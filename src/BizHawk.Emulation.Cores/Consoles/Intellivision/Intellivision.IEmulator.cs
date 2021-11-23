@@ -87,7 +87,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			_stic.active_display = false;
 			_stic.Sr1 = false;
 
-			_cpu.PendingCycles = 3000 + _cpu.GetPendingCycles();
+			_cpu.PendingCycles = 2990 + _cpu.GetPendingCycles();
 
 			while (_cpu.GetPendingCycles() > 0)
 			{
@@ -97,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			}
 
 			// vblank phase 2
-			_cpu.PendingCycles = 791 + _cpu.GetPendingCycles();
+			_cpu.PendingCycles = 801 + _cpu.GetPendingCycles();
 			_stic.in_vb_1 = false;
 
 			while (_cpu.GetPendingCycles() > 0)

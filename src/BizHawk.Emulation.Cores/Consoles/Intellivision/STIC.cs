@@ -194,7 +194,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			switch (addr & 0xF000)
 			{
 				case 0x0000:
-					if (addr <= 0x003F && (in_vb_1 | !active_display))
+					if (addr <= 0x003F && (in_vb_1 | (!active_display & !in_vb_2)))
 					{
 						if (addr == 0x0021 && !peek)
 						{
@@ -209,7 +209,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					}
 					break;
 				case 0x4000:
-					if ((addr <= 0x403F) && (in_vb_1 | !active_display))
+					if ((addr <= 0x403F) && (in_vb_1 | (!active_display & !in_vb_2)))
 					{
 						if (addr == 0x4021 && !peek)
 						{
@@ -218,7 +218,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					}
 					break;
 				case 0x8000:
-					if ((addr <= 0x803F) && (in_vb_1 | !active_display))
+					if ((addr <= 0x803F) && (in_vb_1 | (!active_display & !in_vb_2)))
 					{
 						if (addr == 0x8021 && !peek)
 						{
@@ -227,7 +227,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					}
 					break;
 				case 0xC000:
-					if ((addr <= 0xC03F) && (in_vb_1 | !active_display))
+					if ((addr <= 0xC03F) && (in_vb_1 | (!active_display & !in_vb_2)))
 					{
 						if (addr == 0xC021 && !peek)
 						{
@@ -245,28 +245,28 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			switch (addr & 0xF000)
 			{
 				case 0x0000:
-					if (addr <= 0x003F && (in_vb_1 | !active_display))
+					if (addr <= 0x003F && (in_vb_1 | (!active_display & !in_vb_2)))
 					{
 						write_reg(addr, value, poke);
 						return true;
 					}
 					break;
 				case 0x4000:
-					if (addr <= 0x403F && (in_vb_1 | !active_display))
+					if (addr <= 0x403F && (in_vb_1 | (!active_display & !in_vb_2)))
 					{
 						write_reg(addr-0x4000, value, poke);
 						return true;
 					}
 					break;
 				case 0x8000:
-					if (addr <= 0x803F && (in_vb_1 | !active_display))
+					if (addr <= 0x803F && (in_vb_1 | (!active_display & !in_vb_2)))
 					{
 						write_reg(addr-0x8000, value, poke);
 						return true;
 					}
 					break;
 				case 0xC000:
-					if (addr <= 0xC03F && (in_vb_1 | !active_display))
+					if (addr <= 0xC03F && (in_vb_1 | (!active_display & !in_vb_2)))
 					{
 						write_reg(addr-0xC000, value, poke);
 						return true;
