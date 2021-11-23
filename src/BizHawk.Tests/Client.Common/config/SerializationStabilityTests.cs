@@ -33,6 +33,7 @@ namespace BizHawk.Tests.Client.Common.config
 			typeof(Dictionary<,>),
 			typeof(int),
 			typeof(JToken),
+			typeof(List<>),
 			typeof(Nullable<>),
 			typeof(object),
 			typeof(float),
@@ -78,6 +79,7 @@ namespace BizHawk.Tests.Client.Common.config
 				groupDesc ??= t.Name;
 				foreach (var mi in t.GetMembers(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
 				{
+					if (mi.GetCustomAttribute<JsonIgnoreAttribute>() is not null) continue;
 					if (mi is PropertyInfo pi) CheckMemberAndTypeParams(pi.PropertyType, groupDesc);
 					else if (mi is FieldInfo fi) CheckMemberAndTypeParams(fi.FieldType, groupDesc);
 				}

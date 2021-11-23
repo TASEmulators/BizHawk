@@ -120,6 +120,19 @@ namespace BizHawk.Common.CollectionExtensions
 			foreach (var item in collection) list.Add(item);
 		}
 
+		/// <inheritdoc cref="IList{T}.IndexOf"/>
+		/// <remarks>
+		/// (This is an extension method which reimplements <see cref="IList{T}.IndexOf"/> for other <see cref="IReadOnlyList{T}">collections</see>.
+		/// It defers to the existing <see cref="IList{T}.IndexOf">IndexOf</see> if the receiver's type is <see cref="IList{T}"/> or a subtype.)
+		/// </remarks>
+		public static int IndexOf<T>(this IReadOnlyList<T> list, T elem)
+			where T : IEquatable<T>
+		{
+			if (list is IList<T> listImpl) return listImpl.IndexOf(elem);
+			for (int i = 0, l = list.Count; i < l; i++) if (elem.Equals(list[i])) return i;
+			return -1;
+		}
+
 		public static T? FirstOrNull<T>(this IEnumerable<T> list, Func<T, bool> predicate)
 			where T : struct
 		{

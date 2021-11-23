@@ -5,6 +5,8 @@ using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
+
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace BizHawk.Client.Common
@@ -332,5 +334,12 @@ namespace BizHawk.Client.Common
 		public EHostInputMethod HostInputMethod { get; set; } = HostCapabilityDetector.HasDirectX ? EHostInputMethod.DirectInput : EHostInputMethod.OpenTK;
 
 		public bool UseStaticWindowTitles { get; set; }
+
+		public List<string> ModifierKeys { get; set; } = new();
+
+		[JsonIgnore]
+		public IReadOnlyList<string> ModifierKeysEffective;
+
+		public bool MergeLAndRModifierKeys { get; set; } = true;
 	}
 }

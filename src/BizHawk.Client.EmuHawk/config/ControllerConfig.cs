@@ -81,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private Control CreateNormalPanel(Dictionary<string, string> settings, List<string> buttons, Size size)
 		{
-			var cp = new ControllerConfigPanel { Dock = DockStyle.Fill, AutoScroll = true, Tooltip = toolTip1 };
+			ControllerConfigPanel cp = new(_config.ModifierKeysEffective) { Dock = DockStyle.Fill, AutoScroll = true, Tooltip = toolTip1 };
 			cp.LoadSettings(settings, checkBoxAutoTab.Checked, buttons, size.Width, size.Height);
 			return cp;
 		}

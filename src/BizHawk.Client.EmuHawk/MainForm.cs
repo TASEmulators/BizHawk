@@ -992,9 +992,9 @@ namespace BizHawk.Client.EmuHawk
 				if (triggers.Count == 0)
 				{
 					// Maybe it is a system alt-key which hasn't been overridden
-					if (ie.EventType is InputEventType.Press)
+					if (ie.EventType is InputEventType.Press && (ie.LogicalButton.Modifiers & LogicalButton.MASK_ALT) is not 0U)
 					{
-						if (ie.LogicalButton.Alt && ie.LogicalButton.Button.Length == 1)
+						if (ie.LogicalButton.Button.Length == 1)
 						{
 							var c = ie.LogicalButton.Button.ToLower()[0];
 							if ((c >= 'a' && c <= 'z') || c == ' ')
@@ -1002,8 +1002,7 @@ namespace BizHawk.Client.EmuHawk
 								SendAltKeyChar(c);
 							}
 						}
-
-						if (ie.LogicalButton.Alt && ie.LogicalButton.Button == "Space")
+						else if (ie.LogicalButton.Button == "Space")
 						{
 							SendPlainAltKey(32);
 						}

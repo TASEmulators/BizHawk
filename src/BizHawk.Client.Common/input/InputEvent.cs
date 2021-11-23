@@ -1,6 +1,8 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace BizHawk.Client.Common
 {
@@ -29,25 +31,31 @@ namespace BizHawk.Client.Common
 		Press, Release
 	}
 
-	public readonly struct LogicalButton
+	public struct LogicalButton
 	{
+		public const uint MASK_ALT = 1U << 2;
+
+		public const uint MASK_CTRL = 1U << 1;
+
+		public const uint MASK_SHIFT = 1U << 3;
+
+		public const uint MASK_WIN = 1U << 0;
+
 		public static bool operator ==(LogicalButton lhs, LogicalButton rhs)
 			=> lhs.Button == rhs.Button && lhs.Modifiers == rhs.Modifiers;
 
 		public static bool operator !=(LogicalButton lhs, LogicalButton rhs) => !(lhs == rhs);
 
-		public bool Alt => (Modifiers & ModifierKey.Alt) != 0;
+		/// <remarks>pretty sure these are always consumed during the same iteration of the main program loop, but ¯\_(ツ)_/¯ better safe than sorry --yoshi</remarks>
+		private readonly Func<IReadOnlyList<string>> _getEffectiveModListCallback;
 
 		public readonly string Button;
 
-		public bool Control => (Modifiers & ModifierKey.Control) != 0;
+		public readonly uint Modifiers;
 
-		public readonly ModifierKey Modifiers;
-
-		public bool Shift => (Modifiers & ModifierKey.Shift) != 0;
-
-		public LogicalButton(string button, ModifierKey modifiers)
+		public LogicalButton(string button, uint modifiers, Func<IReadOnlyList<string>> getEffectiveModListCallback)
 		{
+			_getEffectiveModListCallback = getEffectiveModListCallback;
 			Button = button;
 			Modifiers = modifiers;
 		}
@@ -58,12 +66,19 @@ namespace BizHawk.Client.Common
 
 		public override readonly string ToString()
 		{
-			var ret = "";
-			if (Control) ret += "Ctrl+";
-			if (Alt) ret += "Alt+";
-			if (Shift) ret += "Shift+";
-			ret += Button;
-			return ret;
+			if (Modifiers is 0U) return Button;
+			var allMods = _getEffectiveModListCallback();
+			StringBuilder ret = new();
+			for (var i = 0; i < allMods.Count; i++)
+			{
+				var b = 1U << i;
+				if ((Modifiers & b) is not 0U)
+				{
+					ret.Append(allMods[i]);
+					ret.Append('+');
+				}
+			}
+			return ret + Button;
 		}
 	}
 }
