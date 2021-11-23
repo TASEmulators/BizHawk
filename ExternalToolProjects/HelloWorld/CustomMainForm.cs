@@ -95,12 +95,12 @@ namespace HelloWorld
 		public override void Restart()
 		{
 			APIs.EmuClient.SetClientExtraPadding(50, 50);
-
-			if (APIs.GameInfo.GetRomName() != "Null")
+			var gi = APIs.GameInfo.GetGameInfo();
+			if (!string.IsNullOrEmpty(gi?.Name))
 			{
 				Watches.RefreshDomains(_memoryDomains, GlobalConfig.RamWatchDefinePrevious);
-				label_Game.Text = $"You're playing {APIs.GameInfo.GetRomName()}";
-				label_GameHash.Text = $"Hash: {APIs.GameInfo.GetRomHash()}";
+				label_Game.Text = $"You're playing {gi!.Name}";
+				label_GameHash.Text = $"Hash: {gi.Hash}";
 			}
 			else
 			{
@@ -112,7 +112,7 @@ namespace HelloWorld
 		public override void UpdateValues(ToolFormUpdateType type)
 		{
 			if (!(type == ToolFormUpdateType.PreFrame || type == ToolFormUpdateType.FastPreFrame)
-			    || APIs.GameInfo.GetRomName() == "Null"
+			    || string.IsNullOrEmpty(APIs.GameInfo.GetGameInfo()?.Name)
 			    || Watches.Count < 3)
 			{
 				return;
@@ -125,7 +125,7 @@ namespace HelloWorld
 
 		private void button1_Click(object sender, EventArgs e) => APIs.EmuClient.DoFrameAdvance();
 
-		private void label_GameHash_Click(object sender, EventArgs e) => Clipboard.SetText(APIs.GameInfo.GetRomHash());
+		private void label_GameHash_Click(object sender, EventArgs e) => Clipboard.SetText(APIs.GameInfo.GetGameInfo()!.Hash);
 
 		private void loadstate_Click(object sender, EventArgs e)
 		{
