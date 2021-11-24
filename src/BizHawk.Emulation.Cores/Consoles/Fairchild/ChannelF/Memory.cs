@@ -25,7 +25,7 @@
 				// Rom1
 				return BIOS02[addr - 0x400];
 			}
-			else if (addr < 0x2000)
+			else if (addr < 0x1800)
 			{
 				// Cart
 				//return 0;

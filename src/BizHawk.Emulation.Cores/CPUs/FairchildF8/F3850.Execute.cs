@@ -59,8 +59,10 @@
 				case 0x29: JMP(); break;						// A <- H'ii'; PC0l <- H'jj'; PC0h <- (A)
 				case 0x2A: DCI(); break;						// DC0h <- ii; increment PC0; DC0l <- jj; increment PC0
 				case 0x2B: NOP(); break;						// No operation (4 cycles - fetch next opcode)
-				case 0x2C: XDC(); break;						// DC0 <-> DC1
-				
+				case 0x2C: XDC(); break;                        // DC0 <-> DC1
+				case 0x2D: ILLEGAL(); break;                    // No instruction - do a NOP
+				case 0x2E: ILLEGAL(); break;                    // No instruction - do a NOP
+				case 0x2F: ILLEGAL(); break;                    // No instruction - do a NOP
 
 
 				case 0x30: DS(0); break;						// SR <- (SR) + H'FF'
@@ -77,7 +79,8 @@
 				case 0x3B: DS(11); break;						// SR <- (SR) + H'FF'
 				case 0x3C: DS_ISAR(); break;					// SR <- (SR) + H'FF' (SR pointed to by the ISAR)
 				case 0x3D: DS_ISAR_INC(); break;				// SR <- (SR) + H'FF' (SR pointed to by the ISAR); ISAR incremented
-				case 0x3E: DS_ISAR_DEC(); break;				// SR <- (SR) + H'FF' (SR pointed to by the ISAR); ISAR decremented
+				case 0x3E: DS_ISAR_DEC(); break;                // SR <- (SR) + H'FF' (SR pointed to by the ISAR); ISAR decremented
+				case 0x3F: ILLEGAL(); break;					// No instruction - do a NOP
 				
 				case 0x40: LR_A_R(0); break;					// A <- (SR)
 				case 0x41: LR_A_R(1); break;					// A <- (SR)
@@ -93,8 +96,9 @@
 				case 0x4B: LR_A_R(11); break;					// A <- (SR)
 				case 0x4C: LR_A_ISAR(); break;					// A <- (SR) (SR pointed to by the ISAR)
 				case 0x4D: LR_A_ISAR_INC(); break;				// A <- (SR) (SR pointed to by the ISAR); ISAR incremented
-				case 0x4E: LR_A_ISAR_DEC(); break;				// A <- (SR) (SR pointed to by the ISAR); ISAR decremented
-				
+				case 0x4E: LR_A_ISAR_DEC(); break;              // A <- (SR) (SR pointed to by the ISAR); ISAR decremented
+				case 0x4F: ILLEGAL(); break;                    // No instruction - do a NOP
+
 				case 0x50: LR_R_A(0); break;					// SR <- (A)
 				case 0x51: LR_R_A(1); break;					// SR <- (A)
 				case 0x52: LR_R_A(2); break;					// SR <- (A)
@@ -109,7 +113,8 @@
 				case 0x5B: LR_R_A(11); break;					// SR <- (A)
 				case 0x5C: LR_ISAR_A(); break;					// SR <- (A) (SR pointed to by the ISAR)
 				case 0x5D: LR_ISAR_A_INC(); break;				// SR <- (A) (SR pointed to by the ISAR); ISAR incremented
-				case 0x5E: LR_ISAR_A_DEC(); break;				// SR <- (A) (SR pointed to by the ISAR); ISAR decremented
+				case 0x5E: LR_ISAR_A_DEC(); break;              // SR <- (A) (SR pointed to by the ISAR); ISAR decremented
+				case 0x5F: ILLEGAL(); break;                    // No instruction - do a NOP
 
 				case 0x60: LISU(0); break;						// ISARU <- 0'e' (octal)
 				case 0x61: LISU(1); break;						// ISARU <- 0'e' (octal)
@@ -181,7 +186,10 @@
 				case 0x9F: BF_OZCS(); break;					// Branch on false - no overflow and not zero and no carry and negative
 
 				case 0xA0: INS_0(0); break;						// A <- (I/O Port 0 or 1)
-				case 0xA1: INS_0(1); break;						// A <- (I/O Port 0 or 1)
+				case 0xA1: INS_0(1); break;                     // A <- (I/O Port 0 or 1)
+
+				case 0xA2: ILLEGAL(); break;                    // F8 Guide To Programming suggests port 3 cannot be read
+				case 0xA3: ILLEGAL(); break;                    // F8 Guide To Programming suggests port 4 cannot be read
 
 				case 0xA4: INS_1(4); break;						// DB <- Port Address (4 thru 15)
 				case 0xA5: INS_1(5); break;						// DB <- Port Address (4 thru 15)
@@ -197,7 +205,10 @@
 				case 0xAF: INS_1(15); break;					// DB <- Port Address (4 thru 15)
 
 				case 0xB0: OUTS_0(0); break;					// I/O Port 0 or 1 <- (A)
-				case 0xB1: OUTS_0(1); break;					// I/O Port 0 or 1 <- (A)
+				case 0xB1: OUTS_0(1); break;                    // I/O Port 0 or 1 <- (A)
+
+				case 0xB2: ILLEGAL(); break;                    // F8 Guide To Programming suggests port 3 cannot be written to
+				case 0xB3: ILLEGAL(); break;                    // F8 Guide To Programming suggests port 4 cannot be written to
 
 				case 0xB4: OUTS_1(4); break;					// DB <- Port Address (4 thru 15)
 				case 0xB5: OUTS_1(5); break;					// DB <- Port Address (4 thru 15)
@@ -226,7 +237,8 @@
 				case 0xCB: AS(11); break;						// A <- (A) + (r) Binary
 				case 0xCC: AS_IS(); break;						// A <- (A) + (r addressed via ISAR) Binary
 				case 0xCD: AS_IS_INC(); break;					// A <- (A) + (r addressed via ISAR) Binary; Increment ISAR
-				case 0xCE: AS_IS_DEC(); break;					// A <- (A) + (r addressed via ISAR) Binary; Decrement ISAR
+				case 0xCE: AS_IS_DEC(); break;                  // A <- (A) + (r addressed via ISAR) Binary; Decrement ISAR
+				case 0xCF: ILLEGAL(); break;                    // No instruction - do a NOP
 
 				case 0xD0: ASD(0); break;						// A <- (A) + (r) Decimal
 				case 0xD1: ASD(1); break;						// A <- (A) + (r) Decimal
@@ -242,7 +254,8 @@
 				case 0xDB: ASD(11); break;						// A <- (A) + (r) Decimal
 				case 0xDC: ASD_IS(); break;						// A <- (A) + (r addressed via ISAR) Decimal
 				case 0xDD: ASD_IS_INC(); break;					// A <- (A) + (r addressed via ISAR) Decimal; Increment ISAR
-				case 0xDE: ASD_IS_DEC(); break;					// A <- (A) + (r addressed via ISAR) Decimal; Decrement ISAR
+				case 0xDE: ASD_IS_DEC(); break;                 // A <- (A) + (r addressed via ISAR) Decimal; Decrement ISAR
+				case 0xDF: ILLEGAL(); break;                    // No instruction - do a NOP
 
 				case 0xE0: XS(0); break;						// A <- (A) XOR (r)
 				case 0xE1: XS(1); break;						// A <- (A) XOR (r)
@@ -258,7 +271,8 @@
 				case 0xEB: XS(11); break;						// A <- (A) XOR (r)
 				case 0xEC: XS_IS(); break;						// A <- (A) XOR (r addressed via ISAR)
 				case 0xED: XS_IS_INC(); break;					// A <- (A) XOR (r addressed via ISAR); Increment ISAR
-				case 0xEE: XS_IS_DEC(); break;					// A <- (A) XOR (r addressed via ISAR); Decrement ISAR
+				case 0xEE: XS_IS_DEC(); break;                  // A <- (A) XOR (r addressed via ISAR); Decrement ISAR
+				case 0xEF: ILLEGAL(); break;                    // No instruction - do a NOP
 
 				case 0xF0: NS(0); break;						// A <- (A) AND (r)
 				case 0xF1: NS(1); break;                        // A <- (A) AND (r)
@@ -275,8 +289,7 @@
 				case 0xFC: NS_IS(); break;                      // A <- (A) AND (r addressed via ISAR)
 				case 0xFD: NS_IS_INC(); break;                  // A <- (A) AND (r addressed via ISAR); Increment ISAR
 				case 0xFE: NS_IS_DEC(); break;                  // A <- (A) AND (r addressed via ISAR); Decrement ISAR
-
-				default: ILLEGAL(); break;						// Illegal Opcode
+				case 0xFF: ILLEGAL(); break;                    // No instruction - do a NOP
 			}
 		}
 	}

@@ -45,6 +45,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			if (tone == 0)
 			{
 				// silence
+				amplitude = 0;
 			}
 			else
 			{

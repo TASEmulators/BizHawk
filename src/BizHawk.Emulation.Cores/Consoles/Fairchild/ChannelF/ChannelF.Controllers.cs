@@ -5,6 +5,60 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
 	public partial class ChannelF
 	{
+		public ControllerDefinition ChannelFControllerDefinition
+		{
+			get
+			{
+				ControllerDefinition definition = new ControllerDefinition
+				{
+					Name = "ChannelF Controller"
+				};
+
+				string pre = "P1 ";
+
+				// sticks
+				var stickR = new List<string>
+				{
+					// P1 (right) stick
+					pre + "Forward", pre + "Back", pre + "Left", pre + "Right", pre + "CCW", pre + "CW", pre + "Pull", pre + "Push"
+				};
+
+				foreach (var s in stickR)
+				{
+					definition.BoolButtons.Add(s);
+					definition.CategoryLabels[s] = "Right Controller";
+				}
+
+				pre = "P2 ";
+
+				var stickL = new List<string>
+				{
+					// P2 (left) stick
+					pre + "Forward", pre + "Back", pre + "Left", pre + "Right", pre + "CCW", pre + "CW", pre + "Pull", pre + "Push"
+				};
+
+				foreach (var s in stickL)
+				{
+					definition.BoolButtons.Add(s);
+					definition.CategoryLabels[s] = "Left Controller";
+				}
+
+				// console
+				var consoleButtons = new List<string>
+				{
+					"RESET", "START", "HOLD", "MODE", "TIME"
+				};
+
+				foreach (var s in consoleButtons)
+				{
+					definition.BoolButtons.Add(s);
+					definition.CategoryLabels[s] = "Console";
+				}
+
+				return definition;
+			}
+		}
+
 		public bool[] StateConsole = new bool[5];
 		public string[] ButtonsConsole =
 		{
@@ -82,12 +136,18 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				for (int i = 0; i < ButtonsConsole.Length; i++)
 				{
 					var key = ButtonsConsole[i];
-					bool prevState = StateConsole[i]; // CTRLConsole.Bit(i);
+					bool prevState = StateConsole[i]; // CTRLConsole.Bit(i);      
 					bool currState = _controller.IsPressed(key);
 					if (currState != prevState)
 					{
 						StateConsole[i] = currState;
 						noInput = false;
+
+						if (key == "RESET" && StateConsole[i] == true)
+						{
+							CPU.Reset();
+							return true;
+						}
 					}
 				}
 
@@ -117,60 +177,6 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			}
 
 			return noInput;
-		}
-
-		public ControllerDefinition ChannelFControllerDefinition
-		{
-			get
-			{
-				ControllerDefinition definition = new ControllerDefinition
-				{
-					Name = "ChannelF Controller"
-				};
-
-				string pre = "P1 ";
-
-				// sticks
-				var stickR = new List<string>
-				{
-					// P1 (right) stick
-					pre + "Forward", pre + "Back", pre + "Left", pre + "Right", pre + "CCW", pre + "CW", pre + "Pull", pre + "Push"
-				};
-
-				foreach (var s in stickR)
-				{
-					definition.BoolButtons.Add(s);
-					definition.CategoryLabels[s] = "Right Controller";
-				}
-
-				pre = "P2 ";
-
-				var stickL = new List<string>
-				{
-					// P2 (left) stick
-					pre + "Forward", pre + "Back", pre + "Left", pre + "Right", pre + "CCW", pre + "CW", pre + "Pull", pre + "Push"
-				};
-
-				foreach (var s in stickL)
-				{
-					definition.BoolButtons.Add(s);
-					definition.CategoryLabels[s] = "Left Controller";
-				}
-
-				// console
-				var consoleButtons = new List<string>
-				{
-					"RESET", "START", "HOLD", "MODE", "TIME"
-				};
-
-				foreach (var s in consoleButtons)
-				{
-					definition.BoolButtons.Add(s);
-					definition.CategoryLabels[s] = "Console";
-				}
-
-				return definition;
-			}
 		}
 	}
 }

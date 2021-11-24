@@ -515,15 +515,11 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 				// A <- (I/O Port 0 or 1) 
 				case OP_IN:
 					IN_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
-					//instr_pntr++; // dest == A
-					//Regs[ALU0] = cur_instr[instr_pntr++]; // src
-					//IN_Func(A, ALU0);
 					break;
 
 				// I/O Port 0 or 1 <- (A)
 				case OP_OUT:
-					WriteHardware(cur_instr[instr_pntr++], (byte)Regs[cur_instr[instr_pntr++]]);
-					//OUT_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					OUT_Func(IO, A);
 					break;
 
 				// instruction fetch
@@ -725,7 +721,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 				// port must move the current contents of the data bus into the addressed port
 				// CYCLE LENGTH: L
 				case ROMC_1A:
-					WriteHardware(Regs[IO], (byte)Regs[DB]);
+					OUT_Func(IO, DB);
 					break;
 
 				// During the prior cycle, the data bus specified the address of an I/O port. The device containing the addressed I/O port
@@ -734,7 +730,6 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 				// CYCLE LENGTH: L
 				case ROMC_1B:
 					IN_Func(DB, IO);
-					//Regs[DB] = ReadHardware(Regs[IO]);
 					break;
 
 				// None

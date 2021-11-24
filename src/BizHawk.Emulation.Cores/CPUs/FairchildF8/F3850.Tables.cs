@@ -761,16 +761,11 @@
 		}
 
 		/// <summary>
-		/// Illegal Opcode
+		/// Illegal Opcode - just do a short cycle NOP
 		/// </summary>
 		private void ILLEGAL()
 		{
-			PopulateCURINSTR(
-				// S
-				ROMC_00_S,                  // DB <- ((PC0)); PC0++
-				IDLE,
-				IDLE,
-				END);
+			NOP();
 		}
 
 		/// <summary>
@@ -1739,12 +1734,14 @@
 		/// <param name="index"></param>
 		private void INS_0(byte index)
 		{
+			Regs[IO] = index;               // latch port index early
+
 			PopulateCURINSTR(
 				// S
 				ROMC_1C_S,                  // Idle
-				OP_IN, A, index,            // A <- ((Port index - 0/1))
+				OP_IN, ALU0, IO,            // A <- ((Port index - 0/1))
 				IDLE,				
-				OP_LR_A_DB_IO, A, A,       // A <- (A) - flags set as result of IN or INS operation
+				OP_LR_A_DB_IO, A, ALU0,       // A <- (A) - flags set as result of IN or INS operation
 				// S
 				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
@@ -1796,11 +1793,13 @@
 		/// <param name="index"></param>
 		private void OUTS_0(byte index)
 		{
+			Regs[IO] = index;               // latch port index early
+
 			PopulateCURINSTR(
 				// S
 				ROMC_1C_S,					// Idle
 				IDLE,
-				OP_OUT, index, A,			// Port <- (A)
+				OP_OUT, IO, A,			// Port <- (A)
 				IDLE,
 				// S
 				ROMC_00_S,                  // DB <- ((PC0)); PC0++

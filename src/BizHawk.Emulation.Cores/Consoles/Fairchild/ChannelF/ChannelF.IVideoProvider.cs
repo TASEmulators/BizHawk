@@ -55,7 +55,6 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					// columns
 					var colourIndex = pOffset + (VRAM[c | (r << 7)] & 0x03);
 					frameBuffer[(r << 7) + c] = CMap[colourIndex];
-					//frameBuffer[(r << 7) + c + 1] = CMap[colourIndex];
 				}
 			}
 		}
@@ -64,8 +63,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		public int _frameHz = 60;
 		public int[] CroppedBuffer = new int[102 * 58];
 
-		public int VirtualWidth => BufferWidth * 2;
-		public int VirtualHeight => (int)((double)BufferHeight * 1.3) * 2;
+		public int VirtualWidth => BufferWidth * 4;
+		public int VirtualHeight => (int)((double)BufferHeight * 1) * 4;
 		public int BufferWidth => 102; //128
 		public int BufferHeight => 58; //64
 		public int BackgroundColor => Colors.ARGB(0xFF, 0xFF, 0xFF);
