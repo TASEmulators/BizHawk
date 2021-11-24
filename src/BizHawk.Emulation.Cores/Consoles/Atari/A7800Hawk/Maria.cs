@@ -216,8 +216,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					}
 					BG_latch_1 = Core.Maria_regs[0];
 
-					
-
 					color = line_ram[local_GFX_index, pixel];
 
 					if (disp_mode == 0)
@@ -620,7 +618,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 							temp_check = (byte)(((temp_byte & 0x3) << 2) + ((temp_byte >> 4) & 0x3));
 						}
 
-						if ((temp_check & 3) != 0)
+						if ((temp_check & 0xF) != 0)
 						{
 							line_ram[GFX_index, (temp_start + z) % 512] = temp_check;
 							line_ram[GFX_index, (temp_start + z) % 512] += (byte)((GFX_Objects[header_counter].palette & 4) << 2);
