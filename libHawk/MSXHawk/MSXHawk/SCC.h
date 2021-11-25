@@ -22,6 +22,9 @@ namespace MSXHawk
 		uint8_t ch_1_cnt, ch_2_cnt, ch_3_cnt, ch_4_cnt, ch_5_cnt;	
 		uint8_t ch_1_vol, ch_2_vol, ch_3_vol, ch_4_vol, ch_5_vol;
 
+		uint8_t ch_1_frl, ch_2_frl, ch_3_frl, ch_4_frl, ch_5_frl;
+		uint8_t ch_1_frh, ch_2_frh, ch_3_frh, ch_4_frh, ch_5_frh;
+
 		uint16_t ch_1_frq, ch_2_frq, ch_3_frq, ch_4_frq, ch_5_frq;
 		uint16_t ch_1_clk, ch_2_clk, ch_3_clk, ch_4_clk, ch_5_clk;
 
@@ -41,7 +44,7 @@ namespace MSXHawk
 
 		const uint32_t VolumeTable[16] =
 		{
-			0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+			0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30
 		};
 
 		void Reset()
@@ -85,16 +88,16 @@ namespace MSXHawk
 			else if (addr < 0x90)
 			{
 				// frequencies, volumes, enable
-				if (addr == 0x80) { ch_1_frq = (uint16_t)((ch_1_frq & 0xFF00) | value); }
-				else if (addr == 0x81) { ch_1_frq = (uint16_t)((ch_1_frq & 0x00FF) | ((value & 0xF) << 8)); }
-				else if (addr == 0x82) { ch_2_frq = (uint16_t)((ch_2_frq & 0xFF00) | value); }
-				else if (addr == 0x83) { ch_2_frq = (uint16_t)((ch_2_frq & 0x00FF) | ((value & 0xF) << 8)); }
-				else if (addr == 0x84) { ch_3_frq = (uint16_t)((ch_3_frq & 0xFF00) | value); }
-				else if (addr == 0x85) { ch_3_frq = (uint16_t)((ch_3_frq & 0x00FF) | ((value & 0xF) << 8)); }
-				else if (addr == 0x86) { ch_4_frq = (uint16_t)((ch_4_frq & 0xFF00) | value); }
-				else if (addr == 0x87) { ch_4_frq = (uint16_t)((ch_4_frq & 0x00FF) | ((value & 0xF) << 8)); }
-				else if (addr == 0x88) { ch_5_frq = (uint16_t)((ch_5_frq & 0xFF00) | value); }
-				else if (addr == 0x89) { ch_5_frq = (uint16_t)((ch_5_frq & 0x00FF) | ((value & 0xF) << 8)); }
+				if (addr == 0x80) { ch_1_frl = value; }
+				else if (addr == 0x81) { ch_1_frh = (value & 0xF); }
+				else if (addr == 0x82) { ch_2_frl = value; }
+				else if (addr == 0x83) { ch_2_frh = (value & 0xF); }
+				else if (addr == 0x84) { ch_3_frl = value; }
+				else if (addr == 0x85) { ch_3_frh = (value & 0xF); }
+				else if (addr == 0x86) { ch_4_frl = value; }
+				else if (addr == 0x87) { ch_4_frh = (value & 0xF); }
+				else if (addr == 0x88) { ch_5_frl = value; }
+				else if (addr == 0x89) { ch_5_frh = (value & 0xF); }
 				else if (addr == 0x8A) { ch_1_vol = value; }
 				else if (addr == 0x8B) { ch_2_vol = value; }
 				else if (addr == 0x8C) { ch_3_vol = value; }
@@ -109,17 +112,17 @@ namespace MSXHawk
 					ch_5_en = (value & 16) == 16;
 				}
 
-				if (ch_1_frq == 0) { ch_1_frq = 0x1000; }
-				if (ch_2_frq == 0) { ch_2_frq = 0x1000; }
-				if (ch_3_frq == 0) { ch_3_frq = 0x1000; }
-				if (ch_4_frq == 0) { ch_4_frq = 0x1000; }
-				if (ch_5_frq == 0) { ch_5_frq = 0x1000; }
+				ch_1_frq = (ch_1_frl | (ch_1_frh << 8)) + 1;
+				ch_2_frq = (ch_2_frl | (ch_2_frh << 8)) + 1;
+				ch_3_frq = (ch_3_frl | (ch_3_frh << 8)) + 1;
+				ch_4_frq = (ch_4_frl | (ch_4_frh << 8)) + 1;
+				ch_5_frq = (ch_5_frl | (ch_5_frh << 8)) + 1;
 
-				if (ch_1_en) { ch_1_out = (int32_t)page_pntr[ch_1_cnt] * VolumeTable[ch_1_vol]; } else { ch_1_out = 0; }
-				if (ch_2_en) { ch_2_out = (int32_t)page_pntr[ch_2_cnt + 0x20] * VolumeTable[ch_2_vol]; } else { ch_2_out = 0; }
-				if (ch_3_en) { ch_3_out = (int32_t)page_pntr[ch_3_cnt + 0x40] * VolumeTable[ch_3_vol]; } else { ch_3_out = 0; }
-				if (ch_4_en) { ch_4_out = (int32_t)page_pntr[ch_4_cnt + 0x60] * VolumeTable[ch_4_vol]; } else { ch_4_out = 0; }
-				if (ch_5_en) { ch_5_out = (int32_t)page_pntr[ch_5_cnt + 0x60] * VolumeTable[ch_5_vol]; } else { ch_5_out = 0; }
+				if (ch_1_en) { ch_1_out = (int32_t)((int8_t)page_pntr[ch_1_cnt]) * VolumeTable[ch_1_vol]; } else { ch_1_out = 0; }
+				if (ch_2_en) { ch_2_out = (int32_t)((int8_t)page_pntr[ch_2_cnt + 0x20]) * VolumeTable[ch_2_vol]; } else { ch_2_out = 0; }
+				if (ch_3_en) { ch_3_out = (int32_t)((int8_t)page_pntr[ch_3_cnt + 0x40]) * VolumeTable[ch_3_vol]; } else { ch_3_out = 0; }
+				if (ch_4_en) { ch_4_out = (int32_t)((int8_t)page_pntr[ch_4_cnt + 0x60]) * VolumeTable[ch_4_vol]; } else { ch_4_out = 0; }
+				if (ch_5_en) { ch_5_out = (int32_t)((int8_t)page_pntr[ch_5_cnt + 0x60]) * VolumeTable[ch_5_vol]; } else { ch_5_out = 0; }
 			}
 			else 
 			{
@@ -141,7 +144,7 @@ namespace MSXHawk
 						ch_1_cnt++;
 						ch_1_cnt &= 0x1F;
 
-						ch_1_out = (int32_t)page_pntr[ch_1_cnt] * VolumeTable[ch_1_vol];
+						ch_1_out = (int32_t)((int8_t)page_pntr[ch_1_cnt]) * VolumeTable[ch_1_vol];
 					}
 				}
 
@@ -155,7 +158,7 @@ namespace MSXHawk
 						ch_2_cnt++;
 						ch_2_cnt &= 0x1F;
 
-						ch_2_out = (int32_t)page_pntr[ch_2_cnt + 0x20] * VolumeTable[ch_2_vol];
+						ch_2_out = (int32_t)((int8_t)page_pntr[ch_2_cnt + 0x20]) * VolumeTable[ch_2_vol];
 					}
 				}
 
@@ -169,7 +172,7 @@ namespace MSXHawk
 						ch_3_cnt++;
 						ch_3_cnt &= 0x1F;
 
-						ch_3_out = (int32_t)page_pntr[ch_3_cnt + 0x40] * VolumeTable[ch_3_vol];
+						ch_3_out = (int32_t)((int8_t)page_pntr[ch_3_cnt + 0x40]) * VolumeTable[ch_3_vol];
 					}
 				}
 
@@ -183,7 +186,7 @@ namespace MSXHawk
 						ch_4_cnt++;
 						ch_4_cnt &= 0x1F;
 
-						ch_4_out = (int32_t)page_pntr[ch_4_cnt + 0x60] * VolumeTable[ch_4_vol];
+						ch_4_out = (int32_t)((int8_t)page_pntr[ch_4_cnt + 0x60]) * VolumeTable[ch_4_vol];
 					}
 				}
 
@@ -197,7 +200,7 @@ namespace MSXHawk
 						ch_5_cnt++;
 						ch_5_cnt &= 0x1F;
 
-						ch_5_out = (int32_t)page_pntr[ch_5_cnt + 0x60] * VolumeTable[ch_5_vol];
+						ch_5_out = (int32_t)((int8_t)page_pntr[ch_5_cnt + 0x60]) * VolumeTable[ch_5_vol];
 					}
 				}
 			}
@@ -232,6 +235,18 @@ namespace MSXHawk
 			*saver = ch_3_vol; saver++;
 			*saver = ch_4_vol; saver++;
 			*saver = ch_5_vol; saver++;
+
+			*saver = ch_1_frl; saver++;
+			*saver = ch_2_frl; saver++;
+			*saver = ch_3_frl; saver++;
+			*saver = ch_4_frl; saver++;
+			*saver = ch_5_frl; saver++;
+
+			*saver = ch_1_frh; saver++;
+			*saver = ch_2_frh; saver++;
+			*saver = ch_3_frh; saver++;
+			*saver = ch_4_frh; saver++;
+			*saver = ch_5_frh; saver++;
 
 			*saver = (uint8_t)(ch_1_frq & 0xFF); saver++; *saver = (uint8_t)((ch_1_frq >> 8) & 0xFF); saver++;
 			*saver = (uint8_t)(ch_2_frq & 0xFF); saver++; *saver = (uint8_t)((ch_2_frq >> 8) & 0xFF); saver++;
@@ -271,6 +286,18 @@ namespace MSXHawk
 			ch_4_vol = *loader; loader++;
 			ch_5_vol = *loader; loader++;
 
+			ch_1_frl = *loader; loader++;
+			ch_2_frl = *loader; loader++;
+			ch_3_frl = *loader; loader++;
+			ch_4_frl = *loader; loader++;
+			ch_5_frl = *loader; loader++;
+
+			ch_1_frh = *loader; loader++;
+			ch_2_frh = *loader; loader++;
+			ch_3_frh = *loader; loader++;
+			ch_4_frh = *loader; loader++;
+			ch_5_frh = *loader; loader++;
+
 			ch_1_frq = *loader; loader++; ch_1_frq |= (*loader << 8); loader++;
 			ch_2_frq = *loader; loader++; ch_2_frq |= (*loader << 8); loader++;
 			ch_3_frq = *loader; loader++; ch_3_frq |= (*loader << 8); loader++;
@@ -286,11 +313,11 @@ namespace MSXHawk
 			old_sample = *loader; loader++; old_sample |= (*loader << 8); loader++;
 			old_sample |= (*loader << 16); loader++; old_sample |= (*loader << 24); loader++;
 
-			if (ch_1_en) { ch_1_out = (int32_t)page_pntr[ch_1_cnt] * VolumeTable[ch_1_vol]; } else { ch_1_out = 0; }
-			if (ch_2_en) { ch_2_out = (int32_t)page_pntr[ch_2_cnt + 0x20] * VolumeTable[ch_2_vol]; } else { ch_2_out = 0; }
-			if (ch_3_en) { ch_3_out = (int32_t)page_pntr[ch_3_cnt + 0x40] * VolumeTable[ch_3_vol]; } else { ch_3_out = 0; }
-			if (ch_4_en) { ch_4_out = (int32_t)page_pntr[ch_4_cnt + 0x60] * VolumeTable[ch_4_vol]; } else { ch_4_out = 0; }
-			if (ch_5_en) { ch_5_out = (int32_t)page_pntr[ch_5_cnt + 0x60] * VolumeTable[ch_5_vol]; } else { ch_5_out = 0; }
+			if (ch_1_en) { ch_1_out = (int32_t)((int8_t)page_pntr[ch_1_cnt]) * VolumeTable[ch_1_vol]; } else { ch_1_out = 0; }
+			if (ch_2_en) { ch_2_out = (int32_t)((int8_t)page_pntr[ch_2_cnt + 0x20]) * VolumeTable[ch_2_vol]; } else { ch_2_out = 0; }
+			if (ch_3_en) { ch_3_out = (int32_t)((int8_t)page_pntr[ch_3_cnt + 0x40]) * VolumeTable[ch_3_vol]; } else { ch_3_out = 0; }
+			if (ch_4_en) { ch_4_out = (int32_t)((int8_t)page_pntr[ch_4_cnt + 0x60]) * VolumeTable[ch_4_vol]; } else { ch_4_out = 0; }
+			if (ch_5_en) { ch_5_out = (int32_t)((int8_t)page_pntr[ch_5_cnt + 0x60]) * VolumeTable[ch_5_vol]; } else { ch_5_out = 0; }
 
 			return loader;
 		}

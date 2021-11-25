@@ -5,7 +5,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.MSX
 {
-	[Core(CoreNames.MSXHawk, "", isReleased: false)]
+	[Core(CoreNames.MSXHawk, "", isReleased: true)]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class MSX : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IInputPollable, IRegionable, ISettable<MSX.MSXSettings, MSX.MSXSyncSettings>
 	{
