@@ -7,26 +7,21 @@ using System.Collections;
 namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
 	/// <summary>
-	/// Hangman ChannelF Cartridge
-	/// 2KB ROM / NO RAM
+	/// ChannelF Cartridge that utilises 2102 SRAM over IO
 	/// </summary>
-	public class mapper_HANG : VesCartBase
+	public class mapper_MAZE : VesCartBase
 	{
-		public override string BoardType => "HANG";
+		public override string BoardType => "MAZE";
 
-		public mapper_HANG(byte[] rom)
+		public mapper_MAZE(byte[] rom)
 		{
 			ROM = new byte[0xFFFF - 0x800];
 			for (int i = 0; i < rom.Length; i++)
 			{
 				ROM[i] = rom[i];
-				if (i > 3000)
-				{
-					var test = rom[i];
-				}
 			}
 
-			RAM = new byte[0x400];
+			RAM = new byte[400];
 		}
 
 		public override byte ReadBus(ushort addr)
@@ -37,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		public override void WriteBus(ushort addr, byte value)
 		{
-			// no writeable memory
+			// no directly writeable memory
 		}
 
 		public override byte ReadPort(ushort addr)
@@ -67,12 +62,12 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		{
 			switch (addr)
 			{
-				case 20:
+				case 24:
 					m_latch[0] = data;
 
 					m_read_write = data.Bit(0) ? 1 : 0;// BIT(data, 0);
 
-					//m_addr_latch = (m_addr_latch & 0x3f3) | (BIT(data, 2) a<< 2) | (BIT(data, 1) << 3);  // bits 2,3 come from this write!
+					//m_addr_latch = (m_addr_latch & 0x3f3) | (BIT(data, 2) << 2) | (BIT(data, 1) << 3);  // bits 2,3 come from this write!
 					m_addr_latch = (ushort)((m_addr_latch & 0x3f3) | (data.Bit(2) ? 1 : 0 << 2) | (data.Bit(1) ? 1 : 0 << 3));  // bits 2,3 come from this write!
 
 					m_addr = m_addr_latch;
@@ -83,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 						RAM[m_addr] = (byte)m_data0;
 					break;
 
-				case 21:
+				case 25:
 					m_latch[1] = data;
 					// all bits but 2,3 come from this write, but they are shuffled
 					// notice that data is 8bits, so when swapping bit8 & bit9 are always 0!
@@ -105,8 +100,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					m_addr_latch = resBytes[0];
 
 					break;
-
-					}
 			}
 		}
+	}
 }

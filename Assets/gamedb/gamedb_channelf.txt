@@ -56,8 +56,8 @@ F80AF74B09D058B90E719BB7DFBDD50E		Drag Race (USA)	ChannelF			USA
 4C10FA5C7316C59EFA241043FC67DFA8		Magic Numbers - Mind Reader + Nim (USA)	ChannelF			USA
 A8E6103FCAE4D0F9E14D9EDCFC3FC493		Math Quiz I - Addition + Subtraction (USA)	ChannelF			USA
 86B77EAFDF7B806E19E01724987E384F		Math Quiz II - Multiplication + Division (USA)	ChannelF			USA
-6565DF74539476D66FD78DE1BAC0259C		Maze, Jailbreak, Blind-man's-bluff, Trailblazer (USA)	ChannelF			USA
-53E4CC2DA0F2C167E0692B794CB7692C		Maze, Jailbreak, Blind-man's-bluff, Trailblazer (USA) (Alt 1)	ChannelF			USA
+6565DF74539476D66FD78DE1BAC0259C		Maze, Jailbreak, Blind-man's-bluff, Trailblazer (USA)	ChannelF		board=MAZE	USA
+53E4CC2DA0F2C167E0692B794CB7692C		Maze, Jailbreak, Blind-man's-bluff, Trailblazer (USA) (Alt 1)	ChannelF		board=MAZE	USA
 2B3CA549E27579E4519A765FD8F52D0F		Memory Match 1 & 2 (USA)	ChannelF			USA
 1FBD86DCCA0E4619963B902C48AE77F2		Muehle, Tontauben-Schiessen, Kreatives Malspiel, Videoscope (Germany)	ChannelF			Germany
 C2A44D22D3865B036479E9311C74D3AD		Ordtaevling (Sweden)	ChannelF			Sweden
@@ -66,7 +66,7 @@ E90339B7068C6227D54F3C0CA637E017		Pinball Challenge (USA)	ChannelF			USA
 9A894D745356A050F95410983C3BC54A		Pro Football (USA)	ChannelF			USA
 913ECBAA30816C6D78DE8651251761FC		Rat' Mal (Germany)	ChannelF			Germany
 3783B6AC359E21B99CFA17773AA811C6		Robot War, Torpedo Alley (USA)	ChannelF			USA
-5568205F926333914DEDC8EF8BF16AF2		Schach (Germany)	ChannelF			Germany
+5568205F926333914DEDC8EF8BF16AF2		Schach (Germany)	ChannelF		board=SCHACH	Germany
 442E362A39018F2D117F43FE013D1D8B		Scrolling Mountains (200x)(Curtdawg)	ChannelF	
 DFB66EE145FAB65062FDEADAFC8DC34C		Slot Machine (USA)	ChannelF			USA
 4CB12EDAE37DF23851884B82CA410754		Sonar Search (USA)	ChannelF			USA

@@ -29,6 +29,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 			var bios01 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl131253"));
 			var bios02 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl131254"));
+			//var bios02 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl90025"));
 
 			Cartridge = VesCartBase.Configure(_gameInfo.First(), _files.First());
 

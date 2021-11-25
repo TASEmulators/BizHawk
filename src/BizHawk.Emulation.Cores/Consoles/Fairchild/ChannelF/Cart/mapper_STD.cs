@@ -43,11 +43,5 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		{
 			// no writeable hardware
 		}
-
-		public override void SyncState(Serializer ser)
-		{
-			ser.BeginSection("Cart");
-			ser.EndSection();
-		}
 	}
 }
