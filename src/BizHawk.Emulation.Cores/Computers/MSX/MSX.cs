@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.MSX
@@ -16,7 +17,13 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			SyncSettings = (MSXSyncSettings)syncSettings ?? new MSXSyncSettings();
 
 			RomData = new byte[rom.Length];
-			
+
+			// look up game in db before transforming ROM
+			var hash_md5 = MD5Checksum.ComputePrefixedHex(rom);
+			var gi = Database.CheckDatabase(hash_md5);
+			var dict = gi.GetOptions();
+			string s_mapper;
+
 			for (int i = 0; i < rom.Length; i++)
 			{
 				RomData[i] = rom[i];
@@ -38,8 +45,25 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			}
 			else
 			{
-				mapper_1 = 1;
-				Console.WriteLine("Konami Mapper");
+				// Assume default konami style mapper
+				if (gi == null)
+				{
+					
+				}
+				else if (!dict.TryGetValue("mapper", out s_mapper))
+				{
+					mapper_1 = 1;
+					Console.WriteLine("Using Konami Mapper");
+				}
+				else
+				{
+					if (s_mapper == "2")
+					{
+						mapper_1 = 2;
+						Console.WriteLine("Using Konami Mapper with SCC");
+					}
+				}			
+				
 			}
 
 			// if the original was not 64 or 48 k, move it (may need to do this case by case)
@@ -135,7 +159,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		}
 
 		private IntPtr MSX_Pntr { get; set; } = IntPtr.Zero;
-		private byte[] MSX_core = new byte[0x20000];
+		private byte[] MSX_core = new byte[0x28000];
 		public static byte[] Bios = null;
 		public static byte[] Basic;
 

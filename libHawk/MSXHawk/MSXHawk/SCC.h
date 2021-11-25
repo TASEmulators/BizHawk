@@ -7,16 +7,18 @@ using namespace std;
 
 namespace MSXHawk
 {
-	class AY_3_8910
+	class SCC
 	{
 	public:
-		
-		#pragma region AY_3_8910
 
-		AY_3_8910()
+#pragma region SCC
+
+		SCC()
 		{
 			Reset();
 		}
+
+		uint8_t* page_pointer = nullptr;
 
 		bool A_on, B_on, C_on;
 		bool A_up, B_up, C_up;
@@ -27,7 +29,7 @@ namespace MSXHawk
 		uint8_t port_sel;
 		uint8_t vol_A, vol_B, vol_C;
 		uint8_t Register[16] = {};
-				
+
 		uint32_t psg_clock;
 		uint32_t sq_per_A, sq_per_B, sq_per_C;
 		uint32_t clock_A, clock_B, clock_C;
@@ -76,9 +78,10 @@ namespace MSXHawk
 			0x03C5, 0x0555, 0x078B, 0x0AAB, 0x0F16, 0x1555, 0x1E2B, 0x2AAA
 		};
 
+		// returns do not occur in this iplementation, they come from the core
 		uint8_t ReadReg()
 		{
-			return Register[port_sel];
+
 		}
 
 		void sync_psg_state()
@@ -124,10 +127,10 @@ namespace MSXHawk
 
 			uint8_t shape_select = Register[13] & 0xF;
 
-			if (shape_select < 4) { env_shape = 0; }			
-			else if (shape_select < 8) { env_shape = 1; }			
+			if (shape_select < 4) { env_shape = 0; }
+			else if (shape_select < 8) { env_shape = 1; }
 			else { env_shape = 2 + (shape_select - 8); }
-				
+
 			vol_A = Register[8] & 0xF;
 			env_vol_A = ((Register[8] >> 4) & 0x1) > 0;
 
@@ -143,7 +146,7 @@ namespace MSXHawk
 			value &= 0xFF;
 
 			if (port_sel != 0xE) { Register[port_sel] = value; }
-			
+
 
 			sync_psg_state();
 
@@ -177,7 +180,7 @@ namespace MSXHawk
 			// clock noise
 			if (noise_clock == 0)
 			{
-				noise = (noise >> 1) ^ (((noise &0x1) > 0) ? 0x10004 : 0);
+				noise = (noise >> 1) ^ (((noise & 0x1) > 0) ? 0x10004 : 0);
 				noise_clock = noise_per;
 			}
 
@@ -283,9 +286,9 @@ namespace MSXHawk
 			return false;
 		}
 
-		#pragma endregion
+#pragma endregion
 
-		#pragma region State Save / Load
+#pragma region State Save / Load
 
 		uint8_t* SaveState(uint8_t* saver)
 		{
@@ -310,7 +313,7 @@ namespace MSXHawk
 
 			for (int i = 0; i < 16; i++) { *saver = Register[i]; saver++; }
 
-			*saver = (uint8_t)(psg_clock & 0xFF); saver++; *saver = (uint8_t)((psg_clock >> 8) & 0xFF); saver++; 
+			*saver = (uint8_t)(psg_clock & 0xFF); saver++; *saver = (uint8_t)((psg_clock >> 8) & 0xFF); saver++;
 			*saver = (uint8_t)((psg_clock >> 16) & 0xFF); saver++; *saver = (uint8_t)((psg_clock >> 24) & 0xFF); saver++;
 
 			*saver = (uint8_t)(sq_per_A & 0xFF); saver++; *saver = (uint8_t)((sq_per_A >> 8) & 0xFF); saver++;
@@ -429,6 +432,6 @@ namespace MSXHawk
 			return loader;
 		}
 
-		#pragma endregion
+#pragma endregion
 	};
 }

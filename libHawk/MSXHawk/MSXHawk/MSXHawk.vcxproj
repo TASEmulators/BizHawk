@@ -160,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core.h" />
+    <ClInclude Include="SCC.h" />
     <ClInclude Include="Memory.h" />
     <ClInclude Include="TMS9918A.h" />
     <ClInclude Include="AY_3_8910.h" />

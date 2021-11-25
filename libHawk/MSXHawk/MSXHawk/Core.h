@@ -5,6 +5,7 @@
 
 #include "Z80A.h"
 #include "AY_3_8910.h"
+#include "SCC.h"
 #include "TMS9918A.h"
 #include "Memory.h"
 
@@ -18,19 +19,31 @@ namespace MSXHawk
 			MemMap.cpu_pntr = &cpu;
 			MemMap.vdp_pntr = &vdp;
 			MemMap.psg_pntr = &psg;
+			MemMap.SCC_1_pntr = &SCC_1;
+			MemMap.SCC_2_pntr = &SCC_2;
 			cpu.mem_ctrl = &MemMap;
 			vdp.IRQ_PTR = &cpu.FlagI;
 			vdp.SHOW_BG = vdp.SHOW_SPRITES = true;
 			psg.Clock_Divider = 16;
 			sl_case = 0;
+			SCC_1.page_pointer = &MemMap.SCC_1_page[0];
+			SCC_2.page_pointer = &MemMap.SCC_2_page[0];
 		};
 
 		TMS9918A vdp;
 		Z80A cpu;
 		AY_3_8910 psg;
+		SCC SCC_1;
+		SCC SCC_2;
 		MemoryManager MemMap;
 
 		uint8_t sl_case = 0;
+		bool new_sample = false;
+
+		// combine audio from all sources
+		uint32_t sampleclock;
+		uint32_t num_samples;
+		int32_t samples[9000] = {};
 
 		void Load_BIOS(uint8_t* bios, uint8_t* basic)
 		{
@@ -65,8 +78,8 @@ namespace MSXHawk
 			uint32_t scanlinesPerFrame = 262;
 			vdp.SpriteLimit = true;
 
-			psg.num_samples = 0;
-			psg.sampleclock = 0;
+			num_samples = 0;
+			sampleclock = 0;
 
 			for (uint32_t i = 0; i < scanlinesPerFrame; i++)
 			{
@@ -87,55 +100,76 @@ namespace MSXHawk
 					for (int i = 0; i < 14; i++) 
 					{
 						cpu.ExecuteOne(16);
-						psg.sampleclock+=16;
-						psg.generate_sound();
+						sampleclock+=16;
+						new_sample |= psg.generate_sound();
+						new_sample |= SCC_1.generate_sound();
+						//new_sample |= SCC_2.generate_sound();
+						if (new_sample) { Add_Audio_Sample(); }
 					}
 					cpu.ExecuteOne(4);
-					psg.sampleclock += 4;
+					sampleclock += 4;
 					sl_case = 1;
 					break;
 
 				case 1:
 					cpu.ExecuteOne(12);
-					psg.sampleclock += 12;
-					psg.generate_sound();
+					sampleclock += 12;
+					new_sample |= psg.generate_sound();
+					new_sample |= SCC_1.generate_sound();
+					//new_sample |= SCC_2.generate_sound();
+					if (new_sample) { Add_Audio_Sample(); }
 					
 					for (int i = 0; i < 13; i++)
 					{
 						cpu.ExecuteOne(16);
-						psg.sampleclock += 16;
-						psg.generate_sound();
+						sampleclock += 16;
+						new_sample |= psg.generate_sound();
+						new_sample |= SCC_1.generate_sound();
+						//new_sample |= SCC_2.generate_sound();
+						if (new_sample) { Add_Audio_Sample(); }
 					}
 					cpu.ExecuteOne(8);
-					psg.sampleclock += 8;
+					sampleclock += 8;
 					sl_case = 2;
 					break;
 
 				case 2:
 					cpu.ExecuteOne(8);
-					psg.sampleclock += 8;
-					psg.generate_sound();
+					sampleclock += 8;
+					new_sample |= psg.generate_sound();
+					new_sample |= SCC_1.generate_sound();
+					//new_sample |= SCC_2.generate_sound();
+					if (new_sample) { Add_Audio_Sample(); }
 
 					for (int i = 0; i < 13; i++)
 					{
 						cpu.ExecuteOne(16);
-						psg.sampleclock += 16;
-						psg.generate_sound();
+						sampleclock += 16;
+						new_sample |= psg.generate_sound();
+						new_sample |= SCC_1.generate_sound();
+						//new_sample |= SCC_2.generate_sound();
+						if (new_sample) { Add_Audio_Sample(); }
 					}
 					cpu.ExecuteOne(12);
-					psg.sampleclock += 12;
+					sampleclock += 12;
 					sl_case = 3;
 					break;
 				case 3:
 					cpu.ExecuteOne(4);
-					psg.sampleclock += 4;
-					psg.generate_sound();
+					sampleclock += 4;
+					new_sample |= psg.generate_sound();
+					new_sample |= SCC_1.generate_sound();
+					//new_sample |= SCC_2.generate_sound();
+					if (new_sample) { Add_Audio_Sample(); }
 
 					for (int i = 0; i < 14; i++)
 					{
 						cpu.ExecuteOne(16);
-						psg.sampleclock += 16;
-						psg.generate_sound();
+						sampleclock += 16;
+						new_sample |= psg.generate_sound();
+						new_sample |= SCC_1.generate_sound();
+						//new_sample |= SCC_2.generate_sound();
+						if (new_sample) { Add_Audio_Sample(); }
 					}
 					sl_case = 0;
 					break;
@@ -143,6 +177,23 @@ namespace MSXHawk
 			}
 
 			return MemMap.lagged;
+		}
+
+		void Add_Audio_Sample() 
+		{
+			if (num_samples < 4500)
+			{
+				samples[num_samples * 2] = sampleclock;
+				samples[num_samples * 2 + 1] = psg.current_sample - psg.old_sample;
+				samples[num_samples * 2 + 1] += SCC_1.current_sample - SCC_1.old_sample;
+				//samples[num_samples * 2 + 1] = SCC_2.current_sample - SCC_2.old_sample;
+				num_samples++;
+				psg.old_sample = psg.current_sample;
+				SCC_1.old_sample = SCC_1.current_sample;
+				//SCC_2.old_sample = SCC_2.current_sample;
+
+				new_sample = false;
+			}
 		}
 
 		void GetVideo(uint32_t* dest) 
@@ -155,13 +206,13 @@ namespace MSXHawk
 
 		uint32_t GetAudio(int32_t* dest, int32_t* n_samp) 
 		{
-			int32_t* src = psg.samples;
+			int32_t* src = samples;
 			int32_t* dst = dest;
 
-			std::memcpy(dst, src, sizeof int32_t * psg.num_samples * 2);
-			n_samp[0] = psg.num_samples;
+			std::memcpy(dst, src, sizeof int32_t * num_samples * 2);
+			n_samp[0] = num_samples;
 
-			return psg.sampleclock;
+			return sampleclock;
 		}
 
 		int GetMessageLength() 
@@ -182,8 +233,11 @@ namespace MSXHawk
 			saver = vdp.SaveState(saver);
 			saver = cpu.SaveState(saver);
 			saver = psg.SaveState(saver);
+			saver = SCC_1.SaveState(saver);
+			saver = SCC_2.SaveState(saver);
 			saver = MemMap.SaveState(saver);
 
+			*saver = (uint8_t)(new_sample ? 1 : 0); saver++;
 			*saver = sl_case; saver++;
 		}
 
@@ -192,8 +246,11 @@ namespace MSXHawk
 			loader = vdp.LoadState(loader);
 			loader = cpu.LoadState(loader);
 			loader = psg.LoadState(loader);
+			loader = SCC_1.LoadState(loader);
+			loader = SCC_2.LoadState(loader);
 			loader = MemMap.LoadState(loader);
 
+			new_sample = *loader == 1; loader++;
 			sl_case = *loader; loader++;
 		}
 
