@@ -1,0 +1,74 @@
+﻿using System;
+using System.Runtime.InteropServices;
+
+namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
+{
+	/// <summary>
+	/// static bindings into libsameboy.dll
+	/// </summary>
+	public static class LibSameboy
+	{
+		[Flags]
+		public enum Buttons : uint
+		{
+			RIGHT = 0x01,
+			LEFT = 0x02,
+			UP = 0x04,
+			DOWN = 0x08,
+			A = 0x10,
+			B = 0x20,
+			SELECT = 0x40,
+			START = 0x80,
+		}
+
+		[Flags]
+		public enum LoadFlags : uint
+		{
+			IS_DMG = 0,
+			IS_CGB = 1,
+			IS_AGB = 2,
+		}
+
+		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
+		public static extern IntPtr sameboy_create(byte[] romdata, int romlength, byte[] biosdata, int bioslength, LoadFlags flags);
+
+		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void sameboy_destroy(IntPtr core);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void SampleCallback(IntPtr core, IntPtr sample);
+
+		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void sameboy_setsamplecallback(IntPtr core, SampleCallback callback);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void InputCallback(IntPtr core);
+
+		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void sameboy_setinputcallback(IntPtr core, InputCallback callback);
+
+		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
+		public static extern long sameboy_frameadvance(IntPtr core, Buttons input, int[] videobuf);
+
+		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void sameboy_reset(IntPtr core);
+
+		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void sameboy_savesram(IntPtr core, byte[] dest);
+
+		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void sameboy_loadsram(IntPtr core, byte[] data);
+
+		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
+		public static extern int sameboy_sramlen(IntPtr core);
+
+		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void sameboy_savestate(IntPtr core, byte[] data);
+
+		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
+		public static extern bool sameboy_loadstate(IntPtr core, byte[] data, int len);
+
+		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
+		public static extern int sameboy_statelen(IntPtr core);
+	}
+}
