@@ -27,6 +27,14 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 			ControllerDefinition = ChannelFControllerDefinition;
 
+			var bios01 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl131253"));
+			var bios02 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl131254"));
+
+			Cartridge = VesCartBase.Configure(_gameInfo.First(), _files.First());
+
+			BIOS01 = bios01;
+			BIOS02 = bios02;			
+
 			CPU = new F3850
 			{
 				ReadMemory = ReadBus,
@@ -36,17 +44,10 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				DummyReadMemory = ReadBus
 			};
 
-			_tracer = new TraceBuffer(CPU.TraceHeader);
+			_tracer = new TraceBuffer(CPU.TraceHeader);			
 
-			var bios01 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl131253"));
-			var bios02 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl131254"));
-
-			BIOS01 = bios01;
-			BIOS02 = bios02;
-
-			var rom = _files.First();
-
-			Array.Copy(rom, 0, Rom, 0, rom.Length);
+			//var rom = _files.First();
+			//Array.Copy(rom, 0, Rom, 0, rom.Length);
 
 			CalcClock();
 
@@ -66,5 +67,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		public F3850 CPU;
 		private readonly TraceBuffer _tracer;
 		public IController _controller;
+
+		public VesCartBase Cartridge;
 	}
 }

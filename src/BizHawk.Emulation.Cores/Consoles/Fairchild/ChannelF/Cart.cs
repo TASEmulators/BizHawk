@@ -5,6 +5,6 @@
 	/// </summary>
 	public partial class ChannelF
 	{
-		public byte[] Rom = new byte[4096];
+		//public byte[] Rom = new byte[4096];
 	}
 }

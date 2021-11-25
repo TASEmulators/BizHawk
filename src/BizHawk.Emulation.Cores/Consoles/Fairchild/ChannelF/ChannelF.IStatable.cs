@@ -13,6 +13,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			ser.Sync(nameof(latch_y), ref latch_y);
 			//ser.Sync(nameof(ControllersEnabled), ref ControllersEnabled);
 			CPU.SyncState(ser);
+			Cartridge.SyncState(ser);
 			ser.EndSection();
 			/*
 

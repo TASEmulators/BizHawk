@@ -4,9 +4,9 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
 	/// <summary>
 	/// Ports and related functions
-	/// Based on the luxor schematic here:
-	/// https://web.archive.org/web/20210524083634/http://channelf.se/veswiki/images/3/35/Luxor_page2_300dpi.png
-	/// https://channelf.se/veswiki/images/2/23/Luxor_page3_300dpi.png
+	/// Based on the schematic here:
+	/// https://web.archive.org/web/20210524083636/http://channelf.se/veswiki/images/3/31/FVE100_schematic_sheet_1of3.gif
+	/// https://web.archive.org/web/20160313115333/http://channelf.se/veswiki/images/0/04/FVE_schematic_sheet_2_of_3.png
 	/// </summary>
 	public partial class ChannelF
 	{
@@ -15,55 +15,34 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		/// CPU (3850) - ports 0 and 1
 		/// PSU (3851) - ports 4 and 5
 		/// (the second PSU has no IO ports wired up)
+		/// Depending on the attached cartridge, there may be additional hardware on the IO bus
 		/// All CPU and PSU I/O ports are active-low with output-latches
 		/// </summary>
-		public byte[] OutputLatch = new byte[4];
+		public byte[] OutputLatch = new byte[0xFF];
 
-		public bool LS368Disabled;
-
-		public const int PORT0 = 0;
-		public const int PORT1 = 1;
-		public const int PORT4 = 2;
-		public const int PORT5 = 3;
+		public bool LS368Enable;
 
 		/// <summary>
 		/// CPU is attempting to read from a port
 		/// </summary>
-		/// <param name="addr"></param>
-		/// <returns></returns>
 		public byte ReadPort(ushort addr)
 		{
-			byte result = 0xFF;
+			var result = 0xFF;
 
 			switch (addr)
 			{
-				default:
-					break;
 				case 0:
-
 					// Console Buttons - these are connected to pins 0-3 (bits 0-3) through a 7404 Hex Inverter	
 					// b0:	TIME
 					// b1:	MODE
 					// b2:	HOLD
-					// b3:	START	
-					
+					// b3:	START
 					// RESET button is connected directly to the RST pin on the CPU (this is handled here in the PollInput() method)
-
-					// get the 4 console buttons state
-					var cButtons = DataConsole & 0x0F;
-
-					// hex inverter
-					var cButtonsInverted = (byte)(DataConsole ^ 0xFF);
-
-					// AND latched output (pins 4 and 7 not connected)
-					result = (byte)((OutputLatch[PORT0] & 0x6F) | cButtonsInverted);
-
+					result = ~(DataConsole & 0x0F) | OutputLatch[addr];
 					break;
 
 				case 1:
-
 					// right controller (player 1)
-
 					// connected through 7404 Hex Inverter
 					// b0:	RIGHT
 					// b1:	LEFT
@@ -71,26 +50,12 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					// b3:	FORWARD
 					// b4:	CCW
 					// b5:	CW
-					var rButtons = DataRight & 0x3F;
-
-					// connected through LS368 Hex Interting 3-State Buffer
-					// the enable pin of this IC is driven by a CPU write to pin 6 on port 0
-					// b6:	PULL
-					// b7:	PUSH
-					var rButtons2 = LS368Disabled ? 0 : DataRight & 0xC0;
-
-					// hex inverters
-					var rbuttonsInverted = (byte)((rButtons | rButtons2) ^ 0xFF);
-
-					// AND latched output
-					result = (byte)(OutputLatch[PORT1] | rbuttonsInverted);
-
+					var v1 = LS368Enable ? DataRight : DataRight | 0xC0;
+					result = (~v1) | OutputLatch[addr];
 					break;
 
 				case 4:
-
 					// left controller (player 2)
-
 					// connected through LS368 Hex Interting 3-State Buffer
 					// the enable pin of this IC is driven by a CPU write to pin 6 on port 0
 					// b0:	RIGHT
@@ -101,25 +66,22 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					// b5:	CW
 					// b6:	PULL
 					// b7:	PUSH
-					var lButtons = LS368Disabled ? 0 : DataLeft & 0xFF;
-
-					// hex inverter
-					var lButtonsInverted = (byte)(lButtons ^ 0xFF);
-
-					// AND latched output
-					result = (byte)(OutputLatch[PORT4] | lButtonsInverted);
-
+					var v2 = LS368Enable ? DataLeft : 0xFF;
+					result = (~v2) | OutputLatch[addr];
 					break;
 
 				case 5:
+					result = OutputLatch[addr];
+					break;
 
-					// output only IO port - return the last latched output
-					result = OutputLatch[PORT5];
-
+				default:
+					// possible cartridge hardware IO space
+					result = ~(Cartridge.ReadPort(addr)) | OutputLatch[addr];
 					break;
 			}
 
-			return result;
+
+			return (byte)result;
 		}
 
 		/// <summary>
@@ -130,51 +92,30 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			switch (addr)
 			{
 				case 0:
-
-					OutputLatch[PORT0] = value;
-
-					// LS368 enable pin on bit 6
-					LS368Disabled = !value.Bit(6);
-
-					if (!value.Bit(5))
+					OutputLatch[addr] = value;
+					LS368Enable = !value.Bit(6);
+					if (value.Bit(5)) 
 					{
+						// WRT pulse
 						// pulse clocks the 74195 parallel access shift register which feeds inputs of 2 NAND gates
 						// writing data to both sets of even and odd VRAM chips (based on the row and column addresses latched into the 7493 ICs
-						VRAM[((latch_y) * 0x80) + latch_x] = (byte)latch_colour;
+						VRAM[((latch_y) * 0x80) + latch_x] = (byte)latch_colour; 
 					}
-
 					break;
 
 				case 1:
-
-					// latch pixel colour
-					OutputLatch[PORT1] = value;
-					
-					// write data 0 = bit6
-					// write data 1 = bit7
-					latch_colour = ((value) >> 6) & 0x03;
-
+					OutputLatch[addr] = value;
+					latch_colour = ((value ^ 0xFF) >> 6) & 0x03;
 					break;
 
 				case 4:
-
-					// latch horiztonal column address
-					OutputLatch[PORT4] = value;
-
-					// bit7 is not sent to the 7493s (IO47N)
-					latch_x = value & 0x7F;
-
+					OutputLatch[addr] = value;
+					latch_x = (value | 0x80) ^ 0xFF;
 					break;
 
 				case 5:
-
-					// latch vertical row address and sound bits
-					OutputLatch[PORT5] = value;
-
-					// ignore the sound bits
-					latch_y = value & 0x3F;
-
-					// bits 6 (ToneAN) and 7 (ToneBN) are sound generation					
+					OutputLatch[addr] = value;					
+					latch_y = (value | 0xC0) ^ 0xFF;
 					var audio = (value >> 6) & 0x03;
 					if (audio != tone)
 					{
@@ -183,9 +124,13 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 						amplitude = 1;
 						AudioChange();
 					}
+					break;
 
+				default:
+					// possible write to cartridge hardware
+					Cartridge.WritePort(addr, (byte)(value ^ 0xFF));
 					break;
 			}
-		}
+		}		
 	}
 }

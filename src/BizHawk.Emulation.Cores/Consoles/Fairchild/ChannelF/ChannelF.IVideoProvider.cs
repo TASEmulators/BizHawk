@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		public int[] CroppedBuffer = new int[102 * 58];
 
 		public int VirtualWidth => BufferWidth * 4;
-		public int VirtualHeight => (int)((double)BufferHeight * 1) * 4;
+		public int VirtualHeight => (int)((double)BufferHeight * 1.15) * 4;
 		public int BufferWidth => 102; //128
 		public int BufferHeight => 58; //64
 		public int BackgroundColor => Colors.ARGB(0xFF, 0xFF, 0xFF);
