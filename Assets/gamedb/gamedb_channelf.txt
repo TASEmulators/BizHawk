@@ -1,15 +1,19 @@
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;;; Type:	NO-INTRO
+;;; Type:	NO-INTRO & TOSEC
 ;;; Source:	Fairchild - Channel F - 20120223-000000
-;;; FileGen:	2019-04-16 13:59:49 (UTC)
+;;; FileGen:	2021-11-24 09:30:49 (UTC)
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;; Bad Dumps
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+C8D5CE90CB1C76C9589711B5029D3421	B	Color Organ (19xx)(-)[b]	ChannelF	
+3EF873268F8FC428DA225CADABB4703F	B	Democart (demo) (1977)(Fairchild)[b]	ChannelF	
 ;
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;; Hacks
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+02B4A4F523B972C63FEF21BF2E51AE58		Channel F Multi-Cart - Menu (2004)(Riddle, Sean)	ChannelF	
+4B3657594CD1000D08704F4F0FB53C75		Channel F Multi-Cart - Menu (2004)(Riddle, Sean)[a]	ChannelF	
 ;
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;; Over Dumps
@@ -20,21 +24,35 @@
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Home Brew
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+CC445080CAA95EA4A48CC013A04F9808	D	Full Screen Picture Demo (200x)(e5frog)(PD)	ChannelF	
+4B109AAF9C6896DF4EE4C5A37852DAB2	D	Full Screen Picture Demo (200x)(e5frog)(PD)[a]	ChannelF	
+73EEF0F56736E2D8153D6F489DD0BEAD	D	International Karate Demo (200x)(-)(PD)	ChannelF	
+D337BE6E8F348FB329FBAF44D3C2FA17	D	International Karate Demo Test 2 (200x)(-)(PD)	ChannelF	
+A6607B7C30CC4A7695D3112B3271D4E8	D	International Karate Demo Test 3 (200x)(-)(PD)	ChannelF	
+7DD3F1040C774FE147FC1D825B353524	D	International Karate Demo Test 5 (200x)(-)(PD)	ChannelF	
+F680225A38C3C4A66E30DBCA8D351407	D	Test Controls (200x)(e5frog)(PD)	ChannelF	
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;; Believed Good
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 F7BF7D55A7660FFA80D08AD1BA903FF7		Alien Invasion (USA)	ChannelF			USA
 D89B48AE8C906488CAAC2B2AE1D63D88		Backgammon, Acey-Deucey (USA)	ChannelF			USA
 4FA83F734C139963AA02BDBB7A52E500		Baseball (USA)	ChannelF			USA
-25E231E7A464A32B4715BFB47AF89240		Bowling (USA)	ChannelF			USA
+25E231E7A464A32B4715BFB47AF89240		Bowling (USA)	ChannelF		board=STD	USA
 BB7F7BBBE21F142591CDCAFA98D7F6E4		Casino Poker (USA)	ChannelF			USA
 35D61D40EF7EC337CBA092AABAC74DBD		Checkers (USA)	ChannelF			USA
+94530113A22AE27AF6ED87B98D9AF62A		Color Organ (19xx)(-)	ChannelF	
+C44BE208013B82041D01D2BC1834060B		Colortest Demo (200x)(Riddle, Sean)	ChannelF	
+54CF17C48707467295749490D458EAFB		Democart (demo) (1977)(Fairchild)	ChannelF	
+F6916B665893AA8138CDE57C37E50ADA		Democart 2 (demo) (197x)(Fairchild)	ChannelF	
 54CF17C48707467295749490D458EAFB		Demonstration Cartridge (USA)	ChannelF			USA
 F6916B665893AA8138CDE57C37E50ADA		Demonstration Cartridge 2 (USA)	ChannelF			USA
 4F11F13CBCA685CB20E888F87B3B1586		Desert Fox, Shooting Gallery (USA)	ChannelF			USA
 6FFEDAED3C5CD8BA74D98901849CC451		Dodge It (USA)	ChannelF			USA
 F80AF74B09D058B90E719BB7DFBDD50E		Drag Race (USA)	ChannelF			USA
 9E0711B140E22729687DB1E1354980AB		Galactic Space Wars, Lunar Lander (USA)	ChannelF			USA
-0124CD0B61DF5502AABD59029CCB6D5A		Hangman (USA)	ChannelF			USA
+0124CD0B61DF5502AABD59029CCB6D5A		Hangman (USA)	ChannelF		board=HANG	USA
 4C10FA5C7316C59EFA241043FC67DFA8		Magic Numbers - Mind Reader + Nim (USA)	ChannelF			USA
 A8E6103FCAE4D0F9E14D9EDCFC3FC493		Math Quiz I - Addition + Subtraction (USA)	ChannelF			USA
 86B77EAFDF7B806E19E01724987E384F		Math Quiz II - Multiplication + Division (USA)	ChannelF			USA
@@ -49,6 +67,7 @@ E90339B7068C6227D54F3C0CA637E017		Pinball Challenge (USA)	ChannelF			USA
 913ECBAA30816C6D78DE8651251761FC		Rat' Mal (Germany)	ChannelF			Germany
 3783B6AC359E21B99CFA17773AA811C6		Robot War, Torpedo Alley (USA)	ChannelF			USA
 5568205F926333914DEDC8EF8BF16AF2		Schach (Germany)	ChannelF			Germany
+442E362A39018F2D117F43FE013D1D8B		Scrolling Mountains (200x)(Curtdawg)	ChannelF	
 DFB66EE145FAB65062FDEADAFC8DC34C		Slot Machine (USA)	ChannelF			USA
 4CB12EDAE37DF23851884B82CA410754		Sonar Search (USA)	ChannelF			USA
 32CCA8FF09041A39251D7AADE21EE22F		Space War (USA)	ChannelF			USA
@@ -56,3 +75,4 @@ DFB66EE145FAB65062FDEADAFC8DC34C		Slot Machine (USA)	ChannelF			USA
 7E5C26A6D1F9A90C68669A9800BA522D		Tic-Tac-Toe, Shooting Gallery, Doodle, Quadra-Doodle (USA)	ChannelF			USA
 B074C867F235FB69CED96C6916673B45		Video Blackjack (USA)	ChannelF			USA
 90A9B3952568F91502A7088BFB0AE07E		Video Whizball (USA)	ChannelF			USA
+C3C7B3246E50117BD5CDDB2B53E6FBAE		Werbetextcassette (198x)(Electronic-Partner)(DE)	ChannelF			DE

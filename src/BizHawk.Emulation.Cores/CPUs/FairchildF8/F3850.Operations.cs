@@ -34,8 +34,9 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 			FlagO = false;
 			FlagC = false;
 
-			// data is complemented between I/O pins and accumulator.
-			Regs[dest] = (byte)(Regs[src] ^ 0xFF);
+			// data is complemented between I/O pins and accumulator (because PINs are active-low)
+			// however for ease we will make them active-high here
+			Regs[dest] = Regs[src];
 
 			FlagS = !Regs[dest].Bit(7);
 			FlagZ = (Regs[dest] & 0xFF) == 0;
@@ -49,8 +50,9 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		/// <param name="src"></param>
 		public void OUT_Func(byte dest, byte src)
 		{
-			// data is complemented between accumulator and I/O pins.
-			WriteHardware(Regs[dest], (byte)(Regs[src] ^ 0xFF));
+			// data is complemented between accumulator and I/O pins (because PINs are active-low)
+			// however for ease here we will make them active-high
+			WriteHardware(Regs[dest], Regs[src]);
 		}
 
 		public void ClearFlags_Func()
