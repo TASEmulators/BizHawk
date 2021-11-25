@@ -307,10 +307,6 @@ namespace MSXHawk
 			{
 				if (segment < 8)
 				{
-					if (SCC_1_enabled) 
-					{
-						return &unmapped[0];
-					}
 					return &rom_1[rom1_konami_page_2 * 0x2000 + (0x400 * segment)];
 				}
 				else
@@ -339,7 +335,7 @@ namespace MSXHawk
 					{
 						if (segment < 6) 
 						{
-							return &unmapped[0];
+							return &rom_1[rom1_konami_page_2 * 0x2000 + (0x400 * segment)];
 						}
 						else 
 						{
@@ -436,10 +432,6 @@ namespace MSXHawk
 			{
 				if (segment < 8)
 				{
-					if (SCC_2_enabled)
-					{
-						return &unmapped[0];
-					}
 					return &rom_2[rom2_konami_page_2 * 0x2000 + (0x400 * segment)];
 				}
 				else
@@ -468,7 +460,7 @@ namespace MSXHawk
 					{
 						if (segment < 6)
 						{
-							return &unmapped[0];
+							return &rom_2[rom2_konami_page_2 * 0x2000 + (0x400 * segment)];
 						}
 						else
 						{
@@ -511,12 +503,14 @@ namespace MSXHawk
 			if (addr >= 0x8000 && addr < 0xA000 && slot_2_has_rom == 1) { rom1_konami_page_2 = (uint8_t)(value & rom_size_1); remap(); }
 			if (addr >= 0xA000 && addr < 0xC000 && slot_2_has_rom == 1) { rom1_konami_page_3 = (uint8_t)(value & rom_size_1); remap(); }
 		}
+		/*
 		if (rom_mapper_2 == 1)
 		{
 			if (addr >= 0x6000 && addr < 0x8000 && slot_1_has_rom == 2) { rom2_konami_page_1 = (uint8_t)(value & rom_size_2); remap(); }
 			if (addr >= 0x8000 && addr < 0xA000 && slot_2_has_rom == 2) { rom2_konami_page_2 = (uint8_t)(value & rom_size_2); remap(); }
 			if (addr >= 0xA000 && addr < 0xC000 && slot_2_has_rom == 2) { rom2_konami_page_3 = (uint8_t)(value & rom_size_2); remap(); }
 		}
+		*/
 
 		// Konami addresses with SCC
 		if (rom_mapper_1 == 2)
@@ -531,10 +525,11 @@ namespace MSXHawk
 			}
 			if (addr >= 0x9800 && addr < 0xA000 && slot_2_has_rom == 1 && SCC_1_enabled)
 			{
-				SCC_1_pntr->WriteReg(value & 0xFF);
+				SCC_1_pntr->WriteReg((uint8_t)(addr & 0xFF), value);
 			}
 			if (addr >= 0xB000 && addr < 0xB800 && slot_2_has_rom == 1) { rom1_konami_page_3 = (uint8_t)(value & rom_size_1); remap(); }
 		}
+		/*
 		if (rom_mapper_2 == 2)
 		{
 			if (addr >= 0x5000 && addr < 0x5800 && slot_1_has_rom == 2) { rom2_konami_page_0 = (uint8_t)(value & rom_size_2); remap(); }
@@ -547,9 +542,10 @@ namespace MSXHawk
 			}
 			if (addr >= 0x9800 && addr < 0xA000 && slot_2_has_rom == 1 && SCC_2_enabled)
 			{
-				SCC_2_pntr->WriteReg(value & 0xFF);
+				SCC_2_pntr->WriteReg((uint8_t)(addr & 0xFF), value);
 			}
 			if (addr >= 0xB000 && addr < 0xB800 && slot_2_has_rom == 2) { rom2_konami_page_3 = (uint8_t)(value & rom_size_2); remap(); }
 		}
+		*/
 	}
 }

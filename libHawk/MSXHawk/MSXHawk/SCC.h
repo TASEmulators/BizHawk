@@ -13,58 +13,46 @@ namespace MSXHawk
 
 #pragma region SCC
 
-		SCC()
-		{
-			Reset();
-		}
+		SCC() { }
 
-		uint8_t* page_pointer = nullptr;
+		uint8_t* page_pntr = nullptr;
 
-		bool A_on, B_on, C_on;
-		bool A_up, B_up, C_up;
-		bool A_noise, B_noise, C_noise;
-		bool env_vol_A, env_vol_B, env_vol_C;
+		bool ch_1_en, ch_2_en, ch_3_en, ch_4_en, ch_5_en;
 
-		uint8_t env_shape;
-		uint8_t port_sel;
-		uint8_t vol_A, vol_B, vol_C;
-		uint8_t Register[16] = {};
+		uint8_t ch_1_cnt, ch_2_cnt, ch_3_cnt, ch_4_cnt, ch_5_cnt;	
+		uint8_t ch_1_vol, ch_2_vol, ch_3_vol, ch_4_vol, ch_5_vol;
 
-		uint32_t psg_clock;
-		uint32_t sq_per_A, sq_per_B, sq_per_C;
-		uint32_t clock_A, clock_B, clock_C;
-
-		uint32_t env_per;
-		uint32_t env_clock;
-
-		int32_t env_E;
-		int32_t E_up_down;
-
-		uint32_t noise_clock;
-		uint32_t noise_per;
-		uint32_t noise = 0x1;
+		uint16_t ch_1_frq, ch_2_frq, ch_3_frq, ch_4_frq, ch_5_frq;
+		uint16_t ch_1_clk, ch_2_clk, ch_3_clk, ch_4_clk, ch_5_clk;
 
 		int32_t old_sample;
 		int32_t current_sample;
 
-		// non stated if only on frame boundaries
-		bool sound_out_A;
-		bool sound_out_B;
-		bool sound_out_C;
+		// channel output, not stated
+		int32_t ch_1_out, ch_2_out, ch_3_out, ch_4_out, ch_5_out;
 
-		uint8_t Clock_Divider;
+		/*
+		const uint32_t VolumeTable[16] =
+		{
+			0x0000, 0x002A, 0x003C, 0x0055, 0x0078, 0x00AA, 0x00F1, 0x01FF,
+			0x01E2, 0x02AA, 0x03C5, 0x0555, 0x078B, 0x0AAA, 0x0F15, 0x1555
+		};
+		*/
+
+		const uint32_t VolumeTable[16] =
+		{
+			0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+		};
 
 		void Reset()
 		{
-			clock_A = clock_B = clock_C = 0x1000;
-			noise_clock = 0x20;
-			port_sel = 0;
+			ch_1_clk = ch_2_clk = ch_3_clk = ch_4_clk = ch_5_clk = 0x1000;
+			ch_1_cnt = ch_2_cnt = ch_3_cnt = ch_4_cnt = ch_5_cnt = 0;
 
-			for (int i = 0; i < 16; i++)
+			for (int i = 0; i < 0x90; i++)
 			{
-				Register[i] = 0x0;
+				WriteReg(i, 0);
 			}
-			sync_psg_state();
 		}
 
 		short Sample()
@@ -72,214 +60,149 @@ namespace MSXHawk
 			return current_sample;
 		}
 
-		const uint32_t VolumeTable[16] =
-		{
-			0x0000, 0x0055, 0x0079, 0x00AB, 0x00F1, 0x0155, 0x01E3, 0x02AA,
-			0x03C5, 0x0555, 0x078B, 0x0AAB, 0x0F16, 0x1555, 0x1E2B, 0x2AAA
-		};
-
 		// returns do not occur in this iplementation, they come from the core
 		uint8_t ReadReg()
 		{
 
 		}
 
-		void sync_psg_state()
+		void WriteReg(uint8_t addr, uint8_t value)
 		{
-			sq_per_A = (Register[0] & 0xFF) | (((Register[1] & 0xF) << 8));
-			if (sq_per_A == 0)
+			// addresses 0x90-0xA0 are the same as 0x80-90
+			if ((addr >= 0x90) && (addr < 0xA0))
 			{
-				sq_per_A = 0x1000;
+				addr -= 0x10;
 			}
-
-			sq_per_B = (Register[2] & 0xFF) | (((Register[3] & 0xF) << 8));
-			if (sq_per_B == 0)
+			
+			if (addr < 0x80)
 			{
-				sq_per_B = 0x1000;
+				// addresses below 0x80 (waveform tables) act as RAM, those above that range are write only
+				page_pntr[addr] = value;
+				page_pntr[addr + 0x100] = value;
+				page_pntr[addr + 0x200] = value;
+				page_pntr[addr + 0x300] = value;
 			}
-
-			sq_per_C = (Register[4] & 0xFF) | (((Register[5] & 0xF) << 8));
-			if (sq_per_C == 0)
+			else if (addr < 0x90)
 			{
-				sq_per_C = 0x1000;
-			}
-
-			env_per = (Register[11] & 0xFF) | (((Register[12] & 0xFF) << 8));
-			if (env_per == 0)
-			{
-				env_per = 0x10000;
-			}
-
-			env_per *= 2;
-
-			A_on = (Register[7] & 0x1) > 0;
-			B_on = (Register[7] & 0x2) > 0;
-			C_on = (Register[7] & 0x4) > 0;
-			A_noise = (Register[7] & 0x8) > 0;
-			B_noise = (Register[7] & 0x10) > 0;
-			C_noise = (Register[7] & 0x20) > 0;
-
-			noise_per = Register[6] & 0x1F;
-			if (noise_per == 0)
-			{
-				noise_per = 0x20;
-			}
-
-			uint8_t shape_select = Register[13] & 0xF;
-
-			if (shape_select < 4) { env_shape = 0; }
-			else if (shape_select < 8) { env_shape = 1; }
-			else { env_shape = 2 + (shape_select - 8); }
-
-			vol_A = Register[8] & 0xF;
-			env_vol_A = ((Register[8] >> 4) & 0x1) > 0;
-
-			vol_B = Register[9] & 0xF;
-			env_vol_B = ((Register[9] >> 4) & 0x1) > 0;
-
-			vol_C = Register[10] & 0xF;
-			env_vol_C = ((Register[10] >> 4) & 0x1) > 0;
-		}
-
-		void WriteReg(uint8_t value)
-		{
-			value &= 0xFF;
-
-			if (port_sel != 0xE) { Register[port_sel] = value; }
-
-
-			sync_psg_state();
-
-			if (port_sel == 13)
-			{
-				env_clock = env_per;
-
-				if (env_shape == 0 || env_shape == 2 || env_shape == 3 || env_shape == 4 || env_shape == 5)
-				{
-					env_E = 15;
-					E_up_down = -1;
+				// frequencies, volumes, enable
+				if (addr == 0x80) { ch_1_frq = (uint16_t)((ch_1_frq & 0xFF00) | value); }
+				else if (addr == 0x81) { ch_1_frq = (uint16_t)((ch_1_frq & 0x00FF) | ((value & 0xF) << 8)); }
+				else if (addr == 0x82) { ch_2_frq = (uint16_t)((ch_2_frq & 0xFF00) | value); }
+				else if (addr == 0x83) { ch_2_frq = (uint16_t)((ch_2_frq & 0x00FF) | ((value & 0xF) << 8)); }
+				else if (addr == 0x84) { ch_3_frq = (uint16_t)((ch_3_frq & 0xFF00) | value); }
+				else if (addr == 0x85) { ch_3_frq = (uint16_t)((ch_3_frq & 0x00FF) | ((value & 0xF) << 8)); }
+				else if (addr == 0x86) { ch_4_frq = (uint16_t)((ch_4_frq & 0xFF00) | value); }
+				else if (addr == 0x87) { ch_4_frq = (uint16_t)((ch_4_frq & 0x00FF) | ((value & 0xF) << 8)); }
+				else if (addr == 0x88) { ch_5_frq = (uint16_t)((ch_5_frq & 0xFF00) | value); }
+				else if (addr == 0x89) { ch_5_frq = (uint16_t)((ch_5_frq & 0x00FF) | ((value & 0xF) << 8)); }
+				else if (addr == 0x8A) { ch_1_vol = value; }
+				else if (addr == 0x8B) { ch_2_vol = value; }
+				else if (addr == 0x8C) { ch_3_vol = value; }
+				else if (addr == 0x8D) { ch_4_vol = value; }
+				else if (addr == 0x8E) { ch_5_vol = value; }
+				else if (addr == 0x8F)
+				{ 
+					ch_1_en = (value & 1) == 1;
+					ch_2_en = (value & 2) == 2;
+					ch_3_en = (value & 4) == 4;
+					ch_4_en = (value & 8) == 8;
+					ch_5_en = (value & 16) == 16;
 				}
-				else
-				{
-					env_E = 0;
-					E_up_down = 1;
-				}
+
+				if (ch_1_frq == 0) { ch_1_frq = 0x1000; }
+				if (ch_2_frq == 0) { ch_2_frq = 0x1000; }
+				if (ch_3_frq == 0) { ch_3_frq = 0x1000; }
+				if (ch_4_frq == 0) { ch_4_frq = 0x1000; }
+				if (ch_5_frq == 0) { ch_5_frq = 0x1000; }
+
+				if (ch_1_en) { ch_1_out = (int32_t)page_pntr[ch_1_cnt] * VolumeTable[ch_1_vol]; } else { ch_1_out = 0; }
+				if (ch_2_en) { ch_2_out = (int32_t)page_pntr[ch_2_cnt + 0x20] * VolumeTable[ch_2_vol]; } else { ch_2_out = 0; }
+				if (ch_3_en) { ch_3_out = (int32_t)page_pntr[ch_3_cnt + 0x40] * VolumeTable[ch_3_vol]; } else { ch_3_out = 0; }
+				if (ch_4_en) { ch_4_out = (int32_t)page_pntr[ch_4_cnt + 0x60] * VolumeTable[ch_4_vol]; } else { ch_4_out = 0; }
+				if (ch_5_en) { ch_5_out = (int32_t)page_pntr[ch_5_cnt + 0x60] * VolumeTable[ch_5_vol]; } else { ch_5_out = 0; }
+			}
+			else 
+			{
+				// there is a test register in this range, but it is used by games, ignore for now
 			}
 		}
 
-		bool generate_sound()
-		{
-			// there are 8 cpu cycles for every psg cycle
-			clock_A--;
-			clock_B--;
-			clock_C--;
-
-			noise_clock--;
-			env_clock--;
-
-			// clock noise
-			if (noise_clock == 0)
+		bool generate_sound(int cycles)
+		{		
+			for (int i = 0; i < cycles; i++)
 			{
-				noise = (noise >> 1) ^ (((noise & 0x1) > 0) ? 0x10004 : 0);
-				noise_clock = noise_per;
-			}
-
-			if (env_clock == 0)
-			{
-				env_clock = env_per;
-
-				env_E += E_up_down;
-
-				if (env_E == 16 || env_E == -1)
+				if (ch_1_en)
 				{
-					// we just completed a period of the envelope, determine what to do now based on the envelope shape
-					if (env_shape == 0 || env_shape == 1 || env_shape == 3 || env_shape == 9)
+					ch_1_clk--;
+
+					if (ch_1_clk == 0)
 					{
-						E_up_down = 0;
-						env_E = 0;
+						ch_1_clk = ch_1_frq;
+						ch_1_cnt++;
+						ch_1_cnt &= 0x1F;
+
+						ch_1_out = (int32_t)page_pntr[ch_1_cnt] * VolumeTable[ch_1_vol];
 					}
-					else if (env_shape == 5 || env_shape == 7)
+				}
+
+				if (ch_2_en)
+				{
+					ch_2_clk--;
+
+					if (ch_2_clk == 0)
 					{
-						E_up_down = 0;
-						env_E = 15;
+						ch_2_clk = ch_2_frq;
+						ch_2_cnt++;
+						ch_2_cnt &= 0x1F;
+
+						ch_2_out = (int32_t)page_pntr[ch_2_cnt + 0x20] * VolumeTable[ch_2_vol];
 					}
-					else if (env_shape == 4 || env_shape == 8)
+				}
+
+				if (ch_3_en)
+				{
+					ch_3_clk--;
+
+					if (ch_3_clk == 0)
 					{
-						if (env_E == 16)
-						{
-							env_E = 15;
-							E_up_down = -1;
-						}
-						else
-						{
-							env_E = 0;
-							E_up_down = 1;
-						}
+						ch_3_clk = ch_3_frq;
+						ch_3_cnt++;
+						ch_3_cnt &= 0x1F;
+
+						ch_3_out = (int32_t)page_pntr[ch_3_cnt + 0x40] * VolumeTable[ch_3_vol];
 					}
-					else if (env_shape == 2)
+				}
+
+				if (ch_4_en)
+				{
+					ch_4_clk--;
+
+					if (ch_4_clk == 0)
 					{
-						env_E = 15;
+						ch_4_clk = ch_4_frq;
+						ch_4_cnt++;
+						ch_4_cnt &= 0x1F;
+
+						ch_4_out = (int32_t)page_pntr[ch_4_cnt + 0x60] * VolumeTable[ch_4_vol];
 					}
-					else
+				}
+
+				if (ch_5_en)
+				{
+					ch_5_clk--;
+
+					if (ch_5_clk == 0)
 					{
-						env_E = 0;
+						ch_5_clk = ch_5_frq;
+						ch_5_cnt++;
+						ch_5_cnt &= 0x1F;
+
+						ch_5_out = (int32_t)page_pntr[ch_5_cnt + 0x60] * VolumeTable[ch_5_vol];
 					}
 				}
 			}
 
-			if (clock_A == 0)
-			{
-				A_up = !A_up;
-				clock_A = sq_per_A;
-			}
-
-			if (clock_B == 0)
-			{
-				B_up = !B_up;
-				clock_B = sq_per_B;
-			}
-
-			if (clock_C == 0)
-			{
-				C_up = !C_up;
-				clock_C = sq_per_C;
-			}
-
-			sound_out_A = (((noise & 0x1) > 0) | A_noise) & (A_on | A_up);
-			sound_out_B = (((noise & 0x1) > 0) | B_noise) & (B_on | B_up);
-			sound_out_C = (((noise & 0x1) > 0) | C_noise) & (C_on | C_up);
-
-			// now calculate the volume of each channel and add them together
-			current_sample = 0;
-
-			if (env_vol_A)
-			{
-				current_sample = (sound_out_A ? VolumeTable[env_E] : 0);
-			}
-			else
-			{
-				current_sample = (sound_out_A ? VolumeTable[vol_A] : 0);
-			}
-
-			if (env_vol_B)
-			{
-				current_sample += (sound_out_B ? VolumeTable[env_E] : 0);
-			}
-			else
-			{
-				current_sample += (sound_out_B ? VolumeTable[vol_B] : 0);
-			}
-
-			if (env_vol_C)
-			{
-				current_sample += (sound_out_C ? VolumeTable[env_E] : 0);
-			}
-			else
-			{
-				current_sample += (sound_out_C ? VolumeTable[vol_C] : 0);
-			}
-
-			current_sample *= 2;
+			current_sample = ch_1_out + ch_2_out + ch_3_out + ch_4_out + ch_5_out;
 
 			if (current_sample != old_sample) { return true; }
 
@@ -292,68 +215,35 @@ namespace MSXHawk
 
 		uint8_t* SaveState(uint8_t* saver)
 		{
-			*saver = (uint8_t)(A_on ? 1 : 0); saver++;
-			*saver = (uint8_t)(B_on ? 1 : 0); saver++;
-			*saver = (uint8_t)(C_on ? 1 : 0); saver++;
-			*saver = (uint8_t)(A_up ? 1 : 0); saver++;
-			*saver = (uint8_t)(B_up ? 1 : 0); saver++;
-			*saver = (uint8_t)(C_up ? 1 : 0); saver++;
-			*saver = (uint8_t)(A_noise ? 1 : 0); saver++;
-			*saver = (uint8_t)(B_noise ? 1 : 0); saver++;
-			*saver = (uint8_t)(C_noise ? 1 : 0); saver++;
-			*saver = (uint8_t)(env_vol_A ? 1 : 0); saver++;
-			*saver = (uint8_t)(env_vol_B ? 1 : 0); saver++;
-			*saver = (uint8_t)(env_vol_C ? 1 : 0); saver++;
+			*saver = (uint8_t)(ch_1_en ? 1 : 0); saver++;
+			*saver = (uint8_t)(ch_2_en ? 1 : 0); saver++;
+			*saver = (uint8_t)(ch_3_en ? 1 : 0); saver++;
+			*saver = (uint8_t)(ch_4_en ? 1 : 0); saver++;
+			*saver = (uint8_t)(ch_5_en ? 1 : 0); saver++;
 
-			*saver = env_shape; saver++;
-			*saver = port_sel; saver++;
-			*saver = vol_A; saver++;
-			*saver = vol_B; saver++;
-			*saver = vol_C; saver++;
+			*saver = ch_1_cnt; saver++;
+			*saver = ch_2_cnt; saver++;
+			*saver = ch_3_cnt; saver++;
+			*saver = ch_4_cnt; saver++;
+			*saver = ch_5_cnt; saver++;
 
-			for (int i = 0; i < 16; i++) { *saver = Register[i]; saver++; }
+			*saver = ch_1_vol; saver++;
+			*saver = ch_2_vol; saver++;
+			*saver = ch_3_vol; saver++;
+			*saver = ch_4_vol; saver++;
+			*saver = ch_5_vol; saver++;
 
-			*saver = (uint8_t)(psg_clock & 0xFF); saver++; *saver = (uint8_t)((psg_clock >> 8) & 0xFF); saver++;
-			*saver = (uint8_t)((psg_clock >> 16) & 0xFF); saver++; *saver = (uint8_t)((psg_clock >> 24) & 0xFF); saver++;
+			*saver = (uint8_t)(ch_1_frq & 0xFF); saver++; *saver = (uint8_t)((ch_1_frq >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)(ch_2_frq & 0xFF); saver++; *saver = (uint8_t)((ch_2_frq >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)(ch_3_frq & 0xFF); saver++; *saver = (uint8_t)((ch_3_frq >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)(ch_4_frq & 0xFF); saver++; *saver = (uint8_t)((ch_4_frq >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)(ch_5_frq & 0xFF); saver++; *saver = (uint8_t)((ch_5_frq >> 8) & 0xFF); saver++;
 
-			*saver = (uint8_t)(sq_per_A & 0xFF); saver++; *saver = (uint8_t)((sq_per_A >> 8) & 0xFF); saver++;
-			*saver = (uint8_t)((sq_per_A >> 16) & 0xFF); saver++; *saver = (uint8_t)((sq_per_A >> 24) & 0xFF); saver++;
-
-			*saver = (uint8_t)(sq_per_B & 0xFF); saver++; *saver = (uint8_t)((sq_per_B >> 8) & 0xFF); saver++;
-			*saver = (uint8_t)((sq_per_B >> 16) & 0xFF); saver++; *saver = (uint8_t)((sq_per_B >> 24) & 0xFF); saver++;
-
-			*saver = (uint8_t)(sq_per_C & 0xFF); saver++; *saver = (uint8_t)((sq_per_C >> 8) & 0xFF); saver++;
-			*saver = (uint8_t)((sq_per_C >> 16) & 0xFF); saver++; *saver = (uint8_t)((sq_per_C >> 24) & 0xFF); saver++;
-
-			*saver = (uint8_t)(clock_A & 0xFF); saver++; *saver = (uint8_t)((clock_A >> 8) & 0xFF); saver++;
-			*saver = (uint8_t)((clock_A >> 16) & 0xFF); saver++; *saver = (uint8_t)((clock_A >> 24) & 0xFF); saver++;
-
-			*saver = (uint8_t)(clock_B & 0xFF); saver++; *saver = (uint8_t)((clock_B >> 8) & 0xFF); saver++;
-			*saver = (uint8_t)((clock_B >> 16) & 0xFF); saver++; *saver = (uint8_t)((clock_B >> 24) & 0xFF); saver++;
-
-			*saver = (uint8_t)(clock_C & 0xFF); saver++; *saver = (uint8_t)((clock_C >> 8) & 0xFF); saver++;
-			*saver = (uint8_t)((clock_C >> 16) & 0xFF); saver++; *saver = (uint8_t)((clock_C >> 24) & 0xFF); saver++;
-
-			*saver = (uint8_t)(env_per & 0xFF); saver++; *saver = (uint8_t)((env_per >> 8) & 0xFF); saver++;
-			*saver = (uint8_t)((env_per >> 16) & 0xFF); saver++; *saver = (uint8_t)((env_per >> 24) & 0xFF); saver++;
-
-			*saver = (uint8_t)(env_clock & 0xFF); saver++; *saver = (uint8_t)((env_clock >> 8) & 0xFF); saver++;
-			*saver = (uint8_t)((env_clock >> 16) & 0xFF); saver++; *saver = (uint8_t)((env_clock >> 24) & 0xFF); saver++;
-
-			*saver = (uint8_t)(env_E & 0xFF); saver++; *saver = (uint8_t)((env_E >> 8) & 0xFF); saver++;
-			*saver = (uint8_t)((env_E >> 16) & 0xFF); saver++; *saver = (uint8_t)((env_E >> 24) & 0xFF); saver++;
-
-			*saver = (uint8_t)(E_up_down & 0xFF); saver++; *saver = (uint8_t)((E_up_down >> 8) & 0xFF); saver++;
-			*saver = (uint8_t)((E_up_down >> 16) & 0xFF); saver++; *saver = (uint8_t)((E_up_down >> 24) & 0xFF); saver++;
-
-			*saver = (uint8_t)(noise_clock & 0xFF); saver++; *saver = (uint8_t)((noise_clock >> 8) & 0xFF); saver++;
-			*saver = (uint8_t)((noise_clock >> 16) & 0xFF); saver++; *saver = (uint8_t)((noise_clock >> 24) & 0xFF); saver++;
-
-			*saver = (uint8_t)(noise_per & 0xFF); saver++; *saver = (uint8_t)((noise_per >> 8) & 0xFF); saver++;
-			*saver = (uint8_t)((noise_per >> 16) & 0xFF); saver++; *saver = (uint8_t)((noise_per >> 24) & 0xFF); saver++;
-
-			*saver = (uint8_t)(noise & 0xFF); saver++; *saver = (uint8_t)((noise >> 8) & 0xFF); saver++;
-			*saver = (uint8_t)((noise >> 16) & 0xFF); saver++; *saver = (uint8_t)((noise >> 24) & 0xFF); saver++;
+			*saver = (uint8_t)(ch_1_clk & 0xFF); saver++; *saver = (uint8_t)((ch_1_clk >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)(ch_2_clk & 0xFF); saver++; *saver = (uint8_t)((ch_2_clk >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)(ch_3_clk & 0xFF); saver++; *saver = (uint8_t)((ch_3_clk >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)(ch_4_clk & 0xFF); saver++; *saver = (uint8_t)((ch_4_clk >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)(ch_5_clk & 0xFF); saver++; *saver = (uint8_t)((ch_5_clk >> 8) & 0xFF); saver++;
 
 			*saver = (uint8_t)(old_sample & 0xFF); saver++; *saver = (uint8_t)((old_sample >> 8) & 0xFF); saver++;
 			*saver = (uint8_t)((old_sample >> 16) & 0xFF); saver++; *saver = (uint8_t)((old_sample >> 24) & 0xFF); saver++;
@@ -363,71 +253,44 @@ namespace MSXHawk
 
 		uint8_t* LoadState(uint8_t* loader)
 		{
-			A_on = *loader == 1; loader++;
-			B_on = *loader == 1; loader++;
-			C_on = *loader == 1; loader++;
-			A_up = *loader == 1; loader++;
-			B_up = *loader == 1; loader++;
-			C_up = *loader == 1; loader++;
-			A_noise = *loader == 1; loader++;
-			B_noise = *loader == 1; loader++;
-			C_noise = *loader == 1; loader++;
-			env_vol_A = *loader == 1; loader++;
-			env_vol_B = *loader == 1; loader++;
-			env_vol_C = *loader == 1; loader++;
+			ch_1_en = *loader == 1; loader++;
+			ch_2_en = *loader == 1; loader++;
+			ch_3_en = *loader == 1; loader++;
+			ch_4_en = *loader == 1; loader++;
+			ch_5_en = *loader == 1; loader++;
 
-			env_shape = *loader; loader++;
-			port_sel = *loader; loader++;
-			vol_A = *loader; loader++;
-			vol_B = *loader; loader++;
-			vol_C = *loader; loader++;
+			ch_1_cnt = *loader; loader++;
+			ch_2_cnt = *loader; loader++;
+			ch_3_cnt = *loader; loader++;
+			ch_4_cnt = *loader; loader++;
+			ch_5_cnt = *loader; loader++;
 
-			for (int i = 0; i < 16; i++) { Register[i] = *loader; loader++; }
+			ch_1_vol = *loader; loader++;
+			ch_2_vol = *loader; loader++;
+			ch_3_vol = *loader; loader++;
+			ch_4_vol = *loader; loader++;
+			ch_5_vol = *loader; loader++;
 
-			psg_clock = *loader; loader++; psg_clock |= (*loader << 8); loader++;
-			psg_clock |= (*loader << 16); loader++; psg_clock |= (*loader << 24); loader++;
+			ch_1_frq = *loader; loader++; ch_1_frq |= (*loader << 8); loader++;
+			ch_2_frq = *loader; loader++; ch_2_frq |= (*loader << 8); loader++;
+			ch_3_frq = *loader; loader++; ch_3_frq |= (*loader << 8); loader++;
+			ch_4_frq = *loader; loader++; ch_4_frq |= (*loader << 8); loader++;
+			ch_5_frq = *loader; loader++; ch_4_frq |= (*loader << 8); loader++;
 
-			sq_per_A = *loader; loader++; sq_per_A |= (*loader << 8); loader++;
-			sq_per_A |= (*loader << 16); loader++; sq_per_A |= (*loader << 24); loader++;
-
-			sq_per_B = *loader; loader++; sq_per_B |= (*loader << 8); loader++;
-			sq_per_B |= (*loader << 16); loader++; sq_per_B |= (*loader << 24); loader++;
-
-			sq_per_C = *loader; loader++; sq_per_C |= (*loader << 8); loader++;
-			sq_per_C |= (*loader << 16); loader++; sq_per_C |= (*loader << 24); loader++;
-
-			clock_A = *loader; loader++; clock_A |= (*loader << 8); loader++;
-			clock_A |= (*loader << 16); loader++; clock_A |= (*loader << 24); loader++;
-
-			clock_B = *loader; loader++; clock_B |= (*loader << 8); loader++;
-			clock_B |= (*loader << 16); loader++; clock_B |= (*loader << 24); loader++;
-
-			clock_C = *loader; loader++; clock_C |= (*loader << 8); loader++;
-			clock_C |= (*loader << 16); loader++; clock_C |= (*loader << 24); loader++;
-
-			env_per = *loader; loader++; env_per |= (*loader << 8); loader++;
-			env_per |= (*loader << 16); loader++; env_per |= (*loader << 24); loader++;
-
-			env_clock = *loader; loader++; env_clock |= (*loader << 8); loader++;
-			env_clock |= (*loader << 16); loader++; env_clock |= (*loader << 24); loader++;
-
-			env_E = *loader; loader++; env_E |= (*loader << 8); loader++;
-			env_E |= (*loader << 16); loader++; env_E |= (*loader << 24); loader++;
-
-			E_up_down = *loader; loader++; E_up_down |= (*loader << 8); loader++;
-			E_up_down |= (*loader << 16); loader++; E_up_down |= (*loader << 24); loader++;
-
-			noise_clock = *loader; loader++; noise_clock |= (*loader << 8); loader++;
-			noise_clock |= (*loader << 16); loader++; noise_clock |= (*loader << 24); loader++;
-
-			noise_per = *loader; loader++; noise_per |= (*loader << 8); loader++;
-			noise_per |= (*loader << 16); loader++; noise_per |= (*loader << 24); loader++;
-
-			noise = *loader; loader++; noise |= (*loader << 8); loader++;
-			noise |= (*loader << 16); loader++; noise |= (*loader << 24); loader++;
+			ch_1_clk = *loader; loader++; ch_1_clk |= (*loader << 8); loader++;
+			ch_2_clk = *loader; loader++; ch_2_clk |= (*loader << 8); loader++;
+			ch_3_clk = *loader; loader++; ch_3_clk |= (*loader << 8); loader++;
+			ch_4_clk = *loader; loader++; ch_4_clk |= (*loader << 8); loader++;
+			ch_5_clk = *loader; loader++; ch_5_clk |= (*loader << 8); loader++;
 
 			old_sample = *loader; loader++; old_sample |= (*loader << 8); loader++;
 			old_sample |= (*loader << 16); loader++; old_sample |= (*loader << 24); loader++;
+
+			if (ch_1_en) { ch_1_out = (int32_t)page_pntr[ch_1_cnt] * VolumeTable[ch_1_vol]; } else { ch_1_out = 0; }
+			if (ch_2_en) { ch_2_out = (int32_t)page_pntr[ch_2_cnt + 0x20] * VolumeTable[ch_2_vol]; } else { ch_2_out = 0; }
+			if (ch_3_en) { ch_3_out = (int32_t)page_pntr[ch_3_cnt + 0x40] * VolumeTable[ch_3_vol]; } else { ch_3_out = 0; }
+			if (ch_4_en) { ch_4_out = (int32_t)page_pntr[ch_4_cnt + 0x60] * VolumeTable[ch_4_vol]; } else { ch_4_out = 0; }
+			if (ch_5_en) { ch_5_out = (int32_t)page_pntr[ch_5_cnt + 0x60] * VolumeTable[ch_5_vol]; } else { ch_5_out = 0; }
 
 			return loader;
 		}

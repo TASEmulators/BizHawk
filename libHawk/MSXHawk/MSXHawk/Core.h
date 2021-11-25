@@ -24,10 +24,12 @@ namespace MSXHawk
 			cpu.mem_ctrl = &MemMap;
 			vdp.IRQ_PTR = &cpu.FlagI;
 			vdp.SHOW_BG = vdp.SHOW_SPRITES = true;
-			psg.Clock_Divider = 16;
 			sl_case = 0;
-			SCC_1.page_pointer = &MemMap.SCC_1_page[0];
-			SCC_2.page_pointer = &MemMap.SCC_2_page[0];
+			SCC_1.page_pntr = &MemMap.SCC_1_page[0];
+			SCC_2.page_pntr = &MemMap.SCC_2_page[0];
+
+			SCC_1.Reset();
+			SCC_2.Reset();
 		};
 
 		TMS9918A vdp;
@@ -102,7 +104,7 @@ namespace MSXHawk
 						cpu.ExecuteOne(16);
 						sampleclock+=16;
 						new_sample |= psg.generate_sound();
-						new_sample |= SCC_1.generate_sound();
+						new_sample |= SCC_1.generate_sound(16);
 						//new_sample |= SCC_2.generate_sound();
 						if (new_sample) { Add_Audio_Sample(); }
 					}
@@ -115,7 +117,7 @@ namespace MSXHawk
 					cpu.ExecuteOne(12);
 					sampleclock += 12;
 					new_sample |= psg.generate_sound();
-					new_sample |= SCC_1.generate_sound();
+					new_sample |= SCC_1.generate_sound(12);
 					//new_sample |= SCC_2.generate_sound();
 					if (new_sample) { Add_Audio_Sample(); }
 					
@@ -124,7 +126,7 @@ namespace MSXHawk
 						cpu.ExecuteOne(16);
 						sampleclock += 16;
 						new_sample |= psg.generate_sound();
-						new_sample |= SCC_1.generate_sound();
+						new_sample |= SCC_1.generate_sound(16);
 						//new_sample |= SCC_2.generate_sound();
 						if (new_sample) { Add_Audio_Sample(); }
 					}
@@ -137,7 +139,7 @@ namespace MSXHawk
 					cpu.ExecuteOne(8);
 					sampleclock += 8;
 					new_sample |= psg.generate_sound();
-					new_sample |= SCC_1.generate_sound();
+					new_sample |= SCC_1.generate_sound(8);
 					//new_sample |= SCC_2.generate_sound();
 					if (new_sample) { Add_Audio_Sample(); }
 
@@ -146,7 +148,7 @@ namespace MSXHawk
 						cpu.ExecuteOne(16);
 						sampleclock += 16;
 						new_sample |= psg.generate_sound();
-						new_sample |= SCC_1.generate_sound();
+						new_sample |= SCC_1.generate_sound(16);
 						//new_sample |= SCC_2.generate_sound();
 						if (new_sample) { Add_Audio_Sample(); }
 					}
@@ -158,7 +160,7 @@ namespace MSXHawk
 					cpu.ExecuteOne(4);
 					sampleclock += 4;
 					new_sample |= psg.generate_sound();
-					new_sample |= SCC_1.generate_sound();
+					new_sample |= SCC_1.generate_sound(4);
 					//new_sample |= SCC_2.generate_sound();
 					if (new_sample) { Add_Audio_Sample(); }
 
@@ -167,7 +169,7 @@ namespace MSXHawk
 						cpu.ExecuteOne(16);
 						sampleclock += 16;
 						new_sample |= psg.generate_sound();
-						new_sample |= SCC_1.generate_sound();
+						new_sample |= SCC_1.generate_sound(16);
 						//new_sample |= SCC_2.generate_sound();
 						if (new_sample) { Add_Audio_Sample(); }
 					}

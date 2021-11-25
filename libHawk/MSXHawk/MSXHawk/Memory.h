@@ -63,7 +63,6 @@ namespace MSXHawk
 
 		};
 
-		char msg[1000] = {};
 		int msg_len = 0;
 
 		string Mem_text_1 = " ";
@@ -123,6 +122,16 @@ namespace MSXHawk
 
 			// default memory map setup
 			PortA8 = 0;
+
+			// SCC regs that aren't readable return 0xFF
+			for (uint16_t i = 0; i < 0x400; i++) 
+			{
+				if ((i & 0x80) == 0x80)
+				{
+					SCC_1_page[i] = 0xFF;
+					SCC_2_page[i] = 0xFF;
+				}
+			}
 
 			remap();
 		}
