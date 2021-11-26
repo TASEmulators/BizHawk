@@ -99,7 +99,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 			public static bool RebootNeeded(MSXSyncSettings x, MSXSyncSettings y)
 			{
-				return false;
+				return true;
 			}
 		}
 	}

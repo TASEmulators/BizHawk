@@ -44,7 +44,9 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			LibMSX.MSX_settracecallback(MSX_Pntr, tracecb);
 			
 			LibMSX.MSX_frame_advance(MSX_Pntr, ctrl1_byte, ctrl2_byte, kb_rows, true, true);
-			
+
+			LibMSX.MSX_get_video(MSX_Pntr, _vidbuffer);
+
 			/*
 			int msg_l = LibMSX.MSX_getmessagelength(MSX_Pntr);
 			StringBuilder new_msg = new StringBuilder(msg_l);
@@ -212,6 +214,11 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			samples = new short[nsamp * 2];
 
 			blip.ReadSamples(samples, nsamp, true);
+
+			for (int i = 0; i < nsamp * 2; i += 2)
+			{
+				samples[i + 1] = samples[i];
+			}
 		}
 
 		public void DiscardSamples()
@@ -225,7 +232,6 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 		public int[] GetVideoBuffer()
 		{
-			LibMSX.MSX_get_video(MSX_Pntr, _vidbuffer);
 			return _vidbuffer;
 		}
 
