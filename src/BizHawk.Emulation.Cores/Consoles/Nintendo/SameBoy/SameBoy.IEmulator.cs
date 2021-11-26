@@ -27,7 +27,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 				LibSameboy.sameboy_reset(SameboyState);
 			}
 
+			IsLagFrame = true;
+
 			return (LibSameboy.Buttons)b;
+		}
+
+		public bool FrameAdvance(IController controller, bool render, bool rendersound)
+		{
+			var input = FrameAdvancePrep(controller);
+
+			CycleCount += LibSameboy.sameboy_frameadvance(SameboyState, input, VideoBuffer);
+
+			if (!rendersound)
+			{
+				DiscardSamples();
+			}
+
+			FrameAdvancePost();
+
+			return true;
 		}
 
 		private void FrameAdvancePost()
@@ -38,17 +56,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			}
 
 			Frame++;
-		}
-
-		public bool FrameAdvance(IController controller, bool render, bool rendersound)
-		{
-			var input = FrameAdvancePrep(controller);
-
-			CycleCount += LibSameboy.sameboy_frameadvance(SameboyState, input, VideoBuffer);
-
-			FrameAdvancePost();
-
-			return true;
 		}
 
 		public int Frame { get; private set; } = 0;

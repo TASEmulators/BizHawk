@@ -22,18 +22,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 		private IntPtr SameboyState { get; set; } = IntPtr.Zero;
 
-		public int LagCount { get; set; } = 0;
-
-		public bool IsLagFrame { get; set; } = false;
-
 		public bool IsCgb { get; set; }
 
 		public bool IsCGBMode() => IsCgb;
 
-		[FeatureNotImplemented]
-		public IInputCallbackSystem InputCallbacks => throw new NotImplementedException();
+		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
 
 		private readonly LibSameboy.SampleCallback _sampleCallback;
+		private readonly LibSameboy.InputCallback _inputCallback;
 
 		[CoreConstructor(VSystemID.Raw.GB)]
 		[CoreConstructor(VSystemID.Raw.GBC)]
@@ -72,10 +68,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 			SameboyState = LibSameboy.sameboy_create(file, file.Length, bios, bios.Length, flags);
 
+			InitMemoryDomains();
+
 			_sampleCallback = QueueSample;
 			LibSameboy.sameboy_setsamplecallback(SameboyState, _sampleCallback);
+			_inputCallback = InputCallback;
+			LibSameboy.sameboy_setinputcallback(SameboyState, _inputCallback);
 
 			_stateBuf = new byte[LibSameboy.sameboy_statelen(SameboyState)];
+		}
+
+		public int LagCount { get; set; } = 0;
+
+		public bool IsLagFrame { get; set; } = false;
+
+		public IInputCallbackSystem InputCallbacks => _inputCallbacks;
+
+		private void InputCallback()
+		{
+			IsLagFrame = false;
+			_inputCallbacks.Call();
 		}
 	}
 }

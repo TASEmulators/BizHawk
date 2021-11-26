@@ -29,6 +29,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			IS_AGB = 2,
 		}
 
+		// mirror of GB_direct_access_t
+		public enum MemoryAreas : uint
+		{
+			ROM,
+			RAM,
+			CART_RAM,
+			VRAM,
+			HRAM,
+			IO,
+			BOOTROM,
+			OAM,
+			BGP,
+			OBP,
+			IE,
+		}
+
 		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
 		public static extern IntPtr sameboy_create(byte[] romdata, int romlength, byte[] biosdata, int bioslength, LoadFlags flags);
 
@@ -42,11 +58,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 		public static extern void sameboy_setsamplecallback(IntPtr core, SampleCallback callback);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate void InputCallback(IntPtr core);
+		public delegate void InputCallback();
 
 		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void sameboy_setinputcallback(IntPtr core, InputCallback callback);
-
+		 
 		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
 		public static extern long sameboy_frameadvance(IntPtr core, Buttons input, int[] videobuf);
 
@@ -70,5 +86,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
 		public static extern int sameboy_statelen(IntPtr core);
+
+		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
+		public static extern bool sameboy_getmemoryarea(IntPtr core, MemoryAreas which, ref IntPtr data, ref int length);
+
+		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
+		public static extern byte sameboy_cpuread(IntPtr core, ushort addr);
+
+		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void sameboy_cpuwrite(IntPtr core, ushort addr, byte val);
 	}
 }
