@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 		public static extern void sameboy_setinputcallback(IntPtr core, InputCallback callback);
 		 
 		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
-		public static extern long sameboy_frameadvance(IntPtr core, Buttons input, int[] videobuf);
+		public static extern void sameboy_frameadvance(IntPtr core, Buttons input, int[] videobuf);
 
 		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void sameboy_reset(IntPtr core);
@@ -95,5 +95,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void sameboy_cpuwrite(IntPtr core, ushort addr, byte val);
+
+		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
+		public static extern long sameboy_getcyclecount(IntPtr core);
+
+		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void sameboy_setcyclecount(IntPtr core, long newcc);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void TraceCallback();
+
+		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void sameboy_settracecallback(IntPtr core, TraceCallback callback);
+
+		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void sameboy_getregs(IntPtr core, int[] buf);
+
+		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void sameboy_setreg(IntPtr core, int which, int value);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void MemoryCallback(ushort address);
+
+		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void sameboy_setmemorycallback(IntPtr core, int which, MemoryCallback callback);
 	}
 }

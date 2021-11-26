@@ -28,11 +28,18 @@ static u32 rgbCallback(GB_gameboy_t *, u8 r, u8 g, u8 b)
 }
 
 typedef void (*input_callback_t)(void);
+typedef void (*trace_callback_t)(void);
+typedef void (*memory_callback_t)(u16);
 
 typedef struct
 {
 	GB_gameboy_t gb;
 	input_callback_t input_cb;
+	trace_callback_t trace_cb;
+	memory_callback_t read_cb;
+	//memory_callback_t write_cb;
+	memory_callback_t exec_cb;
+	u64 cc;
 } biz_t;
 
 EXPORT biz_t* sameboy_create(u8* romdata, u32 romlen, u8* biosdata, u32 bioslen, LoadFlags flags)
@@ -42,6 +49,7 @@ EXPORT biz_t* sameboy_create(u8* romdata, u32 romlen, u8* biosdata, u32 bioslen,
 	if (flags)
 		model = (flags & IS_AGB) ? GB_MODEL_AGB : GB_MODEL_CGB_E;
 
+	GB_random_seed(0);
 	GB_init(&biz->gb, model);
 	GB_load_rom_from_buffer(&biz->gb, romdata, romlen);
 	GB_load_boot_rom_from_buffer(&biz->gb, biosdata, bioslen);
@@ -51,7 +59,6 @@ EXPORT biz_t* sameboy_create(u8* romdata, u32 romlen, u8* biosdata, u32 bioslen,
 	GB_set_palette(&biz->gb, &GB_PALETTE_GREY);
 	GB_set_color_correction_mode(&biz->gb, GB_COLOR_CORRECTION_EMULATE_HARDWARE);
 	GB_set_rtc_mode(&biz->gb, GB_RTC_MODE_ACCURATE);
-	GB_random_seed(0);
 	return biz;
 }
 
@@ -71,7 +78,7 @@ EXPORT void sameboy_setinputcallback(biz_t* biz, input_callback_t callback)
 	biz->input_cb = callback;
 }
 
-EXPORT u64 sameboy_frameadvance(biz_t* biz, u32 input, u32* vbuf)
+EXPORT void sameboy_frameadvance(biz_t* biz, u32 input, u32* vbuf)
 {
 	GB_set_key_state(&biz->gb, GB_KEY_RIGHT,  input & (1 << 0));
 	GB_set_key_state(&biz->gb, GB_KEY_LEFT,   input & (1 << 1));
@@ -87,22 +94,30 @@ EXPORT u64 sameboy_frameadvance(biz_t* biz, u32 input, u32* vbuf)
 
 	GB_set_pixels_output(&biz->gb, vbuf);
 	GB_set_border_mode(&biz->gb, GB_BORDER_NEVER);
-	u32 cycles = 0;
-	while (true)
+	
+	do
 	{
+		if ((biz->trace_cb || biz->exec_cb) && !biz->gb.halted && !biz->gb.stopped && !biz->gb.hdma_on)
+		{
+			if (biz->trace_cb)
+				biz->trace_cb();
+			
+			if (biz->exec_cb)
+				biz->exec_cb(biz->gb.pc);
+		}
+
 		u32 oldjoyp = biz->gb.io_registers[GB_IO_JOYP] & 0x30;
-		cycles += GB_run(&biz->gb);
+		biz->cc += GB_run(&biz->gb) >> 2;
 		u32 newjoyp = biz->gb.io_registers[GB_IO_JOYP] & 0x30;
 		if (oldjoyp != newjoyp && newjoyp != 0x30)
 			biz->input_cb();
-
-		if (biz->gb.vblank_just_occured)
-			return cycles >> 2;
 	}
+	while (!biz->gb.vblank_just_occured);
 }
 
 EXPORT void sameboy_reset(biz_t* biz)
 {
+	GB_random_seed(0);
 	GB_reset(&biz->gb);
 }
 
@@ -451,4 +466,93 @@ EXPORT u8 sameboy_cpuread(biz_t* biz, u16 addr)
 EXPORT void sameboy_cpuwrite(biz_t* biz, u16 addr, u8 value)
 {
 	GB_write_memory(&biz->gb, addr, value);
+}
+
+EXPORT u64 sameboy_getcyclecount(biz_t* biz)
+{
+	return biz->cc;
+}
+
+EXPORT void sameboy_setcyclecount(biz_t* biz, u64 newCc)
+{
+	biz->cc = newCc;
+}
+
+EXPORT void sameboy_settracecallback(biz_t* biz, trace_callback_t callback)
+{
+	biz->trace_cb = callback;
+}
+
+EXPORT void sameboy_getregs(biz_t* biz, u32* buf)
+{
+	buf[0] = biz->gb.pc & 0xFFFF;
+	buf[1] = biz->gb.a & 0xFF;
+	buf[2] = biz->gb.f & 0xFF;
+	buf[3] = biz->gb.b & 0xFF;
+	buf[4] = biz->gb.c & 0xFF;
+	buf[5] = biz->gb.d & 0xFF;
+	buf[6] = biz->gb.e & 0xFF;
+	buf[7] = biz->gb.h & 0xFF;
+	buf[8] = biz->gb.l & 0xFF;
+	buf[9] = biz->gb.sp & 0xFFFF;
+}
+
+EXPORT void sameboy_setreg(biz_t* biz, u32 which, u32 value)
+{
+	switch (which)
+	{
+		case 0:
+			biz->gb.pc = value & 0xFFFF;
+			break;
+		case 1:
+			biz->gb.a = value & 0xFF;
+			break;
+		case 2:
+			biz->gb.f = value & 0xFF;
+			break;
+		case 3:
+			biz->gb.b = value & 0xFF;
+			break;
+		case 4:
+			biz->gb.c = value & 0xFF;
+			break;
+		case 5:
+			biz->gb.d = value & 0xFF;
+			break;
+		case 6:
+			biz->gb.e = value & 0xFF;
+			break;
+		case 7:
+			biz->gb.h = value & 0xFF;
+			break;
+		case 8:
+			biz->gb.l = value & 0xFF;
+			break;
+		case 9:
+			biz->gb.sp = value & 0xFFFF;
+			break;
+	}
+}
+
+static u8 ReadCallbackRelay(GB_gameboy_t* gb, u16 addr, u8 data)
+{
+	((biz_t*)gb)->read_cb(addr);
+	return data;
+}
+
+EXPORT void sameboy_setmemorycallback(biz_t* biz, u32 which, memory_callback_t callback)
+{
+	switch (which)
+	{
+		case 0:
+			biz->read_cb = callback;
+			GB_set_read_memory_callback(&biz->gb, callback ? ReadCallbackRelay : nullptr);
+			break;
+		case 1:
+			// no write callbacks yet
+			break;
+		case 2:
+			biz->exec_cb = callback;
+			break;
+	}
 }

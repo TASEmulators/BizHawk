@@ -21,6 +21,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			writer.Write(LagCount);
 			writer.Write(Frame);
 			writer.Write(IsCgb);
+			writer.Write(CycleCount);
 		}
 
 		public void LoadStateBinary(BinaryReader reader)
@@ -43,6 +44,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			LagCount = reader.ReadInt32();
 			Frame = reader.ReadInt32();
 			IsCgb = reader.ReadBoolean();
+			CycleCount = reader.ReadInt64();
 		}
 	}
 }

@@ -29,6 +29,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 			IsLagFrame = true;
 
+			LibSameboy.sameboy_settracecallback(SameboyState, Tracer.IsEnabled() ? _tracecb : null);
+
 			return (LibSameboy.Buttons)b;
 		}
 
@@ -36,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 		{
 			var input = FrameAdvancePrep(controller);
 
-			CycleCount += LibSameboy.sameboy_frameadvance(SameboyState, input, VideoBuffer);
+			LibSameboy.sameboy_frameadvance(SameboyState, input, VideoBuffer);
 
 			if (!rendersound)
 			{
@@ -56,6 +58,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			}
 
 			Frame++;
+
+			if (_scanlineline == -1)
+			{
+				_scanlinecb?.Invoke(LibSameboy.sameboy_cpuread(SameboyState, 0xFF40));
+			}
 		}
 
 		public int Frame { get; private set; } = 0;
