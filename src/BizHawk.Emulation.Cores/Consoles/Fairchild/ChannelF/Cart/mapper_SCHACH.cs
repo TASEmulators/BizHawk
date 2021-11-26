@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 	/// </summary>
 	public class mapper_SCHACH : VesCartBase
 	{
-		public override string BoardType => "MAZE";
+		public override string BoardType => "SCHACH";
 
 		public mapper_SCHACH(byte[] rom)
 		{

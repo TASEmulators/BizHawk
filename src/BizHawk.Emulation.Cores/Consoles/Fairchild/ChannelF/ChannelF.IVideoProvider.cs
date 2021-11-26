@@ -60,15 +60,14 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		}
 
 
-		public int _frameHz = 60;
+		//public int _frameHz => region == RegionType.NTSC ? 60 : 50;
 		public int[] CroppedBuffer = new int[102 * 58];
-
 		public int VirtualWidth => BufferWidth * 4;
-		public int VirtualHeight => (int)((double)BufferHeight * 1.15) * 4;
+		public int VirtualHeight => (int)((double)BufferHeight * 1.43) * 4;
 		public int BufferWidth => 102; //128
 		public int BufferHeight => 58; //64
 		public int BackgroundColor => Colors.ARGB(0xFF, 0xFF, 0xFF);
-		public int VsyncNumerator => _frameHz;
+		public int VsyncNumerator => (int)refreshRate;
 		public int VsyncDenominator => 1;
 
 		public int[] GetVideoBuffer()
@@ -98,6 +97,6 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			return CroppedBuffer;
 		}
 
-		public DisplayType Region => DisplayType.NTSC;
+		public DisplayType Region => region == RegionType.NTSC ? DisplayType.NTSC : DisplayType.PAL;
 	}
 }

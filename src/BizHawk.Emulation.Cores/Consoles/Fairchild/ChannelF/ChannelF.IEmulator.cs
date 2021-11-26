@@ -12,8 +12,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		public bool DeterministicEmulation { get; set; }
 
-		private static readonly double cpuFreq = 1.7897725;
-		private static readonly double refreshRate = 60;
+		private double cpuFreq => region == RegionType.NTSC ? 1.7897725 : 2.000000;
+		private double refreshRate => region == RegionType.NTSC ? 60 : 50;
 
 		public int ClockPerFrame;
 		public int FrameClock = 0;
@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{
 			_controller = controller;
-			_isLag = false;
+			_isLag = true;
 
 			if (_tracer.IsEnabled())
 			{
@@ -40,29 +40,33 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				CPU.TraceCallback = null;
 			}
 
-			_isLag = PollInput();
-
 			while (FrameClock++ < ClockPerFrame)
 			{
 				CPU.ExecuteOne();
 			}
 
+			PollInput();
+
 			FrameClock = 0;
 			_frame++;
+
+			if (_isLag)
+				_lagCount++;
+
 			return true;
 		}
 
 		private int _frame;
 #pragma warning disable CS0414
-		private int _lagcount;
-		private bool _islag;
+		//private int _lagcount;
+		//private bool _islag;
 #pragma warning restore CS0414
 
 		public void ResetCounters()
 		{
 			_frame = 0;
-			_lagcount = 0;
-			_islag = false;
+			_lagCount = 0;
+			_isLag = false;
 		}
 
 		public int Frame => _frame;

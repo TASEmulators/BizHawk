@@ -26,7 +26,10 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		public override byte ReadBus(ushort addr)
 		{
 			var off = addr - 0x800;
-			return ROM[off];
+			if (off < ROM.Length)
+				return ROM[off];
+			else
+				return 0xFF;
 		}
 
 		public override void WriteBus(ushort addr, byte value)

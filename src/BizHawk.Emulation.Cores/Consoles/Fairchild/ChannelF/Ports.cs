@@ -37,8 +37,9 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					// b1:	MODE
 					// b2:	HOLD
 					// b3:	START
-					// RESET button is connected directly to the RST pin on the CPU (this is handled here in the PollInput() method)
-					result = ~(DataConsole & 0x0F) | OutputLatch[addr];
+					// RESET button is connected directly to the RST pin on the CPU (this is handled here in the PollInput() method)					
+					result = (~DataConsole & 0x0F) | OutputLatch[addr];
+					_isLag = false;
 					break;
 
 				case 1:
@@ -52,6 +53,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					// b5:	CW
 					var v1 = LS368Enable ? DataRight : DataRight | 0xC0;
 					result = (~v1) | OutputLatch[addr];
+					_isLag = false;
 					break;
 
 				case 4:
@@ -68,6 +70,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					// b7:	PUSH
 					var v2 = LS368Enable ? DataLeft : 0xFF;
 					result = (~v2) | OutputLatch[addr];
+					if (LS368Enable)
+						_isLag = false;
 					break;
 
 				case 5:
@@ -76,10 +80,9 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 				default:
 					// possible cartridge hardware IO space
-					result = ~(Cartridge.ReadPort(addr)) | OutputLatch[addr];
+					result = (Cartridge.ReadPort(addr));
 					break;
 			}
-
 
 			return (byte)result;
 		}
@@ -116,7 +119,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				case 5:
 					OutputLatch[addr] = value;					
 					latch_y = (value | 0xC0) ^ 0xFF;
-					var audio = (value >> 6) & 0x03;
+					var audio = ((value ^ 0xFF) >> 6) & 0x03;
 					if (audio != tone)
 					{
 						tone = audio;
@@ -128,7 +131,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 				default:
 					// possible write to cartridge hardware
-					Cartridge.WritePort(addr, (byte)(value ^ 0xFF));
+					Cartridge.WritePort(addr, (byte)(value));
 					break;
 			}
 		}		

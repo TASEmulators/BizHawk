@@ -23,6 +23,9 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			var settings = lp.Settings ?? new ChannelFSettings();
 			var syncSettings = lp.SyncSettings ?? new ChannelFSyncSettings();
 
+			region = syncSettings.Region;
+
+
 			MemoryCallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
 
 			ControllerDefinition = ChannelFControllerDefinition;
@@ -70,5 +73,6 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		public IController _controller;
 
 		public VesCartBase Cartridge;
+		public RegionType region;
 	}
 }

@@ -56,6 +56,10 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			[Description("If true, the core agrees to behave in a completely deterministic manner")]
 			[DefaultValue(true)]
 			public bool DeterministicEmulation { get; set; }
+			[DisplayName("Region")]
+			[Description("NTSC or PAL - Affects the CPU clock speed and refresh rate")]
+			[DefaultValue(RegionType.NTSC)]
+			public RegionType Region { get; set; }
 
 			public ChannelFSyncSettings Clone()
 			{
@@ -71,6 +75,12 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			{
 				return !DeepEquality.DeepEquals(x, y);
 			}
+		}
+
+		public enum RegionType
+		{
+			NTSC,
+			PAL
 		}
 	}
 }
