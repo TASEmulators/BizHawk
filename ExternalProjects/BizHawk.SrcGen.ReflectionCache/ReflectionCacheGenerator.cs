@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -62,27 +61,26 @@ namespace BizHawk.SrcGen.ReflectionCache
 		{
 			if (context.SyntaxReceiver is not ReflectionCacheGenSyntaxReceiver receiver) return;
 			var nSpace = receiver.Namespace;
-			if (nSpace == null) return;
-			var extraImports = nSpace == "BizHawk.Common" ? string.Empty : "\nusing BizHawk.Common;";
 			var src = $@"#nullable enable
 
 using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-{extraImports}
+{(nSpace == "BizHawk.Common" ? string.Empty : "\nusing BizHawk.Common;")}
 
 namespace {nSpace}
 {{
 	public static class ReflectionCache
 	{{
+		private static Type[]? _types = null;
+
 		private static readonly Assembly Asm = typeof({nSpace}.ReflectionCache).Assembly;
 
 		public static readonly Version AsmVersion = Asm.GetName().Version!;
 
-		private static readonly Lazy<Type[]> _types = new Lazy<Type[]>(() => Asm.GetTypesWithoutLoadErrors().ToArray());
+		public static Type[] Types => _types ??= Asm.GetTypesWithoutLoadErrors().ToArray();
 
-		public static Type[] Types => _types.Value;
 
 		/// <exception cref=""ArgumentException"">not found</exception>
 		public static Stream EmbeddedResourceStream(string embedPath)
