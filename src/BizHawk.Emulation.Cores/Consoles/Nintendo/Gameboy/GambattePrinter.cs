@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		private readonly Gameboy gb;
 		private readonly PrinterCallback callback;
-		private LibGambatte.LinkCallback linkCallback;
+		private readonly LibGambatte.LinkCallback linkCallback;
 
 		private CommandState command_state;
 		private CommandID command_id;
@@ -68,13 +68,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			LibGambatte.gambatte_setlinkcallback(gb.GambatteState, linkCallback);
 
 			// connect the cable
-			LibGambatte.gambatte_linkstatus(gb.GambatteState, 259);
+			LibGambatte.gambatte_linkstatus(gb.GambatteState, 264);
 		}
 
 		public void Disconnect()
 		{
 			if (gb.GambatteState != IntPtr.Zero)
+			{
 				LibGambatte.gambatte_setlinkcallback(gb.GambatteState, null);
+				LibGambatte.gambatte_linkstatus(gb.GambatteState, 265);
+			}
 		}
 
 		private void OnSerial()

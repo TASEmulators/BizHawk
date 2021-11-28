@@ -33,7 +33,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			for (int i = 0; i < _numCores; i++)
 			{
 				_linkedCores[i] = new Gameboy(lp.Comm, lp.Roms[i].Game, lp.Roms[i].RomData, _settings._linkedSettings[i], _syncSettings._linkedSyncSettings[i], lp.DeterministicEmulationRequested);
-				LibGambatte.gambatte_linkstatus(_linkedCores[i].GambatteState, 259); // connect link cable
 				_linkedCores[i].ConnectInputCallbackSystem(_inputCallbacks);
 				_linkedCores[i].ConnectMemoryCallbackSystem(_memoryCallbacks);
 				_linkedConts[i] = new SaveController(Gameboy.CreateControllerDefinition(false, false));
@@ -76,7 +75,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public bool LinkConnected
 		{
 			get => _linkConnected;
-			set => _linkConnected = value;
+			set
+			{
+				_linkConnected = value;
+				for (int i = 0; i < _numCores; i++)
+				{
+					LibGambatte.gambatte_linkstatus(_linkedCores[i].GambatteState, _linkConnected ? 264 : 265);
+				}
+			}
 		}
 
 		private int _numCores = 0;

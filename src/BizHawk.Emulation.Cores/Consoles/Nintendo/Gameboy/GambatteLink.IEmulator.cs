@@ -34,8 +34,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			bool linkDiscoSignalNew = controller.IsPressed("Toggle Link Connection");
 			if (linkDiscoSignalNew && !_linkDiscoSignal)
 			{
-				_linkConnected ^= true;
-				Console.WriteLine("Link connect status to {0}", _linkConnected);
+				LinkConnected ^= true;
+				Console.WriteLine("Link connect status to {0}", LinkConnected);
 			}
 
 			_linkDiscoSignal = linkDiscoSignalNew;
@@ -229,29 +229,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			if (CanIR(one, two))
 			{
-				if (LibGambatte.gambatte_linkstatus(_linkedCores[one].GambatteState, 260) != 0) // InfraredTrigger
+				if (LibGambatte.gambatte_linkstatus(_linkedCores[one].GambatteState, 259) != 0) // InfraredTrigger
 				{
-					LibGambatte.gambatte_linkstatus(_linkedCores[one].GambatteState, 261); // ack
-					if (LibGambatte.gambatte_linkstatus(_linkedCores[one].GambatteState, 262) != 0) // GetOut
+					LibGambatte.gambatte_linkstatus(_linkedCores[one].GambatteState, 260); // ack
+					if (LibGambatte.gambatte_linkstatus(_linkedCores[one].GambatteState, 261) != 0) // GetOut
 					{
-						LibGambatte.gambatte_linkstatus(_linkedCores[two].GambatteState, 263); // ShiftInOn
+						LibGambatte.gambatte_linkstatus(_linkedCores[two].GambatteState, 262); // ShiftInOn
 					}
 					else
 					{
-						LibGambatte.gambatte_linkstatus(_linkedCores[two].GambatteState, 264); // ShiftInOff
+						LibGambatte.gambatte_linkstatus(_linkedCores[two].GambatteState, 263); // ShiftInOff
 					}
 				}
 
-				if (LibGambatte.gambatte_linkstatus(_linkedCores[two].GambatteState, 260) != 0) // InfraredTrigger
+				if (LibGambatte.gambatte_linkstatus(_linkedCores[two].GambatteState, 259) != 0) // InfraredTrigger
 				{
-					LibGambatte.gambatte_linkstatus(_linkedCores[two].GambatteState, 261); // ack
-					if (LibGambatte.gambatte_linkstatus(_linkedCores[two].GambatteState, 262) != 0) // GetOut
+					LibGambatte.gambatte_linkstatus(_linkedCores[two].GambatteState, 260); // ack
+					if (LibGambatte.gambatte_linkstatus(_linkedCores[two].GambatteState, 261) != 0) // GetOut
 					{
-						LibGambatte.gambatte_linkstatus(_linkedCores[one].GambatteState, 263); // ShiftInOn
+						LibGambatte.gambatte_linkstatus(_linkedCores[one].GambatteState, 262); // ShiftInOn
 					}
 					else
 					{
-						LibGambatte.gambatte_linkstatus(_linkedCores[one].GambatteState, 264); // ShiftInOff
+						LibGambatte.gambatte_linkstatus(_linkedCores[one].GambatteState, 263); // ShiftInOff
 					}
 				}
 			}

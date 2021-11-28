@@ -13,14 +13,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 	/// </summary>
 	[PortedCore(CoreNames.Gambatte, "", "Gambatte-Speedrun r717+", "https://github.com/pokemon-speedrunning/gambatte-speedrun")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
-	public partial class Gameboy : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IInputPollable, ICodeDataLogger,
-		IBoardInfo, IRomInfo, IDebuggable, ISettable<Gameboy.GambatteSettings, Gameboy.GambatteSyncSettings>,
-		IGameboyCommon, ICycleTiming, ILinkable
+	public partial class Gameboy : IInputPollable, IRomInfo, IGameboyCommon, ICycleTiming, ILinkable
 	{
 		[CoreConstructor(VSystemID.Raw.GB)]
 		[CoreConstructor(VSystemID.Raw.GBC)]
 		[CoreConstructor(VSystemID.Raw.SGB)]
-		public Gameboy(CoreComm comm, GameInfo game, byte[] file, Gameboy.GambatteSettings settings, Gameboy.GambatteSyncSettings syncSettings, bool deterministic)
+		public Gameboy(CoreComm comm, GameInfo game, byte[] file, GambatteSettings settings, GambatteSyncSettings syncSettings, bool deterministic)
 		{
 			var ser = new BasicServiceProvider(this);
 			ser.Register<IDisassemblable>(_disassembler);
@@ -707,11 +705,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			if (callback != null)
 			{
 				printer = new GambattePrinter(this, callback);
-				LinkConnected = true;
+				_linkConnected = true;
 			}
 			else
 			{
-				LinkConnected = false;
+				_linkConnected = false;
 				if (printer != null) // have no idea how this is ever null???
 				{
 					printer.Disconnect();

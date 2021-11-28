@@ -9,7 +9,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
-	public partial class Gameboy : ITextStatable
+	public partial class Gameboy : IStatable, ITextStatable
 	{
 		public void SaveStateText(TextWriter writer)
 		{

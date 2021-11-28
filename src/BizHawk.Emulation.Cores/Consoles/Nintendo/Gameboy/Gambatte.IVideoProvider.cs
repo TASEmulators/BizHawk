@@ -1,6 +1,8 @@
-﻿namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
+﻿using BizHawk.Emulation.Common;
+
+namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
-	public partial class Gameboy
+	public partial class Gameboy : IVideoProvider
 	{
 		/// <summary>
 		/// buffer of last frame produced
