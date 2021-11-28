@@ -311,12 +311,10 @@ EXPORT void sameboy_setmemorycallback(biz_t* biz, u32 which, memory_callback_t c
 EXPORT void sameboy_setprintercallback(biz_t* biz, printer_callback_t callback)
 {
 	biz->printer_cb = callback;
-	GB_connect_printer(&biz->gb, callback ? PrinterCallbackRelay : nullptr);
-	if (!callback)
-	{
-		GB_set_serial_transfer_bit_start_callback(&biz->gb, nullptr);
-		GB_set_serial_transfer_bit_end_callback(&biz->gb, nullptr);
-	}
+	if (callback)
+		GB_connect_printer(&biz->gb, PrinterCallbackRelay);
+	else
+		GB_disconnect_serial(&biz->gb);
 }
 
 EXPORT void sameboy_setscanlinecallback(biz_t* biz, scanline_callback_t callback, u32 sl)
