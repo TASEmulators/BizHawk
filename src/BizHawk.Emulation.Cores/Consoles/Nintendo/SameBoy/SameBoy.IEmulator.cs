@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 		public string SystemId => VSystemID.Raw.GB;
 
-		public bool DeterministicEmulation => true;
+		public bool DeterministicEmulation { get; }
 
 		public void ResetCounters()
 		{

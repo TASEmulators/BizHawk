@@ -65,6 +65,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 					: Resources.SameboyDmgBoot.Value));
 			}
 
+			DeterministicEmulation = false;
+
+			if (!_syncSettings.UseRealTime || deterministic)
+			{
+				flags |= LibSameboy.LoadFlags.RTC_ACCURATE;
+				DeterministicEmulation = true;
+			}
+
 			SameboyState = LibSameboy.sameboy_create(file, file.Length, bios, bios.Length, flags);
 
 			InitMemoryDomains();

@@ -20,6 +20,7 @@ typedef enum
 	IS_DMG = 0,
 	IS_CGB = 1,
 	IS_AGB = 2,
+	RTC_ACCURATE = 4,
 } LoadFlags;
 
 static u32 rgbCallback(GB_gameboy_t*, u8 r, u8 g, u8 b)
@@ -74,7 +75,7 @@ EXPORT biz_t* sameboy_create(u8* romdata, u32 romlen, u8* biosdata, u32 bioslen,
 {
 	biz_t* biz = new biz_t;
 	GB_model_t model = GB_MODEL_DMG_B;
-	if (flags)
+	if (flags & IS_CGB)
 		model = (flags & IS_AGB) ? GB_MODEL_AGB : GB_MODEL_CGB_E;
 
 	GB_random_seed(0);
@@ -86,7 +87,7 @@ EXPORT biz_t* sameboy_create(u8* romdata, u32 romlen, u8* biosdata, u32 bioslen,
 	GB_set_rgb_encode_callback(&biz->gb, rgbCallback);
 	GB_set_palette(&biz->gb, &GB_PALETTE_GREY);
 	GB_set_color_correction_mode(&biz->gb, GB_COLOR_CORRECTION_EMULATE_HARDWARE);
-	GB_set_rtc_mode(&biz->gb, GB_RTC_MODE_ACCURATE);
+	GB_set_rtc_mode(&biz->gb, (flags & RTC_ACCURATE) ? GB_RTC_MODE_ACCURATE : GB_RTC_MODE_SYNC_TO_HOST);
 	return biz;
 }
 

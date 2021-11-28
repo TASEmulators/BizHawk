@@ -42,6 +42,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			[DefaultValue(ConsoleModeType.Auto)]
 			public ConsoleModeType ConsoleMode { get; set; }
 
+			[DisplayName("Use Real Time")]
+			[Description("If true, RTC clock will be based off of real time instead of emulated time. Ignored (set to false) when recording a movie.")]
+			[DefaultValue(false)]
+			public bool UseRealTime { get; set; }
+
 			public SameboySyncSettings() => SettingsUtil.SetDefaultValues(this);
 
 			public SameboySyncSettings Clone() => MemberwiseClone() as SameboySyncSettings;
