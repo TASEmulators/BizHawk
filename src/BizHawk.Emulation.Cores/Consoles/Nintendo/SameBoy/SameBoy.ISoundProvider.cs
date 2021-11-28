@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 		private int _soundoutbuffcontains = 0;
 
-		private readonly short[] _soundoutbuff = new short[2048 * 4];
+		private readonly short[] _soundoutbuff = new short[2048];
 
 		private unsafe void QueueSample(IntPtr core, IntPtr sample)
 		{

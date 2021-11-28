@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 					true,
 					out _).PadRight(36),
 				registerInfo: string.Format(
-					"A:{0:x2} F:{1:x2} B:{2:x2} C:{3:x2} D:{4:x2} E:{5:x2} H:{6:x2} L:{7:x2} SP:{8:x2} LY:{9:x2} Cy:{10}",
+					"A:{0:x2} F:{1:x2} B:{2:x2} C:{3:x2} D:{4:x2} E:{5:x2} H:{6:x2} L:{7:x2} LY:{9:x2} SP:{8:x2}  Cy:{10} STAT:{11:x2} IF:{12:x2}",
 					s[1] & 0xFF,
 					s[2] & 0xFF,
 					s[3] & 0xFF,
@@ -31,7 +31,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 					s[8] & 0xFF,
 					s[9] & 0xFFFF,
 					LibSameboy.sameboy_cpuread(SameboyState, 0xFF44),
-					CycleCount
+					CycleCount + 485808,
+					LibSameboy.sameboy_cpuread(SameboyState, 0xFF41),
+					LibSameboy.sameboy_cpuread(SameboyState, 0xFF0F)
 					)));
 		}
 	}

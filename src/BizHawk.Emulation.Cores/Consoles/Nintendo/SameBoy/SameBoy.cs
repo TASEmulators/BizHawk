@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 	/// </summary>
 	[PortedCore(CoreNames.Sameboy, "LIJI32", "0.14.7", "https://github.com/LIJI32/SameBoy", isReleased: false)]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
-	public partial class Sameboy : ICycleTiming, IInputPollable, IGameboyCommon
+	public partial class Sameboy : ICycleTiming, IInputPollable, ILinkable, IRomInfo, IBoardInfo, IGameboyCommon
 	{
 		private readonly BasicServiceProvider _serviceProvider;
 
@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 			IsCgb = (flags & LibSameboy.LoadFlags.IS_CGB) == LibSameboy.LoadFlags.IS_CGB;
 
-			byte[] bios = null;
+			byte[] bios;
 			if (_syncSettings.EnableBIOS)
 			{
 				FirmwareID fwid = new(
@@ -77,6 +77,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			_tracecb = MakeTrace;
 			LibSameboy.sameboy_settracecallback(SameboyState, null);
 
+			LibSameboy.sameboy_setscanlinecallback(SameboyState, null, 0);
+			LibSameboy.sameboy_setprintercallback(SameboyState, null);
+
 			const string TRACE_HEADER = "SM83: PC, opcode, registers (A, F, B, C, D, E, H, L, SP, LY, CY)";
 			Tracer = new TraceBuffer(TRACE_HEADER);
 			_serviceProvider.Register<ITraceable>(Tracer);
@@ -85,6 +88,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			_serviceProvider.Register<IDisassemblable>(_disassembler);
 
 			_stateBuf = new byte[LibSameboy.sameboy_statelen(SameboyState)];
+
+			RomDetails = $"{game.Name}\r\n{SHA1Checksum.ComputePrefixedHex(file)}\r\n{MD5Checksum.ComputePrefixedHex(file)}\r\n";
+			BoardName = MapperName(file);
+
+			CycleCount = 0;
 		}
 
 		public double ClockRate => 2097152;
@@ -109,12 +117,53 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			_inputCallbacks.Call();
 		}
 
+		public bool LinkConnected
+		{
+			get => _printercb != null;
+			set { return; }
+		}
+
+		public string RomDetails { get; }
+
+		private static string MapperName(byte[] romdata)
+		{
+			return (romdata[0x147]) switch
+			{
+				0x00 => "Plain ROM",
+				0x01 => "MBC1 ROM",
+				0x02 => "MBC1 ROM+RAM",
+				0x03 => "MBC1 ROM+RAM+BATTERY",
+				0x05 => "MBC2 ROM",
+				0x06 => "MBC2 ROM+BATTERY",
+				0x08 => "Plain ROM+RAM",
+				0x09 => "Plain ROM+RAM+BATTERY",
+				0x0F => "MBC3 ROM+TIMER+BATTERY",
+				0x10 => "MBC3 ROM+TIMER+RAM+BATTERY",
+				0x11 => "MBC3 ROM",
+				0x12 => "MBC3 ROM+RAM",
+				0x13 => "MBC3 ROM+RAM+BATTERY",
+				0x19 => "MBC5 ROM",
+				0x1A => "MBC5 ROM+RAM",
+				0x1B => "MBC5 ROM+RAM+BATTERY",
+				0x1C => "MBC5 ROM+RUMBLE",
+				0x1D => "MBC5 ROM+RUMBLE+RAM",
+				0x1E => "MBC5 ROM+RUMBLE+RAM+BATTERY",
+				0x22 => "MBC7 ROM+ACCEL+EEPROM",
+				0xFC => "Pocket Camera ROM+RAM+BATTERY",
+				0xFE => "HuC3 ROM+RAM+BATTERY",
+				0xFF => "HuC1 ROM+RAM+BATTERY",
+				_ => "UNKNOWN",
+			};
+		}
+
+		public string BoardName { get; }
+
 		// getmemoryarea will return the raw palette buffer, but we want the rgb32 palette, so convert it
 		private unsafe uint[] SynthesizeFrontendPal(IntPtr _pal)
 		{
-			var buf = new uint[8];
+			var buf = new uint[32];
 			var pal = (short*)_pal;
-			for (int i = 0; i < 8; i++)
+			for (int i = 0; i < 32; i++)
 			{
 				byte r = (byte)(pal[i]       & 0x1F);
 				byte g = (byte)(pal[i] >> 5  & 0x1F);
@@ -177,24 +226,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 		}
 
 		private ScanlineCallback _scanlinecb;
-		private int _scanlineline = 0;
+		private int _scanlinecbline;
 
 		public void SetScanlineCallback(ScanlineCallback callback, int line)
 		{
 			_scanlinecb = callback;
-			_scanlineline = line;
+			_scanlinecbline = line;
 
-			if (_scanlineline == -2)
+			LibSameboy.sameboy_setscanlinecallback(SameboyState, _scanlinecbline >= 0 ? callback : null, line);
+
+			if (_scanlinecbline == -2)
 			{
 				_scanlinecb(LibSameboy.sameboy_cpuread(SameboyState, 0xFF40));
 			}
 		}
 
-		PrinterCallback _printercb = null;
+		private PrinterCallback _printercb;
 
 		public void SetPrinterCallback(PrinterCallback callback)
 		{
-			_printercb = null;
+			_printercb = callback;
+			LibSameboy.sameboy_setprintercallback(SameboyState, _printercb);
 		}
 	}
 }

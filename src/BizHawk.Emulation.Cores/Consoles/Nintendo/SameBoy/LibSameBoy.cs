@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
+using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
+
 namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 {
 	/// <summary>
@@ -27,6 +29,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			IS_DMG = 0,
 			IS_CGB = 1,
 			IS_AGB = 2,
+			RTC_ACCURATE = 4,
+			
 		}
 
 		// mirror of GB_direct_access_t
@@ -44,6 +48,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			OBP,
 			IE,
 		}
+
+		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
+		public static extern int sameboy_corelen(IntPtr core);
 
 		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
 		public static extern IntPtr sameboy_create(byte[] romdata, int romlength, byte[] biosdata, int bioslength, LoadFlags flags);
@@ -64,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 		public static extern void sameboy_setinputcallback(IntPtr core, InputCallback callback);
 		 
 		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void sameboy_frameadvance(IntPtr core, Buttons input, int[] videobuf);
+		public static extern void sameboy_frameadvance(IntPtr core, Buttons input, int[] videobuf, bool render);
 
 		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void sameboy_reset(IntPtr core);
@@ -73,7 +80,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 		public static extern void sameboy_savesram(IntPtr core, byte[] dest);
 
 		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void sameboy_loadsram(IntPtr core, byte[] data);
+		public static extern void sameboy_loadsram(IntPtr core, byte[] data, int len);
 
 		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
 		public static extern int sameboy_sramlen(IntPtr core);
@@ -119,5 +126,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void sameboy_setmemorycallback(IntPtr core, int which, MemoryCallback callback);
+
+		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void sameboy_setprintercallback(IntPtr core, PrinterCallback callback);
+
+		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void sameboy_setscanlinecallback(IntPtr core, ScanlineCallback callback, int sl);
 	}
 }

@@ -27,6 +27,7 @@ sourceFiles = Split('''
 	libsameboy/Core/symbol_hash.c
 	libsameboy/Core/memory.c
 	libsameboy/Core/timing.c
+	libsameboy/Core/printer.c
 ''')
 
 conf = env.Configure()

@@ -59,9 +59,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 		public IMemoryCallbackSystem MemoryCallbacks => _memorycallbacks;
 
-		// write callbacks aren't available here
 		private LibSameboy.MemoryCallback _readcb;
-		//private LibSameboy.MemoryCallback _writecb;
+		private LibSameboy.MemoryCallback _writecb;
 		private LibSameboy.MemoryCallback _execcb;
 
 		private void InitMemoryCallbacks()
@@ -79,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			}
 
 			_readcb = CreateCallback(MemoryCallbackFlags.AccessRead, () => MemoryCallbacks.HasReads);
-			//_writecb = CreateCallback(MemoryCallbackFlags.AccessWrite, () => MemoryCallbacks.HasWrites);
+			_writecb = CreateCallback(MemoryCallbackFlags.AccessWrite, () => MemoryCallbacks.HasWrites);
 			_execcb = CreateCallback(MemoryCallbackFlags.AccessExecute, () => MemoryCallbacks.HasExecutes);
 
 			_memorycallbacks.ActiveChanged += SetMemoryCallbacks;
@@ -88,7 +87,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 		private void SetMemoryCallbacks()
 		{
 			LibSameboy.sameboy_setmemorycallback(SameboyState, 0, MemoryCallbacks.HasReads ? _readcb : null);
-			//LibSameboy.sameboy_setmemorycallback(SameboyState, 1, MemoryCallbacks.HasWrites ? _writecb : null);
+			LibSameboy.sameboy_setmemorycallback(SameboyState, 1, MemoryCallbacks.HasWrites ? _writecb : null);
 			LibSameboy.sameboy_setmemorycallback(SameboyState, 2, MemoryCallbacks.HasExecutes ? _execcb : null);
 		}
 	}

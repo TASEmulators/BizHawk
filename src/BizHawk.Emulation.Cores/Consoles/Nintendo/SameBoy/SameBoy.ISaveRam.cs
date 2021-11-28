@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 				throw new ArgumentException("Size of saveram data does not match expected!");
 			}
 
-			LibSameboy.sameboy_loadsram(SameboyState, data);
+			LibSameboy.sameboy_loadsram(SameboyState, data, data.Length);
 		}
 	}
 }

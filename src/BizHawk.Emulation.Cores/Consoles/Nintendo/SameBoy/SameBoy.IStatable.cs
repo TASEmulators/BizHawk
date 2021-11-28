@@ -26,6 +26,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 		public void LoadStateBinary(BinaryReader reader)
 		{
+			Directory.CreateDirectory("sameboy_debug");
+			int len = LibSameboy.sameboy_corelen(SameboyState);
+			byte[] bytes = new byte[len];
+			unsafe
+			{
+				byte* core = (byte*)SameboyState;
+				for (int i = 0; i < len; i++)
+				{
+					bytes[i] = core[i];
+				}
+			}
+
 			int length = reader.ReadInt32();
 			if (length != _stateBuf.Length)
 			{
@@ -45,6 +57,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			Frame = reader.ReadInt32();
 			IsCgb = reader.ReadBoolean();
 			CycleCount = reader.ReadInt64();
+
+			int num = 0;
+			while (File.Exists($"sameboy_debug/gameboy_gb_t{Frame}_{num}_preloadstate.bin"))
+			{
+				num++;
+			}
+
+			File.WriteAllBytes($"sameboy_debug/gameboy_gb_t{Frame}_{num}_preloadstate.bin", bytes);
+
+			unsafe
+			{
+				byte* core = (byte*)SameboyState;
+				for (int i = 0; i < len; i++)
+				{
+					bytes[i] = core[i];
+				}
+			}
+			File.WriteAllBytes($"sameboy_debug/gameboy_gb_t{Frame}_{num}_postloadstate.bin", bytes);
 		}
 	}
 }

@@ -1,3 +1,3 @@
 scons
-cp ./libsameboy.dll ../../Assets/dll/
-rm -rf ./libsameboy.dll
+mv ./libsameboy.dll ../../Assets/dll/
+mv ./libsameboy.so ../../Assets/dll/

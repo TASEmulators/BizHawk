@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 		{
 			var input = FrameAdvancePrep(controller);
 
-			LibSameboy.sameboy_frameadvance(SameboyState, input, VideoBuffer);
+			LibSameboy.sameboy_frameadvance(SameboyState, input, VideoBuffer, render);
 
 			if (!rendersound)
 			{
@@ -59,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 			Frame++;
 
-			if (_scanlineline == -1)
+			if (_scanlinecbline == -1)
 			{
 				_scanlinecb?.Invoke(LibSameboy.sameboy_cpuread(SameboyState, 0xFF40));
 			}
@@ -76,6 +76,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			Frame = 0;
 			LagCount = 0;
 			IsLagFrame = false;
+			CycleCount = 0;
 		}
 
 		public void Dispose()
