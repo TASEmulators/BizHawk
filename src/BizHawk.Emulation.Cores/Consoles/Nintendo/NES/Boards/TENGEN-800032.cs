@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "MAPPER064":
 					break;
 				case "TENGEN-800032":
-					AssertPrg(64, 128); AssertChr(64, 128); AssertVram(0); AssertWram(00);
+					AssertPrg(64, 128); AssertChr(64, 128); AssertVram(0); AssertWram(0);
 					break;
 				default:
 					return false;
