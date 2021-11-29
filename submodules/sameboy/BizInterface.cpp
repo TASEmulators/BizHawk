@@ -37,7 +37,7 @@ typedef void (*scanline_callback_t)(u32);
 typedef struct
 {
 	GB_gameboy_t gb;
-	u32 vbuf[160 * 144];
+	u32 vbuf[256 * 224];
 	input_callback_t input_cb;
 	trace_callback_t trace_cb;
 	memory_callback_t read_cb;
@@ -64,11 +64,6 @@ static bool WriteCallbackRelay(GB_gameboy_t* gb, u16 addr, u8 data)
 static void PrinterCallbackRelay(GB_gameboy_t* gb, u32* image, u8 height, u8 top_margin, u8 bottom_margin, u8 exposure)
 {
 	((biz_t*)gb)->printer_cb(image, height, top_margin, bottom_margin, exposure);
-}
-
-EXPORT int sameboy_corelen(biz_t* biz)
-{
-	return sizeof biz->gb;
 }
 
 EXPORT biz_t* sameboy_create(u8* romdata, u32 romlen, u8* biosdata, u32 bioslen, LoadFlags flags)
@@ -107,7 +102,7 @@ EXPORT void sameboy_setinputcallback(biz_t* biz, input_callback_t callback)
 	biz->input_cb = callback;
 }
 
-EXPORT void sameboy_frameadvance(biz_t* biz, u32 input, u32* vbuf, bool render)
+EXPORT void sameboy_frameadvance(biz_t* biz, u32 input, u32* vbuf, bool render, bool border)
 {
 	GB_set_key_state(&biz->gb, GB_KEY_RIGHT,  input & (1 << 0));
 	GB_set_key_state(&biz->gb, GB_KEY_LEFT,   input & (1 << 1));
@@ -122,7 +117,7 @@ EXPORT void sameboy_frameadvance(biz_t* biz, u32 input, u32* vbuf, bool render)
 		biz->input_cb();
 
 	GB_set_pixels_output(&biz->gb, biz->vbuf);
-	GB_set_border_mode(&biz->gb, GB_BORDER_NEVER);
+	GB_set_border_mode(&biz->gb, border ? GB_BORDER_ALWAYS : GB_BORDER_NEVER);
 	GB_set_rendering_disabled(&biz->gb, !render);
 
 	u32 cycles = 0;
@@ -152,7 +147,9 @@ EXPORT void sameboy_frameadvance(biz_t* biz, u32 input, u32* vbuf, bool render)
 	while (!biz->gb.vblank_just_occured && cycles < 35112);
 	
 	if (biz->gb.vblank_just_occured && render)
+	{
 		memcpy(vbuf, biz->vbuf, sizeof biz->vbuf);
+	}
 }
 
 EXPORT void sameboy_reset(biz_t* biz)
@@ -183,16 +180,7 @@ EXPORT void sameboy_savestate(biz_t* biz, u8* data)
 
 EXPORT u32 sameboy_loadstate(biz_t* biz, u8* data, u32 len)
 {
-	u32 ret = GB_load_state_from_buffer(&biz->gb, data, len);
-	biz->gb.debugger_ticks = 0;
-	biz->gb.absolute_debugger_ticks = 0;
-	biz->gb.rumble_off_cycles = 0;
-	biz->gb.vblank_just_occured = 0;
-	auto temp = biz->gb.apu_output.sample_callback;
-	memset(&biz->gb.apu_output, 0, sizeof biz->gb.apu_output);
-	GB_apu_set_sample_callback(&biz->gb, temp);
-	GB_set_sample_rate(&biz->gb, 44100);
-	return ret;
+	return GB_load_state_from_buffer(&biz->gb, data, len);
 }
 
 EXPORT u32 sameboy_statelen(biz_t* biz)
@@ -204,7 +192,7 @@ EXPORT bool sameboy_getmemoryarea(biz_t* biz, GB_direct_access_t which, void** d
 {
 	if (which > GB_DIRECT_ACCESS_IE || which < GB_DIRECT_ACCESS_ROM)
 		return false;
-	
+
 	u16 bank;
 	*data = GB_get_direct_access(&biz->gb, which, len, &bank);
 	return true;
@@ -322,4 +310,43 @@ EXPORT void sameboy_setscanlinecallback(biz_t* biz, scanline_callback_t callback
 {
 	biz->scanline_cb = callback;
 	biz->scanline_sl = sl;
+}
+
+EXPORT void sameboy_setpalette(biz_t* biz, u32 which)
+{
+	switch (which)
+	{
+		case 0:
+			GB_set_palette(&biz->gb, &GB_PALETTE_GREY);
+			break;
+		case 1:
+			GB_set_palette(&biz->gb, &GB_PALETTE_DMG);
+			break;
+		case 2:
+			GB_set_palette(&biz->gb, &GB_PALETTE_MGB);
+			break;
+		case 3:
+			GB_set_palette(&biz->gb, &GB_PALETTE_GBL);
+			break;
+	}
+}
+
+EXPORT void sameboy_setcolorcorrection(biz_t* biz, GB_color_correction_mode_t which)
+{
+	GB_set_color_correction_mode(&biz->gb, which);
+}
+
+EXPORT void sameboy_setlighttemperature(biz_t* biz, int temperature)
+{
+	GB_set_light_temperature(&biz->gb, temperature / 10.0);
+}
+
+EXPORT void sameboy_sethighpassfilter(biz_t* biz, GB_highpass_mode_t which)
+{
+	GB_set_highpass_filter_mode(&biz->gb, which);
+}
+
+EXPORT void sameboy_setinterferencevolume(biz_t* biz, int volume)
+{
+	GB_set_interference_volume(&biz->gb, volume / 100.0);
 }

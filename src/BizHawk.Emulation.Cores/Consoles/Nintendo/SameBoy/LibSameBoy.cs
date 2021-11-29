@@ -30,7 +30,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			IS_CGB = 1,
 			IS_AGB = 2,
 			RTC_ACCURATE = 4,
-			
 		}
 
 		// mirror of GB_direct_access_t
@@ -48,9 +47,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			OBP,
 			IE,
 		}
-
-		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
-		public static extern int sameboy_corelen(IntPtr core);
 
 		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
 		public static extern IntPtr sameboy_create(byte[] romdata, int romlength, byte[] biosdata, int bioslength, LoadFlags flags);
@@ -71,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 		public static extern void sameboy_setinputcallback(IntPtr core, InputCallback callback);
 		 
 		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void sameboy_frameadvance(IntPtr core, Buttons input, int[] videobuf, bool render);
+		public static extern void sameboy_frameadvance(IntPtr core, Buttons input, int[] videobuf, bool render, bool border);
 
 		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void sameboy_reset(IntPtr core);
@@ -132,5 +128,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void sameboy_setscanlinecallback(IntPtr core, ScanlineCallback callback, int sl);
+
+		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void sameboy_setpalette(IntPtr core, Sameboy.SameboySettings.GBPaletteType which);
+
+		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void sameboy_setcolorcorrection(IntPtr core, Sameboy.SameboySettings.ColorCorrectionMode which);
+
+		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void sameboy_setlighttemperature(IntPtr core, int temperature);
+
+		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void sameboy_sethighpassfilter(IntPtr core, Sameboy.SameboySettings.HighPassFilterMode which);
+
+		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void sameboy_setinterferencevolume(IntPtr core, int volume);
 	}
 }

@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 		{
 			var input = FrameAdvancePrep(controller);
 
-			LibSameboy.sameboy_frameadvance(SameboyState, input, VideoBuffer, render);
+			LibSameboy.sameboy_frameadvance(SameboyState, input, VideoBuffer, render, _settings.ShowBorder);
 
 			if (!rendersound)
 			{

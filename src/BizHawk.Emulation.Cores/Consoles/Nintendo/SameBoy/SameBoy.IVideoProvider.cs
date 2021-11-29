@@ -8,10 +8,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 		private static int[] CreateVideoBuffer()
 		{
-			var b = new int[160 * 144];
-			for (int i = 0; i < (160 * 144); i++)
+			var b = new int[256 * 224];
+			for (int i = 0; i < (256 * 224); i++)
 			{
-				b[i] = -1; // GB/C screen is disabled on bootup, so it always starts as white, not black
+				b[i] = -1;
 			}
 			return b;
 		}
@@ -21,13 +21,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			return VideoBuffer;
 		}
 
-		public int VirtualWidth => 160;
+		public int VirtualWidth => _settings.ShowBorder ? 256 : 160;
 
-		public int VirtualHeight => 144;
+		public int VirtualHeight => _settings.ShowBorder ? 224 : 144;
 
-		public int BufferWidth => 160;
+		public int BufferWidth => _settings.ShowBorder ? 256 : 160;
 
-		public int BufferHeight => 144;
+		public int BufferHeight => _settings.ShowBorder ? 224 : 144;
 
 		public int BackgroundColor => 0;
 

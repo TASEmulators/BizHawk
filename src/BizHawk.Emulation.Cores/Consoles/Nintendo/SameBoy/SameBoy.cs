@@ -32,10 +32,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 		[CoreConstructor(VSystemID.Raw.GB)]
 		[CoreConstructor(VSystemID.Raw.GBC)]
-		public Sameboy(CoreComm comm, GameInfo game, byte[] file, SameboySyncSettings syncSettings, bool deterministic)
+		public Sameboy(CoreComm comm, GameInfo game, byte[] file, SameboySettings settings, SameboySyncSettings syncSettings, bool deterministic)
 		{
 			_serviceProvider = new BasicServiceProvider(this);
 
+			_settings = settings ?? new SameboySettings();
 			_syncSettings = syncSettings ?? new SameboySyncSettings();
 
 			LibSameboy.LoadFlags flags = _syncSettings.ConsoleMode switch
@@ -74,6 +75,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			}
 
 			SameboyState = LibSameboy.sameboy_create(file, file.Length, bios, bios.Length, flags);
+
+			PutSettings(_settings);
 
 			InitMemoryDomains();
 			InitMemoryCallbacks();
