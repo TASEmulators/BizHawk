@@ -26,7 +26,13 @@ struct Platform {
 	virtual auto getBackdropColor() -> uint16 { return 0; }
 
   bool traceEnabled = false;
+  bool readHookEnabled = false;
+  bool writeHookEnabled = false;
+  bool executeHookEnabled = false;
   virtual auto cpuTrace(vector<string>) -> void {}
+  virtual auto readHook(uint address) -> void {}
+  virtual auto writeHook(uint address, uint8 value) -> void {}
+  virtual auto execHook(uint address) -> void {}
 };
 
 extern Platform* platform;

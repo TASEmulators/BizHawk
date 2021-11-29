@@ -267,6 +267,13 @@ EXPORT void snes_set_trace_enabled(bool enabled)
     platform->traceEnabled = enabled;
 }
 
+EXPORT void snes_set_hooks_enabled(bool read_hook_enabled, bool write_hook_enabled, bool execute_hook_enabled)
+{
+    platform->readHookEnabled = read_hook_enabled;
+    platform->writeHookEnabled = write_hook_enabled;
+    platform->executeHookEnabled = execute_hook_enabled;
+}
+
 
 EXPORT int snes_get_region(void) {
     return Region::PAL();

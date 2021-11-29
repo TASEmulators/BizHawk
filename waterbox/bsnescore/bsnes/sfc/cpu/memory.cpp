@@ -7,6 +7,9 @@ auto CPU::idle() -> void {
 }
 
 auto CPU::read(uint address) -> uint8 {
+  if (__builtin_expect(platform->readHookEnabled, 0))
+    platform->readHook(address);
+
   if(address & 0x408000) {
     if(address & 0x800000 && io.fastROM) {
       status.clockCount = 6;
@@ -46,6 +49,9 @@ auto CPU::read(uint address) -> uint8 {
 }
 
 auto CPU::write(uint address, uint8 data) -> void {
+  if (__builtin_expect(platform->writeHookEnabled, 0))
+    platform->writeHook(address, data);
+
   aluEdge();
 
   if(address & 0x408000) {
