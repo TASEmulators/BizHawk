@@ -117,7 +117,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				Path = dllPath,
 				SbrkHeapSizeKB = 14 * 1024,
 				InvisibleHeapSizeKB = 4,
-				MmapHeapSizeKB = 105 * 1024, // TODO: check whether this needs to be larger; it depends on the rom size
+				MmapHeapSizeKB = 110 * 1024, // TODO: check whether this needs to be larger; it depends on the rom size
 				PlainHeapSizeKB = 0,
 				SealedHeapSizeKB = 0,
 				SkipCoreConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
