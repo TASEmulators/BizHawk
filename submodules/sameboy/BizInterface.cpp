@@ -147,9 +147,7 @@ EXPORT void sameboy_frameadvance(biz_t* biz, u32 input, u32* vbuf, bool render, 
 	while (!biz->gb.vblank_just_occured && cycles < 35112);
 	
 	if (biz->gb.vblank_just_occured && render)
-	{
 		memcpy(vbuf, biz->vbuf, sizeof biz->vbuf);
-	}
 }
 
 EXPORT void sameboy_reset(biz_t* biz)
