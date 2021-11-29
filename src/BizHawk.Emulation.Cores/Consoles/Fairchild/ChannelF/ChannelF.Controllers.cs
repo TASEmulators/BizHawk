@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				// console
 				var consoleButtons = new List<string>
 				{
-					"RESET", "START", "HOLD", "MODE", "TIME"
+					"TIME", "MODE", "HOLD", "START", "RESET"
 				};
 
 				foreach (var s in consoleButtons)

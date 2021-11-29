@@ -74,21 +74,9 @@ Group 5: ITT Tele-Match Processor (Germany)
 | Working | xx | 1 | Tetris (2004)(Trauner, Peter)[p] | SRAM2102 | D7050AF61479AA549206250441AA2B0F |
 | Working | xx | 1 | Tetris (2004)(Trauner, Peter)[p][a] | SRAM2102 | 2AEBEDA05478E8B7F5C1ECA037AC6C2F |
 
-#### Demos
-
-| Status | VideoCartID | Group | Game | Cart Info | MD5
-| --- | --- | --- | --- | --- | --- |
-
 #### Applications
 
 | Status | VideoCartID | Group | Game | Cart Info | MD5
 | --- | --- | --- | --- | --- | --- |
-
-#### Bad dumps?
-
-| Status | VideoCartID | Group | Game | Cart Info | MD5
-| --- | --- | --- | --- | --- | --- |
-| Not Working | 04 | 1 | Spitfire (proto)[b] | Standard | 0CFD9B9213CFF4A9DF9DD7FEA4663236 |
-| Not Working | 20 | 2 | Schach (Germany) [b] | F3853 | 7385E596BF2A58E2186439AC1E49C075 |
 
 -Asnivor

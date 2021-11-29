@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
 	/// <summary>
 	/// Saba Schach Mapper
-	/// 6KB ROM / 2KB RAM
+	/// Any size ROM / 2KB RAM mapped at 0x2800 - 0x2FFF
 	/// Info here: http://www.seanriddle.com/chanfmulti.html
 	/// </summary>
 	public class mapper_SCHACH : VesCartBase
@@ -21,22 +21,23 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				ROM[i] = rom[i];
 			}
 
-			RAM = new byte[0x800 * 3];
+			RAM = new byte[0x800];
 		}
 
 		public override byte ReadBus(ushort addr)
 		{
-			var result = 0x00;
+			var result = 0xFF;
 			var off = addr - 0x800;
 
-			if (addr >= 0x2000 && addr < 0x3000)
+			if (addr >= 0x2800 && addr < 0x3000)
 			{
 				// 2KB RAM
-				result = RAM[addr - 0x2000];
+				result = RAM[addr - 0x2800];
 			}
 			else
 			{
-				result = ROM[off];
+				if (off < ROM.Length)
+					result = ROM[off];
 			}
 
 			return (byte)result;
@@ -45,9 +46,14 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		public override void WriteBus(ushort addr, byte value)
 		{
 			// 2KB writeable memory at 0x2800;
-			if (addr >= 0x2000 && addr < 0x3000)
+			if (addr >= 0x2800 && addr < 0x3000)
 			{
-				RAM[addr - 0x2000] = value;
+				RAM[addr - 0x2800] = value;
+			}
+			else if (addr == 0x3800)
+			{
+				// activity LED
+				ActivityLED = !ActivityLED;
 			}
 			else
 			{

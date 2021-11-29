@@ -7,8 +7,7 @@ using BizHawk.Emulation.Cores.Components.FairchildF8;
 namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
 	[Core(CoreNames.ChannelFHawk, "Asnivor", isReleased: false)]
-	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
-	public partial class ChannelF
+	public partial class ChannelF : IDriveLight
 	{
 		[CoreConstructor(VSystemID.Raw.ChannelF)]
 		public ChannelF(CoreLoadParameters<ChannelFSettings, ChannelFSyncSettings> lp)
@@ -74,5 +73,9 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		public VesCartBase Cartridge;
 		public RegionType region;
+
+		public bool DriveLightEnabled => true;
+
+		public bool DriveLightOn => !Cartridge.ActivityLED;
 	}
 }

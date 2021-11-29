@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Cores.Components.FairchildF8
+﻿using System.Text;
+
+namespace BizHawk.Emulation.Cores.Components.FairchildF8
 {
 	public sealed partial class F3850
 	{
@@ -11,8 +13,27 @@
 		public byte[] cur_romc = new byte[MaxInstructionLength];        // fixed size - do not change at runtime
 		public byte opcode;
 
+		public long[] dLog = new long[0xFF];
+		private string debug = "";
+		private void UpdateDebug()
+		{
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < 255; i++)
+			{
+				if (dLog[i] > 0)
+					sb.AppendLine(i.ToString() + "\t" + dLog[i]);
+				else
+					sb.AppendLine();
+			}
+
+			debug = sb.ToString();
+		}
+
 		public void FetchInstruction()
 		{
+			//dLog[opcode] = dLog[opcode] + 1;
+			//UpdateDebug();
+
 			switch (opcode)
 			{
 				case 0x00: LR_A_KU(); break;					// LR A, (KU) 
@@ -116,14 +137,14 @@
 				case 0x5E: LR_ISAR_A_DEC(); break;              // SR <- (A) (SR pointed to by the ISAR); ISAR decremented
 				case 0x5F: ILLEGAL(); break;                    // No instruction - do a NOP
 
-				case 0x60: LISU(0); break;						// ISARU <- 0'e' (octal)
-				case 0x61: LISU(1); break;						// ISARU <- 0'e' (octal)
-				case 0x62: LISU(2); break;						// ISARU <- 0'e' (octal)
-				case 0x63: LISU(3); break;						// ISARU <- 0'e' (octal)
-				case 0x64: LISU(4); break;						// ISARU <- 0'e' (octal)
-				case 0x65: LISU(5); break;						// ISARU <- 0'e' (octal)
-				case 0x66: LISU(6); break;						// ISARU <- 0'e' (octal)
-				case 0x67: LISU(7); break;						// ISARU <- 0'e' (octal)
+				case 0x60: LISU(0x00); break;					// ISARU <- 0'e' (octal)
+				case 0x61: LISU(0x08); break;					// ISARU <- 0'e' (octal)
+				case 0x62: LISU(0x10); break;					// ISARU <- 0'e' (octal)
+				case 0x63: LISU(0x18); break;					// ISARU <- 0'e' (octal)
+				case 0x64: LISU(0x20); break;					// ISARU <- 0'e' (octal)
+				case 0x65: LISU(0x28); break;					// ISARU <- 0'e' (octal)
+				case 0x66: LISU(0x30); break;					// ISARU <- 0'e' (octal)
+				case 0x67: LISU(0x38); break;					// ISARU <- 0'e' (octal)
 				case 0x68: LISL(0); break;						// ISARL <- 0'e' (octal)
 				case 0x69: LISL(1); break;						// ISARL <- 0'e' (octal)
 				case 0x6A: LISL(2); break;						// ISARL <- 0'e' (octal)
@@ -150,14 +171,14 @@
 				case 0x7e: LIS(14); break;						// A <- H'0a'
 				case 0x7f: LIS(15); break;						// A <- H'0a'
 
-				case 0x80: BTN(); break;						// Branch on true - no branch (3 cycle effective NOP)
-				case 0x81: BP(); break;							// Branch if positive (sign bit is set)
-				case 0x82: BC(); break;							// Branch on carry (carry bit is set)
-				case 0x83: BT_CS(); break;						// Branch on carry or positive
-				case 0x84: BZ(); break;							// Branch on zero (zero bit is set)
-				case 0x85: BT_ZS(); break;						// Branch on zero or positive
-				case 0x86: BT_ZC(); break;						// Branch if zero or on carry
-				case 0x87: BT_ZCS(); break;						// Branch if zero or positive or on carry
+				case 0x80: BT(0); break;                        // BTN		-	Branch on true - no branch (3 cycle effective NOP)
+				case 0x81: BT(1); break;                        // BP		-	Branch if positive (sign bit is set)
+				case 0x82: BT(2); break;                        // BC		-	Branch on carry (carry bit is set)
+				case 0x83: BT(3); break;						// BT_CS	-	Branch on carry or positive
+				case 0x84: BT(4); break;                        // BZ		-	Branch on zero (zero bit is set)
+				case 0x85: BT(5); break;						// BT_ZS	-	Branch on zero or positive
+				case 0x86: BT(6); break;						// BT_ZC	-	Branch if zero or on carry
+				case 0x87: BT(7); break;						// BTZ_CS	-	Branch if zero or positive or on carry
 
 				case 0x88: AM(); break;							// A <- (A) + ((DC0))Binary; DC0 <- (DC0) + 1
 				case 0x89: AMD(); break;						// A <- (A) + ((DC0))Decimal; DC0 <- (DC0) + 1
@@ -167,23 +188,24 @@
 				case 0x8D: CM(); break;							// Set status flags on basis of: ((DC)) + (A) + 1; DC0 <- (DC0) + 1; DC <- (DC) + (A)
 				case 0x8E: ADC(); break;						// DC <- (DC) + (A)
 
-				case 0x8F: BR7(); break;						// Branch on ISAR (any of the low 3 bits of ISAR are reset)				
-				case 0x90: BR(); break;							// Unconditional branch relative (always)				
-				case 0x91: BM(); break;							// Branch on negative (sign bit is reset)				
-				case 0x92: BNC(); break;						// Branch if no carry (carry bit is reset)	
-				case 0x93: BF_CS(); break;						// Branch on false - negative and no carry				
-				case 0x94: BNZ(); break;						// Branch on not zero (zero bit is reset)				
-				case 0x95: BF_ZS(); break;						// Branch on false - negative and not zero				
-				case 0x96: BF_ZC(); break;						// Branch on false - no carry and not zero				
-				case 0x97: BF_ZCS(); break;						// Branch on false - no carry and not zero and negative				
-				case 0x98: BNO(); break;						// Branch if no overflow (OVF bit is reset)				
-				case 0x99: BF_OS(); break;						// Branch on false - no overflow and negative				
-				case 0x9A: BF_OC(); break;						// Branch on false - no overflow and no carry				
-				case 0x9B: BF_OCS(); break;						// Branch on false - no overflow and no carry and negative				
-				case 0x9C: BF_OZ(); break;						// Branch on false - no overflow and not zero				
-				case 0x9D: BF_OZS(); break;						// Branch on false - no overflow and not zero and negative				
-				case 0x9E: BF_OZC(); break;						// Branch on false - no overflow and not zero and no carry				
-				case 0x9F: BF_OZCS(); break;					// Branch on false - no overflow and not zero and no carry and negative
+				case 0x8F: BR7(); break;						// Branch on ISAR (any of the low 3 bits of ISAR are reset)			
+																// 	
+				case 0x90: BF(0); break;						// BR		-	Unconditional branch relative (always)				
+				case 0x91: BF(1); break;                        // BM		-	Branch on negative (sign bit is reset)				
+				case 0x92: BF(2); break;                        // BNC		-	Branch if no carry (carry bit is reset)	
+				case 0x93: BF(3); break;						// BF_CS	-	Branch on false - negative and no carry				
+				case 0x94: BF(4); break;                        // BNZ		-	Branch on not zero (zero bit is reset)				
+				case 0x95: BF(5); break;						// BF_ZS	-	Branch on false - negative and not zero				
+				case 0x96: BF(6); break;						// BF_ZC	-	Branch on false - no carry and not zero				
+				case 0x97: BF(7); break;						// BF_ZCS	-	Branch on false - no carry and not zero and negative				
+				case 0x98: BF(8); break;                        // BNO		-	Branch if no overflow (OVF bit is reset)				
+				case 0x99: BF(9); break;						// BF_OS	-	Branch on false - no overflow and negative				
+				case 0x9A: BF(10); break;						// BF_OC	-	Branch on false - no overflow and no carry				
+				case 0x9B: BF(11); break;						// BF_OCS	-	Branch on false - no overflow and no carry and negative				
+				case 0x9C: BF(12); break;						// BF_OZ	-	Branch on false - no overflow and not zero				
+				case 0x9D: BF(13); break;						// BF_OZS	-	Branch on false - no overflow and not zero and negative				
+				case 0x9E: BF(14); break;						// BF_OZC	-	Branch on false - no overflow and not zero and no carry				
+				case 0x9F: BF(15); break;						// BF_OZCS	-	Branch on false - no overflow and not zero and no carry and negative
 
 				case 0xA0: INS_0(0); break;						// A <- (I/O Port 0 or 1)
 				case 0xA1: INS_0(1); break;                     // A <- (I/O Port 0 or 1)
