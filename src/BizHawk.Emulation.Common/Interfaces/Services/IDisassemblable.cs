@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-using System;
+﻿using System;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -40,12 +38,12 @@ namespace BizHawk.Emulation.Common
 	/// </summary>
 	public abstract class VerifiedDisassembler : IDisassemblable
 	{
-		private string _cpu;
+		private string? _cpu;
 
 		/// <exception cref="ArgumentException">(from setter) <paramref name="value"/> isn't the name of an available CPU</exception>
 		public virtual string Cpu
 		{
-			get => _cpu;
+			get => _cpu ??= AvailableCpus.First();
 			set
 			{
 				if (!AvailableCpus.Contains(value))
@@ -62,10 +60,5 @@ namespace BizHawk.Emulation.Common
 		public abstract string PCRegisterName { get; }
 
 		public abstract string Disassemble(MemoryDomain m, uint addr, out int length);
-
-		protected VerifiedDisassembler()
-		{
-			_cpu = AvailableCpus.First();
-		}
 	}
 }

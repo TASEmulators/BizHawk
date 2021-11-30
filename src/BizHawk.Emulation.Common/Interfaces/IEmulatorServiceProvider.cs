@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Common
@@ -29,7 +27,7 @@ namespace BizHawk.Emulation.Common
 
 		/// <summary>
 		/// Returns an instance of T if T is available
-		/// Else returns null
+		/// Else throws NRE
 		/// </summary>
 		/// <typeparam name="T">The requested <see cref="IEmulatorService"/></typeparam>
 		T GetService<T>() where T : IEmulatorService;
@@ -38,7 +36,7 @@ namespace BizHawk.Emulation.Common
 		/// Returns an instance of t if t is available
 		/// Else returns null
 		/// </summary>
-		object GetService(Type t);
+		object? GetService(Type t);
 
 		/// <summary>
 		/// Gets a list of all currently registered services available to be retrieved

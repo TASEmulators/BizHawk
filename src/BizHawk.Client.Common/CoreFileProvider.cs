@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+
+using System.Collections.Generic;
 using System.IO;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
@@ -49,10 +51,10 @@ namespace BizHawk.Client.Common
 			return null;
 		}
 
-		private (byte[] FW, string Path) GetFirmwareWithPathOrThrow(FirmwareID id, string msg)
+		private (byte[] FW, string Path) GetFirmwareWithPathOrThrow(FirmwareID id, string? msg)
 			=> GetFirmwareWithPath(id) ?? throw new MissingFirmwareException($"Couldn't find required firmware {id}.  This is fatal{(msg is null ? "." : $": {msg}")}");
 
-		public byte[] GetFirmware(FirmwareID id, string msg = null)
+		public byte[]? GetFirmware(FirmwareID id, string? msg = null)
 		{
 			var tuple = GetFirmwareWithPath(id);
 			if (tuple is null && msg is not null)
@@ -62,10 +64,10 @@ namespace BizHawk.Client.Common
 			return tuple?.FW;
 		}
 
-		public byte[] GetFirmwareOrThrow(FirmwareID id, string msg = null)
+		public byte[] GetFirmwareOrThrow(FirmwareID id, string? msg = null)
 			=> GetFirmwareWithPathOrThrow(id, msg).FW;
 
-		public (byte[] FW, GameInfo Game) GetFirmwareWithGameInfoOrThrow(FirmwareID id, string msg = null)
+		public (byte[] FW, GameInfo Game) GetFirmwareWithGameInfoOrThrow(FirmwareID id, string? msg = null)
 		{
 			var (fw, path) = GetFirmwareWithPathOrThrow(id, msg);
 			return (fw, Database.GetGameInfo(fw, path));
