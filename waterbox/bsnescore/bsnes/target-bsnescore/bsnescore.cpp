@@ -14,7 +14,7 @@ using namespace SuperFamicom;
 // currently unused; was only used in the graphics debugger as far as i can see
 int snes_peek_logical_register(int reg)
 {
-    if (emulator->configuration("Hacks/PPU/Fast") == "true")
+    if (SuperFamicom::system.fastPPU())
     switch(reg)
     {
         //zero 17-may-2014
@@ -129,7 +129,6 @@ EXPORT void snes_init(int entropy, uint left_port, uint right_port, uint16_t mer
     fprintf(stderr, "snes_init was called!\n");
     emulator = new SuperFamicom::Interface;
     program = new Program;
-    // memset(&cdlInfo,0,sizeof(cdlInfo));
 
     string entropy_string;
     switch (entropy)
@@ -236,7 +235,7 @@ EXPORT void snes_load_cartridge_super_gameboy(
 
 EXPORT void snes_set_layer_enables(LayerEnables* layerEnables)
 {
-    if (emulator->configuration("Hacks/PPU/Fast") == "true") {
+    if (SuperFamicom::system.fastPPU()) {
         ppufast.io.bg1.priority_enabled[0] = layerEnables->BG1_Prio0;
         ppufast.io.bg1.priority_enabled[1] = layerEnables->BG1_Prio1;
         ppufast.io.bg2.priority_enabled[0] = layerEnables->BG2_Prio0;
@@ -300,7 +299,7 @@ EXPORT char snes_get_mapper(void) {
 EXPORT void* snes_get_memory_region(int id, int* size, int* word_size)
 {
     if(!emulator->loaded()) return nullptr;
-    bool fast_ppu = emulator->configuration("Hacks/PPU/Fast") == "true";
+    bool fast_ppu = SuperFamicom::system.fastPPU();
 
     switch(id)
     {
