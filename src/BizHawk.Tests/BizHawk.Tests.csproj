@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net5.0</TargetFramework>
+		<TargetFramework>net6.0</TargetFramework>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(APPVEYOR)' != '' ">
 		<TargetFramework>netcoreapp3.1</TargetFramework>
@@ -11,9 +11,9 @@
 		<OutputPath>$(ProjectDir)../../test_output</OutputPath>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.10.0" PrivateAssets="all" />
-		<PackageReference Include="MSTest.TestAdapter" Version="2.2.3" PrivateAssets="all" />
-		<PackageReference Include="MSTest.TestFramework" Version="2.2.3" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" PrivateAssets="all" />
+		<PackageReference Include="MSTest.TestAdapter" Version="2.2.8" PrivateAssets="all" />
+		<PackageReference Include="MSTest.TestFramework" Version="2.2.8" PrivateAssets="all" />
 		<PackageReference Include="JunitXml.TestLogger" Version="3.0.98" PrivateAssets="all" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Client.Common/BizHawk.Client.Common.csproj" />
 	</ItemGroup>

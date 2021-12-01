@@ -17,7 +17,7 @@ namespace BizHawk.Common
 
 		internal const string PREFIX = "SHA1";
 
-#if NET5_0
+#if NET6_0
 		public static byte[] Compute(ReadOnlySpan<byte> data)
 			=> SHA1.HashData(data);
 

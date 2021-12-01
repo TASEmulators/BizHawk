@@ -17,7 +17,7 @@ namespace BizHawk.Common
 
 		internal const string PREFIX = "MD5";
 
-#if NET5_0
+#if NET6_0
 		public static byte[] Compute(ReadOnlySpan<byte> data)
 			=> MD5.HashData(data);
 #else

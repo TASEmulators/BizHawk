@@ -1,6 +1,6 @@
 # THIS IS A WORK IN PROGRESS!
 
-{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/2fa862644fc15ecb525eb8cd0a60276f1c340c7c.tar.gz") {}
+{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/21.11.tar.gz") {}
 # infrastructure
 , stdenv ? pkgs.stdenvNoCC
 , buildDotnetModule ? pkgs.buildDotnetModule
@@ -26,6 +26,8 @@
 		leaveDotGit = true;
 	}
 # makedeps
+, dotnet-sdk_5 ? pkgs.dotnetCorePackages.sdk_5_0
+, dotnet-sdk_6 ? pkgs.dotnetCorePackages.sdk_6_0
 , git ? pkgs.git
 , p7zip ? pkgs.p7zip
 # rundeps for NixOS hosts
@@ -55,10 +57,11 @@ let
 		pname = "BizHawk";
 		version = hawkVersion;
 		src = hawkSource;
+		dotnet-sdk = if useCWDAsSource then dotnet-sdk_6 else dotnet-sdk_5;
 		nativeBuildInputs = [ git p7zip ];
 		buildInputs = [ mesa monoFinal openal uname ];# ++ lib.optionals (forNixOS) [ gtk2-x11 ];
 		projectFile = "BizHawk.sln";
-		nugetDeps = Dist/deps.nix;
+		nugetDeps = if useCWDAsSource then Dist/deps.nix else Dist/deps-old.nix;
 		extraDotnetBuildFlags = "-maxcpucount:$NIX_BUILD_CORES -p:BuildInParallel=true --no-restore";
 		buildPhase = ''
 			${commentUnless useCWDAsSource}cd src/BizHawk.Version
