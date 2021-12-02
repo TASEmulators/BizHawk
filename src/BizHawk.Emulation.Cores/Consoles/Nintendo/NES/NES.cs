@@ -441,7 +441,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					//now that we know we have an iNES header, we can try to ignore it.
 
-					var trimmed = file.AsSpan(start: 16, length: file.Length - 32);
+					var trimmed = file.AsSpan(start: 16, length: file.Length - 16);
 					hash_sha1 = SHA1Checksum.ComputePrefixedHex(trimmed);
 					hash_sha1_several.Add(hash_sha1);
 					hash_md5 = MD5Checksum.ComputePrefixedHex(trimmed);
