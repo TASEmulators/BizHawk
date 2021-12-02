@@ -46,6 +46,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			BGP,
 			OBP,
 			IE,
+			BGPRGB,
+			OBPRGB,
 		}
 
 		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]

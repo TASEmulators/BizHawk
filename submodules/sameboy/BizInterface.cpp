@@ -188,6 +188,19 @@ EXPORT u32 sameboy_statelen(biz_t* biz)
 
 EXPORT bool sameboy_getmemoryarea(biz_t* biz, GB_direct_access_t which, void** data, size_t* len)
 {
+	if (which == GB_DIRECT_ACCESS_IE + 1)
+	{
+		*data = biz->gb.background_palettes_rgb;
+		*len = sizeof biz->gb.background_palettes_rgb;
+		return true;
+	}
+	else if (which == GB_DIRECT_ACCESS_IE + 2)
+	{
+		*data = biz->gb.sprite_palettes_rgb;
+		*len = sizeof biz->gb.sprite_palettes_rgb;
+		return true;
+	}
+
 	if (which > GB_DIRECT_ACCESS_IE || which < GB_DIRECT_ACCESS_ROM)
 		return false;
 

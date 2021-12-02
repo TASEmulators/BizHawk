@@ -46,5 +46,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			IsCgb = reader.ReadBoolean();
 			CycleCount = reader.ReadInt64();
 		}
+
+		public void DebugSameBoyState()
+		{
+			LibSameboy.sameboy_savestate(SameboyState, _stateBuf);
+			Directory.CreateDirectory("sameboy_debug");
+			File.WriteAllBytes($"sameboy_debug/debug_state{Frame}.bin", _stateBuf);
+		}
 	}
 }

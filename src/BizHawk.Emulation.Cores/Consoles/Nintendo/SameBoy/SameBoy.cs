@@ -169,21 +169,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 		public string BoardName { get; }
 
-		// getmemoryarea will return the raw palette buffer, but we want the rgb32 palette, so convert it
-		private unsafe uint[] SynthesizeFrontendPal(IntPtr _pal)
-		{
-			var buf = new uint[32];
-			var pal = (short*)_pal;
-			for (int i = 0; i < 32; i++)
-			{
-				byte r = (byte)(pal[i]       & 0x1F);
-				byte g = (byte)(pal[i] >> 5  & 0x1F);
-				byte b = (byte)(pal[i] >> 10 & 0x1F);
-				buf[i] = (uint)((0xFF << 24) | (r << 19) | (g << 11) | (b << 3));
-			}
-			return buf;
-		}
-
 		public IGPUMemoryAreas LockGPU()
 		{
 			var _vram = IntPtr.Zero;
@@ -192,48 +177,33 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			var _oam = IntPtr.Zero;
 			int unused = 0;
 			if (!LibSameboy.sameboy_getmemoryarea(SameboyState, LibSameboy.MemoryAreas.VRAM, ref _vram, ref unused)
-				|| !LibSameboy.sameboy_getmemoryarea(SameboyState, LibSameboy.MemoryAreas.BGP, ref _bgpal, ref unused)
-				|| !LibSameboy.sameboy_getmemoryarea(SameboyState, LibSameboy.MemoryAreas.OBP, ref _sppal, ref unused)
+				|| !LibSameboy.sameboy_getmemoryarea(SameboyState, LibSameboy.MemoryAreas.BGPRGB, ref _bgpal, ref unused)
+				|| !LibSameboy.sameboy_getmemoryarea(SameboyState, LibSameboy.MemoryAreas.OBPRGB, ref _sppal, ref unused)
 				|| !LibSameboy.sameboy_getmemoryarea(SameboyState, LibSameboy.MemoryAreas.OAM, ref _oam, ref unused))
 			{
 				throw new InvalidOperationException("Unexpected error in sameboy_getmemoryarea");
 			}
-			return new GPUMemoryAreas(_vram, _oam, SynthesizeFrontendPal(_sppal), SynthesizeFrontendPal(_bgpal));
+
+			return new GPUMemoryAreas()
+			{
+				Vram = _vram,
+				Oam = _oam,
+				Sppal = _sppal,
+				Bgpal = _bgpal
+			};
 		}
 
 		private class GPUMemoryAreas : IGPUMemoryAreas
 		{
-			public IntPtr Vram { get; }
+			public IntPtr Vram { get; init; }
 
-			public IntPtr Oam { get; }
+			public IntPtr Oam { get; init; }
 
-			public IntPtr Sppal { get; }
+			public IntPtr Sppal { get; init; }
 
-			public IntPtr Bgpal { get; }
+			public IntPtr Bgpal { get; init; }
 
-			private readonly List<GCHandle> _handles = new List<GCHandle>();
-
-			public GPUMemoryAreas(IntPtr vram, IntPtr oam, uint[] sppal, uint[] bgpal)
-			{
-				Vram = vram;
-				Oam = oam;
-				Sppal = AddHandle(sppal);
-				Bgpal = AddHandle(bgpal);
-			}
-
-			private IntPtr AddHandle(object target)
-			{
-				var handle = GCHandle.Alloc(target, GCHandleType.Pinned);
-				_handles.Add(handle);
-				return handle.AddrOfPinnedObject();
-			}
-
-			public void Dispose()
-			{
-				foreach (var h in _handles)
-					h.Free();
-				_handles.Clear();
-			}
+			public void Dispose() {}
 		}
 
 		private ScanlineCallback _scanlinecb;

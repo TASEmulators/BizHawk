@@ -14,6 +14,7 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Nintendo.N64;
+using BizHawk.Emulation.Cores.Nintendo.Sameboy;
 using BizHawk.WinForms.Controls;
 
 namespace BizHawk.Client.EmuHawk
@@ -186,6 +187,18 @@ namespace BizHawk.Client.EmuHawk
 						Text = "Firmware",
 					},
 					new ToolStripSeparatorEx(),
+					new DebugVSystemMenuItem("GB")
+					{
+						DropDownItems =
+						{
+							new DebugVSystemChildItem(
+								"Debug SameBoy States",
+								() => (Emulator as Sameboy)!.DebugSameBoyState())
+							{
+								RequiresCore = CoreNames.Sameboy,
+							},
+						},
+					},
 					new DebugVSystemMenuItem("GBA")
 					{
 						DropDownItems =
