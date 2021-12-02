@@ -28,13 +28,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			_linkedOverflow = new int[_numCores];
 
 			RomDetails = "";
-			_memoryCallbacks = new MemoryCallbackSystem(new[] { "System Bus", "ROM", "VRAM", "SRAM", "WRAM", "OAM", "HRAM" });
+
+			var scopes = new string[_numCores * 7];
+			for (int i = 0; i < _numCores; i++)
+			{
+				scopes[i * 7 + 0] = $"P{i + 1} System Bus";
+				scopes[i * 7 + 1] = $"P{i + 1} ROM";
+				scopes[i * 7 + 2] = $"P{i + 1} VRAM";
+				scopes[i * 7 + 3] = $"P{i + 1} SRAM";
+				scopes[i * 7 + 4] = $"P{i + 1} WRAM";
+				scopes[i * 7 + 5] = $"P{i + 1} OAM";
+				scopes[i * 7 + 6] = $"P{i + 1} HRAM";
+			}
+
+			_memoryCallbacks = new MemoryCallbackSystem(scopes);
 
 			for (int i = 0; i < _numCores; i++)
 			{
 				_linkedCores[i] = new Gameboy(lp.Comm, lp.Roms[i].Game, lp.Roms[i].RomData, _settings._linkedSettings[i], _syncSettings._linkedSyncSettings[i], lp.DeterministicEmulationRequested);
 				_linkedCores[i].ConnectInputCallbackSystem(_inputCallbacks);
-				_linkedCores[i].ConnectMemoryCallbackSystem(_memoryCallbacks);
+				_linkedCores[i].ConnectMemoryCallbackSystem(_memoryCallbacks, i);
 				_linkedConts[i] = new SaveController(Gameboy.CreateControllerDefinition(false, false));
 				_linkedBlips[i] = new BlipBuffer(1024);
 				_linkedBlips[i].SetRates(2097152 * 2, 44100);
