@@ -102,16 +102,9 @@ EXPORT void sameboy_setinputcallback(biz_t* biz, input_callback_t callback)
 	biz->input_cb = callback;
 }
 
-EXPORT void sameboy_frameadvance(biz_t* biz, u32 input, u32* vbuf, bool render, bool border)
+EXPORT void sameboy_frameadvance(biz_t* biz, GB_key_mask_t input, u32* vbuf, bool render, bool border)
 {
-	GB_set_key_state(&biz->gb, GB_KEY_RIGHT,  input & (1 << 0));
-	GB_set_key_state(&biz->gb, GB_KEY_LEFT,   input & (1 << 1));
-	GB_set_key_state(&biz->gb, GB_KEY_UP,     input & (1 << 2));
-	GB_set_key_state(&biz->gb, GB_KEY_DOWN,   input & (1 << 3));
-	GB_set_key_state(&biz->gb, GB_KEY_A,      input & (1 << 4));
-	GB_set_key_state(&biz->gb, GB_KEY_B,      input & (1 << 5));
-	GB_set_key_state(&biz->gb, GB_KEY_SELECT, input & (1 << 6));
-	GB_set_key_state(&biz->gb, GB_KEY_START,  input & (1 << 7));
+	GB_set_key_mask(&biz->gb, input);
 
 	if ((biz->gb.io_registers[GB_IO_JOYP] & 0x30) != 0x30)
 		biz->input_cb();
