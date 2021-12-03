@@ -223,7 +223,7 @@ run_tests:
     artifacts: false
   script:
   - apt-get update && apt-get install liblua5.4-0
-  - Dist/BuildTestRelease.sh -v normal -p:TestProjTargetFrameworkOverride=net8.0
+  - Dist/BuildTestRelease.sh -v normal -p:TestProjTargetFrameworkOverride=net10.0
   stage: test
 
 .disabled_job_sast:
