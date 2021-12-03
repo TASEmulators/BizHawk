@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.StringExtensions;
+
+using CollectionExtensions = BizHawk.Common.CollectionExtensions.CollectionExtensions;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
