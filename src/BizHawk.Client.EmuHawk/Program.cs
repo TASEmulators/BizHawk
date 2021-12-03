@@ -58,7 +58,9 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
+#if !NETCOREAPP
 				_ = Assembly.ReflectionOnlyLoad("System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089");
+#endif
 			}
 			catch (FileNotFoundException)
 			{
@@ -204,8 +206,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			EnsureWinFormsInitialized();
+#if NET10_0_OR_GREATER
+			typeof(Form).GetField("s_defaultIcon", BindingFlags.NonPublic | BindingFlags.Static)!
+				.SetValue(null, Properties.Resources.Logo);
+#else
 			typeof(Form).GetField(OSTailoredCode.IsUnixHost ? "default_icon" : "defaultIcon", BindingFlags.NonPublic | BindingFlags.Static)!
 				.SetValue(null, Properties.Resources.Logo);
+#endif
 
 			var configPath = cliFlags.cmdConfigFile ?? Path.Combine(PathUtils.ExeDirectoryPath, "config.ini");
 

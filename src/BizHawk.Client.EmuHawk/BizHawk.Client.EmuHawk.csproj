@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net48</TargetFramework>
+		<TargetFrameworks>net48;net10.0-windows</TargetFrameworks>
 	</PropertyGroup>
 	<Import Project="../MainSlnExecutable.props" />
 	<PropertyGroup>
@@ -12,10 +12,8 @@
 		<NoWarn>$(NoWarn);MA0162</NoWarn> <!-- MA0162 is helpful for migration to .NET Core -->
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
 		<UseWindowsForms>true</UseWindowsForms>
+		<UseWPF>true</UseWPF>
 	</PropertyGroup>
-	<ItemGroup>
-		<Reference Include="PresentationFramework" />
-	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="SharpCompress" PrivateAssets="all" NoWarn="NU1902" />
 		<Reference Include="PcxFileTypePlugin.HawkQuantizer" HintPath="$(ProjectDir)../../References/PcxFileTypePlugin.HawkQuantizer.dll" Private="true" />
