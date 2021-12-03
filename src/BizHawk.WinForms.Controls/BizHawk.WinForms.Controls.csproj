@@ -1,10 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net48</TargetFramework>
+		<TargetFramework>net6.0-windows</TargetFramework>
 	</PropertyGroup>
 	<Import Project="../MainSlnCommon.props" />
+	<PropertyGroup>
+		<UseWindowsForms>true</UseWindowsForms>
+	</PropertyGroup>
 	<ItemGroup>
-		<Reference Include="System.Windows.Forms" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Common/BizHawk.Common.csproj" />
 	</ItemGroup>
 </Project>

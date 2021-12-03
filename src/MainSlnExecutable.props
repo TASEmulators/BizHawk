@@ -5,6 +5,9 @@
 		<OutputPath>$(MSBuildProjectDirectory)/../../output</OutputPath>
 		<AssemblyName>$(MSBuildProjectName.Substring($([MSBuild]::Add($(MSBuildProjectName.LastIndexOf('.')), 1))))</AssemblyName>
 	</PropertyGroup>
+	<PropertyGroup Condition=" !$(IsTargetingNetFramework) ">
+		<AssemblyName>$(TargetName)</AssemblyName>
+	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
 		<OutputType>Exe</OutputType>
 	</PropertyGroup>

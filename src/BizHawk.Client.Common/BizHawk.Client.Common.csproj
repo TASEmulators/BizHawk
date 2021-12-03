@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>netstandard2.0</TargetFramework><!-- some NuGet packages aren't for Standard, and are only loaded at runtime because EmuHawk is still Framework. More work will be required to move to Core. -->
+		<TargetFramework Condition=" '$(OS)' == 'Windows_NT' ">net6.0</TargetFramework><!-- some NuGet packages aren't for Standard, and were only loaded at runtime because EmuHawk was still Framework. More work will be required to move to Core. -->
+		<TargetFramework Condition=" '$(OS)' != 'Windows_NT' ">netstandard2.0</TargetFramework>
 	</PropertyGroup>
 	<Import Project="../MainSlnCommon.props" />
 	<PropertyGroup>

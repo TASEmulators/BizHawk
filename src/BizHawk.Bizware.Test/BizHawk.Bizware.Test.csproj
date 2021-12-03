@@ -1,14 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net48</TargetFramework>
+		<TargetFramework>net6.0-windows</TargetFramework>
 	</PropertyGroup>
 	<Import Project="../MainSlnExecutable.props" />
 	<PropertyGroup>
 		<DefineConstants>$(DefineConstants);EXE_PROJECT</DefineConstants>
 		<OutputPath>$(ProjectDir)bin<!--/$(Configuration)/$(TargetFramework)--></OutputPath>
+		<UseWindowsForms>true</UseWindowsForms>
 	</PropertyGroup>
 	<ItemGroup>
-		<Reference Include="System.Windows.Forms" />
 		<PackageReference Include="OpenTK" Version="3.3.3" PrivateAssets="all" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Client.EmuHawk/BizHawk.Client.EmuHawk.csproj" />
 		<EmbeddedResource Include="TestImages/**/*" />
