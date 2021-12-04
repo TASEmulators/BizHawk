@@ -55,12 +55,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Belogic
 				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Select", "P2 Start", "P2 X", "P2 A", "P2 B", "P2 Y", "P2 L", "P2 R",
 				"Power"
 			}
-		};
+		}.MakeImmutable();
 
 		private static readonly ControllerDefinition Mouse = new ControllerDefinition("SNES Controller")
 		{
 			BoolButtons = { "P1 Mouse Left", "P1 Mouse Right", "Power" }
-		}.AddXYPair("P1 Mouse {0}", AxisPairOrientation.RightAndUp, (-127).RangeTo(127), 0); //TODO verify direction against hardware
+		}.AddXYPair("P1 Mouse {0}", AxisPairOrientation.RightAndUp, (-127).RangeTo(127), 0) //TODO verify direction against hardware
+			.MakeImmutable();
 
 		private static readonly string[] PadBits =
 		{

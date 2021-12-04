@@ -1,10 +1,13 @@
 ﻿#nullable disable
 
+using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Text.RegularExpressions;
 
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Emulation.Common
 {
@@ -14,6 +17,10 @@ namespace BizHawk.Emulation.Common
 	/// <seealso cref="IEmulator" />
 	public class ControllerDefinition
 	{
+		private IList<string> _buttons = new List<string>();
+
+		private bool _mutable = true;
+
 		public readonly string Name;
 
 		public ControllerDefinition(string name)
@@ -26,22 +33,31 @@ namespace BizHawk.Emulation.Common
 			foreach (var kvp in copyFrom.Axes) Axes.Add(kvp);
 			HapticsChannels.AddRange(copyFrom.HapticsChannels);
 			CategoryLabels = copyFrom.CategoryLabels;
+			MakeImmutable();
 		}
 
 		/// <summary>
 		/// Gets or sets a list of all button types that have a boolean (on/off) value
 		/// </summary>
-		public List<string> BoolButtons { get; set; } = new List<string>();
+		public IList<string> BoolButtons
+		{
+			get => _buttons;
+			set
+			{
+				AssertMutable();
+				_buttons = value;
+			}
+		}
 
 		public readonly AxisDict Axes = new AxisDict();
 
 		/// <summary>Contains names of virtual haptic feedback channels, e.g. <c>{ "P1 Mono" }</c>, <c>{ "P2 Left", "P2 Right" }</c>.</summary>
-		public List<string> HapticsChannels { get; } = new();
+		public IList<string> HapticsChannels { get; private set; } = new List<string>();
 
 		/// <summary>
 		/// Gets the category labels. These labels provide a means of categorizing controls in various controller display and config screens
 		/// </summary>
-		public Dictionary<string, string> CategoryLabels { get; } = new Dictionary<string, string>();
+		public IDictionary<string, string> CategoryLabels { get; private set; } = new Dictionary<string, string>();
 
 		public void ApplyAxisConstraints(string constraintClass, IDictionary<string, int> axes)
 		{
@@ -86,6 +102,23 @@ namespace BizHawk.Emulation.Common
 
 				return ret;
 			}
+		}
+
+		private void AssertMutable()
+		{
+			const string ERR_MSG = "this " + nameof(ControllerDefinition) + " has been built and sealed, and may not be mutated";
+			if (!_mutable) throw new InvalidOperationException(ERR_MSG);
+		}
+
+		/// <summary>permanently disables the ability to mutate this instance; returns this reference</summary>
+		public ControllerDefinition MakeImmutable()
+		{
+			BoolButtons = BoolButtons.ToImmutableList();
+			Axes.MakeImmutable();
+			HapticsChannels = HapticsChannels.ToImmutableList();
+			CategoryLabels = CategoryLabels.ToImmutableDictionary();
+			_mutable = false;
+			return this;
 		}
 
 		public int PlayerNumber(string buttonName)

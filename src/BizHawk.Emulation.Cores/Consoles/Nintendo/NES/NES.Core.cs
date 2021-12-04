@@ -177,6 +177,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ControllerDefinition.AddAxis("Reset Cycle", 0.RangeTo(500000), 0);
 			}
 
+			ControllerDefinition.MakeImmutable();
+
 			// don't replace the magicSoundProvider on reset, as it's not needed
 			// if (magicSoundProvider != null) magicSoundProvider.Dispose();
 

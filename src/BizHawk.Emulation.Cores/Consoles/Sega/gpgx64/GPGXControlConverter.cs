@@ -235,6 +235,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 						throw new Exception("Unknown Genesis control device!  Something went wrong.");
 				}
 			}
+
+			ControllerDef.MakeImmutable();
 		}
 
 		public void Convert(IController source, LibGPGX.InputData target)

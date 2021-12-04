@@ -23,6 +23,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		{
 			string inputFields = MameGetString(MAMELuaCommand.GetInputFields);
 			string[] portFields = inputFields.Split(';');
+			MAMEController = new("MAME Controller");
 			MAMEController.BoolButtons.Clear();
 			_fieldsPorts.Clear();
 
@@ -38,6 +39,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					MAMEController.BoolButtons.Add(field);
 				}
 			}
+
+			MAMEController.MakeImmutable();
 		}
 
 		private void SendInput()

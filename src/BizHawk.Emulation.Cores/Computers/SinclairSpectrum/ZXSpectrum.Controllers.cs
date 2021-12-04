@@ -120,7 +120,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					definition.CategoryLabels[s] = "+3 Disk Drive";
 				}
 
-				return definition;
+				return definition.MakeImmutable();
 			}
 		}
 	}

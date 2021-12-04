@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 					.Concat(new[] { "Toggle Cable CR" } )
 					.Concat(new[] { "Toggle Cable RL" } )
 					.ToList()
-			};
+			}.MakeImmutable();
 		}
 
 		public byte ReadPort1(IController c)

@@ -52,6 +52,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			// add buttons that the core itself will handle
 			Definition.BoolButtons.Add("Reset");
 			Definition.BoolButtons.Add("Power");
+
+			Definition.MakeImmutable();
 		}
 
 		public void CoreInputPoll(IController controller)

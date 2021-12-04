@@ -111,7 +111,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					definition.CategoryLabels[s] = "Amstrad Disk Drive";
 				}
 
-				return definition;
+				return definition.MakeImmutable();
 			}
 		}
 	}

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.BizInvoke;
@@ -125,7 +126,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			if (_syncSettings.LeftPortConnected && _syncSettings.RightPortConnected)
 				def.BoolButtons.AddRange(PadP2.Select(p => p.Name));
 			def.BoolButtons.AddRange(new[] { "Reset", "Power" }); // console buttons
-			ControllerDefinition = def;
+			ControllerDefinition = def.MakeImmutable();
 		}
 
 		private struct PadEnt

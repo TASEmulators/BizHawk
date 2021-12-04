@@ -131,7 +131,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 A", "P2 B", "P2 C", "P2 Start", "P2 X", "P2 Y", "P2 Z", "P2 Mode",
 				"Power", "Reset"
 			}
-		};
+		}.MakeImmutable();
 
 		private static readonly string[] ButtonOrders =
 		{

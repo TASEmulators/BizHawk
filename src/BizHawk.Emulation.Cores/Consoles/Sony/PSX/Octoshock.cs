@@ -354,7 +354,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			definition.AddAxis("Disc Select", 0.RangeTo(1), 1);
 
-			return definition;
+			return definition.MakeImmutable();
 		}
 
 		private void SetControllerButtons()

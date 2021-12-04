@@ -69,6 +69,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			// add buttons that the core itself will handle
 			Definition.BoolButtons.Add("Reset");
 			Definition.BoolButtons.Add("Power");
+
+			Definition.MakeImmutable();
 		}
 
 		public void NativeInit(LibsnesApi api)

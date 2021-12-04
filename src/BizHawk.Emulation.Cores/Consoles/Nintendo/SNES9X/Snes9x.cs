@@ -115,6 +115,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			// add buttons that the core itself will handle
 			_controllerDefinition.BoolButtons.Add("Reset");
 			_controllerDefinition.BoolButtons.Add("Power");
+
+			_controllerDefinition.MakeImmutable();
 		}
 
 		private void UpdateControls(IController c)

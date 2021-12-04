@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 using Jellyfish.Virtu;
 
@@ -15,6 +16,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			AppleIIController = new("Apple IIe Keyboard");
 			AppleIIController.BoolButtons.AddRange(RealButtons);
 			AppleIIController.BoolButtons.AddRange(ExtraButtons);
+			AppleIIController.MakeImmutable();
 		}
 
 		[CoreConstructor(VSystemID.Raw.AppleII)]

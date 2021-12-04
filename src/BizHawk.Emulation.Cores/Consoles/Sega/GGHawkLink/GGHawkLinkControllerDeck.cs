@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 					.Concat(Port2.Definition.BoolButtons)
 					.Concat(new[] { "Toggle Cable" } )
 					.ToList()
-			};
+			}.MakeImmutable();
 		}
 
 		public byte ReadPort1(IController c)

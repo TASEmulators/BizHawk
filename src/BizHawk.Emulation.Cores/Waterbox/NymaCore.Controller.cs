@@ -263,7 +263,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					ret.BoolButtons.Add("Previous Disk");
 					ret.BoolButtons.Add("Next Disk");
 				}
-				Definition = ret;
+				Definition = ret.MakeImmutable();
 				finalDevices.Add(null);
 				Devices = finalDevices.ToArray();
 				_switchPreviousFrame = switchPreviousFrame.ToArray();

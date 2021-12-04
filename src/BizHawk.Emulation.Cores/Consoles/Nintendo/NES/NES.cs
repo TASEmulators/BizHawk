@@ -256,7 +256,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Start", "P1 Select", "P1 B", "P1 A", "Reset", "Power",
 					"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Start", "P2 Select", "P2 B", "P2 A"
 				}
-			};
+			}.MakeImmutable();
 
 		public ControllerDefinition ControllerDefinition { get; private set; }
 

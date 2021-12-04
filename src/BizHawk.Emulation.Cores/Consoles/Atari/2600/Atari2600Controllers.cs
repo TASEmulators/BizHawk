@@ -117,7 +117,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				.Select(b => $"P{PortNum} " + b)
 				.ToList()
 			}.AddAxis($"P{PortNum} Paddle X 1", (-127).RangeTo(127), 0)
-				.AddAxis($"P{PortNum} Paddle X 2", (-127).RangeTo(127), 0);
+				.AddAxis($"P{PortNum} Paddle X 2", (-127).RangeTo(127), 0)
+				.MakeImmutable();
 		}
 
 		public int PortNum { get; }
@@ -233,7 +234,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				.Select(b => $"P{PortNum} " + b)
 				.ToList()
 			}.AddAxis($"P{PortNum} Wheel X 1", (-127).RangeTo(127), 0)
-				.AddAxis($"P{PortNum} Wheel X 2", (-127).RangeTo(127), 0);
+				.AddAxis($"P{PortNum} Wheel X 2", (-127).RangeTo(127), 0)
+				.MakeImmutable();
 		}
 
 		public int PortNum { get; }

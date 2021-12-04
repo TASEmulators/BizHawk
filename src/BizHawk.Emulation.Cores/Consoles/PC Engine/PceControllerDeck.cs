@@ -46,6 +46,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			foreach (var kvp in _port3.Definition.Axes) Definition.Axes.Add(kvp);
 			foreach (var kvp in _port4.Definition.Axes) Definition.Axes.Add(kvp);
 			foreach (var kvp in _port5.Definition.Axes) Definition.Axes.Add(kvp);
+			Definition.MakeImmutable();
 		}
 
 		private readonly IPort _port1;

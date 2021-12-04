@@ -33,6 +33,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 			foreach (var kvp in Port1.Definition.Axes) Definition.Axes.Add(kvp);
 			foreach (var kvp in Port2.Definition.Axes) Definition.Axes.Add(kvp);
+
+			Definition.MakeImmutable();
 		}
 
 		public byte ReadPort1(IController c)

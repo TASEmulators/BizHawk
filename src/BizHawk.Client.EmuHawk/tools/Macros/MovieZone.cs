@@ -85,7 +85,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			_controller = _movieSession.GenerateMovieController(d);
+			_controller = _movieSession.GenerateMovieController(d.MakeImmutable());
 		}
 
 		public string Name { get; set; }
@@ -118,7 +118,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			var newController = _movieSession.GenerateMovieController(d);
+			var newController = _movieSession.GenerateMovieController(d.MakeImmutable());
 			var logGenerator = _movieSession.Movie.LogGeneratorInstance(newController);
 			logGenerator.GenerateLogEntry(); // Reference and create all buttons.
 
