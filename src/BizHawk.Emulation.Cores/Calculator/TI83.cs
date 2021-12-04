@@ -90,7 +90,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 				"STO", "LN", "LOG", "SQUARED", "NEG1", "MATH", "ALPHA",
 				"GRAPH", "TRACE", "ZOOM", "WINDOW", "Y", "2ND", "MODE", "DEL",
 			},
-		};
+		}.MakeImmutable();
 
 		private byte ReadMemory(ushort addr)
 		{

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
@@ -153,7 +154,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				ret.BoolButtons.Add("Toggle Link Shift");
 				ret.BoolButtons.Add("Toggle Link Spacing");
 			}
-			return ret;
+			return ret.MakeImmutable();
 		}
 
 		private const int P1 = 0;

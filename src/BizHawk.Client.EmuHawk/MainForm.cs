@@ -2104,7 +2104,7 @@ namespace BizHawk.Client.EmuHawk
 			Controller controls = new(new ControllerDefinition("Emulator Frontend Controls")
 			{
 				BoolButtons = Config.HotkeyBindings.Select(static x => x.DisplayName).ToList(),
-			});
+			}.MakeImmutable());
 
 			foreach (var b in Config.HotkeyBindings)
 			{

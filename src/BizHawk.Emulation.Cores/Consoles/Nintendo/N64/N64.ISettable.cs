@@ -1,4 +1,5 @@
 ﻿using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64
@@ -42,9 +43,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				if (hasRumblePak) def.HapticsChannels.Add($"P{player} Rumble Pak");
 			}
 
-			ControllerDefinition.BoolButtons.Clear();
-			ControllerDefinition.Axes.Clear();
-
+			ControllerDefinition = new("Nintendo 64 Controller");
 			ControllerDefinition.BoolButtons.AddRange(new[] { "Reset", "Power" });
 			for (var i = 0; i < 4; i++)
 			{
@@ -56,6 +55,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 						syncSettings.Controllers[i].PakType == N64SyncSettings.N64ControllerSettings.N64ControllerPakType.RUMBLE_PAK);
 				}
 			}
+			ControllerDefinition.MakeImmutable();
 		}
 	}
 }

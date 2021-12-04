@@ -269,6 +269,7 @@ namespace BizHawk.Client.Common
 			//TODO FDS
 			def.BoolButtons.Add("Reset");
 			def.BoolButtons.Add("Power");
+			def.MakeImmutable();
 			return deck;
 		}
 	}

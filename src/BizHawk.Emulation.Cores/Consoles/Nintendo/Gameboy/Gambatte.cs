@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 
@@ -281,7 +282,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			{
 				ret.BoolButtons.AddRange(new[] { "Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Power" });
 			}
-			return ret;
+			return ret.MakeImmutable();
 		}
 
 		private LibGambatte.Buttons ControllerCallback()

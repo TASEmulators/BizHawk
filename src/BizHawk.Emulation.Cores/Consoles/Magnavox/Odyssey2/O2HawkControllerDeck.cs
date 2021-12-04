@@ -60,6 +60,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			}
 
 			foreach (var kvp in Port1.Definition.Axes) Definition.Axes.Add(kvp);
+
+			Definition.MakeImmutable();
 		}
 
 		public byte ReadPort1(IController c)

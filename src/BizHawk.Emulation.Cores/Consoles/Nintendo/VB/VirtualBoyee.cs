@@ -110,7 +110,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 				.OrderBy(b => _buttonOrdinals[b])
 				.Concat(new[] { "Power" })
 				.ToList()
-		};
+		}.MakeImmutable();
 
 		public override ControllerDefinition ControllerDefinition => VirtualBoyController;
 

@@ -150,7 +150,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				"Previous Disk", "Next Disk",
 				"Power", "Reset"
 			}
-		};
+		}.MakeImmutable();
 
 		private Motherboard _board;
 

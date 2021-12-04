@@ -265,6 +265,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			BoolButtons = { "Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "L", "R", "Power" }
 		}.AddXYZTriple("Tilt {0}", (-32767).RangeTo(32767), 0)
-			.AddAxis("Light Sensor", 0.RangeTo(255), 0);
+			.AddAxis("Light Sensor", 0.RangeTo(255), 0)
+			.MakeImmutable();
 	}
 }

@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					definition.CategoryLabels[s] = "Console";
 				}
 
-				return definition;
+				return definition.MakeImmutable();
 			}
 		}
 

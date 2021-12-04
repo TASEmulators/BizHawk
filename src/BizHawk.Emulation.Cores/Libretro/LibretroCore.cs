@@ -275,7 +275,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 				definition.CategoryLabels[key] = "RetroKeyboard";
 			}
 
-			return definition;
+			return definition.MakeImmutable();
 		}
 
 		public ControllerDefinition ControllerDefinition { get; }

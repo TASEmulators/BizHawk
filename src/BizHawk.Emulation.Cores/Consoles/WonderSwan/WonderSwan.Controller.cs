@@ -61,7 +61,8 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 				{ "P2 B", "Rotated" },
 				{ "P2 A", "Rotated" },
 			}
-		};
+		}.MakeImmutable();
+
 		public ControllerDefinition ControllerDefinition => WonderSwanController;
 
 		private BizSwan.Buttons GetButtons(IController controller)

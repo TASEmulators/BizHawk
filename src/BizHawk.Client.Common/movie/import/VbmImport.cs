@@ -299,7 +299,7 @@ namespace BizHawk.Client.Common.movie.import
 			=> new(new ControllerDefinition("Gameboy Controller")
 			{
 				BoolButtons = { "Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Power" }
-			});
+			}.MakeImmutable());
 
 		private static SimpleController GbaController()
 			=> new(MGBAHawk.GBAController);
