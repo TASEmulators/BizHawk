@@ -27,8 +27,7 @@ namespace BizHawk.Client.Common
 				NesRightPort = nameof(UnpluggedNES)
 			};
 
-			_deck = controllerSettings.Instantiate((x, y) => true);
-			AddDeckControlButtons();
+			_deck = controllerSettings.Instantiate((x, y) => true).AddSystemToControllerDef();
 
 			Result.Movie.HeaderEntries[HeaderKeys.Platform] = platform;
 
@@ -123,8 +122,7 @@ namespace BizHawk.Client.Common
 					if (ParseHeader(line, "port0") == "1")
 					{
 						controllerSettings.NesLeftPort = nameof(ControllerNES);
-						_deck = controllerSettings.Instantiate((x, y) => false);
-						AddDeckControlButtons();
+						_deck = controllerSettings.Instantiate((x, y) => false).AddSystemToControllerDef();
 					}
 				}
 				else if (line.ToLower().StartsWith("port1"))
@@ -132,8 +130,7 @@ namespace BizHawk.Client.Common
 					if (ParseHeader(line, "port1") == "1")
 					{
 						controllerSettings.NesRightPort = nameof(ControllerNES);
-						_deck = controllerSettings.Instantiate((x, y) => false);
-						AddDeckControlButtons();
+						_deck = controllerSettings.Instantiate((x, y) => false).AddSystemToControllerDef();
 					}
 				}
 				else if (line.ToLower().StartsWith("port2"))
@@ -153,7 +150,7 @@ namespace BizHawk.Client.Common
 						controllerSettings.NesRightPort = nameof(FourScore);
 					}
 
-					_deck = controllerSettings.Instantiate((x, y) => false);
+					_deck = controllerSettings.Instantiate((x, y) => false)/*.AddSystemToControllerDef()*/; //TODO call omitted on purpose? --yoshi
 				}
 				else
 				{
@@ -170,7 +167,7 @@ namespace BizHawk.Client.Common
 		private readonly string[] _buttons = { "Right", "Left", "Down", "Up", "Start", "Select", "B", "A" };
 		private void ImportInputFrame(string line)
 		{
-			SimpleController controllers = new(_deck.GetDefinition());
+			SimpleController controllers = new(_deck.ControllerDef);
 
 			string[] sections = line.Split(new[] {'|'}, StringSplitOptions.RemoveEmptyEntries);
 			controllers["Reset"] = sections[1][0] == '1';
@@ -211,16 +208,6 @@ namespace BizHawk.Client.Common
 			}
 
 			Result.Movie.AppendFrame(controllers);
-		}
-
-		private void AddDeckControlButtons()
-		{
-			SimpleController controllers = new(_deck.GetDefinition());
-
-			// TODO: FDS
-			// Yes, this adds them to the deck definition too
-			controllers.Definition.BoolButtons.Add("Reset");
-			controllers.Definition.BoolButtons.Add("Power");
 		}
 
 		private static string ImportTextSubtitle(string line)
@@ -271,6 +258,18 @@ namespace BizHawk.Client.Common
 			{
 				return null;
 			}
+		}
+	}
+
+	internal static class NESHelpers
+	{
+		public static IControllerDeck AddSystemToControllerDef(this IControllerDeck deck)
+		{
+			var def = deck.ControllerDef;
+			//TODO FDS
+			def.BoolButtons.Add("Reset");
+			def.BoolButtons.Add("Power");
+			return deck;
 		}
 	}
 }

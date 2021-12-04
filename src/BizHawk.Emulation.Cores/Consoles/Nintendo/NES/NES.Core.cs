@@ -145,16 +145,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ram = new byte[0x800];
 			CIRAM = new byte[0x800];
 
-			// wire controllers
-			// todo: allow changing this
-			ControllerDeck = ControllerSettings.Instantiate(ppu.LightGunCallback);
 			// set controller definition first time only
 			if (ControllerDefinition == null)
 			{
-				ControllerDefinition = new ControllerDefinition(ControllerDeck.GetDefinition())
-				{
-					Name = "NES Controller"
-				};
+				ControllerDeck = ControllerSettings.Instantiate(ppu.LightGunCallback); // this assignment was outside the conditional for some reason? --yoshi
+				ControllerDefinition = ControllerDeck.ControllerDef;
 
 				// controls other than the deck
 				ControllerDefinition.BoolButtons.Add("Power");
