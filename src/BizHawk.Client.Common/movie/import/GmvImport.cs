@@ -89,10 +89,7 @@ namespace BizHawk.Client.Common.movie.import
 
 			var controlConverter = new GPGXControlConverter(input, false);
 			
-			var controller = new SimpleController
-			{
-				Definition = controlConverter.ControllerDef
-			};
+			SimpleController controller = new(controlConverter.ControllerDef);
 
 			// Unknown.
 			r.ReadByte();

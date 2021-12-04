@@ -264,10 +264,7 @@ namespace BizHawk.Client.Common.movie.import
 
 		private IController EmptyLmsvFrame()
 		{
-			var emptyController = new SimpleController
-			{
-				Definition = _deck.Definition
-			};
+			SimpleController emptyController = new(_deck.Definition);
 
 			foreach (var button in emptyController.Definition.BoolButtons)
 			{
@@ -279,10 +276,7 @@ namespace BizHawk.Client.Common.movie.import
 
 		private void ImportTextFrame(string line, string platform)
 		{
-			var controllers = new SimpleController
-			{
-				Definition = _deck.Definition
-			};
+			SimpleController controllers = new(_deck.Definition);
 
 			var buttons = new[]
 			{

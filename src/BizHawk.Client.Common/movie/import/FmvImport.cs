@@ -100,10 +100,7 @@ namespace BizHawk.Client.Common.movie.import
 
 			AddDeckControlButtons();
 
-			var controllers = new SimpleController
-			{
-				Definition = _deck.GetDefinition()
-			};
+			SimpleController controllers = new(_deck.GetDefinition());
 
 			/*
 			 * 01 Right
@@ -167,10 +164,7 @@ namespace BizHawk.Client.Common.movie.import
 
 		private void AddDeckControlButtons()
 		{
-			var controllers = new SimpleController
-			{
-				Definition = _deck.GetDefinition()
-			};
+			SimpleController controllers = new(_deck.GetDefinition());
 
 			// TODO: FDS
 			// Yes, this adds them to the deck definition too

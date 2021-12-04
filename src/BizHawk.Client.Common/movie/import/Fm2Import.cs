@@ -170,10 +170,7 @@ namespace BizHawk.Client.Common
 		private readonly string[] _buttons = { "Right", "Left", "Down", "Up", "Start", "Select", "B", "A" };
 		private void ImportInputFrame(string line)
 		{
-			var controllers = new SimpleController
-			{
-				Definition = _deck.GetDefinition()
-			};
+			SimpleController controllers = new(_deck.GetDefinition());
 
 			string[] sections = line.Split(new[] {'|'}, StringSplitOptions.RemoveEmptyEntries);
 			controllers["Reset"] = sections[1][0] == '1';
@@ -218,10 +215,7 @@ namespace BizHawk.Client.Common
 
 		private void AddDeckControlButtons()
 		{
-			var controllers = new SimpleController
-			{
-				Definition = _deck.GetDefinition()
-			};
+			SimpleController controllers = new(_deck.GetDefinition());
 
 			// TODO: FDS
 			// Yes, this adds them to the deck definition too
