@@ -145,10 +145,7 @@ namespace BizHawk.Client.Common.movie.import
 			// Advance to first byte of input data.
 			r.BaseStream.Position = firstFrameOffset;
 
-			var controllers = new SimpleController
-			{
-				Definition = _deck.GetDefinition()
-			};
+			SimpleController controllers = new(_deck.GetDefinition());
 
 			string[] buttons = { "A", "B", "Select", "Start", "Up", "Down", "Left", "Right" };
 			bool fds = false;
@@ -293,10 +290,7 @@ namespace BizHawk.Client.Common.movie.import
 
 		private void AddDeckControlButtons()
 		{
-			var controllers = new SimpleController
-			{
-				Definition = _deck.GetDefinition()
-			};
+			SimpleController controllers = new(_deck.GetDefinition());
 
 			// TODO: FDS
 			// Yes, this adds them to the deck definition too

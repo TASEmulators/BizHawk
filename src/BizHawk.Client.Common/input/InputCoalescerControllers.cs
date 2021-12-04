@@ -2,10 +2,15 @@
 
 using System.Linq;
 
+using BizHawk.Emulation.Common;
+
 namespace BizHawk.Client.Common
 {
 	public class InputCoalescer : SimpleController
 	{
+		public InputCoalescer()
+			: base(NullController.Instance.Definition) {} // is Definition ever read on these subclasses? --yoshi
+
 		protected virtual void ProcessSubsets(string button, bool state) {}
 
 		public void Receive(InputEvent ie)

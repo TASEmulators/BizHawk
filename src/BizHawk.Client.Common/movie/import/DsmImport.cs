@@ -84,9 +84,8 @@ namespace BizHawk.Client.Common
 
 		private void ImportInputFrame(string line)
 		{
-			var controller = new SimpleController
-			{
-				Definition = new ControllerDefinition
+			SimpleController controller = new(
+				new ControllerDefinition
 				{
 					BoolButtons =
 					{
@@ -94,8 +93,7 @@ namespace BizHawk.Client.Common
 					}
 				}.AddXYPair("Touch {0}", AxisPairOrientation.RightAndUp, 0.RangeTo(255), 128, 0.RangeTo(191), 96) //TODO verify direction against hardware
 					.AddAxis("Mic Input", 0.RangeTo(2047), 0)
-						.AddAxis("GBA Light Sensor", 0.RangeTo(10), 0)
-			};
+					.AddAxis("GBA Light Sensor", 0.RangeTo(10), 0));
 
 			controller["LidOpen"] = false;
 			controller["LidClose"] = false;

@@ -172,7 +172,6 @@ namespace BizHawk.Client.Common
 		protected void ParseBinaryInputLog(BinaryReader br, IMovie movie, MiscHeaderInfo info)
 		{
 			var settings = new Octoshock.SyncSettings();
-			var controllers = new SimpleController();
 			settings.FIOConfig.Devices8 = new[]
 			{
 				info.Player1Type,
@@ -180,7 +179,7 @@ namespace BizHawk.Client.Common
 				info.Player2Type,
 				OctoshockDll.ePeripheralType.None, OctoshockDll.ePeripheralType.None, OctoshockDll.ePeripheralType.None
 			};
-			controllers.Definition = Octoshock.CreateControllerDefinition(settings);
+			SimpleController controllers = new(Octoshock.CreateControllerDefinition(settings));
 
 			string[] buttons =
 			{
@@ -283,7 +282,6 @@ namespace BizHawk.Client.Common
 		protected void ParseTextInputLog(BinaryReader br, IMovie movie, MiscHeaderInfo info)
 		{
 			Octoshock.SyncSettings settings = new Octoshock.SyncSettings();
-			SimpleController controllers = new SimpleController();
 			settings.FIOConfig.Devices8 = new[]
 			{
 				info.Player1Type,
@@ -291,7 +289,7 @@ namespace BizHawk.Client.Common
 				info.Player2Type,
 				OctoshockDll.ePeripheralType.None, OctoshockDll.ePeripheralType.None, OctoshockDll.ePeripheralType.None
 			};
-			controllers.Definition = Octoshock.CreateControllerDefinition(settings);
+			SimpleController controllers = new(Octoshock.CreateControllerDefinition(settings));
 
 			string[] buttons =
 			{
