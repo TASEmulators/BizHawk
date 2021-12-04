@@ -21,6 +21,20 @@ namespace BizHawk.Emulation.Common
 
 		private bool _mutable = true;
 
+		private IReadOnlyList<IReadOnlyList<string>> _orderedControls = null;
+
+		/// <summary>starts with console buttons, then each player's buttons individually</summary>
+		public IReadOnlyList<IReadOnlyList<string>> ControlsOrdered
+		{
+			get
+			{
+				if (_orderedControls is not null) return _orderedControls;
+				if (!_mutable) return _orderedControls = GenOrderedControls();
+				const string ERR_MSG = "this " + nameof(ControllerDefinition) + " has not yet been built and sealed, so it is not safe to enumerate this while it could still be mutated";
+				throw new InvalidOperationException(ERR_MSG);
+			}
+		}
+
 		public readonly string Name;
 
 		public ControllerDefinition(string name)
@@ -77,37 +91,18 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		/// <summary>
-		/// Gets a list of controls put in a logical order such as by controller number,
-		/// This is a default implementation that should work most of the time
-		/// </summary>
-		public virtual IEnumerable<IEnumerable<string>> ControlsOrdered
-		{
-			get
-			{
-				var list = new List<string>(Axes.Keys);
-				list.AddRange(BoolButtons);
-
-				// starts with console buttons, then each player's buttons individually
-				var ret = new List<string>[PlayerCount + 1];
-				for (int i = 0; i < ret.Length; i++)
-				{
-					ret[i] = new List<string>();
-				}
-
-				foreach (string btn in list)
-				{
-					ret[PlayerNumber(btn)].Add(btn);
-				}
-
-				return ret;
-			}
-		}
-
 		private void AssertMutable()
 		{
 			const string ERR_MSG = "this " + nameof(ControllerDefinition) + " has been built and sealed, and may not be mutated";
 			if (!_mutable) throw new InvalidOperationException(ERR_MSG);
+		}
+
+		protected virtual IReadOnlyList<IReadOnlyList<string>> GenOrderedControls()
+		{
+			var ret = new List<string>[PlayerCount + 1];
+			for (var i = 0; i < ret.Length; i++) ret[i] = new();
+			foreach (var btn in Axes.Keys.Concat(BoolButtons)) ret[PlayerNumber(btn)].Add(btn);
+			return ret;
 		}
 
 		/// <summary>permanently disables the ability to mutate this instance; returns this reference</summary>

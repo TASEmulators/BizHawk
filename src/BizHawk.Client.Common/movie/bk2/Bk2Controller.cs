@@ -122,17 +122,15 @@ namespace BizHawk.Client.Common
 
 		private class Bk2ControllerDefinition : ControllerDefinition
 		{
+			public IReadOnlyList<IReadOnlyList<string>> ControlsFromLog = null;
+
 			public Bk2ControllerDefinition(ControllerDefinition source)
 				: base(source)
 			{
 			}
 
-			public List<List<string>> ControlsFromLog { private get; set; } = new List<List<string>>();
-
-			public override IEnumerable<IEnumerable<string>> ControlsOrdered =>
-				ControlsFromLog.Any()
-					? ControlsFromLog
-					: base.ControlsOrdered;
+			protected override IReadOnlyList<IReadOnlyList<string>> GenOrderedControls()
+				=> ControlsFromLog is not null && ControlsFromLog.Count is not 0 ? ControlsFromLog : base.GenOrderedControls();
 		}
 	}
 }
