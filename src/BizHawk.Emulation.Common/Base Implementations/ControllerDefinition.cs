@@ -23,6 +23,8 @@ namespace BizHawk.Emulation.Common
 
 		private IReadOnlyList<IReadOnlyList<string>> _orderedControls = null;
 
+		private IReadOnlyList<string> _orderedControlsFlat = null;
+
 		/// <summary>starts with console buttons, then each player's buttons individually</summary>
 		public IReadOnlyList<IReadOnlyList<string>> ControlsOrdered
 		{
@@ -36,6 +38,8 @@ namespace BizHawk.Emulation.Common
 		}
 
 		public readonly string Name;
+
+		public IReadOnlyList<string> OrderedControlsFlat => _orderedControlsFlat ??= ControlsOrdered.SelectMany(static s => s).ToList();
 
 		public ControllerDefinition(string name)
 			=> Name = name;

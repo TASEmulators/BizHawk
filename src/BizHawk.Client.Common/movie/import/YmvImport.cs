@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common.movie.import
@@ -121,8 +121,8 @@ namespace BizHawk.Client.Common.movie.import
 				controllers["Reset"] = true;
 			}
 
-			var buttonNames = controllers.Definition.ControlsOrdered.Skip(1).First().ToList();
-			
+			var buttonNames = controllers.Definition.ControlsOrdered[1];
+
 			// Only count lines with that have the right number of buttons and are for valid players.
 			if (sections[1].Length == buttonNames.Count)
 			{
