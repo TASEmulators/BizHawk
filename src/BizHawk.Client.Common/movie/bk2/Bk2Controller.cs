@@ -16,8 +16,7 @@ namespace BizHawk.Client.Common
 
 		private IList<ControlMap> _controlsOrdered;
 
-		private IList<ControlMap> ControlsOrdered => _controlsOrdered ??= _type.ControlsOrdered
-			.SelectMany(c => c) // flatten
+		private IList<ControlMap> ControlsOrdered => _controlsOrdered ??= _type.OrderedControlsFlat
 			.Select(c => new ControlMap
 			{
 				Name = c,
