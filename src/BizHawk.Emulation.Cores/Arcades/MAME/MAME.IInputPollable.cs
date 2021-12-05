@@ -13,11 +13,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		[FeatureNotImplemented]
 		public IInputCallbackSystem InputCallbacks => throw new NotImplementedException();
 
-		public static ControllerDefinition MAMEController = new ControllerDefinition
-		{
-			Name = "MAME Controller",
-			BoolButtons = new List<string>()
-		};
+		public static ControllerDefinition MAMEController = new("MAME Controller");
 
 		private IController _controller = NullController.Instance;
 		private readonly SortedDictionary<string, string> _fieldsPorts = new SortedDictionary<string, string>();

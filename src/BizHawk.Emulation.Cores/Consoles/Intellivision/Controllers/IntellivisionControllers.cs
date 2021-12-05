@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 
@@ -28,10 +27,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		public UnpluggedController(int portNum)
 		{
 			PortNum = portNum;
-			Definition = new ControllerDefinition
-			{
-				BoolButtons = new List<string>()
-			};
+			Definition = new("(Intellivision Controller fragment)");
 		}
 
 		public byte Read(IController c)
@@ -55,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		public StandardController(int portNum)
 		{
 			PortNum = portNum;
-			Definition = new ControllerDefinition
+			Definition = new("(Intellivision Controller fragment)")
 			{
 				BoolButtons = BaseDefinition
 				.Select(b => "P" + PortNum + " " + b)
@@ -139,7 +135,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		public FakeAnalogController(int portNum)
 		{
 			PortNum = portNum;
-			Definition = new ControllerDefinition { BoolButtons = BaseBoolDefinition.Select(b => $"P{PortNum} {b}").ToList() }
+			Definition = new ControllerDefinition("(Intellivision Controller fragment)") { BoolButtons = BaseBoolDefinition.Select(b => $"P{PortNum} {b}").ToList() }
 				.AddXYPair($"P{PortNum} Disc {{0}}", AxisPairOrientation.RightAndUp, (-127).RangeTo(127), 0); //TODO verify direction against hardware
 		}
 

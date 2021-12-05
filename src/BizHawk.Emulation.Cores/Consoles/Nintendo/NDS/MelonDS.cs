@@ -181,9 +181,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public override ControllerDefinition ControllerDefinition => NDSController;
 
-		public static readonly ControllerDefinition NDSController = new ControllerDefinition
+		public static readonly ControllerDefinition NDSController = new ControllerDefinition("NDS Controller")
 		{
-			Name = "NDS Controller",
 			BoolButtons =
 			{
 				"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Y", "X", "L", "R", "LidOpen", "LidClose", "Touch", "Power"

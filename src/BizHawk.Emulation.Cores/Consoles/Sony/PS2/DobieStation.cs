@@ -135,9 +135,8 @@ namespace BizHawk.Emulation.Cores.Sony.PS2
 				: PutSettingsDirtyBits.None;
 		}
 
-		private static readonly ControllerDefinition DualShock = new ControllerDefinition
+		private static readonly ControllerDefinition DualShock = new ControllerDefinition("PS2 DualShock")
 		{
-			Name = "PS2 DualShock",
 			BoolButtons =
 			{
 				"SELECT",

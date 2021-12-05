@@ -5,9 +5,8 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 	public partial class MSX
 	{
 
-		public static readonly ControllerDefinition MSXControllerKB = new ControllerDefinition
+		public static readonly ControllerDefinition MSXControllerKB = new ControllerDefinition("MSX Controller Keyboard")
 		{
-			Name = "MSX Controller Keyboard",
 			BoolButtons =
 				{
 					"Reset",
@@ -25,9 +24,8 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 				}
 		};
 
-		public static readonly ControllerDefinition MSXControllerJS = new ControllerDefinition
+		public static readonly ControllerDefinition MSXControllerJS = new ControllerDefinition("MSX Controller Joystick")
 		{
-			Name = "MSX Controller Joystick",
 			BoolButtons =
 				{
 					"Reset",

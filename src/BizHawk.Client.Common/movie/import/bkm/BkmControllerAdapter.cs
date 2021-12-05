@@ -10,11 +10,9 @@ namespace BizHawk.Client.Common
 	{
 		public BkmControllerAdapter(ControllerDefinition definition, string systemId)
 		{
-			Definition = definition;
-
 			// We do need to map the definition name to the legacy
 			// controller names that were used back in the bkm days
-			Definition.Name = systemId switch
+			var name = systemId switch
 			{
 				"Lynx" => "Lynx Controller",
 				"SNES" => "SNES Controller",
@@ -34,6 +32,7 @@ namespace BizHawk.Client.Common
 				"SMS Controller" => "SMS",
 				_ => "Null Controller",
 			};
+			Definition = new(copyFrom: definition, withName: name);
 		}
 
 		public ControllerDefinition Definition { get; set; }

@@ -140,7 +140,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		private ControllerDefinition CreateControllerDefinition()
 		{
-			var ret = new ControllerDefinition { Name = $"GB Link {_numCores}x Controller" };
+			ControllerDefinition ret = new($"GB Link {_numCores}x Controller");
 			for (int i = 0; i < _numCores; i++)
 			{
 				ret.BoolButtons.AddRange(

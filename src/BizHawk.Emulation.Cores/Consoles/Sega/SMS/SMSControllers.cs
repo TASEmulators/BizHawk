@@ -49,9 +49,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public SmsController(int portNum)
 		{
 			PortNum = portNum;
-			Definition = new ControllerDefinition
+			Definition = new("SMS Controller")
 			{
-				Name = "SMS Controller",
 				BoolButtons = BaseDefinition
 				.Select(b => "P" + PortNum + " " + b)
 				.ToList()
@@ -130,9 +129,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public GGController(int portNum)
 		{
 			PortNum = portNum;
-			Definition = new ControllerDefinition
+			Definition = new("GG Controller")
 			{
-				Name = "GG Controller",
 				BoolButtons = BaseDefinition
 				.Select(b => "P" + PortNum + " " + b)
 				.ToList()
@@ -203,9 +201,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public SMSPaddleController(int portNum)
 		{
 			PortNum = portNum;
-			Definition = new ControllerDefinition
+			Definition = new ControllerDefinition("SMS Paddle Controller")
 			{
-				Name = "SMS Paddle Controller",
 				BoolButtons = BaseDefinition.Select(b => $"P{PortNum} {b}").ToList()
 			}.AddAxis($"P{PortNum} Paddle", 0.RangeTo(255), 128);
 		}
@@ -336,9 +333,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public SMSSportsPadController(int portNum)
 		{
 			PortNum = portNum;
-			Definition = new ControllerDefinition
+			Definition = new ControllerDefinition("SMS Sports Pad Controller")
 			{
-				Name = "SMS Sports Pad Controller",
 				BoolButtons = BaseDefinition.Select(b => $"P{PortNum} {b}").ToList()
 			}.AddXYPair($"P{PortNum} {{0}}", AxisPairOrientation.RightAndUp, (-64).RangeTo(63), 0); //TODO verify direction against hardware
 		}
@@ -626,9 +622,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public SMSLightPhaserController(int portNum)
 		{
 			PortNum = portNum;
-			Definition = new ControllerDefinition
+			Definition = new ControllerDefinition("SMS Light Phaser Controller")
 			{
-				Name = "SMS Light Phaser Controller",
 				BoolButtons = BaseDefinition.Select(b => $"P{PortNum} {b}").ToList()
 			}.AddXYPair($"P{PortNum} {{0}}", AxisPairOrientation.RightAndUp, 0.RangeTo(127), 64, 0.RangeTo(192), 96); //TODO verify direction against hardware
 		}

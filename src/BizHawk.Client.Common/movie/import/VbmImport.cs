@@ -296,7 +296,7 @@ namespace BizHawk.Client.Common.movie.import
 		}
 
 		private static SimpleController GbController()
-			=> new(new ControllerDefinition
+			=> new(new ControllerDefinition("Gameboy Controller")
 			{
 				BoolButtons = { "Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Power" }
 			});

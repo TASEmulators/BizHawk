@@ -15,14 +15,14 @@ namespace BizHawk.Tests.Client.Common.Movie
 		[TestInitialize]
 		public void Initializer()
 		{
-			_boolController = new(new ControllerDefinition { BoolButtons = { "A" } });
-			_axisController = new(new ControllerDefinition().AddXYPair("Stick{0}", AxisPairOrientation.RightAndUp, 0.RangeTo(200), 100));
+			_boolController = new(new ControllerDefinition("Dummy Gamepad") { BoolButtons = { "A" } });
+			_axisController = new(new ControllerDefinition("Dummy Gamepad").AddXYPair("Stick{0}", AxisPairOrientation.RightAndUp, 0.RangeTo(200), 100));
 		}
 
 		[TestMethod]
 		public void GenerateLogEntry_ExclamationForUnknownButtons()
 		{
-			SimpleController controller = new(new ControllerDefinition { BoolButtons = { "Unknown Button" } });
+			SimpleController controller = new(new ControllerDefinition("Dummy Gamepad") { BoolButtons = { "Unknown Button" } });
 			var lg = new Bk2LogEntryGenerator("NES", controller);
 			controller["Unknown Button"] = true;
 			var actual = lg.GenerateLogEntry();

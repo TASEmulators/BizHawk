@@ -16,8 +16,8 @@ namespace BizHawk.Tests.Client.Common.Display
 		[TestInitialize]
 		public void Initializer()
 		{
-			_boolController = new(new ControllerDefinition { BoolButtons = { "A" } });
-			_axisController = new(new ControllerDefinition().AddXYPair("Stick{0}", AxisPairOrientation.RightAndUp, 0.RangeTo(200), MidValue));
+			_boolController = new(new ControllerDefinition("Dummy Gamepad") { BoolButtons = { "A" } });
+			_axisController = new(new ControllerDefinition("Dummy Gamepad").AddXYPair("Stick{0}", AxisPairOrientation.RightAndUp, 0.RangeTo(200), MidValue));
 		}
 
 		[TestMethod]

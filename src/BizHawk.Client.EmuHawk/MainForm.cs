@@ -2101,12 +2101,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void InitControls()
 		{
-			var controls = new Controller(
-				new ControllerDefinition
-				{
-					Name = "Emulator Frontend Controls",
-					BoolButtons = Config.HotkeyBindings.Select(x => x.DisplayName).ToList()
-				});
+			Controller controls = new(new ControllerDefinition("Emulator Frontend Controls")
+			{
+				BoolButtons = Config.HotkeyBindings.Select(static x => x.DisplayName).ToList(),
+			});
 
 			foreach (var b in Config.HotkeyBindings)
 			{
