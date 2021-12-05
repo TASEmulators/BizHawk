@@ -8,6 +8,8 @@ namespace BizHawk.Client.Common
 {
 	internal class BkmControllerAdapter : IController
 	{
+		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
+
 		public BkmControllerAdapter(ControllerDefinition definition, string systemId)
 		{
 			// We do need to map the definition name to the legacy

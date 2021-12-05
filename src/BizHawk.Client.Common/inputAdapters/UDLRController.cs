@@ -15,6 +15,8 @@ namespace BizHawk.Client.Common
 
 		public ControllerDefinition Definition => Source.Definition;
 
+		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
+
 		public bool AllowUdlr { get; set; }
 
 		public bool IsPressed(string button)

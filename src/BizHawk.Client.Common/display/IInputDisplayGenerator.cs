@@ -4,19 +4,11 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public interface IInputDisplayGenerator
-	{
-		/// <summary>
-		/// Generates a display friendly version of the input log entry
-		/// </summary>
-		string Generate();
-	}
-
 	/// <summary>
 	/// An implementation of <see cref="IInputDisplayGenerator"/> that
 	/// uses .bk2 mnemonics as the basis for display
 	/// </summary>
-	public class Bk2InputDisplayGenerator
+	public class Bk2InputDisplayGenerator : IInputDisplayGenerator
 	{
 		private readonly string _systemId;
 		private readonly IController _source;
