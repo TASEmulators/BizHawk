@@ -1,4 +1,7 @@
-﻿using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 using BizHawk.Emulation.Common;
 
@@ -10,12 +13,19 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public class Bk2InputDisplayGenerator : IInputDisplayGenerator
 	{
-		private readonly string _systemId;
+		private readonly IReadOnlyList<(string Name, AxisSpec? Range, char? Mnemonic)> _cachedInputSpecs;
+
 		private readonly IController _source;
 
 		public Bk2InputDisplayGenerator(string systemId, IController source)
 		{
-			_systemId = systemId;
+			const string ERR_MSG = nameof(ControllerDefinition.OrderedControlsFlat) + "/" + nameof(ControllerDefinition.ControlsOrdered) + " contains an input name which is neither a button nor an axis";
+			_cachedInputSpecs = source.Definition.OrderedControlsFlat.Select(button =>
+			{
+				if (source.Definition.Axes.TryGetValue(button, out var range)) return (button, range, null);
+				if (source.Definition.BoolButtons.Contains(button)) return (button, (AxisSpec?) null, (char?) Bk2MnemonicLookup.Lookup(button, systemId));
+				throw new Exception(ERR_MSG);
+			}).ToList();
 			_source = source;
 		}
 
@@ -23,13 +33,13 @@ namespace BizHawk.Client.Common
 		{
 			var sb = new StringBuilder();
 
-			foreach (var button in _source.Definition.OrderedControlsFlat)
+			foreach (var (button, range, mnemonicChar) in _cachedInputSpecs)
 			{
-				if (_source.Definition.Axes.TryGetValue(button, out var range))
+				if (range is not null)
 				{
 					var val = _source.AxisValue(button);
 
-					if (val == range.Neutral)
+					if (val == range.Value.Neutral)
 					{
 						sb.Append("      ");
 					}
@@ -38,10 +48,10 @@ namespace BizHawk.Client.Common
 						sb.Append(val.ToString().PadLeft(5, ' ')).Append(',');
 					}
 				}
-				else if (_source.Definition.BoolButtons.Contains(button))
+				else
 				{
 					sb.Append(_source.IsPressed(button)
-						? Bk2MnemonicLookup.Lookup(button, _systemId)
+						? mnemonicChar
 						: ' ');
 				}
 			}
