@@ -182,12 +182,12 @@ namespace BizHawk.Client.Common
 
 		public string InputStrMovie()
 		{
-			return MakeStringFor(_movieSession.MovieController);
+			return MakeStringFor(_movieSession.MovieController, cache: true);
 		}
 
 		public string InputStrImmediate()
 		{
-			return MakeStringFor(_inputManager.AutofireStickyXorAdapter);
+			return MakeStringFor(_inputManager.AutofireStickyXorAdapter, cache: true);
 		}
 
 		public string InputPrevious()
@@ -205,13 +205,19 @@ namespace BizHawk.Client.Common
 		}
 
 		public string InputStrOrAll()
-			=> MakeStringFor(_movieSession.Movie.IsPlayingOrRecording() && _emulator.Frame > 0
-				? _inputManager.AutofireStickyXorAdapter.Or(_movieSession.Movie.GetInputState(_emulator.Frame - 1))
-				: _inputManager.AutofireStickyXorAdapter);
+			=> _movieSession.Movie.IsPlayingOrRecording() && _emulator.Frame > 0
+				? MakeStringFor(_inputManager.AutofireStickyXorAdapter.Or(_movieSession.Movie.GetInputState(_emulator.Frame - 1)))
+				: InputStrImmediate();
 
-		private string MakeStringFor(IController controller)
+		private string MakeStringFor(IController controller, bool cache = false)
 		{
-			return new Bk2InputDisplayGenerator(_emulator.SystemId, controller).Generate();
+			var idg = controller.InputDisplayGenerator;
+			if (idg is null)
+			{
+				idg = new Bk2InputDisplayGenerator(_emulator.SystemId, controller);
+				if (cache) controller.InputDisplayGenerator = idg;
+			}
+			return idg.Generate();
 		}
 
 		public string MakeIntersectImmediatePrevious()
@@ -300,7 +306,8 @@ namespace BizHawk.Client.Common
 					// basically we're tinting whatever is pressed because it's sticky specially
 					// in order to achieve this we want to avoid drawing anything pink that isn't actually held down right now
 					// so we make an AND adapter and combine it using immediate & sticky
-					var autoString = MakeStringFor(_inputManager.StickyXorAdapter.Source.Xor(_inputManager.AutofireStickyXorAdapter).And(_inputManager.AutofireStickyXorAdapter));
+					// (adapter creation moved to InputManager)
+					var autoString = MakeStringFor(_inputManager.WeirdStickyControllerForInputDisplay, cache: true);
 					g.DrawString(autoString, MessageFont, autoColor, point.X, point.Y);
 
 					//recolor everything that's changed from the previous input

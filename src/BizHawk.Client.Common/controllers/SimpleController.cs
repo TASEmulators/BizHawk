@@ -13,6 +13,8 @@ namespace BizHawk.Client.Common
 	{
 		public ControllerDefinition Definition { get; }
 
+		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
+
 		protected WorkingDictionary<string, bool> Buttons { get; private set; } = new WorkingDictionary<string, bool>();
 		protected WorkingDictionary<string, int> Axes { get; private set; } = new WorkingDictionary<string, int>();
 		protected WorkingDictionary<string, int> HapticFeedback { get; private set; } = new WorkingDictionary<string, int>();

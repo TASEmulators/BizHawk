@@ -25,6 +25,8 @@ namespace BizHawk.Client.Common
 			})
 			.ToList();
 
+		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
+
 		public Bk2Controller(string key, ControllerDefinition definition) : this(definition)
 		{
 			if (!string.IsNullOrEmpty(key))

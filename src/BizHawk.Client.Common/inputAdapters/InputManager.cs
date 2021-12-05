@@ -24,12 +24,14 @@ namespace BizHawk.Client.Common
 
 		private UdlrControllerAdapter UdLRControllerAdapter { get; } = new UdlrControllerAdapter();
 
-		public AutoFireStickyXorAdapter AutofireStickyXorAdapter { get; } = new AutoFireStickyXorAdapter();
+		public AutoFireStickyXorAdapter AutofireStickyXorAdapter { get; private set; } = new AutoFireStickyXorAdapter();
 
 		/// <summary>
 		/// provides an opportunity to mutate the player's input in an autohold style
 		/// </summary>
 		public StickyXorAdapter StickyXorAdapter { get; } = new StickyXorAdapter();
+
+		public IController WeirdStickyControllerForInputDisplay { get; private set; }
 
 		/// <summary>
 		/// Used to AND to another controller, used for <see cref="IJoypadApi.Set(IReadOnlyDictionary{string, bool}, int?)">JoypadApi.Set</see>
@@ -72,8 +74,10 @@ namespace BizHawk.Client.Common
 			UdLRControllerAdapter.Source = ActiveController.Or(AutoFireController);
 			UdLRControllerAdapter.AllowUdlr = config.AllowUdlr;
 
+			// these are all reference types which don't change so this SHOULD be a no-op, but I'm not brave enough to move it to the ctor --yoshi
 			StickyXorAdapter.Source = UdLRControllerAdapter;
-			AutofireStickyXorAdapter.Source = StickyXorAdapter;
+			AutofireStickyXorAdapter = new() { Source = StickyXorAdapter };
+			WeirdStickyControllerForInputDisplay = StickyXorAdapter.Source.Xor(AutofireStickyXorAdapter).And(AutofireStickyXorAdapter);
 
 			session.MovieIn = AutofireStickyXorAdapter;
 			session.StickySource = AutofireStickyXorAdapter;
