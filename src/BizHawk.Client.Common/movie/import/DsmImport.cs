@@ -11,6 +11,13 @@ namespace BizHawk.Client.Common
 	[ImporterFor("DeSmuME", ".dsm")]
 	internal class DsmImport : MovieImporter
 	{
+		private static readonly ControllerDefinition DeSmuMEControllerDef = new ControllerDefinition("NDS Controller")
+		{
+			BoolButtons = { "Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Y", "X", "L", "R", "LidOpen", "LidClose", "Touch", "Power" },
+		}.AddXYPair("Touch {0}", AxisPairOrientation.RightAndUp, 0.RangeTo(255), 128, 0.RangeTo(191), 96) //TODO verify direction against hardware
+			.AddAxis("Mic Input", 0.RangeTo(2047), 0)
+			.AddAxis("GBA Light Sensor", 0.RangeTo(10), 0);
+
 		protected override void RunImport()
 		{
 			Result.Movie.HeaderEntries[HeaderKeys.Platform] = VSystemID.Raw.NDS;
@@ -84,16 +91,7 @@ namespace BizHawk.Client.Common
 
 		private void ImportInputFrame(string line)
 		{
-			SimpleController controller = new(
-				new ControllerDefinition
-				{
-					BoolButtons =
-					{
-						"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Y", "X", "L", "R", "LidOpen", "LidClose", "Touch", "Power"
-					}
-				}.AddXYPair("Touch {0}", AxisPairOrientation.RightAndUp, 0.RangeTo(255), 128, 0.RangeTo(191), 96) //TODO verify direction against hardware
-					.AddAxis("Mic Input", 0.RangeTo(2047), 0)
-					.AddAxis("GBA Light Sensor", 0.RangeTo(10), 0));
+			SimpleController controller = new(DeSmuMEControllerDef);
 
 			controller["LidOpen"] = false;
 			controller["LidClose"] = false;

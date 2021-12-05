@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 using BizHawk.Emulation.Common;
@@ -33,9 +32,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			_port4 = (IPort)Activator.CreateInstance(Implementors[(int)controller4], 4);
 			_port5 = (IPort)Activator.CreateInstance(Implementors[(int)controller5], 5);
 
-			Definition = new ControllerDefinition
+			Definition = new("PC Engine Controller")
 			{
-				Name = "PC Engine Controller",
 				BoolButtons = _port1.Definition.BoolButtons
 					.Concat(_port2.Definition.BoolButtons)
 					.Concat(_port3.Definition.BoolButtons)
@@ -92,10 +90,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public UnpluggedController(int portNum)
 		{
 			PortNum = portNum;
-			Definition = new ControllerDefinition
-			{
-				BoolButtons = new List<string>()
-			};
+			Definition = new("(PC Engine Controller fragment)");
 		}
 
 		public byte Read(IController c, bool sel)
@@ -113,7 +108,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public StandardController(int portNum)
 		{
 			PortNum = portNum;
-			Definition = new ControllerDefinition
+			Definition = new("(PC Engine Controller fragment)")
 			{
 				BoolButtons = BaseDefinition
 				.Select(b => $"P{PortNum} " + b)

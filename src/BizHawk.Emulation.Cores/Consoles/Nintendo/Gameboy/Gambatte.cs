@@ -265,8 +265,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public static ControllerDefinition CreateControllerDefinition(bool sgb, bool sub)
 		{
 			var ret = sub
-				? new ControllerDefinition { Name = "Subframe Gameboy Controller" }.AddAxis("Input Length", 0.RangeTo(35112), 35112)
-				: new ControllerDefinition { Name = "Gameboy Controller" };
+				? new ControllerDefinition("Subframe Gameboy Controller").AddAxis("Input Length", 0.RangeTo(35112), 35112)
+				: new ControllerDefinition("Gameboy Controller");
 			if (sgb)
 			{
 				for (int i = 0; i < 4; i++)

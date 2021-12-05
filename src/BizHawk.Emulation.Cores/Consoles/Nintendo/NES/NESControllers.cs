@@ -146,9 +146,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			_left = left;
 			_right = right;
 			ControllerDef = ControllerDefinitionMerger.GetMerged(
+				"NES Controller",
 				new[] { left.ControllerDefFragment, right.ControllerDefFragment },
 				out var cdum);
-			ControllerDef.Name = "NES Controller";
 			_leftU = cdum[0];
 			_rightU = cdum[1];
 
@@ -194,7 +194,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	public class UnpluggedNES : INesPort
 	{
-		public ControllerDefinition ControllerDefFragment { get; } = new();
+		public ControllerDefinition ControllerDefFragment { get; } = new("(NES Controller fragment)");
 
 		public void Strobe(StrobeInfo s, IController c)
 		{
@@ -234,7 +234,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public ControllerNES()
 		{
-			ControllerDefFragment = new() { BoolButtons = Buttons.OrderBy(x => _buttonOrdinals[x]).ToList() };
+			ControllerDefFragment = new("(NES Controller fragment)") { BoolButtons = Buttons.OrderBy(x => _buttonOrdinals[x]).ToList() };
 		}
 
 
@@ -254,11 +254,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (famicomP2)
 			{
-				ControllerDefFragment = new() { BoolButtons = FamicomP2Buttons.Where(static s => s is not null).OrderBy(x => _buttonOrdinals[x]).ToList() };
+				ControllerDefFragment = new("(NES Controller fragment)") { BoolButtons = FamicomP2Buttons.Where(static s => s is not null).OrderBy(x => _buttonOrdinals[x]).ToList() };
 			}
 			else
 			{
-				ControllerDefFragment = new() { BoolButtons = Buttons.OrderBy(x => _buttonOrdinals[x]).ToList() };
+				ControllerDefFragment = new("(NES Controller fragment)") { BoolButtons = Buttons.OrderBy(x => _buttonOrdinals[x]).ToList() };
 			}
 
 			_famicomP2Hack = famicomP2;
@@ -313,7 +313,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		};
 
 		public ControllerDefinition ControllerDefFragment { get; }
-			= new() { BoolButtons = Buttons.Where(static s => s is not null).ToList() };
+			= new("(NES Controller fragment)") { BoolButtons = Buttons.Where(static s => s is not null).ToList() };
 
 		// reset is not edge triggered; so long as it's high, the latch is continuously reloading
 		// so we need to latch in two places:
@@ -359,7 +359,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private byte _latchedValue = 0x54 ^ 0xff;
 
 		public ControllerDefinition ControllerDefFragment { get; }
-			= new ControllerDefinition { BoolButtons = { "0Fire" } }
+			= new ControllerDefinition("(NES Controller fragment)") { BoolButtons = { "0Fire" } }
 				.AddAxis("0Paddle", 0.RangeTo(160), 80);
 
 		public void Strobe(StrobeInfo s, IController c)
@@ -409,7 +409,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		};
 
 		public ControllerDefinition ControllerDefFragment { get; }
-			= new() { BoolButtons = Buttons.ToList() };
+			= new("(NES Controller fragment)") { BoolButtons = Buttons.ToList() };
 
 		private bool _resetting;
 		private int _latchedValue;
@@ -455,7 +455,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private static readonly string[] D4Buttons = { "0PP4", "0PP3", "0PP12", "0PP8" };
 
 		public ControllerDefinition ControllerDefFragment { get; }
-			= new() { BoolButtons = D3Buttons.Concat(D4Buttons).ToList() };
+			= new("(NES Controller fragment)") { BoolButtons = D3Buttons.Concat(D4Buttons).ToList() };
 
 		private bool _resetting;
 		private int _latched3;
@@ -516,7 +516,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public LightgunDelegate PPUCallback { get; set; }
 
 		public ControllerDefinition ControllerDefFragment { get; }
-			= new ControllerDefinition { BoolButtons = { "0Fire" } }
+			= new ControllerDefinition("(NES Controller fragment)") { BoolButtons = { "0Fire" } }
 				.AddZapper("0Zapper {0}");
 
 		public void Strobe(StrobeInfo s, IController c)
@@ -561,7 +561,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private uint _latchedValue;
 
 		public ControllerDefinition ControllerDefFragment { get; }
-			= new ControllerDefinition { BoolButtons = { "0Fire" } }
+			= new ControllerDefinition("(NES Controller fragment)") { BoolButtons = { "0Fire" } }
 				.AddZapper("0Zapper {0}");
 
 		private void Latch(IController c)
@@ -630,10 +630,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			_player3 = expSlot;
 			ControllerDef = ControllerDefinitionMerger.GetMerged(
+				"NES Controller",
 				new[] { _player1.ControllerDefFragment, _player2.ControllerDefFragment, _player3.ControllerDefFragment },
 				out var cdum);
 			ControllerDef.BoolButtons.Add("P2 Microphone");
-			ControllerDef.Name = "NES Controller";
 			_player1U = cdum[0];
 			_player2U = cdum[1];
 			_player3U = cdum[2];
@@ -692,7 +692,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private byte _latchedValue = 0x54 ^ 0xff;
 
 		public ControllerDefinition ControllerDefFragment { get; }
-			= new ControllerDefinition { BoolButtons = { "0Fire" } }
+			= new ControllerDefinition("(NES Controller fragment)") { BoolButtons = { "0Fire" } }
 				.AddAxis("0Paddle", 0.RangeTo(160), 80);
 
 		public void Strobe(StrobeInfo s, IController c)
@@ -821,7 +821,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		};
 
 		public ControllerDefinition ControllerDefFragment { get; }
-			= new() { BoolButtons = Buttons.ToList() };
+			= new("(NES Controller fragment)") { BoolButtons = Buttons.ToList() };
 
 		private bool _active;
 		private int _column;
@@ -886,7 +886,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		};
 
 		public ControllerDefinition ControllerDefFragment { get; }
-			= new() { BoolButtons = P1Buttons.Concat(P2Buttons).ToList() };
+			= new("(NES Controller fragment)") { BoolButtons = P1Buttons.Concat(P2Buttons).ToList() };
 
 		private bool _resetting;
 		private int _latchedP1;
@@ -936,7 +936,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	public class OekaKids : IFamicomExpansion
 	{
 		public ControllerDefinition ControllerDefFragment { get; }
-			= new ControllerDefinition { BoolButtons = { "0Click", "0Touch" } }
+			= new ControllerDefinition("(NES Controller fragment)") { BoolButtons = { "0Click", "0Touch" } }
 				.AddZapper("0Pen {0}"); // why would a tablet have the same resolution as a CRT monitor? --yoshi
 
 		private bool _resetting;
@@ -999,7 +999,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	public class UnpluggedFam : IFamicomExpansion
 	{
-		public ControllerDefinition ControllerDefFragment => new();
+		public ControllerDefinition ControllerDefFragment => new("(NES Controller fragment)");
 
 		public void Strobe(StrobeInfo s, IController c)
 		{

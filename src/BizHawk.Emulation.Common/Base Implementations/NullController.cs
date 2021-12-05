@@ -12,10 +12,7 @@ namespace BizHawk.Emulation.Common
 	/// <seealso cref="IController" />
 	public class NullController : IController
 	{
-		public ControllerDefinition Definition => new ControllerDefinition
-		{
-			Name = "Null Controller"
-		};
+		public ControllerDefinition Definition { get; } = new ControllerDefinition("Null Controller");
 
 		public bool IsPressed(string button) => false;
 

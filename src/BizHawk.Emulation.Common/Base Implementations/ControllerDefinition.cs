@@ -14,22 +14,19 @@ namespace BizHawk.Emulation.Common
 	/// <seealso cref="IEmulator" />
 	public class ControllerDefinition
 	{
-		public ControllerDefinition() {}
+		public readonly string Name;
 
-		public ControllerDefinition(ControllerDefinition source)
-			: this()
+		public ControllerDefinition(string name)
+			=> Name = name;
+
+		public ControllerDefinition(ControllerDefinition copyFrom, string withName = null)
+			: this(withName ?? copyFrom.Name)
 		{
-			Name = source.Name;
-			BoolButtons.AddRange(source.BoolButtons);
-			foreach (var kvp in source.Axes) Axes.Add(kvp);
-			HapticsChannels.AddRange(source.HapticsChannels);
-			CategoryLabels = source.CategoryLabels;
+			BoolButtons.AddRange(copyFrom.BoolButtons);
+			foreach (var kvp in copyFrom.Axes) Axes.Add(kvp);
+			HapticsChannels.AddRange(copyFrom.HapticsChannels);
+			CategoryLabels = copyFrom.CategoryLabels;
 		}
-
-		/// <summary>
-		/// Gets or sets the name of the controller definition
-		/// </summary>
-		public string Name { get; set; }
 
 		/// <summary>
 		/// Gets or sets a list of all button types that have a boolean (on/off) value

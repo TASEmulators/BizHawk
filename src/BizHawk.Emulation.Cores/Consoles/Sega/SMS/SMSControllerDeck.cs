@@ -18,10 +18,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				// Port 2 is defined, but not used for Game Gear
 				Port2 = new GGController(2);
 
-				Definition = new ControllerDefinition
+				Definition = new ControllerDefinition(Port1.Definition.Name)
 				{
-					Name = Port1.Definition.Name,
-
 					BoolButtons = new[] { "Reset" }
 							.Concat(Port1.Definition.BoolButtons)
 							.ToList()
@@ -34,10 +32,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 				if (!use_keyboard) 
 				{
-					Definition = new ControllerDefinition
+					Definition = new ControllerDefinition(Port1.Definition.Name)
 					{
-						Name = Port1.Definition.Name,
-
 						BoolButtons = new[] { "Reset", "Pause" }
 								.Concat(Port1.Definition.BoolButtons)
 								.Concat(Port2.Definition.BoolButtons)
@@ -46,10 +42,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				}
 				else
 				{
-					Definition = new ControllerDefinition
+					Definition = new ControllerDefinition(Port1.Definition.Name)
 					{
-						Name = Port1.Definition.Name,
-
 						BoolButtons = new[] { "Reset", "Pause" }
 								.Concat(Port1.Definition.BoolButtons)
 								.Concat(Port2.Definition.BoolButtons)

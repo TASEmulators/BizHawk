@@ -46,9 +46,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				HashSet<string> hiddenPorts,
 				string controllerDeckName)
 			{
-				var ret = new ControllerDefinition
+				ControllerDefinition ret = new(controllerDeckName)
 				{
-					Name = controllerDeckName,
 					CategoryLabels =
 					{
 						{ "Power", "System" },

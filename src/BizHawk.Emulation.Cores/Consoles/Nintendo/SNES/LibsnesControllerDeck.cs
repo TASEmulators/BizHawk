@@ -60,13 +60,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				Factory(ss.RightPort, ss)
 			};
 
-			Definition = ControllerDefinitionMerger.GetMerged(_ports.Select(p => p.Definition), out var tmp);
+			Definition = ControllerDefinitionMerger.GetMerged(
+				"SNES Controller",
+				_ports.Select(p => p.Definition),
+				out var tmp);
 			_mergers = tmp.ToArray();
 
 			// add buttons that the core itself will handle
 			Definition.BoolButtons.Add("Reset");
 			Definition.BoolButtons.Add("Power");
-			Definition.Name = "SNES Controller";
 		}
 
 		public void NativeInit(LibsnesApi api)
@@ -161,7 +163,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			return order[btn];
 		}
 
-		private static readonly ControllerDefinition _definition = new ControllerDefinition
+		private static readonly ControllerDefinition _definition = new("(SNES Controller fragment)")
 		{
 			BoolButtons = Buttons.OrderBy(ButtonOrder).ToList()
 		};
@@ -223,7 +225,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			return order[btn];
 		}
 
-		private static readonly ControllerDefinition _definition = new ControllerDefinition
+		private static readonly ControllerDefinition _definition = new("(SNES Controller fragment)")
 		{
 			BoolButtons = Enumerable.Range(0, 4)
 			.SelectMany(i => Buttons
@@ -253,7 +255,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 	{
 		public LibsnesApi.SNES_INPUT_PORT PortType { get; } = LibsnesApi.SNES_INPUT_PORT.Multitap;
 
-		private static readonly ControllerDefinition _definition = new ControllerDefinition
+		private static readonly ControllerDefinition _definition = new("(SNES Controller fragment)")
 		{
 			BoolButtons = Enumerable.Range(0, 32).Select(i => "0B" + i).ToList()
 		};
@@ -270,7 +272,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 	{
 		public LibsnesApi.SNES_INPUT_PORT PortType { get; } = LibsnesApi.SNES_INPUT_PORT.None;
 
-		private static readonly ControllerDefinition _definition = new ControllerDefinition();
+		private static readonly ControllerDefinition _definition = new("(SNES Controller fragment)");
 
 		public ControllerDefinition Definition { get; } = _definition;
 
@@ -285,7 +287,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public LibsnesApi.SNES_INPUT_PORT PortType => LibsnesApi.SNES_INPUT_PORT.Mouse;
 
 		private static readonly ControllerDefinition _definition
-			= new ControllerDefinition { BoolButtons = { "0Mouse Left", "0Mouse Right" } }
+			= new ControllerDefinition("(SNES Controller fragment)") { BoolButtons = { "0Mouse Left", "0Mouse Right" } }
 				.AddXYPair("0Mouse {0}", AxisPairOrientation.RightAndDown, (-127).RangeTo(127), 0); //TODO verify direction against hardware, R+D inferred from behaviour in Mario Paint
 
 		public ControllerDefinition Definition => _definition;
@@ -327,7 +329,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public LibsnesApi.SNES_INPUT_PORT PortType => LibsnesApi.SNES_INPUT_PORT.SuperScope;
 
 		private static readonly ControllerDefinition _definition
-			= new ControllerDefinition { BoolButtons = { "0Trigger", "0Cursor", "0Turbo", "0Pause" } }
+			= new ControllerDefinition("(SNES Controller fragment)") { BoolButtons = { "0Trigger", "0Cursor", "0Turbo", "0Pause" } }
 				.AddLightGun("0Scope {0}");
 
 		public ControllerDefinition Definition => _definition;
@@ -361,7 +363,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public LibsnesApi.SNES_INPUT_PORT PortType => LibsnesApi.SNES_INPUT_PORT.Justifier;
 
 		private static readonly ControllerDefinition _definition
-			= new ControllerDefinition { BoolButtons = { "0Trigger", "0Start", "1Trigger", "1Start" } }
+			= new ControllerDefinition("(SNES Controller fragment)") { BoolButtons = { "0Trigger", "0Start", "1Trigger", "1Start" } }
 				.AddLightGun("0Justifier {0}")
 				.AddLightGun("1Justifier {0}");
 
