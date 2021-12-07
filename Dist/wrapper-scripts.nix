@@ -15,6 +15,9 @@
 }:
 let
 	glHackLibs = rec {
+		Fedora_33 = [
+			"libdrm_amdgpu.so.1" "libdrm_nouveau.so.2" "libdrm_radeon.so.1" "libedit.so.0" "libelf.so.1" "libffi.so.6" "libLLVM-11.so" "libtinfo.so.6" "libvulkan.so.1"
+		];
 		Manjaro_21_0_3 = [ # should match Arch and Manjaro releases from '20/'21
 			"libdrm_amdgpu.so.1" "libdrm_nouveau.so.2" "libdrm_radeon.so.1" "libedit.so.0" "libelf.so.1" "libffi.so.7" "libGLdispatch.so.0" "libicudata.so.69" "libicuuc.so.69" "libLLVM-11.so" "liblzma.so.5" "libncursesw.so.6" "libsensors.so.5" "libstdc++.so.6" "libvulkan.so.1" "libxml2.so.2" "libz.so.1" "libzstd.so.1"
 		];
@@ -81,7 +84,7 @@ in rec {
 		for l in ${builtins.concatStringsSep " " glHackLibsFlat}; do
 			if [ -e "$BIZHAWK_GLHACKDIR/$l" ]; then continue; fi
 			# else it's either a broken link or it doesn't exist, we use ln -f to cover both
-			for d in /usr/lib /usr/lib/x86_64-linux-gnu /usr/lib64 /lib /lib64; do
+			for d in /usr/lib64 /usr/lib /usr/lib/x86_64-linux-gnu /lib64 /lib; do
 				if [ -e "$d/$l" ]; then
 					ln -fsvT "$d/$l" "$BIZHAWK_GLHACKDIR/$l"
 					break
@@ -89,7 +92,7 @@ in rec {
 			done
 		done
 
-		for d in /usr/lib/dri /usr/lib/x86_64-linux-gnu/dri; do
+		for d in /usr/lib64/dri /usr/lib/dri /usr/lib/x86_64-linux-gnu/dri; do
 			if [ -e "$d" ]; then
 				export LIBGL_DRIVERS_PATH=$d
 				break
