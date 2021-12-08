@@ -1016,11 +1016,35 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else if (addr < 0x4020)
 			{
-				ret = ReadReg(addr); // we're not rebasing the register just to keep register names canonical
+				// oam dma access board memory if cpu is not accessing registers
+				// this means that OAM DMA can actually access memory that the cpu cannot
+				if (oam_dma_exec)
+				{
+					if ((cpu.PC >= 0x4000) && (cpu.PC < 0x4020))
+					{
+						ret = ReadReg(addr);
+					}
+					else
+					{
+						ret = Board.ReadExp(addr - 0x4000);
+					}
+				}
+				else
+				{
+					ret = ReadReg(addr);
+				}
 			}
 			else if (addr < 0x6000)
 			{
-				ret = Board.ReadExp(addr - 0x4000);
+				// oam dma will access registers if cpu is accessing them
+				if (oam_dma_exec && ((oam_dma_addr & 0xFF00) == 0x4000) && (cpu.PC >= 0x4000) && (cpu.PC < 0x4020))
+				{
+					ret = ReadReg(addr & 0x401F);
+				}
+				else
+				{
+					ret = Board.ReadExp(addr - 0x4000);
+				}
 			}
 			else
 			{
@@ -1082,7 +1106,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else if (addr < 0x4020)
 			{
-				WriteReg(addr, value);  //we're not rebasing the register just to keep register names canonical
+				WriteReg(addr, value);
 			}
 			else if (addr < 0x6000)
 			{
