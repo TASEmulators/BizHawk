@@ -10,7 +10,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class GambatteLink : ILinkable, IRomInfo
 	{
-		[CoreConstructor(VSystemID.Raw.GBL)]
+		[CoreConstructor(VSystemID.Raw.GBL, LinkCountHack = 2)]
+		[CoreConstructor(VSystemID.Raw.GBL, LinkCountHack = 3)]
+		[CoreConstructor(VSystemID.Raw.GBL, LinkCountHack = 4)]
 		public GambatteLink(CoreLoadParameters<GambatteLinkSettings, GambatteLinkSyncSettings> lp)
 		{
 			if (lp.Roms.Count < MIN_PLAYERS || lp.Roms.Count > MAX_PLAYERS)

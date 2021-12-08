@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 
 		public bool do_frame_fill;
 
-		[CoreConstructor(VSystemID.Raw.GBL)]
+		[CoreConstructor(VSystemID.Raw.GBL, LinkCountHack = 3)]
 		public GBHawkLink3x(CoreLoadParameters<GBLink3xSettings, GBLink3xSyncSettings> lp)
 		{
 			if (lp.Roms.Count != 3)
