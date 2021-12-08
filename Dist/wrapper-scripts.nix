@@ -58,7 +58,7 @@ in rec {
 		fi
 
 		export LD_LIBRARY_PATH=$BIZHAWK_HOME/dll:$BIZHAWK_GLHACKDIR:${lib.makeLibraryPath [ openal ]}
-		${commentUnless debugPInvokes}MONO_LOG_LEVEL=debug MONO_LOG_MASK=dll
+		${commentUnless debugPInvokes}export MONO_LOG_LEVEL=debug MONO_LOG_MASK=dll
 		if [ "$1" = "--mono-no-redirect" ]; then
 			shift
 			printf "(received --mono-no-redirect, stdout was not captured)\n" >EmuHawkMono_laststdout.txt
