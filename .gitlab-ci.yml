@@ -11,6 +11,14 @@ stages:
   - test
   - package
 
+.with-cachix-mono:
+  before_script:
+    - nix-env -iA nixpkgs.cachix
+    - cachix use $CACHIX_CACHE_NAME
+  image: nixos/nix:latest
+  variables:
+    CACHIX_CACHE_NAME: mono-for-bizhawk
+
 build:
   artifacts:
     expire_in: "30 minutes"
@@ -33,6 +41,28 @@ build_ext_tools:
       when: always
   script:
     - for d in $CI_PROJECT_DIR/ExternalToolProjects/*; do if [ -d "$d" ]; then cd "$d" && ./build_release.sh; fi; done
+  stage: test
+
+build_nix_master:
+  allow_failure: true
+  extends: .with-cachix-mono
+  needs: []
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: always
+  script:
+    - nix-build --pure -A emuhawk --arg useCWDAsSource true
+  stage: test
+
+build_nix_prev_release:
+  allow_failure: true
+  extends: .with-cachix-mono
+  needs: []
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: always
+  script:
+    - nix-build --pure -A emuhawk
   stage: test
 
 check_style:
