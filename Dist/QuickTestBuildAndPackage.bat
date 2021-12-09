@@ -9,20 +9,15 @@ if "%1"=="" (
 git --version > NUL
 @if errorlevel 1 goto MISSINGGIT
 
-for /f "usebackq tokens=*" %%A in (`vswhere -version "[16.0,17.0)" -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe`) do SET MSBUILDPATH=%%A
-
-IF "%MSBUILDPATH%"=="" GOTO MISSINGMSBUILD
-
-rem nuget restore ..\BizHawk.sln
-rem call "%MSBUILDPATH%" ..\BizHawk.sln "/p:Configuration=Release;Platform=Any CPU;MachineRunAnalyzersDuringBuild=true" /t:rebuild
 dotnet build ..\BizHawk.sln -c Release --no-incremental
+@if not errorlevel 0 goto DOTNETBUILDFAILED
 rem -p:Platform="Any CPU"
 rem -p:MachineRunAnalyzersDuringBuild=true
 
 rem we have to do this twice right now
 dotnet build ..\BizHawk.sln -c Release
 
-@if errorlevel 1 goto MSBUILDFAILED
+@if errorlevel 1 goto DOTNETBUILDFAILED
 
 rmdir /s /q temp
 del /s %NAME%
@@ -77,13 +72,13 @@ rem DONE!
 rmdir /s /q temp
 goto END
 
-:MISSINGMSBUILD
-@echo Missing msbuild.exe. can't make distro without that.
+:DOTNETBUILDFAILED
+set ERRORLEVEL=1
+@echo dotnet build failed. Usual cause: user committed broken code, or unavailable dotnet sdk
 goto END
-:MSBUILDFAILED
-@echo msbuild failed. Usual cause: user committed broken code.
-goto END
+
 :MISSINGGIT
+set ERRORLEVEL=1
 @echo missing git.exe. can't make distro without that.
 :END
 
