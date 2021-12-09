@@ -1,5 +1,5 @@
-#include:
-#- template: Security/SAST.gitlab-ci.yml
+.disabled_not_a_job_include:
+- template: Security/SAST.gitlab-ci.yml
 
 variables:
   CI_HAWK_ARTIFACT_NAME: "BizHawk_devbuild_${CI_COMMIT_SHORT_SHA}"
@@ -7,14 +7,14 @@ variables:
   CI_HAWK_TMPARTIFACT_NAME: "BizHawk_tempbuild_${CI_COMMIT_REF_SLUG}_${CI_COMMIT_SHORT_SHA}"
 
 stages:
-  - build
-  - test
-  - package
+- build
+- test
+- package
 
-.with-cachix-mono:
+.with_cachix_mono:
   before_script:
-    - nix-env -iA nixpkgs.cachix
-    - cachix use $CACHIX_CACHE_NAME
+  - nix-env -iA nixpkgs.cachix
+  - cachix use $CACHIX_CACHE_NAME
   image: nixos/nix:latest
   variables:
     CACHIX_CACHE_NAME: mono-for-bizhawk
@@ -24,96 +24,96 @@ build:
     expire_in: "30 minutes"
     name: "$CI_HAWK_TMPARTIFACT_NAME"
     paths:
-      - output
+    - output
   image: mcr.microsoft.com/dotnet/sdk:6.0
   script:
-    - if [ "$CI_COMMIT_REF_SLUG" == "release" ]; then Dist/UpdateVersionInfoForRelease.sh; fi
-    - Dist/BuildRelease.sh
+  - if [ "$CI_COMMIT_REF_SLUG" == "release" ]; then Dist/UpdateVersionInfoForRelease.sh; fi
+  - Dist/BuildRelease.sh
   stage: build
 
 build_ext_tools:
   allow_failure: true
   image: mcr.microsoft.com/dotnet/sdk:6.0
   needs:
-    - build
+  - build
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule"'
-      when: always
+  - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    when: always
   script:
-    - for d in $CI_PROJECT_DIR/ExternalToolProjects/*; do if [ -d "$d" ]; then cd "$d" && ./build_release.sh; fi; done
+  - for d in $CI_PROJECT_DIR/ExternalToolProjects/*; do if [ -d "$d" ]; then cd "$d" && ./build_release.sh; fi; done
   stage: test
 
 build_nix_master:
   allow_failure: true
-  extends: .with-cachix-mono
+  extends: .with_cachix_mono
   needs: []
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule"'
-      when: always
+  - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    when: always
   script:
-    - nix-build --pure -A emuhawk --arg useCWDAsSource true
+  - nix-build --pure -A emuhawk --arg useCWDAsSource true
   stage: test
 
 build_nix_prev_release:
   allow_failure: true
-  extends: .with-cachix-mono
+  extends: .with_cachix_mono
   needs: []
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule"'
-      when: always
+  - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    when: always
   script:
-    - nix-build --pure -A emuhawk
+  - nix-build --pure -A emuhawk
   stage: test
 
 check_style:
   image: mcr.microsoft.com/dotnet/sdk:6.0
   needs:
-    - job: build
-      artifacts: false
+  - job: build
+    artifacts: false
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule"'
-      when: always
-      allow_failure: true
-    - if: $BIZHAWKBUILD_USE_ANALYZERS != null
-      when: always
-      allow_failure: false
+  - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    when: always
+    allow_failure: true
+  - if: $BIZHAWKBUILD_USE_ANALYZERS != null
+    when: always
+    allow_failure: false
   script:
-    - cd src/BizHawk.Version
-    - dotnet build -c Release # configuration doesn't really matter as the assembly is empty
-    - ../../Dist/BuildRelease.sh -p:MachineRunAnalyzersDuringBuild=true
+  - cd src/BizHawk.Version
+  - dotnet build -c Release # configuration doesn't really matter as the assembly is empty
+  - ../../Dist/BuildRelease.sh -p:MachineRunAnalyzersDuringBuild=true
   stage: test
 
-#infersharp:
-#  artifacts:
-#    paths:
-#      - infer-out/*
-#  image: mcr.microsoft.com/infersharp:v1.0
-#  needs:
-#    - job: build
-#  rules:
-#    - if: '$CI_PIPELINE_SOURCE == "schedule"'
-#      when: always
-#  script:
-#    - mkdir "infer-in"
-#    - find output -name "BizHawk.*.dll" -exec cp "{}" "infer-in" \;
-#    - cp "output/EmuHawk.exe" "infer-in"
-#    - /app/run_infersharp.sh "infer-in"
-#  stage: test
+.disabled_job_infersharp:
+  artifacts:
+    paths:
+    - infer-out/*
+  image: mcr.microsoft.com/infersharp:v1.0
+  needs:
+  - job: build
+  rules:
+  - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    when: always
+  script:
+  - mkdir "infer-in"
+  - find output -name "BizHawk.*.dll" -exec cp "{}" "infer-in" \;
+  - cp "output/EmuHawk.exe" "infer-in"
+  - /app/run_infersharp.sh "infer-in"
+  stage: test
 
 .package_linux_x64:
   artifacts:
     expire_in: "1 month"
     name: "$CI_HAWK_ARTIFACT_NAME"
     paths:
-      - "$CI_HAWK_ARTIFACT_NAME_TAR"
+    - "$CI_HAWK_ARTIFACT_NAME_TAR"
   image: debian:buster-slim
   needs:
-    - build
+  - build
   script:
-    - su -c "apt-get update && apt-get -y install p7zip-full"
-    - Dist/Package.sh "linux-x64"
-    - cd packaged_output
-    - tar -cf "../$CI_HAWK_ARTIFACT_NAME_TAR" *
+  - su -c "apt-get update && apt-get -y install p7zip-full"
+  - Dist/Package.sh "linux-x64"
+  - cd packaged_output
+  - tar -cf "../$CI_HAWK_ARTIFACT_NAME_TAR" *
   stage: package
 
 .package_windows_x64:
@@ -121,37 +121,37 @@ check_style:
     expire_in: "1 month"
     name: "$CI_HAWK_ARTIFACT_NAME"
     paths:
-      - ./*
+    - ./*
   image: debian:buster-slim
   needs:
-    - build
+  - build
   script:
-    - su -c "apt-get update && apt-get -y install p7zip-full"
-    - Dist/Package.sh "windows-x64"
-      # now we replace $CI_PROJECT_DIR with $CI_PROJECT_DIR/packaged_output, so that the archival step will put everything at the top level
-    - mv packaged_output ..
-    - cd ..
-    - rm -fr $CI_PROJECT_DIR
-    - mv packaged_output $CI_PROJECT_DIR
+  - su -c "apt-get update && apt-get -y install p7zip-full"
+  - Dist/Package.sh "windows-x64"
+    # now we replace $CI_PROJECT_DIR with $CI_PROJECT_DIR/packaged_output, so that the archival step will put everything at the top level
+  - mv packaged_output ..
+  - cd ..
+  - rm -fr $CI_PROJECT_DIR
+  - mv packaged_output $CI_PROJECT_DIR
   stage: package
 
 package_devbuild_linux:
   extends: .package_linux_x64
   rules:
-    - if: $CI_COMMIT_REF_SLUG == "master"
-      when: always
+  - if: $CI_COMMIT_REF_SLUG == "master"
+    when: always
 
 package_devbuild_windows:
   extends: .package_windows_x64
   rules:
-    - if: $CI_COMMIT_REF_SLUG == "master"
-      when: always
+  - if: $CI_COMMIT_REF_SLUG == "master"
+    when: always
 
 package_release_linux:
   extends: .package_linux_x64
   rules:
-    - if: $CI_COMMIT_REF_SLUG == "release"
-      when: always
+  - if: $CI_COMMIT_REF_SLUG == "release"
+    when: always
   variables:
     CI_HAWK_ARTIFACT_NAME: "BizHawk-VERSIONHERE-linux-x64.tar" # .zip is added automatically
     CI_HAWK_ARTIFACT_NAME_TAR: "BizHawk-linux-x64-$CI_COMMIT_SHORT_SHA.tar"
@@ -159,34 +159,34 @@ package_release_linux:
 package_release_windows:
   extends: .package_windows_x64
   rules:
-    - if: $CI_COMMIT_REF_SLUG == "release"
-      when: always
+  - if: $CI_COMMIT_REF_SLUG == "release"
+    when: always
   variables:
     CI_HAWK_ARTIFACT_NAME: "BizHawk-VERSIONHERE-win-x64"
 
 run_tests:
   artifacts:
     paths:
-      - test_output/*.coverage.xml
+    - test_output/*.coverage.xml
     reports:
       junit:
-        - test_output/*.coverage.xml
+      - test_output/*.coverage.xml
   image: mcr.microsoft.com/dotnet/sdk:6.0
   needs:
-    - job: build
-      artifacts: false
+  - job: build
+    artifacts: false
   script:
-    - cd src/BizHawk.Version
-    - dotnet build -c Release # configuration doesn't really matter as the assembly is empty
-    - ../../Dist/BuildTestRelease.sh
+  - cd src/BizHawk.Version
+  - dotnet build -c Release # configuration doesn't really matter as the assembly is empty
+  - ../../Dist/BuildTestRelease.sh
   stage: test
 
-#sast:
-#  variables:
-#    SAST_EXCLUDED_ANALYZERS: bandit, brakeman, eslint, flawfinder, gosec, kubesec, nodejs-scan, phpcs-security-audit, pmd-apex, sobelow, spotbugs
-#  stage: test
+.disabled_job_sast:
+  variables:
+    SAST_EXCLUDED_ANALYZERS: bandit, brakeman, eslint, flawfinder, gosec, kubesec, nodejs-scan, phpcs-security-audit, pmd-apex, sobelow, spotbugs
+  stage: test
 
-#cache:
-#  key: "$CI_COMMIT_REF_SLUG"
-#  paths:
-#    - $HOME/.nuget/packages # probably won't work; set NUGET_PACKAGES to `BizHawk_master/.nuget_packages` and cache that
+.disabled_not_a_job_cache:
+  key: "$CI_COMMIT_REF_SLUG"
+  paths:
+  - $HOME/.nuget/packages # probably won't work; set NUGET_PACKAGES to `BizHawk_master/.nuget_packages` and cache that
