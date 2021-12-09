@@ -19,7 +19,18 @@ stages:
   variables:
     CACHIX_CACHE_NAME: mono-for-bizhawk
 
-build:
+build_asms_debug:
+  artifacts:
+    expire_in: "30 minutes"
+    name: "$CI_HAWK_TMPARTIFACT_NAME"
+    paths:
+      - output
+  image: mcr.microsoft.com/dotnet/sdk:6.0
+  script:
+    - Dist/BuildDebug.sh
+  stage: build
+
+build_asms_release:
   artifacts:
     expire_in: "30 minutes"
     name: "$CI_HAWK_TMPARTIFACT_NAME"
@@ -35,7 +46,7 @@ build_ext_tools:
   allow_failure: true
   image: mcr.microsoft.com/dotnet/sdk:6.0
   needs:
-  - build
+  - build_asms_release
   rules:
   - if: '$CI_PIPELINE_SOURCE == "schedule"'
     when: always
@@ -68,7 +79,7 @@ build_nix_prev_release:
 check_style:
   image: mcr.microsoft.com/dotnet/sdk:6.0
   needs:
-  - job: build
+  - job: build_asms_release
     artifacts: false
   rules:
   - if: '$CI_PIPELINE_SOURCE == "schedule"'
@@ -89,7 +100,7 @@ check_style:
     - infer-out/*
   image: mcr.microsoft.com/infersharp:v1.0
   needs:
-  - job: build
+  - job: build_asms_release
   rules:
   - if: '$CI_PIPELINE_SOURCE == "schedule"'
     when: always
@@ -108,7 +119,9 @@ check_style:
     - "$CI_HAWK_ARTIFACT_NAME_TAR"
   image: debian:buster-slim
   needs:
-  - build
+  - build_asms_release
+  - job: build_asms_debug
+    artifacts: false
   script:
   - su -c "apt-get update && apt-get -y install p7zip-full"
   - Dist/Package.sh "linux-x64"
@@ -124,7 +137,9 @@ check_style:
     - ./*
   image: debian:buster-slim
   needs:
-  - build
+  - build_asms_release
+  - job: build_asms_debug
+    artifacts: false
   script:
   - su -c "apt-get update && apt-get -y install p7zip-full"
   - Dist/Package.sh "windows-x64"
@@ -173,7 +188,7 @@ run_tests:
       - test_output/*.coverage.xml
   image: mcr.microsoft.com/dotnet/sdk:6.0
   needs:
-  - job: build
+  - job: build_asms_release
     artifacts: false
   script:
   - cd src/BizHawk.Version
