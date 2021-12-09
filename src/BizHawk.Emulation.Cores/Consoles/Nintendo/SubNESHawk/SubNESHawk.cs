@@ -19,6 +19,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 				using_reset_timing = true
 			};
 
+			// Adds Reset timing control to controller definition
+			_nesCore.ResetControllerDefinition();
+
 			HardReset();
 			current_cycle = 0;
 			_nesCore.cpu.ext_ppu_cycle = current_cycle;

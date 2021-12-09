@@ -88,6 +88,41 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public bool CanProvideAsync => false;
 
+		public void ResetControllerDefinition()
+		{
+			ControllerDefinition = null;
+
+			ControllerDeck = ControllerSettings.Instantiate(ppu.LightGunCallback);
+			ControllerDefinition = ControllerDeck.ControllerDef;
+
+			// controls other than the deck
+			ControllerDefinition.BoolButtons.Add("Power");
+			ControllerDefinition.BoolButtons.Add("Reset");
+			if (Board is FDS b)
+			{
+				ControllerDefinition.BoolButtons.Add("FDS Eject");
+				for (int i = 0; i < b.NumSides; i++)
+				{
+					ControllerDefinition.BoolButtons.Add("FDS Insert " + i);
+				}
+			}
+
+			if (_isVS)
+			{
+				ControllerDefinition.BoolButtons.Add("Insert Coin P1");
+				ControllerDefinition.BoolButtons.Add("Insert Coin P2");
+				ControllerDefinition.BoolButtons.Add("Service Switch");
+			}
+
+			// Add in the reset timing axis for subneshawk
+			if (using_reset_timing && ControllerDefinition.Axes.Count == 0)
+			{
+				ControllerDefinition.AddAxis("Reset Cycle", 0.RangeTo(500000), 0);
+			}
+
+			ControllerDefinition.MakeImmutable();
+		}
+
 		public void SetSyncMode(SyncSoundMode mode)
 		{
 			if (mode != SyncSoundMode.Sync)
@@ -144,40 +179,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ppu = new PPU(this);
 			ram = new byte[0x800];
 			CIRAM = new byte[0x800];
-
-			// set controller definition first time only
-			if (ControllerDefinition == null)
-			{
-				ControllerDeck = ControllerSettings.Instantiate(ppu.LightGunCallback); // this assignment was outside the conditional for some reason? --yoshi
-				ControllerDefinition = ControllerDeck.ControllerDef;
-
-				// controls other than the deck
-				ControllerDefinition.BoolButtons.Add("Power");
-				ControllerDefinition.BoolButtons.Add("Reset");
-				if (Board is FDS b)
-				{
-					ControllerDefinition.BoolButtons.Add("FDS Eject");
-					for (int i = 0; i < b.NumSides; i++)
-					{
-						ControllerDefinition.BoolButtons.Add("FDS Insert " + i);
-					}
-				}
-
-				if (_isVS)
-				{
-					ControllerDefinition.BoolButtons.Add("Insert Coin P1");
-					ControllerDefinition.BoolButtons.Add("Insert Coin P2");
-					ControllerDefinition.BoolButtons.Add("Service Switch");
-				}
-			}
-
-			// Add in the reset timing axis for subneshawk
-			if (using_reset_timing && ControllerDefinition.Axes.Count == 0)
-			{
-				ControllerDefinition.AddAxis("Reset Cycle", 0.RangeTo(500000), 0);
-			}
-
-			ControllerDefinition.MakeImmutable();
 
 			// don't replace the magicSoundProvider on reset, as it's not needed
 			// if (magicSoundProvider != null) magicSoundProvider.Dispose();

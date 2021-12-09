@@ -70,6 +70,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					ser.Register(reader);
 				}
 			}
+
+			ResetControllerDefinition();
 		}
 
 		private static readonly bool USE_DATABASE = true;
