@@ -308,10 +308,10 @@ namespace BizHawk.Client.Common.movie.import
 				}
 
 				Result.Movie.AppendFrame(controllers);
-
-				Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(ss);
-				MaybeSetCorePreference(VSystemID.Raw.SNES, CoreNames.Bsnes, fileExt: ".smv");
 			}
+
+			Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(ss);
+			MaybeSetCorePreference(VSystemID.Raw.SNES, CoreNames.Bsnes, fileExt: ".smv");
 		}
 	}
 }
