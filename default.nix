@@ -118,7 +118,7 @@ let
 		mono = monoFinal;
 	};
 in {
-	bizhawkAssemblies = bizhawk; # assemblies, dependencies, and the gamedb are in `bin` output; bundled scripts, shaders, etc. are in `out` output
+	bizhawkAssemblies = bizhawk; # assemblies and dependencies, and some other immutable things like the gamedb, are in the `bin` output; the rest of the "assets" (bundled scripts, palettes, etc.) are in the `out` output
 	emuhawk = stdenv.mkDerivation rec {
 		pname = "emuhawk-monort";
 		version = hawkSourceInfo.version;
