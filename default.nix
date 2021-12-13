@@ -65,6 +65,7 @@ let
 		pname = "BizHawk";
 		version = hawkSourceInfo.version;
 		src = hawkSourceInfo.drv;
+		outputs = [ "bin" "out" ];
 		dotnet-sdk = if useCWDAsSource then dotnet-sdk_6 else dotnet-sdk_5;
 		nativeBuildInputs = [ p7zip ];
 		buildInputs = [ mesa monoFinal openal uname ];# ++ lib.optionals (forNixOS) [ gtk2-x11 ];
@@ -77,6 +78,10 @@ let
 			sed -i 's/$(git rev-parse --verify HEAD)/${hawkSourceInfo.shorthash}/' Dist/.InvokeCLIOnMainSln.sh
 			sed -i -e 's/$(git rev-parse --abbrev-ref HEAD)/${hawkSourceInfo.branch}/' -e 's/$(git log -1 --format="%h")/${hawkSourceInfo.shorthash}/' Build/standin.sh
 			sed -i 's/$(git rev-list HEAD --count)//' Build/standin.sh # const field is unused
+
+			# stop MSBuild from copying Assets, we'll do that later
+			sed -i '/Assets\/\*\*/d' src/BizHawk.Client.EmuHawk/BizHawk.Client.EmuHawk.csproj
+			sed -i '/mkdir "packaged_output\/Firmware/d' Dist/Package.sh # and we don't need this
 		'';
 		buildPhase = ''
 			${commentUnless useCWDAsSource}cd src/BizHawk.Version
@@ -85,7 +90,6 @@ let
 			Dist/Build${buildConfig}.sh ${extraDotnetBuildFlags}
 			printf "Nix" >output/dll/custombuild.txt
 			Dist/Package.sh linux-x64
-			rm packaged_output/EmuHawkMono.sh # replaced w/ below script(s)
 		'';
 		inherit doCheck;
 		checkPhase = ''
@@ -97,19 +101,24 @@ let
 #			Dist/Build${buildConfig}.sh -p:MachineRunAnalyzersDuringBuild=true ${extraDotnetBuildFlags}
 		'';
 		installPhase = ''
-			mkdir -p $out
-			cp -aTv packaged_output $out
+			cp -avT packaged_output $bin
+			cp -avt $bin Assets/defctrl.json && rm Assets/defctrl.json
+			cp -avt $bin/dll Assets/dll/* && rm -r Assets/dll
+			rm Assets/EmuHawkMono.sh # replaced w/ scripts from wrapperScripts
+			cp -avt $bin Assets/gamedb && rm -r Assets/gamedb
+			cp -avt $bin Assets/Shaders && rm -r Assets/Shaders
+			cp -avT Assets $out
 		'';
 		dontPatchELF = true;
 	};
 	wrapperScripts = import Dist/wrapper-scripts.nix {
 		inherit (pkgs) lib writeShellScriptBin writeText;
-		inherit commentUnless versionAtLeast mesa openal debugPInvokes initConfig;
+		inherit commentUnless versionAtLeast bizhawk mesa openal debugPInvokes initConfig;
 		hawkVersion = hawkSourceInfo.version;
 		mono = monoFinal;
 	};
 in {
-	bizhawkAssemblies = bizhawk;
+	bizhawkAssemblies = bizhawk; # assemblies, dependencies, and the gamedb are in `bin` output; bundled scripts, shaders, etc. are in `out` output
 	emuhawk = stdenv.mkDerivation rec {
 		pname = "emuhawk-monort";
 		version = hawkSourceInfo.version;

@@ -5,6 +5,7 @@
 , writeShellScriptBin
 , writeText
 # rundeps
+, bizhawk
 , mesa
 , mono
 , openal
@@ -49,13 +50,16 @@ in rec {
 			BIZHAWK_DATA_HOME="$HOME/.local/share"
 		fi
 		BIZHAWK_DATA_HOME="$BIZHAWK_DATA_HOME/emuhawk-monort-${hawkVersion}"
-		mkdir -p "$BIZHAWK_DATA_HOME"
-		cd "$BIZHAWK_DATA_HOME"
-
-		if [ ! -e config.json ]; then
-			cat ${initConfigFile} >config.json # cp kept the perms as 444 -- don't @ me
-			sed -i "s@%%BIZHAWK_DATA_HOME%%@$BIZHAWK_DATA_HOME@g" config.json
+		if [ ! -e "$BIZHAWK_DATA_HOME" ]; then
+			mkdir -p "$BIZHAWK_DATA_HOME"
+			cd "${bizhawk.out}"
+			find . -type f -not -wholename "./nix-support/*" -exec install -DvT "{}" "$BIZHAWK_DATA_HOME/{}" \;
 		fi
+		if [ ! -e "$BIZHAWK_DATA_HOME/config.json" ]; then
+			sed "s@%%BIZHAWK_DATA_HOME%%@$BIZHAWK_DATA_HOME@g" "${initConfigFile}" >"$BIZHAWK_DATA_HOME/config.json"
+			printf "wrote initial config to %s\n" "$BIZHAWK_DATA_HOME/config.json"
+		fi
+		cd "$BIZHAWK_DATA_HOME"
 
 		export LD_LIBRARY_PATH=$BIZHAWK_HOME/dll:$BIZHAWK_GLHACKDIR:${lib.makeLibraryPath [ openal ]}
 		${commentUnless debugPInvokes}export MONO_LOG_LEVEL=debug MONO_LOG_MASK=dll
