@@ -70,6 +70,7 @@ namespace BizHawk.Common
 			}
 		}
 
+		/// <inheritdoc cref="Parse(System.ReadOnlySpan{char},out int)"/>
 		public static Checksum Parse(string str, out int confidence)
 			=> Parse(str.AsSpan(), out confidence);
 
