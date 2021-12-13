@@ -19,7 +19,7 @@
 			path = ./.;
 			name = "BizHawk-${version}";
 			filter = let # this is just for speed, not any r13y concern
-				denyList = [ ".idea" "ExternalCoreProjects" "ExternalProjects" "ExternalToolProjects" "libHawk" "libmupen64plus" "LibretroBridge" "LuaInterface" "lynx" "psx" "quicknes" "submodules" "waterbox" "wonderswan" ];
+				denyList = [ ".git" ".idea" "ExternalCoreProjects" "ExternalProjects" "ExternalToolProjects" "libHawk" "libmupen64plus" "LibretroBridge" "LuaInterface" "lynx" "psx" "quicknes" "submodules" "waterbox" "wonderswan" ];
 			in path: type: type == "regular" || (type == "directory" && !builtins.elem (baseNameOf path) denyList);
 		};
 	}
