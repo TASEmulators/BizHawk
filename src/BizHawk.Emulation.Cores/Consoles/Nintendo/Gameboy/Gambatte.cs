@@ -135,7 +135,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				InitMemoryDomains();
 
-				RomDetails = $"{game.Name}\r\n{SHA1Checksum.ComputePrefixedHex(file)}\r\n{MD5Checksum.ComputePrefixedHex(file)}\r\n";
+				RomDetails = $"{game.Name}\r\n{SHA1Checksum.Compute(file)}\r\n{MD5Checksum.Compute(file)}\r\n";
 
 				byte[] buff = new byte[32];
 				LibGambatte.gambatte_romtitle(GambatteState, buff);

@@ -192,7 +192,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				byte[] DecryptedFirmware = new byte[decrypedfwlen];
 				Marshal.Copy(decryptedfw, DecryptedFirmware, 0, decrypedfwlen);
 				FreeDecryptedFirmware(decryptedfw);
-				var hash = SHA1Checksum.ComputeDigestHex(DecryptedFirmware);
+				var hash = SHA1Checksum.Compute(DecryptedFirmware).DigestHexEncoded();
 				if (hash != goodhashes[0] && hash != goodhashes[1] && hash != goodhashes[2])
 				{
 					comm.ShowMessage("Potentially bad firmware dump! Decrypted hash " + hash + " does not match known good dumps.");

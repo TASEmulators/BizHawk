@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			string romDetails;
 			if (lp.Discs.Count > 0)
 			{
-				string DiscHashWarningText(GameInfo game, string discHash)
+				string DiscHashWarningText(GameInfo game, Checksum discHash)
 				{
 					if (game == null || game.IsRomStatusBad() || game.Status == RomStatus.NotInDatabase)
 					{
@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 					}
 					else
 					{
-						return $"Disc was identified (99.99% confidently) as known good with disc id hash CRC32:{discHash}\n"
+						return $"Disc was identified (99.99% confidently) as known good with disc id hash {discHash}\n"
 							+ "Nonetheless it could be an unrecognized romhack or patched version.\n"
 							+ $"According to redump.org, the ideal hash for entire disc is: CRC32:{game.GetStringValue("dh")}\n"
 							+ "The file you loaded hasn't been hashed entirely (it would take too long)\n"

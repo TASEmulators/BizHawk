@@ -15,8 +15,8 @@ namespace BizHawk.Client.Common
 		public string Extension { get; }
 
 		// false positives of the header check (512 bytes in intv games)
-		public const string Flappy_Bird_INTV = "SHA1:C4ABF77C2CFC0E7B590E2260C56360F9738C45D6";
-		public const string Minehunter_INTV = "SHA1:F91D4507BAF41626D839308659E68DE048C767C8";
+		public static readonly SHA1Checksum Flappy_Bird_INTV = SHA1Checksum.FromHexEncoding("C4ABF77C2CFC0E7B590E2260C56360F9738C45D6");
+		public static readonly SHA1Checksum Minehunter_INTV = SHA1Checksum.FromHexEncoding("F91D4507BAF41626D839308659E68DE048C767C8");
 
 		private const int BankSize = 1024;
 
@@ -60,7 +60,7 @@ namespace BizHawk.Client.Common
 			stream.Position = 0;
 			stream.Read(FileData, 0, fileLength);
 
-			string SHA1_check = SHA1Checksum.ComputePrefixedHex(FileData);
+			var SHA1_check = SHA1Checksum.Compute(FileData);
 
 			// if there was no header offset, RomData is equivalent to FileData
 			// (except in cases where the original interleaved file data is necessary.. in that case we'll have problems..

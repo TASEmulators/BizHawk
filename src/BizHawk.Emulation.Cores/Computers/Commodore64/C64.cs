@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			if (_board.CartPort.IsConnected)
 			{
 				var first = _roms[0]; // There are no multi-cart cart games, so just hardcode first
-				RomDetails = $"{lp.Game.Name}\r\n{SHA1Checksum.ComputePrefixedHex(first)}\r\n{MD5Checksum.ComputePrefixedHex(first)}\r\nMapper Impl \"{_board.CartPort.CartridgeType}\"";
+				RomDetails = $"{lp.Game.Name}\r\n{SHA1Checksum.Compute(first)}\r\n{MD5Checksum.Compute(first)}\r\nMapper Impl \"{_board.CartPort.CartridgeType}\"";
 			}
 
 			SetupMemoryDomains();

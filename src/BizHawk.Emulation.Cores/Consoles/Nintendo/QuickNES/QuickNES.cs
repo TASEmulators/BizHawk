@@ -244,16 +244,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				for (int i = 0; i < chrrom.Size; i++)
 					ms.WriteByte(chrrom.PeekByte(i));
 
-			var sha1 = SHA1Checksum.ComputeDigestHex(ms.ToArray());
+			var sha1 = SHA1Checksum.Compute(ms.ToArray());
 			Console.WriteLine("Hash for BootGod: {0}", sha1);
 
 			// Bail out on ROM's known to not be playable by this core
-			if (HashBlackList.Contains(sha1))
+			if (HashBlackList.Contains(sha1.DigestHexEncoded()))
 			{
 				throw new UnsupportedGameException("Game known to not be playable in this core");
 			}
 
-			sha1 = "sha1:" + sha1; // huh?
 			var carts = BootGodDb.Identify(sha1);
 
 			if (carts.Count > 0)
@@ -295,15 +294,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				throw new ObjectDisposedException(GetType().Name);
 		}
 
+		private static readonly SHA1Checksum ChecksumNeedsPatchMsPacmanTengen = SHA1Checksum.FromHexEncoding("93010514AA1300499ABC8F145D6ABCDBF3084090");
+
 		// Fix some incorrect ines header entries that QuickNES uses to load games.
 		// we need to do this from the raw file since QuickNES hasn't had time to process it yet.
 		private byte[] FixInesHeader(byte[] file)
 		{
-			var sha1 = SHA1Checksum.ComputeDigestHex(file);
+			var sha1 = SHA1Checksum.Compute(file);
 			bool didSomething = false;
 
 			Console.WriteLine(sha1);
-			if (sha1== "93010514AA1300499ABC8F145D6ABCDBF3084090") // Ms. Pac Man (Tengen) [!]
+			if (sha1 == ChecksumNeedsPatchMsPacmanTengen)
 			{
 				file[6] &= 0xFE;
 				didSomething = true;
@@ -318,7 +319,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			return file;
 		}
 
-		// These games are known to not work in quicknes but quicknes thinks it can run them, bail out if one of these is loaded
+		/// <summary>These games are known to not work in quicknes but quicknes thinks it can run them, bail out if one of these is loaded</summary>
+		/// <remarks>yeah I ain't making this strongly-typed --yoshi</remarks>
 		private static readonly HashSet<string> HashBlackList = new HashSet<string>
 		{
 			"E39CA4477D3B96E1CE3A1C61D8055187EA5F1784", // Bill and Ted's Excellent Adventure

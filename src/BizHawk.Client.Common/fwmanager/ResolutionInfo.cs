@@ -1,5 +1,6 @@
 #nullable enable
 
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -8,7 +9,7 @@ namespace BizHawk.Client.Common
 	{
 		public string? FilePath { get; set; }
 
-		public string? Hash { get; set; }
+		public SHA1Checksum? Hash { get; set; }
 
 		public FirmwareFile? KnownFirmwareFile { get; set; }
 

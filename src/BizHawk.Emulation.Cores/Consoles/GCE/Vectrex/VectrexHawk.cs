@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 	{
 		internal static class RomChecksums
 		{
-			public const string Minestorm = "SHA1:65D07426B520DDD3115D40F255511E0FD2E20AE7";
+			public static readonly SHA1Checksum Minestorm = SHA1Checksum.FromHexEncoding("65D07426B520DDD3115D40F255511E0FD2E20AE7");
 		}
 
 		public byte[] RAM = new byte[0x400];
@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			/*var Bios =*/ _bios = comm.CoreFileProvider.GetFirmwareOrThrow(new("VEC", "Bios"), "BIOS Not Found, Cannot Load");
 			/*var Mine =*/ minestorm = comm.CoreFileProvider.GetFirmwareOrThrow(new("VEC", "Minestorm"), "Minestorm Not Found, Cannot Load");
 
-			var romHashSHA1 = SHA1Checksum.ComputePrefixedHex(rom);
+			var romHashSHA1 = SHA1Checksum.Compute(rom);
 			Console.WriteLine(romHashSHA1);
 
 			_rom = rom;

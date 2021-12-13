@@ -232,7 +232,7 @@ namespace BizHawk.Client.Common
 			// TODO - use more sophisticated IDer
 			var discType = new DiscIdentifier(disc).DetectDiscType();
 			var discHasher = new DiscHasher(disc);
-			var discHash = discType == DiscType.SonyPSX
+			Checksum discHash = discType is DiscType.SonyPSX
 				? discHasher.Calculate_PSX_BizIDHash()
 				: discHasher.OldHash();
 

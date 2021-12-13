@@ -2,24 +2,24 @@ using System;
 using System.Diagnostics;
 using System.Security.Cryptography;
 
-using BizHawk.Common.BufferExtensions;
-
 namespace BizHawk.Common
 {
 	/// <summary>uses <see cref="SHA256"/> implementation from BCL</summary>
 	/// <seealso cref="CRC32Checksum"/>
 	/// <seealso cref="MD5Checksum"/>
 	/// <seealso cref="SHA1Checksum"/>
-	public static class SHA256Checksum
+	public sealed class SHA256Checksum : Checksum
 	{
 		/// <remarks>in bits</remarks>
 		internal const int EXPECTED_LENGTH = 256;
 
+		internal const string NAME = "SHA-256";
+
 		internal const string PREFIX = "SHA256";
 
 #if NET6_0
-		public static byte[] Compute(ReadOnlySpan<byte> data)
-			=> SHA256.HashData(data);
+		public static SHA256Checksum Compute(ReadOnlySpan<byte> data)
+			=> new(SHA256.HashData(data));
 #else
 		private static SHA256? _sha256Impl;
 
@@ -36,23 +36,29 @@ namespace BizHawk.Common
 			}
 		}
 
-		public static byte[] Compute(byte[] data)
-			=> SHA256Impl.ComputeHash(data);
+		public static SHA256Checksum Compute(byte[] data)
+			=> new(SHA256Impl.ComputeHash(data));
 
-		public static string ComputeDigestHex(byte[] data)
-			=> Compute(data).BytesToHexString();
-
-		public static string ComputePrefixedHex(byte[] data)
-			=> $"{PREFIX}:{ComputeDigestHex(data)}";
-
-		public static byte[] Compute(ReadOnlySpan<byte> data)
+		public static SHA256Checksum Compute(ReadOnlySpan<byte> data)
 			=> Compute(data.ToArray());
 #endif
 
-		public static string ComputeDigestHex(ReadOnlySpan<byte> data)
-			=> Compute(data).BytesToHexString();
+		public static SHA256Checksum FromDigestBytes(byte[] digest)
+		{
+			AssertCorrectLength(EXPECTED_LENGTH, digest.Length * 8, NAME);
+			return new(digest);
+		}
 
-		public static string ComputePrefixedHex(ReadOnlySpan<byte> data)
-			=> $"{PREFIX}:{ComputeDigestHex(data)}";
+		/// <param name="hexEncode">w/o prefix</param>
+		public static SHA256Checksum FromHexEncoding(string hexEncode)
+		{
+			AssertCorrectLength(EXPECTED_LENGTH, hexEncode.Length * 4, NAME);
+			return new(hexEncode.HexStringToBytes());
+		}
+
+		protected override string Prefix => PREFIX;
+
+		private SHA256Checksum(byte[] digest)
+			: base(digest) {}
 	}
 }

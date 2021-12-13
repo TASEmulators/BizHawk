@@ -23,7 +23,7 @@ namespace BizHawk.Client.Common
 		[LuaMethodExample("local stgamget = gameinfo.getromhash( );")]
 		[LuaMethod("getromhash", "returns the hash of the currently loaded rom, if a rom is loaded")]
 		public string GetRomHash()
-			=> APIs.GameInfo.GetGameInfo()?.Hash ?? string.Empty;
+			=> (APIs.GameInfo.GetGameInfo()?.Hash)?.DigestHexEncoded() ?? string.Empty;
 
 		[LuaMethodExample("if ( gameinfo.indatabase( ) ) then\r\n\tconsole.log( \"returns whether or not the currently loaded rom is in the game database\" );\r\nend;")]
 		[LuaMethod("indatabase", "returns whether or not the currently loaded rom is in the game database")]

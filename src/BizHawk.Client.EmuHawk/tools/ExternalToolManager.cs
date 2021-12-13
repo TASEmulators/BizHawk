@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public sealed class ExternalToolManager
 	{
-		private readonly Func<(CoreSystem System, string Hash)> _getLoadedRomInfoCallback;
+		private readonly Func<(CoreSystem System, Checksum Hash)> _getLoadedRomInfoCallback;
 
 		private PathEntryCollection _paths;
 
@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 
 		internal readonly IList<string> PossibleExtToolTypeNames = new List<string>();
 
-		public ExternalToolManager(PathEntryCollection paths, Func<(CoreSystem System, string Hash)> getLoadedRomInfoCallback)
+		public ExternalToolManager(PathEntryCollection paths, Func<(CoreSystem System, Checksum Hash)> getLoadedRomInfoCallback)
 		{
 			_getLoadedRomInfoCallback = getLoadedRomInfoCallback;
 			Restart(paths);

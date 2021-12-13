@@ -392,10 +392,11 @@ namespace BizHawk.Client.EmuHawk
 				switch (k)
 				{
 					case HeaderKeys.Sha1:
-						if (_game.Hash != v)
+						var hashStr = _game.Hash.ToString();
+						if (hashStr != v)
 						{
 							item.BackColor = Color.Pink;
-							item.ToolTipText = $"Expected: {v}\nActual: {_game.Hash}";
+							item.ToolTipText = $"Expected: {v}\nActual: {hashStr}";
 						}
 						break;
 					case HeaderKeys.EmulatorVersion:

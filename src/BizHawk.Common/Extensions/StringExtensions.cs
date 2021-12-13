@@ -47,6 +47,16 @@ namespace BizHawk.Common.StringExtensions
 				? str.Substring(0, str.Length - 1)
 				: str;
 
+		/// <returns>the substring of <paramref name="str"/> after the first occurrence of <paramref name="delimiter"/>, or the original <paramref name="str"/> if not found</returns>
+		public static string SubstringAfter(this string str, char delimiter) => str.SubstringAfter(delimiter, notFoundValue: str);
+
+		/// <returns>the substring of <paramref name="str"/> after the first occurrence of <paramref name="delimiter"/>, or <paramref name="notFoundValue"/> if not found</returns>
+		public static string SubstringAfter(this string str, char delimiter, string notFoundValue)
+		{
+			var index = str.IndexOf(delimiter);
+			return index < 0 ? notFoundValue : str.Substring(index + 1, str.Length - index - 1);
+		}
+
 		/// <returns>
 		/// <paramref name="str"/> with the trailing substring <paramref name="suffix"/> removed, or
 		/// the original <paramref name="str"/> if <paramref name="str"/> does not end with <paramref name="suffix"/>

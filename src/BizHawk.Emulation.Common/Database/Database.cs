@@ -14,28 +14,12 @@ namespace BizHawk.Emulation.Common
 {
 	public static class Database
 	{
-		private static readonly Dictionary<string, CompactGameInfo> DB = new Dictionary<string, CompactGameInfo>();
+		private static readonly Dictionary<Checksum, CompactGameInfo> DB = new();
 
 		/// <summary>
 		/// blocks until the DB is done loading
 		/// </summary>
 		private static readonly EventWaitHandle acquire = new EventWaitHandle(false, EventResetMode.ManualReset);
-
-		private static string RemoveHashType(string hash)
-		{
-			hash = hash.ToUpper();
-			if (hash.StartsWith("MD5:"))
-			{
-				hash = hash.Substring(4);
-			}
-
-			if (hash.StartsWith("SHA1:"))
-			{
-				hash = hash.Substring(5);
-			}
-
-			return hash;
-		}
 
 		private static void LoadDatabase_Escape(string line, string path, bool silent)
 		{
@@ -60,9 +44,7 @@ namespace BizHawk.Emulation.Common
 		public static void SaveDatabaseEntry(string path, CompactGameInfo gameInfo)
 		{
 			var sb = new StringBuilder();
-			sb
-				.Append("sha1:") // TODO: how do we know it is sha1?
-				.Append(gameInfo.Hash)
+			sb.Append(gameInfo.Hash)
 				.Append('\t');
 
 			sb.Append(gameInfo.Status switch
@@ -121,8 +103,7 @@ namespace BizHawk.Emulation.Common
 
 					var game = new CompactGameInfo
 					{
-						Hash = RemoveHashType(items[0].ToUpper()),
-						// remove a hash type identifier. well don't really need them for indexing (they're just there for human purposes)
+						Hash = Checksum.Parse(items[0], out _),
 						Status = items[1].Trim()
 							switch
 						{
@@ -171,12 +152,11 @@ namespace BizHawk.Emulation.Common
 			});
 		}
 
-		public static GameInfo CheckDatabase(string hash)
+		public static GameInfo CheckDatabase(Checksum hash)
 		{
 			acquire.WaitOne();
 
-			var hashNoType = RemoveHashType(hash);
-			DB.TryGetValue(hashNoType, out var cgi);
+			DB.TryGetValue(hash, out var cgi);
 			if (cgi == null)
 			{
 				Console.WriteLine($"DB: hash {hash} not in game database.");
@@ -190,19 +170,19 @@ namespace BizHawk.Emulation.Common
 		{
 			acquire.WaitOne();
 
-			var hashCRC32 = CRC32Checksum.ComputeDigestHex(romData);
+			var hashCRC32 = CRC32Checksum.Compute(romData);
 			if (DB.TryGetValue(hashCRC32, out var cgi))
 			{
 				return new GameInfo(cgi);
 			}
 
-			var hashMD5 = MD5Checksum.ComputeDigestHex(romData);
+			var hashMD5 = MD5Checksum.Compute(romData);
 			if (DB.TryGetValue(hashMD5, out cgi))
 			{
 				return new GameInfo(cgi);
 			}
 
-			var hashSHA1 = SHA1Checksum.ComputeDigestHex(romData);
+			var hashSHA1 = SHA1Checksum.Compute(romData);
 			if (DB.TryGetValue(hashSHA1, out cgi))
 			{
 				return new GameInfo(cgi);
@@ -216,7 +196,7 @@ namespace BizHawk.Emulation.Common
 				NotInDatabase = true
 			};
 
-			Console.WriteLine($"Game was not in DB. CRC: {hashCRC32} MD5: {hashMD5}");
+			Console.WriteLine($"Game was not in DB.  {hashCRC32}  {hashMD5}");
 
 			var ext = Path.GetExtension(fileName)?.ToUpperInvariant();
 
@@ -399,7 +379,7 @@ namespace BizHawk.Emulation.Common
 		public string Name { get; set; }
 		public string System { get; set; }
 		public string MetaData { get; set; }
-		public string Hash { get; set; }
+		public Checksum Hash { get; set; }
 		public string Region { get; set; }
 		public RomStatus Status { get; set; }
 		public string ForcedCore { get; set; }

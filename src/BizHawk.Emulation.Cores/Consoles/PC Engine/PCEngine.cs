@@ -68,12 +68,12 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					throw new Exception();
 				}
 
-				lp.Game.FirmwareHash = SHA1Checksum.ComputeDigestHex(rom);
+				lp.Game.FirmwareHash = SHA1Checksum.Compute(rom);
 
 				Init(lp.Game, rom);
 
 				// the default RomStatusDetails don't do anything with Disc
-				RomDetails = $"{lp.Game.Name}\r\nDisk partial hash:{new DiscHasher(disc).OldHash()}";
+				RomDetails = $"{lp.Game.Name}\r\nDisk partial hash:{new DiscHasher(disc).OldHash()?.ToString() ?? "no data track found"}";
 
 				_controllerDeck = new PceControllerDeck(
 					_syncSettings.Port1,

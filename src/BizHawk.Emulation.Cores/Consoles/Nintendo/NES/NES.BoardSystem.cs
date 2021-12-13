@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 //TODO - could stringpool the BootGod DB for a pedantic optimization
@@ -138,7 +140,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// looks up from the bootgod DB
 		/// </summary>
-		private CartInfo IdentifyFromBootGodDB(IEnumerable<string> hash_sha1)
+		private CartInfo IdentifyFromBootGodDB(IEnumerable<SHA1Checksum> hash_sha1)
 		{
 			foreach (var hash in hash_sha1)
 			{
@@ -153,7 +155,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// looks up from the game DB
 		/// </summary>
-		private CartInfo IdentifyFromGameDB(string hash)
+		private CartInfo IdentifyFromGameDB(Checksum hash)
 		{
 			var gi = Database.CheckDatabase(hash);
 			if (gi == null) return null;

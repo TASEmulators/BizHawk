@@ -2,6 +2,8 @@
 
 using System.IO;
 
+using BizHawk.Common;
+
 namespace BizHawk.Client.Common
 {
 	/// <summary>represents a file found on disk in the user's firmware directory matching a file in our database</summary>
@@ -9,9 +11,9 @@ namespace BizHawk.Client.Common
 	{
 		public readonly FileInfo FileInfo;
 
-		public readonly string Hash;
+		public readonly SHA1Checksum Hash;
 
-		public RealFirmwareFile(FileInfo fileInfo, string hash)
+		public RealFirmwareFile(FileInfo fileInfo, SHA1Checksum hash)
 		{
 			FileInfo = fileInfo;
 			Hash = hash;

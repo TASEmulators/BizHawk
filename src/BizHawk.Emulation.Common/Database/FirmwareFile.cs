@@ -1,10 +1,12 @@
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Common
 {
 	public readonly struct FirmwareFile
 	{
 		public readonly string Description;
 
-		public readonly string Hash;
+		public readonly SHA1Checksum Hash;
 
 		public readonly string Info;
 
@@ -15,7 +17,7 @@ namespace BizHawk.Emulation.Common
 		public readonly long Size;
 
 		public FirmwareFile(
-			string hash,
+			SHA1Checksum hash,
 			long size,
 			string recommendedName,
 			string desc,

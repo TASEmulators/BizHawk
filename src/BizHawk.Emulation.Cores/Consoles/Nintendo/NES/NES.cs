@@ -323,8 +323,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			CartInfo choice = null;
 			CartInfo iNesHeaderInfo = null;
 			CartInfo iNesHeaderInfoV2 = null;
-			List<string> hash_sha1_several = new List<string>();
-			string hash_sha1 = null, hash_md5 = null;
+			List<SHA1Checksum> hash_sha1_several = new();
+			SHA1Checksum hash_sha1 = null;
+			MD5Checksum hash_md5 = null;
 			Unif unif = null;
 
 			Dictionary<string, string> InitialMapperRegisterValues = new Dictionary<string, string>(SyncSettings.BoardProperties);
@@ -418,8 +419,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					// we don't have an ines header, check if the game hash is in the game db
 					exists = false;
 					Console.WriteLine("headerless ROM, using Game DB");
-					hash_md5 = MD5Checksum.ComputePrefixedHex(file);
-					hash_sha1 = SHA1Checksum.ComputePrefixedHex(file);
+					hash_md5 = MD5Checksum.Compute(file);
+					hash_sha1 = SHA1Checksum.Compute(file);
 					choice = IdentifyFromGameDB(hash_md5) ?? IdentifyFromGameDB(hash_sha1);
 					if (choice==null)
 					{
@@ -443,9 +444,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					//now that we know we have an iNES header, we can try to ignore it.
 
 					var trimmed = file.AsSpan(start: 16, length: file.Length - 16);
-					hash_sha1 = SHA1Checksum.ComputePrefixedHex(trimmed);
+					hash_sha1 = SHA1Checksum.Compute(trimmed);
 					hash_sha1_several.Add(hash_sha1);
-					hash_md5 = MD5Checksum.ComputePrefixedHex(trimmed);
+					hash_md5 = MD5Checksum.Compute(trimmed);
 
 					LoadWriteLine("Found iNES header:");
 					LoadWriteLine(iNesHeaderInfo.ToString());
@@ -485,11 +486,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						}
 						msTemp.Flush();
 						var bytes = msTemp.ToArray();
-						var hash = SHA1Checksum.ComputePrefixedHex(bytes);
+						var hash = SHA1Checksum.Compute(bytes);
 						LoadWriteLine("  PRG (8KB) + CHR hash: {0}", hash);
 						hash_sha1_several.Add(hash);
-						hash = MD5Checksum.ComputePrefixedHex(bytes);
-						LoadWriteLine("  PRG (8KB) + CHR hash:  {0}", hash);
+						LoadWriteLine("  PRG (8KB) + CHR hash:  {0}", MD5Checksum.Compute(bytes));
 					}
 				}
 			}

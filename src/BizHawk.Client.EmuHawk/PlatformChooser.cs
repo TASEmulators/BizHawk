@@ -33,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 				: $"{RomGame.RomData.Length / 1024:n0}kb";
 
 			ExtensionLabel.Text = RomGame.Extension.ToLower();
-			HashBox.Text = RomGame.GameInfo.Hash;
+			HashBox.Text = RomGame.GameInfo.Hash.ToString();
 			int count = 0;
 			int spacing = 25;
 			foreach (var platform in _availableSystems)

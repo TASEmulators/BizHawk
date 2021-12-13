@@ -5,7 +5,6 @@ using System.Text;
 using System.IO;
 
 using BizHawk.Common;
-using BizHawk.Common.BufferExtensions;
 using BizHawk.Common.IOExtensions;
 
 
@@ -96,7 +95,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				Cart.WramBattery = true;
 			}
 
-			Cart.Sha1 = SHA1Checksum.ComputeConcat(Prg, Chr).BytesToHexString();
+			Cart.Sha1 = SHA1Checksum.ComputeConcat(Prg, Chr);
 
 			// other code will expect this
 			if (Chr.Length == 0)

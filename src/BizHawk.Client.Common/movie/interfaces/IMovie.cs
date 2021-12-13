@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -90,12 +92,12 @@ namespace BizHawk.Client.Common
 		bool StartsFromSaveRam { get; set; }
 		string GameName { get; set; }
 		string SystemID { get; set; }
-		string Hash { get; set; }
+		Checksum Hash { get; set; }
 		string Author { get; set; }
 		string Core { get; set; }
 		string EmulatorVersion { get; set; }
 		string OriginalEmulatorVersion { get; set; }
-		string FirmwareHash { get; set; }
+		SHA1Checksum FirmwareHash { get; set; }
 		string BoardName { get; set; }
 
 		/// <summary>

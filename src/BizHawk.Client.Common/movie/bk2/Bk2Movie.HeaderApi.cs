@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 
+using BizHawk.Common;
+
 namespace BizHawk.Client.Common
 {
 	public partial class Bk2Movie
@@ -106,15 +108,16 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public string Hash
+		public Checksum Hash
 		{
-			get => Header[HeaderKeys.Sha1];
+			get => Checksum.Parse(Header[HeaderKeys.Sha1], out _);
 			set
 			{
-				if (Header[HeaderKeys.Sha1] != value)
+				var hashStr = value.ToString();
+				if (Header[HeaderKeys.Sha1] != hashStr)
 				{
 					Changes = true;
-					Header[HeaderKeys.Sha1] = value;
+					Header[HeaderKeys.Sha1] = hashStr;
 				}
 			}
 		}
@@ -184,15 +187,16 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public string FirmwareHash
+		public SHA1Checksum FirmwareHash
 		{
-			get => Header[HeaderKeys.FirmwareSha1];
+			get => (SHA1Checksum) Checksum.Parse(Header[HeaderKeys.FirmwareSha1], out _);
 			set
 			{
-				if (Header[HeaderKeys.FirmwareSha1] != value)
+				var hashStr = value.ToString();
+				if (Header[HeaderKeys.FirmwareSha1] != hashStr)
 				{
 					Changes = true;
-					Header[HeaderKeys.FirmwareSha1] = value;
+					Header[HeaderKeys.FirmwareSha1] = hashStr;
 				}
 			}
 		}

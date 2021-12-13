@@ -57,6 +57,13 @@ namespace BizHawk.Tests.Common.StringExtensions
 		[TestMethod]
 		public void TestSubstringAfter()
 		{
+			Assert.AreEqual("def", abcdef.SubstringAfter('c', qrs));
+			Assert.AreEqual(string.Empty, abcdef.SubstringAfter('f', qrs));
+			Assert.AreEqual(string.Empty, "f".SubstringAfter('f', qrs));
+			Assert.AreEqual("abcdab", "abcdabcdab".SubstringAfter('d', qrs));
+			Assert.AreEqual(qrs, abcdef.SubstringAfter('x', qrs));
+			Assert.AreEqual(qrs, string.Empty.SubstringAfter('c', qrs));
+
 			Assert.AreEqual("def", abcdef.SubstringAfter("bc", qrs));
 			Assert.AreEqual(abcdef, abcdef.SubstringAfter(string.Empty, qrs));
 			Assert.AreEqual(string.Empty, abcdef.SubstringAfter(abcdef, qrs));

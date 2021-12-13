@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.GBHawk;
@@ -230,7 +231,7 @@ namespace BizHawk.Client.Common
 					var key = firmware.ID.MovieHeaderKey;
 					if (!movie.HeaderEntries.ContainsKey(key))
 					{
-						movie.HeaderEntries.Add(key, firmware.Hash);
+						movie.HeaderEntries.Add(key, firmware.Hash?.ToString());
 					}
 				}
 			}

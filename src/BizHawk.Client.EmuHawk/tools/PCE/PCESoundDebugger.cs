@@ -103,13 +103,13 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				bw.Flush();
-				var md5 = MD5Checksum.ComputeDigestHex(_waveformTemp);
+				var md5 = MD5Checksum.Compute(_waveformTemp);
 
 				if (!_psgEntryTable.TryGetValue(md5, out var entry))
 				{
 					entry = new PsgEntry
 					{
-						Name = md5,
+						Name = md5.DigestHexEncoded(),
 						WaveForm = waveform,
 						Active = true,
 						HitCount = 1,
@@ -161,7 +161,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly PsgEntry[] _lastSamples = new PsgEntry[8];
 		private readonly List<PsgEntry> _psgEntries = new List<PsgEntry>();
-		private readonly Dictionary<string, PsgEntry> _psgEntryTable = new Dictionary<string, PsgEntry>();
+		private readonly Dictionary<MD5Checksum, PsgEntry> _psgEntryTable = new();
 
 		// 32*16 samples, 16bit, mono, 8khz (but we'll change the sample rate)
 		private static readonly byte[] EmptyWav = {

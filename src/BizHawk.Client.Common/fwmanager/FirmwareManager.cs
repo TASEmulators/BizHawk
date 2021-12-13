@@ -16,10 +16,10 @@ namespace BizHawk.Client.Common
 	{
 		private static readonly FirmwareID NDS_FIRMWARE = new("NDS", "firmware");
 
-		public static (byte[] Patched, string ActualHash) PerformPatchInMemory(byte[] @base, in FirmwarePatchOption patchOption)
+		public static (byte[] Patched, SHA1Checksum ActualHash) PerformPatchInMemory(byte[] @base, in FirmwarePatchOption patchOption)
 		{
 			var patched = patchOption.Patches.Aggregate(seed: @base, (a, fpd) => fpd.ApplyToMutating(a));
-			return (patched, SHA1Checksum.ComputeDigestHex(patched));
+			return (patched, SHA1Checksum.Compute(patched));
 		}
 
 		public static (string FilePath, int FileSize, FirmwareFile FF) PerformPatchOnDisk(string baseFilename, in FirmwarePatchOption patchOption, PathEntryCollection pathEntries)
@@ -94,14 +94,14 @@ namespace BizHawk.Client.Common
 
 		private sealed class RealFirmwareReader
 		{
-			private readonly Dictionary<string, RealFirmwareFile> _dict = new();
+			private readonly Dictionary<SHA1Checksum, RealFirmwareFile> _dict = new();
 
-			public IReadOnlyDictionary<string, RealFirmwareFile> Dict => _dict;
+			public IReadOnlyDictionary<SHA1Checksum, RealFirmwareFile> Dict => _dict;
 
 			public RealFirmwareFile Read(FileInfo fi)
 			{
 				using var fs = fi.OpenRead();
-				var hash = SHA1Checksum.ComputeDigestHex(fs.ReadAllBytes());
+				var hash = SHA1Checksum.Compute(fs.ReadAllBytes());
 				return _dict![hash] = new RealFirmwareFile(fi, hash);
 			}
 		}

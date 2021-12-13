@@ -28,27 +28,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 	{
 		internal static class RomChecksums
 		{
-			public const string BombermanCollection = "SHA1:385F8FAFA53A83F8F65E1E619FE124BBF7DB4A98";
+			public static readonly SHA1Checksum BombermanCollection = SHA1Checksum.FromHexEncoding("385F8FAFA53A83F8F65E1E619FE124BBF7DB4A98");
 
-			public const string BombermanSelectionKORNotInGameDB = "SHA1:52451464A9F4DD5FAEFE4594954CBCE03BFF0D05";
+			public static readonly SHA1Checksum BombermanSelectionKORNotInGameDB = SHA1Checksum.FromHexEncoding("52451464A9F4DD5FAEFE4594954CBCE03BFF0D05");
 
-			public const string MortalKombatIAndIIUSAEU = "SHA1:E337489255B33367CE26194FC4038346D3388BD9";
+			public static readonly SHA1Checksum MortalKombatIAndIIUSAEU = SHA1Checksum.FromHexEncoding("E337489255B33367CE26194FC4038346D3388BD9");
 
-			public const string PirateRockMan8 = "MD5:CAE0998A899DF2EE6ABA8E7695C2A096";
+			public static readonly MD5Checksum PirateRockMan8 = MD5Checksum.FromHexEncoding("CAE0998A899DF2EE6ABA8E7695C2A096");
 
-			public const string PirateSachen1 = "MD5:D3C1924D847BC5D125BF54C2076BE27A";
+			public static readonly MD5Checksum PirateSachen1 = MD5Checksum.FromHexEncoding("D3C1924D847BC5D125BF54C2076BE27A");
 
-			public const string UnknownRomA = "MD5:97122B9B183AAB4079C8D36A4CE6E9C1";
+			public static readonly MD5Checksum UnknownRomA = MD5Checksum.FromHexEncoding("97122B9B183AAB4079C8D36A4CE6E9C1");
 
-			public const string WisdomTreeExodus = "SHA1:685D5A47A1FC386D7B451C8B2733E654B7779B71";
+			public static readonly SHA1Checksum WisdomTreeExodus = SHA1Checksum.FromHexEncoding("685D5A47A1FC386D7B451C8B2733E654B7779B71");
 
-			public const string WisdomTreeJoshua = "SHA1:019B4B0E76336E2613AE6E8B415B5C65F6D465A5";
+			public static readonly SHA1Checksum WisdomTreeJoshua = SHA1Checksum.FromHexEncoding("019B4B0E76336E2613AE6E8B415B5C65F6D465A5");
 
-			public const string WisdomTreeKJVBible = "SHA1:6362FDE9DCB08242A64F2FBEA33DE93D1776A6E0";
+			public static readonly SHA1Checksum WisdomTreeKJVBible = SHA1Checksum.FromHexEncoding("6362FDE9DCB08242A64F2FBEA33DE93D1776A6E0");
 
-			public const string WisdomTreeNIVBible = "SHA1:136CF97A8C3560EC9DB3D8F354D91B7DE27E0743";
+			public static readonly SHA1Checksum WisdomTreeNIVBible = SHA1Checksum.FromHexEncoding("136CF97A8C3560EC9DB3D8F354D91B7DE27E0743");
 
-			public const string WisdomTreeSpiritualWarfare = "SHA1:6E6AE5DBD8FF8B8F41B8411EF119E96E4ECF763F";
+			public static readonly SHA1Checksum WisdomTreeSpiritualWarfare = SHA1Checksum.FromHexEncoding("6E6AE5DBD8FF8B8F41B8411EF119E96E4ECF763F");
 		}
 
 		// this register controls whether or not the GB BIOS is mapped into memory
@@ -188,9 +188,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				is_GB_in_GBC = true; // for movie files
 			}
 
-			var romHashMD5 = MD5Checksum.ComputePrefixedHex(rom);
+			var romHashMD5 = MD5Checksum.Compute(rom);
 			Console.WriteLine(romHashMD5);
-			var romHashSHA1 = SHA1Checksum.ComputePrefixedHex(rom);
+			var romHashSHA1 = SHA1Checksum.Compute(rom);
 			Console.WriteLine(romHashSHA1);
 
 			_rom = rom;
@@ -507,7 +507,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
-		public string Setup_Mapper(string romHashMD5, string romHashSHA1)
+		public string Setup_Mapper(MD5Checksum romHashMD5, SHA1Checksum romHashSHA1)
 		{
 			// setup up mapper based on header entry
 			string mppr;
@@ -566,15 +566,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 
 			// special case for multi cart mappers
-			if (romHashMD5 is RomChecksums.UnknownRomA
-				|| romHashSHA1 is RomChecksums.BombermanCollection or RomChecksums.MortalKombatIAndIIUSAEU or RomChecksums.BombermanSelectionKORNotInGameDB)
+			if (romHashMD5 == RomChecksums.UnknownRomA
+				|| romHashSHA1 == RomChecksums.BombermanCollection
+				|| romHashSHA1 == RomChecksums.MortalKombatIAndIIUSAEU
+				|| romHashSHA1 == RomChecksums.BombermanSelectionKORNotInGameDB)
 			{
 				Console.WriteLine("Using Multi-Cart Mapper");
 				mapper = new MapperMBC1Multi();
 			}
 			
 			// Wisdom Tree does not identify their mapper, so use hash instead
-			else if (romHashSHA1 is RomChecksums.WisdomTreeJoshua or RomChecksums.WisdomTreeSpiritualWarfare or RomChecksums.WisdomTreeExodus or RomChecksums.WisdomTreeKJVBible or RomChecksums.WisdomTreeNIVBible)
+			else if (romHashSHA1 == RomChecksums.WisdomTreeJoshua
+				|| romHashSHA1 == RomChecksums.WisdomTreeSpiritualWarfare
+				|| romHashSHA1 == RomChecksums.WisdomTreeExodus
+				|| romHashSHA1 == RomChecksums.WisdomTreeKJVBible
+				|| romHashSHA1 == RomChecksums.WisdomTreeNIVBible)
 			{
 				Console.WriteLine("Using Wisdom Tree Mapper");
 				mapper = new MapperWT();

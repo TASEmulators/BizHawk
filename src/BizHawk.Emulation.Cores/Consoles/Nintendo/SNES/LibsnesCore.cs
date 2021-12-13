@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				}
 
 				sgbRomData = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("SNES", "Rom_SGB"), "SGB Rom is required for SGB emulation.");
-				game.FirmwareHash = SHA1Checksum.ComputeDigestHex(sgbRomData);
+				game.FirmwareHash = SHA1Checksum.Compute(sgbRomData);
 			}
 
 			_settings = (SnesSettings)settings ?? new SnesSettings();

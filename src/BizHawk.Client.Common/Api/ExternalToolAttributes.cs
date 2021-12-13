@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Client.Common
@@ -15,7 +16,7 @@ namespace BizHawk.Client.Common
 		{
 			public override bool NotApplicableTo(CoreSystem system) => false;
 
-			public override bool NotApplicableTo(string romHash, CoreSystem? system) => false;
+			public override bool NotApplicableTo(Checksum romHash, CoreSystem? system) => false;
 		}
 
 		[AttributeUsage(AttributeTargets.Class)]
@@ -23,47 +24,45 @@ namespace BizHawk.Client.Common
 		{
 			public override bool NotApplicableTo(CoreSystem system) => system == CoreSystem.Null;
 
-			public override bool NotApplicableTo(string romHash, CoreSystem? system) => system == CoreSystem.Null;
+			public override bool NotApplicableTo(Checksum romHash, CoreSystem? system) => system == CoreSystem.Null;
 		}
 
 		[AttributeUsage(AttributeTargets.Class)]
 		public sealed class RomWhitelist : ExternalToolApplicabilityAttributeBase
 		{
-			private readonly IList<string> _romHashes;
+			private readonly IList<Checksum> _romHashes;
 
 			private readonly CoreSystem _system;
 
 			public RomWhitelist(CoreSystem system, params string[] romHashes)
 			{
 				if (system == CoreSystem.Null) throw new ArgumentException("there are no roms for the NULL system", nameof(system));
-				if (!romHashes.All(NumericStringExtensions.IsHex)) throw new ArgumentException("misformatted hash", nameof(romHashes));
 				_system = system;
-				_romHashes = romHashes.ToList();
+				_romHashes = romHashes.Select(static s => Checksum.Parse(s, out _)).ToList();
 			}
 
 			public override bool NotApplicableTo(CoreSystem system) => system != _system;
 
-			public override bool NotApplicableTo(string romHash, CoreSystem? system) => system != _system || !_romHashes.Contains(romHash);
+			public override bool NotApplicableTo(Checksum romHash, CoreSystem? system) => system != _system || !_romHashes.Contains(romHash);
 		}
 
 		[AttributeUsage(AttributeTargets.Class)]
 		public sealed class SingleRom : ExternalToolApplicabilityAttributeBase
 		{
-			private readonly string _romHash;
+			private readonly Checksum _romHash;
 
 			private readonly CoreSystem _system;
 
 			public SingleRom(CoreSystem system, string romHash)
 			{
 				if (system == CoreSystem.Null) throw new ArgumentException("there are no roms for the NULL system", nameof(system));
-				if (!romHash.IsHex()) throw new ArgumentException("misformatted hash", nameof(romHash));
 				_system = system;
-				_romHash = romHash;
+				_romHash = Checksum.Parse(romHash, out _);
 			}
 
 			public override bool NotApplicableTo(CoreSystem system) => system != _system;
 
-			public override bool NotApplicableTo(string romHash, CoreSystem? system) => system != _system || romHash != _romHash;
+			public override bool NotApplicableTo(Checksum romHash, CoreSystem? system) => system != _system || romHash != _romHash;
 		}
 
 		[AttributeUsage(AttributeTargets.Class)]
@@ -78,7 +77,7 @@ namespace BizHawk.Client.Common
 
 			public override bool NotApplicableTo(CoreSystem system) => system != _system;
 
-			public override bool NotApplicableTo(string romHash, CoreSystem? system) => system != _system;
+			public override bool NotApplicableTo(Checksum romHash, CoreSystem? system) => system != _system;
 		}
 	}
 
@@ -86,9 +85,9 @@ namespace BizHawk.Client.Common
 	{
 		public abstract bool NotApplicableTo(CoreSystem system);
 
-		public abstract bool NotApplicableTo(string romHash, CoreSystem? system);
+		public abstract bool NotApplicableTo(Checksum romHash, CoreSystem? system);
 
-		public bool NotApplicableTo(string romHash) => NotApplicableTo(romHash, null);
+		public bool NotApplicableTo(Checksum romHash) => NotApplicableTo(romHash, null);
 
 		public class DuplicateException : Exception {}
 	}

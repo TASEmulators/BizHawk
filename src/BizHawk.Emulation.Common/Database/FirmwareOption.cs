@@ -1,8 +1,10 @@
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Common
 {
 	public readonly struct FirmwareOption
 	{
-		public readonly string Hash;
+		public readonly SHA1Checksum Hash;
 
 		public readonly FirmwareID ID;
 
@@ -12,7 +14,7 @@ namespace BizHawk.Emulation.Common
 
 		public readonly FirmwareOptionStatus Status;
 
-		public FirmwareOption(FirmwareID id, string hash, long size, FirmwareOptionStatus status)
+		public FirmwareOption(FirmwareID id, SHA1Checksum hash, long size, FirmwareOptionStatus status)
 		{
 			Hash = hash;
 			ID = id;

@@ -5,17 +5,19 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Globalization;
 
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Common
 {
 	public interface IGameInfo
 	{
 		string Name { get; }
 		string System { get; }
-		string Hash { get; }
+		Checksum Hash { get; }
 		string Region { get; }
 		RomStatus Status { get; }
 		bool NotInDatabase { get; }
-		string FirmwareHash { get; }
+		SHA1Checksum FirmwareHash { get; }
 		string ForcedCore { get; }
 	}
 
@@ -23,11 +25,11 @@ namespace BizHawk.Emulation.Common
 	{
 		public string Name { get; set; }
 		public string System { get; set; }
-		public string Hash { get; set; }
+		public Checksum Hash { get; set; }
 		public string Region { get; set; }
 		public RomStatus Status { get; set; } = RomStatus.NotInDatabase;
 		public bool NotInDatabase { get; set; } = true;
-		public string FirmwareHash { get; set; }
+		public SHA1Checksum FirmwareHash { get; set; }
 		public string ForcedCore { get; private set; }
 
 		private Dictionary<string, string> Options { get; set; } = new Dictionary<string, string>();
@@ -47,7 +49,7 @@ namespace BizHawk.Emulation.Common
 		{
 			Name = "Null",
 			System = VSystemID.Raw.NULL,
-			Hash = "",
+			Hash = Checksum.NotAChecksum,
 			Region = "",
 			Status = RomStatus.GoodDump,
 			ForcedCore = "",

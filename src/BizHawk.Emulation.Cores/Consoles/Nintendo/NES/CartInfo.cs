@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
@@ -30,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public string BoardType { get; set; }
 		public string Pcb { get; set; }
 
-		public string Sha1 { get; set; }
+		public SHA1Checksum Sha1 { get; set; }
 		public string System { get; set; }
 		public List<string> Chips { get; set; } = new List<string>();
 

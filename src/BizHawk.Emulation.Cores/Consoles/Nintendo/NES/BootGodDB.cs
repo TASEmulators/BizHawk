@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private readonly bool validate = true;
 
-		private readonly Bag<string, CartInfo> _sha1Table = new Bag<string, CartInfo>();
+		private readonly Bag<SHA1Checksum, CartInfo> _sha1Table = new();
 
 		private static BootGodDb instance;
 
@@ -135,7 +135,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						{
 							currCart = new CartInfo();
 							currCart.System = xmlReader.GetAttribute("system");
-							currCart.Sha1 = $"SHA1:{xmlReader.GetAttribute("sha1")}";
+							currCart.Sha1 = SHA1Checksum.FromHexEncoding(xmlReader.GetAttribute("sha1")!);
 							currCart.Name = currName;
 							state = 2;
 						}
@@ -149,7 +149,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			} //end xmlreader loop
 		}
 
-		public static List<CartInfo> Identify(string sha1)
+		public static List<CartInfo> Identify(SHA1Checksum sha1)
 		{
 			if (acquire == null) throw new InvalidOperationException("Bootgod DB not initialized. It's a client responsibility because only a client knows where the database is located.");
 			acquire.WaitOne();

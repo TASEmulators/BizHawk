@@ -98,11 +98,15 @@ namespace BizHawk.Client.Common
 
 						ret.Assets.Add(new KeyValuePair<string, byte[]>(filename, data));
 						ret.AssetFullPaths.Add(fullPath);
-						var sha1 = SHA1Checksum.Compute(data);
+#if NET5_0
+						hashStream.Write(SHA1Checksum.Compute(data).Digest);
+#else
+						var sha1 = SHA1Checksum.Compute(data).Digest.ToArray();
 						hashStream.Write(sha1, 0, sha1.Length);
+#endif
 					}
 
-					ret.GI.Hash = SHA1Checksum.ComputeDigestHex(hashStream.GetBufferAsSpan());
+					ret.GI.Hash = SHA1Checksum.Compute(hashStream.GetBufferAsSpan());
 					hashStream.Close();
 					if (originalIndex != null)
 					{
@@ -112,7 +116,7 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					ret.GI.Hash = "0000000000000000000000000000000000000000";
+					ret.GI.Hash = Checksum.NotAChecksum;
 				}
 
 				return ret;

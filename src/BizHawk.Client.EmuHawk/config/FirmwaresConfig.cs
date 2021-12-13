@@ -352,9 +352,7 @@ namespace BizHawk.Client.EmuHawk
 
 					lvi.SubItems[6].Text = ri.Size.ToString();
 
-					lvi.SubItems[7].Text = ri.Hash != null
-						? $"sha1:{ri.Hash}"
-						: "";
+					lvi.SubItems[7].Text = ri.Hash?.ToString() ?? string.Empty;
 				}
 			}
 
@@ -565,7 +563,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				olvi.SubItems[0].Text = ff.Size.ToString();
 				olvi.SubItems[0].Font = Font; // why doesn't this work?
-				olvi.SubItems[1].Text = $"sha1:{o.Hash}";
+				olvi.SubItems[1].Text = o.Hash.ToString();
 				olvi.SubItems[1].Font = _fixedFont;
 				olvi.SubItems[2].Text = ff.RecommendedName;
 				olvi.SubItems[2].Font = Font; // why doesn't this work?

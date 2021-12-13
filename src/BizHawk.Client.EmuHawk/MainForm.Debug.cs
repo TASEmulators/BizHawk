@@ -52,7 +52,8 @@ namespace BizHawk.Client.EmuHawk
 
 			public FirmwareAutopatchDebugToolForm()
 			{
-				static string LabelFragment(string hash) => $"{hash.Substring(0, 8)}... {FirmwareDatabase.FirmwareFilesByHash[hash].RecommendedName}";
+				static string LabelFragment(SHA1Checksum checksum)
+					=> $"{checksum.ToString().Substring(0, 12)}... {FirmwareDatabase.FirmwareFilesByHash[checksum].RecommendedName}";
 				List<(string Label, FirmwarePatchOption PatchOption)> patches = FirmwareDatabase.AllPatches.Select(static fpo => ($"{LabelFragment(fpo.BaseHash)} --> {LabelFragment(fpo.TargetHash)}", fpo)).ToList();
 				patches.Sort(static (a, b) => a.Label.CompareTo(b.Label));
 				ComboBox comboPatchsets = new() { Size = new(300, 23) };
@@ -87,10 +88,10 @@ namespace BizHawk.Client.EmuHawk
 							return;
 						}
 						// else something happened, figure out what it was
-						var baseHash = SHA1Checksum.ComputeDigestHex(@base);
+						var baseHash = SHA1Checksum.Compute(@base);
 						this.ModalMessageBox(baseHash == fpo.BaseHash
-							? $"patchset declared with target\nSHA1:{fpo.TargetHash}\nbut produced\nSHA1:{actualHash}\n(is the patch wrong, or the hash?)"
-							: $"patchset declared for base\nSHA1:{fpo.BaseHash}\nbut\nSHA1:{baseHash}\nwas provided");
+							? $"patchset declared with target\n{fpo.TargetHash}\nbut produced\n{actualHash}\n(is the patch wrong, or the hash?)"
+							: $"patchset declared for base\n{fpo.BaseHash}\nbut\n{baseHash}\nwas provided");
 					}
 					catch (Exception e)
 					{

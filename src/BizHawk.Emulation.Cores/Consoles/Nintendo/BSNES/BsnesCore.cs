@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 					? CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("SNES", "Rom_SGB2"), "SGB2 Rom is required for SGB2 emulation.")
 					: CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("SNES", "Rom_SGB"), "SGB1 Rom is required for SGB1 emulation.");
 
-				game.FirmwareHash = SHA1Checksum.ComputeDigestHex(sgbRomData);
+				game.FirmwareHash = SHA1Checksum.Compute(sgbRomData);
 			}
 
 			BsnesApi.SnesCallbacks callbacks = new()

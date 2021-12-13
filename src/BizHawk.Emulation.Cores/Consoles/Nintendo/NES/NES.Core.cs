@@ -15,19 +15,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	{
 		internal static class RomChecksums
 		{
-			public const string CamericaGolden5 = /*sha1:*/"60FC5FA5B5ACCAF3AEFEBA73FC8BFFD3C4DAE558";
+			public static readonly SHA1Checksum CamericaGolden5 = SHA1Checksum.FromHexEncoding("60FC5FA5B5ACCAF3AEFEBA73FC8BFFD3C4DAE558");
 
-			public const string CamericaGolden5Overdump = /*sha1:*/"BAD382331C30B22A908DA4BFF2759C25113CC26A";
+			public static readonly SHA1Checksum CamericaGolden5Overdump = SHA1Checksum.FromHexEncoding("BAD382331C30B22A908DA4BFF2759C25113CC26A");
 
-			public const string CamericaPegasus4in1 = /*sha1:*/"40409FEC8249EFDB772E6FFB2DCD41860C6CCA23";
+			public static readonly SHA1Checksum CamericaPegasus4in1 = SHA1Checksum.FromHexEncoding("40409FEC8249EFDB772E6FFB2DCD41860C6CCA23");
 
-			public const string DancingBlocks = /*sha1:*/"68ABE1E49C9E9CCEA978A48232432C252E5912C0";
+			public static readonly SHA1Checksum DancingBlocks = SHA1Checksum.FromHexEncoding("68ABE1E49C9E9CCEA978A48232432C252E5912C0");
 
-			public const string SeicrossRev2 = "SHA1:4C9C05FAD6F6F33A92A27C2EDC1E7DE12D7F216D"; // yes this is meant to include the prefix
+			public static readonly SHA1Checksum SeicrossRev2 = SHA1Checksum.FromHexEncoding("4C9C05FAD6F6F33A92A27C2EDC1E7DE12D7F216D");
 
-			public const string SilvaSaga = /*sha1:*/"00C50062A2DECE99580063777590F26A253AAB6B";
+			public static readonly SHA1Checksum SilvaSaga = SHA1Checksum.FromHexEncoding("00C50062A2DECE99580063777590F26A253AAB6B");
 
-			public const string Fam_Jump_II = /*sha1:*/"1D7417D31E19B590AFCEB6A8A6E7B9CAB9F9B475";
+			public static readonly SHA1Checksum Fam_Jump_II = SHA1Checksum.FromHexEncoding("1D7417D31E19B590AFCEB6A8A6E7B9CAB9F9B475");
 		}
 
 		//hardware/state
@@ -261,7 +261,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				// short-circuit
 			}
-			else if (hash is RomChecksums.CamericaGolden5 or RomChecksums.CamericaGolden5Overdump or RomChecksums.CamericaPegasus4in1)
+			else if (hash == RomChecksums.CamericaGolden5 || hash == RomChecksums.CamericaGolden5Overdump || hash == RomChecksums.CamericaPegasus4in1)
 			{
 				ram[0x701] = 0xFF;
 			}

@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			RomData = new byte[rom.Length];
 
 			// look up game in db before transforming ROM
-			var hash_md5 = MD5Checksum.ComputePrefixedHex(rom);
+			var hash_md5 = MD5Checksum.Compute(rom);
 			var gi = Database.CheckDatabase(hash_md5);
 			var dict = gi.GetOptions();
 			string s_mapper;

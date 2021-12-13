@@ -67,8 +67,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 			Buffer.BlockCopy(rom, 0x100, header, 0, 0x50);
 
-			Console.WriteLine(MD5Checksum.ComputePrefixedHex(rom));
-			Console.WriteLine(SHA1Checksum.ComputePrefixedHex(rom));
+			Console.WriteLine(MD5Checksum.Compute(rom));
+			Console.WriteLine(SHA1Checksum.Compute(rom));
 			_rom = rom;
 
 			if (game["XROM"]) { is_XROM = true; }

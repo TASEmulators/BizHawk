@@ -3,6 +3,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using BizHawk.Common;
+
 // ReSharper disable IdentifierTypo
 // ReSharper disable InconsistentNaming
 // ReSharper disable StringLiteralTypo
@@ -12,7 +14,7 @@ namespace BizHawk.Emulation.Common
 	{
 		public static IEnumerable<FirmwareFile> FirmwareFiles => FirmwareFilesByHash.Values;
 
-		public static readonly IReadOnlyDictionary<string, FirmwareFile> FirmwareFilesByHash;
+		public static readonly IReadOnlyDictionary<SHA1Checksum, FirmwareFile> FirmwareFilesByHash;
 
 		public static readonly IReadOnlyCollection<FirmwareOption> FirmwareOptions;
 
@@ -23,7 +25,7 @@ namespace BizHawk.Emulation.Common
 		static FirmwareDatabase()
 		{
 			List<FirmwarePatchOption> allPatches = new();
-			Dictionary<string, FirmwareFile> filesByHash = new();
+			Dictionary<SHA1Checksum, FirmwareFile> filesByHash = new();
 			List<FirmwareOption> options = new();
 			List<FirmwareRecord> records = new();
 
@@ -34,13 +36,16 @@ namespace BizHawk.Emulation.Common
 				string desc,
 				string additionalInfo = "",
 				bool isBad = false)
-					=> filesByHash[hash] = new(
-						hash: hash,
-						size: size,
-						recommendedName: recommendedName,
-						desc: desc,
-						additionalInfo: additionalInfo,
-						isBad: isBad);
+			{
+				var checksum = SHA1Checksum.FromHexEncoding(hash);
+				return filesByHash[checksum] = new(
+					hash: checksum,
+					size: size,
+					recommendedName: recommendedName,
+					desc: desc,
+					additionalInfo: additionalInfo,
+					isBad: isBad);
+			}
 
 			void Option(string systemId, string id, in FirmwareFile ff, FirmwareOptionStatus status = FirmwareOptionStatus.Acceptable)
 				=> options.Add(new(new(systemId, id), ff.Hash, ff.Size, ff.IsBad ? FirmwareOptionStatus.Bad : status));
@@ -330,9 +335,9 @@ namespace BizHawk.Emulation.Common
 			Option("GB", "World", File("4E68F9DA03C310E84C523654B9026E51F26CE7F0", 256, "mgb.bin", "Game Boy Boot Rom (Pocket)"), FirmwareOptionStatus.Acceptable);
 			FirmwarePatchData gbCommonPatchAt0xFD = new(0xFD, new byte[] { 0xFE }); // 2 pairs, all have either 0x01 or 0xFF at this octet
 			AddPatchAndMaybeReverse(new(
-				"4ED31EC6B0B175BB109C0EB5FD3D193DA823339F",
+				SHA1Checksum.FromHexEncoding("4ED31EC6B0B175BB109C0EB5FD3D193DA823339F"),
 				gbCommonPatchAt0xFD,
-				"4E68F9DA03C310E84C523654B9026E51F26CE7F0"));
+				SHA1Checksum.FromHexEncoding("4E68F9DA03C310E84C523654B9026E51F26CE7F0")));
 
 			// these are only used for supported SGB cores
 			// placed in GB as these are within the Game Boy side rather than the SNES side
@@ -341,9 +346,9 @@ namespace BizHawk.Emulation.Common
 			Firmware("GB", "SGB2", "Super Game Boy 2 Boot Rom");
 			Option("GB", "SGB2", File("93407EA10D2F30AB96A314D8ECA44FE160AEA734", 256, "sgb2.bin", "Super Game Boy 2 Boot Rom"), FirmwareOptionStatus.Ideal);
 			AddPatchAndMaybeReverse(new(
-				"AA2F50A77DFB4823DA96BA99309085A3C6278515",
+				SHA1Checksum.FromHexEncoding("AA2F50A77DFB4823DA96BA99309085A3C6278515"),
 				gbCommonPatchAt0xFD,
-				"93407EA10D2F30AB96A314D8ECA44FE160AEA734"));
+				SHA1Checksum.FromHexEncoding("93407EA10D2F30AB96A314D8ECA44FE160AEA734")));
 
 			Firmware("GBC", "World", "Game Boy Color Boot Rom");
 			Option("GBC", "World", File("1293D68BF9643BC4F36954C1E80E38F39864528D", 2304, "cgb.bin", "Game Boy Color Boot Rom"), FirmwareOptionStatus.Ideal);
@@ -352,9 +357,9 @@ namespace BizHawk.Emulation.Common
 			Option("GBC", "AGB", File("FA5287E24B0FA533B3B5EF2B28A81245346C1A0F", 2304, "agb.bin", "Game Boy Color Boot Rom (GBA)"), FirmwareOptionStatus.Ideal);
 			Option("GBC", "AGB", File("1ECAFA77AB3172193F3305486A857F443E28EBD9", 2304, "agb_gambatte.bin", "Game Boy Color Boot Rom (GBA, Gambatte RE)"), FirmwareOptionStatus.Bad);
 			AddPatchAndMaybeReverse(new(
-				"1293D68BF9643BC4F36954C1E80E38F39864528D",
+				SHA1Checksum.FromHexEncoding("1293D68BF9643BC4F36954C1E80E38F39864528D"),
 				new FirmwarePatchData(0xF3, new byte[] { 0x03, 0x00, 0xCD, 0x1D, 0xD5, 0xAA, 0x4F, 0x90, 0x74 }),
-				"1ECAFA77AB3172193F3305486A857F443E28EBD9"));
+				SHA1Checksum.FromHexEncoding("1ECAFA77AB3172193F3305486A857F443E28EBD9")));
 
 			Firmware("PCFX", "BIOS", "PCFX bios");
 			var pcfxbios = File("1A77FD83E337F906AECAB27A1604DB064CF10074", 1024 * 1024, "PCFX_bios.bin", "PCFX BIOS 1.00");

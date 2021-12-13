@@ -1,7 +1,6 @@
 using System;
 
 using BizHawk.Common;
-using BizHawk.Common.BufferExtensions;
 
 namespace BizHawk.Emulation.DiscSystem
 {
@@ -17,7 +16,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// calculates the hash for quick PSX Disc identification
 		/// </summary>
-		public string Calculate_PSX_BizIDHash()
+		public CRC32Checksum Calculate_PSX_BizIDHash()
 		{
 			//notes about the hash:
 			//"Arc the Lad II (J) 1.0 and 1.1 conflict up to 25 sectors (so use 26)
@@ -54,7 +53,7 @@ namespace BizHawk.Emulation.DiscSystem
 				crc.Add(buffer2352);
 			}
 
-			return CRC32Checksum.BytesAsDigest(crc.Result).BytesToHexString();
+			return CRC32Checksum.FromDigestBytes(crc.Result);
 		}
 
 		/// <summary>
@@ -84,7 +83,7 @@ namespace BizHawk.Emulation.DiscSystem
 		// gets an identifying hash. hashes the first 512 sectors of
 		// the first data track on the disc.
 		//TODO - this is a very platform-specific thing. hashing the TOC may be faster and be just as effective. so, rename it appropriately
-		public string OldHash()
+		public MD5Checksum OldHash()
 		{
 			byte[] buffer = new byte[512 * 2352];
 			DiscSectorReader dsr = new DiscSectorReader(disc);
@@ -97,9 +96,9 @@ namespace BizHawk.Emulation.DiscSystem
 				for (int s = 0; s < 512 && s < lba_len; s++)
 					dsr.ReadLBA_2352(track.LBA + s, buffer, s * 2352);
 
-				return MD5Checksum.ComputeDigestHex(buffer.AsSpan(start: 0, length: lba_len * 2352));
+				return MD5Checksum.Compute(buffer.AsSpan(start: 0, length: lba_len * 2352));
 			}
-			return "no data track found";
+			return null;
 		}
 	}
 }
