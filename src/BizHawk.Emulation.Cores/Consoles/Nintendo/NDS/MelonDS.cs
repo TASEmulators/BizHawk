@@ -90,7 +90,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			fwSettings.FirmwareBirthdayMonth = _syncSettings.FirmwareBirthdayMonth;
 			fwSettings.FirmwareBirthdayDay = _syncSettings.FirmwareBirthdayDay;
 			fwSettings.FirmwareFavouriteColour = _syncSettings.FirmwareFavouriteColour;
-			var message = Encoding.UTF8.GetBytes(_syncSettings.FirmwareMessage);
+			var message = _syncSettings.FirmwareMessage.Length != 0 ? Encoding.UTF8.GetBytes(_syncSettings.FirmwareMessage) : new byte[1] { 0 };
 			fwSettings.FirmwareMessageLength = message.Length;
 
 			_exe.AddReadonlyFile(roms[0], "game.rom");
