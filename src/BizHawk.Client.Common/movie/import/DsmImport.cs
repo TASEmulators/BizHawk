@@ -88,7 +88,7 @@ namespace BizHawk.Client.Common
 			Result.Movie.HeaderEntries[HeaderKeys.Core] = CoreNames.MelonDS;
 		}
 
-		private readonly string[] _buttons = { "Left", "Right", "Up", "Down", "A", "B", "X", "Y", "L", "R", "Start", "Select" };
+		private readonly string[] _buttons = { "Right", "Left", "Down", "Up", "Start", "Select", "B", "A", "Y", "X", "L", "R", };
 
 		private void ImportInputFrame(string line)
 		{
@@ -108,18 +108,18 @@ namespace BizHawk.Client.Common
 			{
 				var mnemonics = sections[1].Take(_buttons.Length).ToList();
 
-				controller["Left"] = mnemonics[1] != '.';
 				controller["Right"] = mnemonics[0] != '.';
-				controller["Up"] = mnemonics[3] != '.';
+				controller["Left"] = mnemonics[1] != '.';
 				controller["Down"] = mnemonics[2] != '.';
-				controller["A"] = mnemonics[7] != '.';
+				controller["Up"] = mnemonics[3] != '.';
+				controller["Start"] = mnemonics[5] != '.'; // shoutouts to desmume doing start/select as select/start countary to docs
+				controller["Select"] = mnemonics[4] != '.';
 				controller["B"] = mnemonics[6] != '.';
-				controller["X"] = mnemonics[9] != '.';
+				controller["A"] = mnemonics[7] != '.';
 				controller["Y"] = mnemonics[8] != '.';
+				controller["X"] = mnemonics[9] != '.';
 				controller["L"] = mnemonics[10] != '.';
 				controller["R"] = mnemonics[11] != '.';
-				controller["Start"] = mnemonics[4] != '.';
-				controller["Select"] = mnemonics[5] != '.';
 
 				controller["Touch"] = sections[1].Substring(21, 1) != "0";
 
