@@ -5,19 +5,21 @@
 		public enum SNES_MEMORY
 		{
 			CARTRIDGE_RAM,
+			CARTRIDGE_ROM,
+			SGB_ROM,
+
 			BSX_RAM,
 			BSX_PRAM,
 			SUFAMI_TURBO_A_RAM,
 			SUFAMI_TURBO_B_RAM,
 			SA1_IRAM,
+			SA1_BWRAM,
 
 			WRAM,
 			APURAM,
 			VRAM,
 			// OAM, // needs some work in the core probably? or we return an objects pointer
-			CGRAM,
-
-			CARTRIDGE_ROM
+			CGRAM
 		}
 
 		public enum BSNES_INPUT_DEVICE
