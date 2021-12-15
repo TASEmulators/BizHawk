@@ -169,7 +169,7 @@ namespace BizHawk.Client.EmuHawk
             // 
             // SplitContextMenuItem
             // 
-            this.SplitContextMenuItem.ShortcutKeyDisplayString = "Ctrl+D";
+            this.SplitContextMenuItem.ShortcutKeyDisplayString = "Ctrl+L";
             this.SplitContextMenuItem.Text = "Sp&lit";
             this.SplitContextMenuItem.Click += new System.EventHandler(this.SplitWatchMenuItem_Click);
             // 
@@ -535,7 +535,7 @@ namespace BizHawk.Client.EmuHawk
             // 
             // SplitWatchMenuItem
             // 
-            this.SplitWatchMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D)));
+            this.SplitWatchMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.L)));
             this.SplitWatchMenuItem.Text = "Sp&lit Watch";
             this.SplitWatchMenuItem.Click += new System.EventHandler(this.SplitWatchMenuItem_Click);
             // 
