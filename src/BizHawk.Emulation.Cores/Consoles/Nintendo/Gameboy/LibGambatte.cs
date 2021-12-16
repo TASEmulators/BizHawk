@@ -454,7 +454,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// write a single byte to the cpu bus.  while there is no cycle cost to these writes, there can be quite a few side effects.
 		/// use at your own risk.
 		/// </summary>
-		/// <param name="core">opaque state pointe</param>
+		/// <param name="core">opaque state pointer</param>
 		/// <param name="addr">system bus address</param>
 		/// <param name="val">byte to write</param>
 		[DllImport("libgambatte", CallingConvention = CallingConvention.Cdecl)]
@@ -463,24 +463,57 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// <summary>
 		/// link cable stuff; never touch for normal operation
 		/// </summary>
-		/// <param name="core">opaque state pointe</param>
+		/// <param name="core">opaque state pointer</param>
 		/// <param name="which">todo</param>
 		/// <returns>todo</returns>
 		[DllImport("libgambatte", CallingConvention = CallingConvention.Cdecl)]
 		public static extern int gambatte_linkstatus(IntPtr core, int which);
 
 		/// <summary>
-		/// get current rom bank
+		/// get current bank for type of memory
 		/// </summary>
-		/// <param name="core">opaque state pointe</param>
-		/// <returns>current rom bank</returns>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="type">type of memory</param>
+		/// <returns>current bank</returns>
 		[DllImport("libgambatte", CallingConvention = CallingConvention.Cdecl)]
-		public static extern int gambatte_getrombank(IntPtr core);
+		public static extern int gambatte_getbank(IntPtr core, BankType type);
+
+		/// <summary>
+		/// get current bank for type of memory at address
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="addr">address for memory type</param>
+		/// <returns>current bank, or 0 if not applicable</returns>
+		[DllImport("libgambatte", CallingConvention = CallingConvention.Cdecl)]
+		public static extern int gambatte_getaddrbank(IntPtr core, ushort addr);
+
+		/// <summary>
+		/// set current bank for type of memory
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="type">type of memory</param>
+		/// <param name="bank">bank to set</param>
+		[DllImport("libgambatte", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gambatte_setbank(IntPtr core, BankType type, int bank);
+
+		/// <summary>
+		/// set current bank for type of memory at address
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="addr">address for memory type</param>
+		/// <param name="bank">bank to set</param>
+		[DllImport("libgambatte", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gambatte_setbank(IntPtr core, ushort addr, int bank);
+
+		public enum BankType : int
+		{
+			ROM0, ROMX, VRAM, SRAM, WRAM
+		}
 
 		/// <summary>
 		/// get current sram bank
 		/// </summary>
-		/// <param name="core">opaque state pointe</param>
+		/// <param name="core">opaque state pointer</param>
 		/// <returns>current sram bank</returns>
 		[DllImport("libgambatte", CallingConvention = CallingConvention.Cdecl)]
 		public static extern int gambatte_getsrambank(IntPtr core);
