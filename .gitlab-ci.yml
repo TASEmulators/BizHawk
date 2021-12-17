@@ -62,7 +62,7 @@ build_nix_master:
   - if: '$CI_PIPELINE_SOURCE == "schedule"'
     when: always
   script:
-  - nix-build --pure -A emuhawk --arg useCWDAsSource true
+  - nix-build --pure -A emuhawk --arg useCWDAsSource true --arg doCheck true
   stage: test
 
 build_nix_prev_release:
@@ -73,7 +73,7 @@ build_nix_prev_release:
   - if: '$CI_PIPELINE_SOURCE == "schedule"'
     when: always
   script:
-  - nix-build --pure -A emuhawk
+  - nix-build --pure -A emuhawk --arg doCheck true
   stage: test
 
 check_style:
