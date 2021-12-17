@@ -20,7 +20,7 @@ typedef enum
 	RTC_ACCURATE = 4,
 } LoadFlags;
 
-static u32 rgbCallback(GB_gameboy_t*, u8 r, u8 g, u8 b)
+static u32 rgbCallback(GB_gameboy_t *gb, u8 r, u8 g, u8 b)
 {
     return (0xFF << 24) | (r << 16) | (g << 8) | b;
 }
