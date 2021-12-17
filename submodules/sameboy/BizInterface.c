@@ -1,13 +1,10 @@
-extern "C"
-{
 #include "libsameboy/Core/gb.h"
-}
 #include "stdio.h"
 
 #ifdef _WIN32
-	#define EXPORT extern "C" __declspec(dllexport)
+	#define EXPORT __declspec(dllexport)
 #else
-	#define EXPORT extern "C"
+	#define EXPORT __attribute__((visibility("default")))
 #endif
 
 typedef uint8_t u8;
@@ -29,7 +26,7 @@ static u32 rgbCallback(GB_gameboy_t*, u8 r, u8 g, u8 b)
 }
 
 typedef void (*input_callback_t)(void);
-typedef void (*trace_callback_t)(void);
+typedef void (*trace_callback_t)(u16);
 typedef void (*memory_callback_t)(u16);
 typedef void (*printer_callback_t)(u32*, u8, u8, u8, u8);
 typedef void (*scanline_callback_t)(u32);
@@ -61,14 +58,31 @@ static bool WriteCallbackRelay(GB_gameboy_t* gb, u16 addr, u8 data)
 	return true;
 }
 
+static void ExecCallbackRelay(GB_gameboy_t* gb, u16 addr, u8 opcode)
+{
+	biz_t* biz = (biz_t*)gb;
+	if (biz->trace_cb)
+		biz->trace_cb(addr);
+
+	if (biz->exec_cb)
+		biz->exec_cb(addr);
+}
+
 static void PrinterCallbackRelay(GB_gameboy_t* gb, u32* image, u8 height, u8 top_margin, u8 bottom_margin, u8 exposure)
 {
 	((biz_t*)gb)->printer_cb(image, height, top_margin, bottom_margin, exposure);
 }
 
+static void ScanlineCallbackRelay(GB_gameboy_t* gb, u8 line)
+{
+	biz_t* biz = (biz_t*)gb;
+	if (line == biz->scanline_sl)
+		biz->scanline_cb(biz->gb.io_registers[GB_IO_LCDC]);
+}
+
 EXPORT biz_t* sameboy_create(u8* romdata, u32 romlen, u8* biosdata, u32 bioslen, LoadFlags flags)
 {
-	biz_t* biz = new biz_t;
+	biz_t* biz = calloc(1, sizeof (biz_t));
 	GB_model_t model = GB_MODEL_DMG_B;
 	if (flags & IS_CGB)
 		model = (flags & IS_AGB) ? GB_MODEL_AGB : GB_MODEL_CGB_E;
@@ -89,7 +103,7 @@ EXPORT biz_t* sameboy_create(u8* romdata, u32 romlen, u8* biosdata, u32 bioslen,
 EXPORT void sameboy_destroy(biz_t* biz)
 {
 	GB_free(&biz->gb);
-	delete biz;
+	free(biz);
 }
 
 EXPORT void sameboy_setsamplecallback(biz_t* biz, GB_sample_callback_t callback)
@@ -116,26 +130,13 @@ EXPORT void sameboy_frameadvance(biz_t* biz, GB_key_mask_t input, u32* vbuf, boo
 	u32 cycles = 0;
 	do
 	{
-		if ((biz->trace_cb || biz->exec_cb) && !biz->gb.halted && !biz->gb.stopped && !biz->gb.hdma_on && !((biz->gb.interrupt_enable & biz->gb.io_registers[GB_IO_IF] & 0x1F) && (biz->gb.ime && !biz->gb.ime_toggle)))
-		{
-			if (biz->trace_cb)
-				biz->trace_cb();
-			
-			if (biz->exec_cb)
-				biz->exec_cb(biz->gb.pc);
-		}
-
 		u32 oldjoyp = biz->gb.io_registers[GB_IO_JOYP] & 0x30;
-		u32 oldly = biz->gb.io_registers[GB_IO_LY];
 		u32 ret = GB_run(&biz->gb) >> 2;
 		cycles += ret;
 		biz->cc += ret;
 		u32 newjoyp = biz->gb.io_registers[GB_IO_JOYP] & 0x30;
 		if (oldjoyp != newjoyp && newjoyp != 0x30)
 			biz->input_cb();
-		u32 newly = biz->gb.io_registers[GB_IO_LY];
-		if (biz->scanline_cb && oldly != newly && biz->scanline_sl == newly)
-			biz->scanline_cb(biz->gb.io_registers[GB_IO_LCDC]);
 	}
 	while (!biz->gb.vblank_just_occured && cycles < 35112);
 	
@@ -204,17 +205,17 @@ EXPORT bool sameboy_getmemoryarea(biz_t* biz, GB_direct_access_t which, void** d
 
 EXPORT u8 sameboy_cpuread(biz_t* biz, u16 addr)
 {
-	GB_set_read_memory_callback(&biz->gb, nullptr);
+	GB_set_read_memory_callback(&biz->gb, NULL);
 	u8 ret = GB_safe_read_memory(&biz->gb, addr);
-	GB_set_read_memory_callback(&biz->gb, biz->read_cb ? ReadCallbackRelay : nullptr);
+	GB_set_read_memory_callback(&biz->gb, biz->read_cb ? ReadCallbackRelay : NULL);
 	return ret;
 }
 
 EXPORT void sameboy_cpuwrite(biz_t* biz, u16 addr, u8 value)
 {
-	GB_set_write_memory_callback(&biz->gb, nullptr);
+	GB_set_write_memory_callback(&biz->gb, NULL);
 	GB_write_memory(&biz->gb, addr, value);
-	GB_set_write_memory_callback(&biz->gb, biz->write_cb ? WriteCallbackRelay : nullptr);
+	GB_set_write_memory_callback(&biz->gb, biz->write_cb ? WriteCallbackRelay : NULL);
 }
 
 EXPORT u64 sameboy_getcyclecount(biz_t* biz)
@@ -230,6 +231,7 @@ EXPORT void sameboy_setcyclecount(biz_t* biz, u64 newCc)
 EXPORT void sameboy_settracecallback(biz_t* biz, trace_callback_t callback)
 {
 	biz->trace_cb = callback;
+	GB_set_execution_callback(&biz->gb, (callback || biz->exec_cb) ? ExecCallbackRelay : NULL);
 }
 
 EXPORT void sameboy_getregs(biz_t* biz, u32* buf)
@@ -289,14 +291,15 @@ EXPORT void sameboy_setmemorycallback(biz_t* biz, u32 which, memory_callback_t c
 	{
 		case 0:
 			biz->read_cb = callback;
-			GB_set_read_memory_callback(&biz->gb, callback ? ReadCallbackRelay : nullptr);
+			GB_set_read_memory_callback(&biz->gb, callback ? ReadCallbackRelay : NULL);
 			break;
 		case 1:
 			biz->write_cb = callback;
-			GB_set_write_memory_callback(&biz->gb, callback ? WriteCallbackRelay : nullptr);
+			GB_set_write_memory_callback(&biz->gb, callback ? WriteCallbackRelay : NULL);
 			break;
 		case 2:
 			biz->exec_cb = callback;
+			GB_set_execution_callback(&biz->gb, (callback || biz->trace_cb) ? ExecCallbackRelay : NULL);
 			break;
 	}
 }
@@ -314,6 +317,7 @@ EXPORT void sameboy_setscanlinecallback(biz_t* biz, scanline_callback_t callback
 {
 	biz->scanline_cb = callback;
 	biz->scanline_sl = sl;
+	GB_set_lcd_line_callback(&biz->gb, callback ? ScanlineCallbackRelay : NULL);
 }
 
 EXPORT void sameboy_setpalette(biz_t* biz, u32 which)
@@ -353,4 +357,10 @@ EXPORT void sameboy_sethighpassfilter(biz_t* biz, GB_highpass_mode_t which)
 EXPORT void sameboy_setinterferencevolume(biz_t* biz, int volume)
 {
 	GB_set_interference_volume(&biz->gb, volume / 100.0);
+}
+
+EXPORT void sameboy_setrtcdivisoroffset(biz_t* biz, int offset)
+{
+	double base = GB_get_unmultiplied_clock_rate(&biz->gb) * 2.0;
+	GB_set_rtc_multiplier(&biz->gb, (base + offset) / base);
 }

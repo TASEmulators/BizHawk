@@ -1,7 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Collections.Generic;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -93,7 +91,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 			const string TRACE_HEADER = "SM83: PC, opcode, registers (A, F, B, C, D, E, H, L, SP, LY, CY)";
 			Tracer = new TraceBuffer(TRACE_HEADER);
-			_serviceProvider.Register<ITraceable>(Tracer);
+			_serviceProvider.Register(Tracer);
 
 			_disassembler = new Gameboy.GBDisassembler();
 			_serviceProvider.Register<IDisassemblable>(_disassembler);
@@ -103,6 +101,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			RomDetails = $"{game.Name}\r\n{SHA1Checksum.ComputePrefixedHex(file)}\r\n{MD5Checksum.ComputePrefixedHex(file)}\r\n";
 			BoardName = MapperName(file);
 
+			LibSameboy.sameboy_setrtcdivisoroffset(SameboyState, _syncSettings.RTCDivisorOffset);
 			CycleCount = 0;
 		}
 

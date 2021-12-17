@@ -108,7 +108,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 		public static extern void sameboy_setcyclecount(IntPtr core, long newcc);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate void TraceCallback();
+		public delegate void TraceCallback(ushort pc);
 
 		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void sameboy_settracecallback(IntPtr core, TraceCallback callback);
@@ -145,5 +145,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void sameboy_setinterferencevolume(IntPtr core, int volume);
+
+		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void sameboy_setrtcdivisoroffset(IntPtr core, int offset);
 	}
 }

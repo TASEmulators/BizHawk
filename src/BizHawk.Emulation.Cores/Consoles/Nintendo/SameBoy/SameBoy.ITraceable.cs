@@ -8,14 +8,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 		private ITraceable Tracer { get; }
 		private readonly LibSameboy.TraceCallback _tracecb;
 
-		private void MakeTrace()
+		private void MakeTrace(ushort pc)
 		{
 			int[] s = new int[10];
 			LibSameboy.sameboy_getregs(SameboyState, s);
 
 			Tracer.Put(new(
 				disassembly: LR35902.Disassemble(
-					(ushort)(s[0] & 0xFFFF),
+					pc,
 					addr => LibSameboy.sameboy_cpuread(SameboyState, addr),
 					true,
 					out _).PadRight(36),
@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 					s[8] & 0xFF,
 					s[9] & 0xFFFF,
 					LibSameboy.sameboy_cpuread(SameboyState, 0xFF44),
-					CycleCount
+					CycleCount + 485808
 					)));
 		}
 	}

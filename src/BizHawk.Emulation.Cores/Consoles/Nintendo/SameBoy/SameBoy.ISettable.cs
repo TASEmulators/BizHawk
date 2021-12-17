@@ -153,6 +153,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			[DefaultValue(false)]
 			public bool UseRealTime { get; set; }
 
+			[DisplayName("RTC Divisor Offset")]
+			[Description("CPU clock frequency relative to real time clock. Base value is 2^22 Hz. Used in cycle-based RTC to sync on real hardware to account for RTC imperfections.")]
+			[DefaultValue(0)]
+			public int RTCDivisorOffset { get; set; }
+
 			public SameboySyncSettings() => SettingsUtil.SetDefaultValues(this);
 
 			public SameboySyncSettings Clone() => MemberwiseClone() as SameboySyncSettings;

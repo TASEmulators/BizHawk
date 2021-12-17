@@ -1,15 +1,14 @@
-global_cflags = ARGUMENTS.get('CFLAGS', '-Wall -Wextra -O3 -fomit-frame-pointer -flto')
-global_cflags += ARGUMENTS.get('CFLAGS', ' -Wno-strict-aliasing -Wno-multichar -Wno-implicit-fallthrough -Wno-sign-compare -Wno-unused-parameter -Wno-int-in-bool-context -Wno-missing-field-initializers -Wno-overflow')
-global_cxxflags = ARGUMENTS.get('CXXFLAGS', global_cflags + ' -fno-exceptions -fno-rtti -std=c++17')
-global_defines = ' -D_GNU_SOURCE -D_USE_MATH_DEFINES -DNDEBUG -DGB_INTERNAL -DGB_DISABLE_DEBUGGER -DGB_DISABLE_CHEATS -DGB_DISABLE_TIMEKEEPING -DGB_DISABLE_REWIND -DGB_VERSION=""'
+global_cflags = ARGUMENTS.get('CFLAGS', '-Wall -Wextra -O3 -std=gnu11 -fomit-frame-pointer -flto')
+global_cflags += ARGUMENTS.get('CFLAGS', ' -Wno-strict-aliasing -Wno-multichar -Wno-implicit-fallthrough -Wno-sign-compare')
+global_cflags += ARGUMENTS.get('CFLAGS', ' -Wno-unused-parameter -Wno-int-in-bool-context -Wno-missing-field-initializers -Wno-overflow')
+global_defines = ' -D_GNU_SOURCE -D_USE_MATH_DEFINES -DNDEBUG -DGB_INTERNAL -DGB_DISABLE_DEBUGGER -DGB_DISABLE_CHEATS -DGB_DISABLE_TIMEKEEPING -DGB_DISABLE_REWIND -DGB_VERSION='
 vars = Variables()
 vars.Add('CC')
 vars.Add('CXX')
 
 import os
 env = Environment(ENV = os.environ,
-                  CFLAGS = global_cflags + ' -std=gnu11' + global_defines,
-                  CXXFLAGS = global_cxxflags + global_defines,
+                  CFLAGS = global_cflags + global_defines,
                   variables = vars)
 
 sourceFiles = Split('''
@@ -34,9 +33,8 @@ conf = env.Configure()
 
 conf.Finish()
 
-shlib = env.SharedLibrary('sameboy', sourceFiles + ['BizInterface.cpp'],
-                          CXXFLAGS = env['CXXFLAGS'],
-                          LINKFLAGS = env['LINKFLAGS'] + ' -s',
+shlib = env.SharedLibrary('sameboy', sourceFiles + ['BizInterface.c'],
+                          LINKFLAGS = env['LINKFLAGS'] + ' -s -Wno-attributes',
                           SHLIBPREFIX = "lib")
 
 env.Default(shlib)
