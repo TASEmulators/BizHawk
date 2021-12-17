@@ -25,7 +25,8 @@ export BIZHAWK_INT_SYSLIB_PATH="$libpath"
 if [ "$1" = "--mono-no-redirect" ]; then
 	shift
 	printf "(received --mono-no-redirect, stdout was not captured)\n" >EmuHawkMono_laststdout.txt
+	printf "(received --mono-no-redirect, stderr was not captured)\n" >EmuHawkMono_laststderr.txt
 	mono ./EmuHawk.exe "$@"
 else
-	mono ./EmuHawk.exe "$@" >EmuHawkMono_laststdout.txt
+	mono ./EmuHawk.exe "$@" >EmuHawkMono_laststdout.txt 2>EmuHawkMono_laststderr.txt
 fi

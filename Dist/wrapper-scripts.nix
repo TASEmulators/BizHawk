@@ -66,9 +66,10 @@ in rec {
 		if [ "$1" = "--mono-no-redirect" ]; then
 			shift
 			printf "(received --mono-no-redirect, stdout was not captured)\n" >EmuHawkMono_laststdout.txt
+			printf "(received --mono-no-redirect, stderr was not captured)\n" >EmuHawkMono_laststderr.txt
 			exec ${mono}/bin/mono $BIZHAWK_HOME/EmuHawk.exe --config=config.json "$@"
 		else
-			exec ${mono}/bin/mono $BIZHAWK_HOME/EmuHawk.exe --config=config.json "$@" >EmuHawkMono_laststdout.txt
+			exec ${mono}/bin/mono $BIZHAWK_HOME/EmuHawk.exe --config=config.json "$@" >EmuHawkMono_laststdout.txt 2>EmuHawkMono_laststderr.txt
 		fi
 	'';
 	wrapperScriptNonNixOS = writeShellScriptBin "emuhawk-wrapper-non-nixos" ''

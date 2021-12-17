@@ -210,7 +210,7 @@ $proc.Start()
 
 On Linux, you can pass arguments to `EmuHawkMono.sh` as expected and they will be forwarded to `mono`. (You can also `export` env. vars.) All the arguments work as on Windows, with some caveats:
 * file paths must be absolute (or relative to the install dir, `EmuHawkMono.sh` changes the CWD to there);
-* `--mono-no-redirect`: if you pass this flag *as the first argument*, it will be eaten by the script itself, and stdout will *not* be redirected to a file. (It's redirected by default.)
+* `--mono-no-redirect`: if you pass this flag *as the first argument*, it will be eaten by the script itself, and stdout/stderr will *not* be redirected to a file. (It's redirected by default.)
 
 The same example as above would be `./EmuHawkMono.sh --lua=/path/to/script.lua /path/to/rom.n64`.
 
