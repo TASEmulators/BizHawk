@@ -1,4 +1,4 @@
-#include "libsameboy/Core/gb.h"
+#include "gb.h"
 #include "stdio.h"
 
 #ifdef _WIN32

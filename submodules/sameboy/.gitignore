@@ -1,5 +1,6 @@
 .sconsign.dblite
 BizInterface.os
+joypad.os
 config.log
 libsameboy.dll.a
 .sconf_temp
