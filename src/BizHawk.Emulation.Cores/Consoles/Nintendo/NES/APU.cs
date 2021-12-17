@@ -664,7 +664,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				out_silence = true;
 				DMC_RATE = pal ? DMC_RATE_PAL : DMC_RATE_NTSC;
 				timer_reload = DMC_RATE[0];
-				timer = 1020; // confirmed in VisualNES although aligning controller read glitches still doesn't work
+				timer = 1023; // confirmed in VisualNES although aligning controller read glitches still doesn't work
 				sample_buffer_filled = false;
 				out_deltacounter = 64;
 				out_bits_remaining = 7; //confirmed in VisualNES
@@ -939,13 +939,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(sequence_reset_pending), ref sequence_reset_pending);
 			ser.Sync(nameof(sequencer_irq_clear_pending), ref sequencer_irq_clear_pending);
 			ser.Sync(nameof(sequencer_irq_assert), ref sequencer_irq_assert);
+			ser.Sync(nameof(sequencer_check_1), ref sequencer_check_1);
+			ser.Sync(nameof(sequencer_check_2), ref sequencer_check_2);
 
 			ser.Sync(nameof(dmc_dma_countdown), ref dmc_dma_countdown);
 			ser.Sync(nameof(DMC_RDY_check), ref DMC_RDY_check);
-			ser.Sync("sample_length_delay", ref pending_length_change);
-			ser.Sync("dmc_called_from_write", ref call_from_write);
-			ser.Sync("sequencer_tick_delay", ref seq_tick);
-			ser.Sync("seq_val_to_apply", ref seq_val);
+			ser.Sync(nameof(call_from_write), ref call_from_write);
+			ser.Sync(nameof(seq_tick), ref seq_tick);
+			ser.Sync(nameof(seq_val), ref seq_val);
 			ser.Sync(nameof(sequencer_irq_flag), ref sequencer_irq_flag);
 			ser.Sync(nameof(len_clock_active), ref len_clock_active);
 
@@ -984,6 +985,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		private readonly int[][] sequencer_lut = new int[2][];
+
+		private int sequencer_check_1, sequencer_check_2;
 
 		private static readonly int[][] sequencer_lut_ntsc = {
 			new[]{7457,14913,22371,29830},
@@ -1024,6 +1027,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 					sequencer_counter = 0;
 					sequencer_step = 0;
+
+					if (sequencer_mode == 0) { sequencer_check_2 = sequencer_lut[0][3] - 2; }
+					else { sequencer_check_2 = sequencer_lut[1][4] - 2; }
 				}
 			}
 		}
@@ -1133,6 +1139,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			sequencer_counter = 0;
 			sequencer_step = 0;
+
+			sequencer_check_1 = (sequencer_lut[0][1] - 1);
+
+			if(sequencer_mode == 0) { sequencer_check_2 = sequencer_lut[0][3] - 2; }
+			else { sequencer_check_2 = sequencer_lut[1][4] - 2; }
 		}
 
 		public void NESHardReset()
@@ -1140,6 +1151,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// "at power on it is as if $00 was written to $4017 9-12 cycles before the reset vector"
 			// that translates to a starting value for the counter of -3
 			sequencer_counter = -1;
+
+			sequencer_check_1 = (sequencer_lut[0][1] - 1);
+
+			if (sequencer_mode == 0) { sequencer_check_2 = sequencer_lut[0][3] - 2; }
+			else { sequencer_check_2 = sequencer_lut[1][4] - 2; }
 		}
 
 		public void WriteReg(int addr, byte val)
@@ -1242,8 +1258,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public int DebugCallbackDivider;
 		public int DebugCallbackTimer;
 
-		private int pending_length_change;
-
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void RunOneFirst()
 		{
@@ -1261,22 +1275,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void RunOneLast()
 		{
-			if (pending_length_change > 0)
-			{
-				pending_length_change--;
-				if (pending_length_change == 0)
-				{
-					dmc.sample_length--;
-				}
-			}
-
 			// we need to predict if there will be a length clock here, because the sequencer ticks last, but the 
 			// timer reload shouldn't happen if length clock and write happen simultaneously
 			// I'm not sure if we can avoid this by simply processing the sequencer first
 			// but at the moment that would break everything, so this is good enough for now
-			if (sequencer_counter == (sequencer_lut[0][1] - 1) ||
-				(sequencer_counter == sequencer_lut[0][3] - 2 && sequencer_mode == 0) ||
-				(sequencer_counter == sequencer_lut[1][4] - 2 && sequencer_mode == 1))
+			if ((sequencer_counter == sequencer_check_1) || (sequencer_counter == sequencer_check_2))
 			{
 				len_clock_active = true;
 			}
@@ -1287,7 +1290,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// the current code simply matches known behaviour			
 			if (pending_reg != -1)
 			{
-				if (pending_reg == 0x4015 || pending_reg == 0x4015 || pending_reg == 0x4003 || pending_reg == 0x4007)
+				if (pending_reg == 0x4015 || pending_reg == 0x4003 || pending_reg == 0x4007)
 				{
 					_WriteReg(pending_reg, pending_val);
 					pending_reg = -1;
@@ -1320,7 +1323,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// since the units run concurrently, the APU frame sequencer is ran last because
 			// it can change the output values of the pulse/triangle channels
 			// we want the changes to affect it on the *next* cycle.
-
 			if (sequencer_irq_flag == false)
 				sequencer_irq = false;
 

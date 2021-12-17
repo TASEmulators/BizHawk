@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public bool CanProvideAsync => false;
 
-		public void ResetControllerDefinition()
+		internal void ResetControllerDefinition()
 		{
 			ControllerDefinition = null;
 
