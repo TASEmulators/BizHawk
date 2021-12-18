@@ -309,6 +309,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			if (game["MultiResHack"])
 			{
 				VDC1.MultiResHack = game.GetIntValue("MultiResHack");
+				VDC1.Resize_Frame_Buffer_MultiResHack();
 			}
 
 			Cpu.ResetPC();
