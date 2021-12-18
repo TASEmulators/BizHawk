@@ -358,7 +358,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ppu_open_bus = 0;
 			ppu_open_bus_decay_timer = new int[8];
 			double_2007_read = 0;
-			start_up_offset = 3;
+			start_up_offset = 4;
 		}
 
 		private void runppu()

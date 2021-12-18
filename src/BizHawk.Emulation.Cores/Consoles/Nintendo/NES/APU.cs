@@ -664,7 +664,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				out_silence = true;
 				DMC_RATE = pal ? DMC_RATE_PAL : DMC_RATE_NTSC;
 				timer_reload = DMC_RATE[0];
-				timer = 1023; // confirmed in VisualNES although aligning controller read glitches still doesn't work
+				timer = 1020; // confirmed in VisualNES although aligning controller read glitches still doesn't work
 				sample_buffer_filled = false;
 				out_deltacounter = 64;
 				out_bits_remaining = 7; //confirmed in VisualNES
