@@ -451,6 +451,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public bool special_case_delay; // very ugly but the only option
 		public bool reread_trigger;
 		public int do_the_reread_2002, do_the_reread_2007, do_the_reread_cont_1, do_the_reread_cont_2;
+		public int reread_opp_4016, reread_opp_4017;
 		public byte DB; //old data bus values from previous reads
 
 		internal void RunCpuOne()
@@ -497,7 +498,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (apu.dmc_dma_countdown > 0)
 			{
-				if (apu.dmc_dma_countdown == 1 && !apu.dmc.fill_glitch)
+				if (apu.dmc_dma_countdown == 1)
 				{
 					dmc_realign = true;
 				}
@@ -515,46 +516,60 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				apu.dmc_dma_countdown--;
 				if (apu.dmc_dma_countdown == 0)
 				{
-					if (!apu.dmc.fill_glitch)
+					reread_trigger = true;
+					// if the DMA address has the same bits set as the re-read address, they don't occur
+					if ((apu.dmc.sample_address & 0x2007) != 0x2002)
 					{
-						reread_trigger = true;
-						// if the DMA address has the same bits set as the re-read address, they don't occur
-						if ((apu.dmc.sample_address & 0x2007) != 0x2002)
-						{
-							do_the_reread_2002++;
-						}
-
-						if ((apu.dmc.sample_address & 0x2007) != 0x2007)
-						{
-							do_the_reread_2007++;
-						}
-
-						if ((apu.dmc.sample_address & 0x401F) != 0x4016)
-						{
-							do_the_reread_cont_1++;
-						}
-
-						if ((apu.dmc.sample_address & 0x401F) != 0x4017)
-						{
-							do_the_reread_cont_2++;
-						}
-				
-						apu.RunDMCFetch();
+						do_the_reread_2002++;
 					}
+
+					if ((apu.dmc.sample_address & 0x2007) != 0x2007)
+					{
+						do_the_reread_2007++;
+					}
+
+					if ((apu.dmc.sample_address & 0x1F) != 0x16)
+					{
+						do_the_reread_cont_1++;
+					}
+
+					if ((apu.dmc.sample_address & 0x1F) == 0x16)
+					{
+						reread_opp_4016++;
+					}
+
+					if ((apu.dmc.sample_address & 0x1F) != 0x17)
+					{
+						do_the_reread_cont_2++;
+					}
+
+					if ((apu.dmc.sample_address & 0x1F) == 0x17)
+					{
+						reread_opp_4017++;
+					}
+
+					apu.RunDMCFetch();
 
 					dmc_dma_exec = false;
 					apu.dmc_dma_countdown = -1;
-					apu.dmc.fill_glitch = false;
+
 					/*
-					//if (apu.dmc.timer == (apu.dmc.timer_reload-0) && apu.dmc.out_bits_remaining == 7)							
-					//if (apu.dmc.timer == 2 && apu.dmc.out_bits_remaining == 0)
+					if (apu.dmc.timer == 3 && apu.dmc.out_bits_remaining == 0)
 					{
-						Console.WriteLine("close " + cpu.TotalExecutedCycles + " " + apu.dmc.timer + " " + apu.dmc.sample_length);
-						apu.dmc.fill_glitch = true;
-						apu.dmc.delay = 3;
+						Console.WriteLine("close 3 " + cpu.TotalExecutedCycles + " " + apu.dmc.timer + " " + apu.dmc.sample_length + " " + cpu.opcode + " " + cpu.mi);
+					}
+
+					if (apu.dmc.timer == (apu.dmc.timer_reload-1) && apu.dmc.out_bits_remaining == 7)
+					{
+						Console.WriteLine("close 2 " + cpu.TotalExecutedCycles + " " + apu.dmc.timer + " " + apu.dmc.sample_length + " " + cpu.opcode + " " + cpu.mi);
 					}
 					*/
-					//Console.WriteLine("dmc RDY false " + cpu.TotalExecutedCycles + " " + cpu.opcode + " " + cpu.mi + " " + apu.dmc.timer);
+
+					if (apu.dmc.timer == 1 && apu.dmc.out_bits_remaining == 0)
+					{
+						//Console.WriteLine("close " + cpu.TotalExecutedCycles + " " + apu.dmc.timer + " " + apu.dmc.sample_length + " " + cpu.opcode + " " + cpu.mi);
+						apu.dmc.fill_glitch = true;
+					}
 				}				
 			}
 
@@ -595,6 +610,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				do_the_reread_2007 = 0;
 				do_the_reread_cont_1 = 0;
 				do_the_reread_cont_2 = 0;
+				reread_opp_4016 = 0;
+				reread_opp_4017 = 0;
 				reread_trigger = false;
 			}
 				
@@ -652,7 +669,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						// special hardware glitch case
 						ret_spec = read_joyport(addr);
 
-						//if (reread_trigger && (do_the_reread_cont_1 == 0)) { Console.WriteLine("same 1 " + (apu.dmc.sample_address - 1)); }
+						if (reread_trigger && (do_the_reread_cont_1 == 0)) { Console.WriteLine("same 1 " + (apu.dmc.sample_address - 1)); }
+
+						if ((reread_opp_4017 > 0) && ppu.region == PPU.Region.NTSC)
+						{
+							read_joyport(0x4017);
+							//Console.WriteLine("DMC glitch player 2 opposite " + cpu.TotalExecutedCycles + " addr " + (apu.dmc.sample_address - 1));
+						}
 
 						if ((do_the_reread_cont_1 > 0) && ppu.region==PPU.Region.NTSC)
 						{
@@ -680,7 +703,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						// special hardware glitch case
 						ret_spec = read_joyport(addr);
 
-						//if (reread_trigger && (do_the_reread_cont_2 == 0)) { Console.WriteLine("same 2 " + (apu.dmc.sample_address - 1)); }
+						if (reread_trigger && (do_the_reread_cont_2 == 0)) { Console.WriteLine("same 2 " + (apu.dmc.sample_address - 1)); }
+
+						if ((reread_opp_4016 > 0) && ppu.region == PPU.Region.NTSC)
+						{
+							read_joyport(0x4016);
+							//Console.WriteLine("DMC glitch player 1 opposite " + cpu.TotalExecutedCycles + " addr " + (apu.dmc.sample_address - 1));
+						}
 
 						if ((do_the_reread_cont_2 > 0) && ppu.region == PPU.Region.NTSC)
 						{
@@ -775,7 +804,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						sprdma_countdown--;
 						if (sprdma_countdown == 0)
 						{
-							if (apu.dmc.timer % 2 == 0)
+							if (apu.dmc.timer % 2 == 1)
 							{
 								cpu_deadcounter = 2;
 							}

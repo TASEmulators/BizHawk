@@ -664,7 +664,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				out_silence = true;
 				DMC_RATE = pal ? DMC_RATE_PAL : DMC_RATE_NTSC;
 				timer_reload = DMC_RATE[0];
-				timer = 1020; // confirmed in VisualNES although aligning controller read glitches still doesn't work
+				timer = 1019; // confirmed in VisualNES although aligning controller read glitches still doesn't work
 				sample_buffer_filled = false;
 				out_deltacounter = 64;
 				out_bits_remaining = 7; //confirmed in VisualNES
@@ -689,7 +689,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			public int out_shift, out_bits_remaining, out_deltacounter;
 			private bool out_silence;
-			public bool fill_glitch;
+			public bool fill_glitch; // happens when buffer is filled and emptied at the same time
+			//public bool fill_glitch_2; // happens when a write triggered refill happens too prevent an automatic refill
 
 			public int sample => out_deltacounter /* - 64*/;
 
@@ -734,26 +735,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				// also note that the halt for DMC DMA occurs on APU cycles only (hence the timer check)
 				if (!sample_buffer_filled && sample_length > 0 && apu.dmc_dma_countdown == -1 && delay==0)
 				{
-					if (!apu.call_from_write)
+					if (!fill_glitch) 
 					{
-						// when called due to empty bueffer while DMC running, there is no delay
-						//delay = 1;
-						nes.cpu.RDY = false;
-						nes.dmc_dma_exec = true;
-						apu.dmc_dma_countdown = 3;
-						apu.DMC_RDY_check = 2;
-					}
-					else
-					{
-						// when called from write, either a 2 or 3 cycle delay in activation.
-						if (timer % 2 == 1)
+						if (!apu.call_from_write)
 						{
-							delay = 2;
+							delay = 1;
 						}
 						else
 						{
-							delay = 3;
-						}					
+							// when called from write, either a 2 or 3 cycle delay in activation.
+							if (timer % 2 == 0)
+							{
+								delay = 2;
+							}
+							else
+							{
+								delay = 3;
+							}					
+						}
+					}
+					else
+					{
+						// if refill and empty happen simultaneously, do not do another refill and act as though the sample buffer was filled
+						//Console.WriteLine("fill glitch");
+						sample_buffer_filled = true;
 					}
 				}
 
@@ -765,13 +770,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					delay--;
 					if (delay == 0)
 					{
-						if (fill_glitch)
+						/*if (fill_glitch)
 						{
 							//fill_glitch = false;
 							apu.dmc_dma_countdown = 1;
 							apu.DMC_RDY_check = -1;
 						}
-						else if (!apu.call_from_write)
+						else */if (!apu.call_from_write)
 						{
 							apu.dmc_dma_countdown = 4;
 							apu.DMC_RDY_check = 2;
@@ -784,6 +789,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						}
 					}
 				}
+
+				fill_glitch = false;
 			}
 
 			private void Clock()
