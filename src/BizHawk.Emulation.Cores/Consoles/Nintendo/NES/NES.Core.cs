@@ -528,22 +528,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						do_the_reread_2007++;
 					}
 
-					if ((apu.dmc.sample_address & 0x1F) != 0x16)
+					if ((apu.dmc.sample_address & 0x401F) != 0x4016)
 					{
 						do_the_reread_cont_1++;
 					}
 
-					if ((apu.dmc.sample_address & 0x1F) == 0x16)
+					if ((apu.dmc.sample_address & 0x401F) == 0x4016)
 					{
 						reread_opp_4016++;
 					}
 
-					if ((apu.dmc.sample_address & 0x1F) != 0x17)
+					if ((apu.dmc.sample_address & 0x401F) != 0x4017)
 					{
 						do_the_reread_cont_2++;
 					}
 
-					if ((apu.dmc.sample_address & 0x1F) == 0x17)
+					if ((apu.dmc.sample_address & 0x401F) == 0x4017)
 					{
 						reread_opp_4017++;
 					}
@@ -553,24 +553,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					dmc_dma_exec = false;
 					apu.dmc_dma_countdown = -1;
 
-					/*
-					if (apu.dmc.timer == 3 && apu.dmc.out_bits_remaining == 0)
+					if ((apu.dmc.timer == 2) && (apu.dmc.out_bits_remaining == 0))
 					{
-						Console.WriteLine("close 3 " + cpu.TotalExecutedCycles + " " + apu.dmc.timer + " " + apu.dmc.sample_length + " " + cpu.opcode + " " + cpu.mi);
+						Console.WriteLine("close " + cpu.TotalExecutedCycles + " " + apu.dmc.timer + " " + apu.dmc.sample_length + " " + cpu.opcode + " " + cpu.mi);
+						if (apu.dmc.sample_length != 0)
+						{
+							apu.dmc.fill_glitch = true;
+						}					
 					}
 
-					if (apu.dmc.timer == (apu.dmc.timer_reload-1) && apu.dmc.out_bits_remaining == 7)
+					/*
+					if ((apu.dmc.timer == 3) && (apu.dmc.out_bits_remaining == 0) && (apu.dmc.sample_length == 0))
 					{
-						Console.WriteLine("close 2 " + cpu.TotalExecutedCycles + " " + apu.dmc.timer + " " + apu.dmc.sample_length + " " + cpu.opcode + " " + cpu.mi);
+						//Console.WriteLine("close 2 " + cpu.TotalExecutedCycles + " " + apu.dmc.timer + " " + apu.dmc.sample_length + " " + cpu.opcode + " " + cpu.mi);
+						//apu.dmc.fill_glitch_2 = true;
 					}
 					*/
-
-					if (apu.dmc.timer == 1 && apu.dmc.out_bits_remaining == 0)
-					{
-						//Console.WriteLine("close " + cpu.TotalExecutedCycles + " " + apu.dmc.timer + " " + apu.dmc.sample_length + " " + cpu.opcode + " " + cpu.mi);
-						apu.dmc.fill_glitch = true;
-					}
-				}				
+				}
+				/*
+				if (apu.dmc.fill_glitch_2 && (apu.dmc_dma_countdown == 3))
+				{
+					apu.dmc_dma_countdown = -1;
+					dmc_dma_exec = false;
+					apu.dmc.fill_glitch_2 = false;
+				}
+				*/
 			}
 
 			/////////////////////////////
@@ -804,7 +811,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						sprdma_countdown--;
 						if (sprdma_countdown == 0)
 						{
-							if (apu.dmc.timer % 2 == 1)
+							if (apu.dmc.timer % 2 == 0)
 							{
 								cpu_deadcounter = 2;
 							}

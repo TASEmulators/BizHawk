@@ -664,7 +664,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				out_silence = true;
 				DMC_RATE = pal ? DMC_RATE_PAL : DMC_RATE_NTSC;
 				timer_reload = DMC_RATE[0];
-				timer = 1019; // confirmed in VisualNES although aligning controller read glitches still doesn't work
+				timer = 1020; // confirmed in VisualNES although aligning controller read glitches still doesn't work
 				sample_buffer_filled = false;
 				out_deltacounter = 64;
 				out_bits_remaining = 7; //confirmed in VisualNES
@@ -689,8 +689,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			public int out_shift, out_bits_remaining, out_deltacounter;
 			private bool out_silence;
-			public bool fill_glitch; // happens when buffer is filled and emptied at the same time
-			//public bool fill_glitch_2; // happens when a write triggered refill happens too prevent an automatic refill
+			// happens when buffer is filled and emptied at the same time
+			public bool fill_glitch;
+			// happens when a write triggered refill that sets length to zero happens too close to an automatic DMA
+			// (causes 1-cycle blips in dmc_dma_start_test_v2)
+			public bool fill_glitch_2; 
 
 			public int sample => out_deltacounter /* - 64*/;
 
@@ -715,6 +718,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ser.Sync(nameof(out_deltacounter), ref out_deltacounter);
 				ser.Sync(nameof(out_silence), ref out_silence);
 				ser.Sync(nameof(fill_glitch), ref fill_glitch);
+				ser.Sync(nameof(fill_glitch_2), ref fill_glitch_2);
 
 				ser.Sync(nameof(delay), ref delay);
 
@@ -733,18 +737,33 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				// Any time the sample buffer is in an empty state and bytes remaining is not zero, the following occur: 
 				// also note that the halt for DMC DMA occurs on APU cycles only (hence the timer check)
-				if (!sample_buffer_filled && sample_length > 0 && apu.dmc_dma_countdown == -1 && delay==0)
+				if (!sample_buffer_filled && ((sample_length > 0) || fill_glitch_2) && apu.dmc_dma_countdown == -1 && delay==0)
 				{
 					if (!fill_glitch) 
 					{
 						if (!apu.call_from_write)
 						{
-							delay = 1;
+							// when called due to empty bueffer while DMC running, there is no delay
+							nes.cpu.RDY = false;
+							nes.dmc_dma_exec = true;
+
+							if (fill_glitch_2)
+							{
+								// this will only run for one cycle and not actually run a DMA
+								Console.WriteLine("fill glitch 2");
+								apu.dmc_dma_countdown = 4;
+								apu.DMC_RDY_check = -1;
+							}
+							else
+							{
+								apu.dmc_dma_countdown = 3;
+								apu.DMC_RDY_check = 2;
+							}
 						}
 						else
 						{
 							// when called from write, either a 2 or 3 cycle delay in activation.
-							if (timer % 2 == 0)
+							if (timer % 2 == 1)
 							{
 								delay = 2;
 							}
@@ -757,8 +776,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					else
 					{
 						// if refill and empty happen simultaneously, do not do another refill and act as though the sample buffer was filled
-						//Console.WriteLine("fill glitch");
+						Console.WriteLine("fill glitch");
 						sample_buffer_filled = true;
+						fill_glitch = false;
 					}
 				}
 
@@ -770,13 +790,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					delay--;
 					if (delay == 0)
 					{
-						/*if (fill_glitch)
-						{
-							//fill_glitch = false;
-							apu.dmc_dma_countdown = 1;
-							apu.DMC_RDY_check = -1;
-						}
-						else */if (!apu.call_from_write)
+						if (!apu.call_from_write)
 						{
 							apu.dmc_dma_countdown = 4;
 							apu.DMC_RDY_check = 2;
@@ -789,8 +803,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						}
 					}
 				}
-
-				fill_glitch = false;
 			}
 
 			private void Clock()
@@ -845,9 +857,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				if(!en)
 				{
+					/*
+					if ((timer <= 3) && (out_bits_remaining == 0) && (sample_length != 0))
+					{
+						//Console.WriteLine("glitch 2");
+						//fill_glitch_2 = true;
+					}
+					*/
+
 					// If the DMC bit is clear, the DMC bytes remaining will be set to 0 
 					// and the DMC will silence when it empties.
-					sample_length = 0;					
+					sample_length = 0;				
 				}
 				else
 				{
@@ -1151,6 +1171,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if(sequencer_mode == 0) { sequencer_check_2 = sequencer_lut[0][3] - 2; }
 			else { sequencer_check_2 = sequencer_lut[1][4] - 2; }
+
+			dmc.fill_glitch = false;
+			dmc.fill_glitch_2 = false;
 		}
 
 		public void NESHardReset()
@@ -1163,6 +1186,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (sequencer_mode == 0) { sequencer_check_2 = sequencer_lut[0][3] - 2; }
 			else { sequencer_check_2 = sequencer_lut[1][4] - 2; }
+
+			dmc.fill_glitch = false;
+			dmc.fill_glitch_2 = false;
 		}
 
 		public void WriteReg(int addr, byte val)
