@@ -555,7 +555,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 					if ((apu.dmc.timer == 2) && (apu.dmc.out_bits_remaining == 0))
 					{
-						Console.WriteLine("close " + cpu.TotalExecutedCycles + " " + apu.dmc.timer + " " + apu.dmc.sample_length + " " + cpu.opcode + " " + cpu.mi);
+						//Console.WriteLine("close " + cpu.TotalExecutedCycles + " " + apu.dmc.timer + " " + apu.dmc.sample_length + " " + cpu.opcode + " " + cpu.mi);
 						if (apu.dmc.sample_length != 0)
 						{
 							apu.dmc.fill_glitch = true;
@@ -584,16 +584,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// dmc dma end
 			/////////////////////////////
 			apu.RunOneFirst();
-
+			
 			if (cpu.RDY && !IRQ_delay)
 			{
 				cpu.IRQ = _irq_apu || Board.IrqSignal;
 			}
 			else if (special_case_delay || apu.dmc_dma_countdown == 3)
-			{
-				
+			{			
 				cpu.IRQ = _irq_apu || Board.IrqSignal;
-				//if (cpu.IRQ) { Console.WriteLine("something IRQ"); }
 				special_case_delay = false;
 			}
 
@@ -625,7 +623,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			IRQ_delay = false;
 
-			if (!dmc_dma_exec && !oam_dma_exec && !cpu.RDY)
+			if (!cpu.RDY && !dmc_dma_exec && !oam_dma_exec)
 			{
 				cpu.RDY = true;
 				IRQ_delay = true;

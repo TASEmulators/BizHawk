@@ -763,13 +763,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						else
 						{
 							// when called from write, either a 2 or 3 cycle delay in activation.
-							if (timer % 2 == 1)
+							if (timer % 2 == 0)
 							{
-								delay = 2;
+								delay = 3;
 							}
 							else
 							{
-								delay = 3;
+								delay = 2;
 							}					
 						}
 					}
@@ -1232,7 +1232,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 					else if (addr == 0x4017)
 					{
-						if (dmc.timer % 2 == 1)
+						if (dmc.timer % 2 == 0)
 						{
 							seq_tick = 3;
 
@@ -1323,12 +1323,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// the current code simply matches known behaviour			
 			if (pending_reg != -1)
 			{
-				if (pending_reg == 0x4015 || pending_reg == 0x4003 || pending_reg == 0x4007)
+				if ( pending_reg == 0x4003 || pending_reg == 0x4007 || pending_reg == 0x4015 || pending_reg == 0x4017)
 				{
 					_WriteReg(pending_reg, pending_val);
 					pending_reg = -1;
 				}
-				else if (dmc.timer % 2 == 1)
+				else if (dmc.timer % 2 == 0)
 				{
 					_WriteReg(pending_reg, pending_val);
 					pending_reg = -1;
