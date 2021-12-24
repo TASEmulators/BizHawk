@@ -746,6 +746,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							// when called due to empty bueffer while DMC running, there is no delay
 							nes.cpu.RDY = false;
 							nes.dmc_dma_exec = true;
+							nes.DMC_just_started = true;
 
 							if (fill_glitch_2)
 							{
@@ -945,7 +946,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						sample_address = user_address;
 						sample_length = user_length;
 					}
-					else if (irq_enabled) apu.dmc_irq = true;
+					else if (irq_enabled) { apu.dmc_irq_countdown = 3; }
 				}
 				// Console.WriteLine("fetching dmc byte: {0:X2}", sample_buffer);
 			}
@@ -955,6 +956,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			ser.Sync(nameof(irq_pending), ref irq_pending);
 			ser.Sync(nameof(dmc_irq), ref dmc_irq);
+			ser.Sync(nameof(dmc_irq_countdown), ref dmc_irq_countdown);
 			ser.Sync(nameof(pending_reg), ref pending_reg);
 			ser.Sync(nameof(pending_val), ref pending_val);
 
@@ -995,6 +997,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public readonly DMCUnit dmc;
 
 		private bool irq_pending;
+		public int dmc_irq_countdown;
 		private bool dmc_irq;
 		private int pending_reg = -1;
 		private bool doing_tick_quarter = false;
@@ -1347,6 +1350,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (sequencer_irq_assert == 0)
 				{
 					sequencer_irq = true;
+				}
+			}
+
+			if (dmc_irq_countdown > 0)
+			{
+				dmc_irq_countdown--;
+				if (dmc_irq_countdown == 0)
+				{
+					dmc_irq = true;
 				}
 			}
 

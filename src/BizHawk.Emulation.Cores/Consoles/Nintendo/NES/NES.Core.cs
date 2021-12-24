@@ -453,6 +453,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public int do_the_reread_2002, do_the_reread_2007, do_the_reread_cont_1, do_the_reread_cont_2;
 		public int reread_opp_4016, reread_opp_4017;
 		public byte DB; //old data bus values from previous reads
+		public bool DMC_just_started;
 
 		internal void RunCpuOne()
 		{
@@ -510,6 +511,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					apu.dmc_dma_countdown += 2;
 					apu.DMC_RDY_check = -1;
 				}
+
+				if (!dmc_dma_exec) { DMC_just_started = true; }
 				
 				cpu.RDY = false;
 				dmc_dma_exec = true;
@@ -589,10 +592,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				cpu.IRQ = _irq_apu || Board.IrqSignal;
 			}
-			else if (special_case_delay || apu.dmc_dma_countdown == 3)
+			else if (special_case_delay || DMC_just_started)
 			{			
 				cpu.IRQ = _irq_apu || Board.IrqSignal;
 				special_case_delay = false;
+				DMC_just_started = false;
 			}
 
 			cpu.ExecuteOne();
@@ -618,8 +622,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				reread_opp_4016 = 0;
 				reread_opp_4017 = 0;
 				reread_trigger = false;
-			}
-				
+			}			
 
 			IRQ_delay = false;
 
