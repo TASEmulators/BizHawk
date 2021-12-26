@@ -9,6 +9,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			return _settings.Clone();
 		}
 
+		SNES.IBSNESForGfxDebugger.SettingsObj SNES.IBSNESForGfxDebugger.GetSettings()
+			=> GetSettings();
+
 		public SnesSyncSettings GetSyncSettings()
 		{
 			return _syncSettings.Clone();
@@ -20,6 +23,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 			return PutSettingsDirtyBits.None;
 		}
+
+		void SNES.IBSNESForGfxDebugger.PutSettings(SNES.IBSNESForGfxDebugger.SettingsObj s)
+			=> PutSettings((SnesSettings) s);
 
 		public PutSettingsDirtyBits PutSyncSettings(SnesSyncSettings o)
 		{
@@ -41,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		private SnesSettings _settings;
 		private SnesSyncSettings _syncSettings;
 
-		public class SnesSettings
+		public class SnesSettings : SNES.IBSNESForGfxDebugger.SettingsObj
 		{
 			public bool ShowBG1_0 { get; set; } = true;
 			public bool ShowBG2_0 { get; set; } = true;

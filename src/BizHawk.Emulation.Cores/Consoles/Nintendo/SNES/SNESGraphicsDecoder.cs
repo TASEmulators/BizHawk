@@ -13,7 +13,99 @@ using System;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
-	public unsafe class SNESGraphicsDecoder : IDisposable, IMonitor
+	public unsafe interface ISNESGraphicsDecoder : IDisposable, IMonitor
+	{
+		public interface OAMInfo
+		{
+			int X { get; }
+
+			int Y { get; }
+
+			int Tile { get; }
+
+			int Table { get; }
+
+			int Palette { get; }
+
+			int Priority { get; }
+
+			bool VFlip { get; }
+
+			bool HFlip { get; }
+
+			int Size { get; }
+
+			int Address { get; }
+		}
+
+		void CacheTiles();
+
+		int Colorize(int rgb555);
+
+		void Colorize(int* buf, int offset, int numpixels);
+
+		OAMInfo CreateOAMInfo(SNESGraphicsDecoder.ScreenInfo si, int num);
+
+		void DecodeBG(
+			int* screen,
+			int stride,
+			SNESGraphicsDecoder.TileEntry[] map,
+			int tiledataBaseAddr,
+			SNESGraphicsDecoder.ScreenSize size,
+			int bpp,
+			int tilesize,
+			int paletteStart);
+
+		void DecodeMode7BG(int* screen, int stride, bool extBg);
+
+		void DirectColorify(int* screen, int numPixels);
+
+		SNESGraphicsDecoder.TileEntry[] FetchMode7Tilemap();
+
+		SNESGraphicsDecoder.TileEntry[] FetchTilemap(int addr, SNESGraphicsDecoder.ScreenSize size);
+
+		int[] GetPalette();
+
+		void Paletteize(int* buf, int offset, int startcolor, int numpixels);
+
+		void RenderMode7TilesToScreen(
+			int* screen,
+			int stride,
+			bool ext,
+			bool directColor,
+			int tilesWide = 16,
+			int startTile = 0,
+			int numTiles = 256);
+
+		void RenderSpriteToScreen(
+			int* screen,
+			int stride,
+			int destx,
+			int desty,
+			SNESGraphicsDecoder.ScreenInfo si,
+			int spritenum,
+			OAMInfo oam = null,
+			int xlimit = 1024,
+			int ylimit = 1024,
+			byte[,] spriteMap = null);
+
+		void RenderTilesToScreen(
+			int* screen,
+			int tilesWide,
+			int tilesTall,
+			int stride,
+			int bpp,
+			int startcolor,
+			int startTile = 0,
+			int numTiles = -1,
+			bool descramble16 = false);
+
+		SNESGraphicsDecoder.ScreenInfo ScanScreenInfo();
+
+		void SetBackColor(int snescol);
+	}
+
+	public unsafe class SNESGraphicsDecoder : ISNESGraphicsDecoder
 	{
 		public class PaletteSelection
 		{
@@ -207,7 +299,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			public int MODE;
 		}
 
-		public class OAMInfo
+		public class OAMInfo : ISNESGraphicsDecoder.OAMInfo
 		{
 			public int Index { get; }
 			public int X { get; }
@@ -569,6 +661,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			None = 0, Priority = 1, Horz = 2, Vert = 4,
 		}
+
+		public ISNESGraphicsDecoder.OAMInfo CreateOAMInfo(ScreenInfo si, int num)
+			=> new OAMInfo(this, si, num);
 
 		/// <summary>
 		/// decodes a mode7 BG. youll still need to paletteize and colorize it.
@@ -935,7 +1030,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		}
 
 
-		public void RenderSpriteToScreen(int* screen, int stride, int destx, int desty, ScreenInfo si, int spritenum, OAMInfo oam = null, int xlimit = 1024, int ylimit = 1024, byte[,] spriteMap = null)
+		public void RenderSpriteToScreen(int* screen, int stride, int destx, int desty, ScreenInfo si, int spritenum, ISNESGraphicsDecoder.OAMInfo oam = null, int xlimit = 1024, int ylimit = 1024, byte[,] spriteMap = null)
 		{
 			var dims = new[] { SNESGraphicsDecoder.ObjSizes[si.OBSEL_Size, 0], SNESGraphicsDecoder.ObjSizes[si.OBSEL_Size, 1] };
 			if(oam == null)

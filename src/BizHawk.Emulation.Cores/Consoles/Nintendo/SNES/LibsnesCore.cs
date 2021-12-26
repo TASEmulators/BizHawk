@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 	[PortedCore(CoreNames.Bsnes, "byuu", "v87", "https://github.com/bsnes-emu/bsnes/tree/386ac87d21d14fafd15162d480a111209c9955ba")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public unsafe partial class LibsnesCore : IEmulator, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable, ICodeDataLogger,
-		IDebuggable, ISettable<LibsnesCore.SnesSettings, LibsnesCore.SnesSyncSettings>
+		IDebuggable, ISettable<LibsnesCore.SnesSettings, LibsnesCore.SnesSyncSettings>, IBSNESForGfxDebugger
 	{
 		[CoreConstructor(VSystemID.Raw.SGB)]
 		[CoreConstructor(VSystemID.Raw.SNES)]
@@ -235,7 +235,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public SnesColors.ColorType CurrPalette { get; private set; }
 
-		public MyScanlineHookManager ScanlineHookManager { get; }
+		public void SetPalette(string palette)
+		{
+			var s = GetSettings();
+			s.Palette = palette;
+			PutSettings(s);
+		}
+
+		public ISNESGraphicsDecoder CreateGraphicsDecoder()
+			=> new SNESGraphicsDecoder(Api, CurrPalette);
+
+		public ScanlineHookManager ScanlineHookManager { get; }
 
 		public class MyScanlineHookManager : ScanlineHookManager
 		{

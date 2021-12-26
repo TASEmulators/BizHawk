@@ -41,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly List<DisplayTypeItem> displayTypeItems = new List<DisplayTypeItem>();
 
 		[RequiredService]
-		private LibsnesCore Emulator { get; set; }
+		private IBSNESForGfxDebugger Emulator { get; set; }
 
 		[ConfigPersist]
 		public bool UseUserBackdropColor
@@ -104,7 +104,8 @@ namespace BizHawk.Client.EmuHawk
 			UserBackdropColor = -1;
 		}
 
-		private LibsnesCore currentSnesCore;
+		private IBSNESForGfxDebugger currentSnesCore;
+
 		protected override void OnClosed(EventArgs e)
 		{
 			base.OnClosed(e);
@@ -200,7 +201,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private SNESGraphicsDecoder gd;
+		private ISNESGraphicsDecoder gd;
 		private SNESGraphicsDecoder.ScreenInfo si;
 		private SNESGraphicsDecoder.TileEntry[] map;
 		private readonly byte[,] spriteMap = new byte[256, 224];
@@ -370,7 +371,7 @@ namespace BizHawk.Client.EmuHawk
 				for (int y = 0; y < 224; y++) for (int x = 0; x < 256; x++) spriteMap[x, y] = 0xFF;
 				for(int i=127;i>=0;i--)
 				{
-					var oam = new SNESGraphicsDecoder.OAMInfo(gd, si, i);
+					var oam = gd.CreateOAMInfo(si, i);
 					gd.RenderSpriteToScreen(pixelptr, stride / 4, oam.X, oam.Y, si, i, oam, 256, 224, spriteMap);
 				}
 			}
@@ -645,10 +646,8 @@ namespace BizHawk.Client.EmuHawk
 			return ret;
 		}
 
-		private SNESGraphicsDecoder NewDecoder()
-		{
-			return currentSnesCore != null ? new SNESGraphicsDecoder(currentSnesCore.Api, currentSnesCore.CurrPalette) : null;
-		}
+		private ISNESGraphicsDecoder NewDecoder()
+			=> currentSnesCore?.CreateGraphicsDecoder();
 
 		private void RenderPalette()
 		{
@@ -713,7 +712,7 @@ namespace BizHawk.Client.EmuHawk
 		private void UpdateOBJDetails()
 		{
 			if (currObjDataState == null) return;
-			var oam = new SNESGraphicsDecoder.OAMInfo(gd, si, currObjDataState.Number);
+			var oam = gd.CreateOAMInfo(si, currObjDataState.Number);
 			txtObjNumber.Text = $"#${currObjDataState.Number:X2}";
 			txtObjCoord.Text = $"({oam.X}, {oam.Y})";
 			cbObjHFlip.Checked = oam.HFlip;
@@ -1263,11 +1262,9 @@ namespace BizHawk.Client.EmuHawk
 		private void comboPalette_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (suppression) return;
-			var pal = (SnesColors.ColorType)comboPalette.SelectedValue;
+			var pal = comboPalette.SelectedValue.ToString();
 			Console.WriteLine("set {0}", pal);
-			var s = Emulator.GetSettings();
-			s.Palette = pal.ToString();
-			currentSnesCore?.PutSettings(s);
+			currentSnesCore?.SetPalette(pal);
 			RegenerateData();
 			RenderView();
 			RenderPalette();
