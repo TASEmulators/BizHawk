@@ -448,12 +448,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public bool dmc_dma_exec = false;
 		public bool dmc_realign;
 		public bool IRQ_delay;
-		public bool special_case_delay; // very ugly but the only option
 		public bool reread_trigger;
 		public int do_the_reread_2002, do_the_reread_2007, do_the_reread_cont_1, do_the_reread_cont_2;
 		public int reread_opp_4016, reread_opp_4017;
 		public byte DB; //old data bus values from previous reads
+		// DMA's delay IRQ's by one cycle after finished, but allow them on the same cycle if just started
 		public bool DMC_just_started;
+		public bool OAM_just_started;
+		public bool ppu_nmi;
 
 		internal void RunCpuOne()
 		{
@@ -591,11 +593,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (cpu.RDY && !IRQ_delay)
 			{
 				cpu.IRQ = _irq_apu || Board.IrqSignal;
+				if (ppu_nmi)
+				{
+					cpu.NMI = ppu_nmi;
+					ppu_nmi = false;
+				}
+				
 			}
-			else if (special_case_delay || DMC_just_started)
+			else if (OAM_just_started || DMC_just_started)
 			{			
 				cpu.IRQ = _irq_apu || Board.IrqSignal;
-				special_case_delay = false;
+				if (ppu_nmi)
+				{
+					cpu.NMI = ppu_nmi;
+					ppu_nmi = false;
+				}
+
+				OAM_just_started = false;
 				DMC_just_started = false;
 			}
 
@@ -823,7 +837,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							oam_dma_exec = true;
 							cpu.RDY = false;
 							oam_dma_index = 0;
-							special_case_delay = true;
+							OAM_just_started = true;
 						}
 					}
 					break;

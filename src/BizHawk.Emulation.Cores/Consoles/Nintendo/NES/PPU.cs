@@ -423,7 +423,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					NMI_PendingInstructions--;
 					if (NMI_PendingInstructions <= 0)
 					{
-						nes.cpu.NMI = true;
+						nes.ppu_nmi = true;
 					}
 				}
 			}

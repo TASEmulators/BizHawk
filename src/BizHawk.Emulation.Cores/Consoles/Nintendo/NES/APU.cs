@@ -861,7 +861,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					/*
 					if ((timer <= 3) && (out_bits_remaining == 0) && (sample_length != 0))
 					{
-						//Console.WriteLine("glitch 2");
+						Console.WriteLine("glitch 2 " + timer);
 						//fill_glitch_2 = true;
 					}
 					*/

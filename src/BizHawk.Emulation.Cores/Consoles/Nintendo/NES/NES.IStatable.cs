@@ -23,14 +23,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(old_s), ref old_s);
 
 			// OAM related
-			ser.Sync("Oam_Dma_Index", ref oam_dma_index);
-			ser.Sync("Oam_Dma_Exec", ref oam_dma_exec);
-			ser.Sync("Oam_Dma_Addr", ref oam_dma_addr);
-			ser.Sync("Oam_Dma_Byte", ref oam_dma_byte);
-			ser.Sync("Dmc_Dma_Exec", ref dmc_dma_exec);
+			ser.Sync(nameof(oam_dma_index), ref oam_dma_index);
+			ser.Sync(nameof(oam_dma_exec), ref oam_dma_exec);
+			ser.Sync(nameof(oam_dma_addr), ref oam_dma_addr);
+			ser.Sync(nameof(oam_dma_byte), ref oam_dma_byte);
+			ser.Sync(nameof(dmc_dma_exec), ref dmc_dma_exec);
 			ser.Sync(nameof(dmc_realign), ref dmc_realign);
 			ser.Sync(nameof(IRQ_delay), ref IRQ_delay);
-			ser.Sync(nameof(special_case_delay), ref special_case_delay);
 			ser.Sync(nameof(reread_trigger), ref reread_trigger);
 			ser.Sync(nameof(do_the_reread_2002), ref do_the_reread_2002);
 			ser.Sync(nameof(do_the_reread_2007), ref do_the_reread_2007);
@@ -38,7 +37,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(do_the_reread_cont_2), ref do_the_reread_cont_2);
 			ser.Sync(nameof(reread_opp_4016), ref reread_opp_4016);
 			ser.Sync(nameof(reread_opp_4017), ref reread_opp_4017);
+			ser.Sync(nameof(OAM_just_started), ref OAM_just_started);
 			ser.Sync(nameof(DMC_just_started), ref DMC_just_started);
+			ser.Sync(nameof(ppu_nmi), ref ppu_nmi);
 
 			// VS related
 			ser.Sync("VS", ref _isVS);
