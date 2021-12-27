@@ -581,7 +581,10 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				}
 			}
 
-			Fetch1_Real();
+			mi = 0;
+			opcode = VOP_Fetch1_NoInterrupt;
+
+			Fetch1_Real();			
 		}
 
 		private void Fetch1_Real()

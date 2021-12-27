@@ -746,7 +746,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							// when called due to empty bueffer while DMC running, there is no delay
 							nes.cpu.RDY = false;
 							nes.dmc_dma_exec = true;
-							nes.DMC_just_started = true;
 
 							if (fill_glitch_2)
 							{
