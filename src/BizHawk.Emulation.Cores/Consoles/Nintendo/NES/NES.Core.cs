@@ -584,11 +584,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			// DMC was started in the APU, but in this case it only lasts 1 cycle and is then aborted, so put this here
 			// TODO: should this clock controllers?
-			if (apu.dmc.fill_glitch_2)
+			if (apu.dmc.fill_glitch_2_end)
 			{
 				apu.dmc_dma_countdown = -1;
 				dmc_dma_exec = false;
 				apu.dmc.fill_glitch_2 = false;
+				apu.dmc.fill_glitch_2_end = false;
 			}
 
 			cpu.ExecuteOne();

@@ -693,7 +693,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public bool fill_glitch;
 			// happens when a write triggered refill that sets length to zero happens too close to an automatic DMA
 			// (causes 1-cycle blips in dmc_dma_start_test_v2)
-			public bool fill_glitch_2; 
+			public bool fill_glitch_2;
+			public bool fill_glitch_2_end;
+
+			public bool timer_just_reloaded;
 
 			public int sample => out_deltacounter /* - 64*/;
 
@@ -719,6 +722,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ser.Sync(nameof(out_silence), ref out_silence);
 				ser.Sync(nameof(fill_glitch), ref fill_glitch);
 				ser.Sync(nameof(fill_glitch_2), ref fill_glitch_2);
+				ser.Sync(nameof(fill_glitch_2_end), ref fill_glitch_2_end);
+				ser.Sync(nameof(timer_just_reloaded), ref timer_just_reloaded);
 
 				ser.Sync(nameof(delay), ref delay);
 
@@ -728,11 +733,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			public void Run()
 			{
+				timer_just_reloaded = false;
 				if (timer > 0) timer--;
 				if (timer == 0)
 				{
 					timer = timer_reload;
 					Clock();
+					timer_just_reloaded = true;
 				}
 
 				// Any time the sample buffer is in an empty state and bytes remaining is not zero, the following occur: 
@@ -753,6 +760,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 								//Console.WriteLine("fill glitch 2");
 								apu.dmc_dma_countdown = 4;
 								apu.DMC_RDY_check = -1;
+								fill_glitch_2_end = true;
 							}
 							else
 							{
@@ -861,6 +869,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					if ((timer <= 3) && (out_bits_remaining == 0) && (sample_length != 0))
 					{
 						Console.WriteLine("glitch 2 " + timer);
+						fill_glitch_2 = true;
+					}
+
+					if (timer_just_reloaded && (sample_length != 0))
+					{
+						Console.WriteLine("glitch 3 " + timer);
 						//fill_glitch_2 = true;
 					}
 					*/
