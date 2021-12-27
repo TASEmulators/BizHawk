@@ -751,7 +751,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							if (fill_glitch_2)
 							{
 								// this will only run for one cycle and not actually run a DMA
-								Console.WriteLine("fill glitch 2");
+								//Console.WriteLine("fill glitch 2");
 								apu.dmc_dma_countdown = 4;
 								apu.DMC_RDY_check = -1;
 							}
@@ -777,7 +777,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					else
 					{
 						// if refill and empty happen simultaneously, do not do another refill and act as though the sample buffer was filled
-						Console.WriteLine("fill glitch");
+						//Console.WriteLine("fill glitch");
 						sample_buffer_filled = true;
 						fill_glitch = false;
 					}

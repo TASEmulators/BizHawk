@@ -522,7 +522,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (apu.dmc_dma_countdown == 0)
 				{
 					reread_trigger = true;
+
+					do_the_reread_2002++;
+
+					do_the_reread_2007++;
+
 					// if the DMA address has the same bits set as the re-read address, they don't occur
+					// TODO: need to check if also true for ppu regs
+					/*
 					if ((apu.dmc.sample_address & 0x2007) != 0x2002)
 					{
 						do_the_reread_2002++;
@@ -532,7 +539,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						do_the_reread_2007++;
 					}
-
+					*/
 					if ((apu.dmc.sample_address & 0x401F) != 0x4016)
 					{
 						do_the_reread_cont_1++;
@@ -567,22 +574,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						}					
 					}
 
-					/*
-					if ((apu.dmc.timer == 3) && (apu.dmc.out_bits_remaining == 0) && (apu.dmc.sample_length == 0))
+					if ((apu.dmc.timer == 4) && (apu.dmc.out_bits_remaining == 0) && (apu.dmc.sample_length == 0))
 					{
 						//Console.WriteLine("close 2 " + cpu.TotalExecutedCycles + " " + apu.dmc.timer + " " + apu.dmc.sample_length + " " + cpu.opcode + " " + cpu.mi);
-						//apu.dmc.fill_glitch_2 = true;
+						apu.dmc.fill_glitch_2 = true;
 					}
-					*/
 				}
-				/*
-				if (apu.dmc.fill_glitch_2 && (apu.dmc_dma_countdown == 3))
-				{
-					apu.dmc_dma_countdown = -1;
-					dmc_dma_exec = false;
-					apu.dmc.fill_glitch_2 = false;
-				}
-				*/
 			}
 
 			/////////////////////////////
@@ -611,6 +608,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				OAM_just_started = false;
 				DMC_just_started = false;
+
+				// DMC was started in the APU, but in this case it only lasts 1 cycle and is then aborted, so put this here
+				// TODO: should this clock controllers?
+				if (apu.dmc.fill_glitch_2)
+				{
+					apu.dmc_dma_countdown = -1;
+					dmc_dma_exec = false;
+					apu.dmc.fill_glitch_2 = false;
+				}
 			}
 
 			cpu.ExecuteOne();
@@ -691,7 +697,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						// special hardware glitch case
 						ret_spec = read_joyport(addr);
 
-						if (reread_trigger && (do_the_reread_cont_1 == 0)) { Console.WriteLine("same 1 " + (apu.dmc.sample_address - 1)); }
+						//if (reread_trigger && (do_the_reread_cont_1 == 0)) { Console.WriteLine("same 1 " + (apu.dmc.sample_address - 1)); }
 
 						if ((reread_opp_4017 > 0) && ppu.region == PPU.Region.NTSC)
 						{
@@ -725,7 +731,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						// special hardware glitch case
 						ret_spec = read_joyport(addr);
 
-						if (reread_trigger && (do_the_reread_cont_2 == 0)) { Console.WriteLine("same 2 " + (apu.dmc.sample_address - 1)); }
+						//if (reread_trigger && (do_the_reread_cont_2 == 0)) { Console.WriteLine("same 2 " + (apu.dmc.sample_address - 1)); }
 
 						if ((reread_opp_4016 > 0) && ppu.region == PPU.Region.NTSC)
 						{
