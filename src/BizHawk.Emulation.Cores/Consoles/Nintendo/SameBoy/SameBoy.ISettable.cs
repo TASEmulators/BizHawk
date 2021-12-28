@@ -23,6 +23,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			LibSameboy.sameboy_setlighttemperature(SameboyState, o.LightTemperature);
 			LibSameboy.sameboy_sethighpassfilter(SameboyState, o.HighPassFilter);
 			LibSameboy.sameboy_setinterferencevolume(SameboyState, o.InterferenceVolume);
+			LibSameboy.sameboy_setbgwinenabled(SameboyState, o.EnableBGWIN);
+			LibSameboy.sameboy_setobjenabled(SameboyState, o.EnableOBJ);
+			_disassembler.UseRGBDSSyntax = o.UseRGBDSSyntax;
 			_settings = o;
 			return PutSettingsDirtyBits.None;
 		}
@@ -122,6 +125,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 				get => _interferencevolume;
 				set => _interferencevolume = Math.Max(0, Math.Min(100, value));
 			}
+
+			[DisplayName("Enable Background/Window")]
+			[Description("")]
+			[DefaultValue(true)]
+			public bool EnableBGWIN { get; set; }
+
+			[DisplayName("Enable Objects")]
+			[Description("")]
+			[DefaultValue(true)]
+			public bool EnableOBJ { get; set; }
+
+			[DisplayName("Use RGBDS Syntax")]
+			[Description("Uses RGBDS syntax for disassembling.")]
+			[DefaultValue(true)]
+			public bool UseRGBDSSyntax { get; set; }
 
 			public SameboySettings() => SettingsUtil.SetDefaultValues(this);
 

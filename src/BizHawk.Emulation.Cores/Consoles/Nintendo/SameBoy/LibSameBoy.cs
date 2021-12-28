@@ -148,5 +148,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void sameboy_setrtcdivisoroffset(IntPtr core, int offset);
+
+		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void sameboy_setbgwinenabled(IntPtr core, bool enabled);
+
+		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void sameboy_setobjenabled(IntPtr core, bool enabled);
 	}
 }

@@ -24,11 +24,8 @@ sourceFiles = Split('''
 	libsameboy/Core/memory.c
 	libsameboy/Core/timing.c
 	libsameboy/Core/printer.c
-	joypad.c
+	libsameboy/Core/joypad.c
 ''')
-
-#libsameboy/Core/joypad.c
-#add back when opposing directions are allowed
 
 conf = env.Configure()
 

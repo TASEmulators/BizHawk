@@ -35,6 +35,8 @@ typedef struct
 {
 	GB_gameboy_t gb;
 	u32 vbuf[256 * 224];
+	u32 bg_pal[0x20];
+	u32 obj_pal[0x20];
 	input_callback_t input_cb;
 	trace_callback_t trace_cb;
 	memory_callback_t read_cb;
@@ -97,6 +99,7 @@ EXPORT biz_t* sameboy_create(u8* romdata, u32 romlen, u8* biosdata, u32 bioslen,
 	GB_set_palette(&biz->gb, &GB_PALETTE_GREY);
 	GB_set_color_correction_mode(&biz->gb, GB_COLOR_CORRECTION_EMULATE_HARDWARE);
 	GB_set_rtc_mode(&biz->gb, (flags & RTC_ACCURATE) ? GB_RTC_MODE_ACCURATE : GB_RTC_MODE_SYNC_TO_HOST);
+	GB_set_allow_illegal_inputs(&biz->gb, true);
 	return biz;
 }
 
@@ -119,27 +122,25 @@ EXPORT void sameboy_setinputcallback(biz_t* biz, input_callback_t callback)
 EXPORT void sameboy_frameadvance(biz_t* biz, GB_key_mask_t input, u32* vbuf, bool render, bool border)
 {
 	GB_set_key_mask(&biz->gb, input);
-
-	if ((biz->gb.io_registers[GB_IO_JOYP] & 0x30) != 0x30)
-		biz->input_cb();
-
 	GB_set_pixels_output(&biz->gb, biz->vbuf);
 	GB_set_border_mode(&biz->gb, border ? GB_BORDER_ALWAYS : GB_BORDER_NEVER);
 	GB_set_rendering_disabled(&biz->gb, !render);
 
 	u32 cycles = 0;
+	GB_clear_joyp_accessed(&biz->gb);
 	do
 	{
-		u32 oldjoyp = biz->gb.io_registers[GB_IO_JOYP] & 0x30;
 		u32 ret = GB_run(&biz->gb) >> 2;
 		cycles += ret;
 		biz->cc += ret;
-		u32 newjoyp = biz->gb.io_registers[GB_IO_JOYP] & 0x30;
-		if (oldjoyp != newjoyp && newjoyp != 0x30)
+		if (GB_get_joyp_accessed(&biz->gb))
+		{
 			biz->input_cb();
+			GB_clear_joyp_accessed(&biz->gb);
+		}
 	}
 	while (!biz->gb.vblank_just_occured && cycles < 35112);
-	
+
 	if (biz->gb.vblank_just_occured && render)
 		memcpy(vbuf, biz->vbuf, sizeof biz->vbuf);
 }
@@ -180,26 +181,73 @@ EXPORT u32 sameboy_statelen(biz_t* biz)
 	return GB_get_save_state_size(&biz->gb);
 }
 
+static void UpdatePal(biz_t* biz, bool bg)
+{
+	u32* pal = bg ? biz->bg_pal : biz->obj_pal;
+	if (GB_is_cgb_in_cgb_mode(&biz->gb))
+	{
+		u16* rawPal = GB_get_direct_access(&biz->gb, bg ? GB_DIRECT_ACCESS_BGP : GB_DIRECT_ACCESS_OBP, NULL, NULL);
+		for (u32 i = 0; i < 0x20; i++)
+		{
+			pal[i] = GB_convert_rgb15(&biz->gb, rawPal[i] & 0x7FFF, false);
+		}
+	}
+	else
+	{
+		if (bg)
+		{
+			u8 bgp = biz->gb.io_registers[GB_IO_BGP];
+			for (u32 i = 0; i < 4; i++)
+			{
+				pal[i] = biz->gb.background_palettes_rgb[(bgp >> (i * 2)) & 3];
+			}
+			for (u32 i = 4; i < 0x20; i++)
+			{
+				pal[i] = GB_convert_rgb15(&biz->gb, 0x7FFF, false);
+			}
+		}
+		else
+		{
+			u8 obp0 = biz->gb.io_registers[GB_IO_OBP0];
+			for (u32 i = 0; i < 4; i++)
+			{
+				u32 index = (obp0 >> (i * 2)) & 3;
+				pal[i] = biz->gb.object_palettes_rgb[index];
+			}
+			u8 obp1 = biz->gb.io_registers[GB_IO_OBP1];
+			for (u32 i = 0; i < 4; i++)
+			{
+				pal[i + 4] = biz->gb.object_palettes_rgb[4 + ((obp1 >> (i * 2)) & 3)];
+			}
+			for (u32 i = 8; i < 0x20; i++)
+			{
+				pal[i] = GB_convert_rgb15(&biz->gb, 0x7FFF, false);
+			}
+		}
+	}
+}
+
 EXPORT bool sameboy_getmemoryarea(biz_t* biz, GB_direct_access_t which, void** data, size_t* len)
 {
 	if (which == GB_DIRECT_ACCESS_IE + 1)
 	{
-		*data = biz->gb.background_palettes_rgb;
-		*len = sizeof biz->gb.background_palettes_rgb;
+		UpdatePal(biz, true);
+		*data = biz->bg_pal;
+		*len = sizeof biz->bg_pal;
 		return true;
 	}
 	else if (which == GB_DIRECT_ACCESS_IE + 2)
 	{
-		*data = biz->gb.sprite_palettes_rgb;
-		*len = sizeof biz->gb.sprite_palettes_rgb;
+		UpdatePal(biz, false);
+		*data = biz->obj_pal;
+		*len = sizeof biz->obj_pal;
 		return true;
 	}
 
 	if (which > GB_DIRECT_ACCESS_IE || which < GB_DIRECT_ACCESS_ROM)
 		return false;
 
-	u16 bank;
-	*data = GB_get_direct_access(&biz->gb, which, len, &bank);
+	*data = GB_get_direct_access(&biz->gb, which, len, NULL);
 	return true;
 }
 
@@ -236,51 +284,55 @@ EXPORT void sameboy_settracecallback(biz_t* biz, trace_callback_t callback)
 
 EXPORT void sameboy_getregs(biz_t* biz, u32* buf)
 {
-	buf[0] = biz->gb.pc & 0xFFFF;
-	buf[1] = biz->gb.a & 0xFF;
-	buf[2] = biz->gb.f & 0xFF;
-	buf[3] = biz->gb.b & 0xFF;
-	buf[4] = biz->gb.c & 0xFF;
-	buf[5] = biz->gb.d & 0xFF;
-	buf[6] = biz->gb.e & 0xFF;
-	buf[7] = biz->gb.h & 0xFF;
-	buf[8] = biz->gb.l & 0xFF;
-	buf[9] = biz->gb.sp & 0xFFFF;
+	GB_registers_t* regs = GB_get_registers(&biz->gb);
+	buf[0] = *(&regs->af - 1) & 0xFFFF;
+//	buf[0] = biz->gb.pc & 0xFFFF;
+	buf[1] = regs->a & 0xFF;
+	buf[2] = regs->f & 0xFF;
+	buf[3] = regs->b & 0xFF;
+	buf[4] = regs->c & 0xFF;
+	buf[5] = regs->d & 0xFF;
+	buf[6] = regs->e & 0xFF;
+	buf[7] = regs->h & 0xFF;
+	buf[8] = regs->l & 0xFF;
+	buf[9] = regs->sp & 0xFFFF;
 }
 
 EXPORT void sameboy_setreg(biz_t* biz, u32 which, u32 value)
 {
+	GB_registers_t* regs = GB_get_registers(&biz->gb);
 	switch (which)
 	{
 		case 0:
-			biz->gb.pc = value & 0xFFFF;
+			*(&regs->af - 1) = value & 0xFFFF;
+//			biz->gb.pc = value & 0xFFFF;
 			break;
 		case 1:
-			biz->gb.a = value & 0xFF;
+			regs->a = value & 0xFF;
 			break;
 		case 2:
-			biz->gb.f = value & 0xFF;
+			regs->f = value & 0xFF;
 			break;
 		case 3:
-			biz->gb.b = value & 0xFF;
+			regs->b = value & 0xFF;
 			break;
 		case 4:
-			biz->gb.c = value & 0xFF;
+			regs->c = value & 0xFF;
 			break;
 		case 5:
-			biz->gb.d = value & 0xFF;
+			regs->d = value & 0xFF;
 			break;
 		case 6:
-			biz->gb.e = value & 0xFF;
+			regs->e = value & 0xFF;
 			break;
 		case 7:
-			biz->gb.h = value & 0xFF;
+			regs->h = value & 0xFF;
 			break;
 		case 8:
-			biz->gb.l = value & 0xFF;
+			regs->l = value & 0xFF;
 			break;
 		case 9:
-			biz->gb.sp = value & 0xFFFF;
+			regs->sp = value & 0xFFFF;
 			break;
 	}
 }
@@ -363,4 +415,14 @@ EXPORT void sameboy_setrtcdivisoroffset(biz_t* biz, int offset)
 {
 	double base = GB_get_unmultiplied_clock_rate(&biz->gb) * 2.0;
 	GB_set_rtc_multiplier(&biz->gb, (base + offset) / base);
+}
+
+EXPORT void sameboy_setbgwinenabled(biz_t* biz, bool enabled)
+{
+	GB_set_background_rendering_disabled(&biz->gb, !enabled);
+}
+
+EXPORT void sameboy_setobjenabled(biz_t* biz, bool enabled)
+{
+	GB_set_object_rendering_disabled(&biz->gb, !enabled);
 }

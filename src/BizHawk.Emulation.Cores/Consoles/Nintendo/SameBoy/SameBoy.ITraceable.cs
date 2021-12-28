@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 				disassembly: LR35902.Disassemble(
 					pc,
 					addr => LibSameboy.sameboy_cpuread(SameboyState, addr),
-					true,
+					_settings.UseRGBDSSyntax,
 					out _).PadRight(36),
 				registerInfo: string.Format(
 					"A:{0:x2} F:{1:x2} B:{2:x2} C:{3:x2} D:{4:x2} E:{5:x2} H:{6:x2} L:{7:x2} SP:{8:x4} LY:{9:x2} Cy:{10}",

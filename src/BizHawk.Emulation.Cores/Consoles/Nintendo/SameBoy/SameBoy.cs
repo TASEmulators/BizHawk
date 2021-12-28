@@ -74,8 +74,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 			SameboyState = LibSameboy.sameboy_create(file, file.Length, bios, bios.Length, flags);
 
-			PutSettings(_settings);
-
 			InitMemoryDomains();
 			InitMemoryCallbacks();
 
@@ -95,6 +93,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 			_disassembler = new Gameboy.GBDisassembler();
 			_serviceProvider.Register<IDisassemblable>(_disassembler);
+
+			PutSettings(_settings);
 
 			_stateBuf = new byte[LibSameboy.sameboy_statelen(SameboyState)];
 
