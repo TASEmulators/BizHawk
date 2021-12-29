@@ -306,9 +306,9 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			/*ISC* addr,X [absolute indexed RMW X] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X,  Uop.AbsIdx_Stage4, Uop.AbsIdx_RMW_Stage5, Uop.AbsIdx_RMW_Stage6_ISC, Uop.AbsIdx_RMW_Stage7, Uop.End },
 			//0x100
 			/*VOP_Fetch1*/ new Uop[] { Uop.Fetch1 },
-			/*VOP_RelativeStuff*/ new Uop[] { Uop.RelBranch_Stage3, Uop.End_BranchSpecial },
+			/*VOP_RelativeStuff*/ new Uop[] { Uop.RelBranch_Stage3 },
 			/*VOP_RelativeStuff2*/ new Uop[] { Uop.RelBranch_Stage4, Uop.End },
-			/*VOP_RelativeStuff2*/ new Uop[] { Uop.End_SuppressInterrupt },
+			/*VOP_RelativeStuff3*/ new Uop[] { Uop.End_SuppressInterrupt },
 			//i assume these are dummy fetches.... maybe theyre just nops? supposedly these take 7 cycles so that's the only way i can make sense of it
 			//one of them might be the next instruction's fetch, and whatever fetch follows it.
 			//the interrupt would then take place if necessary, using a cached PC. but im not so sure about that.
@@ -316,6 +316,8 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			/*VOP_IRQ*/ new Uop[] { Uop.FetchDummy, Uop.FetchDummy, Uop.PushPCH, Uop.PushPCL, Uop.PushP_IRQ, Uop.FetchPCLVector, Uop.FetchPCHVector, Uop.End_SuppressInterrupt },
 			/*VOP_RESET*/ new Uop[] { Uop.FetchDummy, /*Uop.FetchDummy,*/ Uop.FetchDummy, Uop.PushDummy, Uop.PushDummy, Uop.PushP_Reset, Uop.FetchPCLVector, Uop.FetchPCHVector, Uop.End_SuppressInterrupt },
 			/*VOP_Fetch1_NoInterrupt*/  new Uop[] { Uop.Fetch1_Real },
+			/*VOP_Relative_Aux1*/  new Uop[] { Uop.RelBranch_Aux1 },
+			/*VOP_Relative_Aux2*/  new Uop[] { Uop.FetchDummy, Uop.End }
 		};
 
 		/*
@@ -465,10 +467,11 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 			End,
 			End_ISpecial, //same as end, but preserves the iflag set by the instruction
-			End_BranchSpecial,
 			End_SuppressInterrupt,
 
 			Jam,
+
+			RelBranch_Aux1, RelBranch_Aux2
 		}
 
 		private void InitOpcodeHandlers()
@@ -496,7 +499,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			//  AbsInd_JMP_Stage4, AbsInd_JMP_Stage5,IndIdx_Stage3, IndIdx_Stage4, IndIdx_READ_Stage5, IndIdx_WRITE_Stage5,
 			//  IndIdx_WRITE_Stage6_STA, IndIdx_WRITE_Stage6_SHA,IndIdx_READ_Stage6_LDA, IndIdx_READ_Stage6_CMP, IndIdx_READ_Stage6_ORA, IndIdx_READ_Stage6_SBC, IndIdx_READ_Stage6_ADC, IndIdx_READ_Stage6_AND, IndIdx_READ_Stage6_EOR,
 			//  IndIdx_READ_Stage6_LAX,IndIdx_RMW_Stage5,IndIdx_RMW_Stage6, IndIdx_RMW_Stage7_SLO, IndIdx_RMW_Stage7_RLA, IndIdx_RMW_Stage7_SRE, IndIdx_RMW_Stage7_RRA, IndIdx_RMW_Stage7_ISC, IndIdx_RMW_Stage7_DCP,IndIdx_RMW_Stage8,
-			//  End,End_ISpecial,End_BranchSpecial,End_SuppressInterrupt,
+			//  End,End_ISpecial,End_SuppressInterrupt,
 			//};
 		}
 
@@ -508,7 +511,9 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		private const int VOP_IRQ = 261;
 		private const int VOP_RESET = 262;
 		private const int VOP_Fetch1_NoInterrupt = 263;
-		private const int VOP_NUM = 264;
+		private const int VOP_Relative_Aux1 = 264;
+		private const int VOP_Relative_Aux2 = 265;
+		private const int VOP_NUM = 266;
 
 		//opcode bytes.. theoretically redundant with the temp variables? who knows.
 		public int opcode;
@@ -524,7 +529,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		private bool interrupt_pending;
 		private bool branch_irq_hack; //see Uop.RelBranch_Stage3 for more details
 
-		private bool Interrupted => RDY && (NMI || (IRQ && !FlagI));
+		private bool Interrupted => NMI || (IRQ && !FlagI);
 
 		private void FetchDummy()
 		{
@@ -1206,26 +1211,42 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 		private void RelBranch_Stage3()
 		{
+			alu_temp = (byte)PC + (int)(sbyte)opcode2;
+			PC &= 0xFF00;
+			PC |= (ushort)((alu_temp & 0xFF));
+
+			if (alu_temp.Bit(8))
+			{
+				opcode = VOP_Relative_Aux1;
+				mi = 0;
+
+				RelBranch_Aux1();
+			}
+			else
+			{
+				//to pass cpu_interrupts_v2/5-branch_delays_irq we need to handle a quirk here
+				//if we decide to interrupt in the next cycle, this condition will cause it to get deferred by one instruction
+				if (!interrupt_pending)
+					branch_irq_hack = true;
+
+				opcode = VOP_Relative_Aux2;
+				mi = 0;
+
+				FetchDummy();
+
+				//if (!RDY) { Console.WriteLine("not rdy " + TotalExecutedCycles);}
+			}
+		}
+
+		private void RelBranch_Aux1()
+		{
 			rdy_freeze = !RDY;
 			if (RDY)
 			{
 				_link.DummyReadMemory(PC);
-				alu_temp = (byte)PC + (int)(sbyte)opcode2;
-				PC &= 0xFF00;
-				PC |= (ushort)((alu_temp & 0xFF));
-				if (alu_temp.Bit(8))
-				{
-					//we need to carry the add, and then we'll be ready to fetch the next instruction
-					opcode = VOP_RelativeStuff2;
-					mi = -1;
-				}
-				else
-				{
-					//to pass cpu_interrupts_v2/5-branch_delays_irq we need to handle a quirk here
-					//if we decide to interrupt in the next cycle, this condition will cause it to get deferred by one instruction
-					if (!interrupt_pending)
-						branch_irq_hack = true;
-				}
+
+				opcode = VOP_RelativeStuff2;
+				mi = -1;
 			}
 		}
 
@@ -3121,8 +3142,8 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				case Uop.End_ISpecial: End_ISpecial(); break;
 				case Uop.End_SuppressInterrupt: End_SuppressInterrupt(); break;
 				case Uop.End: End(); break;
-				case Uop.End_BranchSpecial: End_BranchSpecial(); break;
 				case Uop.Jam: Jam(); break;
+				case Uop.RelBranch_Aux1: RelBranch_Aux1(); break;
 			}
 		}
 

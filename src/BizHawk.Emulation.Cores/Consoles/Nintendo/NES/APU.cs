@@ -1195,8 +1195,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public void NESHardReset()
 		{
 			// "at power on it is as if $00 was written to $4017 9-12 cycles before the reset vector"
-			// that translates to a starting value for the counter of -3
-			sequencer_counter = -1;
+			// DMC seems to run for a couple cycles after reset, so aim for the upper end of that range (12)
+			sequencer_counter = 2;
 
 			sequencer_check_1 = (sequencer_lut[0][1] - 1);
 
@@ -1339,7 +1339,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// the current code simply matches known behaviour			
 			if (pending_reg != -1)
 			{
-				if ( pending_reg == 0x4003 || pending_reg == 0x4007 || pending_reg == 0x4015 || pending_reg == 0x4017)
+				if ( pending_reg == 0x4003 || pending_reg == 0x4007 || pending_reg == 0x4010 || pending_reg == 0x4015 || pending_reg == 0x4017)
 				{
 					_WriteReg(pending_reg, pending_val);
 					pending_reg = -1;
