@@ -1233,8 +1233,6 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				mi = 0;
 
 				FetchDummy();
-
-				//if (!RDY) { Console.WriteLine("not rdy " + TotalExecutedCycles);}
 			}
 		}
 
