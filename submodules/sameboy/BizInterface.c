@@ -20,11 +20,6 @@ typedef enum
 	RTC_ACCURATE = 4,
 } LoadFlags;
 
-static u32 rgbCallback(GB_gameboy_t *gb, u8 r, u8 g, u8 b)
-{
-    return (0xFF << 24) | (r << 16) | (g << 8) | b;
-}
-
 typedef void (*input_callback_t)(void);
 typedef void (*trace_callback_t)(u16);
 typedef void (*memory_callback_t)(u16);
@@ -45,8 +40,25 @@ typedef struct
 	printer_callback_t printer_cb;
 	scanline_callback_t scanline_cb;
 	u32 scanline_sl;
+	bool vblank_occured;
 	u64 cc;
 } biz_t;
+
+static u8 PeekIO(biz_t* biz, u8 addr)
+{
+	u8* io = GB_get_direct_access(&biz->gb, GB_DIRECT_ACCESS_IO, NULL, NULL);
+	return io[addr];
+}
+
+static u32 rgb_cb(GB_gameboy_t *gb, u8 r, u8 g, u8 b)
+{
+    return (0xFF << 24) | (r << 16) | (g << 8) | b;
+}
+
+static void vblank_cb(GB_gameboy_t *gb)
+{
+	((biz_t*)gb)->vblank_occured = true;
+}
 
 static u8 ReadCallbackRelay(GB_gameboy_t* gb, u16 addr, u8 data)
 {
@@ -79,7 +91,7 @@ static void ScanlineCallbackRelay(GB_gameboy_t* gb, u8 line)
 {
 	biz_t* biz = (biz_t*)gb;
 	if (line == biz->scanline_sl)
-		biz->scanline_cb(biz->gb.io_registers[GB_IO_LCDC]);
+		biz->scanline_cb(PeekIO(biz, GB_IO_LCDC));
 }
 
 EXPORT biz_t* sameboy_create(u8* romdata, u32 romlen, u8* biosdata, u32 bioslen, LoadFlags flags)
@@ -95,7 +107,8 @@ EXPORT biz_t* sameboy_create(u8* romdata, u32 romlen, u8* biosdata, u32 bioslen,
 	GB_load_boot_rom_from_buffer(&biz->gb, biosdata, bioslen);
 	GB_set_sample_rate(&biz->gb, 44100);
 	GB_set_highpass_filter_mode(&biz->gb, GB_HIGHPASS_ACCURATE);
-	GB_set_rgb_encode_callback(&biz->gb, rgbCallback);
+	GB_set_rgb_encode_callback(&biz->gb, rgb_cb);
+	GB_set_vblank_callback(&biz->gb, vblank_cb);
 	GB_set_palette(&biz->gb, &GB_PALETTE_GREY);
 	GB_set_color_correction_mode(&biz->gb, GB_COLOR_CORRECTION_EMULATE_HARDWARE);
 	GB_set_rtc_mode(&biz->gb, (flags & RTC_ACCURATE) ? GB_RTC_MODE_ACCURATE : GB_RTC_MODE_SYNC_TO_HOST);
@@ -128,6 +141,7 @@ EXPORT void sameboy_frameadvance(biz_t* biz, GB_key_mask_t input, u32* vbuf, boo
 
 	u32 cycles = 0;
 	GB_clear_joyp_accessed(&biz->gb);
+	biz->vblank_occured = false;
 	do
 	{
 		u32 ret = GB_run(&biz->gb) >> 2;
@@ -139,9 +153,9 @@ EXPORT void sameboy_frameadvance(biz_t* biz, GB_key_mask_t input, u32* vbuf, boo
 			GB_clear_joyp_accessed(&biz->gb);
 		}
 	}
-	while (!biz->gb.vblank_just_occured && cycles < 35112);
+	while (!biz->vblank_occured && cycles < 35112);
 
-	if (biz->gb.vblank_just_occured && render)
+	if (biz->vblank_occured && render)
 		memcpy(vbuf, biz->vbuf, sizeof biz->vbuf);
 }
 
@@ -196,10 +210,27 @@ static void UpdatePal(biz_t* biz, bool bg)
 	{
 		if (bg)
 		{
-			u8 bgp = biz->gb.io_registers[GB_IO_BGP];
+			u32 bgPal[4];
+			if (GB_is_cgb(&biz->gb))
+			{
+				u16* rawPal = GB_get_direct_access(&biz->gb, GB_DIRECT_ACCESS_BGP, NULL, NULL);
+				for (u32 i = 0; i < 4; i++)
+				{
+					bgPal[i] = GB_convert_rgb15(&biz->gb, rawPal[i] & 0x7FFF, false);
+				}
+			}
+			else
+			{
+				const GB_palette_t* rawPal = GB_get_palette(&biz->gb);
+				for (u32 i = 0; i < 4; i++)
+				{
+					bgPal[i] = rgb_cb(&biz->gb, rawPal->colors[i].r, rawPal->colors[i].g, rawPal->colors[i].b);
+				}
+			}
+			u8 bgp = PeekIO(biz, GB_IO_BGP);
 			for (u32 i = 0; i < 4; i++)
 			{
-				pal[i] = biz->gb.background_palettes_rgb[(bgp >> (i * 2)) & 3];
+				pal[i] = bgPal[(bgp >> (i * 2)) & 3];
 			}
 			for (u32 i = 4; i < 0x20; i++)
 			{
@@ -208,16 +239,32 @@ static void UpdatePal(biz_t* biz, bool bg)
 		}
 		else
 		{
-			u8 obp0 = biz->gb.io_registers[GB_IO_OBP0];
-			for (u32 i = 0; i < 4; i++)
+			u32 obj0Pal[4];
+			u32 obj1Pal[4];
+			if (GB_is_cgb(&biz->gb))
 			{
-				u32 index = (obp0 >> (i * 2)) & 3;
-				pal[i] = biz->gb.object_palettes_rgb[index];
+				u16* rawPal = GB_get_direct_access(&biz->gb, GB_DIRECT_ACCESS_OBP, NULL, NULL);
+				for (u32 i = 0; i < 4; i++)
+				{
+					obj0Pal[i] = GB_convert_rgb15(&biz->gb, rawPal[i + 0] & 0x7FFF, false);
+					obj1Pal[i] = GB_convert_rgb15(&biz->gb, rawPal[i + 4] & 0x7FFF, false);
+				}
 			}
-			u8 obp1 = biz->gb.io_registers[GB_IO_OBP1];
+			else
+			{
+				const GB_palette_t* rawPal = GB_get_palette(&biz->gb);
+				for (u32 i = 0; i < 4; i++)
+				{
+					obj0Pal[i] = rgb_cb(&biz->gb, rawPal->colors[i].r, rawPal->colors[i].g, rawPal->colors[i].b);
+					obj1Pal[i] = rgb_cb(&biz->gb, rawPal->colors[i].r, rawPal->colors[i].g, rawPal->colors[i].b);
+				}
+			}
+			u8 obp0 = PeekIO(biz, GB_IO_OBP0);
+			u8 obp1 = PeekIO(biz, GB_IO_OBP1);
 			for (u32 i = 0; i < 4; i++)
 			{
-				pal[i + 4] = biz->gb.object_palettes_rgb[4 + ((obp1 >> (i * 2)) & 3)];
+				pal[i + 0] = obj0Pal[(obp0 >> (i * 2)) & 3];
+				pal[i + 4] = obj1Pal[(obp1 >> (i * 2)) & 3];
 			}
 			for (u32 i = 8; i < 0x20; i++)
 			{
@@ -285,8 +332,7 @@ EXPORT void sameboy_settracecallback(biz_t* biz, trace_callback_t callback)
 EXPORT void sameboy_getregs(biz_t* biz, u32* buf)
 {
 	GB_registers_t* regs = GB_get_registers(&biz->gb);
-	buf[0] = *(&regs->af - 1) & 0xFFFF;
-//	buf[0] = biz->gb.pc & 0xFFFF;
+	buf[0] = regs->pc & 0xFFFF;
 	buf[1] = regs->a & 0xFF;
 	buf[2] = regs->f & 0xFF;
 	buf[3] = regs->b & 0xFF;
@@ -304,8 +350,7 @@ EXPORT void sameboy_setreg(biz_t* biz, u32 which, u32 value)
 	switch (which)
 	{
 		case 0:
-			*(&regs->af - 1) = value & 0xFFFF;
-//			biz->gb.pc = value & 0xFFFF;
+			regs->pc = value & 0xFFFF;
 			break;
 		case 1:
 			regs->a = value & 0xFF;
