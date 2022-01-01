@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 	{
 		public IEmulatorServiceProvider ServiceProvider => _serviceProvider;
 
-		public ControllerDefinition ControllerDefinition { get; } = Gameboy.Gameboy.CreateControllerDefinition(false, false);
+		public ControllerDefinition ControllerDefinition { get; }
 
 		private static readonly IReadOnlyList<string> GB_BUTTON_ORDER_IN_BITMASK = new[] { "Start", "Select", "B", "A", "Down", "Up", "Left", "Right", };
 
@@ -34,11 +34,51 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			return (LibSameboy.Buttons)b;
 		}
 
+		// copy pasting GBHawk here...
+
+		private readonly bool _hasAcc;
+		private double theta, phi, theta_prev, phi_prev, phi_prev_2;
+
+		private ushort GetAccX(IController c)
+		{
+			if (!_hasAcc)
+			{
+				return 0;
+			}
+
+			theta_prev = theta;
+			phi_prev_2 = phi_prev;
+			phi_prev = phi;
+
+			theta = c.AxisValue("Tilt Y") * Math.PI / 180.0;
+			phi = c.AxisValue("Tilt X") * Math.PI / 180.0;
+
+			double temp = (double)(Math.Cos(theta) * Math.Sin(phi));
+
+			double temp2 = (double)((phi - 2 * phi_prev + phi_prev_2) * 59.7275 * 59.7275 * 0.1);
+
+			return (ushort)(0x8370 - Math.Floor(temp * 216) - temp2);
+		}
+
+		private ushort GetAccY(IController c)
+		{
+			if (!_hasAcc)
+			{
+				return 0;
+			}
+
+			double temp = (double)Math.Sin(theta);
+
+			double temp2 = (double)(Math.Pow((theta - theta_prev) * 59.7275, 2) * 0.15);
+
+			return (ushort)(0x8370 - Math.Floor(temp * 216) + temp2);
+		}
+
 		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
-			var input = FrameAdvancePrep(controller);
+			var buttons = FrameAdvancePrep(controller);
 
-			LibSameboy.sameboy_frameadvance(SameboyState, input, VideoBuffer, render, _settings.ShowBorder);
+			LibSameboy.sameboy_frameadvance(SameboyState, buttons, GetAccX(controller), GetAccY(controller), VideoBuffer, render, _settings.ShowBorder);
 
 			if (!rendersound)
 			{

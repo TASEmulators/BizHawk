@@ -76,10 +76,13 @@ static void ExecCallbackRelay(GB_gameboy_t* gb, u16 addr, u8 opcode)
 {
 	biz_t* biz = (biz_t*)gb;
 	if (biz->trace_cb)
+	{
 		biz->trace_cb(addr);
-
+	}
 	if (biz->exec_cb)
+	{
 		biz->exec_cb(addr);
+	}
 }
 
 static void PrinterCallbackRelay(GB_gameboy_t* gb, u32* image, u8 height, u8 top_margin, u8 bottom_margin, u8 exposure)
@@ -91,7 +94,9 @@ static void ScanlineCallbackRelay(GB_gameboy_t* gb, u8 line)
 {
 	biz_t* biz = (biz_t*)gb;
 	if (line == biz->scanline_sl)
+	{
 		biz->scanline_cb(PeekIO(biz, GB_IO_LCDC));
+	}
 }
 
 EXPORT biz_t* sameboy_create(u8* romdata, u32 romlen, u8* biosdata, u32 bioslen, LoadFlags flags)
@@ -99,8 +104,9 @@ EXPORT biz_t* sameboy_create(u8* romdata, u32 romlen, u8* biosdata, u32 bioslen,
 	biz_t* biz = calloc(1, sizeof (biz_t));
 	GB_model_t model = GB_MODEL_DMG_B;
 	if (flags & IS_CGB)
+	{
 		model = (flags & IS_AGB) ? GB_MODEL_AGB : GB_MODEL_CGB_E;
-
+	}
 	GB_random_seed(0);
 	GB_init(&biz->gb, model);
 	GB_load_rom_from_buffer(&biz->gb, romdata, romlen);
@@ -132,9 +138,18 @@ EXPORT void sameboy_setinputcallback(biz_t* biz, input_callback_t callback)
 	biz->input_cb = callback;
 }
 
-EXPORT void sameboy_frameadvance(biz_t* biz, GB_key_mask_t input, u32* vbuf, bool render, bool border)
+static double FromRawToG(u32 raw)
 {
-	GB_set_key_mask(&biz->gb, input);
+	return (raw - 0x81D0) / (0x70 * 1.0);
+}
+
+EXPORT void sameboy_frameadvance(biz_t* biz, GB_key_mask_t keys, u16 x, u16 y, u32* vbuf, bool render, bool border)
+{
+	GB_set_key_mask(&biz->gb, keys);
+	if (GB_has_accelerometer(&biz->gb))
+	{
+		GB_set_accelerometer_values(&biz->gb, FromRawToG(x), FromRawToG(y));
+	}
 	GB_set_pixels_output(&biz->gb, biz->vbuf);
 	GB_set_border_mode(&biz->gb, border ? GB_BORDER_ALWAYS : GB_BORDER_NEVER);
 	GB_set_rendering_disabled(&biz->gb, !render);
@@ -156,7 +171,9 @@ EXPORT void sameboy_frameadvance(biz_t* biz, GB_key_mask_t input, u32* vbuf, boo
 	while (!biz->vblank_occured && cycles < 35112);
 
 	if (biz->vblank_occured && render)
+	{
 		memcpy(vbuf, biz->vbuf, sizeof biz->vbuf);
+	}
 }
 
 EXPORT void sameboy_reset(biz_t* biz)
@@ -292,7 +309,9 @@ EXPORT bool sameboy_getmemoryarea(biz_t* biz, GB_direct_access_t which, void** d
 	}
 
 	if (which > GB_DIRECT_ACCESS_IE || which < GB_DIRECT_ACCESS_ROM)
+	{
 		return false;
+	}
 
 	*data = GB_get_direct_access(&biz->gb, which, len, NULL);
 	return true;
@@ -405,9 +424,13 @@ EXPORT void sameboy_setprintercallback(biz_t* biz, printer_callback_t callback)
 {
 	biz->printer_cb = callback;
 	if (callback)
+	{
 		GB_connect_printer(&biz->gb, PrinterCallbackRelay);
+	}
 	else
+	{
 		GB_disconnect_serial(&biz->gb);
+	}
 }
 
 EXPORT void sameboy_setscanlinecallback(biz_t* biz, scanline_callback_t callback, u32 sl)
