@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			return (ushort)(0x8370 - Math.Floor(temp * 216) - temp2);
 		}
 
-		private ushort GetAccY(IController c)
+		private ushort GetAccY()
 		{
 			if (!_hasAcc)
 			{
@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 		{
 			var buttons = FrameAdvancePrep(controller);
 
-			LibSameboy.sameboy_frameadvance(SameboyState, buttons, GetAccX(controller), GetAccY(controller), VideoBuffer, render, _settings.ShowBorder);
+			LibSameboy.sameboy_frameadvance(SameboyState, buttons, GetAccX(controller), GetAccY(), VideoBuffer, render, _settings.ShowBorder);
 
 			if (!rendersound)
 			{
