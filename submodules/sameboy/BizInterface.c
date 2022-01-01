@@ -138,7 +138,7 @@ EXPORT void sameboy_setinputcallback(biz_t* biz, input_callback_t callback)
 	biz->input_cb = callback;
 }
 
-static double FromRawToG(u32 raw)
+static double FromRawToG(u16 raw)
 {
 	return (raw - 0x81D0) / (0x70 * 1.0);
 }
