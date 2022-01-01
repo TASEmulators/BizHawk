@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common.movie.import
@@ -100,17 +100,13 @@ namespace BizHawk.Client.Common.movie.import
 		private void ImportTextFrame(string line)
 		{
 			// Yabause only supported 1 controller
-			var controllers = new SimpleController
+			SimpleController controllers = new(new ControllerDefinition("Saturn Controller")
 			{
-				Definition = new ControllerDefinition
+				BoolButtons = new List<string>
 				{
-					Name = "Saturn Controller",
-					BoolButtons = new List<string>
-					{
-						"Reset", "Power", "Previous Disk", "Next Disk", "P1 Left", "P1 Right", "P1 Up", "P1 Down", "P1 Start", "P1 A", "P1 B", "P1 C", "P1 X", "P1 Y", "P1 Z", "P1 L", "P1 R"
-					}
+					"Reset", "Power", "Previous Disk", "Next Disk", "P1 Left", "P1 Right", "P1 Up", "P1 Down", "P1 Start", "P1 A", "P1 B", "P1 C", "P1 X", "P1 Y", "P1 Z", "P1 L", "P1 R"
 				}
-			};
+			}.MakeImmutable());
 
 			// Split up the sections of the frame.
 			var sections = line.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries);
@@ -125,8 +121,8 @@ namespace BizHawk.Client.Common.movie.import
 				controllers["Reset"] = true;
 			}
 
-			var buttonNames = controllers.Definition.ControlsOrdered.Skip(1).First().ToList();
-			
+			var buttonNames = controllers.Definition.ControlsOrdered[1];
+
 			// Only count lines with that have the right number of buttons and are for valid players.
 			if (sections[1].Length == buttonNames.Count)
 			{

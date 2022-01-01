@@ -123,16 +123,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 
 		public bool Is32XActive { get; }
 
-		public static readonly ControllerDefinition PicoDriveController = new ControllerDefinition
+		public static readonly ControllerDefinition PicoDriveController = new ControllerDefinition("PicoDrive Genesis Controller")
 		{
-			Name = "PicoDrive Genesis Controller",
 			BoolButtons =
 			{
 				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 A", "P1 B", "P1 C", "P1 Start", "P1 X", "P1 Y", "P1 Z", "P1 Mode",
 				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 A", "P2 B", "P2 C", "P2 Start", "P2 X", "P2 Y", "P2 Z", "P2 Mode",
 				"Power", "Reset"
 			}
-		};
+		}.MakeImmutable();
 
 		private static readonly string[] ButtonOrders =
 		{

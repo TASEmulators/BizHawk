@@ -4,9 +4,8 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 {
 	partial class WonderSwan
 	{
-		public static readonly ControllerDefinition WonderSwanController = new ControllerDefinition
+		public static readonly ControllerDefinition WonderSwanController = new ControllerDefinition("WonderSwan Controller")
 		{
-			Name = "WonderSwan Controller",
 			BoolButtons =
 			{
 				"P1 X1",
@@ -62,7 +61,8 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 				{ "P2 B", "Rotated" },
 				{ "P2 A", "Rotated" },
 			}
-		};
+		}.MakeImmutable();
+
 		public ControllerDefinition ControllerDefinition => WonderSwanController;
 
 		private BizSwan.Buttons GetButtons(IController controller)

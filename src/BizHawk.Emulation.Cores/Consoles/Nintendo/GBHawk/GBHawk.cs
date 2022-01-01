@@ -8,6 +8,8 @@ using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
 
+using BizHawk.Common.ReflectionExtensions;
+
 // TODO: mode1_disableint_gbc.gbc behaves differently between GBC and GBA, why?
 // TODO: Window Position A6 behaves differently
 // TODO: Verify open bus behaviour for bad SRAM accesses for other MBCs
@@ -195,15 +197,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			var mppr = Setup_Mapper(romHashMD5, romHashSHA1);
 			if (cart_RAM != null) { cart_RAM_vbls = new byte[cart_RAM.Length]; }
 
-			if (mppr == "MBC7")
-			{
-				_controllerDeck = new GBHawkControllerDeck(_syncSettings.Port1);
-			}
-			else
-			{
-				_controllerDeck = new GBHawkControllerDeck(GBHawkControllerDeck.DefaultControllerName);
-			}
-			
+			_controllerDeck = new(mppr is "MBC7"
+				? typeof(StandardTilt).DisplayName()
+				: GBHawkControllerDeck.DefaultControllerName);
+
 			timer.Core = this;
 			audio.Core = this;
 			ppu.Core = this;

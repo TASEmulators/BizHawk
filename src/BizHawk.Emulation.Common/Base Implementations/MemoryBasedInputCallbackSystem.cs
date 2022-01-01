@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -18,11 +16,6 @@ namespace BizHawk.Emulation.Common
 
 		public MemoryBasedInputCallbackSystem(IDebuggable debuggableCore, string scope, IEnumerable<uint> addresses)
 		{
-			if (addresses == null)
-			{
-				throw new ArgumentException($"{nameof(addresses)} cannot be null.");
-			}
-
 			if (!debuggableCore.MemoryCallbacksAvailable())
 			{
 				throw new InvalidOperationException("Memory callbacks are required");

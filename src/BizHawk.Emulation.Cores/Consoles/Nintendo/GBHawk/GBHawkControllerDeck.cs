@@ -16,14 +16,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				? ctor1(1)
 				: throw new InvalidOperationException($"Invalid controller type: {controller1Name}");
 
-			Definition = new ControllerDefinition
+			Definition = new(Port1.Definition.Name)
 			{
-				Name = Port1.Definition.Name,
 				BoolButtons = Port1.Definition.BoolButtons
 					.ToList()
 			};
 
 			foreach (var kvp in Port1.Definition.Axes) Definition.Axes.Add(kvp);
+
+			Definition.MakeImmutable();
 		}
 
 		public byte ReadPort1(IController c)
@@ -31,15 +32,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			return Port1.Read(c);
 		}
 
-		public ushort ReadAccX1(IController c)
-		{
-			return Port1.ReadAccX(c);
-		}
-
-		public ushort ReadAccY1(IController c)
-		{
-			return Port1.ReadAccY(c);
-		}
+		public (ushort X, ushort Y) ReadAcc1(IController c)
+			=> Port1.ReadAcc(c);
 
 		public ControllerDefinition Definition { get; }
 

@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -48,9 +46,9 @@ namespace BizHawk.Emulation.Common
 
 		protected abstract void TraceFromCallback(uint addr, uint value, uint flags);
 
-		private ITraceSink _sink;
+		private ITraceSink? _sink;
 
-		public ITraceSink Sink
+		public ITraceSink? Sink
 		{
 			get => _sink;
 			set
@@ -68,6 +66,7 @@ namespace BizHawk.Emulation.Common
 
 		public string Header { get; }
 
+#nullable disable
 		private class TracingMemoryCallback : IMemoryCallback
 		{
 			public TracingMemoryCallback(MemoryCallbackDelegate callback, string scope)
@@ -88,5 +87,6 @@ namespace BizHawk.Emulation.Common
 
 			public string Scope { get; }
 		}
+#nullable restore
 	}
 }

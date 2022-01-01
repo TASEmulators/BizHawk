@@ -1,5 +1,6 @@
 ﻿using System;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Nintendo.GBHawk;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 {
@@ -36,7 +37,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 			linkSettings = (GBLinkSettings)lp.Settings ?? new GBLinkSettings();
 			linkSyncSettings = (GBLinkSyncSettings)lp.SyncSettings ?? new GBLinkSyncSettings();
-			_controllerDeck = new GBHawkLinkControllerDeck(GBHawkLinkControllerDeck.DefaultControllerName, GBHawkLinkControllerDeck.DefaultControllerName);
+			_controllerDeck = new(
+				GBHawkControllerDeck.DefaultControllerName,
+				GBHawkControllerDeck.DefaultControllerName);
 
 			var temp_set_L = new GBHawk.GBHawk.GBSettings();
 			var temp_set_R = new GBHawk.GBHawk.GBSettings();

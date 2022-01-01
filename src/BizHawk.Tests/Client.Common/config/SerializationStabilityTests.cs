@@ -22,7 +22,7 @@ namespace BizHawk.Tests.Client.Common.config
 
 		private const string ZWINDER_SER = @"{""CurrentUseCompression"":false,""CurrentBufferSize"":256,""CurrentTargetFrameLength"":500,""CurrentStoreType"":0,""RecentUseCompression"":false,""RecentBufferSize"":128,""RecentTargetFrameLength"":2000,""RecentStoreType"":0,""GapsUseCompression"":false,""GapsBufferSize"":64,""GapsTargetFrameLength"":125,""GapsStoreType"":0,""AncientStateInterval"":5000,""AncientStoreType"":0}";
 
-#if NET5_0
+#if NET6_0
 		private static readonly IReadOnlySet<Type> KnownGoodFromStdlib = new HashSet<Type>
 #else
 		private static readonly ICollection<Type> KnownGoodFromStdlib = new HashSet<Type>

@@ -253,7 +253,8 @@
 			PopulateCURINSTR(
 				// L
 				OP_LR8, DB, Ql,             // DB <- (r15)
-				OP_EI,                      // Set ICB Flag
+				//OP_EI,                      // Set ICB Flag
+				IDLE,
 				IDLE,
 				ROMC_17,					// PC0l <- (DB)
 				IDLE,
@@ -559,7 +560,8 @@
 				IDLE,
 				// S
 				ROMC_00_S,                  // DB <- ((PC0)); PC0++
-				OP_EI,						// Set ICB Flag
+				//OP_EI,                      // Set ICB Flag
+				IDLE,
 				IDLE,
 				END);
 		}
@@ -579,7 +581,8 @@
 				IDLE,
 				// S
 				ROMC_00_S,                  // DB <- ((PC0)); PC0++
-				OP_EI,                      // Set ICB Flag
+				//OP_EI,                      // Set ICB Flag
+				IDLE,
 				IDLE,
 				END);
 		}
@@ -823,7 +826,8 @@
 				IDLE,
 				// S
 				ROMC_00_S,                  // DB <- ((PC0)); PC0++
-				OP_EI,                      // Set ICB Flag
+				//OP_EI,                      // Set ICB Flag
+				IDLE,
 				IDLE,
 				END);
 		}
@@ -866,7 +870,8 @@
 				IDLE,
 				// S
 				ROMC_00_S,                  // DB <- ((PC0)); PC0++
-				OP_EI,                      // Set ICB Flag
+				//OP_EI,                      // Set ICB Flag
+				IDLE,
 				IDLE,
 				END);
 		}
@@ -904,7 +909,8 @@
 				IDLE,
 				// S
 				ROMC_00_S,                  // DB <- ((PC0)); PC0++
-				OP_EI,                      // Set ICB Flag
+				//OP_EI,                      // Set ICB Flag
+				IDLE,
 				IDLE,
 				END);
 		}
@@ -996,7 +1002,7 @@
 		private void DS(byte rIndex)
 		{
 			// only scratch registers 0-16
-			rIndex = (byte)(rIndex & 0x0F);
+			//rIndex = (byte)(rIndex & 0x0F);
 
 			PopulateCURINSTR(
 				// L
@@ -1017,7 +1023,6 @@
 			PopulateCURINSTR(
 				// L
 				IDLE,
-				//OP_SUB8, Regs[ISAR], ONE,	// r[ISAR] = r[ISAR] + 0xff
 				OP_ADD8, Regs[ISAR], BYTE,
 				IDLE,
 				ROMC_00_L,                  // DB <- ((PC0)); PC0++
@@ -1033,7 +1038,6 @@
 			PopulateCURINSTR(
 				// L
 				IDLE,
-				//OP_SUB8, Regs[ISAR], ONE,  // r[ISAR] = r[ISAR] + 0xff
 				OP_ADD8, Regs[ISAR], BYTE,
 				IDLE,
 				OP_IS_INC,                  // Inc ISAR
@@ -1049,7 +1053,6 @@
 			PopulateCURINSTR(
 				// L
 				IDLE,
-				//OP_SUB8, Regs[ISAR], ONE,  // r[ISAR] = r[ISAR] + 0xff
 				OP_ADD8, Regs[ISAR], BYTE,
 				IDLE,
 				OP_IS_DEC,                  // Dec ISAR
@@ -1060,7 +1063,7 @@
 		private void LR_A_R(byte rIndex)
 		{
 			// only scratch registers 0-16
-			rIndex = (byte)(rIndex & 0x0F);
+			//rIndex = (byte)(rIndex & 0x0F);
 
 			PopulateCURINSTR(
 				// S
@@ -1125,7 +1128,7 @@
 		private void LR_R_A(byte rIndex)
 		{
 			// only scratch registers 0-16
-			rIndex = (byte)(rIndex & 0x0F);
+			//rIndex = (byte)(rIndex & 0x0F);
 
 			PopulateCURINSTR(
 				// S
@@ -1232,108 +1235,30 @@
 		}
 
 		/// <summary>
-		/// Branch on True - DO NOT BRANCH
+		/// Branch on TRUE
 		/// </summary>
-		private void BTN()
+		private void BT(byte bit)
 		{
 			PopulateCURINSTR(
 				// S
 				ROMC_1C_S,                  // Idle
 				IDLE,
 				IDLE,
-				OP_BTN);  
+				OP_BT, bit);
 		}
 
 		/// <summary>
-		/// Branch if positive (sign flag is set)
+		/// Branch on FALSE
 		/// </summary>
-		private void BP()
+		private void BF(byte bit)
 		{
 			PopulateCURINSTR(
 				// S
 				ROMC_1C_S,                  // Idle
 				IDLE,
 				IDLE,
-				OP_BP);
-		}
-
-		/// <summary>
-		/// Branch on carry (carry flag is set)
-		/// </summary>
-		private void BC()
-		{
-			PopulateCURINSTR(
-				// S
-				ROMC_1C_S,                  // Idle
-				IDLE,
-				IDLE,
-				OP_BC);
-		}
-
-		/// <summary>
-		/// Branch on carry (carry flag is set) or positive (sign flag is set)
-		/// </summary>
-		private void BT_CS()
-		{
-			PopulateCURINSTR(
-				// S
-				ROMC_1C_S,                  // Idle
-				IDLE,
-				IDLE,
-				OP_BT_CS);
-		}
-
-		/// <summary>
-		/// Branch if zero
-		/// </summary>
-		private void BZ()
-		{
-			PopulateCURINSTR(
-				// S
-				ROMC_1C_S,                  // Idle
-				IDLE,
-				IDLE,
-				OP_BZ);
-		}
-
-		/// <summary>
-		/// Branch if zero or positive
-		/// </summary>
-		private void BT_ZS()
-		{
-			PopulateCURINSTR(
-				// S
-				ROMC_1C_S,                  // Idle
-				IDLE,
-				IDLE,
-				OP_BT_ZS);
-		}
-
-		/// <summary>
-		/// Branch if zero or carry
-		/// </summary>
-		private void BT_ZC()
-		{
-			PopulateCURINSTR(
-				// S
-				ROMC_1C_S,                  // Idle
-				IDLE,
-				IDLE,
-				OP_BT_ZC);
-		}
-
-		/// <summary>
-		/// Branch if zero or carry or positive
-		/// </summary>
-		private void BT_ZCS()
-		{
-			PopulateCURINSTR(
-				// S
-				ROMC_1C_S,                  // Idle
-				IDLE,
-				IDLE,
-				OP_BT_ZCS);
-		}
+				OP_BF, bit);
+		}		
 
 		/// <summary>
 		/// AM - ADD (BINARY) MEMORY TO ACCUMULATOR 
@@ -1349,7 +1274,7 @@
 				ROMC_02,                    // DB <- ((DC0)); DC0++
 				IDLE,
 				IDLE,
-				OP_ADD8, A, DB,             // A <- (DB)
+				OP_ADD8, A, DB,             // A <- A + (DB)
 				IDLE,
 				IDLE,
 				// S
@@ -1514,214 +1439,6 @@
 			PopulateCURINSTR(
 				OP_BR7); 
 		}
-
-		/// <summary>
-		/// Unconditional Branch Relative
-		/// </summary>
-		private void BR()
-		{
-			PopulateCURINSTR(
-				// S
-				ROMC_1C_S,                  // Idle
-				IDLE,
-				IDLE,
-				OP_BR);						
-		}
-
-		/// <summary>
-		/// Branch on Negative (Sign bit is reset)
-		/// </summary>
-		private void BM()
-		{
-			PopulateCURINSTR(
-				// S
-				ROMC_1C_S,                  // Idle
-				IDLE,
-				IDLE,
-				OP_BM);                     
-		}
-
-		/// <summary>
-		/// Branch if no carry (carry bit is reset)
-		/// </summary>
-		private void BNC()
-		{
-			PopulateCURINSTR(
-				// S
-				ROMC_1C_S,                  // Idle
-				IDLE,
-				IDLE,
-				OP_BNC);
-		}
-
-		/// <summary>
-		/// Branch if no carry (carry bit is reset) and negative (sign bit is reset)
-		/// </summary>
-		private void BF_CS()
-		{
-			PopulateCURINSTR(
-				// S
-				ROMC_1C_S,                  // Idle
-				IDLE,
-				IDLE,
-				OP_BF_CS);
-		}
-
-		/// <summary>
-		/// Branch if not zero (zero bit is reset)
-		/// </summary>
-		private void BNZ()
-		{
-			PopulateCURINSTR(
-				// S
-				ROMC_1C_S,                  // Idle
-				IDLE,
-				IDLE,
-				OP_BNZ);
-		}
-
-		/// <summary>
-		/// Branch on negative (sign bit reset) and not zero (zero bit reset)
-		/// </summary>
-		private void BF_ZS()
-		{
-			PopulateCURINSTR(
-				// S
-				ROMC_1C_S,                  // Idle
-				IDLE,
-				IDLE,
-				OP_BF_ZS);
-		}
-
-		/// <summary>
-		/// Branch on no carry (carry bit reset) and not zero (zero bit reset)
-		/// </summary>
-		private void BF_ZC()
-		{
-			PopulateCURINSTR(
-				// S
-				ROMC_1C_S,                  // Idle
-				IDLE,
-				IDLE,
-				OP_BF_ZC);
-		}
-
-		/// <summary>
-		/// Branch on no carry (carry bit reset) and not zero (zero bit reset) and negative (sign bit reset)
-		/// </summary>
-		private void BF_ZCS()
-		{
-			PopulateCURINSTR(
-				// S
-				ROMC_1C_S,                  // Idle
-				IDLE,
-				IDLE,
-				OP_BF_ZCS);
-		}
-
-		/// <summary>
-		/// Branch on no overflow (overflow bit reset) and not zero (zero bit reset) and negative (sign bit reset)
-		/// </summary>
-		private void BNO()
-		{
-			PopulateCURINSTR(
-				// S
-				ROMC_1C_S,                  // Idle
-				IDLE,
-				IDLE,
-				OP_BNO);
-		}
-
-		/// <summary>
-		/// Branch on no overflow (overflow bit reset) and negative (sign bit reset)
-		/// </summary>
-		private void BF_OS()
-		{
-			PopulateCURINSTR(
-				// S
-				ROMC_1C_S,                  // Idle
-				IDLE,
-				IDLE,
-				OP_BF_OS);
-		}
-
-		/// <summary>
-		/// Branch on no overflow (overflow bit reset) and no carry (carry bit reset)
-		/// </summary>
-		private void BF_OC()
-		{
-			PopulateCURINSTR(
-				// S
-				ROMC_1C_S,                  // Idle
-				IDLE,
-				IDLE,
-				OP_BF_OC);
-		}
-
-		/// <summary>
-		/// Branch on no overflow (overflow bit reset) and no carry (carry bit reset) and negative (sign bit reset)
-		/// </summary>
-		private void BF_OCS()
-		{
-			PopulateCURINSTR(
-				// S
-				ROMC_1C_S,                  // Idle
-				IDLE,
-				IDLE,
-				OP_BF_OCS);
-		}
-
-		/// <summary>
-		/// Branch on no overflow (overflow bit reset) and not zero (zero bit reset)
-		/// </summary>
-		private void BF_OZ()
-		{
-			PopulateCURINSTR(
-				// S
-				ROMC_1C_S,                  // Idle
-				IDLE,
-				IDLE,
-				OP_BF_OZ);
-		}
-
-		/// <summary>
-		/// Branch on no overflow (overflow bit reset) and not zero (zero bit reset) and negative
-		/// </summary>
-		private void BF_OZS()
-		{
-			PopulateCURINSTR(
-				// S
-				ROMC_1C_S,                  // Idle
-				IDLE,
-				IDLE,
-				OP_BF_OZS);
-		}
-
-		/// <summary>
-		/// Branch on no overflow (overflow bit reset) and not zero (zero bit reset) and no carry (carry bit reset)
-		/// </summary>
-		private void BF_OZC()
-		{
-			PopulateCURINSTR(
-				// S
-				ROMC_1C_S,                  // Idle
-				IDLE,
-				IDLE,
-				OP_BF_OZC);
-		}
-
-		/// <summary>
-		/// Branch on no overflow (overflow bit reset) and not zero (zero bit reset) and no carry (carry bit reset) and negative
-		/// </summary>
-		private void BF_OZCS()
-		{
-			PopulateCURINSTR(
-				// S
-				ROMC_1C_S,                  // Idle
-				IDLE,
-				IDLE,
-				OP_BF_OZCS);
-		}
 		
 		/// <summary>
 		/// INS - INPUT SHORT ADDRESS
@@ -1836,7 +1553,8 @@
 				IDLE,
 				// S
 				ROMC_00_S,                  // DB <- ((PC0)); PC0++
-				OP_EI,                      // Set ICB Flag
+				//OP_EI,                      // Set ICB Flag
+				IDLE,
 				IDLE,
 				END);
 		}
@@ -1852,7 +1570,7 @@
 		private void AS(byte rIndex)
 		{
 			// only scratch registers 0-15
-			rIndex = (byte) (rIndex & 0x0F);
+			//rIndex = (byte) (rIndex & 0x0F);
 
 			PopulateCURINSTR(
 				// S
@@ -1927,7 +1645,7 @@
 		private void ASD(byte rIndex)
 		{
 			// only scratch registers 0-15
-			rIndex = (byte)(rIndex & 0x0F);
+			//rIndex = (byte)(rIndex & 0x0F);
 
 			PopulateCURINSTR(
 				// S
@@ -2024,7 +1742,7 @@
 		private void XS(byte rIndex)
 		{
 			// only scratch registers 0-15
-			rIndex = (byte)(rIndex & 0x0F);
+			//rIndex = (byte)(rIndex & 0x0F);
 
 			PopulateCURINSTR(
 				// S
@@ -2099,7 +1817,7 @@
 		private void NS(byte rIndex)
 		{
 			// only scratch registers 0-15
-			rIndex = (byte)(rIndex & 0x0F);
+			//rIndex = (byte)(rIndex & 0x0F);
 
 			PopulateCURINSTR(
 				// S
@@ -2166,9 +1884,9 @@
 		}
 
 		/// <summary>
-		/// BF Operation Branching Timing
+		/// Branching Operation
 		/// </summary>
-		private void DO_BF_BRANCH(int instPtr)
+		private void DO_BRANCH(int instPtr)
 		{
 			instr_pntr = instPtr;
 			PopulateCURINSTR(
@@ -2187,49 +1905,9 @@
 		}
 
 		/// <summary>
-		/// BF Operation No-Branching Timing
+		/// No-Branching Operation
 		/// </summary>
-		private void DONT_BF_BRANCH(int instPtr)
-		{
-			instr_pntr = instPtr;
-			PopulateCURINSTR(
-				// S
-				IDLE,
-				ROMC_03_S,			// Immediate operand fetch
-				IDLE,
-				IDLE,
-				// S
-				ROMC_00_S,          // DB <- ((PC0)); PC0++	
-				IDLE,
-				IDLE,
-				END);
-		}
-
-		/// <summary>
-		/// BT Operation Branching Timing
-		/// </summary>
-		private void DO_BT_BRANCH(int instPtr)
-		{
-			instr_pntr = instPtr;
-			PopulateCURINSTR(
-				// L
-				IDLE,
-				ROMC_01,            // PC0 <- PC0 + (DB)
-				IDLE,
-				IDLE,
-				IDLE,
-				IDLE,
-				// S
-				ROMC_00_S,          // DB <- ((PC0)); PC0++	
-				IDLE,
-				IDLE,
-				END);
-		}
-
-		/// <summary>
-		/// BT Operation No-Branching Timing
-		/// </summary>
-		private void DONT_BT_BRANCH(int instPtr)
+		private void DONT_BRANCH(int instPtr)
 		{
 			instr_pntr = instPtr;
 			PopulateCURINSTR(

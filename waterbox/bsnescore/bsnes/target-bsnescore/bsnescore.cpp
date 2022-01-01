@@ -14,7 +14,7 @@ using namespace SuperFamicom;
 // currently unused; was only used in the graphics debugger as far as i can see
 int snes_peek_logical_register(int reg)
 {
-    if (emulator->configuration("Hacks/PPU/Fast") == "true")
+    if (SuperFamicom::system.fastPPU())
     switch(reg)
     {
         //zero 17-may-2014
@@ -129,7 +129,6 @@ EXPORT void snes_init(int entropy, uint left_port, uint right_port, uint16_t mer
     fprintf(stderr, "snes_init was called!\n");
     emulator = new SuperFamicom::Interface;
     program = new Program;
-    // memset(&cdlInfo,0,sizeof(cdlInfo));
 
     string entropy_string;
     switch (entropy)
@@ -236,7 +235,7 @@ EXPORT void snes_load_cartridge_super_gameboy(
 
 EXPORT void snes_set_layer_enables(LayerEnables* layerEnables)
 {
-    if (emulator->configuration("Hacks/PPU/Fast") == "true") {
+    if (SuperFamicom::system.fastPPU()) {
         ppufast.io.bg1.priority_enabled[0] = layerEnables->BG1_Prio0;
         ppufast.io.bg1.priority_enabled[1] = layerEnables->BG1_Prio1;
         ppufast.io.bg2.priority_enabled[0] = layerEnables->BG2_Prio0;
@@ -267,6 +266,37 @@ EXPORT void snes_set_trace_enabled(bool enabled)
     platform->traceEnabled = enabled;
 }
 
+EXPORT void snes_set_hooks_enabled(bool read_hook_enabled, bool write_hook_enabled, bool execute_hook_enabled)
+{
+    platform->readHookEnabled = read_hook_enabled;
+    platform->writeHookEnabled = write_hook_enabled;
+    platform->executeHookEnabled = execute_hook_enabled;
+}
+
+
+uint8_t* snes_get_effective_saveram(int* ram_size) {
+    if (cartridge.has.SA1) {
+        *ram_size = sa1.bwram.size();
+        return sa1.bwram.data();
+    } else if (cartridge.has.SuperFX) {
+        *ram_size = superfx.ram.size();
+        return superfx.ram.data();
+    } else if (cartridge.has.HitachiDSP) {
+        *ram_size = hitachidsp.ram.size();
+        return hitachidsp.ram.data();
+    } else if (cartridge.has.SPC7110) {
+        *ram_size = spc7110.ram.size();
+        return spc7110.ram.data();
+    } else if (cartridge.has.OBC1) {
+        *ram_size = obc1.ram.size();
+        return obc1.ram.data();
+    }
+
+    // note: if sufamiturbo is ever implemented frontend, this will need some additional consideration
+    // because sufamiturbo can have up to 2 cartridges (and respective save rams)
+    *ram_size = cartridge.ram.size();
+    return cartridge.ram.data();
+}
 
 EXPORT int snes_get_region(void) {
     return Region::PAL();
@@ -293,14 +323,25 @@ EXPORT char snes_get_mapper(void) {
 EXPORT void* snes_get_memory_region(int id, int* size, int* word_size)
 {
     if(!emulator->loaded()) return nullptr;
-    bool fast_ppu = emulator->configuration("Hacks/PPU/Fast") == "true";
+    bool fast_ppu = SuperFamicom::system.fastPPU();
 
     switch(id)
     {
+        // this cartridge ram is a generalized memory region that can be anything that is considered
+        // cartridge or save ram for any coprocessor like SA-1, or just the basic cartridge ram
         case SNES_MEMORY::CARTRIDGE_RAM:
-            *size = cartridge.ram.size();
             *word_size = 1;
-            return cartridge.ram.data();
+            return snes_get_effective_saveram(size);
+        case SNES_MEMORY::CARTRIDGE_ROM:
+            *size = program->superFamicom.program.size();
+            *word_size = 1;
+            return program->superFamicom.program.data();
+        case SNES_MEMORY::SGB_ROM:
+            *size = program->gameBoy.program.size();
+            *word_size = 1;
+            return program->gameBoy.program.data();
+
+        // unused
         case SNES_MEMORY::BSX_RAM:
             if (!cartridge.has.BSMemorySlot) break;
             *size = mcc.rom.size();
@@ -321,11 +362,19 @@ EXPORT void* snes_get_memory_region(int id, int* size, int* word_size)
             *size = sufamiturboB.ram.size();
             *word_size = 1;
             return sufamiturboB.ram.data();
+
         case SNES_MEMORY::SA1_IRAM:
             if (!cartridge.has.SA1) break;
             *size = sa1.iram.size();
             *word_size = 1;
             return sa1.iram.data();
+        case SNES_MEMORY::SA1_BWRAM:
+            // effectively the cartridge ram, listed here to allow direct BWRAM access
+            // instead of relying on the CARTRIDGE_RAM domain
+            if (!cartridge.has.SA1) break;
+            *size = sa1.bwram.size();
+            *word_size = 1;
+            return sa1.bwram.data();
 
         case SNES_MEMORY::WRAM:
             *size = sizeof(cpu.wram);
@@ -347,11 +396,6 @@ EXPORT void* snes_get_memory_region(int id, int* size, int* word_size)
             *size = sizeof(ppufast.cgram);
             *word_size = sizeof(*ppufast.cgram);
             return ppufast.cgram;
-
-        case SNES_MEMORY::CARTRIDGE_ROM:
-            *size = cartridge.rom.size();
-            *word_size = 1;
-            return cartridge.rom.data();
     }
 
     return nullptr;

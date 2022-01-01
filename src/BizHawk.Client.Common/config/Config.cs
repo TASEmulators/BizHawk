@@ -155,7 +155,8 @@ namespace BizHawk.Client.Common
 		public int FrameSkip { get; set; } = 4;
 		public int SpeedPercent { get; set; } = 100;
 		public int SpeedPercentAlternate { get; set; } = 400;
-		public bool ClockThrottle { get; set; }= true;
+		public bool ClockThrottle { get; set; } = true;
+		public bool Unthrottled { get; set; } = false;
 		public bool AutoMinimizeSkipping { get; set; } = true;
 		public bool VSyncThrottle { get; set; } = false;
 

@@ -200,10 +200,7 @@ namespace BizHawk.Client.Common.movie.import
 				Result.Movie.HeaderEntries[HeaderKeys.GameName] = gameName;
 			}
 
-			SimpleController controllers = new SimpleController
-			{
-				Definition = _deck.Definition
-			};
+			SimpleController controllers = new(_deck.Definition);
 
 			r.BaseStream.Position = firstFrameOffset;
 			/*
@@ -311,10 +308,10 @@ namespace BizHawk.Client.Common.movie.import
 				}
 
 				Result.Movie.AppendFrame(controllers);
-
-				Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(ss);
-				MaybeSetCorePreference(VSystemID.Raw.SNES, CoreNames.Bsnes, fileExt: ".smv");
 			}
+
+			Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(ss);
+			MaybeSetCorePreference(VSystemID.Raw.SNES, CoreNames.Bsnes, fileExt: ".smv");
 		}
 	}
 }

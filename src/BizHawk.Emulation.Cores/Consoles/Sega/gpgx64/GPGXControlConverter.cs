@@ -179,7 +179,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			int player = 1;
 
-			ControllerDef = new ControllerDefinition();
+			ControllerDef = new("GPGX Genesis Controller");
 
 			ControllerDef.BoolButtons.Add("Power");
 			ControllerDef.BoolButtons.Add("Reset");
@@ -236,7 +236,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				}
 			}
 
-			ControllerDef.Name = "GPGX Genesis Controller";
+			ControllerDef.MakeImmutable();
 		}
 
 		public void Convert(IController source, LibGPGX.InputData target)

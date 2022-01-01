@@ -7,7 +7,6 @@ using BizHawk.Common.BufferExtensions;
 namespace BizHawk.Common
 {
 	/// <summary>uses <see cref="SHA1"/> implementation from BCL</summary>
-	/// <seealso cref="CRC32Checksum"/>
 	/// <seealso cref="MD5Checksum"/>
 	/// <seealso cref="SHA256Checksum"/>
 	public static class SHA1Checksum
@@ -17,7 +16,7 @@ namespace BizHawk.Common
 
 		internal const string PREFIX = "SHA1";
 
-#if NET5_0
+#if NET6_0
 		public static byte[] Compute(ReadOnlySpan<byte> data)
 			=> SHA1.HashData(data);
 

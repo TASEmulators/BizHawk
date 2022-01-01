@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.DiscSystem
 				crc.Add(buffer2352);
 			}
 
-			return CRC32Checksum.BytesAsDigest(crc.Result).BytesToHexString();
+			return crc.Result.ToString("X8");
 		}
 
 		/// <summary>

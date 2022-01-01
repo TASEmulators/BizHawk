@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 using BizHawk.Common;
@@ -38,10 +37,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public UnpluggedController(int portNum)
 		{
 			PortNum = portNum;
-			Definition = new ControllerDefinition
-			{
-				BoolButtons = new List<string>()
-			};
+			Definition = new("(Atari 2600 Basic Controller fragment)");
 		}
 
 		public byte Read(IController c)
@@ -69,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public StandardController(int portNum)
 		{
 			PortNum = portNum;
-			Definition = new ControllerDefinition
+			Definition = new("(Atari 2600 Basic Controller fragment)")
 			{
 				BoolButtons = BaseDefinition
 				.Select(b => $"P{PortNum} " + b)
@@ -115,13 +111,14 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public PaddleController(int portNum)
 		{
 			PortNum = portNum;
-			Definition = new ControllerDefinition
+			Definition = new ControllerDefinition("(Atari 2600 Basic Controller fragment)")
 			{
 				BoolButtons = BaseDefinition
 				.Select(b => $"P{PortNum} " + b)
 				.ToList()
 			}.AddAxis($"P{PortNum} Paddle X 1", (-127).RangeTo(127), 0)
-				.AddAxis($"P{PortNum} Paddle X 2", (-127).RangeTo(127), 0);
+				.AddAxis($"P{PortNum} Paddle X 2", (-127).RangeTo(127), 0)
+				.MakeImmutable();
 		}
 
 		public int PortNum { get; }
@@ -167,7 +164,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public BoostGripController(int portNum)
 		{
 			PortNum = portNum;
-			Definition = new ControllerDefinition
+			Definition = new("(Atari 2600 Basic Controller fragment)")
 			{
 				BoolButtons = BaseDefinition
 				.Select(b => $"P{PortNum} " + b)
@@ -231,13 +228,14 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public DrivingController(int portNum)
 		{
 			PortNum = portNum;
-			Definition = new ControllerDefinition
+			Definition = new ControllerDefinition("(Atari 2600 Basic Controller fragment)")
 			{
 				BoolButtons = BaseDefinition
 				.Select(b => $"P{PortNum} " + b)
 				.ToList()
 			}.AddAxis($"P{PortNum} Wheel X 1", (-127).RangeTo(127), 0)
-				.AddAxis($"P{PortNum} Wheel X 2", (-127).RangeTo(127), 0);
+				.AddAxis($"P{PortNum} Wheel X 2", (-127).RangeTo(127), 0)
+				.MakeImmutable();
 		}
 
 		public int PortNum { get; }
@@ -325,7 +323,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public KeyboardController(int portNum)
 		{
 			PortNum = portNum;
-			Definition = new ControllerDefinition
+			Definition = new("(Atari 2600 Basic Controller fragment)")
 			{
 				BoolButtons = BaseDefinition
 				.Select(b => $"P{PortNum} " + b)

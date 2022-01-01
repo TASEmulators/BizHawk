@@ -37,8 +37,7 @@ namespace BizHawk.Client.Common.movie.import
 				NesLeftPort = nameof(ControllerNES),
 				NesRightPort = nameof(ControllerNES)
 			};
-			_deck = controllerSettings.Instantiate((x, y) => true);
-			AddDeckControlButtons();
+			_deck = controllerSettings.Instantiate((x, y) => true).AddSystemToControllerDef();
 
 			// 004 4-byte little-endian unsigned int: version number, must be 2
 			uint version = r.ReadUInt32();
@@ -145,10 +144,7 @@ namespace BizHawk.Client.Common.movie.import
 			// Advance to first byte of input data.
 			r.BaseStream.Position = firstFrameOffset;
 
-			var controllers = new SimpleController
-			{
-				Definition = _deck.GetDefinition()
-			};
+			SimpleController controllers = new(_deck.ControllerDef);
 
 			string[] buttons = { "A", "B", "Select", "Start", "Up", "Down", "Left", "Right" };
 			bool fds = false;
@@ -289,19 +285,6 @@ namespace BizHawk.Client.Common.movie.import
 
 			syncSettings.Controls = controllerSettings;
 			Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(syncSettings);
-		}
-
-		private void AddDeckControlButtons()
-		{
-			var controllers = new SimpleController
-			{
-				Definition = _deck.GetDefinition()
-			};
-
-			// TODO: FDS
-			// Yes, this adds them to the deck definition too
-			controllers.Definition.BoolButtons.Add("Reset");
-			controllers.Definition.BoolButtons.Add("Power");
 		}
 	}
 }

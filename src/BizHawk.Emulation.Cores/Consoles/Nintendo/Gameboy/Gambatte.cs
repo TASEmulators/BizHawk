@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 
@@ -264,7 +265,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public static ControllerDefinition CreateControllerDefinition(bool sgb, bool sub, bool tilt)
 		{
-			var ret = new ControllerDefinition { Name = (sub ? "Subframe " : "") + "Gameboy Controller" + (tilt ? " + Tilt" : "") };
+			var ret = new ControllerDefinition((sub ? "Subframe " : "") + "Gameboy Controller" + (tilt ? " + Tilt" : ""));
 			if (sub)
 			{
 				ret.AddAxis("Input Length", 0.RangeTo(35112), 35112);
@@ -287,7 +288,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			{
 				ret.BoolButtons.AddRange(new[] { "Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Power" });
 			}
-			return ret;
+			return ret.MakeImmutable();
 		}
 
 		private LibGambatte.Buttons ControllerCallback()

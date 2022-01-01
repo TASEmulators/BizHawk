@@ -48,15 +48,22 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 				// Assume default konami style mapper
 				if (gi == null)
 				{
-					
+					mapper_1 = 3;
+					Console.WriteLine("Using Ascii 8 KB Mapper");
 				}
 				else if (!dict.TryGetValue("mapper", out s_mapper))
 				{
-					mapper_1 = 1;
-					Console.WriteLine("Using Konami Mapper");
+					mapper_1 = 3;
+					Console.WriteLine("Using Ascii 8 KB Mapper");
 				}
 				else
 				{
+					if (s_mapper == "1")
+					{
+						mapper_1 = 1;
+						Console.WriteLine("Using Konami Mapper");
+					}
+
 					if (s_mapper == "2")
 					{
 						mapper_1 = 2;

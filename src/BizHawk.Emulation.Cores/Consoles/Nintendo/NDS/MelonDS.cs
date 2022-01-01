@@ -90,7 +90,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			fwSettings.FirmwareBirthdayMonth = _syncSettings.FirmwareBirthdayMonth;
 			fwSettings.FirmwareBirthdayDay = _syncSettings.FirmwareBirthdayDay;
 			fwSettings.FirmwareFavouriteColour = _syncSettings.FirmwareFavouriteColour;
-			var message = Encoding.UTF8.GetBytes(_syncSettings.FirmwareMessage);
+			var message = _syncSettings.FirmwareMessage.Length != 0 ? Encoding.UTF8.GetBytes(_syncSettings.FirmwareMessage) : new byte[1] { 0 };
 			fwSettings.FirmwareMessageLength = message.Length;
 
 			_exe.AddReadonlyFile(roms[0], "game.rom");
@@ -181,16 +181,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public override ControllerDefinition ControllerDefinition => NDSController;
 
-		public static readonly ControllerDefinition NDSController = new ControllerDefinition
+		public static readonly ControllerDefinition NDSController = new ControllerDefinition("NDS Controller")
 		{
-			Name = "NDS Controller",
 			BoolButtons =
 			{
 				"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Y", "X", "L", "R", "LidOpen", "LidClose", "Touch", "Power"
 			}
 		}.AddXYPair("Touch {0}", AxisPairOrientation.RightAndUp, 0.RangeTo(255), 128, 0.RangeTo(191), 96)
 			.AddAxis("Mic Volume", (0).RangeTo(100), 0)
-			.AddAxis("GBA Light Sensor", 0.RangeTo(10), 0);
+			.AddAxis("GBA Light Sensor", 0.RangeTo(10), 0)
+			.MakeImmutable();
+
 		private LibMelonDS.Buttons GetButtons(IController c)
 		{
 			LibMelonDS.Buttons b = 0;

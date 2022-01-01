@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -15,30 +15,19 @@ namespace BizHawk.Tests.Client.Common.Movie
 		[TestInitialize]
 		public void Initializer()
 		{
-			_boolController = new SimpleController
-			{
-				Definition = new ControllerDefinition { BoolButtons = { "A" } }
-			};
-
-			_axisController = new SimpleController
-			{
-				Definition = new ControllerDefinition().AddXYPair("Stick{0}", AxisPairOrientation.RightAndUp, 0.RangeTo(200), 100)
-			};
+			_boolController = new(new ControllerDefinition("Dummy Gamepad") { BoolButtons = { "A" } }.MakeImmutable());
+			_axisController = new(
+				new ControllerDefinition("Dummy Gamepad")
+					.AddXYPair("Stick{0}", AxisPairOrientation.RightAndUp, 0.RangeTo(200), 100)
+					.MakeImmutable());
 		}
 
 		[TestMethod]
 		public void GenerateLogEntry_ExclamationForUnknownButtons()
 		{
-			var controller = new SimpleController
-			{
-				Definition = new ControllerDefinition
-				{
-					BoolButtons = new List<string> {"Unknown Button"}
-				},
-				["Unknown Button"] = true
-			};
-
+			SimpleController controller = new(new ControllerDefinition("Dummy Gamepad") { BoolButtons = { "Unknown Button" } }.MakeImmutable());
 			var lg = new Bk2LogEntryGenerator("NES", controller);
+			controller["Unknown Button"] = true;
 			var actual = lg.GenerateLogEntry();
 			Assert.AreEqual("|!|", actual);
 		}

@@ -43,13 +43,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				GetController(ss.RightPort, ss)
 			};
 
-			Definition = ControllerDefinitionMerger.GetMerged(_ports.Select(p => p.Definition), out var tmp);
+			Definition = ControllerDefinitionMerger.GetMerged(
+				"SNES Controller",
+				_ports.Select(p => p.Definition),
+				out var tmp);
 			_mergers = tmp.ToArray();
 
 			// add buttons that the core itself will handle
 			Definition.BoolButtons.Add("Reset");
 			Definition.BoolButtons.Add("Power");
-			Definition.Name = "SNES Controller";
+
+			Definition.MakeImmutable();
 		}
 
 		public void CoreInputPoll(IController controller)
@@ -84,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 	internal class BsnesUnpluggedController : IBsnesController
 	{
-		private static readonly ControllerDefinition _definition = new();
+		private static readonly ControllerDefinition _definition = new("(SNES Controller fragment)");
 
 		public ControllerDefinition Definition => _definition;
 
@@ -118,7 +122,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			["0R"] = 11
 		};
 
-		private static readonly ControllerDefinition _definition = new()
+		private static readonly ControllerDefinition _definition = new("(SNES Controller fragment)")
 		{
 			BoolButtons = Buttons.OrderBy(b => ButtonsOrder[b]).ToList()
 		};
@@ -146,7 +150,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 	{
 		private readonly short[] _state = new short[4];
 
-		private static readonly ControllerDefinition _definition = new ControllerDefinition
+		private static readonly ControllerDefinition _definition = new ControllerDefinition("(SNES Controller fragment)")
 				{ BoolButtons = { "0Mouse Left", "0Mouse Right" } }
 			.AddXYPair("0Mouse {0}", AxisPairOrientation.RightAndDown, (-127).RangeTo(127), 0); //TODO verify direction against hardware, R+D inferred from behaviour in Mario Paint
 
@@ -207,7 +211,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			["L"] = 11
 		};
 
-		private static readonly ControllerDefinition _definition = new()
+		private static readonly ControllerDefinition _definition = new("(SNES Controller fragment)")
 		{
 			BoolButtons = Enumerable.Range(0, 4)
 			.SelectMany(i => Buttons.OrderBy(b => ButtonsOrder[b])
@@ -241,7 +245,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		private readonly int[] _buttonsOrder = {4, 5, 6, 7, 0, 8, 1, 9, 10, 11, 2, 3, 12, 13, 14, 15};
 
-		private static readonly ControllerDefinition _definition = new()
+		private static readonly ControllerDefinition _definition = new("(SNES Controller fragment)")
 		{
 			BoolButtons = Enumerable.Range(0, 32).Select(i => $"0B{i}").ToList()
 		};
@@ -270,7 +274,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 	{
 		private readonly short[] _state = new short[6];
 
-		private static readonly ControllerDefinition _definition = new ControllerDefinition
+		private static readonly ControllerDefinition _definition = new ControllerDefinition("(SNES Controller fragment)")
 			{ BoolButtons = { "0Trigger", "0Cursor", "0Turbo", "0Pause" } }
 			.AddLightGun("0Scope {0}");
 
@@ -300,11 +304,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public BsnesJustifierController(bool chained)
 		{
 			Definition = chained
-				? new ControllerDefinition
+				? new ControllerDefinition("(SNES Controller fragment)")
 					{ BoolButtons = { "0Trigger", "0Start", "1Trigger", "1Start" } }
 					.AddLightGun("0Justifier {0}")
 					.AddLightGun("1Justifier {0}")
-				: new ControllerDefinition
+				: new ControllerDefinition("(SNES Controller fragment)")
 					{BoolButtons = { "0Trigger", "0Start"} }
 					.AddLightGun("0Justifier {0}");
 			_state = new short[chained ? 8 : 4];

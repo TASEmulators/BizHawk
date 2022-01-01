@@ -815,7 +815,7 @@ namespace BizHawk.Client.EmuHawk
 				Speed400MenuItem.Enabled =
 				Config.ClockThrottle;
 
-			miUnthrottled.Checked = _unthrottled;
+			miUnthrottled.Checked = Config.Unthrottled;
 		}
 
 		private void KeyPriorityMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1047,7 +1047,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UnthrottledMenuItem_Click(object sender, EventArgs e)
 		{
-			_unthrottled ^= true;
+			Config.Unthrottled ^= true;
 			ThrottleMessage();
 		}
 

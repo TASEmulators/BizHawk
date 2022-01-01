@@ -33,7 +33,7 @@ namespace BizHawk.Client.Common
 * luacolor
 ** Any of:
 ** a 32-bit number in the format 0xAARRGGBB;
-** a string in the format ""#AARRGGBB"";
+** a string in the format ""#RRGGBB"" or ""#AARRGGBB"";
 ** a string containing a CSS3/X11 color name e.g. ""blue"", ""palegoldenrod""; or
 ** a Color created with forms.createcolor.
 ** As noted above, luacolor? indicates nil may also be passed.

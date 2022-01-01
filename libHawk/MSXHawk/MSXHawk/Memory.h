@@ -103,8 +103,8 @@ namespace MSXHawk
 			// page size 0x2000 for konami games
 			if (rom_mapper_1 == 1 || rom_mapper_1 == 2) { rom_size_1 = ext_rom_size_1 / 0x2000 - 1; }
 			if (rom_mapper_2 == 1 || rom_mapper_2 == 2) { rom_size_2 = ext_rom_size_2 / 0x2000 - 1; }
-			
 
+			// initial state
 			if (rom_mapper_1 == 1 || rom_mapper_1 == 2)
 			{
 				rom1_konami_page_0 = 0;
@@ -118,6 +118,26 @@ namespace MSXHawk
 				rom2_konami_page_1 = 1;
 				rom2_konami_page_2 = 2;
 				rom2_konami_page_3 = 3;
+			}
+
+			// page size 0x2000 for generic ascii 8kb mapper
+			if (rom_mapper_1 == 3) { rom_size_1 = ext_rom_size_1 / 0x2000 - 1; }
+			if (rom_mapper_2 == 3) { rom_size_2 = ext_rom_size_2 / 0x2000 - 1; }
+
+			// reuse konami page names (same size) however different initial state
+			if (rom_mapper_1 == 3)
+			{
+				rom1_konami_page_0 = 0;
+				rom1_konami_page_1 = 0;
+				rom1_konami_page_2 = 0;
+				rom1_konami_page_3 = 0;
+			}
+			if (rom_mapper_2 == 3)
+			{
+				rom2_konami_page_0 = 0;
+				rom2_konami_page_1 = 0;
+				rom2_konami_page_2 = 0;
+				rom2_konami_page_3 = 0;
 			}
 
 			// default memory map setup

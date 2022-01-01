@@ -39,11 +39,7 @@
 		/// <param name="addr"></param>
 		public void WriteBus(ushort addr, byte value)
 		{
-			// Cartridge Memory Space
-			if (addr >= 0x800)
-			{
-				Cartridge.WriteBus(addr, value);
-			}
+			Cartridge.WriteBus(addr, value);
 		}		
 	}
 }

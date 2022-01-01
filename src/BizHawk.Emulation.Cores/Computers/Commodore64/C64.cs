@@ -135,9 +135,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		private readonly List<byte[]> _roms;
 
-		private static readonly ControllerDefinition C64ControllerDefinition = new ControllerDefinition
+		private static readonly ControllerDefinition C64ControllerDefinition = new ControllerDefinition("Commodore 64 Controller")
 		{
-			Name = "Commodore 64 Controller",
 			BoolButtons =
 			{
 				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Button",
@@ -151,7 +150,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				"Previous Disk", "Next Disk",
 				"Power", "Reset"
 			}
-		};
+		}.MakeImmutable();
 
 		private Motherboard _board;
 

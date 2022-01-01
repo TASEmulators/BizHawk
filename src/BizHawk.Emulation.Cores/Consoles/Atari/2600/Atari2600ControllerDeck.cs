@@ -15,9 +15,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			Port1 = ControllerCtors[controller1](1);
 			Port2 = ControllerCtors[controller2](2);
 
-			Definition = new ControllerDefinition
+			Definition = new("Atari 2600 Basic Controller")
 			{
-				Name = "Atari 2600 Basic Controller",
 				BoolButtons = Port1.Definition.BoolButtons
 					.Concat(Port2.Definition.BoolButtons)
 					.Concat(new[]
@@ -29,6 +28,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			foreach (var kvp in Port1.Definition.Axes) Definition.Axes.Add(kvp);
 			foreach (var kvp in Port2.Definition.Axes) Definition.Axes.Add(kvp);
+
+			Definition.MakeImmutable();
 		}
 
 		public byte ReadPort1(IController c)

@@ -2,7 +2,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	internal sealed class MMC_Pokemon : MMC3Board_Base
+	internal sealed class MMC_Jncota : MMC3Board_Base
 	{
 		// unsure if this is represented in any other mapper (it doesn't appear to be.)
 		// the games have a register at 0x5000 that swaps out 512K banks that the MMC3 references.
@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//analyze board type
 			switch (Cart.BoardType)
 			{
-				case "MMC3_Pokemon":
+				case "MMC3_Jncota":
 					break;
 
 				default:

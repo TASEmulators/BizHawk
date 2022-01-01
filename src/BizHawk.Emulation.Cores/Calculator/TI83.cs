@@ -77,22 +77,20 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 		internal int LinkState => (_linkOutput | LinkInput) ^ 3;
 
-		private static readonly ControllerDefinition TI83Controller =
-			new ControllerDefinition
+		private static readonly ControllerDefinition TI83Controller = new ControllerDefinition("TI83 Controller")
+		{
+			BoolButtons =
 			{
-				Name = "TI83 Controller",
-				BoolButtons =
-				{
-					"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "DOT",
-					"ON", "ENTER",
-					"DOWN", "LEFT", "UP", "RIGHT",
-					"PLUS", "MINUS", "MULTIPLY", "DIVIDE",
-					"CLEAR", "EXP", "DASH", "PARACLOSE", "TAN", "VARS", "PARAOPEN",
-					"COS", "PRGM", "STAT", "COMMA", "SIN", "MATRIX", "X",
-					"STO", "LN", "LOG", "SQUARED", "NEG1", "MATH", "ALPHA",
-					"GRAPH", "TRACE", "ZOOM", "WINDOW", "Y", "2ND", "MODE", "DEL"
-				}
-			};
+				"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "DOT",
+				"ON", "ENTER",
+				"DOWN", "LEFT", "UP", "RIGHT",
+				"PLUS", "MINUS", "MULTIPLY", "DIVIDE",
+				"CLEAR", "EXP", "DASH", "PARACLOSE", "TAN", "VARS", "PARAOPEN",
+				"COS", "PRGM", "STAT", "COMMA", "SIN", "MATRIX", "X",
+				"STO", "LN", "LOG", "SQUARED", "NEG1", "MATH", "ALPHA",
+				"GRAPH", "TRACE", "ZOOM", "WINDOW", "Y", "2ND", "MODE", "DEL",
+			},
+		}.MakeImmutable();
 
 		private byte ReadMemory(ushort addr)
 		{

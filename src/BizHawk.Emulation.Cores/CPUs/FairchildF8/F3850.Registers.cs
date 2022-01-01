@@ -15,80 +15,100 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		public byte[] Regs = new byte[100];
 
 		// scratchpad registers live in Regs 0-64
-		public byte J = 9;
-		public byte Hh = 10;
-		public byte Hl = 11;
-		public byte Kh = 12;
-		public byte Kl = 13;
-		public byte Qh = 14;
-		public byte Ql = 15;
+		public const byte J = 9;
+		public const byte Hh = 10;
+		public const byte Hl = 11;
+		public const byte Kh = 12;
+		public const byte Kl = 13;
+		public const byte Qh = 14;
+		public const byte Ql = 15;
 
 		// Internal CPU counters kept after the scratchpad for ease of implementation
 		/// <summary>
 		/// Accumulator
 		/// </summary>
-		public byte A = 65;
+		public const byte A = 65;
 		/// <summary>
 		/// Status Register
 		/// </summary>
-		public byte W = 66;
+		public const byte W = 66;
 		/// <summary>
 		/// Indirect Scratchpad Address Register
 		/// (6bit)
 		/// </summary>
-		public byte ISAR = 67;
+		public const byte ISAR = 67;
 		/// <summary>
 		/// Primary Program Counter (high byte)
 		/// </summary>
-		public  byte PC0h = 68;
+		public const byte PC0h = 68;
 		/// <summary>
 		/// Primary Program Counter (low byte)
 		/// </summary>
-		public byte PC0l = 69;
+		public const byte PC0l = 69;
 		/// <summary>
 		/// Backup Program Counter (high byte)
 		/// </summary>
-		public byte PC1h = 70;
+		public const byte PC1h = 70;
 		/// <summary>
 		/// Backup Program Counter (low byte)
 		/// </summary>
-		public byte PC1l = 71;
+		public const byte PC1l = 71;
 		/// <summary>
 		/// Data counter (high byte)
 		/// </summary>
-		public byte DC0h = 72;
+		public const byte DC0h = 72;
 		/// <summary>
 		/// Data Counter (low byte)
 		/// </summary>
-		public byte DC0l = 73;
+		public const byte DC0l = 73;
 		/// <summary>
 		/// Temporary Arithmetic Storage
 		/// </summary>
-		public byte ALU0 = 74;
+		public const byte ALU0 = 74;
 		/// <summary>
 		/// Temporary Arithmetic Storage
 		/// </summary>
-		public byte ALU1 = 75;
+		public const byte ALU1 = 75;
 		/// <summary>
 		/// Data Bus
 		/// </summary>
-		public byte DB = 76;
+		public const byte DB = 76;
 		/// <summary>
 		/// IO Bus/Latch
 		/// </summary>
-		public byte IO = 77;
+		public const byte IO = 77;
 		/// <summary>
 		/// 0x00 value for arithmetic ops
 		/// </summary>
-		public byte ZERO = 78;
+		public const byte ZERO = 78;
 		/// <summary>
 		/// 0x01 value for arithmetic ops
 		/// </summary>
-		public byte ONE = 79;
+		public const byte ONE = 79;
 		/// <summary>
 		/// 0xFF value for arithmetic ops
 		/// </summary>
-		public byte BYTE = 80;
+		public const byte BYTE = 80;
+		/// <summary>
+		/// Backup Data counter (high byte)
+		/// </summary>
+		public const byte DC1h = 81;
+		/// <summary>
+		/// Backup Data Counter (low byte)
+		/// </summary>
+		public const byte DC1l = 82;
+		/// <summary>
+		/// IRQ Vector (high byte)
+		/// </summary>
+		public const byte IRQVh = 83;
+		/// <summary>
+		/// IRQ Vector (low byte)
+		/// </summary>
+		public const byte IRQVl = 84;
+		/// <summary>
+		/// IRQ Request Pending
+		/// </summary>
+		public const byte IRQR = 85;
 
 
 		/// <summary>
@@ -148,6 +168,15 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		}
 
 		/// <summary>
+		/// Signals that IRQ Request is pending
+		/// </summary>
+		public bool IRQRequest
+		{
+			get => Regs[IRQR] > 0;
+			set => Regs[IRQR] = value == true ? (byte)1 : (byte)0;
+		}
+
+		/// <summary>
 		/// Access to the full 16-bit Primary Program Counter
 		/// </summary>
 		public ushort RegPC0
@@ -183,6 +212,32 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 			{
 				Regs[DC0l] = (byte)(value & 0xFF);
 				Regs[DC0h] = (byte)((value >> 8) & 0xFF);
+			}
+		}
+
+		/// <summary>
+		/// Access to the full 16-bit Backup Data Counter
+		/// </summary>
+		public ushort RegDC1
+		{
+			get => (ushort)(Regs[DC1l] | (Regs[DC1h] << 8));
+			set
+			{
+				Regs[DC1l] = (byte)(value & 0xFF);
+				Regs[DC1h] = (byte)((value >> 8) & 0xFF);
+			}
+		}
+
+		/// <summary>
+		/// Access to the full 16-bit IRQ Vector
+		/// </summary>
+		public ushort RegIRQV
+		{
+			get => (ushort)(Regs[IRQVl] | (Regs[IRQVh] << 8));
+			set
+			{
+				Regs[IRQVl] = (byte)(value & 0xFF);
+				Regs[IRQVh] = (byte)((value >> 8) & 0xFF);
 			}
 		}
 
@@ -254,6 +309,9 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 					case "DC0":
 						RegDC0 = (ushort)value;
 						break;
+					case "DC1":
+						RegDC1 = (ushort)value;
+						break;
 					case "DB":
 						Regs[DB] = (byte)value;
 						break;
@@ -287,11 +345,12 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 			}
 
 			Regs[ONE] = 1;
+			Regs[ZERO] = 0;
 			Regs[BYTE] = 0xFF;
 
 			// testing only - fill scratchpad with 0xff
-			for (int i = 0; i < 64; i++)
-				Regs[i] = 0xff;
+			//for (int i = 0; i < 64; i++)
+				//Regs[i] = 0xff;
 		}
 	}
 }

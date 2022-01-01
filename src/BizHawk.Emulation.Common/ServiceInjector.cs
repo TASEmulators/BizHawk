@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-using System;
+﻿using System;
 using System.Linq;
 
 using BizHawk.Common.ReflectionExtensions;
@@ -18,7 +16,7 @@ namespace BizHawk.Emulation.Common
 		public static void ClearServices(object target)
 		{
 			Type targetType = target.GetType();
-			object[] tmp = new object[1];
+			object?[] tmp = { null };
 
 			foreach (var propInfo in
 				targetType.GetPropertiesWithAttrib(typeof(RequiredServiceAttribute))
@@ -35,7 +33,7 @@ namespace BizHawk.Emulation.Common
 		public static bool UpdateServices(IEmulatorServiceProvider source, object target)
 		{
 			Type targetType = target.GetType();
-			object[] tmp = new object[1];
+			object?[] tmp = new object?[1];
 
 			foreach (var propInfo in targetType.GetPropertiesWithAttrib(typeof(RequiredServiceAttribute)))
 			{

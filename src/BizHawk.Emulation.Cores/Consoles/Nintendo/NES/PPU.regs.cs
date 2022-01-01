@@ -345,12 +345,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private byte read_2002()
 		{
 			byte ret = peek_2002();
-			
+			/*
 			if (nes.do_the_reread_2002 > 0)
 			{
 				if (Reg2002_vblank_active || Reg2002_vblank_active_pending)
 					Console.WriteLine("reread 2002");
 			}
+			*/
 			
 			// reading from $2002 resets the destination for $2005 and $2006 writes
 			vtoggle = false;

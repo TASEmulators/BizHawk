@@ -9,10 +9,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		{
 			get
 			{
-				ControllerDefinition definition = new ControllerDefinition
-				{
-					Name = "ChannelF Controller"
-				};
+				ControllerDefinition definition = new("ChannelF Controller");
 
 				string pre = "P1 ";
 
@@ -46,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				// console
 				var consoleButtons = new List<string>
 				{
-					"RESET", "START", "HOLD", "MODE", "TIME"
+					"TIME", "MODE", "HOLD", "START", "RESET"
 				};
 
 				foreach (var s in consoleButtons)
@@ -55,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					definition.CategoryLabels[s] = "Console";
 				}
 
-				return definition;
+				return definition.MakeImmutable();
 			}
 		}
 

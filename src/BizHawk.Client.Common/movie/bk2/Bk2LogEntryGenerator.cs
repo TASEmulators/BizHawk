@@ -28,7 +28,7 @@ namespace BizHawk.Client.Common
 			var sb = new StringBuilder();
 			sb.Append("LogKey:");
 
-			foreach (var group in _source.Definition.ControlsOrdered.Where(c => c.Any()))
+			foreach (var group in _source.Definition.ControlsOrdered.Where(static c => c.Count is not 0))
 			{
 				sb.Append('#');
 				foreach (var button in group)
@@ -43,18 +43,15 @@ namespace BizHawk.Client.Common
 		public IDictionary<string, string> Map()
 		{
 			var dict = new Dictionary<string, string>();
-			foreach (var group in _source.Definition.ControlsOrdered.Where(c => c.Any()))
+			foreach (var button in _source.Definition.OrderedControlsFlat)
 			{
-				foreach (var button in group)
+				if (_source.Definition.BoolButtons.Contains(button))
 				{
-					if (_source.Definition.BoolButtons.Contains(button))
-					{
-						dict.Add(button, Bk2MnemonicLookup.Lookup(button, _systemId).ToString());
-					}
-					else if (_source.Definition.Axes.ContainsKey(button))
-					{
-						dict.Add(button, Bk2MnemonicLookup.LookupAxis(button, _systemId));
-					}
+					dict.Add(button, Bk2MnemonicLookup.Lookup(button, _systemId).ToString());
+				}
+				else if (_source.Definition.Axes.ContainsKey(button))
+				{
+					dict.Add(button, Bk2MnemonicLookup.LookupAxis(button, _systemId));
 				}
 			}
 
@@ -67,35 +64,23 @@ namespace BizHawk.Client.Common
 
 			sb.Append('|');
 
-			foreach (var group in _source.Definition.ControlsOrdered)
+			foreach (var group in _source.Definition.ControlsOrdered.Where(static c => c.Count is not 0))
 			{
-				if (group.Any())
+				foreach (var button in group)
 				{
-					foreach (var button in group)
+					if (_source.Definition.Axes.TryGetValue(button, out var range))
 					{
-						if (_source.Definition.Axes.TryGetValue(button, out var range))
-						{
-							var val = createEmpty ? range.Neutral : _source.AxisValue(button);
-
-							sb.Append(val.ToString().PadLeft(5, ' ')).Append(',');
-						}
-						else if (_source.Definition.BoolButtons.Contains(button))
-						{
-							if (createEmpty)
-							{
-								sb.Append('.');
-							}
-							else
-							{
-								sb.Append(_source.IsPressed(button)
-									? Bk2MnemonicLookup.Lookup(button, _systemId)
-									: '.');
-							}
-						}
+						var val = createEmpty ? range.Neutral : _source.AxisValue(button);
+						sb.Append(val.ToString().PadLeft(5, ' ')).Append(',');
 					}
-
-					sb.Append('|');
+					else if (_source.Definition.BoolButtons.Contains(button))
+					{
+						sb.Append(!createEmpty && _source.IsPressed(button)
+							? Bk2MnemonicLookup.Lookup(button, _systemId)
+							: '.');
+					}
 				}
+				sb.Append('|');
 			}
 
 			return sb.ToString();

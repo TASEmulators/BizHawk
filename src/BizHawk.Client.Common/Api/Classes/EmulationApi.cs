@@ -83,7 +83,7 @@ namespace BizHawk.Client.Common
 				{
 					return new {
 						disasm = DisassemblableCore.Disassemble(
-							string.IsNullOrEmpty(name) ? MemoryDomains.SystemBus : MemoryDomains[name],
+							string.IsNullOrEmpty(name) ? MemoryDomains.SystemBus : MemoryDomains[name]!,
 							pc,
 							out var l
 						),

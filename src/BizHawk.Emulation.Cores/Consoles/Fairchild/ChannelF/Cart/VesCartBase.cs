@@ -28,6 +28,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		}
 		protected byte[] _ram;
 
+		public bool ActivityLED;
+
 		// SRAM config
 		// taken from https://github.com/mamedev/mame/blob/ee1e4f9683a4953cb9d88f9256017fcbc38e3144/src/devices/bus/chanf/rom.cpp
 		// (license:BSD-3-Clause - copyright-holders:Fabio Priuli)
@@ -49,9 +51,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 			switch (boardStr)
 			{
-				// standard cart layout - default to this
-				case "STD":
-				default:
+				// standard cart layout
+				case "STD":				
 					// any number of F3851 Program Storage Units (1KB ROM each) or F3856 Program Storage Unit (2KB ROM)
 					// no on-pcb RAM and no extra IO
 					return new mapper_STD(rom);
@@ -60,8 +61,9 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					return new mapper_MAZE(rom);
 
 				case "SCHACH":
-				
+				default:
 					// F3853 Memory Interface Chip, 6KB of ROM and 2KB of RAM
+					//  - default to this
 					return new mapper_SCHACH(rom);
 
 				case "HANG":
@@ -169,6 +171,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			ser.Sync(nameof(m_addr), ref m_addr);
 			ser.Sync(nameof(m_read_write), ref m_read_write);
 			ser.Sync(nameof(m_data0), ref m_data0);
+			ser.Sync(nameof(ActivityLED), ref ActivityLED);
 			ser.EndSection();
 		}
 	}

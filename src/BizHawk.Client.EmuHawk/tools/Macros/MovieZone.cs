@@ -72,7 +72,7 @@ namespace BizHawk.Client.EmuHawk
 		private void InitController(string key)
 		{
 			string[] keys = key.Split('|');
-			var d = new ControllerDefinition();
+			ControllerDefinition d = new(_emulator.ControllerDefinition.Name);
 			foreach (var k in keys)
 			{
 				if (_emulator.ControllerDefinition.BoolButtons.Contains(k))
@@ -85,7 +85,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			_controller = _movieSession.GenerateMovieController(d);
+			_controller = _movieSession.GenerateMovieController(d.MakeImmutable());
 		}
 
 		public string Name { get; set; }
@@ -105,7 +105,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// Get a IController that only contains buttons in key.
 			string[] keys = _inputKey.Split('|');
-			var d = new ControllerDefinition();
+			ControllerDefinition d = new(_emulator.ControllerDefinition.Name);
 			foreach (var key in keys)
 			{
 				if (_emulator.ControllerDefinition.BoolButtons.Contains(key))
@@ -118,7 +118,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			var newController = _movieSession.GenerateMovieController(d);
+			var newController = _movieSession.GenerateMovieController(d.MakeImmutable());
 			var logGenerator = _movieSession.Movie.LogGeneratorInstance(newController);
 			logGenerator.GenerateLogEntry(); // Reference and create all buttons.
 

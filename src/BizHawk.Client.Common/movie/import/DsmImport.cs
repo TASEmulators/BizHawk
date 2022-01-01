@@ -11,6 +11,14 @@ namespace BizHawk.Client.Common
 	[ImporterFor("DeSmuME", ".dsm")]
 	internal class DsmImport : MovieImporter
 	{
+		private static readonly ControllerDefinition DeSmuMEControllerDef = new ControllerDefinition("NDS Controller")
+		{
+			BoolButtons = { "Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Y", "X", "L", "R", "LidOpen", "LidClose", "Touch", "Power" },
+		}.AddXYPair("Touch {0}", AxisPairOrientation.RightAndUp, 0.RangeTo(255), 128, 0.RangeTo(191), 96) //TODO verify direction against hardware
+			.AddAxis("Mic Input", 0.RangeTo(2047), 0)
+			.AddAxis("GBA Light Sensor", 0.RangeTo(10), 0)
+			.MakeImmutable();
+
 		protected override void RunImport()
 		{
 			Result.Movie.HeaderEntries[HeaderKeys.Platform] = VSystemID.Raw.NDS;
@@ -80,22 +88,11 @@ namespace BizHawk.Client.Common
 			Result.Movie.HeaderEntries[HeaderKeys.Core] = CoreNames.MelonDS;
 		}
 
-		private readonly string[] _buttons = { "Left", "Right", "Up", "Down", "A", "B", "X", "Y", "L", "R", "Start", "Select" };
+		private readonly string[] _buttons = { "Right", "Left", "Down", "Up", "Start", "Select", "B", "A", "Y", "X", "L", "R", };
 
 		private void ImportInputFrame(string line)
 		{
-			var controller = new SimpleController
-			{
-				Definition = new ControllerDefinition
-				{
-					BoolButtons =
-					{
-						"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Y", "X", "L", "R", "LidOpen", "LidClose", "Touch", "Power"
-					}
-				}.AddXYPair("Touch {0}", AxisPairOrientation.RightAndUp, 0.RangeTo(255), 128, 0.RangeTo(191), 96) //TODO verify direction against hardware
-					.AddAxis("Mic Input", 0.RangeTo(2047), 0)
-						.AddAxis("GBA Light Sensor", 0.RangeTo(10), 0)
-			};
+			SimpleController controller = new(DeSmuMEControllerDef);
 
 			controller["LidOpen"] = false;
 			controller["LidClose"] = false;
@@ -111,18 +108,18 @@ namespace BizHawk.Client.Common
 			{
 				var mnemonics = sections[1].Take(_buttons.Length).ToList();
 
-				controller["Left"] = mnemonics[1] != '.';
 				controller["Right"] = mnemonics[0] != '.';
-				controller["Up"] = mnemonics[3] != '.';
+				controller["Left"] = mnemonics[1] != '.';
 				controller["Down"] = mnemonics[2] != '.';
-				controller["A"] = mnemonics[7] != '.';
+				controller["Up"] = mnemonics[3] != '.';
+				controller["Start"] = mnemonics[5] != '.'; // shoutouts to desmume doing start/select as select/start countary to docs
+				controller["Select"] = mnemonics[4] != '.';
 				controller["B"] = mnemonics[6] != '.';
-				controller["X"] = mnemonics[9] != '.';
+				controller["A"] = mnemonics[7] != '.';
 				controller["Y"] = mnemonics[8] != '.';
+				controller["X"] = mnemonics[9] != '.';
 				controller["L"] = mnemonics[10] != '.';
 				controller["R"] = mnemonics[11] != '.';
-				controller["Start"] = mnemonics[4] != '.';
-				controller["Select"] = mnemonics[5] != '.';
 
 				controller["Touch"] = sections[1].Substring(21, 1) != "0";
 

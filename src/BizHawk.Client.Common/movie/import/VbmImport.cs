@@ -296,17 +296,12 @@ namespace BizHawk.Client.Common.movie.import
 		}
 
 		private static SimpleController GbController()
-		{
-			return new SimpleController
+			=> new(new ControllerDefinition("Gameboy Controller")
 			{
-				Definition = new ControllerDefinition
-				{
-					BoolButtons = { "Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Power" }
-				}
-			};
-		}
+				BoolButtons = { "Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Power" }
+			}.MakeImmutable());
 
 		private static SimpleController GbaController()
-			=> new SimpleController { Definition = MGBAHawk.GBAController };
+			=> new(MGBAHawk.GBAController);
 	}
 }

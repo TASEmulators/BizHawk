@@ -108,12 +108,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			}
 
 			_controllerDefinition = ControllerDefinitionMerger.GetMerged(
-				_controllers.Select(c => c.Definition), out _cdums);
+				"SNES Controller",
+				_controllers.Select(c => c.Definition),
+				out _cdums);
 
 			// add buttons that the core itself will handle
 			_controllerDefinition.BoolButtons.Add("Reset");
 			_controllerDefinition.BoolButtons.Add("Power");
-			_controllerDefinition.Name = "SNES Controller";
+
+			_controllerDefinition.MakeImmutable();
 		}
 
 		private void UpdateControls(IController c)
@@ -174,7 +177,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 				return order[btn];
 			}
 
-			private static readonly ControllerDefinition _definition = new ControllerDefinition
+			private static readonly ControllerDefinition _definition = new("(SNES Controller fragment)")
 			{
 				BoolButtons = Buttons.OrderBy(ButtonOrder).ToList()
 			};
@@ -204,7 +207,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 		private class Mouse : Analog
 		{
 			private static readonly ControllerDefinition _definition
-				= new ControllerDefinition { BoolButtons = { "0Mouse Left", "0Mouse Right" } }
+				= new ControllerDefinition("(SNES Controller fragment)") { BoolButtons = { "0Mouse Left", "0Mouse Right" } }
 					.AddXYPair("0Mouse {0}", AxisPairOrientation.RightAndUp, (-127).RangeTo(127), 0); //TODO verify direction against hardware
 
 			public override ControllerDefinition Definition => _definition;
@@ -213,7 +216,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 		private class SuperScope : Analog
 		{
 			private static readonly ControllerDefinition _definition
-				= new ControllerDefinition { BoolButtons = { "0Trigger", "0Cursor", "0Turbo", "0Pause" } }
+				= new ControllerDefinition("(SNES Controller fragment)") { BoolButtons = { "0Trigger", "0Cursor", "0Turbo", "0Pause" } }
 					.AddLightGun("0Scope {0}");
 
 			public override ControllerDefinition Definition => _definition;
@@ -222,7 +225,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 		private class Justifier : Analog
 		{
 			private static readonly ControllerDefinition _definition
-				= new ControllerDefinition { BoolButtons = { "0Trigger", "0Start" } }
+				= new ControllerDefinition("(SNES Controller fragment)") { BoolButtons = { "0Trigger", "0Start" } }
 					.AddLightGun("0Justifier {0}");
 
 			public override ControllerDefinition Definition => _definition;

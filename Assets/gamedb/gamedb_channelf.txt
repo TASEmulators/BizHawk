@@ -6,8 +6,8 @@
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;; Bad Dumps
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-C8D5CE90CB1C76C9589711B5029D3421	B	Color Organ (19xx)(-)[b]	ChannelF	
-3EF873268F8FC428DA225CADABB4703F	B	Democart (demo) (1977)(Fairchild)[b]	ChannelF	
+C8D5CE90CB1C76C9589711B5029D3421	B	Color Organ (19xx)(-)[b]	ChannelF		board=STD
+3EF873268F8FC428DA225CADABB4703F	B	Democart (demo) (1977)(Fairchild)[b]	ChannelF		board=STD
 0CFD9B9213CFF4A9DF9DD7FEA4663236	B	Spitfire (USA) (proto)[b]	ChannelF		board=STD	USA
 7385E596BF2A58E2186439AC1E49C075	B	Schach (Germany) [b]	ChannelF		board=SCHACH	Germany
 ;
@@ -39,6 +39,8 @@ A6607B7C30CC4A7695D3112B3271D4E8	D	International Karate Demo Test 3 (200x)(-)(PD
 F680225A38C3C4A66E30DBCA8D351407	D	Test Controls (200x)(e5frog)(PD)	ChannelF	
 D7050AF61479AA549206250441AA2B0F	D	Tetris (2004)(Trauner, Peter)[p]	ChannelF		board=SCHACH	USA
 2AEBEDA05478E8B7F5C1ECA037AC6C2F	D	Tetris (2004)(Trauner, Peter)[p][a]	ChannelF		board=SCHACH	USA
+3978864E041CADE7D9FF40D69AC658C5	D	Pac-Man (2004)(Blackbird - e5frog)[p][a8]	ChannelF		board=SCHACH
+9369CE5E811E2D56F68A33F7F9DD41D6	D	Pac-Man (Build FeRAM)(2012)(Blackbird - e5frog)	ChannelF		board=SCHACH
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;; Believed Good
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
@@ -82,17 +84,16 @@ C2A44D22D3865B036479E9311C74D3AD		Ordtaevling (Sweden)	ChannelF		board=hang	Swed
 5568205F926333914DEDC8EF8BF16AF2		Schach (Germany)	ChannelF		board=SCHACH	Germany
 7B227DE474806A8AB9474C4716A270B7		Schach [b] (Actually Tennis)	ChannelF		board=SCHACH	Germany
 
+54CF17C48707467295749490D458EAFB		Democart (demo) (1977)(Fairchild)	ChannelF		board=STD
+F6916B665893AA8138CDE57C37E50ADA		Democart 2 (demo) (197x)(Fairchild)	ChannelF		board=STD
 
 
 
-
-94530113A22AE27AF6ED87B98D9AF62A		Color Organ (19xx)(-)	ChannelF	
+94530113A22AE27AF6ED87B98D9AF62A		Color Organ (19xx)(-)	ChannelF		board=STD
 C44BE208013B82041D01D2BC1834060B		Colortest Demo (200x)(Riddle, Sean)	ChannelF	
-54CF17C48707467295749490D458EAFB		Democart (demo) (1977)(Fairchild)	ChannelF	
-F6916B665893AA8138CDE57C37E50ADA		Democart 2 (demo) (197x)(Fairchild)	ChannelF	
-54CF17C48707467295749490D458EAFB		Demonstration Cartridge (USA)	ChannelF			USA
-F6916B665893AA8138CDE57C37E50ADA		Demonstration Cartridge 2 (USA)	ChannelF			USA
 
+
+815AAF2D04F6639164540E32B2FAA69D		Multicart Ram Test	ChannelF		board=SCHACH
 
 
 

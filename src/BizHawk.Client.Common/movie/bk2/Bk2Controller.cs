@@ -16,8 +16,7 @@ namespace BizHawk.Client.Common
 
 		private IList<ControlMap> _controlsOrdered;
 
-		private IList<ControlMap> ControlsOrdered => _controlsOrdered ??= _type.ControlsOrdered
-			.SelectMany(c => c) // flatten
+		private IList<ControlMap> ControlsOrdered => _controlsOrdered ??= _type.OrderedControlsFlat
 			.Select(c => new ControlMap
 			{
 				Name = c,
@@ -25,6 +24,8 @@ namespace BizHawk.Client.Common
 				IsAxis = _type.Axes.ContainsKey(c)
 			})
 			.ToList();
+
+		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
 
 		public Bk2Controller(string key, ControllerDefinition definition) : this(definition)
 		{
@@ -122,17 +123,15 @@ namespace BizHawk.Client.Common
 
 		private class Bk2ControllerDefinition : ControllerDefinition
 		{
+			public IReadOnlyList<IReadOnlyList<string>> ControlsFromLog = null;
+
 			public Bk2ControllerDefinition(ControllerDefinition source)
 				: base(source)
 			{
 			}
 
-			public List<List<string>> ControlsFromLog { private get; set; } = new List<List<string>>();
-
-			public override IEnumerable<IEnumerable<string>> ControlsOrdered =>
-				ControlsFromLog.Any()
-					? ControlsFromLog
-					: base.ControlsOrdered;
+			protected override IReadOnlyList<IReadOnlyList<string>> GenOrderedControls()
+				=> ControlsFromLog is not null && ControlsFromLog.Count is not 0 ? ControlsFromLog : base.GenOrderedControls();
 		}
 	}
 }

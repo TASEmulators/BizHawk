@@ -140,7 +140,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr < 0x2000)
 			{
-				if ((reg1 & 0x80) != 0 && NES.ppu.ppur.status.rendering)
+				
+				if ((reg1 & 0x80) != 0 && NES.ppu.ppur.status.rendering && NES.ppu.PPUON)
 				{
 					if (NES.ppu.ppur.status.sl <= 128)
 						Vram[addr & 0xfff] = value;

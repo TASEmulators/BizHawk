@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 			FlagC = false;
 			FlagO = false;
 			FlagS = false;
-			FlagZ = true;
+			FlagZ = false;
 		}
 
 		/// <summary>
@@ -132,9 +132,9 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		/// </summary>
 		/// <param name="dest"></param>
 		/// <param name="src"></param>
-		public void ADD_Func(byte dest, byte src)
+		public void ADD_Func(byte dest, byte src, byte src2 = ZERO)
 		{
-			var res = Regs[dest] + Regs[src];
+			ushort res = (ushort)(Regs[dest] + Regs[src] + Regs[src2]);
 			FlagS = !res.Bit(7);
 			FlagC = res.Bit(8);
 			FlagZ = (res & 0xFF) == 0;
@@ -226,10 +226,12 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		/// </summary>
 		public void CI_Func()
 		{
-			var twosComp = (byte)((Regs[A] ^ 0xFF) + 1);
+			//var twosComp = (byte)((Regs[A] ^ 0xFF) + 1);
+			var twosComp = (byte)(~Regs[A]);
 			Regs[ALU0] = twosComp;
 			Regs[ALU1] = Regs[DB];
-			ADD_Func(ALU0, ALU1);
+			ADD_Func(ALU0, ALU1, ONE);
+			//ADD_Func(ALU0, ALU1);
 		}		
 
 		/// <summary>
@@ -279,8 +281,8 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 
 			Regs[dest] = (byte)(Regs[dest] ^ Regs[src]);
 
-			FlagZ = (Regs[dest] & 0xFF) == 0;
 			FlagS = !Regs[dest].Bit(7);
+			FlagZ = (Regs[dest] & 0xFF) == 0;			
 		}
 	}
 }

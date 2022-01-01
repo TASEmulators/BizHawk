@@ -135,9 +135,8 @@ namespace BizHawk.Emulation.Cores.Sony.PS2
 				: PutSettingsDirtyBits.None;
 		}
 
-		private static readonly ControllerDefinition DualShock = new ControllerDefinition
+		private static readonly ControllerDefinition DualShock = new ControllerDefinition("PS2 DualShock")
 		{
-			Name = "PS2 DualShock",
 			BoolButtons =
 			{
 				"SELECT",
@@ -164,7 +163,7 @@ namespace BizHawk.Emulation.Cores.Sony.PS2
 				{ "LEFT X", new AxisSpec(0.RangeTo(255), 128) },
 				{ "LEFT Y", new AxisSpec(0.RangeTo(255), 128) },
 			}
-		};
+		}.MakeImmutable();
 
 		public class DobieSyncSettings
 		{

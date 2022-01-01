@@ -187,7 +187,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var gameDbEntry = Emulator.AsGameDBEntryGenerator().GenerateGameDbEntry();
 				gameDbEntry.Status = picker.PickedStatus;
-				Database.SaveDatabaseEntry(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb", "gamedb_user.txt"), gameDbEntry);
+				Database.SaveDatabaseEntry(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb", "gamedb_user.txt"), gameDbEntry); //TODO read-only in Nix builds
 				MainForm.UpdateDumpInfo(gameDbEntry.Status);
 				HideShowGameDbButton();
 			}

@@ -24,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 					FrameInch = true;
 					return false;
 				case "Toggle Throttle":
-					_unthrottled ^= true;
+					Config.Unthrottled ^= true;
 					ThrottleMessage();
 					break;
 				case "Soft Reset":

@@ -92,33 +92,8 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		public const byte OP_LISL = 116;
 		public const byte OP_BT = 117;
 		public const byte OP_ADD8D = 118;
-		public const byte OP_BR7 = 119;
-		public const byte OP_BR = 120;
-		public const byte OP_BM = 121;
-		public const byte OP_BNC = 122;
-		public const byte OP_BF_CS = 123;
-		public const byte OP_BNZ = 124;
-		public const byte OP_BF_ZS = 125;
-		public const byte OP_BF_ZC = 126;
-		public const byte OP_BF_ZCS = 127;
-		public const byte OP_BNO = 128;
-		public const byte OP_BF_OS = 129;
-		public const byte OP_BF_OC = 130;
-		public const byte OP_BF_OCS = 131;
-		public const byte OP_BF_OZ = 132;
-		public const byte OP_BF_OZS = 133;
-		public const byte OP_BF_OZC = 134;
-		public const byte OP_BF_OZCS = 135;
-
-		public const byte OP_BTN = 136;
-		public const byte OP_BP = 137;
-		public const byte OP_BC = 138;
-		public const byte OP_BT_CS = 139;
-		public const byte OP_BZ = 140;
-		public const byte OP_BT_ZS = 141;
-		public const byte OP_BT_ZC = 142;
-		public const byte OP_BT_ZCS = 143;
-		//public const byte OP_BF = 141;
+		public const byte OP_BR7 = 119;		
+		public const byte OP_BF = 141;
 
 		public const byte OP_IN = 151;
 		public const byte OP_OUT = 152;
@@ -194,6 +169,14 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		/// </summary>
 		public void ExecuteOne()
 		{
+			if (Regs[ISAR] > 0x3F)
+			{
+
+			}
+			if (Regs[W] > 0x1F)
+			{ 
+			}
+
 			switch (cur_instr[instr_pntr++])
 			{
 				// always the last tick within an opcode instruction cycle
@@ -309,13 +292,47 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 
 				// set the upper octal ISAR bits (b3,b4,b5) but do not alter the three least significant bits
 				case OP_LISU:
-					Regs[ISAR] = (byte)((((Regs[ISAR] & 0x07) | (cur_instr[instr_pntr++] & 0x07) << 3)) & 0x3F);
+					//Regs[ISAR] = (byte)(((Regs[ISAR] & 0x07) | (cur_instr[instr_pntr++] & 0x07) << 3) & 0x3F);
+					Regs[ISAR] = (byte)((Regs[ISAR] & 0x07) | cur_instr[instr_pntr++]);
 					break;
 
 				// set the lower octal ISAR bits (b0,b1,b2) but do not alter the three most significant bits
 				case OP_LISL:
-					Regs[ISAR] = (byte) (((Regs[ISAR] & 0x38) | (cur_instr[instr_pntr++] & 0x07)) & 0x3F);
+					//Regs[ISAR] = (byte) (((Regs[ISAR] & 0x38) | (cur_instr[instr_pntr++] & 0x07)) & 0x3F);
+					Regs[ISAR] = (byte)((Regs[ISAR] & 0x38) | cur_instr[instr_pntr++]);
 					break;
+
+				// Branch on TRUE
+				case OP_BT:
+					if ((Regs[W] & cur_instr[instr_pntr++]) > 0)
+						DO_BRANCH(0);
+					else
+						DONT_BRANCH(0);
+					break;
+
+				// Branch on ISARL - if any of the low 3 bits of ISAR are reset
+				case OP_BR7:
+				
+				if (!Regs[ISAR].Bit(0) || !Regs[ISAR].Bit(1) || !Regs[ISAR].Bit(2))
+					DO_BRANCH(1);
+				else
+					DONT_BRANCH(1);
+					/*
+					if Regs[ISAR] & 7) == 7)
+						DONT_BRANCH(1);
+					else
+						DO_BRANCH(1);
+					*/
+					break;				
+
+				// Branch on FALSE
+				case OP_BF:
+					if ((Regs[W] & cur_instr[instr_pntr++]) > 0)
+						DONT_BRANCH(0);
+					else
+						DO_BRANCH(0);
+					break;
+					/*
 
 				// Unconditional Branch (relative)
 				case OP_BR:
@@ -442,7 +459,8 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 					else
 						DONT_BF_BRANCH(0);
 					break;
-
+					*/
+/*
 				// Branch on true - no branch
 				case OP_BTN:
 					DONT_BT_BRANCH(0);
@@ -503,14 +521,8 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 					else
 						DONT_BT_BRANCH(0);
 					break;
-
-				// Branch on ISARL - if any of the low 3 bits of ISAR are reset
-				case OP_BR7:
-					if (!Regs[ISAR].Bit(0) || !Regs[ISAR].Bit(1) || !Regs[ISAR].Bit(2))
-						DO_BF_BRANCH(1);
-					else
-						DONT_BF_BRANCH(1);
-					break;
+*/
+				
 			
 				// A <- (I/O Port 0 or 1) 
 				case OP_IN:
@@ -745,7 +757,9 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 				// Devices with DC0 and DC1 registers must switch registers. Devices without a DC1 register perform no operation
 				// CYCLE LENGTH: S
 				case ROMC_1D:
-					// we have no DC1 in this implementation
+					ushort temp = RegDC0;
+					RegDC0 = RegDC1;
+					RegDC1 = temp;
 					break;
 
 				// The device whose address space includes the contents of PC0 must place the low order byte of PC0 onto the data bus

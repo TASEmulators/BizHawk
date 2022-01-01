@@ -101,8 +101,8 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadToPanel<TBindValue>(
 			Control dest,
 			string controllerName,
-			IReadOnlyCollection<string> controllerButtons,
-			Dictionary<string,string> categoryLabels,
+			IList<string> controllerButtons,
+			IDictionary<string, string> categoryLabels,
 			IDictionary<string, Dictionary<string, TBindValue>> settingsBlock,
 			TBindValue defaultValue,
 			PanelCreator<TBindValue> createPanel

@@ -47,22 +47,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Belogic
 			PostInit();
 		}
 
-		private static readonly ControllerDefinition TwoPads = new ControllerDefinition
+		private static readonly ControllerDefinition TwoPads = new ControllerDefinition("SNES Controller")
 		{
-			Name = "SNES Controller",
 			BoolButtons =
 			{
 				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Select", "P1 Start", "P1 X", "P1 A", "P1 B", "P1 Y", "P1 L", "P1 R",
 				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Select", "P2 Start", "P2 X", "P2 A", "P2 B", "P2 Y", "P2 L", "P2 R",
 				"Power"
 			}
-		};
+		}.MakeImmutable();
 
-		private static readonly ControllerDefinition Mouse = new ControllerDefinition
+		private static readonly ControllerDefinition Mouse = new ControllerDefinition("SNES Controller")
 		{
-			Name = "SNES Controller",
 			BoolButtons = { "P1 Mouse Left", "P1 Mouse Right", "Power" }
-		}.AddXYPair("P1 Mouse {0}", AxisPairOrientation.RightAndUp, (-127).RangeTo(127), 0); //TODO verify direction against hardware
+		}.AddXYPair("P1 Mouse {0}", AxisPairOrientation.RightAndUp, (-127).RangeTo(127), 0) //TODO verify direction against hardware
+			.MakeImmutable();
 
 		private static readonly string[] PadBits =
 		{

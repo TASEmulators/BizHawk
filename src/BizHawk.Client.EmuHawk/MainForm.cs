@@ -1374,12 +1374,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Unthrottle()
 		{
-			_unthrottled = true;
+			Config.Unthrottled = true;
 		}
 
 		public void Throttle()
 		{
-			_unthrottled = false;
+			Config.Unthrottled = false;
 		}
 
 		private void ThrottleMessage()
@@ -1400,7 +1400,7 @@ namespace BizHawk.Client.EmuHawk
 				type = ":Clock";
 			}
 
-			string throttled = _unthrottled ? "Unthrottled" : "Throttled";
+			string throttled = Config.Unthrottled ? "Unthrottled" : "Throttled";
 			string msg = $"{throttled}{type} ";
 
 			AddOnScreenMessage(msg);
@@ -1617,7 +1617,6 @@ namespace BizHawk.Client.EmuHawk
 		public int GetApproxFramerate() => _lastFpsRounded;
 
 		private readonly Throttle _throttle;
-		private bool _unthrottled;
 
 		// For handling automatic pausing when entering the menu
 		private bool _wasPaused;
@@ -2101,12 +2100,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void InitControls()
 		{
-			var controls = new Controller(
-				new ControllerDefinition
-				{
-					Name = "Emulator Frontend Controls",
-					BoolButtons = Config.HotkeyBindings.Select(x => x.DisplayName).ToList()
-				});
+			Controller controls = new(new ControllerDefinition("Emulator Frontend Controls")
+			{
+				BoolButtons = Config.HotkeyBindings.Select(static x => x.DisplayName).ToList(),
+			}.MakeImmutable());
 
 			foreach (var b in Config.HotkeyBindings)
 			{
@@ -2203,12 +2200,12 @@ namespace BizHawk.Client.EmuHawk
 				speedPercent = Math.Max(speedPercent / Rewinder.RewindFrequency, 5);
 			}
 
-			DisableSecondaryThrottling = _unthrottled || turbo || fastForward || rewind;
+			DisableSecondaryThrottling = Config.Unthrottled || turbo || fastForward || rewind;
 
 			// realtime throttle is never going to be so exact that using a double here is wrong
 			_throttle.SetCoreFps(Emulator.VsyncRate());
 			_throttle.signal_paused = EmulatorPaused;
-			_throttle.signal_unthrottle = _unthrottled || turbo;
+			_throttle.signal_unthrottle = Config.Unthrottled || turbo;
 
 			// zero 26-mar-2016 - vsync and vsync throttle here both is odd, but see comments elsewhere about triple buffering
 			_throttle.signal_overrideSecondaryThrottle = (fastForward || rewind) && (Config.SoundThrottle || Config.VSyncThrottle || Config.VSync);
@@ -2940,6 +2937,7 @@ namespace BizHawk.Client.EmuHawk
 			SyncThrottle();
 			_throttle.signal_frameAdvance = _runloopFrameAdvance;
 			_throttle.signal_continuousFrameAdvancing = _runloopFrameProgress;
+			if (_lastFastForwardingOrRewinding) _throttle.signal_paused = false;
 
 			_throttle.Step(Config, Sound, allowSleep: true, forceFrameSkip: -1);
 		}
@@ -3035,7 +3033,7 @@ namespace BizHawk.Client.EmuHawk
 			if ((runFrame || force) && !BlockFrameAdvance)
 			{
 				var isFastForwarding = InputManager.ClientControls["Fast Forward"] || IsTurboing || InvisibleEmulation;
-				var isFastForwardingOrRewinding = isFastForwarding || isRewinding || _unthrottled;
+				var isFastForwardingOrRewinding = isFastForwarding || isRewinding || Config.Unthrottled;
 
 				if (isFastForwardingOrRewinding != _lastFastForwardingOrRewinding)
 				{

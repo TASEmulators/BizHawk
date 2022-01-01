@@ -59,7 +59,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				videoFrameCb = snes_video_refresh,
 				audioSampleCb = snes_audio_sample,
 				pathRequestCb = snes_path_request,
-				snesTraceCb = snes_trace
+				traceCb = snes_trace,
+				readHookCb = ReadHook,
+				writeHookCb = WriteHook,
+				execHookCb = ExecHook
 			};
 
 			Api = new BsnesApi(CoreComm.CoreFileProvider.DllPath(), CoreComm, callbacks.AllDelegatesInMemoryOrder());
@@ -383,5 +386,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		private void snes_trace(string disassembly, string registerInfo)
 			=> _tracer.Put(new(disassembly: disassembly, registerInfo: registerInfo));
+
+		private void ReadHook(uint addr)
+		{
+			if (MemoryCallbacks.HasReads)
+			{
+				MemoryCallbacks.CallMemoryCallbacks(addr, 0, (uint) MemoryCallbackFlags.AccessRead, "System Bus");
+			}
+		}
+
+		private void WriteHook(uint addr, byte value)
+		{
+			if (MemoryCallbacks.HasWrites)
+			{
+				MemoryCallbacks.CallMemoryCallbacks(addr, value, (uint) MemoryCallbackFlags.AccessWrite, "System Bus");
+			}
+		}
+
+		private void ExecHook(uint addr)
+		{
+			if (MemoryCallbacks.HasExecutes)
+			{
+				MemoryCallbacks.CallMemoryCallbacks(addr, 0, (uint) MemoryCallbackFlags.AccessExecute, "System Bus");
+			}
+		}
 	}
 }

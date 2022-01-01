@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -57,7 +55,7 @@ namespace BizHawk.Emulation.Common
 		}
 
 		public delegate void ActiveChangedEventHandler();
-		public event ActiveChangedEventHandler ActiveChanged;
+		public event ActiveChangedEventHandler? ActiveChanged;
 
 		private void Changes(bool hadAny, bool hasAny)
 		{

@@ -363,6 +363,57 @@ namespace MSXHawk
 				}
 			}
 		}
+		else if (rom_mapper_1 == 3) // Ascii 8kb
+		{
+			if (base_addr == 0)
+			{
+				if (segment < 8)
+				{
+					return &rom_1[rom1_konami_page_2 * 0x2000 + (0x400 * segment)];
+				}
+				else
+				{
+					segment -= 8;
+					return &rom_1[rom1_konami_page_3 * 0x2000 + (0x400 * segment)];
+				}
+			}
+			else if (base_addr == 0x4000)
+			{
+				if (segment < 8)
+				{
+					return &rom_1[rom1_konami_page_0 * 0x2000 + (0x400 * segment)];
+				}
+				else
+				{
+					segment -= 8;
+					return &rom_1[rom1_konami_page_1 * 0x2000 + (0x400 * segment)];
+				}
+			}
+			else if (base_addr == 0x8000)
+			{
+				if (segment < 8)
+				{
+					return &rom_1[rom1_konami_page_2 * 0x2000 + (0x400 * segment)];
+				}
+				else
+				{
+					segment -= 8;
+					return &rom_1[rom1_konami_page_3 * 0x2000 + (0x400 * segment)];
+				}
+			}
+			else
+			{
+				if (segment < 8)
+				{
+					return &rom_1[rom1_konami_page_0 * 0x2000 + (0x400 * segment)];
+				}
+				else
+				{
+					segment -= 8;
+					return &rom_1[rom1_konami_page_1 * 0x2000 + (0x400 * segment)];
+				}
+			}
+		}
 		else 
 		{
 			return &unmapped[0];
@@ -488,6 +539,57 @@ namespace MSXHawk
 				}
 			}
 		}
+		else if (rom_mapper_2 == 3) // Ascii 8kb
+		{
+			if (base_addr == 0)
+			{
+				if (segment < 8)
+				{
+					return &rom_2[rom2_konami_page_2 * 0x2000 + (0x400 * segment)];
+				}
+				else
+				{
+					segment -= 8;
+					return &rom_2[rom2_konami_page_3 * 0x2000 + (0x400 * segment)];
+				}
+			}
+			else if (base_addr == 0x4000)
+			{
+				if (segment < 8)
+				{
+					return &rom_2[rom2_konami_page_0 * 0x2000 + (0x400 * segment)];
+				}
+				else
+				{
+					segment -= 8;
+					return &rom_2[rom2_konami_page_1 * 0x2000 + (0x400 * segment)];
+				}
+			}
+			else if (base_addr == 0x8000)
+			{
+				if (segment < 8)
+				{
+					return &rom_2[rom2_konami_page_2 * 0x2000 + (0x400 * segment)];
+				}
+				else
+				{
+					segment -= 8;
+					return &rom_2[rom2_konami_page_3 * 0x2000 + (0x400 * segment)];
+				}
+			}
+			else
+			{
+				if (segment < 8)
+				{
+					return &rom_2[rom2_konami_page_0 * 0x2000 + (0x400 * segment)];
+				}
+				else
+				{
+					segment -= 8;
+					return &rom_2[rom2_konami_page_1 * 0x2000 + (0x400 * segment)];
+				}
+			}
+		}
 		else
 		{
 			return &unmapped[0];
@@ -545,6 +647,24 @@ namespace MSXHawk
 				SCC_2_pntr->WriteReg((uint8_t)(addr & 0xFF), value);
 			}
 			if (addr >= 0xB000 && addr < 0xB800 && slot_2_has_rom == 2) { rom2_konami_page_3 = (uint8_t)(value & rom_size_2); remap(); }
+		}
+		*/
+
+		// Ascii 8kb
+		if (rom_mapper_1 == 3)
+		{
+			if (addr >= 0x6000 && addr < 0x6800 && slot_1_has_rom == 1) { rom1_konami_page_0 = (uint8_t)(value & rom_size_1); remap(); }
+			if (addr >= 0x6800 && addr < 0x7000 && slot_1_has_rom == 1) { rom1_konami_page_1 = (uint8_t)(value & rom_size_1); remap(); }
+			if (addr >= 0x7000 && addr < 0x7800 && slot_1_has_rom == 1) { rom1_konami_page_2 = (uint8_t)(value & rom_size_1); remap(); }
+			if (addr >= 0x7800 && addr < 0x8000 && slot_1_has_rom == 1) { rom1_konami_page_3 = (uint8_t)(value & rom_size_1); remap(); }
+		}
+		/*
+		if (rom_mapper_2 == 3)
+		{
+			if (addr >= 0x6000 && addr < 0x6800 && slot_1_has_rom == 2) { rom2_konami_page_0 = (uint8_t)(value & rom_size_2); remap(); }
+			if (addr >= 0x6800 && addr < 0x7000 && slot_1_has_rom == 2) { rom2_konami_page_1 = (uint8_t)(value & rom_size_2); remap(); }
+			if (addr >= 0x7000 && addr < 0x7800 && slot_1_has_rom == 2) { rom2_konami_page_2 = (uint8_t)(value & rom_size_2); remap(); }
+			if (addr >= 0x7800 && addr < 0x8000 && slot_1_has_rom == 2) { rom2_konami_page_3 = (uint8_t)(value & rom_size_2); remap(); }
 		}
 		*/
 	}

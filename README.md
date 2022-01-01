@@ -102,7 +102,7 @@ Run `EmuHawk.exe` to start. If startup is blocked by a Windows SmartScreen dialo
 EmuHawk does have some prerequisites which it can't work without (it will let you know if they're missing). The list is [here](https://github.com/TASEmulators/BizHawk-Prereqs/blob/master/README), and we've made an all-in-one installer which you can get [here](https://github.com/TASEmulators/BizHawk-Prereqs/releases/latest).
 You should only have to run this once per machine, unless the changelog says we need something extra.
 
-We will be following Microsoft in dropping support for old versions of Windows, that is, we reserve the right to ignore your problems unless you've updated to at least Win10 1909 or Win8.1 KB4586845. Read more on [MSDN](https://docs.microsoft.com/en-us/lifecycle/faq/windows).
+We will be following Microsoft in dropping support for old versions of Windows, that is, we reserve the right to ignore your problems unless you've updated to at least Win11 21H2 (initial release), Win10 20H2, or Win8.1 KB5007247. Read more on [MSDN](https://docs.microsoft.com/en-us/lifecycle/faq/windows).
 
 A "backport" release, [1.13.2](https://github.com/TASEmulators/BizHawk/releases/tag/1.13.2), is available for users of Windows XP, 7, or 8.1 32-bit. It has many bugs that will never be fixed and it doesn't have all the features of the later versions.
 
@@ -125,7 +125,7 @@ If you download BizHawk this way, **don't mix different versions**, keep each ve
 Run `EmuHawkMono.sh` to start EmuHawk—you can run it from anywhere, so creating a `.desktop` file to wrap the script is fine. The shell script should print an error if it fails, otherwise it's safe to ignore console output. It takes mostly the same command-line arguments as on Windows: see [*Passing command-line arguments*](#passing-command-line-arguments).
 
 Most features and cores work, notable omissions being Mupen64Plus (N64) and Octoshock (PSX). See [#1430](https://github.com/TASEmulators/BizHawk/issues/1430) for details.
-Lua support is new in 2.7, and it requires Mono >= 6.12. Comment on [#2951](https://github.com/TASEmulators/BizHawk/issues/2951) if you run into any problems with it.
+Lua support is new in 2.7, and it requires Mono >= 6.12.0.151 (unreleased as of 2021-11). Comment on [#2951](https://github.com/TASEmulators/BizHawk/issues/2951) if you run into any problems with it.
 
 [to top](#bizhawk)
 
@@ -157,6 +157,8 @@ To find the dev builds for a specific commit, you can click the green checkmark 
 
 ### Windows
 
+Before you can build, you'll need the .NET 6 SDK or later (comes with VS2022, or can be manually installed beside VS2019, see [full instructions](https://docs.microsoft.com/en-gb/dotnet/core/install/windows)).
+
 If you have WSL, Git BASH, or similar, clone the repo with:
 ```
 git clone https://github.com/TASEmulators/BizHawk.git BizHawk_master
@@ -173,7 +175,7 @@ With VS, start the build by choosing the `BizHawk.Client.EmuHawk` executable in 
 
 ### Unix
 
-Before you can build, you'll need the .NET 5 SDK or later (package name is usually `dotnet-sdk-5.0`, see [full instructions](https://docs.microsoft.com/en-gb/dotnet/core/install/linux)). You may need to uninstall MSBuild and/or the 3.1 SDK first. Once it's installed, run:
+Before you can build, you'll need the .NET 6 SDK or later (package name is usually `dotnet-sdk-6.0`, see [full instructions](https://docs.microsoft.com/en-gb/dotnet/core/install/linux)). Once it's installed, run:
 ```sh
 git clone https://github.com/TASEmulators/BizHawk.git BizHawk_master && cd BizHawk_master
 # or ssh: git clone git@github.com:TASEmulators/BizHawk.git BizHawk_master && cd BizHawk_master
@@ -208,7 +210,7 @@ $proc.Start()
 
 On Linux, you can pass arguments to `EmuHawkMono.sh` as expected and they will be forwarded to `mono`. (You can also `export` env. vars.) All the arguments work as on Windows, with some caveats:
 * file paths must be absolute (or relative to the install dir, `EmuHawkMono.sh` changes the CWD to there);
-* `--mono-no-redirect`: if you pass this flag *as the first argument*, it will be eaten by the script itself, and stdout will *not* be redirected to a file. (It's redirected by default.)
+* `--mono-no-redirect`: if you pass this flag *as the first argument*, it will be eaten by the script itself, and stdout/stderr will *not* be redirected to a file. (It's redirected by default.)
 
 The same example as above would be `./EmuHawkMono.sh --lua=/path/to/script.lua /path/to/rom.n64`.
 

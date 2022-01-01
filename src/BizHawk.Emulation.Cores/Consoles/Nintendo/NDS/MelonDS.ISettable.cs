@@ -141,7 +141,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			public string FirmwareUsername
 			{
 				get => _firmwareusername;
-				set => _firmwareusername = value.Substring(0, Math.Min(10, value.Length));
+				set => _firmwareusername = value.Length != 0 ? value.Substring(0, Math.Min(10, value.Length)) : _firmwareusername.Substring(0, 1);
 			}
 
 			public enum Language : int
