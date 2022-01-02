@@ -12,6 +12,7 @@
 		<OutputType>WinExe</OutputType>
 	</PropertyGroup>
 	<ItemGroup>
+		<Compile Include="$(ProjectDir)../BizHawk.Common/Extensions/MorePathExtensions.cs" />
 		<Compile Include="$(ProjectDir)../BizHawk.Common/OSTailoredCode.cs" />
 	</ItemGroup>
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">

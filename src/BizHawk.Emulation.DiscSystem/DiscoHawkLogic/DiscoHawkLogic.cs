@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+
+using BizHawk.Common.PathExtensions;
 
 namespace BizHawk.Emulation.DiscSystem
 {
@@ -219,30 +222,6 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 		}
 
-		private static List<string> FindCuesRecurse(string dir)
-		{
-			var ret = new List<string>();
-			var dpTodo = new Queue<string>();
-			dpTodo.Enqueue(dir);
-			for (; ; )
-			{
-				if (dpTodo.Count == 0)
-					break;
-				var dpCurr = dpTodo.Dequeue();
-				foreach(var fi in new DirectoryInfo(dpCurr).GetFiles("*.cue"))
-				{
-					ret.Add(fi.FullName);
-				}
-				Parallel.ForEach(new DirectoryInfo(dpCurr).GetDirectories(), di =>
-				{
-					lock(dpTodo)
-						dpTodo.Enqueue(di.FullName);
-				});
-			}
-
-			return ret;
-		}
-
 		public static bool HawkAndWriteFile(string inputPath, Action<string> errorCallback, DiscInterface discInterface = DiscInterface.BizHawk)
 		{
 			DiscMountJob job = new(inputPath, discInterface);
@@ -301,7 +280,7 @@ namespace BizHawk.Emulation.DiscSystem
 			if (scanCues)
 			{
 				verbose = false;
-				var todo = FindCuesRecurse(dirArg);
+				var todo = new DirectoryInfo(dirArg).BreadthFirstSearch("*.cue").Select(fi => fi.FullName).ToList();
 				var po = new ParallelOptions();
 				var cts = new CancellationTokenSource();
 				po.CancellationToken = cts.Token;

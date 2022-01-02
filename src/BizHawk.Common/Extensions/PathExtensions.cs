@@ -10,6 +10,13 @@ namespace BizHawk.Common.PathExtensions
 {
 	public static partial class PathExtensions
 	{
+		/// <remarks>doesn't try very hard</remarks>
+		public static DirectoryInfo CreateIfNotExists(this DirectoryInfo di)
+		{
+			if (!di.Exists) di.Create();
+			return di;
+		}
+
 		/// <returns><see langword="true"/> iff <paramref name="childPath"/> indicates a child of <paramref name="parentPath"/>, with <see langword="false"/> being returned if either path is <see langword="null"/></returns>
 		/// <remarks>algorithm for Windows taken from https://stackoverflow.com/a/7710620/7467292</remarks>
 		public static bool IsSubfolderOf(this string? childPath, string? parentPath)

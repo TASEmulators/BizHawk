@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
+using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -243,38 +244,16 @@ namespace BizHawk.Client.EmuHawk
 			MovieView.VirtualListSize = 0;
 			MovieView.Update();
 
-			var directory = _config.PathEntries.MovieAbsolutePath();
-			if (!Directory.Exists(directory))
-			{
-				Directory.CreateDirectory(directory);
-			}
-
-			var dpTodo = new Queue<string>();
-			var fpTodo = new List<string>();
-			dpTodo.Enqueue(directory);
-			var ordinals = new Dictionary<string, int>();
-
-			while (dpTodo.Count > 0)
-			{
-				string dp = dpTodo.Dequeue();
-				
-				// enqueue subdirectories if appropriate
-				if (_config.PlayMovieIncludeSubDir)
-				{
-					foreach (var subDir in Directory.GetDirectories(dp))
-					{
-						dpTodo.Enqueue(subDir);
-					}
-				}
-
-				// add movies
-				foreach (var extension in MovieService.MovieExtensions)
-				{
-					fpTodo.AddRange(Directory.GetFiles(dp, $"*.{extension}"));
-				}
-			}
+			// enumerate movie files
+			var fpTodo = new DirectoryInfo(_config.PathEntries.MovieAbsolutePath()).CreateIfNotExists()
+				.BreadthFirstSearch(
+					filenameGlobs: MovieService.MovieExtensions.Select(static ext => $"*.{ext}").ToList(),
+					maxDepth: _config.PlayMovieIncludeSubDir ? null : 0)
+				.Select(fi => fi.FullName)
+				.ToList();
 
 			// in parallel, scan each movie
+			var ordinals = new Dictionary<string, int>();
 			Parallel.For(0, fpTodo.Count, i =>
 			{
 				var file = fpTodo[i];

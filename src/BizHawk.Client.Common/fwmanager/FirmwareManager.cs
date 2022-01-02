@@ -8,6 +8,7 @@ using System.Linq;
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.IOExtensions;
+using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -136,15 +137,10 @@ namespace BizHawk.Client.Common
 			var reader = new RealFirmwareReader();
 
 			// build a list of files under the global firmwares path, and build a hash for each of them (as ResolutionInfo) while we're at it
-			var todo = new Queue<DirectoryInfo>(new[] { new DirectoryInfo(pathEntries.AbsolutePathFor(pathEntries.FirmwaresPathFragment, null)) });
-			while (todo.Count != 0)
+			DirectoryInfo root = new(pathEntries.AbsolutePathFor(pathEntries.FirmwaresPathFragment, null));
+			if (root.Exists) foreach (var fi in root.BreadthFirstSearch().Where(fi => _firmwareSizes.Contains(fi.Length)))
 			{
-				var di = todo.Dequeue();
-				if (!di.Exists) continue;
-
-				foreach (var subDir in di.GetDirectories()) todo.Enqueue(subDir); // recurse
-
-				foreach (var fi in di.GetFiles().Where(fi => _firmwareSizes.Contains(fi.Length))) reader.Read(fi);
+				reader.Read(fi);
 			}
 
 			// now, for each firmware record, try to resolve it
