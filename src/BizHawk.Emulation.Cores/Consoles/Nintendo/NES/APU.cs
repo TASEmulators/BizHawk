@@ -664,11 +664,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				out_silence = true;
 				DMC_RATE = pal ? DMC_RATE_PAL : DMC_RATE_NTSC;
 				timer_reload = DMC_RATE[0];
-				timer = 1020; // confirmed in VisualNES although aligning controller read glitches still doesn't work
+				timer = 1020; // confirmed in VisualNES, on console it seems the APU runs a couple cycles before CPU exits reset
 				sample_buffer_filled = false;
 				out_deltacounter = 64;
 				out_bits_remaining = 7; //confirmed in VisualNES
-				user_address = 0xC000; // even though this can't be accessed by writing, it is indeed the power up address
+				user_address = 0xC000;
 				sample_address = 0xC000;
 				user_length = 1;
 			}
@@ -762,8 +762,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							{
 								// this will only run for one cycle and not actually run a DMA
 								//Console.WriteLine("fill glitch 2");
-								apu.dmc_dma_countdown = 4;
-								apu.DMC_RDY_check = -1;
+								apu.dmc_dma_countdown = -2;
+								apu.DMC_RDY_check = -2;
 								fill_glitch_2_end = true;
 							}
 							else
@@ -861,26 +861,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				if(!en)
 				{
-					/*
-					if ((timer <= 3) && (out_bits_remaining == 0) && (sample_length != 0))
+					// in these cases, the disable happens right as the reload begins, it is cancelled similar to a write triggered reload
+					// cancelling an automatic reload, and has the same timing (still uses fill_glitch_2)
+					if (((timer == 4) || (timer == 3)) && (out_bits_remaining == 0) && (sample_length != 0))
 					{
-						Console.WriteLine("glitch 2 " + timer);
 						fill_glitch_2 = true;
 					}
-
-					if (timer_just_reloaded && (sample_length != 0))
+					
+					// in these cases the disable happens too late and the reload (andpotential IRQ) still happen
+					if ((timer <= 2) && (out_bits_remaining == 0) && (sample_length != 0))
 					{
-						Console.WriteLine("glitch 3 " + timer);
-						//fill_glitch_2 = true;
+						pending_disable = true;
+						apu.dmc_irq = false;
+						apu.SyncIRQ();
+						return;
 					}
-					*/
-
-					// If the DMC bit is clear, the DMC bytes remaining will be set to 0 
-					// and the DMC will silence when it empties.
 
 					// if a fetch / reload is in progress, writing here as no immediate effect
+					// but it seems IRQs can be cancelled after the fetch before IRQ
 					if ((apu.dmc_dma_countdown > 0) || (delay != 0) || (apu.dmc_reload_countdown!= 0))
 					{
+						if (apu.dmc_reload_countdown != 0) { apu.dmc_irq_glitch = true; }
+
 						pending_disable = true;
 					}
 					else
@@ -955,7 +957,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					if (sample_address == 0) { sample_address = 0xC000;}
 					// Console.WriteLine(sample_length);
 					// Console.WriteLine(user_length);
-					sample_length--;
 
 					apu.dmc_reload_countdown = 3;
 				}
@@ -968,6 +969,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			ser.Sync(nameof(irq_pending), ref irq_pending);
 			ser.Sync(nameof(dmc_irq), ref dmc_irq);
+			ser.Sync(nameof(dmc_irq_glitch), ref dmc_irq_glitch);
 			ser.Sync(nameof(dmc_reload_countdown), ref dmc_reload_countdown);
 			ser.Sync(nameof(pending_reg), ref pending_reg);
 			ser.Sync(nameof(pending_val), ref pending_val);
@@ -1011,6 +1013,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private bool irq_pending;
 		public int dmc_reload_countdown;
 		private bool dmc_irq;
+		public bool dmc_irq_glitch;
 		private int pending_reg = -1;
 		private bool doing_tick_quarter = false;
 		private byte pending_val = 0;
@@ -1338,6 +1341,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				dmc_reload_countdown--;
 				if (dmc_reload_countdown == 0)
 				{
+					dmc.sample_length--;
+
 					if (dmc.sample_length == 0)
 					{
 						if (dmc.loop_flag)
@@ -1345,15 +1350,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							dmc.sample_address = dmc.user_address;
 							dmc.sample_length = dmc.user_length;
 						}
-						else if (dmc.irq_enabled) { dmc_irq = true; }
+						else if (dmc.irq_enabled && !dmc_irq_glitch) { dmc_irq = true; }
 					}
 					
 					if (dmc.pending_disable)
 					{
 						dmc.sample_length = 0;
 						dmc.pending_disable = false;
-						Console.WriteLine("pending disable");
 					}
+
+					dmc_irq_glitch = false;
 				}
 			}
 
