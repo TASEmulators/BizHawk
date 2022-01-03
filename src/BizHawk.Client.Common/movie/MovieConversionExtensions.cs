@@ -4,13 +4,12 @@ using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Nintendo.Gameboy;
-using BizHawk.Emulation.Cores.Nintendo.GBHawk;
-using BizHawk.Emulation.Cores.Nintendo.SubNESHawk;
-using BizHawk.Emulation.Cores.Nintendo.SubGBHawk;
-using BizHawk.Emulation.Cores.Sega.MasterSystem;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive;
+using BizHawk.Emulation.Cores.Nintendo.NES;
+using BizHawk.Emulation.Cores.Nintendo.SubNESHawk;
+using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 namespace BizHawk.Client.Common
 {
@@ -235,24 +234,15 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			if (emulator is GBHawk gbHawk && gbHawk.IsCGBMode() && !gbHawk.IsGBInGBCMode())
+			if ((emulator is NES nes && nes.IsVS)
+				|| (emulator is SubNESHawk subnes && subnes.IsVs))
 			{
-				movie.HeaderEntries.Add("IsCGBMode", "1");
+				movie.HeaderEntries.Add("IsVS", "1");
 			}
 
-			if (emulator is SubGBHawk subgbHawk)
+			if (emulator is IGameboyCommon gb)
 			{
-				if (subgbHawk._GBCore.IsCGBMode())
-				{
-					movie.HeaderEntries.Add("IsCGBMode", "1");
-				}
-
-				movie.HeaderEntries.Add(HeaderKeys.CycleCount, "0");
-			}
-
-			if (emulator is Gameboy gb)
-			{
-				if (gb.IsCGBMode())	
+				if (gb.IsCGBMode())
 				{
 					movie.HeaderEntries.Add(gb.IsCGBDMGMode() ? "IsCGBDMGMode" : "IsCGBMode", "1");
 				}

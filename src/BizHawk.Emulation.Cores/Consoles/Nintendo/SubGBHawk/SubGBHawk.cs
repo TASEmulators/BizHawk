@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 {
@@ -36,6 +37,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 			ser.Register(_GBCore.ServiceProvider.GetService<ISaveRam>());
 			ser.Register(_GBCore.ServiceProvider.GetService<IRegionable>());
 			ser.Register(_GBCore.ServiceProvider.GetService<ICodeDataLogger>());
+			ser.Register(_GBCore.ServiceProvider.GetService<IGameboyCommon>());
 
 			_tracer = new TraceBuffer(_GBCore.cpu.TraceHeader);
 			ser.Register(_tracer);
