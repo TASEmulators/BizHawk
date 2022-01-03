@@ -63,7 +63,7 @@ namespace BizHawk.Client.EmuHawk
 
 			displayTypeItems.Add(new DisplayTypeItem("Sprites", eDisplayType.Sprites));
 			displayTypeItems.Add(new DisplayTypeItem("OBJ", eDisplayType.OBJ));
-			
+
 			displayTypeItems.Add(new DisplayTypeItem("BG1 Screen", eDisplayType.BG1));
 			displayTypeItems.Add(new DisplayTypeItem("BG2 Screen", eDisplayType.BG2));
 			displayTypeItems.Add(new DisplayTypeItem("BG3 Screen", eDisplayType.BG3));
@@ -248,7 +248,7 @@ namespace BizHawk.Client.EmuHawk
 				txtScreenCGADSUB_AddSub_Descr.Text = si.CGADSUB_AddSub == 1 ? "SUB" : "ADD";
 				txtScreenCGADSUB_Half.Checked = si.CGADSUB_Half;
 
-				txtModeBits.Text = si.Mode.MODE.ToString();
+				txtModeBits.Text = si.Mode.ToString();
 				txtScreenBG1Bpp.Text = FormatBpp(si.BG.BG1.Bpp);
 				txtScreenBG2Bpp.Text = FormatBpp(si.BG.BG2.Bpp);
 				txtScreenBG3Bpp.Text = FormatBpp(si.BG.BG3.Bpp);
@@ -304,7 +304,7 @@ namespace BizHawk.Client.EmuHawk
 				checkMathBG3.Checked = si.BG.BG3.MathEnabled;
 				checkMathBG4.Checked = si.BG.BG4.MathEnabled;
 
-				if (si.Mode.MODE == 1 && si.Mode1_BG3_Priority)
+				if (si.Mode == 1 && si.Mode1_BG3_Priority)
 				{
 					lblBG3.ForeColor = Color.Red;
 					if (toolTip1.GetToolTip(lblBG3) != "Mode 1 BG3 priority toggle bit of $2105 is SET")
@@ -432,7 +432,7 @@ namespace BizHawk.Client.EmuHawk
 					bool DirectColor = si.CGWSEL_DirectColor && bg.Bpp == 8; //any exceptions?
 					int numPixels = 0;
 					//TODO - could use BGMode property on BG... too much chaos to deal with it now
-					if (si.Mode.MODE == 7)
+					if (si.Mode == 7)
 					{
 						bool mode7 = bgnum == 1;
 						bool mode7extbg = (bgnum == 2 && si.SETINI_Mode7ExtBG);
@@ -500,7 +500,7 @@ namespace BizHawk.Client.EmuHawk
 				default: throw new InvalidOperationException();
 			}
 		}
-		
+
 		private class DisplayTypeItem
 		{
 			public eDisplayType Type { get; }
@@ -640,7 +640,7 @@ namespace BizHawk.Client.EmuHawk
 				ret.start = 0;
 				return ret;
 			}
-			
+
 			ret.size = 1 << bpp;
 			ret.start = colorSelection & (~(ret.size - 1));
 			return ret;
@@ -873,7 +873,7 @@ namespace BizHawk.Client.EmuHawk
 			if (tp == tpPalette) groupFreeze.Text = "Freeze - Color";
 			if (tp == tpTile) groupFreeze.Text = "Freeze - Tile";
 			if (tp == tpOBJ) groupFreeze.Text = "Freeze - OBJ";
-			
+
 			groupFreeze.ResumeLayout();
 
 			Win32Imports.SendMessage(groupFreeze.Handle, 11, (IntPtr)1, IntPtr.Zero); //WM_SETREDRAW true
@@ -1055,7 +1055,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			int ox = px / si.ObjSizeBounds.Width;
 			int oy = py / si.ObjSizeBounds.Height;
-			
+
 			if (!0.RangeTo(7).Contains(ox) || !0.RangeTo(15).Contains(oy)) return;
 
 			int objNum = oy * 8 + ox;
