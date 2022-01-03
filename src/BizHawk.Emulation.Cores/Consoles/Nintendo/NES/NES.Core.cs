@@ -567,7 +567,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						}					
 					}
 
-					if ((apu.dmc.timer == 4) && (apu.dmc.out_bits_remaining == 0) && (apu.dmc.sample_length == 0))
+					if ((apu.dmc.timer == 4) && (apu.dmc.out_bits_remaining == 0) && (apu.dmc.sample_length == 1))
 					{
 						//Console.WriteLine("close 2 " + cpu.TotalExecutedCycles + " " + apu.dmc.timer + " " + apu.dmc.sample_length + " " + cpu.opcode + " " + cpu.mi);
 						apu.dmc.fill_glitch_2 = true;

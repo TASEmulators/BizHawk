@@ -857,20 +857,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			public void set_lenctr_en(bool en)
 			{
-				// should this be delayed by two/three cycles?
-
 				if(!en)
 				{
 					// in these cases, the disable happens right as the reload begins, it is cancelled similar to a write triggered reload
 					// cancelling an automatic reload, and has the same timing (still uses fill_glitch_2)
-					if (((timer == 4) || (timer == 3)) && (out_bits_remaining == 0) && (sample_length != 0))
+					if (((timer == 3) || (timer == 2)) && (out_bits_remaining == 0) && (sample_length != 0))
 					{
+						//Console.WriteLine("glitch 3 " + timer);
+						sample_length = 0;
 						fill_glitch_2 = true;
+						apu.dmc_irq = false;
+						apu.SyncIRQ();
+						return;
 					}
 					
 					// in these cases the disable happens too late and the reload (andpotential IRQ) still happen
-					if ((timer <= 2) && (out_bits_remaining == 0) && (sample_length != 0))
+					if ((timer == 1) && (out_bits_remaining == 0) && (sample_length != 0))
 					{
+						//Console.WriteLine("glitch 4 " + timer);
 						pending_disable = true;
 						apu.dmc_irq = false;
 						apu.SyncIRQ();
