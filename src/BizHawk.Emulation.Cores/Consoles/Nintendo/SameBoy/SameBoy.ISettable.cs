@@ -153,18 +153,37 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			[DefaultValue(false)]
 			public bool EnableBIOS { get; set; }
 
-			public enum ConsoleModeType
+			public enum GBModel : short
 			{
-				Auto,
-				GB,
-				GBC,
-				GBA
+				Auto = -1,
+				// GB_MODEL_DMG_0 = 0x000,
+				// GB_MODEL_DMG_A = 0x001,
+				[Display(Name = "DMG-B")]
+				GB_MODEL_DMG_B = 0x002,
+				// GB_MODEL_DMG_C = 0x003,
+				[Display(Name = "MGB")]
+				GB_MODEL_MGB = 0x100,
+				[Display(Name = "CGB-0 (Experimental)")]
+				GB_MODEL_CGB_0 = 0x200,
+				[Display(Name = "CGB-A (Experimental)")]
+				GB_MODEL_CGB_A = 0x201,
+				[Display(Name = "CGB-B (Experimental)")]
+				GB_MODEL_CGB_B = 0x202,
+				[Display(Name = "CGB-C (Experimental)")]
+				GB_MODEL_CGB_C = 0x203,
+				[Display(Name = "CGB-D")]
+				GB_MODEL_CGB_D = 0x204,
+				[Display(Name = "CGB-E")]
+				GB_MODEL_CGB_E = 0x205,
+				[Display(Name = "AGB")]
+				GB_MODEL_AGB = 0x206,
 			}
 
 			[DisplayName("Console Mode")]
-			[Description("Pick which console to run, 'Auto' chooses from ROM header; 'GB', 'GBC', and 'GBA' chooses the respective system.")]
-			[DefaultValue(ConsoleModeType.Auto)]
-			public ConsoleModeType ConsoleMode { get; set; }
+			[Description("Pick which console to run, 'Auto' chooses from ROM header. DMG-B, CGB-E, and AGB are the best options for GB, GBC, and GBA, respectively.")]
+			[DefaultValue(GBModel.Auto)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public GBModel ConsoleMode { get; set; }
 
 			[DisplayName("Use Real Time")]
 			[Description("If true, RTC clock will be based off of real time instead of emulated time. Ignored (set to false) when recording a movie.")]

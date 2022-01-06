@@ -25,6 +25,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 		public bool IsCGBMode() => IsCgb;
 
+		public bool IsCGBDMGMode() => LibSameboy.sameboy_iscgbdmg(SameboyState);
+
 		private readonly LibSameboy.SampleCallback _samplecb;
 		private readonly LibSameboy.InputCallback _inputcb;
 
@@ -37,22 +39,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			_settings = settings ?? new SameboySettings();
 			_syncSettings = syncSettings ?? new SameboySyncSettings();
 
-			LibSameboy.LoadFlags flags = _syncSettings.ConsoleMode switch
+			var model = _syncSettings.ConsoleMode;
+			if (model is SameboySyncSettings.GBModel.Auto)
 			{
-				SameboySyncSettings.ConsoleModeType.GB => LibSameboy.LoadFlags.IS_DMG,
-				SameboySyncSettings.ConsoleModeType.GBC => LibSameboy.LoadFlags.IS_CGB,
-				SameboySyncSettings.ConsoleModeType.GBA => LibSameboy.LoadFlags.IS_CGB | LibSameboy.LoadFlags.IS_AGB,
-				_ => game.System == VSystemID.Raw.GBC ? LibSameboy.LoadFlags.IS_CGB : LibSameboy.LoadFlags.IS_DMG
-			};
+				model = game.System == VSystemID.Raw.GBC
+					? SameboySyncSettings.GBModel.GB_MODEL_CGB_E
+					: SameboySyncSettings.GBModel.GB_MODEL_DMG_B;
+			}
 
-			IsCgb = (flags & LibSameboy.LoadFlags.IS_CGB) == LibSameboy.LoadFlags.IS_CGB;
+			IsCgb = model >= SameboySyncSettings.GBModel.GB_MODEL_CGB_0;
 
 			byte[] bios;
 			if (_syncSettings.EnableBIOS)
 			{
 				FirmwareID fwid = new(
 					IsCgb ? "GBC" : "GB",
-					_syncSettings.ConsoleMode is SameboySyncSettings.ConsoleModeType.GBA
+					_syncSettings.ConsoleMode is SameboySyncSettings.GBModel.GB_MODEL_AGB
 					? "AGB"
 					: "World");
 				bios = comm.CoreFileProvider.GetFirmwareOrThrow(fwid, "BIOS Not Found, Cannot Load.  Change SyncSettings to run without BIOS.");
@@ -60,19 +62,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			else
 			{
 				bios = Util.DecompressGzipFile(new MemoryStream(IsCgb
-					? _syncSettings.ConsoleMode is SameboySyncSettings.ConsoleModeType.GBA ? Resources.SameboyAgbBoot.Value : Resources.SameboyCgbBoot.Value
+					? _syncSettings.ConsoleMode is SameboySyncSettings.GBModel.GB_MODEL_AGB ? Resources.SameboyAgbBoot.Value : Resources.SameboyCgbBoot.Value
 					: Resources.SameboyDmgBoot.Value));
 			}
 
 			DeterministicEmulation = false;
 
+			bool realtime = true;
 			if (!_syncSettings.UseRealTime || deterministic)
 			{
-				flags |= LibSameboy.LoadFlags.RTC_ACCURATE;
+				realtime = false;
 				DeterministicEmulation = true;
 			}
 
-			SameboyState = LibSameboy.sameboy_create(file, file.Length, bios, bios.Length, flags);
+			SameboyState = LibSameboy.sameboy_create(file, file.Length, bios, bios.Length, model, realtime);
 
 			InitMemoryDomains();
 			InitMemoryCallbacks();

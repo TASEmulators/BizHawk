@@ -99,25 +99,17 @@ static void ScanlineCallbackRelay(GB_gameboy_t* gb, u8 line)
 	}
 }
 
-EXPORT biz_t* sameboy_create(u8* romdata, u32 romlen, u8* biosdata, u32 bioslen, LoadFlags flags)
+EXPORT biz_t* sameboy_create(u8* romdata, u32 romlen, u8* biosdata, u32 bioslen, GB_model_t model, bool realtime)
 {
 	biz_t* biz = calloc(1, sizeof (biz_t));
-	GB_model_t model = GB_MODEL_DMG_B;
-	if (flags & IS_CGB)
-	{
-		model = (flags & IS_AGB) ? GB_MODEL_AGB : GB_MODEL_CGB_E;
-	}
 	GB_random_seed(0);
 	GB_init(&biz->gb, model);
 	GB_load_rom_from_buffer(&biz->gb, romdata, romlen);
 	GB_load_boot_rom_from_buffer(&biz->gb, biosdata, bioslen);
 	GB_set_sample_rate(&biz->gb, 44100);
-	GB_set_highpass_filter_mode(&biz->gb, GB_HIGHPASS_ACCURATE);
 	GB_set_rgb_encode_callback(&biz->gb, rgb_cb);
 	GB_set_vblank_callback(&biz->gb, vblank_cb);
-	GB_set_palette(&biz->gb, &GB_PALETTE_GREY);
-	GB_set_color_correction_mode(&biz->gb, GB_COLOR_CORRECTION_EMULATE_HARDWARE);
-	GB_set_rtc_mode(&biz->gb, (flags & RTC_ACCURATE) ? GB_RTC_MODE_ACCURATE : GB_RTC_MODE_SYNC_TO_HOST);
+	GB_set_rtc_mode(&biz->gb, realtime ? GB_RTC_MODE_SYNC_TO_HOST : GB_RTC_MODE_ACCURATE);
 	GB_set_allow_illegal_inputs(&biz->gb, true);
 	return biz;
 }
@@ -154,18 +146,24 @@ EXPORT void sameboy_frameadvance(biz_t* biz, GB_key_mask_t keys, u16 x, u16 y, u
 	GB_set_border_mode(&biz->gb, border ? GB_BORDER_ALWAYS : GB_BORDER_NEVER);
 	GB_set_rendering_disabled(&biz->gb, !render);
 
+	// todo: switch this hack over to joyp_accessed when upstream fixes problems with it
+	if ((PeekIO(biz, GB_IO_JOYP) & 0x30) != 0x30)
+	{
+		biz->input_cb();
+	}
+
 	u32 cycles = 0;
-	GB_clear_joyp_accessed(&biz->gb);
 	biz->vblank_occured = false;
 	do
 	{
+		u8 oldjoyp = PeekIO(biz, GB_IO_JOYP) & 0x30;
 		u32 ret = GB_run(&biz->gb) >> 2;
 		cycles += ret;
 		biz->cc += ret;
-		if (GB_get_joyp_accessed(&biz->gb))
+		u8 newjoyp = PeekIO(biz, GB_IO_JOYP) & 0x30;
+		if (oldjoyp != newjoyp && newjoyp != 0x30)
 		{
 			biz->input_cb();
-			GB_clear_joyp_accessed(&biz->gb);
 		}
 	}
 	while (!biz->vblank_occured && cycles < 35112);
@@ -180,6 +178,11 @@ EXPORT void sameboy_reset(biz_t* biz)
 {
 	GB_random_seed(0);
 	GB_reset(&biz->gb);
+}
+
+EXPORT bool sameboy_iscgbdmg(biz_t* biz)
+{
+	return !GB_is_cgb_in_cgb_mode(&biz->gb);
 }
 
 EXPORT void sameboy_savesram(biz_t* biz, u8* dest)

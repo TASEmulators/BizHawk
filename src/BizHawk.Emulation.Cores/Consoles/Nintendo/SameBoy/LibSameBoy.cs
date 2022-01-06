@@ -23,15 +23,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			START = 0x80,
 		}
 
-		[Flags]
-		public enum LoadFlags : uint
-		{
-			IS_DMG = 0,
-			IS_CGB = 1,
-			IS_AGB = 2,
-			RTC_ACCURATE = 4,
-		}
-
 		// mirror of GB_direct_access_t
 		public enum MemoryAreas : uint
 		{
@@ -51,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 		}
 
 		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
-		public static extern IntPtr sameboy_create(byte[] romdata, int romlength, byte[] biosdata, int bioslength, LoadFlags flags);
+		public static extern IntPtr sameboy_create(byte[] romdata, int romlength, byte[] biosdata, int bioslength, Sameboy.SameboySyncSettings.GBModel model, bool realtime);
 
 		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void sameboy_destroy(IntPtr core);
@@ -73,6 +64,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void sameboy_reset(IntPtr core);
+
+		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
+		public static extern bool sameboy_iscgbdmg(IntPtr core);
 
 		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void sameboy_savesram(IntPtr core, byte[] dest);
