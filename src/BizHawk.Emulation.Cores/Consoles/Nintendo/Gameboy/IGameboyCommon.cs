@@ -18,6 +18,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 	{
 		bool IsCGBMode();
 
+		bool IsCGBDMGMode();
+
 		/// <summary>
 		/// Acquire GPU memory for inspection.  The returned object must be disposed as soon as the frontend
 		/// tool is done inspecting it, and the pointers become invalid once it is disposed.
