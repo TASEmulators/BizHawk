@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 				}, 1));
 
 			MemoryDomains = new MemoryDomainList(_memoryDomains);
-			_serviceProvider.Register<IMemoryDomains>(MemoryDomains);
+			_serviceProvider.Register(MemoryDomains);
 		}
 	}
 }

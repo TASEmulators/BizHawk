@@ -125,7 +125,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 		public IInputCallbackSystem InputCallbacks => _inputCallbacks;
 
-		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+		private readonly InputCallbackSystem _inputCallbacks = new();
 
 		private void InputCallback()
 		{
@@ -136,7 +136,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 		public bool LinkConnected
 		{
 			get => _printercb != null;
-			set { return; }
+			set {}
 		}
 
 		public string RomDetails { get; }
