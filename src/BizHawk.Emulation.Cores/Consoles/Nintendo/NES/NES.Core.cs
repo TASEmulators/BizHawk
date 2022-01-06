@@ -506,7 +506,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					//Console.WriteLine("dmc double " + cpu.TotalExecutedCycles + " " + cpu.opcode + " " + cpu.mi);
 					apu.dmc_dma_countdown += 2;
-					apu.DMC_RDY_check = -1;
 				}
 
 				cpu.RDY = false;
