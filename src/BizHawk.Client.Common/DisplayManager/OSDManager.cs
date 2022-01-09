@@ -92,7 +92,7 @@ namespace BizHawk.Client.Common
 
 		public void AddMessage(string message)
 		{
-			_messages.Add(new UIMessage { Message = message, ExpireAt = DateTime.Now + TimeSpan.FromSeconds(2) });
+			_messages.Add(new UIMessage { Message = message, ExpireAt = DateTime.Now + TimeSpan.FromSeconds(_config.OSDMessageDuration) });
 		}
 
 		public void ClearRamWatches()

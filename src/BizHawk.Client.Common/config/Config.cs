@@ -342,5 +342,8 @@ namespace BizHawk.Client.Common
 		public IReadOnlyList<string> ModifierKeysEffective;
 
 		public bool MergeLAndRModifierKeys { get; set; } = true;
+
+		/// <remarks>in seconds</remarks>
+		public int OSDMessageDuration { get; set; } = 2;
 	}
 }

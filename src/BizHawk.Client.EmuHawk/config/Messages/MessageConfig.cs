@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.WinForms.Controls;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -20,6 +21,8 @@ namespace BizHawk.Client.EmuHawk
 		private MessagePosition _messages;
 		private MessagePosition _autohold;
 		private MessagePosition _ramWatches;
+
+		private readonly SzNUDEx _nudDuration;
 
 		private Dictionary<string, MessagePosition> Positions => new Dictionary<string, MessagePosition>
 		{
@@ -57,6 +60,23 @@ namespace BizHawk.Client.EmuHawk
 			_ramWatches = _config.RamWatches.Clone();	
 
 			InitializeComponent();
+
+			// I'm done wasting my time w/ the Designer --yoshi
+			SuspendLayout();
+			_nudDuration = new() { Maximum = 10.0M, Minimum = 1.0M, Size = new(48, 20) };
+			Controls.Add(new LocSzSingleRowFLP
+			{
+				Anchor = AnchorStyles.Bottom | AnchorStyles.Left,
+				Controls =
+				{
+					new LabelEx { Text = "Messages fade after" },
+					_nudDuration,
+					new LabelEx { Text = "seconds" },
+				},
+				Location = OSTailoredCode.IsUnixHost ? new(224, 380) : new(192, 360), // ¯\_(ツ)_/¯
+				Size = new(300, 24),
+			});
+			ResumeLayout();
 		}
 
 		private void MessageConfig_Load(object sender, EventArgs e)
@@ -64,6 +84,7 @@ namespace BizHawk.Client.EmuHawk
 			CreateMessageRows();
 			CreateColorBoxes();
 			StackMessagesCheckbox.Checked = _config.StackOSDMessages;
+			_nudDuration.Value = _config.OSDMessageDuration;
 		}
 
 		private void CreateMessageRows()
@@ -136,6 +157,7 @@ namespace BizHawk.Client.EmuHawk
 			_config.LastInputColor = ColorRows.Single(r => r.Name == "Previous Frame Input").SelectedColor;
 			_config.MovieInput = ColorRows.Single(r => r.Name == "Movie Input").SelectedColor;
 
+			_config.OSDMessageDuration = (int) _nudDuration.Value;
 			_config.StackOSDMessages = StackMessagesCheckbox.Checked;
 			Close();
 		}
