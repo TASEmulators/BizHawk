@@ -262,6 +262,7 @@ namespace BizHawk.Client.EmuHawk
 			while (true)
 			{
 				_currentConfig = _getConfigCallback();
+				UpdateModifierKeysEffective();
 				Adapter.UpdateConfig(_currentConfig);
 
 				var keyEvents = Adapter.ProcessHostKeyboards();
