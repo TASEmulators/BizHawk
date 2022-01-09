@@ -957,8 +957,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					sample_buffer_filled = true;
 					sample_address = (ushort)(sample_address + 1);
 
-					//sample address wraps to 0xC000
-					if (sample_address == 0) { sample_address = 0xC000;}
+					//sample address wraps to 0x8000, even though this cannot be reached by write to address reg
+					if (sample_address == 0) { sample_address = 0x8000; }
 					// Console.WriteLine(sample_length);
 					// Console.WriteLine(user_length);
 

@@ -532,22 +532,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						do_the_reread_2007++;
 					}
 					*/
-					if ((apu.dmc.sample_address & 0x401F) != 0x4016)
+					if ((apu.dmc.sample_address & 0x1F) != 0x16)
 					{
 						do_the_reread_cont_1++;
 					}
 
-					if ((apu.dmc.sample_address & 0x401F) == 0x4016)
+					if ((apu.dmc.sample_address & 0x1F) == 0x16)
 					{
 						reread_opp_4016++;
 					}
 
-					if ((apu.dmc.sample_address & 0x401F) != 0x4017)
+					if ((apu.dmc.sample_address & 0x1F) != 0x17)
 					{
 						do_the_reread_cont_2++;
 					}
 
-					if ((apu.dmc.sample_address & 0x401F) == 0x4017)
+					if ((apu.dmc.sample_address & 0x1F) == 0x17)
 					{
 						reread_opp_4017++;
 					}
@@ -582,7 +582,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			cpu.IRQ = _irq_apu || Board.IrqSignal;
 
 			// DMC was started in the APU, but in this case it only lasts 1 cycle and is then aborted, so put this here
-			// TODO: should this clock controllers?
+			// NOTE: for some famicoms, this will also clock controllers, this will need to be handled if emulating additional models
 			if (apu.dmc.fill_glitch_2_end)
 			{
 				apu.dmc_dma_countdown = -1;
