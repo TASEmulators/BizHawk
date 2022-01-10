@@ -157,7 +157,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					if (dir_ctrl.Bit(3)) { bc1 = value.Bit(3); }
 					if (dir_ctrl.Bit(4)) { bdir = value.Bit(4); }
 					if (dir_ctrl.Bit(5)) { /*compare = value.Bit(5);*/ }
-					if (dir_ctrl.Bit(6)) { /* cart bank switch */ }
+					if (dir_ctrl.Bit(6)) { /*writing here seems to change the bank for only a single cycle, and only in output mode, not implemented*/ }
 					if (dir_ctrl.Bit(7))
 					{
 						//Console.WriteLine(PB7_undriven + " " + !wrt_val.Bit(7));
@@ -326,6 +326,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					break;
 				case 0x2:
 					dir_ctrl = value;
+					// the direction of bit 6 here controls the bank
+					mapper.bank = dir_ctrl.Bit(6) ? 1 : 0;
+
 					break;
 				case 0x3:
 					dir_dac = value;

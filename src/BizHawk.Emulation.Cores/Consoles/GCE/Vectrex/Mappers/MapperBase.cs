@@ -7,6 +7,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 	{
 		public VectrexHawk Core { get; set; }
 
+		public int bank;
+
 		public virtual byte ReadMemory(ushort addr)
 		{
 			return 0;
@@ -27,6 +29,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		public virtual void SyncState(Serializer ser)
 		{
+			ser.Sync(nameof(bank), ref bank);
 		}
 
 		public virtual void Dispose()

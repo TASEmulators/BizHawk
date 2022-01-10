@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 			_rom = rom;
 
-			// If the game is minstorm, then no cartridge is inserted, retun 0xFF
+			// If the game is minestorm, then no cartridge is inserted, retun 0xFF
 			if (romHashSHA1 == RomChecksums.Minestorm)
 			{
 				_rom  = new byte[0x8000];
@@ -159,8 +159,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		private void Setup_Mapper()
 		{
-			mapper = new MapperDefault();
+			if (_rom.Length == 0x10000)
+			{
+				mapper = new Mapper_64K();
+			}
+			else
+			{
+				mapper = new MapperDefault();
+			}
+			
 			mapper.Core = this;
+			mapper.Initialize();
 		}
 	}
 }
