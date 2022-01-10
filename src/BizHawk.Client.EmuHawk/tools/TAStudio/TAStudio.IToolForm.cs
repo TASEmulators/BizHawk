@@ -124,7 +124,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					RefreshDialog();
+					TastudioStopMovie();
+					LoadMostRecentOrStartNew();
 				}
 			}
 		}

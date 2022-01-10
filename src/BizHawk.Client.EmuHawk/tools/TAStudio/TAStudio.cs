@@ -198,6 +198,15 @@ namespace BizHawk.Client.EmuHawk
 			_initialized = true;
 		}
 
+		private void LoadMostRecentOrStartNew()
+		{
+			if (!LoadFile(new(Settings.RecentTas.MostRecent)))
+			{
+				TasView.AllColumns.Clear();
+				StartNewTasMovie();
+			}
+		}
+
 		private bool Engage()
 		{
 			_engaged = false;
@@ -253,12 +262,7 @@ namespace BizHawk.Client.EmuHawk
 			// Start Scenario 3: No movie, but user wants to autoload their last project
 			else if (CanAutoload)
 			{
-				bool result = LoadFile(new FileInfo(Settings.RecentTas.MostRecent));
-				if (!result)
-				{
-					TasView.AllColumns.Clear();
-					StartNewTasMovie();
-				}
+				LoadMostRecentOrStartNew();
 			}
 
 			// Start Scenario 4: No movie, default behavior of engaging tastudio with a new default project
