@@ -11,7 +11,7 @@ using BizHawk.Emulation.Cores.Nintendo.SNES;
 namespace BizHawk.Client.Common.movie.import
 {
 	// ReSharper disable once UnusedMember.Global
-	// LSMV file format: http://tasvideos.org/Lsnes/Movieformat.html
+	/// <summary>For lsnes' <see href="https://tasvideos.org/Lsnes/Movieformat"><c>.lsmv</c> format</see></summary>
 	[ImporterFor("LSNES", ".lsmv")]
 	internal class LsmvImport : MovieImporter
 	{

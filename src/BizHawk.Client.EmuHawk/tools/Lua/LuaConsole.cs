@@ -1222,7 +1222,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OnlineDocsMenuItem_Click(object sender, EventArgs e)
 		{
-			Process.Start("http://tasvideos.org/BizHawk/LuaFunctions.html");
+			Process.Start("https://tasvideos.org/BizHawk/LuaFunctions");
 		}
 
 		private void ScriptListContextMenu_Opening(object sender, CancelEventArgs e)

@@ -2122,12 +2122,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OnlineHelpMenuItem_Click(object sender, EventArgs e)
 		{
-			System.Diagnostics.Process.Start("http://tasvideos.org/BizHawk.html");
+			System.Diagnostics.Process.Start("https://tasvideos.org/BizHawk");
 		}
 
 		private void ForumsMenuItem_Click(object sender, EventArgs e)
 		{
-			System.Diagnostics.Process.Start("http://tasvideos.org/forum/viewforum.php?f=64");
+			System.Diagnostics.Process.Start("https://tasvideos.org/Forum/Subforum/64");
 		}
 
 		private void FeaturesMenuItem_Click(object sender, EventArgs e)

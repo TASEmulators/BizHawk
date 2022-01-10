@@ -1444,7 +1444,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ForumThreadMenuItem_Click(object sender, EventArgs e)
 		{
-			System.Diagnostics.Process.Start("http://tasvideos.org/forum/viewtopic.php?t=13505");
+			System.Diagnostics.Process.Start("https://tasvideos.org/Forum/Topics/13505");
 		}
 	}
 }

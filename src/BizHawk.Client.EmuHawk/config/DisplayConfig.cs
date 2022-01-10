@@ -345,7 +345,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LinkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			System.Diagnostics.Process.Start("http://tasvideos.org/Bizhawk/DisplayConfig.html");
+			System.Diagnostics.Process.Start("https://tasvideos.org/Bizhawk/DisplayConfig");
 		}
 
 		private void Label13_Click(object sender, EventArgs e)

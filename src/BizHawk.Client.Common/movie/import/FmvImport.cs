@@ -5,8 +5,8 @@ using BizHawk.Emulation.Cores.Nintendo.NES;
 
 namespace BizHawk.Client.Common.movie.import
 {
-	// FMV file format: http://tasvideos.org/FMV.html
 	// ReSharper disable once UnusedMember.Global
+	/// <summary>For Famtasia's <see href="https://tasvideos.org/EmulatorResources/Famtasia/FMV"><c>.fmv</c> format</see></summary>
 	[ImporterFor("Famtasia", ".fmv")]
 	internal class FmvImport : MovieImporter
 	{

@@ -1300,7 +1300,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HelpToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Process.Start("http://tasvideos.org/Bizhawk/BasicBot.html");
+			Process.Start("https://tasvideos.org/Bizhawk/BasicBot");
 		}
 
 		private void InvisibleEmulationCheckBox_CheckedChanged(object sender, EventArgs e)
