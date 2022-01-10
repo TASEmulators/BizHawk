@@ -149,6 +149,7 @@ namespace BizHawk.Client.EmuHawk
 
 				movieToRecord.PopulateWithDefaultHeaderValues(
 					_emulator,
+					((MainForm) _mainForm).GetSettingsAdapterForLoadedCoreUntyped(), //HACK
 					_game,
 					_firmwareManager,
 					AuthorBox.Text ?? _config.DefaultAuthor);

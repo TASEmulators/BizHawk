@@ -241,7 +241,7 @@ namespace BizHawk.Client.EmuHawk
 			where TEmulator : IEmulator
 		{
 			object fromCore = null;
-			var settable = new SettingsAdapter(_emulator);
+			var settable = ((MainForm) _mainForm).GetSettingsAdapterForLoadedCoreUntyped(); //HACK
 			if (settable.HasSyncSettings)
 			{
 				fromCore = settable.GetSyncSettings();

@@ -592,6 +592,7 @@ namespace BizHawk.Client.EmuHawk
 
 			tasMovie.PopulateWithDefaultHeaderValues(
 				Emulator,
+				((MainForm) MainForm).GetSettingsAdapterForLoadedCoreUntyped(), //HACK
 				Game,
 				MainForm.FirmwareManager,
 				Config.DefaultAuthor);
