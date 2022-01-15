@@ -307,7 +307,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			}
 		}
 
-		private readonly int[] palette = new int[32768];
+		private readonly int[] palette = new int[0x8000];
 
 		private void generate_palette()
 		{
@@ -358,7 +358,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 					ushort* sp = data + y * pitch + 48;
 					for (int x = 0; x < 160; x++)
 					{
-						_videoBuffer[di++] = palette[*sp++];
+						_videoBuffer[di++] = palette[*sp++ & 0x7FFF];
 					}
 				}
 				return;
@@ -369,7 +369,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				int si = y / heightMultiplier * pitch;
 				for (int x = 0; x < width * widthMultiplier; x++)
 				{
-					_videoBuffer[di++] = palette[data[si + x / widthMultiplier]];
+					_videoBuffer[di++] = palette[data[si + x / widthMultiplier] & 0x7FFF];
 				}
 			}
 		}
