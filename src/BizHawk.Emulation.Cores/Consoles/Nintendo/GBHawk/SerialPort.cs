@@ -16,7 +16,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public byte coming_in;
 		public bool can_pulse;
 		public bool IRQ_block;
-		public bool tranfser_complete_flag;
 
 		public byte ReadReg(int addr)
 		{
@@ -40,39 +39,44 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					break;
 
 				case 0xFF02:
-					if ((value & 0x1) == 1)
+					if ((value & 0x80) == 0x80)
 					{
-						if (((value & 2) > 0) && Core.GBC_compat)
+						if ((value & 0x01) == 0x01)
 						{
-							clk_rate = 16;
-							serial_clock = 16 - (int)(Core.timer.divider_reg % 8) - 1;
-							
-							// if the clock rate is changing and it's on a GBA/C, the parity of (cpu.totalexecutedcycles & 512) effects the first bit
-							// Not sure exactly how yet
+							if (((value & 2) > 0) && Core.GBC_compat)
+							{
+								clk_rate = 16;
+								serial_clock = 16 - (int)(Core.timer.divider_reg % 8) - 1;
+
+								// if the clock rate is changing and it's on a GBA/C, the parity of (cpu.totalexecutedcycles & 512) effects the first bit
+								// Not sure exactly how yet
+							}
+							else
+							{
+								clk_rate = 512;
+								serial_clock = 512 - (int)(Core.timer.divider_reg % 256) - 1;
+
+								// there seems to be some clock inverting happening on some transfers
+								// not sure of the exact nature of it, here is one method that gives correct result on one test rom but not others
+								/*
+								if (Core._syncSettings.GBACGB && Core.is_GBC)
+								{
+									if ((Core.TotalExecutedCycles % 256) > 127)
+									{
+										serial_clock = (8 - (int)(Core.cpu.TotalExecutedCycles % 8)) + 1;
+									}
+								}
+								*/
+							}
+
+							can_pulse = true;
+							serial_bits = 8;
 						}
 						else
 						{
-							clk_rate = 512;
-							serial_clock = 512 - (int)(Core.timer.divider_reg % 256) - 1;
-
-							// there seems to be some clock inverting happening on some transfers
-							// not sure of the exact nature of it, here is one method that gives correct result on one test rom but not others
-							/*
-							if (Core._syncSettings.GBACGB && Core.is_GBC)
-							{
-								if ((Core.TotalExecutedCycles % 256) > 127)
-								{
-									serial_clock = (8 - (int)(Core.cpu.TotalExecutedCycles % 8)) + 1;
-								}
-							}
-							*/
-						}
-
-						if (tranfser_complete_flag)
-						{
-							can_pulse = true;
+							clk_rate = -1;
+							can_pulse = false;
 							serial_bits = 8;
-							tranfser_complete_flag = false;
 						}
 					}
 					else
@@ -81,7 +85,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						clk_rate = -1;
 						serial_clock = clk_rate;
 						can_pulse = false;
-						tranfser_complete_flag = true;
 					}
 
 					if (Core.GBC_compat)
@@ -117,7 +120,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						if (serial_bits == 0)
 						{
 							serial_control &= 0x7F;
-							tranfser_complete_flag = true;
 
 							if (Core.REG_FFFF.Bit(3)) { Core.cpu.FlagI = true; }
 							Core.REG_FF0F |= 0x08;
@@ -145,7 +147,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			coming_in = 1;		
 			can_pulse = false;
 			IRQ_block = false;
-			tranfser_complete_flag = true;
 		}
 
 		public void SyncState(Serializer ser)
@@ -159,7 +160,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(coming_in), ref coming_in);
 			ser.Sync(nameof(can_pulse), ref can_pulse);
 			ser.Sync(nameof(IRQ_block), ref IRQ_block);
-			ser.Sync(nameof(tranfser_complete_flag), ref tranfser_complete_flag);
 		}
 	}
 }
