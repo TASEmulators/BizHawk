@@ -602,6 +602,7 @@ namespace BizHawk.Client.EmuHawk
 		private void EmulationMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			PauseMenuItem.Checked = _didMenuPause ? _wasPaused : EmulatorPaused;
+			PauseMenuItem.Enabled = !Config.PauseWhenMenuActivated;
 
 			SoftResetMenuItem.Enabled = Emulator.ControllerDefinition.BoolButtons.Contains("Reset")
 				&& !MovieSession.Movie.IsPlaying();
@@ -2143,9 +2144,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MainFormContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
 		{
-			_wasPaused = EmulatorPaused;
-			_didMenuPause = true;
-			PauseEmulator();
+			MaybePauseFromMenuOpened();
 
 			OpenRomContextMenuItem.Visible = Emulator.IsNull() || _inFullscreen;
 
@@ -2242,12 +2241,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void MainFormContextMenu_Closing(object sender, ToolStripDropDownClosingEventArgs e)
-		{
-			if (!_wasPaused)
-			{
-				UnpauseEmulator();
-			}
-		}
+			=> MaybeUnpauseFromMenuClosed();
 
 		private void DisplayConfigMenuItem_Click(object sender, EventArgs e)
 		{
@@ -2460,28 +2454,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MainForm_Activated(object sender, EventArgs e)
 		{
-			if (!Config.RunInBackground)
-			{
-				if (!_wasPaused)
-				{
-					UnpauseEmulator();
-				}
-
-				_wasPaused = false;
-			}
+			if (!Config.RunInBackground) MaybeUnpauseFromMenuClosed();
 		}
 
 		private void MainForm_Deactivate(object sender, EventArgs e)
 		{
-			if (!Config.RunInBackground)
-			{
-				if (EmulatorPaused)
-				{
-					_wasPaused = true;
-				}
-
-				PauseEmulator();
-			}
+			if (!Config.RunInBackground) MaybePauseFromMenuOpened();
 		}
 
 		private void TimerMouseIdle_Tick(object sender, EventArgs e)
@@ -2537,22 +2515,18 @@ namespace BizHawk.Client.EmuHawk
 
 		public void MaybePauseFromMenuOpened()
 		{
-			if (Config.PauseWhenMenuActivated)
-			{
-				_wasPaused = EmulatorPaused;
-				_didMenuPause = true;
-				PauseEmulator();
-			}
+			if (!Config.PauseWhenMenuActivated) return;
+			_wasPaused = EmulatorPaused;
+			PauseEmulator();
+			_didMenuPause = true; // overwrites value set during PauseEmulator call
 		}
 
 		private void MainformMenu_MenuDeactivate(object sender, EventArgs e) => MaybeUnpauseFromMenuClosed();
 
 		public void MaybeUnpauseFromMenuClosed()
 		{
-			if (!_wasPaused)
-			{
-				UnpauseEmulator();
-			}
+			if (_wasPaused || !Config.PauseWhenMenuActivated) return;
+			UnpauseEmulator();
 		}
 
 		private static void FormDragEnter(object sender, DragEventArgs e)
