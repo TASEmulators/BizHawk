@@ -22,6 +22,9 @@ let
 		Manjaro_21_0_3 = [ # should match Arch and Manjaro releases from '20/'21
 			"libdrm_amdgpu.so.1" "libdrm_nouveau.so.2" "libdrm_radeon.so.1" "libedit.so.0" "libelf.so.1" "libffi.so.7" "libGLdispatch.so.0" "libicudata.so.69" "libicuuc.so.69" "libLLVM-11.so" "liblzma.so.5" "libncursesw.so.6" "libsensors.so.5" "libstdc++.so.6" "libvulkan.so.1" "libxml2.so.2" "libz.so.1" "libzstd.so.1"
 		];
+		Manjaro_21_2_1 = [ # should match Arch and Manjaro releases from '22
+			"libdrm_amdgpu.so.1" "libdrm_nouveau.so.2" "libdrm_radeon.so.1" "libedit.so.0" "libelf.so.1" "libffi.so.8" "libicudata.so.70" "libicuuc.so.70" "libLLVM-13.so" "libncursesw.so.6" "libsensors.so.5" "libstdc++.so.6" "libvulkan.so.1" "libxml2.so.2" "libzstd.so.1"
+		];
 		LinuxMint_20_2 = [ # should match Ubuntu 20.04 and similar distros
 			"libbsd.so.0" "libedit.so.2" "libLLVM-12.so.1" "libtinfo.so.6"
 		] ++ Manjaro_21_0_3; #TODO split
