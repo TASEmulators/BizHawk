@@ -618,18 +618,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PauseMenuItem_Click(object sender, EventArgs e)
 		{
-			if (IsTurboSeeking || IsSeeking)
-			{
-				PauseOnFrame = null;
-			}
-			else if (EmulatorPaused)
-			{
-				UnpauseEmulator();
-			}
-			else
-			{
-				PauseEmulator();
-			}
+			TogglePause();
 		}
 
 		private void PowerMenuItem_Click(object sender, EventArgs e)
