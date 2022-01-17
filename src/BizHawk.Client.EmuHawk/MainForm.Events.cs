@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -602,7 +603,6 @@ namespace BizHawk.Client.EmuHawk
 		private void EmulationMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			PauseMenuItem.Checked = _didMenuPause ? _wasPaused : EmulatorPaused;
-			PauseMenuItem.Enabled = !Config.PauseWhenMenuActivated;
 
 			SoftResetMenuItem.Enabled = Emulator.ControllerDefinition.BoolButtons.Contains("Reset")
 				&& !MovieSession.Movie.IsPlaying();
@@ -618,6 +618,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PauseMenuItem_Click(object sender, EventArgs e)
 		{
+			if (Config.PauseWhenMenuActivated && sender == PauseMenuItem)
+			{
+				const string ERR_MSG = nameof(PauseMenuItem_Click) + " ran before " + nameof(MaybeUnpauseFromMenuClosed) + "?";
+				Debug.Assert(EmulatorPaused == _wasPaused, ERR_MSG);
+				// fall through
+			}
 			TogglePause();
 		}
 
