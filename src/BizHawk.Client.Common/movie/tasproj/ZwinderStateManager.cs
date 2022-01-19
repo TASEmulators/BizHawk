@@ -319,12 +319,21 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
+			// We use the gap buffer for forced capture to avoid crowding the "current" buffer and thus reducing it's actual span of covered frames.
+			if (force)
+			{
+				CaptureGap(frame, source);
+				return;
+			}
+
 			// We do not want to consider reserved states for a notion of Last
 			// reserved states can include future states in the case of branch states
-			if ((frame <= LastRing && NeedsGap(frame)) || force)
+			if (frame <= LastRing)
 			{
-				// We use the gap buffer for forced capture to avoid crowding the "current" buffer and thus reducing it's actual span of covered frames.
-				CaptureGap(frame, source);
+				if (NeedsGap(frame))
+				{
+					CaptureGap(frame, source);
+				}
 				return;
 			}
 
