@@ -54,7 +54,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			BsnesApi.SnesCallbacks callbacks = new()
 			{
 				inputPollCb = snes_input_poll,
-				inputStateCb = snes_input_state,
 				noLagCb = snes_no_lag,
 				videoFrameCb = snes_video_refresh,
 				audioSampleCb = snes_audio_sample,
@@ -283,19 +282,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			_region = Api.core.snes_get_region();
 		}
 
-		// poll which updates the controller state
-		private void snes_input_poll()
-		{
-			_controllers.CoreInputPoll(_controller);
-		}
-
 		/// <param name="port">0 or 1, corresponding to L and R physical ports on the snes</param>
 		/// <param name="index">meaningless for most controllers.  for multitap, 0-3 for which multitap controller</param>
 		/// <param name="id">button ID enum; in the case of a regular controller, this corresponds to shift register position</param>
 		/// <returns>for regular controllers, one bit D0 of button status.  for other controls, varying ranges depending on id</returns>
-		private short snes_input_state(int port, int index, int id)
+		private short snes_input_poll(int port, int index, int id)
 		{
-			return _controllers.CoreInputState(port, index, id);
+			return _controllers.CoreInputPoll(_controller, port, index, id);
 		}
 
 		private void snes_no_lag(bool sgbPoll)

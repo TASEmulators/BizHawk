@@ -493,7 +493,7 @@ auto Program::inputPoll(uint port, uint device, uint input) -> int16
 		id = input % 4;
 	}
 
-	return snesCallbacks.snes_input_state(port, index, id);
+	return snesCallbacks.snes_input_poll(port, index, id);
 }
 
 auto Program::inputRumble(uint port, uint device, uint input, bool enable) -> void
