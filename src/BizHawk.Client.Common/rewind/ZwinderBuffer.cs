@@ -65,6 +65,7 @@ namespace BizHawk.Client.Common
 				_fixedRewindInterval = false;
 				_targetFrameLength = settings.TargetFrameLength;
 			}
+			_allowOutOfOrderStates = settings.AllowOutOfOrderStates;
 			_states = new StateInfo[STATEMASK + 1];
 			_useCompression = settings.UseCompression;
 		}
@@ -110,6 +111,8 @@ namespace BizHawk.Client.Common
 		private readonly bool _fixedRewindInterval;
 		private readonly int _targetFrameLength;
 		private readonly int _targetRewindInterval;
+
+		private readonly bool _allowOutOfOrderStates;
 
 		private struct StateInfo
 		{
@@ -162,6 +165,7 @@ namespace BizHawk.Client.Common
 				_useCompression == settings.UseCompression &&
 				_fixedRewindInterval == settings.UseFixedRewindInterval &&
 				(_fixedRewindInterval ? _targetRewindInterval == settings.TargetRewindInterval : _targetFrameLength == settings.TargetFrameLength) &&
+				_allowOutOfOrderStates == settings.AllowOutOfOrderStates &&
 				_backingStoreType == settings.BackingStore;
 		}
 
@@ -173,9 +177,8 @@ namespace BizHawk.Client.Common
 			}
 			if (frameDiff < 1)
 			{
-				// non-linear time is from a combination of other state changing mechanisms and the rewinder
-				// not much we can say here, so just take a state
-				return true;
+				// Manually loading a savestate can cause this. The default rewinder should capture in this situation.
+				return _allowOutOfOrderStates;
 			}
 			return frameDiff >= ComputeIdealRewindInterval();
 		}
@@ -369,6 +372,7 @@ namespace BizHawk.Client.Common
 					UseFixedRewindInterval = false,
 					TargetFrameLength = targetFrameLength,
 					TargetRewindInterval = 5,
+					AllowOutOfOrderStates = false,
 					UseCompression = useCompression
 				});
 				if (ret.Size != size || ret._sizeMask != sizeMask)

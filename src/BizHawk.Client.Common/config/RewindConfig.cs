@@ -34,6 +34,11 @@
 		/// </summary>
 		int TargetRewindInterval { get; }
 
+		/// <summary>
+		/// Specifies if the rewinder should accept states that are given out of order.
+		/// </summary>
+		bool AllowOutOfOrderStates { get; }
+
 		public enum BackingStoreType
 		{
 			Memory,
@@ -52,6 +57,8 @@
 		public bool UseFixedRewindInterval { get; set; } = false;
 		public int TargetFrameLength { get; set; } = 600;
 		public int TargetRewindInterval { get; set; } = 5;
+		public bool AllowOutOfOrderStates { get; set; } = true;
+
 		public IRewindSettings.BackingStoreType BackingStore { get; set; } = IRewindSettings.BackingStoreType.Memory;
 	}
 }

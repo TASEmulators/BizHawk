@@ -109,6 +109,7 @@ namespace BizHawk.Client.Common
 				BufferSize = CurrentBufferSize,
 				UseFixedRewindInterval = false,
 				TargetFrameLength = CurrentTargetFrameLength,
+				AllowOutOfOrderStates = false,
 				BackingStore = CurrentStoreType
 			};
 		}
@@ -120,6 +121,7 @@ namespace BizHawk.Client.Common
 				BufferSize = RecentBufferSize,
 				UseFixedRewindInterval = false,
 				TargetFrameLength = RecentTargetFrameLength,
+				AllowOutOfOrderStates = false,
 				BackingStore = RecentStoreType
 			};
 		}
@@ -131,6 +133,7 @@ namespace BizHawk.Client.Common
 				BufferSize = GapsBufferSize,
 				UseFixedRewindInterval = false,
 				TargetFrameLength = GapsTargetFrameLength,
+				AllowOutOfOrderStates = false,
 				BackingStore = GapsStoreType
 			};
 		}
