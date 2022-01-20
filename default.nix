@@ -117,11 +117,10 @@ let
 		hawkVersion = hawkSourceInfo.version;
 		mono = monoFinal;
 	};
-in {
-	bizhawkAssemblies = bizhawk; # assemblies and dependencies, and some other immutable things like the gamedb, are in the `bin` output; the rest of the "assets" (bundled scripts, palettes, etc.) are in the `out` output
-	emuhawk = stdenv.mkDerivation rec {
-		pname = "emuhawk-monort";
+	mkWrapperWrapper = { pname, innerWrapper, desktopName }: stdenv.mkDerivation rec {
+		inherit pname;
 		version = hawkSourceInfo.version;
+		exeName = "${pname}-${version}";
 		nativeBuildInputs = [ makeWrapper ];
 		buildInputs = [ bizhawk ];
 		# there must be a helper for this somewhere...
@@ -131,15 +130,29 @@ in {
 		dontBuild = true;
 		installPhase = ''
 			mkdir -p $out/bin
-			makeWrapper ${if forNixOS then "${wrapperScripts.wrapperScript}/bin/emuhawk-wrapper" else "${wrapperScripts.wrapperScriptNonNixOS}/bin/emuhawk-wrapper-non-nixos"} $out/bin/${pname}-${version} \
+			makeWrapper ${innerWrapper} $out/bin/${exeName} \
 				--set BIZHAWK_HOME ${bizhawk}
 		'';
 		dontFixup = true;
-#		desktopItems = [ (makeDesktopItem rec {
-#			name = "emuhawk-monort-${version}"; # actually filename
-#			exec = "${pname}-monort-${version}";
-#			desktopName = "EmuHawk (Mono Runtime)"; # actually Name
+#		desktopItems = [ (makeDesktopItem {
+#			name = "${pname}-${version}"; # actually filename
+#			exec = "${exeName}";
+#			inherit desktopName; # actually Name
 #		}) ];
+	};
+in {
+	bizhawkAssemblies = bizhawk; # assemblies and dependencies, and some other immutable things like the gamedb, are in the `bin` output; the rest of the "assets" (bundled scripts, palettes, etc.) are in the `out` output
+	discohawk = mkWrapperWrapper {
+		pname = "discohawk-monort";
+		innerWrapper = "${wrapperScripts.discoWrapper}/bin/discohawk-wrapper";
+		desktopName = "DiscoHawk (Mono Runtime)";
+	};
+	emuhawk = mkWrapperWrapper {
+		pname = "emuhawk-monort";
+		innerWrapper = if forNixOS
+			then "${wrapperScripts.wrapperScript}/bin/emuhawk-wrapper"
+			else "${wrapperScripts.wrapperScriptNonNixOS}/bin/emuhawk-wrapper-non-nixos";
+		desktopName = "EmuHawk (Mono Runtime)";
 	};
 	emuhawkWrapperScriptNonNixOS = wrapperScripts.wrapperScriptNonNixOS;
 	mono = monoFinal;

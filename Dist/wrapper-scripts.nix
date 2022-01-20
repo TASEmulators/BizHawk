@@ -39,6 +39,18 @@ let
 		};
 	} // initConfig));
 in rec {
+	discoWrapper = writeShellScriptBin "discohawk-wrapper" ''
+		set -e
+
+		if [ ! -e "$BIZHAWK_HOME/EmuHawk.exe" ]; then
+			printf "no such file: %s\n" "$BIZHAWK_HOME/EmuHawk.exe"
+			exit 1
+		fi
+
+		export LD_LIBRARY_PATH="$BIZHAWK_HOME/dll"
+		${commentUnless debugPInvokes}export MONO_LOG_LEVEL=debug MONO_LOG_MASK=dll
+		exec ${mono}/bin/mono "$BIZHAWK_HOME/DiscoHawk.exe" "$@"
+	'';
 	wrapperScript = writeShellScriptBin "emuhawk-wrapper" ''
 		set -e
 
