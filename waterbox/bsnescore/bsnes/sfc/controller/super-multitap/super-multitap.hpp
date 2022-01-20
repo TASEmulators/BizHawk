@@ -11,7 +11,6 @@ struct SuperMultitap : Controller {
 private:
   bool isPayloadController;
   uint device;
-  bool latched;
   uint counter1;
   uint counter2;
 

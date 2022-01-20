@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 typedef int16_t (*snes_input_poll_t)(int port, int index, int id);
+typedef void (*snes_controller_latch_t)(void);
 typedef void (*snes_no_lag_t)(bool sgb_poll);
 typedef void (*snes_video_frame_t)(const uint16_t* data, int width, int height, int pitch);
 typedef void (*snes_audio_sample_t)(int16_t left, int16_t right);
@@ -15,6 +16,7 @@ typedef void (*snes_exec_hook_t)(uint32_t address);
 
 struct SnesCallbacks {
     snes_input_poll_t snes_input_poll;
+    snes_controller_latch_t snes_controller_latch;
     snes_no_lag_t snes_no_lag;
     snes_video_frame_t snes_video_frame;
     snes_audio_sample_t snes_audio_sample;

@@ -147,6 +147,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		public delegate void snes_video_frame_t(ushort* data, int width, int height, int pitch);
 		public delegate short snes_input_poll_t(int port, int index, int id);
+		public delegate void snes_controller_latch_t();
 		public delegate void snes_no_lag_t(bool sgb_poll);
 		public delegate void snes_audio_sample_t(short left, short right);
 		public delegate string snes_path_request_t(int slot, string hint, bool required);
@@ -193,6 +194,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		{
 			public snes_input_poll_t inputPollCb;
 			public snes_no_lag_t noLagCb;
+			public snes_controller_latch_t controllerLatchCb;
 			public snes_video_frame_t videoFrameCb;
 			public snes_audio_sample_t audioSampleCb;
 			public snes_path_request_t pathRequestCb;

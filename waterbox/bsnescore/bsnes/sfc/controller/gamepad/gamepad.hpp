@@ -9,7 +9,6 @@ struct Gamepad : Controller {
   auto latch(bool data) -> void;
 
 private:
-  bool latched;
   uint counter;
 
   boolean b, y, select, start;

@@ -447,10 +447,12 @@ auto Program::audioFrame(const double* samples, uint channels) -> void
 
 auto Program::notify(string message) -> void
 {
-	if (message == "NOTIFY NO_LAG")
+	if (message == "NO_LAG")
 		snesCallbacks.snes_no_lag(false);
-	else if (message == "NOTIFY NO_LAG_SGB")
+	else if (message == "NO_LAG_SGB")
 		snesCallbacks.snes_no_lag(true);
+	else if (message == "LATCH")
+		snesCallbacks.snes_controller_latch();
 }
 
 auto Program::cpuTrace(vector<string> parts) -> void

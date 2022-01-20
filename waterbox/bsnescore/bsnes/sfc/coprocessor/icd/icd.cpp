@@ -24,7 +24,7 @@ namespace SameBoy {
   static auto joyp_write(GB_gameboy_t*, uint8_t value) -> void {
     bool p14 = value & 0x10;
     bool p15 = value & 0x20;
-	if (!p14 || !p15) platform->notify("NOTIFY NO_LAG_SGB");
+	if (!p14 || !p15) platform->notify("NO_LAG_SGB");
     icd.joypWrite(p14, p15);
   }
 

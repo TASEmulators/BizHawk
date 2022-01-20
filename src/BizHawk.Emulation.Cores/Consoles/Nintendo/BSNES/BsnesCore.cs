@@ -55,6 +55,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			{
 				inputPollCb = snes_input_poll,
 				noLagCb = snes_no_lag,
+				controllerLatchCb = snes_controller_latch,
 				videoFrameCb = snes_video_refresh,
 				audioSampleCb = snes_audio_sample,
 				pathRequestCb = snes_path_request,
@@ -293,11 +294,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		private void snes_no_lag(bool sgbPoll)
 		{
-			// gets called whenever there was input polled, aka no lag
+			// gets called whenever there was input read in the core
 			if (!IsSGB || sgbPoll)
 			{
 				IsLagFrame = false;
 			}
+		}
+
+		private void snes_controller_latch()
+		{
+			InputCallbacks.Call();
 		}
 
 		private readonly int[] palette = new int[0x8000];

@@ -64,6 +64,8 @@ auto Mouse::latch(bool data) -> void {
   latched = data;
   counter = 0;
 
+  // TODO: should the code below be guarded by a `if (latched == 0)` as well?
+  if (port == ID::Port::Controller1) platform->notify("LATCH");
   x = platform->inputPoll(port, ID::Device::Mouse, X);  //-n = left, 0 = center, +n = right
   y = platform->inputPoll(port, ID::Device::Mouse, Y);  //-n = up,   0 = center, +n = down
   l = platform->inputPoll(port, ID::Device::Mouse, Left);

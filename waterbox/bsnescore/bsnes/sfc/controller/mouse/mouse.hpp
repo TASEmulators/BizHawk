@@ -9,7 +9,6 @@ struct Mouse : Controller {
   auto latch(bool data) -> void;
 
 private:
-  bool latched;
   uint counter;
 
   uint speed;  //0 = slow, 1 = normal, 2 = fast
