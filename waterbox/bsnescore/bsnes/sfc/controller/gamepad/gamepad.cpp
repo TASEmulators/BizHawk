@@ -33,6 +33,7 @@ auto Gamepad::latch(bool data) -> void {
   counter = 0;
 
   if(latched == 0) {
+    if (port == ID::Port::Controller1) platform->notify("LATCH");
     b      = platform->inputPoll(port, ID::Device::Gamepad, B);
     y      = platform->inputPoll(port, ID::Device::Gamepad, Y);
     select = platform->inputPoll(port, ID::Device::Gamepad, Select);

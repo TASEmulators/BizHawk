@@ -16,6 +16,13 @@ Controller::Controller(uint port) : port(port) {
 Controller::~Controller() {
 }
 
+auto Controller::latch(bool data) -> void {
+  if(latched == data) return;
+  latched = data;
+
+  if (latched == 0 && port == ID::Port::Controller1) platform->notify("LATCH");
+}
+
 auto Controller::iobit() -> bool {
   switch(port) {
   case ID::Port::Controller1: return cpu.pio() & 0x40;

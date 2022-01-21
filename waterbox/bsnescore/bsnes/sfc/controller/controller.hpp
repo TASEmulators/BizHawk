@@ -18,11 +18,14 @@ struct Controller {
   auto iobit() -> bool;
   auto iobit(bool data) -> void;
   virtual auto data() -> uint2 { return 0; }
-  virtual auto latch(bool data) -> void {}
+  virtual auto latch(bool data) -> void;
   virtual auto latch() -> void {}  //light guns
   virtual auto draw(uint16_t* output, uint pitch, uint width, uint height) -> void {}  //light guns
 
   const uint port;
+
+protected:
+  bool latched;
 };
 
 struct ControllerPort {

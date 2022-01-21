@@ -169,12 +169,6 @@ EXPORT void snes_reset(void)
 // note: run with runahead doesn't work yet, i suspect it's due to the serialize thing breaking (cause of libco)
 EXPORT void snes_run(void)
 {
-    snesCallbacks.snes_input_poll();
-
-    // TODO: I currently have implemented separate poll and state calls, where poll updates the state and the state call just receives this
-    // based on the way this is implemented this approach might be useless in terms of reducing polling load, will need confirmation here
-    // the runahead feature should also be considered in case this is ever implemented and works
-
     emulator->run();
 }
 

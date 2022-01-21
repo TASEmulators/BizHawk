@@ -13,7 +13,6 @@ struct Justifier : Controller {
 //private:
   const bool chained;  //true if the second justifier is attached to the first
   const uint device;
-  bool latched;
   uint counter;
   uint prev;
 

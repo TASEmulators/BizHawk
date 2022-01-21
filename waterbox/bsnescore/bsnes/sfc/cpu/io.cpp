@@ -16,7 +16,7 @@ auto CPU::readCPU(uint addr, uint8 data) -> uint8 {
   case 0x4016:  //JOYSER0
     data &= 0xfc;
     data |= controllerPort1.device->data();
-    if (!io.autoJoypadPoll) platform->notify("NOTIFY NO_LAG");
+    if (!io.autoJoypadPoll) platform->notify("NO_LAG");
     return data;
 
   //todo: it is not known what happens when reading from this register during auto-joypad polling
@@ -24,7 +24,7 @@ auto CPU::readCPU(uint addr, uint8 data) -> uint8 {
     data &= 0xe0;
     data |= 0x1c;  //pins are connected to GND
     data |= controllerPort2.device->data();
-    if (!io.autoJoypadPoll) platform->notify("NOTIFY NO_LAG");
+    if (!io.autoJoypadPoll) platform->notify("NO_LAG");
     return data;
 
   case 0x4210:  //RDNMI
@@ -53,14 +53,14 @@ auto CPU::readCPU(uint addr, uint8 data) -> uint8 {
   case 0x4217: return io.rdmpy >> 8;  //RDMPYH
 
   //todo: it is not known what happens when reading from these registers during auto-joypad polling
-  case 0x4218: platform->notify("NOTIFY NO_LAG"); return io.joy1 >> 0;   //JOY1L
-  case 0x4219: platform->notify("NOTIFY NO_LAG"); return io.joy1 >> 8;   //JOY1H
-  case 0x421a: platform->notify("NOTIFY NO_LAG"); return io.joy2 >> 0;   //JOY2L
-  case 0x421b: platform->notify("NOTIFY NO_LAG"); return io.joy2 >> 8;   //JOY2H
-  case 0x421c: platform->notify("NOTIFY NO_LAG"); return io.joy3 >> 0;   //JOY3L
-  case 0x421d: platform->notify("NOTIFY NO_LAG"); return io.joy3 >> 8;   //JOY3H
-  case 0x421e: platform->notify("NOTIFY NO_LAG"); return io.joy4 >> 0;   //JOY4L
-  case 0x421f: platform->notify("NOTIFY NO_LAG"); return io.joy4 >> 8;   //JOY4H
+  case 0x4218: platform->notify("NO_LAG"); return io.joy1 >> 0;   //JOY1L
+  case 0x4219: platform->notify("NO_LAG"); return io.joy1 >> 8;   //JOY1H
+  case 0x421a: platform->notify("NO_LAG"); return io.joy2 >> 0;   //JOY2L
+  case 0x421b: platform->notify("NO_LAG"); return io.joy2 >> 8;   //JOY2H
+  case 0x421c: platform->notify("NO_LAG"); return io.joy3 >> 0;   //JOY3L
+  case 0x421d: platform->notify("NO_LAG"); return io.joy3 >> 8;   //JOY3H
+  case 0x421e: platform->notify("NO_LAG"); return io.joy4 >> 0;   //JOY4L
+  case 0x421f: platform->notify("NO_LAG"); return io.joy4 >> 8;   //JOY4H
 
   }
 

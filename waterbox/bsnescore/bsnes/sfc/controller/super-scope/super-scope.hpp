@@ -11,7 +11,6 @@ struct SuperScope : Controller {
   auto draw(uint16_t* data, uint pitch, uint width, uint height) -> void override;
 
 private:
-  bool latched;
   uint counter;
 
   int x;
