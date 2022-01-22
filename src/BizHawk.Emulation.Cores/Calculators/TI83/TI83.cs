@@ -4,18 +4,18 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.Z80A;
 
 // http://www.ticalc.org/pub/text/calcinfo/
-namespace BizHawk.Emulation.Cores.Calculators
+namespace BizHawk.Emulation.Cores.Calculators.TI83
 {
 	[Core(CoreNames.TI83Hawk, "zeromus")]
 	[ServiceNotApplicable(new[] { typeof(IBoardInfo), typeof(IDriveLight), typeof(IRegionable), typeof(ISaveRam), typeof(ISoundProvider) })]
-	public partial class TI83 : IEmulator, IVideoProvider, IDebuggable, IInputPollable, ISettable<TI83.TI83Settings, object>
+	public partial class TI83 : TI83Common, IEmulator, IVideoProvider, IDebuggable, IInputPollable
 	{
 		[CoreConstructor(VSystemID.Raw.TI83)]
-		public TI83(CoreLoadParameters<TI83Settings, object> lp)
+		public TI83(CoreLoadParameters<TI83CommonSettings, object> lp)
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
-			PutSettings(lp.Settings ?? new TI83Settings());
+			PutSettings(lp.Settings ?? new TI83CommonSettings());
 
 			_cpu.FetchMemory = ReadMemory;
 			_cpu.ReadMemory = ReadMemory;

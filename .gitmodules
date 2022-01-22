@@ -39,4 +39,7 @@
 	url = https://github.com/jbremer/darm.git
 [submodule "submodules/libfwunpack"]
 	path = submodules/libfwunpack
-	url = https://github.com/TASEmulators/fwunpack
+	url = https://github.com/TASEmulators/fwunpack.git
+[submodule "submodules/libemu83"]
+	path = submodules/libemu83
+	url = https://github.com/CasualPokePlayer/Emu83

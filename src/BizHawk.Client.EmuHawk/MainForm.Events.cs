@@ -13,7 +13,7 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Atari.A7800Hawk;
-using BizHawk.Emulation.Cores.Calculators;
+using BizHawk.Emulation.Cores.Calculators.TI83;
 using BizHawk.Emulation.Cores.ColecoVision;
 using BizHawk.Emulation.Cores.Computers.AmstradCPC;
 using BizHawk.Emulation.Cores.Computers.AppleII;
@@ -1516,7 +1516,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Ti83PaletteMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is TI83 ti83)
+			if (Emulator is TI83Common ti83)
 			{
 				using var form = new TI83PaletteConfig(this, ti83.GetSettings().Clone());
 				if (form.ShowDialog().IsOk()) AddOnScreenMessage("Palette settings saved");
@@ -2504,7 +2504,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MainForm_Shown(object sender, EventArgs e)
 		{
-			if (Emulator is TI83 && Config.Ti83AutoloadKeyPad)
+			if (Emulator is TI83Common && Config.Ti83AutoloadKeyPad)
 			{
 				Tools.Load<TI83KeyPad>();
 			}

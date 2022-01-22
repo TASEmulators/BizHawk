@@ -380,7 +380,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			"NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", //0x100
 		};
 
-		public string Disassemble(ushort addr, Func<ushort, byte> read, out int size)
+		public static string Disassemble(ushort addr, Func<ushort, byte> read, out int size)
 		{
 			ushort start_addr = addr;
 			ushort extra_inc = 0;

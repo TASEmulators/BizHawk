@@ -24,6 +24,8 @@ using BizHawk.Bizware.BizwareGL;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.Base_Implementations;
 using BizHawk.Emulation.Cores;
+using BizHawk.Emulation.Cores.Calculators.Emu83;
+using BizHawk.Emulation.Cores.Calculators.TI83;
 using BizHawk.Emulation.Cores.Consoles.NEC.PCE;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Consoles.SNK;
@@ -1989,8 +1991,13 @@ namespace BizHawk.Client.EmuHawk
 				case VSystemID.Raw.PSX:
 					PSXSubMenu.Visible = true;
 					break;
-				case VSystemID.Raw.TI83:
+				case VSystemID.Raw.TI83 when Emulator is TI83:
 					TI83SubMenu.Visible = true;
+					LoadTIFileMenuItem.Visible = true;
+					break;
+				case VSystemID.Raw.TI83 when Emulator is Emu83:
+					TI83SubMenu.Visible = true;
+					LoadTIFileMenuItem.Visible = false;
 					break;
 				case VSystemID.Raw.ZXSpectrum:
 					zXSpectrumToolStripMenuItem.Visible = true;
