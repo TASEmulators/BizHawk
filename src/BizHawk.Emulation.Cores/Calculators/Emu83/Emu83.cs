@@ -6,7 +6,7 @@ using BizHawk.Emulation.Cores.Calculators.TI83;
 
 namespace BizHawk.Emulation.Cores.Calculators.Emu83
 {
-	[PortedCore(CoreNames.Emu83, "CasualPokePlayer", isReleased: false)]
+	[PortedCore(CoreNames.Emu83, "CasualPokePlayer")]
 	[ServiceNotApplicable(new[] { typeof(IBoardInfo), typeof(IRegionable), typeof(ISaveRam), typeof(ISoundProvider) })]
 	public partial class Emu83 : TI83Common
 	{
