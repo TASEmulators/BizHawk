@@ -3177,7 +3177,10 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Tools.TAStudio.StopSeeking();
 					}
-					PauseOnFrame = null;
+					else
+					{
+						PauseOnFrame = null;
+					}
 				}
 			}
 

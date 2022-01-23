@@ -891,7 +891,6 @@ namespace BizHawk.Client.EmuHawk
 					if (notch > 0 && Emulator.Frame >= MainForm.PauseOnFrame)
 					{
 						MainForm.PauseEmulator();
-						MainForm.PauseOnFrame = null;
 						StopSeeking();
 						GoToFrame(Emulator.Frame - notch);
 					}
