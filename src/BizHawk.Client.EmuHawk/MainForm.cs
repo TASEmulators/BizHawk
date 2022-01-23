@@ -1736,8 +1736,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateToolsAfter()
 		{
-			Tools.UpdateToolsAfter();
-			HandleToggleLightAndLink();
+			if (IsTurboing)
+			{
+				Tools.FastUpdateAfter();
+			}
+			else
+			{
+				Tools.UpdateToolsAfter();
+				HandleToggleLightAndLink();
+			}
 		}
 
 		public void UpdateDumpInfo(RomStatus? newStatus = null)
@@ -3181,14 +3188,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (toolsNeedUpdate)
 				{
-					if (IsTurboing)
-					{
-						Tools.FastUpdateAfter();
-					}
-					else
-					{
-						UpdateToolsAfter();
-					}
+					UpdateToolsAfter();
 				}
 			}
 
