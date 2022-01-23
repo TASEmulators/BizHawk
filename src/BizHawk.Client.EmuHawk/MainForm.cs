@@ -3134,15 +3134,6 @@ namespace BizHawk.Client.EmuHawk
 
 				PressFrameAdvance = false;
 
-				if (IsTurboing)
-				{
-					Tools.FastUpdateAfter();
-				}
-				else
-				{
-					UpdateToolsAfter();
-				}
-
 				if (!PauseAvi && newFrame && !InvisibleEmulation)
 				{
 					AvFrameAdvance();
@@ -3171,8 +3162,12 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
+				// Ending a turbo seek updates the tools, so lets avoid double updating tools in that case.
+				bool toolsNeedUpdate = true;
 				if (IsSeeking && Emulator.Frame == PauseOnFrame.Value)
 				{
+					toolsNeedUpdate = !IsTurboSeeking;
+
 					PauseEmulator();
 					if (Tools.IsLoaded<TAStudio>())
 					{
@@ -3181,6 +3176,18 @@ namespace BizHawk.Client.EmuHawk
 					else
 					{
 						PauseOnFrame = null;
+					}
+				}
+
+				if (toolsNeedUpdate)
+				{
+					if (IsTurboing)
+					{
+						Tools.FastUpdateAfter();
+					}
+					else
+					{
+						UpdateToolsAfter();
 					}
 				}
 			}
