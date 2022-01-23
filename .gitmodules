@@ -42,4 +42,4 @@
 	url = https://github.com/TASEmulators/fwunpack.git
 [submodule "submodules/libemu83"]
 	path = submodules/libemu83
-	url = https://github.com/CasualPokePlayer/Emu83
+	url = https://github.com/CasualPokePlayer/Emu83.git

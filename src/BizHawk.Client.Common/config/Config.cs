@@ -35,7 +35,7 @@ namespace BizHawk.Client.Common
 			(new[] { VSystemID.Raw.PCE, VSystemID.Raw.PCECD, VSystemID.Raw.SGX },
 				new[] { CoreNames.TurboNyma, CoreNames.HyperNyma, CoreNames.PceHawk }),
 			(new[] { VSystemID.Raw.TI83 },
-				new[] { CoreNames.TI83Hawk, CoreNames.Emu83 })
+				new[] { CoreNames.TI83Hawk, CoreNames.Emu83 }),
 		};
 
 		public Config()
