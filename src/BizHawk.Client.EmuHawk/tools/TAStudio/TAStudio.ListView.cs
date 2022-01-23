@@ -123,6 +123,7 @@ namespace BizHawk.Client.EmuHawk
 			if (CurrentTasMovie != null)
 			{
 				RefreshDialog();
+				UpdateProgressBar();
 			}
 		}
 
