@@ -1053,7 +1053,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CommentsMenuItem_Click(object sender, EventArgs e)
 		{
-			var form = new EditCommentsForm(CurrentTasMovie, true);
+			var form = new EditCommentsForm(CurrentTasMovie, false);
 			form.Show();
 		}
 
