@@ -844,10 +844,11 @@ namespace BizHawk.Client.EmuHawk
 
 			set
 			{
+				bool wasTurboSeeking = IsTurboSeeking;
 				_pauseOnFrame = value;
 				SetPauseStatusBarIcon();
 
-				if (value == null) // TODO: make an Event handler instead, but the logic here is that after turbo seeking, tools will want to do a real update when the emulator finally pauses
+				if (wasTurboSeeking && value == null) // TODO: make an Event handler instead, but the logic here is that after turbo seeking, tools will want to do a real update when the emulator finally pauses
 				{
 					Tools.UpdateToolsBefore();
 					Tools.UpdateToolsAfter();
