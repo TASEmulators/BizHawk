@@ -85,6 +85,9 @@ ECL_EXPORT void GetMemcardData(int which)
 	}
 	catch(...)
 	{
+		char ext[64];
+		trio_snprintf(ext, sizeof(ext), "%d.mcr", which);
+		printf("failed to save memcard %s", MDFN_MakeFName(MDFNMKF_SAV, 0, ext).c_str());
 	}
 }
 
