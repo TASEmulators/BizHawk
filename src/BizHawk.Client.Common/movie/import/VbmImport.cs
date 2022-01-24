@@ -111,11 +111,8 @@ namespace BizHawk.Client.Common.movie.import
 
 			// (If all 3 of these bits are "0", it is for regular GB.)
 			string platform = VSystemID.Raw.GB;
-			if (isGBA)
-			{
-				platform = VSystemID.Raw.GBA;
-				Result.Movie.HeaderEntries[HeaderKeys.Core] = CoreNames.Mgba;
-			}
+
+			if (isGBA) platform = VSystemID.Raw.GBA;
 
 			if (isGBC)
 			{
@@ -273,24 +270,27 @@ namespace BizHawk.Client.Common.movie.import
 
 			if (isGBA)
 			{
-				var ss = new MGBAHawk.SyncSettings { SkipBios = true };
-				Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(ss);
+				Result.Movie.HeaderEntries[HeaderKeys.Core] = CoreNames.Mgba;
+				Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(new MGBAHawk.SyncSettings { SkipBios = true });
 			}
 			else
 			{
-				if (Config.PreferredCores[VSystemID.Raw.GB] == CoreNames.GbHawk || Config.PreferredCores[VSystemID.Raw.GB] == CoreNames.SubGbHawk)
+				Result.Movie.HeaderEntries[HeaderKeys.Core] = Config.PreferredCores[VSystemID.Raw.GB];
+				switch (Config.PreferredCores[VSystemID.Raw.GB])
 				{
-					var tempSync = new GBHawk.GBSyncSettings();
-					if (is_GBC) { tempSync.ConsoleMode = GBHawk.GBSyncSettings.ConsoleModeType.GBC; }
-					else { tempSync.ConsoleMode = GBHawk.GBSyncSettings.ConsoleModeType.GB; }
-					Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(tempSync);
-				}
-				else
-				{
-					var temp_sync = new Gameboy.GambatteSyncSettings();
-					if (is_GBC) { temp_sync.ConsoleMode = Gameboy.GambatteSyncSettings.ConsoleModeType.GBC; }
-					else { temp_sync.ConsoleMode = Gameboy.GambatteSyncSettings.ConsoleModeType.GB; }
-					Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(temp_sync);
+					case CoreNames.Gambatte:
+						Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(new Gameboy.GambatteSyncSettings
+						{
+							ConsoleMode = is_GBC ? Gameboy.GambatteSyncSettings.ConsoleModeType.GBC : Gameboy.GambatteSyncSettings.ConsoleModeType.GB,
+						});
+						break;
+					case CoreNames.GbHawk:
+					case CoreNames.SubGbHawk:
+						Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(new GBHawk.GBSyncSettings
+						{
+							ConsoleMode = is_GBC ? GBHawk.GBSyncSettings.ConsoleModeType.GBC : GBHawk.GBSyncSettings.ConsoleModeType.GB,
+						});
+						break;
 				}
 			}
 		}
