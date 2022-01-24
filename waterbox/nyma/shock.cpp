@@ -61,12 +61,13 @@ ECL_EXPORT void GetMemoryAreas(MemoryArea* m)
 	AddMemoryDomain("PIOMem", PIOMem ? PIOMem->data8 : NULL, 64*1024, MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE4);
 	AddMemoryDomain("DCache", CPU->ScratchRAM.data8, 1024, MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE4);
 	for (int j = 0; j < 8; j++) {
-		std::string s = "Memcard ";
-		s += (j + 1);
+		char* s;
+		asprintf(&s, "Memcard %d", j + 1);
 		if (FIO->MCDevices[j]->GetNVSize())
 		{
-			AddMemoryDomain(s.c_str(), (void*)FIO->MCDevices[j]->ReadNV(), FIO->MCDevices[j]->GetNVSize(), MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_SAVERAMMABLE);
+			AddMemoryDomain(s, (void*)FIO->MCDevices[j]->ReadNV(), FIO->MCDevices[j]->GetNVSize(), MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_SAVERAMMABLE);
 		}
+		free(s);
 	}
 	AddMemoryDomain("System Bus", (void*)AccessSystemBus, 1ull << 32, MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_FUNCTIONHOOK);
 }
