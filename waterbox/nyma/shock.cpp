@@ -60,48 +60,13 @@ ECL_EXPORT void GetMemoryAreas(MemoryArea* m)
 	AddMemoryDomain("BiosROM", BIOSROM->data8, 512*1024, MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE4);
 	AddMemoryDomain("PIOMem", PIOMem ? PIOMem->data8 : NULL, 64*1024, MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE4);
 	AddMemoryDomain("DCache", CPU->ScratchRAM.data8, 1024, MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE4);
+	for (int j = 0; j < 8; j++) {
+		std::string s = "Memcard ";
+		s += (j + 1);
+		if (FIO->MCDevices[j]->GetNVSize())
+		{
+			AddMemoryDomain(s.c_str(), (void*)FIO->MCDevices[j]->ReadNV(), FIO->MCDevices[j]->GetNVSize(), MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_SAVERAMMABLE);
+		}
+	}
 	AddMemoryDomain("System Bus", (void*)AccessSystemBus, 1ull << 32, MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_FUNCTIONHOOK);
-}
-
-ECL_EXPORT int GetMemcardSize(int which)
-{
-	try
-	{
-		return FIO->PossibleDevices[which].Memcard->GetNVSize();
-	}
-	catch(...)
-	{
-		return 0;
-	}
-}
-
-ECL_EXPORT void GetMemcardData(int which)
-{
-	try
-	{
-		char ext[64];
-		trio_snprintf(ext, sizeof(ext), "%d.mcr", which);
-		FIO->SaveMemcard(which, MDFN_MakeFName(MDFNMKF_SAV, 0, ext));
-	}
-	catch(...)
-	{
-		char ext[64];
-		trio_snprintf(ext, sizeof(ext), "%d.mcr", which);
-		printf("failed to save memcard %s", MDFN_MakeFName(MDFNMKF_SAV, 0, ext).c_str());
-	}
-}
-
-ECL_EXPORT bool PutMemcardData(int which)
-{
-	try
-	{
-		char ext[64];
-		trio_snprintf(ext, sizeof(ext), "%d.mcr", which);
-		FIO->LoadMemcard(which, MDFN_MakeFName(MDFNMKF_SAV, 0, ext));
-		return true;
-	}
-	catch(...)
-	{
-		return false;
-	}
 }
