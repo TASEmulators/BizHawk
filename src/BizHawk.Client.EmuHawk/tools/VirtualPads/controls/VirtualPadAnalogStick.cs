@@ -26,6 +26,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public VirtualPadAnalogStick(
 			InputManager inputManager,
+			EventHandler setLastFocusedNUD,
 			string name,
 			string secondaryName,
 			AxisSpec rangeX,
@@ -78,9 +79,15 @@ namespace BizHawk.Client.EmuHawk
 			manualR.Maximum = Math.Max(RectToPolarHelper(RangeX.Max, RangeY.Max).R, RectToPolarHelper(RangeX.Min, RangeY.Min).R);
 
 			ManualX.ValueChanged += ManualXY_ValueChanged;
+			ManualX.GotFocus += setLastFocusedNUD;
 			ManualY.ValueChanged += ManualXY_ValueChanged;
+			ManualY.GotFocus += setLastFocusedNUD;
 			manualR.ValueChanged += PolarNumeric_Changed;
+			manualR.GotFocus += setLastFocusedNUD;
 			manualTheta.ValueChanged += PolarNumeric_Changed;
+			manualTheta.GotFocus += setLastFocusedNUD;
+			MaxXNumeric.GotFocus += setLastFocusedNUD;
+			MaxYNumeric.GotFocus += setLastFocusedNUD;
 
 			AnalogStick.Init(
 				_inputManager.StickyXorAdapter,
