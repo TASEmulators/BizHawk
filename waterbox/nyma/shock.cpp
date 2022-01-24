@@ -60,14 +60,21 @@ ECL_EXPORT void GetMemoryAreas(MemoryArea* m)
 	AddMemoryDomain("BiosROM", BIOSROM->data8, 512*1024, MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE4);
 	AddMemoryDomain("PIOMem", PIOMem ? PIOMem->data8 : NULL, 64*1024, MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE4);
 	AddMemoryDomain("DCache", CPU->ScratchRAM.data8, 1024, MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE4);
-	for (int j = 0; j < 8; j++) {
-		char* s;
-		asprintf(&s, "Memcard %d", j + 1);
-		if (FIO->MCDevices[j]->GetNVSize())
-		{
-			AddMemoryDomain(s, (void*)FIO->MCDevices[j]->ReadNV(), FIO->MCDevices[j]->GetNVSize(), MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_SAVERAMMABLE);
-		}
-		free(s);
-	}
+	#define AddMemcardDomain(which) do\
+	{\
+		if (FIO->MCDevices[which-1]->GetNVSize())\
+		{\
+			AddMemoryDomain("Memcard " #which, (void*)FIO->MCDevices[which-1]->ReadNV(), FIO->MCDevices[which-1]->GetNVSize(), MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_SAVERAMMABLE);\
+		}\
+	}\
+	while (0)
+	AddMemcardDomain(1);
+	AddMemcardDomain(2);
+	AddMemcardDomain(3);
+	AddMemcardDomain(4);
+	AddMemcardDomain(5);
+	AddMemcardDomain(6);
+	AddMemcardDomain(7);
+	AddMemcardDomain(8);
 	AddMemoryDomain("System Bus", (void*)AccessSystemBus, 1ull << 32, MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_FUNCTIONHOOK);
 }
