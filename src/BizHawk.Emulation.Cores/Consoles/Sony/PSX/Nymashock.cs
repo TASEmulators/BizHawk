@@ -1,7 +1,8 @@
-﻿using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Waterbox;
-using System;
+﻿using System;
 using System.Collections.Generic;
+
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Sony.PSX
 {
@@ -29,6 +30,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			{ "psx.bios_na", new() { Hide = true , Default = "$U" } }, // FIRMWARE:
 			{ "psx.bios_eu", new() { Hide = true , Default = "$E" } }, // FIRMWARE:
 
+			{ "psx.input.analog_mode_ct", new() { Hide = true } }, // probably don't want this
+			{ "psx.input.analog_mode_ct.compare", new() { Hide = true } },
+
 			{ "psx.input.port1.gun_chairs", new() { NonSync = true } },
 			{ "psx.input.port2.gun_chairs", new() { NonSync = true } },
 			{ "psx.input.port3.gun_chairs", new() { NonSync = true } },
@@ -38,52 +42,17 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			{ "psx.input.port7.gun_chairs", new() { NonSync = true } },
 			{ "psx.input.port8.gun_chairs", new() { NonSync = true } },
 
+			{ "psx.dbg_exe_cdpath", new() { Hide = true } },
+
+			{ "psx.spu.resamp_quality", new() { NonSync = true } },
+			{ "psx.input.mouse_sensitivity", new() { Hide = true } },
+
+			{ "psx.slstart", new() { NonSync = true } },
+			{ "psx.slend", new() { NonSync = true } },
+			{ "psx.h_overscan", new() { NonSync = true } },
 			{ "psx.correct_aspect", new() { NonSync = true, Default = "0" } },
-
-			/*{ "ss.affinity.vdp2", new() { Hide = true } },
-			{ "ss.dbg_exe_cdpath", new() { Hide = true } },
-			{ "ss.dbg_exe_cem", new() { Hide = true } },
-			{ "ss.dbg_exe_hh", new() { Hide = true } },
-
-			{ "ss.scsp.resamp_quality", new() { NonSync = true } }, // Don't set NoRestart = true for this
-			{ "ss.input.mouse_sensitivity", new() { Hide = true } },
-
-			{ "ss.input.port1.gun_chairs", new() { NonSync = true } },
-			{ "ss.input.port2.gun_chairs", new() { NonSync = true } },
-			{ "ss.input.port3.gun_chairs", new() { NonSync = true } },
-			{ "ss.input.port4.gun_chairs", new() { NonSync = true } },
-			{ "ss.input.port5.gun_chairs", new() { NonSync = true } },
-			{ "ss.input.port6.gun_chairs", new() { NonSync = true } },
-			{ "ss.input.port7.gun_chairs", new() { NonSync = true } },
-			{ "ss.input.port8.gun_chairs", new() { NonSync = true } },
-			{ "ss.input.port9.gun_chairs", new() { NonSync = true } },
-			{ "ss.input.port10.gun_chairs", new() { NonSync = true } },
-			{ "ss.input.port11.gun_chairs", new() { NonSync = true } },
-			{ "ss.input.port12.gun_chairs", new() { NonSync = true } },
-
-			{ "ss.slstart", new() { NonSync = true } },
-			{ "ss.slend", new() { NonSync = true } },
-			{ "ss.h_overscan", new() { NonSync = true } },
-			{ "ss.h_blend", new() { NonSync = true } },
-			{ "ss.correct_aspect", new() { NonSync = true, Default = "0" } },
-			{ "ss.slstartp", new() { NonSync = true } },
-			{ "ss.slendp", new() { NonSync = true } },*/
+			{ "psx.slstartp", new() { NonSync = true } },
+			{ "psx.slendp", new() { NonSync = true } },
 		};
-
-		/*protected override HashSet<string> ComputeHiddenPorts()
-		{
-			var devCount = 12;
-			if (SettingsQuery("ss.input.sport1.multitap") != "1")
-				devCount -= 5;
-			if (SettingsQuery("ss.input.sport2.multitap") != "1")
-				devCount -= 5;
-			var ret = new HashSet<string>();
-			for (var i = 1; i <= 12; i++)
-			{
-				if (i > devCount)
-					ret.Add($"port{i}");
-			}
-			return ret;
-		}*/
 	}
 }
