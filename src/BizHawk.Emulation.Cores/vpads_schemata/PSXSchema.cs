@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -14,35 +15,53 @@ namespace BizHawk.Emulation.Cores
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
 		{
-			var psx = (Octoshock)core;
-			var settings = psx.GetSyncSettings();
-
-			var fioConfig = settings.FIOConfig.ToLogical();
-			for (int i = 0; i < fioConfig.DevicesPlayer.Length; i++)
+			if (core is Octoshock octo)
 			{
-				if (fioConfig.DevicesPlayer[i] == OctoshockDll.ePeripheralType.None)
+				var settings = octo.GetSyncSettings();
+
+				var fioConfig = settings.FIOConfig.ToLogical();
+				for (int i = 0; i < fioConfig.DevicesPlayer.Length; i++)
 				{
-					continue;
+					if (fioConfig.DevicesPlayer[i] == OctoshockDll.ePeripheralType.None)
+					{
+						continue;
+					}
+
+					int pNum = i + 1;
+					if (fioConfig.DevicesPlayer[i] == OctoshockDll.ePeripheralType.DualAnalog || fioConfig.DevicesPlayer[i] == OctoshockDll.ePeripheralType.DualShock)
+					{
+						yield return DualShockController(pNum);
+					}
+
+					if (fioConfig.DevicesPlayer[i] == OctoshockDll.ePeripheralType.Pad)
+					{
+						yield return GamePadController(pNum);
+					}
+
+					if (fioConfig.DevicesPlayer[i] == OctoshockDll.ePeripheralType.NegCon)
+					{
+						yield return NeGcon(pNum);
+					}
 				}
 
-				int pNum = i + 1;
-				if (fioConfig.DevicesPlayer[i] == OctoshockDll.ePeripheralType.DualAnalog || fioConfig.DevicesPlayer[i] == OctoshockDll.ePeripheralType.DualShock)
+				yield return ConsoleButtons(octo);
+			}
+			else if (core is Nymashock nyma)
+			{
+				foreach (var result in nyma.ActualPortData)
 				{
-					yield return DualShockController(pNum);
-				}
-
-				if (fioConfig.DevicesPlayer[i] == OctoshockDll.ePeripheralType.Pad)
-				{
-					yield return GamePadController(pNum);
-				}
-
-				if (fioConfig.DevicesPlayer[i] == OctoshockDll.ePeripheralType.NegCon)
-				{
-					yield return NeGcon(pNum);
+					var num = int.Parse(result.Port.ShortName.Last().ToString());
+					var device = result.Device.ShortName;
+					if (device is "none") continue;
+					yield return device switch
+					{
+						"dualshock" or "dualanalog" => DualShockController(num),
+						"gamepad" => GamePadController(num),
+						"negcon" => NeGcon(num),
+						_ => throw new NotSupportedException($"device {device} is not supported"),
+					};
 				}
 			}
-
-			yield return ConsoleButtons(psx);
 		}
 
 		private static PadSchema DualShockController(int controller)
@@ -156,7 +175,7 @@ namespace BizHawk.Emulation.Cores
 			};
 		}
 
-		private static PadSchema ConsoleButtons(Octoshock psx)
+		private static PadSchema ConsoleButtons(Octoshock octo)
 		{
 			return new ConsoleSchema
 			{
@@ -164,7 +183,28 @@ namespace BizHawk.Emulation.Cores
 				Buttons = new PadSchemaControl[]
 				{
 					new ButtonSchema(10, 15, "Reset"),
-					new DiscManagerSchema(10, 54, new Size(300, 300), psx, new[] { "Open", "Close", "Disc Select" })
+					new DiscManagerSchema(10, 54, new Size(300, 300), octo, new[] { "Open", "Close", "Disc Select" })
+				}
+			};
+		}
+
+		private static PadSchema ConsoleButtons()
+		{
+			return new ConsoleSchema
+			{
+				Size = new Size(327, 50),
+				Buttons = new[]
+				{
+					new ButtonSchema(10, 15, "Reset"),
+					new ButtonSchema(58, 15, "Power"),
+					new ButtonSchema(108, 15, "Previous Disk")
+					{
+						DisplayName = "Prev Disc"
+					},
+					new ButtonSchema(175, 15, "Next Disk")
+					{
+						DisplayName = "Next Disc"
+					},
 				}
 			};
 		}
