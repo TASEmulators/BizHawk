@@ -70,6 +70,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			{ "psx.correct_aspect", new() { NonSync = true } },
 			{ "psx.slstartp", new() { NonSync = true } },
 			{ "psx.slendp", new() { NonSync = true } },
+
+			{ "nyma.rtcinitialtime", new() { Hide = true } },
+			{ "nyma.rtcrealtime", new() { Hide = true } },
 		};
 	}
 }
