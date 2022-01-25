@@ -268,6 +268,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			var s = new NymaSettingsInfo();
 
+			foreach (var kvp in ExtraOverrides.Concat(SettingOverrides))
+			{
+				s.AllOverrides[kvp.Key] = kvp.Value;
+			}
+
 			foreach (var portInfo in allPorts)
 			{
 				s.Ports.Add(new NymaSettingsInfo.Port
@@ -281,12 +286,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 						SettingValue = dev.ShortName
 					}).ToList()
 				});
+				if (!s.AllOverrides.ContainsKey(portInfo.FullName))
+					s.AllOverrides.Add(portInfo.FullName, new SettingOverride());
 			}
 
-			foreach (var kvp in ExtraOverrides.Concat(SettingOverrides))
-			{
-				s.AllOverrides[kvp.Key] = kvp.Value;
-			}
 			var originalSettings = GetSettingsData();
 			foreach (var setting in originalSettings.Concat(ExtraSettings))
 			{
