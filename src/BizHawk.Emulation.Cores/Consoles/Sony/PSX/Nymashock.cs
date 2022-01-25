@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			{ "psx.slstart", new() { NonSync = true } },
 			{ "psx.slend", new() { NonSync = true } },
 			{ "psx.h_overscan", new() { NonSync = true } },
-			{ "psx.correct_aspect", new() { NonSync = true, Default = "0" } },
+			{ "psx.correct_aspect", new() { NonSync = true } },
 			{ "psx.slstartp", new() { NonSync = true } },
 			{ "psx.slendp", new() { NonSync = true } },
 		};
