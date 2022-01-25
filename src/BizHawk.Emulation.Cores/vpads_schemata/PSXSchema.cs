@@ -61,6 +61,8 @@ namespace BizHawk.Emulation.Cores
 						_ => throw new NotSupportedException($"device {device} is not supported"),
 					};
 				}
+
+				yield return ConsoleButtons();
 			}
 		}
 
