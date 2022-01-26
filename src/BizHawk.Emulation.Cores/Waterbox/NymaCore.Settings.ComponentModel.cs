@@ -45,11 +45,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public override PropertyDescriptorCollection GetProperties()
 		{
 			var s1 = SettingsInfo.Ports
-				.Select((p, i) =>
-				{
-					p.DefaultSettingsValue = SettingsInfo.AllOverrides[p.Name].Default ?? p.DefaultSettingsValue;
-					return new PortPropertyDescriptor(p, i);
-				})
+				.Select((p, i) => new PortPropertyDescriptor(p, i))
 				.Cast<PropertyDescriptor>();
 			var s2 = SettingsInfo.AllSettings
 				.Where(s =>

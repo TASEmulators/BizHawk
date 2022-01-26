@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private void InitControls(List<NPortInfoT> allPorts, bool hasCds, ref SystemInfo si)
 		{
 			_controllerAdapter = new ControllerAdapter(
-				allPorts, _syncSettingsActual.PortDevices, SettingsInfo.AllOverrides, OverrideButtonName, hasCds, ref si, ComputeHiddenPorts(),
+				allPorts, _syncSettingsActual.PortDevices, OverrideButtonName, hasCds, ref si, ComputeHiddenPorts(),
 				_controllerDeckName);
 			_nyma.SetInputDevices(_controllerAdapter.Devices);
 			ControllerDefinition = _controllerAdapter.Definition;
@@ -40,7 +40,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			public ControllerAdapter(
 				List<NPortInfoT> allPorts,
 				IDictionary<int, string> config,
-				IDictionary<string, SettingOverride> overrides,
 				Func<string, string> overrideName,
 				bool hasCds,
 				ref SystemInfo systemInfo,
@@ -64,7 +63,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				for (int port = 0, devByteStart = 0; port < allPorts.Count; port++)
 				{
 					var portInfo = allPorts[port];
-					if (!config.TryGetValue(port, out var deviceName)) deviceName = overrides[portInfo.FullName].Default ?? portInfo.DefaultDeviceShortName;
+					if (!config.TryGetValue(port, out var deviceName)) deviceName = portInfo.DefaultDeviceShortName;
 					finalDevices.Add(deviceName);
 
 					if (hiddenPorts.Contains(portInfo.ShortName))
