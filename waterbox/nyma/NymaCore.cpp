@@ -183,7 +183,7 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo& frame)
 
 			for (int line = lineStart; line < lineEnd; line++)
 			{
-				auto lw = multiWidth ? EES->LineWidths[line] : w;
+				auto lw = EES->InterlaceOn ? EES->LineWidths[line] : w;
 				if (MDFN_LIKELY(lw > 0))
 				{
 					memcpy(dst, src, lw * sizeof(uint32_t));
