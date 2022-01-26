@@ -590,6 +590,32 @@ namespace BizHawk.Client.Common
 				["L Gear Shift"] = 'L',
 				["R Gear Shift"] = 'R',
 				["Offscreen Shot"] = 'O'
+			},
+			[VSystemID.Raw.PSX] = new()
+			{
+				["D-Pad Up"] = 'U',
+				["D-Pad Down"] = 'D',
+				["D-Pad Left"] = 'L',
+				["D-Pad Right"] = 'R',
+				["Thumbstick Up"] = 'U',
+				["Thumbstick Down"] = 'D',
+				["Thumbstick Left"] = 'L',
+				["Thumbstick Right"] = 'R',
+				["□"] = 'Q',
+				["△"] = 'T',
+				["○"] = 'O',
+				["Left Stick, Button"] = '<',
+				["Right Stick, Button"] = '>',
+				["Left Stick, L-Thumb"] = 'L',
+				["Right Stick, L-Thumb"] = 'l',
+				["Left Stick, R-Thumb"] = 'R',
+				["Right Stick, R-Thumb"] = 'r',
+				["Left Stick, Trigger"] = 'T',
+				["Right Stick, Trigger"] = 't',
+				["Left Stick, Pinky"] = 'P',
+				["Right Stick, Pinky"] = 'p',
+				["Analog"] = 'M',
+				["Offscreen Shot"] = 'o',
 			}
 		};
 

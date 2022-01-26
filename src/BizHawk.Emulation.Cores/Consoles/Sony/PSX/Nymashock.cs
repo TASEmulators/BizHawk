@@ -33,6 +33,23 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			{ "psx.input.analog_mode_ct", new() { Hide = true } }, // probably don't want this
 			{ "psx.input.analog_mode_ct.compare", new() { Hide = true } },
 
+			{ "Virtual Port 1", new() { Default = "dualshock" } },
+			{ "Virtual Port 2", new() { Default = "none" } },
+			{ "Virtual Port 3", new() { Default = "none" } },
+			{ "Virtual Port 4", new() { Default = "none" } },
+			{ "Virtual Port 5", new() { Default = "none" } },
+			{ "Virtual Port 6", new() { Default = "none" } },
+			{ "Virtual Port 7", new() { Default = "none" } },
+			{ "Virtual Port 8", new() { Default = "none" } },
+
+			{ "psx.input.port2.memcard", new() { Default = "0" } },
+			{ "psx.input.port3.memcard", new() { Default = "0" } },
+			{ "psx.input.port4.memcard", new() { Default = "0" } },
+			{ "psx.input.port5.memcard", new() { Default = "0" } },
+			{ "psx.input.port6.memcard", new() { Default = "0" } },
+			{ "psx.input.port7.memcard", new() { Default = "0" } },
+			{ "psx.input.port8.memcard", new() { Default = "0" } },
+
 			{ "psx.input.port1.gun_chairs", new() { NonSync = true } },
 			{ "psx.input.port2.gun_chairs", new() { NonSync = true } },
 			{ "psx.input.port3.gun_chairs", new() { NonSync = true } },
@@ -53,6 +70,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			{ "psx.correct_aspect", new() { NonSync = true } },
 			{ "psx.slstartp", new() { NonSync = true } },
 			{ "psx.slendp", new() { NonSync = true } },
+
+			{ "nyma.rtcinitialtime", new() { Hide = true } },
+			{ "nyma.rtcrealtime", new() { Hide = true } },
 		};
 	}
 }

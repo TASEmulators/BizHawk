@@ -246,6 +246,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							case InputType.Status:
 								// TODO: wire up statuses to something (not controller, of course)
 								break;
+							case InputType.Rumble:
+								// TODO: wtf do we do here???
+								break;
 							default:
 							{
 								throw new NotImplementedException($"Unimplemented button type {input.Type}");
