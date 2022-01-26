@@ -287,7 +287,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					}).ToList()
 				});
 				if (s.AllOverrides.ContainsKey(portInfo.FullName) && s.AllOverrides[portInfo.FullName].Default != null)
-					s.Ports.Last().DefaultSettingsValue = s.AllOverrides[portInfo.FullName].Default;
+					portInfo.DefaultDeviceShortName = s.Ports.Last().DefaultSettingsValue = s.AllOverrides[portInfo.FullName].Default;
 			}
 
 			var originalSettings = GetSettingsData();
