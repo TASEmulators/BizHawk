@@ -275,6 +275,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 			foreach (var portInfo in allPorts)
 			{
+				if (s.AllOverrides.ContainsKey(portInfo.FullName) && s.AllOverrides[portInfo.FullName].Default != null)
+					portInfo.DefaultDeviceShortName = s.AllOverrides[portInfo.FullName].Default;
+
 				s.Ports.Add(new NymaSettingsInfo.Port
 				{
 					Name = portInfo.FullName,
@@ -286,8 +289,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 						SettingValue = dev.ShortName
 					}).ToList()
 				});
-				if (s.AllOverrides.ContainsKey(portInfo.FullName) && s.AllOverrides[portInfo.FullName].Default != null)
-					portInfo.DefaultDeviceShortName = s.Ports.Last().DefaultSettingsValue = s.AllOverrides[portInfo.FullName].Default;
 			}
 
 			var originalSettings = GetSettingsData();
