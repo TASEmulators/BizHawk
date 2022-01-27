@@ -313,7 +313,7 @@ namespace BizHawk.Client.Common
 		public bool GbAsSgb { get; set; }
 		public string LibretroCore { get; set; }
 
-		public Dictionary<string, string> PreferredCores = new Dictionary<string, string>
+		public Dictionary<string, string> PreferredCores = new()
 		{
 			[VSystemID.Raw.NES] = CoreNames.QuickNes,
 			[VSystemID.Raw.SNES] = CoreNames.Snes9X,
