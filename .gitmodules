@@ -40,3 +40,6 @@
 [submodule "submodules/libfwunpack"]
 	path = submodules/libfwunpack
 	url = https://github.com/TASEmulators/fwunpack
+[submodule "submodules/sameboy/libsameboy"]
+	path = submodules/sameboy/libsameboy
+	url = https://github.com/LIJI32/SameBoy

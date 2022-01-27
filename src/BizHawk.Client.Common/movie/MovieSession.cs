@@ -5,6 +5,7 @@ using System.Linq;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
+using BizHawk.Emulation.Cores.Nintendo.Sameboy;
 using BizHawk.Emulation.Cores.Nintendo.SubNESHawk;
 using BizHawk.Emulation.Cores.Nintendo.SubGBHawk;
 
@@ -361,6 +362,12 @@ namespace BizHawk.Client.Common
 				{
 					valueName = "cycle";
 					coreValue = ((Gameboy)Movie.Emulator).CycleCount;
+					movieHasValue = Movie.HeaderEntries.TryGetValue(HeaderKeys.CycleCount, out movieValueStr);
+				}
+				else if (Movie.Core == CoreNames.Sameboy)
+				{
+					valueName = "cycle";
+					coreValue = ((Sameboy)Movie.Emulator).CycleCount;
 					movieHasValue = Movie.HeaderEntries.TryGetValue(HeaderKeys.CycleCount, out movieValueStr);
 				}
 				else if (Movie.Core == CoreNames.SubGbHawk)
