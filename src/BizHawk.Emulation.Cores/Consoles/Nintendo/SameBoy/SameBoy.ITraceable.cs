@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 					s[8] & 0xFF,
 					s[9] & 0xFFFF,
 					LibSameboy.sameboy_cpuread(SameboyState, 0xFF44),
-					CycleCount + 485808
+					CycleCount
 					)));
 		}
 	}
