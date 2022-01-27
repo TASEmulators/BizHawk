@@ -23,7 +23,6 @@
 #include gamedb_sega_sms.txt
 #include gamedb_sega_md.txt
 #include gamedb_snes.txt
-#include gamedb_user.txt
 #include gamedb_vectrex.txt
 #include gamedb_ws.txt
 #include gamedb_wsc.txt
@@ -31,6 +30,7 @@
 #include gamedb_amstradcpc.txt
 #include gamedb_ngp.txt
 #include gamedb_channelf.txt
+#includeuser gamedb_user.txt
 
 ; ************ TI-83 ************
 

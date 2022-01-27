@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				_linkedCores[i] = new Gameboy(lp.Comm, lp.Roms[i].Game, lp.Roms[i].RomData, _settings._linkedSettings[i], _syncSettings._linkedSyncSettings[i], lp.DeterministicEmulationRequested);
 				_linkedCores[i].ConnectInputCallbackSystem(_inputCallbacks);
 				_linkedCores[i].ConnectMemoryCallbackSystem(_memoryCallbacks, i);
-				_linkedConts[i] = new SaveController(Gameboy.CreateControllerDefinition(false, false));
+				_linkedConts[i] = new SaveController(Gameboy.CreateControllerDefinition(sgb: false, sub: false, tilt: false));
 				_linkedBlips[i] = new BlipBuffer(1024);
 				_linkedBlips[i].SetRates(2097152 * 2, 44100);
 				_linkedOverflow[i] = 0;
@@ -78,6 +78,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			_linkedDebuggable = new LinkedDebuggable(_linkedCores, _numCores, _memoryCallbacks);
 			_serviceProvider.Register<IDebuggable>(_linkedDebuggable);
+
+			_linkedDisassemblable = new LinkedDisassemblable(new GBDisassembler(), _numCores);
+			_serviceProvider.Register<IDisassemblable>(_linkedDisassemblable);
 		}
 
 		private readonly BasicServiceProvider _serviceProvider;
@@ -105,6 +108,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		private readonly LinkedSaveRam _linkedSaveRam;
 		private readonly LinkedMemoryDomains _linkedMemoryDomains;
 		private readonly LinkedDebuggable _linkedDebuggable;
+		private readonly LinkedDisassemblable _linkedDisassemblable;
 
 		// counters to ensure we do 35112 samples per frame
 		private readonly int[] _linkedOverflow;

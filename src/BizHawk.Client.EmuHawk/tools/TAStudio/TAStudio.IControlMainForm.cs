@@ -103,7 +103,6 @@ namespace BizHawk.Client.EmuHawk
 				if (Emulator.Frame >= MainForm.PauseOnFrame)
 				{
 					MainForm.PauseEmulator();
-					MainForm.PauseOnFrame = null;
 					StopSeeking();
 					GoToPreviousFrame();
 				}

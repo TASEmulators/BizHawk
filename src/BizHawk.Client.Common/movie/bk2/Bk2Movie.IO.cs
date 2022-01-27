@@ -83,6 +83,10 @@ namespace BizHawk.Client.Common
 				{
 					Header[HeaderKeys.CycleCount] = gameboy.CycleCount.ToString();
 				}
+				else if (Emulator is Emulation.Cores.Nintendo.Sameboy.Sameboy sameboy)
+				{
+					Header[HeaderKeys.CycleCount] = sameboy.CycleCount.ToString();
+				}
 				else if (Emulator is Emulation.Cores.Nintendo.SubGBHawk.SubGBHawk subGb)
 				{
 					Header[HeaderKeys.CycleCount] = subGb.CycleCount.ToString();

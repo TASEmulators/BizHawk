@@ -845,10 +845,11 @@ namespace BizHawk.Client.EmuHawk
 
 			set
 			{
+				bool wasTurboSeeking = IsTurboSeeking;
 				_pauseOnFrame = value;
 				SetPauseStatusBarIcon();
 
-				if (value == null) // TODO: make an Event handler instead, but the logic here is that after turbo seeking, tools will want to do a real update when the emulator finally pauses
+				if (wasTurboSeeking && value == null) // TODO: make an Event handler instead, but the logic here is that after turbo seeking, tools will want to do a real update when the emulator finally pauses
 				{
 					Tools.UpdateToolsBefore();
 					Tools.UpdateToolsAfter();
@@ -1681,26 +1682,19 @@ namespace BizHawk.Client.EmuHawk
 					sb.Append($"({_lastFps:0} fps) - ");
 				}
 
-				if (!string.IsNullOrEmpty(VersionInfo.CustomBuildString))
-				{
-					sb.Append($"{VersionInfo.CustomBuildString} ");
-				}
-
-				sb.Append(Emulator.IsNull() ? "BizHawk" : Emulator.GetSystemDisplayName());
-
-				if (VersionInfo.DeveloperBuild)
-				{
-					sb.Append(" (interim)");
-				}
-
 				if (!Emulator.IsNull())
 				{
-					sb.Append($" - {Game.Name}");
+					sb.Append($"{Game.Name} {Emulator.GetSystemDisplayName()} - ");
 					if (MovieSession.Movie.IsActive())
 					{
-						sb.Append($" - {Path.GetFileName(MovieSession.Movie.Filename)}");
+						sb.Append($"{Path.GetFileName(MovieSession.Movie.Filename)} - ");
 					}
 				}
+
+				sb.Append(string.IsNullOrEmpty(VersionInfo.CustomBuildString)
+					? "BizHawk"
+					: VersionInfo.CustomBuildString);
+				if (VersionInfo.DeveloperBuild) sb.Append(" (interim)");
 
 				return sb.ToString();
 			}
@@ -1711,8 +1705,9 @@ namespace BizHawk.Client.EmuHawk
 			get
 			{
 				var sb = new StringBuilder();
-				if (!string.IsNullOrEmpty(VersionInfo.CustomBuildString)) sb.Append($"{VersionInfo.CustomBuildString} ");
-				sb.Append("BizHawk");
+				sb.Append(string.IsNullOrEmpty(VersionInfo.CustomBuildString)
+					? "BizHawk"
+					: VersionInfo.CustomBuildString);
 				if (VersionInfo.DeveloperBuild) sb.Append(" (interim)");
 				return sb.ToString();
 			}
@@ -3135,13 +3130,17 @@ namespace BizHawk.Client.EmuHawk
 
 				PressFrameAdvance = false;
 
-				if (IsTurboing)
+				// Update tools, but not if we're at the end of a turbo seek. In that case, updating will happen later when the seek is ended.
+				if (!(IsTurboSeeking && Emulator.Frame == PauseOnFrame.Value))
 				{
-					Tools.FastUpdateAfter();
-				}
-				else
-				{
-					UpdateToolsAfter();
+					if (IsTurboing)
+					{
+						Tools.FastUpdateAfter();
+					}
+					else
+					{
+						UpdateToolsAfter();
+					}
 				}
 
 				if (!PauseAvi && newFrame && !InvisibleEmulation)
@@ -3179,12 +3178,15 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Tools.TAStudio.StopSeeking();
 					}
-					PauseOnFrame = null;
+					else
+					{
+						PauseOnFrame = null;
+					}
 				}
 			}
-
-			if (InputManager.ClientControls["Rewind"] || PressRewind)
+			else if (isRewinding)
 			{
+				// Tools will want to be updated after rewind (load state), but we only need to manually do this if we did not frame advance.
 				UpdateToolsAfter();
 			}
 

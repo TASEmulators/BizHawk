@@ -37,6 +37,7 @@ namespace BizHawk.Client.EmuHawk
             this.EditContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.RemoveContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.DuplicateContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.SplitContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.PokeContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.FreezeContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.UnfreezeAllContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -63,6 +64,7 @@ namespace BizHawk.Client.EmuHawk
             this.cutToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.clearChangeCountsToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.duplicateWatchToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.SplitWatchToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.PokeAddressToolBarItem = new System.Windows.Forms.ToolStripButton();
             this.FreezeAddressToolBarItem = new System.Windows.Forms.ToolStripButton();
             this.seperatorToolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -87,6 +89,7 @@ namespace BizHawk.Client.EmuHawk
             this.EditWatchMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.RemoveWatchMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.DuplicateWatchMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.SplitWatchMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.PokeAddressMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.FreezeAddressMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.InsertSeparatorMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -123,6 +126,7 @@ namespace BizHawk.Client.EmuHawk
             this.EditContextMenuItem,
             this.RemoveContextMenuItem,
             this.DuplicateContextMenuItem,
+            this.SplitContextMenuItem,
             this.PokeContextMenuItem,
             this.FreezeContextMenuItem,
             this.UnfreezeAllContextMenuItem,
@@ -162,6 +166,12 @@ namespace BizHawk.Client.EmuHawk
             this.DuplicateContextMenuItem.ShortcutKeyDisplayString = "Ctrl+D";
             this.DuplicateContextMenuItem.Text = "&Duplicate";
             this.DuplicateContextMenuItem.Click += new System.EventHandler(this.DuplicateWatchMenuItem_Click);
+            // 
+            // SplitContextMenuItem
+            // 
+            this.SplitContextMenuItem.ShortcutKeyDisplayString = "Ctrl+L";
+            this.SplitContextMenuItem.Text = "Sp&lit";
+            this.SplitContextMenuItem.Click += new System.EventHandler(this.SplitWatchMenuItem_Click);
             // 
             // PokeContextMenuItem
             // 
@@ -264,6 +274,7 @@ namespace BizHawk.Client.EmuHawk
             this.cutToolStripButton,
             this.clearChangeCountsToolStripButton,
             this.duplicateWatchToolStripButton,
+            this.SplitWatchToolStripButton,
             this.PokeAddressToolBarItem,
             this.FreezeAddressToolBarItem,
             this.seperatorToolStripButton,
@@ -350,6 +361,15 @@ namespace BizHawk.Client.EmuHawk
             this.duplicateWatchToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.duplicateWatchToolStripButton.Text = "Duplicate Watch";
             this.duplicateWatchToolStripButton.Click += new System.EventHandler(this.DuplicateWatchMenuItem_Click);
+            // 
+            // SplitWatchToolStripButton
+            // 
+            this.SplitWatchToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.SplitWatchToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.SplitWatchToolStripButton.Name = "SplitWatchToolStripButton";
+            this.SplitWatchToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.SplitWatchToolStripButton.Text = "Split Watch";
+            this.SplitWatchToolStripButton.Click += new System.EventHandler(this.SplitWatchMenuItem_Click);
             // 
             // PokeAddressToolBarItem
             // 
@@ -468,6 +488,7 @@ namespace BizHawk.Client.EmuHawk
             this.EditWatchMenuItem,
             this.RemoveWatchMenuItem,
             this.DuplicateWatchMenuItem,
+            this.SplitWatchMenuItem,
             this.PokeAddressMenuItem,
             this.FreezeAddressMenuItem,
             this.InsertSeparatorMenuItem,
@@ -511,6 +532,12 @@ namespace BizHawk.Client.EmuHawk
             this.DuplicateWatchMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D)));
             this.DuplicateWatchMenuItem.Text = "&Duplicate Watch";
             this.DuplicateWatchMenuItem.Click += new System.EventHandler(this.DuplicateWatchMenuItem_Click);
+            // 
+            // SplitWatchMenuItem
+            // 
+            this.SplitWatchMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.L)));
+            this.SplitWatchMenuItem.Text = "Sp&lit Watch";
+            this.SplitWatchMenuItem.Click += new System.EventHandler(this.SplitWatchMenuItem_Click);
             // 
             // PokeAddressMenuItem
             // 
@@ -678,6 +705,7 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx EditWatchMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RemoveWatchMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DuplicateWatchMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SplitWatchMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx PokeAddressMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx FreezeAddressMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx InsertSeparatorMenuItem;
@@ -701,6 +729,7 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripButton cutToolStripButton;
 		private System.Windows.Forms.ToolStripButton clearChangeCountsToolStripButton;
 		private System.Windows.Forms.ToolStripButton duplicateWatchToolStripButton;
+		private System.Windows.Forms.ToolStripButton SplitWatchToolStripButton;
 		private System.Windows.Forms.ToolStripButton PokeAddressToolBarItem;
 		private System.Windows.Forms.ToolStripButton FreezeAddressToolBarItem;
 		private System.Windows.Forms.ToolStripButton seperatorToolStripButton;
@@ -714,6 +743,7 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx EditContextMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RemoveContextMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DuplicateContextMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SplitContextMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx PokeContextMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx FreezeContextMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx UnfreezeAllContextMenuItem;

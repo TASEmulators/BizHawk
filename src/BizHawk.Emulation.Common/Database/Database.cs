@@ -21,6 +21,12 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		private static readonly EventWaitHandle acquire = new EventWaitHandle(false, EventResetMode.ManualReset);
 
+		private static string _bundledRoot = null;
+
+		private static IList<string> _expected = null;
+
+		private static string _userRoot = null;
+
 		private static string RemoveHashType(string hash)
 		{
 			hash = hash.ToUpper();
@@ -37,23 +43,26 @@ namespace BizHawk.Emulation.Common
 			return hash;
 		}
 
-		private static void LoadDatabase_Escape(string line, string path, bool silent)
+		private static void LoadDatabase_Escape(string line, bool inUser, bool silent)
 		{
-			if (!line.ToUpperInvariant().StartsWith("#INCLUDE"))
-			{
-				return;
-			}
+			if (!line.StartsWith("#include", StringComparison.InvariantCultureIgnoreCase)) return;
 
-			line = line.Substring(8).TrimStart();
-			var filename = Path.Combine(path, line);
+			var isUserInclude = line.StartsWith("#includeuser", StringComparison.InvariantCultureIgnoreCase);
+			var searchUser = inUser || isUserInclude;
+			line = line.Substring(isUserInclude ? 12 : 8).TrimStart();
+			var filename = Path.Combine(searchUser ? _userRoot : _bundledRoot, line);
 			if (File.Exists(filename))
 			{
-				if (!silent) Util.DebugWriteLine($"loading external game database {line}");
-				initializeWork(filename, silent);
+				if (!silent) Util.DebugWriteLine($"loading external game database {line} ({(searchUser ? "user" : "bundled")})");
+				initializeWork(filename, inUser: searchUser, silent: silent);
 			}
-			else
+			else if (inUser)
 			{
-				Util.DebugWriteLine($"BENIGN: missing external game database {line}");
+				Util.DebugWriteLine($"BENIGN: missing external game database {line} (user)");
+			}
+			else if (!isUserInclude)
+			{
+				throw new FileNotFoundException($"missing external game database {line} (bundled)");
 			}
 		}
 
@@ -92,8 +101,9 @@ namespace BizHawk.Emulation.Common
 
 		private static bool initialized = false;
 
-		private static void initializeWork(string path, bool silent)
+		private static void initializeWork(string path, bool inUser, bool silent)
 		{
+			if (!inUser) _expected.Remove(Path.GetFileName(path));
 			//reminder: this COULD be done on several threads, if it takes even longer
 			using var reader = new StreamReader(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read));
 			while (reader.EndOfStream == false)
@@ -108,7 +118,7 @@ namespace BizHawk.Emulation.Common
 
 					if (line.StartsWith("#"))
 					{
-						LoadDatabase_Escape(line, Path.GetDirectoryName(path), silent);
+						LoadDatabase_Escape(line, inUser: inUser, silent: silent);
 						continue;
 					}
 
@@ -150,6 +160,14 @@ namespace BizHawk.Emulation.Common
 
 					DB[game.Hash] = game;
 				}
+				catch (FileNotFoundException e) when (e.Message.Contains("missing external game database"))
+				{
+#if DEBUG
+					throw;
+#else
+					Console.WriteLine(e.Message);
+#endif
+				}
 				catch
 				{
 					Util.DebugWriteLine($"Error parsing database entry: {line}");
@@ -164,9 +182,18 @@ namespace BizHawk.Emulation.Common
 			if (initialized) throw new InvalidOperationException("Did not expect re-initialize of game Database");
 			initialized = true;
 
+			_bundledRoot = Path.GetDirectoryName(path);
+			_userRoot = Environment.GetEnvironmentVariable("BIZHAWK_DATA_HOME");
+			if (!string.IsNullOrEmpty(_userRoot) && Directory.Exists(_userRoot)) _userRoot = Path.Combine(_userRoot, "gamedb");
+			else _userRoot = _bundledRoot;
+			Console.WriteLine($"user root: {_userRoot}");
+
+			_expected = new DirectoryInfo(_bundledRoot!).EnumerateFiles("*.txt").Select(static fi => fi.Name).ToList();
+
 			var stopwatch = Stopwatch.StartNew();
 			ThreadPool.QueueUserWorkItem(_=> {
-				initializeWork(path, silent);
+				initializeWork(path, inUser: false, silent: silent);
+				if (_expected.Count is not 0) Util.DebugWriteLine($"extra bundled gamedb files were not #included: {string.Join(", ", _expected)}");
 				Util.DebugWriteLine("GameDB load: " + stopwatch.Elapsed + " sec");
 			});
 		}

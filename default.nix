@@ -88,7 +88,7 @@ let
 			${commentUnless useCWDAsSource}dotnet build ${extraDotnetBuildFlags}
 			${commentUnless useCWDAsSource}cd ../..
 			Dist/Build${buildConfig}.sh ${extraDotnetBuildFlags}
-			printf "Nix" >output/dll/custombuild.txt
+			printf "NixHawk" >output/dll/custombuild.txt
 			Dist/Package.sh linux-x64
 		'';
 		inherit doCheck;

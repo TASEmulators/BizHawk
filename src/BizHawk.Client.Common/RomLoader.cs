@@ -714,7 +714,7 @@ namespace BizHawk.Client.Common
 			{
 				var system = game?.System;
 
-				DispatchErrorMessage(ex, system);
+				DispatchErrorMessage(ex, system: system, path: path);
 				return false;
 			}
 
@@ -724,7 +724,7 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
-		private void DispatchErrorMessage(Exception ex, string system)
+		private void DispatchErrorMessage(Exception ex, string system, string path)
 		{
 			if (ex is AggregateException agg)
 			{
@@ -735,7 +735,7 @@ namespace BizHawk.Client.Common
 				}
 				foreach (Exception e in agg.InnerExceptions)
 				{
-					DispatchErrorMessage(e, system);
+					DispatchErrorMessage(e, system: system, path: path);
 				}
 
 				return;
@@ -748,7 +748,7 @@ namespace BizHawk.Client.Common
 
 			if (ex is MissingFirmwareException)
 			{
-				DoLoadErrorCallback(ex.Message, system, LoadErrorType.MissingFirmware);
+				DoLoadErrorCallback(ex.Message, system, path, Deterministic, LoadErrorType.MissingFirmware);
 			}
 			else if (ex is CGBNotSupportedException)
 			{
