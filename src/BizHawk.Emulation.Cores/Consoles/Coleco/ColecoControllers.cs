@@ -4,9 +4,23 @@ using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.SrcGen.PeripheralOption;
 
 namespace BizHawk.Emulation.Cores.ColecoVision
 {
+	[PeripheralOptionEnum]
+	public enum PeripheralOption : int
+	{
+		[Description("Unplugged Controller")]
+		Unplugged = 0,
+		[Description("ColecoVision Basic Controller")]
+		Standard = 1,
+		[Description("Turbo Controller")]
+		Turbo = 2,
+		[Description("Super Action Controller")]
+		SuperAction = 3,
+	}
+
 	/// <summary>
 	/// Represents a controller plugged into a controller port on the Colecovision
 	/// </summary>
@@ -23,7 +37,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		int PortNum { get; }
 	}
 
-	[DisplayName("Unplugged Controller")]
+	[PeripheralOptionImpl(typeof(PeripheralOption), PeripheralOption.Unplugged)]
 	public class UnpluggedController : IPort
 	{
 		public UnpluggedController(int portNum)
@@ -49,7 +63,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public float UpdateWheel(IController c) => 0;
 	}
 
-	[DisplayName("ColecoVision Basic Controller")]
+	[PeripheralOptionImpl(typeof(PeripheralOption), PeripheralOption.Standard)]
 	public class StandardController : IPort
 	{
 		public StandardController(int portNum)
@@ -120,7 +134,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public float UpdateWheel(IController c) => 0;
 	}
 
-	[DisplayName("Turbo Controller")]
+	[PeripheralOptionImpl(typeof(PeripheralOption), PeripheralOption.Turbo)]
 	public class ColecoTurboController : IPort
 	{
 		public ColecoTurboController(int portNum)
@@ -219,7 +233,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		}
 	}
 
-	[DisplayName("Super Action Controller")]
+	[PeripheralOptionImpl(typeof(PeripheralOption), PeripheralOption.SuperAction)]
 	public class ColecoSuperActionController : IPort
 	{
 		public ColecoSuperActionController(int portNum)

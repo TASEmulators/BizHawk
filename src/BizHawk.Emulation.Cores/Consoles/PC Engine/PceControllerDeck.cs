@@ -2,22 +2,21 @@
 using System.Linq;
 
 using BizHawk.Emulation.Common;
+using BizHawk.SrcGen.PeripheralOption;
 
 namespace BizHawk.Emulation.Cores.PCEngine
 {
+	[PeripheralOptionEnum]
 	public enum PceControllerType
 	{
-		Unplugged,
-		GamePad
+		Unplugged = 0,
+		GamePad = 1,
 	}
 
-	public class PceControllerDeck
+	[PeripheralOptionConsumer(typeof(PceControllerType), typeof(IPort), PceControllerType.GamePad)]
+	public sealed partial class PceControllerDeck
 	{
-		private static readonly Type[] Implementors =
-		{
-			typeof(UnpluggedController), // Order must match PceControllerType enum values
-			typeof(StandardController)
-		};
+		public const PceControllerType PERIPHERAL_UNPLUGGED_OPTION = PceControllerType.Unplugged;
 
 		public PceControllerDeck(
 			PceControllerType controller1,
@@ -26,11 +25,11 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			PceControllerType controller4,
 			PceControllerType controller5)
 		{
-			_port1 = (IPort)Activator.CreateInstance(Implementors[(int)controller1], 1);
-			_port2 = (IPort)Activator.CreateInstance(Implementors[(int)controller2], 2);
-			_port3 = (IPort)Activator.CreateInstance(Implementors[(int)controller3], 3);
-			_port4 = (IPort)Activator.CreateInstance(Implementors[(int)controller4], 4);
-			_port5 = (IPort)Activator.CreateInstance(Implementors[(int)controller5], 5);
+			_port1 = CtorFor(controller1)(1);
+			_port2 = CtorFor(controller2)(2);
+			_port3 = CtorFor(controller3)(3);
+			_port4 = CtorFor(controller4)(4);
+			_port5 = CtorFor(controller5)(5);
 
 			Definition = new("PC Engine Controller")
 			{
@@ -86,6 +85,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		int PortNum { get; }
 	}
 
+	[PeripheralOptionImpl(typeof(PceControllerType), PceControllerType.Unplugged)]
 	public class UnpluggedController : IPort
 	{
 		public UnpluggedController(int portNum)
@@ -104,6 +104,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public int PortNum { get; }
 	}
 
+	[PeripheralOptionImpl(typeof(PceControllerType), PceControllerType.GamePad)]
 	public class StandardController : IPort
 	{
 		public StandardController(int portNum)

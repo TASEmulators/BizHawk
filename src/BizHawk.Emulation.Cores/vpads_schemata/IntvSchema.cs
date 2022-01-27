@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
-using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Intellivision;
 
@@ -13,32 +12,22 @@ namespace BizHawk.Emulation.Cores
 	// ReSharper disable once UnusedMember.Global
 	public class IntvSchema : IVirtualPadSchema
 	{
-		private string StandardControllerName => typeof(StandardController).DisplayName();
-		private string AnalogControllerName => typeof(FakeAnalogController).DisplayName();
-
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
 		{
+			static Func<int, PadSchema> SchemaFor(PeripheralOption option) => option switch
+			{
+				PeripheralOption.Standard => StandardController,
+				PeripheralOption.FakeAnalog => AnalogController,
+				_ => null
+			};
+
 			var intvSyncSettings = ((Intellivision.Intellivision) core).GetSyncSettings().Clone();
-			var port1 = intvSyncSettings.Port1;
-			var port2 = intvSyncSettings.Port2;
 
-			if (port1 == StandardControllerName)
-			{
-				yield return StandardController(1);
-			}
-			else if (port1 == AnalogControllerName)
-			{
-				yield return AnalogController(1);
-			}
+			var port1 = SchemaFor(intvSyncSettings.Port1);
+			if (port1 is not null) yield return port1(1);
 
-			if (port2 == StandardControllerName)
-			{
-				yield return StandardController(2);
-			}
-			else if (port2 == AnalogControllerName)
-			{
-				yield return AnalogController(2);
-			}
+			var port2 = SchemaFor(intvSyncSettings.Port2);
+			if (port2 is not null) yield return port2(2);
 		}
 
 		private static PadSchema StandardController(int controller)

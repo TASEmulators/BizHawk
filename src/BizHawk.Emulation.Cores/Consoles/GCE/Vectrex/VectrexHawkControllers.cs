@@ -3,9 +3,19 @@ using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.SrcGen.PeripheralOption;
 
 namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 {
+	[PeripheralOptionEnum]
+	public enum ControllerType : int
+	{
+		[Description("Vectrex Digital Controller")]
+		Digital = 1,
+		[Description("Vectrex Analog Controller")]
+		Analog = 2,
+	}
+
 	/// <summary>
 	/// Represents a Vectrex add on
 	/// </summary>
@@ -20,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		int PortNum { get; }
 	}
 
-	[DisplayName("Vectrex Digital Controller")]
+	[PeripheralOptionImpl(typeof(ControllerType), ControllerType.Digital)]
 	public class StandardControls : IPort
 	{
 		public StandardControls(int portNum)
@@ -68,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		}
 	}
 
-	[DisplayName("Vectrex Analog Controller")]
+	[PeripheralOptionImpl(typeof(ControllerType), ControllerType.Analog)]
 	public class AnalogControls : IPort
 	{
 		public AnalogControls(int portNum)

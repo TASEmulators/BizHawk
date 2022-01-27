@@ -13,29 +13,20 @@ namespace BizHawk.Emulation.Cores
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
 		{
-			var vecSyncSettings = ((VectrexHawk)core).GetSyncSettings().Clone();
-			var port1 = vecSyncSettings.Port1;
-			var port2 = vecSyncSettings.Port2;
-
-			switch (port1)
+			static Func<int, PadSchema> SchemaFor(ControllerType option) => option switch
 			{
-				case "Vectrex Digital Controller":
-					yield return StandardController(1);
-					break;
-				case "Vectrex Analog Controller":
-					yield return AnalogController(1);
-					break;
-			}
+				ControllerType.Digital => StandardController,
+				ControllerType.Analog => AnalogController,
+				_ => null
+			};
 
-			switch (port2)
-			{
-				case "Vectrex Digital Controller":
-					yield return StandardController(2);
-					break;
-				case "Vectrex Analog Controller":
-					yield return AnalogController(2);
-					break;
-			}
+			var ss = ((VectrexHawk) core).GetSyncSettings().Clone();
+
+			var port1 = SchemaFor(ss.Port1);
+			if (port1 is not null) yield return port1(1);
+
+			var port2 = SchemaFor(ss.Port2);
+			if (port2 is not null) yield return port2(2);
 
 			yield return ConsoleButtons();
 		}

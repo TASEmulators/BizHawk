@@ -61,7 +61,10 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 			is_G7400 = _syncSettings.G7400_Enable;
 
-			_controllerDeck = new O2HawkControllerDeck("O2 Controller", "O2 Controller", is_G7400);
+			_controllerDeck = new(
+				O2HawkControllerDeck.DEFAULT_PERIPHERAL_OPTION,
+				O2HawkControllerDeck.DEFAULT_PERIPHERAL_OPTION,
+				is_G7400);
 
 			_bios = comm.CoreFileProvider.GetFirmwareOrThrow(new("O2", is_G7400 ? "BIOS-G7400" : "BIOS-O2"), "BIOS Not Found, Cannot Load");
 

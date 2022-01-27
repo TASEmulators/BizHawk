@@ -1,7 +1,4 @@
-﻿using System;
-using Newtonsoft.Json;
-
-using BizHawk.Common;
+﻿using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Intellivision
@@ -44,38 +41,9 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		public class IntvSyncSettings
 		{
-			private string _port1 = IntellivisionControllerDeck.DefaultControllerName;
-			private string _port2 = IntellivisionControllerDeck.DefaultControllerName;
+			public PeripheralOption Port1 = IntellivisionControllerDeck.DEFAULT_PERIPHERAL_OPTION;
 
-			[JsonIgnore]
-			public string Port1
-			{
-				get => _port1;
-				set
-				{
-					if (!IntellivisionControllerDeck.ControllerCtors.ContainsKey(value))
-					{
-						throw new InvalidOperationException("Invalid controller type: " + value);
-					}
-
-					_port1 = value;
-				}
-			}
-
-			[JsonIgnore]
-			public string Port2
-			{
-				get => _port2;
-				set
-				{
-					if (!IntellivisionControllerDeck.ControllerCtors.ContainsKey(value))
-					{
-						throw new InvalidOperationException("Invalid controller type: " + value);
-					}
-
-					_port2 = value;
-				}
-			}
+			public PeripheralOption Port2 = IntellivisionControllerDeck.DEFAULT_PERIPHERAL_OPTION;
 
 			public IntvSyncSettings Clone()
 			{

@@ -1,7 +1,5 @@
 ﻿using System.ComponentModel;
 
-using Newtonsoft.Json;
-
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
@@ -34,49 +32,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		public class VectrexSyncSettings
 		{
-			[JsonIgnore]
-			public string Port1 = VectrexHawkControllerDeck.DefaultControllerName;
-			public string Port2 = VectrexHawkControllerDeck.DefaultControllerName;
-
-			public enum ControllerType
-			{
-				Digital,
-				Analog
-			}
-
-			[JsonIgnore]
-			private ControllerType _VectrexController1;
-			private ControllerType _VectrexController2;
-
 			[DisplayName("Controller 1")]
 			[Description("Select Controller Type")]
-			[DefaultValue(ControllerType.Digital)]
-			public ControllerType VectrexController1
-			{
-				get => _VectrexController1;
-				set
-				{
-					if (value == ControllerType.Digital) { Port1 = VectrexHawkControllerDeck.DefaultControllerName; }
-					else { Port1 = "Vectrex Analog Controller"; }
-
-					_VectrexController1 = value;
-				}
-			}
+			[DefaultValue(VectrexHawkControllerDeck.DEFAULT_PERIPHERAL_OPTION)]
+			public ControllerType Port1 { get; set; } = VectrexHawkControllerDeck.DEFAULT_PERIPHERAL_OPTION;
 
 			[DisplayName("Controller 2")]
 			[Description("Select Controller Type")]
-			[DefaultValue(ControllerType.Digital)]
-			public ControllerType VectrexController2
-			{
-				get => _VectrexController2;
-				set
-				{
-					if (value == ControllerType.Digital) { Port2 = VectrexHawkControllerDeck.DefaultControllerName; }
-					else { Port2 = "Vectrex Analog Controller"; }
-
-					_VectrexController2 = value;
-				}
-			}
+			[DefaultValue(VectrexHawkControllerDeck.DEFAULT_PERIPHERAL_OPTION)]
+			public ControllerType Port2 { get; set; } = VectrexHawkControllerDeck.DEFAULT_PERIPHERAL_OPTION;
 
 			public VectrexSyncSettings Clone()
 			{

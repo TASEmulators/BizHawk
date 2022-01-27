@@ -1,19 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.SrcGen.PeripheralOption;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
-	public class Atari2600ControllerDeck
+	[PeripheralOptionConsumer(typeof(Atari2600ControllerTypes), typeof(IPort), Atari2600ControllerTypes.Joystick)]
+	public sealed partial class Atari2600ControllerDeck
 	{
-
 		public Atari2600ControllerDeck(Atari2600ControllerTypes controller1, Atari2600ControllerTypes controller2)
 		{
-			Port1 = ControllerCtors[controller1](1);
-			Port2 = ControllerCtors[controller2](2);
+			Port1 = CtorFor(controller1)(1);
+			Port2 = CtorFor(controller2)(2);
 
 			Definition = new("Atari 2600 Basic Controller")
 			{
@@ -67,18 +66,5 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		private readonly IPort Port1;
 		private readonly IPort Port2;
-
-		private static IReadOnlyDictionary<Atari2600ControllerTypes, Func<int, IPort>> _controllerCtors;
-
-		public static IReadOnlyDictionary<Atari2600ControllerTypes, Func<int, IPort>> ControllerCtors => _controllerCtors
-			??= new Dictionary<Atari2600ControllerTypes, Func<int, IPort>>
-			{
-				[Atari2600ControllerTypes.Unplugged] = portNum => new UnpluggedController(portNum),
-				[Atari2600ControllerTypes.Joystick] = portNum => new StandardController(portNum),
-				[Atari2600ControllerTypes.Paddle] = portNum => new PaddleController(portNum),
-				[Atari2600ControllerTypes.BoostGrip] = portNum => new BoostGripController(portNum),
-				[Atari2600ControllerTypes.Driving] = portNum => new DrivingController(portNum),
-				[Atari2600ControllerTypes.Keyboard] = portNum => new KeyboardController(portNum)
-			};
 	}
 }
