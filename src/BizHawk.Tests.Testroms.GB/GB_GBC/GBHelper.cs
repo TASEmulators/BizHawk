@@ -37,17 +37,17 @@ namespace BizHawk.Tests.Testroms.GB
 				Variant = variant;
 			}
 
-			public override readonly string ToString()
+			public readonly override string ToString()
 				=> $"{Variant} in {CoreName}{(UseBIOS ? string.Empty : " (no BIOS)")}";
 		}
 
 		private static readonly GambatteSettings GambatteSettings = new() { CGBColors = GBColors.ColorType.vivid };
 
-		private static readonly GambatteSyncSettings GambatteSyncSettings_GB_NOBIOS = new() { ConsoleMode = GambatteSyncSettings.ConsoleModeType.GB, FrameLength = GambatteSyncSettings.FrameLengthType.EqualLengthFrames };
+		private static readonly GambatteSyncSettings GambatteSyncSettings_GB_NOBIOS = new() { ConsoleMode = GambatteSyncSettings.ConsoleModeType.GB, EnableBIOS = false, FrameLength = GambatteSyncSettings.FrameLengthType.EqualLengthFrames };
 
 		private static readonly GambatteSyncSettings GambatteSyncSettings_GB_USEBIOS = new() { ConsoleMode = GambatteSyncSettings.ConsoleModeType.GB, EnableBIOS = true, FrameLength = GambatteSyncSettings.FrameLengthType.EqualLengthFrames };
 
-		private static readonly GambatteSyncSettings GambatteSyncSettings_GBC_NOBIOS = new() { ConsoleMode = GambatteSyncSettings.ConsoleModeType.GBC, FrameLength = GambatteSyncSettings.FrameLengthType.EqualLengthFrames };
+		private static readonly GambatteSyncSettings GambatteSyncSettings_GBC_NOBIOS = new() { ConsoleMode = GambatteSyncSettings.ConsoleModeType.GBC, EnableBIOS = false, FrameLength = GambatteSyncSettings.FrameLengthType.EqualLengthFrames };
 
 		private static readonly GambatteSyncSettings GambatteSyncSettings_GBC_USEBIOS = new() { ConsoleMode = GambatteSyncSettings.ConsoleModeType.GBC, EnableBIOS = true, FrameLength = GambatteSyncSettings.FrameLengthType.EqualLengthFrames };
 
@@ -117,13 +117,9 @@ namespace BizHawk.Tests.Testroms.GB
 		}
 
 		public static GambatteSyncSettings GetGambatteSyncSettings(ConsoleVariant variant, bool biosAvailable)
-			=> biosAvailable
-				? variant.IsColour()
-					? GambatteSyncSettings_GBC_USEBIOS
-					: GambatteSyncSettings_GB_USEBIOS
-				: variant.IsColour()
-					? GambatteSyncSettings_GBC_NOBIOS
-					: GambatteSyncSettings_GB_NOBIOS;
+			=> variant.IsColour()
+				? biosAvailable ? GambatteSyncSettings_GBC_USEBIOS : GambatteSyncSettings_GBC_NOBIOS
+				: biosAvailable ? GambatteSyncSettings_GB_USEBIOS : GambatteSyncSettings_GB_NOBIOS;
 
 		public static GBSyncSettings GetGBHawkSyncSettings(ConsoleVariant variant)
 			=> variant.IsColour()
@@ -154,8 +150,10 @@ namespace BizHawk.Tests.Testroms.GB
 
 		/// <summary>converts Gambatte's GBC palette to GBHawk's; GB palette is the same</summary>
 		public static Image NormaliseGBScreenshot(Image img, CoreSetup setup)
-			=> setup.CoreName is CoreNames.Gambatte
-				? ImageUtils.PaletteSwap(img, setup.Variant.IsColour() ? UnVividGBCPaletteMap : UnVividGBPaletteMap)
-				: img;
+			=> setup.CoreName switch
+			{
+				CoreNames.Gambatte => ImageUtils.PaletteSwap(img, setup.Variant.IsColour() ? UnVividGBCPaletteMap : UnVividGBPaletteMap),
+				_ => img
+			};
 	}
 }

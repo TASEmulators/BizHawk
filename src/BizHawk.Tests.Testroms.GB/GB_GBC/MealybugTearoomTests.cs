@@ -7,7 +7,6 @@ using BizHawk.Common.IOExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
-using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.GBHawk;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -218,13 +217,12 @@ namespace BizHawk.Tests.Testroms.GB
 					fe.FrameAdvanceBy(5);
 					if (testCase.TestName is "m3_lcdc_win_map_change2") fe.FrameAdvance(); // just happens to be an outlier
 				}
-				var domain = fe.CoreAsMemDomains!.SystemBus;
-				Func<long> derefPC = fe.Core switch
+				Func<long> getPC = fe.Core switch
 				{
-					Gameboy => () => domain.PeekByte((long) fe.CoreAsDebuggable!.GetCpuFlagsAndRegisters()["PC"].Value),
-					GBHawk gbHawk => () => domain.PeekByte(gbHawk.cpu.RegPC),
-					_ => throw new Exception()
+					GBHawk gbHawk => () => gbHawk.cpu.RegPC,
+					_ => () => (long) fe.CoreAsDebuggable!.GetCpuFlagsAndRegisters()["PC"].Value
 				};
+				var domain = fe.CoreAsMemDomains!.SystemBus;
 				var finished = false;
 				fe.CoreAsDebuggable!.MemoryCallbacks.Add(new MemoryCallback(
 					domain.Name,
@@ -232,7 +230,7 @@ namespace BizHawk.Tests.Testroms.GB
 					"breakpoint",
 					(_, _, _) =>
 					{
-						if (!finished && derefPC() is 0x40) finished = true;
+						if (!finished && domain.PeekByte(getPC()) is 0x40) finished = true;
 					},
 					address: null, // all addresses
 					mask: null));

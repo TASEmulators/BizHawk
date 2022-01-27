@@ -139,7 +139,7 @@ namespace BizHawk.Tests.Testroms.GB.GambatteSuite
 		{
 			static bool GlyphMatches(Bitmap b, int xOffset, byte v)
 			{
-				// `(x, 0)` is the top-left of an 8x8 square of pixels to read from `b`, which is compared against the glyph for the nybble `v`
+				// `(xOffset, 0)` is the top-left of an 8x8 square of pixels to read from `b`, which is compared against the glyph for the nybble `v`
 				bool GlyphRowMatches(int y)
 				{
 					byte rowAsByte = 0;
