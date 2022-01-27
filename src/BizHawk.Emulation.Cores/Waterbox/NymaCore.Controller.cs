@@ -176,7 +176,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							case InputType.Axis:
 							{
 								var data = input.Extra.AsAxis();
-								var fullName = $"{name} {overrideName(data.NameNeg)} / {overrideName(data.NamePos)}";
+								var fullName = $"{name} {overrideName($"{data.NameNeg} / {data.NamePos}")}";
 
 								ret.AddAxis(fullName, 0.RangeTo(0xFFFF), 0x8000, (input.Flags & AxisFlags.InvertCo) != 0);
 								ret.CategoryLabels[fullName] = category;
@@ -191,7 +191,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							case InputType.AxisRel:
 							{
 								var data = input.Extra.AsAxis();
-								var fullName = $"{name} {input.Extra.AsAxis().NameNeg} / {input.Extra.AsAxis().NamePos}";
+								var fullName = $"{name} {overrideName($"{data.NameNeg} / {data.NamePos}")}";
 
 								// TODO: Mednafen docs say this range should be [-32768, 32767], and inspecting the code
 								// reveals that a 16 bit value is read, but using anywhere near this full range makes

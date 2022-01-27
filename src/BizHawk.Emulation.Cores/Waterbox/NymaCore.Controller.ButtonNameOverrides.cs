@@ -13,7 +13,17 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private static readonly Dictionary<string, string> ButtonNameOverrides = new Dictionary<string, string>
 		{
 			["Left Shoulder"] = "L",
-			["Right Shoulder"] = "R"
+			["Right Shoulder"] = "R",
+			["Left Stick, Button"] = "L3",
+			["Right Stick, Button"] = "R3",
+			["Left Stick"] = "LStick",
+			["Right Stick"] = "RStick",
+			["Up/ Down"] = "Y", // space after Up is removed by regex replace
+			["Left/ Right"] = "X",
+			["D-Pad Up"] = "Up", // to match Octoshock
+			["D-Pad Down"] = "Down",
+			["D-Pad Left"] = "Left",
+			["D-Pad Right"] = "Right",
 		};
 
 		/// <summary>
