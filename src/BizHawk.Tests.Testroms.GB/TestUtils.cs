@@ -60,7 +60,8 @@ namespace BizHawk.Tests.Testroms.GB
 		/// <remarks>programmatically veto any test cases by modifying this method</remarks>
 		public static bool ShouldIgnoreCase(string suiteID, string caseStr)
 		{
-//			if (caseStr.Contains("timing")) return true;
+			if (!caseStr.Contains("in SameBoy")) return true;
+			if (!caseStr.Contains("acid")) return true;
 			return false;
 		}
 
