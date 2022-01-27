@@ -1681,26 +1681,19 @@ namespace BizHawk.Client.EmuHawk
 					sb.Append($"({_lastFps:0} fps) - ");
 				}
 
-				if (!string.IsNullOrEmpty(VersionInfo.CustomBuildString))
-				{
-					sb.Append($"{VersionInfo.CustomBuildString} ");
-				}
-
-				sb.Append(Emulator.IsNull() ? "BizHawk" : Emulator.GetSystemDisplayName());
-
-				if (VersionInfo.DeveloperBuild)
-				{
-					sb.Append(" (interim)");
-				}
-
 				if (!Emulator.IsNull())
 				{
-					sb.Append($" - {Game.Name}");
+					sb.Append($"{Game.Name} {Emulator.GetSystemDisplayName()} - ");
 					if (MovieSession.Movie.IsActive())
 					{
-						sb.Append($" - {Path.GetFileName(MovieSession.Movie.Filename)}");
+						sb.Append($"{Path.GetFileName(MovieSession.Movie.Filename)} - ");
 					}
 				}
+
+				sb.Append(string.IsNullOrEmpty(VersionInfo.CustomBuildString)
+					? "BizHawk"
+					: VersionInfo.CustomBuildString);
+				if (VersionInfo.DeveloperBuild) sb.Append(" (interim)");
 
 				return sb.ToString();
 			}
@@ -1711,8 +1704,9 @@ namespace BizHawk.Client.EmuHawk
 			get
 			{
 				var sb = new StringBuilder();
-				if (!string.IsNullOrEmpty(VersionInfo.CustomBuildString)) sb.Append($"{VersionInfo.CustomBuildString} ");
-				sb.Append("BizHawk");
+				sb.Append(string.IsNullOrEmpty(VersionInfo.CustomBuildString)
+					? "BizHawk"
+					: VersionInfo.CustomBuildString);
 				if (VersionInfo.DeveloperBuild) sb.Append(" (interim)");
 				return sb.ToString();
 			}
