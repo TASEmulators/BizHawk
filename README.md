@@ -306,7 +306,7 @@ Neo Geo Pocket | **NeoPop**
 NES | **NesHawk**, QuickNes
 Odyssey² | **O2Hawk**
 PC-FX | **T.S.T.**
-Playstation (PSX) | **Octoshock**
+Playstation (PSX) | **Nymashock**, **Octoshock**
 Sega 32X | **PicoDrive**
 Sega Game Gear | **SMSHawk**
 Sega Genesis | **Genplus-gx**
