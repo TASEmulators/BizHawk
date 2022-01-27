@@ -3134,13 +3134,17 @@ namespace BizHawk.Client.EmuHawk
 
 				PressFrameAdvance = false;
 
-				if (IsTurboing)
+				// Update tools, but not if we're at the end of a turbo seek. In that case, updating will happen later when the seek is ended.
+				if (!(IsTurboSeeking && Emulator.Frame == PauseOnFrame.Value))
 				{
-					Tools.FastUpdateAfter();
-				}
-				else
-				{
-					UpdateToolsAfter();
+					if (IsTurboing)
+					{
+						Tools.FastUpdateAfter();
+					}
+					else
+					{
+						UpdateToolsAfter();
+					}
 				}
 
 				if (!PauseAvi && newFrame && !InvisibleEmulation)
