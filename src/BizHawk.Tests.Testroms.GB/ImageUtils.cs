@@ -21,7 +21,7 @@ namespace BizHawk.Tests.Testroms.GB
 		private static (string Expect, string Actual, string Glob) GenFilenames((string Suite, string Case) id, string fileExt = "png")
 		{
 			var prefix = $"{id.Suite}/{id.Case.GetHashCode():X8}"; // hashcode of string sadly not stable
-			var suffix = $"{id.Case.RemoveInvalidFileSystemChars().Replace(' ', '_')}.{fileExt}";
+			var suffix = $"{id.Case.RemoveInvalidFileSystemChars().Replace(' ', '_').Replace("(no BIOS)", "noBIOS")}.{fileExt}";
 			return ($"{prefix}_expect_{suffix}", $"{prefix}_actual_{suffix}", $"{prefix}_*_{suffix}");
 		}
 

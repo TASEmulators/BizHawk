@@ -37,7 +37,7 @@ namespace BizHawk.Tests.Testroms.GB
 				Variant = variant;
 			}
 
-			public override readonly string ToString()
+			public readonly override string ToString()
 				=> $"{Variant} in {CoreName}{(UseBIOS ? string.Empty : " (no BIOS)")}";
 		}
 
