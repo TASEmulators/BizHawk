@@ -105,7 +105,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			BoardName = MapperName(file);
 
 			_hasAcc = BoardName is "MBC7 ROM+ACCEL+EEPROM";
-			ControllerDefinition = Gameboy.Gameboy.CreateControllerDefinition(false, false, _hasAcc);
+			ControllerDefinition = Gameboy.Gameboy.CreateControllerDefinition(sgb: false, sub: false, tilt: _hasAcc);
 
 			LibSameboy.sameboy_setrtcdivisoroffset(SameboyState, _syncSettings.RTCDivisorOffset);
 			CycleCount = 0;

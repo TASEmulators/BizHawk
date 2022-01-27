@@ -193,7 +193,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							new DebugVSystemChildItem(
 								"Debug SameBoy States",
-								() => (Emulator as Sameboy)!.DebugSameBoyState())
+								() => ((Sameboy) Emulator).DebugSameBoyState())
 							{
 								RequiresCore = CoreNames.Sameboy,
 							},

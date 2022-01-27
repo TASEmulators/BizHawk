@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 				return ret;
 			}
 
-			return new byte[0];
+			return Array.Empty<byte>();
 		}
 
 		public void StoreSaveRam(byte[] data)
