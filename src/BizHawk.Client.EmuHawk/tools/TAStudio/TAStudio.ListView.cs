@@ -657,7 +657,6 @@ namespace BizHawk.Client.EmuHawk
 							CurrentTasMovie.SetBoolStates(firstSel, (frame - firstSel) + 1, buttonName, !allPressed);
 							_boolPaintState = CurrentTasMovie.BoolIsPressed(frame, buttonName);
 							_triggerAutoRestore = true;
-							JumpToGreenzone(true);
 							RefreshDialog();
 						}
 						else if (ModifierKeys == Keys.Shift && ModifierKeys == Keys.Alt) // Does not work?
@@ -671,7 +670,6 @@ namespace BizHawk.Client.EmuHawk
 							CurrentTasMovie.ToggleBoolState(TasView.CurrentCell.RowIndex.Value, buttonName);
 							_boolPaintState = CurrentTasMovie.BoolIsPressed(frame, buttonName);
 							_triggerAutoRestore = true;
-							JumpToGreenzone(true);
 							RefreshDialog();
 						}
 					}
@@ -846,10 +844,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						// If painting up, we have altered frames without loading states (for smoothness)
 						// So now we have to ensure that all the edited frames are invalidated
-						if (_paintingMinFrame < Emulator.Frame)
-						{
-							GoToFrame(_paintingMinFrame);
-						}
+						GoToLastEmulatedFrameIfNecessary(_paintingMinFrame); 
 					}
 
 					ClearLeftMouseStates();
