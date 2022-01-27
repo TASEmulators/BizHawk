@@ -331,6 +331,7 @@ namespace BizHawk.Emulation.Cores
 					},
 					new SingleAxisSchema(125, 15, controller, "Twist | / |", isVertical: true)
 					{
+						DisplayName = "Twist",
 						TargetSize = new Size(64, 178),
 						MinValue = 0,
 						MaxValue = 65535

@@ -644,7 +644,21 @@ namespace BizHawk.Client.Common
 			{
 				["VPos"] = "X",
 				["HPos"] = "Y"
-			}
+			},
+			[VSystemID.Raw.PSX] = new()
+			{
+				["Left Stick Left / Right"] = "lsX",
+				["Left Stick Up / Down"] = "lsY",
+				["Right Stick Left / Right"] = "rsX",
+				["Right Stick Up / Down"] = "rsY",
+				["Left Stick, Left / Right"] = "lsX",
+				["Left Stick, Fore / Back"] = "lsZ",
+				["Right Stick, Left / Right"] = "rsX",
+				["Right Stick, Fore / Back"] = "rsZ",
+				["Motion Left / Right"] = "mX",
+				["Motion Up / Down"] = "mY",
+				["Twist | / |"] = "Twist",
+			},
 		};
 	}
 }
