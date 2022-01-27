@@ -3188,9 +3188,9 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			}
-
-			if (InputManager.ClientControls["Rewind"] || PressRewind)
+			else if (isRewinding)
 			{
+				// Tools will want to be updated after rewind (load state), but we only need to manually do this if we did not frame advance.
 				UpdateToolsAfter();
 			}
 
