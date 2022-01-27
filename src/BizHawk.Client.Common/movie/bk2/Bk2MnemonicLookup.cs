@@ -616,7 +616,7 @@ namespace BizHawk.Client.Common
 				["Right Stick, Pinky"] = 'p',
 				["Analog"] = 'M',
 				["Offscreen Shot"] = 'o',
-			}
+			},
 		};
 
 		private static readonly Dictionary<string, string> BaseAxisLookupTable = new Dictionary<string, string>
