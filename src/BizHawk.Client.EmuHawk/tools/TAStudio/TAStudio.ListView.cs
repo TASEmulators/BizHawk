@@ -16,6 +16,7 @@ namespace BizHawk.Client.EmuHawk
 		// Input Painting
 		private string _startBoolDrawColumn = "";
 		private string _startAxisDrawColumn = "";
+		private bool _drewAxis;
 		private bool _boolPaintState;
 		private int _axisPaintState;
 		private int _axisBackupState;
@@ -789,6 +790,7 @@ namespace BizHawk.Client.EmuHawk
 			_startSelectionDrag = false;
 			_startBoolDrawColumn = "";
 			_startAxisDrawColumn = "";
+			_drewAxis = false;
 			_paintingMinFrame = -1;
 			TasView.ReleaseCurrentCell();
 
@@ -840,7 +842,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					if (!string.IsNullOrWhiteSpace(_startBoolDrawColumn))
+					if (!string.IsNullOrWhiteSpace(_startBoolDrawColumn) || _drewAxis)
 					{
 						// If painting up, we have altered frames without loading states (for smoothness)
 						// So now we have to ensure that all the edited frames are invalidated
@@ -1164,11 +1166,10 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
-					var getVal = (i < CurrentTasMovie.InputLogLength) ? CurrentTasMovie.GetAxisState(i, _startAxisDrawColumn) : setVal;
 					CurrentTasMovie.SetAxisState(i, _startAxisDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column
+				}
 
-					if (getVal != setVal) { JumpToGreenzone(); }
-				}				
+				_drewAxis = true;
 			}
 
 			CurrentTasMovie.IsCountingRerecords = wasCountingRerecords;
