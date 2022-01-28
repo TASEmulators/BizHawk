@@ -1683,7 +1683,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (!Emulator.IsNull())
 				{
-					sb.Append($"{Game.Name} {Emulator.GetSystemDisplayName()} - ");
+					sb.Append($"{Game.Name} [{Emulator.GetSystemDisplayName()}] - ");
 					if (MovieSession.Movie.IsActive())
 					{
 						sb.Append($"{Path.GetFileName(MovieSession.Movie.Filename)} - ");
