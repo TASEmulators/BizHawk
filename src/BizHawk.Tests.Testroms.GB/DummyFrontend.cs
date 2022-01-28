@@ -201,7 +201,7 @@ namespace BizHawk.Tests.Testroms.GB
 				new(Console.WriteLine, Console.WriteLine, efp, CoreComm.CorePreferencesFlags.None));
 			Core = core;
 			_controller = new(Core.ControllerDefinition);
-			while (Core.Frame < biosWaitDuration) Core.FrameAdvance(_controller, render: false, renderSound: false);
+			FrameAdvanceTo(biosWaitDuration);
 			CoreAsDebuggable = Core.CanDebug() ? Core.AsDebuggable() : null;
 			CoreAsMemDomains = Core.HasMemoryDomains() ? Core.AsMemoryDomains() : null;
 			_coreAsVP = core.AsVideoProvider();
@@ -214,23 +214,27 @@ namespace BizHawk.Tests.Testroms.GB
 			lock (_totalFramesMutex) _totalFrames += FrameCount;
 		}
 
-		public void FrameAdvance()
-			=> Core.FrameAdvance(_controller, render: false, renderSound: false);
+		public void FrameAdvance(bool maySkipRender = false)
+			=> Core.FrameAdvance(_controller, render: !maySkipRender, renderSound: false);
 
-		public void FrameAdvanceBy(int numFrames)
+		/// <param name="maySkipRender">applies to last frame (rendering is skipped until then)</param>
+		public void FrameAdvanceBy(int numFrames, bool maySkipRender = false)
 			=> FrameAdvanceTo(FrameCount + numFrames);
 
+		/// <param name="maySkipRender">applies to all frames</param>
 		/// <returns>last return of <paramref name="pred"/> (will be <see langword="false"/> iff timed out)</returns>
 		/// <remarks><paramref name="timeoutAtFrame"/> is NOT relative to current frame count</remarks>
-		public bool FrameAdvanceUntil(Func<bool> pred, int timeoutAtFrame = 500)
+		public bool FrameAdvanceUntil(Func<bool> pred, int timeoutAtFrame = 500, bool maySkipRender = false)
 		{
-			while (!pred() && FrameCount < timeoutAtFrame) FrameAdvance();
+			while (!pred() && FrameCount < timeoutAtFrame) FrameAdvance(maySkipRender: maySkipRender);
 			return FrameCount < timeoutAtFrame;
 		}
 
-		public void FrameAdvanceTo(int frame)
+		/// <param name="maySkipRender">applies to last frame (rendering is skipped until then)</param>
+		public void FrameAdvanceTo(int frame, bool maySkipRender = false)
 		{
-			while (FrameCount < frame) FrameAdvance();
+			while (FrameCount < frame - 1) FrameAdvance(maySkipRender: true);
+			FrameAdvance(maySkipRender: maySkipRender);
 		}
 
 		public Bitmap Screenshot()
