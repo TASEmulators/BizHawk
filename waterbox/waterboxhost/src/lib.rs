@@ -4,7 +4,6 @@
 #![feature(never_type)]
 #![feature(control_flow_enum)]
 #![feature(core_intrinsics)]
-#![feature(asm)]
 #![feature(map_first_last)]
 
 #![allow(dead_code)]

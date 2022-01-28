@@ -1,5 +1,7 @@
 // These are mostly unrelated to Waterbox, and are only here because I was too lazy to put them elsewhere.
 
+use std::arch::asm;
+
 /// win64 function that calls a sysv64 function and returns its result.
 /// The function is passed as a hidden parameter in rax, and should take 0 arguments, all of which are pointer or integer type.
 #[no_mangle]
