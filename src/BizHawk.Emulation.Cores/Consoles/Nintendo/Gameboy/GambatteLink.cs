@@ -70,17 +70,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			GBLinkController = CreateControllerDefinition();
 
-			_linkedSaveRam = new LinkedSaveRam(_linkedCores, _numCores);
-			_serviceProvider.Register<ISaveRam>(_linkedSaveRam);
-
-			_linkedMemoryDomains = new LinkedMemoryDomains(_linkedCores, _numCores);
-			_serviceProvider.Register<IMemoryDomains>(_linkedMemoryDomains);
-
 			_linkedDebuggable = new LinkedDebuggable(_linkedCores, _numCores, _memoryCallbacks);
 			_serviceProvider.Register<IDebuggable>(_linkedDebuggable);
 
 			_linkedDisassemblable = new LinkedDisassemblable(new GBDisassembler(), _numCores);
 			_serviceProvider.Register<IDisassemblable>(_linkedDisassemblable);
+
+			_linkedMemoryDomains = new LinkedMemoryDomains(_linkedCores, _numCores, _linkedDisassemblable);
+			_serviceProvider.Register<IMemoryDomains>(_linkedMemoryDomains);
+
+			_linkedSaveRam = new LinkedSaveRam(_linkedCores, _numCores);
+			_serviceProvider.Register<ISaveRam>(_linkedSaveRam);
 		}
 
 		private readonly BasicServiceProvider _serviceProvider;
@@ -105,10 +105,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		private int _numCores = 0;
 		private readonly Gameboy[] _linkedCores;
 
-		private readonly LinkedSaveRam _linkedSaveRam;
-		private readonly LinkedMemoryDomains _linkedMemoryDomains;
 		private readonly LinkedDebuggable _linkedDebuggable;
 		private readonly LinkedDisassemblable _linkedDisassemblable;
+		private readonly LinkedMemoryDomains _linkedMemoryDomains;
+		private readonly LinkedSaveRam _linkedSaveRam;
 
 		// counters to ensure we do 35112 samples per frame
 		private readonly int[] _linkedOverflow;

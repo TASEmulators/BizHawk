@@ -261,8 +261,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		{
 			// the GB and GBA have no IR port, so ignore them for now
 			// todo: cart based IR
-			return _syncSettings._linkedSyncSettings[one].ConsoleMode is Gameboy.GambatteSyncSettings.ConsoleModeType.GBC
-				&& _syncSettings._linkedSyncSettings[two].ConsoleMode is Gameboy.GambatteSyncSettings.ConsoleModeType.GBC;
+			if (IsCGBMode(one) && IsCGBMode(two))
+			{
+				return _syncSettings._linkedSyncSettings[one].ConsoleMode is not Gameboy.GambatteSyncSettings.ConsoleModeType.GBA
+					&& _syncSettings._linkedSyncSettings[two].ConsoleMode is not Gameboy.GambatteSyncSettings.ConsoleModeType.GBA;
+			}
+
+			return false;
 		}
 
 		public int Frame { get; private set; }
