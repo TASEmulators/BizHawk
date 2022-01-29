@@ -31,7 +31,8 @@ auto PPU::Line::cache() -> void {
     io.displayDisable = true;
   } else {
     memcpy(&io, &ppu.io, sizeof(io));
-    memcpy(&cgram, &ppu.cgram, sizeof(cgram));
+    //memcpy(&cgram, &ppu.cgram, sizeof(cgram));
+    memcpy(cgram, &ppu.cgram, 256 * sizeof (uint16_t));
   }
   if(!Line::count) Line::start = y;
   Line::count++;
