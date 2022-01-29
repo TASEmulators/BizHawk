@@ -21,7 +21,8 @@ bg4(Background::ID::BG4) {
   ppu1.version = 1;  //allowed values: 1
   ppu2.version = 3;  //allowed values: 1, 2, 3
 
-  output = (uint16*)alloc_invisible(512 * 480 * sizeof (uint16));
+  //output = (uint16*)alloc_invisible(512 * 480 * sizeof (uint16));
+  output = new uint16[512 * 480];
 
   for(uint l = 0; l < 16; l++) {
     for(uint r = 0; r < 32; r++) {
@@ -195,13 +196,13 @@ auto PPU::refresh() -> void {
 
   if(system.runAhead) return;
 
-  auto sentOutput = this->output;
+  auto output = this->output;
   auto pitch  = 512;
   auto width  = 512;
   auto height = 480;
   if(configuration.video.blurEmulation) {
     for(uint y : range(height)) {
-      auto data = sentOutput + y * pitch;
+      auto data = output + y * pitch;
       for(uint x : range(width - 1)) {
         auto a = data[x + 0];
         auto b = data[x + 1];
@@ -209,8 +210,8 @@ auto PPU::refresh() -> void {
       }
     }
   }
-  if(auto device = controllerPort2.device) device->draw(sentOutput, pitch * sizeof(uint16), width, height);
-  platform->videoFrame(sentOutput, pitch * sizeof(uint16), width, height, /* scale = */ 1);
+  if(auto device = controllerPort2.device) device->draw(output, pitch * sizeof(uint16), width, height);
+  platform->videoFrame(output, pitch * sizeof(uint16), width, height, /* scale = */ 1);
 }
 
 }
