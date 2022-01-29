@@ -361,23 +361,13 @@ public:
     uint height = 0;
   } frame;
 
-  /*struct Mode7LineGroups {
+  struct Mode7LineGroups {
     int count = -1;
     int startLine[32];
     int endLine[32];
     int startLerpLine[32];
     int endLerpLine[32];
-  } mode7LineGroups;*/
-
-  typedef struct {
-    int count = -1;
-    int startLine[32];
-    int endLine[32];
-    int startLerpLine[32];
-    int endLerpLine[32];
-  } Mode7LineGroups;
-  
-  Mode7LineGroups* mode7LineGroups;
+  } mode7LineGroups;
 };
 
 extern PPU ppufast;

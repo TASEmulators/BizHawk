@@ -54,7 +54,6 @@ PPU::PPU() {
   }
 
   lines = alloc_invisible<Line>(240);
-  mode7LineGroups = alloc_invisible<Mode7LineGroups>(1);
 
   for(uint y : range(240)) {
     lines[y].y = y;
