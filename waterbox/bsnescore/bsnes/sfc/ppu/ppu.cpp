@@ -21,8 +21,7 @@ bg4(Background::ID::BG4) {
   ppu1.version = 1;  //allowed values: 1
   ppu2.version = 3;  //allowed values: 1, 2, 3
 
-  //output = (uint16*)alloc_invisible(512 * 480 * sizeof (uint16));
-  output = new uint16[512 * 480];
+  output = (uint16*)alloc_invisible(512 * 480 * sizeof (uint16));
 
   for(uint l = 0; l < 16; l++) {
     for(uint r = 0; r < 32; r++) {
