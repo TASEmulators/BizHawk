@@ -334,23 +334,16 @@ public:
     bool fieldID;
 
     IO io;
-    //uint16 cgram[256];
-    uint16* cgram;
+    uint16 cgram[256];
 
-    //ObjectItem items[128];  //32 on real hardware
-    //ObjectTile tiles[128];  //34 on real hardware; 1024 max (128 * 64-width tiles)
-    ObjectItem* items;
-    ObjectTile* tiles;
+    ObjectItem items[128];  //32 on real hardware
+    ObjectTile tiles[128];  //34 on real hardware; 1024 max (128 * 64-width tiles)
 
-    //Pixel above[256 * 9 * 9];
-    //Pixel below[256 * 9 * 9];
-    Pixel* above;
-    Pixel* below;
+    Pixel above[256 * 9 * 9];
+    Pixel below[256 * 9 * 9];
 
-    //bool windowAbove[256];
-    //bool windowBelow[256];
-    bool* windowAbove;
-    bool* windowBelow;
+    bool windowAbove[256];
+    bool windowBelow[256];
 
     //flush()
     static uint start;
@@ -358,7 +351,8 @@ public:
   };
 
 //unserialized:
-  Line lines[240];
+  //Line lines[240];
+  Line* lines;
 
   //used to help detect when the video output size changes between frames to clear overscan area.
   struct Frame {
@@ -367,13 +361,23 @@ public:
     uint height = 0;
   } frame;
 
-  struct Mode7LineGroups {
+  /*struct Mode7LineGroups {
     int count = -1;
     int startLine[32];
     int endLine[32];
     int startLerpLine[32];
     int endLerpLine[32];
-  } mode7LineGroups;
+  } mode7LineGroups;*/
+
+  typedef struct {
+    int count = -1;
+    int startLine[32];
+    int endLine[32];
+    int startLerpLine[32];
+    int endLerpLine[32];
+  } Mode7LineGroups;
+  
+  Mode7LineGroups* mode7LineGroups;
 };
 
 extern PPU ppufast;

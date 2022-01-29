@@ -53,14 +53,10 @@ PPU::PPU() {
     }
   }
 
+  lines = alloc_invisible<Line>(240);
+  mode7LineGroups = alloc_invisible<Mode7LineGroups>(1);
+
   for(uint y : range(240)) {
-    lines[y].cgram = alloc_invisible<uint16_t>(256);
-    lines[y].items = alloc_invisible<ObjectItem>(128);
-    lines[y].tiles = alloc_invisible<ObjectTile>(128);
-    lines[y].above = alloc_invisible<Pixel>(256 * 9 * 9);
-    lines[y].below = alloc_invisible<Pixel>(256 * 9 * 9);
-    lines[y].windowAbove = alloc_invisible<bool>(256);
-    lines[y].windowBelow = alloc_invisible<bool>(256);
     lines[y].y = y;
   }
 }

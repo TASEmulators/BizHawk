@@ -1,6 +1,6 @@
 //determine mode 7 line groups for perspective correction
 auto PPU::Line::cacheMode7HD() -> void {
-  ppu.mode7LineGroups.count = 0;
+  ppu.mode7LineGroups->count = 0;
   if(ppu.hdPerspective()) {
     #define isLineMode7(line) (line.io.bg1.tileMode == TileMode::Mode7 && !line.io.displayDisable && ( \
       (line.io.bg1.aboveEnable || line.io.bg1.belowEnable) \
@@ -12,34 +12,34 @@ auto PPU::Line::cacheMode7HD() -> void {
       if(state != isLineMode7(ppu.lines[Line::start + y])) {
         state = !state;
         if(state) {
-          ppu.mode7LineGroups.startLine[ppu.mode7LineGroups.count] = ppu.lines[Line::start + y].y;
+          ppu.mode7LineGroups->startLine[ppu.mode7LineGroups->count] = ppu.lines[Line::start + y].y;
         } else {
-          ppu.mode7LineGroups.endLine[ppu.mode7LineGroups.count] = ppu.lines[Line::start + y].y - 1;
+          ppu.mode7LineGroups->endLine[ppu.mode7LineGroups->count] = ppu.lines[Line::start + y].y - 1;
           //the lines at the edges of mode 7 groups may be erroneous, so start and end lines for interpolation are moved inside
-          int offset = (ppu.mode7LineGroups.endLine[ppu.mode7LineGroups.count] - ppu.mode7LineGroups.startLine[ppu.mode7LineGroups.count]) / 8;
-          ppu.mode7LineGroups.startLerpLine[ppu.mode7LineGroups.count] = ppu.mode7LineGroups.startLine[ppu.mode7LineGroups.count] + offset;
-          ppu.mode7LineGroups.endLerpLine[ppu.mode7LineGroups.count] = ppu.mode7LineGroups.endLine[ppu.mode7LineGroups.count] - offset;
-          ppu.mode7LineGroups.count++;
+          int offset = (ppu.mode7LineGroups->endLine[ppu.mode7LineGroups->count] - ppu.mode7LineGroups->startLine[ppu.mode7LineGroups->count]) / 8;
+          ppu.mode7LineGroups->startLerpLine[ppu.mode7LineGroups->count] = ppu.mode7LineGroups->startLine[ppu.mode7LineGroups->count] + offset;
+          ppu.mode7LineGroups->endLerpLine[ppu.mode7LineGroups->count] = ppu.mode7LineGroups->endLine[ppu.mode7LineGroups->count] - offset;
+          ppu.mode7LineGroups->count++;
         }
       }
     }
     #undef isLineMode7
     if(state) {
       //close the last group if necessary
-      ppu.mode7LineGroups.endLine[ppu.mode7LineGroups.count] = ppu.lines[Line::start + y].y - 1;
-      int offset = (ppu.mode7LineGroups.endLine[ppu.mode7LineGroups.count] - ppu.mode7LineGroups.startLine[ppu.mode7LineGroups.count]) / 8;
-      ppu.mode7LineGroups.startLerpLine[ppu.mode7LineGroups.count] = ppu.mode7LineGroups.startLine[ppu.mode7LineGroups.count] + offset;
-      ppu.mode7LineGroups.endLerpLine[ppu.mode7LineGroups.count] = ppu.mode7LineGroups.endLine[ppu.mode7LineGroups.count] - offset;
-      ppu.mode7LineGroups.count++;
+      ppu.mode7LineGroups->endLine[ppu.mode7LineGroups->count] = ppu.lines[Line::start + y].y - 1;
+      int offset = (ppu.mode7LineGroups->endLine[ppu.mode7LineGroups->count] - ppu.mode7LineGroups->startLine[ppu.mode7LineGroups->count]) / 8;
+      ppu.mode7LineGroups->startLerpLine[ppu.mode7LineGroups->count] = ppu.mode7LineGroups->startLine[ppu.mode7LineGroups->count] + offset;
+      ppu.mode7LineGroups->endLerpLine[ppu.mode7LineGroups->count] = ppu.mode7LineGroups->endLine[ppu.mode7LineGroups->count] - offset;
+      ppu.mode7LineGroups->count++;
     }
 
     //detect groups that do not have perspective
-    for(int i : range(ppu.mode7LineGroups.count)) {
+    for(int i : range(ppu.mode7LineGroups->count)) {
       int a = -1, b = -1, c = -1, d = -1;  //the mode 7 scale factors of the current line
       int aPrev = -1, bPrev = -1, cPrev = -1, dPrev = -1;  //the mode 7 scale factors of the previous line
       bool aVar = false, bVar = false, cVar = false, dVar = false;  //has a varying value been found for the factors?
       bool aInc = false, bInc = false, cInc = false, dInc = false;  //has the variation been an increase or decrease?
-      for(y = ppu.mode7LineGroups.startLerpLine[i]; y <= ppu.mode7LineGroups.endLerpLine[i]; y++) {
+      for(y = ppu.mode7LineGroups->startLerpLine[i]; y <= ppu.mode7LineGroups->endLerpLine[i]; y++) {
         a = ((int)((int16)(ppu.lines[y].io.mode7.a)));
         b = ((int)((int16)(ppu.lines[y].io.mode7.b)));
         c = ((int)((int16)(ppu.lines[y].io.mode7.c)));
@@ -54,8 +54,8 @@ auto PPU::Line::cacheMode7HD() -> void {
           } else if(aInc != a > aPrev) {
             //if there has been an increase and now we have a decrease, or vice versa, set the interpolation lines to -1
             //to deactivate perspective correction for this group and stop analyzing it further
-            ppu.mode7LineGroups.startLerpLine[i] = -1;
-            ppu.mode7LineGroups.endLerpLine[i] = -1;
+            ppu.mode7LineGroups->startLerpLine[i] = -1;
+            ppu.mode7LineGroups->endLerpLine[i] = -1;
             break;
           }
         }
@@ -64,8 +64,8 @@ auto PPU::Line::cacheMode7HD() -> void {
             bVar = true;
             bInc = b > bPrev;
           } else if(bInc != b > bPrev) {
-            ppu.mode7LineGroups.startLerpLine[i] = -1;
-            ppu.mode7LineGroups.endLerpLine[i] = -1;
+            ppu.mode7LineGroups->startLerpLine[i] = -1;
+            ppu.mode7LineGroups->endLerpLine[i] = -1;
             break;
           }
         }
@@ -74,8 +74,8 @@ auto PPU::Line::cacheMode7HD() -> void {
             cVar = true;
             cInc = c > cPrev;
           } else if(cInc != c > cPrev) {
-            ppu.mode7LineGroups.startLerpLine[i] = -1;
-            ppu.mode7LineGroups.endLerpLine[i] = -1;
+            ppu.mode7LineGroups->startLerpLine[i] = -1;
+            ppu.mode7LineGroups->endLerpLine[i] = -1;
             break;
           }
         }
@@ -84,8 +84,8 @@ auto PPU::Line::cacheMode7HD() -> void {
             dVar = true;
             dInc = d > dPrev;
           } else if(dInc != d > dPrev) {
-            ppu.mode7LineGroups.startLerpLine[i] = -1;
-            ppu.mode7LineGroups.endLerpLine[i] = -1;
+            ppu.mode7LineGroups->startLerpLine[i] = -1;
+            ppu.mode7LineGroups->endLerpLine[i] = -1;
             break;
           }
         }
@@ -111,10 +111,10 @@ auto PPU::Line::renderMode7HD(PPU::IO::Background& self, uint8 source) -> void {
   ))
   if(ppu.hdPerspective()) {
     //find the mode 7 line group this line is in and use its interpolation lines
-    for(int i : range(ppu.mode7LineGroups.count)) {
-      if(y >= ppu.mode7LineGroups.startLine[i] && y <= ppu.mode7LineGroups.endLine[i]) {
-        y_a = ppu.mode7LineGroups.startLerpLine[i];
-        y_b = ppu.mode7LineGroups.endLerpLine[i];
+    for(int i : range(ppu.mode7LineGroups->count)) {
+      if(y >= ppu.mode7LineGroups->startLine[i] && y <= ppu.mode7LineGroups->endLine[i]) {
+        y_a = ppu.mode7LineGroups->startLerpLine[i];
+        y_b = ppu.mode7LineGroups->endLerpLine[i];
         break;
       }
     }
