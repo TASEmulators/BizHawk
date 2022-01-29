@@ -35,11 +35,11 @@ auto PPU::noVRAMBlocking() const -> bool { return configuration.hacks.ppu.noVRAM
 
 PPU::PPU() {
   //output = new uint16_t[2304 * 2160]();
-  output = (uint16_t*)alloc_invisible(2304 * 2160 * sizeof (uint16_t));
+  output = alloc_invisible<uint16_t>(2304 * 2160);
 
   for(uint l : range(16)) {
     //lightTable[l] = new uint16_t[32768];
-    lightTable[l] = (uint16_t*)alloc_invisible(32768 * sizeof (uint16_t));
+    lightTable[l] = alloc_invisible<uint16_t>(32768);
     for(uint r : range(32)) {
       for(uint g : range(32)) {
         for(uint b : range(32)) {
@@ -54,13 +54,13 @@ PPU::PPU() {
   }
 
   for(uint y : range(240)) {
-    lines[y].cgram = (uint16_t*)alloc_invisible(256 * sizeof (uint16_t));
-    lines[y].items = (ObjectItem*)alloc_invisible(128 * sizeof (ObjectItem));
-    lines[y].tiles = (ObjectTile*)alloc_invisible(128 * sizeof (ObjectTile));
-    lines[y].above = (Pixel*)alloc_invisible(256 * 9 * 9 * sizeof (Pixel));
-    lines[y].below = (Pixel*)alloc_invisible(256 * 9 * 9 * sizeof (Pixel));
-    lines[y].windowAbove = (bool*)alloc_invisible(256 * sizeof (bool));
-    lines[y].windowBelow = (bool*)alloc_invisible(256 * sizeof (bool));
+    lines[y].cgram = alloc_invisible<uint16_t>(256);
+    lines[y].items = alloc_invisible<ObjectItem>(128);
+    lines[y].tiles = alloc_invisible<ObjectTile>(128);
+    lines[y].above = alloc_invisible<Pixel>(256 * 9 * 9);
+    lines[y].below = alloc_invisible<Pixel>(256 * 9 * 9);
+    lines[y].windowAbove = alloc_invisible<bool>(256);
+    lines[y].windowBelow = alloc_invisible<bool>(256);
     lines[y].y = y;
   }
 }

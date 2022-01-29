@@ -7,7 +7,7 @@ struct WritableMemory : Memory {
 
   inline auto allocate(uint size, uint8 fill = 0xff) -> void override {
     if (!self.data) {
-        self.data = (uint8*)alloc_plain(self.size = size);
+        self.data = alloc_plain<uint8>(self.size = size);
     }
     if(self.size != size) {
       //delete[] self.data;

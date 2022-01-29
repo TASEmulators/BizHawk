@@ -24,8 +24,8 @@ auto Bus::reset() -> void {
   //lookup = new uint8 [16 * 1024 * 1024]();
   //target = new uint32[16 * 1024 * 1024]();
 
-  if (!lookup) lookup = (uint8*)alloc_invisible(16 * 1024 * 1024);
-  if (!target) target = (uint32*)alloc_invisible(16 * 1024 * 1024 * sizeof (uint32));
+  if (!lookup) lookup = alloc_invisible<uint8> (16 * 1024 * 1024);
+  if (!target) target = alloc_invisible<uint32>(16 * 1024 * 1024);
 
   reader[0] = [](uint, uint8 data) -> uint8 { return data; };
   writer[0] = [](uint, uint8) -> void {};
