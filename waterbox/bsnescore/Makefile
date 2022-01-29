@@ -1,7 +1,7 @@
 NEED_LIBCO := 1
 
 CXXFLAGS := -std=c++17 \
-	-I../libco -I./bsnes \
+	-I../emulibc -I../libco -I./bsnes \
 	-Werror=int-to-pointer-cast \
 	-Wno-parentheses -Wno-sign-compare -Wno-unused-variable -Wno-trigraphs -Wno-switch -Wno-reorder -Wno-misleading-indentation \
 	-fno-threadsafe-statics -fno-strict-aliasing -fwrapv

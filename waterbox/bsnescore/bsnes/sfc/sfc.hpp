@@ -3,6 +3,8 @@
 //license: GPLv3
 //started: 2004-10-14
 
+#include <emulibc.h>
+
 #include <emulator/emulator.hpp>
 #include <emulator/random.hpp>
 #include <emulator/cheat.hpp>
