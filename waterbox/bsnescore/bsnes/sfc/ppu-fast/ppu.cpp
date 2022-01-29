@@ -54,6 +54,7 @@ PPU::PPU() {
   }
 
   for(uint y : range(240)) {
+    printf("initing line %d\n", y);
     lines[y].cgram = (uint16_t*)alloc_invisible(256 * sizeof (uint16_t));
     lines[y].items = (ObjectItem*)alloc_invisible(128 * sizeof (ObjectItem));
     lines[y].tiles = (ObjectTile*)alloc_invisible(128 * sizeof (ObjectTile));
