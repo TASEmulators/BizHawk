@@ -1,6 +1,4 @@
-#include <emulibc.h>
-
-ECL_INVISIBLE auto Stream::reset(uint channelCount, double inputFrequency, double outputFrequency) -> void {
+auto Stream::reset(uint channelCount, double inputFrequency, double outputFrequency) -> void {
   channels.reset();
   channels.resize(channelCount);
 
@@ -11,17 +9,17 @@ ECL_INVISIBLE auto Stream::reset(uint channelCount, double inputFrequency, doubl
   setFrequency(inputFrequency, outputFrequency);
 }
 
-ECL_INVISIBLE auto Stream::reset() -> void {
+auto Stream::reset() -> void {
   for(auto& channel : channels) {
     channel.resampler.reset(this->inputFrequency, this->outputFrequency);
   }
 }
 
-ECL_INVISIBLE auto Stream::frequency() const -> double {
+auto Stream::frequency() const -> double {
   return inputFrequency;
 }
 
-ECL_INVISIBLE auto Stream::setFrequency(double inputFrequency, maybe<double> outputFrequency) -> void {
+auto Stream::setFrequency(double inputFrequency, maybe<double> outputFrequency) -> void {
   this->inputFrequency = inputFrequency;
   if(outputFrequency) this->outputFrequency = outputFrequency();
 
@@ -45,7 +43,7 @@ ECL_INVISIBLE auto Stream::setFrequency(double inputFrequency, maybe<double> out
   }
 }
 
-ECL_INVISIBLE auto Stream::addDCRemovalFilter() -> void {
+auto Stream::addDCRemovalFilter() -> void {
   return;  //todo: test to ensure this is desirable before enabling
   for(auto& channel : channels) {
     Filter filter{Filter::Mode::DCRemoval, Filter::Type::None, Filter::Order::None};
@@ -53,7 +51,7 @@ ECL_INVISIBLE auto Stream::addDCRemovalFilter() -> void {
   }
 }
 
-ECL_INVISIBLE auto Stream::addLowPassFilter(double cutoffFrequency, Filter::Order order, uint passes) -> void {
+auto Stream::addLowPassFilter(double cutoffFrequency, Filter::Order order, uint passes) -> void {
   for(auto& channel : channels) {
     for(uint pass : range(passes)) {
       if(order == Filter::Order::First) {
@@ -71,7 +69,7 @@ ECL_INVISIBLE auto Stream::addLowPassFilter(double cutoffFrequency, Filter::Orde
   }
 }
 
-ECL_INVISIBLE auto Stream::addHighPassFilter(double cutoffFrequency, Filter::Order order, uint passes) -> void {
+auto Stream::addHighPassFilter(double cutoffFrequency, Filter::Order order, uint passes) -> void {
   for(auto& channel : channels) {
     for(uint pass : range(passes)) {
       if(order == Filter::Order::First) {
@@ -89,17 +87,17 @@ ECL_INVISIBLE auto Stream::addHighPassFilter(double cutoffFrequency, Filter::Ord
   }
 }
 
-ECL_INVISIBLE auto Stream::pending() const -> uint {
+auto Stream::pending() const -> uint {
   if(!channels) return 0;
   return channels[0].resampler.pending();
 }
 
-ECL_INVISIBLE auto Stream::read(double samples[]) -> uint {
+auto Stream::read(double samples[]) -> uint {
   for(uint c : range(channels.size())) samples[c] = channels[c].resampler.read();
   return channels.size();
 }
 
-ECL_INVISIBLE auto Stream::write(const double samples[]) -> void {
+auto Stream::write(const double samples[]) -> void {
   for(auto c : range(channels.size())) {
     double sample = samples[c] + 1e-25;  //constant offset used to suppress denormals
     for(auto& filter : channels[c].filters) {
@@ -118,7 +116,7 @@ ECL_INVISIBLE auto Stream::write(const double samples[]) -> void {
   audio.process();
 }
 
-ECL_INVISIBLE auto Stream::serialize(serializer& s) -> void {
+auto Stream::serialize(serializer& s) -> void {
   for(auto& channel : channels) {
     channel.resampler.serialize(s);
   }

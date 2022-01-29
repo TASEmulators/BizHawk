@@ -54,6 +54,13 @@ PPU::PPU() {
   }
 
   for(uint y : range(240)) {
+    lines[y].cgram = (uint16_t*)alloc_invisible(256 * sizeof (uint16_t));
+    lines[y].items = (ObjectItem*)alloc_invisible(128 * sizeof (ObjectItem));
+    lines[y].tiles = (ObjectTile*)alloc_invisible(128 * sizeof (ObjectTile));
+    lines[y].above = (Pixel*)alloc_invisible(256 * 9 * 9 * sizeof (Pixel));
+    lines[y].below = (Pixel*)alloc_invisible(256 * 9 * 9 * sizeof (Pixel));
+    lines[y].windowAbove = (bool*)alloc_invisible(256 * sizeof (bool));
+    lines[y].windowBelow = (bool*)alloc_invisible(256 * sizeof (bool));
     lines[y].y = y;
   }
 }

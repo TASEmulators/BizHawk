@@ -334,16 +334,23 @@ public:
     bool fieldID;
 
     IO io;
-    uint16 cgram[256];
+    //uint16 cgram[256];
+    uint16* cgram;
 
-    ObjectItem items[128];  //32 on real hardware
-    ObjectTile tiles[128];  //34 on real hardware; 1024 max (128 * 64-width tiles)
+    //ObjectItem items[128];  //32 on real hardware
+    //ObjectTile tiles[128];  //34 on real hardware; 1024 max (128 * 64-width tiles)
+    ObjectItem* items;
+    ObjectTile* tiles;
 
-    Pixel above[256 * 9 * 9];
-    Pixel below[256 * 9 * 9];
+    //Pixel above[256 * 9 * 9];
+    //Pixel below[256 * 9 * 9];
+    Pixel* above;
+    Pixel* below;
 
-    bool windowAbove[256];
-    bool windowBelow[256];
+    //bool windowAbove[256];
+    //bool windowBelow[256];
+    bool* windowAbove;
+    bool* windowBelow;
 
     //flush()
     static uint start;

@@ -1,3 +1,5 @@
+#include <emulibc.h>
+
 namespace Emulator {
 
 #include "stream.cpp"
