@@ -52,8 +52,7 @@ private:
     uint16 mask = 0x7fff;
   } vram;
 
-  //uint16 output[512 * 480];
-  uint16* output;
+  uint16 output[512 * 480];
   uint16 lightTable[16][32768];
 
   struct {
