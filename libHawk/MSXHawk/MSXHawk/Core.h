@@ -1,7 +1,11 @@
+#ifndef CORE_H
+#define CORE_H
+
 #include <iostream>
 #include <cstdint>
 #include <iomanip>
 #include <string>
+#include <cstring>
 
 #include "Z80A.h"
 #include "AY_3_8910.h"
@@ -203,7 +207,7 @@ namespace MSXHawk
 			uint32_t* src = vdp.FrameBuffer;
 			uint32_t* dst = dest;
 
-			std::memcpy(dst, src, sizeof uint32_t * 256 * 192);
+			std::memcpy(dst, src, sizeof (uint32_t) * 256 * 192);
 		}
 
 		uint32_t GetAudio(int32_t* dest, int32_t* n_samp) 
@@ -211,7 +215,7 @@ namespace MSXHawk
 			int32_t* src = samples;
 			int32_t* dst = dest;
 
-			std::memcpy(dst, src, sizeof int32_t * num_samples * 2);
+			std::memcpy(dst, src, sizeof (int32_t) * num_samples * 2);
 			n_samp[0] = num_samples;
 
 			return sampleclock;
@@ -225,7 +229,7 @@ namespace MSXHawk
 		// the copy length l must be supplied ahead of time from GetMessageLength
 		void GetMessage(char* h, int l)
 		{
-			memcpy(h, MemMap.Mem_text_1.c_str(), l);	
+			std::memcpy(h, MemMap.Mem_text_1.c_str(), l);
 		}
 
 		#pragma region State Save / Load
@@ -305,7 +309,7 @@ namespace MSXHawk
 
 		void GetHeader(char* h, int l)
 		{
-			memcpy(h, cpu.TraceHeader, l);
+			std::memcpy(h, cpu.TraceHeader, l);
 		}
 
 		// the copy length l must be supplied ahead of time from GetRegStrngLength
@@ -313,11 +317,11 @@ namespace MSXHawk
 		{
 			if (t == 0)
 			{
-				memcpy(r, cpu.CPURegisterState().c_str(), l);
+				std::memcpy(r, cpu.CPURegisterState().c_str(), l);
 			}
 			else
 			{
-				memcpy(r, cpu.No_Reg, l);
+				std::memcpy(r, cpu.No_Reg, l);
 			}
 		}
 
@@ -326,15 +330,15 @@ namespace MSXHawk
 		{
 			if (t == 0)
 			{
-				memcpy(d, cpu.CPUDisassembly().c_str(), l);
+				std::memcpy(d, cpu.CPUDisassembly().c_str(), l);
 			}
 			else if (t == 1)
 			{
-				memcpy(d, cpu.NMI_event, l);
+				std::memcpy(d, cpu.NMI_event, l);
 			}
 			else
 			{
-				memcpy(d, cpu.IRQ_event, l);
+				std::memcpy(d, cpu.IRQ_event, l);
 			}
 		}
 
@@ -342,3 +346,4 @@ namespace MSXHawk
 	};
 }
 
+#endif

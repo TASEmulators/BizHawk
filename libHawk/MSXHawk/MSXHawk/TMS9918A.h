@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <iomanip>
 #include <string>
+#include <cstring>
 
 using namespace std;
 

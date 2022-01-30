@@ -1,3 +1,6 @@
+#ifndef AY38910_H
+#define AY38910_H
+
 #include <iostream>
 #include <cstdint>
 #include <iomanip>
@@ -430,3 +433,5 @@ namespace MSXHawk
 		#pragma endregion
 	};
 }
+
+#endif
