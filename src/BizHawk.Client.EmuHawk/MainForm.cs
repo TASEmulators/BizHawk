@@ -35,6 +35,7 @@ using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
+using BizHawk.Emulation.Cores.Sony.PSX;
 
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.CoreExtensions;
@@ -1983,7 +1984,7 @@ namespace BizHawk.Client.EmuHawk
 				case VSystemID.Raw.NES:
 					NESSubMenu.Visible = true;
 					break;
-				case VSystemID.Raw.PSX:
+				case VSystemID.Raw.PSX when Emulator is Octoshock:
 					PSXSubMenu.Visible = true;
 					break;
 				case VSystemID.Raw.TI83:

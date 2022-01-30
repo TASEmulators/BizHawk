@@ -187,6 +187,10 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo& frame)
 				if (MDFN_LIKELY(lw > 0))
 				{
 					memcpy(dst, src, lw * sizeof(uint32_t));
+					if (!EES->InterlaceOn && lw < w)
+					{
+						memset(dst + lw, 0, (w - lw) * sizeof(uint32_t));
+					}
 					src += srcp;
 					dst += dstp;
 				}

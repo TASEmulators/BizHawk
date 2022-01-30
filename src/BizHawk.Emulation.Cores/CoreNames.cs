@@ -40,6 +40,7 @@ namespace BizHawk.Emulation.Cores
 		public const string Mupen64Plus = "Mupen64Plus";
 		public const string NesHawk = "NesHawk";
 		public const string NeoPop = "NeoPop";
+		public const string Nymashock = "Nymashock";
 		public const string O2Hawk = "O2Hawk";
 		public const string Octoshock = "Octoshock";
 		public const string PceHawk = "PCEHawk";

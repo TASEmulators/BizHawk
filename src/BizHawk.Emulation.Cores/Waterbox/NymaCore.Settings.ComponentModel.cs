@@ -48,8 +48,16 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				.Select((p, i) => new PortPropertyDescriptor(p, i))
 				.Cast<PropertyDescriptor>();
 			var s2 = SettingsInfo.AllSettings
-				.Where(s => { var o = SettingsInfo.AllOverrides[s.SettingsKey]; return !o.Hide && !o.NonSync; })
-				.Select(m => MednaPropertyDescriptor.Create(m, true));
+				.Where(s =>
+				{
+					var o = SettingsInfo.AllOverrides[s.SettingsKey];
+					return !o.Hide && !o.NonSync;
+				})
+				.Select(m =>
+				{
+					m.DefaultValue = SettingsInfo.AllOverrides[m.SettingsKey].Default ?? m.DefaultValue;
+					return MednaPropertyDescriptor.Create(m, true);
+				});
 			return new PropertyDescriptorCollection(s1.Concat(s2).ToArray());
 		}
 		public override PropertyDescriptorCollection GetProperties(Attribute[] attributes) => GetProperties();
@@ -70,8 +78,16 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			var s1 = SettingsInfo.LayerNames.Select(l => new LayerPropertyDescriptor(l))
 				.Cast<PropertyDescriptor>();
 			var s2 = SettingsInfo.AllSettings
-				.Where(s => { var o = SettingsInfo.AllOverrides[s.SettingsKey]; return !o.Hide && o.NonSync; })
-				.Select(m => MednaPropertyDescriptor.Create(m, true));
+				.Where(s =>
+				{
+					var o = SettingsInfo.AllOverrides[s.SettingsKey];
+					return !o.Hide && o.NonSync;
+				})
+				.Select(m =>
+				{
+					m.DefaultValue = SettingsInfo.AllOverrides[m.SettingsKey].Default ?? m.DefaultValue;
+					return MednaPropertyDescriptor.Create(m, false);
+				});
 			return new PropertyDescriptorCollection(s1.Concat(s2).ToArray());
 		}
 		public override PropertyDescriptorCollection GetProperties(Attribute[] attributes) => GetProperties();

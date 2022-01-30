@@ -34,6 +34,8 @@ namespace BizHawk.Client.Common
 				new[] { CoreNames.GambatteLink, CoreNames.GBHawkLink, CoreNames.GBHawkLink3x, CoreNames.GBHawkLink4x }),
 			(new[] { VSystemID.Raw.PCE, VSystemID.Raw.PCECD, VSystemID.Raw.SGX },
 				new[] { CoreNames.TurboNyma, CoreNames.HyperNyma, CoreNames.PceHawk }),
+			(new[] { VSystemID.Raw.PSX },
+				new[] { CoreNames.Octoshock, CoreNames.Nymashock}),
 			(new[] { VSystemID.Raw.TI83 },
 				new[] { CoreNames.TI83Hawk, CoreNames.Emu83 }),
 		};
@@ -313,7 +315,7 @@ namespace BizHawk.Client.Common
 		public bool GbAsSgb { get; set; }
 		public string LibretroCore { get; set; }
 
-		public Dictionary<string, string> PreferredCores = new Dictionary<string, string>
+		public Dictionary<string, string> PreferredCores = new()
 		{
 			[VSystemID.Raw.NES] = CoreNames.QuickNes,
 			[VSystemID.Raw.SNES] = CoreNames.Snes9X,
@@ -324,6 +326,7 @@ namespace BizHawk.Client.Common
 			[VSystemID.Raw.PCE] = CoreNames.TurboNyma,
 			[VSystemID.Raw.PCECD] = CoreNames.TurboNyma,
 			[VSystemID.Raw.SGX] = CoreNames.TurboNyma,
+			[VSystemID.Raw.PSX] = CoreNames.Nymashock,
 			[VSystemID.Raw.TI83] = CoreNames.Emu83,
 		};
 
