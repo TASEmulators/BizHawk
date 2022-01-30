@@ -324,6 +324,7 @@ namespace BizHawk.Client.Common
 			[VSystemID.Raw.PCE] = CoreNames.TurboNyma,
 			[VSystemID.Raw.PCECD] = CoreNames.TurboNyma,
 			[VSystemID.Raw.SGX] = CoreNames.TurboNyma,
+			[VSystemID.Raw.TI83] = CoreNames.Emu83,
 		};
 
 		public bool DontTryOtherCores { get; set; }
