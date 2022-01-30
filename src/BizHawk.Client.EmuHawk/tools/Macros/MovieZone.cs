@@ -81,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					d.Axes.Add(k, _emulator.ControllerDefinition.Axes[key]);
+					d.Axes.Add(k, _emulator.ControllerDefinition.Axes[k]);
 				}
 			}
 

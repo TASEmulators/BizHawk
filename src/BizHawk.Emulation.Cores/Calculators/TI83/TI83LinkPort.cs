@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace BizHawk.Emulation.Cores.Calculators
+namespace BizHawk.Emulation.Cores.Calculators.TI83
 {
 	public class TI83LinkPort
 	{

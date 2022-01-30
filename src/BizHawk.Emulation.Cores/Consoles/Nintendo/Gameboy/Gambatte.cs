@@ -198,7 +198,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				_cdCallback = new LibGambatte.CDCallback(CDCallbackProc);
 
-				ControllerDefinition = CreateControllerDefinition(IsSgb, _syncSettings.FrameLength is GambatteSyncSettings.FrameLengthType.UserDefinedFrames);
+				ControllerDefinition = CreateControllerDefinition(sgb: IsSgb, sub: _syncSettings.FrameLength is GambatteSyncSettings.FrameLengthType.UserDefinedFrames, tilt: false);
 
 				NewSaveCoreSetBuff();
 			}
@@ -263,11 +263,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public long CycleCount => (long)_cycleCount;
 		public double ClockRate => TICKSPERSECOND;
 
-		public static ControllerDefinition CreateControllerDefinition(bool sgb, bool sub)
+		public static ControllerDefinition CreateControllerDefinition(bool sgb, bool sub, bool tilt)
 		{
-			var ret = sub
-				? new ControllerDefinition("Subframe Gameboy Controller").AddAxis("Input Length", 0.RangeTo(35112), 35112)
-				: new ControllerDefinition("Gameboy Controller");
+			var ret = new ControllerDefinition((sub ? "Subframe " : "") + "Gameboy Controller" + (tilt ? " + Tilt" : ""));
+			if (sub)
+			{
+				ret.AddAxis("Input Length", 0.RangeTo(35112), 35112);
+			}
+			if (tilt)
+			{
+				ret.AddXYPair($"Tilt {{0}}", AxisPairOrientation.RightAndUp, (-90).RangeTo(90), 0);
+			}
 			if (sgb)
 			{
 				for (int i = 0; i < 4; i++)

@@ -1,7 +1,7 @@
 <Project>
 	<PropertyGroup>
 		<AnalysisLevel>5</AnalysisLevel>
-		<ContinuousIntegrationBuild Condition=" '$(GITLAB_CI)' != '' Or '$(APPVEYOR)' != '' ">true</ContinuousIntegrationBuild>
+		<ContinuousIntegrationBuild Condition=" '$(GITLAB_CI)' != '' ">true</ContinuousIntegrationBuild>
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<ErrorReport>prompt</ErrorReport>
 		<IsTargetingNetFramework>$(TargetFramework.StartsWith("net4"))</IsTargetingNetFramework>

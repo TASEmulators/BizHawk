@@ -29,13 +29,15 @@ namespace BizHawk.Client.Common
 			(new[] { VSystemID.Raw.SGB },
 				new[] { CoreNames.Gambatte, CoreNames.Bsnes, CoreNames.Bsnes115}),
 			(new[] { VSystemID.Raw.GB, VSystemID.Raw.GBC },
-				new[] { CoreNames.Gambatte, CoreNames.GbHawk, CoreNames.SubGbHawk }),
+				new[] { CoreNames.Gambatte, CoreNames.Sameboy, CoreNames.GbHawk, CoreNames.SubGbHawk }),
 			(new[] { VSystemID.Raw.GBL },
 				new[] { CoreNames.GambatteLink, CoreNames.GBHawkLink, CoreNames.GBHawkLink3x, CoreNames.GBHawkLink4x }),
 			(new[] { VSystemID.Raw.PCE, VSystemID.Raw.PCECD, VSystemID.Raw.SGX },
 				new[] { CoreNames.TurboNyma, CoreNames.HyperNyma, CoreNames.PceHawk }),
 			(new[] { VSystemID.Raw.PSX },
 				new[] { CoreNames.Octoshock, CoreNames.Nymashock}),
+			(new[] { VSystemID.Raw.TI83 },
+				new[] { CoreNames.TI83Hawk, CoreNames.Emu83 }),
 		};
 
 		public Config()
@@ -325,6 +327,7 @@ namespace BizHawk.Client.Common
 			[VSystemID.Raw.PCECD] = CoreNames.TurboNyma,
 			[VSystemID.Raw.SGX] = CoreNames.TurboNyma,
 			[VSystemID.Raw.PSX] = CoreNames.Nymashock,
+			[VSystemID.Raw.TI83] = CoreNames.Emu83,
 		};
 
 		public bool DontTryOtherCores { get; set; }

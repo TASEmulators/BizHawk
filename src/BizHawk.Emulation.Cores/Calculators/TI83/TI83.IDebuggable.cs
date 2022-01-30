@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Cores.Calculators
+namespace BizHawk.Emulation.Cores.Calculators.TI83
 {
 	public partial class TI83 : IDebuggable
 	{

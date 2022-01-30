@@ -648,9 +648,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				BookMarkControl.UpdateTextColumnWidth();
 				MarkerControl.UpdateTextColumnWidth();
+				TastudioPlayMode();
 			}
-
-			TastudioPlayMode();
 
 			_initializing = false;
 
@@ -961,16 +960,18 @@ namespace BizHawk.Client.EmuHawk
 				Emulator.ResetCounters();
 			}
 
-			UpdateTools();
+			UpdateOtherTools();
 		}
 
 		public void AddBranchExternal() => BookMarkControl.AddBranchExternal();
 		public void RemoveBranchExternal() => BookMarkControl.RemoveBranchExternal();
 
-		private void UpdateTools()
+		private void UpdateOtherTools() // a hack probably, surely there is a better way to do this
 		{
+			_hackyDontUpdate = true;
 			Tools.UpdateToolsBefore();
 			Tools.UpdateToolsAfter();
+			_hackyDontUpdate = false;
 		}
 
 		public void TogglePause()

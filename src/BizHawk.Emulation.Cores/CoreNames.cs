@@ -19,6 +19,7 @@ namespace BizHawk.Emulation.Cores
 		public const string CPCHawk = "CPCHawk";
 		public const string Cygne = "Cygne/Mednafen";
 		public const string DobieStation = "DobieStation";
+		public const string Emu83 = "Emu83";
 		public const string Faust = "Faust";
 		public const string Gambatte = "Gambatte";
 		public const string GambatteLink = "GambatteLink";
@@ -45,6 +46,7 @@ namespace BizHawk.Emulation.Cores
 		public const string PceHawk = "PCEHawk";
 		public const string PicoDrive = "PicoDrive";
 		public const string QuickNes = "QuickNes";
+		public const string Sameboy = "SameBoy";
 		public const string Saturnus = "Saturnus";
 		public const string SMSHawk = "SMSHawk";
 		public const string Snes9X = "Snes9x";

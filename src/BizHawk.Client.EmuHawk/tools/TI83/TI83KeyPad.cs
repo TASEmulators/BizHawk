@@ -1,7 +1,7 @@
 ﻿using System;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.Properties;
-using BizHawk.Emulation.Cores.Calculators;
+using BizHawk.Emulation.Cores.Calculators.TI83;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -10,7 +10,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		[RequiredService]
 		// ReSharper disable once UnusedAutoPropertyAccessor.Local
-		public TI83 Emu { get; private set; }
+		public TI83Common Emu { get; private set; }
 
 		protected override string WindowTitleStatic => "TI-83 Virtual KeyPad";
 

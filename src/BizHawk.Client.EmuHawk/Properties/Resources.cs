@@ -167,6 +167,7 @@ namespace BizHawk.Client.EmuHawk.Properties
 		internal static readonly Bitmap Shark = ReadEmbeddedBitmap("Shark");
 		internal static readonly Icon SmsIcon = ReadEmbeddedIcon("sms-icon");
 		internal static readonly Bitmap Snes9X = ReadEmbeddedBitmap("snes9x");
+		internal static readonly Bitmap Split = ReadEmbeddedBitmap("Split");
 		internal static readonly Bitmap Square = ReadEmbeddedBitmap("Square");
 		internal static readonly Bitmap SSE = ReadEmbeddedBitmap("SSE");
 		internal static readonly Bitmap SSW = ReadEmbeddedBitmap("SSW");

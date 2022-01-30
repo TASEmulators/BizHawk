@@ -23,6 +23,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public VirtualPadTargetScreen(
 			StickyXorAdapter stickyXorAdapter,
+			EventHandler setLastFocusedNud,
 			string nameX,
 			string nameY,
 			int maxX,
@@ -35,6 +36,9 @@ namespace BizHawk.Client.EmuHawk
 			MaxY = maxY;
 
 			InitializeComponent();
+
+			XNumeric.GotFocus += setLastFocusedNud;
+			YNumeric.GotFocus += setLastFocusedNud;
 		}
 
 		private void VirtualPadTargetScreen_Load(object sender, EventArgs e)
