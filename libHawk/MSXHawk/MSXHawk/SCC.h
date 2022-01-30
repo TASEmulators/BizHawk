@@ -1,7 +1,11 @@
+#ifndef SCC_H
+#define SCC_H
+
 #include <iostream>
 #include <cstdint>
 #include <iomanip>
 #include <string>
+#include <cstring>
 
 using namespace std;
 
@@ -325,3 +329,5 @@ namespace MSXHawk
 #pragma endregion
 	};
 }
+
+#endif

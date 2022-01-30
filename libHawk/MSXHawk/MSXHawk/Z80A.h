@@ -1,7 +1,15 @@
+#ifndef Z80A_H
+#define Z80A_H
+
 #include <iostream>
 #include <cstdint>
 #include <iomanip>
 #include <string>
+#include <cstring>
+
+#ifndef _WIN32
+#define sprintf_s snprintf
+#endif
 
 using namespace std;
 
@@ -5585,3 +5593,5 @@ namespace MSXHawk
 		#pragma endregion
 	};
 }
+
+#endif
