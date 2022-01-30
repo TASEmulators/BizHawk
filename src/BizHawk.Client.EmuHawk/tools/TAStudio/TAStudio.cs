@@ -648,9 +648,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				BookMarkControl.UpdateTextColumnWidth();
 				MarkerControl.UpdateTextColumnWidth();
+				TastudioPlayMode();
 			}
-
-			TastudioPlayMode();
 
 			_initializing = false;
 
