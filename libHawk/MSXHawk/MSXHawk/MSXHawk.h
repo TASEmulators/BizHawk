@@ -1,5 +1,5 @@
-#ifdef _WIN32
+#ifdef _WIN32 // msvc garbage needs this
 #define MSXHawk_EXPORT extern "C" __declspec(dllexport)
-#elif __linux__
-#define MSXHawk_EXPORT extern "C"
+#else
+#define MSXHawk_EXPORT extern "C" __attribute__((visibility("default")))
 #endif
