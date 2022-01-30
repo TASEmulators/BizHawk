@@ -8,4 +8,4 @@ SRCS = $(wildcard MSXHawk/*.cpp)
 all:	libmsxhawk
 
 libmsxhawk: $(SRCS)
-	$(CXX) $(CFLAGS) $(SRCS) -o ../../Assets/dll/MSXHawk.so $(LFLAGS)
+	$(CXX) $(CFLAGS) $(SRCS) -o ../../Assets/dll/libMSXHawk.so $(LFLAGS)
