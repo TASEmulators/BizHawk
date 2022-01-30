@@ -40,6 +40,9 @@
 [submodule "submodules/libfwunpack"]
 	path = submodules/libfwunpack
 	url = https://github.com/TASEmulators/fwunpack.git
+[submodule "submodules/libemu83"]
+	path = submodules/libemu83
+	url = https://github.com/CasualPokePlayer/Emu83.git
 [submodule "submodules/sameboy/libsameboy"]
 	path = submodules/sameboy/libsameboy
 	url = https://github.com/LIJI32/SameBoy.git

@@ -282,7 +282,8 @@ namespace BizHawk.Client.Common
 				["MODE"] = 'O',
 				["DEL"] = 'D',
 				["COMMA"] = ',',
-				["SIN"] = 'S'
+				["SIN"] = 'S',
+				["SEND"] = 'N',
 			},
 			[VSystemID.Raw.C64] = new()
 			{
