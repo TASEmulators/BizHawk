@@ -130,7 +130,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		[CoreConstructor(VSystemID.Raw.GB)]
 		[CoreConstructor(VSystemID.Raw.GBC)]
-		public GBHawk(CoreComm comm, GameInfo game, byte[] rom, /*string gameDbFn,*/ GBSettings settings, GBSyncSettings syncSettings)
+		public GBHawk(CoreComm comm, GameInfo game, byte[] rom, /*string gameDbFn,*/ GBSettings settings, GBSyncSettings syncSettings, bool subframe = false)
 		{
 			var ser = new BasicServiceProvider(this);
 
@@ -199,7 +199,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			_controllerDeck = new(mppr is "MBC7"
 				? typeof(StandardTilt).DisplayName()
-				: GBHawkControllerDeck.DefaultControllerName);
+				: GBHawkControllerDeck.DefaultControllerName, subframe);
 
 			timer.Core = this;
 			audio.Core = this;
