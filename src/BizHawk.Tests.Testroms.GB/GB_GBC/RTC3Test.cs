@@ -41,7 +41,10 @@ namespace BizHawk.Tests.Testroms.GB
 
 		private static readonly IReadOnlyCollection<string> KnownFailures = new[]
 		{
-			"",
+			"RTC3Test.basic on CGB_C in SameBoy",
+			"RTC3Test.basic on CGB_C in SameBoy (no BIOS)",
+			"RTC3Test.basic on DMG in SameBoy",
+			"RTC3Test.basic on DMG in SameBoy (no BIOS)",
 		};
 
 		private static readonly bool RomIsPresent = ReflectionCache.EmbeddedResourceList().Contains(ROM_EMBED_PATH);

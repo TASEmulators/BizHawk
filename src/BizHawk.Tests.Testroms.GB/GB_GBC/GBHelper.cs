@@ -7,11 +7,13 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.GBHawk;
+using BizHawk.Emulation.Cores.Nintendo.Sameboy;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using static BizHawk.Emulation.Cores.Nintendo.Gameboy.Gameboy;
 using static BizHawk.Emulation.Cores.Nintendo.GBHawk.GBHawk;
+using static BizHawk.Emulation.Cores.Nintendo.Sameboy.Sameboy;
 
 namespace BizHawk.Tests.Testroms.GB
 {
@@ -22,7 +24,14 @@ namespace BizHawk.Tests.Testroms.GB
 		public readonly struct CoreSetup
 		{
 			public static IReadOnlyCollection<CoreSetup> ValidSetupsFor(ConsoleVariant variant)
-				=> new CoreSetup[] { new(CoreNames.Gambatte, variant), new(CoreNames.Gambatte, variant, useBios: false), new(CoreNames.GbHawk, variant) };
+				=> new CoreSetup[]
+				{
+					new(CoreNames.Gambatte, variant),
+					new(CoreNames.Gambatte, variant, useBios: false),
+					new(CoreNames.GbHawk, variant),
+					new(CoreNames.Sameboy, variant),
+					new(CoreNames.Sameboy, variant, useBios: false),
+				};
 
 			public readonly string CoreName;
 
@@ -54,6 +63,20 @@ namespace BizHawk.Tests.Testroms.GB
 		private static readonly GBSyncSettings GBHawkSyncSettings_GB = new() { ConsoleMode = GBSyncSettings.ConsoleModeType.GB };
 
 		private static readonly GBSyncSettings GBHawkSyncSettings_GBC = new() { ConsoleMode = GBSyncSettings.ConsoleModeType.GBC };
+
+		private static readonly SameboySettings SameBoySettings = new() { ColorCorrection = SameboySettings.ColorCorrectionMode.DISABLED };
+
+		private static readonly SameboySyncSettings SameBoySyncSettings_GB_NOBIOS = new() { ConsoleMode = SameboySyncSettings.GBModel.GB_MODEL_DMG_B, EnableBIOS = false };
+
+		private static readonly SameboySyncSettings SameBoySyncSettings_GB_USEBIOS = new() { ConsoleMode = SameboySyncSettings.GBModel.GB_MODEL_DMG_B, EnableBIOS = true };
+
+		private static readonly SameboySyncSettings SameBoySyncSettings_GBC_C_NOBIOS = new() { ConsoleMode = SameboySyncSettings.GBModel.GB_MODEL_CGB_C, EnableBIOS = false };
+
+		private static readonly SameboySyncSettings SameBoySyncSettings_GBC_C_USEBIOS = new() { ConsoleMode = SameboySyncSettings.GBModel.GB_MODEL_CGB_C, EnableBIOS = true };
+
+		private static readonly SameboySyncSettings SameBoySyncSettings_GBC_D_NOBIOS = new() { ConsoleMode = SameboySyncSettings.GBModel.GB_MODEL_CGB_D, EnableBIOS = false };
+
+		private static readonly SameboySyncSettings SameBoySyncSettings_GBC_D_USEBIOS = new() { ConsoleMode = SameboySyncSettings.GBModel.GB_MODEL_CGB_D, EnableBIOS = true };
 
 		public static readonly IReadOnlyDictionary<int, int> MattCurriePaletteMap = new Dictionary<int, int>
 		{
@@ -126,6 +149,15 @@ namespace BizHawk.Tests.Testroms.GB
 				? GBHawkSyncSettings_GBC
 				: GBHawkSyncSettings_GB;
 
+		public static SameboySyncSettings GetSameBoySyncSettings(ConsoleVariant variant, bool biosAvailable)
+			=> variant switch
+			{
+				ConsoleVariant.CGB_C => biosAvailable ? SameBoySyncSettings_GBC_C_USEBIOS : SameBoySyncSettings_GBC_C_NOBIOS,
+				ConsoleVariant.CGB_D => biosAvailable ? SameBoySyncSettings_GBC_D_USEBIOS : SameBoySyncSettings_GBC_D_NOBIOS,
+				ConsoleVariant.DMG or ConsoleVariant.DMG_B => biosAvailable ? SameBoySyncSettings_GB_USEBIOS : SameBoySyncSettings_GB_NOBIOS,
+				_ => throw new Exception()
+			};
+
 		public static DummyFrontend.ClassInitCallbackDelegate InitGBCore(CoreSetup setup, string romFilename, byte[] rom)
 			=> (efp, _, coreComm) =>
 			{
@@ -135,9 +167,10 @@ namespace BizHawk.Tests.Testroms.GB
 				{
 					CoreNames.Gambatte => new Gameboy(coreComm, game, rom, GambatteSettings, GetGambatteSyncSettings(setup.Variant, setup.UseBIOS), deterministic: true),
 					CoreNames.GbHawk => new GBHawk(coreComm, game, rom, new(), GetGBHawkSyncSettings(setup.Variant)),
+					CoreNames.Sameboy => new Sameboy(coreComm, game, rom, SameBoySettings, GetSameBoySyncSettings(setup.Variant, setup.UseBIOS), deterministic: true),
 					_ => throw new Exception()
 				};
-				var biosWaitDuration = setup.UseBIOS
+				var biosWaitDuration = setup.UseBIOS || setup.CoreName is CoreNames.Sameboy
 					? setup.Variant.IsColour()
 						? 186
 						: 334
@@ -153,6 +186,7 @@ namespace BizHawk.Tests.Testroms.GB
 			=> setup.CoreName switch
 			{
 				CoreNames.Gambatte => ImageUtils.PaletteSwap(img, setup.Variant.IsColour() ? UnVividGBCPaletteMap : UnVividGBPaletteMap),
+				CoreNames.Sameboy => setup.Variant.IsColour() ? ImageUtils.PaletteSwap(img, UnVividGBCPaletteMap) : img,
 				_ => img
 			};
 	}

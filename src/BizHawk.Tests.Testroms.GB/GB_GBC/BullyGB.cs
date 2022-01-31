@@ -37,6 +37,8 @@ namespace BizHawk.Tests.Testroms.GB
 		private static readonly IReadOnlyCollection<string> KnownFailures = new[]
 		{
 			"BullyGB on CGB_C in GBHawk",
+			"BullyGB on CGB_C in SameBoy (no BIOS)",
+			"BullyGB on DMG in SameBoy (no BIOS)",
 		};
 
 		private static readonly bool RomIsPresent = ReflectionCache.EmbeddedResourceList().Contains(ROM_EMBED_PATH);
@@ -61,7 +63,7 @@ namespace BizHawk.Tests.Testroms.GB
 			TestUtils.ShortCircuitKnownFailure(caseStr, KnownFailures, out var knownFail);
 			var actualUnnormalised = DummyFrontend.RunAndScreenshot(
 				InitGBCore(setup, "bully.gbc", ReflectionCache.EmbeddedResourceStream(ROM_EMBED_PATH).ReadAllBytes()),
-				static fe => fe.FrameAdvanceBy(18));
+				static fe => fe.FrameAdvanceBy(20));
 			var state = GBScreenshotsEqual(
 				ReflectionCache.EmbeddedResourceStream($"res.BullyGB_artifact.expected_{(setup.Variant.IsColour() ? "cgb" : "dmg")}.png"),
 				actualUnnormalised,

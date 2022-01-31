@@ -101,7 +101,7 @@ namespace BizHawk.Tests.Testroms.GB
 			TestUtils.ShortCircuitKnownFailure(caseStr, KnownFailures, out var knownFail);
 			var actualUnnormalised = DummyFrontend.RunAndScreenshot(
 				InitGBCore(testCase.Setup, $"{testCase.TestName}.gbc", ReflectionCache.EmbeddedResourceStream(testCase.RomEmbedPath).ReadAllBytes()),
-				static fe => fe.FrameAdvanceBy(15));
+				static fe => fe.FrameAdvanceBy(18));
 			var state = GBScreenshotsEqual(
 				ReflectionCache.EmbeddedResourceStream(testCase.ExpectEmbedPath),
 				actualUnnormalised,
