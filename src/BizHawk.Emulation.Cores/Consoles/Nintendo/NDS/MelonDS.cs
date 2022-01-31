@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				Filename = "melonDS.wbx",
 				SbrkHeapSizeKB = 2 * 1024,
 				SealedHeapSizeKB = 4,
-				InvisibleHeapSizeKB = 4,
+				InvisibleHeapSizeKB = 4 * 1024,
 				PlainHeapSizeKB = 4,
 				MmapHeapSizeKB = 1024 * 1024,
 				SkipCoreConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
@@ -93,15 +93,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			var message = _syncSettings.FirmwareMessage.Length != 0 ? Encoding.UTF8.GetBytes(_syncSettings.FirmwareMessage) : new byte[1] { 0 };
 			fwSettings.FirmwareMessageLength = message.Length;
 
-			_exe.AddReadonlyFile(roms[0], "game.rom");
-			if (gbacartpresent)
+			var loadData = new LibMelonDS.LoadData
 			{
-				_exe.AddReadonlyFile(roms[1], "gba.rom");
-				if (gbasrampresent)
-				{
-					_exe.AddReadonlyFile(roms[2], "gba.ram");
-				}
-			}
+				DsRomLength = roms[0].Length,
+				GbaRomLength = gbacartpresent ? roms[1].Length : 0,
+				GbaRamLength = gbasrampresent ? roms[2].Length : 0,
+			};
 			if (_syncSettings.UseRealBIOS)
 			{
 				_exe.AddReadonlyFile(bios7, "bios7.rom");
@@ -121,31 +118,30 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			unsafe
 			{
-				fixed (byte* namePtr = &name[0], messagePtr = &message[0])
+				fixed (byte*
+					dsRomPtr = roms[0],
+					gbaRomPtr = gbacartpresent ? roms[1] : null,
+					gbaRamPtr = gbasrampresent ? roms[2] : null,
+					namePtr = &name[0],
+					messagePtr = &message[0])
 				{
+					loadData.DsRomData = (IntPtr)dsRomPtr;
+					loadData.GbaRomData = (IntPtr)gbaRomPtr;
+					loadData.GbaRamData = (IntPtr)gbaRamPtr;
 					fwSettings.FirmwareUsername = (IntPtr)namePtr;
 					fwSettings.FirmwareMessage = (IntPtr)messagePtr;
-					if (!_core.Init(flags, fwSettings))
+					if (!_core.Init(flags, loadData, fwSettings))
 					{
 						throw new InvalidOperationException("Init returned false!");
 					}
 				}
 			}
 
-			_exe.RemoveReadonlyFile("game.rom");
-			if (gbacartpresent)
-			{
-				_exe.RemoveReadonlyFile("gba.rom");
-				if (gbasrampresent)
-				{
-					_exe.RemoveReadonlyFile("gba.ram");
-				}
-			}
-			if (_syncSettings.UseRealBIOS)
+			/*if (_syncSettings.UseRealBIOS)
 			{
 				_exe.RemoveReadonlyFile("bios7.rom");
 				_exe.RemoveReadonlyFile("bios9.rom");
-			}
+			}*/
 			if (fw != null)
 			{
 				_exe.RemoveReadonlyFile("firmware.bin");

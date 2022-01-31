@@ -29,6 +29,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			POWER = 0x8000,
 		}
 
+		[StructLayout(LayoutKind.Sequential)]
+		public new class FrameInfo : LibWaterboxCore.FrameInfo
+		{
+			public long Time;
+			public Buttons Keys;
+			public byte TouchX;
+			public byte TouchY;
+			public byte MicVolume;
+			public byte GBALightSensor;
+		}
+
 		[Flags]
 		public enum LoadFlags : uint
 		{
@@ -41,14 +52,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
-		public new class FrameInfo : LibWaterboxCore.FrameInfo
+		public class LoadData
 		{
-			public long Time;
-			public Buttons Keys;
-			public byte TouchX;
-			public byte TouchY;
-			public byte MicVolume;
-			public byte GBALightSensor;
+			public IntPtr DsRomData;
+			public int DsRomLength;
+			public IntPtr GbaRomData;
+			public int GbaRomLength;
+			public IntPtr GbaRamData;
+			public int GbaRamLength;
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -65,7 +76,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		}
 
 		[BizImport(CC)]
-		public abstract bool Init(LoadFlags flags, FirmwareSettings fwSettings);
+		public abstract bool Init(LoadFlags flags, LoadData loadData, FirmwareSettings fwSettings);
 
 		[BizImport(CC)]
 		public abstract void PutSaveRam(byte[] data, uint len);
