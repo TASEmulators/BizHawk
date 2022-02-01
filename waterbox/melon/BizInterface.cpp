@@ -97,7 +97,7 @@ EXPORT bool Init(LoadFlags flags, LoadData* loadData, FirmwareSettings* fwSettin
 		Config::FirmwareMessage = fwMessage;
 	}
 
-	NANDFilePtr = IS_DSI ? new std::stringstream(std::string(loadData->NandData, loadData->NandLen), std::ios_base::in | std::ios_base::out | std::ios_base::binary) : nullptr;
+	NANDFilePtr = isDsi ? new std::stringstream(std::string(loadData->NandData, loadData->NandLen), std::ios_base::in | std::ios_base::out | std::ios_base::binary) : nullptr;
 
 	if (!NDS::Init()) return false;
 	GPU::InitRenderer(false);
