@@ -4,10 +4,9 @@
 #include "RTC.h"
 #include "ARM.h"
 #include "NDSCart.h"
-#include "NDSCart_SRAMManager.h"
 #include "GBACart.h"
 #include "Platform.h"
-#include "Config.h"
+#include "BizConfig.h"
 #include "types.h"
 #include "frontend/mic_blow.h"
 
@@ -39,9 +38,16 @@ typedef enum
 	FIRMWARE_OVERRIDE = 0x10,
 } LoadFlags;
 
-static const char* bios9_path = "bios9.rom";
-static const char* bios7_path = "bios7.rom";
-static const char* firmware_path = "firmware.bin";
+typedef struct
+{
+	u8* DsRomData;
+	u32 DsRomLen;
+	u8* GbaRomData;
+	u32 GbaRomLen;
+	u8* GbaRamData;
+	u32 GbaRamLen;
+} LoadData;
+
 static const char* rom_path = "game.rom";
 static const char* sram_path = "save.ram";
 static const char* gba_rom_path = "gba.rom";
@@ -60,72 +66,73 @@ typedef struct
 	s32 FirmwareMessageLength;
 } FirmwareSettings;
 
-EXPORT bool Init(LoadFlags flags, FirmwareSettings* fwSettings)
+EXPORT bool Init(LoadFlags flags, LoadData* loadData, FirmwareSettings* fwSettings)
 {
 	Config::ExternalBIOSEnable = !!(flags & USE_REAL_BIOS);
-
-	strncpy(Config::BIOS9Path, Config::ExternalBIOSEnable ? bios9_path : no_path, 1023);
-	Config::BIOS9Path[1023] = '\0';
-	strncpy(Config::BIOS7Path, Config::ExternalBIOSEnable ? bios7_path : no_path, 1023);
-	Config::BIOS7Path[1023] = '\0';
-	strncpy(Config::FirmwarePath, firmware_path, 1023);
-	Config::FirmwarePath[1023] = '\0';
+	Config::AudioBitrate = !!(flags & ACCURATE_AUDIO_BITRATE) ? 1 : 2;
+	Config::FirmwareOverrideSettings = !!(flags & FIRMWARE_OVERRIDE);
+	biz_skip_fw = !!(flags & SKIP_FIRMWARE);
 
 	NDS::SetConsoleType(0);
 	// time calls are deterministic under wbx, so this will force the mac address to a constant value instead of relying on whatever is in the firmware
 	// fixme: might want to allow the user to specify mac address?
 	srand(time(NULL));
 	Config::RandomizeMAC = true;
-	Config::AudioBitrate = !!(flags & ACCURATE_AUDIO_BITRATE) ? 1 : 2;
-	Config::FixedBootTime = true;
-	Config::UseRealTime = false;
-	Config::TimeAtBoot = 0;
 	biz_time = 0;
 	RTC::RtcCallback = BizRtcCallback;
 
-	Config::FirmwareOverrideSettings = !!(flags & FIRMWARE_OVERRIDE);
 	if (Config::FirmwareOverrideSettings)
 	{
-		memcpy(Config::FirmwareUsername, fwSettings->FirmwareUsername, fwSettings->FirmwareUsernameLength);
-		Config::FirmwareUsername[fwSettings->FirmwareUsernameLength] = 0;
+		std::string fwUsername(fwSettings->FirmwareUsername, fwSettings->FirmwareUsernameLength);
+		fwUsername += '\0';
+		Config::FirmwareUsername = fwUsername;
 		Config::FirmwareLanguage = fwSettings->FirmwareLanguage;
 		Config::FirmwareBirthdayMonth = fwSettings->FirmwareBirthdayMonth;
 		Config::FirmwareBirthdayDay = fwSettings->FirmwareBirthdayDay;
 		Config::FirmwareFavouriteColour = fwSettings->FirmwareFavouriteColour;
-		memcpy(Config::FirmwareMessage, fwSettings->FirmwareMessage, fwSettings->FirmwareMessageLength);
-		Config::FirmwareMessage[fwSettings->FirmwareMessageLength] = 0;
+		std::string fwMessage(fwSettings->FirmwareMessage, fwSettings->FirmwareMessageLength);
+		fwMessage += '\0';
+		Config::FirmwareMessage = fwMessage;
 	}
 
 	if (!NDS::Init()) return false;
 	GPU::InitRenderer(false);
 	GPU::SetRenderSettings(false, biz_render_settings);
-	biz_skip_fw = !!(flags & SKIP_FIRMWARE);
-	if (!NDS::LoadROM(rom_path, no_path, biz_skip_fw)) return false;
-	if (flags & GBA_CART_PRESENT) { if (!NDS::LoadGBAROM(gba_rom_path, gba_sram_path)) return false; }
+	if (!NDS::LoadCart(loadData->DsRomData, loadData->DsRomLen, nullptr, 0)) return false;
+	if (flags & GBA_CART_PRESENT)
+	{
+		if (!NDS::LoadGBACart(loadData->GbaRomData, loadData->GbaRomLen, loadData->GbaRamData, loadData->GbaRamLen))
+			return false;
+	}
+	NDS::LoadBIOS();
+	if (biz_skip_fw) NDS::SetupDirectBoot("");
+	NDS::Start();
 	Config::FirmwareOverrideSettings = false;
 	return true;
 }
 
+namespace NDSCart { extern CartCommon* Cart; }
+extern bool NdsSaveRamIsDirty;
+
 EXPORT void PutSaveRam(u8* data, u32 len)
 {
-	if (NDSCart_SRAMManager::SecondaryBufferLength > 0)
-		NDSCart_SRAMManager::UpdateBuffer(data, len);
+	NDS::LoadSave(data, len);
+	NdsSaveRamIsDirty = false;
 }
 
 EXPORT void GetSaveRam(u8* data)
 {
-	if (NDSCart_SRAMManager::SecondaryBufferLength > 0)
-		NDSCart_SRAMManager::FlushSecondaryBuffer(data, NDSCart_SRAMManager::SecondaryBufferLength);
+    if (NDSCart::Cart) NDSCart::Cart->GetSaveData(data);
 }
 
 EXPORT s32 GetSaveRamLength()
 {
-	return NDSCart_SRAMManager::SecondaryBufferLength;
+	return NDSCart::Cart ? NDSCart::Cart->GetSaveLen() : 0;
 }
 
 EXPORT bool SaveRamIsDirty()
 {
-	return NDSCart_SRAMManager::NeedsFlush();
+	return NdsSaveRamIsDirty;
 }
 
 /* excerpted from gbatek
@@ -292,8 +299,8 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 {
 	if (f->Keys & 0x8000)
 	{
-		NDS::LoadBIOS(false);
-		if (biz_skip_fw) NDS::SetupDirectBoot();
+		NDS::LoadBIOS();
+		if (biz_skip_fw) NDS::SetupDirectBoot("");
 	}
 
 	NDS::SetKeyMask(~f->Keys & 0xFFF);

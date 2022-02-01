@@ -1,10 +1,11 @@
+CCFLAGS := -Wno-discarded-qualifiers
+
 CXXFLAGS := -DMELONDS_VERSION="" \
 	-I./melonDS/src -I./melonDS/src/teakra/include \
 	-Wall -Wextra -Werror=int-to-pointer-cast \
-	-Wcast-qual -Wfatal-errors -Wno-missing-braces \
-	-Wno-unused-parameter -Wno-parentheses -Wno-sign-compare \
-	-Wno-unused-variable -Wno-unused-function \
-	-pedantic -std=c++17
+	-Wfatal-errors -Wno-unused-parameter -Wno-unused-variable \
+	-Wno-unused-but-set-variable -Wno-sign-compare \
+	-fno-strict-aliasing -std=c++17
 
 TARGET = melonDS.wbx
 
@@ -73,6 +74,7 @@ SRCS = \
 	$(addprefix melonDS/src/teakra/src/,$(TEAKRA_SRCS)) \
 	$(addprefix melonDS/src/fatfs/,$(FATFS_SRCS)) \
 	$(addprefix melonDS/src/,$(MISC_SRCS)) \
+	BizConfig.cpp \
 	BizInterface.cpp \
 	BizPlatform.cpp
 
