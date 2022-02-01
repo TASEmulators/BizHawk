@@ -30,9 +30,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				SystemId = VSystemID.Raw.NDS,
 			})
 		{
+			_syncSettings = lp.SyncSettings ?? new NDSSyncSettings();
+			_settings = lp.Settings ?? new NDSSettings();
+
 			var roms = lp.Roms.Select(r => r.RomData).ToList();
 
-			if (roms.Count > 3)
+			if (roms.Count > (_syncSettings.UseDSi ? 1 : 3))
 			{
 				throw new InvalidOperationException("Wrong number of ROMs!");
 			}
@@ -54,26 +57,37 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				SkipMemoryConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			}, new Delegate[] { _tracecb });
 
-			_syncSettings = lp.SyncSettings ?? new NDSSyncSettings();
-			_settings = lp.Settings ?? new NDSSettings();
-
-			var bios7 = _syncSettings.UseRealBIOS
+			var bios7 = _syncSettings.UseDSi || _syncSettings.UseRealBIOS
 				? CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios7"))
 				: null;
 
-			var bios9 = _syncSettings.UseRealBIOS
+			var bios9 = _syncSettings.UseDSi || _syncSettings.UseRealBIOS
 				? CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios9"))
 				: null;
 
-			var fw = CoreComm.CoreFileProvider.GetFirmware(new("NDS", "firmware"));
+			var bios7i = _syncSettings.UseDSi
+				? CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios7i"))
+				: null;
+
+			var bios9i = _syncSettings.UseDSi
+				? CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios9i"))
+				: null;
+
+			var nand = _syncSettings.UseDSi
+				? CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "nand"))
+				: null;
+
+			var fw = _syncSettings.UseDSi
+				? CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "firmwarei"))
+				: CoreComm.CoreFileProvider.GetFirmware(new("NDS", "firmware"));
 
 			bool skipfw = _syncSettings.SkipFirmware || !_syncSettings.UseRealBIOS || fw == null;
 
 			LibMelonDS.LoadFlags flags = LibMelonDS.LoadFlags.NONE;
 
-			if (_syncSettings.UseRealBIOS)
+			if (_syncSettings.UseRealBIOS || _syncSettings.UseDSi)
 				flags |= LibMelonDS.LoadFlags.USE_REAL_BIOS;
-			if (skipfw)
+			if (skipfw && !_syncSettings.UseDSi)
 				flags |= LibMelonDS.LoadFlags.SKIP_FIRMWARE;
 			if (gbacartpresent)
 				flags |= LibMelonDS.LoadFlags.GBA_CART_PRESENT;
@@ -98,22 +112,28 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				DsRomLength = roms[0].Length,
 				GbaRomLength = gbacartpresent ? roms[1].Length : 0,
 				GbaRamLength = gbasrampresent ? roms[2].Length : 0,
+				NandLength = nand?.Length ?? 0,
 			};
-			if (_syncSettings.UseRealBIOS)
+			if (_syncSettings.UseRealBIOS || _syncSettings.UseDSi)
 			{
 				_exe.AddReadonlyFile(bios7, "bios7.rom");
 				_exe.AddReadonlyFile(bios9, "bios9.rom");
 			}
+			if (_syncSettings.UseDSi)
+			{
+				_exe.AddReadonlyFile(bios7i, "bios7i.rom");
+				_exe.AddReadonlyFile(bios9i, "bios9i.rom");
+			}
 			if (fw != null)
 			{
-				if (NDSFirmware.MaybeWarnIfBadFw(fw, CoreComm))
+				if (!_syncSettings.UseDSi || NDSFirmware.MaybeWarnIfBadFw(fw, CoreComm))
 				{
 					if (_syncSettings.FirmwareOverride || lp.DeterministicEmulationRequested)
 					{
 						NDSFirmware.SanitizeFw(fw);
 					}
 				}
-				_exe.AddReadonlyFile(fw, "firmware.bin");
+				_exe.AddReadonlyFile(fw, _syncSettings.UseDSi ? "firmwarei.bin" : "firmware.bin");
 			}
 
 			unsafe
@@ -122,12 +142,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					dsRomPtr = roms[0],
 					gbaRomPtr = gbacartpresent ? roms[1] : null,
 					gbaRamPtr = gbasrampresent ? roms[2] : null,
-					namePtr = &name[0],
-					messagePtr = &message[0])
+					nandPtr = nand,
+					namePtr = name,
+					messagePtr = message)
 				{
 					loadData.DsRomData = (IntPtr)dsRomPtr;
 					loadData.GbaRomData = (IntPtr)gbaRomPtr;
 					loadData.GbaRamData = (IntPtr)gbaRamPtr;
+					loadData.NandData = (IntPtr)nandPtr;
 					fwSettings.FirmwareUsername = (IntPtr)namePtr;
 					fwSettings.FirmwareMessage = (IntPtr)messagePtr;
 					if (!_core.Init(flags, loadData, fwSettings))
@@ -137,14 +159,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				}
 			}
 
-			/*if (_syncSettings.UseRealBIOS)
-			{
-				_exe.RemoveReadonlyFile("bios7.rom");
-				_exe.RemoveReadonlyFile("bios9.rom");
-			}*/
 			if (fw != null)
 			{
-				_exe.RemoveReadonlyFile("firmware.bin");
+				_exe.RemoveReadonlyFile(_syncSettings.UseDSi ? "firmwarei.bin" : "firmware.bin");
 			}
 
 			PostInit();
