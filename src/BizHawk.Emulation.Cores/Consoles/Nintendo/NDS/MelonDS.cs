@@ -95,6 +95,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				flags |= LibMelonDS.LoadFlags.ACCURATE_AUDIO_BITRATE;
 			if (_syncSettings.FirmwareOverride || lp.DeterministicEmulationRequested)
 				flags |= LibMelonDS.LoadFlags.FIRMWARE_OVERRIDE;
+			if (_syncSettings.UseDSi)
+				flags |= LibMelonDS.LoadFlags.IS_DSI;
 
 			var fwSettings = new LibMelonDS.FirmwareSettings();
 			var name = Encoding.UTF8.GetBytes(_syncSettings.FirmwareUsername);
@@ -126,7 +128,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			}
 			if (fw != null)
 			{
-				if (!_syncSettings.UseDSi || NDSFirmware.MaybeWarnIfBadFw(fw, CoreComm))
+				if (_syncSettings.UseDSi || NDSFirmware.MaybeWarnIfBadFw(fw, CoreComm))
 				{
 					if (_syncSettings.FirmwareOverride || lp.DeterministicEmulationRequested)
 					{
