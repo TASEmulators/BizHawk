@@ -83,15 +83,15 @@ EXPORT bool Init(LoadFlags flags, LoadData* loadData, FirmwareSettings* fwSettin
 
 	if (Config::FirmwareOverrideSettings)
 	{
-        std::string fwUsername(fwSettings->FirmwareUsername, fwSettings->FirmwareUsernameLength);
-        fwUsername += '\0';
+		std::string fwUsername(fwSettings->FirmwareUsername, fwSettings->FirmwareUsernameLength);
+		fwUsername += '\0';
 		Config::FirmwareUsername = fwUsername;
 		Config::FirmwareLanguage = fwSettings->FirmwareLanguage;
 		Config::FirmwareBirthdayMonth = fwSettings->FirmwareBirthdayMonth;
 		Config::FirmwareBirthdayDay = fwSettings->FirmwareBirthdayDay;
 		Config::FirmwareFavouriteColour = fwSettings->FirmwareFavouriteColour;
-        std::string fwMessage(fwSettings->FirmwareMessage, fwSettings->FirmwareMessageLength);
-        fwMessage += '\0';
+		std::string fwMessage(fwSettings->FirmwareMessage, fwSettings->FirmwareMessageLength);
+		fwMessage += '\0';
 		Config::FirmwareMessage = fwMessage;
 	}
 

@@ -76,6 +76,6 @@ SRCS = \
 	$(addprefix melonDS/src/,$(MISC_SRCS)) \
 	BizConfig.cpp \
 	BizInterface.cpp \
-	BizPlatform.cpp 
+	BizPlatform.cpp
 
 include ../common.mak
