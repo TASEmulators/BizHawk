@@ -115,10 +115,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			{
 				Filename = "bsnes.wbx",
 				Path = dllPath,
-				SbrkHeapSizeKB = 14 * 1024,
-				InvisibleHeapSizeKB = 4,
-				MmapHeapSizeKB = 110 * 1024, // TODO: check whether this needs to be larger; it depends on the rom size
-				PlainHeapSizeKB = 0,
+				SbrkHeapSizeKB = 12 * 1024,
+				InvisibleHeapSizeKB = 136 * 1024, // TODO: Roms get saved here and in mmap, consider consolidating?
+				MmapHeapSizeKB = 33 * 1024, // TODO: check whether this needs to be larger; it depends on the rom size
+				PlainHeapSizeKB = 1 * 1024,
 				SealedHeapSizeKB = 0,
 				SkipCoreConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),

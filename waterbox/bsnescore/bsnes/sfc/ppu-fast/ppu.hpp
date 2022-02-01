@@ -351,7 +351,8 @@ public:
   };
 
 //unserialized:
-  Line lines[240];
+  //Line lines[240];
+  Line* lines;
 
   //used to help detect when the video output size changes between frames to clear overscan area.
   struct Frame {
