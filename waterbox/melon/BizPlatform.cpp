@@ -8,6 +8,7 @@
 #include "BizConfig.h"
 
 bool NdsSaveRamIsDirty = false;
+std::stringstream* NANDFilePtr = NULL;
 
 namespace Platform
 {
@@ -155,11 +156,15 @@ bool GetConfigArray(ConfigEntry entry, void* data)
 
 FILE* OpenFile(std::string path, std::string mode, bool mustexist)
 {
+	if (path == Config::DSiNANDPath) return reinterpret_cast<FILE*>(NANDFilePtr);
+
     return fopen(path.c_str(), mode.c_str());
 }
 
 FILE* OpenLocalFile(std::string path, std::string mode)
 {
+	if (path == Config::DSiNANDPath) return reinterpret_cast<FILE*>(NANDFilePtr);
+
     return fopen(path.c_str(), mode.c_str());
 }
 

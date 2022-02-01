@@ -17,6 +17,8 @@
 #include <algorithm>
 #include <time.h>
 
+#include <sstream>
+
 #define EXPORT extern "C" ECL_EXPORT
 
 static GPU::RenderSettings biz_render_settings { false, 1, false };
@@ -46,13 +48,9 @@ typedef struct
 	u32 GbaRomLen;
 	u8* GbaRamData;
 	u32 GbaRamLen;
+	char* NandData;
+	u32 NandLen;
 } LoadData;
-
-static const char* rom_path = "game.rom";
-static const char* sram_path = "save.ram";
-static const char* gba_rom_path = "gba.rom";
-static const char* gba_sram_path = "gba.ram";
-static const char* no_path = "";
 
 typedef struct
 {
@@ -66,6 +64,8 @@ typedef struct
 	s32 FirmwareMessageLength;
 } FirmwareSettings;
 
+extern std::stringstream* NANDFilePtr;
+
 EXPORT bool Init(LoadFlags flags, LoadData* loadData, FirmwareSettings* fwSettings)
 {
 	Config::ExternalBIOSEnable = !!(flags & USE_REAL_BIOS);
@@ -73,7 +73,7 @@ EXPORT bool Init(LoadFlags flags, LoadData* loadData, FirmwareSettings* fwSettin
 	Config::FirmwareOverrideSettings = !!(flags & FIRMWARE_OVERRIDE);
 	biz_skip_fw = !!(flags & SKIP_FIRMWARE);
 
-	NDS::SetConsoleType(0);
+	NDS::SetConsoleType(1);
 	// time calls are deterministic under wbx, so this will force the mac address to a constant value instead of relying on whatever is in the firmware
 	// fixme: might want to allow the user to specify mac address?
 	srand(time(NULL));
@@ -95,16 +95,18 @@ EXPORT bool Init(LoadFlags flags, LoadData* loadData, FirmwareSettings* fwSettin
 		Config::FirmwareMessage = fwMessage;
 	}
 
+	NANDFilePtr = new std::stringstream(std::string(loadData->NandData, loadData->NandLen), std::ios_base::in | std::ios_base::out | std::ios_base::binary);
+
 	if (!NDS::Init()) return false;
 	GPU::InitRenderer(false);
 	GPU::SetRenderSettings(false, biz_render_settings);
+	NDS::LoadBIOS();
 	if (!NDS::LoadCart(loadData->DsRomData, loadData->DsRomLen, nullptr, 0)) return false;
 	if (flags & GBA_CART_PRESENT)
 	{
 		if (!NDS::LoadGBACart(loadData->GbaRomData, loadData->GbaRomLen, loadData->GbaRamData, loadData->GbaRamLen))
 			return false;
 	}
-	NDS::LoadBIOS();
 	if (biz_skip_fw) NDS::SetupDirectBoot("");
 	NDS::Start();
 	Config::FirmwareOverrideSettings = false;
