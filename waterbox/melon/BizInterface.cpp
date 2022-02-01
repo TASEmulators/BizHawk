@@ -38,6 +38,7 @@ typedef enum
 	GBA_CART_PRESENT = 0x04,
 	ACCURATE_AUDIO_BITRATE = 0x08,
 	FIRMWARE_OVERRIDE = 0x10,
+    IS_DSI = 0x20,
 } LoadFlags;
 
 typedef struct
@@ -72,8 +73,9 @@ EXPORT bool Init(LoadFlags flags, LoadData* loadData, FirmwareSettings* fwSettin
 	Config::AudioBitrate = !!(flags & ACCURATE_AUDIO_BITRATE) ? 1 : 2;
 	Config::FirmwareOverrideSettings = !!(flags & FIRMWARE_OVERRIDE);
 	biz_skip_fw = !!(flags & SKIP_FIRMWARE);
+    bool isDsi = !!(flags & IS_DSI);
 
-	NDS::SetConsoleType(1);
+	NDS::SetConsoleType(isDsi);
 	// time calls are deterministic under wbx, so this will force the mac address to a constant value instead of relying on whatever is in the firmware
 	// fixme: might want to allow the user to specify mac address?
 	srand(time(NULL));
@@ -95,14 +97,14 @@ EXPORT bool Init(LoadFlags flags, LoadData* loadData, FirmwareSettings* fwSettin
 		Config::FirmwareMessage = fwMessage;
 	}
 
-	NANDFilePtr = new std::stringstream(std::string(loadData->NandData, loadData->NandLen), std::ios_base::in | std::ios_base::out | std::ios_base::binary);
+	NANDFilePtr = IS_DSI ? new std::stringstream(std::string(loadData->NandData, loadData->NandLen), std::ios_base::in | std::ios_base::out | std::ios_base::binary) : nullptr;
 
 	if (!NDS::Init()) return false;
 	GPU::InitRenderer(false);
 	GPU::SetRenderSettings(false, biz_render_settings);
 	NDS::LoadBIOS();
 	if (!NDS::LoadCart(loadData->DsRomData, loadData->DsRomLen, nullptr, 0)) return false;
-	if (flags & GBA_CART_PRESENT)
+	if (!isDsi && (flags & GBA_CART_PRESENT))
 	{
 		if (!NDS::LoadGBACart(loadData->GbaRomData, loadData->GbaRomLen, loadData->GbaRamData, loadData->GbaRamLen))
 			return false;
