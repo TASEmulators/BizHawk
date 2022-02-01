@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
 	public class GBHawkControllerDeck
 	{
-		public GBHawkControllerDeck(string controller1Name)
+		public GBHawkControllerDeck(string controller1Name, bool subframe)
 		{
 			Port1 = ControllerCtors.TryGetValue(controller1Name, out var ctor1)
 				? ctor1(1)
@@ -23,6 +23,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			};
 
 			foreach (var kvp in Port1.Definition.Axes) Definition.Axes.Add(kvp);
+
+			if (subframe)
+			{
+				Definition.AddAxis("Input Cycle", 0.RangeTo(70224), 70224);
+			}
 
 			Definition.MakeImmutable();
 		}

@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 			var subGBSettings = (GBHawk.GBHawk.GBSettings)settings ?? new GBHawk.GBHawk.GBSettings();
 			var subGBSyncSettings = (GBHawk.GBHawk.GBSyncSettings)syncSettings ?? new GBHawk.GBHawk.GBSyncSettings();
 
-			_GBCore = new GBHawk.GBHawk(comm, game, rom, subGBSettings, subGBSyncSettings);
+			_GBCore = new GBHawk.GBHawk(comm, game, rom, subGBSettings, subGBSyncSettings, true);
 
 			HardReset();
 			current_cycle = 0;
@@ -41,9 +41,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 
 			_tracer = new TraceBuffer(_GBCore.cpu.TraceHeader);
 			ser.Register(_tracer);
-
-			_GBCore.ControllerDefinition.AddAxis("Input Cycle", 0.RangeTo(70224), 70224)
-				.MakeImmutable();
 		}
 
 		public GBHawk.GBHawk _GBCore;

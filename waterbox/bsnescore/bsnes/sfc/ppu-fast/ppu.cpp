@@ -34,10 +34,12 @@ auto PPU::noVRAMBlocking() const -> bool { return configuration.hacks.ppu.noVRAM
 #define ppu ppufast
 
 PPU::PPU() {
-  output = new uint16_t[2304 * 2160]();
+  //output = new uint16_t[2304 * 2160]();
+  output = alloc_invisible<uint16_t>(2304 * 2160);
 
   for(uint l : range(16)) {
-    lightTable[l] = new uint16_t[32768];
+    //lightTable[l] = new uint16_t[32768];
+    lightTable[l] = alloc_invisible<uint16_t>(32768);
     for(uint r : range(32)) {
       for(uint g : range(32)) {
         for(uint b : range(32)) {
@@ -51,14 +53,17 @@ PPU::PPU() {
     }
   }
 
+  lines = alloc_invisible<Line>(240);
+
   for(uint y : range(240)) {
     lines[y].y = y;
   }
 }
 
 PPU::~PPU() {
-  delete[] output;
-  for(uint l : range(16)) delete[] lightTable[l];
+  //delete[] output;
+  //for(uint l : range(16)) delete[] lightTable[l];
+  abort();
 }
 
 auto PPU::synchronizeCPU() -> void {

@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		IBoardInfo, IRomInfo, ISettable<NES.NESSettings, NES.NESSyncSettings>, ICodeDataLogger
 	{
 		[CoreConstructor(VSystemID.Raw.NES)]
-		public NES(CoreComm comm, GameInfo game, byte[] rom, NESSettings settings, NESSyncSettings syncSettings)
+		public NES(CoreComm comm, GameInfo game, byte[] rom, NESSettings settings, NESSyncSettings syncSettings, bool subframe = false)
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
@@ -71,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 
-			ResetControllerDefinition();
+			ResetControllerDefinition(subframe);
 		}
 
 		private static readonly bool USE_DATABASE = true;

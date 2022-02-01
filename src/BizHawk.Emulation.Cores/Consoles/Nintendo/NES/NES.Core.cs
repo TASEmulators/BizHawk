@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public bool CanProvideAsync => false;
 
-		internal void ResetControllerDefinition()
+		internal void ResetControllerDefinition(bool subframe)
 		{
 			ControllerDefinition = null;
 
@@ -115,7 +115,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			// Add in the reset timing axis for subneshawk
-			if (using_reset_timing && ControllerDefinition.Axes.Count == 0)
+			if (subframe)
 			{
 				ControllerDefinition.AddAxis("Reset Cycle", 0.RangeTo(500000), 0);
 			}
@@ -398,8 +398,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public bool current_strobe;
 		public bool new_strobe;
 		public bool alt_lag;
-		// variable used with subneshawk to trigger reset at specific cycle after reset
-		public bool using_reset_timing = false;
+
 		// this function will run one step of the ppu 
 		// it will return whether the controller is read or not.
 		public void do_single_step(IController controller, out bool cont_read, out bool frame_done)

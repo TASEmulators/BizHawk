@@ -14,13 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			var subNesSettings = (NES.NES.NESSettings)settings ?? new NES.NES.NESSettings();
 			var subNesSyncSettings = (NES.NES.NESSyncSettings)syncSettings ?? new NES.NES.NESSyncSettings();
 
-			_nesCore = new NES.NES(comm, game, rom, subNesSettings, subNesSyncSettings)
-			{
-				using_reset_timing = true
-			};
-
-			// Adds Reset timing control to controller definition
-			_nesCore.ResetControllerDefinition();
+			_nesCore = new NES.NES(comm, game, rom, subNesSettings, subNesSyncSettings, true);
 
 			HardReset();
 			current_cycle = 0;
