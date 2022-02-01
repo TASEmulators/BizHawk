@@ -1,3 +1,5 @@
+CCFLAGS := -Wno-discarded-qualifiers
+
 CXXFLAGS := -DMELONDS_VERSION="" \
 	-I./melonDS/src -I./melonDS/src/teakra/include \
 	-Wall -Wextra -Werror=int-to-pointer-cast \
