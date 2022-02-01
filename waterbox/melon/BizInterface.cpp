@@ -104,6 +104,9 @@ EXPORT bool Init(LoadFlags flags, LoadData* loadData, FirmwareSettings* fwSettin
 		if (!NDS::LoadGBACart(loadData->GbaRomData, loadData->GbaRomLen, loadData->GbaRamData, loadData->GbaRamLen))
 			return false;
 	}
+	NDS::LoadBIOS();
+	if (biz_skip_fw) NDS::SetupDirectBoot("");
+	NDS::Start();
 	Config::FirmwareOverrideSettings = false;
 	return true;
 }

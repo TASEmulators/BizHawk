@@ -44,6 +44,8 @@ int GetConfigInt(ConfigEntry entry)
     case Firm_Color: return Config::FirmwareFavouriteColour;
 
     case AudioBitrate: return Config::AudioBitrate;
+	
+	case TimeAtBoot: return Config::TimeAtBoot;
 
     default: break;
     }
@@ -74,6 +76,9 @@ bool GetConfigBool(ConfigEntry entry)
 
     case Firm_RandomizeMAC: return Config::RandomizeMAC != 0;
     case Firm_OverrideSettings: return Config::FirmwareOverrideSettings != 0;
+
+	case UseRealTime: return Config::UseRealTime != 0;
+	case FixedBootTime: return Config::FixedBootTime != 0;
 
     default: break;
     }
