@@ -300,6 +300,8 @@ static void MicFeedNoise(s8 vol)
 	}
 }
 
+static bool isTouching = false;
+
 EXPORT void FrameAdvance(MyFrameInfo* f)
 {
 	if (f->Keys & 0x8000)
@@ -311,9 +313,15 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 	NDS::SetKeyMask(~f->Keys & 0xFFF);
 
 	if (f->Keys & 0x1000)
+	{
 		NDS::TouchScreen(f->TouchX, f->TouchY);
-	else
+		isTouching = true;
+	}
+	else if (isTouching)
+	{
 		NDS::ReleaseScreen();
+		isTouching = false;
+	}
 
 	if (f->Keys & 0x2000)
 		NDS::SetLidClosed(false);
