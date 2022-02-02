@@ -217,13 +217,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private static byte[] GetTMDData(byte[] ware)
 		{
 			ulong titleId = 0;
-			for (int i = 0; i < 8; i++)
+			for (int i = 0; i < 16; i++)
 			{
 				titleId <<= 8;
-				titleId |= ware[0x230 + 8 - i];
+				titleId |= ware[0x23F - i];
 			}
 			using var zip = new ZipArchive(new MemoryStream(Util.DecompressGzipFile(new MemoryStream(Resources.TMDS.Value))), ZipArchiveMode.Read, false);
-			using var tmd = zip.GetEntry($"{titleId}.tmd").Open();
+			using var tmd = zip.GetEntry($"{titleId:x16}.tmd").Open();
 			var ret = new byte[tmd.Length];
 			tmd.Read(ret, 0, (int)tmd.Length);
 			return ret;
