@@ -291,9 +291,11 @@ namespace BizHawk.Client.EmuHawk
 			Func<Config> getGlobalConfig,
 			Action<Sound> updateGlobalSound,
 			string[] args,
-			out IMovieSession movieSession)
+			out IMovieSession movieSession,
+			out bool exitEarly)
 		{
 			movieSession = null;
+			exitEarly = false;
 
 			_getGlobalConfig = getGlobalConfig;
 
@@ -301,7 +303,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (SingleInstanceInit(args))
 				{
-					Dispose();
+					exitEarly = true;
 					return;
 				}
 			}

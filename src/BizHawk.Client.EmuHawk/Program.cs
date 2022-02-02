@@ -241,7 +241,14 @@ namespace BizHawk.Client.EmuHawk
 					() => initialConfig,
 					newSound => globalSound = newSound,
 					args,
-					out var movieSession);
+					out var movieSession,
+					out var exitEarly);
+				if (exitEarly)
+				{
+					//TODO also use this for ArgParser failure
+					mf.Dispose();
+					return 0;
+				}
 				mf.LoadGlobalConfigFromFile = iniPath =>
 				{
 					if (!VersionInfo.DeveloperBuild && !ConfigService.IsFromSameVersion(iniPath, out var msg))
