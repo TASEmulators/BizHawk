@@ -310,8 +310,8 @@ struct MyFrameInfo : public FrameInfo
 {
 	s64 Time;
 	u32 Keys;
-	s8 TouchX;
-	s8 TouchY;
+	u8 TouchX;
+	u8 TouchY;
 	s8 MicVolume;
 	s8 GBALightSensor;
 };
