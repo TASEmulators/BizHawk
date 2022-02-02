@@ -70,6 +70,30 @@ typedef struct
 
 extern std::stringstream* NANDFilePtr;
 
+static bool LoadDSiWare(u8* TmdData)
+{
+	FILE* bios7i = Platform::OpenLocalFile(Config::DSiBIOS7Path, "rb");
+	if (!bios7i)
+		return false;
+
+	u8 es_keyY[16];
+	fseek(bios7i, 0x8308, SEEK_SET);
+	fread(es_keyY, 16, 1, bios7i);
+	fclose(bios7i);
+
+	FILE* curNAND = Platform::OpenLocalFile(Config::DSiNANDPath, "r+b");
+	if (!curNAND)
+		return false;
+
+	if (!DSi_NAND::Init(curNAND, es_keyY))
+		return false;
+
+	bool ret = DSi_NAND::ImportTitle("dsiware.rom", TmdData, false);
+
+	DSi_NAND::DeInit();
+	return ret;
+}
+
 EXPORT bool Init(LoadFlags flags, LoadData* loadData, FirmwareSettings* fwSettings)
 {
 	Config::ExternalBIOSEnable = !!(flags & USE_REAL_BIOS);
@@ -102,16 +126,17 @@ EXPORT bool Init(LoadFlags flags, LoadData* loadData, FirmwareSettings* fwSettin
 
 	NANDFilePtr = isDsi ? new std::stringstream(std::string(loadData->NandData, loadData->NandLen), std::ios_base::in | std::ios_base::out | std::ios_base::binary) : nullptr;
 
+	if (isDsi && (flags & LOAD_DSIWARE))
+	{
+		if (!LoadDSiWare(loadData->TmdData))
+			return false;
+	}
+
 	if (!NDS::Init()) return false;
 	GPU::InitRenderer(false);
 	GPU::SetRenderSettings(false, biz_render_settings);
 	NDS::LoadBIOS();
-	if (isDsi && (flags & LOAD_DSIWARE))
-	{
-		if (!DSi_NAND::ImportTitle("dsiware.rom", loadData->TmdData, false))
-			return false;
-	}
-	else
+	if (!isDsi || !(flags & LOAD_DSIWARE))
 	{
 		if (!NDS::LoadCart(loadData->DsRomData, loadData->DsRomLen, nullptr, 0))
 			return false;
