@@ -311,8 +311,6 @@ static void MicFeedNoise(s8 vol)
 	}
 }
 
-static bool isTouching = false;
-
 EXPORT void FrameAdvance(MyFrameInfo* f)
 {
 	if (f->Keys & 0x8000)
@@ -327,12 +325,10 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 	if (f->Keys & 0x1000)
 	{
 		NDS::TouchScreen(f->TouchX, f->TouchY);
-		isTouching = true;
 	}
-	else if (isTouching)
+	else
 	{
 		NDS::ReleaseScreen();
-		isTouching = false;
 	}
 
 	if (f->Keys & 0x2000)
