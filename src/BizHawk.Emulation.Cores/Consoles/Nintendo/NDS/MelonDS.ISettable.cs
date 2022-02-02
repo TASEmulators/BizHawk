@@ -103,8 +103,18 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			[DefaultValue(false)]
 			public bool UseRealTime { get; set; }
 
+			[DisplayName("DSi Mode")]
+			[Description("If true, DSi mode will be used.")]
+			[DefaultValue(false)]
+			public bool UseDSi { get; set; }
+
+			[DisplayName("Load DSiWare")]
+			[Description("")]
+			[DefaultValue(false)]
+			public bool LoadDSiWare { get; set; }
+
 			[DisplayName("Use Real BIOS")]
-			[Description("If true, real BIOS files will be used.")]
+			[Description("If true, real BIOS files will be used. Forced true for DSi.")]
 			[DefaultValue(false)]
 			public bool UseRealBIOS { get; set; }
 

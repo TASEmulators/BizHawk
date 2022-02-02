@@ -5,6 +5,7 @@
 #include "ARM.h"
 #include "NDSCart.h"
 #include "GBACart.h"
+#include "DSi_NAND.h"
 #include "Platform.h"
 #include "BizConfig.h"
 #include "types.h"
@@ -16,6 +17,8 @@
 #include <cmath>
 #include <algorithm>
 #include <time.h>
+
+#include <sstream>
 
 #define EXPORT extern "C" ECL_EXPORT
 
@@ -36,6 +39,8 @@ typedef enum
 	GBA_CART_PRESENT = 0x04,
 	ACCURATE_AUDIO_BITRATE = 0x08,
 	FIRMWARE_OVERRIDE = 0x10,
+	IS_DSI = 0x20,
+	LOAD_DSIWARE = 0x40,
 } LoadFlags;
 
 typedef struct
@@ -46,13 +51,10 @@ typedef struct
 	u32 GbaRomLen;
 	u8* GbaRamData;
 	u32 GbaRamLen;
+	char* NandData;
+	u32 NandLen;
+	u8* TmdData;
 } LoadData;
-
-static const char* rom_path = "game.rom";
-static const char* sram_path = "save.ram";
-static const char* gba_rom_path = "gba.rom";
-static const char* gba_sram_path = "gba.ram";
-static const char* no_path = "";
 
 typedef struct
 {
@@ -66,14 +68,41 @@ typedef struct
 	s32 FirmwareMessageLength;
 } FirmwareSettings;
 
+extern std::stringstream* NANDFilePtr;
+
+static bool LoadDSiWare(u8* TmdData)
+{
+	FILE* bios7i = Platform::OpenLocalFile(Config::DSiBIOS7Path, "rb");
+	if (!bios7i)
+		return false;
+
+	u8 es_keyY[16];
+	fseek(bios7i, 0x8308, SEEK_SET);
+	fread(es_keyY, 16, 1, bios7i);
+	fclose(bios7i);
+
+	FILE* curNAND = Platform::OpenLocalFile(Config::DSiNANDPath, "r+b");
+	if (!curNAND)
+		return false;
+
+	if (!DSi_NAND::Init(curNAND, es_keyY))
+		return false;
+
+	bool ret = DSi_NAND::ImportTitle("dsiware.rom", TmdData, false);
+
+	DSi_NAND::DeInit();
+	return ret;
+}
+
 EXPORT bool Init(LoadFlags flags, LoadData* loadData, FirmwareSettings* fwSettings)
 {
 	Config::ExternalBIOSEnable = !!(flags & USE_REAL_BIOS);
 	Config::AudioBitrate = !!(flags & ACCURATE_AUDIO_BITRATE) ? 1 : 2;
 	Config::FirmwareOverrideSettings = !!(flags & FIRMWARE_OVERRIDE);
 	biz_skip_fw = !!(flags & SKIP_FIRMWARE);
+    bool isDsi = !!(flags & IS_DSI);
 
-	NDS::SetConsoleType(0);
+	NDS::SetConsoleType(isDsi);
 	// time calls are deterministic under wbx, so this will force the mac address to a constant value instead of relying on whatever is in the firmware
 	// fixme: might want to allow the user to specify mac address?
 	srand(time(NULL));
@@ -95,16 +124,28 @@ EXPORT bool Init(LoadFlags flags, LoadData* loadData, FirmwareSettings* fwSettin
 		Config::FirmwareMessage = fwMessage;
 	}
 
+	NANDFilePtr = isDsi ? new std::stringstream(std::string(loadData->NandData, loadData->NandLen), std::ios_base::in | std::ios_base::out | std::ios_base::binary) : nullptr;
+
+	if (isDsi && (flags & LOAD_DSIWARE))
+	{
+		if (!LoadDSiWare(loadData->TmdData))
+			return false;
+	}
+
 	if (!NDS::Init()) return false;
 	GPU::InitRenderer(false);
 	GPU::SetRenderSettings(false, biz_render_settings);
-	if (!NDS::LoadCart(loadData->DsRomData, loadData->DsRomLen, nullptr, 0)) return false;
-	if (flags & GBA_CART_PRESENT)
+	NDS::LoadBIOS();
+	if (!isDsi || !(flags & LOAD_DSIWARE))
+	{
+		if (!NDS::LoadCart(loadData->DsRomData, loadData->DsRomLen, nullptr, 0))
+			return false;
+	}
+	if (!isDsi && (flags & GBA_CART_PRESENT))
 	{
 		if (!NDS::LoadGBACart(loadData->GbaRomData, loadData->GbaRomLen, loadData->GbaRamData, loadData->GbaRamLen))
 			return false;
 	}
-	NDS::LoadBIOS();
 	if (biz_skip_fw) NDS::SetupDirectBoot("");
 	NDS::Start();
 	Config::FirmwareOverrideSettings = false;
@@ -269,8 +310,8 @@ struct MyFrameInfo : public FrameInfo
 {
 	s64 Time;
 	u32 Keys;
-	s8 TouchX;
-	s8 TouchY;
+	u8 TouchX;
+	u8 TouchY;
 	s8 MicVolume;
 	s8 GBALightSensor;
 };
@@ -301,14 +342,19 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 	{
 		NDS::LoadBIOS();
 		if (biz_skip_fw) NDS::SetupDirectBoot("");
+		NDS::Start();
 	}
 
 	NDS::SetKeyMask(~f->Keys & 0xFFF);
 
 	if (f->Keys & 0x1000)
+	{
 		NDS::TouchScreen(f->TouchX, f->TouchY);
+	}
 	else
+	{
 		NDS::ReleaseScreen();
+	}
 
 	if (f->Keys & 0x2000)
 		NDS::SetLidClosed(false);

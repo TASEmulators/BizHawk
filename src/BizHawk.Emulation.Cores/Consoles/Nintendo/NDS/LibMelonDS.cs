@@ -49,6 +49,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			GBA_CART_PRESENT = 0x04,
 			ACCURATE_AUDIO_BITRATE = 0x08,
 			FIRMWARE_OVERRIDE = 0x10,
+			IS_DSI = 0x20,
+			LOAD_DSIWARE = 0x40,
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -60,6 +62,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			public int GbaRomLength;
 			public IntPtr GbaRamData;
 			public int GbaRamLength;
+			public IntPtr NandData;
+			public int NandLength;
+			public IntPtr TmdData;
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
