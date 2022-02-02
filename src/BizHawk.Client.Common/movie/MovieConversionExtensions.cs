@@ -5,6 +5,7 @@ using System.Linq;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive;
 using BizHawk.Emulation.Cores.Nintendo.NES;
@@ -231,6 +232,16 @@ namespace BizHawk.Client.Common
 					{
 						movie.HeaderEntries.Add(key, firmware.Hash);
 					}
+				}
+			}
+
+			if (emulator is NDS nds && nds.IsDSi)
+			{
+				movie.HeaderEntries.Add("IsDSi", "1");
+
+				if (nds.IsDSiWare)
+				{
+					movie.HeaderEntries.Add("IsDSiWare", "1");
 				}
 			}
 

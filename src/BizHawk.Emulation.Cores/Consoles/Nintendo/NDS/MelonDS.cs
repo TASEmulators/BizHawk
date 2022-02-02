@@ -36,9 +36,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			_syncSettings = lp.SyncSettings ?? new NDSSyncSettings();
 			_settings = lp.Settings ?? new NDSSettings();
 
+			IsDSi = _syncSettings.UseDSi;
+			IsDSiWare = _syncSettings.LoadDSiWare;
+
 			var roms = lp.Roms.Select(r => r.RomData).ToList();
 
-			if (roms.Count > (_syncSettings.UseDSi ? 1 : 3))
+			if (roms.Count > (IsDSi ? 1 : 3))
 			{
 				throw new InvalidOperationException("Wrong number of ROMs!");
 			}
@@ -60,31 +63,31 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				SkipMemoryConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			}, new Delegate[] { _tracecb });
 
-			var bios7 = _syncSettings.UseDSi || _syncSettings.UseRealBIOS
+			var bios7 = IsDSi || _syncSettings.UseRealBIOS
 				? CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios7"))
 				: null;
 
-			var bios9 = _syncSettings.UseDSi || _syncSettings.UseRealBIOS
+			var bios9 = IsDSi || _syncSettings.UseRealBIOS
 				? CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios9"))
 				: null;
 
-			var bios7i = _syncSettings.UseDSi
+			var bios7i = IsDSi
 				? CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios7i"))
 				: null;
 
-			var bios9i = _syncSettings.UseDSi
+			var bios9i = IsDSi
 				? CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios9i"))
 				: null;
 
-			var nand = _syncSettings.UseDSi
+			var nand = IsDSi
 				? CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "nand"))
 				: null;
 
-			var fw = _syncSettings.UseDSi
+			var fw = IsDSi
 				? CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "firmwarei"))
 				: CoreComm.CoreFileProvider.GetFirmware(new("NDS", "firmware"));
 
-			var tmd = _syncSettings.UseDSi && _syncSettings.LoadDSiWare
+			var tmd = IsDSi && IsDSiWare
 				? GetTMDData(roms[0])
 				: null;
 
@@ -92,19 +95,19 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			LibMelonDS.LoadFlags flags = LibMelonDS.LoadFlags.NONE;
 
-			if (_syncSettings.UseRealBIOS || _syncSettings.UseDSi)
+			if (_syncSettings.UseRealBIOS || IsDSi)
 				flags |= LibMelonDS.LoadFlags.USE_REAL_BIOS;
-			if (skipfw && !_syncSettings.UseDSi)
+			if (skipfw && !IsDSi)
 				flags |= LibMelonDS.LoadFlags.SKIP_FIRMWARE;
 			if (gbacartpresent)
 				flags |= LibMelonDS.LoadFlags.GBA_CART_PRESENT;
-			if (_settings.AccurateAudioBitrate)
+			if (_settings.AccurateAudioBitrate && !IsDSi) // todo: let users have DS audio bitrate on DSi?
 				flags |= LibMelonDS.LoadFlags.ACCURATE_AUDIO_BITRATE;
 			if (_syncSettings.FirmwareOverride || lp.DeterministicEmulationRequested)
 				flags |= LibMelonDS.LoadFlags.FIRMWARE_OVERRIDE;
-			if (_syncSettings.UseDSi)
+			if (IsDSi)
 				flags |= LibMelonDS.LoadFlags.IS_DSI;
-			if (_syncSettings.UseDSi && _syncSettings.LoadDSiWare)
+			if (IsDSi && IsDSiWare)
 				flags |= LibMelonDS.LoadFlags.LOAD_DSIWARE;
 
 			var fwSettings = new LibMelonDS.FirmwareSettings();
@@ -125,30 +128,30 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				GbaRamLength = gbasrampresent ? roms[2].Length : 0,
 				NandLength = nand?.Length ?? 0,
 			};
-			if (_syncSettings.UseRealBIOS || _syncSettings.UseDSi)
+			if (_syncSettings.UseRealBIOS || IsDSi)
 			{
 				_exe.AddReadonlyFile(bios7, "bios7.rom");
 				_exe.AddReadonlyFile(bios9, "bios9.rom");
 			}
-			if (_syncSettings.UseDSi)
+			if (IsDSi)
 			{
 				_exe.AddReadonlyFile(bios7i, "bios7i.rom");
 				_exe.AddReadonlyFile(bios9i, "bios9i.rom");
-				if (_syncSettings.LoadDSiWare)
+				if (IsDSiWare)
 				{
 					_exe.AddReadonlyFile(roms[0], "dsiware.rom");
 				}
 			}
 			if (fw != null)
 			{
-				if (_syncSettings.UseDSi || NDSFirmware.MaybeWarnIfBadFw(fw, CoreComm))
+				if (IsDSi || NDSFirmware.MaybeWarnIfBadFw(fw, CoreComm)) // fw checks dont work on dsi firmware, don't bother
 				{
 					if (_syncSettings.FirmwareOverride || lp.DeterministicEmulationRequested)
 					{
 						NDSFirmware.SanitizeFw(fw);
 					}
 				}
-				_exe.AddReadonlyFile(fw, _syncSettings.UseDSi ? "firmwarei.bin" : "firmware.bin");
+				_exe.AddReadonlyFile(fw, IsDSi ? "firmwarei.bin" : "firmware.bin");
 			}
 
 			unsafe
@@ -178,10 +181,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			if (fw != null)
 			{
-				_exe.RemoveReadonlyFile(_syncSettings.UseDSi ? "firmwarei.bin" : "firmware.bin");
+				_exe.RemoveReadonlyFile(IsDSi ? "firmwarei.bin" : "firmware.bin");
 			}
 
-			if (_syncSettings.UseDSi && _syncSettings.LoadDSiWare)
+			if (IsDSi && IsDSiWares)
 			{
 				_exe.RemoveReadonlyFile("dsiware.rom");
 			}
@@ -228,6 +231,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			tmd.Read(ret, 0, (int)tmd.Length);
 			return ret;
 		}
+
+		public bool IsDSi { get; }
+
+		public bool IsDSiWare { get; }
 
 		public override ControllerDefinition ControllerDefinition => NDSController;
 
