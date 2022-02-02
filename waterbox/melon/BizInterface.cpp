@@ -5,6 +5,7 @@
 #include "ARM.h"
 #include "NDSCart.h"
 #include "GBACart.h"
+#include "DSi_NAND.h"
 #include "Platform.h"
 #include "BizConfig.h"
 #include "types.h"
@@ -38,7 +39,8 @@ typedef enum
 	GBA_CART_PRESENT = 0x04,
 	ACCURATE_AUDIO_BITRATE = 0x08,
 	FIRMWARE_OVERRIDE = 0x10,
-    IS_DSI = 0x20,
+	IS_DSI = 0x20,
+	LOAD_DSIWARE = 0x40,
 } LoadFlags;
 
 typedef struct
@@ -51,6 +53,7 @@ typedef struct
 	u32 GbaRamLen;
 	char* NandData;
 	u32 NandLen;
+	u8* TmdData;
 } LoadData;
 
 typedef struct
@@ -103,13 +106,21 @@ EXPORT bool Init(LoadFlags flags, LoadData* loadData, FirmwareSettings* fwSettin
 	GPU::InitRenderer(false);
 	GPU::SetRenderSettings(false, biz_render_settings);
 	NDS::LoadBIOS();
-	if (!NDS::LoadCart(loadData->DsRomData, loadData->DsRomLen, nullptr, 0)) return false;
+	if (isDsi && (flags & LOAD_DSIWARE))
+	{
+		if (!DSi_NAND::ImportTitle("dsiware.rom", loadData->TmdData, false))
+			return false;
+	}
+	else
+	{
+		if (!NDS::LoadCart(loadData->DsRomData, loadData->DsRomLen, nullptr, 0))
+			return false;
+	}
 	if (!isDsi && (flags & GBA_CART_PRESENT))
 	{
 		if (!NDS::LoadGBACart(loadData->GbaRomData, loadData->GbaRomLen, loadData->GbaRamData, loadData->GbaRamLen))
 			return false;
 	}
-	NDS::LoadBIOS();
 	if (biz_skip_fw) NDS::SetupDirectBoot("");
 	NDS::Start();
 	Config::FirmwareOverrideSettings = false;
@@ -306,6 +317,7 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 	{
 		NDS::LoadBIOS();
 		if (biz_skip_fw) NDS::SetupDirectBoot("");
+		NDS::Start();
 	}
 
 	NDS::SetKeyMask(~f->Keys & 0xFFF);
