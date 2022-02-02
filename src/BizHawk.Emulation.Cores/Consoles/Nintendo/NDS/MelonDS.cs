@@ -184,7 +184,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				_exe.RemoveReadonlyFile(IsDSi ? "firmwarei.bin" : "firmware.bin");
 			}
 
-			if (IsDSi && IsDSiWares)
+			if (IsDSi && IsDSiWare)
 			{
 				_exe.RemoveReadonlyFile("dsiware.rom");
 			}
