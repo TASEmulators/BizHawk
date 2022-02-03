@@ -248,6 +248,7 @@ struct SystemInfo
 	int32_t NominalHeight;
 	int32_t VideoSystem;
 	int32_t FpsFixed;
+	int64_t MasterClock;
 	int32_t LcmWidth;
 	int32_t LcmHeight;
 	int32_t PointerScaleX;
@@ -265,6 +266,7 @@ ECL_EXPORT SystemInfo* GetSystemInfo()
 	SI.NominalHeight = Game->nominal_height;
 	SI.VideoSystem = Game->VideoSystem;
 	SI.FpsFixed = Game->fps;
+	SI.MasterClock = Game->MasterClock;
 	SI.LcmWidth = Game->lcm_width;
 	SI.LcmHeight = Game->lcm_height;
 	SI.PointerScaleX = Game->mouse_scale_x;
@@ -272,7 +274,7 @@ ECL_EXPORT SystemInfo* GetSystemInfo()
 	SI.PointerOffsetX = Game->mouse_offs_x;
 	SI.PointerOffsetY = Game->mouse_offs_y;
 	return &SI;
-} 
+}
 
 ECL_EXPORT const char* GetLayerData()
 {
