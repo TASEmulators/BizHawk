@@ -62,9 +62,7 @@ namespace BizHawk.Client.Common
 			return (int)(double)luaArg;
 		}
 
-		protected void Log(object message)
-		{
-			LogOutputCallback?.Invoke(message.ToString());
-		}
+		protected void Log(string message)
+			=> LogOutputCallback?.Invoke(message);
 	}
 }
