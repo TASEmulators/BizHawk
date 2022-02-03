@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
 
+using BizHawk.BizInvoke;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Calculators.TI83;
 
@@ -10,6 +12,15 @@ namespace BizHawk.Emulation.Cores.Calculators.Emu83
 	[ServiceNotApplicable(new[] { typeof(IBoardInfo), typeof(IRegionable), typeof(ISaveRam), typeof(ISoundProvider) })]
 	public partial class Emu83 : TI83Common
 	{
+		private static readonly LibEmu83 LibEmu83;
+
+		static Emu83()
+		{
+			var resolver = new DynamicLibraryImportResolver(
+				OSTailoredCode.IsUnixHost ? "libemu83.so" : "libemu83.dll", hasLimitedLifetime: false);
+			LibEmu83 = BizInvoker.GetInvoker<LibEmu83>(resolver, CallingConventionAdapters.Native);
+		}
+
 		private IntPtr Context = IntPtr.Zero;
 
 		private readonly BasicServiceProvider _serviceProvider;
