@@ -27,7 +27,8 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local stmaiget = mainmemory.getname( );")]
 		[LuaMethod("getname", "returns the name of the domain defined as main memory for the given core")]
-		public string GetName() => MainMemName;
+		public string GetName()
+			=> MainMemName;
 
 		[LuaMethodExample("local uimaiget = mainmemory.getcurrentmemorydomainsize( );")]
 		[LuaMethod("getcurrentmemorydomainsize", "Returns the number of bytes of the domain defined as main memory")]
@@ -38,11 +39,13 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local uimairea = mainmemory.readbyte( 0x100 );")]
 		[LuaMethod("readbyte", "gets the value from the given address as an unsigned byte")]
-		public uint ReadByte(long addr) => APIs.Memory.ReadByte(addr, MainMemName);
+		public uint ReadByte(long addr)
+			=> APIs.Memory.ReadByte(addr, MainMemName);
 
 		[LuaMethodExample("mainmemory.writebyte( 0x100, 1000 );")]
 		[LuaMethod("writebyte", "Writes the given value to the given address as an unsigned byte")]
-		public void WriteByte(long addr, uint value) => APIs.Memory.WriteByte(addr, value, MainMemName);
+		public void WriteByte(long addr, uint value)
+			=> APIs.Memory.WriteByte(addr, value, MainMemName);
 
 		[LuaDeprecatedMethod]
 		[LuaMethod("readbyterange", "Reads the address range that starts from address, and is length long. Returns a zero-indexed table containing the read values (an array of bytes.)")]
@@ -122,19 +125,23 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local inmairea = mainmemory.read_s8( 0x100 );")]
 		[LuaMethod("read_s8", "read signed byte")]
-		public int ReadS8(long addr) => APIs.Memory.ReadS8(addr, MainMemName);
+		public int ReadS8(long addr)
+			=> APIs.Memory.ReadS8(addr, MainMemName);
 
 		[LuaMethodExample("mainmemory.write_s8( 0x100, 1000 );")]
 		[LuaMethod("write_s8", "write signed byte")]
-		public void WriteS8(long addr, uint value) => APIs.Memory.WriteS8(addr, unchecked((int) value), MainMemName);
+		public void WriteS8(long addr, uint value)
+			=> APIs.Memory.WriteS8(addr, unchecked((int) value), MainMemName);
 
 		[LuaMethodExample("local uimairea = mainmemory.read_u8( 0x100 );")]
 		[LuaMethod("read_u8", "read unsigned byte")]
-		public uint ReadU8(long addr) => APIs.Memory.ReadU8(addr, MainMemName);
+		public uint ReadU8(long addr)
+			=> APIs.Memory.ReadU8(addr, MainMemName);
 
 		[LuaMethodExample("mainmemory.write_u8( 0x100, 1000 );")]
 		[LuaMethod("write_u8", "write unsigned byte")]
-		public void WriteU8(long addr, uint value) => APIs.Memory.WriteU8(addr, value, MainMemName);
+		public void WriteU8(long addr, uint value)
+			=> APIs.Memory.WriteU8(addr, value, MainMemName);
 
 		[LuaMethodExample("local inmairea = mainmemory.read_s16_le( 0x100 );")]
 		[LuaMethod("read_s16_le", "read signed 2 byte value, little endian")]

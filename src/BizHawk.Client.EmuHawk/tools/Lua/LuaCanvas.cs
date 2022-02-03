@@ -174,7 +174,13 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			"DrawBox",
 			"Draws a rectangle on screen from x1/y1 to x2/y2. Same as drawRectangle except it receives two points intead of a point and width/height")]
-		public void DrawBox(int x, int y, int x2, int y2, [LuaColorParam] object line = null, [LuaColorParam] object background = null)
+		public void DrawBox(
+			int x,
+			int y,
+			int x2,
+			int y2,
+			[LuaColorParam] object line = null,
+			[LuaColorParam] object background = null)
 		{
 			try
 			{
@@ -191,7 +197,13 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			"DrawEllipse",
 			"Draws an ellipse at the given coordinates and the given width and height. Line is the color of the ellipse. Background is the optional fill color")]
-		public void DrawEllipse(int x, int y, int width, int height, [LuaColorParam] object line = null, [LuaColorParam] object background = null)
+		public void DrawEllipse(
+			int x,
+			int y,
+			int width,
+			int height,
+			[LuaColorParam] object line = null,
+			[LuaColorParam] object background = null)
 		{
 			try
 			{
@@ -251,7 +263,16 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			"DrawImageRegion",
 			"draws a given region of an image file from the given path at the given coordinate, and optionally with the given size")]
-		public void DrawImageRegion(string path, int sourceX, int sourceY, int sourceWidth, int sourceHeight, int destX, int destY, int? destWidth = null, int? destHeight = null)
+		public void DrawImageRegion(
+			string path,
+			int sourceX,
+			int sourceY,
+			int sourceWidth,
+			int sourceHeight,
+			int destX,
+			int destY,
+			int? destWidth = null,
+			int? destHeight = null)
 		{
 			if (!File.Exists(path))
 			{
@@ -288,7 +309,14 @@ namespace BizHawk.Client.EmuHawk
 			"DrawArc",
 			"draws a Arc shape at the given coordinates and the given width and height"
 		)]
-		public void DrawArc(int x, int y, int width, int height, int startAngle, int sweepAngle, [LuaColorParam] object line = null)
+		public void DrawArc(
+			int x,
+			int y,
+			int width,
+			int height,
+			int startAngle,
+			int sweepAngle,
+			[LuaColorParam] object line = null)
 		{
 			luaPictureBox.DrawArc(x, y, width, height, startAngle, sweepAngle, _th.SafeParseColor(line));
 		}
@@ -333,7 +361,12 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			"DrawPolygon",
 			"Draws a polygon using the table of coordinates specified in points. This should be a table of tables(each of size 2). Line is the color of the polygon. Background is the optional fill color")]
-		public void DrawPolygon(LuaTable points, int? x = null, int? y = null, [LuaColorParam] object line = null, [LuaColorParam] object background = null)
+		public void DrawPolygon(
+			LuaTable points,
+			int? x = null,
+			int? y = null,
+			[LuaColorParam] object line = null,
+			[LuaColorParam] object background = null)
 		{
 			try
 			{
@@ -351,7 +384,13 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			"DrawRectangle",
 			"Draws a rectangle at the given coordinate and the given width and height. Line is the color of the box. Background is the optional fill color")]
-		public void DrawRectangle(int x, int y, int width, int height, [LuaColorParam] object line = null, [LuaColorParam] object background = null)
+		public void DrawRectangle(
+			int x,
+			int y,
+			int width,
+			int height,
+			[LuaColorParam] object line = null,
+			[LuaColorParam] object background = null)
 		{
 			luaPictureBox.DrawRectangle(x, y, width, height, _th.SafeParseColor(line), _th.SafeParseColor(background));
 		}

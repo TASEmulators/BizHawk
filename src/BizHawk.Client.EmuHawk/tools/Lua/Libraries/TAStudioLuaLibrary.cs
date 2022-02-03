@@ -165,9 +165,10 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("local nltasget = tastudio.getselection( );")]
 		[LuaMethod("getselection", "gets the currently selected frames")]
-		public LuaTable GetSelection() => Engaged()
-			? _th.EnumerateToLuaTable(Tastudio.GetSelection(), indexFrom: 0)
-			: _th.CreateTable();
+		public LuaTable GetSelection()
+			=> Engaged()
+				? _th.EnumerateToLuaTable(Tastudio.GetSelection(), indexFrom: 0)
+				: _th.CreateTable();
 
 		[LuaMethodExample("")]
 		[LuaMethod("submitinputchange", "")]

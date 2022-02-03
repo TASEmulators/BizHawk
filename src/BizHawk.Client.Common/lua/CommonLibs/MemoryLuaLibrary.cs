@@ -22,31 +22,38 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local uimemget = memory.getmemorydomainsize( mainmemory.getname( ) );")]
 		[LuaMethod("getmemorydomainsize", "Returns the number of bytes of the specified memory domain. If no domain is specified, or the specified domain doesn't exist, returns the current domain size")]
-		public uint GetMemoryDomainSize(string name = "") => APIs.Memory.GetMemoryDomainSize(name);
+		public uint GetMemoryDomainSize(string name = "")
+			=> APIs.Memory.GetMemoryDomainSize(name);
 
 		[LuaMethodExample("local stmemget = memory.getcurrentmemorydomain( );")]
 		[LuaMethod("getcurrentmemorydomain", "Returns a string name of the current memory domain selected by Lua. The default is Main memory")]
-		public string GetCurrentMemoryDomain() => APIs.Memory.GetCurrentMemoryDomain();
+		public string GetCurrentMemoryDomain()
+			=> APIs.Memory.GetCurrentMemoryDomain();
 
 		[LuaMethodExample("local uimemget = memory.getcurrentmemorydomainsize( );")]
 		[LuaMethod("getcurrentmemorydomainsize", "Returns the number of bytes of the current memory domain selected by Lua. The default is Main memory")]
-		public uint GetCurrentMemoryDomainSize() => APIs.Memory.GetCurrentMemoryDomainSize();
+		public uint GetCurrentMemoryDomainSize()
+			=> APIs.Memory.GetCurrentMemoryDomainSize();
 
 		[LuaMethodExample("if ( memory.usememorydomain( mainmemory.getname( ) ) ) then\r\n\tconsole.log( \"Attempts to set the current memory domain to the given domain. If the name does not match a valid memory domain, the function returns false, else it returns true\" );\r\nend;")]
 		[LuaMethod("usememorydomain", "Attempts to set the current memory domain to the given domain. If the name does not match a valid memory domain, the function returns false, else it returns true")]
-		public bool UseMemoryDomain(string domain) => APIs.Memory.UseMemoryDomain(domain);
+		public bool UseMemoryDomain(string domain)
+			=> APIs.Memory.UseMemoryDomain(domain);
 
 		[LuaMethodExample("local stmemhas = memory.hash_region( 0x100, 50, mainmemory.getname( ) );")]
 		[LuaMethod("hash_region", "Returns a hash as a string of a region of memory, starting from addr, through count bytes. If the domain is unspecified, it uses the current region.")]
-		public string HashRegion(long addr, int count, string domain = null) => APIs.Memory.HashRegion(addr, count, domain);
+		public string HashRegion(long addr, int count, string domain = null)
+			=> APIs.Memory.HashRegion(addr, count, domain);
 
 		[LuaMethodExample("local uimemrea = memory.readbyte( 0x100, mainmemory.getname( ) );")]
 		[LuaMethod("readbyte", "gets the value from the given address as an unsigned byte")]
-		public uint ReadByte(long addr, string domain = null) => APIs.Memory.ReadByte(addr, domain);
+		public uint ReadByte(long addr, string domain = null)
+			=> APIs.Memory.ReadByte(addr, domain);
 
 		[LuaMethodExample("memory.writebyte( 0x100, 1000, mainmemory.getname( ) );")]
 		[LuaMethod("writebyte", "Writes the given value to the given address as an unsigned byte")]
-		public void WriteByte(long addr, uint value, string domain = null) => APIs.Memory.WriteByte(addr, value, domain);
+		public void WriteByte(long addr, uint value, string domain = null)
+			=> APIs.Memory.WriteByte(addr, value, domain);
 
 		[LuaDeprecatedMethod]
 		[LuaMethod("readbyterange", "Reads the address range that starts from address, and is length long. Returns a zero-indexed table containing the read values (an array of bytes.)")]
@@ -126,19 +133,23 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local inmemrea = memory.read_s8( 0x100, mainmemory.getname( ) );")]
 		[LuaMethod("read_s8", "read signed byte")]
-		public int ReadS8(long addr, string domain = null) => APIs.Memory.ReadS8(addr, domain);
+		public int ReadS8(long addr, string domain = null)
+			=> APIs.Memory.ReadS8(addr, domain);
 
 		[LuaMethodExample("memory.write_s8( 0x100, 1000, mainmemory.getname( ) );")]
 		[LuaMethod("write_s8", "write signed byte")]
-		public void WriteS8(long addr, uint value, string domain = null) => APIs.Memory.WriteS8(addr, unchecked((int) value), domain);
+		public void WriteS8(long addr, uint value, string domain = null)
+			=> APIs.Memory.WriteS8(addr, unchecked((int) value), domain);
 
 		[LuaMethodExample("local uimemrea = memory.read_u8( 0x100, mainmemory.getname( ) );")]
 		[LuaMethod("read_u8", "read unsigned byte")]
-		public uint ReadU8(long addr, string domain = null) => APIs.Memory.ReadU8(addr, domain);
+		public uint ReadU8(long addr, string domain = null)
+			=> APIs.Memory.ReadU8(addr, domain);
 
 		[LuaMethodExample("memory.write_u8( 0x100, 1000, mainmemory.getname( ) );")]
 		[LuaMethod("write_u8", "write unsigned byte")]
-		public void WriteU8(long addr, uint value, string domain = null) => APIs.Memory.WriteU8(addr, value, domain);
+		public void WriteU8(long addr, uint value, string domain = null)
+			=> APIs.Memory.WriteU8(addr, value, domain);
 
 		[LuaMethodExample("local inmemrea = memory.read_s16_le( 0x100, mainmemory.getname( ) );")]
 		[LuaMethod("read_s16_le", "read signed 2 byte value, little endian")]

@@ -23,23 +23,28 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("if ( nds.getscreenlayout( ) ) then\r\n\tconsole.log( \"Returns which screen layout is active\" );\r\nend;")]
 		[LuaMethod("getscreenlayout", "Returns which screen layout is active")]
-		public string GetScreenLayout() => Settings.ScreenLayout.ToString();
+		public string GetScreenLayout()
+			=> Settings.ScreenLayout.ToString();
 
 		[LuaMethodExample("if ( nds.getscreeninvert( ) ) then\r\n\tconsole.log( \"Returns whether screens are inverted\" );\r\nend;")]
 		[LuaMethod("getscreeninvert", "Returns whether screens are inverted")]
-		public bool GetScreenInvert() => Settings.ScreenInvert;
+		public bool GetScreenInvert()
+			=> Settings.ScreenInvert;
 
 		[LuaMethodExample("if ( nds.getscreenrotation( ) ) then\r\n\tconsole.log( \"Returns how screens are rotated\" );\r\nend;")]
 		[LuaMethod("getscreenrotation", "Returns how screens are rotated")]
-		public string GetScreenRotation() => Settings.ScreenRotation.ToString();
+		public string GetScreenRotation()
+			=> Settings.ScreenRotation.ToString();
 
 		[LuaMethodExample("if ( nds.getscreengap( ) ) then\r\n\tconsole.log( \"Returns the gap between the screens\" );\r\nend;")]
 		[LuaMethod("getscreengap", "Returns the gap between the screens")]
-		public int GetScreenGap() => Settings.ScreenGap;
+		public int GetScreenGap()
+			=> Settings.ScreenGap;
 
 		[LuaMethodExample("if ( nds.getaccurateaudiobitrate( ) ) then\r\n\tconsole.log( \"Returns whether the audio bitrate is set to accurate mode\" );\r\nend;")]
 		[LuaMethod("getaccurateaudiobitrate", "Returns whether the audio bitrate is in accurate mode")]
-		public bool GetAccurateAudioBitrate() => Settings.AccurateAudioBitrate;
+		public bool GetAccurateAudioBitrate()
+			=> Settings.AccurateAudioBitrate;
 
 		[LuaMethodExample("nds.setscreenlayout( \"Vertical\" );")]
 		[LuaMethod("setscreenlayout", "Sets which screen layout is active")]

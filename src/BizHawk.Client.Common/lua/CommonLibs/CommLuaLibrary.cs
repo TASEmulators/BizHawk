@@ -31,7 +31,8 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethod("socketServerIsConnected", "socketServerIsConnected")]
-		public bool SocketServerIsConnected() => APIs.Comm.Sockets.Connected;
+		public bool SocketServerIsConnected()
+			=> APIs.Comm.Sockets.Connected;
 
 		[LuaMethod("socketServerScreenShot", "sends a screenshot to the Socket server")]
 		public string SocketServerScreenShot()
@@ -153,26 +154,31 @@ namespace BizHawk.Client.Common
 		{
 			return APIs.Comm.MMF.WriteToFile(mmf_filename, outputString);
 		}
+
 		[LuaMethod("mmfWriteBytes", "Write bytes to a memory mapped file")]
 		public int MmfWriteBytes(string mmf_filename, LuaTable byteArray)
 		{
 			return APIs.Comm.MMF.WriteToFile(mmf_filename, _th.EnumerateValues<double>(byteArray).Select(d => (byte)d).ToArray());
 		}
+
 		[LuaMethod("mmfCopyFromMemory", "Copy a section of the memory to a memory mapped file")]
 		public int MmfCopyFromMemory(string mmf_filename, long addr, int length, string domain)
 		{
 			return APIs.Comm.MMF.WriteToFile(mmf_filename, APIs.Memory.ReadByteRange(addr, length, domain).ToArray());
 		}
+
 		[LuaMethod("mmfCopyToMemory", "Copy a memory mapped file to a section of the memory")]
 		public void MmfCopyToMemory(string mmf_filename, long addr, int length, string domain)
 		{
 			APIs.Memory.WriteByteRange(addr, new List<byte>(APIs.Comm.MMF.ReadBytesFromFile(mmf_filename, length)), domain);
 		}
+
 		[LuaMethod("mmfRead", "Reads a string from a memory mapped file")]
 		public string MmfRead(string mmf_filename, int expectedSize)
 		{
 			return APIs.Comm.MMF.ReadFromFile(mmf_filename, expectedSize);
 		}
+
 		[LuaMethod("mmfReadBytes", "Reads bytes from a memory mapped file")]
 		public LuaTable MmfReadBytes(string mmf_filename, int expectedSize)
 			=> _th.ListToTable(APIs.Comm.MMF.ReadBytesFromFile(mmf_filename, expectedSize), indexFrom: 0);
@@ -281,15 +287,17 @@ namespace BizHawk.Client.Common
 
 		[LuaMethod("ws_receive", "Receive a message from a certain websocket id and a maximum number of bytes to read")]
 		[LuaMethodExample("local ws = comm.ws_receive(ws_id, str_len);")]
-		public string WebSocketReceive(string guid, int bufferCap) => _websockets.TryGetValue(Guid.Parse(guid), out var wrapper)
-			? wrapper.Receive(bufferCap)
-			: null;
+		public string WebSocketReceive(string guid, int bufferCap)
+			=> _websockets.TryGetValue(Guid.Parse(guid), out var wrapper)
+				? wrapper.Receive(bufferCap)
+				: null;
 
 		[LuaMethod("ws_get_status", "Get a websocket's status")]
 		[LuaMethodExample("local ws_status = comm.ws_get_status(ws_id);")]
-		public int? WebSocketGetStatus(string guid) => _websockets.TryGetValue(Guid.Parse(guid), out var wrapper)
-			? (int) wrapper.State
-			: (int?) null;
+		public int? WebSocketGetStatus(string guid)
+			=> _websockets.TryGetValue(Guid.Parse(guid), out var wrapper)
+				? (int) wrapper.State
+				: (int?) null;
 
 		[LuaMethod("ws_close", "Close a websocket connection with a close status")]
 		[LuaMethodExample("local ws_status = comm.ws_close(ws_id, close_status);")]

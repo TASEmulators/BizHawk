@@ -33,62 +33,68 @@ namespace BizHawk.Client.Common
 		/// <exception cref="InvalidOperationException">loaded core is not NESHawk or QuickNes</exception>
 		[LuaMethodExample("if ( nes.getallowmorethaneightsprites( ) ) then\r\n\tconsole.log( \"Gets the NES setting 'Allow more than 8 sprites per scanline' value\" );\r\nend;")]
 		[LuaMethod("getallowmorethaneightsprites", "Gets the NES setting 'Allow more than 8 sprites per scanline' value")]
-		public bool GetAllowMoreThanEightSprites() => Settings switch
-		{
-			NES.NESSettings nhs => nhs.AllowMoreThanEightSprites,
-			QuickNES.QuickNESSettings qns => qns.NumSprites != 8,
-			_ => throw new InvalidOperationException()
-		};
+		public bool GetAllowMoreThanEightSprites()
+			=> Settings switch
+			{
+				NES.NESSettings nhs => nhs.AllowMoreThanEightSprites,
+				QuickNES.QuickNESSettings qns => qns.NumSprites != 8,
+				_ => throw new InvalidOperationException()
+			};
 
 		/// <exception cref="InvalidOperationException">loaded core is not NESHawk or QuickNes</exception>
 		[LuaMethodExample("local innesget = nes.getbottomscanline( false );")]
 		[LuaMethod("getbottomscanline", "Gets the current value for the bottom scanline value")]
-		public int GetBottomScanline(bool pal = false) => Settings switch
-		{
-			NES.NESSettings nhs => pal ? nhs.PAL_BottomLine : nhs.NTSC_BottomLine,
-			QuickNES.QuickNESSettings qns => qns.ClipTopAndBottom ? 231 : 239,
-			_ => throw new InvalidOperationException()
-		};
+		public int GetBottomScanline(bool pal = false)
+			=> Settings switch
+			{
+				NES.NESSettings nhs => pal ? nhs.PAL_BottomLine : nhs.NTSC_BottomLine,
+				QuickNES.QuickNESSettings qns => qns.ClipTopAndBottom ? 231 : 239,
+				_ => throw new InvalidOperationException()
+			};
 
 		/// <exception cref="InvalidOperationException">loaded core is not NESHawk or QuickNes</exception>
 		[LuaMethodExample("if ( nes.getclipleftandright( ) ) then\r\n\tconsole.log( \"Gets the current value for the Clip Left and Right sides option\" );\r\nend;")]
 		[LuaMethod("getclipleftandright", "Gets the current value for the Clip Left and Right sides option")]
-		public bool GetClipLeftAndRight() => Settings switch
-		{
-			NES.NESSettings nhs => nhs.ClipLeftAndRight,
-			QuickNES.QuickNESSettings qns => qns.ClipLeftAndRight,
-			_ => throw new InvalidOperationException()
-		};
+		public bool GetClipLeftAndRight()
+			=> Settings switch
+			{
+				NES.NESSettings nhs => nhs.ClipLeftAndRight,
+				QuickNES.QuickNESSettings qns => qns.ClipLeftAndRight,
+				_ => throw new InvalidOperationException()
+			};
 
 		/// <exception cref="InvalidOperationException">loaded core is not NESHawk or QuickNes</exception>
 		[LuaMethodExample("if ( nes.getdispbackground( ) ) then\r\n\tconsole.log( \"Indicates whether or not the bg layer is being displayed\" );\r\nend;")]
 		[LuaMethod("getdispbackground", "Indicates whether or not the bg layer is being displayed")]
-		public bool GetDisplayBackground() => Settings switch
-		{
-			NES.NESSettings nhs => nhs.DispBackground,
-			QuickNES.QuickNESSettings => true,
-			_ => throw new InvalidOperationException()
-		};
+		public bool GetDisplayBackground()
+			=> Settings switch
+			{
+				NES.NESSettings nhs => nhs.DispBackground,
+				QuickNES.QuickNESSettings => true,
+				_ => throw new InvalidOperationException()
+			};
 
 		/// <exception cref="InvalidOperationException">loaded core is not NESHawk or QuickNes</exception>
 		[LuaMethodExample("if ( nes.getdispsprites( ) ) then\r\n\tconsole.log( \"Indicates whether or not sprites are being displayed\" );\r\nend;")]
 		[LuaMethod("getdispsprites", "Indicates whether or not sprites are being displayed")]
-		public bool GetDisplaySprites() => Settings switch
-		{
-			NES.NESSettings nhs => nhs.DispSprites,
-			QuickNES.QuickNESSettings qns => qns.NumSprites > 0,
-			_ => throw new InvalidOperationException()
-		};
+		public bool GetDisplaySprites()
+			=> Settings switch
+			{
+				NES.NESSettings nhs => nhs.DispSprites,
+				QuickNES.QuickNESSettings qns => qns.NumSprites > 0,
+				_ => throw new InvalidOperationException()
+			};
 
 		/// <exception cref="InvalidOperationException">loaded core is not NESHawk or QuickNes</exception>
 		[LuaMethodExample("local innesget = nes.gettopscanline(false);")]
 		[LuaMethod("gettopscanline", "Gets the current value for the top scanline value")]
-		public int GetTopScanline(bool pal = false) => Settings switch
-		{
-			NES.NESSettings nhs => pal ? nhs.PAL_TopLine : nhs.NTSC_TopLine,
-			QuickNES.QuickNESSettings qns => qns.ClipTopAndBottom ? 8 : 0,
-			_ => throw new InvalidOperationException()
-		};
+		public int GetTopScanline(bool pal = false)
+			=> Settings switch
+			{
+				NES.NESSettings nhs => pal ? nhs.PAL_TopLine : nhs.NTSC_TopLine,
+				QuickNES.QuickNESSettings qns => qns.ClipTopAndBottom ? 8 : 0,
+				_ => throw new InvalidOperationException()
+			};
 
 		/// <exception cref="InvalidOperationException">loaded core is not NESHawk or QuickNes</exception>
 		[LuaMethodExample("nes.setallowmorethaneightsprites( true );")]

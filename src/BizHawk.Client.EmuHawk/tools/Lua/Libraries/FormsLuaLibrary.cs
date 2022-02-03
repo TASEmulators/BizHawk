@@ -613,7 +613,14 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			"drawBox",
 			"Draws a rectangle on screen from x1/y1 to x2/y2. Same as drawRectangle except it receives two points intead of a point and width/height")]
-		public void DrawBox(int componentHandle, int x, int y, int x2, int y2, [LuaColorParam] object line = null, [LuaColorParam] object background = null)
+		public void DrawBox(
+			int componentHandle,
+			int x,
+			int y,
+			int x2,
+			int y2,
+			[LuaColorParam] object line = null,
+			[LuaColorParam] object background = null)
 		{
 			try
 			{
@@ -644,7 +651,14 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			"drawEllipse",
 			"Draws an ellipse at the given coordinates and the given width and height. Line is the color of the ellipse. Background is the optional fill color")]
-		public void DrawEllipse(int componentHandle, int x, int y, int width, int height, [LuaColorParam] object line = null, [LuaColorParam] object background = null)
+		public void DrawEllipse(
+			int componentHandle,
+			int x,
+			int y,
+			int width,
+			int height,
+			[LuaColorParam] object line = null,
+			[LuaColorParam] object background = null)
 		{
 			try
 			{
@@ -709,7 +723,14 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			"drawImage",
 			"draws an image file from the given path at the given coordinate. width and height are optional. If specified, it will resize the image accordingly")]
-		public void DrawImage(int componentHandle, string path, int x, int y, int? width = null, int? height = null, bool cache = true)
+		public void DrawImage(
+			int componentHandle,
+			string path,
+			int x,
+			int y,
+			int? width = null,
+			int? height = null,
+			bool cache = true)
 		{
 			if (!File.Exists(path))
 			{
@@ -772,7 +793,17 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			"drawImageRegion",
 			"draws a given region of an image file from the given path at the given coordinate, and optionally with the given size")]
-		public void DrawImageRegion(int componentHandle, string path, int source_x, int source_y, int source_width, int source_height, int dest_x, int dest_y, int? dest_width = null, int? dest_height = null)
+		public void DrawImageRegion(
+			int componentHandle,
+			string path,
+			int source_x,
+			int source_y,
+			int source_width,
+			int source_height,
+			int dest_x,
+			int dest_y,
+			int? dest_width = null,
+			int? dest_height = null)
 		{
 			if (!File.Exists(path))
 			{
@@ -867,7 +898,15 @@ namespace BizHawk.Client.EmuHawk
 			"drawArc",
 			"draws a Arc shape at the given coordinates and the given width and height"
 		)]
-		public void DrawArc(int componentHandle, int x, int y, int width, int height, int startangle, int sweepangle, [LuaColorParam] object line = null)
+		public void DrawArc(
+			int componentHandle,
+			int x,
+			int y,
+			int width,
+			int height,
+			int startangle,
+			int sweepangle,
+			[LuaColorParam] object line = null)
 		{
 			try
 			{
@@ -967,7 +1006,13 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			"drawPolygon",
 			"Draws a polygon using the table of coordinates specified in points. This should be a table of tables(each of size 2). If x or y is passed, the polygon will be translated by the passed coordinate pair. Line is the color of the polygon. Background is the optional fill color")]
-		public void DrawPolygon(int componentHandle, LuaTable points, int? x = null, int? y = null, [LuaColorParam] object line = null, [LuaColorParam] object background = null)
+		public void DrawPolygon(
+			int componentHandle,
+			LuaTable points,
+			int? x = null,
+			int? y = null,
+			[LuaColorParam] object line = null,
+			[LuaColorParam] object background = null)
 		{
 			try
 			{
@@ -999,7 +1044,14 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			"drawRectangle",
 			"Draws a rectangle at the given coordinate and the given width and height. Line is the color of the box. Background is the optional fill color")]
-		public void DrawRectangle(int componentHandle, int x, int y, int width, int height, [LuaColorParam] object line = null, [LuaColorParam] object background = null)
+		public void DrawRectangle(
+			int componentHandle,
+			int x,
+			int y,
+			int width,
+			int height,
+			[LuaColorParam] object line = null,
+			[LuaColorParam] object background = null)
 		{
 			try
 			{

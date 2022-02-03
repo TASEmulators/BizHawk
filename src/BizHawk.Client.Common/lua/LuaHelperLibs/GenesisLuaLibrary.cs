@@ -23,15 +23,18 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("if ( genesis.getlayer_bga( ) ) then\r\n\tconsole.log( \"Returns whether the bg layer A is displayed\" );\r\nend;")]
 		[LuaMethod("getlayer_bga", "Returns whether the bg layer A is displayed")]
-		public bool GetLayerBgA() => Settings.DrawBGA;
+		public bool GetLayerBgA()
+			=> Settings.DrawBGA;
 
 		[LuaMethodExample("if ( genesis.getlayer_bgb( ) ) then\r\n\tconsole.log( \"Returns whether the bg layer B is displayed\" );\r\nend;")]
 		[LuaMethod("getlayer_bgb", "Returns whether the bg layer B is displayed")]
-		public bool GetLayerBgB() => Settings.DrawBGB;
+		public bool GetLayerBgB()
+			=> Settings.DrawBGB;
 
 		[LuaMethodExample("if ( genesis.getlayer_bgw( ) ) then\r\n\tconsole.log( \"Returns whether the bg layer W is displayed\" );\r\nend;")]
 		[LuaMethod("getlayer_bgw", "Returns whether the bg layer W is displayed")]
-		public bool GetLayerBgW() => Settings.DrawBGW;
+		public bool GetLayerBgW()
+			=> Settings.DrawBGW;
 
 		[LuaMethodExample("genesis.setlayer_bga( true );")]
 		[LuaMethod("setlayer_bga", "Sets whether the bg layer A is displayed")]
