@@ -14625,3 +14625,1173 @@ B82AE166DA9B3E35FC0C4552D06B0A9D		Zorro - Quest for Justice (USA) (En,Fr,De,Es,I
 CFEBB2E4D41843E3EC5F46C5BFC7B90D		Zunou ni Asekaku Game Series! Vol. 1 - Cool 104 Joker & Setline (Japan)	NDS			Japan
 816DE4C963B4B0F97170F8798261A055		Zunou Nouryoku Koujou Machine - Touch de Zunoo DS (Japan)	NDS			Japan
 E60489093FF6A5CB6856CCDCEBB77D0C		Zunou Nouryoku Koujou Machine - Touch de Zunoo DS (Japan)	NDS			Japan
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Type:	NO-INTRO
+;;; Source:	Nintendo - Nintendo DSi (Decrypted) - 20220130-110917
+;;; FileGen:	2022-02-03 00:12:53 (UTC)
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Bad Dumps
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Hacks
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Over Dumps
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Translated
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Believed Good
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+0A020966DB338BB0EB2C68112DA5D8EC		Face Training (Europe) (En,Fr,De,Es,It)	NDS			Europe
+8F253DDDEF53FA682C48CB168E59B160		Foto Showdown (USA)	NDS			USA
+4FA4F1EDFC97373D3E218D796A5391CD		Hair Salon (Europe) (En,Fr,De,Es,It)	NDS			Europe
+79CB43B40988A5210B916101CB723A54		Hidden Photo (Europe) (En,Fr,Es,It)	NDS			Europe
+FFD8BF48A9294A6957DC928E34F03537		Monster Finder (Japan)	NDS			Japan
+1B43BF617B1F168DE512833DFED2E7EB		Nintendo DSi XL Demo Video (USA)	NDS			USA
+0F75373B187ADB45FC0AE89C5FC74E27		Nintendo DSi XL Demo Video Volume 2 (USA)	NDS			USA
+F277A49A1A108D8BDDA1C50F406DB812		NOE Movie Player Vol.1 (Europe) (En,Fr,De,Es,It)	NDS			Europe
+23B9F85D5C5AAC0CC58E91F9C8903A8C		Picture Perfect Hair Salon (USA) (En,Fr,Es)	NDS			USA
+7BCB9DC3A5BAD4EBFBD6FED6E892E20E		System - Flaw (Europe) (En,Fr,De,Es,It)	NDS			Europe
+E45CC21A32B73A9B0E80E11B23E304CE		System - Flaw (USA) (En,Fr,Es)	NDS			USA
+EDAB04F62D562BA8421F7EDDEADE6601		WFRUTester (World)	NDS			World
+33E9DB9A240CBA9902B6547D1404E92E		Wimmelbild-Creator (Germany)	NDS			Germany
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Type:	NO-INTRO
+;;; Source:	Nintendo - Nintendo DSi (Encrypted) - 20220130-110917
+;;; FileGen:	2022-02-03 00:12:53 (UTC)
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Bad Dumps
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Hacks
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Over Dumps
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Translated
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Believed Good
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+FBADB8FF08D3303C7339928808F2C1A8		Face Training (Europe) (En,Fr,De,Es,It)	NDS			Europe
+FAE7451386DA087D2842AC4C62A8838C		Foto Showdown (USA)	NDS			USA
+61BEE9ADF14BF470BDA73F33A053AB58		Hair Salon (Europe) (En,Fr,De,Es,It)	NDS			Europe
+E6710CB05626E928CA06D2EB4C16EC31		Hidden Photo (Europe) (En,Fr,Es,It)	NDS			Europe
+1AA0D5A6D9ACCD263DAE7477E00CC9CD		Monster Finder (Japan)	NDS			Japan
+E0B50A9F81262A19CFE5983540E81F2C		Nintendo DSi XL Demo Video (USA)	NDS			USA
+FE3B60278C916C60AD7BFB974A55CFA1		Nintendo DSi XL Demo Video Volume 2 (USA)	NDS			USA
+82C6FB4BDED0EAE18F453385697C4AEB		NOE Movie Player Vol.1 (Europe) (En,Fr,De,Es,It)	NDS			Europe
+54BA5865D961075DE68E9D9137948008		Picture Perfect Hair Salon (USA) (En,Fr,Es)	NDS			USA
+474322C0990F604C7A7D89BFF93540A1		System - Flaw (Europe) (En,Fr,De,Es,It)	NDS			Europe
+42B6408A8AD39BA72E373056387E8D73		System - Flaw (USA) (En,Fr,Es)	NDS			USA
+EDAB04F62D562BA8421F7EDDEADE6601		WFRUTester (World)	NDS			World
+33E9DB9A240CBA9902B6547D1404E92E		Wimmelbild-Creator (Germany)	NDS			Germany
+849067A365405182FC091D83B1115F92		Wimmelbild-Creator (Germany)	NDS			Germany
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Type:	NO-INTRO
+;;; Source:	Nintendo - Nintendo DSi (Digital) - 20211008-234258
+;;; FileGen:	2022-02-03 00:12:53 (UTC)
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Bad Dumps
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Hacks
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Over Dumps
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Translated
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Believed Good
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+EABDB473B369678F5818241584C6CFAF		1001 Blockbusters (Europe)	NDS			Europe
+17178D749E87E2912040DD4E570B1DEB		1001 BlockBusters (USA)	NDS			USA
+F35AC528070BD9EB07272B91C6E0F7AB		1001 Crystal Mazes Collection (Europe)	NDS			Europe
+7ABCC76A9AE667E558DE02BCDD15885C		1001 Crystal Mazes Collection (USA)	NDS			USA
+3C28539A3722F70FD71DF75CD03115F2		101 Dolphin Pets (USA)	NDS			USA
+70B1BE47C367AC000A76F55FDC5A5C9E		101 MiniGolf World (USA)	NDS			USA
+8B5F9E3FEDACDEC3CA28F1AB8F433760		101 Pinball World (Europe)	NDS			Europe
+563C76F8099432A75575FBF08ED45DAE		101 Pinball World (USA)	NDS			USA
+62AAA24153F9D302A5FE74A24C3DBD7B		101 Shark Pets (Europe)	NDS			Europe
+AF945CB98AFFE07E2F2218CA5D46CE44		101 Shark Pets (USA)	NDS			USA
+B6A86AE4F669C80696F9B0986D6E0BFE		10-Byou Sou (Japan)	NDS			Japan
+7F7E17FE186CFAD5264F7DA7854E438D		16 Shot! Shooting Watch (Europe, Australia)	NDS			Europe, Australia
+A3E5F0D86EB30CC51113A47E65B9A86C		16 Shot! Shooting Watch (USA)	NDS			USA
+794C17C8F688255A611C12FE9085CF0A		18th Gate (Europe, Australia)	NDS			Europe, Australia
+3842C02F11802000FCF733E99E7DB605		18th Gate (USA)	NDS			USA
+2F69D5F85AF30B326DAD71E405321086		1950s Lawn Mower Kids (Europe, Australia)	NDS			Europe, Australia
+280A547CEE6AA5CE64D3A61AAD21E3E7		1950s Lawn Mower Kids (USA)	NDS			USA
+8EEB616FA38E0CDBBA88BE8B63922D19		1st Class Poker & BlackJack (USA)	NDS			USA
+854482A4D1F125459B70C94883557CF1		21 - Blackjack (Europe)	NDS			Europe
+FD828F5AE7D6D03EB8A43F3A5BC7C093		21 - Blackjack (USA)	NDS			USA
+1E10B4F23A113B52D5D5B835139DC6FA		24-7 Solitaire (Europe)	NDS			Europe
+91E4F576AC735485931FDDA17DF85E7B		24-7 Solitaire (USA)	NDS			USA
+1003221FF54E433D29E3B67E2ADBB2E4		2-in-1 Solitaire (Europe, Australia)	NDS			Europe, Australia
+326ACA904AC14F1767B960FD5A584944		2Puzzle It - Fantasy (Europe) (En,Fr,De,Es,It)	NDS			Europe
+97C9833C2A99FC2FBB3E746C84405397		3 Heroes - Crystal Soul (Europe, Australia)	NDS			Europe, Australia
+D83D28B6092C9631410AE5F7526403BB		3 Heroes - Crystal Soul (USA)	NDS			USA
+AC6F2E7B5482232B1B234980847D8D81		3,2,1...WordsUp! (Europe)	NDS			Europe
+1808802A0DB102C00C3B9008944AAECF		3,2,1...WordsUp! (USA)	NDS			USA
+EABFC136F5A6003E81F5AF5F0E34625D		3450 Algo (Japan)	NDS			Japan
+98BCF124D1660667E7AE22D03AEEFD38		3D Mahjong (USA)	NDS			USA
+F3CC64F4F00FA109E8EB1DAC6B53B493		3D Space Tank (Europe, Australia)	NDS			Europe, Australia
+983BBAB1F0B7D22D9F1C142D1E3C0433		3D Twist & Match (Europe)	NDS			Europe
+346B6E0250C35E037467E184676A15E2		3D Twist & Match (USA)	NDS			USA
+E7EE11A99267E14A470E47F5783D8B3A		4 Elements (USA)	NDS			USA
+6753373964C6A4A13BDE9CE3AC444B46		4 Travellers - Play French (Europe) (En,De,Es,It,Nl,Sv,No,Da,Fi)	NDS			Europe
+733500FDD2B3AF5424DFE6C11C45F364		4 Travellers - Play Spanish (Europe)	NDS			Europe
+8CC477D5DAAE7110D05F444370B88B67		5 in 1 Mahjong (Europe)	NDS			Europe
+B3340BB25785FF6224A940CC0B448145		5 in 1 Mahjong (USA)	NDS			USA
+F7ADA6CDE63B3878F944726CD0DE42D0		5 in 1 Solitaire (Europe)	NDS			Europe
+38DEC2666489B2E7D5A776B51A93E68B		5 in 1 Solitaire (USA)	NDS			USA
+511478CD35716C9BACD66ABD944786B6		505 Tangram (Europe)	NDS			Europe
+82447B0CE24FAB2ECAE77EAA00535742		505 Tangram (USA)	NDS			USA
+293735C494FDD2283D1E9C419ED83C25		7 Card Games (USA)	NDS			USA
+C90ED82F8D77697F588293CF77F07769		90's Pool (Europe)	NDS			Europe
+4A2454037F4415EA28664A2959D93DE6		90's Pool (USA)	NDS			USA
+DD339D6353838EF3839828520737A387		99Bullets (Europe)	NDS			Europe
+84ACC253B5B345744563325C1B046A1E		99Bullets (USA)	NDS			USA
+4973CF1B5630561AD944AC48A83A887D		99Moves (Europe)	NDS			Europe
+D39EF8B3F61FB5FEED352D74EC96D551		99Moves (USA)	NDS			USA
+B5F228CBBF9471ADFA028922E47BEF17		99Seconds (Europe)	NDS			Europe
+0680BFCBCC06E223FC423479EEAAA040		99Seconds (USA)	NDS			USA
+DA76AE3FF529E76EF81AB4897E163C68		Aa Mujou Setsuna (Japan)	NDS			Japan
+A5A67D4FBF81D7D8442F7B84E7F86EEC		Aahh! Spot the difference (Europe)	NDS			Europe
+DEB93A9E59EF95ADAF2560B0358D1593		Aahh! Spot the difference (USA)	NDS			USA
+48B3B86D55C0E99F387F6AB2F309F333		Absolute Baseball (USA)	NDS			USA
+8E1924643334E83DC58DB93AFA63C6F3		Absolute BrickBuster (USA)	NDS			USA
+963F0DBC1C11CCB728BDAA3A11494DFE		Absolute Chess (USA)	NDS			USA
+F4F1E55EA52D3278796EFA15ED76629D		Absolute Reversi (USA)	NDS			USA
+118BE5974653106EB08078FA5F1C0901		Abyss (Europe)	NDS			Europe
+A26ECEECC9E5DFD82ED9AD8BD6D482A6		Abyss (USA)	NDS			USA
+415ECF65E9BCF06D16960DA64FAC9BFA		Academy - Checkers (Europe)	NDS			Europe
+B61A3E94A5B4B40E8910267CFE029A08		Academy - Checkers (USA)	NDS			USA
+6C8865DA83F39607F791785E55C02D09		Academy - Chess Puzzles (Europe)	NDS			Europe
+1EBCC518BC256F9460A0262BDC673952		Academy - Chess Puzzles (USA)	NDS			USA
+6158EB6C6E2012F35DA9AB960184DBF2		Academy - Tic-Tac-Toe (USA)	NDS			USA
+C9CDE9341AE32EE539912BC35A6F98A7		Academy - Tic-Tac-Toe Noughts & Crosses (Europe, Australia)	NDS			Europe, Australia
+16451F2D0F080F364C42C17A96AD78B5		Accel Knights - Na ga Tame Ware wa Ken o Toru (Japan)	NDS			Japan
+20D1AB576C93492F7F65605D59925AD6		Ace Mathician (Europe, Australia)	NDS			Europe, Australia
+377CAD2671331B1B1CBDA3B4CF6845B1		Ace Mathician (USA)	NDS			USA
+974DD948E81E7398CB2992D1D5CA935F		Advanced Circuits (Europe, Australia)	NDS			Europe, Australia
+533DFEBDB63444207EA1F35A872CBB55		Advanced Circuits (USA)	NDS			USA
+144C33CEAF23990F3226F9C3204D131B		Adventure in Vegas - Slot Machine (Europe, Australia)	NDS			Europe, Australia
+3569AC7EE13160857DE75B2203E9749D		Adventure in Vegas - Slot Machine (USA)	NDS			USA
+E62FFBC729B63A9F07991EAECC1ECA06		Afterzoom (Europe)	NDS			Europe
+D06CD7099AB770CE119ABA36F585E518		Afterzoom (USA)	NDS			USA
+D011ADAC8B44260F0E4B37CF20CFC4B8		Ah! Heaven (Europe)	NDS			Europe
+F3D4AED719DE79961D41E1A4993C693C		Ah! Heaven (USA)	NDS			USA
+C3E47592AA69A8C5E67F0B31A4DC755F		AiRace - Tunnel (Europe, Australia)	NDS			Europe, Australia
+4C2D8CD6AFE5A9FF1F4275C2FF319A26		AiRace - Tunnel (USA)	NDS			USA
+9833699B6E96BDCECDC877E85FF9AADB		AiRace (Europe, Australia)	NDS			Europe, Australia
+D1CBEF8EA90F8A2BDD1EF5EE3B060C49		AiRace (USA)	NDS			USA
+F0C90017723E7F3CA2A86CFD90F42401		Airport Mania - First Flight (Europe, Australia)	NDS			Europe, Australia
+5260FD1EA56C70D251D97210E3893780		Airport Mania - First Flight (USA)	NDS			USA
+CD3862384931E2E34169E54E397A2D62		Airport Mania - Non-Stop Flights (Europe, Australia)	NDS			Europe, Australia
+6C8A790386B87C749142C98A01014FD5		Airport Mania - Non-Stop Flights (USA)	NDS			USA
+52B7B30CD41F23218C1EB905E5400F7C		Al to Harapeko Monster (Japan)	NDS			Japan
+1BC4187CB35727413DFAE922BB011401		Alien Puzzle Adventure (Europe, Australia)	NDS			Europe, Australia
+66AB39977214649965FE765EEC8B73CF		All-Star Air Hockey (USA)	NDS			USA
+08651558438A567AF22964FCF97BD8B3		AlphaBounce (Europe, Australia)	NDS			Europe, Australia
+EBF0D81137DA7A8FAC1F2A5BAB517733		AlphaBounce (USA)	NDS			USA
+66B12F9E7AC6C34F23C53C126E4E7298		Alt-Play - Jason Rohrer Anthology (Europe)	NDS			Europe
+F000F344231DF53C0DBC48AF706C373A		Alt-Play - Jason Rohrer Anthology (USA)	NDS			USA
+F0ECE5349099ADE122378417181B93A5		Amakuchi! Dairoujou (Japan)	NDS			Japan
+852CEE671865BB1AEE781D70F4D9EFB8		American Popstar - Road to Celebrity (USA)	NDS			USA
+218345CF49D95F3A45C2FA53BBBA388F		Amoebattle (USA)	NDS			USA
+411DE79CBB7F436C16BD012FCE9CD59D		Anata no Rakuraku Drum Machine (Japan)	NDS			Japan
+7EA6FBB3D5DB20DE06616B1F6E950D5B		Anata no Rakuraku Electric Guitar (Japan)	NDS			Japan
+068DF78924ACC0BE3BA033211366C043		Anata no Rakuraku Electronic Keyboard (Japan)	NDS			Japan
+3B407195D312F211C36551308CDAC5F7		Anaume Puzzle Game Q (Japan)	NDS			Japan
+F62DA13C444D6DC6E444473B0E3E23C8		Ancient Tribe (USA)	NDS			USA
+DA1ED0138B05505F8E0E1E6FA7C468C8		Animal Crossing Calculator (China) (iQue)	NDS			China
+1D2A6F4A3D94C77B3487E202535DF95F		Animal Crossing Calculator (Europe, Australia) (En,Fr,De,Es,It)	NDS			Europe, Australia
+0925D698641E220ABB0C77D4A4A69C3C		Animal Crossing Calculator (USA)	NDS			USA
+FCD45169EC802AF4709FEF4B24A352B8		Animal Crossing Clock (China) (iQue)	NDS			China
+6695C2D9B25D44201EEBFE5E4904E8A6		Animal Crossing Clock (Europe, Australia) (En,Fr,De,Es,It)	NDS			Europe, Australia
+76A135C006CDB406AA85F0AF25E6235B		Animal Crossing Clock (USA)	NDS			USA
+D09AD0FB8759BA1307A013211D0B3E72		Animal Puzzle Adventure (USA)	NDS			USA
+02D610E7FBE0EB2BD9F966EB7D2AAA3A		Anne's Doll Studio - Gothic Collection (USA)	NDS			USA
+2DEC2A1C99A5C48CDCF202827F25F578		Anne's Doll Studio - Tokyo Collection (USA)	NDS			USA
+6480661E6440CBDDC4048AEE129373BF		Anonymous Notes - Dai-i-shou - From the Abyss (Japan) (Rev 1)	NDS			Japan
+E9E9EF09C555A4828B4BD0B1C4480CA9		Anonymous Notes - Dai-ni-shou - From the Abyss (Japan)	NDS			Japan
+4170DB36D896CC3DF730EA7DA15DBDDC		Anonymous Notes - Dai-san-shou - From the Abyss (Japan)	NDS			Japan
+EB361DC455F0CE8F4895523E69579327		Anonymous Notes 1 - From the Abyss (Europe)	NDS			Europe
+7D7EB7D838BC9A33B62D6C3DC2CC745B		Anonymous Notes 1 - From the Abyss (USA)	NDS			USA
+9D2DCC1BD9AFE484BA11902B68E33511		Anonymous Notes 2 - From the Abyss (Europe)	NDS			Europe
+E7649733AC6268C299A536CBEF209AEA		Anonymous Notes 2 - From the Abyss (USA)	NDS			USA
+3BF5FB868456EDF1BC46349D7CEBB447		Anonymous Notes 3 - From the Abyss (USA)	NDS			USA
+AF01CEB2872624EFCC55383FABA576F4		Anonymous Notes 4 - From the Abyss (USA)	NDS			USA
+12037698B345987A60C47B10E7272C09		Antipole (Europe)	NDS			Europe
+44B647B085C779E4C2C656F029E088D2		Antipole (USA)	NDS			USA
+B6BD44E20513763286AD12B6E13760F6		Aquarium of Luck, The (Europe)	NDS			Europe
+9C6E34B5BB1EB31B6BC330674AB6C3CC		Aquarium with Clock (Japan)	NDS			Japan
+BA4FE89BBDDB1231BBBECFB9AE42C263		ARC Style - Soccer! (Korea)	NDS			Korea
+57FBDB0A24A97A6A81FE07A0C0D4C3C6		Arcade Bowling (USA)	NDS			USA
+EA4D7AFB0F22CA00747795C8BF1C31DD		Arcade Hoops Basketball (USA)	NDS			USA
+005F3089641119682F9CFF92C87A7B2A		Arctic Escape (USA)	NDS			USA
+C9680A91B89659D9B676948BFA046CE1		Are DS ga Sakasa desu kedo. Sakasa Drops (Japan)	NDS			Japan
+C50AB17055F2535B3A686C5C31286ACF		Armageddon Operation Dragon (Europe)	NDS			Europe
+1407039E48134F9E6AF00DF60BB5AA1B		Army Defender (Europe)	NDS			Europe
+4D99F3185133642EB4E16E094D985108		Army Defender (USA)	NDS			USA
+0070BD8025FBF0BE12E52EA4BDEBF717		Around the World in 80 Days (Europe, Australia) (En,Fr,De)	NDS			Europe, Australia
+FF2407DEB4F8CEBB85B5CDF245AA2A41		Arrow of Laputa (Japan)	NDS			Japan
+CB9BCFAA0FBE130518E68FAA2FD023F0		Art Academy - First Semester (Europe, Australia)	NDS			Europe, Australia
+AD141BB7599A34AAF0B14A63AC587A5A		Art Academy - First Semester (USA)	NDS			USA
+149A0095E0E1A7E627861203F84FF66E		Art Academy - Second Semester (Europe, Australia)	NDS			Europe, Australia
+E6DCC53D7E1244A607C74B27A2F02899		Art Academy - Second Semester (USA)	NDS			USA
+1E1405AEA42310B328C5D5CA9297C7DB		Art of Ink (Europe)	NDS			Europe
+2069182540BBF0518C7CCD595DC3737F		Art of Ink (USA)	NDS			USA
+70E7E05A6CCF20BE74A1F2312C6FF98C		Art Style - AQUIA (USA)	NDS			USA
+D54D85E928DBF210B146F49CB7B47E1C		Art Style - AQUITE (Europe, Australia)	NDS			Europe, Australia
+DAB4DF4A47DA4AAE2A656BBCF3878741		Art Style - BASE 10 (USA)	NDS			USA
+E0FCBF3900DAF26ADBCCD8EDFF2F7417		Art Style - BOXLIFE (Europe, Australia)	NDS			Europe, Australia
+797323D5055519A692E737A841A127B8		Art Style - BOXLIFE (USA)	NDS			USA
+C53CC6467ECAA20E842D3AA6221FA99B		Art Style - CODE (Europe, Australia)	NDS			Europe, Australia
+C627840E569CC94FB9B23A3A9DAEE22C		Art Style - DIGIDRIVE (USA) (Rev 1)	NDS			USA
+A122A201CA52B90554117CD0EB8180FB		Art Style - INTERSECT (Europe, Australia) (Rev 1)	NDS			Europe, Australia
+EDE8D8BF821684196F1EF74FE18C1F9C		Art Style - KUBOS (Europe, Australia)	NDS			Europe, Australia
+0AA7CE9D8F13C02B77B4A44CE01E670E		Art Style - NEMREM (Europe, Australia)	NDS			Europe, Australia
+3B2A5638EF775AFC815A5D1538CF5FEE		Art Style - PiCOPiCT (Europe, Australia)	NDS			Europe, Australia
+F56EC1C1129FB1DA05DBCA22588A9231		Art Style - PiCTOBiTS (USA)	NDS			USA
+F3A38698DF1D620EF81F90488393270A		Art Style - precipice (USA)	NDS			USA
+2F8FF763A233937751F7EC0F9EA95608		Art Style - ZENGAGE (USA)	NDS			USA
+FF46FF609895FFDB230B572DF6075C83		Art Style Series - DECODE (Japan)	NDS			Japan
+701079662D3E3E6AC6BBE646DAB898BF		Art Style Series - DECODE (Japan) (Rev 1)	NDS			Japan
+C2D739503651A2B7D658048A56E30771		Art Style Series - DIGIDRIVE (Japan)	NDS			Japan
+9FEDC992D9655D409FF5D4956EB86A0C		Art Style Series - HACOLIFE (Japan)	NDS			Japan
+9D7301D9756514522E2D9376AD50371C		Art Style Series - PiCOPiCT (Japan)	NDS			Japan
+9015D45351B21F1B3D5C411A121DEC8D		Artillery - Knights vs. Orcs (Europe) (En,Fr,De,Es,It)	NDS			Europe
+4AA27CE0355978D5263D99CF7980A851		Asphalt 4 - Elite Racing (Europe, Australia)	NDS			Europe, Australia
+2CAE248A9820054912F2D5415363D5CC		Asphalt 4 - Elite Racing (USA)	NDS			USA
+0153AA0D63F8095418E4EDDF28E75B93		Astro (USA)	NDS			USA
+83B64B6778AE4ED9F7A7EB57D9EB33DB		at Chess Challenge Spirits (Japan)	NDS			Japan
+349BD6502013A94411B36705A66EAA94		at Enta! Taisen Mahjong 2 (Japan)	NDS			Japan
+03A15191CFE9F951EABF28DE4CD44FFB		at Enta! Taisen Reversi (Japan)	NDS			Japan
+DB931C98307BADE5D7ADEB6FB4D4C357		at Enta! Taisen Shogi 2 (Japan)	NDS			Japan
+A4C344C4D350FB9DDAFB4DF95773C8BA		at Kanji Jukugo Game - Kanjukuken Kanshuu (Japan)	NDS			Japan
+F80439697A3E3F03BE7150945AC7805C		at Shogi Challenge Spirits (Japan)	NDS			Japan
+871F09DA17CFFEA49D5AF21CCB71A617		Atelier Deco la Doll (Japan)	NDS			Japan
+AC66BA71D4A331AFC6DF3E9929D9A0DF		Atsumeru Egao Chou (Japan)	NDS			Japan
+7F953F482E3735C9287A219BFF5377B3		ATV Fever (USA)	NDS			USA
+C178A3AE5AB14327F352874944B78396		ATV Quad Kings (USA)	NDS			USA
+7882F8097236519F4297FC371CA0BB17		Aura-Aura Climber (Europe, Australia) (En,Fr,De,Es,It)	NDS			Europe, Australia
+2E57607D40ED18BCA0E7144667E4BFC1		Aura-Aura Climber (USA)	NDS			USA
+867078B68A02F3CDC10541C9DA5321C7		Battle of Giants - Dinosaurs - Fight for Survival (USA) (En,Fr,Es)	NDS			USA
+F196DD187A500BED67B28C655EB73432		Battle of Giants - Dragons - Bronze Edition (USA)	NDS			USA
+D520A3FA18D8FB64512CC40AA7D50B0C		Battle of the Elements (Europe)	NDS			Europe
+47C6D5E1F11B1A1B67B9F47B39788B3D		Bejeweled Twist (Europe, Australia)	NDS			Europe, Australia
+5B13BFA8680EE45DA3E124C0C5C1AA03		Bejeweled Twist (USA)	NDS			USA
+7A172FE21B2139072F501AAE44228260		Big Bass Arcade (USA)	NDS			USA
+669CB07267F44E0302E2CE61A01D5068		Biorhythm (USA)	NDS			USA
+71C08888C4BAC9E2CC4389CE47D994B8		Bird & Beans (China) (iQue)	NDS			China
+02D8BCF07BA5D6F683ED6DA92D9B613E		Bird & Beans (USA) (En,Fr,Es)	NDS			USA
+D3A354B18B8A2AFA2FDD642277701583		Bird & Bombs (Europe, Australia)	NDS			Europe, Australia
+08042DF0E4D4341474D09F5544B62FF9		BlayzBloo - Super Melee Brawlers Battle Royale (USA)	NDS			USA
+1313A47351125504ECC5FB93CF9D6AB8		BlazBlue - Battle x Battle (Japan)	NDS			Japan
+5565EF606A048118B155F2D2F634AF01		Bloons (USA)	NDS			USA
+B4EB7753E8F4CB2FFA2B6AFE384FE2D2		Bloons TD (USA)	NDS			USA
+E1905726352B423673E9A73313B3C415		Bloons TD 4 (Europe)	NDS			Europe
+B4FE096CFA6077566F9D6E4CC8860069		Bloons TD 4 (USA)	NDS			USA
+98DD5AEF4D661723F287829B38F14FB2		Boardwalk Ball Toss (USA)	NDS			USA
+C0F0BA49B88FF84778271D2CA33317DB		Bomberman Blitz (Europe, Australia)	NDS			Europe, Australia
+B500301F503318F4967166FD1F10406C		Bomberman Blitz (USA)	NDS			USA
+CBB8C3EBAE40EEA99DE8AB1263974A20		Bookstore Dream (Europe, Australia)	NDS			Europe, Australia
+BE0A1BDEA75CA59FAAF0F0D9CE2EFF90		Bookstore Dream (USA)	NDS			USA
+3B60C3D296065D2B342FBD695B343C6B		Bookworm (Europe, Australia)	NDS			Europe, Australia
+6D59D39BA433DCBD3396FB6AF738D978		Bookworm (USA)	NDS			USA
+8EE7A46FD8D656A7FC235C2DA4AC9CB5		Boom Boom Squaries (Europe, Australia)	NDS			Europe, Australia
+8BAD6AB64A45F8AF1E1FB60B54547466		Boom Boom Squaries (USA)	NDS			USA
+AFB27F113586E56B97A8E038C167E778		Bounce & Break (Europe)	NDS			Europe
+9E12BE56B702654A31AFDA0B4176630A		Box Pusher (Europe)	NDS			Europe
+BB03A7AC025174B5DC97769417864B2E		Brain Age Express - Arts & Letters (USA)	NDS			USA
+DF181A808EDA13522C5B0D7F152521DB		Brain Age Express - Arts & Letters (USA) (Rev 1)	NDS			USA
+3C9ECFD5F17D92C0EDD216373CFB2B6A		Brain Age Express - Math (USA)	NDS			USA
+23444C7655AB2838A77AD533573546FF		Brain Age Express - Math (USA) (Rev 1)	NDS			USA
+E403D0BACB9EB207BD093F80DB8FF1C2		Brain Age Express - Math (USA) (Rev 2)	NDS			USA
+114D157E31583C81F8A20757A25EE736		Brain Age Express - Sudoku (USA) (Rev 2)	NDS			USA
+10C81650713FC8728D37324B4038F073		Brain Challenge (Europe, Australia) (En,Fr,De,Es,It)	NDS			Europe, Australia
+0FDE46593B26D806EC983201958748B0		Brain Challenge (USA)	NDS			USA
+4498B1596A0ED57B6366EE38F04F26C6		Break Tactics (Europe)	NDS			Europe
+49BDB7183240A8E50113D5B0E80234A6		Break Tactics (USA)	NDS			USA
+B85AF7AE4C4EC749716DA7054A9DE653		Bugs'N'Balls (Europe)	NDS			Europe
+DBAD917A9C26DCCC4C133100885F2FA8		Bugs'N'Balls (USA)	NDS			USA
+819C8C5DA0F5D263FA429C085A3192A7		Cake Ninja - XMAS (Europe) (En,Fr,De,Es,It)	NDS			Europe
+47DB881D43E12F91C21FEE68690160FB		Cake Ninja - XMAS (USA)	NDS			USA
+5C10A6FC4682C1F1A08510A1F8D8EB32		Cake Ninja (USA)	NDS			USA
+4B0DD869AA300E83FAC6C537CF4DB6D8		Cake Ninja 2 (Europe)	NDS			Europe
+9D64D00A7CDB55DD862D28FBB0329AA9		Calculator (Europe, Australia)	NDS			Europe, Australia
+01847F46DAB9707203CEE0B94BDC726B		Calculator (USA) (Rev 1)	NDS			USA
+A66C28D7841B2F910A6A70D9A4439A29		Camara Glamour (Spain)	NDS			Spain
+4FEFEEEDCE3BADC0D4085FBC3420E86F		Candle Route (Europe)	NDS			Europe
+7DE9F1D941716B6FA0EB4BD9E186234C		Candle Route (USA)	NDS			USA
+8A51F0C98AE80DBC0702652B889C7F0C		Car Jack Streets (Europe) (En,Fr,De,Es,It)	NDS			Europe
+8A2DCF9D174618B607BCBAF85BFECA84		Car Jack Streets (USA)	NDS			USA
+40C3C69BBB5CE77A21F287ED7D992CE5		Card Hero - Speed Battle Custom (Japan) (Rev 1)	NDS			Japan
+7BD43A52489EB8802813025C7D9B662A		Castle Conqueror - Against (Europe, Australia)	NDS			Europe, Australia
+3362573BA0F562EFA8D2DC63349BD686		Castle Conqueror - Against (USA)	NDS			USA
+99FC1509EE43C4312197E771EAE43165		Castle Conqueror - Heroes (Europe, Australia)	NDS			Europe, Australia
+0164B1AC47E0D1A6F9CBC8CF17500B8B		Castle Conqueror - Heroes 2 (Europe, Australia)	NDS			Europe, Australia
+FAB6A11B86490ED048BD8FDA498F8FF4		Castle Conqueror - Revolution (Europe, Australia)	NDS			Europe, Australia
+0AF0E6ABA7A754C3CEA3AD59AFAB64F8		Castle Conqueror (Europe)	NDS			Europe
+B0C8D55DF88472FF66ADB395C8B6A208		Castle Conqueror (USA)	NDS			USA
+0216D376576B00E2483958B4AE56722E		Castle of Magic (Europe, Australia)	NDS			Europe, Australia
+AD762327EEF20ECFD77BE6F16EF0976A		Castle of Magic (USA)	NDS			USA
+3D9D90AA57D1C3EEEF4047B6F80B8C50		Cat Frenzy (Europe)	NDS			Europe
+53FDDC5CA58AE1A1C246A5152680B5F9		Cat Frenzy (USA)	NDS			USA
+F18811731C26A6AAD35B4B47A4DA5518		Cave Story (USA)	NDS			USA
+47D9A5B6AA1299090D59F6AE8E513447		Chess Challenge! (Europe, Australia)	NDS			Europe, Australia
+3B4D0089A3490A9EDEF21D4AE6E7883C		Chikaragami - Rikishi (Japan)	NDS			Japan
+C0EC23079E8D40DD42B8B71FFDFC4D05		Chotto Asobi Taizen - Onajimi Table (Japan)	NDS			Japan
+BD717BF2A886FFA7DF432837C8D9F55B		Chotto Asobi Taizen - Otegaru Trump (Japan)	NDS			Japan
+D514B3D69FAB74D620A73D0368C7F17D		Chotto Dr. Mario (Japan)	NDS			Japan
+D1C5ECED03C08C7CDA19009D1610C61C		Chotto Magic Taizen - 3-tsu no Shuffle Game (Japan)	NDS			Japan
+17108253F71F45922CF65B13903AC02C		Chotto Magic Taizen - Funny Face (Japan)	NDS			Japan
+91B667724D938F3FE9AE6DC6D2B758FB		Chotto Magic Taizen - Nensha Camera (Japan)	NDS			Japan
+813E61AD1E75F092702CC22B842CFC1A		Chotto Magic Taizen - Osoroshii Suuji (Japan)	NDS			Japan
+B0207D6E06536CCC5055434A16AF5E27		Chotto Panel de Pon (Japan)	NDS			Japan
+BAC874AC65C041BD4F3BAA79A7C125CF		Christmas Wonderland (Europe)	NDS			Europe
+966C6A31B1F1F00D702E33AD7C0B903E		Christmas Wonderland 2 (Europe)	NDS			Europe
+00C8C2C673B5BF2D209E959EECFDD2BB		Chronos Twins - One Hero in Two Times (Europe)	NDS			Europe
+F683E4A9ADF2C6DD1524AB344F2668DF		Chronos Twins - One Hero in Two Times (USA)	NDS			USA
+AAC8B52F0976782AEA8A84D24F5F42D4		Chuck E. Cheese's Alien Defense Force (USA)	NDS			USA
+D77B0AFE6D111EEFF5F1E5160E32D913		Chuck E. Cheese's Arcade Room (USA)	NDS			USA
+C0FF126DD8DCED8D0A97A52193A853D9		Chuugaku Eitango Kihon 400-Go Master (Japan) (Rev 1)	NDS			Japan
+E98BB406DB9BE06069511674FF5B3D24		Chuukara! Dairoujou (Japan)	NDS			Japan
+741D0F2A160FE474EFBAE67448283B4C		Clash of Elementalists (Europe)	NDS			Europe
+C159EAC672548EDDBC22A62D348FA4C2		Clash of Elementalists (USA)	NDS			USA
+10D51A63DB848C7896D1323F44E77AA8		Clubhouse Games Express - Card Classics (USA, Australia)	NDS			USA, Australia
+9ED019D8E7AE85204DA827785948B9A8		Clubhouse Games Express - Card Classics (USA, Australia) (Rev 1)	NDS			USA, Australia
+E3AB1B81B20CD7F5DC9A4A7E5B2FE93C		Clubhouse Games Express - Family Favorites (USA, Australia)	NDS			USA, Australia
+1C7AD74EC46C6606B5DAC7DF2CF4648B		Clubhouse Games Express - Strategy Pack (USA, Australia)	NDS			USA, Australia
+043875D3515AC9FBB469E46D6C7B524C		Color Commando (Europe)	NDS			Europe
+1C914A4BF8CA5E7F24B91E40C7F1D778		Color Commando (Europe) (Rev 1)	NDS			Europe
+3258C130D74FD62DC9530D15D506CBFD		Color Commando (USA)	NDS			USA
+5A660A5F049B227B5A7EF506BBD5E7CD		Combat of Giants - Fight for Survival (Europe, Australia)	NDS			Europe, Australia
+E7F929D7ECA486A086F25DB6E7B70420		Come On! Dragons (Europe)	NDS			Europe
+874D8CD39B5F78EE7F422F48702C7968		Come On! Dragons (USA)	NDS			USA
+66A56D57D565AF718154A52636B28435		Come On! Heroes (Europe, Australia)	NDS			Europe, Australia
+73B105494203200A1BD07A45D1523B55		Come On! Heroes (USA)	NDS			USA
+AAE64DA23E2D3B14B4D8623463CF8E6F		Cosmo Fighters (USA)	NDS			USA
+DAF4A138F3130423D7B9C30133D79A55		Cosmos X2 (Europe)	NDS			Europe
+E67F6FBB7E224E75D4BF7016C4A93644		Crash-Course Domo (USA)	NDS			USA
+9F3A4D7535F772752075759C363B06A8		Crazy Cheebo - Puzzle Party (Europe)	NDS			Europe
+3C5441F094E538D29E5E2E0AD5F3F55E		Crazy Cheebo - Puzzle Party (USA)	NDS			USA
+3B45D4B66C07FE8A57F7388AE0DB4635		Crazy Chicken - Director's Cut (Europe)	NDS			Europe
+E45B34A2BE36D00BC438341C4C10D71D		Crazy Chicken - Pirates (Europe)	NDS			Europe
+04B8FC5D6593366AFD9FAB7D6B34B54B		Crazy Golf (Europe, Australia)	NDS			Europe, Australia
+146812F9C4B0F1DF9BF48A2DB7FFDB59		Crazy Hamster (Europe)	NDS			Europe
+B88647D24B7232E6FA3E1D5C2B6E68C4		Crazy Hamster (USA)	NDS			USA
+36F3ADC9750D42EE06FF62670C8BF007		Crazy Hunter (Europe)	NDS			Europe
+4550E0DB889CD2A8B1D805C9A317C2B5		Crazy Pinball (USA)	NDS			USA
+5C882FE006F97B535FD38A94392610F3		Crazy Sudoku (Europe, Australia)	NDS			Europe, Australia
+679D2F1FA0CE2FD2816EEA9625CC1B85		Crazy Sudoku (USA)	NDS			USA
+B72513B0EF1539E09CE5D67F3123F8E1		Crazy Train (USA)	NDS			USA
+8E3A3507792D1AA3E9EED5A2B998EE0E		Crazy Train (USA) (Rev 1)	NDS			USA
+04278F80CC4E6C6BE6DCFE15E567DF10		Crystal Adventure (Europe)	NDS			Europe
+B3D034BA631F2CC091AE41D1AFB641F1		Crystal Adventure (USA)	NDS			USA
+607736DFAF42C51F877AD3E3060D8ADF		Crystal Caverns of Amon-Ra (Europe)	NDS			Europe
+82F2F2B1E2F497174133E03F356652CC		Crystal Monsters (Europe, Australia)	NDS			Europe, Australia
+84C8A91781EF337092891F53ACC8778F		Crystal Monsters (USA)	NDS			USA
+65497DDD9D446019730ADBE75D3D023D		Curling Super Championship (Europe)	NDS			Europe
+7FE65324BD66984F2C9C310EA8DAF071		Cut the Rope (Europe, Australia)	NDS			Europe, Australia
+7F6B64CA7D2009FD3EF361E7A63EF1FE		Cut the Rope (USA)	NDS			USA
+88F1D2C4369CAEAD4484F8A7F71E7781		Cute Witch! Runner (Europe)	NDS			Europe
+2C67EB8A23F7931BA2266614766B7D1F		Cute Witch! Runner (USA)	NDS			USA
+C3ECDB5B31A2CBA8843A078189A363C3		Dairojo! Samurai Defenders (USA)	NDS			USA
+C2B23281D1089509514B7B012F272E08		Dark Void Zero (Europe, Australia)	NDS			Europe, Australia
+0963DBAB486179452145E324F1AB4058		Dark Void Zero (USA)	NDS			USA
+A8B80C814D3C69A153997C1807DC9094		Datamine (Europe)	NDS			Europe
+C2C66530D4AAF75B5919EB6F39EDE46F		Date Or Ditch (Europe, Australia)	NDS			Europe, Australia
+18D202A3EC1365A326FF11D64424DB27		Date Or Ditch (USA)	NDS			USA
+A0E1D2359F1E7D62E77CE7CFDDF88408		Decathlon 2012 (Europe)	NDS			Europe
+629F7EE66866AB060E2D24C7CE188973		Deep Sea Creatures (USA)	NDS			USA
+5334D7B938759E6AC2216A5DBFCEEC50		Defense of the Middle Kingdom (USA)	NDS			USA
+D6298C1339FC883197B9A7B4C5D907A6		Dekisugi Tincle Pack (Japan)	NDS			Japan
+D359972E50A7278E554A8FDA3F00D280		Delbo (Europe, Australia)	NDS			Europe, Australia
+E7DDC6D80312B4380B3B901C052DF97B		Delbo (USA)	NDS			USA
+D3644F19C8DE43A8ADB632723007660A		Dentaku + TCG-You Tool - Duel Dentaku Custom (Japan)	NDS			Japan
+554CCBE90AD6E6DB1E3F464941681ED6		Deonjyeoseo Ssok! Yulyeong Toechi (Korea)	NDS			Korea
+3946044F5B3D734123564C04355CE16E		Devil Band - Rock the Underworld (Europe, Australia)	NDS			Europe, Australia
+8B7F138D11C8F86A4AA16217C00B0250		Devil Band - Rock the Underworld (USA)	NDS			USA
+E76B934BA62C0FDD78919B9C55A35743		Dictionary 6 in 1 with Camera Function (Europe, Australia) (En,Fr,De,Es,It) (Rev 1)	NDS			Europe, Australia
+1145318B4F96FE5568A96A55122B6647		Did It Myself ABC123 (USA)	NDS			USA
+6ACDCFEDAD56639176E611B19CE404B5		Digger Dan & Kaboom (Europe)	NDS			Europe
+321CF90B4BC4CD7AC36AA153949188F6		Discolight (Europe)	NDS			Europe
+100057E1DC09A9DC42D7392B51544BE6		Discolight (USA)	NDS			USA
+02D4A4BF4C8C1A6AA3ABD5277EE92CB7		Disney Fireworks (USA)	NDS			USA
+D4A9BD5074A9BD477EE10E1509DC4A88		Divergent Shift (USA) (Rev 1)	NDS			USA
+B0026E45B8029C13A601EFF96CD9B1C7		DodoGo! (Europe, Australia)	NDS			Europe, Australia
+6C94D5F8073C6579061A0F6B3DBA1478		DodoGo! (USA)	NDS			USA
+E033EAEDF8859EF3DFCC2CE9CB29487F		DodoGo! Challenge (USA)	NDS			USA
+E714C0FC9FD3A2F7445584D71DEEBF57		DodoGo! Robo (Europe, Australia)	NDS			Europe, Australia
+54EDE9892AE33F62C8F58CB83D17AFEA		DodoGo! Robo (USA)	NDS			USA
+40AF5B3416E99703C0C5633230840A51		Dokodemo Wii no Ma (Japan)	NDS			Japan
+59F41B5A7AF219B23238108015426530		Dokodemo Wii no Ma (Japan) (Rev 1)	NDS			Japan
+AC3FD45E154298EE611A308ACB43C53C		Don't Cross the Line (USA)	NDS			USA
+6D2204E003967332F80A23BDD36C9CE8		Doodle Fit (USA)	NDS			USA
+983D8764B12AACD2FB83B80F9DD650ED		DotMan (Europe)	NDS			Europe
+709DB10696D75EF80D985CA49FE5D6AD		DotMan (USA)	NDS			USA
+A57EF6A955D7110B9C5154A59AA44F1C		Doukutsu Monogatari (Japan)	NDS			Japan
+6D4F1940FDB79A254E7CEDFEBABF9840		Downtown Texas Hold'em (USA)	NDS			USA
+60AAE693936BFF9E64D0BAFE99277F04		Dr. Mario Express (China) (iQue)	NDS			China
+951B853F3755A603533A69D10D08B249		Dr. Mario Express (USA)	NDS			USA
+3B5C3D7EFB502D78ED02D14F88CE144B		Dr. Mario Express (USA) (Rev 1)	NDS			USA
+2B1217FA44A7C4AEFA1C8395E93E1752		Dracula - Undead Awakening (USA)	NDS			USA
+835FBA988531EDA1202C95E1EF1A8CF3		Dragon Quest Monsters - Battle Road Victory - Senyou Color Code Scanner (Japan)	NDS			Japan
+E823ED79C521459AF51A36F912A442D6		Dragon Quest Monsters - Battle Road Victory - Senyou Color Code Scanner (Japan) (Rev 1)	NDS			Japan
+95B7A00CF6ECD8EB2F27C00CE2DB0A2F		Dragon Quest Wars (Europe, Australia)	NDS			Europe, Australia
+DCC051331D0F61B6BBEB5DD0693478D1		Dragon Quest Wars (Japan)	NDS			Japan
+A84DEB247AC21EEC6BD1A52E8251B37B		Dragon Quest Wars (USA)	NDS			USA
+681833ACF944AF6D7864613753F130CE		Dragon's Lair (Europe, Australia)	NDS			Europe, Australia
+2741AB3D9527E4622294580445695EBE		Dragon's Lair (USA)	NDS			USA
+51F8E08126E1EA4FDAAFAD4F0242D32A		Dragon's Lair II (Europe, Australia) (En,Fr,De,Es,It)	NDS			Europe, Australia
+69662A3F6331362B0F3D68C6C6702E9C		Dragon's Lair II (USA)	NDS			USA
+A00A7AA0C8202FA9F946A488A673C678		Drift Street International (Europe, Australia)	NDS			Europe, Australia
+C4B357DCA9EEA6A6BCDA3E4CAF9EC4CB		Drift Street International (USA)	NDS			USA
+5D711B4DA72765A9BC991D459F5C1F02		Earthworm Jim (Europe, Australia) (En,Fr,De,Es,It)	NDS			Europe, Australia
+3F6490648AD5BA2A67019A29712829F2		Earthworm Jim (USA)	NDS			USA
+404FA7F9BD3FE1911081E879582DE982		Easter Eggztravaganza (Europe) (En,Fr,De)	NDS			Europe
+35200BA4DF7B36299434368ECC9C3FC3		EJ Puzzles - Hooked (USA)	NDS			USA
+6CF8590F43AA797DE0BE5023777C80E1		Electroplankton - Beatnes (Europe, Australia)	NDS			Europe, Australia
+CAF02C2ABC94C159A814733F29FC6BA2		Electroplankton - Beatnes (USA)	NDS			USA
+1BB989258F928575BC70F3038DC191E6		Electroplankton - Hanenbon (Japan)	NDS			Japan
+D3C48B3281D2B16278091543A98B4128		Electroplankton - Hanenbow (Europe, Australia)	NDS			Europe, Australia
+E8E4B90EA2996C58FBF6E29CC24AAB1B		Electroplankton - Hanenbow (USA)	NDS			USA
+B5C941C79E00F079B24CAF5073643E43		Electroplankton - Lumiloop (Europe, Australia)	NDS			Europe, Australia
+C4E72E1DBA348E76B55DA4042DF59578		Electroplankton - Lumiloop (USA)	NDS			USA
+E931302F4C92A79676328AB5F9FFDEE3		Electroplankton - Luminarrow (Europe, Australia)	NDS			Europe, Australia
+4D49E697B15E463CA67A9D5888724C00		Electroplankton - Luminarrow (USA)	NDS			USA
+FB520317B684E0CF1079B5CBB57D097F		Electroplankton - Marine Snow (Japan) (Rev 1)	NDS			Japan
+CE126175395913DD66E697295A15FD67		Electroplankton - Marine-Crystals (Europe, Australia)	NDS			Europe, Australia
+8468A1A8B1A6CE8206559AE2A9416177		Electroplankton - Marine-Crystals (USA)	NDS			USA
+13F41C859121C22F1B4168ABE045E326		Electroplankton - Nanocarp (Europe, Australia)	NDS			Europe, Australia
+B3AACFF17D35D01F6559D1D0BCA360D3		Electroplankton - Nanocarp (Japan) (Rev 1)	NDS			Japan
+5747315433CD26F14CE243316DB4F619		Electroplankton - Nanocarp (USA)	NDS			USA
+EE76DCC486ED1A8FA2B4175FE3BDF6E2		Electroplankton - Rec-Rec (Europe, Australia)	NDS			Europe, Australia
+994CC98C2B7C772A76309C81D2B09CD9		Electroplankton - Rec-Rec (USA)	NDS			USA
+D23C98A67584023057C4D48EC15F5C72		Electroplankton - Sun-Animalcule (Europe, Australia)	NDS			Europe, Australia
+BA7F107BB8BD3FF52F837EC65BA5E32B		Electroplankton - Sun-Animalcule (USA)	NDS			USA
+93B30779E5BF2F33C2F9D575A80B2E8D		Electroplankton - Trapy (Europe, Australia)	NDS			Europe, Australia
+DB8EBD76E1DD1FBFE65B9A025952A0CF		Electroplankton - Trapy (USA)	NDS			USA
+A2AC7214D455662892E2FBBF7CC8A0C9		Electroplankton - Tsurigane Mushi (Japan) (Rev 1)	NDS			Japan
+76EA772B5B1CD1B0245D22CE7C4651D7		Electroplankton - Varvoice (Europe, Australia)	NDS			Europe, Australia
+91679BB5E1DA93F31F258C4CB4846F73		Electroplankton - Varvoice (USA)	NDS			USA
+985460ACC04F59580BB860DB7BC9CD8D		Elemental Masters (Europe) (En,De)	NDS			Europe
+82020F50F893AE7A07046A2B2A0DA3E1		Elemental Masters (USA)	NDS			USA
+A486AB70E5A3592D90897414639EF865		Escape the Virus - Shoot'em Up! (Europe)	NDS			Europe
+243079AFF264EB40E3685961EBB5427E		Escape the Virus - Shoot'em Up! (USA)	NDS			USA
+E2608D815A2728EB4238B19920658D43		Escape the Virus - Swarm Survival (Europe)	NDS			Europe
+3D1AD283719923CAF78EFEC18354E427		Escape the Virus - Swarm Survival (USA)	NDS			USA
+52561D8E53C6D327651704B4F92205D5		Escape Trick - Convenience Store (USA)	NDS			USA
+44CADACBA6B94EC5066EE0AEFE4399CE		Escape Trick - The Secret of Rock City Prison (USA)	NDS			USA
+D1B498BE049FBA1F901AD48DA28F9A31		Escapee GO! (USA)	NDS			USA
+A3CC3650955529C31D6C0BC43A007660		Even Tijd Voor... Brain Training - Cijfers en Sommen (Netherlands) (Rev 1)	NDS			Netherlands
+AE6E81BBB36986B4D07A5573EFDF8D2E		Even Tijd Voor... Brain Training - Sudoku (Netherlands) (Rev 1)	NDS			Netherlands
+8475892CC8325D8579C59EB6F0881950		Even Tijd Voor... Brain Training - Woorden en Beelden (Netherlands) (Rev 1)	NDS			Netherlands
+D905C03447523F5DB8A6ACE1662A7205		Extreme Hangman (Europe, Australia)	NDS			Europe, Australia
+5FC1FCE63D0C74FF7E8DB12F0F9E18DD		Extreme Hangman (USA)	NDS			USA
+66A2C4E08EF435481BD283EF77F22E9F		Extreme Hangman 2 (Europe, Australia)	NDS			Europe, Australia
+AEEBCD038897AEBFB1830E4FACBAC224		Extreme Hangman 2 (USA)	NDS			USA
+9C41ED7D555336E352C5DCBE59897D55		Face Pilot - Fly with Your Nintendo DSi Camera! (Europe, Australia)	NDS			Europe, Australia
+2C67425B31C23A2E615AC20E5B34C28C		Face Pilot - Fly with Your Nintendo DSi Camera! (USA)	NDS			USA
+B4FC45B2AE9DE775EB96193FFBCC81F8		Faceez - Monsters! (Australia)	NDS			Australia
+55820C3F392CC9F98B89C8D6D889C1FA		Faceez - Monsters! (Europe)	NDS			Europe
+2180C260A45A62E73C8EFAD97230983C		Faceez - Monsters! (USA)	NDS			USA
+A36FF7A1F217226237C7E92AC2E490B0		Faceez (Europe, Australia)	NDS			Europe, Australia
+E4D43074E9EAA96823AB98DCBE06B88A		Faceez (USA)	NDS			USA
+AF2C688CD346CAD4B98916F6D0B3A592		Fairy Tale, A (Europe, Australia)	NDS			Europe, Australia
+09939B2587B2349E1E4CAD02325A8196		Fairy Tale, A (USA)	NDS			USA
+BDDC446321A72E18D6D4CC5CE6FC4917		Famicom Wars DS - Ushinawareta Hikari (Japan) (3DS Only)	NDS			Japan
+1EA285E622F35E8F0324ABD1F5680CF1		Fantasy Slots - Adventure Slots and Games (USA)	NDS			USA
+3BC345071C0BC82F453ACE093458014A		Fashion Tycoon (Europe)	NDS			Europe
+279EB4B44018E439BF1EF7E5E026C65C		Fashion Tycoon (USA)	NDS			USA
+0135344AD77095D66DE3DFC244315402		Ferrari GT - Evolution (Europe, Australia) (Rev 1)	NDS			Europe, Australia
+FB413ABF21D881C2627921A5A8780EC5		Ferrari GT - Evolution (USA) (Rev 1)	NDS			USA
+01EB46C88FC8BB441C9521DA931C9D9B		Ferryman Puzzle (Europe)	NDS			Europe
+DF2FEC41BEEED1C45E692856DE7C1624		Fieldrunners (Europe, Australia)	NDS			Europe, Australia
+E2E706E74B8825273E88C4B12705BAF2		Fieldrunners (USA)	NDS			USA
+28E4165636D127A52E2D0F2B44B00085		Fire Panic (Europe, Australia) (En,Fr,De,Es,It)	NDS			Europe, Australia
+75D8C7DF8D93CE17EA597419B6A415B9		Fire Panic (USA)	NDS			USA
+BE9984E83FD2BF0C09DF26EFAEE75BCF		Fishdom (Europe)	NDS			Europe
+534A63FD19BAFDB8A2BAC0695E873F89		Fizz (USA)	NDS			USA
+1E09B577E9FD0EEC57438574728E9D44		Flashlight (Europe)	NDS			Europe
+D1877F22DC5DCC264091213A53B2557F		Flashlight (USA)	NDS			USA
+2E7D42DAA47F29C6EB8C1E9DD47BC6C5		Flight Control (Europe, Australia)	NDS			Europe, Australia
+2464BC04606E2F1CFF33CAABBD9C5305		Flight Control (USA)	NDS			USA
+EDA5D995C62C8E1DD3A036A533B94C1D		Flip the Core (Europe)	NDS			Europe
+0DD65210CEDD21FB76796A20108E2F53		Flip the Core (USA)	NDS			USA
+E39406BB35AA2CA134DBF11418F134D7		Flipnote Studio (Europe, Australia) (En,Fr,De,Es,It)	NDS			Europe, Australia
+4C2E31207808C36F9867F58C192C41B8		Flipnote Studio (USA) (En,Fr,Es)	NDS			USA
+787C05219FDC1E454AE93DDED8D40899		Flipper (Europe) (En,Fr,De,Es)	NDS			Europe
+FBDAAE00A0FB2EA5A04AAE5AD554F8CA		Flipper (USA)	NDS			USA
+9B02330EEF06983876EAC11DAC079275		Flipper 2 - Flush the Goldfish (USA)	NDS			USA
+8689D49AB9FD0629B600ED691CFEFC32		Forgotten Legions (USA)	NDS			USA
+25603A9BB6B35D422962EFE46C080BC1		Foto Face - The Face Stealer Strikes (Europe, Australia)	NDS			Europe, Australia
+F51B77E2347C3C2914DB279D7299955E		Foto Face - The Face Stealer Strikes (USA)	NDS			USA
+0370B44B78499908DF60878B38E68BB2		Frenzic (Europe) (En,Fr,De,Es,It)	NDS			Europe
+C968BC56E0FD121CC4E2CAA176C7A93F		Frenzic (USA)	NDS			USA
+9806A6F9BE25C9EBC95289F99965E973		Frogger Returns (USA)	NDS			USA
+041620B40CEDB82D3649B1028415D672		Furry Legends (Europe)	NDS			Europe
+D51DF130D6818B4262C5D6D6822FA32C		G.G Series - Air Pinball Hockey (USA)	NDS			USA
+725DF5430C73BFC69A546558047E4267		G.G Series - All Breaker (Japan)	NDS			Japan
+B6E004CA57171C0CEC12F9E1BAD2DE2E		G.G Series - All Breaker (USA)	NDS			USA
+8178BCC2C58131588CB65BF978D07850		G.G Series - Altered Weapon (USA)	NDS			USA
+4D99DECD5B065D9318CDAB421893D02D		G.G Series - Assault Buster (Japan)	NDS			Japan
+61BE899B3E6E634E00109E79917CB445		G.G Series - Assault Buster (USA)	NDS			USA
+9B76E288DB151C4F701C31CA8B161A57		G.G Series - Black x Block (USA)	NDS			USA
+BEDBB6813C1B9BFBB5ACD2968233D32D		G.G Series - Chou Hero Ouga (Japan)	NDS			Japan
+CABF8F8FA9B362FD89A7CCFF52DF5CEE		G.G Series - Chou Hero Ouga 2 (Japan)	NDS			Japan
+BCD0F4157BC61F9150B3012EED86323C		G.G Series - Conveyor Toy Packing (USA)	NDS			USA
+7B747B740395849D02CF9FA2503EE0C1		G.G Series - Cosmo Rally!! (USA)	NDS			USA
+EEA83483CF809999C72DE3E6DCB79213		G.G Series - Dark Spirits (USA)	NDS			USA
+171811462A941A88F61A5CAF6289A665		G.G Series - Drift Circuit (USA)	NDS			USA
+B2D5D3C99E329040B687FD91E961BD1B		G.G Series - Drilling Attack!! (USA)	NDS			USA
+23B07C7B38EC8DA827DD30ECB9E292F1		G.G Series - D-Tank (Japan)	NDS			Japan
+9849ADA169E4706ACBFEEE3F0CE466F9		G.G Series - D-Tank (USA)	NDS			USA
+033FA7BABA92DE8986B178A32C257EAB		G.G Series - Energy Chain (Japan)	NDS			Japan
+BED61B9910DFC9F38456D3341B4E81DF		G.G Series - Energy Chain (USA)	NDS			USA
+77C031D65A4126F139EBDA8CDF2228CD		G.G Series - Exciting River (USA)	NDS			USA
+DD61D2AB7A95C17F81D8D7D444D9A831		G.G Series - Great Whip Adventure (USA)	NDS			USA
+D65F5010A376CC1C03FA9076ADBA3E0D		G.G Series - Hero Puzzle (USA)	NDS			USA
+F799480F3359B173911607EFB742A7BB		G.G Series - Horizontal Bar (USA)	NDS			USA
+42B7D27E5F05985ED1293A8F4C7F8D52		G.G Series - Ninja Karakuri Den (USA)	NDS			USA
+6FAE1B52094735A9BBAD4154C5D15C2C		G.G Series - Nyokki (USA)	NDS			USA
+A429D75BC6B88DE9BE64C0B98A695AF3		G.G Series - Run & Strike (USA)	NDS			USA
+C0030BB59C36D53603CF7FF97A13A79F		G.G Series - Score Attacker (Japan)	NDS			Japan
+0CA9D920AA52E4FC08ABBB3EEE18D72B		G.G Series - Score Attacker (USA)	NDS			USA
+FE259209C480978A35DF16CBB01863F4		G.G Series - Score Attacker (USA) (Rev 1)	NDS			USA
+A5A1ADD16EEB76319AA12BD7853189FD		G.G Series - Shadow Army (USA)	NDS			USA
+8039A61A59DEF704496DE5732B1760AD		G.G Series - Shinobi Karakuri Den 2 (Japan)	NDS			Japan
+2970785567EB7D0DC970AC72B6B7947E		G.G Series - Shinobi Karakuri-Den (Japan)	NDS			Japan
+4A6B9BFF12E41E56023390F5FB6AA696		G.G Series - Super Hero Ogre (USA)	NDS			USA
+379D3AED7E82019DE4EC453B65A34574		G.G Series - The Hidden Ninja Kagemaru (USA)	NDS			USA
+2FF8E5C4823DC61424FE69D492828722		G.G Series - The Last Knight (USA)	NDS			USA
+4CFBE6CF32A7FFD72A511BE48AC0910B		G.G Series - The Spiky Blowfish (USA)	NDS			USA
+F8CA542091F76C4C627A0B9026549D11		G.G Series - Throw Out (USA)	NDS			USA
+A957DCBFEAC3E40B130D498C21E0B988		G.G Series - Vector (USA)	NDS			USA
+57FD69B601DA8C245FDB0961D24E6A2D		G.G Series - Vector (USA) (Rev 1)	NDS			USA
+FDDBA0546ABD168CF17548058B2193B5		G.G Series - Vertex (Japan)	NDS			Japan
+143B2E80AC6A3238CED32BB05C257BB5		G.G Series - Vertex (USA)	NDS			USA
+508E00CAE25A9E41DEB3A89AC9873ADF		G.G Series - Wonder Land (Japan)	NDS			Japan
+9897BA4D763D8DA9239953B304D9DDE1		G.G Series - Wonder Land (Korea)	NDS			Korea
+4B36A61A3B43F76D2375EC215D3B8C7B		G.G Series - Wonder Land (USA)	NDS			USA
+7D3B1B3A9879470A31379EE7AB308B31		G.G Series - Z-One (Japan)	NDS			Japan
+D33632EB3F5B7C29ACB30BEDAD115420		G.G Series - Z-One (Korea)	NDS			Korea
+21EEE9DE22F10000555CBDF24E4A46D6		G.G Series - Z-One (USA)	NDS			USA
+4ACBE753E5015DC54CB9B4D73808FE85		G.G Series - Z-One 2 (Japan)	NDS			Japan
+13FB548A29E9D61F1F308705E3909B96		G.G Series DRIFT CIRCUIT (Korea)	NDS			Korea
+0C7C9BF28EE300FDED58D95BCC8B2BA9		Gaia's Moon (Europe)	NDS			Europe
+0940D487981D52F206CEE5C7218B8C20		Gaia's Moon (USA)	NDS			USA
+45FC07C03985F413A54BA4A9EA1E15FE		Galaxy Saver (USA)	NDS			USA
+C208712168A60B3888611693075DC340		Game & Watch - Anquan Mao (China) (iQue)	NDS			China
+8752E48903D569FE26FBD701D75EE19A		Game & Watch - Ball (China) (iQue)	NDS			China
+0D47EA1D43D31864B503F2ED8E145C51		Game & Watch - Ball (Japan)	NDS			Japan
+53528FBC90C389B43C1FC6665F93BA5D		Game & Watch - Ball (USA, Europe)	NDS			USA, Europe
+4A4F134692D008304A1C7EAD411BDB43		Game & Watch - Chef (China) (iQue)	NDS			China
+4AB3F50CB4D4CA279850B04FEE0746F4		Game & Watch - Chef (Japan)	NDS			Japan
+D094745BA23676BCB92E328E73E2082E		Game & Watch - Chef (USA, Europe)	NDS			USA, Europe
+2A55215E12A821C3E853F106038A21DD		Game & Watch - Donkey Kong Jr. (China) (iQue)	NDS			China
+DF40CB8B3198E5F89ECF746CEE61B4CE		Game & Watch - Donkey Kong Jr. (Japan)	NDS			Japan
+4E9783FEB7AA34003EF63DD129393B38		Game & Watch - Donkey Kong Jr. (USA, Europe)	NDS			USA, Europe
+7E1C4305C72C2517C3568B26DF08CD08		Game & Watch - Flagman (China) (iQue)	NDS			China
+1C5EBE397443758CE2EC4186AC4CC55B		Game & Watch - Flagman (Japan)	NDS			Japan
+79EC581CFE13896B68B200C311249C3D		Game & Watch - Flagman (USA, Europe)	NDS			USA, Europe
+4FD07DF358FDDDF9FF000013A4A4C9AA		Game & Watch - Helmet (Japan)	NDS			Japan
+A279ECBA06CDE09BF555039C3453FE53		Game & Watch - Helmet (USA, Europe)	NDS			USA, Europe
+C8905B7B59B424BA7B7D1DC81B5414D4		Game & Watch - Judge (China) (iQue)	NDS			China
+CCFD6E73A4677FCAE3B512373E24F256		Game & Watch - Judge (Japan)	NDS			Japan
+C0CB744F6E249741ED0288775011358E		Game & Watch - Judge (USA, Europe)	NDS			USA, Europe
+B31F25D6E1FD2D783E5C3673F0014AEC		Game & Watch - Manhole (China) (iQue)	NDS			China
+CBEE48B9367801C0B9003A1DD19CE9E0		Game & Watch - Manhole (Japan)	NDS			Japan
+5E09C25539A3EB9A6ECBA33806BEEBFC		Game & Watch - Manhole (USA, Europe)	NDS			USA, Europe
+5C9CFE5D8DF98AE71B2358ECC1C8DA73		Game & Watch - Mario's Cement Factory (China) (iQue)	NDS			China
+5C3D11A212D8BCE2D8C5880F7F8F5DB9		Game & Watch - Mario's Cement Factory (Japan)	NDS			Japan
+FCE41D85502DDAF7276D34B7C38D5ACF		Game & Watch - Mario's Cement Factory (USA, Europe)	NDS			USA, Europe
+3F3CBF28B0BD5CB048474A4F92DE01F6		Game & Watch - Vermin (China) (iQue)	NDS			China
+5A66DA58D275D02C5C550AF36AE29510		Game & Watch - Vermin (Japan)	NDS			Japan
+F33881A314AC069110F32BEA28A25643		Game & Watch - Vermin (USA, Europe)	NDS			USA, Europe
+1947C415FE4208E7CE8686B394D7EC34		Gangstar 2 - Kings of L.A. (Europe, Australia)	NDS			Europe, Australia
+8E984E155B32E2E94838FB3BB1C5FC58		Gangstar 2 - Kings of L.A. (USA)	NDS			USA
+45C9F713E8B69A57B896F9D92433050C		Gareuchyeojwo Darling (Korea)	NDS			Korea
+950C359C1D9C060CDA6AFF41CADAFBF7		Gene Labs (USA)	NDS			USA
+8A24B97D239B86C7B4065BB518EF4B5A		Gibonyeongdaneo - Word Puzzle (Korea)	NDS			Korea
+BFFB0FC08C59044E557DC481B211DAF3		Globulos Party (Europe)	NDS			Europe
+1205E23384FFE5C8200A76EAFBCACF1E		Glory Days - Tactical Defense (Europe)	NDS			Europe
+2E042180B077A28B8DAFC6B65D7AA409		Glory Days - Tactical Defense (USA)	NDS			USA
+8484689726F684A278724169E7CA06E5		Glow Artisan (Europe, Australia)	NDS			Europe, Australia
+0696F990610E789E8EE24F69993F56AA		Glow Artisan (USA)	NDS			USA
+235E62C37CC3997C3669EEA94D1F65FD		Go Fetch! 2 (USA)	NDS			USA
+6792B876DBDDE2F12B359F48701ECD3F		GO Series - 10 Second Run (Europe)	NDS			Europe
+B0CCD02835DB83BB16D52E89EB55E0DE		GO Series - 10 Second Run (USA)	NDS			USA
+AC4C1C1EC368202BC0DB98A3F0476E22		GO Series - Captain Sub (USA)	NDS			USA
+855946382F750FAEACF84D9CFD9CEE8D		GO Series - Dark Spirits (Europe)	NDS			Europe
+C044509222FC293ECBC1FCDC5C55A78F		GO Series - Defense Wars (USA)	NDS			USA
+91526AD171CB5F429B28D766924AD4A0		GO Series - Earth Saver (USA)	NDS			USA
+565CCBB4F1E75C916010DFB8E24C8BE7		GO Series - Fatal Blow (Europe)	NDS			Europe
+A1DB279BD9318383957DDD96D364A678		GO Series - Fishing Resort (Europe)	NDS			Europe
+8302EF3B77B5822ABD098B047DAD4573		GO Series - Fishing Resort (USA)	NDS			USA
+C3E8300FA350B45513B5409713888B9F		GO Series - Ivy the Kiwi mini (Europe, Australia)	NDS			Europe, Australia
+2B3A85AA5A9B2EFC0B68EE7ED0FAE1F5		GO Series - Picdun (Europe) (Rev 1)	NDS			Europe
+06618524E7A1A85BD14EA3A1C77336A3		GO Series - Picdun (USA) (Rev 1)	NDS			USA
+4E1C44781BB688FF619A2B8394C085FC		GO Series - Pinball Attack! (Europe)	NDS			Europe
+57AEAB86A66C7A43129913AE97B6CC07		GO Series - Portable Shrine Wars (USA)	NDS			USA
+FE9167F18E0B7F622C65438D300664AA		GO Series - Tower of Deus (Europe)	NDS			Europe
+A67CEC7B32DBB04E92CD86549EB44385		GO Series - Tower of Deus (USA)	NDS			USA
+C5A62D28FFAB2C9049D09DB3B5277D4B		GO Series - Undead Storm (Europe)	NDS			Europe
+F4C1EB7AD1634143E00691D97A308867		GO Series - Undead Storm (USA)	NDS			USA
+132942FEF18BACE87D957033255596EF		Go! Go! Island Rescue! (Europe, Australia) (En,Fr,De)	NDS			Europe, Australia
+76E482FAF7A1A3F15470810F7D1644CC		Go! Go! Kokopolo (Europe)	NDS			Europe
+FE3A46DEC992E4A3E2F3F409C3D04400		Go! Go! Kokopolo (Europe) (Rev 1)	NDS			Europe
+824DF3826D2CD152566285330A810C0E		Go! Go! Kokopolo (USA)	NDS			USA
+CC7143BD4CB89ED029FF24E7FE34ED85		Go! Go! Kokopolo (USA) (Rev 1)	NDS			USA
+52D278B071A35BF7C746DADC711D7495		Gold Fever (Europe, Australia)	NDS			Europe, Australia
+AB98350333207AE9FE35925BF4B0156F		Goony (Europe)	NDS			Europe
+006BC2EFAF67E57526DECFD13BD41E5C		Goony (USA)	NDS			USA
+6F821BE0578218E44EE0578BC8879CAD		Goooooal America (USA)	NDS			USA
+D5AE526787DFF1BAB544E56302DE9C6F		Guitar Rock Tour (Europe, Australia)	NDS			Europe, Australia
+C88AE747022B6BEB0E1B599190520CD5		Guitar Rock Tour (USA)	NDS			USA
+220FDB14EDA9558B26701B229EA3D602		Hakokoro (Japan)	NDS			Japan
+22B081C942436E45BCE48909014D41B4		Halloween - Trick or Treat (Europe)	NDS			Europe
+7E863EEC0FEDA01E693D720882BE651D		Hard-Hat Domo (USA)	NDS			USA
+2FBD50366AF94D39F1A7B30D338A2985		Heathcliff - Spot On (USA)	NDS			USA
+334EC5C83FEB1AEF7D8A23B6EAD61C65		Hellokids - Vol. 1 - Coloring and Painting! (Europe)	NDS			Europe
+EE6C53385A7695CF82C16B1E6B0CA5E4		Hellokids - Vol. 1 - Coloring and Painting! (USA)	NDS			USA
+D7069237C489AA93F6E706C80C1E477D		Hero of Sparta (Europe, Australia) (En,Fr,De,Es,It)	NDS			Europe, Australia
+1FF4491F38CBFCE1C4F66A16B55CE8F9		Hero of Sparta (USA)	NDS			USA
+2857565128B51AE57EE02AF7B88352D3		Hidden Photo (USA)	NDS			USA
+146A6E8991D9B3369387E21CEA8BE761		Hints Hunter (Europe)	NDS			Europe
+5E545BE02246756268442A124804E225		Hip Hop King - Rytmik Edition (USA)	NDS			USA
+50C930723C872668642D73E9372CD7E0		Hirameki Egara Shiritori (Japan)	NDS			Japan
+540575C4695171E39250DAB638B0A078		Hobonichi no Kenkou Techou (Japan)	NDS			Japan
+20FBB88C899D725D04687520D20BEB82		Hooked on Bass Fishing (Europe)	NDS			Europe
+62E6898193ECB6F46B4B0D69DF3F0342		Hooked on Bass Fishing (USA)	NDS			USA
+AD490550586BA4D17B960379BB2C743E		Hospital Havoc (Europe)	NDS			Europe
+7CCD5CA140C45D4299ECDBCD78C9ABFC		Hot and Cold - A 3D Hidden Object Adventure (USA)	NDS			USA
+7DDC23C864B203E5330A1A7F0973BC47		House M.D. - Episode 1 - Globetrotting (USA)	NDS			USA
+D19234EADC1197D0E184CFE935E9AAC4		House M.D. - Episode 2 - Blue Meanie (USA)	NDS			USA
+86A573E8C589F75A357C0497FBD5793A		House M.D. - Episode 3 - Skull and Bones (USA)	NDS			USA
+E0FDB6DA33EEFFE621AC4C2C8D50E15C		House M.D. - Episode 4 - Crashed (USA)	NDS			USA
+6097103B6C698AB4F4153EFC174505E9		House M.D. - Episode 5 - Under the Big Top (USA)	NDS			USA
+578347443754AA891F27513330D7FD56		I Am in the Movie (Europe)	NDS			Europe
+755489A82ED1D54A30ED3ACC8692ED9D		I am in the Movie (USA)	NDS			USA
+D440F7FF3A2CCDCDE57D43E702B51A53		I Must Run! (Europe)	NDS			Europe
+9A830343870A850A0A22967FA3F5CEE1		I Must Run! (USA)	NDS			USA
+BC7A5316A60EB3C91DF34A011906AFB0		Ice Hockey Slovakia 2011 (Europe)	NDS			Europe
+DF9E0CC5F31C2A48850713E06B2B165E		Ichimoudajin! Nekoking (Japan)	NDS			Japan
+90138C775574E8F42D79B3686B86E10F		Inchworm Animation (Australia)	NDS			Australia
+96787230DBB479EADEA47F9C881D8C57		Inchworm Animation (Europe)	NDS			Europe
+8D7A4D4BA49F36831EFEB7CB0AE5E867		Inchworm Animation (USA)	NDS			USA
+8516BE4E394F5D08A34A48DBE8894175		Invasion of the Alien Blobs! (USA)	NDS			USA
+238CC9F083F8E4BE4908F7B64E021CF2		Ipche Sum-eun Geurim Chatgi - At! Boyeotda (Korea)	NDS			Korea
+B8F353EEABE631D96768A03DA42D840D		iSpot Japan (Europe)	NDS			Europe
+695370A7CC6887CFD2BCC163ECF9BFA9		iSpot Japan (USA)	NDS			USA
+AF7BF6A1A2D998CB237D6025E639649F		Itsudemo Bomberman (Japan)	NDS			Japan
+51409909DA61362F7AEF4534FFD17F77		Itsudemo Pri-Kura Kiradeko Premium (Japan)	NDS			Japan
+EF656C1DFABA8D4599E94F21F06E5C43		Itsudemo Pri-Kura Kiradeko Premium (Japan) (Rev 1)	NDS			Japan
+0BE5D669F99BFC83B8BCFAEAA73EB4E1		Itsudemo Tsuri Biyori - Omoide no Black Bass (Japan)	NDS			Japan
+29106F5CD3722BAE0A98D617BE505F89		Ivy the Kiwi mini (USA)	NDS			USA
+94C58055C490F92CDFCB5FD7AB5E9883		Jagged Alliance (Europe)	NDS			Europe
+509152079DE42531020BFAACB4F4B20E		Jamkkan! Ganpyeon! Dunoe Training (Korea)	NDS			Korea
+31BB7023D4113726DFB77BD00694383B		Jaseiken Necromancer - Nightmare Reborn (Japan)	NDS			Japan
+F0DE5FEA99B152A988A5A4CD677F17F2		Jazzy Billiards (Korea)	NDS			Korea
+6D45D420AC59FCA5F5D83F47738D61B7		Jazzy Billiards (USA)	NDS			USA
+A4E441EFB79D2456B84184A119917199		JellyCar 2 (USA)	NDS			USA
+86D31FA95F5AA72160FFEC9567F4EF0F		Jewel Match (Europe)	NDS			Europe
+6E48A9C1BE5DEFC75F24CD22F14A1BEE		Jewel Quest 4 Heritage (USA)	NDS			USA
+6FF497AFDD63FD255B8634847CA5221E		Jewel Quest 5 - The Sleepless Star (Europe, Australia)	NDS			Europe, Australia
+962422A0323A069835028E0A20303EC1		Jewel Quest 5 - The Sleepless Star (USA)	NDS			USA
+F7A5E95CE73A44AB2D66BD13D93EE31F		Jibun de Tsukuru Nintendo DS Guide (Japan)	NDS			Japan
+310711A0C33BBD365D1E5A589D57BF28		Joshikou Dash (Japan)	NDS			Japan
+1A7394FFF05A2BE6803B63015FD47DFE		Jump Trials (USA)	NDS			USA
+D77C4566B5C602084166EA1F3C595558		Jump Trials Extreme (USA)	NDS			USA
+D18CA482382755E9170275FF2CEDC975		Jung-ibihaenggi (Korea)	NDS			Korea
+28A46A87947DD98C30AAFCCFE7CF8AAA		Just Sing! Christmas Songs (Europe)	NDS			Europe
+F85E9C9401B7A45AEC27A5DDD093798F		Kamenin Merchant! (Japan)	NDS			Japan
+EC773BCD5476BFA6D80A9B9FEF1FBB71		Kami Hikouki (Japan)	NDS			Japan
+179F35AF782843805A1DB181574CE586		Kappa's Trail, A (USA)	NDS			USA
+1A097052AC319D0BD586C63423493DC5		Katanuki (Japan)	NDS			Japan
+8AEEDEF947DF8256FBAEC728B9DB7E4A		Kemonomix (Japan)	NDS			Japan
+69CA016D69419315F3561DEE9E97CA2F		Korogashi Puzzle Katamari Damacy (Japan)	NDS			Japan
+6D895A4D4C91F689234742D2BFA8020C		Kung Fu Dragon (Europe)	NDS			Europe
+1DD7E3486391C417DB9BE13F58E95695		Kung Fu Dragon (USA)	NDS			USA
+C6ECD848B6083FAAE900A11563E406B4		Kuuki Yomi. DS (Japan)	NDS			Japan
+017874C19380006FC5E540588F2C8C5D		Legend of Zelda, The - Four Swords Anniversary Edition (Europe, Australia) (En,Fr,De,Es,It)	NDS			Europe, Australia
+E7223EC76A60804205A3EC41BD8A563A		Legend of Zelda, The - Four Swords Anniversary Edition (USA) (En,Fr,Es)	NDS			USA
+8E38EE2997FC93F47B490CDA7A6092FD		Legends of Exidia (Europe, Australia)	NDS			Europe, Australia
+7D8137440CB5CB47619816F09B09B0F0		Legends of Exidia (USA)	NDS			USA
+C1DB519D506023AF9AE342DE8EDBEC31		Let's Create! Pottery (Europe, Australia) (En,Fr,De,Es,It)	NDS			Europe, Australia
+5643D3B423600848E7D5AA06E19AB3BA		Let's Create! Pottery (USA)	NDS			USA
+E7E7532D4B5C298DB379A1E98683FDBD		Let's Golf! (Europe, Australia)	NDS			Europe, Australia
+EA9DA7EF4285581EE652DC3A911DCEA6		Let's Golf! (USA)	NDS			USA
+A54CCB0E893600844F1C9EF9460D566A		Letter Challenge (USA)	NDS			USA
+50B12BB7083B959456402BF8F3A27CC0		Libera Wing (Europe)	NDS			Europe
+5B6FDDE1FE4764F92B4D543D29CF3A8F		Libera Wing (USA)	NDS			USA
+CF03D27DAFEEB4CAE9594752E0522606		Link 'n' Launch (Europe, Australia)	NDS			Europe, Australia
+83548EB7315F32B370846B83F6049FDB		Link 'n' Launch (USA)	NDS			USA
+09A339C2C1D02A9C8EB4F028303E5EE6		Liti Yincanghua - Tonghua Xun Zong Ji (China) (iQue)	NDS			China
+B17A8BBEEE9FF3540611690C17D89992		Little Bit of... Brain Training, A - Arts Edition (Europe, Australia) (En,Fr,De,Es,It) (Rev 1)	NDS			Europe, Australia
+4E7E1FC86DA513E5B31ADBB13C080D7B		Little Bit of... Brain Training, A - Maths Edition (Europe, Australia) (Rev 1)	NDS			Europe, Australia
+C68F52E2FE7B05D59D85BF0C4420B86A		Little Bit of... Brain Training, A - Sudoku (Europe, Australia) (Rev 1)	NDS			Europe, Australia
+E58F9C8F85E6CD844FA34F8562AD19C8		Little Bit of... Magic Made Fun, A - Deep Psyche (Europe)	NDS			Europe
+F8F11B0F16DB677C3BDE26E98C9C8DF6		Little Bit of... Magic Made Fun, A - Funny Face (Europe) (En,Es)	NDS			Europe
+B4193B1BED981E0DF96F57249DE029AA		Little Bit of... Magic Made Fun, A - Funny Face (Europe) (Fr,De,It) (Rev 1)	NDS			Europe
+DF18BAF13D8494A62BB3EE978DE2E415		Little Bit of... Magic Made Fun, A - Matchmaker (Europe)	NDS			Europe
+8408B88E6D4EECCB84E9EC283D47D4FE		Little Bit of... Magic Made Fun, A - Mind Probe (Europe)	NDS			Europe
+187DAF5C3AA8169142E3E9BE3DCF28DD		Little Bit of... Magic Made Fun, A - Psychic Camera (Europe)	NDS			Europe
+B7547567B1F55A0D2A1045D0BC424E70		Little Bit of... Magic Made Fun, A - Shuffle Games (Europe)	NDS			Europe
+03B0B420AF66ADE359AD4ED8FB8C040F		Little Bit of..., A - Dr. Mario (Europe, Australia)	NDS			Europe, Australia
+0F4A736A6BBF7F416142CD480D342D4C		Little Bit of..., A - Nintendo Touch Golf (Europe, Australia)	NDS			Europe, Australia
+B6FE5C082994648B01B5E3A4ACF7E4E8		Little Bit of..., A - Puzzle League (Europe, Australia)	NDS			Europe, Australia
+D028A398F758599C7E2ED1D4179E3DF4		Little Red Riding Hood's Zombie BBQ (Europe)	NDS			Europe
+DA802F5448CF16ED1FBA606B8F3EED30		Littlest Pet Shop (Europe, Australia)	NDS			Europe, Australia
+D4D62AB3218821B1AC4F2FF0B3A2F132		Littlest Pet Shop (USA)	NDS			USA
+AD38A62C6AB6FE6ADC403A4D82B75D78		Lola's Alphabet Train (Europe)	NDS			Europe
+FBB438D1E19C8A3ED37E891A894082B6		Lola's Alphabet Train (USA)	NDS			USA
+1ED37FFA61E59651B66807F8919EA967		Lola's Fruit Shop Sudoku (Europe)	NDS			Europe
+279F65ACDB6AC96307AC573FCDB1F2CF		Lola's Fruit Shop Sudoku (USA)	NDS			USA
+76468525B782EEF5B88D2C9F90292A37		Looksley's Line Up (USA)	NDS			USA
+1E1E269F10DE7B79A5AB7570B54586D7		Lost Town - The Dust, The (USA)	NDS			USA
+C51C3E68D0EA2E5C960209D515F6428B		Lost Town - The Jungle, The (Europe, Australia)	NDS			Europe, Australia
+3FC33615BCAADD2E183B3616C73F94DF		Lost Treasures of Alexandria (Europe)	NDS			Europe
+AA05341FAE6E9AC55FC1B0EA00325A59		Lost Treasures of Alexandria (USA)	NDS			USA
+51B2F0AFE4A84ABA2D33CCADC36AAC17		Maestro! Green Groove (Europe, Australia)	NDS			Europe, Australia
+73807A285FEEE6BA9AA12A90D9404FD9		Maestro! Green Groove (USA)	NDS			USA
+25735A4EA6415DBF6215742D0D44013C		Magical Diary - Secrets Sharing (USA)	NDS			USA
+2DDE911529CA322FF4B3788EF9ABB9FD		Magical fantasista (Japan)	NDS			Japan
+08CD0625BE91A7286E5603289ABC3738		Magical fantasista (Japan) (Rev 1)	NDS			Japan
+F13AE5A976F294E690D3E379948E0A8A		Magical Whip (Europe)	NDS			Europe
+CAF7503176DE6B9083B69280F30EABA7		Magical Whip (USA)	NDS			USA
+98EAACEC868B24B02A25D0526B81F091		Magnetic Joe (USA)	NDS			USA
+652247E6DDE95F25DD5046A75755C81B		Mahjong (Europe) (En,Fr,De,Es,It)	NDS			Europe
+7B96214DE96DE871BC270018F41957E9		Mahjong (USA)	NDS			USA
+70EAF903813F7C5D4C1A7FC7BC6600F8		Mainichi Sodateru Nikki Calendar (Japan)	NDS			Japan
+BE21310EEAB713958D55B72BF15343B5		Mario Calculator (China) (iQue)	NDS			China
+492FD0E0794D635DAD05A300A6780CCD		Mario Calculator (Europe, Australia)	NDS			Europe, Australia
+3E9952D252877A1BFABA5146346923A6		Mario Calculator (USA) (Rev 1)	NDS			USA
+01362C98CA799BAC853010A4AE443E5F		Mario Clock (China) (iQue)	NDS			China
+E37D351FDD29102D340BC584075DDEAC		Mario Clock (Europe, Australia)	NDS			Europe, Australia
+5E3A2D90FB04A2F54F6B51E2196E2486		Mario Clock (USA) (Rev 1)	NDS			USA
+453CC6B34A1480B9C14BF750A341790D		Mario vs. Donkey Kong - Mini Mini Sai Koushin! (Japan)	NDS			Japan
+EB65B06136EE43512C7C9AA695A7236A		Mario vs. Donkey Kong - Minis March Again! (Europe, Australia)	NDS			Europe, Australia
+6024B5BDE91D819B1EF3DCF67046351A		Mario vs. Donkey Kong - Minis March Again! (USA)	NDS			USA
+77DF82CD845D7165C94751604C6AE867		Mario vs. Donkey Kong - Minis March Again! (USA) (Rev 1)	NDS			USA
+0B4A591C1D613B681328967CC344D322		Master of Illusion Express - Deep Psyche (USA, Australia)	NDS			USA, Australia
+AEB06FA3479438791761939B5A2A9577		Master of Illusion Express - Funny Face (USA, Australia)	NDS			USA, Australia
+F14517E12BE7CF72EAFEEF19721FEEF1		Master of Illusion Express - Matchmaker (USA, Australia)	NDS			USA, Australia
+28AA33A0311798BC14A421B9E3CF2AD0		Master of Illusion Express - Mind Probe (USA, Australia)	NDS			USA, Australia
+6B89E9D18A3788A891B3D15210547555		Master of Illusion Express - Psychic Camera (USA, Australia)	NDS			USA, Australia
+E37D984089B5F19FEF4A3391D5BFC87D		Master of Illusion Express - Shuffle Games (USA, Australia)	NDS			USA, Australia
+97ED4F33A01497B8A90B297B0384FF43		Match Up! (Europe)	NDS			Europe
+62464E3986ED6CB8186CD5473260FCE3		Match Up! (USA)	NDS			USA
+63F937BE049E1F8885660CFB26C8089A		Mega Words (Europe)	NDS			Europe
+DEF27DAB8D2971066FBB2A57F059C9D6		Meikyou Kokugo - Rakubiki Jiten (Japan) (Rev 1)	NDS			Japan
+FDAAA9C67F5158782CFC3CFA8C243542		Metal Torrent (China) (iQue)	NDS			China
+4249499BC580552EED95B4DB18CF5829		Metal Torrent (Europe, Australia)	NDS			Europe, Australia
+6BD3E221772E31486A36DD1480ACFDF3		Metal Torrent (USA)	NDS			USA
+F88864F09F59D7D2F50E26ECAEB82EA0		Miami Nights - Life in the Spotlight (USA)	NDS			USA
+CAF5879F65C566091D3222022FF988A9		Micro no Seimeitai (Japan)	NDS			Japan
+97818E5178B0247BB296CDF10033F522		Mighty Flip Champs! (Europe, Australia)	NDS			Europe, Australia
+02DB79A454C0478A5FFF4DB0B87F1DA6		Mighty Flip Champs! (USA)	NDS			USA
+45A5C6FF7B550AE50E4E747D2471E4F1		Mighty Milky Way (Europe)	NDS			Europe
+3F02B267D76C0637BD77EA4720A1C590		Mighty Milky Way (USA)	NDS			USA
+88C4D133636E9452990BF46545DFCD6E		Missy Mila - Twisted Tales (Europe)	NDS			Europe
+4849F9AD49CFD39AADB7949FB821E21C		Mixed Messages (Europe, Australia)	NDS			Europe, Australia
+0C235BD43CB11B5F48FAC4315279F248		Mixed Messages (USA)	NDS			USA
+8A0E33DD3A598DFAFE07DC195585A253		Moke Moke (USA)	NDS			USA
+05191199971C7AB407EC21798E7B6948		Moto eXtreme (Europe, Australia)	NDS			Europe, Australia
+3EFF9FE06F0D9ADF71527CF86F8777E2		Motto! Shunkan Jump Kentei (Japan)	NDS			Japan
+D47B5BAB1A3BCBF6967DBD10D218742A		Move your Brain - Rollway Puzzle (USA)	NDS			USA
+54EE136B215890AB3F5B60567B3F2830		Mr. Brain (Japan)	NDS			Japan
+6EF5D7ED7D518A751272B39120316763		Mr. Driller - Drill till you Drop (Europe, Australia)	NDS			Europe, Australia
+C3B6050A70E01064517151CDE8C3A934		Mr. Driller - Drill Till You Drop (USA)	NDS			USA
+2B54EBDC887ACF60CC9664FC755514A7		Music on - Acoustic Guitar (Europe, Australia)	NDS			Europe, Australia
+7F7F163CD59B31AD2CB913143079D4B8		Music on - Acoustic Guitar (USA)	NDS			USA
+8F0F0408B8B5C3922C06BF8144A14F78		Music on - Electric Guitar (Europe, Australia)	NDS			Europe, Australia
+846C87368E79490F2133DFBF4B93227C		Music on - Electric Guitar (USA)	NDS			USA
+CDBE9AD27B566CDB47B3F48A55CA2BD8		Music on - Electronic Keyboard (Europe, Australia)	NDS			Europe, Australia
+C79EB0B792B4F7A360C837F3274DADAE		Music on - Electronic Keyboard (USA)	NDS			USA
+B052CDE2576E3450ACB81962B26DF406		Music on - Learning Piano (Europe)	NDS			Europe
+D8E2466BA98EDFE53FFC36C0570B389F		Music on - Learning Piano (USA)	NDS			USA
+478C474E9A159315E3C05F760C4E7D15		Music on - Learning Piano Vol. 2 (Europe)	NDS			Europe
+9C3A396CA9629075F89290C5E2BE2760		Music on - Learning Piano Vol. 2 (USA)	NDS			USA
+02F8CCB96758D54C2F4DF3C6D1990A0F		Music on - Playing Piano (Europe)	NDS			Europe
+EA55F66F25F265C33AF1083F0175E710		Music on - Playing Piano (USA)	NDS			USA
+EACD133A1FCCA29A0416AECB1AE47678		Music On - Retro Keyboard (Europe, Australia)	NDS			Europe, Australia
+4A513615891297270B96BC83A89C7D39		Music On - Retro Keyboard (USA)	NDS			USA
+366D93300FB122DC28B342CA915EC746		My Aquarium - Seven Oceans (Europe)	NDS			Europe
+F58C9165F44B2697806FD179BCF00135		My Asian Farm (Europe)	NDS			Europe
+A3C6F13C7F6308E8250BF0D0FDC2A364		My Asian Farm (USA)	NDS			USA
+1EF01B3348CE2E2E825776E1CD20F20E		My Australian Farm (Europe)	NDS			Europe
+0725EC915E102441A507E2884EA53C8F		My Australian Farm (USA)	NDS			USA
+AAF45477C12654AB363036DC4ABAC839		My Exotic Farm (Europe, Australia)	NDS			Europe, Australia
+B597B1D38DD16E1DC53279686429D89B		My Exotic Farm (USA) (Rev 1)	NDS			USA
+2D42462485F368F7D01B674C5AF5784B		My Farm (Europe, Australia)	NDS			Europe, Australia
+9FA2F7E88D6AF3A45A497C6898A9755A		My Farm (USA) (Rev 1)	NDS			USA
+8CE86633D327960EBC43A964626DC0C1		My Little Restaurant (Europe, Australia)	NDS			Europe, Australia
+F92B89E1F549DFEDA31204C05E0F22D1		myDiary (Europe, Australia)	NDS			Europe, Australia
+751F9CBAA9082A268B40CDF16BCB3B66		myDiary (USA)	NDS			USA
+8F8EEF521A134B40EA962A86E425D7B2		myNotebook - Blue (Europe, Australia)	NDS			Europe, Australia
+E1CF54BAE7C72F8FD9858F2CA256D78E		myNotebook - Blue (USA)	NDS			USA
+60F6E6EFE8838C9DBBF0A5367A7ABE69		myNotebook - Carbon (Europe, Australia)	NDS			Europe, Australia
+F5F515A9588D8B1A0C6409B562771032		myNotebook - Carbon (USA)	NDS			USA
+5870EC2710C29555348692334B3ECFFD		myNotebook - Green (Europe, Australia)	NDS			Europe, Australia
+A949AFA51BE187C1EC1C52AE73CB1B3E		myNotebook - Green (USA)	NDS			USA
+045CAE4D7E7EBF4FBF62F3324824CA73		myNotebook - Pearl (USA)	NDS			USA
+2AF482E81E6CDCDD3C5FE9C323FA91A4		myNotebook - Red (Europe, Australia)	NDS			Europe, Australia
+748C304A9A9E0004D3802F8436796DC2		myNotebook - Red (USA)	NDS			USA
+9492C4184ED68CA8494B8652A225A835		myNotebook - Tan (USA)	NDS			USA
+F36625E59B85295093F07D1069397DC1		myPostcards (Europe, Australia)	NDS			Europe, Australia
+B43B48A729E81CF819AE2900F1159B3F		myPostcards (USA)	NDS			USA
+0EA27B06DCF37624E07E6DEE71378F26		MySims Camera (Europe, Australia)	NDS			Europe, Australia
+9578735B47A1E2CAD67C0553C464F59A		MySims Camera (USA)	NDS			USA
+19A80F18AB7C919BA1647A6B2C258E44		Mysterious Case of Dr. Jekyll & Mr. Hyde, The (USA)	NDS			USA
+8F9BB9EA3EC1BA8B476A1BF1C7081656		Nae Mamdaero Stickersajin - Syabangsyabang Lovely Photo (Korea)	NDS			Korea
+D186A5C870EA65179625F9B5F5E5CCC6		Nae-ireun Taxiwang - Sinnaneun Daeguyeohaeng (Korea)	NDS			Korea
+AA9CCF7C0E37905FF13B7E06E69F1699		Nazo no Minigame (Japan)	NDS			Japan
+F30CD831A4889C264A1A5842A0534EB0		Need for Speed - Nitro-X (Europe, Australia) (En,Fr,De,Es)	NDS			Europe, Australia
+4606B51BEE86527DE66BB9B15998028F		Need for Speed - Nitro-X (USA)	NDS			USA
+45A2FB4BB2024F59001A4C2FA9BD3694		Neko Reversi (Japan)	NDS			Japan
+A87B69D9135D32896E8769D39842E538		New Ace Touch! - Hanyeongsajeon (Korea)	NDS			Korea
+2B8DFC4EDBE47F1534EF4F4C64B49C76		New Ace Touch! - Yeonghansajeon (Korea)	NDS			Korea
+7CE5A100D5D727105FD4A172C2768056		New English Training - Learning with Tempo - Advanced Edition (China) (iQue)	NDS			China
+3B43DCC0313D4905300A786B02C25E70		New English Training - Learning with Tempo - Beginners Edition (China) (iQue)	NDS			China
+CD906BF982BA9B0EF594C333EABE01A6		Nintendo 3DS Transfer Tool (USA)	NDS			USA
+CFBC0A7AF498491B2C0DD6444C191F33		Nintendo 3DS Transfer Tool (USA) (Rev 1)	NDS			USA
+3BD1D1B83385B784202752CDB898BDEE		Nintendo Countdown Calendar (Europe, Australia)	NDS			Europe, Australia
+C4C0DB95D6EF51B5EF4D7AF21B846204		Nintendo Countdown Calendar (USA)	NDS			USA
+1378274ED2DE69FA2848EB6685F60725		Nintendo DSi - Instrument Tuner (USA)	NDS			USA
+4C00C5831DDBFDDBE2FC69206E30B8B6		Nintendo DSi + Internet (Australia) (Pre-install Only)	NDS			Australia
+916905E1E6EFC2A472427598328A755F		Nintendo DSi + Internet (Europe) (En,Fr,De,Es,It) (Rev 1) (Pre-install Only)	NDS			Europe
+2F02601085E22382679A398E6E7E5DF0		Nintendo DSi + Internet (Japan) (Rev 1) (Pre-install Only)	NDS			Japan
+6CB87BA48E90CB6AA4E970ADB0E6CFF0		Nintendo DSi + Internet (Japan) (Rev 2) (Pre-install Only)	NDS			Japan
+9E27863E0EE151A4EB657EA2DD7D6C33		Nintendo DSi + Internet (USA) (Pre-install Only)	NDS			USA
+F999903D0B5A3691F337C05C2E5E921E		Nintendo DSi Browser (Australia) (Rev 2)	NDS			Australia
+895DA0B7D4311C9F5B50A7458C93626D		Nintendo DSi Browser (Australia) (Rev 3)	NDS			Australia
+1D0435377F4BCC7A0652F72A3D8D7C1A		Nintendo DSi Browser (Europe) (En,Fr,De,Es,It) (Rev 3)	NDS			Europe
+D305B9DF9E75DD95D038195ABE49D359		Nintendo DSi Browser (Europe) (Rev 2)	NDS			Europe
+0AC224A53D60AAC3F6E4113B4C36E2CB		Nintendo DSi Browser (Japan)	NDS			Japan
+98F65CD6553370D1CFEBA0E454194865		Nintendo DSi Browser (Japan) (Rev 1)	NDS			Japan
+81B2E9AAECAFA3CEBBFD9497554E4583		Nintendo DSi Browser (Japan) (Rev 3)	NDS			Japan
+1B2C4859A7ABE4C7E716348EA6C9E370		Nintendo DSi Browser (USA) (Rev 2)	NDS			USA
+D219295E6A1DD6FDD859FB0A4D28BB59		Nintendo DSi Browser (USA) (Rev 3)	NDS			USA
+34C2859B7D6E29F4A7A80B10F26D2F43		Nintendo DSi Camera (USA) (Rev 4)	NDS			USA
+12629D2D34E09F43434522B09556BBB2		Nintendo DSi Dentaku - Famicom Mario Type (Japan)	NDS			Japan
+A732DEDC156AC87AA3BB8368012F0837		Nintendo DSi Gakki Tuner (Japan)	NDS			Japan
+6134087DD1359A7A1ED586F208DC482F		Nintendo DSi Metronome (Japan)	NDS			Japan
+27ADD27858A2A192925E28C31BE1FA0B		Nintendo DSi Metronome (USA)	NDS			USA
+B82A66AE010317CD9653340BD8CCEE49		Nintendo DSi Shop (USA) (Rev 12)	NDS			USA
+FE98850224A6397187FA1CBFB0FD4265		Nintendo DSi Sound (USA) (Rev 2)	NDS			USA
+D4FA88F9A89F278D9A6BC7ABC1CF9E28		Nintendo DSi Tokei - Doubutsu no Mori Type (Japan)	NDS			Japan
+BD95FC63726D99DFB256869FD6CEDF31		Nintendo DSi Tokei - Famicom Mario Type (Japan)	NDS			Japan
+17562F38F7A663017F8A06768E422820		Nintendo Fan Network (USA) (Rev 1)	NDS			USA
+C9C5E9084D21ECFCDE13FD91A11699C3		Nintendogs (China) (iQue)	NDS			China
+C4AF6F5DE987CE8421DA8CF99089D289		Nintendoji (Japan) (3DS Only)	NDS			Japan
+FC1B738CD71AAB68796DD390CD36C128		Noroi no Game - Chi (Japan)	NDS			Japan
+1FA5CBD64A8F59E4400EDE80313C94C2		Noroi no Game - Goku (Japan)	NDS			Japan
+D174A37FCCF26944521486E491E94F68		Number Battle (USA)	NDS			USA
+7BB8A54ADBC461B46B40B174674F4F96		Odekake! Earth Seeker (Japan)	NDS			Japan
+AB017FF4EC6236900942ADA7CD6B6336		Oregon Trail, The (USA)	NDS			USA
+1CD5519BAE7E67916E615A0094CD1C49		Orion's Odyssey (USA)	NDS			USA
+A7B96AD780F4DF15ED47D24C5E045C16		Oscar in Movieland (Europe, Australia)	NDS			Europe, Australia
+A67BFF3821B1E72C16DB863AE27178A0		Oscar in Toyland (USA)	NDS			USA
+4AE28943EEBF265532885774BAA92591		Oscar in Toyland 2 (Europe)	NDS			Europe
+7F80AC368B0CBC7962B36FEB47272C67		Oscar's World Tour (Europe)	NDS			Europe
+77607B6E8FA41715ED2B71E74B2A05DB		Panewa! (Japan)	NDS			Japan
+38424EE14EB4C88A459C1A7194A097D0		Paper Airplane Chase (USA)	NDS			USA
+E065B49B8612DC294DCCEFFE7F075ABA		Paper Plane (China) (iQue)	NDS			China
+C436366F4150266A2E10E99BC6B0F1A5		Paper Plane (Europe, Australia)	NDS			Europe, Australia
+7C47B8B7B6B3B7E99E15C0D80E355987		Paul's Shooting Adventure (USA)	NDS			USA
+D4F07574D51561C4F1668937BD5CDEE8		Paul's Shooting Adventure 2 (USA)	NDS			USA
+271EAC6D7445057C73DEF08CF865BDF2		peakvox - Mew Mew Chamber (Japan)	NDS			Japan
+584BF78B8C99EE1B1C095295B950B2BC		peakvox - Route Candle i (Japan)	NDS			Japan
+3C2E8CE0BBAE3357ADB203622CB6F953		Penguin Patrol (USA)	NDS			USA
+80EB6D31C7E7BA0FF9DB8561900BBAAB		Petit Computer (Europe)	NDS			Europe
+F0A86B004B2221DE0C320E722D867D09		Petit Computer (USA)	NDS			USA
+F8EA97C4F8959BB6DFE11A3473712B49		Petz - Dog Superstar (Europe, Australia)	NDS			Europe, Australia
+34DEC41CD72C141177C8F2F982C7BE31		Petz - Hamsterz Family (USA)	NDS			USA
+A23CDE3E81E08FA6DC81FEC262A690DB		PHANTASY STAR 0 Mini (Japan)	NDS			Japan
+829C7E4AA070EF26114BC5EB07379926		Photo Clock (China) (iQue)	NDS			China
+912FE90F67C68477316349FD80C49EBF		Photo Clock (Europe, Australia) (Rev 1)	NDS			Europe, Australia
+67DA16D3899302670418AE36E5457008		Photo Clock (USA)	NDS			USA
+37162418ECFA20988D293E947D10D7A6		Photo Clock (USA) (Rev 1)	NDS			USA
+89C87040E291774E95B53D17998A7693		Photo Dojo (Europe, Australia)	NDS			Europe, Australia
+8403FF72A2943BD1A7ABAC9B7FADDE27		Photo Dojo (France)	NDS			France
+EF21B22A715F93AC8782FCBD42BE6A6B		Photo Dojo (Germany)	NDS			Germany
+7311CF8B7D8BA1ADA6AF8BDE7D2EC9BE		Photo Dojo (Italy)	NDS			Italy
+B75CFEFF2387BBE7CAA63B79C08A4247		Photo Dojo (Spain)	NDS			Spain
+488464D0775B8DDEB22546A09C225341		Photo Dojo (USA)	NDS			USA
+14F7C02F873780EF9B5A5E98CF1692E5		Photo Stand Tsuki - Ban-Bro DX Radio (Japan)	NDS			Japan
+70BDF64657BC4A19AD7B99C3174DDA3C		PickDun (Japan)	NDS			Japan
+EDB157DD0EA3F8DC398C7FD056A37B4C		PictoChat (World) (En,Ja,Fr,De,Es,It) (Pre-install Only)	NDS			World
+922609C642171031D825ED855CB03503		PictureBook Games - The Royal Bluff (USA)	NDS			USA
+BF3381B5D6834F290592A89E015F7D85		Pinball Pulse - The Ancients Beckon (Europe, Australia)	NDS			Europe, Australia
+BE7FBD40A412EB280172563AB65E5A2F		Pinball Pulse - The Ancients Beckon (USA)	NDS			USA
+CD9FD1F7EDCC143FA5159E4C5147C093		Pirates Assault (Europe, Australia)	NDS			Europe, Australia
+1582B88C356E687E5B1B7B0184B13A48		Pirates Assault (USA)	NDS			USA
+35DD9F290EB70B0065716130EC944BCA		Plants vs. Zombies (Europe, Australia)	NDS			Europe, Australia
+D376DC3ADB86C4BA467278EEBD7D04DF		Plants vs. Zombies (USA)	NDS			USA
+DCBD98B9267EFA66A8700C92CA78C07D		Pocket Pack - Words & Numbers (Europe)	NDS			Europe
+2DC30FE2595B5A3C298F0BF9BDADF58D		Pop Island - Paperfield (Europe)	NDS			Europe
+6143AFBD487193921FCB9DF7EF218FAE		Pop Island - Paperfield (USA)	NDS			USA
+068DD593BB5E1D06CA6036DA2C113E85		Pop Island (Europe)	NDS			Europe
+0BE83AF942F8B6C97240735F16B96053		Pop Island (USA)	NDS			USA
+445EC09706EF46487030D58372E24B57		Pop Superstar - Road to Celebrity (Europe, Australia)	NDS			Europe, Australia
+138CA473DCD230FB3ED7F632A33490B8		Pop+ Solo (Europe, Australia)	NDS			Europe, Australia
+4B8689EB2A7AD8FD18C9F005F8A00FC3		Pop+ Solo (USA)	NDS			USA
+A8BE52E569ABB10B11BC0390C6E04610		Prehistorik Man (Europe, Australia)	NDS			Europe, Australia
+7431153D795F7AC5F710799300D37908		Primrose (Europe)	NDS			Europe
+5B3DDB6C282ED009659A756D9221972E		Primrose (USA)	NDS			USA
+B4C79FCCE2E136594B818F9084A7340B		Pro Jumper! Guilty Gear Tangent! (USA)	NDS			USA
+DE6F1C0F436BDABB01426D0F9BD204AB		Pro-Putt Domo (USA)	NDS			USA
+29316FBE625714C568BAA934846C9362		Publisher Dream (Europe)	NDS			Europe
+B0D8ED5E5007E2352B4A54EC801EA5A1		Publisher Dream (USA)	NDS			USA
+334656520A74A92ABD3C041E2F354884		Pucca - Noodle Rush (Europe)	NDS			Europe
+93FE3EDCAFF806DAD5665E34DD16C7F2		Puchicon (Japan)	NDS			Japan
+8D5230BA01685321D4D2E28DB4E00B4B		Puchicon (Japan) (Rev 1)	NDS			Japan
+EF2D034E1E9B76362E6737A9253BFD97		Puchicon (Japan) (Rev 2)	NDS			Japan
+E7998E9477ED27CB23A1EA1E78FD3FFD		Puchicon mkII (Japan)	NDS			Japan
+CB66A911FCBC43CBF70F659DB148E9B0		Puchicon mkII (Japan) (Rev 1)	NDS			Japan
+F4D754BBB5CED70580D2389D14B1A940		Puchicon mkII (Japan) (Rev 2)	NDS			Japan
+F6273B0533967DE14B455130840253F5		Puffins - Let's Fish! (Europe) (En,Fr,De,Es,It)	NDS			Europe
+E786690286816EE6041B955CCD97DE7D		Puffins - Let's Race! (Europe)	NDS			Europe
+A2CC1F1C80357DE0348ED1F607CD2113		Puffins - Let's Roll! (Europe)	NDS			Europe
+D509D758708AD8890FAAC5B380440557		Puzzle Fever (Europe) (En,Fr,De,Es,It)	NDS			Europe
+B9C1704E3B23C338A4136CCF40266F28		Puzzle League - Express (USA)	NDS			USA
+EE82AECAB26DC5285482DDAD9A55BE34		Puzzle Quest - Challenge of the Warlords (Europe)	NDS			Europe
+3E593F78B33545A37C06BCF696C1B5FA		Puzzle Quest - Challenge of the Warlords (USA)	NDS			USA
+9DF77789C67C793F00F9E62D73C01B7F		Puzzle Rocks (Europe) (En,Fr,De,Es,It)	NDS			Europe
+2198EE4C1B84654CA2A47D256C2B5482		Pyoro (Europe, Australia)	NDS			Europe, Australia
+72F4384784A61A58A241021F7AAD0510		Quick Fill Q (Europe)	NDS			Europe
+4611863068848C3011B4FAE628E42B3F		Quick Fill Q (USA)	NDS			USA
+BC7F1720F74078A1FB7378CCC970E944		QuickPick Farmer (Europe) (En,Fr,De,Es,It)	NDS			Europe
+BC935D9FBB681CF19BEDAC44E615008C		Rabi Laby (Europe)	NDS			Europe
+2B89DA80380E16F9D9BCEA8E685DC2F7		Rabi Laby (USA)	NDS			USA
+1F3935BC3DE971D3261554505982235F		Rabi Laby 2 (Europe)	NDS			Europe
+70896476B20B619D25ECA6FDE31701B2		Rabi Laby 2 (USA)	NDS			USA
+3EFD05D2C2BCEE9F10652BE651054FEE		Radar War Series - Gunjin Shogi (Japan)	NDS			Japan
+388668C81CC6D868DED98D55EF1BD53A		Rayman (Europe, Australia)	NDS			Europe, Australia
+C115007B78F6FB7CF9F4DE967E1A2377		Rayman (USA)	NDS			USA
+4A649FBA8F1B5C4672248ED1B399485F		Real Soccer 2009 (USA)	NDS			USA
+624FDB118E031CF06EEEC5F3465B8D39		Reflect Missile (Europe, Australia)	NDS			Europe, Australia
+0580BA9ED5544BF531FDBB0E1D720B54		Reflect Missile (Japan) (Rev 1)	NDS			Japan
+3847A8666D7EE018C01345FBB9F579A2		Remote Racers (Europe, Australia)	NDS			Europe, Australia
+5BB7D5809CB2CC0ADB6AC28842E98DAD		Remote Racers (USA)	NDS			USA
+3C3C46FB3A0AAB3F6B67F3C35BC06F80		Retro Pocket (USA)	NDS			USA
+EE8BFEC51FF3FD69ABE7A49159FCD2D5		Rhythm Core Alpha (Europe, Australia) (En,Fr,De,Es,It)	NDS			Europe, Australia
+ED97269ADAA74C43FBC7BA01CE1159C0		Rhythm Core Alpha (USA)	NDS			USA
+5427A416CC223335A0AC8C037AAB4B1A		Rhythm Core Alpha 2 (Europe, Australia)	NDS			Europe, Australia
+18B28AA1E95EEB5C622D712BEBBD3426		Rhythm Core Alpha 2 (USA)	NDS			USA
+E450803D3EC234B92D3B272B12028A01		Rittai Kakushi E - Attakoreda (Japan)	NDS			Japan
+23B147ADA3577A084BC3ACDA12968BFE		Robot Rescue (Europe, Australia)	NDS			Europe, Australia
+DA826C91034DAA84CC969BE752A29A87		Robot Rescue (USA)	NDS			USA
+DFF9E4DDB5E8FEF5B6D1D24536FDBF73		Robot Rescue 2 (Europe)	NDS			Europe
+3F6D47F1ABD980D206E7334922B360EC		Robot Rescue 2 (USA)	NDS			USA
+C098F887C1B7C9F6DEDDD205089DF5F9		Rock-n-Roll Domo (USA) (Rev 1)	NDS			USA
+966B94C7CDBFA573A63D27D0E017428E		Roller Angels (USA)	NDS			USA
+75B91215C91ACE05E77384145D6FF79E		Rummikub (Europe)	NDS			Europe
+A5DC7A1F315C70DC2691CA75F2EA67EF		Rytmik (Europe, Australia)	NDS			Europe, Australia
+67D18E6DDA179E83D4CAE4EE28F23722		Rytmik (USA)	NDS			USA
+90573C82D3CA3E18C344E668E639F066		Rytmik Retrobits (Europe, Australia)	NDS			Europe, Australia
+4E09CE4890E25511DB908DB65A5EE969		Rytmik Retrobits (USA)	NDS			USA
+EDBE83F7E0F60AB36EA7141CDD028ACD		Rytmik Rock Edition (Europe, Australia)	NDS			Europe, Australia
+0F6DA0C91D3B6EA8F863AC612A658D1A		Rytmik Rock Edition (USA)	NDS			USA
+54D3279E5E86484740998A3D7C483FCE		Rytmik World Music (Europe, Australia)	NDS			Europe, Australia
+2B03CE446F6594C33C4F78029DD0A40C		Rytmik World Music (USA)	NDS			USA
+9AFBF19B09178FE3E9FF93C703E04FE6		Sagittarius-A-Star (Japan)	NDS			Japan
+C4D8DD7C90F38C7A5586CD381C72B49A		Sakutto Hamareru Hori Hori Action - Mr. Driller (Japan)	NDS			Japan
+04C196CA89A56228A1C7F22DBD259750		Save the Turtles (Europe, Australia)	NDS			Europe, Australia
+6B4D94646D17883E5D3B960AEE40D44F		Save the Turtles (USA)	NDS			USA
+D12149360E8DE973A39DD0F145760642		Sawaru Made in Wario DL (Japan) (3DS Only)	NDS			Japan
+72EB4FF2DAD6AD4AF627683530F1A81E		Scrabble Classic (USA)	NDS			USA
+8730E0F95DD3F9A825865E5340A314AF		Scrabble Slam! (USA)	NDS			USA
+2EC98EC1125439F052D653C6FC29B319		Sea Battle (Europe)	NDS			Europe
+98524D830210BA5AEA34FD4A01144906		Sea Battle (USA)	NDS			USA
+0BF113927B7D4A1E160ACD6B7C7A2E23		Seller, The (Europe)	NDS			Europe
+FB9098C054F32DBF3C94811DD24574D2		Sepas Channel (Japan)	NDS			Japan
+8B01E13C9C8A574B8130048C6560AB84		Shantae - Risky's Revenge (Europe)	NDS			Europe
+EF14ED36436FF95197FDFF8C6E9A61F2		Shantae - Risky's Revenge (USA)	NDS			USA
+38DB8158D41DADF68C27BAC714B064D9		Shapo (USA)	NDS			USA
+63117EB80E993357B996A343679321BC		Shashin de Kakutou! Photo Fighter X (Japan)	NDS			Japan
+8952CFA316F05E080AE3263BB430BF1F		Shooting Storm (Korea)	NDS			Korea
+8F38B5272B13689D376246919AA8494E		Shu Zhen Duizhan (China) (iQue)	NDS			China
+3DE2019C983AD3A31C0112879E3FF0CA		Simple DS Series Vol. 2 - The Misshitsu Kara no Dasshutsu - Gakkou-Hen (Japan)	NDS			Japan
+037019BD3B6FA34597B19A0C76C19746		Simple DS Series Vol. 3 - The Misshitsu Kara no Dasshutsu - Prison Break (Japan)	NDS			Japan
+8C156252C6BFF3765C5E22863BDCC730		Simple DS Series Vol. 4 - The Misshitsu Kara no Dasshutsu - Karakuri Yashiki (Japan)	NDS			Japan
+C1B3433509E0569592F335B1CDEEC8B8		Simple DS Series Vol. 5 - The Misshitsu Kara no Dasshutsu - Nangoku no Conveni (Japan)	NDS			Japan
+C910F342F5ABD48635D54C0984333D59		Simply Mahjong (Europe)	NDS			Europe
+3A1B79B505DCDEC714F1D1BDA9486977		Simply Mahjong (USA)	NDS			USA
+839BD50EFF94557FB38F167B0DD9EC5A		Simply Minesweeper (Europe)	NDS			Europe
+87E10752CE83434AAFDEE6766FE08054		Simply Minesweeper (USA)	NDS			USA
+210A0270F326BC82F56903103242C6AE		Simply Solitaire (Europe)	NDS			Europe
+11E3FC9BD03C1D4F7D1598B0CDC4861F		Simply Solitaire (USA)	NDS			USA
+D2D75F482415AF3D9FC2C889DDB79D9D		Simply Sudoku (Europe)	NDS			Europe
+613135B924F426213F4A535CE11A2A6B		Simsimtalchul Gamejeonjip - Heungmijinjin Pyeon (Korea)	NDS			Korea
+476CE94B69998620942E9276C8DA3362		Simsimtalchul Gamejeonjip - Jaemipangpang Pyeon (Korea)	NDS			Korea
+C8B275735A868938961DB6859EDD9A61		Simsimtalchul Gamejeonjip - Matgo & Goseutop Pyeon (Korea)	NDS			Korea
+0D4D5ED12D609E43FDBBA21B494157DF		Sky Jumper Sol (Japan)	NDS			Japan
+BE8CFB873CF7A2FCB0DBBC21C400B9BF		Sleep Clock (Europe, Australia)	NDS			Europe, Australia
+2CE065E685169253943EC4EBC50C8E06		Slingo Quest (USA)	NDS			USA
+27A0179DBDDA81B966F3E64E80A97CBA		Slingo Supreme (USA)	NDS			USA
+E130D7F7F36A1C5E5012AFEB4FD36E36		Snakenoid (Europe)	NDS			Europe
+5A280CAEA7A01D1A59025EA6D363BFF8		Snapdots (USA, Australia)	NDS			USA, Australia
+8C8BA69879912E2F59CC44EF193328DE		SnowBoard Xtreme (Europe)	NDS			Europe
+4187F94DDA469F87FAEBB6E4D700E14E		SnowBoard Xtreme (USA)	NDS			USA
+24DB9222ACC34B62D525EDD9478087E9		Sokomania (Europe)	NDS			Europe
+35E57F7FDD75071E5351534DB7E69733		Sokomania (USA)	NDS			USA
+6975E02DAA56C4F392D6BBFAFF010043		Sokomania 2 - Cool Job (Europe)	NDS			Europe
+23845A00C1AC2EE5263F9974383E1BB7		Sokomania 2 - Cool Job (USA)	NDS			USA
+240D3947351C3020B869934310C1E194		Solitaire DSi (Japan)	NDS			Japan
+184DA884DBBAF53B8A956CF6130A7F63		Soul of Darkness (Europe, Australia)	NDS			Europe, Australia
+B591A37065E5B8C1AD1D850DA5AC908C		Soul of Darkness (Japan)	NDS			Japan
+746CA2CB5755F153496582750E4198B5		Soul of Darkness (USA)	NDS			USA
+94C36FE5DA76246B8DD30BE02155C439		Space Ace (USA)	NDS			USA
+5681A07FF1CFDFE848445578891AAFEF		Space Invaders Extreme Z (Japan)	NDS			Japan
+245386BA31EA1D57121B1ABC3C9C375B		Sparkle Snapshots (China) (iQue)	NDS			China
+BA1385BE8D80A6FEB6C65EB4EE3E19E3		Sparkle Snapshots (Europe, Australia)	NDS			Europe, Australia
+B346BCD3AF040F016760C46CAAF51AC6		Sparkle Snapshots (USA)	NDS			USA
+D4AFA47239925CB79FBF5CBF8F187D46		Spin Six (Europe, Australia)	NDS			Europe, Australia
+82028528C53B54A59A4A4DF57BC28424		Spin Six (USA)	NDS			USA
+30D7854C745F3CD703BC96B2B272857F		Spirit Hunters Inc - Light (USA)	NDS			USA
+C548971FDA8BF1A59D511FBFBF58999A		Spirit Hunters Inc - Shadow (USA)	NDS			USA
+C4F3B77545625103D05EF99D897B61A8		Spot It! Challenge (USA)	NDS			USA
+C685448C426E0F2E30E652857B284ECD		Spot It! Mean Machines (USA)	NDS			USA
+51CE922E8D2948D1BD52F636F1E9A0F0		Spotto! (China) (iQue)	NDS			China
+232934DFCC5CA7F54B5BE43BA909A19A		Spotto! (USA)	NDS			USA
+E47A337FB3328717FCF9BF6468142D87		Starship Defender (Japan)	NDS			Japan
+5D01AD0BB3F1C3A81BDDB55EEB975893		Starship Defense (USA)	NDS			USA
+406E60A525935D1A6F8C48D8008D340C		Starship Patrol (Europe, Australia)	NDS			Europe, Australia
+4A0AE273994563051EDEDADD6C7DECAA		SteamWorld Tower Defense (Europe, Australia)	NDS			Europe, Australia
+EF03F36DE9A2C878FDE1E1E7F2985F47		SteamWorld Tower Defense (USA)	NDS			USA
+470173B9355806AC1D1E121DEF739BF3		Stratego - Next Edition (USA)	NDS			USA
+BF41AC83CA7DED46411D8A945836F204		Successfully Learning English - Year 3 (Europe)	NDS			Europe
+9DE4F3625797EE84D0D787979293E981		Successfully Learning Mathematics - Year 3 (Europe)	NDS			Europe
+AA2F1AFCDF1B5931340D50CF95318121		Sudoku (Europe, Australia) (Rev 1)	NDS			Europe, Australia
+0184664C20CBE570549690FA4C254F11		Sudoku (USA)	NDS			USA
+57EDE02A7CC53BD55C505E64966890C8		Sudoku (USA) (Rev 1)	NDS			USA
+7D3B25FE56A92437EA1914D3FF1BD3C3		Sudoku 150! For Challengers (Europe, Australia)	NDS			Europe, Australia
+75ADA83426645484DB6AB65E30DE35B2		Sudoku 150-Mon! (Japan)	NDS			Japan
+9E9A9BB16DF983E26A4A81EE82105DCA		Sudoku 4Pockets (Europe)	NDS			Europe
+4F04D322152D614ED0793FE2388AFBF6		Sudoku 50! For Beginners (Europe, Australia)	NDS			Europe, Australia
+4F1FFE08CB90BBF50BF3551DBA23EAF4		Sudoku Master (USA)	NDS			USA
+C0F50E6E95E31AABBDC508DA099A8693		Sudoku Sensei (Europe, Australia)	NDS			Europe, Australia
+6058327BB7C7C0B0B4BE8BC0B01E03A3		Sudoku Sensei (USA)	NDS			USA
+3F3031818E389041290BE3F34FE05289		Sudoku Shokyuu 50-Mon! (Japan)	NDS			Japan
+6F7989F99762BA623EB48F59D588F931		Sudoku Student (USA)	NDS			USA
+C05E49156DE7FD45B55153BB46D7071D		Suimin Kiroku - Mezamashi Dokei (Japan)	NDS			Japan
+3968C33E022895CEAA8888E9EA6D4E80		Sujin Taisen - Number Battles (Europe, Australia) (En,Fr,De,Es,It)	NDS			Europe, Australia
+CF1FBA1F606ED029AAA4738B1B85C52D		Sun-ganui Gyesan! - Dunoehoejeoni Ppallajineun Gyesan Training (Korea)	NDS			Korea
+E557E699D4FE41393EED80CB4B42F1D6		Super Swap (Europe)	NDS			Europe
+97F7CC1C3BF947C8A057CD0214399556		Super Yum Yum - Puzzle Adventures (Europe, Australia)	NDS			Europe, Australia
+5061A1EE2D2B2DA1DC07E098BF02FF15		Surfacer+ (Europe) (En,Fr,Es)	NDS			Europe
+3BEB09AB7B8261C8382A74E46C3C2F61		Surviving High School (Europe, Australia)	NDS			Europe, Australia
+F717466F0B79C1C17BFED76D76EB12DF		Surviving High School (USA)	NDS			USA
+D538DB3E81AE81952C0A87A1780D9F44		Sutjarang Nolja! - Magic Squarewa Imagegyesan (Korea)	NDS			Korea
+1485B398E40C74B923C28D45C6DE82CC		System Flaw - Recruit (USA)	NDS			USA
+D73A1D29C1DAF02976BD7F093DE98D34		Tales in a Box - Hidden Shapes in Perspective! (Europe, Australia) (En,Fr,De,Es,It)	NDS			Europe, Australia
+1145AE0AA330F2662EBA2378836CBCE0		Tales to Enjoy! Little Red Riding Hood (USA)	NDS			USA
+717063C7780AC8ACDED1D00C619BBB4B		Tales to Enjoy! Puss in Boots (USA)	NDS			USA
+1ACEE44C68107D1AE5E94D6DAB110E18		Tales to Enjoy! The Ugly Duckling (USA)	NDS			USA
+BE649504A87F6855CD00DD51743B394F		Tales to Enjoy! Three Little Pigs (USA)	NDS			USA
+7C0F9959DB436D90BCD7AF1DF85F8D2B		Telegraph Sudoku & Kakuro (Europe)	NDS			Europe
+9B18CCB792FB0CEFEC9156C023EFA66B		Telegraph Sudoku & Kakuro (USA)	NDS			USA
+1BD959E63C7A24225BED613F88E6D433		Tetris Party Live (Europe, Australia)	NDS			Europe, Australia
+95099BD2363B4340E085C20F63E3C995		Tetris Party Live (USA)	NDS			USA
+31ED2FC2B49A03DF1047B0693578F6F9		Thorium Wars (Europe)	NDS			Europe
+2C3B0AD9530D721BFA0EAAE8208267BA		Thorium Wars (USA)	NDS			USA
+7FA6052C448D437E63F54FCC5FE99E8C		Titanic Mystery (Europe)	NDS			Europe
+E91F164270C6C5259AB5D27F87549023		Titanic Mystery (USA)	NDS			USA
+86810DA25AE1F1D0F39291855C8E7719		Tohoku Daigaku Karei Igaku Kenkyuujo Kawashima Ryuuta Kyouju Kanshuu - Chotto Nou o Kitaeru Otona no DSi Training - Bunkei-Hen (Japan) (Rev 1)	NDS			Japan
+5A65790B78A14F77F4FD7FA0BAAA3011		Tohoku Daigaku Karei Igaku Kenkyuujo Kawashima Ryuuta Kyouju Kanshuu - Chotto Nou o Kitaeru Otona no DSi Training - Rikei-Hen (Japan)	NDS			Japan
+9B814B872BB7CE3FE4661E3B9025A25B		Tohoku Daigaku Karei Igaku Kenkyuujo Kawashima Ryuuta Kyouju Kanshuu - Chotto Nou o Kitaeru Otona no DSi Training - Rikei-Hen (Japan) (Rev 1)	NDS			Japan
+456D6079FB1B3F0FE78D669BC6865648		Tohoku Daigaku Karei Igaku Kenkyuujo Kawashima Ryuuta Kyouju Kanshuu - Chotto Nou o Kitaeru Otona no DSi Training - Sudoku-Hen (Japan)	NDS			Japan
+27FA879A059E728EC734F64685936AB2		Topoloco (Europe)	NDS			Europe
+65F41189C4772216B2718268636706DE		Topsy Turvy Life, A - The Turvys Strike Back (Europe)	NDS			Europe
+A4AAB8997635E4D6F5C0D1AFA828652D		Topsy Turvy Life, A - The Turvys Strike Back (USA)	NDS			USA
+9ADF005D380E55C58442EF464A5DC58A		Topsy Turvy Life, A - Turvy Drops (Europe)	NDS			Europe
+4A1D062E98D5AA15D7237B042A5CD276		Topsy Turvy Life, A - Turvy Drops (USA)	NDS			USA
+5917055EBD8F27DA215534301B4F0617		Tori to Mame (Japan)	NDS			Japan
+28A5FF6B8079FA324231AD6577323BF2		Toridama - Chicken do Shindan (Japan)	NDS			Japan
+B41884A10CB9401BFBE49F9170128ABA		Touch de Manzai! Megami no Etsubo DL (Japan)	NDS			Japan
+E1BA05E0A54F193E632238040B462AD2		Touch de Oboeru Hyakuninisshu - Chotto DSi Shigureden (Japan)	NDS			Japan
+480635A1E56F6EECBC8FB4A82A732075		Touch Solitaire (USA)	NDS			USA
+8C5E1D5D700CE284BD5A7226EC21A5EE		Tower DS Classic, The (Japan)	NDS			Japan
+F25A221663A24998AEB324DA359FBDE5		Tower DS, The - Kougai Ekimae Shijou ni Idome!! Kyodai Shopping Center Hen (Japan)	NDS			Japan
+319397B0ECD86D68D8F3BE648F95F914		Trailblaze - Puzzle Incinerator (Europe, Australia)	NDS			Europe, Australia
+8EA3D1E73FFD2556EF97F74931B3604A		Trajectile (USA)	NDS			USA
+8918CD74F02BA2C9A163B2CA01A22932		Treasure Hunter X (Europe)	NDS			Europe
+B314B18E6CB92C3A1E45E6FBFEA63F5B		Treasure Hunter X (USA)	NDS			USA
+4536B3737935565DBD6AA8A8C1CC74F5		Trollboarder (USA)	NDS			USA
+0ECD008D825FF108362B358EA5E7FA41		Tsukutte Utau Saru Band (Japan)	NDS			Japan
+362E288964D8228F4025BE4F34A26529		Ugoku Memo Chou (Japan)	NDS			Japan
+87943B2A19EA9F3B41123480920DF8A9		Ugoku Memo Chou (Japan) (Rev 1)	NDS			Japan
+990584865B48A2404E19B2E06323872D		Ugoku Memo Chou (Japan) (Rev 2)	NDS			Japan
+C80806CCB148A8FD764C3A49F327046B		Uno (Europe, Australia) (Rev 1)	NDS			Europe, Australia
+42954DE44C145AD2AC94AB2EE81D2FA9		Uno (Japan)	NDS			Japan
+7DB6E699AB8B43359CE146630F88691A		Uno (USA)	NDS			USA
+F8D78CBE8290E5903A2CC67F2D6C73C4		Utsusu Made in Wario (Japan)	NDS			Japan
+4AF7A78DEC3F9E85426B2C1BE982E0BA		Valet Parking 1989 (Europe, Australia)	NDS			Europe, Australia
+4F8D88A19D28479A09B9FEB19497B4FB		Viking Invasion (Europe, Australia)	NDS			Europe, Australia
+09EA679FD5162B6C11AFC172F2768B3D		Viking Invasion (USA)	NDS			USA
+0275D5904884DB70E17F7AA0E6495D44		Wakugumi - Monochrome Puzzle (Europe, Australia)	NDS			Europe, Australia
+DC51D5A12BED2341E7707CA06064FA15		Wari to Honkakuteki - Egokoro Kyoushitsu Kouki (Japan)	NDS			Japan
+A680BCB0B2C3640D8321EFA3A6EE116D		WarioWare - Snapped! (Europe, Australia) (En,Fr,De,Es,It)	NDS			Europe, Australia
+1CA3B760DF8918C8D538C13509A1764D		WarioWare - Snapped! (USA)	NDS			USA
+74AF8F1B81B483EC4106F0C5C54FC754		WarioWare - Snapped! (USA) (Rev 1)	NDS			USA
+8BB8BED06837E914E893B5AD35E2DCA1		WarioWare - Touched! DL (Europe) (3DS Only)	NDS			Europe
+3B160E496BA652D997FFBA0332A95C66		WarioWare - Touched! DL (USA, Australia) (3DS Only)	NDS			USA, Australia
+7A2249B89A29C140473E0DE5E5865E69		Whack-A-Friend (USA)	NDS			USA
+B78058926945C561BC43A5C1789E409C		Where's Wally - The Fantastic Journey - Travel Pack 1 (Europe, Australia)	NDS			Europe, Australia
+979E70B0A0D19BECF09D4661D0703F0F		White-Water Domo (USA)	NDS			USA
+849067A365405182FC091D83B1115F92		Wimmelbild-Creator (Germany)	NDS			Germany
+CB2AEBD96457A00D6900998A30025004		Wizard Defenders (Europe)	NDS			Europe
+4942737BAC6BC21D60D7B3994524BB18		Wizard Defenders (USA)	NDS			USA
+6705F14725D6BB078980ABA684D749D3		Word Searcher (USA)	NDS			USA
+8715CD198D8E13FF2E0178AC6D564CE5		Working Dawgs - Pipes (USA)	NDS			USA
+4F8C9B9EED20F93CBB3DBEC28C87FAF7		Working Dawgs - Rivet Retriever (USA)	NDS			USA
+0D99763BE96CEE32FE70AF6409460188		World Poker Tour - Texas Hold 'Em (Europe) (En,Fr,De,Es,It)	NDS			Europe
+3A3DCB25D0F2EFBF6ED5D85B350E15BA		X-Returns (Japan)	NDS			Japan
+BAF3339EF9D8F7FC2D3A0A1424BDB005		X-Scape (USA)	NDS			USA
+2F79FE6E6BE5FC1A5C6E7261B377A620		Yixia Xia Ming You Daquan - Jingdian Chong Wen (China) (iQue)	NDS			China
+0796A3113BCFAA59FEA7855408F1F116		Yixia Xia Ming You Daquan - Qingsong Xiuxian (China) (iQue)	NDS			China
+A47CA6B2BE431491DB8734BA17EE1888		Yixia Xia Ming You Daquan - Zhiyong Shuangquan (China) (iQue)	NDS			China
+2FAEDD7FEB1BEDF3FDB9992C82996C93		Yixia Xia Nao Nianling DSi Duanlian - Suanshu Pian (China) (iQue)	NDS			China
+5B01E984BE35565D2B9A64874957A7DC		Yummy Yummy Cooking Jam (Europe, Australia)	NDS			Europe, Australia
+53B8C039BF2D71548CB2049E139E0995		Zacross (Japan)	NDS			Japan
+87ABB89B51C8398B83C900A491A93479		Zaojiao Leyuan wo de Tonghua Huiben - Xiaohai tu de Gushi (China) (iQue)	NDS			China
+057F5E9DD5451766793B2107894771A9		Zelda no Densetsu - 4-tsu no Tsurugi - 25th Kinen Edition (Japan)	NDS			Japan
+7D3FEA386E7636AEB06B05889EF40575		ZENONIA (Europe, Australia)	NDS			Europe, Australia
+F2A9091B2CA6B647FFC5D5FEE8227E35		ZENONIA (USA)	NDS			USA
+0CA1BBB727FC5C52EFF34C53FC72CFEC		Zhao Zhao Waliou Zhizao (China) (Rev 1) (iQue)	NDS			China
+629299199B9C8A18FD2026A1FACA6A44		Zhipai DSi (China) (iQue)	NDS			China
+2889F73F7696344DB217D0065F2A7C19		Zimo - Mahjong Fanatic (USA)	NDS			USA
+D0A25FD00C14E37E845C666E5533E8A1		Zombie Blaster (USA)	NDS			USA
+E0B7F8636DCC6F67D93D72B7F2DD564D		Zombie Blaster (USA) (Rev 1)	NDS			USA
+0B211B6AF1D4F39292E695C53D19A3DA		Zombie Skape (Europe)	NDS			Europe
+4FEEE1CD2834A0D82DAE9F0F63A986BE		Zombie Skape (USA)	NDS			USA
+E226BD65D8AE622C1B7E4AB239CBD490		Zomgeri Panic (Japan)	NDS			Japan
+A5E5A5B03AFB3B401C22D9A0CF825A58		Zoo Frenzy (USA)	NDS			USA
+C7B02A6BDE9F5B1BB15994FE32516E9E		Zoonies - Escape from Makatu (Europe, Australia) (En,Fr,De,Es,It)	NDS			Europe, Australia
+CB6E9218A732DE5D10F25E843AE2A437		Zoonies - Escape from Makatu (USA)	NDS			USA
+F810CFC600AFCAC8A585440D46F6046C		Zuma's Revenge! (USA)	NDS			USA
+
