@@ -193,7 +193,7 @@ namespace BizHawk.Client.Common
 				Log("Surface name cannot be nil. Pass \"emucore\" to `gui.use_surface` to restore the default.");
 				return;
 			}
-			_rememberedSurfaceID = DisplaySurfaceIDParser.Parse(surfaceName).Value; // iff param is not null, returns not null or throws
+			_rememberedSurfaceID = DisplaySurfaceIDParser.Parse(surfaceName).Value;
 		}
 
 		public void Dispose() => APIs.Gui.Dispose();
