@@ -37,7 +37,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			_settings = lp.Settings ?? new NDSSettings();
 
 			IsDSi = _syncSettings.UseDSi;
-			IsDSiWare = _syncSettings.LoadDSiWare;
 
 			var roms = lp.Roms.Select(r => r.RomData).ToList();
 
@@ -45,6 +44,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			{
 				throw new InvalidOperationException("Wrong number of ROMs!");
 			}
+
+			IsDSiWare = IsDSi && RomIsWare(roms[0]);
 
 			bool gbacartpresent = roms.Count > 1;
 			bool gbasrampresent = roms.Count == 3;
@@ -217,13 +218,24 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			}
 		}
 
+		private static bool RomIsWare(byte[] file)
+		{
+			uint lowerWareTitleId = 0;
+			for (int i = 0; i < 4; i++)
+			{
+				lowerWareTitleId <<= 8;
+				lowerWareTitleId |= file[0x237 - i];
+			}
+			return lowerWareTitleId == 0x00030004;
+		}
+
 		private static byte[] GetTMDData(byte[] ware)
 		{
 			ulong titleId = 0;
-			for (int i = 0; i < 16; i++)
+			for (int i = 0; i < 8; i++)
 			{
 				titleId <<= 8;
-				titleId |= ware[0x23F - i];
+				titleId |= ware[0x237 - i];
 			}
 			using var zip = new ZipArchive(new MemoryStream(Util.DecompressGzipFile(new MemoryStream(Resources.TMDS.Value))), ZipArchiveMode.Read, false);
 			using var tmd = zip.GetEntry($"{titleId:x16}.tmd").Open();

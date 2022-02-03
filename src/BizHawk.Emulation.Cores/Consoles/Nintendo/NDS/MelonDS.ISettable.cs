@@ -108,11 +108,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			[DefaultValue(false)]
 			public bool UseDSi { get; set; }
 
-			[DisplayName("Load DSiWare")]
-			[Description("")]
-			[DefaultValue(false)]
-			public bool LoadDSiWare { get; set; }
-
 			[DisplayName("Use Real BIOS")]
 			[Description("If true, real BIOS files will be used. Forced true for DSi.")]
 			[DefaultValue(false)]
