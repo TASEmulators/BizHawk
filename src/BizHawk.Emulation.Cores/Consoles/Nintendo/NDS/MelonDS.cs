@@ -115,7 +115,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			var name = Encoding.UTF8.GetBytes(_syncSettings.FirmwareUsername);
 			fwSettings.FirmwareUsernameLength = name.Length;
 			fwSettings.FirmwareLanguage = _syncSettings.FirmwareLanguage;
-			if (_syncSettings.FirmwareStartUp == NDSSyncSettings.StartUp.AutoBoot) fwSettings.FirmwareLanguage |= (NDSSyncSettings.Language)0x40;
+			if (!IsDSi && _syncSettings.FirmwareStartUp == NDSSyncSettings.StartUp.AutoBoot) fwSettings.FirmwareLanguage |= (NDSSyncSettings.Language)0x40;
 			fwSettings.FirmwareBirthdayMonth = _syncSettings.FirmwareBirthdayMonth;
 			fwSettings.FirmwareBirthdayDay = _syncSettings.FirmwareBirthdayDay;
 			fwSettings.FirmwareFavouriteColour = _syncSettings.FirmwareFavouriteColour;
