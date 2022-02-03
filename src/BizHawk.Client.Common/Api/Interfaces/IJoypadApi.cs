@@ -10,7 +10,7 @@ namespace BizHawk.Client.Common
 		void SetFromMnemonicStr(string inputLogEntry);
 		void Set(IReadOnlyDictionary<string, bool> buttons, int? controller = null);
 		void Set(string button, bool? state = null, int? controller = null);
-		void SetAnalog(IReadOnlyDictionary<string, int?> controls, object controller = null);
-		void SetAnalog(string control, int? value = null, object controller = null);
+		void SetAnalog(IReadOnlyDictionary<string, int?> controls, int? controller = null);
+		void SetAnalog(string control, int? value = null, int? controller = null);
 	}
 }

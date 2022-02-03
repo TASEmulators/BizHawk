@@ -43,7 +43,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("joypad.setanalog( { [ \"Tilt X\" ] = -63, [ \"Tilt Y\" ] = 127 } );")]
 		[LuaMethod("setanalog", "sets the given analog controls to their provided values for the current frame. Note that unlike set() there is only the logic of overriding with the given value.")]
-		public void SetAnalog(LuaTable controls, object controller = null)
+		public void SetAnalog(LuaTable controls, int? controller = null)
 		{
 			var dict = new Dictionary<string, int?>();
 			foreach (var (k, v) in _th.EnumerateEntries<object, object>(controls))
