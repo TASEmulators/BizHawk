@@ -3,11 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores;
-using BizHawk.Emulation.Cores.Nintendo.Gameboy;
-using BizHawk.Emulation.Cores.Nintendo.Sameboy;
-using BizHawk.Emulation.Cores.Nintendo.SubNESHawk;
-using BizHawk.Emulation.Cores.Nintendo.SubGBHawk;
 
 namespace BizHawk.Client.Common
 {
@@ -347,52 +342,21 @@ namespace BizHawk.Client.Common
 
 		private void HandlePlaybackEnd()
 		{
-			if (Movie.IsAtEnd() && (
-				Movie.Core == CoreNames.Gambatte || 
-				Movie.Core == CoreNames.SubNesHawk || 
-				Movie.Core == CoreNames.SubGbHawk))
+			if (Movie.IsAtEnd() && (Movie.Emulator is ICycleTiming cycleCore))
 			{
-				long movieValue;
-				long coreValue = 0;
-				bool movieHasValue = true;
-				string movieValueStr = "";
-				string valueName = "";
+				long coreValue = cycleCore.CycleCount;
+				bool movieHasValue = Movie.HeaderEntries.TryGetValue(HeaderKeys.CycleCount, out string movieValueStr);
 
-				if (Movie.Core == CoreNames.Gambatte)
-				{
-					valueName = "cycle";
-					coreValue = ((Gameboy)Movie.Emulator).CycleCount;
-					movieHasValue = Movie.HeaderEntries.TryGetValue(HeaderKeys.CycleCount, out movieValueStr);
-				}
-				else if (Movie.Core == CoreNames.Sameboy)
-				{
-					valueName = "cycle";
-					coreValue = ((Sameboy)Movie.Emulator).CycleCount;
-					movieHasValue = Movie.HeaderEntries.TryGetValue(HeaderKeys.CycleCount, out movieValueStr);
-				}
-				else if (Movie.Core == CoreNames.SubGbHawk)
-				{
-					valueName = "cycle";
-					coreValue = ((SubGBHawk)Movie.Emulator).CycleCount;
-					movieHasValue = Movie.HeaderEntries.TryGetValue(HeaderKeys.CycleCount, out movieValueStr);
-				}
-				else if (Movie.Core == CoreNames.SubNesHawk)
-				{
-					valueName = "VBlank";
-					coreValue = ((SubNESHawk)Movie.Emulator).VblankCount;
-					movieHasValue = Movie.HeaderEntries.TryGetValue(HeaderKeys.VBlankCount, out movieValueStr);
-				}
-
-				movieValue = movieHasValue ? Convert.ToInt64(movieValueStr) : 0;
+				long movieValue = movieHasValue ? Convert.ToInt64(movieValueStr) : 0;
 				var valuesMatch = movieValue == coreValue;
 
 				if (!movieHasValue || !valuesMatch)
 				{
 					var previousState = !movieHasValue
-						? $"The movie is currently missing a {valueName} count."
-						: $"The {valueName} count in the movie ({movieValue}) doesn't match the current value.";
+						? $"The movie is currently missing a cycle count."
+						: $"The cycle count in the movie ({movieValue}) doesn't match the current value.";
 					// TODO: Ideally, this would be a Yes/No MessageBox that saves when "Yes" is pressed.
-					PopupMessage($"The end of the movie has been reached.\n\n{previousState}\n\nSave the movie to update to the current {valueName} count ({coreValue}).");
+					PopupMessage($"The end of the movie has been reached.\n\n{previousState}\n\nSave the movie to update to the current cycle count ({coreValue}).");
 				}
 			}
 

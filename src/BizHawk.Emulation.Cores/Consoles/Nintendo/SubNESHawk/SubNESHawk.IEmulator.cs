@@ -35,10 +35,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			reset_cycle = controller.AxisValue("Reset Cycle");
 			reset_cycle_int = (int)Math.Floor(reset_cycle);
 
-			_isLag = true;
-			_nesCore.alt_lag = true;
-
-			InputCallbacks.Call();
+			_nesCore.lagged = true;
 
 			DoFrame(controller);
 
@@ -51,12 +48,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 				_nesCore.cpu.ext_ppu_cycle = current_cycle;
 			}
 			
-			_isLag = _nesCore.alt_lag;
+			_isLag = _nesCore.lagged;
 
 			if (_isLag)
 			{
 				_lagCount++;
-				VblankCount++;
 			}
 
 			reset_frame = false;

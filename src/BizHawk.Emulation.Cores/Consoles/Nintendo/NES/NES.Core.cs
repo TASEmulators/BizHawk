@@ -397,7 +397,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public bool frame_is_done;
 		public bool current_strobe;
 		public bool new_strobe;
-		public bool alt_lag;
 
 		// this function will run one step of the ppu 
 		// it will return whether the controller is read or not.
@@ -850,7 +849,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (current_strobe && !new_strobe)
 			{
 				controller_was_latched = true;
-				alt_lag = false;
 				lagged = false;
 				InputCallbacks.Call();
 			}

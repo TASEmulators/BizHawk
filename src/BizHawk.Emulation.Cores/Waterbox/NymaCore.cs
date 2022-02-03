@@ -147,6 +147,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				}
 				VsyncNumerator = info.FpsFixed;
 				VsyncDenominator = 1 << 24;
+				ClockRate = info.MasterClock / (double)0x100000000;
 				_soundBuffer = new short[22050 * 2];
 
 				InitControls(portData, discs?.Length > 0, ref info);
@@ -256,9 +257,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private int _mdfnNominalWidth;
 		private int _mdfnNominalHeight;
 		public override int VirtualWidth => _mdfnNominalWidth;
-		public override int VirtualHeight =>_mdfnNominalHeight;
+		public override int VirtualHeight => _mdfnNominalHeight;
 
 		public DisplayType Region { get; protected set; }
+
+		public double ClockRate { get; private set; }
 
 		/// <summary>
 		/// Gets a string array of valid layers to pass to SetLayers, or an empty list if that method should not be called

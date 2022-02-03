@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Emulation.Common
 {
-	public interface ICycleTiming
+	public interface ICycleTiming : ISpecializedEmulatorService
 	{
 		/// <summary>
 		/// Total elapsed emulation time relative to <see cref="ClockRate"/>

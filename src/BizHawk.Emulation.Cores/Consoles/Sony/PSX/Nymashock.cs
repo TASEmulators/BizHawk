@@ -7,7 +7,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 namespace BizHawk.Emulation.Cores.Sony.PSX
 {
 	[PortedCore(CoreNames.Nymashock, "Mednafen Team", "1.27.1", "https://mednafen.github.io/releases/")]
-	public class Nymashock : NymaCore, IRegionable
+	public class Nymashock : NymaCore, IRegionable, ICycleTiming
 	{
 		[CoreConstructor(VSystemID.Raw.PSX)]
 		public Nymashock(CoreLoadParameters<NymaSettings, NymaSyncSettings> lp)

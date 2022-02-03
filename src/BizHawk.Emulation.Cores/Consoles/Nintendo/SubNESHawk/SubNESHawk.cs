@@ -19,7 +19,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			HardReset();
 			current_cycle = 0;
 			_nesCore.cpu.ext_ppu_cycle = current_cycle;
-			VblankCount = 0;
 
 			_nesStatable = _nesCore.ServiceProvider.GetService<IStatable>();
 
@@ -37,6 +36,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			ser.Register(_nesCore.ServiceProvider.GetService<IDebuggable>());
 			ser.Register(_nesCore.ServiceProvider.GetService<IRegionable>());
 			ser.Register(_nesCore.ServiceProvider.GetService<ICodeDataLogger>());
+			ser.Register(_nesCore.ServiceProvider.GetService<ICycleTiming>());
 
 			const string TRACE_HEADER = "6502: PC, machine code, mnemonic, operands, registers (A, X, Y, P, SP), flags (NVTBDIZCR), CPU Cycle, PPU Cycle";
 			_tracer = new TraceBuffer(TRACE_HEADER);
@@ -51,9 +51,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 		}
 
 		private readonly NES.NES _nesCore;
-
-		// needed for movies to accurately calculate timing
-		public int VblankCount;
 
 		public void HardReset() => _nesCore.HardReset();
 

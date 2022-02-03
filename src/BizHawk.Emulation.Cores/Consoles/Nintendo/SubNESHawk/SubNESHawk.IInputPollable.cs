@@ -16,9 +16,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			set => _isLag = value;
 		}
 
-		public IInputCallbackSystem InputCallbacks { get; } = new InputCallbackSystem();
+		public IInputCallbackSystem InputCallbacks => _nesCore.InputCallbacks;
 
-		public bool _isLag = true;
+		private bool _isLag = true;
 		private int _lagCount;
 	}
 }

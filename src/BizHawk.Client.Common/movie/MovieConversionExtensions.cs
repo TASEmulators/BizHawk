@@ -257,8 +257,6 @@ namespace BizHawk.Client.Common
 				{
 					movie.HeaderEntries.Add(gb.IsCGBDMGMode() ? "IsCGBDMGMode" : "IsCGBMode", "1");
 				}
-
-				movie.HeaderEntries.Add(HeaderKeys.CycleCount, "0");
 			}
 
 			if (emulator is SMS sms)
@@ -284,9 +282,10 @@ namespace BizHawk.Client.Common
 				movie.HeaderEntries.Add("Is32X", "1");
 			}
 
-			if (emulator is SubNESHawk)
+			if (emulator is ICycleTiming)
 			{
-				movie.HeaderEntries.Add(HeaderKeys.VBlankCount, "0");
+				movie.HeaderEntries.Add(HeaderKeys.CycleCount, "0");
+				movie.HeaderEntries.Add(HeaderKeys.ClockRate, "0");
 			}
 
 			movie.Core = ((CoreAttribute)Attribute

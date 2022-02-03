@@ -51,6 +51,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 			}
 
 			pass_a_frame = false;
+			_GBCore._islag = false;
 
 			InputCallbacks.Call();
 
@@ -71,7 +72,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 			}
 			current_cycle = 0;
 			
-			_isLag = pass_a_frame;
+			_isLag = _GBCore._islag;
 
 			if (_isLag)
 			{
@@ -113,7 +114,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 
 				current_cycle++;
 				frame_cycle++;
-				CycleCount++;
+				_cycleCount++;
 
 				if (frame_cycle == 70224)
 				{

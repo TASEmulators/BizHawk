@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 	[Core(CoreNames.SubGbHawk, "")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class SubGBHawk : IEmulator, IStatable, IInputPollable,
-		ISettable<GBHawk.GBHawk.GBSettings, GBHawk.GBHawk.GBSyncSettings>, IDebuggable
+		ISettable<GBHawk.GBHawk.GBSettings, GBHawk.GBHawk.GBSyncSettings>, IDebuggable, ICycleTiming
 	{
 		[CoreConstructor(VSystemID.Raw.GB, Priority = CorePriority.SuperLow)]
 		[CoreConstructor(VSystemID.Raw.GBC, Priority = CorePriority.SuperLow)]
@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 
 			HardReset();
 			current_cycle = 0;
-			CycleCount = 0;
+			_cycleCount = 0;
 
 			_GBStatable = _GBCore.ServiceProvider.GetService<IStatable>();
 
@@ -46,7 +46,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 		public GBHawk.GBHawk _GBCore;
 
 		// needed for movies to accurately calculate timing
-		public long CycleCount;
+		private long _cycleCount;
+
+		public long CycleCount => _cycleCount;
+
+		public double ClockRate => 4194304;
 
 		public void HardReset() => _GBCore.HardReset();
 
@@ -74,6 +78,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 		[FeatureNotImplemented]
 		public void Step(StepType type) => throw new NotImplementedException();
 
-		public long TotalExecutedCycles => CycleCount;
+		public long TotalExecutedCycles => _cycleCount;
 	}
 }

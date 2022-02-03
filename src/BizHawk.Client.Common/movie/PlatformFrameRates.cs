@@ -38,9 +38,6 @@ namespace BizHawk.Client.Common
 			["GB"] = 262144.0 / 4389.0, // 59.7275005696
 			["GBC"] = 262144.0 / 4389.0, // 59.7275005696
 
-			// RetroEdit: I don't like how this is cycles per second instead of FPS.
-			// It probably should be moved to a separate place.
-			["GB_Clock"] = 2097152.0,
 			["GBA"] = 262144.0 / 4389.0, // 59.7275005696
 			["NDS"] = 33513982.0 / 560190.0, // 59.8260982881
 			["GEN"] = 53693175 / (3420.0 * 262),
