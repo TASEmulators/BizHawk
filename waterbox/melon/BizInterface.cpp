@@ -433,7 +433,7 @@ EXPORT void SetReg(s32 ncpu, s32 index, s32 val)
 	NDS::SetReg(ncpu, index, val);
 }
 
-EXPORT u32 GetTotalExecutedCycles()
+EXPORT u32 GetCallbackCycleOffset()
 {
     return RunningFrame ? NDS::GetSysClockCycles(2) : 0;
 }
