@@ -5,6 +5,7 @@
 #include "ARM.h"
 #include "NDSCart.h"
 #include "GBACart.h"
+#include "DSi.h"
 #include "DSi_NAND.h"
 #include "Platform.h"
 #include "BizConfig.h"
@@ -253,17 +254,33 @@ static bool SafeToPeek(u32 addr)
 static void ARM9Access(u8* buffer, s64 address, s64 count, bool write)
 {
 	if (write)
-		while (count--) NDS::ARM9Write8(address++, *buffer++);
+	{
+		void (*Write)(u32, u8) = NDS::ConsoleType == 1 ? DSi::ARM9Write8 : NDS::ARM9Write8;
+		while (count--)
+			Write(address++, *buffer++);
+	}
 	else
-		while (count--) *buffer++ = SafeToPeek<true>(address) ? NDS::ARM9Read8(address) : 0, address++;
+	{
+		u8 (*Read)(u32) = NDS::ConsoleType == 1 ? DSi::ARM9Read8 : NDS::ARM9Read8;
+		while (count--)
+			*buffer++ = SafeToPeek<true>(address) ? Read(address) : 0, address++;
+	}
 }
 
 static void ARM7Access(u8* buffer, s64 address, s64 count, bool write)
 {
 	if (write)
-		while (count--) NDS::ARM7Write8(address++, *buffer++);
+	{
+		void (*Write)(u32, u8) = NDS::ConsoleType == 1 ? DSi::ARM7Write8 : NDS::ARM7Write8;
+		while (count--)
+			Write(address++, *buffer++);
+	}
 	else
-		while (count--) *buffer++ = SafeToPeek<false>(address) ? NDS::ARM7Read8(address) : 0, address++;
+	{
+		u8 (*Read)(u32) = NDS::ConsoleType == 1 ? DSi::ARM7Read8 : NDS::ARM7Read8;
+		while (count--)
+			*buffer++ = SafeToPeek<true>(address) ? Read(address) : 0, address++;
+	}
 }
 
 EXPORT void GetMemoryAreas(MemoryArea *m)
@@ -336,8 +353,12 @@ static void MicFeedNoise(s8 vol)
 	}
 }
 
+static bool RunningFrame = false;
+
 EXPORT void FrameAdvance(MyFrameInfo* f)
 {
+    RunningFrame = true;
+
 	if (f->Keys & 0x8000)
 	{
 		NDS::LoadBIOS();
@@ -391,6 +412,8 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 	SPU::ReadOutput(f->SoundBuffer, f->Samples);
 	f->Cycles = NDS::GetSysClockCycles(2);
 	f->Lagged = NDS::LagFrameFlag;
+
+    RunningFrame = false;
 }
 
 void (*InputCallback)();
@@ -410,7 +433,28 @@ EXPORT void SetReg(s32 ncpu, s32 index, s32 val)
 	NDS::SetReg(ncpu, index, val);
 }
 
-EXPORT void SetTraceCallback(void (*callback)(u32 cpu, u32* regs, u32 opcode, s64 ccoffset))
+EXPORT u32 GetTotalExecutedCycles()
+{
+    return RunningFrame ? NDS::GetSysClockCycles(2) : 0;
+}
+
+void (*ReadCallback)(u32);
+void (*WriteCallback)(u32);
+void (*ExecuteCallback)(u32);
+
+EXPORT void SetMemoryCallback(u32 which, void (*callback)(u32 addr))
+{
+	switch (which)
+	{
+		case 0: ReadCallback = callback; break;
+		case 1: WriteCallback = callback; break;
+		case 2: ExecuteCallback = callback; break;
+	}
+}
+
+void (*TraceCallback)(u32, u32*, u32);
+
+EXPORT void SetTraceCallback(void (*callback)(u32 cpu, u32* regs, u32 opcode))
 {
 	TraceCallback = callback;
 }
