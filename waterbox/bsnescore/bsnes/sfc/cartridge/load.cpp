@@ -135,7 +135,7 @@ auto Cartridge::loadMap(Markup::Node map, T& memory) -> uint {
   auto mask = map["mask"].natural();
   if(size == 0) size = memory.size();
   if(size == 0) return print("loadMap(): size=0\n"), 0;  //does this ever actually occur?
-  return bus.map({&T::read, &memory}, {&T::write, &memory}, addr, size, base, mask);
+  return bus.map({&T::read, &memory}, {&T::write, &memory}, addr, true, size, base, mask);
 }
 
 auto Cartridge::loadMap(
@@ -147,7 +147,7 @@ auto Cartridge::loadMap(
   auto size = map["size"].natural();
   auto base = map["base"].natural();
   auto mask = map["mask"].natural();
-  return bus.map(reader, writer, addr, size, base, mask);
+  return bus.map(reader, writer, addr, false, size, base, mask);
 }
 
 //memory(type=ROM,content=Program)
@@ -726,5 +726,5 @@ auto Cartridge::loadOBC1(Markup::Node node) -> void {
 auto Cartridge::loadMSU1() -> void {
   has.MSU1 = true;
 
-  bus.map({&MSU1::readIO, &msu1}, {&MSU1::writeIO, &msu1}, "00-3f,80-bf:2000-2007");
+  bus.map({&MSU1::readIO, &msu1}, {&MSU1::writeIO, &msu1}, "00-3f,80-bf:2000-2007", false);
 }

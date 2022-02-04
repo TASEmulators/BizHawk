@@ -397,7 +397,7 @@ EXPORT void* snes_get_memory_region(int id, int* size, int* word_size)
 
 EXPORT uint8_t snes_bus_read(unsigned addr)
 {
-    return bus.read(addr);
+    return bus.peek(addr);
 }
 
 EXPORT void snes_bus_write(unsigned addr, uint8_t value)

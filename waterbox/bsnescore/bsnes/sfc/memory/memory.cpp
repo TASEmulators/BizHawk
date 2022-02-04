@@ -16,6 +16,7 @@ auto Bus::reset() -> void {
     reader[id].reset();
     writer[id].reset();
     counter[id] = 0;
+    peekable[id] = true;
   }
 
   //if(lookup) delete[] lookup;
@@ -34,7 +35,7 @@ auto Bus::reset() -> void {
 auto Bus::map(
   const function<uint8 (uint, uint8)>& read,
   const function<void  (uint, uint8)>& write,
-  const string& addr, uint size, uint base, uint mask
+  const string& addr, bool isPeekable, uint size, uint base, uint mask
 ) -> uint {
   uint id = 1;
   while(counter[id]) {
@@ -43,6 +44,7 @@ auto Bus::map(
 
   reader[id] = read;
   writer[id] = write;
+  peekable[id] = isPeekable;
 
   auto p = addr.split(":", 1L);
   auto banks = p(0).split(",");

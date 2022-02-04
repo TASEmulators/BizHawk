@@ -87,20 +87,20 @@ auto CPU::power(bool reset) -> void {
 
   reader = {&CPU::readRAM, this};
   writer = {&CPU::writeRAM, this};
-  bus.map(reader, writer, "00-3f,80-bf:0000-1fff", 0x2000);
-  bus.map(reader, writer, "7e-7f:0000-ffff", 0x20000);
+  bus.map(reader, writer, "00-3f,80-bf:0000-1fff", true, 0x2000);
+  bus.map(reader, writer, "7e-7f:0000-ffff", true, 0x20000);
 
   reader = {&CPU::readAPU, this};
   writer = {&CPU::writeAPU, this};
-  bus.map(reader, writer, "00-3f,80-bf:2140-217f");
+  bus.map(reader, writer, "00-3f,80-bf:2140-217f", false);
 
   reader = {&CPU::readCPU, this};
   writer = {&CPU::writeCPU, this};
-  bus.map(reader, writer, "00-3f,80-bf:2180-2183,4016-4017,4200-421f");
+  bus.map(reader, writer, "00-3f,80-bf:2180-2183,4016-4017,4200-421f", false);
 
   reader = {&CPU::readDMA, this};
   writer = {&CPU::writeDMA, this};
-  bus.map(reader, writer, "00-3f,80-bf:4300-437f");
+  bus.map(reader, writer, "00-3f,80-bf:4300-437f", true);
 
   if(!reset) random.array(wram, sizeof(wram));
 

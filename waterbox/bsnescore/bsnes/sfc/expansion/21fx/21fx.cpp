@@ -8,8 +8,8 @@ S21FX::S21FX() {
   resetVector.byte(0) = bus.read(0xfffc, 0x00);
   resetVector.byte(1) = bus.read(0xfffd, 0x00);
 
-  bus.map({&S21FX::read, this}, {&S21FX::write, this}, "00-3f,80-bf:2184-21ff");
-  bus.map({&S21FX::read, this}, {&S21FX::write, this}, "00:fffc-fffd");
+  bus.map({&S21FX::read, this}, {&S21FX::write, this}, "00-3f,80-bf:2184-21ff", false);
+  bus.map({&S21FX::read, this}, {&S21FX::write, this}, "00:fffc-fffd", false);
 
   booted = false;
 
@@ -44,7 +44,7 @@ S21FX::~S21FX() {
   bus.map([vector](uint24 addr, uint8) -> uint8 {
     return vector >> addr * 8;
   }, [](uint24, uint8) -> void {
-  }, "00:fffc-fffd", 2);
+  }, "00:fffc-fffd", false, 2);
 
   if(link.open()) link.close();
   linkInit.reset();
