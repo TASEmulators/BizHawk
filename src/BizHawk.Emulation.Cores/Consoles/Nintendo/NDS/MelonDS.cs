@@ -50,6 +50,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			bool gbacartpresent = roms.Count > 1;
 			bool gbasrampresent = roms.Count == 3;
 
+			InitMemoryCallbacks();
 			_tracecb = MakeTrace;
 
 			_core = PreInit<LibMelonDS>(new WaterboxOptions
@@ -62,7 +63,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				MmapHeapSizeKB = 1024 * 1024,
 				SkipCoreConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
-			}, new Delegate[] { _tracecb });
+			}, new Delegate[] { _readcb, _writecb, _execcb, _tracecb });
 
 			var bios7 = IsDSi || _syncSettings.UseRealBIOS
 				? CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios7"))

@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private ITraceable Tracer { get; }
 		private readonly LibMelonDS.TraceCallback _tracecb;
 
-		private void MakeTrace(LibMelonDS.CpuTypes _cpu, IntPtr _regs, uint _opcode, long _ccoffset)
+		private void MakeTrace(LibMelonDS.CpuTypes _cpu, IntPtr _regs, uint _opcode)
 		{
 			string cpu = _cpu switch
 			{
@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					(uint)regs[13],
 					(uint)regs[14],
 					(uint)regs[15],
-					CycleCount + _ccoffset,
+					TotalExecutedCycles,
 					cpu)));
 		}
 	}

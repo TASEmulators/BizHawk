@@ -7,11 +7,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
 	partial class NDS : IDebuggable
 	{
-		[FeatureNotImplemented]
-		public IMemoryCallbackSystem MemoryCallbacks => throw new NotImplementedException(); // https://github.com/TASEmulators/BizHawk/issues/2585
-
-		public long TotalExecutedCycles => CycleCount;
-
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			uint[] regs = new uint[2 * 16];
@@ -52,5 +47,43 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		[FeatureNotImplemented]
 		public void Step(StepType type) => throw new NotImplementedException();
+
+		public long TotalExecutedCycles => CycleCount + _core.GetCallbackCycleOffset();
+
+		public IMemoryCallbackSystem MemoryCallbacks => _memorycallbacks;
+
+		private readonly MemoryCallbackSystem _memorycallbacks = new(new[] { "System Bus" });
+
+		private LibMelonDS.MemoryCallback _readcb;
+		private LibMelonDS.MemoryCallback _writecb;
+		private LibMelonDS.MemoryCallback _execcb;
+
+		private void InitMemoryCallbacks()
+		{
+			LibMelonDS.MemoryCallback CreateCallback(MemoryCallbackFlags flags, Func<bool> getHasCBOfType)
+			{
+				var rawFlags = (uint)flags;
+				return (address) =>
+				{
+					if (getHasCBOfType())
+					{
+						MemoryCallbacks.CallMemoryCallbacks(address, 0, rawFlags, "System Bus");
+					}
+				};
+			}
+
+			_readcb = CreateCallback(MemoryCallbackFlags.AccessRead, () => MemoryCallbacks.HasReads);
+			_writecb = CreateCallback(MemoryCallbackFlags.AccessWrite, () => MemoryCallbacks.HasWrites);
+			_execcb = CreateCallback(MemoryCallbackFlags.AccessExecute, () => MemoryCallbacks.HasExecutes);
+
+			_memorycallbacks.ActiveChanged += SetMemoryCallbacks;
+		}
+
+		private void SetMemoryCallbacks()
+		{
+			_core.SetMemoryCallback(0, MemoryCallbacks.HasReads ? _readcb : null);
+			_core.SetMemoryCallback(1, MemoryCallbacks.HasWrites ? _writecb : null);
+			_core.SetMemoryCallback(2, MemoryCallbacks.HasExecutes ? _execcb : null);
+		}
 	}
 }

@@ -101,6 +101,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		[BizImport(CC)]
 		public abstract void SetReg(int ncpu, int index, int val);
 
+		[BizImport(CC)]
+		public abstract int GetCallbackCycleOffset();
+
+		[UnmanagedFunctionPointer(CC)]
+		public delegate void MemoryCallback(uint addr);
+
+		[BizImport(CC)]
+		public abstract void SetMemoryCallback(int which, MemoryCallback callback);
+
 		// bit 0 -> ARM9 or ARM7
 		// bit 1 -> ARM or THUMB mode
 		public enum CpuTypes : uint
@@ -112,7 +121,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		}
 
 		[UnmanagedFunctionPointer(CC)]
-		public delegate void TraceCallback(CpuTypes _cpu, IntPtr _regs, uint _opcode, long _ccoffset);
+		public delegate void TraceCallback(CpuTypes _cpu, IntPtr _regs, uint _opcode);
 
 		[BizImport(CC)]
 		public abstract void SetTraceCallback(TraceCallback callback);
