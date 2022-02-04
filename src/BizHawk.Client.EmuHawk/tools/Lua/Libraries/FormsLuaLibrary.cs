@@ -677,6 +677,11 @@ namespace BizHawk.Client.EmuHawk
 			"draws an Icon (.ico) file from the given path at the given coordinate. width and height are optional. If specified, it will resize the image accordingly")]
 		public void DrawIcon(int componentHandle, string path, int x, int y, int? width = null, int? height = null)
 		{
+			if (!File.Exists(path))
+			{
+				LogOutputCallback($"File not found: {path}\nScript Terminated");
+				return;
+			}
 			try
 			{
 				var ptr = new IntPtr(componentHandle);
