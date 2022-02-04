@@ -19,7 +19,6 @@ namespace BizHawk.Client.EmuHawk
 		[OptionalService]
 		public ISaveRam SaveRamEmulator { get; private set; }
 
-		private bool _hackyDontUpdate;
 		private bool _initializing; // If true, will bypass restart logic, this is necessary since loading projects causes a movie to load which causes a rom to reload causing dialogs to restart
 
 		private int _lastRefresh;
@@ -63,11 +62,6 @@ namespace BizHawk.Client.EmuHawk
 		protected override void UpdateAfter()
 		{
 			if (!IsHandleCreated || IsDisposed || CurrentTasMovie == null)
-			{
-				return;
-			}
-
-			if (_hackyDontUpdate)
 			{
 				return;
 			}
