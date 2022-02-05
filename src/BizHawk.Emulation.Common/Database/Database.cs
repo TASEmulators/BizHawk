@@ -152,7 +152,10 @@ namespace BizHawk.Emulation.Common
 						Region = items.Length >= 7 ? items[6] : "",
 						ForcedCore = items.Length >= 8 ? items[7].ToLowerInvariant() : ""
 					};
-
+					if (game.Hash is "DA39A3EE5E6B4B0D3255BFEF95601890AFD80709" or "D41D8CD98F00B204E9800998ECF8427E")
+					{
+						Console.WriteLine($"WARNING: gamedb {path} contains entry for empty rom as \"{game.Name}\"!");
+					}
 					if (!silent && DB.TryGetValue(game.Hash, out var dupe))
 					{
 						Console.WriteLine("gamedb: Multiple hash entries {0}, duplicate detected on \"{1}\" and \"{2}\"", game.Hash, game.Name, dupe.Name);
