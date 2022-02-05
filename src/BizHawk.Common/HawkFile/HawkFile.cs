@@ -169,6 +169,7 @@ namespace BizHawk.Common
 			_boundStream.Position = 0;
 			ArchiveMemberPath = _archiveItems[index].Name; // TODO - maybe go through our own list of names? maybe not, its indices don't match...
 			Util.DebugWriteLine($"{nameof(HawkFile)} bound {CanonicalFullPath}");
+			if (_boundStream.Length is 0) Console.WriteLine("bound file is 0 bytes long?");
 			BoundIndex = archiveIndex;
 			return this;
 		}
