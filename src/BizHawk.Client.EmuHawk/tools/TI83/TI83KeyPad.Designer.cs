@@ -32,7 +32,6 @@ namespace BizHawk.Client.EmuHawk
         {
 			this.components = new System.ComponentModel.Container();
 			this.menuStrip1 = new MenuStripEx();
-			this.toolStripMenuItem1 = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.FileSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SettingsSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ShowHotkeysMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -174,7 +173,6 @@ namespace BizHawk.Client.EmuHawk
 			// menuStrip1
 			// 
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItem1,
             this.FileSubMenu,
             this.SettingsSubMenu});
 			this.menuStrip1.TabIndex = 0;
@@ -1649,7 +1647,6 @@ namespace BizHawk.Client.EmuHawk
         #endregion
 
         private MenuStripEx menuStrip1;
-        private BizHawk.WinForms.Controls.ToolStripMenuItemEx toolStripMenuItem1;
         private BizHawk.WinForms.Controls.ToolStripMenuItemEx FileSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SettingsSubMenu;
         private System.Windows.Forms.Button YButton;
