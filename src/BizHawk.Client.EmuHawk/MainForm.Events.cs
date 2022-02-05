@@ -1464,19 +1464,9 @@ namespace BizHawk.Client.EmuHawk
 			Tools.Load<BarcodeEntry>();
 		}
 
-		private void Ti83SubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			AutoloadKeypadMenuItem.Checked = Config.Ti83AutoloadKeyPad;
-		}
-
 		private void Ti83KeypadMenuItem_Click(object sender, EventArgs e)
 		{
 			Tools.Load<TI83KeyPad>();
-		}
-
-		private void AutoloadKeypadMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.Ti83AutoloadKeyPad ^= true;
 		}
 
 		private void Ti83LoadTIFileMenuItem_Click(object sender, EventArgs e)
@@ -2477,11 +2467,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MainForm_Shown(object sender, EventArgs e)
 		{
-			if (Emulator is TI83Common && Config.Ti83AutoloadKeyPad)
-			{
-				Tools.Load<TI83KeyPad>();
-			}
-
 			if (Config.RecentWatches.AutoLoad)
 			{
 				Tools.LoadRamWatch(!Config.DisplayRamWatch);

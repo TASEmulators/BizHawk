@@ -296,9 +296,6 @@ namespace BizHawk.Client.Common
 		public bool PlayMovieIncludeSubDir { get; set; }
 		public bool PlayMovieMatchHash { get; set; } = true;
 
-		// TI83
-		public bool Ti83AutoloadKeyPad { get; set; } = true;
-
 		public BindingCollection HotkeyBindings { get; set; } = new BindingCollection();
 
 		// Analog Hotkey values
