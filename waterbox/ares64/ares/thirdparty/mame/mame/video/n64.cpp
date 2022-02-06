@@ -3168,59 +3168,38 @@ void n64_rdp::process_command_list()
 
 n64_rdp::n64_rdp(n64_state &state, uint32_t* rdram, uint32_t* dmem) : poly_manager<uint32_t, rdp_poly_state, 8>(state.machine())
 {
-	puts("fuck");
 	ignore = false;
-	puts("fuck");
 	dolog = false;
 
-	puts("fuck");
 	m_rdram = rdram;
-	puts("fuck");
 	m_dmem = dmem;
 
-	puts("fuck");
 	m_aux_buf_ptr = 0;
-	puts("fuck");
 	m_aux_buf = nullptr;
-	puts("fuck");
 	m_pipe_clean = true;
 
-	puts("fuck");
 	m_pending_mode_block = false;
 
-	puts("fuck");
 	m_start = 0;
-	puts("fuck");
 	m_end = 0;
-	puts("fuck");
 	m_current = 0;
-	puts("fuck");
 	m_status = 0x88;
 
-	puts("fuck");
 	m_one.set(0xff, 0xff, 0xff, 0xff);
-	puts("fuck");
 	m_zero.set(0, 0, 0, 0);
 
-	puts("fuck");
 	m_tmem = nullptr;
 
-	puts("fuck");
 	m_machine = nullptr;
-	puts("fuck");
 	m_n64_periphs = nullptr;
 
 	//memset(m_hidden_bits, 3, 8388608);
 
-	puts("fuck");
 	m_prim_lod_fraction.set(0, 0, 0, 0);
-	puts("fuck");
 	z_build_com_table();
 
-	puts("fuck");
 	memset(m_temp_rect_data, 0, sizeof(uint32_t) * 0x1000);
 
-	puts("fuck");
 	for (int32_t i = 0; i < 0x4000; i++)
 	{
 		uint32_t exponent = (i >> 11) & 7;
@@ -3228,10 +3207,8 @@ n64_rdp::n64_rdp(n64_state &state, uint32_t* rdram, uint32_t* dmem) : poly_manag
 		m_z_complete_dec_table[i] = ((mantissa << m_z_dec_table[exponent].shift) + m_z_dec_table[exponent].add) & 0x3fffff;
 	}
 
-	puts("fuck");
 	precalc_cvmask_derivatives();
 
-	puts("fuck");
 	for(int32_t i = 0; i < 0x200; i++)
 	{
 		switch((i >> 7) & 3)
@@ -3249,56 +3226,37 @@ n64_rdp::n64_rdp(n64_state &state, uint32_t* rdram, uint32_t* dmem) : poly_manag
 		}
 	}
 
-	puts("fuck");
 	for(int32_t i = 0; i < 32; i++)
 	{
 		m_replicated_rgba[i] = (i << 3) | ((i >> 2) & 7);
 	}
 
-	puts("fuck");
 	for(int32_t i = 0; i < 0x10000; i++)
 	{
 		m_dzpix_normalize[i] = (uint16_t)normalize_dzpix(i & 0xffff);
 	}
 
-	puts("fuck");
 	m_compute_cvg[0] = &n64_rdp::compute_cvg_noflip;
-	puts("fuck");
 	m_compute_cvg[1] = &n64_rdp::compute_cvg_flip;
 
 	m_write_pixel[0] = &n64_rdp::write_pixel4;
-	puts("fuck");
 	m_write_pixel[1] = &n64_rdp::write_pixel8;
-	puts("fuck");
 	m_write_pixel[2] = &n64_rdp::write_pixel16;
-	puts("fuck");
 	m_write_pixel[3] = &n64_rdp::write_pixel32;
 
-	puts("fuck");
 	m_read_pixel[0] = &n64_rdp::read_pixel4;
-	puts("fuck");
 	m_read_pixel[1] = &n64_rdp::read_pixel8;
-	puts("fuck");
 	m_read_pixel[2] = &n64_rdp::read_pixel16;
-	puts("fuck");
 	m_read_pixel[3] = &n64_rdp::read_pixel32;
 
-	puts("fuck");
 	m_copy_pixel[0] = &n64_rdp::copy_pixel4;
-	puts("fuck");
 	m_copy_pixel[1] = &n64_rdp::copy_pixel8;
-	puts("fuck");
 	m_copy_pixel[2] = &n64_rdp::copy_pixel16;
-	puts("fuck");
 	m_copy_pixel[3] = &n64_rdp::copy_pixel32;
 
-	puts("fuck");
 	m_fill_pixel[0] = &n64_rdp::fill_pixel4;
-	puts("fuck");
 	m_fill_pixel[1] = &n64_rdp::fill_pixel8;
-	puts("fuck");
 	m_fill_pixel[2] = &n64_rdp::fill_pixel16;
-	puts("fuck");
 	m_fill_pixel[3] = &n64_rdp::fill_pixel32;
 }
 
