@@ -255,12 +255,10 @@ int thread_adjust_priority(std::thread *thread, int adjust)
 osd_work_queue *osd_work_queue_alloc(int flags)
 {
 	int threadnum;
-	puts("fuck");
 	int numprocs = effective_num_processors();
 	osd_work_queue *queue;
 	int osdthreadnum = 0;
 	int allocthreadnum;
-	puts("fuck");
 	const char *osdworkqueuemaxthreads = osd_getenv(ENV_WORKQUEUEMAXTHREADS);
 
 	// allocate a new queue
