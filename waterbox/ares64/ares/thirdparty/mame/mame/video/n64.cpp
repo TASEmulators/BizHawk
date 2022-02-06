@@ -100,18 +100,27 @@ int32_t n64_rdp::get_alpha_cvg(int32_t comb_alpha, rdp_span_aux* userdata, const
 
 void n64_state::video_start()
 {
+	puts("std::make_unique<n64_rdp>");
 	m_rdp = std::make_unique<n64_rdp>(*this, m_rdram, m_rsp_dmem);
 
+	puts("set_machine");
 	m_rdp->set_machine(machine());
+	puts("init_internal_state");
 	m_rdp->init_internal_state();
+	puts("set_n64_periphs");
 	m_rdp->set_n64_periphs(m_rcp_periphs);
 
+	puts("m_blender.set_machine");
 	m_rdp->m_blender.set_machine(machine());
+	puts("m_blender.set_processor");
 	m_rdp->m_blender.set_processor(m_rdp.get());
 
+	puts("m_tex_pipe.set_machine");
 	m_rdp->m_tex_pipe.set_machine(machine());
 
+	puts("make_unique_clear<uint8_t[]>(EXTENT_AUX_COUNT)");
 	m_rdp->m_aux_buf = make_unique_clear<uint8_t[]>(EXTENT_AUX_COUNT);
+	puts("huh?");
 
 	if (LOG_RDP_EXECUTION)
 	{

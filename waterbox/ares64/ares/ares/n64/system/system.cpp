@@ -68,41 +68,24 @@ auto System::load(Node::System& root, string name) -> bool {
   node->setSerialize({&System::serialize, this});
   node->setUnserialize({&System::unserialize, this});
   root = node;
-  puts("setting node pak");
   if(!node->setPak(pak = platform->pak(node))) return false;
-  puts("loading cart slot");
+
   cartridgeSlot.load(node);
-  puts("loading port 1");
   controllerPort1.load(node);
-  puts("loading port 2");
   controllerPort2.load(node);
-  puts("loading port 3");
   controllerPort3.load(node);
-  puts("loading port 4");
   controllerPort4.load(node);
-  puts("loading rdram");
   rdram.load(node);
-  puts("loading mi");
   mi.load(node);
-  puts("loading vi");
   vi.load(node);
-  puts("loading ai");
   ai.load(node);
-  puts("loading pi");
   pi.load(node);
-  puts("loading ri");
   ri.load(node);
-  puts("loading si");
   si.load(node);
-  puts("loading cpu");
   cpu.load(node);
-  puts("loading rdp");
   rdp.load(node);
-  puts("loading rsp");
   rsp.load(node);
-  puts("loading dd");
   dd.load(node);
-  puts("loading done");
   #if defined(VULKAN)
   vulkan.load(node);
   #endif
