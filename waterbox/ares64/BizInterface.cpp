@@ -14,27 +14,51 @@ struct BizPlatform : ares::Platform {
 	auto video(ares::Node::Video::Screen, const u32* data, u32 pitch, u32 width, u32 height) -> void override;
 	auto audio(ares::Node::Audio::Stream) -> void override;
 	auto input(ares::Node::Input::Input) -> void override;
-	
-	//VFS::Pak pak;
+
+	shared_pointer<vfs::directory> bizpak = new vfs::directory;
 };
 
-auto BizPlatform::attach(ares::Node::Object) -> void {}
-auto BizPlatform::detach(ares::Node::Object) -> void {}
-auto BizPlatform::pak(ares::Node::Object) -> shared_pointer<vfs::directory> { return NULL; }
-auto BizPlatform::event(ares::Event) -> void {}
-auto BizPlatform::log(string_view) -> void {}
-auto BizPlatform::video(ares::Node::Video::Screen, const u32*, u32, u32, u32) -> void {};
-auto BizPlatform::audio(ares::Node::Audio::Stream) -> void {};
-auto BizPlatform::input(ares::Node::Input::Input) -> void {};
+auto BizPlatform::attach(ares::Node::Object) -> void { puts("called bizplatform attach"); }
+auto BizPlatform::detach(ares::Node::Object) -> void { puts("called bizplatform detach"); }
+auto BizPlatform::pak(ares::Node::Object) -> shared_pointer<vfs::directory> { return bizpak; }
+auto BizPlatform::event(ares::Event) -> void { puts("called bizplatform event"); }
+auto BizPlatform::log(string_view) -> void { puts("called bizplatform log"); }
+auto BizPlatform::video(ares::Node::Video::Screen, const u32*, u32, u32, u32) -> void { puts("called bizplatform video"); };
+auto BizPlatform::audio(ares::Node::Audio::Stream) -> void { puts("called bizplatform audio"); };
+auto BizPlatform::input(ares::Node::Input::Input) -> void { puts("called bizplatform input"); };
 
 static ares::Node::System root;
 static BizPlatform platform;
 
-EXPORT bool Init()
+EXPORT bool Init(bool pal)
 {
+	FILE* f;
+	array_view<u8>* data;
+	u32 len;
+	string name;
+
+	name = pal ? "pif.pal.rom" : "pif.ntsc.rom";
+	f = fopen(name, "rb");
+	fseek(f, 0, SEEK_END);
+	len = ftell(f);
+	data = new array_view<u8>(new u8[len], len);
+	fread((void*)data->data(), 1, len, f);
+	fclose(f);
+	platform.bizpak->append(name, *data);
+
+	name = "program.rom";
+	f = fopen(name, "rb");
+	fseek(f, 0, SEEK_END);
+	len = ftell(f);
+	data = new array_view<u8>(new u8[len], len);
+	fread((void*)data->data(), 1, len, f);
+	fclose(f);
+	platform.bizpak->append(name, *data);
+
 	ares::platform = &platform;
 
-	if (!ares::Nintendo64::load(root, "[Nintendo] Nintendo 64 (NTSC)"))
+	string region = pal ? "PAL" : "NTSC";
+	if (!ares::Nintendo64::load(root, {"[Nintendo] Nintendo 64 (", region, ")"}))
 	{
 		return false;
 	}
@@ -52,9 +76,14 @@ EXPORT bool Init()
 	return true;
 }
 
+u8 dummy[1];
+
 EXPORT void GetMemoryAreas(MemoryArea *m)
 {
-	
+	m[0].Data = dummy;
+	m[0].Name = "Dummy";
+	m[0].Size = 1;
+	m[0].Flags = 0;
 }
 
 struct MyFrameInfo : public FrameInfo
