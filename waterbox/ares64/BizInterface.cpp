@@ -119,7 +119,14 @@ struct MyFrameInfo : public FrameInfo
 EXPORT void FrameAdvance(MyFrameInfo* f)
 {
 	// handle input
-	root->run();
+	try
+	{
+		root->run();
+	}
+	catch (std::exception& e)
+	{
+		puts(e.what());
+	}
 	f->Width = platform.width;
 	f->Height = platform.height;
 	memcpy(f->VideoBuffer, platform.videobuf, sizeof (platform.videobuf));
