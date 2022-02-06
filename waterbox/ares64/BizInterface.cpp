@@ -85,7 +85,7 @@ EXPORT void GetMemoryAreas(MemoryArea *m)
 	m[0].Data = dummy;
 	m[0].Name = "Dummy";
 	m[0].Size = 1;
-	m[0].Flags = MEMORYAREA_FLAGS_WORDSIZE1;
+	m[0].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_PRIMARY;
 }
 
 struct MyFrameInfo : public FrameInfo
