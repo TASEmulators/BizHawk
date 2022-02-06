@@ -122,7 +122,6 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 	root->run();
 	f->Width = platform.width;
 	f->Height = platform.height;
-	printf("width/height %d/%d\n", f->Width, f->Height);
 	memcpy(f->VideoBuffer, platform.videobuf, sizeof (platform.videobuf));
 	s16* soundbuf = f->SoundBuffer;
 	while (platform.stream->pending())
@@ -133,6 +132,7 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 		*soundbuf++ = (s16)std::clamp(buf[1] * 32768, -32768.0, 32767.0);
 		f->Samples++;
 	}
+	puts("returning");
 	// handle a/v and lag (somehow)
 }
 
