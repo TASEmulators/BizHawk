@@ -24,5 +24,7 @@ namespace BizHawk.Emulation.Cores.Properties {
 		internal static readonly Lazy<byte[]> ZX_plus2_rom = new Lazy<byte[]>(() => ReadEmbeddedByteArray("plus2.rom.gz"));
 		internal static readonly Lazy<byte[]> ZX_plus2a_rom = new Lazy<byte[]>(() => ReadEmbeddedByteArray("plus2a.rom.gz"));
 		internal static readonly Lazy<byte[]> TMDS = new Lazy<byte[]>(() => ReadEmbeddedByteArray("tmds.zip.gz"));
+		internal static readonly Lazy<byte[]> PIF_PAL_ROM = new Lazy<byte[]>(() => ReadEmbeddedByteArray("pif.pal.rom.gz"));
+		internal static readonly Lazy<byte[]> PIF_NTSC_ROM = new Lazy<byte[]>(() => ReadEmbeddedByteArray("pif.ntsc.rom.gz"));
 	}
 }
