@@ -1,0 +1,227 @@
+#version 450
+/* Copyright (c) 2020 Themaister
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the
+ * "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to
+ * the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+#include "small_types.h"
+#include "debug.h"
+
+layout(local_size_x_id = 0) in;
+layout(constant_id = 1) const int SCALING_LOG2 = 0;
+const int SCALING_FACTOR = 1 << SCALING_LOG2;
+#include "data_structures.h"
+
+layout(std430, set = 0, binding = 0) readonly buffer TriangleSetupBuffer
+{
+    TriangleSetupMem elems[];
+} triangle_setup;
+#include "load_triangle_setup.h"
+
+layout(std430, set = 0, binding = 1) readonly buffer AttributeSetupBuffer
+{
+    AttributeSetupMem elems[];
+} attribute_setup;
+#include "load_attribute_setup.h"
+
+layout(set = 0, binding = 2, std430) readonly buffer ScissorStateBuffer
+{
+    ScissorStateMem elems[];
+} scissor_state;
+#include "load_scissor_state.h"
+
+layout(std430, set = 0, binding = 3) writeonly buffer SpanSetups
+{
+    SpanSetupMem elems[];
+} span_setups;
+#include "store_span_setup.h"
+
+layout(set = 1, binding = 0) uniform utextureBuffer uInterpolationJobs;
+
+const int SUBPIXELS = 4;
+const int SUBPIXELS_LOG2 = 2;
+
+// Convert a 16.16 signed value to 16.3. We have 8 subpixels in X direction after snapping.
+ivec4 quantize_x(ivec4 x)
+{
+    ivec4 sticky = ivec4(notEqual(x & 0xfff, ivec4(0)));
+    ivec4 snapped = ivec4((x >> 12) | sticky);
+    return snapped;
+}
+
+int min4(ivec4 v)
+{
+    ivec2 v2 = min(v.xy, v.zw);
+    return min(v2.x, v2.y);
+}
+
+int max4(ivec4 v)
+{
+    ivec2 v2 = max(v.xy, v.zw);
+    return max(v2.x, v2.y);
+}
+
+ivec4 interpolate_snapped(ivec4 dvalue, int dy)
+{
+    int dy_shifted = dy >> SCALING_LOG2;
+    int dy_masked = dy & (SCALING_FACTOR - 1);
+    return dy_shifted * dvalue + dy_masked * (dvalue >> SCALING_LOG2);
+}
+
+void main()
+{
+    ivec3 job_indices = ivec3(texelFetch(uInterpolationJobs, int(gl_WorkGroupID.x)).xyz);
+    int primitive_index = job_indices.x;
+    int base_y = job_indices.y * SCALING_FACTOR;
+    int max_y = job_indices.z * SCALING_FACTOR + (SCALING_FACTOR - 1);
+    int y = base_y + int(gl_LocalInvocationIndex);
+    if (y > max_y)
+        return;
+
+    TriangleSetup setup = load_triangle_setup(primitive_index);
+    AttributeSetup attr = load_attribute_setup(primitive_index);
+    ScissorState scissor = load_scissor_state(primitive_index);
+
+    bool flip = (setup.flags & TRIANGLE_SETUP_FLIP_BIT) != 0;
+    bool interlace_en = (setup.flags & TRIANGLE_SETUP_INTERLACE_FIELD_BIT) != 0;
+    bool keep_odd_field = (setup.flags & TRIANGLE_SETUP_INTERLACE_KEEP_ODD_BIT) != 0;
+
+    SpanSetup span_setup;
+
+    // Interpolate RGBA, STZW to their scanline.
+    {
+        bool do_offset = (setup.flags & TRIANGLE_SETUP_DO_OFFSET_BIT) != 0;
+        bool skip_xfrac = (setup.flags & TRIANGLE_SETUP_SKIP_XFRAC_BIT) != 0;
+        int y_interpolation_base = int(setup.yh) >> 2;
+        y_interpolation_base *= SCALING_FACTOR;
+
+        // For high-resolution interpolation, make sure we snap interpolation correctly at whole pixels,
+        // and quantize derivatives in-between pixels.
+        int dy = y - y_interpolation_base;
+
+        int xh = setup.xh * SCALING_FACTOR + dy * (setup.dxhdy << 2);
+
+        ivec4 drgba_diff = ivec4(0);
+        ivec4 dstzw_diff = ivec4(0);
+
+        // In do_offset mode, varyings are latched at last subpixel line instead of first (for some reason).
+        if (do_offset)
+        {
+            xh += (SCALING_FACTOR * 3) * setup.dxhdy;
+
+            ivec4 drgba_deh = attr.drgba_de & ~0x1ff;
+            ivec4 drgba_dyh = attr.drgba_dy & ~0x1ff;
+            drgba_diff = drgba_deh - (drgba_deh >> 2) - drgba_dyh + (drgba_dyh >> 2);
+
+            ivec4 dstzw_deh = attr.dstzw_de & ~0x1ff;
+            ivec4 dstzw_dyh = attr.dstzw_dy & ~0x1ff;
+            dstzw_diff = dstzw_deh - (dstzw_deh >> 2) - dstzw_dyh + (dstzw_dyh >> 2);
+        }
+
+        int base_x = xh >> 15;
+        int xfrac = skip_xfrac ? 0 : ((xh >> 7) & 0xff);
+
+        ivec4 rgba = attr.rgba + interpolate_snapped(attr.drgba_de, dy);
+        rgba = ((rgba & ~0x1ff) + drgba_diff - interpolate_snapped((attr.drgba_dx >> 8) & ~1, xfrac)) & ~0x3ff;
+
+        ivec4 stzw = attr.stzw + interpolate_snapped(attr.dstzw_de, dy);
+        stzw = ((stzw & ~0x1ff) + dstzw_diff - interpolate_snapped((attr.dstzw_dx >> 8) & ~1, xfrac)) & ~0x3ff;
+
+        span_setup.rgba = rgba;
+        span_setup.stzw = stzw;
+        span_setup.interpolation_base_x = base_x;
+    }
+
+    // Check Y dimension.
+    int yh_interpolation_base = int(setup.yh) & ~(SUBPIXELS - 1);
+    int ym_interpolation_base = int(setup.ym);
+    yh_interpolation_base *= SCALING_FACTOR;
+    ym_interpolation_base *= SCALING_FACTOR;
+
+    int y_sub = int(y * SUBPIXELS);
+    ivec4 y_subs = y_sub + ivec4(0, 1, 2, 3);
+    int ylo = max(setup.yh, scissor.ylo) * SCALING_FACTOR;
+    int yhi = min(setup.yl, scissor.yhi) * SCALING_FACTOR;
+
+    bvec4 clip_lo_y = lessThan(y_subs, ivec4(ylo));
+    bvec4 clip_hi_y = greaterThanEqual(y_subs, ivec4(yhi));
+    uvec4 clip_y = uvec4(clip_lo_y) | uvec4(clip_hi_y);
+
+    // Interpolate X at all 4 Y-subpixels.
+    ivec4 xh = setup.xh * SCALING_FACTOR + (y_subs - yh_interpolation_base) * setup.dxhdy;
+    ivec4 xm = setup.xm * SCALING_FACTOR + (y_subs - yh_interpolation_base) * setup.dxmdy;
+    ivec4 xl = setup.xl * SCALING_FACTOR + (y_subs - ym_interpolation_base) * setup.dxldy;
+    xl = mix(xl, xm, lessThan(y_subs, ivec4(SCALING_FACTOR * setup.ym)));
+
+    // If we have overflows, we can become sensitive to this in invalid_line check, where
+    // checks that should pass fail, and vice versa.
+    // Note that we shaved off one bit in triangle setup for upscaling purposes,
+    // so this should be 28 bits normally.
+    xl = bitfieldExtract(xl, 0, 27 + SCALING_LOG2);
+    xh = bitfieldExtract(xh, 0, 27 + SCALING_LOG2);
+
+    ivec4 xh_shifted = quantize_x(xh);
+    ivec4 xl_shifted = quantize_x(xl);
+
+    ivec4 xleft, xright;
+    if (flip)
+    {
+        xleft = xh_shifted;
+        xright = xl_shifted;
+    }
+    else
+    {
+        xleft = xl_shifted;
+        xright = xh_shifted;
+    }
+
+    bvec4 invalid_line = greaterThan(xleft >> 1, xright >> 1);
+
+    ivec4 lo_scissor = ivec4(SCALING_FACTOR * (scissor.xlo << 1));
+    ivec4 hi_scissor = ivec4(SCALING_FACTOR * (scissor.xhi << 1));
+
+    bool all_over = all(greaterThanEqual(min(xleft, xright), hi_scissor));
+    bool all_under = all(lessThan(max(xleft, xright), lo_scissor));
+
+    xleft = max(xleft, lo_scissor);
+    xleft = min(xleft, hi_scissor);
+    xright = max(xright, lo_scissor);
+    xright = min(xright, hi_scissor);
+
+    invalid_line = bvec4(uvec4(invalid_line) | clip_y);
+
+    xleft = mix(xleft, ivec4(0xffff), invalid_line);
+    xright = mix(xright, ivec4(0), invalid_line);
+
+    int start_x = min4(xleft) >> 3;
+    int end_x = max4(xright) >> 3;
+
+    span_setup.xleft = xleft;
+    span_setup.xright = xright;
+    span_setup.start_x = start_x;
+    span_setup.end_x = end_x;
+    span_setup.valid_line = int(!all(invalid_line) && !all_over && !all_under);
+
+    if (interlace_en)
+        if (((y >> SCALING_LOG2) & 1) != int(keep_odd_field))
+            span_setup.valid_line = U16_C(0);
+
+    span_setup.lodlength = int(flip ? (end_x - span_setup.interpolation_base_x) : (span_setup.interpolation_base_x - start_x));
+    store_span_setup(gl_GlobalInvocationID.x, span_setup);
+}

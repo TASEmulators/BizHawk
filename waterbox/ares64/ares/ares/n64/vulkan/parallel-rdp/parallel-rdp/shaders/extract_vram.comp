@@ -1,0 +1,107 @@
+#version 450
+/* Copyright (c) 2020 Themaister
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the
+ * "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to
+ * the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+#include "small_types.h"
+layout(local_size_x = 16, local_size_y = 8) in;
+
+// Copies VRAM into a texture which is then consumed by VI scanout.
+
+layout(set = 0, binding = 0, rgba8ui) uniform writeonly uimage2D uAAInput;
+layout(set = 0, binding = 1, std430) readonly buffer RDRAM16
+{
+	mem_u16 elems[];
+} vram16;
+
+layout(set = 0, binding = 1, std430) readonly buffer RDRAM32
+{
+	uint elems[];
+} vram32;
+
+layout(set = 0, binding = 2, std430) readonly buffer HiddenRDRAM
+{
+	mem_u8 elems[];
+} hidden_vram;
+
+layout(push_constant, std430) uniform Registers
+{
+	int fb_offset;
+	int fb_width;
+	ivec2 offset;
+	ivec2 resolution;
+} registers;
+
+layout(constant_id = 0) const int RDRAM_SIZE = 0;
+const int RDRAM_MASK_8 = RDRAM_SIZE - 1;
+const int RDRAM_MASK_16 = RDRAM_MASK_8 >> 1;
+const int RDRAM_MASK_32 = RDRAM_MASK_16 >> 1;
+layout(constant_id = 2) const int SCALING_LOG2 = 0;
+const int SCALING_FACTOR = 1 << SCALING_LOG2;
+
+#include "vi_status.h"
+
+uvec4 fetch_color(ivec2 coord)
+{
+	ivec2 slice2d = coord & (SCALING_FACTOR - 1);
+	coord >>= SCALING_LOG2;
+	int slice = slice2d.y * SCALING_FACTOR + slice2d.x;
+
+	uvec4 color;
+	if (FMT_RGBA8888)
+	{
+		int linear_coord = coord.y * registers.fb_width + coord.x + registers.fb_offset;
+		linear_coord &= RDRAM_MASK_32;
+		linear_coord += slice * (RDRAM_SIZE >> 2);
+		uint word = uint(vram32.elems[linear_coord]);
+		color = (uvec4(word) >> uvec4(24, 16, 8, 5)) & uvec4(0xff, 0xff, 0xff, 7);
+	}
+	else if (FMT_RGBA5551)
+	{
+		int linear_coord = coord.y * registers.fb_width + coord.x + registers.fb_offset;
+		linear_coord &= RDRAM_MASK_16;
+		linear_coord += slice * (RDRAM_SIZE >> 1);
+		uint word = uint(vram16.elems[linear_coord ^ 1]);
+		uint hidden_word = uint(hidden_vram.elems[linear_coord]);
+
+		uint r = (word >> 8u) & 0xf8u;
+		uint g = (word >> 3u) & 0xf8u;
+		uint b = (word << 2u) & 0xf8u;
+		uint a = ((word & 1u) << 2u) | hidden_word;
+		color = uvec4(r, g, b, a);
+	}
+	else
+		color = uvec4(0);
+
+	if (!FETCH_AA)
+		color.a = 7u;
+
+	return color;
+}
+
+void main()
+{
+	if (any(greaterThanEqual(gl_GlobalInvocationID.xy, registers.resolution)))
+		return;
+
+	ivec2 coord = ivec2(gl_GlobalInvocationID.xy) + registers.offset;
+	uvec4 col = fetch_color(coord);
+	imageStore(uAAInput, ivec2(gl_GlobalInvocationID.xy), col);
+}

@@ -1,0 +1,126 @@
+{
+	"include": [ "../../Granite/assets/shaders/inc" ],
+	"shaders": [
+		{
+			"name": "tmem_update",
+			"compute": true,
+			"path": "tmem_update.comp"
+		},
+		{
+
+			"name": "span_setup",
+			"compute": true,
+			"path": "span_setup.comp"
+		},
+		{
+			"name": "clear_indirect_buffer",
+			"compute": true,
+			"path": "clear_indirect_buffer.comp"
+		},
+		{
+			"name": "tile_binning_combined",
+			"compute": true,
+			"path": "tile_binning_combined.comp",
+			"variants": [
+				{ "define": "SUBGROUP", "count": 2, "resolve": true },
+				{ "define": "UBERSHADER", "count": 2, "resolve": true },
+				{ "define": "SMALL_TYPES", "count": 2, "resolve": true }
+			]
+		},
+		{
+			"name": "ubershader",
+			"path": "ubershader.comp",
+			"compute": true,
+			"variants": [
+				{ "define": "SUBGROUP", "count": 2, "resolve": true },
+				{ "define": "SMALL_TYPES", "count": 2, "resolve": true }
+			]
+		},
+		{
+			"name": "depth_blend",
+			"path": "depth_blend.comp",
+			"compute": true,
+			"variants": [
+				{ "define": "SUBGROUP", "count": 2, "resolve": true },
+				{ "define": "SMALL_TYPES", "count": 2, "resolve": true }
+			]
+		},
+		{
+			"name": "rasterizer",
+			"path": "rasterizer.comp",
+			"compute": true,
+			"variants": [
+				{ "define": "SMALL_TYPES", "count": 2, "resolve": true }
+			]
+		},
+		{
+			"name": "fullscreen",
+			"path": "fullscreen.vert"
+		},
+		{
+			"name": "vi_scale",
+			"path": "vi_scale.frag"
+		},
+		{
+			"name": "vi_divot",
+			"path": "vi_divot.frag",
+			"variants": [
+				{ "define": "FETCH_BUG", "count": 2 }
+			]
+		},
+		{
+			"name": "vi_fetch",
+			"path": "vi_fetch.frag",
+			"variants": [
+				{ "define": "FETCH_BUG", "count": 2 }
+			]
+		},
+		{
+			"name": "vi_blend_fields",
+			"path": "vi_blend_fields.frag"
+		},
+		{
+			"name": "extract_vram",
+			"path": "extract_vram.comp",
+			"compute": true
+		},
+		{
+			"name": "masked_rdram_resolve",
+			"path": "masked_rdram_resolve.comp",
+			"compute": true
+		},
+		{
+			"name": "clear_write_mask",
+			"path": "clear_write_mask.comp",
+			"compute": true
+		},
+		{
+			"name": "update_upscaled_domain_post",
+			"path": "update_upscaled_domain_post.comp",
+			"compute": true
+		},
+		{
+			"name": "update_upscaled_domain_pre",
+			"path": "update_upscaled_domain_pre.comp",
+			"compute": true
+		},
+		{
+			"name": "update_upscaled_domain_resolve",
+			"path": "update_upscaled_domain_resolve.comp",
+			"compute": true
+		},
+		{
+			"name": "clear_super_sampled_write_mask",
+			"path": "clear_super_sampled_write_mask.comp",
+			"compute": true
+		},
+		{
+			"name": "vi_deinterlace_vert",
+			"path": "vi_deinterlace.vert"
+		},
+		{
+			"name": "vi_deinterlace_frag",
+			"path": "vi_deinterlace.frag"
+		}
+	]
+}

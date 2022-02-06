@@ -1,0 +1,33 @@
+auto SM5K::serialize(serializer& s) -> void {
+  s(RAM);
+  s(A);
+  s(X);
+  s(B);
+  s(C);
+  s(IFA);
+  s(IFB);
+  s(IFT);
+  s(IME);
+  s(P0);
+  s(P1);
+  s(P2);
+  s(P3);
+  s(P4);
+  s(P5);
+  s(PC);
+  s(SP);
+  s(SR);
+  s(R3);
+  s(R8);
+  s(R9);
+  s(RA);
+  s(RB);
+  s(RC);
+  s(RE);
+  s(RF);
+  s(SB);
+  s(SKIP);
+  s(STOP);
+  s(HALT);
+  s(DIV);
+}

@@ -1,0 +1,29 @@
+namespace name=Resource
+  namespace name=Ares
+    binary name=Icon1x file=icon.png
+    binary name=Icon2x file=icon@2x.png
+    binary name=Logo1x file=logo.png
+    binary name=Logo2x file=logo@2x.png
+  namespace name=Sprite
+    namespace name=SuperFamicom
+      binary name=CrosshairBlue file=sprite/sfc/crosshair-blue.png
+      binary name=CrosshairGreen file=sprite/sfc/crosshair-green.png
+      binary name=CrosshairRed file=sprite/sfc/crosshair-red.png
+    namespace name=WonderSwan
+      binary name=Auxiliary0 file=sprite/ws/auxiliary-0.png
+      binary name=Auxiliary1 file=sprite/ws/auxiliary-1.png
+      binary name=Auxiliary2 file=sprite/ws/auxiliary-2.png
+      binary name=Headphones file=sprite/ws/headphones.png
+      binary name=Initialized file=sprite/ws/initialized.png
+      binary name=LowBattery file=sprite/ws/low-battery.png
+      binary name=Orientation0 file=sprite/ws/orientation-0.png
+      binary name=Orientation1 file=sprite/ws/orientation-1.png
+      binary name=PoweredOn file=sprite/ws/powered-on.png
+      binary name=Sleeping file=sprite/ws/sleeping.png
+      binary name=VolumeA0 file=sprite/ws/volume-a0.png
+      binary name=VolumeA1 file=sprite/ws/volume-a1.png
+      binary name=VolumeA2 file=sprite/ws/volume-a2.png
+      binary name=VolumeB0 file=sprite/ws/volume-b0.png
+      binary name=VolumeB1 file=sprite/ws/volume-b1.png
+      binary name=VolumeB2 file=sprite/ws/volume-b2.png
+      binary name=VolumeB3 file=sprite/ws/volume-b3.png

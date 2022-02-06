@@ -1,0 +1,191 @@
+#version 450
+/* Copyright (c) 2020 Themaister
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the
+ * "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to
+ * the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+#include "small_types.h"
+
+layout(local_size_x_id = 0, local_size_y_id = 1) in;
+
+#include "debug.h"
+#include "data_structures.h"
+
+layout(set = 0, binding = 0, std430) readonly buffer TriangleSetupBuffer
+{
+    TriangleSetupMem elems[];
+} triangle_setup;
+#include "load_triangle_setup.h"
+
+layout(set = 0, binding = 1, std430) readonly buffer AttributeSetupBuffer
+{
+    AttributeSetupMem elems[];
+} attribute_setup;
+#include "load_attribute_setup.h"
+
+layout(set = 0, binding = 2, std430) readonly buffer DerivedSetupBuffer
+{
+    DerivedSetupMem elems[];
+} derived_setup;
+#include "load_derived_setup.h"
+
+layout(set = 0, binding = 3, std430) readonly buffer StaticRasterStateBuffer
+{
+    StaticRasterizationStateMem elems[];
+} static_raster_state;
+#include "load_static_raster_state.h"
+
+layout(set = 0, binding = 4, std430) readonly buffer StateIndicesBuffer
+{
+    InstanceIndicesMem elems[];
+} state_indices;
+
+layout(set = 0, binding = 5, std430) readonly buffer SpanInfoOffsetBuffer
+{
+    SpanInfoOffsetsMem elems[];
+} span_offsets;
+#include "load_span_offsets.h"
+
+layout(set = 0, binding = 6, std430) readonly buffer SpanSetups
+{
+    SpanSetupMem elems[];
+} span_setups;
+#include "load_span_setup.h"
+
+layout(set = 0, binding = 7, std430) readonly buffer TMEM16
+{
+    TMEMInstance16Mem instances[];
+} tmem16;
+
+layout(set = 0, binding = 7, std430) readonly buffer TMEM8
+{
+    TMEMInstance8Mem instances[];
+} tmem8;
+
+layout(set = 0, binding = 8, std430) readonly buffer TileInfoBuffer
+{
+    TileInfoMem elems[];
+} tile_infos;
+#include "load_tile_info.h"
+
+layout(set = 2, binding = 0, std140) uniform GlobalConstants
+{
+    GlobalFBInfo fb_info;
+} global_constants;
+
+layout(constant_id = 2) const int STATIC_STATE_FLAGS = 0;
+layout(constant_id = 3) const int COMBINER_INPUTS_RGB0 = 0;
+layout(constant_id = 4) const int COMBINER_INPUTS_ALPHA0 = 0;
+layout(constant_id = 5) const int COMBINER_INPUTS_RGB1 = 0;
+layout(constant_id = 6) const int COMBINER_INPUTS_ALPHA1 = 0;
+layout(constant_id = 7) const int DITHER_TEX_SIZE_TEX_FMT = 0;
+
+const int COMBINER_INPUT_RGB0_MULADD = (COMBINER_INPUTS_RGB0 >> 0) & 0xff;
+const int COMBINER_INPUT_RGB0_MULSUB = (COMBINER_INPUTS_RGB0 >> 8) & 0xff;
+const int COMBINER_INPUT_RGB0_MUL = (COMBINER_INPUTS_RGB0 >> 16) & 0xff;
+const int COMBINER_INPUT_RGB0_ADD = (COMBINER_INPUTS_RGB0 >> 24) & 0xff;
+
+const int COMBINER_INPUT_ALPHA0_MULADD = (COMBINER_INPUTS_ALPHA0 >> 0) & 0xff;
+const int COMBINER_INPUT_ALPHA0_MULSUB = (COMBINER_INPUTS_ALPHA0 >> 8) & 0xff;
+const int COMBINER_INPUT_ALPHA0_MUL = (COMBINER_INPUTS_ALPHA0 >> 16) & 0xff;
+const int COMBINER_INPUT_ALPHA0_ADD = (COMBINER_INPUTS_ALPHA0 >> 24) & 0xff;
+
+const int COMBINER_INPUT_RGB1_MULADD = (COMBINER_INPUTS_RGB1 >> 0) & 0xff;
+const int COMBINER_INPUT_RGB1_MULSUB = (COMBINER_INPUTS_RGB1 >> 8) & 0xff;
+const int COMBINER_INPUT_RGB1_MUL = (COMBINER_INPUTS_RGB1 >> 16) & 0xff;
+const int COMBINER_INPUT_RGB1_ADD = (COMBINER_INPUTS_RGB1 >> 24) & 0xff;
+
+const int COMBINER_INPUT_ALPHA1_MULADD = (COMBINER_INPUTS_ALPHA1 >> 0) & 0xff;
+const int COMBINER_INPUT_ALPHA1_MULSUB = (COMBINER_INPUTS_ALPHA1 >> 8) & 0xff;
+const int COMBINER_INPUT_ALPHA1_MUL = (COMBINER_INPUTS_ALPHA1 >> 16) & 0xff;
+const int COMBINER_INPUT_ALPHA1_ADD = (COMBINER_INPUTS_ALPHA1 >> 24) & 0xff;
+
+const int DITHER = (DITHER_TEX_SIZE_TEX_FMT >> 0) & 0xff;
+const int TEX_SIZE = (DITHER_TEX_SIZE_TEX_FMT >> 8) & 0xff;
+const int TEX_FMT = (DITHER_TEX_SIZE_TEX_FMT >> 16) & 0xff;
+
+#define RASTERIZER_SPEC_CONSTANT
+
+#include "noise.h"
+#include "shading.h"
+
+layout(set = 0, binding = 9, std430) writeonly buffer ColorBuffer
+{
+    mem_u8x4 elems[];
+} color;
+
+layout(set = 0, binding = 9, std430) writeonly buffer ColorBufferRaw
+{
+    uint elems[];
+} raw_color;
+
+layout(set = 0, binding = 10, std430) writeonly buffer DepthBuffer
+{
+    int elems[];
+} depth;
+
+layout(set = 0, binding = 11, std430) writeonly buffer ShadeAlpha
+{
+    mem_u8 elems[];
+} shade_alpha;
+
+layout(set = 0, binding = 12, std430) writeonly buffer Coverage
+{
+    mem_i8 elems[];
+} coverage;
+
+layout(set = 1, binding = 0, std430) readonly buffer TileWorkList
+{
+    uvec4 elems[];
+} tile_work_list;
+
+void main()
+{
+    uvec4 work = tile_work_list.elems[gl_WorkGroupID.x];
+    int x = int(work.x * gl_WorkGroupSize.x + gl_LocalInvocationID.x);
+    int y = int(work.y * gl_WorkGroupSize.y + gl_LocalInvocationID.y);
+    uint tile_instance = work.z;
+    uint primitive_index = work.w;
+
+    ShadedData shaded;
+    i8 coverage_value;
+    uint index = tile_instance * (gl_WorkGroupSize.x * gl_WorkGroupSize.y) + gl_LocalInvocationIndex;
+
+    if (shade_pixel(x, y, primitive_index, shaded))
+    {
+        coverage_value = i8(shaded.coverage_count);
+
+        if (coverage_value <= I8_C(8))
+        {
+            // Workaround curious bug with glslang, need to cast manually to uvec4 first.
+            color.elems[index] = mem_u8x4(uvec4(shaded.combined));
+            shade_alpha.elems[index] = mem_u8(shaded.shade_alpha);
+            depth.elems[index] = shaded.z_dith;
+        }
+        else if ((coverage_value & COVERAGE_COPY_BIT) != 0)
+        {
+            // For copy pipe, we use a raw 32-bit word to represent the loaded texel.
+            raw_color.elems[index] = shaded.z_dith;
+        }
+    }
+    else
+        coverage_value = I8_C(-1);
+
+    coverage.elems[index] = mem_i8(coverage_value);
+}
