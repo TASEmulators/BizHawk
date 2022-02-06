@@ -16,6 +16,9 @@ struct BizPlatform : ares::Platform {
 	auto input(ares::Node::Input::Input) -> void override;
 
 	shared_pointer<vfs::directory> bizpak = new vfs::directory;
+	u32 width = 320;
+	u32 height = 240;
+	u32 videobuf[720 * 576];
 };
 
 auto BizPlatform::attach(ares::Node::Object) -> void { puts("called bizplatform attach"); }
@@ -23,7 +26,18 @@ auto BizPlatform::detach(ares::Node::Object) -> void { puts("called bizplatform 
 auto BizPlatform::pak(ares::Node::Object) -> shared_pointer<vfs::directory> { return bizpak; }
 auto BizPlatform::event(ares::Event) -> void { puts("called bizplatform event"); }
 auto BizPlatform::log(string_view) -> void { puts("called bizplatform log"); }
-auto BizPlatform::video(ares::Node::Video::Screen, const u32*, u32, u32, u32) -> void { puts("called bizplatform video"); };
+auto BizPlatform::video(ares::Node::Video::Screen, const u32* data, u32 pitch, u32 width, u32 height) -> void {
+	this->width = width;
+	this->height = height;
+	u32* src = (u32*)data;
+	u32* dst = videobuf;
+	for (int i = 0; i < height; i++)
+	{
+		memcpy(dst, src, width * 4);
+		src += pitch;
+		dst += 720;
+	}
+};
 auto BizPlatform::audio(ares::Node::Audio::Stream) -> void { puts("called bizplatform audio"); };
 auto BizPlatform::input(ares::Node::Input::Input) -> void { puts("called bizplatform input"); };
 
@@ -75,6 +89,7 @@ EXPORT bool Init(bool pal)
 		return false;
 	}
 
+	root->power();
 	return true;
 }
 
@@ -96,7 +111,10 @@ struct MyFrameInfo : public FrameInfo
 EXPORT void FrameAdvance(MyFrameInfo* f)
 {
 	// handle input
-	// frame advance
+	root->run();
+	f->Width = platform.width;
+	f->Height = platform.height;
+	memcpy(f->VideoBuffer, platform.videobuf, sizeof (platform.videobuf));
 	// handle a/v and lag (somehow)
 }
 
