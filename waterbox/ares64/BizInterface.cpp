@@ -19,13 +19,19 @@ struct BizPlatform : ares::Platform {
 	u32 width = 320;
 	u32 height = 240;
 	u32 videobuf[720 * 576];
+	ares::Node::Audio::Stream stream;
 };
 
-auto BizPlatform::attach(ares::Node::Object) -> void { puts("called bizplatform attach"); }
-auto BizPlatform::detach(ares::Node::Object) -> void { puts("called bizplatform detach"); }
+auto BizPlatform::attach(ares::Node::Object node) -> void {
+	if (auto stream = node->cast<ares::Node::Audio::Stream>()) {
+		stream->setResamplerFrequency(44100);
+		this->stream = stream;
+	}
+}
+auto BizPlatform::detach(ares::Node::Object) -> void {}
 auto BizPlatform::pak(ares::Node::Object) -> shared_pointer<vfs::directory> { return bizpak; }
-auto BizPlatform::event(ares::Event) -> void { puts("called bizplatform event"); }
-auto BizPlatform::log(string_view) -> void { puts("called bizplatform log"); }
+auto BizPlatform::event(ares::Event) -> void {}
+auto BizPlatform::log(string_view) -> void {}
 auto BizPlatform::video(ares::Node::Video::Screen, const u32* data, u32 pitch, u32 width, u32 height) -> void {
 	this->width = width;
 	this->height = height;
@@ -38,8 +44,8 @@ auto BizPlatform::video(ares::Node::Video::Screen, const u32* data, u32 pitch, u
 		dst += 720;
 	}
 };
-auto BizPlatform::audio(ares::Node::Audio::Stream) -> void { puts("called bizplatform audio"); };
-auto BizPlatform::input(ares::Node::Input::Input) -> void { puts("called bizplatform input"); };
+auto BizPlatform::audio(ares::Node::Audio::Stream) -> void {};
+auto BizPlatform::input(ares::Node::Input::Input) -> void {};
 
 static ares::Node::System root;
 static BizPlatform platform;
@@ -115,6 +121,15 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 	f->Width = platform.width;
 	f->Height = platform.height;
 	memcpy(f->VideoBuffer, platform.videobuf, sizeof (platform.videobuf));
+	s16* soundbuf = f->SoundBuffer;
+	while (platform.stream->pending())
+	{
+		f64 buf[2] = { 0.0, 0.0 };
+		platform.stream->read(buf);
+		*soundbuf++ = (s16)std::clamp(buf[0] * 32768, -32768.0, 32767.0);
+		*soundbuf++ = (s16)std::clamp(buf[1] * 32768, -32768.0, 32767.0);
+		f->Samples++;
+	}
 	// handle a/v and lag (somehow)
 }
 
