@@ -25,12 +25,17 @@ RDP rdp;
 #include "serialization.cpp"
 
 auto RDP::load(Node::Object parent) -> void {
+  puts("appending RDP");
   node = parent->append<Node::Object>("RDP");
+  puts("loading debugger");
   debugger.load(node);
 
   #if defined(MAME_RDP)
+  puts("making new n64_state");
   state = new n64_state((u32*)rdram.ram.data, (u32*)rsp.dmem.data, n64_periphs_impl::instance());
+  puts("starting RDP video");
   state->video_start();
+  puts("done?");
   #endif
 }
 
