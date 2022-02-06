@@ -42,6 +42,7 @@ EXPORT bool Init(bool pal)
 	fseek(f, 0, SEEK_END);
 	len = ftell(f);
 	data = new array_view<u8>(new u8[len], len);
+	fseek(f, 0, SEEK_SET);
 	fread((void*)data->data(), 1, len, f);
 	fclose(f);
 	platform.bizpak->append(name, *data);
@@ -51,6 +52,7 @@ EXPORT bool Init(bool pal)
 	fseek(f, 0, SEEK_END);
 	len = ftell(f);
 	data = new array_view<u8>(new u8[len], len);
+	fseek(f, 0, SEEK_SET);
 	fread((void*)data->data(), 1, len, f);
 	fclose(f);
 	platform.bizpak->append(name, *data);
