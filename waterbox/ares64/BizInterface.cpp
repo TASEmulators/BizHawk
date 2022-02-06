@@ -78,9 +78,11 @@ EXPORT bool Init(bool pal)
 	fclose(f);
 	platform.bizpak->append(name, *data);
 
+	string region = pal ? "PAL" : "NTSC";
+	platform.bizpak->setAttribute("region", region);
+
 	ares::platform = &platform;
 
-	string region = pal ? "PAL" : "NTSC";
 	if (!ares::Nintendo64::load(root, {"[Nintendo] Nintendo 64 (", region, ")"}))
 	{
 		return false;

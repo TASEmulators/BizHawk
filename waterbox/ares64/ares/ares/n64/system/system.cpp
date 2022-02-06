@@ -10,7 +10,6 @@ auto enumerate() -> vector<string> {
 }
 
 auto load(Node::System& node, string name) -> bool {
-  puts(name);
   if(!enumerate().find(name)) return false;
   return system.load(node, name);
 }
