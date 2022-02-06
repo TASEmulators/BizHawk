@@ -25,7 +25,6 @@ auto PI::unload() -> void {
 
 auto PI::power(bool reset) -> void {
   string pifrom = cartridge.region() == "NTSC" ? "pif.ntsc.rom" : "pif.pal.rom";
-  puts(pifrom);
   if(auto fp = system.pak->read(pifrom)) {
     rom.load(fp);
   }
