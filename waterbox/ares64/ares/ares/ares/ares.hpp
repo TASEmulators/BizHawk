@@ -55,7 +55,7 @@ namespace ares {
   }
 
   namespace Video {
-    static constexpr bool Threaded = true;
+    static constexpr bool Threaded = false;
   }
 
   namespace Constants {
