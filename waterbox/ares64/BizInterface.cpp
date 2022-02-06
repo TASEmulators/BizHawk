@@ -119,11 +119,10 @@ struct MyFrameInfo : public FrameInfo
 EXPORT void FrameAdvance(MyFrameInfo* f)
 {
 	// handle input
-	puts("running");
 	root->run();
-	puts("done");
 	f->Width = platform.width;
 	f->Height = platform.height;
+	printf("width/height %d/%d\n", f->Width, f->Height);
 	memcpy(f->VideoBuffer, platform.videobuf, sizeof (platform.videobuf));
 	s16* soundbuf = f->SoundBuffer;
 	while (platform.stream->pending())
