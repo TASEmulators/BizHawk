@@ -13,8 +13,6 @@ CXXFLAGS := -std=c++17 -msse4.2 \
 	-I.$(MAME_PATH)/lib/util -I.$(MAME_PATH)/mame \
 	-I.$(MAME_PATH)/osd -DMAME_RDP -DLSB_FIRST -DPTR64 -DSDLMAME_LINUX
 
-LDFLAGS := -Wl,-t
-
 TARGET = ares64.wbx
 
 SRCS_PROCESSORS = \
