@@ -33,8 +33,8 @@ auto BizPlatform::pak(ares::Node::Object) -> shared_pointer<vfs::directory> { re
 auto BizPlatform::event(ares::Event) -> void {}
 auto BizPlatform::log(string_view) -> void {}
 auto BizPlatform::video(ares::Node::Video::Screen, const u32* data, u32 pitch, u32 width, u32 height) -> void {
-	//this->width = width;
-	//this->height = height;
+	/*this->width = width;
+	this->height = height;
 	u32* src = (u32*)data;
 	u32* dst = videobuf;
 	for (int i = 0; i < height; i++)
@@ -42,7 +42,8 @@ auto BizPlatform::video(ares::Node::Video::Screen, const u32* data, u32 pitch, u
 		memcpy(dst, src, width * 4);
 		src += pitch;
 		dst += 640;
-	}
+	}*/
+	memcpy(videobuf, data, 640 * 480);
 };
 auto BizPlatform::audio(ares::Node::Audio::Stream) -> void {};
 auto BizPlatform::input(ares::Node::Input::Input) -> void {};
