@@ -24,7 +24,6 @@ auto Cartridge::connect() -> void {
   if(auto fp = pak->read("program.rom")) {
     rom.allocate(fp->size());
     rom.load(fp);
-    puts("loaded rom successfully");
   } else {
     rom.allocate(16);
   }
