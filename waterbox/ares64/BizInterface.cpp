@@ -99,6 +99,7 @@ EXPORT bool Init(bool pal)
 
 	root->power();
 	root->run();
+	root->run();
 	f64 buf[2];
 	while (platform.stream->pending()) platform.stream->read(buf);
 	return true;
