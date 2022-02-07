@@ -1359,12 +1359,22 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public void AudioWriteReg(int addr, byte value)
 		{
+			bool on_c = aud_ctrl.Bit(7);
+
 			switch (addr)
 			{
 				case 0xA7: shift_0 = shift_reg_0 = value; break;
 				case 0xA8: shift_1 = shift_reg_1 = value; break;
 				case 0xA9: shift_2 = shift_reg_2 = value; break;
 				case 0xAA: aud_ctrl = value; break;
+			}
+
+			// reload if turning the audio on (needed for Popeye)
+			if (!on_c && aud_ctrl.Bit(7))
+			{
+				shift_0 = shift_reg_0;
+				shift_1 = shift_reg_1;
+				shift_2 = shift_reg_2;
 			}
 
 			//Console.WriteLine("aud write: " + (addr - 0xA7) + " " + value + " " + Core.cpu.TotalExecutedCycles);
