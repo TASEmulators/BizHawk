@@ -121,8 +121,9 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 	for (int i = 0; i < f->Height; i++)
 	{
 		memcpy(dst, src, f->Width * 4);
-		dst += 640;
+		dst += 320;
 		memcpy(dst, src, f->Width * 4);
+		dst += 320;
 		src += pitch * 2;
 	}
 	s16* soundbuf = f->SoundBuffer;
