@@ -38,10 +38,8 @@ namespace BizHawk.Client.Common
 			["GB"] = 262144.0 / 4389.0, // 59.7275005696
 			["GBC"] = 262144.0 / 4389.0, // 59.7275005696
 
-			// RetroEdit: I don't like how this is cycles per second instead of FPS.
-			// It probably should be moved to a separate place.
-			["GB_Clock"] = 2097152.0,
-			["GBA"] = 262144.0 / 4389.0, // 59.7275005696 
+			["GBA"] = 262144.0 / 4389.0, // 59.7275005696
+			["NDS"] = 33513982.0 / 560190.0, // 59.8260982881
 			["GEN"] = 53693175 / (3420.0 * 262),
 			["GEN_PAL"] = 53203424 / (3420.0 * 313),
 
@@ -58,7 +56,7 @@ namespace BizHawk.Client.Common
 			// according to http://problemkaputt.de/psx-spx.htm
 			//["PSX"] = 44100.0 * 768 * 11 / 7 / 263 / 3413, // 59.292862562
 			//["PSX_PAL"] = 44100.0 * 768 * 11 / 7 / 314 / 3406, // 49.7645593576
-			// according to https://github.com/TASVideos/mednafen/blob/740d63996fc7cebffd39ee253a29ee434965db21/src/psx/gpu.cpp
+			// according to https://github.com/TASEmulators/mednafen/blob/740d63996fc7cebffd39ee253a29ee434965db21/src/psx/gpu.cpp
 			["PSX"] = 502813668.0 / 8388608, //59.940060138702392578125
 			["PSX_PAL"] = 419432765.0 / 8388608, //50.00028192996978759765625
 
@@ -71,13 +69,12 @@ namespace BizHawk.Client.Common
 			["ZXSpectrum_PAL"] = 50.080128205,
 			["AmstradCPC_PAL"] = 50.08012820512821,
 			["UZE"] = 60.016319939602,
-			["VEC"] = 50
+			["VEC"] = 50,
+			["O2"] = 60,
+			["O2_PAL"] = 50
 		};
 
 		public static double GetFrameRate(string systemId, bool pal)
-		{
-			var key = systemId + (pal ? "_PAL" : "");
-			return Rates.ContainsKey(key) ? Rates[key] : 60.0;
-		}
+			=> Rates.TryGetValue(systemId + (pal ? "_PAL" : ""), out var d) ? d : 60.0;
 	}
 }

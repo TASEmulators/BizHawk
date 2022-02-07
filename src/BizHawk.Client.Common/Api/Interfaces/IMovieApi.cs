@@ -7,7 +7,7 @@ namespace BizHawk.Client.Common
 		bool StartsFromSavestate();
 		bool StartsFromSaveram();
 		string Filename();
-		IDictionary<string, object> GetInput(int frame, int? controller = null);
+		IReadOnlyDictionary<string, object> GetInput(int frame, int? controller = null);
 		string GetInputAsMnemonic(int frame);
 		bool GetReadOnly();
 		ulong GetRerecordCount();

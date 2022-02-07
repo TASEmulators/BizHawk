@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores;
-using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Client.Common
 {
@@ -16,22 +14,23 @@ namespace BizHawk.Client.Common
 
 		private readonly Action _pauseCallback;
 		private readonly Action _modeChangedCallback;
-		private readonly Action<string> _messageCallback;
 
 		private IMovie _queuedMovie;
+
+		private readonly IQuickBmpFile _quickBmpFile;
 
 		public MovieSession(
 			IMovieConfig settings,
 			string backDirectory,
 			IDialogParent dialogParent,
-			Action<string> messageCallback,
+			IQuickBmpFile quickBmpFile,
 			Action pauseCallback,
 			Action modeChangedCallback)
 		{
 			Settings = settings;
 			BackupDirectory = backDirectory;
-			_messageCallback = messageCallback;
 			_dialogParent = dialogParent;
+			_quickBmpFile = quickBmpFile;
 			_pauseCallback = pauseCallback
 				?? throw new ArgumentNullException($"{nameof(pauseCallback)} cannot be null.");
 			_modeChangedCallback = modeChangedCallback
@@ -311,7 +310,7 @@ namespace BizHawk.Client.Common
 			// TODO: change IMovies to take HawkFiles only and not path
 			if (Path.GetExtension(path)?.EndsWith("tasproj") ?? false)
 			{
-				return new TasMovie(this, path);
+				return new TasMovie(this, path, _quickBmpFile);
 			}
 
 			return new Bk2Movie(this, path);
@@ -320,9 +319,7 @@ namespace BizHawk.Client.Common
 		public void PopupMessage(string message) => _dialogParent.ModalMessageBox(message, "Warning", EMsgBoxIcon.Warning);
 
 		private void Output(string message)
-		{
-			_messageCallback?.Invoke(message);
-		}
+			=> _dialogParent.DialogController.AddOnScreenMessage(message);
 
 		private void LatchInputToUser()
 		{
@@ -345,21 +342,21 @@ namespace BizHawk.Client.Common
 
 		private void HandlePlaybackEnd()
 		{
-			if (Movie.IsAtEnd() && Movie.Core == CoreNames.Gambatte)
+			if (Movie.IsAtEnd() && (Movie.Emulator is ICycleTiming cycleCore))
 			{
-				var coreCycles = (ulong) ((Gameboy)Movie.Emulator).CycleCount;
-				var cyclesSaved = Movie.HeaderEntries.ContainsKey(HeaderKeys.CycleCount);
-				ulong previousCycles = 0;
-				if (cyclesSaved)
+				long coreValue = cycleCore.CycleCount;
+				bool movieHasValue = Movie.HeaderEntries.TryGetValue(HeaderKeys.CycleCount, out string movieValueStr);
+
+				long movieValue = movieHasValue ? Convert.ToInt64(movieValueStr) : 0;
+				var valuesMatch = movieValue == coreValue;
+
+				if (!movieHasValue || !valuesMatch)
 				{
-					previousCycles = Convert.ToUInt64(Movie.HeaderEntries[HeaderKeys.CycleCount]);
-				}
-				var cyclesMatch = previousCycles == coreCycles;
-				if (!cyclesSaved || !cyclesMatch)
-				{
-					var previousState = !cyclesSaved ? "The saved movie is currently missing a cycle count." : $"The previous cycle count ({previousCycles}) doesn't match.";
+					var previousState = !movieHasValue
+						? $"The movie is currently missing a cycle count."
+						: $"The cycle count in the movie ({movieValue}) doesn't match the current value.";
 					// TODO: Ideally, this would be a Yes/No MessageBox that saves when "Yes" is pressed.
-					PopupMessage($"The end of the movie has been reached.\n\n{previousState}\n\nSave to update to the new cycle count ({coreCycles}).");
+					PopupMessage($"The end of the movie has been reached.\n\n{previousState}\n\nSave the movie to update to the current cycle count ({coreValue}).");
 				}
 			}
 

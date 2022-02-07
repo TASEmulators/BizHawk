@@ -3,6 +3,8 @@ using System.IO;
 using System.Globalization;
 using System.Collections.Generic;
 
+using BizHawk.Common;
+
 //check out ccd2iso linux program?
 //https://wiki.archlinux.org/index.php/CD_Burning#TOC.2FCUE.2FBIN_for_mixed-mode_disks advice here
 //also referencing mednafen sources
@@ -39,22 +41,22 @@ namespace BizHawk.Emulation.DiscSystem
 			/// <summary>
 			/// The [Session] sections
 			/// </summary>
-			public List<CCDSession> Sessions = new List<CCDSession>();
+			public readonly IList<CCDSession> Sessions = new List<CCDSession>();
 
 			/// <summary>
 			/// The [Entry] sctions
 			/// </summary>
-			public List<CCDTocEntry> TOCEntries = new List<CCDTocEntry>();
+			public readonly IList<CCDTocEntry> TOCEntries = new List<CCDTocEntry>();
 
 			/// <summary>
 			/// The [TRACK] sections
 			/// </summary>
-			public List<CCDTrack> Tracks = new List<CCDTrack>();
+			public readonly IList<CCDTrack> Tracks = new List<CCDTrack>();
 
 			/// <summary>
 			/// The [TRACK] sections, indexed by number
 			/// </summary>
-			public Dictionary<int, CCDTrack> TracksByNumber = new Dictionary<int, CCDTrack>();
+			public readonly IDictionary<int, CCDTrack> TracksByNumber = new Dictionary<int, CCDTrack>();
 		}
 
 		/// <summary>
@@ -126,7 +128,7 @@ namespace BizHawk.Emulation.DiscSystem
 			/// <summary>
 			/// The indexes specified for the track (these are 0-indexed)
 			/// </summary>
-			public Dictionary<int, int> Indexes = new Dictionary<int, int>();
+			public readonly IDictionary<int, int> Indexes = new Dictionary<int, int>();
 		}
 
 		/// <summary>
@@ -233,13 +235,11 @@ namespace BizHawk.Emulation.DiscSystem
 			if (ccdSection.Name != "CLONECD")
 				throw new CCDParseException("Malformed CCD format: confusing first section name");
 
-			if (!ccdSection.ContainsKey("VERSION"))
+			if (!ccdSection.TryGetValue("VERSION", out var version))
 				throw new CCDParseException("Malformed CCD format: missing version in CloneCD section");
 
 			if(sections[1].Name != "DISC")
 				throw new CCDParseException("Malformed CCD format: section[1] isn't [Disc]");
-
-			int version = ccdSection["VERSION"];
 
 			return version;
 		}
@@ -301,7 +301,7 @@ namespace BizHawk.Emulation.DiscSystem
 						throw new CCDParseException("Warning: inconsistency in CCD PLBA vs computed P MSF");
 
 					if(entry.Session != 1)
-						throw new CCDParseException("Malformed CCD format: not yet supporting multi-session files"); 
+						throw new CCDParseException("Malformed CCD format: not yet supporting multi-session files");
 				}
 				else if (section.Name.StartsWith("TRACK"))
 				{
@@ -309,15 +309,10 @@ namespace BizHawk.Emulation.DiscSystem
 					CCDTrack track = new CCDTrack(entryNum);
 					ccdf.Tracks.Add(track);
 					ccdf.TracksByNumber[entryNum] = track;
-					foreach (var kvp in section)
+					foreach (var (k, v) in section)
 					{
-						if (kvp.Key == "MODE")
-							track.Mode = kvp.Value;
-						if (kvp.Key.StartsWith("INDEX"))
-						{
-							int inum = int.Parse(kvp.Key.Split(' ')[1]);
-							track.Indexes[inum] = kvp.Value;
-						}
+						if (k == "MODE") track.Mode = v;
+						else if (k.StartsWith("INDEX")) track.Indexes[int.Parse(k.Split(' ')[1])] = v;
 					}
 				}
 			} //sections loop
@@ -540,11 +535,11 @@ namespace BizHawk.Emulation.DiscSystem
 				BCD2 tno, ino;
 
 				//this should actually be zero. im not sure if this is stored as BCD2 or not
-				tno = BCD2.FromDecimal(entry.TrackNo); 
+				tno = BCD2.FromDecimal(entry.TrackNo);
 				
 				//these are special values.. I think, taken from this:
 				//http://www.staff.uni-mainz.de/tacke/scsi/SCSI2-14.html
-				//the CCD will contain Points as decimal values except for these specially converted decimal values which should stay as BCD. 
+				//the CCD will contain Points as decimal values except for these specially converted decimal values which should stay as BCD.
 				//Why couldn't they all be BCD? I don't know. I guess because BCD is inconvenient, but only A0 and friends have special meaning. It's confusing.
 				ino = BCD2.FromDecimal(entry.Point);
 				if (entry.Point == 0xA0) ino.BCDValue = 0xA0;

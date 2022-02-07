@@ -4,15 +4,11 @@ using System;
 
 namespace BizHawk.Emulation.Cores.ColecoVision
 {
-	[Core(
-		"ColecoHawk",
-		"Vecna",
-		isPorted: false,
-		isReleased: true)]
+	[Core(CoreNames.ColecoHawk, "Vecna")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(ISaveRam) })]
 	public sealed partial class ColecoVision : IEmulator, IDebuggable, IInputPollable, ISettable<ColecoVision.ColecoSettings, ColecoVision.ColecoSyncSettings>
 	{
-		[CoreConstructor("Coleco")]
+		[CoreConstructor(VSystemID.Raw.Coleco)]
 		public ColecoVision(CoreComm comm, GameInfo game, byte[] rom,
 			ColecoSettings settings,
 			ColecoSyncSettings syncSettings)
@@ -43,7 +39,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			ser.Register<IStatable>(new StateSerializer(SyncState));
 
 			// TODO: hack to allow bios-less operation would be nice, no idea if its feasible
-			_biosRom = comm.CoreFileProvider.GetFirmware("Coleco", "Bios", true, "Coleco BIOS file is required.");
+			_biosRom = comm.CoreFileProvider.GetFirmwareOrThrow(new("Coleco", "Bios"), "Coleco BIOS file is required.");
 
 			// gamedb can overwrite the SyncSettings; this is ok
 			if (game["NoSkip"])
@@ -61,15 +57,14 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			LoadRom(rom, skipBios);
 			SetupMemoryDomains();
 
-			_tracer.Header = _cpu.TraceHeader;
 			ser.Register<IDisassemblable>(_cpu);
-			ser.Register<ITraceable>(_tracer);
+			ser.Register<ITraceable>(_tracer = new TraceBuffer(_cpu.TraceHeader));
 		}
 
 		private readonly Z80A _cpu;
 		private readonly TMS9918A _vdp;
 		private readonly byte[] _biosRom;
-		private readonly TraceBuffer _tracer = new TraceBuffer();
+		private readonly TraceBuffer _tracer;
 
 		private byte[] _romData;
 		private byte[] _ram = new byte[1024];

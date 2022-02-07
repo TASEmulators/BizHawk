@@ -123,14 +123,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		}
 
 		/// <summary>
-		/// No longer in use
-		/// </summary>
-		public void StartFrame()
-		{
-			//_buzzer.ProcessPulseValue(currentState);
-		}
-
-		/// <summary>
 		/// Starts the tape playing from the beginning of the current block
 		/// </summary>
 		public void Play()
@@ -466,27 +458,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				cycles -= _waitEdge;
 
 				if (_position == 0 && _tapeIsPlaying)
-				{
-					// start of block - take care of initial pulse level for PZX
-					switch (_dataBlocks[_currentDataBlockIndex].BlockDescription)
-					{
-						case BlockType.PULS:
-							// initial pulse level is always low
-							if (currentState)
-								FlipTapeState();
-							break;
-						case BlockType.DATA:
-							// initial pulse level is stored in block
-							if (currentState != _dataBlocks[_currentDataBlockIndex].InitialPulseLevel)
-								FlipTapeState();
-							break;
-						case BlockType.PAUS:
-							// initial pulse level is stored in block
-							if (currentState != _dataBlocks[_currentDataBlockIndex].InitialPulseLevel)
-								FlipTapeState();
-							break;
-					}
-
+				{				
 					// notify about the current block
 					var bl = _dataBlocks[_currentDataBlockIndex];
 
@@ -595,7 +567,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				_waitEdge = _dataBlocks[_currentDataBlockIndex].DataPeriods.Count > 0 ? _dataBlocks[_currentDataBlockIndex].DataPeriods[_position] : 0;
 
 				// flip the current state
-				FlipTapeState();
+				//FlipTapeState();
+				currentState = _dataBlocks[_currentDataBlockIndex].DataLevels[_position];
 			}
 
 			// update lastCycle and return currentstate

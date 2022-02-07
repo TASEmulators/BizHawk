@@ -17,9 +17,7 @@ namespace BizHawk.Client.Common
 
 		public string SavestateBinaryBase64Blob
 		{
-			get => ContainsKey(HeaderKeys.SavestateBinaryBase64Blob)
-				? this[HeaderKeys.SavestateBinaryBase64Blob]
-				: null;
+			get => TryGetValue(HeaderKeys.SavestateBinaryBase64Blob, out var s) ? s : null;
 			set
 			{
 				if (value == null)
@@ -35,18 +33,8 @@ namespace BizHawk.Client.Common
 
 		public new string this[string key]
 		{
-			get => ContainsKey(key) ? base[key] : "";
-			set
-			{
-				if (ContainsKey(key))
-				{
-					base[key] = value;
-				}
-				else
-				{
-					Add(key, value);
-				}
-			}
+			get => TryGetValue(key, out var s) ? s : string.Empty;
+			set => base[key] = value;
 		}
 
 		public new void Clear()

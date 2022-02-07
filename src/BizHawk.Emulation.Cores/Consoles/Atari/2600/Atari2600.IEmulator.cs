@@ -13,7 +13,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			_controller = controller;
 
-			_frame++;
 			_islag = true;
 
 			// Handle all the console controls here
@@ -76,12 +75,14 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			_tia.LineCount = 0;
 
+			_frame++;
+
 			return true;
 		}
 
 		public int Frame => _frame;
 
-		public string SystemId => "A26";
+		public string SystemId => VSystemID.Raw.A26;
 
 		public bool DeterministicEmulation => true;
 

@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			_isLag = true;
 
-			if (_tracer.Enabled)
+			if (_tracer.IsEnabled())
 			{
 				_cpu.TraceCallback = s => _tracer.Put(s);
 			}
@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		public int Frame => _machine?.FrameCount ?? 0;
 
-		public string SystemId => "AmstradCPC";
+		public string SystemId => VSystemID.Raw.AmstradCPC;
 
 		public bool DeterministicEmulation { get; }
 

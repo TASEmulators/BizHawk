@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		private int _frame;
 		public int Frame { get => _frame; set => _frame = value; }
 
-		public string SystemId => "AppleII";
+		public string SystemId => VSystemID.Raw.AppleII;
 
 		public bool DeterministicEmulation => true;
 

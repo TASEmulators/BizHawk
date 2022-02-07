@@ -11,25 +11,53 @@ namespace BizHawk.BizInvoke
 {
 	public static class BizInvoker
 	{
+		private static readonly MethodInfo MInfo_Encoding_GetByteCount = typeof(Encoding).GetMethod(nameof(Encoding.GetByteCount), new[] { typeof(string) })!;
+
+		private static readonly MethodInfo MInfo_Encoding_GetBytes = typeof(Encoding).GetMethod(nameof(Encoding.GetBytes), new[] { typeof(char*), typeof(int), typeof(byte*), typeof(int) })!;
+
+		private static readonly MethodInfo MInfo_ICallingConventionAdapter_GetFunctionPointerForDelegate = typeof(ICallingConventionAdapter).GetMethod(nameof(ICallingConventionAdapter.GetFunctionPointerForDelegate))!;
+
+		private static readonly MethodInfo MInfo_IMonitor_Enter = typeof(IMonitor).GetMethod(nameof(IMonitor.Enter))!;
+
+		private static readonly MethodInfo MInfo_IMonitor_Exit = typeof(IMonitor).GetMethod(nameof(IMonitor.Exit))!;
+
 		/// <summary>
 		/// holds information about a proxy implementation, including type and setup hooks
 		/// </summary>
 		private class InvokerImpl
 		{
-			public Type ImplType;
-			public List<Action<object, IImportResolver, ICallingConventionAdapter>> Hooks;
-			public Action<object, IMonitor> ConnectMonitor;
-			public Action<object, ICallingConventionAdapter> ConnectCallingConventionAdapter;
+			private readonly Action<object, ICallingConventionAdapter> _connectCallingConventionAdapter;
 
-			public object Create(IImportResolver dll, IMonitor monitor, ICallingConventionAdapter adapter)
+			private readonly Action<object, IMonitor>? _connectMonitor;
+
+			private readonly List<Action<object, IImportResolver, ICallingConventionAdapter>> _hooks;
+
+			private readonly Type _implType;
+
+			public readonly bool IsMonitored;
+
+			public InvokerImpl(
+				List<Action<object, IImportResolver, ICallingConventionAdapter>> hooks,
+				Type implType,
+				Action<object, IMonitor>? connectMonitor,
+				Action<object, ICallingConventionAdapter> connectCallingConventionAdapter)
 			{
-				var ret = Activator.CreateInstance(ImplType);
-				ConnectCallingConventionAdapter(ret, adapter);
-				foreach (var f in Hooks)
+				_connectCallingConventionAdapter = connectCallingConventionAdapter;
+				_connectMonitor = connectMonitor;
+				_hooks = hooks;
+				_implType = implType;
+				IsMonitored = connectMonitor != null;
+			}
+
+			public object Create(IImportResolver dll, IMonitor? monitor, ICallingConventionAdapter adapter)
+			{
+				var ret = Activator.CreateInstance(_implType)!;
+				_connectCallingConventionAdapter(ret, adapter);
+				foreach (var f in _hooks)
 				{
 					f(ret, dll, adapter);
 				}
-				ConnectMonitor?.Invoke(ret, monitor);
+				_connectMonitor?.Invoke(ret, monitor!);
 				return ret;
 			}
 		}
@@ -61,9 +89,9 @@ namespace BizHawk.BizInvoke
 		static BizInvoker()
 		{
 			var aname = new AssemblyName("BizInvokeProxyAssembly");
-			ImplAssemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(aname, AssemblyBuilderAccess.Run);
+			ImplAssemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(aname, AssemblyBuilderAccess.Run);
 			ImplModuleBuilder = ImplAssemblyBuilder.DefineDynamicModule("BizInvokerModule");
-			ClassFieldOffset = BizInvokerUtilities.ComputeClassFieldOffset();
+			ClassFieldOffset = BizInvokerUtilities.ComputeClassFirstFieldOffset();
 			StringOffset = BizInvokerUtilities.ComputeStringOffset();
 		}
 
@@ -76,18 +104,18 @@ namespace BizHawk.BizInvoke
 			where T : class
 		{
 			var nonTrivialAdapter = adapter.GetType() != CallingConventionAdapters.Native.GetType();
-			InvokerImpl impl;
+			InvokerImpl? impl;
 			lock (Impls)
 			{
 				var baseType = typeof(T);
 				if (!Impls.TryGetValue(baseType, out impl))
 				{
 					impl = CreateProxy(baseType, false, nonTrivialAdapter);
-					Impls.Add(baseType, impl);
+					Impls.Add(baseType, impl!);
 				}
 			}
 
-			if (impl.ConnectMonitor != null)
+			if (impl!.IsMonitored)
 			{
 				throw new InvalidOperationException("Class was previously proxied with a monitor!");
 			}
@@ -100,18 +128,18 @@ namespace BizHawk.BizInvoke
 			where T : class
 		{
 			var nonTrivialAdapter = adapter.GetType() != CallingConventionAdapters.Native.GetType();
-			InvokerImpl impl;
+			InvokerImpl? impl;
 			lock (Impls)
 			{
 				var baseType = typeof(T);
 				if (!Impls.TryGetValue(baseType, out impl))
 				{
 					impl = CreateProxy(baseType, true, nonTrivialAdapter);
-					Impls.Add(baseType, impl);
+					Impls.Add(baseType, impl!);
 				}
 			}
 
-			if (impl.ConnectMonitor == null)
+			if (!(impl!.IsMonitored))
 			{
 				throw new InvalidOperationException("Class was previously proxied without a monitor!");
 			}
@@ -179,7 +207,7 @@ namespace BizHawk.BizInvoke
 
 			foreach (var mi in baseMethods)
 			{
-				var entryPointName = mi.Attr.EntryPoint ?? mi.Info.Name;
+				var entryPointName = mi.Attr!.EntryPoint ?? mi.Info.Name;
 
 				var hook = mi.Attr.Compatibility
 					? ImplementMethodDelegate(type, mi.Info, mi.Attr.CallingConvention, entryPointName, monitorField, nonTrivialAdapter)
@@ -188,25 +216,24 @@ namespace BizHawk.BizInvoke
 				postCreateHooks.Add(hook);
 			}
 
-			var ret = new InvokerImpl
-			{
-				Hooks = postCreateHooks,
-				ImplType = type.CreateType()
-			};
-			if (monitor)
-			{
-				ret.ConnectMonitor = (o, m) => o.GetType().GetField(monitorField.Name).SetValue(o, m);
-			}
-			ret.ConnectCallingConventionAdapter = (o, a) => o.GetType().GetField(adapterField.Name).SetValue(o, a);
-
-			return ret;
+			return new(
+				postCreateHooks,
+				type.CreateType()!,
+				connectMonitor: monitor
+					? (o, m) => o.GetType().GetField(monitorField!.Name).SetValue(o, m)
+					: null,
+				connectCallingConventionAdapter: (o, a) => o.GetType().GetField(adapterField.Name).SetValue(o, a));
 		}
 
 		/// <summary>
 		/// create a method implementation that uses GetDelegateForFunctionPointer internally
 		/// </summary>
 		private static Action<object, IImportResolver, ICallingConventionAdapter> ImplementMethodDelegate(
-			TypeBuilder type, MethodInfo baseMethod, CallingConvention nativeCall, string entryPointName, FieldInfo monitorField,
+			TypeBuilder type,
+			MethodInfo baseMethod,
+			CallingConvention nativeCall,
+			string entryPointName,
+			FieldInfo? monitorField,
 			bool nonTrivialAdapter)
 		{
 			// create the delegate type
@@ -247,7 +274,7 @@ namespace BizHawk.BizInvoke
 			{
 				il.Emit(OpCodes.Ldarg_0);
 				il.Emit(OpCodes.Ldfld, monitorField);
-				il.Emit(OpCodes.Callvirt, typeof(IMonitor).GetMethod("Enter"));
+				il.Emit(OpCodes.Callvirt, MInfo_IMonitor_Enter);
 				exc = il.BeginExceptionBlock();
 			}
 
@@ -262,7 +289,7 @@ namespace BizHawk.BizInvoke
 
 			if (monitorField != null) // monitor: finally exit
 			{
-				LocalBuilder loc = null;
+				LocalBuilder? loc = null;
 				if (returnType != typeof(void))
 				{
 					loc = il.DeclareLocal(returnType);
@@ -273,12 +300,12 @@ namespace BizHawk.BizInvoke
 				il.BeginFinallyBlock();
 				il.Emit(OpCodes.Ldarg_0);
 				il.Emit(OpCodes.Ldfld, monitorField);
-				il.Emit(OpCodes.Callvirt, typeof(IMonitor).GetMethod("Exit"));
+				il.Emit(OpCodes.Callvirt, MInfo_IMonitor_Exit);
 				il.EndExceptionBlock();
 
 				if (returnType != typeof(void))
 				{
-					il.Emit(OpCodes.Ldloc, loc);
+					il.Emit(OpCodes.Ldloc, loc!);
 				}
 			}
 
@@ -294,25 +321,36 @@ namespace BizHawk.BizInvoke
 			};
 		}
 
-		private class ParameterLoadInfo
+		private readonly struct ParameterLoadInfo
 		{
 			/// <summary>
 			/// The native type for this parameter, to pass to calli
 			/// </summary>
-			public Type NativeType;
+			public readonly Type NativeType;
+
 			/// <summary>
 			/// Closure that will actually emit the parameter load to the il stream.  The evaluation stack will
 			/// already have other parameters on it at this time.
 			/// </summary>
-			public Action EmitLoad;
+			public readonly Action EmitLoad;
+
+			public ParameterLoadInfo(Type nativeType, Action emitLoad)
+			{
+				NativeType = nativeType;
+				EmitLoad = emitLoad;
+			}
 		}
 
 		/// <summary>
 		/// create a method implementation that uses calli internally
 		/// </summary>
 		private static Action<object, IImportResolver, ICallingConventionAdapter> ImplementMethodCalli(
-			TypeBuilder type, MethodInfo baseMethod,
-			CallingConvention nativeCall, string entryPointName, FieldInfo monitorField, FieldInfo adapterField)
+			TypeBuilder type,
+			MethodInfo baseMethod,
+			CallingConvention nativeCall,
+			string entryPointName,
+			FieldInfo? monitorField,
+			FieldInfo adapterField)
 		{
 			var paramInfos = baseMethod.GetParameters();
 			var paramTypes = paramInfos.Select(p => p.ParameterType).ToArray();
@@ -343,7 +381,7 @@ namespace BizHawk.BizInvoke
 			{
 				il.Emit(OpCodes.Ldarg_0);
 				il.Emit(OpCodes.Ldfld, monitorField);
-				il.Emit(OpCodes.Callvirt, typeof(IMonitor).GetMethod("Enter"));
+				il.Emit(OpCodes.Callvirt, MInfo_IMonitor_Enter);
 				exc = il.BeginExceptionBlock();
 			}
 
@@ -361,14 +399,15 @@ namespace BizHawk.BizInvoke
 
 			il.Emit(OpCodes.Ldarg_0);
 			il.Emit(OpCodes.Ldfld, field);
-			il.EmitCalli(OpCodes.Calli, 
-				nativeCall, 
+			il.EmitCalli(
+				OpCodes.Calli,
+				nativeCall,
 				returnType == typeof(bool) ? typeof(byte) : returnType, // undo winapi style bool garbage
 				paramLoadInfos.Select(p => p.NativeType).ToArray());
 
 			if (monitorField != null) // monitor: finally exit
 			{
-				LocalBuilder loc = null;
+				LocalBuilder? loc = null;
 				if (returnType != typeof(void))
 				{
 					loc = il.DeclareLocal(returnType);
@@ -379,12 +418,12 @@ namespace BizHawk.BizInvoke
 				il.BeginFinallyBlock();
 				il.Emit(OpCodes.Ldarg_0);
 				il.Emit(OpCodes.Ldfld, monitorField);
-				il.Emit(OpCodes.Callvirt, typeof(IMonitor).GetMethod("Exit"));
+				il.Emit(OpCodes.Callvirt, MInfo_IMonitor_Exit);
 				il.EndExceptionBlock();
 
 				if (returnType != typeof(void))
 				{
-					il.Emit(OpCodes.Ldloc, loc);
+					il.Emit(OpCodes.Ldloc, loc!);
 				}
 			}
 
@@ -457,28 +496,27 @@ namespace BizHawk.BizInvoke
 
 			if (type.IsByRef)
 			{
-				var et = type.GetElementType();
-				if (!et.IsPrimitive && !et.IsEnum)
+				// Just pass a raw pointer.  In the `ref structType` case, caller needs to ensure fields are compatible.
+				var et = type.GetElementType()!;
+				if (!et.IsValueType)
 				{
-					throw new NotImplementedException("Only refs of primitive or enum types are supported!");
+					throw new NotImplementedException("Only refs of value types are supported!");
 				}
-				return new ParameterLoadInfo
-				{
-					NativeType = typeof(IntPtr),
-					EmitLoad = () =>
+				return new(
+					typeof(IntPtr),
+					() =>
 					{
 						var loc = il.DeclareLocal(type, true);
 						il.Emit(OpCodes.Ldarg, (short)idx);
 						il.Emit(OpCodes.Dup);
 						il.Emit(OpCodes.Stloc, loc);
 						il.Emit(OpCodes.Conv_I);
-					}
-				};
+					});
 			}
 
 			if (type.IsArray)
 			{
-				var et = type.GetElementType();
+				var et = type.GetElementType()!;
 				if (!et.IsValueType)
 				{
 					throw new NotImplementedException("Only arrays of value types are supported!");
@@ -495,10 +533,9 @@ namespace BizHawk.BizInvoke
 					throw new NotImplementedException("Only 0-based 1-dimensional arrays are supported!");
 				}
 
-				return new ParameterLoadInfo
-				{
-					NativeType = typeof(IntPtr),
-					EmitLoad = () => 
+				return new(
+					typeof(IntPtr),
+					() =>
 					{
 						var loc = il.DeclareLocal(type, true);
 						var end = il.DefineLabel();
@@ -518,19 +555,17 @@ namespace BizHawk.BizInvoke
 						il.MarkLabel(isNull);
 						LoadConstant(il, IntPtr.Zero);
 						il.MarkLabel(end);
-					}
-				};
+					});
 			}
 
 			if (typeof(Delegate).IsAssignableFrom(type))
 			{
 				// callback -- use the same callingconventionadapter on it that the invoker is being made from
-				return new ParameterLoadInfo
-				{
-					NativeType = typeof(IntPtr),
-					EmitLoad = () =>
+				return new(
+					typeof(IntPtr),
+					() =>
 					{
-						var mi = typeof(ICallingConventionAdapter).GetMethod("GetFunctionPointerForDelegate");
+						var mi = MInfo_ICallingConventionAdapter_GetFunctionPointerForDelegate;
 						var end = il.DefineLabel();
 						var isNull = il.DefineLabel();
 
@@ -546,8 +581,7 @@ namespace BizHawk.BizInvoke
 						il.MarkLabel(isNull);
 						LoadConstant(il, IntPtr.Zero);
 						il.MarkLabel(end);
-					}
-				};
+					});
 			}
 
 			if (type == typeof(string))
@@ -559,13 +593,13 @@ namespace BizHawk.BizInvoke
 				il.Emit(OpCodes.Brfalse, isNull);
 
 				var encoding = il.DeclareLocal(typeof(Encoding), false);
-				il.EmitCall(OpCodes.Call, typeof(Encoding).GetProperty("UTF8").GetGetMethod(), Type.EmptyTypes);
+				il.EmitCall(OpCodes.Call, typeof(Encoding).GetProperty("UTF8")!.GetGetMethod(), Type.EmptyTypes);
 				il.Emit(OpCodes.Stloc, encoding);
 
 				var strlenbytes = il.DeclareLocal(typeof(int), false);
 				il.Emit(OpCodes.Ldloc, encoding);
 				il.Emit(OpCodes.Ldarg, (short)idx);
-				il.EmitCall(OpCodes.Callvirt, typeof(Encoding).GetMethod("GetByteCount", new[] { typeof(string) }), Type.EmptyTypes);
+				il.EmitCall(OpCodes.Callvirt, MInfo_Encoding_GetByteCount, Type.EmptyTypes);
 				il.Emit(OpCodes.Stloc, strlenbytes);
 
 				var strval = il.DeclareLocal(typeof(string), true); // pin!
@@ -591,13 +625,13 @@ namespace BizHawk.BizInvoke
 				il.Emit(OpCodes.Add);
 				// charcount
 				il.Emit(OpCodes.Ldloc, strval);
-				il.Emit(OpCodes.Call, typeof(string).GetProperty("Length").GetGetMethod());
+				il.Emit(OpCodes.Call, typeof(string).GetProperty("Length")!.GetGetMethod());
 				// bytes
 				il.Emit(OpCodes.Ldloc, bytes);
 				// bytelength
 				il.Emit(OpCodes.Ldloc, strlenbytes);
 				// call
-				il.EmitCall(OpCodes.Callvirt, typeof(Encoding).GetMethod("GetBytes", new[] { typeof(char*), typeof(int), typeof(byte*), typeof(int) }), Type.EmptyTypes);
+				il.EmitCall(OpCodes.Callvirt, MInfo_Encoding_GetBytes, Type.EmptyTypes);
 				// unused ret
 				il.Emit(OpCodes.Pop);
 
@@ -608,23 +642,21 @@ namespace BizHawk.BizInvoke
 				il.Emit(OpCodes.Stloc, bytes);
 				il.MarkLabel(end);
 
-				return new ParameterLoadInfo
-				{
-					NativeType = typeof(IntPtr),
-					EmitLoad = () =>
+				return new(
+					typeof(IntPtr),
+					() =>
 					{
 						il.Emit(OpCodes.Ldloc, bytes);
-					}
-				};
+					});
 			}
 
 			if (type.IsClass)
 			{
 				// non ref of class can just be passed as pointer
-				return new ParameterLoadInfo
-				{
-					NativeType = typeof(IntPtr),
-					EmitLoad = () =>
+				// Just like in the `ref struct` case, if the fields aren't compatible, that's the caller's problem.
+				return new(
+					typeof(IntPtr),
+					() =>
 					{
 						var loc = il.DeclareLocal(type, true);
 						var end = il.DefineLabel();
@@ -646,20 +678,17 @@ namespace BizHawk.BizInvoke
 						il.MarkLabel(isNull);
 						LoadConstant(il, IntPtr.Zero);
 						il.MarkLabel(end);
-					}
-				};
+					});
 			}
 
 			if (type.IsPrimitive || type.IsEnum || type.IsPointer)
 			{
-				return new ParameterLoadInfo
-				{
-					NativeType = type,
-					EmitLoad = () =>
+				return new(
+					type,
+					() =>
 					{
 						il.Emit(OpCodes.Ldarg, (short)idx);
-					}
-				};
+					});
 			}
 
 			throw new NotImplementedException("Unrecognized parameter type!");
@@ -673,7 +702,7 @@ namespace BizHawk.BizInvoke
 		public CallingConvention CallingConvention { get; }
 
 		/// <remarks>The annotated method's name is used iff <see langword="null"/>.</remarks>
-		public string EntryPoint { get; set; }
+		public string? EntryPoint { get; set; } = null;
 
 		/// <summary><see langword="true"/> iff a compatibility interop should be used, which is slower but supports more argument types.</summary>
 		public bool Compatibility { get; set; }

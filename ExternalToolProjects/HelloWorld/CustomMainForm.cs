@@ -12,7 +12,7 @@ namespace HelloWorld
 	[ExternalTool("HelloWorld", Description = "An example of how to interact with EmuHawk")]
 //	[ExternalToolApplicability.SingleRom(CoreSystem.NES, "EA343F4E445A9050D4B4FBAC2C77D0693B1D0922")] // example of limiting tool usage (this is SMB1)
 	[ExternalToolEmbeddedIcon("HelloWorld.icon_Hello.ico")]
-	public partial class CustomMainForm : Form, IExternalToolForm
+	public partial class CustomMainForm : ToolFormBase, IExternalToolForm
 	{
 		/// <remarks>
 		/// <see cref="RequiredServiceAttribute">RequiredServices</see> are populated by EmuHawk at runtime.
@@ -64,41 +64,43 @@ namespace HelloWorld
 			}
 		}
 
+		protected override string WindowTitleStatic => "HelloWorld";
+
 		public CustomMainForm()
 		{
 			InitializeComponent();
 			label_GameHash.Click += label_GameHash_Click;
 			Closing += (sender, args) => APIs.EmuClient.SetClientExtraPadding(0, 0, 0, 0);
-
-			APIs.EmuClient.BeforeQuickSave += (sender, e) =>
+			Load += (_, _) =>
 			{
-				if (e.Slot != 0) return; // only take effect on slot 0
-				var basePath = Path.Combine(GlobalConfig.PathEntries.SaveStateAbsolutePath(APIs.Emulation.GetSystemId()), "Test");
-				if (!Directory.Exists(basePath)) Directory.CreateDirectory(basePath);
-				APIs.EmuClient.SaveState(Path.Combine(basePath, e.Name));
-				e.Handled = true;
-			};
-			APIs.EmuClient.BeforeQuickLoad += (sender, e) =>
-			{
-				if (e.Slot != 0) return; // only take effect on slot 0
-				var basePath = Path.Combine(GlobalConfig.PathEntries.SaveStateAbsolutePath(APIs.Emulation.GetSystemId()), "Test");
-				APIs.EmuClient.LoadState(Path.Combine(basePath, e.Name));
-				e.Handled = true;
+				APIs.EmuClient.BeforeQuickSave += (_, e) =>
+				{
+					if (e.Slot != 0) return; // only take effect on slot 0
+					var basePath = Path.Combine(GlobalConfig.PathEntries.SaveStateAbsolutePath(APIs.Emulation.GetSystemId()), "Test");
+					if (!Directory.Exists(basePath)) Directory.CreateDirectory(basePath);
+					APIs.EmuClient.SaveState(Path.Combine(basePath, e.Name));
+					e.Handled = true;
+				};
+				APIs.EmuClient.BeforeQuickLoad += (_, e) =>
+				{
+					if (e.Slot != 0) return; // only take effect on slot 0
+					var basePath = Path.Combine(GlobalConfig.PathEntries.SaveStateAbsolutePath(APIs.Emulation.GetSystemId()), "Test");
+					APIs.EmuClient.LoadState(Path.Combine(basePath, e.Name));
+					e.Handled = true;
+				};
 			};
 		}
 
-		public bool AskSaveChanges() => true;
-
 		/// <remarks>This is called once when the form is opened, and every time a new movie session starts.</remarks>
-		public void Restart()
+		public override void Restart()
 		{
 			APIs.EmuClient.SetClientExtraPadding(50, 50);
-
-			if (APIs.GameInfo.GetRomName() != "Null")
+			var gi = APIs.GameInfo.GetGameInfo();
+			if (!string.IsNullOrEmpty(gi?.Name))
 			{
 				Watches.RefreshDomains(_memoryDomains, GlobalConfig.RamWatchDefinePrevious);
-				label_Game.Text = $"You're playing {APIs.GameInfo.GetRomName()}";
-				label_GameHash.Text = $"Hash: {APIs.GameInfo.GetRomHash()}";
+				label_Game.Text = $"You're playing {gi!.Name}";
+				label_GameHash.Text = $"Hash: {gi.Hash}";
 			}
 			else
 			{
@@ -107,10 +109,10 @@ namespace HelloWorld
 			}
 		}
 
-		public void UpdateValues(ToolFormUpdateType type)
+		public override void UpdateValues(ToolFormUpdateType type)
 		{
 			if (!(type == ToolFormUpdateType.PreFrame || type == ToolFormUpdateType.FastPreFrame)
-			    || APIs.GameInfo.GetRomName() == "Null"
+			    || string.IsNullOrEmpty(APIs.GameInfo.GetGameInfo()?.Name)
 			    || Watches.Count < 3)
 			{
 				return;
@@ -123,7 +125,7 @@ namespace HelloWorld
 
 		private void button1_Click(object sender, EventArgs e) => APIs.EmuClient.DoFrameAdvance();
 
-		private void label_GameHash_Click(object sender, EventArgs e) => Clipboard.SetText(APIs.GameInfo.GetRomHash());
+		private void label_GameHash_Click(object sender, EventArgs e) => Clipboard.SetText(APIs.GameInfo.GetGameInfo()!.Hash);
 
 		private void loadstate_Click(object sender, EventArgs e)
 		{

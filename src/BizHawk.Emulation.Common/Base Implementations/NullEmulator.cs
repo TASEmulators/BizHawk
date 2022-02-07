@@ -1,8 +1,10 @@
-﻿using System.Threading;
+﻿#nullable disable
+
+using System.Threading;
 
 namespace BizHawk.Emulation.Common
 {
-	[Core("NullHawk", "", false, true)]
+	[Core("NullHawk", "")]
 	[ServiceNotApplicable(new[] {
 		typeof(IVideoProvider),
 		typeof(IBoardInfo),
@@ -40,7 +42,7 @@ namespace BizHawk.Emulation.Common
 
 		public int Frame => 0;
 
-		public string SystemId => "NULL";
+		public string SystemId => VSystemID.Raw.NULL;
 
 		public bool DeterministicEmulation => true;
 

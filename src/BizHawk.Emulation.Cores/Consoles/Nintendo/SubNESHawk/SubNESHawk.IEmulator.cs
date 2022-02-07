@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{
 			//Console.WriteLine("-----------------------FRAME-----------------------");
-			if (_tracer.Enabled)
+			if (_tracer.IsEnabled())
 			{
 				_nesCore.cpu.TraceCallback = s => _tracer.Put(s);
 			}
@@ -20,8 +20,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			{
 				_nesCore.cpu.TraceCallback = null;
 			}
-
-			_frame++;
 
 			if (controller.IsPressed("Power"))
 			{
@@ -37,10 +35,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			reset_cycle = controller.AxisValue("Reset Cycle");
 			reset_cycle_int = (int)Math.Floor(reset_cycle);
 
-			_isLag = true;
-			_nesCore.alt_lag = true;
-
-			InputCallbacks.Call();
+			_nesCore.lagged = true;
 
 			DoFrame(controller);
 
@@ -53,15 +48,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 				_nesCore.cpu.ext_ppu_cycle = current_cycle;
 			}
 			
-			_isLag = _nesCore.alt_lag;
+			_isLag = _nesCore.lagged;
 
 			if (_isLag)
 			{
 				_lagCount++;
-				VblankCount++;
 			}
 
 			reset_frame = false;
+
+			_frame++;
+
 			return ret;
 		}
 
@@ -93,7 +90,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 
 		public int Frame => _frame;
 
-		public string SystemId => "NES";
+		public string SystemId => VSystemID.Raw.NES;
 
 		public bool DeterministicEmulation => _nesCore.DeterministicEmulation;
 

@@ -71,8 +71,6 @@ static cothread_impl* alloc_thread(uint64_t size)
 	return co;
 }
 
-extern void co_swap(cothread_impl*, cothread_impl*);
-
 static void crash(void)
 {
 	__asm__("int3"); // called only if cothread_t entrypoint returns
@@ -149,4 +147,14 @@ void co_switch(cothread_t handle)
 			"zmm30", "zmm31",*/
 			"memory"
 	);
+}
+
+cothread_t co_derive(void* memory, unsigned sz, void (*entrypoint)(void))
+{
+	return NULL;
+}
+
+int co_serializable(void)
+{
+	return 0;
 }

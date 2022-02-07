@@ -21,7 +21,7 @@ namespace BizHawk.Client.Common
 
 		public static string GlobalBaseAbsolutePath(this PathEntryCollection collection)
 		{
-			var globalBase = collection["Global", "Base"].Path;
+			var globalBase = collection[PathEntryCollection.GLOBAL, "Base"].Path;
 
 			// if %exe% prefixed then substitute exe path and repeat
 			if (globalBase.StartsWith("%exe%", StringComparison.InvariantCultureIgnoreCase))
@@ -48,9 +48,9 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public static PathEntry EntryWithFallback(this PathEntryCollection collection, string pathType, string systemId)
 		{
-			return (collection[systemId, pathType] 
+			return (collection[systemId, pathType]
 				?? collection[systemId, "Base"])
-				?? collection["Global", "Base"];
+				?? collection[PathEntryCollection.GLOBAL, "Base"];
 		}
 
 		public static string AbsolutePathForType(this PathEntryCollection collection, string systemId, string type)
@@ -138,25 +138,25 @@ namespace BizHawk.Client.Common
 
 		public static string MovieAbsolutePath(this PathEntryCollection collection)
 		{
-			var path = collection["Global", "Movies"].Path;
+			var path = collection[PathEntryCollection.GLOBAL, "Movies"].Path;
 			return collection.AbsolutePathFor(path, null);
 		}
 
 		public static string MovieBackupsAbsolutePath(this PathEntryCollection collection)
 		{
-			var path = collection["Global", "Movie backups"].Path;
+			var path = collection[PathEntryCollection.GLOBAL, "Movie backups"].Path;
 			return collection.AbsolutePathFor(path, null);
 		}
 
 		public static string AvAbsolutePath(this PathEntryCollection collection)
 		{
-			var path = collection["Global", "A/V Dumps"].Path;
+			var path = collection[PathEntryCollection.GLOBAL, "A/V Dumps"].Path;
 			return collection.AbsolutePathFor(path, null);
 		}
 
 		public static string LuaAbsolutePath(this PathEntryCollection collection)
 		{
-			var path = collection["Global", "Lua"].Path;
+			var path = collection[PathEntryCollection.GLOBAL, "Lua"].Path;
 			return collection.AbsolutePathFor(path, null);
 		}
 
@@ -167,31 +167,31 @@ namespace BizHawk.Client.Common
 
 		public static string LogAbsolutePath(this PathEntryCollection collection)
 		{
-			var path = collection.ResolveToolsPath(collection["Global", "Debug Logs"].Path);
+			var path = collection.ResolveToolsPath(collection[PathEntryCollection.GLOBAL, "Debug Logs"].Path);
 			return collection.AbsolutePathFor(path, null);
 		}
 
 		public static string WatchAbsolutePath(this PathEntryCollection collection)
 		{
-			var path = 	collection.ResolveToolsPath(collection["Global", "Watch (.wch)"].Path);
+			var path = 	collection.ResolveToolsPath(collection[PathEntryCollection.GLOBAL, "Watch (.wch)"].Path);
 			return collection.AbsolutePathFor(path, null);
 		}
 
 		public static string ToolsAbsolutePath(this PathEntryCollection collection)
 		{
-			var path = collection["Global", "Tools"].Path;
+			var path = collection[PathEntryCollection.GLOBAL, "Tools"].Path;
 			return collection.AbsolutePathFor(path, null);
 		}
 
 		public static string TastudioStatesAbsolutePath(this PathEntryCollection collection)
 		{
-			var path = collection["Global", "TAStudio states"].Path;
+			var path = collection[PathEntryCollection.GLOBAL, "TAStudio states"].Path;
 			return collection.AbsolutePathFor(path, null);
 		}
 
 		public static string MultiDiskAbsolutePath(this PathEntryCollection collection)
 		{
-			var path = collection.ResolveToolsPath(collection["Global", "Multi-Disk Bundles"].Path);
+			var path = collection.ResolveToolsPath(collection[PathEntryCollection.GLOBAL, "Multi-Disk Bundles"].Path);
 			return collection.AbsolutePathFor(path, null);
 		}
 
@@ -199,7 +199,7 @@ namespace BizHawk.Client.Common
 		{
 			if (string.IsNullOrWhiteSpace(systemId))
 			{
-				return collection.AbsolutePathFor(collection["Global_NULL", "ROM"].Path, "Global_NULL");
+				return collection.AbsolutePathFor(collection[PathEntryCollection.GLOBAL, "ROM"].Path, PathEntryCollection.GLOBAL);
 			}
 
 			if (collection.UseRecentForRoms)
@@ -211,7 +211,7 @@ namespace BizHawk.Client.Common
 
 			if (!path.Path.PathIsSet())
 			{
-				path = collection["Global", "ROM"];
+				path = collection[PathEntryCollection.GLOBAL, "ROM"];
 
 				if (path.Path.PathIsSet())
 				{
@@ -333,7 +333,7 @@ namespace BizHawk.Client.Common
 				return subPath;
 			}
 
-			var toolsPath = collection["Global", "Tools"].Path;
+			var toolsPath = collection[PathEntryCollection.GLOBAL, "Tools"].Path;
 
 			// Hack for backwards compatibility, prior to 1.11.5, .wch files were in .\Tools, we don't want that to turn into .Tools\Tools
 			if (subPath == "Tools")

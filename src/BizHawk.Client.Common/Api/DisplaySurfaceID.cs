@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BizHawk.Client.Common
 {
@@ -13,6 +14,7 @@ namespace BizHawk.Client.Common
 	/// <remarks>should probably centralise these enum extensions and not-extensions somewhere... --yoshi</remarks>
 	public static class DisplaySurfaceIDParser
 	{
+		[return: NotNullIfNotNull("str")]
 		public static DisplaySurfaceID? Parse(string? str) => str?.ToLowerInvariant() switch
 		{
 			null => null, // this makes it easy to cascade the "remembered" value

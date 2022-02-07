@@ -9,7 +9,7 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class EditSubtitlesForm : Form
+	public partial class EditSubtitlesForm : Form, IDialogParent
 	{
 		
 		private readonly IMovie _selectedMovie;

@@ -194,7 +194,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			switch (addr & 0xF000)
 			{
 				case 0x0000:
-					if (addr <= 0x003F && (in_vb_1 | !active_display))
+					if (addr <= 0x003F && (in_vb_1 | (!active_display & !in_vb_2)))
 					{
 						if (addr == 0x0021 && !peek)
 						{
@@ -209,7 +209,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					}
 					break;
 				case 0x4000:
-					if ((addr <= 0x403F) && (in_vb_1 | !active_display))
+					if ((addr <= 0x403F) && (in_vb_1 | (!active_display & !in_vb_2)))
 					{
 						if (addr == 0x4021 && !peek)
 						{
@@ -218,7 +218,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					}
 					break;
 				case 0x8000:
-					if ((addr <= 0x803F) && (in_vb_1 | !active_display))
+					if ((addr <= 0x803F) && (in_vb_1 | (!active_display & !in_vb_2)))
 					{
 						if (addr == 0x8021 && !peek)
 						{
@@ -227,7 +227,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					}
 					break;
 				case 0xC000:
-					if ((addr <= 0xC03F) && (in_vb_1 | !active_display))
+					if ((addr <= 0xC03F) && (in_vb_1 | (!active_display & !in_vb_2)))
 					{
 						if (addr == 0xC021 && !peek)
 						{
@@ -245,28 +245,28 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			switch (addr & 0xF000)
 			{
 				case 0x0000:
-					if (addr <= 0x003F && (in_vb_1 | !active_display))
+					if (addr <= 0x003F && (in_vb_1 | (!active_display & !in_vb_2)))
 					{
 						write_reg(addr, value, poke);
 						return true;
 					}
 					break;
 				case 0x4000:
-					if (addr <= 0x403F && (in_vb_1 | !active_display))
+					if (addr <= 0x403F && (in_vb_1 | (!active_display & !in_vb_2)))
 					{
 						write_reg(addr-0x4000, value, poke);
 						return true;
 					}
 					break;
 				case 0x8000:
-					if (addr <= 0x803F && (in_vb_1 | !active_display))
+					if (addr <= 0x803F && (in_vb_1 | (!active_display & !in_vb_2)))
 					{
 						write_reg(addr-0x8000, value, poke);
 						return true;
 					}
 					break;
 				case 0xC000:
-					if (addr <= 0xC03F && (in_vb_1 | !active_display))
+					if (addr <= 0xC03F && (in_vb_1 | (!active_display & !in_vb_2)))
 					{
 						write_reg(addr-0xC000, value, poke);
 						return true;
@@ -745,7 +745,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 						{
 							cur_y = j * y_size + m;
 
-							if ((cur_x) < (167 - x_delay) && (loc_y * 2 + cur_y) < (208 - y_delay * 2) && pixel && vis && cur_x >= (8 - x_delay) && (loc_y * 2 + cur_y) >= (16 - y_delay * 2))
+							if ((cur_x) < (167 - x_delay) && (loc_y * 2 + cur_y) < (208 - y_delay * 2) && pixel && (vis && (loc_x != 0)) && cur_x >= (8 - x_delay) && (loc_y * 2 + cur_y) >= (16 - y_delay * 2))
 							{
 								if (!(priority && (Collision[cur_x, loc_y * 2 + cur_y]&0x100)>0))
 									FrameBuffer[(loc_y * 2 + cur_y - (16 - y_delay * 2)) * 176 + cur_x + x_delay + BORDER_OFFSET] = ColorToRGBA(loc_color);
@@ -760,7 +760,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 							if (x_size == 2)
 							{
-								if ((cur_x + 1) < (167 - x_delay) && (loc_y * 2 + cur_y) < (208 - y_delay * 2) && pixel && vis && (cur_x + 1) >= (8 - x_delay) && (loc_y * 2 + cur_y) >= (16 - y_delay * 2))
+								if ((cur_x + 1) < (167 - x_delay) && (loc_y * 2 + cur_y) < (208 - y_delay * 2) && pixel && (vis && (loc_x != 0)) && (cur_x + 1) >= (8 - x_delay) && (loc_y * 2 + cur_y) >= (16 - y_delay * 2))
 								{
 									if (!(priority && (Collision[cur_x + 1, loc_y * 2 + cur_y] & 0x100) > 0))
 										FrameBuffer[(loc_y * 2 + cur_y - (16 - y_delay * 2)) * 176 + cur_x + x_delay + 1 + BORDER_OFFSET] = ColorToRGBA(loc_color);
@@ -790,7 +790,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 							{
 								cur_y = j * y_size + m;
 
-								if ((cur_x) < (167 - x_delay) && ((loc_y + 4 * y_size) * 2 + cur_y) < (208 - y_delay * 2) && pixel && vis && cur_x >= (8 - x_delay) && ((loc_y + 4 * y_size) * 2 + cur_y) >= (16 - y_delay * 2))
+								if ((cur_x) < (167 - x_delay) && ((loc_y + 4 * y_size) * 2 + cur_y) < (208 - y_delay * 2) && pixel && (vis && (loc_x != 0)) && cur_x >= (8 - x_delay) && ((loc_y + 4 * y_size) * 2 + cur_y) >= (16 - y_delay * 2))
 								{
 									if (!(priority && (Collision[cur_x, (loc_y + 4 * y_size) * 2 + cur_y] & 0x100) > 0))
 										FrameBuffer[((loc_y + 4 * y_size) * 2 + cur_y - (16 - y_delay * 2)) * 176 + cur_x + x_delay + BORDER_OFFSET] = ColorToRGBA(loc_color);
@@ -805,7 +805,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 								if (x_size == 2)
 								{
-									if ((cur_x + 1) < (167 - x_delay) && ((loc_y + 4 * y_size) * 2 + cur_y) < (208 - y_delay * 2) && pixel && vis && (cur_x + 1) >= (8 - x_delay) && ((loc_y + 4 * y_size) * 2 + cur_y) >= (16 - y_delay * 2))
+									if ((cur_x + 1) < (167 - x_delay) && ((loc_y + 4 * y_size) * 2 + cur_y) < (208 - y_delay * 2) && pixel && (vis && (loc_x != 0)) && (cur_x + 1) >= (8 - x_delay) && ((loc_y + 4 * y_size) * 2 + cur_y) >= (16 - y_delay * 2))
 									{
 										if (!(priority && (Collision[cur_x + 1, (loc_y + 4 * y_size) * 2 + cur_y] & 0x100) > 0))
 											FrameBuffer[((loc_y + 4 * y_size) * 2 + cur_y - (16 - y_delay * 2)) * 176 + cur_x + x_delay + 1 + BORDER_OFFSET] = ColorToRGBA(loc_color);

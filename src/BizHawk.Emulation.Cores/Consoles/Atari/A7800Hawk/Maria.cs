@@ -216,8 +216,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					}
 					BG_latch_1 = Core.Maria_regs[0];
 
-					
-
 					color = line_ram[local_GFX_index, pixel];
 
 					if (disp_mode == 0)
@@ -620,7 +618,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 							temp_check = (byte)(((temp_byte & 0x3) << 2) + ((temp_byte >> 4) & 0x3));
 						}
 
-						if ((temp_check & 3) != 0)
+						if ((temp_check & 0xF) != 0)
 						{
 							line_ram[GFX_index, (temp_start + z) % 512] = temp_check;
 							line_ram[GFX_index, (temp_start + z) % 512] += (byte)((GFX_Objects[header_counter].palette & 4) << 2);
@@ -688,7 +686,49 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		{
 			ser.BeginSection(nameof(Maria));
 
+			ser.Sync(nameof(temp_check), ref temp_check);
 			ser.Sync(nameof(GFX_index), ref GFX_index);
+
+			ser.Sync(nameof(cycle), ref cycle);
+			ser.Sync(nameof(scanline), ref scanline);
+			ser.Sync(nameof(DLI_countdown), ref DLI_countdown);
+			ser.Sync(nameof(sl_DMA_complete), ref sl_DMA_complete);
+			ser.Sync(nameof(do_dma), ref do_dma);
+
+			ser.Sync(nameof(DMA_phase), ref DMA_phase);
+			ser.Sync(nameof(DMA_phase_counter), ref DMA_phase_counter);
+
+			ser.Sync(nameof(header_read_time), ref header_read_time);
+			ser.Sync(nameof(graphics_read_time), ref graphics_read_time);
+			ser.Sync(nameof(DMA_phase_next), ref DMA_phase_next);
+
+			ser.Sync(nameof(display_zone_pointer), ref display_zone_pointer);
+			ser.Sync(nameof(display_zone_counter), ref display_zone_counter);
+
+			ser.Sync(nameof(current_DLL_offset), ref current_DLL_offset);
+			ser.Sync(nameof(current_DLL_addr), ref current_DLL_addr);
+			ser.Sync(nameof(current_DLL_DLI), ref current_DLL_DLI);
+			ser.Sync(nameof(current_DLL_H16), ref current_DLL_H16);
+			ser.Sync(nameof(current_DLL_H8), ref current_DLL_H8);
+
+			ser.Sync(nameof(global_write_mode), ref global_write_mode);
+
+			ser.Sync(nameof(header_counter), ref header_counter);
+			ser.Sync(nameof(header_pointer), ref header_pointer);
+			ser.Sync(nameof(addr_t), ref addr_t);
+			ser.Sync(nameof(ch_size), ref ch_size);
+			ser.Sync(nameof(scan_index), ref scan_index);
+			ser.Sync(nameof(read_time), ref read_time);
+			ser.Sync(nameof(zero_hole), ref zero_hole);
+
+			ser.Sync(nameof(color), ref color);
+			ser.Sync(nameof(local_GFX_index), ref local_GFX_index);
+			ser.Sync(nameof(temp_palette), ref temp_palette);
+			ser.Sync(nameof(temp_bit_0), ref temp_bit_0);
+			ser.Sync(nameof(temp_bit_1), ref temp_bit_1);
+			ser.Sync(nameof(disp_mode), ref disp_mode);
+			ser.Sync(nameof(BG_latch_1), ref BG_latch_1);
+			ser.Sync(nameof(pixel), ref pixel);
 
 			ser.EndSection();
 		}

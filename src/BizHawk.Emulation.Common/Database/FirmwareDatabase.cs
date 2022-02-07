@@ -1,4 +1,7 @@
+#nullable disable
+
 using System.Collections.Generic;
+using System.Linq;
 
 // ReSharper disable IdentifierTypo
 // ReSharper disable InconsistentNaming
@@ -15,8 +18,11 @@ namespace BizHawk.Emulation.Common
 
 		public static readonly IReadOnlyCollection<FirmwareRecord> FirmwareRecords;
 
+		public static readonly IReadOnlyList<FirmwarePatchOption> AllPatches;
+
 		static FirmwareDatabase()
 		{
+			List<FirmwarePatchOption> allPatches = new();
 			Dictionary<string, FirmwareFile> filesByHash = new();
 			List<FirmwareOption> options = new();
 			List<FirmwareRecord> records = new();
@@ -45,7 +51,14 @@ namespace BizHawk.Emulation.Common
 			void FirmwareAndOption(string hash, long size, string systemId, string id, string name, string desc)
 			{
 				Firmware(systemId, id, desc);
-				Option(systemId, id, File(hash, size, name, desc), FirmwareOptionStatus.Acceptable); //TODO should the single option for these firmwares be Ideal?
+				Option(systemId, id, File(hash, size, name, desc), FirmwareOptionStatus.Ideal);
+			}
+
+			void AddPatchAndMaybeReverse(FirmwarePatchOption fpo)
+			{
+				allPatches.Add(fpo);
+				if (fpo.Patches.Any(fpd => fpd.Overwrite)) return;
+				allPatches.Add(new(fpo.TargetHash, fpo.Patches.Reverse().ToArray(), fpo.BaseHash));
 			}
 
 			// FDS has two OK variants  (http://tcrf.net/Family_Computer_Disk_System)
@@ -55,7 +68,18 @@ namespace BizHawk.Emulation.Common
 			Option("NES", "Bios_FDS", in fdsNintendo, FirmwareOptionStatus.Ideal);
 			Option("NES", "Bios_FDS", in fdsTwinFc);
 
-			FirmwareAndOption("973E10840DB683CF3FAF61BD443090786B3A9F04", 262144, "SNES", "Rom_SGB", "SNES_sgb.sfc", "Super GameBoy Rom"); // World (Rev B) ?
+			var sgb = File("6ED55C4368333B57F6A2F8BBD70CCD87ED48058E", 262144, "SNES_SGB_(JU).sfc", "Super Game Boy Rom (JU)");
+			var sgbA = File("6380A5913ACE3041A305FBAF822B5A8847FEA7ED", 262144, "SNES_SGB_RevA_(JU).sfc", "Super Game Boy Rom (JU, Rev A)");
+			var sgbA_Beta = File("4ED5621A9022E1D94B673CC0F68EA24764E8D6BB", 262144, "SNES_SGB_RevABeta_(JU).sfc", "Super Game Boy Rom (JU, Rev A Beta)");
+			var sgbB = File("973E10840DB683CF3FAF61BD443090786B3A9F04", 262144, "SNES_SGB_RevB_(World).sfc", "Super Game Boy Rom (World, Rev B)");
+			var sgb2 = File("E5B2922CA137051059E4269B236D07A22C07BC84", 524288, "SNES_SGB2_(J).sfc", "Super Game Boy 2 Rom (J)");
+			Firmware("SNES", "Rom_SGB", "Super Game Boy Rom");
+			Firmware("SNES", "Rom_SGB2", "Super Game Boy 2 Rom");
+			Option("SNES", "Rom_SGB", in sgb, FirmwareOptionStatus.Ideal);
+			Option("SNES", "Rom_SGB", in sgbA, FirmwareOptionStatus.Ideal);
+			Option("SNES", "Rom_SGB", in sgbA_Beta);
+			Option("SNES", "Rom_SGB", in sgbB, FirmwareOptionStatus.Ideal);
+			Option("SNES", "Rom_SGB2", in sgb2, FirmwareOptionStatus.Ideal);
 			FirmwareAndOption("A002F4EFBA42775A31185D443F3ED1790B0E949A", 3072, "SNES", "CX4", "SNES_cx4.rom", "CX4 Rom");
 			FirmwareAndOption("188D471FEFEA71EB53F0EE7064697FF0971B1014", 8192, "SNES", "DSP1", "SNES_dsp1.rom", "DSP1 Rom");
 			FirmwareAndOption("78B724811F5F18D8C67669D9390397EB1A47A5E2", 8192, "SNES", "DSP1b", "SNES_dsp1b.rom", "DSP1b Rom");
@@ -90,7 +114,25 @@ namespace BizHawk.Emulation.Common
 
 			FirmwareAndOption("24F67BDEA115A2C847C8813A262502EE1607B7DF", 16384, "NDS", "bios7", "NDS_Bios7.bin", "ARM7 BIOS");
 			FirmwareAndOption("BFAAC75F101C135E32E2AAF541DE6B1BE4C8C62D", 4096, "NDS", "bios9", "NDS_Bios9.bin", "ARM9 BIOS");
-			FirmwareAndOption("22A7547DBC302BCBFB4005CFB5A2D426D3F85AC6", 262144, "NDS", "firmware", "NDS_Firmware.bin", "NDS Firmware (note: given hash is with blank user data)");
+			FirmwareAndOption("0000000000000000000000000000000000000000", 65536, "NDS", "bios7i", "NDS_Bios7i.bin", "ARM7i BIOS");
+			FirmwareAndOption("0000000000000000000000000000000000000000", 65536, "NDS", "bios9i", "NDS_Bios9i.bin", "ARM9i BIOS");
+			Firmware("NDS", "firmware", "NDS Firmware");
+			// throwing a ton of hashes from the interwebs
+			var knownhack1 = File("22A7547DBC302BCBFB4005CFB5A2D426D3F85AC6", 262144, "NDS_Firmware [b1].bin", "NDS Firmware", "known hack", true);
+			var knownhack2 = File("AE22DE59FBF3F35CCFBEACAEBA6FA87AC5E7B14B", 262144, "NDS_Firmware [b2].bin", "NDS Firmware", "known hack", true);
+			var knownhack3 = File("1CF9E67C2C703BB9961BBCDD39CD2C7E319A803B", 262144, "NDS_Firmware [b3].bin", "NDS Firmware", "known hack", true);
+			var likelygood1 = File("EDE9ADD041614EAA232059C63D8613B83FE4E954", 262144, "NDS_Firmware.bin", "NDS Firmware", "likely good");
+			var likelygood2 = File("2EF20B45D12CF00657D4B1BD37A5CC8506923440", 262144, "NDS_Firmware.bin", "NDS Firmware", "likely good");
+			var likelygood3 = File("87DAE2500E889737AF51F4A5B5845770A62482F5", 262144, "NDS_Lite_Firmware.bin", "NDS-Lite Firmware", "likely good");
+			Option("NDS", "firmware", in knownhack1);
+			Option("NDS", "firmware", in knownhack2);
+			Option("NDS", "firmware", in knownhack3);
+			Option("NDS", "firmware", in likelygood1);
+			Option("NDS", "firmware", in likelygood2);
+			Option("NDS", "firmware", in likelygood3);
+
+			FirmwareAndOption("0000000000000000000000000000000000000000", 131072, "NDS", "firmwarei", "DSi_Firmware.bin", "DSi Firmware");
+			FirmwareAndOption("0000000000000000000000000000000000000000", 251658304, "NDS", "nand", "DSi_Nand.bin", "DSi NAND");
 
 			FirmwareAndOption("E4ED47FAE31693E016B081C6BDA48DA5B70D7CCB", 512, "Lynx", "Boot", "LYNX_boot.img", "Boot Rom");
 
@@ -108,11 +150,12 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption("282EB7BC819AAD2A12FD954E76F7838A4E1A7929", 16384, "ZXSpectrum", "TRDOSROM", "ZX_trdos.rom", "TRDOS ROM");
 
 			// MSX
-			FirmwareAndOption("B398CFCB94C9F7E808E0FECE54813CFDFB96F8D0", 16384, "MSX", "bios_test", "MSX_bios.rom", "MSX BIOS");
-			FirmwareAndOption("18559FA9C2D9E99A319550D809009ECDBA6D396E", 16384, "MSX", "basic_test", "MSX_cbios_basic.rom", "MSX BASIC (C-BIOS v0.29a)");
 			FirmwareAndOption("2F997E8A57528518C82AB3693FDAE243DBBCC508", 32768, "MSX", "bios_test_ext", "MSX_cbios_main_msx1.rom", "MSX BIOS (C-BIOS v0.29a)");
-			FirmwareAndOption("E998F0C441F4F1800EF44E42CD1659150206CF79", 16384, "MSX", "bios_pal", "MSX_8020-20bios.rom", "MSX BIOS (Philips VG-8020)");
-			FirmwareAndOption("DF48902F5F12AF8867AE1A87F255145F0E5E0774", 16384, "MSX", "bios_jp", "MSX_4000bios.rom", "MSX BIOS (FS-4000)");
+			//FirmwareAndOption("E998F0C441F4F1800EF44E42CD1659150206CF79", 16384, "MSX", "bios_pal", "MSX_8020-20bios.rom", "MSX BIOS (Philips VG-8020)");
+			//FirmwareAndOption("DF48902F5F12AF8867AE1A87F255145F0E5E0774", 16384, "MSX", "bios_jp", "MSX_4000bios.rom", "MSX BIOS (FS-4000)");
+			FirmwareAndOption("409E82ADAC40F6BDD18EB6C84E8B2FBDC7FB5498", 32768, "MSX", "bios_basic_usa", "MSX.rom", "MSX BIOS and BASIC");
+			FirmwareAndOption("3656BB3BBC17D280D2016FE4F6FF3CDED3082A41", 32768, "MSX", "bios_basic_usa", "MSX.rom", "MSX 1.0 BIOS and BASIC");
+			FirmwareAndOption("302AFB5D8BE26C758309CA3DF611AE69CCED2821", 32768, "MSX", "bios_basic_jpn", "MSX_jpn.rom", "MSX 1.0 JPN BIOS and BASIC");
 
 			// Channel F
 			FirmwareAndOption("81193965A374D77B99B4743D317824B53C3E3C78", 1024, "ChannelF", "ChannelF_sl131253", "ChannelF_SL31253.rom", "Channel F Rom0");
@@ -202,7 +245,7 @@ namespace BizHawk.Emulation.Common
 			// http://forum.fobby.net/index.php?t=msg&goto=2763 [f]
 			// http://www.psxdev.net/forum/viewtopic.php?f=69&t=56 [p]
 			// https://en.wikipedia.org/wiki/PlayStation_models#Comparison_of_models [w]
-			// https://github.com/petrockblog/RetroPie-Setup/wiki/PCSX-Core-Playstation-1 [g] 
+			// https://github.com/petrockblog/RetroPie-Setup/wiki/PCSX-Core-Playstation-1 [g]
 			// http://redump.org/datfile/psx-bios/ also
 			// http://emulation.gametechwiki.com/index.php/File_Hashes [t]
 			var ps_10j = File("343883A7B555646DA8CEE54AADD2795B6E7DD070", 524288, "PSX_1.0(J).bin", "PSX BIOS (Version 1.0 J)", "Used on SCPH-1000, DTL-H1000 [g]. This is Rev for A hardware [w].");
@@ -290,6 +333,22 @@ namespace BizHawk.Emulation.Common
 			// Early revisions of GB/C boot ROMs are not well-supported because the corresponding CPU differences are not emulated.
 			Option("GB", "World", File("8BD501E31921E9601788316DBD3CE9833A97BCBC", 256, "dmg0.bin", "Game Boy Boot Rom (Early J Revision)"), FirmwareOptionStatus.Unacceptable);
 			Option("GB", "World", File("4E68F9DA03C310E84C523654B9026E51F26CE7F0", 256, "mgb.bin", "Game Boy Boot Rom (Pocket)"), FirmwareOptionStatus.Acceptable);
+			FirmwarePatchData gbCommonPatchAt0xFD = new(0xFD, new byte[] { 0xFE }); // 2 pairs, all have either 0x01 or 0xFF at this octet
+			AddPatchAndMaybeReverse(new(
+				"4ED31EC6B0B175BB109C0EB5FD3D193DA823339F",
+				gbCommonPatchAt0xFD,
+				"4E68F9DA03C310E84C523654B9026E51F26CE7F0"));
+
+			// these are only used for supported SGB cores
+			// placed in GB as these are within the Game Boy side rather than the SNES side
+			Firmware("GB", "SGB", "Super Game Boy Boot Rom");
+			Option("GB", "SGB", File("AA2F50A77DFB4823DA96BA99309085A3C6278515", 256, "sgb.bin", "Super Game Boy Boot Rom"), FirmwareOptionStatus.Ideal);
+			Firmware("GB", "SGB2", "Super Game Boy 2 Boot Rom");
+			Option("GB", "SGB2", File("93407EA10D2F30AB96A314D8ECA44FE160AEA734", 256, "sgb2.bin", "Super Game Boy 2 Boot Rom"), FirmwareOptionStatus.Ideal);
+			AddPatchAndMaybeReverse(new(
+				"AA2F50A77DFB4823DA96BA99309085A3C6278515",
+				gbCommonPatchAt0xFD,
+				"93407EA10D2F30AB96A314D8ECA44FE160AEA734"));
 
 			Firmware("GBC", "World", "Game Boy Color Boot Rom");
 			Option("GBC", "World", File("1293D68BF9643BC4F36954C1E80E38F39864528D", 2304, "cgb.bin", "Game Boy Color Boot Rom"), FirmwareOptionStatus.Ideal);
@@ -297,6 +356,10 @@ namespace BizHawk.Emulation.Common
 			Firmware("GBC", "AGB", "Game Boy Color Boot Rom (GBA)");
 			Option("GBC", "AGB", File("FA5287E24B0FA533B3B5EF2B28A81245346C1A0F", 2304, "agb.bin", "Game Boy Color Boot Rom (GBA)"), FirmwareOptionStatus.Ideal);
 			Option("GBC", "AGB", File("1ECAFA77AB3172193F3305486A857F443E28EBD9", 2304, "agb_gambatte.bin", "Game Boy Color Boot Rom (GBA, Gambatte RE)"), FirmwareOptionStatus.Bad);
+			AddPatchAndMaybeReverse(new(
+				"1293D68BF9643BC4F36954C1E80E38F39864528D",
+				new FirmwarePatchData(0xF3, new byte[] { 0x03, 0x00, 0xCD, 0x1D, 0xD5, 0xAA, 0x4F, 0x90, 0x74 }),
+				"1ECAFA77AB3172193F3305486A857F443E28EBD9"));
 
 			Firmware("PCFX", "BIOS", "PCFX bios");
 			var pcfxbios = File("1A77FD83E337F906AECAB27A1604DB064CF10074", 1024 * 1024, "PCFX_bios.bin", "PCFX BIOS 1.00");
@@ -315,6 +378,7 @@ namespace BizHawk.Emulation.Common
 			Option("PS2", "BIOS", File("F9229FE159D0353B9F0632F3FDC66819C9030458", 4 * 1024 * 1024, "ps2-0230a-20080220.bin", "PS2 Bios"), FirmwareOptionStatus.Ideal);
 			Option("PS2", "BIOS", File("9915B5BA56798F4027AC1BD8D10ABE0C1C9C326A", 4 * 1024 * 1024, "ps2-0230e-20080220.bin", "PS2 Bios"));
 
+			AllPatches = allPatches;
 			FirmwareFilesByHash = filesByHash;
 			FirmwareOptions = options;
 			FirmwareRecords = records;

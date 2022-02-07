@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 				R.ppu.color_palette[3] = color_palette_Gr[3];
 			}
 
-			if (_tracer.Enabled)
+			if (_tracer.IsEnabled())
 			{
 				L.cpu.TraceCallback = s => _tracer.Put(s);
 			}
@@ -52,8 +52,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 			{
 				L.cpu.TraceCallback = null;
 			}
-
-			_frame++;
 
 			if (controller.IsPressed("P1 Power"))
 			{
@@ -90,6 +88,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 			{
 				_lagcount++;
 			}
+
+			_frame++;
 
 			return true;
 		}
@@ -225,7 +225,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 		public int Frame => _frame;
 
-		public string SystemId => "DGB";
+		public string SystemId => VSystemID.Raw.GBL;
 
 		public bool DeterministicEmulation { get; set; }
 

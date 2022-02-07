@@ -1,3 +1,4 @@
+using System;
 using System.Windows.Forms;
 
 using BizHawk.Bizware.BizwareGL;
@@ -9,6 +10,12 @@ namespace BizHawk.Bizware.OpenTK3
 {
 	internal class GLControlWrapper : GLControl, IGraphicsControl
 	{
+		public RenderTargetWrapper RenderTargetWrapper
+		{
+			get => throw new NotImplementedException();
+			set => throw new NotImplementedException();
+		}
+
 		// Note: In order to work around bugs in OpenTK which sometimes do things to a context without making that context active first...
 		// we are going to push and pop the context before doing stuff
 		public GLControlWrapper(IGL_TK owner)

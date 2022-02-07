@@ -4,6 +4,8 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
+using BizHawk.Client.Common;
+
 namespace BizHawk.Client.EmuHawk
 {
 	// this is a little messy right now because of remnants of the old config system
@@ -33,8 +35,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool _autoTab;
 
-		public ControllerConfigPanel()
+		private readonly IReadOnlyList<string> _effectiveModList;
+
+		public ControllerConfigPanel(IReadOnlyList<string> effectiveModList)
 		{
+			_effectiveModList = effectiveModList;
 			InitializeComponent();
 		}
 
@@ -121,7 +126,7 @@ namespace BizHawk.Client.EmuHawk
 					x += columnWidth;
 				}
 
-				var iw = new InputCompositeWidget
+				var iw = new InputCompositeWidget(_effectiveModList)
 				{
 					Location = new Point(x, y),
 					Size = new Size(_inputSize, UIHelper.ScaleY(23)),

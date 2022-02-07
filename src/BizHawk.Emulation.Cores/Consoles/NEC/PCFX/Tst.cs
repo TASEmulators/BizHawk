@@ -5,13 +5,12 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 {
-	[Core("T. S. T.", "Mednafen Team", true, true, "1.26.1",
-		"https://mednafen.github.io/releases/", false, "PC-FX")]
+	[PortedCore(CoreNames.TST, "Mednafen Team", "1.27.1", "https://mednafen.github.io/releases/")]
 	public class Tst : NymaCore
 	{
-		[CoreConstructor("PCFX")]
+		[CoreConstructor(VSystemID.Raw.PCFX)]
 		public Tst(CoreLoadParameters<NymaSettings, NymaSyncSettings> lp)
-			: base(lp.Comm, "PCFX", "PC-FX Controller", lp.Settings, lp.SyncSettings)
+			: base(lp.Comm, VSystemID.Raw.PCFX, "PC-FX Controller", lp.Settings, lp.SyncSettings)
 		{
 			if (lp.Roms.Count > 0)
 				throw new InvalidOperationException("To load a PC-FX game, please load the CUE file and not the BIN file.");

@@ -6,13 +6,13 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Belogic
 {
-	[Core("uzem", "David Etherton", true, true, "", "", false)]
+	[PortedCore(CoreNames.Uzem, "David Etherton")]
 	public class Uzem : WaterboxCore
 	{
 		private LibUzem _uze;
 		private readonly bool _mouseEnabled;
 
-		[CoreConstructor("UZE")]
+		[CoreConstructor(VSystemID.Raw.UZE)]
 		public Uzem(CoreComm comm, byte[] rom)
 			: base(comm, new Configuration
 			{
@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Belogic
 				MaxWidth = 720,
 				MaxHeight = 224,
 				MaxSamples = 4096,
-				SystemId = "UZE",
+				SystemId = VSystemID.Raw.UZE,
 				DefaultFpsNumerator = 28618182,
 				DefaultFpsDenominator = 476840
 			})
@@ -47,22 +47,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Belogic
 			PostInit();
 		}
 
-		private static readonly ControllerDefinition TwoPads = new ControllerDefinition
+		private static readonly ControllerDefinition TwoPads = new ControllerDefinition("SNES Controller")
 		{
-			Name = "SNES Controller",
 			BoolButtons =
 			{
 				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Select", "P1 Start", "P1 X", "P1 A", "P1 B", "P1 Y", "P1 L", "P1 R",
 				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Select", "P2 Start", "P2 X", "P2 A", "P2 B", "P2 Y", "P2 L", "P2 R",
 				"Power"
 			}
-		};
+		}.MakeImmutable();
 
-		private static readonly ControllerDefinition Mouse = new ControllerDefinition
+		private static readonly ControllerDefinition Mouse = new ControllerDefinition("SNES Controller")
 		{
-			Name = "SNES Controller",
 			BoolButtons = { "P1 Mouse Left", "P1 Mouse Right", "Power" }
-		}.AddXYPair("P1 Mouse {0}", AxisPairOrientation.RightAndUp, (-127).RangeTo(127), 0); //TODO verify direction against hardware
+		}.AddXYPair("P1 Mouse {0}", AxisPairOrientation.RightAndUp, (-127).RangeTo(127), 0) //TODO verify direction against hardware
+			.MakeImmutable();
 
 		private static readonly string[] PadBits =
 		{

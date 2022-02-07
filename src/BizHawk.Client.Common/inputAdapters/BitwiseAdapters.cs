@@ -1,10 +1,14 @@
-﻿using BizHawk.Emulation.Common;
+﻿using System.Collections.Generic;
+
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
 	public class AndAdapter : IInputAdapter
 	{
 		public ControllerDefinition Definition => Source.Definition;
+
+		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
 
 		public bool IsPressed(string button)
 		{
@@ -20,6 +24,10 @@ namespace BizHawk.Client.Common
 		// this works in the code because SourceOr is the autofire controller
 		public int AxisValue(string name) => Source.AxisValue(name);
 
+		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Source.GetHapticsSnapshot();
+
+		public void SetHapticChannelStrength(string name, int strength) => Source.SetHapticChannelStrength(name, strength);
+
 		public IController Source { get; set; }
 		internal IController SourceAnd { get; set; }
 	}
@@ -27,6 +35,8 @@ namespace BizHawk.Client.Common
 	public class XorAdapter : IInputAdapter
 	{
 		public ControllerDefinition Definition => Source.Definition;
+
+		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
 
 		public bool IsPressed(string button)
 		{
@@ -42,6 +52,10 @@ namespace BizHawk.Client.Common
 		// this works in the code because SourceOr is the autofire controller
 		public int AxisValue(string name) => Source.AxisValue(name);
 
+		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Source.GetHapticsSnapshot();
+
+		public void SetHapticChannelStrength(string name, int strength) => Source.SetHapticChannelStrength(name, strength);
+
 		public IController Source { get; set; }
 		internal IController SourceXor { get; set; }
 	}
@@ -49,6 +63,8 @@ namespace BizHawk.Client.Common
 	public class ORAdapter : IInputAdapter
 	{
 		public ControllerDefinition Definition => Source.Definition;
+
+		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
 
 		public bool IsPressed(string button)
 		{
@@ -59,6 +75,10 @@ namespace BizHawk.Client.Common
 		// pass axes solely from the original source
 		// this works in the code because SourceOr is the autofire controller
 		public int AxisValue(string name) => Source.AxisValue(name);
+
+		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Source.GetHapticsSnapshot();
+
+		public void SetHapticChannelStrength(string name, int strength) => Source.SetHapticChannelStrength(name, strength);
 
 		public IController Source { get; set; }
 		internal IController SourceOr { get; set; }

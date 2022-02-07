@@ -90,10 +90,11 @@ namespace BizHawk.Client.Common
 		private readonly List<UIDisplay> _guiTextList = new List<UIDisplay>();
 		private readonly List<UIDisplay> _ramWatchList = new List<UIDisplay>();
 
-		public void AddMessage(string message)
-		{
-			_messages.Add(new UIMessage { Message = message, ExpireAt = DateTime.Now + TimeSpan.FromSeconds(2) });
-		}
+		public void AddMessage(string message, int? duration = null)
+			=> _messages.Add(new() {
+				Message = message,
+				ExpireAt = DateTime.Now + TimeSpan.FromSeconds(duration ?? _config.OSDMessageDuration),
+			});
 
 		public void ClearRamWatches()
 		{
@@ -182,12 +183,12 @@ namespace BizHawk.Client.Common
 
 		public string InputStrMovie()
 		{
-			return MakeStringFor(_movieSession.MovieController);
+			return MakeStringFor(_movieSession.MovieController, cache: true);
 		}
 
 		public string InputStrImmediate()
 		{
-			return MakeStringFor(_inputManager.AutofireStickyXorAdapter);
+			return MakeStringFor(_inputManager.AutofireStickyXorAdapter, cache: true);
 		}
 
 		public string InputPrevious()
@@ -205,20 +206,19 @@ namespace BizHawk.Client.Common
 		}
 
 		public string InputStrOrAll()
-		{
-			IController m = _inputManager.AutofireStickyXorAdapter;
+			=> _movieSession.Movie.IsPlayingOrRecording() && _emulator.Frame > 0
+				? MakeStringFor(_inputManager.AutofireStickyXorAdapter.Or(_movieSession.Movie.GetInputState(_emulator.Frame - 1)))
+				: InputStrImmediate();
 
-			if (_movieSession.Movie.IsPlayingOrRecording() && _emulator.Frame > 0)
+		private string MakeStringFor(IController controller, bool cache = false)
+		{
+			var idg = controller.InputDisplayGenerator;
+			if (idg is null)
 			{
-				m = m.Or(_movieSession.Movie.GetInputState(_emulator.Frame - 1));
+				idg = new Bk2InputDisplayGenerator(_emulator.SystemId, controller);
+				if (cache) controller.InputDisplayGenerator = idg;
 			}
-
-			return MakeStringFor(m);
-		}
-
-		private string MakeStringFor(IController controller)
-		{
-			return new Bk2InputDisplayGenerator(_emulator.SystemId, controller).Generate();
+			return idg.Generate();
 		}
 
 		public string MakeIntersectImmediatePrevious()
@@ -307,7 +307,8 @@ namespace BizHawk.Client.Common
 					// basically we're tinting whatever is pressed because it's sticky specially
 					// in order to achieve this we want to avoid drawing anything pink that isn't actually held down right now
 					// so we make an AND adapter and combine it using immediate & sticky
-					var autoString = MakeStringFor(_inputManager.StickyXorAdapter.Source.Xor(_inputManager.AutofireStickyXorAdapter).And(_inputManager.AutofireStickyXorAdapter));
+					// (adapter creation moved to InputManager)
+					var autoString = MakeStringFor(_inputManager.WeirdStickyControllerForInputDisplay, cache: true);
 					g.DrawString(autoString, MessageFont, autoColor, point.X, point.Y);
 
 					//recolor everything that's changed from the previous input

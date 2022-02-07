@@ -13,7 +13,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Libretro
 {
-	[Core("Libretro", "zeromus", isPorted: false, isReleased: false)]
+	[Core(CoreNames.Libretro, "zeromus", isReleased: false)]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public unsafe partial class LibretroCore : IEmulator, ISettable<LibretroCore.Settings, LibretroCore.SyncSettings>,
 		ISaveRam, IStatable, IVideoProvider, IInputPollable
@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			_SyncSettings = new SyncSettings();
 			CoreComm = nextComm;
 
-			string dllPath = Path.Combine(CoreComm.CoreFileProvider.DllPath(), "LibretroBridge.dll");
+			var dllPath = Path.Combine(CoreComm.CoreFileProvider.DllPath(), OSTailoredCode.IsUnixHost ? "LibretroBridge.so" : "LibretroBridge.dll");
 			api = new LibretroApi(dllPath, corePath);
 
 			if (api.comm->env.retro_api_version != 1)
@@ -245,8 +245,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		public static ControllerDefinition CreateControllerDefinition(SyncSettings syncSettings)
 		{
-			ControllerDefinition definition = new ControllerDefinition();
-			definition.Name = "LibRetro Controls"; // <-- for compatibility
+			ControllerDefinition definition = new("LibRetro Controls"/*for compatibility*/);
 
 			foreach(var item in new[] {
 					"P1 {0} Up", "P1 {0} Down", "P1 {0} Left", "P1 {0} Right", "P1 {0} Select", "P1 {0} Start", "P1 {0} Y", "P1 {0} B", "P1 {0} X", "P1 {0} A", "P1 {0} L", "P1 {0} R",
@@ -276,7 +275,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 				definition.CategoryLabels[key] = "RetroKeyboard";
 			}
 
-			return definition;
+			return definition.MakeImmutable();
 		}
 
 		public ControllerDefinition ControllerDefinition { get; }
@@ -289,7 +288,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		}
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; set; }
-		public string SystemId => "Libretro";
+		public string SystemId => VSystemID.Raw.Libretro;
 		public bool DeterministicEmulation => false;
 
 		//TODO - terrible things will happen if this changes at runtime

@@ -139,9 +139,9 @@ namespace BizHawk.Tests.Client.Common.Movie
 				ss.Frame = frame;
 				zw.Capture(frame, ss);
 			}
-			var kvp = zw.GetStateClosestToFrame(10440);
-			var actual = StateSource.GetFrameNumberInState(kvp.Value);
-			Assert.AreEqual(kvp.Key, actual);
+			var (f, data) = zw.GetStateClosestToFrame(10440);
+			var actual = StateSource.GetFrameNumberInState(data);
+			Assert.AreEqual(f, actual);
 			Assert.IsTrue(actual <= 10440);
 		}
 
@@ -565,7 +565,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 						throw new Exception("Length field corrupted");
 					var bytes = buff.AsSpan(0, length - 8);
 					br.Read(bytes);
-					if (br.ReadInt32() != CRC32.Calculate(bytes))
+					if (br.ReadUInt32() != CRC32.Calculate(bytes))
 						throw new Exception("Data or CRC field corrupted");
 				}
 			}

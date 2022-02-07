@@ -22,6 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public int m_vol = 1;
 
 		public int dmc_dma_countdown = -1;
+		public int DMC_RDY_check;
 		public bool call_from_write;
 
 		public bool recalculate = false;
@@ -651,40 +652,53 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		} // class TriangleUnit
 
-		private sealed class DMCUnit
+		public sealed class DMCUnit
 		{
 			private readonly APU apu;
+			private readonly NES nes;
 			private readonly int[] DMC_RATE;
 			public DMCUnit(APU apu, bool pal)
 			{
 				this.apu = apu;
+				nes = apu.nes;
 				out_silence = true;
 				DMC_RATE = pal ? DMC_RATE_PAL : DMC_RATE_NTSC;
 				timer_reload = DMC_RATE[0];
-				timer = timer_reload;
+				timer = 1020; // confirmed in VisualNES, on console it seems the APU runs a couple cycles before CPU exits reset
 				sample_buffer_filled = false;
 				out_deltacounter = 64;
-				out_bits_remaining = 0;
-				user_address = 0x8000; // even though this can't be accessed by writing, it is indeed the power up address
+				out_bits_remaining = 7; //confirmed in VisualNES
+				user_address = 0xC000;
+				sample_address = 0xC000;
 				user_length = 1;
 			}
 
-			private bool irq_enabled;
-			private bool loop_flag;
-			private int timer_reload;
+			public bool irq_enabled;
+			public bool loop_flag;
+			public int timer_reload;
 
 			// dmc delay per visual 2a03
-			private int delay;
+			public int delay;
 
 			// this timer never stops, ever, so it is convenient to use for even/odd timing used elsewhere
 			public int timer;
-			private int user_address;
+			public int user_address;
 			public uint user_length, sample_length;
-			private int sample_address, sample_buffer;
-			private bool sample_buffer_filled;
+			public int sample_address, sample_buffer;
+			public bool sample_buffer_filled;
 
-			private int out_shift, out_bits_remaining, out_deltacounter;
-			private bool out_silence;
+			public int out_shift, out_bits_remaining, out_deltacounter;
+			public bool out_silence;
+			// happens when buffer is filled and emptied at the same time
+			public bool fill_glitch;
+			// happens when a write triggered refill that sets length to zero happens too close to an automatic DMA
+			// (causes 1-cycle blips in dmc_dma_start_test_v2)
+			public bool fill_glitch_2;
+			public bool fill_glitch_2_end;
+
+			public bool pending_disable;
+
+			public bool timer_just_reloaded;
 
 			public int sample => out_deltacounter /* - 64*/;
 
@@ -708,8 +722,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ser.Sync(nameof(out_bits_remaining), ref out_bits_remaining);
 				ser.Sync(nameof(out_deltacounter), ref out_deltacounter);
 				ser.Sync(nameof(out_silence), ref out_silence);
+				ser.Sync(nameof(fill_glitch), ref fill_glitch);
+				ser.Sync(nameof(fill_glitch_2), ref fill_glitch_2);
+				ser.Sync(nameof(fill_glitch_2_end), ref fill_glitch_2_end);
+				ser.Sync(nameof(timer_just_reloaded), ref timer_just_reloaded);
 
-				ser.Sync("dmc_call_delay", ref delay);
+				ser.Sync(nameof(pending_disable), ref pending_disable);
+
+				ser.Sync(nameof(delay), ref delay);
 
 				ser.EndSection();
 			}
@@ -717,58 +737,74 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			public void Run()
 			{
+				timer_just_reloaded = false;
 				if (timer > 0) timer--;
 				if (timer == 0)
 				{
 					timer = timer_reload;
 					Clock();
+					timer_just_reloaded = true;
 				}
 
 				// Any time the sample buffer is in an empty state and bytes remaining is not zero, the following occur: 
 				// also note that the halt for DMC DMA occurs on APU cycles only (hence the timer check)
-				if (!sample_buffer_filled && sample_length > 0  && apu.dmc_dma_countdown == -1 && delay==0)
+				if (!sample_buffer_filled && ((sample_length > 0) || fill_glitch_2) && (apu.dmc_dma_countdown == -1) && (delay == 0))
 				{
-					// calls from write take one less cycle, but start on a write instead of a read
-					if (!apu.call_from_write)
+					if (!fill_glitch) 
 					{
-						if (timer % 2 == 1)
+						if (!apu.call_from_write)
 						{
-							delay = 3;
-						} else
+							// when called due to empty bueffer while DMC running, there is no delay
+							nes.cpu.RDY = false;
+							nes.dmc_dma_exec = true;
+
+							if (fill_glitch_2)
+							{
+								// this will only run for one cycle and not actually run a DMA
+								//Console.WriteLine("fill glitch 2");
+								apu.dmc_dma_countdown = -2;
+								apu.DMC_RDY_check = -2;
+								fill_glitch_2_end = true;
+							}
+							else
+							{
+								apu.dmc_dma_countdown = 3;
+								apu.DMC_RDY_check = 2;
+							}
+						}
+						else
 						{
-							delay = 2;
+							// when called from write, either a 2 or 3 cycle delay in activation.
+							if (timer % 2 == 0)
+							{
+								delay = 3;
+							}
+							else
+							{
+								delay = 2;
+							}					
 						}
 					}
 					else
 					{
-						if (timer % 2 == 1)
-						{
-							delay = 2;
-						}
-						else
-						{
-							delay = 3;
-						}
+						// if refill and empty happen simultaneously, do not do another refill and act as though the sample buffer was filled
+						//Console.WriteLine("fill glitch");
+						sample_buffer_filled = true;
+						fill_glitch = false;
 					}
 				}
 
-				// I did some tests in Visual 2A03 and there seems to be some delay betwen when a DMC is first needed and when the 
-				// process to execute the DMA starts. The details are not currently known, but it seems to be a 2 cycle delay
+				// VisualNES and test roms verify that DMC DMA is 1 cycle shorter for calls from writes
+				// however, if the third cycle lands on a write, there is a 2 cycle delay even if the instruction only has a single write
+				// therefore, the RDY_check is 2 in both cases.
 				if (delay != 0)
 				{
 					delay--;
 					if (delay == 0)
 					{
-						if (!apu.call_from_write)
-						{
-							apu.dmc_dma_countdown = 4;
-						}
-						else
-						{
-
-							apu.dmc_dma_countdown = 3;
-							apu.call_from_write = false;
-						}
+						apu.dmc_dma_countdown = 3;
+						apu.DMC_RDY_check = 2;
+						apu.call_from_write = false;
 					}
 				}
 			}
@@ -821,11 +857,43 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			public void set_lenctr_en(bool en)
 			{
-				if (!en)
+				if(!en)
 				{
-					// If the DMC bit is clear, the DMC bytes remaining will be set to 0 
-					// and the DMC will silence when it empties.
-					sample_length = 0;
+					// in these cases, the disable happens right as the reload begins, it is cancelled similar to a write triggered reload
+					// cancelling an automatic reload, and has the same timing (still uses fill_glitch_2)
+					if (((timer == 3) || (timer == 2)) && (out_bits_remaining == 0) && (sample_length != 0))
+					{
+						//Console.WriteLine("glitch 3 " + timer);
+						sample_length = 0;
+						fill_glitch_2 = true;
+						apu.dmc_irq = false;
+						apu.SyncIRQ();
+						return;
+					}
+					
+					// in these cases the disable happens too late and the reload (andpotential IRQ) still happen
+					if ((timer == 1) && (out_bits_remaining == 0) && (sample_length != 0))
+					{
+						//Console.WriteLine("glitch 4 " + timer);
+						pending_disable = true;
+						apu.dmc_irq = false;
+						apu.SyncIRQ();
+						return;
+					}
+
+					// if a fetch / reload is in progress, writing here as no immediate effect
+					// but it seems IRQs can be cancelled after the fetch before IRQ
+					if ((apu.dmc_dma_countdown > 0) || (delay != 0) || (apu.dmc_reload_countdown!= 0))
+					{
+						if (apu.dmc_reload_countdown != 0) { apu.dmc_irq_glitch = true; }
+
+						pending_disable = true;
+					}
+					else
+					{
+						sample_length = 0;
+					}
+								
 				}
 				else
 				{
@@ -888,20 +956,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					sample_buffer = apu.nes.ReadMemory((ushort)sample_address);
 					sample_buffer_filled = true;
 					sample_address = (ushort)(sample_address + 1);
+
+					//sample address wraps to 0x8000, even though this cannot be reached by write to address reg
+					if (sample_address == 0) { sample_address = 0x8000; }
 					// Console.WriteLine(sample_length);
 					// Console.WriteLine(user_length);
-					sample_length--;
-					// apu.pending_length_change = 1;
+
+					apu.dmc_reload_countdown = 3;
 				}
-				if (sample_length == 0)
-				{
-					if (loop_flag)
-					{
-						sample_address = user_address;
-						sample_length = user_length;
-					}
-					else if (irq_enabled) apu.dmc_irq = true;
-				}
+				
 				// Console.WriteLine("fetching dmc byte: {0:X2}", sample_buffer);
 			}
 		}
@@ -910,6 +973,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			ser.Sync(nameof(irq_pending), ref irq_pending);
 			ser.Sync(nameof(dmc_irq), ref dmc_irq);
+			ser.Sync(nameof(dmc_irq_glitch), ref dmc_irq_glitch);
+			ser.Sync(nameof(dmc_reload_countdown), ref dmc_reload_countdown);
 			ser.Sync(nameof(pending_reg), ref pending_reg);
 			ser.Sync(nameof(pending_val), ref pending_val);
 
@@ -921,12 +986,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(sequence_reset_pending), ref sequence_reset_pending);
 			ser.Sync(nameof(sequencer_irq_clear_pending), ref sequencer_irq_clear_pending);
 			ser.Sync(nameof(sequencer_irq_assert), ref sequencer_irq_assert);
+			ser.Sync(nameof(sequencer_check_1), ref sequencer_check_1);
+			ser.Sync(nameof(sequencer_check_2), ref sequencer_check_2);
 
 			ser.Sync(nameof(dmc_dma_countdown), ref dmc_dma_countdown);
-			ser.Sync("sample_length_delay", ref pending_length_change);
-			ser.Sync("dmc_called_from_write", ref call_from_write);
-			ser.Sync("sequencer_tick_delay", ref seq_tick);
-			ser.Sync("seq_val_to_apply", ref seq_val);
+			ser.Sync(nameof(DMC_RDY_check), ref DMC_RDY_check);
+			ser.Sync(nameof(call_from_write), ref call_from_write);
+			ser.Sync(nameof(seq_tick), ref seq_tick);
+			ser.Sync(nameof(seq_val), ref seq_val);
 			ser.Sync(nameof(sequencer_irq_flag), ref sequencer_irq_flag);
 			ser.Sync(nameof(len_clock_active), ref len_clock_active);
 
@@ -945,10 +1012,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public PulseUnit[] pulse = new PulseUnit[2];
 		public TriangleUnit triangle;
 		public NoiseUnit noise;
-		private readonly DMCUnit dmc;
+		public readonly DMCUnit dmc;
 
 		private bool irq_pending;
+		public int dmc_reload_countdown;
 		private bool dmc_irq;
+		public bool dmc_irq_glitch;
 		private int pending_reg = -1;
 		private bool doing_tick_quarter = false;
 		private byte pending_val = 0;
@@ -965,6 +1034,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		private readonly int[][] sequencer_lut = new int[2][];
+
+		private int sequencer_check_1, sequencer_check_2;
 
 		private static readonly int[][] sequencer_lut_ntsc = {
 			new[]{7457,14913,22371,29830},
@@ -1005,6 +1076,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 					sequencer_counter = 0;
 					sequencer_step = 0;
+
+					if (sequencer_mode == 0) { sequencer_check_2 = sequencer_lut[0][3] - 2; }
+					else { sequencer_check_2 = sequencer_lut[1][4] - 2; }
 				}
 			}
 		}
@@ -1114,13 +1188,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			sequencer_counter = 0;
 			sequencer_step = 0;
+
+			sequencer_check_1 = (sequencer_lut[0][1] - 1);
+
+			if(sequencer_mode == 0) { sequencer_check_2 = sequencer_lut[0][3] - 2; }
+			else { sequencer_check_2 = sequencer_lut[1][4] - 2; }
+
+			dmc.fill_glitch = false;
+			dmc.fill_glitch_2 = false;
 		}
 
 		public void NESHardReset()
 		{
 			// "at power on it is as if $00 was written to $4017 9-12 cycles before the reset vector"
-			// that translates to a starting value for the counter of -3
-			sequencer_counter = -1;
+			// DMC seems to run for a couple cycles after reset, so aim for the upper end of that range (12)
+			sequencer_counter = 2;
+
+			sequencer_check_1 = (sequencer_lut[0][1] - 1);
+
+			if (sequencer_mode == 0) { sequencer_check_2 = sequencer_lut[0][3] - 2; }
+			else { sequencer_check_2 = sequencer_lut[1][4] - 2; }
+
+			dmc.fill_glitch = false;
+			dmc.fill_glitch_2 = false;
 		}
 
 		public void WriteReg(int addr, byte val)
@@ -1164,7 +1254,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 					else if (addr == 0x4017)
 					{
-						if (dmc.timer%2==0)
+						if (dmc.timer % 2 == 0)
 						{
 							seq_tick = 3;
 
@@ -1223,8 +1313,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public int DebugCallbackDivider;
 		public int DebugCallbackTimer;
 
-		private int pending_length_change;
-
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void RunOneFirst()
 		{
@@ -1242,24 +1330,41 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void RunOneLast()
 		{
-			if (pending_length_change > 0)
-			{
-				pending_length_change--;
-				if (pending_length_change == 0)
-				{
-					dmc.sample_length--;
-				}
-			}
-
 			// we need to predict if there will be a length clock here, because the sequencer ticks last, but the 
 			// timer reload shouldn't happen if length clock and write happen simultaneously
 			// I'm not sure if we can avoid this by simply processing the sequencer first
 			// but at the moment that would break everything, so this is good enough for now
-			if (sequencer_counter == (sequencer_lut[0][1] - 1) ||
-				(sequencer_counter == sequencer_lut[0][3] - 2 && sequencer_mode == 0) ||
-				(sequencer_counter == sequencer_lut[1][4] - 2 && sequencer_mode == 1))
+			if ((sequencer_counter == sequencer_check_1) || (sequencer_counter == sequencer_check_2))
 			{
 				len_clock_active = true;
+			}
+
+			// writes on the same cycle as reload disable IRQ if it is set, so put this here before writes
+			if (dmc_reload_countdown > 0)
+			{
+				dmc_reload_countdown--;
+				if (dmc_reload_countdown == 0)
+				{
+					dmc.sample_length--;
+
+					if (dmc.sample_length == 0)
+					{
+						if (dmc.loop_flag)
+						{
+							dmc.sample_address = dmc.user_address;
+							dmc.sample_length = dmc.user_length;
+						}
+						else if (dmc.irq_enabled && !dmc_irq_glitch) { dmc_irq = true; }
+					}
+					
+					if (dmc.pending_disable)
+					{
+						dmc.sample_length = 0;
+						dmc.pending_disable = false;
+					}
+
+					dmc_irq_glitch = false;
+				}
 			}
 
 			// handle writes
@@ -1268,7 +1373,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// the current code simply matches known behaviour			
 			if (pending_reg != -1)
 			{
-				if (pending_reg == 0x4015 || pending_reg == 0x4015 || pending_reg == 0x4003 || pending_reg == 0x4007)
+				if ( pending_reg == 0x4003 || pending_reg == 0x4007 || pending_reg == 0x4010 || pending_reg == 0x4015 || pending_reg == 0x4017)
 				{
 					_WriteReg(pending_reg, pending_val);
 					pending_reg = -1;
@@ -1295,13 +1400,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 
+			
+
 			SyncIRQ();
 			nes._irq_apu = irq_pending;
 
 			// since the units run concurrently, the APU frame sequencer is ran last because
 			// it can change the output values of the pulse/triangle channels
 			// we want the changes to affect it on the *next* cycle.
-
 			if (sequencer_irq_flag == false)
 				sequencer_irq = false;
 

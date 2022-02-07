@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 
 using BizHawk.Client.Common;
-using BizHawk.Common.BufferExtensions;
+using BizHawk.Common;
 using BizHawk.Common.IOExtensions;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -29,7 +29,7 @@ namespace BizHawk.Tests.Client.Common.Dearchive
 		private byte[] Rom => _rom.Value;
 
 		[TestMethod]
-		public void SanityCheck() => Assert.AreEqual("70DCA8E791878BDD32426391E4233EA52B47CDD1", Rom.HashSHA1());
+		public void SanityCheck() => Assert.AreEqual("SHA1:70DCA8E791878BDD32426391E4233EA52B47CDD1", SHA1Checksum.ComputePrefixedHex(Rom));
 
 		[TestMethod]
 		public void TestSharpCompress()
@@ -46,7 +46,8 @@ namespace BizHawk.Tests.Client.Common.Dearchive
 				Assert.AreEqual(1, items!.Count, $"{filename} contains 1 file, but was detected as containing {items.Count} files");
 				using MemoryStream ms = new((int) items[0].Size);
 				af.ExtractFile(items[0].ArchiveIndex, ms);
-//				Assert.IsTrue(ms.ReadAllBytes().SequenceEqual(Rom), $"the file extracted from {filename} doesn't match the uncompressed file"); //TODO less dumb way of doing this? also it doesn't work
+				ms.Seek(0L, SeekOrigin.Begin);
+				Assert.IsTrue(ms.ReadAllBytes().SequenceEqual(Rom), $"the file extracted from {filename} doesn't match the uncompressed file");
 			}
 		}
 	}

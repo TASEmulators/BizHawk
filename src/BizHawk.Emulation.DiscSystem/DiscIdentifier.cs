@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using BizHawk.Common;
+
 using ISOParser;
 
 //disc type identification logic
@@ -237,7 +239,7 @@ namespace BizHawk.Emulation.DiscSystem
 				if (absTxt != null && SectorContains("abstracted by snk", Convert.ToInt32(absTxt.Offset))) return DiscType.NeoGeoCD;
 
 				return DiscType.UnknownCDFS;
-			}                
+			}
 
 			return DiscType.UnknownFormat;
 		}
@@ -292,7 +294,7 @@ namespace BizHawk.Emulation.DiscSystem
 			if (toc.FirstRecordedTrackNumber != 1) return false;
 			if (!toc.TOCItems[1].IsData) return false;
 			
-			//some have a signature 
+			//some have a signature
 			if (StringAt("HACKER CD ROM SYSTEM", 0x8, 0x10))
 				return true;
 
@@ -301,7 +303,7 @@ namespace BizHawk.Emulation.DiscSystem
 				return false;
 
 			byte[] sector20 = ReadDataSectorCached(20);
-			uint zecrc = (uint)BizHawk.Common.CRC32.Calculate(sector20);
+			var zecrc = CRC32.Calculate(sector20);
 
 			//known_crcs
 			if (zecrc == 0xd7b47c06) return true; // AV Tanjou
@@ -367,7 +369,7 @@ namespace BizHawk.Emulation.DiscSystem
 			if (data == null) return false;
 			byte[] magic = data.Skip(28).Take(4).ToArray();
 			string hexString = "";
-			foreach (var b in magic)            
+			foreach (var b in magic)
 				hexString += b.ToString("X2");
 
 			return hexString == "C2339F3D";

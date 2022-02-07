@@ -334,7 +334,7 @@ namespace BizHawk.Client.EmuHawk
 				CloneFramesXTimesMenuItem.Enabled =
 				TruncateMenuItem.Enabled =
 				InsertFrameMenuItem.Enabled =
-				InsertNumFramesMenuItem.Enabled = 
+				InsertNumFramesMenuItem.Enabled =
 				TasView.AnyRowsSelected;
 
 			ReselectClipboardMenuItem.Enabled =
@@ -461,8 +461,8 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					_tasClipboard.Add(new TasClipboardEntry(index, input));
-					var lg = CurrentTasMovie.LogGeneratorInstance(input);
-					sb.AppendLine(lg.GenerateLogEntry());
+					var logEntry = CurrentTasMovie.LogGeneratorInstance(input).GenerateLogEntry();
+					sb.AppendLine(Settings.CopyIncludesFrameNo ? $"{FrameToStringPadded(index)} {logEntry}" : logEntry);
 				}
 
 				Clipboard.SetDataObject(sb.ToString());
@@ -828,6 +828,7 @@ namespace BizHawk.Client.EmuHawk
 			OldControlSchemeForBranchesMenuItem.Checked = Settings.OldControlSchemeForBranches;
 			LoadBranchOnDoubleclickMenuItem.Checked = Settings.LoadBranchOnDoubleClick;
 			BindMarkersToInputMenuItem.Checked = CurrentTasMovie.BindMarkersToInput;
+			CopyIncludesFrameNoMenuItem.Checked = Settings.CopyIncludesFrameNo;
 		}
 
 		private void SetMaxUndoLevelsMenuItem_Click(object sender, EventArgs e)
@@ -899,6 +900,11 @@ namespace BizHawk.Client.EmuHawk
 					TasView.SeekingCutoffInterval = val;
 				}
 			}
+		}
+
+		private void CopyIncludesFrameNoMenuItem_Click(object sender, EventArgs e)
+		{
+			Settings.CopyIncludesFrameNo ^= true;
 		}
 
 		private void SetAutosaveIntervalMenuItem_Click(object sender, EventArgs e)
@@ -1047,7 +1053,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CommentsMenuItem_Click(object sender, EventArgs e)
 		{
-			var form = new EditCommentsForm(CurrentTasMovie, true);
+			var form = new EditCommentsForm(CurrentTasMovie, false);
 			form.Show();
 		}
 
@@ -1182,6 +1188,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Settings.DenoteMarkersWithBGColor = DenoteMarkersWithBGColorToolStripMenuItem.Checked;
 			RefreshDialog();
+		}
+
+		private void ColorSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			using var colorSettings = new TAStudioColorSettingsForm(Palette, p => Settings.Palette = p);
+			this.ShowDialogAsChild(colorSettings);
 		}
 
 		private void WheelScrollSpeedMenuItem_Click(object sender, EventArgs e)
@@ -1339,10 +1351,12 @@ namespace BizHawk.Client.EmuHawk
 					ToolStripMenuItem dummyObject = playerMenus[i];
 					item.CheckedChanged += (o, ev) =>
 					{
+						// TODO: preserve underlying button checked state and make this a master visibility control
 						foreach (ToolStripMenuItem menuItem in dummyObject.DropDownItems)
 						{
-							menuItem.Checked ^= true;
+							menuItem.Checked = item.Checked;
 						}
+						dummyObject.Visible = item.Checked;
 
 						CurrentTasMovie.FlagChanges();
 						TasView.AllColumns.ColumnsChanged();
@@ -1430,7 +1444,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ForumThreadMenuItem_Click(object sender, EventArgs e)
 		{
-			System.Diagnostics.Process.Start("http://tasvideos.org/forum/viewtopic.php?t=13505");
+			System.Diagnostics.Process.Start("https://tasvideos.org/Forum/Topics/13505");
 		}
 	}
 }

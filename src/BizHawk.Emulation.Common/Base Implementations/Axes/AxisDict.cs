@@ -1,15 +1,17 @@
-#nullable enable
-
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 
 namespace BizHawk.Emulation.Common
 {
 	public sealed class AxisDict : IReadOnlyDictionary<string, AxisSpec>
 	{
-		private readonly IList<string> _keys = new List<string>();
+		private IList<string> _keys = new List<string>();
 
-		private readonly IDictionary<string, AxisSpec> _specs = new Dictionary<string, AxisSpec>();
+		private bool _mutable = true;
+
+		private IDictionary<string, AxisSpec> _specs = new Dictionary<string, AxisSpec>();
 
 		public int Count => _keys.Count;
 
@@ -24,11 +26,16 @@ namespace BizHawk.Emulation.Common
 		public AxisSpec this[string index]
 		{
 			get => _specs[index];
-			set => _specs[index] = value;
+			set
+			{
+				AssertMutable();
+				_specs[index] = value;
+			}
 		}
 
 		public void Add(string key, AxisSpec value)
 		{
+			AssertMutable();
 			_keys.Add(key);
 			_specs.Add(key, value);
 			if (value.Constraint != null) HasContraints = true;
@@ -36,8 +43,15 @@ namespace BizHawk.Emulation.Common
 
 		public void Add(KeyValuePair<string, AxisSpec> item) => Add(item.Key, item.Value);
 
+		private void AssertMutable()
+		{
+			const string ERR_MSG = "this " + nameof(AxisDict) + " has been built and sealed and may not be mutated";
+			if (!_mutable) throw new InvalidOperationException(ERR_MSG);
+		}
+
 		public void Clear()
 		{
+			AssertMutable();
 			_keys.Clear();
 			_specs.Clear();
 			HasContraints = false;
@@ -50,6 +64,13 @@ namespace BizHawk.Emulation.Common
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 		public int IndexOf(string key) => _keys.IndexOf(key);
+
+		public void MakeImmutable()
+		{
+			_mutable = false;
+			_keys = _keys.ToImmutableList();
+			_specs = _specs.ToImmutableDictionary();
+		}
 
 		public AxisSpec SpecAtIndex(int index) => this[_keys[index]];
 

@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 				w.WriteLine(".\"{0}\" size=0x{1:x8}", kvp.Key, kvp.Value.Length);
 
 				byte[] cd = kvp.Value;
-				var md = mem[kvp.Key];
+				var md = mem[kvp.Key]!;
 
 				for (int i = 0; i < kvp.Value.Length; i++)
 				{

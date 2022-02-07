@@ -1,4 +1,6 @@
 ﻿using System.IO;
+
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 
 namespace BizHawk.Client.Common.movie.import
@@ -21,7 +23,7 @@ namespace BizHawk.Client.Common.movie.import
 				return;
 			}
 
-			Result.Movie.HeaderEntries[HeaderKeys.Platform] = "GEN";
+			Result.Movie.HeaderEntries[HeaderKeys.Platform] = VSystemID.Raw.GEN;
 
 			// 00F ASCII-encoded GMV file format version. The most recent is 'A'. (?)
 			string version = new string(r.ReadChars(1));
@@ -87,10 +89,7 @@ namespace BizHawk.Client.Common.movie.import
 
 			var controlConverter = new GPGXControlConverter(input, false);
 			
-			var controller = new SimpleController
-			{
-				Definition = controlConverter.ControllerDef
-			};
+			SimpleController controller = new(controlConverter.ControllerDef);
 
 			// Unknown.
 			r.ReadByte();

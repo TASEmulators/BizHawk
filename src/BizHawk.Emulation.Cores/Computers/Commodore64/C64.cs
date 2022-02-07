@@ -2,21 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using BizHawk.Common.BufferExtensions;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge;
 using BizHawk.Emulation.Cores.Computers.Commodore64.Media;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
-	[Core(
-		"C64Hawk",
-		"SaxxonPike",
-		isPorted: false,
-		isReleased: true)]
+	[Core(CoreNames.C64Hawk, "SaxxonPike")]
 	public sealed partial class C64 : IEmulator, IRegionable, IBoardInfo, IRomInfo
 	{
-		[CoreConstructor("C64")]
+		[CoreConstructor(VSystemID.Raw.C64)]
 		public C64(CoreLoadParameters<C64Settings, C64SyncSettings> lp)
 		{
 			PutSyncSettings((C64SyncSettings)lp.SyncSettings ?? new C64SyncSettings());
@@ -58,17 +54,26 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			ser.Register<IVideoProvider>(_board.Vic);
 			ser.Register<IDriveLight>(this);
 
-			_tracer = new TraceBuffer { Header = _board.Cpu.TraceHeader };
+			_tracer = new TraceBuffer(_board.Cpu.TraceHeader);
 			ser.Register<ITraceable>(_tracer);
 			ser.Register<IStatable>(new StateSerializer(SyncState));
 
 			if (_board.CartPort.IsConnected)
 			{
-				// There are no multi-cart cart games, so just hardcode .First()
-				RomDetails = $"{lp.Game.Name}\r\nSHA1:{_roms.First().HashSHA1()}\r\nMD5:{_roms.First().HashMD5()}\r\nMapper Impl \"{_board.CartPort.CartridgeType}\"";
+				var first = _roms[0]; // There are no multi-cart cart games, so just hardcode first
+				RomDetails = $"{lp.Game.Name}\r\n{SHA1Checksum.ComputePrefixedHex(first)}\r\n{MD5Checksum.ComputePrefixedHex(first)}\r\nMapper Impl \"{_board.CartPort.CartridgeType}\"";
 			}
 
 			SetupMemoryDomains();
+		}
+
+		public void ExecFetch(ushort addr)
+		{
+			if (_memoryCallbacks.HasExecutes)
+			{
+				uint flags = (uint)(MemoryCallbackFlags.CPUZero | MemoryCallbackFlags.AccessExecute);
+				_memoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
+			}
 		}
 
 		private CoreComm CoreComm { get; }
@@ -130,9 +135,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		private readonly List<byte[]> _roms;
 
-		private static readonly ControllerDefinition C64ControllerDefinition = new ControllerDefinition
+		private static readonly ControllerDefinition C64ControllerDefinition = new ControllerDefinition("Commodore 64 Controller")
 		{
-			Name = "Commodore 64 Controller",
 			BoolButtons =
 			{
 				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Button",
@@ -146,7 +150,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				"Previous Disk", "Next Disk",
 				"Power", "Reset"
 			}
-		};
+		}.MakeImmutable();
 
 		private Motherboard _board;
 
@@ -236,7 +240,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		private byte[] GetFirmware(int length, params string[] names)
 		{
-			var result = names.Select(n => CoreComm.CoreFileProvider.GetFirmware("C64", n, false)).FirstOrDefault(b => b != null && b.Length == length);
+			var result = names.Select(n => CoreComm.CoreFileProvider.GetFirmware(new("C64", n))).FirstOrDefault(b => b != null && b.Length == length);
 			if (result == null)
 			{
 				throw new MissingFirmwareException($"At least one of these firmwares is required: {string.Join(", ", names)}");

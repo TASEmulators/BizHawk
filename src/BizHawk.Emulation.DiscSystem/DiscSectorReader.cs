@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			/// <summary>
 			/// Read it as mode 2 (form 1)
-			/// </summary> 
+			/// </summary>
 			AssumeMode2_Form1,
 		}
 

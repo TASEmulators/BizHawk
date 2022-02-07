@@ -8,6 +8,7 @@ using System.ComponentModel;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.Properties;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 
@@ -30,7 +31,6 @@ namespace BizHawk.Client.EmuHawk
 		private readonly List<TasClipboardEntry> _tasClipboard = new List<TasClipboardEntry>();
 		private const string CursorColumnName = "CursorColumn";
 		private const string FrameColumnName = "FrameColumn";
-		private BackgroundWorker _seekBackgroundWorker;
 		private MovieEndAction _originalEndAction; // The movie end behavior selected by the user (that is overridden by TAStudio)
 		private UndoHistoryForm _undoForm;
 		private Timer _autosaveTimer;
@@ -52,6 +52,8 @@ namespace BizHawk.Client.EmuHawk
 
 		[ConfigPersist]
 		public TAStudioSettings Settings { get; set; } = new TAStudioSettings();
+
+		public TAStudioPalette Palette => Settings.Palette;
 
 		[ConfigPersist]
 		public Font TasViewFont { get; set; } = new Font("Arial", 8.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
@@ -75,12 +77,15 @@ namespace BizHawk.Client.EmuHawk
 				SingleClickAxisEdit = false;
 				OldControlSchemeForBranches = false;
 				LoadBranchOnDoubleClick = true;
+				CopyIncludesFrameNo = false;
 
 				// default to taseditor fashion
 				DenoteStatesWithIcons = false;
 				DenoteStatesWithBGColor = true;
 				DenoteMarkersWithIcons = false;
 				DenoteMarkersWithBGColor = true;
+
+				Palette = TAStudioPalette.Default;
 			}
 
 			public RecentFiles RecentTas { get; set; }
@@ -107,6 +112,8 @@ namespace BizHawk.Client.EmuHawk
 			public int MainVerticalSplitDistance { get; set; }
 			public int BranchMarkerSplitDistance { get; set; }
 			public bool BindMarkersToInput { get; set; }
+			public bool CopyIncludesFrameNo { get; set; }
+			public TAStudioPalette Palette { get; set; }
 		}
 
 		public TAStudio()
@@ -119,13 +126,11 @@ namespace BizHawk.Client.EmuHawk
 			ForumThreadMenuItem.Image = Resources.TAStudio;
 			Icon = Resources.TAStudioIcon;
 
-			InitializeSeekWorker();
-
 			_defaultMainSplitDistance = MainVertialSplit.SplitterDistance;
 			_defaultBranchMarkerSplitDistance = BranchesMarkersSplit.SplitterDistance;
 
 			// TODO: show this at all times or hide it when saving is done?
-			SavingProgressBar.Visible = false;
+			ProgressBar.Visible = false;
 
 			WantsToControlStopMovie = true;
 			WantsToControlRestartMovie = true;
@@ -193,6 +198,15 @@ namespace BizHawk.Client.EmuHawk
 			_initialized = true;
 		}
 
+		private void LoadMostRecentOrStartNew()
+		{
+			if (!LoadFile(new(Settings.RecentTas.MostRecent)))
+			{
+				TasView.AllColumns.Clear();
+				StartNewTasMovie();
+			}
+		}
+
 		private bool Engage()
 		{
 			_engaged = false;
@@ -248,12 +262,7 @@ namespace BizHawk.Client.EmuHawk
 			// Start Scenario 3: No movie, but user wants to autoload their last project
 			else if (CanAutoload)
 			{
-				bool result = LoadFile(new FileInfo(Settings.RecentTas.MostRecent));
-				if (!result)
-				{
-					TasView.AllColumns.Clear();
-					StartNewTasMovie();
-				}
+				LoadMostRecentOrStartNew();
 			}
 
 			// Start Scenario 4: No movie, default behavior of engaging tastudio with a new default project
@@ -291,7 +300,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (!CurrentTasMovie.Changes || Settings.AutosaveInterval == 0 
+			if (!CurrentTasMovie.Changes || Settings.AutosaveInterval == 0
 				|| CurrentTasMovie.Filename == DefaultTasProjName())
 			{
 				return;
@@ -321,62 +330,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void InitializeSeekWorker()
-		{
-			_seekBackgroundWorker?.Dispose();
-			_seekBackgroundWorker = new BackgroundWorker
-			{
-				WorkerReportsProgress = true,
-				WorkerSupportsCancellation = true
-			};
-
-			_seekBackgroundWorker.DoWork += (s, e) =>
-			{
-				this.Invoke(() => MessageStatusLabel.Text = "Seeking...");
-				this.Invoke(() => SavingProgressBar.Visible = true);
-				for (;;)
-				{
-					if (_seekBackgroundWorker.CancellationPending || !IsHandleCreated || !MainForm.PauseOnFrame.HasValue)
-					{
-						e.Cancel = true;
-						break;
-					}
-
-					int diff = Emulator.Frame - _seekStartFrame.Value;
-					int unit = MainForm.PauseOnFrame.Value - _seekStartFrame.Value;
-					double progress = 0;
-
-					if (diff != 0 && unit != 0)
-					{
-						progress = (double)100d / unit * diff;
-					}
-
-					if (progress < 0)
-					{
-						progress = 0;
-					}
-					else if (progress > 100)
-					{
-						progress = 100;
-					}
-
-					_seekBackgroundWorker.ReportProgress((int)progress);
-					System.Threading.Thread.Sleep(1);
-				}
-			};
-
-			_seekBackgroundWorker.ProgressChanged += (s, e) =>
-			{
-				this.Invoke(() => SavingProgressBar.Value = e.ProgressPercentage);
-			};
-
-			_seekBackgroundWorker.RunWorkerCompleted += (s, e) =>
-			{
-				this.Invoke(() => SavingProgressBar.Visible = false);
-				this.Invoke(() => MessageStatusLabel.Text = "");
-			};
-		}
-
 		private void SetTasMovieCallbacks(ITasMovie movie)
 		{
 			movie.ClientSettingsForSave = () => TasView.UserSettingsSerialized();
@@ -400,22 +353,22 @@ namespace BizHawk.Client.EmuHawk
 				.LogGeneratorInstance(MovieSession.MovieController)
 				.Map();
 
-			foreach (var kvp in columnNames)
+			foreach (var (name, mnemonic) in columnNames)
 			{
 				ColumnType type;
 				int digits;
-				if (ControllerType.Axes.TryGetValue(kvp.Key, out var range))
+				if (ControllerType.Axes.TryGetValue(name, out var range))
 				{
 					type = ColumnType.Axis;
-					digits = Math.Max(kvp.Value.Length, range.MaxDigits);
+					digits = Math.Max(mnemonic.Length, range.MaxDigits);
 				}
 				else
 				{
 					type = ColumnType.Boolean;
-					digits = kvp.Value.Length;
+					digits = mnemonic.Length;
 				}
 
-				AddColumn(kvp.Key, kvp.Value, (digits * 6) + 14, type); // magic numbers reused in EditBranchTextPopUp()
+				AddColumn(name, mnemonic, (digits * 6) + 14, type); // magic numbers reused in EditBranchTextPopUp()
 			}
 
 			var columnsToHide = TasView.AllColumns
@@ -562,6 +515,7 @@ namespace BizHawk.Client.EmuHawk
 			CurrentTasMovie.GreenzoneInvalidated = GreenzoneInvalidated;
 			Settings.RecentTas.Add(MovieSession.Movie.Filename);
 			MainForm.SetMainformMovieInfo();
+			CurrentTasMovie.PropertyChanged += TasMovie_OnPropertyChanged;
 		}
 
 		private bool LoadFile(FileInfo file, bool startsFromSavestate = false, int gotoFrame = 0)
@@ -694,9 +648,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				BookMarkControl.UpdateTextColumnWidth();
 				MarkerControl.UpdateTextColumnWidth();
+				TastudioPlayMode();
 			}
-
-			TastudioPlayMode();
 
 			_initializing = false;
 
@@ -956,7 +909,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (fromLua)
 			{
-				bool wasPaused = MainForm.EmulatorPaused; 
+				bool wasPaused = MainForm.EmulatorPaused;
 				
 				// why not use this? because I'm not letting the form freely run. it all has to be under this loop.
 				// i could use this and then poll StepRunLoop_Core() repeatedly, but.. that's basically what I'm doing
@@ -1007,18 +960,16 @@ namespace BizHawk.Client.EmuHawk
 				Emulator.ResetCounters();
 			}
 
-			UpdateOtherTools();
+			UpdateTools();
 		}
 
 		public void AddBranchExternal() => BookMarkControl.AddBranchExternal();
 		public void RemoveBranchExternal() => BookMarkControl.RemoveBranchExternal();
 
-		private void UpdateOtherTools() // a hack probably, surely there is a better way to do this
+		private void UpdateTools()
 		{
-			_hackyDontUpdate = true;
 			Tools.UpdateToolsBefore();
 			Tools.UpdateToolsAfter();
-			_hackyDontUpdate = false;
 		}
 
 		public void TogglePause()
@@ -1156,7 +1107,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TAStudio_DragDrop(object sender, DragEventArgs e)
 		{
-			// TODO: Maybe this should call Mainform's DragDrop method, 
+			// TODO: Maybe this should call Mainform's DragDrop method,
 			// since that can file types that are not movies,
 			// and it can process multiple files sequentially
 			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);

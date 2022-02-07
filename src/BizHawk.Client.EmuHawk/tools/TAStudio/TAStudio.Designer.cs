@@ -129,6 +129,7 @@ namespace BizHawk.Client.EmuHawk
 			this.toolStripSeparator12 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.hideWasLagFramesToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.iconsToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.ColorSettingsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.DenoteStatesWithIconsToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.DenoteStatesWithBGColorToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.DenoteMarkersWithIconsToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -154,7 +155,7 @@ namespace BizHawk.Client.EmuHawk
 			this.TasView = new BizHawk.Client.EmuHawk.InputRoll();
 			this.TasStatusStrip = new StatusStripEx();
 			this.MessageStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-			this.SavingProgressBar = new System.Windows.Forms.ToolStripProgressBar();
+			this.ProgressBar = new System.Windows.Forms.ToolStripProgressBar();
 			this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.SplicerStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.TasPlaybackBox = new BizHawk.Client.EmuHawk.PlaybackBox();
@@ -191,6 +192,7 @@ namespace BizHawk.Client.EmuHawk
 			this.BranchesMarkersSplit = new System.Windows.Forms.SplitContainer();
 			this.MainVertialSplit = new System.Windows.Forms.SplitContainer();
 			this.SetFontMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.CopyIncludesFrameNoMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.TASMenu.SuspendLayout();
 			this.TasStatusStrip.SuspendLayout();
 			this.RightClickMenu.SuspendLayout();
@@ -481,6 +483,7 @@ namespace BizHawk.Client.EmuHawk
             this.SetMaxUndoLevelsMenuItem,
             this.SetBranchCellHoverIntervalMenuItem,
             this.SetSeekingCutoffIntervalMenuItem,
+            this.CopyIncludesFrameNoMenuItem,
             this.toolStripSeparator26,
             this.autosaveToolStripMenuItem,
             this.BackupPerFileSaveMenuItem,
@@ -698,6 +701,7 @@ namespace BizHawk.Client.EmuHawk
             this.RotateMenuItem,
             this.HideLagFramesSubMenu,
             this.iconsToolStripMenuItem,
+            this.ColorSettingsMenuItem,
             this.toolStripSeparator23,
             this.followCursorToolStripMenuItem,
             this.toolStripSeparator25,
@@ -766,6 +770,11 @@ namespace BizHawk.Client.EmuHawk
             this.DenoteMarkersWithBGColorToolStripMenuItem});
 			this.iconsToolStripMenuItem.Text = "Icons";
 			this.iconsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.IconsMenuItem_DropDownOpened);
+			// 
+			// ColorSettingsMenuItem
+			// 
+			this.ColorSettingsMenuItem.Text = "Edit TAStudio Colors...";
+			this.ColorSettingsMenuItem.Click += new System.EventHandler(this.ColorSettingsMenuItem_Click);
 			// 
 			// DenoteStatesWithIconsToolStripMenuItem
 			// 
@@ -923,7 +932,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.TasStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.MessageStatusLabel,
-            this.SavingProgressBar,
+            this.ProgressBar,
             this.toolStripStatusLabel2,
             this.SplicerStatusLabel});
 			this.TasStatusStrip.Location = new System.Drawing.Point(0, 554);
@@ -936,10 +945,10 @@ namespace BizHawk.Client.EmuHawk
 			this.MessageStatusLabel.Size = new System.Drawing.Size(95, 17);
 			this.MessageStatusLabel.Text = "TAStudio engaged";
 			// 
-			// SavingProgressBar
+			// ProgressBar
 			// 
-			this.SavingProgressBar.Name = "SavingProgressBar";
-			this.SavingProgressBar.Size = new System.Drawing.Size(100, 16);
+			this.ProgressBar.Name = "ProgressBar";
+			this.ProgressBar.Size = new System.Drawing.Size(100, 16);
 			// 
 			// toolStripStatusLabel2
 			// 
@@ -1176,6 +1185,11 @@ namespace BizHawk.Client.EmuHawk
 			this.SetFontMenuItem.Text = "Set Font";
 			this.SetFontMenuItem.Click += new System.EventHandler(this.SetFontMenuItem_Click);
 			// 
+			// CopyIncludesFrameNoMenuItem
+			// 
+			this.CopyIncludesFrameNoMenuItem.Text = "Include Frame No. When Copying Row(s)";
+			this.CopyIncludesFrameNoMenuItem.Click += new System.EventHandler(this.CopyIncludesFrameNoMenuItem_Click);
+			// 
 			// TAStudio
 			// 
 			this.AllowDrop = true;
@@ -1303,7 +1317,7 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx StartFromNowSeparator;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx StartNewProjectFromNowMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RotateMenuItem;
-		private System.Windows.Forms.ToolStripProgressBar SavingProgressBar;
+		private System.Windows.Forms.ToolStripProgressBar ProgressBar;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx HideLagFramesSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx HideLagFrames3;
@@ -1351,6 +1365,7 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.SplitContainer MainVertialSplit;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx StartANewProjectFromSaveRamMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx iconsToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ColorSettingsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DenoteStatesWithIconsToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DenoteStatesWithBGColorToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DenoteMarkersWithIconsToolStripMenuItem;
@@ -1374,5 +1389,6 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SingleClickAxisEditMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx LoadBranchOnDoubleclickMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SetFontMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx CopyIncludesFrameNoMenuItem;
 	}
 }

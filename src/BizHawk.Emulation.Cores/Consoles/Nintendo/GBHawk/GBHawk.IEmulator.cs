@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				ppu.color_palette[3] = color_palette_Gr[3];
 			}
 
-			if (_tracer.Enabled)
+			if (_tracer.IsEnabled())
 			{
 				cpu.TraceCallback = s => _tracer.Put(s);
 			}
@@ -53,8 +53,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				cpu.TraceCallback = null;
 			}
-
-			_frame++;
 
 			if (controller.IsPressed("P1 Power"))
 			{
@@ -90,6 +88,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				_lagcount++;
 			}
 
+			_frame++;
+
 			return true;
 		}
 
@@ -114,7 +114,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					DIV_edge_old = (timer.divider_reg & 0x2000) == 0x2000;
 
 					timer.tick();
-					cpu.ExecuteOne();
+					cpu.ExecuteOne(_settings.UseRGBDSSyntax);
 					timer.divider_reg++;
 
 					DIV_falling_edge |= DIV_edge_old & ((timer.divider_reg & 0x2000) == 0);
@@ -131,7 +131,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				DIV_edge_old = double_speed ? ((timer.divider_reg & 0x2000) == 0x2000) : ((timer.divider_reg & 0x1000) == 0x1000);
 
 				timer.tick();
-				cpu.ExecuteOne();
+				cpu.ExecuteOne(_settings.UseRGBDSSyntax);
 				timer.divider_reg++;
 
 				DIV_falling_edge |= DIV_edge_old & (double_speed ? ((timer.divider_reg & 0x2000) == 0) : ((timer.divider_reg & 0x1000) == 0));
@@ -201,7 +201,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				DIV_edge_old = (timer.divider_reg & 0x2000) == 0x2000;
 
 				timer.tick();
-				cpu.ExecuteOne();
+				cpu.ExecuteOne(_settings.UseRGBDSSyntax);
 				timer.divider_reg++;
 
 				DIV_falling_edge |= DIV_edge_old & ((timer.divider_reg & 0x2000) == 0);
@@ -218,7 +218,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			DIV_edge_old = double_speed ? ((timer.divider_reg & 0x2000) == 0x2000) : ((timer.divider_reg & 0x1000) == 0x1000);
 
 			timer.tick();
-			cpu.ExecuteOne();
+			cpu.ExecuteOne(_settings.UseRGBDSSyntax);
 			timer.divider_reg++;
 
 			DIV_falling_edge |= DIV_edge_old & (double_speed ? ((timer.divider_reg & 0x2000) == 0) : ((timer.divider_reg & 0x1000) == 0));
@@ -358,9 +358,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 			InputCallbacks.Call();
 			controller_state = _controllerDeck.ReadPort1(controller);
-
-			Acc_X_state = _controllerDeck.ReadAccX1(controller);
-			Acc_Y_state = _controllerDeck.ReadAccY1(controller);
+			(Acc_X_state, Acc_Y_state) = _controllerDeck.ReadAcc1(controller);
 		}
 
 		public byte GetButtons(ushort r)
@@ -411,7 +409,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public int Frame => _frame;
 
-		public string SystemId => "GB";
+		public string SystemId => VSystemID.Raw.GB;
 
 		public bool DeterministicEmulation { get; set; }
 

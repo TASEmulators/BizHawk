@@ -1,93 +1,119 @@
 ﻿using System;
-using System.Windows.Forms;
 using System.Drawing;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
+using System.Reflection;
+using System.Threading;
+using System.Windows.Forms;
 
 using BizHawk.Bizware.BizwareGL;
-using BizHawk.Bizware.BizwareGL.Drivers.OpenTK;
-
-using OpenTK.Graphics.OpenGL;
+using BizHawk.Bizware.OpenTK3;
+using BizHawk.Client.EmuHawk;
 
 namespace BizHawk.Bizware.Test
 {
-	class Program
+	public static class Program
 	{
-
-		static unsafe void Main(string[] args)
+		static Program()
 		{
-			BizHawk.Bizware.BizwareGL.IGL igl = new BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK();
-
-			List<Art> testArts = new List<Art>();
-			ArtManager am = new ArtManager(igl);
-			foreach (var name in typeof(Program).Assembly.GetManifestResourceNames())
-				if (name.Contains("flame"))
-					testArts.Add(am.LoadArt(typeof(Program).Assembly.GetManifestResourceStream(name)));
-			var smile = am.LoadArt(typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Bizware.Test.TestImages.smile.png"));
-			am.Close(true);
-			StringRenderer sr;
-			using (var xml = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Bizware.Test.TestImages.courier16px.fnt"))
-			using (var tex = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Bizware.Test.TestImages.courier16px_0.png"))
-				sr = new StringRenderer(igl, xml, tex);
-
-			GuiRenderer gr = new GuiRenderer(igl);
-
-			TestForm tf = new TestForm();
-			RetainedGraphicsControl c = new RetainedGraphicsControl(igl);
-			tf.Controls.Add(c);
-			c.Dock = System.Windows.Forms.DockStyle.Fill;
-			tf.FormClosing += (object sender, System.Windows.Forms.FormClosingEventArgs e) =>
+			AppDomain.CurrentDomain.AssemblyResolve += (_, args) =>
+			{
+				lock (AppDomain.CurrentDomain)
 				{
-					tf.Controls.Remove(c);
-					c.Dispose();
-					c = null;
-				};
+					var firstAsm = Array.Find(AppDomain.CurrentDomain.GetAssemblies(), asm => asm.FullName == args.Name);
+					if (firstAsm is not null) return firstAsm;
+					var guessFilename = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, "dll", $"{new AssemblyName(args.Name).Name}.dll");
+					return File.Exists(guessFilename) ? Assembly.LoadFile(guessFilename) : null;
+				}
+			};
+		}
+
+		public static void Main() => RunTest();
+
+		private sealed class TestForm : Form
+		{
+			public TestForm()
+			{
+				SuspendLayout();
+				AutoScaleDimensions = new(6F, 13F);
+				AutoScaleMode = AutoScaleMode.Font;
+				ClientSize = new(292, 273);
+				Name = "TestForm";
+				Text = "TestForm";
+				ResumeLayout();
+			}
+		}
+
+		private static void RunTest()
+		{
+			IGL igl = new IGL_TK(2, 0, false);
+			ArtManager am = new(igl);
+			var testArts = typeof(Program).Assembly.GetManifestResourceNames().Where(s => s.Contains("flame"))
+				.Select(s => am.LoadArt(ReflectionCache.EmbeddedResourceStream(s.Substring(21)))) // ReflectionCache adds back the prefix
+				.ToList();
+			var smile = am.LoadArt(ReflectionCache.EmbeddedResourceStream("TestImages.smile.png"));
+			am.Close();
+			StringRenderer sr;
+			using (var xml = ReflectionCache.EmbeddedResourceStream("TestImages.courier16px.fnt"))
+			using (var tex = ReflectionCache.EmbeddedResourceStream("TestImages.courier16px_0.png"))
+			{
+				sr = new StringRenderer(igl, xml, tex);
+			}
+
+			GuiRenderer gr = new(igl);
+
+			RetainedGraphicsControl? c = new(igl) { Dock = DockStyle.Fill };
+			TestForm tf = new() { Controls = { c } };
+			tf.FormClosing += (_, _) =>
+			{
+				tf.Controls.Remove(c);
+				c.Dispose();
+				c = null;
+			};
 			tf.Show();
 
-			//tf.Paint += (object sender, PaintEventArgs e) => c.Refresh();
+#if false
+			tf.Paint += (_, _) => c.Refresh();
+#endif
 
 			c.SetVsync(false);
 
-			//create a render target
-			RenderTarget rt = igl.CreateRenderTarget(60, 60);
+			// create a render target
+			var rt = igl.CreateRenderTarget(60, 60);
 			rt.Bind();
 			igl.SetClearColor(Color.Blue);
 			igl.Clear(ClearBufferMask.ColorBufferBit);
-			gr.Begin(60, 60, true);
+			gr.Begin(60, 60);
 			gr.Draw(smile);
 			gr.End();
 			rt.Unbind();
 
-			Texture2d rttex2d = igl.LoadTexture(rt.Texture2d.Resolve());
+			var rttex2d = igl.LoadTexture(rt.Texture2d.Resolve());
 
-			//test retroarch shader
-			RenderTarget rt2 = igl.CreateRenderTarget(240, 240);
+			// test retroarch shader
+			var rt2 = igl.CreateRenderTarget(240, 240);
 			rt2.Bind();
 			igl.SetClearColor(Color.CornflowerBlue);
 			igl.Clear(ClearBufferMask.ColorBufferBit);
 			RetroShader shader;
-			using (var stream = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Bizware.Test.TestImages.4xSoft.glsl"))
-				shader = new RetroShader(igl, new System.IO.StreamReader(stream).ReadToEnd());
-			igl.SetBlendState(igl.BlendNone);
+			using (var stream = ReflectionCache.EmbeddedResourceStream("TestImages.4xSoft.glsl"))
+			{
+				shader = new(igl, new StreamReader(stream).ReadToEnd());
+			}
+			igl.SetBlendState(igl.BlendNoneCopy);
 			shader.Run(rttex2d, new Size(60, 60), new Size(240, 240), true);
 
-
-			bool running = true;
-			c.MouseClick += (object sender, MouseEventArgs e) =>
+			var running = true;
+			c.MouseClick += (_, args) =>
 			{
-				if(e.Button == MouseButtons.Left)
-					running ^= true;
-				if (e.Button == MouseButtons.Right)
-					c.Retain ^= true;
+				if (args.Button == MouseButtons.Left) running ^= true;
+				else if (args.Button == MouseButtons.Right) c.Retain ^= true;
 			};
 
-			DateTime start = DateTime.Now;
-			int wobble = 0;
-			for (; ; )
+			var start = DateTime.Now;
+			var wobble = 0;
+			while (c is not null)
 			{
-				if (c == null) break;
-
 				if (running)
 				{
 					c.Begin();
@@ -95,7 +121,7 @@ namespace BizHawk.Bizware.Test
 					igl.SetClearColor(Color.Red);
 					igl.Clear(ClearBufferMask.ColorBufferBit);
 
-					int frame = (int)((DateTime.Now - start).TotalSeconds) % testArts.Count;
+					var frame = (int) (DateTime.Now - start).TotalSeconds % testArts.Count;
 
 					gr.Begin(c.ClientSize.Width, c.ClientSize.Height);
 					gr.SetBlendState(igl.BlendNormal);
@@ -103,17 +129,17 @@ namespace BizHawk.Bizware.Test
 					gr.SetModulateColor(Color.Green);
 					gr.RectFill(250, 0, 16, 16);
 
-					gr.SetBlendState(igl.BlendNone);
+					gr.SetBlendState(igl.BlendNoneCopy);
 					gr.Draw(rttex2d, 0, 20);
 					gr.SetBlendState(igl.BlendNormal);
 
 					sr.RenderString(gr, 0, 0, "?? fps");
 					gr.SetModulateColor(Color.FromArgb(255, 255, 255, 255));
-					gr.SetCornerColor(0, OpenTK.Graphics.Color4.Red);
+					gr.SetCornerColor(0, new(1.0f, 0.0f, 0.0f, 1.0f));
 					gr.Draw(rt2.Texture2d, 0, 0);
-					gr.SetCornerColor(0, OpenTK.Graphics.Color4.White);
+					gr.SetCornerColor(0, new(1.0f, 1.0f, 1.0f, 1.0f));
 					gr.SetModulateColorWhite();
-					gr.Modelview.Translate((float)Math.Sin(wobble / 360.0f) * 50, 0);
+					gr.Modelview.Translate((float) Math.Sin(wobble / 360.0f) * 50, 0);
 					gr.Modelview.Translate(100, 100);
 					gr.Modelview.Push();
 					gr.Modelview.Translate(testArts[frame].Width, 0);
@@ -128,13 +154,12 @@ namespace BizHawk.Bizware.Test
 
 					gr.End();
 
-
 					c.SwapBuffers();
 					c.End();
 				}
 
-				System.Windows.Forms.Application.DoEvents();
-				System.Threading.Thread.Sleep(0);
+				Application.DoEvents();
+				Thread.Sleep(0);
 			}
 		}
 	}

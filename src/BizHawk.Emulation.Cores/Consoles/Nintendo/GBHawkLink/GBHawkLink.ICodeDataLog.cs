@@ -19,15 +19,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 		public void NewCDL(ICodeDataLog cdl)
 		{
-			cdl["ROM"] = new byte[MemoryDomains["ROM L"].Size];
-			cdl["HRAM"] = new byte[MemoryDomains["Zero Page RAM L"].Size];
+			cdl["ROM"] = new byte[MemoryDomains["ROM L"]!.Size];
+			cdl["HRAM"] = new byte[MemoryDomains["Zero Page RAM L"]!.Size];
 
-			cdl["WRAM"] = new byte[MemoryDomains["Main RAM L"].Size];
+			cdl["WRAM"] = new byte[MemoryDomains["Main RAM L"]!.Size];
 
-			if (MemoryDomains.Has("Cart RAM L"))
-			{
-				cdl["CartRAM"] = new byte[MemoryDomains["Cart RAM L"].Size];
-			}
+			var found = MemoryDomains["Cart RAM L"];
+			if (found is not null) cdl["CartRAM"] = new byte[found.Size];
 
 			cdl.SubType = "GB";
 			cdl.SubVer = 0;
@@ -54,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 				if ((flags & LR35902.eCDLogMemFlags.Write) != 0) return;
 			}
 			
-			if (L.ppu.DMA_start)
+			if (L.ppu.DMA_bus_control)
 			{
 				// some of gekkio's tests require these to be accessible during DMA
 				if (addr < 0x8000)

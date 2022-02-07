@@ -10,13 +10,12 @@ using System.Linq;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 {
-	[Core("Virtual Boyee", "Mednafen Team", true, true, "0.9.44.1",
-		"https://mednafen.github.io/releases/", false, "VirtualBoy")]
+	[PortedCore(CoreNames.VirtualBoyee, "Mednafen Team", portedUrl: "https://mednafen.github.io/releases/")]
 	public class VirtualBoyee : WaterboxCore, ISettable<VirtualBoyee.Settings, VirtualBoyee.SyncSettings>
 	{
 		private readonly LibVirtualBoyee _boyee;
 
-		[CoreConstructor("VB")]
+		[CoreConstructor(VSystemID.Raw.VB)]
 		public VirtualBoyee(CoreComm comm, byte[] rom, Settings settings, SyncSettings syncSettings)
 			: base(comm, new Configuration
 			{
@@ -27,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 				MaxWidth = 1024,
 				MaxHeight = 1024,
 				MaxSamples = 8192,
-				SystemId = "VB"
+				SystemId = VSystemID.Raw.VB,
 			})
 		{
 			_settings = settings ?? new Settings();
@@ -105,14 +104,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 			["Start"] = 14
 		};
 
-		private static readonly ControllerDefinition VirtualBoyController = new ControllerDefinition
+		private static readonly ControllerDefinition VirtualBoyController = new ControllerDefinition("VirtualBoy Controller")
 		{
-			Name = "VirtualBoy Controller",
 			BoolButtons = CoreButtons
 				.OrderBy(b => _buttonOrdinals[b])
 				.Concat(new[] { "Power" })
 				.ToList()
-		};
+		}.MakeImmutable();
 
 		public override ControllerDefinition ControllerDefinition => VirtualBoyController;
 
@@ -150,7 +148,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 				SideBySide = 2,
 				//OverUnder,
 				VerticalInterlaced = 4,
-				HorizontalInterlaced = 5
+				HorizontalInterlaced = 5,
+				OnlyLeft = 6,
+				OnlyRight = 7
 			}
 
 			[DefaultValue(ThreeDeeModes.Anaglyph)]

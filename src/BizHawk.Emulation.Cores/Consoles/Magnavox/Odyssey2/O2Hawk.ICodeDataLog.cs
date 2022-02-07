@@ -18,15 +18,13 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public void NewCDL(ICodeDataLog cdl)
 		{
-			cdl["ROM"] = new byte[MemoryDomains["ROM"].Size];
-			cdl["HRAM"] = new byte[MemoryDomains["Zero Page RAM"].Size];
+			cdl["ROM"] = new byte[MemoryDomains["ROM"]!.Size];
+			cdl["HRAM"] = new byte[MemoryDomains["Zero Page RAM"]!.Size];
 
-			cdl["WRAM"] = new byte[MemoryDomains["Main RAM"].Size];
+			cdl["WRAM"] = new byte[MemoryDomains["Main RAM"]!.Size];
 
-			if (MemoryDomains.Has("Cart RAM"))
-			{
-				cdl["CartRAM"] = new byte[MemoryDomains["Cart RAM"].Size];
-			}
+			var found = MemoryDomains["Cart RAM"];
+			if (found is not null) cdl["CartRAM"] = new byte[found.Size];
 
 			cdl.SubType = "O2";
 			cdl.SubVer = 0;

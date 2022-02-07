@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -80,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private Control CreateNormalPanel(Dictionary<string, string> settings, List<string> buttons, Size size)
 		{
-			var cp = new ControllerConfigPanel { Dock = DockStyle.Fill, AutoScroll = true, Tooltip = toolTip1 };
+			ControllerConfigPanel cp = new(_config.ModifierKeysEffective) { Dock = DockStyle.Fill, AutoScroll = true, Tooltip = toolTip1 };
 			cp.LoadSettings(settings, checkBoxAutoTab.Checked, buttons, size.Width, size.Height);
 			return cp;
 		}
@@ -90,13 +91,18 @@ namespace BizHawk.Client.EmuHawk
 			return new AnalogBindPanel(settings, buttons) { Dock = DockStyle.Fill, AutoScroll = true };
 		}
 
+		private static Control CreateFeedbacksPanel(Dictionary<string, FeedbackBind> settings, List<string> buttons, Size size)
+		{
+			return new FeedbacksBindPanel(settings, buttons) { Dock = DockStyle.Fill, AutoScroll = true };
+		}
+
 		private static readonly Regex ButtonMatchesPlayer = new Regex("^P(\\d+)\\s");
 
 		private void LoadToPanel<TBindValue>(
 			Control dest,
 			string controllerName,
-			IReadOnlyCollection<string> controllerButtons,
-			Dictionary<string,string> categoryLabels,
+			IList<string> controllerButtons,
+			IDictionary<string, string> categoryLabels,
 			IDictionary<string, Dictionary<string, TBindValue>> settingsBlock,
 			TBindValue defaultValue,
 			PanelCreator<TBindValue> createPanel
@@ -132,19 +138,12 @@ namespace BizHawk.Client.EmuHawk
 			// saving works, those entries will still be preserved in the config file, tho
 			foreach (var button in controllerButtons)
 			{
-				Match m;
-				string categoryLabel;
-				if (categoryLabels.ContainsKey(button))
+				if (!categoryLabels.TryGetValue(button, out var categoryLabel))
 				{
-					categoryLabel = categoryLabels[button];
-				}
-				else if ((m = ButtonMatchesPlayer.Match(button)).Success)
-				{
-					categoryLabel = $"Player {m.Groups[1].Value}";
-				}
-				else
-				{
-					categoryLabel = "Console"; // anything that wants not console can set it in the categorylabels
+					var m = ButtonMatchesPlayer.Match(button);
+					categoryLabel = m.Success
+						? $"Player {m.Groups[1].Value}"
+						: "Console"; // anything that wants not console can set it in the categorylabels
 				}
 
 				if (!buckets.ContainsKey(categoryLabel))
@@ -168,11 +167,10 @@ namespace BizHawk.Client.EmuHawk
 				var tt = new TabControl { Dock = DockStyle.Fill };
 				dest.Controls.Add(tt);
 				int pageIdx = 0;
-				foreach (var kvp in orderedBuckets)
+				foreach (var (tabName, buttons) in orderedBuckets)
 				{
-					string tabName = kvp.Key;
 					tt.TabPages.Add(tabName);
-					tt.TabPages[pageIdx++].Controls.Add(createPanel(settings, kvp.Value, tt.Size));
+					tt.TabPages[pageIdx++].Controls.Add(createPanel(settings, buttons, tt.Size));
 				}
 			}
 		}
@@ -201,7 +199,8 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadPanels(
 			IDictionary<string, Dictionary<string, string>> normal,
 			IDictionary<string, Dictionary<string, string>> autofire,
-			IDictionary<string, Dictionary<string, AnalogBind>> analog)
+			IDictionary<string, Dictionary<string, AnalogBind>> analog,
+			IDictionary<string, Dictionary<string, FeedbackBind>> haptics)
 		{
 			LoadToPanel(
 				NormalControlsTab,
@@ -230,21 +229,30 @@ namespace BizHawk.Client.EmuHawk
 				new AnalogBind("", 1.0f, 0.1f),
 				CreateAnalogPanel
 			);
+			LoadToPanel(
+				FeedbacksTab,
+				_emulator.ControllerDefinition.Name,
+				_emulator.ControllerDefinition.HapticsChannels,
+				_emulator.ControllerDefinition.CategoryLabels,
+				haptics,
+				new(string.Empty, string.Empty, 1.0f),
+				CreateFeedbacksPanel);
 
 			if (AnalogControlsTab.Controls.Count == 0)
 			{
 				tabControl1.TabPages.Remove(AnalogControlsTab);
 			}
+			if (FeedbacksTab.Controls.Count == 0) tabControl1.TabPages.Remove(FeedbacksTab);
 		}
 
 		private void LoadPanels(DefaultControls cd)
 		{
-			LoadPanels(cd.AllTrollers, cd.AllTrollersAutoFire, cd.AllTrollersAnalog);
+			LoadPanels(cd.AllTrollers, cd.AllTrollersAutoFire, cd.AllTrollersAnalog, cd.AllTrollersFeedbacks);
 		}
 
 		private void LoadPanels(Config c)
 		{
-			LoadPanels(c.AllTrollers, c.AllTrollersAutoFire, c.AllTrollersAnalog);
+			LoadPanels(c.AllTrollers, c.AllTrollersAutoFire, c.AllTrollersAnalog, c.AllTrollersFeedbacks);
 		}
 
 		private void SetControllerPicture(string controlName)
@@ -328,6 +336,7 @@ namespace BizHawk.Client.EmuHawk
 			ActOnControlCollection<ControllerConfigPanel>(NormalControlsTab, c => c.Save(_config.AllTrollers[_emulator.ControllerDefinition.Name]));
 			ActOnControlCollection<ControllerConfigPanel>(AutofireControlsTab, c => c.Save(_config.AllTrollersAutoFire[_emulator.ControllerDefinition.Name]));
 			ActOnControlCollection<AnalogBindPanel>(AnalogControlsTab, c => c.Save(_config.AllTrollersAnalog[_emulator.ControllerDefinition.Name]));
+			ActOnControlCollection<FeedbacksBindPanel>(FeedbacksTab, c => c.Save(_config.AllTrollersFeedbacks[_emulator.ControllerDefinition.Name]));
 		}
 
 		private void SaveToDefaults(DefaultControls cd)
@@ -335,6 +344,7 @@ namespace BizHawk.Client.EmuHawk
 			ActOnControlCollection<ControllerConfigPanel>(NormalControlsTab, c => c.Save(cd.AllTrollers[_emulator.ControllerDefinition.Name]));
 			ActOnControlCollection<ControllerConfigPanel>(AutofireControlsTab, c => c.Save(cd.AllTrollersAutoFire[_emulator.ControllerDefinition.Name]));
 			ActOnControlCollection<AnalogBindPanel>(AnalogControlsTab, c => c.Save(cd.AllTrollersAnalog[_emulator.ControllerDefinition.Name]));
+			ActOnControlCollection<FeedbacksBindPanel>(FeedbacksTab, c => c.Save(cd.AllTrollersFeedbacks[_emulator.ControllerDefinition.Name]));
 		}
 
 		private static void ActOnControlCollection<T>(Control c, Action<T> proc)
@@ -389,17 +399,21 @@ namespace BizHawk.Client.EmuHawk
 			var tb1 = GetTabControl(NormalControlsTab.Controls);
 			var tb2 = GetTabControl(AutofireControlsTab.Controls);
 			var tb3 = GetTabControl(AnalogControlsTab.Controls);
+			var tb4 = GetTabControl(FeedbacksTab.Controls);
 			int? wasTabbedPage1 = null;
 			int? wasTabbedPage2 = null;
 			int? wasTabbedPage3 = null;
+			int? wasTabbedPage4 = null;
 
 			if (tb1?.SelectedTab != null) { wasTabbedPage1 = tb1.SelectedIndex; }
 			if (tb2?.SelectedTab != null) { wasTabbedPage2 = tb2.SelectedIndex; }
 			if (tb3?.SelectedTab != null) { wasTabbedPage3 = tb3.SelectedIndex; }
+			if (tb4?.SelectedTab != null) { wasTabbedPage4 = tb4.SelectedIndex; }
 
 			NormalControlsTab.Controls.Clear();
 			AutofireControlsTab.Controls.Clear();
 			AnalogControlsTab.Controls.Clear();
+			FeedbacksTab.Controls.Clear();
 
 			// load panels directly from the default config.
 			// this means that the changes are NOT committed.  so "Cancel" works right and you
@@ -425,6 +439,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var newTb3 = GetTabControl(AnalogControlsTab.Controls);
 				newTb3?.SelectTab(wasTabbedPage3.Value);
+			}
+
+			if (wasTabbedPage4.HasValue)
+			{
+				var newTb4 = GetTabControl(FeedbacksTab.Controls);
+				newTb4?.SelectTab(wasTabbedPage4.Value);
 			}
 
 			tabControl1.ResumeLayout();

@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
+using BizHawk.Emulation.Cores.Nintendo.BSNES;
 using BizHawk.Emulation.Cores.Nintendo.NES;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
@@ -80,7 +83,7 @@ namespace BizHawk.Client.Common
 				{
 					return new {
 						disasm = DisassemblableCore.Disassemble(
-							string.IsNullOrEmpty(name) ? MemoryDomains.SystemBus : MemoryDomains[name],
+							string.IsNullOrEmpty(name) ? MemoryDomains.SystemBus : MemoryDomains[name]!,
 							pc,
 							out var l
 						),
@@ -100,7 +103,7 @@ namespace BizHawk.Client.Common
 				if (DebuggableCore != null)
 				{
 					var registers = DebuggableCore.GetCpuFlagsAndRegisters();
-					return registers.ContainsKey(name) ? registers[name].Value : (ulong?) null;
+					return registers.TryGetValue(name, out var rv) ? rv.Value : (ulong?) null;
 				}
 			}
 			catch (NotImplementedException) {}
@@ -115,7 +118,7 @@ namespace BizHawk.Client.Common
 				if (DebuggableCore != null)
 				{
 					var table = new Dictionary<string, ulong>();
-					foreach (var kvp in DebuggableCore.GetCpuFlagsAndRegisters()) table[kvp.Key] = kvp.Value.Value;
+					foreach (var (name, rv) in DebuggableCore.GetCpuFlagsAndRegisters()) table[name] = rv.Value;
 					return table;
 				}
 			}
@@ -192,6 +195,7 @@ namespace BizHawk.Client.Common
 			GPGX gpgx => gpgx.GetSettings(),
 			LibsnesCore snes => snes.GetSettings(),
 			NES nes => nes.GetSettings(),
+			NDS nds => nds.GetSettings(),
 			PCEngine pce => pce.GetSettings(),
 			QuickNES quickNes => quickNes.GetSettings(),
 			SMS sms => sms.GetSettings(),
@@ -204,6 +208,7 @@ namespace BizHawk.Client.Common
 			GPGX gpgx => gpgx.PutSettings((GPGX.GPGXSettings) settings),
 			LibsnesCore snes => snes.PutSettings((LibsnesCore.SnesSettings) settings),
 			NES nes => nes.PutSettings((NES.NESSettings) settings),
+			NDS nds => nds.PutSettings((NDS.NDSSettings) settings),
 			PCEngine pce => pce.PutSettings((PCEngine.PCESettings) settings),
 			QuickNES quickNes => quickNes.PutSettings((QuickNES.QuickNESSettings) settings),
 			SMS sms => sms.PutSettings((SMS.SmsSettings) settings),
@@ -214,9 +219,23 @@ namespace BizHawk.Client.Common
 		public void SetRenderPlanes(params bool[] args)
 		{
 			static bool GetSetting(bool[] settings, int index) => index >= settings.Length || settings[index];
-			void SetBsnes(LibsnesCore core)
+			void SetLibsnes(LibsnesCore core)
 			{
 				var s = core.GetSettings();
+				s.ShowBG1_0 = s.ShowBG1_1 = GetSetting(args, 0);
+				s.ShowBG2_0 = s.ShowBG2_1 = GetSetting(args, 1);
+				s.ShowBG3_0 = s.ShowBG3_1 = GetSetting(args, 2);
+				s.ShowBG4_0 = s.ShowBG4_1 = GetSetting(args, 3);
+				s.ShowOBJ_0 = GetSetting(args, 4);
+				s.ShowOBJ_1 = GetSetting(args, 5);
+				s.ShowOBJ_2 = GetSetting(args, 6);
+				s.ShowOBJ_3 = GetSetting(args, 7);
+				core.PutSettings(s);
+			}
+			void SetBsnes(BsnesCore core)
+			{
+				var s = core.GetSettings();
+				// TODO: This should probably support both prios inidividually but I have no idea whether changing this breaks anything
 				s.ShowBG1_0 = s.ShowBG1_1 = GetSetting(args, 0);
 				s.ShowBG2_0 = s.ShowBG2_1 = GetSetting(args, 1);
 				s.ShowBG3_0 = s.ShowBG3_1 = GetSetting(args, 2);
@@ -286,7 +305,10 @@ namespace BizHawk.Client.Common
 					SetGPGX(gpgx);
 					break;
 				case LibsnesCore snes:
-					SetBsnes(snes);
+					SetLibsnes(snes);
+					break;
+				case BsnesCore bsnes:
+					SetBsnes(bsnes);
 					break;
 				case NES nes:
 					SetNesHawk(nes);

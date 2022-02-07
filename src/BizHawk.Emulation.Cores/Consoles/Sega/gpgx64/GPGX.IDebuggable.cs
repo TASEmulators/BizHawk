@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
@@ -16,15 +16,18 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			if (n > regs.Length)
 				throw new InvalidOperationException("A buffer overrun has occured!");
 			var ret = new Dictionary<string, RegisterValue>();
-			for (int i = 0; i < n; i++)
+			using (_elf.EnterExit())
 			{
-				// el hacko
-				string name = Marshal.PtrToStringAnsi(regs[i].Name);
-				byte size = 32;
-				if (name.Contains("68K SR") || name.StartsWith("Z80"))
-					size = 16;
+				for (int i = 0; i < n; i++)
+				{
+					// el hacko
+					string name = Marshal.PtrToStringAnsi(regs[i].Name);
+					byte size = 32;
+					if (name.Contains("68K SR") || name.StartsWith("Z80"))
+						size = 16;
 
-				ret[name] = new RegisterValue((ulong)regs[i].Value, size);
+					ret[name] = new RegisterValue((ulong)regs[i].Value, size);
+				}
 			}
 
 			return ret;

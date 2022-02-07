@@ -9,7 +9,7 @@ using BizHawk.Emulation.Cores.Intellivision;
 
 namespace BizHawk.Emulation.Cores
 {
-	[Schema("INTV")]
+	[Schema(VSystemID.Raw.INTV)]
 	// ReSharper disable once UnusedMember.Global
 	public class IntvSchema : IVirtualPadSchema
 	{

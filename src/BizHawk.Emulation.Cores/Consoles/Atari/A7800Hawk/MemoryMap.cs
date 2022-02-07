@@ -12,6 +12,8 @@ SHADOW
 7. RAM   001X X000 0000 0000 - 001X X111 1111 1111
 */
 
+using System;
+
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
 	public partial class A7800Hawk
@@ -81,7 +83,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			if ((addr >= 0x2800) && (addr < 0x3000))
 			{
 				// this mirror evidently does not exist on hardware despite being in the documentation
-				return 0xFF;// RAM[(addr & 0x7FF) + 0x800];
+				// must return 0 or Summer Games will deadlock at event start screen
+				return 0x0;// RAM[(addr & 0x7FF) + 0x800];
 			}
 
 			if ((addr >= 0x3000) && (addr < 0x4000))

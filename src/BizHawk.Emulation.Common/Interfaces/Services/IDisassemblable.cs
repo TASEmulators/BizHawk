@@ -7,13 +7,13 @@ namespace BizHawk.Emulation.Common
 	/// <summary>
 	/// This service provides the means to generate disassembly by the core for a given CPU and memory domain
 	/// Tools such the debugger use this, but also LUA scripting, and tools like trace logging and code data logging can make use of this tool
-	/// If unavailable the debugger tool will still be available but disable the disassembly window but still be available if the <seealso cref="IDebuggable"/> service is available
+	/// If unavailable the debugger tool will still be available but disable the disassembly window but still be available if the <see cref="IDebuggable"/> service is available
 	/// </summary>
 	public interface IDisassemblable : IEmulatorService
 	{
 		/// <summary>
 		/// Gets or sets the CPUS that will be used to disassemble
-		/// Only values returned from <seealso cref="AvailableCpus"/> will be supported when Set
+		/// Only values returned from <see cref="AvailableCpus"/> will be supported when Set
 		/// </summary>
 		string Cpu { get; set; }
 
@@ -38,12 +38,12 @@ namespace BizHawk.Emulation.Common
 	/// </summary>
 	public abstract class VerifiedDisassembler : IDisassemblable
 	{
-		private string _cpu;
+		private string? _cpu;
 
 		/// <exception cref="ArgumentException">(from setter) <paramref name="value"/> isn't the name of an available CPU</exception>
 		public virtual string Cpu
 		{
-			get => _cpu;
+			get => _cpu ??= AvailableCpus.First();
 			set
 			{
 				if (!AvailableCpus.Contains(value))
@@ -60,10 +60,5 @@ namespace BizHawk.Emulation.Common
 		public abstract string PCRegisterName { get; }
 
 		public abstract string Disassemble(MemoryDomain m, uint addr, out int length);
-
-		protected VerifiedDisassembler()
-		{
-			_cpu = AvailableCpus.First();
-		}
 	}
 }

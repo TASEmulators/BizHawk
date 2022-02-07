@@ -6,7 +6,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores
 {
-	[Schema("NGP")]
+	[Schema(VSystemID.Raw.NGP)]
 	// ReSharper disable once UnusedMember.Global
 	public class NgpSchema : IVirtualPadSchema
 	{

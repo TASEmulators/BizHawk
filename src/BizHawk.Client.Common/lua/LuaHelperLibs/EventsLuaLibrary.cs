@@ -44,6 +44,10 @@ namespace BizHawk.Client.Common
 			Log($"{scope} is not an available scope for {Emulator.Attributes().CoreName}");
 		}
 
+		[LuaMethod("can_use_callback_params", "Returns true. Check this function exists to decide whether to use hacks for older versions w/o parameter support.")]
+		[LuaMethodExample("local mem_callback = event.can_use_callback_params ~= nil and mem_callback or mem_callback_pre_28;")]
+		public bool CanUseCallbackParams()
+			=> true;
 
 		[LuaMethodExample("local steveonf = event.onframeend(\r\n\tfunction()\r\n\t\tconsole.log( \"Calls the given lua function at the end of each frame, after all emulation and drawing has completed. Note: this is the default behavior of lua scripts\" );\r\n\tend\r\n\t, \"Frame name\" );")]
 		[LuaMethod("onframeend", "Calls the given lua function at the end of each frame, after all emulation and drawing has completed. Note: this is the default behavior of lua scripts")]
@@ -68,7 +72,7 @@ namespace BizHawk.Client.Common
 			{
 				try
 				{
-					InputPollableCore.InputCallbacks.Add(nlf.Callback);
+					InputPollableCore.InputCallbacks.Add(nlf.InputCallback);
 					return nlf.Guid.ToString();
 				}
 				catch (NotImplementedException)
@@ -232,20 +236,28 @@ namespace BizHawk.Client.Common
 			=> _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, "OnExit", LogOutputCallback, CurrentFile, name)
 				.Guid.ToString();
 
+		[LuaMethodExample("local closeGuid = event.onconsoleclose(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires when the emulator console closes\" );\r\n\tend\r\n\t, \"Frame name\" );")]
+		[LuaMethod("onconsoleclose", "Fires when the emulator console closes")]
+		public string OnConsoleClose(LuaFunction luaf, string name = null)
+			=> _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, "OnConsoleClose", LogOutputCallback, CurrentFile, name)
+				.Guid.ToString();
+
 		[LuaMethodExample("if ( event.unregisterbyid( \"4d1810b7 - 0d28 - 4acb - 9d8b - d87721641551\" ) ) then\r\n\tconsole.log( \"Removes the registered function that matches the guid.If a function is found and remove the function will return true.If unable to find a match, the function will return false.\" );\r\nend;")]
 		[LuaMethod("unregisterbyid", "Removes the registered function that matches the guid. If a function is found and remove the function will return true. If unable to find a match, the function will return false.")]
-		public bool UnregisterById(string guid) => _luaLibsImpl.RemoveNamedFunctionMatching(nlf => nlf.Guid.ToString() == guid);
+		public bool UnregisterById(string guid)
+			=> _luaLibsImpl.RemoveNamedFunctionMatching(nlf => nlf.Guid.ToString() == guid);
 
 		[LuaMethodExample("if ( event.unregisterbyname( \"Function name\" ) ) then\r\n\tconsole.log( \"Removes the first registered function that matches Name.If a function is found and remove the function will return true.If unable to find a match, the function will return false.\" );\r\nend;")]
 		[LuaMethod("unregisterbyname", "Removes the first registered function that matches Name. If a function is found and remove the function will return true. If unable to find a match, the function will return false.")]
-		public bool UnregisterByName(string name) => _luaLibsImpl.RemoveNamedFunctionMatching(nlf => nlf.Name == name);
+		public bool UnregisterByName(string name)
+			=> _luaLibsImpl.RemoveNamedFunctionMatching(nlf => nlf.Name == name);
 
 		[LuaMethodExample("local scopes = event.availableScopes();")]
 		[LuaMethod("availableScopes", "Lists the available scopes that can be passed into memory events")]
 		public LuaTable AvailableScopes()
 		{
 			return DebuggableCore?.MemoryCallbacksAvailable() == true
-				? _th.ListToTable(DebuggableCore.MemoryCallbacks.AvailableScopes)
+				? _th.ListToTable(DebuggableCore.MemoryCallbacks.AvailableScopes, indexFrom: 0)
 				: _th.CreateTable();
 		}
 

@@ -1,16 +1,16 @@
 ﻿//Copyright (c) 2012 BizHawk team
 
-//Permission is hereby granted, free of charge, to any person obtaining a copy of 
+//Permission is hereby granted, free of charge, to any person obtaining a copy of
 //this software and associated documentation files (the "Software"), to deal in
 //the Software without restriction, including without limitation the rights to
 //use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
 //of the Software, and to permit persons to whom the Software is furnished to do
 //so, subject to the following conditions:
 
-//The above copyright notice and this permission notice shall be included in all 
+//The above copyright notice and this permission notice shall be included in all
 //copies or substantial portions of the Software.
 
-//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 //AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		private static void Prep_EDC()
 		{
-			//14.3 of yellowbook specifies EDC crc as P(x) = (x^16 + x^15 + x^2 + 1) . (x^16 + x^2 + x + 1) 
+			//14.3 of yellowbook specifies EDC crc as P(x) = (x^16 + x^15 + x^2 + 1) . (x^16 + x^2 + x + 1)
 			//confirmation at http://cdmagediscussion.yuku.com/topic/742/EDC-calculation
 			//int Pa = 0x18005;
 			//int Pb = 0x10007;
@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.DiscSystem
 			//uint edc_poly = (uint)Px;
 			const uint edc_poly = 0x8001801B;
 
-			//generate the CRC table 
+			//generate the CRC table
 			uint reverse_edc_poly = BitReverse.Reverse32(edc_poly);
 			for (uint i = 0; i < 256; ++i)
 			{
@@ -86,11 +86,11 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 
 		/// <summary>
-		/// calculate math lookup tables for ECC calculations. 
+		/// calculate math lookup tables for ECC calculations.
 		/// </summary>
 		private static void Prep_ECC()
 		{
-			//create a table implementing f(i) = i*2 
+			//create a table implementing f(i) = i*2
 			for (int i = 0; i < 256; i++)
 			{
 				int n = i * 2;
@@ -200,7 +200,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		/// <summary>
 		/// calculates EDC checksum for the range of data provided
-		/// see section 14.3 of yellowbook 
+		/// see section 14.3 of yellowbook
 		/// </summary>
 		public static uint EDC_Calc(byte[] data, int offset, int length)
 		{

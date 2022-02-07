@@ -10,8 +10,6 @@ namespace BizHawk.Client.Common
 
 		public readonly string? cmdLoadState;
 
-		public readonly string? cmdConfigPath;
-
 		public readonly string? cmdConfigFile;
 
 		public readonly string? cmdMovie;
@@ -50,7 +48,6 @@ namespace BizHawk.Client.Common
 
 		public ParsedCLIFlags(string? cmdLoadSlot,
 			string? cmdLoadState,
-			string? cmdConfigPath,
 			string? cmdConfigFile,
 			string? cmdMovie,
 			string? cmdDumpType,
@@ -72,7 +69,6 @@ namespace BizHawk.Client.Common
 		{
 			this.cmdLoadSlot = cmdLoadSlot;
 			this.cmdLoadState = cmdLoadState;
-			this.cmdConfigPath = cmdConfigPath;
 			this.cmdConfigFile = cmdConfigFile;
 			this.cmdMovie = cmdMovie;
 			this.cmdDumpType = cmdDumpType;

@@ -163,7 +163,49 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			[DisplayName("RTC Initial Time")]
 			[Description("The initial time of emulation.  Only relevant when a game has an RTC chip and \"RTC Use Real Time\" is false.")]
 			[DefaultValue(typeof(DateTime), "2010-01-01")]
+			[TypeConverter(typeof(BizDateTimeConverter))]
 			public DateTime RTCInitialTime { get; set; }
+
+			[DisplayName("Save Type")]
+			[Description("Save type used in games.")]
+			[DefaultValue(LibmGBA.SaveType.Autodetect)]
+			public LibmGBA.SaveType OverrideSaveType { get; set; }
+			public enum HardwareSelection : int
+			{
+				Autodetect = 0,
+				True = 1,
+				False = 2,
+			}
+
+			[DisplayName("RTC")]
+			[Description("")]
+			[DefaultValue(HardwareSelection.Autodetect)]
+			public HardwareSelection OverrideRtc { get; set; }
+
+			[DisplayName("Rumble")]
+			[Description("")]
+			[DefaultValue(HardwareSelection.Autodetect)]
+			public HardwareSelection OverrideRumble { get; set; }
+
+			[DisplayName("Light Sensor")]
+			[Description("")]
+			[DefaultValue(HardwareSelection.Autodetect)]
+			public HardwareSelection OverrideLightSensor { get; set; }
+
+			[DisplayName("Gyro")]
+			[Description("")]
+			[DefaultValue(HardwareSelection.Autodetect)]
+			public HardwareSelection OverrideGyro { get; set; }
+
+			[DisplayName("Tilt")]
+			[Description("")]
+			[DefaultValue(HardwareSelection.Autodetect)]
+			public HardwareSelection OverrideTilt { get; set; }
+
+			[DisplayName("GB Player Detection")]
+			[Description("")]
+			[DefaultValue(false)]
+			public bool OverrideGbPlayerDetect { get; set; }
 
 			public SyncSettings()
 			{

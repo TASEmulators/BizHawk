@@ -8,7 +8,7 @@ using BizHawk.Emulation.Cores.Nintendo.N64;
 
 namespace BizHawk.Emulation.Cores
 {
-	[Schema("N64")]
+	[Schema(VSystemID.Raw.N64)]
 	// ReSharper disable once UnusedMember.Global
 	public class N64Schema : IVirtualPadSchema
 	{

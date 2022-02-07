@@ -142,7 +142,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 		}
 
 		// Execute instructions
-		public void ExecuteOne()
+		public void ExecuteOne(bool useRGBDSSyntax)
 		{
 			switch (instr_table[instr_pntr++])
 			{
@@ -164,11 +164,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					{
 						interrupts_enabled = false;
 
-						TraceCallback?.Invoke(new TraceInfo
-						{
-							Disassembly = "====IRQ====",
-							RegisterInfo = ""
-						});
+						TraceCallback?.Invoke(new(disassembly: "====IRQ====", registerInfo: string.Empty));
 
 						// call interrupt processor 
 						// lowest bit set is highest priority
@@ -177,7 +173,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					else
 					{
 						OnExecFetch?.Invoke(RegPC);
-						if (TraceCallback != null && !CB_prefix) TraceCallback(State());
+						if (TraceCallback != null && !CB_prefix) TraceCallback(State(useRGBDSSyntax));
 						CDLCallback?.Invoke(RegPC, eCDLogMemFlags.FetchFirst);
 						FetchInstruction(ReadMemory(RegPC++));
 					}
@@ -333,11 +329,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 						{
 							interrupts_enabled = false;
 
-							TraceCallback?.Invoke(new TraceInfo
-							{
-								Disassembly = "====IRQ====",
-								RegisterInfo = ""
-							});
+							TraceCallback?.Invoke(new(disassembly: "====IRQ====", registerInfo: string.Empty));
 
 							RegPC--;
 
@@ -347,14 +339,10 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 						}
 						else
 						{
-							TraceCallback?.Invoke(new TraceInfo
-							{
-								Disassembly = "====un-halted====",
-								RegisterInfo = ""
-							});
+							TraceCallback?.Invoke(new(disassembly: "====un-halted====", registerInfo: string.Empty));
 
 							OnExecFetch?.Invoke(RegPC);
-							if (TraceCallback != null && !CB_prefix) TraceCallback(State());
+							if (TraceCallback != null && !CB_prefix) TraceCallback(State(useRGBDSSyntax));
 							CDLCallback?.Invoke(RegPC, eCDLogMemFlags.FetchFirst);
 
 							FetchInstruction(ReadMemory(RegPC));
@@ -364,11 +352,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					{
 						interrupts_enabled = false;
 
-						TraceCallback?.Invoke(new TraceInfo
-						{
-							Disassembly = "====IRQ====",
-							RegisterInfo = ""
-						});
+						TraceCallback?.Invoke(new(disassembly: "====IRQ====", registerInfo: string.Empty));
 						halted = false;
 
 						if (Halt_bug_4)
@@ -407,11 +391,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					else if (temp)
 					{
 						// even if interrupt servicing is disabled, any interrupt flag raised still resumes execution
-						TraceCallback?.Invoke(new TraceInfo
-						{
-							Disassembly = "====un-halted====",
-							RegisterInfo = ""
-						});
+						TraceCallback?.Invoke(new(disassembly: "====un-halted====", registerInfo: string.Empty));
 						halted = false;
 
 						if (is_GBC)
@@ -420,7 +400,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 							if (Halt_bug_3)
 							{
 								OnExecFetch?.Invoke(RegPC);
-								if (TraceCallback != null && !CB_prefix) TraceCallback(State());
+								if (TraceCallback != null && !CB_prefix) TraceCallback(State(useRGBDSSyntax));
 								CDLCallback?.Invoke(RegPC, eCDLogMemFlags.FetchFirst);
 
 								RegPC++;
@@ -436,7 +416,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 						else
 						{
 							OnExecFetch?.Invoke(RegPC);
-							if (TraceCallback != null && !CB_prefix) TraceCallback(State());
+							if (TraceCallback != null && !CB_prefix) TraceCallback(State(useRGBDSSyntax));
 							CDLCallback?.Invoke(RegPC, eCDLogMemFlags.FetchFirst);
 
 							if (Halt_bug_3)
@@ -493,21 +473,13 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 							interrupts_enabled = false;
 							I_use = false;
 
-							TraceCallback?.Invoke(new TraceInfo
-							{
-								Disassembly = "====un-stop====",
-								RegisterInfo = ""
-							});
+							TraceCallback?.Invoke(new(disassembly: "====un-stop====", registerInfo: string.Empty));
 
 							stopped = false;
 							stop_check = false;
 							stop_time = 0;
 
-							TraceCallback?.Invoke(new TraceInfo
-							{
-								Disassembly = "====IRQ====",
-								RegisterInfo = ""
-							});
+							TraceCallback?.Invoke(new(disassembly: "====IRQ====", registerInfo: string.Empty));
 
 							// call interrupt processor 
 							// lowest bit set is highest priority
@@ -527,11 +499,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 						if (stop_time == 0)
 						{
-							TraceCallback?.Invoke(new TraceInfo
-							{
-								Disassembly = "====un-stop====",
-								RegisterInfo = ""
-							});
+							TraceCallback?.Invoke(new(disassembly: "====un-stop====", registerInfo: string.Empty));
 
 							stopped = false;
 
@@ -555,15 +523,11 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					if ((buttons_pressed & 0xF) != 0xF)
 					{
 						// TODO: On a gameboy, you can only un-STOP once, needs further testing
-						TraceCallback?.Invoke(new TraceInfo
-						{
-							Disassembly = "====un-stop====",
-							RegisterInfo = ""
-						});
+						TraceCallback?.Invoke(new(disassembly: "====un-stop====", registerInfo: string.Empty));
 
 						stopped = false;
 						OnExecFetch?.Invoke(RegPC);
-						if (TraceCallback != null && !CB_prefix) TraceCallback(State());
+						if (TraceCallback != null && !CB_prefix) TraceCallback(State(useRGBDSSyntax));
 						CDLCallback?.Invoke(RegPC, eCDLogMemFlags.FetchFirst);
 						FetchInstruction(ReadMemory(RegPC++));
 
@@ -587,7 +551,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					break;
 				case OP_G:
 					OnExecFetch?.Invoke(RegPC);
-					TraceCallback?.Invoke(State());
+					TraceCallback?.Invoke(State(useRGBDSSyntax));
 					CDLCallback?.Invoke(RegPC, eCDLogMemFlags.FetchFirst);
 
 					FetchInstruction(ReadMemory(RegPC)); // note no increment
@@ -648,7 +612,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 					SetIntRegs(interrupt_src_reg);
 
-					if ((interrupt_src_reg & interrupt_enable_reg) == 0) { FlagI = false; }
+					if ((interrupt_src_reg & (interrupt_enable_reg & 0x1F)) == 0) { FlagI = false; }
 					// reset back to default state
 					int_src = 5;
 					int_clear = 0;
@@ -752,12 +716,10 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 		public string TraceHeader => "LR35902: PC, machine code, mnemonic, operands, registers (A, F, B, C, D, E, H, L, SP), Cy, flags (ZNHCI)";
 
-		public TraceInfo State(bool disassemble = true)
-		{
-			return new TraceInfo
-			{
-				Disassembly = $"{(disassemble ? Disassemble(RegPC, ReadMemory, out _) : "---")} ".PadRight(40),
-				RegisterInfo = string.Join(" ",
+		public TraceInfo State(bool useRGBDSSyntax, bool disassemble = true)
+			=> new(
+				disassembly: $"{(disassemble ? Disassemble(RegPC, ReadMemory, useRGBDSSyntax, out _) : "---")} ".PadRight(40),
+				registerInfo: string.Join(" ",
 					$"A:{Regs[A]:X2}",
 					$"F:{Regs[F]:X2}",
 					$"B:{Regs[B]:X2}",
@@ -775,9 +737,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 						FlagH ? "H" : "h",
 						FlagC ? "C" : "c",
 						FlagI ? "I" : "i",
-						interrupts_enabled ? "E" : "e"))
-			};
-		}
+						interrupts_enabled ? "E" : "e")));
 
 		private void FetchInstruction(int op)
 		{

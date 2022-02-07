@@ -1,6 +1,6 @@
 ﻿using System;
 
-using BizHawk.Common.BufferExtensions;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.LR35902;
 
@@ -8,8 +8,9 @@ using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
 
+using BizHawk.Common.ReflectionExtensions;
+
 // TODO: mode1_disableint_gbc.gbc behaves differently between GBC and GBA, why?
-// TODO: oam_dma_start.gb does not behave as expected but test still passes through lucky coincidences / test deficiency
 // TODO: Window Position A6 behaves differently
 // TODO: Verify open bus behaviour for bad SRAM accesses for other MBCs
 // TODO: Apparently sprites at x=A7 do not stop the trigger for FF0F bit flip, but still do not dispatch interrupt or
@@ -20,15 +21,36 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
-	[Core(
-		CoreNames.GbHawk,
-		"",
-		isPorted: false,
-		isReleased: true)]
+	[Core(CoreNames.GbHawk, "")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class GBHawk : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, IGameboyCommon,
 	ISettable<GBHawk.GBSettings, GBHawk.GBSyncSettings>
 	{
+		internal static class RomChecksums
+		{
+			public const string BombermanCollection = "SHA1:385F8FAFA53A83F8F65E1E619FE124BBF7DB4A98";
+
+			public const string BombermanSelectionKORNotInGameDB = "SHA1:52451464A9F4DD5FAEFE4594954CBCE03BFF0D05";
+
+			public const string MortalKombatIAndIIUSAEU = "SHA1:E337489255B33367CE26194FC4038346D3388BD9";
+
+			public const string PirateRockMan8 = "MD5:CAE0998A899DF2EE6ABA8E7695C2A096";
+
+			public const string PirateSachen1 = "MD5:D3C1924D847BC5D125BF54C2076BE27A";
+
+			public const string UnknownRomA = "MD5:97122B9B183AAB4079C8D36A4CE6E9C1";
+
+			public const string WisdomTreeExodus = "SHA1:685D5A47A1FC386D7B451C8B2733E654B7779B71";
+
+			public const string WisdomTreeJoshua = "SHA1:019B4B0E76336E2613AE6E8B415B5C65F6D465A5";
+
+			public const string WisdomTreeKJVBible = "SHA1:6362FDE9DCB08242A64F2FBEA33DE93D1776A6E0";
+
+			public const string WisdomTreeNIVBible = "SHA1:136CF97A8C3560EC9DB3D8F354D91B7DE27E0743";
+
+			public const string WisdomTreeSpiritualWarfare = "SHA1:6E6AE5DBD8FF8B8F41B8411EF119E96E4ECF763F";
+		}
+
 		// this register controls whether or not the GB BIOS is mapped into memory
 		public byte GB_bios_register;
 
@@ -66,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int RAM_Bank;
 		public int RAM_Bank_ret;
 		public byte VRAM_Bank;
-		internal bool is_GBC;
+		internal bool is_GBC, is_GB_in_GBC;
 		public bool GBC_compat; // compatibility mode for GB games played on GBC
 		public bool double_speed;
 		public bool speed_switch;
@@ -94,6 +116,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public MapperBase mapper;
 
+		private readonly GBHawkDisassembler _disassembler = new();
+
 		private readonly ITraceable _tracer;
 
 		public LR35902 cpu;
@@ -104,9 +128,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		private static readonly byte[] GBA_override = { 0xFF, 0x00, 0xCD, 0x03, 0x35, 0xAA, 0x31, 0x90, 0x94, 0x00, 0x00, 0x00, 0x00 };
 
-		[CoreConstructor("GB")]
-		[CoreConstructor("GBC")]
-		public GBHawk(CoreComm comm, GameInfo game, byte[] rom, /*string gameDbFn,*/ GBSettings settings, GBSyncSettings syncSettings)
+		[CoreConstructor(VSystemID.Raw.GB)]
+		[CoreConstructor(VSystemID.Raw.GBC)]
+		public GBHawk(CoreComm comm, GameInfo game, byte[] rom, /*string gameDbFn,*/ GBSettings settings, GBSyncSettings syncSettings, bool subframe = false)
 		{
 			var ser = new BasicServiceProvider(this);
 
@@ -127,44 +151,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			audio = new Audio();
 			serialport = new SerialPort();
 
-			_settings = (GBSettings)settings ?? new GBSettings();
+			_ = PutSettings(settings ?? new GBSettings());
 			_syncSettings = (GBSyncSettings)syncSettings ?? new GBSyncSettings();
 
-			byte[] Bios = null;
-
+			is_GBC = _syncSettings.ConsoleMode switch
+			{
+				GBSyncSettings.ConsoleModeType.GB => false,
+				GBSyncSettings.ConsoleModeType.GBC => true,
+				_ => game.System is not "GB"
+			};
 			// Load up a BIOS and initialize the correct PPU
-			if (_syncSettings.ConsoleMode == GBSyncSettings.ConsoleModeType.Auto)
-			{
-				if (game.System == "GB")
-				{
-					Bios = comm.CoreFileProvider.GetFirmware("GB", "World", true, "BIOS Not Found, Cannot Load");
-					ppu = new GB_PPU();
-				}
-				else
-				{
-					Bios = comm.CoreFileProvider.GetFirmware("GBC", "World", true, "BIOS Not Found, Cannot Load");
-					ppu = new GBC_PPU();
-					is_GBC = true;
-				}			
-			}
-			else if (_syncSettings.ConsoleMode == GBSyncSettings.ConsoleModeType.GB)
-			{
-				Bios = comm.CoreFileProvider.GetFirmware("GB", "World", true, "BIOS Not Found, Cannot Load");
-				ppu = new GB_PPU();
-			}
-			else
-			{
-				Bios = comm.CoreFileProvider.GetFirmware("GBC", "World", true, "BIOS Not Found, Cannot Load");
-				ppu = new GBC_PPU();
-				is_GBC = true;
-			}			
-
-			if (Bios == null)
-			{
-				throw new MissingFirmwareException("Missing Gamboy Bios");
-			}
-
-			_bios = Bios;
+			_bios = comm.CoreFileProvider.GetFirmwareOrThrow(new(is_GBC ? "GBC" : "GB", "World"), "BIOS Not Found, Cannot Load");
+			ppu = is_GBC ? new GBC_PPU() : new GB_PPU();
 
 			// set up IR register to off state
 			if (is_GBC) { IR_mask = 0; IR_reg = 0x3E; IR_receive = 2; IR_self = 2; IR_signal = 2; }
@@ -187,23 +185,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			if (is_GBC && ((header[0x43] != 0x80) && (header[0x43] != 0xC0)))
 			{
 				ppu = new GBC_GB_PPU();
+				is_GB_in_GBC = true; // for movie files
 			}
 
-			Console.WriteLine("MD5: " + rom.HashMD5(0, rom.Length));
-			Console.WriteLine("SHA1: " + rom.HashSHA1(0, rom.Length));
+			var romHashMD5 = MD5Checksum.ComputePrefixedHex(rom);
+			Console.WriteLine(romHashMD5);
+			var romHashSHA1 = SHA1Checksum.ComputePrefixedHex(rom);
+			Console.WriteLine(romHashSHA1);
+
 			_rom = rom;
-			string mppr = Setup_Mapper();
+			var mppr = Setup_Mapper(romHashMD5, romHashSHA1);
 			if (cart_RAM != null) { cart_RAM_vbls = new byte[cart_RAM.Length]; }
 
-			if (mppr == "MBC7")
-			{
-				_controllerDeck = new GBHawkControllerDeck(_syncSettings.Port1);
-			}
-			else
-			{
-				_controllerDeck = new GBHawkControllerDeck(GBHawkControllerDeck.DefaultControllerName);
-			}
-			
+			_controllerDeck = new(mppr is "MBC7"
+				? typeof(StandardTilt).DisplayName()
+				: GBHawkControllerDeck.DefaultControllerName, subframe);
+
 			timer.Core = this;
 			audio.Core = this;
 			ppu.Core = this;
@@ -213,13 +210,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Register<ISoundProvider>(audio);
 			ServiceProvider = ser;
 
-			_settings = (GBSettings)settings ?? new GBSettings();
+			_ = PutSettings(settings ?? new GBSettings());
 			_syncSettings = (GBSyncSettings)syncSettings ?? new GBSyncSettings();
 
-			_tracer = new TraceBuffer { Header = cpu.TraceHeader };
+			_tracer = new TraceBuffer(cpu.TraceHeader);
 			ser.Register<ITraceable>(_tracer);
 			ser.Register<IStatable>(new StateSerializer(SyncState));
-            ser.Register<IDisassemblable>(new GBHawkDisassembler());
+            ser.Register<IDisassemblable>(_disassembler);
 			SetupMemoryDomains();
 			cpu.SetCallbacks(ReadMemory, PeekMemory, PeekMemory, WriteMemory);
 			HardReset();
@@ -230,6 +227,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		}
 
 		public bool IsCGBMode() => is_GBC;
+
+		public bool IsCGBDMGMode() => is_GB_in_GBC;
 
 		/// <summary>
 		/// Produces a palette in the form that certain frontend inspection tools.
@@ -391,7 +390,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					// uninitialized RAM
 					for (int i = 0; i < RAM.Length; i++)
 					{
-						RAM[i] = 0;
+						RAM[i] = GBA_Init_RAM[i];
 					}
 				}
 				else
@@ -508,7 +507,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
-		public string Setup_Mapper()
+		public string Setup_Mapper(string romHashMD5, string romHashSHA1)
 		{
 			// setup up mapper based on header entry
 			string mppr;
@@ -567,23 +566,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 
 			// special case for multi cart mappers
-			if ((_rom.HashMD5(0, _rom.Length) == "97122B9B183AAB4079C8D36A4CE6E9C1") ||
-				(_rom.HashMD5(0, _rom.Length) == "9FB9C42CF52DCFDCFBAD5E61AE1B5777") ||
-				(_rom.HashMD5(0, _rom.Length) == "CF1F58AB72112716D3C615A553B2F481") ||
-				(_rom.HashMD5(0, _rom.Length) == "D0C6FFC3602D91C0B2B1B0461553DE33")	// Bomberman Selection
-				)
+			if (romHashMD5 is RomChecksums.UnknownRomA
+				|| romHashSHA1 is RomChecksums.BombermanCollection or RomChecksums.MortalKombatIAndIIUSAEU or RomChecksums.BombermanSelectionKORNotInGameDB)
 			{
 				Console.WriteLine("Using Multi-Cart Mapper");
 				mapper = new MapperMBC1Multi();
 			}
 			
 			// Wisdom Tree does not identify their mapper, so use hash instead
-			if ((_rom.HashMD5(0, _rom.Length) == "2C07CAEE51A1F0C91C72C7C6F380B0F6") || // Joshua
-				(_rom.HashMD5(0, _rom.Length) == "37E017C8D1A45BAB609FB5B43FB64337") || // Spiritual Warfare
-				(_rom.HashMD5(0, _rom.Length) == "AB1FA0ED0207B1D0D5F401F0CD17BEBF") || // Exodus
-				(_rom.HashMD5(0, _rom.Length) == "BA2AC3587B3E1B36DE52E740274071B0") || // Bible - KJV
-				(_rom.HashMD5(0, _rom.Length) == "8CDDB8B2DCD3EC1A3FDD770DF8BDA07C")    // Bible - NIV
-				)
+			else if (romHashSHA1 is RomChecksums.WisdomTreeJoshua or RomChecksums.WisdomTreeSpiritualWarfare or RomChecksums.WisdomTreeExodus or RomChecksums.WisdomTreeKJVBible or RomChecksums.WisdomTreeNIVBible)
 			{
 				Console.WriteLine("Using Wisdom Tree Mapper");
 				mapper = new MapperWT();
@@ -591,12 +582,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 
 			// special case for bootlegs
-			if ((_rom.HashMD5(0, _rom.Length) == "CAE0998A899DF2EE6ABA8E7695C2A096"))
+			else if (romHashMD5 == RomChecksums.PirateRockMan8)
 			{
 				Console.WriteLine("Using RockMan 8 (Unlicensed) Mapper");
 				mapper = new MapperRM8();
 			}
-			if ((_rom.HashMD5(0, _rom.Length) == "D3C1924D847BC5D125BF54C2076BE27A"))
+			else if (romHashMD5 == RomChecksums.PirateSachen1)
 			{
 				Console.WriteLine("Using Sachen 1 (Unlicensed) Mapper");
 				mapper = new MapperSachen1();
@@ -740,16 +731,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public class GBHawkDisassembler : VerifiedDisassembler
 		{
-			public override IEnumerable<string> AvailableCpus
-			{
-				get { yield return "LR35902"; }
-			}
+			public bool UseRGBDSSyntax;
+
+			public override IEnumerable<string> AvailableCpus { get; } = new[] { "LR35902" };
 
 			public override string PCRegisterName => "PC";
 
 			public override string Disassemble(MemoryDomain m, uint addr, out int length)
 			{
-				string ret = LR35902.Disassemble((ushort)addr, a => m.PeekByte(a), out var tmp);
+				var ret = LR35902.Disassemble((ushort) addr, a => m.PeekByte(a), UseRGBDSSyntax, out var tmp);
 				length = tmp;
 				return ret;
 			}

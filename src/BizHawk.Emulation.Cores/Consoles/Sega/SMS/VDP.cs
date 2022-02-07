@@ -1,6 +1,7 @@
 ﻿using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.Z80A;
+using System;
 
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
@@ -46,6 +47,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public int[] FrameBuffer = new int[256 * 192];
 		public int[] GameGearFrameBuffer = new int[160 * 144];
 		public int[] OverscanFrameBuffer = null;
+		public int[] Backdrop_SL = new int[256];
 
 		public bool Mode1Bit => (Registers[1] & 16) > 0;
 		public bool Mode2Bit => (Registers[0] & 2) > 0;
@@ -71,6 +73,15 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		private int TmsPatternNameTableBase;
 		private int TmsSpriteAttributeBase;
 
+		// older versions fo the SMS VDP have a masking bit in register two that effects mirroring.
+		// This is needed for Ys (JPN) in the status bar
+		private int NameTableMaskBit;
+		private bool JPN_Compat =false;
+
+		// For SMS, the last 8 x-tiles are fixed if vertscroll (reg[0].bit(7)) is set, but on GG it must be
+		// only the last 7 or Fray displays incorrectly
+		private int lock_tile_start;
+
 		// preprocessed state assist stuff.
 		public int[] Palette = new int[32];
 		public byte[] PatternBuffer = new byte[0x8000];
@@ -81,7 +92,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		private static readonly byte[] SMSPalXlatTable = { 0, 85, 170, 255 };
 		private static readonly byte[] GGPalXlatTable = { 0, 17, 34, 51, 68, 85, 102, 119, 136, 153, 170, 187, 204, 221, 238, 255 };
 
-		public VDP(SMS sms, Z80A cpu, VdpMode mode, DisplayType displayType)
+		public VDP(SMS sms, Z80A cpu, VdpMode mode, DisplayType displayType, bool region_compat)
 		{
 			Sms = sms;
 			Cpu = cpu;
@@ -89,7 +100,10 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			if (mode == VdpMode.SMS) CRAM = new byte[32];
 			if (mode == VdpMode.GameGear) CRAM = new byte[64];
 			DisplayType = displayType;
+			if (mode == VdpMode.SMS) { JPN_Compat = region_compat; }
 			NameTableBase = CalcNameTableBase();
+
+			lock_tile_start = mode == VdpMode.SMS ? 24 : 25;
 		}
 
 		public byte ReadData()
@@ -218,6 +232,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public int CalcNameTableBase()
 		{
+			if (JPN_Compat) { NameTableMaskBit = 0xFBFF + ((Registers[2] & 1) << 10); }
 			if (FrameHeight == 192)
 				return 1024 * (Registers[2] & 0x0E);
 			return (1024 * (Registers[2] & 0x0C)) + 0x0700;
@@ -368,6 +383,11 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		internal void RenderCurrentScanline(bool render)
 		{
+			if (ScanLine < FrameHeight)
+			{
+				Backdrop_SL[ScanLine] = Palette[(byte)(16 + (Registers[7] & 15))];
+			}
+			
 			// only mode 4 supports frameskip. deal with it
 			if (TmsMode == 4)
 			{
@@ -409,6 +429,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			ser.Sync(nameof(CRAM), ref CRAM, false);
 			ser.Sync(nameof(VRAM), ref VRAM, false);
 			ser.Sync(nameof(HCounter), ref HCounter);
+			ser.Sync(nameof(Backdrop_SL), ref Backdrop_SL, false);
 			ser.EndSection();
 
 			if (ser.IsReader)
@@ -473,7 +494,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 		}
 
-		public int BackgroundColor => Palette[BackdropColor];
+		public int BackgroundColor => unchecked((int)0xFF000000);
 
 		public int VsyncNumerator => DisplayType == DisplayType.NTSC ? 60 : 50;
 

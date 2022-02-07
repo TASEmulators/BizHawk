@@ -141,6 +141,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			public int NominalHeight;
 			public VideoSystem VideoSystem;
 			public int FpsFixed;
+			public long MasterClock;
 			public int LcmWidth;
 			public int LcmHeight;
 			public int  PointerScaleX;

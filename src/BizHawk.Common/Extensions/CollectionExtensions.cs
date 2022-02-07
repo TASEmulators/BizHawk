@@ -104,5 +104,69 @@ namespace BizHawk.Common.CollectionExtensions
 
 			throw new InvalidOperationException("Item not found");
 		}
+
+		/// <inheritdoc cref="List{T}.AddRange"/>
+		/// <remarks>
+		/// (This is an extension method which reimplements <see cref="List{T}.AddRange"/> for other <see cref="ICollection{T}">collections</see>.
+		/// It defers to the existing <see cref="List{T}.AddRange">AddRange</see> if the receiver's type is <see cref="List{T}"/> or a subclass.)
+		/// </remarks>
+		public static void AddRange<T>(this ICollection<T> list, IEnumerable<T> collection)
+		{
+			if (list is List<T> listImpl)
+			{
+				listImpl.AddRange(collection);
+				return;
+			}
+			foreach (var item in collection) list.Add(item);
+		}
+
+		/// <inheritdoc cref="IList{T}.IndexOf"/>
+		/// <remarks>
+		/// (This is an extension method which reimplements <see cref="IList{T}.IndexOf"/> for other <see cref="IReadOnlyList{T}">collections</see>.
+		/// It defers to the existing <see cref="IList{T}.IndexOf">IndexOf</see> if the receiver's type is <see cref="IList{T}"/> or a subtype.)
+		/// </remarks>
+		public static int IndexOf<T>(this IReadOnlyList<T> list, T elem)
+			where T : IEquatable<T>
+		{
+			if (list is IList<T> listImpl) return listImpl.IndexOf(elem);
+			for (int i = 0, l = list.Count; i < l; i++) if (elem.Equals(list[i])) return i;
+			return -1;
+		}
+
+		public static T? FirstOrNull<T>(this IEnumerable<T> list, Func<T, bool> predicate)
+			where T : struct
+		{
+			foreach (var t in list)
+				if (predicate(t))
+					return t;
+			return null;
+		}
+
+		/// <inheritdoc cref="List{T}.RemoveAll"/>
+		/// <remarks>
+		/// (This is an extension method which reimplements <see cref="List{T}.RemoveAll"/> for other <see cref="ICollection{T}">collections</see>.
+		/// It defers to the existing <see cref="List{T}.RemoveAll">RemoveAll</see> if the receiver's type is <see cref="List{T}"/> or a subclass.)
+		/// </remarks>
+		public static int RemoveAll<T>(this ICollection<T> list, Predicate<T> match)
+		{
+			if (list is List<T> listImpl) return listImpl.RemoveAll(match);
+			var c = list.Count;
+			if (list is IList<T> iList)
+			{
+				for (var i = 0; i < iList.Count; i++)
+				{
+					if (match(iList[i])) iList.RemoveAt(i--);
+				}
+			}
+			else
+			{
+				foreach (var item in list.Where(item => match(item)) // can't simply cast to Func<T, bool>
+					.ToList()) // very important
+				{
+					list.Remove(item);
+				}
+			}
+			return c - list.Count;
+		}
 	}
 }

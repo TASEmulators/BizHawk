@@ -1,3 +1,6 @@
+#ifndef AY38910_H
+#define AY38910_H
+
 #include <iostream>
 #include <cstdint>
 #include <iomanip>
@@ -43,18 +46,12 @@ namespace MSXHawk
 		uint32_t noise = 0x1;
 
 		int32_t old_sample;
+		int32_t current_sample;
 
 		// non stated if only on frame boundaries
 		bool sound_out_A;
 		bool sound_out_B;
 		bool sound_out_C;
-
-		uint8_t Clock_Divider;
-
-		int32_t current_sample;
-		uint32_t sampleclock;
-		uint32_t num_samples;
-		int32_t samples[9000] = {};
 
 		void Reset()
 		{
@@ -76,8 +73,8 @@ namespace MSXHawk
 
 		const uint32_t VolumeTable[16] =
 		{
-			0x0000, 0x0055, 0x0079, 0x00AB, 0x00F1, 0x0155, 0x01E3, 0x02AA,
-			0x03C5, 0x0555, 0x078B, 0x0AAB, 0x0F16, 0x1555, 0x1E2B, 0x2AAA
+			0x0000, 0x002A, 0x003C, 0x0055, 0x0078, 0x00AA, 0x00F1, 0x01FF,
+			0x01E2, 0x02AA, 0x03C5, 0x0555, 0x078B, 0x0AAA, 0x0F15, 0x1555
 		};
 
 		uint8_t ReadReg()
@@ -168,7 +165,7 @@ namespace MSXHawk
 			}
 		}
 
-		void generate_sound()
+		bool generate_sound()
 		{
 			// there are 8 cpu cycles for every psg cycle
 			clock_A--;
@@ -280,15 +277,11 @@ namespace MSXHawk
 				current_sample += (sound_out_C ? VolumeTable[vol_C] : 0);
 			}
 
-			current_sample *= 2;
+			current_sample;
 
-			if ((current_sample != old_sample) && (num_samples < 4500))
-			{
-				samples[num_samples * 2] = sampleclock;
-				samples[num_samples * 2 + 1] = current_sample - old_sample;
-				num_samples++;
-				old_sample = current_sample;
-			}
+			if (current_sample != old_sample) { return true; }
+
+			return false;
 		}
 
 		#pragma endregion
@@ -440,3 +433,5 @@ namespace MSXHawk
 		#pragma endregion
 	};
 }
+
+#endif

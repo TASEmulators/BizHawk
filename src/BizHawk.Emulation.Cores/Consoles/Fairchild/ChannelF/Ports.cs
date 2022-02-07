@@ -4,164 +4,136 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
 	/// <summary>
 	/// Ports and related functions
+	/// Based on the schematic here:
+	/// https://web.archive.org/web/20210524083636/http://channelf.se/veswiki/images/3/31/FVE100_schematic_sheet_1of3.gif
+	/// https://web.archive.org/web/20160313115333/http://channelf.se/veswiki/images/0/04/FVE_schematic_sheet_2_of_3.png
 	/// </summary>
 	public partial class ChannelF
 	{
 		/// <summary>
 		/// The Channel F has 4 8-bit IO ports connected.
-		/// CPU - ports 0 and 1
-		/// PSU - ports 4 and 5
+		/// CPU (3850) - ports 0 and 1
+		/// PSU (3851) - ports 4 and 5
 		/// (the second PSU has no IO ports wired up)
+		/// Depending on the attached cartridge, there may be additional hardware on the IO bus
+		/// All CPU and PSU I/O ports are active-low with output-latches
 		/// </summary>
-		public byte[] PortLatch = new byte[4];
+		public byte[] OutputLatch = new byte[0xFF];
 
-		public bool ControllersEnabled;
-
-		public const int PORT0 = 0;
-		public const int PORT1 = 1;
-		public const int PORT4 = 2;
-		public const int PORT5 = 3;
+		public bool LS368Enable;
 
 		/// <summary>
-		/// CPU attempts to read data byte from the requested port
+		/// CPU is attempting to read from a port
 		/// </summary>
-		/// <param name="addr"></param>
-		/// <returns></returns>
 		public byte ReadPort(ushort addr)
 		{
+			var result = 0xFF;
+
 			switch (addr)
 			{
-				// Console buttons
-				// b0:	TIME
-				// b1:	MODE
-				// b2:	HOLD
-				// b3:	START
 				case 0:
-					return (byte)((DataConsole ^ 0xff) | PortLatch[PORT0]);
+					// Console Buttons - these are connected to pins 0-3 (bits 0-3) through a 7404 Hex Inverter	
+					// b0:	TIME
+					// b1:	MODE
+					// b2:	HOLD
+					// b3:	START
+					// RESET button is connected directly to the RST pin on the CPU (this is handled here in the PollInput() method)					
+					result = (~DataConsole & 0x0F) | OutputLatch[addr];
+					_isLag = false;
+					break;
 
-				// Right controller
-				// b0:	RIGHT
-				// b1:	LEFT
-				// b2:	BACK
-				// b3:	FORWARD
-				// b4:	CCW
-				// b5:	CW
-				// b6:	PULL
-				// b7:	PUSH
 				case 1:
-					byte ed1;
-					if ((PortLatch[PORT0] & 0x40) == 0)
-					{
-						ed1 = DataRight;
-					}
-					else
-					{
-						ed1 = (byte) (0xC0 | DataRight);
-					}
-					return (byte) ((ed1 ^ 0xff) | PortLatch[PORT1]);
+					// right controller (player 1)
+					// connected through 7404 Hex Inverter
+					// b0:	RIGHT
+					// b1:	LEFT
+					// b2:	BACK
+					// b3:	FORWARD
+					// b4:	CCW
+					// b5:	CW
+					var v1 = LS368Enable ? DataRight : DataRight | 0xC0;
+					result = (~v1) | OutputLatch[addr];
+					_isLag = false;
+					break;
 
-				// Left controller
-				// b0:	RIGHT
-				// b1:	LEFT
-				// b2:	BACK
-				// b3:	FORWARD
-				// b4:	CCW
-				// b5:	CW
-				// b6:	PULL
-				// b7:	PUSH
 				case 4:
-					byte ed4;
-					if ((PortLatch[PORT0] & 0x40) == 0)
-					{
-						ed4 = DataLeft;
-					}
-					else
-					{
-						ed4 = 0xff;
-					}
-					return (byte)((ed4 ^ 0xff) | PortLatch[PORT4]);
+					// left controller (player 2)
+					// connected through LS368 Hex Interting 3-State Buffer
+					// the enable pin of this IC is driven by a CPU write to pin 6 on port 0
+					// b0:	RIGHT
+					// b1:	LEFT
+					// b2:	BACK
+					// b3:	FORWARD
+					// b4:	CCW
+					// b5:	CW
+					// b6:	PULL
+					// b7:	PUSH
+					var v2 = LS368Enable ? DataLeft : 0xFF;
+					result = (~v2) | OutputLatch[addr];
+					if (LS368Enable)
+						_isLag = false;
+					break;
 
 				case 5:
-					return (byte) (0 | PortLatch[PORT5]);
+					result = OutputLatch[addr];
+					break;
 
 				default:
-					return 0;
+					// possible cartridge hardware IO space
+					result = (Cartridge.ReadPort(addr));
+					break;
 			}
+
+			return (byte)result;
 		}
 
 		/// <summary>
-		/// CPU attempts to write data to the requested port (latch)
+		/// CPU is attempting to write to the specified IO port
 		/// </summary>
-		/// <param name="addr"></param>
-		/// <param name="value"></param>
 		public void WritePort(ushort addr, byte value)
 		{
 			switch (addr)
 			{
 				case 0:
-					PortLatch[PORT0] = value;
-					if ((value & 0x20) != 0)
+					OutputLatch[addr] = value;
+					LS368Enable = !value.Bit(6);
+					if (value.Bit(5)) 
 					{
-						var offset = _x + (_y * 128);
-						VRAM[offset] = (byte)(_colour);
+						// WRT pulse
+						// pulse clocks the 74195 parallel access shift register which feeds inputs of 2 NAND gates
+						// writing data to both sets of even and odd VRAM chips (based on the row and column addresses latched into the 7493 ICs
+						VRAM[((latch_y) * 0x80) + latch_x] = (byte)latch_colour; 
 					}
 					break;
 
 				case 1:
-
-					PortLatch[PORT1] = value;
-
-					// Write Data0 - indicates that valid data is present for both VRAM ODD0 and EVEN0
-					bool data0 = value.Bit(6);
-					// Write Data1 - indicates that valid data is present for both VRAM ODD1 and EVEN1
-					bool data1 = value.Bit(7);
-
-					//_colour = ((value) >> 6) & 3;
-					_colour = ((value ^ 0xff) >> 6) & 0x3;
+					OutputLatch[addr] = value;
+					latch_colour = ((value ^ 0xFF) >> 6) & 0x03;
 					break;
 
 				case 4:
-					PortLatch[PORT4] = value;
-					_x = (value ^ 0xff) & 0x7f;
-					//_x = (value | 0x80) ^ 0xFF;
-					/*
-
-					// video horizontal position
-					// 0 - video select
-					// 1-6 - horiz A-F
-
-					
-
-					*/
-
+					OutputLatch[addr] = value;
+					latch_x = (value | 0x80) ^ 0xFF;
 					break;
 
-
 				case 5:
-
-					PortLatch[PORT5] = value;
-					//_y = (value & 31); // ^ 0xff;
-					//_y = (value | 0xC0) ^ 0xff;
-
-					//_y = (value ^ 0xff) & 0x1f;
-
-					// video vertical position and sound
-					// 0-5 - Vertical A-F
-					// 6 - Tone AN, 7 - Tone BN
-
-					_y = (value ^ 0xff) & 0x3f;
-
-					// audio
-					var aVal = ((value >> 6) & 0x03); // (value & 0xc0) >> 6;
-					if (aVal != tone)
+					OutputLatch[addr] = value;					
+					latch_y = (value | 0xC0) ^ 0xFF;
+					var audio = ((value ^ 0xFF) >> 6) & 0x03;
+					if (audio != tone)
 					{
-						tone = aVal;
+						tone = audio;
 						time = 0;
 						amplitude = 1;
 						AudioChange();
 					}
 					break;
+
+				default:
+					// possible write to cartridge hardware
+					Cartridge.WritePort(addr, (byte)(value));
+					break;
 			}
-		}
+		}		
 	}
 }

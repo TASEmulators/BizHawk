@@ -6,7 +6,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores
 {
-	[Schema("GB")]
+	[Schema(VSystemID.Raw.GB)]
 	// ReSharper disable once UnusedMember.Global
 	public class GbSchema : IVirtualPadSchema
 	{
@@ -111,7 +111,7 @@ namespace BizHawk.Emulation.Cores
 		}
 	}
 
-	[Schema("GB3x")]
+	[Schema(VSystemID.Raw.GBL)]
 	public class Gb3XSchema : GbSchema
 	{
 		public override IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
@@ -123,7 +123,7 @@ namespace BizHawk.Emulation.Cores
 		}
 	}
 
-	[Schema("GB4x")]
+	[Schema(VSystemID.Raw.GBL)]
 	public class Gb4XSchema : GbSchema
 	{
 		public override IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)

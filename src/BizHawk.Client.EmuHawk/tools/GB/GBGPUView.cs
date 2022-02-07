@@ -8,7 +8,6 @@ using BizHawk.Client.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
-using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -356,6 +355,9 @@ namespace BizHawk.Client.EmuHawk
 			int* pal = (int*)_pal;
 			byte* oam = (byte*)_oam;
 
+			// clear out the old sprite data
+			BmpView.Clear_Selected_Region((byte*)lockData.Scan0, (uint)(lockData.Height * lockData.Stride));
+
 			for (int s = 0; s < 40; s++)
 			{
 				int yPos = *oam++;
@@ -545,7 +547,6 @@ namespace BizHawk.Client.EmuHawk
 				bmpViewOAM.Refresh();
 
 				// oam (objects)
-				bmpViewOBJ.Clear();
 				DrawObj(bmpViewOBJ.Bmp, oam, vram, spPal, lcdc.Bit(2), _cgb);
 				bmpViewOBJ.Refresh();
 			}
@@ -979,7 +980,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void bmpViewOBJ_MouseMove(object sender, MouseEventArgs e)
 		{
-			SpriteMouseover(e.X, e.Y);
+			// TODO: pick out sprites from the object window based on their position
 		}
 
 		private void bmpView_MouseClick(object sender, MouseEventArgs e)

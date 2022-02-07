@@ -25,10 +25,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				SoftReset();
 			}
 
-			_frame++;
-
 			_isLag = true;
-			if (_tracer.Enabled)
+			if (_tracer.IsEnabled())
 			{
 				_cpu.TraceCallback = s => _tracer.Put(s);
 			}
@@ -164,6 +162,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				_lagCount++;
 			}
 
+			_frame++;
+
 			return true;
 		}
 
@@ -179,7 +179,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		public int Frame => _frame;
 
-		public string SystemId => "Coleco";
+		public string SystemId => VSystemID.Raw.Coleco;
 
 		public bool DeterministicEmulation => true;
 

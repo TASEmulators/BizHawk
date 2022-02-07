@@ -7,16 +7,16 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Lynx
 {
-	[Core("Handy", "K. Wilkins, Mednafen Team", true, true, "mednafen 0-9-34-1", "http://mednafen.sourceforge.net/", false)]
+	[PortedCore(CoreNames.Handy, "K. Wilkins, Mednafen Team", "mednafen 0-9-34-1", "http://mednafen.sourceforge.net/")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(IRegionable), typeof(ISettable<,>) })]
 	public partial class Lynx : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IInputPollable
 	{
-		[CoreConstructor("Lynx")]
+		[CoreConstructor(VSystemID.Raw.Lynx)]
 		public Lynx(byte[] file, GameInfo game, CoreComm comm)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 
-			byte[] bios = comm.CoreFileProvider.GetFirmware("Lynx", "Boot", true, "Boot rom is required");
+			var bios = comm.CoreFileProvider.GetFirmwareOrThrow(new("Lynx", "Boot"), "Boot rom is required");
 			if (bios.Length != 512)
 			{
 				throw new MissingFirmwareException("Lynx Bootrom must be 512 bytes!");
@@ -121,7 +121,6 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
-			Frame++;
 			if (controller.IsPressed("Power"))
 			{
 				LibLynx.Reset(Core);
@@ -135,12 +134,14 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 				LagCount++;
 			}
 
+			Frame++;
+
 			return true;
 		}
 
 		public int Frame { get; private set; }
 
-		public string SystemId => "Lynx";
+		public string SystemId => VSystemID.Raw.Lynx;
 
 		public bool DeterministicEmulation => true;
 
@@ -160,11 +161,10 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			}
 		}
 
-		private static readonly ControllerDefinition LynxTroller = new ControllerDefinition
+		private static readonly ControllerDefinition LynxTroller = new ControllerDefinition("Lynx Controller")
 		{
-			Name = "Lynx Controller",
 			BoolButtons = { "Up", "Down", "Left", "Right", "A", "B", "Option 1", "Option 2", "Pause", "Power" },
-		};
+		}.MakeImmutable();
 
 		public ControllerDefinition ControllerDefinition => LynxTroller;
 

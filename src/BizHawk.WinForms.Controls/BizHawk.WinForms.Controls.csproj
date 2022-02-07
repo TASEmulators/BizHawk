@@ -5,5 +5,6 @@
 	<Import Project="../MainSlnCommon.props" />
 	<ItemGroup>
 		<Reference Include="System.Windows.Forms" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Common/BizHawk.Common.csproj" />
 	</ItemGroup>
 </Project>

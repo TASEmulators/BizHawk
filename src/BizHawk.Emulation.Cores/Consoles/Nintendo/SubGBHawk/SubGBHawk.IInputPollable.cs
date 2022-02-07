@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 			set => _isLag = value;
 		}
 
-		public IInputCallbackSystem InputCallbacks { get; } = new InputCallbackSystem();
+		public IInputCallbackSystem InputCallbacks => _GBCore.InputCallbacks;
 
 		public bool _isLag = true;
 		private int _lagCount;

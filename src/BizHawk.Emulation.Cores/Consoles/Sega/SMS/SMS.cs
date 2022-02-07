@@ -14,18 +14,14 @@ using BizHawk.Emulation.Cores.Components.Z80A;
 
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
-	[Core(
-		"SMSHawk",
-		"Vecna",
-		isPorted: false,
-		isReleased: true)]
+	[Core(CoreNames.SMSHawk, "Vecna")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class SMS : IEmulator, ISoundProvider, ISaveRam, IInputPollable, IRegionable,
 		IDebuggable, ISettable<SMS.SmsSettings, SMS.SmsSyncSettings>, ICodeDataLogger
 	{
-		[CoreConstructor("SMS")]
-		[CoreConstructor("SG")]
-		[CoreConstructor("GG")]
+		[CoreConstructor(VSystemID.Raw.SMS)]
+		[CoreConstructor(VSystemID.Raw.SG)]
+		[CoreConstructor(VSystemID.Raw.GG)]
 		public SMS(CoreComm comm, GameInfo game, byte[] rom, SmsSettings settings, SmsSyncSettings syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
@@ -33,9 +29,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			Settings = (SmsSettings)settings ?? new SmsSettings();
 			SyncSettings = (SmsSyncSettings)syncSettings ?? new SmsSyncSettings();
 
-			IsGameGear = game.System == "GG";
-			IsGameGear_C = game.System == "GG";
-			IsSG1000 = game.System == "SG";
+			IsGameGear = game.System == VSystemID.Raw.GG;
+			IsGameGear_C = game.System == VSystemID.Raw.GG;
+			IsSG1000 = game.System == VSystemID.Raw.SG;
 			RomData = rom;
 
 			if (RomData.Length % BankSize != 0)
@@ -44,6 +40,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 
 			RomBanks = (byte)(RomData.Length / BankSize);
+			RomMask = RomData.Length - 1;
+			if (RomMask == 0x5FFF) { RomMask = 0x7FFF; }
+			if (RomMask == 0xBFFF) { RomMask = 0xFFFF; }
 
 			Region = DetermineDisplayType(SyncSettings.DisplayType, game.Region);
 			if (game["PAL"] && Region != DisplayType.PAL)
@@ -90,6 +89,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				MemoryCallbacks = MemoryCallbacks,
 				OnExecFetch = OnExecMemory
 			};
+			
+			// set this before turning off GG system for GG_in_SMS games
+			bool sms_reg_compat = !IsGameGear && (_region == SmsSyncSettings.Regions.Japan);
 
 			if (game["GG_in_SMS"])
 			{
@@ -97,13 +99,13 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				// in SMS compatibility mode (it will fail the check sum if played on an actual SMS though.)
 				IsGameGear = false;
 				IsGameGear_C = true;
-				game.System = "GG";
+				game.System = VSystemID.Raw.GG;
 				Console.WriteLine("Using SMS Compatibility mode for Game Gear System");
 			}
 
 			SystemId = game.System;
 
-			Vdp = new VDP(this, Cpu, IsGameGear ? VdpMode.GameGear : VdpMode.SMS, Region);
+			Vdp = new VDP(this, Cpu, IsGameGear ? VdpMode.GameGear : VdpMode.SMS, Region, sms_reg_compat);
 			ser.Register<IVideoProvider>(Vdp);
 			PSG = new SN76489sms();
 			YM2413 = new YM2413();
@@ -136,6 +138,10 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				InitTerebiOekaki();
 			else if (game["EEPROM"])
 				InitEEPROMMapper();
+			else if(game["SG_EX_A"])
+				Init_SG_EX_A();
+			else if (game["SG_EX_B"])
+				Init_SG_EX_B();
 			else
 				InitSegaMapper();
 
@@ -163,9 +169,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				Port3E = 0xF7; // Disable cartridge, enable BIOS rom
 				InitBiosMapper();
 			}
-			else if (game.System == "SMS" && !game["GG_in_SMS"])
+			else if (game.System == VSystemID.Raw.SMS && !game["GG_in_SMS"])
 			{
-				BiosRom = comm.CoreFileProvider.GetFirmware("SMS", _region.ToString(), false);
+				BiosRom = comm.CoreFileProvider.GetFirmware(new("SMS", _region.ToString()));
 
 				if (BiosRom == null)
 				{
@@ -198,7 +204,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			//this manages the linkage between the cpu and mapper callbacks so it needs running before bootup is complete
 			((ICodeDataLogger)this).SetCDL(null);
 
-			Tracer = new TraceBuffer { Header = Cpu.TraceHeader };
+			Tracer = new TraceBuffer(Cpu.TraceHeader);
 
 			ser.Register(Tracer);
 			ser.Register<IDisassemblable>(Cpu);
@@ -217,6 +223,13 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			{
 				ser.Register<ISmsGpuView>(new SmsGpuView(Vdp));
 			}
+
+			_controllerDeck = new SMSControllerDeck(SyncSettings.Port1, SyncSettings.Port2, IsGameGear_C, SyncSettings.UseKeyboard);
+
+			// Sorta a hack but why not
+			PortDEEnabled = SyncSettings.UseKeyboard && !IsGameGear_C;
+
+			_controllerDeck.SetRegion(_controller, _region == SmsSyncSettings.Regions.Japan);
 		}
 
 		public void HardReset()
@@ -228,6 +241,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		// ROM
 		public byte[] RomData;
+		public int RomMask;
 		private byte RomBank0, RomBank1, RomBank2, RomBank3;
 		private byte Bios_bank;
 		private readonly byte RomBanks;
@@ -424,6 +438,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			else if (port == 0xF1 && HasYM2413) YM2413.Write(value);
 			else if (port == 0xF2 && HasYM2413) YM2413.DetectionValue = value;
 		}
+
+		private readonly SMSControllerDeck _controllerDeck;
+		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
 
 		private readonly SmsSyncSettings.Regions _region;
 

@@ -473,7 +473,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 						irq_pntr = -1;
 						IRQS = 3;
 
-						TraceCallback?.Invoke(new TraceInfo { Disassembly = "====CWAI NMI====", RegisterInfo = "" });
+						TraceCallback?.Invoke(new(disassembly: "====CWAI NMI====", registerInfo: string.Empty));
 					}
 					else if (FIRQPending && !FlagF)
 					{
@@ -486,7 +486,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 						irq_pntr = -1;
 						IRQS = 3;
 
-						TraceCallback?.Invoke(new TraceInfo { Disassembly = "====CWAI FIRQ====", RegisterInfo = "" });
+						TraceCallback?.Invoke(new(disassembly: "====CWAI FIRQ====", registerInfo: string.Empty));
 					}
 					else if (IRQPending && !FlagI)
 					{
@@ -499,7 +499,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 						irq_pntr = -1;
 						IRQS = 3;
 
-						TraceCallback?.Invoke(new TraceInfo { Disassembly = "====CWAI IRQ====", RegisterInfo = "" });
+						TraceCallback?.Invoke(new(disassembly: "====CWAI IRQ====", registerInfo: string.Empty));
 					}
 					else
 					{
@@ -522,7 +522,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 						irq_pntr = -1;
 						IRQS = 3;
 
-						TraceCallback?.Invoke(new TraceInfo { Disassembly = "====SYNC NMI====", RegisterInfo = "" });
+						TraceCallback?.Invoke(new(disassembly: "====SYNC NMI====", registerInfo: string.Empty));
 					}
 					else if (FIRQPending)
 					{
@@ -537,7 +537,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 							irq_pntr = -1;
 							IRQS = 3;
 
-							TraceCallback?.Invoke(new TraceInfo { Disassembly = "====SYNC FIRQ====", RegisterInfo = "" });
+							TraceCallback?.Invoke(new(disassembly: "====SYNC FIRQ====", registerInfo: string.Empty));
 						}
 						else
 						{
@@ -563,7 +563,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 							irq_pntr = -1;
 							IRQS = 3;
 
-							TraceCallback?.Invoke(new TraceInfo { Disassembly = "====SYNC IRQ====", RegisterInfo = "" });
+							TraceCallback?.Invoke(new(disassembly: "====SYNC IRQ====", registerInfo: string.Empty));
 						}
 						else
 						{
@@ -593,7 +593,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 				{
 					NMIPending = false;
 
-					TraceCallback?.Invoke(new TraceInfo { Disassembly = "====NMI====", RegisterInfo = "" });
+					TraceCallback?.Invoke(new(disassembly: "====NMI====", registerInfo: string.Empty));
 
 					NMI_();
 					NMICallback();
@@ -604,7 +604,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 				{
 					FIRQPending = false;
 
-					TraceCallback?.Invoke(new TraceInfo { Disassembly = "====FIRQ====", RegisterInfo = "" });
+					TraceCallback?.Invoke(new(disassembly: "====FIRQ====", registerInfo: string.Empty));
 
 					FIRQ_();
 					FIRQCallback();
@@ -615,7 +615,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 				{
 					IRQPending = false;
 
-					TraceCallback?.Invoke(new TraceInfo { Disassembly = "====IRQ====", RegisterInfo = "" });
+					TraceCallback?.Invoke(new(disassembly: "====IRQ====", registerInfo: string.Empty));
 					IRQ_();
 					IRQCallback();
 					instr_pntr = irq_pntr = 0;
@@ -639,11 +639,9 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 		public string TraceHeader => "MC6809: PC, machine code, mnemonic, operands, registers (A, B, X, Y, US, SP, DP, CC), Cy, flags (EFHINZVC)";
 
 		public TraceInfo State(bool disassemble = true)
-		{
-			return new TraceInfo
-			{
-				Disassembly = $"{(disassemble ? Disassemble(Regs[PC], ReadMemory, out _) : "---")} ".PadRight(50),
-				RegisterInfo = string.Format(
+			=> new(
+				disassembly: $"{(disassemble ? Disassemble(Regs[PC], ReadMemory, out _) : "---")} ".PadRight(50),
+				registerInfo: string.Format(
 					"A:{0:X2} B:{1:X2} X:{2:X4} Y:{3:X4} US:{4:X4} SP:{5:X4} DP:{6:X2} CC:{7:X2} Cy:{8} {9}{10}{11}{12}{13}{14}{15}{16}",
 					Regs[A],
 					Regs[B],
@@ -661,10 +659,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 					FlagN ? "N" : "n",
 					FlagZ ? "Z" : "z",
 					FlagV ? "V" : "v",
-					FlagC ? "C" : "c"
-					)
-			};
-		}
+					FlagC ? "C" : "c"));
 
 		/// <summary>
 		/// Optimization method to set cur_instr

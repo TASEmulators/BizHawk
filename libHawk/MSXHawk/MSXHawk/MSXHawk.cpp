@@ -58,6 +58,18 @@ MSXHawk_EXPORT uint32_t MSX_get_audio(MSXCore* p, int32_t* dest, int32_t* n_samp
 	return p->GetAudio(dest, n_samp);
 }
 
+// length of messages to send
+MSXHawk_EXPORT int MSX_getmessagelength(MSXCore* p)
+{
+	return p->GetMessageLength();
+}
+
+// send messages to be printed
+MSXHawk_EXPORT void MSX_getmessage(MSXCore* p, char* h, int l) 
+{
+	p->GetMessage(h, l);
+}
+
 #pragma region State Save / Load
 
 // save state

@@ -11,12 +11,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="features_cpu.c">
+    <ClCompile Include="..\features_cpu.c">
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </EnableEnhancedInstructionSet>
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotSet</EnableEnhancedInstructionSet>
     </ClCompile>
-    <ClCompile Include="libco\amd64.c">
+    <ClCompile Include="..\libco\amd64.c">
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotSet</EnableEnhancedInstructionSet>
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotSet</EnableEnhancedInstructionSet>
     </ClCompile>
@@ -26,17 +26,15 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="libco\libco.h" />
-    <ClInclude Include="libretro.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <MASM Include="libco\coswap.asm" />
+    <ClInclude Include="..\libco\libco.h" />
+    <ClInclude Include="..\libco\settings.h" />
+    <ClInclude Include="..\libretro.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{AEACAA89-FDA2-40C6-910C-85AEB9726452}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>LibretroBridge</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">

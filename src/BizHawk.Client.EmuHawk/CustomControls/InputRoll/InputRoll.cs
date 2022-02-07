@@ -9,6 +9,9 @@ using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.CustomControls;
 using BizHawk.Common;
 
+// TODO: There are some bad interactions between ScrollToIndex and MakeIndexVisible that are preventing things from working as intended.
+//       But, the current behaviour is ok for now for what it is used for.
+
 namespace BizHawk.Client.EmuHawk
 {
 	// Row width depends on font size and padding
@@ -310,14 +313,14 @@ namespace BizHawk.Client.EmuHawk
 		public bool AllowColumnReorder { get; set; }
 
 		/// <summary>
-		/// Gets or sets a value indicating whether the entire row will always be selected 
+		/// Gets or sets a value indicating whether the entire row will always be selected
 		/// </summary>
 		[Category("Appearance")]
 		[DefaultValue(false)]
 		public bool FullRowSelect { get; set; }
 
 		/// <summary>
-		/// Gets or sets a value indicating whether multiple items can to be selected
+		/// Gets or sets a value indicating whether multiple items can be selected
 		/// </summary>
 		[Category("Behavior")]
 		[DefaultValue(true)]
@@ -710,7 +713,7 @@ namespace BizHawk.Client.EmuHawk
 						_programmaticallyUpdatingScrollBarValues = false;
 					}
 				}
-
+				_programmaticallyChangingRow = false;
 				PointMouseToNewCell();
 			}
 		}
@@ -785,7 +788,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					while (!range.Contains(lastVisible - value) && FirstVisibleRow != 0);
 				}
-
+				_programmaticallyChangingRow = false;
 				PointMouseToNewCell();
 			}
 		}
@@ -889,11 +892,12 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			}
-
+			_programmaticallyChangingRow = false;
 			PointMouseToNewCell();
 		}
 
-		private bool _programmaticallyChangingRow = false;
+		public bool _programmaticallyChangingRow = false;
+
 		/// <summary>
 		/// Scrolls so that the given index is visible, if it isn't already; doesn't use scroll settings.
 		/// </summary>
@@ -902,6 +906,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!IsVisible(index))
 			{
 				_programmaticallyChangingRow = true;
+
 				if (FirstVisibleRow > index)
 				{
 					FirstVisibleRow = index;
@@ -948,7 +953,7 @@ namespace BizHawk.Client.EmuHawk
 
 		// It's necessary to call this anytime the control is programmatically scrolled
 		// Since the mouse may not be pointing to the same cell anymore
-		private void PointMouseToNewCell()
+		public void PointMouseToNewCell()
 		{
 			if (_currentX.HasValue && _currentY.HasValue)
 			{
@@ -966,7 +971,7 @@ namespace BizHawk.Client.EmuHawk
 						newCell.RowIndex = 0;
 					}
 
-					if (!_programmaticallyChangingRow)
+					if (_programmaticallyChangingRow)
 					{
 						_programmaticallyChangingRow = false;
 						CellChanged(newCell);
@@ -1569,7 +1574,7 @@ namespace BizHawk.Client.EmuHawk
 			CurrentCell = newCell;
 
 			if (PointedCellChanged != null &&
-				(_lastCell.Column != CurrentCell.Column || _lastCell.RowIndex != CurrentCell.RowIndex))
+				(_lastCell?.Column != CurrentCell.Column || _lastCell?.RowIndex != CurrentCell.RowIndex))
 			{
 				PointedCellChanged(this, new CellEventArgs(_lastCell, CurrentCell));
 			}

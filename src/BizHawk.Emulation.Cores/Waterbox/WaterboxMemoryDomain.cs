@@ -9,7 +9,7 @@ using static BizHawk.Emulation.Cores.Waterbox.LibWaterboxCore;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {
-	public abstract unsafe class WaterboxMemoryDomain  : MemoryDomain
+	public abstract class WaterboxMemoryDomain : MemoryDomain
 	{
 		protected readonly IntPtr _data;
 		protected readonly IMonitor _monitor;

@@ -1,5 +1,9 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using System.Collections.Generic;
+
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Common
 {
@@ -23,32 +27,35 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// merge some controller definitions for different ports, and such.  i promise to fully document this tomorrow
 		/// </summary>
-		public static ControllerDefinition GetMerged(IEnumerable<ControllerDefinition> controllers, out List<ControlDefUnMerger> unmergers)
+		public static ControllerDefinition GetMerged(
+			string mergedName,
+			IEnumerable<ControllerDefinition> controllers,
+			out List<ControlDefUnMerger> unmergers)
 		{
-			ControllerDefinition ret = new ControllerDefinition();
+			ControllerDefinition ret = new(mergedName);
 			unmergers = new List<ControlDefUnMerger>();
 			int plr = 1;
 			int playerNext = 1;
 			foreach (var def in controllers)
 			{
-				var remaps = new Dictionary<string, string>();
+				Dictionary<string, string> buttonAxisRemaps = new();
 
 				foreach (string s in def.BoolButtons)
 				{
 					string r = Allocate(s, ref plr, ref playerNext);
 					ret.BoolButtons.Add(r);
-					remaps[s] = r;
+					buttonAxisRemaps[s] = r;
 				}
 
-				foreach (var kvp in def.Axes)
+				foreach (var (k, v) in def.Axes)
 				{
-					string r = Allocate(kvp.Key, ref plr, ref playerNext);
-					ret.Axes.Add(r, kvp.Value);
-					remaps[kvp.Key] = r;
+					var r = Allocate(k, ref plr, ref playerNext);
+					ret.Axes.Add(r, v);
+					buttonAxisRemaps[k] = r;
 				}
 
 				plr = playerNext;
-				unmergers.Add(new ControlDefUnMerger(remaps));
+				unmergers.Add(new ControlDefUnMerger(buttonAxisRemaps));
 			}
 
 			return ret;
@@ -57,22 +64,20 @@ namespace BizHawk.Emulation.Common
 
 	public class ControlDefUnMerger
 	{
-		private readonly Dictionary<string, string> _remaps;
-
-		public ControlDefUnMerger(Dictionary<string, string> remaps)
-		{
-			_remaps = remaps;
-		}
-
 		private class DummyController : IController
 		{
-			private readonly IController _src;
-			private readonly Dictionary<string, string> _remaps;
+			private readonly IReadOnlyDictionary<string, string> _buttonAxisRemaps;
 
-			public DummyController(IController src, Dictionary<string, string> remaps)
+			private readonly IController _src;
+
+			public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
+
+			public DummyController(
+				IController src,
+				IReadOnlyDictionary<string, string> buttonAxisRemaps)
 			{
 				_src = src;
-				_remaps = remaps;
+				_buttonAxisRemaps = buttonAxisRemaps;
 			}
 
 			/// <exception cref="NotImplementedException">always</exception>
@@ -80,18 +85,26 @@ namespace BizHawk.Emulation.Common
 
 			public bool IsPressed(string button)
 			{
-				return _src.IsPressed(_remaps[button]);
+				return _src.IsPressed(_buttonAxisRemaps[button]);
 			}
 
 			public int AxisValue(string name)
 			{
-				return _src.AxisValue(_remaps[name]);
+				return _src.AxisValue(_buttonAxisRemaps[name]);
 			}
+
+			public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Array.Empty<(string, int)>();
+
+			public void SetHapticChannelStrength(string name, int strength) {}
 		}
 
-		public IController UnMerge(IController c)
+		private readonly IReadOnlyDictionary<string, string> _buttonAxisRemaps;
+
+		public ControlDefUnMerger(IReadOnlyDictionary<string, string> buttonAxisRemaps)
 		{
-			return new DummyController(c, _remaps);
+			_buttonAxisRemaps = buttonAxisRemaps;
 		}
+
+		public IController UnMerge(IController c) => new DummyController(c, _buttonAxisRemaps);
 	}
 }

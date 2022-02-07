@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.cheats;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Tests.Client.Common.cheats
 {
@@ -22,7 +23,16 @@ namespace BizHawk.Tests.Client.Common.cheats
 				=> GenerateNonsense ? NonsenseData : RealData;
 
 			public string GetDisplayName(MethodInfo methodInfo, object?[] data)
-				=> $"{methodInfo.Name}({string.Join(", ", data.Select(o => o is int i ? $"0x{i:X}" : o?.ToString() ?? "null"))})";
+			{
+				static string Format(object? o) => o switch
+				{
+					null => "null",
+					int i => $"0x{i:X}",
+					string s => $"\"{s}\"",
+					_ => o.ToString()!
+				};
+				return $"{methodInfo.Name}({string.Join(", ", data.Select(Format))})";
+			}
 		}
 
 		private const string ERROR_GBA_CODEBREAKER = "Codebreaker/GameShark SP/Xploder codes are not yet supported.";
@@ -31,13 +41,13 @@ namespace BizHawk.Tests.Client.Common.cheats
 
 		private static readonly IEnumerable<object?[]> NonsenseData = new[]
 		{
-			new[] { "GBA", "33003D0E0020", ERROR_GBA_CODEBREAKER },
+			new[] { VSystemID.Raw.GBA, "33003D0E0020", ERROR_GBA_CODEBREAKER },
 		};
 
 		private static readonly IEnumerable<object?[]> RealData = new[]
 		{
-			new object?[] { "GBA", "4012F5B7 3B7801A6", 0x00000006, 0xB7, NO_COMPARE, WatchSize.Byte },
-			new object?[] { "GBA", "686D7FC3 24B5B832", 0x00000032, 0x7FC3, NO_COMPARE, WatchSize.Word },
+			new object?[] { VSystemID.Raw.GBA, "4012F5B7 3B7801A6", 0x00000006, 0xB7, NO_COMPARE, WatchSize.Byte },
+			new object?[] { VSystemID.Raw.GBA, "686D7FC3 24B5B832", 0x00000032, 0x7FC3, NO_COMPARE, WatchSize.Word },
 		};
 
 		[DataTestMethod]

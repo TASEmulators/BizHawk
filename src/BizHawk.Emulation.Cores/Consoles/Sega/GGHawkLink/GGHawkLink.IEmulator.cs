@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{
 			//Console.WriteLine("-----------------------FRAME-----------------------");
-			if (_tracer.Enabled)
+			if (_tracer.IsEnabled())
 			{
 				L.Cpu.TraceCallback = s => _tracer.Put(s);
 			}
@@ -23,8 +23,6 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 			{
 				L.Cpu.TraceCallback = null;
 			}
-
-			_frame++;
 
 			if (controller.IsPressed("Power"))
 			{
@@ -52,6 +50,8 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 			{
 				_lagCount++;
 			}
+
+			_frame++;
 
 			return true;
 		}
@@ -273,7 +273,7 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 		public int Frame => _frame;
 
-		public string SystemId => "GGL";
+		public string SystemId => VSystemID.Raw.GGL;
 
 		public bool DeterministicEmulation { get; set; }
 

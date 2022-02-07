@@ -29,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 			checkBoxShowCoreBrdColor.Checked = _settings.UseCoreBorderForBackground;
 
 			// OSD Message Verbosity
-			var osdTypes = Enum.GetNames(typeof(ZXSpectrum.OSDVerbosity));     
+			var osdTypes = Enum.GetNames(typeof(ZXSpectrum.OSDVerbosity));
 			foreach (var val in osdTypes)
 			{
 				osdMessageVerbositycomboBox1.Items.Add(val);
@@ -72,7 +72,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CancelBtn_Click(object sender, EventArgs e)
 		{
-			_mainForm.AddOnScreenMessage("Misc settings aborted");
 			DialogResult = DialogResult.Cancel;
 			Close();
 		}

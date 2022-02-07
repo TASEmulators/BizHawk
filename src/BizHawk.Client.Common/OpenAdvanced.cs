@@ -112,8 +112,8 @@ namespace BizHawk.Client.Common
 		// you might think ideally we'd fetch the libretro core name from the core info inside it
 		// but that would involve spinning up excess libretro core instances, which probably isn't good for stability, no matter how much we wish otherwise, not to mention slow.
 		// moreover it's kind of complicated here,
-		// and finally, I think the DisplayName should really be file-based in all cases, since the user is going to be loading cores by filename and 
-		// this is related to the recent roms filename management. 
+		// and finally, I think the DisplayName should really be file-based in all cases, since the user is going to be loading cores by filename and
+		// this is related to the recent roms filename management.
 		// so, leave it.
 		public OpenAdvanced_LibretroNoGame()
 		{

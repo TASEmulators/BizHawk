@@ -44,11 +44,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (index == Log.UndoIndex)
 			{
-				color = TAStudio.GreenZone_InputLog;
+				color = _tastudio.Palette.GreenZone_InputLog;
 			}
 			else if (index > Log.UndoIndex)
 			{
-				color = TAStudio.LagZone_InputLog;
+				color = _tastudio.Palette.LagZone_InputLog;
 			}
 		}
 

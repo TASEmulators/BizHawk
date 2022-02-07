@@ -7,7 +7,7 @@ using BizHawk.Emulation.Cores.Atari.Atari2600;
 
 namespace BizHawk.Emulation.Cores
 {
-	[Schema("A26")]
+	[Schema(VSystemID.Raw.A26)]
 	// ReSharper disable once UnusedMember.Global
 	public class A26Schema : IVirtualPadSchema
 	{

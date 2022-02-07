@@ -1,7 +1,7 @@
 ﻿namespace BizHawk.Emulation.Common
 {
 	/// <summary>
-	/// DisplayType, used in <seealso cref="IEmulator"/>
+	/// DisplayType, used in <see cref="IEmulator"/>
 	/// </summary>
 	public enum DisplayType
 	{
@@ -11,7 +11,7 @@
 	}
 
 	/// <summary>
-	/// The type/increment of stepping in the Step method of <seealso cref="IDebuggable"/>
+	/// The type/increment of stepping in the Step method of <see cref="IDebuggable"/>
 	/// </summary>
 	public enum StepType
 	{

@@ -11,7 +11,7 @@ namespace BizHawk.Client.Common
 	{
 		private readonly Config _config;
 
-		private readonly IWindowCoordsTransformer _displayManager;
+		private readonly DisplayManagerBase _displayManager;
 
 		private readonly IMainFormForApi _mainForm;
 
@@ -35,7 +35,7 @@ namespace BizHawk.Client.Common
 
 		public event StateSavedEventHandler StateSaved;
 
-		public EmuClientApi(Action<string> logCallback, IMainFormForApi mainForm, IWindowCoordsTransformer displayManager, Config config, IEmulator emulator, IGameInfo game)
+		public EmuClientApi(Action<string> logCallback, IMainFormForApi mainForm, DisplayManagerBase displayManager, Config config, IEmulator emulator, IGameInfo game)
 		{
 			_config = config;
 			_displayManager = displayManager;
@@ -88,6 +88,8 @@ namespace BizHawk.Client.Common
 			_config.FrameSkip = numFrames;
 			_mainForm.FrameSkipMessage();
 		}
+
+		public int GetApproxFramerate() => _mainForm.GetApproxFramerate();
 
 		public bool GetSoundOn() => _config.SoundEnabled;
 
@@ -196,7 +198,7 @@ namespace BizHawk.Client.Common
 			{
 				_config.TargetZoomFactors[Emulator.SystemId] = size;
 				_mainForm.FrameBufferResized();
-				_mainForm.AddOnScreenMessage($"Window size set to {size}x");
+				_displayManager.OSD.AddMessage($"Window size set to {size}x");
 			}
 			else
 			{

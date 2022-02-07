@@ -72,7 +72,7 @@ namespace BizHawk.Client.EmuHawk
 		private void InitController(string key)
 		{
 			string[] keys = key.Split('|');
-			var d = new ControllerDefinition();
+			ControllerDefinition d = new(_emulator.ControllerDefinition.Name);
 			foreach (var k in keys)
 			{
 				if (_emulator.ControllerDefinition.BoolButtons.Contains(k))
@@ -81,11 +81,11 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					d.Axes.Add(k, _emulator.ControllerDefinition.Axes[key]);
+					d.Axes.Add(k, _emulator.ControllerDefinition.Axes[k]);
 				}
 			}
 
-			_controller = _movieSession.GenerateMovieController(d);
+			_controller = _movieSession.GenerateMovieController(d.MakeImmutable());
 		}
 
 		public string Name { get; set; }
@@ -105,7 +105,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// Get a IController that only contains buttons in key.
 			string[] keys = _inputKey.Split('|');
-			var d = new ControllerDefinition();
+			ControllerDefinition d = new(_emulator.ControllerDefinition.Name);
 			foreach (var key in keys)
 			{
 				if (_emulator.ControllerDefinition.BoolButtons.Contains(key))
@@ -118,7 +118,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			var newController = _movieSession.GenerateMovieController(d);
+			var newController = _movieSession.GenerateMovieController(d.MakeImmutable());
 			var logGenerator = _movieSession.Movie.LogGeneratorInstance(newController);
 			logGenerator.GenerateLogEntry(); // Reference and create all buttons.
 
@@ -144,14 +144,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			if (Start > movie.InputLogLength)
-			{ 
+			{
 				// Cannot place a frame here. Find a nice way around this.
 				return;
 			}
 
 			// Can't be done with a regular movie.
 			if (!Replace && movie is ITasMovie tasMovie2)
-			{ 
+			{
 				tasMovie2.InsertEmptyFrame(Start, Length);
 			}
 
@@ -169,7 +169,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				// Copy over the frame.
 				for (int i = 0; i < Length; i++)
-				{ 
+				{
 					_controller.SetFromMnemonic(_log[i]);
 					LatchFromSourceButtons(_targetController, _controller);
 					movie.PokeFrame(i + Start, _targetController);

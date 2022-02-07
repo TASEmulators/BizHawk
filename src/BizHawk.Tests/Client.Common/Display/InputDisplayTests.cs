@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -16,15 +16,11 @@ namespace BizHawk.Tests.Client.Common.Display
 		[TestInitialize]
 		public void Initializer()
 		{
-			_boolController = new SimpleController
-			{
-				Definition = new ControllerDefinition { BoolButtons = { "A" } }
-			};
-
-			_axisController = new SimpleController
-			{
-				Definition = new ControllerDefinition().AddXYPair("Stick{0}", AxisPairOrientation.RightAndUp, 0.RangeTo(200), MidValue)
-			};
+			_boolController = new(new ControllerDefinition("Dummy Gamepad") { BoolButtons = { "A" } }.MakeImmutable());
+			_axisController = new(
+				new ControllerDefinition("Dummy Gamepad")
+					.AddXYPair("Stick{0}", AxisPairOrientation.RightAndUp, 0.RangeTo(200), MidValue)
+					.MakeImmutable());
 		}
 
 		[TestMethod]

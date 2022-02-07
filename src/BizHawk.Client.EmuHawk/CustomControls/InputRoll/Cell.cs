@@ -3,7 +3,7 @@
 namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
-	/// Represents a single cell of the <seealso cref="InputRoll"/>
+	/// Represents a single cell of the <see cref="InputRoll"/>
 	/// </summary>
 	public class Cell
 	{

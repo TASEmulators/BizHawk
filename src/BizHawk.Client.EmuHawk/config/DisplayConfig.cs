@@ -94,9 +94,8 @@ namespace BizHawk.Client.EmuHawk
 
 			RefreshAspectRatioOptions();
 
-			if (OSTailoredCode.IsUnixHost)
+			if (!HostCapabilityDetector.HasDirectX)
 			{
-				// Disable SlimDX on Unix
 				rbD3D9.Enabled = false;
 				rbD3D9.AutoCheck = false;
 				cbAlternateVsync.Enabled = false;
@@ -269,7 +268,7 @@ namespace BizHawk.Client.EmuHawk
 					// try compiling it
 					bool ok = false;
 					string errors = "";
-					try 
+					try
 					{
 						var filter = new RetroShaderChain(_gl, cgp, Path.GetDirectoryName(choice));
 						ok = filter.Available;
@@ -318,9 +317,7 @@ namespace BizHawk.Client.EmuHawk
 		public void TbScanlineIntensity_Scroll(object sender, EventArgs e)
 		{
 			_config.TargetScanlineFilterIntensity = tbScanlineIntensity.Value;
-			int scanlines = _config.TargetScanlineFilterIntensity;
-			float percentage = (float) scanlines / 256 * 100;
-			lblScanlines.Text = $"{percentage:F2}%";
+			lblScanlines.Text = $"{_config.TargetScanlineFilterIntensity / 256.0:P2}";
 		}
 
 		private void TrackBarFrameSizeWindowed_ValueChanged(object sender, EventArgs e)
@@ -348,7 +345,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LinkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			System.Diagnostics.Process.Start("http://tasvideos.org/Bizhawk/DisplayConfig.html");
+			System.Diagnostics.Process.Start("https://tasvideos.org/Bizhawk/DisplayConfig");
 		}
 
 		private void Label13_Click(object sender, EventArgs e)

@@ -9,7 +9,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores
 {
-	[Schema("SAT")]
+	[Schema(VSystemID.Raw.SAT)]
 	// ReSharper disable once UnusedMember.Global
 	public class SaturnSchema : IVirtualPadSchema
 	{

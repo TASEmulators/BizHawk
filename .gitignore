@@ -2,15 +2,18 @@
 /snes9xgit
 
 **/.vs/**
+**/.vscode/
 **/bin/**
 **/obj/**
 /output/**
 /output64/**
 /packaged_output
+/result
 /test_output
 **/Release/**
 **/Debug/**
 **/ipch/**
+/Assets/dll/*.wbx
 
 *.ilk
 *.il
@@ -28,7 +31,8 @@
 
 /src/BizHawk.Common/VersionInfo.gen.cs
 
-
+/src/BizHawk.Tests*/res/*_artifact
+/src/BizHawk.Tests*/res/fw
 
 /Build/*.vshost.*
 

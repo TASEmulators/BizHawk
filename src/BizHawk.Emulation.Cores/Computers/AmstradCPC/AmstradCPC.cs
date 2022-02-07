@@ -13,14 +13,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// CPCHawk: Core Class
 	/// * Main Initialization *
 	/// </summary>
-	[Core(
-		"CPCHawk",
-		"Asnivor",
-		isPorted: false,
-		isReleased: false)]
+	[Core(CoreNames.CPCHawk, "Asnivor", isReleased: false)]
 	public partial class AmstradCPC : IRegionable, IDriveLight
 	{
-		[CoreConstructor("AmstradCPC")]
+		[CoreConstructor(VSystemID.Raw.AmstradCPC)]
 		public AmstradCPC(CoreLoadParameters<AmstradCPCSettings, AmstradCPCSyncSettings> lp)
 		{
 			var ser = new BasicServiceProvider(this);
@@ -28,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			CoreComm = lp.Comm;
 			_gameInfo = lp.Roms.Select(r => r.Game).ToList();
 			_cpu = new Z80A();
-			_tracer = new TraceBuffer { Header = _cpu.TraceHeader };
+			_tracer = new TraceBuffer(_cpu.TraceHeader);
 			_files = lp.Roms.Select(r => r.RomData).ToList();
 
 			var settings = lp.Settings ?? new AmstradCPCSettings();
@@ -107,8 +103,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public CPCBase _machine;
 
 		public List<GameInfo> _gameInfo;
-		public List<GameInfo> _tapeInfo = new List<GameInfo>();
-		public List<GameInfo> _diskInfo = new List<GameInfo>();
+		public readonly IList<GameInfo> _tapeInfo = new List<GameInfo>();
+		public readonly IList<GameInfo> _diskInfo = new List<GameInfo>();
 
 		private SoundProviderMixer SoundMixer;
 
@@ -148,7 +144,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				return embeddedRom;
 
 			// Embedded ROM not found, maybe this is a peripheral ROM?
-			var result = names.Select(n => CoreComm.CoreFileProvider.GetFirmware("AmstradCPC", n, false)).FirstOrDefault(b => b != null && b.Length == length);
+			var result = names.Select(n => CoreComm.CoreFileProvider.GetFirmware(new("AmstradCPC", n))).FirstOrDefault(b => b != null && b.Length == length);
 			if (result == null)
 			{
 				throw new MissingFirmwareException($"At least one of these firmwares is required: {string.Join(", ", names)}");

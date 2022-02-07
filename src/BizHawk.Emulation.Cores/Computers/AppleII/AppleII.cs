@@ -1,44 +1,38 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 using Jellyfish.Virtu;
 
 namespace BizHawk.Emulation.Cores.Computers.AppleII
 {
-	[Core(
-		"Virtu",
-		"fool",
-		isPorted: true,
-		isReleased: true)]
+	[PortedCore(CoreNames.Virtu, "fool")]
 	[ServiceNotApplicable(new[] { typeof(IBoardInfo), typeof(IRegionable), typeof(ISaveRam) })]
 	public partial class AppleII : IEmulator, ISoundProvider, IVideoProvider, IStatable, IDriveLight
 	{
 		static AppleII()
 		{
-			AppleIIController = new ControllerDefinition { Name = "Apple IIe Keyboard" };
+			AppleIIController = new("Apple IIe Keyboard");
 			AppleIIController.BoolButtons.AddRange(RealButtons);
 			AppleIIController.BoolButtons.AddRange(ExtraButtons);
+			AppleIIController.MakeImmutable();
 		}
 
-		[CoreConstructor("AppleII")]
+		[CoreConstructor(VSystemID.Raw.AppleII)]
 		public AppleII(CoreLoadParameters<Settings, object> lp)
 		{
 			_romSet = lp.Roms.Select(r => r.RomData).ToList();
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 
-			_tracer = new TraceBuffer
-			{
-				Header = "6502: PC, opcode, register (A, X, Y, P, SP, Cy), flags (NVTBDIZC)"
-			};
+			const string TRACE_HEADER = "6502: PC, opcode, register (A, X, Y, P, SP, Cy), flags (NVTBDIZC)";
+			_tracer = new TraceBuffer(TRACE_HEADER);
 
 			_disk1 = _romSet[0];
 
-			_appleIIRom = lp.Comm.CoreFileProvider.GetFirmware(
-				SystemId, "AppleIIe", true, "The Apple IIe BIOS firmware is required");
-			_diskIIRom = lp.Comm.CoreFileProvider.GetFirmware(
-				SystemId, "DiskII", true, "The DiskII firmware is required");
+			_appleIIRom = lp.Comm.CoreFileProvider.GetFirmwareOrThrow(new(SystemId, "AppleIIe"), "The Apple IIe BIOS firmware is required");
+			_diskIIRom = lp.Comm.CoreFileProvider.GetFirmwareOrThrow(new(SystemId, "DiskII"), "The DiskII firmware is required");
 
 			_machine = new Components(_appleIIRom, _diskIIRom);
 			
@@ -127,17 +121,11 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		private bool _prevPressed;
 
 		private void TracerWrapper(string[] content)
-		{
-			_tracer.Put(new TraceInfo
-			{
-				Disassembly = content[0],
-				RegisterInfo = content[1]
-			});
-		}
+			=> _tracer.Put(new(disassembly: content[0], registerInfo: content[1]));
 
 		private void FrameAdv(IController controller, bool render, bool renderSound)
 		{
-			if (_tracer.Enabled)
+			if (_tracer.IsEnabled())
 			{
 				_machine.Cpu.TraceCallback = TracerWrapper;
 			}

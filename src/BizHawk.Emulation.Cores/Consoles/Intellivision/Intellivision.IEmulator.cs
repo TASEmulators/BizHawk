@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{
-			if (_tracer.Enabled)
+			if (_tracer.IsEnabled())
 			{
 				_cpu.TraceCallback = s => _tracer.Put(s);
 			}
@@ -19,7 +19,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				_cpu.TraceCallback = null;
 			}
 
-			_frame++;
 			_sticRow = -1;
 
 			// read the controller state here for now
@@ -88,7 +87,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			_stic.active_display = false;
 			_stic.Sr1 = false;
 
-			_cpu.PendingCycles = 3000 + _cpu.GetPendingCycles();
+			_cpu.PendingCycles = 2990 + _cpu.GetPendingCycles();
 
 			while (_cpu.GetPendingCycles() > 0)
 			{
@@ -98,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			}
 
 			// vblank phase 2
-			_cpu.PendingCycles = 791 + _cpu.GetPendingCycles();
+			_cpu.PendingCycles = 801 + _cpu.GetPendingCycles();
 			_stic.in_vb_1 = false;
 
 			while (_cpu.GetPendingCycles() > 0)
@@ -125,12 +124,14 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				SoftReset();
 			}
 
+			_frame++;
+
 			return true;
 		}
 
 		public int Frame => _frame;
 
-		public string SystemId => "INTV";
+		public string SystemId => VSystemID.Raw.INTV;
 
 		public bool DeterministicEmulation => true;
 

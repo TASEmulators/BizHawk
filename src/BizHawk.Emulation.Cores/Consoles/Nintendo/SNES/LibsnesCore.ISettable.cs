@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public class SnesSyncSettings
 		{
 			public LibsnesControllerDeck.ControllerType LeftPort { get; set; } = LibsnesControllerDeck.ControllerType.Gamepad;
-			public LibsnesControllerDeck.ControllerType RightPort { get; set; } = LibsnesControllerDeck.ControllerType.Gamepad;
+			public LibsnesControllerDeck.ControllerType RightPort { get; set; } = LibsnesControllerDeck.ControllerType.Unplugged;
 
 			public bool LimitAnalogChangeSensitivity { get; set; } = true;
 

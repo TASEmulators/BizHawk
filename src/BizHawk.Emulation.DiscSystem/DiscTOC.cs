@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.DiscSystem
 			/// <summary>
 			/// [IEC10149] "the control field used in the information track"
 			/// the raw TOC entries do have a control field which is supposed to match what's found in the track.
-			/// Determining whether a track contains audio or data is very important. 
+			/// Determining whether a track contains audio or data is very important.
 			/// A track mode can't be safely determined from reading sectors from the actual track if it's an audio track (there's no sector header with a mode byte)
 			/// </summary>
 			public EControlQ Control;

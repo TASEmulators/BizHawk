@@ -41,7 +41,7 @@ static void Setup()
 	samples = (int16_t*)alloc_invisible(22050 * 2 * sizeof(*samples));
 	Surf = new MDFN_Surface(
 		pixels, Game->fb_width, Game->fb_height, Game->fb_width,
-		MDFN_PixelFormat(MDFN_COLORSPACE_RGB, 16, 8, 0, 24)
+		MDFN_PixelFormat(MDFN_COLORSPACE_RGB, 4, 16, 8, 0, 24)
 	);
 	EES = new EmulateSpecStruct();
 	EES->surface = Surf;
@@ -187,6 +187,10 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo& frame)
 				if (MDFN_LIKELY(lw > 0))
 				{
 					memcpy(dst, src, lw * sizeof(uint32_t));
+					if (!EES->InterlaceOn && lw < w)
+					{
+						memset(dst + lw, 0, (w - lw) * sizeof(uint32_t));
+					}
 					src += srcp;
 					dst += dstp;
 				}
@@ -244,6 +248,7 @@ struct SystemInfo
 	int32_t NominalHeight;
 	int32_t VideoSystem;
 	int32_t FpsFixed;
+	int64_t MasterClock;
 	int32_t LcmWidth;
 	int32_t LcmHeight;
 	int32_t PointerScaleX;
@@ -261,6 +266,7 @@ ECL_EXPORT SystemInfo* GetSystemInfo()
 	SI.NominalHeight = Game->nominal_height;
 	SI.VideoSystem = Game->VideoSystem;
 	SI.FpsFixed = Game->fps;
+	SI.MasterClock = Game->MasterClock;
 	SI.LcmWidth = Game->lcm_width;
 	SI.LcmHeight = Game->lcm_height;
 	SI.PointerScaleX = Game->mouse_scale_x;
@@ -268,7 +274,7 @@ ECL_EXPORT SystemInfo* GetSystemInfo()
 	SI.PointerOffsetX = Game->mouse_offs_x;
 	SI.PointerOffsetY = Game->mouse_offs_y;
 	return &SI;
-} 
+}
 
 ECL_EXPORT const char* GetLayerData()
 {

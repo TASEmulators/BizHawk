@@ -23,6 +23,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public PutSettingsDirtyBits PutSettings(GBSettings o)
 		{
 			_settings = o;
+			_disassembler.UseRGBDSSyntax = _settings.UseRGBDSSyntax;
 			return PutSettingsDirtyBits.None;
 		}
 
@@ -65,6 +66,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			[DefaultValue(Cycle_Return.CPU)]
 			public Cycle_Return cycle_return_setting { get; set; }
 
+			[DisplayName("Use RGBDS syntax")]
+			[Description("When true, rgbds' syntax is used for disassembly.")]
+			[DefaultValue(true)]
+			public bool UseRGBDSSyntax { get; set; }
+
 			public GBSettings Clone()
 			{
 				return (GBSettings)MemberwiseClone();
@@ -78,31 +84,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public class GBSyncSettings
 		{
-			[JsonIgnore]
-			public string Port1 = GBHawkControllerDeck.DefaultControllerName;
-
-			public enum ControllerType
-			{
-				Tilt
-			}
-
-			[JsonIgnore]
-			private ControllerType _GBController;
-
-			[DisplayName("Tilt Controls")]
-			[Description("Choose Tilt Control mode, when Applicable (MBC7 games)")]
-			[DefaultValue(ControllerType.Tilt)]
-			public ControllerType GBController
-			{
-				get => _GBController;
-				set
-				{
-					if (value == ControllerType.Tilt) { Port1 = "Gameboy Controller + Tilt"; }
-
-					_GBController = value;
-				}
-			}
-
 			public enum ConsoleModeType
 			{
 				Auto,

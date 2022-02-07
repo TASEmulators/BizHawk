@@ -73,7 +73,7 @@ namespace BizHawk.Client.EmuHawk
 			if (prev != null && index == Markers.IndexOf(prev))
 			{
 				// feos: taseditor doesn't have it, so we're free to set arbitrary color scheme. and I prefer consistency
-				color = TAStudio.CurrentFrame_InputLog;
+				color = Tastudio.Palette.CurrentFrame_InputLog;
 			}
 			else if (index < Markers.Count)
 			{
@@ -84,11 +84,15 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (record.Lagged.Value)
 					{
-						color = column.Name == "FrameColumn" ? TAStudio.LagZone_FrameCol : TAStudio.LagZone_InputLog;
+						color = column.Name == "FrameColumn"
+							? Tastudio.Palette.LagZone_FrameCol
+							: Tastudio.Palette.LagZone_InputLog;
 					}
 					else
 					{
-						color = column.Name == "LabelColumn" ? TAStudio.GreenZone_FrameCol : TAStudio.GreenZone_InputLog;
+						color = column.Name == "LabelColumn"
+							? Tastudio.Palette.GreenZone_FrameCol
+							: Tastudio.Palette.GreenZone_InputLog;
 					}
 				}
 			}
@@ -294,11 +298,12 @@ namespace BizHawk.Client.EmuHawk
 
 		// SuuperW: Marker renaming can be done with a right-click.
 		// A much more useful feature would be to easily jump to it.
-		private void MarkerView_MouseDoubleClick(object sender, MouseEventArgs e)
+		private void MarkerView_MouseDoubleClick(object sender, EventArgs e)
 		{
-			if (MarkerView.CurrentCell?.RowIndex != null && MarkerView.CurrentCell.RowIndex < MarkerView.RowCount)
+			if (MarkerView.AnyRowsSelected)
 			{
-				var marker = Markers[MarkerView.CurrentCell.RowIndex.Value];
+				var index = MarkerView.SelectedRows.First();
+				var marker = Markers[index];
 				Tastudio.GoToFrame(marker.Frame);
 			}
 		}
@@ -309,7 +314,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var index = MarkerView.SelectedRows.First();
 				var marker = Markers[index];
-
 				return marker.Frame;
 			}
 

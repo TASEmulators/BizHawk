@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Common
 		// 2. aspect ratio is accurate
 
 		/// <summary>
-		/// Gets a value that together with <seealso cref="VirtualHeight"/>, describes a metric on the screen
+		/// Gets a value that together with <see cref="VirtualHeight"/>, describes a metric on the screen
 		/// they should define the smallest size that the buffer can be placed inside such that:
 		/// 1. no actual pixel data is lost
 		/// 2. aspect ratio is accurate
@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Common
 		int VirtualWidth { get; }
 
 		/// <summary>
-		/// Gets a value that together with <seealso cref="VirtualWidth"/>, describes a metric on the screen
+		/// Gets a value that together with <see cref="VirtualWidth"/>, describes a metric on the screen
 		/// they should define the smallest size that the buffer can be placed inside such that:
 		/// 1. no actual pixel data is lost
 		/// 2. aspect ratio is accurate
@@ -47,12 +47,12 @@ namespace BizHawk.Emulation.Common
 		int BufferHeight { get; }
 
 		/// <summary>
-		/// Gets the vsync Numerator. Combined with the <seealso cref="VsyncDenominator"/> can be used to calculate a precise vsync rate.
+		/// Gets the vsync Numerator. Combined with the <see cref="VsyncDenominator"/> can be used to calculate a precise vsync rate.
 		/// </summary>
 		int VsyncNumerator { get; }
 
 		/// <summary>
-		/// Gets the vsync Denominator. Combined with the <seealso cref="VsyncNumerator"/> can be used to calculate a precise vsync rate.
+		/// Gets the vsync Denominator. Combined with the <see cref="VsyncNumerator"/> can be used to calculate a precise vsync rate.
 		/// </summary>
 		int VsyncDenominator { get; }
 

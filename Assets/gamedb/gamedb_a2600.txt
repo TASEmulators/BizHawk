@@ -358,7 +358,7 @@ sha1:ac9b0c62ba0ca7a975d08fabbbc7c7448ecdf18d		Challenge of...NEXAR (1982) (Spec
 sha1:c887ceedc2216f1b403df8c449c89b08334ff2f6		Championship Soccer (AKA Pele's Soccer) (Atari) (PAL) [!]	A26		m=4K;PAL=true
 sha1:9d725002e94b04e29d8cbce3c71d3bb2a84352fa		Championship Soccer (AKA Pele's Soccer) [p1]	A26		m=4K;NTSC=true
 sha1:832283530f5dee332f29cf8c4854dd554f2030a0		Championship Soccer (AKA Pele's Soccer)	A26		m=4K;NTSC=true
-sha1:872b2f9aa7edbcbb2368de0db3696c90998ff016		Chase the Chuckwagon (1983) (Spectravideo)	A26		m=4K;NTSC=true
+sha1:872b2f9aa7edbcbb2368de0db3696c90998ff016		Chase the Chuckwagon (1983) (Spectravideo)	A26		SP_RESET=true;m=4K;NTSC=true
 sha1:39b5bb27a6c4cb6532bd9d4cc520415c59dac653		Checkers (1980) (Activision) [!]	A26		m=2K;NTSC=true
 sha1:1c93c1b3f16dbeaa069ec798c61c3da690711046		Checkers (1980) (Activision) [o1]	A26		m=2K;NTSC=true
 sha1:0c0cd0f0f768afcef0e7ce32a8640c6914d9ff99		Checkers (32-in-1) (Atari) (PAL) [!]	A26		m=2K;PAL=true
@@ -1321,7 +1321,6 @@ sha1:dcd96913a1c840c8b57848986242eeb928bfd2ff		M.A.S.H. (1982) (20th Century Fox
 sha1:55ae319f11584f997b7b52000a1d98cdfaa07d5d		M.A.S.H. (CCE) (no logo) (PAL) [!]	A26		m=4K;PAL=true
 sha1:fbc075766313f04a808236189daa2bf49f584f44		M.A.S.H. (CCE)	A26		m=4K;NTSC=true
 sha1:4c66b84ab0d25e46729bbcf23f985d59ca8520ad		Magicard (CommaVid)	A26		m=CV;NTSC=true
-sha1:DA39A3EE5E6B4B0D3255BFEF95601890AFD80709		Magicard (CommaVid)	A26		m=CV;NTSC=true
 sha1:cdc7e65d965a7a00adda1e8bedfbe6200e349497		Malagai (1983) (Answer Software)	A26		m=4K;NTSC=true
 sha1:311bf43a479e9981c70f38573dbf614429d0a5b5		Mangia' (1983) (Spectravideo) (PAL) [!]	A26		m=4K;PAL=true
 sha1:6c7d1f27efb1e9514494e35cbf03acbf9ffdfe60		Many Blue Bars and Text Demo (PD)	A26		m=4K;NTSC=true
@@ -2431,7 +2430,7 @@ sha1:6c993b4c70cfed390f1f436fdbaa1f81495be18e		Survival Run (1983) (Milton Bradl
 sha1:e84a3f964098c435d361aba9a2948f7ddc58dc60		Sweat! - The Decathalon Game (1 of 2) (1982) (Starpath) (Prototype)	A26		m=AR;NTSC=true
 sha1:d786e27062623b1141806170187040a0280cc19d		Sweat! - The Decathalon Game (1982) (Starpath) (Prototype)	A26		m=AR;NTSC=true
 sha1:bea35df3bbcdc7b0a52e5b09716ab6f49719d9b1		Sweat! - The Decathalon Game (2 of 2) (1982) (Starpath) (Prototype)	A26		m=AR;NTSC=true
-sha1:0d59545b22e15019a33de16999a57dae1f998283		Sword Fight (2000) (Intellevision Productions)	A26		m=4K;NTSC=true
+sha1:0d59545b22e15019a33de16999a57dae1f998283		Sword Fight (2000) (Intellevision Productions)	A26		SP_RESET=true;m=4K;NTSC=true
 sha1:f373c590025d189033f7bbec2445344c8a101437		Sword of Saros (1983) (Starpath) [a1]	A26		m=AR;NTSC=true
 sha1:45ab6ae206f86524e31815a736a90287cca94b70		Sword of Saros (1983) (Starpath)	A26		m=AR;NTSC=true
 sha1:d89ff9b3f548fa496c215cde4c18bc2f3ccef3ef		SwordQuest - Earthworld (1982) (Atari) (PAL) [!]	A26		m=F8;PAL=true

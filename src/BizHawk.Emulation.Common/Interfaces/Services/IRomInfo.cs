@@ -10,6 +10,6 @@
 		/// All necessary information about the Rom.
 		/// Expected to be formatted for user consumption
 		/// </summary>
-		string RomDetails { get; }
+		string? RomDetails { get; }
 	}
 }

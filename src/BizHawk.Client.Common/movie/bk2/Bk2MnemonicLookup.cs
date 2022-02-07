@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 
+using BizHawk.Emulation.Common;
+
 // ReSharper disable StyleCop.SA1509
 namespace BizHawk.Client.Common
 {
@@ -20,14 +22,14 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			if (SystemOverrides.ContainsKey(systemId) && SystemOverrides[systemId].ContainsKey(key))
+			if (SystemOverrides.TryGetValue(systemId, out var overridesForSys) && overridesForSys.TryGetValue(key, out var c))
 			{
-				return SystemOverrides[systemId][key];
+				return c;
 			}
 
-			if (BaseMnemonicLookupTable.ContainsKey(key))
+			if (BaseMnemonicLookupTable.TryGetValue(key, out var c1))
 			{
-				return BaseMnemonicLookupTable[key];
+				return c1;
 			}
 
 			if (key.Length == 1)
@@ -47,14 +49,14 @@ namespace BizHawk.Client.Common
 				.Replace("P4 ", "")
 				.Replace("Key ", "");
 
-			if (AxisSystemOverrides.ContainsKey(systemId) && AxisSystemOverrides[systemId].ContainsKey(key))
+			if (AxisSystemOverrides.TryGetValue(systemId, out var overridesForSystem) && overridesForSystem.TryGetValue(key, out var s))
 			{
-				return AxisSystemOverrides[systemId][key];
+				return s;
 			}
 
-			if (BaseAxisLookupTable.ContainsKey(key))
+			if (BaseAxisLookupTable.TryGetValue(key, out var s1))
 			{
-				return BaseAxisLookupTable[key];
+				return s1;
 			}
 
 			return button;
@@ -71,14 +73,6 @@ namespace BizHawk.Client.Common
 			["Down"] = 'D',
 			["Left"] = 'L',
 			["Right"] = 'R',
-
-			["A"] = 'A',
-			["B"] = 'B',
-			["C"] = 'C',
-
-			["X"] = 'X',
-			["Y"] = 'Y',
-			["Z"] = 'Z',
 
 			["Select"] = 's',
 			["SELECT"] = 's',
@@ -146,7 +140,7 @@ namespace BizHawk.Client.Common
 			["X2"] = '2',
 			["X3"] = '3',
 			["X4"] = '4',
-				
+
 			["Y1"] = '1',
 			["Y2"] = '2',
 			["Y3"] = '3',
@@ -182,7 +176,7 @@ namespace BizHawk.Client.Common
 
 		private static readonly Dictionary<string, Dictionary<string, char>> SystemOverrides = new Dictionary<string, Dictionary<string, char>>
 		{
-			["NES"] = new Dictionary<string, char>
+			[VSystemID.Raw.NES] = new()
 			{
 				["FDS Eject"] = 'E',
 				["FDS Insert 0"] = '0',
@@ -208,7 +202,7 @@ namespace BizHawk.Client.Common
 				["Click"] = 'C',
 				["Touch"] = 'T',
 			},
-			["SNES"] = new Dictionary<string, char>
+			[VSystemID.Raw.SNES] = new()
 			{
 				["Cursor"] = 'c',
 				["Turbo"] = 't',
@@ -247,7 +241,7 @@ namespace BizHawk.Client.Common
 				["B30"] = 'u',
 				["B31"] = 'v'
 			},
-			["TI83"] = new Dictionary<string, char>
+			[VSystemID.Raw.TI83] = new()
 			{
 				["UP"] = 'U',
 				["DOWN"] = 'D',
@@ -288,9 +282,10 @@ namespace BizHawk.Client.Common
 				["MODE"] = 'O',
 				["DEL"] = 'D',
 				["COMMA"] = ',',
-				["SIN"] = 'S'
+				["SIN"] = 'S',
+				["SEND"] = 'N',
 			},
-			["C64"] = new Dictionary<string, char>
+			[VSystemID.Raw.C64] = new()
 			{
 				["L"] = 'L',
 				["R"] = 'R',
@@ -321,7 +316,7 @@ namespace BizHawk.Client.Common
 				["Cursor Left/Right"] = 'l',
 				["Space"] = '_'
 			},
-			["ZXSpectrum"] = new Dictionary<string, char>
+			[VSystemID.Raw.ZXSpectrum] = new()
 			{
 				["Caps Shift"] = '^',
 				["Caps Lock"] = 'L',
@@ -356,7 +351,7 @@ namespace BizHawk.Client.Common
 				["Left Cursor"] = 'l',
 				["Right Cursor"] = 'r'
 			},
-			["N64"] = new Dictionary<string, char>
+			[VSystemID.Raw.N64] = new()
 			{
 				["C Up"] = 'u',
 				["C Down"] = 'd',
@@ -373,33 +368,32 @@ namespace BizHawk.Client.Common
 				["DPad L"] = 'L',
 				["DPad R"] = 'R',
 			},
-			["DGB"] = new Dictionary<string, char>
+			[VSystemID.Raw.GBL] = new()
 			{
-				["Toggle Cable"] = 'L'
-			},
-			["GB3x"] = new Dictionary<string, char>
-			{
+				// gbhawk
+				["Toggle Cable"] = 'L',
 				["Toggle Cable LC"] = 'L',
 				["Toggle Cable CR"] = 'C',
-				["Toggle Cable RL"] = 'R'
-			},
-			["GB4x"] = new Dictionary<string, char>
-			{
+				["Toggle Cable RL"] = 'R',
 				["Toggle Cable UD"] = 'U',
 				["Toggle Cable LR"] = 'L',
 				["Toggle Cable X"] = 'X',
-				["Toggle Cable 4x"] = '4'
+				["Toggle Cable 4x"] = '4',
+				// gambatte
+				["Toggle Link Connection"] = 'L',
+				["Toggle Link Shift"] = 'F',
+				["Toggle Link Spacing"] = 'C',
 			},
-			["Lynx"] = new Dictionary<string, char>
+			[VSystemID.Raw.Lynx] = new()
 			{
 				["Option 1"] = '1',
 				["Option 2"] = '2'
 			},
-			["NGP"] = new Dictionary<string, char>
+			[VSystemID.Raw.NGP] = new()
 			{
 				["Option"] = 'O'
 			},
-			["AppleII"] = new Dictionary<string, char>
+			[VSystemID.Raw.AppleII] = new()
 			{
 				["Tab"] = 't' ,
 				["Return"] = 'e' ,
@@ -414,7 +408,7 @@ namespace BizHawk.Client.Common
 				["L"] = 'L' ,
 				["R"] = 'R'
 			},
-			["INTV"] = new Dictionary<string, char>
+			[VSystemID.Raw.INTV] = new()
 			{
 				["Clear"] = 'C' ,
 				["Enter"] = 'E' ,
@@ -432,14 +426,14 @@ namespace BizHawk.Client.Common
 				["NW"] = '\\' ,
 				["NNW"] = 'n'
 			},
-			["Coleco"] = new Dictionary<string, char>
+			[VSystemID.Raw.Coleco] = new()
 			{
 				["Yellow"] = 'Y',
 				["Red"] = 'R',
 				["Blue"] = 'B',
 				["Purple"] = 'P'
 			},
-			["VB"] = new Dictionary<string, char>
+			[VSystemID.Raw.VB] = new()
 			{
 				["L_Up"] = 'U',
 				["L_Down"] = 'D',
@@ -450,7 +444,7 @@ namespace BizHawk.Client.Common
 				["R_Left"] = 'l',
 				["R_Right"] = 'r',
 			},
-			["PCFX"] = new Dictionary<string, char>
+			[VSystemID.Raw.PCFX] = new()
 			{
 				["I"] = '1',
 				["II"] = '2',
@@ -463,7 +457,7 @@ namespace BizHawk.Client.Common
 				["Mode 2: Set A"] = 'A',
 				["Mode 2: Set B"] = 'B'
 			},
-			["PCE"] = new Dictionary<string, char>
+			[VSystemID.Raw.PCE] = new()
 			{
 				["I"] = '1',
 				["II"] = '2',
@@ -474,13 +468,24 @@ namespace BizHawk.Client.Common
 				["Mode: Set 2-button"] = 'm',
 				["Mode: Set 6-button"] = 'M'
 			},
-			["NDS"] = new Dictionary<string, char>
+			[VSystemID.Raw.PCECD] = new()
+			{
+				["I"] = '1',
+				["II"] = '2',
+				["III"] = '3',
+				["IV"] = '4',
+				["V"] = '5',
+				["VI"] = '6',
+				["Mode: Set 2-button"] = 'm',
+				["Mode: Set 6-button"] = 'M'
+			},
+			[VSystemID.Raw.NDS] = new()
 			{
 				["LidOpen"] = 'o',
 				["LidClose"] = 'c',
 				["Touch"] = 'T'
 			},
-			["O2"] = new Dictionary<string, char>
+			[VSystemID.Raw.O2] = new()
 			{
 				["PERIOD"] = '.',
 				["SPC"] = 's',
@@ -489,16 +494,20 @@ namespace BizHawk.Client.Common
 				["CLR"] = 'c',
 				["ENT"] = 'e'
 			},
-			["MAME"] = new Dictionary<string, char>
+			[VSystemID.Raw.MAME] = new()
 			{
-				["Right Stick/Up"] = 'u',
-				["Right Stick/Down"] = 'd',
-				["Right Stick/Left"] = 'l',
-				["Right Stick/Right"] = 'r',
-				["Left Stick/Up"] = '^',
-				["Left Stick/Down"] = 'v',
-				["Left Stick/Left"] = '<',
-				["Left Stick/Right"] = '>',
+				["1 Player Start"] = '1',
+				["2 Players Start"] = '2',
+				["3 Players Start"] = '3',
+				["4 Players Start"] = '4',
+				["5 Players Start"] = '5',
+				["6 Players Start"] = '6',
+				["7 Players Start"] = '7',
+				["8 Players Start"] = '8',
+				["Board 0 (SW4)"] = '0',
+				["Board 1 (SW5)"] = '1',
+				["Board 2 (SW6)"] = '2',
+				["Board 3 (SW7)"] = '3',
 				["Coin 1"] = 'C',
 				["Coin 2"] = 'C',
 				["Coin 3"] = 'C',
@@ -508,14 +517,39 @@ namespace BizHawk.Client.Common
 				["Coin 7"] = 'C',
 				["Coin 8"] = 'C',
 				["Coin 9"] = 'C',
-				["1 Player Start"] = '1',
-				["2 Players Start"] = '2',
-				["3 Players Start"] = '3',
-				["4 Players Start"] = '4',
-				["5 Players Start"] = '5',
-				["6 Players Start"] = '6',
-				["7 Players Start"] = '7',
-				["8 Players Start"] = '8',
+				["Coinblock"] = 'C',
+				["Cup Select 1"] = '1',
+				["Cup Select 2"] = '2',
+				["Fierce Punch"] = 'F',
+				["Foot Pedal"] = 'P',
+				["Forward Kick"] = 'f',
+				["GEAR 1"] = '1',
+				["GEAR 2"] = '2',
+				["GEAR 3"] = '3',
+				["GEAR 4"] = '4',
+				["GEAR N"] = 'N',
+				["Gun Trigger"] = 'G',
+				["Handle A"] = 'A',
+				["Handle B"] = 'B',
+				["Jab Punch"] = 'J',
+				["Left Stick/Up"] = '^',
+				["Left Stick/Down"] = 'v',
+				["Left Stick/Left"] = '<',
+				["Left Stick/Right"] = '>',
+				["Light"] = 'l',
+				["Lightgun X"] = 'X',
+				["Lightgun Y"] = 'Y',
+				["Medium"] = 'm',
+				["Paddle"] = 'P',
+				["Pedal 1"] = '1',
+				["Pedal 2"] = '2',
+				["Relay"] = 'R',
+				["Right Stick/Up"] = 'u',
+				["Right Stick/Down"] = 'd',
+				["Right Stick/Left"] = 'l',
+				["Right Stick/Right"] = 'r',
+				["Roundhouse Kick"] = 'r',
+				["Sensor"] = 'S',
 				["Service"] = 'S',
 				["Service Mode"] = 'S',
 				["Service Button"] = 'S',
@@ -523,17 +557,29 @@ namespace BizHawk.Client.Common
 				["Service 2"] = 's',
 				["Service 3"] = 's',
 				["Service 4"] = 's',
+				["Short Kick"] = 's',
+				["Sold Out LED1"] = '1',
+				["Sold Out LED2"] = '2',
+				["Sold Out LED3"] = '3',
+				["Sold Out SW1"] = '1',
+				["Sold Out SW2"] = '2',
+				["Sold Out SW3"] = '3',
+				["Stand"] = 'S',
+				["Strong"] = 's',
+				["Strong Punch"] = 'S',
 				["Tilt"] = 'T',
 				["Tilt 1"] = 't',
 				["Tilt 2"] = 't',
 				["Tilt 3"] = 't',
 				["Tilt 4"] = 't',
-				["Foot Pedal"] = 'P',
-				["Gun Trigger"] = 'G',
-				["Lightgun X"] = 'X',
-				["Lightgun Y"] = 'Y',
+				["Volume Down"] = '-',
+				["Volume Up"] = '+',
+				["VR1 (Red)"] = 'R',
+				["VR2 (Blue)"] = 'B',
+				["VR3 (Yellow)"] = 'Y',
+				["VR4 (Green)"] = 'G',
 			},
-			["SAT"] = new Dictionary<string, char>
+			[VSystemID.Raw.SAT] = new()
 			{
 				["Smpc Reset"] = 's',
 				["D-Pad Up"] = 'U',
@@ -545,7 +591,33 @@ namespace BizHawk.Client.Common
 				["L Gear Shift"] = 'L',
 				["R Gear Shift"] = 'R',
 				["Offscreen Shot"] = 'O'
-			}
+			},
+			[VSystemID.Raw.PSX] = new()
+			{
+				["D-Pad Up"] = 'U',
+				["D-Pad Down"] = 'D',
+				["D-Pad Left"] = 'L',
+				["D-Pad Right"] = 'R',
+				["Thumbstick Up"] = 'U',
+				["Thumbstick Down"] = 'D',
+				["Thumbstick Left"] = 'L',
+				["Thumbstick Right"] = 'R',
+				["□"] = 'Q',
+				["△"] = 'T',
+				["○"] = 'O',
+				["Left Stick, Button"] = '<',
+				["Right Stick, Button"] = '>',
+				["Left Stick, L-Thumb"] = 'L',
+				["Right Stick, L-Thumb"] = 'l',
+				["Left Stick, R-Thumb"] = 'R',
+				["Right Stick, R-Thumb"] = 'r',
+				["Left Stick, Trigger"] = 'T',
+				["Right Stick, Trigger"] = 't',
+				["Left Stick, Pinky"] = 'P',
+				["Right Stick, Pinky"] = 'p',
+				["Analog"] = 'M',
+				["Offscreen Shot"] = 'o',
+			},
 		};
 
 		private static readonly Dictionary<string, string> BaseAxisLookupTable = new Dictionary<string, string>
@@ -569,11 +641,25 @@ namespace BizHawk.Client.Common
 
 		private static readonly Dictionary<string, Dictionary<string, string>> AxisSystemOverrides = new Dictionary<string, Dictionary<string, string>>
 		{
-			["A78"] = new Dictionary<string, string>
+			[VSystemID.Raw.A78] = new()
 			{
 				["VPos"] = "X",
 				["HPos"] = "Y"
-			}
+			},
+			[VSystemID.Raw.PSX] = new()
+			{
+				["Left Stick Left / Right"] = "lsX",
+				["Left Stick Up / Down"] = "lsY",
+				["Right Stick Left / Right"] = "rsX",
+				["Right Stick Up / Down"] = "rsY",
+				["Left Stick, Left / Right"] = "lsX",
+				["Left Stick, Fore / Back"] = "lsZ",
+				["Right Stick, Left / Right"] = "rsX",
+				["Right Stick, Fore / Back"] = "rsZ",
+				["Motion Left / Right"] = "mX",
+				["Motion Up / Down"] = "mY",
+				["Twist | / |"] = "Twist",
+			},
 		};
 	}
 }

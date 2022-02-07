@@ -21,6 +21,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly MainForm _owner;
 		private Config _config;
 		private readonly DisplayManager _displayManager;
+		private readonly ExternalToolManager _extToolManager;
 		private readonly InputManager _inputManager;
 		private IExternalApiProvider _apiProvider;
 		private IEmulator _emulator;
@@ -45,6 +46,7 @@ namespace BizHawk.Client.EmuHawk
 			MainForm owner,
 			Config config,
 			DisplayManager displayManager,
+			ExternalToolManager extToolManager,
 			InputManager inputManager,
 			IEmulator emulator,
 			IMovieSession movieSession,
@@ -53,6 +55,7 @@ namespace BizHawk.Client.EmuHawk
 			_owner = owner;
 			_config = config;
 			_displayManager = displayManager;
+			_extToolManager = extToolManager;
 			_inputManager = inputManager;
 			_emulator = emulator;
 			_movieSession = movieSession;
@@ -74,10 +77,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				throw new ArgumentException($"Type {toolType.Name} does not implement {nameof(IToolForm)}.");
 			}
-
-			return (IToolForm) typeof(ToolManager).GetMethod("Load", new[] { typeof(bool), typeof(string) })
-				.MakeGenericMethod(toolType)
-				.Invoke(this, new object[] { focus, "" });
+			var mi = typeof(ToolManager).GetMethod(nameof(Load), new[] { typeof(bool), typeof(string) })!.MakeGenericMethod(toolType);
+			return (IToolForm) mi.Invoke(this, new object[] { focus, "" });
 		}
 
 		// If the form inherits ToolFormBase, it will set base properties such as Tools, Config, etc
@@ -111,15 +112,17 @@ namespace BizHawk.Client.EmuHawk
 			var existingTool = _tools.OfType<T>().FirstOrDefault();
 			if (existingTool != null)
 			{
-				if (!existingTool.IsDisposed)
+				if (existingTool.IsLoaded)
 				{
 					if (focus)
 					{
 						existingTool.Show();
 						existingTool.Focus();
 					}
+
 					return existingTool;
 				}
+
 				_tools.Remove(existingTool);
 			}
 
@@ -161,7 +164,7 @@ namespace BizHawk.Client.EmuHawk
 			var existingTool = _tools.OfType<IExternalToolForm>().FirstOrDefault(t => t.GetType().Assembly.Location == toolPath);
 			if (existingTool != null)
 			{
-				if (!existingTool.IsDisposed)
+				if (existingTool.IsActive)
 				{
 					if (focus)
 					{
@@ -170,6 +173,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					return existingTool;
 				}
+
 				_tools.Remove(existingTool);
 			}
 
@@ -227,7 +231,10 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					Load(t, false);
+					if (!IsLoaded(t))
+					{
+						Load(t, false);
+					}
 				}
 			}
 		}
@@ -263,7 +270,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var closeMenuItem = new ToolStripMenuItem
 			{
-				Name = "CloseBtn", 
+				Name = "CloseBtn",
 				Text = "&Close",
 				ShortcutKeyDisplayString = "Alt+F4"
 			};
@@ -454,10 +461,16 @@ namespace BizHawk.Client.EmuHawk
 			var existingTool = _tools.FirstOrDefault(t => t is T);
 			if (existingTool != null)
 			{
-				return !existingTool.IsDisposed;
+				return existingTool.IsActive;
 			}
 
 			return false;
+		}
+
+		public bool IsLoaded(Type toolType)
+		{
+			var existingTool = _tools.FirstOrDefault(t => t.GetType() == toolType);
+			return existingTool != null && existingTool.IsActive;
 		}
 
 		public bool IsOnScreen(Point topLeft)
@@ -472,8 +485,13 @@ namespace BizHawk.Client.EmuHawk
 		/// <typeparam name="T">Type of tool to check</typeparam>
 		public bool Has<T>() where T : IToolForm
 		{
-			return _tools.Any(t => t is T && !t.IsDisposed);
+			return _tools.Any(t => t is T && t.IsActive);
 		}
+
+		/// <returns><see langword="true"/> iff a tool of the given <paramref name="toolType"/> is <see cref="IToolForm.IsActive">active</see></returns>
+		public bool Has(Type toolType)
+			=> typeof(IToolForm).IsAssignableFrom(toolType)
+				&& _tools.Any(t => toolType.IsInstanceOfType(t) && t.IsActive);
 
 		/// <summary>
 		/// Gets the instance of T, or creates and returns a new instance
@@ -496,13 +514,9 @@ namespace BizHawk.Client.EmuHawk
 		public void UpdateValues<T>() where T : IToolForm
 		{
 			var tool = _tools.FirstOrDefault(t => t is T);
-			if (tool != null)
+			if (tool != null && tool.IsActive)
 			{
-				if (!tool.IsDisposed ||
-					(tool is RamWatch && _config.DisplayRamWatch)) // RAM Watch hack, on screen display should run even if RAM Watch is closed
-				{
-					tool.UpdateValues(ToolFormUpdateType.General);
-				}
+				tool.UpdateValues(ToolFormUpdateType.General);
 			}
 		}
 
@@ -527,10 +541,13 @@ namespace BizHawk.Client.EmuHawk
 				{
 					ServiceInjector.UpdateServices(_emulator.ServiceProvider, tool);
 					
-					if ((tool.IsHandleCreated && !tool.IsDisposed) || tool is RamWatch) // Hack for RAM Watch - in display watches mode it wants to keep running even closed, it will handle disposed logic
+					if (tool.IsActive)
 					{
 						if (tool is IExternalToolForm)
+						{
 							ApiInjector.UpdateApis(ApiProvider, tool);
+						}
+
 						tool.Restart();
 					}
 				}
@@ -677,8 +694,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			foreach (var tool in _tools)
 			{
-				if (!tool.IsDisposed
-					|| (tool is RamWatch && _config.DisplayRamWatch)) // RAM Watch hack, on screen display should run even if RAM Watch is closed
+				if (tool.IsActive)
 				{
 					tool.UpdateValues(ToolFormUpdateType.PreFrame);
 				}
@@ -689,8 +705,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			foreach (var tool in _tools)
 			{
-				if (!tool.IsDisposed
-					|| (tool is RamWatch && _config.DisplayRamWatch)) // RAM Watch hack, on screen display should run even if RAM Watch is closed
+				if (tool.IsActive)
 				{
 					tool.UpdateValues(ToolFormUpdateType.PostFrame);
 				}
@@ -701,8 +716,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			foreach (var tool in _tools)
 			{
-				if (!tool.IsDisposed
-					|| (tool is RamWatch && _config.DisplayRamWatch)) // RAM Watch hack, on screen display should run even if RAM Watch is closed
+				if (tool.IsActive)
 				{
 					tool.UpdateValues(ToolFormUpdateType.FastPreFrame);
 				}
@@ -713,26 +727,19 @@ namespace BizHawk.Client.EmuHawk
 		{
 			foreach (var tool in _tools)
 			{
-				if (!tool.IsDisposed
-					|| (tool is RamWatch && _config.DisplayRamWatch)) // RAM Watch hack, on screen display should run even if RAM Watch is closed
+				if (tool.IsActive)
 				{
 					tool.UpdateValues(ToolFormUpdateType.FastPostFrame);
 				}
 			}
 		}
 
-		private static readonly Lazy<List<string>> LazyAsmTypes = new Lazy<List<string>>(() =>
-			EmuHawk.ReflectionCache.Types // Confining the search to only EmuHawk, for now at least, we may want to broaden for external tools one day
-				.Select(t => t.AssemblyQualifiedName)
-				.ToList());
+		private static readonly IList<string> PossibleToolTypeNames = EmuHawk.ReflectionCache.Types.Select(t => t.AssemblyQualifiedName).ToList();
 
 		public bool IsAvailable(Type tool)
 		{
-			if (!ServiceInjector.IsAvailable(_emulator.ServiceProvider, tool)
-				|| !LazyAsmTypes.Value.Contains(tool.AssemblyQualifiedName)) // not a tool
-			{
-				return false;
-			}
+			if (!ServiceInjector.IsAvailable(_emulator.ServiceProvider, tool)) return false;
+			if (!PossibleToolTypeNames.Contains(tool.AssemblyQualifiedName) && !_extToolManager.PossibleExtToolTypeNames.Contains(tool.AssemblyQualifiedName)) return false; // not a tool
 
 			ToolAttribute attr = tool.GetCustomAttributes(false).OfType<ToolAttribute>().SingleOrDefault();
 			if (attr == null)
@@ -740,10 +747,8 @@ namespace BizHawk.Client.EmuHawk
 				return true; // no ToolAttribute on given type -> assumed all supported
 			}
 
-			var displayName = CoreExtensions.CoreExtensions.DisplayName(_emulator);
-			var systemId = _emulator.SystemId;
-			return !attr.UnsupportedCores.Contains(displayName) // not unsupported
-				&& (!attr.SupportedSystems.Any() || attr.SupportedSystems.Contains(systemId)); // supported (no supported list -> assumed all supported)
+			return !attr.UnsupportedCores.Contains(_emulator.Attributes().CoreName) // not unsupported
+				&& (!attr.SupportedSystems.Any() || attr.SupportedSystems.Contains(_emulator.SystemId)); // supported (no supported list -> assumed all supported)
 		}
 
 		public bool IsAvailable<T>() => IsAvailable(typeof(T));
@@ -755,10 +760,11 @@ namespace BizHawk.Client.EmuHawk
 			T tool = _tools.OfType<T>().FirstOrDefault();
 			if (tool != null)
 			{
-				if (!tool.IsDisposed)
+				if (tool.IsActive)
 				{
 					return tool;
 				}
+
 				_tools.Remove(tool);
 			}
 			tool = new T();
@@ -782,7 +788,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadRamWatch(bool loadDialog)
 		{
-			if (IsLoaded<RamWatch>())
+			if (IsLoaded<RamWatch>() && !_config.DisplayRamWatch)
 			{
 				return;
 			}

@@ -4,6 +4,8 @@ namespace BizHawk.Client.Common
 {
 	public interface IDialogController
 	{
+		void AddOnScreenMessage(string message);
+
 		/// <summary>
 		/// Creates and shows a <c>System.Windows.Forms.MessageBox</c> or equivalent with the given <paramref name="text"/>,
 		/// and with the given <paramref name="owner"/>, <paramref name="caption"/>, and <paramref name="icon"/> if they're specified.

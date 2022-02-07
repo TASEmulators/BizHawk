@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
-			if (_tracer.Enabled)
+			if (_tracer.IsEnabled())
 			{
 				cpu.TraceCallback = s => _tracer.Put(s);
 			}
@@ -20,8 +20,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			{
 				cpu.TraceCallback = null;
 			}
-
-			_frame++;
 
 			if (controller.IsPressed("Power"))
 			{
@@ -74,6 +72,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 				_lagcount++;
 			}
 
+			_frame++;
+
 			return true;
 		}
 
@@ -97,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		public int Frame => _frame;
 
-		public string SystemId => "VEC"; 
+		public string SystemId => VSystemID.Raw.VEC;
 
 		public bool DeterministicEmulation { get; set; }
 

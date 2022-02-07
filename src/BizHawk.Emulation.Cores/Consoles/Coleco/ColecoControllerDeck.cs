@@ -19,9 +19,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				? ctor2(2)
 				: throw new InvalidOperationException($"Invalid controller type: {controller2Name}");
 
-			Definition = new ControllerDefinition
+			Definition = new("ColecoVision Basic Controller")
 			{
-				Name = "ColecoVision Basic Controller",
 				BoolButtons = Port1.Definition.BoolButtons
 					.Concat(Port2.Definition.BoolButtons)
 					.Concat(new[]
@@ -33,6 +32,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 			foreach (var kvp in Port1.Definition.Axes) Definition.Axes.Add(kvp);
 			foreach (var kvp in Port2.Definition.Axes) Definition.Axes.Add(kvp);
+
+			Definition.MakeImmutable();
 		}
 
 		public float wheel1;

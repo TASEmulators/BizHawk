@@ -4,13 +4,13 @@ using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Nintendo.Gameboy;
-using BizHawk.Emulation.Cores.Nintendo.GBHawk;
-using BizHawk.Emulation.Cores.Nintendo.SubNESHawk;
-using BizHawk.Emulation.Cores.Nintendo.SubGBHawk;
-using BizHawk.Emulation.Cores.Sega.MasterSystem;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive;
+using BizHawk.Emulation.Cores.Nintendo.NES;
+using BizHawk.Emulation.Cores.Nintendo.SubNESHawk;
+using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 namespace BizHawk.Client.Common
 {
@@ -25,10 +25,7 @@ namespace BizHawk.Client.Common
 			old.Truncate(0); // Trying to minimize ram usage
 
 			tas.HeaderEntries.Clear();
-			foreach (var kvp in old.HeaderEntries)
-			{
-				tas.HeaderEntries[kvp.Key] = kvp.Value;
-			}
+			foreach (var (k, v) in old.HeaderEntries) tas.HeaderEntries[k] = v;
 
 			// TODO: we have this version number string generated in multiple places
 			tas.HeaderEntries[HeaderKeys.MovieVersion] = $"BizHawk v2.0 Tasproj v{TasMovie.CurrentVersion}";
@@ -61,10 +58,7 @@ namespace BizHawk.Client.Common
 			bk2.CopyLog(old.GetLogEntries());
 
 			bk2.HeaderEntries.Clear();
-			foreach (var kvp in old.HeaderEntries)
-			{
-				bk2.HeaderEntries[kvp.Key] = kvp.Value;
-			}
+			foreach (var (k, v) in old.HeaderEntries) bk2.HeaderEntries[k] = v;
 
 			// TODO: we have this version number string generated in multiple places
 			bk2.HeaderEntries[HeaderKeys.MovieVersion] = "BizHawk v2.0";
@@ -113,10 +107,7 @@ namespace BizHawk.Client.Common
 			tas.LagLog.StartFromFrame(frame);
 
 			tas.HeaderEntries.Clear();
-			foreach (var kvp in old.HeaderEntries)
-			{
-				tas.HeaderEntries[kvp.Key] = kvp.Value;
-			}
+			foreach (var (k, v) in old.HeaderEntries) tas.HeaderEntries[k] = v;
 
 			tas.StartsFromSavestate = true;
 			tas.SyncSettingsJson = old.SyncSettingsJson;
@@ -162,10 +153,7 @@ namespace BizHawk.Client.Common
 			tas.CopyVerificationLog(entries);
 
 			tas.HeaderEntries.Clear();
-			foreach (var kvp in old.HeaderEntries)
-			{
-				tas.HeaderEntries[kvp.Key] = kvp.Value;
-			}
+			foreach (var (k, v) in old.HeaderEntries) tas.HeaderEntries[k] = v;
 
 			tas.StartsFromSaveRam = true;
 			tas.SyncSettingsJson = old.SyncSettingsJson;
@@ -247,29 +235,28 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			if (emulator is GBHawk gbHawk && gbHawk.IsCGBMode())
+			if (emulator is NDS nds && nds.IsDSi)
 			{
-				movie.HeaderEntries.Add("IsCGBMode", "1");
-			}
+				movie.HeaderEntries.Add("IsDSi", "1");
 
-			if (emulator is SubGBHawk subgbHawk)
-			{
-				if (subgbHawk._GBCore.IsCGBMode())
+				if (nds.IsDSiWare)
 				{
-					movie.HeaderEntries.Add("IsCGBMode", "1");
+					movie.HeaderEntries.Add("IsDSiWare", "1");
 				}
-
-				movie.HeaderEntries.Add(HeaderKeys.CycleCount, "0");
 			}
 
-			if (emulator is Gameboy gb)
+			if ((emulator is NES nes && nes.IsVS)
+				|| (emulator is SubNESHawk subnes && subnes.IsVs))
+			{
+				movie.HeaderEntries.Add("IsVS", "1");
+			}
+
+			if (emulator is IGameboyCommon gb)
 			{
 				if (gb.IsCGBMode())
 				{
-					movie.HeaderEntries.Add("IsCGBMode", "1");
+					movie.HeaderEntries.Add(gb.IsCGBDMGMode() ? "IsCGBDMGMode" : "IsCGBMode", "1");
 				}
-
-				movie.HeaderEntries.Add(HeaderKeys.CycleCount, "0");
 			}
 
 			if (emulator is SMS sms)
@@ -295,9 +282,10 @@ namespace BizHawk.Client.Common
 				movie.HeaderEntries.Add("Is32X", "1");
 			}
 
-			if (emulator is SubNESHawk)
+			if (emulator is ICycleTiming)
 			{
-				movie.HeaderEntries.Add(HeaderKeys.VBlankCount, "0");
+				movie.HeaderEntries.Add(HeaderKeys.CycleCount, "0");
+				movie.HeaderEntries.Add(HeaderKeys.ClockRate, "0");
 			}
 
 			movie.Core = ((CoreAttribute)Attribute

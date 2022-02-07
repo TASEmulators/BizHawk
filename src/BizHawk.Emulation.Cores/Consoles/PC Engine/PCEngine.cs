@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using BizHawk.Common.BufferExtensions;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components;
 using BizHawk.Emulation.Cores.Components.H6280;
@@ -11,12 +11,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 {
 	public enum NecSystemType { TurboGrafx, TurboCD, SuperGrafx }
 
-	[Core(
-		CoreNames.PceHawk,
-		"Vecna",
-		isPorted: false,
-		isReleased: true,
-		displayName: "PCE")]
+	[Core(CoreNames.PceHawk, "Vecna")]
 	public sealed partial class PCEngine : IEmulator, ISaveRam, IInputPollable, IVideoLogicalOffsets, IRomInfo,
 		IDebuggable, ISettable<PCEngine.PCESettings, PCEngine.PCESyncSettings>, IDriveLight, ICodeDataLogger,
 		IPceGpuView
@@ -25,20 +20,21 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		int IVideoLogicalOffsets.ScreenY => Settings.TopLine;
 
-		[CoreConstructor("PCE", Priority = CorePriority.Low)]
-		[CoreConstructor("SGX", Priority = CorePriority.Low)]
-		[CoreConstructor("PCECD", Priority = CorePriority.Low)]
+		[CoreConstructor(VSystemID.Raw.PCE, Priority = CorePriority.Low)]
+		[CoreConstructor(VSystemID.Raw.SGX, Priority = CorePriority.Low)]
+		[CoreConstructor(VSystemID.Raw.PCECD, Priority = CorePriority.Low)]
 		public PCEngine(CoreLoadParameters<PCESettings, PCESyncSettings> lp)
 		{
 			if (lp.Discs.Count == 1 && lp.Roms.Count == 0)
 			{
-				SystemId = "PCECD";
+				SystemId = VSystemID.Raw.PCECD;
 				Type = NecSystemType.TurboCD;
 				this.disc = lp.Discs[0].DiscData;
 				Settings = (PCESettings)lp.Settings ?? new PCESettings();
 				_syncSettings = (PCESyncSettings)lp.SyncSettings ?? new PCESyncSettings();
 
-				byte[] rom = lp.Comm.CoreFileProvider.GetFirmwareWithGameInfo("PCECD", "Bios", true, out var biosInfo,
+				var (rom, biosInfo) = lp.Comm.CoreFileProvider.GetFirmwareWithGameInfoOrThrow(
+					new("PCECD", "Bios"),
 					"PCE-CD System Card not found. Please check the BIOS settings in Config->Firmwares.");
 
 				if (biosInfo.Status == RomStatus.BadDump)
@@ -72,7 +68,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					throw new Exception();
 				}
 
-				lp.Game.FirmwareHash = rom.HashSHA1();
+				lp.Game.FirmwareHash = SHA1Checksum.ComputeDigestHex(rom);
 
 				Init(lp.Game, rom);
 
@@ -88,15 +84,13 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 			else if (lp.Discs.Count == 0 && lp.Roms.Count == 1)
 			{
-				switch (lp.Game.System)
+				switch (SystemId = lp.Game.System)
 				{
 					default:
-					case "PCE":
-						SystemId = "PCE";
+					case VSystemID.Raw.PCE:
 						Type = NecSystemType.TurboGrafx;
 						break;
-					case "SGX":
-						SystemId = "SGX";
+					case VSystemID.Raw.SGX:
 						Type = NecSystemType.SuperGrafx;
 						break;
 				}
@@ -229,11 +223,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				RomLength = RomData.Length;
 
 				// user request: current value of the SF2MapperLatch on the tracelogger
-				Cpu.Logger = s => Tracer.Put(new TraceInfo
-				{
-					Disassembly = $"{SF2MapperLatch:X1}:{s}",
-					RegisterInfo = ""
-				});
+				Cpu.Logger = s => Tracer.Put(new(disassembly: $"{SF2MapperLatch:X1}:{s}", registerInfo: string.Empty));
 			}
 			else
 			{
@@ -319,11 +309,12 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			if (game["MultiResHack"])
 			{
 				VDC1.MultiResHack = game.GetIntValue("MultiResHack");
+				VDC1.Resize_Frame_Buffer_MultiResHack();
 			}
 
 			Cpu.ResetPC();
 
-			Tracer = new TraceBuffer { Header = Cpu.TraceHeader };
+			Tracer = new TraceBuffer(Cpu.TraceHeader);
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 			ser.Register<ITraceable>(Tracer);

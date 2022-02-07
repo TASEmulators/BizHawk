@@ -1,8 +1,9 @@
 #![crate_type = "cdylib"]
 
-#![feature(try_trait)]
+#![feature(try_trait_v2)]
+#![feature(never_type)]
+#![feature(control_flow_enum)]
 #![feature(core_intrinsics)]
-#![feature(asm)]
 #![feature(map_first_last)]
 
 #![allow(dead_code)]
@@ -89,8 +90,11 @@ fn align_up(p: usize) -> usize {
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct WbxSysLayout {
+	// Keep this all in sync with the C code!
+
 	pub elf: AddressRange,
 	pub main_thread: AddressRange,
+	pub alt_thread: AddressRange,
 	pub sbrk: AddressRange,
 	pub sealed: AddressRange,
 	pub invis: AddressRange,

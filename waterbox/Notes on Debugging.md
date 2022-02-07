@@ -59,15 +59,10 @@ Bring lots of tools, and lots of self loathing.
 
 * Within the guest, DWARF unwinding information is available and libunwind is used.  Guest C++ programs can freely use exceptions,
 	and Mednafen does so without issue.
-	* Unwinding through any stack that is not guest content will likely explode.
-* Within the host, rust unwinds usually make some SEH explosion that crashes the application.
-	* None of them were meant to be recoverable anyway.
-* C# exceptions that occur when there is guest code on the stack usually cause a complete termination.
-	* So a callback to managed from within a waterbox core, etc.
-	* I never figured this one out.  Guest execution is fully done on vanilla host stacks, and we should be doing nothing
-		that would make this fail.  But it does.
-	* Since the rust waterboxhost, this now will only happen from emulator core specific callbacks, since the rust waterboxhost
-		does not call out to C# from within a syscall handler, ever.
+	* Trying to unwind out of the guest stack will not work, so there needs to be a top level catch.
+* SEH unwinds, either from C# or Rust code, while in a callback from guest code back to host code, will unwind fine, but they
+	will skip right past the guest code.  This recovers the host system, but means that the guest is likely hosed as it
+	had no chance to run any dtors.
 * Any unwinding on a libco cothread will likely make me laugh.
 
 ## Linux

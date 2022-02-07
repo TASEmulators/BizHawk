@@ -1,16 +1,19 @@
 ﻿using System;
+using System.Drawing;
+
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.Properties;
-using BizHawk.Emulation.Cores.Calculators;
+using BizHawk.Common;
+using BizHawk.Emulation.Cores.Calculators.TI83;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class TI83KeyPad : ToolFormBase, IToolFormAutoConfig
+	public sealed partial class TI83KeyPad : ToolFormBase, IToolFormAutoConfig
 	{
 		[RequiredService]
 		// ReSharper disable once UnusedAutoPropertyAccessor.Local
-		public TI83 Emu { get; private set; }
+		public TI83Common Emu { get; private set; }
 
 		protected override string WindowTitleStatic => "TI-83 Virtual KeyPad";
 
@@ -22,6 +25,7 @@ namespace BizHawk.Client.EmuHawk
 			RightButton.Image = Resources.WhiteTriRight;
 			DownButton.Image = Resources.WhiteTriDown;
 			UpButton.Image = Resources.WhiteTriUp;
+			if (OSTailoredCode.IsUnixHost) MinimumSize = (MaximumSize += new Size(48, 32)); // also updates current size
 		}
 
 		[ConfigPersist]

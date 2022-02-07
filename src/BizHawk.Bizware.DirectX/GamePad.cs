@@ -26,7 +26,7 @@ namespace BizHawk.Bizware.DirectX
 				{
 					Console.WriteLine("joy device: {0} `{1}`", device.InstanceGuid, device.ProductName);
 
-					if (device.ProductName.Contains("XBOX 360"))
+					if (device.ProductName.Contains("XBOX 360") || device.ProductName.Contains("Xbox One") || device.ProductName.Contains("XINPUT"))
 						continue; // Don't input XBOX 360 controllers into here; we'll process them via XInput (there are limitations in some trigger axes when xbox pads go over xinput)
 
 					var joystick = new Joystick(_directInput, device.InstanceGuid);
@@ -96,6 +96,7 @@ namespace BizHawk.Bizware.DirectX
 		{
 			_joystick = joystick;
 			PlayerNumber = index + 1;
+			InputNamePrefix = $"J{PlayerNumber} ";
 			Update();
 			InitializeCallbacks();
 		}
@@ -140,6 +141,8 @@ namespace BizHawk.Bizware.DirectX
 		}
 
 		public int PlayerNumber { get; }
+
+		public readonly string InputNamePrefix;
 
 		public string ButtonName(int index)
 		{

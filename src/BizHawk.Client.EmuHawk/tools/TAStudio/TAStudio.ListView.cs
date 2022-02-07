@@ -16,6 +16,7 @@ namespace BizHawk.Client.EmuHawk
 		// Input Painting
 		private string _startBoolDrawColumn = "";
 		private string _startAxisDrawColumn = "";
+		private bool _drewAxis;
 		private bool _boolPaintState;
 		private int _axisPaintState;
 		private int _axisBackupState;
@@ -67,11 +68,11 @@ namespace BizHawk.Client.EmuHawk
 		public AutoPatternBool[] BoolPatterns;
 		public AutoPatternAxis[] AxisPatterns;
 
-		public void JumpToGreenzone()
+		public void JumpToGreenzone(bool OnLeftMouseDown = false)
 		{
 			if (Emulator.Frame > CurrentTasMovie.LastEditedFrame)
 			{
-				GoToLastEmulatedFrameIfNecessary(CurrentTasMovie.LastEditedFrame);
+				GoToLastEmulatedFrameIfNecessary(CurrentTasMovie.LastEditedFrame, OnLeftMouseDown);
 			}
 		}
 
@@ -98,15 +99,15 @@ namespace BizHawk.Client.EmuHawk
 			TastudioPlayMode(); // suspend rec mode until seek ends, to allow mouse editing
 			MainForm.UnpauseEmulator();
 
-			if (!_seekBackgroundWorker.IsBusy && diff > TasView.VisibleRows)
+			if (diff > TasView.VisibleRows)
 			{
-				_seekBackgroundWorker.RunWorkerAsync();
+				MessageStatusLabel.Text = "Seeking...";
+				ProgressBar.Visible = true;
 			}
 		}
 
 		public void StopSeeking(bool skipRecModeCheck = false)
 		{
-			_seekBackgroundWorker.CancelAsync();
 			if (WasRecording && !skipRecModeCheck)
 			{
 				TastudioRecordMode();
@@ -123,25 +124,9 @@ namespace BizHawk.Client.EmuHawk
 			if (CurrentTasMovie != null)
 			{
 				RefreshDialog();
+				UpdateProgressBar();
 			}
 		}
-
-		// public static Color CurrentFrame_FrameCol = Color.FromArgb(0xCF, 0xED, 0xFC); Why?
-		public static Color CurrentFrame_InputLog => Color.FromArgb(0xB5, 0xE7, 0xF7);
-		public static Color SeekFrame_InputLog => Color.FromArgb(0x70, 0xB5, 0xE7, 0xF7);
-
-		public static Color GreenZone_FrameCol => Color.FromArgb(0xDD, 0xFF, 0xDD);
-		public static Color GreenZone_InputLog => Color.FromArgb(0xD2, 0xF9, 0xD3);
-		public static Color GreenZone_InputLog_Stated => Color.FromArgb(0xC4, 0xF7, 0xC8);
-		public static Color GreenZone_InputLog_Invalidated => Color.FromArgb(0xE0, 0xFB, 0xE0);
-
-		public static Color LagZone_FrameCol => Color.FromArgb(0xFF, 0xDC, 0xDD);
-		public static Color LagZone_InputLog => Color.FromArgb(0xF4, 0xDA, 0xDA);
-		public static Color LagZone_InputLog_Stated => Color.FromArgb(0xF0, 0xD0, 0xD2);
-		public static Color LagZone_InputLog_Invalidated => Color.FromArgb(0xF7, 0xE5, 0xE5);
-
-		public static Color Marker_FrameCol => Color.FromArgb(0xF7, 0xFF, 0xC9);
-		public static Color AnalogEdit_Col => Color.FromArgb(0x90, 0x90, 0x70); // SuuperW: When editing an analog value, it will be a gray color.
 
 		private Bitmap ts_v_arrow_green_blue => Properties.Resources.ts_v_arrow_green_blue;
 		private Bitmap ts_h_arrow_green_blue => Properties.Resources.ts_h_arrow_green_blue;
@@ -156,7 +141,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_QueryItemIcon(int index, RollColumn column, ref Bitmap bitmap, ref int offsetX, ref int offsetY)
 		{
-			if (!_engaged)
+			if (!_engaged || _initializing)
 			{
 				return;
 			}
@@ -248,7 +233,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Emulator.Frame != index && CurrentTasMovie.Markers.IsMarker(index) && Settings.DenoteMarkersWithBGColor)
 				{
-					color = Marker_FrameCol;
+					color = Palette.Marker_FrameCol;
 				}
 				else
 				{
@@ -259,7 +244,7 @@ namespace BizHawk.Client.EmuHawk
 				&& (index == _axisEditRow || _extraAxisRows.Contains(index))
 				&& columnName == _axisEditColumn)
 			{
-				color = AnalogEdit_Col;
+				color = Palette.AnalogEdit_Col;
 			}
 
 			int player = Emulator.ControllerDefinition.PlayerNumber(columnName);
@@ -280,38 +265,42 @@ namespace BizHawk.Client.EmuHawk
 
 			if (MainForm.IsSeeking && MainForm.PauseOnFrame == index)
 			{
-				color = CurrentFrame_InputLog;
+				color = Palette.CurrentFrame_InputLog;
 			}
 			else if (!MainForm.IsSeeking && Emulator.Frame == index)
 			{
-				color = CurrentFrame_InputLog;
+				color = Palette.CurrentFrame_InputLog;
 			}
 			else if (record.Lagged.HasValue)
 			{
 				if (!record.HasState && Settings.DenoteStatesWithBGColor)
 				{
 					color = record.Lagged.Value
-						? LagZone_InputLog
-						: GreenZone_InputLog;
+						? Palette.LagZone_InputLog
+						: Palette.GreenZone_InputLog;
 				}
 				else
 				{
 					color = record.Lagged.Value
-						? LagZone_InputLog_Stated
-						: GreenZone_InputLog_Stated;
+						? Palette.LagZone_InputLog_Stated
+						: Palette.GreenZone_InputLog_Stated;
 				}
 			}
 			else if (record.WasLagged.HasValue)
 			{
-				color = record.WasLagged.Value ?
-					LagZone_InputLog_Invalidated :
-					GreenZone_InputLog_Invalidated;
+				color = record.WasLagged.Value
+					? Palette.LagZone_InputLog_Invalidated
+					: Palette.GreenZone_InputLog_Invalidated;
 			}
 			else
 			{
 				color = Color.FromArgb(0xFF, 0xFE, 0xEE);
 			}
 		}
+
+		/// <returns><paramref name="index"/> with leading zeroes such that every frame in the movie will be printed with the same number of digits</returns>
+		private string FrameToStringPadded(int index)
+			=> index.ToString().PadLeft(CurrentTasMovie.InputLogLength.ToString().Length, '0');
 
 		private void TasView_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
@@ -344,7 +333,7 @@ namespace BizHawk.Client.EmuHawk
 				else if (columnName == FrameColumnName)
 				{
 					offsetX = TasView.HorizontalOrientation ? 2 : 7;
-					text = index.ToString().PadLeft(CurrentTasMovie.InputLogLength.ToString().Length, '0');
+					text = FrameToStringPadded(index);
 				}
 				else
 				{
@@ -479,8 +468,13 @@ namespace BizHawk.Client.EmuHawk
 					index += ControllerType.BoolButtons.Count - 1;
 				}
 
-				AutoPatternBool p = BoolPatterns[index];
-				InputManager.AutofireStickyXorAdapter.SetSticky(button, isOn.Value, p);
+				// Fixes auto-loading, but why is this code like this? The code above suggests we have a BoolPattern for every  bool button? But we don't
+				// This is a sign of a deeper problem, but this fixes some basic functionality at least
+				if (index < BoolPatterns.Length)
+				{
+					AutoPatternBool p = BoolPatterns[index];
+					InputManager.AutofireStickyXorAdapter.SetSticky(button, isOn.Value, p);
+				}
 			}
 			else
 			{
@@ -499,8 +493,13 @@ namespace BizHawk.Client.EmuHawk
 					value = 0;
 				}
 
-				AutoPatternAxis p = AxisPatterns[index];
-				InputManager.AutofireStickyXorAdapter.SetAxis(button, value, p);
+				// Fixes auto-loading, but why is this code like this? The code above suggests we have a AxisPattern for every axis button? But we don't
+				// This is a sign of a deeper problem, but this fixes some basic functionality at least
+				if (index < BoolPatterns.Length)
+				{
+					AutoPatternAxis p = AxisPatterns[index];
+					InputManager.AutofireStickyXorAdapter.SetAxis(button, value, p);
+				}
 			}
 		}
 
@@ -524,6 +523,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return;
 			}
+
+			// only on mouse button down, check that the pointed to cell is the correct one (can be wrong due to scroll while playing)
+			TasView._programmaticallyChangingRow = true;
+			TasView.PointMouseToNewCell();
 
 			if (e.Button == MouseButtons.Middle)
 			{
@@ -593,7 +596,7 @@ namespace BizHawk.Client.EmuHawk
 				if (TasView.CurrentCell.Column.Name == CursorColumnName)
 				{
 					_startCursorDrag = true;
-					GoToFrame(TasView.CurrentCell.RowIndex.Value);
+					GoToFrame(TasView.CurrentCell.RowIndex.Value, false, false, true);
 				}
 				else if (TasView.CurrentCell.Column.Name == FrameColumnName)
 				{
@@ -655,7 +658,6 @@ namespace BizHawk.Client.EmuHawk
 							CurrentTasMovie.SetBoolStates(firstSel, (frame - firstSel) + 1, buttonName, !allPressed);
 							_boolPaintState = CurrentTasMovie.BoolIsPressed(frame, buttonName);
 							_triggerAutoRestore = true;
-							JumpToGreenzone();
 							RefreshDialog();
 						}
 						else if (ModifierKeys == Keys.Shift && ModifierKeys == Keys.Alt) // Does not work?
@@ -669,7 +671,6 @@ namespace BizHawk.Client.EmuHawk
 							CurrentTasMovie.ToggleBoolState(TasView.CurrentCell.RowIndex.Value, buttonName);
 							_boolPaintState = CurrentTasMovie.BoolIsPressed(frame, buttonName);
 							_triggerAutoRestore = true;
-							JumpToGreenzone();
 							RefreshDialog();
 						}
 					}
@@ -789,6 +790,7 @@ namespace BizHawk.Client.EmuHawk
 			_startSelectionDrag = false;
 			_startBoolDrawColumn = "";
 			_startAxisDrawColumn = "";
+			_drewAxis = false;
 			_paintingMinFrame = -1;
 			TasView.ReleaseCurrentCell();
 
@@ -840,14 +842,11 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					if (!string.IsNullOrWhiteSpace(_startBoolDrawColumn))
+					if (!string.IsNullOrWhiteSpace(_startBoolDrawColumn) || _drewAxis)
 					{
 						// If painting up, we have altered frames without loading states (for smoothness)
 						// So now we have to ensure that all the edited frames are invalidated
-						if (_paintingMinFrame < Emulator.Frame)
-						{
-							GoToFrame(_paintingMinFrame);
-						}
+						GoToLastEmulatedFrameIfNecessary(_paintingMinFrame); 
 					}
 
 					ClearLeftMouseStates();
@@ -890,7 +889,6 @@ namespace BizHawk.Client.EmuHawk
 					if (notch > 0 && Emulator.Frame >= MainForm.PauseOnFrame)
 					{
 						MainForm.PauseEmulator();
-						MainForm.PauseOnFrame = null;
 						StopSeeking();
 						GoToFrame(Emulator.Frame - notch);
 					}
@@ -1024,7 +1022,7 @@ namespace BizHawk.Client.EmuHawk
 						// If going backwards, delete!
 						bool shouldInsert = true;
 						if (startVal < _rightClickFrame)
-						{ 
+						{
 							// Cloning to a previous frame makes no sense.
 							startVal = _rightClickFrame - 1;
 						}
@@ -1168,11 +1166,10 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
-					var getVal = (i < CurrentTasMovie.InputLogLength) ? CurrentTasMovie.GetAxisState(i, _startAxisDrawColumn) : setVal;
 					CurrentTasMovie.SetAxisState(i, _startAxisDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column
+				}
 
-					if (getVal != setVal) { JumpToGreenzone(); }
-				}				
+				_drewAxis = true;
 			}
 
 			CurrentTasMovie.IsCountingRerecords = wasCountingRerecords;

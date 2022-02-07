@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -169,7 +168,8 @@ namespace BizHawk.Common
 			_extractor.ExtractFile(archiveIndex, _boundStream);
 			_boundStream.Position = 0;
 			ArchiveMemberPath = _archiveItems[index].Name; // TODO - maybe go through our own list of names? maybe not, its indices don't match...
-			Debug.WriteLine($"{nameof(HawkFile)} bound {CanonicalFullPath}");
+			Util.DebugWriteLine($"{nameof(HawkFile)} bound {CanonicalFullPath}");
+			if (_boundStream.Length is 0) Console.WriteLine("bound file is 0 bytes long?");
 			BoundIndex = archiveIndex;
 			return this;
 		}
@@ -183,14 +183,14 @@ namespace BizHawk.Common
 
 		/// <param name="extensions">File extensions; include the leading period in each, and use lowercase.</param>
 		/// <exception cref="InvalidOperationException">stream already bound</exception>
-		private HawkFile BindByExtensionCore(string[] extensions, bool onlyBindSingle = false)
+		private HawkFile BindByExtensionCore(IReadOnlyCollection<string> extensions, bool onlyBindSingle = false)
 		{
 			if (!_rootExists) return this;
 			if (_boundStream != null) throw new InvalidOperationException("stream already bound!");
 
 			if (!(_archiveItems == null || _extractor == null))
 			{
-				if (extensions.Length != 0)
+				if (extensions.Count != 0)
 				{
 					var candidates = _archiveItems.Where(item => extensions.Contains(Path.GetExtension(item.Name).ToLowerInvariant())).ToList();
 					if (onlyBindSingle ? candidates.Count == 1 : candidates.Count != 0) BindArchiveMember(candidates[0].Index);
@@ -208,7 +208,7 @@ namespace BizHawk.Common
 			}
 
 			// open uncompressed file
-			if (extensions.Length == 0
+			if (extensions.Count == 0
 				|| extensions.Contains(Path.GetExtension(FullPathWithoutMember).ToLowerInvariant()))
 			{
 				BindRoot();
@@ -226,7 +226,7 @@ namespace BizHawk.Common
 		/// </summary>
 		/// <param name="extensions">File extensions; include the leading period in each, and use lowercase.</param>
 		/// <remarks>You probably should use <see cref="BindSoleItemOf"/> or the archive chooser instead.</remarks>
-		public HawkFile BindFirstOf(string[] extensions) => BindByExtensionCore(extensions);
+		public HawkFile BindFirstOf(IReadOnlyCollection<string> extensions) => BindByExtensionCore(extensions);
 
 		/// <summary>
 		/// Binds the first archive member whose file extension is <paramref name="extension"/> if one exists,
@@ -240,12 +240,12 @@ namespace BizHawk.Common
 		private void BindRoot()
 		{
 			_boundStream = _rootStream;
-			Debug.WriteLine($"{nameof(HawkFile)} bound {CanonicalFullPath}");
+			Util.DebugWriteLine($"{nameof(HawkFile)} bound {CanonicalFullPath}");
 		}
 
-		/// <summary>As <see cref="BindFirstOf(string[])"/>, but doesn't bind anything if there are multiple archive members with a matching file extension.</summary>
+		/// <summary>As <see cref="BindFirstOf(IReadOnlyCollection{string})"/>, but doesn't bind anything if there are multiple archive members with a matching file extension.</summary>
 		/// <param name="extensions">File extensions; include the leading period in each, and use lowercase.</param>
-		public HawkFile BindSoleItemOf(string[] extensions) => BindByExtensionCore(extensions, onlyBindSingle: true);
+		public HawkFile BindSoleItemOf(IReadOnlyCollection<string> extensions) => BindByExtensionCore(extensions, onlyBindSingle: true);
 
 		public void Dispose()
 		{

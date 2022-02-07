@@ -322,10 +322,15 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 
 		public IMemoryCallbackSystem MemoryCallbacks;
 
-		public byte ReadMemory(ushort address)
+		public byte PeekMemory(ushort address)
 		{
 			byte page = MPR[address >> 13];
-			var result = ReadMemory21((page << 13) | (address & 0x1FFF));
+			return ReadMemory21((page << 13) | (address & 0x1FFF));
+		}
+
+		public byte ReadMemory(ushort address)
+		{
+			byte result = PeekMemory(address);
 
 			if (MemoryCallbacks.HasReads)
 			{
@@ -336,10 +341,15 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 			return result;
 		}
 
-		public void WriteMemory(ushort address, byte value)
+		public void PokeMemory(ushort address, byte value)
 		{
 			byte page = MPR[address >> 13];
 			WriteMemory21((page << 13) | (address & 0x1FFF), value);
+		}
+
+		public void WriteMemory(ushort address, byte value)
+		{
+			PokeMemory(address, value);
 			if (MemoryCallbacks.HasWrites)
 			{
 				uint flags = (uint)(MemoryCallbackFlags.AccessWrite);
@@ -371,11 +381,9 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 		public string TraceHeader => "HuC6280: PC, machine code, mnemonic, operands, registers (A, X, Y, P, SP, Cy), flags (NVTBDIZC)";
 
 		public TraceInfo State()
-		{
-			return new TraceInfo
-			{
-				Disassembly = $"{MPR[PC >> 13]:X2}:{PC:X4}:  {ReadMemory(PC):X2}  {Disassemble(PC, out _)} ".PadRight(30),
-				RegisterInfo = string.Join(" ",
+			=> new(
+				disassembly: $"{MPR[PC >> 13]:X2}:{PC:X4}:  {ReadMemory(PC):X2}  {Disassemble(PC, out _)} ".PadRight(30),
+				registerInfo: string.Join(" ",
 					$"A:{A:X2}",
 					$"X:{X:X2}",
 					$"Y:{Y:X2}",
@@ -390,9 +398,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 						FlagD ? "D" : "d",
 						FlagI ? "I" : "i",
 						FlagZ ? "Z" : "z",
-						FlagC ? "C" : "c"))
-			};
-		}
+						FlagC ? "C" : "c")));
 
 		private static readonly byte[] TableNZ = 
 		{ 

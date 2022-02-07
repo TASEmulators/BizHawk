@@ -147,6 +147,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 		private const byte Rts = 0x60;
 		private const byte JsrSize = 3;
 
-		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
+		public IMemoryCallbackSystem MemoryCallbacks => throw new NotImplementedException();
 	}
 }

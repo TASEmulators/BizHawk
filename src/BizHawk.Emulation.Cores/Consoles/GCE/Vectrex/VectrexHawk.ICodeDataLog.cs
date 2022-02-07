@@ -14,8 +14,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		public void NewCDL(ICodeDataLog cdl)
 		{
-			cdl["RAM"] = new byte[MemoryDomains["Main RAM"].Size];
-			cdl["ROM"] = new byte[MemoryDomains["ROM"].Size];
+			cdl["RAM"] = new byte[MemoryDomains["Main RAM"]!.Size];
+			cdl["ROM"] = new byte[MemoryDomains["ROM"]!.Size];
 
 			cdl.SubType = "VEC";
 			cdl.SubVer = 0;

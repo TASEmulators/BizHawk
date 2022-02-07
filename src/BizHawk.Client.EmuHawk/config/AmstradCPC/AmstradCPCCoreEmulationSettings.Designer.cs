@@ -104,8 +104,8 @@
 			this.lblAutoLoadText.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblAutoLoadText.Location = new System.Drawing.Point(155, 373);
 			this.lblAutoLoadText.Name = "lblAutoLoadText";
-			this.lblAutoLoadText.Text = "When enabled CPCHawk will automatically start and stop the tape whenever the tape" +
-    " motor state changes";
+			this.lblAutoLoadText.Text = "When enabled, the tape will be started and stopped automatically whenever the " +
+    "tape motor state changes";
 			this.lblAutoLoadText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// autoLoadcheckBox1

@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace BizHawk.Client.Common.cheats
 {
-	// TODO: 
+	// TODO:
 	public static class GbaGameSharkDecoder
 	{
 		private static readonly uint[] GameSharkSeeds = { 0x09F4FBBDU, 0x9681884AU, 0x352027E9U, 0xF3DEE5A7U };

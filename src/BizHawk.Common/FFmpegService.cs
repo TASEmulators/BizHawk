@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace BizHawk.Common
 		public static readonly string Version = "N-92462-g529debc987";
 
 		//likewise
-		public static readonly string Url = "https://github.com/TASVideos/ffmpeg-binaries/blob/master/ffmpeg-20181118-529debc-win64-static_ffmpeg.7z?raw=true";
+		public static readonly string Url = "https://github.com/TASEmulators/ffmpeg-binaries/blob/master/ffmpeg-20181118-529debc-win64-static_ffmpeg.7z?raw=true";
 
 		public class AudioQueryResult
 		{
@@ -72,12 +73,12 @@ namespace BizHawk.Common
 			}
 
 			ProcessStartInfo oInfo = new ProcessStartInfo(FFmpegPath, sbCmdline.ToString())
-				{
-					UseShellExecute = false,
-					CreateNoWindow = true,
-					RedirectStandardOutput = true,
-					RedirectStandardError = true
-				};
+			{
+				UseShellExecute = false,
+				CreateNoWindow = true,
+				RedirectStandardOutput = true,
+				RedirectStandardError = true
+			};
 
 			Process proc = new Process();
 			proc.StartInfo = oInfo;
@@ -87,6 +88,7 @@ namespace BizHawk.Common
 			proc.Start();
 			proc.BeginErrorReadLine();
 			string output = proc.StandardOutput.ReadToEnd();
+      
 			proc.WaitForExit();
 
 			return new RunResults

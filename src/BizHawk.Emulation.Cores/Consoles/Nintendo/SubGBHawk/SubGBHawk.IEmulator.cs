@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 				_GBCore.ppu.color_palette[2] = GBHawk.GBHawk.color_palette_Gr[2];
 				_GBCore.ppu.color_palette[3] = GBHawk.GBHawk.color_palette_Gr[3];
 			}
-			if (_tracer.Enabled)
+			if (_tracer.IsEnabled())
 			{
 				_GBCore.cpu.TraceCallback = s => _tracer.Put(s);
 			}
@@ -35,8 +35,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 			{
 				_GBCore.cpu.TraceCallback = null;
 			}
-
-			_frame++;
 
 			reset_frame = false;
 			if (controller.IsPressed("P1 Power"))
@@ -53,6 +51,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 			}
 
 			pass_a_frame = false;
+			_GBCore._islag = false;
 
 			InputCallbacks.Call();
 
@@ -73,7 +72,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 			}
 			current_cycle = 0;
 			
-			_isLag = pass_a_frame;
+			_isLag = _GBCore._islag;
 
 			if (_isLag)
 			{
@@ -81,6 +80,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 			}
 
 			reset_frame = false;
+
+			_frame++;
+
 			return ret;
 		}
 
@@ -112,7 +114,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 
 				current_cycle++;
 				frame_cycle++;
-				CycleCount++;
+				_cycleCount++;
 
 				if (frame_cycle == 70224)
 				{
@@ -135,7 +137,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 
 		public int Frame => _frame;
 
-		public string SystemId => "GB";
+		public string SystemId => VSystemID.Raw.GB;
 
 		public bool DeterministicEmulation => _GBCore.DeterministicEmulation;
 

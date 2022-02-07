@@ -477,7 +477,7 @@
 			this.LuaInterfaceRadio.Size = new System.Drawing.Size(338, 17);
 			this.LuaInterfaceRadio.TabIndex = 2;
 			this.LuaInterfaceRadio.TabStop = true;
-			this.LuaInterfaceRadio.Text = "Lua+LuaInterface - Faster but memory leaks,  use at your own risk!";
+			this.LuaInterfaceRadio.Text = "Lua+LuaInterface";
 			this.LuaInterfaceRadio.UseVisualStyleBackColor = true;
 			// 
 			// NLuaRadio

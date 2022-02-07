@@ -19,6 +19,7 @@ namespace BizHawk.Client.Common
 		/// <exception cref="ArithmeticException"><paramref name="d"/> ≥ 2^53 or <paramref name="d"/> ≤ -2^53</exception>
 		public static long AsInteger(this double d) => PrecisionLimits.Contains(d) ? (long) d : throw new ArithmeticException("integer value exceeds the precision of Lua's integer-as-double");
 
-		public static LuaTable EnumerateToLuaTable<T>(this NLuaTableHelper tableHelper, IEnumerable<T> list) => tableHelper.ListToTable(list.ToList());
+		public static LuaTable EnumerateToLuaTable<T>(this NLuaTableHelper tableHelper, IEnumerable<T> list, int indexFrom = 1)
+			=> tableHelper.ListToTable(list.ToList(), indexFrom);
 	}
 }

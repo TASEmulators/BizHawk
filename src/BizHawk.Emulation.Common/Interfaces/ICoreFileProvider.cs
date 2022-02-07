@@ -20,14 +20,17 @@
 		/// </summary>
 		string GetRetroSystemPath(IGameInfo game);
 
-		/// <summary>
-		/// Get a firmware as a byte array
-		/// </summary>
-		/// <param name="id">the firmware id</param>
-		/// <param name="required">if true, result is guaranteed to be valid; else null is possible if not found</param>
-		/// <param name="msg">message to show if fail to get</param>
-		byte[] GetFirmware(FirmwareID id, bool required, string msg = null);
+		/// <param name="msg">warning message to show on failure</param>
+		/// <returns><see langword="null"/> iff failed</returns>
+		byte[]? GetFirmware(FirmwareID id, string? msg = null);
 
-		byte[] GetFirmwareWithGameInfo(FirmwareID id, bool required, out GameInfo gi, string msg = null);
+		/// <param name="msg">exception message to show on failure</param>
+		/// <exception cref="MissingFirmwareException">if not found</exception>
+		byte[] GetFirmwareOrThrow(FirmwareID id, string? msg = null);
+
+		/// <param name="msg">exception message to show on failure</param>
+		/// <exception cref="MissingFirmwareException">if not found</exception>
+		/// <remarks>only used in PCEHawk</remarks>
+		(byte[] FW, GameInfo Game) GetFirmwareWithGameInfoOrThrow(FirmwareID id, string? msg = null);
 	}
 }

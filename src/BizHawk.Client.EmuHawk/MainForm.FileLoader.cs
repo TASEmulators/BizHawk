@@ -74,11 +74,7 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadLuaFile(string filename, string archive = null)
 		{
 			OpenLuaConsole();
-			if (Tools.Has<LuaConsole>())
-			{
-				if (OSTailoredCode.IsUnixHost) Console.WriteLine($"The Lua environment can currently only be created on Windows, {filename} will not be loaded.");
-				else Tools.LuaConsole.LoadLuaFile(filename);
-			}
+			if (Tools.Has<LuaConsole>()) Tools.LuaConsole.LoadLuaFile(filename);
 		}
 
 		private void LoadLuaSession(string filename, string archive = null)
@@ -218,20 +214,22 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void FormDragDrop_internal(DragEventArgs e)
+		private string[] PathsFromDragDrop;
+
+		private void FormDragDrop_internal()
 		{
 			/*
 			 *  Refactor, moving the loading of particular files into separate functions that can
 			 *  then be used by this code, and loading individual files through the file dialogue.
-			 *  
+			 *
 			 *  Step 1:
 			 *	  Build a dictionary of relevant files from everything that was dragged and dropped.
 			 *	  This includes peeking into all relevant archives and using their files.
-			 *	  
+			 *
 			 *  Step 2:
 			 *	  Perhaps ask the user which of a particular file type they want to use.
 			 *		  Example:  rom1.nes, rom2.smc, rom3.cue are drag-dropped, ask the user which they want to use.
-			 *		  
+			 *
 			 *  Step 3:
 			 *	  Load all of the relevant files, in priority order:
 			 *	  1) The ROM
@@ -242,12 +240,11 @@ namespace BizHawk.Client.EmuHawk
 			 *	  6) LUA scripts
 			 *	  7) Cheat files
 			 *	  8) Movie Playback Files
-			 *	  
+			 *
 			 *  Bonus:
 			 *	  Make that order easy to change in the code, heavily suggesting ROM and playback as first and last respectively.
 			 */
 
-			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
 			Dictionary<LoadOrdering, List<FileInformation>> sortedFiles = new Dictionary<LoadOrdering, List<FileInformation>>();
 
 			// Initialize the dictionary's lists.
@@ -256,7 +253,7 @@ namespace BizHawk.Client.EmuHawk
 				sortedFiles.Add(value, new List<FileInformation>());
 			}
 
-			ProcessFileList(filePaths.Select(EmuHawkUtil.ResolveShortcut), ref sortedFiles);
+			ProcessFileList(PathsFromDragDrop.Select(EmuHawkUtil.ResolveShortcut), ref sortedFiles);
 
 			// For each of the different types of item, if there are no items of that type, skip them.
 			// If there is exactly one of that type of item, load it.

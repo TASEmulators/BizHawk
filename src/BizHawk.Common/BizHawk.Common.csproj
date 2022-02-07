@@ -10,18 +10,14 @@
 		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
 		<PackageReference Include="System.Memory" Version="4.5.4" />
 		<PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" PrivateAssets="all" />
+		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />
+		<PackageReference Include="DotNetAnalyzers.DocumentationAnalyzers" Version="1.0.0-beta.59" />
 		<PackageReference Include="Menees.Analyzers" Version="2.0.4" Condition=" '$(MachineRunAnalyzersDuringBuild)' != '' " />
-		<PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.0" Condition=" '$(MachineRunAnalyzersDuringBuild)' != '' " />
-		<PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.205" Condition=" '$(MachineRunAnalyzersDuringBuild)' != '' " />
-		<ProjectReference Include="$(ProjectDir)../BizHawk.Version/BizHawk.Version.csproj" /><!-- generates VersionInfo.gen.cs -->
+		<PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.333" Condition=" '$(MachineRunAnalyzersDuringBuild)' != '' " />
 	</ItemGroup>
 	<ItemGroup>
+		<!-- target in Version project generates VersionInfo.gen.cs; note that the Version project MUST BE FIRST in solution file -->
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Version/BizHawk.Version.csproj" ReferenceOutputAssembly="false" />
 		<Compile Update="VersionInfo.gen.cs" DependentUpon="VersionInfo.cs" />
 	</ItemGroup>
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<ItemGroup>
-			<AssetFiles Include="$(ProjectDir)../../Assets/**/*.*" />
-		</ItemGroup>
-		<Copy SourceFiles="@(AssetFiles)" DestinationFolder="$(OutputPath)../%(RecursiveDir)" SkipUnchangedFiles="true" />
-	</Target>
 </Project>

@@ -1,40 +1,61 @@
 ﻿using System;
+using System.Linq;
+
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
-	[Core(
-		"DualGambatte",
-		"sinamas/natt",
-		isPorted: true,
-		isReleased: true)]
+	[PortedCore(CoreNames.GambatteLink, "sinamas/natt")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
-	public partial class GambatteLink : IEmulator, IVideoProvider, ISoundProvider, IInputPollable, ISaveRam, IStatable, ILinkable,
-		IBoardInfo, IRomInfo, IDebuggable, ISettable<GambatteLink.GambatteLinkSettings, GambatteLink.GambatteLinkSyncSettings>, ICodeDataLogger
+	public partial class GambatteLink : ILinkable, IRomInfo
 	{
-		[CoreConstructor("DGB")]
-		public GambatteLink(CoreLoadParameters<GambatteLink.GambatteLinkSettings, GambatteLink.GambatteLinkSyncSettings> lp)
+		[CoreConstructor(VSystemID.Raw.GBL)]
+		public GambatteLink(CoreLoadParameters<GambatteLinkSettings, GambatteLinkSyncSettings> lp)
 		{
-			if (lp.Roms.Count != 2)
+			if (lp.Roms.Count < MIN_PLAYERS || lp.Roms.Count > MAX_PLAYERS)
 				throw new InvalidOperationException("Wrong number of roms");
 
-			ServiceProvider = new BasicServiceProvider(this);
-			GambatteLinkSettings linkSettings = (GambatteLinkSettings)lp.Settings ?? new GambatteLinkSettings();
-			GambatteLinkSyncSettings linkSyncSettings = (GambatteLinkSyncSettings)lp.SyncSettings ?? new GambatteLinkSyncSettings();
+			_numCores = lp.Roms.Count;
 
-			L = new Gameboy(lp.Comm, lp.Roms[0].Game, lp.Roms[0].RomData, linkSettings.L, linkSyncSettings.L, lp.DeterministicEmulationRequested);
-			R = new Gameboy(lp.Comm, lp.Roms[1].Game, lp.Roms[1].RomData, linkSettings.R, linkSyncSettings.R, lp.DeterministicEmulationRequested);
+			_serviceProvider = new BasicServiceProvider(this);
+			_settings = lp.Settings ?? new GambatteLinkSettings();
+			_syncSettings = lp.SyncSettings ?? new GambatteLinkSyncSettings();
 
-			// connect link cable
-			LibGambatte.gambatte_linkstatus(L.GambatteState, 259);
-			LibGambatte.gambatte_linkstatus(R.GambatteState, 259);
+			_linkedCores = new Gameboy[_numCores];
+			_linkedConts = new SaveController[_numCores];
+			_linkedBlips = new BlipBuffer[_numCores];
+			_linkedLatches = new int[_numCores];
+			_linkedOverflow = new int[_numCores];
 
-			L.ConnectInputCallbackSystem(_inputCallbacks);
-			R.ConnectInputCallbackSystem(_inputCallbacks);
-			L.ConnectMemoryCallbackSystem(_memorycallbacks);
-			R.ConnectMemoryCallbackSystem(_memorycallbacks);
+			RomDetails = "";
 
-			RomDetails = "LEFT:\r\n" + L.RomDetails + "RIGHT:\r\n" + R.RomDetails;
+			var scopes = new string[_numCores * 7];
+			for (int i = 0; i < _numCores; i++)
+			{
+				scopes[i * 7 + 0] = $"P{i + 1} System Bus";
+				scopes[i * 7 + 1] = $"P{i + 1} ROM";
+				scopes[i * 7 + 2] = $"P{i + 1} VRAM";
+				scopes[i * 7 + 3] = $"P{i + 1} SRAM";
+				scopes[i * 7 + 4] = $"P{i + 1} WRAM";
+				scopes[i * 7 + 5] = $"P{i + 1} OAM";
+				scopes[i * 7 + 6] = $"P{i + 1} HRAM";
+			}
+
+			_memoryCallbacks = new MemoryCallbackSystem(scopes);
+
+			for (int i = 0; i < _numCores; i++)
+			{
+				_linkedCores[i] = new Gameboy(lp.Comm, lp.Roms[i].Game, lp.Roms[i].RomData, _settings._linkedSettings[i], _syncSettings._linkedSyncSettings[i], lp.DeterministicEmulationRequested);
+				_linkedCores[i].ConnectInputCallbackSystem(_inputCallbacks);
+				_linkedCores[i].ConnectMemoryCallbackSystem(_memoryCallbacks, i);
+				_linkedConts[i] = new SaveController(Gameboy.CreateControllerDefinition(sgb: false, sub: false, tilt: false));
+				_linkedBlips[i] = new BlipBuffer(1024);
+				_linkedBlips[i].SetRates(2097152 * 2, 44100);
+				_linkedOverflow[i] = 0;
+				_linkedLatches[i] = 0;
+				RomDetails += $"P{i + 1}:\r\n" + _linkedCores[i].RomDetails;
+			}
 
 			LinkConnected = true;
 
@@ -42,56 +63,110 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			LagCount = 0;
 			IsLagFrame = false;
 
-			_blipLeft = new BlipBuffer(1024);
-			_blipRight = new BlipBuffer(1024);
-			_blipLeft.SetRates(2097152 * 2, 44100);
-			_blipRight.SetRates(2097152 * 2, 44100);
+			SoundBuffer = new short[MaxSampsPerFrame * _numCores];
 
-			SetMemoryDomains();
+			FrameBuffer = CreateVideoBuffer();
+			VideoBuffer = CreateVideoBuffer();
+
+			GBLinkController = CreateControllerDefinition();
+
+			_linkedDebuggable = new LinkedDebuggable(_linkedCores, _numCores, _memoryCallbacks);
+			_serviceProvider.Register<IDebuggable>(_linkedDebuggable);
+
+			_linkedDisassemblable = new LinkedDisassemblable(new GBDisassembler(), _numCores);
+			_serviceProvider.Register<IDisassemblable>(_linkedDisassemblable);
+
+			_linkedMemoryDomains = new LinkedMemoryDomains(_linkedCores, _numCores, _linkedDisassemblable);
+			_serviceProvider.Register<IMemoryDomains>(_linkedMemoryDomains);
+
+			_linkedSaveRam = new LinkedSaveRam(_linkedCores, _numCores);
+			_serviceProvider.Register<ISaveRam>(_linkedSaveRam);
 		}
+
+		private readonly BasicServiceProvider _serviceProvider;
+
+		private readonly MemoryCallbackSystem _memoryCallbacks;
 
 		public string RomDetails { get; }
 
 		public bool LinkConnected
 		{
-			get => _cableconnected;
-			set => _cableconnected = value;
+			get => _linkConnected;
+			set
+			{
+				_linkConnected = value;
+				for (int i = 0; i < _numCores; i++)
+				{
+					LibGambatte.gambatte_linkstatus(_linkedCores[i].GambatteState, _linkConnected ? 264 : 265);
+				}
+			}
 		}
 
-		private bool _disposed = false;
+		private int _numCores = 0;
+		private readonly Gameboy[] _linkedCores;
 
-		private Gameboy L;
-		private Gameboy R;
+		private readonly LinkedDebuggable _linkedDebuggable;
+		private readonly LinkedDisassemblable _linkedDisassemblable;
+		private readonly LinkedMemoryDomains _linkedMemoryDomains;
+		private readonly LinkedSaveRam _linkedSaveRam;
 
-		// counter to ensure we do 35112 samples per frame
-		private int _overflowL = 0;
-		private int _overflowR = 0;
+		// counters to ensure we do 35112 samples per frame
+		private readonly int[] _linkedOverflow;
 
-		// if true, the link cable is currently connected
-		private bool _cableconnected = true;
+		// if true, the link connection is currently active
+		private bool _linkConnected = true;
 
-		// if true, the link cable toggle signal is currently asserted
-		private bool _cablediscosignal = false;
+		// if true, the link is currently shifted (3x/4x only)
+		private bool _linkShifted = false;
+
+		// if true, the link is currently spaced outwards (3x/4x only)
+		private bool _linkSpaced = false;
+
+		// if true, the link toggle signal is currently asserted
+		private bool _linkDiscoSignal = false;
+
+		// if true, the link shift signal is currently asserted
+		private bool _linkShiftSignal = false;
+
+		// if true, the link cable spacing signal is currently asserted
+		private bool _linkSpaceSignal = false;
 
 		private const int SampPerFrame = 35112;
+		private const int MaxSampsPerFrame = (SampPerFrame + 2064) * 2;
 
-		private readonly SaveController LCont = new SaveController(Gameboy.GbController);
-		private readonly SaveController RCont = new SaveController(Gameboy.GbController);
+		private readonly SaveController[] _linkedConts;
 
-		public bool IsCGBMode(bool right)
+		public bool IsCGBMode(int which)
 		{
-			return right ? R.IsCGBMode() : L.IsCGBMode();
+			return which < _numCores && _linkedCores[which].IsCGBMode();
 		}
 
-		private static readonly ControllerDefinition DualGbController = new ControllerDefinition
+		private ControllerDefinition GBLinkController { get; }
+
+		private ControllerDefinition CreateControllerDefinition()
 		{
-			Name = "Dual Gameboy Controller",
-			BoolButtons =
+			ControllerDefinition ret = new($"GB Link {_numCores}x Controller");
+			for (int i = 0; i < _numCores; i++)
 			{
-				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 A", "P1 B", "P1 Select", "P1 Start", "P1 Power",
-				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 A", "P2 B", "P2 Select", "P2 Start", "P2 Power",
-				"Toggle Cable"
+				ret.BoolButtons.AddRange(
+					new[] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start", "Power" }
+						.Select(s => $"P{i + 1} {s}"));
 			}
-		};
+			ret.BoolButtons.Add("Toggle Link Connection");
+			if (_numCores > 2)
+			{
+				ret.BoolButtons.Add("Toggle Link Shift");
+				ret.BoolButtons.Add("Toggle Link Spacing");
+			}
+			return ret.MakeImmutable();
+		}
+
+		private const int P1 = 0;
+		private const int P2 = 1;
+		private const int P3 = 2;
+		private const int P4 = 3;
+
+		private const int MIN_PLAYERS = 2;
+		private const int MAX_PLAYERS = 4;
 	}
 }

@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Common
 	public sealed class ServiceNotApplicableAttribute : Attribute
 	{
 		/// <remarks>TODO neither array nor <see cref="IEnumerable{T}"/> is the correct collection to be using here, try <see cref="IReadOnlyList{T}"/>/<see cref="IReadOnlyCollection{T}"/> instead</remarks>
-		public ServiceNotApplicableAttribute(Type[] types)
+		public ServiceNotApplicableAttribute(Type[]? types)
 		{
 			NotApplicableTypes = types?.AsEnumerable() ?? Enumerable.Empty<Type>();
 		}

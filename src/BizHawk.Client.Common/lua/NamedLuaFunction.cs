@@ -32,19 +32,19 @@ namespace BizHawk.Client.Common
 
 			Guid = Guid.NewGuid();
 
-			Callback = () =>
+			Callback = args =>
 			{
 				try
 				{
-					_function.Call();
+					_function.Call(args);
 				}
 				catch (Exception ex)
 				{
 					logCallback($"error running function attached by the event {Event}\nError message: {ex.Message}");
 				}
 			};
-
-			MemCallback = (address, value, flags) => Callback();
+			InputCallback = () => Callback(Array.Empty<object>());
+			MemCallback = (addr, val, flags) => Callback(new object[] { addr, val, flags });
 		}
 
 		public void DetachFromScript()
@@ -66,7 +66,9 @@ namespace BizHawk.Client.Common
 
 		public string Event { get; }
 
-		public Action Callback { get; }
+		private Action<object[]> Callback { get; }
+
+		public Action InputCallback { get; }
 
 		public MemoryCallbackDelegate MemCallback { get; }
 

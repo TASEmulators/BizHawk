@@ -16,10 +16,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		{
 			get
 			{
-				var definition = new ControllerDefinition
-				{
-					Name = "ZXSpectrum Controller"
-				};
+				ControllerDefinition definition = new("ZXSpectrum Controller");
 
 				// joysticks
 				var joys1 = new List<string>
@@ -123,7 +120,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					definition.CategoryLabels[s] = "+3 Disk Drive";
 				}
 
-				return definition;
+				return definition.MakeImmutable();
 			}
 		}
 	}

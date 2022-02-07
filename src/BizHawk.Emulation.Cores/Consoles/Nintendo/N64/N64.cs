@@ -6,14 +6,7 @@ using BizHawk.Emulation.Cores.Nintendo.N64.NativeApi;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
-	[Core(
-		"Mupen64Plus",
-		"",
-		isPorted: true,
-		isReleased: true,
-		portedVersion: "2.0",
-		portedUrl: "https://code.google.com/p/mupen64plus/",
-		singleInstance: true)]
+	[PortedCore(CoreNames.Mupen64Plus, "", "2.0", "https://code.google.com/p/mupen64plus/", singleInstance: true)]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class N64 : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IDisassemblable, IRegionable,
 		ISettable<N64Settings, N64SyncSettings>
@@ -23,9 +16,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		/// </summary>
 		/// <param name="game">Game information of game to load</param>
 		/// <param name="file">Rom that should be loaded</param>
+		/// <param name="rom">rom data with consistent endianness/order</param>
 		/// <param name="syncSettings">N64SyncSettings object</param>
-		[CoreConstructor("N64")]
-		public N64(GameInfo game, byte[] file, N64Settings settings, N64SyncSettings syncSettings)
+		[CoreConstructor(VSystemID.Raw.N64)]
+		public N64(GameInfo game, byte[] file, byte[] rom, N64Settings settings, N64SyncSettings syncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			InputCallbacks = new InputCallbackSystem();
@@ -51,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				IsOverridingUserExpansionSlotSetting = true;
 			}
 
-			byte country_code = file[0x3E];
+			byte country_code = rom[0x3E];
 			switch (country_code)
 			{
 				// PAL codes
@@ -137,7 +131,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			api.frame_advance();
 			api.frame_advance();
 
-			SetControllerButtons();
+			SetControllerButtons(_syncSettings);
 		}
 
 		private readonly N64Input _inputProvider;
@@ -220,14 +214,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			IsVIFrame = false;
 
-			if (Tracer != null && Tracer.Enabled)
-			{
-				api.setTraceCallback(_tracecb);
-			}
-			else
-			{
-				api.setTraceCallback(null);
-			}
+			api.setTraceCallback(Tracer?.IsEnabled() is true ? _tracecb : null);
 
 			_audioProvider.RenderSound = rendersound;
 
@@ -255,11 +242,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			return true;
 		}
 
-		public string SystemId => "N64";
+		public string SystemId => VSystemID.Raw.N64;
 
 		public DisplayType Region => _display_type;
 
-		public ControllerDefinition ControllerDefinition { get; } = new ControllerDefinition { Name = "Nintendo 64 Controller" };
+		public ControllerDefinition ControllerDefinition { get; private set; } = new("Nintendo 64 Controller");
 
 		public void ResetCounters()
 		{

@@ -80,7 +80,7 @@ namespace BizHawk.Client.EmuHawk
 						Port3ComboBox.SelectedItem = _possibleControllers.First();
 						selectionValid = false;
 					}
-				}   
+				}
 
 				var j3 = Port3ComboBox.SelectedItem.ToString();
 				if (j3 != _possibleControllers.First())
@@ -122,7 +122,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CancelBtn_Click(object sender, EventArgs e)
 		{
-			_mainForm.AddOnScreenMessage("Joystick settings aborted");
 			DialogResult = DialogResult.Cancel;
 			Close();
 		}

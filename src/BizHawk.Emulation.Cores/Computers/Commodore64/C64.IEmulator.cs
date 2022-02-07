@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		{
 			_board.Controller = controller;
 
-			if (_tracer.Enabled)
+			if (_tracer.IsEnabled())
 			{
 				_board.Cpu.TraceCallback = s => _tracer.Put(s);
 			}
@@ -79,7 +79,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public int Frame => _frame;
 
-		public string SystemId => "C64";
+		public string SystemId => VSystemID.Raw.C64;
 
 		public bool DeterministicEmulation => true;
 

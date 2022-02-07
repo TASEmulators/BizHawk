@@ -60,7 +60,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (Emulator is SMS sms && sms.IsGameGear)
 				{
-					SystemDropDown.SelectedItem = "GGL";
+					SystemDropDown.SelectedItem = VSystemID.Raw.GGL;
 				}
 
 				FileSelectors.First().Path = MainForm.CurrentlyOpenRom;
@@ -279,7 +279,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			} while (FileSelectorPanel.Controls.Count != 0);
 
-			if (SystemDropDown.SelectedItem.ToString() == "GB")
+			if (SystemDropDown.SelectedItem.ToString() == VSystemID.Raw.GB)
 			{
 				AddButton.Enabled = false;
 				btnRemove.Enabled = false;

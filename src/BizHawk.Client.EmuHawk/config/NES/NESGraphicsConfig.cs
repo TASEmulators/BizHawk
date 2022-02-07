@@ -4,6 +4,7 @@ using System.Windows.Forms;
 
 using BizHawk.Common;
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 
 namespace BizHawk.Client.EmuHawk
@@ -55,7 +56,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using var ofd = new OpenFileDialog
 			{
-				InitialDirectory = _config.PathEntries.PalettesAbsolutePathFor("NES"),
+				InitialDirectory = _config.PathEntries.PalettesAbsolutePathFor(VSystemID.Raw.NES),
 				Filter = new FilesystemFilterSet(FilesystemFilter.Palettes).ToString(),
 				RestoreDirectory = true
 			};
@@ -107,7 +108,7 @@ namespace BizHawk.Client.EmuHawk
 						var data = Palettes.Load_FCEUX_Palette(palette.ReadAllBytes());
 						if (showMsg)
 						{
-							_mainForm.AddOnScreenMessage($"Palette file loaded: {palette.Name}");
+							_mainForm.DialogController.AddOnScreenMessage($"Palette file loaded: {palette.Name}");
 						}
 
 						return data;
@@ -119,7 +120,7 @@ namespace BizHawk.Client.EmuHawk
 				// no filename: interpret this as "reset to default"
 				if (showMsg)
 				{
-					_mainForm.AddOnScreenMessage("Standard Palette set");
+					_mainForm.DialogController.AddOnScreenMessage("Standard Palette set");
 				}
 
 				return (byte[,])Palettes.QuickNESPalette.Clone();

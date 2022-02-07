@@ -20,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 			LuaFunctionList registeredFuncList,
 			IEmulatorServiceProvider serviceProvider,
 			MainForm mainForm,
-			IDisplayManagerForApi displayManager,
+			DisplayManagerBase displayManager,
 			InputManager inputManager,
 			Config config,
 			IEmulator emulator,
@@ -44,11 +44,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			if (true /*NLua.Lua.WhichLua == "NLua"*/) _lua["keepalives"] = _lua.NewTable();
-			_th = new NLuaTableHelper(_lua);
+			_th = new NLuaTableHelper(_lua, LogToLuaConsole);
 			_displayManager = displayManager;
 			_inputManager = inputManager;
 			_mainForm = mainForm;
 			LuaWait = new AutoResetEvent(false);
+			PathEntries = config.PathEntries;
 			RegisteredFunctions = registeredFuncList;
 			ScriptList = scriptList;
 			Docs.Clear();
@@ -83,9 +84,10 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else if (instance is GuiLuaLibrary guiLib)
 					{
+						// emu lib may be null now, depending on order of ReflectionCache.Types, but definitely won't be null when this is called
 						guiLib.CreateLuaCanvasCallback = (width, height, x, y) =>
 						{
-							var canvas = new LuaCanvas(width, height, x, y, _th, LogToLuaConsole);
+							var canvas = new LuaCanvas(EmulationLuaLibrary, width, height, x, y, _th, LogToLuaConsole);
 							canvas.Show();
 							return _th.ObjectToTable(canvas);
 						};
@@ -100,7 +102,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			_lua.RegisterFunction("print", this, GetType().GetMethod("Print"));
+			_lua.RegisterFunction("print", this, typeof(Win32LuaLibraries).GetMethod(nameof(Print)));
 
 			EmulationLuaLibrary.FrameAdvanceCallback = Frameadvance;
 			EmulationLuaLibrary.YieldCallback = EmuYield;
@@ -110,7 +112,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private ApiContainer _apiContainer;
 
-		private readonly IDisplayManagerForApi _displayManager;
+		private readonly DisplayManagerBase _displayManager;
 
 		private GuiApi GuiAPI => (GuiApi) _apiContainer.Gui;
 
@@ -141,6 +143,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private EventWaitHandle LuaWait;
 
+		public PathEntryCollection PathEntries { get; private set; }
+
 		public LuaFileList ScriptList { get; }
 
 		private static void LogToLuaConsole(object outputs) => _logToLuaConsoleCallback(new[] { outputs });
@@ -154,6 +158,7 @@ namespace BizHawk.Client.EmuHawk
 			IGameInfo game)
 		{
 			_apiContainer = ApiManager.RestartLua(newServiceProvider, LogToLuaConsole, _mainForm, _displayManager, _inputManager, _mainForm.MovieSession, _mainForm.Tools, config, emulator, game);
+			PathEntries = config.PathEntries;
 			foreach (var lib in Libraries.Values)
 			{
 				lib.APIs = _apiContainer;
@@ -247,6 +252,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Close()
 		{
+			foreach (var closeCallback in RegisteredFunctions
+				.Where(l => l.Event == "OnConsoleClose"))
+			{
+				closeCallback.Call();
+			}
+
 			RegisteredFunctions.Clear(_mainForm.Emulator);
 			ScriptList.Clear();
 			FormsLibrary.DestroyAll();

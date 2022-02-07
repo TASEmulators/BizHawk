@@ -4,12 +4,7 @@ using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 {
-	[Core(
-		"GGHawkLink",
-		"",
-		isPorted: false,
-		isReleased: false,
-		displayName: "Game Gear")]
+	[Core(CoreNames.GGHawkLink, "", isReleased: false)]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class GGHawkLink : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable, ILinkable,
 		ISettable<GGHawkLink.GGLinkSettings, GGHawkLink.GGLinkSyncSettings>
@@ -26,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 		private bool do_r_next = false;
 
-		[CoreConstructor("GGL")]
+		[CoreConstructor(VSystemID.Raw.GGL)]
 		public GGHawkLink(CoreLoadParameters<GGLinkSettings, GGLinkSyncSettings> lp)
 		{
 			if (lp.Roms.Count != 2)
@@ -50,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 			ser.Register<IVideoProvider>(this);
 			ser.Register<ISoundProvider>(this); 
 
-			_tracer = new TraceBuffer { Header = L.Cpu.TraceHeader };
+			_tracer = new TraceBuffer(L.Cpu.TraceHeader);
 			ser.Register(_tracer);
 
 			ServiceProvider = ser;

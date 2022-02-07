@@ -300,7 +300,7 @@ namespace BizHawk.Client.Common
 		{
 			if (movie.StartsFromSaveRam && emulator.HasSaveRam())
 			{
-				emulator.AsSaveRam().StoreSaveRam(movie.SaveRam);
+				emulator.AsSaveRam().StoreSaveRam(movie.SaveRam!);
 			}
 		}
 

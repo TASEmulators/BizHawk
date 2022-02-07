@@ -3,7 +3,7 @@ using System.Linq;
 using System.Xml;
 using System.IO;
 
-using BizHawk.Common.BufferExtensions;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.W65816;
 
@@ -17,20 +17,13 @@ using BizHawk.Emulation.Cores.Components.W65816;
 // wrap dll code around some kind of library-accessing interface so that it doesn't malfunction if the dll is unavailable
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
-	[Core(
-		CoreNames.Bsnes,
-		"byuu",
-		isPorted: true,
-		isReleased: true,
-		portedVersion: "v87",
-		portedUrl: "http://byuu.org/",
-		singleInstance: false)]
+	[PortedCore(CoreNames.Bsnes, "byuu", "v87", "http://byuu.org/")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public unsafe partial class LibsnesCore : IEmulator, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable, ICodeDataLogger,
 		IDebuggable, ISettable<LibsnesCore.SnesSettings, LibsnesCore.SnesSyncSettings>
 	{
-		[CoreConstructor("SGB")]
-		[CoreConstructor("SNES")]
+		[CoreConstructor(VSystemID.Raw.SGB)]
+		[CoreConstructor(VSystemID.Raw.SNES)]
 		public LibsnesCore(GameInfo game, byte[] rom, CoreComm comm,
 			LibsnesCore.SnesSettings settings, LibsnesCore.SnesSyncSettings syncSettings)
 			:this(game, rom, null, null, comm, settings, syncSettings)
@@ -43,10 +36,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 
-			_tracer = new TraceBuffer
-			{
-				Header = "65816: PC, mnemonic, operands, registers (A, X, Y, S, D, DB, flags (NVMXDIZC), V, H)"
-			};
+			const string TRACE_HEADER = "65816: PC, mnemonic, operands, registers (A, X, Y, S, D, DB, flags (NVMXDIZC), V, H)";
+			_tracer = new TraceBuffer(TRACE_HEADER);
 
 			ser.Register<IDisassemblable>(new W65816_DisassemblerService());
 
@@ -54,15 +45,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			CoreComm = comm;
 			byte[] sgbRomData = null;
 
-			if (game.System == "SGB")
+			if (game.System == VSystemID.Raw.SGB)
 			{
 				if ((romData[0x143] & 0xc0) == 0xc0)
 				{
 					throw new CGBNotSupportedException();
 				}
 
-				sgbRomData = CoreComm.CoreFileProvider.GetFirmware("SNES", "Rom_SGB", true, "SGB Rom is required for SGB emulation.");
-				game.FirmwareHash = sgbRomData.HashSHA1();
+				sgbRomData = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("SNES", "Rom_SGB"), "SGB Rom is required for SGB emulation.");
+				game.FirmwareHash = SHA1Checksum.ComputeDigestHex(sgbRomData);
 			}
 
 			_settings = (SnesSettings)settings ?? new SnesSettings();
@@ -119,10 +110,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				romData = newData;
 			}
 
-			if (game.System == "SGB")
+			if (game.System == VSystemID.Raw.SGB)
 			{
 				IsSGB = true;
-				SystemId = "SNES";
+				SystemId = VSystemID.Raw.SNES;
 				ser.Register<IBoardInfo>(new SGBBoardInfo());
 
 				_currLoadParams = new LoadParams
@@ -159,7 +150,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					}
 				}
 
-				SystemId = "SNES";
+				SystemId = VSystemID.Raw.SNES;
 				_currLoadParams = new LoadParams
 				{
 					type = LoadParamType.Normal,
@@ -334,7 +325,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 
 			string ret;
-			var data = CoreComm.CoreFileProvider.GetFirmware("SNES", firmwareId, false, "Game may function incorrectly without the requested firmware.");
+			var data = CoreComm.CoreFileProvider.GetFirmware(new("SNES", firmwareId), "Game may function incorrectly without the requested firmware.");
 			if (data != null)
 			{
 				ret = hint;
@@ -359,34 +350,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			if (which == (uint)LibsnesApi.eTRACE.CPU)
 			{
 				var split = msg.Split(new[] { splitStr }, 2, StringSplitOptions.None);
-
-				_tracer.Put(new TraceInfo
-				{
-					Disassembly = split[0].PadRight(34),
-					RegisterInfo = splitStr + split[1]
-				});
+				_tracer.Put(new(disassembly: split[0].PadRight(34), registerInfo: splitStr + split[1]));
 			}
 			else if (which == (uint)LibsnesApi.eTRACE.SMP)
 			{
 				int idx = msg.IndexOf("YA:");
-				string dis = msg.Substring(0,idx).TrimEnd();
-				string regs = msg.Substring(idx);
-				_tracer.Put(new TraceInfo
-				{
-					Disassembly = dis,
-					RegisterInfo = regs
-				});
+				_tracer.Put(new(disassembly: msg.Substring(0, idx).TrimEnd(), registerInfo: msg.Substring(idx)));
 			}
 			else if (which == (uint)LibsnesApi.eTRACE.GB)
 			{
 				int idx = msg.IndexOf("AF:");
-				string dis = msg.Substring(0,idx).TrimEnd();
-				string regs = msg.Substring(idx);
-				_tracer.Put(new TraceInfo
-				{
-					Disassembly = dis,
-					RegisterInfo = regs
-				});
+				_tracer.Put(new(disassembly: msg.Substring(0, idx).TrimEnd(), registerInfo: msg.Substring(idx)));
 			}
 		}
 

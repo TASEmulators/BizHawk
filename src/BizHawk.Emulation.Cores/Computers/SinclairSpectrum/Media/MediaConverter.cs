@@ -145,13 +145,33 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// Takes a PauseInMilliseconds value and returns the value in T-States
 		/// </summary>
 		public static int TranslatePause(int pauseInMS)
-		{
-			// t-states per millisecond
-			var tspms = (69888 * 50) / 1000;
-			// get value
-			int res = pauseInMS * tspms;
+		{			
+			const double tspms = 69888.0 * 50.0 / 1000.0;
+			int res = (int)(pauseInMS * tspms);
 
 			return res;
+		}
+
+		/// <summary>
+		/// Caluclate a data block XOR checksum
+		/// </summary>
+		/// <param name="buf"></param>
+		/// <param name="len"></param>
+		/// <returns></returns>
+		public static bool CheckChecksum(byte[] buf, int len)
+		{
+			byte c = 0;
+			for (int n = 0; n < len - 1; n++)
+			{
+				c ^= buf[n];
+			}
+
+			if (c == buf[len - 1])
+			{
+				return true;
+			}
+
+			return false;
 		}
 
 		/// <summary>

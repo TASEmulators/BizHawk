@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Libretro
 {
-	unsafe partial class LibretroApi
+	public partial class LibretroApi
 	{
 		public enum eMessage : int
 		{

@@ -121,11 +121,12 @@
     <value>Options:
 Casual Gaming - All about performance!
 
-Tool-Assisted Speedruns - Maximum Accuracy!
+Longplays - Stability is the key!
 
-N64 Tool-assisted Speedruns - Identical to Tool 
-Assisted Speedruns but with additional N64 specific settings.
+Tool-Assisted Speedruns (TAS) - Maximum Accuracy!
 
-Longplays - Stability is the key!</value>
+N64 Tool-assisted Speedruns - Same as TAS above but with additional N64 specific settings. NOTE: With this profile, frame advance also skips non-input (lag) frames. This can optionally be disabled under Config-&gt;Customize-&gt;Advanced.
+
+	</value>
   </data>
 </root>

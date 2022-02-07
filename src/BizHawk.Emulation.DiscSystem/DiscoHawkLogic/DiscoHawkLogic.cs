@@ -4,6 +4,8 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
+using BizHawk.Client.DiscoHawk;
+
 namespace BizHawk.Emulation.DiscSystem
 {
 	/// <remarks>
@@ -243,6 +245,22 @@ namespace BizHawk.Emulation.DiscSystem
 			return ret;
 		}
 
+		public static bool HawkAndWriteFile(string inputPath, Action<string> errorCallback, DiscInterface discInterface = DiscInterface.BizHawk)
+		{
+			DiscMountJob job = new(inputPath, discInterface);
+			job.Run();
+			var disc = job.OUT_Disc;
+			if (job.OUT_ErrorLevel)
+			{
+				errorCallback(job.OUT_Log);
+				return false;
+			}
+			var baseName = Path.GetFileNameWithoutExtension(inputPath);
+			var outfile = Path.Combine(Path.GetDirectoryName(inputPath), $"{baseName}_hawked.ccd");
+			CCD_Format.Dump(disc, outfile);
+			return true;
+		}
+
 		public static void RunWithArgs(string[] args, Action<string> showComparisonResultsCallback)
 		{
 			bool scanCues = false;
@@ -251,7 +269,8 @@ namespace BizHawk.Emulation.DiscSystem
 			var loadDiscInterface = DiscInterface.BizHawk;
 			var compareDiscInterfaces = new List<DiscInterface>();
 			bool hawk = false;
-
+			bool music = false;
+			bool overwrite = false;
 			int idx = 0;
 			while (idx < args.Length)
 			{
@@ -268,19 +287,39 @@ namespace BizHawk.Emulation.DiscSystem
 					dirArg = args[idx++];
 					scanCues = true;
 				}
+				else if (au is "MUSIC")
+				{
+					music = true;
+				}
+				else if (au is "OVERWRITE")
+				{
+					overwrite = true;
+				}
 				else infile = a;
 			}
 
 			if (hawk)
 			{
-				if (infile == null)
-				{
-					return;
-				}
+				if (infile == null) return;
+				HawkAndWriteFile(
+					inputPath: infile,
+					errorCallback: err => Console.WriteLine($"failed to convert {infile}:\n{err}"),
+					discInterface: loadDiscInterface);
+			}
 
-				// TODO - write it out
-				var dmj = new DiscMountJob(fromPath: infile, discInterface: loadDiscInterface);
-				dmj.Run();
+			if (music)
+			{
+				if (infile is null) return;
+				using var disc = Disc.LoadAutomagic(infile);
+				var path = Path.GetDirectoryName(infile);
+				var filename = Path.GetFileNameWithoutExtension(infile);
+				bool? CheckOverwrite(string mp3Path)
+				{
+					if (overwrite) return true; // overwrite
+					Console.WriteLine($"{mp3Path} already exists. Remove existing output files, or retry with the extra argument \"OVERWRITE\".");
+					return null; // cancel
+				}
+				AudioExtractor.Extract(disc, path, filename, CheckOverwrite);
 			}
 
 			bool verbose = true;

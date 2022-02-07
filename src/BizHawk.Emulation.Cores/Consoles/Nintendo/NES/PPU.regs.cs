@@ -12,7 +12,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	sealed partial class PPU
+	public partial class PPU
 	{
 		public sealed class Reg_2001
 		{
@@ -288,13 +288,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private Bit Reg2002_objoverflow;  //Sprite overflow. The PPU can handle only eight sprites on one scanline and sets this bit if it starts drawing sprites.
 		private Bit Reg2002_objhit; //Sprite 0 overlap.  Set when a nonzero pixel of sprite 0 is drawn overlapping a nonzero background pixel.  Used for raster timing.
-		private Bit Reg2002_vblank_active;  //Vertical blank start (0: has not started; 1: has started)
-		private bool Reg2002_vblank_active_pending; //set if Reg2002_vblank_active is pending
+		public Bit Reg2002_vblank_active;  //Vertical blank start (0: has not started; 1: has started)
+		public bool Reg2002_vblank_active_pending; //set if Reg2002_vblank_active is pending
 		private bool Reg2002_vblank_clear_pending; //ppu's clear of vblank flag is pending
 		public PPUREGS ppur;
 		public Reg_2000 reg_2000;
 		public Reg_2001 reg_2001;
-		private byte reg_2003;
+		public byte reg_2003;
 		public byte reg_2006_2;
 
 		private void regs_reset()
@@ -345,11 +345,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private byte read_2002()
 		{
 			byte ret = peek_2002();
-
+			/*
+			if (nes.do_the_reread_2002 > 0)
+			{
+				if (Reg2002_vblank_active || Reg2002_vblank_active_pending)
+					Console.WriteLine("reread 2002");
+			}
+			*/
+			
 			// reading from $2002 resets the destination for $2005 and $2006 writes
 			vtoggle = false;
 			Reg2002_vblank_active = 0;
 			Reg2002_vblank_active_pending = false;
+
+			if (nes.do_the_reread_2002 > 0)
+			{
+				ret = peek_2002();
+				// could be another reread, but no other side effects, so don't bother
+			}
 
 			// update the open bus here
 			ppu_open_bus = ret;
@@ -363,7 +376,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//quite strange that is makes the sprite hit flag go high like this
 			if (nes._isVS2c05==2)
 			{
-				if (nes.Frame<4)
+				if (nes.Frame<3)
 				{
 
 					return (byte)((Reg2002_vblank_active << 7) | (Reg2002_objhit << 6) | (1 << 5) | (0x1D));
@@ -436,7 +449,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					OAM[reg_2003] = value;
 					reg_2003++;
-				}
+				}				
 			}
 			else
 			{
@@ -679,11 +692,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							double_2007_read = nes.cpu.TotalExecutedCycles + 1;
 						}
 						
-						if (nes.do_the_reread)
+						if (nes.do_the_reread_2007 > 0)
 						{
 							ret_spec = read_2007();
 							ret_spec = read_2007();
-							nes.do_the_reread = false;
+							// always 2?
 						}
 						return ret_spec;
 					}

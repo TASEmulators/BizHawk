@@ -59,7 +59,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CancelBtn_Click(object sender, EventArgs e)
 		{
-			_mainForm.AddOnScreenMessage("Misc settings aborted");
 			DialogResult = DialogResult.Cancel;
 			Close();
 		}

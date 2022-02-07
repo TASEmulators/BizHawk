@@ -11,7 +11,7 @@ using BizHawk.Emulation.Cores.Nintendo.SNES;
 namespace BizHawk.Client.Common.movie.import
 {
 	// ReSharper disable once UnusedMember.Global
-	// LSMV file format: http://tasvideos.org/Lsnes/Movieformat.html
+	/// <summary>For lsnes' <see href="https://tasvideos.org/Lsnes/Movieformat"><c>.lsmv</c> format</see></summary>
 	[ImporterFor("LSNES", ".lsmv")]
 	internal class LsmvImport : MovieImporter
 	{
@@ -43,11 +43,11 @@ namespace BizHawk.Client.Common.movie.import
 			};
 			_deck = new LibsnesControllerDeck(ss);
 
-			string platform = "SNES";
+			string platform = VSystemID.Raw.SNES;
 
 			foreach (var item in zip.Entries)
 			{
-				if (item.Name == "authors")
+				if (item.FullName == "authors")
 				{
 					using var stream = item.Open();
 					string authors = Encoding.UTF8.GetString(stream.ReadAllBytes());
@@ -85,19 +85,19 @@ namespace BizHawk.Client.Common.movie.import
 
 					Result.Movie.HeaderEntries[HeaderKeys.Author] = authorList;
 				}
-				else if (item.Name == "coreversion")
+				else if (item.FullName == "coreversion")
 				{
 					using var stream = item.Open();
 					string coreVersion = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					Result.Movie.Comments.Add($"CoreOrigin {coreVersion}");
 				}
-				else if (item.Name == "gamename")
+				else if (item.FullName == "gamename")
 				{
 					using var stream = item.Open();
 					string gameName = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					Result.Movie.HeaderEntries[HeaderKeys.GameName] = gameName;
 				}
-				else if (item.Name == "gametype")
+				else if (item.FullName == "gametype")
 				{
 					using var stream = item.Open();
 					string gametype = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
@@ -106,15 +106,15 @@ namespace BizHawk.Client.Common.movie.import
 					switch (gametype)
 					{
 						case "gdmg":
-							platform = "GB";
+							platform = VSystemID.Raw.GB;
 							break;
 						case "ggbc":
 						case "ggbca":
-							platform = "GBC";
+							platform = VSystemID.Raw.GBC;
 							break;
 						case "sgb_ntsc":
 						case "sgb_pal":
-							platform = "SNES";
+							platform = VSystemID.Raw.SNES;
 							Config.GbAsSgb = true;
 							break;
 					}
@@ -122,7 +122,7 @@ namespace BizHawk.Client.Common.movie.import
 					bool pal = gametype == "snes_pal" || gametype == "sgb_pal";
 					Result.Movie.HeaderEntries[HeaderKeys.Pal] = pal.ToString();
 				}
-				else if (item.Name == "input")
+				else if (item.FullName == "input")
 				{
 					using var stream = item.Open();
 					string input = Encoding.UTF8.GetString(stream.ReadAllBytes());
@@ -140,12 +140,12 @@ namespace BizHawk.Client.Common.movie.import
 							}
 
 							// Insert an empty frame in lsmv snes movies
-							// https://github.com/TASVideos/BizHawk/issues/721
+							// https://github.com/TASEmulators/BizHawk/issues/721
 							// Both emulators send the input to bsnes core at the same V interval, but:
 							// lsnes' frame boundary occurs at V = 241, after which the input is read;
 							// BizHawk's frame boundary is just before automatic polling;
 							// This isn't a great place to add this logic but this code is a mess
-							if (lineNum == 1 && platform == "SNES")
+							if (lineNum == 1 && platform == VSystemID.Raw.SNES)
 							{
 								// Note that this logic assumes the first non-empty log entry is a valid input log entry
 								// and that it is NOT a subframe input entry.  It seems safe to assume subframe input would not be on the first line
@@ -156,7 +156,7 @@ namespace BizHawk.Client.Common.movie.import
 						}
 					}
 				}
-				else if (item.Name.StartsWith("moviesram."))
+				else if (item.FullName.StartsWith("moviesram."))
 				{
 					using var stream = item.Open();
 					byte[] movieSram = stream.ReadAllBytes();
@@ -167,7 +167,7 @@ namespace BizHawk.Client.Common.movie.import
 						return;
 					}
 				}
-				else if (item.Name == "port1")
+				else if (item.FullName == "port1")
 				{
 					using var stream = item.Open();
 					string port1 = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
@@ -175,7 +175,7 @@ namespace BizHawk.Client.Common.movie.import
 					ss.LeftPort = LibsnesControllerDeck.ControllerType.Gamepad;
 					_deck = new LibsnesControllerDeck(ss);
 				}
-				else if (item.Name == "port2")
+				else if (item.FullName == "port2")
 				{
 					using var stream = item.Open();
 					string port2 = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
@@ -183,13 +183,13 @@ namespace BizHawk.Client.Common.movie.import
 					ss.RightPort = LibsnesControllerDeck.ControllerType.Gamepad;
 					_deck = new LibsnesControllerDeck(ss);
 				}
-				else if (item.Name == "projectid")
+				else if (item.FullName == "projectid")
 				{
 					using var stream = item.Open();
 					string projectId = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					Result.Movie.HeaderEntries["ProjectID"] = projectId;
 				}
-				else if (item.Name == "rerecords")
+				else if (item.FullName == "rerecords")
 				{
 					using var stream = item.Open();
 					string rerecords = Encoding.UTF8.GetString(stream.ReadAllBytes());
@@ -207,20 +207,20 @@ namespace BizHawk.Client.Common.movie.import
 
 					Result.Movie.Rerecords = (ulong)rerecordCount;
 				}
-				else if (item.Name.EndsWith(".sha256"))
+				else if (item.FullName.EndsWith(".sha256"))
 				{
 					using var stream = item.Open();
 					string rom = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
-					int pos = item.Name.LastIndexOf(".sha256");
-					string name = item.Name.Substring(0, pos);
+					int pos = item.FullName.LastIndexOf(".sha256");
+					string name = item.FullName.Substring(0, pos);
 					Result.Movie.HeaderEntries[$"SHA256_{name}"] = rom;
 				}
-				else if (item.Name == "savestate")
+				else if (item.FullName == "savestate")
 				{
 					Result.Errors.Add("Movies that begin with a savestate are not supported.");
 					return;
 				}
-				else if (item.Name == "subtitles")
+				else if (item.FullName == "subtitles")
 				{
 					using var stream = item.Open();
 					string subtitles = Encoding.UTF8.GetString(stream.ReadAllBytes());
@@ -237,19 +237,19 @@ namespace BizHawk.Client.Common.movie.import
 						}
 					}
 				}
-				else if (item.Name == "starttime.second")
+				else if (item.FullName == "starttime.second")
 				{
 					using var stream = item.Open();
 					string startSecond = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					Result.Movie.HeaderEntries["StartSecond"] = startSecond;
 				}
-				else if (item.Name == "starttime.subsecond")
+				else if (item.FullName == "starttime.subsecond")
 				{
 					using var stream = item.Open();
 					string startSubSecond = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					Result.Movie.HeaderEntries["StartSubSecond"] = startSubSecond;
 				}
-				else if (item.Name == "systemid")
+				else if (item.FullName == "systemid")
 				{
 					using var stream = item.Open();
 					string systemId = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
@@ -259,15 +259,12 @@ namespace BizHawk.Client.Common.movie.import
 
 			Result.Movie.HeaderEntries[HeaderKeys.Platform] = platform;
 			Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(ss);
-			MaybeSetCorePreference(sysID: "SNES", CoreNames.Bsnes, fileExt: ".lsmv");
+			MaybeSetCorePreference(VSystemID.Raw.SNES, CoreNames.Bsnes, fileExt: ".lsmv");
 		}
 
 		private IController EmptyLmsvFrame()
 		{
-			var emptyController = new SimpleController
-			{
-				Definition = _deck.Definition
-			};
+			SimpleController emptyController = new(_deck.Definition);
 
 			foreach (var button in emptyController.Definition.BoolButtons)
 			{
@@ -279,17 +276,14 @@ namespace BizHawk.Client.Common.movie.import
 
 		private void ImportTextFrame(string line, string platform)
 		{
-			var controllers = new SimpleController
-			{
-				Definition = _deck.Definition
-			};
+			SimpleController controllers = new(_deck.Definition);
 
 			var buttons = new[]
 			{
 				"B", "Y", "Select", "Start", "Up", "Down", "Left", "Right", "A", "X", "L", "R"
 			};
 
-			if (platform == "GB" || platform == "GBC")
+			if (platform == VSystemID.Raw.GB || platform == VSystemID.Raw.GBC)
 			{
 				buttons = new[] { "A", "B", "Select", "Start", "Right", "Left", "Up", "Down" };
 			}

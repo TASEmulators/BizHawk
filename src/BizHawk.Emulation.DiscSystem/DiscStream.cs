@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.DiscSystem
 	/// <summary>
 	/// Allows you to stream data off a disc.
 	/// For future work: depending on the View you select, it may not be seekable (in other words, it would need to read sequentially)
-	/// 
+	///
 	/// OLD COMMENTS:
 	/// Allows you to stream data off a disc
 	/// NOTE - it's probably been commented elsewhere, but this is possibly a bad idea! Turn it into views instead,
@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.DiscSystem
 	/// NOTE - actually even THAT is probably a bad idea. sector types can change on the fly.
 	/// this class promises something it can't deliver. (it's only being used to scan an ISO disc)
 	/// Well, we could make code that is full of red flags and warnings like "if this ISNT a 2048 byte sector ISO disc, then this wont work"
-	/// 
+	///
 	/// TODO - Receive some information about the track that this stream is modeling, and have the stream return EOF at the end of the track?
 	/// </summary>
 	public class DiscStream : System.IO.Stream

@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 		MameLaunchGame
 	}
 
-	public partial class OpenAdvancedChooser : Form
+	public partial class OpenAdvancedChooser : Form, IDialogParent
 	{
 		private readonly Config _config;
 

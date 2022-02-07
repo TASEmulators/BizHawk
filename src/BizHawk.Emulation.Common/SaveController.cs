@@ -1,4 +1,7 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -12,6 +15,8 @@ namespace BizHawk.Emulation.Common
 	public class SaveController : IController
 	{
 		private readonly WorkingDictionary<string, int> _buttons = new WorkingDictionary<string, int>();
+
+		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
 
 		public SaveController()
 		{
@@ -95,5 +100,9 @@ namespace BizHawk.Emulation.Common
 		{
 			return _buttons[name];
 		}
+
+		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Array.Empty<(string, int)>();
+
+		public void SetHapticChannelStrength(string name, int strength) {}
 	}
 }

@@ -1,12 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
+
+using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class InputCompositeWidget : UserControl
 	{
-		public InputCompositeWidget()
+		private readonly IReadOnlyList<string> _effectiveModList;
+
+		public InputCompositeWidget(IReadOnlyList<string> effectiveModList)
 		{
+			_effectiveModList = effectiveModList;
+
 			InitializeComponent();
 			btnSpecial.Image = Properties.Resources.ArrowBlackDown;
 
@@ -80,24 +87,24 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DropdownMenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
 		{
-			Input.ModifierKey mods = new Input.ModifierKey();
+			var mods = 0U;
 
 			if ((ModifierKeys & Keys.Shift) != 0)
 			{
-				mods |= Input.ModifierKey.Shift;
+				mods |= LogicalButton.MASK_SHIFT;
 			}
 
 			if ((ModifierKeys & Keys.Control) != 0)
 			{
-				mods |= Input.ModifierKey.Control;
+				mods |= LogicalButton.MASK_CTRL;
 			}
 
 			if ((ModifierKeys & Keys.Alt) != 0)
 			{
-				mods |= Input.ModifierKey.Alt;
+				mods |= LogicalButton.MASK_ALT;
 			}
 
-			var lb = new Input.LogicalButton(e.ClickedItem.Text, mods);
+			LogicalButton lb = new(e.ClickedItem.Text, mods, () => _effectiveModList);
 
 			widget.SetBinding(lb.ToString());
 		}

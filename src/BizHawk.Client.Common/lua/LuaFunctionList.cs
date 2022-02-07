@@ -28,7 +28,7 @@ namespace BizHawk.Client.Common
 		{
 			if (emulator.InputCallbacksAvailable())
 			{
-				emulator.AsInputPollable().InputCallbacks.Remove(function.Callback);
+				emulator.AsInputPollable().InputCallbacks.Remove(function.InputCallback);
 			}
 
 			if (emulator.MemoryCallbacksAvailable())
@@ -64,7 +64,7 @@ namespace BizHawk.Client.Common
 		{
 			if (emulator.InputCallbacksAvailable())
 			{
-				emulator.AsInputPollable().InputCallbacks.RemoveAll(_functions.Select(w => w.Callback));
+				emulator.AsInputPollable().InputCallbacks.RemoveAll(_functions.Select(w => w.InputCallback));
 			}
 
 			if (emulator.MemoryCallbacksAvailable())

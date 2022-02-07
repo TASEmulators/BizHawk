@@ -1,9 +1,16 @@
 using System;
+using System.Drawing;
 
 namespace BizHawk.Bizware.BizwareGL
 {
 	public interface IGraphicsControl : IDisposable
 	{
+		Rectangle ClientRectangle { get; }
+
+		RenderTargetWrapper RenderTargetWrapper { get; set; }
+
+		Graphics CreateGraphics();
+
 		/// <summary>
 		/// Sets whether presentation operations on this control will vsync
 		/// </summary>

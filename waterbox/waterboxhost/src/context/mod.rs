@@ -9,10 +9,10 @@ pub mod thunks;
 // manually match these up with interop.s
 const ORG: usize = 0x35f00000000;
 
-const CALL_GUEST_IMPL_ADDR: usize = ORG;
 const CALL_GUEST_SIMPLE_ADDR: usize = ORG + 0x100;
-const EXTCALL_THUNK_ADDR: usize = ORG + 0x200;
-const RUNTIME_TABLE_ADDR: usize = ORG + 0x700;
+const CALL_GUEST_IMPL_ADDR: usize = ORG + 0x200;
+const EXTCALL_THUNK_ADDR: usize = ORG + 0x300;
+const RUNTIME_TABLE_ADDR: usize = ORG + 0x800;
 
 pub const CALLBACK_SLOTS: usize = 64;
 /// Retrieves a function pointer suitable for sending to the guest that will cause
@@ -81,6 +81,10 @@ pub struct Context {
 	/// Sets the guest's starting rsp, and used internally to track the guest's most recent rsp when transitioned to extcall or syscall
 	/// can be changed by the host to return to a different guest thread
 	pub guest_rsp: usize,
+	/// Like `host_rsp`, but for the inactive first call when a second reentrant call is made to waterbox code.
+	pub host_rsp_alt: usize,
+	/// Like `guest_rsp`, but for the inactive first call when a second reentrant call is made to waterbox code.
+	pub guest_rsp_alt: usize,
 	/// syscall service function
 	pub dispatch_syscall: SyscallCallback,
 	/// This will be passed as the final parameter to dispatch_syscall, and is not otherwise used by the context tracking code
@@ -90,11 +94,13 @@ pub struct Context {
 }
 impl Context {
 	/// Returns a suitably initialized context.  It's almost ready to use, but host_ptr must be set before each usage
-	pub fn new(initial_guest_rsp: usize, dispatch_syscall: SyscallCallback) -> Context {
+	pub fn new(initial_guest_rsp: usize, initial_guest_rsp_alt: usize, dispatch_syscall: SyscallCallback) -> Context {
 		Context {
 			thread_area: 0,
 			host_rsp: 0,
 			guest_rsp: initial_guest_rsp,
+			host_rsp_alt: 0,
+			guest_rsp_alt: initial_guest_rsp_alt,
 			dispatch_syscall,
 			host_ptr: 0,
 			extcall_slots: [None; 64]

@@ -9,10 +9,10 @@ namespace BizHawk.Bizware.BizwareGL
 {
 	public class GDIPlusGuiRenderer : IGuiRenderer
 	{
-		public GDIPlusGuiRenderer(IGL gl)
-		{
-			Owner = gl;
-		}
+		private readonly IGL_GdiPlus Gdi;
+
+		public GDIPlusGuiRenderer(IGL_GdiPlus gl)
+			=> Gdi = gl;
 
 		private readonly Vector4[] CornerColors = { new(1.0f, 1.0f, 1.0f, 1.0f), new(1.0f, 1.0f, 1.0f, 1.0f), new(1.0f, 1.0f, 1.0f, 1.0f), new(1.0f, 1.0f, 1.0f, 1.0f) };
 
@@ -65,12 +65,11 @@ namespace BizHawk.Bizware.BizwareGL
 
 			float[][] colorMatrixElements =
 			{
-			 new float[] {r,  0,  0,  0,  0},
-			 new float[] {0,  g,  0,  0,  0},
-			 new float[] {0,  0,  b,  0,  0},
-			 new float[] {0,  0,  0,  a,  0},
-			 new float[] {0,  0,  0,  0,  1}
-
+				new float[] { r, 0, 0, 0, 0 },
+				new float[] { 0, g, 0, 0, 0 },
+				new float[] { 0, 0, b, 0, 0 },
+				new float[] { 0, 0, 0, a, 0 },
+				new float[] { 0, 0, 0, 0, 1 },
 			};
 
 			var colorMatrix = new ColorMatrix(colorMatrixElements);
@@ -152,7 +151,7 @@ namespace BizHawk.Bizware.BizwareGL
 		public void DrawSubrect(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
 		{
 			var tw = tex.Opaque as GDIPTextureWrapper;
-			var g = ((dynamic) Gdi).GetCurrentGraphics() as sd.Graphics;
+			var g = Gdi.GetCurrentGraphics();
 			PrepDraw(g, tex);
 			SetupMatrix(g);
 
@@ -228,19 +227,19 @@ namespace BizHawk.Bizware.BizwareGL
 			g.Transform = new sd.Drawing2D.Matrix(mat.Row0.X, mat.Row0.Y, mat.Row1.X, mat.Row1.Y, mat.Row3.X, mat.Row3.Y);
 		}
 
-		private unsafe void DrawInternal(Art art, float x, float y, float w, float h)
+		private void DrawInternal(Art art, float x, float y, float w, float h)
 		{
 			DrawInternal(art.BaseTexture, x, y, w, h, art.u0, art.v0, art.u1, art.v1);
 		}
 
-		private unsafe void DrawInternal(Texture2d tex, float x, float y, float w, float h)
+		private void DrawInternal(Texture2d tex, float x, float y, float w, float h)
 		{
 			DrawInternal(tex, x, y, w, h, 0, 0, 1, 1);
 		}
 
-		private unsafe void DrawInternal(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
+		private void DrawInternal(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
 		{
-			var g = ((dynamic) Gdi).GetCurrentGraphics() as sd.Graphics;
+			var g = Gdi.GetCurrentGraphics();
 			PrepDraw(g, tex);
 
 			SetupMatrix(g);
@@ -264,12 +263,12 @@ namespace BizHawk.Bizware.BizwareGL
 			g.Transform = new sd.Drawing2D.Matrix(); //.Reset() doesn't work ? ?
 		}
 
-		private unsafe void DrawInternal(Art art, float x, float y, float w, float h, bool fx, bool fy)
+		private void DrawInternal(Art art, float x, float y, float w, float h, bool fx, bool fy)
 		{
 		}
 
 		public bool IsActive { get; private set; }
-		public IGL Owner { get; }
-		public IGL Gdi => Owner;
+
+		public IGL Owner => Gdi;
 	}
 }

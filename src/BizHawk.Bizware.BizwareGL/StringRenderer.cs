@@ -40,7 +40,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 			for (int i = 0; i < len; i++)
 			{
-				int c = str[i];
+				var c = str[i];
 
 				if (c == '\r')
 				{
@@ -62,8 +62,7 @@ namespace BizHawk.Bizware.BizwareGL
 					continue;
 				}
 
-				if (!FontInfo.Characters.TryGetValue((char)c, out var bfc))
-					bfc = FontInfo.Characters[unchecked((char)-1)];
+				var bfc = FontInfo[c];
 
 				x += bfc.XAdvance;
 			}
@@ -78,7 +77,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 			for (int i = 0; i < len; i++)
 			{
-				int c = str[i];
+				var c = str[i];
 
 				if (c == '\r')
 				{
@@ -98,21 +97,21 @@ namespace BizHawk.Bizware.BizwareGL
 					continue;
 				}
 
-				if (!FontInfo.Characters.TryGetValue((char)c, out var bfc))
-					bfc = FontInfo.Characters[unchecked((char)-1)];
+				var bfc = FontInfo[c];
 				
 				// calculate texcoords (we shouldve already had this cached, but im speedcoding now)
 				Texture2d tex = TexturePages[bfc.TexturePage];
 				float w = tex.Width;
 				float h = tex.Height;
-				float u0 = bfc.Bounds.Left / w;
-				float v0 = bfc.Bounds.Top / h;
-				float u1 = bfc.Bounds.Right / w;
-				float v1 = bfc.Bounds.Bottom / h;
+				sd.Rectangle bounds = new(bfc.X, bfc.Y, bfc.Width, bfc.Height);
+				float u0 = bounds.Left / w;
+				float v0 = bounds.Top / h;
+				float u1 = bounds.Right / w;
+				float v1 = bounds.Bottom / h;
 
-				float gx = x + bfc.Offset.X;
-				float gy = y + bfc.Offset.Y;
-				renderer.DrawSubrect(tex, gx, gy, bfc.Bounds.Width, bfc.Bounds.Height, u0, v0, u1, v1);
+				float gx = x + bfc.XOffset;
+				float gy = y + bfc.YOffset;
+				renderer.DrawSubrect(tex, gx, gy, bfc.Width, bfc.Height, u0, v0, u1, v1);
 
 				x += bfc.XAdvance;
 			}

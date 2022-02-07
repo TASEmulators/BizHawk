@@ -6,21 +6,14 @@ using System.Linq;
 using System.Runtime.InteropServices;
 
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.BizInvoke;
-using BizHawk.Common.BufferExtensions;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
-	[Core(
-		CoreNames.QuickNes,
-		"",
-		isPorted: true,
-		isReleased: true,
-		portedVersion: "0.7.0",
-		portedUrl: "https://github.com/kode54/QuickNES",
-		singleInstance: false)]
+	[PortedCore(CoreNames.QuickNes, "", "0.7.0", "https://github.com/kode54/QuickNES")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class QuickNES : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IInputPollable, IBoardInfo, IVideoLogicalOffsets,
 		IStatable, IDebuggable, ISettable<QuickNES.QuickNESSettings, QuickNES.QuickNESSyncSettings>, INESPPUViewable
@@ -33,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			QN.qn_setup_mappers();
 		}
 
-		[CoreConstructor("NES", Priority = CorePriority.Low)]
+		[CoreConstructor(VSystemID.Raw.NES, Priority = CorePriority.Low)]
 		public QuickNES(byte[] file, QuickNESSettings settings, QuickNESSyncSettings syncSettings)
 		{
 			FP = OSTailoredCode.IsUnixHost
@@ -127,14 +120,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		private void SetControllerDefinition()
 		{
-			var def = new ControllerDefinition();
-			def.Name = "NES Controller";
+			ControllerDefinition def = new("NES Controller");
 			if (_syncSettings.LeftPortConnected || _syncSettings.RightPortConnected)
 				def.BoolButtons.AddRange(PadP1.Select(p => p.Name));
 			if (_syncSettings.LeftPortConnected && _syncSettings.RightPortConnected)
 				def.BoolButtons.AddRange(PadP2.Select(p => p.Name));
 			def.BoolButtons.AddRange(new[] { "Reset", "Power" }); // console buttons
-			ControllerDefinition = def;
+			ControllerDefinition = def.MakeImmutable();
 		}
 
 		private struct PadEnt
@@ -201,9 +193,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 				SetPads(controller, out var j1, out var j2);
 
-				QN.qn_set_tracecb(Context, Tracer.Enabled ? _traceCb : null);
+				QN.qn_set_tracecb(Context, Tracer.IsEnabled() ? _traceCb : null);
 
-				Frame++;
 				LibQuickNES.ThrowStringError(QN.qn_emulate_frame(Context, j1, j2));
 				IsLagFrame = QN.qn_get_joypad_read_count(Context) == 0;
 				if (IsLagFrame)
@@ -217,6 +208,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				_callBack1?.Invoke();
 				_callBack2?.Invoke();
 
+				Frame++;
+
 				return true;
 			}
 		}
@@ -224,7 +217,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		private IntPtr Context;
 		public int Frame { get; private set; }
 
-		public string SystemId => "NES";
+		public string SystemId => VSystemID.Raw.NES;
 		public bool DeterministicEmulation => true;
 		public string BoardName { get; }
 
@@ -242,7 +235,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		{
 			// inefficient, sloppy, etc etc
 			var chrrom = _memoryDomains["CHR VROM"];
-			var prgrom = _memoryDomains["PRG ROM"];
+			var prgrom = _memoryDomains["PRG ROM"]!;
 
 			var ms = new MemoryStream();
 			for (int i = 0; i < prgrom.Size; i++)
@@ -251,7 +244,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				for (int i = 0; i < chrrom.Size; i++)
 					ms.WriteByte(chrrom.PeekByte(i));
 
-			string sha1 = ms.ToArray().HashSHA1();
+			var sha1 = SHA1Checksum.ComputeDigestHex(ms.ToArray());
 			Console.WriteLine("Hash for BootGod: {0}", sha1);
 
 			// Bail out on ROM's known to not be playable by this core
@@ -306,7 +299,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		// we need to do this from the raw file since QuickNES hasn't had time to process it yet.
 		private byte[] FixInesHeader(byte[] file)
 		{
-			string sha1 = BufferExtensions.HashSHA1(file);
+			var sha1 = SHA1Checksum.ComputeDigestHex(file);
 			bool didSomething = false;
 
 			Console.WriteLine(sha1);

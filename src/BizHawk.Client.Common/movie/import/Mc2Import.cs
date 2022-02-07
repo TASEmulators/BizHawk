@@ -1,4 +1,5 @@
-﻿using BizHawk.Emulation.Cores.PCEngine;
+﻿using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.PCEngine;
 
 namespace BizHawk.Client.Common.movie.import
 {
@@ -27,7 +28,7 @@ namespace BizHawk.Client.Common.movie.import
 				ss.Port4,
 				ss.Port5);
 
-			Result.Movie.HeaderEntries[HeaderKeys.Platform] = "PCE";
+			Result.Movie.HeaderEntries[HeaderKeys.Platform] = VSystemID.Raw.PCE;
 			using var sr = SourceFile.OpenText();
 			string line;
 
@@ -84,7 +85,7 @@ namespace BizHawk.Client.Common.movie.import
 				}
 				else if (line.ToLower().StartsWith("pcecd"))
 				{
-					Result.Movie.HeaderEntries[HeaderKeys.Platform] = "PCECD";
+					Result.Movie.HeaderEntries[HeaderKeys.Platform] = VSystemID.Raw.PCECD;
 				}
 				else if (line.ToLower().StartsWith("emuversion"))
 				{
@@ -146,7 +147,7 @@ namespace BizHawk.Client.Common.movie.import
 		{
 			var buttons = new[] { "Up", "Down", "Left", "Right", "B1", "B2", "Run", "Select" };
 
-			var controllers = new SimpleController { Definition = _deck.Definition };
+			SimpleController controllers = new(_deck.Definition);
 
 			// Split up the sections of the frame.
 			string[] sections = line.Split('|');

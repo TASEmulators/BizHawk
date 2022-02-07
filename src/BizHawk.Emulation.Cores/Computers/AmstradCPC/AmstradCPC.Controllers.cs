@@ -16,10 +16,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			get
 			{
-				var definition = new ControllerDefinition
-				{
-					Name = "AmstradCPC Controller"
-				};
+				ControllerDefinition definition = new("AmstradCPC Controller");
 
 				// joysticks
 				var joys1 = new List<string>
@@ -114,7 +111,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					definition.CategoryLabels[s] = "Amstrad Disk Drive";
 				}
 
-				return definition;
+				return definition.MakeImmutable();
 			}
 		}
 	}

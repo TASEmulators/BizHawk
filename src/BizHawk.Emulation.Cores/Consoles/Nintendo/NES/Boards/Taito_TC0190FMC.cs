@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public override void SyncIRQ()
 			{
 				if (irq_pending && !pending)
-					delay = 12; //supposed to be 4 cpu clocks
+					delay = 15; // 5 cpu cycle delay fixes gltiches in Jetsons
 				if (!irq_pending)
 				{
 					delay = 0;

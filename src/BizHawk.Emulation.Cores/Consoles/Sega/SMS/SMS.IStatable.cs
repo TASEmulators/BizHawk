@@ -19,6 +19,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			Cpu.SyncState(ser);
 			Vdp.SyncState(ser);
 			PSG.SyncState(ser);
+			_controllerDeck.SyncState(ser);
 			ser.Sync("RAM", ref SystemRam, false);
 			ser.Sync(nameof(RomBank0), ref RomBank0);
 			ser.Sync(nameof(RomBank1), ref RomBank1);
@@ -32,9 +33,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			ser.Sync(nameof(Port05), ref Port05);
 			ser.Sync(nameof(Port3E), ref Port3E);
 			ser.Sync(nameof(Port3F), ref Port3F);
-			ser.Sync(nameof(Controller1SelectHigh), ref Controller1SelectHigh);
-			ser.Sync(nameof(Controller2SelectHigh), ref Controller2SelectHigh);
-			ser.Sync(nameof(LatchLightPhaser), ref LatchLightPhaser);
+			ser.Sync(nameof(LatchLightPhaser1), ref LatchLightPhaser1);
+			ser.Sync(nameof(LatchLightPhaser2), ref LatchLightPhaser2);
+			ser.Sync(nameof(ControllerTick), ref ControllerTick);
 			ser.Sync(nameof(start_pressed), ref start_pressed);
 			ser.Sync(nameof(cntr_rd_0), ref cntr_rd_0);
 			ser.Sync(nameof(cntr_rd_1), ref cntr_rd_1);
@@ -47,22 +48,13 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			ser.Sync("old_s_L", ref OldSl);
 			ser.Sync("old_s_R", ref OldSr);
 
-			if (SaveRAM != null)
-			{
-				ser.Sync(nameof(SaveRAM), ref SaveRAM, false);
-			}
+			if (SaveRAM != null) { ser.Sync(nameof(SaveRAM), ref SaveRAM, false); }
 
 			ser.Sync(nameof(SaveRamBank), ref SaveRamBank);
 
-			if (ExtRam != null)
-			{
-				ser.Sync("ExtRAM", ref ExtRam, true);
-			}
+			if (ExtRam != null) { ser.Sync("ExtRAM", ref ExtRam, true); }
 
-			if (HasYM2413)
-			{
-				YM2413.SyncState(ser);
-			}
+			if (HasYM2413) { YM2413.SyncState(ser); }
 
 			EEPROM?.SyncState(ser);
 

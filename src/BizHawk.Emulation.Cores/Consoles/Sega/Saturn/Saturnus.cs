@@ -5,13 +5,12 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 {
-	[Core("Saturnus", "Mednafen Team", true, true, "1.26.1",
-		"https://mednafen.github.io/releases/", false, "Saturn")]
+	[PortedCore(CoreNames.Saturnus, "Mednafen Team", "1.27.1", "https://mednafen.github.io/releases/")]
 	public class Saturnus : NymaCore, IRegionable
 	{
-		[CoreConstructor("SAT")]
+		[CoreConstructor(VSystemID.Raw.SAT)]
 		public Saturnus(CoreLoadParameters<NymaSettings, NymaSyncSettings> lp)
-			: base(lp.Comm, "SAT", "Saturn Controller", lp.Settings, lp.SyncSettings)
+			: base(lp.Comm, VSystemID.Raw.SAT, "Saturn Controller", lp.Settings, lp.SyncSettings)
 		{
 			if (lp.Roms.Count > 0)
 				throw new InvalidOperationException("To load a Saturn game, please load the CUE file and not the BIN file.");

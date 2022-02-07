@@ -58,13 +58,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				if (firmwares != null && firmwares.TryGetValue(name, out var id))
 				{
-					var data = CoreComm.CoreFileProvider.GetFirmware(id, true,
-						"Firmware files are usually required and may stop your game from loading");
-					if (data != null)
-					{
-						_exe.AddReadonlyFile(data, name);
-						filesToRemove.Add(name);
-					}
+					var data = CoreComm.CoreFileProvider.GetFirmwareOrThrow(id, "Firmware files are usually required and may stop your game from loading");
+					_exe.AddReadonlyFile(data, name);
+					filesToRemove.Add(name);
 				}
 				else
 				{
@@ -151,6 +147,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				}
 				VsyncNumerator = info.FpsFixed;
 				VsyncDenominator = 1 << 24;
+				ClockRate = info.MasterClock / (double)0x100000000;
 				_soundBuffer = new short[22050 * 2];
 
 				InitControls(portData, discs?.Length > 0, ref info);
@@ -260,9 +257,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private int _mdfnNominalWidth;
 		private int _mdfnNominalHeight;
 		public override int VirtualWidth => _mdfnNominalWidth;
-		public override int VirtualHeight =>_mdfnNominalHeight;
+		public override int VirtualHeight => _mdfnNominalHeight;
 
 		public DisplayType Region { get; protected set; }
+
+		public double ClockRate { get; private set; }
 
 		/// <summary>
 		/// Gets a string array of valid layers to pass to SetLayers, or an empty list if that method should not be called

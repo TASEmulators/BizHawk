@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 
 using BizHawk.Common;
-using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -187,7 +185,7 @@ namespace BizHawk.Client.Common
 
 		public void SetBigEndian(bool enabled = true) => _isBigEndian = enabled;
 
-		public List<string> GetMemoryDomainList() => 
+		public List<string> GetMemoryDomainList() =>
 			DomainList
 				.Select(domain => domain.Name)
 				.ToList();
@@ -235,8 +233,7 @@ namespace BizHawk.Client.Common
 			}
 			var data = new byte[count];
 			for (var i = 0; i < count; i++) data[i] = d.PeekByte(addr + i);
-			using var hasher = SHA256.Create();
-			return hasher.ComputeHash(data).BytesToHexString();
+			return SHA256Checksum.ComputeDigestHex(data);
 		}
 
 		public uint ReadByte(long addr, string domain = null) => ReadUnsigned(addr, 1, domain);

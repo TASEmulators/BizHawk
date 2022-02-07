@@ -13,5 +13,8 @@ namespace BizHawk.Client.Common
 
 		public Dictionary<string, Dictionary<string, AnalogBind>> AllTrollersAnalog { get; set; }
 			= new Dictionary<string, Dictionary<string, AnalogBind>>();
+
+		public Dictionary<string, Dictionary<string, FeedbackBind>> AllTrollersFeedbacks { get; set; }
+			= new Dictionary<string, Dictionary<string, FeedbackBind>>();
 	}
 }

@@ -178,17 +178,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (OSTailoredCode.IsUnixHost)
-			{
-				OpenSessionMenuItem.Enabled = false;
-				RecentSessionsSubMenu.Enabled = false;
-				RecentScriptsSubMenu.Enabled = false;
-				NewScriptMenuItem.Enabled = false;
-				OpenScriptMenuItem.Enabled = false;
-				NewScriptToolbarItem.Enabled = false;
-				OpenScriptToolbarItem.Enabled = false;
-				WriteToOutputWindow("The Lua environment can currently only be created on Windows. You may not load scripts.");
-			}
+			if (OSTailoredCode.IsUnixHost) WriteToOutputWindow("Lua in Mono is currently experimental. Please report bugs here: https://github.com/TASEmulators/BizHawk/issues/2951\n");
 
 			LuaListView.AllColumns.Clear();
 			SetColumns();
@@ -226,20 +216,16 @@ namespace BizHawk.Client.EmuHawk
 
 			LuaFileList newScripts = new(LuaImp?.ScriptList, onChanged: SessionChangedCallback);
 			LuaFunctionList registeredFuncList = new(onChanged: UpdateRegisteredFunctionsDialog);
-			LuaImp = OSTailoredCode.IsUnixHost
-				? new UnixLuaLibraries(
-					newScripts,
-					registeredFuncList)
-				: new Win32LuaLibraries(
-					newScripts,
-					registeredFuncList,
-					Emulator.ServiceProvider,
-					(MainForm) MainForm, //HACK
-					DisplayManager,
-					InputManager,
-					Config,
-					Emulator,
-					Game);
+			LuaImp = new Win32LuaLibraries(
+				newScripts,
+				registeredFuncList,
+				Emulator.ServiceProvider,
+				(MainForm) MainForm, //HACK
+				DisplayManager,
+				InputManager,
+				Config,
+				Emulator,
+				Game);
 
 			InputBox.AutoCompleteCustomSource.AddRange(LuaImp.Docs.Select(a => $"{a.Library}.{a.Name}").ToArray());
 
@@ -295,8 +281,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Path = Path.GetDirectoryName(path),
 				Filter = Path.GetFileName(path),
-				NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
-							 | NotifyFilters.FileName | NotifyFilters.DirectoryName,
+				NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName,
 				EnableRaisingEvents = true
 			};
 
@@ -310,11 +295,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// Even after _watches is cleared, these callbacks hang around! So this check is necessary
 			var script = LuaImp.ScriptList.FirstOrDefault(s => s.Path == e.FullPath && s.Enabled);
-
-			if (script != null)
-			{
-				Invoke(new MethodInvoker(delegate { RefreshScriptMenuItem_Click(null, null); }));
-			}
+			if (script != null) Invoke((MethodInvoker) (() => RefreshLuaScript(script)));
 		}
 
 		public void LoadLuaFile(string path)
@@ -1241,7 +1222,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OnlineDocsMenuItem_Click(object sender, EventArgs e)
 		{
-			Process.Start("http://tasvideos.org/BizHawk/LuaFunctions.html");
+			Process.Start("https://tasvideos.org/BizHawk/LuaFunctions");
 		}
 
 		private void ScriptListContextMenu_Opening(object sender, CancelEventArgs e)
@@ -1263,11 +1244,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RegisteredFunctionsContextItem.Enabled = LuaImp.RegisteredFunctions.Any();
 			CopyContextItem.Enabled = OutputBox.SelectedText.Any();
-			ClearConsoleContextItem.Enabled = 
-				SelectAllContextItem.Enabled = 
+			ClearConsoleContextItem.Enabled =
+				SelectAllContextItem.Enabled =
 				OutputBox.Text.Any();
 
-			ClearRegisteredFunctionsLogContextItem.Enabled = 
+			ClearRegisteredFunctionsLogContextItem.Enabled =
 				LuaImp.RegisteredFunctions.Any();
 		}
 
@@ -1311,11 +1292,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LuaConsole_DragDrop(object sender, DragEventArgs e)
 		{
-			if (OSTailoredCode.IsUnixHost)
-			{
-				Console.WriteLine("The Lua environment can currently only be created on Windows, no scripts will be loaded.");
-				return;
-			}
 			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
 			try
 			{
@@ -1416,8 +1392,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RefreshScriptMenuItem_Click(object sender, EventArgs e)
 		{
-			ToggleScriptMenuItem_Click(sender, e);
-			ToggleScriptMenuItem_Click(sender, e);
+			if (!(LuaImp is Win32LuaLibraries luaLibsImpl)) return;
+			var files = !SelectedFiles.Any() && Settings.ToggleAllIfNoneSelected
+				? luaLibsImpl.ScriptList
+				: SelectedFiles;
+			foreach (var file in files) RefreshLuaScript(file);
+			UpdateDialog();
 		}
 
 		private void InputBox_KeyDown(object sender, KeyEventArgs e)
@@ -1499,7 +1479,7 @@ namespace BizHawk.Client.EmuHawk
 
 		// For whatever reason an auto-complete TextBox doesn't respond to delete
 		// Which is annoying but worse is that it let's the key propagate
-		// If a script is highlighted in the ListView, and the user presses 
+		// If a script is highlighted in the ListView, and the user presses
 		// delete, it will remove the script without this hack
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
 		{
@@ -1564,6 +1544,12 @@ namespace BizHawk.Client.EmuHawk
 				file.Stop();
 				// there used to be a call here which did a redraw of the Gui/OSD, which included a call to `Tools.UpdateToolsAfter` --yoshi
 			}
+		}
+
+		private void RefreshLuaScript(LuaFile file)
+		{
+			ToggleLuaScript(file);
+			ToggleLuaScript(file);
 		}
 
 		[RestoreDefaults]

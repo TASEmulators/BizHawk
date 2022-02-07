@@ -89,6 +89,7 @@ namespace BizHawk.Client.EmuHawk
 
 				_pcRegisterSize = Debuggable.GetCpuFlagsAndRegisters()[Disassembler.PCRegisterName].BitSize / 4;
 				SetDisassemblerItemCount();
+				UpdatePC();
 				UpdateDisassembler();
 			}
 			else
@@ -243,7 +244,7 @@ namespace BizHawk.Client.EmuHawk
 			return base.ProcessCmdKey(ref msg, keyData);
 		}
 
-		private Control _currentToolTipControl = null; 
+		private Control _currentToolTipControl = null;
 
 		private void GenericDebugger_MouseMove(object sender, MouseEventArgs e)
 		{

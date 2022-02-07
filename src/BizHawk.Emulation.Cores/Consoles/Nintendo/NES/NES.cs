@@ -3,27 +3,23 @@ using System.Linq;
 using System.IO;
 using System.Collections.Generic;
 
-using BizHawk.Common.BufferExtensions;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 //TODO - redo all timekeeping in terms of master clock
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	[Core(
-		CoreNames.NesHawk,
-		"zeromus, natt, alyosha, adelikat",
-		isPorted: false,
-		isReleased: true)]
+	[Core(CoreNames.NesHawk, "zeromus, natt, alyosha, adelikat")]
 	public partial class NES : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, IVideoLogicalOffsets,
 		IBoardInfo, IRomInfo, ISettable<NES.NESSettings, NES.NESSyncSettings>, ICodeDataLogger
 	{
-		[CoreConstructor("NES")]
-		public NES(CoreComm comm, GameInfo game, byte[] rom, NESSettings settings, NESSyncSettings syncSettings)
+		[CoreConstructor(VSystemID.Raw.NES)]
+		public NES(CoreComm comm, GameInfo game, byte[] rom, NESSettings settings, NESSyncSettings syncSettings, bool subframe = false)
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 
-			byte[] fdsBios = comm.CoreFileProvider.GetFirmware("NES", "Bios_FDS", false);
+			var fdsBios = comm.CoreFileProvider.GetFirmware(new("NES", "Bios_FDS"));
 			if (fdsBios != null && fdsBios.Length == 40976)
 			{
 				comm.ShowMessage("Your FDS BIOS is a bad dump.  BizHawk will attempt to use it, but no guarantees!  You should find a new one.");
@@ -56,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			ser.Register<IDisassemblable>(cpu);
 
-			Tracer = new TraceBuffer { Header = cpu.TraceHeader };
+			Tracer = new TraceBuffer(cpu.TraceHeader);
 			ser.Register<ITraceable>(Tracer);
 			ser.Register<IVideoProvider>(videoProvider);
 			ser.Register<ISoundProvider>(this);
@@ -74,6 +70,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					ser.Register(reader);
 				}
 			}
+
+			ResetControllerDefinition(subframe);
 		}
 
 		private static readonly bool USE_DATABASE = true;
@@ -254,19 +252,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		[Obsolete] // with the changes to both nes and quicknes cores, nothing uses this anymore
 		public static readonly ControllerDefinition NESController =
-			new ControllerDefinition
+			new ControllerDefinition("NES Controller")
 			{
-				Name = "NES Controller",
 				BoolButtons = {
 					"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Start", "P1 Select", "P1 B", "P1 A", "Reset", "Power",
 					"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Start", "P2 Select", "P2 B", "P2 A"
 				}
-			};
+			}.MakeImmutable();
 
 		public ControllerDefinition ControllerDefinition { get; private set; }
 
 		private int _frame;
-		public int Frame { get => _frame;
+		public int Frame
+		{
+			get => _frame;
 			set => _frame = value;
 		}
 
@@ -281,7 +280,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public bool DeterministicEmulation => true;
 
-		public string SystemId => "NES";
+		public string SystemId => VSystemID.Raw.NES;
 
 		public string GameName => game_name;
 
@@ -421,11 +420,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					// we don't have an ines header, check if the game hash is in the game db
 					exists = false;
 					Console.WriteLine("headerless ROM, using Game DB");
-					hash_md5 = "md5:" + file.HashMD5(0, file.Length);
-					hash_sha1 = "sha1:" + file.HashSHA1(0, file.Length);
-					if (hash_md5 != null) choice = IdentifyFromGameDB(hash_md5);
-					if (choice == null)
-						choice = IdentifyFromGameDB(hash_sha1);
+					hash_md5 = MD5Checksum.ComputePrefixedHex(file);
+					hash_sha1 = SHA1Checksum.ComputePrefixedHex(file);
+					choice = IdentifyFromGameDB(hash_md5) ?? IdentifyFromGameDB(hash_sha1);
 					if (choice==null)
 					{
 						hash_sha1_several.Add(hash_sha1);
@@ -447,9 +444,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					//now that we know we have an iNES header, we can try to ignore it.
 
-					hash_sha1 = "sha1:" + file.HashSHA1(16, file.Length - 16);
+					var trimmed = file.AsSpan(start: 16, length: file.Length - 16);
+					hash_sha1 = SHA1Checksum.ComputePrefixedHex(trimmed);
 					hash_sha1_several.Add(hash_sha1);
-					hash_md5 = "md5:" + file.HashMD5(16, file.Length - 16);
+					hash_md5 = MD5Checksum.ComputePrefixedHex(trimmed);
 
 					LoadWriteLine("Found iNES header:");
 					LoadWriteLine(iNesHeaderInfo.ToString());
@@ -489,10 +487,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						}
 						msTemp.Flush();
 						var bytes = msTemp.ToArray();
-						var hash = "sha1:" + bytes.HashSHA1(0, bytes.Length);
+						var hash = SHA1Checksum.ComputePrefixedHex(bytes);
 						LoadWriteLine("  PRG (8KB) + CHR hash: {0}", hash);
 						hash_sha1_several.Add(hash);
-						hash = "md5:" + bytes.HashMD5(0, bytes.Length);
+						hash = MD5Checksum.ComputePrefixedHex(bytes);
 						LoadWriteLine("  PRG (8KB) + CHR hash:  {0}", hash);
 					}
 				}

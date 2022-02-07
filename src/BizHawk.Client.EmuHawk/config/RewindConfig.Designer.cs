@@ -33,7 +33,7 @@
 			this.Cancel = new System.Windows.Forms.Button();
 			this.RewindEnabledBox = new System.Windows.Forms.CheckBox();
 			this.UseCompression = new System.Windows.Forms.CheckBox();
-			this.label4 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.label4 = new BizHawk.WinForms.Controls.LabelEx();
 			this.BufferSizeUpDown = new System.Windows.Forms.NumericUpDown();
 			this.label3 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
@@ -41,8 +41,13 @@
 			this.label6 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.FullnessLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
+			this.locSingleRowFLP1 = new BizHawk.WinForms.Controls.LocSingleRowFLP();
+			this.labelEx3 = new BizHawk.WinForms.Controls.LabelEx();
+			this.labelEx2 = new BizHawk.WinForms.Controls.LabelEx();
+			this.labelEx1 = new BizHawk.WinForms.Controls.LabelEx();
+			this.cbDeltaCompression = new System.Windows.Forms.CheckBox();
 			this.TargetFrameLengthNumeric = new System.Windows.Forms.NumericUpDown();
-			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.TargetRewindIntervalNumeric = new System.Windows.Forms.NumericUpDown();
 			this.EstTimeLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.label11 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.ApproxFramesLabel = new BizHawk.WinForms.Controls.LocLabelEx();
@@ -68,9 +73,13 @@
 			this.label16 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.BackupSavestatesCheckbox = new System.Windows.Forms.CheckBox();
 			this.label12 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.TargetFrameLengthRadioButton = new System.Windows.Forms.RadioButton();
+			this.TargetRewindIntervalRadioButton = new System.Windows.Forms.RadioButton();
 			((System.ComponentModel.ISupportInitialize)(this.BufferSizeUpDown)).BeginInit();
 			this.groupBox4.SuspendLayout();
+			this.locSingleRowFLP1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.TargetFrameLengthNumeric)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.TargetRewindIntervalNumeric)).BeginInit();
 			this.groupBox6.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarCompression)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudCompression)).BeginInit();
@@ -114,41 +123,41 @@
 			// UseCompression
 			// 
 			this.UseCompression.AutoSize = true;
-			this.UseCompression.Location = new System.Drawing.Point(15, 170);
+			this.UseCompression.Location = new System.Drawing.Point(15, 194);
 			this.UseCompression.Name = "UseCompression";
-			this.UseCompression.Size = new System.Drawing.Size(306, 17);
+			this.UseCompression.Size = new System.Drawing.Size(324, 17);
 			this.UseCompression.TabIndex = 5;
-			this.UseCompression.Text = "Use compression (economizes buffer usage at cost of CPU)";
+			this.UseCompression.Text = "Use zlib compression (economizes buffer usage at cost of CPU)";
 			this.UseCompression.UseVisualStyleBackColor = true;
 			this.UseCompression.CheckedChanged += new System.EventHandler(this.UseCompression_CheckedChanged);
 			// 
 			// label4
 			// 
-			this.label4.Location = new System.Drawing.Point(181, 112);
+			this.label4.Margin = new System.Windows.Forms.Padding(0);
 			this.label4.Name = "label4";
 			this.label4.Text = "MB";
 			// 
 			// BufferSizeUpDown
 			// 
-			this.BufferSizeUpDown.Location = new System.Drawing.Point(125, 110);
+			this.BufferSizeUpDown.Location = new System.Drawing.Point(25, 3);
 			this.BufferSizeUpDown.Maximum = new decimal(new int[] {
-            32768,
-            0,
-            0,
-            0});
+			15,
+			0,
+			0,
+			0});
 			this.BufferSizeUpDown.Minimum = new decimal(new int[] {
-            64,
-            0,
-            0,
-            0});
+			6,
+			0,
+			0,
+			0});
 			this.BufferSizeUpDown.Name = "BufferSizeUpDown";
 			this.BufferSizeUpDown.Size = new System.Drawing.Size(52, 20);
 			this.BufferSizeUpDown.TabIndex = 8;
 			this.BufferSizeUpDown.Value = new decimal(new int[] {
-            512,
-            0,
-            0,
-            0});
+			9,
+			0,
+			0,
+			0});
 			this.BufferSizeUpDown.ValueChanged += new System.EventHandler(this.BufferSizeUpDown_ValueChanged);
 			// 
 			// label3
@@ -183,11 +192,13 @@
 			// 
 			// groupBox4
 			// 
+			this.groupBox4.Controls.Add(this.TargetRewindIntervalRadioButton);
+			this.groupBox4.Controls.Add(this.TargetFrameLengthRadioButton);
+			this.groupBox4.Controls.Add(this.locSingleRowFLP1);
+			this.groupBox4.Controls.Add(this.cbDeltaCompression);
 			this.groupBox4.Controls.Add(this.TargetFrameLengthNumeric);
-			this.groupBox4.Controls.Add(this.label2);
-			this.groupBox4.Controls.Add(this.label4);
+			this.groupBox4.Controls.Add(this.TargetRewindIntervalNumeric);
 			this.groupBox4.Controls.Add(this.UseCompression);
-			this.groupBox4.Controls.Add(this.BufferSizeUpDown);
 			this.groupBox4.Controls.Add(this.RewindEnabledBox);
 			this.groupBox4.Controls.Add(this.label3);
 			this.groupBox4.Controls.Add(this.EstTimeLabel);
@@ -202,38 +213,92 @@
 			this.groupBox4.Controls.Add(this.StateSizeLabel);
 			this.groupBox4.Location = new System.Drawing.Point(12, 12);
 			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(371, 205);
+			this.groupBox4.Size = new System.Drawing.Size(371, 248);
 			this.groupBox4.TabIndex = 2;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "RewindSettings";
 			// 
+			// locSingleRowFLP1
+			// 
+			this.locSingleRowFLP1.Controls.Add(this.labelEx3);
+			this.locSingleRowFLP1.Controls.Add(this.BufferSizeUpDown);
+			this.locSingleRowFLP1.Controls.Add(this.labelEx2);
+			this.locSingleRowFLP1.Controls.Add(this.labelEx1);
+			this.locSingleRowFLP1.Controls.Add(this.label4);
+			this.locSingleRowFLP1.Location = new System.Drawing.Point(100, 107);
+			this.locSingleRowFLP1.Name = "locSingleRowFLP1";
+			// 
+			// labelEx3
+			// 
+			this.labelEx3.Margin = new System.Windows.Forms.Padding(0);
+			this.labelEx3.Name = "labelEx3";
+			this.labelEx3.Text = "2 ^";
+			// 
+			// labelEx2
+			// 
+			this.labelEx2.Margin = new System.Windows.Forms.Padding(0);
+			this.labelEx2.Name = "labelEx2";
+			this.labelEx2.Text = "MB  =";
+			// 
+			// labelEx1
+			// 
+			this.labelEx1.Margin = new System.Windows.Forms.Padding(0);
+			this.labelEx1.Name = "labelEx1";
+			this.labelEx1.Text = "512";
+			// 
+			// cbDeltaCompression
+			// 
+			this.cbDeltaCompression.AutoSize = true;
+			this.cbDeltaCompression.Location = new System.Drawing.Point(15, 217);
+			this.cbDeltaCompression.Name = "cbDeltaCompression";
+			this.cbDeltaCompression.Size = new System.Drawing.Size(332, 17);
+			this.cbDeltaCompression.TabIndex = 35;
+			this.cbDeltaCompression.Text = "Use delta compression (economizes buffer usage at cost of CPU)";
+			this.cbDeltaCompression.UseVisualStyleBackColor = true;
+			// 
 			// TargetFrameLengthNumeric
 			// 
-			this.TargetFrameLengthNumeric.Location = new System.Drawing.Point(125, 135);
+			this.TargetFrameLengthNumeric.Location = new System.Drawing.Point(146, 138);
 			this.TargetFrameLengthNumeric.Maximum = new decimal(new int[] {
-            500000,
-            0,
-            0,
-            0});
+			500000,
+			0,
+			0,
+			0});
 			this.TargetFrameLengthNumeric.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.TargetFrameLengthNumeric.Name = "TargetFrameLengthNumeric";
 			this.TargetFrameLengthNumeric.Size = new System.Drawing.Size(52, 20);
 			this.TargetFrameLengthNumeric.TabIndex = 21;
 			this.TargetFrameLengthNumeric.Value = new decimal(new int[] {
-            600,
-            0,
-            0,
-            0});
+			600,
+			0,
+			0,
+			0});
 			// 
-			// label2
+			// TargetRewindIntervalNumeric
 			// 
-			this.label2.Location = new System.Drawing.Point(12, 138);
-			this.label2.Name = "label2";
-			this.label2.Text = "Desired frame length:";
+			this.TargetRewindIntervalNumeric.Location = new System.Drawing.Point(231, 162);
+			this.TargetRewindIntervalNumeric.Maximum = new decimal(new int[] {
+			500000,
+			0,
+			0,
+			0});
+			this.TargetRewindIntervalNumeric.Minimum = new decimal(new int[] {
+			1,
+			0,
+			0,
+			0});
+			this.TargetRewindIntervalNumeric.Name = "TargetRewindIntervalNumeric";
+			this.TargetRewindIntervalNumeric.Size = new System.Drawing.Size(52, 20);
+			this.TargetRewindIntervalNumeric.TabIndex = 21;
+			this.TargetRewindIntervalNumeric.Value = new decimal(new int[] {
+			5,
+			0,
+			0,
+			0});
 			// 
 			// EstTimeLabel
 			// 
@@ -321,7 +386,7 @@
 			this.trackBarCompression.Location = new System.Drawing.Point(22, 37);
 			this.trackBarCompression.Maximum = 9;
 			this.trackBarCompression.Name = "trackBarCompression";
-			this.trackBarCompression.Size = new System.Drawing.Size(157, 42);
+			this.trackBarCompression.Size = new System.Drawing.Size(157, 45);
 			this.trackBarCompression.TabIndex = 1;
 			this.toolTip1.SetToolTip(this.trackBarCompression, "0 = None; 9 = Maximum");
 			this.trackBarCompression.Value = 1;
@@ -331,18 +396,18 @@
 			// 
 			this.nudCompression.Location = new System.Drawing.Point(185, 37);
 			this.nudCompression.Maximum = new decimal(new int[] {
-            9,
-            0,
-            0,
-            0});
+			9,
+			0,
+			0,
+			0});
 			this.nudCompression.Name = "nudCompression";
 			this.nudCompression.Size = new System.Drawing.Size(52, 20);
 			this.nudCompression.TabIndex = 2;
 			this.nudCompression.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.nudCompression.ValueChanged += new System.EventHandler(this.NudCompression_ValueChanged);
 			// 
 			// groupBox7
@@ -385,23 +450,23 @@
 			// 
 			this.BigScreenshotNumeric.Location = new System.Drawing.Point(212, 267);
 			this.BigScreenshotNumeric.Maximum = new decimal(new int[] {
-            8192,
-            0,
-            0,
-            0});
+			8192,
+			0,
+			0,
+			0});
 			this.BigScreenshotNumeric.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.BigScreenshotNumeric.Name = "BigScreenshotNumeric";
 			this.BigScreenshotNumeric.Size = new System.Drawing.Size(58, 20);
 			this.BigScreenshotNumeric.TabIndex = 32;
 			this.BigScreenshotNumeric.Value = new decimal(new int[] {
-            128,
-            0,
-            0,
-            0});
+			128,
+			0,
+			0,
+			0});
 			// 
 			// LowResLargeScreenshotsCheckbox
 			// 
@@ -464,6 +529,28 @@
 			this.label12.Name = "label12";
 			this.label12.Text = "Compression Level";
 			// 
+			// TargetFrameLengthRadioButton
+			// 
+			this.TargetFrameLengthRadioButton.AutoSize = true;
+			this.TargetFrameLengthRadioButton.Location = new System.Drawing.Point(15, 138);
+			this.TargetFrameLengthRadioButton.Name = "TargetFrameLengthRadioButton";
+			this.TargetFrameLengthRadioButton.Size = new System.Drawing.Size(125, 17);
+			this.TargetFrameLengthRadioButton.TabIndex = 48;
+			this.TargetFrameLengthRadioButton.TabStop = true;
+			this.TargetFrameLengthRadioButton.Text = "Desired frame length:";
+			this.TargetFrameLengthRadioButton.UseVisualStyleBackColor = true;
+			// 
+			// TargetRewindIntervalRadioButton
+			// 
+			this.TargetRewindIntervalRadioButton.AutoSize = true;
+			this.TargetRewindIntervalRadioButton.Location = new System.Drawing.Point(15, 162);
+			this.TargetRewindIntervalRadioButton.Name = "TargetRewindIntervalRadioButton";
+			this.TargetRewindIntervalRadioButton.Size = new System.Drawing.Size(210, 17);
+			this.TargetRewindIntervalRadioButton.TabIndex = 49;
+			this.TargetRewindIntervalRadioButton.TabStop = true;
+			this.TargetRewindIntervalRadioButton.Text = "Rewinds every fixed number of frames: ";
+			this.TargetRewindIntervalRadioButton.UseVisualStyleBackColor = true;
+			// 
 			// RewindConfig
 			// 
 			this.AcceptButton = this.OK;
@@ -485,7 +572,10 @@
 			((System.ComponentModel.ISupportInitialize)(this.BufferSizeUpDown)).EndInit();
 			this.groupBox4.ResumeLayout(false);
 			this.groupBox4.PerformLayout();
+			this.locSingleRowFLP1.ResumeLayout(false);
+			this.locSingleRowFLP1.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.TargetFrameLengthNumeric)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.TargetRewindIntervalNumeric)).EndInit();
 			this.groupBox6.ResumeLayout(false);
 			this.groupBox6.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarCompression)).EndInit();
@@ -505,7 +595,7 @@
 		private System.Windows.Forms.CheckBox UseCompression;
 		private BizHawk.WinForms.Controls.LocLabelEx label1;
 		private BizHawk.WinForms.Controls.LocLabelEx StateSizeLabel;
-		private BizHawk.WinForms.Controls.LocLabelEx label4;
+		private BizHawk.WinForms.Controls.LabelEx label4;
 		private System.Windows.Forms.NumericUpDown BufferSizeUpDown;
 		private BizHawk.WinForms.Controls.LocLabelEx label3;
 		private BizHawk.WinForms.Controls.LocLabelEx label6;
@@ -537,6 +627,13 @@
 				private System.Windows.Forms.CheckBox BackupSavestatesCheckbox;
 				private BizHawk.WinForms.Controls.LocLabelEx label20;
 		private System.Windows.Forms.NumericUpDown TargetFrameLengthNumeric;
-		private BizHawk.WinForms.Controls.LocLabelEx label2;
+		private System.Windows.Forms.NumericUpDown TargetRewindIntervalNumeric;
+		private System.Windows.Forms.CheckBox cbDeltaCompression;
+		private WinForms.Controls.LocSingleRowFLP locSingleRowFLP1;
+		private WinForms.Controls.LabelEx labelEx3;
+		private WinForms.Controls.LabelEx labelEx2;
+		private WinForms.Controls.LabelEx labelEx1;
+		private System.Windows.Forms.RadioButton TargetFrameLengthRadioButton;
+		private System.Windows.Forms.RadioButton TargetRewindIntervalRadioButton;
 	}
 }

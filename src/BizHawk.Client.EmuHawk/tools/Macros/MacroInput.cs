@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private IMovie CurrentMovie => MovieSession.Movie;
 
-		// Still need to make sure the user can't load and use macros that 
+		// Still need to make sure the user can't load and use macros that
 		// have options only available for TasMovie
 
 		private bool _initializing;
@@ -255,11 +255,11 @@ namespace BizHawk.Client.EmuHawk
 			ZonesList.Items.Add($"{loadZone.Name} - length: {loadZone.Length}");
 		}
 
-		public static string SuggestedFolder(Config config, IGameInfo game = null)
+		public static string SuggestedFolder(Config config, IGameInfo game)
 		{
 			return config.PathEntries.AbsolutePathFor(Path.Combine(
-				config.PathEntries["Global", "Macros"].Path,
-				game?.FilesystemSafeName()), null);
+				config.PathEntries[PathEntryCollection.GLOBAL, "Macros"].Path,
+				game.FilesystemSafeName()), null);
 		}
 
 		private bool SaveMacroAs(MovieZone macro)
@@ -300,7 +300,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using var dialog = new OpenFileDialog
 			{
-				InitialDirectory = SuggestedFolder(Config),
+				InitialDirectory = SuggestedFolder(Config, Game),
 				Filter = MacrosFSFilterSet.ToString()
 			};
 

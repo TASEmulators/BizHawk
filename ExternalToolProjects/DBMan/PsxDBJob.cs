@@ -106,8 +106,7 @@ namespace BizHawk.DBManTool
 					Console.WriteLine("{0}/{1}", i, games.Length);
 
 				var name = game.Attribute("name").Value;
-				BizHawk.Emulation.DiscSystem.DiscHasher.SpecialCRC32 spec_crc_calc = new Emulation.DiscSystem.DiscHasher.SpecialCRC32();
-				spec_crc_calc.Current = 0;
+				CRC32 spec_crc_calc = new() { Current = 0 }; //TODO is the current usage (invert initial state, don't invert final state) equivalent to only inverting the final state? --yoshi
 				foreach (var rom in game.Elements("rom"))
 				{
 					var ext = Path.GetExtension(rom.Attribute("name").Value).ToLower();

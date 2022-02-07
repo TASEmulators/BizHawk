@@ -1,17 +1,21 @@
 ﻿using System;
 using System.Drawing;
+using System.Globalization;
 using System.Threading;
 
 namespace BizHawk.Client.Common
 {
 	public abstract class LuaLibraryBase
 	{
+		public PathEntryCollection PathEntries { get; set; }
+
 		protected LuaLibraryBase(IPlatformLuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 		{
 			LogOutputCallback = logOutputCallback;
 			_luaLibsImpl = luaLibsImpl;
 			_th = _luaLibsImpl.GetTableHelper();
 			APIs = apiContainer;
+			PathEntries = _luaLibsImpl.PathEntries;
 		}
 
 		protected static LuaFile CurrentFile { get; private set; }
@@ -58,20 +62,7 @@ namespace BizHawk.Client.Common
 			return (int)(double)luaArg;
 		}
 
-		protected static Color? ToColor(object o)
-		{
-			return o switch
-			{
-				null => null,
-				double d => Color.FromArgb((int) (long) d),
-				string s => Color.FromName(s),
-				_ => null
-			};
-		}
-
-		protected void Log(object message)
-		{
-			LogOutputCallback?.Invoke(message.ToString());
-		}
+		protected void Log(string message)
+			=> LogOutputCallback?.Invoke(message);
 	}
 }

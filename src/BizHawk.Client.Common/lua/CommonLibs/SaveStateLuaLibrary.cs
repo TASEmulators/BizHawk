@@ -33,10 +33,12 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("savestate.save( \"C:\\state.bin\" );")]
 		[LuaMethod("save", "Saves a state at the given path. If EmuHawk is deferring quicksaves, to TAStudio for example, that form will do what it likes (and the path is ignored).")]
-		public void Save(string path, bool suppressOSD = false) => APIs.SaveState.Save(path, suppressOSD);
+		public void Save(string path, bool suppressOSD = false)
+			=> APIs.SaveState.Save(path, suppressOSD);
 
 		[LuaMethodExample("savestate.saveslot( 7 );")]
 		[LuaMethod("saveslot", "Saves a state at the given save slot (must be an integer between 0 and 9). If EmuHawk is deferring quicksaves, to TAStudio for example, that form will do what it likes with the slot number.")]
-		public void SaveSlot(int slotNum, bool suppressOSD = false) => APIs.SaveState.SaveSlot(slotNum, suppressOSD);
+		public void SaveSlot(int slotNum, bool suppressOSD = false)
+			=> APIs.SaveState.SaveSlot(slotNum, suppressOSD);
 	}
 }

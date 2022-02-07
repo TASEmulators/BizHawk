@@ -384,32 +384,32 @@ namespace BizHawk.Client.EmuHawk
 			var firstIndex = MovieView.SelectedIndices[0];
 			MovieView.EnsureVisible(firstIndex);
 
-			foreach (var kvp in _movieList[firstIndex].HeaderEntries)
+			foreach (var (k, v) in _movieList[firstIndex].HeaderEntries)
 			{
-				var item = new ListViewItem(kvp.Key);
-				item.SubItems.Add(kvp.Value);
-				item.ToolTipText = kvp.Value;
-				switch (kvp.Key)
+				var item = new ListViewItem(k);
+				item.SubItems.Add(v);
+				item.ToolTipText = v;
+				switch (k)
 				{
 					case HeaderKeys.Sha1:
-						if (kvp.Value != _game.Hash)
+						if (_game.Hash != v)
 						{
 							item.BackColor = Color.Pink;
-							item.ToolTipText = $"Expected: {_game.Hash}\n Actual: {kvp.Value}";
+							item.ToolTipText = $"Expected: {v}\nActual: {_game.Hash}";
 						}
 						break;
 					case HeaderKeys.EmulatorVersion:
-						if (kvp.Value != VersionInfo.GetEmuVersion())
+						if (VersionInfo.GetEmuVersion() != v)
 						{
 							item.BackColor = Color.Yellow;
-							item.ToolTipText = $"Expected: {VersionInfo.GetEmuVersion()}\n Actual: {kvp.Value}";
+							item.ToolTipText = $"Expected: {v}\nActual: {VersionInfo.GetEmuVersion()}";
 						}
 						break;
 					case HeaderKeys.Platform:
-						if (kvp.Value != _emulator.SystemId)
+						if (_emulator.SystemId != v)
 						{
 							item.BackColor = Color.Pink;
-							item.ToolTipText = $"Expected: {_emulator.SystemId}\n Actual: {kvp.Value}";
+							item.ToolTipText = $"Expected: {v}\n Actual: {_emulator.SystemId}";
 						}
 						break;
 				}
@@ -554,7 +554,7 @@ namespace BizHawk.Client.EmuHawk
 			Run();
 			_movieSession.ReadOnly = ReadOnlyCheckBox.Checked;
 
-			if (StopOnFrameCheckbox.Checked && 
+			if (StopOnFrameCheckbox.Checked &&
 				(StopOnFrameTextBox.ToRawInt().HasValue || LastFrameCheckbox.Checked))
 			{
 				_mainForm.PauseOnFrame = LastFrameCheckbox.Checked

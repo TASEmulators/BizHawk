@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				int len = samples.Length;
 				for (int i = 0; i < len; i++)
 				{
-					short fmSample = fmSamples[i];
+					short fmSample = (short)(fmSamples[i] << 1);
 					samples[i] = (short)(samples[i] + fmSample);
 				}
 			}

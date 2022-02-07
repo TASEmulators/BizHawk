@@ -1,14 +1,10 @@
 ﻿using System;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Nintendo.GBHawk;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 {
-	[Core(
-		"GBHawkLink4x",
-		"",
-		isPorted: false,
-		isReleased: true,
-		displayName: "Gameboy")]
+	[Core(CoreNames.GBHawkLink4x, "")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class GBHawkLink4x : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable,
 	ISettable<GBHawkLink4x.GBLink4xSettings, GBHawkLink4x.GBLink4xSyncSettings>
@@ -51,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 
 		public bool do_frame_fill;
 
-		[CoreConstructor("GB4x")]
+		[CoreConstructor(VSystemID.Raw.GBL)]
 		public GBHawkLink4x(CoreLoadParameters<GBLink4xSettings, GBLink4xSyncSettings> lp)
 		{
 			if (lp.Roms.Count != 4)
@@ -61,8 +57,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 
 			Link4xSettings = (GBLink4xSettings)lp.Settings ?? new GBLink4xSettings();
 			Link4xSyncSettings = (GBLink4xSyncSettings)lp.SyncSettings ?? new GBLink4xSyncSettings();
-			_controllerDeck = new GBHawkLink4xControllerDeck(GBHawkLink4xControllerDeck.DefaultControllerName, GBHawkLink4xControllerDeck.DefaultControllerName, 
-															 GBHawkLink4xControllerDeck.DefaultControllerName, GBHawkLink4xControllerDeck.DefaultControllerName);
+			_controllerDeck = new(
+				GBHawkControllerDeck.DefaultControllerName,
+				GBHawkControllerDeck.DefaultControllerName,
+				GBHawkControllerDeck.DefaultControllerName,
+				GBHawkControllerDeck.DefaultControllerName);
 
 			var tempSetA = new GBHawk.GBHawk.GBSettings();
 			var tempSetB = new GBHawk.GBHawk.GBSettings();
@@ -101,7 +100,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			ser.Register<IVideoProvider>(this);
 			ser.Register<ISoundProvider>(this); 
 
-			_tracer = new TraceBuffer { Header = A.cpu.TraceHeader };
+			_tracer = new TraceBuffer(A.cpu.TraceHeader);
 			ser.Register(_tracer);
 
 			ServiceProvider = ser;

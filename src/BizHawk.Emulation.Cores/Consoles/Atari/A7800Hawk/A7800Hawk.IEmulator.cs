@@ -59,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{
-			if (_tracer.Enabled)
+			if (_tracer.IsEnabled())
 			{
 				cpu.TraceCallback = s => _tracer.Put(s);
 			}
@@ -67,8 +67,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			{
 				cpu.TraceCallback = null;
 			}
-
-			_frame++;
 
 			if (controller.IsPressed("Power"))
 			{
@@ -88,6 +86,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			{
 				_lagCount++;
 			}
+
+			_frame++;
 
 			return true;
 		}
@@ -315,7 +315,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public int Frame => _frame;
 
-		public string SystemId => "A78"; 
+		public string SystemId => VSystemID.Raw.A78;
 
 		public bool DeterministicEmulation { get; set; }
 
@@ -414,7 +414,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			tia.AudioClocks = 0;
 			master_audio_clock = 0;
 			_blip.Clear();
-
 		}
 
 		public void DisposeSound()

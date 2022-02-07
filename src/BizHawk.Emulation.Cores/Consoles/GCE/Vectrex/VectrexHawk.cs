@@ -1,21 +1,21 @@
 ﻿using System;
 
-using BizHawk.Common.BufferExtensions;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.MC6809;
 
 namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 {
-	[Core(
-		"VectrexHawk",
-		"",
-		isPorted: false,
-		isReleased: true,
-		displayName: "Vectrex")]
+	[Core(CoreNames.VectrexHawk, "")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class VectrexHawk : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, 
 	ISettable<object, VectrexHawk.VectrexSyncSettings>
 	{
+		internal static class RomChecksums
+		{
+			public const string Minestorm = "SHA1:65D07426B520DDD3115D40F255511E0FD2E20AE7";
+		}
+
 		public byte[] RAM = new byte[0x400];
 
 		public byte[] _bios, minestorm;
@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		public Audio audio;
 		public SerialPort serialport;
 
-		[CoreConstructor("VEC")]
+		[CoreConstructor(VSystemID.Raw.VEC)]
 		public VectrexHawk(CoreComm comm, byte[] rom, VectrexHawk.VectrexSyncSettings syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
@@ -54,21 +54,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			_syncSettings = (VectrexSyncSettings)syncSettings ?? new VectrexSyncSettings();
 			_controllerDeck = new VectrexHawkControllerDeck(_syncSettings.Port1, _syncSettings.Port2);
 
-			byte[] Bios = null;
-			byte[] Mine = null;
+			/*var Bios =*/ _bios = comm.CoreFileProvider.GetFirmwareOrThrow(new("VEC", "Bios"), "BIOS Not Found, Cannot Load");
+			/*var Mine =*/ minestorm = comm.CoreFileProvider.GetFirmwareOrThrow(new("VEC", "Minestorm"), "Minestorm Not Found, Cannot Load");
 
-			Bios = comm.CoreFileProvider.GetFirmware("VEC", "Bios", true, "BIOS Not Found, Cannot Load");
-			_bios = Bios;
-
-			Mine = comm.CoreFileProvider.GetFirmware("VEC", "Minestorm", true, "Minestorm Not Found, Cannot Load");
-			minestorm = Mine;
-
-			Console.WriteLine("SHA1:" + rom.HashSHA1(0, rom.Length));
+			var romHashSHA1 = SHA1Checksum.ComputePrefixedHex(rom);
+			Console.WriteLine(romHashSHA1);
 
 			_rom = rom;
 
-			// If the game is minstorm, then no cartridge is inserted, retun 0xFF
-			if (rom.HashSHA1(0, rom.Length) == "65D07426B520DDD3115D40F255511E0FD2E20AE7")
+			// If the game is minestorm, then no cartridge is inserted, retun 0xFF
+			if (romHashSHA1 == RomChecksums.Minestorm)
 			{
 				_rom  = new byte[0x8000];
 
@@ -113,7 +108,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			_settings = new object(); // TODO: wtf is this
 			_syncSettings = (VectrexSyncSettings)syncSettings ?? new VectrexSyncSettings();
 
-			_tracer = new TraceBuffer { Header = cpu.TraceHeader };
+			_tracer = new TraceBuffer(cpu.TraceHeader);
 			ser.Register<ITraceable>(_tracer);
 			ser.Register<IStatable>(new StateSerializer(SyncState));
 			SetupMemoryDomains();
@@ -164,8 +159,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		private void Setup_Mapper()
 		{
-			mapper = new MapperDefault();
+			if (_rom.Length == 0x10000)
+			{
+				mapper = new Mapper_64K();
+			}
+			else
+			{
+				mapper = new MapperDefault();
+			}
+			
 			mapper.Core = this;
+			mapper.Initialize();
 		}
 	}
 }

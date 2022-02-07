@@ -68,21 +68,16 @@ namespace BizHawk.Client.Common
 			get
 			{
 				double dblSeconds;
-				var core = Header[HeaderKeys.Core];
 
-				if (Header.ContainsKey(HeaderKeys.CycleCount) && (core == CoreNames.Gambatte || core == CoreNames.SubGbHawk))
+				if (Header.TryGetValue(HeaderKeys.CycleCount, out var numCyclesStr) && Header.TryGetValue(HeaderKeys.ClockRate, out var clockRateStr))
 				{
-					ulong numCycles = Convert.ToUInt64(Header[HeaderKeys.CycleCount]);
-					double cyclesPerSecond = PlatformFrameRates.GetFrameRate("GB_Clock", IsPal);
-					dblSeconds = numCycles / cyclesPerSecond;
+					var numCycles = Convert.ToUInt64(numCyclesStr);
+					var clockRate = Convert.ToDouble(clockRateStr);
+					dblSeconds = numCycles / clockRate;
 				}
 				else
 				{
-					ulong numFrames = (ulong) FrameCount;
-					if (Header.ContainsKey(HeaderKeys.VBlankCount))
-					{
-						numFrames = Convert.ToUInt64(Header[HeaderKeys.VBlankCount]);
-					}
+					var numFrames = (ulong)FrameCount;
 					dblSeconds = numFrames / FrameRate;
 				}
 
@@ -144,7 +139,7 @@ namespace BizHawk.Client.Common
 		{
 			if (frame < FrameCount && frame >= 0)
 			{
-				_adapter ??= new Bk2Controller(Session.MovieController.Definition);
+				_adapter ??= new Bk2Controller(LogKey, Session.MovieController.Definition);
 				_adapter.SetFromMnemonic(Log[frame]);
 				return _adapter;
 			}

@@ -10,7 +10,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class BatchRun : Form
+	public partial class BatchRun : Form, IDialogParent
 	{
 		private readonly Config _config;
 

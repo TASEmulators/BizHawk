@@ -19,11 +19,9 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 		public int opcode;
 
 		public TraceInfo CP1610State(bool disassemble = true)
-		{
-			return new TraceInfo
-			{
-				Disassembly = $"{RegisterPC - 1:X4}:  {opcode:X2}  {(disassemble ? Disassemble((ushort)(RegisterPC - 1), out _) : "---")} ".PadRight(26),
-				RegisterInfo = string.Join(" ",
+			=> new(
+				disassembly: $"{RegisterPC - 1:X4}:  {opcode:X2}  {(disassemble ? Disassemble((ushort)(RegisterPC - 1), out _) : "---")} ".PadRight(26),
+				registerInfo: string.Join(" ",
 					new[]
 					{
 						$"Cy:{TotalExecutedCycles}",
@@ -34,10 +32,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 							FlagO ? "O" : "o",
 							FlagI ? "I" : "i",
 							FlagD ? "D" : "d")
-					}
-						.Concat(Register.Select((r, i) => $"R{i}:{4:X4}")))
-			};
-		}	
+					}.Concat(Register.Select((r, i) => $"R{i}:{r:X4}"))));
 
 		private void Calc_FlagC(int result)
 		{
@@ -52,6 +47,17 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 			FlagO = (
 				(op1_neg && op2_neg && !result_neg) ||
 				(!op1_neg && !op2_neg && result_neg)
+			);
+		}
+
+		private void Calc_FlagO_Sub(int op1, int op2, int result)
+		{
+			bool op1_neg = ((op1 & 0x8000) != 0);
+			bool op2_neg = ((op2 & 0x8000) != 0);
+			bool result_neg = ((result & 0x8000) != 0);
+			FlagO = (
+				(op1_neg && !op2_neg && !result_neg) ||
+				(!op1_neg && op2_neg && result_neg)
 			);
 		}
 
@@ -137,13 +143,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 			*/
 			if (FlagI && Interruptible && !IntRM && !Interrupted)
 			{
-				if (Logging)
-				{
-					Log.WriteLine("------");
-					Log.WriteLine();
-					Log.WriteLine("Interrupt");
-					Log.Flush();
-				}
+				TraceCallback?.Invoke(new(disassembly: "====IRQ====", registerInfo: string.Empty));
 				Interrupted = true;
 				Interruptible = false;
 				Indirect_Set(6, 7);
@@ -159,16 +159,6 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				PendingCycles--;
 				TotalExecutedCycles++;
 				return 1;
-			}
-
-
-			if (Logging)
-			{
-				int addrToAdvance;
-				Log.WriteLine("------");
-				Log.WriteLine();
-				Log.WriteLine(Disassemble(RegisterPC, out addrToAdvance));
-				Log.Flush();
 			}
 
 			byte dest, src, mem;
@@ -190,7 +180,11 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 			switch (opcode)
 			{
 				case 0x000: // HLT
-					throw new ArgumentException(UNEXPECTED_HLT);
+					// CPU is in an unrecoverable state
+					RegisterPC--;
+					cycles = 4;
+					Interruptible = false;
+					break;
 				case 0x001: // SDBD
 					FlagD = true;
 					cycles = 4;
@@ -316,7 +310,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 					var ones = (dest_value ^ 0xFFFF);
 					result = ones + 1;
 					Calc_FlagC(result);
-					Calc_FlagO_Add(ones, 1, result);
+					Calc_FlagO_Sub(dest_value, 0, result);
 					result &= 0xFFFF;
 					Calc_FlagS(result);
 					Calc_FlagZ(result);
@@ -367,7 +361,10 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				// SIN
 				case 0x036:
 				case 0x037:
-					throw new ArgumentException(UNEXPECTED_SIN);
+					// pin that this opcode uses is not connected on intellivision, so treat it as a nop for now
+					cycles = 6;
+					Interruptible = false;
+					break;
 				// RSWD
 				case 0x038:
 				case 0x039:
@@ -858,7 +855,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 					twos = (0xFFFF ^ src_value) + 1;
 					result = dest_value + twos;
 					Calc_FlagC(result);
-					Calc_FlagO_Add(dest_value, twos, result);
+					Calc_FlagO_Sub(dest_value, src_value, result);
 					result &= 0xFFFF;
 					Calc_FlagS(result);
 					Calc_FlagZ(result);
@@ -938,7 +935,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 					twos = (0xFFFF ^ src_value) + 1;
 					result = dest_value + twos;
 					Calc_FlagC(result);
-					Calc_FlagO_Add(dest_value, twos, result);
+					Calc_FlagO_Sub(dest_value, src_value, result);
 					result &= 0xFFFF;
 					Calc_FlagS(result);
 					Calc_FlagZ(result);
@@ -1519,7 +1516,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 					twos = (0xFFFF ^ addr_read) + 1;
 					result = dest_value + twos;
 					Calc_FlagC(result);
-					Calc_FlagO_Add(dest_value, twos, result);
+					Calc_FlagO_Sub(dest_value, addr_read, result);
 					result &= 0xFFFF;
 					Calc_FlagS(result);
 					Calc_FlagZ(result);
@@ -1592,7 +1589,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 					twos = (0xFFFF ^ mem_read) + 1;
 					result = dest_value + twos;
 					Calc_FlagC(result);
-					Calc_FlagO_Add(dest_value, twos, result);
+					Calc_FlagO_Sub(dest_value, mem_read, result);
 					result &= 0xFFFF;
 					Calc_FlagS(result);
 					Calc_FlagZ(result);
@@ -1615,7 +1612,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 					twos = (0xFFFF ^ addr_read) + 1;
 					result = dest_value + twos;
 					Calc_FlagC(result);
-					Calc_FlagO_Add(dest_value, twos, result);
+					Calc_FlagO_Sub(dest_value, addr_read, result);
 					result &= 0xFFFF;
 					Calc_FlagS(result);
 					Calc_FlagZ(result);
@@ -1687,7 +1684,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 					twos = (0xFFFF ^ mem_read) + 1;
 					result = dest_value + twos;
 					Calc_FlagC(result);
-					Calc_FlagO_Add(dest_value, twos, result);
+					Calc_FlagO_Sub(dest_value, mem_read, result);
 					result &= 0xFFFF;
 					Calc_FlagS(result);
 					Calc_FlagZ(result);

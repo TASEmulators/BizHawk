@@ -21,10 +21,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public LuaFunctionList RegisteredFunctions { get; }
 
+		public PathEntryCollection PathEntries { get; }
+
 		public LuaFileList ScriptList { get; }
 
-		public UnixLuaLibraries(LuaFileList scriptList, LuaFunctionList registeredFuncList)
+		public UnixLuaLibraries(LuaFileList scriptList, LuaFunctionList registeredFuncList, PathEntryCollection pathEntries)
 		{
+			PathEntries = pathEntries;
 			RegisteredFunctions = registeredFuncList;
 			ScriptList = scriptList;
 		}

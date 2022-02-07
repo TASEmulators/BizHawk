@@ -775,7 +775,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 				{
 					nonMaskableInterruptPending = false;
 
-					TraceCallback?.Invoke(new TraceInfo { Disassembly = "====NMI====", RegisterInfo = "" });
+					TraceCallback?.Invoke(new(disassembly: "====NMI====", registerInfo: string.Empty));
 
 					iff2 = iff1;
 					iff1 = false;
@@ -796,7 +796,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					iff1 = iff2 = false;
 					EI_pending = 0;
 
-					TraceCallback?.Invoke(new TraceInfo { Disassembly = "====IRQ====", RegisterInfo = "" });
+					TraceCallback?.Invoke(new(disassembly: "====IRQ====", registerInfo: string.Empty));
 
 					switch (interruptMode)
 					{
@@ -867,10 +867,9 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 				}
 			}
 
-			return new TraceInfo
-			{
-				Disassembly = $"{RegPC:X4}: {byte_code.PadRight(12)} {disasm.PadRight(26)}",
-				RegisterInfo = string.Join(" ",
+			return new(
+				disassembly: $"{RegPC:X4}: {byte_code.PadRight(12)} {disasm.PadRight(26)}",
+				registerInfo: string.Join(" ",
 					$"AF:{(Regs[A] << 8) + Regs[F]:X4}",
 					$"BC:{(Regs[B] << 8) + Regs[C]:X4}",
 					$"DE:{(Regs[D] << 8) + Regs[E]:X4}",
@@ -888,8 +887,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						Flag5 ? "5" : "-",
 						FlagZ ? "Z" : "z",
 						FlagS ? "S" : "s",
-						FlagI ? "E" : "e"))
-			};
+						FlagI ? "E" : "e")));
 		}
 
 		/// <summary>

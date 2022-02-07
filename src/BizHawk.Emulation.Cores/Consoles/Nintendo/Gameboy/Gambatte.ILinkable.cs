@@ -4,6 +4,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
 	public partial class Gameboy : ILinkable
 	{
-		public bool LinkConnected { get; set; }
+		private bool _linkConnected;
+
+		public bool LinkConnected
+		{
+			get => _linkConnected;
+			set { return; }
+		}
 	}
 }

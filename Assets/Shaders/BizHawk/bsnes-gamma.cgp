@@ -1,0 +1,4 @@
+shaders = 1
+
+shader0 = bsnes-gamma.cg
+scale0 = 1

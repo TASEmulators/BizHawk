@@ -21,25 +21,19 @@
 		/// that's right, we can only have one sink.
 		/// a sink can route to two other sinks if it has to, though
 		/// </summary>
-		ITraceSink Sink { set; }
-
-		/// <summary>
-		/// Gets a value indicating whether racing is enabled
-		/// This is defined as equivalent to Sink != null
-		/// It's put here because it's such a common operation to check whether it's enabled, and it's not nice to write Sink != null all over
-		/// </summary>
-		bool Enabled { get; }
-
-		/// <summary>
-		/// This is defined as equivalent to Sink.Put
-		/// TBD: could it be defined as equivalent to if(Enabled) Sink.Put()? Probably not, that's just a small amount of wasted work
-		/// </summary>
-		void Put(TraceInfo info);
+		ITraceSink? Sink { get; set; }
 	}
 
-	public class TraceInfo
+	public readonly struct TraceInfo
 	{
-		public string Disassembly { get; set; }
-		public string RegisterInfo { get; set; }
+		public readonly string Disassembly;
+
+		public readonly string RegisterInfo;
+
+		public TraceInfo(string disassembly, string registerInfo)
+		{
+			Disassembly = disassembly;
+			RegisterInfo = registerInfo;
+		}
 	}
 }

@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Client.Common.movie.import
+﻿using BizHawk.Common;
+
+namespace BizHawk.Client.Common.movie.import
 {
 	// ReSharper disable once UnusedMember.Global
 	[ImporterFor("BizHawk", ".bkm")]
@@ -16,10 +18,7 @@
 			}
 
 			Result.Movie.HeaderEntries.Clear();
-			foreach (var kvp in bkm.Header)
-			{
-				Result.Movie.HeaderEntries[kvp.Key] = kvp.Value;
-			}
+			foreach (var (k, v) in bkm.Header) Result.Movie.HeaderEntries[k] = v;
 
 			Result.Movie.SyncSettingsJson = bkm.SyncSettingsJson;
 

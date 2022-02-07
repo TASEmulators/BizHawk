@@ -40,6 +40,7 @@ namespace BizHawk.Client.EmuHawk
 			EditContextMenuItem.Image = Resources.Cut;
 			RemoveContextMenuItem.Image = Resources.Delete;
 			DuplicateContextMenuItem.Image = Resources.Duplicate;
+			SplitContextMenuItem.Image = Resources.Split;
 			PokeContextMenuItem.Image = Resources.Poke;
 			FreezeContextMenuItem.Image = Resources.Freeze;
 			UnfreezeAllContextMenuItem.Image = Resources.Unfreeze;
@@ -57,6 +58,7 @@ namespace BizHawk.Client.EmuHawk
 			cutToolStripButton.Image = Resources.Delete;
 			clearChangeCountsToolStripButton.Image = Resources.Placeholder;
 			duplicateWatchToolStripButton.Image = Resources.Duplicate;
+			SplitWatchToolStripButton.Image = Resources.Split;
 			PokeAddressToolBarItem.Image = Resources.Poke;
 			FreezeAddressToolBarItem.Image = Resources.Freeze;
 			seperatorToolStripButton.Image = Resources.InsertSeparator;
@@ -70,6 +72,7 @@ namespace BizHawk.Client.EmuHawk
 			EditWatchMenuItem.Image = Resources.Cut;
 			RemoveWatchMenuItem.Image = Resources.Delete;
 			DuplicateWatchMenuItem.Image = Resources.Duplicate;
+			SplitWatchMenuItem.Image = Resources.Split;
 			PokeAddressMenuItem.Image = Resources.Poke;
 			FreezeAddressMenuItem.Image = Resources.Freeze;
 			InsertSeparatorMenuItem.Image = Resources.InsertSeparator;
@@ -102,6 +105,9 @@ namespace BizHawk.Client.EmuHawk
 			SetColumns();
 		}
 
+		public override bool IsActive => Config!.DisplayRamWatch || base.IsActive;
+		public override bool IsLoaded => base.IsActive;
+
 		private void SetColumns()
 		{
 			WatchListView.AllColumns.AddRange(Settings.Columns);
@@ -117,14 +123,14 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Columns = new List<RollColumn>
 				{
-					new RollColumn { Text = "Address", Name = WatchList.Address, Visible = true, UnscaledWidth = 60, Type = ColumnType.Text },
-					new RollColumn { Text = "Value", Name = WatchList.Value, Visible = true, UnscaledWidth = 59, Type = ColumnType.Text },
-					new RollColumn { Text = "Prev", Name = WatchList.Prev, Visible = false, UnscaledWidth = 59, Type = ColumnType.Text },
-					new RollColumn { Text = "Changes", Name = WatchList.ChangesCol, Visible = true, UnscaledWidth = 60, Type = ColumnType.Text },
-					new RollColumn { Text = "Diff", Name = WatchList.Diff, Visible = false, UnscaledWidth = 59, Type = ColumnType.Text },
-					new RollColumn { Text = "Type", Name = WatchList.Type, Visible = false, UnscaledWidth = 55, Type = ColumnType.Text },
-					new RollColumn { Text = "Domain", Name = WatchList.Domain, Visible = true, UnscaledWidth = 55, Type = ColumnType.Text },
-					new RollColumn { Text = "Notes", Name = WatchList.Notes, Visible = true, UnscaledWidth = 128, Type = ColumnType.Text }
+					new() { Text = "Address", Name = WatchList.Address, Visible = true, UnscaledWidth = 60, Type = ColumnType.Text },
+					new() { Text = "Value", Name = WatchList.Value, Visible = true, UnscaledWidth = 59, Type = ColumnType.Text },
+					new() { Text = "Prev", Name = WatchList.Prev, Visible = false, UnscaledWidth = 59, Type = ColumnType.Text },
+					new() { Text = "Changes", Name = WatchList.ChangesCol, Visible = true, UnscaledWidth = 60, Type = ColumnType.Text },
+					new() { Text = "Diff", Name = WatchList.Diff, Visible = false, UnscaledWidth = 59, Type = ColumnType.Text },
+					new() { Text = "Type", Name = WatchList.Type, Visible = false, UnscaledWidth = 55, Type = ColumnType.Text },
+					new() { Text = "Domain", Name = WatchList.Domain, Visible = true, UnscaledWidth = 55, Type = ColumnType.Text },
+					new() { Text = "Notes", Name = WatchList.Notes, Visible = true, UnscaledWidth = 128, Type = ColumnType.Text }
 				};
 			}
 
@@ -692,12 +698,15 @@ namespace BizHawk.Client.EmuHawk
 		{
 			EditWatchMenuItem.Enabled =
 				DuplicateWatchMenuItem.Enabled =
+				SplitWatchMenuItem.Enabled =
 				RemoveWatchMenuItem.Enabled =
 				MoveUpMenuItem.Enabled =
 				MoveDownMenuItem.Enabled =
 				MoveTopMenuItem.Enabled =
 				MoveBottomMenuItem.Enabled =
 				SelectedIndices.Any();
+
+			SplitWatchMenuItem.Enabled = MaySplitAllSelected;
 
 			PokeAddressMenuItem.Enabled =
 				FreezeAddressMenuItem.Enabled =
@@ -765,6 +774,38 @@ namespace BizHawk.Client.EmuHawk
 		private void DuplicateWatchMenuItem_Click(object sender, EventArgs e)
 		{
 			EditWatch(duplicate: true);
+		}
+
+		private static (Watch A, Watch B) SplitWatch(Watch ab)
+		{
+			var newSize = ab.Size switch
+			{
+				WatchSize.DWord => WatchSize.Word,
+				WatchSize.Word => WatchSize.Byte,
+				_ => throw new Exception()
+			};
+			var a = Watch.GenerateWatch(ab.Domain, ab.Address, newSize, ab.Type, ab.BigEndian, ab.Notes);
+			var b = Watch.GenerateWatch(ab.Domain, ab.Address + (int) newSize, newSize, ab.Type, ab.BigEndian, ab.Notes);
+			return ab.BigEndian ? (a, b) : (b, a);
+		}
+
+		private void SplitWatchAt(int index)
+		{
+			var ab = _watches[index];
+			if (!ab.IsSplittable) return;
+			var (a, b) = SplitWatch(ab);
+			_watches[index] = a;
+			_watches.Insert(index + 1, b);
+		}
+
+		private void SplitWatchMenuItem_Click(object sender, EventArgs e)
+		{
+			var indices = SelectedIndices.ToList();
+			for (var indexIndex = indices.Count - 1; indexIndex >= 0; indexIndex--) SplitWatchAt(indices[indexIndex]);
+			Changes();
+			UpdateWatchCount();
+			WatchListView.RowCount = _watches.Count;
+			GeneralUpdate();
 		}
 
 		private void PokeAddressMenuItem_Click(object sender, EventArgs e)
@@ -1031,6 +1072,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private bool MaySplitAllSelected => SelectedIndices.Any() && SelectedWatches.All(static w => w.IsSplittable);
+
 		private void ListViewContextMenu_Opening(object sender, CancelEventArgs e)
 		{
 			var indexes = WatchListView.SelectedRows.ToList();
@@ -1038,6 +1081,7 @@ namespace BizHawk.Client.EmuHawk
 			EditContextMenuItem.Visible =
 				RemoveContextMenuItem.Visible =
 				DuplicateContextMenuItem.Visible =
+				SplitContextMenuItem.Visible =
 				PokeContextMenuItem.Visible =
 				FreezeContextMenuItem.Visible =
 				Separator4.Visible =
@@ -1058,6 +1102,8 @@ namespace BizHawk.Client.EmuHawk
 				Debuggable != null &&
 				Debuggable.MemoryCallbacksAvailable() &&
 				SelectedWatches.All(w => w.Domain.Name == (MemoryDomains != null ? MemoryDomains.SystemBus.Name : ""));
+
+			SplitContextMenuItem.Enabled = MaySplitAllSelected;
 
 			PokeContextMenuItem.Enabled =
 				FreezeContextMenuItem.Visible =

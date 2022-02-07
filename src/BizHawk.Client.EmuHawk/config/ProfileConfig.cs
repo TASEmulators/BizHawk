@@ -113,7 +113,7 @@ namespace BizHawk.Client.EmuHawk
 			PutSyncSettings<N64>(n64Settings);
 
 			// SNES
-			_config.PreferredCores["SNES"] = CoreNames.Snes9X;
+			_config.PreferredCores[VSystemID.Raw.SNES] = CoreNames.Snes9X;
 
 			// Genesis
 			var genesisSettings = GetSyncSettings<GPGX, GPGX.GPGXSyncSettings>();
@@ -138,11 +138,11 @@ namespace BizHawk.Client.EmuHawk
 			PutSyncSettings<Atari2600>(a2600Settings);
 
 			// NES
-			_config.PreferredCores["NES"] = CoreNames.QuickNes;
+			_config.PreferredCores[VSystemID.Raw.NES] = CoreNames.QuickNes;
 
 			// GB
-			_config.PreferredCores["GB"] = CoreNames.Gambatte;
-			_config.PreferredCores["GBC"] = CoreNames.Gambatte;
+			_config.PreferredCores[VSystemID.Raw.GB] = CoreNames.Gambatte;
+			_config.PreferredCores[VSystemID.Raw.GBC] = CoreNames.Gambatte;
 			var s = GetSyncSettings<Gameboy, Gameboy.GambatteSyncSettings>();
 			s.EnableBIOS = false;
 			PutSyncSettings<Gameboy>(s);
@@ -153,7 +153,7 @@ namespace BizHawk.Client.EmuHawk
 			_config.Savestates.CompressionLevelNormal = 5;
 
 			// SNES
-			_config.PreferredCores["SNES"] = CoreNames.Bsnes;
+			_config.PreferredCores[VSystemID.Raw.SNES] = CoreNames.Bsnes;
 
 			// SMS
 			var smsSettings = GetSyncSettings<SMS, SMS.SmsSyncSettings>();
@@ -168,11 +168,11 @@ namespace BizHawk.Client.EmuHawk
 			PutSyncSettings<Atari2600>(a2600Settings);
 
 			// NES
-			_config.PreferredCores["NES"] = CoreNames.NesHawk;
+			_config.PreferredCores[VSystemID.Raw.NES] = CoreNames.NesHawk;
 
 			// GB
-			_config.PreferredCores["GB"] = CoreNames.Gambatte;
-			_config.PreferredCores["GBC"] = CoreNames.Gambatte;
+			_config.PreferredCores[VSystemID.Raw.GB] = CoreNames.Gambatte;
+			_config.PreferredCores[VSystemID.Raw.GBC] = CoreNames.Gambatte;
 			var s = GetSyncSettings<Gameboy, Gameboy.GambatteSyncSettings>();
 			s.EnableBIOS = true;
 			PutSyncSettings<Gameboy>(s);
@@ -197,7 +197,7 @@ namespace BizHawk.Client.EmuHawk
 			PutSyncSettings<N64>(n64Settings);
 
 			// SNES
-			_config.PreferredCores["SNES"] = CoreNames.Bsnes;
+			_config.PreferredCores[VSystemID.Raw.SNES] = CoreNames.Bsnes;
 
 			// Genesis
 			var genesisSettings = GetSyncSettings<GPGX, GPGX.GPGXSyncSettings>();
@@ -217,11 +217,11 @@ namespace BizHawk.Client.EmuHawk
 			PutSyncSettings<Atari2600>(a2600Settings);
 
 			// NES
-			_config.PreferredCores["NES"] = CoreNames.NesHawk;
+			_config.PreferredCores[VSystemID.Raw.NES] = CoreNames.NesHawk;
 
 			// GB
-			_config.PreferredCores["GB"] = CoreNames.Gambatte;
-			_config.PreferredCores["GBC"] = CoreNames.Gambatte;
+			_config.PreferredCores[VSystemID.Raw.GB] = CoreNames.Gambatte;
+			_config.PreferredCores[VSystemID.Raw.GBC] = CoreNames.Gambatte;
 			var s = GetSyncSettings<Gameboy, Gameboy.GambatteSyncSettings>();
 			s.EnableBIOS = true;
 			PutSyncSettings<Gameboy>(s);

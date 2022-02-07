@@ -17,7 +17,7 @@ namespace BizHawk.Client.Common
 
 		private readonly Action<string> LogCallback;
 
-		private readonly IDisplayManagerForApi _displayManager;
+		private readonly DisplayManagerBase _displayManager;
 
 		private readonly Dictionary<string, Image> _imageCache = new Dictionary<string, Image>();
 
@@ -39,9 +39,9 @@ namespace BizHawk.Client.Common
 
 		private Color? _defaultTextBackground = Color.FromArgb(128, 0, 0, 0);
 
-		private DisplaySurface _clientSurface;
+		private IDisplaySurface _clientSurface;
 
-		private DisplaySurface _GUISurface;
+		private IDisplaySurface _GUISurface;
 
 		private (int Left, int Top, int Right, int Bottom) _padding = (0, 0, 0, 0);
 
@@ -51,7 +51,7 @@ namespace BizHawk.Client.Common
 
 		public bool HasGUISurface => _GUISurface != null;
 
-		public GuiApi(Action<string> logCallback, IDisplayManagerForApi displayManager)
+		public GuiApi(Action<string> logCallback, DisplayManagerBase displayManager)
 		{
 			LogCallback = logCallback;
 			_displayManager = displayManager;
@@ -64,14 +64,6 @@ namespace BizHawk.Client.Common
 		private Graphics GetGraphics(DisplaySurfaceID? surfaceID)
 		{
 			var g = GetRelevantSurface(surfaceID)?.GetGraphics() ?? Graphics.FromImage(_nullGraphicsBitmap);
-			var (tx, ty) = Emulator.ScreenLogicalOffsets();
-			if (tx != 0 || ty != 0)
-			{
-				var transform = g.Transform;
-				transform.Translate(-tx, -ty);
-				g.Transform = transform;
-			}
-
 			return g;
 		}
 
@@ -81,7 +73,7 @@ namespace BizHawk.Client.Common
 
 		public void SetAttributes(ImageAttributes a) => _attributes = a;
 
-		private DisplaySurface GetRelevantSurface(DisplaySurfaceID? surfaceID)
+		private IDisplaySurface GetRelevantSurface(DisplaySurfaceID? surfaceID)
 		{
 			var nnID = surfaceID ?? _usingSurfaceID ?? throw new Exception();
 			void ThisIsTheLuaAutolockHack()
@@ -189,7 +181,8 @@ namespace BizHawk.Client.Common
 
 		public (int Left, int Top, int Right, int Bottom) GetPadding() => _padding;
 
-		public void AddMessage(string message) => _displayManager.OSD.AddMessage(message);
+		public void AddMessage(string message, int? duration = null)
+			=> _displayManager.OSD.AddMessage(message, duration);
 
 		public void ClearGraphics(DisplaySurfaceID? surfaceID = null) => GetRelevantSurface(surfaceID).Clear();
 

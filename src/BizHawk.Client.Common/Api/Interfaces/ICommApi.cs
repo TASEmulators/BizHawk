@@ -6,12 +6,12 @@ namespace BizHawk.Client.Common
 	{
 		HttpCommunication? HTTP { get; }
 
-		MemoryMappedFiles? MMF { get; }
+		MemoryMappedFiles MMF { get; }
 
 		SocketServer? Sockets { get; }
 
 #if ENABLE_WEBSOCKETS
-		WebSocketServer? WebSockets { get; }
+		WebSocketServer WebSockets { get; }
 #endif
 
 		string? HttpTest();

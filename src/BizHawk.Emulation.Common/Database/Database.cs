@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -7,7 +9,6 @@ using System.Text;
 using System.Threading;
 
 using BizHawk.Common;
-using BizHawk.Common.BufferExtensions;
 
 namespace BizHawk.Emulation.Common
 {
@@ -19,6 +20,12 @@ namespace BizHawk.Emulation.Common
 		/// blocks until the DB is done loading
 		/// </summary>
 		private static readonly EventWaitHandle acquire = new EventWaitHandle(false, EventResetMode.ManualReset);
+
+		private static string _bundledRoot = null;
+
+		private static IList<string> _expected = null;
+
+		private static string _userRoot = null;
 
 		private static string RemoveHashType(string hash)
 		{
@@ -36,23 +43,26 @@ namespace BizHawk.Emulation.Common
 			return hash;
 		}
 
-		private static void LoadDatabase_Escape(string line, string path)
+		private static void LoadDatabase_Escape(string line, bool inUser, bool silent)
 		{
-			if (!line.ToUpperInvariant().StartsWith("#INCLUDE"))
-			{
-				return;
-			}
+			if (!line.StartsWith("#include", StringComparison.InvariantCultureIgnoreCase)) return;
 
-			line = line.Substring(8).TrimStart();
-			var filename = Path.Combine(path, line);
+			var isUserInclude = line.StartsWith("#includeuser", StringComparison.InvariantCultureIgnoreCase);
+			var searchUser = inUser || isUserInclude;
+			line = line.Substring(isUserInclude ? 12 : 8).TrimStart();
+			var filename = Path.Combine(searchUser ? _userRoot : _bundledRoot, line);
 			if (File.Exists(filename))
 			{
-				Debug.WriteLine("loading external game database {0}", line);
-				initializeWork(filename);
+				if (!silent) Util.DebugWriteLine($"loading external game database {line} ({(searchUser ? "user" : "bundled")})");
+				initializeWork(filename, inUser: searchUser, silent: silent);
 			}
-			else
+			else if (inUser)
 			{
-				Debug.WriteLine("BENIGN: missing external game database {0}", line);
+				Util.DebugWriteLine($"BENIGN: missing external game database {line} (user)");
+			}
+			else if (!isUserInclude)
+			{
+				throw new FileNotFoundException($"missing external game database {line} (bundled)");
 			}
 		}
 
@@ -91,8 +101,9 @@ namespace BizHawk.Emulation.Common
 
 		private static bool initialized = false;
 
-		private static void initializeWork(string path)
+		private static void initializeWork(string path, bool inUser, bool silent)
 		{
+			if (!inUser) _expected.Remove(Path.GetFileName(path));
 			//reminder: this COULD be done on several threads, if it takes even longer
 			using var reader = new StreamReader(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read));
 			while (reader.EndOfStream == false)
@@ -107,7 +118,7 @@ namespace BizHawk.Emulation.Common
 
 					if (line.StartsWith("#"))
 					{
-						LoadDatabase_Escape(line, Path.GetDirectoryName(path));
+						LoadDatabase_Escape(line, inUser: inUser, silent: silent);
 						continue;
 					}
 
@@ -141,33 +152,51 @@ namespace BizHawk.Emulation.Common
 						Region = items.Length >= 7 ? items[6] : "",
 						ForcedCore = items.Length >= 8 ? items[7].ToLowerInvariant() : ""
 					};
-
-#if DEBUG
-					if (DB.ContainsKey(game.Hash))
+					if (game.Hash is "DA39A3EE5E6B4B0D3255BFEF95601890AFD80709" or "D41D8CD98F00B204E9800998ECF8427E")
 					{
-						Console.WriteLine("gamedb: Multiple hash entries {0}, duplicate detected on \"{1}\" and \"{2}\"", game.Hash, game.Name, DB[game.Hash].Name);
+						Console.WriteLine($"WARNING: gamedb {path} contains entry for empty rom as \"{game.Name}\"!");
 					}
-#endif
+					if (!silent && DB.TryGetValue(game.Hash, out var dupe))
+					{
+						Console.WriteLine("gamedb: Multiple hash entries {0}, duplicate detected on \"{1}\" and \"{2}\"", game.Hash, game.Name, dupe.Name);
+					}
 
 					DB[game.Hash] = game;
 				}
+				catch (FileNotFoundException e) when (e.Message.Contains("missing external game database"))
+				{
+#if DEBUG
+					throw;
+#else
+					Console.WriteLine(e.Message);
+#endif
+				}
 				catch
 				{
-					Debug.WriteLine($"Error parsing database entry: {line}");
+					Util.DebugWriteLine($"Error parsing database entry: {line}");
 				}
 			}
 
 			acquire.Set();
 		}
 
-		public static void InitializeDatabase(string path)
+		public static void InitializeDatabase(string path, bool silent)
 		{
 			if (initialized) throw new InvalidOperationException("Did not expect re-initialize of game Database");
 			initialized = true;
 
+			_bundledRoot = Path.GetDirectoryName(path);
+			_userRoot = Environment.GetEnvironmentVariable("BIZHAWK_DATA_HOME");
+			if (!string.IsNullOrEmpty(_userRoot) && Directory.Exists(_userRoot)) _userRoot = Path.Combine(_userRoot, "gamedb");
+			else _userRoot = _bundledRoot;
+			Console.WriteLine($"user root: {_userRoot}");
+
+			_expected = new DirectoryInfo(_bundledRoot!).EnumerateFiles("*.txt").Select(static fi => fi.Name).ToList();
+
 			var stopwatch = Stopwatch.StartNew();
 			ThreadPool.QueueUserWorkItem(_=> {
-				initializeWork(path);
+				initializeWork(path, inUser: false, silent: silent);
+				if (_expected.Count is not 0) Util.DebugWriteLine($"extra bundled gamedb files were not #included: {string.Join(", ", _expected)}");
 				Util.DebugWriteLine("GameDB load: " + stopwatch.Elapsed + " sec");
 			});
 		}
@@ -191,20 +220,20 @@ namespace BizHawk.Emulation.Common
 		{
 			acquire.WaitOne();
 
-			var hash = $"{CRC32.Calculate(romData):X8}";
-			if (DB.TryGetValue(hash, out var cgi))
+			var hashCRC32 = CRC32.Calculate(romData).ToString("X8");
+			if (DB.TryGetValue(hashCRC32, out var cgi))
 			{
 				return new GameInfo(cgi);
 			}
 
-			hash = romData.HashMD5();
-			if (DB.TryGetValue(hash, out cgi))
+			var hashMD5 = MD5Checksum.ComputeDigestHex(romData);
+			if (DB.TryGetValue(hashMD5, out cgi))
 			{
 				return new GameInfo(cgi);
 			}
 
-			hash = romData.HashSHA1();
-			if (DB.TryGetValue(hash, out cgi))
+			var hashSHA1 = SHA1Checksum.ComputeDigestHex(romData);
+			if (DB.TryGetValue(hashSHA1, out cgi))
 			{
 				return new GameInfo(cgi);
 			}
@@ -212,15 +241,12 @@ namespace BizHawk.Emulation.Common
 			// rom is not in database. make some best-guesses
 			var game = new GameInfo
 			{
-				Hash = hash,
+				Hash = hashSHA1,
 				Status = RomStatus.NotInDatabase,
 				NotInDatabase = true
 			};
 
-			Console.WriteLine(
-				"Game was not in DB. CRC: {0:X8} MD5: {1}",
-				CRC32.Calculate(romData),
-				System.Security.Cryptography.MD5.Create().ComputeHash(romData).BytesToHexString());
+			Console.WriteLine($"Game was not in DB. CRC: {hashCRC32} MD5: {hashMD5}");
 
 			var ext = Path.GetExtension(fileName)?.ToUpperInvariant();
 
@@ -229,68 +255,68 @@ namespace BizHawk.Emulation.Common
 				case ".NES":
 				case ".UNF":
 				case ".FDS":
-					game.System = "NES";
+					game.System = VSystemID.Raw.NES;
 					break;
 
 				case ".SFC":
 				case ".SMC":
-					game.System = "SNES";
+					game.System = VSystemID.Raw.SNES;
 					break;
 
 				case ".GB":
-					game.System = "GB";
+					game.System = VSystemID.Raw.GB;
 					break;
 				case ".GBC":
-					game.System = "GBC";
+					game.System = VSystemID.Raw.GBC;
 					break;
 				case ".GBA":
-					game.System = "GBA";
+					game.System = VSystemID.Raw.GBA;
 					break;
 				case ".NDS":
-					game.System = "NDS";
+					game.System = VSystemID.Raw.NDS;
 					break;
 
 				case ".SMS":
-					game.System = "SMS";
+					game.System = VSystemID.Raw.SMS;
 					break;
 				case ".GG":
-					game.System = "GG";
+					game.System = VSystemID.Raw.GG;
 					break;
 				case ".SG":
-					game.System = "SG";
+					game.System = VSystemID.Raw.SG;
 					break;
 
 				case ".GEN":
 				case ".MD":
 				case ".SMD":
-					game.System = "GEN";
+					game.System = VSystemID.Raw.GEN;
 					break;
 
 				case ".PSF":
 				case ".MINIPSF":
-					game.System = "PSX";
+					game.System = VSystemID.Raw.PSX;
 					break;
 
 				case ".PCE":
-					game.System = "PCE";
+					game.System = VSystemID.Raw.PCE;
 					break;
 				case ".SGX":
-					game.System = "SGX";
+					game.System = VSystemID.Raw.SGX;
 					break;
 
 				case ".A26":
-					game.System = "A26";
+					game.System = VSystemID.Raw.A26;
 					break;
 				case ".A78":
-					game.System = "A78";
+					game.System = VSystemID.Raw.A78;
 					break;
 
 				case ".COL":
-					game.System = "Coleco";
+					game.System = VSystemID.Raw.Coleco;
 					break;
 
 				case ".INT":
-					game.System = "INTV";
+					game.System = VSystemID.Raw.INTV;
 					break;
 
 				case ".PRG":
@@ -298,48 +324,48 @@ namespace BizHawk.Emulation.Common
 				case ".T64":
 				case ".G64":
 				case ".CRT":
-					game.System = "C64";
+					game.System = VSystemID.Raw.C64;
 					break;
 
 				case ".TZX":
 				case ".PZX":
 				case ".CSW":
 				case ".WAV":
-					game.System = "ZXSpectrum";
+					game.System = VSystemID.Raw.ZXSpectrum;
 					break;
 
 				case ".CDT":
-					game.System = "AmstradCPC";
+					game.System = VSystemID.Raw.AmstradCPC;
 					break;
 
 				case ".TAP":
 					byte[] head = romData.Take(8).ToArray();
 					game.System = Encoding.Default.GetString(head).Contains("C64-TAPE")
-						? "C64"
-						: "ZXSpectrum";
+						? VSystemID.Raw.C64
+						: VSystemID.Raw.ZXSpectrum;
 					break;
 
 				case ".Z64":
 				case ".V64":
 				case ".N64":
-					game.System = "N64";
+					game.System = VSystemID.Raw.N64;
 					break;
 
 				case ".DEBUG":
-					game.System = "DEBUG";
+					game.System = VSystemID.Raw.DEBUG;
 					break;
 
 				case ".WS":
 				case ".WSC":
-					game.System = "WSWAN";
+					game.System = VSystemID.Raw.WSWAN;
 					break;
 
 				case ".LNX":
-					game.System = "Lynx";
+					game.System = VSystemID.Raw.Lynx;
 					break;
 
 				case ".83P":
-					game.System = "83P";
+					game.System = VSystemID.Raw.TI83;
 					break;
 
 				case ".DSK":
@@ -349,40 +375,40 @@ namespace BizHawk.Emulation.Common
 
 				case ".PO":
 				case ".DO":
-					game.System = "AppleII";
+					game.System = VSystemID.Raw.AppleII;
 					break;
 
 				case ".VB":
-					game.System = "VB";
+					game.System = VSystemID.Raw.VB;
 					break;
 
 				case ".NGP":
 				case ".NGC":
-					game.System = "NGP";
+					game.System = VSystemID.Raw.NGP;
 					break;
 
 				case ".O2":
-					game.System = "O2";
+					game.System = VSystemID.Raw.O2;
 					break;
 
 				case ".UZE":
-					game.System = "UZE";
+					game.System = VSystemID.Raw.UZE;
 					break;
 
 				case ".32X":
-					game.System = "32X";
+					game.System = VSystemID.Raw.Sega32X;
 					game.AddOption("32X", "true");
 					break;
 
 				case ".VEC":
-					game.System = "VEC";
+					game.System = VSystemID.Raw.VEC;
 					game.AddOption("VEC", "true");
 					break;
 
 				// refactor to use mame db (output of "mame -listxml" command)
 				// there's no good definition for Arcade anymore, so we might limit to coin-based machines?
 				case ".ZIP":
-					game.System = "MAME";
+					game.System = VSystemID.Raw.MAME;
 					break;
 			}
 

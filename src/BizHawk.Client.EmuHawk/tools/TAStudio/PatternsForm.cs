@@ -130,6 +130,12 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			// repeating zero times is not allowed
+			if ((int)CountNum.Value == 0)
+			{
+				CountNum.Value = 1;
+			}
+
 			if (PatternList.SelectedIndex == _counts.Count)
 			{
 				_loopAt = (int)CountNum.Value;

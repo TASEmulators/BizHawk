@@ -200,7 +200,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		public int VsyncDenominator => GateArray.Z80ClockSpeed;
 
-		public int[] GetVideoBuffer() => ProcessVideoBuffer();
+		public int[] GetVideoBuffer() => ProcessVideoBuffer()!;
 
 		public void SetupScreenSize()
 		{

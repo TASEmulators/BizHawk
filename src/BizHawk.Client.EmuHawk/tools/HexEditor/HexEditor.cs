@@ -118,7 +118,9 @@ namespace BizHawk.Client.EmuHawk
 			RecentTables = new RecentFiles(8);
 			DataSize = 1;
 
-			var font = new Font("Courier New", 8);
+			Font font = OSTailoredCode.IsUnixHost
+				? new("Liberation Mono", 9)
+				: new("Courier New", 8);
 
 			// Measure the font. There seems to be some extra horizontal padding on the first
 			// character so we'll see how much the width increases on the second character.
@@ -126,6 +128,8 @@ namespace BizHawk.Client.EmuHawk
 			var fontSize2 = TextRenderer.MeasureText("00", font);
 			_fontWidth = fontSize2.Width - fontSize1.Width;
 			_fontHeight = fontSize1.Height;
+			const int MAGIC_FIX_NUMBER_H = 4; // don't wanna know
+			if (OSTailoredCode.IsUnixHost) _fontHeight -= MAGIC_FIX_NUMBER_H;
 
 			InitializeComponent();
 			Icon = Resources.PokeIcon;
@@ -302,7 +306,7 @@ namespace BizHawk.Client.EmuHawk
 				GoToAddress(found);
 				_findStr = search;
 			}
-			else if (wrap == false)  
+			else if (wrap == false)
 			{
 				FindPrev(value, true); // Search the opposite direction if not found
 			}
@@ -349,7 +353,7 @@ namespace BizHawk.Client.EmuHawk
 				GoToAddress(found);
 				_findStr = search;
 			}
-			else if (wrap == false) 
+			else if (wrap == false)
 			{
 				FindPrev(value, true); // Search the opposite direction if not found
 			}
@@ -381,10 +385,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private char Remap(byte val)
 		{
-			if (_textTable.Any())
-			{
-				return _textTable.ContainsKey(val) ? _textTable[val] : '?';
-			}
+			if (_textTable.Count != 0) return _textTable.TryGetValue(val, out var c) ? c : '?';
 
 			if (val < ' ' || val >= 0x7F)
 			{
@@ -1052,6 +1053,14 @@ namespace BizHawk.Client.EmuHawk
 			var extra = (address % DataSize) * _fontWidth * 2;
 			var xOffset = AddressesLabel.Location.X + _fontWidth / 2 - 2;
 			var yOffset = AddressesLabel.Location.Y;
+			if (OSTailoredCode.IsUnixHost)
+			{
+				// don't wanna know
+				const int MAGIC_FIX_NUMBER_X = -2;
+				const int MAGIC_FIX_NUMBER_Y = 2;
+				xOffset += MAGIC_FIX_NUMBER_X;
+				yOffset += MAGIC_FIX_NUMBER_Y;
+			}
 
 			return new Point(
 				(int)((((address % 16) / DataSize) * (_fontWidth * (DataSize * 2 + 1))) + xOffset + extra),
@@ -1069,6 +1078,8 @@ namespace BizHawk.Client.EmuHawk
 			int start = (16 / DataSize) * _fontWidth * (DataSize * 2 + 1);
 			start += AddressesLabel.Location.X + _fontWidth / 2;
 			start += _fontWidth * 2;
+			const int MAGIC_FIX_NUMBER_X_ASCII = -3; // don't wanna know
+			if (OSTailoredCode.IsUnixHost) start += MAGIC_FIX_NUMBER_X_ASCII;
 			return start;
 		}
 
@@ -1948,11 +1959,11 @@ namespace BizHawk.Client.EmuHawk
 						break;
 					case 2:
 						var ushortVal = ushort.Parse(nibbleStr, NumberStyles.HexNumber);
-						_domain.PokeUshort(currentAddress, ushortVal, !BigEndian);  // TODO: is this method backwards?
+						_domain.PokeUshort(currentAddress, ushortVal, BigEndian);
 						break;
 					case 4:
 						var uintVal = uint.Parse(nibbleStr, NumberStyles.HexNumber);
-						_domain.PokeUint(currentAddress, uintVal, !BigEndian); // TODO: is this method backwards?
+						_domain.PokeUint(currentAddress, uintVal, BigEndian);
 						break;
 				}
 
@@ -2248,7 +2259,7 @@ namespace BizHawk.Client.EmuHawk
 
 			for (int i = 0; i < 4; i++)
 			{
-					for (int j = 0; j < 4; j++) 
+					for (int j = 0; j < 4; j++)
 					{
 						ushort hi = _domain.PeekUshort(((addr+(i<<3)+(j<<1)     )^0x0), bigEndian);
 						ushort lo = _domain.PeekUshort(((addr+(i<<3)+(j<<1) + 32)^0x0), bigEndian);
@@ -2275,4 +2286,4 @@ namespace BizHawk.Client.EmuHawk
 			DialogController.ShowMessageBox(str);
 		}
 	}
-} 
+}

@@ -39,44 +39,52 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					break;
 
 				case 0xFF02:
-					if ((value & 0x1) == 1)
+					if ((value & 0x80) == 0x80)
 					{
-						
-						serial_bits = 8;
-
-						if (((value & 2) > 0) && Core.GBC_compat)
+						if ((value & 0x01) == 0x01)
 						{
-							clk_rate = 16;
-							serial_clock = 16 - (int)(Core.timer.divider_reg % 8) - 1;
-							
-							// if the clock rate is changing and it's on a GBA/C, the parity of (cpu.totalexecutedcycles & 512) effects the first bit
-							// Not sure exactly how yet
+							if (((value & 2) > 0) && Core.GBC_compat)
+							{
+								clk_rate = 16;
+								serial_clock = 16 - (int)(Core.timer.divider_reg % 8) - 1;
+
+								// if the clock rate is changing and it's on a GBA/C, the parity of (cpu.totalexecutedcycles & 512) effects the first bit
+								// Not sure exactly how yet
+							}
+							else
+							{
+								clk_rate = 512;
+								serial_clock = 512 - (int)(Core.timer.divider_reg % 256) - 1;
+
+								// there seems to be some clock inverting happening on some transfers
+								// not sure of the exact nature of it, here is one method that gives correct result on one test rom but not others
+								/*
+								if (Core._syncSettings.GBACGB && Core.is_GBC)
+								{
+									if ((Core.TotalExecutedCycles % 256) > 127)
+									{
+										serial_clock = (8 - (int)(Core.cpu.TotalExecutedCycles % 8)) + 1;
+									}
+								}
+								*/
+							}
+
+							can_pulse = true;
+							serial_bits = 8;
 						}
 						else
 						{
-							clk_rate = 512;
-							serial_clock = 512 - (int)(Core.timer.divider_reg % 256) - 1;
-
-							// there seems to be some clock inverting happening on some transfers
-							// not sure of the exact nature of it, here is one method that gives correct result on one test rom but not others
-							/*
-							if (Core._syncSettings.GBACGB && Core.is_GBC)
-							{
-								if ((Core.TotalExecutedCycles % 256) > 127)
-								{
-									serial_clock = (8 - (int)(Core.cpu.TotalExecutedCycles % 8)) + 1;
-								}
-							}
-							*/
+							clk_rate = -1;
+							can_pulse = false;
+							serial_bits = 8;
 						}
-						can_pulse = true;
 					}
 					else
 					{
 						serial_bits = 8;
 						clk_rate = -1;
 						serial_clock = clk_rate;
-						can_pulse = false;					
+						can_pulse = false;
 					}
 
 					if (Core.GBC_compat)

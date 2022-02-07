@@ -9,14 +9,17 @@ namespace BizHawk.Client.Common
 {
 	public class Controller : IController
 	{
+		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
+
 		public Controller(ControllerDefinition definition)
 		{
 			Definition = definition;
-			foreach (var kvp in Definition.Axes)
+			foreach (var (k, v) in Definition.Axes)
 			{
-				_axes[kvp.Key] = kvp.Value.Neutral;
-				_axisRanges[kvp.Key] = kvp.Value;
+				_axes[k] = v.Neutral;
+				_axisRanges[k] = v;
 			}
+			foreach (var channel in Definition.HapticsChannels) _haptics[channel] = 0;
 		}
 
 		public ControllerDefinition Definition { get; private set; }
@@ -25,11 +28,18 @@ namespace BizHawk.Client.Common
 
 		public int AxisValue(string name) => _axes[name];
 
+		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot()
+			=> _haptics.Select(kvp => (kvp.Key, kvp.Value)).ToArray();
+
+		public void SetHapticChannelStrength(string name, int strength) => _haptics[name] = strength;
+
 		private readonly WorkingDictionary<string, List<string>> _bindings = new WorkingDictionary<string, List<string>>();
 		private readonly WorkingDictionary<string, bool> _buttons = new WorkingDictionary<string, bool>();
 		private readonly WorkingDictionary<string, int> _axes = new WorkingDictionary<string, int>();
 		private readonly Dictionary<string, AxisSpec> _axisRanges = new WorkingDictionary<string, AxisSpec>();
 		private readonly Dictionary<string, AnalogBind> _axisBindings = new Dictionary<string, AnalogBind>();
+		private readonly Dictionary<string, int> _haptics = new WorkingDictionary<string, int>();
+		private readonly Dictionary<string, FeedbackBind> _feedbackBindings = new Dictionary<string, FeedbackBind>();
 
 		/// <summary>don't do this</summary>
 		public void ForceType(ControllerDefinition newType) => Definition = newType;
@@ -49,66 +59,65 @@ namespace BizHawk.Client.Common
 				.SelectMany(kvp => kvp.Value)
 				.Any(boundButton => boundButton == button);
 
-		public void NormalizeAxes()
+		/// <summary>
+		/// uses the bindings to latch our own logical button state from the source controller's button state (which are assumed to be the physical side of the binding).
+		/// this will clobber any existing data (use OR_* or other functions to layer in additional input sources)
+		/// </summary>
+		public void LatchFromPhysical(IController finalHostController)
 		{
-			foreach (var kvp in _axisBindings)
+			_buttons.Clear();
+			
+			foreach (var (k, v) in _bindings)
 			{
-				if (!_axisRanges.TryGetValue(kvp.Key, out var range)) continue; //TODO throw (or use indexer instead of TryGetValue)? this `continue` should never be hit --yoshi
+				_buttons[k] = false;
+				foreach (var button in v)
+				{
+					if (finalHostController.IsPressed(button))
+					{
+						_buttons[k] = true;
+					}
+				}
+			}
 
-				// values of _axes are ints in -10000..10000 (or 0..10000), so scale to -1..1, using floats to keep fractional part
-				var value = _axes[kvp.Key] / 10000.0f;
+			foreach (var (k, v) in _axisBindings)
+			{
+				// values from finalHostController are ints in -10000..10000 (or 0..10000), so scale to -1..1, using floats to keep fractional part
+				var value = finalHostController.AxisValue(v.Value) / 10000.0f;
 
 				// apply deadzone (and scale diminished range back up to -1..1)
-				var deadzone = kvp.Value.Deadzone;
+				var deadzone = v.Deadzone;
 				if (value < -deadzone) value += deadzone;
 				else if (value < deadzone) value = 0.0f;
 				else value -= deadzone;
 				value /= 1.0f - deadzone;
 
-				// scale by user-set multiplier (which is 0..1, i.e. value can only shrink and is therefore still in -1..1)
-				value *= kvp.Value.Mult;
+				// scale by user-set multiplier (which is -2..2, therefore value is now in -2..2)
+				value *= v.Mult;
 
-				// -1..1 -> range
+				// -1..1 -> -A..A (where A is the larger "side" of the range e.g. a range of 0..50, neutral=10 would give A=40, and thus a value in -40..40)
+				var range = _axisRanges[k];
 				value *= Math.Max(range.Neutral - range.Min, range.Max - range.Neutral);
+
+				// shift the midpoint, so a value of 0 becomes range.Neutral (and, assuming >=1x multiplier, all values in range are reachable)
 				value += range.Neutral;
 
-				// finally, constrain to range again in case the original value was unexpectedly large, or the deadzone and scale made it so, or the axis is lopsided
-				_axes[kvp.Key] = ((int) value).ConstrainWithin(range.Range);
+				// finally, constrain to range
+				_axes[k] = ((int) value).ConstrainWithin(range.Range);
 			}
 		}
 
-		/// <summary>
-		/// uses the bindings to latch our own logical button state from the source controller's button state (which are assumed to be the physical side of the binding).
-		/// this will clobber any existing data (use OR_* or other functions to layer in additional input sources)
-		/// </summary>
-		public void LatchFromPhysical(IController controller)
+		public void PrepareHapticsForHost(SimpleController finalHostController)
 		{
-			_buttons.Clear();
-			
-			foreach (var kvp in _bindings)
+			foreach (var (k, v) in _feedbackBindings)
 			{
-				_buttons[kvp.Key] = false;
-				foreach (var button in kvp.Value)
+				if (_haptics.TryGetValue(k, out var strength))
 				{
-					if (controller.IsPressed(button))
+					foreach (var hostChannel in v.Channels!.Split('+'))
 					{
-						_buttons[kvp.Key] = true;
+						finalHostController.SetHapticChannelStrength(v.GamepadPrefix + hostChannel, (int) ((double) strength * v.Prescale));
 					}
 				}
 			}
-
-			foreach (var kvp in _axisBindings)
-			{
-				var input = controller.AxisValue(kvp.Value.Value);
-				string outKey = kvp.Key;
-				if (_axisRanges.ContainsKey(outKey))
-				{
-					_axes[outKey] = input;
-				}
-			}
-
-			// it's not sure where this should happen, so for backwards compatibility.. do it every time
-			NormalizeAxes();
 		}
 
 		public void ApplyAxisConstraints(string constraintClass)
@@ -169,6 +178,8 @@ namespace BizHawk.Client.Common
 		{
 			_axisBindings[button] = bind;
 		}
+
+		public void BindFeedbackChannel(string channel, FeedbackBind binding) => _feedbackBindings[channel] = binding;
 
 		public List<string> PressedButtons => _buttons
 			.Where(kvp => kvp.Value)

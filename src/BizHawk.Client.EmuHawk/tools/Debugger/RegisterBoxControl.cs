@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
+using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 
@@ -30,7 +31,7 @@ namespace BizHawk.Client.EmuHawk
 				var registers = Core.GetCpuFlagsAndRegisters();
 				_suppressChangeEvents = true;
 
-				foreach (var register in registers)
+				foreach (var (name, rv) in registers)
 				{
 					if (Controls.OfType<Panel>().Any(p => p.Name == "FlagPanel"))
 					{
@@ -39,9 +40,9 @@ namespace BizHawk.Client.EmuHawk
 							.Controls
 							.OfType<CheckBox>())
 						{
-							if (checkbox.Name == register.Key)
+							if (checkbox.Name == name)
 							{
-								checkbox.Checked = register.Value.Value == 1;
+								checkbox.Checked = rv.Value == 1;
 							}
 						}
 					}
@@ -50,9 +51,9 @@ namespace BizHawk.Client.EmuHawk
 					{
 						foreach (var textBox in Controls.OfType<TextBox>())
 						{
-							if (textBox.Name == register.Key)
+							if (textBox.Name == name)
 							{
-								textBox.Text = register.Value.Value.ToHexString(register.Value.BitSize / 4);
+								textBox.Text = rv.Value.ToHexString(rv.BitSize / 4);
 							}
 						}
 					}
@@ -60,9 +61,9 @@ namespace BizHawk.Client.EmuHawk
 					{
 						foreach (var label in Controls.OfType<Label>())
 						{
-							if (label.Name == register.Key)
+							if (label.Name == name)
 							{
-								label.Text = register.Value.Value.ToHexString(register.Value.BitSize / 4);
+								label.Text = rv.Value.ToHexString(rv.BitSize / 4);
 							}
 						}
 					}
@@ -132,11 +133,11 @@ namespace BizHawk.Client.EmuHawk
 				width = 20;
 			}
 
-			foreach (var register in registers.Where(r => r.Value.BitSize != 1))
+			foreach (var (name, rv) in registers.Where(r => r.Value.BitSize != 1))
 			{
 				Controls.Add(new Label
 				{
-					Text = register.Key,
+					Text = name,
 					Location = new Point(UIHelper.ScaleX(5), y + UIHelper.ScaleY(2)),
 					Size = new Size(UIHelper.ScaleX(width + 5), UIHelper.ScaleY(15))
 				});
@@ -145,11 +146,11 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var t = new TextBox
 					{
-						Name = register.Key,
-						Text = register.Value.Value.ToHexString(register.Value.BitSize / 4),
-						Width = UIHelper.ScaleX(6 + ((register.Value.BitSize / 4) * 9)),
+						Name = name,
+						Text = rv.Value.ToHexString(rv.BitSize / 4),
+						Width = UIHelper.ScaleX(6 + ((rv.BitSize / 4) * 9)),
 						Location = new Point(UIHelper.ScaleX(width + 10), y),
-						MaxLength = register.Value.BitSize / 4,
+						MaxLength = rv.BitSize / 4,
 						CharacterCasing = CharacterCasing.Upper
 					};
 
@@ -180,9 +181,9 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Controls.Add(new Label
 					{
-						Name = register.Key,
-						Text = register.Value.Value.ToHexString(register.Value.BitSize / 4),
-						Size = new Size(UIHelper.ScaleX(6 + ((register.Value.BitSize / 4) * 9)), UIHelper.ScaleY(15)),
+						Name = name,
+						Text = rv.Value.ToHexString(rv.BitSize / 4),
+						Size = new Size(UIHelper.ScaleX(6 + ((rv.BitSize / 4) * 9)), UIHelper.ScaleY(15)),
 						Location = new Point(UIHelper.ScaleX(width + 12), y + 2)
 					});
 				}
@@ -203,14 +204,14 @@ namespace BizHawk.Client.EmuHawk
 					AutoScroll = true
 				};
 
-				foreach (var flag in registers.Where(r => r.Value.BitSize == 1).OrderByDescending(x => x.Key))
+				foreach (var (name, rv) in registers.Where(r => r.Value.BitSize == 1).OrderByDescending(x => x.Key))
 				{
 					var c = new CheckBox
 					{
 						Appearance = Appearance.Button,
-						Name = flag.Key,
-						Text = flag.Key.Replace("Flag", "").Trim(), // Hack
-						Checked = flag.Value.Value == 1,
+						Name = name,
+						Text = name.Replace("Flag", "").Trim(), // Hack
+						Checked = rv.Value == 1,
 						Location = new Point(UIHelper.ScaleX(40), y),
 						Dock = DockStyle.Left,
 						Size = new Size(UIHelper.ScaleX(23), UIHelper.ScaleY(23)),

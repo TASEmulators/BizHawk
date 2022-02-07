@@ -234,7 +234,6 @@ namespace BizHawk.Client.EmuHawk
 			this.KeypadMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.LoadTIFileMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator13 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.AutoloadKeypadMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.paletteToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.A7800SubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.A7800ControllerSettingsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -244,9 +243,6 @@ namespace BizHawk.Client.EmuHawk
 			this.toolStripSeparator28 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.GBGPUViewerMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.GBPrinterViewerMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.NDSSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.NdsSettingsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.NdsSyncSettingsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.PSXSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.PSXControllerSettingsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.PSXOptionsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -269,8 +265,8 @@ namespace BizHawk.Client.EmuHawk
 			this.N64CircularAnalogRangeMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.MupenStyleLagMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.N64ExpansionSlotMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.DGBSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.DGBsettingsToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.GBLSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.GBLsettingsToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.AppleSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.AppleDisksSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator31 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
@@ -309,7 +305,7 @@ namespace BizHawk.Client.EmuHawk
 			this.ForumsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.FeaturesMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.AboutMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.Atari7800HawkCoreMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.A7800HawkCoreMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.MainStatusBar = new BizHawk.WinForms.Controls.StatusStripEx();
 			this.DumpStatusButton = new System.Windows.Forms.ToolStripDropDownButton();
 			this.EmuStatus = new BizHawk.WinForms.Controls.StatusLabelEx();
@@ -394,12 +390,11 @@ namespace BizHawk.Client.EmuHawk
 			this.TI83SubMenu,
 			this.A7800SubMenu,
 			this.GBSubMenu,
-			this.NDSSubMenu,
 			this.PSXSubMenu,
 			this.SNESSubMenu,
 			this.ColecoSubMenu,
 			this.N64SubMenu,
-			this.DGBSubMenu,
+			this.GBLSubMenu,
 			this.AppleSubMenu,
 			this.C64SubMenu,
 			this.IntvSubMenu,
@@ -435,7 +430,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// OpenRomMenuItem
 			// 
-			this.OpenRomMenuItem.Text = "&Open ROM";
+			this.OpenRomMenuItem.Text = "&Open ROM...";
 			this.OpenRomMenuItem.Click += new System.EventHandler(this.OpenRomMenuItem_Click);
 			// 
 			// RecentRomSubMenu
@@ -447,7 +442,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// OpenAdvancedMenuItem
 			// 
-			this.OpenAdvancedMenuItem.Text = "Open Ad&vanced";
+			this.OpenAdvancedMenuItem.Text = "Open Ad&vanced...";
 			this.OpenAdvancedMenuItem.Click += new System.EventHandler(this.OpenAdvancedMenuItem_Click);
 			// 
 			// CloseRomMenuItem
@@ -844,7 +839,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// ConfigAndRecordAVMenuItem
 			// 
-			this.ConfigAndRecordAVMenuItem.Text = "Config and Record AVI/WAV";
+			this.ConfigAndRecordAVMenuItem.Text = "Config and Record AVI/WAV...";
 			this.ConfigAndRecordAVMenuItem.Click += new System.EventHandler(this.ConfigAndRecordAVMenuItem_Click);
 			// 
 			// StopAVIMenuItem
@@ -869,7 +864,6 @@ namespace BizHawk.Client.EmuHawk
 			// SynclessRecordingMenuItem
 			// 
 			this.SynclessRecordingMenuItem.Text = "S&yncless Recording Tools";
-			this.SynclessRecordingMenuItem.Click += new System.EventHandler(this.SynclessRecordingMenuItem_Click);
 			// 
 			// ScreenshotSubMenu
 			// 
@@ -950,7 +944,7 @@ namespace BizHawk.Client.EmuHawk
 			// LoadedCoreNameMenuItem
 			// 
 			this.LoadedCoreNameMenuItem.Enabled = false;
-			this.LoadedCoreNameMenuItem.Text = "Loaded core: NullHawk (NULL)";
+			this.LoadedCoreNameMenuItem.Text = "Loaded core: <core name> (sysID)";
 			// 
 			// ViewSubMenu
 			// 
@@ -1460,7 +1454,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// BatchRunnerMenuItem
 			// 
-			this.BatchRunnerMenuItem.Text = "Batch Runner";
+			this.BatchRunnerMenuItem.Text = "Batch Runner...";
 			this.BatchRunnerMenuItem.Visible = false;
 			this.BatchRunnerMenuItem.Click += new System.EventHandler(this.BatchRunnerMenuItem_Click);
 			// 
@@ -1569,10 +1563,8 @@ namespace BizHawk.Client.EmuHawk
 			this.KeypadMenuItem,
 			this.LoadTIFileMenuItem,
 			this.toolStripSeparator13,
-			this.AutoloadKeypadMenuItem,
 			this.paletteToolStripMenuItem});
 			this.TI83SubMenu.Text = "TI83";
-			this.TI83SubMenu.DropDownOpened += new System.EventHandler(this.Ti83SubMenu_DropDownOpened);
 			// 
 			// KeypadMenuItem
 			// 
@@ -1583,13 +1575,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.LoadTIFileMenuItem.Text = "Load TI-83 File...";
 			this.LoadTIFileMenuItem.Click += new System.EventHandler(this.Ti83LoadTIFileMenuItem_Click);
-			// 
-			// AutoloadKeypadMenuItem
-			// 
-			this.AutoloadKeypadMenuItem.Checked = true;
-			this.AutoloadKeypadMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.AutoloadKeypadMenuItem.Text = "Autoload Keypad";
-			this.AutoloadKeypadMenuItem.Click += new System.EventHandler(this.AutoloadKeypadMenuItem_Click);
 			// 
 			// paletteToolStripMenuItem
 			// 
@@ -1637,24 +1622,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.GBPrinterViewerMenuItem.Text = "&Printer Viewer";
 			this.GBPrinterViewerMenuItem.Click += new System.EventHandler(this.GbPrinterViewerMenuItem_Click);
-			// 
-			// NDSSubMenu
-			// 
-			this.NDSSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.NdsSettingsMenuItem,
-			this.NdsSyncSettingsMenuItem});
-			this.NDSSubMenu.Text = "NDS";
-			this.NDSSubMenu.DropDownOpened += new System.EventHandler(this.NDSSubMenu_DropDownOpened);
-			// 
-			// NdsSettingsMenuItem
-			// 
-			this.NdsSettingsMenuItem.Text = "Settings...";
-			this.NdsSettingsMenuItem.Click += new System.EventHandler(this.NDSSettingsMenuItem_Click);
-			// 
-			// NdsSyncSettingsMenuItem
-			// 
-			this.NdsSyncSettingsMenuItem.Text = "Sync Settings...";
-			this.NdsSyncSettingsMenuItem.Click += new System.EventHandler(this.NDSSyncSettingsMenuItem_Click);
 			// 
 			// PSXSubMenu
 			// 
@@ -1773,16 +1740,16 @@ namespace BizHawk.Client.EmuHawk
 			this.N64ExpansionSlotMenuItem.Text = "&Use Expansion Slot";
 			this.N64ExpansionSlotMenuItem.Click += new System.EventHandler(this.N64ExpansionSlotMenuItem_Click);
 			// 
-			// DGBSubMenu
+			// GBLSubMenu
 			// 
-			this.DGBSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.DGBsettingsToolStripMenuItem});
-			this.DGBSubMenu.Text = "&GB Link";
+			this.GBLSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.GBLsettingsToolStripMenuItem});
+			this.GBLSubMenu.Text = "&GB Link";
 			// 
-			// DGBsettingsToolStripMenuItem
+			// GBLsettingsToolStripMenuItem
 			// 
-			this.DGBsettingsToolStripMenuItem.Text = "Settings...";
-			this.DGBsettingsToolStripMenuItem.Click += new System.EventHandler(this.DgbSettingsMenuItem_Click);
+			this.GBLsettingsToolStripMenuItem.Text = "Settings...";
+			this.GBLsettingsToolStripMenuItem.Click += new System.EventHandler(this.GblSettingsMenuItem_Click);
 			// 
 			// AppleSubMenu
 			// 
@@ -1984,12 +1951,12 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// OnlineHelpMenuItem
 			// 
-			this.OnlineHelpMenuItem.Text = "&Online Help...";
+			this.OnlineHelpMenuItem.Text = "Open TASVideos Wiki in Browser";
 			this.OnlineHelpMenuItem.Click += new System.EventHandler(this.OnlineHelpMenuItem_Click);
 			// 
 			// ForumsMenuItem
 			// 
-			this.ForumsMenuItem.Text = "Forums...";
+			this.ForumsMenuItem.Text = "Open Forums in Browser";
 			this.ForumsMenuItem.Click += new System.EventHandler(this.ForumsMenuItem_Click);
 			// 
 			// FeaturesMenuItem
@@ -1999,12 +1966,12 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// AboutMenuItem
 			// 
-			this.AboutMenuItem.Text = "&About";
+			this.AboutMenuItem.Text = "&About...";
 			this.AboutMenuItem.Click += new System.EventHandler(this.AboutMenuItem_Click);
 			// 
-			// Atari7800HawkCoreMenuItem
+			// A7800HawkCoreMenuItem
 			// 
-			this.Atari7800HawkCoreMenuItem.Text = "Atari7800Hawk";
+			this.A7800HawkCoreMenuItem.Text = "A7800Hawk";
 			// 
 			// MainStatusBar
 			// 
@@ -2165,7 +2132,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// CoreNameStatusBarButton
 			// 
-			this.CoreNameStatusBarButton.Text = "Neshawk";
+			this.CoreNameStatusBarButton.Text = "<core name>";
 			// 
 			// ProfileFirstBootLabel
 			// 
@@ -2557,7 +2524,6 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.StatusLabelEx EmuStatus;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx MessagesMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx TI83SubMenu;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AutoloadKeypadMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx KeypadMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator13;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx PathsMenuItem;
@@ -2672,8 +2638,8 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx ShowMenuContextMenuSeparator;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx StopAVContextMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx FdsEjectDiskMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DGBSubMenu;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DGBsettingsToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx GBLSubMenu;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx GBLsettingsToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx GenericCoreSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx A7800ControllerSettingsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx A7800FilterSettingsMenuItem;
@@ -2773,7 +2739,7 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SNESControllerConfigurationMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx C64DisksSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator36;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx Atari7800HawkCoreMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx A7800HawkCoreMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx zXSpectrumToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ZXSpectrumControllerConfigurationMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ZXSpectrumCoreEmulationSettingsMenuItem;
@@ -2796,9 +2762,6 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AmstradCPCDisksSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx cpcd1ToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AmstradCPCNonSyncSettingsToolStripMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx NDSSubMenu;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx NdsSyncSettingsMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx NdsSettingsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator8;
 		private System.Windows.Forms.ToolStripMenuItem CaptureLuaMenuItem;
 	}

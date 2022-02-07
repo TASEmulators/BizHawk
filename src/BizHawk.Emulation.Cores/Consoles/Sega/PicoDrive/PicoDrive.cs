@@ -9,8 +9,7 @@ using System.ComponentModel;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 {
-	[Core(CoreNames.PicoDrive, "notaz", true, true,
-		"0e352905c7aa80b166933970abbcecfce96ad64e", "https://github.com/notaz/picodrive", false)]
+	[PortedCore(CoreNames.PicoDrive, "notaz", "0e352905c7aa80b166933970abbcecfce96ad64e", "https://github.com/notaz/picodrive")]
 	public class PicoDrive : WaterboxCore, IDriveLight, IRegionable, ISettable<object, PicoDrive.SyncSettings>
 	{
 		private readonly LibPicoDrive _core;
@@ -19,8 +18,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 		private readonly DiscSectorReader _cdReader;
 		private readonly bool _isPal;
 
-		[CoreConstructor("GEN", Priority = CorePriority.Low)]
-		[CoreConstructor("32X")]
+		[CoreConstructor(VSystemID.Raw.GEN, Priority = CorePriority.Low)]
+		[CoreConstructor(VSystemID.Raw.Sega32X)]
 		public PicoDrive(CoreComm comm, GameInfo game, byte[] rom, bool deterministic, SyncSettings syncSettings)
 			: this(comm, game, rom, null, deterministic, syncSettings)
 		{ }
@@ -33,12 +32,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 				DefaultHeight = 224,
 				MaxWidth = 320,
 				MaxHeight = 480,
-				SystemId = "GEN"
+				SystemId = VSystemID.Raw.GEN,
 			})
 		{
-			var biosg = comm.CoreFileProvider.GetFirmware("32X", "G", false);
-			var biosm = comm.CoreFileProvider.GetFirmware("32X", "M", false);
-			var bioss = comm.CoreFileProvider.GetFirmware("32X", "S", false);
+			var biosg = comm.CoreFileProvider.GetFirmware(new("32X", "G"));
+			var biosm = comm.CoreFileProvider.GetFirmware(new("32X", "M"));
+			var bioss = comm.CoreFileProvider.GetFirmware(new("32X", "S"));
 			var has32xBios = biosg != null && biosm != null && bioss != null;
 			if (deterministic && !has32xBios)
 				throw new InvalidOperationException("32X BIOS files are required for deterministic mode");
@@ -69,9 +68,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 			}
 			if (cd != null)
 			{
-				_exe.AddReadonlyFile(comm.CoreFileProvider.GetFirmware("GEN", "CD_BIOS_EU", true), "cd.eu");
-				_exe.AddReadonlyFile(comm.CoreFileProvider.GetFirmware("GEN", "CD_BIOS_US", true), "cd.us");
-				_exe.AddReadonlyFile(comm.CoreFileProvider.GetFirmware("GEN", "CD_BIOS_JP", true), "cd.jp");
+				_exe.AddReadonlyFile(comm.CoreFileProvider.GetFirmwareOrThrow(new("GEN", "CD_BIOS_EU")), "cd.eu");
+				_exe.AddReadonlyFile(comm.CoreFileProvider.GetFirmwareOrThrow(new("GEN", "CD_BIOS_US")), "cd.us");
+				_exe.AddReadonlyFile(comm.CoreFileProvider.GetFirmwareOrThrow(new("GEN", "CD_BIOS_JP")), "cd.jp");
 				_exe.AddReadonlyFile(gpgx.GPGX.GetCDData(cd), "toc");
 				_cd = cd;
 				_cdReader = new DiscSectorReader(_cd);
@@ -124,16 +123,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 
 		public bool Is32XActive { get; }
 
-		public static readonly ControllerDefinition PicoDriveController = new ControllerDefinition
+		public static readonly ControllerDefinition PicoDriveController = new ControllerDefinition("PicoDrive Genesis Controller")
 		{
-			Name = "PicoDrive Genesis Controller",
 			BoolButtons =
 			{
 				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 A", "P1 B", "P1 C", "P1 Start", "P1 X", "P1 Y", "P1 Z", "P1 Mode",
 				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 A", "P2 B", "P2 C", "P2 Start", "P2 X", "P2 Y", "P2 Z", "P2 Mode",
 				"Power", "Reset"
 			}
-		};
+		}.MakeImmutable();
 
 		private static readonly string[] ButtonOrders =
 		{

@@ -66,14 +66,11 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				var kvp = GetStateClosestToFrame(frame);
-				if (kvp.Key != frame)
-				{
-					return NonState;
-				}
+				var (f, data) = GetStateClosestToFrame(frame);
+				if (f != frame) return NonState;
 
 				var ms = new MemoryStream();
-				kvp.Value.CopyTo(ms);
+				data.CopyTo(ms);
 				return ms.ToArray();
 			}
 		}
@@ -148,8 +145,7 @@ namespace BizHawk.Client.Common
 			}
 			if (_reserved != null)
 			{
-				foreach (var kvp in _reserved)
-					newReserved.Add(kvp.Key, kvp.Value);
+				foreach (var (f, data) in _reserved) newReserved.Add(f, data);
 				(_reserved as TempFileStateDictionary)?.Dispose();
 			}
 			_reserved = newReserved;
@@ -323,11 +319,9 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			// We do not want to consider reserved states for a notion of Last
-			// reserved states can include future states in the case of branch states
-			if ((frame <= LastRing && NeedsGap(frame)) || force)
+			// We use the gap buffer for forced capture to avoid crowding the "current" buffer and thus reducing it's actual span of covered frames.
+			if (NeedsGap(frame) || force)
 			{
-				// We use the gap buffer for forced capture to avoid crowding the "current" buffer and thus reducing it's actual span of covered frames.
 				CaptureGap(frame, source);
 				return;
 			}
@@ -356,7 +350,7 @@ namespace BizHawk.Client.Common
 							state.GetReadStream().CopyTo(s);
 							AddStateCache(state.Frame);
 						},
-						index2 => 
+						index2 =>
 						{
 							var state2 = _recent.GetState(index2);
 							StateCache.Remove(state2.Frame);
@@ -399,6 +393,12 @@ namespace BizHawk.Client.Common
 
 		private bool NeedsGap(int frame)
 		{
+			// We don't want to "fill gaps" if we are past the latest state in the current/recent buffers.
+			if (frame >= LastRing)
+			{
+				return false;
+			}
+
 			// When starting to fill gaps we won't actually know the true frequency, so fall back to current
 			// Current may very well not be the same as gap, but it's a reasonable behavior to have a current sized gap before seeing filler sized gaps
 			var frequency = _gapFiller.Count == 0 ? _current.RewindFrequency : _gapFiller.RewindFrequency;
@@ -568,11 +568,11 @@ namespace BizHawk.Client.Common
 			_gapFiller.SaveStateBinary(bw);
 
 			bw.Write(_reserved.Count);
-			foreach (var s in _reserved)
+			foreach (var (f, data) in _reserved)
 			{
-				bw.Write(s.Key);
-				bw.Write(s.Value.Length);
-				bw.Write(s.Value);
+				bw.Write(f);
+				bw.Write(data.Length);
+				bw.Write(data);
 			}
 		}
 

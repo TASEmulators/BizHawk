@@ -24,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 					FrameInch = true;
 					return false;
 				case "Toggle Throttle":
-					_unthrottled ^= true;
+					Config.Unthrottled ^= true;
 					ThrottleMessage();
 					break;
 				case "Soft Reset":
@@ -33,10 +33,10 @@ namespace BizHawk.Client.EmuHawk
 				case "Hard Reset":
 					HardReset();
 					break;
-				case "Quick Load": 
+				case "Quick Load":
 					LoadQuickSave($"QuickSave{Config.SaveSlot}");
 					break;
-				case "Quick Save": 
+				case "Quick Save":
 					SaveQuickSave($"QuickSave{Config.SaveSlot}");
 					break;
 				case "Clear Autohold":
@@ -96,7 +96,7 @@ namespace BizHawk.Client.EmuHawk
 					MainMenuStrip.Visible ^= true;
 					break;
 				case "Volume Up":
-					VolumeUp(); 
+					VolumeUp();
 					break;
 				case "Volume Down":
 					VolumeDown();
@@ -140,17 +140,17 @@ namespace BizHawk.Client.EmuHawk
 					break;
 
 				// Save States
-				case "Save State 0": 
+				case "Save State 0":
 					SaveQuickSave("QuickSave0");
 					Config.SaveSlot = 0;
 					UpdateStatusSlots();
 					break;
-				case "Save State 1": 
+				case "Save State 1":
 					SaveQuickSave("QuickSave1");
 					Config.SaveSlot = 1;
 					UpdateStatusSlots();
 					break;
-				case "Save State 2": 
+				case "Save State 2":
 					SaveQuickSave("QuickSave2");
 					Config.SaveSlot = 2;
 					UpdateStatusSlots();
@@ -292,16 +292,16 @@ namespace BizHawk.Client.EmuHawk
 					PlayMovieMenuItem_Click(null, null);
 					break;
 				case "Record Movie":
-					RecordMovieMenuItem_Click(null, null); 
+					RecordMovieMenuItem_Click(null, null);
 					break;
 				case "Stop Movie":
 					StopMovie();
 					break;
 				case "Play from beginning":
-					RestartMovie(); 
+					RestartMovie();
 					break;
 				case "Save Movie":
-					SaveMovie(); 
+					SaveMovie();
 					break;
 
 				// Tools
@@ -346,7 +346,7 @@ namespace BizHawk.Client.EmuHawk
 
 					break;
 				case "TAStudio":
-					Tools.Load<TAStudio>();
+					TAStudioMenuItem_Click(null, null);
 					break;
 				case "ToolBox":
 					Tools.Load<ToolBox>();
@@ -697,30 +697,51 @@ namespace BizHawk.Client.EmuHawk
 				case "GB Toggle BG":
 					if (Emulator is Gameboy gb)
 					{
-						var s = gb.GetSettings();
-						s.DisplayBG ^= true;
-						gb.PutSettings(s);
-						AddOnScreenMessage($"BG toggled {(s.DisplayBG ? "on" : "off")}");
+						if (!gb.DeterministicEmulation)
+						{
+							var ss = gb.GetSyncSettings();
+							ss.DisplayBG ^= true;
+							gb.PutSyncSettings(ss);
+							AddOnScreenMessage($"BG toggled {(ss.DisplayBG ? "on" : "off")}");
+						}
+						else
+						{
+							AddOnScreenMessage($"BG cannot be toggled during movie recording.");
+						}
 					}
 
 					break;
 				case "GB Toggle Obj":
 					if (Emulator is Gameboy gb2)
 					{
-						var s = gb2.GetSettings();
-						s.DisplayOBJ ^= true;
-						gb2.PutSettings(s);
-						AddOnScreenMessage($"OBJ toggled {(s.DisplayOBJ ? "on" : "off")}");
+						if (!gb2.DeterministicEmulation)
+						{
+							var ss = gb2.GetSyncSettings();
+							ss.DisplayOBJ ^= true;
+							gb2.PutSyncSettings(ss);
+							AddOnScreenMessage($"OBJ toggled {(ss.DisplayOBJ ? "on" : "off")}");
+						}
+						else
+						{
+							AddOnScreenMessage($"OBJ cannot be toggled during movie recording.");
+						}
 					}
 
 					break;
 				case "GB Toggle Window":
 					if (Emulator is Gameboy gb3)
 					{
-						var s = gb3.GetSettings();
-						s.DisplayWindow ^= true;
-						gb3.PutSettings(s);
-						AddOnScreenMessage($"WIN toggled {(s.DisplayWindow ? "on" : "off")}");
+						if (!gb3.DeterministicEmulation)
+						{
+							var ss = gb3.GetSyncSettings();
+							ss.DisplayWindow ^= true;
+							gb3.PutSyncSettings(ss);
+							AddOnScreenMessage($"WIN toggled {(ss.DisplayWindow ? "on" : "off")}");
+						}
+						else
+						{
+							AddOnScreenMessage($"WIN cannot be toggled during movie recording.");
+						}
 					}
 
 					break;
@@ -768,15 +789,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void IncrementDSScreenRotate()
 		{
-			if (Emulator is MelonDS ds)
+			if (Emulator is NDS ds)
 			{
 				var settings = ds.GetSettings();
 				settings.ScreenRotation = settings.ScreenRotation switch
 				{
-					MelonDS.ScreenRotationKind.Rotate0 => settings.ScreenRotation = MelonDS.ScreenRotationKind.Rotate90,
-					MelonDS.ScreenRotationKind.Rotate90 => settings.ScreenRotation = MelonDS.ScreenRotationKind.Rotate180,
-					MelonDS.ScreenRotationKind.Rotate180 => settings.ScreenRotation = MelonDS.ScreenRotationKind.Rotate270,
-					MelonDS.ScreenRotationKind.Rotate270 => settings.ScreenRotation = MelonDS.ScreenRotationKind.Rotate0,
+					NDS.ScreenRotationKind.Rotate0 => settings.ScreenRotation = NDS.ScreenRotationKind.Rotate90,
+					NDS.ScreenRotationKind.Rotate90 => settings.ScreenRotation = NDS.ScreenRotationKind.Rotate180,
+					NDS.ScreenRotationKind.Rotate180 => settings.ScreenRotation = NDS.ScreenRotationKind.Rotate270,
+					NDS.ScreenRotationKind.Rotate270 => settings.ScreenRotation = NDS.ScreenRotationKind.Rotate0,
 					_ => settings.ScreenRotation
 				};
 				ds.PutSettings(settings);
@@ -788,7 +809,7 @@ namespace BizHawk.Client.EmuHawk
 		private void IncrementDSLayout(int delta)
 		{
 			bool decrement = delta == -1;
-			if (Emulator is MelonDS ds)
+			if (Emulator is NDS ds)
 			{
 				var settings = ds.GetSettings();
 				var num = (int)settings.ScreenLayout;
@@ -801,8 +822,8 @@ namespace BizHawk.Client.EmuHawk
 					num++;
 				}
 
-				var next = (MelonDS.ScreenLayoutKind)Enum.Parse(typeof(MelonDS.ScreenLayoutKind), num.ToString());
-				if (typeof(MelonDS.ScreenLayoutKind).IsEnumDefined(next))
+				var next = (NDS.ScreenLayoutKind)Enum.Parse(typeof(NDS.ScreenLayoutKind), num.ToString());
+				if (typeof(NDS.ScreenLayoutKind).IsEnumDefined(next))
 				{
 					settings.ScreenLayout = next;
 

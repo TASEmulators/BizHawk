@@ -22,17 +22,14 @@ using Newtonsoft.Json;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.DiscSystem;
 
 #pragma warning disable 649 //adelikat: Disable dumb warnings until this file is complete
 
 namespace BizHawk.Emulation.Cores.Sony.PSX
 {
-	[Core(
-		"Octoshock",
-		"Mednafen Team",
-		isPorted: true,
-		isReleased: true)]
+	[PortedCore(CoreNames.Octoshock, "Mednafen Team")]
 	public unsafe partial class Octoshock : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IDriveLight, ISettable<Octoshock.Settings, Octoshock.SyncSettings>, IRegionable, IInputPollable, IRomInfo
 	{
 		public Octoshock(CoreComm comm, PSF psf, Octoshock.Settings settings, Octoshock.SyncSettings syncSettings)
@@ -44,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		//note: its annoying that we have to have a disc before constructing this.
 		//might want to change that later. HOWEVER - we need to definitely have a region, at least
-		[CoreConstructor("PSX")]
+		[CoreConstructor(VSystemID.Raw.PSX)]
 		public Octoshock(CoreLoadParameters<Octoshock.Settings, Octoshock.SyncSettings> lp)
 		{
 			string romDetails;
@@ -69,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				var sw = new StringWriter();
 				foreach (var d in lp.Discs)
 				{
-					var discHash = new DiscHasher(d.DiscData).Calculate_PSX_BizIDHash().ToString("X8");
+					var discHash = new DiscHasher(d.DiscData).Calculate_PSX_BizIDHash();
 					sw.WriteLine(Path.GetFileName(d.DiscName));
 					sw.WriteLine(DiscHashWarningText(Database.CheckDatabase(discHash), discHash));
 					sw.WriteLine("-------------------------");
@@ -168,7 +165,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				//use mednafen specs
 				if (SystemRegion == OctoshockDll.eRegion.EU)
 				{
-					//https://github.com/TASVideos/mednafen/blob/740d63996fc7cebffd39ee253a29ee434965db21/src/psx/gpu.cpp#L175
+					//https://github.com/TASEmulators/mednafen/blob/740d63996fc7cebffd39ee253a29ee434965db21/src/psx/gpu.cpp#L175
 					// -> 838865530 / 65536 / 256 -> reduced
 					VsyncNumerator = 419432765;
 					VsyncDenominator = 8388608;
@@ -176,7 +173,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				}
 				else
 				{
-					//https://github.com/TASVideos/mednafen/blob/740d63996fc7cebffd39ee253a29ee434965db21/src/psx/gpu.cpp#L183
+					//https://github.com/TASEmulators/mednafen/blob/740d63996fc7cebffd39ee253a29ee434965db21/src/psx/gpu.cpp#L183
 					//-> 1005627336 / 65536 / 256 -> reduced
 					VsyncNumerator = 502813668;
 					VsyncDenominator = 8388608;
@@ -185,7 +182,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			}
 
 			//TODO - known bad firmwares are a no-go. we should refuse to boot them. (that's the mednafen policy)
-			byte[] firmware = comm.CoreFileProvider.GetFirmware("PSX", firmwareRegion, true, "A PSX `" + firmwareRegion + "` region bios file is required");
+			var firmware = comm.CoreFileProvider.GetFirmwareOrThrow(new("PSX", firmwareRegion), $"A PSX `{firmwareRegion}` region bios file is required");
 
 			//create the instance
 			fixed (byte* pFirmware = firmware)
@@ -284,11 +281,11 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		public string RomDetails { get; private set; }
 
-		public string SystemId => "PSX";
+		public string SystemId => VSystemID.Raw.PSX;
 
 		public static ControllerDefinition CreateControllerDefinition(SyncSettings syncSettings)
 		{
-			var definition = new ControllerDefinition { Name = "PSX Front Panel" };
+			ControllerDefinition definition = new("PSX Front Panel");
 
 			var cfg = syncSettings.FIOConfig.ToLogical();
 
@@ -357,7 +354,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			definition.AddAxis("Disc Select", 0.RangeTo(1), 1);
 
-			return definition;
+			return definition.MakeImmutable();
 		}
 
 		private void SetControllerButtons()
@@ -480,7 +477,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public bool CurrentTrayOpen { get; private set; }
 		public int CurrentDiscIndexMounted { get; private set; }
 
-		public List<string> HackyDiscButtons = new List<string>();
+		public readonly IList<string> HackyDiscButtons = new List<string>();
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
@@ -811,8 +808,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			//TODO - actually, make this feedback from the core. there should be a register or status which effectively corresponds to whether it's reading.
 			DriveLightOn = false;
 
-			Frame++;
-
 			SetInput();
 
 			OctoshockDll.shock_SetLEC(psx, _SyncSettings.EnableLEC);
@@ -834,7 +829,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			OctoshockDll.shock_SetRenderOptions(psx, ref ropts);
 
 			//prep tracer
-			if (Tracer.Enabled)
+			if (Tracer.IsEnabled())
 				OctoshockDll.shock_SetTraceCallback(psx, IntPtr.Zero, trace_cb);
 			else
 				OctoshockDll.shock_SetTraceCallback(psx, IntPtr.Zero, null);
@@ -859,7 +854,11 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				LagCount++;
 
 			//what happens to sound in this case?
-			if (render == false) return true;
+			if (render == false) 
+			{
+				Frame++;
+				return true;
+			}
 
 			OctoshockDll.ShockFramebufferInfo fb = new OctoshockDll.ShockFramebufferInfo();
 
@@ -901,6 +900,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				if (sbuffcontains * 2 > sbuff.Length) throw new InvalidOperationException($"{nameof(OctoshockDll.shock_GetSamples)} returned too many samples: {sbuffcontains}");
 				OctoshockDll.shock_GetSamples(psx, samples);
 			}
+
+			Frame++;
 
 			return true;
 		}

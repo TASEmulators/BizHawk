@@ -1,17 +1,20 @@
-﻿using BizHawk.Common;
+﻿using System;
+using System.Collections.Generic;
+
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
 	internal class BkmControllerAdapter : IController
 	{
+		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
+
 		public BkmControllerAdapter(ControllerDefinition definition, string systemId)
 		{
-			Definition = definition;
-
 			// We do need to map the definition name to the legacy
 			// controller names that were used back in the bkm days
-			Definition.Name = systemId switch
+			var name = systemId switch
 			{
 				"Lynx" => "Lynx Controller",
 				"SNES" => "SNES Controller",
@@ -31,6 +34,7 @@ namespace BizHawk.Client.Common
 				"SMS Controller" => "SMS",
 				_ => "Null Controller",
 			};
+			Definition = new(copyFrom: definition, withName: name);
 		}
 
 		public ControllerDefinition Definition { get; set; }
@@ -44,6 +48,10 @@ namespace BizHawk.Client.Common
 		{
 			return _myAxisControls[name];
 		}
+
+		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => throw new NotImplementedException(); // no idea --yoshi
+
+		public void SetHapticChannelStrength(string name, int strength) => throw new NotImplementedException(); // no idea --yoshi
 
 		/// <summary>
 		/// latches all buttons from the supplied mnemonic string

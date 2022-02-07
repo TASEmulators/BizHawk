@@ -5,20 +5,18 @@ using System.Linq;
 namespace BizHawk.Emulation.Common
 {
 	/// <summary>
-	/// An implementation of <seealso cref="ITraceable"/> that is implementation using only methods
-	/// from <seealso cref="IDebuggable"/>, <seealso cref="IMemoryDomains"/>, and <seealso cref="IDisassemblable"/>
+	/// An implementation of <see cref="ITraceable"/> that is implementation using only methods
+	/// from <see cref="IDebuggable"/>, <see cref="IMemoryDomains"/>, and <see cref="IDisassemblable"/>
 	/// Useful for ported cores that have these hooks but no trace logging hook,
 	/// This allows for a traceable implementation without the need for additional API
 	/// Note that this technique will always be significantly slower than a direct implementation
 	/// </summary>
-	/// <seealso cref="ITraceable"/> 
-	/// <seealso cref="IDebuggable"/> 
-	/// <seealso cref="IMemoryDomains"/> 
-	/// <seealso cref="IDisassemblable"/> 
 	public abstract class CallbackBasedTraceBuffer : ITraceable
 	{
+		private const string DEFAULT_HEADER = "Instructions";
+
 		/// <exception cref="InvalidOperationException"><paramref name="debuggableCore"/> does not provide memory callback support or does not implement <see cref="IDebuggable.GetCpuFlagsAndRegisters"/></exception>
-		protected CallbackBasedTraceBuffer(IDebuggable debuggableCore, IMemoryDomains memoryDomains, IDisassemblable disassembler)
+		protected CallbackBasedTraceBuffer(IDebuggable debuggableCore, IMemoryDomains memoryDomains, IDisassemblable disassembler, string header = DEFAULT_HEADER)
 		{
 			if (!debuggableCore.MemoryCallbacksAvailable())
 			{
@@ -34,7 +32,7 @@ namespace BizHawk.Emulation.Common
 				throw new InvalidOperationException($"{nameof(IDebuggable.GetCpuFlagsAndRegisters)} is required");
 			}
 
-			Header = "Instructions";
+			Header = header;
 			DebuggableCore = debuggableCore;
 			MemoryDomains = memoryDomains;
 			Disassembler = disassembler;
@@ -48,22 +46,11 @@ namespace BizHawk.Emulation.Common
 
 		protected abstract void TraceFromCallback(uint addr, uint value, uint flags);
 
-		private ITraceSink _sink;
+		private ITraceSink? _sink;
 
-		public bool Enabled => Sink != null;
-
-		public void Put(TraceInfo info)
+		public ITraceSink? Sink
 		{
-			Sink.Put(info);
-		}
-
-		public ITraceSink Sink
-		{
-			private get
-			{
-				return _sink;
-			}
-
+			get => _sink;
 			set
 			{
 				_sink = value;
@@ -77,8 +64,9 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public string Header { get; protected set; }
+		public string Header { get; }
 
+#nullable disable
 		private class TracingMemoryCallback : IMemoryCallback
 		{
 			public TracingMemoryCallback(MemoryCallbackDelegate callback, string scope)
@@ -99,5 +87,6 @@ namespace BizHawk.Emulation.Common
 
 			public string Scope { get; }
 		}
+#nullable restore
 	}
 }

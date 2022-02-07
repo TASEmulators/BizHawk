@@ -17,22 +17,19 @@
 		{
 			if (addr < 0x400)
 			{
-				// Rom0
+				// BIOS ROM 1
 				return BIOS01[addr];
 			}
 			else if (addr < 0x800)
 			{
-				// Rom1
+				// BIOS ROM 2
 				return BIOS02[addr - 0x400];
 			}
-			else if (addr < 0x2000)
+			else
 			{
-				// Cart
-				//return 0;
-				return Rom[addr - 0x800];
+				// Cartridge Memory Space
+				return Cartridge.ReadBus(addr);
 			}
-
-			return 0xFF;
 		}
 
 		/// <summary>
@@ -42,7 +39,7 @@
 		/// <param name="addr"></param>
 		public void WriteBus(ushort addr, byte value)
 		{
-
-		}
+			Cartridge.WriteBus(addr, value);
+		}		
 	}
 }

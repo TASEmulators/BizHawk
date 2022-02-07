@@ -8,6 +8,8 @@ namespace BizHawk.Emulation.Cores.Components
 		public int current_sample_L;
 		public int current_sample_R;
 
+		int aud_scale = 21;
+
 		public SN76489sms()
 		{
 			Reset();
@@ -235,21 +237,21 @@ namespace BizHawk.Emulation.Cores.Components
 				}
 
 				// now calculate the volume of each channel and add them together
-				current_sample_L = (A_L ? (A_up ? LogScale[Chan_vol[0]] * 42 : 0) : 0);
+				current_sample_L = (A_L ? (A_up ? LogScale[Chan_vol[0]] * aud_scale : 0) : 0);
 
-				current_sample_L += (B_L ? (B_up ? LogScale[Chan_vol[1]] * 42 : 0) : 0);
+				current_sample_L += (B_L ? (B_up ? LogScale[Chan_vol[1]] * aud_scale : 0) : 0);
 
-				current_sample_L += (C_L ? (C_up ? LogScale[Chan_vol[2]] * 42 : 0) : 0);
+				current_sample_L += (C_L ? (C_up ? LogScale[Chan_vol[2]] * aud_scale : 0) : 0);
 
-				current_sample_L += (noise_L ? (noise_bit ? LogScale[Chan_vol[3]] * 42 : 0) : 0);
+				current_sample_L += (noise_L ? (noise_bit ? LogScale[Chan_vol[3]] * aud_scale : 0) : 0);
 
-				current_sample_R = (A_R ? (A_up ? LogScale[Chan_vol[0]] * 42 : 0) : 0);
+				current_sample_R = (A_R ? (A_up ? LogScale[Chan_vol[0]] * aud_scale : 0) : 0);
 
-				current_sample_R += (B_R ? (B_up ? LogScale[Chan_vol[1]] * 42 : 0) : 0);
+				current_sample_R += (B_R ? (B_up ? LogScale[Chan_vol[1]] * aud_scale : 0) : 0);
 
-				current_sample_R += (C_R ? (C_up ? LogScale[Chan_vol[2]] * 42 : 0) : 0);
+				current_sample_R += (C_R ? (C_up ? LogScale[Chan_vol[2]] * aud_scale : 0) : 0);
 
-				current_sample_R += (noise_R ? (noise_bit ? LogScale[Chan_vol[3]] * 42 : 0) : 0);
+				current_sample_R += (noise_R ? (noise_bit ? LogScale[Chan_vol[3]] * aud_scale : 0) : 0);
 			}
 		}
 	}

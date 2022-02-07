@@ -13,11 +13,10 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			_controller = controller;
 			_lagged = true;
 			DriveLightOn = false;
-			Frame++;
 			CheckSpriteLimit();
 			PSG.BeginFrame(Cpu.TotalExecutedCycles);
 
-			Cpu.Debug = Tracer.Enabled;
+			Cpu.Debug = Tracer.IsEnabled();
 
 			if (SuperGrafx)
 			{
@@ -39,6 +38,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			{
 				_isLag = false;
 			}
+
+			Frame++;
 
 			return true;
 		}

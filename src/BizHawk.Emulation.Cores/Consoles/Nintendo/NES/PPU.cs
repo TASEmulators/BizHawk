@@ -3,7 +3,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed partial class PPU
+	public partial class PPU
 	{
 		public int cpu_step, cpu_stepcounter;
 
@@ -260,6 +260,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(yp), ref yp);
 			ser.Sync(nameof(target), ref target);
 			ser.Sync(nameof(ppu_was_on), ref ppu_was_on);
+			ser.Sync(nameof(ppu_was_on_spr), ref ppu_was_on_spr);
 			ser.Sync(nameof(spriteHeight), ref spriteHeight);
 			ser.Sync(nameof(install_2006), ref install_2006);
 			ser.Sync(nameof(race_2006), ref race_2006);
@@ -300,6 +301,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			ser.Sync(nameof(nmi_destiny), ref nmi_destiny);
 			ser.Sync(nameof(evenOddDestiny), ref evenOddDestiny);
+			ser.Sync(nameof(start_up_offset), ref start_up_offset);
 			ser.Sync(nameof(NMI_offset), ref NMI_offset);
 			ser.Sync(nameof(yp_shift), ref yp_shift);
 			ser.Sync(nameof(sprite_eval_cycle), ref sprite_eval_cycle);
@@ -352,10 +354,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			regs_reset();
 			ppudead = 1;
-			idleSynch = false;
+			idleSynch = true;
 			ppu_open_bus = 0;
 			ppu_open_bus_decay_timer = new int[8];
 			double_2007_read = 0;
+			start_up_offset = 4;
 		}
 
 		private void runppu()

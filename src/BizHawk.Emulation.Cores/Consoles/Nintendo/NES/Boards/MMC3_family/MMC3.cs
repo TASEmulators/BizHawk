@@ -5,6 +5,7 @@
 
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
+using System;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
@@ -22,6 +23,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private byte irq_reload, irq_counter;
 		public bool irq_pending, irq_enable, irq_reload_flag;
 		public bool wram_enable, wram_write_protect;
+
+		public bool just_cleared_pending, just_cleared;
 
 		//it really seems like these should be the same but i cant seem to unify them.
 		//theres no sense in delaying the IRQ, so its logic must be tied to the separator.
@@ -64,6 +67,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		protected NesBoardBase board;
 		public MMC3(NesBoardBase board, int num_prg_banks)
 		{
+			just_cleared = just_cleared_pending = false;
+			
 			MirrorMask = 1;
 			this.board = board;
 			if (board.Cart.Chips.Contains("MMC3A")) MMC3Type = EMMC3Type.MMC3A;
@@ -149,6 +154,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(irq_reload_flag), ref irq_reload_flag);
 			ser.Sync(nameof(wram_enable), ref wram_enable);
 			ser.Sync(nameof(wram_write_protect), ref wram_write_protect);
+			ser.Sync(nameof(cmd), ref cmd);
+			ser.Sync(nameof(just_cleared), ref just_cleared);
+			ser.Sync(nameof(just_cleared_pending), ref just_cleared_pending);
 			Sync();
 		}
 
@@ -179,7 +187,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					Sync();
 					break;
 				case 0x2000: //$A000
-							 //mirroring
+					//mirroring
 					mirror = (byte)(value & MirrorMask);
 					board.SetMirrorType(MirrorType);
 					break;
@@ -193,9 +201,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					irq_reload = value;
 					break;
 				case 0x4001: //$C001 - IRQ Clear
-					irq_counter = 0;
-					if (oldIrqType)
-						irq_reload_flag = true;
+					// does not take immediate effect (fixes Klax)
+					just_cleared_pending = true;				
 					break;
 				case 0x6000: //$E000 - IRQ Acknowledge / Disable
 					irq_enable = false;
@@ -259,6 +266,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					ClockIRQ();
 				}
 			}
+
+			if (just_cleared)
+			{
+				irq_counter = 0;
+				if (oldIrqType)
+					irq_reload_flag = true;
+			}
+			
+			just_cleared = just_cleared_pending;
+			just_cleared_pending = false;
 		}
 
 		public virtual int Get_PRGBank_8K(int addr)
@@ -299,8 +316,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 
 				a12_old = a12;
-			}
-			
+			}		
 		}
 	}
 
@@ -309,7 +325,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//state
 		public MMC3 mmc3;
 		public int extra_vrom;
-
 
 		public override void AddressPpu(int addr)
 		{

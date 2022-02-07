@@ -3,30 +3,22 @@ using BizHawk.Emulation.Cores.Nintendo.NES;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 {
-	[Core(
-		CoreNames.SubNesHawk,
-		"",
-		isPorted: false,
-		isReleased: true)]
+	[Core(CoreNames.SubNesHawk, "")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class SubNESHawk : IEmulator, IStatable, IInputPollable,
 		ISettable<NES.NES.NESSettings, NES.NES.NESSyncSettings>
 	{
-		[CoreConstructor("NES", Priority = CorePriority.SuperLow)]
+		[CoreConstructor(VSystemID.Raw.NES, Priority = CorePriority.SuperLow)]
 		public SubNESHawk(CoreComm comm, GameInfo game, byte[] rom, /*string gameDbFn,*/ NES.NES.NESSettings settings, NES.NES.NESSyncSettings syncSettings)
 		{
 			var subNesSettings = (NES.NES.NESSettings)settings ?? new NES.NES.NESSettings();
 			var subNesSyncSettings = (NES.NES.NESSyncSettings)syncSettings ?? new NES.NES.NESSyncSettings();
 
-			_nesCore = new NES.NES(comm, game, rom, subNesSettings, subNesSyncSettings)
-			{
-				using_reset_timing = true
-			};
+			_nesCore = new NES.NES(comm, game, rom, subNesSettings, subNesSyncSettings, true);
 
 			HardReset();
 			current_cycle = 0;
 			_nesCore.cpu.ext_ppu_cycle = current_cycle;
-			VblankCount = 0;
 
 			_nesStatable = _nesCore.ServiceProvider.GetService<IStatable>();
 
@@ -44,8 +36,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			ser.Register(_nesCore.ServiceProvider.GetService<IDebuggable>());
 			ser.Register(_nesCore.ServiceProvider.GetService<IRegionable>());
 			ser.Register(_nesCore.ServiceProvider.GetService<ICodeDataLogger>());
+			ser.Register(_nesCore.ServiceProvider.GetService<ICycleTiming>());
 
-			_tracer = new TraceBuffer { Header = "6502: PC, machine code, mnemonic, operands, registers (A, X, Y, P, SP), flags (NVTBDIZCR), CPU Cycle, PPU Cycle" };
+			const string TRACE_HEADER = "6502: PC, machine code, mnemonic, operands, registers (A, X, Y, P, SP), flags (NVTBDIZCR), CPU Cycle, PPU Cycle";
+			_tracer = new TraceBuffer(TRACE_HEADER);
 			ser.Register(_tracer);
 
 			
@@ -57,9 +51,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 		}
 
 		private readonly NES.NES _nesCore;
-
-		// needed for movies to accurately calculate timing
-		public int VblankCount;
 
 		public void HardReset() => _nesCore.HardReset();
 

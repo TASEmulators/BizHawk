@@ -6,6 +6,7 @@ using System.Threading;
 
 using BizHawk.Bizware.BizwareGL;
 using BizHawk.Bizware.OpenTK3;
+using BizHawk.Common;
 
 using SlimDX.Direct3D9;
 
@@ -352,9 +353,8 @@ namespace BizHawk.Bizware.DirectX
 
 			var ves = new VertexElement[vertexLayout.Items.Count];
 			int stride = 0;
-			foreach (var kvp in vertexLayout.Items)
+			foreach (var (i, item) in vertexLayout.Items)
 			{
-				var item = kvp.Value;
 				DeclarationType declType;
 				switch (item.AttribType)
 				{
@@ -375,7 +375,7 @@ namespace BizHawk.Bizware.DirectX
 				switch(item.Usage)
 				{
 					case AttribUsage.Position:
-						usage = DeclarationUsage.Position; 
+						usage = DeclarationUsage.Position;
 						break;
 					case AttribUsage.Texcoord0:
 						usage = DeclarationUsage.TextureCoordinate;
@@ -391,7 +391,7 @@ namespace BizHawk.Bizware.DirectX
 						throw new NotSupportedException();
 				}
 
-				ves[kvp.Key] = new VertexElement(0, (short)item.Offset, declType, DeclarationMethod.Default, usage, usageIndex);
+				ves[i] = new VertexElement(0, (short) item.Offset, declType, DeclarationMethod.Default, usage, usageIndex);
 			}
 
 			var pw = new PipelineWrapper
@@ -554,7 +554,7 @@ namespace BizHawk.Bizware.DirectX
 			}
 		}
 
-		public unsafe void SetPipelineUniformMatrix(PipelineUniform uniform, Matrix4 mat, bool transpose)
+		public void SetPipelineUniformMatrix(PipelineUniform uniform, Matrix4 mat, bool transpose)
 		{
 			if (uniform.Owner == null)
 			{
@@ -568,7 +568,7 @@ namespace BizHawk.Bizware.DirectX
 			}
 		}
 
-		public unsafe void SetPipelineUniformMatrix(PipelineUniform uniform, ref Matrix4 mat, bool transpose)
+		public void SetPipelineUniformMatrix(PipelineUniform uniform, ref Matrix4 mat, bool transpose)
 		{
 			if (uniform.Owner == null)
 			{
@@ -617,7 +617,7 @@ namespace BizHawk.Bizware.DirectX
 			}
 		}
 
-		public unsafe void SetPipelineUniform(PipelineUniform uniform, Vector4[] values)
+		public void SetPipelineUniform(PipelineUniform uniform, Vector4[] values)
 		{
 			if (uniform.Owner == null) return; // uniform was optimized out
 			var v = new SlimDX.Vector4[values.Length];
@@ -688,7 +688,7 @@ namespace BizHawk.Bizware.DirectX
 		}
 
 		/// <exception cref="InvalidOperationException">GDI+ call returned unexpected data</exception>
-		public unsafe void LoadTextureData(Texture2d tex, BitmapBuffer bmp)
+		public void LoadTextureData(Texture2d tex, BitmapBuffer bmp)
 		{
 			sdi.BitmapData bmpData = bmp.LockBits();
 			var tw = tex.Opaque as TextureWrapper;
@@ -717,7 +717,7 @@ namespace BizHawk.Bizware.DirectX
 		}
 
 		/// <exception cref="InvalidOperationException">SlimDX call returned unexpected data</exception>
-		public unsafe BitmapBuffer ResolveTexture2d(Texture2d tex)
+		public BitmapBuffer ResolveTexture2d(Texture2d tex)
 		{
 			//TODO - lazy create and cache resolving target in RT
 			var target = new Texture(Dev, tex.IntWidth, tex.IntHeight, 1, Usage.None, Format.A8R8G8B8, Pool.SystemMemory);
@@ -951,10 +951,7 @@ namespace BizHawk.Bizware.DirectX
 			Dev.DrawUserPrimitives(pt, primCount, (void*)ptr, (uint)stride);
 		}
 
-		public unsafe void BindArrayData(void* pData)
-		{
-			_pVertexData = new IntPtr(pData);
-		}
+		public void BindArrayData(IntPtr pData) => _pVertexData = pData;
 
 		public void BeginScene()
 		{

@@ -21,7 +21,6 @@ namespace BizHawk.Client.Common
 		{
 			string? cmdLoadSlot = null;
 			string? cmdLoadState = null;
-			string? cmdConfigPath = null;
 			string? cmdConfigFile = null;
 			string? cmdMovie = null;
 			string? cmdDumpType = null;
@@ -182,7 +181,6 @@ namespace BizHawk.Client.Common
 			parsed = new ParsedCLIFlags(
 				cmdLoadSlot: cmdLoadSlot,
 				cmdLoadState: cmdLoadState,
-				cmdConfigPath: cmdConfigPath,
 				cmdConfigFile: cmdConfigFile,
 				cmdMovie: cmdMovie,
 				cmdDumpType: cmdDumpType,
@@ -202,11 +200,6 @@ namespace BizHawk.Client.Common
 				openExtToolDll: openExtToolDll,
 				cmdRom: cmdRom
 			);
-		}
-
-		public static string? GetCmdConfigFile(string[] args)
-		{
-			return args.FirstOrDefault(arg => arg.StartsWith("--config=", StringComparison.InvariantCultureIgnoreCase))?.Substring(9);
 		}
 
 		public sealed class ArgParserException : Exception

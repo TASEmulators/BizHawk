@@ -11,7 +11,7 @@ namespace BizHawk.Client.DiscoHawk
 	public partial class MainDiscoForm : Form
 	{
 		// Release TODO:
-		// An input (queue) list 
+		// An input (queue) list
 		// An outputted list showing new file name
 		// Progress bar should show file being converted
 		// Add disc button, which puts it on the progress cue (converts it)
@@ -35,34 +35,27 @@ namespace BizHawk.Client.DiscoHawk
 
 		private void lblMagicDragArea_DragDrop(object sender, DragEventArgs e)
 		{
-			List<string> files = ValidateDrop(e.Data);
-			if (files.Count == 0) return;
+			lblMagicDragArea.AllowDrop = false;
+			Cursor = Cursors.WaitCursor;
 			try
 			{
-				Cursor = Cursors.WaitCursor;
-				foreach (var file in files)
+				foreach (var file in ValidateDrop(e.Data))
 				{
-					var job = new DiscMountJob(fromPath: file);
-					job.Run();
-					var disc = job.OUT_Disc;
-					if (job.OUT_ErrorLevel)
-					{
-						MessageBox.Show(job.OUT_Log, "Error loading disc");
-						break;
-					}
-
-					string baseName = Path.GetFileNameWithoutExtension(file);
-					baseName += "_hawked";
-					string outfile = $"{Path.Combine(Path.GetDirectoryName(file), baseName)}.ccd";
-					CCD_Format.Dump(disc, outfile);
+					var success = DiscoHawkLogic.HawkAndWriteFile(
+						inputPath: file,
+						errorCallback: err => MessageBox.Show(err, "Error loading disc"));
+					if (!success) break;
 				}
-
-				Cursor = Cursors.Default;
 			}
 			catch (Exception ex)
 			{
 				MessageBox.Show(ex.ToString(), "Error loading disc");
 				throw;
+			}
+			finally
+			{
+				lblMagicDragArea.AllowDrop = true;
+				Cursor = Cursors.Default;
 			}
 		}
 
@@ -129,7 +122,17 @@ namespace BizHawk.Client.DiscoHawk
 				using var disc = Disc.LoadAutomagic(file);
 				var path = Path.GetDirectoryName(file);
 				var filename = Path.GetFileNameWithoutExtension(file);
-				AudioExtractor.Extract(disc, path, filename);
+				static bool? PromptForOverwrite(string mp3Path)
+					=> MessageBox.Show(
+						$"Do you want to overwrite existing files? Choosing \"No\" will simply skip those. You could also \"Cancel\" the extraction entirely.\n\ncaused by file: {mp3Path}",
+						"File to extract already exists",
+						MessageBoxButtons.YesNoCancel) switch
+					{
+						DialogResult.Yes => true,
+						DialogResult.No => false,
+						_ => null
+					};
+				AudioExtractor.Extract(disc, path, filename, PromptForOverwrite);
 			}
 		}
 

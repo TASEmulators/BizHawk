@@ -1,21 +1,24 @@
 ﻿using System;
 
-using BizHawk.Common.BufferExtensions;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.M6502;
 using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
-	[Core(
-		"A7800Hawk",
-		"",
-		isPorted: false,
-		isReleased: true)]
+	[Core(CoreNames.A7800Hawk, "")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(ISettable<,>) })]
 	public partial class A7800Hawk : IEmulator, ISaveRam, IDebuggable, IInputPollable,
 		IRegionable, IBoardInfo, ISettable<A7800Hawk.A7800Settings, A7800Hawk.A7800SyncSettings>
 	{
+		internal static class RomChecksums
+		{
+			public const string KaratekaPAL = "MD5:5E0A1E832BBCEA6FACB832FDE23A440A";
+
+			public const string Serpentine = "MD5:9BD70C06D3386F76F8162881699A777A";
+		}
+
 		// this register selects between 2600 and 7800 mode in the A7800
 		// however, we already have a 2600 emulator so this core will only be loading A7800 games
 		// furthermore, the location of the register is in the same place as TIA registers (0x0-0x1F)
@@ -27,11 +30,11 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public byte[] RAM = new byte[0x1000];
 		public byte[] RAM_6532 = new byte[0x80];
 		public byte[] hs_bios_mem = new byte[0x800];
+		public byte[] _hsram = new byte[2048];
 
 		public readonly byte[] _rom;
 		public readonly byte[] _hsbios;
 		public readonly byte[] _bios;
-		public readonly byte[] _hsram = new byte[2048];
 
 		private int _frame = 0;
 
@@ -72,7 +75,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			public void WriteMemory(ushort address, byte value) => _a7800.WriteMemory(address, value);
 		}
 
-		[CoreConstructor("A78")]
+		[CoreConstructor(VSystemID.Raw.A78)]
 		public A7800Hawk(CoreComm comm, byte[] rom, A7800Hawk.A7800Settings settings, A7800Hawk.A7800SyncSettings syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
@@ -95,9 +98,9 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			_syncSettings = (A7800SyncSettings)syncSettings ?? new A7800SyncSettings();
 			_controllerDeck = new A7800HawkControllerDeck(_syncSettings.Port1, _syncSettings.Port2);
 
-			byte[] highscoreBios = comm.CoreFileProvider.GetFirmware("A78", "Bios_HSC", false, "Some functions may not work without the high score BIOS.");
-			byte[] palBios = comm.CoreFileProvider.GetFirmware("A78", "Bios_PAL", false, "The game will not run if the correct region BIOS is not available.");
-			byte[] ntscBios = comm.CoreFileProvider.GetFirmware("A78", "Bios_NTSC", false, "The game will not run if the correct region BIOS is not available.");
+			var highscoreBios = comm.CoreFileProvider.GetFirmware(new("A78", "Bios_HSC"), "Some functions may not work without the high score BIOS.");
+			var palBios = comm.CoreFileProvider.GetFirmware(new("A78", "Bios_PAL"), "The game will not run if the correct region BIOS is not available.");
+			var ntscBios = comm.CoreFileProvider.GetFirmware(new("A78", "Bios_NTSC"), "The game will not run if the correct region BIOS is not available.");
 
 			byte[] header = new byte[128];
 			bool is_header = false;
@@ -117,9 +120,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			// look up hash in gamedb to see what mapper to use
 			// if none found default is zero
 			// also check for PAL region
-			string hash_md5 = null;
 			s_mapper = null;
-			hash_md5 = "md5:" + rom.HashMD5(0, rom.Length);
+			var hash_md5 = MD5Checksum.ComputePrefixedHex(rom);
 
 			var gi = Database.CheckDatabase(hash_md5);
 
@@ -130,36 +132,30 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				{
 					_isPAL = true;
 				}
-				if (dict.ContainsKey("board"))
-				{
-					s_mapper = dict["board"];
-				}
-				else
-				{
-					throw new Exception("No Board selected for this game");
-				}
+
+				if (!dict.TryGetValue("board", out s_mapper)) throw new Exception("No Board selected for this game");
 
 				// check if the game uses pokey or RAM
-				if (dict.ContainsKey("RAM"))
+				if (dict.TryGetValue("RAM", out var cartRAMStr))
 				{
-					int.TryParse(dict["RAM"], out cart_RAM);
+					int.TryParse(cartRAMStr, out cart_RAM);
 				}
 
-				if (dict.ContainsKey("Pokey"))
+				if (dict.TryGetValue("Pokey", out var pokeyStr))
 				{
-					bool.TryParse(dict["Pokey"], out is_pokey);
+					bool.TryParse(pokeyStr, out is_pokey);
 				}
 
-				if (dict.ContainsKey("Pokey_450"))
+				if (dict.TryGetValue("Pokey_450", out var pokey450Str))
 				{
-					bool.TryParse(dict["Pokey_450"], out is_pokey_450);
+					bool.TryParse(pokey450Str, out is_pokey_450);
 				}
 
 				// some games will not function with the high score bios
 				// if such a game is being played, tell the user and disable it
-				if (dict.ContainsKey("No_HS"))
+				if (dict.TryGetValue("No_HS", out var noHSStr))
 				{
-					bool.TryParse(dict["No_HS"], out var no_hs);
+					bool.TryParse(noHSStr, out var no_hs);
 
 					if (no_hs)
 					{
@@ -193,7 +189,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 						cart_RAM = 8;
 
 						// the homebrew game serpentine requires extra RAM, but in the alternative style
-						if (hash_md5 == "md5:9BD70C06D3386F76F8162881699A777A")
+						if (hash_md5 == RomChecksums.Serpentine)
 						{
 							cart_RAM = 16;
 						}
@@ -220,7 +216,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				small_flag = true;
 
 				// additionally, PAL Karateka  has bank 6 (actually 2) at 0x4000
-				if (rom.HashMD5()=="5E0A1E832BBCEA6FACB832FDE23A440A")
+				if (hash_md5 == RomChecksums.KaratekaPAL)
 				{
 					PAL_Kara = true;
 				}
@@ -265,7 +261,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			ser.Register<ISoundProvider>(this);
 			ServiceProvider = ser;
 
-			_tracer = new TraceBuffer { Header = cpu.TraceHeader };
+			_tracer = new TraceBuffer(cpu.TraceHeader);
 			ser.Register<ITraceable>(_tracer);
 			ser.Register<IStatable>(new StateSerializer(SyncState));
 			SetupMemoryDomains();

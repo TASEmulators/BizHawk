@@ -77,7 +77,6 @@ namespace BizHawk.Client.DiscoHawk
 			if (!File.Exists(ffmpegPath))
 				ffmpegPath = Path.Combine(Path.Combine(GetExeDirectoryAbsolute(), "dll"), "ffmpeg.exe");
 			FFmpegService.FFmpegPath = ffmpegPath;
-			AudioExtractor.FFmpegPath = ffmpegPath;
 
 			if (args.Length == 0)
 			{
@@ -99,9 +98,7 @@ namespace BizHawk.Client.DiscoHawk
 
 		public static string GetExeDirectoryAbsolute()
 		{
-			var uri = new Uri(Assembly.GetEntryAssembly().GetName().CodeBase);
-			string module = uri.LocalPath + System.Web.HttpUtility.UrlDecode(uri.Fragment);
-			return Path.GetDirectoryName(module);
+			return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 		}
 
 		private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)

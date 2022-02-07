@@ -1,5 +1,58 @@
 <?xml version="1.0"?>
 <RuleSet Name="BizHawk Rules" Description="Applies to all projects in the solution -- or, it will eventually." ToolsVersion="14.0">
+	<Rules AnalyzerId="DocumentationAnalyzers" RuleNamespace="DocumentationAnalyzers.StyleRules">
+		<!-- Place text in paragraphs -->
+		<Rule Id="DOC100" Action="Hidden" />
+
+		<!-- Use child blocks consistently -->
+		<Rule Id="DOC101" Action="Hidden" />
+
+		<!-- Use child blocks consistently across elements of the same kind -->
+		<Rule Id="DOC102" Action="Hidden" />
+
+		<!-- Use Unicode characters -->
+		<!-- unnecessary HTML entities also get picked up by CS1570, which seems more reliable -->
+		<Rule Id="DOC103" Action="Error" />
+
+		<!-- Prefer '<see langword="keyword"/>' to '<c>keyword</c>' for referencing language keywords -->
+		<Rule Id="DOC104" Action="Warning" />
+
+		<!-- Prefer '<paramref name="parameter"/>' to '<c>parameter</c>' for referencing parameters -->
+		<Rule Id="DOC105" Action="Warning" />
+
+		<!-- Prefer '<typeparamref name="type_parameter"/>' to '<c>type_parameter</c>' for referencing type parameters -->
+		<Rule Id="DOC106" Action="Warning" />
+
+		<!-- Prefer '<see cref="target"/>' to '<c>target</c>' for referencing code elements -->
+		<Rule Id="DOC107" Action="Warning" />
+
+		<!-- Avoid empty paragraphs -->
+		<Rule Id="DOC108" Action="Error" />
+	</Rules>
+	<Rules AnalyzerId="DocumentationAnalyzers" RuleNamespace="DocumentationAnalyzers.PortabilityRules">
+		<!-- Use XML documentation syntax -->
+		<Rule Id="DOC200" Action="Error" />
+
+		<!-- Item should have description -->
+		<Rule Id="DOC201" Action="Error" />
+
+		<!-- Use section elements correctly -->
+		<Rule Id="DOC202" Action="Error" />
+
+		<!-- Use block elements correctly -->
+		<Rule Id="DOC203" Action="Error" />
+
+		<!-- Use inline elements correctly -->
+		<!-- but this doesn't pick up <seealso/> in <summary/>, for example... -->
+		<Rule Id="DOC204" Action="Error" />
+
+		<!-- 'langword' attribute value should be a language keyword -->
+		<Rule Id="DOC207" Action="Error" />
+
+		<!-- 'href' attribute value should be a URI -->
+		<!-- a lot of false negatives with this one too -->
+		<Rule Id="DOC209" Action="Error" />
+	</Rules>
 	<Rules AnalyzerId="Menees.Analyzers" RuleNamespace="Menees.Analyzers">
 		<!-- Line is too long -->
 		<Rule Id="MEN002" Action="Hidden" />
@@ -347,6 +400,9 @@
 
 		<!-- Comments should contain text -->
 		<Rule Id="SA1120" Action="Hidden" />
+
+		<!-- Use built-in type alias -->
+		<Rule Id="SA1121" Action="Error" />
 
 		<!-- Use string.Empty for empty strings -->
 		<Rule Id="SA1122" Action="Hidden" />

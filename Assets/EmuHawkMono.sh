@@ -7,9 +7,10 @@ fi
 libpath=""
 winepath=""
 if [ "$(command -v lsb_release)" ]; then
-	case "$(lsb_release -i | cut -c17- | tr -d "\n")" in
-		"Arch"|"ManjaroLinux") libpath="/usr/lib";;
-		"Debian"|"LinuxMint"|"Ubuntu"|"Pop") libpath="/usr/lib/x86_64-linux-gnu"; export MONO_WINFORMS_XIM_STYLE=disabled;; # see https://bugzilla.xamarin.com/show_bug.cgi?id=28047#c9
+	case "$(lsb_release -i | cut -c17- | tr -d "\n" | tr A-Z a-z)" in
+		"arch"|"manjarolinux"|"artix") libpath="/usr/lib";;
+		"fedora") libpath="/usr/lib64"; export MONO_WINFORMS_XIM_STYLE=disabled;; # see https://bugzilla.xamarin.com/show_bug.cgi?id=28047#c9
+		"debian"|"linuxmint"|"ubuntu"|"pop") libpath="/usr/lib/x86_64-linux-gnu"; export MONO_WINFORMS_XIM_STYLE=disabled;; # ditto
 	esac
 else
 	printf "Distro does not provide LSB release info API! (You've met with a terrible fate, haven't you?)\n"
@@ -24,7 +25,8 @@ export BIZHAWK_INT_SYSLIB_PATH="$libpath"
 if [ "$1" = "--mono-no-redirect" ]; then
 	shift
 	printf "(received --mono-no-redirect, stdout was not captured)\n" >EmuHawkMono_laststdout.txt
+	printf "(received --mono-no-redirect, stderr was not captured)\n" >EmuHawkMono_laststderr.txt
 	mono ./EmuHawk.exe "$@"
 else
-	mono ./EmuHawk.exe "$@" >EmuHawkMono_laststdout.txt
+	mono ./EmuHawk.exe "$@" >EmuHawkMono_laststdout.txt 2>EmuHawkMono_laststderr.txt
 fi

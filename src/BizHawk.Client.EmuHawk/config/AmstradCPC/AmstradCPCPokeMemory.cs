@@ -7,12 +7,10 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class AmstradCpcPokeMemory : Form
 	{
-		private readonly IMainFormForConfig _mainForm;
 		private readonly AmstradCPC _cpc;
 
-		public AmstradCpcPokeMemory(IMainFormForConfig mainForm, AmstradCPC cpc)
+		public AmstradCpcPokeMemory(AmstradCPC cpc)
 		{
-			_mainForm = mainForm;
 			_cpc = cpc;
 			InitializeComponent();
 			Icon = Properties.Resources.GameControllerIcon;
@@ -31,7 +29,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CancelBtn_Click(object sender, EventArgs e)
 		{
-			_mainForm.AddOnScreenMessage("POKE memory aborted");
 			DialogResult = DialogResult.Cancel;
 			Close();
 		}

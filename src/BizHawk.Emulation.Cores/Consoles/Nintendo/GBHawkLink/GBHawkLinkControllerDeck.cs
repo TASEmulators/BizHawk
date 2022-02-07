@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 using BizHawk.Common;
-using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Nintendo.GBHawk;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 {
@@ -12,21 +11,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 	{
 		public GBHawkLinkControllerDeck(string controller1Name, string controller2Name)
 		{
-			Port1 = ControllerCtors.TryGetValue(controller1Name, out var ctor1)
+			Port1 = GBHawkControllerDeck.ControllerCtors.TryGetValue(controller1Name, out var ctor1)
 				? ctor1(1)
 				: throw new InvalidOperationException($"Invalid controller type: {controller1Name}");
-			Port2 = ControllerCtors.TryGetValue(controller2Name, out var ctor2)
+			Port2 = GBHawkControllerDeck.ControllerCtors.TryGetValue(controller2Name, out var ctor2)
 				? ctor2(2)
 				: throw new InvalidOperationException($"Invalid controller type: {controller2Name}");
 
-			Definition = new ControllerDefinition
+			Definition = new ControllerDefinition(Port1.Definition.Name)
 			{
-				Name = Port1.Definition.Name,
 				BoolButtons = Port1.Definition.BoolButtons
 					.Concat(Port2.Definition.BoolButtons)
 					.Concat(new[] { "Toggle Cable" } )
 					.ToList()
-			};
+			}.MakeImmutable();
 		}
 
 		public byte ReadPort1(IController c)
@@ -54,15 +52,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 		private readonly IPort Port1;
 		private readonly IPort Port2;
-
-		private static IReadOnlyDictionary<string, Func<int, IPort>> _controllerCtors;
-
-		public static IReadOnlyDictionary<string, Func<int, IPort>> ControllerCtors => _controllerCtors
-			??= new Dictionary<string, Func<int, IPort>>
-			{
-				[typeof(StandardControls).DisplayName()] = portNum => new StandardControls(portNum)
-			};
-
-		public static string DefaultControllerName => typeof(StandardControls).DisplayName();
 	}
 }

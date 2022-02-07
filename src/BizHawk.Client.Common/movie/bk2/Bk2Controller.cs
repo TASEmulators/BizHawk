@@ -13,7 +13,19 @@ namespace BizHawk.Client.Common
 		private readonly WorkingDictionary<string, int> _myAxisControls = new WorkingDictionary<string, int>();
 
 		private readonly Bk2ControllerDefinition _type;
-		private readonly List<ControlMap> _controlsOrdered;
+
+		private IList<ControlMap> _controlsOrdered;
+
+		private IList<ControlMap> ControlsOrdered => _controlsOrdered ??= _type.OrderedControlsFlat
+			.Select(c => new ControlMap
+			{
+				Name = c,
+				IsBool = _type.BoolButtons.Contains(c),
+				IsAxis = _type.Axes.ContainsKey(c)
+			})
+			.ToList();
+
+		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
 
 		public Bk2Controller(string key, ControllerDefinition definition) : this(definition)
 		{
@@ -30,21 +42,16 @@ namespace BizHawk.Client.Common
 		public Bk2Controller(ControllerDefinition definition)
 		{
 			_type = new Bk2ControllerDefinition(definition);
-			_controlsOrdered =  Definition.ControlsOrdered
-				.SelectMany(c => c)
-				.Select(c => new ControlMap
-				{
-					Name = c,
-					IsBool = _type.BoolButtons.Contains(c),
-					IsAxis = _type.Axes.ContainsKey(c)
-				})
-				.ToList();
 		}
 
 		public ControllerDefinition Definition => _type;
 
 		public bool IsPressed(string button) => _myBoolButtons[button];
 		public int AxisValue(string name) => _myAxisControls[name];
+
+		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => throw new NotImplementedException(); // no idea --yoshi
+
+		public void SetHapticChannelStrength(string name, int strength) => throw new NotImplementedException(); // no idea --yoshi
 
 		public void SetFrom(IController source)
 		{
@@ -67,10 +74,7 @@ namespace BizHawk.Client.Common
 			}
 
 			// axes don't have sticky logic, so latch default value
-			foreach (var kvp in Definition.Axes)
-			{
-				_myAxisControls[kvp.Key] = kvp.Value.Neutral;
-			}
+			foreach (var (k, v) in Definition.Axes) _myAxisControls[k] = v.Neutral;
 		}
 
 		public void SetFromMnemonic(string mnemonic)
@@ -80,7 +84,7 @@ namespace BizHawk.Client.Common
 				var trimmed = mnemonic.Replace("|", "");
 				var iterator = 0;
 
-				foreach (var key in _controlsOrdered)
+				foreach (var key in ControlsOrdered)
 				{
 					if (key.IsBool)
 					{
@@ -119,17 +123,15 @@ namespace BizHawk.Client.Common
 
 		private class Bk2ControllerDefinition : ControllerDefinition
 		{
+			public IReadOnlyList<IReadOnlyList<string>> ControlsFromLog = null;
+
 			public Bk2ControllerDefinition(ControllerDefinition source)
 				: base(source)
 			{
 			}
 
-			public List<List<string>> ControlsFromLog { private get; set; } = new List<List<string>>();
-
-			public override IEnumerable<IEnumerable<string>> ControlsOrdered =>
-				ControlsFromLog.Any()
-					? ControlsFromLog
-					: base.ControlsOrdered;
+			protected override IReadOnlyList<IReadOnlyList<string>> GenOrderedControls()
+				=> ControlsFromLog is not null && ControlsFromLog.Count is not 0 ? ControlsFromLog : base.GenOrderedControls();
 		}
 	}
 }

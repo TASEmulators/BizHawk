@@ -45,10 +45,11 @@ namespace BizHawk.Emulation.Common
 		long TotalExecutedCycles { get; } // TODO: this should probably be a long, but most cores were using int, oh well
 	}
 
-	public class RegisterValue
+	public readonly struct RegisterValue
 	{
-		public ulong Value { get; }
-		public byte BitSize { get; }
+		public readonly byte BitSize;
+
+		public readonly ulong Value;
 
 		/// <exception cref="ArgumentOutOfRangeException"><paramref name="bitSize"/> not in 1..64</exception>
 		public RegisterValue(ulong val, byte bitSize)

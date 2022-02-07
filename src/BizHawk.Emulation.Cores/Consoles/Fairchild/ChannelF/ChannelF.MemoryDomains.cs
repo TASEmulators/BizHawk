@@ -47,11 +47,12 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		{
 			SyncByteArrayDomain("BIOS1", BIOS01);
 			SyncByteArrayDomain("BIOS2", BIOS02);
-			SyncByteArrayDomain("ROM", Rom);
+			Cartridge.SyncByteArrayDomain(this);
+			//SyncByteArrayDomain("ROM", Rom);
 			SyncByteArrayDomain("VRAM", VRAM);
 		}
 
-		private void SyncByteArrayDomain(string name, byte[] data)
+		public void SyncByteArrayDomain(string name, byte[] data)
 		{
 			if (_memoryDomainsInit || _byteArrayDomains.ContainsKey(name))
 			{

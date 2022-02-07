@@ -1,10 +1,12 @@
 ﻿using System.IO;
+
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 
 namespace BizHawk.Client.Common.movie.import
 {
-	// FMV file format: http://tasvideos.org/FMV.html
 	// ReSharper disable once UnusedMember.Global
+	/// <summary>For Famtasia's <see href="https://tasvideos.org/EmulatorResources/Famtasia/FMV"><c>.fmv</c> format</see></summary>
 	[ImporterFor("Famtasia", ".fmv")]
 	internal class FmvImport : MovieImporter
 	{
@@ -32,7 +34,7 @@ namespace BizHawk.Client.Common.movie.import
 				return;
 			}
 
-			Result.Movie.HeaderEntries[HeaderKeys.Platform] = "NES";
+			Result.Movie.HeaderEntries[HeaderKeys.Platform] = VSystemID.Raw.NES;
 			var syncSettings = new NES.NESSyncSettings();
 
 			// other bits: unknown, set to 0
@@ -92,16 +94,11 @@ namespace BizHawk.Client.Common.movie.import
 				NesLeftPort = controller1 ? nameof(ControllerNES) : nameof(UnpluggedNES),
 				NesRightPort = controller2 ? nameof(ControllerNES) : nameof(UnpluggedNES)
 			};
-			_deck = controllerSettings.Instantiate((x, y) => true);
+			_deck = controllerSettings.Instantiate((x, y) => true).AddSystemToControllerDef();
 			syncSettings.Controls.NesLeftPort = controllerSettings.NesLeftPort;
 			syncSettings.Controls.NesRightPort = controllerSettings.NesRightPort;
 
-			AddDeckControlButtons();
-
-			var controllers = new SimpleController
-			{
-				Definition = _deck.GetDefinition()
-			};
+			SimpleController controllers = new(_deck.ControllerDef);
 
 			/*
 			 * 01 Right
@@ -162,20 +159,5 @@ namespace BizHawk.Client.Common.movie.import
 
 			Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(syncSettings);
 		}
-
-		private void AddDeckControlButtons()
-		{
-			var controllers = new SimpleController
-			{
-				Definition = _deck.GetDefinition()
-			};
-
-			// TODO: FDS
-			// Yes, this adds them to the deck definition too
-			controllers.Definition.BoolButtons.Add("Reset");
-			controllers.Definition.BoolButtons.Add("Power");
-		}
-
-		
 	}
 }

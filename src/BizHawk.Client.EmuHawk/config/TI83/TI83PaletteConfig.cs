@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using BizHawk.Emulation.Cores.Calculators;
+using BizHawk.Emulation.Cores.Calculators.TI83;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class TI83PaletteConfig : Form
 	{
 		private readonly IMainFormForConfig _mainForm;
-		private readonly TI83.TI83Settings _settings;
+		private readonly TI83Common.TI83CommonSettings _settings;
 
 		public TI83PaletteConfig(
 			IMainFormForConfig mainForm,
-			TI83.TI83Settings settings)
+			TI83Common.TI83CommonSettings settings)
 		{
 			_mainForm = mainForm;
 			_settings = settings;
@@ -88,7 +88,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DefaultsBtn_Click(object sender, EventArgs e)
 		{
-			var s = new TI83.TI83Settings();
+			var s = new TI83Common.TI83CommonSettings();
 			BackgroundPanel.BackColor = Color.FromArgb((int)s.BGColor);
 			ForeGroundPanel.BackColor = Color.FromArgb((int)s.ForeColor);
 		}

@@ -89,7 +89,7 @@
             // 
             // StackMessagesCheckbox
             // 
-            this.StackMessagesCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.StackMessagesCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.StackMessagesCheckbox.AutoSize = true;
             this.StackMessagesCheckbox.Location = new System.Drawing.Point(195, 388);
             this.StackMessagesCheckbox.Name = "StackMessagesCheckbox";

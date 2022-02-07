@@ -190,11 +190,11 @@ namespace BizHawk.Client.EmuHawk
 			if ((_searches.Count > 0) && (index < _searches.Count))
 			{
 				var nextColor = Color.White;
+				var search = _searches[index];
+				var isCheat = MainForm.CheatList.IsActive(_settings.Domain, search.Address);
+				var isWeeded = Settings.PreviewMode && !_forcePreviewClear && _searches.Preview(search.Address);
 
-				var isCheat = MainForm.CheatList.IsActive(_settings.Domain, _searches[index].Address);
-				var isWeeded = Settings.PreviewMode && !_forcePreviewClear && _searches.Preview(_searches[index].Address);
-
-				if (!_searches[index].IsValid)
+				if (!search.IsValid)
 				{
 					nextColor = Color.PeachPuff;
 				}
@@ -631,6 +631,14 @@ namespace BizHawk.Client.EmuHawk
 			_searches.SetPreviousType(type);
 		}
 
+		private void HandleWatchSizeSelected(WatchSize newWatchSize)
+		{
+			if (_settings.Size != newWatchSize)
+			{
+				SetSize(newWatchSize);
+			}
+		}
+
 		private void SetSize(WatchSize size)
 		{
 			_settings.Size = size;
@@ -674,6 +682,13 @@ namespace BizHawk.Client.EmuHawk
 			PopulateTypeDropDown();
 			_dropdownDontfire = false;
 			SpecificValueBox.Type = _settings.Type;
+
+			DifferenceBox.Type = _settings.Type;
+			DifferentByBox.Type = _settings.Type;
+
+			DifferenceBox.ByteSize = size;
+			DifferentByBox.ByteSize = size;
+
 			NewSearch();
 		}
 
@@ -1124,17 +1139,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ByteMenuItem_Click(object sender, EventArgs e)
 		{
-			SetSize(WatchSize.Byte);
+			HandleWatchSizeSelected(WatchSize.Byte);
 		}
 
 		private void WordMenuItem_Click(object sender, EventArgs e)
 		{
-			SetSize(WatchSize.Word);
+			HandleWatchSizeSelected(WatchSize.Word);
 		}
 
 		private void DWordMenuItem_Click_Click(object sender, EventArgs e)
 		{
-			SetSize(WatchSize.DWord);
+			HandleWatchSizeSelected(WatchSize.DWord);
 		}
 
 		private void CheckMisalignedMenuItem_Click(object sender, EventArgs e)
@@ -1419,7 +1434,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			SetSize(SelectedSize);
+			HandleWatchSizeSelected(SelectedSize);
 		}
 
 		private void DisplayTypeDropdown_SelectedIndexChanged(object sender, EventArgs e)

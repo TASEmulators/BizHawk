@@ -19,9 +19,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 				? ctor2(2)
 				: throw new InvalidOperationException($"Invalid controller type: {controller2Name}");
 
-			Definition = new ControllerDefinition
+			Definition = new(Port1.Definition.Name)
 			{
-				Name = Port1.Definition.Name,
 				BoolButtons = Port1.Definition.BoolButtons
 							.Concat(Port2.Definition.BoolButtons)
 							.Concat(new[]
@@ -34,6 +33,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 			foreach (var kvp in Port1.Definition.Axes) Definition.Axes.Add(kvp);
 			foreach (var kvp in Port2.Definition.Axes) Definition.Axes.Add(kvp);
+
+			Definition.MakeImmutable();
 		}
 
 		public byte ReadPort1(IController c)

@@ -3,7 +3,7 @@
 	/// <summary>
 	/// This enum specify the size of a <see cref="Watch"/>
 	/// </summary>
-	public enum WatchSize
+	public enum WatchSize : int
 	{
 		/// <summary>
 		/// One byte (8 bits)

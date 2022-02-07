@@ -10,6 +10,7 @@ using System.Drawing;
 using BizHawk.Client.Common.FilterManager;
 
 using BizHawk.Bizware.BizwareGL;
+using BizHawk.Common;
 
 namespace BizHawk.Client.Common.Filters
 {
@@ -75,7 +76,7 @@ namespace BizHawk.Client.Common.Filters
 				var shader = shaders[i] = new RetroShader(Owner, content, debug);
 				if (!shader.Available)
 				{
-					Errors += $"===================\r\nPass {i}:\r\n{(shader.Errors??"").Replace("\n","\r\n")}\n";
+					Errors += $"-------------------\r\nPass {i}:\r\n{(shader.Errors??"").Replace("\n","\r\n")}\n";
 					return;
 				}
 			}
@@ -287,12 +288,12 @@ namespace BizHawk.Client.Common.Filters
 
 			// apply all parameters to this shader.. even if it was meant for other shaders. kind of lame.
 			if(Parameters != null)
-			{ 
-				foreach (var kvp in Parameters)
+			{
+				foreach (var (k, v) in Parameters)
 				{
-					if (kvp.Value is float value)
+					if (v is float value)
 					{
-						shader.Pipeline[kvp.Key].Set(value);
+						shader.Pipeline[k].Set(value);
 					}
 				}
 			}

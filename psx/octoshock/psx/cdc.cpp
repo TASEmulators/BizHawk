@@ -35,7 +35,7 @@
 	Gran Turismo (missing music; GetLocL must be valid and sector data must be ready simultaneous with clearing of status seek bit and setting of reading bit)
 	Harukanaru Toki no Naka de - Banjou Yuugi (needs GetLocL to reflect dancing around target seek position after seek completes; otherwise hangs on voice acting)
 	Incredible Crisis (needs GetLocL to be valid after a SeekL; otherwise hangs without music near start of "Etsuko and the Golden Pig")
-	Tomb Raider(needs GetLocP to reflect dancing around target seek position after seek completes; otherwise, CD-DA tracks at M:S:F=x:x:0 fail to play and game hangs)
+	Tomb Raider(needs GetLocP to reflect dancing around just before target seek position after seek completes; otherwise, CD-DA tracks at M:S:F=x:x:0 fail to play and game hangs)
 	Vib Ribbon, with extra audio CD
 	Mortal Kombat Trilogy, music resumption after pause.
 
@@ -190,6 +190,9 @@ void PS_CDC::SoftReset(void)
 {
  ClearAudioBuffers();
 
+ ReportLastF = 0;
+ ReportStartupDelay = 0;
+
  // Not sure about initial volume state
  Pending_DecodeVolume[0][0] = 0x80;
  Pending_DecodeVolume[0][1] = 0x00;
@@ -200,6 +203,10 @@ void PS_CDC::SoftReset(void)
  RegSelector = 0;
  memset(ArgsBuf, 0, sizeof(ArgsBuf));
  ArgsWP = ArgsRP = 0;
+
+ ArgsReceiveLatch = 0;
+ memset(ArgsReceiveBuf, 0, sizeof(ArgsReceiveBuf));
+ ArgsReceiveIn = 0;
 
  memset(ResultsBuffer, 0, sizeof(ResultsBuffer));
  ResultsWP = 0;
@@ -265,6 +272,10 @@ void PS_CDC::Power(void)
 {
  SPU->Power();
 
+ memset(SectorPipe, 0, sizeof(SectorPipe));
+ memset(SB, 0, sizeof(SB));
+ memset(AsyncResultsPending, 0, sizeof(AsyncResultsPending));
+ memset(&DMABuffer.data[0], 0, DMABuffer.data.size());
  SoftReset();
 
  HoldLogicalPos = false;
@@ -369,10 +380,6 @@ SYNCFUNC(PS_CDC)
   NSS(CommandLoc);
   NSS(CommandLoc_Dirty);
   NSS(xa_previous);
-
-  NSS(xa_cur_set);
-  NSS(xa_cur_file);
-  NSS(xa_cur_chan);
 
   NSS(ReportLastF);
 	NSS(ReportStartupDelay);
@@ -677,23 +684,6 @@ bool PS_CDC::XA_Test(const uint8 *sdata)
  if((Mode & MODE_SF) && (sh->file != FilterFile || sh->channel != FilterChan))
   return false;
 
- if(!xa_cur_set || (Mode & MODE_SF))
- {
-  xa_cur_set = true;
-  xa_cur_file = sh->file;
-  xa_cur_chan = sh->channel;
- }
- else if(sh->file != xa_cur_file || sh->channel != xa_cur_chan)
-  return false;
-
- if(sh->submode & XA_SUBMODE_EOF)
- {
-  //puts("YAY");
-  xa_cur_set = false;
-  xa_cur_file = 0;
-  xa_cur_chan = 0;
- }
-
  return true;
 }
 
@@ -701,10 +691,6 @@ void PS_CDC::ClearAudioBuffers(void)
 {
  memset(&AudioBuffer, 0, sizeof(AudioBuffer));
  memset(xa_previous, 0, sizeof(xa_previous));
-
- xa_cur_set = false;
- xa_cur_file = 0;
- xa_cur_chan = 0;
 
  memset(ADPCM_ResampBuf, 0, sizeof(ADPCM_ResampBuf));
  ADPCM_ResampCurPhase = 0;
@@ -1161,7 +1147,7 @@ void PS_CDC::HandlePlayRead(void)
 
  if(DriveStatus == DS_PAUSED || DriveStatus == DS_STANDBY) // || DriveStatus == DS_SEEKING_LOGICAL2)
  {
-  if(CurSector >= (SeekTarget + 2))
+  if(CurSector >= (SeekTarget + (HoldLogicalPos ? 2 : 0)))
    CurSector = std::max<int32>(-150, CurSector - 9);
  }
  else
@@ -1257,6 +1243,9 @@ pscpu_timestamp_t PS_CDC::Update(const pscpu_timestamp_t timestamp)
      DriveStatus = StatusAfterSeek;
      SeekFinished = true;
      ReportStartupDelay = 24000000;
+
+     if(DriveStatus == DS_PAUSED || DriveStatus == DS_STANDBY)
+      CurSector = std::max<int32>(-150, CurSector - 9);
 
      PSRCounter = 33868800 / (75 * ((Mode & MODE_SPEED) ? 2 : 1));
     }

@@ -32,8 +32,6 @@ namespace BizHawk.Client.Common
 		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
 		bool PauseAvi { set; }
 
-		void AddOnScreenMessage(string message);
-
 		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
 		void ClearHolds();
 
@@ -59,6 +57,9 @@ namespace BizHawk.Client.Common
 
 		void FrameSkipMessage();
 
+		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
+		int GetApproxFramerate();
+
 		/// <remarks>only referenced from <see cref="SaveStateApi"/></remarks>
 		void LoadQuickSave(string quickSlotName, bool suppressOSD = false);
 
@@ -71,7 +72,7 @@ namespace BizHawk.Client.Common
 		void PauseEmulator();
 
 		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
-		void RebootCore();
+		bool RebootCore();
 
 		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
 		void Render();

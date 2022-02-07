@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			_isLag = true;
 
-			if (_tracer.Enabled)
+			if (_tracer.IsEnabled())
 			{
 				_cpu.TraceCallback = s => _tracer.Put(s);
 			}
@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		public int Frame => _machine?.FrameCount ?? 0;
 
-		public string SystemId => "ZXSpectrum";
+		public string SystemId => VSystemID.Raw.ZXSpectrum;
 
 		public bool DeterministicEmulation { get; }
 

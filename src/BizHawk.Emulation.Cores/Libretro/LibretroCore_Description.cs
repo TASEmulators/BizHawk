@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		/// <summary>
 		/// Variables defined by the core
 		/// </summary>
-		public Dictionary<string, VariableDescription> Variables = new Dictionary<string, VariableDescription>();
+		public readonly IDictionary<string, VariableDescription> Variables = new Dictionary<string, VariableDescription>();
 	}
 
 	public class VariableDescription

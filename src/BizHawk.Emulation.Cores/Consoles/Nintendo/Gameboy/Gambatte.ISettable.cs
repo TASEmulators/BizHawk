@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 using Newtonsoft.Json;
 
@@ -17,7 +19,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public PutSettingsDirtyBits PutSettings(GambatteSettings o)
 		{
 			_settings = o;
-			if (IsCGBMode())
+			_disassembler.UseRGBDSSyntax = _settings.RgbdsSyntax;
+			if (IsCGBMode() || IsSgb)
 			{
 				SetCGBColors(_settings.CGBColors);
 			}
@@ -64,17 +67,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			public int[] GBPalette;
 			public GBColors.ColorType CGBColors;
-			public bool DisplayBG = true, DisplayOBJ = true, DisplayWindow = true;
 
 			/// <summary>
 			/// true to mute all audio
 			/// </summary>
 			public bool Muted;
+			
+			/// <summary>
+			/// true to use rgbds syntax
+			/// </summary>
+			public bool RgbdsSyntax;
+
+			/// <summary>
+			/// true to show sgb border (sgb mode only)
+			/// </summary>
+			public bool ShowBorder;
 
 			public GambatteSettings()
 			{
 				GBPalette = (int[])DefaultPalette.Clone();
 				CGBColors = GBColors.ColorType.gambatte;
+				RgbdsSyntax = true;
+				ShowBorder = true;
 			}
 
 
@@ -88,8 +102,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public class GambatteSyncSettings
 		{
-			[DisplayName("Enable official Nintendo BIOS")]
-			[Description("Boots game using system BIOS. You must have the bios file. Should be used for TASing.")]
+			[DisplayName("Use official Nintendo BootROM")]
+			[Description("When false, hacks are used to boot without a BIOS. When true, a provided official BootROM (or \"BIOS\") is used. You must provide the BootROM. Should be used for TASing.")]
 			[DefaultValue(false)]
 			public bool EnableBIOS { get; set; }
 
@@ -102,7 +116,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			}
 
 			[DisplayName("Console Mode")]
-			[Description("Pick which console to run, 'Auto' chooses from ROM header; 'GB', 'GBC', and 'GBA' chooses the respective system")]
+			[Description("Pick which console to run, 'Auto' chooses from ROM header; 'GB', 'GBC', and 'GBA' chooses the respective system. Does nothing in SGB mode.")]
 			[DefaultValue(ConsoleModeType.Auto)]
 			public ConsoleModeType ConsoleMode { get; set; }
 
@@ -111,8 +125,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			[DefaultValue(false)]
 			public bool MulticartCompat { get; set; }
 
+			[DisplayName("Cart Bus Pull-Up Time")]
+			[Description("Time it takes for the cart bus to pull-up to 0xFF in CPU cycles. Used to account for differences in pull-up times between carts/consoles.")]
+			[DefaultValue(8)]
+			public int CartBusPullUpTime { get; set; }
+
 			[DisplayName("Realtime RTC")]
-			[Description("If true, the real time clock in MBC3 games will reflect real time, instead of emulated time.  Ignored (treated as false) when a movie is recording.")]
+			[Description("If true, the real time clock in MBC3 and HuC3 games will reflect real time, instead of emulated time.  Ignored (treated as false) when a movie is recording.")]
 			[DefaultValue(false)]
 			public bool RealTimeRTC { get; set; }
 
@@ -121,18 +140,164 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			[DefaultValue(0)]
 			public int RTCDivisorOffset { get; set; }
 
-			[DisplayName("Equal Length Frames")]
-			[Description("When false, emulation frames sync to vblank.  Only useful for high level TASing.")]
-			[DefaultValue(false)]
-			public bool EqualLengthFrames
-			{
-				get => _equalLengthFrames;
-				set => _equalLengthFrames = value;
-			}
+			[JsonIgnore]
+			private int _internalRTCDays;
 
 			[JsonIgnore]
-			[DeepEqualsIgnore]
-			private bool _equalLengthFrames;
+			private int _internalRTCHours;
+
+			[JsonIgnore]
+			private int _internalRTCMinutes;
+
+			[JsonIgnore]
+			private int _internalRTCSeconds;
+
+			[JsonIgnore]
+			private int _internalRTCCycles;
+
+			[JsonIgnore]
+			private int _latchedRTCDays;
+
+			[JsonIgnore]
+			private int _latchedRTCHours;
+
+			[JsonIgnore]
+			private int _latchedRTCMinutes;
+
+			[JsonIgnore]
+			private int _latchedRTCSeconds;
+
+			[DisplayName("RTC Overflow")]
+			[Description("Sets whether the internal RTC day counter has overflowed.")]
+			[DefaultValue(false)]
+			public bool InternalRTCOverflow { get; set; }
+
+			[DisplayName("RTC Halt")]
+			[Description("Sets whether the internal RTC has halted.")]
+			[DefaultValue(false)]
+			public bool InternalRTCHalt { get; set; }
+
+			[DisplayName("RTC Days")]
+			[Description("Sets the internal RTC day counter. Ranges from 0 to 511.")]
+			[DefaultValue(0)]
+			public int InternalRTCDays
+			{
+				get => _internalRTCDays;
+				set => _internalRTCDays = Math.Max(0, Math.Min(511, value));
+			}
+
+			[DisplayName("RTC Hours")]
+			[Description("Sets the internal RTC hour counter. Ranges from -8 to 23.")]
+			[DefaultValue(0)]
+			public int InternalRTCHours
+			{
+				get => _internalRTCHours;
+				set => _internalRTCHours = Math.Max(-8, Math.Min(23, value));
+			}
+
+			[DisplayName("RTC Minutes")]
+			[Description("Sets the internal RTC minute counter. Ranges from -4 to 59.")]
+			[DefaultValue(0)]
+			public int InternalRTCMinutes
+			{
+				get => _internalRTCMinutes;
+				set => _internalRTCMinutes = Math.Max(-4, Math.Min(59, value));
+			}
+
+			[DisplayName("RTC Seconds")]
+			[Description("Sets the internal RTC second counter. Ranges from -4 to 59.")]
+			[DefaultValue(0)]
+			public int InternalRTCSeconds
+			{
+				get => _internalRTCSeconds;
+				set => _internalRTCSeconds = Math.Max(-4, Math.Min(59, value));
+			}
+
+			[DisplayName("RTC Sub-Seconds")]
+			[Description("Sets the internal RTC sub-second counter, expressed in CPU cycles. Ranges from 0 to 4194303 + the set RTC divisor offset.")]
+			[DefaultValue(0)]
+			public int InternalRTCCycles
+			{
+				get => _internalRTCCycles;
+				set => _internalRTCCycles = Math.Max(0, Math.Min((4194303 + RTCDivisorOffset), value));
+			}
+
+			[DisplayName("Latched RTC Overflow")]
+			[Description("Sets whether the latched RTC shows an overflow.")]
+			[DefaultValue(false)]
+			public bool LatchedRTCOverflow { get; set; }
+
+			[DisplayName("Latched RTC Halt")]
+			[Description("Sets whether the latched RTC shows a halt.")]
+			[DefaultValue(false)]
+			public bool LatchedRTCHalt { get; set; }
+
+			[DisplayName("Latched RTC Days")]
+			[Description("Sets the latched RTC days. Ranges from 0 to 511.")]
+			[DefaultValue(0)]
+			public int LatchedRTCDays
+			{
+				get => _latchedRTCDays;
+				set => _latchedRTCDays = Math.Max(0, Math.Min(511, value));
+			}
+
+			[DisplayName("Latched RTC Hours")]
+			[Description("Sets the latched RTC hours. Ranges from 0 to 31.")]
+			[DefaultValue(0)]
+			public int LatchedRTCHours
+			{
+				get => _latchedRTCHours;
+				set => _latchedRTCHours = Math.Max(0, Math.Min(63, value));
+			}
+
+			[DisplayName("Latched RTC Minutes")]
+			[Description("Sets the latched RTC minutes. Ranges from 0 to 63.")]
+			[DefaultValue(0)]
+			public int LatchedRTCMinutes
+			{
+				get => _latchedRTCMinutes;
+				set => _latchedRTCMinutes = Math.Max(0, Math.Min(63, value));
+			}
+
+			[DisplayName("Latched RTC Seconds")]
+			[Description("Sets the latched RTC seconds. Ranges from 0 to 63.")]
+			[DefaultValue(0)]
+			public int LatchedRTCSeconds
+			{
+				get => _latchedRTCSeconds;
+				set => _latchedRTCSeconds = Math.Max(0, Math.Min(63, value));
+			}
+			
+			public enum FrameLengthType
+			{
+				[Display(Name = "VBlank Driven Frames")]
+				VBlankDrivenFrames,
+				[Display(Name = "Equal Length Frames")]
+				EqualLengthFrames,
+				[Display(Name = "User Defined Frames")]
+				UserDefinedFrames
+			}
+
+			[DisplayName("Frame Length")]
+			[Description("Sets how long an emulation frame will last.\nVBlank Driven Frames will make emulation frames sync to VBlank. Recommended for TASing.\nEqual Length Frames will force all frames to emit 35112 samples. Legacy, not recommended for TASing.\nUser Defined Frames allows for the user to define how many samples are emitted for each frame. Only useful if sub-frame input is desired.")]
+			[DefaultValue(FrameLengthType.VBlankDrivenFrames)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public FrameLengthType FrameLength { get; set; }
+
+			[DisplayName("Display BG")]
+			[Description("Display background")]
+			[DefaultValue(true)]
+			public bool DisplayBG { get; set; }
+
+			[DisplayName("Display OBJ")]
+			[Description("Display objects")]
+			[DefaultValue(true)]
+			public bool DisplayOBJ { get; set; }
+
+			[DisplayName("Display Window")]
+			[Description("Display window")]
+			[DefaultValue(true)]
+			public bool DisplayWindow { get; set; }
 
 			public GambatteSyncSettings()
 			{

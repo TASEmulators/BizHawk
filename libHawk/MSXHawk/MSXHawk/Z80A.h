@@ -1,7 +1,15 @@
+#ifndef Z80A_H
+#define Z80A_H
+
 #include <iostream>
 #include <cstdint>
 #include <iomanip>
 #include <string>
+#include <cstring>
+
+#ifndef _WIN32
+#define sprintf_s snprintf
+#endif
 
 using namespace std;
 
@@ -3843,7 +3851,7 @@ namespace MSXHawk
 
 		void Read_Func(uint32_t dest, uint32_t src_l, uint32_t src_h)
 		{
-			bank_num = bank_offset = (uint32_t)(Regs[src_l] | (Regs[src_h]) << 8);
+			bank_num = bank_offset = (uint32_t)(Regs[src_l] | (Regs[src_h] << 8));
 			bank_offset &= low_mask;
 			bank_num = (bank_num >> bank_shift)& high_mask;
 			Regs[dest] = MemoryMap[bank_num][bank_offset];
@@ -3853,7 +3861,7 @@ namespace MSXHawk
 
 		void Read_INC_Func(uint32_t dest, uint32_t src_l, uint32_t src_h)
 		{
-			bank_num = bank_offset = (uint32_t)(Regs[src_l] | (Regs[src_h]) << 8);
+			bank_num = bank_offset = (uint32_t)(Regs[src_l] | (Regs[src_h] << 8));
 			bank_offset &= low_mask;
 			bank_num = (bank_num >> bank_shift)& high_mask;
 			Regs[dest] = MemoryMap[bank_num][bank_offset];
@@ -3864,7 +3872,7 @@ namespace MSXHawk
 
 		void Read_INC_TR_PC_Func(uint32_t dest_l, uint32_t dest_h, uint32_t src_l, uint32_t src_h)
 		{
-			bank_num = bank_offset = (uint32_t)(Regs[src_l] | (Regs[src_h]) << 8);
+			bank_num = bank_offset = (uint32_t)(Regs[src_l] | (Regs[src_h] << 8));
 			bank_offset &= low_mask;
 			bank_num = (bank_num >> bank_shift)& high_mask;
 			Regs[dest_h] = MemoryMap[bank_num][bank_offset];
@@ -3880,9 +3888,9 @@ namespace MSXHawk
 		{
 			Regs[DB] = Regs[src];
 
-			bank_num = bank_offset = (uint32_t)(Regs[dest_l] | (Regs[dest_h]) << 8);
+			bank_num = bank_offset = (uint32_t)(Regs[dest_l] | (Regs[dest_h] << 8));
 			bank_offset &= low_mask;
-			bank_num = (bank_num >> bank_shift)& high_mask;
+			bank_num = (bank_num >> bank_shift) & high_mask;
 			MemoryMap[bank_num][bank_offset] = (MemoryMapMask[bank_num] & (Regs[src] & 0xFF)) | ((~MemoryMapMask[bank_num]) & MemoryMap[bank_num][bank_offset]);
 
 			Memory_Write((uint32_t)(Regs[dest_l] | (Regs[dest_h] << 8)), (uint8_t)(Regs[src] & 0xFF));
@@ -3892,9 +3900,9 @@ namespace MSXHawk
 		{
 			Regs[DB] = Regs[src];
 
-			bank_num = bank_offset = (uint32_t)(Regs[dest_l] | (Regs[dest_h]) << 8);
+			bank_num = bank_offset = (uint32_t)(Regs[dest_l] | (Regs[dest_h] << 8));
 			bank_offset &= low_mask;
-			bank_num = (bank_num >> bank_shift)& high_mask;
+			bank_num = (bank_num >> bank_shift) & high_mask;
 			MemoryMap[bank_num][bank_offset] = (MemoryMapMask[bank_num] & (Regs[src] & 0xFF)) | ((~MemoryMapMask[bank_num]) & MemoryMap[bank_num][bank_offset]);
 
 			Memory_Write((uint32_t)(Regs[dest_l] | (Regs[dest_h] << 8)), (uint8_t)(Regs[src] & 0xFF));
@@ -3906,9 +3914,9 @@ namespace MSXHawk
 		{
 			Regs[DB] = Regs[src];
 
-			bank_num = bank_offset = (uint32_t)(Regs[dest_l] | (Regs[dest_h]) << 8);
+			bank_num = bank_offset = (uint32_t)(Regs[dest_l] | (Regs[dest_h] << 8));
 			bank_offset &= low_mask;
-			bank_num = (bank_num >> bank_shift)& high_mask;
+			bank_num = (bank_num >> bank_shift) & high_mask;
 			MemoryMap[bank_num][bank_offset] = (MemoryMapMask[bank_num] & (Regs[src] & 0xFF)) | ((~MemoryMapMask[bank_num]) & MemoryMap[bank_num][bank_offset]);
 
 			Memory_Write((uint32_t)(Regs[dest_l] | (Regs[dest_h] << 8)), (uint8_t)(Regs[src] & 0xFF));
@@ -3920,9 +3928,9 @@ namespace MSXHawk
 		{
 			Regs[DB] = Regs[src];
 
-			bank_num = bank_offset = (uint32_t)(Regs[dest_l] | (Regs[dest_h]) << 8);
+			bank_num = bank_offset = (uint32_t)(Regs[dest_l] | (Regs[dest_h] << 8));
 			bank_offset &= low_mask;
-			bank_num = (bank_num >> bank_shift)& high_mask;
+			bank_num = (bank_num >> bank_shift) & high_mask;
 			MemoryMap[bank_num][bank_offset] = (MemoryMapMask[bank_num] & (Regs[src] & 0xFF)) | ((~MemoryMapMask[bank_num]) & MemoryMap[bank_num][bank_offset]);
 
 			Memory_Write((uint32_t)(Regs[dest_l] | (Regs[dest_h] << 8)), (uint8_t)(Regs[src] & 0xFF));
@@ -3946,7 +3954,7 @@ namespace MSXHawk
 
 		void IN_Func(uint32_t dest, uint32_t src_l, uint32_t src_h)
 		{
-			Regs[dest] = HW_Read((uint32_t)(Regs[src_l] | (Regs[src_h]) << 8));
+			Regs[dest] = HW_Read((uint32_t)(Regs[src_l] | (Regs[src_h] << 8)));
 			Regs[DB] = Regs[dest];
 
 			FlagZset(Regs[dest] == 0);
@@ -3960,7 +3968,7 @@ namespace MSXHawk
 
 		void IN_INC_Func(uint32_t dest, uint32_t src_l, uint32_t src_h)
 		{
-			Regs[dest] = HW_Read((uint32_t)(Regs[src_l] | (Regs[src_h]) << 8));
+			Regs[dest] = HW_Read((uint32_t)(Regs[src_l] | (Regs[src_h] << 8)));
 			Regs[DB] = Regs[dest];
 
 			FlagZset(Regs[dest] == 0);
@@ -3976,7 +3984,7 @@ namespace MSXHawk
 
 		void IN_A_N_INC_Func(uint32_t dest, uint32_t src_l, uint32_t src_h)
 		{
-			Regs[dest] = HW_Read((uint32_t)(Regs[src_l] | (Regs[src_h]) << 8));
+			Regs[dest] = HW_Read((uint32_t)(Regs[src_l] | (Regs[src_h] << 8)));
 			Regs[DB] = Regs[dest];
 			INC16_Func(src_l, src_h);
 		}
@@ -5585,3 +5593,5 @@ namespace MSXHawk
 		#pragma endregion
 	};
 }
+
+#endif

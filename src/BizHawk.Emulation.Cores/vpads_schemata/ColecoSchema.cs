@@ -7,7 +7,7 @@ using BizHawk.Emulation.Cores.ColecoVision;
 
 namespace BizHawk.Emulation.Cores
 {
-	[Schema("Coleco")]
+	[Schema(VSystemID.Raw.Coleco)]
 	// ReSharper disable once UnusedMember.Global
 	public class ColecoSchema : IVirtualPadSchema
 	{
@@ -18,11 +18,6 @@ namespace BizHawk.Emulation.Cores
 
 			for (int i = 0; i < 2; i++)
 			{
-				if (ports[i] == typeof(UnpluggedController))
-				{
-					break;
-				}
-
 				if (ports[i] == typeof(StandardController))
 				{
 					yield return StandardController(i + 1);
@@ -36,6 +31,8 @@ namespace BizHawk.Emulation.Cores
 					yield return SuperActionController(i + 1);
 				}
 			}
+
+			// omitting console as it only has reset and power buttons
 		}
 
 		public static PadSchema StandardController(int controller)
@@ -87,27 +84,24 @@ namespace BizHawk.Emulation.Cores
 			};
 		}
 
-		private static IEnumerable<ButtonSchema> StandardButtons(int controller)
+		private static IEnumerable<ButtonSchema> StandardButtons(int controller) => new ButtonSchema[]
 		{
-			return new[]
-			{
-				ButtonSchema.Up(50, 11, controller),
-				ButtonSchema.Down(50, 32, controller),
-				ButtonSchema.Left(29, 22, controller),
-				ButtonSchema.Right(71, 22, controller),
-				new ButtonSchema(27, 85, controller, "1"),
-				new ButtonSchema(50, 85, controller, "2"),
-				new ButtonSchema(73, 85, controller, "3"),
-				new ButtonSchema(27, 108, controller, "4"),
-				new ButtonSchema(50, 108, controller, "5"),
-				new ButtonSchema(73, 108, controller, "6"),
-				new ButtonSchema(27, 131, controller, "7"),
-				new ButtonSchema(50, 131, controller, "8"),
-				new ButtonSchema(73, 131, controller, "9"),
-				new ButtonSchema(27, 154, controller, "Star", "*"),
-				new ButtonSchema(50, 154, controller, "0"),
-				new ButtonSchema(73, 154, controller, "Pound", "#")
-			};
-		}
+			ButtonSchema.Up(50, 11, controller),
+			ButtonSchema.Down(50, 32, controller),
+			ButtonSchema.Left(29, 22, controller),
+			ButtonSchema.Right(71, 22, controller),
+			new(27, 85, controller, "Key 1", "1"),
+			new(50, 85, controller, "Key 2", "2"),
+			new(73, 85, controller, "Key 3", "3"),
+			new(27, 108, controller, "Key 4", "4"),
+			new(50, 108, controller, "Key 5", "5"),
+			new(73, 108, controller, "Key 6", "6"),
+			new(27, 131, controller, "Key 7", "7"),
+			new(50, 131, controller, "Key 8", "8"),
+			new(73, 131, controller, "Key 9", "9"),
+			new(27, 154, controller, "Star", "*"),
+			new(50, 154, controller, "Key 0", "0"),
+			new(73, 154, controller, "Pound", "#"),
+		};
 	}
 }

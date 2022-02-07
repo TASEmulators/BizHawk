@@ -3,29 +3,26 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Nintendo.BSNES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores
 {
-	[Schema("SNES")]
+	[Schema(VSystemID.Raw.SNES)]
 	// ReSharper disable once UnusedMember.Global
 	public class SnesSchema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
 		{
-			if (core is LibsnesCore bsnes)
+			return core switch
 			{
-				return GetBsnesPadSchemas(bsnes);
-			}
-
-			if (core is NymaCore nyma)
-			{
-				return GetFaustSchemas(nyma, showMessageBox);
-			}
-
-			return GetSnes9xPadSchemas((Snes9x)core);
+				LibsnesCore libsnes => GetLibsnesPadSchemas(libsnes),
+				BsnesCore bsnes => GetBsnesPadSchemas(bsnes),
+				NymaCore nyma => GetFaustSchemas(nyma, showMessageBox),
+				_ => GetSnes9xPadSchemas((Snes9x) core)
+			};
 		}
 		private IEnumerable<PadSchema> GetSnes9xPadSchemas(Snes9x core)
 		{
@@ -61,7 +58,7 @@ namespace BizHawk.Emulation.Cores
 			yield return ConsoleButtons();
 		}
 
-		private IEnumerable<PadSchema> GetBsnesPadSchemas(LibsnesCore core)
+		private IEnumerable<PadSchema> GetLibsnesPadSchemas(LibsnesCore core)
 		{
 			var syncSettings = core.GetSyncSettings();
 
@@ -107,6 +104,58 @@ namespace BizHawk.Emulation.Cores
 
 						break;
 					case LibsnesControllerDeck.ControllerType.Payload:
+						yield return Payload(playerNum);
+						break;
+				}
+			}
+
+			yield return ConsoleButtons();
+		}
+
+		private IEnumerable<PadSchema> GetBsnesPadSchemas(BsnesCore core)
+		{
+			var syncSettings = core.GetSyncSettings();
+
+			var ports = new[]
+			{
+				syncSettings.LeftPort,
+				syncSettings.RightPort
+			};
+
+			int playerNum = 0;
+			for (int i = 0; i < 2; i++, playerNum++)
+			{
+				switch (ports[i])
+				{
+					default:
+					case BsnesApi.BSNES_INPUT_DEVICE.None:
+						playerNum--;
+						break;
+					case BsnesApi.BSNES_INPUT_DEVICE.Gamepad:
+						yield return StandardController(playerNum);
+						break;
+					case BsnesApi.BSNES_INPUT_DEVICE.Mouse:
+						yield return Mouse(playerNum);
+						break;
+					case BsnesApi.BSNES_INPUT_DEVICE.SuperMultitap:
+						for (int j = 0; j < 4; j++)
+						{
+							yield return StandardController(playerNum++);
+						}
+						break;
+					case BsnesApi.BSNES_INPUT_DEVICE.SuperScope:
+						yield return SuperScope(playerNum);
+						break;
+					case BsnesApi.BSNES_INPUT_DEVICE.Justifier:
+						yield return Justifier(playerNum);
+						break;
+					case BsnesApi.BSNES_INPUT_DEVICE.Justifiers:
+						for (int j = 0; j < 2; j++)
+						{
+							yield return Justifier(playerNum++);
+						}
+						break;
+					case BsnesApi.BSNES_INPUT_DEVICE.Payload:
 						yield return Payload(playerNum);
 						break;
 				}

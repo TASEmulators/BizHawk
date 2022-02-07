@@ -26,7 +26,8 @@ namespace BizHawk.Client.Common
 		void SetPadding(int l, int t, int r, int b);
 		(int Left, int Top, int Right, int Bottom) GetPadding();
 
-		void AddMessage(string message);
+		void AddMessage(string message, int? duration = null);
+
 		void ClearGraphics(DisplaySurfaceID? surfaceID = null);
 		void ClearText();
 		void SetDefaultForegroundColor(Color color);

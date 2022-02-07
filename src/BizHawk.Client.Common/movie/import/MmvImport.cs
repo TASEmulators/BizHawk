@@ -1,11 +1,12 @@
 ﻿using System.IO;
 using BizHawk.Common.BufferExtensions;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 namespace BizHawk.Client.Common.movie.import
 {
 	// ReSharper disable once UnusedMember.Global
-	// MMV file format: http://tasvideos.org/MMV.html
+	/// <summary>For Dega's <see href="https://tasvideos.org/EmulatorResources/MMV"><c>.mmv</c> format</see></summary>
 	[ImporterFor("Dega", ".mmv")]
 	internal class MmvImport : MovieImporter
 	{
@@ -80,7 +81,7 @@ namespace BizHawk.Client.Common.movie.import
 				isGameGear = false;
 			}
 
-			Result.Movie.HeaderEntries[HeaderKeys.Platform] = "SMS"; // System Id is still SMS even if game gear
+			Result.Movie.HeaderEntries[HeaderKeys.Platform] = VSystemID.Raw.SMS; // System Id is still SMS even if game gear
 
 			// bits 4-31: unused
 			r.ReadBytes(3);
@@ -93,17 +94,9 @@ namespace BizHawk.Client.Common.movie.import
 			byte[] md5 = r.ReadBytes(16);
 			Result.Movie.HeaderEntries[Md5] = md5.BytesToHexString().ToLower();
 
-			var ss = new SMS.SmsSyncSettings
-			{
-				ControllerType = SMS.SmsSyncSettings.ControllerTypes.Standard
-			};
-
-			var controllers = new SimpleController
-			{
-				Definition = isGameGear
-					? SMS.SmsController
-					: SMS.GGController
-			};
+			var ss = new SMS.SmsSyncSettings();
+			var cd = new SMSControllerDeck(ss.Port1, ss.Port2, isGameGear, ss.UseKeyboard);
+			SimpleController controllers = new(cd.Definition);
 
 			/*
 			 76543210
@@ -134,7 +127,7 @@ namespace BizHawk.Client.Common.movie.import
 
 					if (player == 1)
 					{
-						controllers["Pause"] = 
+						controllers["Pause"] =
 							(((controllerState >> 6) & 0x1) != 0 && !isGameGear)
 							|| (((controllerState >> 7) & 0x1) != 0 && isGameGear);
 					}

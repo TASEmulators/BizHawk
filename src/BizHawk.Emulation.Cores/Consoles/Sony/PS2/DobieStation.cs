@@ -7,11 +7,11 @@ using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Emulation.Cores.Sony.PS2
 {
-	[Core("DobieStation", "PSI", true, false, "fa33778b056aa32", "https://github.com/PSI-Rockin/DobieStation", false)]
+	[PortedCore(CoreNames.DobieStation, "PSI", "fa33778b056aa32", "https://github.com/PSI-Rockin/DobieStation", isReleased: false)]
 	public unsafe class DobieStation : WaterboxCore, ISettable<object, DobieStation.DobieSyncSettings>
 	{
 		private readonly LibDobieStation _core;
-		[CoreConstructor("PS2")]
+		[CoreConstructor(VSystemID.Raw.PS2)]
 		public DobieStation(CoreLoadParameters<object, DobieSyncSettings> lp)
 			:base(lp.Comm, new Configuration
 			{
@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Sony.PS2
 				DefaultFpsNumerator = 294912000,
 				DefaultFpsDenominator = 4920115,
 				MaxSamples = 1024,
-				SystemId = "PS2"
+				SystemId = VSystemID.Raw.PS2,
 			})
 		{
 			if (lp.Discs.Count != 1)
@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Sony.PS2
 				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			}, new[] { _cdCallback });
 
-			var bios = lp.Comm.CoreFileProvider.GetFirmware("PS2", "BIOS", true);
+			var bios = lp.Comm.CoreFileProvider.GetFirmwareOrThrow(new("PS2", "BIOS"));
 			_exe.AddReadonlyFile(new byte[0x840000], "MEMCARD0");
 
 			var worked = _core.Initialize(bios,
@@ -135,9 +135,8 @@ namespace BizHawk.Emulation.Cores.Sony.PS2
 				: PutSettingsDirtyBits.None;
 		}
 
-		private static readonly ControllerDefinition DualShock = new ControllerDefinition
+		private static readonly ControllerDefinition DualShock = new ControllerDefinition("PS2 DualShock")
 		{
-			Name = "PS2 DualShock",
 			BoolButtons =
 			{
 				"SELECT",
@@ -164,7 +163,7 @@ namespace BizHawk.Emulation.Cores.Sony.PS2
 				{ "LEFT X", new AxisSpec(0.RangeTo(255), 128) },
 				{ "LEFT Y", new AxisSpec(0.RangeTo(255), 128) },
 			}
-		};
+		}.MakeImmutable();
 
 		public class DobieSyncSettings
 		{

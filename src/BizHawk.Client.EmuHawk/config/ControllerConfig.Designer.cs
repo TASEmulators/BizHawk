@@ -33,6 +33,7 @@
 			this.NormalControlsTab = new System.Windows.Forms.TabPage();
 			this.AutofireControlsTab = new System.Windows.Forms.TabPage();
 			this.AnalogControlsTab = new System.Windows.Forms.TabPage();
+			this.FeedbacksTab = new System.Windows.Forms.TabPage();
 			this.checkBoxAutoTab = new System.Windows.Forms.CheckBox();
 			this.buttonOK = new System.Windows.Forms.Button();
 			this.buttonCancel = new System.Windows.Forms.Button();
@@ -59,6 +60,7 @@
 			this.tabControl1.Controls.Add(this.NormalControlsTab);
 			this.tabControl1.Controls.Add(this.AutofireControlsTab);
 			this.tabControl1.Controls.Add(this.AnalogControlsTab);
+			this.tabControl1.Controls.Add(this.FeedbacksTab);
 			this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tabControl1.Location = new System.Drawing.Point(3, 3);
 			this.tabControl1.Name = "tabControl1";
@@ -94,6 +96,15 @@
 			this.AnalogControlsTab.TabIndex = 2;
 			this.AnalogControlsTab.Text = "Analog Controls";
 			this.AnalogControlsTab.UseVisualStyleBackColor = true;
+			// 
+			// FeedbacksTab
+			// 
+			this.FeedbacksTab.Location = new System.Drawing.Point(4, 22);
+			this.FeedbacksTab.Name = "FeedbacksTab";
+			this.FeedbacksTab.Size = new System.Drawing.Size(554, 495);
+			this.FeedbacksTab.TabIndex = 3;
+			this.FeedbacksTab.Text = "Feedbacks";
+			this.FeedbacksTab.UseVisualStyleBackColor = true;
 			// 
 			// checkBoxAutoTab
 			// 
@@ -267,6 +278,7 @@
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
 		private System.Windows.Forms.PictureBox pictureBox1;
 		private System.Windows.Forms.TabPage AnalogControlsTab;
+		private System.Windows.Forms.TabPage FeedbacksTab;
 		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
 		private System.Windows.Forms.ToolTip toolTip1;
 		private MenuButton btnMisc;

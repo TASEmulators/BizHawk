@@ -15,6 +15,8 @@ namespace BizHawk.Client.Common
 	{
 		public ControllerDefinition Definition => Source.Definition;
 
+		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
+
 		public bool IsPressed(string button)
 		{
 			var source = Source.IsPressed(button);
@@ -38,6 +40,10 @@ namespace BizHawk.Client.Common
 
 			return Source.AxisValue(name);
 		}
+
+		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Source.GetHapticsSnapshot();
+
+		public void SetHapticChannelStrength(string name, int strength) => Source.SetHapticChannelStrength(name, strength);
 
 		public IController Source { get; set; }
 
@@ -111,14 +117,16 @@ namespace BizHawk.Client.Common
 	{
 		public ControllerDefinition Definition => Source.Definition;
 
+		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
+
 		public bool IsPressed(string button)
 		{
 			var source = Source.IsPressed(button);
 			bool patternValue = false;
-			if (_boolPatterns.ContainsKey(button))
+			if (_boolPatterns.TryGetValue(button, out var pattern))
 			{
 				// I can't figure a way to determine right here if it should Peek or Get.
-				patternValue = _boolPatterns[button].PeekNextValue();
+				patternValue = pattern.PeekNextValue();
 			}
 
 			source ^= patternValue;
@@ -127,19 +135,13 @@ namespace BizHawk.Client.Common
 		}
 
 		public int AxisValue(string name)
-		{
-			if (_axisPatterns.ContainsKey(name))
-			{
-				return _axisPatterns[name].PeekNextValue();
-			}
+			=> _axisPatterns.TryGetValue(name, out var pattern)
+				? pattern.PeekNextValue()
+				: Source?.AxisValue(name) ?? 0;
 
-			if (Source == null)
-			{
-				return 0;
-			}
+		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Source.GetHapticsSnapshot();
 
-			return Source.AxisValue(name);
-		}
+		public void SetHapticChannelStrength(string name, int strength) => Source.SetHapticChannelStrength(name, strength);
 
 		// TODO: Change the AutoHold adapter to be one of these, with an 'Off' value of 0?
 		// Probably would have slightly lower performance, but it seems weird to have such a similar class that is only used once.

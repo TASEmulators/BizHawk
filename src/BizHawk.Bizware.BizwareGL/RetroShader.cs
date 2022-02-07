@@ -122,7 +122,7 @@ namespace BizHawk.Bizware.BizwareGL
 			pData[i++] = 1; pData[i++] = v1;
 
 			Owner.SetBlendState(Owner.BlendNoneCopy);
-			Owner.BindArrayData(pData);
+			Owner.BindArrayData(new(pData));
 			Owner.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
 		}
 

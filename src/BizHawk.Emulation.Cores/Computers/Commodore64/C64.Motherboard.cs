@@ -78,6 +78,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			Ram = new Chip4864();
 			Serial = new SerialPort();
 
+			Cpu.c64 = c64;
+
 			switch (sidType)
 			{
 				case C64.SidType.OldR2:

@@ -48,10 +48,8 @@ namespace BizHawk.BizInvoke
 	public static class CallingConventionAdapterExtensions
 	{
 		public static T GetDelegateForFunctionPointer<T>(this ICallingConventionAdapter a, IntPtr p)
-			where T : class
-		{
-			return (T)(object)a.GetDelegateForFunctionPointer(p, typeof(T));
-		}
+			where T : Delegate
+			=> (T) a.GetDelegateForFunctionPointer(p, typeof(T));
 	}
 
 	public class ParameterInfo
@@ -70,7 +68,7 @@ namespace BizHawk.BizInvoke
 		{
 			if (!typeof(Delegate).IsAssignableFrom(delegateType))
 				throw new InvalidOperationException("Must be a delegate type!");
-			var invoke = delegateType.GetMethod("Invoke");
+			var invoke = delegateType.GetMethod("Invoke")!;
 			ReturnType = invoke.ReturnType;
 			ParameterTypes = invoke.GetParameters().Select(p => p.ParameterType).ToList().AsReadOnly();
 		}
@@ -172,10 +170,10 @@ namespace BizHawk.BizInvoke
 					: (ICallingConventionAdapter)new MsHostSysVGuest();
 			}
 
-			private readonly Dictionary<Delegate, int> _slots;
+			private readonly Dictionary<Delegate, int>? _slots;
 			private readonly ICallbackAdjuster _waterboxHost;
 
-			public WaterboxAdapter(IEnumerable<Delegate> slots, ICallbackAdjuster waterboxHost)
+			public WaterboxAdapter(IEnumerable<Delegate>? slots, ICallbackAdjuster waterboxHost)
 			{
 				if (slots != null)
 				{
@@ -248,7 +246,7 @@ namespace BizHawk.BizInvoke
 
 			private readonly MemoryBlock _memory;
 			private readonly object _sync = new object();
-			private readonly WeakReference[] _refs;
+			private readonly WeakReference?[] _refs;
 
 			public MsHostSysVGuest()
 			{
@@ -261,8 +259,7 @@ namespace BizHawk.BizInvoke
 			{
 				for (int i = 0; i < _refs.Length; i++)
 				{
-					if (_refs[i] == null || !_refs[i].IsAlive)
-						return i;
+					if (_refs[i] is not { IsAlive: true }) return i; // return index of first null or dead
 				}
 				throw new InvalidOperationException("Out of Thunk memory");
 			}
@@ -333,10 +330,8 @@ namespace BizHawk.BizInvoke
 
 			private void SetLifetime(int index, object lifetime)
 			{
-				if (_refs[index] == null)
-					_refs[index] = new WeakReference(lifetime);
-				else
-					_refs[index].Target = lifetime;
+				_refs[index] ??= new(null);
+				_refs[index]!.Target = lifetime;
 			}
 
 			public IntPtr GetFunctionPointerForDelegate(Delegate d)

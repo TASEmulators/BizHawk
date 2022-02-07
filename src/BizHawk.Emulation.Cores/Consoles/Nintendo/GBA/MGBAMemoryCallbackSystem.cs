@@ -67,25 +67,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			_callbacks.Add(container);
 		}
 
+		private void Remove(CallbackContainer cb)
+		{
+			if (MGBAHawk.ZZHacky.BizClearWatchpoint(_mgba.Core, cb.ID)) _callbacks.Remove(cb);
+		}
+
 		public void Remove(MemoryCallbackDelegate action)
 		{
 			var cbToRemove = _callbacks.SingleOrDefault(container => container.Callback.Callback == action);
+			if (cbToRemove == null) return;
 
-			if (cbToRemove != null)
+			if (cbToRemove.Callback.Type is MemoryCallbackType.Execute)
 			{
-				if (cbToRemove.Callback.Type == MemoryCallbackType.Execute)
+				_callbacks.Remove(cbToRemove);
+				if (!_callbacks.Any(cb => cb.Callback.Type is MemoryCallbackType.Execute))
 				{
-					_callbacks.Remove(cbToRemove);
-					if (_callbacks.All(cb => cb.Callback.Type != MemoryCallbackType.Execute))
-					{
-						_executeCallback = null;
-						MGBAHawk.ZZHacky.BizSetExecCallback(_mgba.Core, null);
-					}
+					_executeCallback = null;
+					MGBAHawk.ZZHacky.BizSetExecCallback(_mgba.Core, null);
 				}
-				else if (MGBAHawk.ZZHacky.BizClearWatchpoint(_mgba.Core, cbToRemove.ID))
-				{
-					_callbacks.Remove(cbToRemove);
-				}
+			}
+			else
+			{
+				Remove(cbToRemove);
 			}
 		}
 
@@ -99,17 +102,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public void Clear()
 		{
-			foreach (var cb in _callbacks)
-			{
-				if (MGBAHawk.ZZHacky.BizClearWatchpoint(_mgba.Core, cb.ID))
-				{
-					_callbacks.Remove(cb);
-				}
-			}
+			foreach (var cb in _callbacks) Remove(cb);
 		}
 
 		public IEnumerator<IMemoryCallback> GetEnumerator() => _callbacks.Select(c => c.Callback).GetEnumerator();
-		IEnumerator IEnumerable.GetEnumerator() => _callbacks.Select(c => c.Callback).GetEnumerator();
+
+		IEnumerator IEnumerable.GetEnumerator()
+			=> GetEnumerator();
 
 		public void CallMemoryCallbacks(uint addr, uint value, uint flags, string scope)
 		{
@@ -122,6 +121,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			{
 				callback?.Callback?.Invoke(pc, 0, 0);
 			}
+		}
+
+		private MemoryCallbackDelegate DebugCallback = null;
+
+		private bool DebugCallbackExecuted = false;
+
+		public void Debug2805()
+		{
+			DebugCallback = (_, _, _) =>
+			{
+				Console.WriteLine(DebugCallbackExecuted ? "subsequent call" : "first call");
+				Remove(DebugCallback);
+				DebugCallbackExecuted = true;
+			};
+			Add(new MemoryCallback("System Bus", MemoryCallbackType.Write, "Plugin Hook", DebugCallback, 0x020096E0, null));
 		}
 	}
 

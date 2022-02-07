@@ -5,17 +5,16 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Consoles.SNK
 {
-	[Core("NeoPop", "Thomas Klausner, Mednafen Team", true, true, "1.26.1",
-		"https://mednafen.github.io/releases/", false, "NeoPop")]
+	[PortedCore(CoreNames.NeoPop, "Thomas Klausner, Mednafen Team", "1.27.1", "https://mednafen.github.io/releases/")]
 	public class NeoGeoPort : NymaCore,
 		ISaveRam // NGP provides its own saveram interface
 	{
 		private readonly LibNeoGeoPort _neopop;
 
-		[CoreConstructor("NGP")]
+		[CoreConstructor(VSystemID.Raw.NGP)]
 		public NeoGeoPort(CoreComm comm, byte[] rom, GameInfo game,
 			NymaSettings settings, NymaSyncSettings syncSettings, bool deterministic, string extension)
-			: base(comm, "NGP", "NeoGeo Portable Controller", settings, syncSettings)
+			: base(comm, VSystemID.Raw.NGP, "NeoGeo Portable Controller", settings, syncSettings)
 		{
 			_neopop = DoInit<LibNeoGeoPort>(game, rom, null, "ngp.wbx", extension, deterministic);
 		}

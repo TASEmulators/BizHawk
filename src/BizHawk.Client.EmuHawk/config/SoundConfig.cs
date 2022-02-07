@@ -7,7 +7,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class SoundConfig : Form
+	public partial class SoundConfig : Form, IDialogParent
 	{
 		private readonly Config _config;
 
@@ -36,12 +36,7 @@ namespace BizHawk.Client.EmuHawk
 			cbEnableRWFF.Checked = _config.SoundEnabledRWFF;
 			cbMuteFrameAdvance.Checked = _config.MuteFrameAdvance;
 
-			if (OSTailoredCode.IsUnixHost)
-			{
-				// Disable DirectSound and XAudio2 on Mono
-				rbOutputMethodDirectSound.Enabled = false;
-				rbOutputMethodXAudio2.Enabled = false;
-			}
+			rbOutputMethodDirectSound.Enabled = rbOutputMethodXAudio2.Enabled = HostCapabilityDetector.HasDirectX;
 
 			rbOutputMethodDirectSound.Checked = _config.SoundOutputMethod == ESoundOutputMethod.DirectSound;
 			rbOutputMethodXAudio2.Checked = _config.SoundOutputMethod == ESoundOutputMethod.XAudio2;

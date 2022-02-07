@@ -21,13 +21,32 @@ namespace BizHawk.Client.Common
 
 		public string ReadFromFile(string filename, int expectedSize)
 		{
-			using var viewAccessor = MemoryMappedFile.OpenExisting(filename).CreateViewAccessor();
-			var bytes = new byte[expectedSize];
-			viewAccessor.ReadArray(0, bytes, 0, expectedSize);
+			var bytes = ReadBytesFromFile(filename, expectedSize);
 			return Encoding.UTF8.GetString(bytes);
 		}
 
-		public int ScreenShotToFile() => WriteToFile(Filename, _takeScreenshotCallback());
+		public byte[] ReadBytesFromFile(string filename, int expectedSize)
+		{
+			if (!_mmfFiles.TryGetValue(filename, out var mmfFile))
+			{
+				mmfFile = _mmfFiles[filename] = MemoryMappedFile.OpenExisting(filename);
+			}
+
+			using var viewAccessor = mmfFile.CreateViewAccessor(0, expectedSize, MemoryMappedFileAccess.Read);
+			var bytes = new byte[expectedSize];
+			viewAccessor.ReadArray(0, bytes, 0, expectedSize);
+			return bytes;
+		}
+
+		public int ScreenShotToFile()
+		{
+			if (Filename is null)
+			{
+				Console.WriteLine("MMF screenshot target not set; start EmuHawk with `--mmf=filename`");
+				return 0;
+			}
+			return WriteToFile(Filename, _takeScreenshotCallback());
+		}
 
 		public int WriteToFile(string filename, byte[] outputBytes)
 		{

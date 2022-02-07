@@ -1,7 +1,6 @@
 ﻿using System;
 
 using BizHawk.Common;
-using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Intellivision
@@ -12,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		private ushort[] Cart_Ram = new ushort[0x800];
 
-		// There are 10 mappers Intellivision games use (not counting intellicart which is handled seperately)
+		// There are several mappers Intellivision games use (not counting intellicart which is handled seperately)
 		// we will pick the mapper from the game DB and default to 0
 		private int _mapper = 0;
 
@@ -39,27 +38,12 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			}
 
 			// look up hash in gamedb to see what mapper to use
-			// if none found default is zero
-			string hash_sha1 = null;
 			string s_mapper = null;
-			hash_sha1 = "sha1:" + rom.HashSHA1(16, rom.Length - 16);
 
-			var gi = Database.CheckDatabase(hash_sha1);
-			if (gi != null)
-			{
-				var dict = gi.GetOptions();
-				if (!dict.ContainsKey("board"))
-				{
-					throw new Exception("INTV gamedb entries must have a board identifier!");
-				}
-
-				s_mapper = dict["board"];
-			}
-			else
-			{
-				s_mapper = "0";
-			}
-
+			var gi = Database.CheckDatabase(SHA1Checksum.ComputePrefixedHex(rom));
+			if (gi != null && !gi.GetOptions().TryGetValue("board", out s_mapper)) { throw new Exception("INTV gamedb entries must have a board identifier!"); }
+			if (gi == null && (rom.Length % 1024) != 0) { throw new Exception("Game is of unusual size but no header entry present and hash not in game db."); }
+			_mapper = 0;
 			int.TryParse(s_mapper, out _mapper);
 
 			return rom.Length;
@@ -227,6 +211,17 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					if (addr >= 0xD000 && addr <= 0xFFFF)
 					{
 						return Data[addr - 0x8000];
+					}
+					break;
+				case 11:
+					if (addr >= 0x5000 && addr <= 0x5FFF)
+					{
+						return Data[addr - 0x5000];
+					}
+
+					if (addr >= 0xD000 && addr <= 0xDFFF)
+					{
+						return Data[addr - 0xC000];
 					}
 					break;
 			}

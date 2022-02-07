@@ -130,7 +130,7 @@ namespace BizHawk.Client.EmuHawk
 				_config.PutCoreSettings<N64>(_s);
 				_config.PutCoreSyncSettings<N64>(_ss);
 			}
-		} 
+		}
 
 		private void N64VideoPluginConfig_Load(object sender, EventArgs e)
 		{

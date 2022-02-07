@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
+
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace BizHawk.Client.Common
@@ -11,23 +14,44 @@ namespace BizHawk.Client.Common
 	public class Config
 	{
 		public static string ControlDefaultPath => Path.Combine(PathUtils.ExeDirectoryPath, "defctrl.json");
-		
-		public static string DefaultIniPath { get; private set; } = Path.Combine(PathUtils.ExeDirectoryPath, "config.ini");
 
-		// Shenanigans
-		public static void SetDefaultIniPath(string newDefaultIniPath)
+		/// <remarks>
+		/// <c>AppliesTo[0]</c> is used as the group label, and
+		/// <c>Config.PreferredCores[AppliesTo[0]]</c> (lookup on global <see cref="Config"/> instance) determines the currently selected option.
+		/// The tuples' order determines the order of menu items.
+		/// </remarks>
+		public static readonly IReadOnlyList<(string[] AppliesTo, string[] CoreNames)> CorePickerUIData = new List<(string[], string[])>
 		{
-			DefaultIniPath = newDefaultIniPath;
-		}
+			(new[] { VSystemID.Raw.NES },
+				new[] { CoreNames.QuickNes, CoreNames.NesHawk, CoreNames.SubNesHawk }),
+			(new[] { VSystemID.Raw.SNES },
+				new[] { CoreNames.Faust, CoreNames.Snes9X, CoreNames.Bsnes, CoreNames.Bsnes115 }),
+			(new[] { VSystemID.Raw.SGB },
+				new[] { CoreNames.Gambatte, CoreNames.Bsnes, CoreNames.Bsnes115}),
+			(new[] { VSystemID.Raw.GB, VSystemID.Raw.GBC },
+				new[] { CoreNames.Gambatte, CoreNames.Sameboy, CoreNames.GbHawk, CoreNames.SubGbHawk }),
+			(new[] { VSystemID.Raw.GBL },
+				new[] { CoreNames.GambatteLink, CoreNames.GBHawkLink, CoreNames.GBHawkLink3x, CoreNames.GBHawkLink4x }),
+			(new[] { VSystemID.Raw.PCE, VSystemID.Raw.PCECD, VSystemID.Raw.SGX },
+				new[] { CoreNames.TurboNyma, CoreNames.HyperNyma, CoreNames.PceHawk }),
+			(new[] { VSystemID.Raw.PSX },
+				new[] { CoreNames.Octoshock, CoreNames.Nymashock}),
+			(new[] { VSystemID.Raw.TI83 },
+				new[] { CoreNames.TI83Hawk, CoreNames.Emu83 }),
+		};
 
 		public Config()
 		{
-			if (AllTrollers.Count == 0 && AllTrollersAutoFire.Count == 0 && AllTrollersAnalog.Count == 0)
+			if (AllTrollers.Count == 0
+				&& AllTrollersAutoFire.Count == 0
+				&& AllTrollersAnalog.Count == 0
+				&& AllTrollersFeedbacks.Count == 0)
 			{
 				var cd = ConfigService.Load<DefaultControls>(ControlDefaultPath);
 				AllTrollers = cd.AllTrollers;
 				AllTrollersAutoFire = cd.AllTrollersAutoFire;
 				AllTrollersAnalog = cd.AllTrollersAnalog;
+				AllTrollersFeedbacks = cd.AllTrollersFeedbacks;
 			}
 		}
 
@@ -135,7 +159,8 @@ namespace BizHawk.Client.Common
 		public int FrameSkip { get; set; } = 4;
 		public int SpeedPercent { get; set; } = 100;
 		public int SpeedPercentAlternate { get; set; } = 400;
-		public bool ClockThrottle { get; set; }= true;
+		public bool ClockThrottle { get; set; } = true;
+		public bool Unthrottled { get; set; } = false;
 		public bool AutoMinimizeSkipping { get; set; } = true;
 		public bool VSyncThrottle { get; set; } = false;
 
@@ -183,19 +208,10 @@ namespace BizHawk.Client.Common
 		public int AlertMessageColor { get; set; } = DefaultMessagePositions.AlertMessageColor;
 		public int LastInputColor { get; set; } = DefaultMessagePositions.LastInputColor;
 		public int MovieInput { get; set; } = DefaultMessagePositions.MovieInput;
-		
+
 		public int DispPrescale { get; set; } = 1;
 
-		private static bool DetectDirectX()
-		{
-			if (OSTailoredCode.IsUnixHost) return false;
-			var p = OSTailoredCode.LinkedLibManager.LoadOrZero("d3dx9_43.dll");
-			if (p == IntPtr.Zero) return false;
-			OSTailoredCode.LinkedLibManager.FreeByPtr(p);
-			return true;
-		}
-
-		public EDispMethod DispMethod { get; set; } = DetectDirectX() ? EDispMethod.SlimDX9 : EDispMethod.OpenGL;
+		public EDispMethod DispMethod { get; set; } = HostCapabilityDetector.HasDirectX ? EDispMethod.SlimDX9 : EDispMethod.OpenGL;
 
 		public int DispChromeFrameWindowed { get; set; } = 2;
 		public bool DispChromeStatusBarWindowed { get; set; } = true;
@@ -223,7 +239,7 @@ namespace BizHawk.Client.Common
 		public int DispCropBottom { get; set; } = 0;
 
 		// Sound options
-		public ESoundOutputMethod SoundOutputMethod { get; set; } = DetectDirectX() ? ESoundOutputMethod.DirectSound : ESoundOutputMethod.OpenAL;
+		public ESoundOutputMethod SoundOutputMethod { get; set; } = HostCapabilityDetector.HasDirectX ? ESoundOutputMethod.DirectSound : ESoundOutputMethod.OpenAL;
 		public bool SoundEnabled { get; set; } = true;
 		public bool SoundEnabledNormal { get; set; } = true;
 		public bool SoundEnabledRWFF { get; set; } = true;
@@ -280,9 +296,6 @@ namespace BizHawk.Client.Common
 		public bool PlayMovieIncludeSubDir { get; set; }
 		public bool PlayMovieMatchHash { get; set; } = true;
 
-		// TI83
-		public bool Ti83AutoloadKeyPad { get; set; } = true;
-
 		public BindingCollection HotkeyBindings { get; set; } = new BindingCollection();
 
 		// Analog Hotkey values
@@ -293,23 +306,28 @@ namespace BizHawk.Client.Common
 		public Dictionary<string, Dictionary<string, string>> AllTrollers { get; set; } = new Dictionary<string, Dictionary<string, string>>();
 		public Dictionary<string, Dictionary<string, string>> AllTrollersAutoFire { get; set; } = new Dictionary<string, Dictionary<string, string>>();
 		public Dictionary<string, Dictionary<string, AnalogBind>> AllTrollersAnalog { get; set; } = new Dictionary<string, Dictionary<string, AnalogBind>>();
+		public Dictionary<string, Dictionary<string, FeedbackBind>> AllTrollersFeedbacks { get; set; } = new Dictionary<string, Dictionary<string, FeedbackBind>>();
 
 		/// <remarks>as this setting spans multiple cores and doesn't actually affect the behavior of any core, it hasn't been absorbed into the new system</remarks>
 		public bool GbAsSgb { get; set; }
 		public string LibretroCore { get; set; }
 
-		public Dictionary<string, string> PreferredCores = new Dictionary<string, string>
+		public Dictionary<string, string> PreferredCores = new()
 		{
-			["NES"] = CoreNames.QuickNes,
-			["SNES"] = CoreNames.Snes9X,
-			["GB"] = CoreNames.Gambatte,
-			["GBC"] = CoreNames.Gambatte,
-			["DGB"] = CoreNames.DualGambatte,
-			["SGB"] = CoreNames.SameBoy,
-			["PCE"] = CoreNames.TurboNyma,
-			["PCECD"] = CoreNames.TurboNyma,
-			["SGX"] = CoreNames.TurboNyma
+			[VSystemID.Raw.NES] = CoreNames.QuickNes,
+			[VSystemID.Raw.SNES] = CoreNames.Snes9X,
+			[VSystemID.Raw.GB] = CoreNames.Gambatte,
+			[VSystemID.Raw.GBC] = CoreNames.Gambatte,
+			[VSystemID.Raw.GBL] = CoreNames.GambatteLink,
+			[VSystemID.Raw.SGB] = CoreNames.Gambatte,
+			[VSystemID.Raw.PCE] = CoreNames.TurboNyma,
+			[VSystemID.Raw.PCECD] = CoreNames.TurboNyma,
+			[VSystemID.Raw.SGX] = CoreNames.TurboNyma,
+			[VSystemID.Raw.PSX] = CoreNames.Nymashock,
+			[VSystemID.Raw.TI83] = CoreNames.Emu83,
 		};
+
+		public bool DontTryOtherCores { get; set; }
 
 		// ReSharper disable once UnusedMember.Global
 		public string LastWrittenFrom { get; set; } = VersionInfo.MainVersion;
@@ -317,8 +335,18 @@ namespace BizHawk.Client.Common
 		// ReSharper disable once UnusedMember.Global
 		public string LastWrittenFromDetailed { get; set; } = VersionInfo.GetEmuVersion();
 
-		public EHostInputMethod HostInputMethod { get; set; } = OSTailoredCode.IsUnixHost ? EHostInputMethod.OpenTK : EHostInputMethod.DirectInput;
+		public EHostInputMethod HostInputMethod { get; set; } = HostCapabilityDetector.HasDirectX ? EHostInputMethod.DirectInput : EHostInputMethod.OpenTK;
 
 		public bool UseStaticWindowTitles { get; set; }
+
+		public List<string> ModifierKeys { get; set; } = new();
+
+		[JsonIgnore]
+		public IReadOnlyList<string> ModifierKeysEffective;
+
+		public bool MergeLAndRModifierKeys { get; set; } = true;
+
+		/// <remarks>in seconds</remarks>
+		public int OSDMessageDuration { get; set; } = 2;
 	}
 }

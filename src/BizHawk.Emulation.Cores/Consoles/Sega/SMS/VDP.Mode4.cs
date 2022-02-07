@@ -40,14 +40,19 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 			for (int xTile = 0; xTile < 32; xTile++)
 			{
-				if (xTile == 24 && VerticalScrollLock)
+				if (xTile == lock_tile_start && VerticalScrollLock)
 				{
 					vertOffset = ScanLine;
 					yTile = vertOffset / 8;
 				}
 
 				byte PaletteBase = 0;
-				int tileInfo = VRAM[mapBase + ((yTile * 32) + xTile) * 2] | (VRAM[mapBase + (((yTile * 32) + xTile) * 2) + 1] << 8);
+
+				int VRAM_addr = mapBase + ((yTile * 32) + xTile) * 2;
+				if (JPN_Compat) { VRAM_addr &= NameTableMaskBit; }
+
+				int tileInfo = VRAM[VRAM_addr] | (VRAM[VRAM_addr + 1] << 8);
+
 				int tileNo = tileInfo & 0x01FF;
 				if ((tileInfo & 0x800) != 0)
 					PaletteBase = 16;
@@ -121,6 +126,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			{
 				renderHappens = false;
 				overflowHappens = false;
+				collisionHappens = false;
 			}
 
 			int SpriteBase = SpriteAttributeTableBase;
@@ -169,14 +175,15 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					{
 						if (SpriteCollisionBuffer[x + xs] != 0)
 						{
-							if (collisionHappens) 
-								StatusByte |= 0x20; // Set Collision bit
+							if (collisionHappens)
+								StatusByte |= 0x20; // Set Collision bit	
 						}
 						else if (renderHappens && ScanlinePriorityBuffer[x + xs] == 0)
 						{
 							FrameBuffer[(ys + y) * 256 + x + xs] = Palette[(color + 16)];
 						}
-						SpriteCollisionBuffer[x + xs] = 1;
+						if (collisionHappens)
+							SpriteCollisionBuffer[x + xs] = (byte)i;
 					}
 				}
 				SpritesDrawnThisScanline++;
@@ -198,6 +205,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			{
 				renderHappens = false;
 				overflowHappens = false;
+				collisionHappens = false;
 			}
 
 			int SpriteBase = SpriteAttributeTableBase;
@@ -253,7 +261,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 						{
 							FrameBuffer[(ys + y) * 256 + x + xs] = Palette[(color + 16)];
 						}
-						SpriteCollisionBuffer[x + xs] = 1;
+						if (collisionHappens)
+							SpriteCollisionBuffer[x + xs] = 1;
 					}
 				}
 				SpritesDrawnThisScanline++;
@@ -307,22 +316,22 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			// Top overscan
 			for (int y=0; y<overscanTop; y++)
 				for (int x = 0; x < OverscanFrameWidth; x++)
-					OverscanFrameBuffer[(y * OverscanFrameWidth) + x] = BackgroundColor;
+					OverscanFrameBuffer[(y * OverscanFrameWidth) + x] = Backdrop_SL[0];
 			
 			// Bottom overscan
 			for (int y = overscanTop + 192; y < OverscanFrameHeight; y++)
 				for (int x = 0; x < OverscanFrameWidth; x++)
-					OverscanFrameBuffer[(y * OverscanFrameWidth) + x] = BackgroundColor;
+					OverscanFrameBuffer[(y * OverscanFrameWidth) + x] = Backdrop_SL[FrameHeight-1];
 
 			// Left overscan
 			for (int y = overscanTop; y < overscanTop + 192; y++)
 				for (int x = 0; x < overscanLeft; x++)
-					OverscanFrameBuffer[(y * OverscanFrameWidth) + x] = BackgroundColor;
+					OverscanFrameBuffer[(y * OverscanFrameWidth) + x] = Backdrop_SL[y - overscanTop];
 
 			// Right overscan
 			for (int y = overscanTop; y < overscanTop + 192; y++)
 				for (int x = overscanLeft + 256; x < OverscanFrameWidth; x++)
-					OverscanFrameBuffer[(y * OverscanFrameWidth) + x] = BackgroundColor;
+					OverscanFrameBuffer[(y * OverscanFrameWidth) + x] = Backdrop_SL[y - overscanTop];
 
 			// Active display area
 			for (int y = 0; y < 192; y++)

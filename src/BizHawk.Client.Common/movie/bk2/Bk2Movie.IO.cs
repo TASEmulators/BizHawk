@@ -3,6 +3,7 @@ using System.IO;
 
 using BizHawk.Common;
 using BizHawk.Common.IOExtensions;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
@@ -75,23 +76,16 @@ namespace BizHawk.Client.Common
 			// The saved cycle value will only be valid if the end of the movie has been emulated.
 			if (this.IsAtEnd())
 			{
-				if (Emulator is Emulation.Cores.Nintendo.SubNESHawk.SubNESHawk subNes)
+				if (Emulator is ICycleTiming cycleCore)
 				{
-					Header[HeaderKeys.VBlankCount] = subNes.VblankCount.ToString();
-				}
-				else if (Emulator is Emulation.Cores.Nintendo.Gameboy.Gameboy gameboy)
-				{
-					Header[HeaderKeys.CycleCount] = gameboy.CycleCount.ToString();
-				}
-				else if (Emulator is Emulation.Cores.Nintendo.SubGBHawk.SubGBHawk subGb)
-				{
-					Header[HeaderKeys.CycleCount] = subGb.CycleCount.ToString();
+					Header[HeaderKeys.CycleCount] = cycleCore.CycleCount.ToString();
+					Header[HeaderKeys.ClockRate] = cycleCore.ClockRate.ToString();
 				}
 			}
 			else
 			{
 				Header.Remove(HeaderKeys.CycleCount);
-				Header.Remove(HeaderKeys.VBlankCount);
+				Header.Remove(HeaderKeys.ClockRate);
 			}
 		}
 

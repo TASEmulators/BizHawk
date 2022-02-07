@@ -28,21 +28,19 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 			string opcodeStr = MOS6502X.Disassemble(pc, out _, address => _memoryDomains.SystemBus.PeekByte(address));
 
-			Tracer.Put(new TraceInfo
-			{
-				Disassembly = $"{pc:X4}:  {opcodeStr}".PadRight(26),
-				RegisterInfo = string.Join(" ",
+			Tracer.Put(new(
+				disassembly: $"{pc:X4}:  {opcodeStr}".PadRight(26),
+				registerInfo: string.Join(" ",
 					$"A:{a:X2}",
 					$"X:{x:X2}",
 					$"Y:{y:X2}",
 					$"P:{p:X2}",
-					$"SP:{sp:X2}")
-			});
+					$"SP:{sp:X2}")));
 		}
 
 		private void ConnectTracer()
 		{
-			Tracer = new TraceBuffer { Header = TraceHeader };
+			Tracer = new TraceBuffer(TraceHeader);
 			((BasicServiceProvider) ServiceProvider).Register<ITraceable>(Tracer);
 			_traceCb = MakeTrace;
 		}

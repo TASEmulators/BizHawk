@@ -19,10 +19,40 @@ namespace BizHawk.Client.EmuHawk
 		[OptionalService]
 		public ISaveRam SaveRamEmulator { get; private set; }
 
-		private bool _hackyDontUpdate;
 		private bool _initializing; // If true, will bypass restart logic, this is necessary since loading projects causes a movie to load which causes a rom to reload causing dialogs to restart
 
 		private int _lastRefresh;
+
+		private void UpdateProgressBar()
+		{
+			if (MainForm.PauseOnFrame.HasValue)
+			{
+				int diff = Emulator.Frame - _seekStartFrame.Value;
+				int unit = MainForm.PauseOnFrame.Value - _seekStartFrame.Value;
+				double progress = 0;
+
+				if (diff != 0 && unit != 0)
+				{
+					progress = (double)100d / unit * diff;
+				}
+
+				if (progress < 0)
+				{
+					progress = 0;
+				}
+				else if (progress > 100)
+				{
+					progress = 100;
+				}
+
+				ProgressBar.Value = (int)progress;
+			}
+			else
+			{
+				ProgressBar.Visible = false;
+				MessageStatusLabel.Text = "";
+			}
+		}
 
 		protected override void GeneralUpdate()
 		{
@@ -32,11 +62,6 @@ namespace BizHawk.Client.EmuHawk
 		protected override void UpdateAfter()
 		{
 			if (!IsHandleCreated || IsDisposed || CurrentTasMovie == null)
-			{
-				return;
-			}
-
-			if (_hackyDontUpdate)
 			{
 				return;
 			}
@@ -61,6 +86,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			RefreshDialog(refreshNeeded, refreshBranches: false);
+			UpdateProgressBar();
+		}
+
+		protected override void FastUpdateAfter()
+		{
+			UpdateProgressBar();
 		}
 
 		public override void Restart()
@@ -87,7 +118,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					RefreshDialog();
+					TastudioStopMovie();
+					LoadMostRecentOrStartNew();
 				}
 			}
 		}
@@ -114,7 +146,6 @@ namespace BizHawk.Client.EmuHawk
 					MessageBoxDefaultButton.Button3));
 				if (result == DialogResult.Yes)
 				{
-					_exiting = true; // Asking to save changes should only ever be called when closing something
 					SaveTas();
 				}
 				else if (result == DialogResult.No)

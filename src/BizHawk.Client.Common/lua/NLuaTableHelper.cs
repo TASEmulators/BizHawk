@@ -1,5 +1,10 @@
+using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Globalization;
 using System.Linq;
+
+using BizHawk.Common;
 
 using NLua;
 
@@ -7,21 +12,22 @@ namespace BizHawk.Client.Common
 {
 	public sealed class NLuaTableHelper
 	{
+		private readonly Action<string> _logCallback;
+
 		private readonly Lua _lua;
 
-		public NLuaTableHelper(Lua lua) => _lua = lua;
+		public NLuaTableHelper(Lua lua, Action<string> logCallback)
+		{
+			_logCallback = logCallback;
+			_lua = lua;
+		}
 
 		public LuaTable CreateTable() => _lua.NewTable();
 
-		public LuaTable DictToTable<T>(IDictionary<string, T> dictionary)
+		public LuaTable DictToTable<T>(IReadOnlyDictionary<string, T> dictionary)
 		{
 			var table = _lua.NewTable();
-
-			foreach (var kvp in dictionary)
-			{
-				table[kvp.Key] = kvp.Value;
-			}
-
+			foreach (var (k, v) in dictionary) table[k] = v;
 			return table;
 		}
 
@@ -30,10 +36,20 @@ namespace BizHawk.Client.Common
 
 		public IEnumerable<T> EnumerateValues<T>(LuaTable table) => table.Values.Cast<T>();
 
-		public LuaTable ListToTable<T>(IList<T> list, int indexFrom = 0)
+		public LuaTable ListToTable<T>(IList<T> list, int indexFrom = 1)
 		{
 			var table = _lua.NewTable();
 			for (int i = 0, l = list.Count; i != l; i++) table[indexFrom + i] = list[i];
+			return table;
+		}
+
+		public LuaTable MemoryBlockToTable(IReadOnlyList<byte> bytes, long startAddr)
+		{
+			var length = bytes.Count;
+			var table = CreateTable();
+			var iArray = 0;
+			var iDict = startAddr;
+			while (iArray < length) table[(double) iDict++] = bytes[iArray++];
 			return table;
 		}
 
@@ -51,6 +67,39 @@ namespace BizHawk.Client.Common
 				);
 			}
 			return table;
+		}
+
+		public Color ParseColor(object o) => ParseColor(o, safe: false, _logCallback) ?? throw new ArgumentException("failed to parse Color", nameof(o));
+
+		public Color? SafeParseColor(object o) => ParseColor(o, safe: true, _logCallback);
+
+		private static Color? ParseColor(object o, bool safe, Action<string> logCallback)
+		{
+			switch (o)
+			{
+				case null:
+					return null;
+				case Color c:
+					return c;
+				case double d:
+					return ParseColor((int) (long) d, safe, logCallback);
+				case int i:
+					return Color.FromArgb(i);
+				case string s:
+					if (s[0] is '#' && (s.Length is 7 or 9))
+					{
+						var i1 = uint.Parse(s.Substring(1), NumberStyles.HexNumber);
+						if (s.Length is 7) i1 |= 0xFF000000U;
+						return ParseColor(unchecked((int) i1), safe, logCallback);
+					}
+					var fromName = Color.FromName(s);
+					if (fromName.IsNamedColor) return fromName;
+					if (safe) logCallback($"ParseColor: not a known color name (\"{s}\")");
+					return null;
+				default:
+					if (safe) logCallback("ParseColor: coercing object/table to string");
+					return ParseColor(o.ToString(), safe, logCallback);
+			}
 		}
 	}
 }

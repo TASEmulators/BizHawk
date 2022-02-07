@@ -11,17 +11,17 @@ using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 {
-	[Core(CoreNames.TurboNyma, "Mednafen Team", true, true, "1.26.1", "https://mednafen.github.io/releases/", false, "PCE")]
+	[PortedCore(CoreNames.TurboNyma, "Mednafen Team", "1.27.1", "https://mednafen.github.io/releases/")]
 	public class TurboNyma : NymaCore, IRegionable, IPceGpuView
 	{
 		private readonly LibTurboNyma _turboNyma;
 		private readonly bool _hasCds;
 
-		[CoreConstructor("PCE")]
-		[CoreConstructor("SGX")]
-		[CoreConstructor("PCECD")]
+		[CoreConstructor(VSystemID.Raw.PCE)]
+		[CoreConstructor(VSystemID.Raw.SGX)]
+		[CoreConstructor(VSystemID.Raw.PCECD)]
 		public TurboNyma(CoreLoadParameters<NymaSettings, NymaSyncSettings> lp)
-			: base(lp.Comm, "PCE", "PC Engine Controller", lp.Settings, lp.SyncSettings)
+			: base(lp.Comm, VSystemID.Raw.PCE, "PC Engine Controller", lp.Settings, lp.SyncSettings)
 		{
 			var firmwares = new Dictionary<string, FirmwareID>();
 			if (lp.Discs.Count > 0)
@@ -43,8 +43,8 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 		}
 
 		public override string SystemId => IsSgx
-			? _hasCds ? "SGXCD" : "SGX"
-			: _hasCds ? "PCECD" : "PCE";
+			? _hasCds ? VSystemID.Raw.SGXCD : VSystemID.Raw.SGX
+			: _hasCds ? VSystemID.Raw.PCECD : VSystemID.Raw.PCE;
 
 		protected override IDictionary<string, SettingOverride> SettingOverrides { get; } = new Dictionary<string, SettingOverride>
 		{

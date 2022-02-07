@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
-using BizHawk.Common.BufferExtensions;
+using BizHawk.Common;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Common;
 
@@ -63,24 +63,31 @@ namespace BizHawk.Client.EmuHawk
 					lvChannels.Items[i].SubItems[1].Text = "-";
 					lvChannels.Items[i].SubItems[2].Text = "-";
 					lvChannels.Items[i].SubItems[3].Text = "(disabled)";
-					goto DEAD;
+					_lastSamples[i] = null;
+					continue;
 				}
 				if (ch.DDA)
 				{
 					lvChannels.Items[i].SubItems[1].Text = "-";
 					lvChannels.Items[i].SubItems[2].Text = "-";
 					lvChannels.Items[i].SubItems[3].Text = "(DDA)";
-					goto DEAD;
+					_lastSamples[i] = null;
+					continue;
 				}
 				lvChannels.Items[i].SubItems[1].Text = ch.Volume.ToString();
 				lvChannels.Items[i].SubItems[2].Text = ch.Frequency.ToString();
 				if (ch.NoiseChannel)
 				{
 					lvChannels.Items[i].SubItems[3].Text = "(noise)";
-					goto DEAD;
+					_lastSamples[i] = null;
+					continue;
 				}
 
-				if (ch.Volume == 0) goto DEAD;
+				if (ch.Volume == 0)
+				{
+					_lastSamples[i] = null;
+					continue;
+				}
 
 				lvChannels.Items[i].SubItems[3].Text = "-";
 
@@ -96,11 +103,11 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				bw.Flush();
-				string md5 = _waveformTemp.HashMD5();
+				var md5 = MD5Checksum.ComputeDigestHex(_waveformTemp);
 
-				if (!_psgEntryTable.ContainsKey(md5))
+				if (!_psgEntryTable.TryGetValue(md5, out var entry))
 				{
-					var entry = new PsgEntry
+					entry = new PsgEntry
 					{
 						Name = md5,
 						WaveForm = waveform,
@@ -115,7 +122,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					PsgEntry entry = _psgEntryTable[md5];
 					entry.Active = true;
 
 					// are we playing the same sample as before?
@@ -134,12 +140,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				lvChannels.Items[i].SubItems[3].Text = _psgEntryTable[md5].Name;
-
-				continue;
-
-			DEAD:
-				_lastSamples[i] = null;
+				lvChannels.Items[i].SubItems[3].Text = entry.Name;
 			}
 
 			if (sync)
@@ -164,8 +165,8 @@ namespace BizHawk.Client.EmuHawk
 
 		// 32*16 samples, 16bit, mono, 8khz (but we'll change the sample rate)
 		private static readonly byte[] EmptyWav = {
-			0x52, 0x49, 0x46, 0x46, 0x24, 0x04, 0x00, 0x00, 0x57, 0x41, 0x56, 0x45, 0x66, 0x6D, 0x74, 0x20, 
-			0x10, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0xE0, 0x2E, 0x00, 0x00, 0xC0, 0x5D, 0x00, 0x00, 
+			0x52, 0x49, 0x46, 0x46, 0x24, 0x04, 0x00, 0x00, 0x57, 0x41, 0x56, 0x45, 0x66, 0x6D, 0x74, 0x20,
+			0x10, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0xE0, 0x2E, 0x00, 0x00, 0xC0, 0x5D, 0x00, 0x00,
 			0x02, 0x00, 0x10, 0x00, 0x64, 0x61, 0x74, 0x61, 0x00, 0x04, 0x00, 0x00
 		};
 

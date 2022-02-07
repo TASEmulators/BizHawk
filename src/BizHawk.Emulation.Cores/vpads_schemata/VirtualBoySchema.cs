@@ -6,7 +6,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores
 {
-	[Schema("VB")]
+	[Schema(VSystemID.Raw.VB)]
 	// ReSharper disable once UnusedMember.Global
 	public class VirtualBoySchema : IVirtualPadSchema
 	{

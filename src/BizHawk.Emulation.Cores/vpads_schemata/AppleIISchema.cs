@@ -6,7 +6,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores
 {
-	[Schema("AppleII")]
+	[Schema(VSystemID.Raw.AppleII)]
 	// ReSharper disable once UnusedMember.Global
 	public class AppleIISchema : IVirtualPadSchema
 	{

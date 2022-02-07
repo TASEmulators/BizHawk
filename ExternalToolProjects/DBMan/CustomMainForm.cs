@@ -4,14 +4,17 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.Client.EmuHawk;
 
 using Community.CsharpSqlite.SQLiteClient;
 
 namespace BizHawk.DBManTool
 {
 	[ExternalTool("DBMan", Description = "DB Manager", LoadAssemblyFiles = new[] { "CSharp-SQLite.dll" })]
-	public class CustomMainForm : Form, IExternalToolForm
+	public class CustomMainForm : ToolFormBase, IExternalToolForm
 	{
+		protected override string WindowTitleStatic => "DBMan";
+
 		public CustomMainForm()
 		{
 			static Label CreateArgsLabel(string labelText) => new Label { Anchor = AnchorStyles.None, AutoSize = true, Text = labelText };
@@ -54,32 +57,12 @@ namespace BizHawk.DBManTool
 			var tbDiscCMPArgs = CreateArgsTextBox();
 #if false
 			btnDiscCMP.Click += (sender, e) => new DiscCmp().Run(tbDiscCMPArgs.Text.Split(' '));
-#endif
-
-			var btnDATConv = CreateLaunchButton();
-			btnDATConv.Click += (sender, e) =>
-			{
-				try
-				{
-					new DATConverter().Show(this);
-				}
-				catch (Exception ex)
-				{
-					MessageBox.Show(ex.ToString());
-				}
-			};
+#endif			
 
 			SuspendLayout();
 			Controls.Add(new FlowLayoutPanel {
 				AutoSize = true,
-				Controls = {
-					new FlowLayoutPanel {
-						AutoSize = true,
-						Controls = {
-							btnDATConv,
-							CreateArgsLabel("DAT Converter")
-						}
-					},
+				Controls = {					
 					new FlowLayoutPanel {
 						AutoSize = true,
 						Controls = {
@@ -121,10 +104,6 @@ namespace BizHawk.DBManTool
 			ResumeLayout();
 		}
 
-		public override string Text => "DBMan";
-
-		public bool AskSaveChanges() => true;
-
 #if false
 		/// <remarks>This was just sitting in <c>BizHawk.Client.DBMan/Program.cs</c>.</remarks>
 		public static string GetExeDirectoryAbsolute()
@@ -134,9 +113,5 @@ namespace BizHawk.DBManTool
 			return Path.GetDirectoryName(module);
 		}
 #endif
-
-		public void Restart() {}
-
-		public void UpdateValues(ToolFormUpdateType type) {}
 	}
 }

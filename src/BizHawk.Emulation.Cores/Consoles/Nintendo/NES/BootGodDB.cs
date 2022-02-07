@@ -55,14 +55,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// notes: there can be multiple each of prg,chr,wram,vram
 			// we aren't tracking the individual hashes yet.
 
-			string xmlPath = Path.Combine(basePath, "NesCarts.xml");
-			string x7zPath = Path.Combine(basePath, "NesCarts.7z");
-			bool loadXml = File.Exists(xmlPath);
-			using var nesCartFile = new HawkFile(loadXml ? xmlPath : x7zPath);
-			if (!loadXml)
-			{
-				nesCartFile.BindFirst();
-			}
+			using HawkFile nesCartFile = new(Path.Combine(basePath, "NesCarts.xml"));
 
 			var stream = nesCartFile.GetStream();
 
@@ -142,7 +135,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						{
 							currCart = new CartInfo();
 							currCart.System = xmlReader.GetAttribute("system");
-							currCart.Sha1 = "sha1:" + xmlReader.GetAttribute("sha1");
+							currCart.Sha1 = $"SHA1:{xmlReader.GetAttribute("sha1")}";
 							currCart.Name = currName;
 							state = 2;
 						}

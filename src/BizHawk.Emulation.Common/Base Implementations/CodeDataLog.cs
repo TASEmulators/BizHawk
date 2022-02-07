@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Common
 {
 	/// <summary>
 	/// The base implementation of ICodeDataLog
 	/// </summary>
-	/// <seealso cref="ICodeDataLogger" /> 
-	/// <seealso cref="ICodeDataLog" /> 
+	/// <seealso cref="ICodeDataLogger" />
+	/// <seealso cref="ICodeDataLog" />
 	public class CodeDataLog : Dictionary<string, byte[]>, ICodeDataLog
 	{
 		public CodeDataLog()
@@ -26,10 +28,7 @@ namespace BizHawk.Emulation.Common
 				throw new InvalidOperationException("incremental astrological examination");
 			}
 
-			foreach (var kvp in this)
-			{
-				_pins[kvp.Key] = GCHandle.Alloc(kvp.Value, GCHandleType.Pinned);
-			}
+			foreach (var (scope, data) in this) _pins[scope] = GCHandle.Alloc(data, GCHandleType.Pinned);
 		}
 
 		/// <summary>
@@ -68,7 +67,7 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		public bool Active { get; set; }
 
-		public string SubType { get; set; }
+		public string? SubType { get; set; }
 		public int SubVer { get; set; }
 
 		/// <summary>
@@ -91,19 +90,11 @@ namespace BizHawk.Emulation.Common
 				return false;
 			}
 
-			foreach (var kvp in this)
+			foreach (var (scope, data) in this)
 			{
-				if (!other.ContainsKey(kvp.Key))
-				{
-					return false;
-				}
-
-				var oval = other[kvp.Key];
-				if (oval.Length != kvp.Value.Length)
-				{
-					return false;
-				}
+				if (!other.TryGetValue(scope, out var oval) || oval.Length != data.Length) return false;
 			}
+			// don't need to check keys present in other but not in this -- `Count` would differ
 
 			return true;
 		}
@@ -119,10 +110,9 @@ namespace BizHawk.Emulation.Common
 				throw new InvalidDataException("Dictionaries must have the same number of keys!");
 			}
 
-			foreach (var kvp in other)
+			foreach (var (scope, fromData) in other)
 			{
-				byte[] fromData = kvp.Value;
-				byte[] toData = this[kvp.Key];
+				var toData = this[scope];
 
 				if (fromData.Length != toData.Length)
 				{
@@ -154,27 +144,27 @@ namespace BizHawk.Emulation.Common
 			var ret = new Dictionary<string, long>();
 			var w = new BinaryWriter(s);
 			w.Write("BIZHAWK-CDL-2");
-			w.Write(SubType.PadRight(15));
+			w.Write(SubType!.PadRight(15));
 			w.Write(Count);
 			w.Flush();
 			long addr = s.Position;
 			if (forReal)
 			{
-				foreach (var kvp in this)
+				foreach (var (scope, data) in this)
 				{
-					w.Write(kvp.Key);
-					w.Write(kvp.Value.Length);
-					w.Write(kvp.Value);
+					w.Write(scope);
+					w.Write(data.Length);
+					w.Write(data);
 				}
 			}
 			else
 			{
-				foreach (var kvp in this)
+				foreach (var (scope, data) in this)
 				{
-					addr += kvp.Key.Length + 1; //assumes shortly-encoded key names
+					addr += scope.Length + 1; // assumes shortly-encoded key names
 					addr += 4;
-					ret[kvp.Key] = addr;
-					addr += kvp.Value.Length;
+					ret[scope] = addr;
+					addr += data.Length;
 				}
 			}
 

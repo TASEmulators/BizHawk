@@ -21,9 +21,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 			if (is_G7400)
 			{
-				Definition = new ControllerDefinition
+				Definition = new(Port1.Definition.Name)
 				{
-					Name = Port1.Definition.Name,
 					BoolButtons = Port1.Definition.BoolButtons
 					.Concat(Port2.Definition.BoolButtons)
 					.Concat(new[]
@@ -42,9 +41,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			}
 			else
 			{
-				Definition = new ControllerDefinition
+				Definition = new(Port1.Definition.Name)
 				{
-					Name = Port1.Definition.Name,
 					BoolButtons = Port1.Definition.BoolButtons
 					.Concat(Port2.Definition.BoolButtons)
 					.Concat(new[]
@@ -62,6 +60,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			}
 
 			foreach (var kvp in Port1.Definition.Axes) Definition.Axes.Add(kvp);
+
+			Definition.MakeImmutable();
 		}
 
 		public byte ReadPort1(IController c)

@@ -236,7 +236,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			if (addr == 0x1850 && _imageOffsets[1] == 3 << 11)
 			{
-				LoadIntoRam(Core.MemoryDomains["System Bus"].PeekByte(0x80)); // Get load that's being accessed (BIOS places load number at 0x80) // TODO: a better way to do this
+				LoadIntoRam(Core.MemoryDomains["System Bus"]!.PeekByte(0x80)); // Get load that's being accessed (BIOS places load number at 0x80) // TODO: a better way to do this
 				return _superChargerImage[(addr & 0x7FF) + _imageOffsets[1]];
 			}
 

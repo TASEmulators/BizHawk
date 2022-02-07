@@ -1,5 +1,7 @@
 ﻿using System.IO;
 
+using BizHawk.Emulation.Common;
+
 namespace BizHawk.Client.Common.Movie.Import
 {
 	// PXM files are directly compatible with binary-format PJM files, with the only
@@ -15,7 +17,7 @@ namespace BizHawk.Client.Common.Movie.Import
 		protected override void RunImport()
 		{
 			var movie = Result.Movie;
-			movie.HeaderEntries[HeaderKeys.Platform] = "PSX";
+			movie.HeaderEntries[HeaderKeys.Platform] = VSystemID.Raw.PSX;
 
 			using var fs = SourceFile.OpenRead();
 			using var br = new BinaryReader(fs);

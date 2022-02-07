@@ -6,13 +6,10 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class ZxSpectrumPokeMemory : Form
 	{
-		private readonly IMainFormForConfig _mainForm;
 		private readonly ZXSpectrum _speccy;
-		public ZxSpectrumPokeMemory(
-			IMainFormForConfig mainForm,
-			ZXSpectrum speccy)
+
+		public ZxSpectrumPokeMemory(ZXSpectrum speccy)
 		{
-			_mainForm = mainForm;
 			_speccy = speccy;
 
 			InitializeComponent();
@@ -32,7 +29,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CancelBtn_Click(object sender, EventArgs e)
 		{
-			_mainForm.AddOnScreenMessage("POKE memory aborted");
 			DialogResult = DialogResult.Cancel;
 			Close();
 		}

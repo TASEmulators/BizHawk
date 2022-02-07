@@ -5,16 +5,12 @@ using BizHawk.Emulation.Cores.Components.CP1610;
 
 namespace BizHawk.Emulation.Cores.Intellivision
 {
-	[Core(
-		"IntelliHawk",
-		"BrandonE, Alyosha",
-		isPorted: false,
-		isReleased: true)]
+	[Core(CoreNames.IntelliHawk, "BrandonE, Alyosha")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(IRegionable), typeof(ISaveRam) })]
 	public sealed partial class Intellivision : IEmulator, IInputPollable, IDisassemblable,
 		IBoardInfo, IDebuggable, ISettable<Intellivision.IntvSettings, Intellivision.IntvSyncSettings>
 	{
-		[CoreConstructor("INTV")]
+		[CoreConstructor(VSystemID.Raw.INTV)]
 		public Intellivision(CoreComm comm, byte[] rom, Intellivision.IntvSettings settings, Intellivision.IntvSyncSettings syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
@@ -59,10 +55,10 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 			Connect();
 
-			LoadExecutiveRom(comm.CoreFileProvider.GetFirmware("INTV", "EROM", true, "Executive ROM is required."));
-			LoadGraphicsRom(comm.CoreFileProvider.GetFirmware("INTV", "GROM", true, "Graphics ROM is required."));
+			LoadExecutiveRom(comm.CoreFileProvider.GetFirmwareOrThrow(new("INTV", "EROM"), "Executive ROM is required."));
+			LoadGraphicsRom(comm.CoreFileProvider.GetFirmwareOrThrow(new("INTV", "GROM"), "Graphics ROM is required."));
 
-			_tracer = new TraceBuffer { Header = _cpu.TraceHeader };
+			_tracer = new TraceBuffer(_cpu.TraceHeader);
 			ser.Register<ITraceable>(_tracer);
 			ser.Register<IStatable>(new StateSerializer(SyncState));
 			SetupMemoryDomains();

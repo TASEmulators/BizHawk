@@ -669,10 +669,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void ClockPpu()
 		{
-			if (NES.ppu.ppur.status.cycle != 336)
+			if (NES.ppu.ppur.status.cycle != 3)
 				return;
 
-			int sl = NES.ppu.ppur.status.sl + 1;
+			int sl = NES.ppu.ppur.status.sl;
 
 			if (!NES.ppu.PPUON || sl >= 241)
 			{
@@ -695,7 +695,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			else
 			{
 				irq_counter++;
-				if (irq_counter == irq_target)
+				if (irq_counter == (irq_target + 1))
 				{
 					irq_pending = true;
 					SyncIRQ();

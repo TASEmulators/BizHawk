@@ -13,6 +13,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public partial class NES : IEmulator, ISoundProvider, ICycleTiming
 	{
+		internal static class RomChecksums
+		{
+			public const string CamericaGolden5 = /*sha1:*/"60FC5FA5B5ACCAF3AEFEBA73FC8BFFD3C4DAE558";
+
+			public const string CamericaGolden5Overdump = /*sha1:*/"BAD382331C30B22A908DA4BFF2759C25113CC26A";
+
+			public const string CamericaPegasus4in1 = /*sha1:*/"40409FEC8249EFDB772E6FFB2DCD41860C6CCA23";
+
+			public const string DancingBlocks = /*sha1:*/"68ABE1E49C9E9CCEA978A48232432C252E5912C0";
+
+			public const string SeicrossRev2 = "SHA1:4C9C05FAD6F6F33A92A27C2EDC1E7DE12D7F216D"; // yes this is meant to include the prefix
+
+			public const string SilvaSaga = /*sha1:*/"00C50062A2DECE99580063777590F26A253AAB6B";
+
+			public const string Fam_Jump_II = /*sha1:*/"1D7417D31E19B590AFCEB6A8A6E7B9CAB9F9B475";
+		}
+
 		//hardware/state
 		public MOS6502X<CpuLink> cpu;
 		public PPU ppu;
@@ -64,15 +81,47 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private DisplayType _display_type = DisplayType.NTSC;
 
-		//Sound config
-		public void SetVol1(int v) { apu.m_vol = v; }
-
 		private BlipBuffer blip = new BlipBuffer(4096);
 		private const int blipbuffsize = 4096;
 
 		public int old_s = 0;
 
 		public bool CanProvideAsync => false;
+
+		internal void ResetControllerDefinition(bool subframe)
+		{
+			ControllerDefinition = null;
+
+			ControllerDeck = ControllerSettings.Instantiate(ppu.LightGunCallback);
+			ControllerDefinition = ControllerDeck.ControllerDef;
+
+			// controls other than the deck
+			ControllerDefinition.BoolButtons.Add("Power");
+			ControllerDefinition.BoolButtons.Add("Reset");
+			if (Board is FDS b)
+			{
+				ControllerDefinition.BoolButtons.Add("FDS Eject");
+				for (int i = 0; i < b.NumSides; i++)
+				{
+					ControllerDefinition.BoolButtons.Add("FDS Insert " + i);
+				}
+			}
+
+			if (_isVS)
+			{
+				ControllerDefinition.BoolButtons.Add("Insert Coin P1");
+				ControllerDefinition.BoolButtons.Add("Insert Coin P2");
+				ControllerDefinition.BoolButtons.Add("Service Switch");
+			}
+
+			// Add in the reset timing axis for subneshawk
+			if (subframe)
+			{
+				ControllerDefinition.AddAxis("Reset Cycle", 0.RangeTo(500000), 0);
+			}
+
+			ControllerDefinition.MakeImmutable();
+		}
 
 		public void SetSyncMode(SyncSoundMode mode)
 		{
@@ -130,43 +179,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ppu = new PPU(this);
 			ram = new byte[0x800];
 			CIRAM = new byte[0x800];
-
-			// wire controllers
-			// todo: allow changing this
-			ControllerDeck = ControllerSettings.Instantiate(ppu.LightGunCallback);
-			// set controller definition first time only
-			if (ControllerDefinition == null)
-			{
-				ControllerDefinition = new ControllerDefinition(ControllerDeck.GetDefinition())
-				{
-					Name = "NES Controller"
-				};
-
-				// controls other than the deck
-				ControllerDefinition.BoolButtons.Add("Power");
-				ControllerDefinition.BoolButtons.Add("Reset");
-				if (Board is FDS b)
-				{
-					ControllerDefinition.BoolButtons.Add("FDS Eject");
-					for (int i = 0; i < b.NumSides; i++)
-					{
-						ControllerDefinition.BoolButtons.Add("FDS Insert " + i);
-					}
-				}
-
-				if (_isVS)
-				{
-					ControllerDefinition.BoolButtons.Add("Insert Coin P1");
-					ControllerDefinition.BoolButtons.Add("Insert Coin P2");
-					ControllerDefinition.BoolButtons.Add("Service Switch");
-				}
-			}
-
-			// Add in the reset timing axis for subneshawk
-			if (using_reset_timing && ControllerDefinition.Axes.Count == 0)
-			{
-				ControllerDefinition.AddAxis("Reset Cycle", 0.RangeTo(500000), 0);
-			}
 
 			// don't replace the magicSoundProvider on reset, as it's not needed
 			// if (magicSoundProvider != null) magicSoundProvider.Dispose();
@@ -244,30 +256,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// some boards cannot have specific values in RAM upon initialization
 			// Let's hard code those cases here
 			// these will be defined through the gameDB exclusively for now.
-
-			if (cart.GameInfo!=null)
+			var hash = cart.GameInfo?.Hash; // SHA1 or MD5 (see NES.IdentifyFromGameDB)
+			if (hash is null)
 			{
-				
-				if (cart.GameInfo.Hash == "60FC5FA5B5ACCAF3AEFEBA73FC8BFFD3C4DAE558" // Camerica Golden 5
-					|| cart.GameInfo.Hash == "BAD382331C30B22A908DA4BFF2759C25113CC26A" // Camerica Golden 5
-					|| cart.GameInfo.Hash == "40409FEC8249EFDB772E6FFB2DCD41860C6CCA23" // Camerica Pegasus 4-in-1
-					)
+				// short-circuit
+			}
+			else if (hash is RomChecksums.CamericaGolden5 or RomChecksums.CamericaGolden5Overdump or RomChecksums.CamericaPegasus4in1)
+			{
+				ram[0x701] = 0xFF;
+			}
+			else if (hash == RomChecksums.DancingBlocks)
+			{
+				ram[0xEC] = 0;
+				ram[0xED] = 0;
+			}
+			else if (hash == RomChecksums.SilvaSaga || hash == RomChecksums.Fam_Jump_II)
+			{
+				for (int i = 0; i < Board.Wram.Length; i++)
 				{
-					ram[0x701] = 0xFF;
-				}
-				
-				if (cart.GameInfo.Hash == "68ABE1E49C9E9CCEA978A48232432C252E5912C0") // Dancing Blocks
-				{
-					ram[0xEC] = 0;
-					ram[0xED] = 0;
-				}
-
-				if (cart.GameInfo.Hash == "00C50062A2DECE99580063777590F26A253AAB6B") // Silva Saga
-				{
-					for (int i = 0; i < Board.Wram.Length; i++)
-					{
-						Board.Wram[i] = 0xFF;
-					}
+					Board.Wram[i] = 0xFF;
 				}
 			}
 		}
@@ -282,11 +289,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private bool resetSignal;
 		private bool hardResetSignal;
+
 		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
 			_controller = controller;
 
-			if (Tracer.Enabled)
+			if (Tracer.IsEnabled())
 				cpu.TraceCallback = s => Tracer.Put(s);
 			else
 				cpu.TraceCallback = null;
@@ -303,8 +311,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				HardReset();
 			}
-
-			Frame++;
 
 			//if (resetSignal)
 			//Controller.UnpressButton("Reset");   TODO fix this
@@ -381,6 +387,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// any cheats still active will be re-applied by the buspoke at the start of the next frame
 			num_cheats = 0;
 
+			Frame++;
+
 			return true;
 		}
 
@@ -389,9 +397,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public bool frame_is_done;
 		public bool current_strobe;
 		public bool new_strobe;
-		public bool alt_lag;
-		// variable used with subneshawk to trigger reset at specific cycle after reset
-		public bool using_reset_timing = false;
+
 		// this function will run one step of the ppu 
 		// it will return whether the controller is read or not.
 		public void do_single_step(IController controller, out bool cont_read, out bool frame_done)
@@ -439,9 +445,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public byte oam_dma_byte;
 		public bool dmc_dma_exec = false;
 		public bool dmc_realign;
-		public bool IRQ_delay;
-		public bool special_case_delay; // very ugly but the only option
-		public bool do_the_reread;
+		public bool reread_trigger;
+		public int do_the_reread_2002, do_the_reread_2007, do_the_reread_cont_1, do_the_reread_cont_2;
+		public int reread_opp_4016, reread_opp_4017;
 		public byte DB; //old data bus values from previous reads
 
 		internal void RunCpuOne()
@@ -454,7 +460,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				if (cpu_deadcounter == 0)
 				{
-
 					if (oam_dma_index % 2 == 0)
 					{
 						oam_dma_byte = ReadMemory(oam_dma_addr);
@@ -465,8 +470,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						WriteMemory(0x2004, oam_dma_byte);
 					}
 					oam_dma_index++;
-					if (oam_dma_index == 512) oam_dma_exec = false;
-
+					if (oam_dma_index == 512) 
+					{
+						oam_dma_exec = false;
+					}
 				}
 				else
 				{
@@ -491,16 +498,77 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					dmc_realign = true;
 				}
+				
+				// By this point the cpu should be frozen, if it is not, then we are in a multi-write opcode, add another cycle delay
+				if (!cpu.RDY && !cpu.rdy_freeze && (apu.dmc_dma_countdown == apu.DMC_RDY_check))
+				{
+					//Console.WriteLine("dmc double " + cpu.TotalExecutedCycles + " " + cpu.opcode + " " + cpu.mi);
+					apu.dmc_dma_countdown += 2;
+				}
 
 				cpu.RDY = false;
 				dmc_dma_exec = true;
 				apu.dmc_dma_countdown--;
 				if (apu.dmc_dma_countdown == 0)
 				{
+					reread_trigger = true;
+
+					do_the_reread_2002++;
+
+					do_the_reread_2007++;
+
+					// if the DMA address has the same bits set as the re-read address, they don't occur
+					// TODO: need to check if also true for ppu regs
+					/*
+					if ((apu.dmc.sample_address & 0x2007) != 0x2002)
+					{
+						do_the_reread_2002++;
+					}
+
+					if ((apu.dmc.sample_address & 0x2007) != 0x2007)
+					{
+						do_the_reread_2007++;
+					}
+					*/
+					if ((apu.dmc.sample_address & 0x1F) != 0x16)
+					{
+						do_the_reread_cont_1++;
+					}
+
+					if ((apu.dmc.sample_address & 0x1F) == 0x16)
+					{
+						reread_opp_4016++;
+					}
+
+					if ((apu.dmc.sample_address & 0x1F) != 0x17)
+					{
+						do_the_reread_cont_2++;
+					}
+
+					if ((apu.dmc.sample_address & 0x1F) == 0x17)
+					{
+						reread_opp_4017++;
+					}
+
 					apu.RunDMCFetch();
+
 					dmc_dma_exec = false;
 					apu.dmc_dma_countdown = -1;
-					do_the_reread = true;
+
+					if ((apu.dmc.timer == 2) && (apu.dmc.out_bits_remaining == 0))
+					{
+						//Console.WriteLine("close " + cpu.TotalExecutedCycles + " " + apu.dmc.timer + " " + apu.dmc.sample_length + " " + cpu.opcode + " " + cpu.mi);
+						if (apu.dmc.sample_length != 0)
+						{
+							apu.dmc.fill_glitch = true;
+						}					
+					}
+
+					if ((apu.dmc.timer == 4) && (apu.dmc.out_bits_remaining == 0) && (apu.dmc.sample_length == 1))
+					{
+						//Console.WriteLine("close 2 " + cpu.TotalExecutedCycles + " " + apu.dmc.timer + " " + apu.dmc.sample_length + " " + cpu.opcode + " " + cpu.mi);
+						apu.dmc.fill_glitch_2 = true;
+					}
 				}
 			}
 
@@ -509,14 +577,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			/////////////////////////////
 			apu.RunOneFirst();
 
-			if (cpu.RDY && !IRQ_delay)
+			cpu.IRQ = _irq_apu || Board.IrqSignal;
+
+			// DMC was started in the APU, but in this case it only lasts 1 cycle and is then aborted, so put this here
+			// NOTE: for some famicoms, this will also clock controllers, this will need to be handled if emulating additional models
+			if (apu.dmc.fill_glitch_2_end)
 			{
-				cpu.IRQ = _irq_apu || Board.IrqSignal;
-			}
-			else if (special_case_delay || apu.dmc_dma_countdown == 3)
-			{
-				cpu.IRQ = _irq_apu || Board.IrqSignal;
-				special_case_delay = false;
+				apu.dmc_dma_countdown = -1;
+				dmc_dma_exec = false;
+				apu.dmc.fill_glitch_2 = false;
+				apu.dmc.fill_glitch_2_end = false;
 			}
 
 			cpu.ExecuteOne();
@@ -533,15 +603,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			apu.RunOneLast();
 
-			if (do_the_reread && cpu.RDY)
-				do_the_reread = false;
+			if (reread_trigger && cpu.RDY)
+			{
+				do_the_reread_2002 = 0;
+				do_the_reread_2007 = 0;
+				do_the_reread_cont_1 = 0;
+				do_the_reread_cont_2 = 0;
+				reread_opp_4016 = 0;
+				reread_opp_4017 = 0;
+				reread_trigger = false;
+			}			
 
-			IRQ_delay = false;
-
-			if (!dmc_dma_exec && !oam_dma_exec && !cpu.RDY)
+			if (!cpu.RDY && !dmc_dma_exec && !oam_dma_exec)
 			{
 				cpu.RDY = true;
-				IRQ_delay = true;
 			}
 		}
 
@@ -588,13 +663,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						// special hardware glitch case
 						ret_spec = read_joyport(addr);
-						if (do_the_reread && ppu.region==PPU.Region.NTSC)
+
+						//if (reread_trigger && (do_the_reread_cont_1 == 0)) { Console.WriteLine("same 1 " + (apu.dmc.sample_address - 1)); }
+
+						if ((reread_opp_4017 > 0) && ppu.region == PPU.Region.NTSC)
+						{
+							read_joyport(0x4017);
+							//Console.WriteLine("DMC glitch player 2 opposite " + cpu.TotalExecutedCycles + " addr " + (apu.dmc.sample_address - 1));
+						}
+
+						if ((do_the_reread_cont_1 > 0) && ppu.region==PPU.Region.NTSC)
 						{
 							ret_spec = read_joyport(addr);
-							do_the_reread = false;
+							do_the_reread_cont_1--;
+							if (do_the_reread_cont_1 > 0) { ret_spec = read_joyport(addr); }
+							//Console.WriteLine("DMC glitch player 1 " + cpu.TotalExecutedCycles + " addr " + (apu.dmc.sample_address - 1));
 						}
-						return ret_spec;
 
+						return ret_spec;
 					}
 				case 0x4017:
 					if (_isVS)
@@ -606,17 +692,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						ret = (byte)(ret | (VS_dips[2] << 2) | (VS_dips[3] << 3) | (VS_dips[4] << 4) | (VS_dips[5] << 5) | (VS_dips[6] << 6) | (VS_dips[7] << 7));
 
 						return ret;
-
 					}
 					else
 					{
 						// special hardware glitch case
 						ret_spec = read_joyport(addr);
-						if (do_the_reread && ppu.region == PPU.Region.NTSC)
+
+						//if (reread_trigger && (do_the_reread_cont_2 == 0)) { Console.WriteLine("same 2 " + (apu.dmc.sample_address - 1)); }
+
+						if ((reread_opp_4016 > 0) && ppu.region == PPU.Region.NTSC)
+						{
+							read_joyport(0x4016);
+							//Console.WriteLine("DMC glitch player 1 opposite " + cpu.TotalExecutedCycles + " addr " + (apu.dmc.sample_address - 1));
+						}
+
+						if ((do_the_reread_cont_2 > 0) && ppu.region == PPU.Region.NTSC)
 						{
 							ret_spec = read_joyport(addr);
-							do_the_reread = false;
+							do_the_reread_cont_2--;
+							if (do_the_reread_cont_2 > 0) { ret_spec = read_joyport(addr); }
+							//Console.WriteLine("DMC glitch player 2 " + cpu.TotalExecutedCycles + " addr " + (apu.dmc.sample_address - 1));
 						}
+
 						return ret_spec;
 					}
 				default:
@@ -702,7 +799,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						sprdma_countdown--;
 						if (sprdma_countdown == 0)
 						{
-							if (cpu.TotalExecutedCycles % 2 == 0)
+							if (apu.dmc.timer % 2 == 0)
 							{
 								cpu_deadcounter = 2;
 							}
@@ -713,7 +810,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							oam_dma_exec = true;
 							cpu.RDY = false;
 							oam_dma_index = 0;
-							special_case_delay = true;
 						}
 					}
 					break;
@@ -744,6 +840,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private void write_joyport(byte value)
 		{
+			//Console.WriteLine("cont " + value + " frame " + Frame);
+			
 			var si = new StrobeInfo(latched4016, value);
 			ControllerDeck.Strobe(si, _controller);
 			latched4016 = value;
@@ -751,14 +849,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (current_strobe && !new_strobe)
 			{
 				controller_was_latched = true;
-				alt_lag = false;
+				lagged = false;
+				InputCallbacks.Call();
 			}
+			current_strobe = new_strobe;
 		}
 
 		private byte read_joyport(int addr)
 		{
-			InputCallbacks.Call();
-			lagged = false;
 			byte ret;
 			if (_isVS)
 			{
@@ -941,11 +1039,35 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else if (addr < 0x4020)
 			{
-				ret = ReadReg(addr); // we're not rebasing the register just to keep register names canonical
+				// oam dma access board memory if cpu is not accessing registers
+				// this means that OAM DMA can actually access memory that the cpu cannot
+				if (oam_dma_exec)
+				{
+					if ((cpu.PC >= 0x4000) && (cpu.PC < 0x4020))
+					{
+						ret = ReadReg(addr);
+					}
+					else
+					{
+						ret = Board.ReadExp(addr - 0x4000);
+					}
+				}
+				else
+				{
+					ret = ReadReg(addr);
+				}
 			}
 			else if (addr < 0x6000)
 			{
-				ret = Board.ReadExp(addr - 0x4000);
+				// oam dma will access registers if cpu is accessing them
+				if (oam_dma_exec && ((oam_dma_addr & 0xFF00) == 0x4000) && (cpu.PC >= 0x4000) && (cpu.PC < 0x4020))
+				{
+					ret = ReadReg(addr & 0x401F);
+				}
+				else
+				{
+					ret = Board.ReadExp(addr - 0x4000);
+				}
 			}
 			else
 			{
@@ -1007,7 +1129,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else if (addr < 0x4020)
 			{
-				WriteReg(addr, value);  //we're not rebasing the register just to keep register names canonical
+				WriteReg(addr, value);
 			}
 			else if (addr < 0x6000)
 			{

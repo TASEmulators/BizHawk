@@ -4,76 +4,78 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
 	public partial class GambatteLink : ISettable<GambatteLink.GambatteLinkSettings, GambatteLink.GambatteLinkSyncSettings>
 	{
+		private GambatteLinkSettings _settings;
+		private GambatteLinkSyncSettings _syncSettings;
+
 		public GambatteLinkSettings GetSettings()
 		{
-			return new GambatteLinkSettings
-			(
-				L.GetSettings(),
-				R.GetSettings()
-			);
+			return _settings.Clone();
 		}
+
 		public GambatteLinkSyncSettings GetSyncSettings()
 		{
-			return new GambatteLinkSyncSettings
-			(
-				L.GetSyncSettings(),
-				R.GetSyncSettings()
-			);
+			return _syncSettings.Clone();
 		}
 
 		public PutSettingsDirtyBits PutSettings(GambatteLinkSettings o)
 		{
-			return (PutSettingsDirtyBits)((int)L.PutSettings(o.L) | (int)R.PutSettings(o.R));
+			var ret = PutSettingsDirtyBits.None;
+			for (int i = 0; i < _numCores; i++)
+			{
+				ret |= _linkedCores[i].PutSettings(o._linkedSettings[i]);
+			}
+			_settings = o;
+			return ret;
 		}
 
 		public PutSettingsDirtyBits PutSyncSettings(GambatteLinkSyncSettings o)
 		{
-			return (PutSettingsDirtyBits)((int)L.PutSyncSettings(o.L) | (int)R.PutSyncSettings(o.R));
+			var ret = PutSettingsDirtyBits.None;
+			for (int i = 0; i < _numCores; i++)
+			{
+				ret |= _linkedCores[i].PutSyncSettings(o._linkedSyncSettings[i]);
+			}
+			_syncSettings = o;
+			return ret;
 		}
 
 		public class GambatteLinkSettings
 		{
-			public Gameboy.GambatteSettings L;
-			public Gameboy.GambatteSettings R;
+			public Gameboy.GambatteSettings[] _linkedSettings;
 
 			public GambatteLinkSettings()
 			{
-				L = new Gameboy.GambatteSettings();
-				R = new Gameboy.GambatteSettings();
+				_linkedSettings = new Gameboy.GambatteSettings[MAX_PLAYERS] { new(), new(), new(), new() };
 			}
 
-			public GambatteLinkSettings(Gameboy.GambatteSettings L, Gameboy.GambatteSettings R)
+			public GambatteLinkSettings(Gameboy.GambatteSettings one, Gameboy.GambatteSettings two, Gameboy.GambatteSettings three, Gameboy.GambatteSettings four)
 			{
-				this.L = L;
-				this.R = R;
+				_linkedSettings = new Gameboy.GambatteSettings[MAX_PLAYERS] { one, two, three, four };
 			}
 
 			public GambatteLinkSettings Clone()
 			{
-				return new GambatteLinkSettings(L.Clone(), R.Clone());
+				return new GambatteLinkSettings(_linkedSettings[P1].Clone(), _linkedSettings[P2].Clone(), _linkedSettings[P3].Clone(), _linkedSettings[P4].Clone());
 			}
 		}
 
 		public class GambatteLinkSyncSettings
 		{
-			public Gameboy.GambatteSyncSettings L;
-			public Gameboy.GambatteSyncSettings R;
+			public Gameboy.GambatteSyncSettings[] _linkedSyncSettings;
 
 			public GambatteLinkSyncSettings()
 			{
-				L = new Gameboy.GambatteSyncSettings();
-				R = new Gameboy.GambatteSyncSettings();
+				_linkedSyncSettings = new Gameboy.GambatteSyncSettings[MAX_PLAYERS] { new(), new(), new(), new() };
 			}
 
-			public GambatteLinkSyncSettings(Gameboy.GambatteSyncSettings L, Gameboy.GambatteSyncSettings R)
+			public GambatteLinkSyncSettings(Gameboy.GambatteSyncSettings one, Gameboy.GambatteSyncSettings two, Gameboy.GambatteSyncSettings three, Gameboy.GambatteSyncSettings four)
 			{
-				this.L = L;
-				this.R = R;
+				_linkedSyncSettings = new Gameboy.GambatteSyncSettings[MAX_PLAYERS] { one, two, three, four };
 			}
 
 			public GambatteLinkSyncSettings Clone()
 			{
-				return new GambatteLinkSyncSettings(L.Clone(), R.Clone());
+				return new GambatteLinkSyncSettings(_linkedSyncSettings[P1].Clone(), _linkedSyncSettings[P2].Clone(), _linkedSyncSettings[P3].Clone(), _linkedSyncSettings[P4].Clone());
 			}
 		}
 	}

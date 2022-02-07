@@ -110,7 +110,7 @@ namespace BizHawk.Client.EmuHawk
 						Size = new Size(iwOffsetX - UIHelper.ScaleX(2), UIHelper.ScaleY(15))
 					};
 
-					var w = new InputCompositeWidget
+					var w = new InputCompositeWidget(_config.ModifierKeysEffective)
 					{
 						Location = new Point(x + iwOffsetX, y + iwOffsetY),
 						AutoTab = AutoTabCheckBox.Checked,

@@ -1,5 +1,6 @@
 ﻿using BizHawk.Emulation.Common;
 using System;
+using System.Text;
 
 namespace BizHawk.Emulation.Cores.Computers.MSX
 {
@@ -30,10 +31,8 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			if (_controller.IsPressed("P2 B2")) ctrl2_byte -= 0x20;
 
 			if (current_controller == MSXControllerKB) { kb_rows_check(controller); }		
-
-			_frame++;
 			
-			if (Tracer.Enabled)
+			if (Tracer.IsEnabled())
 			{
 				tracecb = MakeTrace;
 			}
@@ -45,7 +44,18 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			LibMSX.MSX_settracecallback(MSX_Pntr, tracecb);
 			
 			LibMSX.MSX_frame_advance(MSX_Pntr, ctrl1_byte, ctrl2_byte, kb_rows, true, true);
-			
+
+			LibMSX.MSX_get_video(MSX_Pntr, _vidbuffer);
+
+			/*
+			int msg_l = LibMSX.MSX_getmessagelength(MSX_Pntr);
+			StringBuilder new_msg = new StringBuilder(msg_l);
+			LibMSX.MSX_getmessage(MSX_Pntr, new_msg, msg_l - 1);
+			Console.WriteLine(new_msg);
+			*/
+
+			_frame++;
+
 			return true;
 		}
 
@@ -139,7 +149,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 		public int Frame => _frame;
 
-		public string SystemId => "MSX";
+		public string SystemId => VSystemID.Raw.MSX;
 
 		public bool DeterministicEmulation => true;
 
@@ -204,6 +214,11 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			samples = new short[nsamp * 2];
 
 			blip.ReadSamples(samples, nsamp, true);
+
+			for (int i = 0; i < nsamp * 2; i += 2)
+			{
+				samples[i + 1] = samples[i];
+			}
 		}
 
 		public void DiscardSamples()
@@ -217,7 +232,6 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 		public int[] GetVideoBuffer()
 		{
-			LibMSX.MSX_get_video(MSX_Pntr, _vidbuffer);
 			return _vidbuffer;
 		}
 

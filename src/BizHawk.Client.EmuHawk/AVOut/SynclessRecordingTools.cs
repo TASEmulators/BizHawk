@@ -12,12 +12,17 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class SynclessRecordingTools : Form, IDialogParent
 	{
-		private readonly List<FrameInfo> _mFrameInfos = new List<FrameInfo>();
 		private readonly Config _config;
+
 		private readonly IGameInfo _game;
 
-		private string _mSynclessConfigFile;
+#if AVI_SUPPORT
+		private readonly List<FrameInfo> _mFrameInfos = new List<FrameInfo>();
+
 		private string _mFramesDirectory;
+
+		private string _mSynclessConfigFile;
+#endif
 
 		public IDialogController DialogController { get; }
 
@@ -29,6 +34,7 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
+#if AVI_SUPPORT
 		public void Run()
 		{
 			var ofd = new OpenFileDialog
@@ -97,9 +103,11 @@ namespace BizHawk.Client.EmuHawk
 			public string WavPath { get; set; }
 			public string PngPath { get; set; }
 		}
+#endif
 
 		private void BtnExport_Click(object sender, EventArgs e)
 		{
+#if AVI_SUPPORT
 			if (_mFrameInfos.Count == 0)
 			{
 				return;
@@ -151,6 +159,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			avw.CloseFile();
+#endif
 		}
 	}
 }
