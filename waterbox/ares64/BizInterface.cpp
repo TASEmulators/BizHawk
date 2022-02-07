@@ -18,7 +18,7 @@ struct BizPlatform : ares::Platform {
 	shared_pointer<vfs::directory> bizpak = new vfs::directory;
 	u32 width = 640;
 	u32 height = 480;
-	u32 videobuf[640 * 576];
+	u32* videobuf = alloc_invisible<u32>(640 * 576);
 	ares::Node::Audio::Stream stream;
 };
 
@@ -33,7 +33,7 @@ auto BizPlatform::pak(ares::Node::Object) -> shared_pointer<vfs::directory> { re
 auto BizPlatform::event(ares::Event) -> void {}
 auto BizPlatform::log(string_view) -> void {}
 auto BizPlatform::video(ares::Node::Video::Screen, const u32* data, u32 pitch, u32 width, u32 height) -> void {
-	/*this->width = width;
+	this->width = width;
 	this->height = height;
 	u32* src = (u32*)data;
 	u32* dst = videobuf;
@@ -42,7 +42,7 @@ auto BizPlatform::video(ares::Node::Video::Screen, const u32* data, u32 pitch, u
 		memcpy(dst, src, width * 4);
 		src += pitch;
 		dst += 640;
-	}*/
+	}
 };
 auto BizPlatform::audio(ares::Node::Audio::Stream) -> void {};
 auto BizPlatform::input(ares::Node::Input::Input) -> void {};
@@ -122,7 +122,7 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 	root->run();
 	f->Width = platform.width;
 	f->Height = platform.height;
-	memcpy(f->VideoBuffer, platform.videobuf, sizeof (platform.videobuf));
+	memcpy(f->VideoBuffer, platform.videobuf, 640 * 576 * 4);
 	s16* soundbuf = f->SoundBuffer;
 	while (platform.stream->pending())
 	{

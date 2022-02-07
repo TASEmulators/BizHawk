@@ -45,7 +45,6 @@ SRCS_MAME = \
 	$(MAME_PATH)/emu/emucore.cpp \
 	$(MAME_PATH)/lib/util/delegate.cpp \
 	$(MAME_PATH)/lib/util/strformat.cpp \
-	$(MAME_PATH)/lib/util/strformat.cpp \
 	$(MAME_PATH)/mame/video/n64.cpp \
 	$(MAME_PATH)/mame/video/pin64.cpp \
 	$(MAME_PATH)/mame/video/rdpblend.cpp \
