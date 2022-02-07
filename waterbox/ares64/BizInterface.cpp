@@ -8,7 +8,7 @@
 struct BizPlatform : ares::Platform {
 	auto attach(ares::Node::Object) -> void override;
 	auto pak(ares::Node::Object) -> shared_pointer<vfs::directory> override;
-	auto video(ares::Node::Video::Screen, const u32* data, u32 pitch, u32 width, u32 height) -> void override;
+	auto video(ares::Node::Video::Screen, const u32*, u32, u32, u32) -> void override;
 	auto input(ares::Node::Input::Input) -> void override;
 
 	shared_pointer<vfs::directory> bizpak = new vfs::directory;
@@ -122,7 +122,8 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 	{
 		memcpy(dst, src, f->Width * 4);
 		dst += 640;
-		src += pitch << 1;
+		memcpy(dst, src, f->Width * 4);
+		src += pitch * 2;
 	}
 	s16* soundbuf = f->SoundBuffer;
 	while (platform.stream->pending())
