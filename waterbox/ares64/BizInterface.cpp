@@ -26,9 +26,9 @@ auto BizPlatform::attach(ares::Node::Object node) -> void {
 	}
 }
 auto BizPlatform::pak(ares::Node::Object) -> shared_pointer<vfs::directory> { return bizpak; }
-auto BizPlatform::video(ares::Node::Video::Screen, const u32* data, u32 pitch, u32 width, u32 height) -> void {
+auto BizPlatform::video(ares::Node::Video::Screen screen, const u32* data, u32 pitch, u32 width, u32 height) -> void {
 	videobuf = (u32*)data;
-	this->pitch = pitch;
+	this->pitch = screen->canvasWidth();
 	this->width = width;
 	this->height = height;
 }
@@ -121,8 +121,7 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 	{
 		memcpy(dst, src, f->Width * 4);
 		dst += 640;
-		memcpy(dst, src, f->Width * 4);
-		src += pitch * 2;
+		src += pitch;
 	}
 	s16* soundbuf = f->SoundBuffer;
 	while (platform.stream->pending())
