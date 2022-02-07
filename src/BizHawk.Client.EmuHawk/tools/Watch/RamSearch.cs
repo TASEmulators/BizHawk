@@ -682,6 +682,13 @@ namespace BizHawk.Client.EmuHawk
 			PopulateTypeDropDown();
 			_dropdownDontfire = false;
 			SpecificValueBox.Type = _settings.Type;
+
+			DifferenceBox.Type = _settings.Type;
+			DifferentByBox.Type = _settings.Type;
+
+			DifferenceBox.ByteSize = size;
+			DifferentByBox.ByteSize = size;
+
 			NewSearch();
 		}
 
