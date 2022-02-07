@@ -137,7 +137,7 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 		f->Samples++;
 	}
 	puts("returning");
-	__asm__("int3");
+	//__asm__("int3");
 	// handle a/v and lag (somehow)
 }
 
