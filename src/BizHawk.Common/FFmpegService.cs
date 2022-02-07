@@ -79,15 +79,20 @@ namespace BizHawk.Common
 					RedirectStandardError = true
 				};
 
-			Process proc = Process.Start(oInfo);
-			string result = proc.StandardOutput.ReadToEnd();
-			result += proc.StandardError.ReadToEnd();
+			Process proc = new Process();
+			proc.StartInfo = oInfo;
+			string eOut = null;
+			proc.ErrorDataReceived += new DataReceivedEventHandler((sender, e) =>
+				{ eOut += e.Data; });
+			proc.Start();
+			proc.BeginErrorReadLine();
+			string output = proc.StandardOutput.ReadToEnd();
 			proc.WaitForExit();
 
 			return new RunResults
 			{
 				ExitCode = proc.ExitCode,
-				Text = result
+				Text = output + eOut
 			};
 		}
 
