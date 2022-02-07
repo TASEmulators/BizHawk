@@ -181,7 +181,8 @@ namespace BizHawk.Client.Common
 
 		public (int Left, int Top, int Right, int Bottom) GetPadding() => _padding;
 
-		public void AddMessage(string message) => _displayManager.OSD.AddMessage(message);
+		public void AddMessage(string message, int? duration = null)
+			=> _displayManager.OSD.AddMessage(message, duration);
 
 		public void ClearGraphics(DisplaySurfaceID? surfaceID = null) => GetRelevantSurface(surfaceID).Clear();
 
