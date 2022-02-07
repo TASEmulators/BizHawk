@@ -1,5 +1,7 @@
 #pragma once
 
+#include <emulibc.h>
+
 #include <libco.h>
 #include <sljit.h>
 
