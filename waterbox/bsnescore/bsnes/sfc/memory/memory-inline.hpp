@@ -23,6 +23,10 @@ auto Bus::reduce(uint addr, uint mask) -> uint {
   return addr;
 }
 
+auto Bus::peek(uint addr, uint8 data) -> uint8 {
+  return peekable[lookup[addr]] ? read(addr, data) : 0;
+}
+
 auto Bus::read(uint addr, uint8 data) -> uint8 {
   return reader[lookup[addr]](target[addr], data);
 }

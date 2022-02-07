@@ -26,6 +26,7 @@ struct Bus {
 
   ~Bus();
 
+  alwaysinline auto peek(uint address, uint8 data = 0) -> uint8;
   alwaysinline auto read(uint address, uint8 data = 0) -> uint8;
   alwaysinline auto write(uint address, uint8 data) -> void;
 
@@ -33,7 +34,7 @@ struct Bus {
   auto map(
     const function<uint8 (uint, uint8)>& read,
     const function<void (uint, uint8)>& write,
-    const string& address, uint size = 0, uint base = 0, uint mask = 0
+    const string& address, bool isPeekable, uint size = 0, uint base = 0, uint mask = 0
   ) -> uint;
   auto unmap(const string& address) -> void;
 
@@ -44,6 +45,7 @@ private:
   function<uint8 (uint, uint8)> reader[256];
   function<void  (uint, uint8)> writer[256];
   uint counter[256];
+  bool peekable[256];
 };
 
 extern Bus bus;
