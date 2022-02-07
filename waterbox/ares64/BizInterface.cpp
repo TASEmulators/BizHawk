@@ -116,12 +116,13 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 	u32 pitch = platform.pitch;
 	u32* src = platform.videobuf;
 	u32* dst = f->VideoBuffer;
+	printf("width %d height %d pitch %d\n", f->Width, f->Height, pitch);
 	for (int i = 0; i < f->Height; i++)
 	{
 		memcpy(dst, src, f->Width * 4);
 		dst += 640;
 		memcpy(dst, src, f->Width * 4);
-		src += pitch;
+		src += pitch * 2;
 	}
 	s16* soundbuf = f->SoundBuffer;
 	while (platform.stream->pending())
