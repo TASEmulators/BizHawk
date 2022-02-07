@@ -121,7 +121,7 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 	{
 		memcpy(dst, src, f->Width * 4);
 		dst += 640;
-		src += pitch >> 1;
+		src += pitch << 1;
 	}
 	s16* soundbuf = f->SoundBuffer;
 	while (platform.stream->pending())
