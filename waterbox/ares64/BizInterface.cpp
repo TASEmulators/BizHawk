@@ -31,6 +31,7 @@ auto BizPlatform::video(ares::Node::Video::Screen screen, const u32* data, u32 p
 	this->pitch = screen->canvasWidth();
 	this->width = width;
 	this->height = height;
+	puts("called bizplatform video");
 }
 auto BizPlatform::input(ares::Node::Input::Input) -> void {};
 
