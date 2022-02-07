@@ -17,6 +17,7 @@ struct BizPlatform : ares::Platform {
 	u32 pitch = 0;
 	u32 width = 0;
 	u32 height = 0;
+	bool newframe = false;
 };
 
 auto BizPlatform::attach(ares::Node::Object node) -> void {
@@ -31,7 +32,7 @@ auto BizPlatform::video(ares::Node::Video::Screen screen, const u32* data, u32 p
 	this->pitch = screen->canvasWidth();
 	this->width = width;
 	this->height = height;
-	puts("called bizplatform video");
+	newframe = true;
 }
 auto BizPlatform::input(ares::Node::Input::Input) -> void {};
 
@@ -88,6 +89,7 @@ EXPORT bool Init(bool pal)
 	root->power();
 	root->run();
 	root->run();
+	platform.newframe = false;
 	f64 buf[2];
 	while (platform.stream->pending()) platform.stream->read(buf);
 	return true;
@@ -112,17 +114,20 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 {
 	// handle input
 	root->run();
-	f->Width = platform.width;
-	f->Height = platform.height;
-	u32 pitch = platform.pitch;
-	u32* src = platform.videobuf;
-	u32* dst = f->VideoBuffer;
-	printf("width %d height %d pitch %d\n", f->Width, f->Height, pitch);
-	for (int i = 0; i < f->Height; i++)
+	if (platform.newframe)
 	{
-		memcpy(dst, src, f->Width * 4);
-		dst += f->Width;
-		src += pitch;
+		f->Width = platform.width;
+		f->Height = platform.height;
+		u32 pitch = platform.pitch;
+		u32* src = platform.videobuf;
+		u32* dst = f->VideoBuffer;
+		for (int i = 0; i < f->Height; i++)
+		{
+			memcpy(dst, src, f->Width * 4);
+			dst += f->Width;
+			src += pitch;
+		}
+		platform.newframe = false;
 	}
 	s16* soundbuf = f->SoundBuffer;
 	while (platform.stream->pending())
