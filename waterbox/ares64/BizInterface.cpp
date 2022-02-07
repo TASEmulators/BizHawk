@@ -7,44 +7,25 @@
 
 struct BizPlatform : ares::Platform {
 	auto attach(ares::Node::Object) -> void override;
-	auto detach(ares::Node::Object) -> void override;
 	auto pak(ares::Node::Object) -> shared_pointer<vfs::directory> override;
-	auto event(ares::Event) -> void override;
-	auto log(string_view message) -> void override;
-	auto video(ares::Node::Video::Screen, const u32* data, u32 pitch, u32 width, u32 height) -> void override;
-	auto audio(ares::Node::Audio::Stream) -> void override;
 	auto input(ares::Node::Input::Input) -> void override;
 
 	shared_pointer<vfs::directory> bizpak = new vfs::directory;
-	u32 width = 640;
-	u32 height = 480;
-	u32* videobuf = alloc_invisible<u32>(640 * 576);
+	ares::Node::Video::Screen screen;
 	ares::Node::Audio::Stream stream;
 };
 
 auto BizPlatform::attach(ares::Node::Object node) -> void {
+	if (auto screen = node->cast<ares::Node::Video::Screen>()) {
+		screen->setProgressive(true);
+		this->screen = screen;
+	}
 	if (auto stream = node->cast<ares::Node::Audio::Stream>()) {
 		stream->setResamplerFrequency(44100);
 		this->stream = stream;
 	}
 }
-auto BizPlatform::detach(ares::Node::Object) -> void {}
 auto BizPlatform::pak(ares::Node::Object) -> shared_pointer<vfs::directory> { return bizpak; }
-auto BizPlatform::event(ares::Event) -> void {}
-auto BizPlatform::log(string_view) -> void {}
-auto BizPlatform::video(ares::Node::Video::Screen, const u32* data, u32 pitch, u32 width, u32 height) -> void {
-	this->width = width;
-	this->height = height;
-	u32* src = (u32*)data;
-	u32* dst = videobuf;
-	for (int i = 0; i < height; i++)
-	{
-		memcpy(dst, src, width * 4);
-		src += pitch;
-		dst += 640;
-	}
-};
-auto BizPlatform::audio(ares::Node::Audio::Stream) -> void {};
 auto BizPlatform::input(ares::Node::Input::Input) -> void {};
 
 static ares::Node::System root;
@@ -124,9 +105,17 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 {
 	// handle input
 	root->run();
-	f->Width = platform.width;
-	f->Height = platform.height;
-	memcpy(f->VideoBuffer, platform.videobuf, 640 * 576 * 4);
+	f->Width = platform.screen->width();
+	f->Height = platform.screen->height();
+	u32 pitch = platform.screen->canvasWidth();
+	u32* src = platform.screen->pixels().data();
+	u32* dst = f->VideoBuffer;
+	for (int i = 0; i < f->Height; i++)
+	{
+		memcpy(dst, src, f->Width * 4);
+		src += pitch;
+		dst += 640;
+	}
 	s16* soundbuf = f->SoundBuffer;
 	while (platform.stream->pending())
 	{
@@ -136,8 +125,6 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 		*soundbuf++ = (s16)std::clamp(buf[1] * 32768, -32768.0, 32767.0);
 		f->Samples++;
 	}
-	puts("returning");
-	//__asm__("int3");
 	// handle a/v and lag (somehow)
 }
 
