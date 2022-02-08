@@ -132,7 +132,7 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 	s16* soundbuf = f->SoundBuffer;
 	while (platform.stream->pending())
 	{
-		f64 buf[2] = { 0.0, 0.0 };
+		f64 buf[2];
 		platform.stream->read(buf);
 		*soundbuf++ = (s16)std::clamp(buf[0] * 32768, -32768.0, 32767.0);
 		*soundbuf++ = (s16)std::clamp(buf[1] * 32768, -32768.0, 32767.0);
