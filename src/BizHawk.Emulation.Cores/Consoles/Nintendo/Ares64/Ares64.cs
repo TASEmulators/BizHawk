@@ -21,9 +21,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 		public Ares64(CoreLoadParameters<object, object> lp)
 			: base(lp.Comm, new Configuration
 			{
-				DefaultWidth = 320,
-				DefaultHeight = 240,
-				MaxWidth = 720,
+				DefaultWidth = 640,
+				DefaultHeight = 480,
+				MaxWidth = 640,
 				MaxHeight = 576,
 				MaxSamples = 1024,
 				DefaultFpsNumerator = 60000,
@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 				Filename = "ares64.wbx",
 				SbrkHeapSizeKB = 2 * 1024,
 				SealedHeapSizeKB = 4,
-				InvisibleHeapSizeKB = 4,
+				InvisibleHeapSizeKB = 6 * 1024,
 				PlainHeapSizeKB = 4,
 				MmapHeapSizeKB = 1024 * 1024,
 				SkipCoreConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
