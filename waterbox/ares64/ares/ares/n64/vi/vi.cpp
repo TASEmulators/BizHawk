@@ -109,6 +109,11 @@ auto VI::refresh() -> void {
   u32 height = vi.io.yscale <= 0x400 ? 239 : 478;
   screen->setViewport(0, 0, width, height);
 
+  if(vi.io.colorDepth == 0 || io.dramAddress == 0) {
+    //blank screen
+    memory::fill<u32>(screen->pixels(1).data(), width * height);
+  }
+
   if(vi.io.colorDepth == 2) {
     //15bpp
     for(u32 y : range(height)) {
