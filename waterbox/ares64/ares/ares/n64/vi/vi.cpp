@@ -112,6 +112,7 @@ auto VI::refresh() -> void {
   if(vi.io.colorDepth == 0 || io.dramAddress == 0) {
     //blank screen
     memory::fill<u32>(screen->pixels(1).data(), width * height);
+	return;
   }
 
   if(vi.io.colorDepth == 2) {
