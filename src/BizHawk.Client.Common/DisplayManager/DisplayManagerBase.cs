@@ -498,27 +498,6 @@ namespace BizHawk.Client.Common
 			return null;
 		}
 
-		public BitmapBuffer RenderVideoProvider(IVideoProvider videoProvider)
-		{
-			// TODO - we might need to gather more Config.DispXXX properties here, so they can be overridden
-			var targetSize = new Size(videoProvider.BufferWidth, videoProvider.BufferHeight);
-			var padding = CalculateCompleteContentPaddingSum(true,true);
-			targetSize.Width += padding.Horizontal;
-			targetSize.Height += padding.Vertical;
-
-			var job = new JobInfo
-			{
-				VideoProvider = videoProvider,
-				Simulate = false,
-				ChainOutsize = targetSize,
-				Offscreen = true,
-				IncludeOSD = false,
-				IncludeUserFilters = false
-			};
-			UpdateSourceInternal(job);
-			return job.OffscreenBb;
-		}
-
 		/// <summary>
 		/// Does the entire display process to an offscreen buffer, suitable for a 'client' screenshot.
 		/// </summary>
@@ -910,8 +889,7 @@ namespace BizHawk.Client.Common
 			}
 
 			//POOPY. why are we delivering the GL context this way? such bad
-			ScreenControlNDS fNDS = filterProgram["CoreScreenControl"] as ScreenControlNDS;
-			if (fNDS != null)
+			if (filterProgram["CoreScreenControl"] is ScreenControlNDS fNDS)
 			{
 				fNDS.GuiRenderer = _renderer;
 				fNDS.GL = _gl;

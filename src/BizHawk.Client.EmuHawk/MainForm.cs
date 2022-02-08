@@ -2287,7 +2287,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public BitmapBuffer MakeScreenshotImage()
 		{
-			return DisplayManager.RenderVideoProvider(_currentVideoProvider);
+			return new BitmapBuffer(_currentVideoProvider.BufferWidth, _currentVideoProvider.BufferHeight, _currentVideoProvider.GetVideoBuffer().ToArray());
 		}
 
 		private void SaveSlotSelectedMessage()
