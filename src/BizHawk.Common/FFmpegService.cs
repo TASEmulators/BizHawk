@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace BizHawk.Common
 {
@@ -80,59 +81,55 @@ namespace BizHawk.Common
 				RedirectStandardError = true
 			};
 
-			string result = "";
+			Process proc = new Process();
+			proc.StartInfo = oInfo;
+			Mutex m = new Mutex();
 
-			//probably naturally thread-safe...
-			//make a lock if not
-			Action<StreamReader,bool> readerloop = (reader,ignore) =>
+			var outputBuilder = new StringBuilder();
+			var outputCloseEvent = new TaskCompletionSource<bool>();
+			var errorCloseEvent = new TaskCompletionSource<bool>();
+
+			proc.OutputDataReceived += (s, e) =>
 			{
-				string line = "";
-				int idx = 0;
-				for (; ; )
+				if (e.Data == null)
 				{
-					int c = reader.Read();
-					if (c == -1)
-						break;
-					else if (c == '\r')
-						idx = 0;
-					else if (c == '\n')
-					{
-						if(!ignore)
-							lock(oInfo)
-								result += line + "\n";
-						line = "";
-						idx = 0;
-					}
-					else
-					{
-						if (idx < line.Length)
-							line = line.Substring(0, idx) + (char)c + line.Substring(idx + 1);
-						else
-							line += (char)c;
-						idx++;
-					}
+					outputCloseEvent.SetResult(true);
 				}
-
-				if(!ignore)
-					if(line != "")
-						lock(oInfo)
-							result += line + "\n"; //not sure about the final \n but i concat it after each finished line so why not.. whatever
+				else
+				{
+					m.WaitOne();
+					outputBuilder.Append(e.Data);
+					m.ReleaseMutex();
+				}
 			};
 
-			Process proc = Process.Start(oInfo);
+			proc.ErrorDataReceived += (s, e) =>
+			{
+				if (e.Data == null)
+				{
+					errorCloseEvent.SetResult(true);
+				}
+				else
+				{
+					m.WaitOne();
+					outputBuilder.Append(e.Data);
+					m.ReleaseMutex();
+				}
+			};
 
-			var tout = new Thread(() => readerloop(proc.StandardOutput,false));
-			var terr = new Thread(() => readerloop(proc.StandardError,false));
-
-			tout.Start();
-			terr.Start();
-
+			proc.Start();
+			proc.BeginOutputReadLine();
+			proc.BeginErrorReadLine();
 			proc.WaitForExit();
+			string resultText = "";
+			m.WaitOne();
+			resultText = outputBuilder.ToString();
+			m.ReleaseMutex();
 
 			return new RunResults
 			{
 				ExitCode = proc.ExitCode,
-				Text = result
+				Text = resultText
 			};
 		}
 
@@ -143,7 +140,7 @@ namespace BizHawk.Common
 			try
 			{
 				var runResults = Run("-i", path, "-xerror", "-f", "wav", "-ar", "44100", "-ac", "2", "-acodec", "pcm_s16le", "-y", tempfile);
-				if(runResults.ExitCode != 0)
+				if (runResults.ExitCode != 0)
 					throw new InvalidOperationException($"Failure running ffmpeg for audio decode. here was its output:\r\n{runResults.Text}");
 				byte[] ret = File.ReadAllBytes(tempfile);
 				if (ret.Length == 0)
