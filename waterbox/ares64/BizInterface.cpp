@@ -29,7 +29,7 @@ auto BizPlatform::attach(ares::Node::Object node) -> void {
 auto BizPlatform::pak(ares::Node::Object) -> shared_pointer<vfs::directory> { return bizpak; }
 auto BizPlatform::video(ares::Node::Video::Screen screen, const u32* data, u32 pitch, u32 width, u32 height) -> void {
 	videobuf = (u32*)data;
-	this->pitch = screen->canvasWidth();
+	this->pitch = pitch >> 2;
 	this->width = width;
 	this->height = height;
 	newframe = true;
