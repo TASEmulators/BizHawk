@@ -71,10 +71,6 @@ EXPORT bool Init(bool pal)
 
 	ares::platform = &platform;
 
-	ares::Nintendo64::option("Quality", 0);
-	ares::Nintendo64::option("Supersampling", false);
-	ares::Nintendo64::option("Enable Vulkan", false);
-
 	if (!ares::Nintendo64::load(root, {"[Nintendo] Nintendo 64 (", region, ")"}))
 	{
 		return false;
