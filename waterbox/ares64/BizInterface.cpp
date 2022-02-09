@@ -1,45 +1,93 @@
 #include <n64/n64.hpp>
 
-#include "../emulibc/emulibc.h"
-#include "../emulibc/waterboxcore.h"
+#include <emulibc.h>
+#include <waterboxcore.h>
 
 #define EXPORT extern "C" ECL_EXPORT
 
-struct BizPlatform : ares::Platform {
+typedef enum
+{
+	Unplugged,
+	Standard,
+	Mempak,
+	Rumblepak,
+} ControllerType;
+
+typedef enum
+{
+	UP      = 1 <<  0,
+	DOWN    = 1 <<  1,
+	LEFT    = 1 <<  2,
+	RIGHT   = 1 <<  3,
+	B       = 1 <<  4,
+	A       = 1 <<  5,
+	C_UP    = 1 <<  6,
+	C_DOWN  = 1 <<  7,
+	C_LEFT  = 1 <<  8,
+	C_RIGHT = 1 <<  9,
+	L       = 1 << 10,
+	R       = 1 << 11,
+	Z       = 1 << 12,
+	START   = 1 << 13,
+} Buttons_t;
+
+struct BizPlatform : ares::Platform
+{
 	auto attach(ares::Node::Object) -> void override;
 	auto pak(ares::Node::Object) -> shared_pointer<vfs::directory> override;
 	auto video(ares::Node::Video::Screen, const u32*, u32, u32, u32) -> void override;
 	auto input(ares::Node::Input::Input) -> void override;
 
 	shared_pointer<vfs::directory> bizpak = new vfs::directory;
-	ares::Node::Audio::Stream stream;
+	ares::Node::Audio::Stream stream = nullptr;
 	u32* videobuf = nullptr;
 	u32 pitch = 0;
 	u32 width = 0;
 	u32 height = 0;
 	bool newframe = false;
+	void (*inputcb)() = nullptr;
+	bool lagged = true;
 };
 
-auto BizPlatform::attach(ares::Node::Object node) -> void {
-	if (auto stream = node->cast<ares::Node::Audio::Stream>()) {
+auto BizPlatform::attach(ares::Node::Object node) -> void
+{
+	if (auto stream = node->cast<ares::Node::Audio::Stream>())
+	{
 		stream->setResamplerFrequency(44100);
 		this->stream = stream;
 	}
 }
-auto BizPlatform::pak(ares::Node::Object) -> shared_pointer<vfs::directory> { return bizpak; }
-auto BizPlatform::video(ares::Node::Video::Screen screen, const u32* data, u32 pitch, u32 width, u32 height) -> void {
+
+auto BizPlatform::pak(ares::Node::Object) -> shared_pointer<vfs::directory>
+{
+	return bizpak;
+}
+
+auto BizPlatform::video(ares::Node::Video::Screen screen, const u32* data, u32 pitch, u32 width, u32 height) -> void
+{
 	videobuf = (u32*)data;
 	this->pitch = pitch >> 2;
 	this->width = width;
 	this->height = height;
 	newframe = true;
 }
-auto BizPlatform::input(ares::Node::Input::Input) -> void {};
+
+auto BizPlatform::input(ares::Node::Input::Input node) -> void
+{
+	if (auto input = node->cast<ares::Node::Input::Button>())
+	{
+		if (input->name() == "Start")
+		{
+			lagged = false;
+			if (inputcb) inputcb();
+		}
+	}
+};
 
 static ares::Node::System root;
 static BizPlatform platform;
 
-EXPORT bool Init(bool pal)
+EXPORT bool Init(ControllerType* controllers, bool pal)
 {
 	FILE* f;
 	array_view<u8>* data;
@@ -86,6 +134,39 @@ EXPORT bool Init(bool pal)
 		return false;
 	}
 
+	for (int i = 0; i < 4; i++)
+	{
+		if (auto port = root->find<ares::Node::Port>({"Controller Port ", 1 + i}))
+		{
+			if (controllers[i] == Unplugged) continue;
+
+			auto peripheral = port->allocate("Gamepad");
+			port->connect();
+
+			string name;
+			switch (controllers[i])
+			{
+				case Mempak: name = "Controller Pak"; break;
+				case Rumblepak: name = "Rumble Pak"; break;
+				default: continue;
+			}
+
+			if (auto port = peripheral->find<ares::Node::Port>("Pak"))
+			{
+				port->allocate(name);
+				port->connect();
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			return false;
+		}
+	}
+
 	root->power();
 	root->run();
 	root->run();
@@ -107,13 +188,55 @@ EXPORT void GetMemoryAreas(MemoryArea *m)
 
 struct MyFrameInfo : public FrameInfo
 {
-	// input
+	Buttons_t P1Buttons;
+	s16 P1XAxis;
+	s16 P1YAxis;
+
+	Buttons_t P2Buttons;
+	s16 P2XAxis;
+	s16 P2YAxis;
+
+	Buttons_t P3Buttons;
+	s16 P3XAxis;
+	s16 P3YAxis;
+
+	Buttons_t P4Buttons;
+	s16 P4XAxis;
+	s16 P4YAxis;
 };
+
+#define UPDATE_CONTROLLER(NUM) \
+if (auto c = (ares::Nintendo64::Gamepad*)ares::Nintendo64::controllerPort##NUM.device.data()) \
+{ \
+	c->x->setValue(f->P##NUM##XAxis); \
+	c->y->setValue(f->P##NUM##YAxis); \
+	c->up->setValue(f->P##NUM##Buttons & UP); \
+	c->down->setValue(f->P##NUM##Buttons & DOWN); \
+	c->left->setValue(f->P##NUM##Buttons & LEFT); \
+	c->right->setValue(f->P##NUM##Buttons & RIGHT); \
+	c->b->setValue(f->P##NUM##Buttons & B); \
+	c->a->setValue(f->P##NUM##Buttons & A); \
+	c->cameraUp->setValue(f->P##NUM##Buttons & C_UP); \
+	c->cameraDown->setValue(f->P##NUM##Buttons & C_DOWN); \
+	c->cameraLeft->setValue(f->P##NUM##Buttons & C_LEFT); \
+	c->cameraRight->setValue(f->P##NUM##Buttons & C_RIGHT); \
+	c->l->setValue(f->P##NUM##Buttons & L); \
+	c->r->setValue(f->P##NUM##Buttons & R); \
+	c->z->setValue(f->P##NUM##Buttons & Z); \
+	c->start->setValue(f->P##NUM##Buttons & START); \
+}
 
 EXPORT void FrameAdvance(MyFrameInfo* f)
 {
-	// handle input
+	UPDATE_CONTROLLER(1)
+	UPDATE_CONTROLLER(2)
+	UPDATE_CONTROLLER(3)
+	UPDATE_CONTROLLER(4)
+
+	platform.lagged = true;
+
 	root->run();
+
 	if (platform.newframe)
 	{
 		f->Width = platform.width;
@@ -129,6 +252,7 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 		}
 		platform.newframe = false;
 	}
+
 	s16* soundbuf = f->SoundBuffer;
 	while (platform.stream->pending())
 	{
@@ -138,10 +262,11 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 		*soundbuf++ = (s16)std::clamp(buf[1] * 32768, -32768.0, 32767.0);
 		f->Samples++;
 	}
-	// handle a/v and lag (somehow)
+
+	f->Lagged = platform.lagged;
 }
 
 EXPORT void SetInputCallback(void (*callback)())
 {
-	
+	platform.inputcb = callback;
 }
