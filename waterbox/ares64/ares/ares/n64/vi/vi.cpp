@@ -111,6 +111,8 @@ auto VI::refresh() -> void {
 
   printf("vi.io.colorDepth %d\n", vi.io.colorDepth);
   printf("vi.io.dramAddress %d\n", vi.io.dramAddress);
+  printf("h-res %d\n", (s32)(vi.io.hend - vi.io.hstart));
+  printf("h-start %d\n", vi.io.hstart);
 
   if(vi.io.colorDepth == 2) {
     //15bpp
