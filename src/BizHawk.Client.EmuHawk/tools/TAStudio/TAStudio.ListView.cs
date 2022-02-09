@@ -327,7 +327,7 @@ namespace BizHawk.Client.EmuHawk
 					int branchIndex = CurrentTasMovie.Branches.IndexOfFrame(index);
 					if (branchIndex != -1)
 					{
-						text = branchIndex.ToString();
+						text = (branchIndex + 1).ToString();
 					}
 				}
 				else if (columnName == FrameColumnName)
