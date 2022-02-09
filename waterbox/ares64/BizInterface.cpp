@@ -203,6 +203,9 @@ struct MyFrameInfo : public FrameInfo
 	Buttons_t P4Buttons;
 	s16 P4XAxis;
 	s16 P4YAxis;
+
+	bool Reset;
+	bool Power;
 };
 
 #define UPDATE_CONTROLLER(NUM) \
@@ -228,6 +231,15 @@ if (auto c = (ares::Nintendo64::Gamepad*)ares::Nintendo64::controllerPort##NUM.d
 
 EXPORT void FrameAdvance(MyFrameInfo* f)
 {
+	if (f->Power)
+	{
+		root->power();
+	}
+	else if (f->Reset)
+	{
+		root->reset();
+	}
+
 	UPDATE_CONTROLLER(1)
 	UPDATE_CONTROLLER(2)
 	UPDATE_CONTROLLER(3)
