@@ -112,7 +112,7 @@ auto VI::refresh() -> void {
   if(vi.io.colorDepth == 0 || io.dramAddress == 0 || (signed)(vi.io.hend - vi.io.hstart) <= 0 || vi.io.hstart >= 640) {
     //blank screen
     memory::fill<u32>(screen->pixels(1).data(), 640 * 576);
-	return;
+    return;
   }
 
   if(vi.io.colorDepth == 2) {
