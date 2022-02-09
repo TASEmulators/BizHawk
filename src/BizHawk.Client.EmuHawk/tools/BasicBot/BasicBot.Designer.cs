@@ -944,7 +944,6 @@ namespace BizHawk.Client.EmuHawk
 			this.StartFromSlotBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.StartFromSlotBox.FormattingEnabled = true;
 			this.StartFromSlotBox.Items.AddRange(new object[] {
-			"Slot 0",
 			"Slot 1",
 			"Slot 2",
 			"Slot 3",
@@ -953,7 +952,8 @@ namespace BizHawk.Client.EmuHawk
 			"Slot 6",
 			"Slot 7",
 			"Slot 8",
-			"Slot 9"});
+			"Slot 9",
+			"Slot 0"});
 			this.StartFromSlotBox.Location = new System.Drawing.Point(71, 25);
 			this.StartFromSlotBox.Name = "StartFromSlotBox";
 			this.StartFromSlotBox.Size = new System.Drawing.Size(75, 21);

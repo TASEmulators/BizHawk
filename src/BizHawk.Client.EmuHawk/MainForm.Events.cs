@@ -73,7 +73,6 @@ namespace BizHawk.Client.EmuHawk
 			void SetSlotFont(ToolStripMenuItemEx menu, int slot) => menu.SetStyle(
 				HasSlot(slot) ? (FontStyle.Italic | FontStyle.Bold) : FontStyle.Regular);
 
-			SetSlotFont(SaveState0MenuItem, 0);
 			SetSlotFont(SaveState1MenuItem, 1);
 			SetSlotFont(SaveState2MenuItem, 2);
 			SetSlotFont(SaveState3MenuItem, 3);
@@ -83,6 +82,7 @@ namespace BizHawk.Client.EmuHawk
 			SetSlotFont(SaveState7MenuItem, 7);
 			SetSlotFont(SaveState8MenuItem, 8);
 			SetSlotFont(SaveState9MenuItem, 9);
+			SetSlotFont(SaveState0MenuItem, 0);
 
 			SaveState1MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save State 1"].Bindings;
 			SaveState2MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save State 2"].Bindings;
@@ -127,7 +127,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveSlotSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			SelectSlot0MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 0"].Bindings;
 			SelectSlot1MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 1"].Bindings;
 			SelectSlot2MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 2"].Bindings;
 			SelectSlot3MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 3"].Bindings;
@@ -137,12 +136,12 @@ namespace BizHawk.Client.EmuHawk
 			SelectSlot7MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 7"].Bindings;
 			SelectSlot8MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 8"].Bindings;
 			SelectSlot9MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 9"].Bindings;
+			SelectSlot0MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 0"].Bindings;
 			PreviousSlotMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Previous Slot"].Bindings;
 			NextSlotMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Next Slot"].Bindings;
 			SaveToCurrentSlotMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Quick Save"].Bindings;
 			LoadCurrentSlotMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Quick Load"].Bindings;
 
-			SelectSlot0MenuItem.Checked = Config.SaveSlot == 0;
 			SelectSlot1MenuItem.Checked = Config.SaveSlot == 1;
 			SelectSlot2MenuItem.Checked = Config.SaveSlot == 2;
 			SelectSlot3MenuItem.Checked = Config.SaveSlot == 3;
@@ -152,6 +151,7 @@ namespace BizHawk.Client.EmuHawk
 			SelectSlot7MenuItem.Checked = Config.SaveSlot == 7;
 			SelectSlot8MenuItem.Checked = Config.SaveSlot == 8;
 			SelectSlot9MenuItem.Checked = Config.SaveSlot == 9;
+			SelectSlot0MenuItem.Checked = Config.SaveSlot == 0;
 		}
 
 		private void SaveRamSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -345,8 +345,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SelectSlotMenuItems_Click(object sender, EventArgs e)
 		{
-			if (sender == SelectSlot0MenuItem) Config.SaveSlot = 0;
-			else if (sender == SelectSlot1MenuItem) Config.SaveSlot = 1;
+			if (sender == SelectSlot1MenuItem) Config.SaveSlot = 1;
 			else if (sender == SelectSlot2MenuItem) Config.SaveSlot = 2;
 			else if (sender == SelectSlot3MenuItem) Config.SaveSlot = 3;
 			else if (sender == SelectSlot4MenuItem) Config.SaveSlot = 4;
@@ -355,6 +354,7 @@ namespace BizHawk.Client.EmuHawk
 			else if (sender == SelectSlot7MenuItem) Config.SaveSlot = 7;
 			else if (sender == SelectSlot8MenuItem) Config.SaveSlot = 8;
 			else if (sender == SelectSlot9MenuItem) Config.SaveSlot = 9;
+			else if (sender == SelectSlot0MenuItem) Config.SaveSlot = 0;
 
 			UpdateStatusSlots();
 			SaveSlotSelectedMessage();

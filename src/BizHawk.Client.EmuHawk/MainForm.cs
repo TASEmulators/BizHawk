@@ -2576,7 +2576,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_stateSlots.Update(Emulator, MovieSession.Movie, SaveStatePrefix());
 
-			Slot0StatusButton.ForeColor = SlotForeColor(0);
 			Slot1StatusButton.ForeColor = SlotForeColor(1);
 			Slot2StatusButton.ForeColor = SlotForeColor(2);
 			Slot3StatusButton.ForeColor = SlotForeColor(3);
@@ -2586,8 +2585,8 @@ namespace BizHawk.Client.EmuHawk
 			Slot7StatusButton.ForeColor = SlotForeColor(7);
 			Slot8StatusButton.ForeColor = SlotForeColor(8);
 			Slot9StatusButton.ForeColor = SlotForeColor(9);
+			Slot0StatusButton.ForeColor = SlotForeColor(0);
 
-			Slot0StatusButton.BackColor = SlotBackColor(0);
 			Slot1StatusButton.BackColor = SlotBackColor(1);
 			Slot2StatusButton.BackColor = SlotBackColor(2);
 			Slot3StatusButton.BackColor = SlotBackColor(3);
@@ -2597,9 +2596,9 @@ namespace BizHawk.Client.EmuHawk
 			Slot7StatusButton.BackColor = SlotBackColor(7);
 			Slot8StatusButton.BackColor = SlotBackColor(8);
 			Slot9StatusButton.BackColor = SlotBackColor(9);
+			Slot0StatusButton.BackColor = SlotBackColor(0);
 
 			SaveSlotsStatusLabel.Visible =
-				Slot0StatusButton.Visible =
 				Slot1StatusButton.Visible =
 				Slot2StatusButton.Visible =
 				Slot3StatusButton.Visible =
@@ -2609,7 +2608,8 @@ namespace BizHawk.Client.EmuHawk
 				Slot7StatusButton.Visible =
 				Slot8StatusButton.Visible =
 				Slot9StatusButton.Visible =
-				Emulator.HasSavestates();
+				Slot0StatusButton.Visible =
+					Emulator.HasSavestates();
 		}
 
 		public BitmapBuffer CaptureOSD()

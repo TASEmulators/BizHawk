@@ -606,7 +606,6 @@ namespace BizHawk.Client.EmuHawk
 			// SaveSlotSubMenu
 			// 
 			this.SaveSlotSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.SelectSlot0MenuItem,
 			this.SelectSlot1MenuItem,
 			this.SelectSlot2MenuItem,
 			this.SelectSlot3MenuItem,
@@ -616,6 +615,7 @@ namespace BizHawk.Client.EmuHawk
 			this.SelectSlot7MenuItem,
 			this.SelectSlot8MenuItem,
 			this.SelectSlot9MenuItem,
+			this.SelectSlot0MenuItem,
 			this.PreviousSlotMenuItem,
 			this.NextSlotMenuItem,
 			this.toolStripSeparator5,
