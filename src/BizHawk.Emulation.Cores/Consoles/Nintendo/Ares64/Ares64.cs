@@ -11,14 +11,14 @@ using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 {
-	[PortedCore(CoreNames.Ares64, "ares team/Near", "v126", "https://ares-emulator.github.io/")]
+	[PortedCore(CoreNames.Ares64, "ares team, Near", "v126", "https://ares-emulator.github.io/")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), })]
 	public partial class Ares64 : WaterboxCore, IRegionable
 	{
 		private readonly LibAres64 _core;
 
 		[CoreConstructor(VSystemID.Raw.N64, Priority = CorePriority.High )]
-		public Ares64(CoreLoadParameters<object, object> lp)
+		public Ares64(CoreLoadParameters<object, Ares64SyncSettings> lp)
 			: base(lp.Comm, new Configuration
 			{
 				DefaultWidth = 640,
@@ -31,6 +31,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 				SystemId = VSystemID.Raw.N64,
 			})
 		{
+			_syncSettings = lp.SyncSettings ?? new();
+
 			_core = PreInit<LibAres64>(new WaterboxOptions
 			{
 				Filename = "ares64.wbx",
@@ -38,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 				SealedHeapSizeKB = 4,
 				InvisibleHeapSizeKB = 6 * 1024,
 				PlainHeapSizeKB = 4,
-				MmapHeapSizeKB = 1024 * 1024,
+				MmapHeapSizeKB = 512 * 1024,
 				SkipCoreConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			});
@@ -53,12 +55,26 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 
 			var pal = Region == DisplayType.PAL;
 
+			if (pal)
+			{
+				VsyncNumerator = 50;
+				VsyncDenominator = 1;
+			}
+
 			var pif = Util.DecompressGzipFile(new MemoryStream(pal ? Resources.PIF_PAL_ROM.Value : Resources.PIF_NTSC_ROM.Value));
 
 			_exe.AddReadonlyFile(pif, pal ? "pif.pal.rom" : "pif.ntsc.rom");
 			_exe.AddReadonlyFile(rom, "program.rom");
 
-			if (!_core.Init(pal))
+			var controllers = new LibAres64.ControllerType[4]
+			{
+				_syncSettings.P1Controller,
+				_syncSettings.P2Controller,
+				_syncSettings.P3Controller,
+				_syncSettings.P4Controller,
+			};
+
+			if (!_core.Init(controllers, pal))
 			{
 				throw new InvalidOperationException("Init returned false!");
 			}
@@ -86,6 +102,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			return new LibAres64.FrameInfo
 			{
 			};
+		}
+
+		protected override void FrameAdvancePost()
+		{
+			if (BufferWidth == 0)
+			{
+				BufferWidth = BufferHeight == 239 ? 320 : 640;
+			}
 		}
 	}
 }
