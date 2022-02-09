@@ -26,7 +26,7 @@ namespace BizHawk.Client.Common
 			{
 				if (movie is ITasMovie tasMovie)
 				{
-					_slots[i] = i < tasMovie.Branches.Count;
+					_slots[(i + 1) % 10] = i < tasMovie.Branches.Count;
 				}
 				else
 				{

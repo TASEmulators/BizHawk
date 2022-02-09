@@ -110,7 +110,7 @@ namespace BizHawk.Client.EmuHawk
 
 			text = column.Name switch
 			{
-				BranchNumberColumnName => index.ToString(),
+				BranchNumberColumnName => (index + 1).ToString(),
 				FrameColumnName => Branches[index].Frame.ToString(),
 				UserTextColumnName => Branches[index].UserText,
 				_ => text
@@ -218,7 +218,7 @@ namespace BizHawk.Client.EmuHawk
 				Branches.Current = index;
 				LoadBranch(SelectedBranch);
 				BranchView.Refresh();
-				Tastudio.MainForm.AddOnScreenMessage($"Loaded branch {Branches.Current}");
+				Tastudio.MainForm.AddOnScreenMessage($"Loaded branch {Branches.Current + 1}");
 			}
 		}
 
@@ -237,7 +237,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Branch();
 			SavedCallback?.Invoke(Branches.Count - 1);
-			Tastudio.MainForm.AddOnScreenMessage($"Added branch {Branches.Current}");
+			Tastudio.MainForm.AddOnScreenMessage($"Added branch {Branches.Current + 1}");
 		}
 
 		private void AddBranchWithTexToolStripMenuItem_Click(object sender, EventArgs e)
@@ -245,7 +245,7 @@ namespace BizHawk.Client.EmuHawk
 			Branch();
 			EditBranchTextPopUp(Branches.Current);
 			SavedCallback?.Invoke(Branches.Count - 1);
-			Tastudio.MainForm.AddOnScreenMessage($"Added branch {Branches.Current}");
+			Tastudio.MainForm.AddOnScreenMessage($"Added branch {Branches.Current + 1}");
 		}
 
 		private void LoadBranchToolStripMenuItem_Click(object sender, EventArgs e)
@@ -290,7 +290,7 @@ namespace BizHawk.Client.EmuHawk
 			Branches.Replace(SelectedBranch, CreateBranch());
 			Tastudio.RefreshDialog();
 			SavedCallback?.Invoke(Branches.Current);
-			Tastudio.MainForm.AddOnScreenMessage($"Saved branch {Branches.Current}");
+			Tastudio.MainForm.AddOnScreenMessage($"Saved branch {Branches.Current + 1}");
 		}
 
 		private void EditBranchTextToolStripMenuItem_Click(object sender, EventArgs e)
@@ -312,7 +312,7 @@ namespace BizHawk.Client.EmuHawk
 				toolTip1.SetToolTip(UndoBranchButton, "Undo Branch Text Edit");
 				_branchUndo = BranchUndo.Text;
 
-				Tastudio.MainForm.AddOnScreenMessage($"Edited branch {index}");
+				Tastudio.MainForm.AddOnScreenMessage($"Edited branch {index + 1}");
 			}
 		}
 
@@ -342,7 +342,7 @@ namespace BizHawk.Client.EmuHawk
 				_backupBranch =  branches[index].Clone();
 				Branches.Remove(branches[index]);
 				RemovedCallback?.Invoke(index);
-				Tastudio.MainForm.AddOnScreenMessage($"Removed branch {index}");
+				Tastudio.MainForm.AddOnScreenMessage($"Removed branch {index + 1}");
 
 				if (index == Branches.Current)
 				{
@@ -529,7 +529,7 @@ namespace BizHawk.Client.EmuHawk
 		public void NonExistentBranchMessage(int slot)
 		{
 			string binding = Tastudio.Config.HotkeyBindings.First(x => x.DisplayName == "Add Branch").Bindings;
-			Tastudio.MainForm.AddOnScreenMessage($"Branch {slot} does not exist");
+			Tastudio.MainForm.AddOnScreenMessage($"Branch {slot + 1} does not exist");
 			Tastudio.MainForm.AddOnScreenMessage($"Use {binding} to add branches");
 		}
 
@@ -573,7 +573,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var i = new InputPrompt
 			{
-				Text = $"Text for branch {index}",
+				Text = $"Text for branch {index + 1}",
 				TextInputType = InputPrompt.InputType.Text,
 				Message = "Enter a message",
 				InitialValue = branch.UserText

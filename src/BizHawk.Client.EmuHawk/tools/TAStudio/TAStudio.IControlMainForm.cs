@@ -32,17 +32,17 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SaveQuickSave(int slot)
 		{
-			BookMarkControl.UpdateBranchExternal(slot);
+			BookMarkControl.UpdateBranchExternal(slot is 0 ? 9 : slot - 1);
 		}
 
 		public void LoadQuickSave(int slot)
 		{
-			BookMarkControl.LoadBranchExternal(slot);
+			BookMarkControl.LoadBranchExternal(slot is 0 ? 9 : slot - 1);
 		}
 
 		public bool SelectSlot(int slot)
 		{
-			BookMarkControl.SelectBranchExternal(slot);
+			BookMarkControl.SelectBranchExternal(slot is 0 ? 9 : slot - 1);
 			return false;
 		}
 
