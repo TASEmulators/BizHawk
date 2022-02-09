@@ -87,6 +87,15 @@ auto BizPlatform::input(ares::Node::Input::Input node) -> void
 static ares::Node::System root;
 static BizPlatform platform;
 
+static inline void HackAroundCrash()
+{
+	root->run();
+	root->run();
+	platform.newframe = false;
+	f64 buf[2];
+	while (platform.stream->pending()) platform.stream->read(buf);
+}
+
 EXPORT bool Init(ControllerType* controllers, bool pal)
 {
 	FILE* f;
@@ -168,11 +177,7 @@ EXPORT bool Init(ControllerType* controllers, bool pal)
 	}
 
 	root->power(false);
-	root->run();
-	root->run();
-	platform.newframe = false;
-	f64 buf[2];
-	while (platform.stream->pending()) platform.stream->read(buf);
+	HackAroundCrash();
 	return true;
 }
 
@@ -234,15 +239,12 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 	if (f->Power)
 	{
 		root->power(false);
-		root->run();
-		root->run();
-		platform.newframe = false;
-		f64 buf[2];
-		while (platform.stream->pending()) platform.stream->read(buf);
+		HackAroundCrash();
 	}
 	else if (f->Reset)
 	{
 		root->power(true);
+		HackAroundCrash();
 	}
 
 	UPDATE_CONTROLLER(1)
