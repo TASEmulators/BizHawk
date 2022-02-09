@@ -167,7 +167,7 @@ EXPORT bool Init(ControllerType* controllers, bool pal)
 		}
 	}
 
-	root->power();
+	root->power(false);
 	root->run();
 	root->run();
 	platform.newframe = false;
@@ -233,11 +233,16 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 {
 	if (f->Power)
 	{
-		root->power();
+		root->power(false);
+		root->run();
+		root->run();
+		platform.newframe = false;
+		f64 buf[2];
+		while (platform.stream->pending()) platform.stream->read(buf);
 	}
 	else if (f->Reset)
 	{
-		root->reset();
+		root->power(true);
 	}
 
 	UPDATE_CONTROLLER(1)
