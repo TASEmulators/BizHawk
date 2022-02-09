@@ -600,7 +600,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// AutoloadLastSlotMenuItem
 			// 
-			this.AutoloadLastSlotMenuItem.Text = "Autoload last Slot";
+			this.AutoloadLastSlotMenuItem.Text = "Autoload Last Slot";
 			this.AutoloadLastSlotMenuItem.Click += new System.EventHandler(this.AutoloadLastSlotMenuItem_Click);
 			// 
 			// SaveSlotSubMenu
