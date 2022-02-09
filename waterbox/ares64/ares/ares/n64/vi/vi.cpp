@@ -109,10 +109,11 @@ auto VI::refresh() -> void {
   u32 height = vi.io.yscale <= 0x400 ? 239 : 478;
   screen->setViewport(0, 0, width, height);
 
-  printf("vi.io.colorDepth %d\n", vi.io.colorDepth);
-  printf("vi.io.dramAddress %d\n", vi.io.dramAddress);
-  printf("h-res %d\n", (s32)(vi.io.hend - vi.io.hstart));
-  printf("h-start %d\n", vi.io.hstart);
+  if(vi.io.colorDepth == 0 || io.dramAddress == 0 || (signed)(vi.io.hend - vi.io.hstart) <= 0 || vi.io.hstart >= 640) {
+    //blank screen
+    memory::fill<u32>(screen->pixels(1).data(), 640 * 576);
+	return;
+  }
 
   if(vi.io.colorDepth == 2) {
     //15bpp
