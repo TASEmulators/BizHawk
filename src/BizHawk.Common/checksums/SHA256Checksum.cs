@@ -7,6 +7,7 @@ using BizHawk.Common.BufferExtensions;
 namespace BizHawk.Common
 {
 	/// <summary>uses <see cref="SHA256"/> implementation from BCL</summary>
+	/// <seealso cref="CRC32Checksum"/>
 	/// <seealso cref="MD5Checksum"/>
 	/// <seealso cref="SHA1Checksum"/>
 	public static class SHA256Checksum

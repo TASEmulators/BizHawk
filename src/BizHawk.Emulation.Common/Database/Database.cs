@@ -220,7 +220,7 @@ namespace BizHawk.Emulation.Common
 		{
 			acquire.WaitOne();
 
-			var hashCRC32 = CRC32.Calculate(romData).ToString("X8");
+			var hashCRC32 = CRC32Checksum.ComputeDigestHex(romData);
 			if (DB.TryGetValue(hashCRC32, out var cgi))
 			{
 				return new GameInfo(cgi);
