@@ -34,11 +34,11 @@ typedef enum
 struct BizPlatform : ares::Platform
 {
 	auto attach(ares::Node::Object) -> void override;
-	auto pak(ares::Node::Object) -> shared_pointer<vfs::directory> override;
+	auto pak(ares::Node::Object) -> ares::VFS::Pak override;
 	auto video(ares::Node::Video::Screen, const u32*, u32, u32, u32) -> void override;
 	auto input(ares::Node::Input::Input) -> void override;
 
-	shared_pointer<vfs::directory> bizpak = new vfs::directory;
+	ares::VFS::Pak bizpak;
 	ares::Node::Audio::Stream stream = nullptr;
 	u32* videobuf = nullptr;
 	u32 pitch = 0;
@@ -58,7 +58,7 @@ auto BizPlatform::attach(ares::Node::Object node) -> void
 	}
 }
 
-auto BizPlatform::pak(ares::Node::Object) -> shared_pointer<vfs::directory>
+auto BizPlatform::pak(ares::Node::Object) -> ares::VFS::Pak
 {
 	return bizpak;
 }
@@ -125,6 +125,15 @@ EXPORT bool Init(ControllerType* controllers, bool pal)
 
 	string region = pal ? "PAL" : "NTSC";
 	platform.bizpak->setAttribute("region", region);
+
+	string cic = pal ? "CIC-NUS-7101" : "CIC-NUS-6102";
+	u32 crc32 = Hash::CRC32({&((u8*)data->data())[0x40], 0x9c0}).value();
+	if (crc32 == 0x1DEB51A9) cic = pal ? "CIC-NUS-7102" : "CIC-NUS-6101";
+	if (crc32 == 0xC08E5BD6) cic = pal ? "CIC-NUS-7101" : "CIC-NUS-6102";
+	if (crc32 == 0x03B8376A) cic = pal ? "CIC-NUS-7103" : "CIC-NUS-6103";
+	if (crc32 == 0xCF7F41DC) cic = pal ? "CIC-NUS-7105" : "CIC-NUS-6105";
+	if (crc32 == 0xD1059C6A) cic = pal ? "CIC-NUS-7106" : "CIC-NUS-6106";
+	platform.bizpak->setAttribute("cic", cic);
 
 	ares::platform = &platform;
 
