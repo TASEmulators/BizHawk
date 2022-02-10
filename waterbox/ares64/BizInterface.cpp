@@ -483,7 +483,7 @@ struct MyFrameInfo : public FrameInfo
 
 	bool Reset;
 	bool Power;
-};
+} __attribute__((packed));
 
 #define UPDATE_CONTROLLER(NUM) do { \
 	if (auto c = (ares::Nintendo64::Gamepad*)ares::Nintendo64::controllerPort##NUM.device.data()) \
