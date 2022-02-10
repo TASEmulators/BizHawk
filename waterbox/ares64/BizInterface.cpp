@@ -417,6 +417,9 @@ EXPORT bool Init(ControllerType* controllers, bool pal)
 
 	root->power(false);
 	HackeryDoo();
+	printf("sizeof (Buttons_t) is %d\n", sizeof (Buttons_t));
+	printf("sizeof (s16) is %d\n", sizeof (s16));
+	printf("sizeof (bool) is %d\n", sizeof (bool));
 	return true;
 }
 
