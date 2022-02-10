@@ -87,18 +87,227 @@ auto BizPlatform::input(ares::Node::Input::Input node) -> void
 static ares::Node::System root;
 static BizPlatform platform;
 
-static inline void HackAroundCrash()
+static inline void HackeryDoo()
 {
-	f64 buf[2];
-	u32 ns = 0;
 	root->run();
-	while (platform.stream->pending()) { platform.stream->read(buf); ns++; }
-	printf("%d\n", ns);
 	root->run();
-	ns = 0;
-	while (platform.stream->pending()) { platform.stream->read(buf); ns++; }
-	printf("%d\n", ns);
 	platform.newframe = false;
+	f64 buf[2];
+	while (platform.stream->pending()) platform.stream->read(buf);
+}
+
+typedef enum
+{
+	NONE,
+	EEPROM512,
+	EEPROM2KB,
+	SRAM32KB,
+	SRAM96KB,
+	FLASH128KB,
+} SaveType;
+
+static inline SaveType DetectSaveType(u8* rom)
+{
+	string id;
+	id.append((char)rom[0x3B]);
+	id.append((char)rom[0x3C]);
+	id.append((char)rom[0x3D]);
+
+	char region_code = rom[0x3E];
+	u8 revision = rom[0x3F];
+
+	SaveType ret = NONE;
+	//512B EEPROM
+	if (id == "NTW") ret = EEPROM512;
+	if (id == "NHF") ret = EEPROM512;
+	if (id == "NOS") ret = EEPROM512;
+	if (id == "NTC") ret = EEPROM512;
+	if (id == "NER") ret = EEPROM512;
+	if (id == "NAG") ret = EEPROM512;
+	if (id == "NAB") ret = EEPROM512;
+	if (id == "NS3") ret = EEPROM512;
+	if (id == "NTN") ret = EEPROM512;
+	if (id == "NBN") ret = EEPROM512;
+	if (id == "NBK") ret = EEPROM512;
+	if (id == "NFH") ret = EEPROM512;
+	if (id == "NMU") ret = EEPROM512;
+	if (id == "NBC") ret = EEPROM512;
+	if (id == "NBH") ret = EEPROM512;
+	if (id == "NHA") ret = EEPROM512;
+	if (id == "NBM") ret = EEPROM512;
+	if (id == "NBV") ret = EEPROM512;
+	if (id == "NBD") ret = EEPROM512;
+	if (id == "NCT") ret = EEPROM512;
+	if (id == "NCH") ret = EEPROM512;
+	if (id == "NCG") ret = EEPROM512;
+	if (id == "NP2") ret = EEPROM512;
+	if (id == "NXO") ret = EEPROM512;
+	if (id == "NCU") ret = EEPROM512;
+	if (id == "NCX") ret = EEPROM512;
+	if (id == "NDY") ret = EEPROM512;
+	if (id == "NDQ") ret = EEPROM512;
+	if (id == "NDR") ret = EEPROM512;
+	if (id == "NN6") ret = EEPROM512;
+	if (id == "NDU") ret = EEPROM512;
+	if (id == "NJM") ret = EEPROM512;
+	if (id == "NFW") ret = EEPROM512;
+	if (id == "NF2") ret = EEPROM512;
+	if (id == "NKA") ret = EEPROM512;
+	if (id == "NFG") ret = EEPROM512;
+	if (id == "NGL") ret = EEPROM512;
+	if (id == "NGV") ret = EEPROM512;
+	if (id == "NGE") ret = EEPROM512;
+	if (id == "NHP") ret = EEPROM512;
+	if (id == "NPG") ret = EEPROM512;
+	if (id == "NIJ") ret = EEPROM512;
+	if (id == "NIC") ret = EEPROM512;
+	if (id == "NFY") ret = EEPROM512;
+	if (id == "NKI") ret = EEPROM512;
+	if (id == "NLL") ret = EEPROM512;
+	if (id == "NLR") ret = EEPROM512;
+	if (id == "NKT") ret = EEPROM512;
+	if (id == "CLB") ret = EEPROM512;
+	if (id == "NLB") ret = EEPROM512;
+	if (id == "NMW") ret = EEPROM512;
+	if (id == "NML") ret = EEPROM512;
+	if (id == "NTM") ret = EEPROM512;
+	if (id == "NMI") ret = EEPROM512;
+	if (id == "NMG") ret = EEPROM512;
+	if (id == "NMO") ret = EEPROM512;
+	if (id == "NMS") ret = EEPROM512;
+	if (id == "NMR") ret = EEPROM512;
+	if (id == "NCR") ret = EEPROM512;
+	if (id == "NEA") ret = EEPROM512;
+	if (id == "NPW") ret = EEPROM512;
+	if (id == "NPM") ret = EEPROM512;
+	if (id == "NPY") ret = EEPROM512;
+	if (id == "NPT") ret = EEPROM512;
+	if (id == "NRA") ret = EEPROM512;
+	if (id == "NWQ") ret = EEPROM512;
+	if (id == "NSU") ret = EEPROM512;
+	if (id == "NSN") ret = EEPROM512;
+	if (id == "NK2") ret = EEPROM512;
+	if (id == "NSV") ret = EEPROM512;
+	if (id == "NFX") ret = EEPROM512;
+	if (id == "NFP") ret = EEPROM512;
+	if (id == "NS6") ret = EEPROM512;
+	if (id == "NNA") ret = EEPROM512;
+	if (id == "NRS") ret = EEPROM512;
+	if (id == "NSW") ret = EEPROM512;
+	if (id == "NSC") ret = EEPROM512;
+	if (id == "NSA") ret = EEPROM512;
+	if (id == "NB6") ret = EEPROM512;
+	if (id == "NSM") ret = EEPROM512;
+	if (id == "NSS") ret = EEPROM512;
+	if (id == "NTX") ret = EEPROM512;
+	if (id == "NT6") ret = EEPROM512;
+	if (id == "NTP") ret = EEPROM512;
+	if (id == "NTJ") ret = EEPROM512;
+	if (id == "NRC") ret = EEPROM512;
+	if (id == "NTR") ret = EEPROM512;
+	if (id == "NTB") ret = EEPROM512;
+	if (id == "NGU") ret = EEPROM512;
+	if (id == "NIR") ret = EEPROM512;
+	if (id == "NVL") ret = EEPROM512;
+	if (id == "NVY") ret = EEPROM512;
+	if (id == "NWR") ret = EEPROM512;
+	if (id == "NWC") ret = EEPROM512;
+	if (id == "NAD") ret = EEPROM512;
+	if (id == "NWU") ret = EEPROM512;
+	if (id == "NYK") ret = EEPROM512;
+	if (id == "NMZ") ret = EEPROM512;
+	if (id == "NDK" && region_code == 'J') ret = EEPROM512;
+	if (id == "NWT" && region_code == 'J') ret = EEPROM512;
+
+	if (id == "NB7") ret = EEPROM2KB;
+	if (id == "NGT") ret = EEPROM2KB;
+	if (id == "NFU") ret = EEPROM2KB;
+	if (id == "NCW") ret = EEPROM2KB;
+	if (id == "NCZ") ret = EEPROM2KB;
+	if (id == "ND6") ret = EEPROM2KB;
+	if (id == "NDO") ret = EEPROM2KB;
+	if (id == "ND2") ret = EEPROM2KB;
+	if (id == "N3D") ret = EEPROM2KB;
+	if (id == "NMX") ret = EEPROM2KB;
+	if (id == "NGC") ret = EEPROM2KB;
+	if (id == "NIM") ret = EEPROM2KB;
+	if (id == "NK4") ret = EEPROM2KB;
+	if (id == "NNB") ret = EEPROM2KB;
+	if (id == "NMV") ret = EEPROM2KB;
+	if (id == "NM8") ret = EEPROM2KB;
+	if (id == "NEV") ret = EEPROM2KB;
+	if (id == "NPP") ret = EEPROM2KB;
+	if (id == "NUB") ret = EEPROM2KB;
+	if (id == "NPD") ret = EEPROM2KB;
+	if (id == "NRZ") ret = EEPROM2KB;
+	if (id == "NR7") ret = EEPROM2KB;
+	if (id == "NEP") ret = EEPROM2KB;
+	if (id == "NYS") ret = EEPROM2KB;
+	if (id == "ND3" && region_code == 'J') ret = EEPROM2KB;
+	if (id == "ND4" && region_code == 'J') ret = EEPROM2KB;
+
+	if (id == "NTE") ret = SRAM32KB;
+	if (id == "NVB") ret = SRAM32KB;
+	if (id == "CFZ") ret = SRAM32KB;
+	if (id == "NFZ") ret = SRAM32KB;
+	if (id == "NSI") ret = SRAM32KB;
+	if (id == "NG6") ret = SRAM32KB;
+	if (id == "N3H") ret = SRAM32KB;
+	if (id == "NGP") ret = SRAM32KB;
+	if (id == "NYW") ret = SRAM32KB;
+	if (id == "NHY") ret = SRAM32KB;
+	if (id == "NIB") ret = SRAM32KB;
+	if (id == "NPS") ret = SRAM32KB;
+	if (id == "NPA") ret = SRAM32KB;
+	if (id == "NP4") ret = SRAM32KB;
+	if (id == "NJ5") ret = SRAM32KB;
+	if (id == "NP6") ret = SRAM32KB;
+	if (id == "NPE") ret = SRAM32KB;
+	if (id == "NJG") ret = SRAM32KB;
+	if (id == "CZL") ret = SRAM32KB;
+	if (id == "NZL") ret = SRAM32KB;
+	if (id == "NKG") ret = SRAM32KB;
+	if (id == "NMF") ret = SRAM32KB;
+	if (id == "NRI") ret = SRAM32KB;
+	if (id == "NUT") ret = SRAM32KB;
+	if (id == "NUM") ret = SRAM32KB;
+	if (id == "NOB") ret = SRAM32KB;
+	if (id == "CPS") ret = SRAM32KB;
+	if (id == "NB5") ret = SRAM32KB;
+	if (id == "NRE") ret = SRAM32KB;
+	if (id == "NAL") ret = SRAM32KB;
+	if (id == "NT3") ret = SRAM32KB;
+	if (id == "NS4") ret = SRAM32KB;
+	if (id == "NA2") ret = SRAM32KB;
+	if (id == "NVP") ret = SRAM32KB;
+	if (id == "NWL") ret = SRAM32KB;
+	if (id == "NW2") ret = SRAM32KB;
+	if (id == "NWX") ret = SRAM32KB;
+	if (id == "NK4" && region_code == 'J' && revision < 2) ret = SRAM32KB;
+
+	if (id == "CDZ") ret = SRAM96KB;
+
+	if (id == "NCC") ret = FLASH128KB;
+	if (id == "NDA") ret = FLASH128KB;
+	if (id == "NAF") ret = FLASH128KB;
+	if (id == "NJF") ret = FLASH128KB;
+	if (id == "NKJ") ret = FLASH128KB;
+	if (id == "NZS") ret = FLASH128KB;
+	if (id == "NM6") ret = FLASH128KB;
+	if (id == "NCK") ret = FLASH128KB;
+	if (id == "NMQ") ret = FLASH128KB;
+	if (id == "NPN") ret = FLASH128KB;
+	if (id == "NPF") ret = FLASH128KB;
+	if (id == "NPO") ret = FLASH128KB;
+	if (id == "CP2") ret = FLASH128KB;
+	if (id == "NP3") ret = FLASH128KB;
+	if (id == "NRH") ret = FLASH128KB;
+	if (id == "NSQ") ret = FLASH128KB;
+	if (id == "NT9") ret = FLASH128KB;
+	if (id == "NW4") ret = FLASH128KB;
+	if (id == "NDP") ret = FLASH128KB;
+
+	return ret;
 }
 
 EXPORT bool Init(ControllerType* controllers, bool pal)
@@ -139,6 +348,23 @@ EXPORT bool Init(ControllerType* controllers, bool pal)
 	if (crc32 == 0xCF7F41DC) cic = pal ? "CIC-NUS-7105" : "CIC-NUS-6105";
 	if (crc32 == 0xD1059C6A) cic = pal ? "CIC-NUS-7106" : "CIC-NUS-6106";
 	platform.bizpak->setAttribute("cic", cic);
+
+	SaveType save = DetectSaveType((u8*)data->data());
+	if (save != NONE)
+	{
+		switch (save)
+		{
+			case EEPROM512: len = 512; name = "save.eeprom"; break;
+			case EEPROM2KB: len = 2 * 1024; name = "save.eeprom"; break;
+			case SRAM32KB: len = 32 * 1024; name = "save.ram"; break;
+			case SRAM96KB: len = 96 * 1024; name = "save.ram"; break;
+			case FLASH128KB: len = 128 * 1024; name = "save.flash"; break;
+			default: return false;
+		}
+		data = new array_view<u8>(new u8[len], len);
+		memset((void*)data->data(), 0xFF, len);
+		platform.bizpak->append(name, *data);
+	}
 
 	ares::platform = &platform;
 
@@ -191,7 +417,7 @@ EXPORT bool Init(ControllerType* controllers, bool pal)
 	}
 
 	root->power(false);
-	HackAroundCrash();
+	HackeryDoo();
 	return true;
 }
 
@@ -253,12 +479,12 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 	if (f->Power)
 	{
 		root->power(false);
-		HackAroundCrash();
+		HackeryDoo();
 	}
 	else if (f->Reset)
 	{
 		root->power(true);
-		HackAroundCrash();
+		HackeryDoo();
 	}
 
 	UPDATE_CONTROLLER(1)
@@ -270,18 +496,17 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 
 	root->run();
 
+	f->Width = platform.width;
+	f->Height = platform.height;
 	if (platform.newframe)
 	{
-		f->Width = platform.width;
-		f->Height = platform.height;
-		u32 pitch = platform.pitch;
 		u32* src = platform.videobuf;
 		u32* dst = f->VideoBuffer;
 		for (int i = 0; i < f->Height; i++)
 		{
 			memcpy(dst, src, f->Width * 4);
 			dst += f->Width;
-			src += pitch;
+			src += platform.pitch;
 		}
 		platform.newframe = false;
 	}
