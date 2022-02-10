@@ -38,7 +38,7 @@ struct BizPlatform : ares::Platform
 	auto video(ares::Node::Video::Screen, const u32*, u32, u32, u32) -> void override;
 	auto input(ares::Node::Input::Input) -> void override;
 
-	ares::VFS::Pak bizpak;
+	ares::VFS::Pak bizpak = new vfs::directory;
 	ares::Node::Audio::Stream stream = nullptr;
 	u32* videobuf = nullptr;
 	u32 pitch = 0;
