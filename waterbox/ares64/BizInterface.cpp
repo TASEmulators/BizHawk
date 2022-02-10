@@ -509,9 +509,9 @@ struct MyFrameInfo : public FrameInfo
 
 EXPORT void FrameAdvance(MyFrameInfo* f)
 {
-	printf("%p\n", &f->P1Buttons);
-	printf("%p\n", &f->P1XAxis);
-	printf("%p\n", &f->P1YAxis);
+	printf("%d\n", (int)f->P1Buttons);
+	printf("%d\n", (int)f->P1XAxis);
+	printf("%d\n", (int)f->P1YAxis);
 	if (f->Power)
 	{
 		root->power(false);
