@@ -483,7 +483,7 @@ struct MyFrameInfo : public FrameInfo
 
 	bool Reset;
 	bool Power;
-} __attribute__((packed));
+};
 
 #define UPDATE_CONTROLLER(NUM) do { \
 	if (auto c = (ares::Nintendo64::Gamepad*)ares::Nintendo64::controllerPort##NUM.device.data()) \
@@ -509,7 +509,9 @@ struct MyFrameInfo : public FrameInfo
 
 EXPORT void FrameAdvance(MyFrameInfo* f)
 {
-	printf("%d\n", sizeof (MyFrameInfo));
+	printf("%p\n", &f->P1Buttons);
+	printf("%p\n", &f->P1XAxis);
+	printf("%p\n", &f->P1YAxis);
 	if (f->Power)
 	{
 		root->power(false);
