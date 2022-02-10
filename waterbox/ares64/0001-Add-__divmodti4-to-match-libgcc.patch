@@ -1,0 +1,182 @@
+From c9af34027bc9cb852a4e5e96154a7bd89531a6de Mon Sep 17 00:00:00 2001
+From: Craig Topper <craig.topper@intel.com>
+Date: Wed, 16 Sep 2020 21:56:01 -0700
+Subject: [PATCH] Add __divmodti4 to match libgcc.
+
+gcc has used this on x86-64 since at least version 7.
+
+Reviewed By: MaskRay
+
+Differential Revision: https://reviews.llvm.org/D80506
+---
+ compiler-rt/lib/builtins/CMakeLists.txt       |  1 +
+ compiler-rt/lib/builtins/README.txt           |  2 +
+ compiler-rt/lib/builtins/divmodti4.c          | 32 +++++++
+ .../test/builtins/Unit/divmodti4_test.c       | 91 +++++++++++++++++++
+ 4 files changed, 126 insertions(+)
+ create mode 100644 compiler-rt/lib/builtins/divmodti4.c
+ create mode 100644 compiler-rt/test/builtins/Unit/divmodti4_test.c
+
+diff --git a/compiler-rt/lib/builtins/CMakeLists.txt b/compiler-rt/lib/builtins/CMakeLists.txt
+index 8dbe15364ab8..3c50df179764 100644
+--- a/compiler-rt/lib/builtins/CMakeLists.txt
++++ b/compiler-rt/lib/builtins/CMakeLists.txt
+@@ -71,6 +71,7 @@ set(GENERIC_SOURCES
+   divdi3.c
+   divmoddi4.c
+   divmodsi4.c
++  divmodti4.c
+   divsc3.c
+   divsf3.c
+   divsi3.c
+diff --git a/compiler-rt/lib/builtins/README.txt b/compiler-rt/lib/builtins/README.txt
+index f9e1bc805092..d66d725e7ab5 100644
+--- a/compiler-rt/lib/builtins/README.txt
++++ b/compiler-rt/lib/builtins/README.txt
+@@ -87,6 +87,8 @@ du_int __udivmoddi4(du_int a, du_int b, du_int* rem);  // a / b, *rem = a % b  u
+ tu_int __udivmodti4(tu_int a, tu_int b, tu_int* rem);  // a / b, *rem = a % b  unsigned
+ su_int __udivmodsi4(su_int a, su_int b, su_int* rem);  // a / b, *rem = a % b  unsigned
+ si_int __divmodsi4(si_int a, si_int b, si_int* rem);   // a / b, *rem = a % b  signed
++di_int __divmoddi4(di_int a, di_int b, di_int* rem);   // a / b, *rem = a % b  signed
++ti_int __divmodti4(ti_int a, ti_int b, ti_int* rem);   // a / b, *rem = a % b  signed
+ 
+ 
+ 
+diff --git a/compiler-rt/lib/builtins/divmodti4.c b/compiler-rt/lib/builtins/divmodti4.c
+new file mode 100644
+index 000000000000..b243ba4ef853
+--- /dev/null
++++ b/compiler-rt/lib/builtins/divmodti4.c
+@@ -0,0 +1,32 @@
++//===-- divmodti4.c - Implement __divmodti4 -------------------------------===//
++//
++// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
++// See https://llvm.org/LICENSE.txt for license information.
++// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
++//
++//===----------------------------------------------------------------------===//
++//
++// This file implements __divmodti4 for the compiler_rt library.
++//
++//===----------------------------------------------------------------------===//
++
++#include "int_lib.h"
++
++#ifdef CRT_HAS_128BIT
++
++// Returns: a / b, *rem = a % b
++
++COMPILER_RT_ABI ti_int __divmodti4(ti_int a, ti_int b, ti_int *rem) {
++  const int bits_in_tword_m1 = (int)(sizeof(ti_int) * CHAR_BIT) - 1;
++  ti_int s_a = a >> bits_in_tword_m1;                   // s_a = a < 0 ? -1 : 0
++  ti_int s_b = b >> bits_in_tword_m1;                   // s_b = b < 0 ? -1 : 0
++  a = (a ^ s_a) - s_a;                                  // negate if s_a == -1
++  b = (b ^ s_b) - s_b;                                  // negate if s_b == -1
++  s_b ^= s_a;                                           // sign of quotient
++  tu_int r;
++  ti_int q = (__udivmodti4(a, b, &r) ^ s_b) - s_b;      // negate if s_b == -1
++  *rem = (r ^ s_a) - s_a;                               // negate if s_a == -1
++  return q;
++}
++
++#endif // CRT_HAS_128BIT
+diff --git a/compiler-rt/test/builtins/Unit/divmodti4_test.c b/compiler-rt/test/builtins/Unit/divmodti4_test.c
+new file mode 100644
+index 000000000000..a9f70dcf1c1e
+--- /dev/null
++++ b/compiler-rt/test/builtins/Unit/divmodti4_test.c
+@@ -0,0 +1,91 @@
++// RUN: %clang_builtins %s %librt -o %t && %run %t
++// REQUIRES: librt_has_divmodti4
++// REQUIRES: int128
++//===-- divmodti4_test.c - Test __divmodti4 -------------------------------===//
++//
++// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
++// See https://llvm.org/LICENSE.txt for license information.
++// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
++//
++//===----------------------------------------------------------------------===//
++//
++// This file tests __divmodti4 for the compiler_rt library.
++//
++//===----------------------------------------------------------------------===//
++
++#include "int_lib.h"
++#include <stdio.h>
++
++#ifdef CRT_HAS_128BIT
++
++// Effects: if rem != 0, *rem = a % b
++// Returns: a / b
++
++COMPILER_RT_ABI ti_int __divmodti4(ti_int a, ti_int b, ti_int* rem);
++
++int test__divmodti4(ti_int a, ti_int b, ti_int expected_q, ti_int expected_r) {
++    ti_int r;
++    ti_int q = __divmodti4(a, b, &r);
++    if (q != expected_q || r != expected_r)
++    {
++        utwords at;
++        at.all = a;
++        utwords bt;
++        bt.all = b;
++        utwords expected_qt;
++        expected_qt.all = expected_q;
++        utwords expected_rt;
++        expected_rt.all = expected_r;
++        utwords qt;
++        qt.all = q;
++        utwords rt;
++        rt.all = r;
++        printf("error in __divmodti4: 0x%.16llX%.16llX / 0x%.16llX%.16llX = "
++               "0x%.16llX%.16llX, R = 0x%.16llX%.16llX, expected 0x%.16llX%.16llX, "
++               "0x%.16llX%.16llX\n",
++               at.s.high, at.s.low, bt.s.high, bt.s.low, qt.s.high, qt.s.low,
++               rt.s.high, rt.s.low, expected_qt.s.high, expected_qt.s.low,
++               expected_rt.s.high, expected_rt.s.low);
++    }
++    return !(q == expected_q && r == expected_r);
++}
++
++char assumption_1[sizeof(ti_int) == 2*sizeof(di_int)] = {0};
++
++tu_int tests[][4] =
++{
++{ (ti_int) 0,                             (ti_int) 1, (ti_int) 0,                                                (ti_int) 0 },
++{ (ti_int) 0,                             (ti_int)-1, (ti_int) 0,                                                (ti_int) 0 },
++{ (ti_int) 2,                             (ti_int) 1, (ti_int) 2,                                                (ti_int) 0 },
++{ (ti_int) 2,                             (ti_int)-1, (ti_int)-2,                                                (ti_int) 0 },
++{ (ti_int)-2,                             (ti_int) 1, (ti_int)-2,                                                (ti_int) 0 },
++{ (ti_int)-2,                             (ti_int)-1, (ti_int) 2,                                                (ti_int) 0 },
++{ (ti_int) 5,                             (ti_int) 3, (ti_int) 1,                                                (ti_int) 2 },
++{ (ti_int) 5,                             (ti_int)-3, (ti_int)-1,                                                (ti_int) 2 },
++{ (ti_int)-5,                             (ti_int) 3, (ti_int)-1,                                                (ti_int)-2 },
++{ (ti_int)-5,                             (ti_int)-3, (ti_int) 1,                                                (ti_int)-2 },
++{ (ti_int)0x8000000000000000LL << 64 | 0, (ti_int) 1, (ti_int)0x8000000000000000LL << 64 | 0,                    (ti_int)0x0LL },
++{ (ti_int)0x8000000000000000LL << 64 | 0, (ti_int)-1, (ti_int)0x8000000000000000LL << 64 | 0,                    (ti_int)0x0LL },
++{ (ti_int)0x8000000000000000LL << 64 | 0, (ti_int)-2, (ti_int)0x4000000000000000LL << 64 | 0,                    (ti_int)0x0LL },
++{ (ti_int)0x8000000000000000LL << 64 | 0, (ti_int) 2, (ti_int)0xC000000000000000LL << 64 | 0,                    (ti_int)0x0LL },
++{ (ti_int)0x8000000000000000LL << 64 | 0, (ti_int)-3, (ti_int)0x2AAAAAAAAAAAAAAALL << 64 | 0xAAAAAAAAAAAAAAAALL, (ti_int)-2 },
++{ (ti_int)0x8000000000000000LL << 64 | 0, (ti_int) 3, (ti_int)0xD555555555555555LL << 64 | 0x5555555555555556LL, (ti_int)-2 },
++};
++
++#endif
++
++int main()
++{
++#ifdef CRT_HAS_128BIT
++    const unsigned N = sizeof(tests) / sizeof(tests[0]);
++    unsigned i;
++    for (i = 0; i < N; ++i)
++        if (test__divmodti4(tests[i][0], tests[i][1], tests[i][2], tests[i][3]))
++            return 1;
++
++
++#else
++    printf("skipped\n");
++#endif
++    return 0;
++}
+-- 
+2.25.1
+
