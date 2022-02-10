@@ -89,11 +89,16 @@ static BizPlatform platform;
 
 static inline void HackAroundCrash()
 {
-	root->run();
-	root->run();
-	platform.newframe = false;
 	f64 buf[2];
-	while (platform.stream->pending()) platform.stream->read(buf);
+	u32 ns = 0;
+	root->run();
+	while (platform.stream->pending()) { platform.stream->read(buf); ns++; }
+	printf("%d\n", ns);
+	root->run();
+	ns = 0;
+	while (platform.stream->pending()) { platform.stream->read(buf); ns++; }
+	printf("%d\n", ns);
+	platform.newframe = false;
 }
 
 EXPORT bool Init(ControllerType* controllers, bool pal)
@@ -127,7 +132,7 @@ EXPORT bool Init(ControllerType* controllers, bool pal)
 	platform.bizpak->setAttribute("region", region);
 
 	string cic = pal ? "CIC-NUS-7101" : "CIC-NUS-6102";
-	u32 crc32 = Hash::CRC32({&((u8*)data->data())[0x40], 0x9c0}).value();
+	u32 crc32 = Hash::CRC32({&((u8*)data->data())[0x40], 0x9C0}).value();
 	if (crc32 == 0x1DEB51A9) cic = pal ? "CIC-NUS-7102" : "CIC-NUS-6101";
 	if (crc32 == 0xC08E5BD6) cic = pal ? "CIC-NUS-7101" : "CIC-NUS-6102";
 	if (crc32 == 0x03B8376A) cic = pal ? "CIC-NUS-7103" : "CIC-NUS-6103";
