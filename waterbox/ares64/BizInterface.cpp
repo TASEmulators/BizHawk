@@ -437,7 +437,7 @@ EXPORT bool Init(ControllerType* controllers, bool pal)
 		if (c->ram.data) \
 		{ \
 			m[i].Data = c->ram.data; \
-			m[i].Name = "MEMPAK ##num##"; \
+			m[i].Name = "MEMPAK " #num; \
 			m[i].Size = c->ram.size; \
 			m[i].Flags = MEMORYAREA_FLAGS_ONEFILLED | MEMORYAREA_FLAGS_SAVERAMMABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE; \
 			i++; \
