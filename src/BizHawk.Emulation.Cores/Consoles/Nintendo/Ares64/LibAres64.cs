@@ -11,16 +11,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 		[Flags]
 		public enum Buttons : uint
 		{
-			UP      = 1 << 00,
-			DOWN    = 1 << 01,
-			LEFT    = 1 << 02,
-			RIGHT   = 1 << 03,
-			B       = 1 << 04,
-			A       = 1 << 05,
-			C_UP    = 1 << 06,
-			C_DOWN  = 1 << 07,
-			C_LEFT  = 1 << 08,
-			C_RIGHT = 1 << 09,
+			UP      = 1 <<  0,
+			DOWN    = 1 <<  1,
+			LEFT    = 1 <<  2,
+			RIGHT   = 1 <<  3,
+			B       = 1 <<  4,
+			A       = 1 <<  5,
+			C_UP    = 1 <<  6,
+			C_DOWN  = 1 <<  7,
+			C_LEFT  = 1 <<  8,
+			C_RIGHT = 1 <<  9,
 			L       = 1 << 10,
 			R       = 1 << 11,
 			Z       = 1 << 12,
@@ -53,6 +53,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			public Buttons P4Buttons;
 			public short P4XAxis;
 			public short P4YAxis;
+
+			public bool Reset;
+			public bool Power;
 		}
 
 		[BizImport(CC)]

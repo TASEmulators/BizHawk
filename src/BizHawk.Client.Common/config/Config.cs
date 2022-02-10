@@ -26,6 +26,8 @@ namespace BizHawk.Client.Common
 				new[] { CoreNames.QuickNes, CoreNames.NesHawk, CoreNames.SubNesHawk }),
 			(new[] { VSystemID.Raw.SNES },
 				new[] { CoreNames.Faust, CoreNames.Snes9X, CoreNames.Bsnes, CoreNames.Bsnes115 }),
+			(new[] { VSystemID.Raw.N64 },
+				new[] { CoreNames.Mupen64Plus, CoreNames.Ares64, }),
 			(new[] { VSystemID.Raw.SGB },
 				new[] { CoreNames.Gambatte, CoreNames.Bsnes, CoreNames.Bsnes115}),
 			(new[] { VSystemID.Raw.GB, VSystemID.Raw.GBC },
@@ -319,6 +321,7 @@ namespace BizHawk.Client.Common
 		{
 			[VSystemID.Raw.NES] = CoreNames.QuickNes,
 			[VSystemID.Raw.SNES] = CoreNames.Snes9X,
+			[VSystemID.Raw.N64] = CoreNames.Mupen64Plus,
 			[VSystemID.Raw.GB] = CoreNames.Gambatte,
 			[VSystemID.Raw.GBC] = CoreNames.Gambatte,
 			[VSystemID.Raw.GBL] = CoreNames.GambatteLink,
