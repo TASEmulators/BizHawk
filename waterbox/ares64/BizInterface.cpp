@@ -117,7 +117,6 @@ static inline SaveType DetectSaveType(u8* rom)
 	u8 revision = rom[0x3F];
 
 	SaveType ret = NONE;
-	//512B EEPROM
 	if (id == "NTW") ret = EEPROM512;
 	if (id == "NHF") ret = EEPROM512;
 	if (id == "NOS") ret = EEPROM512;
@@ -421,14 +420,47 @@ EXPORT bool Init(ControllerType* controllers, bool pal)
 	return true;
 }
 
-u8 dummy[1];
+#define MAYBE_ADD_MEMORY_DOMAIN(mem, name, flags) do { \
+	if (ares::Nintendo64::mem.data) \
+	{ \
+		m[i].Data = ares::Nintendo64::mem.data; \
+		m[i].Name = name; \
+		m[i].Size = ares::Nintendo64::mem.size; \
+		m[i].Flags = flags | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE; \
+		i++; \
+	} \
+} while (0) \
+
+#define MAYBE_ADD_MEMPAK_DOMAIN(num) do { \
+	if (auto c = (ares::Nintendo64::Gamepad*)ares::Nintendo64::controllerPort##num.device.data()) \
+	{ \
+		if (c->ram.data) \
+		{ \
+			m[i].Data = c->ram.data; \
+			m[i].Name = "MEMPAK #num"; \
+			m[i].Size = c->ram.size; \
+			m[i].Flags = MEMORYAREA_FLAGS_SAVERAMMABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE; \
+			i++; \
+		} \
+	} \
+} while (0) \
 
 EXPORT void GetMemoryAreas(MemoryArea *m)
 {
-	m[0].Data = dummy;
-	m[0].Name = "Dummy";
-	m[0].Size = 1;
-	m[0].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_PRIMARY;
+	int i = 0;
+	MAYBE_ADD_MEMORY_DOMAIN(rdram.ram, "RDRAM", MEMORYAREA_FLAGS_PRIMARY);
+	MAYBE_ADD_MEMORY_DOMAIN(cartridge.rom, "ROM", 0);
+	MAYBE_ADD_MEMORY_DOMAIN(pi.rom, "PI ROM", 0);
+	MAYBE_ADD_MEMORY_DOMAIN(pi.ram, "PI RAM", 0);
+	MAYBE_ADD_MEMORY_DOMAIN(rsp.dmem, "RSP DMEM", 0);
+	MAYBE_ADD_MEMORY_DOMAIN(rsp.imem, "RSP IMEM", 0);
+	MAYBE_ADD_MEMORY_DOMAIN(cartridge.ram, "SRAM", MEMORYAREA_FLAGS_SAVERAMMABLE);
+	MAYBE_ADD_MEMORY_DOMAIN(cartridge.ram, "EEPROM", MEMORYAREA_FLAGS_SAVERAMMABLE);
+	MAYBE_ADD_MEMORY_DOMAIN(cartridge.ram, "FLASH", MEMORYAREA_FLAGS_SAVERAMMABLE);
+	MAYBE_ADD_MEMPAK_DOMAIN(1);
+	MAYBE_ADD_MEMPAK_DOMAIN(2);
+	MAYBE_ADD_MEMPAK_DOMAIN(3);
+	MAYBE_ADD_MEMPAK_DOMAIN(4);
 }
 
 struct MyFrameInfo : public FrameInfo
@@ -453,26 +485,27 @@ struct MyFrameInfo : public FrameInfo
 	bool Power;
 };
 
-#define UPDATE_CONTROLLER(NUM) \
-if (auto c = (ares::Nintendo64::Gamepad*)ares::Nintendo64::controllerPort##NUM.device.data()) \
-{ \
-	c->x->setValue(f->P##NUM##XAxis); \
-	c->y->setValue(f->P##NUM##YAxis); \
-	c->up->setValue(f->P##NUM##Buttons & UP); \
-	c->down->setValue(f->P##NUM##Buttons & DOWN); \
-	c->left->setValue(f->P##NUM##Buttons & LEFT); \
-	c->right->setValue(f->P##NUM##Buttons & RIGHT); \
-	c->b->setValue(f->P##NUM##Buttons & B); \
-	c->a->setValue(f->P##NUM##Buttons & A); \
-	c->cameraUp->setValue(f->P##NUM##Buttons & C_UP); \
-	c->cameraDown->setValue(f->P##NUM##Buttons & C_DOWN); \
-	c->cameraLeft->setValue(f->P##NUM##Buttons & C_LEFT); \
-	c->cameraRight->setValue(f->P##NUM##Buttons & C_RIGHT); \
-	c->l->setValue(f->P##NUM##Buttons & L); \
-	c->r->setValue(f->P##NUM##Buttons & R); \
-	c->z->setValue(f->P##NUM##Buttons & Z); \
-	c->start->setValue(f->P##NUM##Buttons & START); \
-}
+#define UPDATE_CONTROLLER(NUM) do { \
+	if (auto c = (ares::Nintendo64::Gamepad*)ares::Nintendo64::controllerPort##NUM.device.data()) \
+	{ \
+		c->x->setValue(f->P##NUM##XAxis); \
+		c->y->setValue(f->P##NUM##YAxis); \
+		c->up->setValue(f->P##NUM##Buttons & UP); \
+		c->down->setValue(f->P##NUM##Buttons & DOWN); \
+		c->left->setValue(f->P##NUM##Buttons & LEFT); \
+		c->right->setValue(f->P##NUM##Buttons & RIGHT); \
+		c->b->setValue(f->P##NUM##Buttons & B); \
+		c->a->setValue(f->P##NUM##Buttons & A); \
+		c->cameraUp->setValue(f->P##NUM##Buttons & C_UP); \
+		c->cameraDown->setValue(f->P##NUM##Buttons & C_DOWN); \
+		c->cameraLeft->setValue(f->P##NUM##Buttons & C_LEFT); \
+		c->cameraRight->setValue(f->P##NUM##Buttons & C_RIGHT); \
+		c->l->setValue(f->P##NUM##Buttons & L); \
+		c->r->setValue(f->P##NUM##Buttons & R); \
+		c->z->setValue(f->P##NUM##Buttons & Z); \
+		c->start->setValue(f->P##NUM##Buttons & START); \
+	} \
+} while (0)
 
 EXPORT void FrameAdvance(MyFrameInfo* f)
 {
@@ -487,10 +520,10 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 		HackeryDoo();
 	}
 
-	UPDATE_CONTROLLER(1)
-	UPDATE_CONTROLLER(2)
-	UPDATE_CONTROLLER(3)
-	UPDATE_CONTROLLER(4)
+	UPDATE_CONTROLLER(1);
+	UPDATE_CONTROLLER(2);
+	UPDATE_CONTROLLER(3);
+	UPDATE_CONTROLLER(4);
 
 	platform.lagged = true;
 
