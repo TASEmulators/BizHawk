@@ -465,9 +465,9 @@ EXPORT void GetMemoryAreas(MemoryArea *m)
 
 struct MyFrameInfo : public FrameInfo
 {
+	Buttons_t P1Buttons;
 	s16 P1XAxis;
 	s16 P1YAxis;
-	Buttons_t P1Buttons;
 
 	Buttons_t P2Buttons;
 	s16 P2XAxis;
@@ -509,6 +509,7 @@ struct MyFrameInfo : public FrameInfo
 
 EXPORT void FrameAdvance(MyFrameInfo* f)
 {
+	printf("%d\n", sizeof (MyFrameInfo));
 	if (f->Power)
 	{
 		root->power(false);
