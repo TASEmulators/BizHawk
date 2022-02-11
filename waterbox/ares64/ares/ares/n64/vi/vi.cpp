@@ -108,7 +108,6 @@ auto VI::refresh() -> void {
   u32 width  = vi.io.width;  //vi.io.xscale <= 0x300 ? 320 : 640;
   u32 height = vi.io.yscale <= 0x400 ? 239 : 478;
   screen->setViewport(0, 0, width, height);
-  printf("width %d, height %d\n", width, height);
 
   if(vi.io.colorDepth == 0 || io.dramAddress == 0 || (signed)(vi.io.hend - vi.io.hstart) <= 0 || vi.io.hstart >= 640) {
     //blank screen
