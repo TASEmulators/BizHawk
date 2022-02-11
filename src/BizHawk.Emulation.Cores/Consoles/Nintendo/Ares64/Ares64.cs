@@ -119,7 +119,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 					ret.BoolButtons.Add($"P{i + 1} C Right");
 					ret.BoolButtons.Add($"P{i + 1} L");
 					ret.BoolButtons.Add($"P{i + 1} R");
-					ret.AddXYPair($"P{i + 1} {{0}} Axis", AxisPairOrientation.RightAndUp, (-32768).RangeTo(32767), 0);
+					ret.AddXYPair($"P{i + 1} {{0}} Axis", AxisPairOrientation.RightAndDown, (-32768).RangeTo(32767), 0);
 					if (controllerTypes[i] == LibAres64.ControllerType.Rumblepak)
 					{
 						ret.HapticsChannels.Add($"P{i + 1} Rumble Pak");
