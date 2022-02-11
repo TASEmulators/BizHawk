@@ -83,8 +83,8 @@ auto System::load(Node::System& root, string name) -> bool {
   ri.load(node);
   si.load(node);
   cpu.load(node);
-  rdp.load(node);
   rsp.load(node);
+  rdp.load(node);
   dd.load(node);
   #if defined(VULKAN)
   vulkan.load(node);
@@ -111,8 +111,8 @@ auto System::unload() -> void {
   ri.unload();
   si.unload();
   cpu.unload();
-  rdp.unload();
   rsp.unload();
+  rdp.unload();
   dd.unload();
   pak.reset();
   node.reset();
@@ -144,8 +144,8 @@ auto System::power(bool reset) -> void {
   ri.power(reset);
   si.power(reset);
   cpu.power(reset);
-  rdp.power(reset);
   rsp.power(reset);
+  rdp.power(reset);
 }
 
 }
