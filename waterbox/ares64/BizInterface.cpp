@@ -417,9 +417,6 @@ EXPORT bool Init(ControllerType* controllers, bool pal)
 
 	root->power(false);
 	HackeryDoo();
-	printf("sizeof (Buttons_t) is %d\n", sizeof (Buttons_t));
-	printf("sizeof (s16) is %d\n", sizeof (s16));
-	printf("sizeof (bool) is %d\n", sizeof (bool));
 	return true;
 }
 
@@ -469,18 +466,19 @@ EXPORT void GetMemoryAreas(MemoryArea *m)
 struct MyFrameInfo : public FrameInfo
 {
 	Buttons_t P1Buttons;
+	Buttons_t P2Buttons;
+	Buttons_t P3Buttons;
+	Buttons_t P4Buttons;
+
 	s16 P1XAxis;
 	s16 P1YAxis;
 
-	Buttons_t P2Buttons;
 	s16 P2XAxis;
 	s16 P2YAxis;
 
-	Buttons_t P3Buttons;
 	s16 P3XAxis;
 	s16 P3YAxis;
 
-	Buttons_t P4Buttons;
 	s16 P4XAxis;
 	s16 P4YAxis;
 
@@ -512,9 +510,6 @@ struct MyFrameInfo : public FrameInfo
 
 EXPORT void FrameAdvance(MyFrameInfo* f)
 {
-	printf("%d\n", (int)f->P1Buttons);
-	printf("%d\n", (int)f->P1XAxis);
-	printf("%d\n", (int)f->P1YAxis);
 	if (f->Power)
 	{
 		root->power(false);
