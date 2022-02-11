@@ -50,19 +50,13 @@ auto RDP::render() -> void {
   #endif
 
   #if defined(MAME_RDP)
-  puts("1");
   auto rdp = state->rdp();
-  puts("2");
   rdp->set_current(command.current);
-  puts("3");
   rdp->set_end(command.end);
-  puts("4");
   rdp->set_status(command.source ? DP_STATUS_XBUS_DMA : 0);
-  puts("5");
+  printf("set_status %s\n", command.source ? "DP_STATUS_XBUS_DMA" : "0");
   rdp->process_command_list();
-  puts("6");
   command.current = rdp->get_current();
-  puts("7");
   return;
   #else
   auto& memory = !command.source ? rdram.ram : rsp.dmem;
