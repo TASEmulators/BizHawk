@@ -466,19 +466,18 @@ EXPORT void GetMemoryAreas(MemoryArea *m)
 struct MyFrameInfo : public FrameInfo
 {
 	Buttons_t P1Buttons;
-	Buttons_t P2Buttons;
-	Buttons_t P3Buttons;
-	Buttons_t P4Buttons;
-
 	s16 P1XAxis;
 	s16 P1YAxis;
 
+	Buttons_t P2Buttons;
 	s16 P2XAxis;
 	s16 P2YAxis;
 
+	Buttons_t P3Buttons;
 	s16 P3XAxis;
 	s16 P3YAxis;
 
+	Buttons_t P4Buttons;
 	s16 P4XAxis;
 	s16 P4YAxis;
 
