@@ -463,21 +463,23 @@ EXPORT void GetMemoryAreas(MemoryArea *m)
 	MAYBE_ADD_MEMPAK_DOMAIN(4);
 }
 
+// fixme: this mismatches the c# side due to some re-ordering c# is doing for some reason
 struct MyFrameInfo : public FrameInfo
 {
 	Buttons_t P1Buttons;
+	Buttons_t P2Buttons;
+	Buttons_t P3Buttons;
+	Buttons_t P4Buttons;
+
 	s16 P1XAxis;
 	s16 P1YAxis;
 
-	Buttons_t P2Buttons;
 	s16 P2XAxis;
 	s16 P2YAxis;
 
-	Buttons_t P3Buttons;
 	s16 P3XAxis;
 	s16 P3YAxis;
 
-	Buttons_t P4Buttons;
 	s16 P4XAxis;
 	s16 P4YAxis;
 
@@ -509,6 +511,23 @@ struct MyFrameInfo : public FrameInfo
 
 EXPORT void FrameAdvance(MyFrameInfo* f)
 {
+	printf("%s %d\n", "P1Buttons", (int)f->P1Buttons);
+	printf("%s %d\n", "P2Buttons", (int)f->P2Buttons);
+	printf("%s %d\n", "P3Buttons", (int)f->P3Buttons);
+	printf("%s %d\n", "P4Buttons", (int)f->P4Buttons);
+
+	printf("%s %d\n", "P1XAxis", (int)f->P1XAxis);
+	printf("%s %d\n", "P1YAxis", (int)f->P1YAxis);
+
+	printf("%s %d\n", "P2XAxis", (int)f->P2XAxis);
+	printf("%s %d\n", "P2YAxis", (int)f->P2YAxis);
+
+	printf("%s %d\n", "P3XAxis", (int)f->P3XAxis);
+	printf("%s %d\n", "P3YAxis", (int)f->P3YAxis);
+
+	printf("%s %d\n", "P4XAxis", (int)f->P4XAxis);
+	printf("%s %d\n", "P4YAxis", (int)f->P4YAxis);
+
 	if (f->Power)
 	{
 		root->power(false);
