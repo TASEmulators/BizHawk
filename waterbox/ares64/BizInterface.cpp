@@ -530,7 +530,6 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 	platform.lagged = true;
 
 	root->run();
-	printf("platform.width %d, platform.height %d\n", platform.width, platform.height);
 
 	f->Width = platform.width;
 	f->Height = platform.height;
