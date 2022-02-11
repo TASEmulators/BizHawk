@@ -46,10 +46,10 @@ namespace BizHawk.Emulation.Cores
 			}
 		}
 
-		private static readonly Func<AxisSpec> MupenRange = () => new((-128).RangeTo(127), 0);
-		private static readonly Func<AxisSpec> AresRange = () => new((-32768).RangeTo(32767), 0);
+		private static readonly Func<bool, AxisSpec> MupenRange = (bool isY) => new((-128).RangeTo(127), 0, false);
+		private static readonly Func<bool, AxisSpec> AresRange = (bool isY) => new((-32768).RangeTo(32767), 0, isY);
 
-		private static PadSchema StandardController(int controller, Func<AxisSpec> makeRange)
+		private static PadSchema StandardController(int controller, Func<bool, AxisSpec> makeRange)
 		{
 			return new PadSchema
 			{
@@ -72,8 +72,8 @@ namespace BizHawk.Emulation.Cores
 					new ButtonSchema(194, 221, controller, "C Right") { Icon = VGamepadButtonImage.YellowArrE },
 					new AnalogSchema(6, 14, $"P{controller} X Axis")
 					{
-						Spec = makeRange(),
-						SecondarySpec = makeRange()
+						Spec = makeRange(false),
+						SecondarySpec = makeRange(true)
 					}
 				}
 			};
