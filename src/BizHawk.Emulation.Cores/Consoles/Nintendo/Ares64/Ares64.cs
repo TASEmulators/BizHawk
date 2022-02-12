@@ -30,7 +30,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 		{
 			_syncSettings = lp.SyncSettings ?? new();
 
-			N64Controller = CreateControllerDefinition(_syncSettings);
+			ControllerSettings = new[]
+			{
+				_syncSettings.P1Controller,
+				_syncSettings.P2Controller,
+				_syncSettings.P3Controller,
+				_syncSettings.P4Controller,
+			};
+
+			N64Controller = CreateControllerDefinition(ControllerSettings);
 
 			_core = PreInit<LibAres64>(new WaterboxOptions
 			{
@@ -65,15 +73,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			_exe.AddReadonlyFile(pif, pal ? "pif.pal.rom" : "pif.ntsc.rom");
 			_exe.AddReadonlyFile(rom, "program.rom");
 
-			var controllers = new LibAres64.ControllerType[4]
-			{
-				_syncSettings.P1Controller,
-				_syncSettings.P2Controller,
-				_syncSettings.P3Controller,
-				_syncSettings.P4Controller,
-			};
-
-			if (!_core.Init(controllers, pal))
+			if (!_core.Init(ControllerSettings, pal))
 			{
 				throw new InvalidOperationException("Init returned false!");
 			}
@@ -91,19 +91,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 
 		private ControllerDefinition N64Controller { get; }
 
-		private static ControllerDefinition CreateControllerDefinition(Ares64SyncSettings syncSettings)
+		public LibAres64.ControllerType[] ControllerSettings { get; }
+
+		private static ControllerDefinition CreateControllerDefinition(LibAres64.ControllerType[] controllerSettings)
 		{
 			var ret = new ControllerDefinition("Nintendo 64 Controller");
-			var controllerTypes = new[]
-			{
-				syncSettings.P1Controller,
-				syncSettings.P2Controller,
-				syncSettings.P3Controller,
-				syncSettings.P4Controller,
-			};
 			for (int i = 0; i < 4; i++)
 			{
-				if (controllerTypes[i] != LibAres64.ControllerType.Unplugged)
+				if (controllerSettings[i] != LibAres64.ControllerType.Unplugged)
 				{
 					ret.BoolButtons.Add($"P{i + 1} DPad U");
 					ret.BoolButtons.Add($"P{i + 1} DPad D");
@@ -120,7 +115,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 					ret.BoolButtons.Add($"P{i + 1} L");
 					ret.BoolButtons.Add($"P{i + 1} R");
 					ret.AddXYPair($"P{i + 1} {{0}} Axis", AxisPairOrientation.RightAndDown, (-32768).RangeTo(32767), 0);
-					if (controllerTypes[i] == LibAres64.ControllerType.Rumblepak)
+					if (controllerSettings[i] == LibAres64.ControllerType.Rumblepak)
 					{
 						ret.HapticsChannels.Add($"P{i + 1} Rumble Pak");
 					}
@@ -169,6 +164,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
+			for (int i = 0; i < 4; i++)
+			{
+				if (ControllerSettings[i] == LibAres64.ControllerType.Rumblepak)
+				{
+					controller.SetHapticChannelStrength($"P{i + 1} Rumble Pak", _core.GetRumbleStatus(i) ? int.MaxValue : 0);
+				}
+			}
+
 			return new LibAres64.FrameInfo
 			{
 				P1Buttons = GetButtons(controller, 1),
@@ -199,5 +202,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 				BufferWidth = BufferHeight == 239 ? 320 : 640;
 			}
 		}
+
+		public override int VirtualWidth => 640;
+
+		public override int VirtualHeight => 480;
 	}
 }

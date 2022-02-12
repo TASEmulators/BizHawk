@@ -28,17 +28,9 @@ namespace BizHawk.Emulation.Cores
 			}
 			else if (core is Ares64 ares64)
 			{
-				var ss = ares64.GetSyncSettings();
-				var controllerTypes = new[]
-				{
-					ss.P1Controller,
-					ss.P2Controller,
-					ss.P3Controller,
-					ss.P4Controller,
-				};
 				for (var i = 0; i < 4; i++)
 				{
-					if (controllerTypes[i] != LibAres64.ControllerType.Unplugged)
+					if (ares64.ControllerSettings[i] != LibAres64.ControllerType.Unplugged)
 					{
 						yield return StandardController(i + 1, AresRange);
 					}

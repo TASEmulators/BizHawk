@@ -59,6 +59,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 		}
 
 		[BizImport(CC)]
-		public abstract bool Init(ControllerType[] controllers, bool pal);
+		public abstract bool Init(ControllerType[] controllerSettings, bool pal);
+
+		[BizImport(CC)]
+		public abstract bool GetRumbleStatus(int num);
 	}
 }
