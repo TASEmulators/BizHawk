@@ -420,6 +420,19 @@ EXPORT bool Init(ControllerType* controllers, bool pal)
 	return true;
 }
 
+EXPORT bool GetRumbleStatus(u32 num)
+{
+	ares::Nintendo64::Gamepad* c = nullptr;
+	switch (num)
+	{
+		case 0: c = (ares::Nintendo64::Gamepad*)ares::Nintendo64::controllerPort1.device.data(); break;
+		case 1: c = (ares::Nintendo64::Gamepad*)ares::Nintendo64::controllerPort2.device.data(); break;
+		case 2: c = (ares::Nintendo64::Gamepad*)ares::Nintendo64::controllerPort3.device.data(); break;
+		case 3: c = (ares::Nintendo64::Gamepad*)ares::Nintendo64::controllerPort4.device.data(); break;
+	}
+	return c ? c->motor->enable() : false;
+}
+
 #define MAYBE_ADD_MEMORY_DOMAIN(mem, name, flags) do { \
 	if (ares::Nintendo64::mem.data) \
 	{ \
