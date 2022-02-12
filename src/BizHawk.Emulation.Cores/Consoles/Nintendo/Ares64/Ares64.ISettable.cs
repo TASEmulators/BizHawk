@@ -48,6 +48,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 
 			public Ares64SyncSettings Clone() => MemberwiseClone() as Ares64SyncSettings;
 
+			public LibAres64.ControllerType[] GetControllerSettings() => new[] { P1Controller, P2Controller, P3Controller, P4Controller, };
+
 			public static bool NeedsReboot(Ares64SyncSettings x, Ares64SyncSettings y) => !DeepEquality.DeepEquals(x, y);
 		}
 	}
