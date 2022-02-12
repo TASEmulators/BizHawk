@@ -4,6 +4,7 @@ using System.Drawing;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 
 namespace BizHawk.Emulation.Cores
@@ -14,17 +15,33 @@ namespace BizHawk.Emulation.Cores
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
 		{
-			var ss = ((N64)core).GetSyncSettings();
-			for (var i = 0; i < 4; i++)
+			if (core is N64 n64)
 			{
-				if (ss.Controllers[i].IsConnected)
+				var ss = n64.GetSyncSettings();
+				for (var i = 0; i < 4; i++)
 				{
-					yield return StandardController(i + 1);
+					if (ss.Controllers[i].IsConnected)
+					{
+						yield return StandardController(i + 1, MupenRange);
+					}
+				}
+			}
+			else if (core is Ares64 ares64)
+			{
+				for (var i = 0; i < 4; i++)
+				{
+					if (ares64.ControllerSettings[i] != LibAres64.ControllerType.Unplugged)
+					{
+						yield return StandardController(i + 1, AresRange);
+					}
 				}
 			}
 		}
 
-		private static PadSchema StandardController(int controller)
+		private static readonly Func<bool, AxisSpec> MupenRange = (bool isY) => new((-128).RangeTo(127), 0, false);
+		private static readonly Func<bool, AxisSpec> AresRange = (bool isY) => new((-32768).RangeTo(32767), 0, isY);
+
+		private static PadSchema StandardController(int controller, Func<bool, AxisSpec> makeRange)
 		{
 			return new PadSchema
 			{
@@ -47,8 +64,8 @@ namespace BizHawk.Emulation.Cores
 					new ButtonSchema(194, 221, controller, "C Right") { Icon = VGamepadButtonImage.YellowArrE },
 					new AnalogSchema(6, 14, $"P{controller} X Axis")
 					{
-						Spec = new AxisSpec((-128).RangeTo(127), 0),
-						SecondarySpec = new AxisSpec((-128).RangeTo(127), 0)
+						Spec = makeRange(false),
+						SecondarySpec = makeRange(true)
 					}
 				}
 			};

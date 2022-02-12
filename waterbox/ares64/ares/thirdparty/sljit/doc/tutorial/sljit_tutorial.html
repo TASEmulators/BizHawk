@@ -1,0 +1,584 @@
+
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>SLJIT tutorial</title>
+
+  <style type="text/css">
+    body {
+      background-color: #707070;
+      color: #000000;
+      font-family: "garamond"
+    }
+    td.main {
+      background-color: #ffffff;
+      color: #000000;
+      font-family: "garamond"
+    }
+  </style>
+</head>
+
+<body>
+
+<center>
+<table width="760" cellspacing=0 cellpadding=0>
+<tr height=20><td width=20 class="main"></td><td width=720 class="main"></td><td width=20 class="main"></td></tr>
+<tr><td width=20 class="main"></td><td width=720 class="main">
+
+<center>
+<a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=248047&amp;type=2" width="125" height="37" border="0" alt="SourceForge.net Logo" /></a>
+</center>
+<h1><center>SLJIT tutorial</center></h1>
+
+<h2>Before started</h2>
+
+<a href="">Download the tutorial sources</a><br>
+<br>
+SLJIT is a light-weight, platform independent JIT compiler, it's easy to
+embed to your own project, as a result of its 'stack-less', SLJIT have
+some limit to register usage.<br>
+<br>
+Here is some other JIT compiler I digged these days, place here if you have interest:<br>
+
+<ul>
+  <b>Libjit/liblighning:</b> - the backend of GNU.net<br>
+  <b>Libgccjit:</b> - introduced in GCC5.0, its different from other JIT lib, this
+                    one seems like constructing a C code, it use the backend of GCC.<br>
+  <b>AsmJIT:</b> - branch from the famous V8 project (JavaScript engine in Chrome),
+                   support only X86/X86_64.<br>
+  <b>DynASM:</b> - used in LuaJIT.<br>
+</ul>
+
+<br>
+AsmJIT and DynASM work in the instruction level, look like coding with ASM language,
+SLJIT look like ASM also, but it hide the detail of the specific CPU, make it more
+common, and become portable, libjit work on higher layer, libgccjit as I mention,
+really you are constructing the C code.<br>
+
+<h2>First program</h2>
+
+Usage of SLJIT:
+<ul>
+1. #include "sljitLir.h" in the head of your C/C++ program<br>
+2. Compile with sljit_src/sljitLir.c<br>
+</ul>
+
+ALL example can be compile like this:
+<ul>
+gcc -Wall -Ipath/to/sljit_src -DSLJIT_CONFIG_AUTO=1 \<br>
+  <ul><b>xxx.c</b> path/to/sljit_src/sljitLir.c -o program</ul>
+</ul>
+
+OK, let's take a look at the first program, this program we create a function that
+return the sum of 3 arguments.<br>
+<br>
+<div style='font-family:Courier New;font-size:11px'>
+<ul>
+#include "sljitLir.h"<br>
+ <br>
+#include &lt;stdio.h&gt;<br>
+#include &lt;stdlib.h&gt;<br>
+ <br>
+typedef sljit_sw (*func3_t)(sljit_sw a, sljit_sw b, sljit_sw c);<br>
+ <br>
+static int add3(sljit_sw a, sljit_sw b, sljit_sw c)<br>
+{<br>
+   <ul>
+    void *code;<br>
+    sljit_sw len;<br>
+    func3_t func;<br>
+   <br>
+    /* Create a SLJIT compiler */<br>
+    struct sljit_compiler *C = sljit_create_compiler();<br>
+   <br>
+    /* Start a context(function entry), have 3 arguments, discuss later */<br>
+    sljit_emit_enter(C, 0,  3,  1, 3, 0, 0, 0);<br>
+   <br>
+    /* The first arguments of function is register SLJIT_S0, 2nd, SLJIT_S1, etc.  */<br>
+    /* R0 = first */<br>
+    sljit_emit_op1(C, SLJIT_MOV, SLJIT_R0, 0, SLJIT_S0, 0);<br>
+   <br>
+    /* R0 = R0 + second */<br>
+    sljit_emit_op2(C, SLJIT_ADD, SLJIT_R0, 0, SLJIT_R0, 0, SLJIT_S1, 0);<br>
+   <br>
+    /* R0 = R0 + third */<br>
+    sljit_emit_op2(C, SLJIT_ADD, SLJIT_R0, 0, SLJIT_R0, 0, SLJIT_S2, 0);<br>
+   <br>
+    /* This statement mov R0 to RETURN REG and return */<br>
+    /* in fact, R0 is RETURN REG itself */<br>
+    sljit_emit_return(C, SLJIT_MOV, SLJIT_R0, 0);<br>
+   <br>
+    /* Generate machine code */<br>
+    code = sljit_generate_code(C);<br>
+    len = sljit_get_generated_code_size(C);<br>
+   <br>
+    /* Execute code */<br>
+    func = (func3_t)code;<br>
+    printf("func return %ld\n", func(a, b, c));<br>
+   <br>
+    /* dump_code(code, len); */<br>
+   <br>
+    /* Clean up */<br>
+    sljit_free_compiler(C);<br>
+    sljit_free_code(code);<br>
+    return 0;<br>
+   </ul>
+}<br>
+ <br>
+int main()<br>
+{<br>
+   <ul>
+    return add3(4, 5, 6);<br>
+   </ul>
+}<br>
+</ul>
+</div>
+
+<br>
+The function sljit_emit_enter create a context, save some registers to the stack,
+and create a call-frame, sljit_emit_return restore the saved-register and clean-up
+the frame. SLJIT is design to embed into other application, the code it generated
+has to follow some basic rule.<br>
+<br>
+The standard called Application Binary Interface, or ABI for short, here is a
+document for X86_64 CPU (<a href="http://www.x86-64.org/documentation/abi.pdf">ABI.pdf</a>),
+almost all Linux/Unix follow this standard. MS windows has its own, read this for more:
+<a href="http://en.wikipedia.org/wiki/X86_calling_conventions">X86_calling_conventions</a><br>
+<br>
+When reading the doc of sljit_emit_emter, the parameters 'saveds' and 'scratchs' make
+me confused. The fact is, the registers in CPU has different functions in the ABI spec,
+some of them used to pass arguments, some of them are 'callee-saved', some of them are
+'temporary used', take X86_64 for example, RAX, R10, R11 are temporary used, that means,
+they may be changed after a call instruction. And RBX, R12-R15 are callee-saved, those
+will remain the same values after the call. The rule is, every function should save
+those registers before using it.<br>
+<br>
+Fortunately, SLJIT have done the most for us, SLJIT_S[0-9] represent those 'safe'
+registers, SLJIT_R[0-9] however, only for 'temporary used'.<br>
+<br>
+When a function start, SLJIT move the function arguments to S0, S1, S2 register, it
+means function arguments are always 'safe' in the context, the limit of using stack for
+storing arguments make SLJIT support only 3 arguments max.<br>
+<br>
+Sljit_emit_opX is easy to understand, in SLJIT a data value is represented by 2
+parameters, it can be a register, an In-memory data, or an immediate number.<br>
+<br>
+
+<table align="center" cellspacing="0">
+<tr><td>First parameter</td> 	<td>Second parameter</td>	<td>Meaning</td></tr>
+<tr><td>SLJIT_R*, SLJIT_S*</td>	<td>0</td>			<td>Temp/saved registers</td></tr>
+<tr><td>SLJIT_IMM</td>			<td>Number</td>		<td>Immediate number</td></tr>
+<tr><td>SLJIT_MEM</td>			<td>Address</td>	<td>In-mem data with Absolute address</td></tr>
+<tr><td>SLJIT_MEM1(r)</td>		<td>Offset</td>		<td>In-mem data in [R + offset]</td></tr>
+<tr><td>SLJIT_MEM2(r1, r2)</td>	<td>Shift(size)</td>		<td>In-mem array, R1 as base address, R2 as index, <br>
+								Shift as size(0 for bytes, 1 for shorts, 2 for <br>
+								4bytes, 3 for 8bytes)</td></tr>
+</table>
+
+<h2>Branch</h2>
+<div style='font-family:Courier New;font-size:11px'>
+<ul>
+#include "sljitLir.h"<br>
+ <br>
+#include &lt;stdio.h&gt;<br>
+#include &lt;stdlib.h&gt;<br>
+ <br>
+typedef sljit_sw (*func3_t)(sljit_sw a, sljit_sw b, sljit_sw c);<br>
+ <br>
+/*<br>
+ This example, we generate a function like this:<br>
+ <br>
+sljit_sw func(sljit_sw a, sljit_sw b, sljit_sw c)<br>
+{<br>
+    <ul>
+    if ((a & 1) == 0)<br>
+    <ul>
+        return c;<br>
+    </ul>
+    return b;<br>
+</ul>
+}<br>
+ <br>
+ */<br>
+static int branch(sljit_sw a, sljit_sw b, sljit_sw c)<br>
+{<br>
+   <ul>
+    void *code;<br>
+    sljit_uw len;<br>
+    func3_t func;<br>
+   <br>
+    struct sljit_jump *ret_c;<br>
+    struct sljit_jump *out;<br>
+   <br>
+    /* Create a SLJIT compiler */<br>
+    struct sljit_compiler *C = sljit_create_compiler();<br>
+   <br>
+    /* 3 arg, 1 temp reg, 3 save reg */<br>
+    sljit_emit_enter(C, 0,  3,  1, 3, 0, 0, 0);<br>
+   <br>
+    /* R0 = a & 1, S0 is argument a */<br>
+    sljit_emit_op2(C, SLJIT_AND, SLJIT_R0, 0, SLJIT_S0, 0, SLJIT_IMM, 1);<br>
+   <br>
+    /* if R0 == 0 then jump to ret_c, where is ret_c? we assign it later */<br>
+    ret_c = sljit_emit_cmp(C, SLJIT_EQUAL, SLJIT_R0, 0, SLJIT_IMM, 0);<br>
+   <br>
+    /* R0 = b, S1 is argument b */<br>
+    sljit_emit_op1(C, SLJIT_MOV, SLJIT_RETURN_REG, 0, SLJIT_S1, 0);<br>
+   <br>
+    /* jump to out */<br>
+    out = sljit_emit_jump(C, SLJIT_JUMP);<br>
+   <br>
+    /* here is the 'ret_c' should jump, we emit a label and set it to ret_c */<br>
+    sljit_set_label(ret_c, sljit_emit_label(C));<br>
+   <br>
+    /* R0 = c, S2 is argument c */<br>
+    sljit_emit_op1(C, SLJIT_MOV, SLJIT_RETURN_REG, 0, SLJIT_S2, 0);<br>
+   <br>
+    /* here is the 'out' should jump */<br>
+    sljit_set_label(out, sljit_emit_label(C));<br>
+   <br>
+    /* end of function */<br>
+    sljit_emit_return(C, SLJIT_MOV, SLJIT_RETURN_REG, 0);<br>
+   <br>
+    /* Generate machine code */<br>
+    code = sljit_generate_code(C);<br>
+    len = sljit_get_generated_code_size(C);<br>
+   <br>
+    /* Execute code */<br>
+    func = (func3_t)code;<br>
+    printf("func return %ld\n", func(a, b, c));<br>
+   <br>
+    /* dump_code(code, len); */<br>
+   <br>
+    /* Clean up */<br>
+    sljit_free_compiler(C);<br>
+    sljit_free_code(code);<br>
+    return 0;<br>
+</ul>
+}<br>
+ <br>
+int main()<br>
+{<br>
+<ul>
+    return branch(4, 5, 6);<br>
+</ul>
+}<br>
+</ul>
+</div>
+
+The key to implement branch is 'struct sljit_jump' and 'struct sljit_label',
+the 'jump' contain a jump instruction, it does not know where to jump unless
+you set a label to it, the 'label' is a code address just like label in ASM
+language.<br>
+<br>
+sljit_emit_cmp/sljit_emit_jump generate a conditional/unconditional jump,
+take the statement<br>
+<ul>
+ret_c = sljit_emit_cmp(C, SLJIT_EQUAL, SLJIT_R0, 0, SLJIT_IMM, 0);<br>
+</ul>
+For example, it create a jump instruction, the condition is R0 equals 0, and
+the position of jumping will assign later with the sljit_set_label statement.<br>
+<br>
+In this example, it creates a branch like this:<br>
+<ul>
+    <ul>
+    R0 = a & 1;<br>
+    if R0 == 0 then goto ret_c;<br>
+    R0 = b;<br>
+    goto out;<br>
+    </ul>
+ret_c:<br>
+    <ul>
+    R0 = c;<br>
+    </ul>
+out:<br>
+    <ul>
+    return R0;<br>
+    </ul>
+</ul>
+<br>
+This is how high-level-language compiler handle branch.<br>
+<br>
+
+<h2>Loop</h2>
+
+Loop example is similar with Branch.
+
+<div style='font-family:Courier New;font-size:11px'>
+<ul>
+/*
+ This example, we generate a function like this:<br>
+ <br>
+sljit_sw func(sljit_sw a, sljit_sw b)<br>
+{<br>
+<ul>
+    sljit_sw i;<br>
+    sljit_sw ret = 0;<br>
+    for (i = 0; i &lt; a; ++i) {<br>
+    <ul>
+        ret += b;<br>
+    </ul>
+    }<br>
+    return ret;<br>
+</ul>
+}<br>
+*/<br>
+<br>
+<ul>
+    /* 2 arg, 2 temp reg, 2 saved reg */<br>
+    sljit_emit_enter(C, 0, 2, 2, 2, 0, 0, 0);<br>
+    <br>
+    /* R0 = 0 */<br>
+    sljit_emit_op2(C, SLJIT_XOR, SLJIT_R1, 0, SLJIT_R1, 0, SLJIT_R1, 0);<br>
+    /* RET = 0 */<br>
+    sljit_emit_op1(C, SLJIT_MOV, SLJIT_RETURN_REG, 0, SLJIT_IMM, 0);<br>
+    /* loopstart: */<br>
+    loopstart = sljit_emit_label(C);<br>
+    /* R1 &gt;= a --> jump out */<br>
+    out = sljit_emit_cmp(C, SLJIT_GREATER_EQUAL, SLJIT_R1, 0, SLJIT_S0, 0);<br>
+    /* RET += b */<br>
+    sljit_emit_op2(C, SLJIT_ADD, SLJIT_RETURN_REG, 0, SLJIT_RETURN_REG, 0, SLJIT_S1, 0);<br>
+    /* R1 += 1 */<br>
+    sljit_emit_op2(C, SLJIT_ADD, SLJIT_R1, 0, SLJIT_R1, 0, SLJIT_IMM, 1);<br>
+    /* jump loopstart */<br>
+    sljit_set_label(sljit_emit_jump(C, SLJIT_JUMP), loopstart);<br>
+    /* out: */<br>
+    sljit_set_label(out, sljit_emit_label(C));<br>
+    <br>
+    /* return RET */<br>
+    sljit_emit_return(C, SLJIT_MOV, SLJIT_RETURN_REG, 0);<br>
+</ul>
+</ul>
+</div>
+
+After this example, you are ready to construct any program that contain complex branch
+and loop.<br>
+<br>
+Here is an interesting fact, 'xor reg, reg' is better than 'mov reg, 0', it save 2 bytes
+in X86 machine.<br>
+<br>
+I will give only the key code in the rest of this tutorial, the full source of each
+chapter can be found in the attachment.<br>
+
+
+<h2>Call external function</h2>
+
+It's easy to call an external function in SLJIT, we use sljit_emit_ijump with SLJIT_CALL*
+operation to do so.<br>
+<br>
+SLJIT_CALL[N] is use to call a function with N arguments, SLJIT has only SLJIT_CALL0,
+CALL1, CALL2, CALL3, which means you can call a function with 3 arguments in max(that
+disappoint me, no chance to call fwrite in SLJIT), the arguments for the callee function
+are passed from SLJIT_R0, R1 and R2. Keep in mind to maintain those 'temp registers'.<br>
+<br>
+Assume that we have an external function:<br>
+<ul>
+    sljit_sw print_num(sljit_sw a);
+</ul>
+
+JIT code to call print_num(S1):
+
+<div style='font-family:Courier New;font-size:11px'>
+<ul>
+    /* R0 = S1; */<br>
+    sljit_emit_op1(C, SLJIT_MOV, SLJIT_R0, 0, SLJIT_S1, 0);<br>
+    /* print_num(R0) */<br>
+    sljit_emit_ijump(C, SLJIT_CALL1, SLJIT_IMM, SLJIT_FUNC_OFFSET(print_num));<br>
+</ul>
+</div>
+<br>
+This code call a imm-data(address of print_num), which is linked properly when the
+program loaded. There no problem in 1-time compile and execute, but when you planning
+to save to file and load/execute next time, that address may not correct as you expect,
+in some platform that support PIC, the address of print_num may relocate to another
+address in run-time. Check this out:
+<a href="http://en.wikipedia.org/wiki/Position-independent_code">PIC</a><br>
+<br>
+
+<h2>Structure access</h2>
+
+SLJIT use SLJIT_MEM1 to implement [Reg + offset] memory access.<br>
+<div style='font-family:Courier New;font-size:11px'>
+<ul>
+struct point_st {<br>
+    <ul>
+    sljit_sw x;<br>
+    int y;<br>
+    short z;<br>
+    char d;<br>
+    char e;<br>
+    </ul>
+};<br>
+<br>
+sljit_emit_op1(C, SLJIT_MOV_SI, SLJIT_R0, 0, SLJIT_MEM1(SLJIT_S0),<br>
+<ul>
+SLJIT_OFFSETOF(struct point_st, y));<br>
+</ul>
+</ul>
+</div>
+
+In this case, SLJIT_S0 is the address of the point_st structure, offset of member 'y'
+is determined in compile time, the important MOV operation always comes with a
+'signed/size' postfix, like this one _SI means 'signed 32bits integer', the postfix
+list:<br>
+<ul>
+   <b>UB</b> = unsigned byte (8 bit)<br>
+   <b>SB</b> = signed byte (8 bit)<br>
+   <b>UH</b> = unsigned half (16 bit)<br>
+   <b>SH</b> = signed half (16 bit)<br>
+   <b>UI</b> = unsigned int (32 bit)<br>
+   <b>SI</b> = signed int (32 bit)<br>
+   <b>P</b>  = pointer (sljit_p) size<br>
+</ul>
+
+<h2>Array accessing</h2>
+
+SLJIT use SLJIT_MEM2 to access arrays, like this:<br>
+
+<div style='font-family:Courier New;font-size:11px'>
+<ul>
+sljit_emit_op1(C, SLJIT_MOV, SLJIT_R0, 0, SLJIT_MEM2(SLJIT_S0, SLJIT_S2),<br>
+<ul>
+SLJIT_WORD_SHIFT);
+</ul>
+</ul>
+</div>
+
+This statement generates a code like this:<br>
+<ul>
+WORD S0[];<br>
+R0 = S0[S2]<br>
+</ul>
+<br>
+The array S0 is declared to be WORD, which will be sizeof(sljit_sw) in length.
+Sljit use a 'shift' for length representation: (0 for single byte, 1 for 2
+bytes, 2 for 4 bytes, 3 for 8bytes)<br>
+<br>
+The file array_access.c demonstrate a array-print example, should be easy
+to understand.<br>
+
+<h2>Local variables</h2>
+
+SLJIT provide SLJIT_MEM1(SLJIT_SP) to access the reserved space in
+sljit_emit_enter's last parameter.<br>
+In this example we have to pass the address to print_arr, local variable
+is the only choice.<br>
+
+<div style='font-family:Courier New;font-size:11px'>
+<ul>
+    /* reserved space in stack for sljit_sw arr[3] */<br>
+    sljit_emit_enter(C, 0,  3,  2, 3, 0, 0, 3 * sizeof(sljit_sw));<br>
+    /*                  opt arg R  S  FR FS local_size */<br>
+   <br>
+    /* arr[0] = S0, SLJIT_SP is the init address of local var */<br>
+    sljit_emit_op1(C, SLJIT_MOV, SLJIT_MEM1(SLJIT_SP), 0, SLJIT_S0, 0);<br>
+    /* arr[1] = S1 */<br>
+    sljit_emit_op1(C, SLJIT_MOV, SLJIT_MEM1(SLJIT_SP), 1 * sizeof(sljit_sw), SLJIT_S1, 0);<br>
+    /* arr[2] = S2 */<br>
+    sljit_emit_op1(C, SLJIT_MOV, SLJIT_MEM1(SLJIT_SP), 2 * sizeof(sljit_sw), SLJIT_S2, 0);<br>
+   <br>
+    /* R0 = arr; in fact SLJIT_SP is the address of arr, but can't do so in SLJIT */<br>
+    sljit_get_local_base(C, SLJIT_R0, 0, 0);   /* get the address of local variables */<br>
+    sljit_emit_op1(C, SLJIT_MOV, SLJIT_R1, 0, SLJIT_IMM, 3);   /* R1 = 3; */<br>
+    sljit_emit_ijump(C, SLJIT_CALL2, SLJIT_IMM, SLJIT_FUNC_OFFSET(print_arr));<br>
+    sljit_emit_return(C, SLJIT_MOV, SLJIT_R0, 0);<br>
+</ul>
+</div>
+<br>
+SLJIT_SP can only be used in SLJIT_MEM1(SLJIT_SP). In this case, SP is the
+address of 'arr', but we cannot assign it to Reg using SLJIT_MOV opr,
+instead, we use sljit_get_local_base, which load the address and offset of
+local variable to the target.<br>
+
+<h2>Brainfuck compiler</h2>
+
+Ok, the basic usage of SLJIT ends here, with more detail, I suggest reading
+sljitLir.h directly, having fun hacking the wonder of SLJIT!<br>
+<br>
+The brainfuck machine introduction can be found here:
+<a href="http://en.wikipedia.org/wiki/Brainfuck">Brainfuck</a><br>
+<br>
+
+<h2>Extra</h2>
+
+1. Dump_code function<br>
+SLJIT didn't provide disassemble functional, this is a simple function to do this(X86 only)<br>
+<br>
+
+<div style='font-family:Courier New;font-size:11px'>
+<ul>
+static void dump_code(void *code, sljit_uw len)<br>
+{<br>
+<ul>
+    FILE *fp = fopen("/tmp/slj_dump", "wb");<br>
+    if (!fp)<br>
+    <ul>
+        return;<br>
+    </ul>
+    fwrite(code, len, 1, fp);<br>
+    fclose(fp);<br>
+</ul>
+#if defined(SLJIT_CONFIG_X86_64)<br>
+<ul>
+    system("objdump -b binary -m l1om -D /tmp/slj_dump");<br>
+</ul>
+#elif defined(SLJIT_CONFIG_X86_32)<br>
+<ul>
+    system("objdump -b binary -m i386 -D /tmp/slj_dump");<br>
+</ul>
+#endif<br>
+}
+</ul>
+</div>
+
+The branch example disassembling:<br>
+ <br>
+0000000000000000 &lt;.data&gt;:<br>
+<ul>
+<table>
+<tr><td>0:</td><td>53</td><td>push   %rbx</td></tr>
+<tr><td>1:</td><td>41 57</td><td>push   %r15</td></tr>
+<tr><td>3:</td><td>41 56</td><td>push   %r14</td></tr>
+<tr><td>5:</td><td>48 8b df</td><td>mov    %rdi,%rbx</td></tr>
+<tr><td>8:</td><td>4c 8b fe</td><td>mov    %rsi,%r15</td></tr>
+<tr><td>b:</td><td>4c 8b f2</td><td>mov    %rdx,%r14</td></tr>
+<tr><td>e:</td><td>48 83 ec 10</td><td>sub    $0x10,%rsp</td></tr>
+<tr><td>12:</td><td>48 89 d8</td><td>mov    %rbx,%rax</td></tr>
+<tr><td>15:</td><td>48 83 e0 01</td><td>and    $0x1,%rax</td></tr>
+<tr><td>19:</td><td>48 83 f8 00</td><td>cmp    $0x0,%rax</td></tr>
+<tr><td>1d:</td><td>74 05</td><td>je     0x24</td></tr>
+<tr><td>1f:</td><td>4c 89 f8</td><td>mov    %r15,%rax</td></tr>
+<tr><td>22:</td><td>eb 03</td><td>jmp    0x27</td></tr>
+<tr><td>24:</td><td>4c 89 f0</td><td>mov    %r14,%rax</td></tr>
+<tr><td>27:</td><td>48 83 c4 10</td><td>add    $0x10,%rsp</td></tr>
+<tr><td>2b:</td><td>41 5e</td><td>pop    %r14</td></tr>
+<tr><td>2d:</td><td>41 5f</td><td>pop    %r15</td></tr>
+<tr><td>2f:</td><td>5b</td><td>pop    %rbx</td></tr>
+<tr><td>30:</td><td>c3</td><td>retq</td></tr>
+</table>
+</ul>
+<br>
+with GCC -O2<br>
+0000000000000000 &lt;func&gt;:<br>
+<ul>
+<table>
+<tr><td>0:</td><td>48 89 d0</td><td>mov    %rdx,%rax</td></tr>
+<tr><td>3:</td><td>83 e7 01</td><td>and    $0x1,%edi</td></tr>
+<tr><td>6:</td><td>48 0f 45 c6</td><td>cmovne %rsi,%rax</td></tr>
+<tr><td>a:</td><td>c3</td><td>retq</td></tr>
+</table>
+</ul>
+<br>
+Err... Ok, the optimization here may be weak, or, optimization there is crazy... :-)<br>
+
+<table width="100%" cellspacing=0 cellpadding=0>
+<tr><td align=right>By wenxichang#163.com, 2015.5.10</td></tr></table>
+
+</td><td width=20 class="main"></td></tr>
+<tr height=20><td width=20 class="main"></td><td width=720 class="main"></td><td width=20 class="main"></td></tr>
+</table>
+</center>
+
+</body>
+</html>

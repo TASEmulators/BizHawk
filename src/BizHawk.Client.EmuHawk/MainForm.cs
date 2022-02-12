@@ -1980,7 +1980,7 @@ namespace BizHawk.Client.EmuHawk
 				case VSystemID.Raw.INTV:
 					IntvSubMenu.Visible = true;
 					break;
-				case VSystemID.Raw.N64:
+				case VSystemID.Raw.N64 when Emulator is N64:
 					N64SubMenu.Visible = true;
 					break;
 				case VSystemID.Raw.NES:

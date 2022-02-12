@@ -1,0 +1,8 @@
+This file is the short summary of the internal changes:
+
+18.11.2012
+    Switching from stdcall to cdecl on x86-32. Fastcall is still the default
+    on GCC and MSVC. Now Intel C compilers are supported.
+
+20.10.2012
+    Supporting Sparc-32 CPUs.

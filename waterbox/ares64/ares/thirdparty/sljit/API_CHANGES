@@ -1,0 +1,169 @@
+This file is the short summary of the API changes:
+
+27.05.2021 - Non-backward compatible
+    The comparison types with the 32 suffix are removed from the
+    project. The sljit_set_current_flags has a new flag which
+    must be set when the flags are set by a 32 bit operation.
+
+04.05.2021 - Non-backward compatible
+    The mul overflow comparison type is removed from the project
+    and the normal overflow type should be used instead.
+
+28.04.2021 - Non-backward compatible
+    The current_flags argument of sljit_set_current_flags must
+    provide information about the instructions which set the CPU
+    status flags.
+
+16.08.2020 - Non-backward compatible
+    A second parameter has been added to sljit_create_compiler()
+    and sljit_free_code() to pass some data to the executable
+    allocator functions.
+
+24.01.2020 - Non-backward compatible
+    The SLJIT_MOV instructions does not support SLJIT_UNDEFINED
+    as destination. New prefetch instructions has been added
+    instead.
+
+20.01.2019 - Non-backward compatible
+    The check_sljit_emit_fast_return function is removed, and
+    this operation is available through check_sljit_emit_op_src.
+
+16.01.2019 - Backward compatible
+    A new opcode (SLJIT_ENDBR) is added to support
+    Intel Control-flow Enforcement Technology (CET).
+
+08.01.2018 - Non-backward compatible
+    Fields of sljit_stack are renamed to fit a
+    top-down stack better.
+
+02.01.2018 - Non-backward compatible
+    Immediate source argument has not been supported
+    for NOT, NEG, CLZ, and fast_return instructions
+    anymore. No CPU supports immedate arguments for
+    these opcodes.
+
+26.12.2017 - Non-backward compatible
+    The MOVU opcodes are removed because the emulation
+    is inefficient. The sljit_emit_mem() operation is
+    added instead.
+
+18.10.2017 - Non-backward compatible
+    The SLJIT_CALL0 - SLJIT_CALL3 jump types are
+    replaced by sljit_emit_call and sljit_emit_icall
+    function calls. These functions allows declaring
+    the argument types.
+
+06.05.2017 - Non-backward compatible
+    Src argument is removed from sljit_emit_op_flags.
+
+24.04.2017 - Non-backward compatible
+    The sljit_is_fpu_available function is replaced
+    by sljit_has_cpu_feature.
+
+20.04.2017 - Non-backward compatible
+    x86 specific cmov is changed to a general function
+
+27.03.2017 - Non-backward compatible
+    JIT stack is changed from bottom-up to top-town.
+
+15.01.2017 - Non-backward compatible
+    Move with update may modifiy flags, the base register
+    can only be used once and [reg+reg<<shift] addressing
+    mode where shift > 0 is not supported anymore.
+
+12.01.2017 - Non-backward compatible
+    Introducing a new flag mechanism which provides better
+    compatibility with CPUs without flags. Only two flags
+    remain: zero and variable. The current type of the
+    variable flag is specified by the arithmetic operator.
+    The SLJIT_KEEP_FLAGS is removed.
+
+29.02.2016 - Non-backward compatible
+    Several types and instructions are renamed to improve
+    readability. In general byte, half, and int are renamed
+    to 8, 16, and 32. Floating point types are also renamed
+    from d and s to f64 and f32.
+
+      [s|u]b -> [s|u]8    (8 bit values)
+      [s|u]h -> [s|u]16   (16 bit values)
+      [s|u]i -> [s|u]32   (32 bit values)
+      d -> f64            (64 bit floating point value)
+      s -> f32            (32 bit floating point value)
+
+18.05.2015 - Non-backward compatible
+    SLJIT_[I|]L[U|S]DIV is renamed to SLJIT_[I|][U|S]DIVMOD
+
+29.09.2014 - Non-backward compatible
+    The sljit_create_compiler, sljit_allocate_stack, and
+    sljit_free_stack functions have an allocator_data
+    argument now.
+
+19.09.2014 - Non-backward compatible
+    Using I, D, S prefixes in conditional and floating
+    point operations. And an L prefix to long multiplication
+    and division (op0 opcodes).
+
+11.08.2014 - Non-backward compatible
+    A currently unused options parameter is added to sljit_emit_enter
+    and sljit_set_context.
+
+06.07.2014 - Non-backward compatible
+    SCRATCH registers are renamed to Rx and SAVED registers
+    are renamed to Sx. See the explanation of these registers
+    in sljitLir.h.
+
+31.05.2014 - Non-backward compatible
+    SLJIT_TEMPORARY_EREGx registers were not renamed to
+    SLJIT_SCRATCH_EREGx when the change was done on 08.11.2012
+
+05.03.2014 - Backward compatible
+    The sljit_set_target now supports those jumps, which
+    does not created with SLJIT_REWRITABLE_JUMP flag.
+    Reason: sljit_emit_ijump does not support conditional
+    jumps.
+
+03.03.2014 - Non-backward compatible
+    SLJIT_MOV_UI cannot be combined with SLJIT_INT_OP.
+    Reason: SLJIT_INT_OP flag is not recommended to use
+    directly, and SLJIT_IMOV has no sign bit.
+
+29.01.2014 - Backward compatible
+    Bits assigned to SLJIT_MEM and SLJIT_IMM flags are changed.
+    Reason: the most common cases are fits into one byte now,
+    and more registers can be supported in the future.
+
+08.11.2012 - Non-backward compatible
+    SLJIT_TEMPORARY_REGx registers are renamed to SLJIT_SCRATCH_REGx.
+
+07.11.2012 - Non-backward compatible
+    sljit_emit_cond_value is renamed to sljit_emit_op_flags. An
+    extra source argument is added which will be used in the future.
+
+05.11.2012 - Backward compatible
+    sljit_emit_cond_value now supports SLJIT_AND and SLJIT_INT_OP
+    flags, which makes this function complete.
+
+01.11.2012 - Non-backward compatible
+    SLJIT_F* opcodes are renamed to SLJIT_*D to show that
+    they are double precision operators. Furthermore
+    SLJIT_*S single precision opcodes are added.
+
+01.11.2012 - Non-backward compatible
+    Register arguments of operations with SLJIT_INT_OP flag
+    must be computed by another operation with SLJIT_INT_OP flag.
+    The same way as SLJIT_SINGLE_OP flag works with floating point
+    numbers. See the description of SLJIT_INT_OP.
+
+01.11.2012 - Backward compatible
+    All operations whose support the SLJIT_INT_OP flag, have an
+    alternate name now, which includes the SLJIT_INT_OP. These
+    names starting with I.
+
+31.10.2012 - Non-backward compatible
+    Renaming sljit_w to sljit_sw, sljit_i to sljit_si, sljit_h
+    to sljit_sh, and sljit_b to sljit_sb. Reason: their sign
+    bit is part of the type now.
+
+20.10.2012 - Non-backward compatible
+    Renaming SLJIT_C_FLOAT_NAN to SLJIT_C_FLOAT_UNORDERED.
+    Reason: all architectures call these unordered comparions.
