@@ -44,10 +44,6 @@ namespace BizHawk.Client.Common
 			Log($"{scope} is not an available scope for {Emulator.Attributes().CoreName}");
 		}
 
-		[LuaMethod("can_use_callback_params", "Returns true. Check this function exists to decide whether to use hacks for older versions w/o parameter support.")]
-		[LuaMethodExample("local mem_callback = event.can_use_callback_params ~= nil and mem_callback or mem_callback_pre_28;")]
-		public bool CanUseCallbackParams()
-			=> true;
 
 		[LuaMethodExample("local steveonf = event.onframeend(\r\n\tfunction()\r\n\t\tconsole.log( \"Calls the given lua function at the end of each frame, after all emulation and drawing has completed. Note: this is the default behavior of lua scripts\" );\r\n\tend\r\n\t, \"Frame name\" );")]
 		[LuaMethod("onframeend", "Calls the given lua function at the end of each frame, after all emulation and drawing has completed. Note: this is the default behavior of lua scripts")]
@@ -72,7 +68,7 @@ namespace BizHawk.Client.Common
 			{
 				try
 				{
-					InputPollableCore.InputCallbacks.Add(nlf.InputCallback);
+					InputPollableCore.InputCallbacks.Add(nlf.Callback);
 					return nlf.Guid.ToString();
 				}
 				catch (NotImplementedException)
