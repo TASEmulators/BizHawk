@@ -309,7 +309,9 @@ static inline SaveType DetectSaveType(u8* rom)
 	return ret;
 }
 
-EXPORT bool Init(ControllerType* controllers, bool pal)
+namespace ares::Nintendo64 { extern bool RestrictAnalogRange; }
+
+EXPORT bool Init(ControllerType* controllers, bool restrictAnalogRange, bool pal)
 {
 	FILE* f;
 	array_view<u8>* data;
@@ -414,6 +416,8 @@ EXPORT bool Init(ControllerType* controllers, bool pal)
 			return false;
 		}
 	}
+
+	ares::Nintendo64::RestrictAnalogRange = restrictAnalogRange;
 
 	root->power(false);
 	HackeryDoo();
