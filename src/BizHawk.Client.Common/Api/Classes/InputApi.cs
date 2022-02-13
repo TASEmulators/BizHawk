@@ -24,7 +24,7 @@ namespace BizHawk.Client.Common
 			return buttons;
 		}
 
-		public Dictionary<string, object> GetMouse()
+		public IReadOnlyDictionary<string, object> GetMouse()
 		{
 			var (pos, scroll, lmb, mmb, rmb, x1mb, x2mb) = _inputManager.GetMainFormMouseInfo();
 			// TODO - need to specify whether in "emu" or "native" coordinate space.
@@ -41,5 +41,13 @@ namespace BizHawk.Client.Common
 				["Wheel"] = scroll
 			};
 		}
+
+		public IReadOnlyDictionary<string, int> GetPressedAxes()
+			=> _inputManager.ControllerInputCoalescer.AxisValues().ToDictionary(static kvp => kvp.Key, static kvp => kvp.Value);
+
+		public IReadOnlyList<string> GetPressedButtons()
+			=> _inputManager.ControllerInputCoalescer.BoolButtons().Where(static kvp => kvp.Value)
+				.Select(static kvp => kvp.Key).ToList();
 	}
 }
+

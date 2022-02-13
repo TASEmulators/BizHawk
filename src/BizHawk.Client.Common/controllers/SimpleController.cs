@@ -44,7 +44,9 @@ namespace BizHawk.Client.Common
 
 		public void SetHapticChannelStrength(string name, int strength) => HapticFeedback[name] = strength;
 
-		public IDictionary<string, bool> BoolButtons() => Buttons;
+		public IReadOnlyDictionary<string, int> AxisValues() => Axes;
+
+		public IReadOnlyDictionary<string, bool> BoolButtons() => Buttons;
 
 		public void AcceptNewAxis(string axisId, int value)
 		{

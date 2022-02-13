@@ -2,6 +2,8 @@
 
 namespace BizHawk.Client.Common
 {
+	/// <summary>for querying or modifying virtual input</summary>
+	/// <seealso cref="IInputApi"/>
 	public interface IJoypadApi : IExternalApi
 	{
 		IReadOnlyDictionary<string, object> Get(int? controller = null);
