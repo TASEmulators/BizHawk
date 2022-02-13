@@ -44,6 +44,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			[DefaultValue(LibAres64.ControllerType.Unplugged)]
 			public LibAres64.ControllerType P4Controller { get; set; }
 
+			[DisplayName("Restrict Analog Range")]
+			[Description("Restricts analog range to account for physical limitations.")]
+			[DefaultValue(false)]
+			public bool RestrictAnalogRange { get; set; }
+
 			public Ares64SyncSettings() => SettingsUtil.SetDefaultValues(this);
 
 			public Ares64SyncSettings Clone() => MemberwiseClone() as Ares64SyncSettings;

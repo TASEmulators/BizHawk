@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			_exe.AddReadonlyFile(pif, pal ? "pif.pal.rom" : "pif.ntsc.rom");
 			_exe.AddReadonlyFile(rom, "program.rom");
 
-			if (!_core.Init(ControllerSettings, pal))
+			if (!_core.Init(ControllerSettings, _syncSettings.RestrictAnalogRange, pal))
 			{
 				throw new InvalidOperationException("Init returned false!");
 			}
@@ -114,7 +114,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 					ret.BoolButtons.Add($"P{i + 1} C Right");
 					ret.BoolButtons.Add($"P{i + 1} L");
 					ret.BoolButtons.Add($"P{i + 1} R");
-					ret.AddXYPair($"P{i + 1} {{0}} Axis", AxisPairOrientation.RightAndDown, (-32768).RangeTo(32767), 0);
+					ret.AddXYPair($"P{i + 1} {{0}} Axis", AxisPairOrientation.RightAndUp, (-128).RangeTo(127), 0);
 					if (controllerSettings[i] == LibAres64.ControllerType.Rumblepak)
 					{
 						ret.HapticsChannels.Add($"P{i + 1} Rumble Pak");

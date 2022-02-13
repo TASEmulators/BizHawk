@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores
 				{
 					if (ss.Controllers[i].IsConnected)
 					{
-						yield return StandardController(i + 1, MupenRange);
+						yield return StandardController(i + 1);
 					}
 				}
 			}
@@ -32,16 +32,15 @@ namespace BizHawk.Emulation.Cores
 				{
 					if (ares64.ControllerSettings[i] != LibAres64.ControllerType.Unplugged)
 					{
-						yield return StandardController(i + 1, AresRange);
+						yield return StandardController(i + 1);
 					}
 				}
 			}
 		}
 
-		private static readonly Func<bool, AxisSpec> MupenRange = (bool isY) => new((-128).RangeTo(127), 0, false);
-		private static readonly Func<bool, AxisSpec> AresRange = (bool isY) => new((-32768).RangeTo(32767), 0, isY);
+		private static readonly Func<AxisSpec> MakeRange = () => new((-128).RangeTo(127), 0);
 
-		private static PadSchema StandardController(int controller, Func<bool, AxisSpec> makeRange)
+		private static PadSchema StandardController(int controller)
 		{
 			return new PadSchema
 			{
@@ -64,8 +63,8 @@ namespace BizHawk.Emulation.Cores
 					new ButtonSchema(194, 221, controller, "C Right") { Icon = VGamepadButtonImage.YellowArrE },
 					new AnalogSchema(6, 14, $"P{controller} X Axis")
 					{
-						Spec = makeRange(false),
-						SecondarySpec = makeRange(true)
+						Spec = MakeRange(),
+						SecondarySpec = MakeRange()
 					}
 				}
 			};
