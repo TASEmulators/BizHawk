@@ -39,18 +39,19 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 		public new class FrameInfo : LibWaterboxCore.FrameInfo
 		{
 			public Buttons P1Buttons;
+			public Buttons P2Buttons;
+			public Buttons P3Buttons;
+			public Buttons P4Buttons;
+
 			public short P1XAxis;
 			public short P1YAxis;
 
-			public Buttons P2Buttons;
 			public short P2XAxis;
 			public short P2YAxis;
 
-			public Buttons P3Buttons;
 			public short P3XAxis;
 			public short P3YAxis;
 
-			public Buttons P4Buttons;
 			public short P4XAxis;
 			public short P4YAxis;
 
