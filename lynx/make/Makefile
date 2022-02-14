@@ -11,7 +11,7 @@ else
 	$(error Unknown arch)
 endif
 
-CXXFLAGS = -Wall -Wno-parentheses -I.. -O3 -std=gnu++11 -fomit-frame-pointer -fno-exceptions -flto -fPIC
+CXXFLAGS = -Wall -Wno-parentheses -I.. -O3 -std=gnu++11 -fomit-frame-pointer -fno-exceptions -flto -fPIC -fvisibility=internal
 TARGET = bizlynx.dll
 
 LDFLAGS_32 = -static -static-libgcc -static-libstdc++
