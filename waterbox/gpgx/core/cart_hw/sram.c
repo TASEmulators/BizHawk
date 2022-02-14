@@ -66,11 +66,8 @@ extern int cinterface_force_sram;
  ****************************************************************************/
 void sram_init()
 {
-  memset(&sram, 0, sizeof (T_SRAM));
-
-  /* backup RAM data is stored above cartridge ROM area, at $800000-$80FFFF (max. 64K) */
-  if (cart.romsize > 0x800000) return;
-  sram.sram = malloc(0x10000);
+ /* disable Backup RAM by default */
+  sram.detected = sram.on = sram.custom = sram.start = sram.end = 0;
 
   /* initialize Backup RAM */
   memset(sram.sram, 0xFF, 0x10000);
