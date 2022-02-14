@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 		static Lynx()
 		{
 			var resolver = new DynamicLibraryImportResolver(
-				OSTailoredCode.IsUnixHost ? "bizlynx.dll.so" : "bizlynx.dll", hasLimitedLifetime: false);
+				OSTailoredCode.IsUnixHost ? "libbizlynx.dll.so" : "bizlynx.dll", hasLimitedLifetime: false);
 			LibLynx = BizInvoker.GetInvoker<LibLynx>(resolver, CallingConventionAdapters.Native);
 		}
 
