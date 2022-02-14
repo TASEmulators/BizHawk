@@ -2,6 +2,8 @@
 using System.Text;
 using System.IO;
 
+using BizHawk.BizInvoke;
+using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
@@ -11,6 +13,15 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(IRegionable), typeof(ISettable<,>) })]
 	public partial class Lynx : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IInputPollable
 	{
+		private static readonly LibLynx LibLynx;
+
+		static Lynx()
+		{
+			var resolver = new DynamicLibraryImportResolver(
+				OSTailoredCode.IsUnixHost ? "libbizlynx.dll.so" : "bizlynx.dll", hasLimitedLifetime: false);
+			LibLynx = BizInvoker.GetInvoker<LibLynx>(resolver, CallingConventionAdapters.Native);
+		}
+
 		[CoreConstructor(VSystemID.Raw.Lynx)]
 		public Lynx(byte[] file, GameInfo game, CoreComm comm)
 		{
