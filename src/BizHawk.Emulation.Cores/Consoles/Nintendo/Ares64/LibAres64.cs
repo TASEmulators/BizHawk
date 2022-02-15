@@ -59,8 +59,31 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			public bool Power;
 		}
 
+		[Flags]
+		public enum LoadFlags : uint
+		{
+			RestrictAnalogRange = 1 << 0,
+			Pal = 1 << 1,
+			// performance only flags
+			UseVulkan = 1 << 2,
+			SuperSample = 1 << 3,
+		}
+
+		public class LoadData
+		{
+			public IntPtr PifData;
+			public int PifLen;
+			public IntPtr RomData;
+			public int RomLen;
+			// performance only data
+			public int VulkanUpscale;
+		}
+
 		[BizImport(CC)]
-		public abstract bool Init(ControllerType[] controllerSettings, bool restrictAnalogRange, bool pal);
+		public abstract bool Init(LoadData loadData, ControllerType[] controllerSettings, LoadFlags loadFlags);
+
+		[BizImport(CC)]
+		public abstract void Deinit();
 
 		[BizImport(CC)]
 		public abstract bool GetRumbleStatus(int num);

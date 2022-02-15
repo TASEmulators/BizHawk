@@ -6,9 +6,9 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Properties;
 using BizHawk.Emulation.Cores.Waterbox;
 
-namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
+namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64.Accuracy
 {
-	[PortedCore(CoreNames.Ares64, "ares team, Near", "v126", "https://ares-emulator.github.io/", isReleased: false)]
+	[PortedCore(CoreNames.Ares64Accuracy, "ares team, Near", "v126", "https://ares-emulator.github.io/", isReleased: false)]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), })]
 	public partial class Ares64 : WaterboxCore, IRegionable
 	{
@@ -68,18 +68,31 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 				VsyncDenominator = 1;
 			}
 
+			LibAres64.LoadFlags loadFlags = 0;
+			if (_syncSettings.RestrictAnalogRange)
+				loadFlags |= LibAres64.LoadFlags.RestrictAnalogRange;
+			if (pal)
+				loadFlags |= LibAres64.LoadFlags.Pal;
+
 			var pif = Util.DecompressGzipFile(new MemoryStream(pal ? Resources.PIF_PAL_ROM.Value : Resources.PIF_NTSC_ROM.Value));
 
-			_exe.AddReadonlyFile(pif, pal ? "pif.pal.rom" : "pif.ntsc.rom");
-			_exe.AddReadonlyFile(rom, "program.rom");
-
-			if (!_core.Init(ControllerSettings, _syncSettings.RestrictAnalogRange, pal))
+			unsafe
 			{
-				throw new InvalidOperationException("Init returned false!");
+				fixed (byte* pifPtr = pif, romPtr = rom)
+				{
+					var loadData = new LibAres64.LoadData()
+					{
+						PifData = (IntPtr)pifPtr,
+						PifLen = pif.Length,
+						RomData = (IntPtr)romPtr,
+						RomLen = rom.Length,
+					};
+					if (!_core.Init(loadData, ControllerSettings, loadFlags))
+					{
+						throw new InvalidOperationException("Init returned false!");
+					}
+				}
 			}
-
-			_exe.RemoveReadonlyFile(pal ? "pif.pal.rom" : "pif.ntsc.rom");
-			_exe.RemoveReadonlyFile("program.rom");
 
 			PostInit();
 			DeterministicEmulation = true;

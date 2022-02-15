@@ -3,7 +3,7 @@ using System.ComponentModel;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
+namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64.Accuracy
 {
 	public partial class Ares64 : ISettable<object, Ares64.Ares64SyncSettings>
 	{
