@@ -95,7 +95,9 @@ auto BizPlatform::input(ares::Node::Input::Input node) -> void
 
 static ares::Node::System root = nullptr;
 static BizPlatform* platform = nullptr;
-static std::vector<array_view<u8>> roms;
+static array_view<u8>* pifData = nullptr;
+static array_view<u8>* romData = nullptr;
+static array_view<u8>* saveData = nullptr;
 
 static inline void HackeryDoo()
 {
@@ -349,10 +351,11 @@ EXPORT void Deinit();
 EXPORT bool Init(LoadData* loadData, ControllerType* controllers, LoadFlags loadFlags)
 {
 	if (Inited) Deinit();
-	
+
 	platform = new BizPlatform;
 	platform->bizpak = new vfs::directory;
 
+	u8* data;
 	u32 len;
 	string name;
 
@@ -360,21 +363,23 @@ EXPORT bool Init(LoadData* loadData, ControllerType* controllers, LoadFlags load
 
 	name = pal ? "pif.pal.rom" : "pif.ntsc.rom";
 	len = loadData->PifLen;
-	roms.push_back(array_view<u8>(new u8[len], len));
-	memcpy((void*)roms.back().data(), loadData->PifData, len);
-	platform->bizpak->append(name, roms.back());
+	data = new u8[len];
+	memcpy(data, loadData->PifData, len);
+	pifData = new array_view<u8>(data, len);
+	platform->bizpak->append(name, *pifData);
 
 	name = "program.rom";
 	len = loadData->RomLen;
-	roms.push_back(array_view<u8>(new u8[len], len));
-	memcpy((void*)roms.back().data(), loadData->RomData, len);
-	platform->bizpak->append(name, roms.back());
+	data = new u8[len];
+	memcpy(data, loadData->RomData, len);
+	romData = new array_view<u8>(data, len);
+	platform->bizpak->append(name, *romData);
 
 	string region = pal ? "PAL" : "NTSC";
 	platform->bizpak->setAttribute("region", region);
 
 	string cic = pal ? "CIC-NUS-7101" : "CIC-NUS-6102";
-	u32 crc32 = Hash::CRC32({&((u8*)roms.back().data())[0x40], 0x9C0}).value();
+	u32 crc32 = Hash::CRC32({&data[0x40], 0x9C0}).value();
 	if (crc32 == 0x1DEB51A9) cic = pal ? "CIC-NUS-7102" : "CIC-NUS-6101";
 	if (crc32 == 0xC08E5BD6) cic = pal ? "CIC-NUS-7101" : "CIC-NUS-6102";
 	if (crc32 == 0x03B8376A) cic = pal ? "CIC-NUS-7103" : "CIC-NUS-6103";
@@ -382,7 +387,7 @@ EXPORT bool Init(LoadData* loadData, ControllerType* controllers, LoadFlags load
 	if (crc32 == 0xD1059C6A) cic = pal ? "CIC-NUS-7106" : "CIC-NUS-6106";
 	platform->bizpak->setAttribute("cic", cic);
 
-	SaveType save = DetectSaveType((u8*)roms.back().data());
+	SaveType save = DetectSaveType(data);
 	if (save != NONE)
 	{
 		switch (save)
@@ -394,17 +399,18 @@ EXPORT bool Init(LoadData* loadData, ControllerType* controllers, LoadFlags load
 			case FLASH128KB: len = 128 * 1024; name = "save.flash"; break;
 			default: Deinit(); return false;
 		}
-		roms.push_back(array_view<u8>(new u8[len], len)); // not really a rom, but this isn't going to be written after, so...
-		memset((void*)roms.back().data(), 0xFF, len);
-		platform->bizpak->append(name, roms.back());
+		data = new u8[len];
+		memset(data, 0xFF, len);
+		saveData = new array_view<u8>(data, len);
+		platform->bizpak->append(name, *saveData);
 	}
 
 	ares::platform = platform;
 
 #ifndef WATERBOXED
-	ares::Nintendo64::option("Enable Vulkan", name = (loadFlags & USE_VULKAN) ? "1" : "0");
-	ares::Nintendo64::option("Quality", name = loadData->VulkanUpscale == 1 ? "1" : (loadData->VulkanUpscale == 2 ? "2" : "4"));
-	ares::Nintendo64::option("Supersampling", name = (loadFlags & SUPER_SAMPLE) ? "1" : "0");
+	ares::Nintendo64::option("Enable Vulkan", !!(loadFlags & USE_VULKAN));
+	ares::Nintendo64::option("Quality", loadData->VulkanUpscale);
+	ares::Nintendo64::option("Supersampling", !!(loadFlags & SUPER_SAMPLE));
 #endif
 
 	if (!ares::Nintendo64::load(root, {"[Nintendo] Nintendo 64 (", region, ")"}))
@@ -474,11 +480,21 @@ EXPORT void Deinit()
 		if (platform->bizpak) platform->bizpak.reset();
 		delete platform;
 	}
-	for (auto rom = roms.begin(); rom != roms.end(); rom++)
+	if (pifData)
 	{
-		delete[] (u8*)rom->data();
+		delete[] (u8*)pifData->data();
+		delete pifData;
 	}
-	roms.clear();
+	if (romData)
+	{
+		delete[] (u8*)romData->data();
+		delete romData;
+	}
+	if (saveData)
+	{
+		delete[] (u8*)saveData->data();
+		delete saveData;
+	}
 	Inited = false;
 }
 

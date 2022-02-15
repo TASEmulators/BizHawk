@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64.Performance
 
 			[DisplayName("Enable Vulkan")]
 			[Description("Enables Vulkan RDP. May fallback to software RDP if your GPU does not support Vulkan.")]
-			[DefaultValue(false)]
+			[DefaultValue(true)]
 			public bool EnableVulkan { get; set; }
 
 			[DisplayName("Super Sample")]
@@ -62,17 +62,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64.Performance
 			[DefaultValue(false)]
 			public bool SuperSample { get; set; }
 
-			[JsonIgnore]
-			private int _vulkanUpscale;
-
-			[DisplayName("Vulkan Upscale Factor")]
+			[DisplayName("Vulkan Upscale")]
 			[Description("")]
-			[DefaultValue(1)]
-			public int VulkanUpscale
-			{
-				get => _vulkanUpscale = Math.Min(Math.Max(_vulkanUpscale, 1), 3);
-				set => _vulkanUpscale = value;
-			}
+			[DefaultValue(LibAres64.VulkanUpscaleOpts.SD)]
+			public LibAres64.VulkanUpscaleOpts VulkanUpscale { get; set; }
 
 			public Ares64SyncSettings() => SettingsUtil.SetDefaultValues(this);
 

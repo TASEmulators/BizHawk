@@ -69,7 +69,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			SuperSample = 1 << 3,
 		}
 
-		public class LoadData
+		public enum VulkanUpscaleOpts : uint
+		{
+			SD = 1,
+			HD = 2,
+			UHD = 4,
+		}
+
+		public struct LoadData
 		{
 			public IntPtr PifData;
 			public int PifLen;
@@ -79,7 +86,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			public int VulkanUpscale;
 		}
 
-		[BizImport(CC)]
+		[BizImport(CC, Compatibility = true)]
 		public abstract bool Init(LoadData loadData, ControllerType[] controllerSettings, LoadFlags loadFlags);
 
 		[BizImport(CC)]

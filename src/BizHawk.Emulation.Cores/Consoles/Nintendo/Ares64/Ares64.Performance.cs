@@ -61,6 +61,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64.Performance
 
 			_syncSettings = lp.SyncSettings ?? new();
 
+			int upscale = _syncSettings.EnableVulkan ? (int)_syncSettings.VulkanUpscale : 1;
+			_videoBuffer = new int[640 * upscale * 576 * upscale];
+
 			ControllerSettings = new[]
 			{
 				_syncSettings.P1Controller,
@@ -106,6 +109,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64.Performance
 						PifLen = pif.Length,
 						RomData = (IntPtr)romPtr,
 						RomLen = rom.Length,
+						VulkanUpscale = upscale,
 					};
 					if (!_core.Init(loadData, ControllerSettings, loadFlags))
 					{
@@ -297,7 +301,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64.Performance
 
 		public int[] GetVideoBuffer() => _videoBuffer;
 
-		private readonly int[] _videoBuffer = new int[640 * 576];
+		private readonly int[] _videoBuffer;
 
 		public int VirtualWidth => 640;
 

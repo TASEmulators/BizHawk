@@ -17,14 +17,11 @@ CXXFLAGS := -std=c++17 -msse4.2 -O3 -flto -fvisibility=internal \
 LDFLAGS := -shared
 
 ifeq ($(OS),Windows_NT)
-	CXXFLAGS += -DOSD_WINDOWS=1
-else
-	CXXFLAGS += -DSDLMAME_LINUX
-endif
-
-ifeq ($(OS),Windows_NT)
+	CCFLAGS += -DVK_USE_PLATFORM_WIN32_KHR
+	CXXFLAGS += -DVK_USE_PLATFORM_WIN32_KHR -DOSD_WINDOWS=1
 	TARGET = libares64.dll
 else
+	CXXFLAGS += -DSDLMAME_LINUX
 	TARGET = libares64.so
 endif
 
@@ -98,8 +95,8 @@ PARALLEL_RDP_INCLUDE_DIRS = \
 	-I.$(PARALLEL_RDP_IMPLEMENTATION)/vulkan-headers/include \
 	-I.$(PARALLEL_RDP_IMPLEMENTATION)/util
 
-CXXFLAGS := $(CXXFLAGS) $(PARALLEL_RDP_INCLUDE_DIRS) -DVULKAN -DGRANITE_VULKAN_MT
-CCFLAGS := $(PARALLEL_RDP_INCLUDE_DIRS)
+CXXFLAGS += $(PARALLEL_RDP_INCLUDE_DIRS) -DVULKAN -DGRANITE_VULKAN_MT
+CCFLAGS += $(PARALLEL_RDP_INCLUDE_DIRS)
 
 SRCS_MAME = \
 	$(MAME_PATH)/emu/emucore.cpp \
@@ -119,8 +116,8 @@ SRCS_SLJIT = \
 SRCS = $(SRCS_LIBCO) $(SRCS_PROCESSORS) $(SRCS_ARES) $(SRCS_N64) $(SRCS_PARALLEL_RDP) $(SRCS_MAME) $(SRCS_SLJIT) BizInterface.cpp
 
 ROOT_DIR := $(shell dirname $(realpath Performance.mak))
-OUTPUTDLL_DIR := $(realpath $(WATERBOX_DIR)/../Assets/dll)
-OUTPUTDLLCOPY_DIR := $(realpath $(WATERBOX_DIR)/../output/dll)
+OUTPUTDLL_DIR := $(realpath $(ROOT_DIR)/../../Assets/dll)
+OUTPUTDLLCOPY_DIR := $(realpath $(ROOT_DIR)/../../output/dll)
 OUT_DIR := $(ROOT_DIR)/obj
 OBJ_DIR := $(OUT_DIR)/release_performance
 
