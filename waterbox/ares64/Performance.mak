@@ -2,7 +2,7 @@ ARES_PATH = $(ROOT_DIR)/ares/ares
 MAME_PATH = $(ROOT_DIR)/ares/thirdparty/mame
 SLJIT_PATH = $(ROOT_DIR)/ares/thirdparty/sljit
 
-CCFLAGS := -std=c99 -Wall
+CCFLAGS := -std=c99 -Wall -Wno-format -Wno-parentheses
 
 CXXFLAGS := -std=c++17 -msse4.2 -O3 -flto -fvisibility=internal \
 	-I../libco -I.$(ROOT_DIR)/ares/ -I.$(ROOT_DIR)/ares/thirdparty/ -I.$(ARES_PATH) \
