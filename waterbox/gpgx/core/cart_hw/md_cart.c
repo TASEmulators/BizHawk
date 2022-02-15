@@ -473,39 +473,39 @@ void md_cart_init(void)
 
     case TYPE_SK:
     {
-      /* store S&K ROM above cartridge ROM (and before backup memory) */
-      if (cart.romsize > 0x600000) break;
+      /* store Sonic & Knuckles ROM files after cartridge ROM area */
+      if (cart.romsize > 0x400000) break;
 
-      /* try to load Sonic & Knuckles ROM file (2 MB) */
-      if (load_archive(SK_ROM, cart.rom + 0x600000, 0x200000, NULL) == 0x200000)
+      /* try to load Sonic & Knuckles ROM file (2MB) */
+      if (load_archive(SK_ROM, cart.rom + 0x400000, 0x200000, NULL) == 0x200000)
       {
         /* check ROM header */
-        if (!memcmp(cart.rom + 0x600000 + 0x120, "SONIC & KNUCKLES",16))
+        if (!memcmp(cart.rom + 0x400000 + 0x120, "SONIC & KNUCKLES",16))
         {
-          /* try to load Sonic 2 & Knuckles UPMEM ROM (256 KB) */
-          if (load_archive(SK_UPMEM, cart.rom + 0x900000, 0x40000, NULL) == 0x40000)
+          /* try to load Sonic 2 & Knuckles upmem ROM file (256KB) */
+          if (load_archive(SK_UPMEM, cart.rom + 0x600000, 0x40000, NULL) == 0x40000)
           {
             /* $000000-$1FFFFF is mapped to S&K ROM */
             for (i=0x00; i<0x20; i++)
             {
-              m68k.memory_map[i].base = cart.rom + 0x600000 + (i << 16);
+              m68k.memory_map[i].base = cart.rom + 0x400000 + (i << 16);
             }
 
 #ifdef LSB_FIRST
             for (i=0; i<0x200000; i+=2)
             {
               /* Byteswap ROM */
-              uint8 temp = cart.rom[i + 0x600000];
-              cart.rom[i + 0x600000] = cart.rom[i + 0x600000 + 1];
-              cart.rom[i + 0x600000 + 1] = temp;
+              uint8 temp = cart.rom[i + 0x400000];
+              cart.rom[i + 0x400000] = cart.rom[i + 0x400000 + 1];
+              cart.rom[i + 0x400000 + 1] = temp;
             }
 
             for (i=0; i<0x40000; i+=2)
             {
               /* Byteswap ROM */
-              uint8 temp = cart.rom[i + 0x900000];
-              cart.rom[i + 0x900000] = cart.rom[i + 0x900000 + 1];
-              cart.rom[i + 0x900000 + 1] = temp;
+              uint8 temp = cart.rom[i + 0x600000];
+              cart.rom[i + 0x600000] = cart.rom[i + 0x600000 + 1];
+              cart.rom[i + 0x600000 + 1] = temp;
             }
 #endif
             cart.special |= HW_LOCK_ON;
@@ -564,16 +564,16 @@ void md_cart_init(void)
   /* Realtec mapper */
   if (cart.hw.realtec)
   {
-    /* 8k BOOT ROM */
+    /* copy 8KB Boot ROM after cartridge ROM area */
     for (i=0; i<8; i++)
     {
-      memcpy(cart.rom + 0x900000 + i*0x2000, cart.rom + 0x7e000, 0x2000);
+      memcpy(cart.rom + 0x400000 + i*0x2000, cart.rom + 0x7e000, 0x2000);
     }
 
-    /* BOOT ROM is mapped to $000000-$3FFFFF */
+    /* Boot ROM (8KB mirrored) is mapped to $000000-$3FFFFF */
     for (i=0x00; i<0x40; i++)
     {
-      m68k.memory_map[i].base = cart.rom + 0x900000;
+      m68k.memory_map[i].base = cart.rom + 0x400000;
     }
   }
 
@@ -845,12 +845,12 @@ static void mapper_sega_w(uint32 data)
     }
 
     /* S&K lock-on chip */
-    if ((cart.special & HW_LOCK_ON) && (config.lock_on == TYPE_SK))
+     if (cart.special & HW_LOCK_ON)
     {
-      /* S2K upmem chip mapped to $300000-$3fffff (256K mirrored) */
+      /* S2K upmem chip mapped to $300000-$3fffff (256KB mirrored) */
       for (i=0x30; i<0x40; i++)
       {
-        m68k.memory_map[i].base = (cart.rom + 0x900000) + ((i & 3) << 16);
+        m68k.memory_map[i].base = (cart.rom + 0x600000) + ((i & 3) << 16);
       }
     }
   }

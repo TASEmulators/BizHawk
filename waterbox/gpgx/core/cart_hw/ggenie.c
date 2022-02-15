@@ -64,9 +64,9 @@ void ggenie_init(void)
   
   memset(&ggenie,0,sizeof(ggenie));
 
-  /* Store Game Genie ROM (32k) above cartridge ROM + SRAM area */
-  if (cart.romsize > 0x810000) return;
-  ggenie.rom = cart.rom + 0x810000;
+    /* Store Game Genie ROM (32KB) above cartridge ROM (max. 8MB) */
+  if (cart.romsize > 0x800000) return;
+  ggenie.rom = cart.rom + 0x800000;
 
   /* Open Game Genie ROM file */
   f = fopen(GG_ROM,"rb");
