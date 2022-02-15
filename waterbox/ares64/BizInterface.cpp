@@ -1,7 +1,16 @@
 #include <n64/n64.hpp>
 
+#if WATERBOXED
 #include <emulibc.h>
 #include <waterboxcore.h>
+#endif
+
+#include <vector>
+
+#ifndef WATERBOXED
+#define ECL_EXPORT __attribute__((visibility("default")))
+#include "../emulibc/waterboxcore.h"
+#endif
 
 #define EXPORT extern "C" ECL_EXPORT
 
@@ -38,7 +47,7 @@ struct BizPlatform : ares::Platform
 	auto video(ares::Node::Video::Screen, const u32*, u32, u32, u32) -> void override;
 	auto input(ares::Node::Input::Input) -> void override;
 
-	ares::VFS::Pak bizpak = new vfs::directory;
+	ares::VFS::Pak bizpak = nullptr;
 	ares::Node::Audio::Stream stream = nullptr;
 	u32* videobuf = nullptr;
 	u32 pitch = 0;
@@ -84,16 +93,17 @@ auto BizPlatform::input(ares::Node::Input::Input node) -> void
 	}
 };
 
-static ares::Node::System root;
-static BizPlatform platform;
+static ares::Node::System root = nullptr;
+static BizPlatform* platform = nullptr;
+static std::vector<array_view<u8>> roms;
 
 static inline void HackeryDoo()
 {
 	root->run();
 	root->run();
-	platform.newframe = false;
+	platform->newframe = false;
 	f64 buf[2];
-	while (platform.stream->pending()) platform.stream->read(buf);
+	while (platform->stream->pending()) platform->stream->read(buf);
 }
 
 typedef enum
@@ -311,46 +321,68 @@ static inline SaveType DetectSaveType(u8* rom)
 
 namespace ares::Nintendo64 { extern bool RestrictAnalogRange; }
 
-EXPORT bool Init(ControllerType* controllers, bool restrictAnalogRange, bool pal)
+bool Inited = false;
+
+typedef struct
 {
-	FILE* f;
-	array_view<u8>* data;
+	u8* PifData;
+	u32 PifLen;
+	u8* RomData;
+	u32 RomLen;
+#ifndef WATERBOXED
+	u32 VulkanUpscale;
+#endif
+} LoadData;
+
+typedef enum
+{
+	RESTRICT_ANALOG_RANGE = 1 << 0,
+	IS_PAL = 1 << 1,
+#ifndef WATERBOXED
+	USE_VULKAN = 1 << 2,
+	SUPER_SAMPLE = 1 << 3,
+#endif
+} LoadFlags;
+
+EXPORT void Deinit();
+
+EXPORT bool Init(LoadData* loadData, ControllerType* controllers, LoadFlags loadFlags)
+{
+	if (Inited) Deinit();
+	
+	platform = new BizPlatform;
+	platform->bizpak = new vfs::directory;
+
 	u32 len;
 	string name;
 
+	bool pal = loadFlags & IS_PAL;
+
 	name = pal ? "pif.pal.rom" : "pif.ntsc.rom";
-	f = fopen(name, "rb");
-	fseek(f, 0, SEEK_END);
-	len = ftell(f);
-	data = new array_view<u8>(new u8[len], len);
-	fseek(f, 0, SEEK_SET);
-	fread((void*)data->data(), 1, len, f);
-	fclose(f);
-	platform.bizpak->append(name, *data);
+	len = loadData->PifLen;
+	roms.push_back(array_view<u8>(new u8[len], len));
+	memcpy((void*)roms.back().data(), loadData->PifData, len);
+	platform->bizpak->append(name, roms.back());
 
 	name = "program.rom";
-	f = fopen(name, "rb");
-	fseek(f, 0, SEEK_END);
-	len = ftell(f);
-	data = new array_view<u8>(new u8[len], len);
-	fseek(f, 0, SEEK_SET);
-	fread((void*)data->data(), 1, len, f);
-	fclose(f);
-	platform.bizpak->append(name, *data);
+	len = loadData->RomLen;
+	roms.push_back(array_view<u8>(new u8[len], len));
+	memcpy((void*)roms.back().data(), loadData->RomData, len);
+	platform->bizpak->append(name, roms.back());
 
 	string region = pal ? "PAL" : "NTSC";
-	platform.bizpak->setAttribute("region", region);
+	platform->bizpak->setAttribute("region", region);
 
 	string cic = pal ? "CIC-NUS-7101" : "CIC-NUS-6102";
-	u32 crc32 = Hash::CRC32({&((u8*)data->data())[0x40], 0x9C0}).value();
+	u32 crc32 = Hash::CRC32({&((u8*)roms.back().data())[0x40], 0x9C0}).value();
 	if (crc32 == 0x1DEB51A9) cic = pal ? "CIC-NUS-7102" : "CIC-NUS-6101";
 	if (crc32 == 0xC08E5BD6) cic = pal ? "CIC-NUS-7101" : "CIC-NUS-6102";
 	if (crc32 == 0x03B8376A) cic = pal ? "CIC-NUS-7103" : "CIC-NUS-6103";
 	if (crc32 == 0xCF7F41DC) cic = pal ? "CIC-NUS-7105" : "CIC-NUS-6105";
 	if (crc32 == 0xD1059C6A) cic = pal ? "CIC-NUS-7106" : "CIC-NUS-6106";
-	platform.bizpak->setAttribute("cic", cic);
+	platform->bizpak->setAttribute("cic", cic);
 
-	SaveType save = DetectSaveType((u8*)data->data());
+	SaveType save = DetectSaveType((u8*)roms.back().data());
 	if (save != NONE)
 	{
 		switch (save)
@@ -360,17 +392,24 @@ EXPORT bool Init(ControllerType* controllers, bool restrictAnalogRange, bool pal
 			case SRAM32KB: len = 32 * 1024; name = "save.ram"; break;
 			case SRAM96KB: len = 96 * 1024; name = "save.ram"; break;
 			case FLASH128KB: len = 128 * 1024; name = "save.flash"; break;
-			default: return false;
+			default: Deinit(); return false;
 		}
-		data = new array_view<u8>(new u8[len], len);
-		memset((void*)data->data(), 0xFF, len);
-		platform.bizpak->append(name, *data);
+		roms.push_back(array_view<u8>(new u8[len], len)); // not really a rom, but this isn't going to be written after, so...
+		memset((void*)roms.back().data(), 0xFF, len);
+		platform->bizpak->append(name, roms.back());
 	}
 
-	ares::platform = &platform;
+	ares::platform = platform;
+
+#ifndef WATERBOXED
+	ares::Nintendo64::option("Enable Vulkan", name = (loadFlags & USE_VULKAN) ? "1" : "0");
+	ares::Nintendo64::option("Quality", name = loadData->VulkanUpscale == 1 ? "1" : (loadData->VulkanUpscale == 2 ? "2" : "4"));
+	ares::Nintendo64::option("Supersampling", name = (loadFlags & SUPER_SAMPLE) ? "1" : "0");
+#endif
 
 	if (!ares::Nintendo64::load(root, {"[Nintendo] Nintendo 64 (", region, ")"}))
 	{
+		Deinit();
 		return false;
 	}
 
@@ -381,6 +420,7 @@ EXPORT bool Init(ControllerType* controllers, bool restrictAnalogRange, bool pal
 	}
 	else
 	{
+		Deinit();
 		return false;
 	}
 
@@ -393,7 +433,6 @@ EXPORT bool Init(ControllerType* controllers, bool restrictAnalogRange, bool pal
 			auto peripheral = port->allocate("Gamepad");
 			port->connect();
 
-			string name;
 			switch (controllers[i])
 			{
 				case Mempak: name = "Controller Pak"; break;
@@ -408,20 +447,39 @@ EXPORT bool Init(ControllerType* controllers, bool restrictAnalogRange, bool pal
 			}
 			else
 			{
+				Deinit();
 				return false;
 			}
 		}
 		else
 		{
+			Deinit();
 			return false;
 		}
 	}
 
-	ares::Nintendo64::RestrictAnalogRange = restrictAnalogRange;
+	ares::Nintendo64::RestrictAnalogRange = loadFlags & RESTRICT_ANALOG_RANGE;
 
 	root->power(false);
 	HackeryDoo();
+	Inited = true;
 	return true;
+}
+
+EXPORT void Deinit()
+{
+	if (root) root->unload();
+	if (platform)
+	{
+		if (platform->bizpak) platform->bizpak.reset();
+		delete platform;
+	}
+	for (auto rom = roms.begin(); rom != roms.end(); rom++)
+	{
+		delete[] (u8*)rom->data();
+	}
+	roms.clear();
+	Inited = false;
 }
 
 EXPORT bool GetRumbleStatus(u32 num)
@@ -544,39 +602,39 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 	UPDATE_CONTROLLER(3);
 	UPDATE_CONTROLLER(4);
 
-	platform.lagged = true;
+	platform->lagged = true;
 
 	root->run();
 
-	f->Width = platform.width;
-	f->Height = platform.height;
-	if (platform.newframe)
+	f->Width = platform->width;
+	f->Height = platform->height;
+	if (platform->newframe)
 	{
-		u32* src = platform.videobuf;
+		u32* src = platform->videobuf;
 		u32* dst = f->VideoBuffer;
 		for (int i = 0; i < f->Height; i++)
 		{
 			memcpy(dst, src, f->Width * 4);
 			dst += f->Width;
-			src += platform.pitch;
+			src += platform->pitch;
 		}
-		platform.newframe = false;
+		platform->newframe = false;
 	}
 
 	s16* soundbuf = f->SoundBuffer;
-	while (platform.stream->pending())
+	while (platform->stream->pending())
 	{
 		f64 buf[2];
-		platform.stream->read(buf);
+		platform->stream->read(buf);
 		*soundbuf++ = (s16)std::clamp(buf[0] * 32768, -32768.0, 32767.0);
 		*soundbuf++ = (s16)std::clamp(buf[1] * 32768, -32768.0, 32767.0);
 		f->Samples++;
 	}
 
-	f->Lagged = platform.lagged;
+	f->Lagged = platform->lagged;
 }
 
 EXPORT void SetInputCallback(void (*callback)())
 {
-	platform.inputcb = callback;
+	platform->inputcb = callback;
 }

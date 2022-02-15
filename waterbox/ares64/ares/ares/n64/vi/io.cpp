@@ -100,7 +100,7 @@ auto VI::writeWord(u32 address, u32 data_) -> void {
   n32 data = data_;
 
   #if defined(VULKAN)
-  vulkan.writeWord(address, data);
+  if (vulkan.enable) vulkan.writeWord(address, data);
   #endif
 
   if(address == 0) {

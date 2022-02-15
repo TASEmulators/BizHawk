@@ -1,0 +1,274 @@
+#version 450
+/* Copyright (c) 2020 Themaister
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the
+ * "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to
+ * the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+// Consumes result from tile_binning_prepass.comp, bins at a finer resolution (8x8 or 16x16 blocks).
+#include "small_types.h"
+
+#if SUBGROUP
+#extension GL_KHR_shader_subgroup_basic : require
+#extension GL_KHR_shader_subgroup_vote : require
+#extension GL_KHR_shader_subgroup_ballot : require
+#extension GL_KHR_shader_subgroup_arithmetic : require
+layout(local_size_x_id = 0) in;
+#else
+// Reasonable default. For AMD (64 threads), subgroups are definitely supported, so this won't be hit.
+layout(local_size_x = 32) in;
+#endif
+
+#include "debug.h"
+#include "data_structures.h"
+#include "binning.h"
+
+layout(constant_id = 1) const int TILE_WIDTH = 8;
+layout(constant_id = 2) const int TILE_HEIGHT = 8;
+layout(constant_id = 3) const int MAX_PRIMITIVES = 256;
+layout(constant_id = 4) const int MAX_WIDTH = 1024;
+layout(constant_id = 5) const int TILE_INSTANCE_STRIDE = 0x8000;
+layout(constant_id = 6) const int SCALE_FACTOR = 1;
+
+const int TILE_BINNING_STRIDE = MAX_PRIMITIVES / 32;
+const int MAX_TILES_X = MAX_WIDTH / TILE_WIDTH;
+
+layout(set = 0, binding = 0, std430) readonly buffer TriangleSetupBuffer
+{
+    TriangleSetupMem elems[];
+} triangle_setup;
+#include "load_triangle_setup.h"
+
+layout(set = 0, binding = 1, std430) readonly buffer ScissorStateBuffer
+{
+    ScissorStateMem elems[];
+} scissor_state;
+#include "load_scissor_state.h"
+
+layout(set = 0, binding = 2, std430) readonly buffer StateIndicesBuffer
+{
+    InstanceIndicesMem elems[];
+} state_indices;
+
+layout(std430, set = 0, binding = 3) writeonly buffer TileBitmask
+{
+    uint binned_bitmask[];
+};
+
+layout(std430, set = 0, binding = 4) writeonly buffer TileBitmaskCoarse
+{
+    uint binned_bitmask_coarse[];
+};
+
+#if !UBERSHADER
+layout(std430, set = 0, binding = 5) writeonly buffer TileInstanceOffset
+{
+    uint elems[];
+} tile_instance_offsets;
+
+layout(std430, set = 0, binding = 6) buffer IndirectBuffer
+{
+    uvec4 elems[];
+} indirect_counts;
+
+// This can actually be uint16_t, but AMD doesn't seem to support loading uint16_t in SMEM unit,
+// the memory traffic for this data structure is not relevant anyways.
+struct TileRasterWork
+{
+    uint tile_x, tile_y;
+    uint tile_instance;
+    uint primitive;
+};
+
+layout(std430, set = 0, binding = 7) writeonly buffer WorkList
+{
+    uvec4 elems[];
+} tile_raster_work;
+#endif
+
+#if !UBERSHADER
+uint allocate_work_offset(uint variant_index)
+{
+#if !SUBGROUP
+    return atomicAdd(indirect_counts.elems[variant_index].x, 1u);
+#else
+    // Merge atomic operations. Compiler would normally do this,
+    // but it might not have figured out that variant_index is uniform.
+    uvec4 active_mask = subgroupBallot(true);
+    uint count = subgroupBallotBitCount(active_mask);
+    uint work_offset = 0u;
+    if (subgroupElect())
+        work_offset = atomicAdd(indirect_counts.elems[variant_index].x, count);
+    work_offset = subgroupBroadcastFirst(work_offset);
+    work_offset += subgroupBallotExclusiveBitCount(active_mask);
+    return work_offset;
+#endif
+}
+#endif
+
+layout(push_constant, std430) uniform Registers
+{
+    uvec2 resolution;
+    int primitive_count;
+} fb_info;
+
+#if !SUBGROUP
+shared uint merged_mask_shared;
+#endif
+
+void main()
+{
+    int group_index = int(gl_WorkGroupID.x);
+    ivec2 meta_tile = ivec2(gl_WorkGroupID.yz);
+
+    const int TILES_X = 8;
+    const int TILES_Y = int(gl_WorkGroupSize.x) >> 3;
+
+#if SUBGROUP
+    // Spec is unclear how gl_LocalInvocationIndex is mapped to gl_SubgroupInvocationID, so synthesize our own.
+    // We know the subgroups are fully occupied with VK_EXT_subgroup_size_control already.
+    int local_index = int(gl_SubgroupInvocationID);
+    int SUBGROUP_TILES_Y = int(gl_SubgroupSize) >> 3;
+#else
+    int local_index = int(gl_LocalInvocationIndex);
+#endif
+
+    int inner_tile_x = local_index & 7;
+    int inner_tile_y = local_index >> 3;
+#if SUBGROUP
+    inner_tile_y += SUBGROUP_TILES_Y * int(gl_SubgroupID);
+#endif
+    ivec2 tile = meta_tile * ivec2(TILES_X, TILES_Y) + ivec2(inner_tile_x, inner_tile_y);
+
+    int linear_tile = tile.y * MAX_TILES_X + tile.x;
+
+    ivec2 base_coord_meta = meta_tile * ivec2(TILE_WIDTH * TILES_X, TILE_HEIGHT * TILES_Y);
+#if SUBGROUP
+    base_coord_meta.y += SUBGROUP_TILES_Y * TILE_HEIGHT * int(gl_SubgroupID);
+    ivec2 end_coord_meta = min(base_coord_meta + ivec2(TILE_WIDTH * TILES_X, TILE_HEIGHT * SUBGROUP_TILES_Y), ivec2(fb_info.resolution)) - 1;
+#else
+    ivec2 end_coord_meta = min(base_coord_meta + ivec2(TILE_WIDTH * TILES_X, TILE_HEIGHT * TILES_Y), ivec2(fb_info.resolution)) - 1;
+#endif
+
+    ivec2 base_coord = tile * ivec2(TILE_WIDTH, TILE_HEIGHT);
+    ivec2 end_coord = min(base_coord + ivec2(TILE_WIDTH, TILE_HEIGHT), ivec2(fb_info.resolution)) - 1;
+
+    int primitive_count = fb_info.primitive_count;
+
+#if !SUBGROUP
+    if (local_index == 0)
+        merged_mask_shared = 0u;
+    barrier();
+#endif
+
+    bool binned = false;
+    if (local_index < 32)
+    {
+        uint primitive_index = group_index * 32 + local_index;
+        if (primitive_index < primitive_count)
+        {
+            ScissorState scissor = load_scissor_state(primitive_index);
+            ivec2 clipped_base_coord = max(base_coord_meta, SCALE_FACTOR * (ivec2(scissor.xlo, scissor.ylo) >> 2) - 1);
+            ivec2 clipped_end_coord = min(end_coord_meta, SCALE_FACTOR * (ivec2(scissor.xhi + 3, scissor.yhi + 3) >> 2) - 1);
+            TriangleSetup setup = load_triangle_setup(primitive_index);
+            binned = bin_primitive(setup, clipped_base_coord, clipped_end_coord, SCALE_FACTOR);
+        }
+    }
+
+#if SUBGROUP
+    uint merged_mask = subgroupBallot(binned).x;
+#else
+    if (binned)
+        atomicOr(merged_mask_shared, 1u << local_index);
+    barrier();
+    uint merged_mask = merged_mask_shared;
+#endif
+
+    uint binned_mask = 0u;
+    while (merged_mask != 0u)
+    {
+        int bit = findLSB(merged_mask);
+        merged_mask &= ~(1u << bit);
+        uint primitive_index = group_index * 32 + bit;
+        ScissorState scissor = load_scissor_state(primitive_index);
+        ivec2 clipped_base_coord = max(base_coord, SCALE_FACTOR * (ivec2(scissor.xlo, scissor.ylo) >> 2));
+        ivec2 clipped_end_coord = min(end_coord, SCALE_FACTOR * (ivec2(scissor.xhi + 3, scissor.yhi + 3) >> 2) - 1);
+        TriangleSetup setup = load_triangle_setup(primitive_index);
+        if (bin_primitive(setup, clipped_base_coord, clipped_end_coord, SCALE_FACTOR))
+            binned_mask |= 1u << bit;
+    }
+
+    binned_bitmask[linear_tile * TILE_BINNING_STRIDE + group_index] = binned_mask;
+    if (binned_mask != 0u)
+        atomicOr(binned_bitmask_coarse[linear_tile], 1u << group_index);
+    else
+        atomicAnd(binned_bitmask_coarse[linear_tile], ~(1u << group_index));
+
+#if SUBGROUP
+#if !UBERSHADER
+    uint bit_count = uint(bitCount(binned_mask));
+    uint instance_offset = 0u;
+    if (subgroupAny(bit_count != 0u))
+    {
+        // Allocate tile instance space for all threads in subgroup in one go.
+        uint total_bit_count = subgroupAdd(bit_count);
+
+        if (subgroupElect())
+            if (total_bit_count != 0u)
+                instance_offset = atomicAdd(indirect_counts.elems[0].w, total_bit_count);
+
+        instance_offset = subgroupBroadcastFirst(instance_offset);
+        instance_offset += subgroupInclusiveAdd(bit_count) - bit_count;
+    }
+#endif
+#else
+#if !UBERSHADER
+    uint bit_count = uint(bitCount(binned_mask));
+    uint instance_offset = 0u;
+    if (bit_count != 0u)
+        instance_offset = atomicAdd(indirect_counts.elems[0].w, bit_count);
+#endif
+#endif
+
+#if !UBERSHADER
+    if (bit_count != 0u)
+        tile_instance_offsets.elems[linear_tile * TILE_BINNING_STRIDE + group_index] = instance_offset;
+
+#if SUBGROUP
+    uint variant_mask = subgroupOr(binned_mask);
+#else
+    uint variant_mask = binned_mask;
+#endif
+
+    while (variant_mask != 0u)
+    {
+        int bit = findLSB(variant_mask);
+        variant_mask &= ~(1u << bit);
+        int primitive_index = group_index * 32 + bit;
+
+        if ((binned_mask & (1u << bit)) != 0u)
+        {
+            uint variant_index = uint(state_indices.elems[primitive_index].static_depth_tmem.x);
+            uint work_offset = allocate_work_offset(variant_index);
+            tile_raster_work.elems[work_offset + uint(TILE_INSTANCE_STRIDE) * variant_index] =
+                uvec4(tile.x, tile.y, instance_offset, primitive_index);
+            instance_offset++;
+        }
+    }
+#endif
+}

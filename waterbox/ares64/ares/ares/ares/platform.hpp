@@ -16,6 +16,7 @@ struct Platform {
   virtual auto pak(Node::Object) -> shared_pointer<vfs::directory> { return {}; }
   virtual auto event(Event) -> void {}
   virtual auto log(string_view message) -> void {}
+  virtual auto status(string_view message) -> void {}
   virtual auto video(Node::Video::Screen, const u32* data, u32 pitch, u32 width, u32 height) -> void {}
   virtual auto audio(Node::Audio::Stream) -> void {}
   virtual auto input(Node::Input::Input) -> void {}

@@ -11,7 +11,8 @@ CXXFLAGS := -std=c++17 -msse4.2 \
 	-fno-strict-aliasing -fwrapv -fno-operator-names \
 	-I.$(MAME_PATH)/devices -I.$(MAME_PATH)/emu \
 	-I.$(MAME_PATH)/lib/util -I.$(MAME_PATH)/mame \
-	-I.$(MAME_PATH)/osd -DMAME_RDP -DLSB_FIRST -DPTR64 -DSDLMAME_EMSCRIPTEN
+	-I.$(MAME_PATH)/osd -DMAME_RDP -DLSB_FIRST -DPTR64 -DSDLMAME_EMSCRIPTEN \
+	-DWATERBOXED
 
 TARGET = ares64.wbx
 

@@ -1,0 +1,279 @@
+#version 450
+/* Copyright (c) 2020 Themaister
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the
+ * "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to
+ * the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+#include "small_types.h"
+#include "fb_formats.h"
+
+layout(local_size_x_id = 3) in;
+
+layout(constant_id = 0) const int RDRAM_SIZE = 8 * 1024 * 1024;
+const int RDRAM_MASK_8 = RDRAM_SIZE - 1;
+const int RDRAM_MASK_16 = RDRAM_MASK_8 >> 1;
+const int RDRAM_MASK_32 = RDRAM_MASK_8 >> 2;
+layout(constant_id = 1) const int FB_SIZE_LOG2 = 0;
+layout(constant_id = 2) const bool COLOR_DEPTH_ALIAS = false;
+layout(constant_id = 4) const int NUM_SAMPLES = 1;
+layout(constant_id = 5) const bool DITHER = false;
+layout(constant_id = 6) const bool RDRAM_UNSCALED_WRITE_MASK = false;
+
+layout(push_constant) uniform Registers
+{
+    uint num_pixels, fb_addr, fb_depth_addr, width, height;
+} registers;
+
+layout(set = 0, binding = 0) writeonly buffer RDRAMSingleSampled8
+{
+    uint8_t elems[];
+} vram8;
+
+layout(set = 0, binding = 0) writeonly buffer RDRAMSingleSampled16
+{
+    uint16_t elems[];
+} vram16;
+
+layout(set = 0, binding = 0) writeonly buffer RDRAMSingleSampled32
+{
+    uint elems[];
+} vram32;
+
+layout(set = 0, binding = 2) writeonly buffer RDRAMUpscalingReference8
+{
+    uint8_t elems[];
+} vram_reference8;
+
+layout(set = 0, binding = 2) writeonly buffer RDRAMUpscalingReference16
+{
+    uint16_t elems[];
+} vram_reference16;
+
+layout(set = 0, binding = 2) writeonly buffer RDRAMUpscalingReference32
+{
+    uint elems[];
+} vram_reference32;
+
+layout(set = 0, binding = 3) readonly buffer RDRAMUpscaling8
+{
+    uint8_t elems[];
+} vram_upscaled8;
+
+layout(set = 0, binding = 3) readonly buffer RDRAMUpscaling16
+{
+    uint16_t elems[];
+} vram_upscaled16;
+
+layout(set = 0, binding = 3) readonly buffer RDRAMUpscaling32
+{
+    uint elems[];
+} vram_upscaled32;
+
+layout(set = 0, binding = 4) readonly buffer RDRAMHiddenUpscaling
+{
+    uint8_t elems[];
+} hidden_vram_upscaled;
+
+void copy_rdram_8(uint index)
+{
+    index &= RDRAM_MASK_8;
+    index ^= 3u;
+
+    uint r = 0u;
+    for (int i = 0; i < NUM_SAMPLES; i++)
+    {
+        uint real_word = uint(vram_upscaled8.elems[index]);
+        r += real_word;
+    }
+
+    r = (r + (NUM_SAMPLES >> 1)) / NUM_SAMPLES;
+    vram_reference8.elems[index] = uint8_t(r);
+    vram8.elems[index] = uint8_t(r);
+
+    if (RDRAM_UNSCALED_WRITE_MASK)
+    {
+        // Need this memory barrier to ensure the mask readback does not read
+        // an invalid value from RDRAM. If the mask is seen, the valid RDRAM value is
+        // also coherent.
+        memoryBarrierBuffer();
+        vram8.elems[index + RDRAM_SIZE] = mem_u8(0xff);
+    }
+
+    // Don't bother writing back hidden VRAM. It is not visible to host anyways, and coverage is meaningless when it's filtered.
+    // If host later decides to modify the CPU memory, then the hidden VRAM values become complete bogus either way.
+}
+
+uvec4 decode_rgba5551(uint word)
+{
+    return (uvec4(word) >> uvec4(11, 6, 1, 0)) & uvec4(0x1f, 0x1f, 0x1f, 1);
+}
+
+uint encode_rgba5551(uvec4 color)
+{
+    return (color.r << 11u) | (color.g << 6u) | (color.b << 1u) | color.a;
+}
+
+const uint bayer_dither_lut[16] = uint[](
+    0, 4, 1, 5,
+    4, 0, 5, 1,
+    3, 7, 2, 6,
+    7, 3, 6, 2);
+
+void copy_rdram_16(uint index, uint x, uint y)
+{
+    index &= RDRAM_MASK_16;
+    index ^= 1u;
+
+    uvec4 rgba = uvec4(0u);
+    for (int i = 0; i < NUM_SAMPLES; i++)
+    {
+        uint real_word = uint(vram_upscaled16.elems[index + i * (RDRAM_SIZE >> 1)]);
+        rgba += decode_rgba5551(real_word);
+    }
+
+    if (DITHER)
+    {
+        uint dither_value = bayer_dither_lut[(y & 3u) * 4u + (x & 3u)] * NUM_SAMPLES;
+        rgba = (8u * rgba + dither_value) / (8 * NUM_SAMPLES);
+    }
+    else
+    {
+        rgba = (rgba + (NUM_SAMPLES >> 1)) / NUM_SAMPLES;
+    }
+
+    uint encoded = encode_rgba5551(rgba);
+    vram16.elems[index] = uint16_t(encoded);
+    vram_reference16.elems[index] = uint16_t(encoded);
+
+    if (RDRAM_UNSCALED_WRITE_MASK)
+    {
+        // Need this memory barrier to ensure the mask readback does not read
+        // an invalid value from RDRAM. If the mask is seen, the valid RDRAM value is
+        // also coherent.
+        memoryBarrierBuffer();
+        vram16.elems[index + (RDRAM_SIZE >> 1u)] = mem_u16(0xffff);
+    }
+
+    // Don't bother writing back hidden VRAM. It is not visible to host anyways, and coverage is meaningless when it's filtered.
+    // If host later decides to modify the CPU memory, then the hidden VRAM values become complete bogus either way.
+}
+
+void copy_rdram_16_single_sample(uint index)
+{
+    // Copies the first sample. We cannot meaningfully filter depth samples.
+    // The first sample should overlap exactly with the single-sampled version.
+    // Coverage clipping might slightly change the result, but shouldn't be different enough to break things.
+    index &= RDRAM_MASK_16;
+    index ^= 1u;
+    uint upscaled_word = uint(vram_upscaled16.elems[index]);
+    vram16.elems[index] = uint16_t(upscaled_word);
+    vram_reference16.elems[index] = uint16_t(upscaled_word);
+
+    if (RDRAM_UNSCALED_WRITE_MASK)
+    {
+        // Need this memory barrier to ensure the mask readback does not read
+        // an invalid value from RDRAM. If the mask is seen, the valid RDRAM value is
+        // also coherent.
+        memoryBarrierBuffer();
+        vram16.elems[index + (RDRAM_SIZE >> 1u)] = mem_u16(0xffff);
+    }
+
+    // Don't bother writing back hidden VRAM. It is not visible to host anyways, and coverage is meaningless when it's filtered.
+    // If host later decides to modify the CPU memory, then the hidden VRAM values become complete bogus either way.
+}
+
+uvec4 decode_rgba8(uint word)
+{
+    return (uvec4(word) >> uvec4(24, 16, 8, 0)) & uvec4(0xff);
+}
+
+uint encode_rgba8(uvec4 color)
+{
+    return (color.r << 24u) | (color.g << 16u) | (color.b << 8u) | (color.a << 0u);
+}
+
+void copy_rdram_32(uint index)
+{
+    index &= RDRAM_MASK_32;
+
+    uvec4 rgba = uvec4(0u);
+    for (int i = 0; i < NUM_SAMPLES; i++)
+    {
+        uint real_word = vram_upscaled32.elems[index + i * (RDRAM_SIZE >> 2)];
+        rgba += decode_rgba8(real_word);
+    }
+
+    rgba = (rgba + (NUM_SAMPLES >> 1)) / NUM_SAMPLES;
+    uint encoded = encode_rgba8(rgba);
+    vram32.elems[index] = encoded;
+    vram_reference32.elems[index] = encoded;
+
+    if (RDRAM_UNSCALED_WRITE_MASK)
+    {
+        // Need this memory barrier to ensure the mask readback does not read
+        // an invalid value from RDRAM. If the mask is seen, the valid RDRAM value is
+        // also coherent.
+        memoryBarrierBuffer();
+        vram32.elems[index + (RDRAM_SIZE >> 2u)] = ~0u;
+    }
+
+    // Don't bother writing back hidden VRAM. It is not visible to host anyways, and coverage is meaningless when it's filtered.
+    // If host later decides to modify the CPU memory, then the hidden VRAM values become complete bogus either way.
+}
+
+void main()
+{
+    uvec2 coord = gl_GlobalInvocationID.xy;
+    if (coord.x >= registers.width)
+        return;
+
+    uint index = coord.y * registers.width + coord.x;
+    uint depth_index = index + registers.fb_depth_addr;
+    uint color_index = index + registers.fb_addr;
+
+    uvec2 mask_coord = coord >> 2u;
+    uint mask_index = mask_coord.x + mask_coord.y * ((registers.width + 3) >> 2u);
+    uint write_mask = vram_upscaled32.elems[NUM_SAMPLES * (RDRAM_SIZE >> 2) + mask_index];
+    uint shamt = 2u * ((coord.x & 3u) + 4u * (coord.y & 3u));
+    write_mask = write_mask >> shamt;
+    bool color_write_mask = (write_mask & 1u) != 0u;
+    bool depth_write_mask = (write_mask & 2u) != 0u;
+
+    if (color_write_mask)
+    {
+        switch (FB_SIZE_LOG2)
+        {
+        case 0:
+            copy_rdram_8(color_index);
+            break;
+
+        case 1:
+            copy_rdram_16(color_index, coord.x, coord.y);
+            break;
+
+        case 2:
+            copy_rdram_32(color_index);
+            break;
+        }
+    }
+
+    if (!COLOR_DEPTH_ALIAS && depth_write_mask)
+        copy_rdram_16_single_sample(depth_index);
+}
