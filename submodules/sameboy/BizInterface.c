@@ -244,7 +244,7 @@ static void UpdatePal(biz_t* biz, bool bg)
 				const GB_palette_t* rawPal = GB_get_palette(&biz->gb);
 				for (u32 i = 0; i < 4; i++)
 				{
-					bgPal[i] = rgb_cb(&biz->gb, rawPal->colors[i].r, rawPal->colors[i].g, rawPal->colors[i].b);
+					bgPal[3 - i] = rgb_cb(&biz->gb, rawPal->colors[i].r, rawPal->colors[i].g, rawPal->colors[i].b);
 				}
 			}
 			u8 bgp = PeekIO(biz, GB_IO_BGP);
@@ -275,8 +275,8 @@ static void UpdatePal(biz_t* biz, bool bg)
 				const GB_palette_t* rawPal = GB_get_palette(&biz->gb);
 				for (u32 i = 0; i < 4; i++)
 				{
-					obj0Pal[i] = rgb_cb(&biz->gb, rawPal->colors[i].r, rawPal->colors[i].g, rawPal->colors[i].b);
-					obj1Pal[i] = rgb_cb(&biz->gb, rawPal->colors[i].r, rawPal->colors[i].g, rawPal->colors[i].b);
+					obj0Pal[3 - i] = rgb_cb(&biz->gb, rawPal->colors[i].r, rawPal->colors[i].g, rawPal->colors[i].b);
+					obj1Pal[3 - i] = rgb_cb(&biz->gb, rawPal->colors[i].r, rawPal->colors[i].g, rawPal->colors[i].b);
 				}
 			}
 			u8 obp0 = PeekIO(biz, GB_IO_OBP0);
