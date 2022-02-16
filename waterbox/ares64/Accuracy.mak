@@ -5,13 +5,14 @@ MAME_PATH = $(ROOT_DIR)/ares/thirdparty/mame
 
 CXXFLAGS := -std=c++17 -msse4.2 \
 	-I../libco -I.$(ROOT_DIR)/ares/ -I.$(ROOT_DIR)/ares/thirdparty/ -I.$(ARES_PATH) \
-	-Werror=int-to-pointer-cast -Wno-unused-but-set-variable \
+	-Werror=int-to-pointer-cast -Wno-unused-but-set-variable -Wno-delete-non-virtual-dtor \
 	-Wno-parentheses -Wno-reorder -Wno-unused-variable \
 	-Wno-sign-compare -Wno-switch -Wno-unused-local-typedefs \
 	-fno-strict-aliasing -fwrapv -fno-operator-names \
 	-I.$(MAME_PATH)/devices -I.$(MAME_PATH)/emu \
 	-I.$(MAME_PATH)/lib/util -I.$(MAME_PATH)/mame \
-	-I.$(MAME_PATH)/osd -DMAME_RDP -DLSB_FIRST -DPTR64 -DSDLMAME_EMSCRIPTEN
+	-I.$(MAME_PATH)/osd -DMAME_RDP -DLSB_FIRST -DPTR64 -DSDLMAME_EMSCRIPTEN \
+	-DWATERBOXED
 
 TARGET = ares64.wbx
 

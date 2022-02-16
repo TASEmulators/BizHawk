@@ -99,6 +99,7 @@ auto System::unload() -> void {
   vulkan.unload();
   #endif
   cartridgeSlot.unload();
+  puts("unloading port 1");
   controllerPort1.unload();
   controllerPort2.unload();
   controllerPort3.unload();
@@ -119,12 +120,14 @@ auto System::unload() -> void {
 }
 
 auto System::save() -> void {
+/*
   if(!node) return;
   cartridge.save();
   controllerPort1.save();
   controllerPort2.save();
   controllerPort3.save();
   controllerPort4.save();
+*/
 }
 
 auto System::power(bool reset) -> void {

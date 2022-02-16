@@ -26,11 +26,21 @@ namespace BizHawk.Emulation.Cores
 					}
 				}
 			}
-			else if (core is Ares64 ares64)
+			else if (core is Consoles.Nintendo.Ares64.Accuracy.Ares64 ares64Acc)
 			{
 				for (var i = 0; i < 4; i++)
 				{
-					if (ares64.ControllerSettings[i] != LibAres64.ControllerType.Unplugged)
+					if (ares64Acc.ControllerSettings[i] != LibAres64.ControllerType.Unplugged)
+					{
+						yield return StandardController(i + 1);
+					}
+				}
+			}
+			else if (core is Consoles.Nintendo.Ares64.Performance.Ares64 ares64Perf)
+			{
+				for (var i = 0; i < 4; i++)
+				{
+					if (ares64Perf.ControllerSettings[i] != LibAres64.ControllerType.Unplugged)
 					{
 						yield return StandardController(i + 1);
 					}

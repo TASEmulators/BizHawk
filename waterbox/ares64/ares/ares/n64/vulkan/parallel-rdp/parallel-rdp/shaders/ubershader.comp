@@ -1,0 +1,103 @@
+#version 450
+/* Copyright (c) 2020 Themaister
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the
+ * "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to
+ * the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+// RIP to any GPU which attempts to execute this monstrosity :)
+
+#if SUBGROUP
+#extension GL_KHR_shader_subgroup_basic : require
+#extension GL_KHR_shader_subgroup_vote : require
+#extension GL_KHR_shader_subgroup_ballot : require
+#extension GL_KHR_shader_subgroup_arithmetic : require
+#endif
+#include "small_types.h"
+
+layout(local_size_x_id = 3, local_size_y_id = 4) in;
+
+#include "debug.h"
+#include "data_structures_buffers.h"
+
+#include "noise.h"
+#include "memory_interfacing.h"
+#include "shading.h"
+
+layout(push_constant, std430) uniform Registers
+{
+    uint fb_addr_index;
+    uint fb_depth_addr_index;
+    uint fb_width;
+    uint fb_height;
+    uint group_mask;
+} registers;
+
+layout(constant_id = 5) const int MAX_PRIMITIVES = 256;
+layout(constant_id = 6) const int MAX_WIDTH = 1024;
+
+const int TILE_BINNING_STRIDE = MAX_PRIMITIVES / 32;
+const int MAX_TILES_X = MAX_WIDTH / int(gl_WorkGroupSize.x);
+
+void main()
+{
+    int x = int(gl_GlobalInvocationID.x);
+    int y = int(gl_GlobalInvocationID.y);
+    ivec2 tile = ivec2(gl_WorkGroupID.xy);
+
+    int linear_tile = tile.x + tile.y * MAX_TILES_X;
+    int linear_tile_base = linear_tile * TILE_BINNING_STRIDE;
+
+    uint coarse_binned = tile_binning_coarse.elems[linear_tile] & registers.group_mask;
+    if (coarse_binned == 0u)
+        return;
+
+    init_tile(gl_GlobalInvocationID.xy,
+              registers.fb_width, registers.fb_height,
+              registers.fb_addr_index, registers.fb_depth_addr_index);
+
+    while (coarse_binned != 0u)
+    {
+        int mask_index = findLSB(coarse_binned);
+        coarse_binned &= ~uint(1 << mask_index);
+
+        uint binned = tile_binning.elems[linear_tile_base + mask_index];
+        while (binned != 0u)
+        {
+            int i = findLSB(binned);
+            binned &= ~uint(1 << i);
+            uint primitive_index = uint(i + 32 * mask_index);
+
+            ShadedData shaded;
+            if (shade_pixel(x, y, primitive_index, shaded))
+            {
+                if ((shaded.coverage_count & COVERAGE_FILL_BIT) != 0)
+                    fill_color(derived_setup.elems[primitive_index].fill_color);
+                else if ((shaded.coverage_count & COVERAGE_COPY_BIT) != 0)
+                    copy_pipeline(shaded.z_dith, primitive_index);
+                else
+                    depth_blend(x, y, primitive_index, shaded);
+            }
+        }
+    }
+
+    finish_tile(gl_GlobalInvocationID.xy,
+                registers.fb_width, registers.fb_height,
+                registers.fb_addr_index, registers.fb_depth_addr_index);
+}

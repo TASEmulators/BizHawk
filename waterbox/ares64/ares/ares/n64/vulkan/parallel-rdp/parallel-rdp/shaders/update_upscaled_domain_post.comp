@@ -1,0 +1,119 @@
+#version 450
+/* Copyright (c) 2020 Themaister
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the
+ * "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to
+ * the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+#include "small_types.h"
+#include "fb_formats.h"
+
+layout(local_size_x_id = 3) in;
+
+layout(constant_id = 0) const int RDRAM_SIZE = 8 * 1024 * 1024;
+const int RDRAM_MASK_8 = RDRAM_SIZE - 1;
+const int RDRAM_MASK_16 = RDRAM_MASK_8 >> 1;
+const int RDRAM_MASK_32 = RDRAM_MASK_8 >> 2;
+layout(constant_id = 1) const int FB_SIZE_LOG2 = 0;
+layout(constant_id = 2) const bool COLOR_DEPTH_ALIAS = false;
+layout(constant_id = 4) const int NUM_SAMPLES = 1;
+
+layout(push_constant) uniform Registers
+{
+    uint num_pixels, fb_addr, fb_depth_addr;
+} registers;
+
+layout(set = 0, binding = 0) readonly buffer RDRAMSingleSampled8
+{
+    uint8_t elems[];
+} vram8;
+
+layout(set = 0, binding = 0) readonly buffer RDRAMSingleSampled16
+{
+    uint16_t elems[];
+} vram16;
+
+layout(set = 0, binding = 0) readonly buffer RDRAMSingleSampled32
+{
+    uint elems[];
+} vram32;
+
+layout(set = 0, binding = 2) buffer RDRAMUpscalingReference8
+{
+    uint8_t elems[];
+} vram_reference8;
+
+layout(set = 0, binding = 2) buffer RDRAMUpscalingReference16
+{
+    uint16_t elems[];
+} vram_reference16;
+
+layout(set = 0, binding = 2) buffer RDRAMUpscalingReference32
+{
+    uint elems[];
+} vram_reference32;
+
+void copy_rdram_8(uint index)
+{
+    index &= RDRAM_MASK_8;
+    uint real_word = uint(vram8.elems[index]);
+    vram_reference8.elems[index] = uint8_t(real_word);
+}
+
+void copy_rdram_16(uint index)
+{
+    index &= RDRAM_MASK_16;
+    uint real_word = uint(vram16.elems[index]);
+    vram_reference16.elems[index] = uint16_t(real_word);
+}
+
+void copy_rdram_32(uint index)
+{
+    index &= RDRAM_MASK_32;
+    uint real_word = vram32.elems[index];
+    vram_reference32.elems[index] = real_word;
+}
+
+void main()
+{
+    uint index = gl_GlobalInvocationID.x;
+    if (index >= registers.num_pixels)
+        return;
+
+    uint depth_index = index + registers.fb_depth_addr;
+    uint color_index = index + registers.fb_addr;
+
+    switch (FB_SIZE_LOG2)
+    {
+        case 0:
+            copy_rdram_8(color_index);
+            break;
+
+        case 1:
+            copy_rdram_16(color_index);
+            break;
+
+        case 2:
+            copy_rdram_32(color_index);
+            break;
+    }
+
+    if (!COLOR_DEPTH_ALIAS)
+        copy_rdram_16(depth_index);
+}

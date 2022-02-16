@@ -33,10 +33,12 @@ Gamepad::~Gamepad() {
 }
 
 auto Gamepad::save() -> void {
+/*
   if(!slot) return;
   if(slot->name() == "Controller Pak") {
     ram.save(pak->write("save.pak"));
   }
+*/
 }
 
 auto Gamepad::allocate(string name) -> Node::Peripheral {

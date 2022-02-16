@@ -1,0 +1,577 @@
+#version 450
+/* Copyright (c) 2020 Themaister
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the
+ * "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to
+ * the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+#include "debug.h"
+#include "small_types.h"
+layout(local_size_x_id = 0) in;
+
+layout(set = 0, binding = 0, std430) readonly buffer VRAM8Buffer
+{
+    mem_u8 data[];
+} vram8;
+
+layout(set = 0, binding = 0, std430) readonly buffer VRAM16Buffer
+{
+    mem_u16 data[];
+} vram16;
+
+layout(set = 0, binding = 0, std430) readonly buffer VRAM32Buffer
+{
+    uint data[];
+} vram32;
+
+layout(set = 0, binding = 1, std430) buffer TMEM16Buffer
+{
+    mem_u16 data[2048];
+} tmem16;
+
+struct TileInstance
+{
+    mem_u16 data[2048];
+};
+
+layout(set = 0, binding = 2, std430) writeonly buffer TMEMInstances
+{
+    TileInstance instances[];
+} tile_instances;
+
+layout(push_constant, std430) uniform Registers
+{
+    int num_uploads;
+} registers;
+
+const int TEXTURE_FMT_RGBA = 0;
+const int TEXTURE_FMT_YUV = 1;
+const int TEXTURE_FMT_CI = 2;
+const int TEXTURE_FMT_IA = 3;
+const int TEXTURE_FMT_I = 4;
+
+const int UPLOAD_MODE_TILE = 0;
+const int UPLOAD_MODE_TLUT = 1;
+const int UPLOAD_MODE_BLOCK = 2;
+
+struct UploadInfo
+{
+    int width, height;
+    float min_t_mod, max_t_mod;
+
+    int vram_addr;
+    int vram_width;
+    int vram_size;
+    int vram_effective_width;
+
+    int tmem_offset;
+    int tmem_stride_words;
+    int tmem_size;
+    int tmem_fmt;
+
+    int mode;
+    float inv_tmem_stride_words;
+    int dxt;
+    int padding;
+};
+
+layout(set = 1, binding = 0, std140) uniform UploadInfos
+{
+    UploadInfo upload_info[256];
+};
+
+bool tmem_dirty;
+uint current_tmem_value;
+
+int compute_upload_t(int offset, float inv_stride)
+{
+    // This is still exact for all relevant inputs, and much faster than integer divide.
+    return int((float(offset) + 0.5) * inv_stride);
+}
+
+// In 32bpp upload mode we read 64 bits and split the result over the lower and upper TMEM.
+void update_tmem_32(UploadInfo info, int tmem16_index, bool upper_tmem, bool yuv)
+{
+    int tmem16_offset = (info.tmem_offset & 0x7ff) >> 1;
+    int tmem16_stride = info.tmem_stride_words;
+
+    int pixel_offset = (tmem16_index - tmem16_offset) & 0x3ff;
+    int upload_x, upload_y;
+    int upload_x_xor = 0;
+
+    if (info.mode == UPLOAD_MODE_BLOCK)
+    {
+        int word_offset = pixel_offset >> 1;
+
+        if (info.tmem_stride_words == 0)
+        {
+            // Trivial case, we can just compute T factor directly and set upload_x_xor.
+            // Other than that, it works like a simple 1D upload.
+
+            // However, if DxT is weird, we might end up in a situation where this word is written multiple times,
+            // or zero times.
+
+            int iteration_candidate_first = word_offset & ~1;
+            int iteration_candidate_second = iteration_candidate_first + 1;
+            int first_t = (iteration_candidate_first * info.dxt) >> 16;
+            int second_t = (iteration_candidate_second * info.dxt) >> 16;
+            if (first_t != second_t)
+            {
+                int iteration_candidate_first_write_index = iteration_candidate_first ^ (first_t & 1);
+                int iteration_candidate_second_write_index = iteration_candidate_second ^ (second_t & 1);
+                if (iteration_candidate_second_write_index == word_offset)
+                    upload_x_xor = (second_t & 1) << 1;
+                else if (iteration_candidate_first_write_index == word_offset)
+                    upload_x_xor = (first_t & 1) << 1;
+                else
+                    return;
+            }
+            else
+                upload_x_xor ^= (first_t & 1) << 1;
+        }
+        else
+        {
+            // Welp ... This is pure insanity, but if we want to be completely correct ...
+            int min_t = compute_upload_t(word_offset & ~1, info.min_t_mod);
+            int max_t = compute_upload_t(word_offset | 1, info.max_t_mod);
+
+            // If t has a range, then the solution to Y = (t = floor(X * dt / 2048)) * stride + X has a range space of:
+            // Y - t_max * stride <= X <= Y - t_min * stride.
+            int max_word_candidate = (word_offset | 1) - tmem16_stride * min_t;
+            int min_word_candidate = (word_offset & ~1) - tmem16_stride * max_t;
+
+            // If we have constraints for X, we constraint T further.
+            min_t = max(min_t, (min_word_candidate * info.dxt) >> 16);
+            max_t = min(max_t, (max_word_candidate * info.dxt) >> 16);
+
+            bool found_candidate = false;
+            for (int t = max_t; t >= min_t; t--)
+            {
+                // Check to see if t is a solution to the equation.
+                // Potentially two targets could write here.
+                int candidate_solution_first = (word_offset & ~1) - tmem16_stride * t;
+                int candidate_solution_second = (word_offset | 1) - tmem16_stride * t;
+
+                int candidate_t_first = (candidate_solution_first * info.dxt) >> 16;
+                int candidate_t_second = (candidate_solution_second * info.dxt) >> 16;
+
+                if (((candidate_solution_second + candidate_t_second * tmem16_stride) ^ (candidate_t_second & 1)) == word_offset)
+                {
+                    found_candidate = true;
+                    pixel_offset = (candidate_solution_second << 1) + (pixel_offset & 1);
+                    break;
+                }
+                else if (((candidate_solution_first + candidate_t_first * tmem16_stride) ^ (candidate_t_first & 1)) == word_offset)
+                {
+                    found_candidate = true;
+                    pixel_offset = (candidate_solution_first << 1) + (pixel_offset & 1);
+                    break;
+                }
+            }
+
+            // We strided over this 64bpp word.
+            if (!found_candidate)
+                return;
+        }
+
+        upload_x = pixel_offset;
+        upload_y = 0;
+    }
+    else if (tmem16_stride == 0)
+    {
+        // For TMEM stride of 0 we're essentially replaying the same line over and over and the final visible result
+        // is what happened in Y == height - 1.
+        upload_x = pixel_offset;
+        upload_y = info.height - 1;
+    }
+    else
+    {
+        upload_y = compute_upload_t(pixel_offset, info.inv_tmem_stride_words);
+        upload_x = pixel_offset - upload_y * tmem16_stride;
+
+        // If stride is smaller than width, we'll need to unroll the last line.
+        if (upload_y >= info.height)
+        {
+            upload_x += tmem16_stride * (upload_y - info.height + 1);
+            upload_y = info.height - 1;
+        }
+    }
+
+    int last_line_upload_x = upload_x ^ ((upload_y & 1) << 1);
+    if (last_line_upload_x >= info.width && upload_y > 0)
+    {
+        // If the last line won't trigger a write, the previous line probably did.
+        upload_y--;
+        upload_x += tmem16_stride;
+    }
+
+    int iteration_offset;
+
+    upload_x ^= ((upload_y & 1) << 1) | upload_x_xor;
+
+    if (info.vram_size == 3 || yuv)
+    {
+        iteration_offset = 4 * (upload_x & ~1);
+    }
+    else if (info.vram_size == 2)
+    {
+        // In 16bpp VRAM mode, we are supposed to step 4 pixels at a time (8 bytes), which will form 2 complete pixels.
+        // However, in 32bpp tile mode we're not shifting the X value appropriately.
+        // So, we're writing texels [0, 1, ..., 4, 5, ...], etc.
+        if ((upload_x & 2) != 0)
+        {
+            // We're not writing in this line, but the previous line might have!
+            // Interleaving patterns will form ...
+            if (upload_y > 0)
+            {
+                upload_y--;
+                upload_x += tmem16_stride;
+                upload_x ^= 2;
+            }
+            else
+            {
+                // These 2 words will never be written to.
+                return;
+            }
+        }
+        iteration_offset = 2 * (upload_x & ~1);
+    }
+    else if (info.vram_size == 1)
+    {
+        // 4 potential mirrors.
+        for (int i = 0; i < 4 && upload_y > 0 && (upload_x & 6) != 0; i++)
+        {
+            upload_y--;
+            upload_x += tmem16_stride;
+            upload_x ^= 2;
+        }
+
+        if ((upload_x & 6) != 0)
+        {
+            // These 6 words will never be written to.
+            return;
+        }
+
+        iteration_offset = upload_x & ~1;
+    }
+
+    if (upload_x >= info.width)
+        return;
+
+    int line_rdram_addr = info.vram_addr + ((upload_y * info.vram_width) << (info.vram_size - 1));
+
+    // The loading pipeline reads 64 bits per iteration.
+    int rdram_addr = line_rdram_addr + iteration_offset + 4 * (upload_x & 1);
+
+    uint word;
+    if ((rdram_addr & 3) == 0)
+    {
+        word = uint(vram32.data[rdram_addr >> 2]);
+    }
+    else
+    {
+        word = (uint(vram8.data[rdram_addr ^ 3]) << 24) |
+               (uint(vram8.data[(rdram_addr + 1) ^ 3]) << 16) |
+               (uint(vram8.data[(rdram_addr + 2) ^ 3]) << 8) |
+                uint(vram8.data[(rdram_addr + 3) ^ 3]);
+    }
+
+    if (yuv)
+    {
+        // Lower TMEM receives interleaved UV samples, while upper receives Y.
+        if (upper_tmem)
+        {
+            uint y0 = (word >> 16u) & 0xffu;
+            uint y1 = (word >> 0u) & 0xffu;
+            word = (y0 << 8u) | y1;
+        }
+        else
+        {
+            uint u = (word >> 24u) & 0xffu;
+            uint v = (word >> 8u) & 0xffu;
+            word = (u << 8u) | v;
+        }
+    }
+    else
+    {
+        word >>= 16u - 16u * uint(upper_tmem);
+        word &= 0xffffu;
+    }
+    current_tmem_value = word;
+    tmem_dirty = true;
+}
+
+void update_tmem_16(UploadInfo info, int tmem16_index)
+{
+    int tmem16_offset = (info.tmem_offset & 0xfff) >> 1;
+    int tmem16_stride = info.tmem_stride_words;
+
+    int pixel_offset = (tmem16_index - tmem16_offset) & 0x7ff;
+    int upload_x, upload_y;
+    int upload_x_xor = 0;
+
+    if (info.mode == UPLOAD_MODE_BLOCK)
+    {
+        int word_offset = pixel_offset >> 2;
+
+        if (info.tmem_stride_words == 0)
+        {
+            // Trivial case, we can just compute T factor directly and set upload_x_xor.
+            // Other than that, it works like a simple 1D upload.
+            upload_x_xor = (((word_offset * info.dxt) >> 16) & 1) << 1;
+        }
+        else
+        {
+            // Welp ... This is pure insanity, but if we want to be completely correct ...
+            int min_t = compute_upload_t(word_offset, info.min_t_mod);
+            int max_t = compute_upload_t(word_offset, info.max_t_mod);
+
+            // If t has a range, then the solution to Y = (t = floor(X * dt / 2048)) * stride + X has a range space of:
+            // Y - t_max * stride <= X <= Y - t_min * stride.
+            int max_word_candidate = word_offset - tmem16_stride * min_t;
+            int min_word_candidate = word_offset - tmem16_stride * max_t;
+
+            // If we have constraints for X, we constraint T further.
+            min_t = max(min_t, (min_word_candidate * info.dxt) >> 16);
+            max_t = min(max_t, (max_word_candidate * info.dxt) >> 16);
+
+            bool found_candidate = false;
+            for (int t = max_t; t >= min_t; t--)
+            {
+                // Check to see if t is a solution to the equation.
+                int candidate_solution = word_offset - tmem16_stride * t;
+                int computed_t = (candidate_solution * info.dxt) >> 16;
+                if (candidate_solution + computed_t * tmem16_stride == word_offset)
+                {
+                    found_candidate = true;
+                    upload_x_xor = (computed_t & 1) << 1;
+                    pixel_offset = (candidate_solution << 2) + (pixel_offset & 3);
+                }
+            }
+
+            // We strided over this 64bpp word.
+            if (!found_candidate)
+                return;
+        }
+
+        upload_x = pixel_offset;
+        upload_y = 0;
+    }
+    else if (tmem16_stride == 0)
+    {
+        // For TMEM stride of 0 we're essentially replaying the same line over and over and the final visible result
+        // is what happened in Y == height - 1.
+        upload_x = pixel_offset;
+        upload_y = info.height - 1;
+    }
+    else
+    {
+        upload_y = compute_upload_t(pixel_offset, info.inv_tmem_stride_words);
+        upload_x = pixel_offset - upload_y * tmem16_stride;
+
+        // If stride is smaller than width, we'll need to unroll the last line.
+        if (upload_y >= info.height)
+        {
+            upload_x += tmem16_stride * (upload_y - info.height + 1);
+            upload_y = info.height - 1;
+        }
+    }
+
+    // This is pure bullshit magic which arises as an edge case when
+    // tile pixel size does not match texture image size.
+    // Should not happen in normal applications.
+    // This is basically doing scatter-as-gather, so we need to figure out
+    // if there is no write to our texel after all (striding), or if there are multiple writes
+    // to our texel, in which case we need to figure out the last writer.
+    // This code is black magic, and it's made with blood, sweat and tears from testing with lots of trial and error.
+    int iteration_offset;
+    if (info.tmem_size != info.vram_size)
+    {
+        if (info.vram_size - info.tmem_size == 1)
+        {
+            // If TMEM is N bpp but VRAM is 2N bpp, we will get mirrored writes here.
+            // Select which half of the 2N bpp load we observe in TMEM.
+            iteration_offset = (upload_x & ~3) * 4;
+            if ((upload_x & ~3) + 2 < (info.vram_effective_width >> (3 - info.vram_size)))
+                iteration_offset += 8;
+        }
+        else if (info.tmem_size == 2 && info.vram_size == 1)
+        {
+            // In 8bpp VRAM mode, we are supposed to step 8 pixels at a time (8 bytes), which will form 4 complete pixels.
+            // However, in 16bpp tile mode we're not shifting the X value appropriately.
+            // So, we're writing texels [0, 1, 2, 3, ..., 8, 9, 10, 11], etc.
+            if ((upload_x & 4) != 0)
+            {
+                // We're not writing in this line, but the previous line might have!
+                // Interleaving patterns will form ...
+                if ((tmem16_stride & 4) != 0 && upload_y > 0)
+                {
+                    upload_y--;
+                    upload_x += tmem16_stride;
+                }
+                else
+                {
+                    // These 4 words will never be written to.
+                    return;
+                }
+            }
+            iteration_offset = upload_x & ~3;
+        }
+    }
+    else
+    {
+        // Normal case TMEM size aligns with VRAM size.
+        iteration_offset = (upload_x & ~3) * 2;
+    }
+
+    if (upload_x >= info.width)
+        return;
+
+    int line_rdram_addr = info.vram_addr + ((upload_y * info.vram_width) << (info.vram_size - 1));
+    upload_x ^= ((upload_y & 1) << 1) | upload_x_xor;
+
+    // The loading pipeline reads 64 bits per iteration.
+    int rdram_addr = line_rdram_addr + iteration_offset + 2 * (upload_x & 3);
+
+    uint word;
+    if ((rdram_addr & 1) == 0)
+        word = uint(vram16.data[(rdram_addr >> 1) ^ 1]);
+    else
+        word = (uint(vram8.data[rdram_addr ^ 3]) << 8) | uint(vram8.data[(rdram_addr + 1) ^ 3]);
+
+    current_tmem_value = word;
+    tmem_dirty = true;
+}
+
+void update_tmem_lut(UploadInfo info, int tmem16_index)
+{
+    int tmem16_offset = (info.tmem_offset & 0xfff) >> 1;
+    int pixel_offset = (tmem16_index - tmem16_offset) & 0x7ff;
+    int pixel_offset_splat;
+
+    if (info.vram_size - info.tmem_size == 2)
+    {
+        pixel_offset_splat = pixel_offset >> 2;
+        pixel_offset_splat <<= info.vram_size - 2;
+        if (pixel_offset_splat >= info.vram_effective_width)
+            return;
+    }
+    else if (info.vram_size - info.tmem_size == 1)
+    {
+        if ((pixel_offset & 4) == 0)
+        {
+            int shamt = info.tmem_size + (info.vram_size == 2 ? 2 : 0);
+            pixel_offset_splat = (pixel_offset & ~7) >> shamt;
+            if (pixel_offset_splat >= info.vram_effective_width)
+                return;
+        }
+        else
+        {
+            return;
+        }
+    }
+    else if (info.vram_size == info.tmem_size)
+    {
+        if ((pixel_offset & 0xc) == 0)
+        {
+            int shamt = info.tmem_size + (info.vram_size == 2 ? 2 : 0);
+            pixel_offset_splat = (pixel_offset & ~3) >> shamt;
+            if (pixel_offset_splat >= info.vram_effective_width)
+                return;
+        }
+        else
+        {
+            return;
+        }
+    }
+    else if (info.vram_size - info.tmem_size == -1)
+    {
+        if ((pixel_offset & 0x1c) == 0)
+        {
+            int shamt = info.tmem_size;
+            pixel_offset_splat = (pixel_offset >> shamt) & ~7;
+            if (pixel_offset_splat >= info.vram_effective_width)
+                return;
+        }
+        else
+        {
+            return;
+        }
+    }
+    else
+    {
+        // 4bpp tile, 32bpp VRAM. Mirrored writes.
+        int span_iteration = pixel_offset >> 2;
+        span_iteration = span_iteration * 2;
+        int span_pixel = span_iteration * 2;
+        if (span_pixel + 2 < info.vram_effective_width)
+            span_pixel += 2;
+
+        if (span_pixel >= info.vram_effective_width)
+            return;
+
+        pixel_offset_splat = span_pixel;
+    }
+
+    int rdram_addr = info.vram_addr + (pixel_offset_splat << (info.vram_size - 1));
+
+    // Odd behavior when we have unaligned TLUT uploads.
+    rdram_addr += 2 * (rdram_addr & 1) * (pixel_offset & 3);
+
+    uint word;
+    if ((rdram_addr & 1) == 0)
+        word = uint(vram16.data[(rdram_addr >> 1) ^ 1]);
+    else
+        word = (uint(vram8.data[rdram_addr ^ 3]) << 8) | uint(vram8.data[(rdram_addr + 1) ^ 3]);
+
+    current_tmem_value = word;
+    tmem_dirty = true;
+}
+
+void main()
+{
+    tmem_dirty = false;
+    current_tmem_value = uint(tmem16.data[gl_GlobalInvocationID.x]);
+    int tmem16_index = int(gl_GlobalInvocationID.x) ^ 1;
+    bool upper_tmem = tmem16_index >= 0x400;
+
+    tile_instances.instances[0].data[gl_GlobalInvocationID.x] = mem_u16(current_tmem_value);
+
+    int num_uploads = registers.num_uploads;
+    for (int i = 0; i < num_uploads; i++)
+    {
+        UploadInfo info = upload_info[i];
+        if (info.mode == UPLOAD_MODE_TLUT)
+        {
+            update_tmem_lut(info, tmem16_index);
+        }
+        else
+        {
+            bool yuv = info.tmem_fmt == TEXTURE_FMT_YUV;
+            if (info.tmem_size == 3 || yuv)
+                update_tmem_32(info, tmem16_index & 0x3ff, upper_tmem, yuv);
+            else if (info.tmem_fmt != TEXTURE_FMT_YUV)
+                update_tmem_16(info, tmem16_index);
+        }
+
+        tile_instances.instances[i + 1].data[gl_GlobalInvocationID.x] = mem_u16(current_tmem_value);
+    }
+
+    if (tmem_dirty)
+        tmem16.data[gl_GlobalInvocationID.x] = mem_u16(current_tmem_value);
+}

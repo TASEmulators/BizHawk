@@ -10,11 +10,16 @@ VI vi;
 auto VI::load(Node::Object parent) -> void {
   node = parent->append<Node::Object>("VI");
 
+  u32 width = 640;
+  u32 height = 576;
+
   #if defined(VULKAN)
-  screen = node->append<Node::Video::Screen>("Screen", vulkan.outputUpscale * 640, vulkan.outputUpscale * 576);
-  #else
-  screen = node->append<Node::Video::Screen>("Screen", 640, 576);
+  if (vulkan.enable) {
+    width *= vulkan.outputUpscale;
+    height *= vulkan.outputUpscale;
+  }
   #endif
+  screen = node->append<Node::Video::Screen>("Screen", width, height);
   screen->setRefresh({&VI::refresh, this});
   screen->colors((1 << 24) + (1 << 15), [&](n32 color) -> n64 {
     if(color < (1 << 24)) {
@@ -31,10 +36,15 @@ auto VI::load(Node::Object parent) -> void {
       return a << 48 | r << 32 | g << 16 | b << 0;
     }
   });
+
   #if defined(VULKAN)
-  screen->setSize(vulkan.outputUpscale * 640, vulkan.outputUpscale * 480);
-  if(!vulkan.supersampleScanout) {
-    screen->setScale(1.0 / vulkan.outputUpscale, 1.0 / vulkan.outputUpscale);
+  if(vulkan.enable) {
+    screen->setSize(vulkan.outputUpscale * 640, vulkan.outputUpscale * 480);
+    if(!vulkan.supersampleScanout) {
+      screen->setScale(1.0 / vulkan.outputUpscale, 1.0 / vulkan.outputUpscale);
+    }
+  } else {
+    screen->setSize(640, 480);
   }
   #else
   screen->setSize(640, 480);
@@ -62,8 +72,10 @@ auto VI::main() -> void {
     io.field = io.field + 1 & io.serrate;
     if(!io.field) {
       #if defined(VULKAN)
-      gpuOutputValid = vulkan.scanoutAsync(io.field);
-      vulkan.frame();
+      if (vulkan.enable) {
+        gpuOutputValid = vulkan.scanoutAsync(io.field);
+        vulkan.frame();
+      }
       #endif
 
       refreshed = true;
@@ -81,7 +93,7 @@ auto VI::step(u32 clocks) -> void {
 
 auto VI::refresh() -> void {
   #if defined(VULKAN)
-  if(gpuOutputValid) {
+  if(vulkan.enable && gpuOutputValid) {
     const u8* rgba = nullptr;
     u32 width = 0, height = 0;
     vulkan.mapScanoutRead(rgba, width, height);
