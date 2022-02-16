@@ -511,6 +511,23 @@ EXPORT bool GetRumbleStatus(u32 num)
 	return c ? c->motor->enable() : false;
 }
 
+EXPORT u32 SerializeSize()
+{
+	return root->serialize(false).size();
+}
+
+EXPORT void Serialize(u8* buf)
+{
+	auto s = root->serialize(false);
+	memcpy(buf, s.data(), s.size());
+}
+
+EXPORT bool Unserialize(u8* buf, u32 sz)
+{
+	serializer s(buf, sz);
+	return root->unserialize(s);
+}
+
 #define MAYBE_ADD_MEMORY_DOMAIN(mem, name, flags) do { \
 	if (ares::Nintendo64::mem.data) \
 	{ \
@@ -653,4 +670,4 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 EXPORT void SetInputCallback(void (*callback)())
 {
 	platform->inputcb = callback;
-}
+ }

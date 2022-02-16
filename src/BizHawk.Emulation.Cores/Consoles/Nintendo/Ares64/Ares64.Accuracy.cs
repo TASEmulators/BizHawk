@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64.Accuracy
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), })]
 	public partial class Ares64 : WaterboxCore, IRegionable
 	{
-		private readonly LibAres64 _core;
+		private readonly LibAres64Accuracy _core;
 
 		[CoreConstructor(VSystemID.Raw.N64)]
 		public Ares64(CoreLoadParameters<object, Ares64SyncSettings> lp)
@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64.Accuracy
 
 			N64Controller = CreateControllerDefinition(ControllerSettings);
 
-			_core = PreInit<LibAres64>(new WaterboxOptions
+			_core = PreInit<LibAres64Accuracy>(new WaterboxOptions
 			{
 				Filename = "ares64.wbx",
 				SbrkHeapSizeKB = 2 * 1024,

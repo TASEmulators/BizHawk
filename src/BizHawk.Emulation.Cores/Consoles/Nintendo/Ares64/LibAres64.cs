@@ -76,7 +76,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			UHD = 4,
 		}
 
-		public struct LoadData
+		[StructLayout(LayoutKind.Sequential)]
+		public class LoadData
 		{
 			public IntPtr PifData;
 			public int PifLen;
@@ -86,13 +87,29 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			public int VulkanUpscale;
 		}
 
-		[BizImport(CC, Compatibility = true)]
+		[BizImport(CC)]
 		public abstract bool Init(LoadData loadData, ControllerType[] controllerSettings, LoadFlags loadFlags);
 
+		[BizImport(CC)]
+		public abstract bool GetRumbleStatus(int num);
+	}
+
+	public abstract class LibAres64Accuracy : LibAres64
+	{
+	}
+
+	public abstract class LibAres64Performance : LibAres64
+	{
 		[BizImport(CC)]
 		public abstract void Deinit();
 
 		[BizImport(CC)]
-		public abstract bool GetRumbleStatus(int num);
+		public abstract int SerializeSize();
+
+		[BizImport(CC)]
+		public abstract void Serialize(byte[] buf);
+
+		[BizImport(CC)]
+		public abstract bool Unserialize(byte[] buf, int sz);
 	}
 }

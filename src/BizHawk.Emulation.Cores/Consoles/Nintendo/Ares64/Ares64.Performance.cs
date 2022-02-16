@@ -12,15 +12,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64.Performance
 {
 	[PortedCore(CoreNames.Ares64Performance, "ares team, Near", "v126", "https://ares-emulator.github.io/", singleInstance: true, isReleased: false)]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), })]
-	public partial class Ares64 : IEmulator, IVideoProvider, ISoundProvider, /*IStatable,*/ IInputPollable, ISaveRam, IRegionable
+	public partial class Ares64 : IEmulator, IVideoProvider, ISoundProvider, IStatable, IInputPollable, ISaveRam, IRegionable
 	{
-		private static readonly LibAres64 _core;
+		private static readonly LibAres64Performance _core;
 
 		static Ares64()
 		{
 			var resolver = new DynamicLibraryImportResolver(
 				OSTailoredCode.IsUnixHost ? "libares64.so" : "libares64.dll", hasLimitedLifetime: false);
-			_core = BizInvoker.GetInvoker<LibAres64>(resolver, CallingConventionAdapters.Native);
+			_core = BizInvoker.GetInvoker<LibAres64Performance>(resolver, CallingConventionAdapters.Native);
 		}
 
 		private readonly BasicServiceProvider _serviceProvider;
@@ -342,6 +342,38 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64.Performance
 		public bool CanProvideAsync => false;
 
 		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
+
+		private byte[] _stateBuffer = new byte[0];
+
+		public void SaveStateBinary(BinaryWriter writer)
+		{
+			var len = _core.SerializeSize();
+			if (len != _stateBuffer.Length)
+			{
+				_stateBuffer = new byte[len];
+			}
+			_core.Serialize(_stateBuffer);
+			writer.Write(_stateBuffer.Length);
+			writer.Write(_stateBuffer);
+		}
+
+		public void LoadStateBinary(BinaryReader reader)
+		{
+			var len = reader.ReadInt32();
+			if (len != _core.SerializeSize())
+			{
+				throw new InvalidOperationException("Savestate size mismatch!");
+			}
+			if (len != _stateBuffer.Length)
+			{
+				_stateBuffer = new byte[len];
+			}
+			reader.Read(_stateBuffer, 0, len);
+			if (!_core.Unserialize(_stateBuffer, len))
+			{
+				throw new Exception($"{nameof(_core.Unserialize)}() returned false!");
+			}
+		}
 
 		private readonly LibWaterboxCore.MemoryArea[] _memoryAreas;
 

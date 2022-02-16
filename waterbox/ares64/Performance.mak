@@ -149,7 +149,7 @@ $(TARGET_RELEASE): $(OBJS)
 	@$(CXX) -o $@ $(LDFLAGS) $(CCFLAGS) $(CXXFLAGS) $(OBJS)
 
 install: $(TARGET_RELEASE)
-	@cp $(TARGET_RELEASE) $(OUTPUTDLL_DIR)/$(TARGET)
+	@cp -f $(TARGET_RELEASE) $(OUTPUTDLL_DIR)/$(TARGET)
 	@cp -f $(TARGET_RELEASE) $(OUTPUTDLLCOPY_DIR)/$(TARGET)
 	@echo Release build of $(TARGET) installed.
 
