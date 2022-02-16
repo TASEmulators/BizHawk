@@ -49,9 +49,9 @@ namespace BizHawk.Client.Common
 		public bool IsPressed(string button) => _myBoolButtons[button];
 		public int AxisValue(string name) => _myAxisControls[name];
 
-		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => throw new NotImplementedException(); // no idea --yoshi
+		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Array.Empty<(string, int)>();
 
-		public void SetHapticChannelStrength(string name, int strength) => throw new NotImplementedException(); // no idea --yoshi
+		public void SetHapticChannelStrength(string name, int strength) {}
 
 		public void SetFrom(IController source)
 		{
