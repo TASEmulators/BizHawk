@@ -57,8 +57,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64.Performance
 			[DefaultValue(true)]
 			public bool EnableVulkan { get; set; }
 
-			[DisplayName("Super Sample")]
-			[Description("Something with Vulkan todo: describe this properly")]
+			[DisplayName("Supersampling")]
+			[Description("Scales HD and UHD resolutions back down to SD")]
 			[DefaultValue(false)]
 			public bool SuperSample { get; set; }
 

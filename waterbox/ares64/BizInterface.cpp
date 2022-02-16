@@ -409,7 +409,7 @@ EXPORT bool Init(LoadData* loadData, ControllerType* controllers, LoadFlags load
 
 #ifndef WATERBOXED
 	ares::Nintendo64::option("Enable Vulkan", !!(loadFlags & USE_VULKAN));
-	ares::Nintendo64::option("Quality", loadData->VulkanUpscale);
+	ares::Nintendo64::option("Quality", loadData->VulkanUpscale == 1 ? "SD" : (loadData->VulkanUpscale == 2 ? "HD" : "UHD"));
 	ares::Nintendo64::option("Supersampling", !!(loadFlags & SUPER_SAMPLE));
 #endif
 
