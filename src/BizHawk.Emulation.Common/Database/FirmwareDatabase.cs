@@ -221,7 +221,7 @@ namespace BizHawk.Emulation.Common
 			Option("GEN", "CD_BIOS_JP", in jp_mcd1_9111);
 			Option("GEN", "CD_BIOS_JP", in jp_mcd1_9112);
 			Option("GEN", "CD_BIOS_US", in us_scd1_9210);
-			Option("GEN", "CD_BIOS_US", in us_scd2_9303);
+			Option("GEN", "CD_BIOS_US", in us_scd2_9303, FirmwareOptionStatus.Unacceptable); // or is it bad? MAME seems to think so. see https://github.com/TASEmulators/BizHawk/issues/2913
 			FirmwareAndOption("DBEBD76A448447CB6E524AC3CB0FD19FC065D944", 256, "32X", "G", "32X_G_BIOS.BIN", "32x 68k BIOS");
 			FirmwareAndOption("1E5B0B2441A4979B6966D942B20CC76C413B8C5E", 2048, "32X", "M", "32X_M_BIOS.BIN", "32x SH2 MASTER BIOS");
 			FirmwareAndOption("4103668C1BBD66C5E24558E73D4F3F92061A109A", 1024, "32X", "S", "32X_S_BIOS.BIN", "32x SH2 SLAVE BIOS");
