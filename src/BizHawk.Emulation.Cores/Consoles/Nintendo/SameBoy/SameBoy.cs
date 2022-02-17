@@ -27,7 +27,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 		public bool IsCGBDMGMode() => LibSameboy.sameboy_iscgbdmg(SameboyState);
 
-		private readonly LibSameboy.SampleCallback _samplecb;
 		private readonly LibSameboy.InputCallback _inputcb;
 
 		[CoreConstructor(VSystemID.Raw.GB)]
@@ -80,8 +79,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			InitMemoryDomains();
 			InitMemoryCallbacks();
 
-			_samplecb = QueueSample;
-			LibSameboy.sameboy_setsamplecallback(SameboyState, _samplecb);
 			_inputcb = InputCallback;
 			LibSameboy.sameboy_setinputcallback(SameboyState, _inputcb);
 			_tracecb = MakeTrace;

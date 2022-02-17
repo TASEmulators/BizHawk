@@ -48,19 +48,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 		public static extern void sameboy_destroy(IntPtr core);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate void SampleCallback(IntPtr core, IntPtr sample);
-
-		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void sameboy_setsamplecallback(IntPtr core, SampleCallback callback);
-
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void InputCallback();
 
 		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void sameboy_setinputcallback(IntPtr core, InputCallback callback);
 		 
 		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void sameboy_frameadvance(IntPtr core, Buttons buttons, ushort x, ushort y, int[] videobuf, bool render, bool border);
+		public static extern void sameboy_frameadvance(IntPtr core, Buttons buttons, ushort x, ushort y, short[] soundbuf, ref int nsamps, int[] videobuf, bool render, bool border);
 
 		[DllImport("libsameboy", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void sameboy_reset(IntPtr core);

@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 		{
 			var buttons = FrameAdvancePrep(controller);
 
-			LibSameboy.sameboy_frameadvance(SameboyState, buttons, GetAccX(controller), GetAccY(), VideoBuffer, render, _settings.ShowBorder);
+			LibSameboy.sameboy_frameadvance(SameboyState, buttons, GetAccX(controller), GetAccY(), _soundoutbuff, ref _soundoutbuffcontains, VideoBuffer, render, _settings.ShowBorder);
 
 			if (!rendersound)
 			{
