@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64.Performance
 		{
 			if (lp.DeterministicEmulationRequested)
 			{
-				throw new InvalidOperationException("This core is not deterministic!");
+				lp.Comm.ShowMessage("This core is not deterministic, switch over to the Ares (Accuracy) core for deterministic movie recordings. You have been warned!");
 			}
 
 			_serviceProvider = new(this);
@@ -293,13 +293,23 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64.Performance
 
 		private void FrameAdvancePost()
 		{
-			if (BufferWidth == 0)
+			if (BufferWidth == 1 && BufferHeight == 1)
 			{
-				BufferWidth = BufferHeight == 239 ? 320 : 640;
+				BufferWidth = 640;
+				BufferHeight = 480;
+				_blankFrame = true;
+			}
+			else
+			{
+				_blankFrame = false;
 			}
 		}
 
-		public int[] GetVideoBuffer() => _videoBuffer;
+		public int[] GetVideoBuffer() => _blankFrame ? _blankBuffer : _videoBuffer;
+
+		private bool _blankFrame;
+
+		private readonly int[] _blankBuffer = new int[640 * 480];
 
 		private readonly int[] _videoBuffer;
 
@@ -355,6 +365,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64.Performance
 			_core.Serialize(_stateBuffer);
 			writer.Write(_stateBuffer.Length);
 			writer.Write(_stateBuffer);
+
+			// other variables
+			writer.Write(Frame);
+			writer.Write(LagCount);
+			writer.Write(IsLagFrame);
 		}
 
 		public void LoadStateBinary(BinaryReader reader)
@@ -373,6 +388,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64.Performance
 			{
 				throw new Exception($"{nameof(_core.Unserialize)}() returned false!");
 			}
+
+			// other variables
+			Frame = reader.ReadInt32();
+			LagCount = reader.ReadInt32();
+			IsLagFrame = reader.ReadBoolean();
 		}
 
 		private readonly LibWaterboxCore.MemoryArea[] _memoryAreas;
