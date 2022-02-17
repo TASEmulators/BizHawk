@@ -34,7 +34,6 @@ typedef struct
 	GB_gameboy_t gb;
 	blip_t* blip_l;
 	blip_t* blip_r;
-	s16 sbuf[2 * 1024];
 	GB_sample_t latch;
 	GB_sample_t sample;
 	u32 vbuf[256 * 224];
@@ -198,9 +197,8 @@ EXPORT void sameboy_frameadvance(biz_t* biz, GB_key_mask_t keys, u16 x, u16 y, s
 	blip_end_frame(biz->blip_l, cycles);
 	blip_end_frame(biz->blip_r, cycles);
 	u32 samps = blip_samples_avail(biz->blip_l);
-	blip_read_samples(biz->blip_l, biz->sbuf + 0, samps, 1);
-	blip_read_samples(biz->blip_r, biz->sbuf + 1, samps, 1);
-	memcpy(sbuf, biz->sbuf, samps * 4);
+	blip_read_samples(biz->blip_l, sbuf + 0, samps, 1);
+	blip_read_samples(biz->blip_r, sbuf + 1, samps, 1);
 	*nsamp = samps;
 
 	if (biz->vblank_occured && render)
