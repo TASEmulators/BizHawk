@@ -35,8 +35,8 @@ typedef struct
 	blip_t* blip_l;
 	blip_t* blip_r;
 	s16 sbuf[2 * 1024];
-	u32 nsamp;
 	GB_sample_t latch;
+	GB_sample_t sample;
 	u32 vbuf[256 * 224];
 	u32 bg_pal[0x20];
 	u32 obj_pal[0x20];
@@ -58,20 +58,11 @@ static u8 PeekIO(biz_t* biz, u8 addr)
 	return io[addr];
 }
 
-static void sample_cb(GB_gameboy_t *gb, GB_sample_t* sample, unsigned cycles)
+static void sample_cb(GB_gameboy_t *gb, GB_sample_t* sample)
 {
 	biz_t* biz = (biz_t*)gb;
-	biz->nsamp += cycles;
-	if (biz->latch.left != sample->left)
-	{
-		blip_add_delta(biz->blip_l, biz->nsamp, biz->latch.left - sample->left);
-		biz->latch.left = sample->left;
-	}
-	if (biz->latch.right != sample->right)
-	{
-		blip_add_delta(biz->blip_r, biz->nsamp, biz->latch.right - sample->right);
-		biz->latch.right = sample->right;
-	}
+	biz->sample.left = sample->left;
+	biz->sample.right = sample->right;
 }
 
 static u32 rgb_cb(GB_gameboy_t *gb, u8 r, u8 g, u8 b)
@@ -191,21 +182,26 @@ EXPORT void sameboy_frameadvance(biz_t* biz, GB_key_mask_t keys, u16 x, u16 y, s
 		{
 			biz->input_cb();
 		}
+		if (biz->latch.left != biz->sample.left)
+		{
+			blip_add_delta(biz->blip_l, cycles, biz->latch.left - biz->sample.left);
+			biz->latch.left = biz->sample.left;
+		}
+		if (biz->latch.right != biz->sample.right)
+		{
+			blip_add_delta(biz->blip_r, cycles, biz->latch.right - biz->sample.right);
+			biz->latch.right = biz->sample.right;
+		}
 	}
 	while (!biz->vblank_occured && cycles < 35112);
 
-	*nsamp = 0;
-	if (biz->nsamp > 0)
-	{
-		blip_end_frame(biz->blip_l, biz->nsamp);
-		blip_end_frame(biz->blip_r, biz->nsamp);
-		u32 samps = blip_samples_avail(biz->blip_l);
-		blip_read_samples(biz->blip_l, biz->sbuf + 0, samps, 1);
-		blip_read_samples(biz->blip_r, biz->sbuf + 1, samps, 1);
-		memcpy(sbuf, biz->sbuf, samps * 4);
-		biz->nsamp = 0;
-		*nsamp = samps;
-	}
+	blip_end_frame(biz->blip_l, cycles);
+	blip_end_frame(biz->blip_r, cycles);
+	u32 samps = blip_samples_avail(biz->blip_l);
+	blip_read_samples(biz->blip_l, biz->sbuf + 0, samps, 1);
+	blip_read_samples(biz->blip_r, biz->sbuf + 1, samps, 1);
+	memcpy(sbuf, biz->sbuf, samps * 4);
+	*nsamp = samps;
 
 	if (biz->vblank_occured && render)
 	{
