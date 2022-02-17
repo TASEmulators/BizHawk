@@ -528,47 +528,41 @@ EXPORT bool Unserialize(u8* buf, u32 sz)
 	return root->unserialize(s);
 }
 
-#define MAYBE_ADD_MEMORY_DOMAIN(mem, name, flags) do { \
-	if (ares::Nintendo64::mem.data) \
-	{ \
-		m[i].Data = ares::Nintendo64::mem.data; \
-		m[i].Name = name; \
-		m[i].Size = ares::Nintendo64::mem.size; \
-		m[i].Flags = flags | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE; \
-		i++; \
-	} \
+#define ADD_MEMORY_DOMAIN(mem, name, flags) do { \
+	m[i].Data = ares::Nintendo64::mem.data; \
+	m[i].Name = name; \
+	m[i].Size = ares::Nintendo64::mem.size; \
+	m[i].Flags = flags | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_SWAPPED | MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE; \
+	i++; \
 } while (0) \
 
-#define MAYBE_ADD_MEMPAK_DOMAIN(num) do { \
+#define ADD_MEMPAK_DOMAIN(num) do { \
 	if (auto c = (ares::Nintendo64::Gamepad*)ares::Nintendo64::controllerPort##num.device.data()) \
 	{ \
-		if (c->ram.data) \
-		{ \
-			m[i].Data = c->ram.data; \
-			m[i].Name = "MEMPAK " #num; \
-			m[i].Size = c->ram.size; \
-			m[i].Flags = MEMORYAREA_FLAGS_ONEFILLED | MEMORYAREA_FLAGS_SAVERAMMABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE; \
-			i++; \
-		} \
+		m[i].Data = c->ram.data; \
+		m[i].Name = "MEMPAK " #num; \
+		m[i].Size = c->ram.size; \
+		m[i].Flags = MEMORYAREA_FLAGS_ONEFILLED | MEMORYAREA_FLAGS_SAVERAMMABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_SWAPPED | MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE; \
+		i++; \
 	} \
 } while (0) \
 
 EXPORT void GetMemoryAreas(MemoryArea *m)
 {
 	int i = 0;
-	MAYBE_ADD_MEMORY_DOMAIN(rdram.ram, "RDRAM", MEMORYAREA_FLAGS_PRIMARY);
-	MAYBE_ADD_MEMORY_DOMAIN(cartridge.rom, "ROM", 0);
-	MAYBE_ADD_MEMORY_DOMAIN(pi.rom, "PI ROM", 0);
-	MAYBE_ADD_MEMORY_DOMAIN(pi.ram, "PI RAM", 0);
-	MAYBE_ADD_MEMORY_DOMAIN(rsp.dmem, "RSP DMEM", 0);
-	MAYBE_ADD_MEMORY_DOMAIN(rsp.imem, "RSP IMEM", 0);
-	MAYBE_ADD_MEMORY_DOMAIN(cartridge.ram, "SRAM", MEMORYAREA_FLAGS_ONEFILLED | MEMORYAREA_FLAGS_SAVERAMMABLE);
-	MAYBE_ADD_MEMORY_DOMAIN(cartridge.eeprom, "EEPROM", MEMORYAREA_FLAGS_ONEFILLED | MEMORYAREA_FLAGS_SAVERAMMABLE);
-	MAYBE_ADD_MEMORY_DOMAIN(cartridge.flash, "FLASH", MEMORYAREA_FLAGS_ONEFILLED | MEMORYAREA_FLAGS_SAVERAMMABLE);
-	MAYBE_ADD_MEMPAK_DOMAIN(1);
-	MAYBE_ADD_MEMPAK_DOMAIN(2);
-	MAYBE_ADD_MEMPAK_DOMAIN(3);
-	MAYBE_ADD_MEMPAK_DOMAIN(4);
+	ADD_MEMORY_DOMAIN(rdram.ram, "RDRAM", MEMORYAREA_FLAGS_PRIMARY);
+	ADD_MEMORY_DOMAIN(cartridge.rom, "ROM", 0);
+	ADD_MEMORY_DOMAIN(pi.rom, "PI ROM", 0);
+	ADD_MEMORY_DOMAIN(pi.ram, "PI RAM", 0);
+	ADD_MEMORY_DOMAIN(rsp.dmem, "RSP DMEM", 0);
+	ADD_MEMORY_DOMAIN(rsp.imem, "RSP IMEM", 0);
+	ADD_MEMORY_DOMAIN(cartridge.ram, "SRAM", MEMORYAREA_FLAGS_ONEFILLED | MEMORYAREA_FLAGS_SAVERAMMABLE);
+	ADD_MEMORY_DOMAIN(cartridge.eeprom, "EEPROM", MEMORYAREA_FLAGS_ONEFILLED | MEMORYAREA_FLAGS_SAVERAMMABLE);
+	ADD_MEMORY_DOMAIN(cartridge.flash, "FLASH", MEMORYAREA_FLAGS_ONEFILLED | MEMORYAREA_FLAGS_SAVERAMMABLE);
+	ADD_MEMPAK_DOMAIN(1);
+	ADD_MEMPAK_DOMAIN(2);
+	ADD_MEMPAK_DOMAIN(3);
+	ADD_MEMPAK_DOMAIN(4);
 }
 
 // fixme: this mismatches the c# side due to some re-ordering c# is doing for some reason
