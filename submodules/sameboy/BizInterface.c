@@ -121,7 +121,7 @@ EXPORT biz_t* sameboy_create(u8* romdata, u32 romlen, u8* biosdata, u32 bioslen,
 	GB_load_rom_from_buffer(&biz->gb, romdata, romlen);
 	GB_load_boot_rom_from_buffer(&biz->gb, biosdata, bioslen);
 	GB_set_sample_rate(&biz->gb, GB_get_clock_rate(&biz->gb) / 2);
-    GB_apu_set_sample_callback(&biz->gb, sample_cb);
+	GB_apu_set_sample_callback(&biz->gb, sample_cb);
 	GB_set_rgb_encode_callback(&biz->gb, rgb_cb);
 	GB_set_vblank_callback(&biz->gb, vblank_cb);
 	GB_set_rtc_mode(&biz->gb, realtime ? GB_RTC_MODE_SYNC_TO_HOST : GB_RTC_MODE_ACCURATE);
