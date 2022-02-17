@@ -31,7 +31,7 @@ conf = env.Configure()
 
 conf.Finish()
 
-shlib = env.SharedLibrary('sameboy', sourceFiles + ['BizInterface.c'],
+shlib = env.SharedLibrary('sameboy', sourceFiles + ['BizInterface.c'] + ['blip_buf.c'],
                           LINKFLAGS = env['LINKFLAGS'] + ' -s -Wno-attributes',
                           SHLIBPREFIX = "lib")
 
