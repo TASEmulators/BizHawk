@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 
+using BizHawk.BizInvoke;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
@@ -15,6 +16,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class Sameboy : ICycleTiming, IInputPollable, ILinkable, IRomInfo, IBoardInfo, IGameboyCommon
 	{
+		private static readonly LibSameboy LibSameboy;
+
+		static Sameboy()
+		{
+			var resolver = new DynamicLibraryImportResolver(
+				OSTailoredCode.IsUnixHost ? "libsameboy.so" : "libsameboy.dll", hasLimitedLifetime: false);
+			LibSameboy = BizInvoker.GetInvoker<LibSameboy>(resolver, CallingConventionAdapters.Native);
+		}
+
 		private readonly BasicServiceProvider _serviceProvider;
 
 		private readonly Gameboy.GBDisassembler _disassembler;
