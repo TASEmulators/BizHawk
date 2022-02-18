@@ -205,23 +205,101 @@ namespace BizHawk.Emulation.Common
 			Option("TI83", "Rom", in ti83p_112);
 
 			// mega cd
-			var eu_mcd1_9210 = File("F891E0EA651E2232AF0C5C4CB46A0CAE2EE8F356", 131072, "MCD_eu_9210.bin", "Mega CD EU (9210)");
-			var eu_mcd2_9303 = File("7063192AE9F6B696C5B81BC8F0A9FE6F0C400E58", 131072, "MCD_eu_9303.bin", "Mega CD EU (9303)");
-			var eu_mcd2_9306 = File("523B3125FB0AC094E16AA072BC6CCDCA22E520E5", 131072, "MCD_eu_9306.bin", "Mega CD EU (9310)"); // ?? is this size correct?
-			var jp_mcd1_9111 = File("4846F448160059A7DA0215A5DF12CA160F26DD69", 131072, "MCD_jp_9111.bin", "Mega CD JP (9111)");
-			var jp_mcd1_9112 = File("E4193C6AE44C3CEA002707D2A88F1FBCCED664DE", 131072, "MCD_jp_9112.bin", "Mega CD JP (9112)");
-			var us_scd1_9210 = File("F4F315ADCEF9B8FEB0364C21AB7F0EAF5457F3ED", 131072, "SCD_us_9210.bin", "Sega CD US (9210)");
-			var us_scd2_9303 = File("BD3EE0C8AB732468748BF98953603CE772612704", 131072, "SCD_us_9303.bin", "Sega CD US (9303)");
+			var jp_mcda_211c = File("219D284DCF63CE366A4DC6D1FF767A0D2EEA283D", 131072, "MCD_aiwa_jp_211c.bin", "Mega CD Aiwa JP (v2.11c)");
+			var us_scd1_100 = File("C5C24E6439A148B7F4C7EA269D09B7A23FE25075", 131072, "SCD_m1_us_100.bin", "Sega CD Model 1 US (v1.00)");
+			var us_scd1_100_h = File("2F397218764502F184F23055055BC5728C71F259", 131072, "SCD_m1_us_100[h].bin", "Sega CD Model 1 US (v1.00) [h]", isBad: true);
+			var us_scd1_110 = File("F4F315ADCEF9B8FEB0364C21AB7F0EAF5457F3ED", 131072, "SCD_m1_us_110.bin", "Sega CD Model 1 US (v1.10)");
+			var us_scd2_200 = File("5A8C4B91D3034C1448AAC4B5DC9A6484FCE51636", 131072, "SCD_m2_us_200.bin", "Sega CD Model 2 US (v2.00)");
+			var us_scd2_200_b = File("BD3EE0C8AB732468748BF98953603CE772612704", 131072, "SCD_m2_us_200[b].bin", "Sega CD Model 2 US (v2.00) [b]", isBad: true);
+			var us_scd2_200w = File("5ADB6C3AF218C60868E6B723EC47E36BBDF5E6F0", 131072, "SCD_m2_us_200w.bin", "Sega CD Model 2 US (v2.00w)");
+			var us_scd2_200w_b = File("27358448FE5514C90AC25430851EF075B7ADC0DB", 131072, "SCD_m2_us_200w[b].bin", "Sega CD Model 2 US (v2.00w) [b]", isBad: true);
+			var us_scd2_211x = File("328A3228C29FBA244B9DB2055ADC1EC4F7A87E6B", 131072, "SCD_m2_us_211x.bin", "Sega CD Model 2 US (v2.11x)");
+			var us_scd2_211x_b = File("0CCB6A3589F2FA6E70BD4996578AD106B8C6D35C", 131072, "SCD_m2_us_211x[b].bin", "Sega CD Model 2 US (v2.11x) [b]", isBad: true);
+			var us_gcdx_221x = File("2B125C0545AFA089B617F2558E686EA723BDC06E", 131072, "GCDX_us_221x.bin", "Genesis CDX US (v2.21x)");
+			var us_gcdx_221x_b = File("830B414197F388DA0ABF2B5FF55DAFC84781D9E5", 131072, "GCDX_us_221x[b].bin", "Genesis CDX US (v2.21x) [b]", isBad: true);
+			var jp_mcd2_200c = File("D203CFE22C03AE479DD8CA33840CF8D9776EB3FF", 131072, "MCD_2_jp_200c.bin", "Mega CD 2 JP (v2.00c)");
+			var jp_mcd2_200c_b2 = File("DC68146AD1FF50FAEEB2A3F685FAB1A2961DABB2", 131072, "MCD_2_jp_200c[b2].bin", "Mega CD 2 JP (v2.00c) [b2]", isBad: true);
+			var jp_mcd2_200c_b = File("762D20EBB85B980C17C53F928C002D747920A281", 131072, "MCD_2_jp_200c[b].bin", "Mega CD 2 JP (v2.00c) [b]", isBad: true);
+			var eu_mcd_100 = File("F891E0EA651E2232AF0C5C4CB46A0CAE2EE8F356", 131072, "MCD_eu_100.bin", "Mega CD EU (v1.00)");
+			var jp_mcd_100g = File("6A40A5CEC00C3B49A4FD013505C5580BAA733A29", 131072, "MCD_jp_100g.bin", "Mega CD JP (v1.00g)");
+			var jp_mcd_100l = File("0D5485E67C3F033C41D677CC9936AFD6AD618D5F", 131072, "MCD_jp_100l.bin", "Mega CD JP (v1.00l)");
+			var jp_mcd_100o = File("9E1495E62B000E1E1C868C0F3B6982E1ABBB8A94", 131072, "MCD_jp_100o.bin", "Mega CD JP (v1.00o)");
+			var jp_mcd_100p = File("4846F448160059A7DA0215A5DF12CA160F26DD69", 131072, "MCD_jp_100p.bin", "Mega CD JP (v1.00p)");
+			var jp_mcd_100p_b = File("2BD871E53960BC0202C948525C02584399BC2478", 131074, "MCD_jp_100p[b].bin", "Mega CD JP (v1.00p) [b]", isBad: true);
+			var as_mcd_100s = File("E4193C6AE44C3CEA002707D2A88F1FBCCED664DE", 131072, "MCD_as_100s.bin", "Mega CD AS (v1.00s)");
+			var jp_mcd_100s = File("230EBFC49DC9E15422089474BCC9FA040F2C57EB", 131072, "MCD_jp_100s.bin", "Mega CD JP (v1.00s)");
+			var eu_mcdii_200 = File("7063192AE9F6B696C5B81BC8F0A9FE6F0C400E58", 131072, "MCD_eu_200.bin", "Mega CD II EU (v2.00)");
+			var eu_mcdii_200_b2 = File("CFCF092E0A70779FC5912DA0FBD154838DF997DA", 131072, "MCD_eu_200[b2].bin", "Mega CD II EU (v2.00) [b2]", isBad: true);
+			var eu_mcdii_200_b = File("0CBA6B33B306A293471D3697CF30F2A4D20673EB", 131072, "MCD_eu_200[b].bin", "Mega CD II EU (v2.00) [b]", isBad: true);
+			var eu_mcdii_200w = File("F5F60F03501908962446EE02FC27D98694DD157D", 131072, "MCD_eu_200w.bin", "Mega CD II EU (v2.00w)");
+			var eu_mcdii_200w_b2 = File("45134EF8655B9D06B130726786EFE2F8B1D430A3", 131072, "MCD_eu_200w[b2].bin", "Mega CD II EU (v2.00w) [b2]", isBad: true);
+			var eu_mcdii_200w_b = File("523B3125FB0AC094E16AA072BC6CCDCA22E520E5", 131072, "MCD_eu_200w[b].bin", "Mega CD II EU (v2.00w) [b]", isBad: true);
+			var eu_mm_221x = File("75548AC9AAA6E81224499F9A1403B2B42433F5B7", 131072, "MM_eu_221x.bin", "Multi Mega EU (v2.21x)");
+			var eu_mm_221x_b2 = File("73FC9C014AD803E9E7D8076B3642A8A5224B3E51", 131072, "MM_eu_221x.bin", "Multi Mega EU (v2.21x) [b]", isBad: true);
+			var jp_wm_m2 = File("B3F32E409BD5508C89ED8BE33D41A58D791D0E5D", 131072, "WM_jp_m2.bin", "Wondermega M2 JP");
+			var jp_wm_100W = File("3FC9358072F74BD24E3E297EA11B2BF15A7AF891", 131072, "WM_jp_100W.bin", "Wondermega JP (v1.00W)");
+			var us_xeye = File("651F14D5A5E0ECB974A60C0F43B1D2006323FB09", 131072, "XEye_us.bin", "X'Eye US");
+
+			var us_la_104 = File("AA811861F8874775075BD3F53008C8AAF59B07DB", 131072, "LA_us_104.bin", "LaserActive US (v1.04)");
+			var jp_la_105 = File("B3B1D880E288B6DC79EEC0FF1B0480C229EC141D", 131072, "LA_us_105.bin", "LaserActive JP (v1.05)");
+			var jp_la_102 = File("26237B333DB4A4C6770297FA5E655EA95840D5D9", 131072, "LA_us_102.bin", "LaserActive JP (v1.02)");
+			var us_la_102 = File("8AF162223BB12FC19B414F126022910372790103", 131072, "LA_us_102.bin", "LaserActive US (v1.02)");
+
+			var jp_mcd_111b = File("204758D5A64C24E96E1A9FE6BD82E1878FEF7ADE", 131072, "MCD_jp_111b.bin", "Mega CD JP (v1.11b)");
+			var jp_mcd_reva = File("062E6A912E3683F7F127CBFD6314B44F93C42DB7", 131072, "MCD_jp_reva.bin", "Mega CD JP (Rev A)");
+			var jp_mcd_beta = File("F30D109D1C2F7C9FEAF38600C65834261DB73D1F", 131072, "MCD_jp_beta.bin", "Mega CD JP (Beta)");
+			var eu_mcd_221 = File("9DE4EDA59F544DB2D5FD7E6514601F7B648D8EB4", 131072, "MCD_eu_221.bin", "Mega CD EU (v2.21)");
+
 			Firmware("GEN", "CD_BIOS_EU", "Mega CD Bios (Europe)");
 			Firmware("GEN", "CD_BIOS_JP", "Mega CD Bios (Japan)");
 			Firmware("GEN", "CD_BIOS_US", "Sega CD Bios (USA)");
-			Option("GEN", "CD_BIOS_EU", in eu_mcd1_9210);
-			Option("GEN", "CD_BIOS_EU", in eu_mcd2_9303);
-			Option("GEN", "CD_BIOS_EU", in eu_mcd2_9306);
-			Option("GEN", "CD_BIOS_JP", in jp_mcd1_9111);
-			Option("GEN", "CD_BIOS_JP", in jp_mcd1_9112);
-			Option("GEN", "CD_BIOS_US", in us_scd1_9210);
-			Option("GEN", "CD_BIOS_US", in us_scd2_9303, FirmwareOptionStatus.Unacceptable); // or is it bad? MAME seems to think so. see https://github.com/TASEmulators/BizHawk/issues/2913
+
+			Option("GEN", "CD_BIOS_EU", in eu_mcd_100);
+			Option("GEN", "CD_BIOS_EU", in eu_mcdii_200);
+			Option("GEN", "CD_BIOS_EU", in eu_mcdii_200_b2);
+			Option("GEN", "CD_BIOS_EU", in eu_mcdii_200_b);
+			Option("GEN", "CD_BIOS_EU", in eu_mcdii_200w);
+			Option("GEN", "CD_BIOS_EU", in eu_mcdii_200w_b2);
+			Option("GEN", "CD_BIOS_EU", in eu_mcdii_200w_b);
+			Option("GEN", "CD_BIOS_EU", in eu_mm_221x);
+			Option("GEN", "CD_BIOS_EU", in eu_mm_221x_b2);
+			Option("GEN", "CD_BIOS_EU", in eu_mcd_221);
+
+			Option("GEN", "CD_BIOS_JP", in jp_mcda_211c);
+			Option("GEN", "CD_BIOS_JP", in jp_mcd2_200c);
+			Option("GEN", "CD_BIOS_JP", in jp_mcd2_200c_b2);
+			Option("GEN", "CD_BIOS_JP", in jp_mcd2_200c_b);
+			Option("GEN", "CD_BIOS_JP", in jp_mcd_100g);
+			Option("GEN", "CD_BIOS_JP", in jp_mcd_100l);
+			Option("GEN", "CD_BIOS_JP", in jp_mcd_100o);
+			Option("GEN", "CD_BIOS_JP", in jp_mcd_100p);
+			Option("GEN", "CD_BIOS_JP", in jp_mcd_100p_b);
+			Option("GEN", "CD_BIOS_JP", in as_mcd_100s);
+			Option("GEN", "CD_BIOS_JP", in jp_mcd_100s);
+			Option("GEN", "CD_BIOS_JP", in jp_wm_m2);
+			Option("GEN", "CD_BIOS_JP", in jp_wm_100W);
+			Option("GEN", "CD_BIOS_JP", in jp_la_105);
+			Option("GEN", "CD_BIOS_JP", in jp_la_102);
+			Option("GEN", "CD_BIOS_JP", in jp_mcd_111b);
+			Option("GEN", "CD_BIOS_JP", in jp_mcd_reva);
+			Option("GEN", "CD_BIOS_JP", in jp_mcd_beta);
+
+			Option("GEN", "CD_BIOS_US", in us_scd1_100);
+			Option("GEN", "CD_BIOS_US", in us_scd1_100_h);
+			Option("GEN", "CD_BIOS_US", in us_scd1_110);
+			Option("GEN", "CD_BIOS_US", in us_scd2_200);
+			Option("GEN", "CD_BIOS_US", in us_scd2_200_b);
+			Option("GEN", "CD_BIOS_US", in us_scd2_200w);
+			Option("GEN", "CD_BIOS_US", in us_scd2_200w_b);
+			Option("GEN", "CD_BIOS_US", in us_scd2_211x);
+			Option("GEN", "CD_BIOS_US", in us_scd2_211x_b);
+			Option("GEN", "CD_BIOS_US", in us_gcdx_221x);
+			Option("GEN", "CD_BIOS_US", in us_gcdx_221x_b);
+			Option("GEN", "CD_BIOS_US", in us_xeye);
+			Option("GEN", "CD_BIOS_US", in us_la_104);
+			Option("GEN", "CD_BIOS_US", in us_la_102);
+
+
 			FirmwareAndOption("DBEBD76A448447CB6E524AC3CB0FD19FC065D944", 256, "32X", "G", "32X_G_BIOS.BIN", "32x 68k BIOS");
 			FirmwareAndOption("1E5B0B2441A4979B6966D942B20CC76C413B8C5E", 2048, "32X", "M", "32X_M_BIOS.BIN", "32x SH2 MASTER BIOS");
 			FirmwareAndOption("4103668C1BBD66C5E24558E73D4F3F92061A109A", 1024, "32X", "S", "32X_S_BIOS.BIN", "32x SH2 SLAVE BIOS");
