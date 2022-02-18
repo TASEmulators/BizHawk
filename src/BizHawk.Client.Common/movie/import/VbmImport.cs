@@ -4,6 +4,7 @@ using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Nintendo.GBHawk;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
+using BizHawk.Emulation.Cores.Nintendo.Sameboy;
 
 namespace BizHawk.Client.Common.movie.import
 {
@@ -289,6 +290,12 @@ namespace BizHawk.Client.Common.movie.import
 						Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(new GBHawk.GBSyncSettings
 						{
 							ConsoleMode = is_GBC ? GBHawk.GBSyncSettings.ConsoleModeType.GBC : GBHawk.GBSyncSettings.ConsoleModeType.GB,
+						});
+						break;
+					case CoreNames.Sameboy:
+						Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(new Sameboy.SameboySyncSettings
+						{
+							ConsoleMode = is_GBC ? Sameboy.SameboySyncSettings.GBModel.GB_MODEL_CGB_E : Sameboy.SameboySyncSettings.GBModel.GB_MODEL_DMG_B,
 						});
 						break;
 				}
