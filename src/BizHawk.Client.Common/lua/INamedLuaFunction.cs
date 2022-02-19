@@ -6,7 +6,7 @@ namespace BizHawk.Client.Common
 {
 	public interface INamedLuaFunction
 	{
-		Action Callback { get; }
+		Action InputCallback { get; }
 
 		Guid Guid { get; }
 
