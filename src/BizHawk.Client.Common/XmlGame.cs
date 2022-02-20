@@ -112,7 +112,7 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					ret.GI.Hash = "0000000000000000000000000000000000000000";
+					ret.GI.Hash = SHA1Checksum.Zero;
 				}
 
 				return ret;

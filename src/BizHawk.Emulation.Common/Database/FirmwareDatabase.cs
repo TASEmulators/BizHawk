@@ -3,6 +3,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using BizHawk.Common;
+
 // ReSharper disable IdentifierTypo
 // ReSharper disable InconsistentNaming
 // ReSharper disable StringLiteralTypo
@@ -114,8 +116,8 @@ namespace BizHawk.Emulation.Common
 
 			FirmwareAndOption("24F67BDEA115A2C847C8813A262502EE1607B7DF", 16384, "NDS", "bios7", "NDS_Bios7.bin", "ARM7 BIOS");
 			FirmwareAndOption("BFAAC75F101C135E32E2AAF541DE6B1BE4C8C62D", 4096, "NDS", "bios9", "NDS_Bios9.bin", "ARM9 BIOS");
-			FirmwareAndOption("0000000000000000000000000000000000000000", 65536, "NDS", "bios7i", "NDS_Bios7i.bin", "ARM7i BIOS");
-			FirmwareAndOption("0000000000000000000000000000000000000000", 65536, "NDS", "bios9i", "NDS_Bios9i.bin", "ARM9i BIOS");
+			FirmwareAndOption(SHA1Checksum.Dummy, 65536, "NDS", "bios7i", "NDS_Bios7i.bin", "ARM7i BIOS");
+			FirmwareAndOption(SHA1Checksum.Dummy, 65536, "NDS", "bios9i", "NDS_Bios9i.bin", "ARM9i BIOS");
 			Firmware("NDS", "firmware", "NDS Firmware");
 			// throwing a ton of hashes from the interwebs
 			var knownhack1 = File("22A7547DBC302BCBFB4005CFB5A2D426D3F85AC6", 262144, "NDS_Firmware [b1].bin", "NDS Firmware", "known hack", true);
@@ -131,8 +133,8 @@ namespace BizHawk.Emulation.Common
 			Option("NDS", "firmware", in likelygood2);
 			Option("NDS", "firmware", in likelygood3);
 
-			FirmwareAndOption("0000000000000000000000000000000000000000", 131072, "NDS", "firmwarei", "DSi_Firmware.bin", "DSi Firmware");
-			FirmwareAndOption("0000000000000000000000000000000000000000", 251658304, "NDS", "nand", "DSi_Nand.bin", "DSi NAND");
+			FirmwareAndOption(SHA1Checksum.Dummy, 131072, "NDS", "firmwarei", "DSi_Firmware.bin", "DSi Firmware");
+			FirmwareAndOption(SHA1Checksum.Dummy, 251658304, "NDS", "nand", "DSi_Nand.bin", "DSi NAND");
 
 			FirmwareAndOption("E4ED47FAE31693E016B081C6BDA48DA5B70D7CCB", 512, "Lynx", "Boot", "LYNX_boot.img", "Boot Rom");
 
