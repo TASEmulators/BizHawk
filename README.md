@@ -58,6 +58,7 @@ Supported consoles and computers:
 * GCE Vectrex
 * Magnavox Odyssey² / Videopac G7000
 * Mattel Intellivision
+* MSX
 * NEC
 	* PC Engine / TurboGrafx-16 + SuperGrafx + CD
 	* PC-FX
@@ -123,8 +124,8 @@ If you download BizHawk this way, **don't mix different versions**, keep each ve
 
 Run `EmuHawkMono.sh` to start EmuHawk—you can run it from anywhere, so creating a `.desktop` file to wrap the script is fine. The shell script should print an error if it fails, otherwise it's safe to ignore console output. It takes mostly the same command-line arguments as on Windows: see [*Passing command-line arguments*](#passing-command-line-arguments).
 
-Most features and cores work, notable omissions being Mupen64Plus (N64) and Octoshock (PSX). See [#1430](https://github.com/TASEmulators/BizHawk/issues/1430) for details.
-Lua support is new in 2.7, and it requires Mono >= 6.12.0.151 (unreleased as of 2021-11). Comment on [#2951](https://github.com/TASEmulators/BizHawk/issues/2951) if you run into any problems with it.
+Most features and cores work, a notable omission being Mupen64Plus (N64). See the Linux thread, [#1430](https://github.com/TASEmulators/BizHawk/issues/1430), for a more detailed breakdown.
+Lua support is new in 2.7, and it requires Mono >= 6.12.0.151 (unreleased as of 2022-01). Comment on [#2951](https://github.com/TASEmulators/BizHawk/issues/2951) if you run into any problems with it.
 
 [to top](#bizhawk)
 
@@ -297,10 +298,12 @@ Atari 7800 | **A7800Hawk**
 Atari Lynx | **Handy**
 Commodore 64 | **C64Hawk**
 ColecoVision | **ColecoHawk**
-Game Boy / Color | **Gambatte**, **GBHawk**
+Game Boy / Color | **Gambatte**, **GBHawk**, **SameBoy**
 Game Boy Advance | **mGBA**
 Intellivision | **IntelliHawk**
-N64 | **Mupen64Plus**
+MSX | **MSXHawk**
+N64 | Ares64, **Mupen64Plus**
+NDS | **melonDS**
 Neo Geo Pocket | **NeoPop**
 NES | **NesHawk**, QuickNes
 Odyssey² | **O2Hawk**
@@ -313,7 +316,7 @@ Sega Master System | **SMSHawk**
 Sega Saturn | **Saturnus**
 SNES | **BSNES**, Faust, Snes9x
 Super Game Boy | **BSNES**, **Gambatte**
-TI-83 | **TI83Hawk**
+TI-83 | **Emu83**, **TI83Hawk**
 TurboGrafx | HyperNyma, **PCEHawk**, **TurboNyma**
 Uzebox | **Uzem**
 Vectrex | **VectrexHawk**
@@ -325,8 +328,6 @@ There are also works-in-progress for:
 * Amstrad CPC (home-grown core)
 * Fairchild Channel F (home-grown core)
 * [MAME](https://mamedev.org)
-* MSX (home-grown core)
-* Nintendo DS via [melonDS](http://melonds.kuribo64.net)
 * Playstation 2 via [Dobiestation](https://github.com/PSI-Rockin/DobieStation)
 * others maybe ([candidates](https://gitlab.com/TASVideos/BizHawk/snippets/1890492))
 
