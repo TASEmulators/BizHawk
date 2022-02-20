@@ -220,8 +220,8 @@ namespace BizHawk.Emulation.Common
 		{
 			acquire.WaitOne();
 
-			var hashCRC32 = CRC32Checksum.ComputeDigestHex(romData);
-			if (DB.TryGetValue(hashCRC32, out var cgi))
+			var hashSHA1 = SHA1Checksum.ComputeDigestHex(romData);
+			if (DB.TryGetValue(hashSHA1, out var cgi))
 			{
 				return new GameInfo(cgi);
 			}
@@ -232,8 +232,8 @@ namespace BizHawk.Emulation.Common
 				return new GameInfo(cgi);
 			}
 
-			var hashSHA1 = SHA1Checksum.ComputeDigestHex(romData);
-			if (DB.TryGetValue(hashSHA1, out cgi))
+			var hashCRC32 = CRC32Checksum.ComputeDigestHex(romData);
+			if (DB.TryGetValue(hashCRC32, out cgi))
 			{
 				return new GameInfo(cgi);
 			}
