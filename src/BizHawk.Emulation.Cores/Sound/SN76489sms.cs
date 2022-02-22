@@ -24,6 +24,8 @@ namespace BizHawk.Emulation.Cores.Components
 		public int noise_rate;
 		public bool noise_bit;
 
+		public ushort tone_low;
+
 		public bool A_L, B_L, C_L, noise_L;
 		public bool A_R, B_R, C_R, noise_R;
 
@@ -88,6 +90,8 @@ namespace BizHawk.Emulation.Cores.Components
 			ser.Sync(nameof(noise_clock), ref noise_clock);
 			ser.Sync(nameof(noise_bit), ref noise_bit);
 
+			ser.Sync(nameof(tone_low), ref tone_low);
+
 			ser.Sync(nameof(psg_clock), ref psg_clock);
 
 			ser.Sync(nameof(A_up), ref A_up);
@@ -133,8 +137,7 @@ namespace BizHawk.Emulation.Cores.Components
 				{
 					if (chan_sel < 3)
 					{
-						Chan_tone[chan_sel] &= 0x3F0;
-						Chan_tone[chan_sel] |= (ushort)(value & 0xF);
+						tone_low = (ushort)(value & 0xF);
 					}
 					else
 					{
@@ -156,8 +159,7 @@ namespace BizHawk.Emulation.Cores.Components
 				{
 					if (chan_sel < 3)
 					{
-						Chan_tone[chan_sel] &= 0xF;
-						Chan_tone[chan_sel] |= (ushort)((value & 0x3F) << 4);
+						Chan_tone[chan_sel] = (ushort)(((value & 0x3F) << 4) | tone_low);
 					}
 					else
 					{
@@ -222,18 +224,21 @@ namespace BizHawk.Emulation.Cores.Components
 				{
 					A_up = !A_up;
 					clock_A = Chan_tone[0] + 1;
+					if (clock_A == 1) { A_up = !A_up; }
 				}
 
 				if (clock_B == 0)
 				{
 					B_up = !B_up;
 					clock_B = Chan_tone[1] + 1;
+					if (clock_B == 1) { B_up = !B_up; }
 				}
 
 				if (clock_C == 0)
 				{
 					C_up = !C_up;
 					clock_C = Chan_tone[2] + 1;
+					if (clock_C == 1) { C_up = !C_up; }
 				}
 
 				// now calculate the volume of each channel and add them together
