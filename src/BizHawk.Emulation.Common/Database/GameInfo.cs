@@ -11,7 +11,10 @@ namespace BizHawk.Emulation.Common
 	{
 		string Name { get; }
 		string System { get; }
+
+		/// <value>either CRC32, MD5, or SHA1, hex-encoded, unprefixed</value>
 		string Hash { get; }
+
 		string Region { get; }
 		RomStatus Status { get; }
 		bool NotInDatabase { get; }

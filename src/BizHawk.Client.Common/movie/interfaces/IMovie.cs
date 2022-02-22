@@ -90,7 +90,10 @@ namespace BizHawk.Client.Common
 		bool StartsFromSaveRam { get; set; }
 		string GameName { get; set; }
 		string SystemID { get; set; }
+
+		/// <value>either CRC32, MD5, or SHA1, hex-encoded, unprefixed</value>
 		string Hash { get; set; }
+
 		string Author { get; set; }
 		string Core { get; set; }
 		string EmulatorVersion { get; set; }
