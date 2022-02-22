@@ -108,49 +108,13 @@ namespace BizHawk.Client.Common
 
 		public string Hash
 		{
-			get
-			{
-				if (Header[HeaderKeys.Sha1] != string.Empty)
-				{
-					return Header[HeaderKeys.Sha1];
-				}
-				else if (Header[HeaderKeys.Md5] != string.Empty)
-				{
-					return Header[HeaderKeys.Md5];
-				}
-				else
-				{
-					return Header[HeaderKeys.Crc32];
-				}
-			}
+			get => Header[HeaderKeys.Sha1];
 			set
 			{
-				if (value.Length == 40)
+				if (Header[HeaderKeys.Sha1] != value)
 				{
-					if (Header[HeaderKeys.Sha1] != value || Header[HeaderKeys.Md5] != string.Empty || Header[HeaderKeys.Crc32] != string.Empty)
-					{
-						Changes = true;
-						Header[HeaderKeys.Sha1] = value;
-						Header[HeaderKeys.Md5] = Header[HeaderKeys.Crc32] = "";
-					}
-				}
-				else if (value.Length == 32)
-				{
-					if (Header[HeaderKeys.Md5] != value || Header[HeaderKeys.Sha1] != string.Empty || Header[HeaderKeys.Crc32] != string.Empty)
-					{
-						Changes = true;
-						Header[HeaderKeys.Md5] = value;
-						Header[HeaderKeys.Sha1] = Header[HeaderKeys.Crc32] = "";
-					}
-				}
-				else
-				{
-					if (Header[HeaderKeys.Crc32] != value || Header[HeaderKeys.Sha1] != string.Empty || Header[HeaderKeys.Md5] != string.Empty)
-					{
-						Changes = true;
-						Header[HeaderKeys.Crc32] = value;
-						Header[HeaderKeys.Sha1] = Header[HeaderKeys.Md5] = "";
-					}
+					Changes = true;
+					Header[HeaderKeys.Sha1] = value;
 				}
 			}
 		}

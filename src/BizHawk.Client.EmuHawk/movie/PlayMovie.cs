@@ -392,8 +392,6 @@ namespace BizHawk.Client.EmuHawk
 				switch (k)
 				{
 					case HeaderKeys.Sha1:
-					case HeaderKeys.Md5:
-					case HeaderKeys.Crc32:
 						if (_game.Hash != v)
 						{
 							item.BackColor = Color.Pink;
