@@ -72,9 +72,9 @@ namespace BizHawk.Client.EmuHawk
 		private bool _trackDeltas;
 		private bool _ignoreEventsNextPoll;
 
-		private static readonly IReadOnlyList<string> ModifierKeysBase = new[] { "Win", "Ctrl", "Alt", "Shift" };
+		private static readonly IReadOnlyList<string> ModifierKeysBase = new[] { "Super", "Ctrl", "Alt", "Shift" };
 
-		private static readonly IReadOnlyList<string> ModifierKeysBaseUnmerged = new[] { "Win", "Ctrl", "Alt", "Shift", "LeftWin", "RightWin", "LeftCtrl", "RightCtrl", "LeftAlt", "RightAlt", "LeftShift", "RightShift" };
+		private static readonly IReadOnlyList<string> ModifierKeysBaseUnmerged = new[] { "Super", "Ctrl", "Alt", "Shift", "LeftSuper", "RightSuper", "LeftCtrl", "RightCtrl", "LeftAlt", "RightAlt", "LeftShift", "RightShift" };
 
 		public void UpdateModifierKeysEffective()
 			=> _currentConfig.ModifierKeysEffective = (_currentConfig.MergeLAndRModifierKeys ? ModifierKeysBase : ModifierKeysBaseUnmerged)
@@ -83,8 +83,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly IReadOnlyDictionary<string, string> _modifierKeyPreMap = new Dictionary<string, string>
 		{
-			["LeftWin"] = "Win",
-			["RightWin"] = "Win",
+			["LeftSuper"] = "Win",
+			["RightSuper"] = "Win",
 			["LeftCtrl"] = "Ctrl",
 			["RightCtrl"] = "Ctrl",
 			["LeftAlt"] = "Alt",
