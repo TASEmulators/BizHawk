@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public static void SaveDatabaseEntry(string path, CompactGameInfo gameInfo)
+		public static void SaveDatabaseEntry(CompactGameInfo gameInfo, string filename = "gamedb_user.txt")
 		{
 			var sb = new StringBuilder();
 			sb
@@ -96,7 +96,8 @@ namespace BizHawk.Emulation.Common
 				.Append(gameInfo.MetaData)
 				.Append(Environment.NewLine);
 
-			File.AppendAllText(path, sb.ToString());
+			File.AppendAllText(Path.Combine(_userRoot, filename), sb.ToString());
+			DB[gameInfo.Hash] = gameInfo;
 		}
 
 		private static bool initialized = false;

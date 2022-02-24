@@ -7,7 +7,6 @@ using System.Windows.Forms;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
-using BizHawk.Common.PathExtensions;
 
 // todo - perks - pause, copy to clipboard, backlog length limiting
 
@@ -187,7 +186,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var gameDbEntry = Emulator.AsGameDBEntryGenerator().GenerateGameDbEntry();
 				gameDbEntry.Status = picker.PickedStatus;
-				Database.SaveDatabaseEntry(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb", "gamedb_user.txt"), gameDbEntry); //TODO read-only in Nix builds
+				Database.SaveDatabaseEntry(gameDbEntry);
 				MainForm.UpdateDumpInfo(gameDbEntry.Status);
 				HideShowGameDbButton();
 			}
