@@ -16,6 +16,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class PlayMovie : Form, IDialogParent
 	{
+		private readonly Func<FirmwareID, string, string> _canProvideFirmware;
+
 		private readonly IMainFormForTools _mainForm;
 		private readonly Config _config;
 		private readonly GameInfo _game;
@@ -36,9 +38,11 @@ namespace BizHawk.Client.EmuHawk
 			Config config,
 			GameInfo game,
 			IEmulator emulator,
-			IMovieSession movieSession)
+			IMovieSession movieSession,
+			Func<FirmwareID, string, string> canProvideFirmware)
 		{
 			_mainForm = mainForm;
+			_canProvideFirmware = canProvideFirmware;
 			_config = config;
 			_game = game;
 			_emulator = emulator;
@@ -410,6 +414,18 @@ namespace BizHawk.Client.EmuHawk
 						{
 							item.BackColor = Color.Pink;
 							item.ToolTipText = $"Expected: {v}\n Actual: {_emulator.SystemId}";
+						}
+						break;
+					default:
+						if (k.Contains("_Firmware_"))
+						{
+							var split = k.Split(new[] { "_Firmware_" }, StringSplitOptions.None);
+							var actualHash = _canProvideFirmware(new(split[0], split[1]), v);
+							if (actualHash != v)
+							{
+								item.BackColor = Color.Yellow;
+								item.ToolTipText = $"Expected: {v}\nActual: {actualHash}";
+							}
 						}
 						break;
 				}

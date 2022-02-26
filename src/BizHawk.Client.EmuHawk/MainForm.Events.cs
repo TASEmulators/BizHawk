@@ -414,9 +414,17 @@ namespace BizHawk.Client.EmuHawk
 			form.ShowDialog();
 		}
 
+		private string CanProvideFirmware(FirmwareID id, string hash)
+			=> FirmwareManager.Resolve(
+				Config.PathEntries,
+				Config.FirmwareUserSpecifications,
+				FirmwareDatabase.FirmwareRecords.First(fr => fr.ID == id),
+//				exactFile: hash, //TODO re-scan FW dir for this file, then try autopatching
+				forbidScan: true)?.Hash;
+
 		private void PlayMovieMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new PlayMovie(this, Config, Game, Emulator, MovieSession);
+			using var form = new PlayMovie(this, Config, Game, Emulator, MovieSession, CanProvideFirmware);
 			form.ShowDialog();
 		}
 
