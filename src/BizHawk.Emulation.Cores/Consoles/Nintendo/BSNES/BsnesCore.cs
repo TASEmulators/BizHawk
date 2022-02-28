@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				right_port = (uint)_syncSettings.RightPort,
 				hotfixes = _syncSettings.Hotfixes ? 1 : 0,
 				fast_ppu = _syncSettings.FastPPU ? 1 : 0,
-				region_override = 0,
+				region_override = (int)_syncSettings.RegionOverride,
 			});
 			Api.SetCallbacks(callbacks);
 

@@ -61,5 +61,12 @@
 			NTSC = 0,
 			PAL = 1
 		}
+
+		public enum REGION_OVERRIDE : uint
+		{
+			Auto,
+			NTSC,
+			PAL
+		}
 	}
 }
