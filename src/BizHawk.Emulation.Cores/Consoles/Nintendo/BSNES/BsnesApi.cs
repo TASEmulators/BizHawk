@@ -221,8 +221,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			public int entropy;
 			public uint left_port;
 			public uint right_port;
-			public bool hotfixes;
-			public bool fast_ppu;
+			public int hotfixes;
+			public int fast_ppu;
 			public int region_override;
 		}
 

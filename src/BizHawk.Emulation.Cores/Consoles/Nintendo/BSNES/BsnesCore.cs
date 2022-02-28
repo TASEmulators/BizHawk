@@ -76,8 +76,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				entropy = (int)_syncSettings.Entropy,
 				left_port = (uint)_syncSettings.LeftPort,
 				right_port = (uint)_syncSettings.RightPort,
-				hotfixes = _syncSettings.Hotfixes,
-				fast_ppu = _syncSettings.FastPPU,
+				hotfixes = _syncSettings.Hotfixes ? 1 : 0,
+				fast_ppu = _syncSettings.FastPPU ? 1 : 0,
 				region_override = (int)_syncSettings.RegionOverride,
 			});
 			Api.SetCallbacks(callbacks);
