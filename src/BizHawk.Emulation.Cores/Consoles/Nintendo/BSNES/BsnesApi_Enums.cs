@@ -62,7 +62,7 @@
 			PAL = 1
 		}
 
-		public enum REGION_OVERRIDE : uint
+		public enum REGION_OVERRIDE : int
 		{
 			Auto,
 			NTSC,
