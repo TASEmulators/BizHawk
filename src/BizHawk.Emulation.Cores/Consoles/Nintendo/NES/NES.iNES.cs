@@ -48,17 +48,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				int mapper = data[6] >> 4 | data[7] & 0xf0 | data[8] << 8 & 0xf00;
 				int submapper = data[8] >> 4;
-
-				// only add submapper if it is non-zero
-				if (submapper != 0)
-				{
-					CartV2.BoardType = $"MAPPER{mapper:d4}-{submapper:d2}";
-				}
-				else
-				{
-					CartV2.BoardType = $"MAPPER{mapper:d4}";
-				}
-				
+				CartV2.BoardType = $"MAPPER{mapper:d4}-{submapper:d2}";
 
 				int vrambat = iNES2Wram(data[11] >> 4);
 				int vramnon = iNES2Wram(data[11] & 15);

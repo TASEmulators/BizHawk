@@ -589,6 +589,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			switch (Cart.BoardType)
 			{
+				case "MAPPER0001-00":
+					if (Cart.WramSize < 32)
+						return false;
+					AssertPrg(128, 256, 512); AssertChr(0); AssertVram(8); AssertWram(32);
+					break;
 				case "HVC-SXROM": //final fantasy 1& 2
 					AssertPrg(128, 256, 512); AssertChr(0); AssertVram(8); AssertWram(32);
 					break;
