@@ -95,7 +95,7 @@ namespace HelloWorld
 		public override void Restart()
 		{
 			APIs.EmuClient.SetClientExtraPadding(50, 50);
-			var gi = APIs.GameInfo.GetGameInfo();
+			var gi = APIs.Emulation.GetGameInfo();
 			if (!string.IsNullOrEmpty(gi?.Name))
 			{
 				Watches.RefreshDomains(_memoryDomains, GlobalConfig.RamWatchDefinePrevious);
@@ -112,7 +112,7 @@ namespace HelloWorld
 		public override void UpdateValues(ToolFormUpdateType type)
 		{
 			if (!(type == ToolFormUpdateType.PreFrame || type == ToolFormUpdateType.FastPreFrame)
-			    || string.IsNullOrEmpty(APIs.GameInfo.GetGameInfo()?.Name)
+			    || string.IsNullOrEmpty(APIs.Emulation.GetGameInfo()?.Name)
 			    || Watches.Count < 3)
 			{
 				return;
@@ -125,7 +125,7 @@ namespace HelloWorld
 
 		private void button1_Click(object sender, EventArgs e) => APIs.EmuClient.DoFrameAdvance();
 
-		private void label_GameHash_Click(object sender, EventArgs e) => Clipboard.SetText(APIs.GameInfo.GetGameInfo()!.Hash);
+		private void label_GameHash_Click(object sender, EventArgs e) => Clipboard.SetText(APIs.Emulation.GetGameInfo()!.Hash);
 
 		private void loadstate_Click(object sender, EventArgs e)
 		{
