@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+
+using System.Collections.Generic;
 
 using BizHawk.Emulation.Common;
 
@@ -8,7 +10,7 @@ namespace BizHawk.Client.Common
 	{
 		void DisplayVsync(bool enabled);
 		int FrameCount();
-		object Disassemble(uint pc, string name = "");
+		object? Disassemble(uint pc, string? name = null);
 		ulong? GetRegister(string name);
 		IReadOnlyDictionary<string, ulong> GetRegisters();
 		void SetRegister(string register, int value);
@@ -22,7 +24,7 @@ namespace BizHawk.Client.Common
 		void MinimizeFrameskip(bool enabled);
 		string GetDisplayType();
 		string GetBoardName();
-		object GetSettings();
+		object? GetSettings();
 		PutSettingsDirtyBits PutSettings(object settings);
 		void SetRenderPlanes(params bool[] args);
 	}
