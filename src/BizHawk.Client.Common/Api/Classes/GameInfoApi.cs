@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using System;
 using System.Collections.Generic;
 
 using BizHawk.Common;
@@ -7,6 +8,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
+	[Obsolete("use IEmulationApi")]
 	public sealed class GameInfoApi : IGameInfoApi
 	{
 		[OptionalService]

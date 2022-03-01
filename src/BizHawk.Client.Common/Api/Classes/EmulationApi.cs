@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -185,6 +186,14 @@ namespace BizHawk.Client.Common
 		public string GetDisplayType() => (RegionableCore?.Region)?.ToString() ?? "";
 
 		public string GetBoardName() => BoardInfo?.BoardName ?? "";
+
+		public IGameInfo? GetGameInfo()
+			=> _game;
+
+		public IReadOnlyDictionary<string, string?> GetGameOptions()
+			=> _game == null
+				? new Dictionary<string, string?>()
+				: ((GameInfo) _game).GetOptions().ToDictionary(static kvp => kvp.Key, static kvp => (string?) kvp.Value);
 
 		public object? GetSettings() => Emulator switch
 		{

@@ -12,7 +12,10 @@ namespace BizHawk.Client.Common
 		public ICommApi Comm => (ICommApi) Libraries[typeof(ICommApi)];
 		public IEmuClientApi EmuClient => (IEmuClientApi) Libraries[typeof(IEmuClientApi)];
 		public IEmulationApi Emulation => (IEmulationApi) Libraries[typeof(IEmulationApi)];
+
+		[Obsolete("use Emulation")]
 		public IGameInfoApi GameInfo => (IGameInfoApi) Libraries[typeof(IGameInfoApi)];
+
 		public IGuiApi Gui => (IGuiApi) Libraries[typeof(IGuiApi)];
 		public IInputApi Input => (IInputApi) Libraries[typeof(IInputApi)];
 		public IJoypadApi Joypad => (IJoypadApi) Libraries[typeof(IJoypadApi)];

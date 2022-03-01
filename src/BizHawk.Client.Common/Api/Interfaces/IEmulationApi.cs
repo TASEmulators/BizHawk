@@ -24,6 +24,11 @@ namespace BizHawk.Client.Common
 		void MinimizeFrameskip(bool enabled);
 		string GetDisplayType();
 		string GetBoardName();
+
+		IGameInfo? GetGameInfo();
+
+		IReadOnlyDictionary<string, string?> GetGameOptions();
+
 		object? GetSettings();
 		PutSettingsDirtyBits PutSettings(object settings);
 		void SetRenderPlanes(params bool[] args);
