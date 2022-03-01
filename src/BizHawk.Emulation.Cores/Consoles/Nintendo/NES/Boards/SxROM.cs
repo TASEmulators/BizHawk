@@ -589,8 +589,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			switch (Cart.BoardType)
 			{
-				case "MAPPER001": //ines 2 might get here
-					if (Cart.WramSize != 32)
+				case "MAPPER0001":
+					if (Cart.WramSize < 32)
 						return false;
 					AssertPrg(128, 256, 512); AssertChr(0); AssertVram(8); AssertWram(32);
 					break;
@@ -636,7 +636,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				case "MAPPER001":
 					// we try to heuristic match to iNES 001 roms with big PRG only
-					if (Cart.PrgSize <= 256 || Cart.WramSize > 8)
+					if (Cart.PrgSize <= 256)
 						return false;
 					AssertPrg(512); AssertChr(0);
 					Cart.VramSize = 8;
