@@ -52,11 +52,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				// only add submapper if it is non-zero
 				if (submapper != 0)
 				{
-					CartV2.BoardType = $"MAPPER{mapper:d4}-{submapper:d2}";
+					CartV2.BoardType = $"MAPPER{mapper:d3}-{submapper:d2}";
 				}
 				else
 				{
-					CartV2.BoardType = $"MAPPER{mapper:d4}";
+					CartV2.BoardType = $"MAPPER{mapper:d3}";
 				}
 				
 
