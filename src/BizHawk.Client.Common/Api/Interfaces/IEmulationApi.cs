@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common
 		int FrameCount();
 		object Disassemble(uint pc, string name = "");
 		ulong? GetRegister(string name);
-		Dictionary<string, ulong> GetRegisters();
+		IReadOnlyDictionary<string, ulong> GetRegisters();
 		void SetRegister(string register, int value);
 		long TotalExecutedCycles();
 		string GetSystemId();

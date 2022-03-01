@@ -21,8 +21,8 @@ namespace BizHawk.Client.Common
 		void SetRerecordCounting(bool counting);
 		void Stop();
 		double GetFps();
-		Dictionary<string, string> GetHeader();
-		List<string> GetComments();
-		List<string> GetSubtitles();
+		IReadOnlyDictionary<string, string> GetHeader();
+		IReadOnlyList<string> GetComments();
+		IReadOnlyList<string> GetSubtitles();
 	}
 }

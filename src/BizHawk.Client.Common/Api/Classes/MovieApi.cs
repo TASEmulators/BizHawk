@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -73,23 +72,16 @@ namespace BizHawk.Client.Common
 			_movieSession.Movie.Save();
 		}
 
-		public Dictionary<string, string> GetHeader()
-		{
-			var table = new Dictionary<string, string>();
-			if (_movieSession.Movie.NotActive())
-			{
-				return table;
-			}
-			foreach (var (k, v) in _movieSession.Movie.HeaderEntries) table[k] = v;
-			return table;
-		}
+		public IReadOnlyDictionary<string, string> GetHeader()
+			=> _movieSession.Movie.NotActive()
+				? new Dictionary<string, string>()
+				: _movieSession.Movie.HeaderEntries.ToDictionary(static kvp => kvp.Key, static kvp => kvp.Value);
 
-		public List<string> GetComments() => _movieSession.Movie.Comments.ToList();
+		public IReadOnlyList<string> GetComments()
+			=> _movieSession.Movie.Comments.ToList();
 
-		public List<string> GetSubtitles() =>
-			_movieSession.Movie.Subtitles
-				.Select(s => s.ToString())
-				.ToList();
+		public IReadOnlyList<string> GetSubtitles()
+			=> _movieSession.Movie.Subtitles.Select(static s => s.ToString()).ToList();
 
 		public string Filename() => _movieSession.Movie.Filename;
 

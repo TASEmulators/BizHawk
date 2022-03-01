@@ -111,7 +111,7 @@ namespace BizHawk.Client.Common
 			return null;
 		}
 
-		public Dictionary<string, ulong> GetRegisters()
+		public IReadOnlyDictionary<string, ulong> GetRegisters()
 		{
 			try
 			{

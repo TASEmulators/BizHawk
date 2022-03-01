@@ -36,7 +36,7 @@ namespace BizHawk.Client.Common
 
 		public IEnumerable<T> EnumerateValues<T>(LuaTable table) => table.Values.Cast<T>();
 
-		public LuaTable ListToTable<T>(IList<T> list, int indexFrom = 1)
+		public LuaTable ListToTable<T>(IReadOnlyList<T> list, int indexFrom = 1)
 		{
 			var table = _lua.NewTable();
 			for (int i = 0, l = list.Count; i != l; i++) table[indexFrom + i] = list[i];
