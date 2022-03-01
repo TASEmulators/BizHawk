@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
 	public interface IEmulationApi : IExternalApi
 	{
-		Action FrameAdvanceCallback { get; set; }
-		Action YieldCallback { get; set; }
 		void DisplayVsync(bool enabled);
-		void FrameAdvance();
 		int FrameCount();
 		object Disassemble(uint pc, string name = "");
 		ulong? GetRegister(string name);
@@ -23,7 +20,6 @@ namespace BizHawk.Client.Common
 		void SetLagCount(int count);
 		void LimitFramerate(bool enabled);
 		void MinimizeFrameskip(bool enabled);
-		void Yield();
 		string GetDisplayType();
 		string GetBoardName();
 		object GetSettings();

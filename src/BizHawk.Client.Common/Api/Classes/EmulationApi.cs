@@ -56,11 +56,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public Action FrameAdvanceCallback { get; set; }
-
 		public bool ForbiddenConfigReferenceUsed { get; private set; }
-
-		public Action YieldCallback { get; set; }
 
 		public EmulationApi(Action<string> logCallback, Config config, IGameInfo game)
 		{
@@ -70,8 +66,6 @@ namespace BizHawk.Client.Common
 		}
 
 		public void DisplayVsync(bool enabled) => _config.VSync = enabled;
-
-		public void FrameAdvance() => FrameAdvanceCallback();
 
 		public int FrameCount() => Emulator.Frame;
 
@@ -183,8 +177,6 @@ namespace BizHawk.Client.Common
 		public void LimitFramerate(bool enabled) => _config.ClockThrottle = enabled;
 
 		public void MinimizeFrameskip(bool enabled) => _config.AutoMinimizeSkipping = enabled;
-
-		public void Yield() => YieldCallback();
 
 		public string GetDisplayType() => (RegionableCore?.Region)?.ToString() ?? "";
 
