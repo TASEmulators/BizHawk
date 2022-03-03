@@ -243,9 +243,6 @@
 		<Compile Update="config/ZXSpectrum/ZXSpectrumNonSyncSettings.cs" SubType="Form" />
 		<Compile Update="config/ZXSpectrum/ZXSpectrumNonSyncSettings.Designer.cs" DependentUpon="ZXSpectrumNonSyncSettings.cs" />
 		<EmbeddedResource Update="config/ZXSpectrum/ZXSpectrumNonSyncSettings.resx" DependentUpon="ZXSpectrumNonSyncSettings.cs" />
-		<Compile Update="config/ZXSpectrum/ZXSpectrumPokeMemory.cs" SubType="Form" />
-		<Compile Update="config/ZXSpectrum/ZXSpectrumPokeMemory.Designer.cs" DependentUpon="ZXSpectrumPokeMemory.cs" />
-		<EmbeddedResource Update="config/ZXSpectrum/ZXSpectrumPokeMemory.resx" DependentUpon="ZXSpectrumPokeMemory.cs" />
 		<Compile Update="CoreFeatureAnalysis.cs" SubType="Form" />
 		<Compile Update="CoreFeatureAnalysis.Designer.cs" DependentUpon="CoreFeatureAnalysis.cs" />
 		<EmbeddedResource Update="CoreFeatureAnalysis.resx" DependentUpon="CoreFeatureAnalysis.cs" />

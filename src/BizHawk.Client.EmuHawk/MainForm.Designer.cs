@@ -282,7 +282,6 @@ namespace BizHawk.Client.EmuHawk
 			this.ZXSpectrumControllerConfigurationMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ZXSpectrumAudioSettingsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ZXSpectrumNonSyncSettingsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.ZXSpectrumPokeMemoryMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ZXSpectrumMediaMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ZXSpectrumTapesSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.zxt1ToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -1810,7 +1809,6 @@ namespace BizHawk.Client.EmuHawk
 			this.ZXSpectrumControllerConfigurationMenuItem,
 			this.ZXSpectrumAudioSettingsMenuItem,
 			this.ZXSpectrumNonSyncSettingsMenuItem,
-			this.ZXSpectrumPokeMemoryMenuItem,
 			this.ZXSpectrumMediaMenuItem});
 			this.zXSpectrumToolStripMenuItem.Text = "ZX Spectrum";
 			// 
@@ -1833,11 +1831,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.ZXSpectrumNonSyncSettingsMenuItem.Text = "Non-Sync Settings";
 			this.ZXSpectrumNonSyncSettingsMenuItem.Click += new System.EventHandler(this.ZXSpectrumNonSyncSettingsMenuItem_Click);
-			// 
-			// ZXSpectrumPokeMemoryMenuItem
-			// 
-			this.ZXSpectrumPokeMemoryMenuItem.Text = "POKE Memory";
-			this.ZXSpectrumPokeMemoryMenuItem.Click += new System.EventHandler(this.ZXSpectrumPokeMemoryMenuItem_Click);
 			// 
 			// ZXSpectrumMediaMenuItem
 			// 
@@ -2745,7 +2738,6 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ZXSpectrumCoreEmulationSettingsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ZXSpectrumNonSyncSettingsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ZXSpectrumAudioSettingsMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ZXSpectrumPokeMemoryMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ZXSpectrumMediaMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ZXSpectrumTapesSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ZXSpectrumDisksSubMenu;

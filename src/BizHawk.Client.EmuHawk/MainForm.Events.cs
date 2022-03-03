@@ -1884,15 +1884,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void ZXSpectrumPokeMemoryMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Emulator is ZXSpectrum speccy)
-			{
-				using var form = new ZxSpectrumPokeMemory(speccy);
-				form.ShowDialog();
-			}
-		}
-
 		private void ZXSpectrumMediaMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			if (Emulator is ZXSpectrum speccy)
