@@ -28,6 +28,15 @@ enum SNES_MEMORY {
 };
 
 
+struct SnesInitData {
+    int entropy;
+    unsigned left_port;
+    unsigned right_port;
+    bool hotfixes;
+    bool fast_ppu;
+    int region_override;
+};
+
 struct LayerEnables
 {
     bool BG1_Prio0, BG1_Prio1;

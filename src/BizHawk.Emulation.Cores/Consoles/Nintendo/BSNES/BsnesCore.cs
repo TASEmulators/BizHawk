@@ -71,15 +71,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 			generate_palette();
 			// TODO: massive random hack till waterboxhost gets fixed to support 5+ args
-			Api.core.snes_init(new()
+			BsnesApi.SnesInitData snesInitData = new()
 			{
-				entropy = (int)_syncSettings.Entropy,
-				left_port = (uint)_syncSettings.LeftPort,
-				right_port = (uint)_syncSettings.RightPort,
-				hotfixes = _syncSettings.Hotfixes ? 1 : 0,
-				fast_ppu = _syncSettings.FastPPU ? 1 : 0,
-				region_override = (int)_syncSettings.RegionOverride,
-			});
+				entropy = _syncSettings.Entropy,
+				left_port = _syncSettings.LeftPort,
+				right_port = _syncSettings.RightPort,
+				hotfixes = _syncSettings.Hotfixes,
+				fast_ppu = _syncSettings.FastPPU,
+				region_override = _syncSettings.RegionOverride,
+			};
+			Api.core.snes_init(ref snesInitData);
 			Api.SetCallbacks(callbacks);
 
 			// start up audio resampler
