@@ -122,16 +122,14 @@ EXPORT void snes_set_callbacks(SnesCallbacks* callbacks)
     snesCallbacks = SnesCallbacks(*callbacks);
 }
 
-EXPORT void snes_init(int entropy, uint left_port, uint right_port, uint16_t merged_bools)// bool hotfixes, bool fast_ppu)
+EXPORT void snes_init(SnesInitData* init_data)
 {
-    bool hotfixes = merged_bools >> 8;
-    bool fast_ppu = merged_bools & 1;
     fprintf(stderr, "snes_init was called!\n");
     emulator = new SuperFamicom::Interface;
     program = new Program;
 
     string entropy_string;
-    switch (entropy)
+    switch (init_data->entropy)
     {
         case 0: entropy_string = "None"; break;
         case 1: entropy_string = "Low"; break;
@@ -139,15 +137,17 @@ EXPORT void snes_init(int entropy, uint left_port, uint right_port, uint16_t mer
     }
     emulator->configure("Hacks/Entropy", entropy_string);
 
-    emulator->connect(ID::Port::Controller1, left_port);
-    emulator->connect(ID::Port::Controller2, right_port);
+    emulator->connect(ID::Port::Controller1, init_data->left_port);
+    emulator->connect(ID::Port::Controller2, init_data->right_port);
 
-    emulator->configure("Hacks/Hotfixes", hotfixes);
-    emulator->configure("Hacks/PPU/Fast", fast_ppu);
+    emulator->configure("Hacks/Hotfixes", init_data->hotfixes);
+    emulator->configure("Hacks/PPU/Fast", init_data->fast_ppu);
 
     emulator->configure("Video/BlurEmulation", false); // blurs the video when not using fast ppu. I don't like it so I disable it here :)
     // needed in order to get audio sync working. should probably figure out what exactly this does or how to change that properly
     Emulator::audio.setFrequency(SAMPLE_RATE);
+
+    program->regionOverride = init_data->region_override;
 }
 
 EXPORT void snes_power(void)

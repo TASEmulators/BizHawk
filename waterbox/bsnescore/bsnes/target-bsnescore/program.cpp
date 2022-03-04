@@ -42,6 +42,7 @@ struct Program : Emulator::Platform
 
 	bool overscan = false;
 	uint16_t backdropColor;
+	int regionOverride = 0;
 
 public:
 	struct Game {
@@ -361,7 +362,11 @@ auto Program::loadSuperFamicom() -> bool
 	auto heuristics = Heuristics::SuperFamicom(rom, superFamicom.location);
 
 	superFamicom.title = heuristics.title();
-	superFamicom.region = heuristics.videoRegion();
+	switch (regionOverride) {
+		case 0: superFamicom.region = heuristics.videoRegion(); break;
+		case 1: superFamicom.region = "NTSC"; break;
+		case 2: superFamicom.region = "PAL"; break;
+	}
 	superFamicom.manifest = heuristics.manifest();
 
 	hackPatchMemory(rom);

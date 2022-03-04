@@ -20,6 +20,7 @@ namespace BizHawk.Client.EmuHawk
 				AlwaysDoubleSize = s.AlwaysDoubleSize,
 				CropSGBFrame = s.CropSGBFrame,
 				Entropy = ss.Entropy,
+				RegionOverride = ss.RegionOverride,
 				Hotfixes = ss.Hotfixes,
 				FastPPU = ss.FastPPU,
 				UseSGB2 = ss.UseSGB2,
@@ -43,6 +44,7 @@ namespace BizHawk.Client.EmuHawk
 				s.AlwaysDoubleSize = dlg.AlwaysDoubleSize;
 				s.CropSGBFrame = dlg.CropSGBFrame;
 				ss.Entropy = dlg.Entropy;
+				ss.RegionOverride = dlg.RegionOverride;
 				ss.Hotfixes = dlg.Hotfixes;
 				ss.FastPPU = dlg.FastPPU;
 				ss.UseSGB2 = dlg.UseSGB2;
@@ -98,6 +100,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get => (BsnesApi.ENTROPY) EntropyBox.SelectedIndex;
 			init => EntropyBox.SelectedIndex = (int) value;
+		}
+
+		private BsnesApi.REGION_OVERRIDE RegionOverride
+		{
+			get => (BsnesApi.REGION_OVERRIDE)RegionBox.SelectedIndex;
+			init => RegionBox.SelectedIndex = (int)value;
 		}
 
 		private bool ShowObj1 { get => Obj1Checkbox.Checked; init => Obj1Checkbox.Checked = value; }

@@ -39,8 +39,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public abstract void snes_set_callbacks(IntPtr[] snesCallbacks);
 
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void snes_init(BsnesApi.ENTROPY entropy, BsnesApi.BSNES_INPUT_DEVICE left,
-			BsnesApi.BSNES_INPUT_DEVICE right, ushort mergedBools);// bool hotfixes, bool fastPPU);
+		public abstract void snes_init(ref BsnesApi.SnesInitData initData);
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_power();
 		[BizImport(CallingConvention.Cdecl)]
@@ -214,6 +213,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				return FieldsInOrder
 					.Select(f => (Delegate)f.GetValue(this));
 			}
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		public struct SnesInitData
+		{
+			public ENTROPY entropy;
+			public BSNES_INPUT_DEVICE left_port;
+			public BSNES_INPUT_DEVICE right_port;
+			public bool hotfixes;
+			public bool fast_ppu;
+			public REGION_OVERRIDE region_override;
 		}
 
 		public void Seal()
