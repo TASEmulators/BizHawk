@@ -12,8 +12,8 @@
 #include "types.h"
 #include "frontend/mic_blow.h"
 
-#include "../emulibc/emulibc.h"
-#include "../emulibc/waterboxcore.h"
+#include "emulibc.h"
+#include "waterboxcore.h"
 
 #include <cmath>
 #include <algorithm>
@@ -74,7 +74,7 @@ extern std::stringstream* NANDFilePtr;
 static bool LoadDSiWare(u8* TmdData)
 {
 	FILE* bios7i = Platform::OpenLocalFile(Config::DSiBIOS7Path, "rb");
-	if (!bios7i)
+	if (!reinterpret_cast<void*>(bios7i))
 		return false;
 
 	u8 es_keyY[16];
@@ -101,7 +101,7 @@ EXPORT bool Init(LoadFlags flags, LoadData* loadData, FirmwareSettings* fwSettin
 	Config::AudioBitrate = !!(flags & ACCURATE_AUDIO_BITRATE) ? 1 : 2;
 	Config::FirmwareOverrideSettings = !!(flags & FIRMWARE_OVERRIDE);
 	biz_skip_fw = !!(flags & SKIP_FIRMWARE);
-    bool isDsi = !!(flags & IS_DSI);
+	bool isDsi = !!(flags & IS_DSI);
 
 	NDS::SetConsoleType(isDsi);
 	// time calls are deterministic under wbx, so this will force the mac address to a constant value instead of relying on whatever is in the firmware
@@ -164,7 +164,7 @@ EXPORT void PutSaveRam(u8* data, u32 len)
 
 EXPORT void GetSaveRam(u8* data)
 {
-    if (NDSCart::Cart) NDSCart::Cart->GetSaveData(data);
+	if (NDSCart::Cart) NDSCart::Cart->GetSaveData(data);
 }
 
 EXPORT s32 GetSaveRamLength()
@@ -357,7 +357,7 @@ static bool RunningFrame = false;
 
 EXPORT void FrameAdvance(MyFrameInfo* f)
 {
-    RunningFrame = true;
+	RunningFrame = true;
 
 	if (f->Keys & 0x8000)
 	{
@@ -413,7 +413,7 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 	f->Cycles = NDS::GetSysClockCycles(2);
 	f->Lagged = NDS::LagFrameFlag;
 
-    RunningFrame = false;
+	RunningFrame = false;
 }
 
 void (*InputCallback)();
@@ -435,7 +435,7 @@ EXPORT void SetReg(s32 ncpu, s32 index, s32 val)
 
 EXPORT u32 GetCallbackCycleOffset()
 {
-    return RunningFrame ? NDS::GetSysClockCycles(2) : 0;
+	return RunningFrame ? NDS::GetSysClockCycles(2) : 0;
 }
 
 void (*ReadCallback)(u32);

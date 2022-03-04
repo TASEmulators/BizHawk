@@ -46,9 +46,7 @@ int GetConfigInt(ConfigEntry entry)
 
     case AudioBitrate: return Config::AudioBitrate;
 	
-	case TimeAtBoot: return Config::TimeAtBoot;
-
-    default: break;
+    case TimeAtBoot: return Config::TimeAtBoot;
     }
 
     return 0;
@@ -78,10 +76,8 @@ bool GetConfigBool(ConfigEntry entry)
     case Firm_RandomizeMAC: return Config::RandomizeMAC != 0;
     case Firm_OverrideSettings: return Config::FirmwareOverrideSettings != 0;
 
-	case UseRealTime: return Config::UseRealTime != 0;
-	case FixedBootTime: return Config::FixedBootTime != 0;
-
-    default: break;
+    case UseRealTime: return Config::UseRealTime != 0;
+    case FixedBootTime: return Config::FixedBootTime != 0;
     }
 
     return false;
@@ -108,8 +104,6 @@ std::string GetConfigString(ConfigEntry entry)
 
     case Firm_Username: return Config::FirmwareUsername;
     case Firm_Message: return Config::FirmwareMessage;
-
-    default: break;
     }
 
     return "";
@@ -147,7 +141,6 @@ bool GetConfigArray(ConfigEntry entry, void* data)
             }
         }
         return false;
-    default: break;
     }
 
     return false;
@@ -156,14 +149,14 @@ bool GetConfigArray(ConfigEntry entry, void* data)
 
 FILE* OpenFile(std::string path, std::string mode, bool mustexist)
 {
-	if (path == Config::DSiNANDPath) return reinterpret_cast<FILE*>(NANDFilePtr);
+    if (path == Config::DSiNANDPath) return reinterpret_cast<FILE*>(NANDFilePtr);
 
     return fopen(path.c_str(), mode.c_str());
 }
 
 FILE* OpenLocalFile(std::string path, std::string mode)
 {
-	if (path == Config::DSiNANDPath) return reinterpret_cast<FILE*>(NANDFilePtr);
+    if (path == Config::DSiNANDPath) return reinterpret_cast<FILE*>(NANDFilePtr);
 
     return fopen(path.c_str(), mode.c_str());
 }
@@ -181,7 +174,7 @@ void Thread_Free(Thread* thread)
 
 void Thread_Wait(Thread* thread)
 {
-	((std::thread*) thread)->join();
+    ((std::thread*) thread)->join();
 }
 
 Semaphore* Semaphore_Create()
@@ -241,7 +234,7 @@ bool Mutex_TryLock(Mutex* mutex)
 
 void WriteNDSSave(const u8* savedata, u32 savelen, u32 writeoffset, u32 writelen)
 {
-	bool NdsSaveRamIsDirty = true;
+    NdsSaveRamIsDirty = true;
 }
 
 void WriteGBASave(const u8* savedata, u32 savelen, u32 writeoffset, u32 writelen)
