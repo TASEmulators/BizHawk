@@ -3,7 +3,9 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
+using BizHawk.BizInvoke;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Properties;
@@ -111,6 +113,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				flags |= LibMelonDS.LoadFlags.IS_DSI;
 			if (IsDSi && IsDSiWare)
 				flags |= LibMelonDS.LoadFlags.LOAD_DSIWARE;
+			if (_settings.ThreadedRendering)
+				flags |= LibMelonDS.LoadFlags.THREADED_RENDERING;
 
 			var fwSettings = new LibMelonDS.FirmwareSettings();
 			var name = Encoding.UTF8.GetBytes(_syncSettings.FirmwareUsername);
@@ -174,7 +178,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					loadData.TmdData = (IntPtr)tmdPtr;
 					fwSettings.FirmwareUsername = (IntPtr)namePtr;
 					fwSettings.FirmwareMessage = (IntPtr)messagePtr;
-					if (!_core.Init(flags, loadData, fwSettings))
+					if (!_core.Init(flags, in loadData, in fwSettings))
 					{
 						throw new InvalidOperationException("Init returned false!");
 					}
@@ -198,6 +202,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			DeterministicEmulation = lp.DeterministicEmulationRequested || (!_syncSettings.UseRealTime);
 			InitializeRtc(_syncSettings.InitialTime);
 
+			_frameThreadPtr = _core.GetFrameThreadProc();
+			if (_frameThreadPtr != IntPtr.Zero)
+			{
+				Console.WriteLine($"Setting up waterbox thread for {_frameThreadPtr}");
+				_frameThreadStart = CallingConventionAdapters.GetWaterboxUnsafeUnwrapped().GetDelegateForFunctionPointer<Action>(_frameThreadPtr);
+			}
+
 			_resampler = new SpeexResampler(SpeexResampler.Quality.QUALITY_DEFAULT, 32768, 44100, 32768, 44100, null, this);
 			_serviceProvider.Register<ISoundProvider>(_resampler);
 
@@ -212,11 +223,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		public override void Dispose()
 		{
 			base.Dispose();
-			if (_resampler != null)
-			{
-				_resampler.Dispose();
-				_resampler = null;
-			}
+			_resampler?.Dispose();
+			_resampler = null;
 		}
 
 		private static bool RomIsWare(byte[] file)
@@ -301,11 +309,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			return b;
 		}
 
-		private bool _renderSound;
+		private readonly IntPtr _frameThreadPtr;
+		private readonly Action _frameThreadStart;
+		private Task _frameThreadProcActive;
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
-			_renderSound = rendersound;
+			if (_frameThreadStart != null)
+			{
+				_frameThreadProcActive = Task.Run(_frameThreadStart);
+			}
 			_core.SetTraceCallback(Tracer.IsEnabled() ? _tracecb : null);
 			return new LibMelonDS.FrameInfo
 			{
@@ -320,16 +333,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		protected override void FrameAdvancePost()
 		{
-			// the core SHOULD produce 547 or 548 samples each frame
-			// however, it seems in some cases (first few frames on power on and lid closed) it doesn't for some reason
-			// hack around it here
-			if (_numSamples < 547 && _renderSound)
+			_frameThreadProcActive?.Wait();
+			_frameThreadProcActive = null;
+		}
+
+		protected override void LoadStateBinaryInternal(BinaryReader reader)
+		{
+			SetMemoryCallbacks();
+			if (_frameThreadPtr != _core.GetFrameThreadProc())
 			{
-				for (int i = _numSamples * 2; i < (547 * 2); i++)
-				{
-					_soundBuffer[i] = 0;
-				}
-				_numSamples = 547;
+				throw new InvalidOperationException("_frameThreadPtr mismatch");
 			}
 		}
 

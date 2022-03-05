@@ -51,10 +51,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			FIRMWARE_OVERRIDE = 0x10,
 			IS_DSI = 0x20,
 			LOAD_DSIWARE = 0x40,
+			THREADED_RENDERING = 0x80,
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
-		public class LoadData
+		public struct LoadData
 		{
 			public IntPtr DsRomData;
 			public int DsRomLength;
@@ -68,7 +69,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
-		public class FirmwareSettings
+		public struct FirmwareSettings
 		{
 			public IntPtr FirmwareUsername; // max 10 length (then terminator)
 			public int FirmwareUsernameLength;
@@ -81,7 +82,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		}
 
 		[BizImport(CC)]
-		public abstract bool Init(LoadFlags flags, LoadData loadData, FirmwareSettings fwSettings);
+		public abstract bool Init(LoadFlags loadFlags, in LoadData loadData, in FirmwareSettings fwSettings);
 
 		[BizImport(CC)]
 		public abstract void PutSaveRam(byte[] data, uint len);
@@ -125,5 +126,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		[BizImport(CC)]
 		public abstract void SetTraceCallback(TraceCallback callback);
+
+		[BizImport(CC)]
+		public abstract IntPtr GetFrameThreadProc();
 	}
 }
