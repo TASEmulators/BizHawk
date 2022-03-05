@@ -412,15 +412,15 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 	NDS::RunFrame();
 	dynamic_cast<GPU3D::SoftRenderer*>(GPU3D::CurrentRenderer.get())->StopRenderThread();
 	const u32 SingleScreenSize = 256 * 192;
-	memcpy(f->VideoBuffer, GPU::Framebuffer[GPU::FrontBuffer][0], SingleScreenSize * sizeof(u32));
-	memcpy(f->VideoBuffer + SingleScreenSize, GPU::Framebuffer[GPU::FrontBuffer][1], SingleScreenSize * sizeof(u32));
+	memcpy(f->VideoBuffer, GPU::Framebuffer[GPU::FrontBuffer][0], SingleScreenSize * sizeof (u32));
+	memcpy(f->VideoBuffer + SingleScreenSize, GPU::Framebuffer[GPU::FrontBuffer][1], SingleScreenSize * sizeof (u32));
 	f->Width = 256;
 	f->Height = 384;
 	f->Samples = SPU::GetOutputSize() / 2;
 	SPU::ReadOutput(f->SoundBuffer, f->Samples);
 	if (f->Samples < 547) // hack
 	{
-		memset(f->SoundBuffer + (f->Samples * 2), 0, (547 * 2) - (f->Samples * 2));
+		memset(f->SoundBuffer + (f->Samples * 2), 0, ((547 * 2) - (f->Samples * 2)) * sizeof (u16));
 		f->Samples = 547;
 	}
 	f->Cycles = NDS::GetSysClockCycles(2);
