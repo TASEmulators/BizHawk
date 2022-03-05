@@ -407,6 +407,7 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 
 	biz_time = f->Time;
 	NDS::RunFrame();
+	dynamic_cast<GPU3D::SoftRenderer*>(GPU3D::CurrentRenderer.get())->StopRenderThread();
 	for (int i = 0; i < (256 * 192); i++)
 	{
 		f->VideoBuffer[i] = GPU::Framebuffer[GPU::FrontBuffer][0][i];

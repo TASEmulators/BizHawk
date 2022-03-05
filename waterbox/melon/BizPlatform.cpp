@@ -192,7 +192,7 @@ void Semaphore_Free(Semaphore* sema)
 
 void Semaphore_Reset(Semaphore* sema)
 {
-    while (!sem_trywait((sem_t*) sema)) {};
+    while (!sem_trywait((sem_t*) sema));
 }
 
 void Semaphore_Wait(Semaphore* sema)
