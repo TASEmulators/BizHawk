@@ -97,24 +97,24 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			bool skipfw = _syncSettings.SkipFirmware || !_syncSettings.UseRealBIOS || fw == null;
 
-			LibMelonDS.LoadFlags flags = LibMelonDS.LoadFlags.NONE;
+			LibMelonDS.LoadFlags loadFlags = LibMelonDS.LoadFlags.NONE;
 
 			if (_syncSettings.UseRealBIOS || IsDSi)
-				flags |= LibMelonDS.LoadFlags.USE_REAL_BIOS;
+				loadFlags |= LibMelonDS.LoadFlags.USE_REAL_BIOS;
 			if (skipfw && !IsDSi)
-				flags |= LibMelonDS.LoadFlags.SKIP_FIRMWARE;
+				loadFlags |= LibMelonDS.LoadFlags.SKIP_FIRMWARE;
 			if (gbacartpresent)
-				flags |= LibMelonDS.LoadFlags.GBA_CART_PRESENT;
+				loadFlags |= LibMelonDS.LoadFlags.GBA_CART_PRESENT;
 			if (_settings.AccurateAudioBitrate && !IsDSi) // todo: let users have DS audio bitrate on DSi?
-				flags |= LibMelonDS.LoadFlags.ACCURATE_AUDIO_BITRATE;
+				loadFlags |= LibMelonDS.LoadFlags.ACCURATE_AUDIO_BITRATE;
 			if (_syncSettings.FirmwareOverride || lp.DeterministicEmulationRequested)
-				flags |= LibMelonDS.LoadFlags.FIRMWARE_OVERRIDE;
+				loadFlags |= LibMelonDS.LoadFlags.FIRMWARE_OVERRIDE;
 			if (IsDSi)
-				flags |= LibMelonDS.LoadFlags.IS_DSI;
+				loadFlags |= LibMelonDS.LoadFlags.IS_DSI;
 			if (IsDSi && IsDSiWare)
-				flags |= LibMelonDS.LoadFlags.LOAD_DSIWARE;
+				loadFlags |= LibMelonDS.LoadFlags.LOAD_DSIWARE;
 			if (_settings.ThreadedRendering)
-				flags |= LibMelonDS.LoadFlags.THREADED_RENDERING;
+				loadFlags |= LibMelonDS.LoadFlags.THREADED_RENDERING;
 
 			var fwSettings = new LibMelonDS.FirmwareSettings();
 			var name = Encoding.UTF8.GetBytes(_syncSettings.FirmwareUsername);
@@ -178,7 +178,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					loadData.TmdData = (IntPtr)tmdPtr;
 					fwSettings.FirmwareUsername = (IntPtr)namePtr;
 					fwSettings.FirmwareMessage = (IntPtr)messagePtr;
-					if (!_core.Init(flags, in loadData, in fwSettings))
+					if (!_core.Init(loadFlags, ref loadData, ref fwSettings))
 					{
 						throw new InvalidOperationException("Init returned false!");
 					}

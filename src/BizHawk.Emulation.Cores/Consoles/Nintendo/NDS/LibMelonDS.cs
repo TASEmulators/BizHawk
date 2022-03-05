@@ -82,7 +82,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		}
 
 		[BizImport(CC)]
-		public abstract bool Init(LoadFlags loadFlags, in LoadData loadData, in FirmwareSettings fwSettings);
+		public abstract bool Init(LoadFlags loadFlags, ref LoadData loadData, ref FirmwareSettings fwSettings);
 
 		[BizImport(CC)]
 		public abstract void PutSaveRam(byte[] data, uint len);
