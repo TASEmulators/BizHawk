@@ -42,6 +42,7 @@ typedef enum
 	FIRMWARE_OVERRIDE = 0x10,
 	IS_DSI = 0x20,
 	LOAD_DSIWARE = 0x40,
+	THREADED_RENDERING = 0x80,
 } LoadFlags;
 
 typedef struct
@@ -95,13 +96,13 @@ static bool LoadDSiWare(u8* TmdData)
 	return ret;
 }
 
-EXPORT bool Init(LoadFlags flags, LoadData* loadData, FirmwareSettings* fwSettings)
+EXPORT bool Init(LoadFlags loadFlags, LoadData* loadData, FirmwareSettings* fwSettings)
 {
-	Config::ExternalBIOSEnable = !!(flags & USE_REAL_BIOS);
-	Config::AudioBitrate = !!(flags & ACCURATE_AUDIO_BITRATE) ? 1 : 2;
-	Config::FirmwareOverrideSettings = !!(flags & FIRMWARE_OVERRIDE);
-	biz_skip_fw = !!(flags & SKIP_FIRMWARE);
-	bool isDsi = !!(flags & IS_DSI);
+	Config::ExternalBIOSEnable = !!(loadFlags & USE_REAL_BIOS);
+	Config::AudioBitrate = !!(loadFlags & ACCURATE_AUDIO_BITRATE) ? 1 : 2;
+	Config::FirmwareOverrideSettings = !!(loadFlags & FIRMWARE_OVERRIDE);
+	biz_skip_fw = !!(loadFlags & SKIP_FIRMWARE);
+	bool isDsi = !!(loadFlags & IS_DSI);
 
 	NDS::SetConsoleType(isDsi);
 	// time calls are deterministic under wbx, so this will force the mac address to a constant value instead of relying on whatever is in the firmware
@@ -127,7 +128,7 @@ EXPORT bool Init(LoadFlags flags, LoadData* loadData, FirmwareSettings* fwSettin
 
 	NANDFilePtr = isDsi ? new std::stringstream(std::string(loadData->NandData, loadData->NandLen), std::ios_base::in | std::ios_base::out | std::ios_base::binary) : nullptr;
 
-	if (isDsi && (flags & LOAD_DSIWARE))
+	if (isDsi && (loadFlags & LOAD_DSIWARE))
 	{
 		if (!LoadDSiWare(loadData->TmdData))
 			return false;
@@ -135,14 +136,15 @@ EXPORT bool Init(LoadFlags flags, LoadData* loadData, FirmwareSettings* fwSettin
 
 	if (!NDS::Init()) return false;
 	GPU::InitRenderer(false);
+	biz_render_settings.Soft_Threaded = !!(loadFlags & THREADED_RENDERING);
 	GPU::SetRenderSettings(false, biz_render_settings);
 	NDS::LoadBIOS();
-	if (!isDsi || !(flags & LOAD_DSIWARE))
+	if (!isDsi || !(loadFlags & LOAD_DSIWARE))
 	{
 		if (!NDS::LoadCart(loadData->DsRomData, loadData->DsRomLen, nullptr, 0))
 			return false;
 	}
-	if (!isDsi && (flags & GBA_CART_PRESENT))
+	if (!isDsi && (loadFlags & GBA_CART_PRESENT))
 	{
 		if (!NDS::LoadGBACart(loadData->GbaRomData, loadData->GbaRomLen, loadData->GbaRamData, loadData->GbaRamLen))
 			return false;
@@ -164,7 +166,11 @@ EXPORT void PutSaveRam(u8* data, u32 len)
 
 EXPORT void GetSaveRam(u8* data)
 {
-	if (NDSCart::Cart) NDSCart::Cart->GetSaveData(data);
+	if (NDSCart::Cart)
+	{
+		NDSCart::Cart->GetSaveData(data);
+		NdsSaveRamIsDirty = false;
+	}
 }
 
 EXPORT s32 GetSaveRamLength()
@@ -416,7 +422,7 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 	RunningFrame = false;
 }
 
-void (*InputCallback)();
+void (*InputCallback)() = nullptr;
 
 EXPORT void SetInputCallback(void (*callback)())
 {
@@ -438,9 +444,9 @@ EXPORT u32 GetCallbackCycleOffset()
 	return RunningFrame ? NDS::GetSysClockCycles(2) : 0;
 }
 
-void (*ReadCallback)(u32);
-void (*WriteCallback)(u32);
-void (*ExecuteCallback)(u32);
+void (*ReadCallback)(u32) = nullptr;
+void (*WriteCallback)(u32) = nullptr;
+void (*ExecuteCallback)(u32) = nullptr;
 
 EXPORT void SetMemoryCallback(u32 which, void (*callback)(u32 addr))
 {
@@ -452,9 +458,16 @@ EXPORT void SetMemoryCallback(u32 which, void (*callback)(u32 addr))
 	}
 }
 
-void (*TraceCallback)(u32, u32*, u32);
+void (*TraceCallback)(u32, u32*, u32) = nullptr;
 
 EXPORT void SetTraceCallback(void (*callback)(u32 cpu, u32* regs, u32 opcode))
 {
 	TraceCallback = callback;
+}
+
+void (*FrameCallback)() = nullptr;
+
+EXPORT void* GetFrameThreadProc()
+{
+	return reinterpret_cast<void*>(FrameCallback);
 }
