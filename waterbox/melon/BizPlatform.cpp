@@ -160,55 +160,59 @@ FILE* OpenLocalFile(std::string path, std::string mode)
 	return fopen(path.c_str(), mode.c_str());
 }
 
+uintptr_t FrameThreadProc = 0;
+std::function<void()> ThreadEntryFunc = nullptr;
+void (*ThreadWaitCallback)() = nullptr;
+
+void ThreadEntry()
+{
+	ThreadEntryFunc();
+}
+
 Thread* Thread_Create(std::function<void()> func)
 {
-	std::thread* t = new std::thread(func);
-	return (Thread*) t;
+	ThreadEntryFunc = func;
+	FrameThreadProc = reinterpret_cast<uintptr_t>(ThreadEntry);
+	return nullptr;
 }
 
 void Thread_Free(Thread* thread)
 {
-	delete (std::thread*) thread;
 }
 
 void Thread_Wait(Thread* thread)
 {
-	((std::thread*) thread)->join();
+	ThreadWaitCallback();
 }
 
 Semaphore* Semaphore_Create()
 {
-	u32* s = new u32;
-	*s = 1;
+	int* s = new int;
+	*s = 0;
 	return (Semaphore*)s;
 }
 
 void Semaphore_Free(Semaphore* sema)
 {
-	delete (u32*)sema;
+	delete (int*)sema;
 }
 
 void Semaphore_Reset(Semaphore* sema)
 {
-	while (true)
-	{
-		u32 res = __atomic_load_n((u32*)sema, __ATOMIC_RELAXED);
-		if (!res) break;
-		__atomic_sub_fetch((u32*)sema, 1u, __ATOMIC_RELAXED);
-	}
+	__atomic_store_n((int*)sema, 0, __ATOMIC_RELAXED);
 }
 
 void Semaphore_Wait(Semaphore* sema)
 {
 loop:
-	u32 res = __atomic_load_n((u32*)sema, __ATOMIC_RELAXED);
+	int res = __atomic_load_n((int*)sema, __ATOMIC_RELAXED);
 	if (!res) goto loop;
-	__atomic_sub_fetch((u32*)sema, 1u, __ATOMIC_RELAXED);
+	__atomic_sub_fetch((int*)sema, 1, __ATOMIC_RELAXED);
 }
 
 void Semaphore_Post(Semaphore* sema, int count)
 {
-	__atomic_add_fetch((u32*)sema, (u32)count, __ATOMIC_RELAXED);
+	__atomic_add_fetch((int*)sema, (int)count, __ATOMIC_RELAXED);
 }
 
 Mutex* Mutex_Create()

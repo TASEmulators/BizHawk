@@ -408,15 +408,18 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 	biz_time = f->Time;
 	NDS::RunFrame();
 	dynamic_cast<GPU3D::SoftRenderer*>(GPU3D::CurrentRenderer.get())->StopRenderThread();
-	for (int i = 0; i < (256 * 192); i++)
-	{
-		f->VideoBuffer[i] = GPU::Framebuffer[GPU::FrontBuffer][0][i];
-		f->VideoBuffer[(256 * 192) + i] = GPU::Framebuffer[GPU::FrontBuffer][1][i];
-	}
+	const u32 SingleScreenSize = 256 * 192;
+	memcpy(f->VideoBuffer, GPU::Framebuffer[GPU::FrontBuffer][0], SingleScreenSize * sizeof(u32));
+	memcpy(f->VideoBuffer + SingleScreenSize, GPU::Framebuffer[GPU::FrontBuffer][1], SingleScreenSize * sizeof(u32));
 	f->Width = 256;
 	f->Height = 384;
 	f->Samples = SPU::GetOutputSize() / 2;
 	SPU::ReadOutput(f->SoundBuffer, f->Samples);
+	if (f->Samples < 547) // hack
+	{
+		memset(f->SoundBuffer + f->Samples * 2, 0, f->Samples * 2);
+		f->Samples = 547;
+	}
 	f->Cycles = NDS::GetSysClockCycles(2);
 	f->Lagged = NDS::LagFrameFlag;
 
@@ -466,9 +469,18 @@ EXPORT void SetTraceCallback(void (*callback)(u32 cpu, u32* regs, u32 opcode))
 	TraceCallback = callback;
 }
 
-void (*FrameCallback)() = nullptr;
-
-EXPORT void* GetFrameThreadProc()
+namespace Platform
 {
-	return reinterpret_cast<void*>(FrameCallback);
+	extern uintptr_t FrameThreadProc;
+	extern void (*ThreadWaitCallback)();
+}
+
+EXPORT uintptr_t GetFrameThreadProc()
+{
+	return Platform::FrameThreadProc;
+}
+
+EXPORT void SetThreadWaitCallback(void (*callback)())
+{
+	Platform::ThreadWaitCallback = callback;
 }
