@@ -54,6 +54,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			InitMemoryCallbacks();
 			_tracecb = MakeTrace;
+			_threadwaitcb = ThreadWaitCallback;
 
 			_core = PreInit<LibMelonDS>(new WaterboxOptions
 			{
@@ -65,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				MmapHeapSizeKB = 1024 * 1024,
 				SkipCoreConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
-			}, new Delegate[] { _readcb, _writecb, _execcb, _tracecb });
+			}, new Delegate[] { _readcb, _writecb, _execcb, _tracecb, _threadwaitcb });
 
 			var bios7 = IsDSi || _syncSettings.UseRealBIOS
 				? CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios7"))
@@ -205,8 +206,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			_frameThreadPtr = _core.GetFrameThreadProc();
 			if (_frameThreadPtr != IntPtr.Zero)
 			{
-				Console.WriteLine($"Setting up waterbox thread for {_frameThreadPtr}");
+				Console.WriteLine($"Setting up waterbox thread for 0x{_frameThreadPtr:X16}");
 				_frameThreadStart = CallingConventionAdapters.GetWaterboxUnsafeUnwrapped().GetDelegateForFunctionPointer<Action>(_frameThreadPtr);
+				_core.SetThreadWaitCallback(_threadwaitcb);
 			}
 
 			_resampler = new SpeexResampler(SpeexResampler.Quality.QUALITY_DEFAULT, 32768, 44100, 32768, 44100, null, this);
@@ -315,7 +317,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
-			if (_frameThreadStart != null)
+			if (_frameThreadStart != null && render)
 			{
 				_frameThreadProcActive = Task.Run(_frameThreadStart);
 			}
@@ -331,7 +333,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			};
 		}
 
-		protected override void FrameAdvancePost()
+		private readonly LibMelonDS.ThreadWaitCallback _threadwaitcb;
+
+		private void ThreadWaitCallback()
 		{
 			_frameThreadProcActive?.Wait();
 			_frameThreadProcActive = null;
