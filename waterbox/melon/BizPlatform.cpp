@@ -8,6 +8,7 @@
 
 bool NdsSaveRamIsDirty = false;
 std::stringstream* NANDFilePtr = NULL;
+bool Stopped = true;
 
 namespace Platform
 {
@@ -22,6 +23,7 @@ void DeInit()
 
 void StopEmu()
 {
+	Stopped = true;
 }
 
 int GetConfigInt(ConfigEntry entry)
@@ -166,7 +168,7 @@ void (*ThreadWaitCallback)() = nullptr;
 
 void ThreadEntry()
 {
-	ThreadEntryFunc();
+	if (!Stopped) ThreadEntryFunc();
 }
 
 Thread* Thread_Create(std::function<void()> func)

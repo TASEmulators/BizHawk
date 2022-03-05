@@ -71,6 +71,7 @@ typedef struct
 } FirmwareSettings;
 
 extern std::stringstream* NANDFilePtr;
+extern bool Stopped;
 
 static bool LoadDSiWare(u8* TmdData)
 {
@@ -151,6 +152,7 @@ EXPORT bool Init(LoadFlags loadFlags, LoadData* loadData, FirmwareSettings* fwSe
 	}
 	if (biz_skip_fw) NDS::SetupDirectBoot("");
 	NDS::Start();
+	Stopped = false;
 	Config::FirmwareOverrideSettings = false;
 	return true;
 }
@@ -370,6 +372,7 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 		NDS::LoadBIOS();
 		if (biz_skip_fw) NDS::SetupDirectBoot("");
 		NDS::Start();
+		Stopped = false;
 	}
 
 	NDS::SetKeyMask(~f->Keys & 0xFFF);
