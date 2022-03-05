@@ -420,7 +420,7 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 	SPU::ReadOutput(f->SoundBuffer, f->Samples);
 	if (f->Samples < 547) // hack
 	{
-		memset(f->SoundBuffer + f->Samples * 2, 0, f->Samples * 2);
+		memset(f->SoundBuffer + (f->Samples * 2), 0, (547 * 2) - (f->Samples * 2));
 		f->Samples = 547;
 	}
 	f->Cycles = NDS::GetSysClockCycles(2);
