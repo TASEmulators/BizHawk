@@ -210,6 +210,10 @@ loop:
 	int res = __atomic_load_n((int*)sema, __ATOMIC_RELAXED);
 	if (!res) goto loop;
 	__atomic_sub_fetch((int*)sema, 1, __ATOMIC_RELAXED);
+	if (__atomic_load_n((int*)sema, __ATOMIC_RELAXED) < 0)
+	{
+		__atomic_store_n((int*)sema, 0, __ATOMIC_RELAXED);
+	}
 }
 
 void Semaphore_Post(Semaphore* sema, int count)
