@@ -114,8 +114,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				loadFlags |= LibMelonDS.LoadFlags.IS_DSI;
 			if (IsDSi && IsDSiWare)
 				loadFlags |= LibMelonDS.LoadFlags.LOAD_DSIWARE;
+#if false
 			if (_settings.ThreadedRendering)
 				loadFlags |= LibMelonDS.LoadFlags.THREADED_RENDERING;
+#endif
 
 			var fwSettings = new LibMelonDS.FirmwareSettings();
 			var name = Encoding.UTF8.GetBytes(_syncSettings.FirmwareUsername);
