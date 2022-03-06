@@ -38,7 +38,7 @@ typedef enum
 	USE_REAL_BIOS = 0x01,
 	SKIP_FIRMWARE = 0x02,
 	GBA_CART_PRESENT = 0x04,
-	ACCURATE_AUDIO_BITRATE = 0x08,
+	RESERVED_FLAG = 0x08,
 	FIRMWARE_OVERRIDE = 0x10,
 	IS_DSI = 0x20,
 	LOAD_DSIWARE = 0x40,
@@ -56,6 +56,7 @@ typedef struct
 	char* NandData;
 	u32 NandLen;
 	u8* TmdData;
+	s32 AudioBitrate;
 } LoadData;
 
 typedef struct
@@ -100,7 +101,7 @@ static bool LoadDSiWare(u8* TmdData)
 EXPORT bool Init(LoadFlags loadFlags, LoadData* loadData, FirmwareSettings* fwSettings)
 {
 	Config::ExternalBIOSEnable = !!(loadFlags & USE_REAL_BIOS);
-	Config::AudioBitrate = !!(loadFlags & ACCURATE_AUDIO_BITRATE) ? 1 : 2;
+	Config::AudioBitrate = loadData->AudioBitrate;
 	Config::FirmwareOverrideSettings = !!(loadFlags & FIRMWARE_OVERRIDE);
 	biz_skip_fw = !!(loadFlags & SKIP_FIRMWARE);
 	bool isDsi = !!(loadFlags & IS_DSI);
@@ -108,6 +109,7 @@ EXPORT bool Init(LoadFlags loadFlags, LoadData* loadData, FirmwareSettings* fwSe
 	NDS::SetConsoleType(isDsi);
 	// time calls are deterministic under wbx, so this will force the mac address to a constant value instead of relying on whatever is in the firmware
 	// fixme: might want to allow the user to specify mac address?
+	// edit: upstream has ability to set mac address, most work is in frontend now
 	srand(time(NULL));
 	Config::RandomizeMAC = true;
 	biz_time = 0;
@@ -486,4 +488,25 @@ EXPORT uintptr_t GetFrameThreadProc()
 EXPORT void SetThreadWaitCallback(void (*callback)())
 {
 	Platform::ThreadWaitCallback = callback;
+}
+
+EXPORT u32 GetNANDSize()
+{
+	if (NANDFilePtr)
+	{
+		NANDFilePtr->seekg(0, std::ios::end);
+		return NANDFilePtr->tellg();
+	}
+
+	return 0;
+}
+
+EXPORT void GetNANDData(char* buf)
+{
+	if (NANDFilePtr)
+	{
+		u32 sz = GetNANDSize();		
+		NANDFilePtr->seekg(0);
+		NANDFilePtr->read(buf, sz);
+	}
 }
