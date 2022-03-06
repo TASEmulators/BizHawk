@@ -206,8 +206,9 @@ void Semaphore_Reset(Semaphore* sema)
 
 void Semaphore_Wait(Semaphore* sema)
 {
+	int res;
 loop:
-	int res = __atomic_load_n((int*)sema, __ATOMIC_RELAXED);
+	res = __atomic_load_n((int*)sema, __ATOMIC_RELAXED);
 	if (!res) goto loop;
 	__atomic_sub_fetch((int*)sema, 1, __ATOMIC_RELAXED);
 	if (__atomic_load_n((int*)sema, __ATOMIC_RELAXED) < 0)
