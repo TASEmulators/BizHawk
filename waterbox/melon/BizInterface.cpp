@@ -510,3 +510,10 @@ EXPORT void GetNANDData(char* buf)
 		NANDFilePtr->read(buf, sz);
 	}
 }
+
+namespace GPU { void ResetVRAMCache(); }
+
+EXPORT void ResetCaches()
+{
+	GPU::ResetVRAMCache();
+}
