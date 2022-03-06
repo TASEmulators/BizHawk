@@ -66,10 +66,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				set => _screengap = Math.Max(0, Math.Min(128, value));
 			}
 
-			[DisplayName("Accurate Audio Bitrate")]
-			[Description("If true, the audio bitrate will be set to 10. Otherwise, it will be set to 16.")]
-			[DefaultValue(true)]
-			public bool AccurateAudioBitrate { get; set; }
+			public enum AudioBitrateType : int
+			{
+				Auto,
+				Ten,
+				Sixteen,
+			}
+
+			[DisplayName("Audio Bitrate")]
+			[Description("Auto will set the audio bitrate most accurate to the console (10 for DS, 16 for DSi).")]
+			[DefaultValue(AudioBitrateType.Auto)]
+			public AudioBitrateType AudioBitrate { get; set; }
 
 			public NDSSettings Clone() => MemberwiseClone() as NDSSettings;
 

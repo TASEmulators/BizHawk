@@ -106,8 +106,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				loadFlags |= LibMelonDS.LoadFlags.SKIP_FIRMWARE;
 			if (gbacartpresent)
 				loadFlags |= LibMelonDS.LoadFlags.GBA_CART_PRESENT;
-			if (_settings.AccurateAudioBitrate && !IsDSi) // todo: let users have DS audio bitrate on DSi?
-				loadFlags |= LibMelonDS.LoadFlags.ACCURATE_AUDIO_BITRATE;
 			if (_syncSettings.FirmwareOverride || lp.DeterministicEmulationRequested)
 				loadFlags |= LibMelonDS.LoadFlags.FIRMWARE_OVERRIDE;
 			if (IsDSi)
@@ -136,6 +134,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				GbaRomLength = gbacartpresent ? roms[1].Length : 0,
 				GbaRamLength = gbasrampresent ? roms[2].Length : 0,
 				NandLength = nand?.Length ?? 0,
+				AudioBitrate = _settings.AudioBitrate,
 			};
 			if (_syncSettings.UseRealBIOS || IsDSi)
 			{

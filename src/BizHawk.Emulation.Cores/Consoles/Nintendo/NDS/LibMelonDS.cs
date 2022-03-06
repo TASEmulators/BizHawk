@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			USE_REAL_BIOS = 0x01,
 			SKIP_FIRMWARE = 0x02,
 			GBA_CART_PRESENT = 0x04,
-			ACCURATE_AUDIO_BITRATE = 0x08,
+			RESERVED_FLAG = 0x08,
 			FIRMWARE_OVERRIDE = 0x10,
 			IS_DSI = 0x20,
 			LOAD_DSIWARE = 0x40,
@@ -66,6 +66,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			public IntPtr NandData;
 			public int NandLength;
 			public IntPtr TmdData;
+			public NDS.NDSSettings.AudioBitrateType AudioBitrate;
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
