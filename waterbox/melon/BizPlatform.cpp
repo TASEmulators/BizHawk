@@ -195,7 +195,7 @@ Semaphore* Semaphore_Create()
 
 void Semaphore_Free(Semaphore* sema)
 {
-	delete (int*)sema;
+	abort();
 }
 
 void Semaphore_Reset(Semaphore* sema)
@@ -223,28 +223,24 @@ void Semaphore_Post(Semaphore* sema, int count)
 
 Mutex* Mutex_Create()
 {
-	std::mutex* m = new std::mutex();
-	return (Mutex*) m;
+	return nullptr;
 }
 
 void Mutex_Free(Mutex* mutex)
 {
-	delete (std::mutex*) mutex;
 }
 
 void Mutex_Lock(Mutex* mutex)
 {
-	((std::mutex*) mutex)->lock();
 }
 
 void Mutex_Unlock(Mutex* mutex)
 {
-	((std::mutex*) mutex)->unlock();
 }
 
 bool Mutex_TryLock(Mutex* mutex)
 {
-	return ((std::mutex*) mutex)->try_lock();
+	return false;
 }
 
 
