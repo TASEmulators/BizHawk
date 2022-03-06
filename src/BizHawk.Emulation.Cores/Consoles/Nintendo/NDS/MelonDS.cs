@@ -256,6 +256,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			return ret;
 		}
 
+		// todo: wire this up w/ frontend
+		public byte[] GetNAND()
+		{
+			int length = _core.GetNANDSize();
+
+			if (length > 0)
+			{
+				var ret = new byte[length];
+				_core.GetNANDData(ret);
+				return ret;
+			}
+
+			return new byte[0];
+		}
+
 		public bool IsDSi { get; }
 
 		public bool IsDSiWare { get; }

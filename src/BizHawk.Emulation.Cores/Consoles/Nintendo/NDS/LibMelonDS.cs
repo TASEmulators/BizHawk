@@ -136,5 +136,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		[BizImport(CC)]
 		public abstract void SetThreadWaitCallback(ThreadWaitCallback callback);
+
+		[BizImport(CC)]
+		public abstract int GetNANDSize();
+
+		[BizImport(CC)]
+		public abstract void GetNANDData(byte[] buf);
 	}
 }
