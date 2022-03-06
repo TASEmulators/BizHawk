@@ -153,9 +153,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			switch (addr)
 			{
-				case 0x0000: prg_banks_8k[0] = (value & 0xF) & prg_bank_mask_8k; break;
-				case 0x2000: prg_banks_8k[1] = (value & 0xF) & prg_bank_mask_8k; break;
-				case 0x4000: prg_banks_8k[2] = (value & 0xF) & prg_bank_mask_8k; break;
+				//0x0F mask on value was removed
+				//technically its out of specs, but some hacks will be adding banks
+				//however, if the game has normal hardware, it has a normal (16 and less) number of prg banks, and the prg_bank_mask_8k will take care of it
+				case 0x0000: prg_banks_8k[0] = value & prg_bank_mask_8k; break;
+				case 0x2000: prg_banks_8k[1] = value & prg_bank_mask_8k; break;
+				case 0x4000: prg_banks_8k[2] = value & prg_bank_mask_8k; break;
 
 				case 0x1000: //[.... .BAM]   Mirroring, CHR reg high bits
 					if(value.Bit(0))
