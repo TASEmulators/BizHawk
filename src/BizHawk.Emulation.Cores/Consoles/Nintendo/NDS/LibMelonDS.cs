@@ -47,14 +47,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			USE_REAL_BIOS = 0x01,
 			SKIP_FIRMWARE = 0x02,
 			GBA_CART_PRESENT = 0x04,
-			ACCURATE_AUDIO_BITRATE = 0x08,
+			RESERVED_FLAG = 0x08,
 			FIRMWARE_OVERRIDE = 0x10,
 			IS_DSI = 0x20,
 			LOAD_DSIWARE = 0x40,
+			THREADED_RENDERING = 0x80,
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
-		public class LoadData
+		public struct LoadData
 		{
 			public IntPtr DsRomData;
 			public int DsRomLength;
@@ -65,10 +66,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			public IntPtr NandData;
 			public int NandLength;
 			public IntPtr TmdData;
+			public NDS.NDSSettings.AudioBitrateType AudioBitrate;
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
-		public class FirmwareSettings
+		public struct FirmwareSettings
 		{
 			public IntPtr FirmwareUsername; // max 10 length (then terminator)
 			public int FirmwareUsernameLength;
@@ -81,7 +83,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		}
 
 		[BizImport(CC)]
-		public abstract bool Init(LoadFlags flags, LoadData loadData, FirmwareSettings fwSettings);
+		public abstract bool Init(LoadFlags loadFlags, ref LoadData loadData, ref FirmwareSettings fwSettings);
 
 		[BizImport(CC)]
 		public abstract void PutSaveRam(byte[] data, uint len);
@@ -125,5 +127,20 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		[BizImport(CC)]
 		public abstract void SetTraceCallback(TraceCallback callback);
+
+		[BizImport(CC)]
+		public abstract IntPtr GetFrameThreadProc();
+
+		[UnmanagedFunctionPointer(CC)]
+		public delegate void ThreadWaitCallback();
+
+		[BizImport(CC)]
+		public abstract void SetThreadWaitCallback(ThreadWaitCallback callback);
+
+		[BizImport(CC)]
+		public abstract int GetNANDSize();
+
+		[BizImport(CC)]
+		public abstract void GetNANDData(byte[] buf);
 	}
 }

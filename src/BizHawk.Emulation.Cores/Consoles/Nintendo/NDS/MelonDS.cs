@@ -3,7 +3,9 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
+using BizHawk.BizInvoke;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Properties;
@@ -52,6 +54,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			InitMemoryCallbacks();
 			_tracecb = MakeTrace;
+			_threadwaitcb = ThreadWaitCallback;
 
 			_core = PreInit<LibMelonDS>(new WaterboxOptions
 			{
@@ -63,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				MmapHeapSizeKB = 1024 * 1024,
 				SkipCoreConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
-			}, new Delegate[] { _readcb, _writecb, _execcb, _tracecb });
+			}, new Delegate[] { _readcb, _writecb, _execcb, _tracecb, _threadwaitcb });
 
 			var bios7 = IsDSi || _syncSettings.UseRealBIOS
 				? CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios7"))
@@ -95,22 +98,24 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			bool skipfw = _syncSettings.SkipFirmware || !_syncSettings.UseRealBIOS || fw == null;
 
-			LibMelonDS.LoadFlags flags = LibMelonDS.LoadFlags.NONE;
+			LibMelonDS.LoadFlags loadFlags = LibMelonDS.LoadFlags.NONE;
 
 			if (_syncSettings.UseRealBIOS || IsDSi)
-				flags |= LibMelonDS.LoadFlags.USE_REAL_BIOS;
+				loadFlags |= LibMelonDS.LoadFlags.USE_REAL_BIOS;
 			if (skipfw && !IsDSi)
-				flags |= LibMelonDS.LoadFlags.SKIP_FIRMWARE;
+				loadFlags |= LibMelonDS.LoadFlags.SKIP_FIRMWARE;
 			if (gbacartpresent)
-				flags |= LibMelonDS.LoadFlags.GBA_CART_PRESENT;
-			if (_settings.AccurateAudioBitrate && !IsDSi) // todo: let users have DS audio bitrate on DSi?
-				flags |= LibMelonDS.LoadFlags.ACCURATE_AUDIO_BITRATE;
+				loadFlags |= LibMelonDS.LoadFlags.GBA_CART_PRESENT;
 			if (_syncSettings.FirmwareOverride || lp.DeterministicEmulationRequested)
-				flags |= LibMelonDS.LoadFlags.FIRMWARE_OVERRIDE;
+				loadFlags |= LibMelonDS.LoadFlags.FIRMWARE_OVERRIDE;
 			if (IsDSi)
-				flags |= LibMelonDS.LoadFlags.IS_DSI;
+				loadFlags |= LibMelonDS.LoadFlags.IS_DSI;
 			if (IsDSi && IsDSiWare)
-				flags |= LibMelonDS.LoadFlags.LOAD_DSIWARE;
+				loadFlags |= LibMelonDS.LoadFlags.LOAD_DSIWARE;
+#if false
+			if (_settings.ThreadedRendering)
+				loadFlags |= LibMelonDS.LoadFlags.THREADED_RENDERING;
+#endif
 
 			var fwSettings = new LibMelonDS.FirmwareSettings();
 			var name = Encoding.UTF8.GetBytes(_syncSettings.FirmwareUsername);
@@ -129,6 +134,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				GbaRomLength = gbacartpresent ? roms[1].Length : 0,
 				GbaRamLength = gbasrampresent ? roms[2].Length : 0,
 				NandLength = nand?.Length ?? 0,
+				AudioBitrate = _settings.AudioBitrate,
 			};
 			if (_syncSettings.UseRealBIOS || IsDSi)
 			{
@@ -174,7 +180,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					loadData.TmdData = (IntPtr)tmdPtr;
 					fwSettings.FirmwareUsername = (IntPtr)namePtr;
 					fwSettings.FirmwareMessage = (IntPtr)messagePtr;
-					if (!_core.Init(flags, loadData, fwSettings))
+					if (!_core.Init(loadFlags, ref loadData, ref fwSettings))
 					{
 						throw new InvalidOperationException("Init returned false!");
 					}
@@ -198,6 +204,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			DeterministicEmulation = lp.DeterministicEmulationRequested || (!_syncSettings.UseRealTime);
 			InitializeRtc(_syncSettings.InitialTime);
 
+			_frameThreadPtr = _core.GetFrameThreadProc();
+			if (_frameThreadPtr != IntPtr.Zero)
+			{
+				Console.WriteLine($"Setting up waterbox thread for 0x{_frameThreadPtr:X16}");
+				_frameThreadStart = CallingConventionAdapters.GetWaterboxUnsafeUnwrapped().GetDelegateForFunctionPointer<Action>(_frameThreadPtr);
+				_core.SetThreadWaitCallback(_threadwaitcb);
+			}
+
 			_resampler = new SpeexResampler(SpeexResampler.Quality.QUALITY_DEFAULT, 32768, 44100, 32768, 44100, null, this);
 			_serviceProvider.Register<ISoundProvider>(_resampler);
 
@@ -212,11 +226,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		public override void Dispose()
 		{
 			base.Dispose();
-			if (_resampler != null)
-			{
-				_resampler.Dispose();
-				_resampler = null;
-			}
+			_resampler?.Dispose();
+			_resampler = null;
 		}
 
 		private static bool RomIsWare(byte[] file)
@@ -243,6 +254,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			var ret = new byte[tmd.Length];
 			tmd.Read(ret, 0, (int)tmd.Length);
 			return ret;
+		}
+
+		// todo: wire this up w/ frontend
+		public byte[] GetNAND()
+		{
+			int length = _core.GetNANDSize();
+
+			if (length > 0)
+			{
+				var ret = new byte[length];
+				_core.GetNANDData(ret);
+				return ret;
+			}
+
+			return new byte[0];
 		}
 
 		public bool IsDSi { get; }
@@ -301,11 +327,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			return b;
 		}
 
-		private bool _renderSound;
+		private readonly IntPtr _frameThreadPtr;
+		private readonly Action _frameThreadStart;
+		private Task _frameThreadProcActive;
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
-			_renderSound = rendersound;
+			if (_frameThreadStart != null && render)
+			{
+				_frameThreadProcActive = Task.Run(_frameThreadStart);
+			}
 			_core.SetTraceCallback(Tracer.IsEnabled() ? _tracecb : null);
 			return new LibMelonDS.FrameInfo
 			{
@@ -318,18 +349,20 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			};
 		}
 
-		protected override void FrameAdvancePost()
+		private readonly LibMelonDS.ThreadWaitCallback _threadwaitcb;
+
+		private void ThreadWaitCallback()
 		{
-			// the core SHOULD produce 547 or 548 samples each frame
-			// however, it seems in some cases (first few frames on power on and lid closed) it doesn't for some reason
-			// hack around it here
-			if (_numSamples < 547 && _renderSound)
+			_frameThreadProcActive?.Wait();
+			_frameThreadProcActive = null;
+		}
+
+		protected override void LoadStateBinaryInternal(BinaryReader reader)
+		{
+			SetMemoryCallbacks();
+			if (_frameThreadPtr != _core.GetFrameThreadProc())
 			{
-				for (int i = _numSamples * 2; i < (547 * 2); i++)
-				{
-					_soundBuffer[i] = 0;
-				}
-				_numSamples = 547;
+				throw new InvalidOperationException("_frameThreadPtr mismatch");
 			}
 		}
 
