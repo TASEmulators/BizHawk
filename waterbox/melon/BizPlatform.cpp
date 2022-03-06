@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <thread>
 #include <mutex>
 #include "Platform.h"
 #include "BizConfig.h"
