@@ -142,5 +142,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		[BizImport(CC)]
 		public abstract void GetNANDData(byte[] buf);
+
+		[BizImport(CC)]
+		public abstract void ResetCaches();
 	}
 }

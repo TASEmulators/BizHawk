@@ -359,6 +359,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		protected override void LoadStateBinaryInternal(BinaryReader reader)
 		{
+			_core.ResetCaches();
 			SetMemoryCallbacks();
 			if (_frameThreadPtr != _core.GetFrameThreadProc())
 			{
