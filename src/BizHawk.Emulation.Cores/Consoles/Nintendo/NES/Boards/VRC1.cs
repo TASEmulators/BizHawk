@@ -151,7 +151,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void WritePrg(int addr, byte value)
 		{
-			switch (addr)
+			switch (addr & 0xF000)
 			{
 				//0x0F mask on value was removed
 				//technically its out of specs, but some hacks will be adding banks
