@@ -423,7 +423,7 @@
 		<Rule Id="SA1132" Action="Hidden" />
 
 		<!-- Do not combine attributes -->
-		<Rule Id="SA1133" Action="Hidden" />
+		<Rule Id="SA1133" Action="Error" />
 
 		<!-- Attributes should not share line -->
 		<Rule Id="SA1134" Action="Hidden" />

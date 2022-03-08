@@ -85,7 +85,8 @@ namespace BizHawk.Common
 			}
 		}
 
-		[InterfaceType(ComInterfaceType.InterfaceIsIUnknown), Guid("00000002-0000-0000-C000-000000000046")]
+		[Guid("00000002-0000-0000-C000-000000000046")]
+		[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 		public interface IMalloc
 		{
 			[PreserveSig] IntPtr Alloc([In] int cb);

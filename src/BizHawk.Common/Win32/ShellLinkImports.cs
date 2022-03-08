@@ -30,7 +30,9 @@ namespace BizHawk.Common
 		public enum SLR_FLAGS {}
 
 		/// <summary>The IShellLink interface allows Shell links to be created, modified, and resolved</summary>
-		[ComImport, InterfaceType(ComInterfaceType.InterfaceIsIUnknown), Guid("000214F9-0000-0000-C000-000000000046")]
+		[ComImport]
+		[Guid("000214F9-0000-0000-C000-000000000046")]
+		[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 		public interface IShellLinkW
 		{
 			/// <summary>Retrieves the path and file name of a Shell link object</summary>
@@ -71,14 +73,18 @@ namespace BizHawk.Common
 			void SetPath([MarshalAs(UnmanagedType.LPWStr)] string pszFile);
 		}
 
-		[ComImport, Guid("0000010c-0000-0000-c000-000000000046"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+		[ComImport]
+		[Guid("0000010c-0000-0000-c000-000000000046")]
+		[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 		public interface IPersist
 		{
 			[PreserveSig]
 			void GetClassID(out Guid pClassID);
 		}
 
-		[ComImport, Guid("0000010b-0000-0000-C000-000000000046"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+		[ComImport]
+		[Guid("0000010b-0000-0000-C000-000000000046")]
+		[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 		public interface IPersistFile : IPersist
 		{
 			new void GetClassID(out Guid pClassID);
@@ -100,7 +106,8 @@ namespace BizHawk.Common
 		}
 
 		/// <remarks>CLSID_ShellLink from ShlGuid.h</remarks>
-		[ComImport, Guid("00021401-0000-0000-C000-000000000046")]
+		[ComImport]
+		[Guid("00021401-0000-0000-C000-000000000046")]
 		public class ShellLink /* : IPersistFile, IShellLinkW */ {}
 	}
 }
