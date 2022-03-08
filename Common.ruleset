@@ -134,7 +134,7 @@
 		<Rule Id="CA1063" Action="Hidden" />
 
 		<!-- Exceptions should be public -->
-		<Rule Id="CA1064" Action="Hidden" />
+		<Rule Id="CA1064" Action="Error" />
 
 		<!-- Do not raise exceptions in unexpected locations -->
 		<Rule Id="CA1065" Action="Hidden" />
