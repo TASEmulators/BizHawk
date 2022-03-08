@@ -45,7 +45,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var hWndOwner = owner?.Handle ?? Win32Imports.GetActiveWindow();
-			Win32Imports.SHGetSpecialFolderLocation(hWndOwner, startLocation, out var pidlRoot);
+			_ = Win32Imports.SHGetSpecialFolderLocation(hWndOwner, startLocation, out var pidlRoot);
 			if (pidlRoot == IntPtr.Zero) return DialogResult.Cancel;
 			var mergedOptions = publicOptions | privateOptions;
 			if ((mergedOptions & Win32Imports.BROWSEINFO.FLAGS.NewDialogStyle) != 0 && ApartmentState.MTA == Application.OleRequired())
@@ -75,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			finally
 			{
-				Win32Imports.SHGetMalloc(out var malloc);
+				_ = Win32Imports.SHGetMalloc(out var malloc);
 				malloc.Free(pidlRoot);
 				if (pidlRet != IntPtr.Zero) malloc.Free(pidlRet);
 			}

@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			//read directly into the target buffer
 			fixed(byte* pBuffer = &buffer[0])
-				mednadisc_ReadSector(handle, LBA, pBuffer + offset);
+				_ = mednadisc_ReadSector(handle, LBA, pBuffer + offset);
 		}
 
 #if false

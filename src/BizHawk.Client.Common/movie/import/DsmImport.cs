@@ -40,8 +40,7 @@ namespace BizHawk.Client.Common
 				}
 				else if (line.StartsWith("rerecordCount"))
 				{
-					int.TryParse(ParseHeader(line, "rerecordCount"), out var rerecordCount);
-					Result.Movie.Rerecords = (ulong)rerecordCount;
+					Result.Movie.Rerecords = (ulong) (int.TryParse(ParseHeader(line, "rerecordCount"), out var rerecordCount) ? rerecordCount : default);
 				}
 				else if (line.StartsWith("firmNickname"))
 				{

@@ -26,26 +26,13 @@ namespace BizHawk.Client.Common
 			/// <returns>0 for equality, 1 if x comes first; -1 if y comes first</returns>
 			public int Compare(Watch x, Watch y)
 			{
-				int xValue;
-				int yValue;
+				var xValue = x.Type is not WatchDisplayType.Signed
+					? x.Value
+					: int.TryParse(x.ValueString, out var i) ? i : default;
 
-				if (x.Type == WatchDisplayType.Signed)
-				{
-					int.TryParse(x.ValueString, out xValue);
-				}
-				else
-				{
-					xValue = x.Value;
-				}
-
-				if (y.Type == WatchDisplayType.Signed)
-				{
-					int.TryParse(y.ValueString, out yValue);
-				}
-				else
-				{
-					yValue = y.Value;
-				}
+				var yValue = y.Type is not WatchDisplayType.Signed
+					? y.Value
+					: int.TryParse(y.ValueString, out var i1) ? i1 : default;
 
 				if (Equals(x, y))
 				{

@@ -49,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 
 			// this will look in subdirectory "dll" to load pinvoked stuff
 			var dllDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
-			SetDllDirectory(dllDir);
+			_ = SetDllDirectory(dllDir);
 
 			//in case assembly resolution fails, such as if we moved them into the dll subdiretory, this event handler can reroute to them
 			AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
@@ -226,7 +226,7 @@ namespace BizHawk.Client.EmuHawk
 				//note: this is pasted instead of being put in a static method due to this initialization code being sensitive to things like that, and not wanting to cause it to break
 				//pasting should be safe (not affecting the jit order of things)
 				var dllDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
-				SetDllDirectory(dllDir);
+				_ = SetDllDirectory(dllDir);
 			}
 
 			Util.DebugWriteLine(EmuHawkUtil.CLRHostHasElevatedPrivileges ? "running as Superuser/Administrator" : "running as unprivileged user");

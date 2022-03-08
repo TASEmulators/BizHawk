@@ -97,8 +97,7 @@ namespace BizHawk.Client.Common
 				}
 				else if (line.ToLower().StartsWith("rerecordcount"))
 				{
-					int.TryParse(ParseHeader(line, "rerecordCount"), out var rerecordCount);
-					Result.Movie.Rerecords = (ulong)rerecordCount;
+					Result.Movie.Rerecords = (ulong) (int.TryParse(ParseHeader(line, "rerecordCount"), out var rerecordCount) ? rerecordCount : default);
 				}
 				else if (line.ToLower().StartsWith("guid"))
 				{

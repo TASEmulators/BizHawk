@@ -98,7 +98,7 @@ namespace BizHawk.Client.Common
 				}
 				else if (argDowncased.StartsWith("--dump-length="))
 				{
-					int.TryParse(argDowncased.Substring(argDowncased.IndexOf('=') + 1), out var len);
+					var len = int.TryParse(argDowncased.Substring(argDowncased.IndexOf('=') + 1), out var i1) ? i1 : default;
 					autoDumpLength = len;
 				}
 				else if (argDowncased.StartsWith("--dump-close"))
@@ -125,7 +125,7 @@ namespace BizHawk.Client.Common
 				}
 				else if (argDowncased.StartsWith("--socket_port="))
 				{
-					int.TryParse(argDowncased.Substring(argDowncased.IndexOf('=') + 1), out var port);
+					var port = int.TryParse(argDowncased.Substring(argDowncased.IndexOf('=') + 1), out var i1) ? i1 : default;
 					if (port > 0) socketPort = port;
 				}
 				else if (argDowncased.StartsWith("--socket_ip="))

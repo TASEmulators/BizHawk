@@ -209,7 +209,7 @@
 		<Rule Id="CA1805" Action="Hidden" />
 
 		<!-- Do not ignore method results -->
-		<Rule Id="CA1806" Action="Hidden" />
+		<Rule Id="CA1806" Action="Error" />
 
 		<!-- Initialize reference type static fields inline -->
 		<Rule Id="CA1810" Action="Hidden" />

@@ -31,7 +31,7 @@ namespace BizHawk.BizInvoke
 		{
 			if (_disposed)
 				return;
-			munmap(Z.US(Start), Z.UU(_size));
+			_ = munmap(Z.US(Start), Z.UU(_size));
 			_disposed = true;
 			GC.SuppressFinalize(this);
 		}
