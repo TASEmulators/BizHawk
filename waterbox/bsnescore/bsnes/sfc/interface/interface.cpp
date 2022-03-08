@@ -216,11 +216,13 @@ auto Interface::connect(uint port, uint device) -> void {
 }
 
 auto Interface::power() -> void {
-  system.power(/* reset = */ false);
+  static bool initial = true;
+  system.power(/* reset = */ false, initial);
+  initial = false;
 }
 
 auto Interface::reset() -> void {
-  system.power(/* reset = */ true);
+  system.power(/* reset = */ true, false);
 }
 
 auto Interface::run() -> void {

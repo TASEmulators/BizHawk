@@ -1,6 +1,6 @@
 struct SDD1 {
   auto unload() -> void;
-  auto power() -> void;
+  auto power(bool initial = true) -> void;
 
   auto ioRead(uint addr, uint8 data) -> uint8;
   auto ioWrite(uint addr, uint8 data) -> void;

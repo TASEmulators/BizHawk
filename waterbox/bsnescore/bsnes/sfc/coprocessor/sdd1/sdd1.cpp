@@ -11,10 +11,10 @@ auto SDD1::unload() -> void {
   rom.reset();
 }
 
-auto SDD1::power() -> void {
+auto SDD1::power(bool initial) -> void {
   //hook S-CPU DMA MMIO registers to gather information for struct dma[];
   //buffer address and transfer size information for use in SDD1::mcu_read()
-  bus.map({&SDD1::dmaRead, &sdd1}, {&SDD1::dmaWrite, &sdd1}, "00-3f,80-bf:4300-437f", true);
+  if (initial) bus.map({&SDD1::dmaRead, &sdd1}, {&SDD1::dmaWrite, &sdd1}, "00-3f,80-bf:4300-437f", true);
 
   r4800 = 0x00;
   r4801 = 0x00;
