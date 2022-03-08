@@ -14,7 +14,7 @@
 [submodule "mgba"]
 	path = submodules/mgba
 	url = https://github.com/TASEmulators/mgba.git
-	branch = bizhawk-0.9
+	branch = bizhawk-0.10
 [submodule "waterbox/melon/melonDS"]
 	path = waterbox/melon/melonDS
 	url = https://github.com/TASEmulators/melonDS.git
