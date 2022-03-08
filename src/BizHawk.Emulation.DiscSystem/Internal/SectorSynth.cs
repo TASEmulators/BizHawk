@@ -239,7 +239,7 @@ namespace BizHawk.Emulation.DiscSystem
 //			else if(toc.disc_type == DISC_TYPE_CD_I) control |= 0x4;
 			control |= (EControlQ)(((int)ses.LastInformationTrack.Control) & 4);
 			
-			SubchannelQ sq = new SubchannelQ();
+			SubchannelQ sq = default;
 			sq.SetStatus(ADR, control);
 			sq.q_tno.BCDValue = 0xAA;
 			sq.q_index.BCDValue = 0x01;

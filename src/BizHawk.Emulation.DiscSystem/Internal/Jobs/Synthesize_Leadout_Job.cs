@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				//var se = new SectorEntry(sz);
 				//Disc.Sectors.Add(se);
-				SubchannelQ sq = new SubchannelQ();
+				SubchannelQ sq = default;
 
 				int track_relative_msf = i;
 				sq.min = BCD2.FromDecimal(new Timestamp(track_relative_msf).MIN);

@@ -165,7 +165,7 @@ namespace BizHawk.Bizware.BizwareGL
 				var pFlIn = (float*) pMatIn;
 				for (var i = 0; i < 16; i++) pDbTemp[i] = pFlIn[i];
 			}
-			Matrix4 result = new();
+			Matrix4 result = default;
 			ref var refResult = ref result;
 			fixed (Matrix4* pMatOut = &refResult)
 			{

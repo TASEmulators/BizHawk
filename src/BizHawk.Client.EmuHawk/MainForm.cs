@@ -4832,6 +4832,6 @@ namespace BizHawk.Client.EmuHawk
 			LoadRom(args[0]);
 		}
 
-		public IQuickBmpFile QuickBmpFile { get; } = new QuickBmpFile();
+		public IQuickBmpFile QuickBmpFile { get; } = EmuHawk.QuickBmpFile.INSTANCE;
 	}
 }

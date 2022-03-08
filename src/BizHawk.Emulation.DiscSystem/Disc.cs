@@ -120,7 +120,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// Parameters set during disc loading which can be referenced by the sector synthesizers
 		/// </summary>
-		internal SectorSynthParams SynthParams = new SectorSynthParams();
+		internal SectorSynthParams SynthParams = default;
 
 		/// <summary>
 		/// Forbid public construction

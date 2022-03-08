@@ -178,7 +178,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (frame >= 0)
 				{
-					PendingChanges newChange = new PendingChanges();
+					PendingChanges newChange = default;
 
 					if (frame < Tastudio.CurrentTasMovie.InputLogLength)
 					{
@@ -215,7 +215,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (frame >= 0)
 				{
-					PendingChanges newChange = new PendingChanges();
+					PendingChanges newChange = default;
 
 					if (frame < Tastudio.CurrentTasMovie.InputLogLength)
 					{

@@ -332,6 +332,8 @@ namespace BizHawk.Client.EmuHawk
 			s.Write(dst, 0, dst.Length);
 		}
 
+		public static readonly QuickBmpFile INSTANCE = default;
+
 		readonly void IQuickBmpFile.Copy(IVideoProvider src, IVideoProvider dst) => Copy(src, dst);
 
 		readonly bool IQuickBmpFile.Load(IVideoProvider v, Stream s) => Load(v, s);

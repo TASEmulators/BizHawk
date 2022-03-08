@@ -160,7 +160,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 		private void EmitRawTOCEntry(CompiledCueTrack cct)
 		{
-			SubchannelQ toc_sq = new SubchannelQ();
+			SubchannelQ toc_sq = default;
 			//absent some kind of policy for how to set it, this is a safe assumption:
 			byte toc_ADR = 1;
 			toc_sq.SetStatus(toc_ADR, (EControlQ)(int)cct.Flags);

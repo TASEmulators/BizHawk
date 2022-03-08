@@ -414,7 +414,7 @@
 		<Rule Id="SA1128" Action="Hidden" />
 
 		<!-- Do not use default value type constructor -->
-		<Rule Id="SA1129" Action="Hidden" />
+		<Rule Id="SA1129" Action="Error" />
 
 		<!-- Use readable conditions -->
 		<Rule Id="SA1131" Action="Hidden" />

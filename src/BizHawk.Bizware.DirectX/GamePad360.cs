@@ -140,7 +140,7 @@ namespace BizHawk.Bizware.DirectX
 
 			if (XInputGetStateExProc != null)
 			{
-				_state = new XINPUT_STATE();
+				_state = default;
 				XInputGetStateExProc(_index0, out _state);
 			}
 			else

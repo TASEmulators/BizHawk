@@ -269,7 +269,7 @@ namespace BizHawk.BizInvoke
 
 			var il = method.GetILGenerator();
 
-			Label exc = new Label();
+			Label exc = default;
 			if (monitorField != null) // monitor: enter and then begin try
 			{
 				il.Emit(OpCodes.Ldarg_0);
@@ -376,7 +376,7 @@ namespace BizHawk.BizInvoke
 
 			var il = method.GetILGenerator();
 
-			Label exc = new Label();
+			Label exc = default;
 			if (monitorField != null) // monitor: enter and then begin try
 			{
 				il.Emit(OpCodes.Ldarg_0);

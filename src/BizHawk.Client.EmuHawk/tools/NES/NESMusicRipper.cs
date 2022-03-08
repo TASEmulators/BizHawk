@@ -166,9 +166,12 @@ namespace BizHawk.Client.EmuHawk
 
 						var rec = _log[index];
 
-						PulseState pulse = new PulseState();
-						if (track == 0) pulse = rec.Pulse0;
-						if (track == 1) pulse = rec.Pulse1;
+						var pulse = track switch
+						{
+							0 => rec.Pulse0,
+							1 => rec.Pulse1,
+							_ => default
+						};
 
 						// transform quieted notes to dead notes
 						// blech its buggy, im tired
