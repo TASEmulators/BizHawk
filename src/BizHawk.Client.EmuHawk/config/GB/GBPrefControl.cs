@@ -24,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 
 		/// <remarks>TODO <see cref="UserControl">UserControls</see> can be <see cref="IDialogParent">IDialogParents</see> too, the modal should still be tied to the parent <see cref="Form"/> if used that way</remarks>
 		[Browsable(false)]
-		public IDialogParent DialogParent { private get; set; }
+		public IDialogParent DialogParent { get; set; }
 
 		[Browsable(false)]
 		public bool SyncSettingsChanged { get; private set; }

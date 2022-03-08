@@ -18,7 +18,7 @@ namespace BizHawk.Client.Common
 		bool EmulatorPaused { get; }
 
 		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
-		bool InvisibleEmulation { set; }
+		bool InvisibleEmulation { get; set; }
 
 		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
 		bool IsSeeking { get; }
@@ -30,7 +30,7 @@ namespace BizHawk.Client.Common
 		(HttpCommunication HTTP, MemoryMappedFiles MMF, SocketServer Sockets) NetworkingHelpers { get; }
 
 		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
-		bool PauseAvi { set; }
+		bool PauseAvi { get; set; }
 
 		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
 		void ClearHolds();

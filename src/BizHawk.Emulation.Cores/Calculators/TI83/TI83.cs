@@ -72,8 +72,8 @@ namespace BizHawk.Emulation.Cores.Calculators.TI83
 		private int _linkOutput;
 
 		internal int LinkOutput => _linkOutput;
-		internal bool LinkActive { private get; set; }
-		internal int LinkInput { private get; set; }
+		internal bool LinkActive { get; set; }
+		internal int LinkInput { get; set; }
 
 		internal int LinkState => (_linkOutput | LinkInput) ^ 3;
 

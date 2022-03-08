@@ -41,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 		public bool HasValue { get; set; }
 
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public bool ReadOnly { private get; set; }
+		public bool ReadOnly { get; set; }
 
 		public string XName { get; private set; } = string.Empty;
 		public string YName { get; private set; } = string.Empty;
@@ -140,7 +140,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly Bitmap _grayDot = new Bitmap(7, 7);
 
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public Action ClearCallback { private get; set; }
+		public Action ClearCallback { get; set; }
 
 		public AnalogStickPanel()
 		{

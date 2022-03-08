@@ -25,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 		bool GameIsClosing { get; }
 
 		/// <remarks>only referenced from <see cref="PlaybackBox"/></remarks>
-		bool HoldFrameAdvance { set; }
+		bool HoldFrameAdvance { get; set; }
 
 		/// <remarks>only referenced from <see cref="BasicBot"/></remarks>
 		bool InvisibleEmulation { get; set; }
@@ -39,7 +39,7 @@ namespace BizHawk.Client.EmuHawk
 		int? PauseOnFrame { get; set; }
 
 		/// <remarks>only referenced from <see cref="PlaybackBox"/></remarks>
-		bool PressRewind { set; }
+		bool PressRewind { get; set; }
 
 		/// <remarks>only referenced from <see cref="TAStudio"/></remarks>
 		IQuickBmpFile QuickBmpFile { get; }

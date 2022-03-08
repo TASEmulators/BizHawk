@@ -17,7 +17,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly Dictionary<Color, SolidBrush> _solidBrushes = new Dictionary<Color, SolidBrush>();
 		private readonly Dictionary<Color, Pen> _pens = new Dictionary<Color, Pen>();
 
-		internal NLuaTableHelper TableHelper { private get; set; }
+		internal NLuaTableHelper TableHelper { get; set; }
 
 		private SolidBrush GetBrush([LuaColorParam] object color)
 		{

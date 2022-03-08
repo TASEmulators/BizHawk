@@ -34,6 +34,7 @@
 		/// </summary>
 		public int UnscaledWidth
 		{
+			get => UIHelper.UnscaleX(Width);
 			set => Width = UIHelper.ScaleX(value);
 		}
 	}

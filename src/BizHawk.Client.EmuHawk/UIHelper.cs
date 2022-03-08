@@ -43,5 +43,8 @@ namespace BizHawk.Client.EmuHawk
 			using var form = new Form { AutoScaleMode = autoScaleMode };
 			return form.CurrentAutoScaleDimensions;
 		}
+
+		public static int UnscaleX(int size)
+			=> (int) Math.Round(size / AutoScaleFactorX);
 	}
 }

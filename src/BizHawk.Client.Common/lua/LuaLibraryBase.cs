@@ -25,7 +25,7 @@ namespace BizHawk.Client.Common
 
 		public abstract string Name { get; }
 
-		public ApiContainer APIs { protected get; set; }
+		public ApiContainer APIs { get; set; }
 
 		protected readonly Action<string> LogOutputCallback;
 

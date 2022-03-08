@@ -13,8 +13,8 @@ namespace BizHawk.Client.Common
 
 		IMovieChangeLog ChangeLog { get; }
 		IStateManager TasStateManager { get; }
-		Func<string> ClientSettingsForSave { set; }
-		Action<string> GetClientSettingsOnLoad { set; }
+		Func<string> ClientSettingsForSave { get; set; }
+		Action<string> GetClientSettingsOnLoad { get; set; }
 		ITasMovieRecord this[int index] { get; }
 		ITasSession TasSession { get; }
 		TasMovieMarkerList Markers { get; }

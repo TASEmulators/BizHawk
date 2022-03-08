@@ -113,7 +113,7 @@
 		<Rule Id="CA1043" Action="Hidden" />
 
 		<!-- Properties should not be write only -->
-		<Rule Id="CA1044" Action="Hidden" />
+		<Rule Id="CA1044" Action="Error" />
 
 		<!-- Do not declare visible instance fields -->
 		<Rule Id="CA1051" Action="Hidden" />
