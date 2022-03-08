@@ -116,7 +116,7 @@ namespace BizHawk.Client.EmuHawk
 			tsbLoggingActive.Checked = value;
 		}
 
-		private string[][] _listContents = new string[0][];
+		private string[][] _listContents = Array.Empty<string[]>();
 
 		private unsafe void UpdateDisplay(bool force)
 		{

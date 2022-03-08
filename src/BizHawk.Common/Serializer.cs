@@ -197,7 +197,7 @@ namespace BizHawk.Common
 			}
 			else
 			{
-				var temp = val ?? new byte[0];
+				var temp = val ?? Array.Empty<byte>();
 				_tw.WriteLine("{0} {1}", name, temp.BytesToHexString());
 			}
 		}
@@ -213,7 +213,7 @@ namespace BizHawk.Common
 				val = _br.ReadByteBuffer(false).ToBoolBuffer();
 				if (val == null && !useNull)
 				{
-					val = new bool[0];
+					val = Array.Empty<bool>();
 				}
 			}
 			else
@@ -239,7 +239,7 @@ namespace BizHawk.Common
 			}
 			else
 			{
-				var temp = val ?? new bool[0];
+				var temp = val ?? Array.Empty<bool>();
 				_tw.WriteLine("{0} {1}", name, temp.ToUByteBuffer().BytesToHexString());
 			}
 		}
@@ -254,7 +254,7 @@ namespace BizHawk.Common
 				val = _br.ReadByteBuffer(false).ToShortBuffer();
 				if (val == null && !useNull)
 				{
-					val = new short[0];
+					val = Array.Empty<short>();
 				}
 			}
 			else
@@ -274,7 +274,7 @@ namespace BizHawk.Common
 				val = _br.ReadByteBuffer(false).ToUShortBuffer();
 				if (val == null && !useNull)
 				{
-					val = new ushort[0];
+					val = Array.Empty<ushort>();
 				}
 			}
 			else
@@ -300,7 +300,7 @@ namespace BizHawk.Common
 			}
 			else
 			{
-				var temp = val ?? new short[0];
+				var temp = val ?? Array.Empty<short>();
 				_tw.WriteLine("{0} {1}", name, temp.ToUByteBuffer().BytesToHexString());
 			}
 		}
@@ -322,7 +322,7 @@ namespace BizHawk.Common
 			}
 			else
 			{
-				var temp = val ?? new ushort[0];
+				var temp = val ?? Array.Empty<ushort>();
 				_tw.WriteLine("{0} {1}", name, temp.ToUByteBuffer().BytesToHexString());
 			}
 		}
@@ -338,7 +338,7 @@ namespace BizHawk.Common
 				val = _br.ReadByteBuffer(false).ToIntBuffer();
 				if (val == null && !useNull)
 				{
-					val = new int[0];
+					val = Array.Empty<int>();
 				}
 			}
 			else
@@ -364,7 +364,7 @@ namespace BizHawk.Common
 			}
 			else
 			{
-				var temp = val ?? new int[0];
+				var temp = val ?? Array.Empty<int>();
 				_tw.WriteLine("{0} {1}", name, temp.ToUByteBuffer().BytesToHexString());
 			}
 		}
@@ -380,7 +380,7 @@ namespace BizHawk.Common
 				val = _br.ReadByteBuffer(false).ToUIntBuffer();
 				if (val == null && !useNull)
 				{
-					val = new uint[0];
+					val = Array.Empty<uint>();
 				}
 			}
 			else
@@ -406,7 +406,7 @@ namespace BizHawk.Common
 			}
 			else
 			{
-				var temp = val ?? new uint[0];
+				var temp = val ?? Array.Empty<uint>();
 				_tw.WriteLine("{0} {1}", name, temp.ToUByteBuffer().BytesToHexString());
 			}
 		}
@@ -422,7 +422,7 @@ namespace BizHawk.Common
 				val = _br.ReadByteBuffer(false).ToFloatBuffer();
 				if (val == null && !useNull)
 				{
-					val = new float[0];
+					val = Array.Empty<float>();
 				}
 			}
 			else
@@ -448,7 +448,7 @@ namespace BizHawk.Common
 			}
 			else
 			{
-				var temp = val ?? new float[0];
+				var temp = val ?? Array.Empty<float>();
 				_tw.WriteLine("{0} {1}", name, temp.ToUByteBuffer().BytesToHexString());
 			}
 		}
@@ -464,7 +464,7 @@ namespace BizHawk.Common
 				val = _br.ReadByteBuffer(false).ToDoubleBuffer();
 				if (val == null && !useNull)
 				{
-					val = new double[0];
+					val = Array.Empty<double>();
 				}
 			}
 			else
@@ -490,7 +490,7 @@ namespace BizHawk.Common
 			}
 			else
 			{
-				var temp = val ?? new double[0];
+				var temp = val ?? Array.Empty<double>();
 				_tw.WriteLine("{0} {1}", name, temp.ToUByteBuffer().BytesToHexString());
 			}
 		}

@@ -51,7 +51,7 @@ namespace BizHawk.Client.EmuHawk
 			W = w;
 		}
 
-		private short[] _samples = new short[0];
+		private short[] _samples = Array.Empty<short>();
 
 		// how many extra audio samples there are (* fpsNum)
 		private long _exAudioNum;

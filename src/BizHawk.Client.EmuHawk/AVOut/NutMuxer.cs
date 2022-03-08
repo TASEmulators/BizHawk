@@ -390,7 +390,7 @@ namespace BizHawk.Client.EmuHawk
 			WriteVarU(1, header); // max_pts_distance
 			WriteVarU(0, header); // decode_delay
 			WriteVarU(1, header); // stream_flags = FLAG_FIXED_FPS
-			WriteBytes(new byte[0], header); // codec_specific_data
+			WriteBytes(Array.Empty<byte>(), header); // codec_specific_data
 
 			// stream_class = video
 			WriteVarU(_avParams.Width, header); // width
@@ -414,7 +414,7 @@ namespace BizHawk.Client.EmuHawk
 			WriteVarU(_avParams.Samplerate, header); // max_pts_distance
 			WriteVarU(0, header); // decode_delay
 			WriteVarU(0, header); // stream_flags = none; no FIXED_FPS because we aren't guaranteeing same-size audio chunks
-			WriteBytes(new byte[0], header); // codec_specific_data
+			WriteBytes(Array.Empty<byte>(), header); // codec_specific_data
 
 			// stream_class = audio
 			WriteVarU(_avParams.Samplerate, header); // samplerate_num
@@ -649,12 +649,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!_videoDone)
 			{
-				WriteVideoFrame(new int[0]);
+				WriteVideoFrame(Array.Empty<int>());
 			}
 
 			if (!_audioDone)
 			{
-				WriteAudioFrame(new short[0]);
+				WriteAudioFrame(Array.Empty<short>());
 			}
 
 			// flush any remaining queued packets

@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common
 {
 	public class ZwinderStateManager : IStateManager, IDisposable
 	{
-		private static readonly byte[] NonState = new byte[0];
+		private static readonly byte[] NonState = Array.Empty<byte>();
 
 		private readonly Func<int, bool> _reserveCallback;
 		internal readonly SortedList<int> StateCache = new SortedList<int>();

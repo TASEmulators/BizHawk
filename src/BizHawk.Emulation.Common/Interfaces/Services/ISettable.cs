@@ -110,7 +110,7 @@ namespace BizHawk.Emulation.Common
 		public bool HasSyncSettings { get; }
 
 		private readonly object[] _tempObject = new object[1];
-		private static readonly object[] Empty = new object[0];
+		private static readonly object[] Empty = Array.Empty<object>();
 
 		private readonly MethodInfo _gets;
 		private readonly MethodInfo _puts;

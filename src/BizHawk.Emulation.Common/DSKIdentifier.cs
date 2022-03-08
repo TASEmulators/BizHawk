@@ -1,5 +1,6 @@
 ﻿#nullable disable
 
+using System;
 using System.Linq;
 using System.Text;
 
@@ -238,7 +239,7 @@ namespace BizHawk.Emulation.Common
 			{
 				if (TrackSizes[i] == 0)
 				{
-					Tracks[i] = new Track { Sectors = new Sector[0] };
+					Tracks[i] = new() { Sectors = Array.Empty<Sector>() };
 					continue;
 				}
 				int p = pos;
@@ -313,7 +314,7 @@ namespace BizHawk.Emulation.Common
 			{
 				if (TrackSizes[i] == 0)
 				{
-					Tracks[i] = new Track { Sectors = new Sector[0] };
+					Tracks[i] = new() { Sectors = Array.Empty<Sector>() };
 					continue;
 				}
 				int p = pos;

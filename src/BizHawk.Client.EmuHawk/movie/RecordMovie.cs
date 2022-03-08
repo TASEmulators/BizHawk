@@ -134,7 +134,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					// TODO: do we want to support optionally not saving this?
-					movieToRecord.SavestateFramebuffer = new int[0];
+					movieToRecord.SavestateFramebuffer = Array.Empty<int>();
 					if (_emulator.HasVideoProvider())
 					{
 						movieToRecord.SavestateFramebuffer = (int[])_emulator.AsVideoProvider().GetVideoBuffer().Clone();

@@ -535,7 +535,8 @@ namespace BizHawk.Client.Common
 
 		private class FakeVideoProvider : IVideoProvider
 		{
-			public int[] GetVideoBuffer() => new int[] {};
+			public int[] GetVideoBuffer()
+				=> Array.Empty<int>();
 
 			public int VirtualWidth { get; set; }
 			public int VirtualHeight { get; set; }

@@ -420,8 +420,8 @@ namespace BizHawk.Client.EmuHawk
 			private CodecToken() { }
 			private AVIWriterImports.AVICOMPRESSOPTIONS _comprOptions;
 			public string codec;
-			public byte[] Format = new byte[0];
-			public byte[] Parms = new byte[0];
+			public byte[] Format = Array.Empty<byte>();
+			public byte[] Parms = Array.Empty<byte>();
 
 			private static string Decode_mmioFOURCC(int code)
 			{

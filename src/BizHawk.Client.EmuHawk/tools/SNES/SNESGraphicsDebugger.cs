@@ -421,7 +421,7 @@ namespace BizHawk.Client.EmuHawk
 				int bgnum = (int)selection;
 				var bg = si.BG[bgnum];
 
-				map = new SNESGraphicsDecoder.TileEntry[0];
+				map = Array.Empty<SNESGraphicsDecoder.TileEntry>();
 				viewBgMode = bg.BGMode;
 
 				//bool handled = false;

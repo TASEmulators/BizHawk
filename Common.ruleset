@@ -239,7 +239,7 @@
 		<Rule Id="CA1823" Action="Hidden" />
 
 		<!-- Avoid zero-length array allocations. -->
-		<Rule Id="CA1825" Action="Hidden" />
+		<Rule Id="CA1825" Action="Error" />
 
 		<!-- Do not use Count() or LongCount() when Any() can be used -->
 		<Rule Id="CA1827" Action="Error" />

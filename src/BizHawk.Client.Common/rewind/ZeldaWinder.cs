@@ -17,10 +17,10 @@ namespace BizHawk.Client.Common
 		private readonly ZwinderBuffer _buffer;
 		private readonly IStatable _stateSource;
 
-		private byte[] _master = new byte[0];
+		private byte[] _master = Array.Empty<byte>();
 		private int _masterFrame = -1;
 		private int _masterLength = 0;
-		private byte[] _scratch = new byte[0];
+		private byte[] _scratch = Array.Empty<byte>();
 		private int _count;
 
 		private Task _activeTask = null;

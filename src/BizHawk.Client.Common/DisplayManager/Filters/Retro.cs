@@ -105,7 +105,7 @@ namespace BizHawk.Client.Common.Filters
 		public readonly string Errors;
 		public readonly IGL Owner;
 		public readonly RetroShaderPreset Preset;
-		public readonly RetroShader[] Shaders = new RetroShader[0];
+		public readonly IReadOnlyList<RetroShader> Shaders = Array.Empty<RetroShader>();
 		public readonly RetroShaderPreset.ShaderPass[] Passes;
 
 		private bool _isDisposed;

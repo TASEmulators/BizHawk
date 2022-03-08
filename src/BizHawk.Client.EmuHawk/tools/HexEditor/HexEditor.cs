@@ -363,9 +363,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private byte[] ConvertHexStringToByteArray(string str)
 		{
-			if (string.IsNullOrWhiteSpace(str)) {
-				return new byte[0];
-			}
+			if (string.IsNullOrWhiteSpace(str)) return Array.Empty<byte>();
 
 			// TODO: Better method of handling this?
 			if (str.Length % 2 == 1)

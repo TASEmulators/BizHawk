@@ -82,7 +82,7 @@ namespace BizHawk.BizInvoke
 			var t = o.GetType();
 			if (t == typeof(OutAttribute) || t == typeof(InAttribute))
 			{
-				return new CustomAttributeBuilder(t.GetConstructor(Type.EmptyTypes)!, new object[0]);
+				return new CustomAttributeBuilder(t.GetConstructor(Type.EmptyTypes)!, Array.Empty<object>());
 			}
 
 			throw new InvalidOperationException($"Unknown parameter attribute {t.Name}");

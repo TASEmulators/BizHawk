@@ -47,9 +47,9 @@ namespace BizHawk.Client.Common
 		private double _lastAdvertisedSamplesPerFrame;
 		private readonly Queue<int> _baseSamplesPerFrame = new Queue<int>();
 
-		private short[] _outputBuffer = new short[0];
+		private short[] _outputBuffer = Array.Empty<short>();
 
-		private short[] _resampleBuffer = new short[0];
+		private short[] _resampleBuffer = Array.Empty<short>();
 		private double _resampleLengthRoundingError;
 
 		public SoundOutputProvider(Func<double> getCoreVsyncRateCallback, bool standaloneMode = false)
@@ -90,8 +90,8 @@ namespace BizHawk.Client.Common
 			_baseEmptyFrameCorrectionHistory.Clear();
 			_lastAdvertisedSamplesPerFrame = 0.0;
 			_baseSamplesPerFrame.Clear();
-			_outputBuffer = new short[0];
-			_resampleBuffer = new short[0];
+			_outputBuffer = Array.Empty<short>();
+			_resampleBuffer = Array.Empty<short>();
 			_resampleLengthRoundingError = 0.0;
 
 			BaseSoundProvider?.DiscardSamples();

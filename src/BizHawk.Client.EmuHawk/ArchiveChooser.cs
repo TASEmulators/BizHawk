@@ -234,8 +234,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return new SimpleMatcher
 				{
-					Keys = searchKey.ToLower().Split(new char[0],
-						StringSplitOptions.RemoveEmptyEntries)
+					Keys = searchKey.ToLower().Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries) // splits on all whitespace chars
 				};
 			}
 			else

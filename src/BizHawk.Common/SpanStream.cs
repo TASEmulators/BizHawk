@@ -30,7 +30,7 @@ namespace BizHawk.Common
 			{
 				_stream = stream;
 			}
-			private byte[] _buffer = new byte[0];
+			private byte[] _buffer = Array.Empty<byte>();
 			private readonly Stream _stream;
 			public unsafe int Read(Span<byte> buffer)
 			{

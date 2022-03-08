@@ -394,10 +394,8 @@ namespace BizHawk.Client.EmuHawk
 				RefreshSettings(form, dest, settings, idx);
 				form.Size = oldSize;
 
-				form.GetType()
-					.GetMethodsWithAttrib(typeof(RestoreDefaultsAttribute))
-					.FirstOrDefault()
-					?.Invoke(form, new object[0]);
+				form.GetType().GetMethodsWithAttrib(typeof(RestoreDefaultsAttribute))
+					.FirstOrDefault()?.Invoke(form, Array.Empty<object>());
 			};
 		}
 

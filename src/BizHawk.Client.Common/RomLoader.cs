@@ -817,7 +817,7 @@ namespace BizHawk.Client.Common
 
 			public static readonly IReadOnlyCollection<string> ZXSpectrum = new[] { "tzx", "tap", "dsk", "pzx" };
 
-			public static readonly IReadOnlyCollection<string> AutoloadFromArchive = new string[0]
+			public static readonly IReadOnlyCollection<string> AutoloadFromArchive = Array.Empty<string>()
 				.Concat(A26)
 				.Concat(A78)
 				.Concat(AppleII)
@@ -848,12 +848,12 @@ namespace BizHawk.Client.Common
 
 		/// <remarks>TODO add and handle <see cref="FilesystemFilter.LuaScripts"/> (you can drag-and-drop scripts and there are already non-rom things in this list, so why not?)</remarks>
 		private static readonly FilesystemFilterSet RomFSFilterSet = new FilesystemFilterSet(
-			new FilesystemFilter("Music Files", new string[0], devBuildExtraExts: new[] { "psf", "minipsf", "sid", "nsf" }),
+			new FilesystemFilter("Music Files", Array.Empty<string>(), devBuildExtraExts: new[] { "psf", "minipsf", "sid", "nsf" }),
 			new FilesystemFilter("Disc Images", new[] { "cue", "ccd", "mds", "m3u" }),
 			new FilesystemFilter("NES", RomFileExtensions.NES.Concat(new[] { "nsf" }).ToList(), addArchiveExts: true),
 			new FilesystemFilter("Super NES", RomFileExtensions.SNES, addArchiveExts: true),
 			new FilesystemFilter("PlayStation", new[] { "cue", "ccd", "mds", "m3u" }),
-			new FilesystemFilter("PSX Executables (experimental)", new string[0], devBuildExtraExts: new[] { "exe" }),
+			new FilesystemFilter("PSX Executables (experimental)", Array.Empty<string>(), devBuildExtraExts: new[] { "exe" }),
 			new FilesystemFilter("PSF Playstation Sound File", new[] { "psf", "minipsf" }),
 			new FilesystemFilter("Nintendo 64", RomFileExtensions.N64),
 			new FilesystemFilter("Gameboy", RomFileExtensions.GB, addArchiveExts: true),
@@ -869,13 +869,13 @@ namespace BizHawk.Client.Common
 			new FilesystemFilter("TI-83", RomFileExtensions.TI83, addArchiveExts: true),
 			FilesystemFilter.Archives,
 			new FilesystemFilter("Genesis", RomFileExtensions.GEN.Concat(new[] { "bin", "cue", "ccd" }).ToList(), addArchiveExts: true),
-			new FilesystemFilter("SID Commodore 64 Music File", new string[0], devBuildExtraExts: new[] { "sid" }, devBuildAddArchiveExts: true),
+			new FilesystemFilter("SID Commodore 64 Music File", Array.Empty<string>(), devBuildExtraExts: new[] { "sid" }, devBuildAddArchiveExts: true),
 			new FilesystemFilter("WonderSwan", RomFileExtensions.WSWAN, addArchiveExts: true),
 			new FilesystemFilter("Apple II", RomFileExtensions.AppleII, addArchiveExts: true),
 			new FilesystemFilter("Virtual Boy", RomFileExtensions.VB, addArchiveExts: true),
 			new FilesystemFilter("Neo Geo Pocket", RomFileExtensions.NGP, addArchiveExts: true),
 			new FilesystemFilter("Commodore 64", RomFileExtensions.C64, addArchiveExts: true),
-			new FilesystemFilter("Amstrad CPC", new string[0], devBuildExtraExts: new[] { "cdt", "dsk" }, devBuildAddArchiveExts: true),
+			new FilesystemFilter("Amstrad CPC", Array.Empty<string>(), devBuildExtraExts: new[] { "cdt", "dsk" }, devBuildAddArchiveExts: true),
 			new FilesystemFilter("Sinclair ZX Spectrum", RomFileExtensions.ZXSpectrum.Concat(new[] { "csw", "wav" }).ToList(), addArchiveExts: true),
 			new FilesystemFilter("Odyssey 2", RomFileExtensions.O2),
 			new FilesystemFilter("Uzebox", RomFileExtensions.UZE),

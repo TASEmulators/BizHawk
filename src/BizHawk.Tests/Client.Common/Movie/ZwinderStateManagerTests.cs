@@ -574,7 +574,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 		private class StateSource : IStatable
 		{
 			public int Frame { get; set; }
-			public byte[] PaddingData { get; set; } = new byte[0];
+			public byte[] PaddingData { get; set; } = Array.Empty<byte>();
 			public void LoadStateBinary(BinaryReader reader)
 			{
 				Frame = reader.ReadInt32();

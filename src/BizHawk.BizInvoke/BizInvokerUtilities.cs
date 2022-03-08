@@ -61,7 +61,7 @@ namespace BizHawk.BizInvoke
 		/// <returns></returns>
 		public static int ComputeStringOffset()
 		{
-			var s = new string(new char[0]);
+			var s = new string(Array.Empty<char>());
 			int ret;
 			fixed(char* fx = s)
 			{

@@ -47,13 +47,10 @@ namespace BizHawk.Client.Common
 			}
 
 			// Create a new instance of the importer class using the no-argument constructor
-			IMovieImport importer = (IMovieImport)importerType
-				.GetConstructor(new Type[] { })
-				?.Invoke(new object[] { });
 
-			return importer == null
-				? ImportResult.Error($"No importer found for file type {ext}")
-				: importer.Import(dialogParent, session, emulator, path, config);
+			return importerType.GetConstructor(Array.Empty<Type>())?.Invoke(Array.Empty<object>()) is IMovieImport importer
+				? importer.Import(dialogParent, session, emulator, path, config)
+				: ImportResult.Error($"No importer found for file type {ext}");
 		}
 
 		private static Type ImporterForExtension(string ext)
