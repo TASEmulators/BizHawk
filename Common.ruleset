@@ -83,7 +83,7 @@
 		<Rule Id="CA1001" Action="Hidden" />
 
 		<!-- Mark assemblies with assembly version -->
-		<Rule Id="CA1016" Action="Hidden" />
+		<Rule Id="CA1016" Action="Warning" />
 
 		<!-- Enum Storage should be Int32 -->
 		<Rule Id="CA1028" Action="Hidden" />
@@ -242,7 +242,7 @@
 		<Rule Id="CA1825" Action="Hidden" />
 
 		<!-- Do not use Count() or LongCount() when Any() can be used -->
-		<Rule Id="CA1827" Action="Hidden" />
+		<Rule Id="CA1827" Action="Error" />
 
 		<!-- Dispose objects before losing scope -->
 		<Rule Id="CA2000" Action="Hidden" />
@@ -251,7 +251,7 @@
 		<Rule Id="CA2002" Action="Hidden" />
 
 		<!-- Do not use stackalloc in loops -->
-		<Rule Id="CA2014" Action="Hidden" />
+		<Rule Id="CA2014" Action="Error" />
 
 		<!-- Review SQL queries for security vulnerabilities -->
 		<Rule Id="CA2100" Action="Hidden" />
@@ -269,7 +269,7 @@
 		<Rule Id="CA2213" Action="Hidden" />
 
 		<!-- Do not call overridable methods in constructors -->
-		<Rule Id="CA2214" Action="Hidden" />
+		<Rule Id="CA2214" Action="Error" />
 
 		<!-- Disposable types should declare finalizer -->
 		<Rule Id="CA2216" Action="Hidden" />
@@ -325,7 +325,7 @@
 		<Rule Id="SA1005" Action="Hidden" />
 
 		<!-- Preprocessor keywords should not be preceded by space -->
-		<Rule Id="SA1006" Action="Hidden" />
+		<Rule Id="SA1006" Action="Error" />
 
 		<!-- Opening parenthesis should be spaced correctly -->
 		<Rule Id="SA1008" Action="Hidden" />
@@ -346,7 +346,7 @@
 		<Rule Id="SA1013" Action="Hidden" />
 
 		<!-- Member access symbols should be spaced correctly -->
-		<Rule Id="SA1019" Action="Hidden" />
+		<Rule Id="SA1019" Action="Error" />
 
 		<!-- Negative signs should be spaced correctly -->
 		<Rule Id="SA1021" Action="Hidden" />
@@ -369,7 +369,7 @@
 
 	<Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers.ReadabilityRules">
 		<!-- Do not prefix calls with base unless local implementation exists -->
-		<Rule Id="SA1100" Action="Hidden" />
+		<Rule Id="SA1100" Action="Error" />
 
 		<!-- Prefix local calls with this -->
 		<Rule Id="SA1101" Action="Hidden" />
@@ -399,7 +399,7 @@
 		<Rule Id="SA1118" Action="Hidden" />
 
 		<!-- Comments should contain text -->
-		<Rule Id="SA1120" Action="Hidden" />
+		<Rule Id="SA1120" Action="Warning" />
 
 		<!-- Use built-in type alias -->
 		<Rule Id="SA1121" Action="Error" />
