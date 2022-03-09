@@ -20,7 +20,7 @@ auto Bus::reset() -> void {
     reader[id].reset();
     writer[id].reset();
     counter[id] = 0;
-    peekable[id] = true;
+    peekable[id] = false;
   }
 
   //if(lookup) delete[] lookup;
