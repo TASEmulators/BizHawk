@@ -73,10 +73,10 @@ auto PPU::load() -> bool {
   return true && ppufast.load();
 }
 
-auto PPU::power(bool reset, bool initial) -> void {
+auto PPU::power(bool reset) -> void {
   if(system.fastPPU()) {
     create(PPUfast::Enter, system.cpuFrequency());
-    ppufast.power(reset, initial);
+    ppufast.power(reset);
     return;
   }
 
@@ -86,7 +86,7 @@ auto PPU::power(bool reset, bool initial) -> void {
 
   function<uint8 (uint, uint8)> reader{&PPU::readIO, this};
   function<void  (uint, uint8)> writer{&PPU::writeIO, this};
-  if (initial) bus.map(reader, writer, "00-3f,80-bf:2100-213f", false);
+  bus.map(reader, writer, "00-3f,80-bf:2100-213f", false);
 
   if(!reset) random.array((uint8*)vram.data, sizeof(vram.data));
 

@@ -173,7 +173,7 @@ auto System::unload() -> void {
   information.loaded = false;
 }
 
-auto System::power(bool reset, bool initial) -> void {
+auto System::power(bool reset) -> void {
   hacks.fastPPU = configuration.hacks.ppu.fast;
 
   Emulator::audio.reset(interface);
@@ -183,10 +183,10 @@ auto System::power(bool reset, bool initial) -> void {
   if(configuration.hacks.entropy == "Low" ) random.entropy(Random::Entropy::Low );
   if(configuration.hacks.entropy == "High") random.entropy(Random::Entropy::High);
 
-  cpu.power(reset, initial);
+  cpu.power(reset);
   smp.power(reset);
   dsp.power(reset);
-  ppu.power(reset, initial);
+  ppu.power(reset);
 
   if(cartridge.has.ICD) icd.power();
   if(cartridge.has.MCC) mcc.power();
@@ -200,7 +200,7 @@ auto System::power(bool reset, bool initial) -> void {
   if(cartridge.has.EpsonRTC) epsonrtc.power();
   if(cartridge.has.SharpRTC) sharprtc.power();
   if(cartridge.has.SPC7110) spc7110.power();
-  if(cartridge.has.SDD1) sdd1.power(initial);
+  if(cartridge.has.SDD1) sdd1.power();
   if(cartridge.has.OBC1) obc1.power();
   if(cartridge.has.MSU1) msu1.power();
   if(cartridge.has.Cx4) cx4.power();

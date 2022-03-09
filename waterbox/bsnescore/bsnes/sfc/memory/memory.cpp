@@ -11,6 +11,10 @@ Bus::~Bus() {
   abort();
 }
 
+auto Bus::lock() -> void {
+  locked = true;
+}
+
 auto Bus::reset() -> void {
   for(uint id : range(256)) {
     reader[id].reset();
@@ -37,6 +41,7 @@ auto Bus::map(
   const function<void  (uint, uint8)>& write,
   const string& addr, bool isPeekable, uint size, uint base, uint mask
 ) -> uint {
+  if (locked) return 0;
   uint id = 1;
   while(counter[id]) {
     if(++id >= 256) return print("SFC error: bus map exhausted\n"), 0;
@@ -81,6 +86,7 @@ auto Bus::map(
 }
 
 auto Bus::unmap(const string& addr) -> void {
+  if (locked) return;
   auto p = addr.split(":", 1L);
   auto banks = p(0).split(",");
   auto addrs = p(1).split(",");

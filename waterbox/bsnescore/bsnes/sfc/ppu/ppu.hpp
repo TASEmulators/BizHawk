@@ -10,7 +10,7 @@ struct PPU : Thread, PPUcounter {
   auto synchronizeCPU() -> void;
   static auto Enter() -> void;
   auto load() -> bool;
-  auto power(bool reset, bool initial = true) -> void;
+  auto power(bool reset) -> void;
 
   //main.cpp
   auto main() -> void;
