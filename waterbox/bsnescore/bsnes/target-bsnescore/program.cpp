@@ -323,6 +323,7 @@ auto Program::load() -> void {
 	}
 
 	emulator->power();
+	bus.lock();
 }
 
 auto Program::load(uint id, string name, string type, vector<string> options) -> Emulator::Platform::Load {
