@@ -7,6 +7,8 @@ namespace BizHawk.Client.Common
 {
 	public sealed class FilesystemFilterSet
 	{
+		private string? _allSer = null;
+
 		public readonly IReadOnlyCollection<FilesystemFilter> Filters;
 
 		public FilesystemFilterSet(params FilesystemFilter[] filters)
@@ -24,7 +26,10 @@ namespace BizHawk.Client.Common
 
 		/// <remarks>call other overload (omit <paramref name="combinedEntryDesc"/>) to not prepend combined entry, return value is a valid <c>Filter</c> for <c>Save-</c>/<c>OpenFileDialog</c></remarks>
 		public string ToString(string combinedEntryDesc, bool addAllFilesEntry = true)
-			=> $"{FilesystemFilter.SerializeEntry(combinedEntryDesc, Filters.SelectMany(filter => filter.Extensions).Distinct().OrderBy(s => s))}|{ToString(addAllFilesEntry)}";
+		{
+			_allSer ??= FilesystemFilter.SerializeEntry(combinedEntryDesc, Filters.SelectMany(static filter => filter.Extensions).Distinct().OrderBy(static s => s).ToList());
+			return $"{_allSer}|{ToString(addAllFilesEntry)}";
+		}
 
 		public static readonly FilesystemFilterSet Screenshots = new FilesystemFilterSet(FilesystemFilter.PNGs, new FilesystemFilter(".bmp Files", new[] { "bmp" }));
 	}

@@ -9,6 +9,8 @@ namespace BizHawk.Client.Common
 {
 	public sealed class FilesystemFilter
 	{
+		private string? _ser = null;
+
 		public readonly string Description;
 
 		public readonly IReadOnlyCollection<string> Extensions;
@@ -45,7 +47,7 @@ namespace BizHawk.Client.Common
 
 		/// <summary>delegated to <see cref="SerializeEntry"/></summary>
 		/// <remarks>return value is a valid <c>Filter</c> for <c>Save-</c>/<c>OpenFileDialog</c></remarks>
-		public override string ToString() => SerializeEntry(Description, Extensions);
+		public override string ToString() => _ser ??= SerializeEntry(Description, Extensions);
 
 		public const string AllFilesEntry = "All Files|*";
 
@@ -68,7 +70,12 @@ namespace BizHawk.Client.Common
 		public static readonly FilesystemFilter TextFiles = new FilesystemFilter("Text Files", new[] { "txt" });
 
 		/// <remarks>return value is a valid <c>Filter</c> for <c>Save-</c>/<c>OpenFileDialog</c></remarks>
-		public static string SerializeEntry(string desc, IEnumerable<string> exts)
-			=> string.Format("{0} ({1})|{1}", desc, string.Join(";", exts.Select(ext => $"*.{ext}")));
+		public static string SerializeEntry(string desc, IReadOnlyCollection<string> exts)
+		{
+			var joinedLower = string.Join(";", exts.Select(static ext => $"*.{ext}"));
+			return OSTailoredCode.IsUnixHost
+				? $"{desc} ({joinedLower})|{string.Join(";", exts.Select(static ext => $"*.{ext};*.{ext.ToUpperInvariant()}"))}"
+				: $"{desc} ({joinedLower})|{joinedLower}";
+		}
 	}
 }
