@@ -49,3 +49,4 @@
 [submodule "waterbox/ares64/ares/thirdparty/angrylion-rdp"]
 	path = waterbox/ares64/ares/thirdparty/angrylion-rdp
 	url = https://github.com/TASEmulators/angrylion-rdp
+	branch = ares
