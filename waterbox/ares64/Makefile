@@ -1,18 +1,15 @@
 NEED_LIBCO := 1
 
 ARES_PATH = $(ROOT_DIR)/ares/ares
-MAME_PATH = $(ROOT_DIR)/ares/thirdparty/mame
+ANGRYLION_PATH = $(ROOT_DIR)/ares/thirdparty/angrylion-rdp/mylittle-nocomment
 
 CXXFLAGS := -std=c++17 -msse4.2 \
 	-I../libco -I.$(ROOT_DIR)/ares/ -I.$(ROOT_DIR)/ares/thirdparty/ -I.$(ARES_PATH) \
-	-Werror=int-to-pointer-cast -Wno-unused-but-set-variable -Wno-delete-non-virtual-dtor \
-	-Wno-parentheses -Wno-reorder -Wno-unused-variable \
+	-Werror=int-to-pointer-cast -Wno-unused-but-set-variable -Wno-format-security \
+	-Wno-parentheses -Wno-reorder -Wno-unused-variable -Wno-delete-non-virtual-dtor \
 	-Wno-sign-compare -Wno-switch -Wno-unused-local-typedefs \
 	-fno-strict-aliasing -fwrapv -fno-operator-names \
-	-I.$(MAME_PATH)/devices -I.$(MAME_PATH)/emu \
-	-I.$(MAME_PATH)/lib/util -I.$(MAME_PATH)/mame \
-	-I.$(MAME_PATH)/osd -DMAME_RDP -DLSB_FIRST -DPTR64 -DSDLMAME_EMSCRIPTEN \
-	-DWATERBOXED
+	-I.$(ANGRYLION_PATH) -DANGRYLION_RDP
 
 TARGET = ares64.wbx
 
@@ -42,17 +39,10 @@ SRCS_N64 = \
 	$(ARES_PATH)/n64/rdp/rdp.cpp \
 	$(ARES_PATH)/n64/rsp/rsp.cpp
 
-SRCS_MAME = \
-	$(MAME_PATH)/emu/emucore.cpp \
-	$(MAME_PATH)/lib/util/delegate.cpp \
-	$(MAME_PATH)/lib/util/strformat.cpp \
-	$(MAME_PATH)/mame/video/n64.cpp \
-	$(MAME_PATH)/mame/video/pin64.cpp \
-	$(MAME_PATH)/mame/video/rdpblend.cpp \
-	$(MAME_PATH)/mame/video/rdptpipe.cpp \
-	$(MAME_PATH)/osd/osdcore.cpp \
-	$(MAME_PATH)/osd/osdsync.cpp
+SRCS_ANGRYLION = \
+	$(ANGRYLION_PATH)/main.cpp \
+	$(ANGRYLION_PATH)/n64video.cpp
 
-SRCS = $(SRCS_PROCESSORS) $(SRCS_ARES) $(SRCS_N64) $(SRCS_MAME) BizInterface.cpp
+SRCS = $(SRCS_PROCESSORS) $(SRCS_ARES) $(SRCS_N64) $(SRCS_ANGRYLION) BizInterface.cpp
 
 include ../common.mak

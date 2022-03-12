@@ -15,10 +15,6 @@ using v128 = __m128i;
   #include <n64/vulkan/vulkan.hpp>
 #endif
 
-#if defined(MAME_RDP)
-class n64_state;
-#endif
-
 namespace ares::Nintendo64 {
   auto enumerate() -> vector<string>;
   auto load(Node::System& node, string name) -> bool;

@@ -6,16 +6,16 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Properties;
 using BizHawk.Emulation.Cores.Waterbox;
 
-namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64.Accuracy
+namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 {
-	[PortedCore(CoreNames.Ares64Accuracy, "ares team, Near", "v126", "https://ares-emulator.github.io/", isReleased: false)]
+	[PortedCore(CoreNames.Ares64, "ares team, Near", "v127", "https://ares-emulator.github.io/", isReleased: false)]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), })]
 	public partial class Ares64 : WaterboxCore, IRegionable
 	{
-		private readonly LibAres64Accuracy _core;
+		private readonly LibAres64 _core;
 
 		[CoreConstructor(VSystemID.Raw.N64)]
-		public Ares64(CoreLoadParameters<object, Ares64SyncSettings> lp)
+		public Ares64(CoreLoadParameters<Ares64Settings, Ares64SyncSettings> lp)
 			: base(lp.Comm, new Configuration
 			{
 				DefaultWidth = 640,
@@ -23,11 +23,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64.Accuracy
 				MaxWidth = 640,
 				MaxHeight = 576,
 				MaxSamples = 2048,
-				DefaultFpsNumerator = 60000,
-				DefaultFpsDenominator = 1001,
+				DefaultFpsNumerator = 60,
+				DefaultFpsDenominator = 1,
 				SystemId = VSystemID.Raw.N64,
 			})
 		{
+			_settings = lp.Settings ?? new();
 			_syncSettings = lp.SyncSettings ?? new();
 
 			ControllerSettings = new[]
@@ -40,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64.Accuracy
 
 			N64Controller = CreateControllerDefinition(ControllerSettings);
 
-			_core = PreInit<LibAres64Accuracy>(new WaterboxOptions
+			_core = PreInit<LibAres64>(new WaterboxOptions
 			{
 				Filename = "ares64.wbx",
 				SbrkHeapSizeKB = 2 * 1024,
@@ -73,6 +74,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64.Accuracy
 				loadFlags |= LibAres64.LoadFlags.RestrictAnalogRange;
 			if (pal)
 				loadFlags |= LibAres64.LoadFlags.Pal;
+			if (_settings.Deinterlacer == LibAres64.DeinterlacerType.Bob)
+				loadFlags |= LibAres64.LoadFlags.BobDeinterlace;
 
 			var pif = Util.DecompressGzipFile(new MemoryStream(pal ? Resources.PIF_PAL_ROM.Value : Resources.PIF_NTSC_ROM.Value));
 
@@ -87,7 +90,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64.Accuracy
 						RomData = (IntPtr)romPtr,
 						RomLen = rom.Length,
 					};
-					if (!_core.Init(loadData, ControllerSettings, loadFlags))
+					if (!_core.Init(ref loadData, ControllerSettings, loadFlags))
 					{
 						throw new InvalidOperationException("Init returned false!");
 					}
@@ -207,17 +210,5 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64.Accuracy
 				Power = controller.IsPressed("Power"),
 			};
 		}
-
-		protected override void FrameAdvancePost()
-		{
-			if (BufferWidth == 0)
-			{
-				BufferWidth = BufferHeight == 239 ? 320 : 640;
-			}
-		}
-
-		public override int VirtualWidth => 640;
-
-		public override int VirtualHeight => 480;
 	}
 }

@@ -49,15 +49,13 @@ auto RDP::render() -> void {
   if(vulkan.enable && vulkan.render()) return;
   #endif
 
-  #if defined(MAME_RDP)
-  auto rdp = state->rdp();
-  rdp->set_current(command.current);
-  rdp->set_end(command.end);
-  rdp->set_status(command.source ? DP_STATUS_XBUS_DMA : 0);
-  rdp->process_command_list();
-  command.current = rdp->get_current();
+  #if defined(ANGRYLION_RDP)
+  if (angrylion::ProcessRDPList()) {
+    command.start = command.current = command.end;
+  }
   return;
-  #else
+  #endif
+
   auto& memory = !command.source ? rdram.ram : rsp.dmem;
 
   auto fetch = [&]() -> u64 {
@@ -553,7 +551,6 @@ auto RDP::render() -> void {
 
     }
   }
-#endif
 }
 
 //0x00

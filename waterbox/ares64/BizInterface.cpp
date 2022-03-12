@@ -1,16 +1,9 @@
 #include <n64/n64.hpp>
 
-#if WATERBOXED
 #include <emulibc.h>
 #include <waterboxcore.h>
-#endif
 
 #include <vector>
-
-#ifndef WATERBOXED
-#define ECL_EXPORT __attribute__((visibility("default")))
-#include "../emulibc/waterboxcore.h"
-#endif
 
 #define EXPORT extern "C" ECL_EXPORT
 
@@ -321,9 +314,7 @@ static inline SaveType DetectSaveType(u8* rom)
 	return ret;
 }
 
-namespace ares::Nintendo64 { extern bool RestrictAnalogRange; }
-
-bool Inited = false;
+namespace ares::Nintendo64 { extern bool RestrictAnalogRange; extern bool BobDeinterlace; }
 
 typedef struct
 {
@@ -331,27 +322,17 @@ typedef struct
 	u32 PifLen;
 	u8* RomData;
 	u32 RomLen;
-#ifndef WATERBOXED
-	u32 VulkanUpscale;
-#endif
 } LoadData;
 
 typedef enum
 {
 	RESTRICT_ANALOG_RANGE = 1 << 0,
 	IS_PAL = 1 << 1,
-#ifndef WATERBOXED
-	USE_VULKAN = 1 << 2,
-	SUPER_SAMPLE = 1 << 3,
-#endif
+	BOB_DEINTERLACE = 1 << 2, // weave otherwise (todo: implement this)
 } LoadFlags;
-
-EXPORT void Deinit();
 
 EXPORT bool Init(LoadData* loadData, ControllerType* controllers, LoadFlags loadFlags)
 {
-	if (Inited) Deinit();
-
 	platform = new BizPlatform;
 	platform->bizpak = new vfs::directory;
 
@@ -397,7 +378,7 @@ EXPORT bool Init(LoadData* loadData, ControllerType* controllers, LoadFlags load
 			case SRAM32KB: len = 32 * 1024; name = "save.ram"; break;
 			case SRAM96KB: len = 96 * 1024; name = "save.ram"; break;
 			case FLASH128KB: len = 128 * 1024; name = "save.flash"; break;
-			default: Deinit(); return false;
+			default: return false;
 		}
 		data = new u8[len];
 		memset(data, 0xFF, len);
@@ -407,15 +388,8 @@ EXPORT bool Init(LoadData* loadData, ControllerType* controllers, LoadFlags load
 
 	ares::platform = platform;
 
-#ifndef WATERBOXED
-	ares::Nintendo64::option("Enable Vulkan", !!(loadFlags & USE_VULKAN));
-	ares::Nintendo64::option("Quality", loadData->VulkanUpscale == 1 ? "SD" : (loadData->VulkanUpscale == 2 ? "HD" : "UHD"));
-	ares::Nintendo64::option("Supersampling", !!(loadFlags & SUPER_SAMPLE));
-#endif
-
 	if (!ares::Nintendo64::load(root, {"[Nintendo] Nintendo 64 (", region, ")"}))
 	{
-		Deinit();
 		return false;
 	}
 
@@ -426,7 +400,6 @@ EXPORT bool Init(LoadData* loadData, ControllerType* controllers, LoadFlags load
 	}
 	else
 	{
-		Deinit();
 		return false;
 	}
 
@@ -453,49 +426,21 @@ EXPORT bool Init(LoadData* loadData, ControllerType* controllers, LoadFlags load
 			}
 			else
 			{
-				Deinit();
 				return false;
 			}
 		}
 		else
 		{
-			Deinit();
 			return false;
 		}
 	}
 
 	ares::Nintendo64::RestrictAnalogRange = loadFlags & RESTRICT_ANALOG_RANGE;
+	ares::Nintendo64::BobDeinterlace = loadFlags & BOB_DEINTERLACE;
 
 	root->power(false);
 	HackeryDoo();
-	Inited = true;
 	return true;
-}
-
-EXPORT void Deinit()
-{
-	if (root) root->unload();
-	if (platform)
-	{
-		if (platform->bizpak) platform->bizpak.reset();
-		delete platform;
-	}
-	if (pifData)
-	{
-		delete[] (u8*)pifData->data();
-		delete pifData;
-	}
-	if (romData)
-	{
-		delete[] (u8*)romData->data();
-		delete romData;
-	}
-	if (saveData)
-	{
-		delete[] (u8*)saveData->data();
-		delete saveData;
-	}
-	Inited = false;
 }
 
 EXPORT bool GetRumbleStatus(u32 num)
@@ -509,23 +454,6 @@ EXPORT bool GetRumbleStatus(u32 num)
 		case 3: c = (ares::Nintendo64::Gamepad*)ares::Nintendo64::controllerPort4.device.data(); break;
 	}
 	return c ? c->motor->enable() : false;
-}
-
-EXPORT u32 SerializeSize()
-{
-	return root->serialize(false).size();
-}
-
-EXPORT void Serialize(u8* buf)
-{
-	auto s = root->serialize(false);
-	memcpy(buf, s.data(), s.size());
-}
-
-EXPORT bool Unserialize(u8* buf, u32 sz)
-{
-	serializer s(buf, sz);
-	return root->unserialize(s);
 }
 
 #define ADD_MEMORY_DOMAIN(mem, name, flags) do { \
@@ -565,7 +493,6 @@ EXPORT void GetMemoryAreas(MemoryArea *m)
 	ADD_MEMPAK_DOMAIN(4);
 }
 
-// fixme: this mismatches the c# side due to some re-ordering c# is doing for some reason
 struct MyFrameInfo : public FrameInfo
 {
 	Buttons_t P1Buttons;
@@ -664,4 +591,4 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 EXPORT void SetInputCallback(void (*callback)())
 {
 	platform->inputcb = callback;
- }
+}

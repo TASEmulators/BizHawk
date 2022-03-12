@@ -3,17 +3,10 @@ Screen::Screen(string name, u32 width, u32 height) : Video(name) {
   _canvasHeight = height;
 
   if(width && height) {
-#ifdef WATERBOXED
     _inputA = alloc_invisible<u32>(width * height);
     _inputB = alloc_invisible<u32>(width * height);
     _output = alloc_invisible<u32>(width * height);
     _rotate = alloc_invisible<u32>(width * height);
-#else
-    _inputA = new u32[width * height]();
-    _inputB = new u32[width * height]();
-    _output = new u32[width * height]();
-    _rotate = new u32[width * height]();
-#endif
 
     if constexpr(ares::Video::Threaded) {
       _thread = nall::thread::create({&Screen::main, this});

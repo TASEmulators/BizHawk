@@ -3,23 +3,44 @@ using System.ComponentModel;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64.Accuracy
+namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 {
-	public partial class Ares64 : ISettable<object, Ares64.Ares64SyncSettings>
+	public partial class Ares64 : ISettable<Ares64.Ares64Settings, Ares64.Ares64SyncSettings>
 	{
+		private Ares64Settings _settings;
 		private Ares64SyncSettings _syncSettings;
 
-		public object GetSettings() => null;
+		public Ares64Settings GetSettings() => _settings.Clone();
 
 		public Ares64SyncSettings GetSyncSettings() => _syncSettings.Clone();
 
-		public PutSettingsDirtyBits PutSettings(object o) => PutSettingsDirtyBits.None;
+		public PutSettingsDirtyBits PutSettings(Ares64Settings o)
+		{
+			var ret = Ares64Settings.NeedsReboot(_settings, o);
+			_settings = o;
+			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
+		}
 
 		public PutSettingsDirtyBits PutSyncSettings(Ares64SyncSettings o)
 		{
 			var ret = Ares64SyncSettings.NeedsReboot(_syncSettings, o);
 			_syncSettings = o;
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
+		}
+
+		public class Ares64Settings
+		{
+			[DisplayName("Deinterlacer")]
+			[Description("Weave looks good for still images, but creates artifacts for moving images.\n" +
+				"Bob looks good for moving images, but makes the image bob up and down.")]
+			[DefaultValue(LibAres64.DeinterlacerType.Weave)]
+			public LibAres64.DeinterlacerType Deinterlacer { get; set; }
+
+			public Ares64Settings() => SettingsUtil.SetDefaultValues(this);
+
+			public Ares64Settings Clone() => MemberwiseClone() as Ares64Settings;
+
+			public static bool NeedsReboot(Ares64Settings x, Ares64Settings y) => !DeepEquality.DeepEquals(x, y);
 		}
 
 		public class Ares64SyncSettings

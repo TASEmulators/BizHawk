@@ -35,6 +35,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			Rumblepak,
 		}
 
+		public enum DeinterlacerType : uint
+		{
+			Weave,
+			Bob,
+		}
+
 		[StructLayout(LayoutKind.Sequential)]
 		public new class FrameInfo : LibWaterboxCore.FrameInfo
 		{
@@ -64,52 +70,22 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 		{
 			RestrictAnalogRange = 1 << 0,
 			Pal = 1 << 1,
-			// performance only flags
-			UseVulkan = 1 << 2,
-			SuperSample = 1 << 3,
-		}
-
-		public enum VulkanUpscaleOpts : uint
-		{
-			SD = 1,
-			HD = 2,
-			UHD = 4,
+			BobDeinterlace = 1 << 2, // weave otherwise
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
-		public class LoadData
+		public struct LoadData
 		{
 			public IntPtr PifData;
 			public int PifLen;
 			public IntPtr RomData;
 			public int RomLen;
-			// performance only data
-			public int VulkanUpscale;
 		}
 
 		[BizImport(CC)]
-		public abstract bool Init(LoadData loadData, ControllerType[] controllerSettings, LoadFlags loadFlags);
+		public abstract bool Init(ref LoadData loadData, ControllerType[] controllerSettings, LoadFlags loadFlags);
 
 		[BizImport(CC)]
 		public abstract bool GetRumbleStatus(int num);
-	}
-
-	public abstract class LibAres64Accuracy : LibAres64
-	{
-	}
-
-	public abstract class LibAres64Performance : LibAres64
-	{
-		[BizImport(CC)]
-		public abstract void Deinit();
-
-		[BizImport(CC)]
-		public abstract int SerializeSize();
-
-		[BizImport(CC)]
-		public abstract void Serialize(byte[] buf);
-
-		[BizImport(CC)]
-		public abstract bool Unserialize(byte[] buf, int sz);
 	}
 }

@@ -1,11 +1,7 @@
 #pragma once
 
-#ifdef WATERBOXED
 #include <emulibc.h>
 #include <libco.h>
-#else
-#include <libco/libco.h>
-#endif
 
 #include <sljit.h>
 
@@ -61,11 +57,7 @@ namespace ares {
   }
 
   namespace Video {
-#ifdef WATERBOXED
     static constexpr bool Threaded = false;
-#else
-    static constexpr bool Threaded = true;
-#endif
   }
 
   namespace Constants {

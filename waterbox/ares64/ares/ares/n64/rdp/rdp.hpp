@@ -347,10 +347,6 @@ struct RDP : Thread, Memory::IO<RDP> {
       n32 data;
     } test;
   } io{*this};
-
-  #if defined(MAME_RDP)
-  unique_pointer<n64_state> state;
-  #endif
 };
 
 extern RDP rdp;

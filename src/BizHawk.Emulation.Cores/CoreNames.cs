@@ -10,8 +10,7 @@ namespace BizHawk.Emulation.Cores
 	public static class CoreNames
 	{
 		public const string A7800Hawk = "A7800Hawk";
-		public const string Ares64Accuracy = "Ares64 (Accuracy)";
-		public const string Ares64Performance = "Ares64 (Performance)";
+		public const string Ares64 = "Ares64";
 		public const string Atari2600Hawk = "Atari2600Hawk";
 		public const string Bsnes = "BSNES";
 		public const string Bsnes115 = "BSNESv115+";

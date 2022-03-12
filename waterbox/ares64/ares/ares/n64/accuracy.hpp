@@ -1,10 +1,6 @@
 struct Accuracy {
   //enable all accuracy flags
-#ifdef WATERBOXED
   static constexpr bool Reference = 1;
-#else
-  static constexpr bool Reference = 0;
-#endif
 
   struct CPU {
     static constexpr bool Interpreter = 0 | Reference;
