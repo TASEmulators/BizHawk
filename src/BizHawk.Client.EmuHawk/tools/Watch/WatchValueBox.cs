@@ -173,14 +173,14 @@ namespace BizHawk.Client.EmuHawk
 					};
 					break;
 				case WatchDisplayType.FixedPoint_12_4:
-					MaxLength = 9;
+					MaxLength = 18;
 					break;
 				case WatchDisplayType.Float:
-					MaxLength = 21;
+					MaxLength = 40;
 					break;
 				case WatchDisplayType.FixedPoint_20_12:
 				case WatchDisplayType.FixedPoint_16_16:
-					MaxLength = 64;
+					MaxLength = 24;
 					break;
 			}
 		}
