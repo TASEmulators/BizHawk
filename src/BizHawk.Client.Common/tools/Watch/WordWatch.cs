@@ -124,7 +124,7 @@ namespace BizHawk.Client.Common
 					case WatchDisplayType.FixedPoint_12_4:
 						if (value.IsSignedDecimal())
 						{
-							val = (ushort)(double.Parse(value) * 16.0);
+							val = (ushort)(double.Parse(value, NumberFormatInfo.InvariantInfo) * 16.0);
 						}
 						else
 						{
@@ -183,7 +183,7 @@ namespace BizHawk.Client.Common
 				_ when !IsValid => "-",
 				WatchDisplayType.Unsigned => val.ToString(),
 				WatchDisplayType.Signed => ((short) val).ToString(), WatchDisplayType.Hex => $"{val:X4}",
-				WatchDisplayType.FixedPoint_12_4 => $"{val / 16.0:F4}",
+				WatchDisplayType.FixedPoint_12_4 => ((short)val / 16.0).ToString("F4", NumberFormatInfo.InvariantInfo),
 				WatchDisplayType.Binary => Convert
 					.ToString(val, 2)
 					.PadLeft(16, '0')

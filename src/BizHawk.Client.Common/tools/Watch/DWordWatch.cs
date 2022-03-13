@@ -118,7 +118,7 @@ namespace BizHawk.Client.Common
 					case WatchDisplayType.FixedPoint_20_12:
 						if (value.IsSignedDecimal())
 						{
-							val = (uint)(double.Parse(value) * 4096.0);
+							val = (uint)(double.Parse(value, NumberFormatInfo.InvariantInfo) * 4096.0);
 						}
 						else
 						{
@@ -129,7 +129,7 @@ namespace BizHawk.Client.Common
 					case WatchDisplayType.FixedPoint_16_16:
 						if (value.IsSignedDecimal())
 						{
-							val = (uint)(double.Parse(value) * 65536.0);
+							val = (uint)(double.Parse(value, NumberFormatInfo.InvariantInfo) * 65536.0);
 						}
 						else
 						{
@@ -140,7 +140,7 @@ namespace BizHawk.Client.Common
 					case WatchDisplayType.Float:
 						if (value.IsSignedDecimal())
 						{
-							var bytes = BitConverter.GetBytes(float.Parse(value));
+							var bytes = BitConverter.GetBytes(float.Parse(value, NumberFormatInfo.InvariantInfo));
 							val = BitConverter.ToUInt32(bytes, 0);
 						}
 						else
@@ -198,7 +198,7 @@ namespace BizHawk.Client.Common
 			{
 				var bytes = BitConverter.GetBytes(val);
 				var _float = BitConverter.ToSingle(bytes, 0);
-				return _float.ToString();
+				return _float.ToString(NumberFormatInfo.InvariantInfo);
 			}
 
 			string FormatBinary()
@@ -217,8 +217,8 @@ namespace BizHawk.Client.Common
 				WatchDisplayType.Unsigned => val.ToString(),
 				WatchDisplayType.Signed => ((int)val).ToString(),
 				WatchDisplayType.Hex => $"{val:X8}",
-				WatchDisplayType.FixedPoint_20_12 => $"{(int)val / 4096.0:0.######}",
-				WatchDisplayType.FixedPoint_16_16 => $"{(int)val / 65536.0:0.######}",
+				WatchDisplayType.FixedPoint_20_12 => ((int)val / 4096.0).ToString("0.######", NumberFormatInfo.InvariantInfo),
+				WatchDisplayType.FixedPoint_16_16 => ((int)val / 65536.0).ToString("0.######", NumberFormatInfo.InvariantInfo),
 				WatchDisplayType.Float => FormatFloat(),
 				WatchDisplayType.Binary => FormatBinary(),
 				_ => val.ToString()
