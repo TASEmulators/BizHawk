@@ -13,26 +13,6 @@ namespace BizHawk.Common.StringExtensions
 		/// <remarks><paramref name="str"/> should exclude the prefix <c>0b</c></remarks>
 		public static bool IsBinary(this string? str) => !string.IsNullOrWhiteSpace(str) && str.All(IsBinary);
 
-		/// <returns><see langword="true"/> iff <paramref name="c"/> is <c>'.'</c> or a digit</returns>
-		/// <remarks>Also this has nothing to do with fixed- vs. floating-point numbers, a better name would be <c>IsUnsignedDecimal</c>.</remarks>
-		public static bool IsFixedPoint(this char c) => IsUnsigned(c) || c == '.';
-
-		/// <returns>
-		/// <see langword="true"/> iff <paramref name="str"/> is not <see langword="null"/>,<br/>
-		/// all chars of <paramref name="str"/> are <c>'.'</c> or a digit, and<br/>
-		/// <paramref name="str"/> contains at most <c>1</c> decimal separator <c>'.'</c>
-		/// </returns>
-		/// <remarks>
-		/// <paramref name="str"/> should exclude the suffix <c>M</c>.<br/>
-		/// This method returning <see langword="true"/> for some <paramref name="str"/> does not imply that <see cref="float.TryParse(string,out float)">float.TryParse</see> will also return <see langword="true"/>.<br/>
-		/// Also this has nothing to do with fixed- vs. floating-point numbers, a better name would be <c>IsUnsignedDecimal</c>.
-		/// </remarks>
-		public static bool IsFixedPoint(this string? str) => !string.IsNullOrWhiteSpace(str) && str.Count(c => c == '.') <= 1 && str.All(IsFixedPoint);
-
-		/// <returns><see langword="true"/> iff <paramref name="c"/> is <c>'-'</c>, <c>'.'</c>, or a digit</returns>
-		/// <remarks>Also this has nothing to do with fixed- vs. floating-point numbers, a better name would be <c>IsSignedDecimal</c>.</remarks>
-		public static bool IsFloat(this char c) => c.IsFixedPoint() || c == '-';
-
 		/// <returns><see langword="true"/> iff <paramref name="c"/> is a hex digit (<c>[0-9A-Fa-f]</c>)</returns>
 		public static bool IsHex(this char c) => IsUnsigned(c) || 'A' <= char.ToUpperInvariant(c) && char.ToUpperInvariant(c) <= 'F';
 
@@ -43,11 +23,14 @@ namespace BizHawk.Common.StringExtensions
 		/// <returns><see langword="true"/> iff <paramref name="c"/> is <c>'-'</c> or a digit</returns>
 		public static bool IsSigned(this char c) => IsUnsigned(c) || c == '-';
 
+		/// <returns><see langword="true"/> iff <paramref name="c"/> is <c>'-'</c>, <c>'.'</c> or a digit</returns>
+		public static bool IsSignedDecimal(this char c) => IsSigned(c) || c is '.';
+
 		/// <returns><see langword="true"/> iff <paramref name="c"/> is a digit</returns>
 		public static bool IsUnsigned(this char c) => char.IsDigit(c);
 
-		/// <returns><see langword="true"/> iff <paramref name="str"/> is not <see langword="null"/> and all chars of <paramref name="str"/> are digits</returns>
-		public static bool IsUnsigned(this string? str) => !string.IsNullOrWhiteSpace(str) && str.All(IsUnsigned);
+		/// <returns><see langword="true"/> iff <paramref name="c"/> is <c>'.'</c> or a digit</returns>
+		public static bool IsUnsignedDecimal(this char c) => IsUnsigned(c) || c is '.';
 
 		/// <returns>
 		/// A copy of <paramref name="raw"/> with characters removed so that the whole thing passes <see cref="IsBinary(string?)">IsBinary</see>.<br/>
@@ -78,9 +61,8 @@ namespace BizHawk.Common.StringExtensions
 		/// <remarks>
 		/// <paramref name="str"/> should exclude the suffix <c>f</c>.<br/>
 		/// This method returning <see langword="true"/> for some <paramref name="str"/> does not imply that <see cref="float.TryParse(string,out float)">float.TryParse</see> will also return <see langword="true"/>.<br/>
-		/// Also this has nothing to do with fixed- vs. floating-point numbers, a better name would be <c>IsSignedDecimal</c>.
 		/// </remarks>
-		public static bool IsFloat(this string? str) => !string.IsNullOrWhiteSpace(str) && str.Count(c => c == '.') <= 1 && str[0].IsFloat() && str.Substring(1).All(IsFixedPoint);
+		public static bool IsSignedDecimal(this string? str) => !string.IsNullOrWhiteSpace(str) && str.Count(c => c == '.') <= 1 && str[0].IsSignedDecimal() && str.Substring(1).All(IsUnsignedDecimal);
 
 		/// <returns>
 		/// <see langword="true"/> iff <paramref name="str"/> is not <see langword="null"/>,
@@ -89,34 +71,11 @@ namespace BizHawk.Common.StringExtensions
 		/// </returns>
 		public static bool IsSigned(this string? str) => !string.IsNullOrWhiteSpace(str) && str[0].IsSigned() && str.Substring(1).All(IsUnsigned);
 
-		/// <returns>
-		/// A copy of <paramref name="raw"/> with characters removed so that the whole thing passes <see cref="IsFixedPoint(string?)">IsFixedPoint</see>.<br/>
-		/// That is, the all chars of the copy will be <c>'.'</c> or a digit and the copy will contain at most <c>1</c> decimal separator <c>'.'</c>.
-		/// </returns>
-		/// <remarks>
-		/// The returned value may not be parseable by <see cref="float.TryParse(string,out float)">float.TryParse</see>.<br/>
-		/// Also this has nothing to do with fixed- vs. floating-point numbers, a better name would be <c>IsUnsignedDecimal</c>.
-		/// </remarks>
-		public static string OnlyFixedPoint(this string? raw)
-		{
-			if (string.IsNullOrWhiteSpace(raw)) return string.Empty;
-			var output = new StringBuilder();
-			var usedDot = false;
-			foreach (var chr in raw)
-			{
-				if (chr == '.')
-				{
-					if (usedDot) continue;
-					output.Append(chr);
-					usedDot = true;
-				}
-				else if (chr.IsUnsigned()) output.Append(chr);
-			}
-			return output.ToString();
-		}
+		/// <returns><see langword="true"/> iff <paramref name="str"/> is not <see langword="null"/> and all chars of <paramref name="str"/> are digits</returns>
+		public static bool IsUnsigned(this string? str) => !string.IsNullOrWhiteSpace(str) && str.All(IsUnsigned);
 
 		/// <returns>
-		/// A copy of <paramref name="raw"/> with characters removed so that the whole thing passes <see cref="IsFloat(string?)">IsFloat</see>.<br/>
+		/// A copy of <paramref name="raw"/> with characters removed so that the whole thing passes <see cref="IsSignedDecimal(string?)">IsSignedDecimal</see>.<br/>
 		/// That is, the first char of the copy will be <c>'-'</c>, <c>'.'</c>, or a digit,<br/>
 		/// all subsequent chars of the copy will be <c>'.'</c> or a digit, and<br/>
 		/// the copy will contain at most <c>1</c> decimal separator <c>'.'</c>.
@@ -124,9 +83,8 @@ namespace BizHawk.Common.StringExtensions
 		/// <remarks>
 		/// If <paramref name="raw"/> contains a serialized negative decimal, it must be at the start (<paramref name="raw"/><c>[0] == '-'</c>) or the sign will be dropped.<br/>
 		/// The returned value may not be parseable by <see cref="float.TryParse(string,out float)">float.TryParse</see>.<br/>
-		/// Also this has nothing to do with fixed- vs. floating-point numbers, a better name would be <c>IsSignedDecimal</c>.
 		/// </remarks>
-		public static string OnlyFloat(this string? raw)
+		public static string OnlySignedDecimal(this string? raw)
 		{
 			if (string.IsNullOrWhiteSpace(raw)) return string.Empty;
 
@@ -134,7 +92,7 @@ namespace BizHawk.Common.StringExtensions
 			var usedDot = false;
 
 			var first = raw[0];
-			if (first.IsFloat())
+			if (first.IsSignedDecimal())
 			{
 				output.Append(first);
 				if (first == '.') usedDot = true;

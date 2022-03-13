@@ -27,7 +27,7 @@ namespace BizHawk.Client.EmuHawk
 			set
 			{
 				var changed = _size != value;
-				
+
 				_size = value;
 				if (changed)
 				{
@@ -222,14 +222,8 @@ namespace BizHawk.Client.EmuHawk
 				case WatchDisplayType.FixedPoint_12_4:
 				case WatchDisplayType.FixedPoint_20_12:
 				case WatchDisplayType.FixedPoint_16_16:
-					if (!e.KeyChar.IsFixedPoint())
-					{
-						e.Handled = true;
-					}
-
-					break;
 				case WatchDisplayType.Float:
-					if (!e.KeyChar.IsFloat())
+					if (!e.KeyChar.IsSignedDecimal())
 					{
 						e.Handled = true;
 					}
@@ -522,10 +516,8 @@ namespace BizHawk.Client.EmuHawk
 				case WatchDisplayType.FixedPoint_12_4:
 				case WatchDisplayType.FixedPoint_20_12:
 				case WatchDisplayType.FixedPoint_16_16:
-					Text = Text.OnlyFixedPoint();
-					break;
 				case WatchDisplayType.Float:
-					Text = Text.OnlyFloat();
+					Text = Text.OnlySignedDecimal();
 					break;
 			}
 
@@ -575,28 +567,28 @@ namespace BizHawk.Client.EmuHawk
 
 					break;
 				case WatchDisplayType.FixedPoint_12_4:
-					if (Text.IsFixedPoint())
+					if (Text.IsSignedDecimal())
 					{
 						return (int)(double.Parse(Text) * 16.0);
 					}
 
 					break;
 				case WatchDisplayType.FixedPoint_20_12:
-					if (Text.IsFixedPoint())
+					if (Text.IsSignedDecimal())
 					{
 						return (int)(double.Parse(Text) * 4096.0);
 					}
 
 					break;
 				case WatchDisplayType.FixedPoint_16_16:
-					if (Text.IsFixedPoint())
+					if (Text.IsSignedDecimal())
 					{
 						return (int)(double.Parse(Text) * 65536.0);
 					}
 
 					break;
 				case WatchDisplayType.Float:
-					if (Text.IsFloat())
+					if (Text.IsSignedDecimal())
 					{
 						if (Text == "-" || Text == ".")
 						{

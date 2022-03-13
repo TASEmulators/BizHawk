@@ -85,7 +85,7 @@ namespace BizHawk.Client.Common
 					case WatchDisplayType.Unsigned:
 						if (value.IsUnsigned())
 						{
-							val = (uint)int.Parse(value);
+							val = uint.Parse(value);
 						}
 						else
 						{
@@ -116,9 +116,9 @@ namespace BizHawk.Client.Common
 
 						break;
 					case WatchDisplayType.FixedPoint_20_12:
-						if (value.IsFixedPoint())
+						if (value.IsSignedDecimal())
 						{
-							val = (uint)(int)(double.Parse(value) * 4096.0);
+							val = (uint)(double.Parse(value) * 4096.0);
 						}
 						else
 						{
@@ -127,9 +127,9 @@ namespace BizHawk.Client.Common
 
 						break;
 					case WatchDisplayType.FixedPoint_16_16:
-						if (value.IsFixedPoint())
+						if (value.IsSignedDecimal())
 						{
-							val = (uint)(int)(double.Parse(value) * 65536.0);
+							val = (uint)(double.Parse(value) * 65536.0);
 						}
 						else
 						{
@@ -138,7 +138,7 @@ namespace BizHawk.Client.Common
 
 						break;
 					case WatchDisplayType.Float:
-						if (value.IsFloat())
+						if (value.IsSignedDecimal())
 						{
 							var bytes = BitConverter.GetBytes(float.Parse(value));
 							val = BitConverter.ToUInt32(bytes, 0);

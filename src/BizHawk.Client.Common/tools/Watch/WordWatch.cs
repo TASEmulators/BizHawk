@@ -122,7 +122,7 @@ namespace BizHawk.Client.Common
 
 						break;
 					case WatchDisplayType.FixedPoint_12_4:
-						if (value.IsFixedPoint())
+						if (value.IsSignedDecimal())
 						{
 							val = (ushort)(double.Parse(value) * 16.0);
 						}
