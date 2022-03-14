@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-
-using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -76,54 +74,14 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				byte val = 0;
-				switch (Type)
+				byte val = Type switch
 				{
-					case WatchDisplayType.Unsigned:
-						if (value.IsUnsigned())
-						{
-							val = (byte)int.Parse(value);
-						}
-						else
-						{
-							return false;
-						}
-
-						break;
-					case WatchDisplayType.Signed:
-						if (value.IsSigned())
-						{
-							val = (byte)(sbyte)int.Parse(value);
-						}
-						else
-						{
-							return false;
-						}
-
-						break;
-					case WatchDisplayType.Hex:
-						if (value.IsHex())
-						{
-							val = (byte)int.Parse(value, NumberStyles.HexNumber);
-						}
-						else
-						{
-							return false;
-						}
-
-						break;
-					case WatchDisplayType.Binary:
-						if (value.IsBinary())
-						{
-							val = (byte)Convert.ToInt32(value, 2);
-						}
-						else
-						{
-							return false;
-						}
-
-						break;
-				}
+					WatchDisplayType.Unsigned => byte.Parse(value),
+					WatchDisplayType.Signed => (byte)sbyte.Parse(value),
+					WatchDisplayType.Hex => byte.Parse(value, NumberStyles.HexNumber),
+					WatchDisplayType.Binary => Convert.ToByte(value, 2),
+					_ => 0
+				};
 
 				PokeByte(val);
 				return true;

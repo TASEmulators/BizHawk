@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-
-using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -79,77 +77,16 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				uint val = 0;
-				switch (Type)
+				uint val = Type switch
 				{
-					case WatchDisplayType.Unsigned:
-						if (value.IsUnsigned())
-						{
-							val = uint.Parse(value);
-						}
-						else
-						{
-							return false;
-						}
-
-						break;
-					case WatchDisplayType.Signed:
-						if (value.IsSigned())
-						{
-							val = (uint)int.Parse(value);
-						}
-						else
-						{
-							return false;
-						}
-
-						break;
-					case WatchDisplayType.Hex:
-						if (value.IsHex())
-						{
-							val = (uint)int.Parse(value, NumberStyles.HexNumber);
-						}
-						else
-						{
-							return false;
-						}
-
-						break;
-					case WatchDisplayType.FixedPoint_20_12:
-						if (value.IsSignedDecimal())
-						{
-							val = (uint)(double.Parse(value, NumberFormatInfo.InvariantInfo) * 4096.0);
-						}
-						else
-						{
-							return false;
-						}
-
-						break;
-					case WatchDisplayType.FixedPoint_16_16:
-						if (value.IsSignedDecimal())
-						{
-							val = (uint)(double.Parse(value, NumberFormatInfo.InvariantInfo) * 65536.0);
-						}
-						else
-						{
-							return false;
-						}
-
-						break;
-					case WatchDisplayType.Float:
-						if (value.IsSignedDecimal())
-						{
-							var bytes = BitConverter.GetBytes(float.Parse(value, NumberFormatInfo.InvariantInfo));
-							val = BitConverter.ToUInt32(bytes, 0);
-						}
-						else
-						{
-							return false;
-						}
-
-						break;
-				}
+					WatchDisplayType.Unsigned => uint.Parse(value),
+					WatchDisplayType.Signed => (uint)int.Parse(value),
+					WatchDisplayType.Hex => uint.Parse(value, NumberStyles.HexNumber),
+					WatchDisplayType.FixedPoint_20_12 => (uint)(double.Parse(value, NumberFormatInfo.InvariantInfo) * 4096.0),
+					WatchDisplayType.FixedPoint_16_16 => (uint)(double.Parse(value, NumberFormatInfo.InvariantInfo) * 65536.0),
+					WatchDisplayType.Float => BitConverter.ToUInt32(BitConverter.GetBytes(float.Parse(value, NumberFormatInfo.InvariantInfo)), 0),
+					_ => 0
+				};
 
 				PokeDWord(val);
 				return true;
