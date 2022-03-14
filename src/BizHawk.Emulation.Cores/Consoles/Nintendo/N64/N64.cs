@@ -113,6 +113,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				//	break;
 			}
 
+			// angrylion needs LLE RSP
+			if (_syncSettings.VideoPlugin is PluginType.Angrylion)
+			{
+				rsp = "mupen64plus-rsp-cxd4-sse2.dll";
+			}
+
 			api.AttachPlugin(mupen64plusApi.m64p_plugin_type.M64PLUGIN_RSP, rsp);
 
 			InitMemoryDomains();

@@ -50,3 +50,7 @@
 	path = waterbox/ares64/ares/thirdparty/angrylion-rdp
 	url = https://github.com/TASEmulators/angrylion-rdp.git
 	branch = ares
+[submodule "libmupen64plus/mupen64plus-video-angrylion-rdp"]
+	path = libmupen64plus/mupen64plus-video-angrylion-rdp
+	url = https://github.com/TASEmulators/angrylion-rdp.git
+	branch = biz_mupen64plus

@@ -44,6 +44,7 @@
 			this.VideoResolutionComboBox = new System.Windows.Forms.ComboBox();
 			this.PluginComboBox = new System.Windows.Forms.ComboBox();
 			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.AngrylionTab = new System.Windows.Forms.TabPage();
 			this.GLideN64Tab = new System.Windows.Forms.TabPage();
 			this.Glide64mk2TabPage = new System.Windows.Forms.TabPage();
 			this.Glide64TabPage = new System.Windows.Forms.TabPage();
@@ -70,8 +71,10 @@
 			this.GlidePropertyGrid = new System.Windows.Forms.PropertyGrid();
 			this.Glide64Mk2PropertyGrid = new System.Windows.Forms.PropertyGrid();
 			this.GlideN64PropertyGrid = new System.Windows.Forms.PropertyGrid();
+			this.AngrylionPropertyGrid = new System.Windows.Forms.PropertyGrid();
 			this.N64plugintabcontrol.SuspendLayout();
 			this.N64vpluginglobaltab.SuspendLayout();
+			this.AngrylionTab.SuspendLayout();
 			this.GLideN64Tab.SuspendLayout();
 			this.Glide64mk2TabPage.SuspendLayout();
 			this.Glide64TabPage.SuspendLayout();
@@ -81,9 +84,10 @@
 			// N64plugintabcontrol
 			// 
 			this.N64plugintabcontrol.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Left) 
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.N64plugintabcontrol.Controls.Add(this.N64vpluginglobaltab);
+			this.N64plugintabcontrol.Controls.Add(this.AngrylionTab);
 			this.N64plugintabcontrol.Controls.Add(this.GLideN64Tab);
 			this.N64plugintabcontrol.Controls.Add(this.Glide64mk2TabPage);
 			this.N64plugintabcontrol.Controls.Add(this.Glide64TabPage);
@@ -163,9 +167,9 @@
 			this.RspTypeDropdown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.RspTypeDropdown.FormattingEnabled = true;
 			this.RspTypeDropdown.Items.AddRange(new object[] {
-            "Pure Interpreter",
-            "Interpreter",
-            "DynaRec"});
+			"Pure Interpreter",
+			"Interpreter",
+			"DynaRec"});
 			this.RspTypeDropdown.Location = new System.Drawing.Point(209, 29);
 			this.RspTypeDropdown.Name = "RspTypeDropdown";
 			this.RspTypeDropdown.Size = new System.Drawing.Size(136, 21);
@@ -183,9 +187,9 @@
 			this.CoreTypeDropdown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.CoreTypeDropdown.FormattingEnabled = true;
 			this.CoreTypeDropdown.Items.AddRange(new object[] {
-            "Pure Interpreter",
-            "Interpreter",
-            "DynaRec"});
+			"Pure Interpreter",
+			"Interpreter",
+			"DynaRec"});
 			this.CoreTypeDropdown.Location = new System.Drawing.Point(13, 29);
 			this.CoreTypeDropdown.Name = "CoreTypeDropdown";
 			this.CoreTypeDropdown.Size = new System.Drawing.Size(136, 21);
@@ -208,20 +212,20 @@
 			this.VideoResolutionComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.VideoResolutionComboBox.FormattingEnabled = true;
 			this.VideoResolutionComboBox.Items.AddRange(new object[] {
-            "320 x 240",
-            "400 x 300",
-            "480 x 360",
-            "512 x 384",
-            "640 x 480",
-            "800 x 600",
-            "1024 x 768",
-            "1152 x 864",
-            "1280 x 960",
-            "1400 x 1050",
-            "1600 x 1200",
-            "1920 x 1440",
-            "2048 x 1536",
-            "Custom"});
+			"320 x 240",
+			"400 x 300",
+			"480 x 360",
+			"512 x 384",
+			"640 x 480",
+			"800 x 600",
+			"1024 x 768",
+			"1152 x 864",
+			"1280 x 960",
+			"1400 x 1050",
+			"1600 x 1200",
+			"1920 x 1440",
+			"2048 x 1536",
+			"Custom"});
 			this.VideoResolutionComboBox.Location = new System.Drawing.Point(13, 217);
 			this.VideoResolutionComboBox.Name = "VideoResolutionComboBox";
 			this.VideoResolutionComboBox.Size = new System.Drawing.Size(136, 21);
@@ -233,10 +237,11 @@
 			this.PluginComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.PluginComboBox.FormattingEnabled = true;
 			this.PluginComboBox.Items.AddRange(new object[] {
-            "Rice",
-            "Glide64",
-            "Glide64mk2",
-            "GLideN64"});
+			"Rice",
+			"Glide64",
+			"Glide64mk2",
+			"GLideN64",
+			"Angrylion"});
 			this.PluginComboBox.Location = new System.Drawing.Point(13, 91);
 			this.PluginComboBox.Name = "PluginComboBox";
 			this.PluginComboBox.Size = new System.Drawing.Size(173, 21);
@@ -248,6 +253,17 @@
 			this.label1.Location = new System.Drawing.Point(10, 75);
 			this.label1.Name = "label1";
 			this.label1.Text = "Active Video Plugin";
+			// 
+			// AngrylionTab
+			// 
+			this.AngrylionTab.Controls.Add(this.AngrylionPropertyGrid);
+			this.AngrylionTab.Location = new System.Drawing.Point(4, 22);
+			this.AngrylionTab.Name = "AngrylionTab";
+			this.AngrylionTab.Padding = new System.Windows.Forms.Padding(3);
+			this.AngrylionTab.Size = new System.Drawing.Size(572, 343);
+			this.AngrylionTab.TabIndex = 9;
+			this.AngrylionTab.Text = "Angrylion";
+			this.AngrylionTab.UseVisualStyleBackColor = true;
 			// 
 			// GLideN64Tab
 			// 
@@ -440,6 +456,13 @@
 			this.GlideN64PropertyGrid.Size = new System.Drawing.Size(566, 337);
 			this.GlideN64PropertyGrid.TabIndex = 3;
 			// 
+			// AngrylionPropertyGrid
+			// 
+			this.AngrylionPropertyGrid.Location = new System.Drawing.Point(3, 3);
+			this.AngrylionPropertyGrid.Name = "AngrylionPropertyGrid";
+			this.AngrylionPropertyGrid.Size = new System.Drawing.Size(566, 337);
+			this.AngrylionPropertyGrid.TabIndex = 4;
+			// 
 			// N64VideoPluginConfig
 			// 
 			this.AcceptButton = this.SaveButton;
@@ -505,10 +528,12 @@
 		private BizHawk.WinForms.Controls.LocLabelEx LabelVideoResolutionX;
 		private System.Windows.Forms.TextBox VideoResolutionYTextBox;
 		private System.Windows.Forms.TextBox VideoResolutionXTextBox;
+		private System.Windows.Forms.TabPage AngrylionTab;
 		private System.Windows.Forms.TabPage GLideN64Tab;
 		private System.Windows.Forms.PropertyGrid RicePropertyGrid;
 		private System.Windows.Forms.PropertyGrid GlidePropertyGrid;
 		private System.Windows.Forms.PropertyGrid Glide64Mk2PropertyGrid;
 		private System.Windows.Forms.PropertyGrid GlideN64PropertyGrid;
+		private System.Windows.Forms.PropertyGrid AngrylionPropertyGrid;
 	}
 }

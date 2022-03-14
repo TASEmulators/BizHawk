@@ -27,6 +27,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			GlidePlugin = new N64GlidePluginSettings();
 			Glide64mk2Plugin = new N64Glide64mk2PluginSettings();
 			GLideN64Plugin = new N64GLideN64PluginSettings();
+			AngrylionPlugin = new N64AngrylionPluginSettings();
 		}
 
 		public CoreType Core { get; set; }
@@ -41,6 +42,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public N64GlidePluginSettings GlidePlugin { get; private set; }
 		public N64Glide64mk2PluginSettings Glide64mk2Plugin { get; private set; }
 		public N64GLideN64PluginSettings GLideN64Plugin { get; private set; }
+		public N64AngrylionPluginSettings AngrylionPlugin { get; private set; }
 
 		public N64SyncSettings Clone()
 		{
@@ -70,6 +72,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				case PluginType.GlideMk2: ips = Glide64mk2Plugin.Clone(); break;
 				case PluginType.Rice: ips = RicePlugin.Clone(); break;
 				case PluginType.GLideN64: ips = GLideN64Plugin.Clone(); break;
+				case PluginType.Angrylion: ips = AngrylionPlugin.Clone(); break;
 			}
 
 			ips.FillPerGameHacks(game);
@@ -115,7 +118,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		FormerlyJabo,
 
 		[Description("GLideN64")]
-		GLideN64
+		GLideN64,
+
+		[Description("Angrylion")]
+		Angrylion,
 	}
 
 	public interface IPluginSettings

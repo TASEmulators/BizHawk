@@ -109,6 +109,7 @@ namespace BizHawk.Client.EmuHawk
 				"Glide64" => PluginType.Glide,
 				"Glide64mk2" => PluginType.GlideMk2,
 				"GLideN64" => PluginType.GLideN64,
+				"Angrylion" => PluginType.Angrylion,
 				_ => _ss.VideoPlugin
 			};
 
@@ -151,6 +152,9 @@ namespace BizHawk.Client.EmuHawk
 				case PluginType.GLideN64:
 					PluginComboBox.Text = "GLideN64";
 					break;
+				case PluginType.Angrylion:
+					PluginComboBox.Text = "Angrylion";
+					break;
 			}
 
 			VideoResolutionXTextBox.Text = _s.VideoSizeX.ToString();
@@ -174,6 +178,7 @@ namespace BizHawk.Client.EmuHawk
 			GlidePropertyGrid.SelectedObject = _ss.GlidePlugin;
 			Glide64Mk2PropertyGrid.SelectedObject = _ss.Glide64mk2Plugin;
 			GlideN64PropertyGrid.SelectedObject = _ss.GLideN64Plugin;
+			AngrylionPropertyGrid.SelectedObject = _ss.AngrylionPlugin;
 		}
 
 		private void PluginComboBox_SelectedIndexChanged(object sender, EventArgs e)

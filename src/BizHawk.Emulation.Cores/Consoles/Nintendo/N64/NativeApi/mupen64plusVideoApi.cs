@@ -56,6 +56,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 				case PluginType.GLideN64:
 					videoplugin = "mupen64plus-video-GLideN64.dll";
 					break;
+				case PluginType.Angrylion:
+					videoplugin = "mupen64plus-video-angrylion-rdp.dll";
+					break;
 			}
 
 			GfxDll = core.AttachPlugin(mupen64plusApi.m64p_plugin_type.M64PLUGIN_GFX,
