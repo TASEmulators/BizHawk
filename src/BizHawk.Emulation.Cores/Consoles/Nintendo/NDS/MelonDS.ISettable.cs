@@ -32,12 +32,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public class NDSSettings
 		{
-#if true
-			[DisplayName("Threaded Rendering")]
-			[Description("")]
+			[DisplayName("Threaded 3D Rendering")]
+			[Description("Offloads 3D rendering to a separate thread")]
 			[DefaultValue(true)]
 			public bool ThreadedRendering { get; set; }
-#endif
 
 			[DisplayName("Screen Layout")]
 			[Description("Adjusts the layout of the screens")]
