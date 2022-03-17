@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			InitMemoryCallbacks();
 			_tracecb = MakeTrace;
-			_threadwaitcb = ThreadWaitCallback;
+			_threadstartcb = ThreadStartCallback;
 
 			_core = PreInit<LibMelonDS>(new WaterboxOptions
 			{
@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				MmapHeapSizeKB = 1024 * 1024,
 				SkipCoreConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
-			}, new Delegate[] { _readcb, _writecb, _execcb, _tracecb, _threadwaitcb });
+			}, new Delegate[] { _readcb, _writecb, _execcb, _tracecb, _threadstartcb });
 
 			var bios7 = IsDSi || _syncSettings.UseRealBIOS
 				? CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios7"))
@@ -112,7 +112,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				loadFlags |= LibMelonDS.LoadFlags.IS_DSI;
 			if (IsDSi && IsDSiWare)
 				loadFlags |= LibMelonDS.LoadFlags.LOAD_DSIWARE;
-#if false
+#if true
 			if (_settings.ThreadedRendering)
 				loadFlags |= LibMelonDS.LoadFlags.THREADED_RENDERING;
 #endif
@@ -209,7 +209,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			{
 				Console.WriteLine($"Setting up waterbox thread for 0x{_frameThreadPtr:X16}");
 				_frameThreadStart = CallingConventionAdapters.GetWaterboxUnsafeUnwrapped().GetDelegateForFunctionPointer<Action>(_frameThreadPtr);
-				_core.SetThreadWaitCallback(_threadwaitcb);
+				_core.SetThreadStartCallback(_threadstartcb);
 			}
 
 			_resampler = new SpeexResampler(SpeexResampler.Quality.QUALITY_DEFAULT, 32768, 44100, 32768, 44100, null, this);
@@ -327,16 +327,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			return b;
 		}
 
-		private readonly IntPtr _frameThreadPtr;
-		private readonly Action _frameThreadStart;
-		private Task _frameThreadProcActive;
-
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
-			if (_frameThreadStart != null && render)
-			{
-				_frameThreadProcActive = Task.Run(_frameThreadStart);
-			}
+			_render = render;
 			_core.SetTraceCallback(Tracer.IsEnabled() ? _tracecb : null);
 			return new LibMelonDS.FrameInfo
 			{
@@ -349,9 +342,26 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			};
 		}
 
-		private readonly LibMelonDS.ThreadWaitCallback _threadwaitcb;
+		private readonly IntPtr _frameThreadPtr;
+		private readonly Action _frameThreadStart;
+		private readonly LibMelonDS.ThreadStartCallback _threadstartcb;
 
-		private void ThreadWaitCallback()
+		private bool _render;
+		private Task _frameThreadProcActive;
+
+		private void ThreadStartCallback()
+		{
+			if (_render)
+			{
+				if (_frameThreadProcActive != null)
+				{
+					throw new InvalidOperationException("Attempted to start render thread twice");
+				}
+				_frameThreadProcActive = Task.Run(_frameThreadStart);
+			}
+		}
+
+		protected override void FrameAdvancePost()
 		{
 			_frameThreadProcActive?.Wait();
 			_frameThreadProcActive = null;

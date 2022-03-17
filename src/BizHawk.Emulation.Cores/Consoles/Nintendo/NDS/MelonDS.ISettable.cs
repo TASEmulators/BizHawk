@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public class NDSSettings
 		{
-#if false
+#if true
 			[DisplayName("Threaded Rendering")]
 			[Description("")]
 			[DefaultValue(true)]

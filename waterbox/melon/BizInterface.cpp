@@ -72,7 +72,6 @@ typedef struct
 } FirmwareSettings;
 
 extern std::stringstream* NANDFilePtr;
-extern bool Stopped;
 
 static bool LoadDSiWare(u8* TmdData)
 {
@@ -154,7 +153,6 @@ EXPORT bool Init(LoadFlags loadFlags, LoadData* loadData, FirmwareSettings* fwSe
 	}
 	if (biz_skip_fw) NDS::SetupDirectBoot("");
 	NDS::Start();
-	Stopped = false;
 	Config::FirmwareOverrideSettings = false;
 	return true;
 }
@@ -374,7 +372,6 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 		NDS::LoadBIOS();
 		if (biz_skip_fw) NDS::SetupDirectBoot("");
 		NDS::Start();
-		Stopped = false;
 	}
 
 	NDS::SetKeyMask(~f->Keys & 0xFFF);
@@ -477,7 +474,7 @@ EXPORT void SetTraceCallback(void (*callback)(u32 cpu, u32* regs, u32 opcode))
 namespace Platform
 {
 	extern uintptr_t FrameThreadProc;
-	extern void (*ThreadWaitCallback)();
+	extern void (*ThreadStartCallback)();
 }
 
 EXPORT uintptr_t GetFrameThreadProc()
@@ -485,9 +482,9 @@ EXPORT uintptr_t GetFrameThreadProc()
 	return Platform::FrameThreadProc;
 }
 
-EXPORT void SetThreadWaitCallback(void (*callback)())
+EXPORT void SetThreadStartCallback(void (*callback)())
 {
-	Platform::ThreadWaitCallback = callback;
+	Platform::ThreadStartCallback = callback;
 }
 
 EXPORT u32 GetNANDSize()

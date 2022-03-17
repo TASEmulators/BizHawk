@@ -7,7 +7,6 @@
 
 bool NdsSaveRamIsDirty = false;
 std::stringstream* NANDFilePtr = NULL;
-bool Stopped = true;
 
 namespace Platform
 {
@@ -22,7 +21,6 @@ void DeInit()
 
 void StopEmu()
 {
-	Stopped = true;
 }
 
 int GetConfigInt(ConfigEntry entry)
@@ -163,11 +161,11 @@ FILE* OpenLocalFile(std::string path, std::string mode)
 
 uintptr_t FrameThreadProc = 0;
 std::function<void()> ThreadEntryFunc = nullptr;
-void (*ThreadWaitCallback)() = nullptr;
+void (*ThreadStartCallback)() = nullptr;
 
 void ThreadEntry()
 {
-	if (!Stopped) ThreadEntryFunc();
+	ThreadEntryFunc();
 }
 
 Thread* Thread_Create(std::function<void()> func)
@@ -181,44 +179,30 @@ void Thread_Free(Thread* thread)
 {
 }
 
-void Thread_Wait(Thread* thread)
+void Thread_Wait(Thread* thread) // hijacked to act as a thread start, consider this "wait for start of thread"
 {
-	ThreadWaitCallback();
+	ThreadStartCallback();
 }
 
 Semaphore* Semaphore_Create()
 {
-	int* s = new int;
-	*s = 0;
-	return (Semaphore*)s;
+	return nullptr;
 }
 
 void Semaphore_Free(Semaphore* sema)
 {
-	abort();
 }
 
 void Semaphore_Reset(Semaphore* sema)
 {
-	__atomic_store_n((int*)sema, 0, __ATOMIC_RELAXED);
 }
 
 void Semaphore_Wait(Semaphore* sema)
 {
-	int res;
-loop:
-	res = __atomic_load_n((int*)sema, __ATOMIC_RELAXED);
-	if (!res) goto loop;
-	__atomic_sub_fetch((int*)sema, 1, __ATOMIC_RELAXED);
-	if (__atomic_load_n((int*)sema, __ATOMIC_RELAXED) < 0)
-	{
-		__atomic_store_n((int*)sema, 0, __ATOMIC_RELAXED);
-	}
 }
 
 void Semaphore_Post(Semaphore* sema, int count)
 {
-	__atomic_add_fetch((int*)sema, (int)count, __ATOMIC_RELAXED);
 }
 
 Mutex* Mutex_Create()
