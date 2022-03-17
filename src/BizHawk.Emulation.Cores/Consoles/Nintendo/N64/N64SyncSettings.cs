@@ -56,6 +56,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				GlidePlugin = GlidePlugin.Clone(),
 				Glide64mk2Plugin = Glide64mk2Plugin.Clone(),
 				GLideN64Plugin = GLideN64Plugin.Clone(),
+				AngrylionPlugin = AngrylionPlugin.Clone(),
 				Controllers = System.Array.ConvertAll(Controllers, a => a.Clone())
 			};
 		}
