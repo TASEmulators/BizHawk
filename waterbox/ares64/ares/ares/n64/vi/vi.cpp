@@ -74,7 +74,7 @@ auto VI::main() -> void {
   if(++io.vcounter >= (Region::NTSC() ? 262 : 312) + io.field) {
     io.vcounter = 0;
     io.field = io.field + 1 & io.serrate;
-    if(!io.field) {
+    if(/*!io.field*/true) { // ares decided to run at 30 FPS when interlaced, although that isn't correct
       #if defined(VULKAN)
       if (vulkan.enable) {
         gpuOutputValid = vulkan.scanoutAsync(io.field);
