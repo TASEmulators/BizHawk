@@ -160,7 +160,7 @@
 			this.label49.Location = new System.Drawing.Point(206, 13);
 			this.label49.Name = "label49";
 			this.label49.Text = "Rsp Plugin";
-			this.label49.Visible = false;
+			this.label49.Visible = true;
 			// 
 			// RspTypeDropdown
 			// 
@@ -174,7 +174,7 @@
 			this.RspTypeDropdown.Name = "RspTypeDropdown";
 			this.RspTypeDropdown.Size = new System.Drawing.Size(136, 21);
 			this.RspTypeDropdown.TabIndex = 17;
-			this.RspTypeDropdown.Visible = false;
+			this.RspTypeDropdown.Visible = true;
 			// 
 			// label48
 			// 
@@ -199,7 +199,7 @@
 			// 
 			this.label47.Location = new System.Drawing.Point(10, 115);
 			this.label47.Name = "label47";
-			this.label47.Text = "(GLideN64 is the newest plugin and has the highest compatibility)";
+			this.label47.Text = "(GLideN64 is good for performance, while Angrylion has the best compatibility)";
 			// 
 			// label2
 			// 
