@@ -13,6 +13,8 @@ typedef enum
 	Standard,
 	Mempak,
 	Rumblepak,
+	Transferpak,
+	Mouse,
 } ControllerType;
 
 typedef enum
@@ -33,20 +35,29 @@ typedef enum
 	START   = 1 << 13,
 } Buttons_t;
 
+static u64 biztime = 0;
+
+static u64 GetBizTime()
+{
+	return biztime;
+}
+
 struct BizPlatform : ares::Platform
 {
 	auto attach(ares::Node::Object) -> void override;
 	auto pak(ares::Node::Object) -> ares::VFS::Pak override;
 	auto video(ares::Node::Video::Screen, const u32*, u32, u32, u32) -> void override;
+	auto audio(ares::Node::Audio::Stream) -> void override;
 	auto input(ares::Node::Input::Input) -> void override;
 
 	ares::VFS::Pak bizpak = nullptr;
-	ares::Node::Audio::Stream stream = nullptr;
 	u32* videobuf = nullptr;
 	u32 pitch = 0;
 	u32 width = 0;
 	u32 height = 0;
-	bool newframe = false;
+	u16* soundbuf = alloc_invisible<u16>(1024 * 2);
+	u32 nsamps = 0;
+	bool hack = false;
 	void (*inputcb)() = nullptr;
 	bool lagged = true;
 };
@@ -56,7 +67,6 @@ auto BizPlatform::attach(ares::Node::Object node) -> void
 	if (auto stream = node->cast<ares::Node::Audio::Stream>())
 	{
 		stream->setResamplerFrequency(44100);
-		this->stream = stream;
 	}
 }
 
@@ -71,14 +81,25 @@ auto BizPlatform::video(ares::Node::Video::Screen screen, const u32* data, u32 p
 	this->pitch = pitch >> 2;
 	this->width = width;
 	this->height = height;
-	newframe = true;
+}
+
+auto BizPlatform::audio(ares::Node::Audio::Stream stream) -> void
+{
+	while (stream->pending())
+	{
+		f64 buf[2];
+		stream->read(buf);
+		soundbuf[nsamps * 2 + 0] = (s16)std::clamp(buf[0] * 32768, -32768.0, 32767.0);
+		soundbuf[nsamps * 2 + 1] = (s16)std::clamp(buf[1] * 32768, -32768.0, 32767.0);
+		if (!hack) nsamps++;
+	}
 }
 
 auto BizPlatform::input(ares::Node::Input::Input node) -> void
 {
 	if (auto input = node->cast<ares::Node::Input::Button>())
 	{
-		if (input->name() == "Start")
+		if (input->name() == "Start" || input->name() == "Left Click")
 		{
 			lagged = false;
 			if (inputcb) inputcb();
@@ -91,14 +112,14 @@ static BizPlatform* platform = nullptr;
 static array_view<u8>* pifData = nullptr;
 static array_view<u8>* romData = nullptr;
 static array_view<u8>* saveData = nullptr;
+static array_view<u8>* gbRomData[4] = { nullptr, nullptr, nullptr, nullptr, };
 
 static inline void HackeryDoo()
 {
+	platform->hack = true;
 	root->run();
 	root->run();
-	platform->newframe = false;
-	f64 buf[2];
-	while (platform->stream->pending()) platform->stream->read(buf);
+	platform->hack = false;
 }
 
 typedef enum
@@ -108,6 +129,7 @@ typedef enum
 	EEPROM2KB,
 	SRAM32KB,
 	SRAM96KB,
+	SRAM128KB,
 	FLASH128KB,
 } SaveType;
 
@@ -311,6 +333,16 @@ static inline SaveType DetectSaveType(u8* rom)
 	if (id == "NW4") ret = FLASH128KB;
 	if (id == "NDP") ret = FLASH128KB;
 
+	if(id[1] == 'E' && id[2] == 'D') {
+		n8 config = revision;
+		if (config.bit(4,7) == 1) ret = EEPROM512;
+		else if (config.bit(4,7) == 2) ret = EEPROM2KB;
+		else if (config.bit(4,7) == 3) ret = SRAM32KB;
+		else if (config.bit(4,7) == 4) ret = SRAM96KB;
+		else if (config.bit(4,7) == 5) ret = FLASH128KB;
+		else if (config.bit(4,7) == 6) ret = SRAM128KB;
+	}
+
 	return ret;
 }
 
@@ -318,10 +350,17 @@ namespace ares::Nintendo64 { extern bool RestrictAnalogRange; extern bool BobDei
 
 typedef struct
 {
+	u8* GbRomData;
+	u32 GbRomLen;
+} GbRom;
+
+typedef struct
+{
 	u8* PifData;
 	u32 PifLen;
 	u8* RomData;
 	u32 RomLen;
+	GbRom GbRoms[4];
 } LoadData;
 
 typedef enum
@@ -330,6 +369,16 @@ typedef enum
 	IS_PAL = 1 << 1,
 	BOB_DEINTERLACE = 1 << 2, // weave otherwise (todo: implement this)
 } LoadFlags;
+
+#define SET_RTC_CALLBACK(NUM) do { \
+	if (auto pad = dynamic_cast<ares::Nintendo64::Gamepad*>(ares::Nintendo64::controllerPort##NUM.device.data())) \
+	{ \
+		if (auto mbc3 = dynamic_cast<ares::Nintendo64::Mbc3*>(pad->transferPak.mbc.data())) \
+		{ \
+			mbc3->rtcCallback = GetBizTime; \
+		} \
+	} \
+} while (0)
 
 EXPORT bool Init(LoadData* loadData, ControllerType* controllers, LoadFlags loadFlags)
 {
@@ -377,6 +426,7 @@ EXPORT bool Init(LoadData* loadData, ControllerType* controllers, LoadFlags load
 			case EEPROM2KB: len = 2 * 1024; name = "save.eeprom"; break;
 			case SRAM32KB: len = 32 * 1024; name = "save.ram"; break;
 			case SRAM96KB: len = 96 * 1024; name = "save.ram"; break;
+			case SRAM128KB: len = 128 * 1024; name = "save.ram"; break;
 			case FLASH128KB: len = 128 * 1024; name = "save.flash"; break;
 			default: return false;
 		}
@@ -384,6 +434,17 @@ EXPORT bool Init(LoadData* loadData, ControllerType* controllers, LoadFlags load
 		memset(data, 0xFF, len);
 		saveData = new array_view<u8>(data, len);
 		platform->bizpak->append(name, *saveData);
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		if (loadData->GbRoms[i].GbRomData)
+		{
+			len = loadData->GbRoms[i].GbRomLen;
+			data = new u8[len];
+			memcpy(data, loadData->GbRoms[i].GbRomData, len);
+			gbRomData[i] = new array_view<u8>(data, len);
+		}
 	}
 
 	ares::platform = platform;
@@ -403,11 +464,27 @@ EXPORT bool Init(LoadData* loadData, ControllerType* controllers, LoadFlags load
 		return false;
 	}
 
-	for (int i = 0; i < 4; i++)
+	for (int i = 0, j = 0; i < 4; i++)
 	{
 		if (auto port = root->find<ares::Node::Port>({"Controller Port ", 1 + i}))
 		{
 			if (controllers[i] == Unplugged) continue;
+
+			if (controllers[i] == Mouse)
+			{
+				port->allocate("Mouse");
+				port->connect();
+				continue;
+			}
+
+			if (controllers[i] == Transferpak)
+			{
+				if (gbRomData[j])
+				{
+					platform->bizpak->remove("gbrom.pak");
+					platform->bizpak->append("gbrom.pak", *gbRomData[j++]);
+				}
+			}
 
 			auto peripheral = port->allocate("Gamepad");
 			port->connect();
@@ -416,6 +493,7 @@ EXPORT bool Init(LoadData* loadData, ControllerType* controllers, LoadFlags load
 			{
 				case Mempak: name = "Controller Pak"; break;
 				case Rumblepak: name = "Rumble Pak"; break;
+				case Transferpak: name = "Transfer Pak"; break;
 				default: continue;
 			}
 
@@ -435,6 +513,11 @@ EXPORT bool Init(LoadData* loadData, ControllerType* controllers, LoadFlags load
 		}
 	}
 
+	SET_RTC_CALLBACK(1);
+	SET_RTC_CALLBACK(2);
+	SET_RTC_CALLBACK(3);
+	SET_RTC_CALLBACK(4);
+
 	ares::Nintendo64::RestrictAnalogRange = loadFlags & RESTRICT_ANALOG_RANGE;
 	ares::Nintendo64::BobDeinterlace = loadFlags & BOB_DEINTERLACE;
 
@@ -443,15 +526,17 @@ EXPORT bool Init(LoadData* loadData, ControllerType* controllers, LoadFlags load
 	return true;
 }
 
+// todo: might need to account for mbc5 rumble?
+// largely pointless tho
 EXPORT bool GetRumbleStatus(u32 num)
 {
 	ares::Nintendo64::Gamepad* c = nullptr;
 	switch (num)
 	{
-		case 0: c = (ares::Nintendo64::Gamepad*)ares::Nintendo64::controllerPort1.device.data(); break;
-		case 1: c = (ares::Nintendo64::Gamepad*)ares::Nintendo64::controllerPort2.device.data(); break;
-		case 2: c = (ares::Nintendo64::Gamepad*)ares::Nintendo64::controllerPort3.device.data(); break;
-		case 3: c = (ares::Nintendo64::Gamepad*)ares::Nintendo64::controllerPort4.device.data(); break;
+		case 0: c = dynamic_cast<ares::Nintendo64::Gamepad*>(ares::Nintendo64::controllerPort1.device.data()); break;
+		case 1: c = dynamic_cast<ares::Nintendo64::Gamepad*>(ares::Nintendo64::controllerPort2.device.data()); break;
+		case 2: c = dynamic_cast<ares::Nintendo64::Gamepad*>(ares::Nintendo64::controllerPort3.device.data()); break;
+		case 3: c = dynamic_cast<ares::Nintendo64::Gamepad*>(ares::Nintendo64::controllerPort4.device.data()); break;
 	}
 	return c ? c->motor->enable() : false;
 }
@@ -462,18 +547,35 @@ EXPORT bool GetRumbleStatus(u32 num)
 	m[i].Size = ares::Nintendo64::mem.size; \
 	m[i].Flags = flags | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_SWAPPED | MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE; \
 	i++; \
-} while (0) \
+} while (0)
 
-#define ADD_MEMPAK_DOMAIN(num) do { \
-	if (auto c = (ares::Nintendo64::Gamepad*)ares::Nintendo64::controllerPort##num.device.data()) \
+#define ADD_MEMPAK_DOMAIN(NUM) do { \
+	if (auto c = dynamic_cast<ares::Nintendo64::Gamepad*>(ares::Nintendo64::controllerPort##NUM.device.data())) \
 	{ \
 		m[i].Data = c->ram.data; \
-		m[i].Name = "MEMPAK " #num; \
+		m[i].Name = "MEMPAK " #NUM; \
 		m[i].Size = c->ram.size; \
 		m[i].Flags = MEMORYAREA_FLAGS_ONEFILLED | MEMORYAREA_FLAGS_SAVERAMMABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_SWAPPED | MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE; \
 		i++; \
 	} \
-} while (0) \
+} while (0)
+
+#define ADD_GB_DOMAINS(NUM) do { \
+	if (auto c = dynamic_cast<ares::Nintendo64::Gamepad*>(ares::Nintendo64::controllerPort##NUM.device.data())) \
+	{ \
+		m[i].Data = c->transferPak.rom.data; \
+		m[i].Name = "GB ROM " #NUM; \
+		m[i].Size = c->transferPak.rom.size; \
+		m[i].Flags = MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_SWAPPED | MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE; \
+		i++; \
+\
+		m[i].Data = c->transferPak.ram.data; \
+		m[i].Name = "GB SRAM " #NUM; \
+		m[i].Size = c->transferPak.ram.size; \
+		m[i].Flags = MEMORYAREA_FLAGS_ONEFILLED | MEMORYAREA_FLAGS_SAVERAMMABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_SWAPPED | MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE; \
+		i++; \
+	} \
+} while (0)
 
 EXPORT void GetMemoryAreas(MemoryArea *m)
 {
@@ -491,10 +593,16 @@ EXPORT void GetMemoryAreas(MemoryArea *m)
 	ADD_MEMPAK_DOMAIN(2);
 	ADD_MEMPAK_DOMAIN(3);
 	ADD_MEMPAK_DOMAIN(4);
+	ADD_GB_DOMAINS(1);
+	ADD_GB_DOMAINS(2);
+	ADD_GB_DOMAINS(3);
+	ADD_GB_DOMAINS(4);
 }
 
 struct MyFrameInfo : public FrameInfo
 {
+	u64 Time;
+
 	Buttons_t P1Buttons;
 	Buttons_t P2Buttons;
 	Buttons_t P3Buttons;
@@ -517,7 +625,7 @@ struct MyFrameInfo : public FrameInfo
 };
 
 #define UPDATE_CONTROLLER(NUM) do { \
-	if (auto c = (ares::Nintendo64::Gamepad*)ares::Nintendo64::controllerPort##NUM.device.data()) \
+	if (auto c = dynamic_cast<ares::Nintendo64::Gamepad*>(ares::Nintendo64::controllerPort##NUM.device.data())) \
 	{ \
 		c->x->setValue(f->P##NUM##XAxis); \
 		c->y->setValue(f->P##NUM##YAxis); \
@@ -535,6 +643,13 @@ struct MyFrameInfo : public FrameInfo
 		c->r->setValue(f->P##NUM##Buttons & R); \
 		c->z->setValue(f->P##NUM##Buttons & Z); \
 		c->start->setValue(f->P##NUM##Buttons & START); \
+	} \
+	else if (auto m = dynamic_cast<ares::Nintendo64::Mouse*>(ares::Nintendo64::controllerPort##NUM.device.data())) \
+	{ \
+		m->x->setValue(f->P##NUM##XAxis); \
+		m->y->setValue(f->P##NUM##YAxis); \
+		m->rclick->setValue(f->P##NUM##Buttons & B); \
+		m->lclick->setValue(f->P##NUM##Buttons & A); \
 	} \
 } while (0)
 
@@ -557,33 +672,24 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 	UPDATE_CONTROLLER(4);
 
 	platform->lagged = true;
+	platform->nsamps = 0;
+	biztime = f->Time;
 
 	root->run();
 
 	f->Width = platform->width;
 	f->Height = platform->height;
-	if (platform->newframe)
+	u32* src = platform->videobuf;
+	u32* dst = f->VideoBuffer;
+	for (int i = 0; i < f->Height; i++)
 	{
-		u32* src = platform->videobuf;
-		u32* dst = f->VideoBuffer;
-		for (int i = 0; i < f->Height; i++)
-		{
-			memcpy(dst, src, f->Width * 4);
-			dst += f->Width;
-			src += platform->pitch;
-		}
-		platform->newframe = false;
+		memcpy(dst, src, f->Width * 4);
+		dst += f->Width;
+		src += platform->pitch;
 	}
 
-	s16* soundbuf = f->SoundBuffer;
-	while (platform->stream->pending())
-	{
-		f64 buf[2];
-		platform->stream->read(buf);
-		*soundbuf++ = (s16)std::clamp(buf[0] * 32768, -32768.0, 32767.0);
-		*soundbuf++ = (s16)std::clamp(buf[1] * 32768, -32768.0, 32767.0);
-		f->Samples++;
-	}
+	f->Samples = platform->nsamps;
+	memcpy(f->SoundBuffer, platform->soundbuf, f->Samples * 4);
 
 	f->Lagged = platform->lagged;
 }

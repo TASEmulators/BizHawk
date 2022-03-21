@@ -38,12 +38,18 @@ auto Gamepad::save() -> void {
   if(slot->name() == "Controller Pak") {
     ram.save(pak->write("save.pak"));
   }
+  if(slot->name() == "Transfer Pak") {
+    if(transferPak.canSave()) {
+      transferPak.ram.save(pak->write("gbram.pak"));
+    }
+  }
 */
 }
 
 auto Gamepad::allocate(string name) -> Node::Peripheral {
   if(name == "Controller Pak") return slot = port->append<Node::Peripheral>("Controller Pak");
   if(name == "Rumble Pak"    ) return slot = port->append<Node::Peripheral>("Rumble Pak");
+  if(name == "Transfer Pak"  ) return slot = port->append<Node::Peripheral>("Transfer Pak");
   return {};
 }
 
@@ -62,6 +68,10 @@ auto Gamepad::connect() -> void {
   if(slot->name() == "Rumble Pak") {
     motor = node->append<Node::Input::Rumble>("Rumble");
   }
+  if(slot->name() == "Transfer Pak") {
+    node->setPak(pak = platform->pak(node));
+    transferPak.allocate(pak->read("gbrom.pak"), pak->read("gbram.pak"));
+  }
 }
 
 auto Gamepad::disconnect() -> void {
@@ -74,6 +84,12 @@ auto Gamepad::disconnect() -> void {
     rumble(false);
     node->remove(motor);
     motor.reset();
+  }
+  if(slot->name() == "Transfer Pak") {
+    if(transferPak.canSave()) {
+      save();
+    }
+    transferPak.reset();
   }
   port->remove(slot);
   slot.reset();

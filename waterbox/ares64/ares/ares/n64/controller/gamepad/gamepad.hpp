@@ -1,9 +1,12 @@
+#include "transfer-pak.hpp"
+
 struct Gamepad : Controller {
   Node::Port port;
   Node::Peripheral slot;
   VFS::Pak pak;
   Memory::Writable ram;  //Toshiba TC55257DFL-85V
   Node::Input::Rumble motor;
+  TransferPak transferPak;
 
   Node::Input::Axis x;
   Node::Input::Axis y;

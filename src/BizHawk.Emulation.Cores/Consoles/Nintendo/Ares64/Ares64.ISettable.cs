@@ -1,7 +1,9 @@
+using System;
 using System.ComponentModel;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 {
@@ -45,6 +47,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 
 		public class Ares64SyncSettings
 		{
+			[DisplayName("Initial Time")]
+			[Description("Initial time of emulation.")]
+			[DefaultValue(typeof(DateTime), "2010-01-01")]
+			[TypeConverter(typeof(BizDateTimeConverter))]
+			public DateTime InitialTime { get; set; }
+
+			[DisplayName("Use Real Time")]
+			[Description("If true, RTC clock will be based off of real time instead of emulated time. Ignored (set to false) when recording a movie.")]
+			[DefaultValue(false)]
+			public bool UseRealTime { get; set; }
+
 			[DisplayName("Player 1 Controller")]
 			[Description("")]
 			[DefaultValue(LibAres64.ControllerType.Mempak)]

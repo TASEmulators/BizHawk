@@ -148,18 +148,23 @@ auto SI::scan() -> void {
     //status
     if(input[0] == 0x00 || input[0] == 0xff) {
       //controller
-      if(channel < 4 && controllers[channel]->device) {
-        output[0] = 0x05;  //0x05 = gamepad; 0x02 = mouse
-        output[1] = 0x00;
-        output[2] = 0x02;  //0x02 = nothing present in controller slot
+      if(channel < 4) {
         if(auto& device = controllers[channel]->device) {
           if(auto gamepad = dynamic_cast<Gamepad*>(device.data())) {
-            if(gamepad->ram || gamepad->motor) {
+            output[0] = 0x05;  //0x05 = gamepad
+            output[1] = 0x00;
+            output[2] = 0x02;  //0x02 = nothing present in controller slot
+            if(gamepad->ram || gamepad->motor || gamepad->transferPak) {
               output[2] = 0x01;  //0x01 = pak present
             }
           }
+          if(dynamic_cast<Mouse*>(device.data())) {
+            output[0] = 0x02;  //0x02 = mouse
+            output[1] = 0x00;
+            output[2] = 0x00;
+          }
+          valid = 1;
         }
-        valid = 1;
       }
 
       //cartridge EEPROM (4kbit)
@@ -223,6 +228,18 @@ auto SI::scan() -> void {
               valid = 1;
             }
           }
+
+          //transfer pak
+          if(auto& transferPak = gamepad->transferPak) {
+            u32 address = (input[1] << 8 | input[2] << 0) & ~31;
+            if(addressCRC(address) == (n5)input[2]) {
+              for(u32 index : range(recv - 1)) {
+                output[index] = transferPak.read(address++);
+              }
+              output[recv - 1] = dataCRC({&output[0], recv - 1});
+              valid = 1;
+            }
+          }
         }
       }
     }
@@ -250,6 +267,18 @@ auto SI::scan() -> void {
               output[0] = dataCRC({&input[3], send - 3});
               valid = 1;
               gamepad->rumble(input[3] & 1);
+            }
+          }
+
+          //transfer pak
+          if(auto& transferPak = gamepad->transferPak) {
+            u32 address = (input[1] << 8 | input[2] << 0) & ~31;
+            if(addressCRC(address) == (n5)input[2]) {
+              for(u32 index : range(send - 3)) {
+                transferPak.write(address++, input[3 + index]);
+              }
+              output[0] = dataCRC({&input[3], send - 3});
+              valid = 1;
             }
           }
         }
