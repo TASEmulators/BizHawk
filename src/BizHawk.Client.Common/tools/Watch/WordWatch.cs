@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-
-using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -74,65 +72,15 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				ushort val = 0;
-				switch (Type)
+				ushort val = Type switch
 				{
-					case WatchDisplayType.Unsigned:
-						if (value.IsUnsigned())
-						{
-							val = (ushort)int.Parse(value);
-						}
-						else
-						{
-							return false;
-						}
-
-						break;
-					case WatchDisplayType.Signed:
-						if (value.IsSigned())
-						{
-							val = (ushort)(short)int.Parse(value);
-						}
-						else
-						{
-							return false;
-						}
-
-						break;
-					case WatchDisplayType.Hex:
-						if (value.IsHex())
-						{
-							val = (ushort)int.Parse(value, NumberStyles.HexNumber);
-						}
-						else
-						{
-							return false;
-						}
-
-						break;
-					case WatchDisplayType.Binary:
-						if (value.IsBinary())
-						{
-							val = (ushort)Convert.ToInt32(value, 2);
-						}
-						else
-						{
-							return false;
-						}
-
-						break;
-					case WatchDisplayType.FixedPoint_12_4:
-						if (value.IsFixedPoint())
-						{
-							val = (ushort)(double.Parse(value) * 16.0);
-						}
-						else
-						{
-							return false;
-						}
-
-						break;
-				}
+					WatchDisplayType.Unsigned => ushort.Parse(value),
+					WatchDisplayType.Signed => (ushort)short.Parse(value),
+					WatchDisplayType.Hex => ushort.Parse(value, NumberStyles.HexNumber),
+					WatchDisplayType.Binary => Convert.ToUInt16(value, 2),
+					WatchDisplayType.FixedPoint_12_4 => (ushort)(double.Parse(value, NumberFormatInfo.InvariantInfo) * 16.0),
+					_ => 0
+				};
 
 				PokeWord(val);
 				return true;
@@ -183,7 +131,7 @@ namespace BizHawk.Client.Common
 				_ when !IsValid => "-",
 				WatchDisplayType.Unsigned => val.ToString(),
 				WatchDisplayType.Signed => ((short) val).ToString(), WatchDisplayType.Hex => $"{val:X4}",
-				WatchDisplayType.FixedPoint_12_4 => $"{val / 16.0:F4}",
+				WatchDisplayType.FixedPoint_12_4 => ((short)val / 16.0).ToString("F4", NumberFormatInfo.InvariantInfo),
 				WatchDisplayType.Binary => Convert
 					.ToString(val, 2)
 					.PadLeft(16, '0')
