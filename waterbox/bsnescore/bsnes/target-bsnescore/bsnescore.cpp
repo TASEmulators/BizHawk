@@ -197,10 +197,8 @@ EXPORT void snes_unserialize(const uint8_t* data, int size)
 }
 
 EXPORT void snes_load_cartridge_normal(
-  const char* base_rom_path, const uint8_t* rom_data, int rom_size
+  const uint8_t* rom_data, int rom_size
 ) {
-    program->superFamicom.location = base_rom_path;
-
     program->superFamicom.raw_data.resize(rom_size);
     memcpy(program->superFamicom.raw_data.data(), rom_data, rom_size);
 
@@ -209,12 +207,8 @@ EXPORT void snes_load_cartridge_normal(
 
 // TODO: merged_rom_sizes is bad, fix this
 EXPORT void snes_load_cartridge_super_gameboy(
-  const char* base_rom_path, const uint8_t* rom_data, const uint8_t* sgb_rom_data, uint64_t merged_rom_sizes
+  const uint8_t* rom_data, const uint8_t* sgb_rom_data, int rom_size, int sgb_rom_size
 ) {
-    int rom_size = merged_rom_sizes >> 32;
-    int sgb_rom_size = merged_rom_sizes & 0xffffffff;
-    program->superFamicom.location = base_rom_path;
-
     program->superFamicom.raw_data.resize(rom_size);
     memcpy(program->superFamicom.raw_data.data(), rom_data, rom_size);
 
@@ -292,8 +286,8 @@ uint8_t* snes_get_effective_saveram(int* ram_size) {
     return cartridge.ram.data();
 }
 
-EXPORT int snes_get_region(void) {
-    return Region::PAL();
+EXPORT System::Region snes_get_region(void) {
+    return SuperFamicom::system.region();
 }
 
 EXPORT char snes_get_mapper(void) {
