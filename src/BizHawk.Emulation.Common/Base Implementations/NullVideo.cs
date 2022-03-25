@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Common
+﻿using System;
+
+namespace BizHawk.Emulation.Common
 {
 	/// <summary>
 	/// A default IVideoProvider that simply returns
@@ -7,7 +9,11 @@
 	/// <seealso cref="IVideoProvider" />
 	public class NullVideo : IVideoProvider
 	{
-		public int[] GetVideoBuffer() => new int[BufferWidth * BufferHeight];
+		public int[] GetVideoBuffer()
+		{
+			Array.Clear(VideoBuffer, 0, VideoBuffer.Length);
+			return VideoBuffer;
+		}
 
 		public static NullVideo Instance { get; } = new NullVideo();
 
@@ -30,5 +36,7 @@
 		public int VsyncNumerator => DefaultVsyncNum;
 
 		public int VsyncDenominator => DefaultVsyncDen;
+
+		private static readonly int[] VideoBuffer = new int[DefaultWidth * DefaultHeight];
 	}
 }
