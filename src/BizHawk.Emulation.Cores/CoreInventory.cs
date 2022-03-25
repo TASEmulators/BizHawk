@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores
 				public byte[] RomData { get; set; }
 				public byte[] FileData { get; set; }
 				public string Extension { get; set; }
-				public string RomPath { get; set; }
+				public string RomDirectory { get; set; }
 				public GameInfo Game { get; set; }
 			}
 
