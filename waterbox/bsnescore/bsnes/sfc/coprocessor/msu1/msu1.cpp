@@ -1,5 +1,7 @@
 #include <sfc/sfc.hpp>
 
+#include <nall/vfs/biz_file.hpp>
+
 namespace SuperFamicom {
 
 MSU1 msu1;

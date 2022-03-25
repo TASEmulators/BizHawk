@@ -450,3 +450,12 @@ EXPORT bool snes_cpu_step()
     scheduler.StepOnce = false;
     return scheduler.event == Scheduler::Event::Frame;
 }
+
+// should be called on savestate load, to get msu files loaded and in the correct state
+EXPORT void snes_msu_sync()
+{
+    if (cartridge.has.MSU1) {
+        msu1.dataOpen();
+        msu1.audioOpen();
+    }
+}

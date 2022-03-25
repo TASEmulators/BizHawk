@@ -87,6 +87,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 			Api.Dispose();
 			_resampler.Dispose();
+			_currentMsuTrack?.Dispose();
 
 			_disposed = true;
 		}

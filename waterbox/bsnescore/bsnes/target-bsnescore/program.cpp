@@ -7,6 +7,7 @@
 #include <heuristics/bs-memory.cpp>
 
 #include "resources.hpp"
+#include <nall/vfs/biz_file.hpp>
 
 static Emulator::Interface *emulator;
 
@@ -150,9 +151,15 @@ auto Program::openFileSuperFamicom(string name, vfs::file::mode mode, bool requi
 	// TODO: the original bsnes code handles a lot more paths; *.data.ram, time.rtc and download.ram
 	// I believe none of these can currently be correctly served by bizhawk and I therefor ignore them here
 	// This should probably be changed? Not sure how much can break from not having them
-	if(name == "save.ram")
+	if(name == "msu1/data.rom" || name == "save.ram")
 	{
 		return vfs::fs::file::open(snesCallbacks.snes_path_request(ID::SuperFamicom, name, required), mode);
+	}
+
+	if(name.match("msu1/track*.pcm"))
+	{
+		snesCallbacks.snes_msu_open(strtol(name.data() + 11, nullptr, 10));
+		return shared_pointer<vfs::biz_file>{new vfs::biz_file};
 	}
 
 	if(name == "arm6.program.rom" && mode == File::Read) {
@@ -363,7 +370,11 @@ auto Program::loadSuperFamicom() -> bool
 		case 1: superFamicom.region = "NTSC"; break;
 		case 2: superFamicom.region = "PAL"; break;
 	}
-	superFamicom.manifest = heuristics.manifest();
+	if (auto fp = vfs::fs::file::open(snesCallbacks.snes_path_request(ID::SuperFamicom, "manifest.bml", false), File::Read)) {
+		superFamicom.manifest = fp->reads();
+	} else {
+		superFamicom.manifest = heuristics.manifest();
+	}
 
 	hackPatchMemory(rom);
 	superFamicom.document = BML::unserialize(superFamicom.manifest);

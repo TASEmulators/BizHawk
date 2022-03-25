@@ -29,6 +29,7 @@ namespace BizHawk.Client.Common
 			public byte[] RomData { get; set; }
 			public byte[] FileData { get; set; }
 			public string Extension { get; set; }
+			public string RomPath { get; set; }
 			public GameInfo Game { get; set; }
 		}
 		private class CoreInventoryParameters : ICoreInventoryParameters
@@ -481,6 +482,7 @@ namespace BizHawk.Client.Common
 						RomData = rom.RomData,
 						FileData = rom.FileData,
 						Extension = rom.Extension,
+						RomPath = file.Directory,
 						Game = game
 					}
 				},

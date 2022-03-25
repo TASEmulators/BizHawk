@@ -67,6 +67,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public abstract void snes_set_cpu_register(string register, uint value);
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract bool snes_cpu_step();
+
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract bool snes_msu_sync();
 	}
 
 	public unsafe partial class BsnesApi : IDisposable, IMonitor, IStatable
@@ -96,6 +99,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			{
 				exe.AddReadonlyFile(data, name);
 				_readonlyFiles.Add(name);
+			}
+		}
+
+		public void AddReadonlyFile(string path, string name)
+		{
+			if (!_readonlyFiles.Contains(name))
+			{
+				try
+				{
+					exe.AddReadonlyFile(File.ReadAllBytes(path), name);
+					_readonlyFiles.Add(name);
+				}
+				catch
+				{
+					// ignored
+				}
 			}
 		}
 
@@ -154,6 +173,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public delegate void snes_read_hook_t(uint address);
 		public delegate void snes_write_hook_t(uint address, byte value);
 		public delegate void snes_exec_hook_t(uint address);
+		public delegate void snes_msu_open_t(ushort track_id);
+		public delegate void snes_msu_seek_t(long offset, bool relative);
+		public delegate byte snes_msu_read_t();
+		public delegate bool snes_msu_end_t();
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct CpuRegisters
@@ -201,6 +224,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			public snes_read_hook_t readHookCb;
 			public snes_write_hook_t writeHookCb;
 			public snes_exec_hook_t execHookCb;
+			public snes_msu_open_t msuOpenCb;
+			public snes_msu_seek_t msuSeekCb;
+			public snes_msu_read_t msuReadCb;
+			public snes_msu_end_t msuEndCb;
 
 			private static List<FieldInfo> FieldsInOrder;
 
@@ -229,11 +256,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public void Seal()
 		{
 			exe.Seal();
-			foreach (var s in _readonlyFiles)
+			foreach (string s in _readonlyFiles.Where(s => !s.StartsWith("msu1/")))
 			{
 				exe.RemoveReadonlyFile(s);
 			}
-			_readonlyFiles.Clear();
+
+			_readonlyFiles.RemoveAll(s => !s.StartsWith("msu1/"));
 		}
 
 		// TODO: confirm that the serializedSize is CONSTANT for any given game,
@@ -258,6 +286,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			// byte[] serializedData = reader.ReadBytes(serializedSize);
 			// _core.snes_unserialize(serializedData, serializedSize);
 			exe.LoadStateBinary(reader);
+			core.snes_msu_sync();
 		}
 	}
 }

@@ -19,6 +19,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 
+			this._romPath = Path.Combine(loadParameters.Roms[0].RomPath, loadParameters.Game.Name);
 			CoreComm = loadParameters.Comm;
 			_settings = loadParameters.Settings ?? new SnesSettings();
 			_syncSettings = loadParameters.SyncSettings ?? new SnesSyncSettings();
@@ -50,7 +51,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				traceCb = snes_trace,
 				readHookCb = ReadHook,
 				writeHookCb = WriteHook,
-				execHookCb = ExecHook
+				execHookCb = ExecHook,
+				msuOpenCb = msu_open,
+				msuSeekCb = msu_seek,
+				msuReadCb = msu_read,
+				msuEndCb = msu_end
 			};
 
 			Api = new BsnesApi(CoreComm.CoreFileProvider.DllPath(), CoreComm, callbacks.AllDelegatesInMemoryOrder());
@@ -118,6 +123,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		private IController _controller;
 		private SpeexResampler _resampler;
+		private readonly string _romPath;
 		private bool _disposed;
 
 		public bool IsSGB { get; }
@@ -131,11 +137,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		private string snes_path_request(int slot, string hint, bool required)
 		{
-			if (hint == "save.ram")
+			switch (hint)
 			{
-				// core asked for saveram, but the interface isn't designed to be able to handle this.
-				// so, we'll just return nothing and the frontend will set the saveram itself later
-				return null;
+				case "manifest.bml":
+					Api.AddReadonlyFile($"{_romPath}.bml", hint);
+					return hint;
+				case "msu1/data.rom":
+					Api.AddReadonlyFile($"{_romPath}.msu", hint);
+					return hint;
+				case "save.ram":
+					// core asked for saveram, but the interface isn't designed to be able to handle this.
+					// so, we'll just return nothing and the frontend will set the saveram itself later
+					return null;
 			}
 
 			string firmwareId;
@@ -302,6 +315,34 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			{
 				MemoryCallbacks.CallMemoryCallbacks(addr, 0, (uint) MemoryCallbackFlags.AccessExecute, "System Bus");
 			}
+		}
+
+		private FileStream _currentMsuTrack;
+
+		private void msu_seek(long offset, bool relative)
+		{
+			_currentMsuTrack?.Seek(offset, relative ? SeekOrigin.Current : SeekOrigin.Begin);
+		}
+		private byte msu_read()
+		{
+			return (byte) (_currentMsuTrack?.ReadByte() ?? 0);
+		}
+
+		private void msu_open(ushort trackId)
+		{
+			_currentMsuTrack?.Dispose();
+			try
+			{
+				_currentMsuTrack = File.OpenRead($"{_romPath}-{trackId}.pcm");
+			}
+			catch
+			{
+				_currentMsuTrack = null;
+			}
+		}
+		private bool msu_end()
+		{
+			return _currentMsuTrack.Position == _currentMsuTrack.Length;
 		}
 	}
 }

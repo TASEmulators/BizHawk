@@ -13,6 +13,10 @@ typedef void (*snes_trace_t)(const char* disassembly, const char* register_info)
 typedef void (*snes_read_hook_t)(uint32_t address);
 typedef void (*snes_write_hook_t)(uint32_t address, uint8_t value);
 typedef void (*snes_exec_hook_t)(uint32_t address);
+typedef void (*snes_msu_open_t)(uint16_t track_id);
+typedef void (*snes_msu_seek_t)(long offset, bool relative);
+typedef uint8_t (*snes_msu_read_t)(void);
+typedef bool (*snes_msu_end_t)(void);
 
 struct SnesCallbacks {
     snes_video_frame_t snes_video_frame;
@@ -25,6 +29,10 @@ struct SnesCallbacks {
     snes_read_hook_t snes_read_hook;
     snes_write_hook_t snes_write_hook;
     snes_exec_hook_t snes_exec_hook;
+    snes_msu_open_t snes_msu_open;
+    snes_msu_seek_t snes_msu_seek;
+    snes_msu_read_t snes_msu_read;
+    snes_msu_end_t snes_msu_end;
 };
 
 extern SnesCallbacks snesCallbacks;
