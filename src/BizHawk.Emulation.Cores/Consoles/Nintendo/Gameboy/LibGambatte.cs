@@ -100,6 +100,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		[DllImport("libgambatte", CallingConvention = CallingConvention.Cdecl)]
 		public static extern int gambatte_generatesgbsamples(IntPtr core, short[] soundbuf, out uint samples);
 
+		[DllImport("libgambatte", CallingConvention = CallingConvention.Cdecl)]
+		public static extern int gambatte_generatembcsamples(IntPtr core, short[] soundbuf);
+
 		/// <summary>
 		/// Reset to initial state.
 		/// Equivalent to reloading a ROM image, or turning a Game Boy Color off and on again.

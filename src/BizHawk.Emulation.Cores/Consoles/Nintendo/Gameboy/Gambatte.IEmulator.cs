@@ -124,8 +124,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			if (IsSgb)
 			{
-				ProcessSgbSound((int)samplesEmittedInFrame, (rendersound && !Muted));
+				ProcessSgbSound((int)samplesEmittedInFrame, rendersound && !Muted);
 			}
+
+			ProcessMbcSound(rendersound && !Muted);
 
 			if (rendersound && !Muted)
 			{

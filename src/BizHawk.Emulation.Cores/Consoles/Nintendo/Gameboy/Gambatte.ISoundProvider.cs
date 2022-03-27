@@ -39,6 +39,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		// sample pairs before resampling
 		private readonly short[] _soundbuff = new short[(35112 + 2064) * 2];
 		private readonly short[] _sgbsoundbuff = new short[2048 * 2];
+		private readonly short[] _mbcsoundbuff = new short[(35112 + 2064) * 2];
 
 		private int _soundoutbuffcontains = 0;
 
@@ -49,6 +50,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		private int _sgbLatchL = 0;
 		private int _sgbLatchR = 0;
+
+		private int _mbcLatchL = 0;
+		private int _mbcLatchR = 0;
 
 		private BlipBuffer _blipL, _blipR;
 		private uint _blipAccumulate;
@@ -101,6 +105,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				}
 				_sgbLatchL = _sgbsoundbuff[i * 2];
 				_sgbLatchR = _sgbsoundbuff[(i * 2) + 1];
+			}
+		}
+
+		private void ProcessMbcSound(bool processSound)
+		{
+			int nsamp = LibGambatte.gambatte_generatembcsamples(GambatteState, _mbcsoundbuff);
+			if (nsamp == 0)
+			{
+				return;
+			}
+
+			for (uint i = 0; i < nsamp; i++)
+			{
+				int ls = _mbcsoundbuff[i * 2] - _mbcLatchL;
+				int rs = _mbcsoundbuff[(i * 2) + 1] - _mbcLatchR;
+				if (ls != 0 && processSound)
+				{
+					_blipL.AddDelta(i, ls);
+				}
+				if (rs != 0 && processSound)
+				{
+					_blipR.AddDelta(i, rs);
+				}
+				_mbcLatchL = _mbcsoundbuff[i * 2];
+				_mbcLatchR = _mbcsoundbuff[(i * 2) + 1];
 			}
 		}
 
