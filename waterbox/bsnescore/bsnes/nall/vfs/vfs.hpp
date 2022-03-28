@@ -19,7 +19,7 @@ struct file {
   virtual auto write(uint8_t data) -> void = 0;
   virtual auto flush() -> void {}
 
-  auto end() const -> bool {
+  virtual auto end() const -> bool {
     return offset() >= size();
   }
 
