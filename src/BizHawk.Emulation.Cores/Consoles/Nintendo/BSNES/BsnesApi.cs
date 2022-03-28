@@ -250,6 +250,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			public BSNES_INPUT_DEVICE right_port;
 			public bool hotfixes;
 			public bool fast_ppu;
+			public bool fast_dsp;
+			public bool fast_coprocessors;
 			public REGION_OVERRIDE region_override;
 		}
 

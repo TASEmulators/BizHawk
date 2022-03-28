@@ -23,6 +23,8 @@ namespace BizHawk.Client.EmuHawk
 				RegionOverride = ss.RegionOverride,
 				Hotfixes = ss.Hotfixes,
 				FastPPU = ss.FastPPU,
+				FastDSP = ss.FastDSP,
+				FastCoprocessors = ss.FastCoprocessors,
 				UseSGB2 = ss.UseSGB2,
 				ShowObj1 = s.ShowOBJ_0,
 				ShowObj2 = s.ShowOBJ_1,
@@ -47,6 +49,8 @@ namespace BizHawk.Client.EmuHawk
 				ss.RegionOverride = dlg.RegionOverride;
 				ss.Hotfixes = dlg.Hotfixes;
 				ss.FastPPU = dlg.FastPPU;
+				ss.FastDSP = dlg.FastDSP;
+				ss.FastCoprocessors = dlg.FastCoprocessors;
 				ss.UseSGB2 = dlg.UseSGB2;
 				s.ShowOBJ_0 = dlg.ShowObj1;
 				s.ShowOBJ_1 = dlg.ShowObj2;
@@ -88,6 +92,18 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get => cbFastPPU.Checked;
 			init => cbDoubleSize.Enabled = cbFastPPU.Checked = value;
+		}
+
+		private bool FastDSP
+		{
+			get => cbFastDSP.Checked;
+			init => cbFastDSP.Checked = value;
+		}
+
+		private bool FastCoprocessors
+		{
+			get => cbFastCoprocessor.Checked;
+			init => cbFastCoprocessor.Checked = value;
 		}
 
 		private bool UseSGB2

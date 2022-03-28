@@ -70,6 +70,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				right_port = _syncSettings.RightPort,
 				hotfixes = _syncSettings.Hotfixes,
 				fast_ppu = _syncSettings.FastPPU,
+				fast_dsp = _syncSettings.FastDSP,
+				fast_coprocessors = _syncSettings.FastCoprocessors,
 				region_override = _syncSettings.RegionOverride,
 			};
 			Api.core.snes_init(ref snesInitData);

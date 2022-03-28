@@ -30,6 +30,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				|| o.RegionOverride != _syncSettings.RegionOverride
 				|| o.Hotfixes != _syncSettings.Hotfixes
 				|| o.FastPPU != _syncSettings.FastPPU
+				|| o.FastDSP != _syncSettings.FastDSP
+				|| o.FastCoprocessors != _syncSettings.FastCoprocessors
 				|| o.UseSGB2 != _syncSettings.UseSGB2;
 
 			_syncSettings = o;
@@ -78,6 +80,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			public bool Hotfixes { get; set; } = true;
 
 			public bool FastPPU { get; set; } = true;
+
+			public bool FastDSP { get; set; } = true;
+
+			public bool FastCoprocessors { get; set; } = true;
 
 			public bool UseSGB2 { get; set; } = true;
 
