@@ -267,7 +267,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					if (Wram != null)
 						return Wram;
 					else
-						return audio.GetSaveRam();
+						return audio?.GetSaveRam();
 				}
 				else
 				{
