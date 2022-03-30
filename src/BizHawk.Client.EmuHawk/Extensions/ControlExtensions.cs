@@ -97,7 +97,7 @@ namespace BizHawk.Client.EmuHawk
 			Type t = controlToClone.GetType();
 			var instance = (T) Activator.CreateInstance(t);
 
-			t.GetProperty("AutoSize")?.SetValue(instance, false, null);
+			t.GetProperty("AutoSize")?.SetMethod?.Invoke(instance, new object[] {false});
 
 			for (int i = 0; i < 3; i++) // why 3 passes of this? --yoshi
 			{
