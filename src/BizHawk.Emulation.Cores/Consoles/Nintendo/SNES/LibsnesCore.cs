@@ -11,13 +11,13 @@ using BizHawk.Emulation.Cores.Components.W65816;
 
 // http://wiki.superfamicom.org/snes/show/Backgrounds
 
-// TODO 
+// TODO
 // libsnes needs to be modified to support multiple instances - THIS IS NECESSARY - or else loading one game and then another breaks things
 // edit - this is a lot of work
 // wrap dll code around some kind of library-accessing interface so that it doesn't malfunction if the dll is unavailable
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
-	[PortedCore(CoreNames.Bsnes, "byuu", "v87", "http://byuu.org/")]
+	[PortedCore(CoreNames.Bsnes, "byuu", "v87", "https://github.com/bsnes-emu/bsnes/tree/386ac87d21d14fafd15162d480a111209c9955ba")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public unsafe partial class LibsnesCore : IEmulator, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable, ICodeDataLogger,
 		IDebuggable, ISettable<LibsnesCore.SnesSettings, LibsnesCore.SnesSyncSettings>
@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			LibsnesCore.SnesSettings settings, LibsnesCore.SnesSyncSettings syncSettings)
 			:this(game, rom, null, null, comm, settings, syncSettings)
 		{}
-		
+
 		public LibsnesCore(GameInfo game, byte[] romData, byte[] xmlData, string baseRomPath, CoreComm comm,
 			LibsnesCore.SnesSettings settings, LibsnesCore.SnesSyncSettings syncSettings)
 		{
