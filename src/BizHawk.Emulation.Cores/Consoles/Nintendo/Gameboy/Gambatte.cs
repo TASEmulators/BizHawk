@@ -427,6 +427,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				0x06 => "MBC2 ROM+BATTERY",
 				0x08 => "Plain ROM+RAM",
 				0x09 => "Plain ROM+RAM+BATTERY",
+				0x0B => "MMM01 ROM", // fixme: mmm01's proper header is at the end of the rom!
+				0x0C => "MMM01 ROM+RAM",
+				0x0D => "MMM01 ROM+BATTERY",
 				0x0F => "MBC3 ROM+TIMER+BATTERY",
 				0x10 => "MBC3 ROM+TIMER+RAM+BATTERY",
 				0x11 => "MBC3 ROM",
@@ -466,9 +469,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				case 0x08: break;
 				case 0x09: break;
 
-				case 0x0B: throw new UnsupportedGameException("\"MM01\" Mapper not supported!");
-				case 0x0C: throw new UnsupportedGameException("\"MM01\" Mapper not supported!");
-				case 0x0D: throw new UnsupportedGameException("\"MM01\" Mapper not supported!");
+				case 0x0B: break;
+				case 0x0C: break;
+				case 0x0D: break;
 
 				case 0x0F: break;
 				case 0x10: break;
