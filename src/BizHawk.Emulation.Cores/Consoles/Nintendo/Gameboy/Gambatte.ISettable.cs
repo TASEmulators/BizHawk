@@ -120,11 +120,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			[DefaultValue(ConsoleModeType.Auto)]
 			public ConsoleModeType ConsoleMode { get; set; }
 
-			[DisplayName("Multicart Compatibility")]
-			[Description("Use special compatibility hacks for certain multicart games.  Relevant only for specific multicarts.")]
-			[DefaultValue(false)]
-			public bool MulticartCompat { get; set; }
-
 			[DisplayName("Cart Bus Pull-Up Time")]
 			[Description("Time it takes for the cart bus to pull-up to 0xFF in CPU cycles. Used to account for differences in pull-up times between carts/consoles.")]
 			[DefaultValue(8)]

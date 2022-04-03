@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
@@ -28,9 +29,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			Tracer = new TraceBuffer(TRACE_HEADER);
 			ser.Register<ITraceable>(Tracer);
 			InitMemoryCallbacks();
-
-			ThrowExceptionForBadRom(file);
-			BoardName = MapperName(file);
 
 			DeterministicEmulation = deterministic;
 
@@ -72,11 +70,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					IsSgb = true;
 				}
 
-				if (_syncSettings.MulticartCompat)
-				{
-					flags |= LibGambatte.LoadFlags.MULTICART_COMPAT;
-				}
-
 				IsCgb = (flags & LibGambatte.LoadFlags.CGB_MODE) == LibGambatte.LoadFlags.CGB_MODE;
 				if (_syncSettings.EnableBIOS)
 				{
@@ -95,6 +88,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				}
 				else
 				{
+
 					if (DeterministicEmulation) // throw a warning if a movie is being recorded with the bios disabled
 					{
 						comm.ShowMessage("Detected disabled BIOS during movie recording. It is recommended to use a BIOS for movie recording. Change Sync Settings to run with a BIOS.");
@@ -121,7 +115,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				}
 
 				// set real default colors (before anyone mucks with them at all)
-				PutSettings((GambatteSettings)settings ?? new GambatteSettings());
+				PutSettings(settings ?? new GambatteSettings());
 
 				InitSound();
 
@@ -131,16 +125,35 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				InputCallback = new LibGambatte.InputGetter(ControllerCallback);
 
-				LibGambatte.gambatte_setinputgetter(GambatteState, InputCallback);
+				LibGambatte.gambatte_setinputgetter(GambatteState, InputCallback, IntPtr.Zero);
 
 				InitMemoryDomains();
 
-				RomDetails = $"{game.Name}\r\n{SHA1Checksum.ComputePrefixedHex(file)}\r\n{MD5Checksum.ComputePrefixedHex(file)}\r\n";
+				byte[] mbcBuf = new byte[32];
+				uint rambanks = 0;
+				uint rombanks = 0;
+				uint crc = 0;
+				uint headerchecksumok = 0;
+				LibGambatte.gambatte_pakinfo(GambatteState, mbcBuf, ref rambanks, ref rombanks, ref crc, ref headerchecksumok);
 
-				byte[] buff = new byte[32];
-				LibGambatte.gambatte_romtitle(GambatteState, buff);
-				string romname = System.Text.Encoding.ASCII.GetString(buff);
-				Console.WriteLine("Core reported rom name: {0}", romname);
+				byte[] romNameBuf = new byte[32];
+				LibGambatte.gambatte_romtitle(GambatteState, romNameBuf);
+				string romname = Encoding.ASCII.GetString(romNameBuf);
+
+				RomDetails = $"{game.Name}\r\n{SHA1Checksum.ComputePrefixedHex(file)}\r\n{MD5Checksum.ComputePrefixedHex(file)}\r\n\r\n";
+				BoardName = Encoding.ASCII.GetString(mbcBuf);
+
+				RomDetails += $"Core reported Header Name: {romname}\r\n";
+				RomDetails += $"Core reported RAM Banks: {rambanks}\r\n";
+				RomDetails += $"Core reported ROM Banks: {rombanks}\r\n";
+				RomDetails += $"Core reported CRC32: {crc:X8}\r\n";
+				RomDetails += $"Core reported Header Checksum Status: {(headerchecksumok != 0 ? "OK" : "BAD")}\r\n";
+
+				if (_syncSettings.EnableBIOS && headerchecksumok == 0)
+				{
+					comm.ShowMessage("Core reports the header checksum is bad. This ROM will not boot with the official BIOS.\n" +
+						"Disable BIOS in sync settings to boot this game");
+				}
 
 				if (!_syncSettings.EnableBIOS && IsCgb && IsCGBDMGMode()) // without a bios, we need to set the palette for cgbdmg ourselves
 				{
@@ -226,7 +239,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// <summary>
 		/// number of reset stall ticks
 		/// </summary>
-		private uint ResetStallTicks { get; set; } = 0;
+		private uint ResetStallTicks { get; }
 
 		/// <summary>
 		/// keep a copy of the input callback delegate so it doesn't get GCed
@@ -291,7 +304,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			return ret.MakeImmutable();
 		}
 
-		private LibGambatte.Buttons ControllerCallback()
+		private LibGambatte.Buttons ControllerCallback(IntPtr p)
 		{
 			InputCallbacks.Call();
 			IsLagFrame = false;
@@ -412,89 +425,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			Frame++;
 
 			endofframecallback?.Invoke(LibGambatte.gambatte_cpuread(GambatteState, 0xff40));
-		}
-
-
-		private static string MapperName(byte[] romdata)
-		{
-			return (romdata[0x147]) switch
-			{
-				0x00 => "Plain ROM",
-				0x01 => "MBC1 ROM",
-				0x02 => "MBC1 ROM+RAM",
-				0x03 => "MBC1 ROM+RAM+BATTERY",
-				0x05 => "MBC2 ROM",
-				0x06 => "MBC2 ROM+BATTERY",
-				0x08 => "Plain ROM+RAM",
-				0x09 => "Plain ROM+RAM+BATTERY",
-				0x0B => "MMM01 ROM", // fixme: mmm01's proper header is at the end of the rom!
-				0x0C => "MMM01 ROM+RAM",
-				0x0D => "MMM01 ROM+BATTERY",
-				0x0F => "MBC3 ROM+TIMER+BATTERY",
-				0x10 => "MBC3 ROM+TIMER+RAM+BATTERY",
-				0x11 => "MBC3 ROM",
-				0x12 => "MBC3 ROM+RAM",
-				0x13 => "MBC3 ROM+RAM+BATTERY",
-				0x19 => "MBC5 ROM",
-				0x1A => "MBC5 ROM+RAM",
-				0x1B => "MBC5 ROM+RAM+BATTERY",
-				0x1C => "MBC5 ROM+RUMBLE",
-				0x1D => "MBC5 ROM+RUMBLE+RAM",
-				0x1E => "MBC5 ROM+RUMBLE+RAM+BATTERY",
-				0xFC => "Pocket Camera ROM+RAM+BATTERY",
-				0xFE => "HuC3 ROM+RAM+BATTERY",
-				0xFF => "HuC1 ROM+RAM+BATTERY",
-				_ => "UNKNOWN",
-			};
-		}
-
-		/// <summary>
-		/// throw exception with intelligible message on some kinds of bad rom
-		/// </summary>
-		private static void ThrowExceptionForBadRom(byte[] romdata)
-		{
-			if (romdata.Length < 0x148)
-			{
-				throw new ArgumentException("ROM is far too small to be a valid GB\\GBC rom!");
-			}
-
-			switch (romdata[0x147])
-			{
-				case 0x00: break;
-				case 0x01: break;
-				case 0x02: break;
-				case 0x03: break;
-				case 0x05: break;
-				case 0x06: break;
-				case 0x08: break;
-				case 0x09: break;
-
-				case 0x0B: break;
-				case 0x0C: break;
-				case 0x0D: break;
-
-				case 0x0F: break;
-				case 0x10: break;
-				case 0x11: break;
-				case 0x12: break;
-				case 0x13: break;
-
-				case 0x19: break;
-				case 0x1A: break;
-				case 0x1B: break;
-				case 0x1C: break; // rumble
-				case 0x1D: break; // rumble
-				case 0x1E: break; // rumble
-
-				case 0x20: throw new UnsupportedGameException("\"MBC6\" Mapper not supported!");
-				case 0x22: throw new UnsupportedGameException("\"MBC7\" Mapper not supported!");
-
-				case 0xFC: break;
-				case 0xFD: throw new UnsupportedGameException("\"Bandai TAMA5\" Mapper not supported!");
-				case 0xFE: break;
-				case 0xFF: break;
-				default: throw new UnsupportedGameException($"Unknown mapper: {romdata[0x147]:x2}");
-			}
 		}
 
 		private static int[] ColorsFromTitleHash(byte[] romdata)

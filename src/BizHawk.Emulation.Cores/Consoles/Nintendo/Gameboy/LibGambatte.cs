@@ -25,8 +25,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			CGB_MODE = 1,
 			/// <summary>Use GBA intial CPU register values when in CGB mode.</summary>
 			GBA_FLAG = 2,
-			/// <summary>Use heuristics to detect and support some multicart MBCs disguised as MBC1.</summary>
-			MULTICART_COMPAT = 4,
+			/// <summary>Previously a multicart heuristic enable. Reserved for future use.</summary>
+			RESERVED_FLAG = 4,
 			/// <summary>Treat the ROM as having SGB support regardless of what its header advertises.</summary>
 			SGB_MODE = 8,
 			/// <summary>Prevent implicit saveSavedata calls for the ROM.</summary>
@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		[Flags]
 		public enum CDLog_Flags : int
 		{
-			ExecFirst = 1,
+			ExecOpcode = 1,
 			ExecOperand = 2,
 			Data = 4
 		}
@@ -157,14 +157,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// </summary>
 		/// <returns>bitfield combination of pressed buttons</returns>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate Buttons InputGetter();
+		public delegate Buttons InputGetter(IntPtr p);
 
 		/// <summary>
 		/// Sets the callback used for getting input state.
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
 		[DllImport("libgambatte", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void gambatte_setinputgetter(IntPtr core, InputGetter getinput);
+		public static extern void gambatte_setinputgetter(IntPtr core, InputGetter getinput, IntPtr p);
 
 		/// <summary>
 		/// Gets which SGB controller is in use, 0 indexed.
@@ -393,6 +393,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// <param name="data">enough room for 16 ascii chars plus terminator</param>
 		[DllImport("libgambatte", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gambatte_romtitle(IntPtr core, byte[] data);
+
+		/// <summary>
+		/// Pakinfo of currently loaded ROM image.
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="mbc">enough room for 25 ascii chars plus terminator</param>
+		/// <param name="rambanks">number of rambanks</param>
+		/// <param name="rombanks">number of rombanks</param>
+		/// <param name="crc">core reported crc32</param>
+		/// <param name="headerchecksumok">core reported header checksum status</param>
+		[DllImport("libgambatte", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gambatte_pakinfo(IntPtr core, byte[] mbc, ref uint rambanks, ref uint rombanks, ref uint crc, ref uint headerchecksumok);
 
 		/// <summary>
 		/// memory areas that gambatte_getmemoryarea() can return
