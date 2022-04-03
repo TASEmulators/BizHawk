@@ -172,37 +172,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				if (DeterministicEmulation)
 				{
-					int[] rtcRegs = new int[11];
-					rtcRegs[(int)LibGambatte.RtcRegIndices.Dh] = 0;
-					if (_syncSettings.InternalRTCOverflow)
-					{
-						rtcRegs[(int)LibGambatte.RtcRegIndices.Dh] |= 0x80;
-					}
-					if (_syncSettings.InternalRTCHalt)
-					{
-						rtcRegs[(int)LibGambatte.RtcRegIndices.Dh] |= 0x40;
-					}
-					rtcRegs[(int)LibGambatte.RtcRegIndices.Dh] |= _syncSettings.InternalRTCDays >> 8;
-					rtcRegs[(int)LibGambatte.RtcRegIndices.Dl] = _syncSettings.InternalRTCDays & 0xFF;
-					rtcRegs[(int)LibGambatte.RtcRegIndices.H] = (_syncSettings.InternalRTCHours < 0) ? (_syncSettings.InternalRTCHours + 0x20) : _syncSettings.InternalRTCHours;
-					rtcRegs[(int)LibGambatte.RtcRegIndices.M] = (_syncSettings.InternalRTCMinutes < 0) ? (_syncSettings.InternalRTCMinutes + 0x40) : _syncSettings.InternalRTCMinutes;
-					rtcRegs[(int)LibGambatte.RtcRegIndices.S] = (_syncSettings.InternalRTCSeconds < 0) ? (_syncSettings.InternalRTCSeconds + 0x40) : _syncSettings.InternalRTCSeconds;
-					rtcRegs[(int)LibGambatte.RtcRegIndices.C] = _syncSettings.InternalRTCCycles;
-					rtcRegs[(int)LibGambatte.RtcRegIndices.Dh_L] = 0;
-					if (_syncSettings.LatchedRTCOverflow)
-					{
-						rtcRegs[(int)LibGambatte.RtcRegIndices.Dh_L] |= 0x80;
-					}
-					if (_syncSettings.LatchedRTCHalt)
-					{
-						rtcRegs[(int)LibGambatte.RtcRegIndices.Dh_L] |= 0x40;
-					}
-					rtcRegs[(int)LibGambatte.RtcRegIndices.Dh_L] |= _syncSettings.LatchedRTCDays >> 8;
-					rtcRegs[(int)LibGambatte.RtcRegIndices.Dl_L] = _syncSettings.LatchedRTCDays & 0xFF;
-					rtcRegs[(int)LibGambatte.RtcRegIndices.H_L] = _syncSettings.LatchedRTCHours;
-					rtcRegs[(int)LibGambatte.RtcRegIndices.M_L] = _syncSettings.LatchedRTCMinutes;
-					rtcRegs[(int)LibGambatte.RtcRegIndices.S_L] = _syncSettings.LatchedRTCSeconds;
-					LibGambatte.gambatte_setrtcregs(GambatteState, rtcRegs);
+					ulong dividers = _syncSettings.InitialTime * (0x400000UL + (ulong)_syncSettings.RTCDivisorOffset) / 2UL;
+					LibGambatte.gambatte_settime(GambatteState, dividers);
 				}
 
 				LibGambatte.gambatte_setrtcdivisoroffset(GambatteState, _syncSettings.RTCDivisorOffset);
