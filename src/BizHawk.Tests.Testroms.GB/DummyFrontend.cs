@@ -238,7 +238,7 @@ namespace BizHawk.Tests.Testroms.GB
 		}
 
 		public Bitmap Screenshot()
-			=> _dispMan.RenderVideoProvider(_coreAsVP).ToSysdrawingBitmap();
+			=> new BitmapBuffer(_coreAsVP.BufferWidth, _coreAsVP.BufferHeight, _coreAsVP.GetVideoBuffer().ToArray()).ToSysdrawingBitmap();
 
 		public void SetButton(string buttonName)
 			=> _controller[buttonName] = true;

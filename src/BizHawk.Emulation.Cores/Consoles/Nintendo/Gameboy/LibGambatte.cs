@@ -515,7 +515,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// <param name="addr">address for memory type</param>
 		/// <param name="bank">bank to set</param>
 		[DllImport("libgambatte", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void gambatte_setbank(IntPtr core, ushort addr, int bank);
+		public static extern void gambatte_setaddrbank(IntPtr core, ushort addr, int bank);
 
 		public enum BankType : int
 		{
