@@ -327,7 +327,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
-			_render = render;
 			_core.SetTraceCallback(Tracer.IsEnabled() ? _tracecb : null);
 			return new LibMelonDS.FrameInfo
 			{
@@ -344,19 +343,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private readonly Action _frameThreadStart;
 		private readonly LibMelonDS.ThreadStartCallback _threadstartcb;
 
-		private bool _render;
 		private Task _frameThreadProcActive;
 
 		private void ThreadStartCallback()
 		{
-			if (_render)
+			if (_frameThreadProcActive != null)
 			{
-				if (_frameThreadProcActive != null)
-				{
-					throw new InvalidOperationException("Attempted to start render thread twice");
-				}
-				_frameThreadProcActive = Task.Run(_frameThreadStart);
+				throw new InvalidOperationException("Attempted to start render thread twice");
 			}
+			_frameThreadProcActive = Task.Run(_frameThreadStart);
 		}
 
 		protected override void FrameAdvancePost()
