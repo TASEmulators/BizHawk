@@ -122,6 +122,8 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 			SetupResampler(api.comm->env.retro_system_av_info.timing.fps, api.comm->env.retro_system_av_info.timing.sample_rate);
 			(ServiceProvider as BasicServiceProvider).Register<ISoundProvider>(resampler);
+
+			InitMemoryDomains(); // im going to assume this should happen when a game is loaded
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; }
@@ -371,6 +373,24 @@ namespace BizHawk.Emulation.Cores.Libretro
 			Frame = reader.ReadInt32();
 			LagCount = reader.ReadInt32();
 			IsLagFrame = reader.ReadBoolean();
+		}
+
+		private readonly List<MemoryDomain> _memoryDomains = new();
+		private IMemoryDomains MemoryDomains { get; set; }
+
+		private void InitMemoryDomains()
+		{
+			foreach (LibretroApi.RETRO_MEMORY m in Enum.GetValues(typeof(LibretroApi.RETRO_MEMORY)))
+			{
+				var mem = api.QUERY_GetMemory(m);
+				if (mem.Item1 != IntPtr.Zero && mem.Item2 > 0)
+				{
+					_memoryDomains.Add(new MemoryDomainIntPtr(Enum.GetName(m.GetType(), m), MemoryDomain.Endian.Little, mem.Item1, (long)mem.Item2, true, 1));
+				}
+			}
+
+			MemoryDomains = new MemoryDomainList(_memoryDomains);
+			(ServiceProvider as BasicServiceProvider).Register(MemoryDomains);
 		}
 	}
 }
