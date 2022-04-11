@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		private class RetroString
 		{
 			private readonly RetroData _data;
-			public IntPtr UnmanagedString => _data.PinnedData();
+			public IntPtr PinnedString => _data.PinnedData();
 
 			public RetroString(string managedString)
 			{
@@ -158,7 +158,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 					//unneeded
 					return false;
 				case LibretroApi.RETRO_ENVIRONMENT.GET_SYSTEM_DIRECTORY:
-					*(byte**)data = (byte*)SystemDirectory.UnmanagedString;
+					*(byte**)data = (byte*)SystemDirectory.PinnedString;
 					return true;
 				case LibretroApi.RETRO_ENVIRONMENT.SET_PIXEL_FORMAT:
 					pixel_format = *(LibretroApi.RETRO_PIXEL_FORMAT*)data;
@@ -189,7 +189,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 					{
 						if (variable_keys[i] == Mershul.PtrToStringUtf8(req->key))
 						{
-							req->value = variables[i].UnmanagedString;
+							req->value = variables[i].PinnedString;
 							return true;
 						}
 					}
@@ -241,7 +241,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 					support_no_game = *(bool*)data;
 					break;
 				case LibretroApi.RETRO_ENVIRONMENT.GET_LIBRETRO_PATH:
-					*(byte**)data = (byte*)CoreDirectory.UnmanagedString;
+					*(byte**)data = (byte*)CoreDirectory.PinnedString;
 					return true;
 				case LibretroApi.RETRO_ENVIRONMENT.SET_AUDIO_CALLBACK:
 					//dont know what to do with this yet
@@ -267,10 +267,10 @@ namespace BizHawk.Emulation.Cores.Libretro
 					//TODO low priority
 					return false;
 				case LibretroApi.RETRO_ENVIRONMENT.GET_CORE_ASSETS_DIRECTORY:
-					*(byte**)data = (byte*)CoreAssetsDirectory.UnmanagedString;
+					*(byte**)data = (byte*)CoreAssetsDirectory.PinnedString;
 					return true;
 				case LibretroApi.RETRO_ENVIRONMENT.GET_SAVE_DIRECTORY:
-					*(byte**)data = (byte*)SaveDirectory.UnmanagedString;
+					*(byte**)data = (byte*)SaveDirectory.PinnedString;
 					return true;
 				case LibretroApi.RETRO_ENVIRONMENT.SET_SYSTEM_AV_INFO:
 					Console.WriteLine("NEED RETRO_ENVIRONMENT.SET_SYSTEM_AV_INFO");
@@ -360,7 +360,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			}
 			else
 			{
-				game.path = path.UnmanagedString;
+				game.path = path.PinnedString;
 				if (which == RETRO_LOAD.DATA)
 				{
 					game.data = data.PinnedData();
