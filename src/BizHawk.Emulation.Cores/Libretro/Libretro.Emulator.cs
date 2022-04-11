@@ -22,7 +22,6 @@ namespace BizHawk.Emulation.Cores.Libretro
 		private LibretroApi.retro_audio_sample_batch_t retro_audio_sample_batch_cb;
 		private LibretroApi.retro_input_poll_t retro_input_poll_cb;
 		private LibretroApi.retro_input_state_t retro_input_state_cb;
-		private LibretroApi.retro_log_printf_t retro_log_printf_cb;
 
 		private readonly BasicServiceProvider _serviceProvider;
 		public IEmulatorServiceProvider ServiceProvider => _serviceProvider;
@@ -259,7 +258,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 					return true;
 				case LibretroApi.RETRO_ENVIRONMENT.GET_LOG_INTERFACE:
 					var cb = (LibretroApi.retro_log_callback*)data;
-					cb->log = Marshal.GetFunctionPointerForDelegate(retro_log_printf_cb = retro_log_printf);
+					cb->log = IntPtr.Zero; // we can't do this from C#, although cores will have a fallback log anyways so not a big deal
 					return true;
 				case LibretroApi.RETRO_ENVIRONMENT.GET_PERF_INTERFACE:
 					// uhhhh what the fuck is this for
@@ -297,39 +296,6 @@ namespace BizHawk.Emulation.Cores.Libretro
 			}
 
 			return false;
-		}
-
-		// TODO GET RID OF THIS HACK
-		private static class CLibHack
-		{
-			[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-			public delegate int snprintf_t(IntPtr buf, long bufsz, IntPtr fmt, IntPtr args);
-
-			public static snprintf_t snprintf;
-
-			static CLibHack()
-			{
-				var resolver = new DynamicLibraryImportResolver(
-					OSTailoredCode.IsUnixHost ? "libc.so.6" : "msvcrt.dll", hasLimitedLifetime: false);
-
-				var ep = OSTailoredCode.IsUnixHost ? "snprintf" : "_snprintf";
-				snprintf = (snprintf_t)Marshal.GetDelegateForFunctionPointer(resolver.GetProcAddrOrThrow(ep), typeof(snprintf_t));
-			}
-		}
-
-		private static unsafe void retro_log_printf(LibretroApi.RETRO_LOG level, IntPtr fmt, IntPtr args)
-		{
-			var sz = CLibHack.snprintf(IntPtr.Zero, 0, fmt, args);
-			if (sz < 0)
-			{
-				Console.WriteLine("snprintf failure.");
-				return;
-			}
-			var p = Marshal.AllocHGlobal(sz + 1);
-			CLibHack.snprintf(p, sz + 1, fmt, args);
-			((byte*)p)[sz] = 0;
-			Console.Write($"[RETRO_LOG_{Enum.GetName(level.GetType(), level)}] " + Mershul.PtrToStringUtf8(p));
-			Marshal.FreeHGlobal(p);
 		}
 
 		private bool inited = false;

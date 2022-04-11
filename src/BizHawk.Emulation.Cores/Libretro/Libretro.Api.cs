@@ -396,9 +396,6 @@ namespace BizHawk.Emulation.Cores.Libretro
 		};
 
 		[UnmanagedFunctionPointer(cc)]
-		public delegate void retro_log_printf_t(RETRO_LOG level, IntPtr fmt, IntPtr args);
-
-		[UnmanagedFunctionPointer(cc)]
 		public delegate bool retro_environment_t(RETRO_ENVIRONMENT cmd, IntPtr data);
 
 		[UnmanagedFunctionPointer(cc)]
