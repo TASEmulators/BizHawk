@@ -259,7 +259,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 				case LibretroApi.RETRO_ENVIRONMENT.GET_LOG_INTERFACE:
 					var cb = (LibretroApi.retro_log_callback*)data;
 					cb->log = IntPtr.Zero; // we can't do this from C#, although cores will have a fallback log anyways so not a big deal
-					return true;
+					return false;
 				case LibretroApi.RETRO_ENVIRONMENT.GET_PERF_INTERFACE:
 					// uhhhh what the fuck is this for
 					return false;
