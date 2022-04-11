@@ -71,7 +71,6 @@ namespace BizHawk.Emulation.Cores.Libretro
 		private class RetroData
 		{
 			private readonly GCHandle _handle;
-			private readonly long _length;
 
 			public IntPtr PinnedData => _handle.AddrOfPinnedObject();
 			public long Length { get; }
