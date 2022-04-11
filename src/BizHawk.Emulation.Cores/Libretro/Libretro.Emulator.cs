@@ -73,13 +73,13 @@ namespace BizHawk.Emulation.Cores.Libretro
 			private readonly GCHandle _handle;
 			private readonly long _length;
 
-			public IntPtr PinnedData() => _handle.AddrOfPinnedObject();
-			public long Length() => _length;
+			public IntPtr PinnedData => _handle.AddrOfPinnedObject();
+			public long Length { get; }
 
 			public RetroData(object o, long len)
 			{
 				_handle = GCHandle.Alloc(o, GCHandleType.Pinned);
-				_length = len;
+				Length = len;
 			}
 
 			~RetroData() => _handle.Free();
@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		private class RetroString
 		{
 			private readonly RetroData _data;
-			public IntPtr PinnedString => _data.PinnedData();
+			public IntPtr PinnedString => _data.PinnedData;
 
 			public RetroString(string managedString)
 			{
@@ -363,8 +363,8 @@ namespace BizHawk.Emulation.Cores.Libretro
 				game.path = path.PinnedString;
 				if (which == RETRO_LOAD.DATA)
 				{
-					game.data = data.PinnedData();
-					game.size = data.Length();
+					game.data = data.PinnedData;
+					game.size = data.Length;
 				}
 			}
 
@@ -727,7 +727,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			}
 
 			var d = new RetroData(_stateBuf, _stateLen);
-			api.retro_serialize(d.PinnedData(), d.Length());
+			api.retro_serialize(d.PinnedData, d.Length);
 			writer.Write(_stateBuf.Length);
 			writer.Write(_stateBuf);
 			// other variables
@@ -746,7 +746,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 			reader.Read(_stateBuf, 0, newlen);
 			var d = new RetroData(_stateBuf, _stateLen);
-			api.retro_unserialize(d.PinnedData(), d.Length());
+			api.retro_unserialize(d.PinnedData, d.Length);
 			// other variables
 			Frame = reader.ReadInt32();
 			LagCount = reader.ReadInt32();
