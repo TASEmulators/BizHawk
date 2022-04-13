@@ -139,7 +139,9 @@ namespace BizHawk.Emulation.Cores.Libretro
 			}
 
 			bridge.LibretroBridge_DestroyCallbackHandler(cbHandler);
-			_resampler?.Dispose();
+
+			_blipL?.Dispose();
+			_blipR?.Dispose();
 		}
 
 		public RetroDescription Description { get; }
@@ -222,7 +224,6 @@ namespace BizHawk.Emulation.Cores.Libretro
 			VsyncDenominator = 10000000;
 
 			SetupResampler(av.fps, av.sample_rate);
-			_serviceProvider.Register<ISoundProvider>(_resampler);
 
 			InitMemoryDomains(); // im going to assume this should happen when a game is loaded
 

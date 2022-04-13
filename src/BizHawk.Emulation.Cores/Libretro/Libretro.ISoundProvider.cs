@@ -6,17 +6,25 @@ namespace BizHawk.Emulation.Cores.Libretro
 {
 	public partial class LibretroEmulator : ISoundProvider
 	{
-		private SpeexResampler _resampler;
+		private BlipBuffer _blipL;
+		private BlipBuffer _blipR;
+
+		private short[] _inSampBuf = new short[0];
+		private short[] _outSampBuf = new short[0];
+
+		private int _latchL = 0;
+		private int _latchR = 0;
 
 		private void SetupResampler(double fps, double sps)
 		{
 			Console.WriteLine("FPS {0} SPS {1}", fps, sps);
 
-			// todo: more precise?
-			uint spsnum = (uint)sps * 10000;
-			uint spsden = 10000U;
+			_outSampBuf = new short[44100]; // big enough
 
-			_resampler = new SpeexResampler(SpeexResampler.Quality.QUALITY_DESKTOP, 44100 * spsden, spsnum, (uint)sps, 44100, null, this);
+			_blipL = new BlipBuffer(44100);
+			_blipL.SetRates(sps, 44100);
+			_blipR = new BlipBuffer(44100);
+			_blipR.SetRates(sps, 44100);
 		}
 
 		public bool CanProvideAsync => false;
@@ -31,25 +39,49 @@ namespace BizHawk.Emulation.Cores.Libretro
 			}
 		}
 
-		private short[] sampleBuf = new short[0];
-
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
 			var len = bridge.LibretroBridge_GetAudioSize(cbHandler);
 			if (len == 0) // no audio?
 			{
-				samples = sampleBuf;
+				samples = _outSampBuf;
 				nsamp = 0;
 				return;
 			}
-			if (len > sampleBuf.Length)
+			if (len > _inSampBuf.Length)
 			{
-				sampleBuf = new short[len];
+				_inSampBuf = new short[len];
 			}
 			var ns = 0;
-			bridge.LibretroBridge_GetAudio(cbHandler, ref ns, sampleBuf);
-			samples = sampleBuf;
-			nsamp = ns;
+			bridge.LibretroBridge_GetAudio(cbHandler, ref ns, _inSampBuf);
+
+			for (uint i = 0; i < ns; i++)
+			{
+				int curr = _inSampBuf[i * 2];
+
+				if (curr != _latchL)
+				{
+					int diff = _latchL - curr;
+					_latchL = curr;
+					_blipL.AddDelta(i, diff);
+				}
+
+				curr = _inSampBuf[(i * 2) + 1];
+
+				if (curr != _latchR)
+				{
+					int diff = _latchR - curr;
+					_latchR = curr;
+					_blipR.AddDelta(i, diff);
+				}
+			}
+
+			_blipL.EndFrame((uint)ns);
+			_blipR.EndFrame((uint)ns);
+			nsamp = _blipL.SamplesAvailable();
+			_blipL.ReadSamplesLeft(_outSampBuf, nsamp);
+			_blipR.ReadSamplesRight(_outSampBuf, nsamp);
+			samples = _outSampBuf;
 		}
 
 		public void GetSamplesAsync(short[] samples)
