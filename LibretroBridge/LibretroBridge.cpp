@@ -63,13 +63,13 @@ public:
 				finalMsg = "[RETRO_LOG_DEBUG] ";
 				break;
 			case RETRO_LOG::INFO:
-				finalMsg = "[RETRO_LOG_DEBUG] ";
+				finalMsg = "[RETRO_LOG_INFO] ";
 				break;
 			case RETRO_LOG::WARN:
-				finalMsg = "[RETRO_LOG_DEBUG] ";
+				finalMsg = "[RETRO_LOG_WARN] ";
 				break;
 			case RETRO_LOG::ERROR:
-				finalMsg = "[RETRO_LOG_DEBUG] ";
+				finalMsg = "[RETRO_LOG_ERROR] ";
 				break;
 			default:
 				finalMsg = "[RETRO_LOG_UNKNOWN] ";
@@ -77,8 +77,8 @@ public:
 		}
 
 		finalMsg += std::string(msg.get());
-		printf(finalMsg.c_str());
-		fflush(stdout);
+		std::printf("%s", finalMsg.c_str());
+		std::fflush(stdout);
 	}
 
 	boolean RetroEnvironment(u32 cmd, void* data) {
@@ -578,7 +578,7 @@ EXPORT bool LibretroBridge_GetSupportsNoGame(CallbackHandler* cbHandler) {
 
 // get current retro_message set by the core
 EXPORT void LibretroBridge_GetRetroMessage(CallbackHandler* cbHandler, retro_message* m) {
-	return cbHandler->GetRetroMessage(m);
+	cbHandler->GetRetroMessage(m);
 }
 
 // set directories for the core
