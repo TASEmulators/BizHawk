@@ -11,6 +11,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		private short[] _inSampBuf = new short[0];
 		private short[] _outSampBuf = new short[0];
+		private int _outSamps;
 
 		private int _latchL = 0;
 		private int _latchR = 0;
@@ -27,25 +28,11 @@ namespace BizHawk.Emulation.Cores.Libretro
 			_blipR.SetRates(sps, 44100);
 		}
 
-		public bool CanProvideAsync => false;
-
-		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
-
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			if (mode == SyncSoundMode.Async)
-			{
-				throw new NotSupportedException("Async mode is not supported.");
-			}
-		}
-
-		public void GetSamplesSync(out short[] samples, out int nsamp)
+		private void ProcessSound()
 		{
 			var len = bridge.LibretroBridge_GetAudioSize(cbHandler);
 			if (len == 0) // no audio?
 			{
-				samples = _outSampBuf;
-				nsamp = 0;
 				return;
 			}
 			if (len > _inSampBuf.Length)
@@ -78,10 +65,28 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 			_blipL.EndFrame((uint)ns);
 			_blipR.EndFrame((uint)ns);
-			nsamp = _blipL.SamplesAvailable();
-			_blipL.ReadSamplesLeft(_outSampBuf, nsamp);
-			_blipR.ReadSamplesRight(_outSampBuf, nsamp);
+			_outSamps = _blipL.SamplesAvailable();
+			_blipL.ReadSamplesLeft(_outSampBuf, _outSamps);
+			_blipR.ReadSamplesRight(_outSampBuf, _outSamps);
+		}
+
+		public bool CanProvideAsync => false;
+
+		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
+
+		public void SetSyncMode(SyncSoundMode mode)
+		{
+			if (mode == SyncSoundMode.Async)
+			{
+				throw new NotSupportedException("Async mode is not supported.");
+			}
+		}
+
+		public void GetSamplesSync(out short[] samples, out int nsamp)
+		{
+			nsamp = _outSamps;
 			samples = _outSampBuf;
+			DiscardSamples();
 		}
 
 		public void GetSamplesAsync(short[] samples)
@@ -91,6 +96,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		public void DiscardSamples()
 		{
+			_outSamps = 0;
 		}
 	}
 }

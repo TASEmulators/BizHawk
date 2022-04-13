@@ -131,6 +131,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		public void Dispose()
 		{
 			UpdateCallbackHandler();
+
 			if (inited)
 			{
 				api.retro_deinit();
@@ -234,19 +235,38 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		private CoreComm Comm { get; }
 
-		public bool FrameAdvance(IController controller, bool render, bool rendersound)
+		private void FrameAdvancePrep(IController controller)
 		{
-			UpdateCallbackHandler();
-
 			UpdateInput(controller);
-			api.retro_run();
-			UpdateVideoBuffer();
+		}
+
+		private void FrameAdvancePost(bool render, bool renderSound)
+		{
+			if (render)
+			{
+				UpdateVideoBuffer();
+			}
+
+			ProcessSound();
+			if (!renderSound)
+			{
+				DiscardSamples();
+			}
 
 			bridge.LibretroBridge_GetRetroMessage(cbHandler, ref retro_msg);
 			if (retro_msg.frames > 0)
 			{
 				Comm.Notify(Mershul.PtrToStringUtf8(retro_msg.msg));
 			}
+		}
+
+		public bool FrameAdvance(IController controller, bool render, bool renderSound = true)
+		{
+			UpdateCallbackHandler();
+
+			FrameAdvancePrep(controller);
+			api.retro_run();
+			FrameAdvancePost(render, renderSound);
 
 			Frame++;
 

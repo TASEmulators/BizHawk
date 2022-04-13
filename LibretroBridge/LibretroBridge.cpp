@@ -32,6 +32,8 @@ public:
 	, height(0)
 	, videoBuf()
 	, videoBufSz(0)
+	, numSamples(0)
+	, sampleBuf()
 	{
 		std::memset(joypads[0], 0, sizeof (joypads[0]));
 		std::memset(joypads[1], 0, sizeof (joypads[1]));

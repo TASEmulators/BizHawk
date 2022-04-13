@@ -15,8 +15,6 @@ namespace BizHawk.Emulation.Cores.Libretro
 		// todo: make this better
 		void UpdateInput(IController controller)
 		{
-			UpdateCallbackHandler();
-
 			short[] input = new short[(int)LibretroApi.RETRO_DEVICE_ID_JOYPAD.LAST];
 			// joypad port 0
 			for (uint i = 0; i < input.Length; i++)
