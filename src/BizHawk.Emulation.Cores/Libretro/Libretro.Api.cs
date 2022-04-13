@@ -9,53 +9,6 @@ namespace BizHawk.Emulation.Cores.Libretro
 	{
 		private const CallingConvention cc = CallingConvention.Cdecl;
 
-		public enum RETRO_ENVIRONMENT : uint
-		{
-			SET_ROTATION = 1,
-			GET_OVERSCAN = 2,
-			GET_CAN_DUPE = 3,
-			SET_MESSAGE = 6,
-			SHUTDOWN = 7,
-			SET_PERFORMANCE_LEVEL = 8,
-			GET_SYSTEM_DIRECTORY = 9,
-			SET_PIXEL_FORMAT = 10,
-			SET_INPUT_DESCRIPTORS = 11,
-			SET_KEYBOARD_CALLBACK = 12,
-			SET_DISK_CONTROL_INTERFACE = 13,
-			SET_HW_RENDER = 14,
-			GET_VARIABLE = 15,
-			SET_VARIABLES = 16,
-			GET_VARIABLE_UPDATE = 17,
-			SET_SUPPORT_NO_GAME = 18,
-			GET_LIBRETRO_PATH = 19,
-			SET_AUDIO_CALLBACK = 22,
-			SET_FRAME_TIME_CALLBACK = 21,
-			GET_RUMBLE_INTERFACE = 23,
-			GET_INPUT_DEVICE_CAPABILITIES = 24,
-			GET_SENSOR_INTERFACE = 25 | EXPERIMENTAL,
-			GET_CAMERA_INTERFACE = 26 | EXPERIMENTAL,
-			GET_LOG_INTERFACE = 27,
-			GET_PERF_INTERFACE = 28,
-			GET_LOCATION_INTERFACE = 29,
-			GET_CONTENT_DIRECTORY = 30,
-			GET_CORE_ASSETS_DIRECTORY = 30,
-			GET_SAVE_DIRECTORY = 31,
-			SET_SYSTEM_AV_INFO = 32,
-			SET_PROC_ADDRESS_CALLBACK = 33,
-			SET_SUBSYSTEM_INFO = 34,
-			SET_CONTROLLER_INFO = 35,
-			SET_MEMORY_MAPS = 36 | EXPERIMENTAL,
-			SET_GEOMETRY = 37,
-			GET_USERNAME = 38,
-			GET_LANGUAGE = 39,
-			GET_CURRENT_SOFTWARE_FRAMEBUFFER = 40 | EXPERIMENTAL,
-			GET_HW_RENDER_INTERFACE = 41 | EXPERIMENTAL,
-			SET_SUPPORT_ACHIEVEMENTS = 42 | EXPERIMENTAL,
-			SET_HW_RENDER_CONTEXT_NEGOTIATION_INTERFACE = 43 | EXPERIMENTAL,
-			SET_SERIALIZATION_QUIRKS = 44,
-			EXPERIMENTAL = 0x10000,
-		}
-
 		public enum RETRO_DEVICE : int
 		{
 			NONE = 0,
@@ -65,13 +18,18 @@ namespace BizHawk.Emulation.Cores.Libretro
 			LIGHTGUN = 4,
 			ANALOG = 5,
 			POINTER = 6,
+			SENSOR_ACCELEROMETER = 7,
+
+			LAST,
 		}
 
 		public enum RETRO_DEVICE_ID_ANALOG
 		{
 			// LEFT / RIGHT?
 			X = 0,
-			Y = 1
+			Y = 1,
+
+			LAST,
 		}
 
 		public enum RETRO_DEVICE_ID_MOUSE
@@ -79,7 +37,9 @@ namespace BizHawk.Emulation.Cores.Libretro
 			X = 0,
 			Y = 1,
 			LEFT = 2,
-			RIGHT = 3
+			RIGHT = 3,
+
+			LAST,
 		}
 
 		public enum RETRO_DEVICE_ID_LIGHTGUN
@@ -90,14 +50,18 @@ namespace BizHawk.Emulation.Cores.Libretro
 			CURSOR = 3,
 			TURBO = 4,
 			PAUSE = 5,
-			START = 6
+			START = 6,
+
+			LAST,
 		}
 
 		public enum RETRO_DEVICE_ID_POINTER
 		{
 			X = 0,
 			Y = 1,
-			PRESSED = 2
+			PRESSED = 2,
+
+			LAST,
 		}
 
 		public enum RETRO_KEY
@@ -245,7 +209,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			EURO = 321,
 			UNDO = 322,
 
-			LAST
+			LAST,
 		}
 
 		[Flags]
@@ -258,14 +222,16 @@ namespace BizHawk.Emulation.Cores.Libretro
 			META = 8,
 			NUMLOCK = 16,
 			CAPSLOCK = 32,
-			SCROLLLOCK = 64
+			SCROLLLOCK = 64,
 		}
 
 		public enum RETRO_DEVICE_ID_SENSOR_ACCELEROMETER
 		{
 			X = 0,
 			Y = 1,
-			Z = 2
+			Z = 2,
+
+			LAST,
 		}
 
 		public enum RETRO_DEVICE_ID_JOYPAD
@@ -285,47 +251,10 @@ namespace BizHawk.Emulation.Cores.Libretro
 			L2 = 12,
 			R2 = 13,
 			L3 = 14,
-			R3 = 15
-		}
+			R3 = 15,
 
-		public enum RETRO_PIXEL_FORMAT : int
-		{
-			ZRGB1555 = 0,
-			XRGB8888 = 1,
-			RGB565 = 2,
-			UNKNOWN = int.MaxValue,
-		}
-
-		public enum RETRO_LANGUAGE : int
-		{
-			ENGLISH = 0,
-			JAPANESE = 1,
-			FRENCH = 2,
-			SPANISH = 3,
-			GERMAN = 4,
-			ITALIAN = 5,
-			DUTCH = 6,
-			PORTUGUESE = 7,
-			RUSSIAN = 8,
-			KOREAN = 9,
-			CHINESE_TRADITIONAL = 10,
-			CHINESE_SIMPLIFIED = 11,
-			ESPERANTO = 12,
-			POLISH = 13,
-			VIETNAMESE = 14,
 			LAST,
-
-			DUMMY = int.MaxValue
 		}
-
-		public enum RETRO_LOG : int
-		{
-			DEBUG = 0,
-			INFO,
-			WARN,
-			ERROR,
-			DUMMY = int.MaxValue,
-		};
 
 		public enum RETRO_REGION : uint
 		{
@@ -353,12 +282,6 @@ namespace BizHawk.Emulation.Cores.Libretro
 		{
 			public IntPtr msg;
 			public uint frames;
-		};
-
-		[StructLayout(LayoutKind.Sequential)]
-		public struct retro_log_callback
-		{
-			public IntPtr log;
 		};
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -395,24 +318,6 @@ namespace BizHawk.Emulation.Cores.Libretro
 			public double sample_rate;
 		};
 
-		[UnmanagedFunctionPointer(cc)]
-		public delegate bool retro_environment_t(RETRO_ENVIRONMENT cmd, IntPtr data);
-
-		[UnmanagedFunctionPointer(cc)]
-		public delegate void retro_video_refresh_t(IntPtr data, uint width, uint height, long pitch);
-
-		[UnmanagedFunctionPointer(cc)]
-		public delegate void retro_audio_sample_t(short left, short right);
-
-		[UnmanagedFunctionPointer(cc)]
-		public delegate void retro_audio_sample_batch_t(IntPtr data, long frames);
-
-		[UnmanagedFunctionPointer(cc)]
-		public delegate void retro_input_poll_t();
-
-		[UnmanagedFunctionPointer(cc)]
-		public delegate short retro_input_state_t(uint port, uint device, uint index, uint id);
-
 		[BizImport(cc)]
 		public abstract void retro_init();
 
@@ -429,22 +334,22 @@ namespace BizHawk.Emulation.Cores.Libretro
 		public abstract void retro_get_system_av_info(IntPtr retro_system_av_info);
 
 		[BizImport(cc)]
-		public abstract void retro_set_environment(retro_environment_t cb);
+		public abstract void retro_set_environment(IntPtr retro_environment);
 
 		[BizImport(cc)]
-		public abstract void retro_set_video_refresh(retro_video_refresh_t cb);
+		public abstract void retro_set_video_refresh(IntPtr retro_video_refresh);
 
 		[BizImport(cc)]
-		public abstract void retro_set_audio_sample(retro_audio_sample_t cb);
+		public abstract void retro_set_audio_sample(IntPtr retro_audio_sample);
 
 		[BizImport(cc)]
-		public abstract long retro_set_audio_sample_batch(retro_audio_sample_batch_t cb);
+		public abstract long retro_set_audio_sample_batch(IntPtr retro_audio_sample_batch);
 
 		[BizImport(cc)]
-		public abstract void retro_set_input_poll(retro_input_poll_t cb);
+		public abstract void retro_set_input_poll(IntPtr retro_input_poll);
 
 		[BizImport(cc)]
-		public abstract void retro_set_input_state(retro_input_state_t cb);
+		public abstract void retro_set_input_state(IntPtr retro_input_state);
 
 		[BizImport(cc)]
 		public abstract void retro_set_controller_port_device(uint port, uint device);
@@ -487,5 +392,56 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		[BizImport(cc)]
 		public abstract long retro_get_memory_size(RETRO_MEMORY id);
+	}
+
+	public abstract class LibretroBridge
+	{
+		private const CallingConvention cc = CallingConvention.Cdecl;
+
+		[BizImport(cc)]
+		public abstract IntPtr LibretroBridge_CreateCallbackHandler();
+
+		[BizImport(cc)]
+		public abstract void LibretroBridge_DestroyCallbackHandler(IntPtr cbHandler);
+
+		[BizImport(cc)]
+		public abstract void LibretroBridge_SetGlobalCallbackHandler(IntPtr cbHandler);
+
+		[BizImport(cc)]
+		public abstract bool LibretroBridge_GetSupportsNoGame(IntPtr cbHandler);
+
+		[BizImport(cc)]
+		public abstract void LibretroBridge_GetRetroMessage(IntPtr cbHandler, ref LibretroApi.retro_message m);
+
+		[BizImport(cc)]
+		public abstract void LibretroBridge_SetDirectories(IntPtr cbHandler, byte[] systemDirectory, byte[] saveDirectory, byte[] coreDirectory, byte[] coreAssetsDirectory);
+
+		[BizImport(cc)]
+		public abstract void LibretroBridge_SetVideoSize(IntPtr cbHandler, int sz);
+
+		[BizImport(cc)]
+		public abstract void LibretroBridge_GetVideo(IntPtr cbHandler, ref int width, ref int height, int[] videoBuf);
+
+		[BizImport(cc)]
+		public abstract uint LibretroBridge_GetAudioSize(IntPtr cbHandler);
+
+		[BizImport(cc)]
+		public abstract void LibretroBridge_GetAudio(IntPtr cbHandler, ref int numSamples, short[] sampleBuf);
+
+		[BizImport(cc)]
+		public abstract void LibretroBridge_SetInput(IntPtr cbHandler, LibretroApi.RETRO_DEVICE device, int port, short[] input);
+
+		public struct retro_procs
+		{
+			public IntPtr retro_environment_proc;
+			public IntPtr retro_video_refresh_proc;
+			public IntPtr retro_audio_sample_proc;
+			public IntPtr retro_audio_sample_batch_proc;
+			public IntPtr retro_input_poll_proc;
+			public IntPtr retro_input_state_proc;
+		}
+
+		[BizImport(cc)]
+		public abstract void LibretroBridge_GetRetroProcs(ref retro_procs cb_procs);
 	}
 }

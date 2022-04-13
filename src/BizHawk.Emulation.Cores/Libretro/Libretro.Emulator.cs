@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -12,59 +11,91 @@ namespace BizHawk.Emulation.Cores.Libretro
 {
 	[PortedCore(CoreNames.Libretro, "CasualPokePlayer", singleInstance: true, isReleased: false)]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
-	public partial class LibretroEmulator : IEmulator, ISaveRam, IStatable, IVideoProvider, IInputPollable, IRegionable
+	public partial class LibretroEmulator : IEmulator
 	{
-		private readonly LibretroApi api;
+		private static readonly LibretroBridge bridge;
+		private static readonly LibretroBridge.retro_procs cb_procs;
 
-		private readonly LibretroApi.retro_environment_t retro_environment_cb;
-		private LibretroApi.retro_video_refresh_t retro_video_refresh_cb;
-		private LibretroApi.retro_audio_sample_t retro_audio_sample_cb;
-		private LibretroApi.retro_audio_sample_batch_t retro_audio_sample_batch_cb;
-		private LibretroApi.retro_input_poll_t retro_input_poll_cb;
-		private LibretroApi.retro_input_state_t retro_input_state_cb;
+		static LibretroEmulator()
+		{
+			var resolver = new DynamicLibraryImportResolver(
+				OSTailoredCode.IsUnixHost ? "libLibretroBridge.so" : "libLibretroBridge.dll", hasLimitedLifetime: false);
+
+			bridge = BizInvoker.GetInvoker<LibretroBridge>(resolver, CallingConventionAdapters.Native);
+
+			cb_procs = new();
+			bridge.LibretroBridge_GetRetroProcs(ref cb_procs);
+		}
+
+		private readonly LibretroApi api;
 
 		private readonly BasicServiceProvider _serviceProvider;
 		public IEmulatorServiceProvider ServiceProvider => _serviceProvider;
 
+		private readonly IntPtr cbHandler;
+
+		// please call this before calling any retro functions
+		private void UpdateCallbackHandler()
+		{
+			bridge.LibretroBridge_SetGlobalCallbackHandler(cbHandler);
+		}
+
 		public LibretroEmulator(CoreComm comm, IGameInfo game, string corePath, bool analysis = false)
 		{
-			api = BizInvoker.GetInvoker<LibretroApi>(
-				new DynamicLibraryImportResolver(corePath, hasLimitedLifetime: false), CallingConventionAdapters.Native);
-
-			_serviceProvider = new(this);
-			Comm = comm;
-
-			if (api.retro_api_version() != 1)
+			try
 			{
-				throw new InvalidOperationException("Unsupported Libretro API version (or major error in interop)");
+				cbHandler = bridge.LibretroBridge_CreateCallbackHandler();
+
+				if (cbHandler == IntPtr.Zero)
+				{
+					throw new Exception("Failed to create callback handler!");
+				}
+
+				UpdateCallbackHandler();
+
+				api = BizInvoker.GetInvoker<LibretroApi>(
+					new DynamicLibraryImportResolver(corePath, hasLimitedLifetime: false), CallingConventionAdapters.Native);
+
+				_serviceProvider = new(this);
+				Comm = comm;
+
+				if (api.retro_api_version() != 1)
+				{
+					throw new InvalidOperationException("Unsupported Libretro API version (or major error in interop)");
+				}
+
+				var SystemDirectory = RetroString(Comm.CoreFileProvider.GetRetroSystemPath(game));
+				var SaveDirectory = RetroString(Comm.CoreFileProvider.GetRetroSaveRAMDirectory(game));
+				var CoreDirectory = RetroString(Path.GetDirectoryName(corePath));
+				var CoreAssetsDirectory = RetroString(Path.GetDirectoryName(corePath));
+
+				bridge.LibretroBridge_SetDirectories(cbHandler, SystemDirectory, SaveDirectory, CoreDirectory, CoreAssetsDirectory);
+
+				ControllerDefinition = CreateControllerDefinition();
+
+				// check if we're just analysing the core and the core path matches the loaded core path anyways
+				if (analysis && corePath == LoadedCorePath)
+				{
+					Description = CalculateDescription();
+					Description.SupportsNoGame = LoadedCoreSupportsNoGame;
+					// don't set init, we don't want the core deinit later
+				}
+				else
+				{
+					api.retro_set_environment(cb_procs.retro_environment_proc);
+					Description = CalculateDescription();
+				}
+
+				if (!analysis)
+				{
+					LoadedCorePath = corePath;
+					LoadedCoreSupportsNoGame = Description.SupportsNoGame;
+				}
 			}
-
-			SystemDirectory = new(Comm.CoreFileProvider.GetRetroSystemPath(game));
-			SaveDirectory = new(Comm.CoreFileProvider.GetRetroSaveRAMDirectory(game));
-			CoreDirectory = new(Path.GetDirectoryName(corePath));
-			CoreAssetsDirectory = new(Path.GetDirectoryName(corePath));
-
-			ControllerDefinition = CreateControllerDefinition();
-
-			// check if we're just analysing the core and the core path matches the loaded core path anyways
-			if (analysis && corePath == LoadedCorePath)
+			catch
 			{
-				Description = CalculateDescription();
-				Description.SupportsNoGame = LoadedCoreSupportsNoGame;
-				// don't set init, we don't want the core deinit later
-			}
-			else
-			{
-				api.retro_set_environment(retro_environment_cb = retro_environment);
-				api.retro_init();
-				Description = CalculateDescription();
-				inited = true;
-			}
-
-			if (!analysis)
-			{
-				LoadedCorePath = corePath;
-				LoadedCoreSupportsNoGame = Description.SupportsNoGame;
+				Dispose();
+				throw;
 			}
 		}
 
@@ -75,7 +106,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			public IntPtr PinnedData => _handle.AddrOfPinnedObject();
 			public long Length { get; }
 
-			public RetroData(object o, long len)
+			public RetroData(object o, long len = 0)
 			{
 				_handle = GCHandle.Alloc(o, GCHandleType.Pinned);
 				Length = len;
@@ -84,236 +115,30 @@ namespace BizHawk.Emulation.Cores.Libretro
 			~RetroData() => _handle.Free();
 		}
 
-		private class RetroString
+		private byte[] RetroString(string managedString)
 		{
-			private readonly RetroData _data;
-			public IntPtr PinnedString => _data.PinnedData;
-
-			public RetroString(string managedString)
-			{
-				var s = Encoding.UTF8.GetBytes(managedString);
-				var b = new byte[s.Length + 1];
-				Array.Copy(s, b, s.Length);
-				b[s.Length] = 0;
-				_data = new(b, b.LongLength);
-			}
+			var s = Encoding.UTF8.GetBytes(managedString);
+			var ret = new byte[s.Length + 1];
+			Array.Copy(s, ret, s.Length);
+			ret[s.Length] = 0;
+			return ret;
 		}
 
-		// environment vars
-
-		private uint rotation_ccw = 0;
-		private LibretroApi.RETRO_PIXEL_FORMAT pixel_format = 0;
-		private bool variables_dirty = false;
-		private int variable_count = 0;
-		private string[] variable_keys = null;
-		private string[] variable_comments = null;
-		private readonly List<RetroString> variables = new();
-		private bool support_no_game = false;
 		private LibretroApi.retro_system_av_info av_info;
-		private LibretroApi.RETRO_REGION _region = LibretroApi.RETRO_REGION.NTSC;
-
-		private readonly RetroString SystemDirectory;
-		private readonly RetroString SaveDirectory;
-		private readonly RetroString CoreDirectory;
-		private readonly RetroString CoreAssetsDirectory;
-
-		public DisplayType Region
-		{
-			get
-			{
-				return _region switch
-				{
-					LibretroApi.RETRO_REGION.NTSC => DisplayType.NTSC,
-					LibretroApi.RETRO_REGION.PAL => DisplayType.PAL,
-					_ => DisplayType.NTSC,
-				};
-			}
-		}
-
-		private unsafe bool retro_environment(LibretroApi.RETRO_ENVIRONMENT cmd, IntPtr data)
-		{
-			switch (cmd)
-			{
-				case LibretroApi.RETRO_ENVIRONMENT.SET_ROTATION:
-					rotation_ccw = (*(uint*)data) * 90;
-					return true;
-				case LibretroApi.RETRO_ENVIRONMENT.GET_OVERSCAN:
-					*(bool*)data = false;
-					return true;
-				case LibretroApi.RETRO_ENVIRONMENT.GET_CAN_DUPE:
-					*(bool*)data = true;
-					return true;
-				case LibretroApi.RETRO_ENVIRONMENT.SET_MESSAGE:
-				{
-					var message = (LibretroApi.retro_message*)data;
-					retro_message_string = Mershul.PtrToStringUtf8(message->msg);
-					retro_message_time = message->frames;
-					return true;
-				}
-				case LibretroApi.RETRO_ENVIRONMENT.SHUTDOWN:
-					//TODO low priority
-					return false;
-				case LibretroApi.RETRO_ENVIRONMENT.SET_PERFORMANCE_LEVEL:
-					//unneeded
-					return false;
-				case LibretroApi.RETRO_ENVIRONMENT.GET_SYSTEM_DIRECTORY:
-					*(byte**)data = (byte*)SystemDirectory.PinnedString;
-					return true;
-				case LibretroApi.RETRO_ENVIRONMENT.SET_PIXEL_FORMAT:
-					pixel_format = *(LibretroApi.RETRO_PIXEL_FORMAT*)data;
-					return true;
-				case LibretroApi.RETRO_ENVIRONMENT.SET_INPUT_DESCRIPTORS:
-					//TODO medium priority
-					return false;
-				case LibretroApi.RETRO_ENVIRONMENT.SET_KEYBOARD_CALLBACK:
-					//TODO high priority (to support keyboard consoles, probably high value for us. but that may take a lot of infrastructure work)
-					return false;
-				case LibretroApi.RETRO_ENVIRONMENT.SET_DISK_CONTROL_INTERFACE:
-					//TODO high priority (to support disc systems)
-					return false;
-				case LibretroApi.RETRO_ENVIRONMENT.SET_HW_RENDER:
-					//TODO high priority (to support 3d renderers
-					return false;
-
-				case LibretroApi.RETRO_ENVIRONMENT.GET_VARIABLE:
-				{
-					//according to retroarch's `core_option_manager_get` this is what we should do
-
-					variables_dirty = false;
-
-					var req = (LibretroApi.retro_variable*)data;
-					req->value = IntPtr.Zero;
-
-					for (int i = 0; i < variable_count; i++)
-					{
-						if (variable_keys[i] == Mershul.PtrToStringUtf8(req->key))
-						{
-							req->value = variables[i].PinnedString;
-							return true;
-						}
-					}
-
-					return true;
-				}
-
-				case LibretroApi.RETRO_ENVIRONMENT.SET_VARIABLES:
-				{
-					var var = (LibretroApi.retro_variable*)data;
-					int nVars = 0;
-					while (var->key != IntPtr.Zero)
-					{
-						var++;
-						nVars++;
-					}
-
-					variables.Clear();
-					variable_count = nVars;
-					variable_keys = new string[nVars];
-					variable_comments = new string[nVars];
-					var = (LibretroApi.retro_variable*)data;
-					for (int i = 0; i < nVars; i++)
-					{
-						variable_keys[i] = Mershul.PtrToStringUtf8(var[i].key);
-						variable_comments[i] = Mershul.PtrToStringUtf8(var[i].value);
-
-						//analyze to find default and save it
-						string comment = variable_comments[i];
-						var ofs = comment.IndexOf(';') + 2;
-						var pipe = comment.IndexOf('|', ofs);
-						if (pipe == -1)
-						{
-							variables.Add(new(comment.Substring(ofs)));
-						}
-						else
-						{
-							variables.Add(new(comment.Substring(ofs, pipe - ofs)));
-						}
-					}
-
-					return true;
-				}
-
-				case LibretroApi.RETRO_ENVIRONMENT.GET_VARIABLE_UPDATE:
-					*(bool*)data = variables_dirty;
-					break;
-				case LibretroApi.RETRO_ENVIRONMENT.SET_SUPPORT_NO_GAME:
-					support_no_game = *(bool*)data;
-					break;
-				case LibretroApi.RETRO_ENVIRONMENT.GET_LIBRETRO_PATH:
-					*(byte**)data = (byte*)CoreDirectory.PinnedString;
-					return true;
-				case LibretroApi.RETRO_ENVIRONMENT.SET_AUDIO_CALLBACK:
-					//dont know what to do with this yet
-					return false;
-				case LibretroApi.RETRO_ENVIRONMENT.SET_FRAME_TIME_CALLBACK:
-					//dont know what to do with this yet
-					return false;
-				case LibretroApi.RETRO_ENVIRONMENT.GET_RUMBLE_INTERFACE:
-					//TODO low priority
-					return false;
-				case LibretroApi.RETRO_ENVIRONMENT.GET_INPUT_DEVICE_CAPABILITIES:
-					//TODO medium priority - other input methods
-					*(ulong*)data = 1 << (int)LibretroApi.RETRO_DEVICE.JOYPAD;
-					return true;
-				case LibretroApi.RETRO_ENVIRONMENT.GET_LOG_INTERFACE:
-					var cb = (LibretroApi.retro_log_callback*)data;
-					cb->log = IntPtr.Zero; // we can't do this from C#, although cores will have a fallback log anyways so not a big deal
-					return false;
-				case LibretroApi.RETRO_ENVIRONMENT.GET_PERF_INTERFACE:
-					// uhhhh what the fuck is this for
-					return false;
-				case LibretroApi.RETRO_ENVIRONMENT.GET_LOCATION_INTERFACE:
-					//TODO low priority
-					return false;
-				case LibretroApi.RETRO_ENVIRONMENT.GET_CORE_ASSETS_DIRECTORY:
-					*(byte**)data = (byte*)CoreAssetsDirectory.PinnedString;
-					return true;
-				case LibretroApi.RETRO_ENVIRONMENT.GET_SAVE_DIRECTORY:
-					*(byte**)data = (byte*)SaveDirectory.PinnedString;
-					return true;
-				case LibretroApi.RETRO_ENVIRONMENT.SET_SYSTEM_AV_INFO:
-					Console.WriteLine("NEED RETRO_ENVIRONMENT.SET_SYSTEM_AV_INFO");
-					return false;
-				case LibretroApi.RETRO_ENVIRONMENT.SET_PROC_ADDRESS_CALLBACK:
-					// uhhhh what the fuck is this for
-					return true;
-				case LibretroApi.RETRO_ENVIRONMENT.SET_SUBSYSTEM_INFO:
-					//needs retro_load_game_special to be useful; not supported yet
-					return false;
-				case LibretroApi.RETRO_ENVIRONMENT.SET_CONTROLLER_INFO:
-					//TODO medium priority probably
-					return false;
-				case LibretroApi.RETRO_ENVIRONMENT.SET_GEOMETRY:
-					// uhhhh what the fuck is this for
-					return true;
-				case LibretroApi.RETRO_ENVIRONMENT.GET_USERNAME:
-					//we definitely want to return false here so the core will do something deterministic
-					return false;
-				case LibretroApi.RETRO_ENVIRONMENT.GET_LANGUAGE:
-					*(uint*)data = (uint)LibretroApi.RETRO_LANGUAGE.ENGLISH;
-					return true;
-			}
-
-			return false;
-		}
 
 		private bool inited = false;
-		private bool game_loaded = false;
 
 		public void Dispose()
 		{
-			if (game_loaded)
-			{
-				api.retro_unload_game();
-				game_loaded = false;
-			}
-
+			UpdateCallbackHandler();
 			if (inited)
 			{
 				api.retro_deinit();
+				api.retro_unload_game();
 				inited = false;
 			}
 
+			bridge.LibretroBridge_DestroyCallbackHandler(cbHandler);
 			_resampler?.Dispose();
 		}
 
@@ -332,13 +157,13 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		public bool LoadData(byte[] data, string id)
 		{
-			LoadHandler(RETRO_LOAD.DATA, new(id), new(data, data.LongLength));
+			LoadHandler(RETRO_LOAD.DATA, new(RetroString(id)), new(data, data.LongLength));
 			return true;
 		}
 
 		public bool LoadPath(string path)
 		{
-			LoadHandler(RETRO_LOAD.PATH, new(path));
+			LoadHandler(RETRO_LOAD.PATH, new(RetroString(path)));
 			return true;
 		}
 
@@ -348,8 +173,10 @@ namespace BizHawk.Emulation.Cores.Libretro
 			return true;
 		}
 
-		private unsafe void LoadHandler(RETRO_LOAD which, RetroString path = null, RetroData data = null)
+		private unsafe void LoadHandler(RETRO_LOAD which, RetroData path = null, RetroData data = null)
 		{
+			UpdateCallbackHandler();
+
 			var game = new LibretroApi.retro_game_info();
 			var gameptr = (IntPtr)(&game);
 
@@ -359,7 +186,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			}
 			else
 			{
-				game.path = path.PinnedString;
+				game.path = path.PinnedData;
 				if (which == RETRO_LOAD.DATA)
 				{
 					game.data = data.PinnedData;
@@ -367,17 +194,18 @@ namespace BizHawk.Emulation.Cores.Libretro
 				}
 			}
 
+			api.retro_init();
 			api.retro_load_game(gameptr);
 
 			var av = new LibretroApi.retro_system_av_info();
 			api.retro_get_system_av_info((IntPtr)(&av));
 			av_info = av;
 
-			api.retro_set_video_refresh(retro_video_refresh_cb = retro_video_refresh);
-			api.retro_set_audio_sample(retro_audio_sample_cb = retro_audio_sample);
-			api.retro_set_audio_sample_batch(retro_audio_sample_batch_cb = retro_audio_sample_batch);
-			api.retro_set_input_poll(retro_input_poll_cb = retro_input_poll);
-			api.retro_set_input_state(retro_input_state_cb = retro_input_state);
+			api.retro_set_video_refresh(cb_procs.retro_video_refresh_proc);
+			api.retro_set_audio_sample(cb_procs.retro_audio_sample_proc);
+			api.retro_set_audio_sample_batch(cb_procs.retro_audio_sample_batch_proc);
+			api.retro_set_input_poll(cb_procs.retro_input_poll_proc);
+			api.retro_set_input_state(cb_procs.retro_input_state_proc);
 
 			_stateBuf = new byte[_stateLen = api.retro_serialize_size()];
 
@@ -386,7 +214,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			//this stuff can only happen after the game is loaded
 
 			//allocate a video buffer which will definitely be large enough
-			SetVideoBuffer((int)av.base_width, (int)av.base_height);
+			InitVideoBuffer((int)av.base_width, (int)av.base_height);
 			vidBuffer = new int[av.max_width * av.max_height];
 
 			// TODO: more precise
@@ -398,239 +226,30 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 			InitMemoryDomains(); // im going to assume this should happen when a game is loaded
 
-			game_loaded = true;
+			inited = true;
 		}
 
-		public IInputCallbackSystem InputCallbacks => _inputCallbacks;
-		private readonly InputCallbackSystem _inputCallbacks = new();
+		private LibretroApi.retro_message retro_msg = new();
 
-		private IController _controller;
-
-		private string retro_message_string = "";
-		private uint retro_message_time = 0;
 		private CoreComm Comm { get; }
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
-			_controller = controller;
+			UpdateCallbackHandler();
+
+			UpdateInput(controller);
 			api.retro_run();
+			UpdateVideoBuffer();
+
+			bridge.LibretroBridge_GetRetroMessage(cbHandler, ref retro_msg);
+			if (retro_msg.frames > 0)
+			{
+				Comm.Notify(Mershul.PtrToStringUtf8(retro_msg.msg));
+			}
+
 			Frame++;
 
-			if (retro_message_time > 0)
-			{
-				Comm.Notify(retro_message_string);
-				retro_message_time--;
-			}
-
 			return true;
-		}
-
-		private int[] vidBuffer;
-		private int vidWidth = -1, vidHeight = -1;
-
-		private void SetVideoBuffer(int width, int height)
-		{
-			//actually, we've already allocated a buffer with the given maximum size
-			if (vidWidth == width && vidHeight == height) return;
-			vidWidth = width;
-			vidHeight = height;
-		}
-
-		//video provider
-		public int BackgroundColor => 0;
-		public int[] GetVideoBuffer() => vidBuffer;
-
-		public int VirtualWidth
-		{
-			get
-			{
-				var dar = av_info.aspect_ratio;
-				if (dar <= 0)
-				{
-					return vidWidth;
-				}
-				if (dar > 1.0f)
-				{
-					return (int)(vidHeight * dar);
-				}
-				return vidWidth;
-			}
-		}
-
-		public int VirtualHeight
-		{
-			get
-			{
-				var dar = av_info.aspect_ratio;
-				if (dar <= 0)
-				{
-					return vidHeight;
-				}
-				if (dar < 1.0f)
-				{
-					return (int)(vidWidth / dar);
-				}
-				return vidHeight;
-			}
-		}
-
-		public int BufferWidth => vidWidth;
-		public int BufferHeight => vidHeight;
-
-		public int VsyncNumerator { get; private set; }
-		public int VsyncDenominator { get; private set; }
-
-		private static unsafe int* address(uint rot, uint width, uint height, long pitch, int x, int y, int* dstbuf, int* optimize0dst)
-		{
-			switch (rot)
-			{
-				case 0:
-					return optimize0dst;
-				case 90:
-					//TODO:
-					return optimize0dst;
-				case 180:
-					//TODO:
-					return optimize0dst;
-				case 270:
-					{
-						int dx = (int)width - y - 1;
-						int dy = x;
-						return dstbuf + dy * width + dx;
-					}
-				default:
-					throw new Exception();
-			}
-		}
-
-		private static unsafe void Blit555(uint rot, short* srcbuf, int* dstbuf, uint width, uint height, long pitch)
-		{
-			int* dst = dstbuf;
-			for (int y = 0; y < height; y++)
-			{
-				short* row = srcbuf;
-				for (int x = 0; x < width; x++)
-				{
-					short ci = *row;
-					int r = ci & 0x001f;
-					int g = ci & 0x03e0;
-					int b = ci & 0x7c00;
-
-					r = (r << 3) | (r >> 2);
-					g = (g >> 2) | (g >> 7);
-					b = (b >> 7) | (b >> 12);
-					int co = r | g | b | unchecked((int)0xff000000);
-
-					*address(rot, width, height, pitch, x, y, dstbuf, dst) = co;
-					dst++;
-					row++;
-				}
-				srcbuf += pitch / 2;
-			}
-		}
-
-		private static unsafe void Blit565(uint rot, short* srcbuf, int* dstbuf, uint width, uint height, long pitch)
-		{
-			int* dst = dstbuf;
-			for (int y = 0; y < height; y++)
-			{
-				short* row = srcbuf;
-				for (int x = 0; x < width; x++)
-				{
-					short ci = *row;
-					int r = ci & 0x001f;
-					int g = (ci & 0x07e0) >> 5;
-					int b = (ci & 0xf800) >> 11;
-
-					r = (r << 3) | (r >> 2);
-					g = (g << 2) | (g >> 4);
-					b = (b << 3) | (b >> 2);
-					int co = (b << 16) | (g << 8) | r | unchecked((int)0xff000000);
-
-					*address(rot, width, height, pitch, x, y, dstbuf, dst) = co;
-					dst++;
-					row++;
-				}
-				srcbuf += pitch / 2;
-			}
-		}
-
-		private static unsafe void Blit888(uint rot, int* srcbuf, int* dstbuf, uint width, uint height, long pitch)
-		{
-			int* dst = dstbuf;
-			for (int y = 0; y < height; y++)
-			{
-				int* row = srcbuf;
-				for (int x = 0; x < width; x++)
-				{
-					int ci = *row;
-					int co = ci | unchecked((int)0xff000000);
-					*address(rot, width, height, pitch, x, y, dstbuf, dst) = co;
-					dst++;
-					row++;
-				}
-				srcbuf += pitch / 4;
-			}
-		}
-
-
-		public unsafe void retro_video_refresh(IntPtr data, uint width, uint height, long pitch)
-		{
-			if (data == IntPtr.Zero)
-			{
-				return;
-			}
-
-			SetVideoBuffer((int)width, (int)height);
-
-			fixed (int* vb = vidBuffer)
-			{
-				switch (pixel_format)
-				{
-					case LibretroApi.RETRO_PIXEL_FORMAT.ZRGB1555:
-						Blit555(rotation_ccw, (short*)data, vb, width, height, pitch);
-						break;
-					case LibretroApi.RETRO_PIXEL_FORMAT.XRGB8888:
-						Blit888(rotation_ccw, (int*)data, vb, width, height, pitch);
-						break;
-					case LibretroApi.RETRO_PIXEL_FORMAT.RGB565:
-						Blit565(rotation_ccw, (short*)data, vb, width, height, pitch);
-						break;
-				}
-			}
-		}
-
-		private SpeexResampler _resampler;
-
-		private short[] _sampleBuf = new short[0];
-
-		// debug
-		private int nsamprecv = 0;
-
-		private void SetupResampler(double fps, double sps)
-		{
-			Console.WriteLine("FPS {0} SPS {1}", fps, sps);
-
-			// todo: more precise?
-			uint spsnum = (uint)sps * 10000;
-			uint spsden = 10000U;
-
-			_resampler = new SpeexResampler(SpeexResampler.Quality.QUALITY_DESKTOP, 44100 * spsden, spsnum, (uint)sps, 44100, null, null);
-		}
-
-		public void retro_audio_sample(short left, short right)
-		{
-			_resampler.EnqueueSample(left, right);
-			nsamprecv++;
-		}
-
-		public void retro_audio_sample_batch(IntPtr data, long frames)
-		{
-			if (_sampleBuf.Length < frames * 2)
-				_sampleBuf = new short[frames * 2];
-			Marshal.Copy(data, _sampleBuf, 0, (int)(frames * 2));
-			_resampler.EnqueueSamples(_sampleBuf, (int)frames);
-			nsamprecv += (int)frames;
 		}
 
 		public static ControllerDefinition CreateControllerDefinition()
@@ -670,42 +289,8 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		public ControllerDefinition ControllerDefinition { get; }
 		public int Frame { get; set; }
-		public int LagCount { get; set; }
-		public bool IsLagFrame { get; set; }
 		public string SystemId => VSystemID.Raw.Libretro;
 		public bool DeterministicEmulation => false;
-
-		public byte[] CloneSaveRam()
-		{
-			if (_saveramSize > 0)
-			{
-				var buf = new byte[_saveramSize];
-				int index = 0;
-				foreach (var m in _saveramAreas)
-				{
-					Marshal.Copy(m.Data, buf, index, (int)m.Size);
-					index += (int)m.Size;
-				}
-				return buf;
-			}
-
-			return null;
-		}
-
-		public void StoreSaveRam(byte[] data)
-		{
-			if (_saveramSize > 0)
-			{
-				int index = 0;
-				foreach (var m in _saveramAreas)
-				{
-					Marshal.Copy(data, index, m.Data, (int)m.Size);
-					index += (int)m.Size;
-				}
-			}
-		}
-
-		public bool SaveRamModified => _saveramSize > 0;
 
 		public void ResetCounters()
 		{
@@ -714,74 +299,10 @@ namespace BizHawk.Emulation.Cores.Libretro
 			IsLagFrame = false;
 		}
 
-		private byte[] _stateBuf;
-		private long _stateLen;
-
-		public void SaveStateBinary(BinaryWriter writer)
-		{
-			_stateLen = api.retro_serialize_size();
-			if (_stateBuf.LongLength != _stateLen)
-			{
-				_stateBuf = new byte[_stateLen];
-			}
-
-			var d = new RetroData(_stateBuf, _stateLen);
-			api.retro_serialize(d.PinnedData, d.Length);
-			writer.Write(_stateBuf.Length);
-			writer.Write(_stateBuf);
-			// other variables
-			writer.Write(Frame);
-			writer.Write(LagCount);
-			writer.Write(IsLagFrame);
-		}
-
-		public void LoadStateBinary(BinaryReader reader)
-		{
-			var newlen = reader.ReadInt32();
-			if (newlen > _stateBuf.Length)
-			{
-				throw new Exception("Unexpected buffer size");
-			}
-
-			reader.Read(_stateBuf, 0, newlen);
-			var d = new RetroData(_stateBuf, _stateLen);
-			api.retro_unserialize(d.PinnedData, d.Length);
-			// other variables
-			Frame = reader.ReadInt32();
-			LagCount = reader.ReadInt32();
-			IsLagFrame = reader.ReadBoolean();
-		}
-
-		private readonly List<MemoryDomain> _memoryDomains = new();
-		private IMemoryDomains MemoryDomains { get; set; }
-
-		private readonly List<MemoryDomainIntPtr> _saveramAreas = new();
-		private long _saveramSize = 0;
-
-		private void InitMemoryDomains()
-		{
-			foreach (LibretroApi.RETRO_MEMORY m in Enum.GetValues(typeof(LibretroApi.RETRO_MEMORY)))
-			{
-				var mem = api.retro_get_memory_data(m);
-				var sz = api.retro_get_memory_size(m);
-				if (mem != IntPtr.Zero && sz > 0)
-				{
-					var d = new MemoryDomainIntPtr(Enum.GetName(m.GetType(), m), MemoryDomain.Endian.Little, mem, sz, true, 1);
-					_memoryDomains.Add(d);
-					if (m is LibretroApi.RETRO_MEMORY.SAVE_RAM or LibretroApi.RETRO_MEMORY.RTC)
-					{
-						_saveramAreas.Add(d);
-						_saveramSize += d.Size;
-					}
-				}
-			}
-
-			MemoryDomains = new MemoryDomainList(_memoryDomains);
-			_serviceProvider.Register(MemoryDomains);
-		}
-
 		public unsafe RetroDescription CalculateDescription()
 		{
+			UpdateCallbackHandler();
+
 			var descr = new RetroDescription();
 			var sys_info = new LibretroApi.retro_system_info();
 			api.retro_get_system_info((IntPtr)(&sys_info));
@@ -790,7 +311,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			descr.ValidExtensions = Mershul.PtrToStringUtf8(sys_info.valid_extensions);
 			descr.NeedsRomAsPath = sys_info.need_fullpath;
 			descr.NeedsArchives = sys_info.block_extract;
-			descr.SupportsNoGame = support_no_game;
+			descr.SupportsNoGame = bridge.LibretroBridge_GetSupportsNoGame(cbHandler);
 			return descr;
 		}
 	}

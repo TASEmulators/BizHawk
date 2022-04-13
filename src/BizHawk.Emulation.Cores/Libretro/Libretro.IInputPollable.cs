@@ -1,12 +1,49 @@
-﻿using BizHawk.Emulation.Common;
+﻿using System;
+
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Libretro
 {
 	public partial class LibretroEmulator : IInputPollable
 	{
-		public void retro_input_poll()
+		public int LagCount { get; set; }
+		public bool IsLagFrame { get; set; }
+
+		[FeatureNotImplemented]
+		public IInputCallbackSystem InputCallbacks => throw new NotImplementedException();
+
+		// todo: make this better
+		void UpdateInput(IController controller)
 		{
-			// useless
+			UpdateCallbackHandler();
+
+			short[] input = new short[(int)LibretroApi.RETRO_DEVICE_ID_JOYPAD.LAST];
+			// joypad port 0
+			for (uint i = 0; i < input.Length; i++)
+			{
+				input[i] = retro_input_state(controller, 0, (uint)LibretroApi.RETRO_DEVICE.JOYPAD, 0, i);
+			}
+			bridge.LibretroBridge_SetInput(cbHandler, LibretroApi.RETRO_DEVICE.JOYPAD, 0, input);
+			// joypad port 1
+			for (uint i = 0; i < input.Length; i++)
+			{
+				input[i] = retro_input_state(controller, 0, (uint)LibretroApi.RETRO_DEVICE.JOYPAD, 1, i);
+			}
+			bridge.LibretroBridge_SetInput(cbHandler, LibretroApi.RETRO_DEVICE.JOYPAD, 1, input);
+			input = new short[(int)LibretroApi.RETRO_DEVICE_ID_POINTER.LAST];
+			// pointer port 0
+			for (uint i = 0; i < input.Length; i++)
+			{
+				input[i] = retro_input_state(controller, 0, (uint)LibretroApi.RETRO_DEVICE.POINTER, 0, i);
+			}
+			bridge.LibretroBridge_SetInput(cbHandler, LibretroApi.RETRO_DEVICE.POINTER, 0, input);
+			input = new short[(int)LibretroApi.RETRO_KEY.LAST];
+			// keyboard port 0
+			for (uint i = 0; i < input.Length; i++)
+			{
+				input[i] = retro_input_state(controller, 0, (uint)LibretroApi.RETRO_DEVICE.KEYBOARD, 0, i);
+			}
+			bridge.LibretroBridge_SetInput(cbHandler, LibretroApi.RETRO_DEVICE.KEYBOARD, 0, input);
 		}
 
 		//meanings (they are kind of hazy, but once we're done implementing this it will be completely defined by example)
@@ -14,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		//device = logical device type
 		//index = sub device index? (multitap?)
 		//id = button id (or key id)
-		public short retro_input_state(uint port, uint device, uint index, uint id)
+		private static short retro_input_state(IController controller, uint port, uint device, uint index, uint id)
 		{
 			//helpful debugging
 			//Console.WriteLine("{0} {1} {2} {3}", port, device, index, id);
@@ -25,9 +62,9 @@ namespace BizHawk.Emulation.Cores.Libretro
 					{
 						return (LibretroApi.RETRO_DEVICE_ID_POINTER)id switch
 						{
-							LibretroApi.RETRO_DEVICE_ID_POINTER.X => (short)_controller.AxisValue("Pointer X"),
-							LibretroApi.RETRO_DEVICE_ID_POINTER.Y => (short)_controller.AxisValue("Pointer Y"),
-							LibretroApi.RETRO_DEVICE_ID_POINTER.PRESSED => (short)(_controller.IsPressed("Pointer Pressed") ? 1 : 0),
+							LibretroApi.RETRO_DEVICE_ID_POINTER.X => (short)controller.AxisValue("Pointer X"),
+							LibretroApi.RETRO_DEVICE_ID_POINTER.Y => (short)controller.AxisValue("Pointer Y"),
+							LibretroApi.RETRO_DEVICE_ID_POINTER.PRESSED => (short)(controller.IsPressed("Pointer Pressed") ? 1 : 0),
 							_ => 0,
 						};
 					}
@@ -174,7 +211,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 							_ => "",
 						};
 
-						return (short)(_controller.IsPressed("Key " + button) ? 1 : 0);
+						return (short)(controller.IsPressed("Key " + button) ? 1 : 0);
 					}
 
 				case LibretroApi.RETRO_DEVICE.JOYPAD:
@@ -196,22 +233,17 @@ namespace BizHawk.Emulation.Cores.Libretro
 							_ => "",
 						};
 
-						return (short)(GetButton(port+1, "RetroPad", button) ? 1 : 0);
+						return (short)(GetButton(controller, port + 1, "RetroPad", button) ? 1 : 0);
 					}
 				default:
 					return 0;
 			}
 		}
 
-		private bool GetButton(uint pnum, string type, string button)
+		private static bool GetButton(IController controller, uint pnum, string type, string button)
 		{
 			string key = $"P{pnum} {type} {button}";
-			bool b = _controller.IsPressed(key);
-			if (b == true)
-			{
-				return true; //debugging placeholder
-			}
-			else return false;
+			return controller.IsPressed(key);
 		}
 
 	}
