@@ -217,8 +217,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			//this stuff can only happen after the game is loaded
 
 			//allocate a video buffer which will definitely be large enough
-			InitVideoBuffer((int)av.base_width, (int)av.base_height);
-			vidBuffer = new int[av.max_width * av.max_height];
+			InitVideoBuffer((int)av.base_width, (int)av.base_height, (int)(av.max_width * av.max_height));
 
 			// TODO: more precise
 			VsyncNumerator = (int)(10000000 * av.fps);

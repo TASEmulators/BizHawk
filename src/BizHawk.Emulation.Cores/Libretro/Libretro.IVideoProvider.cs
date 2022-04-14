@@ -7,12 +7,12 @@ namespace BizHawk.Emulation.Cores.Libretro
 		private int[] vidBuffer;
 		private int vidWidth = -1, vidHeight = -1;
 
-		private void InitVideoBuffer(int width, int height)
+		private void InitVideoBuffer(int width, int height, int maxSize)
 		{
-			vidBuffer = new int[width * height];
+			vidBuffer = new int[maxSize];
 			vidWidth = width;
 			vidHeight = height;
-			bridge.LibretroBridge_SetVideoSize(cbHandler, vidBuffer.Length);
+			bridge.LibretroBridge_SetVideoSize(cbHandler, maxSize);
 		}
 
 		private void UpdateVideoBuffer()
