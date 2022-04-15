@@ -8,11 +8,12 @@ using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 {
-	[PortedCore(CoreNames.Ares64, "ares team, Near", "v127", "https://ares-emulator.github.io/", isReleased: false)]
+	[PortedCore(CoreNames.Ares64, "ares team, Near", "v127", "https://ares-emulator.github.io/")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), })]
 	public partial class Ares64 : WaterboxCore, IRegionable
 	{
 		private readonly LibAres64 _core;
+		private readonly Ares64Disassembler _disassembler;
 
 		[CoreConstructor(VSystemID.Raw.N64)]
 		public Ares64(CoreLoadParameters<Ares64Settings, Ares64SyncSettings> lp)
@@ -40,6 +41,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			};
 
 			N64Controller = CreateControllerDefinition(ControllerSettings);
+			_tracecb = MakeTrace;
 
 			_core = PreInit<LibAres64>(new WaterboxOptions
 			{
@@ -51,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 				MmapHeapSizeKB = 512 * 1024,
 				SkipCoreConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
-			});
+			}, new[] { _tracecb, });
 
 			var rom = lp.Roms[0].RomData;
 
@@ -113,6 +115,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			}
 
 			PostInit();
+
+			Tracer = new TraceBuffer("r3400: PC, mnemonic, operands, registers (GPRs, Load/Link Bit, MultHI, MultLO, Implementation/Revision, Control/Status, FGRs)");
+			_serviceProvider.Register(Tracer);
+
+			_disassembler = new(_core);
+			_serviceProvider.Register<IDisassemblable>(_disassembler);
 
 			DeterministicEmulation = lp.DeterministicEmulationRequested || (!_syncSettings.UseRealTime);
 			InitializeRtc(_syncSettings.InitialTime);
@@ -203,6 +211,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
+			_core.SetTraceCallback(Tracer.IsEnabled() ? _tracecb : null);
+
 			for (int i = 0; i < 4; i++)
 			{
 				if (ControllerSettings[i] == LibAres64.ControllerType.Rumblepak)
