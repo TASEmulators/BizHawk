@@ -570,12 +570,7 @@
             // 
             this.AutoSaveStateSlotNumeric.Location = new System.Drawing.Point(231, 317);
             this.AutoSaveStateSlotNumeric.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.AutoSaveStateSlotNumeric.Minimum = new decimal(new int[] {
-            1,
+            9,
             0,
             0,
             0});
