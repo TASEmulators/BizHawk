@@ -13,6 +13,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 
 		private void MakeTrace(IntPtr disasm)
 		{
+			var disasmStr = Mershul.PtrToStringUtf8(disasm);
+			if (!disasmStr.StartsWith("CPU")) // garbage, ignore
+			{
+				return;
+			}
+			disasmStr = disasmStr.Remove(0, 5); // remove "CPU  "
+			disasmStr = disasmStr.Replace("\n", ""); // remove newlines
+			disasmStr = Regex.Replace(disasmStr, @"\{.*\}", ""); // remove any {*} patterns
+			disasmStr = disasmStr.PadRight(36); // pad
+
 			var regs = GetCpuFlagsAndRegisters();
 			var regsStr = "";
 			foreach (var r in regs)
@@ -24,11 +34,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			}
 
 			regsStr = regsStr.Remove(regsStr.Length - 1, 1);
-
-			var disasmStr = Mershul.PtrToStringUtf8(disasm);
-			disasmStr = disasmStr.Remove(0, 5); // remove "CPU  "
-			disasmStr = disasmStr.Replace("\n", ""); // remove newlines
-			disasmStr = Regex.Replace(disasmStr, @"\{.*\}", ""); // remove any {*} patterns
 
 			Tracer.Put(new(
 				disassembly: disasmStr,

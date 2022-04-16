@@ -116,7 +116,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 
 			PostInit();
 
-			Tracer = new TraceBuffer("r3400: PC, mnemonic, operands, registers (GPRs, Load/Link Bit, MultHI, MultLO, Implementation/Revision, Control/Status, FGRs)");
+			Tracer = new TraceBuffer("r3400: PC, mnemonic, operands, registers (GPRs, MultLO, MultHI)");
 			_serviceProvider.Register(Tracer);
 
 			_disassembler = new(_core);
