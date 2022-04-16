@@ -11,5 +11,7 @@
 		public bool SaveScreenshot { get; set; } = true;
 		public int BigScreenshotSize { get; set; } = 128 * 1024;
 		public bool NoLowResLargeScreenshots { get; set; }
+		public bool AutoSaveStateOnExit { get; set; } = false;
+		public int AutoSaveStateSlot { get; set; } = 1;
 	}
 }
