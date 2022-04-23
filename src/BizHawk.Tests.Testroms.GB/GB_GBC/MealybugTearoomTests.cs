@@ -25,6 +25,7 @@ namespace BizHawk.Tests.Testroms.GB
 
 			public static readonly IReadOnlyCollection<string> KnownFailures = new[]
 			{
+				"m2_win_en_toggle on CGB_C in SameBoy (no BIOS)",
 				"m3_bgp_change on CGB_C in Gambatte", // Gambatte's GBC emulation matches CGB D variant
 				"m3_bgp_change on CGB_C in Gambatte (no BIOS)", // Gambatte's GBC emulation matches CGB D variant
 				"m3_bgp_change on CGB_C in GBHawk",
@@ -82,12 +83,18 @@ namespace BizHawk.Tests.Testroms.GB
 				"m3_lcdc_obj_size_change on DMG in Gambatte",
 				"m3_lcdc_obj_size_change on DMG in Gambatte (no BIOS)",
 				"m3_lcdc_obj_size_change on DMG in GBHawk",
+				"m3_lcdc_obj_size_change on CGB_C in SameBoy",
+				"m3_lcdc_obj_size_change on CGB_C in SameBoy (no BIOS)",
+				"m3_lcdc_obj_size_change on DMG in SameBoy",
+				"m3_lcdc_obj_size_change on DMG in SameBoy (no BIOS)",
 				"m3_lcdc_obj_size_change_scx on CGB_C in GBHawk",
 				"m3_lcdc_obj_size_change_scx on CGB_C in SameBoy",
 				"m3_lcdc_obj_size_change_scx on CGB_C in SameBoy (no BIOS)",
 				"m3_lcdc_obj_size_change_scx on DMG in Gambatte",
 				"m3_lcdc_obj_size_change_scx on DMG in Gambatte (no BIOS)",
 				"m3_lcdc_obj_size_change_scx on DMG in GBHawk",
+				"m3_lcdc_obj_size_change_scx on DMG in SameBoy",
+				"m3_lcdc_obj_size_change_scx on DMG in SameBoy (no BIOS)",
 				"m3_lcdc_tile_sel_change on CGB_C in Gambatte",
 				"m3_lcdc_tile_sel_change on CGB_C in Gambatte (no BIOS)",
 				"m3_lcdc_tile_sel_change on CGB_C in GBHawk",
@@ -95,6 +102,7 @@ namespace BizHawk.Tests.Testroms.GB
 				"m3_lcdc_tile_sel_change2 on CGB_C in Gambatte",
 				"m3_lcdc_tile_sel_change2 on CGB_C in Gambatte (no BIOS)",
 				"m3_lcdc_tile_sel_change2 on CGB_C in GBHawk",
+				"m3_lcdc_tile_sel_change2 on CGB_C in SameBoy (no BIOS)",
 				"m3_lcdc_tile_sel_win_change on CGB_C in Gambatte",
 				"m3_lcdc_tile_sel_win_change on CGB_C in Gambatte (no BIOS)",
 				"m3_lcdc_tile_sel_win_change on CGB_C in GBHawk",
@@ -104,6 +112,7 @@ namespace BizHawk.Tests.Testroms.GB
 				"m3_lcdc_tile_sel_win_change2 on CGB_C in Gambatte",
 				"m3_lcdc_tile_sel_win_change2 on CGB_C in Gambatte (no BIOS)",
 				"m3_lcdc_tile_sel_win_change2 on CGB_C in GBHawk",
+				"m3_lcdc_tile_sel_win_change2 on CGB_C in SameBoy (no BIOS)",
 				"m3_lcdc_win_en_change_multiple on CGB_C in GBHawk",
 				"m3_lcdc_win_en_change_multiple on CGB_C in SameBoy",
 				"m3_lcdc_win_en_change_multiple on CGB_C in SameBoy (no BIOS)",

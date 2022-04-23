@@ -78,8 +78,7 @@ namespace BizHawk.Tests.Testroms.GB
 
 		private static readonly IReadOnlyCollection<string> KnownFailures = new[]
 		{
-			"cgb-acid-hell on CGB_C in Gambatte",
-			"cgb-acid-hell on CGB_C in Gambatte (no BIOS)",
+			"cgb-acid2 on CGB_C in SameBoy (no BIOS)",
 			"dmg-acid2 on CGB_C in Gambatte",
 			"dmg-acid2 on CGB_C in Gambatte (no BIOS)",
 		};
