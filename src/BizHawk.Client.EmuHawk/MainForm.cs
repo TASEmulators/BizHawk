@@ -3744,11 +3744,6 @@ namespace BizHawk.Client.EmuHawk
 				loader.OnLoadSettings += CoreSettings;
 				loader.OnLoadSyncSettings += CoreSyncSettings;
 
-				if (Tools.IsLoaded<GenericDebugger>())
-				{
-					Tools.Restart<GenericDebugger>();
-				}
-
 				// this also happens in CloseGame(). But it needs to happen here since if we're restarting with the same core,
 				// any settings changes that we made need to make it back to config before we try to instantiate that core with
 				// the new settings objects
@@ -3885,13 +3880,6 @@ namespace BizHawk.Client.EmuHawk
 					if (Emulator.HasBoardInfo())
 					{
 						Console.WriteLine("Core reported BoardID: \"{0}\"", Emulator.AsBoardInfo().BoardName);
-					}
-
-					// restarts the lua console if a different rom is loaded.
-					// im not really a fan of how this is done..
-					if (Config.RecentRoms.Empty || Config.RecentRoms.MostRecent != openAdvancedArgs)
-					{
-						Tools.Restart<LuaConsole>();
 					}
 
 					Config.RecentRoms.Add(openAdvancedArgs);
