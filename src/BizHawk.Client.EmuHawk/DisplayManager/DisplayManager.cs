@@ -33,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 			IGL gl,
 			PresentationPanel presentationPanel,
 			Func<bool> getIsSecondaryThrottlingDisabled)
-				: base(config, emulator, inputManager, movieSession, gl.DispMethodEnum(), gl, gl.CreateRenderer())
+				: base(config, emulator, inputManager, movieSession, gl.DispMethodEnum, gl, gl.CreateRenderer())
 		{
 			_presentationPanel = presentationPanel;
 			_getIsSecondaryThrottlingDisabled = getIsSecondaryThrottlingDisabled;

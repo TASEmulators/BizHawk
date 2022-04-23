@@ -20,6 +20,8 @@ namespace BizHawk.Bizware.DirectX
 {
 	public sealed class IGL_SlimDX9 : IGL
 	{
+		public EDispMethod DispMethodEnum => EDispMethod.SlimDX9;
+
 		private const int D3DERR_DEVICELOST = -2005530520;
 		private const int D3DERR_DEVICENOTRESET = -2005530519;
 
