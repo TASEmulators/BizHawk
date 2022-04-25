@@ -165,15 +165,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AddDebugMenu()
 		{
-//			void OpenModal<T>()
-//				where T : Form, new()
-//			{
-//				using T form = new();
-//				this.ShowDialogAsChild(form);
-//			}
+			void OpenModal<T>()
+				where T : Form, new()
+			{
+				using T form = new();
+				this.ShowDialogAsChild(form);
+			}
 			void OpenTool<T>() where T : class, IToolForm => Tools.Load<T>();
 			ToolStripMenuItemEx firmwareAutopatchDebugItem = new() { Text = FirmwareAutopatchDebugToolForm.TOOL_NAME };
 			firmwareAutopatchDebugItem.Click += (_, _) => OpenTool<FirmwareAutopatchDebugToolForm>();
+			ToolStripButton veldridSandboxDebugItem = new() { Text = "VeldridDemo" };
+			veldridSandboxDebugItem.Click += (_, _) => OpenModal<VeldridSandbox>();
 			ToolStripMenuItemEx debugMenu = new()
 			{
 				DropDownItems =
@@ -185,6 +187,14 @@ namespace BizHawk.Client.EmuHawk
 							firmwareAutopatchDebugItem,
 						},
 						Text = "Firmware",
+					},
+					new ToolStripMenuItemEx
+					{
+						DropDownItems =
+						{
+							veldridSandboxDebugItem,
+						},
+						Text = "UI/Rendering",
 					},
 					new ToolStripSeparatorEx(),
 					new DebugVSystemMenuItem("GB")

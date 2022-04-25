@@ -5,6 +5,8 @@
 	<Import Project="../MainSlnCommon.props" />
 	<ItemGroup>
 		<Reference Include="System.Windows.Forms" />
-		<ProjectReference Include="$(ProjectDir)../BizHawk.Common/BizHawk.Common.csproj" />
+		<PackageReference Include="Veldrid.SDL2" Version="4.8.0" />
+		<PackageReference Include="Veldrid.Utilities" Version="4.8.0" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Client.Common/BizHawk.Client.Common.csproj" />
 	</ItemGroup>
 </Project>
