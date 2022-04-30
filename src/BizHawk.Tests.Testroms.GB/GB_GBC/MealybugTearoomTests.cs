@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.IOExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
@@ -23,7 +24,7 @@ namespace BizHawk.Tests.Testroms.GB
 		{
 			public static readonly MealybugTestCase Dummy = new("missing_files", new(CoreNames.Gambatte, ConsoleVariant.DMG), string.Empty, string.Empty);
 
-			public static readonly IReadOnlyCollection<string> KnownFailures = new[]
+			public static readonly IReadOnlyList<string> KnownFailures = new[]
 			{
 				"m2_win_en_toggle on CGB_C in SameBoy (no BIOS)",
 				"m3_bgp_change on CGB_C in Gambatte", // Gambatte's GBC emulation matches CGB D variant
@@ -80,11 +81,11 @@ namespace BizHawk.Tests.Testroms.GB
 				"m3_lcdc_obj_en_change_variant on DMG in SameBoy", // SameBoy emulates DMG-B, but there's no DMG-B-specific expect image for this test, so it should be the same on all DMG revisions?
 				"m3_lcdc_obj_en_change_variant on DMG in SameBoy (no BIOS)", // SameBoy emulates DMG-B, but there's no DMG-B-specific expect image for this test, so it should be the same on all DMG revisions?
 				"m3_lcdc_obj_size_change on CGB_C in GBHawk",
+				"m3_lcdc_obj_size_change on CGB_C in SameBoy",
+				"m3_lcdc_obj_size_change on CGB_C in SameBoy (no BIOS)",
 				"m3_lcdc_obj_size_change on DMG in Gambatte",
 				"m3_lcdc_obj_size_change on DMG in Gambatte (no BIOS)",
 				"m3_lcdc_obj_size_change on DMG in GBHawk",
-				"m3_lcdc_obj_size_change on CGB_C in SameBoy",
-				"m3_lcdc_obj_size_change on CGB_C in SameBoy (no BIOS)",
 				"m3_lcdc_obj_size_change on DMG in SameBoy",
 				"m3_lcdc_obj_size_change on DMG in SameBoy (no BIOS)",
 				"m3_lcdc_obj_size_change_scx on CGB_C in GBHawk",
@@ -260,7 +261,10 @@ namespace BizHawk.Tests.Testroms.GB
 
 		[ClassInitialize]
 		public static void BeforeAll(TestContext ctx)
-			=> TestUtils.PrepareDBAndOutput(SUITE_ID);
+		{
+			if (!MealybugTestCase.KnownFailures.IsSortedAsc()) throw new Exception(SUITE_ID + " known-failing testcase list must be sorted");
+			TestUtils.PrepareDBAndOutput(SUITE_ID);
+		}
 
 		[DataTestMethod]
 		[MealybugTestData]

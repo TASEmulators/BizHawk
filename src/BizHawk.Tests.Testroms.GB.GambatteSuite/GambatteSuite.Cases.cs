@@ -12,7 +12,7 @@ namespace BizHawk.Tests.Testroms.GB.GambatteSuite
 		{
 			public static readonly GambatteHexStrTestCase Dummy = new("missing_files", new(CoreNames.Gambatte, ConsoleVariant.DMG), string.Empty, string.Empty);
 
-			public static readonly IReadOnlyCollection<string> KnownFailures = new[]
+			public static readonly IReadOnlyList<string> KnownFailures = new[]
 			{
 				"cgbpal_m3.cgbpal_m3end_1_cgb04c_out7 on CGB_C in GBHawk",
 				"cgbpal_m3.cgbpal_m3end_3_cgb04c_out0 on CGB_C in GBHawk",
@@ -2952,7 +2952,7 @@ namespace BizHawk.Tests.Testroms.GB.GambatteSuite
 		{
 			public static readonly GambatteRefImageTestCase Dummy = new("missing_files", new(CoreNames.Gambatte, ConsoleVariant.DMG), string.Empty, string.Empty);
 
-			public static readonly IReadOnlyCollection<string> KnownFailures = new[]
+			public static readonly IReadOnlyList<string> KnownFailures = new[]
 			{
 				"bgen.bgoff_bgon_sprite_below_window on CGB_C in SameBoy",
 				"bgen.bgoff_bgon_sprite_below_window on CGB_C in SameBoy (no BIOS)",
