@@ -496,7 +496,7 @@
 			this.label6.Location = new System.Drawing.Point(27, 243);
 			this.label6.Name = "label6";
 			this.label6.Text = "Skips some integrity check exceptions in waterbox cores.\r\nUseful for romhackers. " +
-    "Reboot core after changing.\r\nENABLING THIS VOIDS YOUR WARRANTY\r\n";
+    "Reboot core after changing.\r\nDon't bother reporting bugs if checked.\r\n";
 			// 
 			// cbSkipWaterboxIntegrityChecks
 			// 
