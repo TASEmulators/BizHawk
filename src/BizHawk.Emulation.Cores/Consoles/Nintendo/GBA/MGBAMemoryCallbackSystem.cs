@@ -157,7 +157,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			foreach (var cb in _callbacks)
 			{
-				if (cb.Callback.Address == pc)
+				if (cb.Callback.Type == MemoryCallbackType.Execute && cb.Callback.Address == pc)
 				{
 					cb.Callback.Callback?.Invoke(pc, 0, (uint)MemoryCallbackFlags.AccessExecute);
 				}
