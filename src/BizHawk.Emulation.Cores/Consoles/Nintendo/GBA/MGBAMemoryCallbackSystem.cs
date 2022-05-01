@@ -146,7 +146,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			foreach (var cb in _callbacks)
 			{
-				if (cb.WatchPointType == type && cb.Callback.Address == addr)
+				if (cb.Callback.Type != MemoryCallbackType.Execute && cb.WatchPointType == type && cb.Callback.Address == addr)
 				{
 					cb.Callback.Callback?.Invoke(addr, newValue, (uint)flags);
 				}
