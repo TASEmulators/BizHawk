@@ -390,34 +390,27 @@ namespace BizHawk.Emulation.Common
 
 		public static IReadOnlyDictionary<string, object> ToDictionary(this IController controller, int? controllerNum = null)
 		{
-			var buttons = new Dictionary<string, object>();
-
-			foreach (var button in controller.Definition.BoolButtons)
+			var dict = new Dictionary<string, object>();
+			if (controllerNum == null)
 			{
-				if (controllerNum == null)
-				{
-					buttons[button] = controller.IsPressed(button);
-				}
-				else if (button.Length > 2 && button.Substring(0, 2) == $"P{controllerNum}")
-				{
-					var sub = button.Substring(3);
-					buttons[sub] = controller.IsPressed($"P{controllerNum} {sub}");
-				}
+				foreach (var buttonName in controller.Definition.BoolButtons) dict[buttonName] = controller.IsPressed(buttonName);
+				foreach (var axisName in controller.Definition.Axes.Keys) dict[axisName] = controller.AxisValue(axisName);
+				return dict;
 			}
-			foreach (var button in controller.Definition.Axes.Keys)
+			var prefix = $"P{controllerNum} ";
+			foreach (var buttonName in controller.Definition.BoolButtons)
 			{
-				if (controllerNum == null)
-				{
-					buttons[button] = controller.AxisValue(button);
-				}
-				else if (button.Length > 2 && button.Substring(0, 2) == $"P{controllerNum}")
-				{
-					var sub = button.Substring(3);
-					buttons[sub] = controller.AxisValue($"P{controllerNum} {sub}");
-				}
+				var s = buttonName.RemovePrefix(prefix);
+				if (ReferenceEquals(s, buttonName)) continue; // did not start with prefix
+				dict[s] = controller.IsPressed(buttonName);
 			}
-
-			return buttons;
+			foreach (var axisName in controller.Definition.Axes.Keys)
+			{
+				var s = axisName.RemovePrefix(prefix);
+				if (ReferenceEquals(s, axisName)) continue; // did not start with prefix
+				dict[s] = controller.AxisValue(axisName);
+			}
+			return dict;
 		}
 
 		public static string FilesystemSafeName(this IGameInfo game)
