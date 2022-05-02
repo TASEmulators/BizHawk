@@ -254,7 +254,7 @@ namespace BizHawk.Client.Common.Filters
 		{
 			Size inSize = state.SurfaceFormat.Size;
 			if (_sp.ScaleTypeX == RetroShaderPreset.ScaleType.Absolute) _outputSize.Width = (int)_sp.Scale.X;
-			if (_sp.ScaleTypeY == RetroShaderPreset.ScaleType.Absolute) _outputSize.Width = (int)_sp.Scale.Y;
+			if (_sp.ScaleTypeY == RetroShaderPreset.ScaleType.Absolute) _outputSize.Height = (int)_sp.Scale.Y;
 			if (_sp.ScaleTypeX == RetroShaderPreset.ScaleType.Source) _outputSize.Width = (int)(inSize.Width * _sp.Scale.X);
 			if (_sp.ScaleTypeY == RetroShaderPreset.ScaleType.Source) _outputSize.Height = (int)(inSize.Height * _sp.Scale.Y);
 
@@ -275,7 +275,7 @@ namespace BizHawk.Client.Common.Filters
 		{
 			Size outsize = inSize;
 			if (_sp.ScaleTypeX == RetroShaderPreset.ScaleType.Absolute) outsize.Width = (int)_sp.Scale.X;
-			if (_sp.ScaleTypeY == RetroShaderPreset.ScaleType.Absolute) outsize.Width = (int)_sp.Scale.Y;
+			if (_sp.ScaleTypeY == RetroShaderPreset.ScaleType.Absolute) outsize.Height = (int)_sp.Scale.Y;
 			if (_sp.ScaleTypeX == RetroShaderPreset.ScaleType.Source) outsize.Width = (int)(inSize.Width * _sp.Scale.X);
 			if (_sp.ScaleTypeY == RetroShaderPreset.ScaleType.Source) outsize.Height = (int)(inSize.Height * _sp.Scale.Y);
 			return outsize;
