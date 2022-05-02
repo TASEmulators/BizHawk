@@ -125,12 +125,26 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public bool Load(string path)
+		public bool Load(string path, IDialogParent dialogParent)
 		{
 			// try to detect binary first
 			using var bl = ZipStateLoader.LoadAndDetect(path);
 			if (bl is null) return false;
 			var succeed = false;
+
+			if (!VersionInfo.DeveloperBuild)
+			{
+				bl.GetLump(BinaryStateLump.BizVersion, true, tr => succeed = tr.ReadLine() == VersionInfo.GetEmuVersion());
+				if (!succeed)
+				{
+					var result = dialogParent.ModalMessageBox2(
+						"This savestate was made with a different version, so it's unlikely to work.\nChoose OK to try loading it anyway.",
+						"Savestate version mismatch",
+						EMsgBoxIcon.Question,
+						useOKCancel: true);
+					if (!result) return false;
+				}
+			}
 
 			// Movie timeline check must happen before the core state is loaded
 			if (_movieSession.Movie.IsActive())
