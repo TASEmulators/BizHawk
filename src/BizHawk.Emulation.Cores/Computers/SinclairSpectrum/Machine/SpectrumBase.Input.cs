@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public void PollInput()
 		{
-			Spectrum.InputCallbacks.Call();
+			Spectrum.InputCallbacks.Call(1);
 
 			lock (this)
 			{

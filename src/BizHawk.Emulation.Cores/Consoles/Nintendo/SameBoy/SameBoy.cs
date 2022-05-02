@@ -137,7 +137,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 		private void InputCallback()
 		{
 			IsLagFrame = false;
-			_inputCallbacks.Call();
+			_inputCallbacks.Call(1);
 		}
 
 		public bool LinkConnected

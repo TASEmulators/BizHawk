@@ -28,7 +28,7 @@
 
 		public void PollInput()
 		{
-			_c64.InputCallbacks.Call();
+			_c64.InputCallbacks.Call(1);
 
 			// scan joysticks
 			_pollIndex = 0;

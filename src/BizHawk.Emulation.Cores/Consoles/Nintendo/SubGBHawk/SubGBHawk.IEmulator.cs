@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 			pass_a_frame = false;
 			_GBCore._islag = false;
 
-			InputCallbacks.Call();
+			InputCallbacks.Call(1);
 
 			DoFrame(controller);
 

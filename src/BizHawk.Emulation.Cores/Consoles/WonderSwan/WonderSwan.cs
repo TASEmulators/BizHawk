@@ -165,7 +165,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		private void ButtonCallback()
 		{
-			InputCallbacks.Call();
+			InputCallbacks.Call(1);
 		}
 
 		private void InitDebugCallbacks()

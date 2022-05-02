@@ -45,7 +45,7 @@
 		/// </summary>
 		public void PollInput()
 		{
-			CPC.InputCallbacks.Call();
+			CPC.InputCallbacks.Call(1);
 
 			lock (this)
 			{

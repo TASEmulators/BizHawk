@@ -43,7 +43,7 @@ namespace BizHawk.Client.Common
 					logCallback($"error running function attached by the event {Event}\nError message: {ex.Message}");
 				}
 			};
-			InputCallback = () => Callback(Array.Empty<object>());
+			InputCallback = gamepadIndex => Callback(new object[] { gamepadIndex });
 			MemCallback = (addr, val, flags) => Callback(new object[] { addr, val, flags });
 		}
 
@@ -68,7 +68,7 @@ namespace BizHawk.Client.Common
 
 		private Action<object[]> Callback { get; }
 
-		public Action InputCallback { get; }
+		public Action<int> InputCallback { get; }
 
 		public MemoryCallbackDelegate MemCallback { get; }
 

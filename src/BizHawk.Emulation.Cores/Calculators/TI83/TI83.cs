@@ -270,7 +270,7 @@ namespace BizHawk.Emulation.Cores.Calculators.TI83
 
 		private byte ReadKeyboard()
 		{
-			InputCallbacks.Call();
+			InputCallbacks.Call(1);
 
 			// ref TI-9X
 			int ret = 0xFF;

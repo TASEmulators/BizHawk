@@ -8,16 +8,17 @@ namespace BizHawk.Emulation.Common
 	/// gets and sets input callbacks in the core.  An input callback should fire any time input is
 	/// polled by the core
 	/// </summary>
-	public interface IInputCallbackSystem : ICollection<Action>
+	public interface IInputCallbackSystem : ICollection<Action<int>>
 	{
 		/// <summary>
 		/// Will iterate and call every callback
 		/// </summary>
-		void Call();
+		/// <param name="gamepadIndex">1-indexed</param>
+		void Call(int gamepadIndex);
 
 		/// <summary>
 		/// Will remove the given list of callbacks
 		/// </summary>
-		void RemoveAll(IEnumerable<Action> actions);
+		void RemoveAll(IEnumerable<Action<int>> actions);
 	}
 }

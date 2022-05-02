@@ -326,7 +326,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal byte ReadControls1(bool peek)
 		{
-			InputCallbacks.Call();
+			InputCallbacks.Call(1);
 			
 			byte value = _controllerDeck.ReadPort1(_controller);
 
@@ -341,7 +341,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal byte ReadControls2(bool peek)
 		{
-			InputCallbacks.Call();
+			InputCallbacks.Call(2);
 			byte value = _controllerDeck.ReadPort2(_controller);
 
 			if (!peek)

@@ -262,10 +262,12 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 		public void GetControllerState(IController controller)
 		{
-			InputCallbacks.Call();
+			InputCallbacks.Call(1);
 			L.cntr_rd_0 = (byte)(controller.IsPressed("P1 Start") ? 0x7F : 0xFF);
 			L.cntr_rd_1 = _controllerDeck.ReadPort1(controller);
 			L.cntr_rd_2 = 0xFF;
+
+			InputCallbacks.Call(2);
 			R.cntr_rd_0 = (byte)(controller.IsPressed("P2 Start") ? 0x7F : 0xFF);
 			R.cntr_rd_1 = _controllerDeck.ReadPort2(controller);
 			R.cntr_rd_2 = 0xFF;
