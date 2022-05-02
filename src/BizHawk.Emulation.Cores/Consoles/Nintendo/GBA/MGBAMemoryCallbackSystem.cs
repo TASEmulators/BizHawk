@@ -11,9 +11,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		private readonly MGBAHawk _mgba;
 		private readonly LibmGBA.MemCallback _readWriteCallback;
 		private readonly LibmGBA.ExecCallback _executeCallback;
-		private readonly List<CallbackContainer> _readCallbacks = new();
-		private readonly List<CallbackContainer> _writeCallbacks = new();
-		private readonly List<CallbackContainer> _execCallbacks = new();
+		private readonly Dictionary<uint, MemoryCallbackDelegate> _readCallbacks = new();
+		private readonly Dictionary<uint, MemoryCallbackDelegate> _writeCallbacks = new();
+		private readonly Dictionary<uint, MemoryCallbackDelegate> _execCallbacks = new();
+		private readonly List<CallbackContainer> _callbacks = new();
 
 		public MGBAMemoryCallbackSystem(MGBAHawk mgba)
 		{
@@ -25,18 +26,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public string[] AvailableScopes { get; } = { "System Bus" };
 		public bool ExecuteCallbacksAvailable => true;
 
-		public bool HasReads => _readCallbacks.Count > 0;
-		public bool HasWrites => _writeCallbacks.Count > 0;
-		public bool HasExecutes => _execCallbacks.Count > 0;
+		public bool HasReads => _callbacks.Any(c => c.Callback.Type == MemoryCallbackType.Read);
+		public bool HasWrites => _callbacks.Any(c => c.Callback.Type == MemoryCallbackType.Write);
+		public bool HasExecutes => _callbacks.Any(c => c.Callback.Type == MemoryCallbackType.Execute);
 
 		public bool HasReadsForScope(string scope) =>
-			_readCallbacks.Any(c => c.Callback.Scope == scope);
+			_callbacks.Any(c => c.Callback.Scope == scope
+				&& c.Callback.Type == MemoryCallbackType.Read);
 
 		public bool HasWritesForScope(string scope) =>
-			_writeCallbacks.Any(c => c.Callback.Scope == scope);
+			_callbacks.Any(c => c.Callback.Scope == scope
+				&& c.Callback.Type == MemoryCallbackType.Write);
 
 		public bool HasExecutesForScope(string scope) =>
-			_execCallbacks.Any(c => c.Callback.Scope == scope);
+			_callbacks.Any(c => c.Callback.Scope == scope
+				&& c.Callback.Type == MemoryCallbackType.Execute);
 
 		public void Add(IMemoryCallback callback)
 		{
@@ -67,27 +71,33 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				MGBAHawk.ZZHacky.BizSetMemCallback(_mgba.Core, _readWriteCallback);
 			}
 
-			switch (container.Callback.Type)
+			var cbDict = container.Callback.Type switch
 			{
-				case MemoryCallbackType.Read:
-					_readCallbacks.Add(container);
-					break;
-				case MemoryCallbackType.Write:
-					_writeCallbacks.Add(container);
-					break;
-				case MemoryCallbackType.Execute:
-					_execCallbacks.Add(container);
-					break;
-				default:
-					throw new InvalidOperationException("Invalid callback type");
+				MemoryCallbackType.Read => _readCallbacks,
+				MemoryCallbackType.Write => _writeCallbacks,
+				MemoryCallbackType.Execute => _execCallbacks,
+				_ => throw new InvalidOperationException("Invalid callback type"),
+			};
+
+			if (cbDict.ContainsKey(container.Callback.Address.Value))
+			{
+				cbDict[container.Callback.Address.Value] += container.Callback.Callback;
 			}
+			else
+			{
+				cbDict[container.Callback.Address.Value] = container.Callback.Callback;
+			}
+
+			_callbacks.Add(container);
 		}
 
 		private void Remove(CallbackContainer cb)
 		{
+			_callbacks.Remove(cb);
+
 			if (cb.Callback.Type == MemoryCallbackType.Execute)
 			{
-				_execCallbacks.Remove(cb);
+				_execCallbacks[cb.Callback.Address.Value] -= cb.Callback.Callback;
 
 				if (!HasExecutes)
 				{
@@ -103,11 +113,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 				if (cb.Callback.Type == MemoryCallbackType.Read)
 				{
-					_readCallbacks.Remove(cb);
+					_readCallbacks[cb.Callback.Address.Value] -= cb.Callback.Callback;
 				}
 				else if (cb.Callback.Type == MemoryCallbackType.Write)
 				{
-					_writeCallbacks.Remove(cb);
+					_writeCallbacks[cb.Callback.Address.Value] -= cb.Callback.Callback;
 				}
 				else
 				{
@@ -123,9 +133,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public void Remove(MemoryCallbackDelegate action)
 		{
-			var cbToRemove = _readCallbacks.SingleOrDefault(c => c.Callback.Callback == action)
-				?? _writeCallbacks.SingleOrDefault(c => c.Callback.Callback == action)
-				?? _execCallbacks.SingleOrDefault(c => c.Callback.Callback == action);
+			var cbToRemove = _callbacks.SingleOrDefault(container => container.Callback.Callback == action);
 
 			if (cbToRemove != null)
 			{
@@ -143,25 +151,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public void Clear()
 		{
-			foreach (var cb in _readCallbacks)
-			{
-				Remove(cb);
-			}
-
-			foreach (var cb in _writeCallbacks)
-			{
-				Remove(cb);
-			}
-
-			foreach (var cb in _execCallbacks)
+			foreach (var cb in _callbacks)
 			{
 				Remove(cb);
 			}
 		}
 
-		public IEnumerator<IMemoryCallback> GetEnumerator() => _readCallbacks.Select(c => c.Callback)
-			.Concat(_writeCallbacks.Select(c => c.Callback)
-			.Concat(_execCallbacks.Select(c => c.Callback))).GetEnumerator();
+		public IEnumerator<IMemoryCallback> GetEnumerator() => _callbacks.Select(c => c.Callback).GetEnumerator();
 
 		IEnumerator IEnumerable.GetEnumerator()
 			=> GetEnumerator();
@@ -175,22 +171,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			if (type == LibmGBA.mWatchpointType.WATCHPOINT_READ)
 			{
-				foreach (var cb in _readCallbacks)
+				if (_readCallbacks.TryGetValue(addr, out var cb))
 				{
-					if (cb.Callback.Address == addr)
-					{
-						cb.Callback.Callback?.Invoke(addr, newValue, (uint)MemoryCallbackFlags.AccessRead);
-					}
+					cb?.Invoke(addr, newValue, (uint)MemoryCallbackFlags.AccessRead);
 				}
 			}
 			else if (type == LibmGBA.mWatchpointType.WATCHPOINT_WRITE)
 			{
-				foreach (var cb in _writeCallbacks)
+				if (_writeCallbacks.TryGetValue(addr, out var cb))
 				{
-					if (cb.Callback.Address == addr)
-					{
-						cb.Callback.Callback?.Invoke(addr, newValue, (uint)MemoryCallbackFlags.AccessWrite);
-					}
+					cb?.Invoke(addr, newValue, (uint)MemoryCallbackFlags.AccessWrite);
 				}
 			}
 			else
@@ -201,12 +191,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		private void RunExecCallback(uint pc)
 		{
-			foreach (var cb in _execCallbacks)
+			if (_execCallbacks.TryGetValue(pc, out var cb))
 			{
-				if (cb.Callback.Address == pc)
-				{
-					cb.Callback.Callback?.Invoke(pc, 0, (uint)MemoryCallbackFlags.AccessExecute);
-				}
+				cb?.Invoke(pc, 0, (uint)MemoryCallbackFlags.AccessExecute);
 			}
 		}
 
