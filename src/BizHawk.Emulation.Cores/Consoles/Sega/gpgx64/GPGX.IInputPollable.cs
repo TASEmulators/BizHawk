@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		private void input_callback()
 		{
-			InputCallbacks.Call();
+			InputCallbacks.Call(99); //TODO
 			IsLagFrame = false;
 		}
 	}

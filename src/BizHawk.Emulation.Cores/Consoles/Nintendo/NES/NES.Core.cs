@@ -850,7 +850,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				controller_was_latched = true;
 				lagged = false;
-				InputCallbacks.Call();
+				InputCallbacks.Call(99); //TODO
 			}
 			current_strobe = new_strobe;
 		}
