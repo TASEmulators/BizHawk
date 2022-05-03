@@ -116,5 +116,13 @@ namespace BizHawk.Common.StringExtensions
 			var index = str.IndexOf(delimiter);
 			return index < 0 ? null : str.Substring(0, index);
 		}
+
+		/// <summary>
+		/// splits a given <paramref name="str"/> by <paramref name="delimiter"/>,
+		/// applies <paramref name="transform"/> to each part, then rejoins them
+		/// </summary>
+		/// <remarks><c>"abc,def,ghi".TransformFields(',', s => s.Reverse()) == "cba,fed,ihg"</c></remarks>
+		public static string TransformFields(this string str, char delimiter, Func<string, string> transform)
+			=> string.Join(delimiter.ToString(), str.Split(delimiter).Select(transform));
 	}
 }

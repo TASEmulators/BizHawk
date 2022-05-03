@@ -42,7 +42,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_getConfigCallback = getConfigCallback;
 			_currentConfig = _getConfigCallback();
-			_currentConfig.MergeLAndRModifierKeys = true; // for debugging
 			UpdateModifierKeysEffective();
 
 			MainFormInputAllowedCallback = mainFormInputAllowedCallback;
@@ -81,7 +80,7 @@ namespace BizHawk.Client.EmuHawk
 				.Concat(_currentConfig.ModifierKeys)
 				.Take(32).ToArray();
 
-		private readonly IReadOnlyDictionary<string, string> _modifierKeyPreMap = new Dictionary<string, string>
+		internal static readonly IReadOnlyDictionary<string, string> ModifierKeyPreMap = new Dictionary<string, string>
 		{
 			["LeftSuper"] = "Win",
 			["RightSuper"] = "Win",
@@ -93,9 +92,17 @@ namespace BizHawk.Client.EmuHawk
 			["RightShift"] = "Shift",
 		};
 
+		internal static readonly IReadOnlyDictionary<string, string> ModifierKeyInvPreMap = new Dictionary<string, string>
+		{
+			["Super"] = "LeftWin",
+			["Ctrl"] = "LeftCtrl",
+			["Alt"] = "LeftAlt",
+			["Shift"] = "LeftShift",
+		};
+
 		private void HandleButton(string button, bool newState, ClientInputFocus source)
 		{
-			if (!(_currentConfig.MergeLAndRModifierKeys &&_modifierKeyPreMap.TryGetValue(button, out var button1))) button1 = button;
+			if (!(_currentConfig.MergeLAndRModifierKeys && ModifierKeyPreMap.TryGetValue(button, out var button1))) button1 = button;
 			var modIndex = _currentConfig.ModifierKeysEffective.IndexOf(button1);
 			var currentModifier = modIndex is -1 ? 0U : 1U << modIndex;
 			if (EnableIgnoreModifiers && currentModifier is not 0U) return;
