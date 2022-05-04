@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Diagnostics;
 
 namespace BizHawk.Emulation.Common
 {
@@ -67,15 +68,38 @@ namespace BizHawk.Emulation.Common
 
 		private static void Call(ObservableCollection<IMemoryCallback> cbs, uint addr, uint value, uint flags, string scope)
 		{
-			// ReSharper disable once ForCanBeConvertedToForeach
-			// Intentionally a for loop - https://github.com/TASEmulators/BizHawk/issues/1823
-			for (int i = 0; i < cbs.Count; i++)
+			var cbsCopy = cbs.ToArray();
+			var e = cbsCopy.Length;
+			var i = -1;
+			void UpdateIndexAndEndpoint(object _, NotifyCollectionChangedEventArgs args)
 			{
-				if (!cbs[i].Address.HasValue || (cbs[i].Scope == scope && cbs[i].Address == (addr & cbs[i].AddressMask)))
+				// this was helpful: https://www.codeproject.com/Articles/1004644/ObservableCollection-Simply-Explained
+				switch (args.Action)
 				{
-					cbs[i].Callback(addr, value, flags);
+					case NotifyCollectionChangedAction.Add:
+						Debug.Assert(args.NewStartingIndex >= e);
+						// no-op
+						break;
+					case NotifyCollectionChangedAction.Remove:
+						Debug.Assert(args.OldItems.Count is 1);
+						e--;
+						if (args.OldStartingIndex <= i) i--; // if ==, i will be decremented and incremented, so it ends up pointing to the element which was at i + 1, now at i
+						break;
+					default:
+						Debug.WriteLine("Unexpected operation on memory callback collection!");
+						break;
 				}
 			}
+			cbs.CollectionChanged += UpdateIndexAndEndpoint;
+			while (++i < e)
+			{
+				var cb = cbsCopy[i];
+				if (!cb.Address.HasValue || (cb.Scope == scope && cb.Address == (addr & cb.AddressMask)))
+				{
+					cb.Callback(addr, value, flags);
+				}
+			}
+			cbs.CollectionChanged -= UpdateIndexAndEndpoint;
 		}
 
 		public void CallMemoryCallbacks(uint addr, uint value, uint flags, string scope)
