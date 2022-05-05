@@ -50,7 +50,8 @@ public:
 		va_start(args, fmt);
 		std::size_t sz = std::vsnprintf(NULL, 0, fmt, args);
 		if (static_cast<s64>(sz) < 0) {
-			puts("vsnprintf failed!");
+			std::puts("vsnprintf failed!");
+			std::fflush(stdout);
 			va_end(args);
 			return;
 		}
@@ -105,6 +106,7 @@ public:
 			}
 			case RETRO_ENVIRONMENT::SHUTDOWN:
 				//TODO low priority
+				//maybe we can tell the frontend to stop frame advancing?
 				return false;
 			case RETRO_ENVIRONMENT::SET_PERFORMANCE_LEVEL:
 				//unneeded
@@ -121,9 +123,11 @@ public:
 			}
 			case RETRO_ENVIRONMENT::SET_INPUT_DESCRIPTORS:
 				//TODO medium priority
+				//would need some custom form displaying these probably
 				return false;
 			case RETRO_ENVIRONMENT::SET_KEYBOARD_CALLBACK:
 				//TODO high priority (to support keyboard consoles, probably high value for us. but that may take a lot of infrastructure work)
+				//the callback set is meant to be called from frontend side, so perhaps we should just call this on a SetInput call with keyboard
 				return false;
 			case RETRO_ENVIRONMENT::SET_DISK_CONTROL_INTERFACE:
 				//TODO high priority (to support disc systems)
@@ -193,17 +197,24 @@ public:
 				*static_cast<const char**>(data) = coreDirectory.c_str();
 				return true;
 			case RETRO_ENVIRONMENT::SET_AUDIO_CALLBACK:
-				//dont know what to do with this yet
+				//seems to be meant for async sound?
+				//the callback is meant to be called frontend side
+				//so in practice this callback is useless
 				return false;
 			case RETRO_ENVIRONMENT::SET_FRAME_TIME_CALLBACK:
-				//dont know what to do with this yet
+				//the frontend can send real time to the core
+				//and the frontend is meant to tamper with
+				//this timing for fast forward/slow motion?
+				//just no, those are pure frontend responsibilities
 				return false;
 			case RETRO_ENVIRONMENT::GET_RUMBLE_INTERFACE:
 				//TODO low priority
 				return false;
 			case RETRO_ENVIRONMENT::GET_INPUT_DEVICE_CAPABILITIES:
 				//TODO medium priority - other input methods
-				*static_cast<u64*>(data) = 1 << static_cast<u32>(RETRO_DEVICE::JOYPAD);
+				*static_cast<u64*>(data) = 1 << static_cast<u32>(RETRO_DEVICE::JOYPAD)
+				| 1 << static_cast<u32>(RETRO_DEVICE::KEYBOARD)
+				| 1 << static_cast<u32>(RETRO_DEVICE::POINTER);
 				return true;
 			case RETRO_ENVIRONMENT::GET_LOG_INTERFACE:
 			{
@@ -212,10 +223,13 @@ public:
 				return true;
 			}
 			case RETRO_ENVIRONMENT::GET_PERF_INTERFACE:
-				// uhhhh what the fuck is this for
+				//callbacks for performance counters?
+				//for performance logging???
+				//just no
 				return false;
 			case RETRO_ENVIRONMENT::GET_LOCATION_INTERFACE:
-				//TODO low priority
+				//the frontend is not a GPS
+				//the core should not need this info
 				return false;
 			case RETRO_ENVIRONMENT::GET_CORE_ASSETS_DIRECTORY:
 				*static_cast<const char**>(data) = coreAssetsDirectory.c_str();
@@ -227,8 +241,10 @@ public:
 				RetroLog(RETRO_LOG::WARN, "NEED RETRO_ENVIRONMENT::SET_SYSTEM_AV_INFO");
 				return false;
 			case RETRO_ENVIRONMENT::SET_PROC_ADDRESS_CALLBACK:
-				// uhhhh what the fuck is this for
-				return true;
+				//this is some way to get symbols for API extensions
+				//of which none exist
+				//so this is useless
+				return false;
 			case RETRO_ENVIRONMENT::SET_SUBSYSTEM_INFO:
 				//needs retro_load_game_special to be useful; not supported yet
 				return false;
@@ -236,8 +252,9 @@ public:
 				//TODO medium priority probably
 				return false;
 			case RETRO_ENVIRONMENT::SET_GEOMETRY:
-				// uhhhh what the fuck is this for
-				return true;
+				//TODO medium priority probably
+				//this is essentially just set system av info, except only for video
+				return false;
 			case RETRO_ENVIRONMENT::GET_USERNAME:
 				//we definitely want to return false here so the core will do something deterministic
 				return false;
