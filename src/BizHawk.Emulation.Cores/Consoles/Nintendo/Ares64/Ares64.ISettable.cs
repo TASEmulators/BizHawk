@@ -4,7 +4,6 @@ using System.ComponentModel;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 {
 	public partial class Ares64 : ISettable<Ares64.Ares64Settings, Ares64.Ares64SyncSettings>

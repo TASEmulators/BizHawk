@@ -41,6 +41,8 @@ namespace BizHawk.Bizware.OpenTK3
 	/// </summary>
 	public class IGL_TK : IGL
 	{
+		public EDispMethod DispMethodEnum => EDispMethod.OpenGL;
+
 		//rendering state
 		private Pipeline _currPipeline;
 		private RenderTarget _currRenderTarget;

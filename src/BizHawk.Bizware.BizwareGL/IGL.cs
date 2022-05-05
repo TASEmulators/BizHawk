@@ -14,6 +14,9 @@ namespace BizHawk.Bizware.BizwareGL
 	/// </summary>
 	public interface IGL : IDisposable
 	{
+		/// <remarks>HACK</remarks>
+		EDispMethod DispMethodEnum { get; }
+
 		/// <summary>
 		/// Clears the specified buffer parts
 		/// </summary>

@@ -9,15 +9,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 	public class MGBAMemoryCallbackSystem : IMemoryCallbackSystem
 	{
 		private readonly MGBAHawk _mgba;
-		private LibmGBA.ExecCallback _executeCallback;
-		private readonly Dictionary<uint, IMemoryCallback> _execPcs = new Dictionary<uint, IMemoryCallback> { [0] = null };
+		private readonly LibmGBA.MemCallback _readWriteCallback;
+		private readonly LibmGBA.ExecCallback _executeCallback;
+		private readonly Dictionary<uint, MemoryCallbackDelegate> _readCallbacks = new();
+		private readonly Dictionary<uint, MemoryCallbackDelegate> _writeCallbacks = new();
+		private readonly Dictionary<uint, MemoryCallbackDelegate> _execCallbacks = new();
+		private readonly List<CallbackContainer> _callbacks = new();
 
 		public MGBAMemoryCallbackSystem(MGBAHawk mgba)
 		{
 			_mgba = mgba;
+			_readWriteCallback = RunReadWriteCallback;
+			_executeCallback = RunExecCallback;
 		}
-
-		private readonly List<CallbackContainer> _callbacks = new List<CallbackContainer>();
 
 		public string[] AvailableScopes { get; } = { "System Bus" };
 		public bool ExecuteCallbacksAvailable => true;
@@ -50,18 +54,38 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				throw new NotImplementedException("Wildcard callbacks (no address specified) not currently implemented.");
 			}
 
+			if (callback.AddressMask != 0xFFFFFFFF)
+			{
+				throw new NotImplementedException("Non 0xFFFFFFFF address masks are not currently implemented.");
+			}
+
 			var container = new CallbackContainer(callback);
 
 			if (container.Callback.Type == MemoryCallbackType.Execute)
 			{
-				_executeCallback = RunExecCallback;
-				_execPcs[callback.Address.Value] = callback;
 				MGBAHawk.ZZHacky.BizSetExecCallback(_mgba.Core, _executeCallback);
 			}
 			else
 			{
-				MGBAHawk.ZZHacky.BizSetMemCallback(_mgba.Core, container.CallDelegate);
 				container.ID = MGBAHawk.ZZHacky.BizSetWatchpoint(_mgba.Core, callback.Address.Value, container.WatchPointType);
+				MGBAHawk.ZZHacky.BizSetMemCallback(_mgba.Core, _readWriteCallback);
+			}
+
+			var cbDict = container.Callback.Type switch
+			{
+				MemoryCallbackType.Read => _readCallbacks,
+				MemoryCallbackType.Write => _writeCallbacks,
+				MemoryCallbackType.Execute => _execCallbacks,
+				_ => throw new InvalidOperationException("Invalid callback type"),
+			};
+
+			if (cbDict.ContainsKey(container.Callback.Address.Value))
+			{
+				cbDict[container.Callback.Address.Value] += container.Callback.Callback;
+			}
+			else
+			{
+				cbDict[container.Callback.Address.Value] = container.Callback.Callback;
 			}
 
 			_callbacks.Add(container);
@@ -69,24 +93,49 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		private void Remove(CallbackContainer cb)
 		{
-			if (MGBAHawk.ZZHacky.BizClearWatchpoint(_mgba.Core, cb.ID)) _callbacks.Remove(cb);
+			_callbacks.Remove(cb);
+
+			if (cb.Callback.Type == MemoryCallbackType.Execute)
+			{
+				_execCallbacks[cb.Callback.Address.Value] -= cb.Callback.Callback;
+
+				if (!HasExecutes)
+				{
+					MGBAHawk.ZZHacky.BizSetExecCallback(_mgba.Core, null);
+				}
+			}
+			else
+			{
+				if (!MGBAHawk.ZZHacky.BizClearWatchpoint(_mgba.Core, cb.ID))
+				{
+					throw new InvalidOperationException("Unable to clear watchpoint???");
+				}
+
+				if (cb.Callback.Type == MemoryCallbackType.Read)
+				{
+					_readCallbacks[cb.Callback.Address.Value] -= cb.Callback.Callback;
+				}
+				else if (cb.Callback.Type == MemoryCallbackType.Write)
+				{
+					_writeCallbacks[cb.Callback.Address.Value] -= cb.Callback.Callback;
+				}
+				else
+				{
+					throw new InvalidOperationException("Invalid watchpoint type");
+				}
+
+				if (!HasReads && !HasWrites)
+				{
+					MGBAHawk.ZZHacky.BizSetMemCallback(_mgba.Core, null);
+				}
+			}
 		}
 
 		public void Remove(MemoryCallbackDelegate action)
 		{
 			var cbToRemove = _callbacks.SingleOrDefault(container => container.Callback.Callback == action);
-			if (cbToRemove == null) return;
 
-			if (cbToRemove.Callback.Type is MemoryCallbackType.Execute)
-			{
-				_callbacks.Remove(cbToRemove);
-				if (!_callbacks.Any(cb => cb.Callback.Type is MemoryCallbackType.Execute))
-				{
-					_executeCallback = null;
-					MGBAHawk.ZZHacky.BizSetExecCallback(_mgba.Core, null);
-				}
-			}
-			else
+			if (cbToRemove != null)
 			{
 				Remove(cbToRemove);
 			}
@@ -102,7 +151,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public void Clear()
 		{
-			foreach (var cb in _callbacks) Remove(cb);
+			foreach (var cb in _callbacks)
+			{
+				Remove(cb);
+			}
 		}
 
 		public IEnumerator<IMemoryCallback> GetEnumerator() => _callbacks.Select(c => c.Callback).GetEnumerator();
@@ -115,11 +167,33 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			// Not a thing in this implementation
 		}
 
+		private void RunReadWriteCallback(uint addr, LibmGBA.mWatchpointType type, uint oldValue, uint newValue)
+		{
+			if (type == LibmGBA.mWatchpointType.WATCHPOINT_READ)
+			{
+				if (_readCallbacks.TryGetValue(addr, out var cb))
+				{
+					cb?.Invoke(addr, newValue, (uint)MemoryCallbackFlags.AccessRead);
+				}
+			}
+			else if (type == LibmGBA.mWatchpointType.WATCHPOINT_WRITE)
+			{
+				if (_writeCallbacks.TryGetValue(addr, out var cb))
+				{
+					cb?.Invoke(addr, newValue, (uint)MemoryCallbackFlags.AccessWrite);
+				}
+			}
+			else
+			{
+				throw new InvalidOperationException("Invalid watchpoint type");
+			}
+		}
+
 		private void RunExecCallback(uint pc)
 		{
-			if (_execPcs.TryGetValue(pc, out var callback))
+			if (_execCallbacks.TryGetValue(pc, out var cb))
 			{
-				callback?.Callback?.Invoke(pc, 0, 0);
+				cb?.Invoke(pc, 0, (uint)MemoryCallbackFlags.AccessExecute);
 			}
 		}
 
@@ -144,7 +218,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public CallbackContainer(IMemoryCallback callBack)
 		{
 			Callback = callBack;
-			CallDelegate = Call;
 		}
 
 		public IMemoryCallback Callback { get; }
@@ -156,24 +229,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			get
 			{
-				switch (Callback.Type)
+				return Callback.Type switch
 				{
-					default:
-					case MemoryCallbackType.Read:
-						return LibmGBA.mWatchpointType.WATCHPOINT_READ;
-					case MemoryCallbackType.Write:
-						return LibmGBA.mWatchpointType.WATCHPOINT_WRITE;
-					case MemoryCallbackType.Execute:
-						throw new NotImplementedException("Executes can not be used from watch points.");
-				}
+					MemoryCallbackType.Read => LibmGBA.mWatchpointType.WATCHPOINT_READ,
+					MemoryCallbackType.Write => LibmGBA.mWatchpointType.WATCHPOINT_WRITE,
+					MemoryCallbackType.Execute => throw new NotImplementedException("Executes can not be used from watch points."),
+					_ => throw new InvalidOperationException("Invalid callback type"),
+				};
 			}
-		}
-
-		public LibmGBA.MemCallback CallDelegate;
-
-		private void Call(uint addr, LibmGBA.mWatchpointType type, uint oldValue, uint newValue)
-		{
-			Callback.Callback?.Invoke(addr, newValue, 0);
 		}
 	}
 }

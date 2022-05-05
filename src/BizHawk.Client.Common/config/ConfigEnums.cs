@@ -7,11 +7,6 @@
 		NLuaPlusKopiLua
 	}
 
-	public enum EDispMethod
-	{
-		OpenGL, GdiPlus, SlimDX9
-	}
-
 	public enum ESoundOutputMethod
 	{
 		DirectSound, XAudio2, OpenAL, Dummy

@@ -29,8 +29,9 @@ typedef struct
 	GB_gameboy_t gb;
 	blip_t* blip_l;
 	blip_t* blip_r;
-	GB_sample_t latch;
-	GB_sample_t sample;
+	GB_sample_t sampleBuf[1024 * 8];
+	GB_sample_t sampleLatch;
+	u32 nsamps;
 	u32 vbuf[256 * 224];
 	u32 bg_pal[0x20];
 	u32 obj_pal[0x20];
@@ -55,8 +56,9 @@ static u8 PeekIO(biz_t* biz, u8 addr)
 static void sample_cb(GB_gameboy_t *gb, GB_sample_t* sample)
 {
 	biz_t* biz = (biz_t*)gb;
-	biz->sample.left = sample->left;
-	biz->sample.right = sample->right;
+	biz->sampleBuf[biz->nsamps].left = sample->left;
+	biz->sampleBuf[biz->nsamps].right = sample->right;
+	biz->nsamps++;
 }
 
 static u32 rgb_cb(GB_gameboy_t *gb, u8 r, u8 g, u8 b)
@@ -115,7 +117,7 @@ EXPORT biz_t* sameboy_create(u8* romdata, u32 romlen, u8* biosdata, u32 bioslen,
 	GB_init(&biz->gb, model);
 	GB_load_rom_from_buffer(&biz->gb, romdata, romlen);
 	GB_load_boot_rom_from_buffer(&biz->gb, biosdata, bioslen);
-	GB_set_sample_rate(&biz->gb, GB_get_clock_rate(&biz->gb) / 2);
+	GB_set_sample_rate(&biz->gb, GB_get_clock_rate(&biz->gb) / 2 / 8);
 	GB_apu_set_sample_callback(&biz->gb, sample_cb);
 	GB_set_rgb_encode_callback(&biz->gb, rgb_cb);
 	GB_set_vblank_callback(&biz->gb, vblank_cb);
@@ -123,8 +125,8 @@ EXPORT biz_t* sameboy_create(u8* romdata, u32 romlen, u8* biosdata, u32 bioslen,
 	GB_set_allow_illegal_inputs(&biz->gb, true);
 	biz->blip_l = blip_new(1024);
 	biz->blip_r = blip_new(1024);
-	blip_set_rates(biz->blip_l, GB_get_clock_rate(&biz->gb) / 2, 44100);
-	blip_set_rates(biz->blip_r, GB_get_clock_rate(&biz->gb) / 2, 44100);
+	blip_set_rates(biz->blip_l, GB_get_clock_rate(&biz->gb) / 2 / 8, 44100);
+	blip_set_rates(biz->blip_r, GB_get_clock_rate(&biz->gb) / 2 / 8, 44100);
 	return biz;
 }
 
@@ -176,21 +178,27 @@ EXPORT void sameboy_frameadvance(biz_t* biz, GB_key_mask_t keys, u16 x, u16 y, s
 		{
 			biz->input_cb();
 		}
-		if (biz->latch.left != biz->sample.left)
-		{
-			blip_add_delta(biz->blip_l, cycles, biz->latch.left - biz->sample.left);
-			biz->latch.left = biz->sample.left;
-		}
-		if (biz->latch.right != biz->sample.right)
-		{
-			blip_add_delta(biz->blip_r, cycles, biz->latch.right - biz->sample.right);
-			biz->latch.right = biz->sample.right;
-		}
 	}
 	while (!biz->vblank_occured && cycles < 35112);
 
-	blip_end_frame(biz->blip_l, cycles);
-	blip_end_frame(biz->blip_r, cycles);
+	for (u32 i = 0; i < biz->nsamps; i++)
+	{
+		if (biz->sampleLatch.left != biz->sampleBuf[i].left)
+		{
+			blip_add_delta(biz->blip_l, i, biz->sampleLatch.left - biz->sampleBuf[i].left);
+			biz->sampleLatch.left = biz->sampleBuf[i].left;
+		}
+		if (biz->sampleLatch.right != biz->sampleBuf[i].right)
+		{
+			blip_add_delta(biz->blip_r, i, biz->sampleLatch.right - biz->sampleBuf[i].right);
+			biz->sampleLatch.right = biz->sampleBuf[i].right;
+		}
+	}
+
+	blip_end_frame(biz->blip_l, biz->nsamps);
+	blip_end_frame(biz->blip_r, biz->nsamps);
+	biz->nsamps = 0;
+
 	u32 samps = blip_samples_avail(biz->blip_l);
 	blip_read_samples(biz->blip_l, sbuf + 0, samps, 1);
 	blip_read_samples(biz->blip_r, sbuf + 1, samps, 1);

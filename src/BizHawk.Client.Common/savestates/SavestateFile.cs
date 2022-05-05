@@ -125,83 +125,86 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public bool Load(string path)
+		public bool Load(string path, IDialogParent dialogParent)
 		{
 			// try to detect binary first
-			var bl = ZipStateLoader.LoadAndDetect(path);
-			if (bl != null)
+			using var bl = ZipStateLoader.LoadAndDetect(path);
+			if (bl is null) return false;
+			var succeed = false;
+
+			if (!VersionInfo.DeveloperBuild)
 			{
-				try
+				bl.GetLump(BinaryStateLump.BizVersion, true, tr => succeed = tr.ReadLine() == VersionInfo.GetEmuVersion());
+				if (!succeed)
 				{
-					var succeed = false;
-
-					// Movie timeline check must happen before the core state is loaded
-					if (_movieSession.Movie.IsActive())
-					{
-						bl.GetLump(BinaryStateLump.Input, true, tr => succeed = _movieSession.CheckSavestateTimeline(tr));
-						if (!succeed)
-						{
-							return false;
-						}
-					}
-
-					using (new SimpleTime("Load Core"))
-					{
-						bl.GetCoreState(br => _statable.LoadStateBinary(br), tr => _statable.LoadStateText(tr));
-					}
-
-					// We must handle movie input AFTER the core is loaded to properly handle mode changes, and input latching
-					if (_movieSession.Movie.IsActive())
-					{
-						bl.GetLump(BinaryStateLump.Input, true, tr => succeed = _movieSession.HandleLoadState(tr));
-						if (!succeed)
-						{
-							return false;
-						}
-					}
-
-					if (_videoProvider != null)
-					{
-						bl.GetLump(BinaryStateLump.Framebuffer, false, br => PopulateFramebuffer(br, _videoProvider, _quickBmpFile));
-					}
-
-					string userData = "";
-					bl.GetLump(BinaryStateLump.UserData, false, delegate(TextReader tr)
-					{
-						string line;
-						while ((line = tr.ReadLine()) != null)
-						{
-							if (!string.IsNullOrWhiteSpace(line))
-							{
-								userData = line;
-							}
-						}
-					});
-
-					if (!string.IsNullOrWhiteSpace(userData))
-					{
-						var bag = (Dictionary<string, object>)ConfigService.LoadWithType(userData);
-						_userBag.Clear();
-						foreach (var (k, v) in bag) _userBag.Add(k, v);
-					}
-
-					if (_movieSession.Movie.IsActive() && _movieSession.Movie is ITasMovie)
-					{
-						bl.GetLump(BinaryStateLump.LagLog, false, delegate(TextReader tr)
-						{
-							((ITasMovie)_movieSession.Movie).LagLog.Load(tr);
-						});
-					}
+					var result = dialogParent.ModalMessageBox2(
+						"This savestate was made with a different version, so it's unlikely to work.\nChoose OK to try loading it anyway.",
+						"Savestate version mismatch",
+						EMsgBoxIcon.Question,
+						useOKCancel: true);
+					if (!result) return false;
 				}
-				finally
-				{
-					bl.Dispose();
-				}
-
-				return true;
 			}
 
-			return false;
+			// Movie timeline check must happen before the core state is loaded
+			if (_movieSession.Movie.IsActive())
+			{
+				bl.GetLump(BinaryStateLump.Input, true, tr => succeed = _movieSession.CheckSavestateTimeline(tr));
+				if (!succeed)
+				{
+					return false;
+				}
+			}
+
+			using (new SimpleTime("Load Core"))
+			{
+				bl.GetCoreState(br => _statable.LoadStateBinary(br), tr => _statable.LoadStateText(tr));
+			}
+
+			// We must handle movie input AFTER the core is loaded to properly handle mode changes, and input latching
+			if (_movieSession.Movie.IsActive())
+			{
+				bl.GetLump(BinaryStateLump.Input, true, tr => succeed = _movieSession.HandleLoadState(tr));
+				if (!succeed)
+				{
+					return false;
+				}
+			}
+
+			if (_videoProvider != null)
+			{
+				bl.GetLump(BinaryStateLump.Framebuffer, false, br => PopulateFramebuffer(br, _videoProvider, _quickBmpFile));
+			}
+
+			string userData = "";
+			bl.GetLump(BinaryStateLump.UserData, false, delegate(TextReader tr)
+			{
+				string line;
+				while ((line = tr.ReadLine()) != null)
+				{
+					if (!string.IsNullOrWhiteSpace(line))
+					{
+						userData = line;
+					}
+				}
+			});
+
+			if (!string.IsNullOrWhiteSpace(userData))
+			{
+				var bag = (Dictionary<string, object>)ConfigService.LoadWithType(userData);
+				_userBag.Clear();
+				foreach (var (k, v) in bag) _userBag.Add(k, v);
+			}
+
+			if (_movieSession.Movie.IsActive() && _movieSession.Movie is ITasMovie)
+			{
+				bl.GetLump(BinaryStateLump.LagLog, false, delegate(TextReader tr)
+				{
+					((ITasMovie)_movieSession.Movie).LagLog.Load(tr);
+				});
+			}
+
+			return true;
 		}
 
 		private static void PopulateFramebuffer(BinaryReader br, IVideoProvider videoProvider, IQuickBmpFile quickBmpFile)
