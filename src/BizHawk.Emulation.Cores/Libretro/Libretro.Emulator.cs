@@ -158,25 +158,13 @@ namespace BizHawk.Emulation.Cores.Libretro
 			NO_GAME,
 		}
 
-		public bool LoadData(byte[] data, string id)
-		{
-			LoadHandler(RETRO_LOAD.DATA, new(RetroString(id)), new(data, data.LongLength));
-			return true;
-		}
+		public bool LoadData(byte[] data, string id) => LoadHandler(RETRO_LOAD.DATA, new(RetroString(id)), new(data, data.LongLength));
 
-		public bool LoadPath(string path)
-		{
-			LoadHandler(RETRO_LOAD.PATH, new(RetroString(path)));
-			return true;
-		}
+		public bool LoadPath(string path) => LoadHandler(RETRO_LOAD.PATH, new(RetroString(path)));
 
-		public bool LoadNoGame()
-		{
-			LoadHandler(RETRO_LOAD.NO_GAME);
-			return true;
-		}
+		public bool LoadNoGame() => LoadHandler(RETRO_LOAD.NO_GAME);
 
-		private unsafe void LoadHandler(RETRO_LOAD which, RetroData path = null, RetroData data = null)
+		private unsafe bool LoadHandler(RETRO_LOAD which, RetroData path = null, RetroData data = null)
 		{
 			UpdateCallbackHandler();
 
@@ -198,7 +186,12 @@ namespace BizHawk.Emulation.Cores.Libretro
 			}
 
 			api.retro_init();
-			api.retro_load_game(gameptr);
+			bool success = api.retro_load_game(gameptr);
+			if (!success)
+			{
+				api.retro_deinit();
+				return false;
+			}
 
 			var av = new LibretroApi.retro_system_av_info();
 			api.retro_get_system_av_info((IntPtr)(&av));
@@ -228,6 +221,8 @@ namespace BizHawk.Emulation.Cores.Libretro
 			InitMemoryDomains(); // im going to assume this should happen when a game is loaded
 
 			inited = true;
+
+			return true;
 		}
 
 		private LibretroApi.retro_message retro_msg = new();
