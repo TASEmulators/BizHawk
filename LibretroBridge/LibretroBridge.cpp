@@ -42,7 +42,6 @@ public:
 		std::memset(lightGun, 0, sizeof (lightGun));
 		std::memset(analog, 0, sizeof (analog));
 		std::memset(pointer, 0, sizeof (pointer));
-		std::memset(sensorAccelerometer, 0, sizeof (sensorAccelerometer));
 	}
 
 	static void RetroLog(RETRO_LOG level, const char* fmt, ...) {
@@ -443,9 +442,6 @@ public:
 			case RETRO_DEVICE::POINTER:
 				assert(id < sizeof (pointer));
 				return pointer[id];
-			case RETRO_DEVICE::SENSOR_ACCELEROMETER:
-				assert(id < sizeof (sensorAccelerometer));
-				return sensorAccelerometer[id];
 			default:
 				__builtin_unreachable();
 		}
@@ -519,9 +515,6 @@ public:
 			case RETRO_DEVICE::POINTER:
 				std::memcpy(pointer, input, sizeof (pointer));
 				break;
-			case RETRO_DEVICE::SENSOR_ACCELEROMETER:
-				std::memcpy(sensorAccelerometer, input, sizeof (sensorAccelerometer));
-				break;
 			default:
 				__builtin_unreachable();
 		}
@@ -565,7 +558,6 @@ private:
 	s16 lightGun[static_cast<u32>(RETRO_DEVICE_ID_LIGHTGUN::LAST)];
 	s16 analog[static_cast<u32>(RETRO_DEVICE_ID_ANALOG::LAST)];
 	s16 pointer[static_cast<u32>(RETRO_DEVICE_ID_POINTER::LAST)];
-	s16 sensorAccelerometer[static_cast<u32>(RETRO_DEVICE_ID_SENSOR_ACCELEROMETER::LAST)];
 };
 
 static CallbackHandler * gCbHandler = nullptr;

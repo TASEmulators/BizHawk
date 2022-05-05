@@ -18,7 +18,6 @@ namespace BizHawk.Emulation.Cores.Libretro
 			LIGHTGUN = 4,
 			ANALOG = 5,
 			POINTER = 6,
-			SENSOR_ACCELEROMETER = 7,
 
 			LAST,
 		}
@@ -28,6 +27,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			// LEFT / RIGHT?
 			X = 0,
 			Y = 1,
+			BUTTON = 2,
 
 			LAST,
 		}
@@ -38,6 +38,13 @@ namespace BizHawk.Emulation.Cores.Libretro
 			Y = 1,
 			LEFT = 2,
 			RIGHT = 3,
+			WHEELUP = 4,
+			WHEELDOWN = 5,
+			MIDDLE = 6,
+			HORIZ_WHEELUP = 7,
+			HORIZ_WHEELDOWN = 8,
+			BUTTON_4 = 9,
+			BUTTON_5 = 10,
 
 			LAST,
 		}
@@ -51,6 +58,16 @@ namespace BizHawk.Emulation.Cores.Libretro
 			TURBO = 4,
 			PAUSE = 5,
 			START = 6,
+			SELECT = 7,
+			AUX_C = 8,
+			DPAD_UP = 9,
+			DPAD_DOWN = 10,
+			DPAD_LEFT = 11,
+			DPAD_RIGHT = 12,
+			SCREEN_X = 13,
+			SCREEN_Y = 14,
+			IS_OFFSCREEN = 15,
+			RELOAD = 16,
 
 			LAST,
 		}
@@ -60,6 +77,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			X = 0,
 			Y = 1,
 			PRESSED = 2,
+			COUNT = 3,
 
 			LAST,
 		}
@@ -225,15 +243,6 @@ namespace BizHawk.Emulation.Cores.Libretro
 			SCROLLLOCK = 64,
 		}
 
-		public enum RETRO_DEVICE_ID_SENSOR_ACCELEROMETER
-		{
-			X = 0,
-			Y = 1,
-			Z = 2,
-
-			LAST,
-		}
-
 		public enum RETRO_DEVICE_ID_JOYPAD
 		{
 			B = 0,
@@ -252,6 +261,19 @@ namespace BizHawk.Emulation.Cores.Libretro
 			R2 = 13,
 			L3 = 14,
 			R3 = 15,
+
+			LAST,
+		}
+
+		public enum RETRO_SENSOR
+		{
+			ACCELEROMETER_X = 0,
+			ACCELEROMETER_Y = 1,
+			ACCELEROMETER_Z = 2,
+			GYROSCOPE_X = 3,
+			GYROSCOPE_Y = 4,
+			GYROSCOPE_Z = 5,
+			ILLUMINANCE = 6,
 
 			LAST,
 		}

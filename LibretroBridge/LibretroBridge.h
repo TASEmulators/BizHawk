@@ -69,7 +69,6 @@ enum class RETRO_DEVICE {
 	LIGHTGUN = 4,
 	ANALOG = 5,
 	POINTER = 6,
-	SENSOR_ACCELEROMETER = 7,
 
 	LAST,
 };
@@ -77,6 +76,7 @@ enum class RETRO_DEVICE {
 enum class RETRO_DEVICE_ID_ANALOG {
 	X = 0,
 	Y = 1,
+	BUTTON = 2,
 
 	LAST,
 };
@@ -86,6 +86,13 @@ enum class RETRO_DEVICE_ID_MOUSE {
 	Y = 1,
 	LEFT = 2,
 	RIGHT = 3,
+	WHEELUP = 4,
+	WHEELDOWN = 5,
+	MIDDLE = 6,
+	HORIZ_WHEELUP = 7,
+	HORIZ_WHEELDOWN = 8,
+	BUTTON_4 = 9,
+	BUTTON_5 = 10,
 
 	LAST,
 };
@@ -98,6 +105,16 @@ enum class RETRO_DEVICE_ID_LIGHTGUN {
 	TURBO = 4,
 	PAUSE = 5,
 	START = 6,
+	SELECT = 7,
+	AUX_C = 8,
+	DPAD_UP = 9,
+	DPAD_DOWN = 10,
+	DPAD_LEFT = 11,
+	DPAD_RIGHT = 12,
+	SCREEN_X = 13,
+	SCREEN_Y = 14,
+	IS_OFFSCREEN = 15,
+	RELOAD = 16,
 
 	LAST,
 };
@@ -106,6 +123,7 @@ enum class RETRO_DEVICE_ID_POINTER {
 	X = 0,
 	Y = 1,
 	PRESSED = 2,
+	COUNT = 3,
 
 	LAST,
 };
@@ -268,14 +286,6 @@ enum class RETRO_MOD {
 	SCROLLLOCK = 64,
 };
 
-enum class RETRO_DEVICE_ID_SENSOR_ACCELEROMETER {
-	X = 0,
-	Y = 1,
-	Z = 2,
-
-	LAST,
-};
-
 enum class RETRO_DEVICE_ID_JOYPAD {
 	B = 0,
 	Y = 1,
@@ -293,6 +303,18 @@ enum class RETRO_DEVICE_ID_JOYPAD {
 	R2 = 13,
 	L3 = 14,
 	R3 = 15,
+
+	LAST,
+};
+
+enum class RETRO_SENSOR {
+	ACCELEROMETER_X = 0,
+	ACCELEROMETER_Y = 1,
+	ACCELEROMETER_Z = 2,
+	GYROSCOPE_X = 3,
+	GYROSCOPE_Y = 4,
+	GYROSCOPE_Z = 5,
+	ILLUMINANCE = 6,
 
 	LAST,
 };
