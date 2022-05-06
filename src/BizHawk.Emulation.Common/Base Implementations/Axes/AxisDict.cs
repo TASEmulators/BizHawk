@@ -59,7 +59,13 @@ namespace BizHawk.Emulation.Common
 
 		public bool ContainsKey(string key) => _keys.Contains(key);
 
-		public IEnumerator<KeyValuePair<string, AxisSpec>> GetEnumerator() => _specs.GetEnumerator();
+		public IEnumerator<KeyValuePair<string, AxisSpec>> GetEnumerator()
+		{
+			foreach (var key in _keys)
+			{
+				yield return new(key, _specs[key]);
+			}
+		}
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
