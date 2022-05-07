@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.N64.NativeApi;
 
@@ -21,6 +22,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		[CoreConstructor(VSystemID.Raw.N64)]
 		public N64(GameInfo game, byte[] file, byte[] rom, N64Settings settings, N64SyncSettings syncSettings)
 		{
+			if (OSTailoredCode.IsUnixHost) throw new NotImplementedException();
+
 			ServiceProvider = new BasicServiceProvider(this);
 			InputCallbacks = new InputCallbackSystem();
 
