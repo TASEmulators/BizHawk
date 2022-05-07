@@ -2149,6 +2149,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!LoadRom(romPath, args, out var failureIsFromAskSave))
 			{
 				if (failureIsFromAskSave) AddOnScreenMessage("ROM loading cancelled; a tool had unsaved changes");
+				else if (ioa is OpenAdvanced_LibretroNoGame || File.Exists(romPath)) AddOnScreenMessage("ROM loading failed");
 				else Config.RecentRoms.HandleLoadError(this, romPath, rom);
 			}
 		}
