@@ -129,15 +129,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public void ClearCallback()
 		{
-			ManualX.Value = 0;
-			ManualY.Value = 0;
-			manualR.Value = 0;
-			manualTheta.Value = 0;
+			AnalogStick.Clear(fromCallback: true);
+			SetNumericsFromAnalog();
 			_inputManager.AutofireStickyXorAdapter.SetSticky(AnalogStick.XName, false);
 			_inputManager.StickyXorAdapter.Unset(AnalogStick.XName);
 			_inputManager.AutofireStickyXorAdapter.SetSticky(AnalogStick.YName, false);
 			_inputManager.StickyXorAdapter.Unset(AnalogStick.YName);
-			AnalogStick.HasValue = false;
 		}
 
 		public void Clear() => AnalogStick.Clear();
