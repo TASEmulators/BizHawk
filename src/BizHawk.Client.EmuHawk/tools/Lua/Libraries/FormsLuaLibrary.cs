@@ -346,7 +346,7 @@ namespace BizHawk.Client.EmuHawk
 			_luaForms.Add(form);
 			if (width.HasValue && height.HasValue)
 			{
-				form.Size = UIHelper.Scale(new Size(width.Value, height.Value));
+				form.ClientSize = UIHelper.Scale(new Size(width.Value, height.Value));
 			}
 
 			form.Text = title;
@@ -1340,7 +1340,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (form.Handle == ptr)
 				{
-					SetSize(form, width, height);
+					form.ClientSize = UIHelper.Scale(new Size(width, height));
 				}
 				else
 				{
