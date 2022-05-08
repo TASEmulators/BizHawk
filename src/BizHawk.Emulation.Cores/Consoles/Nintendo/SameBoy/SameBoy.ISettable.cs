@@ -153,7 +153,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			[DefaultValue(false)]
 			public bool EnableBIOS { get; set; }
 
-			public enum GBModel : short
+			public enum GBModel : int
 			{
 				Auto = -1,
 				// GB_MODEL_DMG_0 = 0x000,
@@ -175,8 +175,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 				GB_MODEL_CGB_D = 0x204,
 				[Display(Name = "CGB-E")]
 				GB_MODEL_CGB_E = 0x205,
+				// GB_MODEL_AGB_0 = 0x206,
+				// GB_MODEL_AGB_A = 0x207,
 				[Display(Name = "AGB")]
-				GB_MODEL_AGB = 0x206,
+				GB_MODEL_AGB = 0x207,
+				// GB_MODEL_AGB_B = 0x208,
 			}
 
 			[DisplayName("Console Mode")]
