@@ -40,6 +40,7 @@ using BizHawk.Emulation.Cores.Sony.PSX;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.CoreExtensions;
 using BizHawk.Client.EmuHawk.CustomControls;
+using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -129,27 +130,13 @@ namespace BizHawk.Client.EmuHawk
 			var requestedExtToolDll = _argParser.openExtToolDll;
 			if (requestedExtToolDll != null)
 			{
-				IExternalToolForm loaded = null;
-
-				var enabled = ExtToolManager.ToolStripMenu.Where(item => item.Enabled)
-					.Select(item => ((string, string)) item.Tag)
-					.ToList();
-				try
-				{
-					int foundIndex = enabled.FindIndex(tuple =>
-						tuple.Item1 == requestedExtToolDll
+				var found = ExtToolManager.ToolStripMenu.Where(static item => item.Enabled)
+					.Select(static item => ((string, string)) item.Tag)
+					.FirstOrNull(tuple => tuple.Item1 == requestedExtToolDll
 						|| Path.GetFileName(tuple.Item1) == requestedExtToolDll
 						|| Path.GetFileNameWithoutExtension(tuple.Item1) == requestedExtToolDll);
-
-					if(foundIndex != -1)
-						loaded = Tools.LoadExternalToolForm(enabled[foundIndex].Item1, enabled[foundIndex].Item2, skipExtToolWarning: true);
-				}
-				catch
-				{
-				}
-
-				if(loaded == null)
-					Console.WriteLine($"requested ext. tool dll {requestedExtToolDll} could not be loaded");
+				if (found is not null) Tools.LoadExternalToolForm(found.Value.Item1, found.Value.Item2, skipExtToolWarning: true);
+				else Console.WriteLine($"requested ext. tool dll {requestedExtToolDll} could not be loaded");
 			}
 
 #if DEBUG
