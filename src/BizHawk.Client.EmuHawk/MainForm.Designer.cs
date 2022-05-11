@@ -240,6 +240,7 @@ namespace BizHawk.Client.EmuHawk
 			this.A7800FilterSettingsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.GBSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.GBcoreSettingsToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.SameBoyColorChooserMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator28 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.GBGPUViewerMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.GBPrinterViewerMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -1602,6 +1603,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.GBSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
 			this.GBcoreSettingsToolStripMenuItem,
+			this.SameBoyColorChooserMenuItem,
 			this.toolStripSeparator28,
 			this.GBGPUViewerMenuItem,
 			this.GBPrinterViewerMenuItem});
@@ -1611,6 +1613,11 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.GBcoreSettingsToolStripMenuItem.Text = "Settings...";
 			this.GBcoreSettingsToolStripMenuItem.Click += new System.EventHandler(this.GbCoreSettingsMenuItem_Click);
+			// 
+			// SameBoyColorChooserMenuItem
+			// 
+			this.SameBoyColorChooserMenuItem.Text = "&Choose Custom Palette...";
+			this.SameBoyColorChooserMenuItem.Click += new System.EventHandler(this.SameboyColorChooserMenuItem_Click);
 			// 
 			// GBGPUViewerMenuItem
 			// 
@@ -2659,6 +2666,7 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx customizeToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx N64ControllerSettingsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx GBcoreSettingsToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SameBoyColorChooserMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx NesControllerSettingsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator22;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator23;

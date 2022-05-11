@@ -33,6 +33,7 @@ using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Emulation.Cores.Nintendo.NES;
+using BizHawk.Emulation.Cores.Nintendo.Sameboy;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 using BizHawk.Emulation.Cores.Sony.PSX;
@@ -1991,6 +1992,7 @@ namespace BizHawk.Client.EmuHawk
 				case VSystemID.Raw.GBC:
 				case VSystemID.Raw.SGB when Emulator is Gameboy:
 					GBSubMenu.Visible = true;
+					SameBoyColorChooserMenuItem.Visible = Emulator is Sameboy sameboy && !sameboy.IsCGBMode(); // palette config only works in DMG mode
 					break;
 				case VSystemID.Raw.SNES when Emulator is LibsnesCore { IsSGB: true }: // doesn't use "SGB" sysID
 					SNESSubMenu.Text = "&SGB";

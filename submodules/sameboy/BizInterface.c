@@ -35,6 +35,7 @@ typedef struct
 	u32 vbuf[256 * 224];
 	u32 bg_pal[0x20];
 	u32 obj_pal[0x20];
+	GB_palette_t custom_pal;
 	input_callback_t input_cb;
 	trace_callback_t trace_cb;
 	memory_callback_t read_cb;
@@ -479,8 +480,24 @@ EXPORT void sameboy_setscanlinecallback(biz_t* biz, scanline_callback_t callback
 	GB_set_lcd_line_callback(&biz->gb, callback ? ScanlineCallbackRelay : NULL);
 }
 
-EXPORT void sameboy_setpalette(biz_t* biz, u32 which)
+static struct GB_color_s argb_to_rgb(u32 argb)
 {
+	struct GB_color_s ret;
+	ret.r = argb >> 16 & 0xFF;
+	ret.g = argb >>  8 & 0xFF;
+	ret.b = argb >>  0 & 0xFF;
+	return ret;
+}
+
+EXPORT void sameboy_setpalette(biz_t* biz, u32 which, u32* custom_pal)
+{
+	for (u32 i = 0; i < 4; i++)
+	{
+		biz->custom_pal.colors[3 - i] = argb_to_rgb(custom_pal[i]);
+	}
+
+	biz->custom_pal.colors[4] = argb_to_rgb(custom_pal[4]);
+
 	switch (which)
 	{
 		case 0:
@@ -494,6 +511,9 @@ EXPORT void sameboy_setpalette(biz_t* biz, u32 which)
 			break;
 		case 3:
 			GB_set_palette(&biz->gb, &GB_PALETTE_GBL);
+			break;
+		case 4:
+			GB_set_palette(&biz->gb, &biz->custom_pal);
 			break;
 	}
 }

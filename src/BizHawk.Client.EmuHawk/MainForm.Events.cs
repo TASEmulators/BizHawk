@@ -26,6 +26,7 @@ using BizHawk.Emulation.Cores.Nintendo.BSNES;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Emulation.Cores.Nintendo.NES;
+using BizHawk.Emulation.Cores.Nintendo.Sameboy;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Nintendo.SubNESHawk;
 using BizHawk.Emulation.Cores.Sony.PSX;
@@ -1551,6 +1552,15 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				OpenGenericCoreConfig("Gameboy Settings");
+			}
+		}
+
+		private void SameboyColorChooserMenuItem_Click(object sender, EventArgs e)
+		{
+			if (Emulator is Sameboy sameboy)
+			{
+				using var form = new SameBoyColorChooserForm(this, Game, Config, sameboy.GetSettings().Clone());
+				if (form.ShowDialog().IsOk()) AddOnScreenMessage("Palette settings saved");
 			}
 		}
 
