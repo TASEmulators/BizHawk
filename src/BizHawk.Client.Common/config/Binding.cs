@@ -82,7 +82,7 @@ namespace BizHawk.Client.Common
 				else
 				{
 					// patch entries with updated settings (necessary because of TODO LARP
-					binding.Ordinal = defaultBinding.Ordinal;
+					binding.DisplayName = defaultBinding.DisplayName;
 					binding.DefaultBinding = defaultBinding.DefaultBinding;
 					binding.TabGroup = defaultBinding.TabGroup;
 					binding.ToolTip = defaultBinding.ToolTip;
