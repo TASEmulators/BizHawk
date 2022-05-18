@@ -11,15 +11,18 @@ namespace BizHawk.Common.ReflectionExtensions
 	/// </summary>
 	public static class ReflectionExtensions
 	{
+		/// <summary>filter used when looking for <c>[RequiredApi]</c> et al. by reflection for dependency injection</summary>
+		public const BindingFlags DI_TARGET_PROPS = BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic;
+
 		public static IEnumerable<PropertyInfo> GetPropertiesWithAttrib(this Type type, Type attributeType)
 		{
-			return type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic)
+			return type.GetProperties(DI_TARGET_PROPS)
 				.Where(p => p.GetCustomAttributes(attributeType, false).Length > 0);
 		}
 
 		public static IEnumerable<MethodInfo> GetMethodsWithAttrib(this Type type, Type attributeType)
 		{
-			return type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic)
+			return type.GetMethods(DI_TARGET_PROPS)
 				.Where(p => p.GetCustomAttributes(attributeType, false).Length > 0);
 		}
 
