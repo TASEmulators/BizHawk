@@ -282,7 +282,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		{
 			NTSC = 0,
 			PAL = 1,
-		};
+		}
 
 		public enum RETRO_MEMORY : uint
 		{
@@ -297,14 +297,14 @@ namespace BizHawk.Emulation.Cores.Libretro
 		{
 			public IntPtr key;
 			public IntPtr value;
-		};
+		}
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct retro_message
 		{
 			public IntPtr msg;
 			public uint frames;
-		};
+		}
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct retro_system_info
@@ -314,7 +314,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			public IntPtr valid_extensions;
 			public bool need_fullpath;
 			public bool block_extract;
-		};
+		}
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct retro_game_info
@@ -323,7 +323,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			public IntPtr data;
 			public long size;
 			public IntPtr meta;
-		};
+		}
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct retro_system_av_info
@@ -338,7 +338,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			// struct retro_system_timing
 			public double fps;
 			public double sample_rate;
-		};
+		}
 
 		[BizImport(cc)]
 		public abstract void retro_init();
