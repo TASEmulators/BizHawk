@@ -349,16 +349,16 @@ namespace BizHawk.Client.EmuHawk
 				StateHistoryIntegrityCheckMenuItem.Visible =
 				VersionInfo.DeveloperBuild;
 
-			UndoMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Undo"].Bindings;
-			RedoMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Redo"].Bindings;
-			SelectBetweenMarkersMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select between Markers"].Bindings;
-			SelectAllMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select All"].Bindings;
-			ReselectClipboardMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Reselect Clip."].Bindings;
-			ClearFramesMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Clear Frames"].Bindings;
-			InsertFrameMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Insert Frame"].Bindings;
-			InsertNumFramesMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Insert # Frames"].Bindings;
-			DeleteFramesMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Delete Frames"].Bindings;
-			CloneFramesMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Clone Frames"].Bindings;
+			UndoMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Undo"];
+			RedoMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Redo"];
+			SelectBetweenMarkersMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select between Markers"];
+			SelectAllMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select All"];
+			ReselectClipboardMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Reselect Clip."];
+			ClearFramesMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Clear Frames"];
+			InsertFrameMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Insert Frame"];
+			InsertNumFramesMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Insert # Frames"];
+			DeleteFramesMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Delete Frames"];
+			CloneFramesMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Clone Frames"];
 		}
 
 		private void UndoMenuItem_Click(object sender, EventArgs e)
@@ -1418,12 +1418,12 @@ namespace BizHawk.Client.EmuHawk
 			CancelSeekContextMenuItem.Enabled = MainForm.PauseOnFrame.HasValue;
 			BranchContextMenuItem.Visible = TasView.CurrentCell?.RowIndex == Emulator.Frame;
 
-			SelectBetweenMarkersContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Sel. bet. Markers"].Bindings;
-			InsertNumFramesContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Insert # Frames"].Bindings;
-			ClearContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Clear Frames"].Bindings;
-			InsertFrameContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Insert Frame"].Bindings;
-			DeleteFramesContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Delete Frames"].Bindings;
-			CloneContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Clone Frames"].Bindings;
+			SelectBetweenMarkersContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Sel. bet. Markers"];
+			InsertNumFramesContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Insert # Frames"];
+			ClearContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Clear Frames"];
+			InsertFrameContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Insert Frame"];
+			DeleteFramesContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Delete Frames"];
+			CloneContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Clone Frames"];
 		}
 
 		private void CancelSeekContextMenuItem_Click(object sender, EventArgs e)

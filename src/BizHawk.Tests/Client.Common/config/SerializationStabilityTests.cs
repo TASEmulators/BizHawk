@@ -14,8 +14,6 @@ namespace BizHawk.Tests.Client.Common.config
 	[TestClass]
 	public sealed class SerializationStabilityTests
 	{
-		private const string BINDING_SER = @"{""DisplayName"":""Frame Advance"",""Bindings"":""F"",""DefaultBinding"":""F"",""TabGroup"":""General"",""ToolTip"":"""",""Ordinal"":0}";
-
 		private const string PATHENTRY_SER = @"{""Type"":""Movies"",""Path"":""./Movies"",""System"":""Global_NULL""}";
 
 		private const string RECENT_SER = @"{""recentlist"":[],""MAX_RECENT_FILES"":8,""AutoLoad"":false,""Frozen"":false}";
@@ -43,8 +41,6 @@ namespace BizHawk.Tests.Client.Common.config
 		private static readonly IReadOnlyDictionary<Type, string> KnownGoodFromBizHawk = new Dictionary<Type, string>
 		{
 			[typeof(AnalogBind)] = @"{""Value"":""X1 LeftThumbX Axis"",""Mult"":0.8,""Deadzone"":0.1}",
-			[typeof(Binding)] = BINDING_SER,
-			[typeof(BindingCollection)] = $@"{{""Bindings"":[{BINDING_SER}]}}",
 			[typeof(CheatConfig)] = $@"{{""DisableOnLoad"":false,""LoadFileByGame"":true,""AutoSaveOnClose"":true,""Recent"":{RECENT_SER}}}",
 			[typeof(FeedbackBind)] = @"{""Channels"":""Left+Right"",""GamepadPrefix"":""X1 "",""Prescale"":1.0}",
 			[typeof(MessagePosition)] = @"{""X"":0,""Y"":0,""Anchor"":0}",

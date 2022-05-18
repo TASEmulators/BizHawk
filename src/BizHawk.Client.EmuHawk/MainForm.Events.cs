@@ -43,8 +43,8 @@ namespace BizHawk.Client.EmuHawk
 				SaveSlotSubMenu.Enabled =
 				Emulator.HasSavestates();
 
-			OpenRomMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Open ROM"].Bindings;
-			CloseRomMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Close ROM"].Bindings;
+			OpenRomMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Open ROM"];
+			CloseRomMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Close ROM"];
 
 			MovieSubMenu.Enabled =
 				CloseRomMenuItem.Enabled =
@@ -85,32 +85,32 @@ namespace BizHawk.Client.EmuHawk
 			SetSlotFont(SaveState9MenuItem, 9);
 			SetSlotFont(SaveState0MenuItem, 0);
 
-			SaveState1MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save State 1"].Bindings;
-			SaveState2MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save State 2"].Bindings;
-			SaveState3MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save State 3"].Bindings;
-			SaveState4MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save State 4"].Bindings;
-			SaveState5MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save State 5"].Bindings;
-			SaveState6MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save State 6"].Bindings;
-			SaveState7MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save State 7"].Bindings;
-			SaveState8MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save State 8"].Bindings;
-			SaveState9MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save State 9"].Bindings;
-			SaveState0MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save State 0"].Bindings;
-			SaveNamedStateMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save Named State"].Bindings;
+			SaveState1MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save State 1"];
+			SaveState2MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save State 2"];
+			SaveState3MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save State 3"];
+			SaveState4MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save State 4"];
+			SaveState5MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save State 5"];
+			SaveState6MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save State 6"];
+			SaveState7MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save State 7"];
+			SaveState8MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save State 8"];
+			SaveState9MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save State 9"];
+			SaveState0MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save State 0"];
+			SaveNamedStateMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save Named State"];
 		}
 
 		private void LoadStateSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			LoadState1MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Load State 1"].Bindings;
-			LoadState2MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Load State 2"].Bindings;
-			LoadState3MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Load State 3"].Bindings;
-			LoadState4MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Load State 4"].Bindings;
-			LoadState5MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Load State 5"].Bindings;
-			LoadState6MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Load State 6"].Bindings;
-			LoadState7MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Load State 7"].Bindings;
-			LoadState8MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Load State 8"].Bindings;
-			LoadState9MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Load State 9"].Bindings;
-			LoadState0MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Load State 0"].Bindings;
-			LoadNamedStateMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Load Named State"].Bindings;
+			LoadState1MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Load State 1"];
+			LoadState2MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Load State 2"];
+			LoadState3MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Load State 3"];
+			LoadState4MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Load State 4"];
+			LoadState5MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Load State 5"];
+			LoadState6MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Load State 6"];
+			LoadState7MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Load State 7"];
+			LoadState8MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Load State 8"];
+			LoadState9MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Load State 9"];
+			LoadState0MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Load State 0"];
+			LoadNamedStateMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Load Named State"];
 
 			AutoloadLastSlotMenuItem.Checked = Config.AutoLoadLastSaveSlot;
 
@@ -128,20 +128,20 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveSlotSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			SelectSlot1MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 1"].Bindings;
-			SelectSlot2MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 2"].Bindings;
-			SelectSlot3MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 3"].Bindings;
-			SelectSlot4MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 4"].Bindings;
-			SelectSlot5MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 5"].Bindings;
-			SelectSlot6MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 6"].Bindings;
-			SelectSlot7MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 7"].Bindings;
-			SelectSlot8MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 8"].Bindings;
-			SelectSlot9MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 9"].Bindings;
-			SelectSlot0MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 0"].Bindings;
-			PreviousSlotMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Previous Slot"].Bindings;
-			NextSlotMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Next Slot"].Bindings;
-			SaveToCurrentSlotMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Quick Save"].Bindings;
-			LoadCurrentSlotMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Quick Load"].Bindings;
+			SelectSlot1MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 1"];
+			SelectSlot2MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 2"];
+			SelectSlot3MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 3"];
+			SelectSlot4MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 4"];
+			SelectSlot5MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 5"];
+			SelectSlot6MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 6"];
+			SelectSlot7MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 7"];
+			SelectSlot8MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 8"];
+			SelectSlot9MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 9"];
+			SelectSlot0MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 0"];
+			PreviousSlotMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Previous Slot"];
+			NextSlotMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Next Slot"];
+			SaveToCurrentSlotMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Quick Save"];
+			LoadCurrentSlotMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Quick Load"];
 
 			SelectSlot1MenuItem.Checked = Config.SaveSlot == 1;
 			SelectSlot2MenuItem.Checked = Config.SaveSlot == 2;
@@ -157,7 +157,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveRamSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			FlushSaveRAMMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Flush SaveRAM"].Bindings;
+			FlushSaveRAMMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Flush SaveRAM"];
 		}
 
 		private void MovieSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -172,12 +172,12 @@ namespace BizHawk.Client.EmuHawk
 			AutomaticallyBackupMoviesMenuItem.Checked = Config.Movies.EnableBackupMovies;
 			FullMovieLoadstatesMenuItem.Checked = Config.Movies.VBAStyleMovieLoadState;
 
-			ReadonlyMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Toggle read-only"].Bindings;
-			RecordMovieMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Record Movie"].Bindings;
-			PlayMovieMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Play Movie"].Bindings;
-			StopMovieMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Stop Movie"].Bindings;
-			PlayFromBeginningMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Play from beginning"].Bindings;
-			SaveMovieMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save Movie"].Bindings;
+			ReadonlyMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Toggle read-only"];
+			RecordMovieMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Record Movie"];
+			PlayMovieMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Play Movie"];
+			StopMovieMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Stop Movie"];
+			PlayFromBeginningMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Play from beginning"];
+			SaveMovieMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save Movie"];
 
 			PlayMovieMenuItem.Enabled
 				= ImportMoviesMenuItem.Enabled
@@ -215,8 +215,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AVSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			ConfigAndRecordAVMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Record A/V"].Bindings;
-			StopAVIMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Stop A/V"].Bindings;
+			ConfigAndRecordAVMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Record A/V"];
+			StopAVIMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Stop A/V"];
 			CaptureOSDMenuItem.Checked = Config.AviCaptureOsd;
 			CaptureLuaMenuItem.Checked = Config.AviCaptureLua || Config.AviCaptureOsd; // or with osd is for better compatibility with old config files
 
@@ -237,9 +237,9 @@ namespace BizHawk.Client.EmuHawk
 		private void ScreenshotSubMenu_DropDownOpening(object sender, EventArgs e)
 		{
 			ScreenshotCaptureOSDMenuItem1.Checked = Config.ScreenshotCaptureOsd;
-			ScreenshotMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Screenshot"].Bindings;
-			ScreenshotClipboardMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["ScreenshotToClipboard"].Bindings;
-			ScreenshotClientClipboardMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Screen Client to Clipboard"].Bindings;
+			ScreenshotMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Screenshot"];
+			ScreenshotClipboardMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["ScreenshotToClipboard"];
+			ScreenshotClientClipboardMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Screen Client to Clipboard"];
 		}
 
 		private void OpenRomMenuItem_Click(object sender, EventArgs e)
@@ -619,10 +619,10 @@ namespace BizHawk.Client.EmuHawk
 			HardResetMenuItem.Enabled = Emulator.ControllerDefinition.BoolButtons.Contains("Power")
 				&& !MovieSession.Movie.IsPlaying();
 
-			PauseMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Pause"].Bindings;
-			RebootCoreMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Reboot Core"].Bindings;
-			SoftResetMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Soft Reset"].Bindings;
-			HardResetMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Hard Reset"].Bindings;
+			PauseMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Pause"];
+			RebootCoreMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Reboot Core"];
+			SoftResetMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Soft Reset"];
+			HardResetMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Hard Reset"];
 		}
 
 		private void PauseMenuItem_Click(object sender, EventArgs e)
@@ -660,11 +660,11 @@ namespace BizHawk.Client.EmuHawk
 			DisplayRerecordCountMenuItem.Checked = Config.DisplayRerecordCount;
 			DisplaySubtitlesMenuItem.Checked = Config.DisplaySubtitles;
 
-			DisplayFPSMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Display FPS"].Bindings;
-			DisplayFrameCounterMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Frame Counter"].Bindings;
-			DisplayLagCounterMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Lag Counter"].Bindings;
-			DisplayInputMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Input Display"].Bindings;
-			SwitchToFullscreenMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Full Screen"].Bindings;
+			DisplayFPSMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Display FPS"];
+			DisplayFrameCounterMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Frame Counter"];
+			DisplayLagCounterMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Lag Counter"];
+			DisplayInputMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Input Display"];
+			SwitchToFullscreenMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Full Screen"];
 
 			DisplayStatusBarMenuItem.Checked = Config.DispChromeStatusBarWindowed;
 			DisplayLogWindowMenuItem.Checked = Tools.IsLoaded<LogWindow>();
@@ -1143,15 +1143,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ToolsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			ToolBoxMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["ToolBox"].Bindings;
-			RamWatchMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["RAM Watch"].Bindings;
-			RamSearchMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["RAM Search"].Bindings;
-			HexEditorMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Hex Editor"].Bindings;
-			LuaConsoleMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Lua Console"].Bindings;
-			CheatsMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Cheats"].Bindings;
-			TAStudioMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["TAStudio"].Bindings;
-			VirtualPadMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Virtual Pad"].Bindings;
-			TraceLoggerMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Trace Logger"].Bindings;
+			ToolBoxMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["ToolBox"];
+			RamWatchMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["RAM Watch"];
+			RamSearchMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["RAM Search"];
+			HexEditorMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Hex Editor"];
+			LuaConsoleMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Lua Console"];
+			CheatsMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Cheats"];
+			TAStudioMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["TAStudio"];
+			VirtualPadMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Virtual Pad"];
+			TraceLoggerMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Trace Logger"];
 			TraceLoggerMenuItem.Enabled = Tools.IsAvailable<TraceLogger>();
 			CodeDataLoggerMenuItem.Enabled = Tools.IsAvailable<CDL>();
 

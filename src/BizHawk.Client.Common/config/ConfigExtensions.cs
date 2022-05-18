@@ -145,7 +145,7 @@ namespace BizHawk.Client.Common
 		{
 			string ReplMulti(string multiBind)
 				=> multiBind.TransformFields(',', bind => bind.TransformFields('+', button => replMap.TryGetValue(button, out var repl) ? repl : button));
-			foreach (var hotkeyBinding in config.HotkeyBindings.Bindings) hotkeyBinding.Bindings = ReplMulti(hotkeyBinding.Bindings);
+			foreach (var k in config.HotkeyBindings.Keys.ToList()) config.HotkeyBindings[k] = ReplMulti(config.HotkeyBindings[k]);
 			foreach (var bindCollection in new[] { config.AllTrollers, config.AllTrollersAutoFire }) // analog and feedback binds can only be bound to (host) gamepads, not keyboard
 			{
 				foreach (var k in bindCollection.Keys.ToArray()) bindCollection[k] = bindCollection[k].ToDictionary(static kvp => kvp.Key, kvp => ReplMulti(kvp.Value));

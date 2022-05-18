@@ -2093,13 +2093,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Controller controls = new(new ControllerDefinition("Emulator Frontend Controls")
 			{
-				BoolButtons = Config.HotkeyBindings.Select(static x => x.DisplayName).ToList(),
+				BoolButtons = Config.HotkeyBindings.Keys.ToList(),
 			}.MakeImmutable());
 
-			foreach (var b in Config.HotkeyBindings)
-			{
-				controls.BindMulti(b.DisplayName, b.Bindings);
-			}
+			foreach (var (k, v) in Config.HotkeyBindings) controls.BindMulti(k, v);
 
 			InputManager.ClientControls = controls;
 			InputManager.ControllerInputCoalescer = new(); // ctor initialises values for host haptics
