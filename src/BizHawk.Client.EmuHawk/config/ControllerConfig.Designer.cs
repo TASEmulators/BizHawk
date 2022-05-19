@@ -48,11 +48,16 @@
 			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.label38 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.btnMisc = new BizHawk.Client.EmuHawk.MenuButton();
-			this.AllowUdCheckbox = new System.Windows.Forms.CheckBox();
+			this.flpUDLR = new BizHawk.WinForms.Controls.LocSingleRowFLP();
+			this.lblUDLR = new BizHawk.WinForms.Controls.LabelEx();
+			this.rbUDLRForbid = new BizHawk.WinForms.Controls.RadioButtonEx();
+			this.rbUDLRPriority = new BizHawk.WinForms.Controls.RadioButtonEx();
+			this.rbUDLRAllow = new BizHawk.WinForms.Controls.RadioButtonEx();
 			this.tabControl1.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.contextMenuStrip1.SuspendLayout();
+			this.flpUDLR.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// tabControl1
@@ -225,16 +230,38 @@
 			this.btnMisc.Text = "Misc...";
 			this.btnMisc.UseVisualStyleBackColor = true;
 			// 
-			// AllowUdCheckbox
+			// flpUDLR
 			// 
-			this.AllowUdCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.AllowUdCheckbox.AutoSize = true;
-			this.AllowUdCheckbox.Location = new System.Drawing.Point(576, 548);
-			this.AllowUdCheckbox.Name = "AllowUdCheckbox";
-			this.AllowUdCheckbox.Size = new System.Drawing.Size(101, 17);
-			this.AllowUdCheckbox.TabIndex = 114;
-			this.AllowUdCheckbox.Text = "Allow U+D/L+R";
-			this.AllowUdCheckbox.UseVisualStyleBackColor = true;
+			this.flpUDLR.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.flpUDLR.Controls.Add(this.lblUDLR);
+			this.flpUDLR.Controls.Add(this.rbUDLRForbid);
+			this.flpUDLR.Controls.Add(this.rbUDLRPriority);
+			this.flpUDLR.Controls.Add(this.rbUDLRAllow);
+			this.flpUDLR.Location = new System.Drawing.Point(474, 468);
+			this.flpUDLR.Name = "flpUDLR";
+			// 
+			// lblUDLR
+			// 
+			this.lblUDLR.Name = "lblUDLR";
+			this.lblUDLR.Text = "U+D/L+R:";
+			// 
+			// rbUDLRForbid
+			// 
+			this.rbUDLRForbid.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
+			this.rbUDLRForbid.Name = "rbUDLRForbid";
+			this.rbUDLRForbid.Text = "Forbid";
+			// 
+			// rbUDLRPriority
+			// 
+			this.rbUDLRPriority.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
+			this.rbUDLRPriority.Name = "rbUDLRPriority";
+			this.rbUDLRPriority.Text = "Priority";
+			// 
+			// rbUDLRAllow
+			// 
+			this.rbUDLRAllow.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
+			this.rbUDLRAllow.Name = "rbUDLRAllow";
+			this.rbUDLRAllow.Text = "Allow";
 			// 
 			// ControllerConfig
 			// 
@@ -243,7 +270,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(932, 572);
-			this.Controls.Add(this.AllowUdCheckbox);
+			this.Controls.Add(this.flpUDLR);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label38);
@@ -262,6 +289,8 @@
 			this.tableLayoutPanel1.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			this.contextMenuStrip1.ResumeLayout(false);
+			this.flpUDLR.ResumeLayout(false);
+			this.flpUDLR.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -288,6 +317,10 @@
 				private BizHawk.WinForms.Controls.LocLabelEx label3;
 				private BizHawk.WinForms.Controls.LocLabelEx label2;
 				private BizHawk.WinForms.Controls.LocLabelEx label38;
-		private System.Windows.Forms.CheckBox AllowUdCheckbox;
+		private WinForms.Controls.LocSingleRowFLP flpUDLR;
+		private WinForms.Controls.RadioButtonEx rbUDLRForbid;
+		private WinForms.Controls.RadioButtonEx rbUDLRPriority;
+		private WinForms.Controls.RadioButtonEx rbUDLRAllow;
+		private WinForms.Controls.LabelEx lblUDLR;
 	}
 }

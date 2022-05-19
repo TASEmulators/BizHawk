@@ -98,7 +98,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_config.Savestates.NoLowResLargeScreenshots = false;
 			_config.Savestates.SaveScreenshot = false;
-			_config.AllowUdlr = false;
+			_config.OpposingDirPolicy = OpposingDirPolicy.Priority;
 			_config.Savestates.MakeBackups = false;
 
 			_config.Savestates.CompressionLevelNormal = 0;
@@ -182,7 +182,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// General
 			_config.Savestates.SaveScreenshot = true;
-			_config.AllowUdlr = true;
+			_config.OpposingDirPolicy = OpposingDirPolicy.Allow;
 			_config.Savestates.MakeBackups = true;
 			_config.SkipLagFrame = false;
 			_config.Savestates.CompressionLevelNormal = 5;

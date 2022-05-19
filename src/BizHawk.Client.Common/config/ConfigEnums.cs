@@ -39,4 +39,11 @@
 		OpenTK = 0,
 		DirectInput = 1
 	}
+
+	public enum OpposingDirPolicy
+	{
+		Priority = 0,
+		Forbid = 1,
+		Allow = 2,
+	}
 }

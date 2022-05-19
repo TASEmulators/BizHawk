@@ -11,56 +11,41 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public class UdlrControllerAdapter : IInputAdapter
 	{
+		private readonly HashSet<string> _unpresses = new();
+
 		public IController Source { get; set; }
 
 		public ControllerDefinition Definition => Source.Definition;
 
 		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
 
-		public bool AllowUdlr { get; set; }
+		public OpposingDirPolicy OpposingDirPolicy { get; set; }
 
 		public bool IsPressed(string button)
 		{
-			if (AllowUdlr)
-			{
-				return Source.IsPressed(button);
-			}
+			if (OpposingDirPolicy is OpposingDirPolicy.Allow) return Source.IsPressed(button);
 
 			// " C " is for N64 "P1 C Up" and the like, which should not be subject to mutexing
 			// regarding the unpressing and UDLR logic...... don't think about it. don't question it. don't look at it.
-			if (button.Contains(" C "))
+			if (button.Contains(" C ")) return Source.IsPressed(button);
+
+			bool HandleOpposingDir(string opposingButtonName)
 			{
+				if (Source.IsPressed(opposingButtonName))
+				{
+					if (OpposingDirPolicy is OpposingDirPolicy.Forbid || _unpresses.Contains(button)) return false;
+					_unpresses.Add(opposingButtonName);
+				}
+				else
+				{
+					_unpresses.Remove(button);
+				}
 				return Source.IsPressed(button);
 			}
-
-			if (button.Contains("Down"))
-			{
-				var prefix = button.SubstringBeforeOrNull("Down");
-				string other = $"{prefix}Up";
-				return Source.IsPressed(button) && !Source.IsPressed(other);
-			}
-
-			if (button.Contains("Up"))
-			{
-				var prefix = button.SubstringBeforeOrNull("Up");
-				string other = $"{prefix}Down";
-				return Source.IsPressed(button) && !Source.IsPressed(other);
-			}
-
-			if (button.Contains("Right"))
-			{
-				var prefix = button.SubstringBeforeOrNull("Right");
-				string other = $"{prefix}Left";
-				return Source.IsPressed(button) && !Source.IsPressed(other);
-			}
-
-			if (button.Contains("Left"))
-			{
-				var prefix = button.SubstringBeforeOrNull("Left");
-				string other = $"{prefix}Right";
-				return Source.IsPressed(button) && !Source.IsPressed(other);
-			}
-
+			if (button.Contains("Down")) return HandleOpposingDir($"{button.SubstringBeforeOrNull("Down")}Up");
+			if (button.Contains("Up")) return HandleOpposingDir($"{button.SubstringBeforeOrNull("Up")}Down");
+			if (button.Contains("Right")) return HandleOpposingDir($"{button.SubstringBeforeOrNull("Right")}Left");
+			if (button.Contains("Left")) return HandleOpposingDir($"{button.SubstringBeforeOrNull("Left")}Right");
 			return Source.IsPressed(button);
 		}
 
