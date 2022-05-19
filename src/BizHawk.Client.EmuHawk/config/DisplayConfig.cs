@@ -73,7 +73,7 @@ namespace BizHawk.Client.EmuHawk
 				rbUseRaw.Checked = true;
 			else if (_config.DispManagerAR == EDispManagerAR.System)
 				rbUseSystem.Checked = true;
-			else if (_config.DispManagerAR == EDispManagerAR.Custom)
+			else if (_config.DispManagerAR == EDispManagerAR.CustomSize)
 				rbUseCustom.Checked = true;
 			else if (_config.DispManagerAR == EDispManagerAR.CustomRatio)
 				rbUseCustomRatio.Checked = true;
@@ -152,7 +152,7 @@ namespace BizHawk.Client.EmuHawk
 			else if (rbUseSystem.Checked)
 				_config.DispManagerAR = EDispManagerAR.System;
 			else if (rbUseCustom.Checked)
-				_config.DispManagerAR = EDispManagerAR.Custom;
+				_config.DispManagerAR = EDispManagerAR.CustomSize;
 			else if (rbUseCustomRatio.Checked)
 				_config.DispManagerAR = EDispManagerAR.CustomRatio;
 
