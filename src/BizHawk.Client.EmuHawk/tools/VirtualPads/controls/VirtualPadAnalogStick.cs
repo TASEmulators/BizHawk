@@ -78,16 +78,24 @@ namespace BizHawk.Client.EmuHawk
 			AnalogStick.ClearCallback = ClearCallback;
 			manualR.Maximum = Math.Max(RectToPolarHelper(RangeX.Max, RangeY.Max).R, RectToPolarHelper(RangeX.Min, RangeY.Min).R);
 
+			void UnsetLastFocusedNUD(object sender, EventArgs eventArgs)
+				=> setLastFocusedNUD(null, null);
 			ManualX.ValueChanged += ManualXY_ValueChanged;
 			ManualX.GotFocus += setLastFocusedNUD;
+			ManualX.LostFocus += UnsetLastFocusedNUD;
 			ManualY.ValueChanged += ManualXY_ValueChanged;
 			ManualY.GotFocus += setLastFocusedNUD;
+			ManualY.LostFocus += UnsetLastFocusedNUD;
 			manualR.ValueChanged += PolarNumeric_Changed;
 			manualR.GotFocus += setLastFocusedNUD;
+			manualR.LostFocus += UnsetLastFocusedNUD;
 			manualTheta.ValueChanged += PolarNumeric_Changed;
 			manualTheta.GotFocus += setLastFocusedNUD;
+			manualTheta.LostFocus += UnsetLastFocusedNUD;
 			MaxXNumeric.GotFocus += setLastFocusedNUD;
+			MaxXNumeric.LostFocus += UnsetLastFocusedNUD;
 			MaxYNumeric.GotFocus += setLastFocusedNUD;
+			MaxYNumeric.LostFocus += UnsetLastFocusedNUD;
 
 			AnalogStick.Init(
 				_inputManager.StickyXorAdapter,

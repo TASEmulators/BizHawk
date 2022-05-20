@@ -45,7 +45,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly PadSchema _schema;
 		private readonly InputManager _inputManager;
-		private readonly EventHandler _setLastFocusedNud;
+		private readonly EventHandler _setLastFocusedNUD;
 		private bool _readOnly;
 
 		public void UpdateValues()
@@ -80,7 +80,7 @@ namespace BizHawk.Client.EmuHawk
 			Dock = DockStyle.Top | DockStyle.Left;
 			_schema = schema;
 			_inputManager = inputManager;
-			_setLastFocusedNud = setLastFocusedNUD;
+			_setLastFocusedNUD = setLastFocusedNUD;
 		}
 
 		private void VirtualPadControl_Load(object sender, EventArgs e)
@@ -133,7 +133,7 @@ namespace BizHawk.Client.EmuHawk
 					},
 					AnalogSchema analog => new VirtualPadAnalogStick(
 						_inputManager,
-						_setLastFocusedNud,
+						_setLastFocusedNUD,
 						analog.Name,
 						analog.SecondaryName,
 						analog.Spec,
@@ -145,7 +145,7 @@ namespace BizHawk.Client.EmuHawk
 					},
 					TargetedPairSchema targetedPair => new VirtualPadTargetScreen(
 						_inputManager.StickyXorAdapter,
-						_setLastFocusedNud,
+						_setLastFocusedNUD,
 						targetedPair.Name,
 						targetedPair.SecondaryName,
 						targetedPair.MaxX,

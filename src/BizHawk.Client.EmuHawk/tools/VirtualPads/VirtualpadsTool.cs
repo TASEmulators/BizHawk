@@ -24,15 +24,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private Control _lastFocusedNUD = null;
 
-		public override bool BlocksInputWhenFocused
-		{
-			get
-			{
-				// >:( `NumericUpDown.Focused` doesn't work on Windows (the REFERENCE IMPLEMENTATION), a fact that goes UNMENTIONED in the docs https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.updownbase.focused?view=netframework-4.8
-				if (!OSTailoredCode.IsUnixHost) return true; // ...and I can't think of another hack that isn't extremely convoluted, so the Virtual Pad can just block all input. --yoshi
-				return _lastFocusedNUD?.Focused is true; // on Mono, simple hack to check if typing in a NUD
-			}
-		}
+		public override bool BlocksInputWhenFocused => _lastFocusedNUD is not null;
 
 		private List<VirtualPad> Pads =>
 			ControllerPanel.Controls
@@ -80,6 +72,9 @@ namespace BizHawk.Client.EmuHawk
 			Pads.ForEach(pad => pad.BumpAnalog(x, y));
 		}
 
+		private void SetLastFocusedNUD(object sender, EventArgs args)
+			=> _lastFocusedNUD = (Control) sender;
+
 		private void CreatePads()
 		{
 			ControllerPanel.Controls.Clear();
@@ -122,10 +117,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			EventHandler setLastFocusedNUD = OSTailoredCode.IsUnixHost
-				? (sender, _) => _lastFocusedNUD = (Control) sender
-				: (_, _) => {}; // see BlocksInputWhenFocused implementation
-			ControllerPanel.Controls.AddRange(padSchemata.Select(s => (Control) new VirtualPad(s, InputManager, setLastFocusedNUD)).Reverse().ToArray());
+			ControllerPanel.Controls.AddRange(padSchemata.Select(s => (Control) new VirtualPad(s, InputManager, SetLastFocusedNUD)).Reverse().ToArray());
 		}
 
 		public void ScrollToPadSchema(string padSchemaName)
