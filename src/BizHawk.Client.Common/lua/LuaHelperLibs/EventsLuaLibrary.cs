@@ -51,19 +51,22 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local steveonf = event.onframeend(\r\n\tfunction()\r\n\t\tconsole.log( \"Calls the given lua function at the end of each frame, after all emulation and drawing has completed. Note: this is the default behavior of lua scripts\" );\r\n\tend\r\n\t, \"Frame name\" );")]
 		[LuaMethod("onframeend", "Calls the given lua function at the end of each frame, after all emulation and drawing has completed. Note: this is the default behavior of lua scripts")]
-		public string OnFrameEnd(LuaFunction luaf, string name = null)
+		[return: LuaASCIIStringParam]
+		public string OnFrameEnd(LuaFunction luaf, [LuaArbitraryStringParam] string name = null)
 			=> _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, "OnFrameEnd", LogOutputCallback, CurrentFile, name)
 				.Guid.ToString();
 
 		[LuaMethodExample("local steveonf = event.onframestart(\r\n\tfunction()\r\n\t\tconsole.log( \"Calls the given lua function at the beginning of each frame before any emulation and drawing occurs\" );\r\n\tend\r\n\t, \"Frame name\" );")]
 		[LuaMethod("onframestart", "Calls the given lua function at the beginning of each frame before any emulation and drawing occurs")]
-		public string OnFrameStart(LuaFunction luaf, string name = null)
+		[return: LuaASCIIStringParam]
+		public string OnFrameStart(LuaFunction luaf, [LuaArbitraryStringParam] string name = null)
 			=> _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, "OnFrameStart", LogOutputCallback, CurrentFile, name)
 				.Guid.ToString();
 
 		[LuaMethodExample("local steveoni = event.oninputpoll(\r\n\tfunction()\r\n\t\tconsole.log( \"Calls the given lua function after each time the emulator core polls for input\" );\r\n\tend\r\n\t, \"Frame name\" );")]
 		[LuaMethod("oninputpoll", "Calls the given lua function after each time the emulator core polls for input")]
-		public string OnInputPoll(LuaFunction luaf, string name = null)
+		[return: LuaASCIIStringParam]
+		public string OnInputPoll(LuaFunction luaf, [LuaArbitraryStringParam] string name = null)
 		{
 			var nlf = _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, "OnInputPoll", LogOutputCallback, CurrentFile, name);
 			//TODO should we bother registering the function if the service isn't supported? none of the other events work this way --yoshi
@@ -93,13 +96,19 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local steveonl = event.onloadstate(\r\n\tfunction()\r\n\tconsole.log( \"Fires after a state is loaded. Receives a lua function name, and registers it to the event immediately following a successful savestate event\" );\r\nend\", \"Frame name\" );")]
 		[LuaMethod("onloadstate", "Fires after a state is loaded. Receives a lua function name, and registers it to the event immediately following a successful savestate event")]
-		public string OnLoadState(LuaFunction luaf, string name = null)
+		[return: LuaASCIIStringParam]
+		public string OnLoadState(LuaFunction luaf, [LuaArbitraryStringParam] string name = null)
 			=> _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, "OnSavestateLoad", LogOutputCallback, CurrentFile, name)
 				.Guid.ToString();
 
 		[LuaMethodExample("local steveonm = event.onmemoryexecute(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after the given address is executed by the core\" );\r\n\tend\r\n\t, 0x200, \"Frame name\", \"System Bus\" );")]
 		[LuaMethod("onmemoryexecute", "Fires after the given address is executed by the core")]
-		public string OnMemoryExecute(LuaFunction luaf, uint address, string name = null, string scope = null)
+		[return: LuaASCIIStringParam]
+		public string OnMemoryExecute(
+			LuaFunction luaf,
+			uint address,
+			[LuaArbitraryStringParam] string name = null,
+			[LuaASCIIStringParam] string scope = null)
 		{
 			try
 			{
@@ -130,7 +139,11 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local steveonm = event.onmemoryexecuteany(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after any address is executed by the core (CPU-intensive)\" );\r\n\tend\r\n\t, \"Frame name\", \"System Bus\" );")]
 		[LuaMethod("onmemoryexecuteany", "Fires after any address is executed by the core (CPU-intensive)")]
-		public string OnMemoryExecuteAny(LuaFunction luaf, string name = null, string scope = null)
+		[return: LuaASCIIStringParam]
+		public string OnMemoryExecuteAny(
+			LuaFunction luaf,
+			[LuaArbitraryStringParam] string name = null,
+			[LuaASCIIStringParam] string scope = null)
 		{
 			try
 			{
@@ -166,7 +179,12 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local steveonm = event.onmemoryread(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after the given address is read by the core. If no address is given, it will attach to every memory read\" );\r\n\tend\r\n\t, 0x200, \"Frame name\" );")]
 		[LuaMethod("onmemoryread", "Fires after the given address is read by the core. If no address is given, it will attach to every memory read")]
-		public string OnMemoryRead(LuaFunction luaf, uint? address = null, string name = null, string scope = null)
+		[return: LuaASCIIStringParam]
+		public string OnMemoryRead(
+			LuaFunction luaf,
+			uint? address = null,
+			[LuaArbitraryStringParam] string name = null,
+			[LuaASCIIStringParam] string scope = null)
 		{
 			try
 			{
@@ -196,7 +214,12 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local steveonm = event.onmemorywrite(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after the given address is written by the core. If no address is given, it will attach to every memory write\" );\r\n\tend\r\n\t, 0x200, \"Frame name\" );")]
 		[LuaMethod("onmemorywrite", "Fires after the given address is written by the core. If no address is given, it will attach to every memory write")]
-		public string OnMemoryWrite(LuaFunction luaf, uint? address = null, string name = null, string scope = null)
+		[return: LuaASCIIStringParam]
+		public string OnMemoryWrite(
+			LuaFunction luaf,
+			uint? address = null,
+			[LuaArbitraryStringParam] string name = null,
+			[LuaASCIIStringParam] string scope = null)
 		{
 			try
 			{
@@ -226,34 +249,41 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local steveons = event.onsavestate(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after a state is saved\" );\r\n\tend\r\n\t, \"Frame name\" );")]
 		[LuaMethod("onsavestate", "Fires after a state is saved")]
-		public string OnSaveState(LuaFunction luaf, string name = null)
+		[return: LuaASCIIStringParam]
+		public string OnSaveState(LuaFunction luaf, [LuaArbitraryStringParam] string name = null)
 			=> _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, "OnSavestateSave", LogOutputCallback, CurrentFile, name)
 				.Guid.ToString();
 
 		[LuaMethodExample("local steveone = event.onexit(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after the calling script has stopped\" );\r\n\tend\r\n\t, \"Frame name\" );")]
 		[LuaMethod("onexit", "Fires after the calling script has stopped")]
-		public string OnExit(LuaFunction luaf, string name = null)
+		[return: LuaASCIIStringParam]
+		public string OnExit(LuaFunction luaf, [LuaArbitraryStringParam] string name = null)
 			=> _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, "OnExit", LogOutputCallback, CurrentFile, name)
 				.Guid.ToString();
 
 		[LuaMethodExample("local closeGuid = event.onconsoleclose(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires when the emulator console closes\" );\r\n\tend\r\n\t, \"Frame name\" );")]
 		[LuaMethod("onconsoleclose", "Fires when the emulator console closes")]
-		public string OnConsoleClose(LuaFunction luaf, string name = null)
+		[return: LuaASCIIStringParam]
+		public string OnConsoleClose(LuaFunction luaf, [LuaArbitraryStringParam] string name = null)
 			=> _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, "OnConsoleClose", LogOutputCallback, CurrentFile, name)
 				.Guid.ToString();
 
 		[LuaMethodExample("if ( event.unregisterbyid( \"4d1810b7 - 0d28 - 4acb - 9d8b - d87721641551\" ) ) then\r\n\tconsole.log( \"Removes the registered function that matches the guid.If a function is found and remove the function will return true.If unable to find a match, the function will return false.\" );\r\nend;")]
 		[LuaMethod("unregisterbyid", "Removes the registered function that matches the guid. If a function is found and remove the function will return true. If unable to find a match, the function will return false.")]
-		public bool UnregisterById(string guid)
+		public bool UnregisterById([LuaASCIIStringParam] string guid)
 			=> _luaLibsImpl.RemoveNamedFunctionMatching(nlf => nlf.Guid.ToString() == guid);
 
 		[LuaMethodExample("if ( event.unregisterbyname( \"Function name\" ) ) then\r\n\tconsole.log( \"Removes the first registered function that matches Name.If a function is found and remove the function will return true.If unable to find a match, the function will return false.\" );\r\nend;")]
 		[LuaMethod("unregisterbyname", "Removes the first registered function that matches Name. If a function is found and remove the function will return true. If unable to find a match, the function will return false.")]
-		public bool UnregisterByName(string name)
-			=> _luaLibsImpl.RemoveNamedFunctionMatching(nlf => nlf.Name == name);
+		public bool UnregisterByName([LuaArbitraryStringParam] string name)
+		{
+			var name1 = FixString(name);
+			return _luaLibsImpl.RemoveNamedFunctionMatching(nlf => nlf.Name == name1);
+		}
 
 		[LuaMethodExample("local scopes = event.availableScopes();")]
 		[LuaMethod("availableScopes", "Lists the available scopes that can be passed into memory events")]
+		[return: LuaASCIIStringParam]
 		public LuaTable AvailableScopes()
 		{
 			return DebuggableCore?.MemoryCallbacksAvailable() == true

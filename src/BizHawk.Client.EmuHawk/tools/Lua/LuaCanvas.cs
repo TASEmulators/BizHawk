@@ -85,10 +85,8 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			"SetTitle",
 			"Sets the canvas window title")]
-		public void SetTitle(string title)
-		{
-			Text = title;
-		}
+		public void SetTitle([LuaArbitraryStringParam] string title)
+			=> Text = LuaLibraryBase.FixString(title);
 
 		[LuaMethodExample(
 			"LuaCanvas.SetLocation( 16, 32 );")]
@@ -220,11 +218,11 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			"DrawIcon",
 			"draws an Icon (.ico) file from the given path at the given coordinate. width and height are optional. If specified, it will resize the image accordingly")]
-		public void DrawIcon(string path, int x, int y, int? width = null, int? height = null)
+		public void DrawIcon([LuaArbitraryStringParam] string path, int x, int y, int? width = null, int? height = null)
 		{
 			try
 			{
-				luaPictureBox.DrawIcon(path, x, y, width, height);
+				luaPictureBox.DrawIcon(LuaLibraryBase.FixString(path), x, y, width, height);
 			}
 			catch (Exception ex)
 			{
@@ -237,15 +235,21 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			"DrawImage",
 			"draws an image file from the given path at the given coordinate. width and height are optional. If specified, it will resize the image accordingly")]
-		public void DrawImage(string path, int x, int y, int? width = null, int? height = null, bool cache = true)
+		public void DrawImage(
+			[LuaArbitraryStringParam] string path,
+			int x,
+			int y,
+			int? width = null,
+			int? height = null,
+			bool cache = true)
 		{
-			if (!File.Exists(path))
+			var path1 = LuaLibraryBase.FixString(path);
+			if (!File.Exists(path1))
 			{
-				LogOutputCallback($"File not found: {path}\nScript Terminated");
+				LogOutputCallback($"File not found: {path1}\nScript Terminated");
 				return;
 			}
-
-			luaPictureBox.DrawImage(path, x, y, width, height, cache);
+			luaPictureBox.DrawImage(path1, x, y, width, height, cache);
 		}
 
 		[LuaMethodExample(
@@ -264,7 +268,7 @@ namespace BizHawk.Client.EmuHawk
 			"DrawImageRegion",
 			"draws a given region of an image file from the given path at the given coordinate, and optionally with the given size")]
 		public void DrawImageRegion(
-			string path,
+			[LuaArbitraryStringParam] string path,
 			int sourceX,
 			int sourceY,
 			int sourceWidth,
@@ -274,13 +278,13 @@ namespace BizHawk.Client.EmuHawk
 			int? destWidth = null,
 			int? destHeight = null)
 		{
-			if (!File.Exists(path))
+			var path1 = LuaLibraryBase.FixString(path);
+			if (!File.Exists(path1))
 			{
-				LogOutputCallback($"File not found: {path}\nScript Terminated");
+				LogOutputCallback($"File not found: {path1}\nScript Terminated");
 				return;
 			}
-
-			luaPictureBox.DrawImageRegion(path, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight);
+			luaPictureBox.DrawImageRegion(path1, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight);
 		}
 
 		[LuaMethodExample(
@@ -403,16 +407,16 @@ namespace BizHawk.Client.EmuHawk
 		public void DrawString(
 			int x,
 			int y,
-			string message,
+			[LuaArbitraryStringParam] string message,
 			[LuaColorParam] object foreColor = null,
 			[LuaColorParam] object backColor = null,
 			int? fontSize = null,
-			string fontFamily = null,
-			string fontStyle = null,
-			string horizontalAlign = null,
-			string verticalAlign = null)
+			[LuaASCIIStringParam] string fontFamily = null,
+			[LuaEnumStringParam] string fontStyle = null,
+			[LuaEnumStringParam] string horizontalAlign = null,
+			[LuaEnumStringParam] string verticalAlign = null)
 		{
-			luaPictureBox.DrawText(x, y, message, _th.SafeParseColor(foreColor), _th.SafeParseColor(backColor), fontSize, fontFamily, fontStyle, horizontalAlign, verticalAlign);
+			luaPictureBox.DrawText(x, y, LuaLibraryBase.FixString(message), _th.SafeParseColor(foreColor), _th.SafeParseColor(backColor), fontSize, fontFamily, fontStyle, horizontalAlign, verticalAlign);
 		}
 
 		[LuaMethodExample(
@@ -423,16 +427,16 @@ namespace BizHawk.Client.EmuHawk
 		public void DrawText(
 			int x,
 			int y,
-			string message,
+			[LuaArbitraryStringParam] string message,
 			[LuaColorParam] object foreColor = null,
 			[LuaColorParam] object backColor = null,
 			int? fontSize = null,
-			string fontFamily = null,
-			string fontStyle = null,
-			string horizontalAlign = null,
-			string verticalAlign = null)
+			[LuaASCIIStringParam] string fontFamily = null,
+			[LuaEnumStringParam] string fontStyle = null,
+			[LuaEnumStringParam] string horizontalAlign = null,
+			[LuaEnumStringParam] string verticalAlign = null)
 		{
-			luaPictureBox.DrawText(x, y, message, _th.SafeParseColor(foreColor), _th.SafeParseColor(backColor), fontSize, fontFamily, fontStyle, horizontalAlign, verticalAlign);
+			luaPictureBox.DrawText(x, y, LuaLibraryBase.FixString(message), _th.SafeParseColor(foreColor), _th.SafeParseColor(backColor), fontSize, fontFamily, fontStyle, horizontalAlign, verticalAlign);
 		}
 
 
@@ -460,9 +464,9 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethod("save_image_to_disk", "Saves everything that's been drawn to a .png file at the given path. Relative paths are relative to the path set for \"Screenshots\" for the current system.")]
-		public void SaveImageToDisk(string path)
+		public void SaveImageToDisk([LuaArbitraryStringParam] string path)
 		{
-			luaPictureBox.Image.Save(path.MakeAbsolute(_emuLib.PathEntries.ScreenshotAbsolutePathFor(_emuLib.GetSystemId())));
+			luaPictureBox.Image.Save(LuaLibraryBase.FixString(path).MakeAbsolute(_emuLib.PathEntries.ScreenshotAbsolutePathFor(_emuLib.GetSystemId())));
 		}
 	}
 }

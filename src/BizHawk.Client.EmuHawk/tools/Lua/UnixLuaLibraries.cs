@@ -36,7 +36,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public void CallSaveStateEvent(string name) {}
 
-		public INamedLuaFunction CreateAndRegisterNamedFunction(LuaFunction function, string theEvent, Action<string> logCallback, LuaFile luaFile, string name = null) => null;
+		public INamedLuaFunction CreateAndRegisterNamedFunction(
+			LuaFunction function,
+			string theEvent,
+			Action<string> logCallback,
+			LuaFile luaFile,
+			[LuaArbitraryStringParam] string name = null)
+				=> null;
 
 		public NLuaTableHelper GetTableHelper() => null;
 

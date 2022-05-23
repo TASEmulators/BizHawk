@@ -39,10 +39,8 @@ namespace BizHawk.Client.EmuHawk
 		private static void SetSize(Control control, int width, int height)
 			=> control.Size = UIHelper.Scale(new Size(width, height));
 
-		private static void SetText(Control control, string caption)
-		{
-			control.Text = caption ?? "";
-		}
+		private static void SetText(Control control, [LuaArbitraryStringParam] string caption)
+			=> control.Text = FixString(caption) ?? string.Empty;
 
 		[LuaMethodExample("forms.addclick( 332, function()\r\n\tconsole.log( \"adds the given lua function as a click event to the given control\" );\r\nend );")]
 		[LuaMethod("addclick", "adds the given lua function as a click event to the given control")]
@@ -66,7 +64,7 @@ namespace BizHawk.Client.EmuHawk
 			"button", "Creates a button control on the given form. The caption property will be the text value on the button. clickEvent is the name of a Lua function that will be invoked when the button is clicked. x, and y are the optional location parameters for the position of the button within the given form. The function returns the handle of the created button. Width and Height are optional, if not specified they will be a default size")]
 		public int Button(
 			int formHandle,
-			string caption,
+			[LuaArbitraryStringParam] string caption,
 			LuaFunction clickEvent,
 			int? x = null,
 			int? y = null,
@@ -100,7 +98,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethodExample("local inforche = forms.checkbox( 333, \"Caption\", 2, 48 );")]
 		[LuaMethod(
 			"checkbox", "Creates a checkbox control on the given form. The caption property will be the text of the checkbox. x and y are the optional location parameters for the position of the checkbox within the form")]
-		public int Checkbox(int formHandle, string caption, int? x = null, int? y = null)
+		public int Checkbox(int formHandle, [LuaArbitraryStringParam] string caption, int? x = null, int? y = null)
 		{
 			var form = GetForm(formHandle);
 			if (form == null)
@@ -170,7 +168,7 @@ namespace BizHawk.Client.EmuHawk
 			"dropdown", "Creates a dropdown (with a ComboBoxStyle of DropDownList) control on the given form. Dropdown items are passed via a lua table. Only the values will be pulled for the dropdown items, the keys are irrelevant. Items will be sorted alphabetically. x and y are the optional location parameters, and width and height are the optional size parameters.")]
 		public int Dropdown(
 			int formHandle,
-			LuaTable items,
+			[LuaArbitraryStringParam] LuaTable items,
 			int? x = null,
 			int? y = null,
 			int? width = null,
@@ -182,7 +180,7 @@ namespace BizHawk.Client.EmuHawk
 				return 0;
 			}
 
-			var dropdownItems = _th.EnumerateValues<string>(items).ToList();
+			var dropdownItems = _th.EnumerateValues<string>(items).Select(FixString).ToList();
 			dropdownItems.Sort();
 
 			var dropdown = new LuaDropDown(dropdownItems);
@@ -203,7 +201,8 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("local stforget = forms.getproperty(332, \"Property\");")]
 		[LuaMethod("getproperty", "returns a string representation of the value of a property of the widget at the given handle")]
-		public string GetProperty(int handle, string property)
+		[return: LuaArbitraryStringParam]
+		public string GetProperty(int handle, [LuaASCIIStringParam] string property)
 		{
 			try
 			{
@@ -212,14 +211,14 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						return form.GetType().GetProperty(property).GetValue(form, null).ToString();
+						return UnFixString(form.GetType().GetProperty(property).GetValue(form, null).ToString());
 					}
 
 					foreach (Control control in form.Controls)
 					{
 						if (control.Handle == ptr)
 						{
-							return control.GetType().GetProperty(property).GetValue(control, null).ToString();
+							return UnFixString(control.GetType().GetProperty(property).GetValue(control, null).ToString());
 						}
 					}
 				}
@@ -234,6 +233,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("local stforget = forms.gettext(332);")]
 		[LuaMethod("gettext", "Returns the text property of a given form or control")]
+		[return: LuaArbitraryStringParam]
 		public string GetText(int handle)
 		{
 			try
@@ -243,19 +243,14 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						return form.Text;
+						return UnFixString(form.Text);
 					}
 
 					foreach (Control control in form.Controls)
 					{
 						if (control.Handle == ptr)
 						{
-							if (control is LuaDropDown dd)
-							{
-								return dd.SelectedItem.ToString();
-							}
-
-							return control.Text;
+							return UnFixString(control is LuaDropDown dd ? dd.SelectedItem.ToString() : control.Text);
 						}
 					}
 				}
@@ -302,7 +297,7 @@ namespace BizHawk.Client.EmuHawk
 			"label", "Creates a label control on the given form. The caption property is the text of the label. x, and y are the optional location parameters for the position of the label within the given form. The function returns the handle of the created label. Width and Height are optional, if not specified they will be a default size.")]
 		public int Label(
 			int formHandle,
-			string caption,
+			[LuaArbitraryStringParam] string caption,
 			int? x = null,
 			int? y = null,
 			int? width = null,
@@ -340,7 +335,11 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethodExample("local infornew = forms.newform( 18, 24, \"Title\", function()\r\n\tconsole.log( \"creates a new default dialog, if both width and height are specified it will create a dialog of the specified size. If title is specified it will be the caption of the dialog, else the dialog caption will be 'Lua Dialog'. The function will return an int representing the handle of the dialog created.\" );\r\nend );")]
 		[LuaMethod(
 			"newform", "creates a new default dialog, if both width and height are specified it will create a dialog of the specified size. If title is specified it will be the caption of the dialog, else the dialog caption will be 'Lua Dialog'. The function will return an int representing the handle of the dialog created.")]
-		public int NewForm(int? width = null, int? height = null, string title = null, LuaFunction onClose = null)
+		public int NewForm(
+			int? width = null,
+			int? height = null,
+			[LuaArbitraryStringParam] string title = null,
+			LuaFunction onClose = null)
 		{
 			var form = new LuaWinform(CurrentFile, WindowClosed);
 			_luaForms.Add(form);
@@ -349,7 +348,7 @@ namespace BizHawk.Client.EmuHawk
 				form.ClientSize = UIHelper.Scale(new Size(width.Value, height.Value));
 			}
 
-			form.Text = title;
+			SetText(form, title);
 			form.MaximizeBox = false;
 			form.FormBorderStyle = FormBorderStyle.FixedDialog;
 			form.Icon = SystemIcons.Application;
@@ -376,25 +375,22 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethodExample(@"local filename = forms.openfile(""C:\filename.bin"", ""C:\"", ""Raster Images (*.bmp;*.gif;*.jpg;*.png)|*.bmp;*.gif;*.jpg;*.png|All Files (*.*)|*.*"")")]
 		[LuaMethod(
 			"openfile", "Creates a standard openfile dialog with optional parameters for the filename, directory, and filter. The return value is the directory that the user picked. If they chose to cancel, it will return an empty string")]
-		public string OpenFile(string fileName = null, string initialDirectory = null, string filter = null)
+		[return: LuaArbitraryStringParam]
+		public string OpenFile(
+			[LuaArbitraryStringParam] string fileName = null,
+			[LuaArbitraryStringParam] string initialDirectory = null,
+			[LuaASCIIStringParam] string filter = null)
 		{
 			var openFileDialog1 = new OpenFileDialog();
-			if (initialDirectory != null)
-			{
-				openFileDialog1.InitialDirectory = initialDirectory;
-			}
-
-			if (fileName != null)
-			{
-				openFileDialog1.FileName = fileName;
-			}
+			if (initialDirectory is not null) openFileDialog1.InitialDirectory = FixString(initialDirectory);
+			if (fileName is not null) openFileDialog1.FileName = FixString(fileName);
 
 			openFileDialog1.AddExtension = true;
 			openFileDialog1.Filter = filter ?? FilesystemFilter.AllFilesEntry;
 
 			if (openFileDialog1.ShowDialog() == DialogResult.OK)
 			{
-				return openFileDialog1.FileName;
+				return UnFixString(openFileDialog1.FileName);
 			}
 
 			return "";
@@ -689,11 +685,18 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			"drawIcon",
 			"draws an Icon (.ico) file from the given path at the given coordinate. width and height are optional. If specified, it will resize the image accordingly")]
-		public void DrawIcon(int componentHandle, string path, int x, int y, int? width = null, int? height = null)
+		public void DrawIcon(
+			int componentHandle,
+			[LuaArbitraryStringParam] string path,
+			int x,
+			int y,
+			int? width = null,
+			int? height = null)
 		{
-			if (!File.Exists(path))
+			var path1 = FixString(path);
+			if (!File.Exists(path1))
 			{
-				LogOutputCallback($"File not found: {path}\nScript Terminated");
+				LogOutputCallback($"File not found: {path1}\nScript Terminated");
 				return;
 			}
 			try
@@ -709,7 +712,7 @@ namespace BizHawk.Client.EmuHawk
 
 					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						control.DrawIcon(path, x, y, width, height);
+						control.DrawIcon(path1, x, y, width, height);
 					}
 				}
 			}
@@ -725,16 +728,17 @@ namespace BizHawk.Client.EmuHawk
 			"draws an image file from the given path at the given coordinate. width and height are optional. If specified, it will resize the image accordingly")]
 		public void DrawImage(
 			int componentHandle,
-			string path,
+			[LuaArbitraryStringParam] string path,
 			int x,
 			int y,
 			int? width = null,
 			int? height = null,
 			bool cache = true)
 		{
-			if (!File.Exists(path))
+			var path1 = FixString(path);
+			if (!File.Exists(path1))
 			{
-				LogOutputCallback($"File not found: {path}\nScript Terminated");
+				LogOutputCallback($"File not found: {path1}\nScript Terminated");
 				return;
 			}
 			try
@@ -750,7 +754,7 @@ namespace BizHawk.Client.EmuHawk
 
 					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						control.DrawImage(path, x, y, width, height, cache);
+						control.DrawImage(path1, x, y, width, height, cache);
 					}
 				}
 			}
@@ -795,7 +799,7 @@ namespace BizHawk.Client.EmuHawk
 			"draws a given region of an image file from the given path at the given coordinate, and optionally with the given size")]
 		public void DrawImageRegion(
 			int componentHandle,
-			string path,
+			[LuaArbitraryStringParam] string path,
 			int source_x,
 			int source_y,
 			int source_width,
@@ -805,9 +809,10 @@ namespace BizHawk.Client.EmuHawk
 			int? dest_width = null,
 			int? dest_height = null)
 		{
-			if (!File.Exists(path))
+			var path1 = FixString(path);
+			if (!File.Exists(path1))
 			{
-				LogOutputCallback($"File not found: {path}\nScript Terminated");
+				LogOutputCallback($"File not found: {path1}\nScript Terminated");
 				return;
 			}
 			try
@@ -823,7 +828,7 @@ namespace BizHawk.Client.EmuHawk
 
 					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						control.DrawImageRegion(path, source_x, source_y, source_width, source_height, dest_x, dest_y, dest_width, dest_height);
+						control.DrawImageRegion(path1, source_x, source_y, source_width, source_height, dest_x, dest_y, dest_width, dest_height);
 					}
 				}
 			}
@@ -1086,14 +1091,14 @@ namespace BizHawk.Client.EmuHawk
 			int componentHandle,
 			int x,
 			int y,
-			string message,
+			[LuaArbitraryStringParam] string message,
 			[LuaColorParam] object forecolor = null,
 			[LuaColorParam] object backcolor = null,
 			int? fontsize = null,
-			string fontfamily = null,
-			string fontstyle = null,
-			string horizalign = null,
-			string vertalign = null)
+			[LuaASCIIStringParam] string fontfamily = null,
+			[LuaEnumStringParam] string fontstyle = null,
+			[LuaEnumStringParam] string horizalign = null,
+			[LuaEnumStringParam] string vertalign = null)
 		{
 			try
 			{
@@ -1110,7 +1115,7 @@ namespace BizHawk.Client.EmuHawk
 
 					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						control.DrawText(x, y, message, fgColor, bgColor, fontsize, fontfamily, fontstyle, horizalign, vertalign);
+						control.DrawText(x, y, FixString(message), fgColor, bgColor, fontsize, fontfamily, fontstyle, horizalign, vertalign);
 					}
 				}
 			}
@@ -1128,14 +1133,14 @@ namespace BizHawk.Client.EmuHawk
 			int componentHandle,
 			int x,
 			int y,
-			string message,
+			[LuaArbitraryStringParam] string message,
 			[LuaColorParam] object forecolor = null,
 			[LuaColorParam] object backcolor = null,
 			int? fontsize = null,
-			string fontfamily = null,
-			string fontstyle = null,
-			string horizalign = null,
-			string vertalign = null)
+			[LuaASCIIStringParam] string fontfamily = null,
+			[LuaEnumStringParam] string fontstyle = null,
+			[LuaEnumStringParam] string horizalign = null,
+			[LuaEnumStringParam] string vertalign = null)
 		{
 			try
 			{
@@ -1152,7 +1157,7 @@ namespace BizHawk.Client.EmuHawk
 
 					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						control.DrawText(x, y, message, fgColor, bgColor, fontsize, fontfamily, fontstyle, horizalign, vertalign);
+						control.DrawText(x, y, FixString(message), fgColor, bgColor, fontsize, fontfamily, fontstyle, horizalign, vertalign);
 					}
 				}
 			}
@@ -1227,7 +1232,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("forms.setdropdownitems(dropdown_handle, { \"item1\", \"item2\" });")]
 		[LuaMethod("setdropdownitems", "Updates the item list of a dropdown menu. The optional third parameter toggles alphabetical sorting of items, pass false to skip sorting.")]
-		public void SetDropdownItems(int handle, LuaTable items, bool alphabetize = true)
+		public void SetDropdownItems(int handle, [LuaArbitraryStringParam] LuaTable items, bool alphabetize = true)
 		{
 			try
 			{
@@ -1245,7 +1250,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							if (control is LuaDropDown ldd)
 							{
-								var dropdownItems = _th.EnumerateValues<string>(items).ToList();
+								var dropdownItems = _th.EnumerateValues<string>(items).Select(FixString).ToList();
 								if (alphabetize) dropdownItems.Sort();
 								ldd.SetItems(dropdownItems);
 							}
@@ -1290,7 +1295,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </exception>
 		[LuaMethodExample("forms.setproperty( 332, \"Property\", \"Property value\" );")]
 		[LuaMethod("setproperty", "Attempts to set the given property of the widget with the given value.  Note: not all properties will be able to be represented for the control to accept")]
-		public void SetProperty(int handle, string property, object value)
+		public void SetProperty(int handle, [LuaASCIIStringParam] string property, object value)
 		{
 			// relying on exceptions for error handling here
 			void ParseAndSet(Control c)
@@ -1357,7 +1362,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("forms.settext( 332, \"Caption\" );")]
 		[LuaMethod("settext", "Sets the text property of a control or form by passing in the handle of the created object")]
-		public void Settext(int handle, string caption)
+		public void Settext(int handle, [LuaArbitraryStringParam] string caption)
 		{
 			var ptr = new IntPtr(handle);
 			foreach (var form in _luaForms)
@@ -1384,15 +1389,15 @@ namespace BizHawk.Client.EmuHawk
 			"textbox", "Creates a textbox control on the given form. The caption property will be the initial value of the textbox (default is empty). Width and Height are option, if not specified they will be a default size of 100, 20. Type is an optional property to restrict the textbox input. The available options are HEX, SIGNED, and UNSIGNED. Passing it null or any other value will set it to no restriction. x, and y are the optional location parameters for the position of the textbox within the given form. The function returns the handle of the created textbox. If true, the multiline will enable the standard winform multi-line property. If true, the fixedWidth options will create a fixed width font. Scrollbars is an optional property to specify which scrollbars to display. The available options are Vertical, Horizontal, Both, and None. Scrollbars are only shown on a multiline textbox")]
 		public int Textbox(
 			int formHandle,
-			string caption = null,
+			[LuaArbitraryStringParam] string caption = null,
 			int? width = null,
 			int? height = null,
-			string boxtype = null,
+			[LuaEnumStringParam] string boxtype = null,
 			int? x = null,
 			int? y = null,
 			bool multiline = false,
 			bool fixedWidth = false,
-			string scrollbars = null)
+			[LuaEnumStringParam] string scrollbars = null)
 		{
 			var form = GetForm(formHandle);
 			if (form == null)
