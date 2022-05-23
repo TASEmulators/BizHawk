@@ -379,7 +379,7 @@ namespace BizHawk.Client.EmuHawk
 			Controls.Add(_presentationPanel);
 			Controls.SetChildIndex(_presentationPanel, 0);
 
-			ExtToolManager = new ExternalToolManager(Config.PathEntries, () => (EmuClientApi.SystemIdConverter.Convert(Emulator.SystemId), Game.Hash));
+			ExtToolManager = new ExternalToolManager(Config.PathEntries, () => (Emulator.SystemId, Game.Hash));
 			Tools = new ToolManager(this, Config, DisplayManager, ExtToolManager, InputManager, Emulator, MovieSession, Game);
 
 			// TODO GL - move these event handlers somewhere less obnoxious line in the On* overrides

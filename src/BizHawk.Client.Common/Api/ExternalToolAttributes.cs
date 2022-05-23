@@ -1,8 +1,11 @@
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 using BizHawk.Common.StringExtensions;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
@@ -13,17 +16,21 @@ namespace BizHawk.Client.Common
 		[Obsolete("this is the default behaviour, you can safely omit this attribute")]
 		public sealed class Always : ExternalToolApplicabilityAttributeBase
 		{
-			public override bool NotApplicableTo(CoreSystem system) => false;
+			public override bool NotApplicableTo(string sysID)
+				=> false;
 
-			public override bool NotApplicableTo(string romHash, CoreSystem? system) => false;
+			public override bool NotApplicableTo(string romHash, string? sysID)
+				=> false;
 		}
 
 		[AttributeUsage(AttributeTargets.Class)]
 		public sealed class AnyRomLoaded : ExternalToolApplicabilityAttributeBase
 		{
-			public override bool NotApplicableTo(CoreSystem system) => system == CoreSystem.Null;
+			public override bool NotApplicableTo(string sysID)
+				=> sysID is VSystemID.Raw.NULL;
 
-			public override bool NotApplicableTo(string romHash, CoreSystem? system) => system == CoreSystem.Null;
+			public override bool NotApplicableTo(string romHash, string? sysID)
+				=> sysID is VSystemID.Raw.NULL;
 		}
 
 		[AttributeUsage(AttributeTargets.Class)]
@@ -31,19 +38,25 @@ namespace BizHawk.Client.Common
 		{
 			private readonly IList<string> _romHashes;
 
-			private readonly CoreSystem _system;
+			private readonly string _sysID;
 
+			[Obsolete("replace CoreSystem with string from VSystemID.Raw")]
 			public RomWhitelist(CoreSystem system, params string[] romHashes)
+				: this(SystemIdConverter.ConvertBack(system), romHashes) {}
+
+			public RomWhitelist(string sysID, params string[] romHashes)
 			{
-				if (system == CoreSystem.Null) throw new ArgumentException("there are no roms for the NULL system", nameof(system));
+				if (sysID is VSystemID.Raw.NULL) throw new ArgumentException("there are no roms for the NULL system", nameof(sysID));
 				if (!romHashes.All(NumericStringExtensions.IsHex)) throw new ArgumentException("misformatted hash", nameof(romHashes));
-				_system = system;
 				_romHashes = romHashes.ToList();
+				_sysID = sysID;
 			}
 
-			public override bool NotApplicableTo(CoreSystem system) => system != _system;
+			public override bool NotApplicableTo(string sysID)
+				=> sysID != _sysID;
 
-			public override bool NotApplicableTo(string romHash, CoreSystem? system) => system != _system || !_romHashes.Contains(romHash);
+			public override bool NotApplicableTo(string romHash, string? sysID)
+				=> sysID != _sysID || !_romHashes.Contains(romHash);
 		}
 
 		[AttributeUsage(AttributeTargets.Class)]
@@ -51,44 +64,54 @@ namespace BizHawk.Client.Common
 		{
 			private readonly string _romHash;
 
-			private readonly CoreSystem _system;
+			private readonly string _sysID;
 
+			[Obsolete("replace CoreSystem with string from VSystemID.Raw")]
 			public SingleRom(CoreSystem system, string romHash)
+				: this(SystemIdConverter.ConvertBack(system), romHash) {}
+
+			public SingleRom(string sysID, string romHash)
 			{
-				if (system == CoreSystem.Null) throw new ArgumentException("there are no roms for the NULL system", nameof(system));
+				if (sysID is VSystemID.Raw.NULL) throw new ArgumentException("there are no roms for the NULL system", nameof(sysID));
 				if (!romHash.IsHex()) throw new ArgumentException("misformatted hash", nameof(romHash));
-				_system = system;
 				_romHash = romHash;
+				_sysID = sysID;
 			}
 
-			public override bool NotApplicableTo(CoreSystem system) => system != _system;
+			public override bool NotApplicableTo(string sysID)
+				=> sysID != _sysID;
 
-			public override bool NotApplicableTo(string romHash, CoreSystem? system) => system != _system || romHash != _romHash;
+			public override bool NotApplicableTo(string romHash, string? sysID)
+				=> sysID != _sysID || romHash != _romHash;
 		}
 
 		[AttributeUsage(AttributeTargets.Class)]
 		public sealed class SingleSystem : ExternalToolApplicabilityAttributeBase
 		{
-			private readonly CoreSystem _system;
+			private readonly string _sysID;
 
+			[Obsolete("replace CoreSystem with string from VSystemID.Raw")]
 			public SingleSystem(CoreSystem system)
-			{
-				_system = system;
-			}
+				: this(SystemIdConverter.ConvertBack(system)) {}
 
-			public override bool NotApplicableTo(CoreSystem system) => system != _system;
+			public SingleSystem(string sysID)
+				=> _sysID = sysID;
 
-			public override bool NotApplicableTo(string romHash, CoreSystem? system) => system != _system;
+			public override bool NotApplicableTo(string sysID)
+				=> sysID != _sysID;
+
+			public override bool NotApplicableTo(string romHash, string? sysID)
+				=> sysID != _sysID;
 		}
 	}
 
 	public abstract class ExternalToolApplicabilityAttributeBase : Attribute
 	{
-		public abstract bool NotApplicableTo(CoreSystem system);
+		protected static readonly BizHawkSystemIdToEnumConverter SystemIdConverter = new();
 
-		public abstract bool NotApplicableTo(string romHash, CoreSystem? system);
+		public abstract bool NotApplicableTo(string sysID);
 
-		public bool NotApplicableTo(string romHash) => NotApplicableTo(romHash, null);
+		public abstract bool NotApplicableTo(string romHash, string? sysID);
 
 		public class DuplicateException : Exception {}
 	}
@@ -96,16 +119,14 @@ namespace BizHawk.Client.Common
 	[AttributeUsage(AttributeTargets.Class)]
 	public sealed class ExternalToolAttribute : Attribute
 	{
-		public string Description { get; set; }
+		public string? Description { get; set; }
 
-		public string[] LoadAssemblyFiles { get; set; }
+		public string[]? LoadAssemblyFiles { get; set; }
 
 		public readonly string Name;
 
-		public ExternalToolAttribute(string name)
-		{
-			Name = string.IsNullOrWhiteSpace(name) ? Guid.NewGuid().ToString() : name;
-		}
+		public ExternalToolAttribute(string? name)
+			=> Name = string.IsNullOrWhiteSpace(name) ? Guid.NewGuid().ToString() : name!;
 
 		public class MissingException : Exception {}
 	}
@@ -118,8 +139,6 @@ namespace BizHawk.Client.Common
 
 		/// <param name="resourcePath">The full path, including the assembly name.</param>
 		public ExternalToolEmbeddedIconAttribute(string resourcePath)
-		{
-			ResourcePath = resourcePath;
-		}
+			=> ResourcePath = resourcePath;
 	}
 }
