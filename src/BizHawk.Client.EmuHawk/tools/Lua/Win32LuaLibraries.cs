@@ -34,12 +34,26 @@ namespace BizHawk.Client.EmuHawk
 					var foundAttrs = method.GetCustomAttributes(typeof(LuaMethodAttribute), false);
 					if (foundAttrs.Length == 0) continue;
 					if (instance != null) _lua.RegisterFunction($"{name}.{((LuaMethodAttribute) foundAttrs[0]).Name}", instance, method);
-					Docs.Add(new LibraryFunction(
+					LibraryFunction libFunc = new(
 						name,
 						type.GetCustomAttributes(typeof(DescriptionAttribute), false).Cast<DescriptionAttribute>()
 							.Select(descAttr => descAttr.Description).FirstOrDefault() ?? string.Empty,
 						method
-					));
+					);
+					Docs.Add(libFunc);
+#if DEBUG
+					// these don't catch object or LuaTable!
+					if (method.GetParameters().Any(static pi => pi.ParameterType == typeof(string)
+						&& !pi.CustomAttributes.Any(static a => typeof(LuaStringParamAttributeBase).IsAssignableFrom(a.AttributeType))))
+					{
+						Console.WriteLine($"Lua function {name}.{libFunc.Name} has an unclassified string param");
+					}
+					if (method.ReturnParameter!.ParameterType == typeof(string)
+						&& !method.ReturnParameter.CustomAttributes.Any(static a => typeof(LuaStringParamAttributeBase).IsAssignableFrom(a.AttributeType)))
+					{
+						Console.WriteLine($"Lua function {name}.{libFunc.Name} has an unclassified string return value");
+					}
+#endif
 				}
 			}
 
@@ -265,9 +279,14 @@ namespace BizHawk.Client.EmuHawk
 			_lua = new Lua();
 		}
 
-		public INamedLuaFunction CreateAndRegisterNamedFunction(LuaFunction function, string theEvent, Action<string> logCallback, LuaFile luaFile, string name = null)
+		public INamedLuaFunction CreateAndRegisterNamedFunction(
+			LuaFunction function,
+			string theEvent,
+			Action<string> logCallback,
+			LuaFile luaFile,
+			[LuaArbitraryStringParam] string name = null)
 		{
-			var nlf = new NamedLuaFunction(function, theEvent, logCallback, luaFile, name);
+			var nlf = new NamedLuaFunction(function, theEvent, logCallback, luaFile, LuaLibraryBase.FixString(name));
 			RegisteredFunctions.Add(nlf);
 			return nlf;
 		}

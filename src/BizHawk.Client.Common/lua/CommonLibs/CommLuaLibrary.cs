@@ -20,6 +20,7 @@ namespace BizHawk.Client.Common
 
 		//TO DO: not fully working yet!
 		[LuaMethod("getluafunctionslist", "returns a list of implemented functions")]
+		[return: LuaArbitraryStringParam]
 		public static string GetLuaFunctionsList()
 		{
 			var list = new StringBuilder();
@@ -27,7 +28,7 @@ namespace BizHawk.Client.Common
 			{
 				list.AppendLine(function.ToString());
 			}
-			return list.ToString();
+			return UnFixString(list.ToString());
 		}
 
 		[LuaMethod("socketServerIsConnected", "socketServerIsConnected")]
@@ -35,27 +36,29 @@ namespace BizHawk.Client.Common
 			=> APIs.Comm.Sockets.Connected;
 
 		[LuaMethod("socketServerScreenShot", "sends a screenshot to the Socket server")]
+		[return: LuaArbitraryStringParam]
 		public string SocketServerScreenShot()
 		{
 			CheckSocketServer();
-			return APIs.Comm.Sockets?.SendScreenshot();
+			return UnFixString(APIs.Comm.Sockets?.SendScreenshot());
 		}
 
 		[LuaMethod("socketServerScreenShotResponse", "sends a screenshot to the Socket server and retrieves the response")]
+		[return: LuaArbitraryStringParam]
 		public string SocketServerScreenShotResponse()
 		{
 			CheckSocketServer();
-			return APIs.Comm.Sockets?.SendScreenshot(1000);
+			return UnFixString(APIs.Comm.Sockets?.SendScreenshot(1000));
 		}
 
 		[LuaMethod("socketServerSend", "sends a string to the Socket server")]
-		public int SocketServerSend(string SendString)
+		public int SocketServerSend([LuaArbitraryStringParam] string SendString)
 		{
 			if (!CheckSocketServer())
 			{
 				return -1;
 			}
-			return APIs.Comm.Sockets.SendString(SendString);
+			return APIs.Comm.Sockets.SendString(FixString(SendString));
 		}
 
 		[LuaMethod("socketServerSendBytes", "sends bytes to the Socket server")]
@@ -66,10 +69,11 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethod("socketServerResponse", "receives a message from the Socket server")]
+		[return: LuaArbitraryStringParam]
 		public string SocketServerResponse()
 		{
 			CheckSocketServer();
-			return APIs.Comm.Sockets?.ReceiveString();
+			return UnFixString(APIs.Comm.Sockets?.ReceiveString());
 		}
 
 		[LuaMethod("socketServerSuccessful", "returns the status of the last Socket server action")]
@@ -86,7 +90,7 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethod("socketServerSetIp", "sets the IP address of the Lua socket server")]
-		public void SocketServerSetIp(string ip)
+		public void SocketServerSetIp([LuaASCIIStringParam] string ip)
 		{
 			CheckSocketServer();
 			APIs.Comm.Sockets.IP = ip;
@@ -100,6 +104,7 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethod("socketServerGetIp", "returns the IP address of the Lua socket server")]
+		[return: LuaASCIIStringParam]
 		public string SocketServerGetIp()
 		{
 			return APIs.Comm.Sockets?.IP;
@@ -112,6 +117,7 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethod("socketServerGetInfo", "returns the IP and port of the Lua socket server")]
+		[return: LuaASCIIStringParam]
 		public string SocketServerGetInfo()
 		{
 			return CheckSocketServer()
@@ -132,15 +138,14 @@ namespace BizHawk.Client.Common
 
 		// All MemoryMappedFile related methods
 		[LuaMethod("mmfSetFilename", "Sets the filename for the screenshots")]
-		public void MmfSetFilename(string filename)
-		{
-			APIs.Comm.MMF.Filename = filename;
-		}
+		public void MmfSetFilename([LuaArbitraryStringParam] string filename)
+			=> APIs.Comm.MMF.Filename = FixString(filename);
 
 		[LuaMethod("mmfGetFilename", "Gets the filename for the screenshots")]
+		[return: LuaArbitraryStringParam]
 		public string MmfGetFilename()
 		{
-			return APIs.Comm.MMF.Filename;
+			return UnFixString(APIs.Comm.MMF.Filename);
 		}
 
 		[LuaMethod("mmfScreenshot", "Saves screenshot to memory mapped file")]
@@ -150,73 +155,77 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethod("mmfWrite", "Writes a string to a memory mapped file")]
-		public int MmfWrite(string mmf_filename, string outputString)
-		{
-			return APIs.Comm.MMF.WriteToFile(mmf_filename, outputString);
-		}
+		public int MmfWrite([LuaArbitraryStringParam] string mmf_filename, [LuaArbitraryStringParam] string outputString)
+			=> APIs.Comm.MMF.WriteToFile(FixString(mmf_filename), FixString(outputString));
 
 		[LuaMethod("mmfWriteBytes", "Write bytes to a memory mapped file")]
-		public int MmfWriteBytes(string mmf_filename, LuaTable byteArray)
-		{
-			return APIs.Comm.MMF.WriteToFile(mmf_filename, _th.EnumerateValues<double>(byteArray).Select(d => (byte)d).ToArray());
-		}
+		public int MmfWriteBytes([LuaArbitraryStringParam] string mmf_filename, LuaTable byteArray)
+			=> APIs.Comm.MMF.WriteToFile(FixString(mmf_filename), _th.EnumerateValues<double>(byteArray).Select(d => (byte)d).ToArray());
 
 		[LuaMethod("mmfCopyFromMemory", "Copy a section of the memory to a memory mapped file")]
-		public int MmfCopyFromMemory(string mmf_filename, long addr, int length, string domain)
-		{
-			return APIs.Comm.MMF.WriteToFile(mmf_filename, APIs.Memory.ReadByteRange(addr, length, domain).ToArray());
-		}
+		public int MmfCopyFromMemory(
+			[LuaArbitraryStringParam] string mmf_filename,
+			long addr,
+			int length,
+			[LuaASCIIStringParam] string domain)
+				=> APIs.Comm.MMF.WriteToFile(FixString(mmf_filename), APIs.Memory.ReadByteRange(addr, length, domain).ToArray());
 
 		[LuaMethod("mmfCopyToMemory", "Copy a memory mapped file to a section of the memory")]
-		public void MmfCopyToMemory(string mmf_filename, long addr, int length, string domain)
-		{
-			APIs.Memory.WriteByteRange(addr, new List<byte>(APIs.Comm.MMF.ReadBytesFromFile(mmf_filename, length)), domain);
-		}
+		public void MmfCopyToMemory(
+			[LuaArbitraryStringParam] string mmf_filename,
+			long addr,
+			int length,
+			[LuaASCIIStringParam] string domain)
+				=> APIs.Memory.WriteByteRange(addr, new List<byte>(APIs.Comm.MMF.ReadBytesFromFile(FixString(mmf_filename), length)), domain);
 
 		[LuaMethod("mmfRead", "Reads a string from a memory mapped file")]
-		public string MmfRead(string mmf_filename, int expectedSize)
-		{
-			return APIs.Comm.MMF.ReadFromFile(mmf_filename, expectedSize);
-		}
+		[return: LuaArbitraryStringParam]
+		public string MmfRead([LuaArbitraryStringParam] string mmf_filename, int expectedSize)
+			=> UnFixString(APIs.Comm.MMF.ReadFromFile(FixString(mmf_filename), expectedSize));
 
 		[LuaMethod("mmfReadBytes", "Reads bytes from a memory mapped file")]
-		public LuaTable MmfReadBytes(string mmf_filename, int expectedSize)
-			=> _th.ListToTable(APIs.Comm.MMF.ReadBytesFromFile(mmf_filename, expectedSize), indexFrom: 0);
+		public LuaTable MmfReadBytes([LuaArbitraryStringParam] string mmf_filename, int expectedSize)
+			=> _th.ListToTable(APIs.Comm.MMF.ReadBytesFromFile(FixString(mmf_filename), expectedSize), indexFrom: 0);
 
 		// All HTTP related methods
 		[LuaMethod("httpTest", "tests HTTP connections")]
+		[return: LuaArbitraryStringParam]
 		public string HttpTest()
 		{
 			if (APIs.Comm.HTTP == null) throw new NullReferenceException(); // to match previous behaviour
-			return APIs.Comm.HttpTest();
+			return UnFixString(APIs.Comm.HttpTest());
 		}
 
 		[LuaMethod("httpTestGet", "tests the HTTP GET connection")]
+		[return: LuaArbitraryStringParam]
 		public string HttpTestGet()
 		{
 			CheckHttp();
-			return APIs.Comm.HttpTestGet();
+			return UnFixString(APIs.Comm.HttpTestGet());
 		}
 
 		[LuaMethod("httpGet", "makes a HTTP GET request")]
-		public string HttpGet(string url)
+		[return: LuaArbitraryStringParam]
+		public string HttpGet([LuaArbitraryStringParam] string url)
 		{
 			CheckHttp();
-			return APIs.Comm.HTTP?.ExecGet(url);
+			return UnFixString(APIs.Comm.HTTP?.ExecGet(FixString(url)));
 		}
 
 		[LuaMethod("httpPost", "makes a HTTP POST request")]
-		public string HttpPost(string url, string payload)
+		[return: LuaArbitraryStringParam]
+		public string HttpPost([LuaArbitraryStringParam] string url, [LuaArbitraryStringParam] string payload)
 		{
 			CheckHttp();
-			return APIs.Comm.HTTP?.ExecPost(url, payload);
+			return UnFixString(APIs.Comm.HTTP?.ExecPost(FixString(url), FixString(payload)));
 		}
 
 		[LuaMethod("httpPostScreenshot", "HTTP POST screenshot")]
+		[return: LuaArbitraryStringParam]
 		public string HttpPostScreenshot()
 		{
 			CheckHttp();
-			return APIs.Comm.HTTP?.SendScreenshot();
+			return UnFixString(APIs.Comm.HTTP?.SendScreenshot());
 		}
 
 		[LuaMethod("httpSetTimeout", "Sets HTTP timeout in milliseconds")]
@@ -227,31 +236,33 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethod("httpSetPostUrl", "Sets HTTP POST URL")]
-		public void HttpSetPostUrl(string url)
+		public void HttpSetPostUrl([LuaArbitraryStringParam] string url)
 		{
 			CheckHttp();
-			APIs.Comm.HTTP.PostUrl = url;
+			APIs.Comm.HTTP.PostUrl = FixString(url);
 		}
 
 		[LuaMethod("httpSetGetUrl", "Sets HTTP GET URL")]
-		public void HttpSetGetUrl(string url)
+		public void HttpSetGetUrl([LuaArbitraryStringParam] string url)
 		{
 			CheckHttp();
-			APIs.Comm.HTTP.GetUrl = url;
+			APIs.Comm.HTTP.GetUrl = FixString(url);
 		}
 
 		[LuaMethod("httpGetPostUrl", "Gets HTTP POST URL")]
+		[return: LuaArbitraryStringParam]
 		public string HttpGetPostUrl()
 		{
 			CheckHttp();
-			return APIs.Comm.HTTP?.PostUrl;
+			return UnFixString(APIs.Comm.HTTP?.PostUrl);
 		}
 
 		[LuaMethod("httpGetGetUrl", "Gets HTTP GET URL")]
+		[return: LuaArbitraryStringParam]
 		public string HttpGetGetUrl()
 		{
 			CheckHttp();
-			return APIs.Comm.HTTP?.GetUrl;
+			return UnFixString(APIs.Comm.HTTP?.GetUrl);
 		}
 
 		private void CheckHttp()
@@ -265,7 +276,8 @@ namespace BizHawk.Client.Common
 #if ENABLE_WEBSOCKETS
 		[LuaMethod("ws_open", "Opens a websocket and returns the id so that it can be retrieved later.")]
 		[LuaMethodExample("local ws_id = comm.ws_open(\"wss://echo.websocket.org\");")]
-		public string WebSocketOpen(string uri)
+		[return: LuaASCIIStringParam]
+		public string WebSocketOpen([LuaArbitraryStringParam] string uri)
 		{
 			var wsServer = APIs.Comm.WebSockets;
 			if (wsServer == null)
@@ -274,36 +286,43 @@ namespace BizHawk.Client.Common
 				return null;
 			}
 			var guid = new Guid();
-			_websockets[guid] = wsServer.Open(new Uri(uri));
+			_websockets[guid] = wsServer.Open(new Uri(FixString(uri)));
 			return guid.ToString();
 		}
 
 		[LuaMethod("ws_send", "Send a message to a certain websocket id (boolean flag endOfMessage)")]
 		[LuaMethodExample("local ws = comm.ws_send(ws_id, \"some message\", true);")]
-		public void WebSocketSend(string guid, string content, bool endOfMessage)
+		public void WebSocketSend(
+			[LuaASCIIStringParam] string guid,
+			[LuaArbitraryStringParam] string content,
+			bool endOfMessage)
 		{
-			if (_websockets.TryGetValue(Guid.Parse(guid), out var wrapper)) wrapper.Send(content, endOfMessage);
+			if (_websockets.TryGetValue(Guid.Parse(guid), out var wrapper)) wrapper.Send(FixString(content), endOfMessage);
 		}
 
 		[LuaMethod("ws_receive", "Receive a message from a certain websocket id and a maximum number of bytes to read")]
 		[LuaMethodExample("local ws = comm.ws_receive(ws_id, str_len);")]
-		public string WebSocketReceive(string guid, int bufferCap)
+		[return: LuaArbitraryStringParam]
+		public string WebSocketReceive([LuaASCIIStringParam] string guid, int bufferCap)
 			=> _websockets.TryGetValue(Guid.Parse(guid), out var wrapper)
-				? wrapper.Receive(bufferCap)
+				? UnFixString(wrapper.Receive(bufferCap))
 				: null;
 
 		[LuaMethod("ws_get_status", "Get a websocket's status")]
 		[LuaMethodExample("local ws_status = comm.ws_get_status(ws_id);")]
-		public int? WebSocketGetStatus(string guid)
+		public int? WebSocketGetStatus([LuaASCIIStringParam] string guid)
 			=> _websockets.TryGetValue(Guid.Parse(guid), out var wrapper)
 				? (int) wrapper.State
 				: (int?) null;
 
 		[LuaMethod("ws_close", "Close a websocket connection with a close status")]
 		[LuaMethodExample("local ws_status = comm.ws_close(ws_id, close_status);")]
-		public void WebSocketClose(string guid, WebSocketCloseStatus status, string closeMessage)
+		public void WebSocketClose(
+			[LuaASCIIStringParam] string guid,
+			WebSocketCloseStatus status,
+			[LuaArbitraryStringParam] string closeMessage)
 		{
-			if (_websockets.TryGetValue(Guid.Parse(guid), out var wrapper)) wrapper.Close(status, closeMessage);
+			if (_websockets.TryGetValue(Guid.Parse(guid), out var wrapper)) wrapper.Close(status, FixString(closeMessage));
 		}
 #endif
 	}

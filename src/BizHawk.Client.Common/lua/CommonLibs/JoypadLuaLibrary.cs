@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using NLua;
 
@@ -15,44 +16,47 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local nljoyget = joypad.get( 1 );")]
 		[LuaMethod("get", "returns a lua table of the controller buttons pressed. If supplied, it will only return a table of buttons for the given controller")]
+		[return: LuaArbitraryStringParam]
 		public LuaTable Get(int? controller = null)
-			=> _th.DictToTable(APIs.Joypad.Get(controller));
+			=> _th.DictToTable(APIs.Joypad.Get(controller).ToDictionary(static kvp => UnFixString(kvp.Key), static kvp => kvp.Value));
 
 		[LuaMethodExample("local nljoyget = joypad.getwithmovie( 1 );")]
 		[LuaMethod("getwithmovie", "returns a lua table of the controller buttons pressed, including ones pressed by the current movie. If supplied, it will only return a table of buttons for the given controller")]
+		[return: LuaArbitraryStringParam]
 		public LuaTable GetWithMovie(int? controller = null)
-			=> _th.DictToTable(APIs.Joypad.GetWithMovie(controller));
+			=> _th.DictToTable(APIs.Joypad.GetWithMovie(controller).ToDictionary(static kvp => UnFixString(kvp.Key), static kvp => kvp.Value));
 
 		[LuaMethodExample("local nljoyget = joypad.getimmediate( );")]
 		[LuaMethod("getimmediate", "returns a lua table of any controller buttons currently pressed by the user")]
+		[return: LuaArbitraryStringParam]
 		public LuaTable GetImmediate(int? controller = null)
-			=> _th.DictToTable(APIs.Joypad.GetImmediate(controller));
+			=> _th.DictToTable(APIs.Joypad.GetImmediate(controller).ToDictionary(static kvp => UnFixString(kvp.Key), static kvp => kvp.Value));
 
 		[LuaMethodExample("joypad.setfrommnemonicstr( \"|    0,    0,    0,  100,...R..B....|\" );")]
 		[LuaMethod("setfrommnemonicstr", "sets the given buttons to their provided values for the current frame, string will be interpreted the same way an entry from a movie input log would be")]
-		public void SetFromMnemonicStr(string inputLogEntry)
+		public void SetFromMnemonicStr([LuaASCIIStringParam] string inputLogEntry)
 			=> APIs.Joypad.SetFromMnemonicStr(inputLogEntry);
 
 		[LuaMethodExample("joypad.set( { [\"Left\"] = true, [ \"A\" ] = true, [ \"B\" ] = true } );")]
 		[LuaMethod("set", "sets the given buttons to their provided values for the current frame")]
-		public void Set(LuaTable buttons, int? controller = null)
+		public void Set([LuaArbitraryStringParam] LuaTable buttons, int? controller = null)
 		{
 			var dict = new Dictionary<string, bool>();
 			foreach (var (k, v) in _th.EnumerateEntries<object, object>(buttons))
 			{
-				dict[k.ToString()] = Convert.ToBoolean(v); // Accepts 1/0 or true/false
+				dict[FixString(k.ToString())] = Convert.ToBoolean(v); // Accepts 1/0 or true/false
 			}
 			APIs.Joypad.Set(dict, controller);
 		}
 
 		[LuaMethodExample("joypad.setanalog( { [ \"Tilt X\" ] = -63, [ \"Tilt Y\" ] = 127 } );")]
 		[LuaMethod("setanalog", "sets the given analog controls to their provided values for the current frame. Note that unlike set() there is only the logic of overriding with the given value.")]
-		public void SetAnalog(LuaTable controls, int? controller = null)
+		public void SetAnalog([LuaArbitraryStringParam] LuaTable controls, int? controller = null)
 		{
 			var dict = new Dictionary<string, int?>();
 			foreach (var (k, v) in _th.EnumerateEntries<object, object>(controls))
 			{
-				dict[k.ToString()] = double.TryParse(v.ToString(), out var d) ? (int) d : (int?) null;
+				dict[FixString(k.ToString())] = double.TryParse(v.ToString(), out var d) ? (int) d : null;
 			}
 			APIs.Joypad.SetAnalog(dict, controller);
 		}

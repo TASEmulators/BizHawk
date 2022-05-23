@@ -27,6 +27,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local stmaiget = mainmemory.getname( );")]
 		[LuaMethod("getname", "returns the name of the domain defined as main memory for the given core")]
+		[return: LuaASCIIStringParam]
 		public string GetName()
 			=> MainMemName;
 
