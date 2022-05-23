@@ -133,6 +133,7 @@
 			this.groupBox1.Controls.Add(this.label3);
 			this.groupBox1.Controls.Add(this.radioButton2);
 			this.groupBox1.Controls.Add(this.radioButton1);
+			this.groupBox1.Enabled = false;
 			this.groupBox1.Location = new System.Drawing.Point(12, 12);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(253, 206);
@@ -171,6 +172,7 @@
 			// 
 			this.groupBox2.Controls.Add(this.checkEnableOutput);
 			this.groupBox2.Controls.Add(this.radioButton4);
+			this.groupBox2.Enabled = false;
 			this.groupBox2.Location = new System.Drawing.Point(12, 224);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(253, 69);
@@ -205,6 +207,7 @@
 			// label6
 			// 
 			this.label6.AutoSize = true;
+			this.label6.Enabled = false;
 			this.label6.Location = new System.Drawing.Point(9, 305);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(111, 13);
@@ -224,6 +227,7 @@
 			// 
 			this.lvCompareTargets.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1});
+			this.lvCompareTargets.Enabled = false;
 			this.lvCompareTargets.FullRowSelect = true;
 			this.lvCompareTargets.GridLines = true;
 			this.lvCompareTargets.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
