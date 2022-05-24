@@ -351,7 +351,7 @@ namespace BizHawk.Client.EmuHawk
 
 			UndoMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Undo"];
 			RedoMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Redo"];
-			SelectBetweenMarkersMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select between Markers"];
+			SelectBetweenMarkersMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Sel. bet. Markers"];
 			SelectAllMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select All"];
 			ReselectClipboardMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Reselect Clip."];
 			ClearFramesMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Clear Frames"];

@@ -513,7 +513,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					break;
-				case "Select between Markers":
+				case "Sel. bet. Markers":
 					if (Tools.IsLoaded<TAStudio>())
 					{
 						Tools.TAStudio.SelectBetweenMarkersExternal();
