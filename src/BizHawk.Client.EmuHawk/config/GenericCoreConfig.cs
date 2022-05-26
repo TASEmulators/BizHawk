@@ -73,9 +73,9 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-		public static DialogResult DoDialog(IMainFormForConfig owner, string title, bool isMovieActive)
+		public static DialogResult DoDialog(IEmulator emulator, IMainFormForConfig owner, string title, bool isMovieActive)
 		{
-			if (owner.Emulator is Emulation.Cores.Waterbox.NymaCore core)
+			if (emulator is Emulation.Cores.Waterbox.NymaCore core)
 			{
 				var desc = new Emulation.Cores.Waterbox.NymaTypeDescriptorProvider(core.SettingsInfo);
 				try
@@ -91,7 +91,7 @@ namespace BizHawk.Client.EmuHawk
 					TypeDescriptor.RemoveProvider(desc, typeof(Emulation.Cores.Waterbox.NymaCore.NymaSyncSettings));
 				}
 			}
-			else if(owner.Emulator is Emulation.Cores.Arcades.MAME.MAME mame)
+			else if (emulator is Emulation.Cores.Arcades.MAME.MAME mame)
 			{
 				var desc = new Emulation.Cores.Arcades.MAME.MAMETypeDescriptorProvider(mame.CurrentDriverSettings);
 				try
