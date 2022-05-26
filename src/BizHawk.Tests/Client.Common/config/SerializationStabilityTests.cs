@@ -34,6 +34,7 @@ namespace BizHawk.Tests.Client.Common.config
 			typeof(List<>),
 			typeof(Nullable<>),
 			typeof(object),
+			typeof(Queue<>),
 			typeof(float),
 			typeof(string),
 		};

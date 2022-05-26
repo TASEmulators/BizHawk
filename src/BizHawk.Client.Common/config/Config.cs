@@ -353,5 +353,7 @@ namespace BizHawk.Client.Common
 
 		/// <remarks>in seconds</remarks>
 		public int OSDMessageDuration { get; set; } = 2;
+
+		public Queue<string> RecentCores { get; set; } = new();
 	}
 }

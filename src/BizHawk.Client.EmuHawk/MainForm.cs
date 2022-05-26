@@ -42,6 +42,7 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.CoreExtensions;
 using BizHawk.Client.EmuHawk.CustomControls;
 using BizHawk.Common.CollectionExtensions;
+using BizHawk.WinForms.Controls;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -80,17 +81,55 @@ namespace BizHawk.Client.EmuHawk
 				Config.GbAsSgb ^= true;
 				if (!Emulator.IsNull()) FlagNeedsReboot(); //TODO only alert if a GB or SGB core is loaded
 			};
-			var N64VideoPluginSettingsMenuItem = new ToolStripMenuItem { Image = Properties.Resources.Monitor, Text = "N64 Video Plugin Settings..." };
-			N64VideoPluginSettingsMenuItem.Click += N64PluginSettingsMenuItem_Click;
 			var setLibretroCoreToolStripMenuItem = new ToolStripMenuItem { Text = "Set Libretro Core..." };
 			setLibretroCoreToolStripMenuItem.Click += (clickSender, clickArgs) => RunLibretroCoreChooser();
 			CoresSubMenu.DropDownItems.AddRange(new ToolStripItem[] {
 				GBInSGBMenuItem,
 				new ToolStripSeparator { AutoSize = true },
-				N64VideoPluginSettingsMenuItem,
 				setLibretroCoreToolStripMenuItem
 			});
 			CoresSubMenu.DropDownOpened += (openedSender, openedArgs) => GBInSGBMenuItem.Checked = Config.GbAsSgb;
+
+			ToolStripMenuItemEx recentCoreSettingsSubmenu = new() { Text = "Recent" };
+			recentCoreSettingsSubmenu.DropDownItems.AddRange(CreateCoreSettingsSubmenus().Where(submenu => Config.RecentCores.Contains(submenu.Text)).ToArray());
+			ToolStripMenuItemEx consolesCoreSettingsSubmenu = new() { Text = "For Consoles" };
+			ToolStripMenuItemEx handheldsCoreSettingsSubmenu = new() { Text = "For Handhelds" };
+			ToolStripMenuItemEx pcsCoreSettingsSubmenu = new() { Text = "For PCs" };
+			ToolStripMenuItemEx otherCoreSettingsSubmenu = new() { Text = "Other" };
+			foreach (var submenu in CreateCoreSettingsSubmenus(includeDupes: true))
+			{
+				var parentMenu = (VSystemCategory) submenu.Tag switch
+				{
+					VSystemCategory.Consoles => consolesCoreSettingsSubmenu,
+					VSystemCategory.Handhelds => handheldsCoreSettingsSubmenu,
+					VSystemCategory.PCs => pcsCoreSettingsSubmenu,
+					_ => otherCoreSettingsSubmenu
+				};
+				parentMenu.DropDownItems.Add(submenu);
+			}
+			foreach (var submenu in new[] { recentCoreSettingsSubmenu, consolesCoreSettingsSubmenu, handheldsCoreSettingsSubmenu, pcsCoreSettingsSubmenu, otherCoreSettingsSubmenu })
+			{
+				if (submenu.DropDownItems.Count is 0)
+				{
+					submenu.DropDownItems.Add(new ToolStripMenuItemEx());
+					submenu.Enabled = false;
+				}
+			}
+			ConfigSubMenu.DropDownItems.Insert(
+				ConfigSubMenu.DropDownItems.IndexOf(CoresSubMenu) + 1,
+				new ToolStripMenuItemEx
+				{
+					DropDownItems =
+					{
+						recentCoreSettingsSubmenu,
+						new ToolStripSeparatorEx { AutoSize = true },
+						consolesCoreSettingsSubmenu,
+						handheldsCoreSettingsSubmenu,
+						pcsCoreSettingsSubmenu,
+						otherCoreSettingsSubmenu,
+					},
+					Text = "Core Settings",
+				});
 
 			// Hide Status bar icons and general StatusBar prep
 			MainStatusBar.Padding = new Padding(MainStatusBar.Padding.Left, MainStatusBar.Padding.Top, MainStatusBar.Padding.Left, MainStatusBar.Padding.Bottom); // Workaround to remove extra padding on right
@@ -3798,6 +3837,8 @@ namespace BizHawk.Client.EmuHawk
 					string openAdvancedArgs = $"*{OpenAdvancedSerializer.Serialize(ioa)}";
 					Emulator.Dispose();
 					Emulator = loader.LoadedEmulator;
+					Config.RecentCores.Enqueue(Emulator.Attributes().CoreName);
+					while (Config.RecentCores.Count > 5) Config.RecentCores.Dequeue();
 					InputManager.SyncControls(Emulator, MovieSession, Config);
 
 					if (oaOpenrom != null && Path.GetExtension(oaOpenrom.Path.Replace("|", "")).ToLowerInvariant() == ".xml" && !(Emulator is LibsnesCore))

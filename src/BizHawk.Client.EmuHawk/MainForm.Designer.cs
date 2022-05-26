@@ -1317,7 +1317,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// CoresSubMenu
 			// 
-			this.CoresSubMenu.Text = "Cores";
+			this.CoresSubMenu.Text = "Preferred Cores";
 			// 
 			// SaveConfigMenuItem
 			// 
