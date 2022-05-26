@@ -14,6 +14,7 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Atari.A7800Hawk;
+using BizHawk.Emulation.Cores.Calculators.Emu83;
 using BizHawk.Emulation.Cores.Calculators.TI83;
 using BizHawk.Emulation.Cores.ColecoVision;
 using BizHawk.Emulation.Cores.Computers.AmstradCPC;
@@ -24,6 +25,7 @@ using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Intellivision;
 using BizHawk.Emulation.Cores.Nintendo.BSNES;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
+using BizHawk.Emulation.Cores.Nintendo.GBHawk;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.Sameboy;
@@ -1344,23 +1346,27 @@ namespace BizHawk.Client.EmuHawk
 			Tools.Load<NESMusicRipper>();
 		}
 
+		private DialogResult OpenNesHawkGraphicsSettingsDialog(NES.NESSettings s)
+		{
+			using NESGraphicsConfig form = new(this, Config, s);
+			return this.ShowDialogWithTempMute(form);
+		}
+
+		private DialogResult OpenQuickNesGraphicsSettingsDialog(QuickNES.QuickNESSettings s)
+		{
+			using QuickNesConfig form = new(this, Config, s);
+			return this.ShowDialogWithTempMute(form);
+		}
+
 		private void NesGraphicSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is NES nes)
+			_ = Emulator switch
 			{
-				using var form = new NESGraphicsConfig(this, Config, nes.GetSettings().Clone());
-				form.ShowDialog(this);
-			}
-			else if (Emulator is SubNESHawk sub)
-			{
-				using var form = new NESGraphicsConfig(this, Config, sub.GetSettings().Clone());
-				form.ShowDialog(this);
-			}
-			else if (Emulator is QuickNES quickNes)
-			{
-				using var form = new QuickNesConfig(this, Config, quickNes.GetSettings().Clone());
-				form.ShowDialog(this);
-			}
+				NES nesHawk => OpenNesHawkGraphicsSettingsDialog(nesHawk.GetSettings().Clone()),
+				SubNESHawk subNESHawk => OpenNesHawkGraphicsSettingsDialog(subNESHawk.GetSettings().Clone()),
+				QuickNES quickNes => OpenQuickNesGraphicsSettingsDialog(quickNes.GetSettings().Clone()),
+				_ => DialogResult.None
+			};
 		}
 
 		private void NesSoundChannelsMenuItem_Click(object sender, EventArgs e)
@@ -1368,18 +1374,20 @@ namespace BizHawk.Client.EmuHawk
 			Tools.Load<NESSoundConfig>();
 		}
 
+		private DialogResult OpenNesHawkVSSettingsDialog(NES.NESSyncSettings ss)
+		{
+			using NesVsSettings form = new(this, ss);
+			return this.ShowDialogWithTempMute(form);
+		}
+
 		private void VsSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is NES nes && nes.IsVS)
+			_ = Emulator switch
 			{
-				using var form = new NesVsSettings(this, nes.GetSyncSettings().Clone());
-				this.ShowDialogWithTempMute(form);
-			}
-			else if (Emulator is SubNESHawk sub && sub.IsVs)
-			{
-				using var form = new NesVsSettings(this, sub.GetSyncSettings().Clone());
-				this.ShowDialogWithTempMute(form);
-			}
+				NES { IsVS: true } nesHawk => OpenNesHawkVSSettingsDialog(nesHawk.GetSyncSettings().Clone()),
+				SubNESHawk { IsVs: true } subNESHawk => OpenNesHawkVSSettingsDialog(subNESHawk.GetSyncSettings().Clone()),
+				_ => DialogResult.None
+			};
 		}
 
 		private void FdsEjectDiskMenuItem_Click(object sender, EventArgs e)
@@ -1430,42 +1438,45 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private DialogResult OpenNesHawkGamepadSettingsDialog(NES.NESSyncSettings ss)
+		{
+			using NesControllerSettings form = new(this, ss);
+			return this.ShowDialogWithTempMute(form);
+		}
+
+		private DialogResult OpenQuickNesGamepadSettingsDialog()
+			=> GenericCoreConfig.DoDialog(
+				this,
+				"QuickNES Controller Settings",
+				isMovieActive: MovieSession.Movie.IsActive(),
+				hideSettings: true,
+				hideSyncSettings: false);
+
 		private void NesControllerSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is NES nes)
+			_ = Emulator switch
 			{
-				using var form = new NesControllerSettings(this, nes.GetSyncSettings().Clone());
-				form.ShowDialog();
-			}
-			else if (Emulator is SubNESHawk sub)
-			{
-				using var form = new NesControllerSettings(this, sub.GetSyncSettings().Clone());
-				form.ShowDialog();
-			}
-			else if (Emulator is QuickNES)
-			{
-				GenericCoreConfig.DoDialog(
-					this,
-					"QuickNES Controller Settings",
-					isMovieActive: MovieSession.Movie.IsActive(),
-					hideSettings: true,
-					hideSyncSettings: false);
-			}
+				NES nesHawk => OpenNesHawkGamepadSettingsDialog(nesHawk.GetSyncSettings().Clone()),
+				SubNESHawk subNESHawk => OpenNesHawkGamepadSettingsDialog(subNESHawk.GetSyncSettings().Clone()),
+				QuickNES => OpenQuickNesGamepadSettingsDialog(),
+				_ => DialogResult.None
+			};
+		}
+
+		private DialogResult OpenNesHawkAdvancedSettingsDialog(NES.NESSyncSettings ss, bool hasMapperProperties)
+		{
+			using NESSyncSettingsForm form = new(this, ss, hasMapperProperties: hasMapperProperties);
+			return this.ShowDialogWithTempMute(form);
 		}
 
 		private void MovieSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is NES nes)
+			_ = Emulator switch
 			{
-				using var dlg = new NESSyncSettingsForm(this, nes.GetSyncSettings().Clone(), nes.HasMapperProperties);
-				dlg.ShowDialog(this);
-			}
-			else if (Emulator is SubNESHawk sub)
-			{
-				using var dlg = new NESSyncSettingsForm(this, sub.GetSyncSettings().Clone(), sub.HasMapperProperties);
-				dlg.ShowDialog(this);
-			}
-
+				NES nesHawk => OpenNesHawkAdvancedSettingsDialog(nesHawk.GetSyncSettings().Clone(), nesHawk.HasMapperProperties),
+				SubNESHawk subNESHawk => OpenNesHawkAdvancedSettingsDialog(subNESHawk.GetSyncSettings().Clone(), subNESHawk.HasMapperProperties),
+				_ => DialogResult.None
+			};
 		}
 
 		private void BarcodeReaderMenuItem_Click(object sender, EventArgs e)
@@ -1509,13 +1520,21 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private DialogResult OpenTI83PaletteSettingsDialog(TI83Common.TI83CommonSettings s)
+		{
+			using TI83PaletteConfig form = new(this, s);
+			return this.ShowDialogWithTempMute(form);
+		}
+
 		private void Ti83PaletteMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is TI83Common ti83)
+			var result = Emulator switch
 			{
-				using var form = new TI83PaletteConfig(this, ti83.GetSettings().Clone());
-				if (form.ShowDialog().IsOk()) AddOnScreenMessage("Palette settings saved");
-			}
+				Emu83 emu83 => OpenTI83PaletteSettingsDialog(emu83.GetSettings().Clone()),
+				TI83 ti83Hawk => OpenTI83PaletteSettingsDialog(ti83Hawk.GetSettings().Clone()),
+				_ => DialogResult.None
+			};
+			if (result.IsOk()) AddOnScreenMessage("Palette settings saved");
 		}
 
 		private void A7800SubMenu_DropDownOpened(object sender, EventArgs e)
@@ -1525,43 +1544,69 @@ namespace BizHawk.Client.EmuHawk
 				= MovieSession.Movie.NotActive();
 		}
 
+		private DialogResult OpenA7800HawkGamepadSettingsDialog(A7800Hawk.A7800SyncSettings ss)
+		{
+			using A7800ControllerSettings form = new(this, ss);
+			return this.ShowDialogWithTempMute(form);
+		}
+
 		private void A7800ControllerSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is A7800Hawk atari7800Hawk)
+			_ = Emulator switch
 			{
-				using var form = new A7800ControllerSettings(this, atari7800Hawk.GetSyncSettings().Clone());
-				form.ShowDialog();
-			}
+				A7800Hawk a7800Hawk => OpenA7800HawkGamepadSettingsDialog(a7800Hawk.GetSyncSettings().Clone()),
+				_ => DialogResult.None
+			};
+		}
+
+		private DialogResult OpenA7800HawkFilterSettingsDialog(A7800Hawk.A7800SyncSettings ss)
+		{
+			using A7800FilterSettings form = new(this, ss);
+			return this.ShowDialogWithTempMute(form);
 		}
 
 		private void A7800FilterSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is A7800Hawk atari7800Hawk)
+			_ = Emulator switch
 			{
-				using var form = new A7800FilterSettings(this, atari7800Hawk.GetSyncSettings().Clone());
-				form.ShowDialog();
-			}
+				A7800Hawk a7800Hawk => OpenA7800HawkFilterSettingsDialog(a7800Hawk.GetSyncSettings().Clone()),
+				_ => DialogResult.None
+			};
 		}
+
+		private DialogResult OpenGambatteSettingsDialog(Gameboy gambatte)
+			=> GBPrefs.DoGBPrefsDialog(this, Config, Game, MovieSession, gambatte);
+
+		private DialogResult OpenGBHawkSettingsDialog()
+			=> OpenGenericCoreConfig("Gameboy Settings");
+
+		private DialogResult OpenSameBoySettingsDialog()
+			=> OpenGenericCoreConfig("Gameboy Settings");
 
 		private void GbCoreSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is Gameboy gb)
+			_ = Emulator switch
 			{
-				GBPrefs.DoGBPrefsDialog(this, Config, Game, MovieSession, gb);
-			}
-			else
-			{
-				OpenGenericCoreConfig("Gameboy Settings");
-			}
+				Gameboy gambatte => OpenGambatteSettingsDialog(gambatte),
+				GBHawk => OpenGBHawkSettingsDialog(),
+				Sameboy => OpenSameBoySettingsDialog(),
+				_ => DialogResult.None
+			};
+		}
+
+		private DialogResult OpenSameBoyPaletteSettingsDialog(Sameboy.SameboySettings s)
+		{
+			using SameBoyColorChooserForm form = new(this, Game, Config, s);
+			return this.ShowDialogWithTempMute(form);
 		}
 
 		private void SameboyColorChooserMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is Sameboy sameboy)
+			_ = Emulator switch
 			{
-				using var form = new SameBoyColorChooserForm(this, Game, Config, sameboy.GetSettings().Clone());
-				if (form.ShowDialog().IsOk()) AddOnScreenMessage("Palette settings saved");
-			}
+				Sameboy sameBoy => OpenSameBoyPaletteSettingsDialog(sameBoy.GetSettings().Clone()),
+				_ => DialogResult.None
+			};
 		}
 
 		private void GbGpuViewerMenuItem_Click(object sender, EventArgs e)
@@ -1579,24 +1624,32 @@ namespace BizHawk.Client.EmuHawk
 			PSXControllerSettingsMenuItem.Enabled = MovieSession.Movie.NotActive();
 		}
 
+		private DialogResult OpenOctoshockGamepadSettingsDialog(Octoshock.SyncSettings ss)
+		{
+			using PSXControllerConfig form = new(this, ss);
+			return this.ShowDialogWithTempMute(form);
+		}
+
 		private void PsxControllerSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is Octoshock psx)
+			_ = Emulator switch
 			{
-				using var form = new PSXControllerConfig(this, psx.GetSyncSettings().Clone());
-				form.ShowDialog();
-			}
+				Octoshock octoshock => OpenOctoshockGamepadSettingsDialog(octoshock.GetSyncSettings().Clone()),
+				_ => DialogResult.None
+			};
 		}
+
+		private DialogResult OpenOctoshockSettingsDialog(Octoshock octoshock)
+			=> PSXOptions.DoSettingsDialog(this, Config, octoshock);
 
 		private void PsxOptionsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is Octoshock psx)
+			var result = Emulator switch
 			{
-				if (PSXOptions.DoSettingsDialog(this, Config, psx).IsOk())
-				{
-					FrameBufferResized();
-				}
-			}
+				Octoshock octoshock => OpenOctoshockSettingsDialog(octoshock),
+				_ => DialogResult.None
+			};
+			if (result.IsOk()) FrameBufferResized();
 		}
 
 		private void PsxDiscControlsMenuItem_Click(object sender, EventArgs e)
@@ -1619,18 +1672,26 @@ namespace BizHawk.Client.EmuHawk
 			SnesGfxDebuggerMenuItem.Enabled = true;
 		}
 
+		private DialogResult OpenOldBSNESGamepadSettingsDialog(LibsnesCore.SnesSyncSettings ss)
+		{
+			using SNESControllerSettings form = new(this, ss);
+			return this.ShowDialogWithTempMute(form);
+		}
+
+		private DialogResult OpenBSNESGamepadSettingsDialog(BsnesCore.SnesSyncSettings ss)
+		{
+			using BSNESControllerSettings form = new(this, ss);
+			return this.ShowDialogWithTempMute(form);
+		}
+
 		private void SNESControllerConfigurationMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is LibsnesCore bsnes)
+			_ = Emulator switch
 			{
-				using var form = new SNESControllerSettings(this, bsnes.GetSyncSettings().Clone());
-				form.ShowDialog();
-			}
-			else if (Emulator is BsnesCore bsnesCore)
-			{
-				using var form = new BSNESControllerSettings(this, bsnesCore.GetSyncSettings().Clone());
-				form.ShowDialog();
-			}
+				LibsnesCore oldBSNES => OpenOldBSNESGamepadSettingsDialog(oldBSNES.GetSyncSettings().Clone()),
+				BsnesCore bsnes => OpenBSNESGamepadSettingsDialog(bsnes.GetSyncSettings().Clone()),
+				_ => DialogResult.None
+			};
 		}
 
 		private void SnesGfxDebuggerMenuItem_Click(object sender, EventArgs e)
@@ -1638,16 +1699,20 @@ namespace BizHawk.Client.EmuHawk
 			Tools.Load<SNESGraphicsDebugger>();
 		}
 
+		private DialogResult OpenOldBSNESSettingsDialog(LibsnesCore bsnes)
+			=> SNESOptions.DoSettingsDialog(this, bsnes);
+
+		private DialogResult OpenBSNESSettingsDialog(BsnesCore bsnes)
+			=> BSNESOptions.DoSettingsDialog(this, bsnes);
+
 		private void SnesOptionsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is LibsnesCore libsnes)
+			_ = Emulator switch
 			{
-				SNESOptions.DoSettingsDialog(this, libsnes);
-			}
-			if (Emulator is BsnesCore bsnes)
-			{
-				BSNESOptions.DoSettingsDialog(this, bsnes);
-			}
+				LibsnesCore oldBSNES => OpenOldBSNESSettingsDialog(oldBSNES),
+				BsnesCore bsnes => OpenBSNESSettingsDialog(bsnes),
+				_ => DialogResult.None
+			};
 		}
 
 		private void ColecoSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -1681,13 +1746,19 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private DialogResult OpenColecoHawkGamepadSettingsDialog(ColecoVision.ColecoSyncSettings ss)
+		{
+			using ColecoControllerSettings form = new(this, ss);
+			return this.ShowDialogWithTempMute(form);
+		}
+
 		private void ColecoControllerSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is ColecoVision coleco)
+			_ = Emulator switch
 			{
-				using var form = new ColecoControllerSettings(this, coleco.GetSyncSettings().Clone());
-				form.ShowDialog();
-			}
+				ColecoVision colecoHawk => OpenColecoHawkGamepadSettingsDialog(colecoHawk.GetSyncSettings().Clone()),
+				_ => DialogResult.None
+			};
 		}
 
 		private void N64SubMenu_DropDownOpened(object sender, EventArgs e)
@@ -1706,23 +1777,34 @@ namespace BizHawk.Client.EmuHawk
 			N64ExpansionSlotMenuItem.Enabled = !((N64)Emulator).IsOverridingUserExpansionSlotSetting;
 		}
 
+		private DialogResult OpenMupen64PlusGraphicsSettingsDialog()
+		{
+			using N64VideoPluginConfig form = new(this, Config, Emulator);
+			return this.ShowDialogWithTempMute(form);
+		}
+
 		private void N64PluginSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new N64VideoPluginConfig(this, Config, Emulator);
-			if (form.ShowDialog().IsOk()
+			if (OpenMupen64PlusGraphicsSettingsDialog().IsOk()
 				&& Emulator is not N64) // If it's loaded, the reboot required message will appear
 			{
 				AddOnScreenMessage("Plugin settings saved");
 			}
 		}
 
+		private DialogResult OpenMupen64PlusGamepadSettingsDialog(N64SyncSettings ss)
+		{
+			using N64ControllersSetup form = new(this, ss);
+			return this.ShowDialogWithTempMute(form);
+		}
+
 		private void N64ControllerSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is N64 n64)
+			_ = Emulator switch
 			{
-				using var form = new N64ControllersSetup(this, n64.GetSyncSettings().Clone());
-				form.ShowDialog();
-			}
+				N64 mupen64Plus => OpenMupen64PlusGamepadSettingsDialog(mupen64Plus.GetSyncSettings().Clone()),
+				_ => DialogResult.None
+			};
 		}
 
 		private void N64CircularAnalogRangeMenuItem_Click(object sender, EventArgs e)
@@ -1749,15 +1831,19 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private DialogResult OpenGambatteLinkSettingsDialog(GambatteLink gambatteLink)
+			=> GBLPrefs.DoGBLPrefsDialog(this, Config, Game, MovieSession, gambatteLink);
+
 		private void GblSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is GambatteLink gambatte)
+			_ = Emulator switch
 			{
-				GBLPrefs.DoGBLPrefsDialog(this, Config, Game, MovieSession, gambatte);
-			}
+				GambatteLink gambatteLink => OpenGambatteLinkSettingsDialog(gambatteLink),
+				_ => DialogResult.None
+			};
 		}
 
-		private void OpenGenericCoreConfig(string title)
+		private DialogResult OpenGenericCoreConfig(string title)
 			=> GenericCoreConfig.DoDialog(this, title, isMovieActive: MovieSession.Movie.IsActive());
 
 		private void GenericCoreSettingsMenuItem_Click(object sender, EventArgs e)
@@ -1766,9 +1852,16 @@ namespace BizHawk.Client.EmuHawk
 			OpenGenericCoreConfig($"{coreName} Settings");
 		}
 
+		private DialogResult OpenVirtuSettingsDialog()
+			=> OpenGenericCoreConfig("Apple II Settings");
+
 		private void AppleIISettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			OpenGenericCoreConfig("Apple II Settings");
+			_ = Emulator switch
+			{
+				AppleII => OpenVirtuSettingsDialog(),
+				_ => DialogResult.None
+			};
 		}
 
 		private void AppleSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -1839,9 +1932,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private DialogResult OpenC64HawkSettingsDialog()
+			=> OpenGenericCoreConfig("C64 Settings");
+
 		private void C64SettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			OpenGenericCoreConfig("C64 Settings");
+			_ = Emulator switch
+			{
+				C64 => OpenC64HawkSettingsDialog(),
+				_ => DialogResult.None
+			};
 		}
 
 		private void IntVSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -1849,49 +1949,79 @@ namespace BizHawk.Client.EmuHawk
 			IntVControllerSettingsMenuItem.Enabled = MovieSession.Movie.NotActive();
 		}
 
+		private DialogResult OpenIntelliHawkGamepadSettingsDialog(Intellivision.IntvSyncSettings ss)
+		{
+			using IntvControllerSettings form = new(this, ss);
+			return this.ShowDialogWithTempMute(form);
+		}
+
 		private void IntVControllerSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is Intellivision intv)
+			_ = Emulator switch
 			{
-				using var form = new IntvControllerSettings(this, intv.GetSyncSettings().Clone());
-				form.ShowDialog();
-			}
+				Intellivision intelliHawk => OpenIntelliHawkGamepadSettingsDialog(intelliHawk.GetSyncSettings().Clone()),
+				_ => DialogResult.None
+			};
+		}
+
+		private DialogResult OpenZXHawkGamepadSettingsDialog(ZXSpectrum.ZXSpectrumSyncSettings ss)
+		{
+			using ZxSpectrumJoystickSettings form = new(this, ss);
+			return this.ShowDialogWithTempMute(form);
 		}
 
 		private void ZXSpectrumControllerConfigurationMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is ZXSpectrum zxs)
+			_ = Emulator switch
 			{
-				using var form = new ZxSpectrumJoystickSettings(this, zxs.GetSyncSettings().Clone());
-				form.ShowDialog();
-			}
+				ZXSpectrum zxHawk => OpenZXHawkGamepadSettingsDialog(zxHawk.GetSyncSettings().Clone()),
+				_ => DialogResult.None
+			};
+		}
+
+		private DialogResult OpenZXHawkSyncSettingsDialog(ZXSpectrum.ZXSpectrumSyncSettings ss)
+		{
+			using ZxSpectrumCoreEmulationSettings form = new(this, ss);
+			return this.ShowDialogWithTempMute(form);
 		}
 
 		private void ZXSpectrumCoreEmulationSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is ZXSpectrum speccy)
+			_ = Emulator switch
 			{
-				using var form = new ZxSpectrumCoreEmulationSettings(this, speccy.GetSyncSettings().Clone());
-				form.ShowDialog();
-			}
+				ZXSpectrum zxHawk => OpenZXHawkSyncSettingsDialog(zxHawk.GetSyncSettings().Clone()),
+				_ => DialogResult.None
+			};
+		}
+
+		private DialogResult OpenZXHawkSettingsDialog(ZXSpectrum.ZXSpectrumSettings s)
+		{
+			using ZxSpectrumNonSyncSettings form = new(this, s);
+			return this.ShowDialogWithTempMute(form);
 		}
 
 		private void ZXSpectrumNonSyncSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is ZXSpectrum speccy)
+			_ = Emulator switch
 			{
-				using var form = new ZxSpectrumNonSyncSettings(this, speccy.GetSettings().Clone());
-				form.ShowDialog();
-			}
+				ZXSpectrum zxHawk => OpenZXHawkSettingsDialog(zxHawk.GetSettings().Clone()),
+				_ => DialogResult.None
+			};
+		}
+
+		private DialogResult OpenZXHawkAudioSettingsDialog(ZXSpectrum.ZXSpectrumSettings s)
+		{
+			using ZxSpectrumAudioSettings form = new(this, s);
+			return this.ShowDialogWithTempMute(form);
 		}
 
 		private void ZXSpectrumAudioSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is ZXSpectrum speccy)
+			_ = Emulator switch
 			{
-				using var form = new ZxSpectrumAudioSettings(this, speccy.GetSettings().Clone());
-				form.ShowDialog();
-			}
+				ZXSpectrum zxHawk => OpenZXHawkAudioSettingsDialog(zxHawk.GetSettings().Clone()),
+				_ => DialogResult.None
+			};
 		}
 
 		private void ZXSpectrumMediaMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1996,22 +2126,34 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private DialogResult OpenCPCHawkSyncSettingsDialog(AmstradCPC.AmstradCPCSyncSettings ss)
+		{
+			using AmstradCpcCoreEmulationSettings form = new(this, ss);
+			return this.ShowDialogWithTempMute(form);
+		}
+
 		private void AmstradCpcCoreEmulationSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is AmstradCPC cpc)
+			_ = Emulator switch
 			{
-				using var form = new AmstradCpcCoreEmulationSettings(this, cpc.GetSyncSettings().Clone());
-				form.ShowDialog();
-			}
+				AmstradCPC cpcHawk => OpenCPCHawkSyncSettingsDialog(cpcHawk.GetSyncSettings().Clone()),
+				_ => DialogResult.None
+			};
+		}
+
+		private DialogResult OpenCPCHawkAudioSettingsDialog(AmstradCPC.AmstradCPCSettings s)
+		{
+			using AmstradCpcAudioSettings form = new(this, s);
+			return this.ShowDialogWithTempMute(form);
 		}
 
 		private void AmstradCpcAudioSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is AmstradCPC cpc)
+			_ = Emulator switch
 			{
-				using var form = new AmstradCpcAudioSettings(this, cpc.GetSettings().Clone());
-				form.ShowDialog();
-			}
+				AmstradCPC cpcHawk => OpenCPCHawkAudioSettingsDialog(cpcHawk.GetSettings().Clone()),
+				_ => DialogResult.None
+			};
 		}
 
 		private void AmstradCpcMediaMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -2091,14 +2233,19 @@ namespace BizHawk.Client.EmuHawk
 			AmstradCPCDisksSubMenu.DropDownItems.AddRange(items.ToArray());
 		}
 
+		private DialogResult OpenCPCHawkSettingsDialog(AmstradCPC.AmstradCPCSettings s)
+		{
+			using AmstradCpcNonSyncSettings form = new(this, s);
+			return this.ShowDialogWithTempMute(form);
+		}
+
 		private void AmstradCpcNonSyncSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is AmstradCPC cpc)
+			_ = Emulator switch
 			{
-				using var form = new AmstradCpcNonSyncSettings(this, cpc.GetSettings().Clone());
-				form.ShowDialog();
-			}
-
+				AmstradCPC cpcHawk => OpenCPCHawkSettingsDialog(cpcHawk.GetSettings().Clone()),
+				_ => DialogResult.None
+			};
 		}
 
 		private void HelpSubMenu_DropDownOpened(object sender, EventArgs e)

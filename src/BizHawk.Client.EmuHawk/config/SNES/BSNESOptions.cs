@@ -11,7 +11,7 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		public static void DoSettingsDialog(IMainFormForConfig mainForm, BsnesCore bsnes)
+		public static DialogResult DoSettingsDialog(IMainFormForConfig mainForm, BsnesCore bsnes)
 		{
 			var s = bsnes.GetSettings();
 			var ss = bsnes.GetSyncSettings();
@@ -68,6 +68,7 @@ namespace BizHawk.Client.EmuHawk
 				mainForm.PutCoreSettings(s);
 				mainForm.PutCoreSyncSettings(ss);
 			}
+			return result;
 		}
 
 		private bool AlwaysDoubleSize
