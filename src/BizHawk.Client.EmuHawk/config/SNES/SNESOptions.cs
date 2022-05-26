@@ -14,7 +14,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _suppressDoubleSize;
 		private bool _userDoubleSizeOption;
 
-		public static void DoSettingsDialog(IMainFormForConfig mainForm, LibsnesCore bsnes)
+		public static DialogResult DoSettingsDialog(IMainFormForConfig mainForm, LibsnesCore bsnes)
 		{
 			var s = bsnes.GetSettings();
 			var ss = bsnes.GetSyncSettings();
@@ -51,6 +51,7 @@ namespace BizHawk.Client.EmuHawk
 				mainForm.PutCoreSettings(s);
 				mainForm.PutCoreSyncSettings(ss);
 			}
+			return result;
 		}
 
 		private bool AlwaysDoubleSize

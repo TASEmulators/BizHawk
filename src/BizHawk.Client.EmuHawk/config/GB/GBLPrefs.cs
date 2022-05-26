@@ -48,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool SyncSettingsChanged => gbPrefControl1.SyncSettingsChanged || gbPrefControl2.SyncSettingsChanged || gbPrefControl3.SyncSettingsChanged || gbPrefControl4.SyncSettingsChanged;
 
-		public static void DoGBLPrefsDialog(IMainFormForConfig mainForm, Config config, IGameInfo game, IMovieSession movieSession, GambatteLink gambatte)
+		public static DialogResult DoGBLPrefsDialog(IMainFormForConfig mainForm, Config config, IGameInfo game, IMovieSession movieSession, GambatteLink gambatte)
 		{
 			var s = gambatte.GetSettings();
 			var ss = gambatte.GetSyncSettings();
@@ -61,7 +61,8 @@ namespace BizHawk.Client.EmuHawk
 			dlg.gbPrefControl3.ColorGameBoy = gambatte.IsCGBMode(2);
 			dlg.gbPrefControl4.ColorGameBoy = gambatte.IsCGBMode(3);
 
-			if (mainForm.ShowDialogAsChild(dlg) == DialogResult.OK)
+			var result = mainForm.ShowDialogAsChild(dlg);
+			if (result == DialogResult.OK)
 			{
 				dlg.GetSettings(out s, out ss);
 				gambatte.PutSettings(s);
@@ -70,6 +71,7 @@ namespace BizHawk.Client.EmuHawk
 					mainForm.PutCoreSyncSettings(ss);
 				}
 			}
+			return result;
 		}
 	}
 }

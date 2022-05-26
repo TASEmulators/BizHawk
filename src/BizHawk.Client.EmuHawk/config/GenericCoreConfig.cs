@@ -77,7 +77,7 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-		public static void DoDialog(IMainFormForConfig owner, string title, bool isMovieActive)
+		public static DialogResult DoDialog(IMainFormForConfig owner, string title, bool isMovieActive)
 		{
 			if (owner.Emulator is Emulation.Cores.Waterbox.NymaCore core)
 			{
@@ -87,7 +87,7 @@ namespace BizHawk.Client.EmuHawk
 					// OH GOD THE HACKS WHY
 					TypeDescriptor.AddProvider(desc, typeof(Emulation.Cores.Waterbox.NymaCore.NymaSettings));
 					TypeDescriptor.AddProvider(desc, typeof(Emulation.Cores.Waterbox.NymaCore.NymaSyncSettings));
-					DoDialog(owner, "Nyma Core", isMovieActive, !core.SettingsInfo.HasSettings, !core.SettingsInfo.HasSyncSettings);
+					return DoDialog(owner, "Nyma Core", isMovieActive, !core.SettingsInfo.HasSettings, !core.SettingsInfo.HasSyncSettings);
 				}
 				finally
 				{
@@ -101,7 +101,7 @@ namespace BizHawk.Client.EmuHawk
 				try
 				{
 					TypeDescriptor.AddProvider(desc, typeof(Emulation.Cores.Arcades.MAME.MAME.MAMESyncSettings));
-					DoDialog(owner, "MAME", isMovieActive, true, false);
+					return DoDialog(owner, "MAME", isMovieActive, true, false);
 				}
 				finally
 				{
@@ -110,11 +110,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				DoDialog(owner, title, isMovieActive, false, false);
+				return DoDialog(owner, title, isMovieActive, false, false);
 			}
 		}
 
-		public static void DoDialog(
+		public static DialogResult DoDialog(
 			IMainFormForConfig owner,
 			string title,
 			bool isMovieActive,
@@ -129,7 +129,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Text = title,
 			};
-			owner.ShowDialogAsChild(dlg);
+			return owner.ShowDialogAsChild(dlg);
 		}
 
 		private void PropertyGrid2_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
