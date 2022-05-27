@@ -21,6 +21,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			ret.Add("LO", data[32]);
 			ret.Add("HI", data[33]);
 			ret.Add("PC", (uint)data[34]);
+			// FIXME: the PC register is actually 64-bits (although in practice it will only ever be 32-bits)
+			// Debugger UI doesn't like it as 64 bits, hence the uint cast
 
 			return ret;
 		}

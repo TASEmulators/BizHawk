@@ -22,6 +22,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 
 		public override string Disassemble(MemoryDomain m, uint addr, out int length)
 		{
+			// FIXME: the PC register is actually 64-bits (although in practice it will only ever be 32-bits)
 			_core.GetDisassembly(addr, m.PeekUint(addr, true), _disasmbuf);
 			length = 4;
 			var ret = Encoding.UTF8.GetString(_disasmbuf);
