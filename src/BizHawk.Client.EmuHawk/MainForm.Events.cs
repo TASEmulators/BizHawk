@@ -238,7 +238,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ScreenshotCaptureOSDMenuItem1.Checked = Config.ScreenshotCaptureOsd;
 			ScreenshotMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Screenshot"];
-			ScreenshotClipboardMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["ScreenshotToClipboard"];
+			ScreenshotClipboardMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Screen Raw to Clipboard"];
 			ScreenshotClientClipboardMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Screen Client to Clipboard"];
 		}
 
