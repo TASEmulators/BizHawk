@@ -218,8 +218,13 @@ public:
 			case RETRO_ENVIRONMENT::GET_LOG_INTERFACE:
 			{
 				retro_log_callback* cb = static_cast<retro_log_callback*>(data);
+#ifdef _WIN32
 				cb->log = &RetroLog;
 				return true;
+#else
+				cb->log = nullptr;
+				return false;
+#endif
 			}
 			case RETRO_ENVIRONMENT::GET_PERF_INTERFACE:
 				//callbacks for performance counters?
