@@ -27,7 +27,7 @@ struct Instruction : Tracer {
     for(auto& history : _history) history = ~0;
   }
 
-  auto address(u32 address) -> bool {
+  auto address(u64 address) -> bool {
     address &= (1ull << _addressBits) - 1;  //mask upper bits of address
     _address = address;
     address >>= _addressMask;  //clip unneeded alignment bits (to reduce _masks size)
@@ -55,7 +55,7 @@ struct Instruction : Tracer {
 
   //mark an already-executed address as not executed yet for trace masking.
   //call when writing to executable RAM to support self-modifying code.
-  auto invalidate(u32 address) -> void {
+  auto invalidate(u64 address) -> void {
     if(unlikely(_mask && updateMasks())) {
       address &= (1ull << _addressBits) - 1;
       address >>= _addressMask;

@@ -8,7 +8,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 {
-	[PortedCore(CoreNames.Ares64, "ares team, Near", "v127", "https://ares-emulator.github.io/")]
+	[PortedCore(CoreNames.Ares64, "ares team, Near", "v128", "https://ares-emulator.github.io/")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), })]
 	public partial class Ares64 : WaterboxCore, IRegionable
 	{

@@ -60,14 +60,10 @@ inline auto within(s64 offset, s64 length, s64 min, s64 max) -> bool {
   static_assert(lo <= hi);
   static constexpr s64 range = hi - lo + 1;
   s64 lhs = (offset - lo) % range;
-  s64 rhs = (offset + length - 1) % range;
+  s64 rhs = (lhs + length - 1) % range;
   min = (min - lo) % range;
   max = (max - lo) % range;
-  if(rhs < lhs) {
-    return lhs <= max || rhs >= min;
-  } else {
-    return max >= lhs && min <= rhs;
-  }
+  return lhs >= min && lhs <= max || rhs >= min && rhs <= max;
 }
 
 //returns index of target within {offset ... offset+length-1} in range {lo ... hi}

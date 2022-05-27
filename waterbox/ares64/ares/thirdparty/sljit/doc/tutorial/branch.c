@@ -29,7 +29,7 @@ static int branch(long a, long b, long c)
 	struct sljit_compiler *C = sljit_create_compiler(NULL, NULL);
 
 	/* 3 arg, 1 temp reg, 3 save reg */
-	sljit_emit_enter(C, 0, SLJIT_ARG1(SW)|SLJIT_ARG2(SW)|SLJIT_ARG3(SW),  3, 3, 0, 0, 0);
+	sljit_emit_enter(C, 0, SLJIT_ARGS3(W, W, W, W), 1, 3, 0, 0, 0);
 
 	/* R0 = a & 1, S0 is argument a */
 	sljit_emit_op2(C, SLJIT_AND, SLJIT_R0, 0, SLJIT_S0, 0, SLJIT_IMM, 1);

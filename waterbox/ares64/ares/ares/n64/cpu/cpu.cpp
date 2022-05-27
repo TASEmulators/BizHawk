@@ -52,9 +52,10 @@ auto CPU::synchronize() -> void {
 
   queue.step(clocks, [](u32 event) {
     switch(event) {
-    case Queue::RSP_DMA:       return rsp.dmaTransfer();
-    case Queue::PI_DMA_Read:   return pi.dmaRead();
-    case Queue::PI_DMA_Write:  return pi.dmaWrite();
+    case Queue::RSP_DMA:       return rsp.dmaTransferStep();
+    case Queue::PI_DMA_Read:   return pi.dmaFinished();
+    case Queue::PI_DMA_Write:  return pi.dmaFinished();
+    case Queue::PI_BUS_Write:  return pi.writeFinished();
     case Queue::SI_DMA_Read:   return si.dmaRead();
     case Queue::SI_DMA_Write:  return si.dmaWrite();
     }
@@ -98,14 +99,12 @@ auto CPU::instructionEpilogue() -> s32 {
 
   ipu.r[0].u64 = 0;
 
-  if(--scc.random.index < scc.wired.index) {
-    scc.random.index = 31;
-  }
-
   switch(branch.state) {
   case Branch::Step: ipu.pc += 4; return 0;
-  case Branch::Take: ipu.pc += 4; branch.delaySlot(); return 0;
-  case Branch::DelaySlot: ipu.pc = branch.pc; branch.reset(); return 1;
+  case Branch::Take: ipu.pc += 4; branch.delaySlot(true); return 0;
+  case Branch::NotTaken: ipu.pc += 4; branch.delaySlot(false); return 0;
+  case Branch::DelaySlotTaken: ipu.pc = branch.pc; branch.reset(); return 1;
+  case Branch::DelaySlotNotTaken: ipu.pc += 4; branch.reset(); return 0;
   case Branch::Exception: branch.reset(); return 1;
   case Branch::Discard: ipu.pc += 8; branch.reset(); return 1;
   }
@@ -124,13 +123,13 @@ auto CPU::power(bool reset) -> void {
   for(auto& segment : context.segment) segment = Context::Segment::Unused;
   icache.power(reset);
   dcache.power(reset);
-  for(auto& entry : tlb.entry) entry = {};
+  for(auto& entry : tlb.entry) entry = {}, entry.synchronize();
   tlb.physicalAddress = 0;
   for(auto& r : ipu.r) r.u64 = 0;
   ipu.lo.u64 = 0;
   ipu.hi.u64 = 0;
-  ipu.r[29].u64 = u32(0xa400'1ff0);  //stack pointer
-  ipu.pc = u32(0xbfc0'0000);
+  ipu.r[29].u64 = 0xffff'ffff'a400'1ff0ull;  //stack pointer
+  ipu.pc = 0xffff'ffff'bfc0'0000ull;
   scc = {};
   for(auto& r : fpu.r) r.u64 = 0;
   fpu.csr = {};

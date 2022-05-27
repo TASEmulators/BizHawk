@@ -1,9 +1,9 @@
 struct Cartridge {
   Node::Peripheral node;
   VFS::Pak pak;
-  Memory::Readable rom;
-  Memory::Writable ram;
-  Memory::Writable eeprom;
+  Memory::Readable16 rom;
+  Memory::Writable16 ram;
+  Memory::Writable16 eeprom;
   struct Flash : Memory::Writable {
     template<u32 Size>
     auto read(u32 address) -> u64 {

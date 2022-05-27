@@ -48,8 +48,7 @@ struct IO {
       ((T*)this)->writeWord(address, data);
     }
     if constexpr(Size == Dual) {
-      ((T*)this)->writeWord(address + 0, data >> 32);
-      ((T*)this)->writeWord(address + 4, data >>  0);
+      ((T*)this)->writeWord(address, data >> 32);
     }
   }
 };

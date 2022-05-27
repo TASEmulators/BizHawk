@@ -32,7 +32,7 @@ static int loop(long a, long b)
 	struct sljit_compiler *C = sljit_create_compiler(NULL, NULL);
 
 	/* 2 arg, 2 temp reg, 2 saved reg */
-	sljit_emit_enter(C, 0, SLJIT_ARG1(SW)|SLJIT_ARG2(SW), 2, 2, 0, 0, 0);
+	sljit_emit_enter(C, 0, SLJIT_ARGS2(W, W, W), 2, 2, 0, 0, 0);
 
 	/* R0 = 0 */
 	sljit_emit_op2(C, SLJIT_XOR, SLJIT_R1, 0, SLJIT_R1, 0, SLJIT_R1, 0);

@@ -62,7 +62,7 @@ void verbose_test(regex_char_t *pattern, regex_char_t *string)
 		ptr++;
 
 	printf("Start test '%s' matches to '%s'\n", pattern, string);
-	machine = regex_compile(pattern, ptr - pattern, REGEX_MATCH_VERBOSE | REGEX_NEWLINE, &error);
+	machine = regex_compile(pattern, (int)(ptr - pattern), REGEX_MATCH_VERBOSE | REGEX_NEWLINE, &error);
 
 	if (error) {
 		printf("WARNING: Error %d\n", error);
@@ -84,7 +84,7 @@ void verbose_test(regex_char_t *pattern, regex_char_t *string)
 	while (*ptr)
 		ptr++;
 
-	regex_continue_match_debug(match, string, ptr - string);
+	regex_continue_match_debug(match, string, (int)(ptr - string));
 
 	begin = regex_get_result(match, &end, &id);
 	printf("Math returns: %3d->%3d [%3d]\n", begin, end, id);
@@ -104,7 +104,7 @@ struct test_case {
 	const regex_char_t *string;	/* NULL : end of tests. */
 };
 
-void run_tests(struct test_case* test, int verbose, int silent)
+static void run_tests(struct test_case* test, int verbose, int silent)
 {
 	int error;
 	const regex_char_t *ptr;
@@ -129,7 +129,7 @@ void run_tests(struct test_case* test, int verbose, int silent)
 			while (*ptr)
 				ptr++;
 
-			machine = regex_compile(test->pattern, ptr - test->pattern, test->flags, &error);
+			machine = regex_compile(test->pattern, (int)(ptr - test->pattern), test->flags, &error);
 
 			if (error) {
 				if (!verbose)
@@ -164,7 +164,7 @@ void run_tests(struct test_case* test, int verbose, int silent)
 			regex_free_machine(machine);
 			return;
 		}
-		regex_continue_match_debug(match, test->string, ptr - test->string);
+		regex_continue_match_debug(match, test->string, (int)(ptr - test->string));
 		begin = regex_get_result(match, &end, &id);
 		finished = regex_is_match_finished(match);
 
@@ -183,7 +183,7 @@ void run_tests(struct test_case* test, int verbose, int silent)
 #endif
 
 		regex_reset_match(match);
-		regex_continue_match(match, test->string, ptr - test->string);
+		regex_continue_match(match, test->string, (int)(ptr - test->string));
 		begin = regex_get_result(match, &end, &id);
 		finished = regex_is_match_finished(match);
 		regex_free_match(match);

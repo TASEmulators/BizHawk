@@ -41,7 +41,7 @@ struct CPU : Thread {
   auto power(bool reset) -> void;
 
   struct Pipeline {
-    u32 address;
+    u64 address;
     u32 instruction;
 
     struct InstructionCache {
@@ -61,12 +61,14 @@ struct CPU : Thread {
   } pipeline;
 
   struct Branch {
-    enum : u32 { Step, Take, DelaySlot, Exception, Discard };
+    enum : u32 { Step, Take, NotTaken, DelaySlotTaken, DelaySlotNotTaken, Exception, Discard };
 
-    auto inDelaySlot() const -> bool { return state == DelaySlot; }
+    auto inDelaySlot() const -> bool { return state == DelaySlotTaken || state == DelaySlotNotTaken; }
+    auto inDelaySlotTaken() const -> bool { return state == DelaySlotTaken; }
     auto reset() -> void { state = Step; }
-    auto take(u32 address) -> void { state = Take; pc = address; }
-    auto delaySlot() -> void { state = DelaySlot; }
+    auto take(u64 address) -> void { state = Take; pc = address; }
+    auto notTaken() -> void { state = NotTaken; }
+    auto delaySlot(bool taken) -> void { state = taken ? DelaySlotTaken : DelaySlotNotTaken; }
     auto exception() -> void { state = Exception; }
     auto discard() -> void { state = Discard; }
 
@@ -177,17 +179,16 @@ struct CPU : Thread {
       n1  valid[2];
       n1  dirty[2];
       n3  cacheAlgorithm[2];
-      n32 physicalAddress[2];
+      n36 physicalAddress[2];
       n32 pageMask;
       n40 virtualAddress;
       n8  addressSpaceID;
       n2  region;
     //internal:
       n1  globals;
-      n32 addressMaskHi;
-      n32 addressMaskLo;
-      n32 addressSelect;
-      n40 addressCompare;
+      n40 addressMaskHi;
+      n40 addressMaskLo;
+      n40 addressSelect;
     } entry[TLB::Entries];
 
     u32 physicalAddress;
@@ -207,6 +208,7 @@ struct CPU : Thread {
   auto fetch(u64 address) -> u32;
   template<u32 Size> auto read(u64 address) -> maybe<u64>;
   template<u32 Size> auto write(u64 address, u64 data) -> bool;
+  auto addressException(u64 address) -> void;
 
   //serialization.cpp
   auto serialize(serializer&) -> void;
@@ -403,12 +405,7 @@ struct CPU : Thread {
       n1 probeFailure;
     } index;
 
-    //1
-    struct Random {
-      n5 index = 31;
-      n1 unused;
-    } random;
-
+    //1: Random
     //2: EntryLo0
     //3: EntryLo1
     //5: PageMask
@@ -423,8 +420,7 @@ struct CPU : Thread {
 
     //6
     struct Wired {
-      n5 index;
-      n1 unused;
+      n6 index;
     } wired;
 
     //8
@@ -487,11 +483,11 @@ struct CPU : Thread {
       n2 cu;  //reserved
       n1 bigEndian = 1;
       n2 sysadWritebackPattern;
-      n2 systemClockRatio = 6;
+      n3 systemClockRatio = 7;
     } configuration;
 
     //17: Load Linked Address
-    n64 ll;
+    n32 ll;
     n1  llbit;
 
     //18
@@ -531,6 +527,7 @@ struct CPU : Thread {
   //interpreter-scc.cpp
   auto getControlRegister(n5) -> u64;
   auto setControlRegister(n5, n64) -> void;
+  auto getControlRandom() -> u8;
 
   auto DMFC0(r64& rt, u8 rd) -> void;
   auto DMTC0(cr64& rt, u8 rd) -> void;
@@ -706,6 +703,11 @@ struct CPU : Thread {
 
     auto invalidate(u32 address) -> void {
       pools[address >> 8 & 0x1fffff] = nullptr;
+    }
+    auto invalidateRange(u32 address, u32 length) -> void {
+      for (u32 s = 0; s < length; s += 256)
+        invalidate(address + s);
+      invalidate(address + length - 1);
     }
 
     auto pool(u32 address) -> Pool*;

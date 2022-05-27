@@ -154,6 +154,10 @@ struct file_buffer {
     fileOffset = seekOffset;
   }
 
+  auto handle() const -> FILE* {
+    return fileHandle;
+  }
+
   auto offset() const -> u64 {
     if(!fileHandle) return 0;
     return fileOffset;

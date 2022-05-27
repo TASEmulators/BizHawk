@@ -1,12 +1,12 @@
 auto CPU::DataCache::Line::hit(u32 address) const -> bool {
-  return valid && tag == (address & ~0xfff);
+  return valid && tag == (address & ~0xe000'0fff);
 }
 
 template<u32 Size> auto CPU::DataCache::Line::fill(u32 address, u64 data) -> void {
   cpu.step(40);
   valid = 1;
   dirty = 1;
-  tag   = address & ~0xfff;
+  tag   = address & ~0xe000'0fff;
   //read words according to critical doubleword first scheme
   switch(address & 8) {
   case 0:
@@ -34,7 +34,7 @@ auto CPU::DataCache::Line::fill(u32 address) -> void {
   cpu.step(40);
   valid = 1;
   dirty = 0;
-  tag   = address & ~0xfff;
+  tag   = address & ~0xe000'0fff;
   //read words according to critical doubleword first scheme
   switch(address & 8) {
   case 0:

@@ -32,6 +32,7 @@ SRCS_N64 = \
 	$(ARES_PATH)/n64/vi/vi.cpp \
 	$(ARES_PATH)/n64/ai/ai.cpp \
 	$(ARES_PATH)/n64/pi/pi.cpp \
+	$(ARES_PATH)/n64/pif/pif.cpp \
 	$(ARES_PATH)/n64/ri/ri.cpp \
 	$(ARES_PATH)/n64/si/si.cpp \
 	$(ARES_PATH)/n64/rdram/rdram.cpp \

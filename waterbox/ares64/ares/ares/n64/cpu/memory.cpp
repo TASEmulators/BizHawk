@@ -75,8 +75,8 @@ auto CPU::userSegment64(u64 address) const -> Context::Segment {
 
 auto CPU::segment(u64 address) -> Context::Segment {
   auto segment = context.segment[address >> 29 & 7];
-//if(likely(context.bits == 32))
-  return (Context::Segment)segment;
+  if(likely(context.bits == 32))
+    return (Context::Segment)segment;
   switch(segment) {
   case Context::Segment::Kernel64:
     return kernelSegment64(address);
@@ -91,6 +91,7 @@ auto CPU::segment(u64 address) -> Context::Segment {
 auto CPU::devirtualize(u64 address) -> maybe<u64> {
   switch(context.segment[address >> 29 & 7]) {
   case Context::Segment::Unused:
+    addressException(address);
     exception.addressLoad();
     return nothing;
   case Context::Segment::Mapped:
@@ -108,6 +109,7 @@ auto CPU::fetch(u64 address) -> u32 {
   switch(segment(address)) {
   case Context::Segment::Unused:
     step(1);
+    addressException(address);
     exception.addressLoad();
     return 0;  //nop
   case Context::Segment::Mapped:
@@ -134,14 +136,22 @@ auto CPU::read(u64 address) -> maybe<u64> {
   if constexpr(Accuracy::CPU::AddressErrors) {
     if(unlikely(address & Size - 1)) {
       step(1);
+      addressException(address);
       exception.addressLoad();
       return nothing;
+    }
+    if (context.bits == 32 && unlikely((s32)address != address)) {
+      step(1);
+      addressException(address);
+      exception.addressLoad();
+      return nothing;      
     }
   }
 
   switch(segment(address)) {
   case Context::Segment::Unused:
     step(1);
+    addressException(address);
     exception.addressLoad();
     return nothing;
   case Context::Segment::Mapped:
@@ -168,6 +178,13 @@ auto CPU::write(u64 address, u64 data) -> bool {
   if constexpr(Accuracy::CPU::AddressErrors) {
     if(unlikely(address & Size - 1)) {
       step(1);
+      addressException(address);
+      exception.addressStore();
+      return false;
+    }
+    if (context.bits == 32 && unlikely((s32)address != address)) {
+      step(1);
+      addressException(address);
       exception.addressStore();
       return false;
     }
@@ -176,6 +193,7 @@ auto CPU::write(u64 address, u64 data) -> bool {
   switch(segment(address)) {
   case Context::Segment::Unused:
     step(1);
+    addressException(address);
     exception.addressStore();
     return false;
   case Context::Segment::Mapped:
@@ -195,4 +213,11 @@ auto CPU::write(u64 address, u64 data) -> bool {
   }
 
   unreachable;
+}
+
+auto CPU::addressException(u64 address) -> void {
+  scc.badVirtualAddress = address;
+  scc.context.badVirtualAddress = address >> 13;
+  scc.xcontext.badVirtualAddress = address >> 13;
+  scc.xcontext.region = address >> 62;
 }

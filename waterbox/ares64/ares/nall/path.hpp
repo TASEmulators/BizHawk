@@ -72,7 +72,24 @@ inline auto user() -> string {
 // /home/username/Desktop/
 // c:/users/username/Desktop/
 inline auto desktop(string_view name = {}) -> string {
-  return {user(), "Desktop/", name};
+  #if defined(PLATFORM_WINDOWS)
+  wchar_t path[PATH_MAX] = L"";
+  SHGetFolderPathW(nullptr, CSIDL_DESKTOP | CSIDL_FLAG_CREATE, nullptr, 0, path);
+  string result = (const char*)utf8_t(path);
+  result.transform("\\", "/");
+  #elif defined(PLATFORM_MACOS)
+  string result = {user(), "Desktop/"};
+  #else
+  string result;
+  if(const char *env = getenv("XDG_DESKTOP_DIR")) {
+    result = string(env);
+  } else {
+    result = {user(), "Desktop/"};
+  }
+  #endif
+  if(!result) result = ".";
+  if(!result.endsWith("/")) result.append("/");
+  return result.append(name);
 }
 
 //todo: MacOS uses the same location for userData() and userSettings()

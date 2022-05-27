@@ -43,39 +43,36 @@ struct RSP : Thread, Memory::IO<RSP> {
   } pipeline;
 
   //dma.cpp
-  auto dmaTransfer() -> void;
+  auto dmaTransferStart() -> void;
+  auto dmaTransferStep() -> void;
 
   //io.cpp
   auto readWord(u32 address) -> u32;
   auto writeWord(u32 address, u32 data) -> void;
+  auto ioRead(u32 address) -> u32;
+  auto ioWrite(u32 address, u32 data) -> void;
 
   //serialization.cpp
   auto serialize(serializer&) -> void;
 
   struct DMA {
-    n1  pbusRegion;
-    n12 pbusAddress;
-    n24 dramAddress;
-
-    struct Transfer {
-      n12 length;
-      n12 skip;
-      n8  count;
-    } read, write;
-
-    struct Request {
-      //serialization.cpp
-      auto serialize(serializer&) -> void;
-
-      enum class Type : u32 { Read, Write } type;
+    struct Regs {    
       n1  pbusRegion;
       n12 pbusAddress;
       n24 dramAddress;
-      n16 length;
-      n16 skip;
-      n16 count;
-    };
-    nall::queue<Request[2]> requests;
+      n12 length;
+      n12 skip;
+      n8  count;
+      
+      auto serialize(serializer&) -> void;
+    } pending, current;
+
+    struct Status {
+      n1 read;
+      n1 write;
+
+      auto any() -> n1 { return read | write; }
+    } busy, full;
   } dma;
 
   struct Status : Memory::IO<Status> {
@@ -111,7 +108,7 @@ struct RSP : Thread, Memory::IO<RSP> {
     };
 
     r32 r[32];
-    u32 pc;
+    u12 pc;
   } ipu;
 
   struct Branch {
@@ -119,10 +116,10 @@ struct RSP : Thread, Memory::IO<RSP> {
 
     auto inDelaySlot() const -> bool { return state == DelaySlot; }
     auto reset() -> void { state = Step; }
-    auto take(u32 address) -> void { state = Take; pc = address; }
+    auto take(u12 address) -> void { state = Take; pc = address; }
     auto delaySlot() -> void { state = DelaySlot; }
 
-    u64 pc = 0;
+    u12 pc = 0;
     u32 state = Step;
   } branch;
 
@@ -150,6 +147,7 @@ struct RSP : Thread, Memory::IO<RSP> {
   auto LHU(r32& rt, cr32& rs, s16 imm) -> void;
   auto LUI(r32& rt, u16 imm) -> void;
   auto LW(r32& rt, cr32& rs, s16 imm) -> void;
+  auto LWU(r32& rt, cr32& rs, s16 imm) -> void;
   auto NOR(r32& rd, cr32& rs, cr32& rt) -> void;
   auto OR(r32& rd, cr32& rs, cr32& rt) -> void;
   auto ORI(r32& rt, cr32& rs, u16 imm) -> void;
@@ -308,6 +306,7 @@ struct RSP : Thread, Memory::IO<RSP> {
   template<u8 e> auto VSUB(r128& vd, cr128& vs, cr128& vt) -> void;
   template<u8 e> auto VSUBC(r128& vd, cr128& vs, cr128& vt) -> void;
   template<u8 e> auto VXOR(r128& rd, cr128& vs, cr128& vt) -> void;
+  template<u8 e> auto VZERO(r128& rd, cr128& vs, cr128& vt) -> void;
 
 //unserialized:
   u16 reciprocals[512];

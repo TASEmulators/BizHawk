@@ -1,5 +1,40 @@
 This file is the short summary of the API changes:
 
+21.04.2022 - Non-backward compatible
+    Floating point comparison types are renamed.
+
+01.03.2022 - Non-backward compatible
+    Remove SLJIT_NEG. Instead substraction from
+    immedate 0 is preferred.
+
+31.01.2022 - Non-backward compatible
+    The SLJIT_CURRENT_FLAGS_ADD_SUB option is
+    split into SLJIT_CURRENT_FLAGS_ADD and
+    SLJIT_CURRENT_FLAGS_SUB.
+
+27.02.2022 - Non-backward compatible
+    The SLJIT_F64_ALIGNMENT option is removed.
+
+17.02.2022 - Non-backward compatible
+    Many floating point operations may destroy flags.
+
+06.02.2022 - Non-backward compatible
+    The SLJIT_FUNC_OFFSET macro is renamed to SLJIT_FUNC_ADDR.
+    Furthermore a new SLJIT_FUNC_UADDR macro is added which
+    returns with an unsigned address.
+
+01.02.2022 - Non-backward compatible
+    Rework function argument list descriptor macros used by
+    sljit_emit_enter, sljit_set_context, sljit_emit_call,
+    and sljit_emit_icall functions.
+
+25.01.2022 - Non-backward compatible
+    Change SLJIT_I32_OP and SLJIT_F32_OP to SLJIT_32.
+
+24.01.2022 - Non-backward compatible
+    The SLJIT_UNUSED value is replaced by sljit_emit_op2u and
+    sljit_emit_return_void functions.
+
 27.05.2021 - Non-backward compatible
     The comparison types with the 32 suffix are removed from the
     project. The sljit_set_current_flags has a new flag which

@@ -163,7 +163,7 @@ inline auto spinloop() -> void {
   usleep(1);
 }
 
-#if defined(PLATFORM_MACOS)
+#if defined(PLATFORM_MACOS) && !defined(MSG_NOSIGNAL)
   #define MSG_NOSIGNAL 0
 #endif
 

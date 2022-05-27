@@ -6,6 +6,7 @@ auto AI::serialize(serializer& s) -> void {
 
   s(io.dmaEnable);
   s(io.dmaAddress);
+  s(io.dmaAddressCarry);
   s(io.dmaLength);
   s(io.dmaCount);
   s(io.dacRate);
