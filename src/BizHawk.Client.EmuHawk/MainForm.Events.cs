@@ -1726,24 +1726,28 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void ColecoHawkSetSkipBIOSIntro(bool newValue, ISettingsAdapter settable)
+		{
+			var ss = (ColecoVision.ColecoSyncSettings) settable.GetSyncSettings();
+			ss.SkipBiosIntro = newValue;
+			settable.PutCoreSyncSettings(ss);
+		}
+
 		private void ColecoSkipBiosMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is ColecoVision coleco)
-			{
-				var ss = coleco.GetSyncSettings();
-				ss.SkipBiosIntro ^= true;
-				GetSettingsAdapterForLoadedCore<ColecoVision>().PutCoreSyncSettings(ss);
-			}
+			if (Emulator is ColecoVision) ColecoHawkSetSkipBIOSIntro(!((ToolStripMenuItem) sender).Checked, GetSettingsAdapterForLoadedCore<ColecoVision>());
+		}
+
+		private void ColecoHawkSetSuperGameModule(bool newValue, ISettingsAdapter settable)
+		{
+			var ss = (ColecoVision.ColecoSyncSettings) settable.GetSyncSettings();
+			ss.UseSGM = newValue;
+			settable.PutCoreSyncSettings(ss);
 		}
 
 		private void ColecoUseSGMMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is ColecoVision coleco)
-			{
-				var ss = coleco.GetSyncSettings();
-				ss.UseSGM ^= true;
-				GetSettingsAdapterForLoadedCore<ColecoVision>().PutCoreSyncSettings(ss);
-			}
+			if (Emulator is ColecoVision) ColecoHawkSetSuperGameModule(!((ToolStripMenuItem) sender).Checked, GetSettingsAdapterForLoadedCore<ColecoVision>());
 		}
 
 		private DialogResult OpenColecoHawkGamepadSettingsDialog(ISettingsAdapter settable)
@@ -1812,21 +1816,28 @@ namespace BizHawk.Client.EmuHawk
 			Config.N64UseCircularAnalogConstraint ^= true;
 		}
 
-		private void MupenStyleLagMenuItem_Click(object sender, EventArgs e)
+		private void Mupen64PlusSetNonVILagFrames(bool newValue, ISettingsAdapter settable)
 		{
-			var n64 = (N64)Emulator;
-			var s = n64.GetSettings();
-			s.UseMupenStyleLag ^= true;
-			n64.PutSettings(s);
+			var s = (N64Settings) settable.GetSettings();
+			s.UseMupenStyleLag = newValue;
+			settable.PutCoreSettings(s);
+		}
+
+		private void MupenStyleLagMenuItem_Click(object sender, EventArgs e)
+			=> Mupen64PlusSetNonVILagFrames(!((ToolStripMenuItem) sender).Checked, GetSettingsAdapterForLoadedCore<N64>());
+
+		private void Mupen64PlusSetUseExpansionSlot(bool newValue, ISettingsAdapter settable)
+		{
+			var ss = (N64SyncSettings) settable.GetSettings();
+			ss.DisableExpansionSlot = !newValue;
+			settable.PutCoreSettings(ss);
 		}
 
 		private void N64ExpansionSlotMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is N64 n64)
+			if (Emulator is N64)
 			{
-				var ss = n64.GetSyncSettings();
-				ss.DisableExpansionSlot ^= true;
-				n64.PutSyncSettings(ss);
+				Mupen64PlusSetUseExpansionSlot(!((ToolStripMenuItem) sender).Checked, GetSettingsAdapterForLoadedCore<N64>());
 				FlagNeedsReboot();
 			}
 		}
