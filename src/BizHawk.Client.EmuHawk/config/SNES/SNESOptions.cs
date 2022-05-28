@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
+
+using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 
 namespace BizHawk.Client.EmuHawk
@@ -14,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _suppressDoubleSize;
 		private bool _userDoubleSizeOption;
 
-		public static DialogResult DoSettingsDialog(IMainFormForConfig mainForm, LibsnesCore bsnes)
+		public static DialogResult DoSettingsDialog(IDialogParent dialogParent, IMainFormForConfig mainForm, LibsnesCore bsnes)
 		{
 			var s = bsnes.GetSettings();
 			var ss = bsnes.GetSyncSettings();
@@ -33,7 +35,7 @@ namespace BizHawk.Client.EmuHawk
 				ShowBg4 = s.ShowBG4_0
 			};
 
-			var result = mainForm.ShowDialogAsChild(dlg);
+			var result = dialogParent.ShowDialogAsChild(dlg);
 			if (result == DialogResult.OK)
 			{
 				s.AlwaysDoubleSize = dlg.AlwaysDoubleSize;

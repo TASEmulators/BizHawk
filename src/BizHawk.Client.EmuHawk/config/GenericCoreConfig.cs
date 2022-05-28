@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Windows.Forms;
 
+using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -71,7 +72,7 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-		public static DialogResult DoDialog(IEmulator emulator, IMainFormForConfig owner, string title, bool isMovieActive)
+		public static DialogResult DoDialog(IEmulator emulator, IDialogParent owner, string title, bool isMovieActive)
 		{
 			if (emulator is Emulation.Cores.Waterbox.NymaCore core)
 			{
@@ -109,7 +110,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public static DialogResult DoDialog(
-			IMainFormForConfig owner,
+			IDialogParent owner,
 			string title,
 			bool isMovieActive,
 			bool hideSettings,

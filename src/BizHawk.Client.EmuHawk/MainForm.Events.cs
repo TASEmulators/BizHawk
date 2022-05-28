@@ -1348,7 +1348,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private DialogResult OpenNesHawkGraphicsSettingsDialog(NES.NESSettings s)
 		{
-			using NESGraphicsConfig form = new(this, Config, s);
+			using NESGraphicsConfig form = new(Config, this, this, s);
 			return this.ShowDialogWithTempMute(form);
 		}
 
@@ -1465,7 +1465,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private DialogResult OpenNesHawkAdvancedSettingsDialog(NES.NESSyncSettings ss, bool hasMapperProperties)
 		{
-			using NESSyncSettingsForm form = new(this, ss, hasMapperProperties: hasMapperProperties);
+			using NESSyncSettingsForm form = new(this, this, ss, hasMapperProperties: hasMapperProperties);
 			return this.ShowDialogWithTempMute(form);
 		}
 
@@ -1575,7 +1575,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private DialogResult OpenGambatteSettingsDialog(Gameboy gambatte)
-			=> GBPrefs.DoGBPrefsDialog(this, Config, Game, MovieSession, gambatte);
+			=> GBPrefs.DoGBPrefsDialog(Config, this, Game, this, MovieSession, gambatte);
 
 		private DialogResult OpenGBHawkSettingsDialog()
 			=> OpenGenericCoreConfig("Gameboy Settings");
@@ -1596,7 +1596,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private DialogResult OpenSameBoyPaletteSettingsDialog(Sameboy.SameboySettings s)
 		{
-			using SameBoyColorChooserForm form = new(this, Game, Config, s);
+			using SameBoyColorChooserForm form = new(Config, this, Game, this, s);
 			return this.ShowDialogWithTempMute(form);
 		}
 
@@ -1640,7 +1640,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private DialogResult OpenOctoshockSettingsDialog(Octoshock octoshock)
-			=> PSXOptions.DoSettingsDialog(this, Config, octoshock);
+			=> PSXOptions.DoSettingsDialog(Config, this, this, octoshock);
 
 		private void PsxOptionsMenuItem_Click(object sender, EventArgs e)
 		{
@@ -1700,10 +1700,10 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private DialogResult OpenOldBSNESSettingsDialog(LibsnesCore bsnes)
-			=> SNESOptions.DoSettingsDialog(this, bsnes);
+			=> SNESOptions.DoSettingsDialog(this, this, bsnes);
 
 		private DialogResult OpenBSNESSettingsDialog(BsnesCore bsnes)
-			=> BSNESOptions.DoSettingsDialog(this, bsnes);
+			=> BSNESOptions.DoSettingsDialog(this, this, bsnes);
 
 		private void SnesOptionsMenuItem_Click(object sender, EventArgs e)
 		{
@@ -1832,7 +1832,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private DialogResult OpenGambatteLinkSettingsDialog(GambatteLink gambatteLink)
-			=> GBLPrefs.DoGBLPrefsDialog(this, Config, Game, MovieSession, gambatteLink);
+			=> GBLPrefs.DoGBLPrefsDialog(Config, this, Game, this, MovieSession, gambatteLink);
 
 		private void GblSettingsMenuItem_Click(object sender, EventArgs e)
 		{
@@ -1966,7 +1966,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private DialogResult OpenZXHawkGamepadSettingsDialog(ZXSpectrum.ZXSpectrumSyncSettings ss)
 		{
-			using ZxSpectrumJoystickSettings form = new(this, ss);
+			using ZxSpectrumJoystickSettings form = new(this, this, ss);
 			return this.ShowDialogWithTempMute(form);
 		}
 

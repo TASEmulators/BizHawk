@@ -7,18 +7,22 @@ using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class ZxSpectrumJoystickSettings : Form
+	public partial class ZxSpectrumJoystickSettings : Form, IDialogParent
 	{
 		private readonly IMainFormForConfig _mainForm;
 		private readonly ZXSpectrum.ZXSpectrumSyncSettings _syncSettings;
 		private string[] _possibleControllers;
 
+		public IDialogController DialogController { get; }
+
 		public ZxSpectrumJoystickSettings(
+			IDialogController dialogController,
 			IMainFormForConfig mainForm,
 			ZXSpectrum.ZXSpectrumSyncSettings syncSettings)
 		{
 			_mainForm = mainForm;
 			_syncSettings = syncSettings;
+			DialogController = dialogController;
 			InitializeComponent();
 			Icon = Properties.Resources.GameControllerIcon;
 		}
@@ -110,7 +114,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					_mainForm.DialogController.ShowMessageBox("Invalid joystick configuration. \nDuplicates have automatically been changed to NULL.\n\nPlease review the configuration");
+					DialogController.ShowMessageBox("Invalid joystick configuration. \nDuplicates have automatically been changed to NULL.\n\nPlease review the configuration");
 				}
 			}
 			else
