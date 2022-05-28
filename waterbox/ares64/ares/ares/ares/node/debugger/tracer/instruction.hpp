@@ -28,9 +28,9 @@ struct Instruction : Tracer {
   }
 
   auto address(u64 address) -> bool {
-    address &= (1ull << _addressBits) - 1;  //mask upper bits of address
+    address &= (u128(1) << _addressBits) - 1;  //mask upper bits of address
     _address = address;
-    address >>= _addressMask;  //clip unneeded alignment bits (to reduce _masks size)
+    /*address >>= _addressMask;  //clip unneeded alignment bits (to reduce _masks size)
 
     if(_mask && updateMasks()) {
       if(_masks[address >> 3] & 1 << (address & 7)) return false;  //do not trace twice
@@ -48,7 +48,7 @@ struct Instruction : Tracer {
         _history[index] = _history[index + 1];
       }
       _history.last() = _address;
-    }
+    }*/
 
     return true;
   }
@@ -56,11 +56,11 @@ struct Instruction : Tracer {
   //mark an already-executed address as not executed yet for trace masking.
   //call when writing to executable RAM to support self-modifying code.
   auto invalidate(u64 address) -> void {
-    if(unlikely(_mask && updateMasks())) {
-      address &= (1ull << _addressBits) - 1;
+    /*if(unlikely(_mask && updateMasks())) {
+      address &= (u128(1) << _addressBits) - 1;
       address >>= _addressMask;
       _masks[address >> 3] &= ~(1 << (address & 7));
-    }
+    }*/
   }
 
   auto notify(const string& instruction, const string& context, const string& extra = {}) -> void {
@@ -72,7 +72,6 @@ struct Instruction : Tracer {
       );
       _omitted = 0;
     }
-
     string output{
       _component, "  ",
       hex(_address, _addressBits + 3 >> 2), "  ",

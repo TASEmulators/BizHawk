@@ -314,11 +314,12 @@ auto RSP::SFV(cr128& vt, cr32& rs, s8 imm) -> void {
 template<u8 e>
 auto RSP::SHV(cr128& vt, cr32& rs, s8 imm) -> void {
   auto address = rs.u32 + imm * 16;
+  auto index = address & 7;
+  address &= ~7;
   for(u32 offset = 0; offset < 8; offset++) {
     auto byte = e + offset * 2;
     auto value = vt.byte(byte + 0 & 15) << 1 | vt.byte(byte + 1 & 15) >> 7;
-    dmem.write<Byte>(address, value);
-    address += 2;
+    dmem.write<Byte>(address + (index + offset * 2 & 15), value);
   }
 }
 
@@ -411,8 +412,8 @@ auto RSP::SWV(cr128& vt, cr32& rs, s8 imm) -> void {
   auto address = rs.u32 + imm * 16;
   auto start = e;
   auto end = start + 16;
-  auto base = address & 15;
-  address &= ~15;
+  auto base = address & 7;
+  address &= ~7;
   for(u32 offset = start; offset < end; offset++) {
     dmem.write<Byte>(address + (base++ & 15), vt.byte(offset & 15));
   }

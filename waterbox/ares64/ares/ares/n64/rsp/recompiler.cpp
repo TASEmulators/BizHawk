@@ -1,14 +1,14 @@
 auto RSP::Recompiler::pool() -> Pool* {
   if(context) return context;
 
-  u32 hashcode = 0;
+  nall::Hash::CRC32 hashcode;
   for(u32 offset : range(4096)) {
-    hashcode = (hashcode << 5) + hashcode + self.imem.read<Byte>(offset);
+    hashcode.input(self.imem.read<Byte>(offset));
   }
 
   PoolHashPair pair;
   pair.pool = (Pool*)allocator.acquire();
-  pair.hashcode = hashcode;
+  pair.hashcode = hashcode.value();
   if(auto result = pools.find(pair)) {
     return context = result->pool;
   }
