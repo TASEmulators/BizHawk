@@ -40,6 +40,7 @@ namespace BizHawk.Emulation.Cores
 				Name = coreAttr.CoreName;
 				Type = type;
 				CTor = ctor;
+				LinkCountHack = consAttr.LinkCountHack;
 				Priority = consAttr.Priority;
 				CoreAttr = coreAttr;
 
@@ -81,7 +82,12 @@ namespace BizHawk.Emulation.Cores
 			public string Name { get; }
 			public Type Type { get; }
 			public ConstructorInfo CTor { get; }
+
+			/// <summary>see <see cref="CoreConstructorAttribute.LinkCountHack"/></summary>
+			public int LinkCountHack { get; }
+
 			public CorePriority Priority { get; }
+
 			public CoreAttribute CoreAttr { get; }
 			public Type SettingsType { get; } = typeof(object);
 			public Type SyncSettingsType { get; } = typeof(object);
@@ -236,6 +242,10 @@ namespace BizHawk.Emulation.Cores
 		{
 			System = system;
 		}
+
+		/// <summary>it might be a hack but it works TODO does it tho</summary>
+		public int LinkCountHack { get; set; } = 1;
+
 		public CorePriority Priority { get; set; }
 	}
 

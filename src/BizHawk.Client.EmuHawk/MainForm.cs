@@ -51,10 +51,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			SetWindowText();
 
+			var groupLabelGBL = $"{VSystemID.Raw.GBL} (GB 2x/3x/4x)";
 			foreach (var (appliesTo, coreNames) in Config.CorePickerUIData)
 			{
 				var groupLabel = appliesTo[0];
-				var submenu = new ToolStripMenuItem { Text = groupLabel };
+				var submenu = new ToolStripMenuItem { Text = groupLabel is VSystemID.Raw.GBL ? groupLabelGBL : groupLabel };
 				void ClickHandler(object clickSender, EventArgs clickArgs)
 				{
 					var coreName = ((ToolStripMenuItem) clickSender).Text;

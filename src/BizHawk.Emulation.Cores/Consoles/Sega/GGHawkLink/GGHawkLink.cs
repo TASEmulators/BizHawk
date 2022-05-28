@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 		private bool do_r_next = false;
 
-		[CoreConstructor(VSystemID.Raw.GGL)]
+		[CoreConstructor(VSystemID.Raw.GGL, LinkCountHack = 2)]
 		public GGHawkLink(CoreLoadParameters<GGLinkSettings, GGLinkSyncSettings> lp)
 		{
 			if (lp.Roms.Count != 2)

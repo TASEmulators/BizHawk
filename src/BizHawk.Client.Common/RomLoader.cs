@@ -361,7 +361,7 @@ namespace BizHawk.Client.Common
 			nextEmulator = MakeCoreFromCoreInventory(cip, forcedCoreName);
 		}
 
-		private IEmulator MakeCoreFromCoreInventory(CoreInventoryParameters cip, string forcedCoreName = null)
+		private IEmulator MakeCoreFromCoreInventory(CoreInventoryParameters cip, string forcedCoreName = null, int requestedLinkCount = 1)
 		{
 			IReadOnlyCollection<CoreInventory.Core> cores;
 			if (forcedCoreName != null)
@@ -376,17 +376,12 @@ namespace BizHawk.Client.Common
 				cores = CoreInventory.Instance.GetCores(cip.Game.System)
 					.OrderBy(c =>
 					{
-						if (c.Name == preferredCore)
-						{
-							return (int)CorePriority.UserPreference;
-						}
-
-						if (string.Equals(c.Name, dbForcedCoreName, StringComparison.InvariantCultureIgnoreCase))
-						{
-							return (int)CorePriority.GameDbPreference;
-						}
-
-						return (int)c.Priority;
+						CorePriority nameCheck;
+						if (c.Name == preferredCore) nameCheck = CorePriority.UserPreference;
+						else if (string.Equals(c.Name, dbForcedCoreName, StringComparison.InvariantCultureIgnoreCase)) nameCheck = CorePriority.GameDbPreference;
+						else nameCheck = c.Priority;
+						return (int) nameCheck
+							+ (c.LinkCountHack == requestedLinkCount ? 0 : 10); // deprioritise cores which don't emulate the right number of linked consoles
 					})
 					.ToList();
 				if (cores.Count == 0) throw new InvalidOperationException("No core was found to try on the game");
@@ -554,7 +549,7 @@ namespace BizHawk.Client.Common
 						})
 						.ToList(),
 				};
-				nextEmulator = MakeCoreFromCoreInventory(cip, forcedCoreName);
+				nextEmulator = MakeCoreFromCoreInventory(cip, forcedCoreName, requestedLinkCount: cip.Roms.Count);
 				return true;
 			}
 			catch (Exception ex)
