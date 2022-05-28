@@ -48,12 +48,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool SyncSettingsChanged => gbPrefControl1.SyncSettingsChanged || gbPrefControl2.SyncSettingsChanged || gbPrefControl3.SyncSettingsChanged || gbPrefControl4.SyncSettingsChanged;
 
-		public static DialogResult DoGBLPrefsDialog(IMainFormForConfig mainForm, Config config, IGameInfo game, IMovieSession movieSession, GambatteLink gambatte)
+		public static DialogResult DoGBLPrefsDialog(
+			Config config,
+			IDialogParent dialogParent,
+			IGameInfo game,
+			IMainFormForConfig mainForm,
+			IMovieSession movieSession,
+			GambatteLink gambatte)
 		{
 			var s = gambatte.GetSettings();
 			var ss = gambatte.GetSyncSettings();
 
-			using var dlg = new GBLPrefs(mainForm.DialogController, config, game, movieSession);
+			using var dlg = new GBLPrefs(dialogParent.DialogController, config, game, movieSession);
 			dlg.PutSettings(s, ss);
 
 			dlg.gbPrefControl1.ColorGameBoy = gambatte.IsCGBMode(0);
@@ -61,7 +67,7 @@ namespace BizHawk.Client.EmuHawk
 			dlg.gbPrefControl3.ColorGameBoy = gambatte.IsCGBMode(2);
 			dlg.gbPrefControl4.ColorGameBoy = gambatte.IsCGBMode(3);
 
-			var result = mainForm.ShowDialogAsChild(dlg);
+			var result = dialogParent.ShowDialogAsChild(dlg);
 			if (result == DialogResult.OK)
 			{
 				dlg.GetSettings(out s, out ss);

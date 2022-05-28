@@ -9,7 +9,7 @@ using BizHawk.Emulation.Cores.Nintendo.NES;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class NESGraphicsConfig : Form
+	public partial class NESGraphicsConfig : Form, IDialogParent
 	{
 		// TODO:
 		// Allow selection of palette file from archive
@@ -20,14 +20,18 @@ namespace BizHawk.Client.EmuHawk
 		private NES.NESSettings _settings;
 		//private Bitmap _bmp;
 
+		public IDialogController DialogController { get; }
+
 		public NESGraphicsConfig(
-			IMainFormForConfig mainForm,
 			Config config,
+			IDialogController dialogController,
+			IMainFormForConfig mainForm,
 			NES.NESSettings settings)
 		{
 			_mainForm = mainForm;
 			_config = config;
 			_settings = settings;
+			DialogController = dialogController;
 			InitializeComponent();
 		}
 
@@ -108,7 +112,7 @@ namespace BizHawk.Client.EmuHawk
 						var data = Palettes.Load_FCEUX_Palette(palette.ReadAllBytes());
 						if (showMsg)
 						{
-							_mainForm.DialogController.AddOnScreenMessage($"Palette file loaded: {palette.Name}");
+							DialogController.AddOnScreenMessage($"Palette file loaded: {palette.Name}");
 						}
 
 						return data;
@@ -120,7 +124,7 @@ namespace BizHawk.Client.EmuHawk
 				// no filename: interpret this as "reset to default"
 				if (showMsg)
 				{
-					_mainForm.DialogController.AddOnScreenMessage("Standard Palette set");
+					DialogController.AddOnScreenMessage("Standard Palette set");
 				}
 
 				return (byte[,])Palettes.QuickNESPalette.Clone();

@@ -10,19 +10,27 @@ using BizHawk.Emulation.Cores.Nintendo.Sameboy;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class SameBoyColorChooserForm : Form
+	public partial class SameBoyColorChooserForm : Form, IDialogParent
 	{
 		private readonly IMainFormForConfig _mainForm;
 		private readonly IGameInfo _game;
 		private readonly Config _config;
 		private readonly Sameboy.SameboySettings _settings;
 
-		public SameBoyColorChooserForm(IMainFormForConfig mainForm, IGameInfo game, Config config, Sameboy.SameboySettings settings)
+		public IDialogController DialogController { get; }
+
+		public SameBoyColorChooserForm(
+			Config config,
+			IDialogController dialogController,
+			IGameInfo game,
+			IMainFormForConfig mainForm,
+			Sameboy.SameboySettings settings)
 		{
 			_mainForm = mainForm;
 			_game = game;
 			_config = config;
 			_settings = settings;
+			DialogController = dialogController;
 			InitializeComponent();
 			SetAllColors(_settings.GetCustomPalette());
 		}
@@ -228,7 +236,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (alert)
 				{
-					_mainForm.ModalMessageBox("Error loading .pal file!");
+					this.ModalMessageBox("Error loading .pal file!");
 				}
 			}
 		}
@@ -249,7 +257,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch
 			{
-				_mainForm.ModalMessageBox("Error saving .pal file!");
+				this.ModalMessageBox("Error saving .pal file!");
 			}
 		}
 

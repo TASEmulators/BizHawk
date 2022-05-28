@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
+
+using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.BSNES;
 
 namespace BizHawk.Client.EmuHawk
@@ -11,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		public static DialogResult DoSettingsDialog(IMainFormForConfig mainForm, BsnesCore bsnes)
+		public static DialogResult DoSettingsDialog(IDialogParent dialogParent, IMainFormForConfig mainForm, BsnesCore bsnes)
 		{
 			var s = bsnes.GetSettings();
 			var ss = bsnes.GetSyncSettings();
@@ -40,7 +42,7 @@ namespace BizHawk.Client.EmuHawk
 				ShowBg4_1 = s.ShowBG4_1
 			};
 
-			DialogResult result = mainForm.ShowDialogAsChild(dlg);
+			var result = dialogParent.ShowDialogAsChild(dlg);
 			if (result == DialogResult.OK)
 			{
 				s.AlwaysDoubleSize = dlg.AlwaysDoubleSize;

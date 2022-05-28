@@ -18,13 +18,14 @@ namespace BizHawk.Client.EmuHawk
 		public IDialogController DialogController { get; }
 
 		public NESSyncSettingsForm(
+			IDialogController dialogController,
 			IMainFormForConfig mainForm,
 			NES.NESSyncSettings syncSettings,
 			bool hasMapperProperties)
 		{
 			_mainForm = mainForm;
 			_syncSettings = syncSettings;
-			DialogController = mainForm.DialogController;
+			DialogController = dialogController;
 			InitializeComponent();
 			HelpBtn.Image = Properties.Resources.Help;
 
