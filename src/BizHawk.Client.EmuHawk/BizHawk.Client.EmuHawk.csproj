@@ -86,9 +86,6 @@
 		<Compile Update="config/AmstradCPC/AmstradCPCNonSyncSettings.cs" SubType="Form" />
 		<Compile Update="config/AmstradCPC/AmstradCPCNonSyncSettings.Designer.cs" DependentUpon="AmstradCPCNonSyncSettings.cs" />
 		<EmbeddedResource Update="config/AmstradCPC/AmstradCPCNonSyncSettings.resx" DependentUpon="AmstradCPCNonSyncSettings.cs" />
-		<Compile Update="config/AmstradCPC/AmstradCPCPokeMemory.cs" SubType="Form" />
-		<Compile Update="config/AmstradCPC/AmstradCPCPokeMemory.Designer.cs" DependentUpon="AmstradCPCPokeMemory.cs" />
-		<EmbeddedResource Update="config/AmstradCPC/AmstradCPCPokeMemory.resx" DependentUpon="AmstradCPCPokeMemory.cs" />
 		<Compile Update="config/AnalogRangeConfigControl.cs" SubType="UserControl" />
 		<Compile Update="config/AnalogRangeConfigControl.Designer.cs" DependentUpon="AnalogRangeConfigControl.cs" />
 		<EmbeddedResource Update="config/AnalogRangeConfigControl.resx" DependentUpon="AnalogRangeConfigControl.cs" />

@@ -2014,15 +2014,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void AmstradCpcPokeMemoryMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Emulator is AmstradCPC cpc)
-			{
-				using var form = new AmstradCpcPokeMemory(cpc);
-				form.ShowDialog();
-			}
-		}
-
 		private void AmstradCpcMediaMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			if (Emulator is AmstradCPC cpc)
