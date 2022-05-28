@@ -127,14 +127,14 @@ namespace BizHawk.Client.EmuHawk
 			return owner.ShowDialogAsChild(dlg);
 		}
 
-		public static void DoDialogFor(
+		public static DialogResult DoDialogFor(
 			IDialogParent owner,
 			ISettingsAdapter settable,
 			string title,
 			bool isMovieActive)
 		{
 			using GenericCoreConfig dlg = new(settable, isMovieActive) { Text = title };
-			owner.ShowDialogAsChild(dlg);
+			return owner.ShowDialogAsChild(dlg);
 		}
 
 		private void PropertyGrid2_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)

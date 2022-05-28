@@ -1609,10 +1609,10 @@ namespace BizHawk.Client.EmuHawk
 			=> GBPrefs.DoGBPrefsDialog(Config, this, Game, MovieSession, settable, gambatte);
 
 		private DialogResult OpenGBHawkSettingsDialog()
-			=> OpenGenericCoreConfig("Gameboy Settings");
+			=> OpenGenericCoreConfigFor<GBHawk>("Gameboy Settings");
 
 		private DialogResult OpenSameBoySettingsDialog()
-			=> OpenGenericCoreConfig("Gameboy Settings");
+			=> OpenGenericCoreConfigFor<Sameboy>("Gameboy Settings");
 
 		private void GbCoreSettingsMenuItem_Click(object sender, EventArgs e)
 		{
@@ -1885,7 +1885,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 		}
 
-		private void OpenGenericCoreConfigFor<T>(string title)
+		private DialogResult OpenGenericCoreConfigFor<T>(string title)
 			where T : IEmulator
 			=> GenericCoreConfig.DoDialogFor(this, GetSettingsAdapterFor<T>(), title, isMovieActive: MovieSession.Movie.IsActive());
 
@@ -1899,7 +1899,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private DialogResult OpenVirtuSettingsDialog()
-			=> OpenGenericCoreConfig("Apple II Settings");
+			=> OpenGenericCoreConfigFor<AppleII>("Apple II Settings");
 
 		private void AppleIISettingsMenuItem_Click(object sender, EventArgs e)
 		{
@@ -1979,7 +1979,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private DialogResult OpenC64HawkSettingsDialog()
-			=> OpenGenericCoreConfig("C64 Settings");
+			=> OpenGenericCoreConfigFor<C64>("C64 Settings");
 
 		private void C64SettingsMenuItem_Click(object sender, EventArgs e)
 		{
@@ -2784,7 +2784,6 @@ namespace BizHawk.Client.EmuHawk
 			// C64Hawk
 			var c64HawkSettingsItem = CreateSettingsItem("Settings...", (_, _) => OpenC64HawkSettingsDialog());
 			var c64HawkSubmenu = CreateCoreSubmenu(VSystemCategory.PCs, CoreNames.C64Hawk, c64HawkSettingsItem);
-			c64HawkSubmenu.DropDownOpened += (_, _) => c64HawkSettingsItem.Enabled = Emulator is C64;
 			items.Add(c64HawkSubmenu);
 
 			// ChannelFHawk
@@ -2849,7 +2848,6 @@ namespace BizHawk.Client.EmuHawk
 			// GBHawk
 			var gbHawkSettingsItem = CreateSettingsItem("Settings...", (_, _) => OpenGBHawkSettingsDialog());
 			var gbHawkSubmenu = CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.GbHawk, gbHawkSettingsItem);
-			gbHawkSubmenu.DropDownOpened += (_, _) => gbHawkSettingsItem.Enabled = Emulator is GBHawk;
 			items.Add(gbHawkSubmenu);
 
 			// GBHawkLink
@@ -3007,7 +3005,6 @@ namespace BizHawk.Client.EmuHawk
 				CoreNames.Sameboy,
 				sameBoySettingsItem,
 				CreateSettingsItem("Choose Custom Palette...", (_, _) => OpenSameBoyPaletteSettingsDialog(GetSettingsAdapterFor<Sameboy>())));
-			sameBoySubmenu.DropDownOpened += (_, _) => sameBoySettingsItem.Enabled = Emulator is Sameboy;
 			items.Add(sameBoySubmenu);
 
 			// Saturnus
@@ -3072,7 +3069,6 @@ namespace BizHawk.Client.EmuHawk
 			// Virtu
 			var virtuSettingsItem = CreateSettingsItem("Settings...", (_, _) => OpenVirtuSettingsDialog());
 			var virtuSubmenu = CreateCoreSubmenu(VSystemCategory.PCs, CoreNames.Virtu, virtuSettingsItem);
-			virtuSubmenu.DropDownOpened += (_, _) => virtuSettingsItem.Enabled = Emulator is AppleII;
 			items.Add(virtuSubmenu);
 
 			// Virtual Boyee
