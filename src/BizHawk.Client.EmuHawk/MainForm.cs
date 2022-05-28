@@ -2429,7 +2429,13 @@ namespace BizHawk.Client.EmuHawk
 			if (dirty.HasFlag(PutSettingsDirtyBits.RebootCore)) FlagNeedsReboot();
 		}
 
-		public SettingsAdapter GetSettingsAdapterForLoadedCore<T>()
+		public ISettingsAdapter GetSettingsAdapterFor<T>()
+			where T : IEmulator
+			=> Emulator is T
+				? GetSettingsAdapterForLoadedCoreUntyped()
+				: new ConfigSettingsAdapter<T>(Config);
+
+		public ISettingsAdapter GetSettingsAdapterForLoadedCore<T>()
 			where T : IEmulator
 		{
 			if (Emulator is not T) throw new InvalidOperationException();

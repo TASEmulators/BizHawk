@@ -966,7 +966,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ProfilesMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new ProfileConfig(this, Emulator, Config);
+			using var form = new ProfileConfig(Config, this);
 			if (!form.ShowDialog().IsOk()) return;
 			AddOnScreenMessage("Profile settings saved");
 
@@ -1779,7 +1779,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private DialogResult OpenMupen64PlusGraphicsSettingsDialog()
 		{
-			using N64VideoPluginConfig form = new(this, Config, Emulator);
+			using N64VideoPluginConfig form = new(this);
 			return this.ShowDialogWithTempMute(form);
 		}
 
@@ -2542,7 +2542,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// We do not check if the user is actually setting a profile here.
 			// This is intentional.
-			using var profileForm = new ProfileConfig(this, Emulator, Config);
+			using var profileForm = new ProfileConfig(Config, this);
 			profileForm.ShowDialog();
 			Config.FirstBoot = false;
 			ProfileFirstBootLabel.Visible = false;

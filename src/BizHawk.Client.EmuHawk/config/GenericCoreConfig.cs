@@ -8,7 +8,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class GenericCoreConfig : Form
 	{
-		private readonly SettingsAdapter _settable;
+		private readonly ISettingsAdapter _settable;
 
 		private object _s;
 		private object _ss;
@@ -16,14 +16,14 @@ namespace BizHawk.Client.EmuHawk
 		private bool _settingsChanged;
 
 		private GenericCoreConfig(
-			IMainFormForConfig mainForm,
+			ISettingsAdapter settable,
 			bool isMovieActive,
 			bool ignoreSettings = false,
 			bool ignoreSyncSettings = false)
 		{
 			InitializeComponent();
 
-			_settable = ((MainForm) mainForm).GetSettingsAdapterForLoadedCoreUntyped(); //HACK
+			_settable = settable;
 
 			if (_settable.HasSettings && !ignoreSettings) _s = _settable.GetSettings();
 
@@ -116,7 +116,7 @@ namespace BizHawk.Client.EmuHawk
 			bool hideSyncSettings)
 		{
 			using var dlg = new GenericCoreConfig(
-				owner,
+				((MainForm) owner).GetSettingsAdapterForLoadedCoreUntyped(), //HACK
 				isMovieActive: isMovieActive,
 				ignoreSettings: hideSettings,
 				ignoreSyncSettings: hideSyncSettings)

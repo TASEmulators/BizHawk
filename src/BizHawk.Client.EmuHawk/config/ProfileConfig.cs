@@ -16,16 +16,12 @@ namespace BizHawk.Client.EmuHawk
 	public partial class ProfileConfig : Form
 	{
 		private readonly IMainFormForConfig _mainForm;
-		private readonly IEmulator _emulator;
+
 		private readonly Config _config;
 
-		public ProfileConfig(
-			IMainFormForConfig mainForm,
-			IEmulator emulator,
-			Config config)
+		public ProfileConfig(Config config, IMainFormForConfig mainForm)
 		{
 			_mainForm = mainForm;
-			_emulator = emulator;
 			_config = config;
 			InitializeComponent();
 			Icon = Properties.Resources.ProfileIcon;
@@ -241,7 +237,7 @@ namespace BizHawk.Client.EmuHawk
 			where TEmulator : IEmulator
 		{
 			object fromCore = null;
-			var settable = ((MainForm) _mainForm).GetSettingsAdapterForLoadedCoreUntyped(); //HACK
+			var settable = _mainForm.GetSettingsAdapterFor<TEmulator>();
 			if (settable.HasSyncSettings)
 			{
 				fromCore = settable.GetSyncSettings();
@@ -254,15 +250,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PutSyncSettings<TEmulator>(object o)
 			where TEmulator : IEmulator
-		{
-			if (_emulator is TEmulator)
-			{
-				_mainForm.GetSettingsAdapterForLoadedCore<TEmulator>().PutCoreSyncSettings(o);
-			}
-			else
-			{
-				_config.PutCoreSyncSettings<TEmulator>(o);
-			}
-		}
+			=> _mainForm.GetSettingsAdapterFor<TEmulator>().PutCoreSyncSettings(o);
 	}
 }
