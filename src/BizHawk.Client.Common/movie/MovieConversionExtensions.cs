@@ -180,7 +180,7 @@ namespace BizHawk.Client.Common
 		public static void PopulateWithDefaultHeaderValues(
 			this IMovie movie,
 			IEmulator emulator,
-			SettingsAdapter settable,
+			ISettingsAdapter settable,
 			IGameInfo game,
 			FirmwareManager firmwareManager,
 			string author)

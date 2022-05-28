@@ -66,10 +66,27 @@ namespace BizHawk.Emulation.Common
 		ScreenLayoutChanged = 2,
 	}
 
+	public interface ISettingsAdapter
+	{
+		bool HasSettings { get; }
+
+		bool HasSyncSettings { get; }
+
+		/// <exception cref="InvalidOperationException">does not have non-sync settings</exception>
+		object GetSettings();
+
+		/// <exception cref="InvalidOperationException">does not have sync settings</exception>
+		object GetSyncSettings();
+
+		void PutCoreSettings(object s);
+
+		void PutCoreSyncSettings(object ss);
+	}
+
 	/// <summary>
 	/// serves as a shim between strongly typed ISettable and consumers
 	/// </summary>
-	public class SettingsAdapter
+	public sealed class SettingsAdapter : ISettingsAdapter
 	{
 		private readonly Action<PutSettingsDirtyBits> _handlePutCoreSettings;
 
@@ -135,7 +152,6 @@ namespace BizHawk.Emulation.Common
 		private readonly MethodInfo _getss;
 		private readonly MethodInfo _putss;
 
-		/// <exception cref="InvalidOperationException">does not have non-sync settings</exception>
 		public object GetSettings()
 		{
 			if (!HasSettings)
@@ -146,7 +162,6 @@ namespace BizHawk.Emulation.Common
 			return _gets.Invoke(_settable, Empty);
 		}
 
-		/// <exception cref="InvalidOperationException">does not have sync settings</exception>
 		public object GetSyncSettings()
 		{
 			if (!HasSyncSettings)

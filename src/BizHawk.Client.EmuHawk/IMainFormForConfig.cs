@@ -8,7 +8,10 @@ namespace BizHawk.Client.EmuHawk
 	public interface IMainFormForConfig : IDialogParent
 	{
 		/// <exception cref="InvalidOperationException">loaded emulator is not instance of <typeparamref name="T"/></exception>
-		SettingsAdapter GetSettingsAdapterForLoadedCore<T>()
+		ISettingsAdapter GetSettingsAdapterForLoadedCore<T>()
+			where T : IEmulator;
+
+		ISettingsAdapter GetSettingsAdapterFor<T>()
 			where T : IEmulator;
 	}
 }
