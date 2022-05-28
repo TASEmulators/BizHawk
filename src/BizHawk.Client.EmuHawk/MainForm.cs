@@ -91,12 +91,19 @@ namespace BizHawk.Client.EmuHawk
 			CoresSubMenu.DropDownOpened += (openedSender, openedArgs) => GBInSGBMenuItem.Checked = Config.GbAsSgb;
 
 			ToolStripMenuItemEx recentCoreSettingsSubmenu = new() { Text = "Recent" };
-			recentCoreSettingsSubmenu.DropDownItems.AddRange(CreateCoreSettingsSubmenus().Where(submenu => Config.RecentCores.Contains(submenu.Text)).ToArray());
+			recentCoreSettingsSubmenu.DropDownItems.AddRange(CreateCoreSettingsSubmenus().ToArray());
+			ToolStripMenuItemEx noRecentsItem = new() { Enabled = false, Text = "(N/A)" };
+			recentCoreSettingsSubmenu.DropDownItems.Add(noRecentsItem);
+			recentCoreSettingsSubmenu.DropDownOpened += (_, _) =>
+			{
+				foreach (ToolStripItem submenu in recentCoreSettingsSubmenu.DropDownItems) submenu.Visible = Config.RecentCores.Contains(submenu.Text);
+				noRecentsItem.Visible = Config.RecentCores.Count is 0;
+			};
 			ToolStripMenuItemEx consolesCoreSettingsSubmenu = new() { Text = "For Consoles" };
 			ToolStripMenuItemEx handheldsCoreSettingsSubmenu = new() { Text = "For Handhelds" };
 			ToolStripMenuItemEx pcsCoreSettingsSubmenu = new() { Text = "For PCs" };
 			ToolStripMenuItemEx otherCoreSettingsSubmenu = new() { Text = "Other" };
-			foreach (var submenu in CreateCoreSettingsSubmenus(includeDupes: true))
+			foreach (var submenu in CreateCoreSettingsSubmenus(includeDupes: true).OrderBy(submenu => submenu.Text))
 			{
 				var parentMenu = (VSystemCategory) submenu.Tag switch
 				{
@@ -107,11 +114,11 @@ namespace BizHawk.Client.EmuHawk
 				};
 				parentMenu.DropDownItems.Add(submenu);
 			}
-			foreach (var submenu in new[] { recentCoreSettingsSubmenu, consolesCoreSettingsSubmenu, handheldsCoreSettingsSubmenu, pcsCoreSettingsSubmenu, otherCoreSettingsSubmenu })
+			foreach (var submenu in new[] { consolesCoreSettingsSubmenu, handheldsCoreSettingsSubmenu, pcsCoreSettingsSubmenu, otherCoreSettingsSubmenu })
 			{
 				if (submenu.DropDownItems.Count is 0)
 				{
-					submenu.DropDownItems.Add(new ToolStripMenuItemEx());
+					submenu.DropDownItems.Add(new ToolStripMenuItemEx { Text = "(none)" });
 					submenu.Enabled = false;
 				}
 			}

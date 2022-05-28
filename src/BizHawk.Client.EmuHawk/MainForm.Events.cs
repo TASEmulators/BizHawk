@@ -2782,7 +2782,10 @@ namespace BizHawk.Client.EmuHawk
 			items.Add(oldBSNESSubmenu);
 
 			// C64Hawk
-			items.Add(CreateCoreSubmenu(VSystemCategory.PCs, CoreNames.C64Hawk, CreateSettingsItem("Settings...", (_, _) => OpenC64HawkSettingsDialog())));
+			var c64HawkSettingsItem = CreateSettingsItem("Settings...", (_, _) => OpenC64HawkSettingsDialog());
+			var c64HawkSubmenu = CreateCoreSubmenu(VSystemCategory.PCs, CoreNames.C64Hawk, c64HawkSettingsItem);
+			c64HawkSubmenu.DropDownOpened += (_, _) => c64HawkSettingsItem.Enabled = Emulator is C64;
+			items.Add(c64HawkSubmenu);
 
 			// ChannelFHawk
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.ChannelFHawk, CreateGenericCoreConfigItem<ChannelF>(CoreNames.ChannelFHawk)));
@@ -2844,7 +2847,10 @@ namespace BizHawk.Client.EmuHawk
 			items.Add(gambatteLinkSubmenu);
 
 			// GBHawk
-			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.GbHawk, CreateSettingsItem("Settings...", (_, _) => OpenGBHawkSettingsDialog())));
+			var gbHawkSettingsItem = CreateSettingsItem("Settings...", (_, _) => OpenGBHawkSettingsDialog());
+			var gbHawkSubmenu = CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.GbHawk, gbHawkSettingsItem);
+			gbHawkSubmenu.DropDownOpened += (_, _) => gbHawkSettingsItem.Enabled = Emulator is GBHawk;
+			items.Add(gbHawkSubmenu);
 
 			// GBHawkLink
 			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.GBHawkLink, CreateGenericCoreConfigItem<GBHawkLink>(CoreNames.GBHawkLink)));
@@ -2862,7 +2868,7 @@ namespace BizHawk.Client.EmuHawk
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Gpgx, CreateGenericCoreConfigItem<GPGX>(CoreNames.Gpgx)));
 
 			// Handy
-			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.Handy, CreateGenericCoreConfigItem<Lynx>(CoreNames.Handy)));
+			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.Handy, CreateGenericCoreConfigItem<Lynx>(CoreNames.Handy))); // as Handy doesn't implement `IStatable<,>`, this opens an empty `GenericCoreConfig`, which is dumb, but matches the existing behaviour
 
 			// HyperNyma
 			var hyperNymaSettingsItem = CreateSettingsItem("Settings...", (_, _) => OpenGenericCoreConfig($"{CoreNames.HyperNyma} Settings"));
@@ -2995,11 +3001,14 @@ namespace BizHawk.Client.EmuHawk
 			items.Add(quickNesSubmenu);
 
 			// SameBoy
-			items.Add(CreateCoreSubmenu(
+			var sameBoySettingsItem = CreateSettingsItem("Settings...", (_, _) => OpenSameBoySettingsDialog());
+			var sameBoySubmenu = CreateCoreSubmenu(
 				VSystemCategory.Handhelds,
 				CoreNames.Sameboy,
-				CreateSettingsItem("Settings...", (_, _) => OpenSameBoySettingsDialog()),
-				CreateSettingsItem("Choose Custom Palette...", (_, _) => OpenSameBoyPaletteSettingsDialog(GetSettingsAdapterFor<Sameboy>()))));
+				sameBoySettingsItem,
+				CreateSettingsItem("Choose Custom Palette...", (_, _) => OpenSameBoyPaletteSettingsDialog(GetSettingsAdapterFor<Sameboy>())));
+			sameBoySubmenu.DropDownOpened += (_, _) => sameBoySettingsItem.Enabled = Emulator is Sameboy;
+			items.Add(sameBoySubmenu);
 
 			// Saturnus
 			var saturnusSettingsItem = CreateSettingsItem("Settings...", (_, _) => OpenGenericCoreConfig($"{CoreNames.Saturnus} Settings"));
@@ -3055,13 +3064,16 @@ namespace BizHawk.Client.EmuHawk
 			items.Add(turboNymaSubmenu);
 
 			// uzem
-			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Uzem, CreateGenericCoreConfigItem<Uzem>(CoreNames.Uzem)));
+			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Uzem, CreateGenericCoreConfigItem<Uzem>(CoreNames.Uzem))); // as uzem doesn't implement `IStatable<,>`, this opens an empty `GenericCoreConfig`, which is dumb, but matches the existing behaviour
 
 			// VectrexHawk
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.VectrexHawk, CreateGenericCoreConfigItem<VectrexHawk>(CoreNames.VectrexHawk)));
 
 			// Virtu
-			items.Add(CreateCoreSubmenu(VSystemCategory.PCs, CoreNames.Virtu, CreateSettingsItem("Settings...", (_, _) => OpenVirtuSettingsDialog())));
+			var virtuSettingsItem = CreateSettingsItem("Settings...", (_, _) => OpenVirtuSettingsDialog());
+			var virtuSubmenu = CreateCoreSubmenu(VSystemCategory.PCs, CoreNames.Virtu, virtuSettingsItem);
+			virtuSubmenu.DropDownOpened += (_, _) => virtuSettingsItem.Enabled = Emulator is AppleII;
+			items.Add(virtuSubmenu);
 
 			// Virtual Boyee
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.VirtualBoyee, CreateGenericCoreConfigItem<VirtualBoyee>(CoreNames.VirtualBoyee)));
