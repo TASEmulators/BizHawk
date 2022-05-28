@@ -1,22 +1,22 @@
 ﻿using System;
 using System.Windows.Forms;
 
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class SNESControllerSettings : Form
 	{
-		private readonly IMainFormForConfig _mainForm;
+		private readonly ISettingsAdapter _settable;
+
 		private readonly LibsnesCore.SnesSyncSettings _syncSettings;
 		private bool _suppressDropdownChangeEvents;
 
-		public SNESControllerSettings(
-			IMainFormForConfig mainForm,
-			LibsnesCore.SnesSyncSettings syncSettings)
+		public SNESControllerSettings(ISettingsAdapter settable)
 		{
-			_mainForm = mainForm;
-			_syncSettings = syncSettings;
+			_settable = settable;
+			_syncSettings = (LibsnesCore.SnesSyncSettings) _settable.GetSyncSettings();
 			InitializeComponent();
 			Icon = Properties.Resources.GameControllerIcon;
 		}
@@ -44,7 +44,7 @@ namespace BizHawk.Client.EmuHawk
 				_syncSettings.RightPort = (LibsnesControllerDeck.ControllerType)Enum.Parse(typeof(LibsnesControllerDeck.ControllerType), Port2ComboBox.SelectedItem.ToString());
 				_syncSettings.LimitAnalogChangeSensitivity = LimitAnalogChangeCheckBox.Checked;
 
-				_mainForm.GetSettingsAdapterForLoadedCore<LibsnesCore>().PutCoreSyncSettings(_syncSettings);
+				_settable.PutCoreSyncSettings(_syncSettings);
 			}
 
 			DialogResult = DialogResult.OK;

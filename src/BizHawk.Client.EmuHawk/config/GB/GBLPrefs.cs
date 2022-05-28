@@ -48,12 +48,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool SyncSettingsChanged => gbPrefControl1.SyncSettingsChanged || gbPrefControl2.SyncSettingsChanged || gbPrefControl3.SyncSettingsChanged || gbPrefControl4.SyncSettingsChanged;
 
+		/// <remarks>TODO only use <paramref name="settable"/></remarks>
 		public static DialogResult DoGBLPrefsDialog(
 			Config config,
 			IDialogParent dialogParent,
 			IGameInfo game,
-			IMainFormForConfig mainForm,
 			IMovieSession movieSession,
+			ISettingsAdapter settable,
 			GambatteLink gambatte)
 		{
 			var s = gambatte.GetSettings();
@@ -74,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 				gambatte.PutSettings(s);
 				if (dlg.SyncSettingsChanged)
 				{
-					mainForm.GetSettingsAdapterForLoadedCore<GambatteLink>().PutCoreSyncSettings(ss);
+					settable.PutCoreSyncSettings(ss);
 				}
 			}
 			return result;

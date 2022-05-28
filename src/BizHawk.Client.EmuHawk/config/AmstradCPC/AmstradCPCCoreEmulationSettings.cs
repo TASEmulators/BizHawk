@@ -1,19 +1,21 @@
 ﻿using System;
 using System.Windows.Forms;
+
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Computers.AmstradCPC;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class AmstradCpcCoreEmulationSettings : Form
 	{
-		private readonly IMainFormForConfig _mainForm;
+		private readonly ISettingsAdapter _settable;
+
 		private readonly AmstradCPC.AmstradCPCSyncSettings _syncSettings;
 
-		public AmstradCpcCoreEmulationSettings(IMainFormForConfig mainForm,
-			AmstradCPC.AmstradCPCSyncSettings syncSettings)
+		public AmstradCpcCoreEmulationSettings(ISettingsAdapter settable)
 		{
-			_mainForm = mainForm;
-			_syncSettings = syncSettings;
+			_settable = settable;
+			_syncSettings = (AmstradCPC.AmstradCPCSyncSettings) _settable.GetSyncSettings();
 			InitializeComponent();
 		}
 
@@ -59,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 				_syncSettings.DeterministicEmulation = determEmucheckBox1.Checked;
 				_syncSettings.AutoStartStopTape = autoLoadcheckBox1.Checked;
 
-				_mainForm.GetSettingsAdapterForLoadedCore<AmstradCPC>().PutCoreSyncSettings(_syncSettings);
+				_settable.PutCoreSyncSettings(_syncSettings);
 
 				DialogResult = DialogResult.OK;
 				Close();

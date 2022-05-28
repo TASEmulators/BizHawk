@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Windows.Forms;
 
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Sony.PSX;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class PSXControllerConfig : Form
 	{
-		private readonly IMainFormForConfig _mainForm;
+		private readonly ISettingsAdapter _settable;
+
 		private readonly Octoshock.SyncSettings _syncSettings;
 
-		public PSXControllerConfig(
-			IMainFormForConfig mainForm,
-			Octoshock.SyncSettings syncSettings)
+		public PSXControllerConfig(ISettingsAdapter settable)
 		{
-			_mainForm = mainForm;
-			_syncSettings = syncSettings;
+			_settable = settable;
+			_syncSettings = (Octoshock.SyncSettings) _settable.GetSyncSettings();
 			InitializeComponent();
 			Icon = Properties.Resources.GameControllerIcon;
 		}
@@ -141,7 +141,7 @@ namespace BizHawk.Client.EmuHawk
 		private void BtnOk_Click(object sender, EventArgs e)
 		{
 			_syncSettings.FIOConfig = UserConfigFromGui();
-			_mainForm.GetSettingsAdapterForLoadedCore<Octoshock>().PutCoreSyncSettings(_syncSettings);
+			_settable.PutCoreSyncSettings(_syncSettings);
 			
 			DialogResult = DialogResult.OK;
 			Close();

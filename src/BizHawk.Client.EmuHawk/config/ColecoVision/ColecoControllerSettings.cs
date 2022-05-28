@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Windows.Forms;
+
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.ColecoVision;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class ColecoControllerSettings : Form
 	{
-		private readonly IMainFormForConfig _mainForm;
+		private readonly ISettingsAdapter _settable;
+
 		private readonly ColecoVision.ColecoSyncSettings _syncSettings;
 
-		public ColecoControllerSettings(
-			IMainFormForConfig mainForm,
-			ColecoVision.ColecoSyncSettings settings)
+		public ColecoControllerSettings(ISettingsAdapter settable)
 		{
-			_mainForm = mainForm;
-			_syncSettings = settings;
+			_settable = settable;
+			_syncSettings = (ColecoVision.ColecoSyncSettings) _settable.GetSyncSettings();
 			InitializeComponent();
 			Icon = Properties.Resources.GameControllerIcon;
 		}
@@ -42,7 +43,7 @@ namespace BizHawk.Client.EmuHawk
 				_syncSettings.Port1 = Port1ComboBox.SelectedItem.ToString();
 				_syncSettings.Port2 = Port2ComboBox.SelectedItem.ToString();
 
-				_mainForm.GetSettingsAdapterForLoadedCore<ColecoVision>().PutCoreSyncSettings(_syncSettings);
+				_settable.PutCoreSyncSettings(_syncSettings);
 			}
 
 			DialogResult = DialogResult.OK;

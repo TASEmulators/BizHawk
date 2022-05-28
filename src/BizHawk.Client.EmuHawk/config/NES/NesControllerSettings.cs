@@ -1,21 +1,22 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
+
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class NesControllerSettings : Form
 	{
-		private readonly IMainFormForConfig _mainForm;
+		private readonly ISettingsAdapter _settable;
+
 		private readonly NES.NESSyncSettings _syncSettings;
 
-		public NesControllerSettings(
-			IMainFormForConfig mainForm,
-			NES.NESSyncSettings syncSettings)
+		public NesControllerSettings(ISettingsAdapter settable)
 		{
-			_mainForm = mainForm;
-			_syncSettings = syncSettings;
+			_settable = settable;
+			_syncSettings = (NES.NESSyncSettings) _settable.GetSyncSettings();
 			InitializeComponent();
 			Icon = Properties.Resources.GameControllerIcon;
 
@@ -53,7 +54,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (changed)
 			{
-				_mainForm.GetSettingsAdapterForLoadedCore<NES>().PutCoreSyncSettings(_syncSettings);
+				_settable.PutCoreSyncSettings(_syncSettings);
 			}
 
 			DialogResult = DialogResult.OK;

@@ -4,6 +4,7 @@ using System.Windows.Forms;
 
 using BizHawk.Emulation.Cores.Sony.PSX;
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -12,20 +13,22 @@ namespace BizHawk.Client.EmuHawk
 		// backups of the labels for string replacing
 		private readonly string _lblPixelProText, _lblMednafenText, _lblTweakedMednafenText;
 
+		private readonly ISettingsAdapter _settable;
+
 		public IDialogController DialogController { get; }
 
 		private PSXOptions(
 			Config config,
 			IDialogController dialogController,
-			IMainFormForConfig mainForm,
+			ISettingsAdapter settable,
 			Octoshock.Settings settings,
 			Octoshock.SyncSettings syncSettings,
 			OctoshockDll.eVidStandard vidStandard,
 			Size currentVideoSize)
 		{
 			InitializeComponent();
-			_mainForm = mainForm;
 			_config = config;
+			_settable = settable;
 			_settings = settings;
 			_syncSettings = syncSettings;
 			_previewVideoStandard = vidStandard;
@@ -67,7 +70,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private Size _previewVideoSize;
-		private readonly IMainFormForConfig _mainForm;
 		private readonly Config _config;
 		private readonly OctoshockDll.eVidStandard _previewVideoStandard;
 		private readonly Octoshock.Settings _settings;
@@ -80,17 +82,18 @@ namespace BizHawk.Client.EmuHawk
 			DialogController.ShowMessageBox("Finetuned Display Options will take effect if you OK from PSX Options");
 		}
 
+		/// <remarks>TODO only use <paramref name="settable"/></remarks>
 		public static DialogResult DoSettingsDialog(
 			Config config,
 			IDialogParent dialogParent,
-			IMainFormForConfig mainForm,
+			ISettingsAdapter settable,
 			Octoshock psx)
 		{
 			var s = psx.GetSettings();
 			var ss = psx.GetSyncSettings();
 			var vid = psx.SystemVidStandard;
 			var size = psx.CurrentVideoSize;
-			using var dlg = new PSXOptions(config, dialogParent.DialogController, mainForm, s, ss, vid, size);
+			using var dlg = new PSXOptions(config, dialogParent.DialogController, settable, s, ss, vid, size);
 			return dialogParent.ShowDialogAsChild(dlg);
 		}
 
@@ -131,9 +134,8 @@ namespace BizHawk.Client.EmuHawk
 
 			SyncSettingsFromGui(_settings, _syncSettings);
 			_settings.Validate();
-			var settable = _mainForm.GetSettingsAdapterForLoadedCore<Octoshock>();
-			settable.PutCoreSettings(_settings);
-			settable.PutCoreSyncSettings(_syncSettings);
+			_settable.PutCoreSettings(_settings);
+			_settable.PutCoreSyncSettings(_syncSettings);
 
 			DialogResult = DialogResult.OK;
 			Close();

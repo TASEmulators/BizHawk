@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Windows.Forms;
+
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class ZxSpectrumCoreEmulationSettings : Form
 	{
-		private readonly IMainFormForConfig _mainForm;
+		private readonly ISettingsAdapter _settable;
+
 		private readonly ZXSpectrum.ZXSpectrumSyncSettings _syncSettings;
 
-		public ZxSpectrumCoreEmulationSettings(
-			IMainFormForConfig mainForm,
-			ZXSpectrum.ZXSpectrumSyncSettings syncSettings)
+		public ZxSpectrumCoreEmulationSettings(ISettingsAdapter settable)
 		{
-			_mainForm = mainForm;
-			_syncSettings = syncSettings;
+			_settable = settable;
+			_syncSettings = (ZXSpectrum.ZXSpectrumSyncSettings) _settable.GetSyncSettings();
 			InitializeComponent();
 			Icon = Properties.Resources.GameControllerIcon;
 		}
@@ -61,7 +62,7 @@ namespace BizHawk.Client.EmuHawk
 				_syncSettings.DeterministicEmulation = determEmucheckBox1.Checked;
 				_syncSettings.AutoLoadTape = autoLoadcheckBox1.Checked;
 
-				_mainForm.GetSettingsAdapterForLoadedCore<ZXSpectrum>().PutCoreSyncSettings(_syncSettings);
+				_settable.PutCoreSyncSettings(_syncSettings);
 			}
 			DialogResult = DialogResult.OK;
 			Close();

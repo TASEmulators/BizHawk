@@ -1,21 +1,22 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
+
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Atari.A7800Hawk;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class A7800FilterSettings : Form
 	{
-		private readonly IMainFormForConfig _mainForm;
+		private readonly ISettingsAdapter _settable;
+
 		private readonly A7800Hawk.A7800SyncSettings _syncSettings;
 
-		public A7800FilterSettings(
-			IMainFormForConfig mainForm,
-			A7800Hawk.A7800SyncSettings syncSettings)
+		public A7800FilterSettings(ISettingsAdapter settable)
 		{
-			_mainForm = mainForm;
-			_syncSettings = syncSettings;
+			_settable = settable;
+			_syncSettings = (A7800Hawk.A7800SyncSettings) _settable.GetSyncSettings();
 			InitializeComponent();
 			Icon = Properties.Resources.GameControllerIcon;
 		}
@@ -39,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 			if (changed)
 			{
 				_syncSettings.Filter = Port1ComboBox.SelectedItem.ToString();
-				_mainForm.GetSettingsAdapterForLoadedCore<A7800Hawk>().PutCoreSyncSettings(_syncSettings);
+				_settable.PutCoreSyncSettings(_syncSettings);
 			}
 
 			DialogResult = DialogResult.OK;

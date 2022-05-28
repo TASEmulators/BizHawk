@@ -1346,15 +1346,15 @@ namespace BizHawk.Client.EmuHawk
 			Tools.Load<NESMusicRipper>();
 		}
 
-		private DialogResult OpenNesHawkGraphicsSettingsDialog(NES.NESSettings s)
+		private DialogResult OpenNesHawkGraphicsSettingsDialog(ISettingsAdapter settable)
 		{
-			using NESGraphicsConfig form = new(Config, this, this, s);
+			using NESGraphicsConfig form = new(Config, this, settable);
 			return this.ShowDialogWithTempMute(form);
 		}
 
-		private DialogResult OpenQuickNesGraphicsSettingsDialog(QuickNES.QuickNESSettings s)
+		private DialogResult OpenQuickNesGraphicsSettingsDialog(ISettingsAdapter settable)
 		{
-			using QuickNesConfig form = new(this, Config, s);
+			using QuickNesConfig form = new(Config, settable);
 			return this.ShowDialogWithTempMute(form);
 		}
 
@@ -1362,9 +1362,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_ = Emulator switch
 			{
-				NES nesHawk => OpenNesHawkGraphicsSettingsDialog(nesHawk.GetSettings().Clone()),
-				SubNESHawk subNESHawk => OpenNesHawkGraphicsSettingsDialog(subNESHawk.GetSettings().Clone()),
-				QuickNES quickNes => OpenQuickNesGraphicsSettingsDialog(quickNes.GetSettings().Clone()),
+				NES => OpenNesHawkGraphicsSettingsDialog(GetSettingsAdapterForLoadedCore<NES>()),
+				SubNESHawk => OpenNesHawkGraphicsSettingsDialog(GetSettingsAdapterForLoadedCore<SubNESHawk>()),
+				QuickNES => OpenQuickNesGraphicsSettingsDialog(GetSettingsAdapterForLoadedCore<QuickNES>()),
 				_ => DialogResult.None
 			};
 		}
@@ -1374,9 +1374,9 @@ namespace BizHawk.Client.EmuHawk
 			Tools.Load<NESSoundConfig>();
 		}
 
-		private DialogResult OpenNesHawkVSSettingsDialog(NES.NESSyncSettings ss)
+		private DialogResult OpenNesHawkVSSettingsDialog(ISettingsAdapter settable)
 		{
-			using NesVsSettings form = new(this, ss);
+			using NesVsSettings form = new(settable);
 			return this.ShowDialogWithTempMute(form);
 		}
 
@@ -1384,8 +1384,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_ = Emulator switch
 			{
-				NES { IsVS: true } nesHawk => OpenNesHawkVSSettingsDialog(nesHawk.GetSyncSettings().Clone()),
-				SubNESHawk { IsVs: true } subNESHawk => OpenNesHawkVSSettingsDialog(subNESHawk.GetSyncSettings().Clone()),
+				NES { IsVS: true } => OpenNesHawkVSSettingsDialog(GetSettingsAdapterForLoadedCore<NES>()),
+				SubNESHawk { IsVs: true } => OpenNesHawkVSSettingsDialog(GetSettingsAdapterForLoadedCore<SubNESHawk>()),
 				_ => DialogResult.None
 			};
 		}
@@ -1438,9 +1438,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private DialogResult OpenNesHawkGamepadSettingsDialog(NES.NESSyncSettings ss)
+		private DialogResult OpenNesHawkGamepadSettingsDialog(ISettingsAdapter settable)
 		{
-			using NesControllerSettings form = new(this, ss);
+			using NesControllerSettings form = new(settable);
 			return this.ShowDialogWithTempMute(form);
 		}
 
@@ -1456,16 +1456,16 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_ = Emulator switch
 			{
-				NES nesHawk => OpenNesHawkGamepadSettingsDialog(nesHawk.GetSyncSettings().Clone()),
-				SubNESHawk subNESHawk => OpenNesHawkGamepadSettingsDialog(subNESHawk.GetSyncSettings().Clone()),
+				NES => OpenNesHawkGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<NES>()),
+				SubNESHawk => OpenNesHawkGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<SubNESHawk>()),
 				QuickNES => OpenQuickNesGamepadSettingsDialog(),
 				_ => DialogResult.None
 			};
 		}
 
-		private DialogResult OpenNesHawkAdvancedSettingsDialog(NES.NESSyncSettings ss, bool hasMapperProperties)
+		private DialogResult OpenNesHawkAdvancedSettingsDialog(ISettingsAdapter settable, bool hasMapperProperties)
 		{
-			using NESSyncSettingsForm form = new(this, this, ss, hasMapperProperties: hasMapperProperties);
+			using NESSyncSettingsForm form = new(this, settable, hasMapperProperties: hasMapperProperties);
 			return this.ShowDialogWithTempMute(form);
 		}
 
@@ -1473,8 +1473,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_ = Emulator switch
 			{
-				NES nesHawk => OpenNesHawkAdvancedSettingsDialog(nesHawk.GetSyncSettings().Clone(), nesHawk.HasMapperProperties),
-				SubNESHawk subNESHawk => OpenNesHawkAdvancedSettingsDialog(subNESHawk.GetSyncSettings().Clone(), subNESHawk.HasMapperProperties),
+				NES nesHawk => OpenNesHawkAdvancedSettingsDialog(GetSettingsAdapterForLoadedCore<NES>(), nesHawk.HasMapperProperties),
+				SubNESHawk subNESHawk => OpenNesHawkAdvancedSettingsDialog(GetSettingsAdapterForLoadedCore<SubNESHawk>(), subNESHawk.HasMapperProperties),
 				_ => DialogResult.None
 			};
 		}
@@ -1520,9 +1520,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private DialogResult OpenTI83PaletteSettingsDialog(TI83Common.TI83CommonSettings s)
+		private DialogResult OpenTI83PaletteSettingsDialog(ISettingsAdapter settable)
 		{
-			using TI83PaletteConfig form = new(this, s);
+			using TI83PaletteConfig form = new(settable);
 			return this.ShowDialogWithTempMute(form);
 		}
 
@@ -1530,8 +1530,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var result = Emulator switch
 			{
-				Emu83 emu83 => OpenTI83PaletteSettingsDialog(emu83.GetSettings().Clone()),
-				TI83 ti83Hawk => OpenTI83PaletteSettingsDialog(ti83Hawk.GetSettings().Clone()),
+				Emu83 => OpenTI83PaletteSettingsDialog(GetSettingsAdapterForLoadedCore<Emu83>()),
+				TI83 => OpenTI83PaletteSettingsDialog(GetSettingsAdapterForLoadedCore<TI83>()),
 				_ => DialogResult.None
 			};
 			if (result.IsOk()) AddOnScreenMessage("Palette settings saved");
@@ -1544,9 +1544,9 @@ namespace BizHawk.Client.EmuHawk
 				= MovieSession.Movie.NotActive();
 		}
 
-		private DialogResult OpenA7800HawkGamepadSettingsDialog(A7800Hawk.A7800SyncSettings ss)
+		private DialogResult OpenA7800HawkGamepadSettingsDialog(ISettingsAdapter settable)
 		{
-			using A7800ControllerSettings form = new(this, ss);
+			using A7800ControllerSettings form = new(settable);
 			return this.ShowDialogWithTempMute(form);
 		}
 
@@ -1554,14 +1554,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_ = Emulator switch
 			{
-				A7800Hawk a7800Hawk => OpenA7800HawkGamepadSettingsDialog(a7800Hawk.GetSyncSettings().Clone()),
+				A7800Hawk => OpenA7800HawkGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<A7800Hawk>()),
 				_ => DialogResult.None
 			};
 		}
 
-		private DialogResult OpenA7800HawkFilterSettingsDialog(A7800Hawk.A7800SyncSettings ss)
+		private DialogResult OpenA7800HawkFilterSettingsDialog(ISettingsAdapter settable)
 		{
-			using A7800FilterSettings form = new(this, ss);
+			using A7800FilterSettings form = new(settable);
 			return this.ShowDialogWithTempMute(form);
 		}
 
@@ -1569,13 +1569,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_ = Emulator switch
 			{
-				A7800Hawk a7800Hawk => OpenA7800HawkFilterSettingsDialog(a7800Hawk.GetSyncSettings().Clone()),
+				A7800Hawk => OpenA7800HawkFilterSettingsDialog(GetSettingsAdapterForLoadedCore<A7800Hawk>()),
 				_ => DialogResult.None
 			};
 		}
 
-		private DialogResult OpenGambatteSettingsDialog(Gameboy gambatte)
-			=> GBPrefs.DoGBPrefsDialog(Config, this, Game, this, MovieSession, gambatte);
+		private DialogResult OpenGambatteSettingsDialog(ISettingsAdapter settable, Gameboy gambatte)
+			=> GBPrefs.DoGBPrefsDialog(Config, this, Game, MovieSession, settable, gambatte);
 
 		private DialogResult OpenGBHawkSettingsDialog()
 			=> OpenGenericCoreConfig("Gameboy Settings");
@@ -1587,16 +1587,16 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_ = Emulator switch
 			{
-				Gameboy gambatte => OpenGambatteSettingsDialog(gambatte),
+				Gameboy gambatte => OpenGambatteSettingsDialog(GetSettingsAdapterForLoadedCore<Gameboy>(), gambatte),
 				GBHawk => OpenGBHawkSettingsDialog(),
 				Sameboy => OpenSameBoySettingsDialog(),
 				_ => DialogResult.None
 			};
 		}
 
-		private DialogResult OpenSameBoyPaletteSettingsDialog(Sameboy.SameboySettings s)
+		private DialogResult OpenSameBoyPaletteSettingsDialog(ISettingsAdapter settable)
 		{
-			using SameBoyColorChooserForm form = new(Config, this, Game, this, s);
+			using SameBoyColorChooserForm form = new(Config, this, Game, settable);
 			return this.ShowDialogWithTempMute(form);
 		}
 
@@ -1604,7 +1604,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_ = Emulator switch
 			{
-				Sameboy sameBoy => OpenSameBoyPaletteSettingsDialog(sameBoy.GetSettings().Clone()),
+				Sameboy => OpenSameBoyPaletteSettingsDialog(GetSettingsAdapterForLoadedCore<Sameboy>()),
 				_ => DialogResult.None
 			};
 		}
@@ -1624,9 +1624,9 @@ namespace BizHawk.Client.EmuHawk
 			PSXControllerSettingsMenuItem.Enabled = MovieSession.Movie.NotActive();
 		}
 
-		private DialogResult OpenOctoshockGamepadSettingsDialog(Octoshock.SyncSettings ss)
+		private DialogResult OpenOctoshockGamepadSettingsDialog(ISettingsAdapter settable)
 		{
-			using PSXControllerConfig form = new(this, ss);
+			using PSXControllerConfig form = new(settable);
 			return this.ShowDialogWithTempMute(form);
 		}
 
@@ -1634,19 +1634,19 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_ = Emulator switch
 			{
-				Octoshock octoshock => OpenOctoshockGamepadSettingsDialog(octoshock.GetSyncSettings().Clone()),
+				Octoshock => OpenOctoshockGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<Octoshock>()),
 				_ => DialogResult.None
 			};
 		}
 
-		private DialogResult OpenOctoshockSettingsDialog(Octoshock octoshock)
-			=> PSXOptions.DoSettingsDialog(Config, this, this, octoshock);
+		private DialogResult OpenOctoshockSettingsDialog(ISettingsAdapter settable, Octoshock octoshock)
+			=> PSXOptions.DoSettingsDialog(Config, this, settable, octoshock);
 
 		private void PsxOptionsMenuItem_Click(object sender, EventArgs e)
 		{
 			var result = Emulator switch
 			{
-				Octoshock octoshock => OpenOctoshockSettingsDialog(octoshock),
+				Octoshock octoshock => OpenOctoshockSettingsDialog(GetSettingsAdapterForLoadedCore<Octoshock>(), octoshock),
 				_ => DialogResult.None
 			};
 			if (result.IsOk()) FrameBufferResized();
@@ -1672,15 +1672,15 @@ namespace BizHawk.Client.EmuHawk
 			SnesGfxDebuggerMenuItem.Enabled = true;
 		}
 
-		private DialogResult OpenOldBSNESGamepadSettingsDialog(LibsnesCore.SnesSyncSettings ss)
+		private DialogResult OpenOldBSNESGamepadSettingsDialog(ISettingsAdapter settable)
 		{
-			using SNESControllerSettings form = new(this, ss);
+			using SNESControllerSettings form = new(settable);
 			return this.ShowDialogWithTempMute(form);
 		}
 
-		private DialogResult OpenBSNESGamepadSettingsDialog(BsnesCore.SnesSyncSettings ss)
+		private DialogResult OpenBSNESGamepadSettingsDialog(ISettingsAdapter settable)
 		{
-			using BSNESControllerSettings form = new(this, ss);
+			using BSNESControllerSettings form = new(settable);
 			return this.ShowDialogWithTempMute(form);
 		}
 
@@ -1688,8 +1688,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_ = Emulator switch
 			{
-				LibsnesCore oldBSNES => OpenOldBSNESGamepadSettingsDialog(oldBSNES.GetSyncSettings().Clone()),
-				BsnesCore bsnes => OpenBSNESGamepadSettingsDialog(bsnes.GetSyncSettings().Clone()),
+				LibsnesCore => OpenOldBSNESGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<LibsnesCore>()),
+				BsnesCore => OpenBSNESGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<BsnesCore>()),
 				_ => DialogResult.None
 			};
 		}
@@ -1699,18 +1699,18 @@ namespace BizHawk.Client.EmuHawk
 			Tools.Load<SNESGraphicsDebugger>();
 		}
 
-		private DialogResult OpenOldBSNESSettingsDialog(LibsnesCore bsnes)
-			=> SNESOptions.DoSettingsDialog(this, this, bsnes);
+		private DialogResult OpenOldBSNESSettingsDialog(ISettingsAdapter settable, LibsnesCore bsnes)
+			=> SNESOptions.DoSettingsDialog(this, settable, bsnes);
 
-		private DialogResult OpenBSNESSettingsDialog(BsnesCore bsnes)
-			=> BSNESOptions.DoSettingsDialog(this, this, bsnes);
+		private DialogResult OpenBSNESSettingsDialog(ISettingsAdapter settable, BsnesCore bsnes)
+			=> BSNESOptions.DoSettingsDialog(this, settable, bsnes);
 
 		private void SnesOptionsMenuItem_Click(object sender, EventArgs e)
 		{
 			_ = Emulator switch
 			{
-				LibsnesCore oldBSNES => OpenOldBSNESSettingsDialog(oldBSNES),
-				BsnesCore bsnes => OpenBSNESSettingsDialog(bsnes),
+				LibsnesCore oldBSNES => OpenOldBSNESSettingsDialog(GetSettingsAdapterForLoadedCore<LibsnesCore>(), oldBSNES),
+				BsnesCore bsnes => OpenBSNESSettingsDialog(GetSettingsAdapterForLoadedCore<BsnesCore>(), bsnes),
 				_ => DialogResult.None
 			};
 		}
@@ -1746,9 +1746,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private DialogResult OpenColecoHawkGamepadSettingsDialog(ColecoVision.ColecoSyncSettings ss)
+		private DialogResult OpenColecoHawkGamepadSettingsDialog(ISettingsAdapter settable)
 		{
-			using ColecoControllerSettings form = new(this, ss);
+			using ColecoControllerSettings form = new(settable);
 			return this.ShowDialogWithTempMute(form);
 		}
 
@@ -1756,7 +1756,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_ = Emulator switch
 			{
-				ColecoVision colecoHawk => OpenColecoHawkGamepadSettingsDialog(colecoHawk.GetSyncSettings().Clone()),
+				ColecoVision => OpenColecoHawkGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<ColecoVision>()),
 				_ => DialogResult.None
 			};
 		}
@@ -1777,24 +1777,24 @@ namespace BizHawk.Client.EmuHawk
 			N64ExpansionSlotMenuItem.Enabled = !((N64)Emulator).IsOverridingUserExpansionSlotSetting;
 		}
 
-		private DialogResult OpenMupen64PlusGraphicsSettingsDialog()
+		private DialogResult OpenMupen64PlusGraphicsSettingsDialog(ISettingsAdapter settable)
 		{
-			using N64VideoPluginConfig form = new(this);
+			using N64VideoPluginConfig form = new(settable);
 			return this.ShowDialogWithTempMute(form);
 		}
 
 		private void N64PluginSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (OpenMupen64PlusGraphicsSettingsDialog().IsOk()
+			if (OpenMupen64PlusGraphicsSettingsDialog(GetSettingsAdapterFor<N64>()).IsOk()
 				&& Emulator is not N64) // If it's loaded, the reboot required message will appear
 			{
 				AddOnScreenMessage("Plugin settings saved");
 			}
 		}
 
-		private DialogResult OpenMupen64PlusGamepadSettingsDialog(N64SyncSettings ss)
+		private DialogResult OpenMupen64PlusGamepadSettingsDialog(ISettingsAdapter settable)
 		{
-			using N64ControllersSetup form = new(this, ss);
+			using N64ControllersSetup form = new(settable);
 			return this.ShowDialogWithTempMute(form);
 		}
 
@@ -1802,7 +1802,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_ = Emulator switch
 			{
-				N64 mupen64Plus => OpenMupen64PlusGamepadSettingsDialog(mupen64Plus.GetSyncSettings().Clone()),
+				N64 => OpenMupen64PlusGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<N64>()),
 				_ => DialogResult.None
 			};
 		}
@@ -1831,14 +1831,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private DialogResult OpenGambatteLinkSettingsDialog(GambatteLink gambatteLink)
-			=> GBLPrefs.DoGBLPrefsDialog(Config, this, Game, this, MovieSession, gambatteLink);
+		private DialogResult OpenGambatteLinkSettingsDialog(ISettingsAdapter settable, GambatteLink gambatteLink)
+			=> GBLPrefs.DoGBLPrefsDialog(Config, this, Game, MovieSession, settable, gambatteLink);
 
 		private void GblSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			_ = Emulator switch
 			{
-				GambatteLink gambatteLink => OpenGambatteLinkSettingsDialog(gambatteLink),
+				GambatteLink gambatteLink => OpenGambatteLinkSettingsDialog(GetSettingsAdapterForLoadedCore<GambatteLink>(), gambatteLink),
 				_ => DialogResult.None
 			};
 		}
@@ -1949,9 +1949,9 @@ namespace BizHawk.Client.EmuHawk
 			IntVControllerSettingsMenuItem.Enabled = MovieSession.Movie.NotActive();
 		}
 
-		private DialogResult OpenIntelliHawkGamepadSettingsDialog(Intellivision.IntvSyncSettings ss)
+		private DialogResult OpenIntelliHawkGamepadSettingsDialog(ISettingsAdapter settable)
 		{
-			using IntvControllerSettings form = new(this, ss);
+			using IntvControllerSettings form = new(settable);
 			return this.ShowDialogWithTempMute(form);
 		}
 
@@ -1959,14 +1959,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_ = Emulator switch
 			{
-				Intellivision intelliHawk => OpenIntelliHawkGamepadSettingsDialog(intelliHawk.GetSyncSettings().Clone()),
+				Intellivision => OpenIntelliHawkGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<Intellivision>()),
 				_ => DialogResult.None
 			};
 		}
 
-		private DialogResult OpenZXHawkGamepadSettingsDialog(ZXSpectrum.ZXSpectrumSyncSettings ss)
+		private DialogResult OpenZXHawkGamepadSettingsDialog(ISettingsAdapter settable)
 		{
-			using ZxSpectrumJoystickSettings form = new(this, this, ss);
+			using ZxSpectrumJoystickSettings form = new(this, settable);
 			return this.ShowDialogWithTempMute(form);
 		}
 
@@ -1974,14 +1974,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_ = Emulator switch
 			{
-				ZXSpectrum zxHawk => OpenZXHawkGamepadSettingsDialog(zxHawk.GetSyncSettings().Clone()),
+				ZXSpectrum => OpenZXHawkGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<ZXSpectrum>()),
 				_ => DialogResult.None
 			};
 		}
 
-		private DialogResult OpenZXHawkSyncSettingsDialog(ZXSpectrum.ZXSpectrumSyncSettings ss)
+		private DialogResult OpenZXHawkSyncSettingsDialog(ISettingsAdapter settable)
 		{
-			using ZxSpectrumCoreEmulationSettings form = new(this, ss);
+			using ZxSpectrumCoreEmulationSettings form = new(settable);
 			return this.ShowDialogWithTempMute(form);
 		}
 
@@ -1989,14 +1989,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_ = Emulator switch
 			{
-				ZXSpectrum zxHawk => OpenZXHawkSyncSettingsDialog(zxHawk.GetSyncSettings().Clone()),
+				ZXSpectrum => OpenZXHawkSyncSettingsDialog(GetSettingsAdapterForLoadedCore<ZXSpectrum>()),
 				_ => DialogResult.None
 			};
 		}
 
-		private DialogResult OpenZXHawkSettingsDialog(ZXSpectrum.ZXSpectrumSettings s)
+		private DialogResult OpenZXHawkSettingsDialog(ISettingsAdapter settable)
 		{
-			using ZxSpectrumNonSyncSettings form = new(this, s);
+			using ZxSpectrumNonSyncSettings form = new(settable);
 			return this.ShowDialogWithTempMute(form);
 		}
 
@@ -2004,14 +2004,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_ = Emulator switch
 			{
-				ZXSpectrum zxHawk => OpenZXHawkSettingsDialog(zxHawk.GetSettings().Clone()),
+				ZXSpectrum => OpenZXHawkSettingsDialog(GetSettingsAdapterForLoadedCore<ZXSpectrum>()),
 				_ => DialogResult.None
 			};
 		}
 
-		private DialogResult OpenZXHawkAudioSettingsDialog(ZXSpectrum.ZXSpectrumSettings s)
+		private DialogResult OpenZXHawkAudioSettingsDialog(ISettingsAdapter settable)
 		{
-			using ZxSpectrumAudioSettings form = new(this, s);
+			using ZxSpectrumAudioSettings form = new(settable);
 			return this.ShowDialogWithTempMute(form);
 		}
 
@@ -2019,7 +2019,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_ = Emulator switch
 			{
-				ZXSpectrum zxHawk => OpenZXHawkAudioSettingsDialog(zxHawk.GetSettings().Clone()),
+				ZXSpectrum => OpenZXHawkAudioSettingsDialog(GetSettingsAdapterForLoadedCore<ZXSpectrum>()),
 				_ => DialogResult.None
 			};
 		}
@@ -2126,9 +2126,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private DialogResult OpenCPCHawkSyncSettingsDialog(AmstradCPC.AmstradCPCSyncSettings ss)
+		private DialogResult OpenCPCHawkSyncSettingsDialog(ISettingsAdapter settable)
 		{
-			using AmstradCpcCoreEmulationSettings form = new(this, ss);
+			using AmstradCpcCoreEmulationSettings form = new(settable);
 			return this.ShowDialogWithTempMute(form);
 		}
 
@@ -2136,14 +2136,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_ = Emulator switch
 			{
-				AmstradCPC cpcHawk => OpenCPCHawkSyncSettingsDialog(cpcHawk.GetSyncSettings().Clone()),
+				AmstradCPC => OpenCPCHawkSyncSettingsDialog(GetSettingsAdapterForLoadedCore<AmstradCPC>()),
 				_ => DialogResult.None
 			};
 		}
 
-		private DialogResult OpenCPCHawkAudioSettingsDialog(AmstradCPC.AmstradCPCSettings s)
+		private DialogResult OpenCPCHawkAudioSettingsDialog(ISettingsAdapter settable)
 		{
-			using AmstradCpcAudioSettings form = new(this, s);
+			using AmstradCpcAudioSettings form = new(settable);
 			return this.ShowDialogWithTempMute(form);
 		}
 
@@ -2151,7 +2151,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_ = Emulator switch
 			{
-				AmstradCPC cpcHawk => OpenCPCHawkAudioSettingsDialog(cpcHawk.GetSettings().Clone()),
+				AmstradCPC => OpenCPCHawkAudioSettingsDialog(GetSettingsAdapterForLoadedCore<AmstradCPC>()),
 				_ => DialogResult.None
 			};
 		}
@@ -2233,9 +2233,9 @@ namespace BizHawk.Client.EmuHawk
 			AmstradCPCDisksSubMenu.DropDownItems.AddRange(items.ToArray());
 		}
 
-		private DialogResult OpenCPCHawkSettingsDialog(AmstradCPC.AmstradCPCSettings s)
+		private DialogResult OpenCPCHawkSettingsDialog(ISettingsAdapter settable)
 		{
-			using AmstradCpcNonSyncSettings form = new(this, s);
+			using AmstradCpcNonSyncSettings form = new(settable);
 			return this.ShowDialogWithTempMute(form);
 		}
 
@@ -2243,7 +2243,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_ = Emulator switch
 			{
-				AmstradCPC cpcHawk => OpenCPCHawkSettingsDialog(cpcHawk.GetSettings().Clone()),
+				AmstradCPC => OpenCPCHawkSettingsDialog(GetSettingsAdapterForLoadedCore<AmstradCPC>()),
 				_ => DialogResult.None
 			};
 		}

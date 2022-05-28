@@ -17,12 +17,13 @@ namespace BizHawk.Client.EmuHawk
 			Icon = Properties.Resources.GambatteIcon;
 		}
 
+		/// <remarks>TODO only use <paramref name="settable"/></remarks>
 		public static DialogResult DoGBPrefsDialog(
 			Config config,
 			IDialogParent dialogParent,
 			IGameInfo game,
-			IMainFormForConfig mainForm,
 			IMovieSession movieSession,
+			ISettingsAdapter settable,
 			Gameboy gb)
 		{
 			var s = gb.GetSettings();
@@ -38,7 +39,7 @@ namespace BizHawk.Client.EmuHawk
 				gb.PutSettings(s);
 				if (dlg.gbPrefControl1.SyncSettingsChanged)
 				{
-					mainForm.GetSettingsAdapterForLoadedCore<Gameboy>().PutCoreSyncSettings(ss);
+					settable.PutCoreSyncSettings(ss);
 				}
 			}
 			return result;

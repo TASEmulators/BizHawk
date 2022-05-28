@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Windows.Forms;
+
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Intellivision;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class IntvControllerSettings : Form
 	{
-		private readonly IMainFormForConfig _mainForm;
+		private readonly ISettingsAdapter _settable;
+
 		private readonly Intellivision.IntvSyncSettings _syncSettings;
 
-		public IntvControllerSettings(
-			IMainFormForConfig mainForm,
-			Intellivision.IntvSyncSettings syncSettings)
+		public IntvControllerSettings(ISettingsAdapter settable)
 		{
-			_mainForm = mainForm;
-			_syncSettings = syncSettings;
+			_settable = settable;
+			_syncSettings = (Intellivision.IntvSyncSettings) _settable.GetSyncSettings();
 			InitializeComponent();
 			Icon = Properties.Resources.GameControllerIcon;
 		}
@@ -42,7 +43,7 @@ namespace BizHawk.Client.EmuHawk
 				_syncSettings.Port1 = Port1ComboBox.SelectedItem.ToString();
 				_syncSettings.Port2 = Port2ComboBox.SelectedItem.ToString();
 
-				_mainForm.GetSettingsAdapterForLoadedCore<Intellivision>().PutCoreSyncSettings(_syncSettings);
+				_settable.PutCoreSyncSettings(_syncSettings);
 			}
 
 			DialogResult = DialogResult.OK;
