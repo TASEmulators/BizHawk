@@ -13,8 +13,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 
 		private void MakeTrace(IntPtr disasm)
 		{
-			// FIXME: Something is wrong here, this is called back once and never called back again
-			// worked fine before v128 merge, probably some upstream regression?
 			var disasmStr = Mershul.PtrToStringUtf8(disasm);
 			if (!disasmStr.StartsWith("CPU")) // garbage, ignore
 			{
