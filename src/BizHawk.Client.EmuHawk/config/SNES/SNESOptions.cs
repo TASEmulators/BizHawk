@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 
 namespace BizHawk.Client.EmuHawk
@@ -16,7 +17,8 @@ namespace BizHawk.Client.EmuHawk
 		private bool _suppressDoubleSize;
 		private bool _userDoubleSizeOption;
 
-		public static DialogResult DoSettingsDialog(IDialogParent dialogParent, IMainFormForConfig mainForm, LibsnesCore bsnes)
+		/// <remarks>TODO only use <paramref name="settable"/></remarks>
+		public static DialogResult DoSettingsDialog(IDialogParent dialogParent, ISettingsAdapter settable, LibsnesCore bsnes)
 		{
 			var s = bsnes.GetSettings();
 			var ss = bsnes.GetSyncSettings();
@@ -50,7 +52,6 @@ namespace BizHawk.Client.EmuHawk
 				s.ShowBG3_0 = s.ShowBG3_1 = dlg.ShowBg3;
 				s.ShowBG4_0 = s.ShowBG4_1 = dlg.ShowBg4;
 
-				var settable = mainForm.GetSettingsAdapterForLoadedCore<LibsnesCore>();
 				settable.PutCoreSettings(s);
 				settable.PutCoreSyncSettings(ss);
 			}

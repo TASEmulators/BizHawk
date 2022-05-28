@@ -11,18 +11,17 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class QuickNesConfig : Form
 	{
-		private readonly IMainFormForConfig _mainForm;
 		private readonly Config _config;
+
+		private readonly ISettingsAdapter _settable;
+
 		private readonly QuickNES.QuickNESSettings _settings;
 
-		public QuickNesConfig(
-			IMainFormForConfig mainForm,
-			Config config,
-			QuickNES.QuickNESSettings settings)
+		public QuickNesConfig(Config config, ISettingsAdapter settable)
 		{
-			_mainForm = mainForm;
 			_config = config;
-			_settings = settings;
+			_settable = settable;
+			_settings = (QuickNES.QuickNESSettings) _settable.GetSettings();
 			InitializeComponent();
 			Icon = Properties.Resources.QuickNesIcon;
 		}
@@ -106,7 +105,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ButtonOk_Click(object sender, EventArgs e)
 		{
-			_mainForm.GetSettingsAdapterForLoadedCore<QuickNES>().PutCoreSettings(_settings);
+			_settable.PutCoreSettings(_settings);
 			DialogResult = DialogResult.OK;
 			Close();
 		}

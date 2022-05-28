@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Windows.Forms;
+
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Computers.AmstradCPC;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class AmstradCpcNonSyncSettings : Form
 	{
-		private readonly IMainFormForConfig _mainForm;
+		private readonly ISettingsAdapter _settable;
+
 		private readonly AmstradCPC.AmstradCPCSettings _settings;
 
-		public AmstradCpcNonSyncSettings(
-			IMainFormForConfig mainForm,
-			AmstradCPC.AmstradCPCSettings settings)
+		public AmstradCpcNonSyncSettings(ISettingsAdapter settable)
 		{
-			_mainForm = mainForm;
-			_settings = settings;
+			_settable = settable;
+			_settings = (AmstradCPC.AmstradCPCSettings) _settable.GetSettings();
 			InitializeComponent();
 			Icon = Properties.Resources.GameControllerIcon;
 		}
@@ -40,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_settings.OSDMessageVerbosity = (AmstradCPC.OSDVerbosity)Enum.Parse(typeof(AmstradCPC.OSDVerbosity), osdMessageVerbositycomboBox1.SelectedItem.ToString());
 
-				_mainForm.GetSettingsAdapterForLoadedCore<AmstradCPC>().PutCoreSettings(_settings);
+				_settable.PutCoreSettings(_settings);
 
 				DialogResult = DialogResult.OK;
 				Close();

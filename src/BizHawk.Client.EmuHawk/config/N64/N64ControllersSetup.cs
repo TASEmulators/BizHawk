@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class N64ControllersSetup : Form
 	{
-		private readonly IMainFormForConfig _mainForm;
+		private readonly ISettingsAdapter _settable;
+
 		private readonly N64SyncSettings _syncSettings;
 
 		private List<N64ControllerSettingControl> ControllerSettingControls => Controls
@@ -17,12 +19,10 @@ namespace BizHawk.Client.EmuHawk
 			.OrderBy(n => n.ControllerNumber)
 			.ToList();
 
-		public N64ControllersSetup(
-			IMainFormForConfig mainForm,
-			N64SyncSettings syncSettings)
+		public N64ControllersSetup(ISettingsAdapter settable)
 		{
-			_mainForm = mainForm;
-			_syncSettings = syncSettings;
+			_settable = settable;
+			_syncSettings = (N64SyncSettings) _settable.GetSyncSettings();
 			InitializeComponent();
 			Icon = Properties.Resources.GameControllerIcon;
 		}
@@ -52,7 +52,7 @@ namespace BizHawk.Client.EmuHawk
 					_syncSettings.Controllers[c.ControllerNumber - 1].PakType = c.PakType;
 				});
 
-			_mainForm.GetSettingsAdapterForLoadedCore<N64>().PutCoreSyncSettings(_syncSettings);
+			_settable.PutCoreSyncSettings(_syncSettings);
 
 			DialogResult = DialogResult.OK;
 			Close();

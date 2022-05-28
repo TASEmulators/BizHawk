@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Windows.Forms;
+
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class ZxSpectrumAudioSettings : Form
 	{
-		private readonly IMainFormForConfig _mainForm;
+		private readonly ISettingsAdapter _settable;
+
 		private readonly ZXSpectrum.ZXSpectrumSettings _settings;
 
-		public ZxSpectrumAudioSettings(
-			IMainFormForConfig mainForm,
-			ZXSpectrum.ZXSpectrumSettings settings)
+		public ZxSpectrumAudioSettings(ISettingsAdapter settable)
 		{
-			_mainForm = mainForm;
-			_settings = settings;
+			_settable = settable;
+			_settings = (ZXSpectrum.ZXSpectrumSettings) _settable.GetSettings();
 			InitializeComponent();
 			Icon = Properties.Resources.GameControllerIcon;
 		}
@@ -55,7 +56,7 @@ namespace BizHawk.Client.EmuHawk
 				_settings.EarVolume = earVolumetrackBar.Value;
 				_settings.AYVolume = ayVolumetrackBar.Value;
 
-				_mainForm.GetSettingsAdapterForLoadedCore<ZXSpectrum>().PutCoreSettings(_settings);
+				_settable.PutCoreSettings(_settings);
 			}
 			DialogResult = DialogResult.OK;
 			Close();

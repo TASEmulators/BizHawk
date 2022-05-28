@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.BSNES;
 
 namespace BizHawk.Client.EmuHawk
@@ -13,7 +14,8 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		public static DialogResult DoSettingsDialog(IDialogParent dialogParent, IMainFormForConfig mainForm, BsnesCore bsnes)
+		/// <remarks>TODO only use <paramref name="settable"/></remarks>
+		public static DialogResult DoSettingsDialog(IDialogParent dialogParent, ISettingsAdapter settable, BsnesCore bsnes)
 		{
 			var s = bsnes.GetSettings();
 			var ss = bsnes.GetSyncSettings();
@@ -67,7 +69,6 @@ namespace BizHawk.Client.EmuHawk
 				s.ShowBG4_0 = dlg.ShowBg4_0;
 				s.ShowBG4_1 = dlg.ShowBg4_1;
 
-				var settable = mainForm.GetSettingsAdapterForLoadedCore<BsnesCore>();
 				settable.PutCoreSettings(s);
 				settable.PutCoreSyncSettings(ss);
 			}

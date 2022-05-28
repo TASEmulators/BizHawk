@@ -12,9 +12,11 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class SameBoyColorChooserForm : Form, IDialogParent
 	{
-		private readonly IMainFormForConfig _mainForm;
 		private readonly IGameInfo _game;
 		private readonly Config _config;
+
+		private readonly ISettingsAdapter _settable;
+
 		private readonly Sameboy.SameboySettings _settings;
 
 		public IDialogController DialogController { get; }
@@ -23,13 +25,12 @@ namespace BizHawk.Client.EmuHawk
 			Config config,
 			IDialogController dialogController,
 			IGameInfo game,
-			IMainFormForConfig mainForm,
-			Sameboy.SameboySettings settings)
+			ISettingsAdapter settable)
 		{
-			_mainForm = mainForm;
 			_game = game;
 			_config = config;
-			_settings = settings;
+			_settable = settable;
+			_settings = (Sameboy.SameboySettings) _settable.GetSettings();
 			DialogController = dialogController;
 			InitializeComponent();
 			SetAllColors(_settings.GetCustomPalette());
@@ -324,7 +325,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_settings.SetCustomPalette(colors);
 
-			_mainForm.GetSettingsAdapterForLoadedCore<Sameboy>().PutCoreSettings(_settings);
+			_settable.PutCoreSettings(_settings);
 
 			DialogResult = DialogResult.OK;
 			Close();

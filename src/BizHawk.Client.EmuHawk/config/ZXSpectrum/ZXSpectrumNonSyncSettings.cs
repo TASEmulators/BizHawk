@@ -1,21 +1,22 @@
 ﻿using System;
 using System.Windows.Forms;
+
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class ZxSpectrumNonSyncSettings : Form
 	{
-		private readonly IMainFormForConfig _mainForm;
+		private readonly ISettingsAdapter _settable;
+
 		private readonly ZXSpectrum.ZXSpectrumSettings _settings;
 		private int _bgColor;
 
-		public ZxSpectrumNonSyncSettings(
-			IMainFormForConfig mainForm,
-			ZXSpectrum.ZXSpectrumSettings settings)
+		public ZxSpectrumNonSyncSettings(ISettingsAdapter settable)
 		{
-			_mainForm = mainForm;
-			_settings = settings;
+			_settable = settable;
+			_settings = (ZXSpectrum.ZXSpectrumSettings) _settable.GetSettings();
 			InitializeComponent();
 			Icon = Properties.Resources.GameControllerIcon;
 		}
@@ -58,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 				_settings.BackgroundColor = _bgColor;
 				_settings.UseCoreBorderForBackground = checkBoxShowCoreBrdColor.Checked;
 
-				_mainForm.GetSettingsAdapterForLoadedCore<ZXSpectrum>().PutCoreSettings(_settings);
+				_settable.PutCoreSettings(_settings);
 
 				DialogResult = DialogResult.OK;
 				Close();

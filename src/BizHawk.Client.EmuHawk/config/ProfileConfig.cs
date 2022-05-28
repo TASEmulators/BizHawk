@@ -15,11 +15,11 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class ProfileConfig : Form
 	{
-		private readonly IMainFormForConfig _mainForm;
+		private readonly MainForm _mainForm;
 
 		private readonly Config _config;
 
-		public ProfileConfig(Config config, IMainFormForConfig mainForm)
+		public ProfileConfig(Config config, MainForm mainForm)
 		{
 			_mainForm = mainForm;
 			_config = config;

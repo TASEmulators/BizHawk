@@ -1,21 +1,22 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Calculators.TI83;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class TI83PaletteConfig : Form
 	{
-		private readonly IMainFormForConfig _mainForm;
+		private readonly ISettingsAdapter _settable;
+
 		private readonly TI83Common.TI83CommonSettings _settings;
 
-		public TI83PaletteConfig(
-			IMainFormForConfig mainForm,
-			TI83Common.TI83CommonSettings settings)
+		public TI83PaletteConfig(ISettingsAdapter settable)
 		{
-			_mainForm = mainForm;
-			_settings = settings;
+			_settable = settable;
+			_settings = (TI83Common.TI83CommonSettings) _settable.GetSettings();
 			InitializeComponent();
 			Icon = Properties.Resources.CalculateIcon;
 		}
@@ -32,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 			_settings.BGColor = (uint)BackgroundPanel.BackColor.ToArgb();
 			_settings.ForeColor = (uint)ForeGroundPanel.BackColor.ToArgb();
 
-			_mainForm.GetSettingsAdapterForLoadedCore<TI83>().PutCoreSettings(_settings);
+			_settable.PutCoreSettings(_settings);
 
 			DialogResult = DialogResult.OK;
 			Close();
