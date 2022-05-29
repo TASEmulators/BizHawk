@@ -14,10 +14,10 @@ namespace BizHawk.Common
 	{
 		public static string FFmpegPath = string.Empty; // always updated in DiscoHawk.Program/EmuHawk.Program
 
-		//could return a different version for different operating systems.. shouldnt be hard.
-		public static readonly string Version = "N-92462-g529debc987";
+		//https://ffmpeg.org/doxygen/3.2/index.html
+		//use dot to ensure it's a major version and not random junk
+		public static readonly string Version = "4.";
 
-		//likewise
 		public static readonly string Url = "https://github.com/TASEmulators/ffmpeg-binaries/blob/master/ffmpeg-20181118-529debc-win64-static_ffmpeg.7z?raw=true";
 
 		public class AudioQueryResult
@@ -49,7 +49,9 @@ namespace BizHawk.Common
 			try
 			{
 				string stdout = Run("-version").Text;
-				if (stdout.Contains($"ffmpeg version {Version}")) return true;
+				if (stdout.Contains($"ffmpeg version {Version}")
+					|| stdout.Contains($"ffmpeg version n{Version}"))
+					return true;
 			}
 			catch
 			{
