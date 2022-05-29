@@ -49,7 +49,7 @@ namespace BizHawk.Client.Common
 			for (var i = 0; i < entries.Count; i++)
 			{
 				var (entry, archiveIndex) = entries[i];
-				if (entry.Key == null) return null;
+				if (entry.Key is null) return null; // see https://github.com/adamhathcock/sharpcompress/issues/137
 				outFiles.Add(new HawkArchiveFileItem(entry.Key.Replace('\\', '/'), size: entry.Size, index: i, archiveIndex: archiveIndex));
 			}
 			return outFiles;
