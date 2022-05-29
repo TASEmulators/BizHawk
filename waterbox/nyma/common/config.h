@@ -117,6 +117,9 @@
 /* Define to 1 if you have the `dup2' function. */
 #undef HAVE_DUP2
 
+/* Define if we are compiling and linking with external libzstd. */
+#undef HAVE_EXTERNAL_LIBZSTD
+
 /* Define if we are compiling and linking with external LZO. */
 #undef HAVE_EXTERNAL_LZO2
 
@@ -138,29 +141,14 @@
 /* Define to 1 if you have the <fenv.h> header file. */
 #undef HAVE_FENV_H
 
-/* Define to 1 if you have the `fopen64' function. */
-#undef HAVE_FOPEN64
-
 /* Define to 1 if you have the `fork' function. */
 #undef HAVE_FORK
 
 /* Define to 1 if you have the `freeaddrinfo' function. */
 #undef HAVE_FREEADDRINFO
 
-/* Define to 1 if fseeko (and presumably ftello) exists and is declared. */
-#undef HAVE_FSEEKO
-
-/* Define to 1 if you have the `fseeko64' function. */
-#undef HAVE_FSEEKO64
-
 /* Define to 1 if you have the `fstat64' function. */
 #undef HAVE_FSTAT64
-
-/* Define to 1 if you have the `ftello' function. */
-#undef HAVE_FTELLO
-
-/* Define to 1 if you have the `ftello64' function. */
-#undef HAVE_FTELLO64
 
 /* Define to 1 if you have the `ftruncate64' function. */
 #undef HAVE_FTRUNCATE64
@@ -244,11 +232,11 @@
 /* Define to 1 if you have the `asound' library (-lasound). */
 #undef HAVE_LIBASOUND
 
+/* Define if we are compiling with libFLAC support. */
+#undef HAVE_LIBFLAC
+
 /* Define to 1 if you have the `mpcdec' library (-lmpcdec). */
 #undef HAVE_LIBMPCDEC
-
-/* Define if we are compiling with libsndfile support. */
-#undef HAVE_LIBSNDFILE
 
 /* Define to 1 if you have the `trio' library (-ltrio). */
 #undef HAVE_LIBTRIO
@@ -270,6 +258,9 @@
 
 /* Define to 1 if the system has the type `long long int'. */
 #define HAVE_LONG_LONG_INT 1
+
+/* Define to 1 if you have the `lseek64' function. */
+#undef HAVE_LSEEK64
 
 /* Define to 1 if you have the `madvise' function. */
 #undef HAVE_MADVISE
@@ -422,6 +413,9 @@
 /* Define to 1 if you have the `sigaction' function. */
 #undef HAVE_SIGACTION
 
+/* Define to 1 if you have the `siglongjmp' function. */
+#undef HAVE_SIGLONGJMP
+
 /* Define to 1 if you have the `signal' function. */
 #undef HAVE_SIGNAL
 
@@ -526,6 +520,9 @@
 /* Define to 1 if O_NOFOLLOW works. */
 #undef HAVE_WORKING_O_NOFOLLOW
 
+/* Define to 1 if you have the `_longjmp' function. */
+#undef HAVE__LONGJMP
+
 /* Define to 1 if you have the `_mkdir' function. */
 #undef HAVE__MKDIR
 
@@ -549,10 +546,10 @@
 #undef MDFN_ENABLE_DEV_BUILD
 
 /* Mednafen version definition. */
-#define MEDNAFEN_VERSION "1.24.3"
+#define MEDNAFEN_VERSION "1.29.0"
 
 /* Mednafen version numeric. */
-#define MEDNAFEN_VERSION_NUMERIC 0x00102403
+#define MEDNAFEN_VERSION_NUMERIC 0x00102900
 
 /* Define if config.h is present */
 #undef MINILZO_HAVE_CONFIG_H
@@ -738,6 +735,9 @@
 
 /* Define if we are compiling with PlayStation emulation. */
 #define WANT_PSX_EMU 1
+
+/* Define if we are compiling with Sega Arcade SCSP Player. */
+#undef WANT_SASPLAY_EMU
 
 /* Define if we are compiling with SMS+GG emulation. */
 #define WANT_SMS_EMU 1
