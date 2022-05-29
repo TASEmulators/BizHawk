@@ -48,13 +48,14 @@ public:
 		va_list args;
 		va_start(args, fmt);
 		std::size_t sz = std::vsnprintf(NULL, 0, fmt, args);
+		va_end(args);
 		if (static_cast<s64>(sz) < 0) {
 			std::puts("vsnprintf failed!");
 			std::fflush(stdout);
-			va_end(args);
 			return;
 		}
 
+		va_start(args, fmt);
 		std::unique_ptr<char[]> msg(new char[sz + 1]);
 		std::vsnprintf(msg.get(), sz + 1, fmt, args);
 		va_end(args);
@@ -218,13 +219,8 @@ public:
 			case RETRO_ENVIRONMENT::GET_LOG_INTERFACE:
 			{
 				retro_log_callback* cb = static_cast<retro_log_callback*>(data);
-#ifdef _WIN32
 				cb->log = &RetroLog;
 				return true;
-#else
-				cb->log = nullptr;
-				return false;
-#endif
 			}
 			case RETRO_ENVIRONMENT::GET_PERF_INTERFACE:
 				//callbacks for performance counters?
@@ -406,7 +402,7 @@ public:
 		sampleBuf.push_back(right);
 		numSamples++;
 	}
-	
+
 	std::size_t RetroAudioSampleBatch(const s16* data, std::size_t frames) {
 		const std::size_t ret = frames;
 		while (frames--) {
@@ -478,7 +474,7 @@ public:
 		videoBuf.reset(new u32[sz]);
 		videoBufSz = sz;
 	}
-	
+
 	void GetVideo(u32* width, u32* height, u32* videoBuf) {
 		*width = this->width;
 		*height = this->height;
