@@ -16,10 +16,11 @@ namespace BizHawk.Client.Common
 	{
 		private IArchive? _archive;
 
-		private IEnumerable<IArchiveEntry> EnumerateArchiveFiles()
+		private IEnumerable<(IArchiveEntry Entry, int ArchiveIndex)> EnumerateArchiveFiles()
 		{
 			if (_archive == null) throw new ObjectDisposedException(nameof(SharpCompressArchiveFile));
-			return _archive.Entries.Where(e => !e.IsDirectory);
+			return _archive.Entries.Select(static (e, i) => (Entry: e, ArchiveIndex: i))
+				.Where(static tuple => !tuple.Entry.IsDirectory);
 		}
 
 		public SharpCompressArchiveFile(string path) => _archive = ArchiveFactory.Open(path, new());
@@ -47,9 +48,9 @@ namespace BizHawk.Client.Common
 			var entries = EnumerateArchiveFiles().ToList();
 			for (var i = 0; i < entries.Count; i++)
 			{
-				var entry = entries[i];
-				if (entry.Key == null) return null;
-				outFiles.Add(new HawkArchiveFileItem(entry.Key.Replace('\\', '/'), entry.Size, i, i));
+				var (entry, archiveIndex) = entries[i];
+				if (entry.Key is null) return null; // see https://github.com/adamhathcock/sharpcompress/issues/137
+				outFiles.Add(new HawkArchiveFileItem(entry.Key.Replace('\\', '/'), size: entry.Size, index: i, archiveIndex: archiveIndex));
 			}
 			return outFiles;
 		}
