@@ -12,9 +12,9 @@ namespace BizHawk.Common
 {
 	public static class FFmpegService
 	{
-		private const string BIN_HOST_URI_LINUX_X64 = "https://github.com/TASEmulators/ffmpeg-binaries/blob/master/ffmpeg-4.4.1-static-linux-x64.7z";
+		private const string BIN_HOST_URI_LINUX_X64 = "https://github.com/TASEmulators/ffmpeg-binaries/raw/master/ffmpeg-4.4.1-static-linux-x64.7z";
 
-		private const string BIN_HOST_URI_WIN_X64 = "https://www.gyan.dev/ffmpeg/builds/packages/ffmpeg-4.4.1-essentials_build.7z";
+		private const string BIN_HOST_URI_WIN_X64 = "https://github.com/TASEmulators/ffmpeg-binaries/raw/master/ffmpeg-4.4.1-static-windows-x64.7z";
 
 		private const string VERSION = "ffmpeg version 4.4.1";
 
