@@ -23,10 +23,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 
 			{ "vb.3dmode", new() { NonSync = true/*, NoRestart = true*/ } }, // fixme: a restart shouldn't be needed, yet upstream doesn't allow that?
 			{ "vb.3dreverse", new() { NonSync = true } },
-			{ "vb.anaglyph.lcolor", new() { NonSync = true, NoRestart = true } },
+			{ "vb.anaglyph.lcolor", new() { Default = "16759296", NonSync = true, NoRestart = true } },
 			{ "vb.anaglyph.preset", new() { NonSync = true, NoRestart = true } },
-			{ "vb.anaglyph.rcolor", new() { NonSync = true, NoRestart = true } },
-			{ "vb.default_color", new() { NonSync = true, NoRestart = true } },
+			{ "vb.anaglyph.rcolor", new() { Default = "47871", NonSync = true, NoRestart = true } },
+			{ "vb.default_color", new() { Default = "15790320", NonSync = true, NoRestart = true } },
 			{ "vb.instant_display_hack", new() { NonSync = true, NoRestart = true } },
 			{ "vb.ledonscale", new() { NonSync = true, NoRestart = true } },
 			{ "vb.liprescale", new() { NonSync = true } },
