@@ -230,7 +230,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		{
 			[DisplayName("Use Six Button Controllers")]
 			[Description("Controls the type of any attached normal controllers; six button controllers are used if true, otherwise three button controllers.  Some games don't work correctly with six button controllers.  Not relevant if other controller types are connected.")]
-			[DefaultValue(true)]
+			[DefaultValue(false)]
 			public bool UseSixButton { get; set; }
 
 			[DisplayName("Control Type - Left Port")]
