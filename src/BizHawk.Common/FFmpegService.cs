@@ -12,13 +12,15 @@ namespace BizHawk.Common
 {
 	public static class FFmpegService
 	{
+		private const string BIN_HOST_URI_LINUX_X64 = "https://github.com/TASEmulators/ffmpeg-binaries/raw/master/ffmpeg-4.4.1-static-linux-x64.7z";
+
+		private const string BIN_HOST_URI_WIN_X64 = "https://github.com/TASEmulators/ffmpeg-binaries/raw/master/ffmpeg-4.4.1-static-windows-x64.7z";
+
+		private const string VERSION = "ffmpeg version 4.4.1";
+
 		public static string FFmpegPath = string.Empty; // always updated in DiscoHawk.Program/EmuHawk.Program
 
-		//could return a different version for different operating systems.. shouldnt be hard.
-		public static readonly string Version = "N-92462-g529debc987";
-
-		//likewise
-		public static readonly string Url = "https://github.com/TASEmulators/ffmpeg-binaries/blob/master/ffmpeg-20181118-529debc-win64-static_ffmpeg.7z?raw=true";
+		public static readonly string Url = OSTailoredCode.IsUnixHost ? BIN_HOST_URI_LINUX_X64 : BIN_HOST_URI_WIN_X64;
 
 		public class AudioQueryResult
 		{
@@ -48,13 +50,12 @@ namespace BizHawk.Common
 		{
 			try
 			{
-				string stdout = Run("-version").Text;
-				if (stdout.Contains($"ffmpeg version {Version}")) return true;
+				return Run("-version").Text.Contains(VERSION);
 			}
 			catch
 			{
+				return false;
 			}
-			return false;
 		}
 
 		public struct RunResults
