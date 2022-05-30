@@ -11,7 +11,7 @@ using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 {
-	[PortedCore(CoreNames.TurboNyma, "Mednafen Team", "1.27.1", "https://mednafen.github.io/releases/")]
+	[PortedCore(CoreNames.TurboNyma, "Mednafen Team", "1.29.0", "https://mednafen.github.io/releases/")]
 	public class TurboNyma : NymaCore, IRegionable, IPceGpuView
 	{
 		private readonly LibTurboNyma _turboNyma;

@@ -9,7 +9,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 {
-	[PortedCore(CoreNames.HyperNyma, "Mednafen Team", "1.27.1", "https://mednafen.github.io/releases/")]
+	[PortedCore(CoreNames.HyperNyma, "Mednafen Team", "1.29.0", "https://mednafen.github.io/releases/")]
 	public class HyperNyma : NymaCore, IRegionable, IPceGpuView
 	{
 		private readonly LibHyperNyma _hyperNyma;

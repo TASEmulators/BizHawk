@@ -4,7 +4,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Faust
 {
-	[PortedCore(CoreNames.Faust, "Mednafen Team", "1.27.1", "https://mednafen.github.io/releases/")]
+	[PortedCore(CoreNames.Faust, "Mednafen Team", "1.29.0", "https://mednafen.github.io/releases/")]
 	public class Faust : NymaCore, IRegionable
 	{
 		[CoreConstructor(VSystemID.Raw.SNES)]
