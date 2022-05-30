@@ -27,4 +27,4 @@ typedef void (*FrameCallback)();
 void RegisterFrameThreadProc(FrameCallback threadproc);
 
 void StartGameWithCds(int numdisks);
-void SwitchCds(bool prev, bool next);
+void SwitchCds(bool open, bool close, int cd);
