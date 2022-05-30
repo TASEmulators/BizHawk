@@ -19,10 +19,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private readonly byte[] _inputPortData = new byte[MAX_INPUT_DATA];
 		private readonly string _controllerDeckName;
 
-		private void InitControls(List<NPortInfoT> allPorts, bool hasCds, ref SystemInfo si)
+		private void InitControls(List<NPortInfoT> allPorts, int numCds, ref SystemInfo si)
 		{
 			_controllerAdapter = new ControllerAdapter(
-				allPorts, _syncSettingsActual.PortDevices, OverrideButtonName, hasCds, ref si, ComputeHiddenPorts(),
+				allPorts, _syncSettingsActual.PortDevices, OverrideButtonName, numCds, ref si, ComputeHiddenPorts(),
 				_controllerDeckName);
 			_nyma.SetInputDevices(_controllerAdapter.Devices);
 			ControllerDefinition = _controllerAdapter.Definition;
@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				List<NPortInfoT> allPorts,
 				IDictionary<int, string> config,
 				Func<string, string> overrideName,
-				bool hasCds,
+				int numCds,
 				ref SystemInfo systemInfo,
 				HashSet<string> hiddenPorts,
 				string controllerDeckName)
@@ -52,8 +52,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					{
 						{ "Power", "System" },
 						{ "Reset", "System" },
-						{ "Previous Disk", "System" },
-						{ "Next Disk", "System" },
+						{ "Open Tray", "System" },
+						{ "Close Tray", "System" },
+						{ "Disk Index", "System" },
 					}
 				};
 
@@ -261,10 +262,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				}
 				ret.BoolButtons.Add("Power");
 				ret.BoolButtons.Add("Reset");
-				if (hasCds)
+				if (numCds > 0)
 				{
-					ret.BoolButtons.Add("Previous Disk");
-					ret.BoolButtons.Add("Next Disk");
+					ret.BoolButtons.Add("Open Tray");
+					ret.BoolButtons.Add("Close Tray");
+					ret.AddAxis("Disk Index", (-1).RangeTo(numCds - 1), 0);
 				}
 				Definition = ret.MakeImmutable();
 				finalDevices.Add(null);

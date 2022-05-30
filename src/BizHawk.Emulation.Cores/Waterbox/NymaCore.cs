@@ -150,7 +150,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				ClockRate = info.MasterClock / (double)0x100000000;
 				_soundBuffer = new short[22050 * 2];
 
-				InitControls(portData, discs?.Length > 0, ref info);
+				InitControls(portData, discs?.Length ?? 0, ref info);
 				PostInit();
 				SettingsInfo.LayerNames = GetLayerData();
 				_settings.Normalize(SettingsInfo);
@@ -217,10 +217,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				flags |= LibNymaCore.BizhawkFlags.SkipSoundening;
 			if (SettingsQuery("nyma.constantfb") != "0")
 				flags |= LibNymaCore.BizhawkFlags.RenderConstantSize;
-			if (controller.IsPressed("Previous Disk"))
-				flags |= LibNymaCore.BizhawkFlags.PreviousDisk;
-			if (controller.IsPressed("Next Disk"))
-				flags |= LibNymaCore.BizhawkFlags.NextDisk;
+			if (controller.IsPressed("Open Tray"))
+				flags |= LibNymaCore.BizhawkFlags.OpenTray;
+			if (controller.IsPressed("Close Tray"))
+				flags |= LibNymaCore.BizhawkFlags.CloseTray;
 
 			var ret = new LibNymaCore.FrameInfo
 			{
@@ -232,6 +232,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 						: LibNymaCore.CommandType.NONE,
 				InputPortData = (byte*)_frameAdvanceInputLock.AddrOfPinnedObject(),
 				FrontendTime = GetRtcTime(SettingsQuery("nyma.rtcrealtime") != "0"),
+				DiskIndex = (int)controller.AxisValue("Disk Index")
 			};
 			if (_frameThreadStart != null)
 			{

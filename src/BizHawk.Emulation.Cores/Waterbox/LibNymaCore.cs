@@ -76,10 +76,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			SkipSoundening = 2,
 			// render at LCM * LCM instead of raw
 			RenderConstantSize = 4,
-			// switch to the previous disk, if possible
-			PreviousDisk = 8,
-			// switch to the next disk, if possible
-			NextDisk = 16
+			// open disk tray, if possible
+			OpenTray = 8,
+			// close disk tray, if possible
+			CloseTray = 16
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -98,6 +98,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			/// If the core calls time functions, this is the value that will be used
 			/// </summary>
 			public long FrontendTime;
+			/// <summary>
+			/// disk index to use if close tray is done
+			/// </summary>
+			public int DiskIndex;
 		}
 
 		/// <summary>
