@@ -322,7 +322,7 @@ while sys == 'GB' or sys == 'GBC' do
 end
 
 while sys == 'VB' do
-	if movie.mode() == 'PLAY' then c = movie.getinput(emu.framecount() - 1)
+	if movie.mode() == 'PLAY' then c = movie.getinput(emu.framecount() - 1, 1)
 	else c = joypad.get() end
 
 	x = xpos

@@ -443,6 +443,8 @@ namespace BizHawk.Client.Common
 				["R_Down"] = 'd',
 				["R_Left"] = 'l',
 				["R_Right"] = 'r',
+				["Battery Voltage: Set Normal"] = '+',
+				["Battery Voltage: Set Low"] = '-',
 			},
 			[VSystemID.Raw.PCFX] = new()
 			{
