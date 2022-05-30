@@ -118,7 +118,7 @@ struct MyFrameInfo: public FrameInfo
 	// raw data for each input port, assumed to be MAX_PORTS * MAX_PORT_DATA long
 	uint8_t* InputPortData;
 	int64_t FrontendTime;
-	uint8_t DiscIndex; // used on close tray
+	int32_t DiskIndex; // used on close tray
 };
 
 ECL_EXPORT void FrameAdvance(MyFrameInfo& frame)
@@ -131,7 +131,7 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo& frame)
 		auto open = !!(frame.BizhawkFlags & BizhawkFlags::OpenTray);
 		auto close = !!(frame.BizhawkFlags & BizhawkFlags::CloseTray);
 		if (open || close)
-			SwitchCds(open, close, frame.DiscIndex);
+			SwitchCds(open, close, frame.DiskIndex);
 	}
 
 	if (frame.Command)
