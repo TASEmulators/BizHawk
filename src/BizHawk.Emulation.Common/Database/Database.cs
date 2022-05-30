@@ -181,22 +181,19 @@ namespace BizHawk.Emulation.Common
 			acquire.Set();
 		}
 
-		public static void InitializeDatabase(string path, bool silent)
+		public static void InitializeDatabase(string bundledRoot, string userRoot, bool silent)
 		{
 			if (initialized) throw new InvalidOperationException("Did not expect re-initialize of game Database");
 			initialized = true;
 
-			_bundledRoot = Path.GetDirectoryName(path);
-			_userRoot = Environment.GetEnvironmentVariable("BIZHAWK_DATA_HOME");
-			if (!string.IsNullOrEmpty(_userRoot) && Directory.Exists(_userRoot)) _userRoot = Path.Combine(_userRoot, "gamedb");
-			else _userRoot = _bundledRoot;
-			Console.WriteLine($"user root: {_userRoot}");
+			_bundledRoot = bundledRoot;
+			_userRoot = Directory.Exists(userRoot) ? userRoot : bundledRoot;
 
 			_expected = new DirectoryInfo(_bundledRoot!).EnumerateFiles("*.txt").Select(static fi => fi.Name).ToList();
 
 			var stopwatch = Stopwatch.StartNew();
 			ThreadPool.QueueUserWorkItem(_=> {
-				initializeWork(path, inUser: false, silent: silent);
+				initializeWork(Path.Combine(bundledRoot, "gamedb.txt"), inUser: false, silent: silent);
 				if (_expected.Count is not 0) Util.DebugWriteLine($"extra bundled gamedb files were not #included: {string.Join(", ", _expected)}");
 				Util.DebugWriteLine("GameDB load: " + stopwatch.Elapsed + " sec");
 			});

@@ -343,7 +343,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			//do this threaded stuff early so it has plenty of time to run in background
-			Database.InitializeDatabase(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb", "gamedb.txt"), silent: true);
+			Database.InitializeDatabase(
+				bundledRoot: Path.Combine(PathUtils.ExeDirectoryPath, "gamedb"),
+				userRoot: Path.Combine(PathUtils.DataDirectoryPath, "gamedb"),
+				silent: true);
 			BootGodDb.Initialize(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb"));
 
 			_argParser = cliFlags;
