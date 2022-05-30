@@ -155,7 +155,7 @@ namespace BizHawk.Client.EmuHawk
 			initialConfig.ResolveDefaults();
 			// initialConfig should really be globalConfig as it's mutable
 
-			FFmpegService.FFmpegPath = Path.Combine(PathUtils.DllDirectoryPath, OSTC.IsUnixHost ? "ffmpeg" : "ffmpeg.exe");
+			FFmpegService.FFmpegPath = Path.Combine(PathUtils.DataDirectoryPath, "dll", OSTC.IsUnixHost ? "ffmpeg" : "ffmpeg.exe");
 
 			StringLogUtil.DefaultToDisk = initialConfig.Movies.MoviesOnDisk;
 

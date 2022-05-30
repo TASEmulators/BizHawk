@@ -89,6 +89,8 @@ namespace BizHawk.Client.EmuHawk
 						if (exiting)
 							return;
 
+						DirectoryInfo parentDir = new(Path.GetDirectoryName(FFmpegService.FFmpegPath)!);
+						if (!parentDir.Exists) parentDir.Create();
 						File.WriteAllBytes(FFmpegService.FFmpegPath, data);
 						if (OSTailoredCode.IsUnixHost)
 						{
