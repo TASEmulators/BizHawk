@@ -323,7 +323,7 @@ end
 
 while sys == 'VB' do
 	if movie.mode() == 'PLAY' then c = movie.getinput(emu.framecount() - 1, 1)
-	else c = joypad.get() end
+	else c = joypad.get(1) end
 
 	x = xpos
 	y = ypos
