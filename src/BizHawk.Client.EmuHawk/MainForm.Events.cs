@@ -3072,7 +3072,10 @@ namespace BizHawk.Client.EmuHawk
 			items.Add(virtuSubmenu);
 
 			// Virtual Boyee
-			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.VirtualBoyee, CreateGenericCoreConfigItem<VirtualBoyee>(CoreNames.VirtualBoyee)));
+			var virtualBoyeeSettingsItem = CreateSettingsItem("Settings...", (_, _) => OpenGenericCoreConfig($"{CoreNames.VirtualBoyee} Settings"));
+			var virtualBoyeeSubmenu = CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.VirtualBoyee, virtualBoyeeSettingsItem);
+			virtualBoyeeSubmenu.DropDownOpened += (_, _) => virtualBoyeeSettingsItem.Enabled = Emulator is VirtualBoyee;
+			items.Add(virtualBoyeeSubmenu);
 
 			// ZXHawk
 			items.Add(CreateCoreSubmenu(
