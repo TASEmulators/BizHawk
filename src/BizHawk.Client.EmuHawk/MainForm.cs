@@ -52,9 +52,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			SetWindowText();
 
-			foreach (var (appliesTo, coreNames) in Config.CorePickerUIData)
+			foreach (var (groupLabel, appliesTo, coreNames) in Config.CorePickerUIData.Select(static tuple => (GroupLabel: tuple.AppliesTo[0], tuple.AppliesTo, tuple.CoreNames))
+				.OrderBy(static tuple => tuple.GroupLabel))
 			{
-				var groupLabel = appliesTo[0];
 				var submenu = new ToolStripMenuItem { Text = groupLabel };
 				void ClickHandler(object clickSender, EventArgs clickArgs)
 				{
@@ -67,28 +67,25 @@ namespace BizHawk.Client.EmuHawk
 					entry.Click += ClickHandler;
 					return (ToolStripItem) entry;
 				}).ToArray());
-				submenu.DropDownOpened += (openedSender, openedArgs) =>
+				submenu.DropDownOpened += (openedSender, _) =>
 				{
 					Config.PreferredCores.TryGetValue(groupLabel, out var preferred);
 					foreach (ToolStripMenuItem entry in ((ToolStripMenuItem) openedSender).DropDownItems) entry.Checked = entry.Text == preferred;
 				};
 				CoresSubMenu.DropDownItems.Add(submenu);
 			}
-
+			CoresSubMenu.DropDownItems.Add(new ToolStripSeparator { AutoSize = true });
 			var GBInSGBMenuItem = new ToolStripMenuItem { Text = "GB in SGB" };
-			GBInSGBMenuItem.Click += (clickSender, clickArgs) =>
+			GBInSGBMenuItem.Click += (_, _) =>
 			{
 				Config.GbAsSgb ^= true;
 				if (!Emulator.IsNull()) FlagNeedsReboot(); //TODO only alert if a GB or SGB core is loaded
 			};
+			CoresSubMenu.DropDownItems.Add(GBInSGBMenuItem);
 			var setLibretroCoreToolStripMenuItem = new ToolStripMenuItem { Text = "Set Libretro Core..." };
-			setLibretroCoreToolStripMenuItem.Click += (clickSender, clickArgs) => RunLibretroCoreChooser();
-			CoresSubMenu.DropDownItems.AddRange(new ToolStripItem[] {
-				GBInSGBMenuItem,
-				new ToolStripSeparator { AutoSize = true },
-				setLibretroCoreToolStripMenuItem
-			});
-			CoresSubMenu.DropDownOpened += (openedSender, openedArgs) => GBInSGBMenuItem.Checked = Config.GbAsSgb;
+			setLibretroCoreToolStripMenuItem.Click += (_, _) => RunLibretroCoreChooser();
+			CoresSubMenu.DropDownItems.Add(setLibretroCoreToolStripMenuItem);
+			CoresSubMenu.DropDownOpened += (_, _) => GBInSGBMenuItem.Checked = Config.GbAsSgb;
 
 			ToolStripMenuItemEx recentCoreSettingsSubmenu = new() { Text = "Recent" };
 			recentCoreSettingsSubmenu.DropDownItems.AddRange(CreateCoreSettingsSubmenus().ToArray());
