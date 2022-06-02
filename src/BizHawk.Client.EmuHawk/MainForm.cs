@@ -59,8 +59,11 @@ namespace BizHawk.Client.EmuHawk
 				void ClickHandler(object clickSender, EventArgs clickArgs)
 				{
 					var coreName = ((ToolStripMenuItem) clickSender).Text;
-					foreach (var system in appliesTo) Config.PreferredCores[system] = coreName;
-					if (appliesTo.Contains(Emulator.SystemId)) FlagNeedsReboot(); //TODO don't alert if the loaded core was the one selected
+					foreach (var system in appliesTo)
+					{
+						if (Emulator.SystemId == system && Emulator.Attributes().CoreName != coreName) FlagNeedsReboot();
+						Config.PreferredCores[system] = coreName;
+					}
 				}
 				submenu.DropDownItems.AddRange(coreNames.Select(coreName => {
 					var entry = new ToolStripMenuItem { Text = coreName };
@@ -79,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 			GBInSGBMenuItem.Click += (_, _) =>
 			{
 				Config.GbAsSgb ^= true;
-				if (!Emulator.IsNull()) FlagNeedsReboot(); //TODO only alert if a GB or SGB core is loaded
+				if (Emulator.SystemId is VSystemID.Raw.GB or VSystemID.Raw.GBC or VSystemID.Raw.SGB) FlagNeedsReboot();
 			};
 			CoresSubMenu.DropDownItems.Add(GBInSGBMenuItem);
 			var setLibretroCoreToolStripMenuItem = new ToolStripMenuItem { Text = "Set Libretro Core..." };
