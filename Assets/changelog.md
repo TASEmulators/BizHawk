@@ -1,0 +1,124 @@
+# BizHawk changelog
+
+## changes from 2.7 to 2.8
+
+- Misc. changes to EmuHawk:
+	- fixed various bugs with the Paths config dialog
+	- fixed "Close and reload ROM" in Firmware Manager crashing if it was opened from missing FW dialog (#3054)
+	- fixed typos which broke INTV, NES, and PSX gamedb lookups
+	- fixed known good Saturn BIOS choices marked as unknown (#3095)
+	- updated list of Sega CD / Mega CD BIOSes in firmware database
+	- many gamedb additions and updates
+	- fixed RAM Search difference fields can't fit all possible values (#3117)
+	- fixed `File` > `Load State` > `Auto-load Last Slot` breaking movie recording/playback (#2384)
+	- fixed .dsm importer
+	- fixed .smv importer nagging about core choice thousands of times (#3022)
+	- fixed .vbm importer
+	- made OSD message duration (time to fade) configurable in UI, and allow API calls to override it
+	- added option to split RAM Watch entries (#1024)
+	- fixed drag+drop bug (#1483)
+	- made `Config` > `Customize...` > `Pause when menu activated` behave consistently
+	- fixed overlapping UI elements in Debugger (#3026)
+	- tidied up numbering of save slots and TAStudio branches (#3112)
+	- fixed `ObjectDisposedException` when triggering single-instance passthrough
+	- fixed throttle edge cases
+	- fixed edge cases where post-frame tool updates would run twice after a frame advance
+	- added more logging and warning dialogs for edge cases
+	- many smaller fixes and even some frontend speed optimisations (not sarcasm, this is a first)
+- Linux port:
+	- added support for PSX (see Nymashock below) and technically N64 and TI-83 (see Ares64 and Emu83 below)
+	- fixed various problems w/ alignment and size under Mono
+	- fixed hotkeys triggering accidentally when typing in Virtual Pad fields (#3087)
+	- added Nix expression for reproducible EmuHawk (and DiscoHawk) builds without dependency issues
+- TAStudio:
+	- re-enabled editing of movie comments (#3063)
+	- added an edit dialog for TAStudio palette (#2119)
+	- fixed branch screenshots (#1513)
+	- fixed weird edge case putting TAStudio in an unaccounted-for state (#3066)
+	- fixed error when autoloading a rom and TAStudio AND a .tasproj for a different rom
+	- fixed incorrect behaviour when jumping to frame 0
+- Lua/ApiHawk:
+	- added support for `"#RRGGBB"` format when parsing colours ("luacolor" in docs) in Lua API
+	- fixed `joypad.setfrommnemonicstr` not working without reinitialising MovieSession (#2525)
+- DiscoHawk:
+	- fixed deadlocks (#3128)
+- New and graduating cores:
+	- Nymashock:
+		- new PSX core ported from Mednafen (like Octoshock, though this is newer and more easily updated, which also means it has more peripherals)
+	- SameBoy:
+		- new ported GB/C core with comparable accuracy to Gambatte and GBHawk (not to be confused with the SameBoy SGB core in older releases)
+	- Emu83:
+		- new TI-83 core
+	- BSNESv115+:
+		- BSNESv115+ (the "new BSNES port") is no longer experimental
+		- fixed Hex Editor and others using read instead of peek (#3060)
+		- implemented memory callbacks
+		- fixed ram and rom memory domains
+		- increased MmapHeapSize to prevent crashes, affected Star Ocean
+		- refactored latching to improve dumping/verification
+		- reduced savestate size (increased frequency for TAStudio/rewind)
+		- improved speed of fast ppu check
+	- MSXHawk:
+		- MSXHawk is no longer experimental
+		- implemented more hardware/mappers
+		- added Linux port
+	- Ares64:
+		- 2 new experimental cores ported from Ares: one for casual play which is slow and desync-prone ("Performance"), and one for TASing which is even slower but will sync ("Accuracy")
+- Other cores:
+	- A7800Hawk:
+		- fixed nondeterminism caused by incorrect savestate code
+		- fixed Basketbrawl and summer games
+		- fixed off pixel detection in write mode, affected baby pac man
+	- Atari2600Hawk:
+		- fixed audio issues, affected ms pac man
+	- Gambatte:
+		- updated core
+		- fixed error when attempting to write to some registers e.g. with the Debugger (#3028)
+		- fixed crash on Linux
+		- refactored GambatteLink to be more modular and add support for 3x/4x
+		- added proper memory callback scopes for link play
+		- enabled disassembly in link play
+		- allowed linking w/ GBC cart IR
+		- stopped using fine-grained timing for link play when the link is disconnected
+		- added more scopes for memory callbacks
+	- GBHawk:
+		- updated GBA startup state, affected Konami collection vol. 4
+		- fixed link play, affected perfect dark
+	- Genplus-gx:
+		- added support for SRAM larger than 8MB (#3073)
+		- prevented crash when loading Debugger (#2769, #2958)
+	- Handy:
+		- fixed crash on Linux (#2425)
+	- IntelliHawk:
+		- adjusted sme timings and fixed accesses to registers, affected motocross
+		- cleaned up CPU, fix trace logger and throw less exceptions
+		- fixed intellicart, affected various homebrew roms
+		- fixed MOBs with x-coord 0 being visible, affected bowling
+		- fixed overflow flag calculation, affected checkers and reversi
+		- more compatibility work
+	- MAME:
+		- stopped treating warnings as errors
+		- set System Bus correctly
+	- melonDS:
+		- updated core, adding experimental DSiWare support
+		- enabled memory callbacks
+		- fixed empty strings in firmware settings preventing roms from loading (#3030)
+	- Mupen64Plus:
+		- fixed haptic feedback causing movie playback to crash
+		- enabled GLideN64's texture wildcard support (#3104)
+	- NesHawk:
+		- added mapper for Pokemon bootlegs
+		- fixed not parsing iNES v2 headers (#3082)
+		- other small accuracy improvements and bugfixes
+	- O2Hawk:
+		- fixed blobbers and Popeye
+	- PCEHawk:
+		- fixed crash related to framebuffer resizing (#3018)
+	- SMSHawk:
+		- fixed sprite collision inaccuracy (#1611), affected Ecco the Dolphin
+		- fixed Fray (vert lock update)
+		- fixed SMS backdrop colors
+		- fixed ys (JPN) by emulating VRAM masking bit
+		- improved SG-1000 8kb ram adapter emulation
+	- VectrexHawk:
+		- implemented 64K bank switching
