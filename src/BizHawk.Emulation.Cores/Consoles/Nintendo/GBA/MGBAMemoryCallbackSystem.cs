@@ -196,21 +196,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				cb?.Invoke(pc, 0, (uint)MemoryCallbackFlags.AccessExecute);
 			}
 		}
-
-		private MemoryCallbackDelegate DebugCallback = null;
-
-		private bool DebugCallbackExecuted = false;
-
-		public void Debug2805()
-		{
-			DebugCallback = (_, _, _) =>
-			{
-				Console.WriteLine(DebugCallbackExecuted ? "subsequent call" : "first call");
-				Remove(DebugCallback);
-				DebugCallbackExecuted = true;
-			};
-			Add(new MemoryCallback("System Bus", MemoryCallbackType.Write, "Plugin Hook", DebugCallback, 0x020096E0, null));
-		}
 	}
 
 	internal class CallbackContainer

@@ -12,7 +12,6 @@ using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
-using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Emulation.Cores.Nintendo.Sameboy;
 using BizHawk.WinForms.Controls;
@@ -196,18 +195,6 @@ namespace BizHawk.Client.EmuHawk
 								() => ((Sameboy) Emulator).DebugSameBoyState())
 							{
 								RequiresCore = CoreNames.Sameboy,
-							},
-						},
-					},
-					new DebugVSystemMenuItem(VSystemID.Raw.GBA)
-					{
-						DropDownItems =
-						{
-							new DebugVSystemChildItem(
-								"Reproduce #2805",
-								() => ((MGBAMemoryCallbackSystem) Emulator.AsDebuggable().MemoryCallbacks).Debug2805())
-							{
-								RequiresCore = CoreNames.Mgba,
 							},
 						},
 					},
