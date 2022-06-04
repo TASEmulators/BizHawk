@@ -1,5 +1,190 @@
 # BizHawk changelog
 
+## changes from 2.8 to 2.9
+
+[13456e51b CPP] (Virtu) changed RTC to use deterministic time when recording instead of system time
+
+[948049bb2 CPP] (Genplus-gx) stopped byteswapping Z80 domains (#3290)
+
+[d3d90eb70 CPP] fixed Debugger breakpoint crash with mGBA (#3287)
+
+[4df256cd6 CPP] (Virtu) fixed some internal state not being overwritten by savestates
+
+[1241758ec Yoshi] made file extension check for disc images case-insensitive
+
+[fea85649b Morilli] (TAStudio) fixed `.tasproj` headers being written differently based on locale (i.e. ',' instead of '.')
+
+[5afb6ca45 Yoshi] fixed `InvalidOperationException` when using SMS peripherals (#3282)
+
+[1d4e7dd3f Morilli] (BSNESv115+) rework Payload peripheral and fix Virtual Pads
+
+[363afcd55 Morilli] (BSNESv115+) improve peripheral selection for P1
+
+[2c3b6b3cd CPP] (TIC-80) new core (nesbox' own reference implementation)
+
+[2e46d1398 Yoshi] fixed MSX rom loading
+
+[2e46d1398 Yoshi] fixed some systems not having a name to display in the window title
+
+[587855522 Yoshi] fixed Windows version detection and enabled warning for unsupported versions (#2972, #3194)
+
+[a98e3f361 Yoshi] (Linux) adjusted alignment and size of UI elements in Record Movie dialog so they don't overlap... again
+
+[2d015515b Yoshi] moved "Save Window Position" for main window to `Config` > `Display...` > `Window` and added a "Stay on Top"
+
+[0174abde6 CPP] (a26) fix crash when pushing Select on Karate title screen
+
+[8869570bc Yoshi] removed some unnecessary prompts to reboot core
+
+[c70e87af2 Yoshi] reordered `Config` > `Preferred Cores` submenu
+
+[f5d8c0fb1 Yoshi] (Genplus-gx) changed default peripheral to 3-button Genesis gamepad (#2775, #3262)
+
+[6d726a102 feos] bumped FFmpeg to 4.4.1, added auto-download to Linux port (#3259)
+
+[1c27c73c8 CPP] fixed disc switching for Nymashock and Saturnus
+
+[0c95088e0 CPP] (VirtualBoyee) updated to Mednafen 1.29.0
+
+[b3d344b00 Yoshi] fixed strange behaviour when trying to extract archive which contains folders
+
+[e6d74c316 CPP] (Faust) updated to Mednafen 1.29.0
+
+[e6d74c316 CPP] (HyperNyma) updated to Mednafen 1.29.0
+
+[e6d74c316 CPP] (TurboNyma) updated to Mednafen 1.29.0
+
+[e6d74c316 CPP] (NeoPop) updated to Mednafen 1.29.0
+
+[e6d74c316 CPP] (T. S. T.) updated to Mednafen 1.29.0
+
+[e6d74c316 CPP] (Nymashock) updated to Mednafen 1.29.0
+
+[e6d74c316 CPP] (Saturnus) updated to Mednafen 1.29.0
+
+[cd9327a10 CPP] (mGBA) updated to interim version after 0.9.3
+
+[a455cce2d Yoshi] added UI for editing any* core's settings/syncsettings without it being loaded
+
+[0d42459be Yoshi] (CPCHawk) removed redundant `AmstradCpcPokeMemory` tool
+
+[3fe168ad0 CPP] (melonDS) updated to interim version after 0.9.4
+
+[9a73be0e2 CPP] (SameBoy) updated to interim version after 0.14.7, fixing some bugs and adding GB palette customiser (#3185, #3239)
+
+[95ecbe998 Yoshi] fixed "Screenshot (raw) -> Clipboard" not showing keybind hint
+
+[48cfc7988 Morilli] (TAStudio) fixed "Select between Markers" hotkey not working
+
+[09061843f Yoshi] (Lua) fixed encoding bug which caused e.g. Japanese text to become mojibake/garbled (#190, #2041)
+
+[9bdf043f3 Yoshi] (ApiHawk) deprecated `CoreSystem` enum in favour of `VSystemID` const strings
+
+[1026503d9 Yoshi] refactored firmware config so the acceptability status icons make sense (#3157)
+
+[af2d8da36 Yoshi] restored "priority" option for U+D/L+R policy, and made it the default again (#2752)
+
+[fd4771c45 Yoshi] fixed category radio buttons being cut off in Messages config
+
+[71150c60d Yoshi] (ApiHawk) changed injector to include non-public properties when looking for `ApiContainer`
+
+[6e46cb550 Yoshi] (Linux) added short-circuit to Mupen64Plus loading to avoid error messages and any strange failure state
+
+[afc442462 Yoshi] (Lua) fixed setting size of Lua Forms (#3034)
+
+[b4ca2f9de Yoshi] increased precision when tweaking axis sensitivity/deadzone (#3038)
+
+[5f820cc53 Yoshi] fixed hotkeys triggering accidentally in Virtual Pad on Windows (#3087)
+
+[41de03e31 Yoshi] (Linux) changed default Lua engine to "NLua+KopiLua" which doesn't seem to crash on normal Mono builds like the other one does
+
+[c93ceae46 Yoshi] fixed typo in Snes9x sound settings bitfield (#1208)
+
+[cb42e8c4d Yoshi] stopped offering to remove missing file from recent roms when it's not actually missing, it just failed to load (#3006)
+
+[d90166e1e CPP] fixed `.dsm` importer which relied on non-deterministic `Dictionary` (hashmap) ordering for axis names
+
+[25fb81698 CPP] (Libretro) rewrote Libretro host implementation, fixing some crashes, adding memory domains, and slightly improving performance (#3211, #3216)
+
+[635fff6c5 Yoshi] (ApiHawk/Lua) improved how removing a memory callback from within a callback is processed (#1823)
+
+[ceb64cedb Yoshi] finished UX for merging/unmerging LShift+RShift and other modifier keys (#3184, #3257)
+
+[5a913ac2a notwa] fixed shaders' height being used for width
+
+[ee241dc62 Yoshi] improved UX of loading a savestate from an older (or newer) version
+
+[53240c2f8 Yoshi] fixed opening roms from "jump list" in Windows shell / file manager (#3224)
+
+[b39631b24 CPP] (ApiHawk/Lua) fixed `event.onmemoryread` behaviour under mGBA (#3230)
+
+[14984aea2 Morilli] fixed BSNES rom loading edge case where the filename doesn't exactly match the one in the gamedb
+
+[de1d8f56d Yoshi] made DirectX optional on Windows (it's still in the prereq installer because it's usually faster)
+
+[a08116f2d CPP] fixed Lua referencing a core after it's unloaded, making scripts crash (#3226)
+
+[7d268e244 CPP] fixed regression where screenshots from some cores were transparent (#3166)
+
+[c496c97c8 CPP] remove some render off logic (this might not be sync safe), move threaded rendering to a sync setting (this probably doesn't affect sync, but best be safe here) WRITEME
+
+[93dadb021 CPP] fixed `.gmv` importer not setting the core name `.bk2` header
+
+[97a11ec08 CPP] fix NESHawk mistakenly having cycle count complained about WRITEME
+
+[db7d72be9 Morilli] update nonfunctional bsnes links WRITEME
+
+[672ad1579 Morilli] fixed #3195 WRITEME
+
+[688adf27e CPP] resolve #3192
+seems to have been a null reference on init. saving seems to still function fine after this change WRITEME
+
+[3d039934a Morilli] BSNESv115+: expose fast dsp and fast coprocessor options WRITEME
+
+[339d34413 Morilli] Implement msu1 handling for bsnes115+ (#3190) WRITEME
+
+[da2a20e55 Morilli] BSNESv115+: Some general cleanup, remove nonfunctional msu1 code WRITEME
+
+[a68c835a4 CPP] (Gambatte) update gambatte WRITEME (m161, MBC1, HuC1, HuC3, MMM01)
+
+[6db532fb8 Morilli] refactored memory poking, allowing negative values for fixed-point watches and fixing other bugs (#3175)
+
+[ccac4d100 CPP] Ares64 WRITEME
+
+[f8a688d47 Yoshi] (Linux) fixed various file pickers using case-sensitive file extensions
+
+[3726cc629 Morilli] fixed #3173 by only calling bus.map() on initial power, not subsequent calls (#3176) WRITEME
+
+[6e4a5a96a CPP] (melonDS) reset caches after load state WRITEME
+
+[8b6f1c96d CPP] (melonDS) don't state sound buffers too WRITEME
+
+[4bfb3ba48 CPP] (melonDS) don't state these big caches WRITEME
+
+[46c2d6faf CPP] (melonDS) Cleanups & Updates & Prep For Multithread Rendering Support & Prep For DSi NAND bs (#3174) WRITEME
+
+[9411e659b zeromus] (NesHawk) WritePrg really needs to be masking the address... there's no way it's correct, otherwise. WRITEME
+
+[fcce7b64d zeromus] (NesHawk) relaxed restriction on vrc1 PRG registers, so they can be larger than the original vrc1 chip allows (for rom-expanding hacks)
+
+[114124c82 CPP] BSNES Region Override (#3169) WRITEME
+
+[4bac1bbf1 CPP] (melonDS) fixed SaveRAM not getting written to disk when unloading/reloading core (#3165)
+
+[6cb44e0e8 Yoshi] (ZXHawk) removed redundant `ZXSpectrumPokeMemory` tool
+
+[0ff69c560 CPP] fixed SXROM Detection (#3170) WRITEME
+
+[b82ac3e2d Yoshi] (ApiHawk) merged `IGameInfoApi` into `IEmulationApi`, and some other minor API method signature changes
+
+[8b07f9ecd Yoshi] added warning when current firmware customization does not match the one specified in the movie header (#2498)
+
+[d466c2694 Yoshi] fixed keybinds not working after waking from lock screen on Windows (#3161)
+
+[7b857e7ac alyosha] SMS: only update tone on second byte write, filter out highest frequency, fixes #3160 WRITEME
+
+[8385337e7 Yoshi] (Lua) added arguments to memory callback functions (cb will be called with addr, val, flags)—check `event.can_use_callback_params("memory")` when writing polyfills
+
 ## changes from 2.7 to 2.8
 
 - Misc. changes to EmuHawk:
