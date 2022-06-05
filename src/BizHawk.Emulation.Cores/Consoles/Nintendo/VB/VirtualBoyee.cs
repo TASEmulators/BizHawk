@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
@@ -9,11 +8,35 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 	[PortedCore(CoreNames.VirtualBoyee, "Mednafen Team", "1.29.0", "https://mednafen.github.io/releases/")]
 	public class VirtualBoyee : NymaCore
 	{
+		private VirtualBoyee(CoreComm comm)
+			: base(comm, null, null, null, null)
+		{
+		}
+
+		private static NymaSettingsInfo _cachedSettingsInfo;
+
+		public static NymaSettingsInfo CachedSettingsInfo(CoreComm comm)
+		{
+			if (_cachedSettingsInfo is null)
+			{
+				using var n = new VirtualBoyee(comm);
+				n.InitForSettingsInfo("vb.wbx");
+				_cachedSettingsInfo = n.SettingsInfo.Clone();
+			}
+
+			return _cachedSettingsInfo;
+		}
+
 		[CoreConstructor(VSystemID.Raw.VB)]
 		public VirtualBoyee(CoreLoadParameters<NymaSettings, NymaSyncSettings> lp)
 			: base(lp.Comm, VSystemID.Raw.VB, "VirtualBoy Controller", lp.Settings, lp.SyncSettings)
 		{
 			DoInit<LibNymaCore>(lp, "vb.wbx");
+
+			if (_cachedSettingsInfo is null)
+			{
+				_cachedSettingsInfo = SettingsInfo.Clone();
+			}
 		}
 
 		protected override IDictionary<string, SettingOverride> SettingOverrides { get; } = new Dictionary<string, SettingOverride>

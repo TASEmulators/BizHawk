@@ -62,6 +62,7 @@ using BizHawk.Emulation.Cores.Sega.GGHawkLink;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.Cores.Sony.PS2;
 using BizHawk.Emulation.Cores.Sony.PSX;
+using BizHawk.Emulation.Cores.Waterbox;
 using BizHawk.Emulation.Cores.WonderSwan;
 using BizHawk.WinForms.Controls;
 
@@ -1898,6 +1899,10 @@ namespace BizHawk.Client.EmuHawk
 			OpenGenericCoreConfig($"{coreName} Settings");
 		}
 
+		private DialogResult OpenNymaConfigFor<T>(NymaCore.NymaSettingsInfo settingsInfo)
+			where T : IEmulator
+			=> GenericCoreConfig.DoNymaDialogFor(this, GetSettingsAdapterFor<T>(), settingsInfo, isMovieActive: MovieSession.Movie.IsActive());
+
 		private DialogResult OpenVirtuSettingsDialog()
 			=> OpenGenericCoreConfigFor<AppleII>("Apple II Settings");
 
@@ -2821,9 +2826,8 @@ namespace BizHawk.Client.EmuHawk
 			items.Add(CreateCoreSubmenu(VSystemCategory.Other, CoreNames.Emu83, CreateSettingsItem("Palette...", (_, _) => OpenTI83PaletteSettingsDialog(GetSettingsAdapterFor<Emu83>()))));
 
 			// Faust
-			var faustSettingsItem = CreateSettingsItem("Settings...", (_, _) => OpenGenericCoreConfig($"{CoreNames.Faust} Settings"));
+			var faustSettingsItem = CreateSettingsItem("Settings...", (_, _) => OpenNymaConfigFor<Faust>(Faust.CachedSettingsInfo(CreateCoreComm())));
 			var faustSubmenu = CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Faust, faustSettingsItem);
-			faustSubmenu.DropDownOpened += (_, _) => faustSettingsItem.Enabled = Emulator is Faust;
 			items.Add(faustSubmenu);
 
 			// Gambatte
@@ -2869,9 +2873,8 @@ namespace BizHawk.Client.EmuHawk
 			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.Handy, CreateGenericCoreConfigItem<Lynx>(CoreNames.Handy))); // as Handy doesn't implement `IStatable<,>`, this opens an empty `GenericCoreConfig`, which is dumb, but matches the existing behaviour
 
 			// HyperNyma
-			var hyperNymaSettingsItem = CreateSettingsItem("Settings...", (_, _) => OpenGenericCoreConfig($"{CoreNames.HyperNyma} Settings"));
+			var hyperNymaSettingsItem = CreateSettingsItem("Settings...", (_, _) => OpenNymaConfigFor<HyperNyma>(HyperNyma.CachedSettingsInfo(CreateCoreComm())));
 			var hyperNymaSubmenu = CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.HyperNyma, hyperNymaSettingsItem);
-			hyperNymaSubmenu.DropDownOpened += (_, _) => hyperNymaSettingsItem.Enabled = Emulator is HyperNyma;
 			items.Add(hyperNymaSubmenu);
 
 			// IntelliHawk
@@ -2934,9 +2937,8 @@ namespace BizHawk.Client.EmuHawk
 			items.Add(mupen64PlusSubmenu);
 
 			// NeoPop
-			var neoPopSettingsItem = CreateSettingsItem("Settings...", (_, _) => OpenGenericCoreConfig($"{CoreNames.NeoPop} Settings"));
+			var neoPopSettingsItem = CreateSettingsItem("Settings...", (_, _) => OpenNymaConfigFor<NeoGeoPort>(NeoGeoPort.CachedSettingsInfo(CreateCoreComm())));
 			var neoPopSubmenu = CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.NeoPop, neoPopSettingsItem);
-			neoPopSubmenu.DropDownOpened += (_, _) => neoPopSettingsItem.Enabled = Emulator is NeoGeoPort;
 			items.Add(neoPopSubmenu);
 
 			// NesHawk
@@ -2962,9 +2964,8 @@ namespace BizHawk.Client.EmuHawk
 			items.Add(nesHawkSubmenu);
 
 			// Nymashock
-			var nymashockSettingsItem = CreateSettingsItem("Settings...", (_, _) => OpenGenericCoreConfig($"{CoreNames.Nymashock} Settings"));
+			var nymashockSettingsItem = CreateSettingsItem("Settings...", (_, _) => OpenNymaConfigFor<Nymashock>(Nymashock.CachedSettingsInfo(CreateCoreComm())));
 			var nymashockSubmenu = CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Nymashock, nymashockSettingsItem);
-			nymashockSubmenu.DropDownOpened += (_, _) => nymashockSettingsItem.Enabled = Emulator is Nymashock;
 			items.Add(nymashockSubmenu);
 
 			// O2Hawk
@@ -3008,9 +3009,8 @@ namespace BizHawk.Client.EmuHawk
 			items.Add(sameBoySubmenu);
 
 			// Saturnus
-			var saturnusSettingsItem = CreateSettingsItem("Settings...", (_, _) => OpenGenericCoreConfig($"{CoreNames.Saturnus} Settings"));
+			var saturnusSettingsItem = CreateSettingsItem("Settings...", (_, _) => OpenNymaConfigFor<Saturnus>(Saturnus.CachedSettingsInfo(CreateCoreComm())));
 			var saturnusSubmenu = CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Saturnus, saturnusSettingsItem);
-			saturnusSubmenu.DropDownOpened += (_, _) => saturnusSettingsItem.Enabled = Emulator is Saturnus;
 			items.Add(saturnusSubmenu);
 
 			// SMSHawk
@@ -3049,15 +3049,13 @@ namespace BizHawk.Client.EmuHawk
 			items.Add(CreateCoreSubmenu(VSystemCategory.Other, CoreNames.TI83Hawk, CreateSettingsItem("Palette...", (_, _) => OpenTI83PaletteSettingsDialog(GetSettingsAdapterFor<TI83>()))));
 
 			// T. S. T.
-			var tstSettingsItem = CreateSettingsItem("Settings...", (_, _) => OpenGenericCoreConfig($"{CoreNames.TST} Settings"));
+			var tstSettingsItem = CreateSettingsItem("Settings...", (_, _) => OpenNymaConfigFor<Tst>(Tst.CachedSettingsInfo(CreateCoreComm())));
 			var tstSubmenu = CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.TST, tstSettingsItem);
-			tstSubmenu.DropDownOpened += (_, _) => tstSettingsItem.Enabled = Emulator is Tst;
 			items.Add(tstSubmenu);
 
 			// TurboNyma
-			var turboNymaSettingsItem = CreateSettingsItem("Settings...", (_, _) => OpenGenericCoreConfig($"{CoreNames.TurboNyma} Settings"));
+			var turboNymaSettingsItem = CreateSettingsItem("Settings...", (_, _) => OpenNymaConfigFor<TurboNyma>(TurboNyma.CachedSettingsInfo(CreateCoreComm())));
 			var turboNymaSubmenu = CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.TurboNyma, turboNymaSettingsItem);
-			turboNymaSubmenu.DropDownOpened += (_, _) => turboNymaSettingsItem.Enabled = Emulator is TurboNyma;
 			items.Add(turboNymaSubmenu);
 
 			// uzem
@@ -3072,9 +3070,8 @@ namespace BizHawk.Client.EmuHawk
 			items.Add(virtuSubmenu);
 
 			// Virtual Boyee
-			var virtualBoyeeSettingsItem = CreateSettingsItem("Settings...", (_, _) => OpenGenericCoreConfig($"{CoreNames.VirtualBoyee} Settings"));
+			var virtualBoyeeSettingsItem = CreateSettingsItem("Settings...", (_, _) => OpenNymaConfigFor<VirtualBoyee>(VirtualBoyee.CachedSettingsInfo(CreateCoreComm())));
 			var virtualBoyeeSubmenu = CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.VirtualBoyee, virtualBoyeeSettingsItem);
-			virtualBoyeeSubmenu.DropDownOpened += (_, _) => virtualBoyeeSettingsItem.Enabled = Emulator is VirtualBoyee;
 			items.Add(virtualBoyeeSubmenu);
 
 			// ZXHawk

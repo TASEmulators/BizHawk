@@ -185,6 +185,31 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			return t;
 		}
 
+		// inits only to get settings info
+		// should only ever be called if no SettingsInfo cache exists statically within the core
+		protected void InitForSettingsInfo(string wbxFilename)
+		{
+			_nyma = PreInit<LibNymaCore>(new WaterboxOptions
+			{
+				Filename = wbxFilename,
+				// todo: maybe make these smaller? not much is going to occur within this core instance...
+				SbrkHeapSizeKB = 1024 * 16,
+				SealedHeapSizeKB = 1024 * 48,
+				InvisibleHeapSizeKB = 1024 * 48,
+				PlainHeapSizeKB = 1024 * 48,
+				MmapHeapSizeKB = 1024 * 48,
+				SkipCoreConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
+				SkipMemoryConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
+			});
+
+			using (_exe.EnterExit())
+			{
+				_nyma.PreInit();
+				var portData = GetInputPortsData();
+				InitAllSettingsInfo(portData);
+			}
+		}
+
 		protected override void SaveStateBinaryInternal(BinaryWriter writer)
 		{
 			_controllerAdapter.SaveStateBinary(writer);

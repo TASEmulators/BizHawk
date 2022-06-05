@@ -1,7 +1,8 @@
-﻿using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Waterbox;
-using System;
+﻿using System;
 using System.Collections.Generic;
+
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Consoles.SNK
 {
@@ -9,6 +10,25 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 	public class NeoGeoPort : NymaCore,
 		ISaveRam // NGP provides its own saveram interface
 	{
+		private NeoGeoPort(CoreComm comm)
+			: base(comm, null, null, null, null)
+		{
+		}
+
+		private static NymaSettingsInfo _cachedSettingsInfo;
+
+		public static NymaSettingsInfo CachedSettingsInfo(CoreComm comm)
+		{
+			if (_cachedSettingsInfo is null)
+			{
+				using var n = new NeoGeoPort(comm);
+				n.InitForSettingsInfo("ngp.wbx");
+				_cachedSettingsInfo = n.SettingsInfo.Clone();
+			}
+
+			return _cachedSettingsInfo;
+		}
+
 		private readonly LibNeoGeoPort _neopop;
 
 		[CoreConstructor(VSystemID.Raw.NGP)]
@@ -17,6 +37,11 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 			: base(comm, VSystemID.Raw.NGP, "NeoGeo Portable Controller", settings, syncSettings)
 		{
 			_neopop = DoInit<LibNeoGeoPort>(game, rom, null, "ngp.wbx", extension, deterministic);
+
+			if (_cachedSettingsInfo is null)
+			{
+				_cachedSettingsInfo = SettingsInfo.Clone();
+			}
 		}
 
 		public new bool SaveRamModified
