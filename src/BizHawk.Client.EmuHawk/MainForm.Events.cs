@@ -2777,12 +2777,12 @@ namespace BizHawk.Client.EmuHawk
 			var bsnesGamepadSettingsItem = CreateSettingsItem("Controller Configuration...", (_, _) => OpenBSNESGamepadSettingsDialog(GetSettingsAdapterFor<BsnesCore>()));
 			var bsnesSettingsItem = CreateSettingsItem("Options...", (_, _) => OpenBSNESSettingsDialog());
 			var bsnesSubmenu = CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Bsnes115, bsnesGamepadSettingsItem, bsnesSettingsItem);
-			oldBSNESSubmenu.DropDownOpened += (_, _) =>
+			bsnesSubmenu.DropDownOpened += (_, _) =>
 			{
 				var loadedCoreIsBSNES = Emulator is BsnesCore;
 				bsnesGamepadSettingsItem.Enabled = !loadedCoreIsBSNES || MovieSession.Movie.NotActive();
 			};
-			items.Add(oldBSNESSubmenu);
+			items.Add(bsnesSubmenu);
 
 			// C64Hawk
 			var c64HawkSettingsItem = CreateSettingsItem("Settings...", (_, _) => OpenC64HawkSettingsDialog());
