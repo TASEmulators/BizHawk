@@ -26,6 +26,22 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			_controllerDeckName = controllerDeckName;
 		}
 
+		private WaterboxOptions NymaWaterboxOptions(string wbxFilename)
+		{
+			return new WaterboxOptions
+			{
+				Filename = wbxFilename,
+				// WaterboxHost only saves parts of memory that have changed, so not much to be gained by making these precisely sized
+				SbrkHeapSizeKB = 1024 * 16,
+				SealedHeapSizeKB = 1024 * 48,
+				InvisibleHeapSizeKB = 1024 * 48,
+				PlainHeapSizeKB = 1024 * 48,
+				MmapHeapSizeKB = 1024 * 48,
+				SkipCoreConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
+				SkipMemoryConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
+			};
+		}
+
 		private LibNymaCore _nyma;
 		protected T DoInit<T>(
 			CoreLoadParameters<NymaSettings, NymaSyncSettings> lp,
@@ -68,18 +84,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				}
 			});
 
-			var t = PreInit<T>(new WaterboxOptions
-			{
-				Filename = wbxFilename,
-				// WaterboxHost only saves parts of memory that have changed, so not much to be gained by making these precisely sized
-				SbrkHeapSizeKB = 1024 * 16,
-				SealedHeapSizeKB = 1024 * 48,
-				InvisibleHeapSizeKB = 1024 * 48,
-				PlainHeapSizeKB = 1024 * 48,
-				MmapHeapSizeKB = 1024 * 48,
-				SkipCoreConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
-				SkipMemoryConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
-			}, new Delegate[] { _settingsQueryDelegate, _cdTocCallback, _cdSectorCallback, firmwareDelegate });
+			var t = PreInit<T>(NymaWaterboxOptions(wbxFilename), new Delegate[] { _settingsQueryDelegate, _cdTocCallback, _cdSectorCallback, firmwareDelegate });
 			_nyma = t;
 
 			using (_exe.EnterExit())
@@ -183,6 +188,20 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 
 			return t;
+		}
+
+		// inits only to get settings info
+		// should only ever be called if no SettingsInfo cache exists statically within the core
+		protected void InitForSettingsInfo(string wbxFilename)
+		{
+			_nyma = PreInit<LibNymaCore>(NymaWaterboxOptions(wbxFilename));
+
+			using (_exe.EnterExit())
+			{
+				_nyma.PreInit();
+				var portData = GetInputPortsData();
+				InitAllSettingsInfo(portData);
+			}
 		}
 
 		protected override void SaveStateBinaryInternal(BinaryWriter writer)

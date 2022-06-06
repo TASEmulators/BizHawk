@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+
 using BizHawk.BizInvoke;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -12,6 +13,25 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 	[PortedCore(CoreNames.HyperNyma, "Mednafen Team", "1.29.0", "https://mednafen.github.io/releases/")]
 	public class HyperNyma : NymaCore, IRegionable, IPceGpuView
 	{
+		private HyperNyma(CoreComm comm)
+			: base(comm, null, null, null, null)
+		{
+		}
+
+		private static NymaSettingsInfo _cachedSettingsInfo;
+
+		public static NymaSettingsInfo CachedSettingsInfo(CoreComm comm)
+		{
+			if (_cachedSettingsInfo is null)
+			{
+				using var n = new HyperNyma(comm);
+				n.InitForSettingsInfo("hyper.wbx");
+				_cachedSettingsInfo = n.SettingsInfo.Clone();
+			}
+
+			return _cachedSettingsInfo;
+		}
+
 		private readonly LibHyperNyma _hyperNyma;
 		private readonly bool _hasCds;
 
@@ -29,6 +49,11 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 			}
 
 			_hyperNyma = DoInit<LibHyperNyma>(lp, "hyper.wbx", firmwares);
+
+			if (_cachedSettingsInfo is null)
+			{
+				_cachedSettingsInfo = SettingsInfo.Clone();
+			}
 		}
 
 		public override string SystemId => IsSgx

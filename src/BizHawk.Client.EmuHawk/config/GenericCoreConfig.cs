@@ -137,6 +137,31 @@ namespace BizHawk.Client.EmuHawk
 			return owner.ShowDialogAsChild(dlg);
 		}
 
+		public static DialogResult DoNymaDialogFor(
+			IDialogParent owner,
+			ISettingsAdapter settable,
+			Emulation.Cores.Waterbox.NymaCore.NymaSettingsInfo settingsInfo,
+			bool isMovieActive)
+		{
+			var desc = new Emulation.Cores.Waterbox.NymaTypeDescriptorProvider(settingsInfo);
+			try
+			{
+				// OH GOD THE HACKS WHY
+				TypeDescriptor.AddProvider(desc, typeof(Emulation.Cores.Waterbox.NymaCore.NymaSettings));
+				TypeDescriptor.AddProvider(desc, typeof(Emulation.Cores.Waterbox.NymaCore.NymaSyncSettings));
+				using GenericCoreConfig dlg = new(settable, isMovieActive, !settingsInfo.HasSettings, !settingsInfo.HasSyncSettings)
+				{
+					Text = "Nyma Core"
+				};
+				return owner.ShowDialogAsChild(dlg);
+			}
+			finally
+			{
+				TypeDescriptor.RemoveProvider(desc, typeof(Emulation.Cores.Waterbox.NymaCore.NymaSettings));
+				TypeDescriptor.RemoveProvider(desc, typeof(Emulation.Cores.Waterbox.NymaCore.NymaSyncSettings));
+			}
+		}
+
 		private void PropertyGrid2_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
 		{
 			_syncSettingsChanged = true;

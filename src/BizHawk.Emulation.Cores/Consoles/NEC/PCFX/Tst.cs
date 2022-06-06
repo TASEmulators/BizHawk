@@ -1,13 +1,33 @@
-﻿using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Waterbox;
-using System;
+﻿using System;
 using System.Collections.Generic;
+
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 {
 	[PortedCore(CoreNames.TST, "Mednafen Team", "1.29.0", "https://mednafen.github.io/releases/")]
 	public class Tst : NymaCore
 	{
+		private Tst(CoreComm comm)
+			: base(comm, null, null, null, null)
+		{
+		}
+
+		private static NymaSettingsInfo _cachedSettingsInfo;
+
+		public static NymaSettingsInfo CachedSettingsInfo(CoreComm comm)
+		{
+			if (_cachedSettingsInfo is null)
+			{
+				using var n = new Tst(comm);
+				n.InitForSettingsInfo("pcfx.wbx");
+				_cachedSettingsInfo = n.SettingsInfo.Clone();
+			}
+
+			return _cachedSettingsInfo;
+		}
+
 		[CoreConstructor(VSystemID.Raw.PCFX)]
 		public Tst(CoreLoadParameters<NymaSettings, NymaSyncSettings> lp)
 			: base(lp.Comm, VSystemID.Raw.PCFX, "PC-FX Controller", lp.Settings, lp.SyncSettings)
@@ -20,6 +40,11 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 			};
 
 			DoInit<LibNymaCore>(lp, "pcfx.wbx", firmwares);
+
+			if (_cachedSettingsInfo is null)
+			{
+				_cachedSettingsInfo = SettingsInfo.Clone();
+			}
 		}
 
 		protected override IDictionary<string, SettingOverride> SettingOverrides { get; } = new Dictionary<string, SettingOverride>

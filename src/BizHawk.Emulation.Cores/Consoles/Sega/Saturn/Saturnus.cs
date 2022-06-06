@@ -1,13 +1,33 @@
-﻿using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Waterbox;
-using System;
+﻿using System;
 using System.Collections.Generic;
+
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 {
 	[PortedCore(CoreNames.Saturnus, "Mednafen Team", "1.29.0", "https://mednafen.github.io/releases/")]
 	public class Saturnus : NymaCore, IRegionable
 	{
+		private Saturnus(CoreComm comm)
+			: base(comm, null, null, null, null)
+		{
+		}
+
+		private static NymaSettingsInfo _cachedSettingsInfo;
+
+		public static NymaSettingsInfo CachedSettingsInfo(CoreComm comm)
+		{
+			if (_cachedSettingsInfo is null)
+			{
+				using var n = new Saturnus(comm);
+				n.InitForSettingsInfo("ss.wbx");
+				_cachedSettingsInfo = n.SettingsInfo.Clone();
+			}
+
+			return _cachedSettingsInfo;
+		}
+
 		[CoreConstructor(VSystemID.Raw.SAT)]
 		public Saturnus(CoreLoadParameters<NymaSettings, NymaSyncSettings> lp)
 			: base(lp.Comm, VSystemID.Raw.SAT, "Saturn Controller", lp.Settings, lp.SyncSettings)
@@ -23,6 +43,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 				// { "FIRMWARE:$SATAR", new("SAT", "AR") }, // action replay garbage
 			};
 			DoInit<LibNymaCore>(lp, "ss.wbx", firmwares);
+
+			if (_cachedSettingsInfo is null)
+			{
+				_cachedSettingsInfo = SettingsInfo.Clone();
+			}
 		}
 
 		protected override IDictionary<string, SettingOverride> SettingOverrides { get; } = new Dictionary<string, SettingOverride>

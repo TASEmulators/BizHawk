@@ -9,6 +9,25 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 	[PortedCore(CoreNames.Nymashock, "Mednafen Team", "1.29.0", "https://mednafen.github.io/releases/")]
 	public class Nymashock : NymaCore, IRegionable, ICycleTiming
 	{
+		private Nymashock(CoreComm comm)
+			: base(comm, null, null, null, null)
+		{
+		}
+
+		private static NymaSettingsInfo _cachedSettingsInfo;
+
+		public static NymaSettingsInfo CachedSettingsInfo(CoreComm comm)
+		{
+			if (_cachedSettingsInfo is null)
+			{
+				using var n = new Nymashock(comm);
+				n.InitForSettingsInfo("shock.wbx");
+				_cachedSettingsInfo = n.SettingsInfo.Clone();
+			}
+
+			return _cachedSettingsInfo;
+		}
+
 		[CoreConstructor(VSystemID.Raw.PSX)]
 		public Nymashock(CoreLoadParameters<NymaSettings, NymaSyncSettings> lp)
 			: base(lp.Comm, VSystemID.Raw.PSX, "PSX Front Panel", lp.Settings, lp.SyncSettings)
@@ -22,6 +41,11 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				{ "FIRMWARE:$E", new("PSX", "E") },
 			};
 			DoInit<LibNymaCore>(lp, "shock.wbx", firmwares);
+
+			if (_cachedSettingsInfo is null)
+			{
+				_cachedSettingsInfo = SettingsInfo.Clone();
+			}
 		}
 
 		protected override IDictionary<string, SettingOverride> SettingOverrides { get; } = new Dictionary<string, SettingOverride>
