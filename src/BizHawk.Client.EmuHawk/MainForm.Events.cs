@@ -1606,8 +1606,8 @@ namespace BizHawk.Client.EmuHawk
 			};
 		}
 
-		private DialogResult OpenGambatteSettingsDialog(ISettingsAdapter settable, Gameboy gambatte)
-			=> GBPrefs.DoGBPrefsDialog(Config, this, Game, MovieSession, settable, gambatte);
+		private DialogResult OpenGambatteSettingsDialog()
+			=> GBPrefs.DoGBPrefsDialog(Config, this, Game, MovieSession, GetSettingsAdapterFor<Gameboy>());
 
 		private DialogResult OpenGBHawkSettingsDialog()
 			=> OpenGenericCoreConfigFor<GBHawk>("Gameboy Settings");
@@ -1619,7 +1619,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_ = Emulator switch
 			{
-				Gameboy gambatte => OpenGambatteSettingsDialog(GetSettingsAdapterForLoadedCore<Gameboy>(), gambatte),
+				Gameboy => OpenGambatteSettingsDialog(),
 				GBHawk => OpenGBHawkSettingsDialog(),
 				Sameboy => OpenSameBoySettingsDialog(),
 				_ => DialogResult.None
@@ -1874,14 +1874,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private DialogResult OpenGambatteLinkSettingsDialog(ISettingsAdapter settable, GambatteLink gambatteLink)
-			=> GBLPrefs.DoGBLPrefsDialog(Config, this, Game, MovieSession, settable, gambatteLink);
+		private DialogResult OpenGambatteLinkSettingsDialog()
+			=> GBLPrefs.DoGBLPrefsDialog(Config, this, Game, MovieSession, GetSettingsAdapterFor<GambatteLink>());
 
 		private void GblSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			_ = Emulator switch
 			{
-				GambatteLink gambatteLink => OpenGambatteLinkSettingsDialog(GetSettingsAdapterForLoadedCore<GambatteLink>(), gambatteLink),
+				GambatteLink => OpenGambatteLinkSettingsDialog(),
 				_ => DialogResult.None
 			};
 		}
@@ -2831,22 +2831,19 @@ namespace BizHawk.Client.EmuHawk
 			items.Add(faustSubmenu);
 
 			// Gambatte
-			var gambatteSettingsItem = CreateSettingsItem("Settings...", (_, _) => OpenGambatteSettingsDialog(GetSettingsAdapterForLoadedCore<Gameboy>(), (Gameboy) Emulator));
+			var gambatteSettingsItem = CreateSettingsItem("Settings...", (_, _) => OpenGambatteSettingsDialog());
 			var gambatteSubmenu = CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.Gambatte, gambatteSettingsItem);
-			gambatteSubmenu.DropDownOpened += (_, _) => gambatteSettingsItem.Enabled = Emulator is Gameboy;
 			items.Add(gambatteSubmenu);
 			if (includeDupes)
 			{
-				var gambatteSettingsItem1 = CreateSettingsItem("Settings...", (_, _) => OpenGambatteSettingsDialog(GetSettingsAdapterForLoadedCore<Gameboy>(), (Gameboy) Emulator));
+				var gambatteSettingsItem1 = CreateSettingsItem("Settings...", (_, _) => OpenGambatteSettingsDialog());
 				var gambatteSubmenu1 = CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Gambatte, gambatteSettingsItem1);
-				gambatteSubmenu1.DropDownOpened += (_, _) => gambatteSettingsItem1.Enabled = Emulator is Gameboy;
 				items.Add(gambatteSubmenu1);
 			}
 
 			// GambatteLink
-			var gambatteLinkSettingsItem = CreateSettingsItem("Settings...", (_, _) => OpenGambatteLinkSettingsDialog(GetSettingsAdapterForLoadedCore<GambatteLink>(), (GambatteLink) Emulator));
+			var gambatteLinkSettingsItem = CreateSettingsItem("Settings...", (_, _) => OpenGambatteLinkSettingsDialog());
 			var gambatteLinkSubmenu = CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.GambatteLink, gambatteLinkSettingsItem);
-			gambatteLinkSubmenu.DropDownOpened += (_, _) => gambatteLinkSettingsItem.Enabled = Emulator is GambatteLink;
 			items.Add(gambatteLinkSubmenu);
 
 			// GBHawk
