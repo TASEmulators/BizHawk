@@ -1731,18 +1731,18 @@ namespace BizHawk.Client.EmuHawk
 			Tools.Load<SNESGraphicsDebugger>();
 		}
 
-		private DialogResult OpenOldBSNESSettingsDialog(ISettingsAdapter settable, LibsnesCore bsnes)
-			=> SNESOptions.DoSettingsDialog(this, settable, bsnes);
+		private DialogResult OpenOldBSNESSettingsDialog()
+			=> SNESOptions.DoSettingsDialog(this, GetSettingsAdapterFor<LibsnesCore>());
 
-		private DialogResult OpenBSNESSettingsDialog(ISettingsAdapter settable, BsnesCore bsnes)
-			=> BSNESOptions.DoSettingsDialog(this, settable, bsnes);
+		private DialogResult OpenBSNESSettingsDialog()
+			=> BSNESOptions.DoSettingsDialog(this, GetSettingsAdapterFor<BsnesCore>());
 
 		private void SnesOptionsMenuItem_Click(object sender, EventArgs e)
 		{
 			_ = Emulator switch
 			{
-				LibsnesCore oldBSNES => OpenOldBSNESSettingsDialog(GetSettingsAdapterForLoadedCore<LibsnesCore>(), oldBSNES),
-				BsnesCore bsnes => OpenBSNESSettingsDialog(GetSettingsAdapterForLoadedCore<BsnesCore>(), bsnes),
+				LibsnesCore => OpenOldBSNESSettingsDialog(),
+				BsnesCore => OpenBSNESSettingsDialog(),
 				_ => DialogResult.None
 			};
 		}
@@ -2763,26 +2763,24 @@ namespace BizHawk.Client.EmuHawk
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Atari2600Hawk, CreateGenericCoreConfigItem<Atari2600>(CoreNames.Atari2600Hawk)));
 
 			// BSNES
-			var bsnesGamepadSettingsItem = CreateSettingsItem("Controller Configuration...", (_, _) => OpenOldBSNESGamepadSettingsDialog(GetSettingsAdapterFor<LibsnesCore>()));
-			var bsnesSettingsItem = CreateSettingsItem("Options...", SnesOptionsMenuItem_Click);
-			var bsnesSubmenu = CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Bsnes, bsnesGamepadSettingsItem, bsnesSettingsItem);
-			bsnesSubmenu.DropDownOpened += (_, _) =>
+			var oldBSNESGamepadSettingsItem = CreateSettingsItem("Controller Configuration...", (_, _) => OpenOldBSNESGamepadSettingsDialog(GetSettingsAdapterFor<LibsnesCore>()));
+			var oldBSNESSettingsItem = CreateSettingsItem("Options...", (_, _) => OpenOldBSNESSettingsDialog());
+			var oldBSNESSubmenu = CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Bsnes, oldBSNESGamepadSettingsItem, oldBSNESSettingsItem);
+			oldBSNESSubmenu.DropDownOpened += (_, _) =>
 			{
-				var loadedCoreIsBSNES = Emulator is LibsnesCore;
-				bsnesGamepadSettingsItem.Enabled = !loadedCoreIsBSNES || MovieSession.Movie.NotActive();
-				bsnesSettingsItem.Enabled = loadedCoreIsBSNES;
+				var loadedCoreIsOldBSNES = Emulator is LibsnesCore;
+				oldBSNESGamepadSettingsItem.Enabled = !loadedCoreIsOldBSNES || MovieSession.Movie.NotActive();
 			};
-			items.Add(bsnesSubmenu);
+			items.Add(oldBSNESSubmenu);
 
 			// BSNESv115+
-			var oldBSNESGamepadSettingsItem = CreateSettingsItem("Controller Configuration...", (_, _) => OpenBSNESGamepadSettingsDialog(GetSettingsAdapterFor<BsnesCore>()));
-			var oldBSNESSettingsItem = CreateSettingsItem("Options...", SnesOptionsMenuItem_Click);
-			var oldBSNESSubmenu = CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Bsnes115, oldBSNESGamepadSettingsItem, oldBSNESSettingsItem);
+			var bsnesGamepadSettingsItem = CreateSettingsItem("Controller Configuration...", (_, _) => OpenBSNESGamepadSettingsDialog(GetSettingsAdapterFor<BsnesCore>()));
+			var bsnesSettingsItem = CreateSettingsItem("Options...", (_, _) => OpenBSNESSettingsDialog());
+			var bsnesSubmenu = CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Bsnes115, bsnesGamepadSettingsItem, bsnesSettingsItem);
 			oldBSNESSubmenu.DropDownOpened += (_, _) =>
 			{
 				var loadedCoreIsBSNES = Emulator is BsnesCore;
-				oldBSNESGamepadSettingsItem.Enabled = !loadedCoreIsBSNES || MovieSession.Movie.NotActive();
-				oldBSNESSettingsItem.Enabled = loadedCoreIsBSNES;
+				bsnesGamepadSettingsItem.Enabled = !loadedCoreIsBSNES || MovieSession.Movie.NotActive();
 			};
 			items.Add(oldBSNESSubmenu);
 
@@ -2796,8 +2794,8 @@ namespace BizHawk.Client.EmuHawk
 
 			// ColecoHawk
 			var colecoHawkGamepadSettingsItem = CreateSettingsItem("Controller Settings...", (_, _) => OpenColecoHawkGamepadSettingsDialog(GetSettingsAdapterFor<ColecoVision>()));
-			var colecoHawkSkipBIOSItem = CreateSettingsItem("Skip BIOS intro (When Applicable)", (sender, _) => ColecoHawkSetSkipBIOSIntro(!((ToolStripMenuItem) sender).Checked, GetSettingsAdapterForLoadedCore<ColecoVision>()));
-			var colecoHawkUseSGMItem = CreateSettingsItem("Use the Super Game Module", (sender, _) => ColecoHawkSetSuperGameModule(!((ToolStripMenuItem)sender).Checked, GetSettingsAdapterForLoadedCore<ColecoVision>()));
+			var colecoHawkSkipBIOSItem = CreateSettingsItem("Skip BIOS intro (When Applicable)", (sender, _) => ColecoHawkSetSkipBIOSIntro(!((ToolStripMenuItem) sender).Checked, GetSettingsAdapterFor<ColecoVision>()));
+			var colecoHawkUseSGMItem = CreateSettingsItem("Use the Super Game Module", (sender, _) => ColecoHawkSetSuperGameModule(!((ToolStripMenuItem)sender).Checked, GetSettingsAdapterFor<ColecoVision>()));
 			var colecoHawkSubmenu = CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.ColecoHawk, colecoHawkGamepadSettingsItem, colecoHawkSkipBIOSItem, colecoHawkUseSGMItem);
 			colecoHawkSubmenu.DropDownOpened += (_, _) =>
 			{

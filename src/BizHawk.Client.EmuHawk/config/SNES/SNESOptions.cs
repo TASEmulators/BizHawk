@@ -17,11 +17,10 @@ namespace BizHawk.Client.EmuHawk
 		private bool _suppressDoubleSize;
 		private bool _userDoubleSizeOption;
 
-		/// <remarks>TODO only use <paramref name="settable"/></remarks>
-		public static DialogResult DoSettingsDialog(IDialogParent dialogParent, ISettingsAdapter settable, LibsnesCore bsnes)
+		public static DialogResult DoSettingsDialog(IDialogParent dialogParent, ISettingsAdapter settable)
 		{
-			var s = bsnes.GetSettings();
-			var ss = bsnes.GetSyncSettings();
+			var s = settable.GetSettings() as LibsnesCore.SnesSettings;
+			var ss = settable.GetSyncSettings() as LibsnesCore.SnesSyncSettings;
 			using var dlg = new SNESOptions
 			{
 				RandomizedInitialState = ss.RandomizedInitialState,

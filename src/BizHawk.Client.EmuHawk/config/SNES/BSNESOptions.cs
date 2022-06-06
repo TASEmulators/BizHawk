@@ -14,11 +14,10 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		/// <remarks>TODO only use <paramref name="settable"/></remarks>
-		public static DialogResult DoSettingsDialog(IDialogParent dialogParent, ISettingsAdapter settable, BsnesCore bsnes)
+		public static DialogResult DoSettingsDialog(IDialogParent dialogParent, ISettingsAdapter settable)
 		{
-			var s = bsnes.GetSettings();
-			var ss = bsnes.GetSyncSettings();
+			var s = settable.GetSettings() as BsnesCore.SnesSettings;
+			var ss = settable.GetSyncSettings() as BsnesCore.SnesSyncSettings;
 			using var dlg = new BSNESOptions
 			{
 				AlwaysDoubleSize = s.AlwaysDoubleSize,
