@@ -131,9 +131,11 @@ namespace BizHawk.Client.EmuHawk
 			IDialogParent owner,
 			ISettingsAdapter settable,
 			string title,
-			bool isMovieActive)
+			bool isMovieActive,
+			bool hideSettings = false,
+			bool hideSyncSettings = false)
 		{
-			using GenericCoreConfig dlg = new(settable, isMovieActive) { Text = title };
+			using GenericCoreConfig dlg = new(settable, isMovieActive, hideSettings, hideSyncSettings) { Text = title };
 			return owner.ShowDialogAsChild(dlg);
 		}
 

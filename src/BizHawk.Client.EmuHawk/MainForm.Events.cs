@@ -454,7 +454,7 @@ namespace BizHawk.Client.EmuHawk
 				Config.PathEntries,
 				Config.FirmwareUserSpecifications,
 				FirmwareDatabase.FirmwareRecords.First(fr => fr.ID == id),
-//				exactFile: hash, //TODO re-scan FW dir for this file, then try autopatching
+				//				exactFile: hash, //TODO re-scan FW dir for this file, then try autopatching
 				forbidScan: true)?.Hash;
 
 		private void PlayMovieMenuItem_Click(object sender, EventArgs e)
@@ -1477,10 +1477,11 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private DialogResult OpenQuickNesGamepadSettingsDialog()
-			=> GenericCoreConfig.DoDialog(
+			=> GenericCoreConfig.DoDialogFor(
 				this,
+				GetSettingsAdapterFor<QuickNES>(),
 				"QuickNES Controller Settings",
-				isMovieActive: MovieSession.Movie.IsActive(),
+				MovieSession.Movie.IsActive(),
 				hideSettings: true,
 				hideSyncSettings: false);
 
@@ -1671,14 +1672,14 @@ namespace BizHawk.Client.EmuHawk
 			};
 		}
 
-		private DialogResult OpenOctoshockSettingsDialog(ISettingsAdapter settable, Octoshock octoshock)
-			=> PSXOptions.DoSettingsDialog(Config, this, settable, octoshock);
+		private DialogResult OpenOctoshockSettingsDialog(OctoshockDll.eVidStandard vidStandard, Size vidSize)
+			=> PSXOptions.DoSettingsDialog(Config, this, GetSettingsAdapterFor<Octoshock>(), vidStandard, vidSize);
 
 		private void PsxOptionsMenuItem_Click(object sender, EventArgs e)
 		{
 			var result = Emulator switch
 			{
-				Octoshock octoshock => OpenOctoshockSettingsDialog(GetSettingsAdapterForLoadedCore<Octoshock>(), octoshock),
+				Octoshock octoshock => OpenOctoshockSettingsDialog(octoshock.SystemVidStandard, octoshock.CurrentVideoSize),
 				_ => DialogResult.None
 			};
 			if (result.IsOk()) FrameBufferResized();
@@ -2794,12 +2795,12 @@ namespace BizHawk.Client.EmuHawk
 
 			// ColecoHawk
 			var colecoHawkGamepadSettingsItem = CreateSettingsItem("Controller Settings...", (_, _) => OpenColecoHawkGamepadSettingsDialog(GetSettingsAdapterFor<ColecoVision>()));
-			var colecoHawkSkipBIOSItem = CreateSettingsItem("Skip BIOS intro (When Applicable)", (sender, _) => ColecoHawkSetSkipBIOSIntro(!((ToolStripMenuItem) sender).Checked, GetSettingsAdapterFor<ColecoVision>()));
+			var colecoHawkSkipBIOSItem = CreateSettingsItem("Skip BIOS intro (When Applicable)", (sender, _) => ColecoHawkSetSkipBIOSIntro(!((ToolStripMenuItem)sender).Checked, GetSettingsAdapterFor<ColecoVision>()));
 			var colecoHawkUseSGMItem = CreateSettingsItem("Use the Super Game Module", (sender, _) => ColecoHawkSetSuperGameModule(!((ToolStripMenuItem)sender).Checked, GetSettingsAdapterFor<ColecoVision>()));
 			var colecoHawkSubmenu = CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.ColecoHawk, colecoHawkGamepadSettingsItem, colecoHawkSkipBIOSItem, colecoHawkUseSGMItem);
 			colecoHawkSubmenu.DropDownOpened += (_, _) =>
 			{
-				var ss = (ColecoVision.ColecoSyncSettings) GetSettingsAdapterFor<ColecoVision>().GetSyncSettings();
+				var ss = (ColecoVision.ColecoSyncSettings)GetSettingsAdapterFor<ColecoVision>().GetSyncSettings();
 				colecoHawkGamepadSettingsItem.Enabled = MovieSession.Movie.NotActive() || Emulator is not ColecoVision;
 				colecoHawkSkipBIOSItem.Checked = ss.SkipBiosIntro;
 				colecoHawkUseSGMItem.Checked = ss.UseSGM;
@@ -2904,13 +2905,13 @@ namespace BizHawk.Client.EmuHawk
 			var mupen64PlusGraphicsSettingsItem = CreateSettingsItem("Video Plugins...", N64PluginSettingsMenuItem_Click);
 			var mupen64PlusGamepadSettingsItem = CreateSettingsItem("Controller Settings...", (_, _) => OpenMupen64PlusGamepadSettingsDialog(GetSettingsAdapterFor<N64>()));
 			var mupen64PlusAnalogConstraintItem = CreateSettingsItem("Circular Analog Range", N64CircularAnalogRangeMenuItem_Click);
-			var mupen64PlusNonVILagFramesItem = CreateSettingsItem("Non-VI Lag Frames", (sender, _) => Mupen64PlusSetNonVILagFrames(!((ToolStripMenuItem) sender).Checked, GetSettingsAdapterFor<N64>()));
-			var mupen64PlusUseExpansionSlotItem = CreateSettingsItem("Use Expansion Slot", (sender, _) => Mupen64PlusSetUseExpansionSlot(!((ToolStripMenuItem) sender).Checked, GetSettingsAdapterFor<N64>()));
+			var mupen64PlusNonVILagFramesItem = CreateSettingsItem("Non-VI Lag Frames", (sender, _) => Mupen64PlusSetNonVILagFrames(!((ToolStripMenuItem)sender).Checked, GetSettingsAdapterFor<N64>()));
+			var mupen64PlusUseExpansionSlotItem = CreateSettingsItem("Use Expansion Slot", (sender, _) => Mupen64PlusSetUseExpansionSlot(!((ToolStripMenuItem)sender).Checked, GetSettingsAdapterFor<N64>()));
 			var mupen64PlusSubmenu = CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Mupen64Plus, mupen64PlusGraphicsSettingsItem, mupen64PlusGamepadSettingsItem, mupen64PlusAnalogConstraintItem, mupen64PlusNonVILagFramesItem, mupen64PlusUseExpansionSlotItem);
 			mupen64PlusSubmenu.DropDownOpened += (_, _) =>
 			{
 				var settable = GetSettingsAdapterFor<N64>();
-				var s = (N64Settings) settable.GetSettings();
+				var s = (N64Settings)settable.GetSettings();
 				var isMovieActive = MovieSession.Movie.IsActive();
 				var mupen64Plus = Emulator as N64;
 				var loadedCoreIsMupen64Plus = mupen64Plus is not null;
@@ -2925,7 +2926,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					mupen64PlusUseExpansionSlotItem.Checked = !((N64SyncSettings) settable.GetSyncSettings()).DisableExpansionSlot;
+					mupen64PlusUseExpansionSlotItem.Checked = !((N64SyncSettings)settable.GetSyncSettings()).DisableExpansionSlot;
 					mupen64PlusUseExpansionSlotItem.Enabled = true;
 				}
 			};
@@ -2939,7 +2940,7 @@ namespace BizHawk.Client.EmuHawk
 			// NesHawk
 			var nesHawkGamepadSettingsItem = CreateSettingsItem("Controller Settings...", (_, _) => OpenNesHawkGamepadSettingsDialog(GetSettingsAdapterFor<NES>()));
 			var nesHawkVSSettingsItem = CreateSettingsItem("VS Settings...", (_, _) => OpenNesHawkVSSettingsDialog(GetSettingsAdapterFor<NES>()));
-			var nesHawkAdvancedSettingsItem = CreateSettingsItem("Advanced Settings...", MovieSettingsMenuItem_Click);
+			var nesHawkAdvancedSettingsItem = CreateSettingsItem("Advanced Settings...", (_, _) => OpenNesHawkAdvancedSettingsDialog(GetSettingsAdapterFor<NES>(), Emulator is not NES nesHawk || nesHawk.HasMapperProperties));
 			var nesHawkSubmenu = CreateCoreSubmenu(
 				VSystemCategory.Consoles,
 				CoreNames.NesHawk,
@@ -2952,9 +2953,9 @@ namespace BizHawk.Client.EmuHawk
 				var isMovieActive = MovieSession.Movie.IsActive();
 				var nesHawk = Emulator as NES;
 				var loadedCoreIsNesHawk = nesHawk is not null;
-				nesHawkGamepadSettingsItem.Enabled = !isMovieActive && Tools.IsAvailable<NesControllerSettings>();
-				nesHawkVSSettingsItem.Enabled = nesHawk?.IsVS is true;
-				nesHawkAdvancedSettingsItem.Enabled = loadedCoreIsNesHawk && !isMovieActive;
+				nesHawkGamepadSettingsItem.Enabled = (!loadedCoreIsNesHawk || !isMovieActive) && Tools.IsAvailable<NesControllerSettings>();
+				nesHawkVSSettingsItem.Enabled = !loadedCoreIsNesHawk || nesHawk.IsVS is true;
+				nesHawkAdvancedSettingsItem.Enabled = !loadedCoreIsNesHawk || !isMovieActive;
 			};
 			items.Add(nesHawkSubmenu);
 
@@ -2969,12 +2970,22 @@ namespace BizHawk.Client.EmuHawk
 			// Octoshock
 			var octoshockGamepadSettingsItem = CreateSettingsItem("Controller / Memcard Settings...", (_, _) => OpenOctoshockGamepadSettingsDialog(GetSettingsAdapterFor<Octoshock>()));
 			var octoshockSettingsItem = CreateSettingsItem("Options...", PsxOptionsMenuItem_Click);
-			var octoshockSubmenu = CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Octoshock, octoshockGamepadSettingsItem, octoshockSettingsItem);
+			// using init buffer sizes here (in practice, they don't matter here, but might as well)
+			var octoshockNtscSettingsItem = CreateSettingsItem("Options (as NTSC)...", (_, _) => OpenOctoshockSettingsDialog(OctoshockDll.eVidStandard.NTSC, new(280, 240)));
+			var octoshockPalSettingsItem = CreateSettingsItem("Options (as PAL)...", (_, _) => OpenOctoshockSettingsDialog(OctoshockDll.eVidStandard.PAL, new(280, 288)));
+			var octoshockSubmenu = CreateCoreSubmenu(
+				VSystemCategory.Consoles,
+				CoreNames.Octoshock,
+				octoshockGamepadSettingsItem,
+				octoshockSettingsItem,
+				octoshockNtscSettingsItem,
+				octoshockPalSettingsItem);
 			octoshockSubmenu.DropDownOpened += (_, _) =>
 			{
 				var loadedCoreIsOctoshock = Emulator is Octoshock;
 				octoshockGamepadSettingsItem.Enabled = !loadedCoreIsOctoshock || MovieSession.Movie.NotActive();
-				octoshockSettingsItem.Enabled = loadedCoreIsOctoshock;
+				octoshockSettingsItem.Visible = loadedCoreIsOctoshock;
+				octoshockNtscSettingsItem.Visible = octoshockPalSettingsItem.Visible = !loadedCoreIsOctoshock;
 			};
 			items.Add(octoshockSubmenu);
 
@@ -2991,7 +3002,12 @@ namespace BizHawk.Client.EmuHawk
 				CoreNames.QuickNes,
 				quickNesGamepadSettingsItem,
 				CreateSettingsItem("Graphics Settings...", (_, _) => OpenQuickNesGraphicsSettingsDialog(GetSettingsAdapterFor<QuickNES>())));
-			quickNesSubmenu.DropDownOpened += (_, _) => quickNesGamepadSettingsItem.Enabled = !MovieSession.Movie.IsActive() && Emulator is QuickNES && Tools.IsAvailable<NesControllerSettings>();
+			quickNesSubmenu.DropDownOpened += (_, _) =>
+			{
+				var isMovieActive = MovieSession.Movie.IsActive();
+				var loadedCoreIsQuickNes = Emulator is QuickNES;
+				quickNesGamepadSettingsItem.Enabled = (!loadedCoreIsQuickNes || !isMovieActive) && Tools.IsAvailable<NesControllerSettings>();
+			};
 			items.Add(quickNesSubmenu);
 
 			// SameBoy
@@ -3021,7 +3037,7 @@ namespace BizHawk.Client.EmuHawk
 			// SubNESHawk
 			var subNESHawkGamepadSettingsItem = CreateSettingsItem("Controller Settings...", (_, _) => OpenNesHawkGamepadSettingsDialog(GetSettingsAdapterFor<SubNESHawk>()));
 			var subNESHawkVSSettingsItem = CreateSettingsItem("VS Settings...", (_, _) => OpenNesHawkVSSettingsDialog(GetSettingsAdapterFor<SubNESHawk>()));
-			var subNESHawkAdvancedSettingsItem = CreateSettingsItem("Advanced Settings...", MovieSettingsMenuItem_Click);
+			var subNESHawkAdvancedSettingsItem = CreateSettingsItem("Advanced Settings...", (_, _) => OpenNesHawkAdvancedSettingsDialog(GetSettingsAdapterFor<SubNESHawk>(), Emulator is not SubNESHawk subNESHawk || subNESHawk.HasMapperProperties));
 			var subNESHawkSubmenu = CreateCoreSubmenu(
 				VSystemCategory.Consoles,
 				CoreNames.SubNesHawk,
@@ -3035,8 +3051,8 @@ namespace BizHawk.Client.EmuHawk
 				var subNESHawk = Emulator as SubNESHawk;
 				var loadedCoreIsSubNESHawk = subNESHawk is not null;
 				subNESHawkGamepadSettingsItem.Enabled = !isMovieActive && Tools.IsAvailable<NesControllerSettings>();
-				subNESHawkVSSettingsItem.Enabled = subNESHawk?.IsVs is true;
-				subNESHawkAdvancedSettingsItem.Enabled = loadedCoreIsSubNESHawk && !isMovieActive;
+				subNESHawkVSSettingsItem.Enabled = !loadedCoreIsSubNESHawk || subNESHawk.IsVs is true;
+				subNESHawkAdvancedSettingsItem.Enabled = !loadedCoreIsSubNESHawk || !isMovieActive;
 			};
 			items.Add(subNESHawkSubmenu);
 

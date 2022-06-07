@@ -82,18 +82,16 @@ namespace BizHawk.Client.EmuHawk
 			DialogController.ShowMessageBox("Finetuned Display Options will take effect if you OK from PSX Options");
 		}
 
-		/// <remarks>TODO only use <paramref name="settable"/></remarks>
 		public static DialogResult DoSettingsDialog(
 			Config config,
 			IDialogParent dialogParent,
 			ISettingsAdapter settable,
-			Octoshock psx)
+			OctoshockDll.eVidStandard vidStandard,
+			Size vidSize)
 		{
-			var s = psx.GetSettings();
-			var ss = psx.GetSyncSettings();
-			var vid = psx.SystemVidStandard;
-			var size = psx.CurrentVideoSize;
-			using var dlg = new PSXOptions(config, dialogParent.DialogController, settable, s, ss, vid, size);
+			var s = settable.GetSettings() as Octoshock.Settings;
+			var ss = settable.GetSyncSettings() as Octoshock.SyncSettings;
+			using var dlg = new PSXOptions(config, dialogParent.DialogController, settable, s, ss, vidStandard, vidSize);
 			return dialogParent.ShowDialogAsChild(dlg);
 		}
 
