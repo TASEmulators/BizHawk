@@ -37,10 +37,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Faust
 
 			DoInit<LibNymaCore>(game, rom, null, "faust.wbx", extension, deterministic);
 
-			if (_cachedSettingsInfo is null)
-			{
-				_cachedSettingsInfo = SettingsInfo.Clone();
-			}
+			_cachedSettingsInfo ??= SettingsInfo.Clone();
 		}
 
 		protected override HashSet<string> ComputeHiddenPorts()

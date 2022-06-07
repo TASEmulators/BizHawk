@@ -50,10 +50,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 
 			_hyperNyma = DoInit<LibHyperNyma>(lp, "hyper.wbx", firmwares);
 
-			if (_cachedSettingsInfo is null)
-			{
-				_cachedSettingsInfo = SettingsInfo.Clone();
-			}
+			_cachedSettingsInfo ??= SettingsInfo.Clone();
 		}
 
 		public override string SystemId => IsSgx

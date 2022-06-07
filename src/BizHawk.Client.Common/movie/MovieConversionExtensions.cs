@@ -288,9 +288,7 @@ namespace BizHawk.Client.Common
 				movie.HeaderEntries.Add(HeaderKeys.ClockRate, "0");
 			}
 
-			movie.Core = ((CoreAttribute)Attribute
-				.GetCustomAttribute(emulator.GetType(), typeof(CoreAttribute)))
-				.CoreName;
+			movie.Core = emulator.Attributes().CoreName;
 		}
 
 		internal static string ConvertFileNameToTasMovie(string oldFileName)

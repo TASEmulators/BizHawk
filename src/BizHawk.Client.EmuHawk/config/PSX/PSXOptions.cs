@@ -89,9 +89,14 @@ namespace BizHawk.Client.EmuHawk
 			OctoshockDll.eVidStandard vidStandard,
 			Size vidSize)
 		{
-			var s = settable.GetSettings() as Octoshock.Settings;
-			var ss = settable.GetSyncSettings() as Octoshock.SyncSettings;
-			using var dlg = new PSXOptions(config, dialogParent.DialogController, settable, s, ss, vidStandard, vidSize);
+			using PSXOptions dlg = new(
+				config,
+				dialogParent.DialogController,
+				settable,
+				(Octoshock.Settings) settable.GetSettings(),
+				(Octoshock.SyncSettings) settable.GetSyncSettings(),
+				vidStandard,
+				vidSize);
 			return dialogParent.ShowDialogAsChild(dlg);
 		}
 

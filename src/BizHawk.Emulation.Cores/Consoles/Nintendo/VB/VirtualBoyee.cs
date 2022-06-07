@@ -33,10 +33,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 		{
 			DoInit<LibNymaCore>(lp, "vb.wbx");
 
-			if (_cachedSettingsInfo is null)
-			{
-				_cachedSettingsInfo = SettingsInfo.Clone();
-			}
+			_cachedSettingsInfo ??= SettingsInfo.Clone();
 		}
 
 		protected override IDictionary<string, SettingOverride> SettingOverrides { get; } = new Dictionary<string, SettingOverride>

@@ -38,10 +38,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 		{
 			_neopop = DoInit<LibNeoGeoPort>(game, rom, null, "ngp.wbx", extension, deterministic);
 
-			if (_cachedSettingsInfo is null)
-			{
-				_cachedSettingsInfo = SettingsInfo.Clone();
-			}
+			_cachedSettingsInfo ??= SettingsInfo.Clone();
 		}
 
 		public new bool SaveRamModified

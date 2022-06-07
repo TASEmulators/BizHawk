@@ -44,10 +44,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			};
 			DoInit<LibNymaCore>(lp, "ss.wbx", firmwares);
 
-			if (_cachedSettingsInfo is null)
-			{
-				_cachedSettingsInfo = SettingsInfo.Clone();
-			}
+			_cachedSettingsInfo ??= SettingsInfo.Clone();
 		}
 
 		protected override IDictionary<string, SettingOverride> SettingOverrides { get; } = new Dictionary<string, SettingOverride>

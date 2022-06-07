@@ -55,8 +55,8 @@ namespace BizHawk.Client.EmuHawk
 			IMovieSession movieSession,
 			ISettingsAdapter settable)
 		{
-			var s = settable.GetSettings() as GambatteLink.GambatteLinkSettings;
-			var ss = settable.GetSyncSettings() as GambatteLink.GambatteLinkSyncSettings;
+			var s = (GambatteLink.GambatteLinkSettings) settable.GetSettings();
+			var ss = (GambatteLink.GambatteLinkSyncSettings) settable.GetSyncSettings();
 
 			using var dlg = new GBLPrefs(dialogParent.DialogController, config, game, movieSession);
 			dlg.PutSettings(s, ss);

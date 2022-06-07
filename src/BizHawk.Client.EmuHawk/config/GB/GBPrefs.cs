@@ -24,8 +24,8 @@ namespace BizHawk.Client.EmuHawk
 			IMovieSession movieSession,
 			ISettingsAdapter settable)
 		{
-			var s = settable.GetSettings() as Gameboy.GambatteSettings;
-			var ss = settable.GetSyncSettings() as Gameboy.GambatteSyncSettings;
+			var s = (Gameboy.GambatteSettings) settable.GetSettings();
+			var ss = (Gameboy.GambatteSyncSettings) settable.GetSyncSettings();
 
 			using var dlg = new GBPrefs(dialogParent.DialogController);
 			dlg.gbPrefControl1.PutSettings(config, game, movieSession, s, ss);

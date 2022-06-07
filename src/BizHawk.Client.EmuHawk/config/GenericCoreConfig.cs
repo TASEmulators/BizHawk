@@ -1,14 +1,89 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Arcades.MAME;
+using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class GenericCoreConfig : Form
 	{
+		private readonly struct TempTypeDescProviderScope : IDisposable
+		{
+			private readonly TypeDescriptionProvider _desc;
+
+			private readonly Type _type;
+
+			public TempTypeDescProviderScope(TypeDescriptionProvider desc, Type type)
+				=> TypeDescriptor.AddProvider(_desc = desc, _type = type);
+
+			public void Dispose()
+				=> TypeDescriptor.RemoveProvider(_desc, _type);
+		}
+
+		public static DialogResult DoDialogFor(
+			IDialogParent owner,
+			ISettingsAdapter settable,
+			string title,
+			bool isMovieActive,
+			bool ignoreSettings = false,
+			bool ignoreSyncSettings = false)
+		{
+			using GenericCoreConfig dlg = new(
+				settable,
+				isMovieActive: isMovieActive,
+				ignoreSettings: ignoreSettings,
+				ignoreSyncSettings: ignoreSyncSettings)
+			{
+				Text = title,
+			};
+			return owner.ShowDialogAsChild(dlg);
+		}
+
+		private static DialogResult DoMAMEDialog(
+			IDialogParent owner,
+			ISettingsAdapter settable,
+			List<MAME.DriverSetting> settings,
+			bool isMovieActive)
+		{
+			using TempTypeDescProviderScope scope = new(new MAMETypeDescriptorProvider(settings), typeof(MAME.MAMESyncSettings));
+			return DoDialogFor(owner, settable, "MAME Settings", isMovieActive: isMovieActive, ignoreSettings: true);
+		}
+
+		public static DialogResult DoNymaDialogFor(
+			IDialogParent owner,
+			ISettingsAdapter settable,
+			string title,
+			NymaCore.NymaSettingsInfo settingsInfo,
+			bool isMovieActive)
+		{
+			NymaTypeDescriptorProvider desc = new(settingsInfo);
+			using TempTypeDescProviderScope scope = new(desc, typeof(NymaCore.NymaSettings)), scope1 = new(desc, typeof(NymaCore.NymaSyncSettings));
+			return DoDialogFor(
+				owner,
+				settable,
+				title,
+				isMovieActive: isMovieActive,
+				ignoreSettings: !settingsInfo.HasSettings,
+				ignoreSyncSettings: !settingsInfo.HasSyncSettings);
+		}
+
+		public static void DoDialog(IEmulator emulator, IDialogParent owner, bool isMovieActive)
+		{
+			var settable = ((MainForm) owner).GetSettingsAdapterForLoadedCoreUntyped(); //HACK
+			var title = $"{emulator.Attributes().CoreName} Settings";
+			_ = emulator switch
+			{
+				MAME mame => DoMAMEDialog(owner, settable, mame.CurrentDriverSettings, isMovieActive: isMovieActive),
+				NymaCore core => DoNymaDialogFor(owner, settable, title, core.SettingsInfo, isMovieActive: isMovieActive),
+				_ => DoDialogFor(owner, settable, title, isMovieActive: isMovieActive)
+			};
+		}
+
 		private readonly ISettingsAdapter _settable;
 
 		private object _s;
@@ -70,98 +145,6 @@ namespace BizHawk.Client.EmuHawk
 
 			DialogResult = DialogResult.OK;
 			Close();
-		}
-
-		public static DialogResult DoDialog(IEmulator emulator, IDialogParent owner, string title, bool isMovieActive)
-		{
-			if (emulator is Emulation.Cores.Waterbox.NymaCore core)
-			{
-				var desc = new Emulation.Cores.Waterbox.NymaTypeDescriptorProvider(core.SettingsInfo);
-				try
-				{
-					// OH GOD THE HACKS WHY
-					TypeDescriptor.AddProvider(desc, typeof(Emulation.Cores.Waterbox.NymaCore.NymaSettings));
-					TypeDescriptor.AddProvider(desc, typeof(Emulation.Cores.Waterbox.NymaCore.NymaSyncSettings));
-					return DoDialog(owner, "Nyma Core", isMovieActive, !core.SettingsInfo.HasSettings, !core.SettingsInfo.HasSyncSettings);
-				}
-				finally
-				{
-					TypeDescriptor.RemoveProvider(desc, typeof(Emulation.Cores.Waterbox.NymaCore.NymaSettings));
-					TypeDescriptor.RemoveProvider(desc, typeof(Emulation.Cores.Waterbox.NymaCore.NymaSyncSettings));
-				}
-			}
-			else if (emulator is Emulation.Cores.Arcades.MAME.MAME mame)
-			{
-				var desc = new Emulation.Cores.Arcades.MAME.MAMETypeDescriptorProvider(mame.CurrentDriverSettings);
-				try
-				{
-					TypeDescriptor.AddProvider(desc, typeof(Emulation.Cores.Arcades.MAME.MAME.MAMESyncSettings));
-					return DoDialog(owner, "MAME", isMovieActive, true, false);
-				}
-				finally
-				{
-					TypeDescriptor.RemoveProvider(desc, typeof(Emulation.Cores.Arcades.MAME.MAME.MAMESyncSettings));
-				}
-			}
-			else
-			{
-				return DoDialog(owner, title, isMovieActive, false, false);
-			}
-		}
-
-		public static DialogResult DoDialog(
-			IDialogParent owner,
-			string title,
-			bool isMovieActive,
-			bool hideSettings,
-			bool hideSyncSettings)
-		{
-			using var dlg = new GenericCoreConfig(
-				((MainForm) owner).GetSettingsAdapterForLoadedCoreUntyped(), //HACK
-				isMovieActive: isMovieActive,
-				ignoreSettings: hideSettings,
-				ignoreSyncSettings: hideSyncSettings)
-			{
-				Text = title,
-			};
-			return owner.ShowDialogAsChild(dlg);
-		}
-
-		public static DialogResult DoDialogFor(
-			IDialogParent owner,
-			ISettingsAdapter settable,
-			string title,
-			bool isMovieActive,
-			bool hideSettings = false,
-			bool hideSyncSettings = false)
-		{
-			using GenericCoreConfig dlg = new(settable, isMovieActive, hideSettings, hideSyncSettings) { Text = title };
-			return owner.ShowDialogAsChild(dlg);
-		}
-
-		public static DialogResult DoNymaDialogFor(
-			IDialogParent owner,
-			ISettingsAdapter settable,
-			Emulation.Cores.Waterbox.NymaCore.NymaSettingsInfo settingsInfo,
-			bool isMovieActive)
-		{
-			var desc = new Emulation.Cores.Waterbox.NymaTypeDescriptorProvider(settingsInfo);
-			try
-			{
-				// OH GOD THE HACKS WHY
-				TypeDescriptor.AddProvider(desc, typeof(Emulation.Cores.Waterbox.NymaCore.NymaSettings));
-				TypeDescriptor.AddProvider(desc, typeof(Emulation.Cores.Waterbox.NymaCore.NymaSyncSettings));
-				using GenericCoreConfig dlg = new(settable, isMovieActive, !settingsInfo.HasSettings, !settingsInfo.HasSyncSettings)
-				{
-					Text = "Nyma Core"
-				};
-				return owner.ShowDialogAsChild(dlg);
-			}
-			finally
-			{
-				TypeDescriptor.RemoveProvider(desc, typeof(Emulation.Cores.Waterbox.NymaCore.NymaSettings));
-				TypeDescriptor.RemoveProvider(desc, typeof(Emulation.Cores.Waterbox.NymaCore.NymaSyncSettings));
-			}
 		}
 
 		private void PropertyGrid2_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)

@@ -19,8 +19,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public static DialogResult DoSettingsDialog(IDialogParent dialogParent, ISettingsAdapter settable)
 		{
-			var s = settable.GetSettings() as LibsnesCore.SnesSettings;
-			var ss = settable.GetSyncSettings() as LibsnesCore.SnesSyncSettings;
+			var s = (LibsnesCore.SnesSettings) settable.GetSettings();
+			var ss = (LibsnesCore.SnesSyncSettings) settable.GetSyncSettings();
 			using var dlg = new SNESOptions
 			{
 				RandomizedInitialState = ss.RandomizedInitialState,
