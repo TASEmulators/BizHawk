@@ -1234,8 +1234,8 @@ sha1:a82aaeef44ad88de605c50d23fb4f6cec73f3ab4		Kamikaze Saucers (198x) (Syncro)	
 sha1:dac53b95626b68d3686430ccfda8c1a10946bad2		Kangaroo (1983) (Atari) (PAL) [!]	A26		m=F8;PAL=true
 sha1:e418fe90d1707e95c605517362b87a059c6af52a		Kangaroo (1983) (Atari) (PAL) [a1][!]	A26		m=F8;PAL=true
 sha1:01fd30311e028944eafb6d14bb001035f816ced7		Kangaroo (1983) (Atari)	A26		m=F8;NTSC=true
-sha1:c0db7d295e2ce5e00e00b8a83075b1103688ea15		Karate (1982) (Froggo)	A26		m=4K;NTSC=true
-sha1:c8cd0a04edea449151e6349db2455d48f23dc213		Karate (1982) (PAL) [p1][!]	A26		m=4K;PAL=true
+sha1:c0db7d295e2ce5e00e00b8a83075b1103688ea15		Karate (1982) (Froggo)	A26		SP_RESET=true;SP_SELECT=true;m=4K;NTSC=true
+sha1:c8cd0a04edea449151e6349db2455d48f23dc213		Karate (1982) (PAL) [p1][!]	A26		SP_RESET=true;SP_SELECT=true;m=4K;PAL=true
 sha1:a5ad3e48b296fe2126bed394483811395daf1327		KC Munckin (29-01-2003) (J. Parlee)	A26		m=4K;NTSC=true
 sha1:4dd1f09bc4ac633033554ff1f95cf848f577b459		KC Pacman (Pac-Man Hack)	A26		m=4K;NTSC=true
 sha1:525e9054343916e2a7271278cf3610e0ed1efb71		Keystone Kapers (1983) (Activision) (PAL) [!]	A26		m=4K;PAL=true
