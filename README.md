@@ -276,6 +276,21 @@ More disclaimers: Develop a habit to always flush saves manually every time you 
 
 For now, the best way to learn how to TAS is to browse pages like [BasicTools](https://tasvideos.org/TasingGuide/BasicTools) on TASVideos and watch tutorials like [The8bitbeast's](https://www.youtube.com/playlist?list=PLlJzD6wWmoXmihK13itZJ-mzjK3SD1EaM) and [Sand_Knight and dwangoAC's](https://youtu.be/6tJniMaR2Ps).
 
+## TAStudio
+
+A lot of useful information is presented in [the video tutorials thread on TASVideos](https://tasvideos.org/Forum/Topics/21792).
+
+# Analog controls
+
+Enter analog editing mode by double-clicking on an analog input cell. The cell color will change. There are several ways to edit values:
+
+* Arrow keys (see the `TAStudio` section in the `Hotkeys` menu)
+* Numeric input
+* Mouse dragging
+* Using the `Virtual Pad` tool while the `Recording mode` is enabled in TAStudio
+
+While in analog editing mode, you can select multiple rows if you hold Shift or Control key and click on the `Frame#` column. That will allow you editing all those cells at once using Arrow keys or numeric input.
+
 [to top](#bizhawk)
 
 ### External tools
