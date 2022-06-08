@@ -276,11 +276,11 @@ More disclaimers: Develop a habit to always flush saves manually every time you 
 
 For now, the best way to learn how to TAS is to browse pages like [BasicTools](https://tasvideos.org/TasingGuide/BasicTools) on TASVideos and watch tutorials like [The8bitbeast's](https://www.youtube.com/playlist?list=PLlJzD6wWmoXmihK13itZJ-mzjK3SD1EaM) and [Sand_Knight and dwangoAC's](https://youtu.be/6tJniMaR2Ps).
 
-### TAStudio
+#### TAStudio
 
 A lot of useful information is presented in [the video tutorials thread on TASVideos](https://tasvideos.org/Forum/Topics/21792).
 
-#### Analog controls
+##### Analog controls
 
 Enter analog editing mode by double-clicking on an analog input cell. The cell color will change. There are several ways to edit values:
 
