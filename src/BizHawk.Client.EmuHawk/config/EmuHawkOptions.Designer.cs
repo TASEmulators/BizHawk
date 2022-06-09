@@ -40,7 +40,6 @@
 			this.AcceptBackgroundInputControllerOnlyCheckBox = new System.Windows.Forms.CheckBox();
 			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.RunInBackgroundCheckbox = new System.Windows.Forms.CheckBox();
-			this.SaveWindowPositionCheckbox = new System.Windows.Forms.CheckBox();
 			this.EnableContextMenuCheckbox = new System.Windows.Forms.CheckBox();
 			this.PauseWhenMenuActivatedCheckbox = new System.Windows.Forms.CheckBox();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -135,7 +134,6 @@
 			this.tabPage1.Controls.Add(this.AcceptBackgroundInputControllerOnlyCheckBox);
 			this.tabPage1.Controls.Add(this.label1);
 			this.tabPage1.Controls.Add(this.RunInBackgroundCheckbox);
-			this.tabPage1.Controls.Add(this.SaveWindowPositionCheckbox);
 			this.tabPage1.Controls.Add(this.EnableContextMenuCheckbox);
 			this.tabPage1.Controls.Add(this.PauseWhenMenuActivatedCheckbox);
 			this.tabPage1.Controls.Add(this.groupBox3);
@@ -211,16 +209,6 @@
 			this.RunInBackgroundCheckbox.TabIndex = 21;
 			this.RunInBackgroundCheckbox.Text = "Run in background";
 			this.RunInBackgroundCheckbox.UseVisualStyleBackColor = true;
-			// 
-			// SaveWindowPositionCheckbox
-			// 
-			this.SaveWindowPositionCheckbox.AutoSize = true;
-			this.SaveWindowPositionCheckbox.Location = new System.Drawing.Point(196, 29);
-			this.SaveWindowPositionCheckbox.Name = "SaveWindowPositionCheckbox";
-			this.SaveWindowPositionCheckbox.Size = new System.Drawing.Size(133, 17);
-			this.SaveWindowPositionCheckbox.TabIndex = 19;
-			this.SaveWindowPositionCheckbox.Text = "Save Window Position";
-			this.SaveWindowPositionCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// EnableContextMenuCheckbox
 			// 
@@ -655,7 +643,6 @@
 		private System.Windows.Forms.CheckBox AcceptBackgroundInputControllerOnlyCheckBox;
 		private BizHawk.WinForms.Controls.LocLabelEx label1;
 		private System.Windows.Forms.CheckBox RunInBackgroundCheckbox;
-		private System.Windows.Forms.CheckBox SaveWindowPositionCheckbox;
 		private System.Windows.Forms.CheckBox EnableContextMenuCheckbox;
 		private System.Windows.Forms.CheckBox PauseWhenMenuActivatedCheckbox;
 		private System.Windows.Forms.GroupBox groupBox3;

@@ -102,6 +102,7 @@ namespace BizHawk.Client.Common
 		public RecentFiles RecentRoms { get; set; } = new RecentFiles(10);
 		public bool PauseWhenMenuActivated { get; set; } = true;
 		public bool SaveWindowPosition { get; set; } = true;
+		public bool MainFormStayOnTop { get; set; }
 		public bool StartPaused { get; set; }
 		public bool StartFullscreen { get; set; }
 		public int MainWndx { get; set; } = -1; // Negative numbers will be ignored

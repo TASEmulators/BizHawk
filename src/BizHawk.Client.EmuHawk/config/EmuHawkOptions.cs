@@ -64,7 +64,6 @@ namespace BizHawk.Client.EmuHawk
 			StartPausedCheckbox.Checked = _config.StartPaused;
 			PauseWhenMenuActivatedCheckbox.Checked = _config.PauseWhenMenuActivated;
 			EnableContextMenuCheckbox.Checked = _config.ShowContextMenu;
-			SaveWindowPositionCheckbox.Checked = _config.SaveWindowPosition;
 			RunInBackgroundCheckbox.Checked = _config.RunInBackground;
 			AcceptBackgroundInputCheckbox.Checked = _config.AcceptBackgroundInput;
 			AcceptBackgroundInputControllerOnlyCheckBox.Checked = _config.AcceptBackgroundInputControllerOnly;
@@ -128,7 +127,6 @@ namespace BizHawk.Client.EmuHawk
 			_config.StartPaused = StartPausedCheckbox.Checked;
 			_config.PauseWhenMenuActivated = PauseWhenMenuActivatedCheckbox.Checked;
 			_config.ShowContextMenu = EnableContextMenuCheckbox.Checked;
-			_config.SaveWindowPosition = SaveWindowPositionCheckbox.Checked;
 			_config.RunInBackground = RunInBackgroundCheckbox.Checked;
 			_config.AcceptBackgroundInput = AcceptBackgroundInputCheckbox.Checked;
 			_config.AcceptBackgroundInputControllerOnly = AcceptBackgroundInputControllerOnlyCheckBox.Checked;

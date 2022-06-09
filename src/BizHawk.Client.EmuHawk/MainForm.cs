@@ -540,6 +540,8 @@ namespace BizHawk.Client.EmuHawk
 				Location = new Point(Config.MainWndx, Config.MainWndy);
 			}
 
+			if (Config.MainFormStayOnTop) TopMost = true;
+
 			if (_argParser.cmdRom != null)
 			{
 				// Commandline should always override auto-load
