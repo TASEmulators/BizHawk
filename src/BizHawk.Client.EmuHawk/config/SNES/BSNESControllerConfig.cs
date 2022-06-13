@@ -24,11 +24,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			LimitAnalogChangeCheckBox.Checked = _syncSettings.LimitAnalogChangeSensitivity;
 
-			Port1ComboBox.PopulateFromEnum(_syncSettings.LeftPort);
-			Port2ComboBox.PopulateFromEnum(_syncSettings.RightPort);
-
 			Port1ComboBox.SelectedIndex = (int) _syncSettings.LeftPort >= Port1ComboBox.Items.Count ? 0 : (int) _syncSettings.LeftPort;
-			Port2ComboBox.SelectedIndex = (int) _syncSettings.RightPort >= Port2ComboBox.Items.Count ? 0 : (int) _syncSettings.RightPort;
+			Port2ComboBox.PopulateFromEnum(_syncSettings.RightPort);
 		}
 
 		private void OkBtn_Click(object sender, EventArgs e)
