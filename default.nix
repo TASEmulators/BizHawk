@@ -14,13 +14,7 @@
 	version = "2.8.1-local"; # distinguishes parallel installs' config and other data
 	shorthash = "000000000"; # this and the branch name are written into movies and savestates, written to config to detect in-place upgrades (N/A to Nix), and of course also shown in the About dialog
 	branch = "master"; # must be regex-escaped (interpolated as `sed "s/.../${branch}/"`)
-	drv = builtins.path {
-		path = ./.;
-		name = "BizHawk-${version}";
-		filter = let # this is just for speed, not any r13y concern
-			denyList = [ ".git" ".idea" "ExternalCoreProjects" "ExternalProjects" "ExternalToolProjects" "libHawk" "libmupen64plus" "LibretroBridge" "LuaInterface" "lynx" "psx" "quicknes" "submodules" "waterbox" "wonderswan" ];
-		in path: type: type == "regular" || (type == "directory" && !builtins.elem (baseNameOf path) denyList);
-	};
+	drv = builtins.path { path = ./.; name = "BizHawk-${version}"; }; # did have filter here for speed, but it wasn't faster and it wasn't correct and it couldn't be made correct and I'm mad
 }
 # makedeps
 , dotnet-sdk_5 ? pkgs.dotnetCorePackages.sdk_5_0
