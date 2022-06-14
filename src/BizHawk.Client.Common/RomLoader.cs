@@ -791,6 +791,8 @@ namespace BizHawk.Client.Common
 
 			public static readonly IReadOnlyCollection<string> Lynx = new[] { "lnx" };
 
+			public static readonly IReadOnlyCollection<string> MSX = new[] { "cas", "dsk", "mx1", "rom" };
+
 			public static readonly IReadOnlyCollection<string> N64 = new[] { "z64", "v64", "n64" };
 
 			public static readonly IReadOnlyCollection<string> NDS = new[] { "nds" };
@@ -830,6 +832,7 @@ namespace BizHawk.Client.Common
 				.Concat(GEN)
 				.Concat(INTV)
 				.Concat(Lynx)
+				.Concat(MSX)
 				.Concat(N64)
 				.Concat(NDS)
 				.Concat(NES)
@@ -882,6 +885,7 @@ namespace BizHawk.Client.Common
 			new FilesystemFilter("Odyssey 2", RomFileExtensions.O2),
 			new FilesystemFilter("Uzebox", RomFileExtensions.UZE),
 			new FilesystemFilter("Vectrex", RomFileExtensions.VEC),
+			new FilesystemFilter("MSX", RomFileExtensions.MSX),
 			FilesystemFilter.EmuHawkSaveStates
 		);
 
