@@ -100,6 +100,7 @@ namespace BizHawk.Client.Common
 		string OriginalEmulatorVersion { get; set; }
 		string FirmwareHash { get; set; }
 		string BoardName { get; set; }
+		string LogKey { get; set; }
 
 		/// <summary>
 		/// Loads from the HawkFile the minimal amount of information needed to determine Header info and Movie length.
