@@ -393,6 +393,10 @@ namespace BizHawk.Emulation.Common
 					game.System = VSystemID.Raw.UZE;
 					break;
 
+				case ".TIC":
+					game.System = VSystemID.Raw.TIC80;
+					break;
+
 				case ".32X":
 					game.System = VSystemID.Raw.Sega32X;
 					game.AddOption("32X", "true");

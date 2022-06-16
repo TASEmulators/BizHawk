@@ -58,6 +58,7 @@ namespace BizHawk.Emulation.Common
 			[VSystemID.Raw.SMS] = "Sega Master System",
 			[VSystemID.Raw.SNES] = "SNES",
 			[VSystemID.Raw.TI83] = "TI - 83",
+			[VSystemID.Raw.TIC80] = "TIC-80",
 			[VSystemID.Raw.UZE] = "Uzebox",
 			[VSystemID.Raw.VB] = "Virtual Boy",
 			[VSystemID.Raw.VEC] = "Vectrex",

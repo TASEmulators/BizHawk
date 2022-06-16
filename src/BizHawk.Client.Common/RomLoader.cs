@@ -811,6 +811,8 @@ namespace BizHawk.Client.Common
 
 			public static readonly IReadOnlyCollection<string> TI83 = new[] { "83g", "83l", "83p" };
 
+			public static readonly IReadOnlyCollection<string> TIC80 = new[] { "tic" };
+
 			public static readonly IReadOnlyCollection<string> UZE = new[] { "uze" };
 
 			public static readonly IReadOnlyCollection<string> VB = new[] { "vb" };
@@ -842,6 +844,7 @@ namespace BizHawk.Client.Common
 				.Concat(SMS)
 				.Concat(SNES)
 				.Concat(TI83)
+				.Concat(TIC80)
 				.Concat(UZE)
 				.Concat(VB)
 				.Concat(VEC)
@@ -872,6 +875,7 @@ namespace BizHawk.Client.Common
 			new FilesystemFilter("ColecoVision", RomFileExtensions.Coleco, addArchiveExts: true),
 			new FilesystemFilter("IntelliVision", RomFileExtensions.INTV, addArchiveExts: true),
 			new FilesystemFilter("TI-83", RomFileExtensions.TI83, addArchiveExts: true),
+			new FilesystemFilter("TIC-80", RomFileExtensions.TIC80, addArchiveExts: true),
 			FilesystemFilter.Archives,
 			new FilesystemFilter("Genesis", RomFileExtensions.GEN.Concat(new[] { "bin", "cue", "ccd" }).ToList(), addArchiveExts: true),
 			new FilesystemFilter("SID Commodore 64 Music File", Array.Empty<string>(), devBuildExtraExts: new[] { "sid" }, devBuildAddArchiveExts: true),
