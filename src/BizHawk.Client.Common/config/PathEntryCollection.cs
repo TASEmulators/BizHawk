@@ -283,6 +283,8 @@ namespace BizHawk.Client.Common
 
 			CommonEntriesFor(VSystemID.Raw.TI83, basePath: Path.Combine(".", "TI83")),
 
+			CommonEntriesFor(VSystemID.Raw.TIC80, basePath: Path.Combine(".", "TIC80")),
+
 			CommonEntriesFor(VSystemID.Raw.UZE, basePath: Path.Combine(".", "Uzebox")),
 
 			CommonEntriesFor(VSystemID.Raw.VB, basePath: Path.Combine(".", "VB")),
