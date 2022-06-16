@@ -26,6 +26,7 @@ using BizHawk.Emulation.Cores.Computers.AppleII;
 using BizHawk.Emulation.Cores.Computers.Commodore64;
 using BizHawk.Emulation.Cores.Computers.MSX;
 using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
+using BizHawk.Emulation.Cores.Computers.TIC80;
 using BizHawk.Emulation.Cores.Consoles.Belogic;
 using BizHawk.Emulation.Cores.Consoles.ChannelF;
 using BizHawk.Emulation.Cores.Consoles.NEC.PCE;
@@ -3007,6 +3008,9 @@ namespace BizHawk.Client.EmuHawk
 
 			// TI83Hawk
 			items.Add(CreateCoreSubmenu(VSystemCategory.Other, CoreNames.TI83Hawk, CreateSettingsItem("Palette...", (_, _) => OpenTI83PaletteSettingsDialog(GetSettingsAdapterFor<TI83>()))));
+
+			// TIC80
+			items.Add(CreateCoreSubmenu(VSystemCategory.PCs, CoreNames.TIC80, CreateGenericCoreConfigItem<TIC80>(CoreNames.TIC80)));
 
 			// T. S. T.
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.TST, CreateGenericNymaCoreConfigItem<Tst>(CoreNames.TST, Tst.CachedSettingsInfo)));

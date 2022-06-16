@@ -54,6 +54,7 @@ namespace BizHawk.Client.Common
 			[VSystemID.Raw.VEC] = "VEC",
 			[VSystemID.Raw.O2] = "O2",
 			[VSystemID.Raw.MSX] = "MSX",
+			[VSystemID.Raw.TIC80] = "TIC80",
 			[VSystemID.Raw.UZE] = "UZE",
 			[VSystemID.Raw.NDS] = "NDS",
 			[VSystemID.Raw.Sega32X] = "Sega 32X",
