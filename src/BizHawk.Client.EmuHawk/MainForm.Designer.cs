@@ -1019,12 +1019,12 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// DisplayFrameCounterMenuItem
 			// 
-			this.DisplayFrameCounterMenuItem.Text = "Display FrameCounter";
+			this.DisplayFrameCounterMenuItem.Text = "Display Frame Count";
 			this.DisplayFrameCounterMenuItem.Click += new System.EventHandler(this.DisplayFrameCounterMenuItem_Click);
 			// 
 			// DisplayLagCounterMenuItem
 			// 
-			this.DisplayLagCounterMenuItem.Text = "Display Lag Counter";
+			this.DisplayLagCounterMenuItem.Text = "Display Lag Frame Count";
 			this.DisplayLagCounterMenuItem.Click += new System.EventHandler(this.DisplayLagCounterMenuItem_Click);
 			// 
 			// DisplayInputMenuItem
