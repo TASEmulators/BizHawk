@@ -239,7 +239,12 @@ namespace BizHawk.Client.Common
 				["B28"] = 's',
 				["B29"] = 't',
 				["B30"] = 'u',
-				["B31"] = 'v'
+				["B31"] = 'v',
+
+				["Extra1"] = '1',
+				["Extra2"] = '2',
+				["Extra3"] = '3',
+				["Extra4"] = '4'
 			},
 			[VSystemID.Raw.TI83] = new()
 			{
