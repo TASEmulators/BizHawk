@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Computers.TIC80
 	public abstract class LibTIC80 : LibWaterboxCore
 	{
 		[Flags]
-		public enum TI80Gamepad : byte
+		public enum TIC80Gamepad : byte
 		{
 			Up = 0x01,
 			Down = 0x02,
@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Computers.TIC80
 			Y = 0x80,
 		}
 
-		public enum TI80Keys : byte
+		public enum TIC80Keys : byte
 		{
 			Unknown,
 
@@ -115,20 +115,32 @@ namespace BizHawk.Emulation.Cores.Computers.TIC80
 		[StructLayout(LayoutKind.Sequential)]
 		public new class FrameInfo : LibWaterboxCore.FrameInfo
 		{
-			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-			public TI80Gamepad[] Gamepads = new TI80Gamepad[4];
+			public long Time;
+			public bool Crop;
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		public struct TIC80Inputs
+		{
+			public TIC80Gamepad P1Gamepad;
+			public TIC80Gamepad P2Gamepad;
+			public TIC80Gamepad P3Gamepad;
+			public TIC80Gamepad P4Gamepad;
 
 			public sbyte MouseX;
 			public sbyte MouseY;
 			public ushort MouseButtons;
 
-			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-			public TI80Keys[] Keys = new TI80Keys[4];
-			
-			public bool Crop;
+			public TIC80Keys Key1;
+			public TIC80Keys Key2;
+			public TIC80Keys Key3;
+			public TIC80Keys Key4;
 		}
 
 		[BizImport(CC)]
 		public abstract bool Init(byte[] rom, int sz);
+
+		[BizImport(CC)]
+		public abstract void SetInputs(ref TIC80Inputs inputs);
 	}
 }

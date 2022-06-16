@@ -7,6 +7,19 @@
 
 #include <string.h>
 
+static time_t biz_time = 0;
+static u32 biz_clock_rm = 0;
+
+time_t BizTimeCallback()
+{
+	return biz_time;
+}
+
+clock_t BizClockCallback()
+{
+	return biz_time * CLOCKS_PER_SEC + (biz_clock_rm * CLOCKS_PER_SEC / 60);
+}
+
 static tic80* tic;
 
 ECL_EXPORT bool Init(u8* rom, u32 sz)
@@ -41,10 +54,17 @@ ECL_EXPORT void GetMemoryAreas(MemoryArea* m)
 	m[2].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE;
 }
 
+static tic80_input biz_inputs;
+
+ECL_EXPORT void SetInputs(tic80_input* inputs)
+{
+	memcpy(&biz_inputs, inputs, sizeof(tic80_input));
+}
+
 typedef struct
 {
 	FrameInfo b;
-	tic80_input inputs;
+	u64 time;
 	bool crop;
 } MyFrameInfo;
 
@@ -54,8 +74,10 @@ void (*inputcb)() = 0;
 ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 {
 	lagged = true;
+	biz_time = f->time;
+	biz_clock_rm = (biz_clock_rm + 1) % 60;
 
-	tic80_tick(tic, f->inputs);
+	tic80_tick(tic, biz_inputs);
 	tic80_sound(tic);
 
 	f->b.Samples = tic->samples.count / TIC80_SAMPLE_CHANNELS;

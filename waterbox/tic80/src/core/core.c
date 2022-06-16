@@ -46,6 +46,9 @@ static_assert(sizeof(tic_map) < 1024 * 32,          "tic_map");
 static_assert(sizeof(tic_vram) == TIC_VRAM_SIZE,    "tic_vram");
 static_assert(sizeof(tic_ram) == TIC_RAM_SIZE,      "tic_ram");
 
+time_t BizTimeCallback();
+clock_t BizClockCallback();
+
 u8 tic_api_peek(tic_mem* memory, s32 address, s32 bits)
 {
     if (address < 0)
@@ -204,13 +207,13 @@ void tic_api_sync(tic_mem* tic, u32 mask, s32 bank, bool toCart)
 double tic_api_time(tic_mem* memory)
 {
     tic_core* core = (tic_core*)memory;
-    return (clock() - core->data->start) * 1000.0 / CLOCKS_PER_SEC;
+    return (BizClockCallback() - core->data->start) * 1000.0 / CLOCKS_PER_SEC;
 }
 
 s32 tic_api_tstamp(tic_mem* memory)
 {
     tic_core* core = (tic_core*)memory;
-    return (s32)time(NULL);
+    return (s32)BizTimeCallback();
 }
 
 static bool compareMetatag(const char* code, const char* tag, const char* value, const char* comment)
@@ -452,7 +455,7 @@ void tic_core_tick(tic_mem* tic, tic_tick_data* data)
                 tic->input.keyboard = 1;
             else tic->input.data = -1;  // default is all enabled
 
-            data->start = clock();
+            data->start = BizClockCallback();
 
             // TODO: does where to fetch code from need to be a config option so this isn't hard
             // coded for just a single langage? perhaps change it later when we have a second script
@@ -492,7 +495,7 @@ void tic_core_pause(tic_mem* memory)
     if (core->data)
     {
         core->pause.time.start = core->data->start;
-        core->pause.time.paused = clock();
+        core->pause.time.paused = BizClockCallback();
     }
 }
 
@@ -504,7 +507,7 @@ void tic_core_resume(tic_mem* memory)
     {
         memcpy(&core->state, &core->pause.state, sizeof(tic_core_state_data));
         memcpy(memory->ram, &core->pause.ram, sizeof(tic_ram));
-        core->data->start = core->pause.time.start + clock() - core->pause.time.paused;
+        core->data->start = core->pause.time.start + BizClockCallback() - core->pause.time.paused;
         memory->input.data = core->pause.input;
     }
 }
