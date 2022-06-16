@@ -66,6 +66,7 @@ typedef struct
 	FrameInfo b;
 	u64 time;
 	bool crop;
+	bool reset;
 } MyFrameInfo;
 
 bool lagged;
@@ -73,9 +74,13 @@ void (*inputcb)() = 0;
 
 ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 {
+	if (f->reset)
+	{
+		tic_api_reset((tic_mem*)tic);
+	}
+
 	lagged = true;
 	biz_time = f->time;
-	biz_clock_rm = (biz_clock_rm + 1) % 60;
 
 	tic80_tick(tic, biz_inputs);
 	tic80_sound(tic);
@@ -111,6 +116,8 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 	f->b.Height = height;
 
 	f->b.Lagged = lagged;
+
+	biz_clock_rm = (biz_clock_rm + 1) % 60;
 }
 
 ECL_EXPORT void SetInputCallback(void (*callback)())

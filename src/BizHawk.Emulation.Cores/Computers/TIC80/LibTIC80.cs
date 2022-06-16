@@ -117,6 +117,7 @@ namespace BizHawk.Emulation.Cores.Computers.TIC80
 		{
 			public long Time;
 			public bool Crop;
+			public bool Reset;
 		}
 
 		[StructLayout(LayoutKind.Sequential)]

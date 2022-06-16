@@ -111,6 +111,8 @@ namespace BizHawk.Emulation.Cores.Computers.TIC80
 				ret.CategoryLabels[name] = "Keyboard";
 			}
 
+			ret.BoolButtons.Add("Reset");
+
 			return ret.MakeImmutable();
 		}
 
@@ -199,7 +201,8 @@ namespace BizHawk.Emulation.Cores.Computers.TIC80
 			return new LibTIC80.FrameInfo
 			{
 				Time = GetRtcTime(!DeterministicEmulation),
-				Crop = _settings.Crop
+				Crop = _settings.Crop,
+				Reset = controller.IsPressed("Reset"),
 			};
 		}
 	}
