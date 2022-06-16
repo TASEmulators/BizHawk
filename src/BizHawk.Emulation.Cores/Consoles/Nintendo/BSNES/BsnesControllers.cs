@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		{
 			_ports = new[]
 			{
-				GetController(ss.LeftPort, ss),
+				GetController((BSNES_INPUT_DEVICE)ss.LeftPort, ss),
 				GetController(ss.RightPort, ss)
 			};
 

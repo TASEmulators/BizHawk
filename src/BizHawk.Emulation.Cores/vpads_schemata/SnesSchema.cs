@@ -118,7 +118,7 @@ namespace BizHawk.Emulation.Cores
 
 			var ports = new[]
 			{
-				syncSettings.LeftPort,
+				(BsnesApi.BSNES_INPUT_DEVICE) syncSettings.LeftPort,
 				syncSettings.RightPort
 			};
 

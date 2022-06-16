@@ -246,7 +246,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public struct SnesInitData
 		{
 			public ENTROPY entropy;
-			public BSNES_INPUT_DEVICE left_port;
+			public BSNES_PORT1_INPUT_DEVICE left_port;
 			public BSNES_INPUT_DEVICE right_port;
 			public bool hotfixes;
 			public bool fast_ppu;

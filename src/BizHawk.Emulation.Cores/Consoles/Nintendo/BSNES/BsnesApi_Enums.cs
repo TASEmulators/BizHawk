@@ -34,6 +34,15 @@
 			Justifiers
 		}
 
+		public enum BSNES_PORT1_INPUT_DEVICE
+		{
+			None,
+			Gamepad,
+			Mouse,
+			SuperMultitap,
+			Payload
+		}
+
 		public enum ENTROPY
 		{
 			None,
