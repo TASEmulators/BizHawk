@@ -18,6 +18,7 @@ namespace BizHawk.Client.Common.movie.import
 			using var fs = SourceFile.Open(FileMode.Open, FileAccess.Read);
 			using var r = new BinaryReader(fs);
 			bool is_GBC = false;
+			bool is_SGB = false;
 
 			// 000 4-byte signature: 56 42 4D 1A "VBM\x1A"
 			string signature = new string(r.ReadChars(4));
@@ -124,7 +125,8 @@ namespace BizHawk.Client.Common.movie.import
 
 			if (isSGB)
 			{
-				Result.Errors.Add("SGB imports are not currently supported");
+				is_SGB = true;
+				platform = VSystemID.Raw.SGB;
 			}
 
 			Result.Movie.HeaderEntries[HeaderKeys.Platform] = platform;
@@ -282,7 +284,8 @@ namespace BizHawk.Client.Common.movie.import
 					case CoreNames.Gambatte:
 						Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(new Gameboy.GambatteSyncSettings
 						{
-							ConsoleMode = is_GBC ? Gameboy.GambatteSyncSettings.ConsoleModeType.GBC : Gameboy.GambatteSyncSettings.ConsoleModeType.GB,
+							ConsoleMode = is_SGB ? Gameboy.GambatteSyncSettings.ConsoleModeType.SGB :
+								is_GBC ? Gameboy.GambatteSyncSettings.ConsoleModeType.GBC : Gameboy.GambatteSyncSettings.ConsoleModeType.GB,
 						});
 						break;
 					case CoreNames.GbHawk:
