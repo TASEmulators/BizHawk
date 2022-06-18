@@ -53,14 +53,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			Api.core.snes_set_video_enabled(render);
 			Api.core.snes_set_audio_enabled(renderSound);
 
-			// run the core for one frame
-			Api.core.snes_run();
+			// run the core for one (sub-)frame
+			bool subFrameRequested = controller.IsPressed("Subframe");
+			bool framePassed = Api.core.snes_run(subFrameRequested);
 			Frame++;
 
-			if (IsLagFrame)
-			{
+			if (framePassed && IsLagFrame)
 				LagCount++;
-			}
+			else
+				IsLagFrame = false;
 
 			return true;
 		}

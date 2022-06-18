@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_reset();
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void snes_run();
+		public abstract bool snes_run(bool breakOnLatch);
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_serialize(byte[] serializedData, int serializedSize);

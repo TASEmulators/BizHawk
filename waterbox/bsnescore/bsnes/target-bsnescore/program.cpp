@@ -43,6 +43,7 @@ struct Program : Emulator::Platform
 	bool overscan = false;
 	uint16_t backdropColor;
 	int regionOverride = 0;
+	bool breakOnLatch;
 
 public:
 	struct Game {
@@ -463,8 +464,13 @@ auto Program::notify(string message) -> void
 		snesCallbacks.snes_no_lag(false);
 	else if (message == "NO_LAG_SGB")
 		snesCallbacks.snes_no_lag(true);
-	else if (message == "LATCH")
+	else if (message == "LATCH") {
+		if (breakOnLatch) {
+			scheduler.StepOnce = true;
+			breakOnLatch = false;
+		}
 		snesCallbacks.snes_controller_latch();
+	}
 }
 
 auto Program::cpuTrace(vector<string> parts) -> void

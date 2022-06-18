@@ -169,9 +169,11 @@ EXPORT void snes_reset(void)
 }
 
 // note: run with runahead doesn't work yet, i suspect it's due to the serialize thing breaking (cause of libco)
-EXPORT void snes_run(void)
+EXPORT bool snes_run(bool breakOnLatch)
 {
+    program->breakOnLatch = breakOnLatch;
     emulator->run();
+    return scheduler.event == Scheduler::Event::Frame;
 }
 
 // not used, but would probably be nice
@@ -449,7 +451,6 @@ EXPORT bool snes_cpu_step()
 {
     scheduler.StepOnce = true;
     emulator->run();
-    scheduler.StepOnce = false;
     return scheduler.event == Scheduler::Event::Frame;
 }
 
