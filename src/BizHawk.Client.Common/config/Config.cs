@@ -25,12 +25,10 @@ namespace BizHawk.Client.Common
 		/// </remarks>
 		public static readonly IReadOnlyList<(string[] AppliesTo, string[] CoreNames)> CorePickerUIData = new List<(string[], string[])>
 		{
-			([ VSystemID.Raw.GB, VSystemID.Raw.GBC ],
-				[ CoreNames.Gambatte, CoreNames.Sameboy, CoreNames.GbHawk, CoreNames.SubGbHawk ]),
+			([ VSystemID.Raw.GB, VSystemID.Raw.GBC, VSystemID.Raw.SGB ],
+				[ CoreNames.Gambatte, CoreNames.Sameboy, CoreNames.GbHawk, CoreNames.SubGbHawk, CoreNames.Bsnes, CoreNames.Bsnes115, CoreNames.SubBsnes115 ]),
 			([ VSystemID.Raw.GBL ],
 				[ CoreNames.GambatteLink, CoreNames.GBHawkLink, CoreNames.GBHawkLink3x, CoreNames.GBHawkLink4x ]),
-			([ VSystemID.Raw.SGB ],
-				[ CoreNames.Gambatte, CoreNames.Bsnes115, CoreNames.SubBsnes115, CoreNames.Bsnes ]),
 			([ VSystemID.Raw.GEN ],
 				[ CoreNames.Gpgx, CoreNames.PicoDrive ]),
 			([ VSystemID.Raw.N64 ],
@@ -389,7 +387,6 @@ namespace BizHawk.Client.Common
 		public Dictionary<string, Dictionary<string, FeedbackBind>> AllTrollersFeedbacks { get; set; } = new Dictionary<string, Dictionary<string, FeedbackBind>>();
 
 		/// <remarks>as this setting spans multiple cores and doesn't actually affect the behavior of any core, it hasn't been absorbed into the new system</remarks>
-		public bool GbAsSgb { get; set; }
 		public string LibretroCore { get; set; }
 
 		public Dictionary<string, string> PreferredCores = GenDefaultCorePreferences();

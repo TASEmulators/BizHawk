@@ -482,11 +482,6 @@ namespace BizHawk.Client.Common
 						);
 						return;
 					}
-
-					if (_config.GbAsSgb)
-					{
-						game.System = VSystemID.Raw.SGB;
-					}
 					break;
 				case VSystemID.Raw.PSX when ext is ".bin":
 					const string FILE_EXT_CUE = ".cue";
