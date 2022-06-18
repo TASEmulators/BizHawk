@@ -454,6 +454,11 @@ EXPORT bool snes_cpu_step()
     return scheduler.event == Scheduler::Event::Frame;
 }
 
+EXPORT long snes_get_executed_cycles()
+{
+    return SuperFamicom::cpu.TotalExecutedCycles;
+}
+
 // should be called on savestate load, to get msu files loaded and in the correct state
 EXPORT void snes_msu_sync()
 {

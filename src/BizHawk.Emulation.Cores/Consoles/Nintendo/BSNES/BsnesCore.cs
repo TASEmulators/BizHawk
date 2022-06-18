@@ -10,7 +10,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 {
 	[PortedCore(CoreNames.Bsnes115, "bsnes team", "v115+", "https://github.com/bsnes-emu/bsnes")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
-	public unsafe partial class BsnesCore : IEmulator, IDebuggable, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable, ISettable<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings>
+	public unsafe partial class BsnesCore : IEmulator, IDebuggable, IVideoProvider, ISaveRam, IStatable, IInputPollable,
+		IRegionable, ISettable<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings>, ICycleTiming
 	{
 		[CoreConstructor(VSystemID.Raw.SGB)]
 		[CoreConstructor(VSystemID.Raw.SNES)]
@@ -94,18 +95,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			}
 
 			_region = Api.core.snes_get_region();
-
 			if (_region == BsnesApi.SNES_REGION.NTSC)
 			{
 				// taken from bsnes source
 				VsyncNumerator = 21477272;
 				VsyncDenominator = 357366;
+				ClockRate = 315.0 / 88.0 * 1000000.0 * 6.0;
 			}
 			else
 			{
 				// http://forums.nesdev.com/viewtopic.php?t=5367&start=19
 				VsyncNumerator = 21281370;
 				VsyncDenominator = 4 * 341 * 312;
+				ClockRate = (283.75 * 15625.0 + 25.0) * 4.8;
 			}
 
 			SetMemoryDomains();
@@ -346,5 +348,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		{
 			return _currentMsuTrack.Position == _currentMsuTrack.Length;
 		}
+
+		public long CycleCount => Api.core.snes_get_executed_cycles();
+		public double ClockRate { get; }
 	}
 }

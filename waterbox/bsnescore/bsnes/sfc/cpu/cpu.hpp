@@ -76,6 +76,8 @@ struct CPU : Processor::WDC65816, Thread, PPUcounter {
     uint target = 0;
   } overclocking;
 
+  long TotalExecutedCycles;
+
 private:
   uint version = 2;  //allowed: 1, 2
 

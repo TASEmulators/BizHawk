@@ -89,12 +89,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			}
 		}
 
-		public long TotalExecutedCycles { get; private set; }
+		public long TotalExecutedCycles => CycleCount;
 
 		private void StepInto()
 		{
 			_framePassed = Api.core.snes_cpu_step();
-			TotalExecutedCycles++;
 			if (_framePassed)
 			{
 				Frame++;

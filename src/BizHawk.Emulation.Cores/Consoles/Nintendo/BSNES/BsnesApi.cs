@@ -69,6 +69,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public abstract bool snes_cpu_step();
 
 		[BizImport(CallingConvention.Cdecl)]
+		public abstract long snes_get_executed_cycles();
+
+		[BizImport(CallingConvention.Cdecl)]
 		public abstract bool snes_msu_sync();
 	}
 
