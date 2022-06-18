@@ -28,10 +28,8 @@ namespace BizHawk.Client.Common
 				new[] { CoreNames.Faust, CoreNames.Snes9X, CoreNames.Bsnes, CoreNames.Bsnes115 }),
 			(new[] { VSystemID.Raw.N64 },
 				new[] { CoreNames.Mupen64Plus, CoreNames.Ares64 }),
-			(new[] { VSystemID.Raw.SGB },
-				new[] { CoreNames.Gambatte, CoreNames.Bsnes, CoreNames.Bsnes115}),
-			(new[] { VSystemID.Raw.GB, VSystemID.Raw.GBC },
-				new[] { CoreNames.Gambatte, CoreNames.Sameboy, CoreNames.GbHawk, CoreNames.SubGbHawk }),
+			(new[] { VSystemID.Raw.GB, VSystemID.Raw.GBC, VSystemID.Raw.SGB }, //TODO the "core reboot needed" message wouldn't show up when BSNES SGB cores are being used
+				new[] { CoreNames.Gambatte, CoreNames.Sameboy, CoreNames.GbHawk, CoreNames.SubGbHawk, CoreNames.Bsnes, CoreNames.Bsnes115}),
 			(new[] { VSystemID.Raw.GBL },
 				new[] { CoreNames.GambatteLink, CoreNames.GBHawkLink, CoreNames.GBHawkLink3x, CoreNames.GBHawkLink4x }),
 			(new[] { VSystemID.Raw.PCE, VSystemID.Raw.PCECD, VSystemID.Raw.SGX },
@@ -311,7 +309,6 @@ namespace BizHawk.Client.Common
 		public Dictionary<string, Dictionary<string, FeedbackBind>> AllTrollersFeedbacks { get; set; } = new Dictionary<string, Dictionary<string, FeedbackBind>>();
 
 		/// <remarks>as this setting spans multiple cores and doesn't actually affect the behavior of any core, it hasn't been absorbed into the new system</remarks>
-		public bool GbAsSgb { get; set; }
 		public string LibretroCore { get; set; }
 
 		public Dictionary<string, string> PreferredCores = new()
@@ -322,7 +319,6 @@ namespace BizHawk.Client.Common
 			[VSystemID.Raw.GB] = CoreNames.Gambatte,
 			[VSystemID.Raw.GBC] = CoreNames.Gambatte,
 			[VSystemID.Raw.GBL] = CoreNames.GambatteLink,
-			[VSystemID.Raw.SGB] = CoreNames.Gambatte,
 			[VSystemID.Raw.PCE] = CoreNames.TurboNyma,
 			[VSystemID.Raw.PCECD] = CoreNames.TurboNyma,
 			[VSystemID.Raw.SGX] = CoreNames.TurboNyma,

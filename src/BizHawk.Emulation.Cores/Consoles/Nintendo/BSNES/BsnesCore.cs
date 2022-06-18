@@ -17,7 +17,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 	{
 		private BsnesApi.SNES_REGION _region;
 
-		[CoreConstructor(VSystemID.Raw.SGB)]
+		[CoreConstructor(VSystemID.Raw.GB)]
+		[CoreConstructor(VSystemID.Raw.GBC)]
 		[CoreConstructor(VSystemID.Raw.SNES)]
 		public BsnesCore(GameInfo game, byte[] rom, CoreComm comm,
 			SnesSettings settings, SnesSyncSettings syncSettings)
@@ -37,8 +38,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			_settings = settings ?? new SnesSettings();
 			_syncSettings = syncSettings ?? new SnesSyncSettings();
 
-			if (game.System == VSystemID.Raw.SGB)
+			if (game.System == VSystemID.Raw.GB || game.System == VSystemID.Raw.GBC)
 			{
+				IsSGB = true;
 				if ((romData[0x143] & 0xc0) == 0xc0)
 				{
 					throw new CGBNotSupportedException();
@@ -87,9 +89,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			InitAudio();
 			ser.Register<ISoundProvider>(_resampler);
 
-			if (game.System == VSystemID.Raw.SGB)
+			if (IsSGB)
 			{
-				IsSGB = true;
 				SystemId = VSystemID.Raw.SNES;
 				ser.Register<IBoardInfo>(new SGBBoardInfo());
 

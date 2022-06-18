@@ -453,13 +453,6 @@ namespace BizHawk.Client.Common
 
 			switch (game.System)
 			{
-				case VSystemID.Raw.GB:
-				case VSystemID.Raw.GBC:
-					if (_config.GbAsSgb)
-					{
-						game.System = VSystemID.Raw.SGB;
-					}
-					break;
 				case VSystemID.Raw.MAME:
 					nextEmulator = new MAME(
 						file.Directory,

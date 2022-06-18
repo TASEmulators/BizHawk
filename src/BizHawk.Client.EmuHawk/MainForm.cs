@@ -72,23 +72,15 @@ namespace BizHawk.Client.EmuHawk
 				CoresSubMenu.DropDownItems.Add(submenu);
 			}
 
-			var GBInSGBMenuItem = new ToolStripMenuItem { Text = "GB in SGB" };
-			GBInSGBMenuItem.Click += (clickSender, clickArgs) =>
-			{
-				Config.GbAsSgb ^= true;
-				if (!Emulator.IsNull()) FlagNeedsReboot(); //TODO only alert if a GB or SGB core is loaded
-			};
 			var N64VideoPluginSettingsMenuItem = new ToolStripMenuItem { Image = Properties.Resources.Monitor, Text = "N64 Video Plugin Settings..." };
 			N64VideoPluginSettingsMenuItem.Click += N64PluginSettingsMenuItem_Click;
 			var setLibretroCoreToolStripMenuItem = new ToolStripMenuItem { Text = "Set Libretro Core..." };
 			setLibretroCoreToolStripMenuItem.Click += (clickSender, clickArgs) => RunLibretroCoreChooser();
 			CoresSubMenu.DropDownItems.AddRange(new ToolStripItem[] {
-				GBInSGBMenuItem,
 				new ToolStripSeparator { AutoSize = true },
 				N64VideoPluginSettingsMenuItem,
 				setLibretroCoreToolStripMenuItem
 			});
-			CoresSubMenu.DropDownOpened += (openedSender, openedArgs) => GBInSGBMenuItem.Checked = Config.GbAsSgb;
 
 			// Hide Status bar icons and general StatusBar prep
 			MainStatusBar.Padding = new Padding(MainStatusBar.Padding.Left, MainStatusBar.Padding.Top, MainStatusBar.Padding.Left, MainStatusBar.Padding.Bottom); // Workaround to remove extra padding on right
