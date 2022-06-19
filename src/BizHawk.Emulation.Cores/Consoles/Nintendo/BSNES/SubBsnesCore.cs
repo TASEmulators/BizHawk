@@ -23,6 +23,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			ser.Register(_bsnesCore.ServiceProvider.GetService<IInputPollable>());
 			ser.Register(_bsnesCore.ServiceProvider.GetService<IRegionable>());
 			ser.Register(_bsnesCore.ServiceProvider.GetService<ISettable<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings>>());
+			ser.Register(_bsnesCore.ServiceProvider.GetService<ISoundProvider>());
+			ser.Register(_bsnesCore.ServiceProvider.GetService<IMemoryDomains>());
+			ser.Register(_bsnesCore.ServiceProvider.GetService<IDisassemblable>());
+			ser.Register(_bsnesCore.ServiceProvider.GetService<ITraceable>());
 			ServiceProvider = ser;
 		}
 
