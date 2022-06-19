@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -28,7 +28,7 @@ namespace BizHawk.Client.Common
 			foreach (var (k, v) in old.HeaderEntries) tas.HeaderEntries[k] = v;
 
 			// TODO: we have this version number string generated in multiple places
-			tas.HeaderEntries[HeaderKeys.MovieVersion] = $"BizHawk v2.0 Tasproj v{TasMovie.CurrentVersion}";
+			tas.HeaderEntries[HeaderKeys.MovieVersion] = $"BizHawk v2.0 Tasproj v{TasMovie.CurrentVersion.ToString(NumberFormatInfo.InvariantInfo)}";
 
 			tas.SyncSettingsJson = old.SyncSettingsJson;
 
