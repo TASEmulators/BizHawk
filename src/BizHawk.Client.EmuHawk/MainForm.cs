@@ -1478,7 +1478,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SNES_ToggleBg(int layer)
 		{
-			if (Emulator is not (BsnesCore or LibsnesCore or Snes9x) || !1.RangeTo(4).Contains(layer))
+			if (Emulator is not (BsnesCore or SubBsnesCore or LibsnesCore or Snes9x) || !1.RangeTo(4).Contains(layer))
 			{
 				return;
 			}
@@ -1506,6 +1506,29 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					bsnes.PutSettings(s);
+					break;
+				}
+				case SubBsnesCore bsnes:
+				{
+					var settingsProvider = bsnes.ServiceProvider.GetService<ISettable<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings>>();
+					var s = settingsProvider.GetSettings();
+					switch (layer)
+					{
+						case 1:
+							result = s.ShowBG1_0 = s.ShowBG1_1 ^= true;
+							break;
+						case 2:
+							result = s.ShowBG2_0 = s.ShowBG2_1 ^= true;
+							break;
+						case 3:
+							result = s.ShowBG3_0 = s.ShowBG3_1 ^= true;
+							break;
+						case 4:
+							result = s.ShowBG4_0 = s.ShowBG4_1 ^= true;
+							break;
+					}
+
+					settingsProvider.PutSettings(s);
 					break;
 				}
 				case LibsnesCore libsnes:
@@ -2058,6 +2081,11 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case VSystemID.Raw.SNES when Emulator is BsnesCore bsnesCore:
 					SNESSubMenu.Text = bsnesCore.IsSGB ?  "&SGB" : "&SNES";
+					SnesGfxDebuggerMenuItem.Visible = false;
+					SNESSubMenu.Visible = true;
+					break;
+				case VSystemID.Raw.SNES when Emulator is SubBsnesCore:
+					SNESSubMenu.Text = "&SNES";
 					SnesGfxDebuggerMenuItem.Visible = false;
 					SNESSubMenu.Visible = true;
 					break;

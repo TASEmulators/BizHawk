@@ -20,6 +20,7 @@ namespace BizHawk.Emulation.Cores
 			{
 				LibsnesCore libsnes => GetLibsnesPadSchemas(libsnes),
 				BsnesCore bsnes => GetBsnesPadSchemas(bsnes),
+				SubBsnesCore subBsnes => GetBsnesPadSchemas(subBsnes.ServiceProvider.GetService<ISettable<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings>>()),
 				NymaCore nyma => GetFaustSchemas(nyma, showMessageBox),
 				_ => GetSnes9xPadSchemas((Snes9x) core)
 			};
@@ -112,9 +113,9 @@ namespace BizHawk.Emulation.Cores
 			yield return ConsoleButtons();
 		}
 
-		private IEnumerable<PadSchema> GetBsnesPadSchemas(BsnesCore core)
+		private IEnumerable<PadSchema> GetBsnesPadSchemas(ISettable<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings> settingsProvider)
 		{
-			var syncSettings = core.GetSyncSettings();
+			var syncSettings = settingsProvider.GetSyncSettings();
 
 			var ports = new[]
 			{
