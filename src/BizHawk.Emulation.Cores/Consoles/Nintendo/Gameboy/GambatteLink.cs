@@ -175,7 +175,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		private Boolean isSGB(int i)
 		{
-			return _syncSettings._linkedSyncSettings[i].ConsoleMode.ToString().Equals(VSystemID.Raw.SGB);
+			return _syncSettings._linkedSyncSettings[i].ConsoleMode.ToString().Equals("SGB2");
 		}
 
 		private const int P1 = 0;
