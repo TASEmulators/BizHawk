@@ -10,29 +10,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{
-			_controller = controller;
+			FrameAdvancePre(controller, render, renderSound);
 
-			/* if the input poll callback is called, it will set this to false
-			 * this has to be done before we save the per-frame state in deterministic
-			 * mode, because in there, the core actually advances, and might advance
-			 * through the point in time where IsLagFrame gets set to false.  makes sense?
-			 */
 			IsLagFrame = true;
 
 			bool resetSignal = controller.IsPressed("Reset");
 			if (resetSignal)
 			{
-				int resetCycle = controller.AxisValue("Reset Cycle");
-				long initialExecutedCycles = CycleCount;
-				while (CycleCount < initialExecutedCycles + resetCycle)
-				{
-					bool _framePassed = Api.core.snes_cpu_step();
-					if (_framePassed && IsLagFrame)
-					{
-						LagCount++;
-						break;
-					}
-				}
 				Api.core.snes_reset();
 			}
 
@@ -41,6 +25,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			{
 				Api.core.snes_power();
 			}
+
+			// run the core for one frame
+			Api.core.snes_run(false);
+			Frame++;
+
+			if (IsLagFrame)
+			{
+				LagCount++;
+			}
+
+			return true;
+		}
+
+		internal void FrameAdvancePre(IController controller, bool render, bool renderSound)
+		{
+			_controller = controller;
 
 			var enables = new BsnesApi.LayerEnables
 			{
@@ -63,21 +63,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			Api.core.snes_set_trace_enabled(_tracer.IsEnabled());
 			Api.core.snes_set_video_enabled(render);
 			Api.core.snes_set_audio_enabled(renderSound);
-
-			// run the core for one (sub-)frame
-			bool subFrameRequested = controller.IsPressed("Subframe");
-			bool framePassed = Api.core.snes_run(subFrameRequested);
-			Frame++;
-
-			if (framePassed && IsLagFrame)
-				LagCount++;
-			else
-				IsLagFrame = false;
-
-			return true;
 		}
 
-		public int Frame { get; private set; }
+		public int Frame { get; set; }
 
 		public string SystemId => VSystemID.Raw.SNES;
 
