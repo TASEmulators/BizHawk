@@ -51,16 +51,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				{
 					case GambatteSyncSettings.ConsoleModeType.GB:
 						break;
-					case GambatteSyncSettings.ConsoleModeType.SGB:
-						flags &= ~(LibGambatte.LoadFlags.CGB_MODE | LibGambatte.LoadFlags.GBA_FLAG);
-						flags |= LibGambatte.LoadFlags.SGB_MODE;
-						IsSgb = true;
-						break;
 					case GambatteSyncSettings.ConsoleModeType.GBC:
 						flags |= LibGambatte.LoadFlags.CGB_MODE;
 						break;
 					case GambatteSyncSettings.ConsoleModeType.GBA:
 						flags |= LibGambatte.LoadFlags.CGB_MODE | LibGambatte.LoadFlags.GBA_FLAG;
+						break;
+					case GambatteSyncSettings.ConsoleModeType.SGB2:
+						flags &= ~(LibGambatte.LoadFlags.CGB_MODE | LibGambatte.LoadFlags.GBA_FLAG);
+						flags |= LibGambatte.LoadFlags.SGB_MODE;
+						IsSgb = true;
 						break;
 					default:
 						if (game.System == VSystemID.Raw.GBC)

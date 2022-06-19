@@ -84,7 +84,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 			if (IsSGB)
 			{
-				SystemId = VSystemID.Raw.SGB;
 				ser.Register<IBoardInfo>(new SGBBoardInfo());
 
 				Api.core.snes_load_cartridge_super_gameboy(sgbRomData, loadParameters.Roms[0].RomData,

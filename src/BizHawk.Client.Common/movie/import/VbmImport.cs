@@ -284,7 +284,7 @@ namespace BizHawk.Client.Common.movie.import
 					case CoreNames.Gambatte:
 						Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(new Gameboy.GambatteSyncSettings
 						{
-							ConsoleMode = is_SGB ? Gameboy.GambatteSyncSettings.ConsoleModeType.SGB :
+							ConsoleMode = is_SGB ? Gameboy.GambatteSyncSettings.ConsoleModeType.SGB2 :
 								is_GBC ? Gameboy.GambatteSyncSettings.ConsoleModeType.GBC : Gameboy.GambatteSyncSettings.ConsoleModeType.GB,
 						});
 						break;
