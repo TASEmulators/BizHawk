@@ -11,7 +11,7 @@ ECL_EXPORT void SetCDCallbacks()
 {
 	abort();
 }
-void SwitchCds(bool prev, bool next)
+void SwitchCds(bool open, bool close, int cd)
 {
 	abort();
 }

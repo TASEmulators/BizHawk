@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 
 using BizHawk.Common;
+using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.DiscSystem;
 
 using OSTC = EXE_PROJECT.OSTailoredCode;
@@ -73,10 +74,7 @@ namespace BizHawk.Client.DiscoHawk
 				OSTC.LinkedLibManager.FreeByPtr(lib);
 			}
 
-			var ffmpegPath = Path.Combine(GetExeDirectoryAbsolute(), "ffmpeg.exe");
-			if (!File.Exists(ffmpegPath))
-				ffmpegPath = Path.Combine(Path.Combine(GetExeDirectoryAbsolute(), "dll"), "ffmpeg.exe");
-			FFmpegService.FFmpegPath = ffmpegPath;
+			FFmpegService.FFmpegPath = Path.Combine(PathUtils.DataDirectoryPath, "dll", OSTC.IsUnixHost ? "ffmpeg" : "ffmpeg.exe");
 
 			if (args.Length == 0)
 			{

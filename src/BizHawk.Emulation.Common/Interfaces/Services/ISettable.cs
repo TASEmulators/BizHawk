@@ -66,13 +66,48 @@ namespace BizHawk.Emulation.Common
 		ScreenLayoutChanged = 2,
 	}
 
+	public interface ISettingsAdapter
+	{
+		bool HasSettings { get; }
+
+		bool HasSyncSettings { get; }
+
+		/// <exception cref="InvalidOperationException">does not have non-sync settings</exception>
+		object GetSettings();
+
+		/// <exception cref="InvalidOperationException">does not have sync settings</exception>
+		object GetSyncSettings();
+
+		void PutCoreSettings(object s);
+
+		void PutCoreSyncSettings(object ss);
+	}
+
 	/// <summary>
 	/// serves as a shim between strongly typed ISettable and consumers
 	/// </summary>
-	public class SettingsAdapter
+	public sealed class SettingsAdapter : ISettingsAdapter
 	{
-		public SettingsAdapter(IEmulator emulator)
+		private readonly Action<PutSettingsDirtyBits> _handlePutCoreSettings;
+
+		private readonly Action<PutSettingsDirtyBits> _handlePutCoreSyncSettings;
+
+		private readonly Func<bool> _mayPutCoreSettings;
+
+		private readonly Func<bool> _mayPutCoreSyncSettings;
+
+		public SettingsAdapter(
+			IEmulator emulator,
+			Func<bool> mayPutCoreSettings,
+			Action<PutSettingsDirtyBits> handlePutCoreSettings,
+			Func<bool> mayPutCoreSyncSettings,
+			Action<PutSettingsDirtyBits> handlePutCoreSyncSettings)
 		{
+			_handlePutCoreSettings = handlePutCoreSettings;
+			_handlePutCoreSyncSettings = handlePutCoreSyncSettings;
+			_mayPutCoreSettings = mayPutCoreSettings;
+			_mayPutCoreSyncSettings = mayPutCoreSyncSettings;
+
 			var settableType = emulator.ServiceProvider.AvailableServices
 				.SingleOrDefault(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(ISettable<,>));
 			if (settableType == null)
@@ -117,7 +152,6 @@ namespace BizHawk.Emulation.Common
 		private readonly MethodInfo _getss;
 		private readonly MethodInfo _putss;
 
-		/// <exception cref="InvalidOperationException">does not have non-sync settings</exception>
 		public object GetSettings()
 		{
 			if (!HasSettings)
@@ -128,7 +162,6 @@ namespace BizHawk.Emulation.Common
 			return _gets.Invoke(_settable, Empty);
 		}
 
-		/// <exception cref="InvalidOperationException">does not have sync settings</exception>
 		public object GetSyncSettings()
 		{
 			if (!HasSyncSettings)
@@ -139,26 +172,24 @@ namespace BizHawk.Emulation.Common
 			return _getss.Invoke(_settable, Empty);
 		}
 
-		/// <exception cref="InvalidOperationException">does not have non-sync settings</exception>
-		public PutSettingsDirtyBits PutSettings(object o)
+		public void PutCoreSettings(object s)
 		{
-			if (!HasSettings)
-			{
-				throw new InvalidOperationException();
-			}
+			if (HasSettings && _mayPutCoreSettings()) _handlePutCoreSettings(DoPutSettings(s));
+		}
 
+		public void PutCoreSyncSettings(object ss)
+		{
+			if (HasSyncSettings && _mayPutCoreSyncSettings()) _handlePutCoreSyncSettings(DoPutSyncSettings(ss));
+		}
+
+		private PutSettingsDirtyBits DoPutSettings(object o)
+		{
 			_tempObject[0] = o;
 			return (PutSettingsDirtyBits)_puts.Invoke(_settable, _tempObject);
 		}
 
-		/// <exception cref="InvalidOperationException">does not have sync settings</exception>
-		public PutSettingsDirtyBits PutSyncSettings(object o)
+		private PutSettingsDirtyBits DoPutSyncSettings(object o)
 		{
-			if (!HasSyncSettings)
-			{
-				throw new InvalidOperationException();
-			}
-
 			_tempObject[0] = o;
 			return (PutSettingsDirtyBits)_putss.Invoke(_settable, _tempObject);
 		}

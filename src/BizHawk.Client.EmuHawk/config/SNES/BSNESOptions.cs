@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
+
+using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.BSNES;
 
 namespace BizHawk.Client.EmuHawk
@@ -11,10 +14,10 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		public static void DoSettingsDialog(IMainFormForConfig mainForm, BsnesCore bsnes)
+		public static DialogResult DoSettingsDialog(IDialogParent dialogParent, ISettingsAdapter settable)
 		{
-			var s = bsnes.GetSettings();
-			var ss = bsnes.GetSyncSettings();
+			var s = (BsnesCore.SnesSettings) settable.GetSettings();
+			var ss = (BsnesCore.SnesSyncSettings) settable.GetSyncSettings();
 			using var dlg = new BSNESOptions
 			{
 				AlwaysDoubleSize = s.AlwaysDoubleSize,
@@ -23,6 +26,8 @@ namespace BizHawk.Client.EmuHawk
 				RegionOverride = ss.RegionOverride,
 				Hotfixes = ss.Hotfixes,
 				FastPPU = ss.FastPPU,
+				FastDSP = ss.FastDSP,
+				FastCoprocessors = ss.FastCoprocessors,
 				UseSGB2 = ss.UseSGB2,
 				ShowObj1 = s.ShowOBJ_0,
 				ShowObj2 = s.ShowOBJ_1,
@@ -38,7 +43,7 @@ namespace BizHawk.Client.EmuHawk
 				ShowBg4_1 = s.ShowBG4_1
 			};
 
-			DialogResult result = mainForm.ShowDialogAsChild(dlg);
+			var result = dialogParent.ShowDialogAsChild(dlg);
 			if (result == DialogResult.OK)
 			{
 				s.AlwaysDoubleSize = dlg.AlwaysDoubleSize;
@@ -47,6 +52,8 @@ namespace BizHawk.Client.EmuHawk
 				ss.RegionOverride = dlg.RegionOverride;
 				ss.Hotfixes = dlg.Hotfixes;
 				ss.FastPPU = dlg.FastPPU;
+				ss.FastDSP = dlg.FastDSP;
+				ss.FastCoprocessors = dlg.FastCoprocessors;
 				ss.UseSGB2 = dlg.UseSGB2;
 				s.ShowOBJ_0 = dlg.ShowObj1;
 				s.ShowOBJ_1 = dlg.ShowObj2;
@@ -61,9 +68,10 @@ namespace BizHawk.Client.EmuHawk
 				s.ShowBG4_0 = dlg.ShowBg4_0;
 				s.ShowBG4_1 = dlg.ShowBg4_1;
 
-				mainForm.PutCoreSettings(s);
-				mainForm.PutCoreSyncSettings(ss);
+				settable.PutCoreSettings(s);
+				settable.PutCoreSyncSettings(ss);
 			}
+			return result;
 		}
 
 		private bool AlwaysDoubleSize
@@ -88,6 +96,18 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get => cbFastPPU.Checked;
 			init => cbDoubleSize.Enabled = cbFastPPU.Checked = value;
+		}
+
+		private bool FastDSP
+		{
+			get => cbFastDSP.Checked;
+			init => cbFastDSP.Checked = value;
+		}
+
+		private bool FastCoprocessors
+		{
+			get => cbFastCoprocessor.Checked;
+			init => cbFastCoprocessor.Checked = value;
 		}
 
 		private bool UseSGB2

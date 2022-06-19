@@ -42,7 +42,7 @@
             // 
             this.LocationLabel.AllowDrop = true;
             this.LocationLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.LocationLabel.Location = new System.Drawing.Point(167, 7);
+            this.LocationLabel.Location = new System.Drawing.Point(167, 2);
             this.LocationLabel.Name = "LocationLabel";
             this.LocationLabel.Text = "255, 255";
             // 
@@ -53,7 +53,7 @@
             this.Controls.Add(this.LocationLabel);
             this.Controls.Add(this.RowRadio);
             this.Name = "MessageRow";
-            this.Size = new System.Drawing.Size(224, 28);
+            this.Size = new System.Drawing.Size(224, 23);
             this.ResumeLayout(false);
             this.PerformLayout();
 

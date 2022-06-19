@@ -49,10 +49,10 @@
 			this.PakTypeDropdown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.PakTypeDropdown.FormattingEnabled = true;
 			this.PakTypeDropdown.Items.AddRange(new object[] {
-            "None",
-            "Memory Card",
-            "Rumble Pak",
-            "Transfer Pak"});
+			"None",
+			"Memory Card",
+			"Rumble Pak",
+			"Transfer Pak"});
 			this.PakTypeDropdown.Location = new System.Drawing.Point(160, 0);
 			this.PakTypeDropdown.Name = "PakTypeDropdown";
 			this.PakTypeDropdown.Size = new System.Drawing.Size(121, 21);

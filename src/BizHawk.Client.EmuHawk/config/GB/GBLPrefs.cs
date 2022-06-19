@@ -48,28 +48,30 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool SyncSettingsChanged => gbPrefControl1.SyncSettingsChanged || gbPrefControl2.SyncSettingsChanged || gbPrefControl3.SyncSettingsChanged || gbPrefControl4.SyncSettingsChanged;
 
-		public static void DoGBLPrefsDialog(IMainFormForConfig mainForm, Config config, IGameInfo game, IMovieSession movieSession, GambatteLink gambatte)
+		public static DialogResult DoGBLPrefsDialog(
+			Config config,
+			IDialogParent dialogParent,
+			IGameInfo game,
+			IMovieSession movieSession,
+			ISettingsAdapter settable)
 		{
-			var s = gambatte.GetSettings();
-			var ss = gambatte.GetSyncSettings();
+			var s = (GambatteLink.GambatteLinkSettings) settable.GetSettings();
+			var ss = (GambatteLink.GambatteLinkSyncSettings) settable.GetSyncSettings();
 
-			using var dlg = new GBLPrefs(mainForm.DialogController, config, game, movieSession);
+			using var dlg = new GBLPrefs(dialogParent.DialogController, config, game, movieSession);
 			dlg.PutSettings(s, ss);
 
-			dlg.gbPrefControl1.ColorGameBoy = gambatte.IsCGBMode(0);
-			dlg.gbPrefControl2.ColorGameBoy = gambatte.IsCGBMode(1);
-			dlg.gbPrefControl3.ColorGameBoy = gambatte.IsCGBMode(2);
-			dlg.gbPrefControl4.ColorGameBoy = gambatte.IsCGBMode(3);
-
-			if (mainForm.ShowDialogAsChild(dlg) == DialogResult.OK)
+			var result = dialogParent.ShowDialogAsChild(dlg);
+			if (result == DialogResult.OK)
 			{
 				dlg.GetSettings(out s, out ss);
-				gambatte.PutSettings(s);
+				settable.PutCoreSettings(s);
 				if (dlg.SyncSettingsChanged)
 				{
-					mainForm.PutCoreSyncSettings(ss);
+					settable.PutCoreSyncSettings(ss);
 				}
 			}
+			return result;
 		}
 	}
 }

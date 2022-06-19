@@ -25,7 +25,12 @@ namespace BizHawk.Client.Common
 
 		void CallSaveStateEvent(string name);
 
-		INamedLuaFunction CreateAndRegisterNamedFunction(LuaFunction function, string theEvent, Action<string> logCallback, LuaFile luaFile, string name = null);
+		INamedLuaFunction CreateAndRegisterNamedFunction(
+			LuaFunction function,
+			string theEvent,
+			Action<string> logCallback,
+			LuaFile luaFile,
+			[LuaArbitraryStringParam] string name = null);
 
 		NLuaTableHelper GetTableHelper();
 

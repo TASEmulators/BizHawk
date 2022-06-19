@@ -36,6 +36,7 @@ struct AI : Thread, Memory::IO<AI> {
   struct IO {
     n1  dmaEnable;
     n24 dmaAddress[2];
+    n1  dmaAddressCarry;
     n18 dmaLength[2];
     n2  dmaCount;
     n14 dacRate;

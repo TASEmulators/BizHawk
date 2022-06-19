@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 		public PutSettingsDirtyBits PutSettings(SameboySettings o)
 		{
-			LibSameboy.sameboy_setpalette(SameboyState, o.GBPalette);
+			LibSameboy.sameboy_setpalette(SameboyState, o.GBPalette, o.GetCustomPalette());
 			LibSameboy.sameboy_setcolorcorrection(SameboyState, o.ColorCorrection);
 			LibSameboy.sameboy_setlighttemperature(SameboyState, o.LightTemperature);
 			LibSameboy.sameboy_sethighpassfilter(SameboyState, o.HighPassFilter);
@@ -51,7 +51,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 				MGB,
 				[Display(Name = "Teal (Game Boy Light)")]
 				GBL,
+				[Display(Name = "Custom")]
+				CUSTOM,
 			}
+
+			private int[] _customPal;
 
 			[DisplayName("GB Mono Palette")]
 			[Description("Selects which palette to use in GB mode. Does nothing in GBC mode.")]
@@ -141,9 +145,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			[DefaultValue(true)]
 			public bool UseRGBDSSyntax { get; set; }
 
-			public SameboySettings() => SettingsUtil.SetDefaultValues(this);
+			public SameboySettings()
+			{
+				SettingsUtil.SetDefaultValues(this);
+				_customPal = new[] { 0x00ffffff, 0x00aaaaaa, 0x00555555, 0x00000000, 0x00ffffff, };
+			}
 
 			public SameboySettings Clone() => MemberwiseClone() as SameboySettings;
+
+			public int[] GetCustomPalette() => _customPal.Clone() as int[];
+
+			public void SetCustomPalette(int[] pal) => _customPal = pal.Clone() as int[];
 		}
 
 		public class SameboySyncSettings
@@ -153,7 +165,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			[DefaultValue(false)]
 			public bool EnableBIOS { get; set; }
 
-			public enum GBModel : short
+			public enum GBModel : int
 			{
 				Auto = -1,
 				// GB_MODEL_DMG_0 = 0x000,
@@ -175,8 +187,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 				GB_MODEL_CGB_D = 0x204,
 				[Display(Name = "CGB-E")]
 				GB_MODEL_CGB_E = 0x205,
+				// GB_MODEL_AGB_0 = 0x206,
+				// GB_MODEL_AGB_A = 0x207,
 				[Display(Name = "AGB")]
-				GB_MODEL_AGB = 0x206,
+				GB_MODEL_AGB = 0x207,
+				// GB_MODEL_AGB_B = 0x208,
 			}
 
 			[DisplayName("Console Mode")]

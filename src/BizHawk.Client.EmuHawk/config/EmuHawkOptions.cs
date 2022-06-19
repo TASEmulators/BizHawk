@@ -64,12 +64,12 @@ namespace BizHawk.Client.EmuHawk
 			StartPausedCheckbox.Checked = _config.StartPaused;
 			PauseWhenMenuActivatedCheckbox.Checked = _config.PauseWhenMenuActivated;
 			EnableContextMenuCheckbox.Checked = _config.ShowContextMenu;
-			SaveWindowPositionCheckbox.Checked = _config.SaveWindowPosition;
 			RunInBackgroundCheckbox.Checked = _config.RunInBackground;
 			AcceptBackgroundInputCheckbox.Checked = _config.AcceptBackgroundInput;
 			AcceptBackgroundInputControllerOnlyCheckBox.Checked = _config.AcceptBackgroundInputControllerOnly;
 			HandleAlternateKeyboardLayoutsCheckBox.Checked = _config.HandleAlternateKeyboardLayouts;
 			NeverAskSaveCheckbox.Checked = _config.SuppressAskSave;
+			cbMergeLAndRModifierKeys.Checked = _config.MergeLAndRModifierKeys;
 			SingleInstanceModeCheckbox.Checked = _config.SingleInstanceMode;
 			SingleInstanceModeCheckbox.Enabled = !OSTailoredCode.IsUnixHost;
 
@@ -110,16 +110,29 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
+			if (cbMergeLAndRModifierKeys.Checked != _config.MergeLAndRModifierKeys)
+			{
+				var merging = cbMergeLAndRModifierKeys.Checked;
+				var result = MessageBox.Show(
+					this,
+					text: $"Would you like to replace {(merging ? "LShift and RShift with Shift" : "Shift with LShift")},\nand the same for the other modifier keys,\nin existing keybinds for hotkeys and all systems' gamepads?",
+					caption: "Rewrite keybinds now?",
+					MessageBoxButtons.YesNoCancel,
+					MessageBoxIcon.Question);
+				if (result is DialogResult.Cancel) return;
+				if (result is DialogResult.Yes) _config.ReplaceKeysInBindings(merging ? Input.ModifierKeyPreMap : Input.ModifierKeyInvPreMap);
+			}
+
 			_config.StartFullscreen = StartFullScreenCheckbox.Checked;
 			_config.StartPaused = StartPausedCheckbox.Checked;
 			_config.PauseWhenMenuActivated = PauseWhenMenuActivatedCheckbox.Checked;
 			_config.ShowContextMenu = EnableContextMenuCheckbox.Checked;
-			_config.SaveWindowPosition = SaveWindowPositionCheckbox.Checked;
 			_config.RunInBackground = RunInBackgroundCheckbox.Checked;
 			_config.AcceptBackgroundInput = AcceptBackgroundInputCheckbox.Checked;
 			_config.AcceptBackgroundInputControllerOnly = AcceptBackgroundInputControllerOnlyCheckBox.Checked;
 			_config.HandleAlternateKeyboardLayouts = HandleAlternateKeyboardLayoutsCheckBox.Checked;
 			_config.SuppressAskSave = NeverAskSaveCheckbox.Checked;
+			_config.MergeLAndRModifierKeys = cbMergeLAndRModifierKeys.Checked;
 			_config.SingleInstanceMode = SingleInstanceModeCheckbox.Checked;
 			if(rbInputMethodDirectInput.Checked) _config.HostInputMethod =  EHostInputMethod.DirectInput;
 			if(rbInputMethodOpenTK.Checked) _config.HostInputMethod = EHostInputMethod.OpenTK;

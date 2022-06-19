@@ -29,6 +29,7 @@ namespace BizHawk.Client.Common
 			public byte[] RomData { get; set; }
 			public byte[] FileData { get; set; }
 			public string Extension { get; set; }
+			public string RomPath { get; set; }
 			public GameInfo Game { get; set; }
 		}
 		private class CoreInventoryParameters : ICoreInventoryParameters
@@ -474,6 +475,7 @@ namespace BizHawk.Client.Common
 						RomData = rom.RomData,
 						FileData = rom.FileData,
 						Extension = rom.Extension,
+						RomPath = file.FullPathWithoutMember,
 						Game = game
 					}
 				},
@@ -588,7 +590,7 @@ namespace BizHawk.Client.Common
 			bool allowArchives = true;
 			if (OpenAdvanced is OpenAdvanced_MAME) allowArchives = false;
 			using var file = new HawkFile(path, false, allowArchives);
-			if (!file.Exists) return false; // if the provided file doesn't even exist, give up!
+			if (!file.Exists && OpenAdvanced is not OpenAdvanced_LibretroNoGame) return false; // if the provided file doesn't even exist, give up! (unless libretro no game is used)
 
 			CanonicalFullPath = file.CanonicalFullPath;
 
@@ -600,12 +602,12 @@ namespace BizHawk.Client.Common
 			{
 				var cancel = false;
 
-				if (OpenAdvanced is OpenAdvanced_Libretro)
+				if (OpenAdvanced is OpenAdvanced_Libretro or OpenAdvanced_LibretroNoGame)
 				{
 					// must be done before LoadNoGame (which triggers retro_init and the paths to be consumed by the core)
 					// game name == name of core
 					Game = game = new GameInfo { Name = Path.GetFileNameWithoutExtension(launchLibretroCore), System = VSystemID.Raw.Libretro };
-					var retro = new LibretroCore(nextComm, game, launchLibretroCore);
+					var retro = new LibretroEmulator(nextComm, game, launchLibretroCore);
 					nextEmulator = retro;
 
 					if (retro.Description.SupportsNoGame && string.IsNullOrEmpty(path))
@@ -782,6 +784,8 @@ namespace BizHawk.Client.Common
 
 			public static readonly IReadOnlyCollection<string> Lynx = new[] { "lnx" };
 
+			public static readonly IReadOnlyCollection<string> MSX = new[] { "cas", "dsk", "mx1", "rom" };
+
 			public static readonly IReadOnlyCollection<string> N64 = new[] { "z64", "v64", "n64" };
 
 			public static readonly IReadOnlyCollection<string> NDS = new[] { "nds" };
@@ -799,6 +803,8 @@ namespace BizHawk.Client.Common
 			public static readonly IReadOnlyCollection<string> SNES = new[] { "smc", "sfc", "xml" };
 
 			public static readonly IReadOnlyCollection<string> TI83 = new[] { "83g", "83l", "83p" };
+
+			public static readonly IReadOnlyCollection<string> TIC80 = new[] { "tic" };
 
 			public static readonly IReadOnlyCollection<string> UZE = new[] { "uze" };
 
@@ -821,6 +827,7 @@ namespace BizHawk.Client.Common
 				.Concat(GEN)
 				.Concat(INTV)
 				.Concat(Lynx)
+				.Concat(MSX)
 				.Concat(N64)
 				.Concat(NDS)
 				.Concat(NES)
@@ -830,6 +837,7 @@ namespace BizHawk.Client.Common
 				.Concat(SMS)
 				.Concat(SNES)
 				.Concat(TI83)
+				.Concat(TIC80)
 				.Concat(UZE)
 				.Concat(VB)
 				.Concat(VEC)
@@ -860,6 +868,7 @@ namespace BizHawk.Client.Common
 			new FilesystemFilter("ColecoVision", RomFileExtensions.Coleco, addArchiveExts: true),
 			new FilesystemFilter("IntelliVision", RomFileExtensions.INTV, addArchiveExts: true),
 			new FilesystemFilter("TI-83", RomFileExtensions.TI83, addArchiveExts: true),
+			new FilesystemFilter("TIC-80", RomFileExtensions.TIC80, addArchiveExts: true),
 			FilesystemFilter.Archives,
 			new FilesystemFilter("Genesis", RomFileExtensions.GEN.Concat(new[] { "bin", "cue", "ccd" }).ToList(), addArchiveExts: true),
 			new FilesystemFilter("SID Commodore 64 Music File", Array.Empty<string>(), devBuildExtraExts: new[] { "sid" }, devBuildAddArchiveExts: true),
@@ -873,6 +882,7 @@ namespace BizHawk.Client.Common
 			new FilesystemFilter("Odyssey 2", RomFileExtensions.O2),
 			new FilesystemFilter("Uzebox", RomFileExtensions.UZE),
 			new FilesystemFilter("Vectrex", RomFileExtensions.VEC),
+			new FilesystemFilter("MSX", RomFileExtensions.MSX),
 			FilesystemFilter.EmuHawkSaveStates
 		);
 

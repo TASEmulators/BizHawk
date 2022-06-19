@@ -59,6 +59,13 @@ namespace BizHawk.Client.EmuHawk
 			cbStatusBarWindowed.Checked = _config.DispChromeStatusBarWindowed;
 			cbCaptionWindowed.Checked = _config.DispChromeCaptionWindowed;
 			cbMenuWindowed.Checked = _config.DispChromeMenuWindowed;
+			cbMainFormSaveWindowPosition.Checked = _config.SaveWindowPosition;
+			cbMainFormStayOnTop.Checked = _config.MainFormStayOnTop;
+			if (OSTailoredCode.IsUnixHost)
+			{
+				cbMainFormStayOnTop.Enabled = false;
+				cbMainFormStayOnTop.Visible = false;
+			}
 			cbStatusBarFullscreen.Checked = _config.DispChromeStatusBarFullscreen;
 			cbMenuFullscreen.Checked = _config.DispChromeMenuFullscreen;
 			trackbarFrameSizeWindowed.Value = _config.DispChromeFrameWindowed;
@@ -73,7 +80,7 @@ namespace BizHawk.Client.EmuHawk
 				rbUseRaw.Checked = true;
 			else if (_config.DispManagerAR == EDispManagerAR.System)
 				rbUseSystem.Checked = true;
-			else if (_config.DispManagerAR == EDispManagerAR.Custom)
+			else if (_config.DispManagerAR == EDispManagerAR.CustomSize)
 				rbUseCustom.Checked = true;
 			else if (_config.DispManagerAR == EDispManagerAR.CustomRatio)
 				rbUseCustomRatio.Checked = true;
@@ -135,6 +142,9 @@ namespace BizHawk.Client.EmuHawk
 			_config.DispChromeStatusBarWindowed = cbStatusBarWindowed.Checked;
 			_config.DispChromeCaptionWindowed = cbCaptionWindowed.Checked;
 			_config.DispChromeMenuWindowed = cbMenuWindowed.Checked;
+			_config.SaveWindowPosition = cbMainFormSaveWindowPosition.Checked;
+			_config.MainFormStayOnTop = cbMainFormStayOnTop.Checked;
+			Owner.TopMost = _config.MainFormStayOnTop;
 			_config.DispChromeStatusBarFullscreen = cbStatusBarFullscreen.Checked;
 			_config.DispChromeMenuFullscreen = cbMenuFullscreen.Checked;
 			_config.DispChromeFrameWindowed = trackbarFrameSizeWindowed.Value;
@@ -152,7 +162,7 @@ namespace BizHawk.Client.EmuHawk
 			else if (rbUseSystem.Checked)
 				_config.DispManagerAR = EDispManagerAR.System;
 			else if (rbUseCustom.Checked)
-				_config.DispManagerAR = EDispManagerAR.Custom;
+				_config.DispManagerAR = EDispManagerAR.CustomSize;
 			else if (rbUseCustomRatio.Checked)
 				_config.DispManagerAR = EDispManagerAR.CustomRatio;
 

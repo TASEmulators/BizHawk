@@ -17,11 +17,13 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local stgamget = gameinfo.getromname( );")]
 		[LuaMethod("getromname", "returns the name of the currently loaded rom, if a rom is loaded")]
+		[return: LuaArbitraryStringParam]
 		public string GetRomName()
-			=> APIs.Emulation.GetGameInfo()?.Name ?? string.Empty;
+			=> UnFixString(APIs.Emulation.GetGameInfo()?.Name) ?? string.Empty;
 
 		[LuaMethodExample("local stgamget = gameinfo.getromhash( );")]
 		[LuaMethod("getromhash", "returns the hash of the currently loaded rom, if a rom is loaded")]
+		[return: LuaASCIIStringParam]
 		public string GetRomHash()
 			=> APIs.Emulation.GetGameInfo()?.Hash ?? string.Empty;
 
@@ -32,6 +34,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local stgamget = gameinfo.getstatus( );")]
 		[LuaMethod("getstatus", "returns the game database status of the currently loaded rom. Statuses are for example: GoodDump, BadDump, Hack, Unknown, NotInDatabase")]
+		[return: LuaEnumStringParam]
 		public string GetStatus()
 			=> (APIs.Emulation.GetGameInfo()?.Status)?.ToString();
 
@@ -42,11 +45,13 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local stgamget = gameinfo.getboardtype( );")]
 		[LuaMethod("getboardtype", "returns identifying information about the 'mapper' or similar capability used for this game.  empty if no such useful distinction can be drawn")]
+		[return: LuaArbitraryStringParam]
 		public string GetBoardType()
-			=> APIs.Emulation.GetBoardName();
+			=> UnFixString(APIs.Emulation.GetBoardName());
 
 		[LuaMethodExample("local nlgamget = gameinfo.getoptions( );")]
 		[LuaMethod("getoptions", "returns the game options for the currently loaded rom. Options vary per platform")]
+		[return: LuaASCIIStringParam] // these had better be just flags and not anything localised --yoshi
 		public LuaTable GetOptions()
 			=> _th.DictToTable(APIs.Emulation.GetGameOptions());
 	}

@@ -10,6 +10,8 @@ namespace BizHawk.Bizware.BizwareGL
 {
 	public class IGL_GdiPlus : IGL
 	{
+		public EDispMethod DispMethodEnum => EDispMethod.GdiPlus;
+
 		// rendering state
 		private RenderTarget _currRenderTarget;
 

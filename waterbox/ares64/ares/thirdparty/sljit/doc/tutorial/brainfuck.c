@@ -148,13 +148,13 @@ static void *compile(FILE *src, unsigned long *lcode)
 	int SP = SLJIT_S0;			/* bf SP */
 	int CELLS = SLJIT_S1;		/* bf array */
 
-	sljit_emit_enter(C, 0,  SLJIT_ARG1(SW) | SLJIT_ARG2(SW),  2, 2, 0, 0, 0);								/* opt arg R  S  FR FS local_size */
+	sljit_emit_enter(C, 0, SLJIT_ARGS2(VOID, W, W), 2, 2, 0, 0, 0);								/* opt arg R  S  FR FS local_size */
 
 	sljit_emit_op2(C, SLJIT_XOR, SP, 0, SP, 0, SP, 0);						/* SP = 0 */
 
 	sljit_emit_op1(C, SLJIT_MOV, SLJIT_R0, 0, SLJIT_IMM, BF_CELL_SIZE);
 	sljit_emit_op1(C, SLJIT_MOV, SLJIT_R1, 0, SLJIT_IMM, 1);
-	sljit_emit_icall(C, SLJIT_CALL, SLJIT_RET(SW) | SLJIT_ARG1(SW) | SLJIT_ARG2(SW), SLJIT_IMM, SLJIT_FUNC_OFFSET(my_alloc));/* calloc(BF_CELL_SIZE, 1) => R0 */
+	sljit_emit_icall(C, SLJIT_CALL, SLJIT_ARGS2(P, W, W), SLJIT_IMM, SLJIT_FUNC_ADDR(my_alloc));/* calloc(BF_CELL_SIZE, 1) => R0 */
 
 	end = sljit_emit_cmp(C, SLJIT_EQUAL, SLJIT_R0, 0, SLJIT_IMM, 0);		/* R0 == 0 --> jump end */
 
@@ -176,10 +176,10 @@ static void *compile(FILE *src, unsigned long *lcode)
 			break;
 		case '.':
 			sljit_emit_op1(C, SLJIT_MOV_U8, SLJIT_R0, 0, SLJIT_MEM2(CELLS, SP), 0);		/* R0 = CELLS[SP] */
-			sljit_emit_icall(C, SLJIT_CALL, SLJIT_ARG1(SW), SLJIT_IMM, SLJIT_FUNC_OFFSET(my_putchar));	/* putchar(R0) */
+			sljit_emit_icall(C, SLJIT_CALL, SLJIT_ARGS1(W, W), SLJIT_IMM, SLJIT_FUNC_ADDR(my_putchar));	/* putchar(R0) */
 			break;
 		case ',':
-			sljit_emit_icall(C, SLJIT_CALL, SLJIT_RET(SW), SLJIT_IMM, SLJIT_FUNC_OFFSET(my_getchar));	/* R0 = getchar() */
+			sljit_emit_icall(C, SLJIT_CALL, SLJIT_ARGS0(W), SLJIT_IMM, SLJIT_FUNC_ADDR(my_getchar));	/* R0 = getchar() */
 			sljit_emit_op1(C, SLJIT_MOV_U8, SLJIT_MEM2(CELLS, SP), 0, SLJIT_R0, 0);		/* CELLS[SP] = R0 */
 			break;
 		case '[':
@@ -210,10 +210,10 @@ static void *compile(FILE *src, unsigned long *lcode)
 	}
 
 	sljit_emit_op1(C, SLJIT_MOV, SLJIT_R0, 0, CELLS, 0);
-	sljit_emit_icall(C, SLJIT_CALL, SLJIT_ARG1(SW), SLJIT_IMM, SLJIT_FUNC_OFFSET(my_free));	/* free(CELLS) */
+	sljit_emit_icall(C, SLJIT_CALL, SLJIT_ARGS1(P, P), SLJIT_IMM, SLJIT_FUNC_ADDR(my_free));	/* free(CELLS) */
 
 	sljit_set_label(end, sljit_emit_label(C));
-	sljit_emit_return(C, SLJIT_UNUSED, 0, 0);
+	sljit_emit_return_void(C);
 
 	code = sljit_generate_code(C);
 	if (lcode)

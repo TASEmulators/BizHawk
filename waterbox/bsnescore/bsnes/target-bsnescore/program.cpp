@@ -7,6 +7,7 @@
 #include <heuristics/bs-memory.cpp>
 
 #include "resources.hpp"
+#include <nall/vfs/biz_file.hpp>
 
 static Emulator::Interface *emulator;
 
@@ -28,7 +29,6 @@ struct Program : Emulator::Platform
 	auto execHook(uint address) -> void override;
 
 	auto load() -> void;
-	auto loadFile(string location) -> vector<uint8_t>;
 	auto loadSuperFamicom() -> bool;
 	auto loadGameBoy() -> bool;
 	auto loadBSMemory() -> bool;
@@ -46,10 +46,7 @@ struct Program : Emulator::Platform
 
 public:
 	struct Game {
-		explicit operator bool() const { return (bool)location; }
-
 		string option;
-		string location;
 		string manifest;
 		Markup::Node document;
 		boolean patched;
@@ -94,25 +91,25 @@ auto Program::open(uint id, string name, vfs::file::mode mode, bool required) ->
 
 	shared_pointer<vfs::file> result;
 
-	if (name == "ipl.rom" && mode == vfs::file::mode::read) {
+	if (name == "ipl.rom" && mode == File::Read) {
 		result = vfs::memory::file::open(iplrom, sizeof(iplrom));
 	}
 
-	if (name == "boards.bml" && mode == vfs::file::mode::read) {
+	if (name == "boards.bml" && mode == File::Read) {
 		result = vfs::memory::file::open(Boards, sizeof(Boards));
 	}
 
 	if (id == 1) { //Super Famicom
-		if (name == "manifest.bml" && mode == vfs::file::mode::read) {
+		if (name == "manifest.bml" && mode == File::Read) {
 			result = vfs::memory::file::open(superFamicom.manifest.data<uint8_t>(), superFamicom.manifest.size());
 		}
-		else if (name == "program.rom" && mode == vfs::file::mode::read) {
+		else if (name == "program.rom" && mode == File::Read) {
 			result = vfs::memory::file::open(superFamicom.program.data(), superFamicom.program.size());
 		}
-		else if (name == "data.rom" && mode == vfs::file::mode::read) {
+		else if (name == "data.rom" && mode == File::Read) {
 			result = vfs::memory::file::open(superFamicom.data.data(), superFamicom.data.size());
 		}
-		else if (name == "expansion.rom" && mode == vfs::file::mode::read) {
+		else if (name == "expansion.rom" && mode == File::Read) {
 			result = vfs::memory::file::open(superFamicom.expansion.data(), superFamicom.expansion.size());
 		}
 		else {
@@ -120,10 +117,10 @@ auto Program::open(uint id, string name, vfs::file::mode mode, bool required) ->
 		}
 	}
 	else if (id == 2) { //Game Boy
-		if (name == "manifest.bml" && mode == vfs::file::mode::read) {
+		if (name == "manifest.bml" && mode == File::Read) {
 			result = vfs::memory::file::open(gameBoy.manifest.data<uint8_t>(), gameBoy.manifest.size());
 		}
-		else if (name == "program.rom" && mode == vfs::file::mode::read) {
+		else if (name == "program.rom" && mode == File::Read) {
 			result = vfs::memory::file::open(gameBoy.program.data(), gameBoy.program.size());
 		}
 		else {
@@ -131,10 +128,10 @@ auto Program::open(uint id, string name, vfs::file::mode mode, bool required) ->
 		}
 	}
 	else if (id == 3) {  //BS Memory
-		if (name == "manifest.bml" && mode == vfs::file::mode::read) {
+		if (name == "manifest.bml" && mode == File::Read) {
 			result = vfs::memory::file::open(bsMemory.manifest.data<uint8_t>(), bsMemory.manifest.size());
 		}
-		else if (name == "program.rom" && mode == vfs::file::mode::read) {
+		else if (name == "program.rom" && mode == File::Read) {
 			result = vfs::memory::file::open(bsMemory.program.data(), bsMemory.program.size());
 		}
 		else if(name == "program.flash") {
@@ -154,12 +151,18 @@ auto Program::openFileSuperFamicom(string name, vfs::file::mode mode, bool requi
 	// TODO: the original bsnes code handles a lot more paths; *.data.ram, time.rtc and download.ram
 	// I believe none of these can currently be correctly served by bizhawk and I therefor ignore them here
 	// This should probably be changed? Not sure how much can break from not having them
-	if(name == "msu1/data.rom" || name.match("msu1/track*.pcm") || name == "save.ram")
+	if(name == "msu1/data.rom" || name == "save.ram")
 	{
 		return vfs::fs::file::open(snesCallbacks.snes_path_request(ID::SuperFamicom, name, required), mode);
 	}
 
-	if(name == "arm6.program.rom" && mode == vfs::file::mode::read) {
+	if(name.match("msu1/track*.pcm"))
+	{
+		snesCallbacks.snes_msu_open(strtol(name.data() + 11, nullptr, 10));
+		return shared_pointer<vfs::biz_file>{new vfs::biz_file};
+	}
+
+	if(name == "arm6.program.rom" && mode == File::Read) {
 		if(superFamicom.firmware.size() == 0x28000) {
 			return vfs::memory::file::open(&superFamicom.firmware.data()[0x00000], 0x20000);
 		}
@@ -168,18 +171,18 @@ auto Program::openFileSuperFamicom(string name, vfs::file::mode mode, bool requi
 		}
 	}
 
-	if(name == "arm6.data.rom" && mode == vfs::file::mode::read) {
+	if(name == "arm6.data.rom" && mode == File::Read) {
 		if(superFamicom.firmware.size() == 0x28000) {
 			return vfs::memory::file::open(&superFamicom.firmware.data()[0x20000], 0x08000);
 		}
 		if(auto memory = superFamicom.document["game/board/memory(type=ROM,content=Data,architecture=ARM6)"]) {
 			auto file = vfs::fs::file::open(snesCallbacks.snes_path_request(ID::SuperFamicom, memory["identifier"].text().downcase(), required), mode);
-			if (file) file->seek(0x20000, vfs::file::index::absolute);
+			if (file) file->seek(0x20000);
 			return file;
 		}
 	}
 
-	if(name == "hg51bs169.data.rom" && mode == vfs::file::mode::read) {
+	if(name == "hg51bs169.data.rom" && mode == File::Read) {
 		if(superFamicom.firmware.size() == 0xc00) {
 			return vfs::memory::file::open(superFamicom.firmware.data(), superFamicom.firmware.size());
 		}
@@ -188,7 +191,7 @@ auto Program::openFileSuperFamicom(string name, vfs::file::mode mode, bool requi
 		}
 	}
 
-	if(name == "lr35902.boot.rom" && mode == vfs::file::mode::read) {
+	if(name == "lr35902.boot.rom" && mode == File::Read) {
 		if(superFamicom.firmware.size() == 0x100) {
 			return vfs::memory::file::open(superFamicom.firmware.data(), superFamicom.firmware.size());
 		}
@@ -197,7 +200,7 @@ auto Program::openFileSuperFamicom(string name, vfs::file::mode mode, bool requi
 		}
 	}
 
-	if(name == "upd7725.program.rom" && mode == vfs::file::mode::read) {
+	if(name == "upd7725.program.rom" && mode == File::Read) {
 		if(superFamicom.firmware.size() == 0x2000) {
 			return vfs::memory::file::open(&superFamicom.firmware.data()[0x0000], 0x1800);
 		}
@@ -207,18 +210,18 @@ auto Program::openFileSuperFamicom(string name, vfs::file::mode mode, bool requi
 		}
 	}
 
-	if(name == "upd7725.data.rom" && mode == vfs::file::mode::read) {
+	if(name == "upd7725.data.rom" && mode == File::Read) {
 		if(superFamicom.firmware.size() == 0x2000) {
 			return vfs::memory::file::open(&superFamicom.firmware.data()[0x1800], 0x0800);
 		}
 		if(auto memory = superFamicom.document["game/board/memory(type=ROM,content=Data,architecture=uPD7725)"]) {
 			auto file = vfs::fs::file::open(snesCallbacks.snes_path_request(ID::SuperFamicom, memory["identifier"].text().downcase(), required), mode);
-			if (file) file->seek(0x1800, vfs::file::index::absolute);
+			if (file) file->seek(0x1800);
 			return file;
 		}
 	}
 
-	if(name == "upd96050.program.rom" && mode == vfs::file::mode::read) {
+	if(name == "upd96050.program.rom" && mode == File::Read) {
 		if(superFamicom.firmware.size() == 0xd000) {
 			return vfs::memory::file::open(&superFamicom.firmware.data()[0x0000], 0xc000);
 		}
@@ -228,13 +231,13 @@ auto Program::openFileSuperFamicom(string name, vfs::file::mode mode, bool requi
 		}
 	}
 
-	if(name == "upd96050.data.rom" && mode == vfs::file::mode::read) {
+	if(name == "upd96050.data.rom" && mode == File::Read) {
 		if(superFamicom.firmware.size() == 0xd000) {
 			return vfs::memory::file::open(&superFamicom.firmware.data()[0xc000], 0x1000);
 		}
 		if(auto memory = superFamicom.document["game/board/memory(type=ROM,content=Data,architecture=uPD96050)"]) {
 			auto file = vfs::fs::file::open(snesCallbacks.snes_path_request(ID::SuperFamicom, memory["identifier"].text().downcase(), required), mode);
-			if (file) file->seek(0xc000, vfs::file::index::absolute);
+			if (file) file->seek(0xc000);
 			return file;
 		}
 	}
@@ -355,12 +358,11 @@ auto Program::load(uint id, string name, string type, vector<string> options) ->
 auto Program::loadSuperFamicom() -> bool
 {
 	vector<uint8_t>& rom = superFamicom.raw_data;
-	fprintf(stderr, "location: \"%s\"\n", superFamicom.location.data());
 	fprintf(stderr, "rom size: %ld\n", rom.size());
 
 	if(rom.size() < 0x8000) return false;
 
-	auto heuristics = Heuristics::SuperFamicom(rom, superFamicom.location);
+	auto heuristics = Heuristics::SuperFamicom(rom, "");
 
 	superFamicom.title = heuristics.title();
 	switch (regionOverride) {
@@ -368,7 +370,11 @@ auto Program::loadSuperFamicom() -> bool
 		case 1: superFamicom.region = "NTSC"; break;
 		case 2: superFamicom.region = "PAL"; break;
 	}
-	superFamicom.manifest = heuristics.manifest();
+	if (auto fp = vfs::fs::file::open(snesCallbacks.snes_path_request(ID::SuperFamicom, "manifest.bml", false), File::Read)) {
+		superFamicom.manifest = fp->reads();
+	} else {
+		superFamicom.manifest = heuristics.manifest();
+	}
 
 	hackPatchMemory(rom);
 	superFamicom.document = BML::unserialize(superFamicom.manifest);
@@ -397,7 +403,7 @@ auto Program::loadSuperFamicom() -> bool
 auto Program::loadGameBoy() -> bool {
 	if (gameBoy.program.size() < 0x4000) return false;
 
-	auto heuristics = Heuristics::GameBoy(gameBoy.program, gameBoy.location);
+	auto heuristics = Heuristics::GameBoy(gameBoy.program, "");
 
 	gameBoy.manifest = heuristics.manifest();
 	gameBoy.document = BML::unserialize(gameBoy.manifest);
@@ -408,7 +414,7 @@ auto Program::loadGameBoy() -> bool {
 auto Program::loadBSMemory() -> bool {
 	if (bsMemory.program.size() < 0x8000) return false;
 
-	auto heuristics = Heuristics::BSMemory(bsMemory.program, gameBoy.location);
+	auto heuristics = Heuristics::BSMemory(bsMemory.program, "");
 
 	bsMemory.manifest = heuristics.manifest();
 	bsMemory.document = BML::unserialize(bsMemory.manifest);

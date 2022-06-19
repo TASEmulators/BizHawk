@@ -3,22 +3,25 @@ using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class ZxSpectrumJoystickSettings : Form
+	public partial class ZxSpectrumJoystickSettings : Form, IDialogParent
 	{
-		private readonly IMainFormForConfig _mainForm;
+		private readonly ISettingsAdapter _settable;
+
 		private readonly ZXSpectrum.ZXSpectrumSyncSettings _syncSettings;
 		private string[] _possibleControllers;
 
-		public ZxSpectrumJoystickSettings(
-			IMainFormForConfig mainForm,
-			ZXSpectrum.ZXSpectrumSyncSettings syncSettings)
+		public IDialogController DialogController { get; }
+
+		public ZxSpectrumJoystickSettings(IDialogController dialogController, ISettingsAdapter settable)
 		{
-			_mainForm = mainForm;
-			_syncSettings = syncSettings;
+			_settable = settable;
+			_syncSettings = (ZXSpectrum.ZXSpectrumSyncSettings) _settable.GetSyncSettings();
+			DialogController = dialogController;
 			InitializeComponent();
 			Icon = Properties.Resources.GameControllerIcon;
 		}
@@ -103,14 +106,14 @@ namespace BizHawk.Client.EmuHawk
 					_syncSettings.JoystickType2 = (JoystickType)Enum.Parse(typeof(JoystickType), Port2ComboBox.SelectedItem.ToString());
 					_syncSettings.JoystickType3 = (JoystickType)Enum.Parse(typeof(JoystickType), Port3ComboBox.SelectedItem.ToString());
 
-					_mainForm.PutCoreSyncSettings(_syncSettings);
+					_settable.PutCoreSyncSettings(_syncSettings);
 
 					DialogResult = DialogResult.OK;
 					Close();
 				}
 				else
 				{
-					_mainForm.DialogController.ShowMessageBox("Invalid joystick configuration. \nDuplicates have automatically been changed to NULL.\n\nPlease review the configuration");
+					DialogController.ShowMessageBox("Invalid joystick configuration. \nDuplicates have automatically been changed to NULL.\n\nPlease review the configuration");
 				}
 			}
 			else

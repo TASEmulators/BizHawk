@@ -2,17 +2,11 @@
 
 struct PI : Memory::IO<PI> {
   Node::Object node;
-  Memory::Readable rom;
-  Memory::Writable ram;
 
   struct Debugger {
     //debugger.cpp
     auto load(Node::Object) -> void;
     auto io(bool mode, u32 address, u32 data) -> void;
-
-    struct Memory {
-      Node::Debugger::Memory ram;
-    } memory;
 
     struct Tracer {
       Node::Debugger::Tracer::Notification io;
@@ -27,11 +21,22 @@ struct PI : Memory::IO<PI> {
   //dma.cpp
   auto dmaRead() -> void;
   auto dmaWrite() -> void;
+  auto dmaFinished() -> void;
 
   //io.cpp
+  auto ioRead(u32 address) -> u32;
+  auto ioWrite(u32 address, u32 data) -> void;
+
+  //bus.hpp
   auto readWord(u32 address) -> u32;
   auto writeWord(u32 address, u32 data) -> void;
-
+  auto writeFinished() -> void;
+  auto writeForceFinish() -> void;
+  template <u32 Size>
+  auto busRead(u32 address) -> u32;
+  template <u32 Size>
+  auto busWrite(u32 address, u32 data) -> void;
+  
   //serialization.cpp
   auto serialize(serializer&) -> void;
 
@@ -44,7 +49,7 @@ struct PI : Memory::IO<PI> {
     n32 pbusAddress;
     n32 readLength;
     n32 writeLength;
-    n1  romLockout;
+    n32 busLatch;
   } io;
 
   struct BSD {

@@ -75,6 +75,15 @@ struct directory : node {
     return _nodes.removeByValue(item), true;
   }
 
+  auto remove(const string& name) -> bool {
+    for(auto& node : _nodes) {
+      if(node->name() == name) {
+        return _nodes.removeByValue(node), true;
+      }
+    }
+    return false;
+  }
+
   auto files() const -> vector<shared_pointer<file>> {
     vector<shared_pointer<file>> files;
     for(auto& node : _nodes) {

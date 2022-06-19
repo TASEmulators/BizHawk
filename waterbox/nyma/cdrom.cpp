@@ -117,38 +117,34 @@ void StartGameWithCds(int numdisks)
 		0 // orientation: flip sides on NES FDS.  not used elsewhere?
 	);
 }
-static bool wasPrev;
-static bool wasNext;
-static int cd;
-void SwitchCds(bool prev, bool next)
+static bool trayOpen = false;
+static int curCd = 0; // -1 means no media present
+void SwitchCds(bool open, bool close, int cd)
 {
-	auto newCd = cd;
-	if (prev && !wasPrev)
-	{
-		newCd = std::max(newCd - 1, -1);
-	}
-	if (next && !wasNext)
-	{
-		newCd = std::min(newCd + 1, (int)(CDInterfaces->size() - 1));
-	}
-	if (newCd != cd)
+	if (open && !trayOpen)
 	{
 		Mednafen::MDFNGameInfo->SetMedia(
 			0, // drive: 0 unless there's more than one drive
 			0, // state: 0 = open, 1 = closed (media absent), 2 = closed (media present)
+			std::max(curCd, 0), // media: index into the disk list
+			0 // orientation: flip sides on NES FDS.  not used elsewhere?
+		);
+
+		trayOpen = true;
+	}
+
+	if (close && trayOpen)
+	{
+		Mednafen::MDFNGameInfo->SetMedia(
+			0, // drive: 0 unless there's more than one drive
+			cd == -1 ? 1 : 2, // state: 0 = open, 1 = closed (media absent), 2 = closed (media present)
 			std::max(cd, 0), // media: index into the disk list
 			0 // orientation: flip sides on NES FDS.  not used elsewhere?
 		);
-		Mednafen::MDFNGameInfo->SetMedia(
-			0, // drive: 0 unless there's more than one drive
-			newCd == -1 ? 0 : 2, // state: 0 = open, 1 = closed (media absent), 2 = closed (media present)
-			std::max(newCd, 0), // media: index into the disk list
-			0 // orientation: flip sides on NES FDS.  not used elsewhere?
-		);
+
+		trayOpen = false;
+		curCd = cd;
 	}
-	cd = newCd;
-	wasPrev = prev;
-	wasNext = next;
 }
 
 // CDInterface::Load pulls in a bunch of things that we do not want, stub them out here

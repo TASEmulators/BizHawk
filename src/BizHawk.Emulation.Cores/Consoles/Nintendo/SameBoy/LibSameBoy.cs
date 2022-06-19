@@ -120,7 +120,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 		public abstract void sameboy_setscanlinecallback(IntPtr core, ScanlineCallback callback, int sl);
 
 		[BizImport(cc)]
-		public abstract void sameboy_setpalette(IntPtr core, Sameboy.SameboySettings.GBPaletteType which);
+		public abstract void sameboy_setpalette(IntPtr core, Sameboy.SameboySettings.GBPaletteType which, int[] custompal);
 
 		[BizImport(cc)]
 		public abstract void sameboy_setcolorcorrection(IntPtr core, Sameboy.SameboySettings.ColorCorrectionMode which);

@@ -18,6 +18,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			ser.Sync("leftDifficultySwitchHeld", ref _leftDifficultySwitchHeld);
 			ser.Sync("rightDifficultySwitchHeld", ref _rightDifficultySwitchHeld);
 			ser.Sync(nameof(unselect_reset), ref unselect_reset);
+			ser.Sync(nameof(unselect_select), ref unselect_select);
 
 			_tia.SyncState(ser);
 			_m6532.SyncState(ser);

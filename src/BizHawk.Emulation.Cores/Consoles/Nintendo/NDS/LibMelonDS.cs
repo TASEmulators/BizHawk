@@ -132,10 +132,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		public abstract IntPtr GetFrameThreadProc();
 
 		[UnmanagedFunctionPointer(CC)]
-		public delegate void ThreadWaitCallback();
+		public delegate void ThreadStartCallback();
 
 		[BizImport(CC)]
-		public abstract void SetThreadWaitCallback(ThreadWaitCallback callback);
+		public abstract void SetThreadStartCallback(ThreadStartCallback callback);
 
 		[BizImport(CC)]
 		public abstract int GetNANDSize();

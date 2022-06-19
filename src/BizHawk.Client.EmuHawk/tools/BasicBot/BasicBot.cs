@@ -132,9 +132,9 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (!Config.AllowUdlr) 
+			if (Config!.OpposingDirPolicy is not OpposingDirPolicy.Allow)
 			{
-				DialogController.ShowMessageBox("In order to use this tool, 'Allow U+D / L+R' must be checked in the controller menu.");
+				DialogController.ShowMessageBox("In order to use this tool, U+D/L+R policy in the controller binds dialog must be set to 'Allow'.");
 				Close();
 				DialogResult = DialogResult.Cancel;
 				return;

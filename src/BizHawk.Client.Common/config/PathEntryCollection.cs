@@ -54,6 +54,7 @@ namespace BizHawk.Client.Common
 			[VSystemID.Raw.VEC] = "VEC",
 			[VSystemID.Raw.O2] = "O2",
 			[VSystemID.Raw.MSX] = "MSX",
+			[VSystemID.Raw.TIC80] = "TIC80",
 			[VSystemID.Raw.UZE] = "UZE",
 			[VSystemID.Raw.NDS] = "NDS",
 			[VSystemID.Raw.Sega32X] = "Sega 32X",
@@ -281,6 +282,8 @@ namespace BizHawk.Client.Common
 			CommonEntriesFor(VSystemID.Raw.SNES, basePath: Path.Combine(".", "SNES")),
 
 			CommonEntriesFor(VSystemID.Raw.TI83, basePath: Path.Combine(".", "TI83")),
+
+			CommonEntriesFor(VSystemID.Raw.TIC80, basePath: Path.Combine(".", "TIC80")),
 
 			CommonEntriesFor(VSystemID.Raw.UZE, basePath: Path.Combine(".", "Uzebox")),
 

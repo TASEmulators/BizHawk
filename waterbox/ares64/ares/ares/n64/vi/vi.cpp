@@ -40,7 +40,7 @@ auto VI::load(Node::Object parent) -> void {
       return a << 48 | r << 32 | g << 16 | b << 0;
     }
   });
-
+  
   #if defined(VULKAN)
   if(vulkan.enable) {
     screen->setSize(vulkan.outputUpscale * 640, vulkan.outputUpscale * 480);
@@ -74,7 +74,7 @@ auto VI::main() -> void {
   if(++io.vcounter >= (Region::NTSC() ? 262 : 312) + io.field) {
     io.vcounter = 0;
     io.field = io.field + 1 & io.serrate;
-    if(!io.field) {
+    if(/*!io.field*/true) { // ares decided to run at 30 FPS when interlaced, although that isn't correct
       #if defined(VULKAN)
       if (vulkan.enable) {
         gpuOutputValid = vulkan.scanoutAsync(io.field);
@@ -90,7 +90,7 @@ auto VI::main() -> void {
       #if defined(VULKAN)
       }
       #endif
-	  #endif
+      #endif
 
       refreshed = true;
       screen->frame();
@@ -152,12 +152,6 @@ auto VI::refresh() -> void {
   u32 width  = vi.io.width;  //vi.io.xscale <= 0x300 ? 320 : 640;
   u32 height = vi.io.yscale <= 0x400 ? 239 : 478;
   screen->setViewport(0, 0, width, height);
-
-  if(vi.io.colorDepth == 0 || io.dramAddress == 0 || (signed)(vi.io.hend - vi.io.hstart) <= 0 || vi.io.hstart >= 640) {
-    //blank screen
-    memory::fill<u32>(screen->pixels(1).data(), 640 * 576);
-    return;
-  }
 
   if(vi.io.colorDepth == 2) {
     //15bpp

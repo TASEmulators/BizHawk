@@ -273,14 +273,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 		{
 			_settings = o;
 			int s = 0;
-			if (o.PlaySound0) s |= 1;
-			if (o.PlaySound0) s |= 2;
-			if (o.PlaySound0) s |= 4;
-			if (o.PlaySound0) s |= 8;
-			if (o.PlaySound0) s |= 16;
-			if (o.PlaySound0) s |= 32;
-			if (o.PlaySound0) s |= 64;
-			if (o.PlaySound0) s |= 128;
+			if (o.PlaySound0) s |= 0b1;
+			if (o.PlaySound1) s |= 0b10;
+			if (o.PlaySound2) s |= 0b100;
+			if (o.PlaySound3) s |= 0b1000;
+			if (o.PlaySound4) s |= 0b10000;
+			if (o.PlaySound5) s |= 0b100000;
+			if (o.PlaySound6) s |= 0b1000000;
+			if (o.PlaySound7) s |= 0b10000000;
 			_core.biz_set_sound_channels(s);
 			int l = 0;
 			if (o.ShowBg0) l |= 1;

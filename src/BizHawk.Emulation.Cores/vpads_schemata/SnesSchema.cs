@@ -118,11 +118,11 @@ namespace BizHawk.Emulation.Cores
 
 			var ports = new[]
 			{
-				syncSettings.LeftPort,
+				(BsnesApi.BSNES_INPUT_DEVICE) syncSettings.LeftPort,
 				syncSettings.RightPort
 			};
 
-			int playerNum = 0;
+			int playerNum = 1;
 			for (int i = 0; i < 2; i++, playerNum++)
 			{
 				switch (ports[i])
@@ -142,6 +142,7 @@ namespace BizHawk.Emulation.Cores
 						{
 							yield return StandardController(playerNum++);
 						}
+						playerNum--;
 						break;
 					case BsnesApi.BSNES_INPUT_DEVICE.SuperScope:
 						yield return SuperScope(playerNum);
@@ -154,9 +155,14 @@ namespace BizHawk.Emulation.Cores
 						{
 							yield return Justifier(playerNum++);
 						}
+						playerNum--;
 						break;
 					case BsnesApi.BSNES_INPUT_DEVICE.Payload:
-						yield return Payload(playerNum);
+						for (int j = 0; j < 4; j++)
+						{
+							yield return ExtendedStandardController(playerNum++);
+						}
+						playerNum--;
 						break;
 				}
 			}
@@ -204,6 +210,21 @@ namespace BizHawk.Emulation.Cores
 					new ButtonSchema(146, 25, controller, "A")
 				}
 			};
+		}
+
+		private static PadSchema ExtendedStandardController(int controller)
+		{
+			PadSchema standardController = StandardController(controller);
+			var newButtons = standardController.Buttons.ToList();
+			newButtons.AddRange(new[]
+			{
+				new ButtonSchema(60, 65, controller, "Extra1", "1"),
+				new ButtonSchema(80, 65, controller, "Extra2", "2"),
+				new ButtonSchema(100, 65, controller, "Extra3", "3"),
+				new ButtonSchema(120, 65, controller, "Extra4", "4")
+			});
+			standardController.Buttons = newButtons;
+			return standardController;
 		}
 
 		private static PadSchema Mouse(int controller)

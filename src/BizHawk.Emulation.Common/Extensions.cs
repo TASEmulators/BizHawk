@@ -15,6 +15,7 @@ namespace BizHawk.Emulation.Common
 {
 	public static class EmulatorExtensions
 	{
+		/// <remarks>need to think about e.g. Genesis / Mega Drive using one sysID but having a different display name depending on the BIOS region --yoshi</remarks>
 		public static readonly IReadOnlyDictionary<string, string> SystemIDDisplayNames = new Dictionary<string, string>
 		{
 			[VSystemID.Raw.A26] = "Atari 2600",
@@ -24,6 +25,7 @@ namespace BizHawk.Emulation.Common
 			[VSystemID.Raw.C64] = "Commodore 64",
 			[VSystemID.Raw.ChannelF] = "Channel F",
 			[VSystemID.Raw.Coleco] = "ColecoVision",
+			// DEBUG
 			[VSystemID.Raw.GBL] = "Game Boy Link",
 			[VSystemID.Raw.GB] = "GB",
 			[VSystemID.Raw.SGB] = "SGB",
@@ -31,25 +33,32 @@ namespace BizHawk.Emulation.Common
 			[VSystemID.Raw.GBC] = "Gameboy Color",
 			[VSystemID.Raw.GEN] = "Genesis",
 			[VSystemID.Raw.GG] = "Game Gear",
+			[VSystemID.Raw.GGL] = "Game Gear Link",
 			[VSystemID.Raw.INTV] = "Intellivision",
 			[VSystemID.Raw.Libretro] = "Libretro",
 			[VSystemID.Raw.Lynx] = "Lynx",
 			[VSystemID.Raw.MAME] = "MAME",
+			[VSystemID.Raw.MSX] = "MSX",
 			[VSystemID.Raw.N64] = "Nintendo 64",
 			[VSystemID.Raw.NDS] = "NDS",
 			[VSystemID.Raw.NES] = "NES",
 			[VSystemID.Raw.NGP] = "Neo-Geo Pocket",
+			// NULL
 			[VSystemID.Raw.O2] = "Odyssey2",
 			[VSystemID.Raw.PCE] = "TurboGrafx-16",
 			[VSystemID.Raw.PCECD] = "TurboGrafx - 16(CD)",
 			[VSystemID.Raw.PCFX] = "PCFX",
+			[VSystemID.Raw.PS2] = "PlayStation 2",
 			[VSystemID.Raw.PSX] = "PlayStation",
 			[VSystemID.Raw.SAT] = "Saturn",
+			[VSystemID.Raw.Sega32X] = "Genesis 32X",
 			[VSystemID.Raw.SG] = "SG-1000",
 			[VSystemID.Raw.SGX] = "SuperGrafx",
+			[VSystemID.Raw.SGXCD] = "SuperGrafx CD-ROM²", // this was a TG-16 peripheral which the SuperGrafx kept compatibility with, though no games used it (w/ SGX) according to Wikipedia, so maybe this should say "TurboGrafx CD-ROM²"? --yoshi
 			[VSystemID.Raw.SMS] = "Sega Master System",
 			[VSystemID.Raw.SNES] = "SNES",
 			[VSystemID.Raw.TI83] = "TI - 83",
+			[VSystemID.Raw.TIC80] = "TIC-80",
 			[VSystemID.Raw.UZE] = "Uzebox",
 			[VSystemID.Raw.VB] = "Virtual Boy",
 			[VSystemID.Raw.VEC] = "Vectrex",
@@ -390,34 +399,27 @@ namespace BizHawk.Emulation.Common
 
 		public static IReadOnlyDictionary<string, object> ToDictionary(this IController controller, int? controllerNum = null)
 		{
-			var buttons = new Dictionary<string, object>();
-
-			foreach (var button in controller.Definition.BoolButtons)
+			var dict = new Dictionary<string, object>();
+			if (controllerNum == null)
 			{
-				if (controllerNum == null)
-				{
-					buttons[button] = controller.IsPressed(button);
-				}
-				else if (button.Length > 2 && button.Substring(0, 2) == $"P{controllerNum}")
-				{
-					var sub = button.Substring(3);
-					buttons[sub] = controller.IsPressed($"P{controllerNum} {sub}");
-				}
+				foreach (var buttonName in controller.Definition.BoolButtons) dict[buttonName] = controller.IsPressed(buttonName);
+				foreach (var axisName in controller.Definition.Axes.Keys) dict[axisName] = controller.AxisValue(axisName);
+				return dict;
 			}
-			foreach (var button in controller.Definition.Axes.Keys)
+			var prefix = $"P{controllerNum} ";
+			foreach (var buttonName in controller.Definition.BoolButtons)
 			{
-				if (controllerNum == null)
-				{
-					buttons[button] = controller.AxisValue(button);
-				}
-				else if (button.Length > 2 && button.Substring(0, 2) == $"P{controllerNum}")
-				{
-					var sub = button.Substring(3);
-					buttons[sub] = controller.AxisValue($"P{controllerNum} {sub}");
-				}
+				var s = buttonName.RemovePrefix(prefix);
+				if (ReferenceEquals(s, buttonName)) continue; // did not start with prefix
+				dict[s] = controller.IsPressed(buttonName);
 			}
-
-			return buttons;
+			foreach (var axisName in controller.Definition.Axes.Keys)
+			{
+				var s = axisName.RemovePrefix(prefix);
+				if (ReferenceEquals(s, axisName)) continue; // did not start with prefix
+				dict[s] = controller.AxisValue(axisName);
+			}
+			return dict;
 		}
 
 		public static string FilesystemSafeName(this IGameInfo game)

@@ -578,7 +578,7 @@ namespace BizHawk.Client.Common
 		{
 			bool arActive = GlobalConfig.DispFixAspectRatio;
 			bool arSystem = GlobalConfig.DispManagerAR == EDispManagerAR.System;
-			bool arCustom = GlobalConfig.DispManagerAR == EDispManagerAR.Custom;
+			bool arCustom = GlobalConfig.DispManagerAR == EDispManagerAR.CustomSize;
 			bool arCustomRatio = GlobalConfig.DispManagerAR == EDispManagerAR.CustomRatio;
 			bool arCorrect = arSystem || arCustom || arCustomRatio;
 			bool arInteger = GlobalConfig.DispFixScaleInteger;
@@ -816,7 +816,7 @@ namespace BizHawk.Client.Common
 				{
 					//Already set
 				}
-				if (GlobalConfig.DispManagerAR == EDispManagerAR.Custom)
+				if (GlobalConfig.DispManagerAR == EDispManagerAR.CustomSize)
 				{
 					//not clear what any of these other options mean for "screen controlled" systems
 					vw = GlobalConfig.DispCustomUserARWidth;

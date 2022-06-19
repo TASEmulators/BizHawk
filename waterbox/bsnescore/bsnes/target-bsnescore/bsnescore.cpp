@@ -142,6 +142,8 @@ EXPORT void snes_init(SnesInitData* init_data)
 
     emulator->configure("Hacks/Hotfixes", init_data->hotfixes);
     emulator->configure("Hacks/PPU/Fast", init_data->fast_ppu);
+    emulator->configure("Hacks/DSP/Fast", init_data->fast_dsp);
+    emulator->configure("Hacks/Coprocessor/DelayedSync", init_data->fast_coprocessors);
 
     emulator->configure("Video/BlurEmulation", false); // blurs the video when not using fast ppu. I don't like it so I disable it here :)
     // needed in order to get audio sync working. should probably figure out what exactly this does or how to change that properly
@@ -197,10 +199,8 @@ EXPORT void snes_unserialize(const uint8_t* data, int size)
 }
 
 EXPORT void snes_load_cartridge_normal(
-  const char* base_rom_path, const uint8_t* rom_data, int rom_size
+  const uint8_t* rom_data, int rom_size
 ) {
-    program->superFamicom.location = base_rom_path;
-
     program->superFamicom.raw_data.resize(rom_size);
     memcpy(program->superFamicom.raw_data.data(), rom_data, rom_size);
 
@@ -209,12 +209,8 @@ EXPORT void snes_load_cartridge_normal(
 
 // TODO: merged_rom_sizes is bad, fix this
 EXPORT void snes_load_cartridge_super_gameboy(
-  const char* base_rom_path, const uint8_t* rom_data, const uint8_t* sgb_rom_data, uint64_t merged_rom_sizes
+  const uint8_t* rom_data, const uint8_t* sgb_rom_data, int rom_size, int sgb_rom_size
 ) {
-    int rom_size = merged_rom_sizes >> 32;
-    int sgb_rom_size = merged_rom_sizes & 0xffffffff;
-    program->superFamicom.location = base_rom_path;
-
     program->superFamicom.raw_data.resize(rom_size);
     memcpy(program->superFamicom.raw_data.data(), rom_data, rom_size);
 
@@ -292,8 +288,8 @@ uint8_t* snes_get_effective_saveram(int* ram_size) {
     return cartridge.ram.data();
 }
 
-EXPORT int snes_get_region(void) {
-    return Region::PAL();
+EXPORT System::Region snes_get_region(void) {
+    return SuperFamicom::system.region();
 }
 
 EXPORT char snes_get_mapper(void) {
@@ -455,4 +451,13 @@ EXPORT bool snes_cpu_step()
     emulator->run();
     scheduler.StepOnce = false;
     return scheduler.event == Scheduler::Event::Frame;
+}
+
+// should be called on savestate load, to get msu files loaded and in the correct state
+EXPORT void snes_msu_sync()
+{
+    if (cartridge.has.MSU1) {
+        msu1.dataOpen();
+        msu1.audioOpen();
+    }
 }

@@ -5,26 +5,29 @@ using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class NESSyncSettingsForm : Form, IDialogParent
 	{
-		private readonly IMainFormForConfig _mainForm;
 		private readonly DataTableDictionaryBind<string, string> _dataTableDictionary;
+
+		private readonly ISettingsAdapter _settable;
+
 		private readonly NES.NESSyncSettings _syncSettings;
 
 		public IDialogController DialogController { get; }
 
 		public NESSyncSettingsForm(
-			IMainFormForConfig mainForm,
-			NES.NESSyncSettings syncSettings,
+			IDialogController dialogController,
+			ISettingsAdapter settable,
 			bool hasMapperProperties)
 		{
-			_mainForm = mainForm;
-			_syncSettings = syncSettings;
-			DialogController = mainForm.DialogController;
+			_settable = settable;
+			_syncSettings = (NES.NESSyncSettings) _settable.GetSyncSettings();
+			DialogController = dialogController;
 			InitializeComponent();
 			HelpBtn.Image = Properties.Resources.Help;
 
@@ -92,7 +95,7 @@ namespace BizHawk.Client.EmuHawk
 			DialogResult = DialogResult.OK;
 			if (changed)
 			{
-				_mainForm.PutCoreSyncSettings(_syncSettings);
+				_settable.PutCoreSyncSettings(_syncSettings);
 			}
 		}
 

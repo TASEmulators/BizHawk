@@ -32,13 +32,15 @@ auto AI::main() -> void {
 auto AI::sample() -> void {
   if(io.dmaCount == 0) return stream->frame(0.0, 0.0);
 
+  io.dmaAddress[0].bit(13,23) += io.dmaAddressCarry;
   auto data  = rdram.ram.read<Word>(io.dmaAddress[0]);
   auto left  = s16(data >> 16);
   auto right = s16(data >>  0);
   stream->frame(left / 32768.0, right / 32768.0);
 
-  io.dmaAddress[0] += 4;
-  io.dmaLength [0] -= 4;
+  io.dmaAddress[0].bit(0,12) += 4;
+  io.dmaAddressCarry          = io.dmaAddress[0].bit(0,12) == 0;
+  io.dmaLength[0]            -= 4;
   if(!io.dmaLength[0]) {
     mi.raise(MI::IRQ::AI);
     if(--io.dmaCount) {

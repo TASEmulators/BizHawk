@@ -92,8 +92,8 @@ static int add3(sljit_sw a, sljit_sw b, sljit_sw c)<br>
     /* Create a SLJIT compiler */<br>
     struct sljit_compiler *C = sljit_create_compiler();<br>
    <br>
-    /* Start a context(function entry), have 3 arguments, discuss later */<br>
-    sljit_emit_enter(C, 0,  3,  1, 3, 0, 0, 0);<br>
+    /* Start a context(function entry), has 3 arguments, discuss later */<br>
+    sljit_emit_enter(C, 0, SLJIT_ARGS3(W, W, W, W), 1, 3, 0, 0, 0);<br>
    <br>
     /* The first arguments of function is register SLJIT_S0, 2nd, SLJIT_S1, etc.  */<br>
     /* R0 = first */<br>
@@ -158,8 +158,8 @@ Fortunately, SLJIT have done the most for us, SLJIT_S[0-9] represent those 'safe
 registers, SLJIT_R[0-9] however, only for 'temporary used'.<br>
 <br>
 When a function start, SLJIT move the function arguments to S0, S1, S2 register, it
-means function arguments are always 'safe' in the context, the limit of using stack for
-storing arguments make SLJIT support only 3 arguments max.<br>
+means function arguments are always 'safe' in the context; a maximum of 4
+arguments is supported by SLJIT.<br>
 <br>
 Sljit_emit_opX is easy to understand, in SLJIT a data value is represented by 2
 parameters, it can be a register, an In-memory data, or an immediate number.<br>
@@ -215,7 +215,7 @@ static int branch(sljit_sw a, sljit_sw b, sljit_sw c)<br>
     struct sljit_compiler *C = sljit_create_compiler();<br>
    <br>
     /* 3 arg, 1 temp reg, 3 save reg */<br>
-    sljit_emit_enter(C, 0,  3,  1, 3, 0, 0, 0);<br>
+    sljit_emit_enter(C, 0, SLJIT_ARGS3(W, W, W, W), 1, 3, 0, 0, 0);<br>
    <br>
     /* R0 = a & 1, S0 is argument a */<br>
     sljit_emit_op2(C, SLJIT_AND, SLJIT_R0, 0, SLJIT_S0, 0, SLJIT_IMM, 1);<br>
@@ -327,7 +327,7 @@ sljit_sw func(sljit_sw a, sljit_sw b)<br>
 <br>
 <ul>
     /* 2 arg, 2 temp reg, 2 saved reg */<br>
-    sljit_emit_enter(C, 0, 2, 2, 2, 0, 0, 0);<br>
+    sljit_emit_enter(C, 0, SLJIT_ARGS2(W, W, W), 2, 2, 0, 0, 0);<br>
     <br>
     /* R0 = 0 */<br>
     sljit_emit_op2(C, SLJIT_XOR, SLJIT_R1, 0, SLJIT_R1, 0, SLJIT_R1, 0);<br>
@@ -364,13 +364,13 @@ chapter can be found in the attachment.<br>
 
 <h2>Call external function</h2>
 
-It's easy to call an external function in SLJIT, we use sljit_emit_ijump with SLJIT_CALL*
+It's easy to call an external function in SLJIT, we use sljit_emit_icall with SLJIT_CALL
 operation to do so.<br>
 <br>
-SLJIT_CALL[N] is use to call a function with N arguments, SLJIT has only SLJIT_CALL0,
-CALL1, CALL2, CALL3, which means you can call a function with 3 arguments in max(that
-disappoint me, no chance to call fwrite in SLJIT), the arguments for the callee function
-are passed from SLJIT_R0, R1 and R2. Keep in mind to maintain those 'temp registers'.<br>
+SLJIT_CALL is use to call a function with N arguments, the number of arguments
+and the return type are defined in the third parameter from sljit_emit_icall
+just like it is done for SLJIT defined dunctions.<br>
+the arguments for the callee function are passed from SLJIT_R0, R1 and R2. Keep in mind to maintain those 'temp registers'.<br>
 <br>
 Assume that we have an external function:<br>
 <ul>
@@ -384,7 +384,7 @@ JIT code to call print_num(S1):
     /* R0 = S1; */<br>
     sljit_emit_op1(C, SLJIT_MOV, SLJIT_R0, 0, SLJIT_S1, 0);<br>
     /* print_num(R0) */<br>
-    sljit_emit_ijump(C, SLJIT_CALL1, SLJIT_IMM, SLJIT_FUNC_OFFSET(print_num));<br>
+    sljit_emit_icall(C, SLJIT_CALL, SLJIT_ARGS1(W, W), SLJIT_IMM, SLJIT_FUNC_ADDR(print_num));<br>
 </ul>
 </div>
 <br>
@@ -407,11 +407,10 @@ struct point_st {<br>
     int y;<br>
     short z;<br>
     char d;<br>
-    char e;<br>
     </ul>
 };<br>
 <br>
-sljit_emit_op1(C, SLJIT_MOV_SI, SLJIT_R0, 0, SLJIT_MEM1(SLJIT_S0),<br>
+sljit_emit_op1(C, SLJIT_MOV_S32, SLJIT_R0, 0, SLJIT_MEM1(SLJIT_S0),<br>
 <ul>
 SLJIT_OFFSETOF(struct point_st, y));<br>
 </ul>
@@ -420,15 +419,15 @@ SLJIT_OFFSETOF(struct point_st, y));<br>
 
 In this case, SLJIT_S0 is the address of the point_st structure, offset of member 'y'
 is determined in compile time, the important MOV operation always comes with a
-'signed/size' postfix, like this one _SI means 'signed 32bits integer', the postfix
+'signed/size' postfix, like this one _S32 means 'signed 32bits integer', the postfix
 list:<br>
 <ul>
-   <b>UB</b> = unsigned byte (8 bit)<br>
-   <b>SB</b> = signed byte (8 bit)<br>
-   <b>UH</b> = unsigned half (16 bit)<br>
-   <b>SH</b> = signed half (16 bit)<br>
-   <b>UI</b> = unsigned int (32 bit)<br>
-   <b>SI</b> = signed int (32 bit)<br>
+   <b>U8</b> = unsigned byte (8 bit)<br>
+   <b>S8</b> = signed byte (8 bit)<br>
+   <b>U16</b> = unsigned half (16 bit)<br>
+   <b>S16</b> = signed half (16 bit)<br>
+   <b>U32</b> = unsigned int (32 bit)<br>
+   <b>S32</b> = signed int (32 bit)<br>
    <b>P</b>  = pointer (sljit_p) size<br>
 </ul>
 
@@ -451,9 +450,9 @@ WORD S0[];<br>
 R0 = S0[S2]<br>
 </ul>
 <br>
-The array S0 is declared to be WORD, which will be sizeof(sljit_sw) in length.
-Sljit use a 'shift' for length representation: (0 for single byte, 1 for 2
-bytes, 2 for 4 bytes, 3 for 8bytes)<br>
+The array S0 is declared to be WORD (using SLJIT_WORD_SHIFT), which will be sizeof(sljit_sw) in length.
+SLJIT use a 'shift' for length representation: (0 for single byte, 1 for 2
+bytes, 2 for 4 bytes, 3 for 8bytes).<br>
 <br>
 The file array_access.c demonstrate a array-print example, should be easy
 to understand.<br>
@@ -468,7 +467,7 @@ is the only choice.<br>
 <div style='font-family:Courier New;font-size:11px'>
 <ul>
     /* reserved space in stack for sljit_sw arr[3] */<br>
-    sljit_emit_enter(C, 0,  3,  2, 3, 0, 0, 3 * sizeof(sljit_sw));<br>
+    sljit_emit_enter(C, 0, SLJIT_ARGS3(W, W, W, W), 2, 3, 0, 0, 3 * sizeof(sljit_sw));<br>
     /*                  opt arg R  S  FR FS local_size */<br>
    <br>
     /* arr[0] = S0, SLJIT_SP is the init address of local var */<br>
@@ -481,7 +480,7 @@ is the only choice.<br>
     /* R0 = arr; in fact SLJIT_SP is the address of arr, but can't do so in SLJIT */<br>
     sljit_get_local_base(C, SLJIT_R0, 0, 0);   /* get the address of local variables */<br>
     sljit_emit_op1(C, SLJIT_MOV, SLJIT_R1, 0, SLJIT_IMM, 3);   /* R1 = 3; */<br>
-    sljit_emit_ijump(C, SLJIT_CALL2, SLJIT_IMM, SLJIT_FUNC_OFFSET(print_arr));<br>
+    sljit_emit_icall(C, SLJIT_CALL, SLJIT_ARGS2(W, P, W), SLJIT_IMM, SLJIT_FUNC_ADDR(print_arr));<br>
     sljit_emit_return(C, SLJIT_MOV, SLJIT_R0, 0);<br>
 </ul>
 </div>
@@ -573,7 +572,8 @@ with GCC -O2<br>
 Err... Ok, the optimization here may be weak, or, optimization there is crazy... :-)<br>
 
 <table width="100%" cellspacing=0 cellpadding=0>
-<tr><td align=right>By wenxichang#163.com, 2015.5.10</td></tr></table>
+<tr><td align=right>Originally by wenxichang#163.com, 2015.5.10</td></tr>
+</table>
 
 </td><td width=20 class="main"></td></tr>
 <tr height=20><td width=20 class="main"></td><td width=720 class="main"></td><td width=20 class="main"></td></tr>

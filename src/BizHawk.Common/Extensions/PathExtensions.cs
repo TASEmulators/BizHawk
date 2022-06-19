@@ -165,6 +165,13 @@ namespace BizHawk.Common.PathExtensions
 
 	public static class PathUtils
 	{
+		/// <returns>absolute path of the user data dir <c>$BIZHAWK_DATA_HOME</c>, or fallback value equal to <see cref="ExeDirectoryPath"/></returns>
+		/// <remarks>
+		/// returned string omits trailing slash<br/>
+		/// on Windows, the env. var is ignored and the fallback of <see cref="ExeDirectoryPath"/> is always used
+		/// </remarks>
+		public static readonly string DataDirectoryPath;
+
 		/// <returns>absolute path of the dll dir (sibling of EmuHawk.exe)</returns>
 		/// <remarks>returned string omits trailing slash</remarks>
 		public static readonly string DllDirectoryPath;
@@ -181,6 +188,20 @@ namespace BizHawk.Common.PathExtensions
 				: string.IsNullOrEmpty(dirPath) ? throw new Exception("failed to get location of executable, very bad things must have happened") : dirPath.RemoveSuffix('\\');
 			DllDirectoryPath = Path.Combine(OSTailoredCode.IsUnixHost && ExeDirectoryPath == string.Empty ? "/" : ExeDirectoryPath, "dll");
 			// yes, this is a lot of extra code to make sure BizHawk can run in `/` on Unix, but I've made up for it by caching these for the program lifecycle --yoshi
+			DataDirectoryPath = ExeDirectoryPath;
+			if (OSTailoredCode.IsUnixHost)
+			{
+				var envVar = Environment.GetEnvironmentVariable("BIZHAWK_DATA_HOME");
+				try
+				{
+					envVar = envVar?.MakeAbsolute() ?? string.Empty;
+					if (Directory.Exists(envVar)) DataDirectoryPath = envVar;
+				}
+				catch
+				{
+					// ignored
+				}
+			}
 		}
 	}
 }

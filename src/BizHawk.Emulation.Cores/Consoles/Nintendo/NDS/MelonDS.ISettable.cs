@@ -32,13 +32,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public class NDSSettings
 		{
-#if false
-			[DisplayName("Threaded Rendering")]
-			[Description("")]
-			[DefaultValue(true)]
-			public bool ThreadedRendering { get; set; }
-#endif
-
 			[DisplayName("Screen Layout")]
 			[Description("Adjusts the layout of the screens")]
 			[DefaultValue(ScreenLayoutKind.Vertical)]
@@ -97,6 +90,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public class NDSSyncSettings
 		{
+			[DisplayName("Threaded 3D Rendering")]
+			[Description("Offloads 3D rendering to a separate thread")]
+			[DefaultValue(true)]
+			public bool ThreadedRendering { get; set; }
+
 			[JsonIgnore]
 			private DateTime _initaltime;
 

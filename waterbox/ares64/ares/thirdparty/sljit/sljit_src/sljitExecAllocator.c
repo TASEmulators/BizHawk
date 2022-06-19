@@ -66,7 +66,7 @@
 /* --------------------------------------------------------------------- */
 
 /* 64 KByte. */
-#define CHUNK_SIZE	0x10000
+#define CHUNK_SIZE	(sljit_uw)0x10000u
 
 /*
    alloc_chunk / free_chunk :
@@ -112,7 +112,7 @@ static SLJIT_INLINE void free_chunk(void *chunk, sljit_uw size)
 
 static SLJIT_INLINE int get_map_jit_flag()
 {
-	sljit_sw page_size;
+	size_t page_size;
 	void *ptr;
 	struct utsname name;
 	static int map_jit_flag = -1;
@@ -235,7 +235,7 @@ struct free_block {
 #define AS_FREE_BLOCK(base, offset) \
 	((struct free_block*)(((sljit_u8*)base) + offset))
 #define MEM_START(base)		((void*)(((sljit_u8*)base) + sizeof(struct block_header)))
-#define ALIGN_SIZE(size)	(((size) + sizeof(struct block_header) + 7) & ~7)
+#define ALIGN_SIZE(size)	(((size) + sizeof(struct block_header) + 7u) & ~(sljit_uw)7)
 
 static struct free_block* free_blocks;
 static sljit_uw allocated_size;

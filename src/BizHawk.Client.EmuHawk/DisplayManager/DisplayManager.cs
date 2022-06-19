@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Drawing;
 
 using BizHawk.Bizware.BizwareGL;
-using BizHawk.Bizware.DirectX;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
@@ -33,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 			IGL gl,
 			PresentationPanel presentationPanel,
 			Func<bool> getIsSecondaryThrottlingDisabled)
-				: base(config, emulator, inputManager, movieSession, gl.DispMethodEnum(), gl, gl.CreateRenderer())
+				: base(config, emulator, inputManager, movieSession, gl.DispMethodEnum, gl, gl.CreateRenderer())
 		{
 			_presentationPanel = presentationPanel;
 			_getIsSecondaryThrottlingDisabled = getIsSecondaryThrottlingDisabled;
@@ -58,9 +57,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			bool alternateVsync = false;
 
-			// only used by alternate vsync
-			IGL_SlimDX9 dx9 = null;
-
 			if (!job.Offscreen)
 			{
 				//apply the vsync setting (should probably try to avoid repeating this)
@@ -75,15 +71,11 @@ namespace BizHawk.Client.EmuHawk
 					vsync = false;
 
 				//for now, it's assumed that the presentation panel is the main window, but that may not always be true
-				if (vsync && GlobalConfig.DispAlternateVsync && GlobalConfig.VSyncThrottle)
+				if (vsync && GlobalConfig.DispAlternateVsync && GlobalConfig.VSyncThrottle && _gl.DispMethodEnum is EDispMethod.SlimDX9)
 				{
-					dx9 = _gl as IGL_SlimDX9;
-					if (dx9 != null)
-					{
-						alternateVsync = true;
-						//unset normal vsync if we've chosen the alternate vsync
-						vsync = false;
-					}
+					alternateVsync = true;
+					//unset normal vsync if we've chosen the alternate vsync
+					vsync = false;
 				}
 
 				//TODO - whats so hard about triple buffering anyway? just enable it always, and change api to SetVsync(enable,throttle)
@@ -126,13 +118,13 @@ namespace BizHawk.Client.EmuHawk
 			Debug.Assert(inFinalTarget);
 
 			// wait for vsync to begin
-			if (alternateVsync) dx9.AlternateVsyncPass(0);
+			if (alternateVsync) ((dynamic) _gl).AlternateVsyncPass(0);
 
 			// present and conclude drawing
 			_graphicsControl.SwapBuffers();
 
 			// wait for vsync to end
-			if (alternateVsync) dx9.AlternateVsyncPass(1);
+			if (alternateVsync) ((dynamic) _gl).AlternateVsyncPass(1);
 
 			// nope. don't do this. workaround for slow context switching on intel GPUs. just switch to another context when necessary before doing anything
 			// presentationPanel.GraphicsControl.End();

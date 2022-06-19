@@ -111,6 +111,8 @@
 			this.cbCaptionWindowed = new System.Windows.Forms.CheckBox();
 			this.linkLabel1 = new System.Windows.Forms.LinkLabel();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.cbMainFormSaveWindowPosition = new System.Windows.Forms.CheckBox();
+			this.cbMainFormStayOnTop = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).BeginInit();
 			this.grpFinalFilter.SuspendLayout();
@@ -807,7 +809,7 @@
 			this.groupBox4.Controls.Add(this.cbFullscreenHacks);
 			this.groupBox4.Controls.Add(this.cbStatusBarFullscreen);
 			this.groupBox4.Controls.Add(this.cbMenuFullscreen);
-			this.groupBox4.Location = new System.Drawing.Point(143, 6);
+			this.groupBox4.Location = new System.Drawing.Point(153, 6);
 			this.groupBox4.Name = "groupBox4";
 			this.groupBox4.Size = new System.Drawing.Size(266, 211);
 			this.groupBox4.TabIndex = 27;
@@ -862,6 +864,8 @@
 			// 
 			// groupBox2
 			// 
+			this.groupBox2.Controls.Add(this.cbMainFormStayOnTop);
+			this.groupBox2.Controls.Add(this.cbMainFormSaveWindowPosition);
 			this.groupBox2.Controls.Add(this.lblFrameTypeWindowed);
 			this.groupBox2.Controls.Add(this.cbStatusBarWindowed);
 			this.groupBox2.Controls.Add(this.label9);
@@ -870,7 +874,7 @@
 			this.groupBox2.Controls.Add(this.cbCaptionWindowed);
 			this.groupBox2.Location = new System.Drawing.Point(6, 6);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(131, 211);
+			this.groupBox2.Size = new System.Drawing.Size(141, 211);
 			this.groupBox2.TabIndex = 26;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Windowed";
@@ -938,6 +942,26 @@
 			this.linkLabel1.TabStop = true;
 			this.linkLabel1.Text = "Documentation";
 			this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel1_LinkClicked);
+			// 
+			// cbMainFormSaveWindowPosition
+			// 
+			this.cbMainFormSaveWindowPosition.AutoSize = true;
+			this.cbMainFormSaveWindowPosition.Location = new System.Drawing.Point(9, 150);
+			this.cbMainFormSaveWindowPosition.Name = "cbMainFormSaveWindowPosition";
+			this.cbMainFormSaveWindowPosition.Size = new System.Drawing.Size(133, 17);
+			this.cbMainFormSaveWindowPosition.TabIndex = 26;
+			this.cbMainFormSaveWindowPosition.Text = "Save Window Position";
+			this.cbMainFormSaveWindowPosition.UseVisualStyleBackColor = true;
+			// 
+			// cbMainFormStayOnTop
+			// 
+			this.cbMainFormStayOnTop.AutoSize = true;
+			this.cbMainFormStayOnTop.Location = new System.Drawing.Point(9, 174);
+			this.cbMainFormStayOnTop.Name = "cbMainFormStayOnTop";
+			this.cbMainFormStayOnTop.Size = new System.Drawing.Size(84, 17);
+			this.cbMainFormStayOnTop.TabIndex = 27;
+			this.cbMainFormStayOnTop.Text = "Stay on Top";
+			this.cbMainFormStayOnTop.UseVisualStyleBackColor = true;
 			// 
 			// DisplayConfigLite
 			// 
@@ -1071,5 +1095,7 @@
 		private WinForms.Controls.LocSzSingleColumnFLP flpStaticWindowTitles;
 		private WinForms.Controls.CheckBoxEx cbStaticWindowTitles;
 		private WinForms.Controls.LocLabelEx lblStaticWindowTitles;
+		private System.Windows.Forms.CheckBox cbMainFormStayOnTop;
+		private System.Windows.Forms.CheckBox cbMainFormSaveWindowPosition;
 	}
 }

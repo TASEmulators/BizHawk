@@ -528,9 +528,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void NonExistentBranchMessage(int slot)
 		{
-			string binding = Tastudio.Config.HotkeyBindings.First(x => x.DisplayName == "Add Branch").Bindings;
 			Tastudio.MainForm.AddOnScreenMessage($"Branch {slot + 1} does not exist");
-			Tastudio.MainForm.AddOnScreenMessage($"Use {binding} to add branches");
+			Tastudio.MainForm.AddOnScreenMessage($"Use {Tastudio.Config!.HotkeyBindings["Add Branch"]} to add branches");
 		}
 
 		public void UpdateValues()

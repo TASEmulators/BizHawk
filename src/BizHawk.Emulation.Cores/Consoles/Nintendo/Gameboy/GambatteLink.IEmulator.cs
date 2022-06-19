@@ -231,47 +231,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				LibGambatte.gambatte_linkstatus(_linkedCores[two].GambatteState, oo & 0xff); // ShiftIn
 			}
 
-			if (CanIR(one, two))
+			if (LibGambatte.gambatte_linkstatus(_linkedCores[one].GambatteState, 259) != 0) // InfraredTrigger
 			{
-				if (LibGambatte.gambatte_linkstatus(_linkedCores[one].GambatteState, 259) != 0) // InfraredTrigger
+				LibGambatte.gambatte_linkstatus(_linkedCores[one].GambatteState, 260); // ack
+				if (LibGambatte.gambatte_linkstatus(_linkedCores[one].GambatteState, 261) != 0) // GetOut
 				{
-					LibGambatte.gambatte_linkstatus(_linkedCores[one].GambatteState, 260); // ack
-					if (LibGambatte.gambatte_linkstatus(_linkedCores[one].GambatteState, 261) != 0) // GetOut
-					{
-						LibGambatte.gambatte_linkstatus(_linkedCores[two].GambatteState, 262); // ShiftInOn
-					}
-					else
-					{
-						LibGambatte.gambatte_linkstatus(_linkedCores[two].GambatteState, 263); // ShiftInOff
-					}
+					LibGambatte.gambatte_linkstatus(_linkedCores[two].GambatteState, 262); // ShiftInOn
 				}
-
-				if (LibGambatte.gambatte_linkstatus(_linkedCores[two].GambatteState, 259) != 0) // InfraredTrigger
+				else
 				{
-					LibGambatte.gambatte_linkstatus(_linkedCores[two].GambatteState, 260); // ack
-					if (LibGambatte.gambatte_linkstatus(_linkedCores[two].GambatteState, 261) != 0) // GetOut
-					{
-						LibGambatte.gambatte_linkstatus(_linkedCores[one].GambatteState, 262); // ShiftInOn
-					}
-					else
-					{
-						LibGambatte.gambatte_linkstatus(_linkedCores[one].GambatteState, 263); // ShiftInOff
-					}
+					LibGambatte.gambatte_linkstatus(_linkedCores[two].GambatteState, 263); // ShiftInOff
 				}
 			}
-		}
 
-		private bool CanIR(int one, int two)
-		{
-			// the GB and GBA have no IR port, so ignore them for now
-			// todo: cart based IR
-			if (IsCGBMode(one) && IsCGBMode(two))
+			if (LibGambatte.gambatte_linkstatus(_linkedCores[two].GambatteState, 259) != 0) // InfraredTrigger
 			{
-				return _syncSettings._linkedSyncSettings[one].ConsoleMode is not Gameboy.GambatteSyncSettings.ConsoleModeType.GBA
-					&& _syncSettings._linkedSyncSettings[two].ConsoleMode is not Gameboy.GambatteSyncSettings.ConsoleModeType.GBA;
+				LibGambatte.gambatte_linkstatus(_linkedCores[two].GambatteState, 260); // ack
+				if (LibGambatte.gambatte_linkstatus(_linkedCores[two].GambatteState, 261) != 0) // GetOut
+				{
+					LibGambatte.gambatte_linkstatus(_linkedCores[one].GambatteState, 262); // ShiftInOn
+				}
+				else
+				{
+					LibGambatte.gambatte_linkstatus(_linkedCores[one].GambatteState, 263); // ShiftInOff
+				}
 			}
-
-			return false;
 		}
 
 		public int Frame { get; private set; }

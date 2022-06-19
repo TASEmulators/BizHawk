@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.Cores
 					};
 				}
 
-				yield return NymaConsoleButtons();
+				yield return NymaConsoleButtons(nyma.ControllerDefinition.Axes["Disk Index"]);
 			}
 		}
 
@@ -429,23 +429,23 @@ namespace BizHawk.Emulation.Cores
 			};
 		}
 
-		private static PadSchema NymaConsoleButtons()
+		private static PadSchema NymaConsoleButtons(AxisSpec diskRange)
 		{
 			return new ConsoleSchema
 			{
-				Size = new Size(327, 50),
-				Buttons = new[]
+				Size = new Size(250, 100),
+				Buttons = new PadSchemaControl[]
 				{
 					new ButtonSchema(10, 15, "Reset"),
 					new ButtonSchema(58, 15, "Power"),
-					new ButtonSchema(108, 15, "Previous Disk")
+					new ButtonSchema(108, 15, "Open Tray"),
+					new ButtonSchema(175, 15, "Close Tray"),
+					new SingleAxisSchema(10, 35, "Disk Index")
 					{
-						DisplayName = "Prev Disc"
-					},
-					new ButtonSchema(175, 15, "Next Disk")
-					{
-						DisplayName = "Next Disc"
-					},
+						MinValue = diskRange.Min,
+						MaxValue = diskRange.Max,
+						TargetSize = new Size(235, 60)
+					}
 				}
 			};
 		}

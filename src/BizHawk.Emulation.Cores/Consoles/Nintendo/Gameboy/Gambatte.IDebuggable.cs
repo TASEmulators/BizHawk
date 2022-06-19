@@ -87,8 +87,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				{
 					MemoryCallbacks.CallMemoryCallbacks(address, 0, rawFlags, which + "System Bus");
 					var bank = LibGambatte.gambatte_getaddrbank(GambatteState, (ushort)address);
-					if (address < 0x4000u) // always rom bank 0 for most mbcs (todo: edge mbcs where this doesn't apply)
+					if (address < 0x4000u) // usually rom bank 0 for most mbcs, some mbcs might have this at a different rom bank
 					{
+						address += (uint)(bank * 0x4000);
 						MemoryCallbacks.CallMemoryCallbacks(address, 0, rawFlags, which + "ROM");
 					}
 					else if (address < 0x8000u) // rom bank x

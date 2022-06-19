@@ -26,6 +26,7 @@ namespace BizHawk.Emulation.Cores
 				public byte[] RomData { get; set; }
 				public byte[] FileData { get; set; }
 				public string Extension { get; set; }
+				public string RomPath { get; set; }
 				public GameInfo Game { get; set; }
 			}
 
@@ -105,7 +106,7 @@ namespace BizHawk.Emulation.Cores
 				param.Roms = cip.Roms;
 				param.Discs = cip.Discs;
 				param.DeterministicEmulationRequested = cip.DeterministicEmulationRequested;
-				return (IEmulator)CTor.Invoke(new object[] { param });				
+				return (IEmulator)CTor.Invoke(new object[] { param });
 			}
 
 			private IEmulator CreateUsingLegacyConstructorParameters(ICoreInventoryParameters cip)
@@ -207,7 +208,7 @@ namespace BizHawk.Emulation.Cores
 		/// The user has indicated in preferences that this is their favorite core
 		/// </summary>
 		UserPreference = -200,
-		
+
 		/// <summary>
 		/// A very good core that should be preferred over normal cores.  Don't use this?
 		/// </summary>

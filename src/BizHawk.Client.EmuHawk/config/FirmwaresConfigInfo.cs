@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 // todo - display details on the current resolution status
@@ -9,22 +9,12 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class FirmwaresConfigInfo : Form
 	{
-		public const int idIdeal = 0;
-		public const int idAcceptable = 1;
-		public const int idUnacceptable = 2;
-		public const int idBad = 3;
-
-		public const string ttIdeal = "COOL: Ideal for TASing and anything. There can only be one.";
-		public const string ttAcceptable = "OK: This works on the core";
-		public const string ttUnacceptable = "NO: This doesn't work on the core";
-		public const string ttBad = "BAD! Why are you using this file";
-
 		public FirmwaresConfigInfo()
 		{
 			InitializeComponent();
 
-			// prep imagelist for listview with 4 item states for (ideal, acceptable, unacceptable, bad)
-			imageList1.Images.AddRange(new Image[] { Properties.Resources.GreenCheck, Properties.Resources.Freeze, Properties.Resources.ThumbsDown, Properties.Resources.ExclamationRed });
+			// prep imagelist for listview
+			foreach (var kvp in FirmwaresConfig.StatusIcons.OrderBy(static kvp => kvp.Key)) imageList1.Images.Add(kvp.Value);
 		}
 
 		private void LvOptions_KeyDown(object sender, KeyEventArgs e)

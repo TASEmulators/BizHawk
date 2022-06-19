@@ -72,10 +72,6 @@ namespace BizHawk.Client.EmuHawk
             | System.Windows.Forms.AnchorStyles.Right)));
             this.Port2ComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.Port2ComboBox.FormattingEnabled = true;
-            this.Port2ComboBox.Items.AddRange(new object[] {
-            "None",
-            "Gamepad",
-            "Mouse"});
             this.Port2ComboBox.Location = new System.Drawing.Point(12, 104);
             this.Port2ComboBox.Name = "Port2ComboBox";
             this.Port2ComboBox.Size = new System.Drawing.Size(284, 21);
@@ -88,10 +84,6 @@ namespace BizHawk.Client.EmuHawk
             | System.Windows.Forms.AnchorStyles.Right)));
             this.Port1ComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.Port1ComboBox.FormattingEnabled = true;
-            this.Port1ComboBox.Items.AddRange(new object[] {
-            "None",
-            "Gamepad",
-            "Mouse"});
             this.Port1ComboBox.Location = new System.Drawing.Point(12, 54);
             this.Port1ComboBox.Name = "Port1ComboBox";
             this.Port1ComboBox.Size = new System.Drawing.Size(284, 21);

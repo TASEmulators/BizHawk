@@ -24,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private Control _lastFocusedNUD = null;
 
-		public override bool BlocksInputWhenFocused => _lastFocusedNUD?.Focused == true;
+		public override bool BlocksInputWhenFocused => _lastFocusedNUD is not null;
 
 		private List<VirtualPad> Pads =>
 			ControllerPanel.Controls
@@ -72,6 +72,9 @@ namespace BizHawk.Client.EmuHawk
 			Pads.ForEach(pad => pad.BumpAnalog(x, y));
 		}
 
+		private void SetLastFocusedNUD(object sender, EventArgs args)
+			=> _lastFocusedNUD = (Control) sender;
+
 		private void CreatePads()
 		{
 			ControllerPanel.Controls.Clear();
@@ -114,8 +117,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			void SetLastFocusedNUD(object sender, EventArgs args)
-				=> _lastFocusedNUD = (Control) sender;
 			ControllerPanel.Controls.AddRange(padSchemata.Select(s => (Control) new VirtualPad(s, InputManager, SetLastFocusedNUD)).Reverse().ToArray());
 		}
 

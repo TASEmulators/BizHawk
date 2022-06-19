@@ -56,6 +56,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				GlidePlugin = GlidePlugin.Clone(),
 				Glide64mk2Plugin = Glide64mk2Plugin.Clone(),
 				GLideN64Plugin = GLideN64Plugin.Clone(),
+				AngrylionPlugin = AngrylionPlugin.Clone(),
 				Controllers = System.Array.ConvertAll(Controllers, a => a.Clone())
 			};
 		}
@@ -97,8 +98,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			[Description("Hle")]
 			Rsp_Hle = 0,
 
-			//[Description("cxd4 LLE")]
-			//Rsp_cxd4 = 2
+			[Description("cxd4 LLE")]
+			Rsp_cxd4 = 2
 		}
 	}
 

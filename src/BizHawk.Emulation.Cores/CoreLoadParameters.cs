@@ -9,6 +9,7 @@ namespace BizHawk.Emulation.Cores
 		byte[] RomData { get; }
 		byte[] FileData { get; }
 		string Extension { get; }
+		public string RomPath { get; }
 		/// <summary>
 		/// GameInfo for this individual asset.  Doesn't make sense a lot of the time;
 		/// only use this if your individual rom assets are full proper games when considered alone.

@@ -37,7 +37,7 @@
             // 
             this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.buttonOK.Location = new System.Drawing.Point(280, 363);
+            this.buttonOK.Location = new System.Drawing.Point(378, 386);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 1;
@@ -48,7 +48,7 @@
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(361, 363);
+            this.buttonCancel.Location = new System.Drawing.Point(459, 386);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 2;
@@ -60,10 +60,10 @@
             this.gbPrefControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.gbPrefControl1.ColorGameBoy = false;
+            this.gbPrefControl1.DialogParent = null;
             this.gbPrefControl1.Location = new System.Drawing.Point(12, 12);
             this.gbPrefControl1.Name = "gbPrefControl1";
-            this.gbPrefControl1.Size = new System.Drawing.Size(424, 345);
+            this.gbPrefControl1.Size = new System.Drawing.Size(522, 368);
             this.gbPrefControl1.TabIndex = 0;
             // 
             // GBPrefs
@@ -72,7 +72,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(448, 398);
+            this.ClientSize = new System.Drawing.Size(546, 421);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOK);
             this.Controls.Add(this.gbPrefControl1);

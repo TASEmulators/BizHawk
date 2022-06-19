@@ -10,7 +10,7 @@ namespace HelloWorld
 {
 	/// <remarks>All of this is example code, but it's at least a little more substantiative than a simple "hello world".</remarks>
 	[ExternalTool("HelloWorld", Description = "An example of how to interact with EmuHawk")]
-//	[ExternalToolApplicability.SingleRom(CoreSystem.NES, "EA343F4E445A9050D4B4FBAC2C77D0693B1D0922")] // example of limiting tool usage (this is SMB1)
+//	[ExternalToolApplicability.SingleRom(VSystemID.Raw.NES, "EA343F4E445A9050D4B4FBAC2C77D0693B1D0922")] // example of limiting tool usage (this is SMB1)
 	[ExternalToolEmbeddedIcon("HelloWorld.icon_Hello.ico")]
 	public partial class CustomMainForm : ToolFormBase, IExternalToolForm
 	{

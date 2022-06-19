@@ -57,9 +57,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public abstract int snes_serialized_size();
 
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void snes_load_cartridge_normal(string baseRomPath, byte[] romData, int romSize);
+		public abstract void snes_load_cartridge_normal(byte[] romData, int romSize);
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void snes_load_cartridge_super_gameboy(string baseRomPath, byte[] romData, byte[] sgbRomData, ulong mergedRomSizes);
+		public abstract void snes_load_cartridge_super_gameboy(byte[] romData, byte[] sgbRomData, int romSize, int sgbRomSize);
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_get_cpu_registers(ref BsnesApi.CpuRegisters registers);
@@ -67,6 +67,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public abstract void snes_set_cpu_register(string register, uint value);
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract bool snes_cpu_step();
+
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract bool snes_msu_sync();
 	}
 
 	public unsafe partial class BsnesApi : IDisposable, IMonitor, IStatable
@@ -99,6 +102,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			}
 		}
 
+		public void AddReadonlyFile(string path, string name)
+		{
+			if (!_readonlyFiles.Contains(name))
+			{
+				try
+				{
+					exe.AddReadonlyFile(File.ReadAllBytes(path), name);
+					_readonlyFiles.Add(name);
+				}
+				catch
+				{
+					// ignored
+				}
+			}
+		}
+
 		public void SetCallbacks(SnesCallbacks callbacks)
 		{
 			var functionPointerArray = callbacks
@@ -115,7 +134,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				Filename = "bsnes.wbx",
 				Path = dllPath,
 				SbrkHeapSizeKB = 12 * 1024,
-				InvisibleHeapSizeKB = 136 * 1024, // TODO: Roms get saved here and in mmap, consider consolidating?
+				InvisibleHeapSizeKB = 140 * 1024, // TODO: Roms get saved here and in mmap, consider consolidating?
 				MmapHeapSizeKB = 33 * 1024, // TODO: check whether this needs to be larger; it depends on the rom size
 				PlainHeapSizeKB = 1 * 1024,
 				SealedHeapSizeKB = 0,
@@ -154,6 +173,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public delegate void snes_read_hook_t(uint address);
 		public delegate void snes_write_hook_t(uint address, byte value);
 		public delegate void snes_exec_hook_t(uint address);
+		public delegate void snes_msu_open_t(ushort track_id);
+		public delegate void snes_msu_seek_t(long offset, bool relative);
+		public delegate byte snes_msu_read_t();
+		public delegate bool snes_msu_end_t();
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct CpuRegisters
@@ -201,6 +224,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			public snes_read_hook_t readHookCb;
 			public snes_write_hook_t writeHookCb;
 			public snes_exec_hook_t execHookCb;
+			public snes_msu_open_t msuOpenCb;
+			public snes_msu_seek_t msuSeekCb;
+			public snes_msu_read_t msuReadCb;
+			public snes_msu_end_t msuEndCb;
 
 			private static List<FieldInfo> FieldsInOrder;
 
@@ -219,21 +246,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public struct SnesInitData
 		{
 			public ENTROPY entropy;
-			public BSNES_INPUT_DEVICE left_port;
+			public BSNES_PORT1_INPUT_DEVICE left_port;
 			public BSNES_INPUT_DEVICE right_port;
 			public bool hotfixes;
 			public bool fast_ppu;
+			public bool fast_dsp;
+			public bool fast_coprocessors;
 			public REGION_OVERRIDE region_override;
 		}
 
 		public void Seal()
 		{
 			exe.Seal();
-			foreach (var s in _readonlyFiles)
+			foreach (string s in _readonlyFiles.Where(s => !s.StartsWith("msu1/")))
 			{
 				exe.RemoveReadonlyFile(s);
 			}
-			_readonlyFiles.Clear();
+
+			_readonlyFiles.RemoveAll(s => !s.StartsWith("msu1/"));
 		}
 
 		// TODO: confirm that the serializedSize is CONSTANT for any given game,
@@ -258,6 +288,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			// byte[] serializedData = reader.ReadBytes(serializedSize);
 			// _core.snes_unserialize(serializedData, serializedSize);
 			exe.LoadStateBinary(reader);
+			core.snes_msu_sync();
 		}
 	}
 }

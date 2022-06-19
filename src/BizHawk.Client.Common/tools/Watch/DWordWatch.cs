@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-
-using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -79,77 +77,16 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				uint val = 0;
-				switch (Type)
+				uint val = Type switch
 				{
-					case WatchDisplayType.Unsigned:
-						if (value.IsUnsigned())
-						{
-							val = (uint)int.Parse(value);
-						}
-						else
-						{
-							return false;
-						}
-
-						break;
-					case WatchDisplayType.Signed:
-						if (value.IsSigned())
-						{
-							val = (uint)int.Parse(value);
-						}
-						else
-						{
-							return false;
-						}
-
-						break;
-					case WatchDisplayType.Hex:
-						if (value.IsHex())
-						{
-							val = (uint)int.Parse(value, NumberStyles.HexNumber);
-						}
-						else
-						{
-							return false;
-						}
-
-						break;
-					case WatchDisplayType.FixedPoint_20_12:
-						if (value.IsFixedPoint())
-						{
-							val = (uint)(int)(double.Parse(value) * 4096.0);
-						}
-						else
-						{
-							return false;
-						}
-
-						break;
-					case WatchDisplayType.FixedPoint_16_16:
-						if (value.IsFixedPoint())
-						{
-							val = (uint)(int)(double.Parse(value) * 65536.0);
-						}
-						else
-						{
-							return false;
-						}
-
-						break;
-					case WatchDisplayType.Float:
-						if (value.IsFloat())
-						{
-							var bytes = BitConverter.GetBytes(float.Parse(value));
-							val = BitConverter.ToUInt32(bytes, 0);
-						}
-						else
-						{
-							return false;
-						}
-
-						break;
-				}
+					WatchDisplayType.Unsigned => uint.Parse(value),
+					WatchDisplayType.Signed => (uint)int.Parse(value),
+					WatchDisplayType.Hex => uint.Parse(value, NumberStyles.HexNumber),
+					WatchDisplayType.FixedPoint_20_12 => (uint)(double.Parse(value, NumberFormatInfo.InvariantInfo) * 4096.0),
+					WatchDisplayType.FixedPoint_16_16 => (uint)(double.Parse(value, NumberFormatInfo.InvariantInfo) * 65536.0),
+					WatchDisplayType.Float => BitConverter.ToUInt32(BitConverter.GetBytes(float.Parse(value, NumberFormatInfo.InvariantInfo)), 0),
+					_ => 0
+				};
 
 				PokeDWord(val);
 				return true;
@@ -198,7 +135,7 @@ namespace BizHawk.Client.Common
 			{
 				var bytes = BitConverter.GetBytes(val);
 				var _float = BitConverter.ToSingle(bytes, 0);
-				return _float.ToString();
+				return _float.ToString(NumberFormatInfo.InvariantInfo);
 			}
 
 			string FormatBinary()
@@ -217,8 +154,8 @@ namespace BizHawk.Client.Common
 				WatchDisplayType.Unsigned => val.ToString(),
 				WatchDisplayType.Signed => ((int)val).ToString(),
 				WatchDisplayType.Hex => $"{val:X8}",
-				WatchDisplayType.FixedPoint_20_12 => $"{(int)val / 4096.0:0.######}",
-				WatchDisplayType.FixedPoint_16_16 => $"{(int)val / 65536.0:0.######}",
+				WatchDisplayType.FixedPoint_20_12 => ((int)val / 4096.0).ToString("0.######", NumberFormatInfo.InvariantInfo),
+				WatchDisplayType.FixedPoint_16_16 => ((int)val / 65536.0).ToString("0.######", NumberFormatInfo.InvariantInfo),
 				WatchDisplayType.Float => FormatFloat(),
 				WatchDisplayType.Binary => FormatBinary(),
 				_ => val.ToString()

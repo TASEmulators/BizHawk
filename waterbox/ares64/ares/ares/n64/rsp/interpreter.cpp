@@ -81,7 +81,7 @@ auto RSP::decoderEXECUTE() -> void {
   op(0x24, LBU, RT, RS, IMMi16);
   op(0x25, LHU, RT, RS, IMMi16);
   op(0x26, INVALID);  //LWR
-  op(0x27, INVALID);  //LWU
+  op(0x27, LWU, RT, RS, IMMi16);
   op(0x28, SB, RT, RS, IMMi16);
   op(0x29, SH, RT, RS, IMMi16);
   op(0x2a, INVALID);  //SWL
@@ -279,20 +279,20 @@ auto RSP::decoderVU() -> void {
   vu(0x0f, VMADH, VD, VS, VT);
   vu(0x10, VADD, VD, VS, VT);
   vu(0x11, VSUB, VD, VS, VT);
-  op(0x12, INVALID);
+  vu(0x12, VZERO, VD, VS, VT); //VSUT
   vu(0x13, VABS, VD, VS, VT);
   vu(0x14, VADDC, VD, VS, VT);
   vu(0x15, VSUBC, VD, VS, VT);
-  op(0x16, INVALID);
-  op(0x17, INVALID);
-  op(0x18, INVALID);
-  op(0x19, INVALID);
-  op(0x1a, INVALID);
-  op(0x1b, INVALID);
-  op(0x1c, INVALID);
+  vu(0x16, VZERO, VD, VS, VT); //VADDB
+  vu(0x17, VZERO, VD, VS, VT); //VSUBB
+  vu(0x18, VZERO, VD, VS, VT); //VACCB
+  vu(0x19, VZERO, VD, VS, VT); //VSUCB
+  vu(0x1a, VZERO, VD, VS, VT); //VSAD
+  vu(0x1b, VZERO, VD, VS, VT); //VSAC
+  vu(0x1c, VZERO, VD, VS, VT); //VSUM
   vu(0x1d, VSAR, VD, VS);
-  op(0x1e, INVALID);
-  op(0x1f, INVALID);
+  vu(0x1e, VZERO, VD, VS, VT);
+  vu(0x1f, VZERO, VD, VS, VT);
   vu(0x20, VLT, VD, VS, VT);
   vu(0x21, VEQ, VD, VS, VT);
   vu(0x22, VNE, VD, VS, VT);
@@ -307,8 +307,8 @@ auto RSP::decoderVU() -> void {
   vu(0x2b, VNOR, VD, VS, VT);
   vu(0x2c, VXOR, VD, VS, VT);
   vu(0x2d, VNXOR, VD, VS, VT);
-  op(0x2e, INVALID);
-  op(0x2f, INVALID);
+  vu(0x2e, VZERO, VD, VS, VT);
+  vu(0x2f, VZERO, VD, VS, VT);
   vu(0x30, VRCP, VD, DE, VT);
   vu(0x31, VRCPL, VD, DE, VT);
   vu(0x32, VRCPH, VD, DE, VT);
@@ -317,14 +317,14 @@ auto RSP::decoderVU() -> void {
   vu(0x35, VRSQL, VD, DE, VT);
   vu(0x36, VRSQH, VD, DE, VT);
   op(0x37, VNOP);
-  op(0x38, INVALID);
-  op(0x39, INVALID);
-  op(0x3a, INVALID);
-  op(0x3b, INVALID);
-  op(0x3c, INVALID);
-  op(0x3d, INVALID);
-  op(0x3e, INVALID);
-  op(0x3f, INVALID);
+  vu(0x38, VZERO, VD, VS, VT); //VEXTT
+  vu(0x39, VZERO, VD, VS, VT); //VEXTQ
+  vu(0x3a, VZERO, VD, VS, VT); //VEXTN
+  vu(0x3b, VZERO, VD, VS, VT);
+  vu(0x3c, VZERO, VD, VS, VT); //VINST
+  vu(0x3d, VZERO, VD, VS, VT); //VINSQ
+  vu(0x3e, VZERO, VD, VS, VT); //VINSN
+  op(0x3f, VNOP); //VNULL
   }
   #undef E
   #undef DE

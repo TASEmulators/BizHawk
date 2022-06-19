@@ -31,6 +31,7 @@ auto CPU::ANDI(r64& rt, cr64& rs, u16 imm) -> void {
 
 auto CPU::BEQ(cr64& rs, cr64& rt, s16 imm) -> void {
   if(rs.u64 == rt.u64) branch.take(PC + 4 + (imm << 2));
+  else branch.notTaken();
 }
 
 auto CPU::BEQL(cr64& rs, cr64& rt, s16 imm) -> void {
@@ -40,17 +41,20 @@ auto CPU::BEQL(cr64& rs, cr64& rt, s16 imm) -> void {
 
 auto CPU::BGEZ(cr64& rs, s16 imm) -> void {
   if(rs.s64 >= 0) branch.take(PC + 4 + (imm << 2));
+  else branch.notTaken();
 }
 
 auto CPU::BGEZAL(cr64& rs, s16 imm) -> void {
-  RA.u64 = s32(PC + 8);
+  bool inDelaySlot = branch.inDelaySlot();
   if(rs.s64 >= 0) branch.take(PC + 4 + (imm << 2));
+  else branch.notTaken();
+  RA.u64 = s32(inDelaySlot ? branch.pc+4 : PC+8);
 }
 
 auto CPU::BGEZALL(cr64& rs, s16 imm) -> void {
-  RA.u64 = s32(PC + 8);
   if(rs.s64 >= 0) branch.take(PC + 4 + (imm << 2));
   else branch.discard();
+  RA.u64 = s32(PC + 8);
 }
 
 auto CPU::BGEZL(cr64& rs, s16 imm) -> void {
@@ -60,6 +64,7 @@ auto CPU::BGEZL(cr64& rs, s16 imm) -> void {
 
 auto CPU::BGTZ(cr64& rs, s16 imm) -> void {
   if(rs.s64 > 0) branch.take(PC + 4 + (imm << 2));
+  else branch.notTaken();
 }
 
 auto CPU::BGTZL(cr64& rs, s16 imm) -> void {
@@ -69,6 +74,7 @@ auto CPU::BGTZL(cr64& rs, s16 imm) -> void {
 
 auto CPU::BLEZ(cr64& rs, s16 imm) -> void {
   if(rs.s64 <= 0) branch.take(PC + 4 + (imm << 2));
+  else branch.notTaken();
 }
 
 auto CPU::BLEZL(cr64& rs, s16 imm) -> void {
@@ -78,11 +84,13 @@ auto CPU::BLEZL(cr64& rs, s16 imm) -> void {
 
 auto CPU::BLTZ(cr64& rs, s16 imm) -> void {
   if(rs.s64 < 0) branch.take(PC + 4 + (imm << 2));
+  else branch.notTaken();
 }
 
 auto CPU::BLTZAL(cr64& rs, s16 imm) -> void {
   RA.u64 = s32(PC + 8);
   if(rs.s64 < 0) branch.take(PC + 4 + (imm << 2));
+  else branch.notTaken();
 }
 
 auto CPU::BLTZALL(cr64& rs, s16 imm) -> void {
@@ -98,6 +106,7 @@ auto CPU::BLTZL(cr64& rs, s16 imm) -> void {
 
 auto CPU::BNE(cr64& rs, cr64& rt, s16 imm) -> void {
   if(rs.u64 != rt.u64) branch.take(PC + 4 + (imm << 2));
+  else branch.notTaken();
 }
 
 auto CPU::BNEL(cr64& rs, cr64& rt, s16 imm) -> void {
@@ -111,6 +120,8 @@ auto CPU::BREAK() -> void {
 
 auto CPU::CACHE(u8 operation, cr64& rs, s16 imm) -> void {
   u32 address = rs.u64 + imm;
+  if (auto phys = devirtualize(address)) address = *phys;
+  else return;
 
   switch(operation) {
 
@@ -346,34 +357,39 @@ auto CPU::DSUBU(r64& rd, cr64& rs, cr64& rt) -> void {
 }
 
 auto CPU::J(u32 imm) -> void {
-  branch.take((PC + 4 & 0xf000'0000) | (imm << 2));
+  if (branch.inDelaySlotTaken()) return;
+  branch.take((PC + 4 & 0xffff'ffff'f000'0000) | (imm << 2));
 }
 
 auto CPU::JAL(u32 imm) -> void {
-  RA.u64 = s32(PC + 8);
-  branch.take((PC + 4 & 0xf000'0000) | (imm << 2));
+  RA.u64 = branch.inDelaySlotTaken() ? branch.pc+4 : PC+8;
+  if (!branch.inDelaySlotTaken()) branch.take((PC + 4 & 0xffff'ffff'f000'0000) | (imm << 2));
+  else if (!branch.inDelaySlot()) branch.notTaken();
 }
 
 auto CPU::JALR(r64& rd, cr64& rs) -> void {
-  rd.u64 = s32(PC + 8);
-  branch.take(rs.u32);
+  u64 tgt = rs.u64;
+  rd.u64 = branch.inDelaySlotTaken() ? branch.pc+4 : PC+8;
+  if (!branch.inDelaySlotTaken()) branch.take(tgt);
+  else if (!branch.inDelaySlot()) branch.notTaken();
 }
 
 auto CPU::JR(cr64& rs) -> void {
-  branch.take(rs.u32);
+  if (!branch.inDelaySlotTaken()) branch.take(rs.u64);
+  else if (!branch.inDelaySlot()) branch.notTaken();
 }
 
 auto CPU::LB(r64& rt, cr64& rs, s16 imm) -> void {
-  if(auto data = read<Byte>(rs.u32 + imm)) rt.u64 = s8(*data);
+  if(auto data = read<Byte>(rs.u64 + imm)) rt.u64 = s8(*data);
 }
 
 auto CPU::LBU(r64& rt, cr64& rs, s16 imm) -> void {
-  if(auto data = read<Byte>(rs.u32 + imm)) rt.u64 = u8(*data);
+  if(auto data = read<Byte>(rs.u64 + imm)) rt.u64 = u8(*data);
 }
 
 auto CPU::LD(r64& rt, cr64& rs, s16 imm) -> void {
   if(!context.kernelMode() && context.bits == 32) return exception.reservedInstruction();
-  if(auto data = read<Dual>(rs.u32 + imm)) rt.u64 = *data;
+  if(auto data = read<Dual>(rs.u64 + imm)) rt.u64 = *data;
 }
 
 auto CPU::LDL(r64& rt, cr64& rs, s16 imm) -> void {
@@ -557,27 +573,31 @@ auto CPU::LDR(r64& rt, cr64& rs, s16 imm) -> void {
 }
 
 auto CPU::LH(r64& rt, cr64& rs, s16 imm) -> void {
-  if(auto data = read<Half>(rs.u32 + imm)) rt.u64 = s16(*data);
+  if(auto data = read<Half>(rs.u64 + imm)) rt.u64 = s16(*data);
 }
 
 auto CPU::LHU(r64& rt, cr64& rs, s16 imm) -> void {
-  if(auto data = read<Half>(rs.u32 + imm)) rt.u64 = u16(*data);
+  if(auto data = read<Half>(rs.u64 + imm)) rt.u64 = u16(*data);
 }
 
 auto CPU::LL(r64& rt, cr64& rs, s16 imm) -> void {
-  if(auto data = read<Word>(rs.u32 + imm)) {
-    rt.u64 = s32(*data);
-    scc.ll = tlb.physicalAddress >> 4;
-    scc.llbit = 1;
+  if(auto address = devirtualize(rs.u64 + imm)) {
+    if (auto data = read<Word>(*address)) {
+      rt.u64 = s32(*data);
+      scc.ll = (*address & 0x1fff'ffff) >> 4;
+      scc.llbit = 1;
+    }
   }
 }
 
 auto CPU::LLD(r64& rt, cr64& rs, s16 imm) -> void {
   if(!context.kernelMode() && context.bits == 32) return exception.reservedInstruction();
-  if(auto data = read<Dual>(rs.u32 + imm)) {
-    rt.u64 = *data;
-    scc.ll = tlb.physicalAddress >> 4;
-    scc.llbit = 1;
+  if(auto address = devirtualize(rs.u64 + imm)) {
+    if (auto data = read<Dual>(*address)) {
+      rt.u64 = *data;
+      scc.ll = (*address & 0x1fff'ffff) >> 4;
+      scc.llbit = 1;
+    }
   }
 }
 
@@ -586,7 +606,7 @@ auto CPU::LUI(r64& rt, u16 imm) -> void {
 }
 
 auto CPU::LW(r64& rt, cr64& rs, s16 imm) -> void {
-  if(auto data = read<Word>(rs.u32 + imm)) rt.u64 = s32(*data);
+  if(auto data = read<Word>(rs.u64 + imm)) rt.u64 = s32(*data);
 }
 
 auto CPU::LWL(r64& rt, cr64& rs, s16 imm) -> void {
@@ -700,7 +720,7 @@ auto CPU::LWR(r64& rt, cr64& rs, s16 imm) -> void {
 }
 
 auto CPU::LWU(r64& rt, cr64& rs, s16 imm) -> void {
-  if(auto data = read<Word>(rs.u32 + imm)) rt.u64 = u32(*data);
+  if(auto data = read<Word>(rs.u64 + imm)) rt.u64 = u32(*data);
 }
 
 auto CPU::MFHI(r64& rd) -> void {
@@ -746,31 +766,35 @@ auto CPU::ORI(r64& rt, cr64& rs, u16 imm) -> void {
 }
 
 auto CPU::SB(cr64& rt, cr64& rs, s16 imm) -> void {
-  write<Byte>(rs.u32 + imm, rt.u32);
+  write<Byte>(rs.u64 + imm, rt.u32);
 }
 
 auto CPU::SC(r64& rt, cr64& rs, s16 imm) -> void {
-  if(scc.llbit) {
-    scc.llbit = 0;
-    rt.u64 = write<Word>(rs.u32 + imm, rt.u32);
-  } else {
-    rt.u64 = 0;
+  if(auto address = devirtualize(rs.u64 + imm)) {  
+    if(scc.llbit) {
+      scc.llbit = 0;
+      rt.u64 = write<Word>(*address, rt.u32);
+    } else {
+      rt.u64 = 0;
+    }
   }
 }
 
 auto CPU::SCD(r64& rt, cr64& rs, s16 imm) -> void {
   if(!context.kernelMode() && context.bits == 32) return exception.reservedInstruction();
-  if(scc.llbit) {
-    scc.llbit = 0;
-    rt.u64 = write<Dual>(rs.u32 + imm, rt.u64);
-  } else {
-    rt.u64 = 0;
+  if(auto address = devirtualize(rs.u64 + imm)) {  
+    if(scc.llbit) {
+      scc.llbit = 0;
+      rt.u64 = write<Dual>(*address, rt.u64);
+    } else {
+      rt.u64 = 0;
+    }
   }
 }
 
 auto CPU::SD(cr64& rt, cr64& rs, s16 imm) -> void {
   if(!context.kernelMode() && context.bits == 32) return exception.reservedInstruction();
-  write<Dual>(rs.u32 + imm, rt.u64);
+  write<Dual>(rs.u64 + imm, rt.u64);
 }
 
 auto CPU::SDL(cr64& rt, cr64& rs, s16 imm) -> void {
@@ -918,7 +942,7 @@ auto CPU::SDR(cr64& rt, cr64& rs, s16 imm) -> void {
 }
 
 auto CPU::SH(cr64& rt, cr64& rs, s16 imm) -> void {
-  write<Half>(rs.u32 + imm, rt.u32);
+  write<Half>(rs.u64 + imm, rt.u32);
 }
 
 auto CPU::SLL(r64& rd, cr64& rt, u8 sa) -> void {
@@ -971,7 +995,7 @@ auto CPU::SUBU(r64& rd, cr64& rs, cr64& rt) -> void {
 }
 
 auto CPU::SW(cr64& rt, cr64& rs, s16 imm) -> void {
-  write<Word>(rs.u32 + imm, rt.u32);
+  write<Word>(rs.u64 + imm, rt.u32);
 }
 
 auto CPU::SWL(cr64& rt, cr64& rs, s16 imm) -> void {

@@ -39,10 +39,17 @@ endif
 # common commands
 ifeq ($(shell echo ^^),^)
   # cmd
-  delete  = $(info Deleting $1 ...) @del /q $(subst /,\,$1)
-  rdelete = $(info Deleting $1 ...) @del /s /q $(subst /,\,$1) && if exist $(subst /,\,$1) (rmdir /s /q $(subst /,\,$1))
+  fixpath = $(subst /,\\,$1)
+  mkdir   = @if not exist $(call fixpath,$1) (mkdir $(call fixpath,$1))
+  copy    = @copy $(call fixpath,$1) $(call fixpath,$2)
+  rcopy   = @xcopy /e /q /y $(call fixpath,$1) $(call fixpath,$2)
+  delete  = $(info Deleting $1 ...) @del /q $(call fixpath,$1)
+  rdelete = $(info Deleting $1 ...) @if exist $(call fixpath,$1) (rmdir /s /q $(call fixpath,$1))
 else
   # sh
+  mkdir   = @mkdir -p $1
+  copy    = @cp $1 $2
+  rcopy   = @cp -R $1 $2
   delete  = $(info Deleting $1 ...) @rm -f $1
   rdelete = $(info Deleting $1 ...) @rm -rf $1
 endif
@@ -92,16 +99,12 @@ ifeq ($(build),debug)
   symbols = true
   flags += -Og -DBUILD_DEBUG
 else ifeq ($(build),stable)
-  lto = true
   flags += -O1 -DBUILD_STABLE
 else ifeq ($(build),minified)
-  lto = true
   flags += -Os -DBUILD_MINIFIED
 else ifeq ($(build),release)
-  lto = true
   flags += -O2 -DBUILD_RELEASE
 else ifeq ($(build),optimized)
-  lto = true
   flags += -O3 -fomit-frame-pointer -DBUILD_OPTIMIZED
 else
   $(error unrecognized build type.)
@@ -210,6 +213,12 @@ nall.verbose:
 %.o: $<
 	$(info Compiling $(subst ../,,$<) ...)
 	@$(call compile)
+
+$(object.path):
+	$(call mkdir,$(object.path))
+
+$(output.path):
+	$(call mkdir,$(output.path))
 
 # function compile([arguments])
 compile = \

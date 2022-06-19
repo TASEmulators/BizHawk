@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		{
 			_ports = new[]
 			{
-				GetController(ss.LeftPort, ss),
+				GetController((BSNES_INPUT_DEVICE)ss.LeftPort, ss),
 				GetController(ss.RightPort, ss)
 			};
 
@@ -90,7 +90,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			"0Up", "0Down", "0Left", "0Right", "0B", "0A", "0Y", "0X", "0L", "0R", "0Select", "0Start"
 		};
 
-		private static readonly Dictionary<string, int> ButtonsOrder = new()
+		private static readonly Dictionary<string, int> DisplayButtonOrder = new()
 		{
 			["0Up"] = 0,
 			["0Down"] = 1,
@@ -108,7 +108,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		private static readonly ControllerDefinition _definition = new("(SNES Controller fragment)")
 		{
-			BoolButtons = Buttons.OrderBy(b => ButtonsOrder[b]).ToList()
+			BoolButtons = Buttons.OrderBy(b => DisplayButtonOrder[b]).ToList()
 		};
 
 		public ControllerDefinition Definition => _definition;
@@ -126,7 +126,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 	{
 		private static readonly ControllerDefinition _definition = new ControllerDefinition("(SNES Controller fragment)")
 				{ BoolButtons = { "0Mouse Left", "0Mouse Right" } }
-			.AddXYPair("0Mouse {0}", AxisPairOrientation.RightAndDown, (-127).RangeTo(127), 0); //TODO verify direction against hardware, R+D inferred from behaviour in Mario Paint
+			.AddXYPair("0Mouse {0}", AxisPairOrientation.RightAndDown, (-127).RangeTo(127), 0);
 
 		public ControllerDefinition Definition => _definition;
 		public bool LimitAnalogChangeSensitivity { get; init; } = true;
@@ -166,7 +166,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			"Up", "Down", "Left", "Right", "B", "A", "Y", "X", "L", "R", "Select", "Start"
 		};
 
-		private static readonly Dictionary<string, int> ButtonsOrder = new()
+		private static readonly Dictionary<string, int> DisplayButtonOrder = new()
 		{
 			["Up"] = 0,
 			["Down"] = 1,
@@ -178,14 +178,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			["B"] = 7,
 			["X"] = 8,
 			["A"] = 9,
-			["R"] = 10,
-			["L"] = 11
+			["L"] = 10,
+			["R"] = 11
 		};
 
 		private static readonly ControllerDefinition _definition = new("(SNES Controller fragment)")
 		{
 			BoolButtons = Enumerable.Range(0, 4)
-			.SelectMany(i => Buttons.OrderBy(b => ButtonsOrder[b])
+			.SelectMany(i => Buttons.OrderBy(b => DisplayButtonOrder[b])
 				.Select(b => i + b))
 			.ToList()
 		};
@@ -201,23 +201,52 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		}
 	}
 
+	/// <summary>
+	/// "Virtual" controller that behaves like a multitap controller, but with 16 instead of 12 buttons per controller.
+	/// </summary>
 	internal class BsnesPayloadController : IBsnesController
 	{
-		private readonly int[] _buttonsOrder = {4, 5, 6, 7, 0, 8, 1, 9, 10, 11, 2, 3, 12, 13, 14, 15};
+		private static readonly string[] Buttons =
+		{
+			"Up", "Down", "Left", "Right", "B", "A", "Y", "X", "L", "R", "Select", "Start", "Extra1", "Extra2", "Extra3", "Extra4"
+		};
+
+		private static readonly Dictionary<string, int> DisplayButtonOrder = new()
+		{
+			["B"] = 0,
+			["Y"] = 1,
+			["Select"] = 2,
+			["Start"] = 3,
+			["Up"] = 4,
+			["Down"] = 5,
+			["Left"] = 6,
+			["Right"] = 7,
+			["A"] = 8,
+			["X"] = 9,
+			["L"] = 10,
+			["R"] = 11,
+			["Extra1"] = 12,
+			["Extra2"] = 13,
+			["Extra3"] = 14,
+			["Extra4"] = 15
+		};
 
 		private static readonly ControllerDefinition _definition = new("(SNES Controller fragment)")
 		{
-			BoolButtons = Enumerable.Range(0, 32).Select(i => $"0B{i}").ToList()
+			BoolButtons = Enumerable.Range(0, 4)
+				.SelectMany(i => Buttons.OrderBy(b => DisplayButtonOrder[b])
+					.Select(b => i + b))
+				.ToList()
 		};
 
 		public ControllerDefinition Definition => _definition;
 
 		public short GetState(IController controller, int index, int id)
 		{
-			if (index >= 2 || id >= 16)
+			if (index >= 4 || id >= 16)
 				return 0;
 
-			return (short) (controller.IsPressed(Definition.BoolButtons[index * 16 + _buttonsOrder[id]]) ? 1 : 0);
+			return (short) (controller.IsPressed(index + Buttons[id]) ? 1 : 0);
 		}
 	}
 

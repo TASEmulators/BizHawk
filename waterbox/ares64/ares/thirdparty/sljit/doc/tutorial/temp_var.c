@@ -36,7 +36,7 @@ static int temp_var(long a, long b, long c)
 	struct sljit_compiler *C = sljit_create_compiler(NULL, NULL);
 
 	/* reserved space in stack for long arr[3] */
-	sljit_emit_enter(C, 0, SLJIT_ARG1(SW)|SLJIT_ARG2(SW)|SLJIT_ARG3(SW),  3, 3, 0, 0, 3 * sizeof(long));
+	sljit_emit_enter(C, 0, SLJIT_ARGS3(W, W, W, W), 2, 3, 0, 0, 3 * sizeof(long));
 	/*                  opt arg R  S  FR FS local_size */
 
 	/* arr[0] = S0, SLJIT_SP is the init address of local var */
@@ -49,7 +49,7 @@ static int temp_var(long a, long b, long c)
 	/* R0 = arr; in fact SLJIT_SP is the address of arr, but can't do so in SLJIT */
 	sljit_get_local_base(C, SLJIT_R0, 0, 0);	/* get the address of local variables */
 	sljit_emit_op1(C, SLJIT_MOV, SLJIT_R1, 0, SLJIT_IMM, 3);	/* R1 = 3; */
-	sljit_emit_icall(C, SLJIT_CALL, SLJIT_ARG1(SW)|SLJIT_ARG2(SW), SLJIT_IMM, SLJIT_FUNC_OFFSET(print_arr));
+	sljit_emit_icall(C, SLJIT_CALL, SLJIT_ARGS2(W, P, W), SLJIT_IMM, SLJIT_FUNC_ADDR(print_arr));
 	sljit_emit_return(C, SLJIT_MOV, SLJIT_R0, 0);
 
 	/* Generate machine code */

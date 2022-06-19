@@ -11,7 +11,7 @@ using BizHawk.Emulation.Cores.Components.M6502;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public partial class NES : IEmulator, ISoundProvider, ICycleTiming
+	public partial class NES : IEmulator, ISoundProvider/*, ICycleTiming*/
 	{
 		internal static class RomChecksums
 		{

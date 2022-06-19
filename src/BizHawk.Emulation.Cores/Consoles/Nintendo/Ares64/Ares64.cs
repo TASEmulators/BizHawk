@@ -8,11 +8,12 @@ using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 {
-	[PortedCore(CoreNames.Ares64, "ares team, Near", "v127", "https://ares-emulator.github.io/", isReleased: false)]
+	[PortedCore(CoreNames.Ares64, "ares team, Near", "v128", "https://ares-emulator.github.io/")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), })]
 	public partial class Ares64 : WaterboxCore, IRegionable
 	{
 		private readonly LibAres64 _core;
+		private readonly Ares64Disassembler _disassembler;
 
 		[CoreConstructor(VSystemID.Raw.N64)]
 		public Ares64(CoreLoadParameters<Ares64Settings, Ares64SyncSettings> lp)
@@ -22,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 				DefaultHeight = 480,
 				MaxWidth = 640,
 				MaxHeight = 576,
-				MaxSamples = 2048,
+				MaxSamples = 1024,
 				DefaultFpsNumerator = 60,
 				DefaultFpsDenominator = 1,
 				SystemId = VSystemID.Raw.N64,
@@ -40,6 +41,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			};
 
 			N64Controller = CreateControllerDefinition(ControllerSettings);
+			_tracecb = MakeTrace;
 
 			_core = PreInit<LibAres64>(new WaterboxOptions
 			{
@@ -51,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 				MmapHeapSizeKB = 512 * 1024,
 				SkipCoreConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
-			});
+			}, new[] { _tracecb, });
 
 			var rom = lp.Roms[0].RomData;
 
@@ -79,9 +81,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 
 			var pif = Util.DecompressGzipFile(new MemoryStream(pal ? Resources.PIF_PAL_ROM.Value : Resources.PIF_NTSC_ROM.Value));
 
+			var gbRoms = new byte[][] { null, null, null, null };
+			var numGbRoms = lp.Roms.Count - 1;
+			for (int i = 0; i < numGbRoms; i++)
+			{
+				gbRoms[i] = lp.Roms[i + 1].RomData;
+			}
+
 			unsafe
 			{
-				fixed (byte* pifPtr = pif, romPtr = rom)
+				fixed (byte* pifPtr = pif, romPtr = rom, gb1RomPtr = gbRoms[0], gb2RomPtr = gbRoms[1], gb3RomPtr = gbRoms[2], gb4RomPtr = gbRoms[3]) 
 				{
 					var loadData = new LibAres64.LoadData()
 					{
@@ -89,6 +98,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 						PifLen = pif.Length,
 						RomData = (IntPtr)romPtr,
 						RomLen = rom.Length,
+						Gb1RomData = (IntPtr)gb1RomPtr,
+						Gb1RomLen = gbRoms[0]?.Length ?? 0,
+						Gb2RomData = (IntPtr)gb2RomPtr,
+						Gb2RomLen = gbRoms[1]?.Length ?? 0,
+						Gb3RomData = (IntPtr)gb3RomPtr,
+						Gb3RomLen = gbRoms[2]?.Length ?? 0,
+						Gb4RomData = (IntPtr)gb4RomPtr,
+						Gb4RomLen = gbRoms[3]?.Length ?? 0,
 					};
 					if (!_core.Init(ref loadData, ControllerSettings, loadFlags))
 					{
@@ -98,7 +115,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			}
 
 			PostInit();
-			DeterministicEmulation = true;
+
+			Tracer = new TraceBuffer("r3400: PC, mnemonic, operands, registers (GPRs, MultLO, MultHI)");
+			_serviceProvider.Register(Tracer);
+
+			_disassembler = new(_core);
+			_serviceProvider.Register<IDisassemblable>(_disassembler);
+
+			DeterministicEmulation = lp.DeterministicEmulationRequested || (!_syncSettings.UseRealTime);
+			InitializeRtc(_syncSettings.InitialTime);
 		}
 
 		public DisplayType Region { get; }
@@ -114,7 +139,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			var ret = new ControllerDefinition("Nintendo 64 Controller");
 			for (int i = 0; i < 4; i++)
 			{
-				if (controllerSettings[i] != LibAres64.ControllerType.Unplugged)
+				if (controllerSettings[i] == LibAres64.ControllerType.Mouse)
+				{
+					ret.BoolButtons.Add($"P{i + 1} Mouse Right");
+					ret.BoolButtons.Add($"P{i + 1} Mouse Left");
+					ret.AddXYPair($"P{i + 1} {{0}} Axis", AxisPairOrientation.RightAndUp, (-128).RangeTo(127), 0);
+				}
+				else if (controllerSettings[i] != LibAres64.ControllerType.Unplugged)
 				{
 					ret.BoolButtons.Add($"P{i + 1} DPad U");
 					ret.BoolButtons.Add($"P{i + 1} DPad D");
@@ -154,9 +185,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 				ret |= LibAres64.Buttons.LEFT;
 			if (controller.IsPressed($"P{num} DPad R"))
 				ret |= LibAres64.Buttons.RIGHT;
-			if (controller.IsPressed($"P{num} B"))
+			if (controller.IsPressed($"P{num} B") || controller.IsPressed($"P{num} Mouse Right"))
 				ret |= LibAres64.Buttons.B;
-			if (controller.IsPressed($"P{num} A"))
+			if (controller.IsPressed($"P{num} A") || controller.IsPressed($"P{num} Mouse Left"))
 				ret |= LibAres64.Buttons.A;
 			if (controller.IsPressed($"P{num} C Up"))
 				ret |= LibAres64.Buttons.C_UP;
@@ -180,6 +211,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
+			_core.SetTraceCallback(Tracer.IsEnabled() ? _tracecb : null);
+
 			for (int i = 0; i < 4; i++)
 			{
 				if (ControllerSettings[i] == LibAres64.ControllerType.Rumblepak)
@@ -190,19 +223,22 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 
 			return new LibAres64.FrameInfo
 			{
+				Time = GetRtcTime(!DeterministicEmulation),
+
 				P1Buttons = GetButtons(controller, 1),
+				P2Buttons = GetButtons(controller, 2),
+				P3Buttons = GetButtons(controller, 3),
+				P4Buttons = GetButtons(controller, 4),
+
 				P1XAxis = (short)controller.AxisValue("P1 X Axis"),
 				P1YAxis = (short)controller.AxisValue("P1 Y Axis"),
 
-				P2Buttons = GetButtons(controller, 2),
 				P2XAxis = (short)controller.AxisValue("P2 X Axis"),
 				P2YAxis = (short)controller.AxisValue("P2 Y Axis"),
 
-				P3Buttons = GetButtons(controller, 3),
 				P3XAxis = (short)controller.AxisValue("P3 X Axis"),
 				P3YAxis = (short)controller.AxisValue("P3 Y Axis"),
 
-				P4Buttons = GetButtons(controller, 4),
 				P4XAxis = (short)controller.AxisValue("P4 X Axis"),
 				P4YAxis = (short)controller.AxisValue("P4 Y Axis"),
 

@@ -263,6 +263,18 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			/// </summary>
 			public bool HasSyncSettings => Ports.Count > 0
 				|| AllSettings.Select(s => AllOverrides[s.SettingsKey]).Any(o => !o.Hide && !o.NonSync);
+
+			public NymaSettingsInfo Clone()
+			{
+				return new NymaSettingsInfo
+				{
+					LayerNames = new(LayerNames ?? new()),
+					Ports = new(Ports ?? new()),
+					AllSettings = new(AllSettings ?? new()),
+					AllSettingsByKey = new(AllSettingsByKey ?? new()),
+					AllOverrides = new(AllOverrides ?? new())
+				};
+			}
 		}
 		private void InitAllSettingsInfo(List<NPortInfoT> allPorts)
 		{

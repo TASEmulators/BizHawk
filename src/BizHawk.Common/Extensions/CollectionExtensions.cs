@@ -168,5 +168,33 @@ namespace BizHawk.Common.CollectionExtensions
 			}
 			return c - list.Count;
 		}
+
+		public static bool IsSortedAsc<T>(this IReadOnlyList<T> list)
+			where T : IComparable<T>
+		{
+			for (int i = 0, e = list.Count - 1; i < e; i++) if (list[i + 1].CompareTo(list[i]) < 0) return false;
+			return true;
+		}
+
+		public static bool IsSortedAsc<T>(this ReadOnlySpan<T> span)
+			where T : IComparable<T>
+		{
+			for (int i = 0, e = span.Length - 1; i < e; i++) if (span[i + 1].CompareTo(span[i]) < 0) return false;
+			return true;
+		}
+
+		public static bool IsSortedDesc<T>(this IReadOnlyList<T> list)
+			where T : IComparable<T>
+		{
+			for (int i = 0, e = list.Count - 1; i < e; i++) if (list[i + 1].CompareTo(list[i]) > 0) return false;
+			return true;
+		}
+
+		public static bool IsSortedDesc<T>(this ReadOnlySpan<T> span)
+			where T : IComparable<T>
+		{
+			for (int i = 0, e = span.Length - 1; i < e; i++) if (span[i + 1].CompareTo(span[i]) > 0) return false;
+			return true;
+		}
 	}
 }

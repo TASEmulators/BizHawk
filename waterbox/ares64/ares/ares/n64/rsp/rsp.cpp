@@ -119,6 +119,10 @@ auto RSP::power(bool reset) -> void {
     recompiler.allocator.resize(64_MiB, bump_allocator::executable | bump_allocator::zero_fill, buffer);
     recompiler.reset();
   }
+
+  if constexpr(Accuracy::RSP::SISD) {
+    platform->status("RSP vectorization disabled (no SSE 4.1 support)");
+  }
 }
 
 }

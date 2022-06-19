@@ -26,6 +26,22 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			_controllerDeckName = controllerDeckName;
 		}
 
+		private WaterboxOptions NymaWaterboxOptions(string wbxFilename)
+		{
+			return new WaterboxOptions
+			{
+				Filename = wbxFilename,
+				// WaterboxHost only saves parts of memory that have changed, so not much to be gained by making these precisely sized
+				SbrkHeapSizeKB = 1024 * 16,
+				SealedHeapSizeKB = 1024 * 48,
+				InvisibleHeapSizeKB = 1024 * 48,
+				PlainHeapSizeKB = 1024 * 48,
+				MmapHeapSizeKB = 1024 * 48,
+				SkipCoreConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
+				SkipMemoryConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
+			};
+		}
+
 		private LibNymaCore _nyma;
 		protected T DoInit<T>(
 			CoreLoadParameters<NymaSettings, NymaSyncSettings> lp,
@@ -68,18 +84,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				}
 			});
 
-			var t = PreInit<T>(new WaterboxOptions
-			{
-				Filename = wbxFilename,
-				// WaterboxHost only saves parts of memory that have changed, so not much to be gained by making these precisely sized
-				SbrkHeapSizeKB = 1024 * 16,
-				SealedHeapSizeKB = 1024 * 48,
-				InvisibleHeapSizeKB = 1024 * 48,
-				PlainHeapSizeKB = 1024 * 48,
-				MmapHeapSizeKB = 1024 * 48,
-				SkipCoreConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
-				SkipMemoryConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
-			}, new Delegate[] { _settingsQueryDelegate, _cdTocCallback, _cdSectorCallback, firmwareDelegate });
+			var t = PreInit<T>(NymaWaterboxOptions(wbxFilename), new Delegate[] { _settingsQueryDelegate, _cdTocCallback, _cdSectorCallback, firmwareDelegate });
 			_nyma = t;
 
 			using (_exe.EnterExit())
@@ -150,7 +155,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				ClockRate = info.MasterClock / (double)0x100000000;
 				_soundBuffer = new short[22050 * 2];
 
-				InitControls(portData, discs?.Length > 0, ref info);
+				InitControls(portData, discs?.Length ?? 0, ref info);
 				PostInit();
 				SettingsInfo.LayerNames = GetLayerData();
 				_settings.Normalize(SettingsInfo);
@@ -185,6 +190,20 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			return t;
 		}
 
+		// inits only to get settings info
+		// should only ever be called if no SettingsInfo cache exists statically within the core
+		protected void InitForSettingsInfo(string wbxFilename)
+		{
+			_nyma = PreInit<LibNymaCore>(NymaWaterboxOptions(wbxFilename));
+
+			using (_exe.EnterExit())
+			{
+				_nyma.PreInit();
+				var portData = GetInputPortsData();
+				InitAllSettingsInfo(portData);
+			}
+		}
+
 		protected override void SaveStateBinaryInternal(BinaryWriter writer)
 		{
 			_controllerAdapter.SaveStateBinary(writer);
@@ -217,10 +236,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				flags |= LibNymaCore.BizhawkFlags.SkipSoundening;
 			if (SettingsQuery("nyma.constantfb") != "0")
 				flags |= LibNymaCore.BizhawkFlags.RenderConstantSize;
-			if (controller.IsPressed("Previous Disk"))
-				flags |= LibNymaCore.BizhawkFlags.PreviousDisk;
-			if (controller.IsPressed("Next Disk"))
-				flags |= LibNymaCore.BizhawkFlags.NextDisk;
+			if (controller.IsPressed("Open Tray"))
+				flags |= LibNymaCore.BizhawkFlags.OpenTray;
+			if (controller.IsPressed("Close Tray"))
+				flags |= LibNymaCore.BizhawkFlags.CloseTray;
 
 			var ret = new LibNymaCore.FrameInfo
 			{
@@ -232,6 +251,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 						: LibNymaCore.CommandType.NONE,
 				InputPortData = (byte*)_frameAdvanceInputLock.AddrOfPinnedObject(),
 				FrontendTime = GetRtcTime(SettingsQuery("nyma.rtcrealtime") != "0"),
+				DiskIndex = (int)controller.AxisValue("Disk Index")
 			};
 			if (_frameThreadStart != null)
 			{

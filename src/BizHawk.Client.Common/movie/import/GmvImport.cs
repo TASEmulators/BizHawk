@@ -1,6 +1,7 @@
 ﻿using System.IO;
 
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 
 namespace BizHawk.Client.Common.movie.import
@@ -164,6 +165,7 @@ namespace BizHawk.Client.Common.movie.import
 			}
 
 			Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(ss);
+			Result.Movie.HeaderEntries[HeaderKeys.Core] = CoreNames.Gpgx;
 		}
 	}
 }

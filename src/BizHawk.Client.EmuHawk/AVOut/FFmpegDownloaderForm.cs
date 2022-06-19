@@ -20,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 			txtLocation.Text = FFmpegService.FFmpegPath;
 			txtUrl.Text = FFmpegService.Url;
 
-			if (OSTailoredCode.IsUnixHost) textBox1.Text = string.Join("\n", textBox1.Text.Split('\n').Take(3)) + $"\n\n(Linux user: Create a symlink with the below filename pointing to the ffmpeg binary with version {FFmpegService.Version}.)";
+			if (OSTailoredCode.IsUnixHost) textBox1.Text = string.Join("\n", textBox1.Text.Split('\n').Take(3)) + "\n\n(Linux user: If installing manually, you can use a symlink.)";
 		}
 
 		private int pct = 0;
@@ -81,15 +81,22 @@ namespace BizHawk.Client.EmuHawk
 				//try acquiring file
 				using (var hf = new HawkFile(fn))
 				{
-					using (var exe = hf.BindFirstOf(".exe"))
+					using (var exe = OSTailoredCode.IsUnixHost ? hf.BindArchiveMember("ffmpeg") : hf.BindFirstOf(".exe"))
 					{
-						var data = exe.ReadAllBytes();
+						var data = exe!.ReadAllBytes();
 
 						//last chance. exiting, don't dump the new ffmpeg file
 						if (exiting)
 							return;
 
+						DirectoryInfo parentDir = new(Path.GetDirectoryName(FFmpegService.FFmpegPath)!);
+						if (!parentDir.Exists) parentDir.Create();
 						File.WriteAllBytes(FFmpegService.FFmpegPath, data);
+						if (OSTailoredCode.IsUnixHost)
+						{
+							OSTailoredCode.ConstructSubshell("chmod", $"+x {FFmpegService.FFmpegPath}", checkStdout: false).Start();
+							Thread.Sleep(50); // Linux I/O flush idk
+						}
 					}
 				}
 

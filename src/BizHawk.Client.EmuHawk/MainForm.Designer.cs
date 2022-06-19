@@ -240,6 +240,7 @@ namespace BizHawk.Client.EmuHawk
 			this.A7800FilterSettingsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.GBSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.GBcoreSettingsToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.SameBoyColorChooserMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator28 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.GBGPUViewerMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.GBPrinterViewerMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -293,7 +294,6 @@ namespace BizHawk.Client.EmuHawk
 			this.amstradCPCCoreEmulationSettingsToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.AmstradCPCAudioSettingsToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.AmstradCPCNonSyncSettingsToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.AmstradCPCPokeMemoryToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.AmstradCPCMediaToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.AmstradCPCTapesSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.cpct1ToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -1019,12 +1019,12 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// DisplayFrameCounterMenuItem
 			// 
-			this.DisplayFrameCounterMenuItem.Text = "Display FrameCounter";
+			this.DisplayFrameCounterMenuItem.Text = "Display Frame Count";
 			this.DisplayFrameCounterMenuItem.Click += new System.EventHandler(this.DisplayFrameCounterMenuItem_Click);
 			// 
 			// DisplayLagCounterMenuItem
 			// 
-			this.DisplayLagCounterMenuItem.Text = "Display Lag Counter";
+			this.DisplayLagCounterMenuItem.Text = "Display Lag Frame Count";
 			this.DisplayLagCounterMenuItem.Click += new System.EventHandler(this.DisplayLagCounterMenuItem_Click);
 			// 
 			// DisplayInputMenuItem
@@ -1317,7 +1317,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// CoresSubMenu
 			// 
-			this.CoresSubMenu.Text = "Cores";
+			this.CoresSubMenu.Text = "Preferred Cores";
 			// 
 			// SaveConfigMenuItem
 			// 
@@ -1602,6 +1602,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.GBSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
 			this.GBcoreSettingsToolStripMenuItem,
+			this.SameBoyColorChooserMenuItem,
 			this.toolStripSeparator28,
 			this.GBGPUViewerMenuItem,
 			this.GBPrinterViewerMenuItem});
@@ -1611,6 +1612,11 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.GBcoreSettingsToolStripMenuItem.Text = "Settings...";
 			this.GBcoreSettingsToolStripMenuItem.Click += new System.EventHandler(this.GbCoreSettingsMenuItem_Click);
+			// 
+			// SameBoyColorChooserMenuItem
+			// 
+			this.SameBoyColorChooserMenuItem.Text = "&Choose Custom Palette...";
+			this.SameBoyColorChooserMenuItem.Click += new System.EventHandler(this.SameboyColorChooserMenuItem_Click);
 			// 
 			// GBGPUViewerMenuItem
 			// 
@@ -1878,7 +1884,6 @@ namespace BizHawk.Client.EmuHawk
 			this.amstradCPCCoreEmulationSettingsToolStripMenuItem,
 			this.AmstradCPCAudioSettingsToolStripMenuItem,
 			this.AmstradCPCNonSyncSettingsToolStripMenuItem,
-			this.AmstradCPCPokeMemoryToolStripMenuItem,
 			this.AmstradCPCMediaToolStripMenuItem});
 			this.amstradCPCToolStripMenuItem.Text = "Amstrad CPC";
 			// 
@@ -1896,11 +1901,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.AmstradCPCNonSyncSettingsToolStripMenuItem.Text = "Non-Sync Settings";
 			this.AmstradCPCNonSyncSettingsToolStripMenuItem.Click += new System.EventHandler(this.AmstradCpcNonSyncSettingsMenuItem_Click);
-			// 
-			// AmstradCPCPokeMemoryToolStripMenuItem
-			// 
-			this.AmstradCPCPokeMemoryToolStripMenuItem.Text = "POKE Memory";
-			this.AmstradCPCPokeMemoryToolStripMenuItem.Click += new System.EventHandler(this.AmstradCpcPokeMemoryMenuItem_Click);
 			// 
 			// AmstradCPCMediaToolStripMenuItem
 			// 
@@ -2659,6 +2659,7 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx customizeToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx N64ControllerSettingsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx GBcoreSettingsToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SameBoyColorChooserMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx NesControllerSettingsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator22;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator23;
@@ -2747,7 +2748,6 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx amstradCPCToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx amstradCPCCoreEmulationSettingsToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AmstradCPCAudioSettingsToolStripMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AmstradCPCPokeMemoryToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AmstradCPCMediaToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AmstradCPCTapesSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx cpct1ToolStripMenuItem;

@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 				return ret;
 			}
 
-			return Array.Empty<byte>();
+			return null;
 		}
 
 		public void StoreSaveRam(byte[] data)
@@ -30,7 +30,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 				throw new ArgumentException("Size of saveram data does not match expected!");
 			}
 
-			LibSameboy.sameboy_loadsram(SameboyState, data, data.Length);
+			if (expected > 0)
+			{
+				LibSameboy.sameboy_loadsram(SameboyState, data, data.Length);
+			}
 		}
 	}
 }

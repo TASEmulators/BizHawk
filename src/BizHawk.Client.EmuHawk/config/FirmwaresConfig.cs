@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -10,7 +9,6 @@ using System.Windows.Forms;
 
 using BizHawk.Common;
 using BizHawk.Client.Common;
-using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
@@ -28,6 +26,28 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class FirmwaresConfig : Form, IDialogParent
 	{
+		private const string STATUS_DESC_UNUSED = "";
+
+		private static readonly IReadOnlyDictionary<FirmwareOptionStatus, string> StatusDescs = new Dictionary<FirmwareOptionStatus, string>
+		{
+			[FirmwareOptionStatus.Unset] = STATUS_DESC_UNUSED,
+			[FirmwareOptionStatus.Bad] = "BAD! Why are you using this file",
+			[FirmwareOptionStatus.Unknown] = STATUS_DESC_UNUSED,
+			[FirmwareOptionStatus.Unacceptable] = "NO: This doesn't work on the core",
+			[FirmwareOptionStatus.Acceptable] = "OK: This works on the core",
+			[FirmwareOptionStatus.Ideal] = "COOL: Ideal for TASing and anything. There can only be one.",
+		};
+
+		internal static readonly IReadOnlyDictionary<FirmwareOptionStatus, Image> StatusIcons = new Dictionary<FirmwareOptionStatus, Image>
+		{
+			[FirmwareOptionStatus.Unset] = Properties.Resources.ExclamationRed,
+			[FirmwareOptionStatus.Bad] = Properties.Resources.ThumbsDown, // in this main view, bad dumps use this thumbs down (to differentiate from unset); in a record's info view, they use unset's red '!' (to differentiate from unacceptable)
+			[FirmwareOptionStatus.Unknown] = Properties.Resources.RetroQuestion,
+			[FirmwareOptionStatus.Unacceptable] = Properties.Resources.ThumbsDown,
+			[FirmwareOptionStatus.Acceptable] = Properties.Resources.GreenCheck,
+			[FirmwareOptionStatus.Ideal] = Properties.Resources.Freeze,
+		};
+
 		private readonly IDictionary<string, string> _firmwareUserSpecifications;
 
 		private readonly PathEntryCollection _pathEntries;
@@ -70,11 +90,6 @@ namespace BizHawk.Client.EmuHawk
 		};
 
 		public string TargetSystem { get; set; }
-
-		private const int IdUnsure = 0;
-		private const int IdMissing = 1;
-		private const int IdOk = 2;
-		private const int IdBad = 3;
 
 		private Font _fixedFont, _boldFont, _boldFixedFont;
 
@@ -120,17 +135,10 @@ namespace BizHawk.Client.EmuHawk
 				= tbbImport.Image
 				= tbbClose.Image
 				= tbbCloseReload.Image
-				= tbbOpenFolder.Image = Resources.Placeholder;
+				= tbbOpenFolder.Image = Properties.Resources.Placeholder;
 
 			// prep ImageList for ListView
-			// the order matters, so make sure these match IdUnsure, IdMissing, etc.
-			imageList1.Images.AddRange(new Image[]
-			{
-				Resources.RetroQuestion,
-				Resources.ExclamationRed,
-				Resources.GreenCheck,
-				Resources.ThumbsDown,
-			});
+			foreach (var kvp in StatusIcons.OrderBy(static kvp => kvp.Key)) imageList1.Images.Add(kvp.Value);
 
 			_listViewSorter = new ListViewSorter(-1);
 
@@ -178,7 +186,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Tag = fr,
 					UseItemStyleForSubItems = false,
-					ImageIndex = IdUnsure,
+					ImageIndex = (int) FirmwareOptionStatus.Unknown,
 					ToolTipText = null
 				};
 				lvi.SubItems.Add(sysID);
@@ -287,7 +295,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (ri == null)
 				{
-					lvi.ImageIndex = IdMissing;
+					lvi.ImageIndex = (int) FirmwareOptionStatus.Unset;
 					lvi.ToolTipText = "No file bound for this firmware!";
 				}
 				else
@@ -304,20 +312,17 @@ namespace BizHawk.Client.EmuHawk
 					var hash = ri.KnownFirmwareFile?.Hash;
 					if (hash == null)
 					{
-						lvi.ImageIndex = IdUnsure;
+						lvi.ImageIndex = (int) FirmwareOptionStatus.Unknown;
 						lvi.ToolTipText = "You've bound a custom choice here. Hope you know what you're doing.";
 						lvi.SubItems[4].Text = "-custom-";
 					}
-					else if (FirmwareDatabase.FirmwareOptions.FirstOrNull(fo => fo.Hash == hash)?.IsAcceptableOrIdeal == false)
-					{
-						lvi.ImageIndex = IdBad;
-						lvi.ToolTipText = "Bad! This file has been bound to a choice which is known to be bad (details in right-click > Info)";
-						lvi.SubItems[4].Text = ri.KnownFirmwareFile.Value.Description;
-					}
 					else
 					{
-						lvi.ImageIndex = IdOk;
-						lvi.ToolTipText = "Good! This file has been bound to some kind of a decent choice";
+						var fo = FirmwareDatabase.FirmwareOptions.FirstOrNull(fo => fo.Hash == hash);
+						lvi.ImageIndex = (int) (fo?.Status ?? FirmwareOptionStatus.Unset); // null here means it's an option for a different record, so use the red '!' like unset
+						lvi.ToolTipText = fo?.IsAcceptableOrIdeal == true
+							? "Good! This file has been bound to some kind of a decent choice"
+							: "Bad! This file has been bound to a choice which is known to be bad (details in right-click > Info)";
 						lvi.SubItems[4].Text = ri.KnownFirmwareFile.Value.Description;
 					}
 
@@ -336,14 +341,14 @@ namespace BizHawk.Client.EmuHawk
 					// if the user specified a file but its missing, mark it as such
 					if (ri.Missing)
 					{
-						lvi.ImageIndex = IdMissing;
+						lvi.ImageIndex = (int) FirmwareOptionStatus.Unset;
 						lvi.ToolTipText = "The file that's specified is missing!";
 					}
 
 					// if the user specified a known firmware file but its for some other firmware, it was probably a mistake. mark it as suspicious
 					if (ri.KnownMismatching)
 					{
-						lvi.ImageIndex = IdUnsure;
+						lvi.ImageIndex = (int) FirmwareOptionStatus.Unknown;
 						lvi.ToolTipText = "You've manually specified a firmware file, and we're sure it's wrong. Hope you know what you're doing.";
 					}
 
@@ -543,26 +548,8 @@ namespace BizHawk.Client.EmuHawk
 				olvi.SubItems.Add(new ListViewItem.ListViewSubItem());
 				olvi.SubItems.Add(new ListViewItem.ListViewSubItem());
 				var ff = FirmwareDatabase.FirmwareFilesByHash[o.Hash];
-				if (o.Status == FirmwareOptionStatus.Ideal)
-				{
-					olvi.ImageIndex = FirmwaresConfigInfo.idIdeal;
-					olvi.ToolTipText = FirmwaresConfigInfo.ttIdeal;
-				}
-				if (o.Status == FirmwareOptionStatus.Acceptable)
-				{
-					olvi.ImageIndex = FirmwaresConfigInfo.idAcceptable;
-					olvi.ToolTipText = FirmwaresConfigInfo.ttAcceptable;
-				}
-				if (o.Status == FirmwareOptionStatus.Unacceptable)
-				{
-					olvi.ImageIndex = FirmwaresConfigInfo.idUnacceptable;
-					olvi.ToolTipText = FirmwaresConfigInfo.ttUnacceptable;
-				}
-				if (o.Status == FirmwareOptionStatus.Bad)
-				{
-					olvi.ImageIndex = FirmwaresConfigInfo.idBad;
-					olvi.ToolTipText = FirmwaresConfigInfo.ttBad;
-				}
+				olvi.ImageIndex = (int) (o.Status is FirmwareOptionStatus.Bad ? FirmwareOptionStatus.Unset : o.Status); // if bad, use unset's red '!' to differentiate from unacceptable
+				olvi.ToolTipText = StatusDescs[o.Status];
 				olvi.SubItems[0].Text = ff.Size.ToString();
 				olvi.SubItems[0].Font = Font; // why doesn't this work?
 				olvi.SubItems[1].Text = $"sha1:{o.Hash}";

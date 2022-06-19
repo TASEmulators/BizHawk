@@ -4,9 +4,28 @@ using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Faust
 {
-	[PortedCore(CoreNames.Faust, "Mednafen Team", "1.27.1", "https://mednafen.github.io/releases/")]
+	[PortedCore(CoreNames.Faust, "Mednafen Team", "1.29.0", "https://mednafen.github.io/releases/")]
 	public class Faust : NymaCore, IRegionable
 	{
+		private Faust(CoreComm comm)
+			: base(comm, null, null, null, null)
+		{
+		}
+
+		private static NymaSettingsInfo _cachedSettingsInfo;
+
+		public static NymaSettingsInfo CachedSettingsInfo(CoreComm comm)
+		{
+			if (_cachedSettingsInfo is null)
+			{
+				using var n = new Faust(comm);
+				n.InitForSettingsInfo("faust.wbx");
+				_cachedSettingsInfo = n.SettingsInfo.Clone();
+			}
+
+			return _cachedSettingsInfo;
+		}
+
 		[CoreConstructor(VSystemID.Raw.SNES)]
 		public Faust(GameInfo game, byte[] rom, CoreComm comm, string extension,
 			NymaSettings settings, NymaSyncSettings syncSettings, bool deterministic)
@@ -17,6 +36,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Faust
 				SettingOverrides.Add("snes_faust.renderer", new() { Hide = true, Default = "0" });
 
 			DoInit<LibNymaCore>(game, rom, null, "faust.wbx", extension, deterministic);
+
+			_cachedSettingsInfo ??= SettingsInfo.Clone();
 		}
 
 		protected override HashSet<string> ComputeHiddenPorts()

@@ -58,7 +58,7 @@ namespace Mednafen
 			case MDFNMKF_SAVBACK: ret += "SAVBACK:"; break;
 			case MDFNMKF_CHEAT: ret += "CHEAT:"; break;
 			case MDFNMKF_PALETTE: ret += "PALETTE:"; break;
-			case MDFNMKF_IPS: ret += "IPS:"; break;
+			case MDFNMKF_PATCH: ret += "PATCH:"; break;
 			case MDFNMKF_MOVIE: ret += "MOVIE:"; break;
 			case MDFNMKF_SNAP_DAT: ret += "SNAP_DAT:"; break;
 			case MDFNMKF_CHEAT_TMP: ret += "CHEAT_TMP:"; break;

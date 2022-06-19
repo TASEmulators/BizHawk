@@ -9,7 +9,7 @@ with SLJIT. Further details can be found in sljitLir.h.
 SLJIT is a platform independent assembler which
   - provides access to common CPU features
   - can be easily ported to wide-spread CPU
-    architectures (e.g. x86, ARM, POWER, MIPS, SPARC)
+    architectures (e.g. x86, ARM, POWER, MIPS, SPARC, s390x)
 
 The key challenge of this project is finding a common
 subset of CPU features which
@@ -46,12 +46,12 @@ instruction.
 For example, the following code snippet
 is a valid instruction sequence:
 
-    sljit_emit_op1(compiler, SLJIT_IMOV,
+    sljit_emit_op1(compiler, SLJIT_MOV32,
         SLJIT_R0, 0, SLJIT_MEM1(SLJIT_R1), 0);
     // An int32_t value is loaded into SLJIT_R0
-    sljit_emit_op1(compiler, SLJIT_INEG,
+    sljit_emit_op1(compiler, SLJIT_NOT32,
         SLJIT_R0, 0, SLJIT_R0, 0);
-    // the int32_t value in SLJIT_R0 is negated
+    // the int32_t value in SLJIT_R0 is bit inverted
     // and the type of the result is still int32_t
 
 The next code snippet is not allowed:
@@ -59,9 +59,9 @@ The next code snippet is not allowed:
     sljit_emit_op1(compiler, SLJIT_MOV,
         SLJIT_R0, 0, SLJIT_MEM1(SLJIT_R1), 0);
     // An intptr_t value is loaded into SLJIT_R0
-    sljit_emit_op1(compiler, SLJIT_INEG,
+    sljit_emit_op1(compiler, SLJIT_NOT32,
         SLJIT_R0, 0, SLJIT_R0, 0);
-    // The result of SLJIT_INEG instruction
+    // The result of SLJIT_NOT instruction
     // is undefined. Even crash is possible
     // (e.g. on MIPS-64).
 
@@ -71,7 +71,7 @@ register regardless its previous value:
     sljit_emit_op1(compiler, SLJIT_MOV,
         SLJIT_R0, 0, SLJIT_MEM1(SLJIT_R1), 0);
     // An intptr_t value is loaded into SLJIT_R0
-    sljit_emit_op1(compiler, SLJIT_IMOV,
+    sljit_emit_op1(compiler, SLJIT_MOV32,
         SLJIT_R0, 0, SLJIT_MEM1(SLJIT_R2), 0);
     // From now on SLJIT_R0 contains an int32_t
     // value. The previous value is discarded.

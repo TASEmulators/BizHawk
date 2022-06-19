@@ -41,7 +41,6 @@ auto CPU::serialize(serializer& s) -> void {
     s(e.addressMaskHi);
     s(e.addressMaskLo);
     s(e.addressSelect);
-    s(e.addressCompare);
   }
   s(tlb.physicalAddress);
 
@@ -52,8 +51,6 @@ auto CPU::serialize(serializer& s) -> void {
 
   s(scc.index.tlbEntry);
   s(scc.index.probeFailure);
-  s(scc.random.index);
-  s(scc.random.unused);
   s(scc.tlb.global);
   s(scc.tlb.valid);
   s(scc.tlb.dirty);
@@ -67,11 +64,9 @@ auto CPU::serialize(serializer& s) -> void {
   s(scc.tlb.addressMaskHi);
   s(scc.tlb.addressMaskLo);
   s(scc.tlb.addressSelect);
-  s(scc.tlb.addressCompare);
   s(scc.context.badVirtualAddress);
   s(scc.context.pageTableEntryBase);
   s(scc.wired.index);
-  s(scc.wired.unused);
   s(scc.badVirtualAddress);
   s(scc.count);
   s(scc.compare);

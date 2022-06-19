@@ -33,6 +33,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			Standard,
 			Mempak,
 			Rumblepak,
+			Transferpak,
+			Mouse,
 		}
 
 		public enum DeinterlacerType : uint
@@ -44,6 +46,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 		[StructLayout(LayoutKind.Sequential)]
 		public new class FrameInfo : LibWaterboxCore.FrameInfo
 		{
+			public long Time;
+
 			public Buttons P1Buttons;
 			public Buttons P2Buttons;
 			public Buttons P3Buttons;
@@ -80,6 +84,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			public int PifLen;
 			public IntPtr RomData;
 			public int RomLen;
+			public IntPtr Gb1RomData;
+			public int Gb1RomLen;
+			public IntPtr Gb2RomData;
+			public int Gb2RomLen;
+			public IntPtr Gb3RomData;
+			public int Gb3RomLen;
+			public IntPtr Gb4RomData;
+			public int Gb4RomLen;
 		}
 
 		[BizImport(CC)]
@@ -87,5 +99,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 
 		[BizImport(CC)]
 		public abstract bool GetRumbleStatus(int num);
+
+		[BizImport(CC)]
+		public abstract void GetDisassembly(uint address, uint instruction, byte[] buf);
+
+		[UnmanagedFunctionPointer(CC)]
+		public delegate void TraceCallback(IntPtr disasm);
+
+		[BizImport(CC)]
+		public abstract void SetTraceCallback(TraceCallback callback);
+
+		[BizImport(CC)]
+		public abstract void GetRegisters(ulong[] buf);
 	}
 }

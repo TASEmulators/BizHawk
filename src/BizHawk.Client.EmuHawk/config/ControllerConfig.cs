@@ -189,7 +189,20 @@ namespace BizHawk.Client.EmuHawk
 			SuspendLayout();
 			LoadPanels(_config);
 
-			AllowUdCheckbox.Checked = _config.AllowUdlr;
+			switch (_config.OpposingDirPolicy)
+			{
+				case OpposingDirPolicy.Priority:
+					rbUDLRPriority.Checked = true;
+					break;
+				case OpposingDirPolicy.Forbid:
+					rbUDLRForbid.Checked = true;
+					break;
+				case OpposingDirPolicy.Allow:
+					rbUDLRAllow.Checked = true;
+					break;
+				default:
+					throw new Exception();
+			}
 			checkBoxAutoTab.Checked = _config.InputConfigAutoTab;
 
 			SetControllerPicture(_emulator.ControllerDefinition.Name);
@@ -370,7 +383,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ButtonOk_Click(object sender, EventArgs e)
 		{
-			_config.AllowUdlr = AllowUdCheckbox.Checked;
+			if (rbUDLRPriority.Checked) _config.OpposingDirPolicy = OpposingDirPolicy.Priority;
+			else if (rbUDLRForbid.Checked) _config.OpposingDirPolicy = OpposingDirPolicy.Forbid;
+			else if (rbUDLRAllow.Checked) _config.OpposingDirPolicy = OpposingDirPolicy.Allow;
 			_config.InputConfigAutoTab = checkBoxAutoTab.Checked;
 
 			Save();

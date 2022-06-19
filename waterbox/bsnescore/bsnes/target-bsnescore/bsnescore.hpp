@@ -34,6 +34,8 @@ struct SnesInitData {
     unsigned right_port;
     bool hotfixes;
     bool fast_ppu;
+    bool fast_dsp;
+    bool fast_coprocessors;
     int region_override;
 };
 

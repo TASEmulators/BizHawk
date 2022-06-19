@@ -104,10 +104,10 @@ enum BizhawkFlags
 	SkipSoundening = 2,
 	// render at LCM * LCM instead of raw
 	RenderConstantSize = 4,
-	// switch to the previous disk, if possible
-	PreviousDisk = 8,
-	// switch to the next disk, if possible
-	NextDisk = 16
+	// open disk tray, if possible
+	OpenTray = 8,
+	// close disk tray, if possible
+	CloseTray = 16
 };
 
 struct MyFrameInfo: public FrameInfo
@@ -118,6 +118,7 @@ struct MyFrameInfo: public FrameInfo
 	// raw data for each input port, assumed to be MAX_PORTS * MAX_PORT_DATA long
 	uint8_t* InputPortData;
 	int64_t FrontendTime;
+	int32_t DiskIndex; // used on close tray
 };
 
 ECL_EXPORT void FrameAdvance(MyFrameInfo& frame)
@@ -127,10 +128,10 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo& frame)
 	EES->skip = !!(frame.BizhawkFlags & BizhawkFlags::SkipRendering);
 
 	{
-		auto prev = !!(frame.BizhawkFlags & BizhawkFlags::PreviousDisk);
-		auto next = !!(frame.BizhawkFlags & BizhawkFlags::NextDisk);
-		if (prev || next)
-			SwitchCds(prev, next);
+		auto open = !!(frame.BizhawkFlags & BizhawkFlags::OpenTray);
+		auto close = !!(frame.BizhawkFlags & BizhawkFlags::CloseTray);
+		if (open || close)
+			SwitchCds(open, close, frame.DiskIndex);
 	}
 
 	if (frame.Command)

@@ -67,7 +67,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		public int Frame { get; private set; }
 
-		public string SystemId { get; }
+		public string SystemId => VSystemID.Raw.SNES;
+
 		public bool DeterministicEmulation => true;
 
 		public void ResetCounters()
@@ -86,6 +87,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 			Api.Dispose();
 			_resampler.Dispose();
+			_currentMsuTrack?.Dispose();
 
 			_disposed = true;
 		}

@@ -21,8 +21,6 @@ namespace BizHawk.Client.Common
 
 		private readonly IGameInfo Game;
 
-		public static readonly BizHawkSystemIdToEnumConverter SystemIdConverter = new BizHawkSystemIdToEnumConverter();
-
 		private readonly IVideoProvider VideoProvider;
 
 		public event BeforeQuickLoadEventHandler BeforeQuickLoad;

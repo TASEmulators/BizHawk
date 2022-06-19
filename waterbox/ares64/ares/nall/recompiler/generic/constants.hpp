@@ -53,8 +53,4 @@
   struct mem : public op_base {
     mem(sreg base, sljit_sw offset) : op_base(SLJIT_MEM1(base.fst), offset) {}
   };
-
-  struct unused : public op_base {
-    unused() : op_base(SLJIT_UNUSED, 0) {}
-  };
 //};

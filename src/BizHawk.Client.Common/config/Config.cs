@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+
+using BizHawk.Bizware.BizwareGL;
 using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
@@ -58,7 +60,7 @@ namespace BizHawk.Client.Common
 		public void ResolveDefaults()
 		{
 			PathEntries.ResolveWithDefaults();
-			HotkeyBindings.ResolveWithDefaults();
+			HotkeyInfo.ResolveWithDefaults(HotkeyBindings);
 			PathEntries.RefreshTempPath();
 		}
 
@@ -98,6 +100,7 @@ namespace BizHawk.Client.Common
 		public RecentFiles RecentRoms { get; set; } = new RecentFiles(10);
 		public bool PauseWhenMenuActivated { get; set; } = true;
 		public bool SaveWindowPosition { get; set; } = true;
+		public bool MainFormStayOnTop { get; set; }
 		public bool StartPaused { get; set; }
 		public bool StartFullscreen { get; set; }
 		public int MainWndx { get; set; } = -1; // Negative numbers will be ignored
@@ -107,7 +110,7 @@ namespace BizHawk.Client.Common
 		public bool AcceptBackgroundInputControllerOnly { get; set; }
 		public bool HandleAlternateKeyboardLayouts { get; set; }
 		public bool SingleInstanceMode { get; set; }
-		public bool AllowUdlr { get; set; }
+		public OpposingDirPolicy OpposingDirPolicy { get; set; }
 		public bool ShowContextMenu { get; set; } = true;
 		public bool HotkeyConfigAutoTab { get; set; } = true;
 		public bool InputConfigAutoTab { get; set; } = true;
@@ -145,7 +148,7 @@ namespace BizHawk.Client.Common
 		public int FlushSaveRamFrames { get; set; }
 
 		/// <remarks>Don't rename this without changing <c>BizHawk.Client.EmuHawk.Program.CurrentDomain_AssemblyResolve</c></remarks>
-		public ELuaEngine LuaEngine { get; set; } = ELuaEngine.LuaPlusLuaInterface;
+		public ELuaEngine LuaEngine { get; set; } = OSTailoredCode.IsUnixHost ? ELuaEngine.NLuaPlusKopiLua : ELuaEngine.LuaPlusLuaInterface;
 
 		public bool TurboSeek { get; set; }
 
@@ -296,7 +299,7 @@ namespace BizHawk.Client.Common
 		public bool PlayMovieIncludeSubDir { get; set; }
 		public bool PlayMovieMatchHash { get; set; } = true;
 
-		public BindingCollection HotkeyBindings { get; set; } = new BindingCollection();
+		public Dictionary<string, string> HotkeyBindings { get; set; } = new();
 
 		// Analog Hotkey values
 		public int AnalogLargeChange { get; set; } = 10;
@@ -347,5 +350,7 @@ namespace BizHawk.Client.Common
 
 		/// <remarks>in seconds</remarks>
 		public int OSDMessageDuration { get; set; } = 2;
+
+		public Queue<string> RecentCores { get; set; } = new();
 	}
 }

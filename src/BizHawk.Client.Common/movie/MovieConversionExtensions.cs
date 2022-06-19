@@ -180,6 +180,7 @@ namespace BizHawk.Client.Common
 		public static void PopulateWithDefaultHeaderValues(
 			this IMovie movie,
 			IEmulator emulator,
+			ISettingsAdapter settable,
 			IGameInfo game,
 			FirmwareManager firmwareManager,
 			string author)
@@ -189,7 +190,6 @@ namespace BizHawk.Client.Common
 			movie.OriginalEmulatorVersion = VersionInfo.GetEmuVersion();
 			movie.SystemID = emulator.SystemId;
 
-			var settable = new SettingsAdapter(emulator);
 			if (settable.HasSyncSettings)
 			{
 				movie.SyncSettingsJson = ConfigService.SaveWithType(settable.GetSyncSettings());
@@ -288,9 +288,7 @@ namespace BizHawk.Client.Common
 				movie.HeaderEntries.Add(HeaderKeys.ClockRate, "0");
 			}
 
-			movie.Core = ((CoreAttribute)Attribute
-				.GetCustomAttribute(emulator.GetType(), typeof(CoreAttribute)))
-				.CoreName;
+			movie.Core = emulator.Attributes().CoreName;
 		}
 
 		internal static string ConvertFileNameToTasMovie(string oldFileName)

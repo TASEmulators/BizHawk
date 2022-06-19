@@ -12,7 +12,6 @@ using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
-using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Emulation.Cores.Nintendo.Sameboy;
 using BizHawk.WinForms.Controls;
@@ -36,11 +35,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private sealed class DebugVSystemMenuItem : ToolStripMenuItemEx
 		{
-			public readonly IReadOnlyCollection<string> ExtraSysIDs;
+			public readonly IReadOnlyCollection<string> SysIDs;
 
-			public DebugVSystemMenuItem(string labelText, IReadOnlyCollection<string>? extraSysIDs = null)
+			public DebugVSystemMenuItem(string labelText, params string[] extraSysIDs)
 			{
-				ExtraSysIDs = extraSysIDs ?? Array.Empty<string>();
+				SysIDs = new[] { labelText }.Concat(extraSysIDs).ToHashSet();
 				Text = labelText;
 			}
 		}
@@ -152,7 +151,7 @@ namespace BizHawk.Client.EmuHawk
 					var ss = ((N64) Emulator!).GetSyncSettings();
 					var glidenSS = ss.GLideN64Plugin;
 					foreach (var pi in props) pi.SetValue(obj: glidenSS, value: RandomElem(propDict[pi], rng));
-					((MainForm) MainForm).PutCoreSyncSettings(ss);
+					((MainForm) MainForm).GetSettingsAdapterForLoadedCore<N64>().PutCoreSyncSettings(ss);
 				}
 				SzButtonEx btnLightFuzz = new() { Size = new(200, 23), Text = "--> randomise some props" };
 				btnLightFuzz.Click += (_, _) => Fuzz(limit: true);
@@ -187,7 +186,7 @@ namespace BizHawk.Client.EmuHawk
 						Text = "Firmware",
 					},
 					new ToolStripSeparatorEx(),
-					new DebugVSystemMenuItem("GB")
+					new DebugVSystemMenuItem(VSystemID.Raw.GB, VSystemID.Raw.GBC)
 					{
 						DropDownItems =
 						{
@@ -199,19 +198,7 @@ namespace BizHawk.Client.EmuHawk
 							},
 						},
 					},
-					new DebugVSystemMenuItem("GBA")
-					{
-						DropDownItems =
-						{
-							new DebugVSystemChildItem(
-								"Reproduce #2805",
-								() => ((MGBAMemoryCallbackSystem) Emulator.AsDebuggable().MemoryCallbacks).Debug2805())
-							{
-								RequiresCore = CoreNames.Mgba,
-							},
-						},
-					},
-					new DebugVSystemMenuItem("N64")
+					new DebugVSystemMenuItem(VSystemID.Raw.N64)
 					{
 						DropDownItems =
 						{
@@ -228,7 +215,7 @@ namespace BizHawk.Client.EmuHawk
 				var coreName = Emulator.Attributes().CoreName;
 				foreach (var item in ((ToolStripMenuItemEx) ddoSender).DropDownItems.OfType<DebugVSystemMenuItem>())
 				{
-					var groupEnabled = item.Text == sysID || item.ExtraSysIDs.Contains(sysID);
+					var groupEnabled = item.SysIDs.Contains(sysID);
 					foreach (var child in item.DropDownItems.Cast<DebugVSystemChildItem>().Where(static child => child.RequiresLoadedRom)) // RequiresLoadedRom == false => leave Enabled as default true
 					{
 						child.Enabled = groupEnabled && (child.RequiresCore is null || child.RequiresCore == coreName);
