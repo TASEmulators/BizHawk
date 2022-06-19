@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		public ControllerDefinition Definition { get; }
 
-		public BsnesControllers(BsnesCore.SnesSyncSettings ss)
+		public BsnesControllers(BsnesCore.SnesSyncSettings ss, bool subframe = false)
 		{
 			_ports = new[]
 			{
@@ -52,8 +52,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			// add buttons that the core itself will handle
 			Definition.BoolButtons.Add("Reset");
 			Definition.BoolButtons.Add("Power");
-			// When set, only emulate until the next input latch (or until the frame ends)
-			Definition.BoolButtons.Add("Subframe");
+			if (subframe)
+			{
+				// When set, only emulate until the next input latch (or until the frame ends)
+				Definition.BoolButtons.Add("Subframe");
+				Definition.AddAxis("Reset Cycle", 0.RangeTo(357366), 0);
+			}
 
 			Definition.MakeImmutable();
 		}

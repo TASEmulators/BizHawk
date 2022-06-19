@@ -15,7 +15,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 	{
 		[CoreConstructor(VSystemID.Raw.SGB)]
 		[CoreConstructor(VSystemID.Raw.SNES)]
-		public BsnesCore(CoreLoadParameters<SnesSettings, SnesSyncSettings> loadParameters)
+		public BsnesCore(CoreLoadParameters<SnesSettings, SnesSyncSettings> loadParameters) : this(loadParameters, false) { }
+		public BsnesCore(CoreLoadParameters<SnesSettings, SnesSyncSettings> loadParameters, bool subframe = false)
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
@@ -61,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 			Api = new BsnesApi(CoreComm.CoreFileProvider.DllPath(), CoreComm, callbacks.AllDelegatesInMemoryOrder());
 
-			_controllers = new BsnesControllers(_syncSettings);
+			_controllers = new BsnesControllers(_syncSettings, subframe);
 
 			generate_palette();
 			BsnesApi.SnesInitData snesInitData = new()
