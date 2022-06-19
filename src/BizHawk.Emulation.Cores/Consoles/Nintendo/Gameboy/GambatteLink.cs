@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				_linkedCores[i] = new Gameboy(lp.Comm, lp.Roms[i].Game, lp.Roms[i].RomData, _settings._linkedSettings[i], _syncSettings._linkedSyncSettings[i], lp.DeterministicEmulationRequested);
 				_linkedCores[i].ConnectInputCallbackSystem(_inputCallbacks);
 				_linkedCores[i].ConnectMemoryCallbackSystem(_memoryCallbacks, i);
-				_linkedConts[i] = new SaveController(Gameboy.CreateControllerDefinition(sgb: false, sub: false, tilt: false, rumble: false, remote: false));
+				_linkedConts[i] = new SaveController(Gameboy.CreateControllerDefinition(sgb: isSGB(i), sub: false, tilt: false));
 				_linkedBlips[i] = new BlipBuffer(1024);
 				_linkedBlips[i].SetRates(2097152 * 2, 44100);
 				_linkedOverflow[i] = 0;
@@ -147,9 +147,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			ControllerDefinition ret = new($"GB Link {_numCores}x Controller");
 			for (int i = 0; i < _numCores; i++)
 			{
-				ret.BoolButtons.AddRange(
-					new[] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start", "Power" }
-						.Select(s => $"P{i + 1} {s}"));
+				if (isSGB(i))
+				{
+					for (int j = 0; j < 4; j++)
+					{
+						ret.BoolButtons.AddRange(
+							new[] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start" }
+								.Select(s => $"P{i + 1} - P{j + 1} {s}"));
+					}
+					ret.BoolButtons.Add($"P{i + 1} Power");
+				}
+				else
+				{
+					ret.BoolButtons.AddRange(
+						new[] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start", "Power" }
+							.Select(s => $"P{i + 1} {s}"));
+				}
 			}
 			ret.BoolButtons.Add("Toggle Link Connection");
 			if (_numCores > 2)
@@ -158,6 +171,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				ret.BoolButtons.Add("Toggle Link Spacing");
 			}
 			return ret.MakeImmutable();
+		}
+
+		private Boolean isSGB(int i)
+		{
+			return _syncSettings._linkedSyncSettings[i].ConsoleMode.ToString().Equals(VSystemID.Raw.SGB);
 		}
 
 		private const int P1 = 0;

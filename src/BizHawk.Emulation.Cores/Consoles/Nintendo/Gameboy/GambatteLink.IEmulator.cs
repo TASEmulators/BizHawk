@@ -23,7 +23,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				{
 					for (int i = 0; i < _numCores; i++)
 					{
-						if (s.Contains($"P{i + 1} "))
+						if (s.Contains($"P{i + 1} -"))
+						{
+							_linkedConts[i].Set(s.Replace($"P{i + 1} - ", ""));
+						}
+						else if (s.Contains($"P{i + 1} "))
 						{
 							_linkedConts[i].Set(s.Replace($"P{i + 1} ", ""));
 						}
