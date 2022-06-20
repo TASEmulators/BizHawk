@@ -128,10 +128,7 @@ namespace BizHawk.Emulation.DiscSystem
 		internal Disc()
 		{}
 
-		public static bool IsValidExtension(string extension) =>
-			extension == ".iso"
-			|| extension == ".cue"
-			|| extension == ".ccd"
-			|| extension == ".mds";
+		public static bool IsValidExtension(string extension)
+			=> extension.ToLowerInvariant() is ".ccd" or ".cue" or ".iso" or ".mds";
 	}
 }
