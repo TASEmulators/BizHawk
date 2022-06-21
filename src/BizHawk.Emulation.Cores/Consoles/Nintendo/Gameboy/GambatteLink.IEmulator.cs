@@ -72,10 +72,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			unsafe
 			{
-				fixed (int* fbuff = &FrameBuffer[0])
+				fixed (int* fbuff = &FrameBuffer[0], svbuff = &SgbVideoBuffer[0])
 				{
 					// use pitch to have both cores write to the same frame buffer, interleaved
 					int Pitch = 160 * _numCores;
+					int sgbPitch = 256 * _numCores;
 
 					fixed (short* sbuff = &SoundBuffer[0])
 					{
@@ -107,6 +108,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 										for (int j = 0; j < 144; j++)
 										{
 											Array.Copy(FrameBuffer, (i * 160) + (j * Pitch), VideoBuffer, (i * 160) + (j * Pitch), 160);
+										}
+										if (isAnySgb)
+										{
+											if (isSgb[i]) // all SGB borders will be displayed when any of them has the option enabled
+											{
+												if (LibGambatte.gambatte_updatescreenborder(_linkedCores[i].GambatteState, svbuff + (i * 256), sgbPitch) != 0)
+												{
+													throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_updatescreenborder)}() returned non-zero (border error???)");
+												}
+											}
+											else
+											{
+												for (int j = 0; j < 144; j++)
+												{
+													Array.Copy(FrameBuffer, (i * 160) + (j * Pitch), SgbVideoBuffer, (i * 256 + 48) + (40 + j) * sgbPitch, 160);
+												}
+											}
 										}
 									}
 
