@@ -111,7 +111,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 										}
 										if (isAnySgb)
 										{
-											if (isSgb[i]) // all SGB borders will be displayed when any of them has the option enabled
+											if (isSgb(i)) // all SGB borders will be displayed when any of them has the option enabled
 											{
 												if (LibGambatte.gambatte_updatescreenborder(_linkedCores[i].GambatteState, svbuff + (i * 256), sgbPitch) != 0)
 												{
