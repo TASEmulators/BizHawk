@@ -155,36 +155,11 @@ To find the dev builds for a specific commit, you can click the green checkmark 
 
 ## Building
 
-### Windows
+See the [contributor guidelines](https://github.com/TASEmulators/BizHawk/blob/master/contributing.md).
 
-Before you can build, you'll need the .NET 6 SDK or later (comes with VS2022, or can be manually installed beside VS2019, see [full instructions](https://docs.microsoft.com/en-gb/dotnet/core/install/windows)).
-
-If you have WSL, Git BASH, or similar, clone the repo with:
-```
-git clone https://github.com/TASEmulators/BizHawk.git BizHawk_master
-# or ssh: git clone git@github.com:TASEmulators/BizHawk.git BizHawk_master
-```
-...then go into the repo's `Dist` folder and run `QuickTestBuildAndPackage_Release.bat`. This is the same process used by AppVeyor.
-(Git is required for this script, but if you proceed to open the solution in VS then you can build without it.)
-
-For anything more complicated than just building, you'll need an IDE like [VS Community 2019](https://visualstudio.microsoft.com/vs/community), currently the best free C# IDE (you may prefer Rider, VS Code, or something else).
-Open the `/BizHawk.sln` solution file in your IDE.
-With VS, start the build by choosing the `BizHawk.Client.EmuHawk` executable in the toolbar (in either the `Debug` or `Release` configuration) and clicking the launch button beside it.
-
-[to top](#bizhawk)
-
-### Unix
-
-Before you can build, you'll need the .NET 6 SDK or later (package name is usually `dotnet-sdk-6.0`, see [full instructions](https://docs.microsoft.com/en-gb/dotnet/core/install/linux)). Once it's installed, run:
-```sh
-git clone https://github.com/TASEmulators/BizHawk.git BizHawk_master && cd BizHawk_master
-# or ssh: git clone git@github.com:TASEmulators/BizHawk.git BizHawk_master && cd BizHawk_master
-Dist/BuildRelease.sh
-```
-
-The assemblies are put in the `/output` dir, so if you have the runtime dependencies (see [*Installing*](#unix)) you can call `/output/EmuHawkMono.sh`.
-
-VS 2019 isn't available on Linux, but Rider and VS Code are. You can always code from the command line...
+tl;dr:
+- On Unix, run `Dist/BuildRelease.sh` (uses .NET SDK CLI). You can also use Rider or VS Code.
+- On Windows, run in [VS2022](https://visualstudio.microsoft.com/vs/community). You can also use the command-line, Rider, or VS Code.
 
 [to top](#bizhawk)
 
