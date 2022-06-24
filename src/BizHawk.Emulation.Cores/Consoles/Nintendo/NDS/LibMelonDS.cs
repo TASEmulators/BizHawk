@@ -38,6 +38,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			public byte TouchY;
 			public byte MicVolume;
 			public byte GBALightSensor;
+			public bool ConsiderAltLag;
 		}
 
 		[Flags]
@@ -112,21 +113,24 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		[BizImport(CC)]
 		public abstract void SetMemoryCallback(int which, MemoryCallback callback);
 
-		// bit 0 -> ARM9 or ARM7
-		// bit 1 -> ARM or THUMB mode
-		public enum CpuTypes : uint
+		[Flags]
+		public enum TraceMask : uint
 		{
-			ARM9,
-			ARM7,
-			ARM9_THUMB,
-			ARM7_THUMB,
+			NONE = 0,
+			ARM7_THUMB = 1,
+			ARM7_ARM = 2,
+			ARM9_THUMB = 4,
+			ARM9_ARM = 8,
 		}
 
 		[UnmanagedFunctionPointer(CC)]
-		public delegate void TraceCallback(CpuTypes _cpu, IntPtr _regs, uint _opcode);
+		public delegate void TraceCallback(TraceMask type, IntPtr regs, IntPtr disasm, uint cyclesOff);
 
 		[BizImport(CC)]
-		public abstract void SetTraceCallback(TraceCallback callback);
+		public abstract void SetTraceCallback(TraceCallback callback, TraceMask mask);
+
+		[BizImport(CC)]
+		public abstract void GetDisassembly(TraceMask type, uint opcode, byte[] ret);
 
 		[BizImport(CC)]
 		public abstract IntPtr GetFrameThreadProc();

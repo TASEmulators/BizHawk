@@ -213,7 +213,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			_resampler = new SpeexResampler(SpeexResampler.Quality.QUALITY_DEFAULT, 32768, 44100, 32768, 44100, null, this);
 			_serviceProvider.Register<ISoundProvider>(_resampler);
 
-			_disassembler = new NDSDisassembler();
+			_disassembler = new(_core);
 			_serviceProvider.Register<IDisassemblable>(_disassembler);
 
 			const string TRACE_HEADER = "ARM9+ARM7: PC, opcode, registers (r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15, Cy, CpuMode)";
@@ -327,7 +327,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
-			_core.SetTraceCallback(Tracer.IsEnabled() ? _tracecb : null);
+			_core.SetTraceCallback(Tracer.IsEnabled() ? _tracecb : null, _settings.GetTraceMask());
 			return new LibMelonDS.FrameInfo
 			{
 				Time = GetRtcTime(!DeterministicEmulation),
@@ -336,6 +336,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				TouchY = (byte)controller.AxisValue("Touch Y"),
 				MicVolume = (byte)controller.AxisValue("Mic Volume"),
 				GBALightSensor = (byte)controller.AxisValue("GBA Light Sensor"),
+				ConsiderAltLag = _settings.ConsiderAltLag,
 			};
 		}
 
