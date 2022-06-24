@@ -56,7 +56,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			{
 				// When set, only emulate until the next input latch (or until the frame ends)
 				Definition.BoolButtons.Add("Subframe");
-				Definition.AddAxis("Reset Cycle", 0.RangeTo(357366), 0);
+				// Amount of instructions to execute before resetting; range hopefully set large enough
+				Definition.AddAxis("Reset Instruction", 0.RangeTo(200000), 0);
 			}
 
 			Definition.MakeImmutable();

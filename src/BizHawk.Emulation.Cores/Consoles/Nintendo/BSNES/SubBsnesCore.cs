@@ -45,16 +45,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			bool resetSignal = controller.IsPressed("Reset");
 			if (resetSignal)
 			{
-				int resetCycle = controller.AxisValue("Reset Cycle");
-				long initialExecutedCycles = CycleCount;
-				while (CycleCount < initialExecutedCycles + resetCycle)
+				int resetInstruction = controller.AxisValue("Reset Instruction");
+				for (int i = 0; i < resetInstruction; i++)
 				{
 					framePassed = _bsnesCore.Api.core.snes_cpu_step();
-					if (framePassed && _bsnesCore.IsLagFrame)
-					{
-						_bsnesCore.LagCount++;
-						break;
-					}
+					if (framePassed) break;
 				}
 				_bsnesCore.Api.core.snes_reset();
 			}
