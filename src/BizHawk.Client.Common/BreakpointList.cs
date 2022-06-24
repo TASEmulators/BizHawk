@@ -11,7 +11,10 @@ namespace BizHawk.Client.Common
 
 		public void Add(IDebuggable core, string scope, uint address, uint mask, MemoryCallbackType type)
 		{
-			Add(new Breakpoint(core, scope, Callback, address, mask, type));
+			if (!Exists(x => x.Address == address))
+			{
+				Add(new Breakpoint(core, scope, Callback, address, mask, type));
+			}
 		}
 
 		public new void Clear()
