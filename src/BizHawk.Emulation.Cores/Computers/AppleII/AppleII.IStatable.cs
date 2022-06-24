@@ -56,6 +56,10 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			_machine.Memory.Sync(ser);
 			ser.EndSection();
 
+			ser.BeginSection("Keyboard");
+			_machine.Memory.Keyboard.Sync(ser);
+			ser.EndSection();
+
 			ser.BeginSection("NoSlotClock");
 			_machine.NoSlotClock.Sync(ser);
 			ser.EndSection();
