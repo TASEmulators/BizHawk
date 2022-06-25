@@ -49,9 +49,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 							},
 							wordSize: 2));
 					}
+					else if (name.Contains("Z80"))
+					{
+						mm.Add(new MemoryDomainIntPtrMonitor(name, endian, area, size, true, 1, _elf));
+					}
 					else
 					{
-						// TODO: are the Z80 domains really Swap16 in the core?  Check this
 						mm.Add(new MemoryDomainIntPtrSwap16Monitor(name, endian, area, size, true, _elf));
 					}
 				}
