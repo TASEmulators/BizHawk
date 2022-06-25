@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			[DisplayName("Trace ARM9 Thumb")]
 			[Description("")]
-			[DefaultValue(false)]
+			[DefaultValue(true)]
 			public bool TraceArm9Thumb { get; set; }
 
 			[DisplayName("Trace ARM9 ARM")]
