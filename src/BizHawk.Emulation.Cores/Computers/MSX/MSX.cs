@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			SyncSettings = lp.SyncSettings ?? new MSXSyncSettings();
 
 			var rom = lp.Roms.FirstOrDefault() ?? throw new Exception("Must have a ROM for MSX!");
-			if (rom.Extension is not "rom")
+			if (rom.Extension.ToLowerInvariant() is not ".rom")
 			{
 				throw new NotSupportedException("Only MSX .rom files are supported!");
 			}
