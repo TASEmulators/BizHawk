@@ -39,6 +39,8 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			ser.Sync("CurrentDisk", ref _currentDisk);
 			ser.Sync("WhiteAppleDown", ref Keyboard.WhiteAppleDown);
 			ser.Sync("BlackAppleDown", ref Keyboard.BlackAppleDown);
+			ser.Sync("ClockTime", ref _clockTime);
+			ser.Sync("ClockRemainder", ref _clockRemainder);
 
 			ser.BeginSection("Events");
 			_machine.Events.Sync(ser);

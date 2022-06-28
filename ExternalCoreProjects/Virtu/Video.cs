@@ -121,7 +121,8 @@ namespace Jellyfish.Virtu
 			ser.Sync(nameof(_vLineLeaveVBlank), ref _vLineLeaveVBlank);
 			ser.Sync(nameof(_charSet), ref _charSet, false);
 			ser.Sync(nameof(_isCellDirty), ref _isCellDirty, false);
-			ser.Sync(nameof(_isMonochrome), ref _isMonochrome);
+			//ser.Sync(nameof(_isMonochrome), ref _isMonochrome);
+			//TODO: does this affect sync?
 		}
 
 		// ReSharper disable once UnusedMember.Global
