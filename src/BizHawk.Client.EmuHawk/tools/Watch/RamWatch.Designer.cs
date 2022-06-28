@@ -591,6 +591,7 @@ namespace BizHawk.Client.EmuHawk
             // 
             // SelectAllMenuItem
             // 
+            this.SelectAllMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys) ((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
             this.SelectAllMenuItem.ShortcutKeyDisplayString = "Ctrl+A";
             this.SelectAllMenuItem.Text = "Select &All";
             this.SelectAllMenuItem.Click += new System.EventHandler(this.SelectAllMenuItem_Click);
