@@ -944,6 +944,18 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void SelectAllAddresses()
+		{
+			if (!SelectedIndices.Any()) 
+			{ 
+				WatchListView.SelectAll();
+			}
+			else 
+			{
+				WatchListView.DeselectAll();
+			}
+		}
+
 		public class RamSearchSettings
 		{
 			public RamSearchSettings()
@@ -1290,6 +1302,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_searches.ClearHistory();
 			UpdateUndoToolBarButtons();
+		}
+
+		private void SelectAllMenuItem_Click(object sender, EventArgs e)
+		{
+			SelectAllAddresses();
 		}
 
 		private void SettingsSubMenu_DropDownOpened(object sender, EventArgs e)
