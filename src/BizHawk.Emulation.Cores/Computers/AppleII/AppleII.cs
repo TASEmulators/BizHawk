@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 			_syncSettings = lp.SyncSettings ?? new SyncSettings();
 			DeterministicEmulation = lp.DeterministicEmulationRequested || !_syncSettings.UseRealTime;
-			InitializeRtc(DeterministicEmulation);
+			InitializeRtc(!DeterministicEmulation);
 		}
 
 		private static readonly ControllerDefinition AppleIIController;
