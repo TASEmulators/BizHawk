@@ -321,6 +321,7 @@ namespace BizHawk.Client.Common
 			[VSystemID.Raw.N64] = CoreNames.Mupen64Plus,
 			[VSystemID.Raw.GB] = CoreNames.Gambatte,
 			[VSystemID.Raw.GBC] = CoreNames.Gambatte,
+			[VSystemID.Raw.SGB] = CoreNames.Gambatte,
 			[VSystemID.Raw.GBL] = CoreNames.GambatteLink,
 			[VSystemID.Raw.PCE] = CoreNames.TurboNyma,
 			[VSystemID.Raw.PCECD] = CoreNames.TurboNyma,
