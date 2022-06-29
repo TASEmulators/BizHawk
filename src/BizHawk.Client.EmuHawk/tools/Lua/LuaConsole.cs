@@ -829,7 +829,7 @@ namespace BizHawk.Client.EmuHawk
 				DuplicateScriptMenuItem.Enabled =
 				MoveUpMenuItem.Enabled =
 				MoveDownMenuItem.Enabled =
-				LuaListView.SelectedRows.Any();
+					LuaListView.AnyRowsSelected;
 
 			SelectAllMenuItem.Enabled = LuaImp.ScriptList.Any();
 			StopAllScriptsMenuItem.Enabled = LuaImp.ScriptList.Any(script => script.Enabled);
@@ -986,7 +986,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DuplicateScriptMenuItem_Click(object sender, EventArgs e)
 		{
-			if (LuaListView.SelectedRows.Any())
+			if (LuaListView.AnyRowsSelected)
 			{
 				var script = SelectedItems.First();
 
@@ -1024,16 +1024,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void InsertSeparatorMenuItem_Click(object sender, EventArgs e)
 		{
-			var indices = LuaListView.SelectedRows.ToList();
-			if (indices.Any() && indices.Last() < LuaImp.ScriptList.Count)
-			{
-				LuaImp.ScriptList.Insert(indices.Last(), LuaFile.SeparatorInstance);
-			}
-			else
-			{
-				LuaImp.ScriptList.Add(LuaFile.SeparatorInstance);
-			}
-
+			LuaImp.ScriptList.Insert(LuaListView.SelectionStartIndex ?? LuaImp.ScriptList.Count, LuaFile.SeparatorInstance);
 			UpdateDialog();
 		}
 
@@ -1090,9 +1081,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void SelectAllMenuItem_Click(object sender, EventArgs e)
-		{
-			LuaListView.SelectAll();
-		}
+			=> LuaListView.ToggleSelectAll();
 
 		private void StopAllScriptsMenuItem_Click(object sender, EventArgs e)
 		{

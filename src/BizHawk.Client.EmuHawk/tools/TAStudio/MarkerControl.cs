@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
@@ -16,6 +15,9 @@ namespace BizHawk.Client.EmuHawk
 		public TasMovieMarkerList Markers => Tastudio.CurrentTasMovie.Markers;
 
 		public IDialogController DialogController => Tastudio.MainForm;
+
+		private TasMovieMarker FirstSelectedMarker
+			=> Markers[MarkerView.FirstSelectedRowIndex];
 
 		public MarkerControl()
 		{
@@ -122,7 +124,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			EditMarkerToolStripMenuItem.Enabled =
 				RemoveMarkerToolStripMenuItem.Enabled =
-				MarkerInputRoll.AnyRowsSelected && MarkerView.SelectedRows.First() != 0;
+					MarkerInputRoll.AnyRowsSelected && MarkerView.FirstSelectedRowIndex is not 0;
 
 			JumpToMarkerToolStripMenuItem.Enabled =
 				ScrollToMarkerToolStripMenuItem.Enabled =
@@ -133,29 +135,19 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (MarkerView.AnyRowsSelected)
 			{
-				Tastudio.SetVisibleFrame(SelectedMarkerFrame());
+				Tastudio.SetVisibleFrame(FirstSelectedMarker.Frame);
 				Tastudio.RefreshDialog();
 			}
 		}
 
 		private void JumpToMarkerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (MarkerView.AnyRowsSelected)
-			{
-				var index = MarkerView.SelectedRows.First();
-				var marker = Markers[index];
-				Tastudio.GoToFrame(marker.Frame);
-			}
+			if (MarkerView.AnyRowsSelected) Tastudio.GoToFrame(FirstSelectedMarker.Frame);
 		}
 
 		private void EditMarkerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (MarkerView.AnyRowsSelected)
-			{
-				var index = MarkerView.SelectedRows.First();
-				var marker = Markers[index];
-				EditMarkerPopUp(marker);
-			}
+			if (MarkerView.AnyRowsSelected) EditMarkerPopUp(FirstSelectedMarker);
 		}
 
 		private void AddMarkerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -170,12 +162,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RemoveMarkerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (MarkerView.AnyRowsSelected)
-			{
-				SelectedMarkers.ForEach(i => Markers.Remove(i));
-				MarkerView.RowCount = Markers.Count;
-				Tastudio.RefreshDialog();
-			}
+			if (!MarkerView.AnyRowsSelected) return;
+			foreach (var i in MarkerView.SelectedRows.Select(index => Markers[index]).ToList()) Markers.Remove(i);
+			MarkerView.RowCount = Markers.Count;
+			Tastudio.RefreshDialog();
 		}
 
 		public void UpdateMarkerCount()
@@ -283,41 +273,18 @@ namespace BizHawk.Client.EmuHawk
 		{
 			EditMarkerButton.Enabled =
 				RemoveMarkerButton.Enabled =
-				MarkerInputRoll.AnyRowsSelected && MarkerView.SelectedRows.First() != 0;
+					MarkerInputRoll.AnyRowsSelected && MarkerView.FirstSelectedRowIndex is not 0;
 
 			JumpToMarkerButton.Enabled =
 				ScrollToMarkerButton.Enabled =
 				MarkerInputRoll.AnyRowsSelected;
 		}
 
-		private List<TasMovieMarker> SelectedMarkers => MarkerView
-			.SelectedRows
-			.Select(index => Markers[index])
-			.ToList();
-		
-
 		// SuuperW: Marker renaming can be done with a right-click.
 		// A much more useful feature would be to easily jump to it.
 		private void MarkerView_MouseDoubleClick(object sender, EventArgs e)
 		{
-			if (MarkerView.AnyRowsSelected)
-			{
-				var index = MarkerView.SelectedRows.First();
-				var marker = Markers[index];
-				Tastudio.GoToFrame(marker.Frame);
-			}
-		}
-
-		public int SelectedMarkerFrame()
-		{
-			if (MarkerView.AnyRowsSelected)
-			{
-				var index = MarkerView.SelectedRows.First();
-				var marker = Markers[index];
-				return marker.Frame;
-			}
-
-			return -1;
+			if (MarkerView.AnyRowsSelected) Tastudio.GoToFrame(FirstSelectedMarker.Frame);
 		}
 	}
 }

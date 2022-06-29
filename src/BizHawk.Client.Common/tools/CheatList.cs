@@ -46,6 +46,9 @@ namespace BizHawk.Client.Common
 
 		public int ActiveCount => _cheatList.Count(c => c.Enabled);
 
+		public bool AnyActive
+			=> _cheatList.Any(static c => c.Enabled);
+
 		public bool Changes
 		{
 			get => _changes;

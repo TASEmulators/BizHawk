@@ -170,9 +170,8 @@ namespace BizHawk.Client.EmuHawk
 			MainForm.UpdateStatusSlots();
 		}
 
-		public TasBranch SelectedBranch => BranchView.AnyRowsSelected
-			? Branches[BranchView.SelectedRows.First()]
-			: null;
+		public TasBranch SelectedBranch
+			=> BranchView.AnyRowsSelected ? Branches[BranchView.FirstSelectedRowIndex] : null;
 
 		private TasBranch CreateBranch()
 		{
@@ -214,8 +213,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (SelectedBranch != null)
 			{
-				int index = BranchView.SelectedRows.First();
-				Branches.Current = index;
+				Branches.Current = BranchView.FirstSelectedRowIndex;
 				LoadBranch(SelectedBranch);
 				BranchView.Refresh();
 				Tastudio.MainForm.AddOnScreenMessage($"Loaded branch {Branches.Current + 1}");
@@ -267,7 +265,7 @@ namespace BizHawk.Client.EmuHawk
 			if (BranchView.AnyRowsSelected)
 			{
 				LoadSelectedBranch();
-				LoadedCallback?.Invoke(BranchView.SelectedRows.First());
+				LoadedCallback?.Invoke(BranchView.FirstSelectedRowIndex);
 			}
 		}
 
@@ -278,7 +276,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			Branches.Current = BranchView.SelectedRows.First();
+			Branches.Current = BranchView.FirstSelectedRowIndex;
 
 			_backupBranch = SelectedBranch.Clone();
 			UndoBranchToolStripMenuItem.Enabled = UndoBranchButton.Enabled = true;
@@ -300,7 +298,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			int index = BranchView.SelectedRows.First();
+			var index = BranchView.FirstSelectedRowIndex;
 			string oldText = SelectedBranch.UserText;
 
 			if (EditBranchTextPopUp(index))
@@ -318,14 +316,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void JumpToBranchToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!BranchView.AnyRowsSelected)
-			{
-				return;
-			}
-
-			int index = BranchView.SelectedRows.First();
-			var branch = Branches[index];
-			Tastudio.GoToFrame(branch.Frame);
+			if (BranchView.AnyRowsSelected) Tastudio.GoToFrame(Branches[BranchView.FirstSelectedRowIndex].Frame);
 		}
 
 		private void RemoveBranchToolStripMenuItem_Click(object sender, EventArgs e)
@@ -491,7 +482,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			int sel = BranchView.SelectedRows.First();
+			var sel = BranchView.FirstSelectedRowIndex;
 			if (next)
 			{
 				if (Branches[sel + 1] != null)

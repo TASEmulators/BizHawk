@@ -384,10 +384,11 @@ namespace BizHawk.Client.EmuHawk
 				MoveUpMenuItem.Enabled =
 				MoveDownMenuItem.Enabled =
 				ToggleMenuItem.Enabled =
-				SelectedIndices.Any();
+					CheatListView.AnyRowsSelected;
 
-			// Always leave enabled even if no cheats enabled. This way the hotkey will always work however a new cheat is enabled
-			// DisableAllCheatsMenuItem.Enabled = MainForm.CheatList.ActiveCount > 0;
+#if false // Always leave enabled even if no cheats enabled. This way the hotkey will always work, even if a new cheat is enabled without also refreshing the menu
+			DisableAllCheatsMenuItem.Enabled = MainForm.CheatList.AnyActive;
+#endif
 
 			GameGenieSeparator.Visible =
 				OpenGameGenieEncoderDecoderMenuItem.Visible =
@@ -411,15 +412,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void InsertSeparatorMenuItem_Click(object sender, EventArgs e)
 		{
-			if (SelectedIndices.Any())
-			{
-				MainForm.CheatList.Insert(SelectedIndices.Max(), Cheat.Separator);
-			}
-			else
-			{
-				MainForm.CheatList.Add(Cheat.Separator);
-			}
-			
+			MainForm.CheatList.Insert(CheatListView.SelectionStartIndex ?? MainForm.CheatList.Count, Cheat.Separator);
 			GeneralUpdate();
 			UpdateMessageLabel();
 		}
@@ -480,9 +473,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void SelectAllMenuItem_Click(object sender, EventArgs e)
-		{
-			CheatListView.SelectAll();
-		}
+			=> CheatListView.ToggleSelectAll();
 
 		private void ToggleMenuItem_Click(object sender, EventArgs e)
 		{
@@ -606,7 +597,7 @@ namespace BizHawk.Client.EmuHawk
 				RemoveContextMenuItem.Enabled =
 				SelectedCheats.Any();
 
-			DisableAllContextMenuItem.Enabled = MainForm.CheatList.ActiveCount > 0;
+			DisableAllContextMenuItem.Enabled = MainForm.CheatList.AnyActive;
 		}
 
 		private void ViewInHexEditorContextMenuItem_Click(object sender, EventArgs e)

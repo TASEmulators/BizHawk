@@ -586,6 +586,12 @@ namespace BizHawk.Client.EmuHawk
 			Refresh();
 		}
 
+		public void ToggleSelectAll()
+		{
+			if (SelectedRows.Count() == RowCount) DeselectAll();
+			else SelectAll();
+		}
+
 		public void TruncateSelection(int index)
 		{
 			_selectedItems.RemoveWhere(cell => cell.RowIndex > index);
@@ -596,17 +602,17 @@ namespace BizHawk.Client.EmuHawk
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool IsPointingAtColumnHeader => IsHoveringOnColumnCell;
 
+		/// <returns>the <see cref="Cell.RowIndex"/> of the selected row with the earliest index, or <see langword="null"/> if no rows are selected</returns>
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public int? FirstSelectedIndex => AnyRowsSelected
-			? SelectedRows.Min()
-			: (int?)null;
+		public int? SelectionStartIndex
+			=> AnyRowsSelected ? SelectedRowsWithDuplicates.Min() : null;
 
+		/// <returns>the <see cref="Cell.RowIndex"/> of the selected row with the latest index, or <see langword="null"/> if no rows are selected</returns>
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public int? LastSelectedIndex => AnyRowsSelected
-			? SelectedRows.Max()
-			: (int?)null;
+		public int? SelectionEndIndex
+			=> AnyRowsSelected ? SelectedRowsWithDuplicates.Max() : null;
 
 		/// <summary>
 		/// Gets or sets the current Cell that the mouse was in.
@@ -919,13 +925,26 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[Browsable(false)]
-		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public IEnumerable<int> SelectedRows => _selectedItems
-			.Where(cell => cell.RowIndex.HasValue)
-			.Select(cell => cell.RowIndex.Value)
-			.Distinct();
+		private IEnumerable<int> SelectedRowsWithDuplicates
+			=> _selectedItems.Where(static cell => cell.RowIndex is not null).Select(static cell => cell.RowIndex.Value);
 
-		public bool AnyRowsSelected => _selectedItems.Any(cell => cell.RowIndex.HasValue);
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public IEnumerable<int> SelectedRows
+			=> SelectedRowsWithDuplicates.Distinct();
+
+		[Browsable(false)]
+		public bool AnyRowsSelected
+			=> _selectedItems.Any(static cell => cell.RowIndex is not null);
+
+		/// <returns>the <see cref="Cell.RowIndex"/> of the first row in the selection list (throws if no rows are selected)</returns>
+		/// <remarks>you probably want <see cref="SelectionStartIndex"/>, TODO check existing callsites</remarks>
+		[Browsable(false)]
+		public int FirstSelectedRowIndex
+			=> SelectedRowsWithDuplicates.First();
+
+		public bool IsRowSelected(int rowIndex)
+			=> _selectedItems.Any(cell => cell.RowIndex == rowIndex);
 
 		public IEnumerable<ToolStripItem> GenerateContextMenuItems()
 		{
@@ -1356,7 +1375,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (ChangeSelectionWhenPaging)
 					{
-						var selectedRow = SelectedRows.Any() ? SelectedRows.First() : FirstVisibleRow;
+						var selectedRow = AnyRowsSelected ? FirstSelectedRowIndex : FirstVisibleRow;
 						var increment = LastVisibleRow - FirstVisibleRow;
 						var newSelectedRow = selectedRow - increment;
 						if (newSelectedRow < 0)
@@ -1378,7 +1397,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (ChangeSelectionWhenPaging)
 					{
-						var selectedRow = SelectedRows.Any() ? SelectedRows.First() : FirstVisibleRow;
+						var selectedRow = AnyRowsSelected ? FirstSelectedRowIndex : FirstVisibleRow;
 						var increment = LastVisibleRow - FirstVisibleRow;
 						var newSelectedRow = selectedRow + increment;
 						if (newSelectedRow > RowCount - 1)
@@ -1412,9 +1431,9 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (e.IsPressed(Keys.Up))
 				{
-					if (SelectedRows.Any())
+					if (AnyRowsSelected)
 					{
-						var selectedRow = SelectedRows.First();
+						var selectedRow = FirstSelectedRowIndex;
 						if (selectedRow > 0)
 						{
 							var targetSelectedRow = selectedRow - 1;
@@ -1427,9 +1446,9 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (e.IsPressed(Keys.Down))
 				{
-					if (SelectedRows.Any())
+					if (AnyRowsSelected)
 					{
-						var selectedRow = SelectedRows.First();
+						var selectedRow = FirstSelectedRowIndex;
 						if (selectedRow < RowCount - 1)
 						{
 							var targetSelectedRow = selectedRow + 1;
@@ -1482,7 +1501,7 @@ namespace BizHawk.Client.EmuHawk
 				// Selection cursor
 				else if (e.IsCtrl(Keys.Up))
 				{
-					if (SelectedRows.Any() && LetKeysModifySelection && SelectedRows.First() > 0)
+					if (AnyRowsSelected && LetKeysModifySelection && FirstSelectedRowIndex > 0)
 					{
 						foreach (var row in SelectedRows.ToList()) // clones SelectedRows
 						{
@@ -1493,7 +1512,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (e.IsCtrl(Keys.Down))
 				{
-					if (SelectedRows.Any() && LetKeysModifySelection)
+					if (AnyRowsSelected && LetKeysModifySelection)
 					{
 						foreach (var row in SelectedRows.Reverse()) // clones SelectedRows
 						{
@@ -1504,30 +1523,30 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (e.IsCtrl(Keys.Left))
 				{
-					if (SelectedRows.Any() && LetKeysModifySelection)
+					if (AnyRowsSelected && LetKeysModifySelection)
 					{
 						SelectRow(SelectedRows.Last(), false);
 					}
 				}
 				else if (e.IsCtrl(Keys.Right))
 				{
-					if (SelectedRows.Any() && LetKeysModifySelection && SelectedRows.Last() < _rowCount - 1)
+					if (AnyRowsSelected && LetKeysModifySelection && SelectedRows.Last() < _rowCount - 1)
 					{
 						SelectRow(SelectedRows.Last() + 1, true);
 					}
 				}
 				else if (e.IsCtrlShift(Keys.Left))
 				{
-					if (SelectedRows.Any() && LetKeysModifySelection && SelectedRows.First() > 0)
+					if (AnyRowsSelected && LetKeysModifySelection && FirstSelectedRowIndex > 0)
 					{
-						SelectRow(SelectedRows.First() - 1, true);
+						SelectRow(FirstSelectedRowIndex - 1, true);
 					}
 				}
 				else if (e.IsCtrlShift(Keys.Right))
 				{
-					if (SelectedRows.Any() && LetKeysModifySelection)
+					if (AnyRowsSelected && LetKeysModifySelection)
 					{
-						SelectRow(SelectedRows.First(), false);
+						SelectRow(FirstSelectedRowIndex, false);
 					}
 				}
 				else if (e.IsCtrl(Keys.PageUp))

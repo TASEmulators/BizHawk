@@ -1991,7 +1991,7 @@ namespace BizHawk.Client.EmuHawk
 				(_highlightedAddress.HasValue || _secondaryHighlightedAddresses.Any()) &&
 				_domain.Writable;
 
-			UnfreezeAllContextItem.Visible = MainForm.CheatList.ActiveCount > 0;
+			UnfreezeAllContextItem.Visible = MainForm.CheatList.AnyActive;
 			PasteContextItem.Visible = _domain.Writable && data != null && data.GetDataPresent(DataFormats.Text);
 
 			ContextSeparator1.Visible =

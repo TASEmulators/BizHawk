@@ -421,8 +421,7 @@ namespace BizHawk.Client.EmuHawk
 
 			PokeAddressToolBarItem.Enabled =
 				FreezeAddressToolBarItem.Enabled =
-				SelectedIndices.Any()
-				&& _searches.Domain.Writable;
+					WatchListView.AnyRowsSelected && _searches.Domain.Writable;
 		}
 
 		private long? CompareToValue
@@ -545,6 +544,9 @@ namespace BizHawk.Client.EmuHawk
 		private IEnumerable<Watch> SelectedItems => SelectedIndices.Select(index => _searches[index]);
 
 		private IEnumerable<Watch> SelectedWatches => SelectedItems.Where(x => !x.IsSeparator);
+
+		private bool MayPokeAllSelected
+			=> WatchListView.AnyRowsSelected && SelectedWatches.All(static w => w.Domain.Writable);
 
 		private void SetRemovedMessage(int val)
 		{
@@ -876,16 +878,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PokeAddress()
 		{
-			if (SelectedIndices.Any())
-			{
-				var poke = new RamPoke(DialogController, SelectedIndices.Select(t => _searches[t]), MainForm.CheatList)
-				{
-					InitialLocation = this.ChildPointToScreen(WatchListView)
-				};
-
-				this.ShowDialogWithTempMute(poke);
-				UpdateList();
-			}
+			if (!WatchListView.AnyRowsSelected) return;
+			using RamPoke poke = new(DialogController, SelectedItems, MainForm.CheatList) { InitialLocation = this.ChildPointToScreen(WatchListView) };
+			this.ShowDialogWithTempMute(poke);
+			UpdateList();
 		}
 
 		private void RemoveRamWatchesFromList()
@@ -942,12 +938,6 @@ namespace BizHawk.Client.EmuHawk
 					// Re-show dialog if the address isn't valid
 				}
 			}
-		}
-
-		private void SelectAllAddresses()
-		{
-			if (SelectedIndices.Count() == WatchListView.RowCount) WatchListView.DeselectAll();
-			else WatchListView.SelectAll();
 		}
 
 		public class RamSearchSettings
@@ -1196,12 +1186,11 @@ namespace BizHawk.Client.EmuHawk
 
 			RemoveMenuItem.Enabled =
 				AddToRamWatchMenuItem.Enabled =
-				SelectedIndices.Any();
+					WatchListView.AnyRowsSelected;
 
 			PokeAddressMenuItem.Enabled =
 				FreezeAddressMenuItem.Enabled =
-				SelectedIndices.Any() &&
-				SelectedWatches.All(w => w.Domain.Writable);
+					MayPokeAllSelected;
 
 			UndoMenuItem.Enabled =
 				ClearUndoMenuItem.Enabled =
@@ -1299,9 +1288,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void SelectAllMenuItem_Click(object sender, EventArgs e)
-		{
-			SelectAllAddresses();
-		}
+			=> WatchListView.ToggleSelectAll();
 
 		private void SettingsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -1379,27 +1366,17 @@ namespace BizHawk.Client.EmuHawk
 				FreezeContextMenuItem.Visible =
 				ContextMenuSeparator2.Visible =
 				ViewInHexEditorContextMenuItem.Visible =
-				SelectedIndices.Any();
+					WatchListView.AnyRowsSelected;
 
 			PokeContextMenuItem.Enabled =
 				FreezeContextMenuItem.Visible =
-				SelectedIndices.Any() &&
-				SelectedWatches.All(w => w.Domain.Writable);
+					MayPokeAllSelected;
 
-			UnfreezeAllContextMenuItem.Visible = MainForm.CheatList.ActiveCount > 0;
+			UnfreezeAllContextMenuItem.Visible = MainForm.CheatList.AnyActive;
 
-			ContextMenuSeparator3.Visible = SelectedIndices.Any() || (MainForm.CheatList.ActiveCount > 0);
+			ContextMenuSeparator3.Visible = WatchListView.AnyRowsSelected || MainForm.CheatList.AnyActive;
 
-			var allCheats = true;
-			foreach (var index in SelectedIndices)
-			{
-				if (!MainForm.CheatList.IsActive(_settings.Domain, _searches[index].Address))
-				{
-					allCheats = false;
-				}
-			}
-
-			if (allCheats)
+			if (SelectedItems.All(watch => MainForm.CheatList.IsActive(_settings.Domain, watch.Address)))
 			{
 				FreezeContextMenuItem.Text = "&Unfreeze Address";
 				FreezeContextMenuItem.Image = Resources.Unfreeze;
@@ -1658,12 +1635,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RemoveToolBarItem.Enabled =
 				AddToRamWatchToolBarItem.Enabled =
-				SelectedIndices.Any();
+					WatchListView.AnyRowsSelected;
 
 			PokeAddressToolBarItem.Enabled =
 				FreezeAddressToolBarItem.Enabled =
-				SelectedIndices.Any()
-				&& _searches.Domain.Writable;
+					WatchListView.AnyRowsSelected && _searches.Domain.Writable;
 		}
 
 		private void WatchListView_Enter(object sender, EventArgs e)
@@ -1688,7 +1664,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void WatchListView_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
-			if (SelectedIndices.Any())
+			if (WatchListView.AnyRowsSelected)
 			{
 				AddToRamWatch();
 			}
