@@ -946,7 +946,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SelectAllAddresses()
 		{
-			if (!SelectedIndices.Any()) 
+			
+			if (!SelectedIndices.Any() || (SelectedIndices.Any() && SelectedIndices.Count() < WatchListView.RowCount))
 			{ 
 				WatchListView.SelectAll();
 			}
