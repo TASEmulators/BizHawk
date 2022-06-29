@@ -50,6 +50,12 @@ git pull --set-upstream-to=upstream/master master
 
 Before touching the code, pull `master` and create a new branch off it with a descriptive name.
 
+After touching the code, commit your changes and push to your fork. You can then submit a pull request at any time on GitHub.  
+Your commit message summary [should be](https://www.git-scm.com/book/en/v2/Distributed-Git-Contributing-to-a-Project#_commit_guidelines) written in the *imperative* tense (imagine "This commit will" comes before it). GitHub wraps at 70 chars.  
+The description should include any non-obvious effects the changes will have. If you feel you need to explain what the code does, consider using code comments instead. It's okay to leave the description blank for simple commits.  
+You can use limited Markdown in the summary and description, including monospace, commit/Issue links, and, in the description, bullet points.
+In the description, link to related commits and Issues with a short-hash (`abc123def`) or ID (`#1234`), respectively. If your commit fixes an Issue, put it in the summary and use a [closing keyword](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/using-keywords-in-issues-and-pull-requests#linking-a-pull-request-to-an-issue).
+
 It's probably a good idea to get the .NET SDK, even if you're not working on a .NET project, so that you can test your changes in EmuHawk.
 
 
