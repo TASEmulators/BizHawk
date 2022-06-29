@@ -946,15 +946,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SelectAllAddresses()
 		{
-			
-			if (!SelectedIndices.Any() || (SelectedIndices.Any() && SelectedIndices.Count() < WatchListView.RowCount))
-			{ 
-				WatchListView.SelectAll();
-			}
-			else 
-			{
-				WatchListView.DeselectAll();
-			}
+			if (SelectedIndices.Count() == WatchListView.RowCount) WatchListView.DeselectAll();
+			else WatchListView.SelectAll();
 		}
 
 		public class RamSearchSettings
