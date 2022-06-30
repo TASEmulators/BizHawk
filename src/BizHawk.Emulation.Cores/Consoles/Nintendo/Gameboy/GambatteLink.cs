@@ -155,7 +155,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					{
 						ret.BoolButtons.AddRange(
 							new[] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start" }
-								.Select(s => $"P{i + 1} - P{j + 1} {s}"));
+								.Select(s => $"P{i + 1} - C{j + 1} {s}"));
 					}
 					ret.BoolButtons.Add($"P{i + 1} Power");
 				}
