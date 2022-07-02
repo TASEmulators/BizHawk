@@ -40,7 +40,7 @@ BizHawk's source is hosted with Git.
 	- Your IDE probably has Git support, or you could install the Git CLI, or a GUI such as [GitHub Desktop](https://desktop.github.com) or [GitKraken](https://gitkraken.com).
 	- You can also use Git from within WSL2.
 
-To download the repo, first make sure you have a fork on GitHub ([click here](https://github.com/TASEmulators/BizHawk/fork) and check "Owner" dropdown if you're not sure).
+To download the repo, first make sure you have a fork on GitHub (check the dropdown beside the "Fork" button at the top of the page).
 Then clone your fork with Git.
 You should add the main repo as an extra remote (upstream) to stay up-to-date. With the CLI that would look like:
 ```sh
