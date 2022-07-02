@@ -67,7 +67,7 @@ static u32 rgb_cb(GB_gameboy_t *gb, u8 r, u8 g, u8 b)
     return (0xFF << 24) | (r << 16) | (g << 8) | b;
 }
 
-static void vblank_cb(GB_gameboy_t *gb)
+static void vblank_cb(GB_gameboy_t *gb, GB_vblank_type_t type)
 {
 	((biz_t*)gb)->vblank_occured = true;
 }
