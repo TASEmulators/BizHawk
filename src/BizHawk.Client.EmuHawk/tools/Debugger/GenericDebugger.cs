@@ -293,7 +293,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ToPCBtn_Click(object sender, EventArgs e)
 		{
+			UpdatePC();
 			UpdateDisassembler();
+			DisassemblerView.Refresh();
 		}
 
 		private void RefreshMenuItem_Click(object sender, EventArgs e)
