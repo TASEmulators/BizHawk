@@ -624,6 +624,8 @@ namespace BizHawk.Client.Common
 				["Right Stick, Pinky"] = 'p',
 				["Analog"] = 'M',
 				["Offscreen Shot"] = 'o',
+				["Open Tray"] = 'o',
+				["Close Tray"] = 'c',
 			},
 		};
 
@@ -643,7 +645,8 @@ namespace BizHawk.Client.Common
 			["LStick Y"] = "lsY",
 			["RStick X"] = "rsX",
 			["RStick Y"] = "rsY",
-			["Disc Select"] = "Disc"
+			["Disc Select"] = "Disc",
+			["Disk Index"] = "Disk",
 		};
 
 		private static readonly Dictionary<string, Dictionary<string, string>> AxisSystemOverrides = new Dictionary<string, Dictionary<string, string>>

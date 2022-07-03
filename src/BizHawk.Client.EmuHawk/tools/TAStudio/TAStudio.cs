@@ -377,11 +377,12 @@ namespace BizHawk.Client.EmuHawk
 					c.Name == "Power"
 					|| c.Name == "Reset"
 					|| c.Name == "Light Sensor"
-					|| c.Name == "Open"
-					|| c.Name == "Close"
 					|| c.Name == "Disc Select"
+					|| c.Name == "Disk Index"
 					|| c.Name.StartsWith("Tilt")
 					|| c.Name.StartsWith("Key ")
+					|| c.Name.StartsWith("Open")
+					|| c.Name.StartsWith("Close")
 					|| c.Name.EndsWith("Tape")
 					|| c.Name.EndsWith("Disk")
 					|| c.Name.EndsWith("Block")
