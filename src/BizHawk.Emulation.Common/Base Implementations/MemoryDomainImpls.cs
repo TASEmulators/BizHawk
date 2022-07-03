@@ -293,6 +293,7 @@ namespace BizHawk.Emulation.Common
 			Writable = writable;
 			WordSize = wordSize;
 			_monitor = monitor;
+			Monitor = _monitor;
 		}
 	}
 
@@ -382,6 +383,7 @@ namespace BizHawk.Emulation.Common
 			Writable = writable;
 			WordSize = 2;
 			_monitor = monitor;
+			Monitor = _monitor;
 		}
 	}
 
