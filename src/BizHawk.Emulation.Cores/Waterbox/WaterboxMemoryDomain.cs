@@ -51,6 +51,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				_addressMangler = 0;
 			}
 			Definition = m;
+			Monitor = _monitor;
 		}
 	}
 

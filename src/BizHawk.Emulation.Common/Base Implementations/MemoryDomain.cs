@@ -27,6 +27,12 @@ namespace BizHawk.Emulation.Common
 
 		public bool Writable { get; protected set; }
 
+		/// <summary>
+		/// only use this if you are expecting to do a lot of peeks/pokes
+		/// MAY BE NULL
+		/// </summary>
+		public IMonitor Monitor { get; protected set; }
+
 		public abstract byte PeekByte(long addr);
 
 		public abstract void PokeByte(long addr, byte val);

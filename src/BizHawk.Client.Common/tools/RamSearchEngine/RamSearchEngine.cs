@@ -198,10 +198,18 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		{
 			if (_settings.IsDetailed())
 			{
-				foreach (IMiniWatchDetails watch in _watchList)
+				try
 				{
-					watch.Update(_settings.PreviousType, _settings.Domain, _settings.BigEndian);
+					_settings.Domain.Monitor?.Enter();
+					foreach (IMiniWatchDetails watch in _watchList)
+					{
+						watch.Update(_settings.PreviousType, _settings.Domain, _settings.BigEndian);
+					}
 				}
+				finally
+				{
+					_settings.Domain.Monitor?.Exit();
+				}	
 			}
 		}
 
