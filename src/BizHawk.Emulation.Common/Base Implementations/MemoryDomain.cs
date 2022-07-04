@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Common
 	/// as required by the IMemoryDomains service.
 	/// </summary>
 	/// <seealso cref="IMemoryDomains" />
-	public abstract class MemoryDomain
+	public abstract class MemoryDomain : IMonitor
 	{
 		public enum Endian
 		{
@@ -26,12 +26,6 @@ namespace BizHawk.Emulation.Common
 		public Endian EndianType { get; protected set; }
 
 		public bool Writable { get; protected set; }
-
-		/// <summary>
-		/// only use this if you are expecting to do a lot of peeks/pokes
-		/// MAY BE NULL
-		/// </summary>
-		public IMonitor Monitor { get; protected set; }
 
 		public abstract byte PeekByte(long addr);
 
@@ -121,9 +115,12 @@ namespace BizHawk.Emulation.Common
 				throw new InvalidOperationException("Invalid length of values array");
 			}
 
-			for (var i = addresses.Start; i <= addresses.EndInclusive; i++)
+			using (this.EnterExit())
 			{
-				values[i - addresses.Start] = PeekByte(i);
+				for (var i = addresses.Start; i <= addresses.EndInclusive; i++)
+				{
+					values[i - addresses.Start] = PeekByte(i);
+				}
 			}
 		}
 
@@ -145,8 +142,11 @@ namespace BizHawk.Emulation.Common
 				throw new InvalidOperationException("Invalid length of values array");
 			}
 
-			for (var i = 0; i < values.Length; i++, start += 2)
-				values[i] = PeekUshort(start, bigEndian);
+			using (this.EnterExit())
+			{
+				for (var i = 0; i < values.Length; i++, start += 2)
+					values[i] = PeekUshort(start, bigEndian);
+			}
 		}
 
 		public virtual void BulkPeekUint(Range<long> addresses, bool bigEndian, uint[] values)
@@ -167,10 +167,25 @@ namespace BizHawk.Emulation.Common
 				throw new InvalidOperationException("Invalid length of values array");
 			}
 
-			for (var i = 0; i < values.Length; i++, start += 4)
-				values[i] = PeekUint(start, bigEndian);
+			using (this.EnterExit())
+			{
+				for (var i = 0; i < values.Length; i++, start += 4)
+					values[i] = PeekUint(start, bigEndian);
+			}
 		}
 
 		public virtual void SendCheatToCore(int addr, byte value, int compare, int compare_type) { }
+
+		/// <summary>
+		/// only use this if you are expecting to do a lot of peeks/pokes
+		/// no-op if the domain has no monitor
+		/// </summary>
+		public virtual void Enter() { }
+
+		/// <summary>
+		/// only use this if you are expecting to do a lot of peeks/pokes
+		/// no-op if the domain has no monitor
+		/// </summary>
+		public virtual void Exit() { }
 	}
 }

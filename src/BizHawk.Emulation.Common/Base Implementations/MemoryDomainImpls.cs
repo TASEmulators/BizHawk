@@ -251,9 +251,14 @@ namespace BizHawk.Emulation.Common
 		{
 			if ((ulong)addr < (ulong)Size)
 			{
-				using (_monitor.EnterExit())
+				try
 				{
+					_monitor.Enter();
 					return ((byte*)Data)[addr];
+				}
+				finally
+				{
+					_monitor.Exit();
 				}
 			}
 
@@ -266,9 +271,14 @@ namespace BizHawk.Emulation.Common
 			{
 				if ((ulong)addr < (ulong)Size)
 				{
-					using (_monitor.EnterExit())
+					try
 					{
+						_monitor.Enter();
 						((byte*)Data)[addr] = val;
+					}
+					finally
+					{
+						_monitor.Exit();
 					}
 				}
 				else
@@ -293,8 +303,13 @@ namespace BizHawk.Emulation.Common
 			Writable = writable;
 			WordSize = wordSize;
 			_monitor = monitor;
-			Monitor = _monitor;
 		}
+
+		public override void Enter()
+			=> _monitor.Enter();
+
+		public override void Exit()
+			=> _monitor.Exit();
 	}
 
 	public unsafe class MemoryDomainIntPtrSwap16 : MemoryDomain
@@ -346,9 +361,14 @@ namespace BizHawk.Emulation.Common
 		{
 			if ((ulong)addr < (ulong)Size)
 			{
-				using (_monitor.EnterExit())
+				try
 				{
+					_monitor.Enter();
 					return ((byte*)Data)[addr ^ 1];
+				}
+				finally
+				{
+					_monitor.Exit();
 				}
 			}
 
@@ -361,9 +381,14 @@ namespace BizHawk.Emulation.Common
 			{
 				if ((ulong)addr < (ulong)Size)
 				{
-					using (_monitor.EnterExit())
+					try
 					{
+						_monitor.Enter();
 						((byte*)Data)[addr ^ 1] = val;
+					}
+					finally
+					{
+						_monitor.Exit();
 					}
 				}
 				else
@@ -383,8 +408,13 @@ namespace BizHawk.Emulation.Common
 			Writable = writable;
 			WordSize = 2;
 			_monitor = monitor;
-			Monitor = _monitor;
 		}
+
+		public override void Enter()
+			=> _monitor.Enter();
+
+		public override void Exit()
+			=> _monitor.Exit();
 	}
 
 	public class MemoryDomainDelegateSysBusNES : MemoryDomain
