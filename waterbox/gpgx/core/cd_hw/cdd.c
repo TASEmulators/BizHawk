@@ -157,13 +157,14 @@ void cdd_hotswap(const toc_t *toc)
 	if (toc)
 	{
 		cdd.loaded = 1;
-		memcpy(&cdd.toc, &toc, sizeof(cdd.toc));
+		memcpy(&cdd.toc, toc, sizeof(cdd.toc));
 	}
 	else
 	{
 		cdd.loaded = 0;
 		memset(&cdd.toc, 0x00, sizeof(cdd.toc));
 	}
+
 	cdd_reset();
 }
 
