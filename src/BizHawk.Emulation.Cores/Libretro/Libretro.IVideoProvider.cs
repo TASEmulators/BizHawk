@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		{
 			get
 			{
-				var dar = av_info.aspect_ratio;
+				var dar = av_info.geometry.aspect_ratio;
 				if (dar <= 0)
 				{
 					return vidWidth;
@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		{
 			get
 			{
-				var dar = av_info.aspect_ratio;
+				var dar = av_info.geometry.aspect_ratio;
 				if (dar <= 0)
 				{
 					return vidHeight;

@@ -210,13 +210,13 @@ namespace BizHawk.Emulation.Cores.Libretro
 			//this stuff can only happen after the game is loaded
 
 			//allocate a video buffer which will definitely be large enough
-			InitVideoBuffer((int)av.base_width, (int)av.base_height, (int)(av.max_width * av.max_height));
+			InitVideoBuffer((int)av.geometry.base_width, (int)av.geometry.base_height, (int)(av.geometry.max_width * av.geometry.max_height));
 
 			// TODO: more precise
-			VsyncNumerator = (int)(10000000 * av.fps);
+			VsyncNumerator = (int)(10000000 * av.timing.fps);
 			VsyncDenominator = 10000000;
 
-			SetupResampler(av.fps, av.sample_rate);
+			SetupResampler(av.timing.fps, av.timing.sample_rate);
 
 			InitMemoryDomains(); // im going to assume this should happen when a game is loaded
 
@@ -236,6 +236,18 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		private void FrameAdvancePost(bool render, bool renderSound)
 		{
+			if (bridge.LibretroBridge_GetRetroGeometryInfo(cbHandler, ref av_info.geometry))
+			{
+				vidBuffer = new int[av_info.geometry.max_width * av_info.geometry.max_height];
+			}
+
+			if (bridge.LibretroBridge_GetRetroTimingInfo(cbHandler, ref av_info.timing))
+			{
+				VsyncNumerator = (int)(10000000 * av_info.timing.fps);
+				_blipL.SetRates(av_info.timing.sample_rate, 44100);
+				_blipR.SetRates(av_info.timing.sample_rate, 44100);
+			}
+
 			if (render)
 			{
 				UpdateVideoBuffer();

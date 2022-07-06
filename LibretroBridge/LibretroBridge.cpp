@@ -17,6 +17,10 @@ public:
 	: supportsNoGame(false)
 	, retroMessageString()
 	, retroMessageTime(0)
+	, geoInfoDirty(false)
+	, geoInfo()
+	, timingInfoDirty(false)
+	, timingInfo()
 	, variablesDirty(false)
 	, variableCount(0)
 	, variableKeys()
@@ -238,8 +242,15 @@ public:
 				*static_cast<const char**>(data) = saveDirectory.c_str();
 				return true;
 			case RETRO_ENVIRONMENT::SET_SYSTEM_AV_INFO:
-				RetroLog(RETRO_LOG::WARN, "NEED RETRO_ENVIRONMENT::SET_SYSTEM_AV_INFO");
-				return false;
+			{
+				const retro_system_av_info* av = static_cast<const retro_system_av_info*>(data);
+				std::memcpy(&geoInfo, &av->geometry, sizeof (retro_game_geometry));
+				SetVideoSize(geoInfo.max_width * geoInfo.max_height);
+				geoInfoDirty = true;
+				std::memcpy(&timingInfo, &av->timing, sizeof (retro_system_timing));
+				timingInfoDirty = true;
+				return true;
+			}
 			case RETRO_ENVIRONMENT::SET_PROC_ADDRESS_CALLBACK:
 				//this is some way to get symbols for API extensions
 				//of which none exist
@@ -252,9 +263,13 @@ public:
 				//TODO medium priority probably
 				return false;
 			case RETRO_ENVIRONMENT::SET_GEOMETRY:
-				//TODO medium priority probably
-				//this is essentially just set system av info, except only for video
-				return false;
+			{
+				const retro_game_geometry* geo = static_cast<const retro_game_geometry*>(data);
+				std::memcpy(&geoInfo, geo, sizeof (retro_game_geometry));
+				SetVideoSize(geoInfo.max_width * geoInfo.max_height);
+				geoInfoDirty = true;
+				return true;
+			}
 			case RETRO_ENVIRONMENT::GET_USERNAME:
 				//we definitely want to return false here so the core will do something deterministic
 				return false;
@@ -461,6 +476,26 @@ public:
 		}
 	}
 
+	bool GetRetroGeometryInfo(retro_game_geometry* geo) {
+		if (!geoInfoDirty) {
+			return false;
+		}
+
+		std::memcpy(geo, &geoInfo, sizeof (retro_game_geometry));
+		geoInfoDirty = false;
+		return true;
+	}
+
+	bool GetRetroTimingInfo(retro_system_timing* timing) {
+		if (!timingInfoDirty) {
+			return false;
+		}
+
+		std::memcpy(timing, &timingInfo, sizeof (retro_system_timing));
+		timingInfoDirty = false;
+		return true;
+	}
+
 	// need some way to communicate with retro variables later
 
 	void SetDirectories(const char* systemDirectory, const char* saveDirectory, const char* coreDirectory, const char* coreAssetsDirectory) {
@@ -528,6 +563,12 @@ private:
 	std::string retroMessageString;
 	u32 retroMessageTime;
 
+	bool geoInfoDirty;
+	retro_game_geometry geoInfo;
+
+	bool timingInfoDirty;
+	retro_system_timing timingInfo;
+
 	bool variablesDirty;
 	u32 variableCount;
 	std::unique_ptr<std::string[]> variableKeys;
@@ -591,6 +632,20 @@ EXPORT bool LibretroBridge_GetSupportsNoGame(CallbackHandler* cbHandler) {
 // get current retro_message set by the core
 EXPORT void LibretroBridge_GetRetroMessage(CallbackHandler* cbHandler, retro_message* m) {
 	cbHandler->GetRetroMessage(m);
+}
+
+// get current retro_game_geometry set by the core
+// returns false if no changes are needed for geometry info
+// geo is only valid if true is returned
+EXPORT bool LibretroBridge_GetRetroGeometryInfo(CallbackHandler* cbHandler, retro_game_geometry* geo) {
+	return cbHandler->GetRetroGeometryInfo(geo);
+}
+
+// get current retro_system_timing set by the core
+// returns false if no changes are needed for timing info
+// timing is only valid if true is returned
+EXPORT bool LibretroBridge_GetRetroTimingInfo(CallbackHandler* cbHandler, retro_system_timing* timing) {
+	return cbHandler->GetRetroTimingInfo(timing);
 }
 
 // set directories for the core

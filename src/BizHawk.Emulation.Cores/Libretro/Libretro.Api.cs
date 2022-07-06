@@ -326,18 +326,27 @@ namespace BizHawk.Emulation.Cores.Libretro
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
-		public struct retro_system_av_info
+		public struct retro_game_geometry
 		{
-			// struct retro_game_geometry
 			public uint base_width;
 			public uint base_height;
 			public uint max_width;
 			public uint max_height;
 			public float aspect_ratio;
+		}
 
-			// struct retro_system_timing
+		[StructLayout(LayoutKind.Sequential)]
+		public struct retro_system_timing
+		{
 			public double fps;
 			public double sample_rate;
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		public struct retro_system_av_info
+		{
+			public retro_game_geometry geometry;
+			public retro_system_timing timing;
 		}
 
 		[BizImport(cc)]
@@ -431,6 +440,12 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		[BizImport(cc)]
 		public abstract bool LibretroBridge_GetSupportsNoGame(IntPtr cbHandler);
+
+		[BizImport(cc)]
+		public abstract bool LibretroBridge_GetRetroGeometryInfo(IntPtr cbHandler, ref LibretroApi.retro_game_geometry g);
+
+		[BizImport(cc)]
+		public abstract bool LibretroBridge_GetRetroTimingInfo(IntPtr cbHandler, ref LibretroApi.retro_system_timing t);
 
 		[BizImport(cc)]
 		public abstract void LibretroBridge_GetRetroMessage(IntPtr cbHandler, ref LibretroApi.retro_message m);
