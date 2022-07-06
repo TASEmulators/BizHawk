@@ -86,7 +86,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			public GambatteSettings()
 			{
 				GBPalette = (int[])DefaultPalette.Clone();
-				CGBColors = GBColors.ColorType.gambatte;
+				CGBColors = GBColors.ColorType.sameboy;
 				RgbdsSyntax = true;
 				ShowBorder = true;
 			}

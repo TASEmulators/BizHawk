@@ -645,7 +645,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public void SetCGBColors(GBColors.ColorType type)
 		{
-			int[] lut = GBColors.GetLut(type);
+			int[] lut = GBColors.GetLut(type, IsSgb, _syncSettings.ConsoleMode is GambatteSyncSettings.ConsoleModeType.GBA);
 			LibGambatte.gambatte_setcgbpalette(GambatteState, lut);
 		}
 	}
