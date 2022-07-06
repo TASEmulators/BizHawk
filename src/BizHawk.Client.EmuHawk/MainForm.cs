@@ -94,7 +94,7 @@ namespace BizHawk.Client.EmuHawk
 			recentCoreSettingsSubmenu.DropDownItems.AddRange(CreateCoreSettingsSubmenus().ToArray());
 			ToolStripMenuItemEx noRecentsItem = new() { Enabled = false, Text = "(N/A)" };
 			recentCoreSettingsSubmenu.DropDownItems.Add(noRecentsItem);
-			recentCoreSettingsSubmenu.DropDownOpened += (_, _) =>
+			recentCoreSettingsSubmenu.DropDownOpening += (_, _) =>
 			{
 				foreach (ToolStripItem submenu in recentCoreSettingsSubmenu.DropDownItems) submenu.Visible = Config.RecentCores.Contains(submenu.Text);
 				noRecentsItem.Visible = Config.RecentCores.Count is 0;
