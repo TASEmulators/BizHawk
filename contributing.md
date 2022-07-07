@@ -73,6 +73,8 @@ It's probably a good idea to get the .NET SDK, even if you're not working on a .
 	- The .NET 6 SDK comes with [VS Community 2022](https://visualstudio.microsoft.com/vs/community) (and it can be manually installed beside VS2019, see [full instructions](https://docs.microsoft.com/en-gb/dotnet/core/install/windows)).
 	- You can also use Rider, VS Code, or something else instead of VS Community.
 
+For EmuHawk and libraries in the main solution, which do not target .NET 6, we have [this page](https://github.com/TASEmulators/BizHawk/wiki/Available-C%23-and-.NET-features) documenting which features are actually available to use.
+
 
 
 ## blip_buf
