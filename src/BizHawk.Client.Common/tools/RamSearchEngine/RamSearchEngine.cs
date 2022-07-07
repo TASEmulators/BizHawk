@@ -49,11 +49,8 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		{
 			_history.Clear();
 			var domain = _settings.Domain;
-			var listSize = domain.Size;
-			if (!_settings.CheckMisAligned)
-			{
-				listSize /= (int)_settings.Size;
-			}
+			int stepSize = _settings.CheckMisAligned ? 1 : (int)_settings.Size;
+			long listSize = domain.Size / stepSize - (int)_settings.Size + stepSize;
 
 			_watchList = new IMiniWatch[listSize];
 
@@ -77,29 +74,29 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 						break;
 					case WatchSize.Word:
-						for (int i = 0; i < domain.Size - 1; i += _settings.CheckMisAligned ? 1 : 2)
+						for (int i = 0; i < listSize; i++)
 						{
 							if (_settings.IsDetailed())
 							{
-								_watchList[i] = new MiniWordWatchDetailed(domain, i, _settings.BigEndian);
+								_watchList[i] = new MiniWordWatchDetailed(domain, i * stepSize, _settings.BigEndian);
 							}
 							else
 							{
-								_watchList[i] = new MiniWordWatch(domain, i, _settings.BigEndian);
+								_watchList[i] = new MiniWordWatch(domain, i * stepSize, _settings.BigEndian);
 							}
 						}
 
 						break;
 					case WatchSize.DWord:
-						for (int i = 0; i < domain.Size - 3; i += _settings.CheckMisAligned ? 1 : 4)
+						for (int i = 0; i < listSize; i++)
 						{
 							if (_settings.IsDetailed())
 							{
-								_watchList[i] = new MiniDWordWatchDetailed(domain, i, _settings.BigEndian);
+								_watchList[i] = new MiniDWordWatchDetailed(domain, i * stepSize, _settings.BigEndian);
 							}
 							else
 							{
-								_watchList[i] = new MiniDWordWatch(domain, i, _settings.BigEndian);
+								_watchList[i] = new MiniDWordWatch(domain, i * stepSize, _settings.BigEndian);
 							}
 						}
 
@@ -273,16 +270,11 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		public void RemoveAddressRange(IEnumerable<long> addresses)
 		{
-			_watchList.RemoveAll(w => addresses.Contains(w.Address));
+			_watchList = _watchList.Where(w => !addresses.Contains(w.Address)).ToArray();
 		}
 
 		public void AddRange(IEnumerable<long> addresses, bool append)
 		{
-			if (!append)
-			{
-				Array.Clear(_watchList, 0, _watchList.Length);
-			}
-
 			var list = _settings.Size switch
 			{
 				WatchSize.Byte => addresses.ToBytes(_settings),
@@ -291,7 +283,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 				_ => addresses.ToBytes(_settings)
 			};
 
-			_watchList.AddRange(list);
+			_watchList = (append ? _watchList.Concat(list) : list).ToArray();
 		}
 
 		public void Sort(string column, bool reverse)
