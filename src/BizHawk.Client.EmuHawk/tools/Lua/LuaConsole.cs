@@ -107,7 +107,7 @@ namespace BizHawk.Client.EmuHawk
 			EditToolbarItem.Image = Resources.Cut;
 			RemoveScriptToolbarItem.Image = Resources.Delete;
 			DuplicateToolbarButton.Image = Resources.Duplicate;
-			ClearConsoleToolbarButton.Image = Resources.Monitor;
+			ClearConsoleToolbarButton.Image = Resources.ClearConsole;
 			MoveUpToolbarItem.Image = Resources.MoveUp;
 			toolStripButtonMoveDown.Image = Resources.MoveDown;
 			InsertSeparatorToolbarItem.Image = Resources.InsertSeparator;
