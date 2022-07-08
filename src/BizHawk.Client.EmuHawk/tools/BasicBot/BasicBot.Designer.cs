@@ -520,7 +520,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.FrameLengthNumeric.Location = new System.Drawing.Point(60, 25);
 			this.FrameLengthNumeric.Maximum = new decimal(new int[] {
-			999,
+			9999,
 			0,
 			0,
 			0});
