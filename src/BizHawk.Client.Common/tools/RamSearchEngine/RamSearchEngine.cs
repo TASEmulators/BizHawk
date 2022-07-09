@@ -14,7 +14,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 	{
 		private Compare _compareTo = Compare.Previous;
 
-		private IMiniWatch[] _watchList;
+		private IMiniWatch[] _watchList = Array.Empty<IMiniWatch>();
 		private readonly SearchEngineSettings _settings;
 		private readonly UndoHistory<IEnumerable<IMiniWatch>> _history = new UndoHistory<IEnumerable<IMiniWatch>>(true, new List<IMiniWatch>()); //TODO use IList instead of IEnumerable and stop calling `.ToArray()` (i.e. cloning) on reads and writes?
 		private bool _isSorted = true; // Tracks whether or not the array is sorted by address, if it is, binary search can be used for finding watches
