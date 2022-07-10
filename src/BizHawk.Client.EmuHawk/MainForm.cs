@@ -1486,31 +1486,9 @@ namespace BizHawk.Client.EmuHawk
 			bool result = false;
 			switch (Emulator)
 			{
-				case BsnesCore bsnes:
+				case BsnesCore or SubBsnesCore:
 				{
-					var s = bsnes.GetSettings();
-					switch (layer)
-					{
-						case 1:
-							result = s.ShowBG1_0 = s.ShowBG1_1 ^= true;
-							break;
-						case 2:
-							result = s.ShowBG2_0 = s.ShowBG2_1 ^= true;
-							break;
-						case 3:
-							result = s.ShowBG3_0 = s.ShowBG3_1 ^= true;
-							break;
-						case 4:
-							result = s.ShowBG4_0 = s.ShowBG4_1 ^= true;
-							break;
-					}
-
-					bsnes.PutSettings(s);
-					break;
-				}
-				case SubBsnesCore bsnes:
-				{
-					var settingsProvider = bsnes.ServiceProvider.GetService<ISettable<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings>>();
+					var settingsProvider = Emulator.ServiceProvider.GetService<ISettable<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings>>();
 					var s = settingsProvider.GetSettings();
 					switch (layer)
 					{
