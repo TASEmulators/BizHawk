@@ -21,6 +21,7 @@ namespace BizHawk.Client.Common
 			string newFilename = ConvertFileNameToTasMovie(old.Filename);
 			var tas = (ITasMovie)old.Session.Get(newFilename);
 			tas.CopyLog(old.GetLogEntries());
+			tas.LogKey = old.LogKey;
 
 			old.Truncate(0); // Trying to minimize ram usage
 
@@ -56,6 +57,7 @@ namespace BizHawk.Client.Common
 		{
 			var bk2 = old.Session.Get(old.Filename.Replace(old.PreferredExtension, Bk2Movie.Extension));
 			bk2.CopyLog(old.GetLogEntries());
+			bk2.LogKey = old.LogKey;
 
 			bk2.HeaderEntries.Clear();
 			foreach (var (k, v) in old.HeaderEntries) bk2.HeaderEntries[k] = v;
@@ -95,6 +97,7 @@ namespace BizHawk.Client.Common
 			var entries = old.GetLogEntries();
 
 			tas.CopyLog(entries.Skip(frame));
+			tas.LogKey = old.LogKey;
 			tas.CopyVerificationLog(old.VerificationLog);
 			tas.CopyVerificationLog(entries.Take(frame));
 
