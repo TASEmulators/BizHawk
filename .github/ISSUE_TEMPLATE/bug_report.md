@@ -7,8 +7,9 @@ assignees: ''
 
 ---
 
-[//]: # "This issue description supports Markdown syntax (this is what comments look like). There's a cheatsheet here: https://guides.github.com/features/mastering-markdown/"
-[//]: # "You can leave these comments here or delete them. Also, please remember to search for similar issues before writing anything, including in closed issues!"
+[//]: # "This description supports Markdown syntax. There's a cheatsheet here: https://guides.github.com/features/mastering-markdown/"
+[//]: # "These lines are comments, for letting you know what you should be writing. You can delete them or leave them in."
+[//]: # "Also, please don't waste your time writing until you've checked for similar Issues. Remember to check closed Issues too!"
 [//]: # "One more thing: if you're on Linux, please comment on #1430 instead of opening an issue so we don't annoy the other devs."
 
 ### Summary
