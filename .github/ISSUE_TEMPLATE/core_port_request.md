@@ -1,7 +1,7 @@
 ---
 name: Core port request
 about: Request another emulator be ported into BizHawk
-title: '[Core Port Req.] (name of emulator, and systems emulated if it's not obvious)'
+title: "[Core Port Req.] (name of emulator, and systems emulated if it's not obvious)"
 labels: 'Core: Future core, Enhancement'
 assignees: ''
 
