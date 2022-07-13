@@ -177,7 +177,7 @@ namespace BizHawk.BizInvoke
 			{
 				if (slots != null)
 				{
-					_slots = slots.Select((cb, i) => new { cb, i })
+					_slots = slots.Select(static (cb, i) => (cb, i))
 						.ToDictionary(a => a.cb, a => a.i, new ReferenceEqualityComparer());
 				}
 				_waterboxHost = waterboxHost;

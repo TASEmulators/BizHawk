@@ -6,6 +6,7 @@ using System.Reflection.Emit;
 using System.Runtime.InteropServices;
 using System.Text;
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.BizInvoke
 {
@@ -167,11 +168,7 @@ namespace BizHawk.BizInvoke
 			}
 
 			var baseMethods = baseType.GetMethods(BindingFlags.Instance | BindingFlags.Public)
-				.Select(m => new
-				{
-					Info = m,
-					Attr = m.GetCustomAttributes(true).OfType<BizImportAttribute>().FirstOrDefault()
-				})
+				.Select(static m => (Info: m, Attr: m.GetCustomAttributes(true).OfType<BizImportAttribute>().FirstOrDefault()))
 				.Where(a => a.Attr != null)
 				.ToList();
 
@@ -181,19 +178,13 @@ namespace BizHawk.BizInvoke
 			}
 
 			{
-				var uo = baseMethods.FirstOrDefault(a => !a.Info.IsVirtual || a.Info.IsFinal);
-				if (uo != null)
-				{
-					throw new InvalidOperationException($"Method {uo.Info.Name} cannot be overriden!");
-				}
+				var uo = baseMethods.FirstOrNull(static a => !a.Info.IsVirtual || a.Info.IsFinal);
+				if (uo is not null) throw new InvalidOperationException($"Method {uo.Value.Info.Name} cannot be overriden!");
 
 				// there's no technical reason to disallow this, but we wouldn't be doing anything
 				// with the base implementation, so it's probably a user error
-				var na = baseMethods.FirstOrDefault(a => !a.Info.IsAbstract);
-				if (na != null)
-				{
-					throw new InvalidOperationException($"Method {na.Info.Name} is not abstract!");
-				}
+				var na = baseMethods.FirstOrNull(static a => !a.Info.IsAbstract);
+				if (na is not null) throw new InvalidOperationException($"Method {na.Value.Info.Name} is not abstract!");
 			}
 
 			// hooks that will be run on the created proxy object

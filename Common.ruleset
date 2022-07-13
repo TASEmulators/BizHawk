@@ -5,7 +5,7 @@
 		<Rule Id="BHI1001" Action="Error" />
 
 		<!-- Do not use anonymous types (classes) -->
-		<Rule Id="BHI1002" Action="Hidden" />
+		<Rule Id="BHI1002" Action="Error" />
 
 		<!-- Do not use query expression syntax -->
 		<Rule Id="BHI1003" Action="Error" />

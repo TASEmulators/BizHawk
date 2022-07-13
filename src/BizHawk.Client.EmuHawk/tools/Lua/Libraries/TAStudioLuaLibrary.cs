@@ -382,11 +382,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!Engaged()) return _th.CreateTable();
 			return _th.EnumerateToLuaTable(
-				Tastudio.CurrentTasMovie.Branches.Select(b => new
+				Tastudio.CurrentTasMovie.Branches.Select(b =>
 				{
-					Id = b.Uuid.ToString(),
-					b.Frame,
-					Text = UnFixString(b.UserText)
+					var table = _th.CreateTable();
+					table["Id"] = b.Uuid.ToString();
+					table["Frame"] = b.Frame;
+					table["Text"] = UnFixString(b.UserText);
+					return table;
 				}),
 				indexFrom: 0);
 		}

@@ -9,6 +9,22 @@ namespace BizHawk.Client.Common
 {
 	public class TasBranch
 	{
+		internal struct ForSerialization
+		{
+			public readonly int Frame;
+
+			public readonly DateTime TimeStamp;
+
+			public readonly Guid UniqueIdentifier;
+
+			public ForSerialization(int frame, DateTime timeStamp, Guid uniqueIdentifier)
+			{
+				Frame = frame;
+				TimeStamp = timeStamp;
+				UniqueIdentifier = uniqueIdentifier;
+			}
+		}
+
 		public int Frame { get; set; }
 		public byte[] CoreData { get; set; }
 		public IStringLog InputLog { get; set; }
@@ -19,6 +35,8 @@ namespace BizHawk.Client.Common
 		public TasMovieMarkerList Markers { get; set; }
 		public Guid Uuid { get; set; }
 		public string UserText { get; set; }
+
+		internal ForSerialization ForSerial => new(Frame, TimeStamp, Uuid);
 
 		public TasBranch Clone() => (TasBranch)MemberwiseClone();
 	}
@@ -123,16 +141,7 @@ namespace BizHawk.Client.Common
 			var nusertext = new IndexedStateLump(BinaryStateLump.BranchUserText);
 			foreach (var b in this)
 			{
-				bs.PutLump(nheader, tw =>
-				{
-					// if this header needs more stuff in it, handle it sensibly
-					tw.WriteLine(JsonConvert.SerializeObject(new
-					{
-						b.Frame,
-						b.TimeStamp,
-						UniqueIdentifier = b.Uuid
-					}));
-				});
+				bs.PutLump(nheader, tw => tw.WriteLine(JsonConvert.SerializeObject(b.ForSerial)));
 
 				bs.PutLump(ncore, (Stream s) => s.Write(b.CoreData, 0, b.CoreData.Length));
 
