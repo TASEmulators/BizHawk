@@ -1,5 +1,18 @@
 <?xml version="1.0"?>
 <RuleSet Name="BizHawk Rules" Description="Applies to all projects in the solution -- or, it will eventually." ToolsVersion="14.0">
+	<Rules AnalyzerId="BizHawk.Analyzer" RuleNamespace="BizHawk.Analyzer">
+		<!-- Do not use anonymous delegates -->
+		<Rule Id="BHI1001" Action="Hidden" />
+
+		<!-- Do not use anonymous types (classes) -->
+		<Rule Id="BHI1002" Action="Hidden" />
+
+		<!-- Do not use query expression syntax -->
+		<Rule Id="BHI1003" Action="Error" />
+
+		<!-- Verbatim interpolated strings should begin $@, not @$ -->
+		<Rule Id="BHI1004" Action="Error" />
+	</Rules>
 	<Rules AnalyzerId="DocumentationAnalyzers" RuleNamespace="DocumentationAnalyzers.StyleRules">
 		<!-- Place text in paragraphs -->
 		<Rule Id="DOC100" Action="Hidden" />
