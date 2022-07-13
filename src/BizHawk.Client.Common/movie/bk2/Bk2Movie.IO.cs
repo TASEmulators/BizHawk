@@ -156,7 +156,7 @@ namespace BizHawk.Client.Common
 
 		protected void LoadBk2Fields(ZipStateLoader bl, bool preload)
 		{
-			bl.GetLump(BinaryStateLump.Movieheader, true, delegate(TextReader tr)
+			bl.GetLump(BinaryStateLump.Movieheader, abort: true, tr =>
 			{
 				string line;
 				while ((line = tr.ReadLine()) != null)
@@ -176,7 +176,7 @@ namespace BizHawk.Client.Common
 				}
 			});
 
-			bl.GetLump(BinaryStateLump.Input, true, delegate(TextReader tr)
+			bl.GetLump(BinaryStateLump.Input, abort: true, tr =>
 			{
 				IsCountingRerecords = false;
 				ExtractInputLog(tr, out _);
@@ -188,7 +188,7 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			bl.GetLump(BinaryStateLump.Comments, false, delegate(TextReader tr)
+			bl.GetLump(BinaryStateLump.Comments, abort: false, tr =>
 			{
 				string line;
 				while ((line = tr.ReadLine()) != null)
@@ -200,7 +200,7 @@ namespace BizHawk.Client.Common
 				}
 			});
 
-			bl.GetLump(BinaryStateLump.Subtitles, false, delegate(TextReader tr)
+			bl.GetLump(BinaryStateLump.Subtitles, abort: false, tr =>
 			{
 				string line;
 				while ((line = tr.ReadLine()) != null)
@@ -214,7 +214,7 @@ namespace BizHawk.Client.Common
 				Subtitles.Sort();
 			});
 
-			bl.GetLump(BinaryStateLump.SyncSettings, false, delegate(TextReader tr)
+			bl.GetLump(BinaryStateLump.SyncSettings, abort: false, tr =>
 			{
 				string line;
 				while ((line = tr.ReadLine()) != null)
@@ -229,16 +229,10 @@ namespace BizHawk.Client.Common
 			if (StartsFromSavestate)
 			{
 				bl.GetCoreState(
-					delegate(BinaryReader br, long length)
-					{
-						BinarySavestate = br.ReadBytes((int)length);
-					},
-					delegate(TextReader tr)
-					{
-						TextSavestate = tr.ReadToEnd();
-					});
+					(br, length) => BinarySavestate = br.ReadBytes((int) length),
+					tr => TextSavestate = tr.ReadToEnd());
 				bl.GetLump(BinaryStateLump.Framebuffer, false,
-					delegate(BinaryReader br, long length)
+					(br, length) =>
 					{
 						SavestateFramebuffer = new int[length / sizeof(int)];
 						for (int i = 0; i < SavestateFramebuffer.Length; i++)
@@ -250,10 +244,7 @@ namespace BizHawk.Client.Common
 			else if (StartsFromSaveRam)
 			{
 				bl.GetLump(BinaryStateLump.MovieSaveRam, false,
-					delegate(BinaryReader br, long length)
-					{
-						SaveRam = br.ReadBytes((int)length);
-					});
+					(br, length) => SaveRam = br.ReadBytes((int) length));
 			}
 		}
 	}

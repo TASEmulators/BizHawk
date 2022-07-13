@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			mm.Add(_cwram = new MemoryDomainDelegate("Combined WRAM", (256 + 32) * 1024, le, null, null, 4));
 
 			mm.Add(new MemoryDomainDelegate("System Bus", 0x10000000, le,
-				delegate (long addr)
+				addr =>
 				{
 					var a = (uint)addr;
 					if (a >= 0x10000000)
@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 					return LibmGBA.BizReadBus(Core, a);
 				},
-				delegate (long addr, byte val)
+				(addr, val) =>
 				{
 					var a = (uint)addr;
 					if (a >= 0x10000000)

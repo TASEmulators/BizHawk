@@ -2,7 +2,7 @@
 <RuleSet Name="BizHawk Rules" Description="Applies to all projects in the solution -- or, it will eventually." ToolsVersion="14.0">
 	<Rules AnalyzerId="BizHawk.Analyzer" RuleNamespace="BizHawk.Analyzer">
 		<!-- Do not use anonymous delegates -->
-		<Rule Id="BHI1001" Action="Hidden" />
+		<Rule Id="BHI1001" Action="Error" />
 
 		<!-- Do not use anonymous types (classes) -->
 		<Rule Id="BHI1002" Action="Hidden" />

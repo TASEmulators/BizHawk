@@ -123,7 +123,7 @@ namespace BizHawk.Client.Common
 			var nusertext = new IndexedStateLump(BinaryStateLump.BranchUserText);
 			foreach (var b in this)
 			{
-				bs.PutLump(nheader, delegate(TextWriter tw)
+				bs.PutLump(nheader, tw =>
 				{
 					// if this header needs more stuff in it, handle it sensibly
 					tw.WriteLine(JsonConvert.SerializeObject(new
@@ -134,12 +134,9 @@ namespace BizHawk.Client.Common
 					}));
 				});
 
-				bs.PutLump(ncore, delegate(Stream s)
-				{
-					s.Write(b.CoreData, 0, b.CoreData.Length);
-				});
+				bs.PutLump(ncore, (Stream s) => s.Write(b.CoreData, 0, b.CoreData.Length));
 
-				bs.PutLump(ninput, delegate(TextWriter tw)
+				bs.PutLump(ninput, tw =>
 				{
 					int todo = b.InputLog.Count;
 					for (int i = 0; i < todo; i++)
@@ -148,27 +145,21 @@ namespace BizHawk.Client.Common
 					}
 				});
 
-				bs.PutLump(nframebuffer, delegate(Stream s)
+				bs.PutLump(nframebuffer, s =>
 				{
 					var vp = new BitmapBufferVideoProvider(b.OSDFrameBuffer);
 					_quickBmpFile.Save(vp, s, b.OSDFrameBuffer.Width, b.OSDFrameBuffer.Height);
 				});
 
-				bs.PutLump(ncoreframebuffer, delegate(Stream s)
+				bs.PutLump(ncoreframebuffer, s =>
 				{
 					var vp = new BitmapBufferVideoProvider(b.CoreFrameBuffer);
 					_quickBmpFile.Save(vp, s, b.CoreFrameBuffer.Width, b.CoreFrameBuffer.Height);
 				});
 
-				bs.PutLump(nmarkers, delegate(TextWriter tw)
-				{
-					tw.WriteLine(b.Markers.ToString());
-				});
+				bs.PutLump(nmarkers, tw => tw.WriteLine(b.Markers.ToString()));
 
-				bs.PutLump(nusertext, delegate(TextWriter tw)
-				{
-					tw.WriteLine(b.UserText);
-				});
+				bs.PutLump(nusertext, tw => tw.WriteLine(b.UserText));
 
 				nheader.Increment();
 				ncore.Increment();
@@ -196,7 +187,7 @@ namespace BizHawk.Client.Common
 			{
 				var b = new TasBranch();
 
-				if (!bl.GetLump(nheader, false, delegate(TextReader tr)
+				if (!bl.GetLump(nheader, abort: false, tr =>
 				{
 					var header = (dynamic)JsonConvert.DeserializeObject(tr.ReadLine());
 					b.Frame = (int)header.Frame;
@@ -226,13 +217,13 @@ namespace BizHawk.Client.Common
 					return;
 				}
 
-				bl.GetLump(ncore, true, delegate(Stream s, long length)
+				bl.GetLump(ncore, abort: true, (Stream s, long length) =>
 				{
 					b.CoreData = new byte[length];
 					s.Read(b.CoreData, 0, b.CoreData.Length);
 				});
 
-				bl.GetLump(ninput, true, delegate(TextReader tr)
+				bl.GetLump(ninput, abort: true, tr =>
 				{
 					b.InputLog = StringLogUtil.MakeStringLog();
 					string line;
@@ -242,20 +233,20 @@ namespace BizHawk.Client.Common
 					}
 				});
 
-				bl.GetLump(nframebuffer, true, delegate(Stream s, long length)
+				bl.GetLump(nframebuffer, abort: true, (s, _) =>
 				{
 					_quickBmpFile.LoadAuto(s, out var vp);
 					b.OSDFrameBuffer = new BitmapBuffer(vp.BufferWidth, vp.BufferHeight, vp.GetVideoBuffer());
 				});
 
-				bl.GetLump(ncoreframebuffer, false, delegate(Stream s, long length)
+				bl.GetLump(ncoreframebuffer, abort: false, (s, _) =>
 				{
 					_quickBmpFile.LoadAuto(s, out var vp);
 					b.CoreFrameBuffer = new BitmapBuffer(vp.BufferWidth, vp.BufferHeight, vp.GetVideoBuffer());
 				});
 
 				b.Markers = new TasMovieMarkerList(movie);
-				bl.GetLump(nmarkers, false, delegate(TextReader tr)
+				bl.GetLump(nmarkers, abort: false, tr =>
 				{
 					string line;
 					while ((line = tr.ReadLine()) != null)
@@ -267,7 +258,7 @@ namespace BizHawk.Client.Common
 					}
 				});
 
-				bl.GetLump(nusertext, false, delegate(TextReader tr)
+				bl.GetLump(nusertext, abort: false, tr =>
 				{
 					string line;
 					if ((line = tr.ReadLine()) != null)

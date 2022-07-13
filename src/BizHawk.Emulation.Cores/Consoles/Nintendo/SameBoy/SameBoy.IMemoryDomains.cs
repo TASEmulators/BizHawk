@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 			// also add a special memory domain for the system bus, where calls get sent directly to the core each time
 			_memoryDomains.Add(new MemoryDomainDelegate("System Bus", 65536, MemoryDomain.Endian.Little,
-				delegate(long addr)
+				addr =>
 				{
 					if (addr < 0 || addr >= 65536)
 					{
@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 					return LibSameboy.sameboy_cpuread(SameboyState, (ushort)addr);
 				},
-				delegate(long addr, byte val)
+				(addr, val) =>
 				{
 					if (addr < 0 || addr >= 65536)
 					{

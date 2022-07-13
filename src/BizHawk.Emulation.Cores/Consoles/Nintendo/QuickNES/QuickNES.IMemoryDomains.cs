@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				"System Bus",
 				0x10000,
 				MemoryDomain.Endian.Unknown,
-				delegate(long addr)
+				addr =>
 				{
 					if (addr < 0 || addr >= 0x10000)
 					{
@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 					return QN.qn_peek_prgbus(Context, (int)addr);
 				},
-				delegate(long addr, byte val)
+				(addr, val) =>
 				{
 					if (addr < 0 || addr >= 0x10000)
 					{

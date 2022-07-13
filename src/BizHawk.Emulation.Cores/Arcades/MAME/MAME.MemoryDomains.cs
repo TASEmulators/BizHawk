@@ -87,10 +87,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					var name = $"{ deviceName } : { read } : 0x{ firstOffset:X}-0x{ lastOffset:X}";
 
 					domains.Add(new MemoryDomainDelegate(name, lastOffset - firstOffset + 1, endian,
-						delegate (long addr)
-						{
-							return _peek(addr, firstOffset, size);
-						},
+						addr => _peek(addr, firstOffset, size),
 						read == "rom"
 							? null
 							: (long addr, byte val) => _poke(addr, val, firstOffset, size),
@@ -99,10 +96,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 
 			domains.Add(new MemoryDomainDelegate(deviceName + " : System Bus", size, endian,
-				delegate (long addr)
-				{
-					return _peek(addr, 0, size);
-				},
+				addr => _peek(addr, 0, size),
 				null, dataWidth));
 
 			_memoryDomains = new MemoryDomainList(domains);

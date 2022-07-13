@@ -34,14 +34,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 						// vram pokes need to go through hook which invalidates cached tiles
 						byte* p = (byte*)area;
 						mm.Add(new MemoryDomainDelegate(name, size, MemoryDomain.Endian.Unknown,
-							delegate (long addr)
+							addr =>
 							{
 								if (addr < 0 || addr >= 65536)
 									throw new ArgumentOutOfRangeException();
 								using (_elf.EnterExit())
 									return p[addr ^ 1];
 							},
-							delegate (long addr, byte val)
+							(addr, val) =>
 							{
 								if (addr < 0 || addr >= 65536)
 									throw new ArgumentOutOfRangeException();
@@ -59,14 +59,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					}
 				}
 				var m68Bus = new MemoryDomainDelegate("M68K BUS", 0x1000000, MemoryDomain.Endian.Big,
-					delegate (long addr)
+					addr =>
 					{
 						var a = (uint)addr;
 						if (a >= 0x1000000)
 							throw new ArgumentOutOfRangeException();
 						return Core.gpgx_peek_m68k_bus(a);
 					},
-					delegate (long addr, byte val)
+					(addr, val) =>
 					{
 						var a = (uint)addr;
 						if (a >= 0x1000000)
@@ -79,14 +79,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				if (IsMegaCD)
 				{
 					var s68Bus = new MemoryDomainDelegate("S68K BUS", 0x1000000, MemoryDomain.Endian.Big,
-					delegate (long addr)
+					addr =>
 					{
 						var a = (uint)addr;
 						if (a >= 0x1000000)
 							throw new ArgumentOutOfRangeException();
 						return Core.gpgx_peek_s68k_bus(a);
 					},
-					delegate (long addr, byte val)
+					(addr, val) =>
 					{
 						var a = (uint)addr;
 						if (a >= 0x1000000)

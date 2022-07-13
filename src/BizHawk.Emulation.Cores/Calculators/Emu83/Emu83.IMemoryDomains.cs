@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Calculators.Emu83
 			CreateMemoryDomain(LibEmu83.MemoryArea_t.MEM_VRAM, "VRAM");
 
 			_memoryDomains.Add(new MemoryDomainDelegate("System Bus", 0x10000, MemoryDomain.Endian.Little,
-				delegate(long addr)
+				addr =>
 				{
 					if (addr < 0 || addr >= 0x10000)
 					{
@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Calculators.Emu83
 
 					return LibEmu83.TI83_ReadMemory(Context, (ushort)addr);
 				},
-				delegate(long addr, byte val)
+				(addr, val) =>
 				{
 					if (addr < 0 || addr >= 0x10000)
 					{

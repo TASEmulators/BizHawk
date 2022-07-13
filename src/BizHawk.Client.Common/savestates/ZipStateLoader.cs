@@ -123,31 +123,13 @@ namespace BizHawk.Client.Common
 		}
 
 		public bool GetLump(BinaryStateLump lump, bool abort, Action<BinaryReader> callback)
-		{
-			return GetLump(lump, abort, delegate(Stream s, long unused)
-			{
-				var br = new BinaryReader(s);
-				callback(br);
-			});
-		}
+			=> GetLump(lump, abort, (s, _) => callback(new(s)));
 
 		public bool GetLump(BinaryStateLump lump, bool abort, Action<BinaryReader, long> callback)
-		{
-			return GetLump(lump, abort, delegate(Stream s, long length)
-			{
-				var br = new BinaryReader(s);
-				callback(br, length);
-			});
-		}
+			=> GetLump(lump, abort, (s, length) => callback(new(s), length));
 
 		public bool GetLump(BinaryStateLump lump, bool abort, Action<TextReader> callback)
-		{
-			return GetLump(lump, abort, delegate(Stream s, long unused)
-			{
-				var tr = new StreamReader(s);
-				callback(tr);
-			});
-		}
+			=> GetLump(lump, abort, (s, _) => callback(new StreamReader(s)));
 
 		/// <exception cref="Exception">couldn't find Binary or Text savestate</exception>
 		public void GetCoreState(Action<BinaryReader, long> callbackBinary, Action<TextReader> callbackText)
