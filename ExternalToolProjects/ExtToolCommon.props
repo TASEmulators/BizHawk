@@ -3,6 +3,7 @@
 	<PropertyGroup>
 		<CodeAnalysisRuleSet>$(ProjectDir)../../Common.ruleset</CodeAnalysisRuleSet>
 		<OutputPath>$(ProjectDir)bin/$(Configuration)/</OutputPath>
+		<RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
 	</PropertyGroup>
 	<ItemGroup>
 		<AdditionalFiles Include="$(ProjectDir)../../.stylecop.json" />
