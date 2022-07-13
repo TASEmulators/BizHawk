@@ -73,25 +73,23 @@ namespace BizHawk.Client.Common
 		public int FrameCount()
 			=> Emulator!.Frame;
 
-		public object? Disassemble(uint pc, string? name = null)
+		public (string Disasm, int Length) Disassemble(uint pc, string? name = null)
 		{
 			try
 			{
 				if (DisassemblableCore != null)
 				{
-					return new {
-						disasm = DisassemblableCore.Disassemble(
-							string.IsNullOrEmpty(name) ? MemoryDomains!.SystemBus : MemoryDomains![name!]!,
-							pc,
-							out var l
-						),
-						length = l
-					};
+					var disasm = DisassemblableCore.Disassemble(
+						string.IsNullOrEmpty(name) ? MemoryDomains!.SystemBus : MemoryDomains![name!]!,
+						pc,
+						out var l
+					);
+					return (disasm, l);
 				}
 			}
 			catch (NotImplementedException) {}
 			LogCallback($"Error: {Emulator.Attributes().CoreName} does not yet implement {nameof(IDisassemblable.Disassemble)}()");
-			return null;
+			return (string.Empty, 0);
 		}
 
 		public ulong? GetRegister(string name)
