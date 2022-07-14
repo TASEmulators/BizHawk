@@ -583,7 +583,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_lastSelectedRow = null;
 			_selectedItems.Clear();
-			SelectedIndexChanged?.Invoke(this, new EventArgs());
+			SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
 			Refresh();
 		}
 
@@ -1214,7 +1214,7 @@ namespace BizHawk.Client.EmuHawk
 
 					Refresh();
 
-					SelectedIndexChanged?.Invoke(this, new EventArgs());
+					SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
 				}
 			}
 
@@ -1234,7 +1234,7 @@ namespace BizHawk.Client.EmuHawk
 
 						Refresh();
 
-						SelectedIndexChanged?.Invoke(this, new EventArgs());
+						SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
 					}
 				}
 			}

@@ -150,7 +150,7 @@
 		<Rule Id="MA0018" Action="Error" />
 
 		<!-- Use EventArgs.Empty -->
-		<Rule Id="MA0019" Action="Hidden" />
+		<Rule Id="MA0019" Action="Error" />
 
 		<!-- Use direct methods instead of LINQ methods -->
 		<Rule Id="MA0020" Action="Hidden" />

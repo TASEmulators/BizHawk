@@ -371,7 +371,7 @@ namespace BizHawk.Client.EmuHawk
 
 			radios[index].Checked = true;
 			var mi = radios[index].GetType().GetMethod("OnClick", BindingFlags.Instance | BindingFlags.NonPublic);
-			mi?.Invoke(radios[index], new object[] { new EventArgs() });
+			mi?.Invoke(radios[index], new object[] { EventArgs.Empty });
 		}
 
 		public void NextOperator(bool reverse = false)
@@ -407,7 +407,7 @@ namespace BizHawk.Client.EmuHawk
 
 			radios[index].Checked = true;
 			var mi = radios[index].GetType().GetMethod("OnClick", BindingFlags.Instance | BindingFlags.NonPublic);
-			mi?.Invoke(radios[index], new object[] { new EventArgs() });
+			mi?.Invoke(radios[index], new object[] { EventArgs.Empty });
 		}
 
 		private void ToggleSearchDependentToolBarItems()
