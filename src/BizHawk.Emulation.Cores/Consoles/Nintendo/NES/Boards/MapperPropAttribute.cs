@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							}
 							catch (Exception e) when (e is InvalidCastException || e is FormatException || e is OverflowException)
 							{
-								throw new InvalidDataException("Auto Mapper Properties were in a bad format!", e);
+								throw new InvalidOperationException("Auto Mapper Properties were in a bad format!", e);
 							}
 						}
 
