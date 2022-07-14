@@ -1023,7 +1023,7 @@ namespace BizHawk.Client.Common
 			{
 				DisplaySurfaceID.EmuCore => (GameExtraPadding.Left + _currEmuWidth + GameExtraPadding.Right, GameExtraPadding.Top + _currEmuHeight + GameExtraPadding.Bottom),
 				DisplaySurfaceID.Client => (currNativeWidth, currNativeHeight),
-				_ => throw new ArgumentException(message: "not a valid enum member", paramName: nameof(surfaceID))
+				_ => throw new InvalidOperationException()
 			};
 
 			IDisplaySurface ret = sdss.AllocateSurface(width, height, clear);

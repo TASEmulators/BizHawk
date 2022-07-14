@@ -1,5 +1,6 @@
 ﻿namespace BizHawk.Analyzers;
 
+using System;
 using System.Collections.Immutable;
 
 using Microsoft.CodeAnalysis;
@@ -10,6 +11,10 @@ using Microsoft.CodeAnalysis.Diagnostics;
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class HawkSourceAnalyzer : DiagnosticAnalyzer
 {
+	private const string ERR_MSG_SWITCH_THROWS_UNKNOWN = "Indeterminable exception type in default switch branch, should be InvalidOperationException/SwitchExpressionException";
+
+	private const string ERR_MSG_SWITCH_THROWS_WRONG_TYPE = "Incorrect exception type in default switch branch, should be InvalidOperationException/SwitchExpressionException";
+
 	private static readonly DiagnosticDescriptor DiagInterpStringIsDollarAt = new(
 		id: "BHI1004",
 		title: "Verbatim interpolated strings should begin $@, not @$",
@@ -42,11 +47,20 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 		defaultSeverity: DiagnosticSeverity.Error,
 		isEnabledByDefault: true);
 
+	private static readonly DiagnosticDescriptor DiagSwitchShouldThrowIOE = new(
+		id: "BHI1005",
+		title: "Default branch of switch expression should throw InvalidOperationException/SwitchExpressionException or not throw",
+		messageFormat: "{0}",
+		category: "Usage",
+		defaultSeverity: DiagnosticSeverity.Error,
+		isEnabledByDefault: true);
+
 	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
 		DiagInterpStringIsDollarAt,
 		DiagNoAnonClasses,
 		DiagNoAnonDelegates,
-		DiagNoQueryExpression);
+		DiagNoQueryExpression,
+		DiagSwitchShouldThrowIOE);
 
 	public override void Initialize(AnalysisContext context)
 	{
@@ -69,11 +83,37 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 					case QueryExpressionSyntax:
 						snac.ReportDiagnostic(Diagnostic.Create(DiagNoQueryExpression, snac.Node.GetLocation()));
 						break;
+					case SwitchExpressionArmSyntax { WhenClause: null, Pattern: DiscardPatternSyntax, Expression: ThrowExpressionSyntax tes }:
+						if (tes.Expression is ObjectCreationExpressionSyntax oces)
+						{
+							// to resolve edge-cases involving aliases, you're supposed to use `snac.SemanticModel.GetTypeInfo(oces.Type).ConvertedType?.Name`, but I couldn't get it to work
+							if (((oces.Type as IdentifierNameSyntax)?.Identifier)?.ToString() is "SwitchExpressionException" or nameof(InvalidOperationException))
+							{
+								// correct usage, do not flag
+							}
+							else
+							{
+								snac.ReportDiagnostic(Diagnostic.Create(DiagSwitchShouldThrowIOE, tes.GetLocation(), ERR_MSG_SWITCH_THROWS_WRONG_TYPE));
+							}
+						}
+						else
+						{
+							// code reads `throw <something weird>`
+							snac.ReportDiagnostic(Diagnostic.Create(
+								DiagSwitchShouldThrowIOE,
+								tes.GetLocation(),
+								DiagnosticSeverity.Warning,
+								additionalLocations: null,
+								properties: null,
+								ERR_MSG_SWITCH_THROWS_UNKNOWN));
+						}
+						break;
 				}
 			},
 			SyntaxKind.AnonymousObjectCreationExpression,
 			SyntaxKind.AnonymousMethodExpression,
 			SyntaxKind.InterpolatedStringExpression,
-			SyntaxKind.QueryExpression);
+			SyntaxKind.QueryExpression,
+			SyntaxKind.SwitchExpressionArm);
 	}
 }

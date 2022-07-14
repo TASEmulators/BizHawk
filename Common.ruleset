@@ -12,6 +12,9 @@
 
 		<!-- Verbatim interpolated strings should begin $@, not @$ -->
 		<Rule Id="BHI1004" Action="Error" />
+
+		<!-- Default branch of switch expression should throw InvalidOperationException/SwitchExpressionException or not throw -->
+		<Rule Id="BHI1005" Action="Error" />
 	</Rules>
 	<Rules AnalyzerId="DocumentationAnalyzers" RuleNamespace="DocumentationAnalyzers.StyleRules">
 		<!-- Place text in paragraphs -->

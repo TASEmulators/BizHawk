@@ -72,7 +72,7 @@ namespace BizHawk.Common
 			DistinctOS.Linux => new UnixMonoLLManager(),
 			DistinctOS.macOS => new UnixMonoLLManager(),
 			DistinctOS.Windows => new WindowsLLManager(),
-			_ => throw new ArgumentOutOfRangeException()
+			_ => throw new InvalidOperationException()
 		});
 
 		public static ILinkedLibManager LinkedLibManager => _LinkedLibManager.Value;

@@ -63,7 +63,7 @@ namespace BizHawk.Emulation.Cores
 						"guncon" => NymaGunCon(num),
 						"justifier" => NymaKonamiJustifier(num),
 						"dancepad" => NymaDancePad(num),
-						_ => throw new NotSupportedException($"device {device} is not supported"),
+						_ => throw new InvalidOperationException($"device {device} is not supported")
 					};
 				}
 

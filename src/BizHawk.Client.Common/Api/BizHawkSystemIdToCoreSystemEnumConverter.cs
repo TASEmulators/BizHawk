@@ -65,7 +65,7 @@ namespace BizHawk.Client.Common
 				VSystemID.Raw.SGB => CoreSystem.SuperGameBoy,
 				VSystemID.Raw.UZE => CoreSystem.UzeBox,
 				VSystemID.Raw.PCFX => CoreSystem.PcFx,
-				_ => throw new IndexOutOfRangeException($"{value} is missing in convert list")
+				_ => throw new InvalidOperationException($"{value} is missing in convert list")
 			};
 		}
 
@@ -131,7 +131,7 @@ namespace BizHawk.Client.Common
 				CoreSystem.ZXSpectrum => VSystemID.Raw.ZXSpectrum,
 				CoreSystem.AmstradCPC => VSystemID.Raw.AmstradCPC,
 				CoreSystem.Odyssey2 => VSystemID.Raw.O2,
-				_ => throw new IndexOutOfRangeException($"{value} is missing in convert list")
+				_ => throw new InvalidOperationException($"{value} is missing in convert list")
 			};
 		}
 

@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				"ARM v5 (Thumb)" => LibMelonDS.TraceMask.ARM9_THUMB,
 				"ARM v4" => LibMelonDS.TraceMask.ARM7_ARM,
 				"ARM v4 (Thumb)" => LibMelonDS.TraceMask.ARM7_THUMB,
-				_ => throw new Exception("Invalid CPU mode?"),
+				_ => throw new InvalidOperationException("Invalid CPU mode?")
 			};
 
 			if (Cpu.Length == 14)

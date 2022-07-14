@@ -14,6 +14,7 @@ namespace BizHawk.Client.Common
 	/// <remarks>should probably centralise these enum extensions and not-extensions somewhere... --yoshi</remarks>
 	public static class DisplaySurfaceIDParser
 	{
+#pragma warning disable BHI1005 // switching on string, possibly from user input, ArgumentException is correct here
 		[return: NotNullIfNotNull("str")]
 		public static DisplaySurfaceID? Parse(string? str) => str?.ToLowerInvariant() switch
 		{
@@ -24,12 +25,13 @@ namespace BizHawk.Client.Common
 			"native" => DisplaySurfaceID.Client,
 			_ => throw new ArgumentException(message: $"{str} is not the name of a display surface", paramName: nameof(str))
 		};
+#pragma warning restore BHI1005
 
 		public static string GetName(this DisplaySurfaceID surfaceID) => surfaceID switch
 		{
 			DisplaySurfaceID.EmuCore => "emucore",
 			DisplaySurfaceID.Client => "client",
-			_ => throw new ArgumentException(message: "not a valid enum member", paramName: nameof(surfaceID))
+			_ => throw new InvalidOperationException()
 		};
 	}
 }
