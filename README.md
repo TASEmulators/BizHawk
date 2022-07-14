@@ -21,7 +21,7 @@ Jump to:
 	* [Cores](#cores)
 * [Support and troubleshooting](#support-and-troubleshooting)
 * Contributing
-	* [EmuHawk development](#emuhawk-or-core-development)
+	* [EmuHawk or core development](#emuhawk-or-core-development)
 	* [Testing/QA](#testingqa)
 	* [Localization](#localization)
 	* [License](#license)
