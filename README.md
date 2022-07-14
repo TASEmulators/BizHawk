@@ -14,9 +14,7 @@ Jump to:
 	* [Unix](#unix)
 		* [macOS](#macos-legacy-bizhawk)
 	* [Development builds](#development-builds)
-* Building
-	* [Windows](#windows-1)
-	* [Unix](#unix-1)
+* [Building](#building)
 * [Usage](#usage)
 	* [TASing](#tasing)
 	* [External tools](#external-tools)
