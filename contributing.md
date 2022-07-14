@@ -50,7 +50,8 @@ git pull --set-upstream-to=upstream/master master
 
 Before touching the code, pull `master` and create a new branch off it with a descriptive name.
 
-After touching the code, commit your changes and push to your fork. You can then submit a pull request at any time on GitHub.  
+After touching the code, commit your changes. Try to group your changes into many smaller commits with a clear purpose to each—committing early and often can help. Bonus points if each commit can build and run.  
+If you made the branch a while ago, pull `master` and *rebase, not merge*. Then push to your fork, and you can submit a pull request at any time on GitHub.  
 Your commit message summary [should be](https://www.git-scm.com/book/en/v2/Distributed-Git-Contributing-to-a-Project#_commit_guidelines) written in the *imperative* tense (imagine "This commit will" comes before it). GitHub wraps at 70 chars.  
 The description should include any non-obvious effects the changes will have. If you feel you need to explain what the code does, consider using code comments instead. It's okay to leave the description blank for simple commits.  
 You can use limited Markdown in the summary and description, including monospace, commit/Issue links, and, in the description, bullet points.
@@ -103,10 +104,18 @@ See [EmuHawk](#emuhawk). Build scripts also build DiscoHawk, or from VS2022 choo
 
 Uses C#; you will need the .NET SDK or an IDE which includes it. See the [.NET section](#for-any-net-project).
 
+The source for EmuHawk, plus DiscoHawk and the supporting libraries, is in `/src`, with a few extra files used by the build system elsewhere.
+EmuHawk's project file `/src/BizHawk.Client.EmuHawk/BizHawk.Client.EmuHawk.csproj` includes the other projects [in a tree](https://gitlab.com/TASVideos/BizHawk/snippets/1886666), and they're all included in `/BizHawk.sln`.
+
 In VS2022, open `BizHawk.sln`, then select the "BizHawk.Client.EmuHawk | Release" configuration to build and run.
 On the command-line, from root of the repo run `Dist/BuildRelease.sh` (Unix) or `Dist\QuickTestBuildAndPackage_Release.bat` (Windows). Run EmuHawk from `output` in the repo's root.
 
 There are 2 build configurations. Besides `Release` there is `Debug`, which *does not run* bytecode optimisations, *does not remove* debugging symbols, *enables* additional logging, and *enables* some features. On Windows, a `Debug` executable will spawn a console window for stdout.
+
+We have an automated test suite in the solution which runs in CI, though you can and should run it before pushing.
+There are also various Analyzers (static code analysis plugins) for detecting common mistakes and checking code style. Not every style rule is currently enabled, so please make sure you use CRLF, tabs, and [Allman braces](https://en.wikipedia.org/wiki/Indentation_style#Allman_style) (but don't try to fix code you're not working on).
+
+There are additional test suites specifically for regression-testing cores—these are not included in the solution and need to be run manually. See [the base project's readme](https://github.com/TASEmulators/BizHawk/blob/master/src/BizHawk.Tests.Testroms.GB/readme.md) for details.
 
 
 
@@ -239,6 +248,9 @@ Uses C++.
 > Plugins for the C# compiler, used in main BizHawk solution projects.
 
 These use C#; you will need the .NET SDK or an IDE which includes it. See the [.NET section](#for-any-net-project).
+
+### BizHawk Analyzer
+> Performs additional code style checks not covered by the other Analyzers.
 
 ### ReflectionCache source generator
 > Generates a helper class in an assembly for accessing `<EmbeddedResource/>`s and `Type`s.
