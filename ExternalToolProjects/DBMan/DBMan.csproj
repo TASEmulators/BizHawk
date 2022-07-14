@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<Import Project="$(ProjectDir)../ExtToolCommon.props" />
 	<Import Project="$(ProjectDir)../NET48ExternalToolForm.targets" />
+	<Import Project="$(ProjectDir)../ExtToolCommon.props" />
 	<PropertyGroup>
 		<GenerateResourceMSBuildArchitecture Condition=" '$(GenerateResourceMSBuildArchitecture)' == '' ">CurrentArchitecture</GenerateResourceMSBuildArchitecture>
 		<GenerateResourceMSBuildRuntime Condition=" '$(GenerateResourceMSBuildRuntime)' == '' ">CurrentRuntime</GenerateResourceMSBuildRuntime>
