@@ -19,9 +19,11 @@ namespace BizHawk.Bizware.BizwareGL
 		internal void AddUniformInfo(UniformInfo ui)
 		{
 			_UniformInfos.Add(ui);
+			_cachedInfos = null;
 		}
 
-		public IEnumerable<UniformInfo> UniformInfos => _UniformInfos;
+		private UniformInfo[] _cachedInfos;
+		public UniformInfo[] UniformInfos => (this._cachedInfos ??= _UniformInfos.ToArray());
 		private readonly List<UniformInfo> _UniformInfos = new List<UniformInfo>();
 
 		/// <returns>the first and only <see cref="UniformInfo"/></returns>
