@@ -2285,18 +2285,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				ScreenSaver.ResetTimerPeriodically();
 			}
-
-
-			List<string[]> todo = new();
-			lock (_singleInstanceForwardedArgs)
-			{
-				if (_singleInstanceForwardedArgs.Count > 0)
-				{
-					todo = new List<string[]>(_singleInstanceForwardedArgs);
-					_singleInstanceForwardedArgs.Clear();
-				}
-			}
-			foreach (var args in todo) SingleInstanceProcessArgs(args);
 		}
 
 		private void AutohideCursor(bool hide)
@@ -4715,7 +4703,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private Mutex _singleInstanceMutex;
 		private NamedPipeServerStream _singleInstanceServer;
-		private readonly List<string[]> _singleInstanceForwardedArgs = new();
 
 		private bool SingleInstanceInit(string[] args)
 		{
@@ -4820,8 +4807,7 @@ namespace BizHawk.Client.EmuHawk
 				var args = payloadString.Split('|').Select(a => Encoding.UTF8.GetString(a.HexStringToBytes())).ToArray();
 
 				Console.WriteLine("RECEIVED SINGLE INSTANCE FORWARDED ARGS:");
-				lock (_singleInstanceForwardedArgs)
-					_singleInstanceForwardedArgs.Add(args);
+				this.BeginInvoke((Action<string[]>)this.SingleInstanceProcessArgs, new object[] { args });
 			}
 			catch (ObjectDisposedException)
 			{
