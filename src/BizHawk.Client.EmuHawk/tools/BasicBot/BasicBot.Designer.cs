@@ -690,7 +690,8 @@ namespace BizHawk.Client.EmuHawk
 			">=",
 			"=",
 			"<=",
-			"<"});
+			"<",
+			"!="});
 			this.Tiebreak1Operator.Location = new System.Drawing.Point(208, 3);
 			this.Tiebreak1Operator.Name = "Tiebreak1Operator";
 			this.Tiebreak1Operator.Size = new System.Drawing.Size(40, 21);
@@ -774,7 +775,8 @@ namespace BizHawk.Client.EmuHawk
 			">=",
 			"=",
 			"<=",
-			"<"});
+			"<",
+			"!="});
 			this.Tiebreak2Operator.Location = new System.Drawing.Point(208, 3);
 			this.Tiebreak2Operator.Name = "Tiebreak2Operator";
 			this.Tiebreak2Operator.Size = new System.Drawing.Size(40, 21);
@@ -916,7 +918,8 @@ namespace BizHawk.Client.EmuHawk
 			">=",
 			"=",
 			"<=",
-			"<"});
+			"<",
+			"!="});
 			this.Tiebreak3Operator.Location = new System.Drawing.Point(208, 3);
 			this.Tiebreak3Operator.Name = "Tiebreak3Operator";
 			this.Tiebreak3Operator.Size = new System.Drawing.Size(40, 21);
