@@ -93,6 +93,9 @@
 
 		<!-- Use UTC time -->
 		<Rule Id="MEN013" Action="Hidden" />
+
+		<!-- Prefer TryGetValue -->
+		<Rule Id="MEN014" Action="Hidden" />
 	</Rules>
 	<Rules AnalyzerId="Meziantou.Analyzers" RuleNamespace="Meziantou.Analyzers">
 		<!-- StringComparison is missing -->

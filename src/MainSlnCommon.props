@@ -2,7 +2,6 @@
 	<Import Project="../Common.props" />
 	<PropertyGroup>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-		<CodeAnalysisRuleSet>$(ProjectDir)../../Common.ruleset</CodeAnalysisRuleSet>
 		<DefineConstants>$(DefineConstants);AVI_SUPPORT</DefineConstants>
 		<DocumentationFile>$(ProjectDir)bin/doc_comments.xml</DocumentationFile>
 		<LangVersion>9.0</LangVersion>
@@ -11,8 +10,6 @@
 		<OutputPath>$(ProjectDir)../../output/dll</OutputPath>
 	</PropertyGroup>
 	<ItemGroup>
-		<AdditionalFiles Include="$(ProjectDir)../../.stylecop.json" />
-		<Analyzer Include="$(ProjectDir)../../References/BizHawk.Analyzer.dll" />
 		<Analyzer Include="$(ProjectDir)../../References/BizHawk.SrcGen.ReflectionCache.dll" />
 	</ItemGroup>
 </Project>
