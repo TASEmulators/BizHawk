@@ -214,9 +214,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private string[] PathsFromDragDrop;
-
-		private void FormDragDrop_internal()
+		private void FormDragDrop_internal(string[] pathsFromDragDrop)
 		{
 			/*
 			 *  Refactor, moving the loading of particular files into separate functions that can
@@ -253,7 +251,7 @@ namespace BizHawk.Client.EmuHawk
 				sortedFiles.Add(value, new List<FileInformation>());
 			}
 
-			ProcessFileList(PathsFromDragDrop.Select(EmuHawkUtil.ResolveShortcut), ref sortedFiles);
+			ProcessFileList(pathsFromDragDrop.Select(EmuHawkUtil.ResolveShortcut), ref sortedFiles);
 
 			// For each of the different types of item, if there are no items of that type, skip them.
 			// If there is exactly one of that type of item, load it.

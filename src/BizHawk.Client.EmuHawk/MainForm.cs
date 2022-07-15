@@ -2286,18 +2286,6 @@ namespace BizHawk.Client.EmuHawk
 				ScreenSaver.ResetTimerPeriodically();
 			}
 
-			if (PathsFromDragDrop is not null) this.DoWithTempMute(() =>
-			{
-				try
-				{
-					FormDragDrop_internal();
-				}
-				catch (Exception ex)
-				{
-					ShowMessageBox(owner: null, $"Exception on drag and drop:\n{ex}");
-				}
-				PathsFromDragDrop = null;
-			});
 
 			List<string[]> todo = new();
 			lock (_singleInstanceForwardedArgs)
