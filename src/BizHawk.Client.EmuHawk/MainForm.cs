@@ -739,6 +739,9 @@ namespace BizHawk.Client.EmuHawk
 
 			InitializeFpsData();
 
+			int frameCount = 0;
+			const int MessageCheckFrame = 5;
+
 			for (; ; )
 			{
 				Input.Instance.Update();
@@ -784,7 +787,9 @@ namespace BizHawk.Client.EmuHawk
 
 				Render();
 
-				CheckMessages();
+				++frameCount;
+				if (0 == (frameCount % MessageCheckFrame))
+					CheckMessages();
 
 				if (_exitRequestPending)
 				{
