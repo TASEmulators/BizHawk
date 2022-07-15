@@ -308,8 +308,9 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// BestGroupBox
 			// 
-			this.BestGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-			| System.Windows.Forms.AnchorStyles.Right)));
+			this.BestGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.BestGroupBox.Controls.Add(this.btnCopyBestInput);
 			this.BestGroupBox.Controls.Add(this.PlayBestButton);
 			this.BestGroupBox.Controls.Add(this.ClearBestButton);
@@ -464,7 +465,7 @@ namespace BizHawk.Client.EmuHawk
 			// label13
 			// 
 			this.label13.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.label13.Location = new System.Drawing.Point(104, 16);
+			this.label13.Location = new System.Drawing.Point(96, 16);
 			this.label13.Name = "label13";
 			this.label13.Text = "Main Value:";
 			// 
@@ -962,7 +963,8 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// ControlGroupBox
 			// 
-			this.ControlGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.ControlGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.ControlGroupBox.Controls.Add(this.InvisibleEmulationCheckBox);
 			this.ControlGroupBox.Controls.Add(this.panel2);
 			this.ControlGroupBox.Controls.Add(this.StopBtn);
