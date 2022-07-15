@@ -17,6 +17,8 @@ namespace BizHawk.Client.EmuHawk
 		public FormsLuaLibrary(IPlatformLuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
+		public Form MainForm { get; set; }
+
 		public override string Name => "forms";
 
 		private readonly List<LuaWinform> _luaForms = new List<LuaWinform>();
@@ -352,6 +354,7 @@ namespace BizHawk.Client.EmuHawk
 			form.MaximizeBox = false;
 			form.FormBorderStyle = FormBorderStyle.FixedDialog;
 			form.Icon = SystemIcons.Application;
+			form.Owner = MainForm;
 			form.Show();
 
 			form.FormClosed += (o, e) =>

@@ -96,6 +96,10 @@ namespace BizHawk.Client.EmuHawk
 						consoleLib.Tools = _mainForm.Tools;
 						_logToLuaConsoleCallback = consoleLib.Log;
 					}
+					else if (instance is FormsLuaLibrary formsLib)
+					{
+						formsLib.MainForm = _mainForm;
+					}
 					else if (instance is GuiLuaLibrary guiLib)
 					{
 						// emu lib may be null now, depending on order of ReflectionCache.Types, but definitely won't be null when this is called
