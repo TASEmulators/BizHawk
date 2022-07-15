@@ -304,12 +304,17 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			retobj.GetDataOrThrow();
 		}
 
+		private bool _activated;
 		public void Enter()
 		{
 			if (_enterCount == 0)
 			{
 				var retobj = new ReturnData();
-				NativeImpl.wbx_activate_host(_nativeHost, retobj);
+				if (!this._activated)
+				{
+					NativeImpl.wbx_activate_host(_nativeHost, retobj);
+					this._activated = true;
+				}
 				retobj.GetDataOrThrow();
 			}
 			_enterCount++;
@@ -324,7 +329,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			else if (_enterCount == 1)
 			{
 				var retobj = new ReturnData();
-				NativeImpl.wbx_deactivate_host(_nativeHost, retobj);
+				// Moved to Dispose
+				//NativeImpl.wbx_deactivate_host(_nativeHost, retobj);
 				retobj.GetDataOrThrow();
 			}
 			_enterCount--;
@@ -337,8 +343,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				var retobj = new ReturnData();
 				if (_enterCount != 0)
 				{
+					// This is by design, to avoid calling wbx_activate_host / wbx_deactivate_host for every frame
 					NativeImpl.wbx_deactivate_host(_nativeHost, retobj);
-					Console.Error.WriteLine("Warn: Disposed of WaterboxHost which was active");
+					//Console.Error.WriteLine("Warn: Disposed of WaterboxHost which was active");
 				}
 				NativeImpl.wbx_destroy_host(_nativeHost, retobj);
 				_enterCount = 0;
