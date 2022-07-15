@@ -138,4 +138,24 @@ namespace BizHawk.Common
 			set => base[key] = value;
 		}
 	}
+
+	/// <summary>A dictionary whose index getter creates an entry if the requested key isn't part of the collection, making it always safe to use the returned value. The new entry's value will be the result of the default constructor of <typeparamref name="TValue"/>.</summary>
+	[Serializable]
+	public class WorkingValueDictionary<TKey, TValue> : Dictionary<TKey, TValue>
+		where TKey : notnull
+		where TValue : struct
+	{
+		public WorkingValueDictionary() { }
+
+		protected WorkingValueDictionary(SerializationInfo info, StreamingContext context) : base(info, context) { }
+
+		[property: MaybeNull]
+		public new TValue this[TKey key]
+		{
+			get => TryGetValue(key, out var temp)
+				? temp
+				: base[key] = default(TValue);
+			set => base[key] = value;
+		}
+	}
 }
