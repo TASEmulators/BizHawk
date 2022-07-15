@@ -27,6 +27,26 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
+		// Doesn't get allocated on heap
+		[StructLayout(LayoutKind.Explicit)]
+		public struct ReturnDataStruc
+		{
+			[FieldOffset(0)]
+			public byte ErrorMessageStart;
+			[FieldOffset(1024)]
+			public IntPtr Data;
+
+			public IntPtr GetDataOrThrow()
+			{
+				if (ErrorMessageStart != 0)
+				{
+					fixed (byte* p = &ErrorMessageStart)
+						throw new InvalidOperationException(Mershul.PtrToStringUtf8((IntPtr)p));
+				}
+				return Data;
+			}
+		}
+
 		[StructLayout(LayoutKind.Sequential)]
 		public class MemoryLayoutTemplate
 		{
@@ -139,7 +159,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// Ignored if host is already active.
 		/// </summary>
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void wbx_activate_host(IntPtr /*WaterboxHost*/ obj, ReturnData /*void*/ ret);
+		public abstract void wbx_activate_host(IntPtr /*WaterboxHost*/ obj, out ReturnDataStruc /*void*/ ret);
 
 		/// <summary>
 		/// Deactivates a host environment, and releases the mutex.

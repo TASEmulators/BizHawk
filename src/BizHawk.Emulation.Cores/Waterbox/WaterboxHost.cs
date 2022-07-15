@@ -309,13 +309,14 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			if (_enterCount == 0)
 			{
-				var retobj = new ReturnData();
+				// TODO: Check for accuracy.  Activation is expensive, so only do once.
 				if (!this._activated)
 				{
-					NativeImpl.wbx_activate_host(_nativeHost, retobj);
+					ReturnDataStruc retobj;
+					NativeImpl.wbx_activate_host(_nativeHost, out retobj);
 					this._activated = true;
+					retobj.GetDataOrThrow();
 				}
-				retobj.GetDataOrThrow();
 			}
 			_enterCount++;
 		}
@@ -328,10 +329,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 			else if (_enterCount == 1)
 			{
-				var retobj = new ReturnData();
+				// TODO: Check for accuracy.  This is deferred to Dispose
+				//var retobj = new ReturnData();
 				// Moved to Dispose
 				//NativeImpl.wbx_deactivate_host(_nativeHost, retobj);
-				retobj.GetDataOrThrow();
+				//retobj.GetDataOrThrow();
 			}
 			_enterCount--;
 		}
