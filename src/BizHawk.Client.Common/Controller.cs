@@ -34,11 +34,11 @@ namespace BizHawk.Client.Common
 		public void SetHapticChannelStrength(string name, int strength) => _haptics[name] = strength;
 
 		private readonly WorkingDictionary<string, List<string>> _bindings = new WorkingDictionary<string, List<string>>();
-		private readonly WorkingDictionary<string, bool> _buttons = new WorkingDictionary<string, bool>();
-		private readonly WorkingDictionary<string, int> _axes = new WorkingDictionary<string, int>();
+		private readonly WorkingValueDictionary<string, bool> _buttons = new WorkingValueDictionary<string, bool>();
+		private readonly WorkingValueDictionary<string, int> _axes = new WorkingValueDictionary<string, int>();
 		private readonly Dictionary<string, AxisSpec> _axisRanges = new WorkingDictionary<string, AxisSpec>();
 		private readonly Dictionary<string, AnalogBind> _axisBindings = new Dictionary<string, AnalogBind>();
-		private readonly Dictionary<string, int> _haptics = new WorkingDictionary<string, int>();
+		private readonly WorkingValueDictionary<string, int> _haptics = new WorkingValueDictionary<string, int>();
 		private readonly Dictionary<string, FeedbackBind> _feedbackBindings = new Dictionary<string, FeedbackBind>();
 
 		/// <summary>don't do this</summary>
