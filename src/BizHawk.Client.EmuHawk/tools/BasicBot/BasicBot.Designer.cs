@@ -606,7 +606,8 @@ namespace BizHawk.Client.EmuHawk
 			">=",
 			"=",
 			"<=",
-			"<"});
+			"<",
+			"!="});
 			this.MainOperator.Location = new System.Drawing.Point(208, 3);
 			this.MainOperator.Name = "MainOperator";
 			this.MainOperator.Size = new System.Drawing.Size(40, 21);

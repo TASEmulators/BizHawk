@@ -252,25 +252,25 @@ namespace BizHawk.Client.EmuHawk
 		public byte MainComparisonType
 		{
 			get => (byte)MainOperator.SelectedIndex;
-			set => MainOperator.SelectedIndex = value < 5 ? value : 0;
+			set => MainOperator.SelectedIndex = value < 6 ? value : 0;
 		}
 
 		public byte Tie1ComparisonType
 		{
 			get => (byte)Tiebreak1Operator.SelectedIndex;
-			set => Tiebreak1Operator.SelectedIndex = value < 5 ? value : 0;
+			set => Tiebreak1Operator.SelectedIndex = value < 6 ? value : 0;
 		}
 
 		public byte Tie2ComparisonType
 		{
 			get => (byte)Tiebreak2Operator.SelectedIndex;
-			set => Tiebreak2Operator.SelectedIndex = value < 5 ? value : 0;
+			set => Tiebreak2Operator.SelectedIndex = value < 6 ? value : 0;
 		}
 
 		public byte Tie3ComparisonType
 		{
 			get => (byte)Tiebreak3Operator.SelectedIndex;
-			set => Tiebreak3Operator.SelectedIndex = value < 5 ? value : 0;
+			set => Tiebreak3Operator.SelectedIndex = value < 6 ? value : 0;
 		}
 
 		public string FromSlot
@@ -956,6 +956,7 @@ namespace BizHawk.Client.EmuHawk
 				2 => (currentValue == bestValue),
 				3 => (currentValue <= bestValue),
 				4 => (currentValue < bestValue),
+				5 => (currentValue != bestValue),
 				_ => false
 			};
 		}
