@@ -13,6 +13,9 @@ internal static class RoslynUtils
 	public static ITypeSymbol? GetThrownExceptionType(this SemanticModel model, ThrowExpressionSyntax tes)
 		=> model.GetThrownExceptionType(tes.Expression);
 
+	public static ITypeSymbol? GetThrownExceptionType(this SemanticModel model, ThrowStatementSyntax tss)
+		=> model.GetThrownExceptionType(tss.Expression!);
+
 	public static bool Matches(this ITypeSymbol expected, ITypeSymbol? actual)
 		=> SymbolEqualityComparer.Default.Equals(expected, actual);
 }

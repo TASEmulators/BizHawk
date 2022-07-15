@@ -83,16 +83,10 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		public int BackgroundColor => 0;
 
 		public int VsyncNumerator
-		{
-			[FeatureNotImplemented]
-			get => NullVideo.DefaultVsyncNum;
-		}
+			=> NullVideo.DefaultVsyncNum; //TODO precise numbers or confirm the default is okay
 
 		public int VsyncDenominator
-		{
-			[FeatureNotImplemented]
-			get => NullVideo.DefaultVsyncDen;
-		}
+			=> NullVideo.DefaultVsyncDen; //TODO precise numbers or confirm the default is okay
 
 		public void Reset()
 		{

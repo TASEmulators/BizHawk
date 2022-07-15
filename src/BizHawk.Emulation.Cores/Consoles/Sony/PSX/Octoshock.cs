@@ -918,7 +918,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			get => throw new NotImplementedException();
 		}
 
-		[FeatureNotImplemented]
 		public bool DeterministicEmulation => true;
 
 		public int[] GetVideoBuffer() => frameBuffer;

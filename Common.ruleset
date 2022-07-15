@@ -15,6 +15,9 @@
 
 		<!-- Default branch of switch expression should throw InvalidOperationException/SwitchExpressionException or not throw -->
 		<Rule Id="BHI1005" Action="Error" />
+
+		<!-- Throw NotImplementedException from methods/props marked [FeatureNotImplemented] -->
+		<Rule Id="BHI3300" Action="Error" />
 	</Rules>
 	<Rules AnalyzerId="DocumentationAnalyzers" RuleNamespace="DocumentationAnalyzers.StyleRules">
 		<!-- Place text in paragraphs -->
