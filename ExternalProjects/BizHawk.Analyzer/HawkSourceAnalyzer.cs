@@ -1,6 +1,5 @@
 ﻿namespace BizHawk.Analyzers;
 
-using System;
 using System.Collections.Immutable;
 
 using Microsoft.CodeAnalysis;
@@ -66,9 +65,16 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 	{
 		context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
 		context.EnableConcurrentExecution();
+		INamedTypeSymbol? invalidOperationExceptionSym = null;
+		INamedTypeSymbol? switchExpressionExceptionSym = null;
 		context.RegisterSyntaxNodeAction(
-			static snac =>
+			snac =>
 			{
+				if (invalidOperationExceptionSym is null)
+				{
+					invalidOperationExceptionSym = snac.Compilation.GetTypeByMetadataName("System.InvalidOperationException")!;
+					switchExpressionExceptionSym = snac.Compilation.GetTypeByMetadataName("System.Runtime.CompilerServices.SwitchExpressionException");
+				}
 				switch (snac.Node)
 				{
 					case AnonymousMethodExpressionSyntax:
@@ -84,21 +90,9 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 						snac.ReportDiagnostic(Diagnostic.Create(DiagNoQueryExpression, snac.Node.GetLocation()));
 						break;
 					case SwitchExpressionArmSyntax { WhenClause: null, Pattern: DiscardPatternSyntax, Expression: ThrowExpressionSyntax tes }:
-						if (tes.Expression is ObjectCreationExpressionSyntax oces)
+						var thrownExceptionType = snac.SemanticModel.GetThrownExceptionType(tes);
+						if (thrownExceptionType is null)
 						{
-							// to resolve edge-cases involving aliases, you're supposed to use `snac.SemanticModel.GetTypeInfo(oces.Type).ConvertedType?.Name`, but I couldn't get it to work
-							if (((oces.Type as IdentifierNameSyntax)?.Identifier)?.ToString() is "SwitchExpressionException" or nameof(InvalidOperationException))
-							{
-								// correct usage, do not flag
-							}
-							else
-							{
-								snac.ReportDiagnostic(Diagnostic.Create(DiagSwitchShouldThrowIOE, tes.GetLocation(), ERR_MSG_SWITCH_THROWS_WRONG_TYPE));
-							}
-						}
-						else
-						{
-							// code reads `throw <something weird>`
 							snac.ReportDiagnostic(Diagnostic.Create(
 								DiagSwitchShouldThrowIOE,
 								tes.GetLocation(),
@@ -107,6 +101,11 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 								properties: null,
 								ERR_MSG_SWITCH_THROWS_UNKNOWN));
 						}
+						else if (!invalidOperationExceptionSym.Matches(thrownExceptionType) && switchExpressionExceptionSym?.Matches(thrownExceptionType) != true)
+						{
+							snac.ReportDiagnostic(Diagnostic.Create(DiagSwitchShouldThrowIOE, tes.GetLocation(), ERR_MSG_SWITCH_THROWS_WRONG_TYPE));
+						}
+						// else correct usage, do not flag
 						break;
 				}
 			},
