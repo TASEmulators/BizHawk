@@ -88,4 +88,77 @@ namespace BizHawk.Bizware.BizwareGL
 		public void PostMultiplyMatrix(Matrix4 value) { Top = Top * value; IsDirty = true; }
 		public void PreMultiplyMatrix(Matrix4 value) { Top = value * Top; IsDirty = true; }
 	}
+
+	// This is the same as MatrixStack, without the actual stack, and as a value type
+	// to reduce object allocations
+	// TODO: Merge functionality of MatrixStack / MatrickStackSlim to reduce code duplication
+	public struct MatrixTransformSlim
+	{
+		private const float DEG_TO_RAD_FACTOR = (float)System.Math.PI / 180.0f;
+
+		private static float DegreesToRadians(float degrees) => degrees * DEG_TO_RAD_FACTOR;
+
+		public void Init()
+		{
+			LoadIdentity();
+			IsDirty = false;
+		}
+
+		public static implicit operator Matrix4(MatrixTransformSlim ms) { return ms.Top; }
+		public static implicit operator MatrixTransformSlim(Matrix4 m) { return new MatrixTransformSlim(m); }
+
+		public MatrixTransformSlim(Matrix4 matrix) : this() { LoadMatrix(matrix); }
+
+		public bool IsDirty;
+
+		/// <summary>
+		/// This is made public for performance reasons, to avoid lame copies of the matrix when necessary. Don't mess it up!
+		/// </summary>
+		public Matrix4 Top;
+
+		/// <summary>
+		/// Resets the matrix stack to an empty identity matrix stack
+		/// </summary>
+		public void Clear()
+		{
+			LoadIdentity();
+			IsDirty = true;
+		}
+
+		/// <summary>
+		/// Clears the matrix stack and loads the specified value
+		/// </summary>
+		public void Clear(Matrix4 value)
+		{
+			Top = value;
+			IsDirty = true;
+		}
+
+		public void LoadMatrix(Matrix4 value) { Top = value; IsDirty = true; }
+
+		public void LoadIdentity() { Top = Matrix4.Identity; IsDirty = true; }
+
+		public void RotateAxis(Vector3 axisRotation, float angle) { PostMultiplyMatrix(Matrix4.CreateFromAxisAngle(in axisRotation, angle)); IsDirty = true; }
+
+		public void Scale(Vector3 scale) { PostMultiplyMatrix(Matrix4.CreateScale(in scale)); IsDirty = true; }
+		public void Scale(Vector2 scale) { PostMultiplyMatrix(Matrix4.CreateScale(scale.X, scale.Y, 1)); IsDirty = true; }
+		public void Scale(float x, float y, float z) { PostMultiplyMatrix(Matrix4.CreateScale(x, y, z)); IsDirty = true; }
+		public void Scale(float ratio) { Scale(ratio, ratio, ratio); IsDirty = true; }
+		public void Scale(float x, float y) { Scale(x, y, 1); IsDirty = true; }
+
+		public void RotateAxis(float x, float y, float z, float degrees) { PostMultiplyMatrix(Matrix4.CreateFromAxisAngle(new Vector3(x, y, z), DegreesToRadians(degrees))); IsDirty = true; }
+		public void RotateY(float degrees) { PostMultiplyMatrix(Matrix4.CreateRotationY(DegreesToRadians(degrees))); IsDirty = true; }
+		public void RotateX(float degrees) { PostMultiplyMatrix(Matrix4.CreateRotationX(DegreesToRadians(degrees))); IsDirty = true; }
+		public void RotateZ(float degrees) { PostMultiplyMatrix(Matrix4.CreateRotationZ(DegreesToRadians(degrees))); IsDirty = true; }
+
+		public void Translate(Vector2 v) { Translate(v.X, v.Y, 0); IsDirty = true; }
+		public void Translate(Vector3 trans) { PostMultiplyMatrix(Matrix4.CreateTranslation(in trans)); IsDirty = true; }
+		public void Translate(float x, float y, float z) { PostMultiplyMatrix(Matrix4.CreateTranslation(x, y, z)); IsDirty = true; }
+		public void Translate(float x, float y) { Translate(x, y, 0); IsDirty = true; }
+		public void Translate(Point pt) { Translate(pt.X, pt.Y, 0); IsDirty = true; }
+
+		public void PostMultiplyMatrix(MatrixStack ms) { PostMultiplyMatrix(ms.Top); IsDirty = true; }
+		public void PostMultiplyMatrix(Matrix4 value) { Top = Top * value; IsDirty = true; }
+		public void PreMultiplyMatrix(Matrix4 value) { Top = value * Top; IsDirty = true; }
+	}
 }
