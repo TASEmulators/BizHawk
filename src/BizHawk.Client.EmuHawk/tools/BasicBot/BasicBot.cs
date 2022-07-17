@@ -936,7 +936,7 @@ namespace BizHawk.Client.EmuHawk
 
 					if (current.TieBreak2 == comparison.TieBreak2)
 					{
-						if (!TestValue(Tie3ComparisonType, current.TieBreak3, current.TieBreak3))
+						if (!TestValue(Tie3ComparisonType, current.TieBreak3, comparison.TieBreak3))
 						{
 							return false;
 						}
