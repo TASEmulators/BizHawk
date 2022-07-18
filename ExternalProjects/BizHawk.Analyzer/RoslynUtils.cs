@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 internal static class RoslynUtils
 {
 	private static ITypeSymbol? GetThrownExceptionType(this SemanticModel model, ExpressionSyntax exprSyn)
-		=> exprSyn is ObjectCreationExpressionSyntax oces
+		=> exprSyn is ObjectCreationExpressionSyntax
 			? model.GetTypeInfo(exprSyn).Type
 			: null; // code reads `throw <something weird>`
 
