@@ -103,6 +103,7 @@ See [EmuHawk](#emuhawk). Build scripts also build DiscoHawk, or from VS2022 choo
 > EmuHawk is the main app, an emulator frontend.
 
 Uses C#; you will need the .NET SDK or an IDE which includes it. See the [.NET section](#for-any-net-project).
+Most projects target .NET Standard 2.0, with some targeting .NET Framework 4.8. It's written at the top of their project files, or you can check the [project graph](https://gitlab.com/TASVideos/BizHawk/snippets/1886666).
 
 The source for EmuHawk, plus DiscoHawk and the supporting libraries, is in `/src`, with a few extra files used by the build system elsewhere.
 EmuHawk's project file `/src/BizHawk.Client.EmuHawk/BizHawk.Client.EmuHawk.csproj` includes the other projects [in a tree](https://gitlab.com/TASVideos/BizHawk/snippets/1886666), and they're all included in `/BizHawk.sln`.
