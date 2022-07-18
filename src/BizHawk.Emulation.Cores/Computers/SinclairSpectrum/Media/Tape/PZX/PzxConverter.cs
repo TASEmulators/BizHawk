@@ -27,8 +27,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public override bool IsWriter => false;
 
-		protected override Type SelfType
-			=> typeof(PzxConverter);
+		protected override string SelfTypeName
+			=> nameof(PzxConverter);
 
 		/// <summary>
 		/// Working list of generated tape data blocks
@@ -99,8 +99,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			if (ident.ToUpper() != "PZXT")
 			{
 				// this is not a valid TZX format file
-				throw new Exception(typeof(PzxConverter).ToString() +
-					"This is not a valid PZX format file");
+				throw new Exception($"{nameof(PzxConverter)}: This is not a valid PZX format file");
 			}
 
 			_position = 0;

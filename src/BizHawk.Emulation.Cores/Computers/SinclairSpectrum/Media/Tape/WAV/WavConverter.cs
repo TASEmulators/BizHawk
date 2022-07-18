@@ -28,8 +28,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public override bool IsWriter => false;
 
-		protected override Type SelfType
-			=> typeof(WavConverter);
+		protected override string SelfTypeName
+			=> nameof(WavConverter);
 
 		/// <summary>
 		/// Position counter
@@ -77,8 +77,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			if (ident.ToUpper() != "WAVE")
 			{
 				// this is not a valid TZX format file
-				throw new Exception(typeof(WavConverter).ToString() +
-					"This is not a valid WAV format file");
+				throw new Exception($"{nameof(WavConverter)}: This is not a valid WAV format file");
 			}
 
 			//_position = 0;

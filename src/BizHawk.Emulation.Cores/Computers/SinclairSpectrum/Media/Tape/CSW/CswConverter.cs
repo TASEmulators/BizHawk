@@ -32,8 +32,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public override bool IsWriter => false;
 
-		protected override Type SelfType
-			=> typeof(CswConverter);
+		protected override string SelfTypeName
+			=> nameof(CswConverter);
 
 		private readonly DatacorderDevice _datacorder;
 
@@ -83,15 +83,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			if (ident.ToUpper() != "COMPRESSED SQUARE WAVE")
 			{
 				// this is not a valid CSW format file
-				throw new Exception(typeof(CswConverter).ToString() +
-					"This is not a valid CSW format file");
+				throw new Exception($"{nameof(CswConverter)}: This is not a valid CSW format file");
 			}
 
 			if (data[0x16] != 0x1a)
 			{
 				// invalid terminator code
-				throw new Exception(typeof(CswConverter).ToString() +
-					"This image reports as a CSW but has an invalid terminator code");
+				throw new Exception($"{nameof(CswConverter)}: This image reports as a CSW but has an invalid terminator code");
 			}
 
 			_position = 0;
@@ -185,13 +183,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				if (compressionType == 1)
 					Array.Copy(data, _position, cswDataUncompressed, 0, cswDataUncompressed.Length);
 				else
-					throw new Exception(typeof(CswConverter).ToString() +
-					"CSW Format unknown compression type");
+					throw new Exception($"{nameof(CswConverter)}: CSW Format unknown compression type");
 			}
 			else
 			{
-				throw new Exception(typeof(CswConverter).ToString() +
-					"CSW Format Version " + majorVer + "." + minorVer + " is not currently supported");
+				throw new Exception($"{nameof(CswConverter)}: CSW Format Version {majorVer}.{minorVer} is not currently supported");
 			}
 
 			// create the single tape block

@@ -27,8 +27,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public override bool IsWriter => false;
 
-		protected override Type SelfType
-			=> typeof(TapConverter);
+		protected override string SelfTypeName
+			=> nameof(TapConverter);
 
 		private readonly DatacorderDevice _datacorder;
 

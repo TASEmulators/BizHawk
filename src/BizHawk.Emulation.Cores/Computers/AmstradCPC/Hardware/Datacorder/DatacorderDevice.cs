@@ -347,9 +347,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				catch (Exception ex)
 				{
 					// exception during operation
-					var e = ex;
-					throw new Exception(typeof(DatacorderDevice).ToString() +
-					"\n\nTape image file has a valid CDT header, but threw an exception whilst data was being parsed.\n\n" + e.ToString());
+					throw new Exception($"{nameof(DatacorderDevice)}\n\nTape image file has a valid CDT header, but threw an exception whilst data was being parsed.\n\n{ex}", ex);
 				}
 			}
 		}

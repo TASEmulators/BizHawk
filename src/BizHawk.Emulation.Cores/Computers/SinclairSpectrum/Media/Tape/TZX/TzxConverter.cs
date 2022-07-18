@@ -26,8 +26,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public override bool IsWriter => false;
 
-		protected override Type SelfType
-			=> typeof(TzxConverter);
+		protected override string SelfTypeName
+			=> nameof(TzxConverter);
 
 		/// <summary>
 		/// Working list of generated tape data blocks
@@ -205,8 +205,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			if (ident != "ZXTape!" || eotm != 0x1A)
 			{
 				// this is not a valid TZX format file
-				throw new Exception(typeof(TzxConverter) +
-					"This is not a valid TZX format file");
+				throw new Exception($"{nameof(TzxConverter)}: This is not a valid TZX format file");
 			}
 
 			// iterate through each block

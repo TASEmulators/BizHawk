@@ -22,6 +22,12 @@
 		<!-- Don't call this.GetType(), use typeof operator (or replace subtype check with better encapsulation) -->
 		<Rule Id="BHI1101" Action="Error" />
 
+		<!-- Don't call typeof(T).Name, use nameof operator -->
+		<Rule Id="BHI1102" Action="Error" />
+
+		<!-- Don't call typeof(T).ToString(), use nameof operator or typeof(T).FullName -->
+		<Rule Id="BHI1103" Action="Error" />
+
 		<!-- Throw NotImplementedException from methods/props marked [FeatureNotImplemented] -->
 		<Rule Id="BHI3300" Action="Error" />
 	</Rules>

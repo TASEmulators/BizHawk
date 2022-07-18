@@ -293,7 +293,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		private void CheckDisposed()
 		{
 			if (Context == IntPtr.Zero)
-				throw new ObjectDisposedException(typeof(QuickNES).Name);
+				throw new ObjectDisposedException(nameof(QuickNES));
 		}
 
 		// Fix some incorrect ines header entries that QuickNES uses to load games.

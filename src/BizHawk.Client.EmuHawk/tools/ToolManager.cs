@@ -131,7 +131,7 @@ namespace BizHawk.Client.EmuHawk
 			if (newTool is Form form) form.Owner = _owner;
 			ServiceInjector.UpdateServices(_emulator.ServiceProvider, newTool);
 			SetBaseProperties(newTool);
-			var toolTypeName = typeof(T).ToString();
+			var toolTypeName = typeof(T).FullName!;
 			// auto settings
 			if (newTool is IToolFormAutoConfig autoConfigTool)
 			{

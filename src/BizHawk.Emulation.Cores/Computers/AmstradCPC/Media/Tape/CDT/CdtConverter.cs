@@ -26,8 +26,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public override bool IsWriter => false;
 
-		protected override Type SelfType
-			=> typeof(CdtConverter);
+		protected override string SelfTypeName
+			=> nameof(CdtConverter);
 
 		/// <summary>
 		/// Working list of generated tape data blocks
@@ -167,8 +167,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			if (ident != "ZXTape!" || eotm != 0x1A)
 			{
 				// this is not a valid TZX format file
-				throw new Exception(typeof(CdtConverter) +
-					"This is not a valid TZX format file");
+				throw new Exception($"{nameof(CdtConverter)}: This is not a valid TZX format file");
 			}
 
 			// iterate through each block

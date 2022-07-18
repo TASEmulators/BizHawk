@@ -775,8 +775,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 				if (!found)
 				{
-					throw new Exception(typeof(DriveState).ToString() +
-						"\n\nDisk image file could not be parsed. Potentially an unknown format.");
+					throw new Exception($"{nameof(DriveState)}\n\nDisk image file could not be parsed. Potentially an unknown format.");
 				}
 			}
 
