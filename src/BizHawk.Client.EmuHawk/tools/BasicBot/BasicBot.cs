@@ -915,50 +915,29 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool IsBetter(BotAttempt comparison, BotAttempt current)
 		{
-			if (!TestValue(MainComparisonType, current.Maximize, comparison.Maximize))
-			{
-				return false;
-			}
-
-			if (current.Maximize == comparison.Maximize)
-			{
-				if (!TestValue(Tie1ComparisonType, current.TieBreak1, comparison.TieBreak1))
+			static bool TestValue(byte operation, int currentValue, int bestValue)
+				=> operation switch
 				{
-					return false;
-				}
+					0 => (currentValue > bestValue),
+					1 => (currentValue >= bestValue),
+					2 => (currentValue == bestValue),
+					3 => (currentValue <= bestValue),
+					4 => (currentValue < bestValue),
+					5 => (currentValue != bestValue),
+					_ => false
+				};
 
-				if (current.TieBreak1 == comparison.TieBreak1)
-				{
-					if (!TestValue(Tie2ComparisonType, current.TieBreak2, comparison.TieBreak2))
-					{
-						return false;
-					}
+			if (!TestValue(MainComparisonType, current.Maximize, comparison.Maximize)) return false;
+			if (current.Maximize != comparison.Maximize) return true;
 
-					if (current.TieBreak2 == comparison.TieBreak2)
-					{
-						if (!TestValue(Tie3ComparisonType, current.TieBreak3, comparison.TieBreak3))
-						{
-							return false;
-						}
-					}
-				}
-			}
+			if (!TestValue(Tie1ComparisonType, current.TieBreak1, comparison.TieBreak1)) return false;
+			if (current.TieBreak1 != comparison.TieBreak1) return true;
 
-			return true;
-		}
+			if (!TestValue(Tie2ComparisonType, current.TieBreak2, comparison.TieBreak2)) return false;
+			if (current.TieBreak2 != comparison.TieBreak2) return true;
 
-		private bool TestValue(byte operation, int currentValue, int bestValue)
-		{
-			return operation switch
-			{
-				0 => (currentValue > bestValue),
-				1 => (currentValue >= bestValue),
-				2 => (currentValue == bestValue),
-				3 => (currentValue <= bestValue),
-				4 => (currentValue < bestValue),
-				5 => (currentValue != bestValue),
-				_ => false
-			};
+			if (!TestValue(Tie3ComparisonType, current.TieBreak3, comparison.TieBreak3)) return false;
+			/*if (current.TieBreak3 != comparison.TieBreak3)*/ return true;
 		}
 
 		private void UpdateBestAttempt()
