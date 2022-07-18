@@ -90,9 +90,9 @@ namespace BizHawk.Client.Common
 									data = File.ReadAllBytes(fullPath.Split('|').First());
 								}
 							}
-							catch
+							catch (Exception e)
 							{
-								throw new Exception($"Couldn't load XMLGame LoadAsset \"{filename}\"");
+								throw new Exception($"Couldn't load XMLGame LoadAsset \"{filename}\"", e);
 							}
 						}
 

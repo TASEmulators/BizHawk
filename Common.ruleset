@@ -270,7 +270,7 @@
 		<Rule Id="MA0053" Action="Hidden" />
 
 		<!-- Embed the caught exception as innerException -->
-		<Rule Id="MA0054" Action="Hidden" />
+		<Rule Id="MA0054" Action="Error" />
 
 		<!-- Do not use finalizer -->
 		<Rule Id="MA0055" Action="Hidden" />
