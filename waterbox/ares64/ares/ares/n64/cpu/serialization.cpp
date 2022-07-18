@@ -8,6 +8,7 @@ auto CPU::serialize(serializer& s) -> void {
   s(branch.state);
 
   s(context.endian);
+  s(context.physMask);
   s(context.mode);
   s(context.bits);
   s(context.segment);

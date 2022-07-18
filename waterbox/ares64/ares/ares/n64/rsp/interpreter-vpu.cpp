@@ -301,13 +301,57 @@ auto RSP::SDV(cr128& vt, cr32& rs, s8 imm) -> void {
 template<u8 e>
 auto RSP::SFV(cr128& vt, cr32& rs, s8 imm) -> void {
   auto address = rs.u32 + imm * 16;
-  auto start = e >> 1;
-  auto end = start + 4;
-  auto base = address & 15;
-  address &= ~15;
-  for(u32 offset = start; offset < end; offset++) {
-    dmem.write<Byte>(address + (base & 15), vt.element(offset & 7) >> 7);
-    base += 4;
+  auto base = address & 7;
+  address &= ~7;
+  switch (e) {
+  case 0: case 15:
+    dmem.write<Byte>(address + (base +  0 & 15), vt.element(0) >> 7);
+    dmem.write<Byte>(address + (base +  4 & 15), vt.element(1) >> 7);
+    dmem.write<Byte>(address + (base +  8 & 15), vt.element(2) >> 7);
+    dmem.write<Byte>(address + (base + 12 & 15), vt.element(3) >> 7);
+    break;
+  case 1:
+    dmem.write<Byte>(address + (base +  0 & 15), vt.element(6) >> 7);
+    dmem.write<Byte>(address + (base +  4 & 15), vt.element(7) >> 7);
+    dmem.write<Byte>(address + (base +  8 & 15), vt.element(4) >> 7);
+    dmem.write<Byte>(address + (base + 12 & 15), vt.element(5) >> 7);
+    break;
+  case 4:
+    dmem.write<Byte>(address + (base +  0 & 15), vt.element(1) >> 7);
+    dmem.write<Byte>(address + (base +  4 & 15), vt.element(2) >> 7);
+    dmem.write<Byte>(address + (base +  8 & 15), vt.element(3) >> 7);
+    dmem.write<Byte>(address + (base + 12 & 15), vt.element(0) >> 7);
+    break;
+  case 5:
+    dmem.write<Byte>(address + (base +  0 & 15), vt.element(7) >> 7);
+    dmem.write<Byte>(address + (base +  4 & 15), vt.element(4) >> 7);
+    dmem.write<Byte>(address + (base +  8 & 15), vt.element(5) >> 7);
+    dmem.write<Byte>(address + (base + 12 & 15), vt.element(6) >> 7);
+    break;
+  case 8:
+    dmem.write<Byte>(address + (base +  0 & 15), vt.element(4) >> 7);
+    dmem.write<Byte>(address + (base +  4 & 15), vt.element(5) >> 7);
+    dmem.write<Byte>(address + (base +  8 & 15), vt.element(6) >> 7);
+    dmem.write<Byte>(address + (base + 12 & 15), vt.element(7) >> 7);
+    break;
+  case 11:
+    dmem.write<Byte>(address + (base +  0 & 15), vt.element(3) >> 7);
+    dmem.write<Byte>(address + (base +  4 & 15), vt.element(0) >> 7);
+    dmem.write<Byte>(address + (base +  8 & 15), vt.element(1) >> 7);
+    dmem.write<Byte>(address + (base + 12 & 15), vt.element(2) >> 7);
+    break;
+  case 12:
+    dmem.write<Byte>(address + (base +  0 & 15), vt.element(5) >> 7);
+    dmem.write<Byte>(address + (base +  4 & 15), vt.element(6) >> 7);
+    dmem.write<Byte>(address + (base +  8 & 15), vt.element(7) >> 7);
+    dmem.write<Byte>(address + (base + 12 & 15), vt.element(4) >> 7);
+    break;
+  default:
+    dmem.write<Byte>(address + (base +  0 & 15), 0);
+    dmem.write<Byte>(address + (base +  4 & 15), 0);
+    dmem.write<Byte>(address + (base +  8 & 15), 0);
+    dmem.write<Byte>(address + (base + 12 & 15), 0);
+    break;
   }
 }
 
@@ -382,14 +426,14 @@ auto RSP::SSV(cr128& vt, cr32& rs, s8 imm) -> void {
 template<u8 e>
 auto RSP::STV(u8 vt, cr32& rs, s8 imm) -> void {
   auto address = rs.u32 + imm * 16;
-  auto start = vt;
-  auto end = min(32, start + 8);
-  auto element = 8 - (e >> 1);
-  auto base = (address & 15) + (element << 1);
-  address &= ~15;
+  auto start = vt & ~7;
+  auto end = start + 8;
+  auto element = 16 - (e & ~1);
+  auto base = (address & 7) - (e & ~1);
+  address &= ~7;
   for(u32 offset = start; offset < end; offset++) {
-    dmem.writeUnaligned<Half>(address + (base & 15), vpu.r[offset].element(element++ & 7));
-    base += 2;
+    dmem.write<Byte>(address + (base++ & 15), vpu.r[offset].byte(element++ & 15));
+    dmem.write<Byte>(address + (base++ & 15), vpu.r[offset].byte(element++ & 15));
   }
 }
 
@@ -425,15 +469,21 @@ auto RSP::VABS(r128& vd, cr128& vs, cr128& vt) -> void {
     r128 vte = vt(e);
     for(u32 n : range(8)) {
       if(vs.s16(n) < 0) {
-        if(vte.s16(n) == -32768) vte.s16(n) = -32767;
-        ACCL.s16(n) = -vte.s16(n);
+        if(vte.s16(n) == -32768) {
+          ACCL.s16(n)  = -32768;
+          vd.s16(n)    = 32767;
+        } else {
+          ACCL.s16(n) = -vte.s16(n);
+          vd.s16(n)   = -vte.s16(n);
+        }
       } else if(vs.s16(n) > 0) {
         ACCL.s16(n) = +vte.s16(n);
+        vd.s16(n)   = +vte.s16(n);
       } else {
         ACCL.s16(n) = 0;
+        vd.s16(n)   = 0;
       }
     }
-    vd = ACCL;
   }
 
   if constexpr(Accuracy::RSP::SIMD) {
@@ -581,10 +631,14 @@ auto RSP::VCL(r128& vd, cr128& vs, cr128& vt) -> void {
       if(VCOL.get(n)) {
         if(VCOH.get(n)) {
           ACCL.u16(n) = VCCL.get(n) ? -vte.u16(n) : vs.u16(n);
-        } else if(VCE.get(n)) {
-          ACCL.u16(n) = VCCL.set(n, vs.u16(n) + vte.u16(n) <= 0xffff) ? -vte.u16(n) : vs.u16(n);
         } else {
-          ACCL.u16(n) = VCCL.set(n, vs.u16(n) + vte.u16(n) == 0) ? -vte.u16(n) : vs.u16(n);
+          u16 sum = vs.u16(n) + vte.u16(n);
+          bool carry = (vs.u16(n) + vte.u16(n)) != sum;
+          if(VCE.get(n)) {
+            ACCL.u16(n) = VCCL.set(n, (!sum || !carry)) ? -vte.u16(n) : vs.u16(n);
+          } else {
+            ACCL.u16(n) = VCCL.set(n, (!sum && !carry)) ? -vte.u16(n) : vs.u16(n);
+          }
         }
       } else {
         if(VCOH.get(n)) {
@@ -679,12 +733,11 @@ auto RSP::VEQ(r128& vd, cr128& vs, cr128& vt) -> void {
   if constexpr(Accuracy::RSP::SISD) {
     cr128 vte = vt(e);
     for(u32 n : range(8)) {
-      ACCL.u16(n) = VCCL.set(n, !VCE.get(n) && vs.u16(n) == vte.u16(n)) ? vs.u16(n) : vte.u16(n);
+      ACCL.u16(n) = VCCL.set(n, !VCOH.get(n) && vs.u16(n) == vte.u16(n)) ? vs.u16(n) : vte.u16(n);
     }
     VCCH = zero;  //unverified
     VCOL = zero;
     VCOH = zero;
-    VCE = zero;
     vd = ACCL;
   }
 
@@ -707,12 +760,11 @@ auto RSP::VGE(r128& vd, cr128& vs, cr128& vt) -> void {
   if constexpr(Accuracy::RSP::SISD) {
     cr128 vte = vt(e);
     for(u32 n : range(8)) {
-      ACCL.u16(n) = VCCL.set(n, vs.s16(n) > vte.s16(n) || (vs.s16(n) == vte.s16(n) && (!VCOL.get(n) || VCE.get(n)))) ? vs.u16(n) : vte.u16(n);
+      ACCL.u16(n) = VCCL.set(n, vs.s16(n) > vte.s16(n) || (vs.s16(n) == vte.s16(n) && (!VCOL.get(n) || !VCOH.get(n)))) ? vs.u16(n) : vte.u16(n);
     }
     VCCH = zero;  //unverified
     VCOL = zero;
     VCOH = zero;
-    VCE = zero;
     vd = ACCL;
   }
 
@@ -738,12 +790,11 @@ auto RSP::VLT(r128& vd, cr128& vs, cr128& vt) -> void {
   if constexpr(Accuracy::RSP::SISD) {
     cr128 vte = vt(e);
     for(u32 n : range(8)) {
-      ACCL.u16(n) = VCCL.set(n, vs.s16(n) < vte.s16(n) || (vs.s16(n) == vte.s16(n) && VCOL.get(n) && !VCE.get(n))) ? vs.u16(n) : vte.u16(n);
+      ACCL.u16(n) = VCCL.set(n, vs.s16(n) < vte.s16(n) || (vs.s16(n) == vte.s16(n) && VCOL.get(n) && VCOH.get(n))) ? vs.u16(n) : vte.u16(n);
     }
-    VCCH = zero;  //unverified
+    VCCH = zero;
     VCOL = zero;
     VCOH = zero;
-    VCE = zero;
     vd = ACCL;
   }
 
@@ -769,7 +820,7 @@ auto RSP::VMACF(r128& vd, cr128& vs, cr128& vt) -> void {
   if constexpr(Accuracy::RSP::SISD) {
     cr128 vte = vt(e);
     for(u32 n : range(8)) {
-      accumulatorSet(n, accumulatorGet(n) + vs.s16(n) * vte.s16(n) * 2);
+      accumulatorSet(n, accumulatorGet(n) + (s64)vs.s16(n) * (s64)vte.s16(n) * 2);
       if constexpr(U == 0) {
         vd.u16(n) = accumulatorSaturate(n, 1, 0x8000, 0x7fff);
       }
@@ -1099,9 +1150,9 @@ auto RSP::VMULF(r128& vd, cr128& vs, cr128& vt) -> void {
   if constexpr(Accuracy::RSP::SISD) {
     cr128 vte = vt(e);
     for(u32 n : range(8)) {
-      accumulatorSet(n, vs.s16(n) * vte.s16(n) * 2 + 0x8000);
+      accumulatorSet(n, (s64)vs.s16(n) * (s64)vte.s16(n) * 2 + 0x8000);
       if constexpr(U == 0) {
-        vd.u16(n) = ACCM.u16(n);
+        vd.u16(n) = accumulatorSaturate(n, 1, 0x8000, 0x7fff);
       }
       if constexpr(U == 1) {
         vd.u16(n) = ACCH.s16(n) < 0 ? 0x0000 : (ACCH.s16(n) ^ ACCM.s16(n)) < 0 ? 0xffff : ACCM.u16(n);
@@ -1175,12 +1226,11 @@ auto RSP::VNE(r128& vd, cr128& vs, cr128& vt) -> void {
   if constexpr(Accuracy::RSP::SISD) {
     cr128 vte = vt(e);
     for(u32 n : range(8)) {
-      ACCL.u16(n) = VCCL.set(n, vs.u16(n) != vte.u16(n) || VCE.get(n)) ? vs.u16(n) : vte.u16(n);
+      ACCL.u16(n) = VCCL.set(n, vs.u16(n) != vte.u16(n) || VCOH.get(n)) ? vs.u16(n) : vte.u16(n);
     }
     VCCH = zero;  //unverified
     VCOL = zero;
     VCOH = zero;
-    VCE = zero;
     vd = ACCL;
   }
 

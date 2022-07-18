@@ -616,6 +616,8 @@ auto RDP::syncTile() -> void {
 //0x29
 auto RDP::syncFull() -> void {
   mi.raise(MI::IRQ::DP);
+  command.pipeBusy = 0;
+  command.startGclk = 0;
 }
 
 //0x2a
