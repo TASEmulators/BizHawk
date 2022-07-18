@@ -66,8 +66,10 @@ namespace BizHawk.Emulation.Common
 			{
 				case LibSpeexDSP.RESAMPLER_ERR.SUCCESS:
 					return;
+#pragma warning disable MA0012 // this will crash the .NET host, as it should
 				case LibSpeexDSP.RESAMPLER_ERR.ALLOC_FAILED:
 					throw new InsufficientMemoryException($"{nameof(LibSpeexDSP)}: Alloc failed");
+#pragma warning restore MA0012
 				case LibSpeexDSP.RESAMPLER_ERR.BAD_STATE:
 					throw new Exception($"{nameof(LibSpeexDSP)}: Bad state");
 				case LibSpeexDSP.RESAMPLER_ERR.INVALID_ARG:

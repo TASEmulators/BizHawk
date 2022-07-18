@@ -101,7 +101,7 @@ namespace BizHawk.Common
 						_extractor = DearchivalMethod.Construct(path);
 						try
 						{
-							_archiveItems = _extractor.Scan() ?? throw new NullReferenceException();
+							_archiveItems = _extractor.Scan()!;
 							IsArchive = true;
 						}
 						catch

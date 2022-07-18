@@ -147,13 +147,13 @@
 		<Rule Id="MA0011" Action="Hidden" />
 
 		<!-- Do not raise reserved exception type -->
-		<Rule Id="MA0012" Action="Hidden" />
+		<Rule Id="MA0012" Action="Error" />
 
 		<!-- Types should not extend System.ApplicationException -->
 		<Rule Id="MA0013" Action="Error" />
 
 		<!-- Do not raise System.ApplicationException type -->
-		<Rule Id="MA0014" Action="Hidden" />
+		<Rule Id="MA0014" Action="Error" />
 
 		<!-- Specify the parameter name in ArgumentException -->
 		<Rule Id="MA0015" Action="Hidden" />

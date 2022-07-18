@@ -78,14 +78,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			_sram.Data = s.sram;
 
 			// special combined ram memory domain
+			const int SIZE_COMBINED = (256 + 32) * 1024;
 			_cwram.Peek =
 				addr =>
 				{
-					if (addr < 0 || addr >= (256 + 32) * 1024)
-					{
-						throw new IndexOutOfRangeException();
-					}
-
+					if (addr is < 0 or >= SIZE_COMBINED) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "invalid address");
 					if (addr >= 256 * 1024)
 					{
 						return PeekWRAM(s.iwram, addr & 32767);
@@ -96,11 +93,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			_cwram.Poke =
 				(addr, val) =>
 				{
-					if (addr < 0 || addr >= (256 + 32) * 1024)
-					{
-						throw new IndexOutOfRangeException();
-					}
-
+					if (addr is < 0 or >= SIZE_COMBINED) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "invalid address");
 					if (addr >= 256 * 1024)
 					{
 						PokeWRAM(s.iwram, addr & 32767, val);
