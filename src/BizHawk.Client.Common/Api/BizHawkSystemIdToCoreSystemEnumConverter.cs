@@ -22,7 +22,7 @@ namespace BizHawk.Client.Common
 		/// <param name="parameter">The converter parameter to use; null in our case</param>
 		/// <param name="cultureInfo">The culture to use in the converter</param>
 		/// <returns>A <see cref="CoreSystem"/> that is equivalent to BizHawk SystemId <see cref="string"/></returns>
-		/// <exception cref="IndexOutOfRangeException">Thrown when SystemId hasn't been found</exception>
+		/// <exception cref="InvalidOperationException">Thrown when SystemId hasn't been found</exception>
 		public object Convert(object value, Type targetType, object parameter, CultureInfo cultureInfo)
 		{
 			return (string) value switch
@@ -75,7 +75,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		/// <param name="value"><see cref="string"/> you want to convert</param>
 		/// <returns>A <see cref="CoreSystem"/> that is equivalent to BizHawk SystemId <see cref="string"/></returns>
-		/// <exception cref="IndexOutOfRangeException">Thrown when SystemId hasn't been found</exception>
+		/// <exception cref="InvalidOperationException">Thrown when SystemId hasn't been found</exception>
 		public CoreSystem Convert(string value)
 		{
 			return (CoreSystem)Convert(value, null, null, CultureInfo.CurrentCulture);
@@ -90,7 +90,7 @@ namespace BizHawk.Client.Common
 		/// <param name="parameter">The converter parameter to use; null in our case</param>
 		/// <param name="cultureInfo">The culture to use in the converter</param>
 		/// <returns>A <see cref="string"/> that is used by BizHawk SystemId</returns>
-		/// <exception cref="IndexOutOfRangeException">Thrown when <see cref="CoreSystem"/> hasn't been found</exception>
+		/// <exception cref="InvalidOperationException">Thrown when <see cref="CoreSystem"/> hasn't been found</exception>
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo cultureInfo)
 		{
 			return (CoreSystem) value switch
@@ -141,7 +141,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		/// <param name="value"><see cref="CoreSystem"/> you want to convert</param>
 		/// <returns>A <see cref="string"/> that is used by BizHawk SystemId</returns>
-		/// <exception cref="IndexOutOfRangeException">Thrown when <see cref="CoreSystem"/> hasn't been found</exception>
+		/// <exception cref="InvalidOperationException">Thrown when <see cref="CoreSystem"/> hasn't been found</exception>
 		public string ConvertBack(CoreSystem value)
 		{
 			return (string)ConvertBack(value, null, null, CultureInfo.CurrentCulture);
