@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// <summary>
 	/// Responsible for TZX format serialization
 	/// </summary>
-	public class CdtConverter : MediaConverter
+	public sealed class CdtConverter : MediaConverter
 	{
 		/// <summary>
 		/// The type of serializer
@@ -25,6 +25,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// Signs whether this class can be used to write the data format
 		/// </summary>
 		public override bool IsWriter => false;
+
+		protected override Type SelfType
+			=> typeof(CdtConverter);
 
 		/// <summary>
 		/// Working list of generated tape data blocks
@@ -164,7 +167,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			if (ident != "ZXTape!" || eotm != 0x1A)
 			{
 				// this is not a valid TZX format file
-				throw new Exception(this.GetType() +
+				throw new Exception(typeof(CdtConverter) +
 					"This is not a valid TZX format file");
 			}
 

@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// Responsible for Compressed Square Wave conversion
 	/// https://web.archive.org/web/20171024182530/http://ramsoft.bbk.org.omegahg.com/csw.html
 	/// </summary>
-	public class CswConverter : MediaConverter
+	public sealed class CswConverter : MediaConverter
 	{
 		/// <summary>
 		/// The type of serializer
@@ -31,6 +31,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// Signs whether this class can be used to write the data format
 		/// </summary>
 		public override bool IsWriter => false;
+
+		protected override Type SelfType
+			=> typeof(CswConverter);
 
 		private readonly DatacorderDevice _datacorder;
 
@@ -80,14 +83,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			if (ident.ToUpper() != "COMPRESSED SQUARE WAVE")
 			{
 				// this is not a valid CSW format file
-				throw new Exception(this.GetType().ToString() +
+				throw new Exception(typeof(CswConverter).ToString() +
 					"This is not a valid CSW format file");
 			}
 
 			if (data[0x16] != 0x1a)
 			{
 				// invalid terminator code
-				throw new Exception(this.GetType().ToString() +
+				throw new Exception(typeof(CswConverter).ToString() +
 					"This image reports as a CSW but has an invalid terminator code");
 			}
 
@@ -182,12 +185,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				if (compressionType == 1)
 					Array.Copy(data, _position, cswDataUncompressed, 0, cswDataUncompressed.Length);
 				else
-					throw new Exception(this.GetType().ToString() +
+					throw new Exception(typeof(CswConverter).ToString() +
 					"CSW Format unknown compression type");
 			}
 			else
 			{
-				throw new Exception(this.GetType().ToString() +
+				throw new Exception(typeof(CswConverter).ToString() +
 					"CSW Format Version " + majorVer + "." + minorVer + " is not currently supported");
 			}
 

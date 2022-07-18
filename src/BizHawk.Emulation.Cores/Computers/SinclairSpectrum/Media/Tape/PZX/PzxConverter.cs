@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// Reponsible for PZX format serializaton
 	/// Based on the information here:  http://zxds.raxoft.cz/docs/pzx.txt
 	/// </summary>
-	public class PzxConverter : MediaConverter
+	public sealed class PzxConverter : MediaConverter
 	{
 		/// <summary>
 		/// The type of serializer
@@ -26,6 +26,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// Signs whether this class can be used to write the data format
 		/// </summary>
 		public override bool IsWriter => false;
+
+		protected override Type SelfType
+			=> typeof(PzxConverter);
 
 		/// <summary>
 		/// Working list of generated tape data blocks
@@ -96,7 +99,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			if (ident.ToUpper() != "PZXT")
 			{
 				// this is not a valid TZX format file
-				throw new Exception(this.GetType().ToString() +
+				throw new Exception(typeof(PzxConverter).ToString() +
 					"This is not a valid PZX format file");
 			}
 

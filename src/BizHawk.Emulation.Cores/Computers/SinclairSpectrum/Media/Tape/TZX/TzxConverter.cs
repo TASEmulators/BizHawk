@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// <summary>
 	/// Reponsible for TZX format serializaton
 	/// </summary>
-	public class TzxConverter : MediaConverter
+	public sealed class TzxConverter : MediaConverter
 	{
 		/// <summary>
 		/// The type of serializer
@@ -25,6 +25,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// Signs whether this class can be used to write the data format
 		/// </summary>
 		public override bool IsWriter => false;
+
+		protected override Type SelfType
+			=> typeof(TzxConverter);
 
 		/// <summary>
 		/// Working list of generated tape data blocks
@@ -202,7 +205,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			if (ident != "ZXTape!" || eotm != 0x1A)
 			{
 				// this is not a valid TZX format file
-				throw new Exception(this.GetType() +
+				throw new Exception(typeof(TzxConverter) +
 					"This is not a valid TZX format file");
 			}
 

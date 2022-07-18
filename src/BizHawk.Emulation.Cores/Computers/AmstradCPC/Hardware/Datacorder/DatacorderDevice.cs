@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// <summary>
 	/// Represents the tape device
 	/// </summary>
-	public class DatacorderDevice
+	public sealed class DatacorderDevice
 	{
 		private CPCBase _machine;
 		private Z80A _cpu => _machine.CPU;
@@ -348,7 +348,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				{
 					// exception during operation
 					var e = ex;
-					throw new Exception(this.GetType().ToString() +
+					throw new Exception(typeof(DatacorderDevice).ToString() +
 					"\n\nTape image file has a valid CDT header, but threw an exception whilst data was being parsed.\n\n" + e.ToString());
 				}
 			}

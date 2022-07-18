@@ -16,6 +16,12 @@
 		<!-- Default branch of switch expression should throw InvalidOperationException/SwitchExpressionException or not throw -->
 		<Rule Id="BHI1005" Action="Error" />
 
+		<!-- Don't call this.GetType() in sealed type, use typeof operator -->
+		<Rule Id="BHI1100" Action="Error" />
+
+		<!-- Don't call this.GetType(), use typeof operator (or replace subtype check with better encapsulation) -->
+		<Rule Id="BHI1101" Action="Error" />
+
 		<!-- Throw NotImplementedException from methods/props marked [FeatureNotImplemented] -->
 		<Rule Id="BHI3300" Action="Error" />
 	</Rules>

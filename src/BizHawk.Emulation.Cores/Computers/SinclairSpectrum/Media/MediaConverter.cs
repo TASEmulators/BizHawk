@@ -26,12 +26,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public virtual bool IsWriter => false;
 
+		protected abstract Type SelfType { get; }
+
 		/// <summary>
 		/// Serialization method
 		/// </summary>
 		public virtual void Read(byte[] data)
 		{
-			throw new NotImplementedException(this.GetType().ToString() +
+			throw new NotImplementedException(SelfType.ToString() +
 				"Read operation is not implemented for this converter");
 		}
 
@@ -40,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public virtual void Write(byte[] data)
 		{
-			throw new NotImplementedException(this.GetType().ToString() +
+			throw new NotImplementedException(SelfType.ToString() +
 				"Write operation is not implemented for this converter");
 		}
 
@@ -49,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public virtual bool CheckType(byte[] data)
 		{
-			throw new NotImplementedException(this.GetType().ToString() +
+			throw new NotImplementedException(SelfType.ToString() +
 				"Check type operation is not implemented for this converter");
 		}
 

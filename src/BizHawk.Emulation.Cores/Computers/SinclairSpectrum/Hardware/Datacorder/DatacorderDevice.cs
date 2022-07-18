@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// <summary>
 	/// Represents the tape device (or build-in datacorder as it was called +2 and above)
 	/// </summary>
-	public class DatacorderDevice : IPortIODevice
+	public sealed class DatacorderDevice : IPortIODevice
 	{
 		private SpectrumBase _machine { get; set; }
 		private Z80A _cpu { get; set; }
@@ -312,7 +312,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				{
 					// exception during operation
 					var e = ex;
-					throw new Exception(this.GetType().ToString() +
+					throw new Exception(typeof(DatacorderDevice).ToString() +
 					"\n\nTape image file has a valid TZX header, but threw an exception whilst data was being parsed.\n\n" + e.ToString());
 				}
 			}
@@ -332,7 +332,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				{
 					// exception during operation
 					var e = ex;
-					throw new Exception(this.GetType().ToString() +
+					throw new Exception(typeof(DatacorderDevice).ToString() +
 					"\n\nTape image file has a valid PZX header, but threw an exception whilst data was being parsed.\n\n" + e.ToString());
 				}
 			}
@@ -352,7 +352,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				{
 					// exception during operation
 					var e = ex;
-					throw new Exception(this.GetType().ToString() +
+					throw new Exception(typeof(DatacorderDevice).ToString() +
 					"\n\nTape image file has a valid CSW header, but threw an exception whilst data was being parsed.\n\n" + e.ToString());
 				}
 			}
@@ -372,7 +372,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				{
 					// exception during operation
 					var e = ex;
-					throw new Exception(this.GetType().ToString() +
+					throw new Exception(typeof(DatacorderDevice).ToString() +
 					"\n\nTape image file has a valid WAV header, but threw an exception whilst data was being parsed.\n\n" + e.ToString());
 				}
 			}
@@ -391,7 +391,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				{
 					// exception during operation
 					var e = ex;
-					throw new Exception(this.GetType().ToString() +
+					throw new Exception(typeof(DatacorderDevice).ToString() +
 					"\n\nAn exception was thrown whilst data from this tape image was being parsed as TAP.\n\n" + e.ToString());
 				}
 			}

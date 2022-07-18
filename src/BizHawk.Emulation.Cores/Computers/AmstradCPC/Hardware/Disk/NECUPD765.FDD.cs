@@ -170,7 +170,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Holds specfic state information about a drive
 		/// </summary>
-		private class DriveState : IFDDHost
+		private sealed class DriveState : IFDDHost
 		{
 			/// <summary>
 			/// The drive ID from an FDC perspective
@@ -775,7 +775,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 				if (!found)
 				{
-					throw new Exception(this.GetType().ToString() +
+					throw new Exception(typeof(DriveState).ToString() +
 						"\n\nDisk image file could not be parsed. Potentially an unknown format.");
 				}
 			}
