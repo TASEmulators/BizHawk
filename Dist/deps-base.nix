@@ -172,7 +172,7 @@ let
 	];
 	since-2_8_1 = [
 		({ name = "Menees.Analyzers"; version = "3.0.8"; sha256 = "1apv06cmnrakaylyh85hjyn380cnj0h53j3pakyp0f4jnpgw0bgf"; })
-		({ name = "Meziantou.Analyzer"; version = "1.0.704"; sha256 = "13jc2jylkiikyff5dmz762gmzalzsw7k8zcs6w6dk3xspwdd8n9j"; })
+		({ name = "Meziantou.Analyzer"; version = "1.0.707"; sha256 = "09drs16fr0xly4k8drznw7pa5f2byjc9km0pm0c3rrhl7jsz4ds5"; })
 		({ name = "Microsoft.AspNetCore.App.Ref"; version = "6.0.6"; sha256 = "08pjgsq2vcsdy4vgff146izvxq5hpg02a8lvih0wcsgghv1m1qki"; })
 		({ name = "Nullable"; version = "1.3.1"; sha256 = "0hwrr4q22c0i056dqy3v431rxjv7md910ihz0pjsi16qxsbpw7p7"; })
 		({ name = "StyleCop.Analyzers"; version = "1.2.0-beta.435"; sha256 = "0dirz0av24ds2k7hgpss15y4wlhwlzz22qdjvkq0n3g3sxcckrsy"; })

@@ -15,9 +15,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public static int GetIntFromBitArray(BitArray bitArray)
 		{
-			if (bitArray.Length > 32)
-				throw new ArgumentException("Argument length shall be at most 32 bits.");
-
+			if (bitArray.Length > 32) throw new ArgumentException(message: "Argument length shall be at most 32 bits.", paramName: nameof(bitArray));
 			int[] array = new int[1];
 			bitArray.CopyTo(array, 0);
 			return array[0];

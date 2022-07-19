@@ -75,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!typeof(IToolForm).IsAssignableFrom(toolType))
 			{
-				throw new ArgumentException($"Type {toolType.Name} does not implement {nameof(IToolForm)}.");
+				throw new ArgumentException(message: $"Type {toolType.Name} does not implement {nameof(IToolForm)}.", paramName: nameof(toolType));
 			}
 			var mi = typeof(ToolManager).GetMethod(nameof(Load), new[] { typeof(bool), typeof(string) })!.MakeGenericMethod(toolType);
 			return (IToolForm) mi.Invoke(this, new object[] { focus, "" });

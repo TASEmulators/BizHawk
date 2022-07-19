@@ -96,7 +96,7 @@ namespace BizHawk.Common.PathExtensions
 			var path = new StringBuilder(260 /* = MAX_PATH */);
 			return Win32Imports.PathRelativePathTo(path, fromPath, GetPathAttribute(fromPath), toPath, GetPathAttribute(toPath))
 				? path.ToString()
-				: throw new ArgumentException("Paths must have a common prefix");
+				: throw new ArgumentException(message: "Paths must have a common prefix", paramName: nameof(toPath));
 		}
 
 		/// <returns>absolute path (OS-dependent) equivalent to <paramref name="path"/></returns>

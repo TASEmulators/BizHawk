@@ -307,9 +307,9 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					return 0x75CC80;
 				case 15:
 					return 0xB51A58;
+				default:
+					throw new ArgumentOutOfRangeException(paramName: nameof(color), color, message: "Specified color does not exist.");
 			}
-
-			throw new ArgumentException("Specified color does not exist.");
 		}
 
 		public void Background(int input_row)

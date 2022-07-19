@@ -36,15 +36,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 						mm.Add(new MemoryDomainDelegate(name, size, MemoryDomain.Endian.Unknown,
 							addr =>
 							{
-								if (addr < 0 || addr >= 65536)
-									throw new ArgumentOutOfRangeException();
+								if (addr is < 0 or > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
 								using (_elf.EnterExit())
 									return p[addr ^ 1];
 							},
 							(addr, val) =>
 							{
-								if (addr < 0 || addr >= 65536)
-									throw new ArgumentOutOfRangeException();
+								if (addr is < 0 or > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
 								Core.gpgx_poke_vram(((int)addr) ^ 1, val);
 							},
 							wordSize: 2));
@@ -62,15 +60,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					addr =>
 					{
 						var a = (uint)addr;
-						if (a >= 0x1000000)
-							throw new ArgumentOutOfRangeException();
+						if (a > 0xFFFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), a, message: "address out of range");
 						return Core.gpgx_peek_m68k_bus(a);
 					},
 					(addr, val) =>
 					{
 						var a = (uint)addr;
-						if (a >= 0x1000000)
-							throw new ArgumentOutOfRangeException();
+						if (a > 0xFFFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), a, message: "address out of range");
 						Core.gpgx_write_m68k_bus(a, val);
 					}, 2);
 
@@ -82,15 +78,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					addr =>
 					{
 						var a = (uint)addr;
-						if (a >= 0x1000000)
-							throw new ArgumentOutOfRangeException();
+						if (a > 0xFFFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), a, message: "address out of range");
 						return Core.gpgx_peek_s68k_bus(a);
 					},
 					(addr, val) =>
 					{
 						var a = (uint)addr;
-						if (a >= 0x1000000)
-							throw new ArgumentOutOfRangeException();
+						if (a > 0xFFFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), a, message: "address out of range");
 						Core.gpgx_write_s68k_bus(a, val);
 					}, 2);
 

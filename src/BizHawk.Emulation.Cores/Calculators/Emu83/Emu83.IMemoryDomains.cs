@@ -33,20 +33,12 @@ namespace BizHawk.Emulation.Cores.Calculators.Emu83
 			_memoryDomains.Add(new MemoryDomainDelegate("System Bus", 0x10000, MemoryDomain.Endian.Little,
 				addr =>
 				{
-					if (addr < 0 || addr >= 0x10000)
-					{
-						throw new ArgumentOutOfRangeException();
-					}
-
+					if (addr is < 0 or > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
 					return LibEmu83.TI83_ReadMemory(Context, (ushort)addr);
 				},
 				(addr, val) =>
 				{
-					if (addr < 0 || addr >= 0x10000)
-					{
-						throw new ArgumentOutOfRangeException();
-					}
-
+					if (addr is < 0 or > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
 					LibEmu83.TI83_WriteMemory(Context, (ushort)addr, val);
 				}, 1));
 

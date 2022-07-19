@@ -156,7 +156,7 @@
 		<Rule Id="MA0014" Action="Error" />
 
 		<!-- Specify the parameter name in ArgumentException -->
-		<Rule Id="MA0015" Action="Hidden" />
+		<Rule Id="MA0015" Action="Error" />
 
 		<!-- Prefer returning collection abstraction instead of implementation -->
 		<Rule Id="MA0016" Action="Hidden" />

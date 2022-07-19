@@ -161,7 +161,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_sampleRate < 1 || _numChannels < 1)
 			{
-				throw new ArgumentException("Bad samplerate/numchannels");
+				throw new InvalidOperationException("Bad samplerate/numchannels");
 			}
 		}
 
@@ -200,7 +200,7 @@ namespace BizHawk.Client.EmuHawk
 			// advance to first
 			if (!_fileChain.MoveNext())
 			{
-				throw new ArgumentException("Iterator was empty!");
+				throw new ArgumentException(message: "Iterator was empty!", paramName: nameof(ss));
 			}
 
 			OpenCurrent(ss.Current);
@@ -234,15 +234,12 @@ namespace BizHawk.Client.EmuHawk
 			return new WavWriterVToken();
 		}
 
-		/// <exception cref="ArgumentOutOfRangeException"><paramref name="bits"/> is not <c>16</c></exception>
+		/// <exception cref="ArgumentException"><paramref name="bits"/> is not <c>16</c></exception>
 		public void SetAudioParameters(int sampleRate, int channels, int bits)
 		{
 			_sampleRate = sampleRate;
 			_channels = channels;
-			if (bits != 16)
-			{
-				throw new ArgumentException("Only support 16bit audio!");
-			}
+			if (bits is not 16) throw new ArgumentException(message: "Only support 16bit audio!", paramName: nameof(bits));
 		}
 
 		public void SetMetaData(string gameName, string authors, ulong lengthMs, ulong rerecords)

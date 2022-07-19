@@ -514,7 +514,7 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					throw new ArgumentException($"WatchDisplayType {value} is invalid for this type of Watch");
+					throw new ArgumentException(message: $"WatchDisplayType {value} is invalid for this type of Watch", paramName: nameof(value));
 				}
 			}
 		}

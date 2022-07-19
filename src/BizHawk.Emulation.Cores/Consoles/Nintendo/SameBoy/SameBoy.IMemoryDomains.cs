@@ -46,20 +46,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			_memoryDomains.Add(new MemoryDomainDelegate("System Bus", 65536, MemoryDomain.Endian.Little,
 				addr =>
 				{
-					if (addr < 0 || addr >= 65536)
-					{
-						throw new ArgumentOutOfRangeException();
-					}
-
+					if (addr is < 0 or > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
 					return LibSameboy.sameboy_cpuread(SameboyState, (ushort)addr);
 				},
 				(addr, val) =>
 				{
-					if (addr < 0 || addr >= 65536)
-					{
-						throw new ArgumentOutOfRangeException();
-					}
-
+					if (addr is < 0 or > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
 					LibSameboy.sameboy_cpuwrite(SameboyState, (ushort)addr, val);
 				}, 1));
 

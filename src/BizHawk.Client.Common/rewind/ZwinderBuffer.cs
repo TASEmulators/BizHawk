@@ -20,8 +20,7 @@ namespace BizHawk.Client.Common
 		*/
 		public ZwinderBuffer(IRewindSettings settings)
 		{
-			if (settings == null)
-				throw new ArgumentException("ZwinderBuffer's settings cannot be null.");
+			if (settings is null) throw new ArgumentNullException(paramName: nameof(settings));
 
 			long targetSize = settings.BufferSize * 1024 * 1024;
 			if (settings.TargetFrameLength < 1) throw new ArgumentException(message: nameof(IRewindSettings.TargetFrameLength) + " of provided settings is invalid", paramName: nameof(settings));
@@ -50,7 +49,7 @@ namespace BizHawk.Client.Common
 					break;
 				}
 				default:
-					throw new ArgumentException("Unsupported store type for ZwinderBuffer.");
+					throw new ArgumentException(message: $"Unsupported {nameof(IRewindSettings.BackingStore)} type for ZwinderBuffer in provided settings.", paramName: nameof(settings));
 			}
 			if (settings.UseFixedRewindInterval)
 			{

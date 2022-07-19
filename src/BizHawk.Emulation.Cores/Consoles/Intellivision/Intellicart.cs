@@ -83,10 +83,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				crc = UpdateCRC16(crc, upper_end);
 				ushort start = (ushort)(upper_start << 8);
 				ushort end = (ushort)((upper_end << 8) | 0xFF);
-				if (end < start)
-				{
-					throw new ArgumentException("Ranges can't start higher than they end.");
-				}
+				if (end < start) throw new ArgumentException(message: "Ranges can't start higher than they end.", paramName: nameof(Rom));
 
 				for (int addr = start; addr <= end; addr++)
 				{
@@ -100,10 +97,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				}
 
 				expected = (ushort)((Rom[offset++] << 8) | Rom[offset++]);
-				if (expected != crc)
-				{
-					throw new ArgumentException("Invalid CRC.");
-				}
+				if (expected != crc) throw new ArgumentException(message: "Invalid CRC.", paramName: nameof(Rom));
 			}
 
 			// Parse for memory attributes.
@@ -151,10 +145,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				int rangeStart = range * 2048;
 				ushort start = (ushort)((((Rom[index] >> 4) & 0x07) << 8) + rangeStart);
 				ushort end = (ushort)(((Rom[index] & 0x07) << 8) + 0xFF + rangeStart);
-				if (end < start)
-				{
-					throw new ArgumentException("Ranges can't start higher than they end.");
-				}
+				if (end < start) throw new ArgumentException(message: "Ranges can't start higher than they end.", paramName: nameof(Rom));
 
 				FineAddresses[range] = new ushort[2];
 				FineAddresses[range][0] = start;
@@ -170,10 +161,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			expected = (ushort)((Rom[offset++] << 8) | (Rom[offset++] & 0xFF));
 
 			// Check if there is an invalid CRC for the memory attributes / fine addresses.
-			if (expected != crc)
-			{
-				throw new ArgumentException("Invalid CRC.");
-			}
+			if (expected != crc) throw new ArgumentException(message: "Invalid CRC.", paramName: nameof(Rom));
 
 			return offset;
 		}

@@ -189,10 +189,7 @@ namespace BizHawk.BizInvoke
 				{
 					throw new InvalidOperationException("This calling convention adapter was created for departure only!  Pass known delegate slots when constructing to enable arrival");
 				}
-				if (!(lifetime is Delegate d))
-				{
-					throw new ArgumentException("For this calling convention adapter, lifetimes must be delegate so guest slot can be inferred");
-				}
+				if (lifetime is not Delegate d) throw new ArgumentException(message: "For this calling convention adapter, lifetimes must be delegate so guest slot can be inferred", paramName: nameof(lifetime));
 				if (!_slots.TryGetValue(d, out var slot))
 				{
 					throw new InvalidOperationException("All callback delegates must be registered at load");

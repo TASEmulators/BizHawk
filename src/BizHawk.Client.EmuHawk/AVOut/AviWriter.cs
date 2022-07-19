@@ -48,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				throw new ArgumentException($"{nameof(AviWriter)} only takes its own {nameof(CodecToken)}s!");
+				throw new ArgumentException(message: $"{nameof(AviWriter)} only takes its own {nameof(CodecToken)}s!", paramName: nameof(token));
 			}
 		}
 
