@@ -105,10 +105,7 @@ namespace BizHawk.Client.Common
 
 		public new void Add(TasBranch item)
 		{
-			if (item == null)
-			{
-				throw new ArgumentNullException($"{nameof(item)} cannot be null");
-			}
+			if (item is null) throw new ArgumentNullException(paramName: nameof(item));
 
 			if (item.Uuid == Guid.Empty)
 			{

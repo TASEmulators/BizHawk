@@ -73,11 +73,7 @@ namespace BizHawk.Client.EmuHawk
 			/// <exception cref="ArgumentException"><paramref name="buffer"/> is not in use</exception>
 			public void ReleaseBuffer(T[] buffer)
 			{
-				if (!_inUse.Remove(buffer))
-				{
-					throw new ArgumentException();
-				}
-
+				if (!_inUse.Remove(buffer)) throw new ArgumentException(message: "already released?", paramName: nameof(buffer));
 				_available.Add(buffer);
 			}
 		}

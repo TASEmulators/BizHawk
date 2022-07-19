@@ -32,9 +32,9 @@ namespace BizHawk.Client.Common
 			_dialogParent = dialogParent;
 			_quickBmpFile = quickBmpFile;
 			_pauseCallback = pauseCallback
-				?? throw new ArgumentNullException($"{nameof(pauseCallback)} cannot be null.");
+				?? throw new ArgumentNullException(paramName: nameof(pauseCallback));
 			_modeChangedCallback = modeChangedCallback
-				?? throw new ArgumentNullException($"{nameof(modeChangedCallback)} CannotUnloadAppDomainException be null.");
+				?? throw new ArgumentNullException(paramName: nameof(modeChangedCallback));
 		}
 
 		public IMovieConfig Settings { get; }

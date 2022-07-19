@@ -112,10 +112,7 @@ namespace BizHawk.Client.Common
 		/// <exception cref="ArgumentNullException"><paramref name="cheat"/> is null</exception>
 		public void Add(Cheat cheat)
 		{
-			if (cheat is null)
-			{
-				throw new ArgumentNullException($"{nameof(cheat)} can not be null");
-			}
+			if (cheat is null) throw new ArgumentNullException(paramName: nameof(cheat));
 
 			if (cheat.IsSeparator)
 			{

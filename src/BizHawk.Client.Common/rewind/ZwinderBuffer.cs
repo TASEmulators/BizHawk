@@ -24,10 +24,7 @@ namespace BizHawk.Client.Common
 				throw new ArgumentException("ZwinderBuffer's settings cannot be null.");
 
 			long targetSize = settings.BufferSize * 1024 * 1024;
-			if (settings.TargetFrameLength < 1)
-			{
-				throw new ArgumentOutOfRangeException(nameof(settings.TargetFrameLength));
-			}
+			if (settings.TargetFrameLength < 1) throw new ArgumentException(message: nameof(IRewindSettings.TargetFrameLength) + " of provided settings is invalid", paramName: nameof(settings));
 
 			Size = 1L << (int)Math.Floor(Math.Log(targetSize, 2));
 			_sizeMask = Size - 1;

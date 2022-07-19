@@ -41,21 +41,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				addr =>
 				{
 					var a = (uint)addr;
-					if (a >= 0x10000000)
-					{
-						throw new ArgumentOutOfRangeException();
-					}
-
+					if (a >= 0x10000000) throw new ArgumentOutOfRangeException(paramName: nameof(addr), a, message: "address out of range");
 					return LibmGBA.BizReadBus(Core, a);
 				},
 				(addr, val) =>
 				{
 					var a = (uint)addr;
-					if (a >= 0x10000000)
-					{
-						throw new ArgumentOutOfRangeException();
-					}
-
+					if (a >= 0x10000000) throw new ArgumentOutOfRangeException(paramName: nameof(addr), a, message: "address out of range");
 					LibmGBA.BizWriteBus(Core, a, val);
 				}, 4));
 

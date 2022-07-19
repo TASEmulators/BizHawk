@@ -104,13 +104,13 @@ namespace BizHawk.Common
 		/// <exception cref="ArgumentException"><paramref name="str"/> has an odd number of chars or contains a char not in <c>[0-9A-Fa-f]</c></exception>
 		public static byte[] HexStringToBytes(this string str)
 		{
-			if (str.Length % 2 != 0) throw new ArgumentException();
+			if (str.Length % 2 is not 0) throw new ArgumentException(message: "string length must be even (add 0 padding if necessary)", paramName: nameof(str));
 			static int CharToNybble(char c)
 			{
 				if ('0' <= c && c <= '9') return c - 0x30;
 				if ('A' <= c && c <= 'F') return c - 0x37;
 				if ('a' <= c && c <= 'f') return c - 0x57;
-				throw new ArgumentException();
+				throw new ArgumentException(message: "not a hex digit", paramName: nameof(c));
 			}
 			using var ms = new MemoryStream();
 			for (int i = 0, l = str.Length / 2; i != l; i++) ms.WriteByte((byte) ((CharToNybble(str[2 * i]) << 4) + CharToNybble(str[2 * i + 1])));

@@ -11,10 +11,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private byte _peek(long addr, int firstOffset, long size)
 		{
-			if (addr < 0 || addr >= size)
-			{
-				throw new ArgumentOutOfRangeException();
-			}
+			if (addr < 0 || addr >= size) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
 
 			if (!_memAccess)
 			{
@@ -33,10 +30,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private void _poke(long addr, byte val, int firstOffset, long size)
 		{
-			if (addr < 0 || addr >= size)
-			{
-				throw new ArgumentOutOfRangeException();
-			}
+			if (addr < 0 || addr >= size) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
 
 			if (!_memAccess)
 			{

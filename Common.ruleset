@@ -237,7 +237,7 @@
 		<Rule Id="MA0042" Action="Error" />
 
 		<!-- Use nameof operator in ArgumentException -->
-		<Rule Id="MA0043" Action="Hidden" />
+		<Rule Id="MA0043" Action="Error" />
 
 		<!-- Remove useless ToString call -->
 		<Rule Id="MA0044" Action="Hidden" />
@@ -622,7 +622,7 @@
 		<Rule Id="CA2101" Action="Hidden" />
 
 		<!-- Instantiate argument exceptions correctly -->
-		<Rule Id="CA2208" Action="Hidden" />
+		<Rule Id="CA2208" Action="Error" />
 
 		<!-- Non-constant fields should not be visible -->
 		<Rule Id="CA2211" Action="Hidden" />
