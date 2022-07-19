@@ -154,7 +154,7 @@ in rec {
 				hash = "sha256-KXe69svPIIFaXgT9t+02pwdQ6WWqdqgUdtaE2S4/YxA=";
 			};
 			dotnet-sdk = dotnet-sdk_5;
-			nugetDeps = Dist/deps-old.nix;
+			nugetDeps = Dist/deps_2_7.nix;
 		};
 	};
 	emuhawk-2_8 = buildEmuHawkWrapperFor {
@@ -168,6 +168,7 @@ in rec {
 				rev = "e731e0f32903cd40b83ed75bba3b1e3753105ce2";
 				hash = "sha256-kP6zvTbhctqGCmjDOtQgBGII1T0xIyN5keq7d/lfWVM=";
 			};
+			nugetDeps = Dist/deps_2_8.nix;
 		};
 	};
 	emuhawk = buildEmuHawkWrapperFor { inherit bizhawkAssemblies; hawkSourceInfo = hawkSourceInfoDev; };
