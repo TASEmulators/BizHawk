@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			}
 
 			// now process the blocks
-			var infoBlock = blocks.FirstOrDefault(a => a.RecordType == RecordHeaderType.INFO);
+			var infoBlock = blocks.Find(static a => a.RecordType == RecordHeaderType.INFO);
 			var IMGEblocks = blocks.Where(a => a.RecordType == RecordHeaderType.IMGE).ToList();
 			var DATAblocks = blocks.Where(a => a.RecordType == RecordHeaderType.DATA);
 

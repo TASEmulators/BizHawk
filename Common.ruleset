@@ -171,7 +171,7 @@
 		<Rule Id="MA0019" Action="Error" />
 
 		<!-- Use direct methods instead of LINQ methods -->
-		<Rule Id="MA0020" Action="Hidden" />
+		<Rule Id="MA0020" Action="Error" />
 
 		<!-- Use StringComparer.GetHashCode instead of string.GetHashCode -->
 		<Rule Id="MA0021" Action="Hidden" />

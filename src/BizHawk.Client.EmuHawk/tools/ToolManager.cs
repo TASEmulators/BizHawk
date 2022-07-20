@@ -455,21 +455,10 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		/// <typeparam name="T">Type of tool to check</typeparam>
 		public bool IsLoaded<T>() where T : IToolForm
-		{
-			var existingTool = _tools.FirstOrDefault(t => t is T);
-			if (existingTool != null)
-			{
-				return existingTool.IsActive;
-			}
-
-			return false;
-		}
+			=> _tools.OfType<T>().FirstOrDefault()?.IsActive is true;
 
 		public bool IsLoaded(Type toolType)
-		{
-			var existingTool = _tools.FirstOrDefault(t => t.GetType() == toolType);
-			return existingTool != null && existingTool.IsActive;
-		}
+			=> _tools.Find(t => t.GetType() == toolType)?.IsActive is true;
 
 		public bool IsOnScreen(Point topLeft)
 		{
@@ -511,8 +500,8 @@ namespace BizHawk.Client.EmuHawk
 		/// <typeparam name="T">Type of tool to update</typeparam>
 		public void UpdateValues<T>() where T : IToolForm
 		{
-			var tool = _tools.FirstOrDefault(t => t is T);
-			if (tool != null && tool.IsActive)
+			var tool = _tools.OfType<T>().FirstOrDefault();
+			if (tool?.IsActive is true)
 			{
 				tool.UpdateValues(ToolFormUpdateType.General);
 			}
@@ -568,10 +557,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		/// <typeparam name="T">Type of tool to restart</typeparam>
 		public void Restart<T>() where T : IToolForm
-		{
-			var tool = _tools.FirstOrDefault(t => t is T);
-			tool?.Restart();
-		}
+			=> _tools.OfType<T>().FirstOrDefault()?.Restart();
 
 		/// <summary>
 		/// Runs AskSave on every tool dialog, false is returned if any tool returns false
@@ -594,7 +580,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <typeparam name="T">Type of tool to close</typeparam>
 		public void Close<T>() where T : IToolForm
 		{
-			var tool = _tools.FirstOrDefault(t => t is T);
+			var tool = _tools.OfType<T>().FirstOrDefault();
 			if (tool != null)
 			{
 				tool.Close();
@@ -604,8 +590,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Close(Type toolType)
 		{
-			var tool = _tools.FirstOrDefault(toolType.IsInstanceOfType);
-
+			var tool = _tools.Find(toolType.IsInstanceOfType);
 			if (tool != null)
 			{
 				tool.Close();

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace BizHawk.Emulation.Common
 {
@@ -38,8 +37,7 @@ namespace BizHawk.Emulation.Common
 		};
 
 		public SystemInfo this[string systemId]
-			=> _systems.FirstOrDefault(s => s.SystemId == systemId)
-			?? new SystemInfo("Unknown", "Unknown");
+			=> _systems.Find(s => s.SystemId == systemId) ?? new("Unknown", "Unknown");
 
 		public IEnumerable<SystemInfo> AllSystems => _systems;
 

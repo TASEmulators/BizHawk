@@ -346,8 +346,7 @@ namespace BizHawk.Client.EmuHawk
 				.OrderBy(x => x.TabIndex)
 				.ToList();
 
-			var selected = radios.FirstOrDefault(x => x.Checked);
-			var index = radios.IndexOf(selected);
+			var index = radios.FindIndex(static x => x.Checked);
 
 			if (reverse)
 			{
@@ -382,8 +381,7 @@ namespace BizHawk.Client.EmuHawk
 				.OrderBy(x => x.TabIndex)
 				.ToList();
 
-			var selected = radios.FirstOrDefault(x => x.Checked);
-			var index = radios.IndexOf(selected);
+			var index = radios.FindIndex(static x => x.Checked);
 
 			if (reverse)
 			{

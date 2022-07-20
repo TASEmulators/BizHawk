@@ -120,9 +120,8 @@ namespace BizHawk.Client.Common
 		public IEnumerator<PathEntry> GetEnumerator() => Paths.GetEnumerator();
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-		public PathEntry this[string system, string type] =>
-			Paths.FirstOrDefault(p => p.IsSystem(system) && p.Type == type)
-			?? TryGetDebugPath(system, type);
+		public PathEntry this[string system, string type]
+			=> Paths.Find(p => p.IsSystem(system) && p.Type == type) ?? TryGetDebugPath(system, type);
 
 		private PathEntry TryGetDebugPath(string system, string type)
 		{
@@ -143,11 +142,7 @@ namespace BizHawk.Client.Common
 			// Add missing entries
 			foreach (var defaultPath in Defaults.Value)
 			{
-				var path = Paths.FirstOrDefault(p => p.System == defaultPath.System && p.Type == defaultPath.Type);
-				if (path == null)
-				{
-					Paths.Add(defaultPath);
-				}
+				if (!Paths.Any(p => p.System == defaultPath.System && p.Type == defaultPath.Type)) Paths.Add(defaultPath);
 			}
 
 			var entriesToRemove = new List<PathEntry>();

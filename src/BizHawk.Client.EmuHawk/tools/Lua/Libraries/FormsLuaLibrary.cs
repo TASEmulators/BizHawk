@@ -25,14 +25,14 @@ namespace BizHawk.Client.EmuHawk
 
 		public void WindowClosed(IntPtr handle)
 		{
-			var form = _luaForms.FirstOrDefault(form => form.Handle == handle);
-			if (form != null) _luaForms.Remove(form);
+			var i = _luaForms.FindIndex(form => form.Handle == handle);
+			if (i is not -1) _luaForms.RemoveAt(i);
 		}
 
 		private LuaWinform GetForm(int formHandle)
 		{
 			var ptr = new IntPtr(formHandle);
-			return _luaForms.FirstOrDefault(form => form.Handle == ptr);
+			return _luaForms.Find(form => form.Handle == ptr);
 		}
 
 		private static void SetLocation(Control control, int x, int y)

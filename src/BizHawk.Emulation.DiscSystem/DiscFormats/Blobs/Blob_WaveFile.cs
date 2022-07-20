@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.DiscSystem
 					throw new Blob_WaveFile_Exception("Not a RIFF WAVE file");
 				}
 
-				if (!(rm.riff.subchunks.FirstOrDefault(chunk => chunk.tag == "fmt ") is RiffMaster.RiffSubchunk_fmt fmt))
+				if (rm.riff.subchunks.Find(static chunk => chunk.tag == "fmt ") is not RiffMaster.RiffSubchunk_fmt fmt)
 				{
 					throw new Blob_WaveFile_Exception("Not a valid RIFF WAVE file (missing fmt chunk");
 				}
