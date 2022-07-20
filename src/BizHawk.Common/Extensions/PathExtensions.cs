@@ -2,7 +2,6 @@
 using System.Text;
 using System.IO;
 using System.Reflection;
-using System.Linq;
 
 using BizHawk.Common.StringExtensions;
 
@@ -79,18 +78,8 @@ namespace BizHawk.Common.PathExtensions
 			//TODO merge this with the Windows implementation in MakeRelativeTo
 			static FileAttributes GetPathAttribute(string path1)
 			{
-				var di = new DirectoryInfo(path1.Split('|').First());
-				if (di.Exists)
-				{
-					return FileAttributes.Directory;
-				}
-
-				var fi = new FileInfo(path1.Split('|').First());
-				if (fi.Exists)
-				{
-					return FileAttributes.Normal;
-				}
-
+				if (Directory.Exists(path1.SubstringBefore('|'))) return FileAttributes.Directory;
+				if (File.Exists(path1.SubstringBefore('|'))) return FileAttributes.Normal;
 				throw new FileNotFoundException();
 			}
 			var path = new StringBuilder(260 /* = MAX_PATH */);

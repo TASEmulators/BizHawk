@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Linq;
 
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
@@ -81,7 +81,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				Name = _game.Name,
 				System = VSystemID.Raw.A26,
-				MetaData = "m=" + _mapper.GetType().ToString().Split('.').Last(),
+				MetaData = "m=" + _mapper.GetType().ToString().SubstringAfterLast('.'),
 				Hash = SHA1Checksum.ComputeDigestHex(Rom),
 				Region = _game.Region,
 				Status = RomStatus.Unknown

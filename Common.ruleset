@@ -402,7 +402,7 @@
 		<Rule Id="MA0097" Action="Hidden" />
 
 		<!-- Use indexer instead of LINQ methods -->
-		<Rule Id="MA0098" Action="Hidden" />
+		<Rule Id="MA0098" Action="Warning" />
 
 		<!-- Use Explicit enum value instead of 0 -->
 		<Rule Id="MA0099" Action="Hidden" />

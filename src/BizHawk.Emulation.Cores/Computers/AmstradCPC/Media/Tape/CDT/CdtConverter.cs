@@ -367,7 +367,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			_position += blockLen;
 
 			// generate PAUSE block
-			CreatePauseBlock(_datacorder.DataBlocks.Last());
+			CreatePauseBlock(_datacorder.DataBlocks[_datacorder.DataBlocks.Count - 1]);
 		}
 
 		/*              length: [0F,10,11]+12
@@ -427,7 +427,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			_position += blockLen;
 
 			// generate PAUSE block
-			CreatePauseBlock(_datacorder.DataBlocks.Last());
+			CreatePauseBlock(_datacorder.DataBlocks[_datacorder.DataBlocks.Count - 1]);
 		}
 
 		/*              length: 04
@@ -551,7 +551,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			_position += blockLen;
 
 			// generate PAUSE block
-			CreatePauseBlock(_datacorder.DataBlocks.Last());
+			CreatePauseBlock(_datacorder.DataBlocks[_datacorder.DataBlocks.Count - 1]);
 		}
 
 		/*              length: [05,06,07]+08
@@ -657,7 +657,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			_datacorder.DataBlocks.Add(t);
 
 			// generate PAUSE block
-			CreatePauseBlock(_datacorder.DataBlocks.Last());
+			CreatePauseBlock(_datacorder.DataBlocks[_datacorder.DataBlocks.Count - 1]);
 		}
 
 		/*              length: [00,01,02,03]+04
@@ -728,7 +728,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			_datacorder.DataBlocks.Add(t);
 
 			// generate PAUSE block
-			CreatePauseBlock(_datacorder.DataBlocks.Last());
+			CreatePauseBlock(_datacorder.DataBlocks[_datacorder.DataBlocks.Count - 1]);
 		}
 
 		/*              length: [00,01,02,03]+04
@@ -880,7 +880,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			_position += 2;
 
 			// generate PAUSE block
-			CreatePauseBlock(_datacorder.DataBlocks.Last());
+			CreatePauseBlock(_datacorder.DataBlocks[_datacorder.DataBlocks.Count - 1]);
 
 		}
 
