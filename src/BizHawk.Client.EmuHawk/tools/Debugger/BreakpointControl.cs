@@ -202,13 +202,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateBreakpointRemoveButton()
 		{
-			ToggleButton.Enabled =
-			RemoveBreakpointButton.Enabled =
-			EditableItems.Any();
-
-			DuplicateBreakpointButton.Enabled =
-			EditBreakpointButton.Enabled =
-			EditableItems.Count() == 1;
+			var editableCount = EditableItems.Count();
+			ToggleButton.Enabled = RemoveBreakpointButton.Enabled = editableCount > 0;
+			DuplicateBreakpointButton.Enabled = EditBreakpointButton.Enabled = editableCount == 1;
 		}
 
 		private void BreakpointView_SelectedIndexChanged(object sender, EventArgs e)

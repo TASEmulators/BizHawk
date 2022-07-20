@@ -90,13 +90,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		public void DisableSource(ISoundProvider source)
 		{
-			var sp = SoundProviders.Where(a => a.SoundProvider == source);
-			if (sp.Count() == 1)
-				SoundProviders.Remove(sp.First());
-			else if (sp.Count() > 1)
-				foreach (var s in sp)
-					SoundProviders.Remove(s);
-
+			SoundProviders.RemoveAll(a => a.SoundProvider == source);
 			EqualizeVolumes();
 		}
 

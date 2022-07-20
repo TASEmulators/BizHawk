@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.EmuHawk.Properties;
+using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -225,10 +226,10 @@ namespace BizHawk.Client.EmuHawk
 			RemoveBranchContextMenuItem.Enabled = SelectedBranch != null;
 
 			UpdateBranchContextMenuItem.Enabled =
-			LoadBranchContextMenuItem.Enabled =
-			EditBranchTextContextMenuItem.Enabled =
-			JumpToBranchContextMenuItem.Enabled =
-				BranchView.SelectedRows.Count() == 1;
+				LoadBranchContextMenuItem.Enabled =
+				EditBranchTextContextMenuItem.Enabled =
+				JumpToBranchContextMenuItem.Enabled =
+					BranchView.SelectedRows.CountIsExactly(1);
 		}
 
 		private void AddBranchToolStripMenuItem_Click(object sender, EventArgs e)
@@ -506,9 +507,9 @@ namespace BizHawk.Client.EmuHawk
 		private void UpdateButtons()
 		{
 			UpdateBranchButton.Enabled =
-			LoadBranchButton.Enabled =
-			JumpToBranchButton.Enabled =
-				BranchView.SelectedRows.Count() == 1;
+				LoadBranchButton.Enabled =
+				JumpToBranchButton.Enabled =
+					BranchView.SelectedRows.CountIsExactly(1);
 		}
 
 		private void Select(int index, bool value)

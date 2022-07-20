@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -119,6 +120,16 @@ namespace BizHawk.Common.CollectionExtensions
 			}
 			foreach (var item in collection) list.Add(item);
 		}
+
+		public static bool CountIsAtLeast<T>(this IEnumerable<T> collection, int n)
+			=> collection is ICollection countable
+				? countable.Count >= n
+				: collection.Skip(n - 1).Any();
+
+		public static bool CountIsExactly<T>(this IEnumerable<T> collection, int n)
+			=> collection is ICollection countable
+				? countable.Count == n
+				: collection.Take(n + 1).Count() == n;
 
 		/// <inheritdoc cref="IList{T}.IndexOf"/>
 		/// <remarks>

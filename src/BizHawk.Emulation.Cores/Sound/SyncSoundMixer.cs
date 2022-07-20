@@ -109,20 +109,7 @@ namespace BizHawk.Emulation.Cores.Components
 		/// </summary>
 		public void UnPinSource(ISoundProvider source)
 		{
-			var sp = _soundProviders.Where(a => a.SoundProvider == source);
-
-			if (sp.Count() == 1)
-			{
-				_soundProviders.Remove(sp.First());
-			}
-			else if (sp.Count() > 1)
-			{
-				foreach (var s in sp)
-				{
-					_soundProviders.Remove(s);
-				}
-			}
-
+			_soundProviders.RemoveAll(a => a.SoundProvider == source);
 			EqualizeVolumes();
 		}
 

@@ -589,7 +589,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void ToggleSelectAll()
 		{
-			if (SelectedRows.Count() == RowCount) DeselectAll();
+			if (SelectedRows.CountIsExactly(RowCount)) DeselectAll();
 			else SelectAll();
 		}
 

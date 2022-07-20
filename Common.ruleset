@@ -204,7 +204,7 @@
 		<Rule Id="MA0030" Action="Error" />
 
 		<!-- Optimize Enumerable.Count() usage -->
-		<Rule Id="MA0031" Action="Hidden" />
+		<Rule Id="MA0031" Action="Error" />
 
 		<!-- Use an overload with a CancellationToken argument -->
 		<Rule Id="MA0032" Action="Hidden" />
