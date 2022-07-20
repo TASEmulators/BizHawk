@@ -570,7 +570,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			ErrorIconButton.Visible = _watches.Where(watch => !watch.IsSeparator).Any(watch => !watch.IsValid);
+			ErrorIconButton.Visible = _watches.Any(static watch => !watch.IsSeparator && !watch.IsValid);
 
 			MessageLabel.Text = message;
 		}

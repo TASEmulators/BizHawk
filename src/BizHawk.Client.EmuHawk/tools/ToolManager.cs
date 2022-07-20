@@ -490,9 +490,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public IEnumerable<Type> AvailableTools => EmuHawk.ReflectionCache.Types
-			.Where(t => typeof(IToolForm).IsAssignableFrom(t))
-			.Where(t => !t.IsInterface)
-			.Where(IsAvailable);
+			.Where(t => !t.IsInterface && typeof(IToolForm).IsAssignableFrom(t) && IsAvailable(t));
 
 		/// <summary>
 		/// Calls UpdateValues() on an instance of T, if it exists

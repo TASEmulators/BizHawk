@@ -198,7 +198,7 @@
 		<Rule Id="MA0028" Action="Hidden" />
 
 		<!-- Combine LINQ methods -->
-		<Rule Id="MA0029" Action="Hidden" />
+		<Rule Id="MA0029" Action="Error" />
 
 		<!-- Remove useless OrderBy call -->
 		<Rule Id="MA0030" Action="Error" />

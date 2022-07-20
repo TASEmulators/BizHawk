@@ -1218,8 +1218,7 @@ namespace BizHawk.Client.EmuHawk
 			ColumnsSubMenu.DropDownItems.Clear();
 
 			var columns = TasView.AllColumns
-				.Where(c => !string.IsNullOrWhiteSpace(c.Text))
-				.Where(c => c.Name != "FrameColumn")
+				.Where(static c => !string.IsNullOrWhiteSpace(c.Text) && c.Name is not "FrameColumn")
 				.ToList();
 
 			int workingHeight = Screen.FromControl(this).WorkingArea.Height;

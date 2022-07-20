@@ -2070,8 +2070,8 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private static readonly IList<Type> SpecializedTools = ReflectionCache.Types
-			.Where(t => typeof(IToolForm).IsAssignableFrom(t) && !t.IsAbstract)
-			.Where(t => t.GetCustomAttribute<SpecializedToolAttribute>() != null)
+			.Where(static t => !t.IsAbstract && typeof(IToolForm).IsAssignableFrom(t)
+				&& t.GetCustomAttribute<SpecializedToolAttribute>() is not null)
 			.ToList();
 
 		private ISet<char> _availableAccelerators;
