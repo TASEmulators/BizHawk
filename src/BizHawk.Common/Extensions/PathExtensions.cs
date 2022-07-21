@@ -169,6 +169,9 @@ namespace BizHawk.Common.PathExtensions
 		/// <remarks>returned string omits trailing slash</remarks>
 		public static readonly string ExeDirectoryPath;
 
+		public static string SpecialRecentsDir
+			=> Environment.GetFolderPath(Environment.SpecialFolder.Recent, Environment.SpecialFolderOption.DoNotVerify);
+
 		static PathUtils()
 		{
 			var dirPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
