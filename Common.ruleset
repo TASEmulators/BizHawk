@@ -111,6 +111,9 @@
 
 		<!-- Prefer TryGetValue -->
 		<Rule Id="MEN014" Action="Hidden" />
+
+		<!-- Use Preferred Terms -->
+		<Rule Id="MEN015" Action="Hidden" />
 	</Rules>
 	<Rules AnalyzerId="Meziantou.Analyzers" RuleNamespace="Meziantou.Analyzers">
 		<!-- StringComparison is missing -->
