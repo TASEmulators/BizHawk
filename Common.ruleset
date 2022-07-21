@@ -309,7 +309,7 @@
 		<Rule Id="MA0065" Action="Error" />
 
 		<!-- Hash table unfriendly type is used in a hash table -->
-		<Rule Id="MA0066" Action="Hidden" />
+		<Rule Id="MA0066" Action="Error" />
 
 		<!-- Use Guid.Empty -->
 		<Rule Id="MA0067" Action="Error" />

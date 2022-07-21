@@ -191,9 +191,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					if (xx != yy)
 						return PutSettingsDirtyBits.RebootCore;
 				}
-				if (!new HashSet<KeyValuePair<int, string>>(x.PortDevices).SetEquals(y.PortDevices))
-					return PutSettingsDirtyBits.RebootCore;
-				return PutSettingsDirtyBits.None;
+				return x.PortDevices.OrderBy(static kvp => kvp.Key).SequenceEqual(y.PortDevices.OrderBy(static kvp => kvp.Key))
+					? PutSettingsDirtyBits.None
+					: PutSettingsDirtyBits.RebootCore;
 			}
 		}
 
