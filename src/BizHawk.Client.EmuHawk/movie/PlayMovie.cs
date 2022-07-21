@@ -212,27 +212,11 @@ namespace BizHawk.Client.EmuHawk
 				HighlightMovie(tas[0]);
 				return;
 			}
-			
-			if (tas.Count > 1)
-			{
-				indices = new List<int>(tas);
-			}
 
 			// Final tie breaker - Last used file
-			var file = new FileInfo(_movieList[indices[0]].Filename);
-			var time = file.LastAccessTime;
-			var mostRecent = indices[0];
-			for (var i = 1; i < indices.Count; i++)
-			{
-				file = new FileInfo(_movieList[indices[0]].Filename);
-				if (file.LastAccessTime > time)
-				{
-					time = file.LastAccessTime;
-					mostRecent = indices[i];
-				}
-			}
-
-			HighlightMovie(mostRecent);
+			HighlightMovie(tas.Select(movieIndex => (Index: movieIndex, Timestamp: new FileInfo(_movieList[movieIndex].Filename).LastAccessTime))
+				.OrderByDescending(static tuple => tuple.Timestamp)
+				.First().Index);
 		}
 
 		private void HighlightMovie(int index)
