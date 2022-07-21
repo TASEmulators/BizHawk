@@ -363,7 +363,7 @@
 		<Rule Id="MA0083" Action="Error" />
 
 		<!-- Local variable should not hide other symbols -->
-		<Rule Id="MA0084" Action="Hidden" />
+		<Rule Id="MA0084" Action="Warning" />
 
 		<!-- Anonymous delegates should not be used to unsubscribe from Events -->
 		<Rule Id="MA0085" Action="Error" />
