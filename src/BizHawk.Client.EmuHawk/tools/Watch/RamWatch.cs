@@ -877,7 +877,8 @@ namespace BizHawk.Client.EmuHawk
 		private void MoveDownMenuItem_Click(object sender, EventArgs e)
 		{
 			var indices = SelectedIndices.ToList();
-			if (indices.Count == 0 || indices.Last() == _watches.Count - 1)
+			if (indices.Count == 0
+				|| indices[indices.Count - 1] == _watches.Count - 1) // at end already
 			{
 				return;
 			}

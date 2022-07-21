@@ -11,6 +11,7 @@ using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 namespace BizHawk.Client.EmuHawk
@@ -199,8 +200,7 @@ namespace BizHawk.Client.EmuHawk
 						throw new Exception("System Id can not be blank");
 					}
 
-					var basePath = Path.GetDirectoryName(name.Split('|').First());
-
+					var basePath = Path.GetDirectoryName(name.SubstringBefore('|'));
 					if (string.IsNullOrEmpty(basePath))
 					{
 						var fileInfo = new FileInfo(name);

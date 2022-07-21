@@ -1063,7 +1063,8 @@ namespace BizHawk.Client.EmuHawk
 		private void MoveDownMenuItem_Click(object sender, EventArgs e)
 		{
 			var indices = LuaListView.SelectedRows.ToList();
-			if (indices.Count == 0 || indices.Last() == LuaImp.ScriptList.Count - 1)
+			if (indices.Count == 0
+				|| indices[indices.Count - 1] == LuaImp.ScriptList.Count - 1) // at end already
 			{
 				return;
 			}

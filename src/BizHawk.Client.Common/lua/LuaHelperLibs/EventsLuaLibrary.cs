@@ -301,7 +301,7 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					scope = DebuggableCore.MemoryCallbacks.AvailableScopes.First();
+					scope = DebuggableCore.MemoryCallbacks.AvailableScopes[0];
 				}
 			}
 

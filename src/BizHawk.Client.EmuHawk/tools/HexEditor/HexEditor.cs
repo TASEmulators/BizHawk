@@ -898,13 +898,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					return "";
 				}
-
-				if (path.Contains("|"))
-				{
-					path = path.Split('|').First();
-				}
-
-				return Path.GetDirectoryName(path);
+				return Path.GetDirectoryName(path.SubstringBefore('|'));
 			}
 		}
 
@@ -918,13 +912,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					return "";
 				}
-
-				if (path.Contains("|"))
-				{
-					path = path.Split('|').Last();
-				}
-
-				return Path.GetFileName(path);
+				return Path.GetFileName(path.SubstringAfterLast('|'));
 			}
 		}
 
@@ -1328,9 +1316,7 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadTableFileMenuItem_Click(object sender, EventArgs e)
 		{
 			string initialDirectory = Config.PathEntries.ToolsAbsolutePath();
-			var romName = Config.RecentRoms.MostRecent.Contains('|')
-				? Config.RecentRoms.MostRecent.Split('|').Last()
-				: Config.RecentRoms.MostRecent;
+			var romName = Config.RecentRoms.MostRecent.SubstringAfterLast('|');
 
 			using var ofd = new OpenFileDialog
 			{

@@ -46,6 +46,9 @@ namespace BizHawk.Client.Common
 		private int _totalSteps;
 		private bool _recordingBatch;
 
+		private List<IMovieAction> LatestBatch
+			=> _history[_history.Count - 1];
+
 		public List<string> Names { get; } = new List<string>();
 		public int UndoIndex { get; private set; } = -1;
 
@@ -163,7 +166,7 @@ namespace BizHawk.Client.Common
 			}
 
 			_recordingBatch = false;
-			List<IMovieAction> last = _history.Last();
+			var last = LatestBatch;
 			if (last.Count == 0) // Remove batch if it's empty.
 			{
 				_history.RemoveAt(_history.Count - 1);
@@ -328,8 +331,8 @@ namespace BizHawk.Client.Common
 			if (IsRecording || force)
 			{
 				AddMovieAction(name);
-				_history.Last().Add(new MovieAction(first, last, _movie));
-				_lastGeneral = _history.Last().Count - 1;
+				LatestBatch.Add(new MovieAction(first, last, _movie));
+				_lastGeneral = LatestBatch.Count - 1;
 			}
 		}
 
@@ -337,7 +340,7 @@ namespace BizHawk.Client.Common
 		{
 			if (IsRecording || force)
 			{
-				(_history.Last()[_lastGeneral] as MovieAction).SetRedoLog(_movie);
+				((MovieAction) LatestBatch[_lastGeneral]).SetRedoLog(_movie);
 			}
 		}
 
@@ -346,7 +349,7 @@ namespace BizHawk.Client.Common
 			if (IsRecording || force)
 			{
 				AddMovieAction(name);
-				_history.Last().Add(new MovieActionFrameEdit(frame, button, oldState, !oldState));
+				LatestBatch.Add(new MovieActionFrameEdit(frame, button, oldState, !oldState));
 			}
 		}
 
@@ -355,7 +358,7 @@ namespace BizHawk.Client.Common
 			if (IsRecording || force)
 			{
 				AddMovieAction(name);
-				_history.Last().Add(new MovieActionFrameEdit(frame, button, oldState, newState));
+				LatestBatch.Add(new MovieActionFrameEdit(frame, button, oldState, newState));
 			}
 		}
 
@@ -368,7 +371,7 @@ namespace BizHawk.Client.Common
 					: $"Remove Marker at frame {oldPosition}";
 
 				AddMovieAction(name);
-				_history.Last().Add(new MovieActionMarker(newMarker, oldPosition, oldMessage));
+				LatestBatch.Add(new MovieActionMarker(newMarker, oldPosition, oldMessage));
 			}
 		}
 
@@ -377,7 +380,7 @@ namespace BizHawk.Client.Common
 			if (IsRecording || force)
 			{
 				AddMovieAction(name);
-				_history.Last().Add(new MovieActionBindInput(_movie, frame, isDelete));
+				LatestBatch.Add(new MovieActionBindInput(_movie, frame, isDelete));
 			}
 		}
 
@@ -386,7 +389,7 @@ namespace BizHawk.Client.Common
 			if (IsRecording || force)
 			{
 				AddMovieAction(name);
-				_history.Last().Add(new MovieActionInsertFrames(frame, count));
+				LatestBatch.Add(new MovieActionInsertFrames(frame, count));
 			}
 		}
 
@@ -395,7 +398,7 @@ namespace BizHawk.Client.Common
 			if (IsRecording || force)
 			{
 				AddMovieAction(name);
-				_history.Last().Add(new MovieActionInsertFrames(frame, newInputs));
+				LatestBatch.Add(new MovieActionInsertFrames(frame, newInputs));
 			}
 		}
 
@@ -404,7 +407,7 @@ namespace BizHawk.Client.Common
 			if (IsRecording || force)
 			{
 				AddMovieAction(name);
-				_history.Last().Add(new MovieActionRemoveFrames(removeStart, removeUpTo, oldInputs, removedMarkers));
+				LatestBatch.Add(new MovieActionRemoveFrames(removeStart, removeUpTo, oldInputs, removedMarkers));
 			}
 		}
 	}

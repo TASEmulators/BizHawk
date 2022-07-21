@@ -221,7 +221,7 @@ namespace BizHawk.Client.EmuHawk
 			// Final tie breaker - Last used file
 			var file = new FileInfo(_movieList[indices[0]].Filename);
 			var time = file.LastAccessTime;
-			var mostRecent = indices.First();
+			var mostRecent = indices[0];
 			for (var i = 1; i < indices.Count; i++)
 			{
 				file = new FileInfo(_movieList[indices[0]].Filename);
