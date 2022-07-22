@@ -958,6 +958,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				BestAttemptLogLabel.Text = sb.ToString();
 				PlayBestButton.Enabled = true;
+				btnCopyBestInput.Enabled = true;
 			}
 			else
 			{
@@ -969,6 +970,7 @@ namespace BizHawk.Client.EmuHawk
 				BestTieBreak3Box.Text = "";
 				BestAttemptLogLabel.Text = "";
 				PlayBestButton.Enabled = false;
+				btnCopyBestInput.Enabled = false;
 			}
 		}
 
