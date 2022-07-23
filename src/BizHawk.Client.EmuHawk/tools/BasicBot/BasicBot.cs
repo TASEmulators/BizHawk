@@ -643,10 +643,18 @@ namespace BizHawk.Client.EmuHawk
 				control.Probability = p;
 			}
 
-			MaximizeAddress = botData.Maximize;
-			TieBreaker1Address = botData.TieBreaker1;
-			TieBreaker2Address = botData.TieBreaker2;
-			TieBreaker3Address = botData.TieBreaker3;
+			MaximizeAddressBox.ResetText();
+			TieBreaker1Box.ResetText();
+			TieBreaker2Box.ResetText();
+			TieBreaker3Box.ResetText();
+			if (botData.Maximize != int.MinValue)
+				MaximizeAddress = botData.Maximize;
+			if (botData.TieBreaker1 != int.MinValue)
+				TieBreaker1Address = botData.TieBreaker1;
+			if (botData.TieBreaker2 != int.MinValue)
+				TieBreaker2Address = botData.TieBreaker2;
+			if (botData.TieBreaker3 != int.MinValue)
+				TieBreaker3Address = botData.TieBreaker3;
 			try
 			{
 				MainComparisonType = botData.ComparisonTypeMain;
@@ -723,10 +731,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Best = _bestBotAttempt,
 				ControlProbabilities = ControlProbabilities,
-				Maximize = MaximizeAddress,
-				TieBreaker1 = TieBreaker1Address,
-				TieBreaker2 = TieBreaker2Address,
-				TieBreaker3 = TieBreaker3Address,
+				Maximize = MaximizeAddressBox.Text.Length > 0 ? MaximizeAddress : int.MinValue,
+				TieBreaker1 = TieBreaker1Box.Text.Length > 0 ? TieBreaker1Address : int.MinValue,
+				TieBreaker2 = TieBreaker2Box.Text.Length > 0 ? TieBreaker2Address : int.MinValue,
+				TieBreaker3 = TieBreaker3Box.Text.Length > 0 ? TieBreaker3Address : int.MinValue,
 				ComparisonTypeMain = MainComparisonType,
 				ComparisonTypeTie1 = Tie1ComparisonType,
 				ComparisonTypeTie2 = Tie2ComparisonType,
