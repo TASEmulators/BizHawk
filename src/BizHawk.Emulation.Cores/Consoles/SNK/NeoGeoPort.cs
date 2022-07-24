@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 		ISaveRam // NGP provides its own saveram interface
 	{
 		private NeoGeoPort(CoreComm comm)
-			: base(comm, null, null, null, null)
+			: base(comm, VSystemID.Raw.NULL, null, null, null)
 		{
 		}
 
