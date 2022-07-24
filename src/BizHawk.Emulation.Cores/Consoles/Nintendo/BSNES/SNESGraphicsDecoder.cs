@@ -321,7 +321,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				OBSEL_NameSel = OBSEL_NameSel,
 				OBSEL_NameBase = OBSEL_NameBase,
 				OBJTable0Addr = OBSEL_NameBase << 14,
-				OBJTable1Addr = ((OBSEL_NameBase << 14) + ((OBSEL_NameSel + 1) << 13)) & 0xFFF,
+				OBJTable1Addr = ((OBSEL_NameBase << 14) + ((OBSEL_NameSel + 1) << 13)) & 0xFFFF,
 				OBJ_MainEnabled = _api.core.snes_peek_logical_register(TM_OBJ) == 1,
 				OBJ_SubEnabled = _api.core.snes_peek_logical_register(TS_OBJ) == 1,
 				OBJ_MathEnabled = _api.core.snes_peek_logical_register(CGADDSUB_OBJ) == 1,

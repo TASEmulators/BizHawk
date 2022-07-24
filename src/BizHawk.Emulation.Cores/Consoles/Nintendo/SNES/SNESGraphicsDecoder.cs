@@ -421,7 +421,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				OBSEL_NameSel = OBSEL_NameSel,
 				OBSEL_NameBase = OBSEL_NameBase,
 				OBJTable0Addr = OBSEL_NameBase << 14,
-				OBJTable1Addr = ((OBSEL_NameBase << 14) + ((OBSEL_NameSel + 1) << 13)) & 0xFFF,
+				OBJTable1Addr = ((OBSEL_NameBase << 14) + ((OBSEL_NameSel + 1) << 13)) & 0xFFFF,
 				SETINI_Mode7ExtBG = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.SETINI_MODE7_EXTBG) == 1,
 				SETINI_HiRes = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.SETINI_HIRES) == 1,
 				SETINI_Overscan = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.SETINI_OVERSCAN) == 1,
