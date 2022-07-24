@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using BizHawk.Common;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using static BizHawk.Emulation.Cores.Nintendo.BSNES.BsnesApi.SNES_REGISTER;
@@ -9,35 +10,64 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 {
 	public sealed unsafe class SNESGraphicsDecoder : ISNESGraphicsDecoder
 	{
-		private struct Object // size: 10 bytes; equivalent to the c++ version
+		[StructLayout(LayoutKind.Sequential)]
+		public struct Object // size: 10 bytes; equivalent to the c++ version
 		{
-			private ushort x;
-			private byte y;
-			private byte character;
-			private bool nameSelect;
-			private bool vflip;
-			private bool hflip;
-			private byte priority;
-			private byte palette;
-			private bool size;
+			public readonly ushort x;
+			public readonly byte y;
+			public readonly byte character;
+			public readonly bool nameSelect;
+			public readonly bool vflip;
+			public readonly bool hflip;
+			public readonly byte priority;
+			public readonly byte palette;
+			public readonly bool size;
 		}
 
 		private readonly BsnesApi _api;
 		private readonly byte* vram; // waterbox pointer, ALWAYS access with EnterExit()
-		private Object* objects; // waterbox pointer, ALWAYS access with EnterExit()
+		private readonly Object* objects; // waterbox pointer, ALWAYS access with EnterExit()
 		private readonly ushort* cgram; // waterbox pointer, ALWAYS access with EnterExit()
 		private readonly byte[][] cachedTiles = new byte[5][];
 		private readonly int[] bppArrayIndex = { 0, 0, 0, 0, 1, 0, 0, 0, 2 };
 
-		private readonly int[] palette;
+		private readonly int[] palette = new int[32768];
+		private readonly short[] directColorTable = new short[256];
+		private void generate_palette()
+		{
+			const int a = 0xFF;
+			for (int color = 0; color < 32768; color++) {
+				int r = (color >> 10) & 31;
+				int g = (color >>  5) & 31;
+				int b = (color >>  0) & 31;
+
+				r = r << 3 | r >> 2; r = r << 8 | r << 0;
+				g = g << 3 | g >> 2; g = g << 8 | g << 0;
+				b = b << 3 | b >> 2; b = b << 8 | b << 0;
+
+				palette[color] = a << 24 | b >> 8 << 16 | g >> 8 <<  8 | r >> 8 << 0;
+			}
+		}
+
+		private void generate_directColorTable()
+		{
+			for (int i = 0; i < 256; i++)
+			{
+				directColorTable[i] = (short)
+						( (i << 2 & 0x001c)    //R
+						+ (i << 4 & 0x0380)    //G
+						+ (i << 7 & 0x6000) ); //B
+			}
+		}
 
 		public SNESGraphicsDecoder(BsnesApi api)
 		{
 			_api = api;
-			vram = (byte*) api.core.snes_get_memory_region((int)BsnesApi.SNES_MEMORY.VRAM, out _, out _);
-			objects = (Object*) api.core.snes_get_memory_region((int)BsnesApi.SNES_MEMORY.OBJECTS, out _, out _);
+			vram = (byte*)api.core.snes_get_memory_region((int)BsnesApi.SNES_MEMORY.VRAM, out _, out _);
+			objects = (Object*)api.core.snes_get_memory_region((int)BsnesApi.SNES_MEMORY.OBJECTS, out _, out _);
 			cgram = (ushort*)api.core.snes_get_memory_region((int)BsnesApi.SNES_MEMORY.CGRAM, out _, out _);
-			palette = SnesColors.GetLUT(SnesColors.ColorType.BSNES);
+			generate_palette();
+			generate_directColorTable();
 		}
 
 		public void CacheTiles()
@@ -73,7 +103,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 					addr += 2;
 				}
 			}
-
 		}
 
 		private void CacheTiles_Merge(int toBpp)
@@ -118,19 +147,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		public int Colorize(int rgb555)
 		{
-			return palette[491520 + rgb555];
+			return palette[rgb555];
 		}
 
 		public void Colorize(int* buf, int offset, int numpixels)
 		{
 			for (int i = 0; i < numpixels; i++)
 			{
-				buf[offset + i] = palette[491520 + buf[offset + i]];
+				buf[offset + i] = palette[buf[offset + i]];
 			}
 		}
 
 		public ISNESGraphicsDecoder.OAMInfo CreateOAMInfo(ScreenInfo si, int num)
-			=> throw new NotImplementedException();
+		{
+			using (_api.EnterExit())
+			{
+				return new OAMInfo(objects, si, num);
+			}
+		}
 
 		public void DecodeBG(
 			int* screen,
@@ -198,9 +232,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			=> throw new NotImplementedException();
 
 		public void DirectColorify(int* screen, int numPixels)
-			=> throw new NotImplementedException();
-
-		public void Dispose() {}
+		{
+			for (int i = 0; i < numPixels; i++)
+			{
+				screen[i] = directColorTable[screen[i]];
+			}
+		}
 
 		public void Enter()
 			=> _api.Enter();
@@ -271,7 +308,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			int tilesWide,
 			int startTile,
 			int numTiles)
-				=> throw new NotImplementedException();
+		{
+			byte[] cachedTileBuffer = cachedTiles[ext ? 4 : 3];
+			for (int i = 0; i < numTiles; i++)
+			{
+				int targetYPos = i / tilesWide * stride * 8;
+				int targetXPos = i % tilesWide * 8;
+				int destinationOffset = targetYPos + targetXPos;
+				int sourceOffset = (startTile + i) * 64;
+				for (int y = 0; y < 8; y++)
+				for (int x = 0; x < 8; x++)
+				{
+					screen[destinationOffset + y * stride + x] = cachedTileBuffer[sourceOffset++];
+				}
+			}
+
+			int numPixels = numTiles * 8 * 8;
+			if (directColor) DirectColorify(screen, numPixels);
+			else Paletteize(screen, 0, 0, numPixels);
+			Colorize(screen, 0, numPixels);
+		}
 
 		public void RenderSpriteToScreen(
 			int* screen,
@@ -283,19 +339,89 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			int xlimit,
 			int ylimit,
 			byte[,] spriteMap)
-				=> throw new NotImplementedException();
+		{
+			using (_api.EnterExit()) oam ??= new OAMInfo(objects, si, spritenum);
+			Size dim = ObjSizes[si.OBSEL_Size, oam.Size ? 1 : 0];
+
+			byte[] cachedTileBuffer = cachedTiles[bppArrayIndex[4]];
+
+			int baseaddr = oam.Table ? si.OBJTable1Addr : si.OBJTable0Addr;
+
+			//TODO - flips of 'undocumented' rectangular oam settings are wrong. probably easy to do right, but we need a test
+
+			int bcol = oam.Tile & 0xF;
+			int brow = (oam.Tile >> 4) & 0xF;
+			for(int oy=0;oy<dim.Height;oy++)
+			for (int ox = 0; ox < dim.Width; ox++)
+			{
+				int dy, dx;
+
+				if (oam.HFlip)
+					dx = dim.Width - 1 - ox;
+				else dx = ox;
+				if (oam.VFlip)
+					dy = dim.Height - 1 - oy;
+				else dy = oy;
+
+				dx += destx;
+				dy += desty;
+
+				if(dx>=xlimit || dy>=ylimit || dx<0 || dy<0)
+					continue;
+
+				int col = (bcol + (ox >> 3)) & 0xF;
+				int row = (brow + (oy >> 3)) & 0xF;
+				int sx = ox & 0x7;
+				int sy = oy & 0x7;
+
+				int addr = baseaddr*2 + (row * 16 + col) * 64;
+				addr += sy * 8 + sx;
+
+				int dofs = stride*dy+dx;
+				int color = cachedTileBuffer[addr];
+				if (spriteMap != null && color == 0)
+				{
+					//skip transparent pixels
+				}
+				else
+				{
+					screen[dofs] = color;
+					Paletteize(screen, dofs, oam.Palette * 16 + 128, 1);
+					Colorize(screen, dofs, 1);
+					if (spriteMap != null) spriteMap[dx, dy] = (byte)spritenum;
+				}
+			}
+		}
 
 		public void RenderTilesToScreen(
 			int* screen,
-			int tilesWide,
-			int tilesTall,
 			int stride,
 			int bpp,
 			int startcolor,
 			int startTile,
-			int numTiles,
-			bool descramble16)
-				=> throw new NotImplementedException();
+			int numTiles)
+		{
+			if (numTiles == -1)
+				numTiles = 8192 / bpp;
+			byte[] cachedTileBuffer = cachedTiles[bppArrayIndex[bpp]];
+			int tilesPerRow = stride / 8;
+			for (int i = 0; i < numTiles; i++)
+			{
+				int targetYPos = i / tilesPerRow * stride * 8;
+				int targetXPos = i % tilesPerRow * 8;
+				int destinationOffset = targetYPos + targetXPos;
+				int sourceOffset = (startTile + i) * 64;
+				for (int y = 0; y < 8; y++)
+				for (int x = 0; x < 8; x++)
+				{
+					screen[destinationOffset + y * stride + x] = cachedTileBuffer[sourceOffset++];
+				}
+			}
+
+			int numPixels = numTiles * 8 * 8;
+			Paletteize(screen, 0, startcolor, numPixels);
+			Colorize(screen, 0, numPixels);
+		}
 
 		public ScreenInfo ScanScreenInfo()
 		{
@@ -464,5 +590,35 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		public void SetBackColor(int snescol)
 			=> throw new NotImplementedException();
+	}
+
+	internal class OAMInfo : ISNESGraphicsDecoder.OAMInfo
+	{
+		public ushort X { get; }
+		public byte Y { get; }
+		public int Tile { get; }
+		public bool Table { get; }
+		public int Palette { get; }
+		public byte Priority { get; }
+		public bool VFlip { get; }
+		public bool HFlip { get; }
+		public bool Size { get; }
+		public int Address { get; }
+
+		public unsafe OAMInfo(SNESGraphicsDecoder.Object* objects, ScreenInfo si, int index)
+		{
+			X = objects[index].x;
+			Y = objects[index].y;
+			Table = objects[index].nameSelect;
+			Palette = objects[index].palette;
+			Priority = objects[index].priority;
+			HFlip = objects[index].hflip;
+			VFlip = objects[index].vflip;
+			Size = objects[index].size;
+			byte character = objects[index].character;
+			Tile = character + (Table ? 256 : 0);
+			Address = character * 32 + (Table ? si.OBJTable1Addr : si.OBJTable0Addr);
+			Address &= 0xFFFF;
+		}
 	}
 }

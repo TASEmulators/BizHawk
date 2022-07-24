@@ -209,8 +209,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RegenerateData()
 		{
-			gd?.Dispose();
-			gd = null;
 			if (currentSnesCore == null) return;
 			gd = NewDecoder();
 			using (gd.EnterExit())
@@ -380,24 +378,24 @@ namespace BizHawk.Client.EmuHawk
 				allocate(128, 256);
 				int startTile;
 				startTile = si.OBJTable0Addr / 32;
-				gd.RenderTilesToScreen(pixelptr, 16, 16, stride / 4, 4, currPaletteSelection.start, startTile, 256, true);
+				gd.RenderTilesToScreen(pixelptr, stride / 4, 4, currPaletteSelection.start, startTile, 256);
 				startTile = si.OBJTable1Addr / 32;
-				gd.RenderTilesToScreen(pixelptr + (stride/4*8*16), 16, 16, stride / 4, 4, currPaletteSelection.start, startTile, 256, true);
+				gd.RenderTilesToScreen(pixelptr + (stride/4*8*16), stride / 4, 4, currPaletteSelection.start, startTile, 256);
 			}
 			if (selection == eDisplayType.Tiles2bpp)
 			{
 				allocate(512, 512);
-				gd.RenderTilesToScreen(pixelptr, 64, 64, stride / 4, 2, currPaletteSelection.start);
+				gd.RenderTilesToScreen(pixelptr, stride / 4, 2, currPaletteSelection.start);
 			}
 			if (selection == eDisplayType.Tiles4bpp)
 			{
 				allocate(512, 512);
-				gd.RenderTilesToScreen(pixelptr, 64, 32, stride / 4, 4, currPaletteSelection.start);
+				gd.RenderTilesToScreen(pixelptr, stride / 4, 4, currPaletteSelection.start);
 			}
 			if (selection == eDisplayType.Tiles8bpp)
 			{
 				allocate(256, 256);
-				gd.RenderTilesToScreen(pixelptr, 32, 32, stride / 4, 8, currPaletteSelection.start);
+				gd.RenderTilesToScreen(pixelptr, stride / 4, 8, currPaletteSelection.start);
 			}
 			if (selection == eDisplayType.TilesMode7)
 			{
@@ -717,8 +715,8 @@ namespace BizHawk.Client.EmuHawk
 			txtObjCoord.Text = $"({oam.X}, {oam.Y})";
 			cbObjHFlip.Checked = oam.HFlip;
 			cbObjVFlip.Checked = oam.VFlip;
-			cbObjLarge.Checked = oam.Size == 1;
-			txtObjSize.Text = SNESGraphicsDecoder.ObjSizes[si.OBSEL_Size, oam.Size].ToString();
+			cbObjLarge.Checked = oam.Size;
+			txtObjSize.Text = SNESGraphicsDecoder.ObjSizes[si.OBSEL_Size, oam.Size ? 1 : 0].ToString();
 			txtObjPriority.Text = oam.Priority.ToString();
 			txtObjPalette.Text = oam.Palette.ToString();
 			txtObjPaletteMemo.Text = $"${oam.Palette * 16 + 128:X2}";
@@ -980,9 +978,9 @@ namespace BizHawk.Client.EmuHawk
 				{
 					//render an obj tile
 					int tile = currTileDataState.Address / 32;
-					gd.RenderTilesToScreen((int*)bmpdata.Scan0, 1, 1, bmpdata.Stride / 4, bpp, currPaletteSelection.start, tile, 1);
+					gd.RenderTilesToScreen((int*)bmpdata.Scan0, bmpdata.Stride / 4, bpp, currPaletteSelection.start, tile, 1);
 				}
-				else gd.RenderTilesToScreen((int*)bmpdata.Scan0, 1, 1, bmpdata.Stride / 4, bpp, currPaletteSelection.start, currTileDataState.Tile, 1);
+				else gd.RenderTilesToScreen((int*)bmpdata.Scan0, bmpdata.Stride / 4, bpp, currPaletteSelection.start, currTileDataState.Tile, 1);
 
 				bmp.UnlockBits(bmpdata);
 				viewerTile.SetBitmap(bmp);

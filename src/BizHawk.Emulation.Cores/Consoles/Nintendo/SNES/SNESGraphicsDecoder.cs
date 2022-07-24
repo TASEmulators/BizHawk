@@ -14,27 +14,27 @@ using System.Drawing;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
-	public unsafe interface ISNESGraphicsDecoder : IDisposable, IMonitor
+	public unsafe interface ISNESGraphicsDecoder : IMonitor
 	{
 		public interface OAMInfo
 		{
-			int X { get; }
+			ushort X { get; }
 
-			int Y { get; }
+			byte Y { get; }
 
 			int Tile { get; }
 
-			int Table { get; }
+			bool Table { get; }
 
 			int Palette { get; }
 
-			int Priority { get; }
+			byte Priority { get; }
 
 			bool VFlip { get; }
 
 			bool HFlip { get; }
 
-			int Size { get; }
+			bool Size { get; }
 
 			int Address { get; }
 		}
@@ -92,14 +92,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		void RenderTilesToScreen(
 			int* screen,
-			int tilesWide,
-			int tilesTall,
 			int stride,
 			int bpp,
 			int startcolor,
 			int startTile = 0,
-			int numTiles = -1,
-			bool descramble16 = false);
+			int numTiles = -1);
 
 		SNESGraphicsDecoder.ScreenInfo ScanScreenInfo();
 
@@ -295,16 +292,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public class OAMInfo : ISNESGraphicsDecoder.OAMInfo
 		{
 			public int Index { get; }
-			public int X { get; }
-			public int Y { get; }
+			public ushort X { get; }
+			public byte Y { get; }
 			public int Tile { get; }
-			public int Name { get; }
-			public int Table { get; }
+			public bool Table { get; }
 			public int Palette { get; }
-			public int Priority { get; }
+			public byte Priority { get; }
 			public bool VFlip { get; }
 			public bool HFlip { get; }
-			public int Size { get; }
+			public bool Size { get; }
 
 			/// <summary>
 			/// tiledata address
@@ -318,11 +314,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				int lowaddr = num*4;
 				X = dec.oam[lowaddr++];
 				Y = dec.oam[lowaddr++];
-				Name = dec.oam[lowaddr++];
-				Table = dec.oam[lowaddr] & 1;
+				byte name = dec.oam[lowaddr++];
+				Table = (dec.oam[lowaddr] & 1) == 1;
 				Palette = (dec.oam[lowaddr]>>1) & 7;
-				Priority = (dec.oam[lowaddr] >> 4) & 3;
-				HFlip = ((dec.oam[lowaddr] >> 6) & 1)==1;
+				Priority = (byte)((dec.oam[lowaddr] >> 4) & 3);
+				HFlip = ((dec.oam[lowaddr] >> 6) & 1) == 1;
 				VFlip = ((dec.oam[lowaddr] >> 7) & 1) == 1;
 
 				int highaddr = num / 4;
@@ -331,11 +327,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				high >>= shift;
 				int x = high & 1;
 				high >>= 1;
-				Size = high & 1;
-				X |= (x << 8);
-				X = (X << 23) >> 23;
+				Size = (high & 1) != 0;
+				X = (ushort)(X | (x << 8));
 
-				Tile = Table*256 + Name;
+				Tile = name + (Table ? 256 : 0);
 				Address = 32 * Tile;
 
 				if (Tile < 256)
@@ -986,11 +981,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		/// we might need 16x16 unscrambling and some other perks here eventually.
 		/// provide a start color to use as the basis for the palette
 		/// </summary>
-		public void RenderTilesToScreen(int* screen, int tilesWide, int tilesTall, int stride, int bpp, int startcolor, int startTile = 0, int numTiles = -1, bool descramble16 = false)
+		public void RenderTilesToScreen(int* screen, int stride, int bpp, int startcolor, int startTile = 0, int numTiles = -1)
 		{
 			if (numTiles == -1)
 				numTiles = 8192 / bpp;
 			int[] tilebuf = _tileCache[bpp];
+			int tilesWide = stride / 8;
 			for (int i = 0; i < numTiles; i++)
 			{
 				int tnum = startTile + i;
@@ -1014,18 +1010,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public void RenderSpriteToScreen(int* screen, int stride, int destx, int desty, ScreenInfo si, int spritenum, ISNESGraphicsDecoder.OAMInfo oam = null, int xlimit = 1024, int ylimit = 1024, byte[,] spriteMap = null)
 		{
-			var dims = new[] { SNESGraphicsDecoder.ObjSizes[si.OBSEL_Size, 0], SNESGraphicsDecoder.ObjSizes[si.OBSEL_Size, 1] };
-			if(oam == null)
-				oam = new OAMInfo(this, si, spritenum);
-			var dim = dims[oam.Size];
+			oam ??= new OAMInfo(this, si, spritenum);
+			var dim = ObjSizes[si.OBSEL_Size, oam.Size ? 1 : 0];
 
 			int[] tilebuf = _tileCache[4];
 
-			int baseaddr;
-			if (oam.Table == 0)
-				baseaddr = si.OBJTable0Addr;
-			else
-				baseaddr = si.OBJTable1Addr;
+			int baseaddr = oam.Table ? si.OBJTable1Addr : si.OBJTable0Addr;
 
 			//TODO - flips of 'undocumented' rectangular oam settings are wrong. probably easy to do right, but we need a test
 
