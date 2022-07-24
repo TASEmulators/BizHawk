@@ -36,7 +36,7 @@ namespace BizHawk.Client.Common
 				new[] { CoreNames.Gambatte, CoreNames.Sameboy, CoreNames.GbHawk, CoreNames.SubGbHawk }),
 			(new[] { VSystemID.Raw.GBL },
 				new[] { CoreNames.GambatteLink, CoreNames.GBHawkLink, CoreNames.GBHawkLink3x, CoreNames.GBHawkLink4x }),
-			(new[] { VSystemID.Raw.PCE, VSystemID.Raw.PCECD, VSystemID.Raw.SGX },
+			(new[] { VSystemID.Raw.PCE, VSystemID.Raw.PCECD, VSystemID.Raw.SGX, VSystemID.Raw.SGXCD },
 				new[] { CoreNames.TurboNyma, CoreNames.HyperNyma, CoreNames.PceHawk }),
 			(new[] { VSystemID.Raw.PSX },
 				new[] { CoreNames.Octoshock, CoreNames.Nymashock }),
@@ -329,6 +329,7 @@ namespace BizHawk.Client.Common
 			[VSystemID.Raw.PCE] = CoreNames.TurboNyma,
 			[VSystemID.Raw.PCECD] = CoreNames.TurboNyma,
 			[VSystemID.Raw.SGX] = CoreNames.TurboNyma,
+			[VSystemID.Raw.SGXCD] = CoreNames.TurboNyma,
 			[VSystemID.Raw.PSX] = CoreNames.Nymashock,
 			[VSystemID.Raw.TI83] = CoreNames.Emu83,
 		};
