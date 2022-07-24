@@ -151,11 +151,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 				_customPal = new[] { 0x00ffffff, 0x00aaaaaa, 0x00555555, 0x00000000, 0x00ffffff, };
 			}
 
-			public SameboySettings Clone() => MemberwiseClone() as SameboySettings;
+			public SameboySettings Clone()
+				=> (SameboySettings)MemberwiseClone();
 
-			public int[] GetCustomPalette() => _customPal.Clone() as int[];
+			public int[] GetCustomPalette() 
+				=> (int[])_customPal.Clone();
 
-			public void SetCustomPalette(int[] pal) => _customPal = pal.Clone() as int[];
+			public void SetCustomPalette(int[] pal)
+				=> _customPal = (int[])pal.Clone();
 		}
 
 		public class SameboySyncSettings
@@ -210,11 +213,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			[DefaultValue(0)]
 			public int RTCDivisorOffset { get; set; }
 
-			public SameboySyncSettings() => SettingsUtil.SetDefaultValues(this);
+			[DisplayName("Disable Joypad Bounce")]
+			[Description("Disables emulation of the bounce from a physical joypad.")]
+			[DefaultValue(true)]
+			public bool NoJoypadBounce { get; set; }
 
-			public SameboySyncSettings Clone() => MemberwiseClone() as SameboySyncSettings;
+			public SameboySyncSettings()
+				=> SettingsUtil.SetDefaultValues(this);
 
-			public static bool NeedsReboot(SameboySyncSettings x, SameboySyncSettings y) => !DeepEquality.DeepEquals(x, y);
+			public SameboySyncSettings Clone()
+				=> (SameboySyncSettings)MemberwiseClone();
+
+			public static bool NeedsReboot(SameboySyncSettings x, SameboySyncSettings y)
+				=> !DeepEquality.DeepEquals(x, y);
 		}
 	}
 }

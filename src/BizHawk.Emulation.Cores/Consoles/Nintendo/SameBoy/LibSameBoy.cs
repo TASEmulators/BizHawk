@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 		}
 
 		[BizImport(cc)]
-		public abstract IntPtr sameboy_create(byte[] romdata, int romlength, byte[] biosdata, int bioslength, Sameboy.SameboySyncSettings.GBModel model, bool realtime);
+		public abstract IntPtr sameboy_create(byte[] romdata, int romlength, byte[] biosdata, int bioslength, Sameboy.SameboySyncSettings.GBModel model, bool realtime, bool nobounce);
 
 		[BizImport(cc)]
 		public abstract void sameboy_destroy(IntPtr core);
