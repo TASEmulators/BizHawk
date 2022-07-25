@@ -16,7 +16,7 @@ namespace BizHawk.Experiment.AutoGenConfig
 	{
 		public ApiContainer? _apiContainer { get; set; }
 
-		private ApiContainer APIs => _apiContainer ?? throw new NullReferenceException();
+		private ApiContainer APIs => _apiContainer!;
 
 		private static readonly WeakReference<ConfigEditorCache> _cache = new WeakReference<ConfigEditorCache>(new ConfigEditorCache(typeof(Config)));
 

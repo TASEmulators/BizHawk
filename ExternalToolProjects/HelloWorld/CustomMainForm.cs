@@ -36,7 +36,7 @@ namespace HelloWorld
 		/// </remarks>
 		public ApiContainer? _apiContainer { get; set; }
 
-		private ApiContainer APIs => _apiContainer ?? throw new NullReferenceException();
+		private ApiContainer APIs => _apiContainer!;
 
 		/// <remarks>
 		/// An example of a hack. Hacks should be your last resort because they're prone to break with new releases.
