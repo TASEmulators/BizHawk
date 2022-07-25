@@ -1,7 +1,6 @@
 using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
-using BizHawk.Common;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using static BizHawk.Emulation.Cores.Nintendo.BSNES.BsnesApi.SNES_REGISTER;
 using static BizHawk.Emulation.Cores.Nintendo.SNES.SNESGraphicsDecoder;
@@ -72,14 +71,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		public void CacheTiles()
 		{
-			using (_api.EnterExit()) // for vram access
-			{
-				CacheTiles2Bpp();
-				CacheTiles_Merge(4);
-				CacheTiles_Merge(8);
-				CacheTilesMode7();
-				CacheTilesMode7ExtBg();
-			}
+			CacheTiles2Bpp();
+			CacheTiles_Merge(4);
+			CacheTiles_Merge(8);
+			CacheTilesMode7();
+			CacheTilesMode7ExtBg();
 		}
 
 		private void CacheTiles2Bpp()
@@ -158,13 +154,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			}
 		}
 
-		public ISNESGraphicsDecoder.OAMInfo CreateOAMInfo(ScreenInfo si, int num)
-		{
-			using (_api.EnterExit())
-			{
-				return new OAMInfo(objects, si, num);
-			}
-		}
+		public ISNESGraphicsDecoder.OAMInfo CreateOAMInfo(ScreenInfo si, int num) => new OAMInfo(objects, si, num);
 
 		public void DecodeBG(
 			int* screen,
@@ -255,21 +245,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			int realHeight = blockDimensions.Height * 32;
 			TileEntry[] buf = new TileEntry[realWidth*realHeight];
 
-			using (_api.EnterExit())
+			for (int by = 0; by < blockDimensions.Height; by++)
+			for (int bx = 0; bx < blockDimensions.Width; bx++)
+			for (int y = 0; y < 32; y++)
+			for (int x = 0; x < 32; x++)
 			{
-				for (int by = 0; by < blockDimensions.Height; by++)
-				for (int bx = 0; bx < blockDimensions.Width; bx++)
-				for (int y = 0; y < 32; y++)
-				for (int x = 0; x < 32; x++)
-				{
-					int idx = (by * 32 + y) * realWidth + bx * 32 + x;
-					ushort entry = *(ushort*)(vram + addr);
-					buf[idx].tilenum = (ushort)(entry & 0x3FF);
-					buf[idx].palette = (byte)((entry >> 10) & 7);
-					buf[idx].flags = (TileEntryFlags)((entry >> 13) & 7);
-					buf[idx].address = addr;
-					addr += 2;
-				}
+				int idx = (by * 32 + y) * realWidth + bx * 32 + x;
+				ushort entry = *(ushort*)(vram + addr);
+				buf[idx].tilenum = (ushort)(entry & 0x3FF);
+				buf[idx].palette = (byte)((entry >> 10) & 7);
+				buf[idx].flags = (TileEntryFlags)((entry >> 13) & 7);
+				buf[idx].address = addr;
+				addr += 2;
 			}
 
 			return buf;
@@ -277,26 +264,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		public int[] GetPalette()
 		{
-			using (_api.EnterExit())
-			{
-				int[] ret = new int[256];
-				for (int i = 0; i < 256; i++)
-					ret[i] = cgram[i] & 0x7FFF;
-				return ret;
-			}
+			int[] ret = new int[256];
+			for (int i = 0; i < 256; i++)
+				ret[i] = cgram[i] & 0x7FFF;
+			return ret;
 		}
 
 		public void Paletteize(int* buf, int offset, int startcolor, int numpixels)
 		{
-			using (_api.EnterExit())
+			for (int i = 0; i < numpixels; i++)
 			{
-				for (int i = 0; i < numpixels; i++)
-				{
-					int entry = buf[offset + i];
-					int color = cgram[startcolor + entry] & 0x7FFF;
+				int entry = buf[offset + i];
+				int color = cgram[startcolor + entry] & 0x7FFF;
 
-					buf[offset + i] = color;
-				}
+				buf[offset + i] = color;
 			}
 		}
 
@@ -340,7 +321,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			int ylimit,
 			byte[,] spriteMap)
 		{
-			using (_api.EnterExit()) oam ??= new OAMInfo(objects, si, spritenum);
+			oam ??= new OAMInfo(objects, si, spritenum);
 			Size dim = ObjSizes[si.OBSEL_Size, oam.Size ? 1 : 0];
 
 			byte[] cachedTileBuffer = cachedTiles[bppArrayIndex[4]];

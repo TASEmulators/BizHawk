@@ -1264,9 +1264,12 @@ namespace BizHawk.Client.EmuHawk
 			Console.WriteLine("set {0}", pal);
 			currentSnesCore?.SetPalette(pal);
 			RegenerateData();
-			RenderView();
-			RenderPalette();
-			RenderTileView();
+			using (gd.EnterExit())
+			{
+				RenderView();
+				RenderPalette();
+				RenderTileView();
+			}
 		}
 
 		private void RefreshBGENCheckStatesFromConfig()
