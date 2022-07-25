@@ -222,7 +222,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		}
 
 		public void DecodeMode7BG(int* screen, int stride, bool extBg)
-			=> throw new NotImplementedException();
+		{
+			byte[] cachedTileBuffer = cachedTiles[extBg ? 4 : 3];
+			for (int ty = 0, tidx = 0; ty < 128; ty++)
+			for (int tx = 0; tx < 128; tx++, tidx++)
+			{
+				int tileEntry = vram[tidx * 2];
+				int src = tileEntry * 64;
+				for (int py = 0; py < 8; py++)
+				for (int px = 0; px < 8; px++)
+				{
+					int dst = (ty * 8 + py) * stride + (tx * 8 + px);
+					int srcData = cachedTileBuffer[src++];
+					screen[dst] = srcData;
+				}
+			}
+		}
 
 		public void DirectColorify(int* screen, int numPixels)
 		{
@@ -239,7 +254,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			=> _api.Exit();
 
 		public TileEntry[] FetchMode7Tilemap()
-			=> throw new NotImplementedException();
+		{
+			var buf = new TileEntry[128*128];
+			for (int tidx = 0; tidx < 128 * 128; tidx++)
+			{
+				buf[tidx].address = tidx * 2;
+				buf[tidx].tilenum = vram[tidx * 2];
+			}
+
+			return buf;
+		}
 
 		public TileEntry[] FetchTilemap(int addr, ScreenSize size)
 		{

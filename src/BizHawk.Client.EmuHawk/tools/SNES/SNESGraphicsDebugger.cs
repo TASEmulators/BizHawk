@@ -532,6 +532,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SNESGraphicsDebugger_Load(object sender, EventArgs e)
 		{
+			currentSnesCore = Emulator;
+			gd = NewDecoder();
+
 			if (UserBackdropColor != -1)
 			{
 				pnBackdropColor.BackColor = Color.FromArgb(UserBackdropColor);
@@ -539,6 +542,7 @@ namespace BizHawk.Client.EmuHawk
 			if (checkBackdropColor.Checked)
 			{
 				SyncBackdropColor();
+				gd.SetBackColor(DecodeWinformsColorToSNES(pnBackdropColor.BackColor));
 			}
 
 			UpdateToolsLoadstate();
