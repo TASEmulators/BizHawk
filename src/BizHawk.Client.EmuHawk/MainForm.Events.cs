@@ -427,6 +427,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RecordMovieMenuItem_Click(object sender, EventArgs e)
 		{
+			if (Game.IsNullInstance()) return;
 			if (!Emulator.Attributes().Released)
 			{
 				var result = this.ModalMessageBox2(

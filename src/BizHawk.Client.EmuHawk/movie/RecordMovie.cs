@@ -30,6 +30,8 @@ namespace BizHawk.Client.EmuHawk
 			IMovieSession movieSession,
 			FirmwareManager firmwareManager)
 		{
+			if (game.IsNullInstance()) throw new InvalidOperationException("how is the traditional Record dialog open with no game loaded? please report this including as much detail as possible");
+
 			_mainForm = mainForm;
 			_config = config;
 			_game = game;

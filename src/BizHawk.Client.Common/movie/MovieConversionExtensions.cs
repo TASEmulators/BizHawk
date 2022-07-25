@@ -198,18 +198,11 @@ namespace BizHawk.Client.Common
 				movie.SyncSettingsJson = ConfigService.SaveWithType(settable.GetSyncSettings());
 			}
 
-			if (game.IsNullInstance())
+			movie.GameName = game.FilesystemSafeName();
+			movie.Hash = game.Hash;
+			if (game.FirmwareHash != null)
 			{
-				movie.GameName = "NULL";
-			}
-			else
-			{
-				movie.GameName = game.FilesystemSafeName();
-				movie.Hash = game.Hash;
-				if (game.FirmwareHash != null)
-				{
-					movie.FirmwareHash = game.FirmwareHash;
-				}
+				movie.FirmwareHash = game.FirmwareHash;
 			}
 
 			if (emulator.HasBoardInfo())
