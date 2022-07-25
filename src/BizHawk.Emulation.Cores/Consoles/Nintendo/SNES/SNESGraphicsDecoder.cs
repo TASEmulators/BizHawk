@@ -100,7 +100,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		SNESGraphicsDecoder.ScreenInfo ScanScreenInfo();
 
-		void SetBackColor(int snescol);
+		void SetBackColor(int snescol = -1);
 	}
 
 	public unsafe class SNESGraphicsDecoder : ISNESGraphicsDecoder
@@ -838,13 +838,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		private readonly int[][] _tileCache = new int[18][];
 
-		private bool usingUserBackColor = false;
+		private bool usingUserBackColor;
 		private int userBackColor;
 
 		public void SetBackColor(int snescol)
 		{
-			usingUserBackColor = true;
-			userBackColor = snescol;
+			if (snescol == -1)
+			{
+				usingUserBackColor = false;
+			}
+			else
+			{
+				usingUserBackColor = true;
+				userBackColor = snescol;
+			}
 		}
 
 		/// <summary>

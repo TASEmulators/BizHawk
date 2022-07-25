@@ -111,6 +111,7 @@ namespace BizHawk.Client.EmuHawk
 			base.OnClosed(e);
 			currentSnesCore?.ScanlineHookManager.Unregister(this);
 			currentSnesCore = null;
+			gd = null;
 		}
 
 		private string FormatBpp(int bpp)
@@ -174,6 +175,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (currentSnesCore != Emulator && Emulator != null)
 			{
+				gd = null;
 				suppression = true;
 				comboPalette.SelectedValue = Emulator.CurrPalette;
 				RefreshBGENCheckStatesFromConfig();
@@ -210,11 +212,9 @@ namespace BizHawk.Client.EmuHawk
 		private void RegenerateData()
 		{
 			if (currentSnesCore == null) return;
-			gd = NewDecoder();
+			gd ??= NewDecoder();
 			using (gd.EnterExit())
 			{
-				if (checkBackdropColor.Checked)
-					gd.SetBackColor(DecodeWinformsColorToSNES(pnBackdropColor.BackColor));
 				gd.CacheTiles();
 				si = gd.ScanScreenInfo();
 			}
@@ -1192,6 +1192,10 @@ namespace BizHawk.Client.EmuHawk
 		private void checkBackdropColor_CheckedChanged(object sender, EventArgs e)
 		{
 			SyncBackdropColor();
+			if (checkBackdropColor.Checked)
+				gd?.SetBackColor(DecodeWinformsColorToSNES(pnBackdropColor.BackColor));
+			else
+				gd?.SetBackColor();
 			RegenerateData();
 		}
 

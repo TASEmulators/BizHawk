@@ -30,6 +30,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		private readonly byte[][] cachedTiles = new byte[5][];
 		private readonly int[] bppArrayIndex = { 0, 0, 0, 0, 1, 0, 0, 0, 2 };
 
+		private bool useBackColor;
+		private int backColor;
+
 		private readonly int[] palette = new int[32768];
 		private readonly short[] directColorTable = new short[256];
 		private void generate_palette()
@@ -275,7 +278,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			for (int i = 0; i < numpixels; i++)
 			{
 				int entry = buf[offset + i];
-				int color = cgram[startcolor + entry] & 0x7FFF;
+				int color = entry == 0 && useBackColor ? backColor : cgram[startcolor + entry] & 0x7FFF;
 
 				buf[offset + i] = color;
 			}
@@ -570,7 +573,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		}
 
 		public void SetBackColor(int snescol)
-			=> throw new NotImplementedException();
+		{
+			if (snescol == -1)
+			{
+				useBackColor = false;
+			}
+			else
+			{
+				useBackColor = true;
+				backColor = snescol;
+			}
+		}
 	}
 
 	internal class OAMInfo : ISNESGraphicsDecoder.OAMInfo
