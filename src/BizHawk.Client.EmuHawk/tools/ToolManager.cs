@@ -129,7 +129,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!(CreateInstance<T>(toolPath) is T newTool)) return null;
 
 			if (newTool is Form form) form.Owner = _owner;
-			ServiceInjector.UpdateServices(_emulator.ServiceProvider, newTool);
+			if (!ServiceInjector.UpdateServices(_emulator.ServiceProvider, newTool)) return null;
 			SetBaseProperties(newTool);
 			var toolTypeName = typeof(T).FullName!;
 			// auto settings
@@ -180,8 +180,7 @@ namespace BizHawk.Client.EmuHawk
 			var newTool = (IExternalToolForm) CreateInstance(typeof(IExternalToolForm), toolPath, customFormTypeName, skipExtToolWarning: skipExtToolWarning);
 			if (newTool == null) return null;
 			if (newTool is Form form) form.Owner = _owner;
-			ApiInjector.UpdateApis(ApiProvider, newTool);
-			ServiceInjector.UpdateServices(_emulator.ServiceProvider, newTool);
+			if (!(ServiceInjector.UpdateServices(_emulator.ServiceProvider, newTool) && ApiInjector.UpdateApis(ApiProvider, newTool))) return null;
 			SetBaseProperties(newTool);
 			// auto settings
 			if (newTool is IToolFormAutoConfig autoConfigTool)
@@ -522,24 +521,16 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var tool in _tools)
 			{
 				SetBaseProperties(tool);
-				if (ServiceInjector.IsAvailable(_emulator.ServiceProvider, tool.GetType()))
+				if (ServiceInjector.UpdateServices(_emulator.ServiceProvider, tool)
+					&& (tool is not IExternalToolForm || ApiInjector.UpdateApis(ApiProvider, tool)))
 				{
-					ServiceInjector.UpdateServices(_emulator.ServiceProvider, tool);
-					
-					if (tool.IsActive)
-					{
-						if (tool is IExternalToolForm)
-						{
-							ApiInjector.UpdateApis(ApiProvider, tool);
-						}
-
-						tool.Restart();
-					}
+					if (tool.IsActive) tool.Restart();
 				}
 				else
 				{
 					unavailable.Add(tool);
 					ServiceInjector.ClearServices(tool); // the services of the old emulator core are no longer valid on the tool
+					if (tool is IExternalToolForm) ApiInjector.ClearApis(tool);
 				}
 			}
 
@@ -720,6 +711,7 @@ namespace BizHawk.Client.EmuHawk
 		public bool IsAvailable(Type tool)
 		{
 			if (!ServiceInjector.IsAvailable(_emulator.ServiceProvider, tool)) return false;
+			if (typeof(IExternalToolForm).IsAssignableFrom(tool) && !ApiInjector.IsAvailable(ApiProvider, tool)) return false;
 			if (!PossibleToolTypeNames.Contains(tool.AssemblyQualifiedName) && !_extToolManager.PossibleExtToolTypeNames.Contains(tool.AssemblyQualifiedName)) return false; // not a tool
 
 			ToolAttribute attr = tool.GetCustomAttributes(false).OfType<ToolAttribute>().SingleOrDefault();
