@@ -19,6 +19,7 @@ typedef uint32_t u32;
 typedef uint64_t u64;
 
 typedef void (*input_callback_t)(void);
+typedef void (*rumble_callback_t)(u32);
 typedef void (*trace_callback_t)(u16);
 typedef void (*memory_callback_t)(u16);
 typedef void (*printer_callback_t)(u32*, u8, u8, u8, u8);
@@ -36,6 +37,7 @@ typedef struct
 	u32 obj_pal[0x20];
 	GB_palette_t custom_pal;
 	input_callback_t input_cb;
+	rumble_callback_t rumble_cb;
 	trace_callback_t trace_cb;
 	memory_callback_t read_cb;
 	memory_callback_t write_cb;
@@ -77,15 +79,20 @@ static u32 rgb_cb(GB_gameboy_t *gb, u8 r, u8 g, u8 b)
     return (0xFF << 24) | (r << 16) | (g << 8) | b;
 }
 
-static void vblank_cb(GB_gameboy_t *gb, GB_vblank_type_t type)
+static void vblank_cb(GB_gameboy_t* gb, GB_vblank_type_t type)
 {
 	((biz_t*)gb)->vblank_occured = true;
 }
 
-static u8 camera_pixel_cb(GB_gameboy_t *gb, u8 x, u8 y)
+static u8 camera_pixel_cb(GB_gameboy_t* gb, u8 x, u8 y)
 {
 	// stub for now (also needed for determinism)
 	return 0;
+}
+
+static void RumbleCallbackRelay(GB_gameboy_t* gb, double rumble_amplitude)
+{
+	((biz_t*)gb)->rumble_cb(INT32_MAX * rumble_amplitude);
 }
 
 static u8 ReadCallbackRelay(GB_gameboy_t* gb, u16 addr, u8 data)
@@ -135,6 +142,8 @@ EXPORT biz_t* sameboy_create(u8* romdata, u32 romlen, u8* biosdata, u32 bioslen,
 	GB_load_rom_from_buffer(&biz->gb, romdata, romlen);
 	GB_load_boot_rom_from_buffer(&biz->gb, biosdata, bioslen);
 	GB_set_sample_rate(&biz->gb, GB_get_clock_rate(&biz->gb) / 2 / 8);
+	GB_set_rumble_mode(&biz->gb, GB_RUMBLE_ALL_GAMES);
+	GB_set_rumble_callback(&biz->gb, RumbleCallbackRelay);
 	GB_apu_set_sample_callback(&biz->gb, sample_cb);
 	GB_set_rgb_encode_callback(&biz->gb, rgb_cb);
 	GB_set_vblank_callback(&biz->gb, vblank_cb);
@@ -161,6 +170,11 @@ EXPORT void sameboy_destroy(biz_t* biz)
 EXPORT void sameboy_setinputcallback(biz_t* biz, input_callback_t callback)
 {
 	biz->input_cb = callback;
+}
+
+EXPORT void sameboy_setrumblecallback(biz_t* biz, rumble_callback_t callback)
+{
+	biz->rumble_cb = callback;
 }
 
 static double FromRawToG(u16 raw)

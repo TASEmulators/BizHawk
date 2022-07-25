@@ -7,14 +7,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 {
 	public partial class Sameboy
 	{
-		private readonly List<MemoryDomain> _memoryDomains = new List<MemoryDomain>();
+		private readonly List<MemoryDomain> _memoryDomains = new();
 
 		private IMemoryDomains MemoryDomains { get; set; }
 
 		private void CreateMemoryDomain(LibSameboy.MemoryAreas which, string name)
 		{
 			IntPtr data = IntPtr.Zero;
-			int length = 0;
+			long length = 0;
 
 			if (!LibSameboy.sameboy_getmemoryarea(SameboyState, which, ref data, ref length))
 			{
