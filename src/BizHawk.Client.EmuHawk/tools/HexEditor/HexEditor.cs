@@ -16,6 +16,7 @@ using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Client.EmuHawk.ToolExtensions;
+using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -242,13 +243,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_textTable.Any())
 			{
-				var byteArr = new List<byte>();
-				foreach (var chr in str)
+				var byteArr = new byte[str.Length];
+				for (var i = 0; i < str.Length; i++)
 				{
-					byteArr.Add((byte)_textTable.FirstOrDefault(kvp => kvp.Value == chr).Key);
+					var c = str[i];
+					byteArr[i] = (byte) (_textTable.FirstOrNull(kvp => kvp.Value == c)?.Key ?? 0);
 				}
-
-				return byteArr.ToArray();
+				return byteArr;
 			}
 
 			return str.Select(Convert.ToByte).ToArray();

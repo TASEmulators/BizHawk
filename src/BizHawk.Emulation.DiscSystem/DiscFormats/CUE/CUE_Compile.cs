@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 
 //this would be a good place for structural validation
 //after this step, we won't want to have to do stuff like that (it will gunk up already sticky code)
@@ -109,10 +110,10 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 		public override string ToString()
 		{
-			var idx = Indexes.FirstOrDefault(cci => cci.Number == 1);
-			if (idx.Number != 1) return $"T#{Number:D2} NO INDEX 1";
+			var idx = Indexes.FirstOrNull(static cci => cci.Number is 1);
+			if (idx is null) return $"T#{Number:D2} NO INDEX 1";
 			var indexlist = string.Join("|", Indexes);
-			return $"T#{Number:D2} {BlobIndex}:{idx.FileMSF} ({indexlist})";
+			return $"T#{Number:D2} {BlobIndex}:{idx.Value.FileMSF} ({indexlist})";
 		}
 	}
 

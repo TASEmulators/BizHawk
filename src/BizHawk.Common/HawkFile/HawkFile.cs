@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
+using BizHawk.Common.CollectionExtensions;
+
 namespace BizHawk.Common
 {
 	/// <summary>
@@ -257,7 +259,8 @@ namespace BizHawk.Common
 		}
 
 		/// <summary>finds an ArchiveItem with the specified name (path) within the archive; returns null if it doesnt exist</summary>
-		public HawkArchiveFileItem? FindArchiveMember(string? name) => ArchiveItems.FirstOrDefault(ai => ai.Name == name);
+		public HawkArchiveFileItem? FindArchiveMember(string? name)
+			=> ArchiveItems.FirstOrNull(ai => ai.Name == name);
 
 		/// <returns>a stream for the currently bound file</returns>
 		/// <exception cref="InvalidOperationException">no stream bound (haven't called <see cref="BindArchiveMember(int)"/> or overload)</exception>

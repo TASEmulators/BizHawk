@@ -28,6 +28,9 @@
 		<!-- Don't call typeof(T).ToString(), use nameof operator or typeof(T).FullName -->
 		<Rule Id="BHI1103" Action="Error" />
 
+		<!-- Call to FirstOrDefault when elements are of a value type; FirstOrNull may have been intended -->
+		<Rule Id="BHI3100" Action="Error" />
+
 		<!-- Throw NotImplementedException from methods/props marked [FeatureNotImplemented] -->
 		<Rule Id="BHI3300" Action="Error" />
 	</Rules>
