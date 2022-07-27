@@ -62,7 +62,6 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
 
-		// Unused, due to the use of MainForm to loadstate, but this needs to be kept here in order to establish an IStatable dependency
 		[RequiredService]
 		private IStatable StatableCore { get; set; }
 
@@ -273,6 +272,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void Restart()
 		{
+			_ = StatableCore!; // otherwise unused due to loadstating via MainForm; however this service is very much required so the property needs to be present
+
 			if (_currentDomain == null
 				|| MemoryDomains.Contains(_currentDomain))
 			{
