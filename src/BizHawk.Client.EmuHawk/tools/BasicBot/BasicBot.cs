@@ -189,65 +189,41 @@ namespace BizHawk.Client.EmuHawk
 			set => FrameLengthNumeric.Value = value;
 		}
 
-		public int MaximizeAddress
+		private ulong? MaximizeAddress
 		{
-			get => MaximizeAddressBox.ToRawInt() ?? 0;
-			set => MaximizeAddressBox.SetFromRawInt(value);
+			get => MaximizeAddressBox.ToU64();
+			set => MaximizeAddressBox.SetFromU64(value);
 		}
 
-		public int MaximizeValue
+		private int MaximizeValue
+			=> GetRamValue(MaximizeAddress);
+
+		private ulong? TieBreaker1Address
 		{
-			get
-			{
-				int? addr = MaximizeAddressBox.ToRawInt();
-				return addr.HasValue ? GetRamValue(addr.Value) : 0;
-			}
+			get => TieBreaker1Box.ToU64();
+			set => TieBreaker1Box.SetFromU64(value);
 		}
 
-		public int TieBreaker1Address
+		private int TieBreaker1Value
+			=> GetRamValue(TieBreaker1Address);
+
+		private ulong? TieBreaker2Address
 		{
-			get => TieBreaker1Box.ToRawInt() ?? 0;
-			set => TieBreaker1Box.SetFromRawInt(value);
+			get => TieBreaker2Box.ToU64();
+			set => TieBreaker2Box.SetFromU64(value);
 		}
 
-		public int TieBreaker1Value
+		private int TieBreaker2Value
+			=> GetRamValue(TieBreaker2Address);
+
+		private ulong? TieBreaker3Address
 		{
-			get
-			{
-				int? addr = TieBreaker1Box.ToRawInt();
-				return addr.HasValue ? GetRamValue(addr.Value) : 0;
-			}
+			get => TieBreaker3Box.ToU64();
+			set => TieBreaker3Box.SetFromU64(value);
 		}
 
-		public int TieBreaker2Address
-		{
-			get => TieBreaker2Box.ToRawInt() ?? 0;
-			set => TieBreaker2Box.SetFromRawInt(value);
-		}
-
-		public int TieBreaker2Value
-		{
-			get
-			{
-				int? addr = TieBreaker2Box.ToRawInt();
-				return addr.HasValue ? GetRamValue(addr.Value) : 0;
-			}
-		}
-
-		public int TieBreaker3Address
-		{
-			get => TieBreaker3Box.ToRawInt() ?? 0;
-			set => TieBreaker3Box.SetFromRawInt(value);
-		}
-
-		public int TieBreaker3Value
-		{
-			get
-			{
-				int? addr = TieBreaker3Box.ToRawInt();
-				return addr.HasValue ? GetRamValue(addr.Value) : 0;
-			}
-		}
+		private int TieBreaker3Value
+			=> GetRamValue(TieBreaker3Address);
 
 		public byte MainComparisonType
 		{
@@ -570,10 +546,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			public BotAttempt Best { get; set; }
 			public Dictionary<string, double> ControlProbabilities { get; set; }
-			public int Maximize { get; set; }
-			public int TieBreaker1 { get; set; }
-			public int TieBreaker2 { get; set; }
-			public int TieBreaker3 { get; set; }
+			public ulong? Maximize { get; set; }
+			public ulong? TieBreaker1 { get; set; }
+			public ulong? TieBreaker2 { get; set; }
+			public ulong? TieBreaker3 { get; set; }
 			public byte ComparisonTypeMain { get; set; }
 			public byte ComparisonTypeTie1 { get; set; }
 			public byte ComparisonTypeTie2 { get; set; }
@@ -870,8 +846,10 @@ namespace BizHawk.Client.EmuHawk
 			TieBreaker3Box.SetHexProperties(_currentDomain.Size);
 		}
 
-		private int GetRamValue(int addr)
+		private int GetRamValue(ulong? address)
 		{
+			if (address is null) return 0;
+			var addr = checked((long) address); //TODO MemoryDomain needs converting one day
 			var val = _dataSize switch
 			{
 				1 => _currentDomain.PeekByte(addr),
@@ -1105,10 +1083,7 @@ namespace BizHawk.Client.EmuHawk
 				return "At least one control must have a probability greater than 0.";
 			}
 
-			if (!MaximizeAddressBox.ToRawInt().HasValue)
-			{
-				return "A main value address is required.";
-			}
+			if (MaximizeAddress is null) return "A main value address is required.";
 
 			if (FrameLengthNumeric.Value == 0)
 			{

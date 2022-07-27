@@ -160,6 +160,9 @@ namespace BizHawk.Client.EmuHawk
 			Text = string.Format(_addressFormatStr, val);
 		}
 
+		public void SetFromU64(ulong? val)
+			=> Text = val is null ? string.Empty : string.Format(_addressFormatStr, val.Value);
+
 		public long? ToLong()
 		{
 			if (string.IsNullOrWhiteSpace(Text))
@@ -174,6 +177,13 @@ namespace BizHawk.Client.EmuHawk
 
 			return long.Parse(Text, NumberStyles.HexNumber);
 		}
+
+		public ulong? ToU64()
+			=> ulong.TryParse(Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var l)
+				? l
+				: Nullable
+					? null
+					: default(ulong);
 	}
 
 	public class UnsignedIntegerBox : TextBox, INumberBox
