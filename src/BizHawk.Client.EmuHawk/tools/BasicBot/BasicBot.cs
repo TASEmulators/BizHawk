@@ -376,7 +376,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (file != null)
 			{
-				LoadBotFile(file.FullName);
+				_ = LoadBotFile(file.FullName);
 			}
 		}
 
@@ -594,12 +594,17 @@ namespace BizHawk.Client.EmuHawk
 			public string MemoryDomain { get; set; }
 			public bool BigEndian { get; set; }
 			public int DataSize { get; set; }
+
+			public string HawkVersion { get; set; }
+			public string SysID { get; set; }
+			public string CoreName { get; set; }
+			public string GameName { get; set; }
 		}
 
 		private void LoadFileFromRecent(string path)
 		{
 			var result = LoadBotFile(path);
-			if (!result)
+			if (!result && !File.Exists(path))
 			{
 				Settings.RecentBotFiles.HandleLoadError(MainForm, path);
 			}
@@ -607,15 +612,60 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool LoadBotFile(string path)
 		{
-			var file = new FileInfo(path);
-			if (!file.Exists)
+			BotData botData;
+			try
 			{
+				botData = (BotData) ConfigService.LoadWithType(File.ReadAllText(path));
+			}
+			catch (Exception e)
+			{
+				using ExceptionBox dialog = new(e);
+				this.ShowDialogAsChild(dialog);
 				return false;
 			}
+			if (botData.SysID != Emulator.SystemId)
+			{
+				this.ModalMessageBox(text: $"This file was made for a different system ({botData.SysID}).");
+				if (!string.IsNullOrEmpty(botData.SysID)) return false; // there's little chance the file would load without throwing, and if it did, it wouldn't be useful
+				// else grandfathered (made with old version, sysID unknowable), user has been warned
+			}
+			// if something else is off, though, let the user decide
+			var hawkVersionMatches = VersionInfo.DeveloperBuild || botData.HawkVersion == VersionInfo.GetEmuVersion();
+			var coreNameMatches = botData.CoreName == Emulator.Attributes().CoreName;
+			var gameNameMatches = botData.GameName == Game.Name;
+			if (!(hawkVersionMatches && coreNameMatches && gameNameMatches))
+			{
+				var s = hawkVersionMatches
+					? coreNameMatches
+						? string.Empty
+						: $" with a different core ({botData.CoreName ?? "unknown"})"
+					: coreNameMatches
+						? " with a different version of EmuHawk"
+						: $" with a different core ({botData.CoreName ?? "unknown"}) on a different version of EmuHawk";
+				if (!gameNameMatches) s = $"for a different game ({botData.GameName ?? "unknown"}){s}";
+				if (!this.ModalMessageBox2(
+					text: $"This file was made {s}. Load it anyway?",
+					caption: "Confirm file load",
+					icon: EMsgBoxIcon.Question))
+				{
+					return false;
+				}
+			}
+			try
+			{
+				LoadBotFileInner(botData, path);
+				return true;
+			}
+			catch (Exception e)
+			{
+				using ExceptionBox dialog = new(e);
+				this.ShowDialogAsChild(dialog);
+				return false;
+			}
+		}
 
-			var json = File.ReadAllText(path);
-			var botData = (BotData)ConfigService.LoadWithType(json);
-
+		private void LoadBotFileInner(BotData botData, string path)
+		{
 			_bestBotAttempt.Attempt = botData.Best.Attempt;
 			_bestBotAttempt.Maximize = botData.Best.Maximize;
 			_bestBotAttempt.TieBreak1 = botData.Best.TieBreak1;
@@ -714,7 +764,6 @@ namespace BizHawk.Client.EmuHawk
 			MessageLabel.Text = $"{Path.GetFileNameWithoutExtension(path)} loaded";
 
 			AssessRunButtonStatus();
-			return true;
 		}
 
 		private void SaveBotFile(string path)
@@ -745,7 +794,11 @@ namespace BizHawk.Client.EmuHawk
 				Frames = Frames,
 				MemoryDomain = _currentDomain.Name,
 				BigEndian = _bigEndian,
-				DataSize = _dataSize
+				DataSize = _dataSize,
+				HawkVersion = VersionInfo.GetEmuVersion(),
+				SysID = Emulator.SystemId,
+				CoreName = Emulator.Attributes().CoreName,
+				GameName = Game.Name,
 			};
 
 			var json = ConfigService.SaveWithType(data);
