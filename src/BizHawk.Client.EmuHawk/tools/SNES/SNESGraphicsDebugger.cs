@@ -109,7 +109,7 @@ namespace BizHawk.Client.EmuHawk
 		protected override void OnClosed(EventArgs e)
 		{
 			base.OnClosed(e);
-			currentSnesCore?.ScanlineHookManager.Unregister(this);
+			currentSnesCore?.ScanlineHookManager?.Unregister(this);
 			currentSnesCore = null;
 			gd = null;
 		}
@@ -170,7 +170,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (currentSnesCore != Emulator)
 			{
-				currentSnesCore?.ScanlineHookManager.Unregister(this);
+				currentSnesCore?.ScanlineHookManager?.Unregister(this);
 			}
 
 			if (currentSnesCore != Emulator && Emulator != null)
@@ -187,9 +187,9 @@ namespace BizHawk.Client.EmuHawk
 			if (currentSnesCore != null)
 			{
 				if (Visible && checkScanlineControl.Checked)
-					currentSnesCore.ScanlineHookManager.Register(this, ScanlineHook);
+					currentSnesCore.ScanlineHookManager?.Register(this, ScanlineHook);
 				else
-					currentSnesCore.ScanlineHookManager.Unregister(this);
+					currentSnesCore.ScanlineHookManager?.Unregister(this);
 			}
 		}
 
@@ -1270,7 +1270,7 @@ namespace BizHawk.Client.EmuHawk
 			if (suppression) return;
 			var pal = comboPalette.SelectedValue.ToString();
 			Console.WriteLine("set {0}", pal);
-			currentSnesCore?.SetPalette(pal);
+			currentSnesCore?.SetPalette((SnesColors.ColorType)comboPalette.SelectedIndex);
 			RegenerateData();
 			using (gd.EnterExit())
 			{

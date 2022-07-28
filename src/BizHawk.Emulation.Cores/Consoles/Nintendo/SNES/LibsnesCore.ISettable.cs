@@ -63,7 +63,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			public bool CropSGBFrame { get; set; } = false;
 			public bool AlwaysDoubleSize { get; set; } = false;
-			public string Palette { get; set; } = "BizHawk";
+			public SnesColors.ColorType Palette { get; set; } = SnesColors.ColorType.BizHawk;
 
 			public SnesSettings Clone()
 			{

@@ -235,7 +235,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public SnesColors.ColorType CurrPalette { get; private set; }
 
-		public void SetPalette(string palette)
+		public void SetPalette(SnesColors.ColorType palette)
 		{
 			var s = GetSettings();
 			s.Palette = palette;
@@ -372,14 +372,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				int idx = msg.IndexOf("AF:");
 				_tracer.Put(new(disassembly: msg.Substring(0, idx).TrimEnd(), registerInfo: msg.Substring(idx)));
 			}
-		}
-
-		private void SetPalette(SnesColors.ColorType pal)
-		{
-			CurrPalette = pal;
-			int[] tmp = SnesColors.GetLUT(pal);
-			fixed (int* p = &tmp[0])
-				Api.QUERY_set_color_lut((IntPtr)p);
 		}
 
 		private void ReadHook(uint addr)
@@ -643,7 +635,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		private void RefreshPalette()
 		{
-			SetPalette((SnesColors.ColorType)Enum.Parse(typeof(SnesColors.ColorType), _settings.Palette, false));
+			CurrPalette = _settings.Palette;
+			int[] tmp = SnesColors.GetLUT(_settings.Palette);
+			fixed (int* p = &tmp[0])
+				Api.QUERY_set_color_lut((IntPtr)p);
 		}
 	}
 }

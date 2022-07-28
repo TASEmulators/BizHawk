@@ -1,3 +1,5 @@
+#nullable enable
+
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
@@ -33,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		SnesColors.ColorType CurrPalette { get; }
 
-		ScanlineHookManager ScanlineHookManager { get; }
+		ScanlineHookManager? ScanlineHookManager { get; }
 
 		ISNESGraphicsDecoder CreateGraphicsDecoder();
 
@@ -41,6 +43,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		void PutSettings(SettingsObj s);
 
-		void SetPalette(string palette);
+		void SetPalette(SnesColors.ColorType palette);
 	}
 }
