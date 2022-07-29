@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 
-using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 
@@ -9,16 +8,13 @@ using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 // ReSharper disable UnusedAutoPropertyAccessor.Local
 namespace BizHawk.Client.Common
 {
+	/// <remarks>
+	/// TODO: perhaps with the new core config system, one could automatically bring out all of the settings to a lua table, with names.
+	/// that would be completely arbitrary and would remove the whole requirement for this mess
+	/// </remarks>
 	[Description("Functions related specifically to Nes Cores")]
 	public sealed class NESLuaLibrary : LuaLibraryBase
 	{
-		// TODO:
-		// perhaps with the new core config system, one could
-		// automatically bring out all of the settings to a lua table, with names.  that
-		// would be completely arbitrary and would remove the whole requirement for this mess
-		[OptionalService]
-		private IMemoryDomains MemoryDomains { get; set; }
-
 		public NESLuaLibrary(IPlatformLuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
