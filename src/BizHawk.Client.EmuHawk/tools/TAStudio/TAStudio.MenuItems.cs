@@ -53,18 +53,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (AskSaveChanges())
 			{
-				if (SaveRamEmulator.CloneSaveRam() != null)
-				{
-					GoToFrame(TasView.AnyRowsSelected ? TasView.FirstSelectedRowIndex : 0);
-					var newProject = CurrentTasMovie.ConvertToSaveRamAnchoredMovie(
-						SaveRamEmulator.CloneSaveRam());
-					MainForm.PauseEmulator();
-					LoadFile(new FileInfo(newProject.Filename), true);
-				}
-				else
-				{
-					throw new Exception("No SaveRam");
-				}
+				var saveRam = SaveRamEmulator?.CloneSaveRam() ?? throw new Exception("No SaveRam");
+				GoToFrame(TasView.AnyRowsSelected ? TasView.FirstSelectedRowIndex : 0);
+				var newProject = CurrentTasMovie.ConvertToSaveRamAnchoredMovie(saveRam);
+				MainForm.PauseEmulator();
+				LoadFile(new FileInfo(newProject.Filename), true);
 			}
 		}
 
