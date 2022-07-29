@@ -11,12 +11,10 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[GenEmuServiceProp(typeof(IGBAGPUViewable), "GBA")]
 	[SpecializedTool("GPU Viewer")]
 	public partial class GbaGpuView : ToolFormBase, IToolFormAutoConfig
 	{
-		[RequiredService]
-		private IGBAGPUViewable GBA { get; set; }
-
 		// emulator memory areas
 		private IntPtr _vram;
 		private IntPtr _oam;
@@ -794,9 +792,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void GbaGpuView_FormClosed(object sender, FormClosedEventArgs e)
-		{
-			GBA?.SetScanlineCallback(null, 0);
-		}
+			=> GBA.SetScanlineCallback(null, 0);
 
 		private void timerMessage_Tick(object sender, EventArgs e)
 		{

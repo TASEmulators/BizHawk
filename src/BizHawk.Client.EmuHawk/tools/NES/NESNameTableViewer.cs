@@ -9,15 +9,11 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	/// <remarks>TODO: Show Scroll Lines + UI Toggle</remarks>
+	[GenEmuServiceProp(typeof(IEmulator), "_emu")]
+	[GenEmuServiceProp(typeof(INESPPUViewable), "_ppu")]
 	public partial class NESNameTableViewer : ToolFormBase, IToolFormAutoConfig
 	{
-		// TODO:
-		// Show Scroll Lines + UI Toggle
-		[RequiredService]
-		private INESPPUViewable _ppu { get; set; }
-		[RequiredService]
-		private IEmulator _emu { get; set; }
-
 		[ConfigPersist]
 		private int RefreshRateConfig
 		{
@@ -217,9 +213,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void NESNameTableViewer_FormClosed(object sender, FormClosedEventArgs e)
-		{
-			_ppu?.RemoveCallback1();
-		}
+			=> _ppu.RemoveCallback1();
 
 		private void ScanlineTextBox_TextChanged(object sender, EventArgs e)
 		{
