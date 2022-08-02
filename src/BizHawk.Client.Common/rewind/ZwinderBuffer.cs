@@ -233,7 +233,7 @@ namespace BizHawk.Client.Common
 
 			if (_useCompression)
 			{
-				using var compressor = new DeflateStream(stream, CompressionLevel.Fastest, leaveOpen: true);
+				using var compressor = Zstd.Zstd.CreateZstdCompressionStream(stream, 0);
 				callback(compressor);
 			}
 			else
@@ -253,7 +253,7 @@ namespace BizHawk.Client.Common
 		{
 			Stream stream = new LoadStateStream(_backingStore, _states[index].Start, _states[index].Size, _sizeMask);
 			if (_useCompression)
-				stream = new DeflateStream(stream, CompressionMode.Decompress, leaveOpen: true);
+				stream = Zstd.Zstd.CreateZstdDecompressionStream(stream);
 			return stream;
 		}
 
@@ -370,7 +370,7 @@ namespace BizHawk.Client.Common
 					TargetFrameLength = targetFrameLength,
 					TargetRewindInterval = 5,
 					AllowOutOfOrderStates = false,
-					UseCompression = useCompression
+					UseCompression = useCompression,
 				});
 				if (ret.Size != size || ret._sizeMask != sizeMask)
 				{

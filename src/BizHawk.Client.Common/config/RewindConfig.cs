@@ -22,7 +22,7 @@
 		/// <summary>
 		/// Specifies whether TargetFrameLength or TargetRewindInterval is used.
 		/// </summary>
-		public bool UseFixedRewindInterval { get; }
+		bool UseFixedRewindInterval { get; }
 
 		/// <summary>
 		/// Desired frame length (number of emulated frames you can go back before running out of buffer)
@@ -45,13 +45,13 @@
 			TempFile,
 		}
 
-		public BackingStoreType BackingStore { get; }
+		BackingStoreType BackingStore { get; }
 	}
 
 	public class RewindConfig : IRewindSettings
 	{
-		public bool UseCompression { get; set; }
-		public bool UseDelta { get; set; }
+		public bool UseCompression { get; set; } = false;
+		public bool UseDelta { get; set; } = false;
 		public bool Enabled { get; set; } = true;
 		public long BufferSize { get; set; } = 512; // in mb
 		public bool UseFixedRewindInterval { get; set; } = false;
