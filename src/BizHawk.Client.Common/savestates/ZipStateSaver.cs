@@ -31,13 +31,13 @@ namespace BizHawk.Client.Common
 
 		public void PutVersionLumps()
 		{
-			PutLump(BinaryStateLump.Versiontag, WriteVersion);
-			PutLump(BinaryStateLump.BizVersion, WriteEmuVersion);
+			PutLump(BinaryStateLump.Versiontag, WriteVersion, false);
+			PutLump(BinaryStateLump.BizVersion, WriteEmuVersion, false);
 		}
 
-		public void PutLump(BinaryStateLump lump, Action<Stream> callback)
+		public void PutLump(BinaryStateLump lump, Action<Stream> callback, bool doubleCompress = true)
 		{
-			_zip.WriteItem(lump.WriteName, callback);
+			_zip.WriteItem(lump.WriteName, callback, doubleCompress);
 		}
 
 		public void PutLump(BinaryStateLump lump, Action<BinaryWriter> callback)
@@ -52,12 +52,13 @@ namespace BizHawk.Client.Common
 
 		public void PutLump(BinaryStateLump lump, Action<TextWriter> callback)
 		{
+			// don't double compress text, as its annoying for users
 			PutLump(lump, s =>
 			{
 				TextWriter tw = new StreamWriter(s);
 				callback(tw);
 				tw.Flush();
-			});
+			}, false);
 		}
 
 		public void Dispose()

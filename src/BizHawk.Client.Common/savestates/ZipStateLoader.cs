@@ -85,7 +85,7 @@ namespace BizHawk.Client.Common
 			{
 				ret._zip = new ZipArchive(new FileStream(filename, FileMode.Open, FileAccess.Read), ZipArchiveMode.Read);
 				ret.PopulateEntries();
-				if (!isMovieLoad && !ret.GetLump(BinaryStateLump.Versiontag, false, ret.ReadVersion))
+				if (!isMovieLoad && !ret.GetLump(BinaryStateLump.Versiontag, false, ret.ReadVersion, false))
 				{
 					ret._zip.Dispose();
 					return null;
@@ -102,14 +102,24 @@ namespace BizHawk.Client.Common
 		/// <param name="lump">lump to retrieve</param>
 		/// <param name="abort">pass true to throw exception instead of returning false</param>
 		/// <param name="callback">function to call with the desired stream</param>
+		/// <param name="isDoubleCompressed">lump is double compressed</param>
 		/// <returns>true iff stream was loaded</returns>
 		/// <exception cref="Exception">stream not found and <paramref name="abort"/> is <see langword="true"/></exception>
-		public bool GetLump(BinaryStateLump lump, bool abort, Action<Stream, long> callback)
+		public bool GetLump(BinaryStateLump lump, bool abort, Action<Stream, long> callback, bool isDoubleCompressed = true)
 		{
 			if (_entriesByName.TryGetValue(lump.ReadName, out var e))
 			{
 				using var zs = e.Open();
-				callback(zs, e.Length);
+
+				if (isDoubleCompressed)
+				{
+					using var z = Zstd.Zstd.CreateZstdDecompressionStream(zs);
+					callback(z, e.Length);
+				}
+				else
+				{
+					callback(zs, e.Length);
+				}
 
 				return true;
 			}
@@ -129,7 +139,7 @@ namespace BizHawk.Client.Common
 			=> GetLump(lump, abort, (s, length) => callback(new(s), length));
 
 		public bool GetLump(BinaryStateLump lump, bool abort, Action<TextReader> callback)
-			=> GetLump(lump, abort, (s, _) => callback(new StreamReader(s)));
+			=> GetLump(lump, abort, (s, _) => callback(new StreamReader(s)), false);
 
 		/// <exception cref="Exception">couldn't find Binary or Text savestate</exception>
 		public void GetCoreState(Action<BinaryReader, long> callbackBinary, Action<TextReader> callbackText)
