@@ -10,7 +10,14 @@ namespace BizHawk.Client.Common
 		private readonly IZipWriter _zip;
 		private bool _isDisposed;
 
-		private static void WriteVersion(Stream s)
+		private static void WriteZipVersion(Stream s)
+		{
+			var sw = new StreamWriter(s);
+			sw.WriteLine("0"); // version 1.0.0
+			sw.Flush();
+		}
+
+		private static void WriteStateVersion(Stream s)
 		{
 			var sw = new StreamWriter(s);
 			sw.WriteLine("1"); // version 1.0.1
@@ -27,17 +34,18 @@ namespace BizHawk.Client.Common
 		public ZipStateSaver(string path, int compressionLevel)
 		{
 			_zip = new FrameworkZipWriter(path, compressionLevel);
+			PutLump(BinaryStateLump.ZipVersion, WriteZipVersion, false);
 		}
 
 		public void PutVersionLumps()
 		{
-			PutLump(BinaryStateLump.Versiontag, WriteVersion, false);
+			PutLump(BinaryStateLump.StateVersion, WriteStateVersion, false);
 			PutLump(BinaryStateLump.BizVersion, WriteEmuVersion, false);
 		}
 
-		public void PutLump(BinaryStateLump lump, Action<Stream> callback, bool doubleCompress = true)
+		public void PutLump(BinaryStateLump lump, Action<Stream> callback, bool zstdCompress = true)
 		{
-			_zip.WriteItem(lump.WriteName, callback, doubleCompress);
+			_zip.WriteItem(lump.WriteName, callback, zstdCompress);
 		}
 
 		public void PutLump(BinaryStateLump lump, Action<BinaryWriter> callback)
@@ -52,7 +60,7 @@ namespace BizHawk.Client.Common
 
 		public void PutLump(BinaryStateLump lump, Action<TextWriter> callback)
 		{
-			// don't double compress text, as its annoying for users
+			// don't zstd compress text, as it's annoying for users
 			PutLump(lump, s =>
 			{
 				TextWriter tw = new StreamWriter(s);

@@ -26,13 +26,13 @@ namespace BizHawk.Client.Common
 			_zstdCompressionLevel = compressionLevel * 2 + 1;
 		}
 
-		public void WriteItem(string name, Action<Stream> callback, bool doubleCompress)
+		public void WriteItem(string name, Action<Stream> callback, bool zstdCompress)
 		{
 			using var stream = _archive.CreateEntry(name, _level).Open();
 
-			if (doubleCompress)
+			if (zstdCompress)
 			{
-				using var z = Zstd.Zstd.CreateZstdCompressionStream(stream, _zstdCompressionLevel);
+				using var z = Zstd.CreateZstdCompressionStream(stream, _zstdCompressionLevel);
 				callback(z);
 			}
 			else

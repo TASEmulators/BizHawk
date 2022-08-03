@@ -5,9 +5,9 @@ using System.Runtime.InteropServices;
 using BizHawk.BizInvoke;
 using BizHawk.Common;
 
-namespace BizHawk.Client.Common.Zstd
+namespace BizHawk.Client.Common
 {
-	public class Zstd : IDisposable
+	public static class Zstd
 	{
 		private class ZstdCompressionStream : Stream
 		{
@@ -318,34 +318,6 @@ namespace BizHawk.Client.Common.Zstd
 			MaxCompressionLevel = _lib.ZSTD_maxCLevel();
 		}
 
-		private bool _disposed = false;
-		private readonly IntPtr _CCtx;
-		private readonly IntPtr _DCtx;
-		// these functions are not thread safe anyways, so...
-		private byte[] _compressionBuffer = Array.Empty<byte>();
-
-		public Zstd()
-		{
-			_CCtx = _lib.ZSTD_createCCtx();
-			_DCtx = _lib.ZSTD_createDCtx();
-		}
-
-		~Zstd()
-		{
-			Dispose();
-		}
-
-		public void Dispose()
-		{
-			if (!_disposed)
-			{
-				_lib.ZSTD_freeCCtx(_CCtx);
-				_lib.ZSTD_freeDCtx(_DCtx);
-				GC.SuppressFinalize(this);
-				_disposed = true;
-			}
-		}
-
 		private static void CheckError(ulong code)
 		{
 			if (_lib.ZSTD_isError(code) != 0)
@@ -354,45 +326,15 @@ namespace BizHawk.Client.Common.Zstd
 			}
 		}
 
-		public byte[] CompressArray(byte[] src, int compressionLevel)
-		{
-			var compressBound = (int)_lib.ZSTD_compressBound((ulong)src.Length);
-			if (_compressionBuffer.Length < compressBound)
-			{
-				_compressionBuffer = new byte[compressBound];
-			}
-
-			var sz = _lib.ZSTD_compressCCtx(_CCtx, _compressionBuffer, (ulong)_compressionBuffer.Length, src, (ulong)src.Length, compressionLevel);
-
-			CheckError(sz);
-
-			var ret = new byte[sz];
-			Buffer.BlockCopy(_compressionBuffer, 0, ret, 0, (int)sz);
-			return ret;
-		}
-
-		public byte[] DecompressArray(byte[] src)
-		{
-			var sz = _lib.ZSTD_getFrameContentSize(src, (ulong)src.Length);
-			if (sz == unchecked((ulong)-1))
-			{
-				throw new Exception($"ZSTD ERROR: ZSTD_CONTENTSIZE_UNKNOWN");
-			}
-			else if (sz == unchecked((ulong)-2))
-			{
-				throw new Exception($"ZSTD ERROR: ZSTD_CONTENTSIZE_ERROR");
-			}
-
-			var ret = new byte[sz];
-			var code = _lib.ZSTD_decompressDCtx(_DCtx, ret, sz, src, (ulong)src.Length);
-
-			CheckError(code);
-
-			return ret;
-		}
-
 		public static Stream CreateZstdCompressionStream(Stream stream, int compressionLevel)
-			=> new ZstdCompressionStream(stream, compressionLevel);
+		{
+			if (compressionLevel < MinCompressionLevel || compressionLevel > MaxCompressionLevel)
+			{
+				throw new ArgumentOutOfRangeException(nameof(compressionLevel));
+			}
+
+			return new ZstdCompressionStream(stream, compressionLevel);
+		}
 
 		public static Stream CreateZstdDecompressionStream(Stream stream)
 			=> new ZstdDecompressionStream(stream);

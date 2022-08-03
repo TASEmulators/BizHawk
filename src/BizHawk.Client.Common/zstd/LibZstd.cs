@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using BizHawk.BizInvoke;
 using BizHawk.Common;
 
-namespace BizHawk.Client.Common.Zstd
+namespace BizHawk.Client.Common
 {
 	public abstract class LibZstd
 	{
