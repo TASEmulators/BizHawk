@@ -271,7 +271,7 @@ namespace BizHawk.Client.Common.Zstd
 					}
 					n -= outputToConsume;
 
-					if (_input.Size == _input.Pos)
+					if (_input.Pos == INPUT_BUFFER_SIZE)
 					{
 						// ditto here
 						_input.Pos = _input.Size = 0;
@@ -307,7 +307,7 @@ namespace BizHawk.Client.Common.Zstd
 		static Zstd()
 		{
 			var resolver = new DynamicLibraryImportResolver(
-				OSTailoredCode.IsUnixHost ? "libzstd.so.1.5.2" : "libzstd.dll", hasLimitedLifetime: false);
+				OSTailoredCode.IsUnixHost ? "libzstd.so" : "libzstd.dll", hasLimitedLifetime: false);
 			_lib = BizInvoker.GetInvoker<LibZstd>(resolver, CallingConventionAdapters.Native);
 
 			MinCompressionLevel = _lib.ZSTD_minCLevel();
