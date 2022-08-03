@@ -260,7 +260,10 @@ namespace BizHawk.Client.Common.Zstd
 				{
 					var inputConsumed = _baseStream.Read(_inputBuffer, (int)_input.Size, (int)(INPUT_BUFFER_SIZE - _input.Size));
 					_input.Size += (ulong)inputConsumed;
-					CheckError(_lib.ZSTD_decompressStream(_zds, ref _output, ref _input));
+					if (_output.Pos < OUTPUT_BUFFER_SIZE) // this won't compress anything the output is full, avoids some unneeded interop
+					{
+						CheckError(_lib.ZSTD_decompressStream(_zds, ref _output, ref _input));
+					}
 					var outputToConsume = n > (int)(_output.Pos - _outputConsumed) ? (int)(_output.Pos - _outputConsumed) : n;
 					Marshal.Copy(_output.Ptr + (int)_outputConsumed, buffer, offset, outputToConsume);
 					_outputConsumed += (ulong)outputToConsume;
