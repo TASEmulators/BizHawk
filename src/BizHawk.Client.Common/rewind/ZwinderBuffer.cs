@@ -233,7 +233,8 @@ namespace BizHawk.Client.Common
 
 			if (_useCompression)
 			{
-				using var compressor = Zstd.Zstd.CreateZstdCompressionStream(stream, 0);
+				// TODO: tweak this (ratio is only around 2, but this is really fast)
+				using var compressor = Zstd.Zstd.CreateZstdCompressionStream(stream, Zstd.Zstd.MinCompressionLevel);
 				callback(compressor);
 			}
 			else

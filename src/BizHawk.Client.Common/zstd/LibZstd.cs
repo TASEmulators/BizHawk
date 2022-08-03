@@ -23,6 +23,12 @@ namespace BizHawk.Client.Common.Zstd
 		public abstract IntPtr ZSTD_getErrorName(ulong code);
 
 		[BizImport(cc)]
+		public abstract int ZSTD_minCLevel();
+
+		[BizImport(cc)]
+		public abstract int ZSTD_maxCLevel();
+
+		[BizImport(cc)]
 		public abstract IntPtr ZSTD_createCCtx();
 
 		[BizImport(cc)]

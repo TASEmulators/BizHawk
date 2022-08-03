@@ -11,7 +11,6 @@ namespace BizHawk.Client.Common.Zstd
 	{
 		private class ZstdCompressionStream : Stream
 		{
-			private readonly LibZstd _lib;
 			private readonly Stream _baseStream;
 			private readonly IntPtr _zcs;
 
@@ -30,9 +29,8 @@ namespace BizHawk.Client.Common.Zstd
 			// 1 MB output buffer
 			private const int OUTPUT_BUFFER_SIZE = 1024 * 1024 * 1;
 
-			public ZstdCompressionStream(LibZstd lib, Stream baseStream, int compressionLevel)
+			public ZstdCompressionStream(Stream baseStream, int compressionLevel)
 			{
-				_lib = lib;
 				_baseStream = baseStream;
 
 				_zcs = _lib.ZSTD_createCStream();
@@ -74,6 +72,7 @@ namespace BizHawk.Client.Common.Zstd
 					while (true)
 					{
 						var n = _lib.ZSTD_endStream(_zcs, ref _output);
+						CheckError(n);
 						InternalFlush();
 						if (n == 0)
 						{
@@ -116,7 +115,7 @@ namespace BizHawk.Client.Common.Zstd
 			{
 				while (_input.Pos < _input.Size)
 				{
-					_lib.ZSTD_compressStream(_zcs, ref _output, ref _input);
+					CheckError(_lib.ZSTD_compressStream(_zcs, ref _output, ref _input));
 					while (true)
 					{
 						if (_output.Pos == OUTPUT_BUFFER_SIZE)
@@ -125,6 +124,7 @@ namespace BizHawk.Client.Common.Zstd
 						}
 
 						var n = _lib.ZSTD_flushStream(_zcs, ref _output);
+						CheckError(n);
 						if (n == 0)
 						{
 							InternalFlush();
@@ -165,7 +165,6 @@ namespace BizHawk.Client.Common.Zstd
 
 		private class ZstdDecompressionStream : Stream
 		{
-			private readonly LibZstd _lib;
 			private readonly Stream _baseStream;
 			private readonly IntPtr _zds;
 
@@ -184,9 +183,8 @@ namespace BizHawk.Client.Common.Zstd
 			// 4 MB output buffer
 			private const int OUTPUT_BUFFER_SIZE = 1024 * 1024 * 4;
 
-			public ZstdDecompressionStream(LibZstd lib, Stream baseStream)
+			public ZstdDecompressionStream(Stream baseStream)
 			{
-				_lib = lib;
 				_baseStream = baseStream;
 
 				_zds = _lib.ZSTD_createDStream();
@@ -262,23 +260,25 @@ namespace BizHawk.Client.Common.Zstd
 				{
 					var inputConsumed = _baseStream.Read(_inputBuffer, (int)_input.Size, (int)(INPUT_BUFFER_SIZE - _input.Size));
 					_input.Size += (ulong)inputConsumed;
-					_lib.ZSTD_decompressStream(_zds, ref _output, ref _input);
+					CheckError(_lib.ZSTD_decompressStream(_zds, ref _output, ref _input));
 					var outputToConsume = n > (int)(_output.Pos - _outputConsumed) ? (int)(_output.Pos - _outputConsumed) : n;
 					Marshal.Copy(_output.Ptr + (int)_outputConsumed, buffer, offset, outputToConsume);
 					_outputConsumed += (ulong)outputToConsume;
 					if (_outputConsumed == OUTPUT_BUFFER_SIZE)
 					{
-						_output.Pos = 0;
+						// all the buffer is consumed, kick these back to the beginning
+						_output.Pos = _outputConsumed = 0;
 					}
 					n -= outputToConsume;
 
 					if (_input.Size == _input.Pos)
 					{
-						// kick this back to the beginning, it's all consumed anyways
-						_input.Size = 0;
+						// ditto here
+						_input.Pos = _input.Size = 0;
 					}
 
 					// couldn't consume anything, get out
+					// (decompression must be complete at this point)
 					if (inputConsumed == 0 && outputToConsume == 0)
 					{
 						break;
@@ -300,11 +300,18 @@ namespace BizHawk.Client.Common.Zstd
 
 		private static readonly LibZstd _lib;
 
+		public static int MinCompressionLevel { get; }
+
+		public static int MaxCompressionLevel { get; }
+
 		static Zstd()
 		{
 			var resolver = new DynamicLibraryImportResolver(
-				OSTailoredCode.IsUnixHost ? "libzstd.so" : "libzstd.dll", hasLimitedLifetime: false);
+				OSTailoredCode.IsUnixHost ? "libzstd.so.1.5.2" : "libzstd.dll", hasLimitedLifetime: false);
 			_lib = BizInvoker.GetInvoker<LibZstd>(resolver, CallingConventionAdapters.Native);
+
+			MinCompressionLevel = _lib.ZSTD_minCLevel();
+			MaxCompressionLevel = _lib.ZSTD_maxCLevel();
 		}
 
 		private bool _disposed = false;
@@ -381,9 +388,9 @@ namespace BizHawk.Client.Common.Zstd
 		}
 
 		public static Stream CreateZstdCompressionStream(Stream stream, int compressionLevel)
-			=> new ZstdCompressionStream(_lib, stream, compressionLevel);
+			=> new ZstdCompressionStream(stream, compressionLevel);
 
 		public static Stream CreateZstdDecompressionStream(Stream stream)
-			=> new ZstdDecompressionStream(_lib, stream);
+			=> new ZstdDecompressionStream(stream);
 	}
 }
