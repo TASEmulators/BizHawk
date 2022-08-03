@@ -264,6 +264,7 @@ namespace BizHawk.Client.Common.Zstd
 					var outputToConsume = n > (int)(_output.Pos - _outputConsumed) ? (int)(_output.Pos - _outputConsumed) : n;
 					Marshal.Copy(_output.Ptr + (int)_outputConsumed, buffer, offset, outputToConsume);
 					_outputConsumed += (ulong)outputToConsume;
+					offset += outputToConsume;
 					if (_outputConsumed == OUTPUT_BUFFER_SIZE)
 					{
 						// all the buffer is consumed, kick these back to the beginning
