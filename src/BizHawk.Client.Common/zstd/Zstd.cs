@@ -16,11 +16,11 @@ namespace BizHawk.Client.Common
 
 			private readonly byte[] _inputBuffer;
 			private readonly GCHandle _inputHandle;
-			private LibZstd.Buffer _input;
+			private LibZstd.StreamBuffer _input;
 
 			private readonly byte[] _outputBuffer;
 			private readonly GCHandle _outputHandle;
-			private LibZstd.Buffer _output;
+			private LibZstd.StreamBuffer _output;
 
 			// TODO: tweak these sizes
 
@@ -170,11 +170,11 @@ namespace BizHawk.Client.Common
 
 			private readonly byte[] _inputBuffer;
 			private readonly GCHandle _inputHandle;
-			private LibZstd.Buffer _input;
+			private LibZstd.StreamBuffer _input;
 
 			private readonly byte[] _outputBuffer;
 			private readonly GCHandle _outputHandle;
-			private LibZstd.Buffer _output;
+			private LibZstd.StreamBuffer _output;
 
 			// TODO: tweak these sizes
 
@@ -311,7 +311,7 @@ namespace BizHawk.Client.Common
 		static Zstd()
 		{
 			var resolver = new DynamicLibraryImportResolver(
-				OSTailoredCode.IsUnixHost ? "libzstd.so" : "libzstd.dll", hasLimitedLifetime: false);
+				OSTailoredCode.IsUnixHost ? "libzstd.so.1" : "libzstd.dll", hasLimitedLifetime: false);
 			_lib = BizInvoker.GetInvoker<LibZstd>(resolver, CallingConventionAdapters.Native);
 
 			MinCompressionLevel = _lib.ZSTD_minCLevel();

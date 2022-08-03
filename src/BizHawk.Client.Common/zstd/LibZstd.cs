@@ -23,7 +23,7 @@ namespace BizHawk.Client.Common
 		public abstract int ZSTD_maxCLevel();
 
 		[StructLayout(LayoutKind.Sequential)]
-		public struct Buffer
+		public struct StreamBuffer
 		{
 			public IntPtr Ptr;
 			public ulong Size;
@@ -40,13 +40,13 @@ namespace BizHawk.Client.Common
 		public abstract ulong ZSTD_initCStream(IntPtr zcs, int compressionLevel);
 
 		[BizImport(cc)]
-		public abstract ulong ZSTD_compressStream(IntPtr zcs, ref Buffer output, ref Buffer input);
+		public abstract ulong ZSTD_compressStream(IntPtr zcs, ref StreamBuffer output, ref StreamBuffer input);
 
 		[BizImport(cc)]
-		public abstract ulong ZSTD_flushStream(IntPtr zcs, ref Buffer output);
+		public abstract ulong ZSTD_flushStream(IntPtr zcs, ref StreamBuffer output);
 
 		[BizImport(cc)]
-		public abstract ulong ZSTD_endStream(IntPtr zcs, ref Buffer output);
+		public abstract ulong ZSTD_endStream(IntPtr zcs, ref StreamBuffer output);
 
 		[BizImport(cc)]
 		public abstract IntPtr ZSTD_createDStream();
@@ -58,6 +58,6 @@ namespace BizHawk.Client.Common
 		public abstract ulong ZSTD_initDStream(IntPtr zds);
 
 		[BizImport(cc)]
-		public abstract ulong ZSTD_decompressStream(IntPtr zds, ref Buffer output, ref Buffer input);
+		public abstract ulong ZSTD_decompressStream(IntPtr zds, ref StreamBuffer output, ref StreamBuffer input);
 	}
 }
