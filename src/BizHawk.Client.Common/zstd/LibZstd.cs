@@ -11,12 +11,6 @@ namespace BizHawk.Client.Common
 		private const CallingConvention cc = CallingConvention.Cdecl;
 
 		[BizImport(cc)]
-		public abstract ulong ZSTD_getFrameContentSize(byte[] src, ulong srcSize);
-
-		[BizImport(cc)]
-		public abstract ulong ZSTD_compressBound(ulong srcSize);
-
-		[BizImport(cc)]
 		public abstract uint ZSTD_isError(ulong code);
 
 		[BizImport(cc)]
@@ -27,24 +21,6 @@ namespace BizHawk.Client.Common
 
 		[BizImport(cc)]
 		public abstract int ZSTD_maxCLevel();
-
-		[BizImport(cc)]
-		public abstract IntPtr ZSTD_createCCtx();
-
-		[BizImport(cc)]
-		public abstract ulong ZSTD_freeCCtx(IntPtr cctx);
-
-		[BizImport(cc)]
-		public abstract ulong ZSTD_compressCCtx(IntPtr cctx, byte[] dst, ulong dstCapacity, byte[] src, ulong srcSize, int compressionLevel);
-
-		[BizImport(cc)]
-		public abstract IntPtr ZSTD_createDCtx();
-
-		[BizImport(cc)]
-		public abstract ulong ZSTD_freeDCtx(IntPtr dctx);
-
-		[BizImport(cc)]
-		public abstract ulong ZSTD_decompressDCtx(IntPtr dctx, byte[] dst, ulong dstCapacity, byte[] src, ulong srcSize);
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct Buffer
