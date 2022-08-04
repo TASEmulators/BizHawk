@@ -1712,8 +1712,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				if (!Config.DispChromeCaptionWindowed || _argParser._chromeless) return string.Empty; //TODO why would you want this? was this a previous attempt at static window titles?
-
 				var sb = new StringBuilder();
 
 				if (_inResizeLoop)
