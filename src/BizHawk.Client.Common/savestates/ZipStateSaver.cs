@@ -12,16 +12,14 @@ namespace BizHawk.Client.Common
 
 		private static void WriteZipVersion(Stream s)
 		{
-			var sw = new StreamWriter(s);
+			using var sw = new StreamWriter(s);
 			sw.WriteLine("2"); // version 1.0.2
-			sw.Flush();
 		}
 
 		private static void WriteEmuVersion(Stream s)
 		{
-			var sw = new StreamWriter(s);
+			using var sw = new StreamWriter(s);
 			sw.WriteLine(VersionInfo.GetEmuVersion());
-			sw.Flush();
 		}
 
 		public ZipStateSaver(string path, int compressionLevel)
@@ -29,6 +27,7 @@ namespace BizHawk.Client.Common
 			_zip = new FrameworkZipWriter(path, compressionLevel);
 
 			// we put these in every zip, so we know where they came from
+			// a bit redundant for movie files given their headers, but w/e
 			PutLump(BinaryStateLump.ZipVersion, WriteZipVersion, false);
 			PutLump(BinaryStateLump.BizVersion, WriteEmuVersion, false);
 		}

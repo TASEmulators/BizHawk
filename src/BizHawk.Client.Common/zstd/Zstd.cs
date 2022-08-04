@@ -448,9 +448,9 @@ namespace BizHawk.Client.Common
 		/// Also, of course, do not attempt to create multiple streams at once
 		/// Only 1 stream at a time is allowed per Zstd instance
 		/// </summary>
-		/// <param name="stream">the stream to compress</param>
+		/// <param name="stream">the stream to write compressed data</param>
 		/// <param name="compressionLevel">compression level, bounded by MinCompressionLevel and MaxCompressionLevel</param>
-		/// <returns></returns>
+		/// <returns>zstd compression stream</returns>
 		/// <exception cref="ArgumentOutOfRangeException">compressionLevel is too small or too big</exception>
 		public Stream CreateZstdCompressionStream(Stream stream, int compressionLevel)
 		{
@@ -472,8 +472,8 @@ namespace BizHawk.Client.Common
 		/// Also, of course, do not attempt to create multiple streams at once
 		/// Only 1 stream at a time is allowed per Zstd instance
 		/// </summary>
-		/// <param name="stream">the stream to decompress</param>
-		/// <returns></returns>
+		/// <param name="stream">a stream with zstd compressed data to decompress</param>
+		/// <returns>zstd decompression stream</returns>
 		public Stream CreateZstdDecompressionStream(Stream stream)
 		{
 			_decompressionStreamContext.InitContext();
