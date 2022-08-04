@@ -81,12 +81,9 @@ namespace BizHawk.Client.Common
 		
 		private void LoadTasprojExtras(ZipStateLoader bl)
 		{
-			bl.GetLump(BinaryStateLump.LagLog, false, delegate(TextReader tr)
-			{
-				LagLog.Load(tr);
-			});
+			bl.GetLump(BinaryStateLump.LagLog, abort: false, tr => LagLog.Load(tr));
 
-			bl.GetLump(BinaryStateLump.Markers, false, delegate(TextReader tr)
+			bl.GetLump(BinaryStateLump.Markers, abort: false, tr =>
 			{
 				string line;
 				while ((line = tr.ReadLine()) != null)
@@ -101,7 +98,7 @@ namespace BizHawk.Client.Common
 			if (GetClientSettingsOnLoad != null)
 			{
 				string clientSettings = "";
-				bl.GetLump(BinaryStateLump.ClientSettings, false, delegate(TextReader tr)
+				bl.GetLump(BinaryStateLump.ClientSettings, abort: false, tr =>
 				{
 					string line;
 					while ((line = tr.ReadLine()) != null)
@@ -119,7 +116,7 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			bl.GetLump(BinaryStateLump.VerificationLog, false, delegate(TextReader tr)
+			bl.GetLump(BinaryStateLump.VerificationLog, abort: false, tr =>
 			{
 				VerificationLog.Clear();
 				while (true)
@@ -139,7 +136,7 @@ namespace BizHawk.Client.Common
 
 			Branches.Load(bl, this);
 
-			bl.GetLump(BinaryStateLump.Session, false, delegate(TextReader tr)
+			bl.GetLump(BinaryStateLump.Session, abort: false, tr =>
 			{
 				var json = tr.ReadToEnd();
 				try
@@ -153,7 +150,7 @@ namespace BizHawk.Client.Common
 			});
 
 			ZwinderStateManagerSettings settings = new ZwinderStateManagerSettings();
-			bl.GetLump(BinaryStateLump.StateHistorySettings, false, delegate(TextReader tr)
+			bl.GetLump(BinaryStateLump.StateHistorySettings, abort: false, tr =>
 			{
 				var json = tr.ReadToEnd();
 				try
@@ -166,7 +163,7 @@ namespace BizHawk.Client.Common
 				}
 			});
 
-			bl.GetLump(BinaryStateLump.StateHistory, false, delegate(BinaryReader br, long length)
+			bl.GetLump(BinaryStateLump.StateHistory, abort: false, (br, _) =>
 			{
 				try
 				{

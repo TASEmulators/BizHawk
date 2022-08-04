@@ -429,7 +429,7 @@ namespace BizHawk.Emulation.Common
 				.Replace('|', '+') // '|' is the filename-member separator for archives in HawkFile
 				.Replace(":", " -") // ':' is the path separator in lists (Path.GetFileName will drop all but the last entry in such a list)
 				.Replace("\"", ""); // '"' is just annoying as it needs escaping on the command-line
-			var filesystemDir = Path.GetDirectoryName(pass1);
+			var filesystemDir = string.IsNullOrWhiteSpace(pass1) ? string.Empty : Path.GetDirectoryName(pass1);
 			var pass2 = Path.GetFileName(pass1).RemoveInvalidFileSystemChars();
 			return Path.Combine(filesystemDir, pass2.RemoveSuffix('.')); // trailing '.' would be duplicated when file extension is added
 		}

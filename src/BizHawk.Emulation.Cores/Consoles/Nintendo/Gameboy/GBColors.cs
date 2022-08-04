@@ -214,7 +214,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				ColorType.vbabgbold => OldVBAColor,
 				ColorType.gba => GBAColor,
 				ColorType.libretrogbc => LibretroGBCColor,
-				_ => throw new ArgumentOutOfRangeException(nameof(c)),
+				_ => throw new InvalidOperationException()
 			};
 
 			int i = 0;

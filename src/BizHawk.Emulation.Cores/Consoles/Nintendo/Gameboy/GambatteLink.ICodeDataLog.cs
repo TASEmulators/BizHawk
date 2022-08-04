@@ -1,6 +1,7 @@
-using BizHawk.Emulation.Common;
-
+using System;
 using System.IO;
+
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
@@ -23,8 +24,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		}
 
 		[FeatureNotImplemented]
-		void ICodeDataLogger.DisassembleCDL(Stream s, ICodeDataLog cdl)
+		public void DisassembleCDL(Stream s, ICodeDataLog cdl)
 		{
+			throw new NotImplementedException();
 			// this doesn't actually do anything
 			/*
 			for (int i = 0; i < _numCores; i++)

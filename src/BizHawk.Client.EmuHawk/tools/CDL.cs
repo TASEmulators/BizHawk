@@ -48,9 +48,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[RequiredService]
-		private IMemoryDomains MemoryDomains { get; set; }
-
-		[RequiredService]
 		private ICodeDataLogger CodeDataLogger { get; set; }
 
 		private string _currentFilename;

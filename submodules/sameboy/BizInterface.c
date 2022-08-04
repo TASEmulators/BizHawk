@@ -19,6 +19,7 @@ typedef uint32_t u32;
 typedef uint64_t u64;
 
 typedef void (*input_callback_t)(void);
+typedef void (*rumble_callback_t)(u32);
 typedef void (*trace_callback_t)(u16);
 typedef void (*memory_callback_t)(u16);
 typedef void (*printer_callback_t)(u32*, u8, u8, u8, u8);
@@ -29,7 +30,6 @@ typedef struct
 	GB_gameboy_t gb;
 	blip_t* blip_l;
 	blip_t* blip_r;
-	GB_sample_t sampleBuf[1024 * 8];
 	GB_sample_t sampleLatch;
 	u32 nsamps;
 	u32 vbuf[256 * 224];
@@ -37,6 +37,7 @@ typedef struct
 	u32 obj_pal[0x20];
 	GB_palette_t custom_pal;
 	input_callback_t input_cb;
+	rumble_callback_t rumble_cb;
 	trace_callback_t trace_cb;
 	memory_callback_t read_cb;
 	memory_callback_t write_cb;
@@ -57,8 +58,19 @@ static u8 PeekIO(biz_t* biz, u8 addr)
 static void sample_cb(GB_gameboy_t *gb, GB_sample_t* sample)
 {
 	biz_t* biz = (biz_t*)gb;
-	biz->sampleBuf[biz->nsamps].left = sample->left;
-	biz->sampleBuf[biz->nsamps].right = sample->right;
+
+	if (biz->sampleLatch.left != sample->left)
+	{
+		blip_add_delta(biz->blip_l, biz->nsamps, biz->sampleLatch.left - sample->left);
+		biz->sampleLatch.left = sample->left;
+	}
+
+	if (biz->sampleLatch.right != sample->right)
+	{
+		blip_add_delta(biz->blip_r, biz->nsamps, biz->sampleLatch.right - sample->right);
+		biz->sampleLatch.right = sample->right;
+	}
+
 	biz->nsamps++;
 }
 
@@ -67,9 +79,20 @@ static u32 rgb_cb(GB_gameboy_t *gb, u8 r, u8 g, u8 b)
     return (0xFF << 24) | (r << 16) | (g << 8) | b;
 }
 
-static void vblank_cb(GB_gameboy_t *gb, GB_vblank_type_t type)
+static void vblank_cb(GB_gameboy_t* gb, GB_vblank_type_t type)
 {
 	((biz_t*)gb)->vblank_occured = true;
+}
+
+static u8 camera_pixel_cb(GB_gameboy_t* gb, u8 x, u8 y)
+{
+	// stub for now (also needed for determinism)
+	return 0;
+}
+
+static void RumbleCallbackRelay(GB_gameboy_t* gb, double rumble_amplitude)
+{
+	((biz_t*)gb)->rumble_cb(INT32_MAX * rumble_amplitude);
 }
 
 static u8 ReadCallbackRelay(GB_gameboy_t* gb, u16 addr, u8 data)
@@ -111,7 +134,7 @@ static void ScanlineCallbackRelay(GB_gameboy_t* gb, u8 line)
 	}
 }
 
-EXPORT biz_t* sameboy_create(u8* romdata, u32 romlen, u8* biosdata, u32 bioslen, GB_model_t model, bool realtime)
+EXPORT biz_t* sameboy_create(u8* romdata, u32 romlen, u8* biosdata, u32 bioslen, GB_model_t model, bool realtime, bool nobounce)
 {
 	biz_t* biz = calloc(1, sizeof (biz_t));
 	GB_random_seed(0);
@@ -119,10 +142,15 @@ EXPORT biz_t* sameboy_create(u8* romdata, u32 romlen, u8* biosdata, u32 bioslen,
 	GB_load_rom_from_buffer(&biz->gb, romdata, romlen);
 	GB_load_boot_rom_from_buffer(&biz->gb, biosdata, bioslen);
 	GB_set_sample_rate(&biz->gb, GB_get_clock_rate(&biz->gb) / 2 / 8);
+	GB_set_rumble_mode(&biz->gb, GB_RUMBLE_ALL_GAMES);
+	GB_set_rumble_callback(&biz->gb, RumbleCallbackRelay);
 	GB_apu_set_sample_callback(&biz->gb, sample_cb);
 	GB_set_rgb_encode_callback(&biz->gb, rgb_cb);
 	GB_set_vblank_callback(&biz->gb, vblank_cb);
+	GB_set_camera_get_pixel_callback(&biz->gb, camera_pixel_cb);
+	GB_set_pixels_output(&biz->gb, biz->vbuf);
 	GB_set_rtc_mode(&biz->gb, realtime ? GB_RTC_MODE_SYNC_TO_HOST : GB_RTC_MODE_ACCURATE);
+	GB_set_emulate_joypad_bouncing(&biz->gb, !nobounce);
 	GB_set_allow_illegal_inputs(&biz->gb, true);
 	biz->blip_l = blip_new(1024);
 	biz->blip_r = blip_new(1024);
@@ -144,6 +172,11 @@ EXPORT void sameboy_setinputcallback(biz_t* biz, input_callback_t callback)
 	biz->input_cb = callback;
 }
 
+EXPORT void sameboy_setrumblecallback(biz_t* biz, rumble_callback_t callback)
+{
+	biz->rumble_cb = callback;
+}
+
 static double FromRawToG(u16 raw)
 {
 	return (raw - 0x81D0) / (0x70 * 1.0);
@@ -156,7 +189,6 @@ EXPORT void sameboy_frameadvance(biz_t* biz, GB_key_mask_t keys, u16 x, u16 y, s
 	{
 		GB_set_accelerometer_values(&biz->gb, FromRawToG(x), FromRawToG(y));
 	}
-	GB_set_pixels_output(&biz->gb, biz->vbuf);
 	GB_set_border_mode(&biz->gb, border ? GB_BORDER_ALWAYS : GB_BORDER_NEVER);
 	GB_set_rendering_disabled(&biz->gb, !render);
 
@@ -181,20 +213,6 @@ EXPORT void sameboy_frameadvance(biz_t* biz, GB_key_mask_t keys, u16 x, u16 y, s
 		}
 	}
 	while (!biz->vblank_occured && cycles < 35112);
-
-	for (u32 i = 0; i < biz->nsamps; i++)
-	{
-		if (biz->sampleLatch.left != biz->sampleBuf[i].left)
-		{
-			blip_add_delta(biz->blip_l, i, biz->sampleLatch.left - biz->sampleBuf[i].left);
-			biz->sampleLatch.left = biz->sampleBuf[i].left;
-		}
-		if (biz->sampleLatch.right != biz->sampleBuf[i].right)
-		{
-			blip_add_delta(biz->blip_r, i, biz->sampleLatch.right - biz->sampleBuf[i].right);
-			biz->sampleLatch.right = biz->sampleBuf[i].right;
-		}
-	}
 
 	blip_end_frame(biz->blip_l, biz->nsamps);
 	blip_end_frame(biz->blip_r, biz->nsamps);

@@ -6,8 +6,8 @@
 		<BIZHAWK_DATA_HOME>$(ProjectDir)../../output/</BIZHAWK_DATA_HOME>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
 		<Reference Include="System.Windows.Forms" />
+		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />
 		<Reference Include="BizHawk.Client.Common"
 			HintPath="$(ProjectDir)../../output/dll/BizHawk.Client.Common.dll"
 			Private="true" />

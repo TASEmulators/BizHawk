@@ -36,13 +36,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public void StoreSaveRam(byte[] data)
 		{
 			int expected = LibGambatte.gambatte_getsavedatalength(GambatteState);
-			switch (data.Length - expected)
-			{
-				case 0:
-					break;
-				default:
-					throw new ArgumentException("Size of saveram data does not match expected!");
-			}
+			if (data.Length != expected) throw new ArgumentException(message: "Size of saveram data does not match expected!", paramName: nameof(data));
 
 			LibGambatte.gambatte_loadsavedata(GambatteState, data);
 

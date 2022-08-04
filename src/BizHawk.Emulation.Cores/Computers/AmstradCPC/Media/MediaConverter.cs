@@ -24,32 +24,25 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public virtual bool IsWriter => false;
 
+		protected abstract string SelfTypeName { get; }
+
 		/// <summary>
 		/// Serialization method
 		/// </summary>
 		public virtual void Read(byte[] data)
-		{
-			throw new NotImplementedException(this.GetType() +
-				"Read operation is not implemented for this converter");
-		}
+			=> throw new NotImplementedException($"Read operation is not implemented for {SelfTypeName}");
 
 		/// <summary>
 		/// DeSerialization method
 		/// </summary>
 		public virtual void Write(byte[] data)
-		{
-			throw new NotImplementedException(this.GetType() +
-				"Write operation is not implemented for this converter");
-		}
+			=> throw new NotImplementedException($"Write operation is not implemented for {SelfTypeName}");
 
 		/// <summary>
 		/// Serializer does a quick check, returns TRUE if file is detected as this type
 		/// </summary>
 		public virtual bool CheckType(byte[] data)
-		{
-			throw new NotImplementedException(this.GetType().ToString() +
-				"Check type operation is not implemented for this converter");
-		}
+			=> throw new NotImplementedException($"Check type operation is not implemented for {SelfTypeName}");
 
 		/// <summary>
 		/// Converts an int32 value into a byte array

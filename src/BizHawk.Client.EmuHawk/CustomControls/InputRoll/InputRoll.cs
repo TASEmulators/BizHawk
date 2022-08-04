@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.CustomControls;
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 
 // TODO: There are some bad interactions between ScrollToIndex and MakeIndexVisible that are preventing things from working as intended.
 //       But, the current behaviour is ok for now for what it is used for.
@@ -582,13 +583,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_lastSelectedRow = null;
 			_selectedItems.Clear();
-			SelectedIndexChanged?.Invoke(this, new EventArgs());
+			SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
 			Refresh();
 		}
 
 		public void ToggleSelectAll()
 		{
-			if (SelectedRows.Count() == RowCount) DeselectAll();
+			if (SelectedRows.CountIsExactly(RowCount)) DeselectAll();
 			else SelectAll();
 		}
 
@@ -1213,7 +1214,7 @@ namespace BizHawk.Client.EmuHawk
 
 					Refresh();
 
-					SelectedIndexChanged?.Invoke(this, new EventArgs());
+					SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
 				}
 			}
 
@@ -1233,7 +1234,7 @@ namespace BizHawk.Client.EmuHawk
 
 						Refresh();
 
-						SelectedIndexChanged?.Invoke(this, new EventArgs());
+						SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
 					}
 				}
 			}
@@ -1891,8 +1892,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_horizontalOrientation)
 			{
-				return _columns.VisibleColumns.Select((n, i) => new { Column = n, Index = i })
-					.FirstOrDefault(item => (GetHColTop(item.Index) - _vBar.Value).RangeTo(GetHColBottom(item.Index) - _vBar.Value).Contains(pixel))
+				return _columns.VisibleColumns.Select(static (n, i) => (Column: n, Index: i))
+					.FirstOrNull(item => (GetHColTop(item.Index) - _vBar.Value).RangeTo(GetHColBottom(item.Index) - _vBar.Value).Contains(pixel))
 					?.Column;
 			}
 			return _columns.VisibleColumns.FirstOrDefault(column => (column.Left - _hBar.Value).RangeTo(column.Right - _hBar.Value).Contains(pixel));

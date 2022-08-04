@@ -75,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!typeof(IToolForm).IsAssignableFrom(toolType))
 			{
-				throw new ArgumentException($"Type {toolType.Name} does not implement {nameof(IToolForm)}.");
+				throw new ArgumentException(message: $"Type {toolType.Name} does not implement {nameof(IToolForm)}.", paramName: nameof(toolType));
 			}
 			var mi = typeof(ToolManager).GetMethod(nameof(Load), new[] { typeof(bool), typeof(string) })!.MakeGenericMethod(toolType);
 			return (IToolForm) mi.Invoke(this, new object[] { focus, "" });
@@ -129,9 +129,9 @@ namespace BizHawk.Client.EmuHawk
 			if (!(CreateInstance<T>(toolPath) is T newTool)) return null;
 
 			if (newTool is Form form) form.Owner = _owner;
-			ServiceInjector.UpdateServices(_emulator.ServiceProvider, newTool);
+			if (!ServiceInjector.UpdateServices(_emulator.ServiceProvider, newTool)) return null;
 			SetBaseProperties(newTool);
-			var toolTypeName = typeof(T).ToString();
+			var toolTypeName = typeof(T).FullName!;
 			// auto settings
 			if (newTool is IToolFormAutoConfig autoConfigTool)
 			{
@@ -180,8 +180,7 @@ namespace BizHawk.Client.EmuHawk
 			var newTool = (IExternalToolForm) CreateInstance(typeof(IExternalToolForm), toolPath, customFormTypeName, skipExtToolWarning: skipExtToolWarning);
 			if (newTool == null) return null;
 			if (newTool is Form form) form.Owner = _owner;
-			ApiInjector.UpdateApis(ApiProvider, newTool);
-			ServiceInjector.UpdateServices(_emulator.ServiceProvider, newTool);
+			if (!(ServiceInjector.UpdateServices(_emulator.ServiceProvider, newTool) && ApiInjector.UpdateApis(ApiProvider, newTool))) return null;
 			SetBaseProperties(newTool);
 			// auto settings
 			if (newTool is IToolFormAutoConfig autoConfigTool)
@@ -314,7 +313,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (dest == null)
 			{
-				throw new InvalidOperationException($"{nameof(IToolFormAutoConfig)} must have menu to bind to!");
+				throw new InvalidOperationException($"{nameof(IToolFormAutoConfig)} must have menu to bind to! (need {nameof(Form.MainMenuStrip)} or other {nameof(MenuStrip)} w/ menu labelled \"Settings\")");
 			}
 
 			int idx = dest.Count;
@@ -455,21 +454,10 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		/// <typeparam name="T">Type of tool to check</typeparam>
 		public bool IsLoaded<T>() where T : IToolForm
-		{
-			var existingTool = _tools.FirstOrDefault(t => t is T);
-			if (existingTool != null)
-			{
-				return existingTool.IsActive;
-			}
-
-			return false;
-		}
+			=> _tools.OfType<T>().FirstOrDefault()?.IsActive is true;
 
 		public bool IsLoaded(Type toolType)
-		{
-			var existingTool = _tools.FirstOrDefault(t => t.GetType() == toolType);
-			return existingTool != null && existingTool.IsActive;
-		}
+			=> _tools.Find(t => t.GetType() == toolType)?.IsActive is true;
 
 		public bool IsOnScreen(Point topLeft)
 		{
@@ -501,9 +489,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public IEnumerable<Type> AvailableTools => EmuHawk.ReflectionCache.Types
-			.Where(t => typeof(IToolForm).IsAssignableFrom(t))
-			.Where(t => !t.IsInterface)
-			.Where(IsAvailable);
+			.Where(t => !t.IsInterface && typeof(IToolForm).IsAssignableFrom(t) && IsAvailable(t));
 
 		/// <summary>
 		/// Calls UpdateValues() on an instance of T, if it exists
@@ -511,8 +497,8 @@ namespace BizHawk.Client.EmuHawk
 		/// <typeparam name="T">Type of tool to update</typeparam>
 		public void UpdateValues<T>() where T : IToolForm
 		{
-			var tool = _tools.FirstOrDefault(t => t is T);
-			if (tool != null && tool.IsActive)
+			var tool = _tools.OfType<T>().FirstOrDefault();
+			if (tool?.IsActive is true)
 			{
 				tool.UpdateValues(ToolFormUpdateType.General);
 			}
@@ -535,24 +521,16 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var tool in _tools)
 			{
 				SetBaseProperties(tool);
-				if (ServiceInjector.IsAvailable(_emulator.ServiceProvider, tool.GetType()))
+				if (ServiceInjector.UpdateServices(_emulator.ServiceProvider, tool)
+					&& (tool is not IExternalToolForm || ApiInjector.UpdateApis(ApiProvider, tool)))
 				{
-					ServiceInjector.UpdateServices(_emulator.ServiceProvider, tool);
-					
-					if (tool.IsActive)
-					{
-						if (tool is IExternalToolForm)
-						{
-							ApiInjector.UpdateApis(ApiProvider, tool);
-						}
-
-						tool.Restart();
-					}
+					if (tool.IsActive) tool.Restart();
 				}
 				else
 				{
 					unavailable.Add(tool);
 					ServiceInjector.ClearServices(tool); // the services of the old emulator core are no longer valid on the tool
+					if (tool is IExternalToolForm) ApiInjector.ClearApis(tool);
 				}
 			}
 
@@ -568,10 +546,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		/// <typeparam name="T">Type of tool to restart</typeparam>
 		public void Restart<T>() where T : IToolForm
-		{
-			var tool = _tools.FirstOrDefault(t => t is T);
-			tool?.Restart();
-		}
+			=> _tools.OfType<T>().FirstOrDefault()?.Restart();
 
 		/// <summary>
 		/// Runs AskSave on every tool dialog, false is returned if any tool returns false
@@ -594,7 +569,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <typeparam name="T">Type of tool to close</typeparam>
 		public void Close<T>() where T : IToolForm
 		{
-			var tool = _tools.FirstOrDefault(t => t is T);
+			var tool = _tools.OfType<T>().FirstOrDefault();
 			if (tool != null)
 			{
 				tool.Close();
@@ -604,8 +579,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Close(Type toolType)
 		{
-			var tool = _tools.FirstOrDefault(toolType.IsInstanceOfType);
-
+			var tool = _tools.Find(toolType.IsInstanceOfType);
 			if (tool != null)
 			{
 				tool.Close();
@@ -737,6 +711,7 @@ namespace BizHawk.Client.EmuHawk
 		public bool IsAvailable(Type tool)
 		{
 			if (!ServiceInjector.IsAvailable(_emulator.ServiceProvider, tool)) return false;
+			if (typeof(IExternalToolForm).IsAssignableFrom(tool) && !ApiInjector.IsAvailable(ApiProvider, tool)) return false;
 			if (!PossibleToolTypeNames.Contains(tool.AssemblyQualifiedName) && !_extToolManager.PossibleExtToolTypeNames.Contains(tool.AssemblyQualifiedName)) return false; // not a tool
 
 			ToolAttribute attr = tool.GetCustomAttributes(false).OfType<ToolAttribute>().SingleOrDefault();

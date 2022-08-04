@@ -14,17 +14,14 @@ Jump to:
 	* [Unix](#unix)
 		* [macOS](#macos-legacy-bizhawk)
 	* [Development builds](#development-builds)
-* Building
-	* [Windows](#windows-1)
-	* [Unix](#unix-1)
+* [Building](#building)
 * [Usage](#usage)
 	* [TASing](#tasing)
 	* [External tools](#external-tools)
 	* [Cores](#cores)
 * [Support and troubleshooting](#support-and-troubleshooting)
-* [Contributing](#contributing)
-	* [EmuHawk development](#emuhawk-development)
-	* [Core development](#core-development)
+* Contributing
+	* [EmuHawk or core development](#emuhawk-or-core-development)
 	* [Testing/QA](#testingqa)
 	* [Localization](#localization)
 	* [License](#license)
@@ -155,36 +152,11 @@ To find the dev builds for a specific commit, you can click the green checkmark 
 
 ## Building
 
-### Windows
+See the [contributor guidelines](https://github.com/TASEmulators/BizHawk/blob/master/contributing.md).
 
-Before you can build, you'll need the .NET 6 SDK or later (comes with VS2022, or can be manually installed beside VS2019, see [full instructions](https://docs.microsoft.com/en-gb/dotnet/core/install/windows)).
-
-If you have WSL, Git BASH, or similar, clone the repo with:
-```
-git clone https://github.com/TASEmulators/BizHawk.git BizHawk_master
-# or ssh: git clone git@github.com:TASEmulators/BizHawk.git BizHawk_master
-```
-...then go into the repo's `Dist` folder and run `QuickTestBuildAndPackage_Release.bat`. This is the same process used by AppVeyor.
-(Git is required for this script, but if you proceed to open the solution in VS then you can build without it.)
-
-For anything more complicated than just building, you'll need an IDE like [VS Community 2019](https://visualstudio.microsoft.com/vs/community), currently the best free C# IDE (you may prefer Rider, VS Code, or something else).
-Open the `/BizHawk.sln` solution file in your IDE.
-With VS, start the build by choosing the `BizHawk.Client.EmuHawk` executable in the toolbar (in either the `Debug` or `Release` configuration) and clicking the launch button beside it.
-
-[to top](#bizhawk)
-
-### Unix
-
-Before you can build, you'll need the .NET 6 SDK or later (package name is usually `dotnet-sdk-6.0`, see [full instructions](https://docs.microsoft.com/en-gb/dotnet/core/install/linux)). Once it's installed, run:
-```sh
-git clone https://github.com/TASEmulators/BizHawk.git BizHawk_master && cd BizHawk_master
-# or ssh: git clone git@github.com:TASEmulators/BizHawk.git BizHawk_master && cd BizHawk_master
-Dist/BuildRelease.sh
-```
-
-The assemblies are put in the `/output` dir, so if you have the runtime dependencies (see [*Installing*](#unix)) you can call `/output/EmuHawkMono.sh`.
-
-VS 2019 isn't available on Linux, but Rider and VS Code are. You can always code from the command line...
+tl;dr:
+- On Unix, run `Dist/BuildRelease.sh` (uses .NET SDK CLI). You can also use Rider or VS Code.
+- On Windows, run in [VS2022](https://visualstudio.microsoft.com/vs/community). You can also use the command-line, Rider, or VS Code.
 
 [to top](#bizhawk)
 
@@ -343,7 +315,6 @@ There are also works-in-progress for:
 * Amstrad CPC (home-grown core)
 * Fairchild Channel F (home-grown core)
 * [MAME](https://mamedev.org)
-* Playstation 2 via [Dobiestation](https://github.com/PSI-Rockin/DobieStation)
 * others maybe ([candidates](https://gitlab.com/TASVideos/BizHawk/snippets/1890492))
 
 Please don't bother core devs about these WIPs unless you're looking to contribute in some way.
@@ -363,34 +334,26 @@ You can [open a new issue](https://github.com/TASEmulators/BizHawk/issues/new) a
 
 ## Contributing
 
-### EmuHawk development
+### EmuHawk or core development
 
-Do you want your name next to [these fine people](https://github.com/TASEmulators/BizHawk/graphs/contributors)? Fork the repo and work on one of our [many open issues](https://github.com/TASEmulators/BizHawk/issues).
-If you ask on IRC/Discord (see above), you might get more info about the problem—or you might find someone else is also working on it. It's especially important to ask about adding new features.
+Do you want your name next to [these fine people](https://github.com/TASEmulators/BizHawk/graphs/contributors)?
+We have [many open issues](https://github.com/TASEmulators/BizHawk/issues?q=label%3A"help+wanted") with no-one to work on them.
+Any which would be a good fit for someone who's new to Open Source are listed [here](https://github.com/TASEmulators/BizHawk/contribute) (spoilers: it's probably empty).
 
-All the source code for EmuHawk is in `/src`. The project file, `/src/BizHawk.Client.EmuHawk/BizHawk.Client.EmuHawk.csproj`, includes the other projects [in a tree](https://gitlab.com/TASVideos/BizHawk/snippets/1886666).
+[The contribution guidelines](https://github.com/TASEmulators/BizHawk/blob/master/contributing.md) have more details on how to get set up, work with the code, and submit changes to us.
 
-When opening a PR:
-* Consider making changes over multiple commits instead of one large commit. Bonus points if each commit is a working build.
-* Rebase instead of merging when pulling changes.
-* Don't use the `master` branch of your fork! Using another branch makes rebasing so much easier.
-* Our test suite is small, but it's still worth running. Build the executable project `BizHawk.Tests`.
-	* If you fork on GitLab, the tests will run in CI.
-* For the time being, code style is checked manually. Please use CRLF, tabs, and [Allman braces](https://en.wikipedia.org/wiki/Indentation_style#Allman_style) in new files.
-	* Static code analysis is configured but disabled—build with `-p:MachineRunAnalyzersDuringBuild=true`.
-		* If you fork on GitLab, the Analyzers will run in CI if you use `git push -o ci.variable="BIZHAWKBUILD_USE_ANALYZERS=true"` (or otherwise set that env. var for the pipeline).
+Don't shy away from asking about an Issue on IRC/Discord (see above)! You might be given more info about the problem—or you might find out someone is already working on it.
+For adding new features it's especially important, because details are often left out of the issue tracker, and we may want to make sure the new addition is future-proofed.
 
-[to top](#bizhawk)
-
-### Core development
-
-We're not particularly interested in PRs adding cores out-of-the-blue, but if you have experience in emulator development please get in touch on IRC/Discord.
+With regards to core development, we're not particularly interested in PRs adding cores out-of-the-blue, but if you have experience in emulator development please get in touch. We have a wishlist of cores to port, and on top of that, many of our in-house cores are without a maintainer.
 
 [to top](#bizhawk)
 
 ### Testing/QA
 
 Not a programmer? You can still be helpful by grabbing a recent [dev build](#development-builds) and reproducing old bugs, i.e. checking if they've been fixed or not.
+
+Those with hardware or other domain knowledge may be able to help triage [issues like these](https://github.com/TASEmulators/BizHawk/issues?q=label%3A"Needs+domain+knowledge+for+triage").
 
 [to top](#bizhawk)
 

@@ -68,9 +68,8 @@ namespace BizHawk.Client.Common
 
 		public Cheat this[int index] => _cheatList[index];
 
-		public Cheat this[MemoryDomain domain, long address] =>
-			_cheatList.FirstOrDefault(cheat => cheat.Domain == domain && cheat.Address == address);
-
+		public Cheat this[MemoryDomain domain, long address]
+			=> _cheatList.Find(cheat => cheat.Domain == domain && cheat.Address == address);
 
 		public IEnumerator<Cheat> GetEnumerator() => _cheatList.GetEnumerator();
 
@@ -112,10 +111,7 @@ namespace BizHawk.Client.Common
 		/// <exception cref="ArgumentNullException"><paramref name="cheat"/> is null</exception>
 		public void Add(Cheat cheat)
 		{
-			if (cheat is null)
-			{
-				throw new ArgumentNullException($"{nameof(cheat)} can not be null");
-			}
+			if (cheat is null) throw new ArgumentNullException(paramName: nameof(cheat));
 
 			if (cheat.IsSeparator)
 			{

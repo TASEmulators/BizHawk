@@ -11,10 +11,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 		public ControllerDefinition ControllerDefinition { get; }
 
+		private IController _controller = NullController.Instance;
+
 		private static readonly IReadOnlyList<string> GB_BUTTON_ORDER_IN_BITMASK = new[] { "Start", "Select", "B", "A", "Down", "Up", "Left", "Right", };
 
 		private LibSameboy.Buttons FrameAdvancePrep(IController controller)
 		{
+			_controller = controller;
+
 			uint b = 0;
 			for (var i = 0; i < 8; i++)
 			{

@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 		}
 
 		[BizImport(cc)]
-		public abstract IntPtr sameboy_create(byte[] romdata, int romlength, byte[] biosdata, int bioslength, Sameboy.SameboySyncSettings.GBModel model, bool realtime);
+		public abstract IntPtr sameboy_create(byte[] romdata, int romlength, byte[] biosdata, int bioslength, Sameboy.SameboySyncSettings.GBModel model, bool realtime, bool nobounce);
 
 		[BizImport(cc)]
 		public abstract void sameboy_destroy(IntPtr core);
@@ -52,6 +52,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 		[BizImport(cc)]
 		public abstract void sameboy_setinputcallback(IntPtr core, InputCallback callback);
+
+		[UnmanagedFunctionPointer(cc)]
+		public delegate void RumbleCallback(int amplitude);
+
+		[BizImport(cc)]
+		public abstract void sameboy_setrumblecallback(IntPtr core, RumbleCallback callback);
 
 		[BizImport(cc)]
 		public abstract void sameboy_frameadvance(IntPtr core, Buttons buttons, ushort x, ushort y, short[] soundbuf, ref int nsamps, int[] videobuf, bool render, bool border);
@@ -81,7 +87,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 		public abstract int sameboy_statelen(IntPtr core);
 
 		[BizImport(cc)]
-		public abstract bool sameboy_getmemoryarea(IntPtr core, MemoryAreas which, ref IntPtr data, ref int length);
+		public abstract bool sameboy_getmemoryarea(IntPtr core, MemoryAreas which, ref IntPtr data, ref long length);
 
 		[BizImport(cc)]
 		public abstract byte sameboy_cpuread(IntPtr core, ushort addr);

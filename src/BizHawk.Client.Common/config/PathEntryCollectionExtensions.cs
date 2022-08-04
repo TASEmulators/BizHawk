@@ -87,10 +87,7 @@ namespace BizHawk.Client.Common
 				return collection.GlobalBaseAbsolutePath();
 			}
 
-			if (path == "%recent%")
-			{
-				return Environment.SpecialFolder.Recent.ToString();
-			}
+			if (path == "%recent%") return PathUtils.SpecialRecentsDir;
 
 			if (path.StartsWith("%exe%"))
 			{
@@ -202,10 +199,7 @@ namespace BizHawk.Client.Common
 				return collection.AbsolutePathFor(collection[PathEntryCollection.GLOBAL, "ROM"].Path, PathEntryCollection.GLOBAL);
 			}
 
-			if (collection.UseRecentForRoms)
-			{
-				return Environment.SpecialFolder.Recent.ToString();
-			}
+			if (collection.UseRecentForRoms) return PathUtils.SpecialRecentsDir;
 
 			var path = collection[systemId, "ROM"];
 

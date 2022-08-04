@@ -1,10 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<Import Project="$(ProjectDir)../ExtToolCommon.props" />
 	<Import Project="$(ProjectDir)../NET48ExternalToolForm.targets" />
+	<Import Project="$(ProjectDir)../ExtToolCommon.props" />
 	<PropertyGroup>
 		<GenerateResourceMSBuildArchitecture Condition=" '$(GenerateResourceMSBuildArchitecture)' == '' ">CurrentArchitecture</GenerateResourceMSBuildArchitecture>
 		<GenerateResourceMSBuildRuntime Condition=" '$(GenerateResourceMSBuildRuntime)' == '' ">CurrentRuntime</GenerateResourceMSBuildRuntime>
 		<GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+		<NoWarn>$(NoWarn);SA1400</NoWarn>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="System.Memory" Version="4.5.4" />

@@ -33,9 +33,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		}
 
 		[FeatureNotImplemented]
-		void ICodeDataLogger.DisassembleCDL(Stream s, ICodeDataLog cdl)
-		{
-		}
+		public void DisassembleCDL(Stream s, ICodeDataLog cdl)
+			=> throw new NotImplementedException();
 
 		private ICodeDataLog _cdl;
 		private string _which;

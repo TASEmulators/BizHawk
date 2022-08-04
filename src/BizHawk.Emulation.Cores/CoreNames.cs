@@ -19,7 +19,6 @@ namespace BizHawk.Emulation.Cores
 		public const string ColecoHawk = "ColecoHawk";
 		public const string CPCHawk = "CPCHawk";
 		public const string Cygne = "Cygne/Mednafen";
-		public const string DobieStation = "DobieStation";
 		public const string Emu83 = "Emu83";
 		public const string Faust = "Faust";
 		public const string Gambatte = "Gambatte";

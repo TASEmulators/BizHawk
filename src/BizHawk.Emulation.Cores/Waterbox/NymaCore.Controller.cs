@@ -72,13 +72,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 					var devices = portInfo.Devices;
 					
-					var device = devices.FirstOrDefault(a => a.ShortName == deviceName);
+					var device = devices.Find(a => a.ShortName == deviceName);
 					if (device == null)
 					{
 						Console.WriteLine($"Warn: unknown controller device {deviceName}");
-						device = devices.FirstOrDefault(a => a.ShortName == portInfo.DefaultDeviceShortName);
-						if (device == null)
-							throw new InvalidOperationException($"Fail: unknown controller device {portInfo.DefaultDeviceShortName}");
+						device = devices.Find(a => a.ShortName == portInfo.DefaultDeviceShortName)
+							?? throw new InvalidOperationException($"Fail: unknown controller device {portInfo.DefaultDeviceShortName}");
 					}
 
 					ActualPortData.Add(new PortResult

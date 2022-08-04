@@ -1,11 +1,11 @@
 auto CPU::InstructionCache::Line::hit(u32 address) const -> bool {
-  return valid && tag == (address & ~0xe000'0fff);
+  return valid && tag == (address & ~0x0000'0fff);
 }
 
 auto CPU::InstructionCache::Line::fill(u32 address) -> void {
   cpu.step(48);
   valid = 1;
-  tag   = address & ~0xe000'0fff;
+  tag   = address & ~0x0000'0fff;
   words[0] = bus.read<Word>(tag | index | 0x00);
   words[1] = bus.read<Word>(tag | index | 0x04);
   words[2] = bus.read<Word>(tag | index | 0x08);
@@ -42,7 +42,7 @@ auto CPU::InstructionCache::step(u32 address) -> void {
   if(!line.hit(address)) {
     cpu.step(48);
     line.valid = 1;
-    line.tag   = address & ~0xe000'0fff;
+    line.tag   = address & ~0x0000'0fff;
   } else {
     cpu.step(2);
   }

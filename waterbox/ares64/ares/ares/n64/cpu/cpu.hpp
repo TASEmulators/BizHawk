@@ -95,6 +95,7 @@ struct CPU : Thread {
     auto setMode() -> void;
 
     bool endian;
+    u64  physMask;
     u32  mode;
     u32  bits;
     u32  segment[8];  //512_MiB chunks
@@ -167,9 +168,8 @@ struct CPU : Thread {
     };
 
     //tlb.cpp
-    auto load(u32 address) -> Match;
-    auto store(u32 address) -> Match;
-    auto exception(u32 address) -> void;
+    auto load(u64 vaddr) -> Match;
+    auto store(u64 vaddr) -> Match;
 
     struct Entry {
       //scc-tlb.cpp
@@ -195,20 +195,20 @@ struct CPU : Thread {
   } tlb{*this};
 
   //memory.cpp
-  auto kernelSegment32(u32 address) const -> Context::Segment;
-  auto supervisorSegment32(u32 address) const -> Context::Segment;
-  auto userSegment32(u32 address) const -> Context::Segment;
+  auto kernelSegment32(u32 vaddr) const -> Context::Segment;
+  auto supervisorSegment32(u32 vaddr) const -> Context::Segment;
+  auto userSegment32(u32 vaddr) const -> Context::Segment;
 
-  auto kernelSegment64(u64 address) const -> Context::Segment;
-  auto supervisorSegment64(u64 address) const -> Context::Segment;
-  auto userSegment64(u64 address) const -> Context::Segment;
+  auto kernelSegment64(u64 vaddr) const -> Context::Segment;
+  auto supervisorSegment64(u64 vaddr) const -> Context::Segment;
+  auto userSegment64(u64 vaddr) const -> Context::Segment;
 
-  auto segment(u64 address) -> Context::Segment;
-  auto devirtualize(u64 address) -> maybe<u64>;
-  auto fetch(u64 address) -> u32;
-  template<u32 Size> auto read(u64 address) -> maybe<u64>;
-  template<u32 Size> auto write(u64 address, u64 data) -> bool;
-  auto addressException(u64 address) -> void;
+  auto segment(u64 vaddr) -> Context::Segment;
+  auto devirtualize(u64 vaddr) -> maybe<u64>;
+  auto fetch(u64 vaddr) -> u32;
+  template<u32 Size> auto read(u64 vaddr) -> maybe<u64>;
+  template<u32 Size> auto write(u64 vaddr, u64 data) -> bool;
+  auto addressException(u64 vaddr) -> void;
 
   //serialization.cpp
   auto serialize(serializer&) -> void;
@@ -522,6 +522,9 @@ struct CPU : Thread {
 
     //30: Error Exception Program Counter
     n64 epcError;
+
+    //other
+    n64 latch;
   } scc;
 
   //interpreter-scc.cpp

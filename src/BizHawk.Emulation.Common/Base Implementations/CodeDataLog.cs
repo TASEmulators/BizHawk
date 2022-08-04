@@ -99,7 +99,7 @@ namespace BizHawk.Emulation.Common
 			return true;
 		}
 
-		/// <exception cref="InvalidDataException">
+		/// <exception cref="InvalidOperationException">
 		/// <paramref name="other"/> is not the same length as <see langword="this"/>, or
 		/// any value differs in size from the corresponding value in <paramref name="other"/>
 		/// </exception>
@@ -107,7 +107,7 @@ namespace BizHawk.Emulation.Common
 		{
 			if (Count != other.Count)
 			{
-				throw new InvalidDataException("Dictionaries must have the same number of keys!");
+				throw new InvalidOperationException("Dictionaries must have the same number of keys!");
 			}
 
 			foreach (var (scope, fromData) in other)
@@ -116,7 +116,7 @@ namespace BizHawk.Emulation.Common
 
 				if (fromData.Length != toData.Length)
 				{
-					throw new InvalidDataException("Memory regions must be the same size!");
+					throw new InvalidOperationException("Memory regions must be the same size!");
 				}
 
 				for (int i = 0; i < toData.Length; i++)
@@ -177,7 +177,7 @@ namespace BizHawk.Emulation.Common
 			return SaveInternal(new MemoryStream(), false);
 		}
 
-		/// <exception cref="InvalidDataException">contents of <paramref name="s"/> do not begin with valid file header</exception>
+		/// <exception cref="InvalidOperationException">contents of <paramref name="s"/> do not begin with valid file header</exception>
 		public void Load(Stream s)
 		{
 			var br = new BinaryReader(s);
@@ -186,7 +186,7 @@ namespace BizHawk.Emulation.Common
 			{
 				"BIZHAWK-CDL-1" => "PCE",
 				"BIZHAWK-CDL-2" => br.ReadString().TrimEnd(' '),
-				_ => throw new InvalidDataException("File is not a BizHawk CDL file!"),
+				_ => throw new InvalidOperationException("File is not a BizHawk CDL file!"),
 			};
 			int count = br.ReadInt32();
 			for (int i = 0; i < count; i++)

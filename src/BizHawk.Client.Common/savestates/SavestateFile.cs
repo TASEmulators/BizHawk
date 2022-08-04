@@ -97,7 +97,7 @@ namespace BizHawk.Client.Common
 			if (_movieSession.Movie.IsActive())
 			{
 				bs.PutLump(BinaryStateLump.Input,
-					delegate(TextWriter tw)
+					tw =>
 					{
 						// this never should have been a core's responsibility
 						tw.WriteLine("Frame {0}", _emulator.Frame);
@@ -108,7 +108,7 @@ namespace BizHawk.Client.Common
 			if (_userBag.Any())
 			{
 				bs.PutLump(BinaryStateLump.UserData,
-					delegate(TextWriter tw)
+					tw =>
 					{
 						var data = ConfigService.SaveWithType(_userBag);
 						tw.WriteLine(data);
@@ -117,11 +117,7 @@ namespace BizHawk.Client.Common
 
 			if (_movieSession.Movie.IsActive() && _movieSession.Movie is ITasMovie)
 			{
-				bs.PutLump(BinaryStateLump.LagLog,
-					delegate(TextWriter tw)
-					{
-						((ITasMovie)_movieSession.Movie).LagLog.Save(tw);
-					});
+				bs.PutLump(BinaryStateLump.LagLog, tw => ((ITasMovie) _movieSession.Movie).LagLog.Save(tw));
 			}
 		}
 
@@ -177,7 +173,7 @@ namespace BizHawk.Client.Common
 			}
 
 			string userData = "";
-			bl.GetLump(BinaryStateLump.UserData, false, delegate(TextReader tr)
+			bl.GetLump(BinaryStateLump.UserData, abort: false, tr =>
 			{
 				string line;
 				while ((line = tr.ReadLine()) != null)
@@ -198,10 +194,7 @@ namespace BizHawk.Client.Common
 
 			if (_movieSession.Movie.IsActive() && _movieSession.Movie is ITasMovie)
 			{
-				bl.GetLump(BinaryStateLump.LagLog, false, delegate(TextReader tr)
-				{
-					((ITasMovie)_movieSession.Movie).LagLog.Load(tr);
-				});
+				bl.GetLump(BinaryStateLump.LagLog, abort: false, tr => ((ITasMovie) _movieSession.Movie).LagLog.Load(tr));
 			}
 
 			return true;

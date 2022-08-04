@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 using NLua;
@@ -38,8 +39,15 @@ namespace BizHawk.Client.Common
 		[LuaMethodExample("local obemudis = emu.disassemble( 0x8000 );")]
 		[LuaMethod("disassemble", "Returns the disassembly object (disasm string and length int) for the given PC address. Uses System Bus domain if no domain name provided")]
 		[return: LuaASCIIStringParam]
-		public object Disassemble(uint pc, [LuaASCIIStringParam] string name = "")
-			=> APIs.Emulation.Disassemble(pc, name);
+		public LuaTable Disassemble(uint pc, [LuaASCIIStringParam] string name = "")
+		{
+			var (disasm, length) = APIs.Emulation.Disassemble(pc, name);
+			if (length is 0) return null;
+			var table = _th.CreateTable();
+			table["disasm"] = disasm;
+			table["length"] = length;
+			return table;
+		}
 
 		// TODO: what about 64 bit registers?
 		[LuaMethodExample("local inemuget = emu.getregister( emu.getregisters( )[ 0 ] );")]

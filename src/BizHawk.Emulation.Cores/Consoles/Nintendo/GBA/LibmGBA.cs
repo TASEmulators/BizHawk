@@ -44,7 +44,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			Sram = 1,
 			Flash512 = 2,
 			Flash1m = 3,
-			Eeprom = 4
+			Eeprom = 4,
+			Eeprom512 = 5,
+			Sram512 = 6,
 		}
 
 		[Flags]

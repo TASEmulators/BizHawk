@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 
 using NLua;
@@ -73,14 +74,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var lib in Client.Common.ReflectionCache.Types.Concat(EmuHawk.ReflectionCache.Types)
 				.Where(t => typeof(LuaLibraryBase).IsAssignableFrom(t) && t.IsSealed && ServiceInjector.IsAvailable(serviceProvider, t)))
 			{
-				bool addLibrary = true;
-				var attributes = lib.GetCustomAttributes(typeof(LuaLibraryAttribute), false);
-				if (attributes.Any())
-				{
-					addLibrary = VersionInfo.DeveloperBuild || ((LuaLibraryAttribute)attributes.First()).Released;
-				}
-
-				if (addLibrary)
+				if (VersionInfo.DeveloperBuild || lib.GetCustomAttribute<LuaLibraryAttribute>(inherit: false)?.Released == true)
 				{
 					var instance = (LuaLibraryBase) Activator.CreateInstance(lib, this, _apiContainer, (Action<string>) LogToLuaConsole);
 					ServiceInjector.UpdateServices(serviceProvider, instance);
@@ -95,6 +89,10 @@ namespace BizHawk.Client.EmuHawk
 					{
 						consoleLib.Tools = _mainForm.Tools;
 						_logToLuaConsoleCallback = consoleLib.Log;
+					}
+					else if (instance is FormsLuaLibrary formsLib)
+					{
+						formsLib.MainForm = _mainForm;
 					}
 					else if (instance is GuiLuaLibrary guiLib)
 					{

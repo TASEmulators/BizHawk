@@ -42,7 +42,7 @@ namespace BizHawk.Client.Common
 
 		public void PutLump(BinaryStateLump lump, Action<BinaryWriter> callback)
 		{
-			PutLump(lump, delegate(Stream s)
+			PutLump(lump, s =>
 			{
 				var bw = new BinaryWriter(s);
 				callback(bw);
@@ -52,7 +52,7 @@ namespace BizHawk.Client.Common
 
 		public void PutLump(BinaryStateLump lump, Action<TextWriter> callback)
 		{
-			PutLump(lump, delegate(Stream s)
+			PutLump(lump, s =>
 			{
 				TextWriter tw = new StreamWriter(s);
 				callback(tw);

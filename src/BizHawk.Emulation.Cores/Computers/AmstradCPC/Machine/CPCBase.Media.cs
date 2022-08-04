@@ -214,7 +214,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		protected void LoadDiskMedia()
 		{
-			if (this.GetType() == typeof(CPC464))
+			if (this is CPC464)
 			{
 				CPC.CoreComm.ShowMessage("You are trying to load one of more disk images.\n\n Please select something other than CPC 464 emulation immediately and reboot the core");
 				return;

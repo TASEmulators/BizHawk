@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// Reponsible for WAV format conversion
 	/// Based heavily on code from zxmak2: https://archive.codeplex.com/?p=zxmak2
 	/// </summary>
-	public class WavConverter : MediaConverter
+	public sealed class WavConverter : MediaConverter
 	{
 		/// <summary>
 		/// The type of serializer
@@ -27,6 +27,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// Signs whether this class can be used to write the data format
 		/// </summary>
 		public override bool IsWriter => false;
+
+		protected override string SelfTypeName
+			=> nameof(WavConverter);
 
 		/// <summary>
 		/// Position counter
@@ -74,8 +77,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			if (ident.ToUpper() != "WAVE")
 			{
 				// this is not a valid TZX format file
-				throw new Exception(this.GetType().ToString() +
-					"This is not a valid WAV format file");
+				throw new Exception($"{nameof(WavConverter)}: This is not a valid WAV format file");
 			}
 
 			//_position = 0;

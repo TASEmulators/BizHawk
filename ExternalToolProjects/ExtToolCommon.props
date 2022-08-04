@@ -1,11 +1,10 @@
 <Project>
 	<Import Project="../Common.props" />
 	<PropertyGroup>
-		<CodeAnalysisRuleSet>$(ProjectDir)../../Common.ruleset</CodeAnalysisRuleSet>
 		<OutputPath>$(ProjectDir)bin/$(Configuration)/</OutputPath>
+		<RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
 	</PropertyGroup>
 	<ItemGroup>
-		<AdditionalFiles Include="$(ProjectDir)../../.stylecop.json" />
 		<None Remove="*.sh" />
 	</ItemGroup>
 </Project>

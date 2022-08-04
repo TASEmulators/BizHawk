@@ -192,7 +192,7 @@ namespace BizHawk.Client.Common
 		[return: LuaArbitraryStringParam]
 		public string HttpTest()
 		{
-			if (APIs.Comm.HTTP == null) throw new NullReferenceException(); // to match previous behaviour
+			_ = APIs.Comm.HTTP!; // to match previous behaviour
 			return UnFixString(APIs.Comm.HttpTest());
 		}
 

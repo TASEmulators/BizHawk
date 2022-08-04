@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 	public class Tst : NymaCore
 	{
 		private Tst(CoreComm comm)
-			: base(comm, null, null, null, null)
+			: base(comm, VSystemID.Raw.NULL, null, null, null)
 		{
 		}
 

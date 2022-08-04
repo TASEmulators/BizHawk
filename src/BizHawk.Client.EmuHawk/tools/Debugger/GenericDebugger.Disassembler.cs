@@ -133,7 +133,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void IncrementCurrentAddress()
 		{
-			_currentDisassemblerAddress += (uint)_disassemblyLines.First().Size;
+			_currentDisassemblerAddress += (uint) _disassemblyLines[0].Size;
 			if (_currentDisassemblerAddress >= BusMaxValue)
 			{
 				_currentDisassemblerAddress = (uint)(BusMaxValue - 1);

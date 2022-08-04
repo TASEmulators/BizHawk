@@ -51,7 +51,7 @@ namespace BizHawk.Common
 
 		private static void gf2_matrix_square(Span<uint> square, ReadOnlySpan<uint> mat)
 		{
-			if (mat.Length != square.Length) throw new ArgumentException();
+			if (mat.Length != square.Length) throw new ArgumentException(message: "must be same length as " + nameof(square), paramName: nameof(mat));
 			for (var n = 0; n < square.Length; n++) square[n] = gf2_matrix_times(mat, mat[n]);
 		}
 

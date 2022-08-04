@@ -346,8 +346,7 @@ namespace BizHawk.Client.EmuHawk
 				.OrderBy(x => x.TabIndex)
 				.ToList();
 
-			var selected = radios.FirstOrDefault(x => x.Checked);
-			var index = radios.IndexOf(selected);
+			var index = radios.FindIndex(static x => x.Checked);
 
 			if (reverse)
 			{
@@ -371,7 +370,7 @@ namespace BizHawk.Client.EmuHawk
 
 			radios[index].Checked = true;
 			var mi = radios[index].GetType().GetMethod("OnClick", BindingFlags.Instance | BindingFlags.NonPublic);
-			mi?.Invoke(radios[index], new object[] { new EventArgs() });
+			mi?.Invoke(radios[index], new object[] { EventArgs.Empty });
 		}
 
 		public void NextOperator(bool reverse = false)
@@ -382,8 +381,7 @@ namespace BizHawk.Client.EmuHawk
 				.OrderBy(x => x.TabIndex)
 				.ToList();
 
-			var selected = radios.FirstOrDefault(x => x.Checked);
-			var index = radios.IndexOf(selected);
+			var index = radios.FindIndex(static x => x.Checked);
 
 			if (reverse)
 			{
@@ -407,7 +405,7 @@ namespace BizHawk.Client.EmuHawk
 
 			radios[index].Checked = true;
 			var mi = radios[index].GetType().GetMethod("OnClick", BindingFlags.Instance | BindingFlags.NonPublic);
-			mi?.Invoke(radios[index], new object[] { new EventArgs() });
+			mi?.Invoke(radios[index], new object[] { EventArgs.Empty });
 		}
 
 		private void ToggleSearchDependentToolBarItems()

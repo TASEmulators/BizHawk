@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 	public class Nymashock : NymaCore, IRegionable, ICycleTiming
 	{
 		private Nymashock(CoreComm comm)
-			: base(comm, null, null, null, null)
+			: base(comm, VSystemID.Raw.NULL, null, null, null)
 		{
 		}
 

@@ -51,7 +51,7 @@ namespace BizHawk.Client.EmuHawk
 				EHostInputMethod.OpenTK => new OpenTKInputAdapter(),
 				_ when OSTailoredCode.IsUnixHost => new OpenTKInputAdapter(),
 				EHostInputMethod.DirectInput => new DirectInputAdapter(),
-				_ => throw new Exception()
+				_ => throw new InvalidOperationException()
 			};
 			Console.WriteLine($"Using {Adapter.Desc} for host input (keyboard + gamepads)");
 			Adapter.UpdateConfig(_currentConfig);

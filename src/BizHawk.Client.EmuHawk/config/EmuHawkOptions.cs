@@ -104,7 +104,7 @@ namespace BizHawk.Client.EmuHawk
 					NLuaRadio.Checked = true;
 					break;
 				default:
-					throw new ArgumentOutOfRangeException();
+					throw new InvalidOperationException();
 			}
 		}
 

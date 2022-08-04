@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 	/// <summary>
 	/// a gameboy/gameboy color emulator wrapped around native C libsameboy
 	/// </summary>
-	[PortedCore(CoreNames.Sameboy, "LIJI32", "0.14.7", "https://github.com/LIJI32/SameBoy")]
+	[PortedCore(CoreNames.Sameboy, "LIJI32", "0.15.1", "https://github.com/LIJI32/SameBoy")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class Sameboy : ICycleTiming, IInputPollable, ILinkable, IRomInfo, IBoardInfo, IGameboyCommon
 	{
@@ -38,6 +38,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 		public bool IsCGBDMGMode() => LibSameboy.sameboy_iscgbdmg(SameboyState);
 
 		private readonly LibSameboy.InputCallback _inputcb;
+
+		private readonly LibSameboy.RumbleCallback _rumblecb;
 
 		[CoreConstructor(VSystemID.Raw.GB)]
 		[CoreConstructor(VSystemID.Raw.GBC)]
@@ -84,16 +86,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 				DeterministicEmulation = true;
 			}
 
-			SameboyState = LibSameboy.sameboy_create(file, file.Length, bios, bios.Length, model, realtime);
+			SameboyState = LibSameboy.sameboy_create(file, file.Length, bios, bios.Length, model, realtime, _syncSettings.NoJoypadBounce);
 
 			InitMemoryDomains();
 			InitMemoryCallbacks();
 
 			_inputcb = InputCallback;
-			LibSameboy.sameboy_setinputcallback(SameboyState, _inputcb);
+			_rumblecb = RumbleCallback;
 			_tracecb = MakeTrace;
-			LibSameboy.sameboy_settracecallback(SameboyState, null);
 
+			LibSameboy.sameboy_setinputcallback(SameboyState, _inputcb);
+			LibSameboy.sameboy_setrumblecallback(SameboyState, _rumblecb);
+
+			LibSameboy.sameboy_settracecallback(SameboyState, null);
 			LibSameboy.sameboy_setscanlinecallback(SameboyState, null, 0);
 			LibSameboy.sameboy_setprintercallback(SameboyState, null);
 
@@ -112,7 +117,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			BoardName = MapperName(file);
 
 			_hasAcc = BoardName is "MBC7 ROM+ACCEL+EEPROM";
-			ControllerDefinition = Gameboy.Gameboy.CreateControllerDefinition(sgb: false, sub: false, tilt: _hasAcc);
+			ControllerDefinition = Gameboy.Gameboy.CreateControllerDefinition(sgb: false, sub: false, tilt: _hasAcc, rumble: true);
 
 			LibSameboy.sameboy_setrtcdivisoroffset(SameboyState, _syncSettings.RTCDivisorOffset);
 			CycleCount = 0;
@@ -138,6 +143,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 		{
 			IsLagFrame = false;
 			_inputCallbacks.Call();
+		}
+
+		private void RumbleCallback(int amplitude)
+		{
+			_controller.SetHapticChannelStrength("Rumble", amplitude);
 		}
 
 		public bool LinkConnected
@@ -187,7 +197,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			var _bgpal = IntPtr.Zero;
 			var _sppal = IntPtr.Zero;
 			var _oam = IntPtr.Zero;
-			int unused = 0;
+			long unused = 0;
 			if (!LibSameboy.sameboy_getmemoryarea(SameboyState, LibSameboy.MemoryAreas.VRAM, ref _vram, ref unused)
 				|| !LibSameboy.sameboy_getmemoryarea(SameboyState, LibSameboy.MemoryAreas.BGPRGB, ref _bgpal, ref unused)
 				|| !LibSameboy.sameboy_getmemoryarea(SameboyState, LibSameboy.MemoryAreas.OBPRGB, ref _sppal, ref unused)

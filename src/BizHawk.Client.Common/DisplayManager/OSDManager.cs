@@ -162,7 +162,7 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					var message = _messages.Last();
+					var message = _messages[_messages.Count - 1];
 					DrawMessage(g, message, 0);
 				}
 			}

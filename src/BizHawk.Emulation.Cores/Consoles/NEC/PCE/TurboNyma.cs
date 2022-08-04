@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 	public class TurboNyma : NymaCore, IRegionable, IPceGpuView
 	{
 		private TurboNyma(CoreComm comm)
-			: base(comm, null, null, null, null)
+			: base(comm, VSystemID.Raw.NULL, null, null, null)
 		{
 		}
 
@@ -40,6 +40,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 		[CoreConstructor(VSystemID.Raw.PCE)]
 		[CoreConstructor(VSystemID.Raw.SGX)]
 		[CoreConstructor(VSystemID.Raw.PCECD)]
+		[CoreConstructor(VSystemID.Raw.SGXCD)]
 		public TurboNyma(CoreLoadParameters<NymaSettings, NymaSyncSettings> lp)
 			: base(lp.Comm, VSystemID.Raw.PCE, "PC Engine Controller", lp.Settings, lp.SyncSettings)
 		{

@@ -15,7 +15,7 @@ stages:
   before_script:
   - nix-env -iA nixpkgs.cachix
   - cachix use $CACHIX_CACHE_NAME
-  image: nixos/nix:2.3.12
+  image: nixos/nix:latest
   variables:
     CACHIX_CACHE_NAME: mono-for-bizhawk
 
@@ -117,7 +117,7 @@ check_style:
     name: "$CI_HAWK_ARTIFACT_NAME"
     paths:
     - "$CI_HAWK_ARTIFACT_NAME_TAR"
-  image: nixos/nix:2.3.12
+  image: nixos/nix:latest
   needs:
   - build_asms_release
   - job: build_asms_debug
@@ -134,7 +134,7 @@ check_style:
     name: "$CI_HAWK_ARTIFACT_NAME"
     paths:
     - ./*
-  image: nixos/nix:2.3.12
+  image: nixos/nix:latest
   needs:
   - build_asms_release
   - job: build_asms_debug

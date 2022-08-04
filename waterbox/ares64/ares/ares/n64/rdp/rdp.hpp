@@ -67,6 +67,7 @@ struct RDP : Thread, Memory::IO<RDP> {
   //io.cpp
   auto readWord(u32 address) -> u32;
   auto writeWord(u32 address, u32 data) -> void;
+  auto flushCommands() -> void;
 
   //serialization.cpp
   auto serialize(serializer&) -> void;
@@ -82,6 +83,9 @@ struct RDP : Thread, Memory::IO<RDP> {
     n1  source;  //0 = RDRAM, 1 = DMEM
     n1  freeze;
     n1  flush;
+    n1  startValid;
+    n1  endValid;
+    n1  startGclk;
     n1  ready = 1;
   } command;
 

@@ -40,7 +40,7 @@ using namespace nall;
 
 namespace ares {
   static const string Name       = "ares";
-  static const string Version    = "128";
+  static const string Version    = "129";
   static const string Copyright  = "ares team, Near";
   static const string License    = "ISC";
   static const string LicenseURI = "https://opensource.org/licenses/ISC";
@@ -49,7 +49,7 @@ namespace ares {
 
   //incremented only when serialization format changes
   static const u32    SerializerSignature = 0x31545342;  //"BST1" (little-endian)
-  static const string SerializerVersion   = "128";
+  static const string SerializerVersion   = "129";
 
   namespace VFS {
     using Pak = shared_pointer<vfs::directory>;

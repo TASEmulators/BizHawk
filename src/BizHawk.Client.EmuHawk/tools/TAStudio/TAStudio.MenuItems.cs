@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -52,18 +53,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (AskSaveChanges())
 			{
-				if (SaveRamEmulator.CloneSaveRam() != null)
-				{
-					GoToFrame(TasView.AnyRowsSelected ? TasView.FirstSelectedRowIndex : 0);
-					var newProject = CurrentTasMovie.ConvertToSaveRamAnchoredMovie(
-						SaveRamEmulator.CloneSaveRam());
-					MainForm.PauseEmulator();
-					LoadFile(new FileInfo(newProject.Filename), true);
-				}
-				else
-				{
-					throw new Exception("No SaveRam");
-				}
+				var saveRam = SaveRamEmulator?.CloneSaveRam() ?? throw new Exception("No SaveRam");
+				GoToFrame(TasView.AnyRowsSelected ? TasView.FirstSelectedRowIndex : 0);
+				var newProject = CurrentTasMovie.ConvertToSaveRamAnchoredMovie(saveRam);
+				MainForm.PauseEmulator();
+				LoadFile(new FileInfo(newProject.Filename), true);
 			}
 		}
 
@@ -739,7 +733,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetMarkersMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.SelectedRows.Count() > 50)
+			var selectedRows = TasView.SelectedRows.ToList();
+			if (selectedRows.Count > 50)
 			{
 				var result = DialogController.ShowMessageBox2("Are you sure you want to add more than 50 markers?", "Add markers", EMsgBoxIcon.Question, useOKCancel: true);
 				if (!result)
@@ -748,7 +743,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			foreach (var index in TasView.SelectedRows)
+			foreach (var index in selectedRows)
 			{
 				MarkerControl.AddMarker(index, false);
 			}
@@ -1218,8 +1213,7 @@ namespace BizHawk.Client.EmuHawk
 			ColumnsSubMenu.DropDownItems.Clear();
 
 			var columns = TasView.AllColumns
-				.Where(c => !string.IsNullOrWhiteSpace(c.Text))
-				.Where(c => c.Name != "FrameColumn")
+				.Where(static c => !string.IsNullOrWhiteSpace(c.Text) && c.Name is not "FrameColumn")
 				.ToList();
 
 			int workingHeight = Screen.FromControl(this).WorkingArea.Height;
@@ -1404,13 +1398,14 @@ namespace BizHawk.Client.EmuHawk
 				(Clipboard.GetDataObject()?.GetDataPresent(DataFormats.StringFormat) ?? false)
 				&& TasView.AnyRowsSelected;
 
+			var selectionIsSingleRow = TasView.SelectedRows.CountIsExactly(1);
 			StartNewProjectFromNowMenuItem.Visible =
-				TasView.SelectedRows.Count() == 1
+				selectionIsSingleRow
 				&& TasView.IsRowSelected(Emulator.Frame)
 				&& !CurrentTasMovie.StartsFromSaveRam;
 
 			StartANewProjectFromSaveRamMenuItem.Visible =
-				TasView.SelectedRows.Count() == 1
+				selectionIsSingleRow
 				&& SaveRamEmulator != null
 				&& !CurrentTasMovie.StartsFromSavestate;
 

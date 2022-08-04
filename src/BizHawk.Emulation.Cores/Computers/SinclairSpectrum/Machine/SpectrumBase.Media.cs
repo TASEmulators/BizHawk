@@ -227,7 +227,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         protected void LoadDiskMedia()
         {
-            if (this.GetType() != typeof(ZX128Plus3))
+            if (this is not ZX128Plus3)
             {
                 Spectrum.CoreComm.ShowMessage("You are trying to load one of more disk images.\n\n Please select ZX Spectrum +3 emulation immediately and reboot the core");
                 return;

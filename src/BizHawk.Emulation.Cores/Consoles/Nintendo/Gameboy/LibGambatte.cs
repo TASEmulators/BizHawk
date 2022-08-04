@@ -275,12 +275,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// </summary>
 		/// <param name="cameraBuf">pointer to camera buffer</param>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate bool CameraCallback(IntPtr cameraBuf);
+		public delegate void CameraCallback(IntPtr cameraBuf);
 
 		/// <summary>
 		/// sets the camera data request callback.
 		/// the callback will receive the pointer to the buffer.
-		/// a 128x112 rgb32 image should be copied to the buffer, with success returned.
+		/// a 128x112 native endian rgb32 image should be copied to the buffer.
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
 		/// <param name="callback">the callback</param>

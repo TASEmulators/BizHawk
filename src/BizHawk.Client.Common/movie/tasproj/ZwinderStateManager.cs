@@ -141,7 +141,7 @@ namespace BizHawk.Client.Common
 					newReserved = new TempFileStateDictionary();
 					break;
 				default:
-					throw new ArgumentException("Unsupported store type for reserved states.");
+					throw new InvalidOperationException("Unsupported store type for reserved states.");
 			}
 			if (_reserved != null)
 			{

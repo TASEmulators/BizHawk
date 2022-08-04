@@ -335,11 +335,7 @@ namespace BizHawk.Client.Common
 			var discs = m3u.Entries
 				.Select(e => e.Path)
 				.Where(p => Disc.IsValidExtension(Path.GetExtension(p)))
-				.Select(path => new
-				{
-					d = DiscExtensions.CreateAnyType(path, str => DoLoadErrorCallback(str, "???", LoadErrorType.DiscError)),
-					p = path,
-				})
+				.Select(path => (p: path, d: DiscExtensions.CreateAnyType(path, str => DoLoadErrorCallback(str, "???", LoadErrorType.DiscError))))
 				.Where(a => a.d != null)
 				.Select(a => (IDiscAsset)new DiscAsset
 				{
@@ -540,11 +536,7 @@ namespace BizHawk.Client.Common
 						.ToList(),
 					Discs = xmlGame.AssetFullPaths
 						.Where(p => Disc.IsValidExtension(Path.GetExtension(p)))
-						.Select(path => new
-						{
-							d = DiscExtensions.CreateAnyType(path, str => DoLoadErrorCallback(str, system, LoadErrorType.DiscError)),
-							p = path,
-						})
+						.Select(path => (p: path, d: DiscExtensions.CreateAnyType(path, str => DoLoadErrorCallback(str, system, LoadErrorType.DiscError))))
 						.Where(a => a.d != null)
 						.Select(a => (IDiscAsset)new DiscAsset
 						{
@@ -711,6 +703,8 @@ namespace BizHawk.Client.Common
 
 					return false;
 				}
+
+				_ = game!; // shouldn't be null if `nextEmulator` isn't? just in case
 			}
 			catch (Exception ex)
 			{

@@ -548,7 +548,7 @@ namespace BizHawk.Client.EmuHawk
 				var ioa = OpenAdvancedSerializer.ParseWithLegacy(_argParser.cmdRom);
 				if (ioa is OpenAdvanced_OpenRom oaor) ioa = new OpenAdvanced_OpenRom { Path = oaor.Path.MakeAbsolute() }; // fixes #3224; should this be done for all the IOpenAdvanced types? --yoshi
 				LoadRom(ioa.SimplePath, new LoadRomArgs { OpenAdvanced = ioa });
-				if (Game == null)
+				if (Game.IsNullInstance())
 				{
 					ShowMessageBox(owner: null, $"Failed to load {_argParser.cmdRom} specified on commandline");
 				}
@@ -567,7 +567,7 @@ namespace BizHawk.Client.EmuHawk
 			if (_argParser.cmdMovie != null)
 			{
 				_suppressSyncSettingsWarning = true; // We don't want to be nagged if we are attempting to automate
-				if (Game == null)
+				if (Game.IsNullInstance())
 				{
 					OpenRom();
 				}
@@ -1712,8 +1712,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				if (!Config.DispChromeCaptionWindowed || _argParser._chromeless) return string.Empty; //TODO why would you want this? was this a previous attempt at static window titles?
-
 				var sb = new StringBuilder();
 
 				if (_inResizeLoop)
@@ -2070,8 +2068,8 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private static readonly IList<Type> SpecializedTools = ReflectionCache.Types
-			.Where(t => typeof(IToolForm).IsAssignableFrom(t) && !t.IsAbstract)
-			.Where(t => t.GetCustomAttribute<SpecializedToolAttribute>() != null)
+			.Where(static t => !t.IsAbstract && typeof(IToolForm).IsAssignableFrom(t)
+				&& t.GetCustomAttribute<SpecializedToolAttribute>() is not null)
 			.ToList();
 
 		private ISet<char> _availableAccelerators;
@@ -3318,6 +3316,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_currAviWriter != null) return;
 
+			if (Game.IsNullInstance()) throw new InvalidOperationException("how is an A/V recording starting with no game loaded? please report this including as much detail as possible");
+
 			// select IVideoWriter to use
 			IVideoWriter aw;
 
@@ -3431,19 +3431,12 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						using var sfd = new SaveFileDialog();
-						if (Game != null)
+						using SaveFileDialog sfd = new()
 						{
-							sfd.FileName = $"{Game.FilesystemSafeName()}.{ext}"; // don't use Path.ChangeExtension, it might wreck game names with dots in them
-							sfd.InitialDirectory = Config.PathEntries.AvAbsolutePath();
-						}
-						else
-						{
-							sfd.FileName = "NULL";
-							sfd.InitialDirectory = Config.PathEntries.AvAbsolutePath();
-						}
-
-						sfd.Filter = new FilesystemFilterSet(new FilesystemFilter(ext, new[] { ext })).ToString();
+							FileName = $"{Game.FilesystemSafeName()}.{ext}",
+							Filter = new FilesystemFilterSet(new FilesystemFilter(ext, new[] { ext })).ToString(),
+							InitialDirectory = Config.PathEntries.AvAbsolutePath(),
+						};
 
 						if (this.ShowDialogWithTempMute(sfd) == DialogResult.Cancel)
 						{

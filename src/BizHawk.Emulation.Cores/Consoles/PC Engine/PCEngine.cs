@@ -23,6 +23,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		[CoreConstructor(VSystemID.Raw.PCE, Priority = CorePriority.Low)]
 		[CoreConstructor(VSystemID.Raw.SGX, Priority = CorePriority.Low)]
 		[CoreConstructor(VSystemID.Raw.PCECD, Priority = CorePriority.Low)]
+		[CoreConstructor(VSystemID.Raw.SGXCD, Priority = CorePriority.Low)]
 		public PCEngine(CoreLoadParameters<PCESettings, PCESyncSettings> lp)
 		{
 			if (lp.Discs.Count == 1 && lp.Roms.Count == 0)

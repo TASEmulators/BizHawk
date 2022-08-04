@@ -583,6 +583,8 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			if (Game.IsNullInstance()) throw new InvalidOperationException("how is TAStudio open with no game loaded? please report this including as much detail as possible");
+
 			var filename = DefaultTasProjName(); // TODO don't do this, take over any mainform actions that can crash without a filename
 			var tasMovie = (ITasMovie)MovieSession.Get(filename);
 			tasMovie.BindMarkersToInput = Settings.BindMarkersToInput;

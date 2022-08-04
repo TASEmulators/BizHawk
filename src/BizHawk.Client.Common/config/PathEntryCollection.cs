@@ -15,7 +15,7 @@ namespace BizHawk.Client.Common
 	{
 		private static readonly string COMBINED_SYSIDS_GB = string.Join("_", VSystemID.Raw.GB, VSystemID.Raw.GBC, VSystemID.Raw.SGB);
 
-		private static readonly string COMBINED_SYSIDS_PCE = string.Join("_", VSystemID.Raw.PCE, VSystemID.Raw.PCECD, VSystemID.Raw.SGX);
+		private static readonly string COMBINED_SYSIDS_PCE = string.Join("_", VSystemID.Raw.PCE, VSystemID.Raw.PCECD, VSystemID.Raw.SGX, VSystemID.Raw.SGXCD);
 
 		public static readonly string GLOBAL = string.Join("_", "Global", VSystemID.Raw.NULL);
 
@@ -120,9 +120,8 @@ namespace BizHawk.Client.Common
 		public IEnumerator<PathEntry> GetEnumerator() => Paths.GetEnumerator();
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-		public PathEntry this[string system, string type] =>
-			Paths.FirstOrDefault(p => p.IsSystem(system) && p.Type == type)
-			?? TryGetDebugPath(system, type);
+		public PathEntry this[string system, string type]
+			=> Paths.Find(p => p.IsSystem(system) && p.Type == type) ?? TryGetDebugPath(system, type);
 
 		private PathEntry TryGetDebugPath(string system, string type)
 		{
@@ -143,11 +142,7 @@ namespace BizHawk.Client.Common
 			// Add missing entries
 			foreach (var defaultPath in Defaults.Value)
 			{
-				var path = Paths.FirstOrDefault(p => p.System == defaultPath.System && p.Type == defaultPath.Type);
-				if (path == null)
-				{
-					Paths.Add(defaultPath);
-				}
+				if (!Paths.Any(p => p.System == defaultPath.System && p.Type == defaultPath.Type)) Paths.Add(defaultPath);
 			}
 
 			var entriesToRemove = new List<PathEntry>();

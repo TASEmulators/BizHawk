@@ -20,14 +20,10 @@ namespace BizHawk.Client.Common
 		*/
 		public ZwinderBuffer(IRewindSettings settings)
 		{
-			if (settings == null)
-				throw new ArgumentException("ZwinderBuffer's settings cannot be null.");
+			if (settings is null) throw new ArgumentNullException(paramName: nameof(settings));
 
 			long targetSize = settings.BufferSize * 1024 * 1024;
-			if (settings.TargetFrameLength < 1)
-			{
-				throw new ArgumentOutOfRangeException(nameof(settings.TargetFrameLength));
-			}
+			if (settings.TargetFrameLength < 1) throw new ArgumentException(message: nameof(IRewindSettings.TargetFrameLength) + " of provided settings is invalid", paramName: nameof(settings));
 
 			Size = 1L << (int)Math.Floor(Math.Log(targetSize, 2));
 			_sizeMask = Size - 1;
@@ -53,7 +49,7 @@ namespace BizHawk.Client.Common
 					break;
 				}
 				default:
-					throw new ArgumentException("Unsupported store type for ZwinderBuffer.");
+					throw new ArgumentException(message: $"Unsupported {nameof(IRewindSettings.BackingStore)} type for ZwinderBuffer in provided settings.", paramName: nameof(settings));
 			}
 			if (settings.UseFixedRewindInterval)
 			{
@@ -286,8 +282,7 @@ namespace BizHawk.Client.Common
 		/// <returns></returns>
 		public StateInformation GetState(int index)
 		{
-			if ((uint)index >= (uint)Count)
-				throw new IndexOutOfRangeException();
+			if ((uint) index >= (uint) Count) throw new ArgumentOutOfRangeException(paramName: nameof(index), index, message: "index out of range");
 			return new StateInformation(this, (index + _firstStateIndex) & STATEMASK);
 		}
 
@@ -297,8 +292,10 @@ namespace BizHawk.Client.Common
 		/// <param name="index"></param>
 		public void InvalidateEnd(int index)
 		{
-			if ((uint)index > (uint)Count)
-				throw new IndexOutOfRangeException();
+			if ((uint) index > (uint) Count) // intentionally allows index == Count (e.g. clearing an empty buffer)
+			{
+				throw new ArgumentOutOfRangeException(paramName: nameof(index), index, message: "index out of range");
+			}
 			_nextStateIndex = (index + _firstStateIndex) & STATEMASK;
 			//Util.DebugWriteLine($"Size: {Size >> 20}MiB, Used: {Used >> 20}MiB, States: {Count}");
 		}

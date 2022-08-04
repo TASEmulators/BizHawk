@@ -435,6 +435,9 @@ namespace BizHawk.Emulation.Common
 			Option("GBC", "World", File("DF5A0D2D49DE38FBD31CC2AAB8E62C8550E655C0", 2304, "cgb0.bin", "Game Boy Color Boot Rom (Early Revision)"), FirmwareOptionStatus.Unacceptable);
 			Firmware("GBC", "AGB", "Game Boy Color Boot Rom (GBA)");
 			Option("GBC", "AGB", File("FA5287E24B0FA533B3B5EF2B28A81245346C1A0F", 2304, "agb.bin", "Game Boy Color Boot Rom (GBA)"), FirmwareOptionStatus.Ideal);
+			// early GBAs did not patch the logo reading TOCTOU (only relevant for bootlegs that logo swap)
+			Option("GBC", "AGB", File("0DAAC31ACB6CB346FC954368ACB02ACB3ADCC3AB", 2304, "agb0.bin", "Game Boy Color Boot Rom (GBA, Early Revision)"), FirmwareOptionStatus.Acceptable);
+			// functionally equal to agb0.bin (no TOCTOU patch)
 			Option("GBC", "AGB", File("1ECAFA77AB3172193F3305486A857F443E28EBD9", 2304, "agb_gambatte.bin", "Game Boy Color Boot Rom (GBA, Gambatte RE)"), FirmwareOptionStatus.Bad);
 			AddPatchAndMaybeReverse(new(
 				"1293D68BF9643BC4F36954C1E80E38F39864528D",

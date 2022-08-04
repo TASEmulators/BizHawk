@@ -38,24 +38,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			mm.Add(_cwram = new MemoryDomainDelegate("Combined WRAM", (256 + 32) * 1024, le, null, null, 4));
 
 			mm.Add(new MemoryDomainDelegate("System Bus", 0x10000000, le,
-				delegate (long addr)
+				addr =>
 				{
 					var a = (uint)addr;
-					if (a >= 0x10000000)
-					{
-						throw new ArgumentOutOfRangeException();
-					}
-
+					if (a >= 0x10000000) throw new ArgumentOutOfRangeException(paramName: nameof(addr), a, message: "address out of range");
 					return LibmGBA.BizReadBus(Core, a);
 				},
-				delegate (long addr, byte val)
+				(addr, val) =>
 				{
 					var a = (uint)addr;
-					if (a >= 0x10000000)
-					{
-						throw new ArgumentOutOfRangeException();
-					}
-
+					if (a >= 0x10000000) throw new ArgumentOutOfRangeException(paramName: nameof(addr), a, message: "address out of range");
 					LibmGBA.BizWriteBus(Core, a, val);
 				}, 4));
 
@@ -78,14 +70,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			_sram.Data = s.sram;
 
 			// special combined ram memory domain
+			const int SIZE_COMBINED = (256 + 32) * 1024;
 			_cwram.Peek =
 				addr =>
 				{
-					if (addr < 0 || addr >= (256 + 32) * 1024)
-					{
-						throw new IndexOutOfRangeException();
-					}
-
+					if (addr is < 0 or >= SIZE_COMBINED) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "invalid address");
 					if (addr >= 256 * 1024)
 					{
 						return PeekWRAM(s.iwram, addr & 32767);
@@ -96,11 +85,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			_cwram.Poke =
 				(addr, val) =>
 				{
-					if (addr < 0 || addr >= (256 + 32) * 1024)
-					{
-						throw new IndexOutOfRangeException();
-					}
-
+					if (addr is < 0 or >= SIZE_COMBINED) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "invalid address");
 					if (addr >= 256 * 1024)
 					{
 						PokeWRAM(s.iwram, addr & 32767, val);

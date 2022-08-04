@@ -371,6 +371,10 @@ namespace BizHawk.Client.EmuHawk
 			rbFinalFilterBilinear.Checked = true;
 			checkLetterbox.Checked = true;
 			rbUseSystem.Checked = true;
+			txtCropLeft.Text = "0";
+			txtCropTop.Text = "0";
+			txtCropRight.Text = "0";
+			txtCropBottom.Text = "0";
 		}
 	}
 }

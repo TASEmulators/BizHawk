@@ -195,16 +195,23 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// Prefer tas files
+			// but `_movieList` should only contain `.bk2` and `.tasproj` so... isn't that all of them? or, it is now I've fixed the case-sensitivity bug --yoshi
 			var tas = new List<int>();
 			for (var i = 0; i < indices.Count; i++)
 			{
 				foreach (var ext in MovieService.MovieExtensions)
 				{
-					if (Path.GetExtension(_movieList[indices[i]].Filename)?.ToUpper() == $".{ext}")
+					if ($".{ext}".Equals(Path.GetExtension(_movieList[indices[i]].Filename), StringComparison.InvariantCultureIgnoreCase))
 					{
 						tas.Add(i);
 					}
 				}
+			}
+
+			if (tas.Count is 0)
+			{
+				if (_movieList.Count is not 0) HighlightMovie(0);
+				return;
 			}
 
 			if (tas.Count == 1)
@@ -212,27 +219,11 @@ namespace BizHawk.Client.EmuHawk
 				HighlightMovie(tas[0]);
 				return;
 			}
-			
-			if (tas.Count > 1)
-			{
-				indices = new List<int>(tas);
-			}
 
 			// Final tie breaker - Last used file
-			var file = new FileInfo(_movieList[indices[0]].Filename);
-			var time = file.LastAccessTime;
-			var mostRecent = indices.First();
-			for (var i = 1; i < indices.Count; i++)
-			{
-				file = new FileInfo(_movieList[indices[0]].Filename);
-				if (file.LastAccessTime > time)
-				{
-					time = file.LastAccessTime;
-					mostRecent = indices[i];
-				}
-			}
-
-			HighlightMovie(mostRecent);
+			HighlightMovie(tas.Select(movieIndex => (Index: movieIndex, Timestamp: new FileInfo(_movieList[movieIndex].Filename).LastAccessTime))
+				.OrderByDescending(static tuple => tuple.Timestamp)
+				.First().Index);
 		}
 
 		private void HighlightMovie(int index)

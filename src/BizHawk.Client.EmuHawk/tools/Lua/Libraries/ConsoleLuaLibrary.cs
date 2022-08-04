@@ -70,7 +70,7 @@ namespace BizHawk.Client.EmuHawk
 				var valueObjs = lti.Values;
 				if (keyObjs.Count != valueObjs.Count)
 				{
-					throw new IndexOutOfRangeException("each value must be paired with one key, they differ in number");
+					throw new ArgumentException(message: "each value must be paired with one key, they differ in number", paramName: nameof(lti));
 				}
 
 				var values = new object[keyObjs.Count];

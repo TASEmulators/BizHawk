@@ -2493,9 +2493,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			cmdByte = cByte;
 
 			// lookup the command
-			var cmd = CommandList.FirstOrDefault(a => a.CommandCode == cmdByte);
-
-			if (cmd == null)
+			var i = CommandList.FindIndex(a => a.CommandCode == cmdByte);
+			if (i is -1)
 			{
 				// no command found - use invalid
 				CMDIndex = CommandList.Count - 1;
@@ -2503,7 +2502,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			else
 			{
 				// valid command found
-				CMDIndex = CommandList.FindIndex(a => a.CommandCode == cmdByte);
+				CMDIndex = i;
 
 				// check validity of command byte flags
 				// if a flag is set but not valid for this command then it is invalid

@@ -152,7 +152,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			{
 				0x20 or 0xfc => 3,
 				0x22 => 4,
-				_ => throw new ArgumentOutOfRangeException()
+				_ => throw new InvalidOperationException()
 			};
 		}
 	}

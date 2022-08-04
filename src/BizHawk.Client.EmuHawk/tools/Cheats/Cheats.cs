@@ -10,6 +10,7 @@ using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Client.EmuHawk.ToolExtensions;
+using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -447,7 +448,8 @@ namespace BizHawk.Client.EmuHawk
 		private void MoveDownMenuItem_Click(object sender, EventArgs e)
 		{
 			var indices = SelectedIndices.ToList();
-			if (indices.Count == 0 || indices.Last() == MainForm.CheatList.Count - 1)
+			if (indices.Count == 0
+				|| indices[indices.Count - 1] == MainForm.CheatList.Count - 1) // at end already
 			{
 				return;
 			}
@@ -607,14 +609,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Tools.Load<HexEditor>();
 
-				if (selected.Select(x => x.Domain).Distinct().Count() > 1)
-				{
-					ViewInHexEditor(selected[0].Domain, new List<long> { selected.First().Address ?? 0 }, selected.First().Size);
-				}
-				else
-				{
-					ViewInHexEditor(selected.First().Domain, selected.Select(x => x.Address ?? 0), selected.First().Size);
-				}
+				ViewInHexEditor(
+					selected[0].Domain,
+					selected.Select(static x => x.Domain).Distinct().CountIsAtLeast(2)
+						? new[] { selected[0].Address ?? 0 }
+						: selected.Select(static x => x.Address ?? 0),
+					selected[0].Size);
 			}
 		}
 
