@@ -72,14 +72,16 @@ namespace BizHawk.Client.Common
 				{
 					state = _buffer.GetState(index - 1);
 				}
-				_stateSource.LoadStateBinary(new BinaryReader(state.GetReadStream()));
+				using var br = new BinaryReader(state.GetReadStream());
+				_stateSource.LoadStateBinary(br);
 				_buffer.InvalidateEnd(index);
 			}
 			else
 			{
 				// The emulator will frame advance without giving us a chance to
 				// re-capture this frame, so we shouldn't invalidate this state just yet.
-				_stateSource.LoadStateBinary(new BinaryReader(state.GetReadStream()));
+				using var br = new BinaryReader(state.GetReadStream());
+				_stateSource.LoadStateBinary(br);
 			}
 			return true;
 		}

@@ -12,9 +12,11 @@ namespace BizHawk.Client.Common
 		private Version _ver;
 		private bool _isDisposed;
 		private Dictionary<string, ZipArchiveEntry> _entriesByName;
+		private readonly Zstd _zstd;
 
 		private ZipStateLoader()
 		{
+			_zstd = new();
 		}
 
 		public void Dispose()
@@ -30,6 +32,7 @@ namespace BizHawk.Client.Common
 				if (disposing)
 				{
 					_zip.Dispose();
+					_zstd.Dispose();
 				}
 			}
 		}
@@ -122,7 +125,7 @@ namespace BizHawk.Client.Common
 
 				if (isZstdCompressed && _ver.Build > 1)
 				{
-					using var z = Zstd.CreateZstdDecompressionStream(zs);
+					using var z = _zstd.CreateZstdDecompressionStream(zs);
 					callback(z, e.Length);
 				}
 				else

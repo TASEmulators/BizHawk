@@ -67,10 +67,15 @@ namespace BizHawk.Client.Common
 			get
 			{
 				var (f, data) = GetStateClosestToFrame(frame);
-				if (f != frame) return NonState;
+				if (f != frame)
+				{
+					data.Dispose();
+					return NonState;
+				}
 
 				var ms = new MemoryStream();
 				data.CopyTo(ms);
+				data.Dispose();
 				return ms.ToArray();
 			}
 		}
@@ -169,7 +174,11 @@ namespace BizHawk.Client.Common
 						if (_reserveCallback(si.Frame))
 							AddToReserved(si);
 						else
-							buffer.Capture(si.Frame, s => si.GetReadStream().CopyTo(s), null, true);
+							buffer.Capture(si.Frame, s => 
+							{
+								using var rs = si.GetReadStream();
+								rs.CopyTo(s);
+							}, null, true);
 					}
 					old.Dispose();
 				}
@@ -277,7 +286,8 @@ namespace BizHawk.Client.Common
 			}
 
 			var ms = new MemoryStream();
-			state.GetReadStream().CopyTo(ms);
+			using var s = state.GetReadStream();
+			s.CopyTo(ms);
 			_reserved.Add(state.Frame, ms.ToArray());
 			AddStateCache(state.Frame);
 		}
@@ -346,7 +356,8 @@ namespace BizHawk.Client.Common
 					_recent.Capture(state.Frame,
 						s =>
 						{
-							state.GetReadStream().CopyTo(s);
+							using var rs = state.GetReadStream();
+							rs.CopyTo(s);
 							AddStateCache(state.Frame);
 						},
 						index2 =>

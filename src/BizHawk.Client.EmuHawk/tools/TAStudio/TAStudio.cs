@@ -910,6 +910,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				LoadState(closestState);
 			}
+			closestState.Value.Dispose();
 
 			if (fromLua)
 			{
