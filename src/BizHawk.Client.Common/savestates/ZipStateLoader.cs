@@ -9,8 +9,7 @@ namespace BizHawk.Client.Common
 	public class ZipStateLoader : IDisposable
 	{
 		private ZipArchive _zip;
-		private Version _zipVer;
-		private Version _stateVer;
+		private Version _ver;
 		private bool _isDisposed;
 		private Dictionary<string, ZipArchiveEntry> _entriesByName;
 
@@ -37,27 +36,18 @@ namespace BizHawk.Client.Common
 
 		private void ReadZipVersion(Stream s, long length)
 		{
-			// the "BizZip 1.0" tag contains an integer in it describing the sub version.
-			var sr = new StreamReader(s);
-			_zipVer = new Version(1, 0, int.Parse(sr.ReadLine()));
-
-			Console.WriteLine("Read a zip of version {0}", _zipVer);
-		}
-
-		private void ReadStateVersion(Stream s, long length)
-		{
 			// the "BizState 1.0" tag contains an integer in it describing the sub version.
 			if (length == 0)
 			{
-				_stateVer = new Version(1, 0, 0); // except for the first release, which doesn't
+				_ver = new Version(1, 0, 0); // except for the first release, which doesn't
 			}
 			else
 			{
 				var sr = new StreamReader(s);
-				_stateVer = new Version(1, 0, int.Parse(sr.ReadLine()));
+				_ver = new Version(1, 0, int.Parse(sr.ReadLine()));
 			}
 
-			Console.WriteLine("Read a zipstate of version {0}", _stateVer);
+			Console.WriteLine("Read a zipstate of version {0}", _ver);
 		}
 
 		private void PopulateEntries()
@@ -95,19 +85,19 @@ namespace BizHawk.Client.Common
 			{
 				ret._zip = new ZipArchive(new FileStream(filename, FileMode.Open, FileAccess.Read), ZipArchiveMode.Read);
 				ret.PopulateEntries();
-				if (!isMovieLoad && !ret.GetLump(BinaryStateLump.StateVersion, false, ret.ReadStateVersion, false))
+				if (isMovieLoad)
+				{
+					if (!ret.GetLump(BinaryStateLump.ZipVersion, false, ret.ReadZipVersion, false))
+					{
+						// movies before 1.0.2 did not include the BizState 1.0 file, don't strictly error in this case
+						ret._ver = new Version(1, 0, 0);
+						Console.WriteLine("Read a zipstate of version {0}", ret._ver);
+					}
+				}
+				else if (!ret.GetLump(BinaryStateLump.ZipVersion, false, ret.ReadZipVersion, false))
 				{
 					ret._zip.Dispose();
 					return null;
-				}
-
-				if (!ret.GetLump(BinaryStateLump.ZipVersion, false, ret.ReadZipVersion, false))
-				{
-					// not strictly an error here
-					// anything without a zip version is not zstd compressed at all
-					// so don't try decompressing if so
-					ret._zipVer = new Version(0, 0, 0);
-					Console.WriteLine("Read a zip of version {0}", ret._zipVer);
 				}
 
 				return ret;
@@ -130,7 +120,7 @@ namespace BizHawk.Client.Common
 			{
 				using var zs = e.Open();
 
-				if (isZstdCompressed && _zipVer.Major > 0)
+				if (isZstdCompressed && _ver.Build > 1)
 				{
 					using var z = Zstd.CreateZstdDecompressionStream(zs);
 					callback(z, e.Length);

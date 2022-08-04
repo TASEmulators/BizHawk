@@ -13,14 +13,7 @@ namespace BizHawk.Client.Common
 		private static void WriteZipVersion(Stream s)
 		{
 			var sw = new StreamWriter(s);
-			sw.WriteLine("0"); // version 1.0.0
-			sw.Flush();
-		}
-
-		private static void WriteStateVersion(Stream s)
-		{
-			var sw = new StreamWriter(s);
-			sw.WriteLine("1"); // version 1.0.1
+			sw.WriteLine("2"); // version 1.0.2
 			sw.Flush();
 		}
 
@@ -34,12 +27,9 @@ namespace BizHawk.Client.Common
 		public ZipStateSaver(string path, int compressionLevel)
 		{
 			_zip = new FrameworkZipWriter(path, compressionLevel);
-			PutLump(BinaryStateLump.ZipVersion, WriteZipVersion, false);
-		}
 
-		public void PutVersionLumps()
-		{
-			PutLump(BinaryStateLump.StateVersion, WriteStateVersion, false);
+			// we put these in every zip, so we know where they came from
+			PutLump(BinaryStateLump.ZipVersion, WriteZipVersion, false);
 			PutLump(BinaryStateLump.BizVersion, WriteEmuVersion, false);
 		}
 
