@@ -238,66 +238,63 @@ namespace BizHawk.Client.Common
 				: discHasher.OldHash();
 
 			var game = Database.CheckDatabase(discHash);
-			if (game == null)
+			if (game is not null) return game;
+			// else try to use our wizard methods
+			game = new GameInfo { Name = name, Hash = discHash };
+			Exception NoCoreForSystem(string sysID)
 			{
-				// try to use our wizard methods
-				game = new GameInfo { Name = name, Hash = discHash };
-				Exception NoCoreForSystem(string sysID)
-				{
-					// no supported emulator core for these (yet)
-					game.System = sysID;
-					return new NoAvailableCoreException(sysID);
-				}
+				// no supported emulator core for these (yet)
+				game.System = sysID;
+				return new NoAvailableCoreException(sysID);
+			}
+			switch (discType)
+			{
+				case DiscType.SegaSaturn:
+					game.System = VSystemID.Raw.SAT;
+					break;
+				case DiscType.MegaCD:
+					game.System = VSystemID.Raw.GEN;
+					break;
+				case DiscType.PCFX:
+					game.System = VSystemID.Raw.PCFX;
+					break;
 
-				switch (discType)
-				{
-					case DiscType.SegaSaturn:
-						game.System = VSystemID.Raw.SAT;
-						break;
-					case DiscType.MegaCD:
-						game.System = VSystemID.Raw.GEN;
-						break;
-					case DiscType.PCFX:
-						game.System = VSystemID.Raw.PCFX;
-						break;
+				case DiscType.TurboGECD:
+				case DiscType.TurboCD:
+					game.System = VSystemID.Raw.PCE;
+					break;
 
-					case DiscType.TurboGECD:
-					case DiscType.TurboCD:
-						game.System = VSystemID.Raw.PCE;
-						break;
+				case DiscType.Amiga:
+					throw NoCoreForSystem(VSystemID.Raw.Amiga);
+				case DiscType.CDi:
+					throw NoCoreForSystem(VSystemID.Raw.PhillipsCDi);
+				case DiscType.Dreamcast:
+					throw NoCoreForSystem(VSystemID.Raw.Dreamcast);
+				case DiscType.GameCube:
+					throw NoCoreForSystem(VSystemID.Raw.GameCube);
+				case DiscType.NeoGeoCD:
+					throw NoCoreForSystem(VSystemID.Raw.NeoGeoCD);
+				case DiscType.Panasonic3DO:
+					throw NoCoreForSystem(VSystemID.Raw.Panasonic3DO);
+				case DiscType.Playdia:
+					throw NoCoreForSystem(VSystemID.Raw.Playdia);
+				case DiscType.SonyPS2:
+					throw NoCoreForSystem(VSystemID.Raw.PS2);
+				case DiscType.SonyPSP:
+					throw NoCoreForSystem(VSystemID.Raw.PSP);
+				case DiscType.Wii:
+					throw NoCoreForSystem(VSystemID.Raw.Wii);
 
-					case DiscType.Amiga:
-						throw NoCoreForSystem(VSystemID.Raw.Amiga);
-					case DiscType.CDi:
-						throw NoCoreForSystem(VSystemID.Raw.PhillipsCDi);
-					case DiscType.Dreamcast:
-						throw NoCoreForSystem(VSystemID.Raw.Dreamcast);
-					case DiscType.GameCube:
-						throw NoCoreForSystem(VSystemID.Raw.GameCube);
-					case DiscType.NeoGeoCD:
-						throw NoCoreForSystem(VSystemID.Raw.NeoGeoCD);
-					case DiscType.Panasonic3DO:
-						throw NoCoreForSystem(VSystemID.Raw.Panasonic3DO);
-					case DiscType.Playdia:
-						throw NoCoreForSystem(VSystemID.Raw.Playdia);
-					case DiscType.SonyPS2:
-						throw NoCoreForSystem(VSystemID.Raw.PS2);
-					case DiscType.SonyPSP:
-						throw NoCoreForSystem(VSystemID.Raw.PSP);
-					case DiscType.Wii:
-						throw NoCoreForSystem(VSystemID.Raw.Wii);
+				case DiscType.AudioDisc:
+				case DiscType.UnknownCDFS:
+				case DiscType.UnknownFormat:
+					game.System = _config.TryGetChosenSystemForFileExt(ext, out var sysID) ? sysID : VSystemID.Raw.NULL;
+					break;
 
-					case DiscType.AudioDisc:
-					case DiscType.UnknownCDFS:
-					case DiscType.UnknownFormat:
-						game.System = _config.TryGetChosenSystemForFileExt(ext, out var sysID) ? sysID : VSystemID.Raw.NULL;
-						break;
-
-					default: //"for an unknown disc, default to psx instead of pce-cd, since that is far more likely to be what they are attempting to open" [5e07ab3ec3b8b8de9eae71b489b55d23a3909f55, year 2015]
-					case DiscType.SonyPSX:
-						game.System = VSystemID.Raw.PSX;
-						break;
-				}
+				default: //"for an unknown disc, default to psx instead of pce-cd, since that is far more likely to be what they are attempting to open" [5e07ab3ec3b8b8de9eae71b489b55d23a3909f55, year 2015]
+				case DiscType.SonyPSX:
+					game.System = VSystemID.Raw.PSX;
+					break;
 			}
 			return game;
 		}
