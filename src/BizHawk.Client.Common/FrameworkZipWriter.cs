@@ -2,6 +2,8 @@
 using System.IO;
 using System.IO.Compression;
 
+using BizHawk.Emulation.Common;
+
 namespace BizHawk.Client.Common
 {
 	public class FrameworkZipWriter : IZipWriter

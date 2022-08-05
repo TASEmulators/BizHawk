@@ -72,9 +72,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			}
 			else
 			{
-				bios = Util.DecompressGzipFile(new MemoryStream(IsCgb
+				bios = Zstd.DecompressZstdStream(new MemoryStream(IsCgb
 					? _syncSettings.ConsoleMode is SameboySyncSettings.GBModel.GB_MODEL_AGB ? Resources.SameboyAgbBoot.Value : Resources.SameboyCgbBoot.Value
-					: Resources.SameboyDmgBoot.Value));
+					: Resources.SameboyDmgBoot.Value)).ToArray();
 			}
 
 			DeterministicEmulation = false;

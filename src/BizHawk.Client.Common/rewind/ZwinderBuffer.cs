@@ -5,6 +5,7 @@ using System.Linq;
 
 using BizHawk.BizInvoke;
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
