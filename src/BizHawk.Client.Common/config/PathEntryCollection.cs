@@ -59,7 +59,6 @@ namespace BizHawk.Client.Common
 			[VSystemID.Raw.NDS] = "NDS",
 			[VSystemID.Raw.Sega32X] = "Sega 32X",
 			[VSystemID.Raw.GGL] = "Dual Game Gear",
-			[VSystemID.Raw.PS2] = "Playstation 2",
 		};
 
 		private static PathEntry BaseEntryFor(string sysID, string path)
@@ -263,8 +262,6 @@ namespace BizHawk.Client.Common
 			CommonEntriesFor(COMBINED_SYSIDS_PCE, basePath: Path.Combine(".", "PC Engine")),
 
 			CommonEntriesFor(VSystemID.Raw.PCFX, basePath: Path.Combine(".", "PCFX")),
-
-			CommonEntriesFor(VSystemID.Raw.PS2, basePath: Path.Combine(".", "PS2")),
 
 			CommonEntriesFor(VSystemID.Raw.PSX, basePath: Path.Combine(".", "PSX")),
 

@@ -248,12 +248,6 @@ namespace BizHawk.Client.Common
 					case DiscType.SegaSaturn:
 						game.System = VSystemID.Raw.SAT;
 						break;
-					case DiscType.SonyPSP:
-						game.System = "PSP";
-						break;
-					case DiscType.SonyPS2:
-						game.System = VSystemID.Raw.PS2;
-						break;
 					case DiscType.MegaCD:
 						game.System = VSystemID.Raw.GEN;
 						break;
@@ -273,6 +267,8 @@ namespace BizHawk.Client.Common
 					case DiscType.NeoGeoCD:
 					case DiscType.Panasonic3DO:
 					case DiscType.Playdia:
+					case DiscType.SonyPS2:
+					case DiscType.SonyPSP:
 					case DiscType.Wii:
 						// no supported emulator core for these (yet)
 						game.System = discType.ToString();

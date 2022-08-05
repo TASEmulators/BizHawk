@@ -41,7 +41,6 @@ namespace BizHawk.Emulation.Common
 			public const string PCE = "PCE";
 			public const string PCECD = "PCECD";
 			public const string PCFX = "PCFX";
-			public const string PS2 = "PS2";
 			public const string PSX = "PSX";
 			public const string SAT = "SAT";
 			public const string Sega32X = "32X";
