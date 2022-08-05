@@ -86,6 +86,7 @@ namespace BizHawk.Client.EmuHawk
 			["ChannelF"] = "Channel F",
 			["VEC"] = "Vectrex",
 			["MSX"] = "MSX",
+//			["PS2"] = "Sony PlayStation 2",
 		};
 
 		public string TargetSystem { get; set; }

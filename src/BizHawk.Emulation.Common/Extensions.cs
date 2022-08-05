@@ -48,6 +48,7 @@ namespace BizHawk.Emulation.Common
 			[VSystemID.Raw.PCE] = "TurboGrafx-16",
 			[VSystemID.Raw.PCECD] = "TurboGrafx - 16(CD)",
 			[VSystemID.Raw.PCFX] = "PCFX",
+			[VSystemID.Raw.PS2] = "PlayStation 2",
 			[VSystemID.Raw.PSX] = "PlayStation",
 			[VSystemID.Raw.SAT] = "Saturn",
 			[VSystemID.Raw.Sega32X] = "Genesis 32X",

@@ -242,6 +242,12 @@ namespace BizHawk.Client.Common
 			{
 				// try to use our wizard methods
 				game = new GameInfo { Name = name, Hash = discHash };
+				Exception NoCoreForSystem(string sysID)
+				{
+					// no supported emulator core for these (yet)
+					game.System = sysID;
+					return new NoAvailableCoreException(sysID);
+				}
 
 				switch (discType)
 				{
@@ -261,18 +267,25 @@ namespace BizHawk.Client.Common
 						break;
 
 					case DiscType.Amiga:
+						throw NoCoreForSystem(VSystemID.Raw.Amiga);
 					case DiscType.CDi:
+						throw NoCoreForSystem(VSystemID.Raw.PhillipsCDi);
 					case DiscType.Dreamcast:
+						throw NoCoreForSystem(VSystemID.Raw.Dreamcast);
 					case DiscType.GameCube:
+						throw NoCoreForSystem(VSystemID.Raw.GameCube);
 					case DiscType.NeoGeoCD:
+						throw NoCoreForSystem(VSystemID.Raw.NeoGeoCD);
 					case DiscType.Panasonic3DO:
+						throw NoCoreForSystem(VSystemID.Raw.Panasonic3DO);
 					case DiscType.Playdia:
+						throw NoCoreForSystem(VSystemID.Raw.Playdia);
 					case DiscType.SonyPS2:
+						throw NoCoreForSystem(VSystemID.Raw.PS2);
 					case DiscType.SonyPSP:
+						throw NoCoreForSystem(VSystemID.Raw.PSP);
 					case DiscType.Wii:
-						// no supported emulator core for these (yet)
-						game.System = discType.ToString();
-						throw new NoAvailableCoreException(discType.ToString());
+						throw NoCoreForSystem(VSystemID.Raw.Wii);
 
 					case DiscType.AudioDisc:
 					case DiscType.UnknownCDFS:
