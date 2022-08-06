@@ -94,13 +94,13 @@ $(TARGET_DEBUG): $(DOBJS) $(EMULIBC_DOBJS) $(LINKSCRIPT)
 
 install: $(TARGET_RELEASE)
 	@cp -f $< $(OUTPUTDLL_DIR)
-	@zstd -c --ultra -22 $< > $(OUTPUTDLL_DIR)/$(TARGET).zst
+	@zstd --stdout --ultra -22 --threads=0 $< > $(OUTPUTDLL_DIR)/$(TARGET).zst
 	@cp $(OUTPUTDLL_DIR)/$(TARGET).zst $(OUTPUTDLLCOPY_DIR)/$(TARGET).zst || true
 	@echo Release build of $(TARGET) installed.
 
 install-debug: $(TARGET_DEBUG)
 	@cp -f $< $(OUTPUTDLL_DIR)
-	@zstd -c --ultra -22 $< > $(OUTPUTDLL_DIR)/$(TARGET).zst
+	@zstd --stdout --ultra -22 --threads=0 $< > $(OUTPUTDLL_DIR)/$(TARGET).zst
 	@cp $(OUTPUTDLL_DIR)/$(TARGET).zst $(OUTPUTDLLCOPY_DIR)/$(TARGET).zst || true
 	@echo Debug build of $(TARGET) installed.
 
