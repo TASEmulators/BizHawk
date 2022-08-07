@@ -3,10 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace BizHawk.Common
 {
-	/// <remarks>
-	/// An implementation of CRC-32 (i.e. POSIX cksum)
-	/// Intended for comparing discs against the Redump.org database
-	/// </remarks>
+	/// <remarks>Implementation of CRC-32 (i.e. POSIX cksum), intended for comparing discs against the Redump.org database</remarks>
 	public sealed class CRC32
 	{
 		/// <remarks>coefficients of the polynomial, in the format Wikipedia calls "reversed"</remarks>
@@ -22,13 +19,13 @@ namespace BizHawk.Common
 
 		static CRC32()
 		{
+			// for Add (CRC32 computation):
 			_calcCRC = Marshal.GetDelegateForFunctionPointer<LibBizHash.CalcCRC>(LibBizHash.BizCalcCrcFunc());
 
 			// for Incorporate:
 			var combinerState = (COMBINER_INIT_STATE = new uint[64]).AsSpan();
 			var even = combinerState.Slice(start: 0, length: 32); // even-power-of-two zeros operator
 			var odd = combinerState.Slice(start: 32, length: 32); // odd-power-of-two zeros operator
-
 			// put operator for one zero bit in odd
 			odd[0] = POLYNOMIAL_CONST;
 			var oddTail = odd.Slice(1);
@@ -44,26 +41,6 @@ namespace BizHawk.Common
 			CRC32 crc32 = new();
 			crc32.Add(data);
 			return crc32.Result;
-		}
-
-		private uint _current = 0xFFFFFFFFU;
-
-		/// <summary>The raw non-negated output</summary>
-		public uint Current
-		{
-			get => _current;
-			set => _current = value;
-		}
-
-		/// <summary>The negated output (the typical result of the CRC calculation)</summary>
-		public uint Result => ~_current;
-
-		public unsafe void Add(ReadOnlySpan<byte> data)
-		{
-			fixed (byte* d = &data.GetPinnableReference())
-			{
-				_current = _calcCRC(_current, (IntPtr)d, data.Length);
-			}
 		}
 
 		private static void gf2_matrix_square(Span<uint> square, ReadOnlySpan<uint> mat)
@@ -83,6 +60,26 @@ namespace BizHawk.Common
 				matIdx++;
 			}
 			return sum;
+		}
+
+		private uint _current = 0xFFFFFFFFU;
+
+		/// <summary>The raw non-negated output</summary>
+		public uint Current
+		{
+			get => _current;
+			set => _current = value;
+		}
+
+		/// <summary>The negated output (the typical result of the CRC calculation)</summary>
+		public uint Result => ~_current;
+
+		public unsafe void Add(ReadOnlySpan<byte> data)
+		{
+			fixed (byte* d = &data.GetPinnableReference())
+			{
+				_current = _calcCRC(_current, (IntPtr) d, data.Length);
+			}
 		}
 
 		/// <summary>
@@ -114,7 +111,9 @@ namespace BizHawk.Common
 				gf2_matrix_square(odd, even);
 				if ((len & 1U) != 0U) _current = gf2_matrix_times(odd, _current);
 				len >>= 1;
-			} while (len != 0U); // if no more bits set, then done
+
+				// if no more bits set, then done
+			} while (len != 0U);
 
 			// finally, combine and return
 			_current ^= crc;
