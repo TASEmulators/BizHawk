@@ -185,10 +185,7 @@ namespace BizHawk.Client.EmuHawk
 			// Create movie folder if it doesn't already exist
 			try
 			{
-				if (!Directory.Exists(movieFolderPath))
-				{
-					Directory.CreateDirectory(movieFolderPath);
-				}
+				Directory.CreateDirectory(movieFolderPath);
 			}
 			catch (Exception movieDirException)
 			{

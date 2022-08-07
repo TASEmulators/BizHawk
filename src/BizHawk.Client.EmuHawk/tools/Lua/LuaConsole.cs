@@ -785,19 +785,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenSessionMenuItem_Click(object sender, EventArgs e)
 		{
+			var initDir = Config!.PathEntries.LuaAbsolutePath();
+			Directory.CreateDirectory(initDir);
 			var ofd = new OpenFileDialog
 			{
-				InitialDirectory = Config.PathEntries.LuaAbsolutePath(),
+				InitialDirectory = initDir,
 				Filter = SessionsFSFilterSet.ToString(),
 				RestoreDirectory = true,
 				Multiselect = false
 			};
-
-			if (!Directory.Exists(ofd.InitialDirectory))
-			{
-				Directory.CreateDirectory(ofd.InitialDirectory);
-			}
-
 			var result = this.ShowDialogWithTempMute(ofd);
 			if (result.IsOk() && !string.IsNullOrWhiteSpace(ofd.FileName))
 			{
@@ -871,19 +867,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenScriptMenuItem_Click(object sender, EventArgs e)
 		{
+			var initDir = Config!.PathEntries.LuaAbsolutePath();
+			Directory.CreateDirectory(initDir);
 			var ofd = new OpenFileDialog
 			{
-				InitialDirectory = Config.PathEntries.LuaAbsolutePath(),
+				InitialDirectory = initDir,
 				Filter = new FilesystemFilterSet(FilesystemFilter.LuaScripts, FilesystemFilter.TextFiles).ToString(),
 				RestoreDirectory = true,
 				Multiselect = true
 			};
-
-			if (!Directory.Exists(ofd.InitialDirectory))
-			{
-				Directory.CreateDirectory(ofd.InitialDirectory);
-			}
-
 			var result = this.ShowDialogWithTempMute(ofd);
 			if (result.IsOk() && ofd.FileNames != null)
 			{

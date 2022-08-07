@@ -1606,11 +1606,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				ofd.InitialDirectory = Config.PathEntries.AbsolutePathForType(VSystemID.Raw.Libretro, "Cores");
-				if (!Directory.Exists(ofd.InitialDirectory))
-				{
-					Directory.CreateDirectory(ofd.InitialDirectory);
-				}
+				var initDir = Config.PathEntries.AbsolutePathForType(VSystemID.Raw.Libretro, "Cores");
+				Directory.CreateDirectory(initDir);
+				ofd.InitialDirectory = initDir;
 			}
 
 			ofd.RestoreDirectory = true;

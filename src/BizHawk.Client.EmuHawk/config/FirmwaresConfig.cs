@@ -402,11 +402,7 @@ namespace BizHawk.Client.EmuHawk
 		private void TbbOpenFolder_Click(object sender, EventArgs e)
 		{
 			var frmWares = _pathEntries.FirmwareAbsolutePath();
-			if (!Directory.Exists(frmWares))
-			{
-				Directory.CreateDirectory(frmWares);
-			}
-
+			Directory.CreateDirectory(frmWares);
 			System.Diagnostics.Process.Start(frmWares);
 		}
 
