@@ -2,7 +2,8 @@ LibBizHash is the unmanaged side for BizHawk's hashing.
 
 CRC32 code is taken from [zlib-ng](https://github.com/zlib-ng/zlib-ng) with massive slashing of code and various tweaks. This code is licensed under the zlib license.
 SHA1 is code is taken from [SHA-Intrinsics](https://github.com/noloader/SHA-Intrinsics) with some tweaks. This code is under the public domain.
-All modifications by the BizHawk team are licensed under MIT.
+
+To build, just do `make` in this directory. Note gcc 10 or later is required (due to missing intrinsics in older gcc versions)
 
 zlib-ng's license:
 
