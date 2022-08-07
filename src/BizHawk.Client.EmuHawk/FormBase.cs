@@ -26,10 +26,12 @@ namespace BizHawk.Client.EmuHawk
 			if (control.BackColor == SystemColors.Control) control.BackColor = Color.WhiteSmoke;
 			foreach (Control c1 in control.Controls)
 			{
-				if (c1 is ToolStrip ts) ts.Renderer = new ToolStripProfessionalRenderer(new LinuxColorTable());
+				if (c1 is ToolStrip ts) ts.Renderer = GlobalToolStripRenderer;
 				else FixBackColorOnControls(c1);
 			}
 		}
+
+		public static readonly ToolStripRenderer GlobalToolStripRenderer = new ToolStripProfessionalRenderer(new LinuxColorTable());
 
 		private string? _windowTitleStatic;
 
