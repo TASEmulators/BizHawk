@@ -33,7 +33,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private string? _windowTitleStatic;
 
-		public virtual bool BlocksInputWhenFocused { get; } = true;
+		public virtual bool BlocksInputWhenFocused
+			=> true;
 
 		public Config? Config { get; set; }
 
