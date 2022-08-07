@@ -6,6 +6,43 @@ using BizHawk.Common.BufferExtensions;
 
 namespace BizHawk.Common
 {
+	public interface ISHA1
+	{
+		byte[] ComputeHash(byte[] buffer);
+	}
+
+	public sealed class NETSHA1 : ISHA1
+	{
+		private readonly SHA1 _sha1Impl;
+
+		public NETSHA1()
+		{
+			_sha1Impl = SHA1.Create();
+			Debug.Assert(_sha1Impl.CanReuseTransform && _sha1Impl.HashSize is SHA1Checksum.EXPECTED_LENGTH);
+		}
+
+		public byte[] ComputeHash(byte[] buffer)
+			=> _sha1Impl.ComputeHash(buffer);
+	}
+
+	public sealed class FastSHA1 : ISHA1
+	{
+		public unsafe byte[] ComputeHash(byte[] buffer)
+		{
+			var state = stackalloc uint[] { 0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0 };
+			LibBizHash.BizFastCalcSha1((IntPtr)state, buffer, buffer.Length);
+			var ret = new byte[20];
+			for (int i = 0; i < 5; i++)
+			{
+				ret[i * 4] = (byte)(state[i] >> 24);
+				ret[i * 4] = (byte)(state[i] >> 16);
+				ret[i * 4] = (byte)(state[i] >>  8);
+				ret[i * 4] = (byte)(state[i] >>  0);
+			}
+			return ret;
+		}
+	}
+
 	/// <summary>uses <see cref="SHA1"/> implementation from BCL</summary>
 	/// <seealso cref="CRC32Checksum"/>
 	/// <seealso cref="MD5Checksum"/>
@@ -35,16 +72,17 @@ namespace BizHawk.Common
 			return impl.GetHashAndReset();
 		}
 #else
-		private static SHA1? _sha1Impl;
+		private static ISHA1? _sha1Impl;
 
-		private static SHA1 SHA1Impl
+		private static ISHA1 SHA1Impl
 		{
 			get
 			{
 				if (_sha1Impl == null)
 				{
-					_sha1Impl = SHA1.Create();
-					Debug.Assert(_sha1Impl.CanReuseTransform && _sha1Impl.HashSize is EXPECTED_LENGTH);
+					_sha1Impl = LibBizHash.BizSupportsShaInstructions()
+						? new FastSHA1()
+						: new NETSHA1();
 				}
 				return _sha1Impl;
 			}

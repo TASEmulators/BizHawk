@@ -1,38 +1,34 @@
 using System;
+using System.Runtime.InteropServices;
 
 namespace BizHawk.Common
 {
-	/// <remarks>Implementation of CRC-32 (i.e. POSIX cksum), intended for comparing discs against the Redump.org database</remarks>
+	/// <remarks>
+	/// An implementation of CRC-32 (i.e. POSIX cksum)
+	/// Intended for comparing discs against the Redump.org database
+	/// </remarks>
 	public sealed class CRC32
 	{
 		/// <remarks>coefficients of the polynomial, in the format Wikipedia calls "reversed"</remarks>
 		public const uint POLYNOMIAL_CONST = 0xEDB88320U;
 
-		private static readonly uint[] COMBINER_INIT_STATE;
+		/// <summary>
+		/// Delegate to unmanaged code that actually does the calculation.
+		/// This may be hardware accelerated, if the CPU supports such.
+		/// </summary>
+		private static readonly LibBizHash.CalcCRC _calcCRC;
 
-		private static readonly uint[] CRC32Table;
+		private static readonly uint[] COMBINER_INIT_STATE;
 
 		static CRC32()
 		{
-			// for Add (CRC32 computation):
-			CRC32Table = new uint[256];
-			for (var i = 0U; i < 256U; i++)
-			{
-				var crc = i;
-				for (var j = 0; j < 8; j++)
-				{
-					var xor = (crc & 1U) == 1U;
-					crc >>= 1;
-					if (xor) crc ^= POLYNOMIAL_CONST;
-				}
-				CRC32Table[i] = crc;
-			}
+			_calcCRC = Marshal.GetDelegateForFunctionPointer<LibBizHash.CalcCRC>(LibBizHash.BizCalcCrcFunc());
 
 			// for Incorporate:
 			var combinerState = (COMBINER_INIT_STATE = new uint[64]).AsSpan();
 			var even = combinerState.Slice(start: 0, length: 32); // even-power-of-two zeros operator
 			var odd = combinerState.Slice(start: 32, length: 32); // odd-power-of-two zeros operator
-			// put operator for one zero bit in odd
+																  // put operator for one zero bit in odd
 			odd[0] = POLYNOMIAL_CONST;
 			var oddTail = odd.Slice(1);
 			for (var n = 0; n < oddTail.Length; n++) oddTail[n] = 1U << n;
@@ -44,9 +40,29 @@ namespace BizHawk.Common
 
 		public static uint Calculate(ReadOnlySpan<byte> data)
 		{
-			CRC32 crc32 = new();
+			var crc32 = new CRC32();
 			crc32.Add(data);
 			return crc32.Result;
+		}
+
+		private uint _current = 0xFFFFFFFFU;
+
+		/// <summary>The raw non-negated output</summary>
+		public uint Current
+		{
+			get => _current;
+			set => _current = value;
+		}
+
+		/// <summary>The negated output (the typical result of the CRC calculation)</summary>
+		public uint Result => ~_current;
+
+		public unsafe void Add(ReadOnlySpan<byte> data)
+		{
+			fixed (byte* d = &data.GetPinnableReference())
+			{
+				_current = _calcCRC(_current, (IntPtr)d, data.Length);
+			}
 		}
 
 		private static void gf2_matrix_square(Span<uint> square, ReadOnlySpan<uint> mat)
@@ -66,32 +82,6 @@ namespace BizHawk.Common
 				matIdx++;
 			}
 			return sum;
-		}
-
-		private uint _current = 0xFFFFFFFFU;
-
-		/// <summary>The raw non-negated output</summary>
-		public uint Current
-		{
-			get => _current;
-			set => _current = value;
-		}
-
-		/// <summary>The negated output (the typical result of the CRC calculation)</summary>
-		public uint Result => ~_current;
-
-		public void Add(byte datum)
-		{
-			_current = CRC32Table[(_current ^ datum) & 0xFF] ^ (_current >> 8);
-		}
-
-		public void Add(ReadOnlySpan<byte> data)
-		{
-			foreach (var b in data)
-			{
-//				Add(b); // I assume this would be slower
-				_current = CRC32Table[(_current ^ b) & 0xFF] ^ (_current >> 8);
-			}
 		}
 
 		/// <summary>
