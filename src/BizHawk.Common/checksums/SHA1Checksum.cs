@@ -34,10 +34,10 @@ namespace BizHawk.Common
 			var ret = new byte[20];
 			for (int i = 0; i < 5; i++)
 			{
-				ret[i * 4] = (byte)(state[i] >> 24);
-				ret[i * 4] = (byte)(state[i] >> 16);
-				ret[i * 4] = (byte)(state[i] >>  8);
-				ret[i * 4] = (byte)(state[i] >>  0);
+				ret[i * 4 + 0] = (byte)(state[i] >> 24);
+				ret[i * 4 + 1] = (byte)(state[i] >> 16);
+				ret[i * 4 + 2] = (byte)(state[i] >>  8);
+				ret[i * 4 + 3] = (byte)(state[i] >>  0);
 			}
 			return ret;
 		}
