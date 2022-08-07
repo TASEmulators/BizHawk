@@ -77,30 +77,28 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenTasMenuItem_Click(object sender, EventArgs e)
 		{
-			if (AskSaveChanges())
+			if (!AskSaveChanges()) return;
+			var filename = CurrentTasMovie.Filename;
+			if (string.IsNullOrWhiteSpace(filename) || filename == DefaultTasProjName())
 			{
-				var filename = CurrentTasMovie.Filename;
-				if (string.IsNullOrWhiteSpace(filename) || filename == DefaultTasProjName())
-				{
-					filename = "";
-				}
+				filename = "";
+			}
 
-				// need to be fancy here, so call the ofd constructor directly instead of helper
-				var ofd = new OpenFileDialog
-				{
-					FileName = filename,
-					InitialDirectory = Config.PathEntries.MovieAbsolutePath(),
-					Filter = new FilesystemFilterSet(
-						new FilesystemFilter("All Available Files", MovieService.MovieExtensions.Reverse().ToArray()),
-						FilesystemFilter.TAStudioProjects,
-						FilesystemFilter.BizHawkMovies
-					).ToString()
-				};
+			// need to be fancy here, so call the ofd constructor directly instead of helper
+			var ofd = new OpenFileDialog
+			{
+				FileName = filename,
+				InitialDirectory = Config.PathEntries.MovieAbsolutePath(),
+				Filter = new FilesystemFilterSet(
+					new FilesystemFilter("All Available Files", MovieService.MovieExtensions.Reverse().ToArray()),
+					FilesystemFilter.TAStudioProjects,
+					FilesystemFilter.BizHawkMovies
+				).ToString()
+			};
 
-				if (this.ShowDialogWithTempMute(ofd).IsOk())
-				{
-					LoadMovieFile(ofd.FileName, false);
-				}
+			if (this.ShowDialogWithTempMute(ofd).IsOk())
+			{
+				LoadMovieFile(ofd.FileName, false);
 			}
 		}
 

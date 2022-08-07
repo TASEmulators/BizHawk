@@ -1544,31 +1544,25 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Ti83LoadTIFileMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is TI83 ti83)
+			if (Emulator is not TI83 ti83) return;
+			using var ofd = new OpenFileDialog
 			{
-				using var ofd = new OpenFileDialog
+				Filter = new FilesystemFilterSet(new FilesystemFilter("TI-83 Program Files", new[] { "83p", "8xp" })).ToString(),
+				InitialDirectory = Config.PathEntries.RomAbsolutePath(Emulator.SystemId),
+				RestoreDirectory = true
+			};
+			if (!ofd.ShowDialog().IsOk()) return;
+			try
+			{
+				ti83.LinkPort.SendFileToCalc(File.OpenRead(ofd.FileName), true);
+			}
+			catch (IOException ex)
+			{
+				var message =
+					$"Invalid file format. Reason: {ex.Message} \nForce transfer? This may cause the calculator to crash.";
+				if (this.ShowMessageBox3(owner: null, message, "Upload Failed", EMsgBoxIcon.Question) == true)
 				{
-					Filter = new FilesystemFilterSet(new FilesystemFilter("TI-83 Program Files", new[] { "83p", "8xp" })).ToString(),
-					InitialDirectory = Config.PathEntries.RomAbsolutePath(Emulator.SystemId),
-					RestoreDirectory = true
-				};
-
-				if (ofd.ShowDialog().IsOk())
-				{
-					try
-					{
-						ti83.LinkPort.SendFileToCalc(File.OpenRead(ofd.FileName), true);
-					}
-					catch (IOException ex)
-					{
-						var message =
-							$"Invalid file format. Reason: {ex.Message} \nForce transfer? This may cause the calculator to crash.";
-
-						if (this.ShowMessageBox3(owner: null, message, "Upload Failed", EMsgBoxIcon.Question) == true)
-						{
-							ti83.LinkPort.SendFileToCalc(File.OpenRead(ofd.FileName), false);
-						}
-					}
+					ti83.LinkPort.SendFileToCalc(File.OpenRead(ofd.FileName), false);
 				}
 			}
 		}

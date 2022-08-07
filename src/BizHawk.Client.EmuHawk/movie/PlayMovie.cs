@@ -511,23 +511,19 @@ namespace BizHawk.Client.EmuHawk
 				Filter = new FilesystemFilterSet(FilesystemFilter.BizHawkMovies, FilesystemFilter.TAStudioProjects).ToString(),
 				InitialDirectory = _config.PathEntries.MovieAbsolutePath()
 			};
-
-			var result = this.ShowDialogWithTempMute(ofd);
-			if (result == DialogResult.OK)
+			if (!this.ShowDialogWithTempMute(ofd).IsOk()) return;
+			var file = new FileInfo(ofd.FileName);
+			if (!file.Exists)
 			{
-				var file = new FileInfo(ofd.FileName);
-				if (!file.Exists)
-				{
-					return;
-				}
+				return;
+			}
 
-				int? index = AddMovieToList(ofd.FileName, true);
-				RefreshMovieList();
-				if (index.HasValue)
-				{
-					MovieView.SelectedIndices.Clear();
-					MovieView.Items[index.Value].Selected = true;
-				}
+			int? index = AddMovieToList(ofd.FileName, true);
+			RefreshMovieList();
+			if (index.HasValue)
+			{
+				MovieView.SelectedIndices.Clear();
+				MovieView.Items[index.Value].Selected = true;
 			}
 		}
 

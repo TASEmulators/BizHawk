@@ -268,37 +268,36 @@ namespace BizHawk.Client.EmuHawk
 				Filter = new FilesystemFilter(".CGP Files", new[] { "cgp" }).ToString(),
 				FileName = _pathSelection
 			};
-			if (this.ShowDialogAsChild(ofd).IsOk())
-			{
-				rbUser.Checked = true;
-				var choice = Path.GetFullPath(ofd.FileName);
+			if (!this.ShowDialogAsChild(ofd).IsOk()) return;
+
+			rbUser.Checked = true;
+			var choice = Path.GetFullPath(ofd.FileName);
 				
-				//test the preset
-				using (var stream = File.OpenRead(choice))
+			//test the preset
+			using (var stream = File.OpenRead(choice))
+			{
+				var cgp = new RetroShaderPreset(stream);
+
+				// try compiling it
+				bool ok = false;
+				string errors = "";
+				try
 				{
-					var cgp = new RetroShaderPreset(stream);
-
-					// try compiling it
-					bool ok = false;
-					string errors = "";
-					try
-					{
-						var filter = new RetroShaderChain(_gl, cgp, Path.GetDirectoryName(choice));
-						ok = filter.Available;
-						errors = filter.Errors;
-					}
-					catch {}
-					if (!ok)
-					{
-						using var errorForm = new ExceptionBox(errors);
-						this.ShowDialogAsChild(errorForm);
-						return;
-					}
+					var filter = new RetroShaderChain(_gl, cgp, Path.GetDirectoryName(choice));
+					ok = filter.Available;
+					errors = filter.Errors;
 				}
-
-				_pathSelection = choice;
-				RefreshState();
+				catch {}
+				if (!ok)
+				{
+					using var errorForm = new ExceptionBox(errors);
+					this.ShowDialogAsChild(errorForm);
+					return;
+				}
 			}
+
+			_pathSelection = choice;
+			RefreshState();
 		}
 
 		private void CheckLetterbox_CheckedChanged(object sender, EventArgs e)

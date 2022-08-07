@@ -856,20 +856,18 @@ namespace BizHawk.Client.EmuHawk
 			};
 
 			var result = this.ShowDialogWithTempMute(sfd);
-			if (result.IsOk() && !string.IsNullOrWhiteSpace(sfd.FileName))
+			if (!result.IsOk() || string.IsNullOrWhiteSpace(sfd.FileName)) return;
+			string defaultTemplate = "while true do\n\temu.frameadvance();\nend";
+			File.WriteAllText(sfd.FileName, defaultTemplate);
+			LuaImp.ScriptList.Add(new LuaFile(Path.GetFileNameWithoutExtension(sfd.FileName), sfd.FileName));
+			Config.RecentLua.Add(sfd.FileName);
+			UpdateDialog();
+			Process.Start(new ProcessStartInfo
 			{
-				string defaultTemplate = "while true do\n\temu.frameadvance();\nend";
-				File.WriteAllText(sfd.FileName, defaultTemplate);
-				LuaImp.ScriptList.Add(new LuaFile(Path.GetFileNameWithoutExtension(sfd.FileName), sfd.FileName));
-				Config.RecentLua.Add(sfd.FileName);
-				UpdateDialog();
-				Process.Start(new ProcessStartInfo
-				{
-					Verb = "Open",
-					FileName = sfd.FileName
-				});
-				AddFileWatches();
-			}
+				Verb = "Open",
+				FileName = sfd.FileName
+			});
+			AddFileWatches();
 		}
 
 		private void OpenScriptMenuItem_Click(object sender, EventArgs e)
@@ -884,16 +882,14 @@ namespace BizHawk.Client.EmuHawk
 				Multiselect = true
 			};
 			var result = this.ShowDialogWithTempMute(ofd);
-			if (result.IsOk() && ofd.FileNames != null)
+			if (!result.IsOk() || ofd.FileNames is null) return;
+			foreach (var file in ofd.FileNames)
 			{
-				foreach (var file in ofd.FileNames)
-				{
-					LoadLuaFile(file);
-					Config.RecentLua.Add(file);
-				}
-
-				UpdateDialog();
+				LoadLuaFile(file);
+				Config.RecentLua.Add(file);
 			}
+
+			UpdateDialog();
 		}
 
 		private void ToggleScriptMenuItem_Click(object sender, EventArgs e)
@@ -1006,20 +1002,17 @@ namespace BizHawk.Client.EmuHawk
 					OverwritePrompt = true,
 					Filter = new FilesystemFilterSet(FilesystemFilter.LuaScripts).ToString()
 				};
-
-				if (sfd.ShowDialog().IsOk())
+				if (!sfd.ShowDialog().IsOk()) return;
+				string text = File.ReadAllText(script.Path);
+				File.WriteAllText(sfd.FileName, text);
+				LuaImp.ScriptList.Add(new LuaFile(Path.GetFileNameWithoutExtension(sfd.FileName), sfd.FileName));
+				Config.RecentLua.Add(sfd.FileName);
+				UpdateDialog();
+				Process.Start(new ProcessStartInfo
 				{
-					string text = File.ReadAllText(script.Path);
-					File.WriteAllText(sfd.FileName, text);
-					LuaImp.ScriptList.Add(new LuaFile(Path.GetFileNameWithoutExtension(sfd.FileName), sfd.FileName));
-					Config.RecentLua.Add(sfd.FileName);
-					UpdateDialog();
-					Process.Start(new ProcessStartInfo
-					{
-						Verb = "Open",
-						FileName = sfd.FileName
-					});
-				}
+					Verb = "Open",
+					FileName = sfd.FileName
+				});
 			}
 		}
 

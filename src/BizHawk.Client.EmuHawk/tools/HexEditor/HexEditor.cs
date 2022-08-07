@@ -1326,13 +1326,10 @@ namespace BizHawk.Client.EmuHawk
 				Filter = new FilesystemFilterSet(new FilesystemFilter("Text Table Files", new[] { "tbl" })).ToString(),
 				RestoreDirectory = false
 			};
-
-			if (this.ShowDialogWithTempMute(ofd) == DialogResult.OK)
-			{
-				LoadTable(ofd.FileName);
-				RecentTables.Add(ofd.FileName);
-				GeneralUpdate();
-			}
+			if (!this.ShowDialogWithTempMute(ofd).IsOk()) return;
+			LoadTable(ofd.FileName);
+			RecentTables.Add(ofd.FileName);
+			GeneralUpdate();
 		}
 
 		private void CloseTableFileMenuItem_Click(object sender, EventArgs e)
