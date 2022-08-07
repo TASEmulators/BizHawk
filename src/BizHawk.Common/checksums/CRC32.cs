@@ -28,7 +28,8 @@ namespace BizHawk.Common
 			var combinerState = (COMBINER_INIT_STATE = new uint[64]).AsSpan();
 			var even = combinerState.Slice(start: 0, length: 32); // even-power-of-two zeros operator
 			var odd = combinerState.Slice(start: 32, length: 32); // odd-power-of-two zeros operator
-																  // put operator for one zero bit in odd
+
+			// put operator for one zero bit in odd
 			odd[0] = POLYNOMIAL_CONST;
 			var oddTail = odd.Slice(1);
 			for (var n = 0; n < oddTail.Length; n++) oddTail[n] = 1U << n;
@@ -40,7 +41,7 @@ namespace BizHawk.Common
 
 		public static uint Calculate(ReadOnlySpan<byte> data)
 		{
-			var crc32 = new CRC32();
+			CRC32 crc32 = new();
 			crc32.Add(data);
 			return crc32.Result;
 		}
@@ -113,9 +114,7 @@ namespace BizHawk.Common
 				gf2_matrix_square(odd, even);
 				if ((len & 1U) != 0U) _current = gf2_matrix_times(odd, _current);
 				len >>= 1;
-
-				// if no more bits set, then done
-			} while (len != 0U);
+			} while (len != 0U); // if no more bits set, then done
 
 			// finally, combine and return
 			_current ^= crc;
