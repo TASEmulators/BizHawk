@@ -51,6 +51,9 @@ void x86_check_features(void) {
     } else {
         x86_cpu_has_tzcnt = 0;
         x86_cpu_has_avx2 = 0;
+        x86_cpu_has_avx512 = 0;
+        x86_cpu_has_avx512vnni = 0;
         x86_cpu_has_vpclmulqdq = 0;
+        x86_cpu_has_sha = 0;
     }
 }
