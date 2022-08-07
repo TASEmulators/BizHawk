@@ -9,7 +9,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class DisplayConfig : Form
+	public partial class DisplayConfig : Form, IDialogParent
 	{
 		private readonly Config _config;
 
@@ -17,12 +17,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private string _pathSelection;
 
+		public IDialogController DialogController { get; }
+
 		public bool NeedReset { get; set; }
 
-		public DisplayConfig(Config config, IGL gl)
+		public DisplayConfig(Config config, IDialogController dialogController, IGL gl)
 		{
 			_config = config;
 			_gl = gl;
+			DialogController = dialogController;
 
 			InitializeComponent();
 
@@ -265,7 +268,7 @@ namespace BizHawk.Client.EmuHawk
 				Filter = new FilesystemFilter(".CGP Files", new[] { "cgp" }).ToString(),
 				FileName = _pathSelection
 			};
-			if (ofd.ShowDialog() == DialogResult.OK)
+			if (this.ShowDialogAsChild(ofd).IsOk())
 			{
 				rbUser.Checked = true;
 				var choice = Path.GetFullPath(ofd.FileName);
@@ -288,7 +291,7 @@ namespace BizHawk.Client.EmuHawk
 					if (!ok)
 					{
 						using var errorForm = new ExceptionBox(errors);
-						errorForm.ShowDialog();
+						this.ShowDialogAsChild(errorForm);
 						return;
 					}
 				}

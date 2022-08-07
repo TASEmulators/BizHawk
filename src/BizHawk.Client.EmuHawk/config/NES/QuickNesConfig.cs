@@ -9,7 +9,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class QuickNesConfig : Form
+	public partial class QuickNesConfig : Form, IDialogParent
 	{
 		private readonly Config _config;
 
@@ -17,11 +17,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly QuickNES.QuickNESSettings _settings;
 
-		public QuickNesConfig(Config config, ISettingsAdapter settable)
+		public IDialogController DialogController { get; }
+
+		public QuickNesConfig(Config config, IDialogController dialogController, ISettingsAdapter settable)
 		{
 			_config = config;
 			_settable = settable;
 			_settings = (QuickNES.QuickNESSettings) _settable.GetSettings();
+			DialogController = dialogController;
 			InitializeComponent();
 			Icon = Properties.Resources.QuickNesIcon;
 		}

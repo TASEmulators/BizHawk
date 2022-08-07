@@ -1407,7 +1407,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private DialogResult OpenQuickNesGraphicsSettingsDialog(ISettingsAdapter settable)
 		{
-			using QuickNesConfig form = new(Config, settable);
+			using QuickNesConfig form = new(Config, DialogController, settable);
 			return this.ShowDialogWithTempMute(form);
 		}
 
@@ -2443,7 +2443,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DisplayConfigMenuItem_Click(object sender, EventArgs e)
 		{
-			using var window = new DisplayConfig(Config, GL);
+			using DisplayConfig window = new(Config, DialogController, GL);
 			if (this.ShowDialogWithTempMute(window).IsOk())
 			{
 				DisplayManager.RefreshUserShader();
