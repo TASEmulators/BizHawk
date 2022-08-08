@@ -1,6 +1,6 @@
 CC = gcc
 
-CFLAGS = -Wall -Wextra -O3 -flto -fvisibility=internal -fPIC
+CFLAGS = -Wall -Wextra -O3 -flto -s -fvisibility=internal -fPIC
 LFLAGS = -shared
 
 SRCS = $(wildcard ./*.c) $(wildcard x86/*.c)
