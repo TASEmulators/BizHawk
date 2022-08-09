@@ -9,8 +9,8 @@
 /* sizeof(__m128i) * (4 folds) */
 
 typedef struct crc32_fold_s {
-    uint8_t fold[CRC32_FOLD_BUFFER_SIZE];
-    uint32_t value;
+	uint8_t fold[CRC32_FOLD_BUFFER_SIZE];
+	uint32_t value;
 } crc32_fold;
 
 #endif

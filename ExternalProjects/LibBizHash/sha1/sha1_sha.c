@@ -1,8 +1,13 @@
-#include "../cpu_features.h"
+/*   Intel SHA extensions using C intrinsics               */
+/*   Written and place in public domain by Jeffrey Walton  */
+/*   Based on code from Intel, and by Sean Gulley for      */
+/*   the miTLS project.                                    */
+
 #include <immintrin.h>
+#include "common.h"
 
 __attribute__((target("sha", "sse4.1")))
-void BizFastCalcSha1Internal(uint32_t state[5], const uint8_t data[], uint32_t length) {
+void sha1_sha(uint32_t state[5], const uint8_t data[], uint32_t length) {
 	__m128i ABCD, ABCD_SAVE, E0, E0_SAVE, E1;
 	__m128i MSG0, MSG1, MSG2, MSG3;
 	const __m128i MASK = _mm_set_epi64x(0x0001020304050607ULL, 0x08090a0b0c0d0e0fULL);

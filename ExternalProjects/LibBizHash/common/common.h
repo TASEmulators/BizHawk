@@ -3,14 +3,13 @@
  * For conditions of distribution and use, see copyright notice in README.md
  */
 
-#ifndef CPU_FEATURES_H_
-#define CPU_FEATURES_H_
+#ifndef COMMON_H_
+#define COMMON_H_
 
 #include <stdint.h>
-#include "crc32_fold.h"
-#include "x86/x86_features.h"
+#include <string.h>
 
-extern void cpu_check_features(void);
+#include "x86_features.h"
 
 /* CRC32 */
 typedef uint32_t (*crc32_func)(uint32_t crc32, const uint8_t *buf, uint32_t len);
@@ -19,6 +18,6 @@ extern uint32_t crc32_braid(uint32_t crc, const uint8_t *buf, uint32_t len);
 extern uint32_t crc32_pclmulqdq(uint32_t crc32, const uint8_t *buf, uint32_t len);
 
 /* SHA1 */
-void BizFastCalcSha1Internal(uint32_t state[5], const uint8_t data[], uint32_t length);
+void sha1_sha(uint32_t state[5], const uint8_t data[], uint32_t length);
 
 #endif

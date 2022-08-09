@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 
 using BizHawk.Common.BufferExtensions;
@@ -29,16 +30,13 @@ namespace BizHawk.Common
 	{
 		public unsafe byte[] ComputeHash(byte[] buffer)
 		{
+			// Set SHA1 start state
 			var state = stackalloc uint[] { 0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0 };
-			LibBizHash.BizFastCalcSha1((IntPtr)state, buffer, buffer.Length);
+			// This will use dedicated SHA instructions, which perform 4x faster than a generic implementation
+			LibBizHash.BizCalcSha1((IntPtr)state, buffer, buffer.Length);
+			// The copy seems wasteful, but pinning the state down actually has a bigger performance impact
 			var ret = new byte[20];
-			for (int i = 0; i < 5; i++)
-			{
-				ret[i * 4 + 0] = (byte)(state[i] >> 24);
-				ret[i * 4 + 1] = (byte)(state[i] >> 16);
-				ret[i * 4 + 2] = (byte)(state[i] >>  8);
-				ret[i * 4 + 3] = (byte)(state[i] >>  0);
-			}
+			Marshal.Copy((IntPtr)state, ret, 0, 20);
 			return ret;
 		}
 	}
