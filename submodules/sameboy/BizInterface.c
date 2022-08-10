@@ -1,12 +1,10 @@
+#undef GB_INTERNAL // don't rely on GB_INTERNAL in interface
+
 #include "gb.h"
 #include "blip_buf.h"
 #include "stdio.h"
 
-#ifdef _WIN32
-	#define EXPORT __declspec(dllexport)
-#else
-	#define EXPORT __attribute__((visibility("default")))
-#endif
+#define EXPORT __attribute__((visibility("default")))
 
 typedef int8_t s8;
 typedef int16_t s16;
@@ -45,17 +43,18 @@ typedef struct
 	printer_callback_t printer_cb;
 	scanline_callback_t scanline_cb;
 	u32 scanline_sl;
-	bool vblank_occured;
+	bool vblank_occurred;
+	bool new_frame_present;
 	u64 cc;
 } biz_t;
 
-static u8 PeekIO(biz_t* biz, u8 addr)
+static inline u8 PeekIO(biz_t* biz, u8 addr)
 {
 	u8* io = GB_get_direct_access(&biz->gb, GB_DIRECT_ACCESS_IO, NULL, NULL);
 	return io[addr];
 }
 
-static void sample_cb(GB_gameboy_t *gb, GB_sample_t* sample)
+static void sample_cb(GB_gameboy_t* gb, GB_sample_t* sample)
 {
 	biz_t* biz = (biz_t*)gb;
 
@@ -74,14 +73,19 @@ static void sample_cb(GB_gameboy_t *gb, GB_sample_t* sample)
 	biz->nsamps++;
 }
 
-static u32 rgb_cb(GB_gameboy_t *gb, u8 r, u8 g, u8 b)
+static u32 rgb_cb(GB_gameboy_t* gb, u8 r, u8 g, u8 b)
 {
     return (0xFF << 24) | (r << 16) | (g << 8) | b;
 }
 
 static void vblank_cb(GB_gameboy_t* gb, GB_vblank_type_t type)
 {
-	((biz_t*)gb)->vblank_occured = true;
+	biz_t* biz = (biz_t*)gb;
+	biz->vblank_occurred = true;
+	if (type != GB_VBLANK_TYPE_REPEAT)
+	{
+		biz->new_frame_present = true;
+	}
 }
 
 static u8 camera_pixel_cb(GB_gameboy_t* gb, u8 x, u8 y)
@@ -177,7 +181,7 @@ EXPORT void sameboy_setrumblecallback(biz_t* biz, rumble_callback_t callback)
 	biz->rumble_cb = callback;
 }
 
-static double FromRawToG(u16 raw)
+static inline double FromRawToG(u16 raw)
 {
 	return (raw - 0x81D0) / (0x70 * 1.0);
 }
@@ -199,7 +203,9 @@ EXPORT void sameboy_frameadvance(biz_t* biz, GB_key_mask_t keys, u16 x, u16 y, s
 	}
 
 	u32 cycles = 0;
-	biz->vblank_occured = false;
+	biz->vblank_occurred = false;
+	biz->new_frame_present = false;
+
 	do
 	{
 		u8 oldjoyp = PeekIO(biz, GB_IO_JOYP) & 0x30;
@@ -212,7 +218,7 @@ EXPORT void sameboy_frameadvance(biz_t* biz, GB_key_mask_t keys, u16 x, u16 y, s
 			biz->input_cb();
 		}
 	}
-	while (!biz->vblank_occured && cycles < 35112);
+	while (!biz->vblank_occurred && cycles < 35112);
 
 	blip_end_frame(biz->blip_l, biz->nsamps);
 	blip_end_frame(biz->blip_r, biz->nsamps);
@@ -223,7 +229,7 @@ EXPORT void sameboy_frameadvance(biz_t* biz, GB_key_mask_t keys, u16 x, u16 y, s
 	blip_read_samples(biz->blip_r, sbuf + 1, samps, 1);
 	*nsamp = samps;
 
-	if (biz->vblank_occured && render)
+	if (biz->new_frame_present && render)
 	{
 		memcpy(vbuf, biz->vbuf, sizeof biz->vbuf);
 	}
@@ -498,7 +504,7 @@ EXPORT void sameboy_setscanlinecallback(biz_t* biz, scanline_callback_t callback
 	GB_set_lcd_line_callback(&biz->gb, callback ? ScanlineCallbackRelay : NULL);
 }
 
-static struct GB_color_s argb_to_rgb(u32 argb)
+static inline struct GB_color_s argb_to_rgb(u32 argb)
 {
 	struct GB_color_s ret;
 	ret.r = argb >> 16 & 0xFF;

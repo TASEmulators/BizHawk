@@ -69,19 +69,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 				DISABLED,
 				[Display(Name = "Correct Color Curves")]
 				CORRECT_CURVES,
-				[Display(Name = "Emulate Hardware")]
-				EMULATE_HARDWARE,
-				[Display(Name = "Preserve Brightness")]
-				PRESERVE_BRIGHTNESS,
+				[Display(Name = "Modern - Balanced")]
+				MODERN_BALANCED,
+				[Display(Name = "Modern - Boost Contrast")]
+				MODERN_BOOST_CONTRAST,
 				[Display(Name = "Reduce Contrast")]
 				REDUCE_CONTRAST,
 				[Display(Name = "Harsh Reality")]
 				LOW_CONTRAST,
+				[Display(Name = "Modern - Accurate")]
+				MODERN_ACCURATE,
 			}
 
 			[DisplayName("GBC Color Correction")]
 			[Description("Selects which color correction method to use in GBC mode. Does nothing in GB mode.")]
-			[DefaultValue(ColorCorrectionMode.EMULATE_HARDWARE)]
+			[DefaultValue(ColorCorrectionMode.MODERN_BALANCED)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public ColorCorrectionMode ColorCorrection { get; set; }
 
@@ -192,9 +194,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 				GB_MODEL_CGB_E = 0x205,
 				// GB_MODEL_AGB_0 = 0x206,
 				// GB_MODEL_AGB_A = 0x207,
+				// GB_MODEL_GBP_A = 0x207 | 0x20,
 				[Display(Name = "AGB")]
 				GB_MODEL_AGB = 0x207,
+				[Display(Name = "GBP")]
+				GB_MODEL_GBP = 0x207 | 0x20,
 				// GB_MODEL_AGB_B = 0x208,
+				// GB_MODEL_AGB_E = 0x209,
+				// GB_MODEL_GBP_E = 0x209 | 0x20,
 			}
 
 			[DisplayName("Console Mode")]

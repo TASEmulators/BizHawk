@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			{
 				FirmwareID fwid = new(
 					IsCgb ? "GBC" : "GB",
-					_syncSettings.ConsoleMode is SameboySyncSettings.GBModel.GB_MODEL_AGB
+					_syncSettings.ConsoleMode >= SameboySyncSettings.GBModel.GB_MODEL_AGB
 					? "AGB"
 					: "World");
 				bios = comm.CoreFileProvider.GetFirmwareOrThrow(fwid, "BIOS Not Found, Cannot Load.  Change SyncSettings to run without BIOS.");
@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			else
 			{
 				bios = Zstd.DecompressZstdStream(new MemoryStream(IsCgb
-					? _syncSettings.ConsoleMode is SameboySyncSettings.GBModel.GB_MODEL_AGB ? Resources.SameboyAgbBoot.Value : Resources.SameboyCgbBoot.Value
+					? _syncSettings.ConsoleMode >= SameboySyncSettings.GBModel.GB_MODEL_AGB ? Resources.SameboyAgbBoot.Value : Resources.SameboyCgbBoot.Value
 					: Resources.SameboyDmgBoot.Value)).ToArray();
 			}
 
