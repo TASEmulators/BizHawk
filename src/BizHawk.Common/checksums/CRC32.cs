@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 
 namespace BizHawk.Common
 {
@@ -8,25 +9,18 @@ namespace BizHawk.Common
 		/// <remarks>coefficients of the polynomial, in the format Wikipedia calls "reversed"</remarks>
 		public const uint POLYNOMIAL_CONST = 0xEDB88320U;
 
-		private static readonly uint[] COMBINER_INIT_STATE;
+		/// <summary>
+		/// Delegate to unmanaged code that actually does the calculation.
+		/// This may be hardware accelerated, if the CPU supports such.
+		/// </summary>
+		private static readonly LibBizHash.CalcCRC _calcCRC;
 
-		private static readonly uint[] CRC32Table;
+		private static readonly uint[] COMBINER_INIT_STATE;
 
 		static CRC32()
 		{
 			// for Add (CRC32 computation):
-			CRC32Table = new uint[256];
-			for (var i = 0U; i < 256U; i++)
-			{
-				var crc = i;
-				for (var j = 0; j < 8; j++)
-				{
-					var xor = (crc & 1U) == 1U;
-					crc >>= 1;
-					if (xor) crc ^= POLYNOMIAL_CONST;
-				}
-				CRC32Table[i] = crc;
-			}
+			_calcCRC = Marshal.GetDelegateForFunctionPointer<LibBizHash.CalcCRC>(LibBizHash.BizCalcCrcFunc());
 
 			// for Incorporate:
 			var combinerState = (COMBINER_INIT_STATE = new uint[64]).AsSpan();
@@ -80,17 +74,11 @@ namespace BizHawk.Common
 		/// <summary>The negated output (the typical result of the CRC calculation)</summary>
 		public uint Result => ~_current;
 
-		public void Add(byte datum)
+		public unsafe void Add(ReadOnlySpan<byte> data)
 		{
-			_current = CRC32Table[(_current ^ datum) & 0xFF] ^ (_current >> 8);
-		}
-
-		public void Add(ReadOnlySpan<byte> data)
-		{
-			foreach (var b in data)
+			fixed (byte* d = &data.GetPinnableReference())
 			{
-//				Add(b); // I assume this would be slower
-				_current = CRC32Table[(_current ^ b) & 0xFF] ^ (_current >> 8);
+				_current = _calcCRC(_current, (IntPtr) d, data.Length);
 			}
 		}
 

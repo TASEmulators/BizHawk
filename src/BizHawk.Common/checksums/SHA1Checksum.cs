@@ -1,11 +1,46 @@
 using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 
 using BizHawk.Common.BufferExtensions;
 
 namespace BizHawk.Common
 {
+	public interface ISHA1
+	{
+		byte[] ComputeHash(byte[] buffer);
+	}
+
+	public sealed class NETSHA1 : ISHA1
+	{
+		private readonly SHA1 _sha1Impl;
+
+		public NETSHA1()
+		{
+			_sha1Impl = SHA1.Create();
+			Debug.Assert(_sha1Impl.CanReuseTransform && _sha1Impl.HashSize is SHA1Checksum.EXPECTED_LENGTH);
+		}
+
+		public byte[] ComputeHash(byte[] buffer)
+			=> _sha1Impl.ComputeHash(buffer);
+	}
+
+	public sealed class FastSHA1 : ISHA1
+	{
+		public unsafe byte[] ComputeHash(byte[] buffer)
+		{
+			// Set SHA1 start state
+			var state = stackalloc uint[] { 0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0 };
+			// This will use dedicated SHA instructions, which perform 4x faster than a generic implementation
+			LibBizHash.BizCalcSha1((IntPtr)state, buffer, buffer.Length);
+			// The copy seems wasteful, but pinning the state down actually has a bigger performance impact
+			var ret = new byte[20];
+			Marshal.Copy((IntPtr)state, ret, 0, 20);
+			return ret;
+		}
+	}
+
 	/// <summary>uses <see cref="SHA1"/> implementation from BCL</summary>
 	/// <seealso cref="CRC32Checksum"/>
 	/// <seealso cref="MD5Checksum"/>
@@ -35,16 +70,17 @@ namespace BizHawk.Common
 			return impl.GetHashAndReset();
 		}
 #else
-		private static SHA1? _sha1Impl;
+		private static ISHA1? _sha1Impl;
 
-		private static SHA1 SHA1Impl
+		private static ISHA1 SHA1Impl
 		{
 			get
 			{
 				if (_sha1Impl == null)
 				{
-					_sha1Impl = SHA1.Create();
-					Debug.Assert(_sha1Impl.CanReuseTransform && _sha1Impl.HashSize is EXPECTED_LENGTH);
+					_sha1Impl = LibBizHash.BizSupportsShaInstructions()
+						? new FastSHA1()
+						: new NETSHA1();
 				}
 				return _sha1Impl;
 			}
