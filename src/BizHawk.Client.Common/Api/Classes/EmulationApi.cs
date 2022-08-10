@@ -235,9 +235,9 @@ namespace BizHawk.Client.Common
 				s.ShowOBJ_3 = GetSetting(args, 7);
 				core.PutSettings(s);
 			}
-			void SetBsnes(BsnesCore core)
+			void SetBsnes(ISettable<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings> settingsProvider)
 			{
-				var s = core.GetSettings();
+				var s = settingsProvider.GetSettings();
 				// TODO: This should probably support both prios inidividually but I have no idea whether changing this breaks anything
 				s.ShowBG1_0 = s.ShowBG1_1 = GetSetting(args, 0);
 				s.ShowBG2_0 = s.ShowBG2_1 = GetSetting(args, 1);
@@ -247,7 +247,7 @@ namespace BizHawk.Client.Common
 				s.ShowOBJ_1 = GetSetting(args, 5);
 				s.ShowOBJ_2 = GetSetting(args, 6);
 				s.ShowOBJ_3 = GetSetting(args, 7);
-				core.PutSettings(s);
+				settingsProvider.PutSettings(s);
 			}
 			void SetCygne(WonderSwan ws)
 			{
@@ -312,6 +312,9 @@ namespace BizHawk.Client.Common
 					break;
 				case BsnesCore bsnes:
 					SetBsnes(bsnes);
+					break;
+				case SubBsnesCore subBsnes:
+					SetBsnes(subBsnes.ServiceProvider.GetService<ISettable<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings>>());
 					break;
 				case NES nes:
 					SetNesHawk(nes);

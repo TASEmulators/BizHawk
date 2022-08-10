@@ -244,7 +244,9 @@ namespace BizHawk.Client.Common
 				["Extra1"] = '1',
 				["Extra2"] = '2',
 				["Extra3"] = '3',
-				["Extra4"] = '4'
+				["Extra4"] = '4',
+
+				["Subframe"] = 'F'
 			},
 			[VSystemID.Raw.TI83] = new()
 			{
