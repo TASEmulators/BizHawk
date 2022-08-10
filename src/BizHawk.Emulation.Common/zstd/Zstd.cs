@@ -57,11 +57,6 @@ namespace BizHawk.Emulation.Common
 				InUse = false;
 			}
 
-			~ZstdCompressionStreamContext()
-			{
-				Dispose();
-			}
-
 			private bool _disposed = false;
 
 			public void Dispose()
@@ -71,7 +66,6 @@ namespace BizHawk.Emulation.Common
 					_lib.ZSTD_freeCStream(Zcs);
 					InputHandle.Free();
 					OutputHandle.Free();
-					GC.SuppressFinalize(this);
 					_disposed = true;
 				}
 			}
@@ -100,16 +94,11 @@ namespace BizHawk.Emulation.Common
 				_ctx = ctx;
 			}
 
-			~ZstdCompressionStream()
-			{
-				Dispose();
-			}
-
 			private bool _disposed = false;
 
 			protected override void Dispose(bool disposing)
 			{
-				if (!_disposed)
+				if (disposing && !_disposed)
 				{
 					Flush();
 					while (true)
@@ -123,7 +112,6 @@ namespace BizHawk.Emulation.Common
 						}
 					}
 					_ctx.InUse = false;
-					GC.SuppressFinalize(this);
 					_disposed = true;
 				}
 			}
@@ -252,11 +240,6 @@ namespace BizHawk.Emulation.Common
 				InUse = false;
 			}
 
-			~ZstdDecompressionStreamContext()
-			{
-				Dispose();
-			}
-
 			private bool _disposed = false;
 
 			public void Dispose()
@@ -266,7 +249,6 @@ namespace BizHawk.Emulation.Common
 					_lib.ZSTD_freeDStream(Zds);
 					InputHandle.Free();
 					OutputHandle.Free();
-					GC.SuppressFinalize(this);
 					_disposed = true;
 				}
 			}
@@ -295,19 +277,13 @@ namespace BizHawk.Emulation.Common
 				_ctx = ctx;
 			}
 
-			~ZstdDecompressionStream()
-			{
-				Dispose();
-			}
-
 			private bool _disposed = false;
 
 			protected override void Dispose(bool disposing)
 			{
-				if (!_disposed)
+				if (disposing && !_disposed)
 				{
 					_ctx.InUse = false;
-					GC.SuppressFinalize(this);
 					_disposed = true;
 				}
 			}
@@ -413,11 +389,6 @@ namespace BizHawk.Emulation.Common
 			_decompressionStreamContext = new();
 		}
 
-		~Zstd()
-		{
-			Dispose();
-		}
-
 		private bool _disposed = false;
 
 		public void Dispose()
@@ -426,7 +397,6 @@ namespace BizHawk.Emulation.Common
 			{
 				_compressionStreamContext.Dispose();
 				_decompressionStreamContext.Dispose();
-				GC.SuppressFinalize(this);
 				_disposed = true;
 			}
 		}
@@ -440,13 +410,13 @@ namespace BizHawk.Emulation.Common
 		}
 
 		/// <summary>
-		/// Creates a zstd compression stream
-		/// This stream uses a shared context as to avoid buffer allocation spam
-		/// It is absolutely important to call Dispose() / use using on returned stream
-		/// If this is not done, the shared context will remain in use
-		/// And the proceeding attempt to initialize it will throw
-		/// Also, of course, do not attempt to create multiple streams at once
-		/// Only 1 stream at a time is allowed per Zstd instance
+		/// Creates a zstd compression stream.
+		/// This stream uses a shared context as to avoid buffer allocation spam.
+		/// It is absolutely important to call Dispose() / use using on returned stream.
+		/// If this is not done, the shared context will remain in use,
+		/// and the proceeding attempt to initialize it will throw.
+		/// Also, of course, do not attempt to create multiple streams at once.
+		/// Only 1 stream at a time is allowed per Zstd instance.
 		/// </summary>
 		/// <param name="stream">the stream to write compressed data</param>
 		/// <param name="compressionLevel">compression level, bounded by MinCompressionLevel and MaxCompressionLevel</param>
@@ -464,13 +434,13 @@ namespace BizHawk.Emulation.Common
 		}
 
 		/// <summary>
-		/// Creates a zstd decompression stream
-		/// This stream uses a shared context as to avoid buffer allocation spam
-		/// It is absolutely important to call Dispose() / use using on returned stream
-		/// If this is not done, the shared context will remain in use
-		/// And the proceeding attempt to initialize it will throw
-		/// Also, of course, do not attempt to create multiple streams at once
-		/// Only 1 stream at a time is allowed per Zstd instance
+		/// Creates a zstd decompression stream.
+		/// This stream uses a shared context as to avoid buffer allocation spam.
+		/// It is absolutely important to call Dispose() / use using on returned stream.
+		/// If this is not done, the shared context will remain in use,
+		/// and the proceeding attempt to initialize it will throw.
+		/// Also, of course, do not attempt to create multiple streams at once.
+		/// Only 1 stream at a time is allowed per Zstd instance.
 		/// </summary>
 		/// <param name="stream">a stream with zstd compressed data to decompress</param>
 		/// <returns>zstd decompression stream</returns>
@@ -480,6 +450,15 @@ namespace BizHawk.Emulation.Common
 			return new ZstdDecompressionStream(stream, _decompressionStreamContext);
 		}
 
+		/// <summary>
+		/// Decompresses src stream and returns a memory stream with the decompressed contents.
+		/// Context creation and disposing is handled internally in this function, unlike the non-static ones.
+		/// This is useful in cases where you are not doing repeated decompressions,
+		/// so keeping a Zstd instance around is not as useful.
+		/// </summary>
+		/// <param name="src">stream with zstd compressed data to decompress</param>
+		/// <returns>MemoryStream with the decompressed contents of src</returns>
+		/// <exception cref="InvalidOperationException">src does not have a ZSTD header</exception>
 		public static MemoryStream DecompressZstdStream(Stream src)
 		{
 			// check for ZSTD header
