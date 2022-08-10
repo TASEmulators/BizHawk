@@ -31,7 +31,7 @@ namespace BizHawk.Client.Common
 			(new[] { VSystemID.Raw.N64 },
 				new[] { CoreNames.Mupen64Plus, CoreNames.Ares64 }),
 			(new[] { VSystemID.Raw.SGB },
-				new[] { CoreNames.Gambatte, CoreNames.Bsnes, CoreNames.Bsnes115}),
+				new[] { CoreNames.Gambatte, CoreNames.Bsnes, CoreNames.Bsnes115, CoreNames.SubBsnes115 }),
 			(new[] { VSystemID.Raw.GB, VSystemID.Raw.GBC },
 				new[] { CoreNames.Gambatte, CoreNames.Sameboy, CoreNames.GbHawk, CoreNames.SubGbHawk }),
 			(new[] { VSystemID.Raw.GBL },

@@ -2058,12 +2058,12 @@ namespace BizHawk.Client.EmuHawk
 					SnesGfxDebuggerMenuItem.Visible = true;
 					break;
 				case VSystemID.Raw.SNES when Emulator is BsnesCore bsnesCore:
-					SNESSubMenu.Text = bsnesCore.IsSGB ?  "&SGB" : "&SNES";
+					SNESSubMenu.Text = bsnesCore.IsSGB ? "&SGB" : "&SNES";
 					SnesGfxDebuggerMenuItem.Visible = false;
 					SNESSubMenu.Visible = true;
 					break;
-				case VSystemID.Raw.SNES when Emulator is SubBsnesCore:
-					SNESSubMenu.Text = "&SNES";
+				case VSystemID.Raw.SNES when Emulator is SubBsnesCore subBsnesCore:
+					SNESSubMenu.Text = subBsnesCore.IsSGB ? "&SGB" : "&SNES";
 					SnesGfxDebuggerMenuItem.Visible = false;
 					SNESSubMenu.Visible = true;
 					break;
