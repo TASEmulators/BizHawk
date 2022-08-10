@@ -189,9 +189,8 @@ run_tests:
   - job: build_asms_release
     artifacts: false
   script:
-  - cd src/BizHawk.Version
-  - dotnet build -c Release # configuration doesn't really matter as the assembly is empty
-  - ../../Dist/BuildTestRelease.sh
+  - Dist/BuildDebug.sh # populate output
+  - Dist/BuildTestRelease.sh
   stage: test
 
 .disabled_job_sast:
