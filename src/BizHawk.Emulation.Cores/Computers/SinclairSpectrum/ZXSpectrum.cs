@@ -187,17 +187,17 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			switch (names.FirstOrDefault())
 			{
 				case "48ROM":
-					embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.ZX_48_ROM.Value));
+					embeddedRom = Zstd.DecompressZstdStream(new MemoryStream(Resources.ZX_48_ROM.Value)).ToArray();
 					break;
 				case "128ROM":
-					embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.ZX_128_ROM.Value));
+					embeddedRom = Zstd.DecompressZstdStream(new MemoryStream(Resources.ZX_128_ROM.Value)).ToArray();
 					break;
 				case "PLUS2ROM":
-					embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.ZX_plus2_rom.Value));
+					embeddedRom = Zstd.DecompressZstdStream(new MemoryStream(Resources.ZX_plus2_rom.Value)).ToArray();
 					break;
 				case "PLUS2AROM":
 				case "PLUS3ROM":
-					embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.ZX_plus2a_rom.Value));
+					embeddedRom = Zstd.DecompressZstdStream(new MemoryStream(Resources.ZX_plus2a_rom.Value)).ToArray();
 					break;
 				default:
 					embeddedFound = false;

@@ -4,6 +4,8 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 
+using BizHawk.Emulation.Common;
+
 namespace BizHawk.Client.Common
 {
 	public class ZipStateLoader : IDisposable
@@ -12,9 +14,11 @@ namespace BizHawk.Client.Common
 		private Version _ver;
 		private bool _isDisposed;
 		private Dictionary<string, ZipArchiveEntry> _entriesByName;
+		private readonly Zstd _zstd;
 
 		private ZipStateLoader()
 		{
+			_zstd = new();
 		}
 
 		public void Dispose()
@@ -30,11 +34,12 @@ namespace BizHawk.Client.Common
 				if (disposing)
 				{
 					_zip.Dispose();
+					_zstd.Dispose();
 				}
 			}
 		}
 
-		private void ReadVersion(Stream s, long length)
+		private void ReadZipVersion(Stream s, long length)
 		{
 			// the "BizState 1.0" tag contains an integer in it describing the sub version.
 			if (length == 0)
@@ -85,7 +90,16 @@ namespace BizHawk.Client.Common
 			{
 				ret._zip = new ZipArchive(new FileStream(filename, FileMode.Open, FileAccess.Read), ZipArchiveMode.Read);
 				ret.PopulateEntries();
-				if (!isMovieLoad && !ret.GetLump(BinaryStateLump.Versiontag, false, ret.ReadVersion))
+				if (isMovieLoad)
+				{
+					if (!ret.GetLump(BinaryStateLump.ZipVersion, false, ret.ReadZipVersion, false))
+					{
+						// movies before 1.0.2 did not include the BizState 1.0 file, don't strictly error in this case
+						ret._ver = new Version(1, 0, 0);
+						Console.WriteLine("Read a zipstate of version {0}", ret._ver);
+					}
+				}
+				else if (!ret.GetLump(BinaryStateLump.ZipVersion, false, ret.ReadZipVersion, false))
 				{
 					ret._zip.Dispose();
 					return null;
@@ -102,14 +116,24 @@ namespace BizHawk.Client.Common
 		/// <param name="lump">lump to retrieve</param>
 		/// <param name="abort">pass true to throw exception instead of returning false</param>
 		/// <param name="callback">function to call with the desired stream</param>
+		/// <param name="isZstdCompressed">lump is zstd compressed</param>
 		/// <returns>true iff stream was loaded</returns>
 		/// <exception cref="Exception">stream not found and <paramref name="abort"/> is <see langword="true"/></exception>
-		public bool GetLump(BinaryStateLump lump, bool abort, Action<Stream, long> callback)
+		public bool GetLump(BinaryStateLump lump, bool abort, Action<Stream, long> callback, bool isZstdCompressed = true)
 		{
 			if (_entriesByName.TryGetValue(lump.ReadName, out var e))
 			{
 				using var zs = e.Open();
-				callback(zs, e.Length);
+
+				if (isZstdCompressed && _ver.Build > 1)
+				{
+					using var z = _zstd.CreateZstdDecompressionStream(zs);
+					callback(z, e.Length);
+				}
+				else
+				{
+					callback(zs, e.Length);
+				}
 
 				return true;
 			}
@@ -129,7 +153,7 @@ namespace BizHawk.Client.Common
 			=> GetLump(lump, abort, (s, length) => callback(new(s), length));
 
 		public bool GetLump(BinaryStateLump lump, bool abort, Action<TextReader> callback)
-			=> GetLump(lump, abort, (s, _) => callback(new StreamReader(s)));
+			=> GetLump(lump, abort, (s, _) => callback(new StreamReader(s)), false);
 
 		/// <exception cref="Exception">couldn't find Binary or Text savestate</exception>
 		public void GetCoreState(Action<BinaryReader, long> callbackBinary, Action<TextReader> callbackText)

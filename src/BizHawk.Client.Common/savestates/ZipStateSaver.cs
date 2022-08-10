@@ -10,34 +10,31 @@ namespace BizHawk.Client.Common
 		private readonly IZipWriter _zip;
 		private bool _isDisposed;
 
-		private static void WriteVersion(Stream s)
+		private static void WriteZipVersion(Stream s)
 		{
-			var sw = new StreamWriter(s);
-			sw.WriteLine("1"); // version 1.0.1
-			sw.Flush();
+			using var sw = new StreamWriter(s);
+			sw.WriteLine("2"); // version 1.0.2
 		}
 
 		private static void WriteEmuVersion(Stream s)
 		{
-			var sw = new StreamWriter(s);
+			using var sw = new StreamWriter(s);
 			sw.WriteLine(VersionInfo.GetEmuVersion());
-			sw.Flush();
 		}
 
 		public ZipStateSaver(string path, int compressionLevel)
 		{
 			_zip = new FrameworkZipWriter(path, compressionLevel);
+
+			// we put these in every zip, so we know where they came from
+			// a bit redundant for movie files given their headers, but w/e
+			PutLump(BinaryStateLump.ZipVersion, WriteZipVersion, false);
+			PutLump(BinaryStateLump.BizVersion, WriteEmuVersion, false);
 		}
 
-		public void PutVersionLumps()
+		public void PutLump(BinaryStateLump lump, Action<Stream> callback, bool zstdCompress = true)
 		{
-			PutLump(BinaryStateLump.Versiontag, WriteVersion);
-			PutLump(BinaryStateLump.BizVersion, WriteEmuVersion);
-		}
-
-		public void PutLump(BinaryStateLump lump, Action<Stream> callback)
-		{
-			_zip.WriteItem(lump.WriteName, callback);
+			_zip.WriteItem(lump.WriteName, callback, zstdCompress);
 		}
 
 		public void PutLump(BinaryStateLump lump, Action<BinaryWriter> callback)
@@ -52,12 +49,13 @@ namespace BizHawk.Client.Common
 
 		public void PutLump(BinaryStateLump lump, Action<TextWriter> callback)
 		{
+			// don't zstd compress text, as it's annoying for users
 			PutLump(lump, s =>
 			{
 				TextWriter tw = new StreamWriter(s);
 				callback(tw);
 				tw.Flush();
-			});
+			}, false);
 		}
 
 		public void Dispose()

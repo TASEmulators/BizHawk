@@ -79,7 +79,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			if (_settings.Deinterlacer == LibAres64.DeinterlacerType.Bob)
 				loadFlags |= LibAres64.LoadFlags.BobDeinterlace;
 
-			var pif = Util.DecompressGzipFile(new MemoryStream(pal ? Resources.PIF_PAL_ROM.Value : Resources.PIF_NTSC_ROM.Value));
+			var pif = Zstd.DecompressZstdStream(new MemoryStream(pal ? Resources.PIF_PAL_ROM.Value : Resources.PIF_NTSC_ROM.Value)).ToArray();
 
 			var gbRoms = new byte[][] { null, null, null, null };
 			var numGbRoms = lp.Roms.Count - 1;

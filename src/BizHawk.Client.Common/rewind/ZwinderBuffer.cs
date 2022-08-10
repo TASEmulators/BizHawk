@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
+
 using BizHawk.BizInvoke;
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
@@ -63,6 +64,7 @@ namespace BizHawk.Client.Common
 			}
 			_allowOutOfOrderStates = settings.AllowOutOfOrderStates;
 			_states = new StateInfo[STATEMASK + 1];
+			_zstd = new();
 			_useCompression = settings.UseCompression;
 		}
 
@@ -71,6 +73,7 @@ namespace BizHawk.Client.Common
 			foreach (var d in (_disposables as IEnumerable<IDisposable>).Reverse())
 				d.Dispose();
 			_disposables.Clear();
+			_zstd.Dispose();
 		}
 
 		private readonly List<IDisposable> _disposables = new List<IDisposable>();
@@ -126,6 +129,7 @@ namespace BizHawk.Client.Common
 		private int _nextStateIndex;
 		private int HeadStateIndex => (_nextStateIndex - 1) & STATEMASK;
 
+		private readonly Zstd _zstd;
 		private readonly bool _useCompression;
 
 		/// <summary>
@@ -233,7 +237,8 @@ namespace BizHawk.Client.Common
 
 			if (_useCompression)
 			{
-				using var compressor = new DeflateStream(stream, CompressionLevel.Fastest, leaveOpen: true);
+				// TODO: expose compression level as a setting
+				using var compressor = _zstd.CreateZstdCompressionStream(stream, 1);
 				callback(compressor);
 			}
 			else
@@ -253,7 +258,7 @@ namespace BizHawk.Client.Common
 		{
 			Stream stream = new LoadStateStream(_backingStore, _states[index].Start, _states[index].Size, _sizeMask);
 			if (_useCompression)
-				stream = new DeflateStream(stream, CompressionMode.Decompress, leaveOpen: true);
+				stream = _zstd.CreateZstdDecompressionStream(stream);
 			return stream;
 		}
 

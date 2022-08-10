@@ -247,7 +247,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				titleId <<= 8;
 				titleId |= ware[0x237 - i];
 			}
-			using var zip = new ZipArchive(new MemoryStream(Util.DecompressGzipFile(new MemoryStream(Resources.TMDS.Value))), ZipArchiveMode.Read, false);
+			using var zip = new ZipArchive(Zstd.DecompressZstdStream(new MemoryStream(Resources.TMDS.Value)), ZipArchiveMode.Read, false);
 			using var tmd = zip.GetEntry($"{titleId:x16}.tmd")?.Open() ?? throw new Exception($"Cannot find TMD for title ID {titleId:x16}, please report");
 			var ret = new byte[tmd.Length];
 			tmd.Read(ret, 0, (int)tmd.Length);
