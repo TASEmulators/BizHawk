@@ -114,7 +114,7 @@ auto CPU::fetch(u64 vaddr) -> u32 {
     return 0;  //nop
   case Context::Segment::Mapped:
     if(auto match = tlb.load(vaddr)) {
-      if(match.cache) return icache.fetch(match.address & context.physMask);
+      if(match.cache) return icache.fetch(match.address & context.physMask, cpu);
       step(1);
       return bus.read<Word>(match.address & context.physMask);
     }
@@ -122,7 +122,7 @@ auto CPU::fetch(u64 vaddr) -> u32 {
     addressException(vaddr);
     return 0;  //nop
   case Context::Segment::Cached:
-    return icache.fetch(vaddr & context.physMask);
+    return icache.fetch(vaddr & context.physMask, cpu);
   case Context::Segment::Direct:
     step(1);
     return bus.read<Word>(vaddr & context.physMask);

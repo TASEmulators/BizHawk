@@ -1,5 +1,9 @@
 This file is the short summary of the API changes:
 
+16.06.2022 - Non-backward compatible
+    Remove SLJIT_ENTER_CDECL and SLJIT_CALL_CDECL.
+    The default calling mode is cdecl now.
+
 21.04.2022 - Non-backward compatible
     Floating point comparison types are renamed.
 

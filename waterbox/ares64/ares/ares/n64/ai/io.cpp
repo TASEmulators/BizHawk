@@ -12,6 +12,7 @@ auto AI::readWord(u32 address) -> u32 {
     data.bit( 0) = io.dmaCount > 1;
     data.bit(20) = 1;
     data.bit(24) = 1;
+    data.bit(25) = io.dmaEnable;
     data.bit(30) = io.dmaCount > 0;
     data.bit(31) = io.dmaCount > 1;
   }
@@ -34,7 +35,8 @@ auto AI::writeWord(u32 address, u32 data_) -> void {
   if(address == 1) {
     //AI_LENGTH
     n18 length = data.bit(0,17) & ~7;
-    if(io.dmaCount < 2 && length) {
+    if(io.dmaCount < 2) {
+      if(io.dmaCount == 0) mi.raise(MI::IRQ::AI);
       io.dmaLength[io.dmaCount] = length;
       io.dmaCount++;
     }

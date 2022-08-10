@@ -103,26 +103,80 @@ struct CPU : Thread {
 
   //icache.cpp
   struct InstructionCache {
+    CPU& self;
     struct Line;
-    auto line(u32 address) -> Line&;
-    auto step(u32 address) -> void;
-    auto fetch(u32 address) -> u32;
-    auto read(u32 address) -> u32;
-    auto power(bool reset) -> void;
+    auto line(u32 address) -> Line& { return lines[address >> 5 & 0x1ff]; }
+
+    //used by the recompiler to simulate instruction cache fetch timing
+    auto step(u32 address) -> void {
+      auto& line = this->line(address);
+      if(!line.hit(address)) {
+        self.step(48);
+        line.valid = 1;
+        line.tag   = address & ~0x0000'0fff;
+      } else {
+        self.step(2);
+      }
+    }
+
+    //used by the interpreter to fully emulate the instruction cache
+    auto fetch(u32 address, CPU& cpu) -> u32 {
+      auto& line = this->line(address);
+      if(!line.hit(address)) {
+        line.fill(address, cpu);
+      } else {
+        cpu.step(2);
+      }
+      return line.read(address);
+    }
+
+    auto power(bool reset) -> void {
+      u32 index = 0;
+      for(auto& line : lines) {
+        line.valid = 0;
+        line.tag   = 0;
+        line.index = index++ << 5 & 0xfe0;
+        for(auto& word : line.words) word = 0;
+       }
+    }
 
     //16KB
     struct Line {
-      auto hit(u32 address) const -> bool;
-      auto fill(u32 address) -> void;
-      auto writeBack() -> void;
-      auto read(u32 address) const -> u32;
+      auto hit(u32 address) const -> bool { return valid && tag == (address & ~0x0000'0fff); }
+      auto fill(u32 address, CPU& cpu) -> void {
+        cpu.step(48);
+        valid = 1;
+        tag   = address & ~0x0000'0fff;
+        words[0] = bus.read<Word>(tag | index | 0x00);
+        words[1] = bus.read<Word>(tag | index | 0x04);
+        words[2] = bus.read<Word>(tag | index | 0x08);
+        words[3] = bus.read<Word>(tag | index | 0x0c);
+        words[4] = bus.read<Word>(tag | index | 0x10);
+        words[5] = bus.read<Word>(tag | index | 0x14);
+        words[6] = bus.read<Word>(tag | index | 0x18);
+        words[7] = bus.read<Word>(tag | index | 0x1c);
+      }
+
+      auto writeBack(CPU& cpu) -> void {
+        cpu.step(48);
+        bus.write<Word>(tag | index | 0x00, words[0]);
+        bus.write<Word>(tag | index | 0x04, words[1]);
+        bus.write<Word>(tag | index | 0x08, words[2]);
+        bus.write<Word>(tag | index | 0x0c, words[3]);
+        bus.write<Word>(tag | index | 0x10, words[4]);
+        bus.write<Word>(tag | index | 0x14, words[5]);
+        bus.write<Word>(tag | index | 0x18, words[6]);
+        bus.write<Word>(tag | index | 0x1c, words[7]);
+      }
+
+      auto read(u32 address) const -> u32 { return words[address >> 2 & 7]; }
 
       bool valid;
       u32  tag;
       u16  index;
       u32  words[8];
     } lines[512];
-  } icache;
+  } icache{*this};
 
   //dcache.cpp
   struct DataCache {
@@ -705,12 +759,31 @@ struct CPU : Thread {
     }
 
     auto invalidate(u32 address) -> void {
+      /* FIXME: Recompiler shouldn't be so aggressive with pool eviction
+       * Sometimes there are overlapping blocks, so clearing just one block
+       * isn't sufficient and causes some games to crash (Jet Force Gemini)
+       * the recompiler needs to be smarter with block tracking
+       * Until then, clear the entire pool and live with the performance hit.
+      */
+      #if 1
+      invalidatePool(address);
+      #else
+      auto pool = pools[address >> 8 & 0x1fffff];
+      if(!pool) return;
+      memory::jitprotect(false);
+      pool->blocks[address >> 2 & 0x3f] = nullptr;
+      memory::jitprotect(true);
+      #endif
+    }
+
+    auto invalidatePool(u32 address) -> void {
       pools[address >> 8 & 0x1fffff] = nullptr;
     }
+
     auto invalidateRange(u32 address, u32 length) -> void {
       for (u32 s = 0; s < length; s += 256)
-        invalidate(address + s);
-      invalidate(address + length - 1);
+        invalidatePool(address + s);
+      invalidatePool(address + length - 1);
     }
 
     auto pool(u32 address) -> Pool*;

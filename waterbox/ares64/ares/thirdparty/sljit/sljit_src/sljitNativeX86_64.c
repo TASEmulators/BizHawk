@@ -101,34 +101,38 @@ static sljit_u8* emit_x86_instruction(struct sljit_compiler *compiler, sljit_uw 
 	/* Calculate size of b. */
 	inst_size += 1; /* mod r/m byte. */
 	if (b & SLJIT_MEM) {
-		if (!(b & OFFS_REG_MASK)) {
-			if (NOT_HALFWORD(immb)) {
-				PTR_FAIL_IF(emit_load_imm64(compiler, TMP_REG2, immb));
-				immb = 0;
-				if (b & REG_MASK)
-					b |= TO_OFFS_REG(TMP_REG2);
-				else
-					b |= TMP_REG2;
-			}
-			else if (reg_lmap[b & REG_MASK] == 4)
-				b |= TO_OFFS_REG(SLJIT_SP);
+		if (!(b & OFFS_REG_MASK) && NOT_HALFWORD(immb)) {
+			PTR_FAIL_IF(emit_load_imm64(compiler, TMP_REG2, immb));
+			immb = 0;
+			if (b & REG_MASK)
+				b |= TO_OFFS_REG(TMP_REG2);
+			else
+				b |= TMP_REG2;
 		}
 
 		if (!(b & REG_MASK))
 			inst_size += 1 + sizeof(sljit_s32); /* SIB byte required to avoid RIP based addressing. */
 		else {
-			if (reg_map[b & REG_MASK] >= 8)
-				rex |= REX_B;
-
-			if (immb != 0 && (!(b & OFFS_REG_MASK) || (b & OFFS_REG_MASK) == TO_OFFS_REG(SLJIT_SP))) {
+			if (immb != 0 && !(b & OFFS_REG_MASK)) {
 				/* Immediate operand. */
 				if (immb <= 127 && immb >= -128)
 					inst_size += sizeof(sljit_s8);
 				else
 					inst_size += sizeof(sljit_s32);
 			}
-			else if (reg_lmap[b & REG_MASK] == 5)
-				inst_size += sizeof(sljit_s8);
+			else if (reg_lmap[b & REG_MASK] == 5) {
+				/* Swap registers if possible. */
+				if ((b & OFFS_REG_MASK) && (immb & 0x3) == 0 && reg_lmap[OFFS_REG(b)] != 5)
+					b = SLJIT_MEM | OFFS_REG(b) | TO_OFFS_REG(b & REG_MASK);
+				else
+					inst_size += sizeof(sljit_s8);
+			}
+
+			if (reg_map[b & REG_MASK] >= 8)
+				rex |= REX_B;
+
+			if (reg_lmap[b & REG_MASK] == 4 && !(b & OFFS_REG_MASK))
+				b |= TO_OFFS_REG(SLJIT_SP);
 
 			if (b & OFFS_REG_MASK) {
 				inst_size += 1; /* SIB byte. */
@@ -223,7 +227,7 @@ static sljit_u8* emit_x86_instruction(struct sljit_compiler *compiler, sljit_uw 
 	} else if (b & REG_MASK) {
 		reg_lmap_b = reg_lmap[b & REG_MASK];
 
-		if (!(b & OFFS_REG_MASK) || (b & OFFS_REG_MASK) == TO_OFFS_REG(SLJIT_SP) || reg_lmap_b == 5) {
+		if (!(b & OFFS_REG_MASK) || (b & OFFS_REG_MASK) == TO_OFFS_REG(SLJIT_SP)) {
 			if (immb != 0 || reg_lmap_b == 5) {
 				if (immb <= 127 && immb >= -128)
 					*buf_ptr |= 0x40;
@@ -248,8 +252,14 @@ static sljit_u8* emit_x86_instruction(struct sljit_compiler *compiler, sljit_uw 
 			}
 		}
 		else {
+			if (reg_lmap_b == 5)
+				*buf_ptr |= 0x40;
+
 			*buf_ptr++ |= 0x04;
 			*buf_ptr++ = U8(reg_lmap_b | (reg_lmap[OFFS_REG(b)] << 3) | (immb << 6));
+
+			if (reg_lmap_b == 5)
+				*buf_ptr++ = 0;
 		}
 	}
 	else {
@@ -378,6 +388,9 @@ SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_enter(struct sljit_compiler *compi
 	CHECK_ERROR();
 	CHECK(check_sljit_emit_enter(compiler, options, arg_types, scratches, saveds, fscratches, fsaveds, local_size));
 	set_emit_enter(compiler, options, arg_types, scratches, saveds, fscratches, fsaveds, local_size);
+
+	if (options & SLJIT_ENTER_REG_ARG)
+		arg_types = 0;
 
 	/* Emit ENDBR64 at function entry if needed.  */
 	FAIL_IF(emit_endbranch(compiler));
@@ -786,17 +799,15 @@ SLJIT_API_FUNC_ATTRIBUTE struct sljit_jump* sljit_emit_call(struct sljit_compile
 
 	compiler->mode32 = 0;
 
-	PTR_FAIL_IF(call_with_args(compiler, arg_types, NULL));
+	if ((type & 0xff) != SLJIT_CALL_REG_ARG)
+		PTR_FAIL_IF(call_with_args(compiler, arg_types, NULL));
 
 	if (type & SLJIT_CALL_RETURN) {
 		PTR_FAIL_IF(emit_stack_frame_release(compiler));
 		type = SLJIT_JUMP | (type & SLJIT_REWRITABLE_JUMP);
 	}
 
-#if (defined SLJIT_VERBOSE && SLJIT_VERBOSE) \
-		|| (defined SLJIT_ARGUMENT_CHECKS && SLJIT_ARGUMENT_CHECKS)
-	compiler->skip_checks = 1;
-#endif
+	SLJIT_SKIP_CHECKS(compiler);
 	return sljit_emit_jump(compiler, type);
 }
 
@@ -822,16 +833,15 @@ SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_icall(struct sljit_compiler *compi
 		}
 
 		FAIL_IF(emit_stack_frame_release(compiler));
-		type = SLJIT_JUMP;
 	}
 
-	FAIL_IF(call_with_args(compiler, arg_types, &src));
+	if ((type & 0xff) != SLJIT_CALL_REG_ARG)
+		FAIL_IF(call_with_args(compiler, arg_types, &src));
 
-#if (defined SLJIT_VERBOSE && SLJIT_VERBOSE) \
-		|| (defined SLJIT_ARGUMENT_CHECKS && SLJIT_ARGUMENT_CHECKS)
-	compiler->skip_checks = 1;
-#endif
+	if (type & SLJIT_CALL_RETURN)
+		type = SLJIT_JUMP;
 
+	SLJIT_SKIP_CHECKS(compiler);
 	return sljit_emit_ijump(compiler, type, src, srcw);
 }
 

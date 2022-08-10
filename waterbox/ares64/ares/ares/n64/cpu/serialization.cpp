@@ -115,6 +115,7 @@ auto CPU::serialize(serializer& s) -> void {
   s(scc.tagLo.primaryCacheState);
   s(scc.tagLo.physicalAddress);
   s(scc.epcError);
+  s(scc.latch);
 
   for(auto& r : fpu.r) s(r.u64);
   s(fpu.csr.roundMode);

@@ -1,6 +1,8 @@
 #pragma once
 //started: 2020-04-28
 
+#define XXH_INLINE_ALL
+#include <xxhash.h>
 #include <ares/ares.hpp>
 #include <nall/hashset.hpp>
 #include <nall/recompiler/generic/generic.hpp>
@@ -8,6 +10,9 @@
 
 #if defined(ARCHITECTURE_AMD64)
 #include <nmmintrin.h>
+using v128 = __m128i;
+#elif defined(ARCHITECTURE_ARM64)
+#include <sse2neon.h>
 using v128 = __m128i;
 #endif
 

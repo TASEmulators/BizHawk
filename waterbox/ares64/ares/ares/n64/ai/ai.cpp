@@ -25,27 +25,32 @@ auto AI::unload() -> void {
 }
 
 auto AI::main() -> void {
-  sample();
+  f64 left = 0, right = 0;
+  sample(left, right);
+  stream->frame(left, right);
   step(dac.period);
 }
 
-auto AI::sample() -> void {
-  if(io.dmaCount == 0) return stream->frame(0.0, 0.0);
+auto AI::sample(f64& left, f64& right) -> void {
+  if(io.dmaCount == 0) return;
 
-  io.dmaAddress[0].bit(13,23) += io.dmaAddressCarry;
-  auto data  = rdram.ram.read<Word>(io.dmaAddress[0]);
-  auto left  = s16(data >> 16);
-  auto right = s16(data >>  0);
-  stream->frame(left / 32768.0, right / 32768.0);
+  if(io.dmaLength[0] && io.dmaEnable) {
+    io.dmaAddress[0].bit(13,23) += io.dmaAddressCarry;
+    auto data  = rdram.ram.read<Word>(io.dmaAddress[0]);
+    auto l     = s16(data >> 16);
+    auto r     = s16(data >>  0);
+    left       = l / 32768.0;
+    right      = r / 32768.0;
 
-  io.dmaAddress[0].bit(0,12) += 4;
-  io.dmaAddressCarry          = io.dmaAddress[0].bit(0,12) == 0;
-  io.dmaLength[0]            -= 4;
+    io.dmaAddress[0].bit(0,12) += 4;
+    io.dmaAddressCarry          = io.dmaAddress[0].bit(0,12) == 0;
+    io.dmaLength[0]            -= 4;
+  }
   if(!io.dmaLength[0]) {
-    mi.raise(MI::IRQ::AI);
     if(--io.dmaCount) {
       io.dmaAddress[0] = io.dmaAddress[1];
       io.dmaLength [0] = io.dmaLength [1];
+      mi.raise(MI::IRQ::AI);
     }
   }
 }

@@ -199,7 +199,7 @@ namespace nall {
   struct Architecture {
     static constexpr bool x86   = 0;
     static constexpr bool amd64 = 0;
-    static constexpr bool sse41 = 0;
+    static constexpr bool sse41 = 1; // simulated via sse2neon.h
     static constexpr bool arm64 = 1;
     static constexpr bool arm32 = 0;
     static constexpr bool ppc64 = 0;

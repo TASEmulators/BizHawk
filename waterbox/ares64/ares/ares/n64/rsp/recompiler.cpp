@@ -1,35 +1,34 @@
-auto RSP::Recompiler::pool() -> Pool* {
-  if(context) return context;
+auto RSP::Recompiler::pool(u12 address) -> Pool* {
+  if(context[address >> 8]) return context[address >> 8];
 
-  nall::Hash::CRC32 hashcode;
-  for(u32 offset : range(4096)) {
-    hashcode.input(self.imem.read<Byte>(offset));
-  }
+  auto hashcode = XXH3_64bits(self.imem.data + address, 256);
 
   PoolHashPair pair;
   pair.pool = (Pool*)allocator.acquire();
-  pair.hashcode = hashcode.value();
-  if(auto result = pools.find(pair)) {
-    return context = result->pool;
+  pair.hashcode = hashcode;
+
+  auto result = pools[address >> 8].find(pair);
+  if(result) {
+    return context[address >> 8] = result->pool;
   }
 
   allocator.reserve(sizeof(Pool));
-  if(auto result = pools.insert(pair)) {
-    return context = result->pool;
+  if(auto result = pools[address >> 8].insert(pair)) {
+    return context[address >> 8] = result->pool;
   }
 
   throw;  //should never occur
 }
 
-auto RSP::Recompiler::block(u32 address) -> Block* {
-  if(auto block = pool()->blocks[address >> 2 & 0x3ff]) return block;
+auto RSP::Recompiler::block(u12 address) -> Block* {
+  if(auto block = pool(address)->blocks[address >> 2 & 0x3ff]) return block;
   auto block = emit(address);
-  pool()->blocks[address >> 2 & 0x3ff] = block;
+  pool(address)->blocks[address >> 2 & 0x3ff] = block;
   memory::jitprotect(true);
   return block;
 }
 
-auto RSP::Recompiler::emit(u32 address) -> Block* {
+auto RSP::Recompiler::emit(u12 address) -> Block* {
   if(unlikely(allocator.available() < 1_MiB)) {
     print("RSP allocator flush\n");
     memory::jitprotect(false);

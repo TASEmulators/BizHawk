@@ -26,11 +26,7 @@
 
 SLJIT_API_FUNC_ATTRIBUTE const char* sljit_get_platform_name(void)
 {
-#if (defined SLJIT_X86_32_FASTCALL && SLJIT_X86_32_FASTCALL)
-	return "x86" SLJIT_CPUINFO " ABI:fastcall";
-#else
 	return "x86" SLJIT_CPUINFO;
-#endif
 }
 
 /*
@@ -79,9 +75,9 @@ static const sljit_u8 reg_map[SLJIT_NUMBER_OF_REGISTERS + 3] = {
 #define CHECK_EXTRA_REGS(p, w, do) \
 	if (p >= SLJIT_R3 && p <= SLJIT_S3) { \
 		if (p <= compiler->scratches) \
-			w = compiler->scratches_offset + ((p) - SLJIT_R3) * SSIZE_OF(sw); \
+			w = (2 * SSIZE_OF(sw)) + ((p) - SLJIT_R3) * SSIZE_OF(sw); \
 		else \
-			w = compiler->locals_offset + ((p) - SLJIT_S2) * SSIZE_OF(sw); \
+			w = SLJIT_LOCALS_OFFSET_BASE + ((p) - SLJIT_S2) * SSIZE_OF(sw); \
 		p = SLJIT_MEM1(SLJIT_SP); \
 		do; \
 	}
@@ -2338,10 +2334,7 @@ SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_op2u(struct sljit_compiler *compil
 	CHECK(check_sljit_emit_op2(compiler, op, 1, 0, 0, src1, src1w, src2, src2w));
 
 	if (opcode != SLJIT_SUB && opcode != SLJIT_AND) {
-#if (defined SLJIT_VERBOSE && SLJIT_VERBOSE) \
-			|| (defined SLJIT_ARGUMENT_CHECKS && SLJIT_ARGUMENT_CHECKS)
-		compiler->skip_checks = 1;
-#endif
+		SLJIT_SKIP_CHECKS(compiler);
 		return sljit_emit_op2(compiler, op, TMP_REG1, 0, src1, src1w, src2, src2w);
 	}
 
@@ -2851,10 +2844,7 @@ SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_op_flags(struct sljit_compiler *co
 		return emit_mov(compiler, dst, dstw, TMP_REG1, 0);
 	}
 
-#if (defined SLJIT_VERBOSE && SLJIT_VERBOSE) \
-		|| (defined SLJIT_ARGUMENT_CHECKS && SLJIT_ARGUMENT_CHECKS)
-	compiler->skip_checks = 1;
-#endif
+	SLJIT_SKIP_CHECKS(compiler);
 	return sljit_emit_op2(compiler, op, dst_save, dstw_save, dst_save, dstw_save, TMP_REG1, 0);
 
 #else
@@ -2965,10 +2955,7 @@ SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_op_flags(struct sljit_compiler *co
 	if (GET_OPCODE(op) < SLJIT_ADD)
 		return emit_mov(compiler, dst, dstw, TMP_REG1, 0);
 
-#if (defined SLJIT_VERBOSE && SLJIT_VERBOSE) \
-		|| (defined SLJIT_ARGUMENT_CHECKS && SLJIT_ARGUMENT_CHECKS)
-	compiler->skip_checks = 1;
-#endif
+	SLJIT_SKIP_CHECKS(compiler);
 	return sljit_emit_op2(compiler, op, dst_save, dstw_save, dst_save, dstw_save, TMP_REG1, 0);
 #endif /* SLJIT_CONFIG_X86_64 */
 }

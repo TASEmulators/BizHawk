@@ -108,7 +108,7 @@ struct RSP : Thread, Memory::IO<RSP> {
     };
 
     r32 r[32];
-    u12 pc;
+    u16 pc; // previously u12; now u16 for performance.
   } ipu;
 
   struct Branch {
@@ -175,7 +175,7 @@ struct RSP : Thread, Memory::IO<RSP> {
   //vpu.cpp: Vector Processing Unit
   union r128 {
     struct { uint128_t u128; };
-#if defined(ARCHITECTURE_AMD64)
+#if defined(ARCHITECTURE_AMD64) || defined(ARCHITECTURE_ARM64)
     struct {   __m128i v128; };
 
     operator __m128i() const { return v128; }
@@ -350,18 +350,18 @@ struct RSP : Thread, Memory::IO<RSP> {
     };
 
     auto reset() -> void {
-      context = nullptr;
-      pools.reset();
+      for(auto n : range(16)) context[n] = nullptr;
+      for(auto n : range(16)) pools[n].reset();
     }
 
-    auto invalidate() -> void {
-      context = nullptr;
+    auto invalidate(u32 address) -> void {
+      context[address >> 8] = nullptr;
     }
 
-    auto pool() -> Pool*;
-    auto block(u32 address) -> Block*;
+    auto pool(u12 address) -> Pool*;
+    auto block(u12 address) -> Block*;
 
-    auto emit(u32 address) -> Block*;
+    auto emit(u12 address) -> Block*;
     auto emitEXECUTE(u32 instruction) -> bool;
     auto emitSPECIAL(u32 instruction) -> bool;
     auto emitREGIMM(u32 instruction) -> bool;
@@ -371,9 +371,8 @@ struct RSP : Thread, Memory::IO<RSP> {
     auto emitSWC2(u32 instruction) -> bool;
 
     bump_allocator allocator;
-    Pool* context = nullptr;
-    set<PoolHashPair> pools;
-  //hashset<PoolHashPair> pools;
+    Pool* context[16];
+    set<PoolHashPair> pools[16];
   } recompiler{*this};
 
   struct Disassembler {

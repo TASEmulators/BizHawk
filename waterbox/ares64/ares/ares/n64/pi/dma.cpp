@@ -37,7 +37,7 @@ auto PI::dmaWrite() -> void {
     }
 
     if constexpr(Accuracy::CPU::Recompiler) {
-      cpu.recompiler.invalidateRange(io.dramAddress, io.dramAddress + cur_len);
+      cpu.recompiler.invalidateRange(io.dramAddress, cur_len);
     }
     for (u32 i = 0; i < cur_len; i++)
       rdram.ram.write<Byte>(io.dramAddress++, mem[i]);

@@ -446,8 +446,6 @@ struct sljit_compiler {
 
 #if (defined SLJIT_CONFIG_X86_32 && SLJIT_CONFIG_X86_32)
 	sljit_s32 args_size;
-	sljit_s32 locals_offset;
-	sljit_s32 scratches_offset;
 #endif
 
 #if (defined SLJIT_CONFIG_X86_64 && SLJIT_CONFIG_X86_64)
@@ -489,12 +487,6 @@ struct sljit_compiler {
 #endif
 
 #if (defined SLJIT_CONFIG_RISCV && SLJIT_CONFIG_RISCV)
-	sljit_s32 cache_arg;
-	sljit_sw cache_argw;
-#endif
-
-#if (defined SLJIT_CONFIG_SPARC_32 && SLJIT_CONFIG_SPARC_32)
-	sljit_s32 delay_slot;
 	sljit_s32 cache_arg;
 	sljit_sw cache_argw;
 #endif
@@ -702,17 +694,21 @@ SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_cmp_info(sljit_s32 type);
          overwrites the previous context.
 */
 
-/* The SLJIT_S0/SLJIT_S1 registers are not saved / restored on function
-   enter / return. Instead, these registers can be used to pass / return
-   data (such as global / local context pointers) across function calls.
-   This is an sljit specific (non ABI compatible) function call extension
-   so both the caller and called function must be compiled by sljit. */
-#define SLJIT_ENTER_KEEP_S0	0x00000001
-#define SLJIT_ENTER_KEEP_S0_S1	0x00000002
+/* Saved registers between SLJIT_S0 and SLJIT_S(n - 1) (inclusive)
+   are not saved / restored on function enter / return. Instead,
+   these registers can be used to pass / return data (such as
+   global / local context pointers) across function calls. The
+   value of n must be between 1 and 3. Furthermore, this option
+   is only supported by register argument calling convention, so
+   SLJIT_ENTER_REG_ARG (see below) must be specified as well. */
+#define SLJIT_ENTER_KEEP(n)	(n)
 
-/* The compiled function uses cdecl calling
- * convention instead of SLJIT_FUNC. */
-#define SLJIT_ENTER_CDECL	0x00000004
+/* The compiled function uses an sljit specific register argument
+ * calling convention. This is a lightweight function call type where
+ * both the caller and called function must be compiled with sljit.
+ * The jump type of the function call must be SLJIT_CALL_REG_ARG
+ * and the called function must store all arguments in registers. */
+#define SLJIT_ENTER_REG_ARG	0x00000004
 
 /* The local_size must be >= 0 and <= SLJIT_MAX_LOCAL_SIZE. */
 #define SLJIT_MAX_LOCAL_SIZE	65536
@@ -819,8 +815,9 @@ SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_fast_enter(struct sljit_compiler *
            Write-back is supported except for one instruction: 32 bit signed
                 load with [reg+imm] addressing mode on 64 bit.
    mips:   [reg+imm], -65536 <= imm <= 65535
-   sparc:  [reg+imm], -4096 <= imm <= 4095
-           [reg+reg] is supported
+           Write-back is not supported
+   riscv:  [reg+imm], -2048 <= imm <= 2047
+           Write-back is not supported
    s390x:  [reg+imm], -2^19 <= imm < 2^19
            [reg+reg] is supported
            Write-back is not supported
@@ -1293,11 +1290,11 @@ SLJIT_API_FUNC_ATTRIBUTE struct sljit_label* sljit_emit_label(struct sljit_compi
 #define SLJIT_JUMP			34
 	/* Fast calling method. See sljit_emit_fast_enter / SLJIT_FAST_RETURN. */
 #define SLJIT_FAST_CALL			35
-	/* Called function must be declared with the SLJIT_FUNC attribute. */
+	/* Default C calling convention. */
 #define SLJIT_CALL			36
-	/* Called function must be declared with cdecl attribute.
-	   This is the default attribute for C functions. */
-#define SLJIT_CALL_CDECL		37
+	/* Called function must be an sljit compiled function.
+	   See SLJIT_ENTER_REG_ARG option. */
+#define SLJIT_CALL_REG_ARG		37
 
 /* The target can be changed during runtime (see: sljit_set_jump_addr). */
 #define SLJIT_REWRITABLE_JUMP		0x1000
@@ -1305,10 +1302,7 @@ SLJIT_API_FUNC_ATTRIBUTE struct sljit_label* sljit_emit_label(struct sljit_compi
    the called function returns to the caller of the current function. The
    stack usage is reduced before the call, but it is not necessarily reduced
    to zero. In the latter case the compiler needs to allocate space for some
-   arguments and the return register must be kept as well.
-
-   This feature is highly experimental and not supported on SPARC platform
-   at the moment. */
+   arguments and the return address must be stored on the stack as well. */
 #define SLJIT_CALL_RETURN			0x2000
 
 /* Emit a jump instruction. The destination is not set, only the type of the jump.
@@ -1407,32 +1401,58 @@ SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_cmov(struct sljit_compiler *compil
 
 /* The following flags are used by sljit_emit_mem() and sljit_emit_fmem(). */
 
+/* Memory load operation. This is the default. */
+#define SLJIT_MEM_LOAD		0x000000
+/* Memory store operation. */
+#define SLJIT_MEM_STORE		0x000200
+
+/* Load or stora data from an unaligned address. */
+#define SLJIT_MEM_UNALIGNED	0x000400
+/* Load or store data and update the base address with a single operation. */
+/* Base register is updated before the memory access. */
+#define SLJIT_MEM_PRE		0x000800
+/* Base register is updated after the memory access. */
+#define SLJIT_MEM_POST		0x001000
+
+/* The following flags are supported when SLJIT_MEM_UNALIGNED is specified: */
+
+/* Defines 16 bit alignment for unaligned accesses. */
+#define SLJIT_MEM_ALIGNED_16	0x010000
+/* Defines 32 bit alignment for unaligned accesses. */
+#define SLJIT_MEM_ALIGNED_32	0x020000
+
+/* The following flags are supported when SLJIT_MEM_PRE or
+   SLJIT_MEM_POST is specified: */
+
 /* When SLJIT_MEM_SUPP is passed, no instructions are emitted.
    Instead the function returns with SLJIT_SUCCESS if the instruction
    form is supported and SLJIT_ERR_UNSUPPORTED otherwise. This flag
    allows runtime checking of available instruction forms. */
-#define SLJIT_MEM_SUPP		0x0200
-/* Memory load operation. This is the default. */
-#define SLJIT_MEM_LOAD		0x0000
-/* Memory store operation. */
-#define SLJIT_MEM_STORE		0x0400
-/* Base register is updated before the memory access. */
-#define SLJIT_MEM_PRE		0x0800
-/* Base register is updated after the memory access. */
-#define SLJIT_MEM_POST		0x1000
+#define SLJIT_MEM_SUPP		0x010000
 
-/* Emit a single memory load or store with update instruction. When the
-   requested instruction form is not supported by the CPU, it returns
-   with SLJIT_ERR_UNSUPPORTED instead of emulating the instruction. This
-   allows specializing tight loops based on the supported instruction
-   forms (see SLJIT_MEM_SUPP flag).
+/* The sljit_emit_mem emits instructions for various memory operations:
+
+   When SLJIT_MEM_UNALIGNED is set in type argument:
+     Emit instructions for unaligned memory loads or stores. When
+     SLJIT_UNALIGNED is not defined, the only way to access unaligned
+     memory data is using sljit_emit_mem. Otherwise all operations (e.g.
+     sljit_emit_op1/2, or sljit_emit_fop1/2) supports unaligned access.
+     In general, the performance of unaligned memory accesses are often
+     lower than aligned and should be avoided.
+
+   When SLJIT_MEM_PRE or SLJIT_MEM_POST is set in type argument:
+     Emit a single memory load or store with update instruction.
+     When the requested instruction form is not supported by the CPU,
+     it returns with SLJIT_ERR_UNSUPPORTED instead of emulating the
+     instruction. This allows specializing tight loops based on
+     the supported instruction forms (see SLJIT_MEM_SUPP flag).
 
    type must be between SLJIT_MOV and SLJIT_MOV_P and can be
-     combined with SLJIT_MEM_* flags. Either SLJIT_MEM_PRE
-     or SLJIT_MEM_POST must be specified.
+     combined with SLJIT_MEM_* flags.
    reg is the source or destination register, and must be
      different from the base register of the mem operand
-   mem must be a SLJIT_MEM1() or SLJIT_MEM2() operand
+     when SLJIT_MEM_PRE or SLJIT_MEM_POST is passed
+   mem must be a memory operand
 
    Flags: - (does not modify flags) */
 SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_mem(struct sljit_compiler *compiler, sljit_s32 type,
@@ -1442,9 +1462,11 @@ SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_mem(struct sljit_compiler *compile
 /* Same as sljit_emit_mem except the followings:
 
    type must be SLJIT_MOV_F64 or SLJIT_MOV_F32 and can be
-     combined with SLJIT_MEM_* flags. Either SLJIT_MEM_PRE
-     or SLJIT_MEM_POST must be specified.
-   freg is the source or destination floating point register */
+     combined with SLJIT_MEM_* flags.
+   freg is the source or destination floating point register
+   mem must be a memory operand
+
+   Flags: - (does not modify flags) */
 
 SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_fmem(struct sljit_compiler *compiler, sljit_s32 type,
 	sljit_s32 freg,
@@ -1603,7 +1625,7 @@ SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_get_register_index(sljit_s32 reg);
 /* The following function is a helper function for sljit_emit_op_custom.
    It returns with the real machine register index of any SLJIT_FLOAT register.
 
-   Note: the index is always an even number on ARM (except ARM-64), MIPS, and SPARC. */
+   Note: the index is always an even number on ARM-32, MIPS. */
 
 SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_get_float_register_index(sljit_s32 reg);
 

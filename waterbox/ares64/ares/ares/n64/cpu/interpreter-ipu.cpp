@@ -155,13 +155,13 @@ auto CPU::CACHE(u8 operation, cr64& rs, s16 imm) -> void {
 
   case 0x14: {  //icache fill
     auto& line = icache.line(address);
-    line.fill(address);
+    line.fill(address, cpu);
     break;
   }
 
   case 0x18: {  //icache hit write back
     auto& line = icache.line(address);
-    if(line.hit(address)) line.writeBack();
+    if(line.hit(address)) line.writeBack(cpu);
     break;
   }
 

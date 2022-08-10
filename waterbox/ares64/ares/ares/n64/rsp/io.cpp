@@ -69,7 +69,7 @@ auto RSP::ioRead(u32 address) -> u32 {
 
 auto RSP::writeWord(u32 address, u32 data) -> void {
   if(address <= 0x0403'ffff) {
-    if(address & 0x1000) return recompiler.invalidate(), imem.write<Word>(address, data);
+    if(address & 0x1000) return recompiler.invalidate(address & 0xfff), imem.write<Word>(address, data);
     else                 return dmem.write<Word>(address, data);
   }
   return ioWrite(address, data);

@@ -4,7 +4,6 @@ namespace ares::Nintendo64 {
 
 CPU cpu;
 #include "context.cpp"
-#include "icache.cpp"
 #include "dcache.cpp"
 #include "tlb.cpp"
 #include "memory.cpp"
