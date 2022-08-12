@@ -15,8 +15,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		{
 			FrameAdvancePre(controller, render, renderSound);
 
-			IsLagFrame = true;
-
 			bool resetSignal = controller.IsPressed("Reset");
 			if (resetSignal)
 			{
@@ -29,16 +27,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				Api.core.snes_power();
 			}
 
+			IsLagFrame = true;
 			// run the core for one frame
 			Api.core.snes_run(false);
-			short[] audioBuffer = GetAudiobuffer();
-			_soundProvider.PutSamples(audioBuffer, audioBuffer.Length / 2);
-			Frame++;
-
-			if (IsLagFrame)
-			{
-				LagCount++;
-			}
+			FrameAdvancePost();
 
 			return true;
 		}
@@ -68,6 +60,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			Api.core.snes_set_trace_enabled(_tracer.IsEnabled());
 			Api.core.snes_set_video_enabled(render);
 			Api.core.snes_set_audio_enabled(renderSound);
+		}
+
+		internal void FrameAdvancePost()
+		{
+			short[] audioBuffer = GetAudiobuffer();
+			_soundProvider.PutSamples(audioBuffer, audioBuffer.Length / 2);
+			Frame++;
+
+			if (IsLagFrame)
+			{
+				LagCount++;
+			}
 		}
 
 		private unsafe short[] GetAudiobuffer()
