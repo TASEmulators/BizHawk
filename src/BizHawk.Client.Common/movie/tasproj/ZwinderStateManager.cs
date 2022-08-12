@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -244,7 +245,7 @@ namespace BizHawk.Client.Common
 		// Enumerate all reserved states in reverse order
 		private IEnumerable<StateInfo> ReservedStates()
 		{
-			foreach (var key in _reserved.Keys.OrderByDescending(k => k))
+			foreach (var key in _reserved.Keys.OrderDescending())
 			{
 				yield return new StateInfo(key, _reserved[key]);
 			}

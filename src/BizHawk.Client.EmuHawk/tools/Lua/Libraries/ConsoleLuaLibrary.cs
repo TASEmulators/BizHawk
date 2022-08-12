@@ -3,6 +3,8 @@ using System.Linq;
 using System.Text;
 
 using BizHawk.Client.Common;
+using BizHawk.Common.CollectionExtensions;
+
 using NLua;
 
 namespace BizHawk.Client.EmuHawk
@@ -82,7 +84,7 @@ namespace BizHawk.Client.EmuHawk
 
 				return string.Concat(keyObjs.Cast<object>()
 					.Select((kObj, i) => $"\"{(kObj is string s ? FixString(s) : kObj.ToString())}\": \"{(values[i] is string s1 ? FixString(s1) : values[i].ToString())}\"\n")
-					.OrderBy(static s => s));
+					.Order());
 			}
 
 			if (!Tools.Has<LuaConsole>())

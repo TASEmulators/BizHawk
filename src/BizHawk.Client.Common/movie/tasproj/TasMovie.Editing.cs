@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -117,8 +118,7 @@ namespace BizHawk.Client.Common
 				// and process each block independently
 				List<int> framesToDelete = frames
 					.Where(fr => fr >= 0 && fr < InputLogLength)
-					.OrderBy(fr => fr)
-					.ToList();
+					.Order().ToList();
 				// f is the current index for framesToDelete
 				int f = 0;
 				int numDeleted = 0;

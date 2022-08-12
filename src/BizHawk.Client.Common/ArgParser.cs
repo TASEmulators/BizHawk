@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 
+using BizHawk.Common.CollectionExtensions;
+
 namespace BizHawk.Client.Common
 {
 	/// <summary>
@@ -86,7 +88,7 @@ namespace BizHawk.Client.Common
 					}
 
 					// automatically set dump length to maximum frame
-					autoDumpLength = currAviWriterFrameList.OrderBy(x => x).Last();
+					autoDumpLength = currAviWriterFrameList.Order().Last();
 				}
 				else if (argDowncased.StartsWith("--version"))
 				{

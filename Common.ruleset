@@ -31,6 +31,9 @@
 		<!-- Call to FirstOrDefault when elements are of a value type; FirstOrNull may have been intended -->
 		<Rule Id="BHI3100" Action="Error" />
 
+		<!-- Use .Order()/.OrderDescending() shorthand -->
+		<Rule Id="BHI3101" Action="Warning" />
+
 		<!-- Throw NotImplementedException from methods/props marked [FeatureNotImplemented] -->
 		<Rule Id="BHI3300" Action="Error" />
 	</Rules>

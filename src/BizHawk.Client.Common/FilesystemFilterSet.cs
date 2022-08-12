@@ -3,6 +3,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using BizHawk.Common.CollectionExtensions;
+
 namespace BizHawk.Client.Common
 {
 	public sealed class FilesystemFilterSet
@@ -27,7 +29,7 @@ namespace BizHawk.Client.Common
 		/// <remarks>call other overload (omit <paramref name="combinedEntryDesc"/>) to not prepend combined entry, return value is a valid <c>Filter</c> for <c>Save-</c>/<c>OpenFileDialog</c></remarks>
 		public string ToString(string combinedEntryDesc, bool addAllFilesEntry = true)
 		{
-			_allSer ??= FilesystemFilter.SerializeEntry(combinedEntryDesc, Filters.SelectMany(static filter => filter.Extensions).Distinct().OrderBy(static s => s).ToList());
+			_allSer ??= FilesystemFilter.SerializeEntry(combinedEntryDesc, Filters.SelectMany(static filter => filter.Extensions).Distinct().Order().ToList());
 			return $"{_allSer}|{ToString(addAllFilesEntry)}";
 		}
 

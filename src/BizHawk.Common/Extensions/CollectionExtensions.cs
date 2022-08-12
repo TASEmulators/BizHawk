@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace BizHawk.Common.CollectionExtensions
 {
@@ -153,6 +154,16 @@ namespace BizHawk.Common.CollectionExtensions
 			return null;
 		}
 
+		/// <remarks>shorthand for <c>this.OrderBy(static e => e)</c>, backported from .NET 7</remarks>
+		public static IOrderedEnumerable<T> Order<T>(this IEnumerable<T> source)
+			where T : IComparable<T>
+			=> source.OrderBy(ReturnSelf);
+
+		/// <remarks>shorthand for <c>this.OrderByDescending(static e => e)</c>, backported from .NET 7</remarks>
+		public static IOrderedEnumerable<T> OrderDescending<T>(this IEnumerable<T> source)
+			where T : IComparable<T>
+			=> source.OrderByDescending(ReturnSelf);
+
 		/// <inheritdoc cref="List{T}.RemoveAll"/>
 		/// <remarks>
 		/// (This is an extension method which reimplements <see cref="List{T}.RemoveAll"/> for other <see cref="ICollection{T}">collections</see>.
@@ -179,6 +190,10 @@ namespace BizHawk.Common.CollectionExtensions
 			}
 			return c - list.Count;
 		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private static T ReturnSelf<T>(this T self)
+			=> self;
 
 		public static bool IsSortedAsc<T>(this IReadOnlyList<T> list)
 			where T : IComparable<T>

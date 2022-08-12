@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
+using BizHawk.Common.CollectionExtensions;
+
 namespace BizHawk.Emulation.Common
 {
 	/// <summary>
@@ -74,8 +76,7 @@ namespace BizHawk.Emulation.Common
 		private static List<string> AllSysIDs
 			=> _allSysIDs ??= typeof(Raw).GetFields(BindingFlags.Public | BindingFlags.Static)
 				.Select(x => (string) x.GetRawConstantValue())
-				.OrderBy(s => s)
-				.ToList();
+				.Order().ToList();
 
 		/// <returns><paramref name="sysID"/> iff it's in <see cref="Raw">the valid list</see>, else <see langword="null"/></returns>
 		public static string? Validate(string sysID)
