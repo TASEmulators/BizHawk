@@ -11,6 +11,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		public ControllerDefinition ControllerDefinition => _controllers.Definition;
 
+		private short[] _audioBuffer = Array.Empty<short>();
+
 		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{
 			FrameAdvancePre(controller, render, renderSound);
@@ -64,8 +66,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		internal void FrameAdvancePost()
 		{
-			short[] audioBuffer = GetAudiobuffer();
-			_soundProvider.PutSamples(audioBuffer, audioBuffer.Length / 2);
+			int numSamples = UpdateAudioBuffer();
+			_soundProvider.PutSamples(_audioBuffer, numSamples / 2);
 			Frame++;
 
 			if (IsLagFrame)
@@ -74,19 +76,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			}
 		}
 
-		private unsafe short[] GetAudiobuffer()
+		private unsafe int UpdateAudioBuffer()
 		{
 			using (Api.exe.EnterExit())
 			{
 				short* rawAudioBuffer = Api.core.snes_get_audiobuffer_and_size(out int size);
-				short[] audioBuffer = new short[size];
-				Marshal.Copy((IntPtr) rawAudioBuffer, audioBuffer, 0, size);
+				if (size > _audioBuffer.Length)
+					_audioBuffer = new short[size];
+				Marshal.Copy((IntPtr) rawAudioBuffer, _audioBuffer, 0, size);
 
-				return audioBuffer;
+				return size;
 			}
 		}
 
-		public int Frame { get; set; }
+		public int Frame { get; private set; }
 
 		public string SystemId => VSystemID.Raw.SNES;
 
