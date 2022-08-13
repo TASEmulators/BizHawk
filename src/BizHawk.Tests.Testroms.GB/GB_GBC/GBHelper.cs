@@ -155,7 +155,7 @@ namespace BizHawk.Tests.Testroms.GB
 				ConsoleVariant.CGB_C => biosAvailable ? SameBoySyncSettings_GBC_C_USEBIOS : SameBoySyncSettings_GBC_C_NOBIOS,
 				ConsoleVariant.CGB_D => biosAvailable ? SameBoySyncSettings_GBC_D_USEBIOS : SameBoySyncSettings_GBC_D_NOBIOS,
 				ConsoleVariant.DMG or ConsoleVariant.DMG_B => biosAvailable ? SameBoySyncSettings_GB_USEBIOS : SameBoySyncSettings_GB_NOBIOS,
-				_ => throw new Exception()
+				_ => throw new InvalidOperationException()
 			};
 
 		public static DummyFrontend.ClassInitCallbackDelegate InitGBCore(CoreSetup setup, string romFilename, byte[] rom)
@@ -168,7 +168,7 @@ namespace BizHawk.Tests.Testroms.GB
 					CoreNames.Gambatte => new Gameboy(coreComm, game, rom, GambatteSettings, GetGambatteSyncSettings(setup.Variant, setup.UseBIOS), deterministic: true),
 					CoreNames.GbHawk => new GBHawk(coreComm, game, rom, new(), GetGBHawkSyncSettings(setup.Variant)),
 					CoreNames.Sameboy => new Sameboy(coreComm, game, rom, SameBoySettings, GetSameBoySyncSettings(setup.Variant, setup.UseBIOS), deterministic: true),
-					_ => throw new Exception()
+					_ => throw new InvalidOperationException("unknown GB core")
 				};
 				var biosWaitDuration = setup.UseBIOS || setup.CoreName is CoreNames.Sameboy
 					? setup.Variant.IsColour()
