@@ -43,7 +43,7 @@ namespace SameBoy {
     icd.apuWrite(left, right);
   }
 
-  static auto vblank(GB_gameboy_t*) -> void {
+  static auto vblank(GB_gameboy_t*, GB_vblank_type_t) -> void {
   }
 }
 
