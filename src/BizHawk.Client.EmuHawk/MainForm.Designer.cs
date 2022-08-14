@@ -529,7 +529,6 @@ namespace BizHawk.Client.EmuHawk
 			// AutosaveLastSlotMenuItem
 			// 
 			this.AutosaveLastSlotMenuItem.Name = "AutosaveLastSlotMenuItem";
-			this.AutosaveLastSlotMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.AutosaveLastSlotMenuItem.Text = "Autosave Last Slot";
 			this.AutosaveLastSlotMenuItem.Click += new System.EventHandler(this.AutosaveLastSlotMenuItem_Click);
 			// 
