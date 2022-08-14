@@ -122,6 +122,7 @@ namespace BizHawk.Client.Common
 		public bool AutofireLagFrames { get; set; } = true;
 		public int SaveSlot { get; set; } // currently selected savestate slot
 		public bool AutoLoadLastSaveSlot { get; set; }
+		public bool AutoSaveLastSaveSlot { get; set; }
 		public bool SkipLagFrame { get; set; }
 		public bool SuppressAskSave { get; set; }
 		public bool AviCaptureOsd { get; set; }

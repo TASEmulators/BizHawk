@@ -119,6 +119,8 @@ namespace BizHawk.Client.EmuHawk
 			SetSlotFont(SaveState9MenuItem, 9);
 			SetSlotFont(SaveState0MenuItem, 0);
 
+			AutosaveLastSlotMenuItem.Checked = Config.AutoSaveLastSaveSlot;
+
 			SaveState1MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save State 1"];
 			SaveState2MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save State 2"];
 			SaveState3MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save State 3"];
@@ -376,6 +378,10 @@ namespace BizHawk.Client.EmuHawk
 		private void AutoloadLastSlotMenuItem_Click(object sender, EventArgs e)
 		{
 			Config.AutoLoadLastSaveSlot ^= true;
+		}
+		private void AutosaveLastSlotMenuItem_Click(object sender, EventArgs e)
+		{
+			Config.AutoSaveLastSaveSlot ^= true;
 		}
 
 		private void SelectSlotMenuItems_Click(object sender, EventArgs e)

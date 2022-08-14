@@ -65,8 +65,6 @@ namespace BizHawk.Client.EmuHawk
 			ScreenshotInStatesCheckbox.Checked = _config.Savestates.SaveScreenshot;
 			LowResLargeScreenshotsCheckbox.Checked = !_config.Savestates.NoLowResLargeScreenshots;
 			BigScreenshotNumeric.Value = _config.Savestates.BigScreenshotSize / 1024;
-			AutoSaveStateOnExitCheckbox.Checked = _config.Savestates.AutoSaveStateOnExit;
-			AutoSaveStateSlotNumeric.Value = _config.Savestates.AutoSaveStateSlot;
 
 			ScreenshotInStatesCheckbox_CheckedChanged(null, null);
 		}
@@ -129,8 +127,6 @@ namespace BizHawk.Client.EmuHawk
 			_config.Savestates.SaveScreenshot = ScreenshotInStatesCheckbox.Checked;
 			_config.Savestates.NoLowResLargeScreenshots = !LowResLargeScreenshotsCheckbox.Checked;
 			_config.Savestates.BigScreenshotSize = (int)BigScreenshotNumeric.Value * 1024;
-			_config.Savestates.AutoSaveStateOnExit = AutoSaveStateOnExitCheckbox.Checked;
-			_config.Savestates.AutoSaveStateSlot = (int)AutoSaveStateSlotNumeric.Value;
 
 			if (TriggerRewindSettingsReload)
 			{

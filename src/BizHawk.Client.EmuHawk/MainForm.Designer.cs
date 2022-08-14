@@ -39,6 +39,8 @@ namespace BizHawk.Client.EmuHawk
 			this.SaveState0MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator6 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.SaveNamedStateMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.toolStripSeparator24 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+			this.AutosaveLastSlotMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.LoadStateSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.LoadState1MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.LoadState2MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -463,7 +465,9 @@ namespace BizHawk.Client.EmuHawk
 			this.SaveState9MenuItem,
 			this.SaveState0MenuItem,
 			this.toolStripSeparator6,
-			this.SaveNamedStateMenuItem});
+			this.SaveNamedStateMenuItem,
+			this.toolStripSeparator24,
+			this.AutosaveLastSlotMenuItem});
 			this.SaveStateSubMenu.Text = "&Save State";
 			this.SaveStateSubMenu.DropDownOpened += new System.EventHandler(this.SaveStateSubMenu_DropDownOpened);
 			// 
@@ -521,6 +525,13 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.SaveNamedStateMenuItem.Text = "Save Named State...";
 			this.SaveNamedStateMenuItem.Click += new System.EventHandler(this.SaveNamedStateMenuItem_Click);
+			// 
+			// AutosaveLastSlotMenuItem
+			// 
+			this.AutosaveLastSlotMenuItem.Name = "AutosaveLastSlotMenuItem";
+			this.AutosaveLastSlotMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.AutosaveLastSlotMenuItem.Text = "Autosave Last Slot";
+			this.AutosaveLastSlotMenuItem.Click += new System.EventHandler(this.AutosaveLastSlotMenuItem_Click);
 			// 
 			// LoadStateSubMenu
 			// 
@@ -2756,5 +2767,7 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AmstradCPCNonSyncSettingsToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator8;
 		private System.Windows.Forms.ToolStripMenuItem CaptureLuaMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem AutosaveLastSlotMenuItem;
+		private ToolStripSeparatorEx toolStripSeparator24;
 	}
 }

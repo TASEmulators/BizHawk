@@ -4106,10 +4106,9 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (Config.Savestates.AutoSaveStateOnExit)
+			if (Config.AutoSaveLastSaveSlot && HasSlot(Config.SaveSlot))
 			{
-				SaveQuickSave($"QuickSave{Config.Savestates.AutoSaveStateSlot}");
-				Config.SaveSlot = Config.Savestates.AutoSaveStateSlot;
+				SaveQuickSave($"QuickSave{Config.SaveSlot}");
 			}
 		}
 

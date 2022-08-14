@@ -75,8 +75,6 @@
 			this.label12 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.TargetFrameLengthRadioButton = new System.Windows.Forms.RadioButton();
 			this.TargetRewindIntervalRadioButton = new System.Windows.Forms.RadioButton();
-			this.AutoSaveStateOnExitCheckbox = new System.Windows.Forms.CheckBox();
-			this.AutoSaveStateSlotNumeric = new System.Windows.Forms.NumericUpDown();
 			((System.ComponentModel.ISupportInitialize)(this.BufferSizeUpDown)).BeginInit();
 			this.groupBox4.SuspendLayout();
 			this.locSingleRowFLP1.SuspendLayout();
@@ -87,7 +85,6 @@
 			((System.ComponentModel.ISupportInitialize)(this.nudCompression)).BeginInit();
 			this.groupBox7.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.BigScreenshotNumeric)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.AutoSaveStateSlotNumeric)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// OK
@@ -415,8 +412,6 @@
 			// 
 			// groupBox7
 			// 
-			this.groupBox7.Controls.Add(this.AutoSaveStateSlotNumeric);
-			this.groupBox7.Controls.Add(this.AutoSaveStateOnExitCheckbox);
 			this.groupBox7.Controls.Add(this.label20);
 			this.groupBox7.Controls.Add(this.KbLabel);
 			this.groupBox7.Controls.Add(this.BigScreenshotNumeric);
@@ -556,33 +551,6 @@
 			this.TargetRewindIntervalRadioButton.Text = "Rewinds every fixed number of frames: ";
 			this.TargetRewindIntervalRadioButton.UseVisualStyleBackColor = true;
 			// 
-			// AutoSaveStateOnExitCheckbox
-			// 
-			this.AutoSaveStateOnExitCheckbox.AutoSize = true;
-			this.AutoSaveStateOnExitCheckbox.Location = new System.Drawing.Point(21, 320);
-			this.AutoSaveStateOnExitCheckbox.Name = "AutoSaveStateOnExitCheckbox";
-			this.AutoSaveStateOnExitCheckbox.Size = new System.Drawing.Size(204, 17);
-			this.AutoSaveStateOnExitCheckbox.TabIndex = 39;
-			this.AutoSaveStateOnExitCheckbox.Text = "Automatically save state on exit in slot";
-			this.AutoSaveStateOnExitCheckbox.UseVisualStyleBackColor = true;
-			// 
-			// AutoSaveStateSlotNumeric
-			// 
-			this.AutoSaveStateSlotNumeric.Location = new System.Drawing.Point(231, 317);
-			this.AutoSaveStateSlotNumeric.Maximum = new decimal(new int[] {
-			9,
-			0,
-			0,
-			0});
-			this.AutoSaveStateSlotNumeric.Name = "AutoSaveStateSlotNumeric";
-			this.AutoSaveStateSlotNumeric.Size = new System.Drawing.Size(39, 20);
-			this.AutoSaveStateSlotNumeric.TabIndex = 40;
-			this.AutoSaveStateSlotNumeric.Value = new decimal(new int[] {
-			1,
-			0,
-			0,
-			0});
-			// 
 			// RewindConfig
 			// 
 			this.AcceptButton = this.OK;
@@ -615,7 +583,6 @@
 			this.groupBox7.ResumeLayout(false);
 			this.groupBox7.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.BigScreenshotNumeric)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.AutoSaveStateSlotNumeric)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -668,7 +635,5 @@
 		private WinForms.Controls.LabelEx labelEx1;
 		private System.Windows.Forms.RadioButton TargetFrameLengthRadioButton;
 		private System.Windows.Forms.RadioButton TargetRewindIntervalRadioButton;
-		private System.Windows.Forms.CheckBox AutoSaveStateOnExitCheckbox;
-		private System.Windows.Forms.NumericUpDown AutoSaveStateSlotNumeric;
 	}
 }
