@@ -66,12 +66,14 @@ namespace BizHawk.Emulation.Common
 			{
 				case LibSpeexDSP.RESAMPLER_ERR.SUCCESS:
 					return;
+#pragma warning disable MA0012 // this will crash the .NET host, as it should
 				case LibSpeexDSP.RESAMPLER_ERR.ALLOC_FAILED:
 					throw new InsufficientMemoryException($"{nameof(LibSpeexDSP)}: Alloc failed");
+#pragma warning restore MA0012
 				case LibSpeexDSP.RESAMPLER_ERR.BAD_STATE:
 					throw new Exception($"{nameof(LibSpeexDSP)}: Bad state");
 				case LibSpeexDSP.RESAMPLER_ERR.INVALID_ARG:
-					throw new ArgumentException($"{nameof(LibSpeexDSP)}: Bad Argument");
+					throw new Exception($"{nameof(LibSpeexDSP)}: Bad Argument");
 				case LibSpeexDSP.RESAMPLER_ERR.PTR_OVERLAP:
 					throw new Exception($"{nameof(LibSpeexDSP)}: Buffers cannot overlap");
 			}
@@ -88,10 +90,7 @@ namespace BizHawk.Emulation.Common
 		/// <exception cref="Exception">unmanaged call failed</exception>
 		public SpeexResampler(Quality quality, uint rationum, uint ratioden, uint sratein, uint srateout, Action<short[], int> drainer = null, ISoundProvider input = null)
 		{
-			if (drainer != null && input != null)
-			{
-				throw new ArgumentException($"Can't autofetch without being an {nameof(ISoundProvider)}?");
-			}
+			if (drainer is not null && input is not null) throw new ArgumentException(message: $"Can't autofetch without being an {nameof(ISoundProvider)}?", paramName: nameof(input));
 
 			var err = LibSpeexDSP.RESAMPLER_ERR.SUCCESS;
 			_st = NativeDSP.speex_resampler_init_frac(2, rationum, ratioden, sratein, srateout, quality, ref err);

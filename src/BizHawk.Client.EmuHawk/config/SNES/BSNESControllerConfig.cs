@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Windows.Forms;
+
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.BSNES;
-using BizHawk.Emulation.Cores.Nintendo.SNES;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class BSNESControllerSettings : Form
 	{
-		private readonly IMainFormForConfig _mainForm;
+		private readonly ISettingsAdapter _settable;
+
 		private readonly BsnesCore.SnesSyncSettings _syncSettings;
 
-		public BSNESControllerSettings(
-			IMainFormForConfig mainForm,
-			BsnesCore.SnesSyncSettings syncSettings)
+		public BSNESControllerSettings(ISettingsAdapter settable)
 		{
-			_mainForm = mainForm;
-			_syncSettings = syncSettings;
+			_settable = settable;
+			_syncSettings = (BsnesCore.SnesSyncSettings) _settable.GetSyncSettings();
 			InitializeComponent();
 			Icon = Properties.Resources.GameControllerIcon;
 		}
@@ -24,24 +24,24 @@ namespace BizHawk.Client.EmuHawk
 		{
 			LimitAnalogChangeCheckBox.Checked = _syncSettings.LimitAnalogChangeSensitivity;
 
-			Port1ComboBox.SelectedIndex = (int) _syncSettings.LeftPort >= Port1ComboBox.Items.Count ? 0 : (int) _syncSettings.LeftPort;
+			Port1ComboBox.PopulateFromEnum(_syncSettings.LeftPort);
 			Port2ComboBox.PopulateFromEnum(_syncSettings.RightPort);
 		}
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
 			bool changed =
-				_syncSettings.LeftPort != (BsnesApi.BSNES_INPUT_DEVICE) Port1ComboBox.SelectedIndex
+				_syncSettings.LeftPort != (BsnesApi.BSNES_PORT1_INPUT_DEVICE) Port1ComboBox.SelectedIndex
 				|| _syncSettings.RightPort != (BsnesApi.BSNES_INPUT_DEVICE) Port2ComboBox.SelectedIndex
 				|| _syncSettings.LimitAnalogChangeSensitivity != LimitAnalogChangeCheckBox.Checked;
 
 			if (changed)
 			{
-				_syncSettings.LeftPort = (BsnesApi.BSNES_INPUT_DEVICE) Port1ComboBox.SelectedIndex;
+				_syncSettings.LeftPort = (BsnesApi.BSNES_PORT1_INPUT_DEVICE) Port1ComboBox.SelectedIndex;
 				_syncSettings.RightPort = (BsnesApi.BSNES_INPUT_DEVICE) Port2ComboBox.SelectedIndex;
 				_syncSettings.LimitAnalogChangeSensitivity = LimitAnalogChangeCheckBox.Checked;
 
-				_mainForm.PutCoreSyncSettings(_syncSettings);
+				_settable.PutCoreSyncSettings(_syncSettings);
 			}
 
 			DialogResult = DialogResult.OK;

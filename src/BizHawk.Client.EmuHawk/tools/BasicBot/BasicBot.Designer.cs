@@ -308,8 +308,9 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// BestGroupBox
 			// 
-			this.BestGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-			| System.Windows.Forms.AnchorStyles.Right)));
+			this.BestGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.BestGroupBox.Controls.Add(this.btnCopyBestInput);
 			this.BestGroupBox.Controls.Add(this.PlayBestButton);
 			this.BestGroupBox.Controls.Add(this.ClearBestButton);
@@ -464,7 +465,7 @@ namespace BizHawk.Client.EmuHawk
 			// label13
 			// 
 			this.label13.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.label13.Location = new System.Drawing.Point(104, 16);
+			this.label13.Location = new System.Drawing.Point(96, 16);
 			this.label13.Name = "label13";
 			this.label13.Text = "Main Value:";
 			// 
@@ -520,7 +521,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.FrameLengthNumeric.Location = new System.Drawing.Point(60, 25);
 			this.FrameLengthNumeric.Maximum = new decimal(new int[] {
-			999,
+			9999,
 			0,
 			0,
 			0});
@@ -606,7 +607,8 @@ namespace BizHawk.Client.EmuHawk
 			">=",
 			"=",
 			"<=",
-			"<"});
+			"<",
+			"!="});
 			this.MainOperator.Location = new System.Drawing.Point(208, 3);
 			this.MainOperator.Name = "MainOperator";
 			this.MainOperator.Size = new System.Drawing.Size(40, 21);
@@ -689,7 +691,8 @@ namespace BizHawk.Client.EmuHawk
 			">=",
 			"=",
 			"<=",
-			"<"});
+			"<",
+			"!="});
 			this.Tiebreak1Operator.Location = new System.Drawing.Point(208, 3);
 			this.Tiebreak1Operator.Name = "Tiebreak1Operator";
 			this.Tiebreak1Operator.Size = new System.Drawing.Size(40, 21);
@@ -773,7 +776,8 @@ namespace BizHawk.Client.EmuHawk
 			">=",
 			"=",
 			"<=",
-			"<"});
+			"<",
+			"!="});
 			this.Tiebreak2Operator.Location = new System.Drawing.Point(208, 3);
 			this.Tiebreak2Operator.Name = "Tiebreak2Operator";
 			this.Tiebreak2Operator.Size = new System.Drawing.Size(40, 21);
@@ -915,7 +919,8 @@ namespace BizHawk.Client.EmuHawk
 			">=",
 			"=",
 			"<=",
-			"<"});
+			"<",
+			"!="});
 			this.Tiebreak3Operator.Location = new System.Drawing.Point(208, 3);
 			this.Tiebreak3Operator.Name = "Tiebreak3Operator";
 			this.Tiebreak3Operator.Size = new System.Drawing.Size(40, 21);
@@ -961,7 +966,8 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// ControlGroupBox
 			// 
-			this.ControlGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.ControlGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.ControlGroupBox.Controls.Add(this.InvisibleEmulationCheckBox);
 			this.ControlGroupBox.Controls.Add(this.panel2);
 			this.ControlGroupBox.Controls.Add(this.StopBtn);

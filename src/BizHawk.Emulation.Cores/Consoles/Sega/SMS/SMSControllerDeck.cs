@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					BoolButtons = new[] { "Reset" }
 							.Concat(Port1.Definition.BoolButtons)
 							.ToList()
-				}.MakeImmutable();
+				};
 			}
 			else
 			{
@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 								.Concat(Port1.Definition.BoolButtons)
 								.Concat(Port2.Definition.BoolButtons)
 								.ToList()
-					}.MakeImmutable();
+					};
 				}
 				else
 				{
@@ -49,12 +49,13 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 								.Concat(Port2.Definition.BoolButtons)
 								.Concat(KeyboardMap)
 								.ToList()
-					}.MakeImmutable();
+					};
 				}
 
 				foreach (var kvp in Port1.Definition.Axes) Definition.Axes.Add(kvp);
 				foreach (var kvp in Port2.Definition.Axes) Definition.Axes.Add(kvp);
-			}		
+			}
+			Definition.MakeImmutable();
 		}
 
 		public byte ReadPort1_c1(IController c)

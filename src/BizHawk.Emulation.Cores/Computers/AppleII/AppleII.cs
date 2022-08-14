@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using BizHawk.Common.CollectionExtensions;
@@ -20,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		}
 
 		[CoreConstructor(VSystemID.Raw.AppleII)]
-		public AppleII(CoreLoadParameters<Settings, object> lp)
+		public AppleII(CoreLoadParameters<Settings, SyncSettings> lp)
 		{
 			_romSet = lp.Roms.Select(r => r.RomData).ToList();
 			var ser = new BasicServiceProvider(this);
@@ -35,7 +36,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			_diskIIRom = lp.Comm.CoreFileProvider.GetFirmwareOrThrow(new(SystemId, "DiskII"), "The DiskII firmware is required");
 
 			_machine = new Components(_appleIIRom, _diskIIRom);
-			
+
 			// make a writable memory stream cloned from the rom.
 			// for junk.dsk the .dsk is important because it determines the format from that
 			InitDisk();
@@ -46,6 +47,10 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 			SetupMemoryDomains();
 			PutSettings(lp.Settings ?? new Settings());
+
+			_syncSettings = lp.SyncSettings ?? new SyncSettings();
+			DeterministicEmulation = lp.DeterministicEmulationRequested || !_syncSettings.UseRealTime;
+			InitializeRtc(!DeterministicEmulation);
 		}
 
 		private static readonly ControllerDefinition AppleIIController;
@@ -155,6 +160,8 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 				_prevPressed = false;
 			}
 
+			AdvanceRtc();
+
 			MachineAdvance(RealButtons.Where(controller.IsPressed));
 			if (IsLagFrame)
 			{
@@ -210,6 +217,39 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 				}
 			};
 			_machine.Memory.InputCallback = InputCallbacks.Call;
+		}
+
+		private bool _useRealTime;
+		private long _clockTime;
+		private int _clockRemainder;
+		private const int TicksInSecond = 10000000; // DateTime.Ticks uses 100-nanosecond intervals
+		
+		private DateTime GetFrontendTime()
+		{
+			if (_useRealTime && DeterministicEmulation)
+				throw new InvalidOperationException();
+			
+			return _useRealTime
+				? DateTime.Now
+				: new DateTime(_clockTime * TicksInSecond + (_clockRemainder * TicksInSecond / VsyncNumerator));
+		}
+
+		private void InitializeRtc(bool useRealTime)
+		{
+			_useRealTime = useRealTime;
+			_clockTime = _syncSettings.InitialTime.Ticks / TicksInSecond;
+			_clockRemainder = (int)(_syncSettings.InitialTime.Ticks % TicksInSecond) * VsyncNumerator / TicksInSecond;
+			_machine.NoSlotClock.FrontendTimeCallback = GetFrontendTime;
+		}
+
+		private void AdvanceRtc()
+		{
+			_clockRemainder += VsyncDenominator;
+			if (_clockRemainder >= VsyncNumerator)
+			{
+				_clockRemainder -= VsyncNumerator;
+				_clockTime++;
+			}
 		}
 	}
 }

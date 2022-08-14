@@ -59,13 +59,13 @@
 			// 
 			// trackBarSensitivity
 			// 
-			this.trackBarSensitivity.LargeChange = 20;
+			this.trackBarSensitivity.LargeChange = 4;
 			this.trackBarSensitivity.Location = new System.Drawing.Point(267, 21);
-			this.trackBarSensitivity.Maximum = 20;
-			this.trackBarSensitivity.Minimum = -20;
+			this.trackBarSensitivity.Maximum = 40;
+			this.trackBarSensitivity.Minimum = -40;
 			this.trackBarSensitivity.Name = "trackBarSensitivity";
-			this.trackBarSensitivity.Size = new System.Drawing.Size(104, 45);
-			this.trackBarSensitivity.SmallChange = 10;
+			this.trackBarSensitivity.Size = new System.Drawing.Size(160, 45);
+			this.trackBarSensitivity.SmallChange = 1;
 			this.trackBarSensitivity.TabIndex = 2;
 			this.trackBarSensitivity.TickFrequency = 10;
 			this.trackBarSensitivity.ValueChanged += new System.EventHandler(this.TrackBarSensitivity_ValueChanged);
@@ -92,11 +92,15 @@
 			// 
 			// trackBarDeadzone
 			// 
+			this.trackBarDeadzone.LargeChange = 5;
 			this.trackBarDeadzone.Location = new System.Drawing.Point(267, 51);
+			this.trackBarDeadzone.Maximum = 25;
+			this.trackBarDeadzone.Minimum = 0;
 			this.trackBarDeadzone.Name = "trackBarDeadzone";
-			this.trackBarDeadzone.Size = new System.Drawing.Size(104, 45);
+			this.trackBarDeadzone.Size = new System.Drawing.Size(160, 45);
+			this.trackBarDeadzone.SmallChange = 1;
 			this.trackBarDeadzone.TabIndex = 5;
-			this.trackBarDeadzone.TickFrequency = 2;
+			this.trackBarDeadzone.TickFrequency = 5;
 			this.trackBarDeadzone.ValueChanged += new System.EventHandler(this.TrackBarDeadzone_ValueChanged);
 			// 
 			// labelDeadzone
@@ -139,7 +143,7 @@
 			this.Controls.Add(this.labelButtonName);
 			this.Controls.Add(this.textBox1);
 			this.Name = "AnalogBindControl";
-			this.Size = new System.Drawing.Size(378, 99);
+			this.Size = new System.Drawing.Size(434, 99);
 			((System.ComponentModel.ISupportInitialize)(this.trackBarSensitivity)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarDeadzone)).EndInit();
 			this.ResumeLayout(false);

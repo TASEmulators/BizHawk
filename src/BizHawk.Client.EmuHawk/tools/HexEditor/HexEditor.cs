@@ -16,6 +16,7 @@ using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Client.EmuHawk.ToolExtensions;
+using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -242,13 +243,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_textTable.Any())
 			{
-				var byteArr = new List<byte>();
-				foreach (var chr in str)
+				var byteArr = new byte[str.Length];
+				for (var i = 0; i < str.Length; i++)
 				{
-					byteArr.Add((byte)_textTable.FirstOrDefault(kvp => kvp.Value == chr).Key);
+					var c = str[i];
+					byteArr[i] = (byte) (_textTable.FirstOrNull(kvp => kvp.Value == c)?.Key ?? 0);
 				}
-
-				return byteArr.ToArray();
+				return byteArr;
 			}
 
 			return str.Select(Convert.ToByte).ToArray();
@@ -898,13 +899,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					return "";
 				}
-
-				if (path.Contains("|"))
-				{
-					path = path.Split('|').First();
-				}
-
-				return Path.GetDirectoryName(path);
+				return Path.GetDirectoryName(path.SubstringBefore('|'));
 			}
 		}
 
@@ -918,13 +913,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					return "";
 				}
-
-				if (path.Contains("|"))
-				{
-					path = path.Split('|').Last();
-				}
-
-				return Path.GetFileName(path);
+				return Path.GetFileName(path.SubstringAfterLast('|'));
 			}
 		}
 
@@ -1328,9 +1317,7 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadTableFileMenuItem_Click(object sender, EventArgs e)
 		{
 			string initialDirectory = Config.PathEntries.ToolsAbsolutePath();
-			var romName = Config.RecentRoms.MostRecent.Contains('|')
-				? Config.RecentRoms.MostRecent.Split('|').Last()
-				: Config.RecentRoms.MostRecent;
+			var romName = Config.RecentRoms.MostRecent.SubstringAfterLast('|');
 
 			using var ofd = new OpenFileDialog
 			{
@@ -1991,7 +1978,7 @@ namespace BizHawk.Client.EmuHawk
 				(_highlightedAddress.HasValue || _secondaryHighlightedAddresses.Any()) &&
 				_domain.Writable;
 
-			UnfreezeAllContextItem.Visible = MainForm.CheatList.ActiveCount > 0;
+			UnfreezeAllContextItem.Visible = MainForm.CheatList.AnyActive;
 			PasteContextItem.Visible = _domain.Writable && data != null && data.GetDataPresent(DataFormats.Text);
 
 			ContextSeparator1.Visible =

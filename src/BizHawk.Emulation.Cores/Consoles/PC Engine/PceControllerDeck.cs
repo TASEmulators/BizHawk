@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			switch (portNum)
 			{
 				default:
-					throw new ArgumentException($"Invalid {nameof(portNum)}: {portNum}");
+					throw new ArgumentOutOfRangeException(paramName: nameof(portNum), portNum, "port index out of range");
 				case 1:
 					return _port1.Read(c, sel);
 				case 2:

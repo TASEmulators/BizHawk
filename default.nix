@@ -14,13 +14,7 @@
 	version = "2.8.1-local"; # distinguishes parallel installs' config and other data
 	shorthash = "000000000"; # this and the branch name are written into movies and savestates, written to config to detect in-place upgrades (N/A to Nix), and of course also shown in the About dialog
 	branch = "master"; # must be regex-escaped (interpolated as `sed "s/.../${branch}/"`)
-	drv = builtins.path {
-		path = ./.;
-		name = "BizHawk-${version}";
-		filter = let # this is just for speed, not any r13y concern
-			denyList = [ ".git" ".idea" "ExternalCoreProjects" "ExternalProjects" "ExternalToolProjects" "libHawk" "libmupen64plus" "LibretroBridge" "LuaInterface" "lynx" "psx" "quicknes" "submodules" "waterbox" "wonderswan" ];
-		in path: type: type == "regular" || (type == "directory" && !builtins.elem (baseNameOf path) denyList);
-	};
+	drv = builtins.path { path = ./.; name = "BizHawk-${version}"; }; # did have filter here for speed, but it wasn't faster and it wasn't correct and it couldn't be made correct and I'm mad
 }
 # makedeps
 , dotnet-sdk_5 ? pkgs.dotnetCorePackages.sdk_5_0
@@ -160,7 +154,7 @@ in rec {
 				hash = "sha256-KXe69svPIIFaXgT9t+02pwdQ6WWqdqgUdtaE2S4/YxA=";
 			};
 			dotnet-sdk = dotnet-sdk_5;
-			nugetDeps = Dist/deps-old.nix;
+			nugetDeps = Dist/deps_2_7.nix;
 		};
 	};
 	emuhawk-2_8 = buildEmuHawkWrapperFor {
@@ -174,6 +168,7 @@ in rec {
 				rev = "e731e0f32903cd40b83ed75bba3b1e3753105ce2";
 				hash = "sha256-kP6zvTbhctqGCmjDOtQgBGII1T0xIyN5keq7d/lfWVM=";
 			};
+			nugetDeps = Dist/deps_2_8.nix;
 		};
 	};
 	emuhawk = buildEmuHawkWrapperFor { inherit bizhawkAssemblies; hawkSourceInfo = hawkSourceInfoDev; };

@@ -87,7 +87,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		{
 			if (erom.Length != 8192)
 			{
-				throw new ApplicationException("EROM file is wrong size - expected 8192 bytes");
+				throw new ArgumentException(message: "EROM file is wrong size - expected 8192 bytes", paramName: nameof(erom));
 			}
 
 			int index = 0;
@@ -103,7 +103,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		{
 			if (grom.Length != 2048)
 			{
-				throw new ApplicationException("GROM file is wrong size - expected 2048 bytes");
+				throw new ArgumentException(message: "GROM file is wrong size - expected 2048 bytes", paramName: nameof(grom));
 			}
 
 			GraphicsRom = grom;

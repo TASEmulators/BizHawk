@@ -17,7 +17,7 @@ namespace BizHawk.Common
 		private static MethodInfo FromExpression(Expression e)
 			=> e is MethodCallExpression caller
 				? caller.Method
-				: throw new ArgumentException("Expression must be a method call");
+				: throw new ArgumentException(message: "Expression must be a method call", paramName: nameof(e));
 
 		private static MethodInfo Method<T>(Expression<Action<T>> f)
 		{

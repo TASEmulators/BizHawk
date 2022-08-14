@@ -16,6 +16,8 @@
 		<PackageReference Include="MSTest.TestFramework" Version="2.2.8" PrivateAssets="all" />
 		<PackageReference Include="JunitXml.TestLogger" Version="3.0.98" PrivateAssets="all" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Client.Common/BizHawk.Client.Common.csproj" />
+		<None Include="$(ProjectDir)../../Assets/dll/libbizhash.*" CopyToOutputDirectory="PreserveNewest" />
+		<None Include="$(ProjectDir)../../Assets/dll/libzstd.*" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
 	<ItemGroup>
 		<EmbeddedResource Include="data/**/*" />

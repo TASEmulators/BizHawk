@@ -32,8 +32,6 @@
   OP1(mov64_s32, MOV_S32)
   OP1(not32, NOT32)
   OP1(not64, NOT)
-  OP1(neg32, NEG32)
-  OP1(neg64, NEG)
 #undef OP1
 
   //2 operand instructions
@@ -77,11 +75,10 @@
 #define OPC(name, op) \
   template<typename T, typename U> \
   auto name(T x, U y, sljit_s32 flags) { \
-    sljit_emit_op2(compiler, \
-                   SLJIT_##op | flags, \
-                   SLJIT_UNUSED, 0, \
-                   x.fst, x.snd, \
-                   y.fst, y.snd); \
+    sljit_emit_op2u(compiler, \
+                    SLJIT_##op | flags, \
+                    x.fst, x.snd, \
+                    y.fst, y.snd); \
   }
 
   OPC(cmp32, SUB32)
@@ -93,7 +90,7 @@
   template<typename T, typename U>
   auto cmp32_jump(T x, U y, sljit_s32 flags) -> sljit_jump* {
     return sljit_emit_cmp(compiler,
-                          SLJIT_I32_OP | flags,
+                          SLJIT_32 | flags,
                           x.fst, x.snd,
                           y.fst, y.snd);
   }

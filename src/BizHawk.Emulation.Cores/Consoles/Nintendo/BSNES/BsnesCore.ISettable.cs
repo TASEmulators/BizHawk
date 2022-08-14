@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		public class SnesSyncSettings
 		{
-			public BsnesApi.BSNES_INPUT_DEVICE LeftPort { get; set; } = BsnesApi.BSNES_INPUT_DEVICE.Gamepad;
+			public BsnesApi.BSNES_PORT1_INPUT_DEVICE LeftPort { get; set; } = BsnesApi.BSNES_PORT1_INPUT_DEVICE.Gamepad;
 
 			public BsnesApi.BSNES_INPUT_DEVICE RightPort { get; set; } = BsnesApi.BSNES_INPUT_DEVICE.None;
 

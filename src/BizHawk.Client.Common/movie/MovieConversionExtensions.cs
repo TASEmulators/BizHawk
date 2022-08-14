@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -21,6 +21,7 @@ namespace BizHawk.Client.Common
 			string newFilename = ConvertFileNameToTasMovie(old.Filename);
 			var tas = (ITasMovie)old.Session.Get(newFilename);
 			tas.CopyLog(old.GetLogEntries());
+			tas.LogKey = old.LogKey;
 
 			old.Truncate(0); // Trying to minimize ram usage
 
@@ -28,7 +29,7 @@ namespace BizHawk.Client.Common
 			foreach (var (k, v) in old.HeaderEntries) tas.HeaderEntries[k] = v;
 
 			// TODO: we have this version number string generated in multiple places
-			tas.HeaderEntries[HeaderKeys.MovieVersion] = $"BizHawk v2.0 Tasproj v{TasMovie.CurrentVersion}";
+			tas.HeaderEntries[HeaderKeys.MovieVersion] = $"BizHawk v2.0 Tasproj v{TasMovie.CurrentVersion.ToString(NumberFormatInfo.InvariantInfo)}";
 
 			tas.SyncSettingsJson = old.SyncSettingsJson;
 
@@ -56,6 +57,7 @@ namespace BizHawk.Client.Common
 		{
 			var bk2 = old.Session.Get(old.Filename.Replace(old.PreferredExtension, Bk2Movie.Extension));
 			bk2.CopyLog(old.GetLogEntries());
+			bk2.LogKey = old.LogKey;
 
 			bk2.HeaderEntries.Clear();
 			foreach (var (k, v) in old.HeaderEntries) bk2.HeaderEntries[k] = v;
@@ -95,6 +97,7 @@ namespace BizHawk.Client.Common
 			var entries = old.GetLogEntries();
 
 			tas.CopyLog(entries.Skip(frame));
+			tas.LogKey = old.LogKey;
 			tas.CopyVerificationLog(old.VerificationLog);
 			tas.CopyVerificationLog(entries.Take(frame));
 
@@ -180,6 +183,7 @@ namespace BizHawk.Client.Common
 		public static void PopulateWithDefaultHeaderValues(
 			this IMovie movie,
 			IEmulator emulator,
+			ISettingsAdapter settable,
 			IGameInfo game,
 			FirmwareManager firmwareManager,
 			string author)
@@ -189,24 +193,16 @@ namespace BizHawk.Client.Common
 			movie.OriginalEmulatorVersion = VersionInfo.GetEmuVersion();
 			movie.SystemID = emulator.SystemId;
 
-			var settable = new SettingsAdapter(emulator);
 			if (settable.HasSyncSettings)
 			{
 				movie.SyncSettingsJson = ConfigService.SaveWithType(settable.GetSyncSettings());
 			}
 
-			if (game.IsNullInstance())
+			movie.GameName = game.FilesystemSafeName();
+			movie.Hash = game.Hash;
+			if (game.FirmwareHash != null)
 			{
-				movie.GameName = "NULL";
-			}
-			else
-			{
-				movie.GameName = game.FilesystemSafeName();
-				movie.Hash = game.Hash;
-				if (game.FirmwareHash != null)
-				{
-					movie.FirmwareHash = game.FirmwareHash;
-				}
+				movie.FirmwareHash = game.FirmwareHash;
 			}
 
 			if (emulator.HasBoardInfo())
@@ -288,9 +284,7 @@ namespace BizHawk.Client.Common
 				movie.HeaderEntries.Add(HeaderKeys.ClockRate, "0");
 			}
 
-			movie.Core = ((CoreAttribute)Attribute
-				.GetCustomAttribute(emulator.GetType(), typeof(CoreAttribute)))
-				.CoreName;
+			movie.Core = emulator.Attributes().CoreName;
 		}
 
 		internal static string ConvertFileNameToTasMovie(string oldFileName)

@@ -14,20 +14,12 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			var mainRamDomain = new MemoryDomainDelegate("Main Ram", 0xC000, MemoryDomain.Endian.Little,
 				addr =>
 				{
-					if (addr < 0 || addr >= 0xC000)
-					{
-						throw new ArgumentOutOfRangeException();
-					}
-
+					if (addr is < 0 or > 0xBFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
 					return (byte)_machine.Memory.Peek((int)addr);
 				},
 				(addr, value) =>
 				{
-					if (addr < 0 || addr >= 0xC000)
-					{
-						throw new ArgumentOutOfRangeException();
-					}
-
+					if (addr is < 0 or > 0xBFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
 					_machine.Memory.Write((int)addr, value);
 				}, 1);
 
@@ -36,20 +28,12 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			var systemBusDomain = new MemoryDomainDelegate("System Bus", 0x10000, MemoryDomain.Endian.Little,
 				addr =>
 				{
-					if (addr < 0 || addr >= 65536)
-					{
-						throw new ArgumentOutOfRangeException();
-					}
-
+					if (addr is < 0 or > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
 					return (byte)_machine.Memory.Peek((int)addr);
 				},
 				(addr, value) =>
 				{
-					if (addr < 0 || addr >= 65536)
-					{
-						throw new ArgumentOutOfRangeException();
-					}
-
+					if (addr is < 0 or > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
 					_machine.Memory.Write((int)addr, value);
 				}, 1);
 

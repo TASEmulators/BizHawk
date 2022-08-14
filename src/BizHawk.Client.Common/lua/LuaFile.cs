@@ -53,6 +53,7 @@
 				return;
 			}
 
+			Thread.Yield(0); // we MUST yield this thread, else old references to lua libs might be used (and those may contain references to a Dispose()'d emulator)
 			State = RunState.Disabled;
 			if (true /*NLua.Lua.WhichLua == "NLua"*/) Thread.GetTable("keepalives")[Thread] = null;
 			Thread = null;

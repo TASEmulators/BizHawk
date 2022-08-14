@@ -52,6 +52,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 			Definition = m;
 		}
+
+		public override void Enter()
+			=> _monitor.Enter();
+
+		public override void Exit()
+			=> _monitor.Exit();
 	}
 
 	public unsafe class WaterboxMemoryDomainPointer : WaterboxMemoryDomain
@@ -67,9 +73,14 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			if ((ulong)addr < (ulong)Size)
 			{
-				using (_monitor.EnterExit())
+				try
 				{
+					_monitor.Enter();
 					return ((byte*)_data)[addr ^ _addressMangler];
+				}
+				finally
+				{
+					_monitor.Exit();
 				}
 			}
 
@@ -82,9 +93,14 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				if ((ulong)addr < (ulong)Size)
 				{
-					using (_monitor.EnterExit())
+					try
 					{
+						_monitor.Enter();
 						((byte*)_data)[addr ^ _addressMangler] = val;
+					}
+					finally
+					{
+						_monitor.Exit();
 					}
 				}
 				else
@@ -107,9 +123,14 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 			if (start < (ulong)Size && (start + count) <= (ulong)Size)
 			{
-				using (_monitor.EnterExit())
+				try
 				{
+					_monitor.Enter();
 					Marshal.Copy(Z.US((ulong)_data + start), values, 0, (int)count);
+				}
+				finally
+				{
+					_monitor.Exit();
 				}
 			}
 			else

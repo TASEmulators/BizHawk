@@ -42,7 +42,7 @@ auto System::game() -> string {
 auto System::run() -> void {
   while(!vi.refreshed) cpu.main();
   vi.refreshed = false;
-  if (!pi.io.romLockout) si.run();
+  if (!pif.io.romLockout) pif.run();
 }
 
 auto System::load(Node::System& root, string name) -> bool {
@@ -80,6 +80,7 @@ auto System::load(Node::System& root, string name) -> bool {
   vi.load(node);
   ai.load(node);
   pi.load(node);
+  pif.load(node);
   ri.load(node);
   si.load(node);
   cpu.load(node);
@@ -108,6 +109,7 @@ auto System::unload() -> void {
   vi.unload();
   ai.unload();
   pi.unload();
+  pif.unload();
   ri.unload();
   si.unload();
   cpu.unload();
@@ -143,6 +145,7 @@ auto System::power(bool reset) -> void {
   vi.power(reset);
   ai.power(reset);
   pi.power(reset);
+  pif.power(reset);
   ri.power(reset);
   si.power(reset);
   cpu.power(reset);

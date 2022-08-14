@@ -13,7 +13,10 @@ namespace BizHawk.Client.Common
 	{
 		private static readonly ControllerDefinition DeSmuMEControllerDef = new ControllerDefinition("NDS Controller")
 		{
-			BoolButtons = { "Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Y", "X", "L", "R", "LidOpen", "LidClose", "Touch", "Power" },
+			BoolButtons =
+			{
+				"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Y", "X", "L", "R", "LidOpen", "LidClose", "Touch", "Power"
+			}
 		}.AddXYPair("Touch {0}", AxisPairOrientation.RightAndUp, 0.RangeTo(255), 128, 0.RangeTo(191), 96) //TODO verify direction against hardware
 			.AddAxis("Mic Volume", 0.RangeTo(100), 0)
 			.AddAxis("GBA Light Sensor", 0.RangeTo(10), 0)

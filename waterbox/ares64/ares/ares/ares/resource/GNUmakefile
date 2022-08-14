@@ -1,6 +1,10 @@
+build := stable
+nall.path := ../../../nall
+include $(nall.path)/GNUmakefile
+
 all:
 	sourcery resource.bml resource.cpp resource.hpp
 
 clean:
-	rm resource.cpp
-	rm resource.hpp
+	$(call delete,resource.cpp)
+	$(call delete,resource.hpp)

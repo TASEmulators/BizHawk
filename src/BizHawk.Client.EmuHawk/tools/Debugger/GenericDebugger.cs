@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -52,7 +53,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				try
 				{
-					if (CanSetCpu && Disassembler.AvailableCpus.Count() > 1)
+					if (CanSetCpu && Disassembler.AvailableCpus.CountIsAtLeast(2))
 					{
 						var c = new ComboBox
 						{
@@ -293,7 +294,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ToPCBtn_Click(object sender, EventArgs e)
 		{
+			UpdatePC();
 			UpdateDisassembler();
+			DisassemblerView.Refresh();
 		}
 
 		private void RefreshMenuItem_Click(object sender, EventArgs e)

@@ -72,7 +72,7 @@ namespace BizHawk.Client.Common
 			// Wire up input chain
 
 			UdLRControllerAdapter.Source = ActiveController.Or(AutoFireController);
-			UdLRControllerAdapter.AllowUdlr = config.AllowUdlr;
+			UdLRControllerAdapter.OpposingDirPolicy = config.OpposingDirPolicy;
 
 			// these are all reference types which don't change so this SHOULD be a no-op, but I'm not brave enough to move it to the ctor --yoshi
 			StickyXorAdapter.Source = UdLRControllerAdapter;

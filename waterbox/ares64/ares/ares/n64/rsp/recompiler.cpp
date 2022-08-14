@@ -1,35 +1,34 @@
-auto RSP::Recompiler::pool() -> Pool* {
-  if(context) return context;
+auto RSP::Recompiler::pool(u12 address) -> Pool* {
+  if(context[address >> 8]) return context[address >> 8];
 
-  u32 hashcode = 0;
-  for(u32 offset : range(4096)) {
-    hashcode = (hashcode << 5) + hashcode + self.imem.read<Byte>(offset);
-  }
+  auto hashcode = XXH3_64bits(self.imem.data + address, 256);
 
   PoolHashPair pair;
   pair.pool = (Pool*)allocator.acquire();
   pair.hashcode = hashcode;
-  if(auto result = pools.find(pair)) {
-    return context = result->pool;
+
+  auto result = pools[address >> 8].find(pair);
+  if(result) {
+    return context[address >> 8] = result->pool;
   }
 
   allocator.reserve(sizeof(Pool));
-  if(auto result = pools.insert(pair)) {
-    return context = result->pool;
+  if(auto result = pools[address >> 8].insert(pair)) {
+    return context[address >> 8] = result->pool;
   }
 
   throw;  //should never occur
 }
 
-auto RSP::Recompiler::block(u32 address) -> Block* {
-  if(auto block = pool()->blocks[address >> 2 & 0x3ff]) return block;
+auto RSP::Recompiler::block(u12 address) -> Block* {
+  if(auto block = pool(address)->blocks[address >> 2 & 0x3ff]) return block;
   auto block = emit(address);
-  pool()->blocks[address >> 2 & 0x3ff] = block;
+  pool(address)->blocks[address >> 2 & 0x3ff] = block;
   memory::jitprotect(true);
   return block;
 }
 
-auto RSP::Recompiler::emit(u32 address) -> Block* {
+auto RSP::Recompiler::emit(u12 address) -> Block* {
   if(unlikely(allocator.available() < 1_MiB)) {
     print("RSP allocator flush\n");
     memory::jitprotect(false);
@@ -272,7 +271,16 @@ auto RSP::Recompiler::emitEXECUTE(u32 instruction) -> bool {
   }
 
   //INVALID
-  case 0x26 ... 0x27: {
+  case 0x26: {
+    return 0;
+  }
+
+  //LWU Rt,Rs,i16
+  case 0x27: {
+    lea(reg(1), Rt);
+    lea(reg(2), Rs);
+    mov32(reg(3), imm(i16));
+    call(&RSP::LWU);
     return 0;
   }
 
@@ -795,9 +803,13 @@ auto RSP::Recompiler::emitVU(u32 instruction) -> bool {
     return 0;
   }
 
-  //INVALID
+  //VSUT (broken)
   case 0x12: {
-    return 0;
+    lea(reg(1), Vd);
+    lea(reg(2), Vs);
+    lea(reg(3), Vt);
+    callvu(&RSP::VZERO);
+    return 0;    
   }
 
   //VABS Vd,Vs,Vt(e)
@@ -827,9 +839,13 @@ auto RSP::Recompiler::emitVU(u32 instruction) -> bool {
     return 0;
   }
 
-  //INVALID
+  //Broken opcodes: VADDB, VSUBB, VACCB, VSUCB, VSAD, VSAC, VSUM
   case 0x16 ... 0x1c: {
-    return 0;
+    lea(reg(1), Vd);
+    lea(reg(2), Vs);
+    lea(reg(3), Vt);
+    callvu(&RSP::VZERO);
+    return 0;    
   }
 
   //VSAR Vd,Vs,E
@@ -840,9 +856,13 @@ auto RSP::Recompiler::emitVU(u32 instruction) -> bool {
     return 0;
   }
 
-  //INVALID
+  //Invalid opcodes
   case 0x1e ... 0x1f: {
-    return 0;
+    lea(reg(1), Vd);
+    lea(reg(2), Vs);
+    lea(reg(3), Vt);
+    callvu(&RSP::VZERO);
+    return 0;    
   }
 
   //VLT Vd,Vs,Vt(e)
@@ -973,6 +993,10 @@ auto RSP::Recompiler::emitVU(u32 instruction) -> bool {
 
   //INVALID
   case 0x2e ... 0x2f: {
+    lea(reg(1), Vd);
+    lea(reg(2), Vs);
+    lea(reg(3), Vt);
+    callvu(&RSP::VZERO);
     return 0;
   }
 
@@ -1042,10 +1066,39 @@ auto RSP::Recompiler::emitVU(u32 instruction) -> bool {
   //VNOP
   case 0x37: {
     call(&RSP::VNOP);
+    return 0;
+  }
+
+  //Broken opcodes: VEXTT, VEXTQ, VEXTN
+  case 0x38 ... 0x3a: {
+    lea(reg(1), Vd);
+    lea(reg(2), Vs);
+    lea(reg(3), Vt);
+    callvu(&RSP::VZERO);
+    return 0;        
   }
 
   //INVALID
-  case 0x38 ... 0x3f: {
+  case 0x3b: {
+    lea(reg(1), Vd);
+    lea(reg(2), Vs);
+    lea(reg(3), Vt);
+    callvu(&RSP::VZERO);
+    return 0;
+  }
+
+  //Broken opcodes: VINST, VINSQ, VINSN
+  case 0x3c ... 0x3e: {
+    lea(reg(1), Vd);
+    lea(reg(2), Vs);
+    lea(reg(3), Vt);
+    callvu(&RSP::VZERO);
+    return 0;        
+  }
+
+  //VNULL
+  case 0x3f: {
+    call(&RSP::VNOP);    
     return 0;
   }
 

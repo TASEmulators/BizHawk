@@ -175,7 +175,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			return _gpumem;
 		}
 
-		[FeatureNotImplemented]
 		public void SetScanlineCallback(Action callback, int scanline)
 		{
 			_scanlinecb = callback;

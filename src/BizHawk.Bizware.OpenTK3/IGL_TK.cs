@@ -41,6 +41,8 @@ namespace BizHawk.Bizware.OpenTK3
 	/// </summary>
 	public class IGL_TK : IGL
 	{
+		public EDispMethod DispMethodEnum => EDispMethod.OpenGL;
+
 		//rendering state
 		private Pipeline _currPipeline;
 		private RenderTarget _currRenderTarget;
@@ -662,9 +664,7 @@ namespace BizHawk.Bizware.OpenTK3
 
 		private GLControl CastControl(swf.Control swfControl)
 		{
-			GLControl glc = swfControl as GLControl;
-			if (glc == null)
-				throw new ArgumentException("Argument isn't a control created by the IGL interface", "glControl");
+			if (swfControl is not GLControl glc) throw new ArgumentException(message: "Argument isn't a control created by the IGL interface", paramName: nameof(swfControl));
 			return glc;
 		}
 

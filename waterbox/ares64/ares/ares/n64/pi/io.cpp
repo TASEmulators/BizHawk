@@ -1,4 +1,4 @@
-auto PI::readWord(u32 address) -> u32 {
+auto PI::ioRead(u32 address) -> u32 {
   address = (address & 0xfffff) >> 2;
   n32 data;
 
@@ -74,7 +74,7 @@ auto PI::readWord(u32 address) -> u32 {
   return data;
 }
 
-auto PI::writeWord(u32 address, u32 data_) -> void {
+auto PI::ioWrite(u32 address, u32 data_) -> void {
   address = (address & 0xfffff) >> 2;
   n32 data = data_;
 
@@ -91,21 +91,23 @@ auto PI::writeWord(u32 address, u32 data_) -> void {
 
   if(address == 1) {
     //PI_PBUS_ADDRESS
-    io.pbusAddress = n29(data) & ~1;
+    io.pbusAddress = n32(data) & ~1;
   }
 
   if(address == 2) {
     //PI_READ_LENGTH
     io.readLength = n24(data);
     io.dmaBusy = 1;
-    queue.insert(Queue::PI_DMA_Read, io.readLength * 9);
+    queue.insert(Queue::PI_DMA_Read, io.readLength * 36);
+    dmaRead();
   }
 
   if(address == 3) {
     //PI_WRITE_LENGTH
     io.writeLength = n24(data);
     io.dmaBusy = 1;
-    queue.insert(Queue::PI_DMA_Write, io.writeLength * 9);
+    queue.insert(Queue::PI_DMA_Write, io.writeLength * 36);
+    dmaWrite();
   }
 
   if(address == 4) {

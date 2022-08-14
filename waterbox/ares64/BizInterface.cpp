@@ -46,6 +46,7 @@ struct BizPlatform : ares::Platform
 {
 	auto attach(ares::Node::Object) -> void override;
 	auto pak(ares::Node::Object) -> ares::VFS::Pak override;
+	auto log(string_view) -> void override;
 	auto video(ares::Node::Video::Screen, const u32*, u32, u32, u32) -> void override;
 	auto audio(ares::Node::Audio::Stream) -> void override;
 	auto input(ares::Node::Input::Input) -> void override;
@@ -60,6 +61,7 @@ struct BizPlatform : ares::Platform
 	bool hack = false;
 	void (*inputcb)() = nullptr;
 	bool lagged = true;
+	void (*tracecb)(const char*) = nullptr;
 };
 
 auto BizPlatform::attach(ares::Node::Object node) -> void
@@ -73,6 +75,11 @@ auto BizPlatform::attach(ares::Node::Object node) -> void
 auto BizPlatform::pak(ares::Node::Object) -> ares::VFS::Pak
 {
 	return bizpak;
+}
+
+auto BizPlatform::log(string_view message) -> void
+{
+	if (tracecb) tracecb(message.data());
 }
 
 auto BizPlatform::video(ares::Node::Video::Screen screen, const u32* data, u32 pitch, u32 width, u32 height) -> void
@@ -566,24 +573,83 @@ EXPORT bool GetRumbleStatus(u32 num)
 		m[i].Data = c->transferPak.rom.data; \
 		m[i].Name = "GB ROM " #NUM; \
 		m[i].Size = c->transferPak.rom.size; \
-		m[i].Flags = MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_SWAPPED | MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE; \
+		m[i].Flags = MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_SWAPPED | MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE; \
 		i++; \
 \
 		m[i].Data = c->transferPak.ram.data; \
 		m[i].Name = "GB SRAM " #NUM; \
 		m[i].Size = c->transferPak.ram.size; \
-		m[i].Flags = MEMORYAREA_FLAGS_ONEFILLED | MEMORYAREA_FLAGS_SAVERAMMABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_SWAPPED | MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE; \
+		m[i].Flags = MEMORYAREA_FLAGS_ONEFILLED | MEMORYAREA_FLAGS_SAVERAMMABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_SWAPPED | MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE; \
 		i++; \
 	} \
 } while (0)
+
+static inline u8 GetByteFromWord(u32 word, u32 addr)
+{
+	switch (addr & 3)
+	{
+		case 0: return (word >> 24) & 0xFF;
+		case 1: return (word >> 16) & 0xFF;
+		case 2: return (word >>  8) & 0xFF;
+		case 3: return (word >>  0) & 0xFF;
+		default: __builtin_unreachable();
+	}
+}
+
+static u8 PeekFunc(u64 address)
+{
+	address &= 0x1fff'ffff;
+	const u32 addr = address;
+
+	if (addr > 0x0403'ffff && addr <= 0x0407'ffff) // RSP
+	{
+		address = (address & 0x3ffff) >> 2;
+		if (address == 7) // SP_SEMAPHORE
+		{
+			return GetByteFromWord(ares::Nintendo64::rsp.status.semaphore & 1, addr);
+		}
+	}
+	else if (addr > 0x0407'ffff && addr <= 0x040f'ffff) // RSP Status
+	{
+		address = (address & 0x7ffff) >> 2;
+		if (address == 0) // SP_PC_REG
+		{
+			return GetByteFromWord(ares::Nintendo64::rsp.ipu.pc & 0xFFF, addr);
+		}
+	}
+	else if (addr > 0x046f'ffff && addr <= 0x047f'ffff) // RI
+	{
+		address = (address & 0xfffff) >> 2;
+		if (address == 3) // RI_SELECT
+		{
+			return GetByteFromWord(ares::Nintendo64::ri.io.select, addr);
+		}
+	}
+
+	return ares::Nintendo64::bus.read<ares::Nintendo64::Byte>(addr);
+}
+
+static void SysBusAccess(u8* buffer, u64 address, u64 count, bool write)
+{
+	if (write)
+	{
+		while (count--)
+			ares::Nintendo64::bus.write<ares::Nintendo64::Byte>(address++, *buffer++);
+	}
+	else
+	{
+		while (count--)
+			*buffer++ = PeekFunc(address++);
+	}
+}
 
 EXPORT void GetMemoryAreas(MemoryArea *m)
 {
 	int i = 0;
 	ADD_MEMORY_DOMAIN(rdram.ram, "RDRAM", MEMORYAREA_FLAGS_PRIMARY);
 	ADD_MEMORY_DOMAIN(cartridge.rom, "ROM", 0);
-	ADD_MEMORY_DOMAIN(pi.rom, "PI ROM", 0);
-	ADD_MEMORY_DOMAIN(pi.ram, "PI RAM", 0);
+	ADD_MEMORY_DOMAIN(pif.rom, "PIF ROM", 0);
+	ADD_MEMORY_DOMAIN(pif.ram, "PIF RAM", 0);
 	ADD_MEMORY_DOMAIN(rsp.dmem, "RSP DMEM", 0);
 	ADD_MEMORY_DOMAIN(rsp.imem, "RSP IMEM", 0);
 	ADD_MEMORY_DOMAIN(cartridge.ram, "SRAM", MEMORYAREA_FLAGS_ONEFILLED | MEMORYAREA_FLAGS_SAVERAMMABLE);
@@ -597,6 +663,11 @@ EXPORT void GetMemoryAreas(MemoryArea *m)
 	ADD_GB_DOMAINS(2);
 	ADD_GB_DOMAINS(3);
 	ADD_GB_DOMAINS(4);
+
+	m[i].Data = (void*)SysBusAccess;
+	m[i].Name = "System Bus";
+	m[i].Size = 1ull << 32;
+	m[i].Flags = MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_SWAPPED | MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_FUNCTIONHOOK;
 }
 
 struct MyFrameInfo : public FrameInfo
@@ -697,4 +768,28 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 EXPORT void SetInputCallback(void (*callback)())
 {
 	platform->inputcb = callback;
+}
+
+EXPORT void GetDisassembly(u32 address, u32 instruction, char* buf)
+{
+	auto s = ares::Nintendo64::cpu.disassembler.disassemble(address, instruction).strip();
+	strcpy(buf, s.data());
+}
+
+EXPORT void SetTraceCallback(void (*callback)(const char*))
+{
+	ares::Nintendo64::cpu.debugger.tracer.instruction->setEnabled(!!callback);
+	platform->tracecb = callback;
+}
+
+EXPORT void GetRegisters(u64* buf)
+{
+	for (int i = 0; i < 32; i++)
+	{
+		buf[i] = ares::Nintendo64::cpu.ipu.r[i].u64;
+	}
+
+	buf[32] = ares::Nintendo64::cpu.ipu.lo.u64;
+	buf[33] = ares::Nintendo64::cpu.ipu.hi.u64;
+	buf[34] = ares::Nintendo64::cpu.ipu.pc;
 }

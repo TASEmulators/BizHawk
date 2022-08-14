@@ -28,9 +28,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		[FeatureNotImplemented]
 		public void DisassembleCDL(Stream s, ICodeDataLog cdl)
-		{
-
-		}
+			=> throw new NotImplementedException();
 
 		public enum CDLog_AddrType
 		{

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Arcades.MAME
@@ -31,10 +32,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			{
 				if (portField != string.Empty)
 				{
-					string[] substrings = portField.Split(',');
-					string tag = substrings.First();
-					string field = substrings.Last();
-
+					var tag = portField.SubstringBefore(',');
+					var field = portField.SubstringAfterLast(',');
 					_fieldsPorts.Add(field, tag);
 					MAMEController.BoolButtons.Add(field);
 				}

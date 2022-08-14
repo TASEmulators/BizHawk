@@ -108,12 +108,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			var moduleName = opt.Filename;
 
 			var path = Path.Combine(opt.Path, moduleName);
-			var gzpath = path + ".gz";
+			var zstpath = path + ".zst";
 			byte[] data;
-			if (File.Exists(gzpath))
+			if (File.Exists(zstpath))
 			{
-				using var fs = new FileStream(gzpath, FileMode.Open, FileAccess.Read);
-				data = Util.DecompressGzipFile(fs);
+				using var fs = new FileStream(zstpath, FileMode.Open, FileAccess.Read);
+				data = Zstd.DecompressZstdStream(fs).ToArray();
 			}
 			else
 			{

@@ -30,6 +30,8 @@ namespace BizHawk.Client.EmuHawk
 			IMovieSession movieSession,
 			FirmwareManager firmwareManager)
 		{
+			if (game.IsNullInstance()) throw new InvalidOperationException("how is the traditional Record dialog open with no game loaded? please report this including as much detail as possible");
+
 			_mainForm = mainForm;
 			_config = config;
 			_game = game;
@@ -42,8 +44,9 @@ namespace BizHawk.Client.EmuHawk
 			if (OSTailoredCode.IsUnixHost) Load += (_, _) =>
 			{
 				//HACK to make this usable on Linux. No clue why this Form in particular is so much worse, maybe the GroupBox? --yoshi
-				DefaultAuthorCheckBox.Location += new Size(0, 20);
-				var s = new Size(0, 36);
+				groupBox1.Height -= 24;
+				DefaultAuthorCheckBox.Location += new Size(0, 32);
+				var s = new Size(0, 40);
 				OK.Location += s;
 				Cancel.Location += s;
 			};
@@ -149,6 +152,7 @@ namespace BizHawk.Client.EmuHawk
 
 				movieToRecord.PopulateWithDefaultHeaderValues(
 					_emulator,
+					((MainForm) _mainForm).GetSettingsAdapterForLoadedCoreUntyped(), //HACK
 					_game,
 					_firmwareManager,
 					AuthorBox.Text ?? _config.DefaultAuthor);

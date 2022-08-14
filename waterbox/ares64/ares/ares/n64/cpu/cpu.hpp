@@ -41,7 +41,7 @@ struct CPU : Thread {
   auto power(bool reset) -> void;
 
   struct Pipeline {
-    u32 address;
+    u64 address;
     u32 instruction;
 
     struct InstructionCache {
@@ -61,12 +61,14 @@ struct CPU : Thread {
   } pipeline;
 
   struct Branch {
-    enum : u32 { Step, Take, DelaySlot, Exception, Discard };
+    enum : u32 { Step, Take, NotTaken, DelaySlotTaken, DelaySlotNotTaken, Exception, Discard };
 
-    auto inDelaySlot() const -> bool { return state == DelaySlot; }
+    auto inDelaySlot() const -> bool { return state == DelaySlotTaken || state == DelaySlotNotTaken; }
+    auto inDelaySlotTaken() const -> bool { return state == DelaySlotTaken; }
     auto reset() -> void { state = Step; }
-    auto take(u32 address) -> void { state = Take; pc = address; }
-    auto delaySlot() -> void { state = DelaySlot; }
+    auto take(u64 address) -> void { state = Take; pc = address; }
+    auto notTaken() -> void { state = NotTaken; }
+    auto delaySlot(bool taken) -> void { state = taken ? DelaySlotTaken : DelaySlotNotTaken; }
     auto exception() -> void { state = Exception; }
     auto discard() -> void { state = Discard; }
 
@@ -93,6 +95,7 @@ struct CPU : Thread {
     auto setMode() -> void;
 
     bool endian;
+    u64  physMask;
     u32  mode;
     u32  bits;
     u32  segment[8];  //512_MiB chunks
@@ -100,26 +103,80 @@ struct CPU : Thread {
 
   //icache.cpp
   struct InstructionCache {
+    CPU& self;
     struct Line;
-    auto line(u32 address) -> Line&;
-    auto step(u32 address) -> void;
-    auto fetch(u32 address) -> u32;
-    auto read(u32 address) -> u32;
-    auto power(bool reset) -> void;
+    auto line(u32 address) -> Line& { return lines[address >> 5 & 0x1ff]; }
+
+    //used by the recompiler to simulate instruction cache fetch timing
+    auto step(u32 address) -> void {
+      auto& line = this->line(address);
+      if(!line.hit(address)) {
+        self.step(48);
+        line.valid = 1;
+        line.tag   = address & ~0x0000'0fff;
+      } else {
+        self.step(2);
+      }
+    }
+
+    //used by the interpreter to fully emulate the instruction cache
+    auto fetch(u32 address, CPU& cpu) -> u32 {
+      auto& line = this->line(address);
+      if(!line.hit(address)) {
+        line.fill(address, cpu);
+      } else {
+        cpu.step(2);
+      }
+      return line.read(address);
+    }
+
+    auto power(bool reset) -> void {
+      u32 index = 0;
+      for(auto& line : lines) {
+        line.valid = 0;
+        line.tag   = 0;
+        line.index = index++ << 5 & 0xfe0;
+        for(auto& word : line.words) word = 0;
+       }
+    }
 
     //16KB
     struct Line {
-      auto hit(u32 address) const -> bool;
-      auto fill(u32 address) -> void;
-      auto writeBack() -> void;
-      auto read(u32 address) const -> u32;
+      auto hit(u32 address) const -> bool { return valid && tag == (address & ~0x0000'0fff); }
+      auto fill(u32 address, CPU& cpu) -> void {
+        cpu.step(48);
+        valid = 1;
+        tag   = address & ~0x0000'0fff;
+        words[0] = bus.read<Word>(tag | index | 0x00);
+        words[1] = bus.read<Word>(tag | index | 0x04);
+        words[2] = bus.read<Word>(tag | index | 0x08);
+        words[3] = bus.read<Word>(tag | index | 0x0c);
+        words[4] = bus.read<Word>(tag | index | 0x10);
+        words[5] = bus.read<Word>(tag | index | 0x14);
+        words[6] = bus.read<Word>(tag | index | 0x18);
+        words[7] = bus.read<Word>(tag | index | 0x1c);
+      }
+
+      auto writeBack(CPU& cpu) -> void {
+        cpu.step(48);
+        bus.write<Word>(tag | index | 0x00, words[0]);
+        bus.write<Word>(tag | index | 0x04, words[1]);
+        bus.write<Word>(tag | index | 0x08, words[2]);
+        bus.write<Word>(tag | index | 0x0c, words[3]);
+        bus.write<Word>(tag | index | 0x10, words[4]);
+        bus.write<Word>(tag | index | 0x14, words[5]);
+        bus.write<Word>(tag | index | 0x18, words[6]);
+        bus.write<Word>(tag | index | 0x1c, words[7]);
+      }
+
+      auto read(u32 address) const -> u32 { return words[address >> 2 & 7]; }
 
       bool valid;
       u32  tag;
       u16  index;
       u32  words[8];
     } lines[512];
-  } icache;
+  } icache{*this};
 
   //dcache.cpp
   struct DataCache {
@@ -165,9 +222,8 @@ struct CPU : Thread {
     };
 
     //tlb.cpp
-    auto load(u32 address) -> Match;
-    auto store(u32 address) -> Match;
-    auto exception(u32 address) -> void;
+    auto load(u64 vaddr) -> Match;
+    auto store(u64 vaddr) -> Match;
 
     struct Entry {
       //scc-tlb.cpp
@@ -177,36 +233,36 @@ struct CPU : Thread {
       n1  valid[2];
       n1  dirty[2];
       n3  cacheAlgorithm[2];
-      n32 physicalAddress[2];
+      n36 physicalAddress[2];
       n32 pageMask;
       n40 virtualAddress;
       n8  addressSpaceID;
       n2  region;
     //internal:
       n1  globals;
-      n32 addressMaskHi;
-      n32 addressMaskLo;
-      n32 addressSelect;
-      n40 addressCompare;
+      n40 addressMaskHi;
+      n40 addressMaskLo;
+      n40 addressSelect;
     } entry[TLB::Entries];
 
     u32 physicalAddress;
   } tlb{*this};
 
   //memory.cpp
-  auto kernelSegment32(u32 address) const -> Context::Segment;
-  auto supervisorSegment32(u32 address) const -> Context::Segment;
-  auto userSegment32(u32 address) const -> Context::Segment;
+  auto kernelSegment32(u32 vaddr) const -> Context::Segment;
+  auto supervisorSegment32(u32 vaddr) const -> Context::Segment;
+  auto userSegment32(u32 vaddr) const -> Context::Segment;
 
-  auto kernelSegment64(u64 address) const -> Context::Segment;
-  auto supervisorSegment64(u64 address) const -> Context::Segment;
-  auto userSegment64(u64 address) const -> Context::Segment;
+  auto kernelSegment64(u64 vaddr) const -> Context::Segment;
+  auto supervisorSegment64(u64 vaddr) const -> Context::Segment;
+  auto userSegment64(u64 vaddr) const -> Context::Segment;
 
-  auto segment(u64 address) -> Context::Segment;
-  auto devirtualize(u64 address) -> maybe<u64>;
-  auto fetch(u64 address) -> u32;
-  template<u32 Size> auto read(u64 address) -> maybe<u64>;
-  template<u32 Size> auto write(u64 address, u64 data) -> bool;
+  auto segment(u64 vaddr) -> Context::Segment;
+  auto devirtualize(u64 vaddr) -> maybe<u64>;
+  auto fetch(u64 vaddr) -> u32;
+  template<u32 Size> auto read(u64 vaddr) -> maybe<u64>;
+  template<u32 Size> auto write(u64 vaddr, u64 data) -> bool;
+  auto addressException(u64 vaddr) -> void;
 
   //serialization.cpp
   auto serialize(serializer&) -> void;
@@ -403,12 +459,7 @@ struct CPU : Thread {
       n1 probeFailure;
     } index;
 
-    //1
-    struct Random {
-      n5 index = 31;
-      n1 unused;
-    } random;
-
+    //1: Random
     //2: EntryLo0
     //3: EntryLo1
     //5: PageMask
@@ -423,8 +474,7 @@ struct CPU : Thread {
 
     //6
     struct Wired {
-      n5 index;
-      n1 unused;
+      n6 index;
     } wired;
 
     //8
@@ -487,11 +537,11 @@ struct CPU : Thread {
       n2 cu;  //reserved
       n1 bigEndian = 1;
       n2 sysadWritebackPattern;
-      n2 systemClockRatio = 6;
+      n3 systemClockRatio = 7;
     } configuration;
 
     //17: Load Linked Address
-    n64 ll;
+    n32 ll;
     n1  llbit;
 
     //18
@@ -526,11 +576,15 @@ struct CPU : Thread {
 
     //30: Error Exception Program Counter
     n64 epcError;
+
+    //other
+    n64 latch;
   } scc;
 
   //interpreter-scc.cpp
   auto getControlRegister(n5) -> u64;
   auto setControlRegister(n5, n64) -> void;
+  auto getControlRandom() -> u8;
 
   auto DMFC0(r64& rt, u8 rd) -> void;
   auto DMTC0(cr64& rt, u8 rd) -> void;
@@ -705,7 +759,31 @@ struct CPU : Thread {
     }
 
     auto invalidate(u32 address) -> void {
+      /* FIXME: Recompiler shouldn't be so aggressive with pool eviction
+       * Sometimes there are overlapping blocks, so clearing just one block
+       * isn't sufficient and causes some games to crash (Jet Force Gemini)
+       * the recompiler needs to be smarter with block tracking
+       * Until then, clear the entire pool and live with the performance hit.
+      */
+      #if 1
+      invalidatePool(address);
+      #else
+      auto pool = pools[address >> 8 & 0x1fffff];
+      if(!pool) return;
+      memory::jitprotect(false);
+      pool->blocks[address >> 2 & 0x3f] = nullptr;
+      memory::jitprotect(true);
+      #endif
+    }
+
+    auto invalidatePool(u32 address) -> void {
       pools[address >> 8 & 0x1fffff] = nullptr;
+    }
+
+    auto invalidateRange(u32 address, u32 length) -> void {
+      for (u32 s = 0; s < length; s += 256)
+        invalidatePool(address + s);
+      invalidatePool(address + length - 1);
     }
 
     auto pool(u32 address) -> Pool*;

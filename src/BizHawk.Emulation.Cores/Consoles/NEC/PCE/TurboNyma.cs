@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+
 using BizHawk.BizInvoke;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -11,15 +12,35 @@ using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 {
-	[PortedCore(CoreNames.TurboNyma, "Mednafen Team", "1.27.1", "https://mednafen.github.io/releases/")]
+	[PortedCore(CoreNames.TurboNyma, "Mednafen Team", "1.29.0", "https://mednafen.github.io/releases/")]
 	public class TurboNyma : NymaCore, IRegionable, IPceGpuView
 	{
+		private TurboNyma(CoreComm comm)
+			: base(comm, VSystemID.Raw.NULL, null, null, null)
+		{
+		}
+
+		private static NymaSettingsInfo _cachedSettingsInfo;
+
+		public static NymaSettingsInfo CachedSettingsInfo(CoreComm comm)
+		{
+			if (_cachedSettingsInfo is null)
+			{
+				using var n = new TurboNyma(comm);
+				n.InitForSettingsInfo("turbo.wbx");
+				_cachedSettingsInfo = n.SettingsInfo.Clone();
+			}
+
+			return _cachedSettingsInfo;
+		}
+
 		private readonly LibTurboNyma _turboNyma;
 		private readonly bool _hasCds;
 
 		[CoreConstructor(VSystemID.Raw.PCE)]
 		[CoreConstructor(VSystemID.Raw.SGX)]
 		[CoreConstructor(VSystemID.Raw.PCECD)]
+		[CoreConstructor(VSystemID.Raw.SGXCD)]
 		public TurboNyma(CoreLoadParameters<NymaSettings, NymaSyncSettings> lp)
 			: base(lp.Comm, VSystemID.Raw.PCE, "PC Engine Controller", lp.Settings, lp.SyncSettings)
 		{
@@ -40,6 +61,8 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 			}
 
 			_turboNyma = DoInit<LibTurboNyma>(lp, "turbo.wbx", firmwares);
+
+			_cachedSettingsInfo ??= SettingsInfo.Clone();
 		}
 
 		public override string SystemId => IsSgx

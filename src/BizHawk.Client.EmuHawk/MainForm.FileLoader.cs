@@ -266,7 +266,7 @@ namespace BizHawk.Client.EmuHawk
 					case 0:
 						break;
 					case 1:
-						var fileInformation = sortedFiles[value].First();
+						var fileInformation = sortedFiles[value][0];
 						string filename = Path.Combine(new[] { fileInformation.DirectoryName, fileInformation.FileName });
 
 						switch (value)

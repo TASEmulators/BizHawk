@@ -297,14 +297,16 @@ namespace BizHawk.Bizware.BizwareGL
 		{
 			readonly get
 			{
+				if (rowIndex is < 0 or > 3) throw new ArgumentOutOfRangeException(paramName: nameof(rowIndex), rowIndex, message: "index out of range");
+				if (columnIndex is < 0 or > 3) throw new ArgumentOutOfRangeException(paramName: nameof(columnIndex), columnIndex, message: "index out of range");
 				var i = rowIndex * 4 + columnIndex;
-				if (i < 0 || 15 < i) throw new IndexOutOfRangeException($"no such element m[{rowIndex}, {columnIndex}] of {nameof(Matrix4)}");
 				fixed (Matrix4* p = &this) return ((float*) p)[i];
 			}
 			set
 			{
+				if (rowIndex is < 0 or > 3) throw new ArgumentOutOfRangeException(paramName: nameof(rowIndex), rowIndex, message: "index out of range");
+				if (columnIndex is < 0 or > 3) throw new ArgumentOutOfRangeException(paramName: nameof(columnIndex), columnIndex, message: "index out of range");
 				var i = rowIndex * 4 + columnIndex;
-				if (i < 0 || 15 < i) throw new IndexOutOfRangeException($"no such element m[{rowIndex}, {columnIndex}] of {nameof(Matrix4)}");
 				fixed (Matrix4* p = &this) ((float*) p)[i] = value;
 			}
 		}

@@ -22,19 +22,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				new MemoryDomainDelegate("System Bus", 0x10000, MemoryDomain.Endian.Little,
 				(addr) =>
 				{
-					if (addr < 0 || addr >= 65536)
-					{
-						throw new ArgumentOutOfRangeException();
-					}
+					if (addr is < 0 or > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
 					return _machine.ReadBus((ushort)addr);
 				},
 				(addr, value) =>
 				{
-					if (addr < 0 || addr >= 65536)
-					{
-						throw new ArgumentOutOfRangeException();
-					}
-
+					if (addr is < 0 or > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
 					_machine.WriteBus((ushort)addr, value);
 				}, 1)
 			};

@@ -1,6 +1,8 @@
 #pragma once
 //started: 2020-04-28
 
+#define XXH_INLINE_ALL
+#include <xxhash.h>
 #include <ares/ares.hpp>
 #include <nall/hashset.hpp>
 #include <nall/recompiler/generic/generic.hpp>
@@ -8,6 +10,9 @@
 
 #if defined(ARCHITECTURE_AMD64)
 #include <nmmintrin.h>
+using v128 = __m128i;
+#elif defined(ARCHITECTURE_ARM64)
+#include <sse2neon.h>
 using v128 = __m128i;
 #endif
 
@@ -45,6 +50,7 @@ namespace ares::Nintendo64 {
       RSP_DMA,
       PI_DMA_Read,
       PI_DMA_Write,
+      PI_BUS_Write,
       SI_DMA_Read,
       SI_DMA_Write,
     };
@@ -61,11 +67,13 @@ namespace ares::Nintendo64 {
   #include <n64/vi/vi.hpp>
   #include <n64/ai/ai.hpp>
   #include <n64/pi/pi.hpp>
+  #include <n64/pif/pif.hpp>
   #include <n64/ri/ri.hpp>
   #include <n64/si/si.hpp>
   #include <n64/rdram/rdram.hpp>
   #include <n64/cpu/cpu.hpp>
-  #include <n64/rdp/rdp.hpp>
   #include <n64/rsp/rsp.hpp>
+  #include <n64/rdp/rdp.hpp>
   #include <n64/memory/bus.hpp>
+  #include <n64/pi/bus.hpp>
 }

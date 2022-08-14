@@ -182,7 +182,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				_cdCallback = new LibGambatte.CDCallback(CDCallbackProc);
 
-				ControllerDefinition = CreateControllerDefinition(sgb: IsSgb, sub: _syncSettings.FrameLength is GambatteSyncSettings.FrameLengthType.UserDefinedFrames, tilt: false);
+				ControllerDefinition = CreateControllerDefinition(sgb: IsSgb, sub: _syncSettings.FrameLength is GambatteSyncSettings.FrameLengthType.UserDefinedFrames, tilt: false, rumble: false);
 
 				NewSaveCoreSetBuff();
 			}
@@ -247,7 +247,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public long CycleCount => (long)_cycleCount;
 		public double ClockRate => TICKSPERSECOND;
 
-		public static ControllerDefinition CreateControllerDefinition(bool sgb, bool sub, bool tilt)
+		public static ControllerDefinition CreateControllerDefinition(bool sgb, bool sub, bool tilt, bool rumble)
 		{
 			var ret = new ControllerDefinition((sub ? "Subframe " : "") + "Gameboy Controller" + (tilt ? " + Tilt" : ""));
 			if (sub)
@@ -257,6 +257,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			if (tilt)
 			{
 				ret.AddXYPair($"Tilt {{0}}", AxisPairOrientation.RightAndUp, (-90).RangeTo(90), 0);
+			}
+			if (rumble)
+			{
+				ret.HapticsChannels.Add("Rumble");
 			}
 			if (sgb)
 			{
@@ -645,7 +649,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public void SetCGBColors(GBColors.ColorType type)
 		{
-			int[] lut = GBColors.GetLut(type);
+			int[] lut = GBColors.GetLut(type, IsSgb, _syncSettings.ConsoleMode is GambatteSyncSettings.ConsoleModeType.GBA);
 			LibGambatte.gambatte_setcgbpalette(GambatteState, lut);
 		}
 	}

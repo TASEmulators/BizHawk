@@ -54,7 +54,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					{
 						unselect_reset = true;
 					}
-					else
+
+					if (SP_SELECT)
+					{
+						unselect_select = true;
+					}
+
+					if (!SP_RESET && !SP_SELECT)
 					{
 						throw new Exception("ERROR: Unable to resolve Frame. Please Report.");
 					}

@@ -1,24 +1,26 @@
 ﻿using System;
-using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class ZxSpectrumJoystickSettings : Form
+	public partial class ZxSpectrumJoystickSettings : Form, IDialogParent
 	{
-		private readonly IMainFormForConfig _mainForm;
+		private readonly ISettingsAdapter _settable;
+
 		private readonly ZXSpectrum.ZXSpectrumSyncSettings _syncSettings;
 		private string[] _possibleControllers;
 
-		public ZxSpectrumJoystickSettings(
-			IMainFormForConfig mainForm,
-			ZXSpectrum.ZXSpectrumSyncSettings syncSettings)
+		public IDialogController DialogController { get; }
+
+		public ZxSpectrumJoystickSettings(IDialogController dialogController, ISettingsAdapter settable)
 		{
-			_mainForm = mainForm;
-			_syncSettings = syncSettings;
+			_settable = settable;
+			_syncSettings = (ZXSpectrum.ZXSpectrumSyncSettings) _settable.GetSyncSettings();
+			DialogController = dialogController;
 			InitializeComponent();
 			Icon = Properties.Resources.GameControllerIcon;
 		}
@@ -53,46 +55,46 @@ namespace BizHawk.Client.EmuHawk
 				bool selectionValid = true;
 
 				var j1 = Port1ComboBox.SelectedItem.ToString();
-				if (j1 != _possibleControllers.First())
+				if (j1 != _possibleControllers[0])
 				{
 					if (j1 == Port2ComboBox.SelectedItem.ToString())
 					{
-						Port2ComboBox.SelectedItem = _possibleControllers.First();
+						Port2ComboBox.SelectedItem = _possibleControllers[0];
 						selectionValid = false;
 					}
 					if (j1 == Port3ComboBox.SelectedItem.ToString())
 					{
-						Port3ComboBox.SelectedItem = _possibleControllers.First();
+						Port3ComboBox.SelectedItem = _possibleControllers[0];
 						selectionValid = false;
 					}
 				}
 
 				var j2 = Port2ComboBox.SelectedItem.ToString();
-				if (j2 != _possibleControllers.First())
+				if (j2 != _possibleControllers[0])
 				{
 					if (j2 == Port1ComboBox.SelectedItem.ToString())
 					{
-						Port1ComboBox.SelectedItem = _possibleControllers.First();
+						Port1ComboBox.SelectedItem = _possibleControllers[0];
 						selectionValid = false;
 					}
 					if (j2 == Port3ComboBox.SelectedItem.ToString())
 					{
-						Port3ComboBox.SelectedItem = _possibleControllers.First();
+						Port3ComboBox.SelectedItem = _possibleControllers[0];
 						selectionValid = false;
 					}
 				}
 
 				var j3 = Port3ComboBox.SelectedItem.ToString();
-				if (j3 != _possibleControllers.First())
+				if (j3 != _possibleControllers[0])
 				{
 					if (j3 == Port1ComboBox.SelectedItem.ToString())
 					{
-						Port1ComboBox.SelectedItem = _possibleControllers.First();
+						Port1ComboBox.SelectedItem = _possibleControllers[0];
 						selectionValid = false;
 					}
 					if (j3 == Port2ComboBox.SelectedItem.ToString())
 					{
-						Port2ComboBox.SelectedItem = _possibleControllers.First();
+						Port2ComboBox.SelectedItem = _possibleControllers[0];
 						selectionValid = false;
 					}
 				}
@@ -103,14 +105,14 @@ namespace BizHawk.Client.EmuHawk
 					_syncSettings.JoystickType2 = (JoystickType)Enum.Parse(typeof(JoystickType), Port2ComboBox.SelectedItem.ToString());
 					_syncSettings.JoystickType3 = (JoystickType)Enum.Parse(typeof(JoystickType), Port3ComboBox.SelectedItem.ToString());
 
-					_mainForm.PutCoreSyncSettings(_syncSettings);
+					_settable.PutCoreSyncSettings(_syncSettings);
 
 					DialogResult = DialogResult.OK;
 					Close();
 				}
 				else
 				{
-					_mainForm.DialogController.ShowMessageBox("Invalid joystick configuration. \nDuplicates have automatically been changed to NULL.\n\nPlease review the configuration");
+					DialogController.ShowMessageBox("Invalid joystick configuration. \nDuplicates have automatically been changed to NULL.\n\nPlease review the configuration");
 				}
 			}
 			else

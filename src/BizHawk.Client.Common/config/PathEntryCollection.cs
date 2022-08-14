@@ -15,7 +15,7 @@ namespace BizHawk.Client.Common
 	{
 		private static readonly string COMBINED_SYSIDS_GB = string.Join("_", VSystemID.Raw.GB, VSystemID.Raw.GBC, VSystemID.Raw.SGB);
 
-		private static readonly string COMBINED_SYSIDS_PCE = string.Join("_", VSystemID.Raw.PCE, VSystemID.Raw.PCECD, VSystemID.Raw.SGX);
+		private static readonly string COMBINED_SYSIDS_PCE = string.Join("_", VSystemID.Raw.PCE, VSystemID.Raw.PCECD, VSystemID.Raw.SGX, VSystemID.Raw.SGXCD);
 
 		public static readonly string GLOBAL = string.Join("_", "Global", VSystemID.Raw.NULL);
 
@@ -54,11 +54,11 @@ namespace BizHawk.Client.Common
 			[VSystemID.Raw.VEC] = "VEC",
 			[VSystemID.Raw.O2] = "O2",
 			[VSystemID.Raw.MSX] = "MSX",
+			[VSystemID.Raw.TIC80] = "TIC80",
 			[VSystemID.Raw.UZE] = "UZE",
 			[VSystemID.Raw.NDS] = "NDS",
 			[VSystemID.Raw.Sega32X] = "Sega 32X",
 			[VSystemID.Raw.GGL] = "Dual Game Gear",
-			[VSystemID.Raw.PS2] = "Playstation 2",
 		};
 
 		private static PathEntry BaseEntryFor(string sysID, string path)
@@ -119,9 +119,8 @@ namespace BizHawk.Client.Common
 		public IEnumerator<PathEntry> GetEnumerator() => Paths.GetEnumerator();
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-		public PathEntry this[string system, string type] =>
-			Paths.FirstOrDefault(p => p.IsSystem(system) && p.Type == type)
-			?? TryGetDebugPath(system, type);
+		public PathEntry this[string system, string type]
+			=> Paths.Find(p => p.IsSystem(system) && p.Type == type) ?? TryGetDebugPath(system, type);
 
 		private PathEntry TryGetDebugPath(string system, string type)
 		{
@@ -142,11 +141,7 @@ namespace BizHawk.Client.Common
 			// Add missing entries
 			foreach (var defaultPath in Defaults.Value)
 			{
-				var path = Paths.FirstOrDefault(p => p.System == defaultPath.System && p.Type == defaultPath.Type);
-				if (path == null)
-				{
-					Paths.Add(defaultPath);
-				}
+				if (!Paths.Any(p => p.System == defaultPath.System && p.Type == defaultPath.Type)) Paths.Add(defaultPath);
 			}
 
 			var entriesToRemove = new List<PathEntry>();
@@ -268,8 +263,6 @@ namespace BizHawk.Client.Common
 
 			CommonEntriesFor(VSystemID.Raw.PCFX, basePath: Path.Combine(".", "PCFX")),
 
-			CommonEntriesFor(VSystemID.Raw.PS2, basePath: Path.Combine(".", "PS2")),
-
 			CommonEntriesFor(VSystemID.Raw.PSX, basePath: Path.Combine(".", "PSX")),
 
 			CommonEntriesFor(VSystemID.Raw.SAT, basePath: Path.Combine(".", "Saturn")),
@@ -281,6 +274,8 @@ namespace BizHawk.Client.Common
 			CommonEntriesFor(VSystemID.Raw.SNES, basePath: Path.Combine(".", "SNES")),
 
 			CommonEntriesFor(VSystemID.Raw.TI83, basePath: Path.Combine(".", "TI83")),
+
+			CommonEntriesFor(VSystemID.Raw.TIC80, basePath: Path.Combine(".", "TIC80")),
 
 			CommonEntriesFor(VSystemID.Raw.UZE, basePath: Path.Combine(".", "Uzebox")),
 

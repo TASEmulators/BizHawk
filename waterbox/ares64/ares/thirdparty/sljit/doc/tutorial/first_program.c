@@ -15,7 +15,7 @@ static int add3(long a, long b, long c)
 	struct sljit_compiler *C = sljit_create_compiler(NULL, NULL);
 
 	/* Start a context(function entry), have 3 arguments, discuss later */
-	sljit_emit_enter(C, 0,  SLJIT_ARG1(SW)|SLJIT_ARG2(SW)|SLJIT_ARG3(SW),  3, 3, 0, 0, 0);
+	sljit_emit_enter(C, 0, SLJIT_ARGS3(W, W, W, W), 1, 3, 0, 0, 0);
 
 	/* The first arguments of function is register SLJIT_S0, 2nd, SLJIT_S1, etc.  */
 	/* R0 = first */

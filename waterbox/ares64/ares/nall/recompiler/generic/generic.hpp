@@ -14,13 +14,13 @@ namespace nall::recompiler {
       compiler = sljit_create_compiler(nullptr, &allocator);
 
       sljit_s32 options = 0;
-      if(args >= 1) options |= SLJIT_ARG1(SW);
-      if(args >= 2) options |= SLJIT_ARG2(SW);
-      if(args >= 3) options |= SLJIT_ARG3(SW);
+      if(args >= 1) options |= SLJIT_ARG_VALUE(SLJIT_ARG_TYPE_W, 1);
+      if(args >= 2) options |= SLJIT_ARG_VALUE(SLJIT_ARG_TYPE_W, 2);
+      if(args >= 3) options |= SLJIT_ARG_VALUE(SLJIT_ARG_TYPE_W, 3);
       sljit_emit_enter(compiler, 0, options, 4, 3, 0, 0, 0);
       sljit_jump* entry = sljit_emit_jump(compiler, SLJIT_JUMP);
       epilogue = sljit_emit_label(compiler);
-      sljit_emit_return(compiler, SLJIT_UNUSED, 0, 0);
+      sljit_emit_return_void(compiler);
 
       sljit_set_label(entry, sljit_emit_label(compiler));
     }
@@ -34,7 +34,7 @@ namespace nall::recompiler {
     }
 
     auto testJumpEpilog() {
-      sljit_set_label(sljit_emit_cmp(compiler, SLJIT_NOT_EQUAL | SLJIT_I32_OP, SLJIT_RETURN_REG, 0, SLJIT_IMM, 0), epilogue);
+      sljit_set_label(sljit_emit_cmp(compiler, SLJIT_NOT_EQUAL | SLJIT_32, SLJIT_RETURN_REG, 0, SLJIT_IMM, 0), epilogue);
     }
 
     auto jumpEpilog() {

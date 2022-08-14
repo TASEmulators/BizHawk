@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private static int iNES2Wram(int i)
 		{
 			if (i == 0) return 0;
-			if (i == 15) throw new InvalidDataException();
+			if (i == 15) throw new InvalidOperationException();
 			return 1 << (i + 6);
 		}
 

@@ -31,9 +31,6 @@
 [submodule "waterbox/llvm-project"]
 	path = waterbox/llvm-project
 	url = https://github.com/llvm/llvm-project.git
-[submodule "waterbox/dobie/dobiestation"]
-	path = waterbox/dobie/dobiestation
-	url = https://github.com/nattthebear/DobieStation.git
 [submodule "submodules/libdarm"]
 	path = submodules/libdarm
 	url = https://github.com/jbremer/darm.git

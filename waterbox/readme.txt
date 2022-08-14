@@ -11,7 +11,7 @@ It consists of a modified musl libc, and build scripts to tie it all together.
 	1. Install WSL2 
 	2. Install Ubuntu 20.04 LTS (https://www.microsoft.com/en-us/p/ubuntu-2004-lts/9n6svws3rx71)
 	3. Clone the bizhawk repository. You can use it through /mnt or /home if you really like 
-	4. Install build tools: sudo apt-get update && sudo apt-get install gcc g++ make cmake llvm
+	4. Install build tools: sudo apt-get update && sudo apt-get install gcc g++ make cmake llvm zstd
 	4b. (Note for future work: ideally the llvm installed above would not be required)
 
 	PREPARE A WIN10 VM:
@@ -57,7 +57,8 @@ It consists of a modified musl libc, and build scripts to tie it all together.
 	cd nyma && make -f pcfx.mak install
 	cd nyma && make -f ss.mak install
 	cd nyma && make -f shock.mak install
+	cd nyma && make -f vb.mak install
 	cd picodrive && make install
 	cd snes9x && make install
+	cd tic80 && make install
 	cd uzem && make install
-	cd vb && make install

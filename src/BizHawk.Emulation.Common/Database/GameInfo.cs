@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Common
 
 		public static GameInfo NullInstance => new GameInfo
 		{
-			Name = "Null",
+			Name = string.Empty,
 			System = VSystemID.Raw.NULL,
 			Hash = "",
 			Region = "",

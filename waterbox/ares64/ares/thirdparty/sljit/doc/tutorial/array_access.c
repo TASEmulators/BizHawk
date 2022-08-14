@@ -33,7 +33,7 @@ static int array_access(long *arr, long narr)
 	/* Create a SLJIT compiler */
 	struct sljit_compiler *C = sljit_create_compiler(NULL, NULL);
 
-	sljit_emit_enter(C, 0, SLJIT_ARG1(SW),  1, 3, 0, 0, 0);
+	sljit_emit_enter(C, 0, SLJIT_ARGS2(W, P, W),  1, 3, 0, 0, 0);
 	/*                  opt arg R  S  FR FS local_size */
 	sljit_emit_op2(C, SLJIT_XOR, SLJIT_S2, 0, SLJIT_S2, 0, SLJIT_S2, 0);				// S2 = 0
 	sljit_emit_op1(C, SLJIT_MOV, SLJIT_S1, 0, SLJIT_IMM, narr);                         // S1 = narr
@@ -41,7 +41,7 @@ static int array_access(long *arr, long narr)
 	struct sljit_jump *out = sljit_emit_cmp(C, SLJIT_GREATER_EQUAL, SLJIT_S2, 0, SLJIT_S1, 0);	// S2 >= a --> jump out
 
 	sljit_emit_op1(C, SLJIT_MOV, SLJIT_R0, 0, SLJIT_MEM2(SLJIT_S0, SLJIT_S2), SLJIT_WORD_SHIFT);// R0 = (long *)S0[S2];
-	sljit_emit_icall(C, SLJIT_CALL, SLJIT_RET(SW) | SLJIT_ARG1(SW), SLJIT_IMM, SLJIT_FUNC_OFFSET(print_num));					// print_num(R0);
+	sljit_emit_icall(C, SLJIT_CALL, SLJIT_ARGS1(W, W), SLJIT_IMM, SLJIT_FUNC_ADDR(print_num));					// print_num(R0);
 
 	sljit_emit_op2(C, SLJIT_ADD, SLJIT_S2, 0, SLJIT_S2, 0, SLJIT_IMM, 1);						// S2 += 1
 	sljit_set_label(sljit_emit_jump(C, SLJIT_JUMP), loopstart);									// jump loopstart

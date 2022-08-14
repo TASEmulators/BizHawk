@@ -14,7 +14,9 @@ namespace BizHawk.Client.Common
 		{
 			if (string.IsNullOrWhiteSpace(filename))
 			{
-				throw new ArgumentNullException($"{nameof(filename)} can not be null.");
+				throw filename is null
+					? new ArgumentNullException(paramName: nameof(filename))
+					: new ArgumentException(message: "path cannot be blank", paramName: nameof(filename));
 			}
 
 			Session = session;

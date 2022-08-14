@@ -18,7 +18,7 @@ struct AI : Thread, Memory::IO<AI> {
   auto load(Node::Object) -> void;
   auto unload() -> void;
   auto main() -> void;
-  auto sample() -> void;
+  auto sample(f64& left, f64& right) -> void;
   auto step(u32 clocks) -> void;
   auto power(bool reset) -> void;
 
@@ -36,6 +36,7 @@ struct AI : Thread, Memory::IO<AI> {
   struct IO {
     n1  dmaEnable;
     n24 dmaAddress[2];
+    n1  dmaAddressCarry;
     n18 dmaLength[2];
     n2  dmaCount;
     n14 dacRate;

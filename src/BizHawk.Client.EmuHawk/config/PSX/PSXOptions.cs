@@ -4,29 +4,36 @@ using System.Windows.Forms;
 
 using BizHawk.Emulation.Cores.Sony.PSX;
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class PSXOptions : Form
+	public partial class PSXOptions : Form, IDialogParent
 	{
 		// backups of the labels for string replacing
 		private readonly string _lblPixelProText, _lblMednafenText, _lblTweakedMednafenText;
-		
+
+		private readonly ISettingsAdapter _settable;
+
+		public IDialogController DialogController { get; }
+
 		private PSXOptions(
-			IMainFormForConfig mainForm,
 			Config config,
+			IDialogController dialogController,
+			ISettingsAdapter settable,
 			Octoshock.Settings settings,
 			Octoshock.SyncSettings syncSettings,
 			OctoshockDll.eVidStandard vidStandard,
 			Size currentVideoSize)
 		{
 			InitializeComponent();
-			_mainForm = mainForm;
 			_config = config;
+			_settable = settable;
 			_settings = settings;
 			_syncSettings = syncSettings;
 			_previewVideoStandard = vidStandard;
 			_previewVideoSize = currentVideoSize;
+			DialogController = dialogController;
 
 			if (_previewVideoStandard == OctoshockDll.eVidStandard.NTSC)
 			{
@@ -63,7 +70,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private Size _previewVideoSize;
-		private readonly IMainFormForConfig _mainForm;
 		private readonly Config _config;
 		private readonly OctoshockDll.eVidStandard _previewVideoStandard;
 		private readonly Octoshock.Settings _settings;
@@ -73,19 +79,25 @@ namespace BizHawk.Client.EmuHawk
 		private void BtnNiceDisplayConfig_Click(object sender, EventArgs e)
 		{
 			_dispSettingsSet = true;
-			_mainForm.DialogController.ShowMessageBox("Finetuned Display Options will take effect if you OK from PSX Options");
+			DialogController.ShowMessageBox("Finetuned Display Options will take effect if you OK from PSX Options");
 		}
 
-		public static DialogResult DoSettingsDialog(IMainFormForConfig mainForm, Config config, Octoshock psx)
+		public static DialogResult DoSettingsDialog(
+			Config config,
+			IDialogParent dialogParent,
+			ISettingsAdapter settable,
+			OctoshockDll.eVidStandard vidStandard,
+			Size vidSize)
 		{
-			var s = psx.GetSettings();
-			var ss = psx.GetSyncSettings();
-			var vid = psx.SystemVidStandard;
-			var size = psx.CurrentVideoSize;
-			using var dlg = new PSXOptions(mainForm, config, s, ss, vid, size);
-
-			var result = mainForm.ShowDialogAsChild(dlg);
-			return result;
+			using PSXOptions dlg = new(
+				config,
+				dialogParent.DialogController,
+				settable,
+				(Octoshock.Settings) settable.GetSettings(),
+				(Octoshock.SyncSettings) settable.GetSyncSettings(),
+				vidStandard,
+				vidSize);
+			return dialogParent.ShowDialogAsChild(dlg);
 		}
 
 		private void SyncSettingsFromGui(Octoshock.Settings settings, Octoshock.SyncSettings syncSettings)
@@ -125,8 +137,8 @@ namespace BizHawk.Client.EmuHawk
 
 			SyncSettingsFromGui(_settings, _syncSettings);
 			_settings.Validate();
-			_mainForm.PutCoreSettings(_settings);
-			_mainForm.PutCoreSyncSettings(_syncSettings);
+			_settable.PutCoreSettings(_settings);
+			_settable.PutCoreSyncSettings(_syncSettings);
 
 			DialogResult = DialogResult.OK;
 			Close();
@@ -187,7 +199,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LinkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			_mainForm.DialogController.ShowMessageBox($@"These options control BizHawk's Display Options to make it act quite a lot like Mednafen:
+			DialogController.ShowMessageBox($@"These options control BizHawk's Display Options to make it act quite a lot like Mednafen:
 
 {nameof(_config.DispManagerAR)} = System (Use emulator-recommended AR)
 {nameof(_config.DispFixAspectRatio)} = true (Maintain aspect ratio [letterbox main window as needed])

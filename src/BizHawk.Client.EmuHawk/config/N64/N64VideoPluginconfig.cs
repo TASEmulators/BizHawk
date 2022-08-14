@@ -4,17 +4,15 @@ using System.Windows.Forms;
 
 using BizHawk.Common.StringExtensions;
 using BizHawk.Common.ReflectionExtensions;
-using BizHawk.Emulation.Cores.Nintendo.N64;
-using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Nintendo.N64;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class N64VideoPluginConfig : Form
 	{
-		private readonly IMainFormForConfig _mainForm;
-		private readonly Config _config;
-		private readonly IEmulator _emulator;
+		private readonly ISettingsAdapter _settable;
+
 		private readonly N64Settings _s;
 		private readonly N64SyncSettings _ss;
 
@@ -41,28 +39,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly bool _programmaticallyChangingPluginComboBox = false;
 
-		public N64VideoPluginConfig(
-			IMainFormForConfig mainForm,
-			Config config,
-			IEmulator emulator)
+		public N64VideoPluginConfig(ISettingsAdapter settable)
 		{
-			_mainForm = mainForm;
-			_config = config;
-			_emulator = emulator;
+			_settable = settable;
 
-			// because mupen is a pile of garbage, this all needs to work even when N64 is not loaded
-			if (_emulator is N64 n64)
-			{
-				_s = n64.GetSettings();
-				_ss = n64.GetSyncSettings();
-			}
-			else
-			{
-				_s = _config.GetCoreSettings<N64, N64Settings>()
-					?? new N64Settings();
-				_ss = _config.GetCoreSyncSettings<N64, N64SyncSettings>()
-					?? new N64SyncSettings();
-			}
+			_s = (N64Settings) _settable.GetSettings();
+			_ss = (N64SyncSettings) _settable.GetSyncSettings();
 
 			InitializeComponent();
 			Icon = Properties.Resources.MonitorIcon;
@@ -121,16 +103,8 @@ namespace BizHawk.Client.EmuHawk
 				.ToString()
 				.GetEnumFromDescription<N64SyncSettings.RspType>();
 
-			if (_emulator is N64)
-			{
-				_mainForm.PutCoreSettings(_s);
-				_mainForm.PutCoreSyncSettings(_ss);
-			}
-			else
-			{
-				_config.PutCoreSettings<N64>(_s);
-				_config.PutCoreSyncSettings<N64>(_ss);
-			}
+			_settable.PutCoreSettings(_s);
+			_settable.PutCoreSyncSettings(_ss);
 		}
 
 		private void N64VideoPluginConfig_Load(object sender, EventArgs e)

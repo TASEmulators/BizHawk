@@ -252,7 +252,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		private void Init(VicType initRegion, BorderType borderType, SidType sidType, TapeDriveType tapeDriveType, DiskDriveType diskDriveType)
 		{
 			// Force certain drive types to be available depending on ROM type
-			var rom = _roms.First();
+			var rom = _roms[0];
 
 			switch (C64FormatFinder.GetFormat(rom))
 			{

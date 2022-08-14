@@ -1,0 +1,76 @@
+inline auto PI::readWord(u32 address) -> u32 {
+  if(address <= 0x046f'ffff) return ioRead(address);
+
+  if (unlikely(io.ioBusy)) {
+    writeForceFinish(); //technically, we should wait until Queue::PI_BUS_Write
+    return io.busLatch;
+  }
+  return busRead<Word>(address);
+}
+
+template <u32 Size>
+inline auto PI::busRead(u32 address) -> u32 {
+  static_assert(Size == Half || Size == Word);  //PI bus will do 32-bit (CPU) or 16-bit (DMA) only
+  static constexpr u32 unmapped = 0;
+
+  if(address <= 0x04ff'ffff) return unmapped; //Address range not memory mapped, only accessible via DMA
+  if(address <= 0x0500'03ff) return dd.c2s.read<Size>(address);
+  if(address <= 0x0500'04ff) return dd.ds.read<Size>(address);
+  if(address <= 0x0500'057f) return dd.read<Size>(address);
+  if(address <= 0x0500'05bf) return dd.ms.read<Size>(address);
+  if(address <= 0x05ff'ffff) return unmapped;
+  if(address <= 0x063f'ffff) return dd.iplrom.read<Size>(address);
+  if(address <= 0x07ff'ffff) return unmapped;
+  if(address <= 0x0fff'ffff) {
+    if(cartridge.ram  ) return cartridge.ram.read<Size>(address);
+    if(cartridge.flash) return cartridge.flash.read<Size>(address);
+    return unmapped;
+  }
+  if(address <= 0x13fe'ffff) return cartridge.rom.read<Size>(address);
+  if(address <= 0x13ff'ffff) return cartridge.isviewer.read<Size>(address);
+  if(address <= 0x7fff'ffff) return unmapped;
+  return unmapped; //accesses here actually lock out the RCP
+}
+
+inline auto PI::writeWord(u32 address, u32 data) -> void {
+  if(address <= 0x046f'ffff) return ioWrite(address, data);
+
+  if(io.ioBusy) return;
+  io.ioBusy = 1;
+  io.busLatch = data;
+  queue.insert(Queue::PI_BUS_Write, 400);
+  return busWrite<Word>(address, data);
+}
+
+template <u32 Size>
+inline auto PI::busWrite(u32 address, u32 data) -> void {
+  static_assert(Size == Half || Size == Word);  //PI bus will do 32-bit (CPU) or 16-bit (DMA) only
+  if(address <= 0x04ff'ffff) return; //Address range not memory mapped, only accessible via DMA
+  if(address <= 0x0500'03ff) return dd.c2s.write<Size>(address, data);
+  if(address <= 0x0500'04ff) return dd.ds.write<Size>(address, data);
+  if(address <= 0x0500'057f) return dd.write<Size>(address, data);
+  if(address <= 0x0500'05bf) return dd.ms.write<Size>(address, data);
+  if(address <= 0x05ff'ffff) return;
+  if(address <= 0x063f'ffff) return dd.iplrom.write<Size>(address, data);
+  if(address <= 0x07ff'ffff) return;
+  if(address <= 0x0fff'ffff) {
+    if(cartridge.ram  ) return cartridge.ram.write<Size>(address, data);
+    if(cartridge.flash) return cartridge.flash.write<Size>(address, data);
+    return;
+  }
+  if(address <= 0x13fe'ffff) return cartridge.rom.write<Size>(address, data);
+  if(address <= 0x13ff'ffff) {
+    writeForceFinish(); //Debugging channel for homebrew, be gentle
+    return cartridge.isviewer.write<Size>(address, data);
+  }
+  if(address <= 0x7fff'ffff) return;
+}
+
+inline auto PI::writeFinished() -> void {
+  io.ioBusy = 0;
+}
+
+inline auto PI::writeForceFinish() -> void {
+  io.ioBusy = 0;
+  queue.remove(Queue::PI_BUS_Write);
+}

@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				ScreenSize.ABAB_64x32 => new Dimensions(2, 1),
 				ScreenSize.AABB_32x64 => new Dimensions(1, 2),
 				ScreenSize.ABCD_64x64 => new Dimensions(2, 2),
-				_ => throw new Exception()
+				_ => throw new InvalidOperationException()
 			};
 		}
 

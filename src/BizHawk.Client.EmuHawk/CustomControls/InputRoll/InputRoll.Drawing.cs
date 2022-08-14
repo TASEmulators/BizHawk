@@ -33,8 +33,7 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					visibleColumns = _columns.VisibleColumns
-						.Where(c => c.Right > _hBar.Value)
-						.Where(c => c.Left - _hBar.Value < e.ClipRectangle.Width)
+						.Where(c => c.Right > _hBar.Value && c.Left - _hBar.Value < e.ClipRectangle.Width)
 						.ToList();
 				}
 

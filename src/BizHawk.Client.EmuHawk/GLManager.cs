@@ -56,7 +56,7 @@ namespace BizHawk.Client.EmuHawk
 			bool begun = false;
 
 			//this needs a begin signal to set the swap chain to the next backbuffer
-			if (cr.GL is IGL_SlimDX9)
+			if (cr.GL.DispMethodEnum is EDispMethod.SlimDX9)
 			{
 				cr.Gc.Begin();
 				begun = true;

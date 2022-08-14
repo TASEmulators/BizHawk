@@ -1,11 +1,14 @@
 <Project>
 	<PropertyGroup>
 		<AnalysisLevel>5</AnalysisLevel>
+		<CodeAnalysisRuleSet>$(ProjectDir)../../Common.ruleset</CodeAnalysisRuleSet>
 		<ContinuousIntegrationBuild Condition=" '$(GITLAB_CI)' != '' Or '$(APPVEYOR)' != '' ">true</ContinuousIntegrationBuild>
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<ErrorReport>prompt</ErrorReport>
+		<Features>strict</Features>
 		<IsTargetingNetFramework>$(TargetFramework.StartsWith("net4"))</IsTargetingNetFramework>
-		<LangVersion>9.0</LangVersion>
+		<LangVersion>10.0</LangVersion>
+		<NoWarn>SA0001</NoWarn>
 		<Nullable>enable</Nullable>
 		<PlatformTarget>AnyCPU</PlatformTarget>
 		<RunAnalyzersDuringBuild Condition=" '$(MachineRunAnalyzersDuringBuild)' == '' ">false</RunAnalyzersDuringBuild>
@@ -27,7 +30,13 @@
 		<DefineConstants>$(DefineConstants);$(MachineExtraCompilationFlag)</DefineConstants>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Nullable" Version="1.3.0" PrivateAssets="all" />
+		<PackageReference Include="DotNetAnalyzers.DocumentationAnalyzers" Version="1.0.0-beta.59" PrivateAssets="all" />
+		<PackageReference Include="Menees.Analyzers" Version="3.0.8" PrivateAssets="all" />
+		<PackageReference Include="Meziantou.Analyzer" Version="1.0.707" PrivateAssets="all" />
+		<PackageReference Include="Nullable" Version="1.3.1" PrivateAssets="all" />
+		<PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.435" PrivateAssets="all" />
+		<Analyzer Include="$(ProjectDir)../../References/BizHawk.Analyzer.dll" />
+		<AdditionalFiles Include="$(ProjectDir)../../.stylecop.json" />
 	</ItemGroup>
 	<PropertyGroup Condition=" $(IsTargetingNetFramework) ">
 		<GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>

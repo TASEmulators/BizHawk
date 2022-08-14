@@ -36,7 +36,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public bool SP_FRAME = false;
 		public bool SP_RESET = false;
+		public bool SP_SELECT = false;
 		public bool unselect_reset;
+		public bool unselect_select;
 
 		internal struct CpuLink : IMOS6502XLink
 		{
@@ -227,9 +229,15 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				SP_FRAME = true;
 			}
+			// Some games wait for reset to be unpressed before turning the screen back on, hack unset it if needed
 			if (_game.GetOptions().TryGetValue("SP_RESET", out var spResetStr) && spResetStr == "true")
 			{
 				SP_RESET = true;
+			}
+			// Ditto select (ex. Karate)
+			if (_game.GetOptions().TryGetValue("SP_SELECT", out var spSelectStr) && spSelectStr == "true")
+			{
+				SP_SELECT = true;
 			}
 		}
 
@@ -375,6 +383,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			if (unselect_reset)
 			{
 				reset = false;
+			}
+
+			if (unselect_select)
+			{
+				select = false;
 			}
 
 			if (reset) { value &= 0xFE; }

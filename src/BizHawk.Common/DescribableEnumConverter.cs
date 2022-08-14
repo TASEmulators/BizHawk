@@ -22,7 +22,7 @@ namespace BizHawk.Common
 
 		public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
 		{
-			var valueStr = value?.ToString() ?? throw new ArgumentException($"got null {nameof(value)}");
+			var valueStr = value?.ToString() ?? throw new ArgumentNullException(paramName: nameof(value));
 			return Enum.Parse(
 				enumType,
 				enumType.GetFields(BindingFlags.Public | BindingFlags.Static)
@@ -33,7 +33,7 @@ namespace BizHawk.Common
 
 		public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destType)
 		{
-			var fieldName = Enum.GetName(enumType, value ?? throw new ArgumentException($"got null {nameof(value)}"));
+			var fieldName = Enum.GetName(enumType, value ?? throw new ArgumentNullException(paramName: nameof(value)));
 			if (fieldName != null)
 			{
 				var fieldInfo = enumType.GetField(fieldName);

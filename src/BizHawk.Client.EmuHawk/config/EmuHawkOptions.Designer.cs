@@ -40,7 +40,6 @@
 			this.AcceptBackgroundInputControllerOnlyCheckBox = new System.Windows.Forms.CheckBox();
 			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.RunInBackgroundCheckbox = new System.Windows.Forms.CheckBox();
-			this.SaveWindowPositionCheckbox = new System.Windows.Forms.CheckBox();
 			this.EnableContextMenuCheckbox = new System.Windows.Forms.CheckBox();
 			this.PauseWhenMenuActivatedCheckbox = new System.Windows.Forms.CheckBox();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -78,6 +77,7 @@
 			this.BackupSRamCheckbox = new System.Windows.Forms.CheckBox();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.locLabelEx1 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.cbMergeLAndRModifierKeys = new System.Windows.Forms.CheckBox();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -126,6 +126,7 @@
 			// 
 			// tabPage1
 			// 
+			this.tabPage1.Controls.Add(this.cbMergeLAndRModifierKeys);
 			this.tabPage1.Controls.Add(this.HandleAlternateKeyboardLayoutsCheckBox);
 			this.tabPage1.Controls.Add(this.NeverAskSaveCheckbox);
 			this.tabPage1.Controls.Add(this.label2);
@@ -133,7 +134,6 @@
 			this.tabPage1.Controls.Add(this.AcceptBackgroundInputControllerOnlyCheckBox);
 			this.tabPage1.Controls.Add(this.label1);
 			this.tabPage1.Controls.Add(this.RunInBackgroundCheckbox);
-			this.tabPage1.Controls.Add(this.SaveWindowPositionCheckbox);
 			this.tabPage1.Controls.Add(this.EnableContextMenuCheckbox);
 			this.tabPage1.Controls.Add(this.PauseWhenMenuActivatedCheckbox);
 			this.tabPage1.Controls.Add(this.groupBox3);
@@ -210,16 +210,6 @@
 			this.RunInBackgroundCheckbox.Text = "Run in background";
 			this.RunInBackgroundCheckbox.UseVisualStyleBackColor = true;
 			// 
-			// SaveWindowPositionCheckbox
-			// 
-			this.SaveWindowPositionCheckbox.AutoSize = true;
-			this.SaveWindowPositionCheckbox.Location = new System.Drawing.Point(196, 29);
-			this.SaveWindowPositionCheckbox.Name = "SaveWindowPositionCheckbox";
-			this.SaveWindowPositionCheckbox.Size = new System.Drawing.Size(133, 17);
-			this.SaveWindowPositionCheckbox.TabIndex = 19;
-			this.SaveWindowPositionCheckbox.Text = "Save Window Position";
-			this.SaveWindowPositionCheckbox.UseVisualStyleBackColor = true;
-			// 
 			// EnableContextMenuCheckbox
 			// 
 			this.EnableContextMenuCheckbox.AutoSize = true;
@@ -281,7 +271,7 @@
 			this.groupBox1.Controls.Add(this.StartFullScreenCheckbox);
 			this.groupBox1.Controls.Add(this.label3);
 			this.groupBox1.Controls.Add(this.SingleInstanceModeCheckbox);
-			this.groupBox1.Location = new System.Drawing.Point(6, 205);
+			this.groupBox1.Location = new System.Drawing.Point(6, 221);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(369, 133);
 			this.groupBox1.TabIndex = 15;
@@ -496,7 +486,7 @@
 			this.label6.Location = new System.Drawing.Point(27, 243);
 			this.label6.Name = "label6";
 			this.label6.Text = "Skips some integrity check exceptions in waterbox cores.\r\nUseful for romhackers. " +
-    "Reboot core after changing.\r\nENABLING THIS VOIDS YOUR WARRANTY\r\n";
+    "Reboot core after changing.\r\nDon't bother reporting bugs if checked.\r\n";
 			// 
 			// cbSkipWaterboxIntegrityChecks
 			// 
@@ -573,6 +563,16 @@
 			this.locLabelEx1.Name = "locLabelEx1";
 			this.locLabelEx1.Text = "Note: Only a tiny subset of commandline args work (incl. rom path)";
 			// 
+			// cbMergeLAndRModifierKeys
+			// 
+			this.cbMergeLAndRModifierKeys.AutoSize = true;
+			this.cbMergeLAndRModifierKeys.Location = new System.Drawing.Point(7, 202);
+			this.cbMergeLAndRModifierKeys.Name = "cbMergeLAndRModifierKeys";
+			this.cbMergeLAndRModifierKeys.Size = new System.Drawing.Size(320, 17);
+			this.cbMergeLAndRModifierKeys.TabIndex = 29;
+			this.cbMergeLAndRModifierKeys.Text = "Merge L+R modifier keys e.g. Shift instead of LShift and RShift";
+			this.cbMergeLAndRModifierKeys.UseVisualStyleBackColor = true;
+			// 
 			// EmuHawkOptions
 			// 
 			this.AcceptButton = this.OkBtn;
@@ -643,7 +643,6 @@
 		private System.Windows.Forms.CheckBox AcceptBackgroundInputControllerOnlyCheckBox;
 		private BizHawk.WinForms.Controls.LocLabelEx label1;
 		private System.Windows.Forms.CheckBox RunInBackgroundCheckbox;
-		private System.Windows.Forms.CheckBox SaveWindowPositionCheckbox;
 		private System.Windows.Forms.CheckBox EnableContextMenuCheckbox;
 		private System.Windows.Forms.CheckBox PauseWhenMenuActivatedCheckbox;
 		private System.Windows.Forms.GroupBox groupBox3;
@@ -657,5 +656,6 @@
 		private System.Windows.Forms.CheckBox SingleInstanceModeCheckbox;
 		private System.Windows.Forms.CheckBox NoMixedKeyPriorityCheckBox;
 		private WinForms.Controls.LocLabelEx locLabelEx1;
+		private System.Windows.Forms.CheckBox cbMergeLAndRModifierKeys;
 	}
 }

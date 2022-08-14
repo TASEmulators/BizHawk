@@ -107,6 +107,7 @@ namespace BizHawk.Client.EmuHawk
 			EditToolbarItem.Image = Resources.Cut;
 			RemoveScriptToolbarItem.Image = Resources.Delete;
 			DuplicateToolbarButton.Image = Resources.Duplicate;
+			ClearConsoleToolbarButton.Image = Resources.ClearConsole;
 			MoveUpToolbarItem.Image = Resources.MoveUp;
 			toolStripButtonMoveDown.Image = Resources.MoveDown;
 			InsertSeparatorToolbarItem.Image = Resources.InsertSeparator;
@@ -829,7 +830,7 @@ namespace BizHawk.Client.EmuHawk
 				DuplicateScriptMenuItem.Enabled =
 				MoveUpMenuItem.Enabled =
 				MoveDownMenuItem.Enabled =
-				LuaListView.SelectedRows.Any();
+					LuaListView.AnyRowsSelected;
 
 			SelectAllMenuItem.Enabled = LuaImp.ScriptList.Any();
 			StopAllScriptsMenuItem.Enabled = LuaImp.ScriptList.Any(script => script.Enabled);
@@ -986,7 +987,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DuplicateScriptMenuItem_Click(object sender, EventArgs e)
 		{
-			if (LuaListView.SelectedRows.Any())
+			if (LuaListView.AnyRowsSelected)
 			{
 				var script = SelectedItems.First();
 
@@ -1022,18 +1023,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void ClearConsoleMenuItem_Click(object sender, EventArgs e)
+		{
+			ClearOutputWindow();
+		}
+
 		private void InsertSeparatorMenuItem_Click(object sender, EventArgs e)
 		{
-			var indices = LuaListView.SelectedRows.ToList();
-			if (indices.Any() && indices.Last() < LuaImp.ScriptList.Count)
-			{
-				LuaImp.ScriptList.Insert(indices.Last(), LuaFile.SeparatorInstance);
-			}
-			else
-			{
-				LuaImp.ScriptList.Add(LuaFile.SeparatorInstance);
-			}
-
+			LuaImp.ScriptList.Insert(LuaListView.SelectionStartIndex ?? LuaImp.ScriptList.Count, LuaFile.SeparatorInstance);
 			UpdateDialog();
 		}
 
@@ -1066,7 +1063,8 @@ namespace BizHawk.Client.EmuHawk
 		private void MoveDownMenuItem_Click(object sender, EventArgs e)
 		{
 			var indices = LuaListView.SelectedRows.ToList();
-			if (indices.Count == 0 || indices.Last() == LuaImp.ScriptList.Count - 1)
+			if (indices.Count == 0
+				|| indices[indices.Count - 1] == LuaImp.ScriptList.Count - 1) // at end already
 			{
 				return;
 			}
@@ -1090,9 +1088,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void SelectAllMenuItem_Click(object sender, EventArgs e)
-		{
-			LuaListView.SelectAll();
-		}
+			=> LuaListView.ToggleSelectAll();
 
 		private void StopAllScriptsMenuItem_Click(object sender, EventArgs e)
 		{

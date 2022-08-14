@@ -416,13 +416,13 @@ unsigned int ctrl_io_read_byte(unsigned int address)
     case 0x44:  /* RADICA */
     case 0x50:  /* SVP */
     {
-		if ((address & 0xFC) == 0x00)
+		if (svp && (address & 0xFC) == 0x00)
 		{
 			unsigned int data = svp->ssp1601.gr[SSP_XST].byte.h;
 			return (address & 1) ? (data & 0xFF) : (data >> 8);
 		}
 		
-		if ((address & 0xFE) == 0x04)
+		if (svp && (address & 0xFE) == 0x04)
 		{
 			unsigned int data = svp->ssp1601.gr[SSP_PM0].byte.h;
 			svp->ssp1601.gr[SSP_PM0].byte.h &= ~1;
@@ -544,12 +544,12 @@ unsigned int ctrl_io_read_word(unsigned int address)
 
     case 0x50:  /* SVP */
     {
-      if ((address & 0xFC) == 0)
+      if (svp && (address & 0xFC) == 0)
       {
         return svp->ssp1601.gr[SSP_XST].byte.h;
       }
 
-      if ((address & 0xFE) == 4)
+      if (svp && (address & 0xFE) == 4)
       {
         unsigned int data = svp->ssp1601.gr[SSP_PM0].byte.h;
         svp->ssp1601.gr[SSP_PM0].byte.h &= ~1;
@@ -1005,7 +1005,7 @@ void ctrl_io_write_word(unsigned int address, unsigned int data)
 
     case 0x50:  /* SVP */
     {
-      if (!(address & 0xFD))
+      if (svp && !(address & 0xFD))
       {
         svp->ssp1601.gr[SSP_XST].byte.h = data;
         svp->ssp1601.gr[SSP_PM0].byte.h |= 2;

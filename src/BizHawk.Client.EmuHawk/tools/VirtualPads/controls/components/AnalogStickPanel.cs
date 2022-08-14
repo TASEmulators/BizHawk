@@ -257,12 +257,12 @@ namespace BizHawk.Client.EmuHawk
 			Refresh();
 		}
 
-		public void Clear()
+		public void Clear(bool fromCallback = false)
 		{
 			if (!HasValue && X == 0 && Y == 0) return;
 			X = Y = 0;
 			HasValue = false;
-			ClearCallback?.Invoke();
+			if (!fromCallback) ClearCallback?.Invoke();
 			Refresh();
 		}
 

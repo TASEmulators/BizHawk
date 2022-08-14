@@ -69,6 +69,7 @@ namespace BizHawk.Client.EmuHawk.Properties
 		internal static readonly Icon CdLoggerIcon = ReadEmbeddedIcon("cdlogger");
 		internal static readonly Bitmap Checkbox = ReadEmbeddedBitmap("checkbox");
 		internal static readonly Bitmap Circle = ReadEmbeddedBitmap("Circle");
+		internal static readonly Bitmap ClearConsole = ReadEmbeddedBitmap("clear_console");
 		internal static readonly Bitmap Close = ReadEmbeddedBitmap("Close");
 		internal static readonly Icon CommandWindow = ReadEmbeddedIcon("commandWindow");
 		internal static readonly Bitmap Connect16X16 = ReadEmbeddedBitmap("connect_16x16");

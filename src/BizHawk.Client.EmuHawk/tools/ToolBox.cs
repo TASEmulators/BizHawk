@@ -45,11 +45,10 @@ namespace BizHawk.Client.EmuHawk
 			ToolBoxStrip.Items.Clear();
 
 			var tools = EmuHawk.ReflectionCache.Types
-				.Where(t => typeof(IToolForm).IsAssignableFrom(t))
-				.Where(t => typeof(Form).IsAssignableFrom(t))
-				.Where(t => !typeof(ToolBox).IsAssignableFrom(t))
-				.Where(t => ServiceInjector.IsAvailable(Emulator.ServiceProvider, t))
-				.Where(t => VersionInfo.DeveloperBuild || !t.GetCustomAttributes(false).OfType<ToolAttribute>().Any(a => !a.Released));
+				.Where(t => typeof(IToolForm).IsAssignableFrom(t) && typeof(Form).IsAssignableFrom(t)
+					&& !typeof(ToolBox).IsAssignableFrom(t)
+					&& ServiceInjector.IsAvailable(Emulator.ServiceProvider, t)
+					&& (VersionInfo.DeveloperBuild || !t.GetCustomAttributes(false).OfType<ToolAttribute>().Any(static a => !a.Released)));
 
 			/*
 			for (int i = 0; i < tools.Count(); i++)

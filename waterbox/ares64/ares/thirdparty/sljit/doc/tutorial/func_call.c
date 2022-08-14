@@ -34,7 +34,7 @@ static int func_call(long a, long b, long c)
 	/* Create a SLJIT compiler */
 	struct sljit_compiler *C = sljit_create_compiler(NULL, NULL);
 
-	sljit_emit_enter(C, 0, SLJIT_ARG1(SW)|SLJIT_ARG2(SW)|SLJIT_ARG3(SW), 3, 3, 0, 0, 0);
+	sljit_emit_enter(C, 0, SLJIT_ARGS3(W, W, W, W), 3, 3, 0, 0, 0);
 
 	/*  a & 1 --> R0 */
 	sljit_emit_op2(C, SLJIT_AND, SLJIT_R0, 0, SLJIT_S0, 0, SLJIT_IMM, 1);
@@ -43,7 +43,7 @@ static int func_call(long a, long b, long c)
 
 	/* R0 = S1; print_num(R0) */
 	sljit_emit_op1(C, SLJIT_MOV, SLJIT_R0, 0, SLJIT_S1, 0);
-	sljit_emit_icall(C, SLJIT_CALL, SLJIT_RET(SW) | SLJIT_ARG1(SW), SLJIT_IMM, SLJIT_FUNC_OFFSET(print_num));
+	sljit_emit_icall(C, SLJIT_CALL, SLJIT_ARGS1(W, W), SLJIT_IMM, SLJIT_FUNC_ADDR(print_num));
 
 	/* jump out */
 	out = sljit_emit_jump(C, SLJIT_JUMP);
@@ -52,7 +52,7 @@ static int func_call(long a, long b, long c)
 
 	/* R0 = c; print_num(R0); */
 	sljit_emit_op1(C, SLJIT_MOV, SLJIT_R0, 0, SLJIT_S2, 0);
-	sljit_emit_icall(C, SLJIT_CALL, SLJIT_RET(SW) | SLJIT_ARG1(SW), SLJIT_IMM, SLJIT_FUNC_OFFSET(print_num));
+	sljit_emit_icall(C, SLJIT_CALL, SLJIT_ARGS1(W, W), SLJIT_IMM, SLJIT_FUNC_ADDR(print_num));
 
 	/* out: */
 	sljit_set_label(out, sljit_emit_label(C));

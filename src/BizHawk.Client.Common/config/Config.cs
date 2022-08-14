@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+
+using BizHawk.Bizware.BizwareGL;
 using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
@@ -25,16 +27,16 @@ namespace BizHawk.Client.Common
 			(new[] { VSystemID.Raw.NES },
 				new[] { CoreNames.QuickNes, CoreNames.NesHawk, CoreNames.SubNesHawk }),
 			(new[] { VSystemID.Raw.SNES },
-				new[] { CoreNames.Faust, CoreNames.Snes9X, CoreNames.Bsnes, CoreNames.Bsnes115 }),
+				new[] { CoreNames.Faust, CoreNames.Snes9X, CoreNames.Bsnes, CoreNames.Bsnes115, CoreNames.SubBsnes115 }),
 			(new[] { VSystemID.Raw.N64 },
 				new[] { CoreNames.Mupen64Plus, CoreNames.Ares64 }),
 			(new[] { VSystemID.Raw.SGB },
-				new[] { CoreNames.Gambatte, CoreNames.Bsnes, CoreNames.Bsnes115}),
+				new[] { CoreNames.Gambatte, CoreNames.Bsnes, CoreNames.Bsnes115, CoreNames.SubBsnes115 }),
 			(new[] { VSystemID.Raw.GB, VSystemID.Raw.GBC },
 				new[] { CoreNames.Gambatte, CoreNames.Sameboy, CoreNames.GbHawk, CoreNames.SubGbHawk }),
 			(new[] { VSystemID.Raw.GBL },
 				new[] { CoreNames.GambatteLink, CoreNames.GBHawkLink, CoreNames.GBHawkLink3x, CoreNames.GBHawkLink4x }),
-			(new[] { VSystemID.Raw.PCE, VSystemID.Raw.PCECD, VSystemID.Raw.SGX },
+			(new[] { VSystemID.Raw.PCE, VSystemID.Raw.PCECD, VSystemID.Raw.SGX, VSystemID.Raw.SGXCD },
 				new[] { CoreNames.TurboNyma, CoreNames.HyperNyma, CoreNames.PceHawk }),
 			(new[] { VSystemID.Raw.PSX },
 				new[] { CoreNames.Octoshock, CoreNames.Nymashock }),
@@ -60,7 +62,7 @@ namespace BizHawk.Client.Common
 		public void ResolveDefaults()
 		{
 			PathEntries.ResolveWithDefaults();
-			HotkeyBindings.ResolveWithDefaults();
+			HotkeyInfo.ResolveWithDefaults(HotkeyBindings);
 			PathEntries.RefreshTempPath();
 		}
 
@@ -100,6 +102,7 @@ namespace BizHawk.Client.Common
 		public RecentFiles RecentRoms { get; set; } = new RecentFiles(10);
 		public bool PauseWhenMenuActivated { get; set; } = true;
 		public bool SaveWindowPosition { get; set; } = true;
+		public bool MainFormStayOnTop { get; set; }
 		public bool StartPaused { get; set; }
 		public bool StartFullscreen { get; set; }
 		public int MainWndx { get; set; } = -1; // Negative numbers will be ignored
@@ -109,7 +112,7 @@ namespace BizHawk.Client.Common
 		public bool AcceptBackgroundInputControllerOnly { get; set; }
 		public bool HandleAlternateKeyboardLayouts { get; set; }
 		public bool SingleInstanceMode { get; set; }
-		public bool AllowUdlr { get; set; }
+		public OpposingDirPolicy OpposingDirPolicy { get; set; }
 		public bool ShowContextMenu { get; set; } = true;
 		public bool HotkeyConfigAutoTab { get; set; } = true;
 		public bool InputConfigAutoTab { get; set; } = true;
@@ -147,7 +150,7 @@ namespace BizHawk.Client.Common
 		public int FlushSaveRamFrames { get; set; }
 
 		/// <remarks>Don't rename this without changing <c>BizHawk.Client.EmuHawk.Program.CurrentDomain_AssemblyResolve</c></remarks>
-		public ELuaEngine LuaEngine { get; set; } = ELuaEngine.LuaPlusLuaInterface;
+		public ELuaEngine LuaEngine { get; set; } = OSTailoredCode.IsUnixHost ? ELuaEngine.NLuaPlusKopiLua : ELuaEngine.LuaPlusLuaInterface;
 
 		public bool TurboSeek { get; set; }
 
@@ -298,7 +301,7 @@ namespace BizHawk.Client.Common
 		public bool PlayMovieIncludeSubDir { get; set; }
 		public bool PlayMovieMatchHash { get; set; } = true;
 
-		public BindingCollection HotkeyBindings { get; set; } = new BindingCollection();
+		public Dictionary<string, string> HotkeyBindings { get; set; } = new();
 
 		// Analog Hotkey values
 		public int AnalogLargeChange { get; set; } = 10;
@@ -326,6 +329,7 @@ namespace BizHawk.Client.Common
 			[VSystemID.Raw.PCE] = CoreNames.TurboNyma,
 			[VSystemID.Raw.PCECD] = CoreNames.TurboNyma,
 			[VSystemID.Raw.SGX] = CoreNames.TurboNyma,
+			[VSystemID.Raw.SGXCD] = CoreNames.TurboNyma,
 			[VSystemID.Raw.PSX] = CoreNames.Nymashock,
 			[VSystemID.Raw.TI83] = CoreNames.Emu83,
 		};
@@ -351,5 +355,7 @@ namespace BizHawk.Client.Common
 
 		/// <remarks>in seconds</remarks>
 		public int OSDMessageDuration { get; set; } = 2;
+
+		public Queue<string> RecentCores { get; set; } = new();
 	}
 }

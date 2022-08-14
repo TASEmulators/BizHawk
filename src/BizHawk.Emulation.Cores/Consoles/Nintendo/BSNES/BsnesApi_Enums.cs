@@ -24,14 +24,24 @@
 
 		public enum BSNES_INPUT_DEVICE
 		{
-			None,
-			Gamepad,
-			Mouse,
-			SuperMultitap,
-			Payload,
-			SuperScope,
-			Justifier,
-			Justifiers
+			None = 0,
+			Gamepad = 1,
+			Mouse = 2,
+			SuperMultitap = 3,
+			Payload = 4,
+			SuperScope = 5,
+			Justifier = 6,
+			Justifiers = 7
+		}
+
+		/// this a subset of the <see cref="BSNES_INPUT_DEVICE"/> enum with all lightgun controllers removed
+		public enum BSNES_PORT1_INPUT_DEVICE
+		{
+			None = 0,
+			Gamepad = 1,
+			Mouse = 2,
+			SuperMultitap = 3,
+			Payload = 4
 		}
 
 		public enum ENTROPY

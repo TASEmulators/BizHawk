@@ -58,6 +58,7 @@ auto SuperMultitap::latch(bool data) -> void {
   counter2 = 0;
 
   if(latched == 0) {
+    if (port == ID::Port::Controller1) platform->notify("LATCH");
     uint offset = isPayloadController ? 16 : 12;
     for(uint id : range(4)) {
       auto& gamepad = gamepads[id];

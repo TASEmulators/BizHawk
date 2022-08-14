@@ -10,6 +10,7 @@ auto CPU::joypadCounter() const -> uint {
 
 auto CPU::stepOnce() -> void {
   counter.cpu += 2;
+  TotalExecutedCycles += 2;
   tick();
   if(hcounter() & 2) nmiPoll(), irqPoll();
   if(joypadCounter() == 0) joypadEdge();

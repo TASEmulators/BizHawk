@@ -22,7 +22,7 @@ namespace BizHawk.Client.Common
 		/// <param name="parameter">The converter parameter to use; null in our case</param>
 		/// <param name="cultureInfo">The culture to use in the converter</param>
 		/// <returns>A <see cref="CoreSystem"/> that is equivalent to BizHawk SystemId <see cref="string"/></returns>
-		/// <exception cref="IndexOutOfRangeException">Thrown when SystemId hasn't been found</exception>
+		/// <exception cref="InvalidOperationException">Thrown when SystemId hasn't been found</exception>
 		public object Convert(object value, Type targetType, object parameter, CultureInfo cultureInfo)
 		{
 			return (string) value switch
@@ -65,7 +65,7 @@ namespace BizHawk.Client.Common
 				VSystemID.Raw.SGB => CoreSystem.SuperGameBoy,
 				VSystemID.Raw.UZE => CoreSystem.UzeBox,
 				VSystemID.Raw.PCFX => CoreSystem.PcFx,
-				_ => throw new IndexOutOfRangeException($"{value} is missing in convert list")
+				_ => throw new InvalidOperationException($"{value} is missing in convert list")
 			};
 		}
 
@@ -75,7 +75,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		/// <param name="value"><see cref="string"/> you want to convert</param>
 		/// <returns>A <see cref="CoreSystem"/> that is equivalent to BizHawk SystemId <see cref="string"/></returns>
-		/// <exception cref="IndexOutOfRangeException">Thrown when SystemId hasn't been found</exception>
+		/// <exception cref="InvalidOperationException">Thrown when SystemId hasn't been found</exception>
 		public CoreSystem Convert(string value)
 		{
 			return (CoreSystem)Convert(value, null, null, CultureInfo.CurrentCulture);
@@ -90,7 +90,7 @@ namespace BizHawk.Client.Common
 		/// <param name="parameter">The converter parameter to use; null in our case</param>
 		/// <param name="cultureInfo">The culture to use in the converter</param>
 		/// <returns>A <see cref="string"/> that is used by BizHawk SystemId</returns>
-		/// <exception cref="IndexOutOfRangeException">Thrown when <see cref="CoreSystem"/> hasn't been found</exception>
+		/// <exception cref="InvalidOperationException">Thrown when <see cref="CoreSystem"/> hasn't been found</exception>
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo cultureInfo)
 		{
 			return (CoreSystem) value switch
@@ -98,29 +98,40 @@ namespace BizHawk.Client.Common
 				CoreSystem.AppleII => VSystemID.Raw.AppleII,
 				CoreSystem.Atari2600 => VSystemID.Raw.A26,
 				CoreSystem.Atari7800 => VSystemID.Raw.A78,
+				CoreSystem.ChannelF => VSystemID.Raw.ChannelF,
 				CoreSystem.ColecoVision => VSystemID.Raw.Coleco,
 				CoreSystem.Commodore64 => VSystemID.Raw.C64,
 				CoreSystem.GameBoyLink => VSystemID.Raw.GBL,
 				CoreSystem.GameBoy => VSystemID.Raw.GB,
 				CoreSystem.GameBoyAdvance => VSystemID.Raw.GBA,
 				CoreSystem.Genesis => VSystemID.Raw.GEN,
+				CoreSystem.GGL => VSystemID.Raw.GGL,
 				CoreSystem.Intellivision => VSystemID.Raw.INTV,
 				CoreSystem.Libretro => VSystemID.Raw.Libretro,
 				CoreSystem.Lynx => VSystemID.Raw.Lynx,
+				CoreSystem.MAME => VSystemID.Raw.MAME,
 				CoreSystem.MasterSystem => VSystemID.Raw.SMS,
+				CoreSystem.MSX => VSystemID.Raw.MSX,
+				CoreSystem.NeoGeoPocket => VSystemID.Raw.NGP,
 				CoreSystem.NES => VSystemID.Raw.NES,
 				CoreSystem.Nintendo64 => VSystemID.Raw.N64,
+				CoreSystem.NintendoDS => VSystemID.Raw.NDS,
 				CoreSystem.Null => VSystemID.Raw.NULL,
 				CoreSystem.PCEngine => VSystemID.Raw.PCE,
+				CoreSystem.PcFx => VSystemID.Raw.PCFX,
 				CoreSystem.Playstation => VSystemID.Raw.PSX,
 				CoreSystem.Saturn => VSystemID.Raw.SAT,
 				CoreSystem.SNES => VSystemID.Raw.SNES,
+				CoreSystem.SuperGameBoy => VSystemID.Raw.SGB,
 				CoreSystem.TI83 => VSystemID.Raw.TI83,
+				CoreSystem.UzeBox => VSystemID.Raw.UZE,
+				CoreSystem.Vectrex => VSystemID.Raw.VEC,
+				CoreSystem.VirtualBoy => VSystemID.Raw.VB,
 				CoreSystem.WonderSwan => VSystemID.Raw.WSWAN,
 				CoreSystem.ZXSpectrum => VSystemID.Raw.ZXSpectrum,
 				CoreSystem.AmstradCPC => VSystemID.Raw.AmstradCPC,
 				CoreSystem.Odyssey2 => VSystemID.Raw.O2,
-				_ => throw new IndexOutOfRangeException($"{value} is missing in convert list")
+				_ => throw new InvalidOperationException($"{value} is missing in convert list")
 			};
 		}
 
@@ -130,7 +141,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		/// <param name="value"><see cref="CoreSystem"/> you want to convert</param>
 		/// <returns>A <see cref="string"/> that is used by BizHawk SystemId</returns>
-		/// <exception cref="IndexOutOfRangeException">Thrown when <see cref="CoreSystem"/> hasn't been found</exception>
+		/// <exception cref="InvalidOperationException">Thrown when <see cref="CoreSystem"/> hasn't been found</exception>
 		public string ConvertBack(CoreSystem value)
 		{
 			return (string)ConvertBack(value, null, null, CultureInfo.CurrentCulture);

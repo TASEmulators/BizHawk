@@ -81,7 +81,10 @@ namespace BizHawk.Tests.Testroms.GB.GambatteSuite
 
 		[ClassInitialize]
 		public static void BeforeAll(TestContext ctx)
-			=> TestUtils.PrepareDBAndOutput(SUITE_ID);
+		{
+			if (!(GambatteHexStrTestCase.KnownFailures.IsSortedAsc() && GambatteRefImageTestCase.KnownFailures.IsSortedAsc())) throw new Exception(SUITE_ID + " known-failing testcase list must be sorted");
+			TestUtils.PrepareDBAndOutput(SUITE_ID);
+		}
 
 		private static (IReadOnlyList<GambatteRefImageTestCase> RefImageCases, IReadOnlyList<GambatteHexStrTestCase> HexStrCases) EnumerateAllCases()
 		{

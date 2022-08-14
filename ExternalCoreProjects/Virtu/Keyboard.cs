@@ -322,6 +322,15 @@ namespace Jellyfish.Virtu
 			Strobe = false;
 		}
 
+		public void Sync(IComponentSerializer ser)
+		{
+			ser.Sync("Latch", ref _latch);
+			ser.Sync("Strobe", ref _strobe);
+			ser.Sync("CapsActive", ref _capsActive);
+			ser.Sync(nameof(_currentCapsLockState), ref _currentCapsLockState);
+			ser.Sync(nameof(_framesToRepeat), ref _framesToRepeat);
+		}
+
 		/// <summary>
 		/// true if any of the 56 basic keys are pressed
 		/// </summary>
@@ -330,14 +339,31 @@ namespace Jellyfish.Virtu
 		/// <summary>
 		/// the currently latched key; 7 bits.
 		/// </summary>
-		public int Latch { get; private set; }
-		public bool Strobe { get; private set; }
+		public int Latch
+		{
+			get => _latch;
+			private set => _latch = value;
+		}
+
+		public bool Strobe
+		{
+			get => _strobe;
+			private set => _strobe = value;
+		}
+
+		private int _latch;
+		private bool _strobe;
 
 		/// <summary>
 		/// true if caps lock is active
 		/// </summary>
-		private bool CapsActive { get; set; }
+		private bool CapsActive
+		{
+			get => _capsActive;
+			set => _capsActive = value;
+		}
 
+		private bool _capsActive;
 		private bool _currentCapsLockState;
 
 		/// <summary>

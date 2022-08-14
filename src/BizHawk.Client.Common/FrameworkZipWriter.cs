@@ -2,12 +2,16 @@
 using System.IO;
 using System.IO.Compression;
 
+using BizHawk.Emulation.Common;
+
 namespace BizHawk.Client.Common
 {
 	public class FrameworkZipWriter : IZipWriter
 	{
 		private ZipArchive _archive;
+		private Zstd _zstd;
 		private readonly CompressionLevel _level;
+		private readonly int _zstdCompressionLevel;
 
 		public FrameworkZipWriter(string path, int compressionLevel)
 		{
@@ -19,12 +23,26 @@ namespace BizHawk.Client.Common
 				_level = CompressionLevel.Fastest;
 			else
 				_level = CompressionLevel.Optimal;
+
+			_zstd = new();
+			// compressionLevel ranges from 0 to 9
+			// normal compression level range for zstd is 1 to 19
+			_zstdCompressionLevel = compressionLevel * 2 + 1;
 		}
 
-		public void WriteItem(string name, Action<Stream> callback)
+		public void WriteItem(string name, Action<Stream> callback, bool zstdCompress)
 		{
 			using var stream = _archive.CreateEntry(name, _level).Open();
-			callback(stream);
+
+			if (zstdCompress)
+			{
+				using var z = _zstd.CreateZstdCompressionStream(stream, _zstdCompressionLevel);
+				callback(z);
+			}
+			else
+			{
+				callback(stream);
+			}
 		}
 
 		public void Dispose()
@@ -33,6 +51,12 @@ namespace BizHawk.Client.Common
 			{
 				_archive.Dispose();
 				_archive = null;
+			}
+
+			if (_zstd != null)
+			{
+				_zstd.Dispose();
+				_zstd = null;
 			}
 		}
 	}

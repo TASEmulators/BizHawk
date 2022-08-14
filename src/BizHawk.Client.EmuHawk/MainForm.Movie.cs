@@ -11,10 +11,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public bool StartNewMovie(IMovie movie, bool record)
 		{
-			if (movie == null)
-			{
-				throw new ArgumentNullException($"{nameof(movie)} cannot be null.");
-			}
+			if (movie is null) throw new ArgumentNullException(paramName: nameof(movie));
 
 			var oldPreferredCores = new Dictionary<string, string>(Config.PreferredCores);
 			try

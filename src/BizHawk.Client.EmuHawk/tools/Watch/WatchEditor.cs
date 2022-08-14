@@ -5,6 +5,8 @@ using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Common.CollectionExtensions;
+
 using Emu = BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -76,7 +78,7 @@ namespace BizHawk.Client.EmuHawk
 
 						BigEndianCheckBox.ThreeState = true;
 
-						if (Watches.Select(s => s.Size).Distinct().Count() > 1)
+						if (Watches.Select(static s => s.Size).Distinct().CountIsAtLeast(2))
 						{
 							DisplayTypeDropDown.Enabled = false;
 						}

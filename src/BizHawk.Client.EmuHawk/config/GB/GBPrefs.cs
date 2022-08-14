@@ -17,23 +17,29 @@ namespace BizHawk.Client.EmuHawk
 			Icon = Properties.Resources.GambatteIcon;
 		}
 
-		public static void DoGBPrefsDialog(IMainFormForConfig mainForm, Config config, IGameInfo game, IMovieSession movieSession, Gameboy gb)
+		public static DialogResult DoGBPrefsDialog(
+			Config config,
+			IDialogParent dialogParent,
+			IGameInfo game,
+			IMovieSession movieSession,
+			ISettingsAdapter settable)
 		{
-			var s = gb.GetSettings();
-			var ss = gb.GetSyncSettings();
+			var s = (Gameboy.GambatteSettings) settable.GetSettings();
+			var ss = (Gameboy.GambatteSyncSettings) settable.GetSyncSettings();
 
-			using var dlg = new GBPrefs(mainForm.DialogController);
+			using var dlg = new GBPrefs(dialogParent.DialogController);
 			dlg.gbPrefControl1.PutSettings(config, game, movieSession, s, ss);
-			dlg.gbPrefControl1.ColorGameBoy = gb.IsCGBMode() || gb.IsSgb;
-			if (mainForm.ShowDialogAsChild(dlg).IsOk())
+			var result = dialogParent.ShowDialogAsChild(dlg);
+			if (result.IsOk())
 			{
 				dlg.gbPrefControl1.GetSettings(out s, out ss);
-				gb.PutSettings(s);
+				settable.PutCoreSettings(s);
 				if (dlg.gbPrefControl1.SyncSettingsChanged)
 				{
-					mainForm.PutCoreSyncSettings(ss);
+					settable.PutCoreSyncSettings(ss);
 				}
 			}
+			return result;
 		}
 	}
 }

@@ -155,7 +155,7 @@ namespace BizHawk.Client.EmuHawk
 			initialConfig.ResolveDefaults();
 			// initialConfig should really be globalConfig as it's mutable
 
-			FFmpegService.FFmpegPath = Path.Combine(PathUtils.DllDirectoryPath, OSTC.IsUnixHost ? "ffmpeg" : "ffmpeg.exe");
+			FFmpegService.FFmpegPath = Path.Combine(PathUtils.DataDirectoryPath, "dll", OSTC.IsUnixHost ? "ffmpeg" : "ffmpeg.exe");
 
 			StringLogUtil.DefaultToDisk = initialConfig.Movies.MoviesOnDisk;
 
@@ -181,17 +181,15 @@ namespace BizHawk.Client.EmuHawk
 							// possibly sharing config w/ Windows, assume the user wants the not-slow method (but don't change the config)
 							return TryInitIGL(EDispMethod.OpenGL);
 						}
-						IGL_SlimDX9 glSlimDX;
 						try
 						{
-							glSlimDX = new IGL_SlimDX9();
+							return CheckRenderer(IndirectX.CreateD3DGLImpl());
 						}
 						catch (Exception ex)
 						{
 							new ExceptionBox(new Exception("Initialization of Direct3d 9 Display Method failed; falling back to GDI+", ex)).ShowDialog();
 							return TryInitIGL(initialConfig.DispMethod = EDispMethod.GdiPlus);
 						}
-						return CheckRenderer(glSlimDX);
 					case EDispMethod.OpenGL:
 						var glOpenTK = new IGL_TK(2, 0, false);
 						if (glOpenTK.Version < 200)

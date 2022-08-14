@@ -8,12 +8,13 @@ using System.Reflection;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public sealed class ExternalToolManager
 	{
-		private readonly Func<(CoreSystem System, string Hash)> _getLoadedRomInfoCallback;
+		private readonly Func<(string SysID, string Hash)> _getLoadedRomInfoCallback;
 
 		private PathEntryCollection _paths;
 
@@ -23,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 
 		internal readonly IList<string> PossibleExtToolTypeNames = new List<string>();
 
-		public ExternalToolManager(PathEntryCollection paths, Func<(CoreSystem System, string Hash)> getLoadedRomInfoCallback)
+		public ExternalToolManager(PathEntryCollection paths, Func<(string SysID, string Hash)> getLoadedRomInfoCallback)
 		{
 			_getLoadedRomInfoCallback = getLoadedRomInfoCallback;
 			Restart(paths);
@@ -102,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 					var (system, loadedRomHash) = _getLoadedRomInfoCallback();
 					if (applicabilityAttrs[0].NotApplicableTo(system))
 					{
-						item.ToolTipText = system == CoreSystem.Null
+						item.ToolTipText = system is VSystemID.Raw.NULL
 							? "This tool doesn't work when no rom is loaded"
 							: "This tool doesn't work with this system";
 						return item;

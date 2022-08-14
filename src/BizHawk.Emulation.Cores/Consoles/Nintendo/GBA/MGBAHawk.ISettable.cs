@@ -38,6 +38,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			GBColors.ColorType c = GBColors.ColorType.vivid;
 			switch (o.ColorType)
 			{
+				case Settings.ColorTypes.SameBoy: c = GBColors.ColorType.sameboy; break;
 				case Settings.ColorTypes.Gambatte: c = GBColors.ColorType.gambatte; break;
 				case Settings.ColorTypes.Vivid: c = GBColors.ColorType.vivid; break;
 				case Settings.ColorTypes.VbaVivid: c = GBColors.ColorType.vbavivid; break;
@@ -45,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				case Settings.ColorTypes.VbaGbOld: c = GBColors.ColorType.vbabgbold; break;
 				case Settings.ColorTypes.BizhawkGba: c = GBColors.ColorType.gba; break;
 			}
-			GBColors.GetLut(c, palette);
+			GBColors.GetLut(c, palette, agb: true);
 			for (var i = 32768; i < 65536; i++)
 				palette[i] = palette[i - 32768];
 			LibmGBA.BizSetPalette(Core, palette);
@@ -104,6 +105,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			public enum ColorTypes
 			{
+				[Display(Name = "SameBoy GBA")]
+				SameBoy,
 				[Display(Name = "Gambatte CGB")]
 				Gambatte,
 				[Display(Name = "Vivid")]

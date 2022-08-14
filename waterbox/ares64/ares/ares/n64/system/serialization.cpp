@@ -46,6 +46,7 @@ auto System::serialize(serializer& s, bool synchronize) -> void {
   s(vi);
   s(ai);
   s(pi);
+  s(pif);
   s(ri);
   s(si);
   s(cpu);

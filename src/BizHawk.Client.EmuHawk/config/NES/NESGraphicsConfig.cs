@@ -9,25 +9,30 @@ using BizHawk.Emulation.Cores.Nintendo.NES;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class NESGraphicsConfig : Form
+	public partial class NESGraphicsConfig : Form, IDialogParent
 	{
 		// TODO:
 		// Allow selection of palette file from archive
 		// Hotkeys for BG & Sprite display toggle
 		// NTSC filter settings? Hue, Tint (This should probably be a client thing, not a nes specific thing?)
-		private readonly IMainFormForConfig _mainForm;
 		private readonly Config _config;
+
+		private readonly ISettingsAdapter _settable;
+
 		private NES.NESSettings _settings;
 		//private Bitmap _bmp;
 
+		public IDialogController DialogController { get; }
+
 		public NESGraphicsConfig(
-			IMainFormForConfig mainForm,
 			Config config,
-			NES.NESSettings settings)
+			IDialogController dialogController,
+			ISettingsAdapter settable)
 		{
-			_mainForm = mainForm;
 			_config = config;
-			_settings = settings;
+			_settable = settable;
+			_settings = (NES.NESSettings) _settable.GetSettings();
+			DialogController = dialogController;
 			InitializeComponent();
 		}
 
@@ -108,7 +113,7 @@ namespace BizHawk.Client.EmuHawk
 						var data = Palettes.Load_FCEUX_Palette(palette.ReadAllBytes());
 						if (showMsg)
 						{
-							_mainForm.DialogController.AddOnScreenMessage($"Palette file loaded: {palette.Name}");
+							DialogController.AddOnScreenMessage($"Palette file loaded: {palette.Name}");
 						}
 
 						return data;
@@ -120,7 +125,7 @@ namespace BizHawk.Client.EmuHawk
 				// no filename: interpret this as "reset to default"
 				if (showMsg)
 				{
-					_mainForm.DialogController.AddOnScreenMessage("Standard Palette set");
+					DialogController.AddOnScreenMessage("Standard Palette set");
 				}
 
 				return (byte[,])Palettes.QuickNESPalette.Clone();
@@ -149,7 +154,7 @@ namespace BizHawk.Client.EmuHawk
 				_settings.BackgroundColor &= 0x00FFFFFF;
 			}
 
-			_mainForm.PutCoreSettings(_settings);
+			_settable.PutCoreSettings(_settings);
 			Close();
 		}
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 
 using NLua;
@@ -34,12 +35,26 @@ namespace BizHawk.Client.EmuHawk
 					var foundAttrs = method.GetCustomAttributes(typeof(LuaMethodAttribute), false);
 					if (foundAttrs.Length == 0) continue;
 					if (instance != null) _lua.RegisterFunction($"{name}.{((LuaMethodAttribute) foundAttrs[0]).Name}", instance, method);
-					Docs.Add(new LibraryFunction(
+					LibraryFunction libFunc = new(
 						name,
 						type.GetCustomAttributes(typeof(DescriptionAttribute), false).Cast<DescriptionAttribute>()
 							.Select(descAttr => descAttr.Description).FirstOrDefault() ?? string.Empty,
 						method
-					));
+					);
+					Docs.Add(libFunc);
+#if DEBUG
+					// these don't catch object or LuaTable!
+					if (method.GetParameters().Any(static pi => pi.ParameterType == typeof(string)
+						&& !pi.CustomAttributes.Any(static a => typeof(LuaStringParamAttributeBase).IsAssignableFrom(a.AttributeType))))
+					{
+						Console.WriteLine($"Lua function {name}.{libFunc.Name} has an unclassified string param");
+					}
+					if (method.ReturnParameter!.ParameterType == typeof(string)
+						&& !method.ReturnParameter.CustomAttributes.Any(static a => typeof(LuaStringParamAttributeBase).IsAssignableFrom(a.AttributeType)))
+					{
+						Console.WriteLine($"Lua function {name}.{libFunc.Name} has an unclassified string return value");
+					}
+#endif
 				}
 			}
 
@@ -59,14 +74,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var lib in Client.Common.ReflectionCache.Types.Concat(EmuHawk.ReflectionCache.Types)
 				.Where(t => typeof(LuaLibraryBase).IsAssignableFrom(t) && t.IsSealed && ServiceInjector.IsAvailable(serviceProvider, t)))
 			{
-				bool addLibrary = true;
-				var attributes = lib.GetCustomAttributes(typeof(LuaLibraryAttribute), false);
-				if (attributes.Any())
-				{
-					addLibrary = VersionInfo.DeveloperBuild || ((LuaLibraryAttribute)attributes.First()).Released;
-				}
-
-				if (addLibrary)
+				if (VersionInfo.DeveloperBuild || lib.GetCustomAttribute<LuaLibraryAttribute>(inherit: false)?.Released == true)
 				{
 					var instance = (LuaLibraryBase) Activator.CreateInstance(lib, this, _apiContainer, (Action<string>) LogToLuaConsole);
 					ServiceInjector.UpdateServices(serviceProvider, instance);
@@ -81,6 +89,10 @@ namespace BizHawk.Client.EmuHawk
 					{
 						consoleLib.Tools = _mainForm.Tools;
 						_logToLuaConsoleCallback = consoleLib.Log;
+					}
+					else if (instance is FormsLuaLibrary formsLib)
+					{
+						formsLib.MainForm = _mainForm;
 					}
 					else if (instance is GuiLuaLibrary guiLib)
 					{
@@ -265,9 +277,14 @@ namespace BizHawk.Client.EmuHawk
 			_lua = new Lua();
 		}
 
-		public INamedLuaFunction CreateAndRegisterNamedFunction(LuaFunction function, string theEvent, Action<string> logCallback, LuaFile luaFile, string name = null)
+		public INamedLuaFunction CreateAndRegisterNamedFunction(
+			LuaFunction function,
+			string theEvent,
+			Action<string> logCallback,
+			LuaFile luaFile,
+			[LuaArbitraryStringParam] string name = null)
 		{
-			var nlf = new NamedLuaFunction(function, theEvent, logCallback, luaFile, name);
+			var nlf = new NamedLuaFunction(function, theEvent, logCallback, luaFile, LuaLibraryBase.FixString(name));
 			RegisteredFunctions.Add(nlf);
 			return nlf;
 		}

@@ -60,6 +60,7 @@ namespace BizHawk.Client.EmuHawk
 			this.EditScriptMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.RemoveScriptMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.DuplicateScriptMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.ClearConsoleMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator7 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.InsertSeparatorMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.MoveUpMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -100,6 +101,7 @@ namespace BizHawk.Client.EmuHawk
 			this.EditToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.RemoveScriptToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.DuplicateToolbarButton = new System.Windows.Forms.ToolStripButton();
+			this.ClearConsoleToolbarButton = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator2 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.MoveUpToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButtonMoveDown = new System.Windows.Forms.ToolStripButton();
@@ -243,6 +245,7 @@ namespace BizHawk.Client.EmuHawk
             this.EditScriptMenuItem,
             this.RemoveScriptMenuItem,
             this.DuplicateScriptMenuItem,
+            this.ClearConsoleMenuItem,
             this.toolStripSeparator7,
             this.InsertSeparatorMenuItem,
             this.MoveUpMenuItem,
@@ -299,6 +302,11 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.DuplicateScriptMenuItem.Text = "&Duplicate Script";
 			this.DuplicateScriptMenuItem.Click += new System.EventHandler(this.DuplicateScriptMenuItem_Click);
+			// 
+			// ClearConsoleMenuItem
+			// 
+			this.ClearConsoleMenuItem.Text = "&Clear Output";
+			this.ClearConsoleMenuItem.Click += new System.EventHandler(this.ClearConsoleMenuItem_Click);
 			// 
 			// InsertSeparatorMenuItem
 			// 
@@ -500,6 +508,7 @@ namespace BizHawk.Client.EmuHawk
             this.EditToolbarItem,
             this.RemoveScriptToolbarItem,
             this.DuplicateToolbarButton,
+            this.ClearConsoleToolbarButton,
             this.toolStripSeparator2,
             this.MoveUpToolbarItem,
             this.toolStripButtonMoveDown,
@@ -581,6 +590,15 @@ namespace BizHawk.Client.EmuHawk
 			this.DuplicateToolbarButton.Size = new System.Drawing.Size(23, 22);
 			this.DuplicateToolbarButton.Text = "Duplicate Script";
 			this.DuplicateToolbarButton.Click += new System.EventHandler(this.DuplicateScriptMenuItem_Click);
+			// 
+			// ClearConsoleToolbarButton
+			// 
+			this.ClearConsoleToolbarButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.ClearConsoleToolbarButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.ClearConsoleToolbarButton.Name = "ClearConsoleToolbarButton";
+			this.ClearConsoleToolbarButton.Size = new System.Drawing.Size(23, 22);
+			this.ClearConsoleToolbarButton.Text = "Clear Output";
+			this.ClearConsoleToolbarButton.Click += new System.EventHandler(this.ClearConsoleMenuItem_Click);
 			// 
 			// MoveUpToolbarItem
 			// 
@@ -765,8 +783,10 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator10;
 		private System.Windows.Forms.ToolStripButton EraseToolbarItem;
 		private System.Windows.Forms.ToolStripButton DuplicateToolbarButton;
+		private System.Windows.Forms.ToolStripButton ClearConsoleToolbarButton;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DuplicateScriptMenuItem;
-        private System.Windows.Forms.TextBox InputBox;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ClearConsoleMenuItem;
+		private System.Windows.Forms.TextBox InputBox;
 		private System.Windows.Forms.SplitContainer splitContainer1;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ReturnAllIfNoneSelectedMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ReloadWhenScriptFileChangesMenuItem;

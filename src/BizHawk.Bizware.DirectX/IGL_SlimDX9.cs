@@ -20,6 +20,8 @@ namespace BizHawk.Bizware.DirectX
 {
 	public sealed class IGL_SlimDX9 : IGL
 	{
+		public EDispMethod DispMethodEnum => EDispMethod.SlimDX9;
+
 		private const int D3DERR_DEVICELOST = -2005530520;
 		private const int D3DERR_DEVICENOTRESET = -2005530519;
 
@@ -255,7 +257,7 @@ namespace BizHawk.Bizware.DirectX
 				BlendEquationMode.Max => BlendOperation.Maximum,
 				BlendEquationMode.Min => BlendOperation.Minimum,
 				BlendEquationMode.FuncReverseSubtract => BlendOperation.ReverseSubtract,
-				_ => throw new ArgumentOutOfRangeException()
+				_ => throw new InvalidOperationException()
 			};
 		}
 
@@ -282,7 +284,7 @@ namespace BizHawk.Bizware.DirectX
 			BlendingFactorSrc.Src1Color => throw new NotSupportedException(),
 			BlendingFactorSrc.OneMinusSrc1Color => throw new NotSupportedException(),
 			BlendingFactorSrc.OneMinusSrc1Alpha => throw new NotSupportedException(),
-			_ => throw new ArgumentOutOfRangeException()
+			_ => throw new InvalidOperationException()
 		};
 
 		public void SetBlendState(IBlendState rsBlend)

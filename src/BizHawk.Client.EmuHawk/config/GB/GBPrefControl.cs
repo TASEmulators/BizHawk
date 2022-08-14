@@ -19,9 +19,6 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		[Browsable(false)]
-		public bool ColorGameBoy { get; set; }
-
 		/// <remarks>TODO <see cref="UserControl">UserControls</see> can be <see cref="IDialogParent">IDialogParents</see> too, the modal should still be tied to the parent <see cref="Form"/> if used that way</remarks>
 		[Browsable(false)]
 		public IDialogParent DialogParent { get; set; }
@@ -61,16 +58,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void ButtonPalette_Click(object sender, EventArgs e)
+		private void ButtonGbPalette_Click(object sender, EventArgs e)
 		{
-			if (ColorGameBoy)
-			{
-				CGBColorChooserForm.DoCGBColorChooserFormDialog(DialogParent, _s);
-			}
-			else
-			{
-				ColorChooserForm.DoColorChooserFormDialog(DialogParent, _config, _game, _s);
-			}
+			ColorChooserForm.DoColorChooserFormDialog(DialogParent, _config, _game, _s);
+		}
+
+		private void ButtonGbcPalette_Click(object sender, EventArgs e)
+		{
+			CGBColorChooserForm.DoCGBColorChooserFormDialog(DialogParent, _s);
 		}
 
 		private void PropertyGrid1_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)

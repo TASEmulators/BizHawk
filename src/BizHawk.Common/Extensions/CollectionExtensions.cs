@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace BizHawk.Common.CollectionExtensions
 {
@@ -120,6 +122,16 @@ namespace BizHawk.Common.CollectionExtensions
 			foreach (var item in collection) list.Add(item);
 		}
 
+		public static bool CountIsAtLeast<T>(this IEnumerable<T> collection, int n)
+			=> collection is ICollection countable
+				? countable.Count >= n
+				: collection.Skip(n - 1).Any();
+
+		public static bool CountIsExactly<T>(this IEnumerable<T> collection, int n)
+			=> collection is ICollection countable
+				? countable.Count == n
+				: collection.Take(n + 1).Count() == n;
+
 		/// <inheritdoc cref="IList{T}.IndexOf"/>
 		/// <remarks>
 		/// (This is an extension method which reimplements <see cref="IList{T}.IndexOf"/> for other <see cref="IReadOnlyList{T}">collections</see>.
@@ -141,6 +153,16 @@ namespace BizHawk.Common.CollectionExtensions
 					return t;
 			return null;
 		}
+
+		/// <remarks>shorthand for <c>this.OrderBy(static e => e)</c>, backported from .NET 7</remarks>
+		public static IOrderedEnumerable<T> Order<T>(this IEnumerable<T> source)
+			where T : IComparable<T>
+			=> source.OrderBy(ReturnSelf);
+
+		/// <remarks>shorthand for <c>this.OrderByDescending(static e => e)</c>, backported from .NET 7</remarks>
+		public static IOrderedEnumerable<T> OrderDescending<T>(this IEnumerable<T> source)
+			where T : IComparable<T>
+			=> source.OrderByDescending(ReturnSelf);
 
 		/// <inheritdoc cref="List{T}.RemoveAll"/>
 		/// <remarks>
@@ -167,6 +189,38 @@ namespace BizHawk.Common.CollectionExtensions
 				}
 			}
 			return c - list.Count;
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private static T ReturnSelf<T>(this T self)
+			=> self;
+
+		public static bool IsSortedAsc<T>(this IReadOnlyList<T> list)
+			where T : IComparable<T>
+		{
+			for (int i = 0, e = list.Count - 1; i < e; i++) if (list[i + 1].CompareTo(list[i]) < 0) return false;
+			return true;
+		}
+
+		public static bool IsSortedAsc<T>(this ReadOnlySpan<T> span)
+			where T : IComparable<T>
+		{
+			for (int i = 0, e = span.Length - 1; i < e; i++) if (span[i + 1].CompareTo(span[i]) < 0) return false;
+			return true;
+		}
+
+		public static bool IsSortedDesc<T>(this IReadOnlyList<T> list)
+			where T : IComparable<T>
+		{
+			for (int i = 0, e = list.Count - 1; i < e; i++) if (list[i + 1].CompareTo(list[i]) > 0) return false;
+			return true;
+		}
+
+		public static bool IsSortedDesc<T>(this ReadOnlySpan<T> span)
+			where T : IComparable<T>
+		{
+			for (int i = 0, e = span.Length - 1; i < e; i++) if (span[i + 1].CompareTo(span[i]) > 0) return false;
+			return true;
 		}
 	}
 }

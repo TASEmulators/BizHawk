@@ -32,22 +32,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				"System Bus",
 				0x10000,
 				MemoryDomain.Endian.Unknown,
-				delegate(long addr)
+				addr =>
 				{
-					if (addr < 0 || addr >= 0x10000)
-					{
-						throw new ArgumentOutOfRangeException();
-					}
-
+					if (addr is < 0 or > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
 					return QN.qn_peek_prgbus(Context, (int)addr);
 				},
-				delegate(long addr, byte val)
+				(addr, val) =>
 				{
-					if (addr < 0 || addr >= 0x10000)
-					{
-						throw new ArgumentOutOfRangeException();
-					}
-
+					if (addr is < 0 or > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
 					QN.qn_poke_prgbus(Context, (int)addr, val);
 				}, 1));
 

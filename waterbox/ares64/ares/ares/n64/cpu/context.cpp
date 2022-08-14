@@ -18,7 +18,8 @@ auto CPU::Context::setMode() -> void {
     break;
   }
 
-  if(bits == 32 || bits == 64) {
+  if(bits == 32) {
+    physMask = 0x1fff'ffff;
     segment[0] = Segment::Mapped;
     segment[1] = Segment::Mapped;
     segment[2] = Segment::Mapped;
@@ -47,6 +48,7 @@ auto CPU::Context::setMode() -> void {
   }
 
   if(bits == 64) {
+    physMask = 0x7fff'ffff;
     for(auto n : range(8))
     switch(mode) {
     case Mode::Kernel:

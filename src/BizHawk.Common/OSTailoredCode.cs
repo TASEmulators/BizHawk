@@ -1,6 +1,7 @@
+#nullable enable
+
 using System;
 using System.Diagnostics;
-using System.Globalization;
 using System.Runtime.InteropServices;
 
 using BizHawk.Common.StringExtensions;
@@ -18,37 +19,49 @@ namespace BizHawk.Common
 			? SimpleSubshell("uname", "-s", "Can't determine OS") == "Darwin" ? DistinctOS.macOS : DistinctOS.Linux
 			: DistinctOS.Windows;
 
-		private static readonly Lazy<(WindowsVersion, int?)?> _HostWindowsVersion = new Lazy<(WindowsVersion, int?)?>(() =>
+		private static readonly Lazy<(WindowsVersion, Version?)?> _HostWindowsVersion = new(() =>
 		{
-			static string GetRegValue(string key)
+			static string? GetRegValue(string key)
 			{
-				using var proc = ConstructSubshell("REG", $@"QUERY ""HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion"" /V {key}");
-				proc.Start();
-				return proc.StandardOutput.ReadToEnd().Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)[1].Split(new[] { "\t", "    " }, StringSplitOptions.RemoveEmptyEntries)[2];
+				try
+				{
+					using var proc = ConstructSubshell("REG", $@"QUERY ""HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion"" /V {key}");
+					proc.Start();
+					return proc.StandardOutput.ReadToEnd().Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)[1].Split(new[] { "\t", "    " }, StringSplitOptions.RemoveEmptyEntries)[2];
+				}
+				catch (Exception)
+				{
+					// Education edition? Poor Group Policy setup? https://github.com/TASEmulators/BizHawk/issues/2972
+					return null;
+				}
 			}
 			if (CurrentOS != DistinctOS.Windows) return null;
-			var rawWinVer = float.Parse(GetRegValue("CurrentVersion"), NumberFormatInfo.InvariantInfo); // contains '.' even when system-wide decimal separator is ','
-			WindowsVersion winVer; // sorry if this elif chain is confusing, I couldn't be bothered writing and testing float equality --yoshi
-			if (rawWinVer < 6.0f) winVer = WindowsVersion.XP;
-			else if (rawWinVer < 6.1f) winVer = WindowsVersion.Vista;
-			else if (rawWinVer < 6.2f) winVer = WindowsVersion._7;
-			else if (rawWinVer < 6.3f) winVer = WindowsVersion._8;
-			else
+			Version rawWinVer = new(GetRegValue("CurrentVersion") ?? "6.3");
+			WindowsVersion winVer;
+			if (rawWinVer >= new Version(6, 3))
 			{
-				// 8.1 and 10 are both version 6.3
-				if (GetRegValue("ProductName").Contains("Windows 10"))
+				// Win8.1, Win10, and Win11 all have CurrentVersion == "6.3"
+				if ((GetRegValue("ProductName") ?? "Windows 10").Contains("Windows 10"))
 				{
-					return (WindowsVersion._10, int.Parse(GetRegValue("ReleaseId")));
+					// Win11 has ProductName == "Windows 10 Pro" MICROSOFT WHY https://stackoverflow.com/a/69922526 https://stackoverflow.com/a/70456554
+//					Version win10PlusVer = new(FileVersionInfo.GetVersionInfo(@"C:\Windows\System32\kernel32.dll").FileVersion.SubstringBefore(' ')); // bonus why: this doesn't work because the file's metadata wasn't updated
+					Version win10PlusVer = new(10, 0, int.TryParse(GetRegValue("CurrentBuild") ?? "19044", out var i) ? i : 19044); // still, leaving the Version wrapper here for when they inevitably do something stupid like decide to call Win11 11.0.x (or 10.1.x because they're incapable of doing anything sensible)
+					return (win10PlusVer < new Version(10, 0, 22000) ? WindowsVersion._10 : WindowsVersion._11, win10PlusVer);
 				}
-				// ...else we're on 8.1. Can't be bothered writing code for KB installed check, not that I have a Win8.1 machine to test on anyway, so it gets a free pass --yoshi
+				// ...else we're on 8.1. Can't be bothered writing code for KB installed check, not that I have a Win8.1 machine to test on anyway, so it gets a free pass (though I suspect `CurrentBuild` would work here too). --yoshi
 				winVer = WindowsVersion._8_1;
 			}
+			else if (rawWinVer == new Version(6, 2)) winVer = WindowsVersion._8;
+			else if (rawWinVer == new Version(6, 1)) winVer = WindowsVersion._7;
+			// in reality, EmuHawk will not run on these OSes, but here they are for posterity
+			else if (rawWinVer == new Version(6, 0)) winVer = WindowsVersion.Vista;
+			else /*if (rawWinVer < new Version(6, 0))*/ winVer = WindowsVersion.XP;
 			return (winVer, null);
 		});
 
 		private static readonly Lazy<bool> _isWSL = new(() => IsUnixHost && SimpleSubshell("uname", "-r", "missing uname?").Contains("microsoft", StringComparison.InvariantCultureIgnoreCase));
 
-		public static (WindowsVersion Version, int? Win10Release)? HostWindowsVersion => _HostWindowsVersion.Value;
+		public static (WindowsVersion Version, Version? Win10PlusVersion)? HostWindowsVersion => _HostWindowsVersion.Value;
 
 		public static readonly bool IsUnixHost = CurrentOS != DistinctOS.Windows;
 
@@ -59,7 +72,7 @@ namespace BizHawk.Common
 			DistinctOS.Linux => new UnixMonoLLManager(),
 			DistinctOS.macOS => new UnixMonoLLManager(),
 			DistinctOS.Windows => new WindowsLLManager(),
-			_ => throw new ArgumentOutOfRangeException()
+			_ => throw new InvalidOperationException()
 		});
 
 		public static ILinkedLibManager LinkedLibManager => _LinkedLibManager.Value;
@@ -167,7 +180,8 @@ namespace BizHawk.Common
 			_7,
 			_8,
 			_8_1,
-			_10
+			_10,
+			_11,
 		}
 
 		/// <param name="cmd">POSIX <c>$0</c></param>
@@ -200,7 +214,7 @@ namespace BizHawk.Common
 			proc.Start();
 			var stdout = proc.StandardOutput;
 			if (stdout.EndOfStream) throw new Exception($"{noOutputMsg} ({cmd} wrote nothing to stdout)");
-			return stdout.ReadLine();
+			return stdout.ReadLine()!;
 		}
 	}
 }

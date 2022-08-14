@@ -67,7 +67,8 @@ namespace BizHawk.Client.Common
 			return g;
 		}
 
-		public void ToggleCompositingMode() => _compositingMode = 1 - _compositingMode;
+		public void ToggleCompositingMode()
+			=> _compositingMode = (CompositingMode) (1 - (int) _compositingMode); // enum has two members, 0 and 1
 
 		public ImageAttributes GetAttributes() => _attributes;
 

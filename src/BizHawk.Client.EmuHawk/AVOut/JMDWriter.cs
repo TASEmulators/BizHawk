@@ -169,7 +169,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (!f.CanWrite)
 				{
-					throw new ArgumentException($"{nameof(Stream)} must be writable!");
+					throw new ArgumentException(message: $"{nameof(Stream)} must be writable!", paramName: nameof(f));
 				}
 
 				_f = f;
@@ -323,11 +323,7 @@ namespace BizHawk.Client.EmuHawk
 			/// </summary>
 			private void WriteVar(int v)
 			{
-				if (v < 0)
-				{
-					throw new ArgumentException("length cannot be less than 0!");
-				}
-
+				if (v < 0) throw new ArgumentException(message: "length cannot be less than 0!", paramName: nameof(v));
 				WriteVar((ulong)v);
 			}
 
@@ -542,7 +538,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				throw new ArgumentException("codec token must be of right type");
+				throw new ArgumentException(message: "codec token must be of right type", paramName: nameof(token));
 			}
 		}
 
@@ -590,10 +586,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// the sampleRate limits are arbitrary, just to catch things which are probably silly-wrong
 			// if a larger range of sampling rates is needed, it should be supported
-			if (!8000.RangeTo(96000).Contains(sampleRate) || !1.RangeTo(2).Contains(channels) || bits != 16)
-			{
-				throw new ArgumentException("Audio parameters out of range!");
-			}
+			const string ERR_MSG_INVALID_ARG = "Audio parameters out of range!";
+			if (sampleRate is < 8000 or > 96000) throw new ArgumentOutOfRangeException(paramName: nameof(sampleRate), sampleRate, message: ERR_MSG_INVALID_ARG);
+			if (channels is < 1 or > 2) throw new ArgumentOutOfRangeException(paramName: nameof(channels), channels, message: ERR_MSG_INVALID_ARG);
+			if (bits is not 16) throw new ArgumentException(message: ERR_MSG_INVALID_ARG, paramName: nameof(bits));
 
 			_audioSampleRate = sampleRate;
 			_audioChannels = channels;

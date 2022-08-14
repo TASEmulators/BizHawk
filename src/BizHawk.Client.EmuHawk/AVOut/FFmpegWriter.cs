@@ -231,7 +231,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				throw new ArgumentException($"{nameof(FFmpegWriter)} can only take its own codec tokens!");
+				throw new ArgumentException(message: $"{nameof(FFmpegWriter)} can only take its own codec tokens!", paramName: nameof(token));
 			}
 		}
 

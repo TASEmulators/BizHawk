@@ -1,4 +1,4 @@
-CCFLAGS := -Wno-discarded-qualifiers
+CCFLAGS := -Wno-discarded-qualifiers -Wno-pointer-sign
 
 CXXFLAGS := -DMELONDS_VERSION="" \
 	-I./melonDS/src -I./melonDS/src/teakra/include \
@@ -76,6 +76,7 @@ SRCS = \
 	$(addprefix melonDS/src/,$(MISC_SRCS)) \
 	BizConfig.cpp \
 	BizInterface.cpp \
-	BizPlatform.cpp
+	BizPlatform.cpp \
+	dthumb.c
 
 include ../common.mak

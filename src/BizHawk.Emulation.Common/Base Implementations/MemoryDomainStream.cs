@@ -90,7 +90,7 @@ namespace BizHawk.Emulation.Common
 					Position = Length + offset;
 					break;
 				default:
-					throw new ArgumentOutOfRangeException("origin");
+					throw new ArgumentOutOfRangeException(paramName: nameof(origin));
 			}
 			return Position;
 		}

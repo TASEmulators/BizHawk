@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_reset();
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void snes_run();
+		public abstract bool snes_run(bool breakOnLatch);
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_serialize(byte[] serializedData, int serializedSize);
@@ -67,6 +67,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public abstract void snes_set_cpu_register(string register, uint value);
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract bool snes_cpu_step();
+
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract long snes_get_executed_cycles();
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract bool snes_msu_sync();
@@ -212,7 +215,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
-		public class SnesCallbacks
+		public sealed class SnesCallbacks
 		{
 			public snes_video_frame_t videoFrameCb;
 			public snes_audio_sample_t audioSampleCb;
@@ -233,7 +236,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 			public IEnumerable<Delegate> AllDelegatesInMemoryOrder()
 			{
-				FieldsInOrder ??= GetType()
+				FieldsInOrder ??= typeof(SnesCallbacks)
 					.GetFields()
 					.OrderBy(BizInvokerUtilities.ComputeFieldOffset)
 					.ToList();
@@ -246,7 +249,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public struct SnesInitData
 		{
 			public ENTROPY entropy;
-			public BSNES_INPUT_DEVICE left_port;
+			public BSNES_PORT1_INPUT_DEVICE left_port;
 			public BSNES_INPUT_DEVICE right_port;
 			public bool hotfixes;
 			public bool fast_ppu;

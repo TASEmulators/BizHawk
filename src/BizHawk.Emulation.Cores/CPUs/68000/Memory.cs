@@ -366,8 +366,9 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 				case 4:
 					immed = ReadLong(pc); pc += 4;
 					return $"#${immed:X}";
+				default:
+					throw new ArgumentException(message: "Invalid size", paramName: nameof(size));
 			}
-			throw new ArgumentException("Invalid size");
 		}
 
 		private string DisassembleAddress(int mode, int reg, ref int pc)

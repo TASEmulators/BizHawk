@@ -83,8 +83,8 @@ struct priority_queue<T[Size]> {
   }
 
   auto remove(const T& event) -> void {
-    for(auto& entry : heap) {
-      if(entry.event == event) entry.valid = false;
+    for(u32 i = 0; i < size; i++) {
+      if(heap[i].event == event) heap[i].valid = false;
     }
   }
 

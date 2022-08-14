@@ -5,6 +5,13 @@ namespace BizHawk.Common.StringExtensions
 {
 	public static class StringExtensions
 	{
+		public static string CharCodepointsToString(byte[] array)
+		{
+			var a = new char[array.Length];
+			for (var i = 0; i < array.Length; i++) a[i] = char.ConvertFromUtf32(array[i])[0];
+			return new(a);
+		}
+
 		public static bool Contains(this string haystack, string needle, StringComparison comparisonType)
 			=> haystack.IndexOf(needle, comparisonType) != -1;
 
@@ -76,6 +83,23 @@ namespace BizHawk.Common.StringExtensions
 		}
 
 		/// <returns>
+		/// the substring of <paramref name="str"/> after the last occurrence of <paramref name="delimiter"/>, or
+		/// the original <paramref name="str"/> if not found
+		/// </returns>
+		public static string SubstringAfterLast(this string str, char delimiter)
+			=> str.SubstringAfterLast(delimiter, notFoundValue: str);
+
+		/// <returns>
+		/// the substring of <paramref name="str"/> after the last occurrence of <paramref name="delimiter"/>, or
+		/// <paramref name="notFoundValue"/> if not found
+		/// </returns>
+		public static string SubstringAfterLast(this string str, char delimiter, string notFoundValue)
+		{
+			var index = str.LastIndexOf(delimiter);
+			return index < 0 ? notFoundValue : str.Substring(index + 1, str.Length - index - 1);
+		}
+
+		/// <returns>
 		/// the substring of <paramref name="str"/> before the first occurrence of <paramref name="delimiter"/>, or
 		/// the original <paramref name="str"/> if not found
 		/// </returns>
@@ -116,5 +140,20 @@ namespace BizHawk.Common.StringExtensions
 			var index = str.IndexOf(delimiter);
 			return index < 0 ? null : str.Substring(0, index);
 		}
+
+		public static byte[] ToCharCodepointArray(this string str)
+		{
+			var a = new byte[str.Length];
+			for (var i = 0; i < str.Length; i++) a[i] = (byte) char.ConvertToUtf32(str, i);
+			return a;
+		}
+
+		/// <summary>
+		/// splits a given <paramref name="str"/> by <paramref name="delimiter"/>,
+		/// applies <paramref name="transform"/> to each part, then rejoins them
+		/// </summary>
+		/// <remarks><c>"abc,def,ghi".TransformFields(',', s => s.Reverse()) == "cba,fed,ihg"</c></remarks>
+		public static string TransformFields(this string str, char delimiter, Func<string, string> transform)
+			=> string.Join(delimiter.ToString(), str.Split(delimiter).Select(transform));
 	}
 }

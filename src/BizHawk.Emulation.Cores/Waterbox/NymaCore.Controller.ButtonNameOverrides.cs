@@ -13,7 +13,20 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private static readonly Dictionary<string, string> ButtonNameOverrides = new Dictionary<string, string>
 		{
 			["Left Shoulder"] = "L",
-			["Right Shoulder"] = "R"
+			["Right Shoulder"] = "R",
+			["Left-Back"] = "L",
+			["Right-Back"] = "R",
+
+			// VB specific hack
+			// needed like this as otherwise left and right dpads have the same
+			["UP ↑ (Left D-Pad)"] = "L_Up",
+			["DOWN ↓ (Left D-Pad)"] = "L_Down",
+			["LEFT ← (Left D-Pad)"] = "L_Left",
+			["RIGHT → (Left D-Pad)"] = "L_Right",
+			["UP ↑ (Right D-Pad)"] = "R_Up",
+			["DOWN ↓ (Right D-Pad)"] = "R_Down",
+			["LEFT ← (Right D-Pad)"] = "R_Left",
+			["RIGHT → (Right D-Pad)"] = "R_Right",
 		};
 
 		/// <summary>
@@ -22,6 +35,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// </summary>
 		private string OverrideButtonName(string original)
 		{
+			// VB hack
+			if (ButtonNameOverrides.ContainsKey(original))
+			{
+				original = ButtonNameOverrides[original];
+			}
+
 			original = Regex.Replace(original, @"\s*(↑|↓|←|→)\s*", "");
 			original = Regex.Replace(original, @"\s*\([^\)]+\)\s*", "");
 			if (!IsRomanNumeral(original))
