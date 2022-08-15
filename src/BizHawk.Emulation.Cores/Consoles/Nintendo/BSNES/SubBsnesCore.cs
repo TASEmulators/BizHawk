@@ -80,12 +80,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				framePassed = _bsnesCore.Api.core.snes_run(subFrameRequested);
 			}
 
-			_bsnesCore.Frame++;
-
-			if (framePassed && _bsnesCore.IsLagFrame)
-				_bsnesCore.LagCount++;
-			else
-				_bsnesCore.IsLagFrame = false;
+			if (!framePassed) _bsnesCore.IsLagFrame = false;
+			_bsnesCore.FrameAdvancePost();
 
 			return true;
 		}

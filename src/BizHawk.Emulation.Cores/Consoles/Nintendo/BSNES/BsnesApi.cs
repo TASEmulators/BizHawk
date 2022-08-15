@@ -25,6 +25,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public abstract void snes_set_hooks_enabled(bool readHookEnabled, bool writeHookEnabled, bool executeHookEnabled);
 
 		[BizImport(CallingConvention.Cdecl)]
+		public abstract short* snes_get_audiobuffer_and_size(out int size);
+		[BizImport(CallingConvention.Cdecl)]
 		public abstract BsnesApi.SNES_REGION snes_get_region();
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract BsnesApi.SNES_MAPPER snes_get_mapper();
@@ -167,7 +169,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		}
 
 		public delegate void snes_video_frame_t(ushort* data, int width, int height, int pitch);
-		public delegate void snes_audio_sample_t(short left, short right);
 		public delegate short snes_input_poll_t(int port, int index, int id);
 		public delegate void snes_controller_latch_t();
 		public delegate void snes_no_lag_t(bool sgb_poll);
@@ -218,7 +219,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public sealed class SnesCallbacks
 		{
 			public snes_video_frame_t videoFrameCb;
-			public snes_audio_sample_t audioSampleCb;
 			public snes_input_poll_t inputPollCb;
 			public snes_controller_latch_t controllerLatchCb;
 			public snes_no_lag_t noLagCb;

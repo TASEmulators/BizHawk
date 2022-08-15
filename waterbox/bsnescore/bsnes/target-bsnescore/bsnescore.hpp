@@ -6,8 +6,6 @@
 
 #define EXPORT ECL_EXPORT
 
-#define SAMPLE_RATE 32040
-
 enum SNES_MEMORY {
     CARTRIDGE_RAM,
     CARTRIDGE_ROM,

@@ -146,8 +146,7 @@ EXPORT void snes_init(SnesInitData* init_data)
     emulator->configure("Hacks/Coprocessor/DelayedSync", init_data->fast_coprocessors);
 
     emulator->configure("Video/BlurEmulation", false); // blurs the video when not using fast ppu. I don't like it so I disable it here :)
-    // needed in order to get audio sync working. should probably figure out what exactly this does or how to change that properly
-    Emulator::audio.setFrequency(SAMPLE_RATE);
+    Emulator::audio.setFrequency(44100); // default is 48000, but bizhawk expects 44100
 
     program->regionOverride = init_data->region_override;
 }
@@ -172,6 +171,7 @@ EXPORT void snes_reset(void)
 EXPORT bool snes_run(bool breakOnLatch)
 {
     program->breakOnLatch = breakOnLatch;
+    audioBuffer.clear();
     emulator->run();
     return scheduler.event == Scheduler::Event::Frame;
 }
@@ -292,6 +292,11 @@ uint8_t* snes_get_effective_saveram(int* ram_size) {
 
 EXPORT System::Region snes_get_region(void) {
     return SuperFamicom::system.region();
+}
+
+EXPORT short* snes_get_audiobuffer_and_size(int& out_size) {
+    out_size = audioBuffer.size();
+    return audioBuffer.data();
 }
 
 EXPORT char snes_get_mapper(void) {
