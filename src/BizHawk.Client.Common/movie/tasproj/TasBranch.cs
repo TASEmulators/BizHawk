@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
 using BizHawk.Bizware.BizwareGL;
+using BizHawk.Common.IOExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -223,10 +224,9 @@ namespace BizHawk.Client.Common
 					return;
 				}
 
-				bl.GetLump(ncore, abort: true, (Stream s, long length) =>
+				bl.GetLump(ncore, abort: true, (s, _) =>
 				{
-					b.CoreData = new byte[length];
-					s.Read(b.CoreData, 0, b.CoreData.Length);
+					b.CoreData = s.ReadAllBytes();
 				});
 
 				bl.GetLump(ninput, abort: true, tr =>

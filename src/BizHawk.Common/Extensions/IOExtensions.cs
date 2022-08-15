@@ -26,6 +26,22 @@ namespace BizHawk.Common.IOExtensions
 			return outStream.ToArray();
 		}
 
+		public static byte[] ReadAllBytes(this BinaryReader br)
+		{
+			const int BUFF_SIZE = 4096;
+			var buffer = new byte[BUFF_SIZE];
+
+			int bytesRead;
+			var outStream = new MemoryStream();
+
+			while ((bytesRead = br.Read(buffer, 0, BUFF_SIZE)) > 0)
+			{
+				outStream.Write(buffer, 0, bytesRead);
+			}
+
+			return outStream.ToArray();
+		}
+
 		/// <summary>
 		/// Read a string from a binary reader using utf8 encoding and known byte length
 		/// </summary>

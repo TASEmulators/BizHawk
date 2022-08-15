@@ -163,7 +163,7 @@ namespace BizHawk.Client.Common
 				}
 			});
 
-			bl.GetLump(BinaryStateLump.StateHistory, abort: false, (br, _) =>
+			bl.GetLump(BinaryStateLump.StateHistory, abort: false, br =>
 			{
 				try
 				{

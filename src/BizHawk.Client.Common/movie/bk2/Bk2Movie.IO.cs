@@ -229,22 +229,20 @@ namespace BizHawk.Client.Common
 			if (StartsFromSavestate)
 			{
 				bl.GetCoreState(
-					(br, length) => BinarySavestate = br.ReadBytes((int) length),
+					br => BinarySavestate = br.ReadAllBytes(),
 					tr => TextSavestate = tr.ReadToEnd());
 				bl.GetLump(BinaryStateLump.Framebuffer, false,
-					(br, length) =>
+					br =>
 					{
-						SavestateFramebuffer = new int[length / sizeof(int)];
-						for (int i = 0; i < SavestateFramebuffer.Length; i++)
-						{
-							SavestateFramebuffer[i] = br.ReadInt32();
-						}
+						var fb = br.ReadAllBytes();
+						SavestateFramebuffer = new int[fb.Length / sizeof(int)];
+						Buffer.BlockCopy(fb, 0, SavestateFramebuffer, 0, fb.Length);
 					});
 			}
 			else if (StartsFromSaveRam)
 			{
 				bl.GetLump(BinaryStateLump.MovieSaveRam, false,
-					(br, length) => SaveRam = br.ReadBytes((int) length));
+					br => SaveRam = br.ReadAllBytes());
 			}
 		}
 	}
