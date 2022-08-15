@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
+using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -67,17 +68,16 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				var (f, data) = GetStateClosestToFrame(frame);
+				var (f, dataStream) = GetStateClosestToFrame(frame);
 				if (f != frame)
 				{
-					data.Dispose();
+					dataStream.Dispose();
 					return NonState;
 				}
 
-				var ms = new MemoryStream();
-				data.CopyTo(ms);
-				data.Dispose();
-				return ms.ToArray();
+				var data = dataStream.ReadAllBytes();
+				dataStream.Dispose();
+				return data;
 			}
 		}
 
@@ -286,10 +286,8 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			var ms = new MemoryStream();
 			using var s = state.GetReadStream();
-			s.CopyTo(ms);
-			_reserved.Add(state.Frame, ms.ToArray());
+			_reserved.Add(state.Frame, s.ReadAllBytes());
 			AddStateCache(state.Frame);
 		}
 

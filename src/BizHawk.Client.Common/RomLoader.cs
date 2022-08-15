@@ -5,6 +5,7 @@ using System.IO.Compression;
 using System.Linq;
 
 using BizHawk.Common;
+using BizHawk.Common.IOExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
@@ -497,9 +498,7 @@ namespace BizHawk.Client.Common
 			// TODO: Why does the PSF loader need CbDeflater provided?  Surely this is a matter internal to it.
 			static byte[] CbDeflater(Stream instream, int size)
 			{
-				var ret = new MemoryStream();
-				new GZipStream(instream, CompressionMode.Decompress).CopyTo(ret);
-				return ret.ToArray();
+				return new GZipStream(instream, CompressionMode.Decompress).ReadAllBytes();
 			}
 			var psf = new PSF();
 			psf.Load(path, CbDeflater);

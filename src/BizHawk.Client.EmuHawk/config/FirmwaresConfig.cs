@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using BizHawk.Common;
 using BizHawk.Client.Common;
 using BizHawk.Common.CollectionExtensions;
+using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Common;
 
 // notes: eventually, we intend to have a "firmware acquisition interface" exposed to the emulator cores.
@@ -656,13 +657,10 @@ namespace BizHawk.Client.EmuHawk
 						foreach (var ai in hf.ArchiveItems)
 						{
 							hf.BindArchiveMember(ai);
-							var stream = hf.GetStream();
-							var ms = new MemoryStream();
-							Util.CopyStream(hf.GetStream(), ms, stream.Length);
 							string outfile = ai.Name;
 							string myname = Path.GetFileName(outfile);
 							outfile = Path.Combine(extractPath, myname);
-							File.WriteAllBytes(outfile, ms.ToArray());
+							File.WriteAllBytes(outfile, hf.GetStream().ReadAllBytes());
 							hf.Unbind();
 
 							if (_cbAllowImport.Checked || Manager.CanFileBeImported(outfile))
