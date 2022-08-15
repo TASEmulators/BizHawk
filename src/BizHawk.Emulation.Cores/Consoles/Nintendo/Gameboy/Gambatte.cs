@@ -127,6 +127,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				LibGambatte.gambatte_setinputgetter(GambatteState, InputCallback, IntPtr.Zero);
 
+				if (_syncSettings.EnableRemote)
+				{
+					RemoteCallback = new LibGambatte.RemoteCallback(RemoteInputCallback);
+					LibGambatte.gambatte_setremotecallback(GambatteState, RemoteCallback);
+				}
+
 				InitMemoryDomains();
 
 				byte[] mbcBuf = new byte[32];
@@ -182,7 +188,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				_cdCallback = new LibGambatte.CDCallback(CDCallbackProc);
 
-				ControllerDefinition = CreateControllerDefinition(sgb: IsSgb, sub: _syncSettings.FrameLength is GambatteSyncSettings.FrameLengthType.UserDefinedFrames, tilt: false, rumble: false);
+				ControllerDefinition = CreateControllerDefinition(
+					sgb: IsSgb,
+					sub: _syncSettings.FrameLength is GambatteSyncSettings.FrameLengthType.UserDefinedFrames,
+					tilt: false,
+					rumble: false,
+					remote: _syncSettings.EnableRemote);
 
 				NewSaveCoreSetBuff();
 			}
@@ -223,6 +234,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		private LibGambatte.Buttons CurrentButtons = 0;
 
 		/// <summary>
+		/// remote callback delegate
+		/// </summary>
+		private readonly LibGambatte.RemoteCallback RemoteCallback;
+
+		/// <summary>
+		/// remote command to send
+		/// </summary>
+		private byte RemoteCommand = 0;
+
+		/// <summary>
 		/// internal gambatte state
 		/// </summary>
 		internal IntPtr GambatteState { get; private set; } = IntPtr.Zero;
@@ -247,7 +268,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public long CycleCount => (long)_cycleCount;
 		public double ClockRate => TICKSPERSECOND;
 
-		public static ControllerDefinition CreateControllerDefinition(bool sgb, bool sub, bool tilt, bool rumble)
+		public static ControllerDefinition CreateControllerDefinition(bool sgb, bool sub, bool tilt, bool rumble, bool remote)
 		{
 			var ret = new ControllerDefinition((sub ? "Subframe " : "") + "Gameboy Controller" + (tilt ? " + Tilt" : ""));
 			if (sub)
@@ -261,6 +282,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			if (rumble)
 			{
 				ret.HapticsChannels.Add("Rumble");
+			}
+			if (remote)
+			{
+				ret.AddAxis("Remote Command", 0.RangeTo(127), 127);
 			}
 			if (sgb)
 			{
@@ -303,6 +328,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			{
 				return CurrentButtons;
 			}
+		}
+
+		private byte RemoteInputCallback()
+		{
+			InputCallbacks.Call();
+			IsLagFrame = false;
+			return RemoteCommand;
 		}
 
 		/// <summary>
@@ -366,7 +398,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					if (controller.IsPressed(GB_BUTTON_ORDER_IN_BITMASK[i])) b |= 1;
 				}
 			}
+
 			CurrentButtons = (LibGambatte.Buttons)b;
+
+			RemoteCommand = (byte)controller.AxisValue("Remote Command");
 
 			// the controller callback will set this to false if it actually gets called during the frame
 			IsLagFrame = true;
