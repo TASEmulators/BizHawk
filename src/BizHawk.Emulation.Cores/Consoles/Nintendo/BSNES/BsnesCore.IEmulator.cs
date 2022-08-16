@@ -81,6 +81,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			using (Api.exe.EnterExit())
 			{
 				short* rawAudioBuffer = Api.core.snes_get_audiobuffer_and_size(out int size);
+				if (size == 0) return 0;
 				if (size > _audioBuffer.Length)
 					_audioBuffer = new short[size];
 				Marshal.Copy((IntPtr) rawAudioBuffer, _audioBuffer, 0, size);
