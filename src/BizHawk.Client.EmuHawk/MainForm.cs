@@ -4101,15 +4101,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AutoSaveStateIfConfigured()
 		{
-			if (!Emulator.HasSavestates())
-			{
-				return;
-			}
-
-			if (Config.AutoSaveLastSaveSlot && HasSlot(Config.SaveSlot))
-			{
-				SaveQuickSave($"QuickSave{Config.SaveSlot}");
-			}
+			if (Config.AutoSaveLastSaveSlot && Emulator.HasSavestates()) SaveQuickSave($"QuickSave{Config.SaveSlot}");
 		}
 
 		public bool GameIsClosing { get; private set; } // Lets tools make better decisions when being called by CloseGame
