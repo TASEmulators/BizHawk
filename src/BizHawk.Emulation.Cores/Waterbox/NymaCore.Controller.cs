@@ -210,7 +210,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							case InputType.PointerX:
 							{
 								// I think the core expects to be sent some sort of 16 bit integer, but haven't investigated much
-								ret.AddAxis(name, systemInfo.PointerOffsetX.RangeTo(systemInfo.PointerScaleX), systemInfo.PointerOffsetX);
+								var minX = systemInfo.PointerOffsetX;
+								var maxX = systemInfo.PointerOffsetX + systemInfo.PointerScaleX;
+								ret.AddAxis(name, minX.RangeTo(maxX), (minX + maxX) / 2);
 								_thunks.Add((c, b) =>
 								{
 									var val = c.AxisValue(name);
@@ -222,7 +224,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							case InputType.PointerY:
 							{
 								// I think the core expects to be sent some sort of 16 bit integer, but haven't investigated much
-								ret.AddAxis(name, systemInfo.PointerOffsetY.RangeTo(systemInfo.PointerScaleY), systemInfo.PointerOffsetY);
+								var minY = systemInfo.PointerOffsetY;
+								var maxY = systemInfo.PointerOffsetY + systemInfo.PointerScaleY;
+								ret.AddAxis(name, minY.RangeTo(maxY), (minY + maxY) / 2);
 								_thunks.Add((c, b) =>
 								{
 									var val = c.AxisValue(name);
