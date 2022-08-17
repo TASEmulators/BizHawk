@@ -290,7 +290,9 @@ namespace BizHawk.Client.Common
 
 		internal static string ConvertFileNameToTasMovie(string oldFileName)
 		{
+			if (oldFileName is null) return null;
 			var (dir, fileNoExt, _) = oldFileName.SplitPathToDirFileAndExt();
+			if (dir is null) return string.Empty;
 			var newFileName = Path.Combine(dir, $"{fileNoExt}.{TasMovie.Extension}");
 			int fileSuffix = 0;
 			while (File.Exists(newFileName))
