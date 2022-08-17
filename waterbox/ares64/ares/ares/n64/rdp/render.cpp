@@ -50,7 +50,8 @@ auto RDP::render() -> void {
   #endif
 
   #if defined(ANGRYLION_RDP)
-  command.current = angrylion::ProcessRDPList();
+  angrylion::ProcessRDPList();
+  command.current = command.end;
   return;
   #endif
 
