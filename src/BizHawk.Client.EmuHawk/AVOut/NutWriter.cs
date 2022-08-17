@@ -2,6 +2,7 @@
 using System.IO;
 
 using BizHawk.Client.Common;
+using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -44,9 +45,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void OpenFile(string baseName)
 		{
-			_baseName = Path.Combine(
-				Path.GetDirectoryName(baseName) ?? "",
-				Path.GetFileNameWithoutExtension(baseName) ?? "");
+			var (dir, fileNoExt, _) = baseName.SplitPathToDirFileAndExt();
+			_baseName = Path.Combine(dir ?? string.Empty, fileNoExt);
 			_segment = 0;
 
 			StartSegment();

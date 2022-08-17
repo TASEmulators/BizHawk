@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 
 using BizHawk.Common;
+using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
@@ -289,13 +290,13 @@ namespace BizHawk.Client.Common
 
 		internal static string ConvertFileNameToTasMovie(string oldFileName)
 		{
-			string newFileName = Path.ChangeExtension(oldFileName, $".{TasMovie.Extension}");
+			var (dir, fileNoExt, _) = oldFileName.SplitPathToDirFileAndExt();
+			var newFileName = Path.Combine(dir, $"{fileNoExt}.{TasMovie.Extension}");
 			int fileSuffix = 0;
 			while (File.Exists(newFileName))
 			{
 				// Using this should hopefully be system agnostic
-				var temp_path = Path.Combine(Path.GetDirectoryName(oldFileName), Path.GetFileNameWithoutExtension(oldFileName));
-				newFileName = $"{temp_path} {++fileSuffix}.{TasMovie.Extension}";
+				newFileName = Path.Combine(dir, $"{fileNoExt} {++fileSuffix}.{TasMovie.Extension}");
 			}
 
 			return newFileName;

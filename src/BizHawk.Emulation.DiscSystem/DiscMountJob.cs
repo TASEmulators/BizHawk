@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+
+using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.DiscSystem.CUE;
 
 namespace BizHawk.Emulation.DiscSystem
@@ -180,13 +182,14 @@ namespace BizHawk.Emulation.DiscSystem
 //				OUT_Disc.DiscMountPolicy = IN_DiscMountPolicy; // NOT SURE WE NEED THIS (only makes sense for cue probably)
 			}
 
-			switch (Path.GetExtension(IN_FromPath).ToLowerInvariant())
+			var (dir, file, ext) = IN_FromPath.SplitPathToDirFileAndExt();
+			switch (ext.ToLowerInvariant())
 			{
 				case ".ccd":
 					OUT_Disc = new CCD_Format().LoadCCDToDisc(IN_FromPath, IN_DiscMountPolicy);
 					break;
 				case ".cue":
-					LoadCue(Path.GetDirectoryName(IN_FromPath), File.ReadAllText(IN_FromPath));
+					LoadCue(dir, File.ReadAllText(IN_FromPath));
 					break;
 				case ".iso":
 					// make a fake .cue file to represent this .iso and mount that
@@ -194,9 +197,9 @@ namespace BizHawk.Emulation.DiscSystem
 					//TODO try it both ways and check the disc type to use whichever one succeeds in identifying a disc type
 					var len = new FileInfo(IN_FromPath).Length;
 					LoadCue(
-						Path.GetDirectoryName(IN_FromPath),
+						dir,
 						$@"
-					FILE ""{Path.GetFileName(IN_FromPath)}"" BINARY
+					FILE ""{file}"" BINARY
 						TRACK 01 {(len % 2048 is not 0 && len % 2352 is 0 ? "MODE2/2352" : "MODE1/2048")}
 							INDEX 01 00:00:00");
 					break;

@@ -4,6 +4,8 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 
+using BizHawk.Common.PathExtensions;
+
 using ISOParser;
 
 namespace BizHawk.Emulation.DiscSystem
@@ -471,12 +473,12 @@ namespace BizHawk.Emulation.DiscSystem
 							// assume an MDF file with the same name as the MDS
 						}
 
-						string dir = Path.GetDirectoryName(aFile.MDSPath);
+						var (dir, fileNoExt, _) = aFile.MDSPath.SplitPathToDirFileAndExt();
 
 						if (f.FilenameOffset == 0 ||
 							string.Compare(fileName, "*.mdf", StringComparison.InvariantCultureIgnoreCase) == 0)
 						{
-							fileName = $@"{dir}\{Path.GetFileNameWithoutExtension(aFile.MDSPath)}.mdf";
+							fileName = $@"{dir}\{fileNoExt}.mdf";
 						}
 						else
 						{

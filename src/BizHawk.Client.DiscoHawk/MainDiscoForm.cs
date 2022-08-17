@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using System.IO;
+
+using BizHawk.Common.PathExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.DiscSystem;
 
@@ -120,8 +122,7 @@ namespace BizHawk.Client.DiscoHawk
 			foreach (var file in files)
 			{
 				using var disc = Disc.LoadAutomagic(file);
-				var path = Path.GetDirectoryName(file);
-				var filename = Path.GetFileNameWithoutExtension(file);
+				var (path, filename, _) = file.SplitPathToDirFileAndExt();
 				static bool? PromptForOverwrite(string mp3Path)
 					=> MessageBox.Show(
 						$"Do you want to overwrite existing files? Choosing \"No\" will simply skip those. You could also \"Cancel\" the extraction entirely.\n\ncaused by file: {mp3Path}",

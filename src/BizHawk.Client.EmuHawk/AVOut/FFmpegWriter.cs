@@ -72,12 +72,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public void OpenFile(string baseName)
 		{
-			_baseName = Path.Combine(
-				Path.GetDirectoryName(baseName),
-				Path.GetFileNameWithoutExtension(baseName));
-
-			_ext = Path.GetExtension(baseName);
-
+			var (dir, fileNoExt, ext) = baseName.SplitPathToDirFileAndExt();
+			_baseName = Path.Combine(dir!, fileNoExt);
+			_ext = ext;
 			_segment = 0;
 			OpenFileSegment();
 		}

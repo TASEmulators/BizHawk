@@ -1601,8 +1601,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Config.LibretroCore != null)
 			{
-				ofd.FileName = Path.GetFileName(Config.LibretroCore);
-				ofd.InitialDirectory = Path.GetDirectoryName(Config.LibretroCore);
+				(ofd.InitialDirectory, ofd.FileName) = Config.LibretroCore.SplitPathToDirAndFile();
 			}
 			else
 			{

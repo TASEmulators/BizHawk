@@ -5,6 +5,7 @@ using System.IO;
 
 using BizHawk.Client.Common;
 using BizHawk.Common.IOExtensions;
+using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -261,14 +262,12 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private static IEnumerator<Stream> CreateStreamIterator(string template)
 		{
-			string dir = Path.GetDirectoryName(template) ?? "";
-			string baseName = Path.GetFileNameWithoutExtension(template) ?? "";
-			string ext = Path.GetExtension(template);
+			var (dir, baseName, ext) = template.SplitPathToDirFileAndExt();
 			yield return new FileStream(template, FileMode.Create);
 			int counter = 1;
 			while (true)
 			{
-				yield return new FileStream($"{Path.Combine(dir, baseName)}_{counter}{ext}", FileMode.Create);
+				yield return new FileStream($"{Path.Combine(dir ?? string.Empty, baseName)}_{counter}{ext}", FileMode.Create);
 				counter++;
 			}
 		}
