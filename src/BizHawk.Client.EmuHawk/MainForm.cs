@@ -4079,6 +4079,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			StopAv();
+			AutoSaveStateIfConfigured();
 
 			CommitCoreSettingsToConfig();
 			Rewinder?.Dispose();
@@ -4096,6 +4097,11 @@ namespace BizHawk.Client.EmuHawk
 			RewireSound();
 			RebootStatusBarIcon.Visible = false;
 			GameIsClosing = false;
+		}
+
+		private void AutoSaveStateIfConfigured()
+		{
+			if (Config.AutoSaveLastSaveSlot && Emulator.HasSavestates()) SaveQuickSave($"QuickSave{Config.SaveSlot}");
 		}
 
 		public bool GameIsClosing { get; private set; } // Lets tools make better decisions when being called by CloseGame
