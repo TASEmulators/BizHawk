@@ -22,11 +22,17 @@ namespace BizHawk.Client.Common
 			_lua = lua;
 		}
 
-		public LuaTable CreateTable() => _lua.NewTable();
+		private LuaTable NewTable()
+		{
+			_lua.NewTable("_TEMP_BIZHAWK_RULES_");
+			return _lua.GetTable("_TEMP_BIZHAWK_RULES_");
+		}
+
+		public LuaTable CreateTable() => NewTable();
 
 		public LuaTable DictToTable<T>(IReadOnlyDictionary<string, T> dictionary)
 		{
-			var table = _lua.NewTable();
+			var table = NewTable();
 			foreach (var (k, v) in dictionary) table[k] = v;
 			return table;
 		}
@@ -38,7 +44,7 @@ namespace BizHawk.Client.Common
 
 		public LuaTable ListToTable<T>(IReadOnlyList<T> list, int indexFrom = 1)
 		{
-			var table = _lua.NewTable();
+			var table = NewTable();
 			for (int i = 0, l = list.Count; i != l; i++) table[indexFrom + i] = list[i];
 			return table;
 		}
@@ -55,7 +61,7 @@ namespace BizHawk.Client.Common
 
 		public LuaTable ObjectToTable(object obj)
 		{
-			var table = _lua.NewTable();
+			var table = NewTable();
 			foreach (var method in obj.GetType().GetMethods())
 			{
 				if (!method.IsPublic) continue;

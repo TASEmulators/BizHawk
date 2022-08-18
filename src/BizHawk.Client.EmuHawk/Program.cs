@@ -308,27 +308,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var requested = args.Name;
 
-			//mutate filename depending on selection of lua core. here's how it works
-			//1. we build NLua to the output/dll/lua directory. that brings KopiLua with it
-			//2. We reference it from there, but we tell it not to copy local; that way there's no NLua in the output/dll directory
-			//3. When NLua assembly attempts to load, it can't find it
-			//I. if LuaInterface is selected by the user, we switch to requesting that.
-			//     (those DLLs are built into the output/DLL directory)
-			//II. if NLua is selected by the user, we skip over this part;
-			//    later, we look for NLua or KopiLua assembly names and redirect them to files located in the output/DLL/nlua directory
-			if (new AssemblyName(requested).Name == "NLua")
-			{
-				// if this method referenced the global config, assemblies would need to be loaded, which isn't smart to do from the assembly resolver.
-				//so.. we're going to resort to something really bad.
-				//avert your eyes.
-				var configPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "config.ini");
-				if (File.Exists(configPath)
-					&& (Array.Find(File.ReadAllLines(configPath), line => line.Contains("  \"LuaEngine\": ")) ?? string.Empty).Contains("0"))
-				{
-					requested = "LuaInterface";
-				}
-			}
-
 			lock (AppDomain.CurrentDomain)
 			{
 				var firstAsm = Array.Find(AppDomain.CurrentDomain.GetAssemblies(), asm => asm.FullName == requested);
@@ -338,7 +317,6 @@ namespace BizHawk.Client.EmuHawk
 				var dllname = $"{new AssemblyName(requested).Name}.dll";
 				var directory = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
 				var simpleName = new AssemblyName(requested).Name;
-				if (simpleName == "NLua" || simpleName == "KopiLua") directory = Path.Combine(directory, "nlua");
 				var fname = Path.Combine(directory, dllname);
 				//it is important that we use LoadFile here and not load from a byte array; otherwise mixed (managed/unmanaged) assemblies can't load
 				return File.Exists(fname) ? Assembly.LoadFile(fname) : null;
