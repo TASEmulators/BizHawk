@@ -46,7 +46,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethod("can_use_callback_params", "Returns whether EmuHawk will pass arguments to callbacks. This version passes arguments to \"memory\" callbacks, so this function will return true for that input. (It returns false for any other input.) This tells you whether hacks for older versions w/o parameter support are necessary.")]
 		[LuaMethodExample("local mem_callback = event.can_use_callback_params(\"memory\") and mem_callback or mem_callback_pre_29;")]
-		public bool CanUseCallbackParams(string subset = null)
+		public bool CanUseCallbackParams([LuaEnumStringParam] string subset = null)
 			=> subset is "memory";
 
 		[LuaMethodExample("local steveonf = event.onframeend(\r\n\tfunction()\r\n\t\tconsole.log( \"Calls the given lua function at the end of each frame, after all emulation and drawing has completed. Note: this is the default behavior of lua scripts\" );\r\n\tend\r\n\t, \"Frame name\" );")]
