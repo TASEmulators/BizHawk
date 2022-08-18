@@ -91,6 +91,8 @@ namespace BizHawk.Client.Common
 					return ParseColor((int) (long) d, safe, logCallback);
 				case int i:
 					return Color.FromArgb(i);
+				case long l:
+					return Color.FromArgb((int)l);
 				case string s:
 					if (s[0] is '#' && (s.Length is 7 or 9))
 					{

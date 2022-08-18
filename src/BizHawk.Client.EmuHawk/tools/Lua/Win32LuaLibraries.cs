@@ -310,13 +310,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public void ExecuteString(string command)
-		{
-			var func = _lua.LoadString(command, "main");
-			var state = _lua.NewThread(func, out _currThread);
-			state.Resume(state, 0);
-		}
-
-		public void RunScheduledDisposes() => _lua.Dispose();
+			=> _lua.DoString(command);
 
 		public (bool WaitForFrame, bool Terminated) ResumeScript(LuaFile lf)
 		{

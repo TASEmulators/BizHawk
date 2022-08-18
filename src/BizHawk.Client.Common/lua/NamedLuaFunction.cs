@@ -50,7 +50,7 @@ namespace BizHawk.Client.Common
 		public void DetachFromScript()
 		{
 			new Lua().NewThread(out var thread);
-				
+
 			// Current dir will have to do for now, but this will inevitably not be desired
 			// Users will expect it to be the same directly as the thread that spawned this callback
 			// But how do we know what that directory was?

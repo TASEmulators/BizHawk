@@ -629,12 +629,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			luaLibsImpl.RunScheduledDisposes();
-			foreach (var nlf in luaLibsImpl.RegisteredFunctions)
-			{
-				nlf.LuaFile.Thread.Dispose();
-			}
-
 			_messageCount = 0;
 		}
 
