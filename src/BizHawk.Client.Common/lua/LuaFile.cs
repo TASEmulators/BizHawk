@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Client.Common
+﻿using NLua;
+
+namespace BizHawk.Client.Common
 {
 	public class LuaFile
 	{
@@ -35,7 +37,7 @@
 		public bool Enabled => State != RunState.Disabled;
 		public bool Paused => State == RunState.Paused;
 		public bool IsSeparator { get; }
-		public NLua.Lua Thread { get; set; }
+		public LuaThread Thread { get; set; }
 		public bool FrameWaiting { get; set; }
 		public string CurrentDirectory { get; set; }
 
@@ -48,14 +50,13 @@
 
 		public void Stop()
 		{
-			if (Thread == null)
+			if (Thread is null)
 			{
 				return;
 			}
 
 			Thread.State.Yield(0); // we MUST yield this thread, else old references to lua libs might be used (and those may contain references to a Dispose()'d emulator)
 			State = RunState.Disabled;
-			Thread.GetTable("keepalives")[Thread] = null;
 			Thread = null;
 		}
 

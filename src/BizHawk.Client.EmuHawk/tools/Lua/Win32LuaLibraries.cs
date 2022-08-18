@@ -59,7 +59,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_th = new NLuaTableHelper(_lua, LogToLuaConsole);
-			_lua["keepalives"] = _th.CreateTable();
 			_displayManager = displayManager;
 			_inputManager = inputManager;
 			_mainForm = mainForm;
@@ -133,7 +132,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly MainForm _mainForm;
 
 		private Lua _lua = new();
-		private KeraLua.Lua _currThread;
+		private LuaThread _currThread;
 
 		private readonly NLuaTableHelper _th;
 
@@ -297,16 +296,12 @@ namespace BizHawk.Client.EmuHawk
 			return true;
 		}
 
-		public Lua SpawnCoroutine(string file)
+		public LuaThread SpawnCoroutine(string file)
 		{
-			var lua = new Lua(_lua.NewThread(out _));
 			var content = File.ReadAllText(file);
-			var main = lua.LoadString(content, "main");
-			lua.Push(main); // push main function on to stack for subsequent resuming
-			_lua.GetTable("keepalives")[lua] = 1;
-			//this not being run is the origin of a memory leak if you restart scripts too many times
-			_lua.Pop();
-			return lua;
+			var main = _lua.LoadString(content, "main");
+			_lua.NewThread(main, out var ret);
+			return ret;
 		}
 
 		public void SpawnAndSetFileThread(string pathToLoad, LuaFile lf)
@@ -316,28 +311,23 @@ namespace BizHawk.Client.EmuHawk
 
 		public void ExecuteString(string command)
 		{
-			_currThread = _lua.NewThread(out _);
-			_currThread.DoString(command);
-			_lua.Pop();
+			var func = _lua.LoadString(command, "main");
+			var state = _lua.NewThread(func, out _currThread);
+			state.Resume(state, 0);
 		}
 
 		public void RunScheduledDisposes() => _lua.Dispose();
 
 		public (bool WaitForFrame, bool Terminated) ResumeScript(LuaFile lf)
 		{
-			_currThread = lf.Thread.State;
+			_currThread = lf.Thread;
 
 			try
 			{
 				LuaLibraryBase.SetCurrentThread(lf);
 
-				var execResult = _currThread.Resume(_currThread, 0);
+				var execResult = _currThread.State.Resume(_currThread.State, 0);
 				GuiAPI.ThisIsTheLuaAutounlockHack();
-
-				_lua.Dispose(); // TODO: I don't think this is needed anymore, we run this regularly anyway
-
-				// not sure how this is going to work out, so do this too
-				_currThread.Dispose();
 
 				_currThread = null;
 				var result = execResult == 0
@@ -366,12 +356,12 @@ namespace BizHawk.Client.EmuHawk
 		private void Frameadvance()
 		{
 			FrameAdvanceRequested = true;
-			_currThread.Yield(0);
+			_currThread.State.Yield(0);
 		}
 
 		private void EmuYield()
 		{
-			_currThread.Yield(0);
+			_currThread.State.Yield(0);
 		}
 	}
 }
