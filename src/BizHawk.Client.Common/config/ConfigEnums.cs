@@ -1,12 +1,5 @@
 ﻿namespace BizHawk.Client.Common
 {
-	public enum ELuaEngine
-	{
-		/// <remarks>Don't change this member's ordinal (don't reorder) without changing <c>BizHawk.Client.EmuHawk.Program.CurrentDomain_AssemblyResolve</c></remarks>
-		LuaPlusLuaInterface,
-		NLuaPlusKopiLua
-	}
-
 	public enum ESoundOutputMethod
 	{
 		DirectSound, XAudio2, OpenAL, Dummy
