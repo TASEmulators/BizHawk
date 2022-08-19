@@ -73,7 +73,7 @@ namespace BizHawk.Client.EmuHawk
 				PlayRecordStatusButton.Visible = false;
 			}
 
-			SetWindowText();
+			UpdateWindowTitle();
 			UpdateStatusSlots();
 		}
 

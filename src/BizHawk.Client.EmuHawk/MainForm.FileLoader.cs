@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
+using BizHawk.Common.PathExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -31,10 +32,10 @@ namespace BizHawk.Client.EmuHawk
 			public string FileName { get; }
 			public string ArchiveName { get; }
 
-			public FileInformation(string directory, string file, string archive)
+			public FileInformation((string Dir, string File) FilePathSplit, string archive)
 			{
-				DirectoryName = directory;
-				FileName = file;
+				DirectoryName = FilePathSplit.Dir;
+				FileName = FilePathSplit.File;
 				ArchiveName = archive;
 			}
 		}
@@ -132,7 +133,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (string file in fileList)
 			{
 				var ext = Path.GetExtension(file)?.ToUpperInvariant() ?? "";
-				FileInformation fileInformation = new FileInformation(Path.GetDirectoryName(file), Path.GetFileName(file), archive);
+				FileInformation fileInformation = new(file.SplitPathToDirAndFile(), archive);
 
 				switch (ext)
 				{

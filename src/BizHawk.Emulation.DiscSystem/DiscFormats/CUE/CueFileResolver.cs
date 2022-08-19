@@ -1,6 +1,8 @@
 using System.IO;
 using System.Collections.Generic;
 
+using BizHawk.Common.PathExtensions;
+
 namespace BizHawk.Emulation.DiscSystem.CUE
 {
 	/// <summary>
@@ -70,9 +72,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		/// </summary>
 		public List<string> Resolve(string path)
 		{
-			string targetFile = Path.GetFileName(path);
-			string targetFragment = Path.GetFileNameWithoutExtension(path);
-
+			var (targetFile, targetFragment, _) = path.SplitPathToDirFileAndExt();
 			DirectoryInfo di = null;
 			MyFileInfo[] fileInfos;
 			if (!string.IsNullOrEmpty(Path.GetDirectoryName(path)))

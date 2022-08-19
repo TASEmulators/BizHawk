@@ -423,16 +423,12 @@ namespace BizHawk.Emulation.Common
 		}
 
 		public static string FilesystemSafeName(this IGameInfo game)
-		{
-			var pass1 = game.Name
-				.Replace('/', '+') // '/' is the path dir separator, obviously (methods in Path will treat it as such, even on Windows)
+			=> game.Name.Replace('/', '+') // '/' is the path dir separator, obviously (methods in Path will treat it as such, even on Windows)
 				.Replace('|', '+') // '|' is the filename-member separator for archives in HawkFile
 				.Replace(":", " -") // ':' is the path separator in lists (Path.GetFileName will drop all but the last entry in such a list)
-				.Replace("\"", ""); // '"' is just annoying as it needs escaping on the command-line
-			var filesystemDir = string.IsNullOrWhiteSpace(pass1) ? string.Empty : Path.GetDirectoryName(pass1);
-			var pass2 = Path.GetFileName(pass1).RemoveInvalidFileSystemChars();
-			return Path.Combine(filesystemDir, pass2.RemoveSuffix('.')); // trailing '.' would be duplicated when file extension is added
-		}
+				.Replace("\"", "") // '"' is just annoying as it needs escaping on the command-line
+				.RemoveInvalidFileSystemChars()
+				.RemoveSuffix('.'); // trailing '.' would be duplicated when file extension is added
 
 		/// <summary>
 		/// Adds an axis to the receiver <see cref="ControllerDefinition"/>, and returns it.

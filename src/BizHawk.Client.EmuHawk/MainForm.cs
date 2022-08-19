@@ -50,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private void MainForm_Load(object sender, EventArgs e)
 		{
-			SetWindowText();
+			UpdateWindowTitle();
 
 			foreach (var (groupLabel, appliesTo, coreNames) in Config.CorePickerUIData.Select(static tuple => (GroupLabel: tuple.AppliesTo[0], tuple.AppliesTo, tuple.CoreNames))
 				.OrderBy(static tuple => tuple.GroupLabel))
@@ -461,15 +461,12 @@ namespace BizHawk.Client.EmuHawk
 				Sound?.StopSound();
 			};
 
-			Resize += (o, e) =>
-			{
-				SetWindowText();
-			};
+			Resize += (_, _) => UpdateWindowTitle();
 
 			ResizeEnd += (o, e) =>
 			{
 				_inResizeLoop = false;
-				SetWindowText();
+				UpdateWindowTitle();
 
 				if (_presentationPanel != null)
 				{
@@ -1604,16 +1601,13 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Config.LibretroCore != null)
 			{
-				ofd.FileName = Path.GetFileName(Config.LibretroCore);
-				ofd.InitialDirectory = Path.GetDirectoryName(Config.LibretroCore);
+				(ofd.InitialDirectory, ofd.FileName) = Config.LibretroCore.SplitPathToDirAndFile();
 			}
 			else
 			{
-				ofd.InitialDirectory = Config.PathEntries.AbsolutePathForType(VSystemID.Raw.Libretro, "Cores");
-				if (!Directory.Exists(ofd.InitialDirectory))
-				{
-					Directory.CreateDirectory(ofd.InitialDirectory);
-				}
+				var initDir = Config.PathEntries.AbsolutePathForType(VSystemID.Raw.Libretro, "Cores");
+				Directory.CreateDirectory(initDir);
+				ofd.InitialDirectory = initDir;
 			}
 
 			ofd.RestoreDirectory = true;
@@ -1757,8 +1751,6 @@ namespace BizHawk.Client.EmuHawk
 				return sb.ToString();
 			}
 		}
-
-		public void SetWindowText() => UpdateWindowTitle();
 
 		private void ClearAutohold()
 		{
@@ -3284,10 +3276,7 @@ namespace BizHawk.Client.EmuHawk
 			OSD.Fps = fpsString;
 
 			// need to refresh window caption in this case
-			if (Config.DispSpeedupFeatures == 0)
-			{
-				SetWindowText();
-			}
+			if (Config.DispSpeedupFeatures is 0) UpdateWindowTitle();
 		}
 
 		private void InitializeFpsData()
@@ -4018,7 +4007,7 @@ namespace BizHawk.Client.EmuHawk
 		private void OnRomChanged()
 		{
 			OSD.Fps = "0 fps";
-			SetWindowText();
+			UpdateWindowTitle();
 			HandlePlatformMenus();
 			_stateSlots.ClearRedoList();
 			UpdateStatusSlots();

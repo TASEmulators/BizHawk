@@ -11,6 +11,7 @@ using BizHawk.Common;
 using BizHawk.Client.Common;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.IOExtensions;
+using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 
 // notes: eventually, we intend to have a "firmware acquisition interface" exposed to the emulator cores.
@@ -402,11 +403,7 @@ namespace BizHawk.Client.EmuHawk
 		private void TbbOpenFolder_Click(object sender, EventArgs e)
 		{
 			var frmWares = _pathEntries.FirmwareAbsolutePath();
-			if (!Directory.Exists(frmWares))
-			{
-				Directory.CreateDirectory(frmWares);
-			}
-
+			Directory.CreateDirectory(frmWares);
 			System.Diagnostics.Process.Start(frmWares);
 		}
 
@@ -615,11 +612,8 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					// hmm they're different. import but rename it
-					string dir = Path.GetDirectoryName(target);
-					string ext = Path.GetExtension(target);
-					string name = Path.GetFileNameWithoutExtension(target);
-					name += " (variant)";
-					target = Path.Combine(dir, name) + ext;
+					var (dir, name, ext) = target.SplitPathToDirFileAndExt();
+					target = Path.Combine(dir!, $"{name} (variant)") + ext;
 				}
 
 				Directory.CreateDirectory(Path.GetDirectoryName(target));

@@ -239,11 +239,7 @@ namespace BizHawk.Client.EmuHawk
 			MovieView.Update();
 
 			var directory = _config.PathEntries.MovieAbsolutePath();
-			if (!Directory.Exists(directory))
-			{
-				Directory.CreateDirectory(directory);
-			}
-
+			Directory.CreateDirectory(directory);
 			var dpTodo = new Queue<string>();
 			var fpTodo = new List<string>();
 			dpTodo.Enqueue(directory);

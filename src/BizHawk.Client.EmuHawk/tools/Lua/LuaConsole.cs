@@ -278,10 +278,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CreateFileWatcher(string path)
 		{
+			var (dir, file) = path.SplitPathToDirAndFile();
 			var watcher = new FileSystemWatcher
 			{
-				Path = Path.GetDirectoryName(path),
-				Filter = Path.GetFileName(path),
+				Path = dir,
+				Filter = file,
 				NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName,
 				EnableRaisingEvents = true
 			};
@@ -646,8 +647,7 @@ namespace BizHawk.Client.EmuHawk
 			var sfd = new SaveFileDialog();
 			if (!string.IsNullOrWhiteSpace(LuaImp.ScriptList.Filename))
 			{
-				sfd.FileName = Path.GetFileNameWithoutExtension(LuaImp.ScriptList.Filename);
-				sfd.InitialDirectory = Path.GetDirectoryName(LuaImp.ScriptList.Filename);
+				(sfd.InitialDirectory, sfd.FileName, _) = LuaImp.ScriptList.Filename.SplitPathToDirFileAndExt();
 			}
 			else if (!Game.IsNullInstance())
 			{
@@ -779,19 +779,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenSessionMenuItem_Click(object sender, EventArgs e)
 		{
+			var initDir = Config!.PathEntries.LuaAbsolutePath();
+			Directory.CreateDirectory(initDir);
 			var ofd = new OpenFileDialog
 			{
-				InitialDirectory = Config.PathEntries.LuaAbsolutePath(),
+				InitialDirectory = initDir,
 				Filter = SessionsFSFilterSet.ToString(),
 				RestoreDirectory = true,
 				Multiselect = false
 			};
-
-			if (!Directory.Exists(ofd.InitialDirectory))
-			{
-				Directory.CreateDirectory(ofd.InitialDirectory);
-			}
-
 			var result = this.ShowDialogWithTempMute(ofd);
 			if (result.IsOk() && !string.IsNullOrWhiteSpace(ofd.FileName))
 			{
@@ -833,15 +829,22 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NewScriptMenuItem_Click(object sender, EventArgs e)
 		{
+			string initDir;
+			string ext;
+			if (!string.IsNullOrWhiteSpace(LuaImp.ScriptList.Filename))
+			{
+				(initDir, ext, _) = LuaImp.ScriptList.Filename.SplitPathToDirFileAndExt();
+			}
+			else
+			{
+				initDir = Config!.PathEntries.LuaAbsolutePath();
+				ext = Path.GetFileNameWithoutExtension(Game.Name);
+			}
 			var sfd = new SaveFileDialog
 			{
-				InitialDirectory = !string.IsNullOrWhiteSpace(LuaImp.ScriptList.Filename)
-					? Path.GetDirectoryName(LuaImp.ScriptList.Filename)
-					: Config.PathEntries.LuaAbsolutePath(),
+				InitialDirectory = initDir,
 				DefaultExt = ".lua",
-				FileName = !string.IsNullOrWhiteSpace(LuaImp.ScriptList.Filename)
-					? Path.GetFileNameWithoutExtension(LuaImp.ScriptList.Filename)
-					: Path.GetFileNameWithoutExtension(Game.Name),
+				FileName = ext,
 				OverwritePrompt = true,
 				Filter = new FilesystemFilterSet(FilesystemFilter.LuaScripts).ToString()
 			};
@@ -865,19 +868,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenScriptMenuItem_Click(object sender, EventArgs e)
 		{
+			var initDir = Config!.PathEntries.LuaAbsolutePath();
+			Directory.CreateDirectory(initDir);
 			var ofd = new OpenFileDialog
 			{
-				InitialDirectory = Config.PathEntries.LuaAbsolutePath(),
+				InitialDirectory = initDir,
 				Filter = new FilesystemFilterSet(FilesystemFilter.LuaScripts, FilesystemFilter.TextFiles).ToString(),
 				RestoreDirectory = true,
 				Multiselect = true
 			};
-
-			if (!Directory.Exists(ofd.InitialDirectory))
-			{
-				Directory.CreateDirectory(ofd.InitialDirectory);
-			}
-
 			var result = this.ShowDialogWithTempMute(ofd);
 			if (result.IsOk() && ofd.FileNames != null)
 			{
@@ -992,11 +991,12 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 
+				var (dir, fileNoExt, _) = script.Path.SplitPathToDirFileAndExt();
 				var sfd = new SaveFileDialog
 				{
-					InitialDirectory = Path.GetDirectoryName(script.Path),
+					InitialDirectory = dir,
 					DefaultExt = ".lua",
-					FileName = $"{Path.GetFileNameWithoutExtension(script.Path)} (1)",
+					FileName = $"{fileNoExt} (1)",
 					OverwritePrompt = true,
 					Filter = new FilesystemFilterSet(FilesystemFilter.LuaScripts).ToString()
 				};

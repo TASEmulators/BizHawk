@@ -66,11 +66,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 		public FileInfo OpenFileDialog(string currentFile, string path, FilesystemFilterSet filterSet)
 		{
-			if (!Directory.Exists(path))
-			{
-				Directory.CreateDirectory(path);
-			}
-
+			Directory.CreateDirectory(path);
 			using var ofd = new OpenFileDialog
 			{
 				FileName = !string.IsNullOrWhiteSpace(currentFile)
@@ -91,11 +87,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 		public static FileInfo SaveFileDialog(string currentFile, string path, FilesystemFilterSet filterSet, IDialogParent parent)
 		{
-			if (!Directory.Exists(path))
-			{
-				Directory.CreateDirectory(path);
-			}
-
+			Directory.CreateDirectory(path);
 			using var sfd = new SaveFileDialog
 			{
 				FileName = Path.GetFileName(currentFile),

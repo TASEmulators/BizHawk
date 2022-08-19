@@ -16,7 +16,6 @@
 		<Reference Include="System.IO.Compression" />
 	</ItemGroup>
 	<ItemGroup>
-		<Reference Include="GongShell" HintPath="$(ProjectDir)../../References/GongShell.dll" Private="true" />
 		<Reference Include="PcxFileTypePlugin.HawkQuantizer" HintPath="$(ProjectDir)../../References/PcxFileTypePlugin.HawkQuantizer.dll" Private="true" />
 		<PackageReference Include="NLua" Version="1.6.0" />
 	</ItemGroup>

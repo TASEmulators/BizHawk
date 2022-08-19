@@ -806,7 +806,7 @@ namespace BizHawk.Client.EmuHawk
 					_autosaveTimer.Start();
 				}
 
-				MainForm.SetWindowText();
+				MainForm.UpdateWindowTitle();
 			});
 		}
 

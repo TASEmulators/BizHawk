@@ -26,6 +26,7 @@
 , mono ? null
 , openal ? pkgs.openal
 , uname ? stdenv
+, zstd ? pkgs.zstd
 # other parameters
 , buildConfig ? "Release" # "Debug"/"Release"
 , debugPInvokes ? false # forwarded to Dist/wrapper-scripts.nix
@@ -48,7 +49,8 @@ let
 		src = hawkSourceInfo.drv;
 		outputs = [ "bin" "out" ];
 		dotnet-sdk = if hawkSourceInfo ? dotnet-sdk then hawkSourceInfo.dotnet-sdk else dotnet-sdk_6;
-		buildInputs = [ mesa monoFinal openal uname ];# ++ lib.optionals (forNixOS) [ gtk2-x11 ];
+		nativeBuildInputs = [ zstd ];
+		buildInputs = [ mesa monoFinal openal uname zstd ];# ++ lib.optionals (forNixOS) [ gtk2-x11 ];
 		projectFile = "BizHawk.sln";
 		nugetDeps = if hawkSourceInfo ? nugetDeps then hawkSourceInfo.nugetDeps else Dist/deps.nix;
 		extraDotnetBuildFlags = "-maxcpucount:$NIX_BUILD_CORES -p:BuildInParallel=true --no-restore";
@@ -75,6 +77,7 @@ let
 		checkPhase = ''
 			export GITLAB_CI=1 # pretend to be in GitLab CI -- platform-specific tests don't run in CI because they assume an Arch filesystem (on Linux hosts)
 			# from 2.7.1, use standard -p:ContinuousIntegrationBuild=true instead
+			export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${lib.makeLibraryPath [ zstd ]}"
 			Dist/BuildTest${buildConfig}.sh ${extraDotnetBuildFlags}
 
 			# can't build w/ extra Analyzers, it fails to restore :(
@@ -93,7 +96,7 @@ let
 	};
 	wrapperScriptsFor = { hawkSourceInfo, bizhawkAssemblies }: import Dist/wrapper-scripts.nix {
 		inherit (pkgs) lib writeShellScriptBin writeText;
-		inherit commentUnless versionAtLeast mesa openal debugPInvokes initConfig;
+		inherit commentUnless versionAtLeast mesa openal zstd debugPInvokes initConfig;
 		bizhawk = bizhawkAssemblies;
 		hawkVersion = hawkSourceInfo.version;
 		mono = monoFinal;

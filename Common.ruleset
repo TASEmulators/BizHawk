@@ -103,6 +103,9 @@
 		<!-- File is too long -->
 		<Rule Id="MEN005" Action="Hidden" />
 
+		<!-- Use a single return -->
+		<Rule Id="MEN007" Action="Hidden" />
+
 		<!-- File name should match type -->
 		<Rule Id="MEN008" Action="Hidden" />
 

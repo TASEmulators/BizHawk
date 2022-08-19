@@ -2,6 +2,7 @@
 using System.IO;
 
 using BizHawk.Common;
+using BizHawk.Common.PathExtensions;
 
 namespace BizHawk.Emulation.DiscSystem
 {
@@ -28,9 +29,9 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		private string FindAudio(string audioPath)
 		{
-			string basePath = Path.GetFileNameWithoutExtension(audioPath);
+			var (dir, basePath, _) = audioPath.SplitPathToDirFileAndExt();
 			//look for potential candidates
-			var di = new DirectoryInfo(Path.GetDirectoryName(audioPath));
+			DirectoryInfo di = new(dir!);
 			var fis = di.GetFiles();
 			//first, look for the file type we actually asked for
 			foreach (var fi in fis)

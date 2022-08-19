@@ -150,6 +150,17 @@ namespace BizHawk.Common.PathExtensions
 		public static bool PathIsSet(this string path) => !string.IsNullOrWhiteSpace(path) && path != "." && path != "./" && path != ".\\";
 
 		public static string RemoveInvalidFileSystemChars(this string name) => string.Concat(name.Split(Path.GetInvalidFileNameChars()));
+
+		public static (string? Dir, string File) SplitPathToDirAndFile(this string path)
+			=> (Path.GetDirectoryName(path), Path.GetFileName(path));
+
+		public static (string? Dir, string FileNoExt, string? FileExt) SplitPathToDirFileAndExt(this string path)
+			=> (
+				Path.GetDirectoryName(path),
+				Path.GetFileNameWithoutExtension(path),
+				Path.GetExtension(path) is { Length: not 0 } ext
+					? ext
+					: null);
 	}
 
 	public static class PathUtils

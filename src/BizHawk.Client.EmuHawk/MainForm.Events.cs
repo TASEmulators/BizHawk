@@ -12,6 +12,7 @@ using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.CustomControls;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Common;
+using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Arcades.MAME;
@@ -606,12 +607,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ScreenshotAsMenuItem_Click(object sender, EventArgs e)
 		{
-			var path = $"{ScreenshotPrefix()}.{DateTime.Now:yyyy-MM-dd HH.mm.ss}.png";
-
+			var (dir, file) = $"{ScreenshotPrefix()}.{DateTime.Now:yyyy-MM-dd HH.mm.ss}.png".SplitPathToDirAndFile();
 			using var sfd = new SaveFileDialog
 			{
-				InitialDirectory = Path.GetDirectoryName(path),
-				FileName = Path.GetFileName(path),
+				InitialDirectory = dir,
+				FileName = file,
 				Filter = FilesystemFilter.PNGs.ToString()
 			};
 
@@ -1144,11 +1144,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveConfigAsMenuItem_Click(object sender, EventArgs e)
 		{
-			var path = _getConfigPath();
+			var (dir, file) = _getConfigPath().SplitPathToDirAndFile();
 			using var sfd = new SaveFileDialog
 			{
-				InitialDirectory = Path.GetDirectoryName(path),
-				FileName = Path.GetFileName(path),
+				InitialDirectory = dir,
+				FileName = file,
 				Filter = ConfigFileFSFilterString
 			};
 
@@ -1166,11 +1166,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadConfigFromMenuItem_Click(object sender, EventArgs e)
 		{
-			var path = _getConfigPath();
+			var (dir, file) = _getConfigPath().SplitPathToDirAndFile();
 			using var ofd = new OpenFileDialog
 			{
-				InitialDirectory = Path.GetDirectoryName(path),
-				FileName = Path.GetFileName(path),
+				InitialDirectory = dir,
+				FileName = file,
 				Filter = ConfigFileFSFilterString
 			};
 

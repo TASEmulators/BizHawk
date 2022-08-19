@@ -9,6 +9,7 @@ using System.Threading;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 
 // some helpful p/invoke from http://www.codeproject.com/KB/audio-video/Motion_Detection.aspx?msg=1142967
@@ -54,9 +55,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static IEnumerator<string> CreateBasicNameProvider(string template)
 		{
-			string dir = Path.GetDirectoryName(template);
-			string baseName = Path.GetFileNameWithoutExtension(template);
-			string ext = Path.GetExtension(template);
+			var (dir, baseName, ext) = template.SplitPathToDirFileAndExt();
 			yield return template;
 			int counter = 1;
 			for (;;)
