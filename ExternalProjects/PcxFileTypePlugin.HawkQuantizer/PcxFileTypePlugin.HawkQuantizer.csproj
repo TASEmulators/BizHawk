@@ -5,8 +5,12 @@
 	<Import Project="../../Common.props" />
 	<PropertyGroup>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<Nullable>disable</Nullable>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="System.Drawing.Common" Version="4.7.0" />
+		<PackageReference Include="System.Drawing.Common" Version="5.0.2" />
 	</ItemGroup>
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Copy SourceFiles="$(OutputPath)PcxFileTypePlugin.HawkQuantizer.dll" DestinationFolder="$(ProjectDir)../../References/" />
+	</Target>
 </Project>
