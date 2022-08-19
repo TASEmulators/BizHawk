@@ -306,11 +306,16 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SpawnAndSetFileThread(string pathToLoad, LuaFile lf)
 		{
+			lf.LuaRef = _lua; // ref kept around for DetachFromScript in NamedLuaFunction
 			lf.Thread = SpawnCoroutine(pathToLoad);
 		}
 
 		public void ExecuteString(string command)
-			=> _lua.DoString(command);
+		{
+			var func = _lua.LoadString(command, "ExecuteString");
+			var state = _lua.NewThread(func, out _);
+			state.Resume(state, 0);
+		}
 
 		public (bool WaitForFrame, bool Terminated) ResumeScript(LuaFile lf)
 		{

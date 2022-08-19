@@ -37,6 +37,7 @@ namespace BizHawk.Client.Common
 		public bool Enabled => State != RunState.Disabled;
 		public bool Paused => State == RunState.Paused;
 		public bool IsSeparator { get; }
+		public Lua LuaRef { get; set; }
 		public LuaThread Thread { get; set; }
 		public bool FrameWaiting { get; set; }
 		public string CurrentDirectory { get; set; }
@@ -55,7 +56,8 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			Thread.State.Yield(0); // we MUST yield this thread, else old references to lua libs might be used (and those may contain references to a Dispose()'d emulator)
+			//Thread.State.Yield(0); // we MUST yield this thread, else old references to lua libs might be used (and those may contain references to a Dispose()'d emulator)
+			//yield removed after move to NLua/KeraLua, causes NREs, might not be needed anymore? --cpp
 			State = RunState.Disabled;
 			Thread = null;
 		}
