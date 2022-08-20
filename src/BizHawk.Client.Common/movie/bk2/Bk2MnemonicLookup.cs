@@ -642,6 +642,7 @@ namespace BizHawk.Client.Common
 				["Right Bracket"] = ']',
 				["Backslash"] = '\\',
 				["Semicolon"] = ';',
+				["Apostrophe"] = '\'',
 				["Grave"] = '`',
 				["Comma"] = ',',
 				["Period"] = '.',
