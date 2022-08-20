@@ -57,7 +57,7 @@ namespace BizHawk.Client.Common
 			var table = CreateTable();
 			var iArray = 0;
 			var iDict = startAddr;
-			while (iArray < length) table[(double) iDict++] = bytes[iArray++];
+			while (iArray < length) table[iDict++] = bytes[iArray++];
 			return table;
 		}
 

@@ -79,9 +79,9 @@ namespace BizHawk.Client.Common
 				var pointsArr = new Point[4];
 				var i = 0;
 				foreach (var point in _th.EnumerateValues<LuaTable>(points)
-					.Select(table => _th.EnumerateValues<double>(table).ToList()))
+					.Select(table => _th.EnumerateValues<long>(table).ToList()))
 				{
-					pointsArr[i] = new Point(LuaInt(point[0]), LuaInt(point[1]));
+					pointsArr[i] = new Point((int) point[0], (int) point[1]);
 					i++;
 					if (i >= 4)
 					{
@@ -218,14 +218,14 @@ namespace BizHawk.Client.Common
 			[LuaEnumStringParam] string surfaceName = null)
 		{
 			var pointsList = _th.EnumerateValues<LuaTable>(points)
-				.Select(table => _th.EnumerateValues<double>(table).ToList()).ToList();
+				.Select(table => _th.EnumerateValues<long>(table).ToList()).ToList();
 			try
 			{
 				var pointsArr = new Point[pointsList.Count];
 				var i = 0;
 				foreach (var point in pointsList)
 				{
-					pointsArr[i] = new Point(LuaInt(point[0]) + (offsetX ?? 0), LuaInt(point[1]) + (offsetY ?? 0));
+					pointsArr[i] = new Point((int) point[0] + (offsetX ?? 0), (int) point[1] + (offsetY ?? 0));
 					i++;
 				}
 				APIs.Gui.DrawPolygon(pointsArr, _th.SafeParseColor(line), _th.SafeParseColor(background), surfaceID: UseOrFallback(surfaceName));

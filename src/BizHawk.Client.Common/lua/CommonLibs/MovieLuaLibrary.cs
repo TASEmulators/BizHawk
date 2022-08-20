@@ -63,7 +63,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local domovlen = movie.length( );")]
 		[LuaMethod("length", "Returns the total number of frames of the loaded movie")]
-		public double Length()
+		public int Length()
 			=> APIs.Movie.Length();
 
 		[LuaMethodExample("local stmovmod = movie.mode( );")]
@@ -82,10 +82,10 @@ namespace BizHawk.Client.Common
 		public void SetReadOnly(bool readOnly)
 			=> APIs.Movie.SetReadOnly(readOnly);
 
-		[LuaMethodExample("movie.setrerecordcount( 20.0 );")]
+		[LuaMethodExample("movie.setrerecordcount( 20 );")]
 		[LuaMethod("setrerecordcount", "Sets the rerecord count of the current movie.")]
-		public void SetRerecordCount(double count)
-			=> APIs.Movie.SetRerecordCount((ulong) count.AsInteger());
+		public void SetRerecordCount(ulong count)
+			=> APIs.Movie.SetRerecordCount(count);
 
 		[LuaMethodExample("movie.setrerecordcounting( true );")]
 		[LuaMethod("setrerecordcounting", "Sets whether or not the current movie will increment the rerecord counter on loadstate")]

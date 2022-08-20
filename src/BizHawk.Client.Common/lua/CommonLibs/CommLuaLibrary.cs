@@ -65,7 +65,7 @@ namespace BizHawk.Client.Common
 		public int SocketServerSendBytes(LuaTable byteArray)
 		{
 			if (!CheckSocketServer()) return -1;
-			return APIs.Comm.Sockets.SendBytes(_th.EnumerateValues<double>(byteArray).Select(d => (byte) d).ToArray());
+			return APIs.Comm.Sockets.SendBytes(_th.EnumerateValues<long>(byteArray).Select(l => (byte) l).ToArray());
 		}
 
 		[LuaMethod("socketServerResponse", "receives a message from the Socket server")]
@@ -160,7 +160,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethod("mmfWriteBytes", "Write bytes to a memory mapped file")]
 		public int MmfWriteBytes([LuaArbitraryStringParam] string mmf_filename, LuaTable byteArray)
-			=> APIs.Comm.MMF.WriteToFile(FixString(mmf_filename), _th.EnumerateValues<double>(byteArray).Select(d => (byte)d).ToArray());
+			=> APIs.Comm.MMF.WriteToFile(FixString(mmf_filename), _th.EnumerateValues<long>(byteArray).Select(l => (byte) l).ToArray());
 
 		[LuaMethod("mmfCopyFromMemory", "Copy a section of the memory to a memory mapped file")]
 		public int MmfCopyFromMemory(

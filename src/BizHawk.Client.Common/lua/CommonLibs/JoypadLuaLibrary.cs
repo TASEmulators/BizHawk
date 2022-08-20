@@ -56,7 +56,7 @@ namespace BizHawk.Client.Common
 			var dict = new Dictionary<string, int?>();
 			foreach (var (k, v) in _th.EnumerateEntries<object, object>(controls))
 			{
-				dict[FixString(k.ToString())] = double.TryParse(v.ToString(), out var d) ? (int) d : null;
+				dict[FixString(k.ToString())] = long.TryParse(v.ToString(), out var d) ? (int) d : null;
 			}
 			APIs.Joypad.SetAnalog(dict, controller);
 		}

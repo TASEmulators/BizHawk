@@ -74,11 +74,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		protected static int LuaInt(object luaArg)
-		{
-			return (int)(double)luaArg;
-		}
-
 		protected void Log(string message)
 			=> LogOutputCallback?.Invoke(message);
 	}

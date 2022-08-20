@@ -73,12 +73,11 @@ namespace BizHawk.Client.Common
 			var d = Domain;
 			if (d.CanPoke())
 			{
-				foreach (var (address, v) in _th.EnumerateEntries<double, double>(memoryblock))
+				foreach (var (addr, v) in _th.EnumerateEntries<int, byte>(memoryblock))
 				{
-					var addr = LuaInt(address);
 					if (addr < d.Size)
 					{
-						d.PokeByte(addr, (byte) LuaInt(v));
+						d.PokeByte(addr, v);
 					}
 					else
 					{
@@ -96,15 +95,15 @@ namespace BizHawk.Client.Common
 		[LuaMethodExample("mainmemory.write_bytes_as_array(0x100, { 0xAB, 0x12, 0xCD, 0x34 });")]
 		[LuaMethod("write_bytes_as_array", "Writes sequential bytes starting at addr.")]
 		public void WriteBytesAsArray(long addr, LuaTable bytes)
-			=> APIs.Memory.WriteByteRange(addr, _th.EnumerateValues<double>(bytes).Select(d => (byte) d).ToList(), MainMemName);
+			=> APIs.Memory.WriteByteRange(addr, _th.EnumerateValues<long>(bytes).Select(l => (byte) l).ToList(), MainMemName);
 
 		[LuaMethodExample("mainmemory.write_bytes_as_dict({ [0x100] = 0xAB, [0x104] = 0xCD, [0x106] = 0x12, [0x107] = 0x34, [0x108] = 0xEF });")]
 		[LuaMethod("write_bytes_as_dict", "Writes bytes at arbitrary addresses (the keys of the given table are the addresses, relative to the start of the main memory).")]
 		public void WriteBytesAsDict(LuaTable addrMap)
 		{
-			foreach (var (addr, v) in _th.EnumerateEntries<double, double>(addrMap))
+			foreach (var (addr, v) in _th.EnumerateEntries<int, uint>(addrMap))
 			{
-				APIs.Memory.WriteByte(LuaInt(addr), (uint) v, MainMemName);
+				APIs.Memory.WriteByte(addr, v, MainMemName);
 			}
 		}
 
