@@ -629,6 +629,41 @@ namespace BizHawk.Client.Common
 				["Open Tray"] = 'o',
 				["Close Tray"] = 'c',
 			},
+			[VSystemID.Raw.TIC80] = new()
+			{
+				["Mouse Left Click"] = 'l',
+				["Mouse Middle Click"] = 'm',
+				["Mouse Right Click"] = 'r',
+				["Mouse Relative Toggle"] = 't',
+
+				["Minus"] = '-',
+				["Equals"] = '=',
+				["Left Bracket"] = '[',
+				["Right Bracket"] = ']',
+				["Backslash"] = '\\',
+				["Semicolon"] = ';',
+				["Grave"] = '`',
+				["Comma"] = ',',
+				["Period"] = '.',
+				["Slash"] = '/',
+				["Space"] = 's',
+				["Tab"] = 't',
+				["Return"] = 'r',
+				["Backspace"] = 'b',
+				["Delete"] = 'd',
+				["Insert"] = 'i',
+				["Page Up"] = 'u',
+				["Page Down"] = 'v',
+				["Home"] = 'h',
+				["End"] = 'e',
+				["Caps Lock"] = 'l',
+				["Control"] = 'c',
+				["Shift"] = '^',
+				["Alt"] = 'a',
+				["Escape"] = 'e',
+				["F11"] = '1',
+				["F12"] = '2',
+			},
 		};
 
 		private static readonly Dictionary<string, string> BaseAxisLookupTable = new Dictionary<string, string>
@@ -671,6 +706,13 @@ namespace BizHawk.Client.Common
 				["Motion Left / Right"] = "mX",
 				["Motion Up / Down"] = "mY",
 				["Twist | / |"] = "Twist",
+			},
+			[VSystemID.Raw.TIC80] = new()
+			{
+				["Mouse Position X"] = "mpX",
+				["Mouse Position Y"] = "mpY",
+				["Mouse Scroll X"] = "msX",
+				["Mouse Scroll Y"] = "msY",
 			},
 		};
 	}
