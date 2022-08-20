@@ -103,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 					_ => output.ToString()
 				});
 
-			if (outputs == null)
+			if (outputs == null || outputs.Length == 0 || (outputs.Length == 1 && outputs[0] is null))
 			{
 				sb.Append($"(no return){terminator}");
 				return;
