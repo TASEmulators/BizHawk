@@ -25,7 +25,9 @@ namespace BizHawk.Client.Common
 		private LuaTable NewTable()
 		{
 			_lua.NewTable("_TEMP_BIZHAWK_RULES_");
-			return _lua.GetTable("_TEMP_BIZHAWK_RULES_");
+			var ret = _lua.GetTable("_TEMP_BIZHAWK_RULES_");
+			_lua["_TEMP_BIZHAWK_RULES_"] = null;
+			return ret;
 		}
 
 		public LuaTable CreateTable() => NewTable();
