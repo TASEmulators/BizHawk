@@ -56,8 +56,11 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			//Thread.State.Yield(0); // we MUST yield this thread, else old references to lua libs might be used (and those may contain references to a Dispose()'d emulator)
-			//yield removed after move to NLua/KeraLua, causes NREs, might not be needed anymore? --cpp
+			if (Thread.State.Status == KeraLua.LuaStatus.OK)
+			{
+				Thread.State.Yield(0); // we MUST yield this thread, else old references to lua libs might be used (and those may contain references to a Dispose()'d emulator)
+			}
+
 			State = RunState.Disabled;
 			Thread = null;
 		}

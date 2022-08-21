@@ -272,7 +272,7 @@ namespace BizHawk.Client.EmuHawk
 			RegisteredFunctions.Clear(_mainForm.Emulator);
 			ScriptList.Clear();
 			FormsLibrary.DestroyAll();
-			_lua.Close();
+			_lua.Dispose();
 			_lua = new Lua();
 		}
 
@@ -312,9 +312,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void ExecuteString(string command)
 		{
-			var func = _lua.LoadString(command, "ExecuteString");
-			var state = _lua.NewThread(func, out _);
-			state.Resume(state, 0);
+			var func = _lua.LoadString(command, "__BIZHAWK_INTERNAL_EXECUTESTRING");
+			_lua.NewThread(func, out _).Resume(null, 0);
 		}
 
 		public (bool WaitForFrame, bool Terminated) ResumeScript(LuaFile lf)
@@ -325,7 +324,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				LuaLibraryBase.SetCurrentThread(lf);
 
-				var execResult = _currThread.State.Resume(_currThread.State, 0);
+				var execResult = _currThread.State.Resume(null, 0);
 				GuiAPI.ThisIsTheLuaAutounlockHack();
 
 				_currThread = null;
