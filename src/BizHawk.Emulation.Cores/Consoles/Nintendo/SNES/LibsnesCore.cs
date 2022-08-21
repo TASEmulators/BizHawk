@@ -238,7 +238,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public void SetPalette(SnesColors.ColorType palette)
 		{
 			var s = GetSettings();
-			s.Palette = palette;
+			s.Palette = Enum.GetName(typeof(SnesColors.ColorType), palette);
 			PutSettings(s);
 		}
 
@@ -635,8 +635,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		private void RefreshPalette()
 		{
-			CurrPalette = _settings.Palette;
-			int[] tmp = SnesColors.GetLUT(_settings.Palette);
+			CurrPalette = (SnesColors.ColorType)Enum.Parse(typeof(SnesColors.ColorType), _settings.Palette, false);
+			int[] tmp = SnesColors.GetLUT(CurrPalette);
 			fixed (int* p = &tmp[0])
 				Api.QUERY_set_color_lut((IntPtr)p);
 		}
