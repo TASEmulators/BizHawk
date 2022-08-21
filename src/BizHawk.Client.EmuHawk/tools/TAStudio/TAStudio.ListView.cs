@@ -495,7 +495,7 @@ namespace BizHawk.Client.EmuHawk
 
 				// Fixes auto-loading, but why is this code like this? The code above suggests we have a AxisPattern for every axis button? But we don't
 				// This is a sign of a deeper problem, but this fixes some basic functionality at least
-				if (index < BoolPatterns.Length)
+				if (index < AxisPatterns.Length)
 				{
 					AutoPatternAxis p = AxisPatterns[index];
 					InputManager.AutofireStickyXorAdapter.SetAxis(button, value, p);
