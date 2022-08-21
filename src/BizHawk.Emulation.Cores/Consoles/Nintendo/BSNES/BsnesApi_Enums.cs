@@ -85,7 +85,7 @@
 			BG4VOFS,
 			M7HOFS,
 			M7VOFS
-		};
+		}
 
 		public enum SNES_MEMORY
 		{
