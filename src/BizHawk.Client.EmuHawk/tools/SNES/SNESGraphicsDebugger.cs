@@ -85,6 +85,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var paletteTypeItems = new List<PaletteTypeItem>
 			{
+				// must be in same order as enum
 				new PaletteTypeItem("BizHawk", SnesColors.ColorType.BizHawk),
 				new PaletteTypeItem("bsnes", SnesColors.ColorType.BSNES),
 				new PaletteTypeItem("Snes9X", SnesColors.ColorType.Snes9x)
@@ -1268,9 +1269,9 @@ namespace BizHawk.Client.EmuHawk
 		private void comboPalette_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (suppression) return;
-			var pal = comboPalette.SelectedValue.ToString();
+			var pal = (SnesColors.ColorType)comboPalette.SelectedValue;
 			Console.WriteLine("set {0}", pal);
-			currentSnesCore?.SetPalette((SnesColors.ColorType)comboPalette.SelectedIndex);
+			currentSnesCore?.SetPalette(pal);
 			RegenerateData();
 			using (gd.EnterExit())
 			{
