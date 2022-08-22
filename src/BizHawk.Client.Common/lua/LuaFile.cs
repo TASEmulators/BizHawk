@@ -30,7 +30,7 @@ namespace BizHawk.Client.Common
 			State = RunState.Disabled;
 		}
 
-		public static LuaFile SeparatorInstance => new LuaFile(true);
+		public static LuaFile SeparatorInstance => new(true);
 
 		public string Name { get; set; }
 		public string Path { get; }
@@ -62,6 +62,8 @@ namespace BizHawk.Client.Common
 			}
 
 			State = RunState.Disabled;
+			LuaRef = null;
+			Thread.Dispose();
 			Thread = null;
 		}
 

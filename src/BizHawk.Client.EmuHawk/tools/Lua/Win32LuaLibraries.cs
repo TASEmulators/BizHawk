@@ -254,7 +254,7 @@ namespace BizHawk.Client.EmuHawk
 		public void CallExitEvent(LuaFile lf)
 		{
 			foreach (var exitCallback in RegisteredFunctions
-				.Where(l => l.Event == "OnExit" && (l.LuaFile.Path == lf.Path || l.LuaFile.Thread == lf.Thread)))
+				.Where(l => l.Event == "OnExit" && (l.LuaFile.Path == lf.Path || ReferenceEquals(l.LuaFile.Thread, lf.Thread))))
 			{
 				exitCallback.Call();
 			}
