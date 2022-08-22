@@ -1271,7 +1271,14 @@ namespace BizHawk.Client.EmuHawk
 			if (suppression) return;
 			var pal = (SnesColors.ColorType)comboPalette.SelectedValue;
 			Console.WriteLine("set {0}", pal);
-			currentSnesCore?.SetPalette(pal);
+			try
+			{
+				currentSnesCore?.SetPalette(pal);
+			}
+			catch (NotImplementedException)
+			{
+				comboPalette.Enabled = false;
+			}
 			RegenerateData();
 			using (gd.EnterExit())
 			{
