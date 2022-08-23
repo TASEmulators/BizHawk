@@ -626,15 +626,17 @@ namespace BizHawk.Client.EmuHawk
 						_patternPaint = false;
 						_startBoolDrawColumn = buttonName;
 
-						if ((ModifierKeys == Keys.Alt && ModifierKeys != Keys.Shift) || (applyPatternToPaintedInputToolStripMenuItem.Checked && (!onlyOnAutoFireColumnsToolStripMenuItem.Checked
-							|| TasView.CurrentCell.Column.Emphasis)))
+						var altOrShift4State = ModifierKeys & (Keys.Alt | Keys.Shift);
+						if (altOrShift4State is Keys.Alt
+							|| (applyPatternToPaintedInputToolStripMenuItem.Checked
+								&& (!onlyOnAutoFireColumnsToolStripMenuItem.Checked || TasView.CurrentCell.Column.Emphasis)))
 						{
 							BoolPatterns[ControllerType.BoolButtons.IndexOf(buttonName)].Reset();
 							_patternPaint = true;
 							_startRow = TasView.CurrentCell.RowIndex.Value;
 							_boolPaintState = !CurrentTasMovie.BoolIsPressed(frame, buttonName);
 						}
-						else if (ModifierKeys == Keys.Shift && ModifierKeys != Keys.Alt)
+						else if (altOrShift4State is Keys.Shift)
 						{
 							if (!TasView.AnyRowsSelected) return;
 
@@ -658,10 +660,12 @@ namespace BizHawk.Client.EmuHawk
 							_triggerAutoRestore = true;
 							RefreshDialog();
 						}
-						else if (ModifierKeys == Keys.Shift && ModifierKeys == Keys.Alt) // Does not work?
+#if false // to match previous behaviour
+						else if (altOrShift4State is not 0)
 						{
 							// TODO: Pattern drawing from selection to current cell
 						}
+#endif
 						else
 						{
 							CurrentTasMovie.ChangeLog.BeginNewBatch($"Paint Bool {buttonName} from frame {frame}");
