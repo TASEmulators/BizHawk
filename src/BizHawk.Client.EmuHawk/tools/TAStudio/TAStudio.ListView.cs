@@ -637,16 +637,14 @@ namespace BizHawk.Client.EmuHawk
 						else if (ModifierKeys == Keys.Shift && ModifierKeys != Keys.Alt)
 						{
 							if (!TasView.AnyRowsSelected) return;
-							var firstSel = TasView.FirstSelectedRowIndex;
 
-							if (frame <= firstSel)
-							{
-								firstSel = frame;
-								frame = TasView.FirstSelectedRowIndex;
-							}
+							var iFirstSelectedRow = TasView.FirstSelectedRowIndex;
+							var (firstSel, lastSel) = frame <= iFirstSelectedRow
+								? (frame, iFirstSelectedRow)
+								: (iFirstSelectedRow, frame);
 
 							bool allPressed = true;
-							for (int i = firstSel; i <= frame; i++)
+							for (var i = firstSel; i <= lastSel; i++)
 							{
 								if (i == CurrentTasMovie.FrameCount // last movie frame can't have input, but can be selected
 									|| !CurrentTasMovie.BoolIsPressed(i, buttonName))
@@ -655,8 +653,8 @@ namespace BizHawk.Client.EmuHawk
 									break;
 								}
 							}
-							CurrentTasMovie.SetBoolStates(firstSel, (frame - firstSel) + 1, buttonName, !allPressed);
-							_boolPaintState = CurrentTasMovie.BoolIsPressed(frame, buttonName);
+							CurrentTasMovie.SetBoolStates(firstSel, lastSel - firstSel + 1, buttonName, !allPressed);
+							_boolPaintState = CurrentTasMovie.BoolIsPressed(lastSel, buttonName);
 							_triggerAutoRestore = true;
 							RefreshDialog();
 						}
