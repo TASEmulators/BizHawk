@@ -1869,9 +1869,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Mupen64PlusSetUseExpansionSlot(bool newValue, ISettingsAdapter settable)
 		{
-			var ss = (N64SyncSettings) settable.GetSettings();
+			var ss = (N64SyncSettings) settable.GetSyncSettings();
 			ss.DisableExpansionSlot = !newValue;
-			settable.PutCoreSettings(ss);
+			settable.PutCoreSyncSettings(ss);
 		}
 
 		private void N64ExpansionSlotMenuItem_Click(object sender, EventArgs e)
