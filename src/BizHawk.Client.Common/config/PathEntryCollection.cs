@@ -182,7 +182,6 @@ namespace BizHawk.Client.Common
 				new(GLOBAL, "Watch (.wch)", Path.Combine(".", ".")),
 				new(GLOBAL, "Debug Logs", Path.Combine(".", "")),
 				new(GLOBAL, "Macros", Path.Combine(".", "Movies", "Macros")),
-				new(GLOBAL, "TAStudio states", Path.Combine(".", "Movies", "TAStudio states")),
 				new(GLOBAL, "Multi-Disk Bundles", Path.Combine(".", "")),
 				new(GLOBAL, "External Tools", Path.Combine(".", "ExternalTools")),
 				new(GLOBAL, "Temp Files", ""),

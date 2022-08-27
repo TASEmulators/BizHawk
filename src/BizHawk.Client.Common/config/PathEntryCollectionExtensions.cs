@@ -180,12 +180,6 @@ namespace BizHawk.Client.Common
 			return collection.AbsolutePathFor(path, null);
 		}
 
-		public static string TastudioStatesAbsolutePath(this PathEntryCollection collection)
-		{
-			var path = collection[PathEntryCollection.GLOBAL, "TAStudio states"].Path;
-			return collection.AbsolutePathFor(path, null);
-		}
-
 		public static string MultiDiskAbsolutePath(this PathEntryCollection collection)
 		{
 			var path = collection.ResolveToolsPath(collection[PathEntryCollection.GLOBAL, "Multi-Disk Bundles"].Path);

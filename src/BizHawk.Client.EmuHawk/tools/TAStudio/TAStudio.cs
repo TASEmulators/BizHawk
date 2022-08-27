@@ -26,7 +26,6 @@ namespace BizHawk.Client.EmuHawk
 		public ITasMovie CurrentTasMovie => MovieSession.Movie as ITasMovie;
 
 		public bool IsInMenuLoop { get; private set; }
-		public string StatesPath => Config.PathEntries.TastudioStatesAbsolutePath();
 
 		private readonly List<TasClipboardEntry> _tasClipboard = new List<TasClipboardEntry>();
 		private const string CursorColumnName = "CursorColumn";
