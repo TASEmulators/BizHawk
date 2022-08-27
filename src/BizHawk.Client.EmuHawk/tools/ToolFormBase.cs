@@ -11,17 +11,17 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class ToolFormBase : FormBase, IToolForm, IDialogParent
 	{
-		public ToolManager Tools { get; set; }
+		protected ToolManager Tools { get; private set; }
 
-		public DisplayManager DisplayManager { get; set; }
+		protected DisplayManager DisplayManager { get; private set; }
 
-		public InputManager InputManager { get; set; }
+		protected InputManager InputManager { get; private set; }
 
-		public IMainFormForTools MainForm { get; set; }
+		protected IMainFormForTools MainForm { get; private set; }
 
-		public IMovieSession MovieSession { get; set; }
+		protected IMovieSession MovieSession { get; private set; }
 
-		public IGameInfo Game { get; set; }
+		protected IGameInfo Game { get; private set; }
 
 		public IDialogController DialogController => MainForm;
 
@@ -31,6 +31,22 @@ namespace BizHawk.Client.EmuHawk
 		public virtual bool IsLoaded => IsActive;
 
 		public virtual void Restart() {}
+
+		public void SetToolFormBaseProps(
+			DisplayManager displayManager,
+			InputManager inputManager,
+			IMainFormForTools mainForm,
+			IMovieSession movieSession,
+			ToolManager toolManager,
+			IGameInfo game)
+		{
+			DisplayManager = displayManager;
+			Game = game;
+			InputManager = inputManager;
+			MainForm = mainForm;
+			MovieSession = movieSession;
+			Tools = toolManager;
+		}
 
 		public virtual void UpdateValues(ToolFormUpdateType type)
 		{

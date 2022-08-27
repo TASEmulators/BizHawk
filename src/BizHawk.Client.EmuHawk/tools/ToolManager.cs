@@ -88,13 +88,7 @@ namespace BizHawk.Client.EmuHawk
 
 			f.Config = _config;
 			if (!(form is ToolFormBase tool)) return;
-
-			tool.Tools = this;
-			tool.DisplayManager = _displayManager;
-			tool.InputManager = _inputManager;
-			tool.MainForm = _owner;
-			tool.MovieSession = _movieSession;
-			tool.Game = _game;
+			tool.SetToolFormBaseProps(_displayManager, _inputManager, _owner, _movieSession, this, _game);
 		}
 
 		/// <summary>
