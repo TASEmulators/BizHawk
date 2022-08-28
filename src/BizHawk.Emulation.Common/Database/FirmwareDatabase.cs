@@ -16,6 +16,8 @@ namespace BizHawk.Emulation.Common
 
 		public static readonly IReadOnlyDictionary<string, FirmwareFile> FirmwareFilesByHash;
 
+		public static readonly IReadOnlyDictionary<FirmwareOption, FirmwareFile> FirmwareFilesWithDummyHash;
+
 		public static readonly IReadOnlyCollection<FirmwareOption> FirmwareOptions;
 
 		public static readonly IReadOnlyCollection<FirmwareRecord> FirmwareRecords;
@@ -26,6 +28,7 @@ namespace BizHawk.Emulation.Common
 		{
 			List<FirmwarePatchOption> allPatches = new();
 			Dictionary<string, FirmwareFile> filesByHash = new();
+			Dictionary<FirmwareOption, FirmwareFile> filesWithDummyHash = new();
 			List<FirmwareOption> options = new();
 			List<FirmwareRecord> records = new();
 
@@ -45,7 +48,15 @@ namespace BizHawk.Emulation.Common
 						isBad: isBad);
 
 			void Option(string systemId, string id, in FirmwareFile ff, FirmwareOptionStatus status = FirmwareOptionStatus.Acceptable)
-				=> options.Add(new(new(systemId, id), ff.Hash, ff.Size, ff.IsBad ? FirmwareOptionStatus.Bad : status));
+			{
+				options.Add(new(new(systemId, id), ff.Hash, ff.Size, ff.IsBad ? FirmwareOptionStatus.Bad : status));
+				if (ff.Hash is SHA1Checksum.Dummy)
+				{
+					// these shouldn't have more than 1 option
+					// as these files represent an impossible to hash firmware
+					filesWithDummyHash[options[options.Count - 1]] = ff;
+				}
+			}
 
 			void Firmware(string systemId, string id, string desc)
 				=> records.Add(new(new(systemId, id), desc));
@@ -463,6 +474,7 @@ namespace BizHawk.Emulation.Common
 
 			AllPatches = allPatches;
 			FirmwareFilesByHash = filesByHash;
+			FirmwareFilesWithDummyHash = filesWithDummyHash;
 			FirmwareOptions = options;
 			FirmwareRecords = records;
 		}
