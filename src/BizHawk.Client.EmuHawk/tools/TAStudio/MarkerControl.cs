@@ -287,7 +287,7 @@ namespace BizHawk.Client.EmuHawk
 				i.Location = point;
 			}
 
-			if (this.ShowDialogWithTempMute(i) == DialogResult.OK)
+			if (this.ShowDialogWithTempMute(i) == DialogResult.OK && !Markers.IsMarker(int.Parse(i.PromptText)))
 			{
 				Markers.Move(marker.Frame, int.Parse(i.PromptText));
 				UpdateTextColumnWidth();

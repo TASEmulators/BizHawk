@@ -82,7 +82,7 @@
 			// 
 			// EditMarkerFrameToolStripMenuItem
 			// 
-			this.EditMarkerFrameToolStripMenuItem.Text = "Edit Frame";
+			this.EditMarkerFrameToolStripMenuItem.Text = "Edit Frame (Alt + Drag)";
 			this.EditMarkerFrameToolStripMenuItem.Click += new System.EventHandler(this.EditMarkerFrameToolStripMenuItem_Click);
 			// 
 			// AddMarkerToolStripMenuItem
@@ -127,7 +127,7 @@
 			this.EditMarkerFrameButton.Name = "EditMarkerFrameButton";
 			this.EditMarkerFrameButton.Size = new System.Drawing.Size(24, 24);
 			this.EditMarkerFrameButton.TabIndex = 6;
-			this.toolTip1.SetToolTip(this.EditMarkerFrameButton, "Edit Marker Frame");
+			this.toolTip1.SetToolTip(this.EditMarkerFrameButton, "Edit Marker Frame (Alt + Drag)");
 			this.EditMarkerFrameButton.UseVisualStyleBackColor = true;
 			this.EditMarkerFrameButton.Click += new System.EventHandler(this.EditMarkerFrameToolStripMenuItem_Click);
 			// 
