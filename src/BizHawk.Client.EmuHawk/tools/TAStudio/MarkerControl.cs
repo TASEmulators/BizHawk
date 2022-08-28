@@ -287,12 +287,16 @@ namespace BizHawk.Client.EmuHawk
 				i.Location = point;
 			}
 
-			if (this.ShowDialogWithTempMute(i) == DialogResult.OK && !Markers.IsMarker(int.Parse(i.PromptText)))
+			if (this.ShowDialogWithTempMute(i).IsOk())
 			{
-				Markers.Move(marker.Frame, int.Parse(i.PromptText));
-				UpdateTextColumnWidth();
-				UpdateValues();
-				Tastudio.RefreshDialog();
+				var promptValue = int.Parse(i.PromptText);
+				if (!Markers.IsMarker(promptValue))
+				{ 
+					Markers.Move(marker.Frame, promptValue);
+					UpdateTextColumnWidth();
+					UpdateValues();
+					Tastudio.RefreshDialog();
+				}
 			}
 		}
 
@@ -313,17 +317,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MarkerView_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			EditMarkerButton.Enabled =
-				RemoveMarkerButton.Enabled =
-					MarkerInputRoll.AnyRowsSelected && MarkerView.FirstSelectedRowIndex is not 0;
-
 			EditMarkerFrameButton.Enabled =
-				RemoveMarkerButton.Enabled =
-					MarkerInputRoll.AnyRowsSelected && MarkerView.FirstSelectedRowIndex is not 0;
+				EditMarkerButton.Enabled =
+					RemoveMarkerButton.Enabled =
+						MarkerInputRoll.AnyRowsSelected && MarkerView.FirstSelectedRowIndex is not 0;
 
 			JumpToMarkerButton.Enabled =
 				ScrollToMarkerButton.Enabled =
-				MarkerInputRoll.AnyRowsSelected;
+					MarkerInputRoll.AnyRowsSelected;
 		}
 
 		// SuuperW: Marker renaming can be done with a right-click.
