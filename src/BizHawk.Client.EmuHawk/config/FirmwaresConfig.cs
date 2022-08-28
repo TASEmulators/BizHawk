@@ -545,9 +545,7 @@ namespace BizHawk.Client.EmuHawk
 				olvi.SubItems.Add(new ListViewItem.ListViewSubItem());
 				olvi.SubItems.Add(new ListViewItem.ListViewSubItem());
 				olvi.SubItems.Add(new ListViewItem.ListViewSubItem());
-				var ff = o.Hash is SHA1Checksum.Dummy
-					? FirmwareDatabase.FirmwareFilesWithDummyHash[o]
-					: FirmwareDatabase.FirmwareFilesByHash[o.Hash];
+				var ff = FirmwareDatabase.FirmwareFilesByOption[o];
 				olvi.ImageIndex = (int) (o.Status is FirmwareOptionStatus.Bad ? FirmwareOptionStatus.Unset : o.Status); // if bad, use unset's red '!' to differentiate from unacceptable
 				olvi.ToolTipText = StatusDescs[o.Status];
 				olvi.SubItems[0].Text = ff.Size.ToString();
