@@ -3,7 +3,6 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Text;
 
 using BizHawk.Common.StringExtensions;
 
@@ -153,11 +152,8 @@ namespace BizHawk.Common
 			private enum FORMAT_MESSAGE : uint
 			{
 				ALLOCATE_BUFFER = 0x00000100,
-				ARGUMENT_ARRAY = 0x00002000,
-				FROM_HMODULE = 0x00000800,
-				FROM_STRING = 0x00000400,
-				FROM_SYSTEM = 0x00001000,
 				IGNORE_INSERTS = 0x00000200,
+				FROM_SYSTEM = 0x00001000,
 			}
 
 			[DllImport("kernel32.dll")]
