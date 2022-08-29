@@ -91,6 +91,8 @@ namespace BizHawk.Common
 
 			/// <exception cref="InvalidOperationException">could not find library</exception>
 			IntPtr LoadOrThrow(string dllToLoad);
+
+			string GetErrorMessage();
 		}
 
 		private class UnixMonoLLManager : ILinkedLibManager
@@ -126,6 +128,12 @@ namespace BizHawk.Common
 			{
 				var ret = LoadOrZero(dllToLoad);
 				return ret != IntPtr.Zero ? ret : throw new InvalidOperationException($"got null pointer from {nameof(dlopen)}, error: {Marshal.PtrToStringAnsi(dlerror())}");
+			}
+
+			public string GetErrorMessage()
+			{
+				var errCharPtr = dlerror();
+				return errCharPtr == IntPtr.Zero ? "No error present" : Marshal.PtrToStringAnsi(errCharPtr);
 			}
 
 			private const int RTLD_NOW = 2;
@@ -164,6 +172,8 @@ namespace BizHawk.Common
 				var ret = LoadOrZero(dllToLoad);
 				return ret != IntPtr.Zero ? ret : throw new InvalidOperationException($"got null pointer from {nameof(LoadLibrary)}, error code: {GetLastError()}");
 			}
+
+			public string GetErrorMessage() => $"Error Code 0x{GetLastError():X8}";
 		}
 
 		public enum DistinctOS : byte
