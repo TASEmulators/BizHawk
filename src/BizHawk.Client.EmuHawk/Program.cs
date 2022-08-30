@@ -26,6 +26,14 @@ namespace BizHawk.Client.EmuHawk
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 
+			// quickly check if the user is running this as a 32 bit process somehow
+			if (!Environment.Is64BitProcess)
+			{
+				using (var box = new ExceptionBox($"EmuHawk requires a 64 bit environment in order to run! EmuHawk will now close.")) box.ShowDialog();
+				Process.GetCurrentProcess().Kill();
+				return;
+			}
+
 			if (OSTC.IsUnixHost)
 			{
 				// for Unix, skip everything else and just wire up the event handler
