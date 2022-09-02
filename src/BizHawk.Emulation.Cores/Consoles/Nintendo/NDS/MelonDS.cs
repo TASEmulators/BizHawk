@@ -106,7 +106,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				loadFlags |= LibMelonDS.LoadFlags.SKIP_FIRMWARE;
 			if (gbacartpresent)
 				loadFlags |= LibMelonDS.LoadFlags.GBA_CART_PRESENT;
-			if (_syncSettings.FirmwareOverride || lp.DeterministicEmulationRequested)
+			if (fw is null || _syncSettings.FirmwareOverride || lp.DeterministicEmulationRequested)
 				loadFlags |= LibMelonDS.LoadFlags.FIRMWARE_OVERRIDE;
 			if (IsDSi)
 				loadFlags |= LibMelonDS.LoadFlags.IS_DSI;
