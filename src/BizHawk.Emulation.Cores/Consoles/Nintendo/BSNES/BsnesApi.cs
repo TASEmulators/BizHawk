@@ -33,6 +33,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void* snes_get_memory_region(int id, out int size, out int wordSize);
 		[BizImport(CallingConvention.Cdecl)]
+		public abstract int snes_peek_logical_register(BsnesApi.SNES_REGISTER register);
+		[BizImport(CallingConvention.Cdecl)]
 		public abstract byte snes_bus_read(uint address);
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_bus_write(uint address, byte value);

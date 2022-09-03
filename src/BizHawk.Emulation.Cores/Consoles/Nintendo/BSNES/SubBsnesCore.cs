@@ -1,4 +1,5 @@
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Nintendo.SNES;
 
 namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 {
@@ -28,6 +29,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			ser.Register(_bsnesCore.ServiceProvider.GetService<IMemoryDomains>());
 			ser.Register(_bsnesCore.ServiceProvider.GetService<IDisassemblable>());
 			ser.Register(_bsnesCore.ServiceProvider.GetService<ITraceable>());
+			ser.Register(_bsnesCore.ServiceProvider.GetService<IBSNESForGfxDebugger>());
 			if (IsSGB)
 			{
 				// board info is only set in SGB mode

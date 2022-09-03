@@ -10,10 +10,100 @@
 
 using BizHawk.Common;
 using System;
+using System.Drawing;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
-	public unsafe class SNESGraphicsDecoder : IDisposable, IMonitor
+	public unsafe interface ISNESGraphicsDecoder : IMonitor
+	{
+		public interface OAMInfo
+		{
+			ushort X { get; }
+
+			byte Y { get; }
+
+			int Tile { get; }
+
+			bool Table { get; }
+
+			int Palette { get; }
+
+			byte Priority { get; }
+
+			bool VFlip { get; }
+
+			bool HFlip { get; }
+
+			bool Size { get; }
+
+			int Address { get; }
+		}
+
+		void CacheTiles();
+
+		int Colorize(int rgb555);
+
+		void Colorize(int* buf, int offset, int numpixels);
+
+		OAMInfo CreateOAMInfo(SNESGraphicsDecoder.ScreenInfo si, int num);
+
+		void DecodeBG(
+			int* screen,
+			int stride,
+			SNESGraphicsDecoder.TileEntry[] map,
+			int tiledataBaseAddr,
+			SNESGraphicsDecoder.ScreenSize size,
+			int bpp,
+			int tilesize,
+			int paletteStart);
+
+		void DecodeMode7BG(int* screen, int stride, bool extBg);
+
+		void DirectColorify(int* screen, int numPixels);
+
+		SNESGraphicsDecoder.TileEntry[] FetchMode7Tilemap();
+
+		SNESGraphicsDecoder.TileEntry[] FetchTilemap(int addr, SNESGraphicsDecoder.ScreenSize size);
+
+		int[] GetPalette();
+
+		void Paletteize(int* buf, int offset, int startcolor, int numpixels);
+
+		void RenderMode7TilesToScreen(
+			int* screen,
+			int stride,
+			bool ext,
+			bool directColor,
+			int tilesWide = 16,
+			int startTile = 0,
+			int numTiles = 256);
+
+		void RenderSpriteToScreen(
+			int* screen,
+			int stride,
+			int destx,
+			int desty,
+			SNESGraphicsDecoder.ScreenInfo si,
+			int spritenum,
+			OAMInfo oam = null,
+			int xlimit = 1024,
+			int ylimit = 1024,
+			byte[,] spriteMap = null);
+
+		void RenderTilesToScreen(
+			int* screen,
+			int stride,
+			int bpp,
+			int startcolor,
+			int startTile = 0,
+			int numTiles = -1);
+
+		SNESGraphicsDecoder.ScreenInfo ScanScreenInfo();
+
+		void SetBackColor(int snescol = -1);
+	}
+
+	public unsafe class SNESGraphicsDecoder : ISNESGraphicsDecoder
 	{
 		public class PaletteSelection
 		{
@@ -48,16 +138,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			return ret;
 		}
 
-		public static Dimensions[,] ObjSizes = 
+		public static Size[,] ObjSizes =
 		{
-			{ new Dimensions(8,8), new Dimensions(16,16) },
-			{ new Dimensions(8,8), new Dimensions(32,32) },
-			{ new Dimensions(8,8), new Dimensions(64,64) },
-			{ new Dimensions(16,16), new Dimensions(32,32) },
-			{ new Dimensions(16,16), new Dimensions(64,64) },
-			{ new Dimensions(32,32), new Dimensions(64,64) },
-			{ new Dimensions(16,32), new Dimensions(32,64) },
-			{ new Dimensions(16,32), new Dimensions(32,32) }
+			{ new(8,8), new(16,16) },
+			{ new(8,8), new(32,32) },
+			{ new(8,8), new(64,64) },
+			{ new(16,16), new(32,32) },
+			{ new(16,16), new(64,64) },
+			{ new(32,32), new(64,64) },
+			{ new(16,32), new(32,64) },
+			{ new(16,32), new(32,32) }
 		};
 
 		public static Dimensions SizeInBlocksForBGSize(ScreenSize size)
@@ -199,27 +289,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			public BGInfo this[int index] => bgs[index - 1];
 		}
 
-		public class ModeInfo
-		{
-			/// <summary>
-			/// the mode number, i.e. Mode 7
-			/// </summary>
-			public int MODE;
-		}
-
-		public class OAMInfo
+		public class OAMInfo : ISNESGraphicsDecoder.OAMInfo
 		{
 			public int Index { get; }
-			public int X { get; }
-			public int Y { get; }
+			public ushort X { get; }
+			public byte Y { get; }
 			public int Tile { get; }
-			public int Name { get; }
-			public int Table { get; }
+			public bool Table { get; }
 			public int Palette { get; }
-			public int Priority { get; }
+			public byte Priority { get; }
 			public bool VFlip { get; }
 			public bool HFlip { get; }
-			public int Size { get; }
+			public bool Size { get; }
 
 			/// <summary>
 			/// tiledata address
@@ -229,15 +310,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			public OAMInfo(SNESGraphicsDecoder dec, ScreenInfo si, int num)
 			{
 				Index = num;
-				
+
 				int lowaddr = num*4;
 				X = dec.oam[lowaddr++];
 				Y = dec.oam[lowaddr++];
-				Name = dec.oam[lowaddr++];
-				Table = dec.oam[lowaddr] & 1;
+				byte name = dec.oam[lowaddr++];
+				Table = (dec.oam[lowaddr] & 1) == 1;
 				Palette = (dec.oam[lowaddr]>>1) & 7;
-				Priority = (dec.oam[lowaddr] >> 4) & 3;
-				HFlip = ((dec.oam[lowaddr] >> 6) & 1)==1;
+				Priority = (byte)((dec.oam[lowaddr] >> 4) & 3);
+				HFlip = ((dec.oam[lowaddr] >> 6) & 1) == 1;
 				VFlip = ((dec.oam[lowaddr] >> 7) & 1) == 1;
 
 				int highaddr = num / 4;
@@ -246,13 +327,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				high >>= shift;
 				int x = high & 1;
 				high >>= 1;
-				Size = high & 1;
-				X |= (x << 8);
-				X = (X << 23) >> 23;
+				Size = (high & 1) != 0;
+				X = (ushort)(X | (x << 8));
 
-				Tile = Table*256 + Name;
+				Tile = name + (Table ? 256 : 0);
 				Address = 32 * Tile;
-			
+
 				if (Tile < 256)
 					Address += si.OBJTable0Addr;
 				else
@@ -264,240 +344,53 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public class ScreenInfo
 		{
-			public Dimensions ObjSizeBounds;
-			public Dimensions ObjSizeBoundsSquare;
+			public Size ObjSizeBounds;
+			public Size ObjSizeBoundsSquare;
 
 			public BGInfos BG = new BGInfos();
 
-			public ModeInfo Mode = new ModeInfo();
+			public int Mode { get; init; }
+			public bool Mode1_BG3_Priority { get; init; }
 
-			public bool Mode1_BG3_Priority { get; private set; }
+			public bool SETINI_Mode7ExtBG { get; init; }
+			public bool SETINI_HiRes { get; init; }
+			public bool SETINI_Overscan { get; init; }
+			public bool SETINI_ObjInterlace { get; init; }
+			public bool SETINI_ScreenInterlace { get; init; }
 
-			public bool SETINI_Mode7ExtBG { get; private set; }
-			public bool SETINI_HiRes { get; private set; }
-			public bool SETINI_Overscan { get; private set; }
-			public bool SETINI_ObjInterlace { get; private set; }
-			public bool SETINI_ScreenInterlace { get; private set; }
+			public int CGWSEL_ColorMask { get; init; }
+			public int CGWSEL_ColorSubMask { get; init; }
+			public int CGWSEL_AddSubMode { get; init; }
+			public bool CGWSEL_DirectColor { get; init; }
+			public int CGADSUB_AddSub { get; init; }
+			public bool CGADSUB_Half { get; init; }
 
-			public int CGWSEL_ColorMask { get; private set; }
-			public int CGWSEL_ColorSubMask { get; private set; }
-			public int CGWSEL_AddSubMode { get; private set; }
-			public bool CGWSEL_DirectColor { get; private set; }
-			public int CGADSUB_AddSub { get; private set; }
-			public bool CGADSUB_Half { get; private set; }
+			public int OBSEL_Size { get; init; }
+			public int OBSEL_NameSel { get; init; }
+			public int OBSEL_NameBase { get; init; }
 
-			public int OBSEL_Size { get; private set; }
-			public int OBSEL_NameSel { get; private set; }
-			public int OBSEL_NameBase { get; private set; }
+			public int OBJTable0Addr { get; init; }
+			public int OBJTable1Addr { get; init; }
 
-			public int OBJTable0Addr { get; private set; }
-			public int OBJTable1Addr { get; private set; }
+			public bool OBJ_MainEnabled { get; init; }
+			public bool OBJ_SubEnabled { get; init; }
+			public bool OBJ_MathEnabled { get; init; }
+			public bool BK_MathEnabled { get; init; }
 
-			public bool OBJ_MainEnabled { get; private set; }
-			public bool OBJ_SubEnabled { get; private set; }
-			public bool OBJ_MathEnabled { get; private set; }
-			public bool BK_MathEnabled { get; private set; }
-
-			public int M7HOFS { get; private set; }
-			public int M7VOFS { get; private set; }
-			public int M7A { get; private set; }
-			public int M7B { get; private set; }
-			public int M7C { get; private set; }
-			public int M7D { get; private set; }
-			public int M7X { get; private set; }
-			public int M7Y { get; private set; }
-			public int M7SEL_REPEAT { get; private set; }
-			public bool M7SEL_HFLIP { get; private set; }
-			public bool M7SEL_VFLIP { get; private set; }
-
-			public static ScreenInfo GetScreenInfo(LibsnesApi api)
-			{
-				var si = new ScreenInfo();
-
-				si.Mode1_BG3_Priority = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG3_PRIORITY) == 1;
-
-				si.OBSEL_Size = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.OBSEL_SIZE);
-				si.OBSEL_NameSel = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.OBSEL_NAMESEL);
-				si.OBSEL_NameBase = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.OBSEL_NAMEBASE);
-
-				si.ObjSizeBounds = ObjSizes[si.OBSEL_Size,1];
-				int square = Math.Max(si.ObjSizeBounds.Width, si.ObjSizeBounds.Height);
-				si.ObjSizeBoundsSquare = new Dimensions(square, square);
-
-
-				si.OBJTable0Addr = si.OBSEL_NameBase << 14;
-				si.OBJTable1Addr = (si.OBJTable0Addr + ((si.OBSEL_NameSel + 1) << 13)) & 0xFFFF;
-
-				si.SETINI_Mode7ExtBG = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.SETINI_MODE7_EXTBG) == 1;
-				si.SETINI_HiRes = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.SETINI_HIRES) == 1;
-				si.SETINI_Overscan = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.SETINI_OVERSCAN) == 1;
-				si.SETINI_ObjInterlace = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.SETINI_OBJ_INTERLACE) == 1;
-				si.SETINI_ScreenInterlace = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.SETINI_SCREEN_INTERLACE) == 1;
-
-				si.CGWSEL_ColorMask = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.CGWSEL_COLORMASK);
-				si.CGWSEL_ColorSubMask = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.CGWSEL_COLORSUBMASK);
-				si.CGWSEL_AddSubMode = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.CGWSEL_ADDSUBMODE);
-				si.CGWSEL_DirectColor = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.CGWSEL_DIRECTCOLOR) == 1;
-
-				si.CGADSUB_AddSub = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.CGADSUB_MODE);
-				si.CGADSUB_Half = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.CGADSUB_HALF) == 1;
-
-				si.OBJ_MainEnabled = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.TM_OBJ) == 1;
-				si.OBJ_SubEnabled = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.TS_OBJ) == 1;
-				si.OBJ_MathEnabled = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.CGADSUB_OBJ) == 1;
-				si.BK_MathEnabled = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.CGADSUB_BACKDROP) == 1;
-
-				si.Mode.MODE = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG_MODE);
-				si.BG.BG1.Bpp = ModeBpps[si.Mode.MODE, 0];
-				si.BG.BG2.Bpp = ModeBpps[si.Mode.MODE, 1];
-				si.BG.BG3.Bpp = ModeBpps[si.Mode.MODE, 2];
-				si.BG.BG4.Bpp = ModeBpps[si.Mode.MODE, 3];
-
-				//initial setting of mode type (derived from bpp table.. mode7 bg types will be fixed up later)
-				for(int i=1;i<=4;i++)
-					si.BG[i].BGMode = si.BG[i].Bpp == 0 ? BGMode.Unavailable : BGMode.Text;
-
-				si.BG.BG1.TILESIZE = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG1_TILESIZE);
-				si.BG.BG2.TILESIZE = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG2_TILESIZE);
-				si.BG.BG3.TILESIZE = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG3_TILESIZE);
-				si.BG.BG4.TILESIZE = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG4_TILESIZE);
-
-				si.BG.BG1.SCSIZE = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG1_SCSIZE);
-				si.BG.BG2.SCSIZE = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG2_SCSIZE);
-				si.BG.BG3.SCSIZE = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG3_SCSIZE);
-				si.BG.BG4.SCSIZE = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG4_SCSIZE);
-				si.BG.BG1.SCADDR = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG1_SCADDR);
-				si.BG.BG2.SCADDR = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG2_SCADDR);
-				si.BG.BG3.SCADDR = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG3_SCADDR);
-				si.BG.BG4.SCADDR = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG4_SCADDR);
-				si.BG.BG1.TDADDR = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG1_TDADDR);
-				si.BG.BG2.TDADDR = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG2_TDADDR);
-				si.BG.BG3.TDADDR = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG3_TDADDR);
-				si.BG.BG4.TDADDR = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG4_TDADDR);
-
-				si.BG.BG1.MainEnabled = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.TM_BG1) == 1;
-				si.BG.BG2.MainEnabled = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.TM_BG2) == 1;
-				si.BG.BG3.MainEnabled = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.TM_BG3) == 1;
-				si.BG.BG4.MainEnabled = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.TM_BG4) == 1;
-				si.BG.BG1.SubEnabled = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.TS_BG1) == 1;
-				si.BG.BG2.SubEnabled = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.TS_BG2) == 1;
-				si.BG.BG3.SubEnabled = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.TS_BG3) == 1;
-				si.BG.BG4.SubEnabled = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.TS_BG4) == 1;
-				si.BG.BG1.MathEnabled = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.CGADSUB_BG1) == 1;
-				si.BG.BG2.MathEnabled = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.CGADSUB_BG2) == 1;
-				si.BG.BG3.MathEnabled = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.CGADSUB_BG3) == 1;
-				si.BG.BG4.MathEnabled = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.CGADSUB_BG4) == 1;
-
-				si.BG.BG1.HOFS = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG1HOFS);
-				si.BG.BG1.VOFS = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG1VOFS);
-				si.BG.BG2.HOFS = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG2HOFS);
-				si.BG.BG2.VOFS = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG2VOFS);
-				si.BG.BG3.HOFS = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG3HOFS);
-				si.BG.BG3.VOFS = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG3VOFS);
-				si.BG.BG4.HOFS = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG4HOFS);
-				si.BG.BG4.VOFS = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG4VOFS);
-
-				si.M7HOFS = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.M7HOFS);
-				si.M7VOFS = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.M7VOFS);
-				si.M7A = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.M7A);
-				si.M7B = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.M7B);
-				si.M7C = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.M7C);
-				si.M7D = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.M7D);
-				si.M7X = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.M7X);
-				si.M7Y = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.M7Y);
-				si.M7Y = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.M7Y);
-				si.M7SEL_REPEAT = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.M7SEL_REPEAT);
-				si.M7SEL_HFLIP = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.M7SEL_HFLIP)!=0;
-				si.M7SEL_VFLIP = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.M7SEL_VFLIP)!=0;
-
-				for (int i = 1; i <= 4; i++)
-				{
-					si.BG[i].Mode = si.Mode.MODE;
-					si.BG[i].TiledataAddr = si.BG[i].TDADDR << 13;
-					si.BG[i].ScreenAddr = si.BG[i].SCADDR << 9;
-				}
-				
-				//fixup irregular things for mode 7
-				if (si.Mode.MODE == 7)
-				{
-					si.BG.BG1.TiledataAddr = 0;
-					si.BG.BG1.ScreenAddr = 0;
-
-					if (si.CGWSEL_DirectColor)
-					{
-						si.BG.BG1.BGMode = BGMode.Mode7DC;
-					}
-					else
-						si.BG.BG1.BGMode = BGMode.Mode7;
-
-					if (si.SETINI_Mode7ExtBG)
-					{
-						si.BG.BG2.BGMode = BGMode.Mode7Ext;
-						si.BG.BG2.Bpp = 7;
-						si.BG.BG2.TiledataAddr = 0;
-						si.BG.BG2.ScreenAddr = 0;
-					}
-				}
-
-				//determine which colors each BG could use
-				switch (si.Mode.MODE)
-				{
-					case 0:
-						si.BG.BG1.PaletteSelection = new PaletteSelection(0, 32);
-						si.BG.BG2.PaletteSelection = new PaletteSelection(32, 32);
-						si.BG.BG3.PaletteSelection = new PaletteSelection(64, 32);
-						si.BG.BG4.PaletteSelection = new PaletteSelection(96, 32);
-						break;
-					case 1:
-						si.BG.BG1.PaletteSelection = new PaletteSelection(0, 128);
-						si.BG.BG2.PaletteSelection = new PaletteSelection(0, 128);
-						si.BG.BG3.PaletteSelection = new PaletteSelection(0, 32);
-						si.BG.BG4.PaletteSelection = new PaletteSelection(0, 0);
-						break;
-					case 2:
-						si.BG.BG1.PaletteSelection = new PaletteSelection(0, 128);
-						si.BG.BG2.PaletteSelection = new PaletteSelection(0, 128);
-						si.BG.BG3.PaletteSelection = new PaletteSelection(0, 0);
-						si.BG.BG4.PaletteSelection = new PaletteSelection(0, 0);
-						break;
-					case 3:
-						si.BG.BG1.PaletteSelection = new PaletteSelection(0, 256);
-						si.BG.BG2.PaletteSelection = new PaletteSelection(0, 128);
-						si.BG.BG3.PaletteSelection = new PaletteSelection(0, 0);
-						si.BG.BG4.PaletteSelection = new PaletteSelection(0, 0);
-						break;
-					case 4:
-						si.BG.BG1.PaletteSelection = new PaletteSelection(0, 256);
-						si.BG.BG2.PaletteSelection = new PaletteSelection(0, 32);
-						si.BG.BG3.PaletteSelection = new PaletteSelection(0, 0);
-						si.BG.BG4.PaletteSelection = new PaletteSelection(0, 0);
-						break;
-					case 5:
-						si.BG.BG1.PaletteSelection = new PaletteSelection(0, 128);
-						si.BG.BG2.PaletteSelection = new PaletteSelection(0, 32);
-						si.BG.BG3.PaletteSelection = new PaletteSelection(0, 0);
-						si.BG.BG4.PaletteSelection = new PaletteSelection(0, 0);
-						break;
-					case 6:
-						si.BG.BG1.PaletteSelection = new PaletteSelection(0, 128);
-						si.BG.BG2.PaletteSelection = new PaletteSelection(0, 32);
-						si.BG.BG3.PaletteSelection = new PaletteSelection(0, 0);
-						si.BG.BG4.PaletteSelection = new PaletteSelection(0, 0);
-						break;
-					case 7:
-						si.BG.BG1.PaletteSelection = new PaletteSelection(0, 256);
-						si.BG.BG2.PaletteSelection = new PaletteSelection(0, 128);
-						si.BG.BG3.PaletteSelection = new PaletteSelection(0, 0);
-						si.BG.BG4.PaletteSelection = new PaletteSelection(0, 0);
-						break;
-
-				}
-
-				return si;
-			}
+			public int M7HOFS { get; init; }
+			public int M7VOFS { get; init; }
+			public int M7A { get; init; }
+			public int M7B { get; init; }
+			public int M7C { get; init; }
+			public int M7D { get; init; }
+			public int M7X { get; init; }
+			public int M7Y { get; init; }
+			public int M7SEL_REPEAT { get; init; }
+			public bool M7SEL_HFLIP { get; init; }
+			public bool M7SEL_VFLIP { get; init; }
 		}
 
-		private static readonly int[,] ModeBpps = {
+		public static readonly int[,] ModeBpps = {
 				{2,2,2,2},
 				{4,4,2,0},
 				{4,4,0,0},
@@ -512,7 +405,182 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public ScreenInfo ScanScreenInfo()
 		{
-			return ScreenInfo.GetScreenInfo(api);
+			int OBSEL_NameSel = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.OBSEL_NAMESEL);
+			int OBSEL_NameBase = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.OBSEL_NAMEBASE);
+
+			var si = new ScreenInfo
+			{
+				Mode = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG_MODE),
+				Mode1_BG3_Priority = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG3_PRIORITY) == 1,
+				OBSEL_Size = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.OBSEL_SIZE),
+				OBSEL_NameSel = OBSEL_NameSel,
+				OBSEL_NameBase = OBSEL_NameBase,
+				OBJTable0Addr = OBSEL_NameBase << 14,
+				OBJTable1Addr = ((OBSEL_NameBase << 14) + ((OBSEL_NameSel + 1) << 13)) & 0xFFFF,
+				SETINI_Mode7ExtBG = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.SETINI_MODE7_EXTBG) == 1,
+				SETINI_HiRes = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.SETINI_HIRES) == 1,
+				SETINI_Overscan = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.SETINI_OVERSCAN) == 1,
+				SETINI_ObjInterlace = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.SETINI_OBJ_INTERLACE) == 1,
+				SETINI_ScreenInterlace = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.SETINI_SCREEN_INTERLACE) == 1,
+				CGWSEL_ColorMask = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.CGWSEL_COLORMASK),
+				CGWSEL_ColorSubMask = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.CGWSEL_COLORSUBMASK),
+				CGWSEL_AddSubMode = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.CGWSEL_ADDSUBMODE),
+				CGWSEL_DirectColor = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.CGWSEL_DIRECTCOLOR) == 1,
+				CGADSUB_AddSub = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.CGADSUB_MODE),
+				CGADSUB_Half = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.CGADSUB_HALF) == 1,
+				OBJ_MainEnabled = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.TM_OBJ) == 1,
+				OBJ_SubEnabled = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.TS_OBJ) == 1,
+				OBJ_MathEnabled = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.CGADSUB_OBJ) == 1,
+				BK_MathEnabled = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.CGADSUB_BACKDROP) == 1,
+				M7HOFS = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.M7HOFS),
+				M7VOFS = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.M7VOFS),
+				M7A = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.M7A),
+				M7B = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.M7B),
+				M7C = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.M7C),
+				M7D = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.M7D),
+				M7X = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.M7X),
+				M7Y = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.M7Y),
+				M7SEL_REPEAT = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.M7SEL_REPEAT),
+				M7SEL_HFLIP = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.M7SEL_HFLIP)!=0,
+				M7SEL_VFLIP = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.M7SEL_VFLIP)!=0,
+			};
+
+			si.ObjSizeBounds = ObjSizes[si.OBSEL_Size,1];
+			int square = Math.Max(si.ObjSizeBounds.Width, si.ObjSizeBounds.Height);
+			si.ObjSizeBoundsSquare = new Size(square, square);
+
+			si.BG.BG1.Bpp = ModeBpps[si.Mode, 0];
+			si.BG.BG2.Bpp = ModeBpps[si.Mode, 1];
+			si.BG.BG3.Bpp = ModeBpps[si.Mode, 2];
+			si.BG.BG4.Bpp = ModeBpps[si.Mode, 3];
+
+			//initial setting of mode type (derived from bpp table.. mode7 bg types will be fixed up later)
+			for(int i=1;i<=4;i++)
+				si.BG[i].BGMode = si.BG[i].Bpp == 0 ? BGMode.Unavailable : BGMode.Text;
+
+			si.BG.BG1.TILESIZE = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG1_TILESIZE);
+			si.BG.BG2.TILESIZE = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG2_TILESIZE);
+			si.BG.BG3.TILESIZE = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG3_TILESIZE);
+			si.BG.BG4.TILESIZE = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG4_TILESIZE);
+
+			si.BG.BG1.SCSIZE = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG1_SCSIZE);
+			si.BG.BG2.SCSIZE = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG2_SCSIZE);
+			si.BG.BG3.SCSIZE = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG3_SCSIZE);
+			si.BG.BG4.SCSIZE = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG4_SCSIZE);
+			si.BG.BG1.SCADDR = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG1_SCADDR);
+			si.BG.BG2.SCADDR = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG2_SCADDR);
+			si.BG.BG3.SCADDR = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG3_SCADDR);
+			si.BG.BG4.SCADDR = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG4_SCADDR);
+			si.BG.BG1.TDADDR = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG1_TDADDR);
+			si.BG.BG2.TDADDR = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG2_TDADDR);
+			si.BG.BG3.TDADDR = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG3_TDADDR);
+			si.BG.BG4.TDADDR = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG4_TDADDR);
+
+			si.BG.BG1.MainEnabled = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.TM_BG1) == 1;
+			si.BG.BG2.MainEnabled = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.TM_BG2) == 1;
+			si.BG.BG3.MainEnabled = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.TM_BG3) == 1;
+			si.BG.BG4.MainEnabled = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.TM_BG4) == 1;
+			si.BG.BG1.SubEnabled = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.TS_BG1) == 1;
+			si.BG.BG2.SubEnabled = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.TS_BG2) == 1;
+			si.BG.BG3.SubEnabled = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.TS_BG3) == 1;
+			si.BG.BG4.SubEnabled = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.TS_BG4) == 1;
+			si.BG.BG1.MathEnabled = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.CGADSUB_BG1) == 1;
+			si.BG.BG2.MathEnabled = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.CGADSUB_BG2) == 1;
+			si.BG.BG3.MathEnabled = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.CGADSUB_BG3) == 1;
+			si.BG.BG4.MathEnabled = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.CGADSUB_BG4) == 1;
+
+			si.BG.BG1.HOFS = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG1HOFS);
+			si.BG.BG1.VOFS = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG1VOFS);
+			si.BG.BG2.HOFS = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG2HOFS);
+			si.BG.BG2.VOFS = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG2VOFS);
+			si.BG.BG3.HOFS = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG3HOFS);
+			si.BG.BG3.VOFS = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG3VOFS);
+			si.BG.BG4.HOFS = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG4HOFS);
+			si.BG.BG4.VOFS = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG4VOFS);
+
+			for (int i = 1; i <= 4; i++)
+			{
+				si.BG[i].Mode = si.Mode;
+				si.BG[i].TiledataAddr = si.BG[i].TDADDR << 13;
+				si.BG[i].ScreenAddr = si.BG[i].SCADDR << 9;
+			}
+
+			//fixup irregular things for mode 7
+			if (si.Mode == 7)
+			{
+				si.BG.BG1.TiledataAddr = 0;
+				si.BG.BG1.ScreenAddr = 0;
+
+				if (si.CGWSEL_DirectColor)
+				{
+					si.BG.BG1.BGMode = BGMode.Mode7DC;
+				}
+				else
+					si.BG.BG1.BGMode = BGMode.Mode7;
+
+				if (si.SETINI_Mode7ExtBG)
+				{
+					si.BG.BG2.BGMode = BGMode.Mode7Ext;
+					si.BG.BG2.Bpp = 7;
+					si.BG.BG2.TiledataAddr = 0;
+					si.BG.BG2.ScreenAddr = 0;
+				}
+			}
+
+			//determine which colors each BG could use
+			switch (si.Mode)
+			{
+				case 0:
+					si.BG.BG1.PaletteSelection = new PaletteSelection(0, 32);
+					si.BG.BG2.PaletteSelection = new PaletteSelection(32, 32);
+					si.BG.BG3.PaletteSelection = new PaletteSelection(64, 32);
+					si.BG.BG4.PaletteSelection = new PaletteSelection(96, 32);
+					break;
+				case 1:
+					si.BG.BG1.PaletteSelection = new PaletteSelection(0, 128);
+					si.BG.BG2.PaletteSelection = new PaletteSelection(0, 128);
+					si.BG.BG3.PaletteSelection = new PaletteSelection(0, 32);
+					si.BG.BG4.PaletteSelection = new PaletteSelection(0, 0);
+					break;
+				case 2:
+					si.BG.BG1.PaletteSelection = new PaletteSelection(0, 128);
+					si.BG.BG2.PaletteSelection = new PaletteSelection(0, 128);
+					si.BG.BG3.PaletteSelection = new PaletteSelection(0, 0);
+					si.BG.BG4.PaletteSelection = new PaletteSelection(0, 0);
+					break;
+				case 3:
+					si.BG.BG1.PaletteSelection = new PaletteSelection(0, 256);
+					si.BG.BG2.PaletteSelection = new PaletteSelection(0, 128);
+					si.BG.BG3.PaletteSelection = new PaletteSelection(0, 0);
+					si.BG.BG4.PaletteSelection = new PaletteSelection(0, 0);
+					break;
+				case 4:
+					si.BG.BG1.PaletteSelection = new PaletteSelection(0, 256);
+					si.BG.BG2.PaletteSelection = new PaletteSelection(0, 32);
+					si.BG.BG3.PaletteSelection = new PaletteSelection(0, 0);
+					si.BG.BG4.PaletteSelection = new PaletteSelection(0, 0);
+					break;
+				case 5:
+					si.BG.BG1.PaletteSelection = new PaletteSelection(0, 128);
+					si.BG.BG2.PaletteSelection = new PaletteSelection(0, 32);
+					si.BG.BG3.PaletteSelection = new PaletteSelection(0, 0);
+					si.BG.BG4.PaletteSelection = new PaletteSelection(0, 0);
+					break;
+				case 6:
+					si.BG.BG1.PaletteSelection = new PaletteSelection(0, 128);
+					si.BG.BG2.PaletteSelection = new PaletteSelection(0, 32);
+					si.BG.BG3.PaletteSelection = new PaletteSelection(0, 0);
+					si.BG.BG4.PaletteSelection = new PaletteSelection(0, 0);
+					break;
+				case 7:
+					si.BG.BG1.PaletteSelection = new PaletteSelection(0, 256);
+					si.BG.BG2.PaletteSelection = new PaletteSelection(0, 128);
+					si.BG.BG3.PaletteSelection = new PaletteSelection(0, 0);
+					si.BG.BG4.PaletteSelection = new PaletteSelection(0, 0);
+					break;
+			}
+
+			return si;
 		}
 
 		//the same basic color table that libsnes uses to convert from snes 555 to rgba32
@@ -565,10 +633,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			public int address;
 		}
 
+		[Flags]
 		public enum TileEntryFlags : byte
 		{
 			None = 0, Priority = 1, Horz = 2, Vert = 4,
 		}
+
+		public ISNESGraphicsDecoder.OAMInfo CreateOAMInfo(ScreenInfo si, int num)
+			=> new OAMInfo(this, si, num);
 
 		/// <summary>
 		/// decodes a mode7 BG. youll still need to paletteize and colorize it.
@@ -650,7 +722,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 						{
 							int mapIndex = mty * dims.Width + mtx;
 							var te = map[mapIndex];
-							
+
 							//apply metatile flipping
 							int tnx = tx, tny = ty;
 							if (tilesize == 16)
@@ -766,13 +838,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		private readonly int[][] _tileCache = new int[18][];
 
-		private bool usingUserBackColor = false;
+		private bool usingUserBackColor;
 		private int userBackColor;
 
 		public void SetBackColor(int snescol)
 		{
-			usingUserBackColor = true;
-			userBackColor = snescol;
+			if (snescol == -1)
+			{
+				usingUserBackColor = false;
+			}
+			else
+			{
+				usingUserBackColor = true;
+				userBackColor = snescol;
+			}
 		}
 
 		/// <summary>
@@ -909,11 +988,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		/// we might need 16x16 unscrambling and some other perks here eventually.
 		/// provide a start color to use as the basis for the palette
 		/// </summary>
-		public void RenderTilesToScreen(int* screen, int tilesWide, int tilesTall, int stride, int bpp, int startcolor, int startTile = 0, int numTiles = -1, bool descramble16 = false)
+		public void RenderTilesToScreen(int* screen, int stride, int bpp, int startcolor, int startTile = 0, int numTiles = -1)
 		{
 			if (numTiles == -1)
 				numTiles = 8192 / bpp;
 			int[] tilebuf = _tileCache[bpp];
+			int tilesWide = stride / 8;
 			for (int i = 0; i < numTiles; i++)
 			{
 				int tnum = startTile + i;
@@ -935,20 +1015,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		}
 
 
-		public void RenderSpriteToScreen(int* screen, int stride, int destx, int desty, ScreenInfo si, int spritenum, OAMInfo oam = null, int xlimit = 1024, int ylimit = 1024, byte[,] spriteMap = null)
+		public void RenderSpriteToScreen(int* screen, int stride, int destx, int desty, ScreenInfo si, int spritenum, ISNESGraphicsDecoder.OAMInfo oam = null, int xlimit = 1024, int ylimit = 1024, byte[,] spriteMap = null)
 		{
-			var dims = new[] { SNESGraphicsDecoder.ObjSizes[si.OBSEL_Size, 0], SNESGraphicsDecoder.ObjSizes[si.OBSEL_Size, 1] };
-			if(oam == null)
-				oam = new OAMInfo(this, si, spritenum);
-			var dim = dims[oam.Size];
+			oam ??= new OAMInfo(this, si, spritenum);
+			var dim = ObjSizes[si.OBSEL_Size, oam.Size ? 1 : 0];
 
 			int[] tilebuf = _tileCache[4];
 
-			int baseaddr;
-			if (oam.Table == 0)
-				baseaddr = si.OBJTable0Addr;
-			else
-				baseaddr = si.OBJTable1Addr;
+			int baseaddr = oam.Table ? si.OBJTable1Addr : si.OBJTable0Addr;
 
 			//TODO - flips of 'undocumented' rectangular oam settings are wrong. probably easy to do right, but we need a test
 
