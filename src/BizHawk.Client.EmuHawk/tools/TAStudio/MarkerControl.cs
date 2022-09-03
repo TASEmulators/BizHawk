@@ -125,10 +125,7 @@ namespace BizHawk.Client.EmuHawk
 		private void MarkerContextMenu_Opening(object sender, CancelEventArgs e)
 		{
 			EditMarkerToolStripMenuItem.Enabled =
-				RemoveMarkerToolStripMenuItem.Enabled =
-					MarkerInputRoll.AnyRowsSelected && MarkerView.FirstSelectedRowIndex is not 0;
-
-			EditMarkerFrameToolStripMenuItem.Enabled =
+				EditMarkerFrameToolStripMenuItem.Enabled =
 				RemoveMarkerToolStripMenuItem.Enabled =
 					MarkerInputRoll.AnyRowsSelected && MarkerView.FirstSelectedRowIndex is not 0;
 
@@ -265,7 +262,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void EditMarkerFramePopUp(TasMovieMarker marker, bool followCursor = false)
+		public void EditMarkerFramePopUp(TasMovieMarker marker)
 		{
 			var markerFrame = marker.Frame;
 			var i = new InputPrompt
@@ -273,31 +270,21 @@ namespace BizHawk.Client.EmuHawk
 				Text = $"Marker for frame {markerFrame}",
 				TextInputType = InputPrompt.InputType.Unsigned,
 				Message = "Enter a frame number",
-				InitialValue =
-					Markers.IsMarker(markerFrame)
+				InitialValue = Markers.IsMarker(markerFrame)
 					? Markers.PreviousOrCurrent(markerFrame).Frame.ToString()
-					: "0"
+					: "0",
 			};
 
-			if (followCursor)
+			if (!this.ShowDialogWithTempMute(i).IsOk()
+				|| !int.TryParse(i.PromptText, out var promptValue)
+				|| Markers.IsMarker(promptValue)) // don't move to frame with an existing marker
 			{
-				var point = Cursor.Position;
-				point.Offset(i.Width / -2, i.Height / -2);
-				i.StartPosition = FormStartPosition.Manual;
-				i.Location = point;
+				return;
 			}
-
-			if (this.ShowDialogWithTempMute(i).IsOk())
-			{
-				var promptValue = int.Parse(i.PromptText);
-				if (!Markers.IsMarker(promptValue))
-				{ 
-					Markers.Move(marker.Frame, promptValue);
-					UpdateTextColumnWidth();
-					UpdateValues();
-					Tastudio.RefreshDialog();
-				}
-			}
+			Markers.Move(marker.Frame, promptValue);
+			UpdateTextColumnWidth();
+			UpdateValues();
+			Tastudio.RefreshDialog();
 		}
 
 		public void UpdateValues()
@@ -317,14 +304,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MarkerView_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			EditMarkerFrameButton.Enabled =
-				EditMarkerButton.Enabled =
-					RemoveMarkerButton.Enabled =
-						MarkerInputRoll.AnyRowsSelected && MarkerView.FirstSelectedRowIndex is not 0;
+			EditMarkerButton.Enabled =
+				EditMarkerFrameButton.Enabled =
+				RemoveMarkerButton.Enabled =
+					MarkerInputRoll.AnyRowsSelected && MarkerView.FirstSelectedRowIndex is not 0;
 
 			JumpToMarkerButton.Enabled =
 				ScrollToMarkerButton.Enabled =
-					MarkerInputRoll.AnyRowsSelected;
+				MarkerInputRoll.AnyRowsSelected;
 		}
 
 		// SuuperW: Marker renaming can be done with a right-click.
