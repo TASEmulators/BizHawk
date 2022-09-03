@@ -2382,26 +2382,14 @@ namespace BizHawk.Client.EmuHawk
 			base.WndProc(ref m);
 		}
 
-		// sends an alt+mnemonic combination
+		/// <summary>HACK to send an alt+mnemonic combination</summary>
 		private void SendAltKeyChar(char c)
-		{
-			switch (OSTailoredCode.CurrentOS)
-			{
-				case OSTailoredCode.DistinctOS.Linux:
-				case OSTailoredCode.DistinctOS.macOS:
-					// no mnemonics for you
-					break;
-				case OSTailoredCode.DistinctOS.Windows:
-					//HACK
-					var _ = typeof(ToolStrip).InvokeMember(
-						"ProcessMnemonicInternal",
-						BindingFlags.NonPublic | BindingFlags.InvokeMethod | BindingFlags.Instance,
-						null,
-						MainformMenu,
-						new object[] { c });
-					break;
-			}
-		}
+			=> _ = typeof(ToolStrip).InvokeMember(
+				OSTailoredCode.IsUnixHost ? "ProcessMnemonic" : "ProcessMnemonicInternal",
+				BindingFlags.NonPublic | BindingFlags.InvokeMethod | BindingFlags.Instance,
+				null,
+				MainformMenu,
+				new object/*?*/[] { c });
 
 		public static readonly string ConfigFileFSFilterString = new FilesystemFilter("Config File", new[] { "ini" }).ToString();
 
