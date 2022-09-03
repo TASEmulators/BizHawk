@@ -18,6 +18,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class MultiDiskBundler : ToolFormBase, IToolFormAutoConfig
 	{
+		private static readonly FilesystemFilterSet BundlesFSFilterSet = new(new FilesystemFilter("XML Files", new[] { "xml" }));
+
 		private XElement _currentXml;
 
 		[RequiredService]
@@ -259,7 +261,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				FileName = filename,
 				InitialDirectory = initialDirectory,
-				Filter = new FilesystemFilterSet(new FilesystemFilter("XML Files", new[] { "xml" })).ToString()
+				Filter = BundlesFSFilterSet.ToString(),
 			};
 
 			if (this.ShowDialogWithTempMute(sfd) != DialogResult.Cancel)

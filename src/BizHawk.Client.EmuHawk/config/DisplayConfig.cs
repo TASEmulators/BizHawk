@@ -11,6 +11,11 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class DisplayConfig : Form, IDialogParent
 	{
+		private static readonly FilesystemFilterSet CgShaderPresetsFSFilterSet = new(new FilesystemFilter(".CGP Files", new[] { "cgp" }))
+		{
+			AppendAllFilesEntry = false,
+		};
+
 		private readonly Config _config;
 
 		private readonly IGL _gl;
@@ -265,7 +270,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using var ofd = new OpenFileDialog
 			{
-				Filter = new FilesystemFilter(".CGP Files", new[] { "cgp" }).ToString(),
+				Filter = CgShaderPresetsFSFilterSet.ToString(),
 				FileName = _pathSelection
 			};
 			if (!this.ShowDialogAsChild(ofd).IsOk()) return;

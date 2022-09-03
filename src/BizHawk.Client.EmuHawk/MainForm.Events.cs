@@ -72,6 +72,23 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class MainForm
 	{
+		private static readonly FilesystemFilterSet MAMERomsFSFilterSet = new(new FilesystemFilter("MAME Arcade ROMs", new[] { "zip" }))
+		{
+			AppendAllFilesEntry = false,
+		};
+
+		private static readonly FilesystemFilterSet ScreenshotsFSFilterSet = new(FilesystemFilter.PNGs)
+		{
+			AppendAllFilesEntry = false,
+		};
+
+		private static readonly FilesystemFilterSet TI83ProgramFilesFSFilterSet = new(new FilesystemFilter("TI-83 Program Files", new[] { "83p", "8xp" }));
+
+		private static readonly FilesystemFilterSet ZXStateFilesFSFilterSet = new(new FilesystemFilter("ZX-State files", new[] { "szx" }))
+		{
+			AppendAllFilesEntry = false,
+		};
+
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			SaveStateSubMenu.Enabled =
@@ -316,7 +333,7 @@ namespace BizHawk.Client.EmuHawk
 			else if (oac.Result == AdvancedRomLoaderType.MameLaunchGame)
 			{
 				args.OpenAdvanced = new OpenAdvanced_MAME();
-				filter = new FilesystemFilter("MAME Arcade ROMs", new[] { "zip" }).ToString();
+				filter = MAMERomsFSFilterSet.ToString();
 			}
 			else
 			{
@@ -521,10 +538,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var file = ToolFormBase.SaveFileDialog(
-				filename,
-				Config.PathEntries.MovieAbsolutePath(),
-				"Movie Files",
-				MovieSession.Movie.PreferredExtension,
+				currentFile: filename,
+				path: Config.PathEntries.MovieAbsolutePath(),
+				MovieSession.Movie.GetFSFilterSet(),
 				this);
 
 			if (file != null)
@@ -619,7 +635,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				InitialDirectory = dir,
 				FileName = file,
-				Filter = FilesystemFilter.PNGs.ToString()
+				Filter = ScreenshotsFSFilterSet.ToString(),
 			};
 
 			if (this.ShowDialogWithTempMute(sfd).IsOk())
@@ -1547,7 +1563,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator is not TI83 ti83) return;
 			using var ofd = new OpenFileDialog
 			{
-				Filter = new FilesystemFilterSet(new FilesystemFilter("TI-83 Program Files", new[] { "83p", "8xp" })).ToString(),
+				Filter = TI83ProgramFilesFSFilterSet.ToString(),
 				InitialDirectory = Config.PathEntries.RomAbsolutePath(Emulator.SystemId),
 				RestoreDirectory = true
 			};
@@ -2166,7 +2182,7 @@ namespace BizHawk.Client.EmuHawk
 			using var zxSnapExpDialog = new SaveFileDialog
 			{
 				DefaultExt = "szx",
-				Filter = new FilesystemFilter("ZX-State files", new[] { "szx" }).ToString(),
+				Filter = ZXStateFilesFSFilterSet.ToString(),
 				RestoreDirectory = true,
 				SupportMultiDottedExtensions = true,
 				Title = "EXPERIMENTAL - Export 3rd party snapshot formats"

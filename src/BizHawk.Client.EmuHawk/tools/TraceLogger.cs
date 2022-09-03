@@ -13,6 +13,10 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class TraceLogger : ToolFormBase, IToolFormAutoConfig
 	{
+		private static readonly FilesystemFilterSet LogFilesFSFilterSet = new(
+			new FilesystemFilter("Log Files", new[] { "log" }),
+			FilesystemFilter.TextFiles);
+
 		[RequiredService]
 		private ITraceable Tracer { get; set; }
 
@@ -298,10 +302,7 @@ namespace BizHawk.Client.EmuHawk
 				sfd.InitialDirectory = Config.PathEntries.LogAbsolutePath();
 			}
 
-			sfd.Filter = new FilesystemFilterSet(
-				new FilesystemFilter("Log Files", new[] { "log" }),
-				FilesystemFilter.TextFiles
-			).ToString();
+			sfd.Filter = LogFilesFSFilterSet.ToString();
 			sfd.RestoreDirectory = true;
 			var result = this.ShowDialogWithTempMute(sfd);
 			return result.IsOk() ? new FileInfo(sfd.FileName) : null;

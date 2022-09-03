@@ -17,6 +17,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public sealed partial class BasicBot : ToolFormBase, IToolFormAutoConfig
 	{
+		private static readonly FilesystemFilterSet BotFilesFSFilterSet = new(new FilesystemFilter("Bot files", new[] { "bot" }));
+
 		private string _currentFileName = "";
 
 		private string CurrentFileName
@@ -346,10 +348,9 @@ namespace BizHawk.Client.EmuHawk
 		private void OpenMenuItem_Click(object sender, EventArgs e)
 		{
 			var file = OpenFileDialog(
-					CurrentFileName,
-					Config.PathEntries.ToolsAbsolutePath(),
-					"Bot files",
-					"bot");
+				currentFile: CurrentFileName,
+				path: Config!.PathEntries.ToolsAbsolutePath(),
+				BotFilesFSFilterSet);
 
 			if (file != null)
 			{
@@ -374,10 +375,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var file = SaveFileDialog(
-				fileName,
-				Config.PathEntries.ToolsAbsolutePath(),
-				"Bot files",
-				"bot",
+				currentFile: fileName,
+				path: Config!.PathEntries.ToolsAbsolutePath(),
+				BotFilesFSFilterSet,
 				this);
 
 			if (file != null)

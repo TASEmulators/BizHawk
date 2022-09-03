@@ -14,6 +14,11 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class TAStudio
 	{
+		private static readonly FilesystemFilterSet MoviesFSFilterSet = new(
+			new FilesystemFilter("All Available Files", MovieService.MovieExtensions.Reverse().ToArray()),
+			FilesystemFilter.TAStudioProjects,
+			FilesystemFilter.BizHawkMovies);
+
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			ToBk2MenuItem.Enabled =
@@ -89,11 +94,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				FileName = filename,
 				InitialDirectory = Config.PathEntries.MovieAbsolutePath(),
-				Filter = new FilesystemFilterSet(
-					new FilesystemFilter("All Available Files", MovieService.MovieExtensions.Reverse().ToArray()),
-					FilesystemFilter.TAStudioProjects,
-					FilesystemFilter.BizHawkMovies
-				).ToString()
+				Filter = MoviesFSFilterSet.ToString(),
 			};
 
 			if (this.ShowDialogWithTempMute(ofd).IsOk())

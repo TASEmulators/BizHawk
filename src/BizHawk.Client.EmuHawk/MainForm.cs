@@ -48,6 +48,13 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class MainForm : FormBase, IDialogParent, IMainFormForApi, IMainFormForTools
 	{
+		private static readonly FilesystemFilterSet EmuHawkSaveStatesFSFilterSet = new(FilesystemFilter.EmuHawkSaveStates);
+
+		private static readonly FilesystemFilterSet LibretroCoresFSFilterSet = new(new FilesystemFilter("Libretro Cores", new[] { OSTailoredCode.IsUnixHost ? "so" : "dll" }))
+		{
+			AppendAllFilesEntry = false,
+		};
+
 		private void MainForm_Load(object sender, EventArgs e)
 		{
 			UpdateWindowTitle();
@@ -1616,7 +1623,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			ofd.RestoreDirectory = true;
-			ofd.Filter = new FilesystemFilter("Libretro Cores", new[] { OSTailoredCode.IsUnixHost ? "so" : "dll" }).ToString();
+			ofd.Filter = LibretroCoresFSFilterSet.ToString();
 
 			if (ofd.ShowDialog() == DialogResult.Cancel)
 			{
@@ -4410,7 +4417,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				AddExtension = true,
 				DefaultExt = "State",
-				Filter = new FilesystemFilterSet(FilesystemFilter.EmuHawkSaveStates).ToString(),
+				Filter = EmuHawkSaveStatesFSFilterSet.ToString(),
 				InitialDirectory = path,
 				FileName = $"{SaveStatePrefix()}.QuickSave0.State"
 			};
@@ -4442,7 +4449,7 @@ namespace BizHawk.Client.EmuHawk
 			using var ofd = new OpenFileDialog
 			{
 				InitialDirectory = Config.PathEntries.SaveStateAbsolutePath(Game.System),
-				Filter = new FilesystemFilterSet(FilesystemFilter.EmuHawkSaveStates).ToString(),
+				Filter = EmuHawkSaveStatesFSFilterSet.ToString(),
 				RestoreDirectory = true
 			};
 

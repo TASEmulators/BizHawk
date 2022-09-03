@@ -16,6 +16,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class TAStudio : ToolFormBase, IToolFormAutoConfig, IControlMainform
 	{
+		public static readonly FilesystemFilterSet TAStudioProjectsFSFilterSet = new(FilesystemFilter.TAStudioProjects);
+
 		public override bool BlocksInputWhenFocused => IsInMenuLoop;
 
 		public new IMainFormForTools MainForm => base.MainForm;
@@ -779,12 +781,10 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				var file = SaveFileDialog(
-					filename,
-					Config.PathEntries.MovieAbsolutePath(),
-					"Tas Project Files",
-					"tasproj",
-					this
-				);
+					currentFile: filename,
+					path: Config!.PathEntries.MovieAbsolutePath(),
+					TAStudioProjectsFSFilterSet,
+					this);
 
 				if (file != null)
 				{

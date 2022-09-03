@@ -61,8 +61,6 @@ namespace BizHawk.Client.Common
 
 		public static readonly FilesystemFilter LuaScripts = new FilesystemFilter("Lua Scripts", new[] { "lua" });
 
-		public static readonly FilesystemFilter Palettes = new FilesystemFilter("Palette Files", new[] { "pal" });
-
 		public static readonly FilesystemFilter PNGs = new FilesystemFilter("PNG Files", new[] { "png" });
 
 		public static readonly FilesystemFilter TAStudioProjects = new FilesystemFilter("TAS Project Files", new[] { MovieService.TasMovieExtension });

@@ -11,7 +11,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class EditSubtitlesForm : Form, IDialogParent
 	{
-		
+		private static readonly FilesystemFilterSet SubRipFilesFSFilterSet = new(new FilesystemFilter("SubRip Files", new[] { "srt" }));
+
 		private readonly IMovie _selectedMovie;
 		private readonly bool _readOnly;
 
@@ -204,7 +205,7 @@ namespace BizHawk.Client.EmuHawk
 			using var form = new SaveFileDialog
 			{
 				AddExtension = true,
-				Filter = new FilesystemFilterSet(new FilesystemFilter("SubRip Files", new[] { "srt" })).ToString()
+				Filter = SubRipFilesFSFilterSet.ToString(),
 			};
 
 			var result = form.ShowDialog();

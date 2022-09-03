@@ -16,6 +16,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class PlayMovie : Form, IDialogParent
 	{
+		private static readonly FilesystemFilterSet MoviesFSFilterSet = new(FilesystemFilter.BizHawkMovies, FilesystemFilter.TAStudioProjects);
+
 		private readonly Func<FirmwareID, string, string> _canProvideFirmware;
 
 		private readonly IMainFormForTools _mainForm;
@@ -508,7 +510,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using var ofd = new OpenFileDialog
 			{
-				Filter = new FilesystemFilterSet(FilesystemFilter.BizHawkMovies, FilesystemFilter.TAStudioProjects).ToString(),
+				Filter = MoviesFSFilterSet.ToString(),
 				InitialDirectory = _config.PathEntries.MovieAbsolutePath()
 			};
 			if (!this.ShowDialogWithTempMute(ofd).IsOk()) return;

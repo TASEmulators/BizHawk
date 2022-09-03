@@ -41,6 +41,21 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private const string ROM_DOMAIN_NAME = "File on Disk";
+
+		private static readonly FilesystemFilterSet BinFilesFSFilterSet = CreateBinaryDumpFSFilterSet("bin");
+
+		private static readonly FilesystemFilterSet HexDumpsFSFilterSet = new(FilesystemFilter.TextFiles);
+
+		private static readonly FilesystemFilterSet ImportableFSFilterSet = new(
+			BinFilesFSFilterSet.Filters[0],
+			new FilesystemFilter("Save Files", new[] { "sav" }));
+
+		private static readonly FilesystemFilterSet TextTablesFSFilterSet = new(new FilesystemFilter("Text Table Files", new[] { "tbl" }));
+
+		private static FilesystemFilterSet CreateBinaryDumpFSFilterSet(string ext)
+			=> new(new FilesystemFilter("Binary", new[] { ext }));
+
 		[RequiredService]
 		private IMemoryDomains MemoryDomains { get; set; }
 
@@ -193,7 +208,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!(MainForm.CurrentlyOpenRomArgs.OpenAdvanced is OpenAdvanced_MAME))
 			{
 				_rom = GetRomBytes();
-				_romDomain = new MemoryDomainByteArray("File on Disk", MemoryDomain.Endian.Little, _rom, true, 1);
+				_romDomain = new MemoryDomainByteArray(ROM_DOMAIN_NAME, MemoryDomain.Endian.Little, _rom, writable: true, wordSize: 1);
 
 				if (_domain.Name == _romDomain.Name)
 				{
@@ -878,17 +893,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private string GetSaveFileFilter()
-		{
-			if (_domain.Name == "File on Disk")
-			{
-				var extension = Path.GetExtension(RomName);
-				return $"Binary (*{extension})|*{extension}|All Files|*.*";
-			}
-			
-			return "Binary (*.bin)|*.bin|All Files|*.*";
-		}
-
 		private string RomDirectory
 		{
 			get
@@ -921,13 +925,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using var sfd = new SaveFileDialog
 			{
-				Filter = GetSaveFileFilter()
-				, RestoreDirectory = true
-				, InitialDirectory = RomDirectory
-				, FileName =
-					_domain.Name == "File on Disk"
-						? RomName
-						: Game.FilesystemSafeName()
+				Filter = (_domain.Name is ROM_DOMAIN_NAME
+					? CreateBinaryDumpFSFilterSet(Path.GetExtension(RomName).RemovePrefix('.'))
+					: BinFilesFSFilterSet).ToString(),
+				RestoreDirectory = true,
+				InitialDirectory = RomDirectory,
+				FileName = _domain.Name is ROM_DOMAIN_NAME
+					? RomName
+					: Game.FilesystemSafeName(),
 			};
 
 			var result = this.ShowDialogWithTempMute(sfd);
@@ -938,10 +943,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using var sfd = new SaveFileDialog
 			{
-				FileName = _domain.Name == "File on Disk"
+				FileName = _domain.Name is ROM_DOMAIN_NAME
 					? $"{Path.GetFileNameWithoutExtension(RomName)}.txt"
 					: Game.FilesystemSafeName(),
-				Filter = new FilesystemFilterSet(FilesystemFilter.TextFiles).ToString(),
+				Filter = HexDumpsFSFilterSet.ToString(),
 				InitialDirectory = RomDirectory,
 				RestoreDirectory = true
 			};
@@ -1232,7 +1237,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			if (_domain.Name == "File on Disk")
+			if (_domain.Name is ROM_DOMAIN_NAME)
 			{
 				SaveMenuItem.Visible = !CurrentRomIsArchive();
 				SaveAsBinaryMenuItem.Text = "Save as ROM...";
@@ -1272,10 +1277,7 @@ namespace BizHawk.Client.EmuHawk
 
 			using var sfd = new OpenFileDialog
 			{
-				Filter = new FilesystemFilterSet(
-					new FilesystemFilter("Binary", new[] { "bin" }),
-					new FilesystemFilter("Save Files", new[] { "sav" })
-				).ToString(),
+				Filter = ImportableFSFilterSet.ToString(),
 				RestoreDirectory = true
 			};
 
@@ -1323,7 +1325,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				FileName = $"{Path.GetFileNameWithoutExtension(romName)}.tbl",
 				InitialDirectory = initialDirectory,
-				Filter = new FilesystemFilterSet(new FilesystemFilter("Text Table Files", new[] { "tbl" })).ToString(),
+				Filter = TextTablesFSFilterSet.ToString(),
 				RestoreDirectory = false
 			};
 			if (!this.ShowDialogWithTempMute(ofd).IsOk()) return;

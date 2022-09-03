@@ -86,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 			using var ofd = new OpenFileDialog
 			{
 				InitialDirectory = _config.PathEntries.PalettesAbsolutePathFor(VSystemID.Raw.NES),
-				Filter = new FilesystemFilterSet(FilesystemFilter.Palettes).ToString(),
+				Filter = FilesystemFilterSet.Palettes.ToString(),
 				RestoreDirectory = true
 			};
 

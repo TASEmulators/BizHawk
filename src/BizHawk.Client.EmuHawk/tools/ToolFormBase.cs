@@ -11,6 +11,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class ToolFormBase : FormBase, IToolForm, IDialogParent
 	{
+		private static readonly FilesystemFilterSet WatchFilesFSFilterSet = new(new FilesystemFilter("Watch Files", new[] { "wch" }));
+
 		protected ToolManager Tools { get; private set; }
 
 		protected DisplayManager DisplayManager { get; private set; }
@@ -76,10 +78,6 @@ namespace BizHawk.Client.EmuHawk
 		protected virtual void FastUpdateBefore() { }
 		protected virtual void FastUpdateAfter() { }
 
-		public FileInfo OpenFileDialog(string currentFile, string path, string fileType, string fileExt)
-		{
-			return OpenFileDialog(currentFile, path, new FilesystemFilterSet(new FilesystemFilter(fileType, new[] { fileExt })));
-		}
 		public FileInfo OpenFileDialog(string currentFile, string path, FilesystemFilterSet filterSet)
 		{
 			Directory.CreateDirectory(path);
@@ -97,10 +95,6 @@ namespace BizHawk.Client.EmuHawk
 			return result.IsOk() ? new FileInfo(ofd.FileName) : null;
 		}
 
-		public static FileInfo SaveFileDialog(string currentFile, string path, string fileType, string fileExt, IDialogParent parent)
-		{
-			return SaveFileDialog(currentFile, path, new FilesystemFilterSet(new FilesystemFilter(fileType, new[] { fileExt })), parent);
-		}
 		public static FileInfo SaveFileDialog(string currentFile, string path, FilesystemFilterSet filterSet, IDialogParent parent)
 		{
 			Directory.CreateDirectory(path);
@@ -117,14 +111,17 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public FileInfo GetWatchFileFromUser(string currentFile)
-		{
-			return OpenFileDialog(currentFile, Config.PathEntries.WatchAbsolutePath(), "Watch Files", "wch");
-		}
+			=> OpenFileDialog(
+				currentFile: currentFile,
+				path: Config!.PathEntries.WatchAbsolutePath(),
+				WatchFilesFSFilterSet);
 
 		public FileInfo GetWatchSaveFileFromUser(string currentFile)
-		{
-			return SaveFileDialog(currentFile, Config.PathEntries.WatchAbsolutePath(), "Watch Files", "wch", this);
-		}
+			=> SaveFileDialog(
+				currentFile: currentFile,
+				path: Config!.PathEntries.WatchAbsolutePath(),
+				WatchFilesFSFilterSet,
+				this);
 
 		public void ViewInHexEditor(MemoryDomain domain, IEnumerable<long> addresses, WatchSize size)
 		{

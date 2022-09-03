@@ -24,6 +24,10 @@ namespace BizHawk.Client.EmuHawk
 		private const string ScriptColumnName = "Script";
 		private const string PathColumnName = "PathName";
 
+		private static readonly FilesystemFilterSet JustScriptsFSFilterSet = new(FilesystemFilter.LuaScripts);
+
+		private static readonly FilesystemFilterSet ScriptsAndTextFilesFSFilterSet = new(FilesystemFilter.LuaScripts, FilesystemFilter.TextFiles);
+
 		private static readonly FilesystemFilterSet SessionsFSFilterSet = new FilesystemFilterSet(new FilesystemFilter("Lua Session Files", new[] { "luases" }));
 
 		private readonly LuaAutocompleteInstaller _luaAutoInstaller = new LuaAutocompleteInstaller();
@@ -852,7 +856,7 @@ namespace BizHawk.Client.EmuHawk
 				DefaultExt = ".lua",
 				FileName = ext,
 				OverwritePrompt = true,
-				Filter = new FilesystemFilterSet(FilesystemFilter.LuaScripts).ToString()
+				Filter = JustScriptsFSFilterSet.ToString(),
 			};
 
 			var result = this.ShowDialogWithTempMute(sfd);
@@ -877,7 +881,7 @@ namespace BizHawk.Client.EmuHawk
 			var ofd = new OpenFileDialog
 			{
 				InitialDirectory = initDir,
-				Filter = new FilesystemFilterSet(FilesystemFilter.LuaScripts, FilesystemFilter.TextFiles).ToString(),
+				Filter = ScriptsAndTextFilesFSFilterSet.ToString(),
 				RestoreDirectory = true,
 				Multiselect = true
 			};
@@ -1000,7 +1004,7 @@ namespace BizHawk.Client.EmuHawk
 					DefaultExt = ".lua",
 					FileName = $"{fileNoExt} (1)",
 					OverwritePrompt = true,
-					Filter = new FilesystemFilterSet(FilesystemFilter.LuaScripts).ToString()
+					Filter = JustScriptsFSFilterSet.ToString(),
 				};
 				if (!sfd.ShowDialog().IsOk()) return;
 				string text = File.ReadAllText(script.Path);

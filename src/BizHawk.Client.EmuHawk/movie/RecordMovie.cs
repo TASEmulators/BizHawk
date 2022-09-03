@@ -197,14 +197,14 @@ namespace BizHawk.Client.EmuHawk
 				else throw;
 			}
 			
-			var preferredExt = _movieSession.Movie?.PreferredExtension ?? "bk2";
+			var filterset = _movieSession.Movie.GetFSFilterSet();
 			using var sfd = new SaveFileDialog
 			{
 				InitialDirectory = movieFolderPath,
-				DefaultExt = $".{preferredExt}",
+				DefaultExt = $".{filterset.Filters[0].Extensions.First()}",
 				FileName = RecordBox.Text,
 				OverwritePrompt = false,
-				Filter = new FilesystemFilterSet(new FilesystemFilter("Movie Files", new[] { preferredExt })).ToString()
+				Filter = filterset.ToString(),
 			};
 
 			var result = this.ShowDialogWithTempMute(sfd);

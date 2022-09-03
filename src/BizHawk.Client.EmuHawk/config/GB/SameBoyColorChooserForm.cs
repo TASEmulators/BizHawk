@@ -267,7 +267,7 @@ namespace BizHawk.Client.EmuHawk
 			using var ofd = new OpenFileDialog
 			{
 				InitialDirectory = _config.PathEntries.ScreenshotAbsolutePathFor(VSystemID.Raw.GB),
-				Filter = new FilesystemFilterSet(FilesystemFilter.Palettes).ToString(),
+				Filter = FilesystemFilterSet.Palettes.ToString(),
 				RestoreDirectory = true
 			};
 
@@ -304,7 +304,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				InitialDirectory = _config.PathEntries.PalettesAbsolutePathFor(VSystemID.Raw.GB),
 				FileName = $"{_game.Name}.pal",
-				Filter = new FilesystemFilterSet(FilesystemFilter.Palettes).ToString(),
+				Filter = FilesystemFilterSet.Palettes.ToString(),
 				RestoreDirectory = true
 			};
 
