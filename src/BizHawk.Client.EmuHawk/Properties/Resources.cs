@@ -141,6 +141,7 @@ namespace BizHawk.Client.EmuHawk.Properties
 		internal static readonly Icon PceIcon = ReadEmbeddedIcon("pce");
 		internal static readonly Bitmap Pencil = ReadEmbeddedBitmap("pencil");
 		internal static readonly Icon PencilIcon = ReadEmbeddedIcon("pencil");
+		internal static readonly Bitmap Clock = ReadEmbeddedBitmap("Clock");
 		internal static readonly Bitmap Play = ReadEmbeddedBitmap("Play");
 		internal static readonly Bitmap Placeholder = ReadEmbeddedBitmap("placeholder_bitmap");
 		internal static readonly Icon PokeIcon = ReadEmbeddedIcon("poke");
