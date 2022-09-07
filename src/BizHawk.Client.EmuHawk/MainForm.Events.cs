@@ -947,21 +947,22 @@ namespace BizHawk.Client.EmuHawk
 				ESoundOutputMethod.OpenAL => OpenALSoundOutput.GetDeviceNames(),
 				_ => Enumerable.Empty<string>()
 			};
+			var oldOutputMethod = Config.SoundOutputMethod;
+			var oldDevice = Config.SoundDevice;
 			using var form = new SoundConfig(this, Config, GetDeviceNamesCallback);
 			if (!form.ShowDialog().IsOk()) return;
-			AddOnScreenMessage("Sound settings saved");
 
-			if (form.ApplyNewSoundDevice)
+			AddOnScreenMessage("Sound settings saved");
+			if (Config.SoundOutputMethod == oldOutputMethod && Config.SoundDevice == oldDevice)
 			{
-				Sound.Dispose();
-				Sound = new Sound(Handle, Config, () => Emulator.VsyncRate());
-				Sound.StartSound();
+				Sound.StopSound();
 			}
 			else
 			{
-				Sound.StopSound();
-				Sound.StartSound();
+				Sound.Dispose();
+				Sound = new Sound(Handle, Config, () => Emulator.VsyncRate());
 			}
+			Sound.StartSound();
 			RewireSound();
 		}
 
