@@ -106,7 +106,7 @@ namespace BizHawk.Tests.Client.Common.Lua
 
 		[LuaMethod("pass_color", "")]
 		public static void PassColor(object? c)
-			=> Assert.IsTrue(_th.SafeParseColor(c) == (Color?)ExpectedValue);
+			=> Assert.IsTrue(_th.SafeParseColor(c)?.ToArgb() == ((Color?)ExpectedValue)?.ToArgb());
 
 		static LuaTests()
 		{
@@ -269,6 +269,159 @@ namespace BizHawk.Tests.Client.Common.Lua
 			LuaInstance.DoString("pass_char(nil)");
 			LuaInstance.DoString("pass_string(nil)");
 			LuaInstance.DoString("pass_color(nil)");
+		}
+
+		[TestMethod]
+		public void Net_Argument_Bool()
+		{
+			ExpectedValue = false;
+			LuaInstance.DoString("pass_bool(false)");
+			ExpectedValue = true;
+			LuaInstance.DoString("pass_bool(true)");
+		}
+
+		/*
+		[TestMethod]
+		public void Net_Argument_S8()
+		{
+			ExpectedValue = (sbyte)123;
+			LuaInstance.DoString("pass_s8(123)");
+			ExpectedValue = (sbyte)-123;
+			LuaInstance.DoString("pass_s8(-123)");
+		}
+		*/
+
+		[TestMethod]
+		public void Net_Argument_U8()
+		{
+			ExpectedValue = (byte)123;
+			LuaInstance.DoString("pass_u8(123)");
+		}
+
+		[TestMethod]
+		public void Net_Argument_S16()
+		{
+			ExpectedValue = (short)123;
+			LuaInstance.DoString("pass_s16(123)");
+			ExpectedValue = (short)-123;
+			LuaInstance.DoString("pass_s16(-123)");
+		}
+
+		[TestMethod]
+		public void Net_Argument_U16()
+		{
+			ExpectedValue = (ushort)123;
+			LuaInstance.DoString("pass_u16(123)");
+		}
+
+		[TestMethod]
+		public void Net_Argument_S32()
+		{
+			ExpectedValue = 123;
+			LuaInstance.DoString("pass_s32(123)");
+			ExpectedValue = -123;
+			LuaInstance.DoString("pass_s32(-123)");
+		}
+
+		[TestMethod]
+		public void Net_Argument_U32()
+		{
+			ExpectedValue = 123U;
+			LuaInstance.DoString("pass_u32(123)");
+		}
+
+		[TestMethod]
+		public void Net_Argument_S64()
+		{
+			ExpectedValue = 123L;
+			LuaInstance.DoString("pass_s64(123)");
+			ExpectedValue = -123L;
+			LuaInstance.DoString("pass_s64(-123)");
+		}
+
+		[TestMethod]
+		public void Net_Argument_U64()
+		{
+			ExpectedValue = 123UL;
+			LuaInstance.DoString("pass_u64(123)");
+		}
+
+		[TestMethod]
+		public void Net_Argument_F32()
+		{
+			ExpectedValue = 123.0F;
+			LuaInstance.DoString("pass_f32(123.0)");
+			ExpectedValue = -123.0F;
+			LuaInstance.DoString("pass_f32(-123.0)");
+		}
+
+		[TestMethod]
+		public void Net_Argument_F64()
+		{
+			ExpectedValue = 123.0;
+			LuaInstance.DoString("pass_f64(123.0)");
+			ExpectedValue = -123.0;
+			LuaInstance.DoString("pass_f64(-123.0)");
+		}
+
+		[TestMethod]
+		public void Net_Argument_F128()
+		{
+			ExpectedValue = 123.0M;
+			LuaInstance.DoString("pass_f128(123.0)");
+			ExpectedValue = -123.0M;
+			LuaInstance.DoString("pass_f128(-123.0)");
+		}
+
+		/*
+		[TestMethod]
+		public void Net_Argument_IntPtr()
+		{
+			ExpectedValue = (IntPtr)123;
+			LuaInstance.DoString("pass_intptr(123)");
+			ExpectedValue = (IntPtr)(-123);
+			LuaInstance.DoString("pass_intptr(-123)");
+		}*/
+
+		/*
+		[TestMethod]
+		public void Net_Argument_UIntPtr()
+		{
+			ExpectedValue = (UIntPtr)123;
+			LuaInstance.DoString("pass_uintptr(123)");
+		}*/
+
+		/*[TestMethod]
+		public void Net_Argument_Char()
+		{
+			ExpectedValue = 'a';
+			LuaInstance.DoString($"pass_char({(byte)'a'})");
+		}*/
+
+		[TestMethod]
+		public void Net_Argument_String()
+		{
+			ExpectedValue = "foobar";
+			LuaInstance.DoString($"pass_string(\"foobar\")");
+		}
+
+		[TestMethod]
+		public void Net_Argument_String_Utf8()
+		{
+			ExpectedValue = "こんにちは";
+			LuaInstance.DoString($"pass_string(\"こんにちは\")");
+		}
+
+		[TestMethod]
+		public void Net_Argument_Color()
+		{
+			ExpectedValue = Color.Aqua;
+			LuaInstance.DoString("pass_color(\"Aqua\")");
+			LuaInstance.DoString("pass_color(\"#FF00FFFF\")");
+			LuaInstance.DoString("pass_color(0xFF00FFFF)");
+			LuaInstance.DoString("pass_color(4278255615.0)");
+			// implicit 0xFF for Alpha when not provided
+			LuaInstance.DoString("pass_color(\"#00FFFF\")");
 		}
 	}
 }
