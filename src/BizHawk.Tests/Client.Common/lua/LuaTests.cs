@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 
 using BizHawk.Client.Common;
@@ -105,8 +108,139 @@ namespace BizHawk.Tests.Client.Common.Lua
 		}
 
 		[LuaMethod("pass_color", "")]
-		public static void PassColor(object? c)
-			=> Assert.IsTrue(_th.SafeParseColor(c)?.ToArgb() == ((Color?)ExpectedValue)?.ToArgb());
+		public static void PassColor(object? o)
+			=> Assert.IsTrue(_th.SafeParseColor(o)?.ToArgb() == ((Color?)ExpectedValue)?.ToArgb());
+
+		[LuaMethod("pass_table", "")]
+		public static void PassTable(NLua.LuaTable? o)
+		{
+			if (ExpectedValue is null)
+			{
+				Assert.IsNull(o);
+			}
+			else
+			{
+				var t = _th.EnumerateEntries<object, object>(o!);
+				var expected = _th.EnumerateEntries<object, object>((NLua.LuaTable)ExpectedValue);
+				Assert.IsTrue(!t.Except(expected).Any() && !expected.Except(t).Any());
+			}
+		}
+
+		private static object? CallackArg { get; set; }
+
+		[LuaMethod("pass_callback", "")]
+		public static void PassCallback(NLua.LuaFunction? o)
+		{
+			if (ExpectedValue is null)
+			{
+				Assert.IsNull(o);
+			}
+			else
+			{
+				switch (CallackArg)
+				{
+					case null:
+						o!.Call();
+						break;
+					case bool b:
+						o!.Call(b);
+						break;
+					case double d:
+						o!.Call(d);
+						break;
+					case string s:
+						o!.Call(s);
+						break;
+					case NLua.LuaTable t:
+						o!.Call(t);
+						break;
+					case NLua.LuaFunction f:
+						o!.Call(f);
+						break;
+					default:
+						Assert.Fail();
+						break;
+				}
+			}
+		}
+
+		private static object? ReturnValue { get; set; }
+
+		[LuaMethod("return_object", "")]
+		public static object? ReturnObject()
+			=> ReturnValue;
+
+		[LuaMethod("return_bool", "")]
+		public static bool? ReturnBool()
+			=> (bool?)ReturnValue;
+
+		[LuaMethod("return_s8", "")]
+		public static sbyte? ReturnS8()
+			=> (sbyte?)ReturnValue;
+
+		[LuaMethod("return_u8", "")]
+		public static byte? ReturnU8()
+			=> (byte?)ReturnValue;
+
+		[LuaMethod("return_s16", "")]
+		public static short? ReturnS16()
+			=> (short?)ReturnValue;
+
+		[LuaMethod("return_u16", "")]
+		public static ushort? ReturnU16()
+			=> (ushort?)ReturnValue;
+
+		[LuaMethod("return_s32", "")]
+		public static int? ReturnS32()
+			=> (int?)ReturnValue;
+
+		[LuaMethod("return_u32", "")]
+		public static uint? ReturnU32()
+			=> (uint?)ReturnValue;
+
+		[LuaMethod("return_s64", "")]
+		public static long? ReturnS64()
+			=> (long?)ReturnValue;
+
+		[LuaMethod("return_u64", "")]
+		public static ulong? ReturnU64()
+			=> (ulong?)ReturnValue;
+
+		[LuaMethod("return_f32", "")]
+		public static float? ReturnF32()
+			=> (float?)ReturnValue;
+
+		[LuaMethod("return_f64", "")]
+		public static double? ReturnF64()
+			=> (double?)ReturnValue;
+
+		[LuaMethod("return_f128", "")]
+		public static decimal? ReturnF128()
+			=> (decimal?)ReturnValue;
+
+		[LuaMethod("return_intptr", "")]
+		public static IntPtr? ReturnIntPtr()
+			=> (IntPtr?)ReturnValue;
+
+		[LuaMethod("return_uintptr", "")]
+		public static UIntPtr? ReturnUIntPtr()
+			=> (UIntPtr?)ReturnValue;
+
+		[LuaMethod("return_char", "")]
+		public static char? ReturnChar()
+			=> (char?)ReturnValue;
+
+		[LuaMethod("return_string", "")]
+		public static string? ReturnString()
+			=> UnFixString((string?)ReturnValue);
+
+		[LuaMethod("return_table", "")]
+		public static NLua.LuaTable? ReturnTable()
+			=> (NLua.LuaTable?)ReturnValue;
+
+		[LuaMethod("return_callback", "")]
+		public static NLua.LuaFunction? ReturnFunction()
+			=> (NLua.LuaFunction?)ReturnValue;
 
 		static LuaTests()
 		{
@@ -269,6 +403,8 @@ namespace BizHawk.Tests.Client.Common.Lua
 			LuaInstance.DoString("pass_char(nil)");
 			LuaInstance.DoString("pass_string(nil)");
 			LuaInstance.DoString("pass_color(nil)");
+			LuaInstance.DoString("pass_table(nil)");
+			LuaInstance.DoString("pass_callback(nil)");
 		}
 
 		[TestMethod]
@@ -422,6 +558,135 @@ namespace BizHawk.Tests.Client.Common.Lua
 			LuaInstance.DoString("pass_color(4278255615.0)");
 			// implicit 0xFF for Alpha when not provided
 			LuaInstance.DoString("pass_color(\"#00FFFF\")");
+		}
+
+		[TestMethod]
+		public void Net_Argument_Table()
+		{
+			ExpectedValue = _th.ListToTable(new List<double>
+			{
+				0.123,
+				0.321
+			});
+			LuaInstance.DoString("pass_table({0.123,0.321})");
+
+			ExpectedValue = _th.DictToTable(new Dictionary<string, double>
+			{
+				["foo"] = 0.123,
+				["bar"] = 0.321
+			});
+			LuaInstance.DoString("pass_table({[\"foo\"]=0.123,[\"bar\"]=0.321})");
+		}
+
+		[TestMethod]
+		public void Net_Argument_LuaFunction()
+		{
+			ExpectedValue = 123.0;
+			LuaInstance.DoString("pass_callback(function() pass_f64(123.0) end)");
+		}
+
+		[TestMethod]
+		public void Lua_Argument_Nil()
+		{
+			ExpectedValue = true;
+			CallackArg = null;
+			LuaInstance.DoString("pass_callback(function(foo) pass_bool(foo == nil) end)");
+		}
+
+		[TestMethod]
+		public void Lua_Argument_Boolean()
+		{
+			ExpectedValue = true;
+			CallackArg = true;
+			LuaInstance.DoString("pass_callback(function(foo) pass_bool(foo == true) end)");
+			CallackArg = false;
+			LuaInstance.DoString("pass_callback(function(foo) pass_bool(foo == false) end)");
+		}
+
+		[TestMethod]
+		public void Lua_Argument_Number()
+		{
+			ExpectedValue = true;
+			CallackArg = 123.0;
+			LuaInstance.DoString("pass_callback(function(foo) pass_bool(foo == 123.0) end)");
+		}
+
+		[TestMethod]
+		public void Lua_Argument_String()
+		{
+			ExpectedValue = true;
+			CallackArg = "foobar";
+			LuaInstance.DoString("pass_callback(function(foo) pass_bool(foo == \"foobar\") end)");
+		}
+
+		[TestMethod]
+		public void Lua_Argument_String_Utf8()
+		{
+			ExpectedValue = true;
+			CallackArg = UnFixString("こんにちは"); // seriously, wtf?
+			LuaInstance.DoString("pass_callback(function(foo) pass_bool(foo == \"こんにちは\") end)");
+		}
+
+		[TestMethod]
+		public void Lua_Argument_Function()
+		{
+			ExpectedValue = true;
+
+			//this doesn't work lol
+			//Action<object> cb = o => Assert.IsTrue((double)o == 0.123);
+			//CallackArg = LuaInstance.RegisterFunction("__INTERNAL_CALLBACK__", cb.GetMethodInfo());
+
+			CallackArg = LuaInstance.DoString("return function(foo) pass_bool(foo == 0.123) end")[0];
+			LuaInstance.DoString("pass_callback(function(foo) foo(0.123) end)");
+		}
+
+		[TestMethod]
+		public void Lua_Argument_Table_FromList()
+		{
+			ExpectedValue = true;
+			CallackArg = _th.ListToTable(new List<double>
+			{
+				0.123,
+				0.321
+			});
+			LuaInstance.DoString("pass_callback(function(foo) pass_bool(foo[1] == 0.123) pass_bool(foo[2] == 0.321) end)");
+		}
+
+		[TestMethod]
+		public void Lua_Argument_Table_FromDict()
+		{
+			ExpectedValue = true;
+			CallackArg = _th.DictToTable(new Dictionary<string, double>
+			{
+				["foo"] = 0.123,
+				["bar"] = 0.321
+			});
+			LuaInstance.DoString("pass_callback(function(foo) pass_bool(foo[\"foo\"] == 0.123) pass_bool(foo[\"bar\"] == 0.321) end)");
+		}
+
+		[TestMethod]
+		public void Net_Return_Nullable()
+		{
+			ReturnValue = null;
+			Assert.IsTrue((bool)LuaInstance.DoString("return return_object() == nil")[0]);
+			Assert.IsTrue((bool)LuaInstance.DoString("return return_bool() == nil")[0]);
+			Assert.IsTrue((bool)LuaInstance.DoString("return return_s8() == nil")[0]);
+			Assert.IsTrue((bool)LuaInstance.DoString("return return_u8() == nil")[0]);
+			Assert.IsTrue((bool)LuaInstance.DoString("return return_s16() == nil")[0]);
+			Assert.IsTrue((bool)LuaInstance.DoString("return return_u16() == nil")[0]);
+			Assert.IsTrue((bool)LuaInstance.DoString("return return_s32() == nil")[0]);
+			Assert.IsTrue((bool)LuaInstance.DoString("return return_u32() == nil")[0]);
+			Assert.IsTrue((bool)LuaInstance.DoString("return return_s64() == nil")[0]);
+			Assert.IsTrue((bool)LuaInstance.DoString("return return_u64() == nil")[0]);
+			Assert.IsTrue((bool)LuaInstance.DoString("return return_f32() == nil")[0]);
+			Assert.IsTrue((bool)LuaInstance.DoString("return return_f64() == nil")[0]);
+			Assert.IsTrue((bool)LuaInstance.DoString("return return_f128() == nil")[0]);
+			Assert.IsTrue((bool)LuaInstance.DoString("return return_intptr() == nil")[0]);
+			Assert.IsTrue((bool)LuaInstance.DoString("return return_uintptr() == nil")[0]);
+			Assert.IsTrue((bool)LuaInstance.DoString("return return_char() == nil")[0]);
+			Assert.IsTrue((bool)LuaInstance.DoString("return return_string() == nil")[0]);
+			Assert.IsTrue((bool)LuaInstance.DoString("return return_table() == nil")[0]);
+			Assert.IsTrue((bool)LuaInstance.DoString("return return_callback() == nil")[0]);
 		}
 	}
 }
