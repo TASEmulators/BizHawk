@@ -35,7 +35,7 @@ namespace BizHawk.Client.Common
 		[LuaMethodExample("gui.addmessage( \"Some message\" );")]
 		[LuaMethod("addmessage", "Adds a message to the OSD's message area")]
 		public void AddMessage([LuaArbitraryStringParam] string message)
-			=> APIs.Gui.AddMessage(FixString(message));
+			=> APIs.Gui.AddMessage(message);
 
 		[LuaMethodExample("gui.clearGraphics( );")]
 		[LuaMethod("clearGraphics", "clears all lua drawn graphics from the screen")]
@@ -129,7 +129,7 @@ namespace BizHawk.Client.Common
 			int? width = null,
 			int? height = null,
 			[LuaEnumStringParam] string surfaceName = null)
-				=> APIs.Gui.DrawIcon(FixString(path), x, y, width, height, surfaceID: UseOrFallback(surfaceName));
+				=> APIs.Gui.DrawIcon(path, x, y, width, height, surfaceID: UseOrFallback(surfaceName));
 
 		[LuaMethodExample("gui.drawImage( \"C:\\sample.bmp\", 16, 32, 18, 24, false );")]
 		[LuaMethod("drawImage", "draws an image file from the given path at the given coordinate. width and height are optional. If specified, it will resize the image accordingly")]
@@ -141,7 +141,7 @@ namespace BizHawk.Client.Common
 			int? height = null,
 			bool cache = true,
 			[LuaEnumStringParam] string surfaceName = null)
-				=> APIs.Gui.DrawImage(FixString(path), x, y, width, height, cache, surfaceID: UseOrFallback(surfaceName));
+				=> APIs.Gui.DrawImage(path, x, y, width, height, cache, surfaceID: UseOrFallback(surfaceName));
 
 		[LuaMethodExample("gui.clearImageCache( );")]
 		[LuaMethod("clearImageCache", "clears the image cache that is built up by using gui.drawImage, also releases the file handle for cached images")]
@@ -161,7 +161,7 @@ namespace BizHawk.Client.Common
 			int? dest_width = null,
 			int? dest_height = null,
 			[LuaEnumStringParam] string surfaceName = null)
-				=> APIs.Gui.DrawImageRegion(FixString(path), source_x, source_y, source_width, source_height, dest_x, dest_y, dest_width, dest_height, surfaceID: UseOrFallback(surfaceName));
+				=> APIs.Gui.DrawImageRegion(path, source_x, source_y, source_width, source_height, dest_x, dest_y, dest_width, dest_height, surfaceID: UseOrFallback(surfaceName));
 
 		[LuaMethodExample("gui.drawLine( 161, 321, 162, 322, 0xFFFFFFFF );")]
 		[LuaMethod("drawLine", "Draws a line from the first coordinate pair to the 2nd. Color is optional (if not specified it will be drawn black)")]
@@ -280,7 +280,7 @@ namespace BizHawk.Client.Common
 			[LuaEnumStringParam] string horizalign = null,
 			[LuaEnumStringParam] string vertalign = null,
 			[LuaEnumStringParam] string surfaceName = null)
-				=> APIs.Gui.DrawString(x, y, FixString(message), _th.SafeParseColor(forecolor), _th.SafeParseColor(backcolor), fontsize, fontfamily, fontstyle, horizalign, vertalign, surfaceID: UseOrFallback(surfaceName));
+				=> APIs.Gui.DrawString(x, y, message, _th.SafeParseColor(forecolor), _th.SafeParseColor(backcolor), fontsize, fontfamily, fontstyle, horizalign, vertalign, surfaceID: UseOrFallback(surfaceName));
 
 		[LuaMethodExample("gui.pixelText( 16, 32, \"Some message\", 0x7F0000FF, 0x00007FFF, \"Arial Narrow\" );")]
 		[LuaMethod("pixelText", "Draws the given message in the emulator screen space (like all draw functions) at the given x,y coordinates and the given color. The default color is white. Two font families are available, \"fceux\" and \"gens\" (or  \"0\" and \"1\" respectively), both are monospace and have the same size as in the emulators they've been taken from. If no font family is specified, it uses \"gens\" font, unless that's overridden via gui.defaultPixelFont()")]
@@ -292,7 +292,7 @@ namespace BizHawk.Client.Common
 			[LuaColorParam] object backcolor = null,
 			[LuaASCIIStringParam] string fontfamily = null,
 			[LuaEnumStringParam] string surfaceName = null)
-				=> APIs.Gui.DrawText(x, y, FixString(message), _th.SafeParseColor(forecolor), _th.SafeParseColor(backcolor) ?? APIs.Gui.GetDefaultTextBackground().Value, fontfamily, surfaceID: UseOrFallback(surfaceName));
+				=> APIs.Gui.DrawText(x, y, message, _th.SafeParseColor(forecolor), _th.SafeParseColor(backcolor) ?? APIs.Gui.GetDefaultTextBackground().Value, fontfamily, surfaceID: UseOrFallback(surfaceName));
 
 		[LuaMethodExample("gui.text( 16, 32, \"Some message\", 0x7F0000FF, \"bottomleft\" );")]
 		[LuaMethod("text", "Displays the given text on the screen at the given coordinates. Optional Foreground color. The optional anchor flag anchors the text to one of the four corners. Anchor flag parameters: topleft, topright, bottomleft, bottomright")]
@@ -302,7 +302,7 @@ namespace BizHawk.Client.Common
 			[LuaArbitraryStringParam] string message,
 			[LuaColorParam] object forecolor = null,
 			[LuaEnumStringParam] string anchor = null)
-				=> APIs.Gui.Text(x, y, FixString(message), _th.SafeParseColor(forecolor), anchor);
+				=> APIs.Gui.Text(x, y, message, _th.SafeParseColor(forecolor), anchor);
 
 		[LuaMethodExample("local nlguicre = gui.createcanvas( 77, 99, 2, 48 );")]
 		[LuaMethod("createcanvas", "Creates a canvas of the given size and, if specified, the given coordinates.")]

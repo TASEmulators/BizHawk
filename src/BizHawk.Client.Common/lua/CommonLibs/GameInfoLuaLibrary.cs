@@ -19,7 +19,7 @@ namespace BizHawk.Client.Common
 		[LuaMethod("getromname", "returns the name of the currently loaded rom, if a rom is loaded")]
 		[return: LuaArbitraryStringParam]
 		public string GetRomName()
-			=> UnFixString(APIs.Emulation.GetGameInfo()?.Name) ?? string.Empty;
+			=> APIs.Emulation.GetGameInfo()?.Name ?? string.Empty;
 
 		[LuaMethodExample("local stgamget = gameinfo.getromhash( );")]
 		[LuaMethod("getromhash", "returns the hash of the currently loaded rom, if a rom is loaded")]
@@ -47,7 +47,7 @@ namespace BizHawk.Client.Common
 		[LuaMethod("getboardtype", "returns identifying information about the 'mapper' or similar capability used for this game.  empty if no such useful distinction can be drawn")]
 		[return: LuaArbitraryStringParam]
 		public string GetBoardType()
-			=> UnFixString(APIs.Emulation.GetBoardName());
+			=> APIs.Emulation.GetBoardName();
 
 		[LuaMethodExample("local nlgamget = gameinfo.getoptions( );")]
 		[LuaMethod("getoptions", "returns the game options for the currently loaded rom. Options vary per platform")]

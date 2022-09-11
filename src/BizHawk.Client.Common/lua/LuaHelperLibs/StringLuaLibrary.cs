@@ -57,7 +57,7 @@ namespace BizHawk.Client.Common
 		[LuaMethod("trim", "returns a string that trims whitespace on the left and right ends of the string")]
 		[return: LuaArbitraryStringParam]
 		public static string Trim([LuaArbitraryStringParam] string str)
-			=> string.IsNullOrEmpty(str) ? null : UnFixString(FixString(str).Trim());
+			=> string.IsNullOrEmpty(str) ? null : str.Trim();
 
 		[LuaMethodExample("local stbizrep = bizstring.replace( \"Some string\", \"Some\", \"Replaced\" );")]
 		[LuaMethod("replace", "Returns a string that replaces all occurrences of str2 in str1 with the value of replace")]
@@ -69,7 +69,7 @@ namespace BizHawk.Client.Common
 		{
 			return string.IsNullOrEmpty(str)
 				? null
-				: UnFixString(FixString(str).Replace(FixString(str2), FixString(replace)));
+				: str.Replace(str2, replace);
 		}
 
 		[LuaMethodExample("local stbiztou = bizstring.toupper( \"Some string\" );")]
@@ -79,7 +79,7 @@ namespace BizHawk.Client.Common
 		{
 			return string.IsNullOrEmpty(str)
 				? null
-				: UnFixString(FixString(str).ToUpperInvariant());
+				: str.ToUpperInvariant();
 		}
 
 		[LuaMethodExample("local stbiztol = bizstring.tolower( \"Some string\" );")]
@@ -89,7 +89,7 @@ namespace BizHawk.Client.Common
 		{
 			return string.IsNullOrEmpty(str)
 				? null
-				: UnFixString(FixString(str).ToLowerInvariant());
+				: str.ToLowerInvariant();
 		}
 
 		[LuaMethodExample("local stbizsub = bizstring.substring( \"Some string\", 6, 3 );")]
@@ -99,7 +99,7 @@ namespace BizHawk.Client.Common
 		{
 			return string.IsNullOrEmpty(str)
 				? null
-				: UnFixString(FixString(str).Substring(position, length));
+				: str.Substring(position, length);
 		}
 
 		[LuaMethodExample("local stbizrem = bizstring.remove( \"Some string\", 4, 5 );")]
@@ -109,7 +109,7 @@ namespace BizHawk.Client.Common
 		{
 			return string.IsNullOrEmpty(str)
 				? null
-				: UnFixString(FixString(str).Remove(position, count));
+				: str.Remove(position, count);
 		}
 
 		[LuaMethodExample("if ( bizstring.contains( \"Some string\", \"Some\") ) then\r\n\tconsole.log( \"Returns whether or not str contains str2\" );\r\nend;")]
@@ -136,8 +136,7 @@ namespace BizHawk.Client.Common
 				=> s?.Length == 1 ? s[0] : defaultValue;
 			return string.IsNullOrEmpty(str)
 				? _th.CreateTable()
-				: _th.ListToTable(FixString(str).Split(new[] { SingleOrElse(FixString(separator), ',') }, StringSplitOptions.RemoveEmptyEntries)
-					.Select(static s => UnFixString(s)).ToList());
+				: _th.ListToTable(str.Split(new[] { SingleOrElse(separator, ',') }, StringSplitOptions.RemoveEmptyEntries).ToList());
 		}
 	}
 }

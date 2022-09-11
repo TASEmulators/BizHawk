@@ -83,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				return string.Concat(keyObjs.Cast<object>()
-					.Select((kObj, i) => $"\"{(kObj is string s ? FixString(s) : kObj.ToString())}\": \"{(values[i] is string s1 ? FixString(s1) : values[i].ToString())}\"\n")
+					.Select((kObj, i) => $"\"{kObj}\": \"{values[i]}\"\n")
 					.Order());
 			}
 
@@ -99,7 +99,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					null => "nil",
 					LuaTable table => SerializeTable(table),
-					string s => FixString(s),
 					_ => output.ToString()
 				});
 

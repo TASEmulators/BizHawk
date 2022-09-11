@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 
 using NLua;
@@ -58,6 +59,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
+			_lua.State.Encoding = Encoding.UTF8;
 			_th = new NLuaTableHelper(_lua, LogToLuaConsole);
 			_displayManager = displayManager;
 			_inputManager = inputManager;
@@ -283,7 +285,7 @@ namespace BizHawk.Client.EmuHawk
 			LuaFile luaFile,
 			[LuaArbitraryStringParam] string name = null)
 		{
-			var nlf = new NamedLuaFunction(function, theEvent, logCallback, luaFile, LuaLibraryBase.FixString(name));
+			var nlf = new NamedLuaFunction(function, theEvent, logCallback, luaFile, name);
 			RegisteredFunctions.Add(nlf);
 			return nlf;
 		}
@@ -301,6 +303,7 @@ namespace BizHawk.Client.EmuHawk
 			var content = File.ReadAllText(file);
 			var main = _lua.LoadString(content, "main");
 			_lua.NewThread(main, out var ret);
+			ret.State.Encoding = Encoding.UTF8;
 			return ret;
 		}
 
@@ -311,10 +314,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public void ExecuteString(string command)
-		{
-			var func = _lua.LoadString(command, "__BIZHAWK_INTERNAL_EXECUTESTRING");
-			_lua.NewThread(func, out _).Resume(null, 0);
-		}
+			=> _lua.DoString(command);
 
 		public (bool WaitForFrame, bool Terminated) ResumeScript(LuaFile lf)
 		{
