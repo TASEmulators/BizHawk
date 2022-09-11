@@ -414,11 +414,17 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void SaveToCurrentSlotMenuItem_Click(object sender, EventArgs e)
+			=> SavestateCurrentSlot();
+
+		private void SavestateCurrentSlot()
 		{
 			SaveQuickSave($"QuickSave{Config.SaveSlot}");
 		}
 
 		private void LoadCurrentSlotMenuItem_Click(object sender, EventArgs e)
+			=> LoadstateCurrentSlot();
+
+		private void LoadstateCurrentSlot()
 		{
 			LoadQuickSave($"QuickSave{Config.SaveSlot}");
 		}
@@ -645,9 +651,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void ScheduleShutdown()
+			=> _exitRequestPending = true;
+
 		public void CloseEmulator(int? exitCode = null)
 		{
-			_exitRequestPending = true;
+			ScheduleShutdown();
 			if (exitCode != null) _exitCode = exitCode.Value;
 		}
 
@@ -1094,6 +1103,9 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void UnthrottledMenuItem_Click(object sender, EventArgs e)
+			=> ToggleUnthrottled();
+
+		private void ToggleUnthrottled()
 		{
 			Config.Unthrottled ^= true;
 			ThrottleMessage();
@@ -2445,6 +2457,9 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void LoadLastRomContextMenuItem_Click(object sender, EventArgs e)
+			=> LoadMostRecentROM();
+
+		private void LoadMostRecentROM()
 		{
 			LoadRomFromRecent(Config.RecentRoms.MostRecent);
 		}

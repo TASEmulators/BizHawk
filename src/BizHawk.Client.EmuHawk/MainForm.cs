@@ -556,7 +556,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (Config.RecentRoms.AutoLoad && !Config.RecentRoms.Empty)
 			{
-				LoadRomFromRecent(Config.RecentRoms.MostRecent);
+				LoadMostRecentROM();
 			}
 
 			if (_argParser.audiosync.HasValue)
@@ -637,7 +637,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (Config.AutoLoadLastSaveSlot)
 				{
-					LoadQuickSave($"QuickSave{Config.SaveSlot}");
+					LoadstateCurrentSlot();
 				}
 			}
 
@@ -3608,10 +3608,7 @@ namespace BizHawk.Client.EmuHawk
 				if (_autoDumpLength == 0) // finish
 				{
 					StopAv();
-					if (_argParser._autoCloseOnDump)
-					{
-						_exitRequestPending = true;
-					}
+					if (_argParser._autoCloseOnDump) ScheduleShutdown();
 				}
 			}
 		}
@@ -3949,7 +3946,7 @@ namespace BizHawk.Client.EmuHawk
 					Tools.UpdateCheatRelatedTools(null, null);
 					if (!MovieSession.NewMovieQueued && Config.AutoLoadLastSaveSlot && HasSlot(Config.SaveSlot))
 					{
-						LoadQuickSave($"QuickSave{Config.SaveSlot}");
+						LoadstateCurrentSlot();
 					}
 
 					if (FirmwareManager.RecentlyServed.Count > 0)
@@ -4078,7 +4075,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AutoSaveStateIfConfigured()
 		{
-			if (Config.AutoSaveLastSaveSlot && Emulator.HasSavestates()) SaveQuickSave($"QuickSave{Config.SaveSlot}");
+			if (Config.AutoSaveLastSaveSlot && Emulator.HasSavestates()) SavestateCurrentSlot();
 		}
 
 		public bool GameIsClosing { get; private set; } // Lets tools make better decisions when being called by CloseGame

@@ -54,8 +54,7 @@ namespace BizHawk.Client.EmuHawk
 					FrameInch = true;
 					return false;
 				case "Toggle Throttle":
-					Config.Unthrottled ^= true;
-					ThrottleMessage();
+					ToggleUnthrottled();
 					break;
 				case "Soft Reset":
 					SoftReset();
@@ -64,10 +63,10 @@ namespace BizHawk.Client.EmuHawk
 					HardReset();
 					break;
 				case "Quick Load":
-					LoadQuickSave($"QuickSave{Config.SaveSlot}");
+					LoadstateCurrentSlot();
 					break;
 				case "Quick Save":
-					SaveQuickSave($"QuickSave{Config.SaveSlot}");
+					SavestateCurrentSlot();
 					break;
 				case "Clear Autohold":
 					ClearAutohold();
@@ -93,7 +92,7 @@ namespace BizHawk.Client.EmuHawk
 					CloseRom();
 					break;
 				case "Load Last ROM":
-					LoadRomFromRecent(Config.RecentRoms.MostRecent);
+					LoadMostRecentROM();
 					break;
 				case "Flush SaveRAM":
 					FlushSaveRAM();
@@ -126,7 +125,7 @@ namespace BizHawk.Client.EmuHawk
 					ToggleSound();
 					break;
 				case "Exit Program":
-					_exitRequestPending = true;
+					ScheduleShutdown();
 					break;
 				case "Record A/V":
 					RecordAv();
