@@ -324,26 +324,16 @@ namespace BizHawk.Client.EmuHawk
 					Tools.Load<Cheats>();
 					break;
 				case "Toggle All Cheats":
-					if (CheatList.Any())
-					{
-						string type = " (mixed)";
-						if (CheatList.All(c => c.Enabled))
-						{
-							type = " (off)";
-						}
-						else if (CheatList.All(c => !c.Enabled))
-						{
-							type = " (on)";
-						}
-
-						foreach (var x in CheatList)
-						{
-							x.Toggle();
-						}
-
-						AddOnScreenMessage($"Cheats toggled{type}");
-					}
-
+					var cheats = CheatList.Where(static c => !c.IsSeparator).ToList();
+					if (cheats.Count is 0) break;
+					var firstWasEnabled = cheats[0].Enabled;
+					var kind = cheats.All(c => c.Enabled == firstWasEnabled)
+						? firstWasEnabled
+							? "off"
+							: "on"
+						: "mixed";
+					foreach (var x in cheats) x.Toggle();
+					AddOnScreenMessage($"Cheats toggled ({kind})");
 					break;
 				case "TAStudio":
 					TAStudioMenuItem_Click(null, null);
