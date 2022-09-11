@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				NdsSysBus.UseArm9 = int.Parse(Cpu.Substring(5, 1)) == 5;
 			}
 
-			var ret = new byte[64];
+			var ret = new byte[80];
 			var type = Cpu switch
 			{
 				"ARM v5" => LibMelonDS.TraceMask.ARM9_ARM,

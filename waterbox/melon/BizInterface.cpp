@@ -471,31 +471,31 @@ EXPORT void SetMemoryCallback(u32 which, void (*callback)(u32 addr))
 }
 
 TraceMask_t TraceMask = TRACE_NONE;
-static void (*TraceCallback)(TraceMask_t, u32*, u8*, u32) = nullptr;
-#define TRACE_STRING_LENGTH 64
+static void (*TraceCallback)(TraceMask_t, u32*, char*, u32) = nullptr;
+#define TRACE_STRING_LENGTH 80
 typedef enum {
 	ARMv4T, //ARM v4, THUMB v1
 	ARMv5TE, //ARM v5, THUMB v2
 	ARMv6, //ARM v6, THUMB v3
 } ARMARCH; //only 32-bit legacy architectures with THUMB support
-extern "C" unsigned int Disassemble_thumb(unsigned int code, unsigned char str[TRACE_STRING_LENGTH], unsigned int it, const unsigned char* cond, ARMARCH tv);
-extern "C" void Disassemble_arm(unsigned int code, unsigned char str[TRACE_STRING_LENGTH], ARMARCH av);
+extern "C" u32 Disassemble_thumb(u32 code, char str[TRACE_STRING_LENGTH], ARMARCH tv);
+extern "C" void Disassemble_arm(u32 code, char str[TRACE_STRING_LENGTH], ARMARCH av);
 
 void TraceTrampoline(TraceMask_t type, u32* regs, u32 opcode)
 {
-	static unsigned char disasm[TRACE_STRING_LENGTH];
+	static char disasm[TRACE_STRING_LENGTH];
 	memset(disasm, 0, sizeof disasm);
 	switch (type) {
-		case TRACE_ARM7_THUMB: Disassemble_thumb(opcode, disasm, 0, nullptr, ARMv4T); break;
+		case TRACE_ARM7_THUMB: Disassemble_thumb(opcode, disasm, ARMv4T); break;
 		case TRACE_ARM7_ARM: Disassemble_arm(opcode, disasm, ARMv4T); break;
-		case TRACE_ARM9_THUMB: Disassemble_thumb(opcode, disasm, 0, nullptr, ARMv5TE); break;
+		case TRACE_ARM9_THUMB: Disassemble_thumb(opcode, disasm, ARMv5TE); break;
 		case TRACE_ARM9_ARM: Disassemble_arm(opcode, disasm, ARMv5TE); break;
 		default: __builtin_unreachable();
 	}
 	TraceCallback(type, regs, disasm, NDS::GetSysClockCycles(2));
 }
 
-EXPORT void SetTraceCallback(void (*callback)(TraceMask_t mask, u32* regs, u8* disasm, u32 cyclesOff), TraceMask_t mask)
+EXPORT void SetTraceCallback(void (*callback)(TraceMask_t mask, u32* regs, char* disasm, u32 cyclesOff), TraceMask_t mask)
 {
 	TraceCallback = callback;
 	TraceMask = callback ? mask : TRACE_NONE;
@@ -503,12 +503,12 @@ EXPORT void SetTraceCallback(void (*callback)(TraceMask_t mask, u32* regs, u8* d
 
 EXPORT void GetDisassembly(TraceMask_t type, u32 opcode, char* ret)
 {
-	static unsigned char disasm[TRACE_STRING_LENGTH];
+	static char disasm[TRACE_STRING_LENGTH];
 	memset(disasm, 0, sizeof disasm);
 	switch (type) {
-		case TRACE_ARM7_THUMB: Disassemble_thumb(opcode, disasm, 0, nullptr, ARMv4T); break;
+		case TRACE_ARM7_THUMB: Disassemble_thumb(opcode, disasm, ARMv4T); break;
 		case TRACE_ARM7_ARM: Disassemble_arm(opcode, disasm, ARMv4T); break;
-		case TRACE_ARM9_THUMB: Disassemble_thumb(opcode, disasm, 0, nullptr, ARMv5TE); break;
+		case TRACE_ARM9_THUMB: Disassemble_thumb(opcode, disasm, ARMv5TE); break;
 		case TRACE_ARM9_ARM: Disassemble_arm(opcode, disasm, ARMv5TE); break;
 		default: __builtin_unreachable();
 	}
