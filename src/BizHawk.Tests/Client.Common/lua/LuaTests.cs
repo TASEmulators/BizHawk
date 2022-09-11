@@ -149,7 +149,7 @@ namespace BizHawk.Tests.Client.Common.Lua
 						o!.Call(d);
 						break;
 					case string s:
-						o!.Call(s);
+						o!.Call(UnFixString(s));
 						break;
 					case NLua.LuaTable t:
 						o!.Call(t);
@@ -423,7 +423,7 @@ namespace BizHawk.Tests.Client.Common.Lua
 		public void Lua_Argument_String_Utf8()
 		{
 			ExpectedValue = true;
-			CallackArg = UnFixString("こんにちは"); // seriously, wtf?
+			CallackArg = "こんにちは";
 			LuaInstance.DoString("pass_callback(function(foo) pass_bool(foo == \"こんにちは\") end)");
 		}
 
