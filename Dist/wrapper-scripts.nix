@@ -6,10 +6,13 @@
 , writeText
 # rundeps
 , bizhawk
+, lua
 , mesa
 , mono
 , openal
 , zstd
+#, speexdsp
+, gtk2-x11
 # other parameters
 , debugPInvokes
 , hawkVersion
@@ -77,7 +80,7 @@ in rec {
 		fi
 		cd "$BIZHAWK_DATA_HOME"
 
-		export LD_LIBRARY_PATH="$BIZHAWK_HOME/dll:$BIZHAWK_GLHACKDIR:${lib.makeLibraryPath [ openal zstd ]}"
+		export LD_LIBRARY_PATH="$BIZHAWK_HOME/dll:$BIZHAWK_GLHACKDIR:${lib.makeLibraryPath [ openal zstd lua gtk2-x11 ]}"
 		${commentUnless debugPInvokes}export MONO_LOG_LEVEL=debug MONO_LOG_MASK=dll
 		if [ "$1" = "--mono-no-redirect" ]; then
 			shift

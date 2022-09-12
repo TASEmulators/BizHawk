@@ -20,8 +20,9 @@
 , dotnet-sdk_5 ? pkgs.dotnetCorePackages.sdk_5_0
 , dotnet-sdk_6 ? pkgs.dotnetCorePackages.sdk_6_0
 # rundeps for NixOS hosts
-#, gtk2-x11 ? pkgs.gtk2-x11
+, gtk2-x11 ? pkgs.gtk2-x11
 # rundeps for all Linux hosts
+, lua ? pkgs.lua5_4
 , mesa ? pkgs.mesa
 , mono ? null
 , openal ? pkgs.openal
@@ -96,7 +97,7 @@ let
 	};
 	wrapperScriptsFor = { hawkSourceInfo, bizhawkAssemblies }: import Dist/wrapper-scripts.nix {
 		inherit (pkgs) lib writeShellScriptBin writeText;
-		inherit commentUnless versionAtLeast mesa openal zstd debugPInvokes initConfig;
+		inherit commentUnless versionAtLeast mesa openal debugPInvokes initConfig lua gtk2-x11 zstd;
 		bizhawk = bizhawkAssemblies;
 		hawkVersion = hawkSourceInfo.version;
 		mono = monoFinal;
@@ -145,7 +146,7 @@ let
 in rec {
 	bizhawkAssemblies = buildAssembliesFor hawkSourceInfoDev; # assemblies and dependencies, and some other immutable things like the gamedb, are in the `bin` output; the rest of the "assets" (bundled scripts, palettes, etc.) are in the `out` output
 	discohawk = buildDiscoHawkWrapperFor { inherit bizhawkAssemblies; hawkSourceInfo = hawkSourceInfoDev; };
-	emuhawk-2_7 = buildEmuHawkWrapperFor {
+  emuhawk-2_7 = buildEmuHawkWrapperFor {
 		hawkSourceInfo = {
 			version = "2.7";
 			shorthash = "dbaf25956";
