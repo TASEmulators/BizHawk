@@ -61,6 +61,7 @@ namespace BizHawk.Emulation.Cores
 		public const string VectrexHawk = "VectrexHawk";
 		public const string Virtu = "Virtu";
 		public const string VirtualBoyee = "Virtual Boyee";
+		public const string VirtualJaguar = "Virtual Jaguar";
 		public const string ZXHawk = "ZXHawk";
 	}
 }

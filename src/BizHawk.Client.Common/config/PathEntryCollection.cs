@@ -44,6 +44,7 @@ namespace BizHawk.Client.Common
 			[VSystemID.Raw.N64] = "N64",
 			[VSystemID.Raw.SAT] = "Saturn",
 			[VSystemID.Raw.WSWAN] = "WonderSwan",
+			[VSystemID.Raw.JAG] = "Jaguar",
 			[VSystemID.Raw.Lynx] = "Lynx",
 			[VSystemID.Raw.AppleII] = "Apple II",
 			[VSystemID.Raw.Libretro] = "Libretro",
@@ -225,6 +226,8 @@ namespace BizHawk.Client.Common
 			new[] {
 				PalettesEntryFor(VSystemID.Raw.INTV),
 			},
+
+			CommonEntriesFor(VSystemID.Raw.JAG, basePath: Path.Combine(".", "Jaguar")),
 
 			new[] {
 				BaseEntryFor(VSystemID.Raw.Libretro, Path.Combine(".", "Libretro")),

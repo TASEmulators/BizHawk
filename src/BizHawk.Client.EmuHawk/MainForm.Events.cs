@@ -18,6 +18,7 @@ using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Arcades.MAME;
 using BizHawk.Emulation.Cores.Atari.A7800Hawk;
 using BizHawk.Emulation.Cores.Atari.Atari2600;
+using BizHawk.Emulation.Cores.Atari.Jaguar;
 using BizHawk.Emulation.Cores.Atari.Lynx;
 using BizHawk.Emulation.Cores.Calculators.Emu83;
 using BizHawk.Emulation.Cores.Calculators.TI83;
@@ -3041,6 +3042,9 @@ namespace BizHawk.Client.EmuHawk
 
 			// Virtual Boyee
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.VirtualBoyee, CreateGenericNymaCoreConfigItem<VirtualBoyee>(CoreNames.VirtualBoyee, VirtualBoyee.CachedSettingsInfo)));
+
+			// Virtual Jaguar
+			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.VirtualJaguar, CreateGenericCoreConfigItem<VirtualJaguar>(CoreNames.VirtualJaguar)));
 
 			// ZXHawk
 			items.Add(CreateCoreSubmenu(

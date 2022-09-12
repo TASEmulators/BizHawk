@@ -788,6 +788,8 @@ namespace BizHawk.Client.Common
 
 			public static readonly IReadOnlyCollection<string> INTV = new[] { "int", "bin", "rom" };
 
+			public static readonly IReadOnlyCollection<string> Jaguar = new[] { "j64", "jag" };
+
 			public static readonly IReadOnlyCollection<string> Lynx = new[] { "lnx" };
 
 			public static readonly IReadOnlyCollection<string> MSX = new[] { "cas", "dsk", "mx1", "rom" };
@@ -832,6 +834,7 @@ namespace BizHawk.Client.Common
 				.Concat(GBA)
 				.Concat(GEN)
 				.Concat(INTV)
+				.Concat(Jaguar)
 				.Concat(Lynx)
 				.Concat(MSX)
 				.Concat(N64)
@@ -870,6 +873,7 @@ namespace BizHawk.Client.Common
 			new FilesystemFilter("PC Engine", RomFileExtensions.PCE.Concat(new[] { "cue", "ccd", "mds" }).ToList(), addArchiveExts: true),
 			new FilesystemFilter("Atari 2600", RomFileExtensions.A26, devBuildExtraExts: new[] { "bin" }, addArchiveExts: true),
 			new FilesystemFilter("Atari 7800", RomFileExtensions.A78, devBuildExtraExts: new[] { "bin" }, addArchiveExts: true),
+			new FilesystemFilter("Atari Jaguar", RomFileExtensions.Jaguar, addArchiveExts: true),
 			new FilesystemFilter("Atari Lynx", RomFileExtensions.Lynx, addArchiveExts: true),
 			new FilesystemFilter("ColecoVision", RomFileExtensions.Coleco, addArchiveExts: true),
 			new FilesystemFilter("IntelliVision", RomFileExtensions.INTV, addArchiveExts: true),

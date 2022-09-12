@@ -76,6 +76,7 @@ namespace BizHawk.Client.EmuHawk
 			["GEN"] = "Genesis",
 			["SMS"] = "Sega Master System",
 			["PSX"] = "PlayStation",
+			["JAG"] = "Jaguar",
 			["Lynx"] = "Lynx",
 			["AppleII"] = "Apple II",
 			["O2"] = "Odyssey 2 / Philips Videopac+ G7400",

@@ -35,6 +35,7 @@
 		<Compile Update="Consoles/Atari/2600/Atari2600.*.cs" DependentUpon="Atari2600.cs" />
 		<Compile Update="Consoles/Atari/A7800Hawk/A7800Hawk.*.cs" DependentUpon="A7800Hawk.cs" />
 		<Compile Update="Consoles/Atari/A7800Hawk/MemoryMap.cs" DependentUpon="A7800Hawk.cs" />
+		<Compile Update="Consoles/Atari/jaguar/VirtualJaguar.*.cs" DependentUpon="VirtualJaguar.cs" />
 		<Compile Update="Consoles/Atari/lynx/Lynx.*.cs" DependentUpon="Lynx.cs" />
 		<Compile Update="Consoles/Coleco/ColecoVision.*.cs" DependentUpon="ColecoVision.cs" />
 		<Compile Update="Consoles/GCE/Vectrex/VectrexHawk.*.cs" DependentUpon="VectrexHawk..cs" />

@@ -143,6 +143,12 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption(SHA1Checksum.Dummy, 131072, "NDS", "firmwarei", "DSi_Firmware.bin", "DSi Firmware");
 			FirmwareAndOption(SHA1Checksum.Dummy, 251658304, "NDS", "nand", "DSi_Nand.bin", "DSi NAND");
 
+			Firmware("JAG", "Bios", "Bios");
+			var kseries = File("F8991B0C385F4E5002FA2A7E2F5E61E8C5213356", 131072, "JAG_bios_k.bin", "Bios (K Series)");
+			var mseries = File("AF643900FEA84234E08B616A6D27F03F0A61DB96", 131072, "JAG_bios_m.bin", "Bios (M Series)");
+			Option("JAG", "Bios", in kseries);
+			Option("JAG", "Bios", in mseries);
+
 			FirmwareAndOption("E4ED47FAE31693E016B081C6BDA48DA5B70D7CCB", 512, "Lynx", "Boot", "LYNX_boot.img", "Boot Rom");
 
 			FirmwareAndOption("5A65B922B562CB1F57DAB51B73151283F0E20C7A", 8192, "INTV", "EROM", "INTV_EROM.bin", "Executive Rom");
