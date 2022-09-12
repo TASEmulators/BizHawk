@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 				SkipMemoryConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			});
 
-			var bios = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("JAG", "Bios"));
+			var bios = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("Jaguar", "Bios"));
 			if (bios.Length != 0x20000)
 			{
 				throw new MissingFirmwareException("Jaguar Bios must be 131072 bytes!");
