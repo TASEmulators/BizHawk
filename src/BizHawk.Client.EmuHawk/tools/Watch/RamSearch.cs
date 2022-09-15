@@ -907,8 +907,7 @@ namespace BizHawk.Client.EmuHawk
 				Message = "Enter a hexadecimal value"
 			};
 
-			var result = this.ShowDialogWithTempMute(prompt);
-			while (result.IsOk())
+			while (this.ShowDialogWithTempMute(prompt).IsOk())
 			{
 				try
 				{
