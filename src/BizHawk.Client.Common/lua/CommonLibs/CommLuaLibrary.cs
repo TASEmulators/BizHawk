@@ -68,7 +68,7 @@ namespace BizHawk.Client.Common
 			return APIs.Comm.Sockets.SendBytes(_th.EnumerateValues<double>(byteArray).Select(d => (byte) d).ToArray());
 		}
 
-		[LuaMethod("socketServerResponse", "receives a message from the Socket server")]
+		[LuaMethod("socketServerResponse", "Receives a message from the Socket server. Since BizHawk 2.6.2, all responses must be of the form $\"{msg.Length:D} {msg}\" i.e. prefixed with the length in base-10 and a space.")]
 		[return: LuaArbitraryStringParam]
 		public string SocketServerResponse()
 		{

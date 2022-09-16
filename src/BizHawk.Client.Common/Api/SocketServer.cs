@@ -71,6 +71,9 @@ namespace BizHawk.Client.Common
 
 		public string GetInfo() => $"{_targetAddr.HostIP}:{_targetAddr.Port}";
 
+		/// <remarks>
+		/// Since BizHawk 2.6.2, all responses must be of the form <c>$"{msg.Length:D} {msg}"</c> i.e. prefixed with the length in base-10 and a space.
+		/// </remarks>
 		public string ReceiveString(Encoding encoding = null)
 		{
 			if (!Connected)
