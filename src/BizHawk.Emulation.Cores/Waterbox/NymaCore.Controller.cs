@@ -27,6 +27,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			_nyma.SetInputDevices(_controllerAdapter.Devices);
 			ControllerDefinition = _controllerAdapter.Definition;
 		}
+
 		protected delegate void ControllerThunk(IController c, byte[] b);
 
 		protected class ControllerAdapter : IStatable
@@ -244,14 +245,22 @@ namespace BizHawk.Emulation.Cores.Waterbox
 									var val = c.AxisValue(name);
 									b[byteStart] = (byte)val;
 									b[byteStart + 1] = (byte)(val >> 8);
-								});									
+								});
 								break;
 							}
 							case InputType.Status:
 								// TODO: wire up statuses to something (not controller, of course)
 								break;
 							case InputType.Rumble:
-								// TODO: wtf do we do here???
+								ret.HapticsChannels.Add(name);
+								// this is a special case, we treat b here as output rather than input
+								// so these thunks are called after the frame has advanced
+								_rumblers.Add((c, b) =>
+								{
+									// TODO: not entirely sure this is correct...
+									var val = b[byteStart] | (b[byteStart + 1] << 8);
+									c.SetHapticChannelStrength(name, val << 7);
+								});
 								break;
 							default:
 							{
@@ -279,13 +288,20 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 			private readonly byte[] _switchPreviousFrame;
 
-			private readonly List<Action<IController, byte[]>> _thunks = new List<Action<IController, byte[]>>();
+			private readonly List<ControllerThunk> _thunks = new();
+			private readonly List<ControllerThunk> _rumblers = new();
 
 			public void SetBits(IController src, byte[] dest)
 			{
 				Array.Clear(dest, 0, dest.Length);
 				foreach (var t in _thunks)
 					t(src, dest);
+			}
+
+			public void DoRumble(IController dest, byte[] src)
+			{
+				foreach (var r in _rumblers)
+					r(dest, src);
 			}
 
 			private const ulong MAGIC = 9569546739673486731;
