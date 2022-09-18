@@ -471,7 +471,7 @@ EXPORT void SetMemoryCallback(u32 which, void (*callback)(u32 addr))
 }
 
 TraceMask_t TraceMask = TRACE_NONE;
-static void (*TraceCallback)(TraceMask_t, u32*, char*, u32) = nullptr;
+static void (*TraceCallback)(TraceMask_t, u32, u32*, char*, u32) = nullptr;
 #define TRACE_STRING_LENGTH 80
 typedef enum {
 	ARMv4T, //ARM v4, THUMB v1
@@ -492,10 +492,10 @@ void TraceTrampoline(TraceMask_t type, u32* regs, u32 opcode)
 		case TRACE_ARM9_ARM: Disassemble_arm(opcode, disasm, ARMv5TE); break;
 		default: __builtin_unreachable();
 	}
-	TraceCallback(type, regs, disasm, NDS::GetSysClockCycles(2));
+	TraceCallback(type, opcode, regs, disasm, NDS::GetSysClockCycles(2));
 }
 
-EXPORT void SetTraceCallback(void (*callback)(TraceMask_t mask, u32* regs, char* disasm, u32 cyclesOff), TraceMask_t mask)
+EXPORT void SetTraceCallback(void (*callback)(TraceMask_t mask, u32 opcode, u32* regs, char* disasm, u32 cyclesOff), TraceMask_t mask)
 {
 	TraceCallback = callback;
 	TraceMask = callback ? mask : TRACE_NONE;

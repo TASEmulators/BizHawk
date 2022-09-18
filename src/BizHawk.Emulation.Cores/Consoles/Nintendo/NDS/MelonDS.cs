@@ -216,7 +216,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			_disassembler = new(_core);
 			_serviceProvider.Register<IDisassemblable>(_disassembler);
 
-			const string TRACE_HEADER = "ARM9+ARM7: PC, opcode, registers (r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15, Cy, CpuMode)";
+			const string TRACE_HEADER = "ARM9+ARM7: Opcode address, opcode, registers (r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, SP, LR, PC, Cy, CpuMode)";
 			Tracer = new TraceBuffer(TRACE_HEADER);
 			_serviceProvider.Register(Tracer);
 		}
@@ -365,6 +365,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		{
 			_core.ResetCaches();
 			SetMemoryCallbacks();
+			_core.SetThreadStartCallback(_threadstartcb);
 			if (_frameThreadPtr != _core.GetFrameThreadProc())
 			{
 				throw new InvalidOperationException("_frameThreadPtr mismatch");
