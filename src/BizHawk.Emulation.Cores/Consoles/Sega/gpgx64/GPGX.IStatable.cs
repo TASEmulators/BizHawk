@@ -20,6 +20,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			RefreshMemCallbacks();
 			Core.gpgx_set_cdd_callback(cd_callback_handle);
 			Core.gpgx_invalidate_pattern_cache();
+			Core.gpgx_set_draw_mask(_settings.GetDrawMask());
 			UpdateVideo();
 		}
 
