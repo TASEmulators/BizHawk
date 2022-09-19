@@ -12,11 +12,6 @@
 #define VIDEO_MODE_16BPP_DIRECT 2
 #define VIDEO_MODE_16BPP_RGB	3
 
-// Virtual screen size stuff
-
-// NB: This virtual width is for PWIDTH = 4
-//#define VIRTUAL_SCREEN_WIDTH            320
-//was:340, 330
 #define VIRTUAL_SCREEN_WIDTH            326
 #define VIRTUAL_SCREEN_HEIGHT_NTSC      240
 #define VIRTUAL_SCREEN_HEIGHT_PAL       256

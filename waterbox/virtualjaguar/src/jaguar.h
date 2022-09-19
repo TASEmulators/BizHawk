@@ -17,19 +17,12 @@ void JaguarWriteByte(uint32_t offset, uint8_t data, uint32_t who = UNKNOWN);
 void JaguarWriteWord(uint32_t offset, uint16_t data, uint32_t who = UNKNOWN);
 void JaguarWriteLong(uint32_t offset, uint32_t data, uint32_t who = UNKNOWN);
 
-bool JaguarInterruptHandlerIsValid(uint32_t i);
-void JaguarDasm(uint32_t offset, uint32_t qt);
-
 void JaguarExecuteNew(void);
 
 // Exports from JAGUAR.CPP
 
-extern int32_t jaguarCPUInExec;
 extern uint32_t jaguarMainROMCRC32, jaguarROMSize, jaguarRunAddress;
-extern char * jaguarEepromsPath;
 extern bool jaguarCartInserted;
-extern bool bpmActive;
-extern uint32_t bpmAddress1;
 
 // Various clock rates
 
@@ -42,10 +35,5 @@ extern uint32_t bpmAddress1;
 
 #define ASSERT_LINE		1
 #define CLEAR_LINE		0
-
-//Temp debug stuff (will go away soon, so don't depend on these)
-
-void DumpMainMemory(void);
-uint8_t * GetRamPtr(void);
 
 #endif	// __JAGUAR_H__

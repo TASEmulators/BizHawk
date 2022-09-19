@@ -11,7 +11,8 @@
 #ifndef __WAVETABLE_H__
 #define __WAVETABLE_H__
 
-// How to preserve const-ness of this stuff without introducing tons of hairiness?
-extern /*const*/ unsigned char waveTableROM[];
+#include <stdint.h>
+
+extern const uint8_t waveTableROM[];
 
 #endif	// __WAVETABLE_H__

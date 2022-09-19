@@ -10,6 +10,8 @@
 // JLH  01/16/2010  Created this log ;-)
 //
 
+#include "wavetable.h"
+
 //
 // In a real Jaguar, these are 16-bit values that are sign-extended to 32 bits.
 // Each entry has 128 values (e.g., SINE goes from F1D200-F1D3FF)
@@ -17,7 +19,7 @@
 // NOTE: This can probably be converted to 32-bit table, since I don't think
 //       that unaligned access is allowed...
 
-/*const*/ unsigned char waveTableROM[4096] =
+const uint8_t waveTableROM[4096] =
 {
     0xFF, 0xFF, 0xC2, 0x01, 0xFF, 0xFF, 0xC4, 0x01, 0xFF, 0xFF, 0xC6, 0x01, 0xFF, 0xFF, 0xC8, 0x01,
     0xFF, 0xFF, 0xCA, 0x01, 0xFF, 0xFF, 0xCC, 0x01, 0xFF, 0xFF, 0xCE, 0x01, 0xFF, 0xFF, 0xD0, 0x01,

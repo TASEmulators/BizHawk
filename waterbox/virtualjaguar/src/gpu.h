@@ -5,7 +5,6 @@
 #ifndef __GPU_H__
 #define __GPU_H__
 
-//#include "types.h"
 #include "memory.h"
 
 #define GPU_CONTROL_RAM_BASE    0x00F02100
@@ -27,8 +26,6 @@ void GPUWriteWord(uint32_t offset, uint16_t data, uint32_t who = UNKNOWN);
 void GPUWriteLong(uint32_t offset, uint32_t data, uint32_t who = UNKNOWN);
 
 uint32_t GPUGetPC(void);
-void GPUReleaseTimeslice(void);
-void GPUResetStats(void);
 uint32_t GPUReadPC(void);
 
 // GPU interrupt numbers (from $F00100, bits 4-8)

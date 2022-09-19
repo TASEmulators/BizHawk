@@ -14,7 +14,4 @@
 
 #include "settings.h"
 
-// Global variables
-
 VJSettings vjs;
-

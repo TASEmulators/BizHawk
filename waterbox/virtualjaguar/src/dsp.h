@@ -15,7 +15,6 @@ void DSPReset(void);
 void DSPExec(int32_t);
 void DSPDone(void);
 void DSPUpdateRegisterBanks(void);
-void DSPHandleIRQs(void);
 void DSPSetIRQLine(int irqline, int state);
 uint8_t DSPReadByte(uint32_t offset, uint32_t who = UNKNOWN);
 uint16_t DSPReadWord(uint32_t offset, uint32_t who = UNKNOWN);
@@ -26,14 +25,8 @@ void DSPWriteLong(uint32_t offset, uint32_t data, uint32_t who = UNKNOWN);
 void DSPReleaseTimeslice(void);
 bool DSPIsRunning(void);
 
-void DSPExecP(int32_t cycles);
-void DSPExecP2(int32_t cycles);
-//void DSPExecP3(int32_t cycles);
-void DSPExecComp(int32_t cycles);
-
 // Exported vars
 
-extern bool doDSPDis;
 extern uint32_t dsp_reg_bank_0[], dsp_reg_bank_1[];
 
 // DSP interrupt numbers (in $F1A100, bits 4-8 & 16)

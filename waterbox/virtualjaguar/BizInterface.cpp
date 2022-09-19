@@ -38,10 +38,6 @@ static s16 latchL, latchR;
 
 EXPORT bool Init(BizSettings* bizSettings, u8* boot, u8* rom, u32 sz)
 {
-	vjs.GPUEnabled = true;
-	vjs.DSPEnabled = true;
-	vjs.usePipelinedDSP = false;
-	vjs.renderType = RT_NORMAL;
 	vjs.hardwareTypeNTSC = bizSettings->hardwareTypeNTSC;
 	vjs.useJaguarBIOS = bizSettings->useJaguarBIOS;
 	vjs.useFastBlitter = bizSettings->useFastBlitter;

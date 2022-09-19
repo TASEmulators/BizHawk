@@ -64,8 +64,6 @@ const char * condition[32] =
 	"never,"
 };
 
-
-
 char * signed_16bit(int16_t val)
 {
 	static char temp[10];
@@ -77,7 +75,6 @@ char * signed_16bit(int16_t val)
 
 	return temp;
 }
-
 
 unsigned dasmjag(int dsp_type, char * bufferOut, unsigned pc)
 {
@@ -180,9 +177,6 @@ unsigned dasmjag(int dsp_type, char * bufferOut, unsigned pc)
 					break;
 	}
 
-#if 0
-	sprintf(bufferOut,"%-24s (%04X)", buffer, op);
-#else
 	if (size == 2)
 		sprintf(bufferOut, "%04X            %-24s", op, buffer);
 	else
@@ -190,7 +184,6 @@ unsigned dasmjag(int dsp_type, char * bufferOut, unsigned pc)
 		uint16_t word1 = ROPCODE(pc), word2 = ROPCODE(pc + 2);
 		sprintf(bufferOut, "%04X %04X %04X  %-24s", op, word1, word2, buffer);
 	}
-#endif
 
 	return size;
 }
