@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-internal static class RoslynUtils
+public static class RoslynUtils
 {
 	public static SyntaxNode? EnclosingTypeDeclarationSyntax(this CSharpSyntaxNode node)
 	{

@@ -1,6 +1,7 @@
 <Project>
 	<Import Project="../Common.props" />
 	<PropertyGroup>
+		<NoWarn>$(NoWarn);SA1200</NoWarn>
 		<RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
 	</PropertyGroup>
 	<ItemGroup>
