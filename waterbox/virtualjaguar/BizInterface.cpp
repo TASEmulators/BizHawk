@@ -4,6 +4,8 @@
 #include "memory.h"
 #include "tom.h"
 #include "joystick.h"
+#include "m68000/m68kinterface.h"
+
 #include "blip_buf.h"
 
 #include <emulibc.h>
@@ -36,7 +38,7 @@ static blip_t* blipL;
 static blip_t* blipR;
 static s16 latchL, latchR;
 
-EXPORT bool Init(BizSettings* bizSettings, u8* boot, u8* rom, u32 sz)
+static void InitCommon(BizSettings* bizSettings)
 {
 	vjs.hardwareTypeNTSC = bizSettings->hardwareTypeNTSC;
 	vjs.useJaguarBIOS = bizSettings->useJaguarBIOS;
@@ -46,8 +48,12 @@ EXPORT bool Init(BizSettings* bizSettings, u8* boot, u8* rom, u32 sz)
 	blipR = blip_new(1024);
 	blip_set_rates(blipL, 48000, 44100);
 	blip_set_rates(blipR, 48000, 44100);
-
 	JaguarInit();
+}
+
+EXPORT bool Init(BizSettings* bizSettings, u8* boot, u8* rom, u32 sz)
+{
+	InitCommon(bizSettings);
 
 	if (!JaguarLoadFile(rom, sz))
 	{
@@ -69,6 +75,26 @@ EXPORT bool Init(BizSettings* bizSettings, u8* boot, u8* rom, u32 sz)
 	JaguarReset();
 
 	return true;
+}
+
+void (*cd_toc_callback)(void * dest);
+void (*cd_read_callback)(int32_t lba, void * dest);
+
+EXPORT void SetCdCallbacks(void (*ctc)(void * dest), void (*cdrc)(int32_t lba, void * dest))
+{
+	cd_toc_callback = ctc;
+	cd_read_callback = cdrc;
+}
+
+EXPORT void InitWithCd(BizSettings* bizSettings, u8* boot)
+{
+	InitCommon(bizSettings);
+	vjs.hardwareTypeAlpine = false;
+
+	SET32(jaguarMainRAM, 0, 0x00200000);
+	memcpy(jagMemSpace + 0xE00000, boot, 0x20000);
+
+	JaguarReset();
 }
 
 extern uint16_t eeprom_ram[64];
@@ -96,42 +122,42 @@ EXPORT void GetMemoryAreas(MemoryArea* m)
 	m[0].Data = jaguarMainRAM;
 	m[0].Name = "Main RAM";
 	m[0].Size = 0x200000;
-	m[0].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_PRIMARY;
+	m[0].Flags = MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_PRIMARY;
 
 	m[1].Data = eeprom_ram;
 	m[1].Name = "EEPROM";
 	m[1].Size = sizeof(eeprom_ram);
-	m[1].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_SAVERAMMABLE;
+	m[1].Flags = MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_SAVERAMMABLE;
 
 	m[2].Data = gpuRAM;
 	m[2].Name = "GPU RAM";
 	m[2].Size = 0x18000;
-	m[2].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE;
+	m[2].Flags = MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN;
 
 	m[3].Data = dspRAM;
 	m[3].Name = "DSP RAM";
 	m[3].Size = 0x5000;
-	m[3].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE;
+	m[3].Flags = MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN;
 
 	m[4].Data = TOMGetRamPointer();
 	m[4].Name = "TOM RAM";
 	m[4].Size = 0x4000;
-	m[4].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE;
+	m[4].Flags = MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN;
 
 	m[5].Data = jaguarMainROM;
 	m[5].Name = "ROM";
 	m[5].Size = jaguarROMSize;
-	m[5].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE;
+	m[5].Flags = MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN;
 
 	m[6].Data = jagMemSpace + 0xE00000;
 	m[6].Name = "BIOS";
 	m[6].Size = 0x20000;
-	m[6].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE;
+	m[6].Flags = MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN;
 
 	m[7].Data = jagMemSpace;
 	m[7].Name = "System Bus";
 	m[7].Size = 0xF20000;
-	m[7].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE;
+	m[7].Flags = MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN;
 }
 
 struct MyFrameInfo : public FrameInfo
@@ -141,7 +167,6 @@ struct MyFrameInfo : public FrameInfo
 };
 
 bool lagged;
-void (*inputcb)() = 0;
 
 EXPORT void FrameAdvance(MyFrameInfo* f)
 {
@@ -195,7 +220,43 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 	blip_read_samples(blipR, f->SoundBuffer + 1, f->Samples, 1);
 }
 
+void (*InputCallback)() = 0;
+
 EXPORT void SetInputCallback(void (*callback)())
 {
-	inputcb = callback;
+	InputCallback = callback;
+}
+
+void (*ReadCallback)(u32) = 0;
+void (*WriteCallback)(u32) = 0;
+void (*ExecuteCallback)(u32) = 0;
+
+EXPORT void SetMemoryCallback(u32 which, void (*callback)(u32))
+{
+	switch (which)
+	{
+		case 0: ReadCallback = callback; break;
+		case 1: WriteCallback = callback; break;
+		case 2: ExecuteCallback = callback; break;
+	}
+}
+
+void (*TraceCallback)(u32*) = 0;
+
+EXPORT void SetTraceCallback(void (*callback)(u32*))
+{
+	TraceCallback = callback;
+}
+
+EXPORT void GetRegisters(u32* regs)
+{
+	for (u32 i = 0; i < 18; i++)
+	{
+		regs[i] = m68k_get_reg(NULL, (m68k_register_t)i);
+	}
+}
+
+EXPORT void SetRegister(u32 which, u32 val)
+{
+	m68k_set_reg((m68k_register_t)which, val);
 }

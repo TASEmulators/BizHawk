@@ -27,7 +27,6 @@ uint8_t joypad1Buttons[21];
 static bool joysticksEnabled;
 
 extern bool lagged;
-extern void (*inputcb)();
 
 void JoystickInit(void)
 {
@@ -53,8 +52,7 @@ void JoystickDone(void)
 uint16_t JoystickReadWord(uint32_t offset)
 {
 	lagged = false;
-	if (__builtin_expect(!!inputcb, false))
-		inputcb();
+	MAYBE_CALLBACK(InputCallback);
 
 	uint8_t joypad0Offset[16] = {
 		0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x0C, 0xFF, 0xFF, 0xFF, 0x08, 0xFF, 0x04, 0x00, 0xFF

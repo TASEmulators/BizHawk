@@ -36,4 +36,16 @@ extern bool jaguarCartInserted;
 #define ASSERT_LINE		1
 #define CLEAR_LINE		0
 
+// Callbacks
+
+extern void (*InputCallback)();
+
+extern void (*ReadCallback)(uint32_t);
+extern void (*WriteCallback)(uint32_t);
+extern void (*ExecuteCallback)(uint32_t);
+
+extern void (*TraceCallback)(uint32_t*);
+
+#define MAYBE_CALLBACK(callback, ...) do { if (__builtin_expect(!!callback, false)) callback(__VA_ARGS__); } while (0)
+
 #endif	// __JAGUAR_H__

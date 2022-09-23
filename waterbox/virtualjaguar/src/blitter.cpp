@@ -642,6 +642,11 @@ void blitter_generic(uint32_t cmd)
 			uint32_t pixelSize = (size - 1) << 16;
 			a2_x = (a2_x + pixelSize) & ~pixelSize;
 		}
+
+		a1_x += a1_step_x;
+		a1_y += a1_step_y;
+		a2_x += a2_step_x;
+		a2_y += a2_step_y;
 	}
 
 	WREG(A1_PIXEL,  (a1_y & 0xFFFF0000) | ((a1_x >> 16) & 0xFFFF));
@@ -1670,20 +1675,20 @@ void BlitterMidsummer2(void)
 					ADDBMUX(addb_x, addb_y, addbsel, a1_x, a1_y, a2_x, a2_y, a1_frac_x, a1_frac_y);
 					ADDRADD(addq_x, addq_y, a1fracldi, adda_x, adda_y, addb_x, addb_y, modx, suba_x, suba_y);
 
-						if (a1addx == 3)
-						{
-							a1_frac_x = addq_x, a1_frac_y = addq_y;
+					if (a1addx == 3)
+					{
+						a1_frac_x = addq_x, a1_frac_y = addq_y;
 
-							addasel = 2, addbsel = 0, a1fracldi = false;
-							ADDAMUX(adda_x, adda_y, addasel, a1_step_x, a1_step_y, a1_stepf_x, a1_stepf_y, a2_step_x, a2_step_y,
-								a1_inc_x, a1_inc_y, a1_incf_x, a1_incf_y, adda_xconst, adda_yconst, addareg, suba_x, suba_y);
-							ADDBMUX(addb_x, addb_y, addbsel, a1_x, a1_y, a2_x, a2_y, a1_frac_x, a1_frac_y);
-							ADDRADD(addq_x, addq_y, a1fracldi, adda_x, adda_y, addb_x, addb_y, modx, suba_x, suba_y);
+						addasel = 2, addbsel = 0, a1fracldi = false;
+						ADDAMUX(adda_x, adda_y, addasel, a1_step_x, a1_step_y, a1_stepf_x, a1_stepf_y, a2_step_x, a2_step_y,
+							a1_inc_x, a1_inc_y, a1_incf_x, a1_incf_y, adda_xconst, adda_yconst, addareg, suba_x, suba_y);
+						ADDBMUX(addb_x, addb_y, addbsel, a1_x, a1_y, a2_x, a2_y, a1_frac_x, a1_frac_y);
+						ADDRADD(addq_x, addq_y, a1fracldi, adda_x, adda_y, addb_x, addb_y, modx, suba_x, suba_y);
 
-							a1_x = addq_x, a1_y = addq_y;
-						}
-						else
-							a1_x = addq_x, a1_y = addq_y;
+						a1_x = addq_x, a1_y = addq_y;
+					}
+					else
+						a1_x = addq_x, a1_y = addq_y;
 				}
 
 				if (a2_add)
@@ -2054,7 +2059,7 @@ void DATA(uint64_t &wdata, uint8_t &dcomp, uint8_t &zcomp, bool &nowrite,
 	uint8_t dech38el[2][8] = { { 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80 },
 		{ 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 } };
 
-			int en = (dend & 0x3F ? 1 : 0);
+	int en = (dend & 0x3F ? 1 : 0);
 	uint8_t e_coarse = decl38e[en][(dend & 0x38) >> 3];
 	uint8_t e_fine = decl38e[(e_coarse & 0x01) ^ 0x01][dend & 0x07];
 	e_fine &= 0xFE;

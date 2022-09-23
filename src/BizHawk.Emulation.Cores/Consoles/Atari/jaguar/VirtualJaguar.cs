@@ -1,18 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
+using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Emulation.Cores.Atari.Jaguar
 {
 	[PortedCore(CoreNames.VirtualJaguar, "Niels Wagenaar, Carwin Jones, Adam Green, James L. Hammons", "2.1.3", "https://icculus.org/virtualjaguar/", isReleased: false)]
-	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
-	public partial class VirtualJaguar : WaterboxCore, IRegionable
+	public partial class VirtualJaguar : WaterboxCore, IRegionable, IDriveLight
 	{
 		private readonly LibVirtualJaguar _core;
+		private readonly JaguarDisassembler _disassembler;
 
 		[CoreConstructor(VSystemID.Raw.JAG)]
 		public VirtualJaguar(CoreLoadParameters<object, VirtualJaguarSyncSettings> lp)
@@ -34,6 +37,11 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 			Region = _syncSettings.NTSC ? DisplayType.NTSC : DisplayType.PAL;
 			VsyncNumerator = _syncSettings.NTSC ? 60 : 50;
 
+			InitMemoryCallbacks();
+			_traceCallback = MakeTrace;
+			_cdTocCallback = CDTOCCallback;
+			_cdReadCallback = CDReadCallback;
+
 			_core = PreInit<LibVirtualJaguar>(new WaterboxOptions
 			{
 				Filename = "virtualjaguar.wbx",
@@ -44,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 				MmapHeapSizeKB = 64 * 1024,
 				SkipCoreConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
-			});
+			}, new Delegate[] { _readCallback, _writeCallback, _execCallback, _traceCallback, _cdTocCallback, _cdReadCallback, });
 
 			var bios = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("Jaguar", "Bios"));
 			if (bios.Length != 0x20000)
@@ -59,19 +67,59 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 				UseFastBlitter = _syncSettings.UseFastBlitter,
 			};
 
-			var rom = lp.Roms[0].FileData;
-			unsafe
+			if (lp.Discs.Count > 0)
 			{
-				fixed (byte* rp = rom, bp = bios)
+#if false
+				_cd = lp.Discs[0].DiscData;
+				_cdReader = new(_cd);
+#else
+				_cd = new Disc[lp.Discs.Count];
+				_cdReader = new DiscSectorReader[lp.Discs.Count];
+				for (int i = 0; i < lp.Discs.Count; i++)
 				{
-					if (!_core.Init(ref settings, (IntPtr)bp, (IntPtr)rp, rom.Length))
+					_cd[i] = lp.Discs[i].DiscData;
+					_cdReader[i] = new(lp.Discs[i].DiscData);
+				}
+#endif
+				_core.SetCdCallbacks(_cdTocCallback, _cdReadCallback);
+
+				unsafe
+				{
+					fixed (byte* bp = bios)
 					{
-						throw new Exception("Core rejected the rom!");
+						_core.InitWithCd(ref settings, (IntPtr)bp);
+					}
+				}
+			}
+			else
+			{
+				_cdTocCallback = null;
+				_cdReadCallback = null;
+				var rom = lp.Roms[0].FileData;
+				unsafe
+				{
+					fixed (byte* rp = rom, bp = bios)
+					{
+						if (!_core.Init(ref settings, (IntPtr)bp, (IntPtr)rp, rom.Length))
+						{
+							throw new Exception("Core rejected the rom!");
+						}
 					}
 				}
 			}
 
+			_core.SetCdCallbacks(null, null);
+
 			PostInit();
+
+			_core.SetCdCallbacks(_cdTocCallback, _cdReadCallback);
+
+			_disassembler = new();
+			_serviceProvider.Register<IDisassemblable>(_disassembler);
+
+			const string TRACE_HEADER = "M68K: PC, machine code, mnemonic, operands, registers (D0-D7, A0-A7, SR), flags (XNZVC)";
+			Tracer = new TraceBuffer(TRACE_HEADER);
+			_serviceProvider.Register(Tracer);
 		}
 
 		private static readonly IReadOnlyList<string> JaguarButtonsOrdered = new[]
@@ -150,6 +198,9 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
+			_core.SetTraceCallback(Tracer.IsEnabled() ? _traceCallback : null);
+			DriveLightOn = false;
+
 			return new LibVirtualJaguar.FrameInfo()
 			{
 				Player1 = GetButtons(controller, 1),
@@ -158,6 +209,143 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 			};
 		}
 
+		protected override void LoadStateBinaryInternal(BinaryReader reader)
+		{
+			SetMemoryCallbacks();
+			_core.SetCdCallbacks(_cdTocCallback, _cdReadCallback);
+		}
+
 		public DisplayType Region { get; }
+
+		public bool IsJaguarCD => _cd != null;
+		public bool DriveLightEnabled => IsJaguarCD;
+		public bool DriveLightOn { get; private set; }
+
+		private readonly LibVirtualJaguar.CDTOCCallback _cdTocCallback;
+		private readonly LibVirtualJaguar.CDReadCallback _cdReadCallback;
+
+#if false // uh oh, we don't actually have multisession disc support, so...
+		private readonly Disc _cd;
+		private readonly DiscSectorReader _cdReader;
+
+		private void CDTOCCallback(IntPtr dst)
+		{
+			var lastLeadOutTs = new Timestamp(_cd.TOC.LeadoutLBA + 150);
+
+			var toc = new LibVirtualJaguar.TOC
+			{
+				Padding0 = 0,
+				Padding1 = 0,
+				NumSessions = (byte)(_cd.Structure.Sessions.Count - 1),
+				MinTrack = (byte)_cd.TOC.FirstRecordedTrackNumber,
+				MaxTrack = (byte)_cd.TOC.LastRecordedTrackNumber,
+				LastLeadOutMins = lastLeadOutTs.MIN,
+				LastLeadOutSecs = lastLeadOutTs.SEC,
+				LastLeadOutFrames = lastLeadOutTs.FRAC,
+				Tracks = new LibVirtualJaguar.TOC.Track[127],
+			};
+
+			var trackNum = 0;
+			for (int i = 1; i < _cd.Structure.Sessions.Count; i++)
+			{
+				var session = _cd.Structure.Sessions[i];
+				for (int j = 1; j < session.InformationTrackCount; j++)
+				{
+					var track = session.Tracks[trackNum];
+					toc.Tracks[i].TrackNum = (byte)track.Number;
+					var ts = new Timestamp(track.LBA + 150);
+					toc.Tracks[i].StartMins = ts.MIN;
+					toc.Tracks[i].StartSecs = ts.SEC;
+					toc.Tracks[i].StartFrames = ts.FRAC;
+					toc.Tracks[i].SessionNum = (byte)(i - 1);
+					var durTs = new Timestamp(track.NextTrack.LBA - track.LBA);
+					toc.Tracks[i].DurMins = durTs.MIN;
+					toc.Tracks[i].DurSecs = durTs.SEC;
+					toc.Tracks[i].DurFrames = durTs.FRAC;
+					trackNum++;
+				}
+			}
+
+			Marshal.StructureToPtr(toc, dst, false);
+		}
+
+		private void CDReadCallback(int lba, IntPtr dst)
+		{
+			var buf = new byte[2352];
+			_cdReader.ReadLBA_2352(lba, buf, 0);
+			Marshal.Copy(buf, 0, dst, 2352);
+			DriveLightOn = true;
+		}
+
+#else
+
+		private readonly Disc[] _cd;
+		private readonly DiscSectorReader[] _cdReader;
+		private int[] _cdLbaOffsets;
+
+		private void CDTOCCallback(IntPtr dst)
+		{
+			var lastLeadOutTs = new Timestamp(_cd.Sum(c => c.TOC.LeadoutLBA) + _cd.Length * 150);
+
+			var toc = new LibVirtualJaguar.TOC
+			{
+				Padding0 = 0,
+				Padding1 = 0,
+				NumSessions = (byte)_cd.Length,
+				MinTrack = (byte)_cd[0].TOC.FirstRecordedTrackNumber,
+				MaxTrack = (byte)(_cd[0].TOC.FirstRecordedTrackNumber + _cd.Sum(c => c.Session1.InformationTrackCount - c.TOC.FirstRecordedTrackNumber)),
+				LastLeadOutMins = lastLeadOutTs.MIN,
+				LastLeadOutSecs = lastLeadOutTs.SEC,
+				LastLeadOutFrames = lastLeadOutTs.FRAC,
+				Tracks = new LibVirtualJaguar.TOC.Track[127],
+			};
+
+			var trackNum = 0;
+			var lbaOffset = 0;
+			var trackOffset = 0;
+			_cdLbaOffsets = new int[_cd.Length];
+			for (int i = 0; i < _cd.Length; i++)
+			{
+				var session = _cd[i].Session1;
+				for (int j = 0; j < session.InformationTrackCount; j++)
+				{
+					var track = session.Tracks[j + 1];
+					toc.Tracks[trackNum].TrackNum = (byte)(trackOffset + track.Number);
+					var ts = new Timestamp(lbaOffset + track.LBA + 150);
+					toc.Tracks[trackNum].StartMins = ts.MIN;
+					toc.Tracks[trackNum].StartSecs = ts.SEC;
+					toc.Tracks[trackNum].StartFrames = ts.FRAC;
+					toc.Tracks[trackNum].SessionNum = (byte)i;
+					var durTs = new Timestamp(track.NextTrack.LBA - track.LBA);
+					toc.Tracks[trackNum].DurMins = durTs.MIN;
+					toc.Tracks[trackNum].DurSecs = durTs.SEC;
+					toc.Tracks[trackNum].DurFrames = durTs.FRAC;
+					trackNum++;
+				}
+
+				trackOffset += session.InformationTrackCount;
+				lbaOffset += session.LeadoutTrack.LBA - session.FirstInformationTrack.LBA + 150;
+				_cdLbaOffsets[i] = lbaOffset;
+			}
+
+			Marshal.StructureToPtr(toc, dst, false);
+		}
+
+		private void CDReadCallback(int lba, IntPtr dst)
+		{
+			var buf = new byte[2352];
+			for (int i = 0; i < _cdReader.Length; i++)
+			{
+				if (lba < _cdLbaOffsets[i])
+				{
+					_cdReader[i].ReadLBA_2352(lba - (i == 0 ? 0 : _cdLbaOffsets[i - 1]), buf, 0);
+					break;
+				}
+			}
+
+			Marshal.Copy(buf, 0, dst, 2352);
+			DriveLightOn = true;
+		}
+#endif
 	}
 }

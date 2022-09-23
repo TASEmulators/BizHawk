@@ -22,7 +22,6 @@ uint32_t DSPReadLong(uint32_t offset, uint32_t who = UNKNOWN);
 void DSPWriteByte(uint32_t offset, uint8_t data, uint32_t who = UNKNOWN);
 void DSPWriteWord(uint32_t offset, uint16_t data, uint32_t who = UNKNOWN);
 void DSPWriteLong(uint32_t offset, uint32_t data, uint32_t who = UNKNOWN);
-void DSPReleaseTimeslice(void);
 bool DSPIsRunning(void);
 
 // Exported vars

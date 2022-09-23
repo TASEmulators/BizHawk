@@ -219,14 +219,6 @@ static uint8_t dsp_ram_8[0x2000];
 
 #define BRANCH_CONDITION(x)		dsp_branch_condition_table[(x) + ((jaguar_flags & 7) << 5)]
 
-static uint32_t dsp_in_exec = 0;
-static uint32_t dsp_releaseTimeSlice_flag = 0;
-
-void DSPReleaseTimeslice(void)
-{
-	dsp_releaseTimeSlice_flag = 1;
-}
-
 void dsp_build_branch_condition_table(void)
 {
 	for(int i=0; i<65536; i++)
@@ -457,7 +449,6 @@ void DSPWriteLong(uint32_t offset, uint32_t data, uint32_t who)
 					if (JERRYIRQEnabled(IRQ2_DSP))
 					{
 						JERRYSetPendingIRQ(IRQ2_DSP);
-						DSPReleaseTimeslice();
 						m68k_set_irq(2);
 					}
 					data &= ~CPUINT;
@@ -466,7 +457,6 @@ void DSPWriteLong(uint32_t offset, uint32_t data, uint32_t who)
 				if (data & DSPINT0)
 				{
 					m68k_end_timeslice();
-					DSPReleaseTimeslice();
 					DSPSetIRQLine(DSPIRQ_CPU, ASSERT_LINE);
 					data &= ~DSPINT0;
 				}
@@ -478,8 +468,6 @@ void DSPWriteLong(uint32_t offset, uint32_t data, uint32_t who)
 				{
 					if (who == M68K)
 						m68k_end_timeslice();
-					else if (who == DSP)
-						DSPReleaseTimeslice();
 				}
 				break;
 			}
@@ -505,7 +493,7 @@ void DSPUpdateRegisterBanks(void)
 	int bank = (dsp_flags & REGPAGE);
 
 	if (dsp_flags & IMASK)
-		bank = 0;							// IMASK forces main bank to be bank 0
+		bank = 0;
 
 	if (bank)
 		dsp_reg = dsp_reg_bank_1, dsp_alternate_reg = dsp_reg_bank_0;
@@ -593,7 +581,6 @@ void DSPReset(void)
 	dsp_data_organization = 0xFFFFFFFF;
 	dsp_control			  = 0x00002000;
 	dsp_div_control		  = 0x00000000;
-	dsp_in_exec			  = 0;
 
 	dsp_reg = dsp_reg_bank_0;
 	dsp_alternate_reg = dsp_reg_bank_1;
@@ -617,9 +604,6 @@ void DSPDone(void)
 //
 void DSPExec(int32_t cycles)
 {
-	dsp_releaseTimeSlice_flag = 0;
-	dsp_in_exec++;
-
 	while (cycles > 0 && DSP_RUNNING)
 	{
 		if (IMASKCleared)
@@ -636,8 +620,6 @@ void DSPExec(int32_t cycles)
 		dsp_opcode[index]();
 		cycles -= dsp_opcode_cycles[index];
 	}
-
-	dsp_in_exec--;
 }
 
 //
@@ -959,7 +941,7 @@ static void dsp_opcode_normi(void)
 static void dsp_opcode_mmult(void)
 {
 	int count	= dsp_matrix_control&0x0f;
-	uint32_t addr = dsp_pointer_to_matrix; // in the dsp ram
+	uint32_t addr = dsp_pointer_to_matrix;
 	int64_t accum = 0;
 	uint32_t res;
 

@@ -295,7 +295,7 @@ uint16_t GPUReadWord(uint32_t offset, uint32_t who)
 
 		uint32_t data = GPUReadLong(offset & 0xFFFFFFFC, who);
 
-		if (offset & 0x02)			// Cases 0 & 2...
+		if (offset & 0x02)
 			return data & 0xFFFF;
 		else
 			return data >> 16;
@@ -436,12 +436,13 @@ void GPUWriteWord(uint32_t offset, uint16_t data, uint32_t who)
 //
 // GPU dword access (write)
 //
-void GPUWriteLong(uint32_t offset, uint32_t data, uint32_t who/*=UNKNOWN*/)
+void GPUWriteLong(uint32_t offset, uint32_t data, uint32_t who)
 {
 	if ((offset >= GPU_WORK_RAM_BASE) && (offset <= GPU_WORK_RAM_BASE + 0x0FFC))
 	{
 		offset &= 0xFFF;
 		SET32(gpu_ram_8, offset, data);
+		return;
 	}
 	else if ((offset >= GPU_CONTROL_RAM_BASE) && (offset <= GPU_CONTROL_RAM_BASE + 0x1C))
 	{
@@ -465,7 +466,6 @@ void GPUWriteLong(uint32_t offset, uint32_t data, uint32_t who/*=UNKNOWN*/)
 				gpu_matrix_control = data;
 				break;
 			case 0x08:
-				// This can only point to long aligned addresses
 				gpu_pointer_to_matrix = data & 0xFFFFFFFC;
 				break;
 			case 0x0C:
@@ -492,7 +492,6 @@ void GPUWriteLong(uint32_t offset, uint32_t data, uint32_t who/*=UNKNOWN*/)
 				{
 					GPUSetIRQLine(0, ASSERT_LINE);
 					m68k_end_timeslice();
-					DSPReleaseTimeslice();
 					data &= ~0x04;
 				}
 
@@ -509,7 +508,11 @@ void GPUWriteLong(uint32_t offset, uint32_t data, uint32_t who/*=UNKNOWN*/)
 				gpu_div_control = data;
 				break;
 		}
+
+		return;
 	}
+
+	JaguarWriteLong(offset, data, who);
 }
 
 //
@@ -851,9 +854,9 @@ static void gpu_opcode_pack(void)
 {
 	uint32_t val = RN;
 
-	if (IMM_1 == 0)				// Pack
+	if (IMM_1 == 0)
 		RN = ((val >> 10) & 0x0000F000) | ((val >> 5) & 0x00000F00) | (val & 0x000000FF);
-	else						// Unpack
+	else
 		RN = ((val & 0x0000F000) << 10) | ((val & 0x00000F00) << 5) | (val & 0x000000FF);
 }
 

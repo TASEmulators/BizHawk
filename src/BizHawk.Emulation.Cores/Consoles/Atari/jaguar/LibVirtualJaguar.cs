@@ -8,34 +8,6 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 {
 	public abstract class LibVirtualJaguar : LibWaterboxCore
 	{
-		[StructLayout(LayoutKind.Sequential)]
-		public struct Settings
-		{
-			public bool NTSC;
-			public bool UseBIOS;
-			public bool UseFastBlitter;
-		}
-
-		[StructLayout(LayoutKind.Sequential)]
-		public new class FrameInfo : LibWaterboxCore.FrameInfo
-		{
-			public Buttons Player1;
-			public Buttons Player2;
-			public bool Reset;
-		}
-
-		[BizImport(CC)]
-		public abstract bool Init(ref Settings s, IntPtr bios, IntPtr rom, int romsize);
-
-		[BizImport(CC)]
-		public abstract bool SaveRamIsDirty();
-
-		[BizImport(CC)]
-		public abstract void GetSaveRam(byte[] dst);
-
-		[BizImport(CC)]
-		public abstract void PutSaveRam(byte[] src);
-
 		[Flags]
 		public enum Buttons : uint
 		{
@@ -61,5 +33,99 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 			Option = 1 << 19,
 			Pause = 1 << 20,
 		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		public struct Settings
+		{
+			public bool NTSC;
+			public bool UseBIOS;
+			public bool UseFastBlitter;
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		public new class FrameInfo : LibWaterboxCore.FrameInfo
+		{
+			public Buttons Player1;
+			public Buttons Player2;
+			public bool Reset;
+		}
+
+		[BizImport(CC)]
+		public abstract bool Init(ref Settings s, IntPtr bios, IntPtr rom, int romsize);
+
+		[StructLayout(LayoutKind.Sequential)]
+		public struct TOC
+		{
+			public byte Padding0;
+			public byte Padding1;
+			public byte NumSessions;
+			public byte MinTrack;
+			public byte MaxTrack;
+			public byte LastLeadOutMins;
+			public byte LastLeadOutSecs;
+			public byte LastLeadOutFrames;
+
+			[StructLayout(LayoutKind.Sequential)]
+			public struct Track
+			{
+				public byte TrackNum;
+				public byte StartMins;
+				public byte StartSecs;
+				public byte StartFrames;
+				public byte SessionNum;
+				public byte DurMins;
+				public byte DurSecs;
+				public byte DurFrames;
+			}
+
+			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 127)]
+			public Track[] Tracks;
+		}
+
+		[UnmanagedFunctionPointer(CC)]
+		public delegate void CDTOCCallback(IntPtr dst);
+
+		[UnmanagedFunctionPointer(CC)]
+		public delegate void CDReadCallback(int lba, IntPtr dst);
+
+		[BizImport(CC)]
+		public abstract void SetCdCallbacks(CDTOCCallback cdtc, CDReadCallback cdrc);
+
+		[BizImport(CC)]
+		public abstract void InitWithCd(ref Settings s, IntPtr bios);
+
+		[BizImport(CC)]
+		public abstract bool SaveRamIsDirty();
+
+		[BizImport(CC)]
+		public abstract void GetSaveRam(byte[] dst);
+
+		[BizImport(CC)]
+		public abstract void PutSaveRam(byte[] src);
+
+		[UnmanagedFunctionPointer(CC)]
+		public delegate void MemoryCallback(uint addr);
+
+		[BizImport(CC)]
+		public abstract void SetMemoryCallback(int which, MemoryCallback callback);
+
+		[UnmanagedFunctionPointer(CC)]
+		public delegate void TraceCallback(IntPtr regs);
+
+		[BizImport(CC)]
+		public abstract void SetTraceCallback(TraceCallback callback);
+
+		[BizImport(CC)]
+		public abstract void GetRegisters(uint[] regs);
+
+		public enum M68KRegisters : uint
+		{
+			D0, D1, D2, D3, D4, D5, D6, D7,
+			A0, A1, A2, A3, A4, A5, A6, A7,
+			PC, SR,
+		}
+
+		[BizImport(CC)]
+		public abstract void SetRegister(M68KRegisters which, int val);
 	}
 }

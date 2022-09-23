@@ -20,6 +20,7 @@
 #include <time.h>
 #include <string.h>
 #include "blitter.h"
+#include "cdhle.h"
 #include "cdrom.h"
 #include "dac.h"
 #include "dsp.h"
@@ -50,10 +51,34 @@ extern uint8_t jagMemSpace[];
 uint32_t jaguarMainROMCRC32, jaguarROMSize, jaguarRunAddress;
 bool jaguarCartInserted = false;
 bool lowerField = false;
+bool jaguarCdInserted = false;
 
 void M68KInstructionHook(void)
 {
-	// TODO: Trace/Exec callback
+	if (jaguarCdInserted)
+	{
+		uint32_t pc = m68k_get_reg(NULL, M68K_REG_PC);
+		if (pc >= 0x3000 && pc <= 0x306C)
+		{
+			CDHLEHook((pc - 0x3000) / 6);
+			// return
+			uint32_t sp = m68k_get_reg(NULL, M68K_REG_SP);
+			m68k_set_reg(M68K_REG_PC, m68k_read_memory_32(sp));
+			m68k_set_reg(M68K_REG_SP, sp + 4);
+		}
+	}
+
+	if (__builtin_expect(!!TraceCallback, false))
+	{
+		uint32_t regs[18];
+		for (uint32_t i = 0; i < 18; i++)
+		{
+			regs[i] = m68k_get_reg(NULL, (m68k_register_t)i);
+		}
+		TraceCallback(regs); 
+	}
+
+	MAYBE_CALLBACK(ExecuteCallback, m68k_get_reg(NULL, M68K_REG_PC));
 }
 
 //
@@ -73,6 +98,8 @@ int irq_ack_handler(int level)
 
 unsigned int m68k_read_memory_8(unsigned int address)
 {
+	MAYBE_CALLBACK(ReadCallback, address);
+
 	address &= 0x00FFFFFF;
 
 	unsigned int retVal = 0;
@@ -97,6 +124,8 @@ unsigned int m68k_read_memory_8(unsigned int address)
 
 unsigned int m68k_read_memory_16(unsigned int address)
 {
+	MAYBE_CALLBACK(ReadCallback, address);
+
 	address &= 0x00FFFFFF;
 
     unsigned int retVal = 0;
@@ -129,6 +158,8 @@ unsigned int m68k_read_memory_16(unsigned int address)
 
 unsigned int m68k_read_memory_32(unsigned int address)
 {
+	MAYBE_CALLBACK(ReadCallback, address);
+
 	address &= 0x00FFFFFF;
 
 	uint32_t retVal = 0;
@@ -148,6 +179,8 @@ unsigned int m68k_read_memory_32(unsigned int address)
 
 void m68k_write_memory_8(unsigned int address, unsigned int value)
 {
+	MAYBE_CALLBACK(WriteCallback, address);
+
 	address &= 0x00FFFFFF;
 
 	if ((address >= 0x000000) && (address <= 0x1FFFFF))
@@ -164,6 +197,8 @@ void m68k_write_memory_8(unsigned int address, unsigned int value)
 
 void m68k_write_memory_16(unsigned int address, unsigned int value)
 {
+	MAYBE_CALLBACK(WriteCallback, address);
+
 	address &= 0x00FFFFFF;
 
 	if ((address >= 0x000000) && (address <= 0x1FFFFE))
@@ -388,6 +423,7 @@ void JaguarInit(void)
 	TOMInit();
 	JERRYInit();
 	CDROMInit();
+	CDHLEInit();
 }
 
 void HalflineCallback(void);
@@ -410,7 +446,8 @@ void JaguarReset(void)
 	GPUReset();
 	DSPReset();
 	CDROMReset();
-    m68k_pulse_reset();
+	CDHLEReset();
+	m68k_pulse_reset();
 
 	lowerField = false;
 	SetCallbackTime(HalflineCallback, (vjs.hardwareTypeNTSC ? 31.777777777 : 32.0));
@@ -418,6 +455,7 @@ void JaguarReset(void)
 
 void JaguarDone(void)
 {
+	CDHLEDone();
 	CDROMDone();
 	GPUDone();
 	DSPDone();
