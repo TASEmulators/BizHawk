@@ -219,7 +219,7 @@ static void CDSendBlock(void)
 		if (cd_word_alignment)
 		{
 			uint8_t temp2352[2352];
-			cd_read_callback(cd_read_lba, &cd_buf2352[cd_buf_rm]);
+			cd_read_callback(cd_read_lba, temp2352);
 			memmove(&cd_buf2352[cd_buf_rm], &cd_buf2352[cd_buf_rm + cd_word_alignment], 2352 - cd_word_alignment);
 			memcpy(&cd_buf2352[cd_buf_rm + 2352 - cd_word_alignment], &temp2352[0], cd_word_alignment);
 		}
