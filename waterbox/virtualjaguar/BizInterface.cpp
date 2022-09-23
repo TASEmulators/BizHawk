@@ -97,7 +97,7 @@ EXPORT void InitWithCd(BizSettings* bizSettings, u8* boot)
 	JaguarReset();
 }
 
-extern uint16_t eeprom_ram[64];
+extern u16 eeprom_ram[64];
 extern bool eeprom_dirty;
 
 EXPORT bool SaveRamIsDirty()
@@ -117,6 +117,9 @@ EXPORT void PutSaveRam(u8* src)
 	eeprom_dirty = false;
 }
 
+extern u8 gpu_ram_8[0x1000];
+extern u8 dsp_ram_8[0x2000];
+
 EXPORT void GetMemoryAreas(MemoryArea* m)
 {
 	m[0].Data = jaguarMainRAM;
@@ -129,14 +132,14 @@ EXPORT void GetMemoryAreas(MemoryArea* m)
 	m[1].Size = sizeof(eeprom_ram);
 	m[1].Flags = MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_SAVERAMMABLE;
 
-	m[2].Data = gpuRAM;
+	m[2].Data = gpu_ram_8;
 	m[2].Name = "GPU RAM";
-	m[2].Size = 0x18000;
+	m[2].Size = sizeof(gpu_ram_8);
 	m[2].Flags = MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN;
 
-	m[3].Data = dspRAM;
+	m[3].Data = dsp_ram_8;
 	m[3].Name = "DSP RAM";
-	m[3].Size = 0x5000;
+	m[3].Size = sizeof(dsp_ram_8);
 	m[3].Flags = MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN;
 
 	m[4].Data = TOMGetRamPointer();

@@ -215,7 +215,7 @@ uint32_t dsp_convert_zero[32] = {
 
 uint8_t dsp_branch_condition_table[32 * 8];
 static uint16_t mirror_table[65536];
-static uint8_t dsp_ram_8[0x2000];
+uint8_t dsp_ram_8[0x2000];
 
 #define BRANCH_CONDITION(x)		dsp_branch_condition_table[(x) + ((jaguar_flags & 7) << 5)]
 

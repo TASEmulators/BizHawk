@@ -163,7 +163,7 @@ void (*gpu_opcode[64])()=
 	gpu_opcode_store_r14_ri,		gpu_opcode_store_r15_ri,		gpu_opcode_sat24,				gpu_opcode_pack,
 };
 
-static uint8_t gpu_ram_8[0x1000];
+uint8_t gpu_ram_8[0x1000];
 uint32_t gpu_pc;
 static uint32_t gpu_acc;
 static uint32_t gpu_remain;
