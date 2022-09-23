@@ -25,8 +25,9 @@ static bool cd_is_reading;
 static uint32_t cd_read_addr_start;
 static uint32_t cd_read_addr_end;
 static int32_t cd_read_lba;
-static uint8_t cd_buf2352[2352 * 4]; // also 64 * 147
-static uint32_t cd_buf_block_num;
+static uint8_t cd_buf2352[2352 + 128];
+static uint32_t cd_buf_pos;
+static uint32_t cd_buf_rm;
 
 extern void (*cd_toc_callback)(void * dest);
 extern void (*cd_read_callback)(int32_t lba, void * dest);
@@ -63,6 +64,9 @@ static uint32_t cd_boot_len;
 static int32_t cd_boot_lba;
 static uint32_t cd_boot_off;
 
+static bool cd_byte_swapped;
+static uint32_t cd_word_alignment;
+
 void CDHLEInit(void)
 {
 	if (cd_toc_callback && cd_read_callback)
@@ -90,8 +94,9 @@ void CDHLEInit(void)
 		{
 			cd_read_callback(startLba + i, buf2352);
 			static const char* atariHeader = "ATARI APPROVED DATA HEADER ATRI\x20";
+			static const char* byteSwappedHeader = "TARA IPARPVODED TA AEHDAREA RI\x20I"; // some dumps are byteswapped, detect these and fix them
 			
-			for (uint32_t j = 0; j < (2352 - 32 - 4 - 4); j += 2)
+			for (uint32_t j = 0; j < (2352 - 32 - 4 - 4); j++)
 			{
 				if (!memcmp(&buf2352[j], atariHeader, 32))
 				{
@@ -100,6 +105,21 @@ void CDHLEInit(void)
 					cd_boot_len = GET32(buf2352, j + 32 + 4);
 					cd_boot_lba = startLba + i;
 					cd_boot_off = j + 32 + 4 + 4;
+					cd_byte_swapped = false;
+					cd_word_alignment = (4 - j) & 3;
+					foundHeader = true;
+					break;
+				}
+
+				if (!memcmp(&buf2352[j], byteSwappedHeader, 32))
+				{
+					fprintf(stderr, "(byteswapped) startLba + i %04X\n", startLba + i);
+					cd_boot_addr = *(uint32_t*)&buf2352[j + 32];
+					cd_boot_len = *(uint32_t*)&buf2352[j + 32 + 4];
+					cd_boot_lba = startLba + i;
+					cd_boot_off = j + 32 + 4 + 4;
+					cd_byte_swapped = true;
+					cd_word_alignment = (4 - j) & 3;
 					foundHeader = true;
 					break;
 				}
@@ -135,6 +155,16 @@ void CDHLEReset(void)
 		uint8_t buf2352[2352];
 
 		cd_read_callback(lba++, buf2352);
+
+		if (cd_byte_swapped)
+		{
+			uint16_t* cd16buf = (uint16_t*)buf2352;
+			for (uint32_t i = 0; i < (2352 / 2); i++)
+			{
+				cd16buf[i] = __builtin_bswap16(cd16buf[i]);
+			}
+		}
+
 		for (uint32_t i = cd_boot_off; i < 2352 && dstStart < dstEnd;)
 		{
 			uint32_t end = (i + 64) > 2352 ? 2352 : (i + 64);
@@ -147,6 +177,16 @@ void CDHLEReset(void)
 		while (dstStart < dstEnd)
 		{
 			cd_read_callback(lba++, buf2352);
+
+			if (cd_byte_swapped)
+			{
+				uint16_t* cd16buf = (uint16_t*)buf2352;
+				for (uint32_t i = 0; i < 1176; i++)
+				{
+					cd16buf[i] = __builtin_bswap16(cd16buf[i]);
+				}
+			}
+
 			for (uint32_t i = 0; i < 2352 && dstStart < dstEnd;)
 			{
 				uint32_t end = (i + 64) > 2352 ? 2352 : (i + 64);
@@ -170,24 +210,42 @@ void CDHLEDone(void)
 
 static void CDSendBlock(void)
 {
-	if (cd_buf_block_num == 0)
+	if (cd_buf_rm < 64)
 	{
-		for (uint32_t i = 0; i < 4; i++)
+		memmove(&cd_buf2352[0], &cd_buf2352[cd_buf_pos], cd_buf_rm);
+		cd_read_callback(cd_read_lba++, &cd_buf2352[cd_buf_rm]);
+
+		// hack to force word alignment
+		if (cd_word_alignment)
 		{
-			cd_read_callback(cd_read_lba + i, &cd_buf2352[2352 * i]); 
+			uint8_t temp2352[2352];
+			cd_read_callback(cd_read_lba, &cd_buf2352[cd_buf_rm]);
+			memmove(&cd_buf2352[cd_buf_rm], &cd_buf2352[cd_buf_rm + cd_word_alignment], 2352 - cd_word_alignment);
+			memcpy(&cd_buf2352[cd_buf_rm + 2352 - cd_word_alignment], &temp2352[0], cd_word_alignment);
 		}
 
-		cd_read_lba += 4;
+		cd_buf_pos = 0;
+		cd_buf_rm += 2352 - cd_word_alignment;
+
+		if (cd_byte_swapped)
+		{
+			uint16_t* cd16buf = (uint16_t*)cd_buf2352;
+			for (uint32_t i = 0; i < (2352 / 2); i++)
+			{
+				cd16buf[i] = __builtin_bswap16(cd16buf[i]);
+			}
+		}
 	}
 
 	// send one block of data
 	for (uint32_t i = 0; i < 64; i++)
 	{
-		JaguarWriteByte(cd_read_addr_start + i, cd_buf2352[i + 64 * cd_buf_block_num], GPU);
+		JaguarWriteByte(cd_read_addr_start + i, cd_buf2352[cd_buf_pos + i], GPU);
 	}
 
 	cd_read_addr_start += 64;
-	cd_buf_block_num = (cd_buf_block_num + 1) % 147;
+	cd_buf_pos += 64;
+	cd_buf_rm -= 64;
 
 	if (cd_read_addr_start >= cd_read_addr_end)
 	{
@@ -367,7 +425,8 @@ static void CD_read(void)
 		cd_read_addr_start = dstStart;
 		cd_read_addr_end = dstEnd;
 		cd_read_lba = (minutes * 60 + seconds) * 75 + frames - 150;
-		cd_buf_block_num = 0;
+		cd_buf_pos = 0;
+		cd_buf_rm = 0;
 		RemoveCallback(CDHLECallback);
 		SetCallbackTime(CDHLECallback, 180 >> (cd_mode & 1));
 	}
@@ -413,11 +472,13 @@ static void CD_getoc(void)
 
 static void CD_initm(void)
 {
+	fprintf(stderr, "CD_init called %08X\n", m68k_get_reg(NULL, M68K_REG_A0));
 	cd_initm = true;
 }
 
 static void CD_initf(void)
 {
+	fprintf(stderr, "CD_initf called %08X\n", m68k_get_reg(NULL, M68K_REG_A0));
 	cd_initm = false;
 }
 
