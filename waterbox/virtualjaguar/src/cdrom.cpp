@@ -36,7 +36,7 @@ static uint16_t CDROMBusRead(void);
 #define I2SDAT2		BUTCH + 0x28		// i2s FIFO data (old)
 #define UNKNOWN		BUTCH + 0x2C		// Seems to be some sort of I2S interface
 
-static uint8_t cdRam[0x100];
+uint8_t cdRam[0x100];
 static uint16_t cdCmd = 0, cdPtr = 0;
 static bool haveCDGoodness;
 static uint32_t min, sec, frm, block;

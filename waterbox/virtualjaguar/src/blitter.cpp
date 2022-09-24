@@ -29,7 +29,7 @@
 
 // Blitter register RAM (most of it is hidden from the user)
 
-static uint8_t blitter_ram[0x100];
+uint8_t blitter_ram[0x100];
 
 void BlitterMidsummer2(void);
 

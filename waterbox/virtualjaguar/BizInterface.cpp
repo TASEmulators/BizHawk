@@ -119,11 +119,55 @@ EXPORT void PutSaveRam(u8* src)
 
 extern u8 gpu_ram_8[0x1000];
 extern u8 dsp_ram_8[0x2000];
+extern u8 cdRam[0x100];
+extern u8 blitter_ram[0x100];
+extern u8 jerry_ram_8[0x10000];
+static u8 unmapped;
+
+static inline u8* GetSysBusPtr(u64 address)
+{
+	address &= 0xFFFFFF;
+	unmapped = 0xFF;
+	switch (address)
+	{
+		case 0x000000 ... 0x7FFFFF: return &jaguarMainRAM[address & 0x1FFFFF];
+		case 0x800000 ... 0xDFFEFF: return &jaguarMainROM[address - 0x800000];
+		case 0xDFFF00 ... 0xDFFFFF: return &cdRam[address & 0xFF];
+		case 0xE00000 ... 0xE3FFFF: return &jagMemSpace[address];
+		case 0xF00000 ... 0xF021FF: return &TOMGetRamPointer()[address & 0x3FFF];
+		case 0xF02200 ... 0xF0229F: return &blitter_ram[address & 0xFF];
+		case 0xF022A0 ... 0xF02FFF: return &TOMGetRamPointer()[address & 0x3FFF];
+		case 0xF03000 ... 0xF03FFF: return &gpu_ram_8[address & 0xFFF];
+		case 0xF04000 ... 0xF0FFFF: return &TOMGetRamPointer()[address & 0x3FFF];
+		case 0xF10000 ... 0xF1AFFF: return &jerry_ram_8[address & 0xFFFF];
+		case 0xF1B000 ... 0xF1CFFF: return &dsp_ram_8[address - 0xF1B000];
+		case 0xF1D000 ... 0xF1FFFF: return &jerry_ram_8[address & 0xFFFF];
+		case 0xF20000 ... 0xFFFFFF: return &unmapped;
+	}
+}
+
+static void SysBusAccess(u8* buffer, u64 address, u64 count, bool write)
+{
+	if (write)
+	{
+		while (count--)
+		{
+			*GetSysBusPtr(address++) = *buffer++;
+		}
+	}
+	else
+	{
+		while (count--)
+		{
+			*buffer++ = *GetSysBusPtr(address++);
+		}
+	}
+}
 
 EXPORT void GetMemoryAreas(MemoryArea* m)
 {
 	m[0].Data = jaguarMainRAM;
-	m[0].Name = "Main RAM";
+	m[0].Name = "DRAM";
 	m[0].Size = 0x200000;
 	m[0].Flags = MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_PRIMARY;
 
@@ -147,20 +191,30 @@ EXPORT void GetMemoryAreas(MemoryArea* m)
 	m[4].Size = 0x4000;
 	m[4].Flags = MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN;
 
-	m[5].Data = jaguarMainROM;
-	m[5].Name = "ROM";
-	m[5].Size = jaguarROMSize;
+	m[5].Data = jerry_ram_8;
+	m[5].Name = "JERRY RAM";
+	m[5].Size = sizeof(jerry_ram_8);
 	m[5].Flags = MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN;
 
-	m[6].Data = jagMemSpace + 0xE00000;
-	m[6].Name = "BIOS";
-	m[6].Size = 0x20000;
+	m[6].Data = blitter_ram;
+	m[6].Name = "BLITTER RAM";
+	m[6].Size = sizeof(blitter_ram);
 	m[6].Flags = MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN;
 
-	m[7].Data = jagMemSpace;
-	m[7].Name = "System Bus";
-	m[7].Size = 0xF20000;
+	m[7].Data = jaguarMainROM;
+	m[7].Name = "ROM";
+	m[7].Size = jaguarROMSize;
 	m[7].Flags = MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN;
+
+	m[8].Data = jagMemSpace + 0xE00000;
+	m[8].Name = "BIOS";
+	m[8].Size = 0x20000;
+	m[8].Flags = MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN;
+
+	m[9].Data = (void*)SysBusAccess;
+	m[9].Name = "System Bus";
+	m[9].Size = 0x1000000;
+	m[9].Flags = MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_FUNCTIONHOOK;
 }
 
 struct MyFrameInfo : public FrameInfo
