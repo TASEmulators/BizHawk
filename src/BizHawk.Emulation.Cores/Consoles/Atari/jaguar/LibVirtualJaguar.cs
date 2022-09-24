@@ -110,15 +110,18 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 		public abstract void SetMemoryCallback(int which, MemoryCallback callback);
 
 		[UnmanagedFunctionPointer(CC)]
-		public delegate void TraceCallback(IntPtr regs);
+		public delegate void M68KTraceCallback(IntPtr regs);
+
+		[UnmanagedFunctionPointer(CC)]
+		public delegate void RISCTraceCallback(uint pc, IntPtr regs);
 
 		[BizImport(CC)]
-		public abstract void SetTraceCallback(TraceCallback callback);
+		public abstract void SetTraceCallbacks(M68KTraceCallback cpuTraceCallback, RISCTraceCallback gpuTraceCallback, RISCTraceCallback dspTraceCallback);
 
 		[BizImport(CC)]
-		public abstract void GetRegisters(uint[] regs);
+		public abstract void GetRegisters(IntPtr regs);
 
-		public enum M68KRegisters : uint
+		public enum M68KRegisters : int
 		{
 			D0, D1, D2, D3, D4, D5, D6, D7,
 			A0, A1, A2, A3, A4, A5, A6, A7,
@@ -126,6 +129,6 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 		}
 
 		[BizImport(CC)]
-		public abstract void SetRegister(M68KRegisters which, int val);
+		public abstract void SetRegister(int which, int val);
 	}
 }

@@ -5,15 +5,19 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Jaguar
 {
-	public partial class VirtualJaguar : ISettable<object, VirtualJaguar.VirtualJaguarSyncSettings>
+	public partial class VirtualJaguar : ISettable<VirtualJaguar.VirtualJaguarSettings, VirtualJaguar.VirtualJaguarSyncSettings>
 	{
+		private VirtualJaguarSettings _settings;
 		private VirtualJaguarSyncSettings _syncSettings;
 
-		public object GetSettings()
-			=> null;
+		public VirtualJaguarSettings GetSettings()
+			=> _settings.Clone();
 
-		public PutSettingsDirtyBits PutSettings(object o)
-			=> PutSettingsDirtyBits.None;
+		public PutSettingsDirtyBits PutSettings(VirtualJaguarSettings o)
+		{
+			_settings = o;
+			return PutSettingsDirtyBits.None;
+		}
 
 		public VirtualJaguarSyncSettings GetSyncSettings()
 			=> _syncSettings.Clone();
@@ -23,6 +27,30 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 			var ret = VirtualJaguarSyncSettings.NeedsReboot(_syncSettings, o);
 			_syncSettings = o;
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
+		}
+
+		public class VirtualJaguarSettings
+		{
+			[DisplayName("Trace M68K (CPU)")]
+			[Description("")]
+			[DefaultValue(true)]
+			public bool TraceCPU { get; set; }
+
+			[DisplayName("Trace TOM (GPU)")]
+			[Description("")]
+			[DefaultValue(false)]
+			public bool TraceGPU { get; set; }
+
+			[DisplayName("Trace JERRY (DSP)")]
+			[Description("")]
+			[DefaultValue(false)]
+			public bool TraceDSP { get; set; }
+
+			public VirtualJaguarSettings()
+				=> SettingsUtil.SetDefaultValues(this);
+
+			public VirtualJaguarSettings Clone()
+				=> (VirtualJaguarSettings)MemberwiseClone();
 		}
 
 		public class VirtualJaguarSyncSettings
@@ -43,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 			public bool NTSC { get; set; }
 
 			[DisplayName("Skip BIOS")]
-			[Description("BIOS file must still be present")]
+			[Description("BIOS file must still be present. Ignored (set to true) for Jaguar CD")]
 			[DefaultValue(true)]
 			public bool SkipBIOS { get; set; }
 

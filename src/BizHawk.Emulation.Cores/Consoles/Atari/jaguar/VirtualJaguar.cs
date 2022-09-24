@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 		private readonly JaguarDisassembler _disassembler;
 
 		[CoreConstructor(VSystemID.Raw.JAG)]
-		public VirtualJaguar(CoreLoadParameters<object, VirtualJaguarSyncSettings> lp)
+		public VirtualJaguar(CoreLoadParameters<VirtualJaguarSettings, VirtualJaguarSyncSettings> lp)
 			: base(lp.Comm, new Configuration
 			{
 				DefaultWidth = 326,
@@ -31,6 +31,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 				SystemId = VSystemID.Raw.JAG,
 			})
 		{
+			_settings = lp.Settings ?? new();
 			_syncSettings = lp.SyncSettings ?? new();
 
 			ControllerDefinition = CreateControllerDefinition(_syncSettings.P1Active, _syncSettings.P2Active);
@@ -38,7 +39,9 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 			VsyncNumerator = _syncSettings.NTSC ? 60 : 50;
 
 			InitMemoryCallbacks();
-			_traceCallback = MakeTrace;
+			_cpuTraceCallback = MakeCPUTrace;
+			_gpuTraceCallback = MakeGPUTrace;
+			_dspTraceCallback = MakeDSPTrace;
 			_cdTocCallback = CDTOCCallback;
 			_cdReadCallback = CDReadCallback;
 
@@ -52,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 				MmapHeapSizeKB = 64 * 1024,
 				SkipCoreConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
-			}, new Delegate[] { _readCallback, _writeCallback, _execCallback, _traceCallback, _cdTocCallback, _cdReadCallback, });
+			}, new Delegate[] { _readCallback, _writeCallback, _execCallback, _cpuTraceCallback, _gpuTraceCallback, _dspTraceCallback, _cdTocCallback, _cdReadCallback, });
 
 			var bios = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("Jaguar", "Bios"));
 			if (bios.Length != 0x20000)
@@ -117,7 +120,9 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 			_disassembler = new();
 			_serviceProvider.Register<IDisassemblable>(_disassembler);
 
-			const string TRACE_HEADER = "M68K: PC, machine code, mnemonic, operands, registers (D0-D7, A0-A7, SR), flags (XNZVC)";
+			// bleh
+			const string TRACE_HEADER = "M68K: PC, machine code, mnemonic, operands, registers (D0-D7, A0-A7, SR), flags (XNZVC)\r\n"
+				+ "GPU/DSP: PC, machine code, mnemonic, operands, registers (r0-r32)";
 			Tracer = new TraceBuffer(TRACE_HEADER);
 			_serviceProvider.Register(Tracer);
 		}
@@ -198,7 +203,18 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
-			_core.SetTraceCallback(Tracer.IsEnabled() ? _traceCallback : null);
+			if (Tracer.IsEnabled())
+			{
+				_core.SetTraceCallbacks(
+					_settings.TraceCPU ? _cpuTraceCallback : null,
+					_settings.TraceGPU ? _gpuTraceCallback : null,
+					_settings.TraceDSP ? _dspTraceCallback : null);
+			}
+			else
+			{
+				_core.SetTraceCallbacks(null, null, null);
+			}
+
 			DriveLightOn = false;
 
 			return new LibVirtualJaguar.FrameInfo()
