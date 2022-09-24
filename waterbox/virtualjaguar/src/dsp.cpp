@@ -606,6 +606,8 @@ void DSPExec(int32_t cycles)
 {
 	while (cycles > 0 && DSP_RUNNING)
 	{
+		MAYBE_CALLBACK(DSPTraceCallback, dsp_pc, dsp_reg);
+
 		if (IMASKCleared)
 		{
 			DSPHandleIRQsNP();

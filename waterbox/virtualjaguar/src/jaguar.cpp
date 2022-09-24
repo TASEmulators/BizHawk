@@ -68,14 +68,14 @@ void M68KInstructionHook(void)
 		}
 	}
 
-	if (__builtin_expect(!!TraceCallback, false))
+	if (__builtin_expect(!!CPUTraceCallback, false))
 	{
 		uint32_t regs[18];
 		for (uint32_t i = 0; i < 18; i++)
 		{
 			regs[i] = m68k_get_reg(NULL, (m68k_register_t)i);
 		}
-		TraceCallback(regs); 
+		CPUTraceCallback(regs);
 	}
 
 	MAYBE_CALLBACK(ExecuteCallback, m68k_get_reg(NULL, M68K_REG_PC));

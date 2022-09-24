@@ -3,6 +3,8 @@
 #include "settings.h"
 #include "memory.h"
 #include "tom.h"
+#include "gpu.h"
+#include "dsp.h"
 #include "joystick.h"
 #include "m68000/m68kinterface.h"
 
@@ -298,12 +300,19 @@ EXPORT void SetMemoryCallback(u32 which, void (*callback)(u32))
 	}
 }
 
-void (*TraceCallback)(u32*) = 0;
+void (*CPUTraceCallback)(u32*) = 0;
+void (*GPUTraceCallback)(u32, u32*) = 0;
+void (*DSPTraceCallback)(u32, u32*) = 0;
 
-EXPORT void SetTraceCallback(void (*callback)(u32*))
+EXPORT void SetTraceCallbacks(void (*ccb)(u32*), void (*gcb)(u32, u32*), void (*dcb)(u32, u32*))
 {
-	TraceCallback = callback;
+	CPUTraceCallback = ccb;
+	GPUTraceCallback = gcb;
+	DSPTraceCallback = dcb;
 }
+
+extern u32 gpu_pc;
+extern u32 dsp_pc;
 
 EXPORT void GetRegisters(u32* regs)
 {
@@ -311,9 +320,24 @@ EXPORT void GetRegisters(u32* regs)
 	{
 		regs[i] = m68k_get_reg(NULL, (m68k_register_t)i);
 	}
+	memcpy(&regs[18], gpu_reg_bank_0, 128);
+	memcpy(&regs[50], gpu_reg_bank_1, 128);
+	memcpy(&regs[82], dsp_reg_bank_0, 128);
+	memcpy(&regs[114], dsp_reg_bank_1, 128);
+	regs[146] = gpu_pc;
+	regs[147] = dsp_pc;
 }
 
 EXPORT void SetRegister(u32 which, u32 val)
 {
-	m68k_set_reg((m68k_register_t)which, val);
+	switch (which)
+	{
+		case 0 ... 17: m68k_set_reg((m68k_register_t)which, val); break;
+		case 18 ... 49: gpu_reg_bank_0[which - 18] = val; break;
+		case 50 ... 81: gpu_reg_bank_1[which - 50] = val; break;
+		case 82 ... 113: dsp_reg_bank_0[which - 82] = val; break;
+		case 114 ... 145: dsp_reg_bank_1[which - 114] = val; break;
+		case 146: gpu_pc = val; break;
+		case 147: dsp_pc = val; break;
+	}
 }

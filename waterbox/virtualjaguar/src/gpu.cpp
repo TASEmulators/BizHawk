@@ -631,6 +631,8 @@ void GPUExec(int32_t cycles)
 
 	while (cycles > 0 && GPU_RUNNING)
 	{
+		MAYBE_CALLBACK(GPUTraceCallback, gpu_pc, gpu_reg);
+
 		uint16_t opcode = GPUReadWord(gpu_pc, GPU);
 		uint32_t index = opcode >> 10;
 		gpu_opcode_first_parameter = (opcode >> 5) & 0x1F;

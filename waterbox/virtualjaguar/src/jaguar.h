@@ -44,7 +44,9 @@ extern void (*ReadCallback)(uint32_t);
 extern void (*WriteCallback)(uint32_t);
 extern void (*ExecuteCallback)(uint32_t);
 
-extern void (*TraceCallback)(uint32_t*);
+extern void (*CPUTraceCallback)(uint32_t*);
+extern void (*GPUTraceCallback)(uint32_t, uint32_t*);
+extern void (*DSPTraceCallback)(uint32_t, uint32_t*);
 
 #define MAYBE_CALLBACK(callback, ...) do { if (__builtin_expect(!!callback, false)) callback(__VA_ARGS__); } while (0)
 
