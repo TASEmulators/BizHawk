@@ -146,7 +146,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 
 			if (length == 6)
 			{
-				return $"{opcode:X04} {m.PeekUshort(addr + 2, true):X04} {m.PeekUshort(addr + 2, true):X04}  {disasm}";
+				return $"{opcode:X04} {m.PeekUshort(addr + 2, true):X04} {m.PeekUshort(addr + 4, true):X04}  {disasm}";
 			}
 			else
 			{
