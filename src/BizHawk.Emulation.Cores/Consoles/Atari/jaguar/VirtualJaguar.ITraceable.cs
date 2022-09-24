@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 				(sr & 1) > 0 ? "C" : "c");
 			regInfo += " (M68K)";
 
-			Tracer.Put(new(disassembly: $"{pc:X6}:  {disasm}".PadRight(30), registerInfo: regInfo));
+			Tracer.Put(new(disassembly: $"{pc:X6}:  {disasm}".PadRight(50), registerInfo: regInfo));
 		}
 
 		private unsafe void MakeGPUTrace(uint pc, IntPtr r)
