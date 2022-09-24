@@ -133,11 +133,6 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 		public IMemoryCallbackSystem MemoryCallbacks { get; } = new MemoryCallbackSystem(new[] { "System Bus" });
 
-		public bool CanStep(StepType type)
-		{
-			return false;
-		}
-
 		[FeatureNotImplemented]
 		public void Step(StepType type)
 		{

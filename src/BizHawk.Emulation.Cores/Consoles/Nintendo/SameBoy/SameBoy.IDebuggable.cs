@@ -46,8 +46,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			value);
 		}
 
-		public bool CanStep(StepType type) => false;
-
 		[FeatureNotImplemented]
 		public void Step(StepType type) => throw new NotImplementedException();
 

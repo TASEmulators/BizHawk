@@ -51,11 +51,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public IMemoryCallbackSystem MemoryCallbacks { get; } = new MemoryCallbackSystem(new[] { "System Bus" });
 
-		public bool CanStep(StepType type)
-		{
-			return false;
-		}
-
 		[FeatureNotImplemented]
 		public void Step(StepType type)
 		{

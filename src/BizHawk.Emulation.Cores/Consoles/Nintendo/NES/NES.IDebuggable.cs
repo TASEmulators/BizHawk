@@ -10,8 +10,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void SetCpuRegister(string register, int value) => cpu.SetCpuRegister(register, value);
 
-		public bool CanStep(StepType type) => false;
-
 		public IMemoryCallbackSystem MemoryCallbacks { get; } = new MemoryCallbackSystem(new[] { "System Bus" });
 
 		[FeatureNotImplemented]

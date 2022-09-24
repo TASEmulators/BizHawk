@@ -51,8 +51,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			}
 		}
 
-		public bool CanStep(StepType type) => false;
-
 		[FeatureNotImplemented]
 		public void Step(StepType type) => throw new NotImplementedException();
 

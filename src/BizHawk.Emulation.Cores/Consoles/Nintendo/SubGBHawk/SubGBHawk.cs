@@ -73,8 +73,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 
 		public IMemoryCallbackSystem MemoryCallbacks => _GBCore.MemoryCallbacks;
 
-		public bool CanStep(StepType type) => false;
-
 		[FeatureNotImplemented]
 		public void Step(StepType type) => throw new NotImplementedException();
 

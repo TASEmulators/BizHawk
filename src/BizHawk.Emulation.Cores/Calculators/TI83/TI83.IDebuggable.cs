@@ -15,8 +15,6 @@ namespace BizHawk.Emulation.Cores.Calculators.TI83
 		[FeatureNotImplemented]
 		public void Step(StepType type) => throw new NotImplementedException();
 
-		public bool CanStep(StepType type) => false;
-
 		public long TotalExecutedCycles => _cpu.TotalExecutedCycles;
 	}
 }

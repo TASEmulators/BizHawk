@@ -14,8 +14,6 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		public IMemoryCallbackSystem MemoryCallbacks { get; }
 
-		public bool CanStep(StepType type) => false;
-
 		[FeatureNotImplemented]
 		public void Step(StepType type) => throw new NotImplementedException();
 

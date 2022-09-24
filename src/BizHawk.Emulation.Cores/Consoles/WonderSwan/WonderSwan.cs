@@ -123,8 +123,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			throw new NotImplementedException();
 		}
 
-		public bool CanStep(StepType type) => false;
-
 		[FeatureNotImplemented]
 		public void Step(StepType type) => throw new NotImplementedException();
 

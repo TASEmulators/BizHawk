@@ -79,9 +79,6 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 			}
 		}
 
-		public bool CanStep(StepType type)
-			=> false;
-
 		[FeatureNotImplemented]
 		public void Step(StepType type)
 			=> throw new NotImplementedException();
