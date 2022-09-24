@@ -75,7 +75,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 				};
 			}
 
-			return (opcode >> 10) switch
+			var disasm = (opcode >> 10) switch
 			{
 				0x00 => $"add {argRR()}",
 				0x01 => $"addc {argRR()}",
@@ -115,7 +115,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 				0x23 => $"moveq {argIR()}",
 				0x24 => $"moveta {argRR()}",
 				0x25 => $"movefa {argRR()}",
-				0x26 => $"movei ${m.PeekUshort(addr + 2, true) | (m.PeekUshort(addr + 4, true) << 16):X04} {argR2()}",
+				0x26 => $"movei ${m.PeekUshort(addr + 2, true) | (m.PeekUshort(addr + 4, true) << 16):X06}, {argR2()}",
 				0x27 => $"loadb {argDRR()}",
 				0x28 => $"loadw {argDRR()}",
 				0x29 => $"load {argDRR()}",
@@ -130,7 +130,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 				0x32 => $"store {argRDRO(15)}",
 				0x33 => $"move pc, {argR2()}",
 				0x34 => $"jump {argCC()}(r{arg1:d02})",
-				0x35 => $"jr {argCC()}${addr + 2 + ((sbyte)(arg1 << 3) >> 2):X02}",
+				0x35 => $"jr {argCC()}${addr + 2 + ((sbyte)(arg1 << 3) >> 2):X06}",
 				0x36 => $"mmult {argRR()}",
 				0x37 => $"mtoi {argRR()}",
 				0x38 => $"normi {argRR()}",
@@ -143,6 +143,15 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 				0x3F => gpu ? $"{(arg1 == 0 ? "pack" : "unpack")} {argR2()}" : $"addqmod {argCZIR()}",
 				_ => throw new InvalidOperationException(),
 			};
+
+			if (length == 6)
+			{
+				return $"{opcode:X04} {m.PeekUshort(addr + 2, true):X04} {m.PeekUshort(addr + 2, true):X04}  {disasm}";
+			}
+			else
+			{
+				return $"{opcode:X04}  {disasm}";
+			}
 		}
 
 		public override string PCRegisterName => Cpu switch
