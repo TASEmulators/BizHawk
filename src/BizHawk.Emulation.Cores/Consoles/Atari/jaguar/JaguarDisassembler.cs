@@ -150,7 +150,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 			}
 			else
 			{
-				return $"{opcode:X04}  {disasm}";
+				return $"{opcode:X04}            {disasm}";
 			}
 		}
 
