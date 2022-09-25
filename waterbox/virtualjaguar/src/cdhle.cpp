@@ -275,7 +275,7 @@ static void CDHLECallback(void)
 			CDSendBlock();
 		}
 		//GPUSetIRQLine(GPUIRQ_DSP, ASSERT_LINE);
-		SetCallbackTime(CDHLECallback, 180 >> (cd_mode & 1));
+		SetCallbackTime(CDHLECallback, 240 >> (cd_mode & 1));
 	}
 }
 
@@ -521,7 +521,7 @@ static void CD_read(void)
 						cd_buf_rm = bufRm;
 						cd_buf_circular_size = circBufSz;
 						RemoveCallback(CDHLECallback);
-						SetCallbackTime(CDHLECallback, 180 >> (cd_mode & 1));
+						SetCallbackTime(CDHLECallback, 240 >> (cd_mode & 1));
 						JERRYWriteWord(0xF10020, 0, M68K);
 						break;
 					}
@@ -542,7 +542,7 @@ static void CD_read(void)
 			cd_buf_rm = 0;
 			cd_buf_circular_size = 0;
 			RemoveCallback(CDHLECallback);
-			SetCallbackTime(CDHLECallback, 180 >> (cd_mode & 1));
+			SetCallbackTime(CDHLECallback, 240 >> (cd_mode & 1));
 			JERRYWriteWord(0xF10020, 0, M68K);
 		}
 	}
