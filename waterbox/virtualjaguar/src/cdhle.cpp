@@ -117,8 +117,8 @@ void CDHLEInit(void)
 				if (!memcmp(&buf2352[j], byteSwappedHeader, 32))
 				{
 					fprintf(stderr, "(byteswapped) startLba + i %04X\n", startLba + i);
-					cd_boot_addr = *(uint32_t*)&buf2352[j + 32];
-					cd_boot_len = *(uint32_t*)&buf2352[j + 32 + 4];
+					cd_boot_addr = *(uint16_t*)&buf2352[j + 32] << 16 | *(uint16_t*)&buf2352[j + 32 + 2];
+					cd_boot_len = *(uint16_t*)&buf2352[j + 32 + 4] << 16 | *(uint16_t*)&buf2352[j + 32 + 4 + 2];
 					cd_boot_lba = startLba + i;
 					cd_boot_off = j + 32 + 4 + 4;
 					cd_byte_swapped = true;
