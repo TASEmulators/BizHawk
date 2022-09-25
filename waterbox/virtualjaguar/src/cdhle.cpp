@@ -25,12 +25,14 @@ static uint8_t cd_mode;
 static uint8_t cd_osamp;
 
 static bool cd_is_reading;
+static uint32_t cd_read_orig_addr_start;
 static uint32_t cd_read_addr_start;
 static uint32_t cd_read_addr_end;
 static int32_t cd_read_lba;
 static uint8_t cd_buf2352[2352 + 128];
 static uint32_t cd_buf_pos;
 static uint32_t cd_buf_rm;
+static uint32_t cd_buf_circular_size;
 
 extern void (*cd_toc_callback)(void * dest);
 extern void (*cd_read_callback)(int32_t lba, void * dest);
@@ -151,9 +153,10 @@ void CDHLEReset(void)
 		memcpy(&jaguarMainRAM[TOC_BASE_ADDR], &toc, sizeof(TOC));
 
 		// copy bootcode to RAM
-		// maximum of 64KiB is allowed
+		// supposedly a maximum of 64KiB is allowed
+		// but some games will expect past 64KiB to be copied?
 		uint32_t dstStart = cd_boot_addr;
-		uint32_t dstEnd = cd_boot_addr + (cd_boot_len > 0x10000 ? 0x10000 : cd_boot_len);
+		uint32_t dstEnd = cd_boot_addr + cd_boot_len;
 		fprintf(stderr, "boot track dstStart %04X dstEnd %04X\n", dstStart, dstEnd);
 		int32_t lba = cd_boot_lba;
 		uint8_t buf2352[2352];
@@ -201,7 +204,7 @@ void CDHLEReset(void)
 			}
 		}
 
-		cd_read_addr_start = dstStart;
+		cd_read_orig_addr_start = cd_read_addr_start = dstStart;
 
 		SET32(jaguarMainRAM, 4, cd_boot_addr);
 		SET16(jaguarMainRAM, 0x3004, 0x0403); // BIOS VER
@@ -228,17 +231,17 @@ static void CDSendBlock(void)
 			memcpy(&cd_buf2352[cd_buf_rm + 2352 - cd_word_alignment], &temp2352[0], cd_word_alignment);
 		}
 
-		cd_buf_pos = 0;
-		cd_buf_rm += 2352 - cd_word_alignment;
-
 		if (cd_byte_swapped)
 		{
-			uint16_t* cd16buf = (uint16_t*)cd_buf2352;
+			uint16_t* cd16buf = (uint16_t*)&cd_buf2352[cd_buf_rm];
 			for (uint32_t i = 0; i < (2352 / 2); i++)
 			{
 				cd16buf[i] = __builtin_bswap16(cd16buf[i]);
 			}
 		}
+
+		cd_buf_pos = 0;
+		cd_buf_rm += 2352;
 	}
 
 	// send one block of data
@@ -254,6 +257,11 @@ static void CDSendBlock(void)
 	if (cd_read_addr_start >= cd_read_addr_end)
 	{
 		cd_is_reading = false;
+	}
+
+	if (cd_buf_circular_size && (cd_read_addr_end - cd_read_addr_start) >= cd_buf_circular_size)
+	{
+		cd_read_addr_start = cd_read_orig_addr_start;
 	}
 }
 
@@ -454,15 +462,89 @@ static void CD_read(void)
 
 	if (!(timecode & 0x80000000))
 	{
-		cd_is_reading = true;
-		cd_read_addr_start = dstStart;
-		cd_read_addr_end = dstEnd;
-		cd_read_lba = (minutes * 60 + seconds) * 75 + frames - 150;
-		cd_buf_pos = 0;
-		cd_buf_rm = 0;
-		RemoveCallback(CDHLECallback);
-		SetCallbackTime(CDHLECallback, 180 >> (cd_mode & 1));
-		JERRYWriteWord(0xF10020, 0, M68K);
+		if (cd_initm)
+		{
+			uint32_t marker = m68k_get_reg(NULL, M68K_REG_D1);
+			uint32_t circBufSz = m68k_get_reg(NULL, M68K_REG_D2);
+			fprintf(stderr, "cd_initm read: marker %04X, circBufSz %04X\n", marker, circBufSz);
+			uint32_t lba = (minutes * 60 + seconds) * 75 + frames - 150;
+			uint8_t buf2352[2352 + 128];
+			uint32_t bufPos = 0;
+			uint32_t bufRm = 0;
+			while (true)
+			{
+				if (bufRm < 64)
+				{
+					memmove(&buf2352[0], &buf2352[bufPos], bufRm);
+					cd_read_callback(lba++, &buf2352[bufRm]);
+
+					if (cd_word_alignment)
+					{
+						uint8_t temp2352[2352];
+						cd_read_callback(lba, temp2352);
+						memmove(&buf2352[bufRm], &buf2352[bufRm + cd_word_alignment], 2352 - cd_word_alignment);
+						memcpy(&buf2352[bufRm + 2352 - cd_word_alignment], &temp2352[0], cd_word_alignment);
+					}
+
+					if (cd_byte_swapped)
+					{
+						uint16_t* cd16buf = (uint16_t*)&buf2352[bufRm];
+						for (uint32_t i = 0; i < (2352 / 2); i++)
+						{
+							cd16buf[i] = __builtin_bswap16(cd16buf[i]);
+						}
+					}
+
+					bufPos = 0;
+					bufRm += 2352;
+				}
+
+				if (GET32(buf2352, bufPos) == marker)
+				{
+					bool foundMarker = true;
+					for (uint32_t i = 4; i < 64; i += 4)
+					{
+						foundMarker &= GET32(buf2352, bufPos + i) == marker;
+					}
+
+					if (foundMarker)
+					{
+						bufPos += 64;
+						bufRm -= 64;
+						memcpy(&cd_buf2352[0], &buf2352[bufPos], bufRm);
+						cd_is_reading = true;
+						cd_read_orig_addr_start = dstStart;
+						cd_read_addr_start = dstStart;
+						cd_read_addr_end = dstEnd;
+						cd_read_lba = lba;
+						cd_buf_pos = 0;
+						cd_buf_rm = bufRm;
+						cd_buf_circular_size = circBufSz;
+						RemoveCallback(CDHLECallback);
+						SetCallbackTime(CDHLECallback, 180 >> (cd_mode & 1));
+						JERRYWriteWord(0xF10020, 0, M68K);
+						break;
+					}
+				}
+
+				bufPos += 4;
+				bufRm -= 4;
+			}
+		}
+		else
+		{
+			cd_is_reading = true;
+			cd_read_orig_addr_start = dstStart;
+			cd_read_addr_start = dstStart;
+			cd_read_addr_end = dstEnd;
+			cd_read_lba = (minutes * 60 + seconds) * 75 + frames - 150;
+			cd_buf_pos = 0;
+			cd_buf_rm = 0;
+			cd_buf_circular_size = 0;
+			RemoveCallback(CDHLECallback);
+			SetCallbackTime(CDHLECallback, 180 >> (cd_mode & 1));
+			JERRYWriteWord(0xF10020, 0, M68K);
+		}
 	}
 
 	NO_ERR();
