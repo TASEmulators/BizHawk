@@ -2,6 +2,7 @@
 #include "gpu.h"
 #include "memory.h"
 #include "jaguar.h"
+#include "jerry.h"
 #include "event.h"
 #include "m68000/m68kinterface.h"
 
@@ -9,8 +10,10 @@
 #include <stdio.h>
 #include <string.h>
 
-#define SET_ERR() jaguarMainRAM[0x3E00] = -1
-#define NO_ERR() jaguarMainRAM[0x3E00] = 0
+#define SET_ERR() SET16(jaguarMainRAM, 0x3E00, -1)
+// 0 should be no error, yet some games expect 1?
+// todo: investigate
+#define NO_ERR() SET16(jaguarMainRAM, 0x3E00, 1)
 
 #define TOC_BASE_ADDR 0x2C00
 
@@ -93,8 +96,8 @@ void CDHLEInit(void)
 		for (int32_t i = 0; i < numLbas; i++)
 		{
 			cd_read_callback(startLba + i, buf2352);
-			static const char* atariHeader = "ATARI APPROVED DATA HEADER ATRI\x20";
-			static const char* byteSwappedHeader = "TARA IPARPVODED TA AEHDAREA RI\x20I"; // some dumps are byteswapped, detect these and fix them
+			static const char* atariHeader = "ATARI APPROVED DATA HEADER ATRI ";
+			static const char* byteSwappedHeader = "TARA IPARPVODED TA AEHDAREA RT I"; // some dumps are byteswapped, detect these and fix them
 			
 			for (uint32_t j = 0; j < (2352 - 32 - 4 - 4); j++)
 			{
@@ -151,6 +154,7 @@ void CDHLEReset(void)
 		// maximum of 64KiB is allowed
 		uint32_t dstStart = cd_boot_addr;
 		uint32_t dstEnd = cd_boot_addr + (cd_boot_len > 0x10000 ? 0x10000 : cd_boot_len);
+		fprintf(stderr, "boot track dstStart %04X dstEnd %04X\n", dstStart, dstEnd);
 		int32_t lba = cd_boot_lba;
 		uint8_t buf2352[2352];
 
@@ -181,7 +185,7 @@ void CDHLEReset(void)
 			if (cd_byte_swapped)
 			{
 				uint16_t* cd16buf = (uint16_t*)buf2352;
-				for (uint32_t i = 0; i < 1176; i++)
+				for (uint32_t i = 0; i < (2352 / 2); i++)
 				{
 					cd16buf[i] = __builtin_bswap16(cd16buf[i]);
 				}
@@ -262,8 +266,35 @@ static void CDHLECallback(void)
 		{
 			CDSendBlock();
 		}
+		//GPUSetIRQLine(GPUIRQ_DSP, ASSERT_LINE);
 		SetCallbackTime(CDHLECallback, 180 >> (cd_mode & 1));
 	}
+}
+
+static void LoadISRStub()
+{
+	uint32_t isrAddr = m68k_get_reg(NULL, M68K_REG_A0);
+	uint32_t addr = 0xF03010;
+
+	#define WRITE_GASM(x) do { GPUWriteWord(addr, x, M68K); addr += 2; } while (0)
+
+	WRITE_GASM(0x981E); WRITE_GASM(isrAddr & 0xFFFF); WRITE_GASM(isrAddr >> 16); // movei ISR_ADDR, r30
+	WRITE_GASM(0xD3C0); // jump (r30)
+	WRITE_GASM(0xE400); // nop
+
+	addr = isrAddr;
+
+	WRITE_GASM(0x981E); WRITE_GASM(0x2100); WRITE_GASM(0x00F0); // movei $F02100, r30
+	WRITE_GASM(0xA7DD); // load (r30), r29
+	WRITE_GASM(0x3C7D); // bclr 3, r29
+	WRITE_GASM(0x395D); // bset 10, r29
+	WRITE_GASM(0xA7FC); // load (r31), r28
+	WRITE_GASM(0x085C); // addq 2, r28
+	WRITE_GASM(0x089F); // addq 4, r31
+	WRITE_GASM(0xD380); // jump (r28)
+	WRITE_GASM(0xBFDD); // store r29, (r30)
+
+	#undef WRITE_GASM
 }
 
 static void CD_init(void);
@@ -311,7 +342,8 @@ void CDHLEHook(uint32_t which)
 
 static void CD_init(void)
 {
-	fprintf(stderr, "do CD_init");
+	fprintf(stderr, "CD_init called %08X\n", m68k_get_reg(NULL, M68K_REG_A0));
+	LoadISRStub();
 	cd_initm = false;
 }
 
@@ -344,6 +376,7 @@ static void CD_jeri(void)
 
 static void CD_spin(void)
 {
+	fprintf(stderr, "CD_spin: new session %04X\n", m68k_get_reg(NULL, M68K_REG_D1) & 0xFFFF);
 	NO_ERR();
 }
 
@@ -429,6 +462,7 @@ static void CD_read(void)
 		cd_buf_rm = 0;
 		RemoveCallback(CDHLECallback);
 		SetCallbackTime(CDHLECallback, 180 >> (cd_mode & 1));
+		JERRYWriteWord(0xF10020, 0, M68K);
 	}
 
 	NO_ERR();
@@ -472,13 +506,15 @@ static void CD_getoc(void)
 
 static void CD_initm(void)
 {
-	fprintf(stderr, "CD_init called %08X\n", m68k_get_reg(NULL, M68K_REG_A0));
+	fprintf(stderr, "CD_initm called %08X\n", m68k_get_reg(NULL, M68K_REG_A0));
+	LoadISRStub();
 	cd_initm = true;
 }
 
 static void CD_initf(void)
 {
 	fprintf(stderr, "CD_initf called %08X\n", m68k_get_reg(NULL, M68K_REG_A0));
+	LoadISRStub();
 	cd_initm = false;
 }
 

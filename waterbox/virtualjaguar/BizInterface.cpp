@@ -249,7 +249,6 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 	JaguarSetScreenBuffer(nullptr);
 	f->Width = TOMGetVideoModeWidth();
 	f->Height = TOMGetVideoModeHeight();
-	f->Lagged = lagged;
 
 	u32 samples = 48000 / (vjs.hardwareTypeNTSC ? 60 : 50);
 	SoundCallback(soundBuf, samples * 4);
@@ -277,6 +276,8 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 	f->Samples = blip_samples_avail(blipL);
 	blip_read_samples(blipL, f->SoundBuffer + 0, f->Samples, 1);
 	blip_read_samples(blipR, f->SoundBuffer + 1, f->Samples, 1);
+
+	f->Lagged = lagged;
 }
 
 void (*InputCallback)() = 0;
