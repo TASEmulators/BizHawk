@@ -204,7 +204,7 @@ void CDHLEReset(void)
 			}
 		}
 
-		cd_read_orig_addr_start = cd_read_addr_start = dstStart;
+		cd_read_addr_start = dstStart;
 
 		SET32(jaguarMainRAM, 4, cd_boot_addr);
 		SET16(jaguarMainRAM, 0x3004, 0x0403); // BIOS VER
@@ -519,7 +519,7 @@ static void CD_read(void)
 						cd_read_lba = lba;
 						cd_buf_pos = 0;
 						cd_buf_rm = bufRm;
-						cd_buf_circular_size = circBufSz;
+						cd_buf_circular_size = circBufSz ? (1 << circBufSz) : 0;
 						RemoveCallback(CDHLECallback);
 						SetCallbackTime(CDHLECallback, 240 >> (cd_mode & 1));
 						JERRYWriteWord(0xF10020, 0, M68K);

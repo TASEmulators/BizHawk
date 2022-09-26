@@ -291,7 +291,7 @@ void tom_render_24bpp_scanline(uint32_t * backbuffer)
 		uint32_t r = *current_line_buffer++;
 		current_line_buffer++;
 		uint32_t b = *current_line_buffer++;
-		*backbuffer++ = 0x000000FF | (r << 24) | (g << 16) | (b << 8);
+		*backbuffer++ = (r << 16) | (g << 8) | b;
 		width--;
 	}
 }
