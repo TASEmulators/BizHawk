@@ -42,6 +42,16 @@ build_asms_release:
   - Dist/BuildRelease.sh
   stage: build
 
+build_ext_projs:
+  allow_failure: true
+  image: mcr.microsoft.com/dotnet/sdk:6.0
+  rules:
+  - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    when: always
+  script:
+  - for d in $CI_PROJECT_DIR/ExternalProjects/*; do if [ -e "$d/build_release.sh" ]; then cd "$d" && ./build_release.sh; fi; done
+  stage: test
+
 build_ext_tools:
   allow_failure: true
   image: mcr.microsoft.com/dotnet/sdk:6.0
