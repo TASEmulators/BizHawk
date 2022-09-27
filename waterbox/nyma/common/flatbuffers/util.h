@@ -17,18 +17,20 @@
 #ifndef FLATBUFFERS_UTIL_H_
 #define FLATBUFFERS_UTIL_H_
 
+#include <ctype.h>
 #include <errno.h>
 
 #include "flatbuffers/base.h"
+#include "flatbuffers/stl_emulation.h"
 
 #ifndef FLATBUFFERS_PREFER_PRINTF
+#  include <iomanip>
 #  include <sstream>
 #else  // FLATBUFFERS_PREFER_PRINTF
 #  include <float.h>
 #  include <stdio.h>
 #endif  // FLATBUFFERS_PREFER_PRINTF
 
-#include <iomanip>
 #include <string>
 
 namespace flatbuffers {
@@ -49,6 +51,9 @@ inline bool is_alpha(char c) {
   // ASCII only: alpha to upper case => reset bit 0x20 (~0x20 = 0xDF).
   return check_ascii_range(c & 0xDF, 'a' & 0xDF, 'z' & 0xDF);
 }
+
+// Check for uppercase alpha
+inline bool is_alpha_upper(char c) { return check_ascii_range(c, 'A', 'Z'); }
 
 // Check (case-insensitive) that `c` is equal to alpha.
 inline bool is_alpha_char(char c, char alpha) {
@@ -72,6 +77,14 @@ inline bool is_xdigit(char c) {
 // Case-insensitive isalnum
 inline bool is_alnum(char c) { return is_alpha(c) || is_digit(c); }
 
+inline char CharToUpper(char c) {
+  return static_cast<char>(::toupper(static_cast<unsigned char>(c)));
+}
+
+inline char CharToLower(char c) {
+  return static_cast<char>(::tolower(static_cast<unsigned char>(c)));
+}
+
 // @end-locale-independent functions for ASCII character set
 
 #ifdef FLATBUFFERS_PREFER_PRINTF
@@ -82,7 +95,7 @@ template<typename T> size_t IntToDigitCount(T t) {
   // Count a single 0 left of the dot for fractional numbers
   if (-1 < t && t < 1) digit_count++;
   // Count digits until fractional part
-  T eps = std::numeric_limits<float>::epsilon();
+  T eps = std::numeric_limits<T>::epsilon();
   while (t <= (-1 + eps) || (1 - eps) <= t) {
     t /= 10;
     digit_count++;
@@ -133,20 +146,6 @@ template<> inline std::string NumToString<unsigned char>(unsigned char t) {
 template<> inline std::string NumToString<char>(char t) {
   return NumToString(static_cast<int>(t));
 }
-#if defined(FLATBUFFERS_CPP98_STL)
-template<> inline std::string NumToString<long long>(long long t) {
-  char buf[21];  // (log((1 << 63) - 1) / log(10)) + 2
-  snprintf(buf, sizeof(buf), "%lld", t);
-  return std::string(buf);
-}
-
-template<>
-inline std::string NumToString<unsigned long long>(unsigned long long t) {
-  char buf[22];  // (log((1 << 63) - 1) / log(10)) + 1
-  snprintf(buf, sizeof(buf), "%llu", t);
-  return std::string(buf);
-}
-#endif  // defined(FLATBUFFERS_CPP98_STL)
 
 // Special versions for floats/doubles.
 template<typename T> std::string FloatToString(T t, int precision) {
@@ -256,7 +255,7 @@ inline void strtoval_impl(double *val, const char *str, char **endptr) {
 }
 
 // UBSAN: double to float is safe if numeric_limits<float>::is_iec559 is true.
-__supress_ubsan__("float-cast-overflow")
+__suppress_ubsan__("float-cast-overflow")
 inline void strtoval_impl(float *val, const char *str, char **endptr) {
   *val = __strtof_impl(str, endptr);
 }
@@ -323,6 +322,9 @@ inline bool StringToFloatImpl(T *val, const char *const str) {
 // - If the converted value falls out of range of corresponding return type, a
 // range error occurs. In this case value MAX(T)/MIN(T) is returned.
 template<typename T> inline bool StringToNumber(const char *s, T *val) {
+  // Assert on `unsigned long` and `signed long` on LP64.
+  // If it is necessary, it could be solved with flatbuffers::enable_if<B,T>.
+  static_assert(sizeof(T) < sizeof(int64_t), "unexpected type T");
   FLATBUFFERS_ASSERT(s && val);
   int64_t i64;
   // The errno check isn't needed, will return MAX/MIN on overflow.
@@ -446,13 +448,17 @@ std::string StripPath(const std::string &filepath);
 // Strip the last component of the path + separator.
 std::string StripFileName(const std::string &filepath);
 
-// Concatenates a path with a filename, regardless of wether the path
+std::string StripPrefix(const std::string &filepath,
+                        const std::string &prefix_to_remove);
+
+// Concatenates a path with a filename, regardless of whether the path
 // ends in a separator or not.
 std::string ConCatPathFileName(const std::string &path,
                                const std::string &filename);
 
 // Replaces any '\\' separators with '/'
 std::string PosixPath(const char *path);
+std::string PosixPath(const std::string &path);
 
 // This function ensure a directory exists, by recursively
 // creating dirs for any parts of the path that don't exist yet.
@@ -461,6 +467,10 @@ void EnsureDirExists(const std::string &filepath);
 // Obtains the absolute path from any other path.
 // Returns the input path if the absolute path couldn't be resolved.
 std::string AbsolutePath(const std::string &filepath);
+
+// Returns files relative to the --project_root path, prefixed with `//`.
+std::string RelativeToRootPath(const std::string &project,
+                               const std::string &filepath);
 
 // To and from UTF-8 unicode conversion functions
 
@@ -675,8 +685,31 @@ bool SetGlobalTestLocale(const char *locale_name,
 bool ReadEnvironmentVariable(const char *var_name,
                              std::string *_value = nullptr);
 
-// MSVC specific: Send all assert reports to STDOUT to prevent CI hangs.
-void SetupDefaultCRTReportMode();
+enum class Case {
+  kUnknown = 0,
+  // TheQuickBrownFox
+  kUpperCamel = 1,
+  // theQuickBrownFox
+  kLowerCamel = 2,
+  // the_quick_brown_fox
+  kSnake = 3,
+  // THE_QUICK_BROWN_FOX
+  kScreamingSnake = 4,
+  // THEQUICKBROWNFOX
+  kAllUpper = 5,
+  // thequickbrownfox
+  kAllLower = 6,
+  // the-quick-brown-fox
+  kDasher = 7,
+  // THEQuiCKBr_ownFox (or whatever you want, we won't change it)
+  kKeep = 8,
+  // the_quick_brown_fox123 (as opposed to the_quick_brown_fox_123)
+  kSnake2 = 9,
+};
+
+// Convert the `input` string of case `input_case` to the specified `output_case`.
+std::string ConvertCase(const std::string &input, Case output_case,
+                    Case input_case = Case::kSnake);
 
 }  // namespace flatbuffers
 
