@@ -111,7 +111,7 @@ void CDHLEInit(void)
 					cd_boot_lba = startLba + i;
 					cd_boot_off = j + 32 + 4 + 4;
 					cd_byte_swapped = false;
-					cd_word_alignment = (4 - j) & 3;
+					cd_word_alignment = -j & 3;
 					foundHeader = true;
 					break;
 				}
@@ -124,7 +124,7 @@ void CDHLEInit(void)
 					cd_boot_lba = startLba + i;
 					cd_boot_off = j + 32 + 4 + 4;
 					cd_byte_swapped = true;
-					cd_word_alignment = (4 - j) & 3;
+					cd_word_alignment = -j & 3;
 					foundHeader = true;
 					break;
 				}
@@ -244,10 +244,10 @@ static void CDSendBlock(void)
 		cd_buf_rm += 2352;
 	}
 
-	// send one block of data
-	for (uint32_t i = 0; i < 64; i++)
+	// send one block of data, one long at a time
+	for (uint32_t i = 0; i < 64; i += 4)
 	{
-		JaguarWriteByte(cd_read_addr_start + i, cd_buf2352[cd_buf_pos + i], GPU);
+		GPUWriteLong(cd_read_addr_start + i, GET32(cd_buf2352, cd_buf_pos + i), GPU);
 	}
 
 	cd_read_addr_start += 64;
@@ -258,8 +258,7 @@ static void CDSendBlock(void)
 	{
 		cd_is_reading = false;
 	}
-
-	if (cd_buf_circular_size && (cd_read_addr_end - cd_read_addr_start) >= cd_buf_circular_size)
+	else if (cd_buf_circular_size && (cd_read_addr_start - cd_read_orig_addr_start) >= cd_buf_circular_size)
 	{
 		cd_read_addr_start = cd_read_orig_addr_start;
 	}
@@ -270,12 +269,15 @@ static void CDHLECallback(void)
 	RemoveCallback(CDHLECallback);
 	if (cd_is_reading)
 	{
-		if (!cd_paused)
+		if (!GPURunning())
+			fprintf(stderr, "CDHLECallback called with GPU inactive\n");
+
+		if (GPURunning() && !cd_paused)
 		{
 			CDSendBlock();
+			//GPUSetIRQLine(GPUIRQ_DSP, ASSERT_LINE);
 		}
-		//GPUSetIRQLine(GPUIRQ_DSP, ASSERT_LINE);
-		SetCallbackTime(CDHLECallback, 240 >> (cd_mode & 1));
+		SetCallbackTime(CDHLECallback, 285 >> (cd_mode & 1));
 	}
 }
 
@@ -366,14 +368,6 @@ static void CD_mode(void)
 
 static void CD_ack(void)
 {
-	if (!cd_paused)
-	{
-		while (cd_is_reading)
-		{
-			CDSendBlock();
-		}
-	}
-
 	NO_ERR();
 }
 
@@ -521,8 +515,9 @@ static void CD_read(void)
 						cd_buf_rm = bufRm;
 						cd_buf_circular_size = circBufSz ? (1 << circBufSz) : 0;
 						RemoveCallback(CDHLECallback);
-						SetCallbackTime(CDHLECallback, 240 >> (cd_mode & 1));
+						SetCallbackTime(CDHLECallback, 285 >> (cd_mode & 1));
 						JERRYWriteWord(0xF10020, 0, M68K);
+						//GPUWriteLong(0xF02100, GPUReadLong(0xF02100, M68K) | 0x20, M68K);
 						break;
 					}
 				}
@@ -542,8 +537,9 @@ static void CD_read(void)
 			cd_buf_rm = 0;
 			cd_buf_circular_size = 0;
 			RemoveCallback(CDHLECallback);
-			SetCallbackTime(CDHLECallback, 240 >> (cd_mode & 1));
+			SetCallbackTime(CDHLECallback, 285 >> (cd_mode & 1));
 			JERRYWriteWord(0xF10020, 0, M68K);
+			//GPUWriteLong(0xF02100, GPUReadLong(0xF02100, M68K) | 0x20, M68K);
 		}
 	}
 

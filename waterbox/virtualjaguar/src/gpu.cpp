@@ -216,9 +216,9 @@ uint32_t gpu_convert_zero[32] =
 uint8_t * branch_condition_table = 0;
 #define BRANCH_CONDITION(x)	branch_condition_table[(x) + ((jaguar_flags & 7) << 5)]
 
-uint32_t GPUGetPC(void)
+bool GPURunning(void)
 {
-	return gpu_pc;
+	return GPU_RUNNING;
 }
 
 void build_branch_condition_table(void)
@@ -609,11 +609,6 @@ void GPUReset(void)
 		*((uint32_t *)(&gpu_ram_8[i])) = rand();
 }
 
-uint32_t GPUReadPC(void)
-{
-	return gpu_pc;
-}
-
 void GPUDone(void)
 {
 }
@@ -865,7 +860,7 @@ static void gpu_opcode_pack(void)
 static void gpu_opcode_storeb(void)
 {
 	if ((RM >= 0xF03000) && (RM <= 0xF03FFF))
-		GPUWriteLong(RM, RN & 0xFF, GPU);
+		GPUWriteLong(RM & 0xFFFFFFFC, RN, GPU);
 	else
 		JaguarWriteByte(RM, RN, GPU);
 }
@@ -873,7 +868,7 @@ static void gpu_opcode_storeb(void)
 static void gpu_opcode_storew(void)
 {
 	if ((RM >= 0xF03000) && (RM <= 0xF03FFF))
-		GPUWriteLong(RM & 0xFFFFFFFE, RN & 0xFFFF, GPU);
+		GPUWriteLong(RM & 0xFFFFFFFC, RN, GPU);
 	else
 		JaguarWriteWord(RM, RN, GPU);
 }
@@ -890,8 +885,7 @@ static void gpu_opcode_storep(void)
 {
 	if ((RM >= 0xF03000) && (RM <= 0xF03FFF))
 	{
-		GPUWriteLong((RM & 0xFFFFFFF8) + 0, gpu_hidata, GPU);
-		GPUWriteLong((RM & 0xFFFFFFF8) + 4, RN, GPU);
+		GPUWriteLong(RM & 0xFFFFFFFC, RN, GPU);
 	}
 	else
 	{
@@ -903,7 +897,7 @@ static void gpu_opcode_storep(void)
 static void gpu_opcode_loadb(void)
 {
 	if ((RM >= 0xF03000) && (RM <= 0xF03FFF))
-		RN = GPUReadLong(RM, GPU) & 0xFF;
+		RN = GPUReadLong(RM & 0xFFFFFFFC, GPU);
 	else
 		RN = JaguarReadByte(RM, GPU);
 }
@@ -911,7 +905,7 @@ static void gpu_opcode_loadb(void)
 static void gpu_opcode_loadw(void)
 {
 	if ((RM >= 0xF03000) && (RM <= 0xF03FFF))
-		RN = GPUReadLong(RM & 0xFFFFFFFE, GPU) & 0xFFFF;
+		RN = GPUReadLong(RM & 0xFFFFFFFC, GPU);
 	else
 		RN = JaguarReadWord(RM, GPU);
 }
@@ -925,8 +919,7 @@ static void gpu_opcode_loadp(void)
 {
 	if ((RM >= 0xF03000) && (RM <= 0xF03FFF))
 	{
-		gpu_hidata = GPUReadLong((RM & 0xFFFFFFF8) + 0, GPU);
-		RN		   = GPUReadLong((RM & 0xFFFFFFF8) + 4, GPU);
+		RN		   = GPUReadLong(RM & 0xFFFFFFFC, GPU);
 	}
 	else
 	{

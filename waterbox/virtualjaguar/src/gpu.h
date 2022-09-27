@@ -25,8 +25,7 @@ void GPUWriteByte(uint32_t offset, uint8_t data, uint32_t who = UNKNOWN);
 void GPUWriteWord(uint32_t offset, uint16_t data, uint32_t who = UNKNOWN);
 void GPUWriteLong(uint32_t offset, uint32_t data, uint32_t who = UNKNOWN);
 
-uint32_t GPUGetPC(void);
-uint32_t GPUReadPC(void);
+bool GPURunning(void);
 
 // GPU interrupt numbers (from $F00100, bits 4-8)
 

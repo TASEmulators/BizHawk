@@ -784,7 +784,7 @@ static void dsp_opcode_nop(void)
 static void dsp_opcode_storeb(void)
 {
 	if (RM >= DSP_WORK_RAM_BASE && RM <= (DSP_WORK_RAM_BASE + 0x1FFF))
-		DSPWriteLong(RM, RN & 0xFF, DSP);
+		DSPWriteLong(RM & 0xFFFFFFFC, RN, DSP);
 	else
 		JaguarWriteByte(RM, RN, DSP);
 }
@@ -792,7 +792,7 @@ static void dsp_opcode_storeb(void)
 static void dsp_opcode_storew(void)
 {
 	if (RM >= DSP_WORK_RAM_BASE && RM <= (DSP_WORK_RAM_BASE + 0x1FFF))
-		DSPWriteLong(RM, RN & 0xFFFF, DSP);
+		DSPWriteLong(RM & 0xFFFFFFFC, RN, DSP);
 	else
 		JaguarWriteWord(RM, RN, DSP);
 }
@@ -805,7 +805,7 @@ static void dsp_opcode_store(void)
 static void dsp_opcode_loadb(void)
 {
 	if (RM >= DSP_WORK_RAM_BASE && RM <= (DSP_WORK_RAM_BASE + 0x1FFF))
-		RN = DSPReadLong(RM, DSP) & 0xFF;
+		RN = DSPReadLong(RM & 0xFFFFFFFC, DSP);
 	else
 		RN = JaguarReadByte(RM, DSP);
 }
@@ -813,7 +813,7 @@ static void dsp_opcode_loadb(void)
 static void dsp_opcode_loadw(void)
 {
 	if (RM >= DSP_WORK_RAM_BASE && RM <= (DSP_WORK_RAM_BASE + 0x1FFF))
-		RN = DSPReadLong(RM & 0xFFFFFFFE, DSP) & 0xFFFF;
+		RN = DSPReadLong(RM & 0xFFFFFFFC, DSP);
 	else
 		RN = JaguarReadWord(RM & 0xFFFFFFFE, DSP);
 }
