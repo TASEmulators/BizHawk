@@ -2,7 +2,7 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
 	</PropertyGroup>
-	<Import Project="../../Common.props" />
+	<Import Project="../LibCommon.props" />
 	<PropertyGroup>
 		<NoWarn>$(NoWarn);SA1200</NoWarn>
 	</PropertyGroup>
@@ -10,7 +10,4 @@
 		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.2" PrivateAssets="all" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0" PrivateAssets="all" />
 	</ItemGroup>
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Copy SourceFiles="$(OutputPath)BizHawk.Analyzer.dll" DestinationFolder="$(ProjectDir)../../References/" />
-	</Target>
 </Project>
