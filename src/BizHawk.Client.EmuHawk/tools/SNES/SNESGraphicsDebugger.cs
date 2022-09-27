@@ -755,6 +755,8 @@ namespace BizHawk.Client.EmuHawk
 			//calculate address of tile
 			var bg = si.BG[currMapEntryState.bgnum];
 			int bpp = bg.Bpp;
+			if (bpp == 0) return;
+
 			int tiledataBaseAddr = bg.TiledataAddr;
 			int tileSizeBytes = 8 * bpp;
 			int baseTileNum = tiledataBaseAddr / tileSizeBytes;
