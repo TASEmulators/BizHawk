@@ -186,7 +186,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				foreach (var lf in RegisteredFunctions.Where(static l => l.Event == "OnSavestateSave").ToList())
+				foreach (var lf in RegisteredFunctions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_SAVESTATE).ToList())
 				{
 					lf.Call(name);
 				}
@@ -203,7 +203,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				foreach (var lf in RegisteredFunctions.Where(static l => l.Event == "OnSavestateLoad").ToList())
+				foreach (var lf in RegisteredFunctions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_LOADSTATE).ToList())
 				{
 					lf.Call(name);
 				}
@@ -221,7 +221,7 @@ namespace BizHawk.Client.EmuHawk
 			if (IsUpdateSupressed) return;
 			try
 			{
-				foreach (var lf in RegisteredFunctions.Where(static l => l.Event == "OnFrameStart").ToList())
+				foreach (var lf in RegisteredFunctions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_PREFRAME).ToList())
 				{
 					lf.Call();
 				}
@@ -239,7 +239,7 @@ namespace BizHawk.Client.EmuHawk
 			if (IsUpdateSupressed) return;
 			try
 			{
-				foreach (var lf in RegisteredFunctions.Where(static l => l.Event == "OnFrameEnd").ToList())
+				foreach (var lf in RegisteredFunctions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_POSTFRAME).ToList())
 				{
 					lf.Call();
 				}
@@ -255,7 +255,8 @@ namespace BizHawk.Client.EmuHawk
 		public void CallExitEvent(LuaFile lf)
 		{
 			foreach (var exitCallback in RegisteredFunctions
-				.Where(l => l.Event == "OnExit" && (l.LuaFile.Path == lf.Path || l.LuaFile.Thread == lf.Thread))
+				.Where(l => l.Event == NamedLuaFunction.EVENT_TYPE_ENGINESTOP
+					&& (l.LuaFile.Path == lf.Path || l.LuaFile.Thread == lf.Thread))
 				.ToList())
 			{
 				exitCallback.Call();
@@ -266,7 +267,7 @@ namespace BizHawk.Client.EmuHawk
 		public void Close()
 		{
 			foreach (var closeCallback in RegisteredFunctions
-				.Where(static l => l.Event == "OnConsoleClose")
+				.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_CONSOLECLOSE)
 				.ToList())
 			{
 				closeCallback.Call();
