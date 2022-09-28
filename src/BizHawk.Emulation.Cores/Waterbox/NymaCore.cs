@@ -8,7 +8,9 @@ using BizHawk.BizInvoke;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.DiscSystem;
-using FlatBuffers;
+
+using Google.FlatBuffers;
+
 using NymaTypes;
 
 namespace BizHawk.Emulation.Cores.Waterbox

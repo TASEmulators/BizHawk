@@ -7,6 +7,6 @@
 		<Nullable>disable</Nullable>
 	</PropertyGroup>
 	<ItemGroup>
-		<ProjectReference Include="$(ProjectDir)../FlatBuffers.Core/FlatBuffers.Core.csproj" />
+		<PackageReference Include="Google.FlatBuffers" Version="22.9.24" Private="true" />
 	</ItemGroup>
 </Project>
