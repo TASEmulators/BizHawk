@@ -266,7 +266,8 @@ namespace BizHawk.Client.EmuHawk
 		public void Close()
 		{
 			foreach (var closeCallback in RegisteredFunctions
-				.Where(l => l.Event == "OnConsoleClose"))
+				.Where(static l => l.Event == "OnConsoleClose")
+				.ToList())
 			{
 				closeCallback.Call();
 			}
