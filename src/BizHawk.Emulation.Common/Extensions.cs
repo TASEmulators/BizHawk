@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Common
 			[VSystemID.Raw.GG] = "Game Gear",
 			[VSystemID.Raw.GGL] = "Game Gear Link",
 			[VSystemID.Raw.INTV] = "Intellivision",
-			[VSystemID.Raw.JAG] = "Jaguar",
+			[VSystemID.Raw.Jaguar] = "Jaguar",
 			[VSystemID.Raw.Libretro] = "Libretro",
 			[VSystemID.Raw.Lynx] = "Lynx",
 			[VSystemID.Raw.MAME] = "MAME",

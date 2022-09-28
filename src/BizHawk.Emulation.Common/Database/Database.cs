@@ -360,7 +360,7 @@ namespace BizHawk.Emulation.Common
 
 				case ".J64":
 				case ".JAG":
-					game.System = VSystemID.Raw.JAG;
+					game.System = VSystemID.Raw.Jaguar;
 					break;
 
 				case ".LNX":

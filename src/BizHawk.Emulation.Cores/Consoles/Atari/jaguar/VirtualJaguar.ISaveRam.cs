@@ -6,23 +6,33 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 {
 	public partial class VirtualJaguar : ISaveRam
 	{
-		public new bool SaveRamModified => _core.SaveRamIsDirty();
+		private readonly int _saveRamSize;
+
+		public new bool SaveRamModified => _saveRamSize > 0 && _core.SaveRamIsDirty();
 
 		public new byte[] CloneSaveRam()
 		{
-			byte[] ret = new byte[128];
+			if (_saveRamSize == 0)
+			{
+				return null;
+			}
+
+			byte[] ret = new byte[_saveRamSize];
 			_core.GetSaveRam(ret);
 			return ret;
 		}
 
 		public new void StoreSaveRam(byte[] data)
 		{
-			if (data.Length != 128)
+			if (_saveRamSize > 0)
 			{
-				throw new ArgumentException(message: "buffer wrong size", paramName: nameof(data));
-			}
+				if (data.Length != _saveRamSize)
+				{
+					throw new ArgumentException(message: "buffer wrong size", paramName: nameof(data));
+				}
 
-			_core.PutSaveRam(data);
+				_core.PutSaveRam(data);
+			}
 		}
 	}
 }

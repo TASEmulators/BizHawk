@@ -92,7 +92,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 		public abstract void SetCdCallbacks(CDTOCCallback cdtc, CDReadCallback cdrc);
 
 		[BizImport(CC)]
-		public abstract void InitWithCd(ref Settings s, IntPtr bios);
+		public abstract void InitWithCd(ref Settings s, IntPtr bios, IntPtr memtrack);
 
 		[BizImport(CC)]
 		public abstract bool SaveRamIsDirty();
@@ -107,7 +107,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 		public delegate void MemoryCallback(uint addr);
 
 		[BizImport(CC)]
-		public abstract void SetMemoryCallback(int which, MemoryCallback callback);
+		public abstract void SetMemoryCallbacks(MemoryCallback rcb, MemoryCallback wcb, MemoryCallback ecb);
 
 		[UnmanagedFunctionPointer(CC)]
 		public delegate void M68KTraceCallback(IntPtr regs);
@@ -116,7 +116,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 		public delegate void RISCTraceCallback(uint pc, IntPtr regs);
 
 		[BizImport(CC)]
-		public abstract void SetTraceCallbacks(M68KTraceCallback cpuTraceCallback, RISCTraceCallback gpuTraceCallback, RISCTraceCallback dspTraceCallback);
+		public abstract void SetTraceCallbacks(M68KTraceCallback ctcb, RISCTraceCallback gtcb, RISCTraceCallback dtcb);
 
 		[BizImport(CC)]
 		public abstract void GetRegisters(IntPtr regs);

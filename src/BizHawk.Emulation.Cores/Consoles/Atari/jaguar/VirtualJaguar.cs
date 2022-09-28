@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Properties;
 using BizHawk.Emulation.Cores.Waterbox;
 using BizHawk.Emulation.DiscSystem;
 
@@ -17,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 		private readonly LibVirtualJaguar _core;
 		private readonly JaguarDisassembler _disassembler;
 
-		[CoreConstructor(VSystemID.Raw.JAG)]
+		[CoreConstructor(VSystemID.Raw.Jaguar)]
 		public VirtualJaguar(CoreLoadParameters<VirtualJaguarSettings, VirtualJaguarSyncSettings> lp)
 			: base(lp.Comm, new Configuration
 			{
@@ -28,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 				MaxSamples = 1024,
 				DefaultFpsNumerator = 60,
 				DefaultFpsDenominator = 1,
-				SystemId = VSystemID.Raw.JAG,
+				SystemId = VSystemID.Raw.Jaguar,
 			})
 		{
 			_settings = lp.Settings ?? new();
@@ -57,11 +58,16 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 				SkipMemoryConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			}, new Delegate[] { _readCallback, _writeCallback, _execCallback, _cpuTraceCallback, _gpuTraceCallback, _dspTraceCallback, _cdTocCallback, _cdReadCallback, });
 
-			var bios = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("Jaguar", "Bios"));
-			if (bios.Length != 0x20000)
+			// we can include the bios files / memtrack rom as they are public domain since May 14, 1999
+			// see https://www.atariage.com/Jaguar/archives/HasbroRights.html
+			var brev = _syncSettings.BiosRevision switch
 			{
-				throw new MissingFirmwareException("Jaguar Bios must be 131072 bytes!");
-			}
+				VirtualJaguarSyncSettings.BiosRevisions.KSeries => Resources.JAGUAR_KSERIES_ROM,
+				VirtualJaguarSyncSettings.BiosRevisions.MSeries => Resources.JAGUAR_MSERIES_ROM,
+				_ => throw new InvalidOperationException(),
+			};
+
+			var bios = Zstd.DecompressZstdStream(new MemoryStream(brev.Value)).ToArray();
 
 			var settings = new LibVirtualJaguar.Settings()
 			{
@@ -76,6 +82,11 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 				_cd = lp.Discs[0].DiscData;
 				_cdReader = new(_cd);
 #else
+				if (lp.Discs.Count == 1)
+				{
+					throw new InvalidOperationException("Jaguar CD currently requires each session split into separate discs");
+				}
+
 				_cd = new Disc[lp.Discs.Count];
 				_cdReader = new DiscSectorReader[lp.Discs.Count];
 				for (int i = 0; i < lp.Discs.Count; i++)
@@ -86,11 +97,16 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 #endif
 				_core.SetCdCallbacks(_cdTocCallback, _cdReadCallback);
 
+				_saveRamSize = _syncSettings.UseMemoryTrack ? 0x20000 : 0;
+				var memtrack = _syncSettings.UseMemoryTrack
+					? Zstd.DecompressZstdStream(new MemoryStream(Resources.JAGUAR_MEMTRACK_ROM.Value)).ToArray()
+					: null;
+
 				unsafe
 				{
-					fixed (byte* bp = bios)
+					fixed (byte* bp = bios, mp = memtrack)
 					{
-						_core.InitWithCd(ref settings, (IntPtr)bp);
+						_core.InitWithCd(ref settings, (IntPtr)bp, (IntPtr)mp);
 					}
 				}
 			}
@@ -98,6 +114,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 			{
 				_cdTocCallback = null;
 				_cdReadCallback = null;
+				_saveRamSize = 128;
 				var rom = lp.Roms[0].FileData;
 				unsafe
 				{
@@ -240,7 +257,9 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 		private readonly LibVirtualJaguar.CDTOCCallback _cdTocCallback;
 		private readonly LibVirtualJaguar.CDReadCallback _cdReadCallback;
 
-#if false // uh oh, we don't actually have multisession disc support, so...
+		// uh oh, we don't actually have multisession disc support, so...
+		// TODO: get rid of this hack once we have proper multisession disc support
+#if false
 		private readonly Disc _cd;
 		private readonly DiscSectorReader _cdReader;
 

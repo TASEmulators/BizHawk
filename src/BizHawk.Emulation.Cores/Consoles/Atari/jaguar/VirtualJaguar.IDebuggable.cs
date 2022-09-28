@@ -14,20 +14,28 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 			_core.GetRegisters((IntPtr)regs);
 
 			var ret = new Dictionary<string, RegisterValue>();
+			// M68K data regs
 			for (int i = 0; i < 8; i++)
 			{
 				ret[$"M68K D{i}"] = regs[i];
+			}
+			// M68K address regs
+			for (int i = 0; i < 8; i++)
+			{
 				ret[$"M68K A{i}"] = regs[8 + i];
 			}
 			ret["M68K PC"] = regs[16];
 			ret["M68K SR"] = regs[17];
+			// these registers aren't really 0-63, but it's two banks of 32 registers
 			for (int i = 0; i < 64; i++)
 			{
-				// registers aren't really 0-63, but it's two banks of 32 registers
 				ret[$"GPU R{i}"] = regs[18 + i];
-				ret[$"DSP R{i}"] = regs[82 + i];
 			}
 			ret["GPU PC"] = regs[146];
+			for (int i = 0; i < 64; i++)
+			{
+				ret[$"DSP R{i}"] = regs[82 + i];
+			}
 			ret["DSP PC"] = regs[147];
 
 			return ret;
@@ -113,9 +121,10 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 
 		private void SetMemoryCallbacks()
 		{
-			_core.SetMemoryCallback(0, MemoryCallbacks.HasReads ? _readCallback : null);
-			_core.SetMemoryCallback(1, MemoryCallbacks.HasWrites ? _writeCallback : null);
-			_core.SetMemoryCallback(2, MemoryCallbacks.HasExecutes ? _execCallback : null);
+			_core.SetMemoryCallbacks(
+				MemoryCallbacks.HasReads ? _readCallback : null,
+				MemoryCallbacks.HasWrites ? _writeCallback : null,
+				MemoryCallbacks.HasExecutes ? _execCallback : null);
 		}
 	}
 }

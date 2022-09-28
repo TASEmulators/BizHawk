@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 			_m68kDisassembler.ReadByte = a => (sbyte)m.PeekByte(a);
 			_m68kDisassembler.ReadWord = a => (short)m.PeekUshort(a, true);
 			_m68kDisassembler.ReadLong = a => (int)m.PeekUint(a, true);
-			var info = _m68kDisassembler.Disassemble((int)addr);
+			var info = _m68kDisassembler.Disassemble((int)(addr & 0xFFFFFF));
 			length = info.Length;
 			return $"{info.RawBytes.Substring(0, 4):X4}  {info.Mnemonic,-7} {info.Args}";
 		}
@@ -24,33 +24,33 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 		// most of this is taken from virtualjaguar's dasmjag function
 		public string DisassembleRISC(bool gpu, MemoryDomain m, uint addr, out int length)
 		{
-			var opcode = m.PeekUshort(addr, true);
+			var opcode = m.PeekUshort(addr & 0xFFFFFF, true);
 			var arg1 = (opcode >> 5) & 0x1F;
 			var arg2 = opcode & 0x1F;
 			length = (opcode >> 10) == 0x26 ? 6 : 2;
 
-			string argRR() => $"r{arg1:d02}, r{arg2:d02}";
-			string argCZIR() => $"${(arg1 == 0 ? 32 : arg1):X02}, r{arg2:d02}";
-			string argIR() => $"${arg1:X02}, r{arg2:d02}";
-			string argR2() => $"r{arg2:d02}";
+			string argRR() => $"r{arg1}, r{arg2}";
+			string argCZIR() => $"${(arg1 == 0 ? 32 : arg1):X02}, r{arg2}";
+			string argIR() => $"${arg1:X02}, r{arg2}";
+			string argR2() => $"r{arg2}";
 			string argSR()
 			{
 				var s1 = (short)(arg1 << 11) >> 11;
 				if (s1 < 0)
 				{
-					return $"-${-s1:X02}, r{arg2:d02}";
+					return $"-${-s1:X02}, r{arg2}";
 				}
 				else
 				{
-					return $"${s1:X02}, r{arg2:d02}";
+					return $"${s1:X02}, r{arg2}";
 				}
 			}
-			string argDRR() => $"(r{arg1:d02}), r{arg2:d02}";
-			string argRDR() => $"r{arg2:d02}, (r{arg1:d02})";
-			string argDROR(int r) => $"(r{r:d02} + ${(arg1 == 0 ? 128 : arg1 * 4):X02}), r{arg2:d02}";
-			string argRDRO(int r) => $"r{arg2:d02}, (r{r:d02} + ${(arg1 == 0 ? 128 : arg1 * 4):X02})";
-			string argDRORR(int r) => $"(r{r:d02} + r{arg1:d02}), r{arg2:d02}";
-			string argRDROR(int r) => $"r{arg1:d02}, (r{r:d02} + r{arg2:d02})";
+			string argDRR() => $"(r{arg1}), r{arg2}";
+			string argRDR() => $"r{arg2}, (r{arg1})";
+			string argDROR(int r) => $"(r{r} + ${(arg1 == 0 ? 128 : arg1 * 4):X02}), r{arg2}";
+			string argRDRO(int r) => $"r{arg2}, (r{r} + ${(arg1 == 0 ? 128 : arg1 * 4):X02})";
+			string argDRORR(int r) => $"(r{r} + r{arg1}), r{arg2}";
+			string argRDROR(int r) => $"r{arg1}, (r{r} + r{arg2})";
 			string argCC()
 			{
 				return arg2 switch
@@ -115,7 +115,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 				0x23 => $"moveq {argIR()}",
 				0x24 => $"moveta {argRR()}",
 				0x25 => $"movefa {argRR()}",
-				0x26 => $"movei ${m.PeekUshort(addr + 2, true) | (m.PeekUshort(addr + 4, true) << 16):X06}, {argR2()}",
+				0x26 => $"movei ${m.PeekUshort((addr + 2) & 0xFFFFFF, true) | (m.PeekUshort((addr + 4) & 0xFFFFFF, true) << 16):X06}, {argR2()}",
 				0x27 => $"loadb {argDRR()}",
 				0x28 => $"loadw {argDRR()}",
 				0x29 => $"load {argDRR()}",
@@ -129,7 +129,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 				0x31 => $"store {argRDRO(14)}",
 				0x32 => $"store {argRDRO(15)}",
 				0x33 => $"move pc, {argR2()}",
-				0x34 => $"jump {argCC()}(r{arg1:d02})",
+				0x34 => $"jump {argCC()}(r{arg1})",
 				0x35 => $"jr {argCC()}${addr + 2 + ((sbyte)(arg1 << 3) >> 2):X06}",
 				0x36 => $"mmult {argRR()}",
 				0x37 => $"mtoi {argRR()}",
@@ -139,14 +139,14 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 				0x3B => $"load {argDRORR(15)}",
 				0x3C => $"store {argRDROR(14)}",
 				0x3D => $"store {argRDROR(15)}",
-				0x3E => gpu ? $"sat24 {argR2()}" : $"illegal [{arg1:d02}, {arg2:d02}]",
+				0x3E => gpu ? $"sat24 {argR2()}" : $"illegal [{arg1}, {arg2}]",
 				0x3F => gpu ? $"{(arg1 == 0 ? "pack" : "unpack")} {argR2()}" : $"addqmod {argCZIR()}",
 				_ => throw new InvalidOperationException(),
 			};
 
 			if (length == 6)
 			{
-				return $"{opcode:X04} {m.PeekUshort(addr + 2, true):X04} {m.PeekUshort(addr + 4, true):X04}  {disasm}";
+				return $"{opcode:X04} {m.PeekUshort((addr + 2) & 0xFFFFFF, true):X04} {m.PeekUshort((addr + 4) & 0xFFFFFF, true):X04}  {disasm}";
 			}
 			else
 			{

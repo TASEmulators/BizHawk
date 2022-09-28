@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Common
 			public const string GG = "GG";
 			public const string GGL = "GGL";
 			public const string INTV = "INTV";
-			public const string JAG = "Jaguar";
+			public const string Jaguar = "Jaguar";
 			public const string Libretro = "Libretro";
 			public const string Lynx = "Lynx";
 			public const string MAME = "MAME";

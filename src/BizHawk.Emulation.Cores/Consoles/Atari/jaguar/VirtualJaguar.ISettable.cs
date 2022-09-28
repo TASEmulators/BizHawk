@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -32,17 +33,17 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 		public class VirtualJaguarSettings
 		{
 			[DisplayName("Trace M68K (CPU)")]
-			[Description("")]
+			[Description("Used for the tracelogger")]
 			[DefaultValue(true)]
 			public bool TraceCPU { get; set; }
 
 			[DisplayName("Trace TOM (GPU)")]
-			[Description("")]
+			[Description("Used for the tracelogger")]
 			[DefaultValue(false)]
 			public bool TraceGPU { get; set; }
 
 			[DisplayName("Trace JERRY (DSP)")]
-			[Description("")]
+			[Description("Used for the tracelogger")]
 			[DefaultValue(false)]
 			public bool TraceDSP { get; set; }
 
@@ -55,30 +56,49 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 
 		public class VirtualJaguarSyncSettings
 		{
-			[DisplayName("Player 1 Controller Connected")]
+			[DisplayName("Player 1 Connected")]
 			[Description("")]
 			[DefaultValue(true)]
 			public bool P1Active { get; set; }
 
-			[DisplayName("Player 2 Controller Connected")]
+			[DisplayName("Player 2 Connected")]
 			[Description("")]
 			[DefaultValue(false)]
 			public bool P2Active { get; set; }
 
-			[DisplayName("NTSC")]
-			[Description("")]
-			[DefaultValue(true)]
-			public bool NTSC { get; set; }
-
 			[DisplayName("Skip BIOS")]
-			[Description("BIOS file must still be present. Ignored (set to true) for Jaguar CD")]
+			[Description("Ignored (set to true) for Jaguar CD")]
 			[DefaultValue(true)]
 			public bool SkipBIOS { get; set; }
 
-			[DisplayName("Use Fast Blitter")]
+			public enum BiosRevisions
+			{
+				[Display(Name = "K Series")]
+				KSeries = 0,
+				[Display(Name = "M Series")]
+				MSeries = 1,
+			}
+
+			[DisplayName("BIOS Revision")]
 			[Description("")]
+			[DefaultValue(BiosRevisions.MSeries)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public BiosRevisions BiosRevision { get; set; }
+
+			[DisplayName("NTSC")]
+			[Description("Set this to false to emulate a PAL console")]
 			[DefaultValue(true)]
+			public bool NTSC { get; set; }
+
+			[DisplayName("Use Fast Blitter")]
+			[Description("If true, a faster, less compatible blitter is used")]
+			[DefaultValue(false)]
 			public bool UseFastBlitter { get; set; }
+
+			[DisplayName("Use Memory Track")]
+			[Description("Allows for SaveRAM creation with Jaguar CD games. Does nothing for non-CD games.")]
+			[DefaultValue(true)]
+			public bool UseMemoryTrack { get; set; }
 
 			public VirtualJaguarSyncSettings()
 				=> SettingsUtil.SetDefaultValues(this);
