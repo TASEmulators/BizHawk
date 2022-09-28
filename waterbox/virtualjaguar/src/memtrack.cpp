@@ -30,6 +30,7 @@ enum { MT_NONE, MT_PROD_ID, MT_RESET, MT_WRITE_ENABLE };
 enum { MT_IDLE, MT_PHASE1, MT_PHASE2 };
 
 uint8_t mtMem[0x20000];
+bool mtDirty;
 uint8_t mtCommand = MT_NONE;
 uint8_t mtState = MT_IDLE;
 
@@ -38,6 +39,7 @@ void MTStateMachine(uint8_t reg, uint16_t data);
 void MTInit(void)
 {
 	memset(mtMem, 0xFF, 0x20000);
+	mtDirty = false;
 }
 
 void MTReset(void)
@@ -90,6 +92,7 @@ void MTWriteWord(uint32_t addr, uint16_t data)
 	if (mtCommand == MT_WRITE_ENABLE)
 	{
 		mtMem[(addr & 0x7FFFC) >> 2] = (uint8_t)(data & 0xFF);
+		mtDirty = true;
 		return;
 	}
 

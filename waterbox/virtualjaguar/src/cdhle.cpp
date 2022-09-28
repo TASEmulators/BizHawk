@@ -3,6 +3,9 @@
 #include "memory.h"
 #include "jaguar.h"
 #include "jerry.h"
+#include "tom.h"
+#include "dac.h"
+#include "dsp.h"
 #include "event.h"
 #include "m68000/m68kinterface.h"
 
@@ -21,6 +24,7 @@ static bool cd_setup;
 static bool cd_initm;
 static bool cd_muted;
 static bool cd_paused;
+bool cd_jerry;
 static uint8_t cd_mode;
 static uint8_t cd_osamp;
 
@@ -144,8 +148,19 @@ void CDHLEReset(void)
 	cd_initm = false;
 	cd_muted = false;
 	cd_paused = false;
+	cd_jerry = false;
 	cd_mode = 0;
 	cd_osamp = 0;
+
+	cd_is_reading = false;
+	cd_read_orig_addr_start = 0;
+	cd_read_addr_start = 0;
+	cd_read_addr_end = 0;
+	cd_read_lba = 0;
+	memset(cd_buf2352, 0, sizeof(cd_buf2352));
+	cd_buf_pos = 0;
+	cd_buf_rm = 0;
+	cd_buf_circular_size = 0;
 
 	if (cd_read_callback)
 	{
@@ -208,6 +223,12 @@ void CDHLEReset(void)
 
 		SET32(jaguarMainRAM, 4, cd_boot_addr);
 		SET16(jaguarMainRAM, 0x3004, 0x0403); // BIOS VER
+		DACWriteByte(0xF1A153, 9); // set SCLK to 9
+		if (jaguarMainROMCRC32 == 0xFDF37F47)
+		{
+			TOMWriteWord(0xF00000, (TOMGetMEMCON1() & ~6u) | 4); // set ROM width to 32 bit
+			memcpy(&jaguarMainRAM[0x2400], &jaguarMainROM[0x6D60], 0x790); // copy memtrack "bios" to ram
+		}
 	}
 }
 
@@ -215,58 +236,35 @@ void CDHLEDone(void)
 {
 }
 
-static void CDSendBlock(void)
+static void RefillCDBuf()
 {
-	if (cd_buf_rm < 64)
-	{
-		memmove(&cd_buf2352[0], &cd_buf2352[cd_buf_pos], cd_buf_rm);
-		cd_read_callback(cd_read_lba++, &cd_buf2352[cd_buf_rm]);
+	memmove(&cd_buf2352[0], &cd_buf2352[cd_buf_pos], cd_buf_rm);
+	cd_read_callback(cd_read_lba++, &cd_buf2352[cd_buf_rm]);
 
-		// hack to force word alignment
-		if (cd_word_alignment)
+	// hack to force word alignment
+	if (cd_word_alignment)
+	{
+		uint8_t temp2352[2352];
+		cd_read_callback(cd_read_lba, temp2352);
+		memmove(&cd_buf2352[cd_buf_rm], &cd_buf2352[cd_buf_rm + cd_word_alignment], 2352 - cd_word_alignment);
+		memcpy(&cd_buf2352[cd_buf_rm + 2352 - cd_word_alignment], &temp2352[0], cd_word_alignment);
+	}
+
+	if (cd_byte_swapped)
+	{
+		uint16_t* cd16buf = (uint16_t*)&cd_buf2352[cd_buf_rm];
+		for (uint32_t i = 0; i < (2352 / 2); i++)
 		{
-			uint8_t temp2352[2352];
-			cd_read_callback(cd_read_lba, temp2352);
-			memmove(&cd_buf2352[cd_buf_rm], &cd_buf2352[cd_buf_rm + cd_word_alignment], 2352 - cd_word_alignment);
-			memcpy(&cd_buf2352[cd_buf_rm + 2352 - cd_word_alignment], &temp2352[0], cd_word_alignment);
+			cd16buf[i] = __builtin_bswap16(cd16buf[i]);
 		}
-
-		if (cd_byte_swapped)
-		{
-			uint16_t* cd16buf = (uint16_t*)&cd_buf2352[cd_buf_rm];
-			for (uint32_t i = 0; i < (2352 / 2); i++)
-			{
-				cd16buf[i] = __builtin_bswap16(cd16buf[i]);
-			}
-		}
-
-		cd_buf_pos = 0;
-		cd_buf_rm += 2352;
 	}
 
-	// send one block of data, one long at a time
-	for (uint32_t i = 0; i < 64; i += 4)
-	{
-		GPUWriteLong(cd_read_addr_start + i, GET32(cd_buf2352, cd_buf_pos + i), GPU);
-	}
-
-	cd_read_addr_start += 64;
-	cd_buf_pos += 64;
-	cd_buf_rm -= 64;
-
-	if (cd_read_addr_start >= cd_read_addr_end)
-	{
-		cd_is_reading = false;
-	}
-	else if (cd_buf_circular_size && (cd_read_addr_start - cd_read_orig_addr_start) >= cd_buf_circular_size)
-	{
-		cd_read_addr_start = cd_read_orig_addr_start;
-	}
+	cd_buf_pos = 0;
+	cd_buf_rm += 2352;
 }
 
 static void CDHLECallback(void)
 {
-	RemoveCallback(CDHLECallback);
 	if (cd_is_reading)
 	{
 		if (!GPURunning())
@@ -274,14 +272,69 @@ static void CDHLECallback(void)
 
 		if (GPURunning() && !cd_paused)
 		{
-			CDSendBlock();
+			if (cd_buf_rm < 64)
+			{
+				RefillCDBuf();
+			}
+
+			// send one block of data, one long at a time
+			for (uint32_t i = 0; i < 64; i += 4)
+			{
+				GPUWriteLong(cd_read_addr_start + i, GET32(cd_buf2352, cd_buf_pos + i), GPU);
+			}
+
+			cd_read_addr_start += 64;
+			cd_buf_pos += 64;
+			cd_buf_rm -= 64;
+
+			if (cd_read_addr_start >= cd_read_addr_end)
+			{
+				cd_is_reading = false;
+			}
+			else if (cd_buf_circular_size && (cd_read_addr_start - cd_read_orig_addr_start) >= cd_buf_circular_size)
+			{
+				cd_read_addr_start = cd_read_orig_addr_start;
+			}
+
 			//GPUSetIRQLine(GPUIRQ_DSP, ASSERT_LINE);
 		}
+
 		SetCallbackTime(CDHLECallback, 285 >> (cd_mode & 1));
 	}
 }
 
-static void LoadISRStub()
+// called from JERRYI2SCallback
+bool CDHLEJerryCallback(void)
+{
+	if (!cd_is_reading || !cd_jerry || cd_paused)
+	{
+		return false;
+	}
+
+	if (cd_buf_rm < 4)
+	{
+		RefillCDBuf();
+	}
+
+	DACWriteWord(0xF1A14A, GET16(cd_buf2352, cd_buf_pos + 0));
+	DACWriteWord(0xF1A14E, GET16(cd_buf2352, cd_buf_pos + 2));
+
+	cd_buf_pos += 4;
+	cd_buf_rm -= 4;
+
+	return true;
+}
+
+static void ResetCallbacks(void)
+{
+	RemoveCallback(CDHLECallback);
+	if (!cd_jerry)
+	{
+		SetCallbackTime(CDHLECallback, 285 >> (cd_mode & 1));
+	}
+}
+
+static void LoadISRStub(void)
 {
 	uint32_t isrAddr = m68k_get_reg(NULL, M68K_REG_A0);
 	uint32_t addr = 0xF03010;
@@ -373,7 +426,13 @@ static void CD_ack(void)
 
 static void CD_jeri(void)
 {
-	fprintf(stderr, "CD_jeri called %d!!!\n", m68k_get_reg(NULL, M68K_REG_D0) & 1);
+	bool njerry = m68k_get_reg(NULL, M68K_REG_D0) & 1;
+	if (cd_jerry ^ njerry)
+	{
+		fprintf(stderr, "changing jerry mode %d -> %d\n", cd_jerry, njerry);
+		cd_jerry = njerry;
+		ResetCallbacks();
+	}
 }
 
 static void CD_spin(void)
@@ -514,8 +573,7 @@ static void CD_read(void)
 						cd_buf_pos = 0;
 						cd_buf_rm = bufRm;
 						cd_buf_circular_size = circBufSz ? (1 << circBufSz) : 0;
-						RemoveCallback(CDHLECallback);
-						SetCallbackTime(CDHLECallback, 285 >> (cd_mode & 1));
+						ResetCallbacks();
 						JERRYWriteWord(0xF10020, 0, M68K);
 						//GPUWriteLong(0xF02100, GPUReadLong(0xF02100, M68K) | 0x20, M68K);
 						break;
@@ -536,8 +594,7 @@ static void CD_read(void)
 			cd_buf_pos = 0;
 			cd_buf_rm = 0;
 			cd_buf_circular_size = 0;
-			RemoveCallback(CDHLECallback);
-			SetCallbackTime(CDHLECallback, 285 >> (cd_mode & 1));
+			ResetCallbacks();
 			JERRYWriteWord(0xF10020, 0, M68K);
 			//GPUWriteLong(0xF02100, GPUReadLong(0xF02100, M68K) | 0x20, M68K);
 		}

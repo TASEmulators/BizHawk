@@ -27,6 +27,7 @@
 #include "settings.h"
 #include "tom.h"
 #include "wavetable.h"
+#include "cdhle.h"
 
 /*static*/ uint8_t jerry_ram_8[0x10000];
 
@@ -142,12 +143,10 @@ void JERRYI2SCallback(void)
 	}
 	else
 	{
-		if (ButchIsReadyToSend())
+		if (CDHLEJerryCallback())
 		{
-			SetSSIWordsXmittedFromButch();
 			DSPSetIRQLine(DSPIRQ_SSI, ASSERT_LINE);
 		}
-
 		SetCallbackTime(JERRYI2SCallback, 22.675737, EVENT_JERRY);
 	}
 }

@@ -69,10 +69,8 @@ void DSPSampleCallback(void);
 void DACInit(void)
 {
 	ltxd = lrxd = 0;
-	sclk = 19;
 
-	uint32_t riscClockRate = (vjs.hardwareTypeNTSC ? RISC_CLOCK_RATE_NTSC : RISC_CLOCK_RATE_PAL);
-	uint32_t cyclesPerSample = riscClockRate / DAC_AUDIO_RATE;
+	sclk = 19;
 }
 
 //

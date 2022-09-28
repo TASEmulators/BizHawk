@@ -8,5 +8,6 @@ void CDHLEReset(void);
 void CDHLEDone(void);
 
 void CDHLEHook(uint32_t which);
+bool CDHLEJerryCallback(void);
 
 #endif	// __CDHLE_H__

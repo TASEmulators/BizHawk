@@ -88,9 +88,13 @@ EXPORT void SetCdCallbacks(void (*ctc)(void * dest), void (*cdrc)(int32_t lba, v
 	cd_read_callback = cdrc;
 }
 
-EXPORT void InitWithCd(BizSettings* bizSettings, u8* boot)
+EXPORT void InitWithCd(BizSettings* bizSettings, u8* boot, u8* memtrack)
 {
 	InitCommon(bizSettings);
+	if (memtrack)
+	{
+		JaguarLoadFile(memtrack, 0x20000);
+	}
 	vjs.hardwareTypeAlpine = false;
 
 	SET32(jaguarMainRAM, 0, 0x00200000);
@@ -99,24 +103,50 @@ EXPORT void InitWithCd(BizSettings* bizSettings, u8* boot)
 	JaguarReset();
 }
 
+// standard cart eeprom
 extern u16 eeprom_ram[64];
 extern bool eeprom_dirty;
 
+// memtrack ram (used for jagcd)
+extern u8 mtMem[0x20000];
+extern bool mtDirty;
+
+static inline bool IsMemTrack()
+{
+	return jaguarMainROMCRC32 == 0xFDF37F47;
+}
+
 EXPORT bool SaveRamIsDirty()
 {
-	return eeprom_dirty;
+	return IsMemTrack() ? mtDirty : eeprom_dirty;
 }
 
 EXPORT void GetSaveRam(u8* dst)
 {
-	memcpy(dst, eeprom_ram, sizeof(eeprom_ram));
-	eeprom_dirty = false;
+	if (IsMemTrack())
+	{
+		memcpy(dst, mtMem, sizeof(mtMem));
+		mtDirty = false;
+	}
+	else
+	{
+		memcpy(dst, eeprom_ram, sizeof(eeprom_ram));
+		eeprom_dirty = false;
+	}
 }
 
 EXPORT void PutSaveRam(u8* src)
 {
-	memcpy(eeprom_ram, src, sizeof(eeprom_ram));
-	eeprom_dirty = false;
+	if (IsMemTrack())
+	{
+		memcpy(mtMem, src, sizeof(mtMem));
+		mtDirty = false;
+	}
+	else
+	{
+		memcpy(eeprom_ram, src, sizeof(eeprom_ram));
+		eeprom_dirty = false;
+	}
 }
 
 extern u8 gpu_ram_8[0x1000];
@@ -173,10 +203,20 @@ EXPORT void GetMemoryAreas(MemoryArea* m)
 	m[0].Size = 0x200000;
 	m[0].Flags = MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_PRIMARY;
 
-	m[1].Data = eeprom_ram;
-	m[1].Name = "EEPROM";
-	m[1].Size = sizeof(eeprom_ram);
-	m[1].Flags = MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_SAVERAMMABLE;
+	if (IsMemTrack())
+	{
+		m[1].Data = mtMem;
+		m[1].Name = "MEMTRACK RAM";
+		m[1].Size = sizeof(mtMem);
+		m[1].Flags = MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_SAVERAMMABLE;
+	}
+	else
+	{
+		m[1].Data = jaguarCartInserted ? eeprom_ram : NULL;
+		m[1].Name = "EEPROM";
+		m[1].Size = sizeof(eeprom_ram);
+		m[1].Flags = MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_SAVERAMMABLE;
+	}
 
 	m[2].Data = gpu_ram_8;
 	m[2].Name = "GPU RAM";
@@ -291,14 +331,11 @@ void (*ReadCallback)(u32) = 0;
 void (*WriteCallback)(u32) = 0;
 void (*ExecuteCallback)(u32) = 0;
 
-EXPORT void SetMemoryCallback(u32 which, void (*callback)(u32))
+EXPORT void SetMemoryCallbacks(void (*rcb)(u32), void (*wcb)(u32), void (*ecb)(u32))
 {
-	switch (which)
-	{
-		case 0: ReadCallback = callback; break;
-		case 1: WriteCallback = callback; break;
-		case 2: ExecuteCallback = callback; break;
-	}
+	ReadCallback = rcb;
+	WriteCallback = wcb;
+	ExecuteCallback = ecb;
 }
 
 void (*CPUTraceCallback)(u32*) = 0;

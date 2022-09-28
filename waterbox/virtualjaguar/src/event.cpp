@@ -19,7 +19,9 @@
 
 #include "event.h"
 
+#include <assert.h>
 #include <stdint.h>
+#include <float.h>
 
 #define EVENT_LIST_SIZE       32
 
@@ -145,10 +147,10 @@ double GetTimeToNextEvent(int type)
 {
 	if (type == EVENT_MAIN)
 	{
-		double time = eventList[0].eventTime;
-		nextEvent = 0;
+		double time = DBL_MAX;
+		nextEvent = EVENT_LIST_SIZE;
 
-		for(uint32_t i=1; i<EVENT_LIST_SIZE; i++)
+		for(uint32_t i=0; i<EVENT_LIST_SIZE; i++)
 		{
 			if (eventList[i].valid && (eventList[i].eventTime < time))
 			{
@@ -157,14 +159,15 @@ double GetTimeToNextEvent(int type)
 			}
 		}
 
+		assert(nextEvent != EVENT_LIST_SIZE);
 		return time;
 	}
 	else
 	{
-		double time = eventListJERRY[0].eventTime;
-		nextEventJERRY = 0;
+		double time = DBL_MAX;
+		nextEventJERRY = EVENT_LIST_SIZE;
 
-		for(uint32_t i=1; i<EVENT_LIST_SIZE; i++)
+		for(uint32_t i=0; i<EVENT_LIST_SIZE; i++)
 		{
 			if (eventListJERRY[i].valid && (eventListJERRY[i].eventTime < time))
 			{
@@ -173,6 +176,7 @@ double GetTimeToNextEvent(int type)
 			}
 		}
 
+		assert(nextEventJERRY != EVENT_LIST_SIZE);
 		return time;
 	}
 }
