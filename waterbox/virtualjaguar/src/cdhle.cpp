@@ -287,7 +287,7 @@ static void CDHLECallback(void)
 			cd_buf_pos += 64;
 			cd_buf_rm -= 64;
 
-			if (cd_read_addr_start >= cd_read_addr_end)
+			if (cd_read_addr_start > cd_read_addr_end)
 			{
 				cd_is_reading = false;
 			}
