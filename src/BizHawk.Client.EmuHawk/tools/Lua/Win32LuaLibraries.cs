@@ -186,7 +186,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				foreach (var lf in RegisteredFunctions.Where(l => l.Event == "OnSavestateSave"))
+				foreach (var lf in RegisteredFunctions.Where(static l => l.Event == "OnSavestateSave").ToList())
 				{
 					lf.Call(name);
 				}
@@ -203,7 +203,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				foreach (var lf in RegisteredFunctions.Where(l => l.Event == "OnSavestateLoad"))
+				foreach (var lf in RegisteredFunctions.Where(static l => l.Event == "OnSavestateLoad").ToList())
 				{
 					lf.Call(name);
 				}
@@ -221,7 +221,7 @@ namespace BizHawk.Client.EmuHawk
 			if (IsUpdateSupressed) return;
 			try
 			{
-				foreach (var lf in RegisteredFunctions.Where(l => l.Event == "OnFrameStart"))
+				foreach (var lf in RegisteredFunctions.Where(static l => l.Event == "OnFrameStart").ToList())
 				{
 					lf.Call();
 				}
@@ -239,7 +239,7 @@ namespace BizHawk.Client.EmuHawk
 			if (IsUpdateSupressed) return;
 			try
 			{
-				foreach (var lf in RegisteredFunctions.Where(l => l.Event == "OnFrameEnd"))
+				foreach (var lf in RegisteredFunctions.Where(static l => l.Event == "OnFrameEnd").ToList())
 				{
 					lf.Call();
 				}
@@ -255,7 +255,8 @@ namespace BizHawk.Client.EmuHawk
 		public void CallExitEvent(LuaFile lf)
 		{
 			foreach (var exitCallback in RegisteredFunctions
-				.Where(l => l.Event == "OnExit" && (l.LuaFile.Path == lf.Path || l.LuaFile.Thread == lf.Thread)))
+				.Where(l => l.Event == "OnExit" && (l.LuaFile.Path == lf.Path || l.LuaFile.Thread == lf.Thread))
+				.ToList())
 			{
 				exitCallback.Call();
 			}
