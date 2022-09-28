@@ -19,7 +19,6 @@
 #include <stdlib.h>
 #include "dac.h"
 #include "gpu.h"
-#include "jagdasm.h"
 #include "jaguar.h"
 #include "jerry.h"
 #include "m68000/m68kinterface.h"

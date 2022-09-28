@@ -12,15 +12,12 @@ struct cputbl
 	uint16_t opcode;
 };
 
-extern uint16_t last_op_for_exception_3;	/* Opcode of faulting instruction */
-extern uint32_t last_addr_for_exception_3;	/* PC at fault time */
-extern uint32_t last_fault_for_exception_3;	/* Address that generated the exception */
+extern uint16_t last_op_for_exception_3;
+extern uint32_t last_addr_for_exception_3;
+extern uint32_t last_fault_for_exception_3;
 
-/* Family of the latest instruction executed (to check for pairing) */
-extern int OpcodeFamily;			/* see instrmnem in readcpu.h */
+extern int OpcodeFamily;
 
-/* How many cycles to add to the current instruction in case a "misaligned" bus access is made */
-/* (used when addressing mode is d8(an,ix)) */
 extern int BusCyclePenalty;
 extern int CurrentInstrCycles;
 

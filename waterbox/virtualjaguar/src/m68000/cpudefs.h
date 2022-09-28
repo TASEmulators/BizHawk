@@ -70,8 +70,6 @@ extern struct regstruct regs, lastint_regs;
 /* Possible exceptions sources for M68000_Exception() and Exception() */
 #define M68000_EXC_SRC_CPU      1  /* Direct CPU exception */
 #define M68000_EXC_SRC_AUTOVEC  2  /* Auto-vector exception (e.g. VBL) */
-//#define M68000_EXC_SRC_INT_MFP  3  /* MFP interrupt exception */
-//#define M68000_EXC_SRC_INT_DSP  4  /* DSP interrupt exception */
 
 #define SET_CFLG(x) (CFLG = (x))
 #define SET_NFLG(x) (NFLG = (x))

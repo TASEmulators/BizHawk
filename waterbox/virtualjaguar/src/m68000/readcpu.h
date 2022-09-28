@@ -11,7 +11,6 @@
 
 #include "sysdeps.h"
 
-
 ENUMDECL {
   Dreg, Areg, Aind, Aipi, Apdi, Ad16, Ad8r,
   absw, absl, PC16, PC8r, imm, imm0, imm1, imm2, immi, am_unknown, am_illg
@@ -44,7 +43,7 @@ ENUMDECL {
     i_CINVL, i_CINVP, i_CINVA, i_CPUSHL, i_CPUSHP, i_CPUSHA, i_MOVE16,
     i_MMUOP,
 
-    MAX_OPCODE_FAMILY				/* should always be last of the list */
+    MAX_OPCODE_FAMILY
 } ENUMNAME (instrmnem);
 
 extern const struct mnemolookup {

@@ -57,12 +57,12 @@ void M68KInstructionHook(void)
 {
 	if (jaguarCdInserted)
 	{
-		uint32_t pc = m68k_get_reg(NULL, M68K_REG_PC);
+		uint32_t pc = m68k_get_reg(M68K_REG_PC);
 		if (pc >= 0x3000 && pc <= 0x306C)
 		{
 			CDHLEHook((pc - 0x3000) / 6);
 			// return
-			uint32_t sp = m68k_get_reg(NULL, M68K_REG_SP);
+			uint32_t sp = m68k_get_reg(M68K_REG_SP);
 			m68k_set_reg(M68K_REG_PC, m68k_read_memory_32(sp));
 			m68k_set_reg(M68K_REG_SP, sp + 4);
 		}
@@ -73,12 +73,12 @@ void M68KInstructionHook(void)
 		uint32_t regs[18];
 		for (uint32_t i = 0; i < 18; i++)
 		{
-			regs[i] = m68k_get_reg(NULL, (m68k_register_t)i);
+			regs[i] = m68k_get_reg((m68k_register_t)i);
 		}
 		CPUTraceCallback(regs);
 	}
 
-	MAYBE_CALLBACK(ExecuteCallback, m68k_get_reg(NULL, M68K_REG_PC));
+	MAYBE_CALLBACK(ExecuteCallback, m68k_get_reg(M68K_REG_PC));
 }
 
 //

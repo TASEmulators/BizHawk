@@ -69,7 +69,6 @@ typedef enum
  */
 #define M68K_INT_ACK_SPURIOUS      0xFFFFFFFE
 
-void m68k_set_cpu_type(unsigned int);
 void m68k_pulse_reset(void);
 int m68k_execute(int num_cycles);
 void m68k_set_irq(unsigned int int_level);
@@ -90,45 +89,24 @@ int irq_ack_handler(int);
 
 // Convenience functions
 
-// Uncomment this to have the emulated CPU call a hook function after every instruction
-// NB: This must be implemented by the user!
-#define M68K_HOOK_FUNCTION
-#ifdef M68K_HOOK_FUNCTION
 void M68KInstructionHook(void);
-#endif
 
-// Functions to allow debugging
-void M68KDebugHalt(void);
-void M68KDebugResume(void);
-
-/* Peek at the internals of a CPU context.  This can either be a context
- * retrieved using m68k_get_context() or the currently running context.
- * If context is NULL, the currently running CPU context will be used.
- */
-unsigned int m68k_get_reg(void * context, m68k_register_t reg);
+/* Peek at the internals of the currently running CPU context */
+unsigned int m68k_get_reg(m68k_register_t reg);
 
 /* Poke values into the internals of the currently running CPU context */
 void m68k_set_reg(m68k_register_t reg, unsigned int value);
 
-// Dummy functions, for now...
-
 /* Check if an instruction is valid for the specified CPU type */
 unsigned int m68k_is_valid_instruction(unsigned int instruction, unsigned int cpu_type);
-
-/* Disassemble 1 instruction using the epecified CPU type at pc.  Stores
- * disassembly in str_buff and returns the size of the instruction in bytes.
- */
-unsigned int m68k_disassemble(char * str_buff, unsigned int pc, unsigned int cpu_type);
 
 /* These functions let you read/write/modify the number of cycles left to run
  * while m68k_execute() is running.
  * These are useful if the 68k accesses a memory-mapped port on another device
  * that requires immediate processing by another CPU.
  */
-int m68k_cycles_run(void);              // Number of cycles run so far
-int m68k_cycles_remaining(void);        // Number of cycles left
-void m68k_modify_timeslice(int cycles); // Modify cycles left
-void m68k_end_timeslice(void);          // End timeslice now
+void m68k_modify_timeslice(int cycles);
+void m68k_end_timeslice(void);
 
 #ifdef __cplusplus
 }

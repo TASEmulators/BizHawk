@@ -27,7 +27,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "dsp.h"
-#include "jagdasm.h"
 #include "jaguar.h"
 #include "m68000/m68kinterface.h"
 #include "tom.h"

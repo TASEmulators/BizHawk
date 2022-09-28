@@ -356,7 +356,7 @@ EXPORT void GetRegisters(u32* regs)
 {
 	for (u32 i = 0; i < 18; i++)
 	{
-		regs[i] = m68k_get_reg(NULL, (m68k_register_t)i);
+		regs[i] = m68k_get_reg((m68k_register_t)i);
 	}
 	memcpy(&regs[18], gpu_reg_bank_0, 128);
 	memcpy(&regs[50], gpu_reg_bank_1, 128);

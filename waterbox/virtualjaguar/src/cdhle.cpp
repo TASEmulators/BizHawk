@@ -336,7 +336,7 @@ static void ResetCallbacks(void)
 
 static void LoadISRStub(void)
 {
-	uint32_t isrAddr = m68k_get_reg(NULL, M68K_REG_A0);
+	uint32_t isrAddr = m68k_get_reg(M68K_REG_A0);
 	uint32_t addr = 0xF03010;
 
 	#define WRITE_GASM(x) do { GPUWriteWord(addr, x, M68K); addr += 2; } while (0)
@@ -405,7 +405,7 @@ void CDHLEHook(uint32_t which)
 
 static void CD_init(void)
 {
-	fprintf(stderr, "CD_init called %08X\n", m68k_get_reg(NULL, M68K_REG_A0));
+	fprintf(stderr, "CD_init called %08X\n", m68k_get_reg(M68K_REG_A0));
 	LoadISRStub();
 	cd_initm = false;
 }
@@ -414,7 +414,7 @@ static void CD_mode(void)
 {
 	// bit 0 = speed (0 = single, 1 = double)
 	// bit 1 = mode (0 = audio, 1 = data)
-	cd_mode = m68k_get_reg(NULL, M68K_REG_D0) & 3;
+	cd_mode = m68k_get_reg(M68K_REG_D0) & 3;
 	fprintf(stderr, "CD_mode mode = %d, speed = %d\n", cd_mode >> 1, cd_mode & 1);
 	NO_ERR();
 }
@@ -426,7 +426,7 @@ static void CD_ack(void)
 
 static void CD_jeri(void)
 {
-	bool njerry = m68k_get_reg(NULL, M68K_REG_D0) & 1;
+	bool njerry = m68k_get_reg(M68K_REG_D0) & 1;
 	if (cd_jerry ^ njerry)
 	{
 		fprintf(stderr, "changing jerry mode %d -> %d\n", cd_jerry, njerry);
@@ -437,7 +437,7 @@ static void CD_jeri(void)
 
 static void CD_spin(void)
 {
-	fprintf(stderr, "CD_spin: new session %04X\n", m68k_get_reg(NULL, M68K_REG_D1) & 0xFFFF);
+	fprintf(stderr, "CD_spin: new session %04X\n", m68k_get_reg(M68K_REG_D1) & 0xFFFF);
 	NO_ERR();
 }
 
@@ -486,8 +486,8 @@ static void CD_upaus(void)
 
 static void CD_read(void)
 {
-	uint32_t dstStart = m68k_get_reg(NULL, M68K_REG_A0);
-	uint32_t dstEnd = m68k_get_reg(NULL, M68K_REG_A1);
+	uint32_t dstStart = m68k_get_reg(M68K_REG_A0);
+	uint32_t dstEnd = m68k_get_reg(M68K_REG_A1);
 
 	fprintf(stderr, "CD READ: dstStart %08X, dstEnd %08X\n", dstStart, dstEnd);
 
@@ -498,7 +498,7 @@ static void CD_read(void)
 		return;
 	}
 
-	uint32_t timecode = m68k_get_reg(NULL, M68K_REG_D0);
+	uint32_t timecode = m68k_get_reg(M68K_REG_D0);
 
 	uint32_t frames = timecode & 0xFF;
 	uint32_t seconds = (timecode >> 8) & 0xFF;
@@ -517,8 +517,8 @@ static void CD_read(void)
 	{
 		if (cd_initm)
 		{
-			uint32_t marker = m68k_get_reg(NULL, M68K_REG_D1);
-			uint32_t circBufSz = m68k_get_reg(NULL, M68K_REG_D2);
+			uint32_t marker = m68k_get_reg(M68K_REG_D1);
+			uint32_t circBufSz = m68k_get_reg(M68K_REG_D2);
 			fprintf(stderr, "cd_initm read: marker %04X, circBufSz %04X\n", marker, circBufSz);
 			uint32_t lba = (minutes * 60 + seconds) * 75 + frames - 150;
 			uint8_t buf2352[2352 + 128];
@@ -630,7 +630,7 @@ static void CD_ptr(void)
 
 static void CD_osamp(void)
 {
-	cd_osamp = m68k_get_reg(NULL, M68K_REG_D0) & 3;
+	cd_osamp = m68k_get_reg(M68K_REG_D0) & 3;
 	NO_ERR();
 }
 
@@ -641,14 +641,14 @@ static void CD_getoc(void)
 
 static void CD_initm(void)
 {
-	fprintf(stderr, "CD_initm called %08X\n", m68k_get_reg(NULL, M68K_REG_A0));
+	fprintf(stderr, "CD_initm called %08X\n", m68k_get_reg(M68K_REG_A0));
 	LoadISRStub();
 	cd_initm = true;
 }
 
 static void CD_initf(void)
 {
-	fprintf(stderr, "CD_initf called %08X\n", m68k_get_reg(NULL, M68K_REG_A0));
+	fprintf(stderr, "CD_initf called %08X\n", m68k_get_reg(M68K_REG_A0));
 	LoadISRStub();
 	cd_initm = false;
 }

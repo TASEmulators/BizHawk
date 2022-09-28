@@ -16,9 +16,6 @@
 /* 2008/04/26	[NP]	Handle sz_byte for Areg as a valid srcmode if current instruction is a MOVE	*/
 /*			(e.g. move.b a1,(a0) ($1089)) (fix Blood Money on Superior 65)			*/
 
-
-//const char ReadCpu_fileid[] = "Hatari readcpu.c : " __DATE__ " " __TIME__;
-
 #include <ctype.h>
 #include <string.h>
 
@@ -219,12 +216,6 @@ static void build_insn(int insn)
 	int flaglive = 0, flagdead = 0;
 	id = defs68k[insn];
 
-	/* Note: We treat anything with unknown flags as a jump. That
-	   is overkill, but "the programmer" was lazy quite often, and
-	   *this* programmer can't be bothered to work out what can and
-	   can't trap. Usually, this will be overwritten with the gencomp
-	   based information, anyway. */
-
 	for(j=0; j<5; j++)
 	{
 		switch (id.flaginfo[j].flagset)
@@ -304,14 +295,12 @@ out1:
 		if (bitval[bitj] == 0)
 			bitval[bitj] = 8;
 
-		/* first check whether this one does not match after all */
 		if (bitval[bitz] == 3 || bitval[bitC] == 1)
 			continue;
 
 		if (bitcnt[bitI] && (bitval[bitI] == 0x00 || bitval[bitI] == 0xff))
 			continue;
 
-		/* bitI and bitC get copied to biti and bitc */
 		if (bitcnt[bitI])
 		{
 			bitval[biti] = bitval[bitI]; bitpos[biti] = bitpos[bitI];
@@ -367,15 +356,12 @@ out1:
 
 		mnemonic[mnp] = 0;
 
-		/* now, we have read the mnemonic and the size */
 		while (opcstr[pos] && isspace((unsigned)opcstr[pos]))
 			pos++;
 
-		/* A goto a day keeps the D******a away. */
 		if (opcstr[pos] == 0)
 			goto endofline;
 
-		/* parse the source address */
 		usesrc = 1;
 		switch (opcstr[pos++])
 		{
@@ -422,7 +408,6 @@ out1:
 
 				if (CPU_EMU_SIZE < 4)
 				{
-					/* Used for branch instructions */
 					srctype = 1;
 					srcgather = 1;
 					srcpos = bitpos[biti];
@@ -434,7 +419,6 @@ out1:
 
 				if (CPU_EMU_SIZE < 3)
 				{
-					/* 1..8 for ADDQ/SUBQ and rotshi insns */
 					srcgather = 1;
 					srctype = 3;
 					srcpos = bitpos[bitj];
@@ -446,7 +430,6 @@ out1:
 
 				if (CPU_EMU_SIZE < 5)
 				{
-					/* 0..15 */
 					srcgather = 1;
 					srctype = 2;
 					srcpos = bitpos[bitJ];
@@ -469,7 +452,6 @@ out1:
 
 				if (CPU_EMU_SIZE < 5)
 				{
-					/* 0..15 */
 					srcgather = 1;
 					srctype = 5;
 					srcpos = bitpos[bitK];
@@ -481,7 +463,6 @@ out1:
 
 				if (CPU_EMU_SIZE < 5)
 				{
-					/* 0..3 */
 					srcgather = 1;
 					srctype = 7;
 					srcpos = bitpos[bitp];
@@ -514,7 +495,6 @@ out1:
 
 				if (opcstr[pos] == '!')
 				{
-					/* exclusion */
 					do
 					{
 						pos++;
@@ -532,7 +512,6 @@ out1:
 				{
 					if (opcstr[pos + 4] == '-')
 					{
-						/* replacement */
 						if (mode_from_str(opcstr + pos) == srcmode)
 							srcmode = mode_from_str(opcstr + pos + 5);
 						else
@@ -542,7 +521,6 @@ out1:
 					}
 					else
 					{
-						/* normal */
 						while(mode_from_str(opcstr + pos) != srcmode)
 						{
 							pos += 4;
@@ -562,7 +540,6 @@ out1:
 				}
 			}
 
-			/* Some addressing modes are invalid as destination */
 			if (srcmode == imm || srcmode == PC16 || srcmode == PC8r)
 				goto nomatch;
 
@@ -589,7 +566,6 @@ out1:
 
 				if (opcstr[pos] == '!')
 				{
-					/* exclusion */
 					do
 					{
 						pos++;
@@ -607,7 +583,6 @@ out1:
 				{
 					if (opcstr[pos + 4] == '-')
 					{
-						/* replacement */
 						if (mode_from_str(opcstr + pos) == srcmode)
 							srcmode = mode_from_str(opcstr + pos + 5);
 						else
@@ -617,7 +592,6 @@ out1:
 					}
 					else
 					{
-						/* normal */
 						while(mode_from_str(opcstr+pos) != srcmode)
 						{
 							pos += 4;
@@ -639,7 +613,6 @@ out1:
 		default: abort();
 		}
 
-		/* safety check - might have changed */
 		if (srcmode != Areg && srcmode != Dreg && srcmode != Aind
 			&& srcmode != Ad16 && srcmode != Ad8r && srcmode != Aipi
 			&& srcmode != Apdi && srcmode != immi)
@@ -647,8 +620,7 @@ out1:
 			srcgather = 0;
 		}
 
-//		if (srcmode == Areg && sz == sz_byte)
-		if (srcmode == Areg && sz == sz_byte && strcmp(mnemonic, "MOVE") != 0 )	// [NP] move.b is valid on 68000
+		if (srcmode == Areg && sz == sz_byte && strcmp(mnemonic, "MOVE") != 0 )
 			goto nomatch;
 
 		if (opcstr[pos] != ',')
@@ -656,7 +628,6 @@ out1:
 
 		pos++;
 
-		/* parse the destination address */
 		usedst = 1;
 
 		switch (opcstr[pos++])
@@ -736,7 +707,6 @@ out1:
 
 				if (opcstr[pos] == '!')
 				{
-					/* exclusion */
 					do
 					{
 						pos++;
@@ -754,7 +724,6 @@ out1:
 				{
 					if (opcstr[pos+4] == '-')
 					{
-						/* replacement */
 						if (mode_from_str(opcstr + pos) == destmode)
 							destmode = mode_from_str(opcstr + pos + 5);
 						else
@@ -764,7 +733,6 @@ out1:
 					}
 					else
 					{
-						/* normal */
 						while(mode_from_str(opcstr + pos) != destmode)
 						{
 							pos += 4;
@@ -784,7 +752,6 @@ out1:
 				}
 			}
 
-			/* Some addressing modes are invalid as destination */
 			if (destmode == imm || destmode == PC16 || destmode == PC8r)
 				goto nomatch;
 
@@ -810,7 +777,6 @@ out1:
 
 				if (opcstr[pos] == '!')
 				{
-					/* exclusion */
 					do
 					{
 						pos++;
@@ -828,7 +794,6 @@ out1:
 				{
 					if (opcstr[pos+4] == '-')
 					{
-						/* replacement */
 						if (mode_from_str(opcstr + pos) == destmode)
 							destmode = mode_from_str(opcstr + pos + 5);
 						else
@@ -838,7 +803,6 @@ out1:
 					}
 					else
 					{
-						/* normal */
 						while (mode_from_str(opcstr + pos) != destmode)
 						{
 							pos += 4;
@@ -860,7 +824,6 @@ out1:
 		default: abort();
 		}
 
-		/* safety check - might have changed */
 		if (destmode != Areg && destmode != Dreg && destmode != Aind
 			&& destmode != Ad16 && destmode != Ad8r && destmode != Aipi
 			&& destmode != Apdi)
@@ -870,13 +833,7 @@ out1:
 
 		if (destmode == Areg && sz == sz_byte)
 			goto nomatch;
-#if 0
-		if (sz == sz_byte && (destmode == Aipi || destmode == Apdi)) {
-			dstgather = 0;
-		}
-#endif
 endofline:
-		/* now, we have a match */
 		if (table68k[opc].mnemo != i_ILLG)
 			fprintf(stderr, "Double match: %x: %s\n", opc, opcstr);
 
@@ -921,21 +878,14 @@ endofline:
 		table68k[opc].stype = srctype;
 		table68k[opc].plev = id.plevel;
 		table68k[opc].clev = id.cpulevel;
-#if 0
-		for (i = 0; i < 5; i++) {
-			table68k[opc].flaginfo[i].flagset = id.flaginfo[i].flagset;
-			table68k[opc].flaginfo[i].flaguse = id.flaginfo[i].flaguse;
-		}
-#endif
 		table68k[opc].flagdead = flagdead;
 		table68k[opc].flaglive = flaglive;
 		table68k[opc].isjmp = isjmp;
 
 nomatch:
-	/* FOO! */;
+		;
     }
 }
-
 
 void read_table68k(void)
 {
@@ -952,20 +902,14 @@ void read_table68k(void)
 		build_insn(i);
 }
 
-
 static int mismatch;
 
-
-static void handle_merges (long int opcode)
+static void handle_merges(long int opcode)
 {
 	uint16_t smsk;
 	uint16_t dmsk;
 	int sbitdst, dstend;
 	int srcreg, dstreg;
-
-//0011 DDDd ddss sSSS:00:-NZ00:-----:12: MOVE.W  s,d[!Areg]
-//31C3 ->
-//0011 0001 1100 0011 : DDD = 0, ddd = 7, sss = 0, SSS = 3
 
 	if (table68k[opcode].spos == -1)
 	{
@@ -1019,9 +963,6 @@ static void handle_merges (long int opcode)
 			code = (code & ~smsk) | (srcreg << table68k[opcode].spos);
 			code = (code & ~dmsk) | (dstreg << table68k[opcode].dpos);
 
-			/* Check whether this is in fact the same instruction.
-			* The instructions should never differ, except for the
-			* Bcc.(BW) case. */
 			if (table68k[code].mnemo != table68k[opcode].mnemo
 				|| table68k[code].size != table68k[opcode].size
 				|| table68k[code].suse != table68k[opcode].suse
@@ -1051,52 +992,11 @@ static void handle_merges (long int opcode)
 			if (code != opcode)
 			{
 				table68k[code].handler = opcode;
-
-#if 0
-if (opcode == 0x31C3 || code == 0x31C3)
-{
-	printf("Relocate... ($%04X->$%04X)\n", (uint16_t)opcode, code);
-	printf(" handler: %08X\n", table68k[code].handler);
-	printf("    dreg: %i\n", table68k[code].dreg);
-	printf("    sreg: %i\n", table68k[code].sreg);
-	printf("    dpos: %i\n", table68k[code].dpos);
-	printf("    spos: %i\n", table68k[code].spos);
-	printf("   sduse: %i\n", table68k[code].sduse);
-	printf("flagdead: %i\n", table68k[code].flagdead);
-	printf("flaglive: %i\n", table68k[code].flaglive);
-}
-#endif
-/*
-    long int handler;
-    unsigned char dreg;
-    unsigned char sreg;
-    signed char dpos;
-    signed char spos;
-    unsigned char sduse;
-    int flagdead:8, flaglive:8;
-    unsigned int mnemo:8;
-    unsigned int cc:4;
-    unsigned int plev:2;
-    unsigned int size:2;
-    unsigned int smode:5;
-    unsigned int stype:3;
-    unsigned int dmode:5;
-    unsigned int suse:1;
-    unsigned int duse:1;
-    unsigned int unused1:1;
-    unsigned int clev:3;
-    unsigned int isjmp:1;
-    unsigned int unused2:4;
-*/
 			}
 		}
 	}
 }
 
-
-// What this really does is expand the # of handlers, which is why the
-// opcode has to be passed into the opcode handler...
-// E.g., $F620 maps into $F621-F627 as well; this code does this expansion.
 void do_merges(void)
 {
 	long int opcode;
@@ -1115,9 +1015,7 @@ void do_merges(void)
 	nr_cpuop_funcs = nr;
 }
 
-
 int get_no_mismatches(void)
 {
 	return mismatch;
 }
-
