@@ -319,13 +319,20 @@ bool CDHLEJerryCallback(void)
 	DACWriteWord(0xF1A14A, GET16(cd_buf2352, cd_buf_pos + 0));
 	DACWriteWord(0xF1A14E, GET16(cd_buf2352, cd_buf_pos + 2));
 
+	//cd_read_addr_start += 4;
 	cd_buf_pos += 4;
 	cd_buf_rm -= 4;
+
+	// don't think this is right
+	/*if (cd_read_addr_start > cd_read_addr_end && !((cd_read_addr_start - cd_read_orig_addr_start) & 0x3F))
+	{
+		cd_is_reading = false;
+	}*/
 
 	return true;
 }
 
-static void ResetCallbacks(void)
+static void ResetCallback(void)
 {
 	RemoveCallback(CDHLECallback);
 	if (!cd_jerry)
@@ -431,7 +438,7 @@ static void CD_jeri(void)
 	{
 		fprintf(stderr, "changing jerry mode %d -> %d\n", cd_jerry, njerry);
 		cd_jerry = njerry;
-		ResetCallbacks();
+		ResetCallback();
 	}
 }
 
@@ -573,7 +580,7 @@ static void CD_read(void)
 						cd_buf_pos = 0;
 						cd_buf_rm = bufRm;
 						cd_buf_circular_size = circBufSz ? (1 << circBufSz) : 0;
-						ResetCallbacks();
+						ResetCallback();
 						JERRYWriteWord(0xF10020, 0, M68K);
 						//GPUWriteLong(0xF02100, GPUReadLong(0xF02100, M68K) | 0x20, M68K);
 						break;
@@ -594,7 +601,7 @@ static void CD_read(void)
 			cd_buf_pos = 0;
 			cd_buf_rm = 0;
 			cd_buf_circular_size = 0;
-			ResetCallbacks();
+			ResetCallback();
 			JERRYWriteWord(0xF10020, 0, M68K);
 			//GPUWriteLong(0xF02100, GPUReadLong(0xF02100, M68K) | 0x20, M68K);
 		}
