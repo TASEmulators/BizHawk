@@ -250,6 +250,8 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 
 		public DisplayType Region { get; }
 
+		public override int VirtualHeight => (int)Math.Ceiling(BufferHeight * (BufferWidth / 326.0));
+
 		public bool IsJaguarCD => _cd != null;
 		public bool DriveLightEnabled => IsJaguarCD;
 		public bool DriveLightOn { get; private set; }
