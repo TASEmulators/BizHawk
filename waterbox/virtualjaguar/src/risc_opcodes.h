@@ -97,7 +97,7 @@ RISC_OPCODE(jr)
 
 	if (BRANCH_CONDITION(IMM_2))
 	{
-		int32_t offset = (IMM_1 > 0x10 ? 0xFFFFFFF0 | IMM_1 : IMM_1);
+		int32_t offset = (IMM_1 & 0x10 ? 0xFFFFFFF0 | IMM_1 : IMM_1);
 		int32_t delayed_pc = risc_pc + (offset * 2);
 		risc_inhibit_interrupt = 1;
 		RISCExec(1);
