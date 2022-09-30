@@ -333,8 +333,6 @@ RISC_OPCODE(moveq)
 RISC_OPCODE(resmac)
 {
 	RN = (uint32_t)risc_acc;
-	//this makes Club Drive sound ok, but it has missing sounds and other games/bios suffer
-	//risc_inhibit_interrupt = 1;
 }
 
 RISC_OPCODE(imult)

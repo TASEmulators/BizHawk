@@ -561,6 +561,8 @@ void TOMWriteByte(uint32_t offset, uint8_t data, uint32_t who)
 	if ((offset < 0xF00000) || (offset > 0xF03FFF))
 		return;
 
+	tomRam8[offset & 0x3FFF] = data;
+
 	if ((offset >= GPU_CONTROL_RAM_BASE) && (offset < GPU_CONTROL_RAM_BASE+0x20))
 	{
 		GPUWriteByte(offset, data, who);
@@ -599,10 +601,6 @@ void TOMWriteByte(uint32_t offset, uint8_t data, uint32_t who)
 		offset &= 0x5FF;
 		tomRam8[offset] = data, tomRam8[offset + 0x200] = data;
 	}
-	else
-	{
-		tomRam8[offset & 0x3FFF] = data;
-	}
 }
 
 //
@@ -615,6 +613,9 @@ void TOMWriteWord(uint32_t offset, uint16_t data, uint32_t who)
 
 	if ((offset < 0xF00000) || (offset > 0xF03FFF))
 		return;
+
+	tomRam8[(offset + 0) & 0x3FFF] = data >> 8;
+	tomRam8[(offset + 1) & 0x3FFF] = data & 0xFF;
 
 	if ((offset >= GPU_CONTROL_RAM_BASE) && (offset < GPU_CONTROL_RAM_BASE+0x20))
 	{
@@ -679,9 +680,6 @@ void TOMWriteWord(uint32_t offset, uint16_t data, uint32_t who)
 			tomWidth = width, tomHeight = height;
 		}
 	}
-
-	tomRam8[(offset + 0) & 0x3FFF] = data >> 8;
-	tomRam8[(offset + 1) & 0x3FFF] = data & 0xFF;
 }
 
 int TOMIRQEnabled(int irq)
