@@ -2,7 +2,7 @@
 
 #if RISC == 3
 	#define RISC_OPCODE(op)			static void gpu_opcode_##op(void)
-	#define risc_opcode				gpu_opcode
+	#define risc_inhibit_interrupt	gpu_inhibit_interrupt
 	#define IMM_1					gpu_opcode_first_parameter
 	#define IMM_2					gpu_opcode_second_parameter
 	#define risc_flag_n				gpu_flag_n
@@ -17,12 +17,13 @@
 	#define risc_div_control		gpu_div_control
 	#define risc_remain				gpu_remain
 	#define IS_RISC_RAM(x)			x >= GPU_WORK_RAM_BASE && x <= (GPU_WORK_RAM_BASE + 0xFFF)
+	#define RISCExec(x)				GPUExec(x)
 	#define RISCReadWord(x, y)		GPUReadWord(x, y)
 	#define RISCReadLong(x, y)		GPUReadLong(x, y)
 	#define RISCWriteLong(x, y, z)	GPUWriteLong(x, y, z)
 #elif RISC == 2
 	#define RISC_OPCODE(op)			static void dsp_opcode_##op(void)
-	#define risc_opcode				dsp_opcode
+	#define risc_inhibit_interrupt	dsp_inhibit_interrupt
 	#define IMM_1					dsp_opcode_first_parameter
 	#define IMM_2					dsp_opcode_second_parameter
 	#define risc_flag_n				dsp_flag_n
@@ -37,6 +38,7 @@
 	#define risc_div_control		dsp_div_control
 	#define risc_remain				dsp_remain
 	#define IS_RISC_RAM(x)			x >= DSP_WORK_RAM_BASE && x <= (DSP_WORK_RAM_BASE + 0x1FFF)
+	#define RISCExec(x)				DSPExec(x)
 	#define RISCReadWord(x, y)		DSPReadWord(x, y)
 	#define RISCReadLong(x, y)		DSPReadLong(x, y)
 	#define RISCWriteLong(x, y, z)	DSPWriteLong(x, y, z)
@@ -83,10 +85,8 @@ RISC_OPCODE(jump)
 	if (BRANCH_CONDITION(IMM_2))
 	{
 		uint32_t delayed_pc = RM;
-		uint16_t opcode = RISCReadWord(risc_pc, RISC);
-		IMM_1 = (opcode >> 5) & 0x1F;
-		IMM_2 = opcode & 0x1F;
-		risc_opcode[opcode >> 10]();
+		risc_inhibit_interrupt = 1;
+		RISCExec(1);
 		risc_pc = delayed_pc;
 	}
 }
@@ -99,10 +99,8 @@ RISC_OPCODE(jr)
 	{
 		int32_t offset = (IMM_1 > 0x10 ? 0xFFFFFFF0 | IMM_1 : IMM_1);
 		int32_t delayed_pc = risc_pc + (offset * 2);
-		uint16_t opcode = RISCReadWord(risc_pc, RISC);
-		IMM_1 = (opcode >> 5) & 0x1F;
-		IMM_2 = opcode & 0x1F;
-		risc_opcode[opcode >> 10]();
+		risc_inhibit_interrupt = 1;
+		RISCExec(1);
 		risc_pc = delayed_pc;
 	}
 }
@@ -334,7 +332,9 @@ RISC_OPCODE(moveq)
 
 RISC_OPCODE(resmac)
 {
-	RN = risc_acc;
+	RN = (uint32_t)risc_acc;
+	//this makes Club Drive sound ok, but it has missing sounds and other games/bios suffer
+	//risc_inhibit_interrupt = 1;
 }
 
 RISC_OPCODE(imult)
@@ -381,7 +381,8 @@ RISC_OPCODE(addqt)
 RISC_OPCODE(imacn)
 {
 	int32_t res = (int16_t)RM * (int16_t)RN;
-	risc_acc += res;
+	risc_acc += (int64_t)res;
+	risc_inhibit_interrupt = 1;
 }
 
 RISC_OPCODE(mtoi)
@@ -421,6 +422,7 @@ RISC_OPCODE(mmult)
 	int64_t accum = 0;
 	uint32_t res;
 
+	// remove the + 2 and change the 4s to 2 for Baldies to sound ok, screws up bios however
 	if (!(risc_matrix_control & 0x10))
 	{
 		for (int i = 0; i < count; i++)
@@ -431,9 +433,9 @@ RISC_OPCODE(mmult)
 			else
 				a = (int16_t)(risc_alternate_reg[IMM_1 + (i >> 1)] & 0xffff);
 
-			int16_t b = (int16_t)RISCReadWord(addr, RISC);
+			int16_t b = (int16_t)RISCReadWord(addr + 2, RISC);
 			accum += a * b;
-			addr += 2;
+			addr += 4;
 		}
 	}
 	else
@@ -448,7 +450,7 @@ RISC_OPCODE(mmult)
 
 			int16_t b = (int16_t)RISCReadWord(addr, RISC);
 			accum += a * b;
-			addr += 2 * count;
+			addr += 4 * count;
 		}
 	}
 
@@ -488,24 +490,10 @@ RISC_OPCODE(div)
 
 RISC_OPCODE(imultn)
 {
-	uint32_t res = (int16_t)RN * (int16_t)RM;
-	risc_acc = (int32_t)res;
+	uint32_t res = (int32_t)((int16_t)RN * (int16_t)RM);
+	risc_acc = (int64_t)res;
 	SET_ZN(res);
-
-	uint16_t opcode = RISCReadWord(risc_pc, RISC);
-	while ((opcode >> 10) == 20)
-	{
-		IMM_1 = (opcode >> 5) & 0x1F;
-		IMM_2 = opcode & 0x1F;
-		risc_acc += (int32_t)((int16_t)RN * (int16_t)RM);
-		risc_pc += 2;
-		opcode = RISCReadWord(risc_pc, RISC);
-	}
-	if ((opcode >> 10) == 19)
-	{
-		RN = risc_acc;
-		risc_pc += 2;
-	}
+	risc_inhibit_interrupt = 1;
 }
 
 RISC_OPCODE(neg)

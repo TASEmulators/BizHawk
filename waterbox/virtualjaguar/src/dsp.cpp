@@ -23,8 +23,6 @@
 #include "jerry.h"
 #include "m68000/m68kinterface.h"
 
-bool IMASKCleared = false;
-
 // DSP flags (old--have to get rid of this crap)
 
 #define CINT0FLAG			0x00200
@@ -186,6 +184,9 @@ uint32_t dsp_reg_bank_0[32], dsp_reg_bank_1[32];
 
 static uint32_t dsp_opcode_first_parameter;
 static uint32_t dsp_opcode_second_parameter;
+
+static bool IMASKCleared;
+static uint32_t dsp_inhibit_interrupt;
 
 #define DSP_RUNNING	(dsp_control & 0x01)
 
@@ -392,7 +393,7 @@ void DSPWriteLong(uint32_t offset, uint32_t data, uint32_t who)
 		{
 			case 0x00:
 			{
-				IMASKCleared = (dsp_flags & IMASK) && !(data & IMASK);
+				IMASKCleared |= (dsp_flags & IMASK) && !(data & IMASK);
 
 				dsp_flags = data & (~IMASK);
 				dsp_flag_z = dsp_flags & 0x01;
@@ -582,18 +583,21 @@ void DSPExec(int32_t cycles)
 	{
 		MAYBE_CALLBACK(DSPTraceCallback, dsp_pc, dsp_reg);
 
-		if (IMASKCleared)
+		if (IMASKCleared && !dsp_inhibit_interrupt)
 		{
 			DSPHandleIRQsNP();
 			IMASKCleared = false;
 		}
 
+		dsp_inhibit_interrupt = 0;
 		uint16_t opcode = DSPReadWord(dsp_pc, DSP);
 		uint32_t index = opcode >> 10;
 		dsp_opcode_first_parameter = (opcode >> 5) & 0x1F;
 		dsp_opcode_second_parameter = opcode & 0x1F;
+
 		dsp_pc += 2;
 		dsp_opcode[index]();
+
 		cycles -= dsp_opcode_cycles[index];
 	}
 }

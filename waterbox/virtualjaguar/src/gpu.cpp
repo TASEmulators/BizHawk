@@ -182,6 +182,9 @@ static uint32_t * gpu_alternate_reg;
 static uint32_t gpu_opcode_first_parameter;
 static uint32_t gpu_opcode_second_parameter;
 
+static bool IMASKCleared;
+static uint32_t gpu_inhibit_interrupt;
+
 #define GPU_RUNNING		(gpu_control & 0x01)
 
 static uint8_t branch_condition_table[32 * 8];
@@ -414,15 +417,14 @@ void GPUWriteLong(uint32_t offset, uint32_t data, uint32_t who)
 		{
 			case 0x00:
 			{
-				bool IMASKCleared = (gpu_flags & IMASK) && !(data & IMASK);
+				IMASKCleared |= (gpu_flags & IMASK) && !(data & IMASK);
+
 				gpu_flags = data & (~IMASK);
 				gpu_flag_z = gpu_flags & ZERO_FLAG;
 				gpu_flag_c = (gpu_flags & CARRY_FLAG) >> 1;
 				gpu_flag_n = (gpu_flags & NEGA_FLAG) >> 2;
 				GPUUpdateRegisterBanks();
 				gpu_control &= ~((gpu_flags & CINT04FLAGS) >> 3);
-				if (IMASKCleared)
-					GPUHandleIRQs();
 				break;
 			}
 			case 0x04:
@@ -566,6 +568,7 @@ void GPUReset(void)
 		gpu_reg[i] = gpu_alternate_reg[i] = 0x00000000;
 
 	gpu_flag_z = gpu_flag_n = gpu_flag_c = 0;
+	IMASKCleared = false;
 	memset(gpu_ram_8, 0xFF, 0x1000);
 
 	for(uint32_t i=0; i<4096; i+=4)
@@ -579,18 +582,19 @@ void GPUDone(void)
 //
 // Main GPU execution core
 //
-
 void GPUExec(int32_t cycles)
 {
-	if (!GPU_RUNNING)
-		return;
-
-	GPUHandleIRQs();
-
 	while (cycles > 0 && GPU_RUNNING)
 	{
 		MAYBE_CALLBACK(GPUTraceCallback, gpu_pc, gpu_reg);
 
+		if (IMASKCleared && !gpu_inhibit_interrupt)
+		{
+			GPUHandleIRQs();
+			IMASKCleared = false;
+		}
+
+		gpu_inhibit_interrupt = 0;
 		uint16_t opcode = GPUReadWord(gpu_pc, GPU);
 		uint32_t index = opcode >> 10;
 		gpu_opcode_first_parameter = (opcode >> 5) & 0x1F;
