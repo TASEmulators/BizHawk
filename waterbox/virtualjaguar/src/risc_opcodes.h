@@ -11,6 +11,7 @@
 	#define risc_pc					gpu_pc
 	#define risc_reg				gpu_reg
 	#define risc_alternate_reg		gpu_alternate_reg
+	#define risc_reg_bank_1			gpu_reg_bank_1
 	#define risc_acc				gpu_acc
 	#define risc_matrix_control		gpu_matrix_control
 	#define risc_pointer_to_matrix	gpu_pointer_to_matrix
@@ -32,6 +33,7 @@
 	#define risc_pc					dsp_pc
 	#define risc_reg				dsp_reg
 	#define risc_alternate_reg		dsp_alternate_reg
+	#define risc_reg_bank_1			dsp_reg_bank_1
 	#define risc_acc				dsp_acc
 	#define risc_matrix_control		dsp_matrix_control
 	#define risc_pointer_to_matrix	dsp_pointer_to_matrix
@@ -420,18 +422,17 @@ RISC_OPCODE(mmult)
 	int64_t accum = 0;
 	uint32_t res;
 
-	// remove the + 2 and change the 4s to 2 for Baldies to sound ok, screws up bios however
 	if (!(risc_matrix_control & 0x10))
 	{
 		for (int i = 0; i < count; i++)
 		{
 			int16_t a;
 			if (i & 0x01)
-				a = (int16_t)((risc_alternate_reg[IMM_1 + (i >> 1)] >> 16) & 0xffff);
+				a = (int16_t)((risc_reg_bank_1[IMM_1 + (i >> 1)] >> 16) & 0xffff);
 			else
-				a = (int16_t)(risc_alternate_reg[IMM_1 + (i >> 1)] & 0xffff);
+				a = (int16_t)(risc_reg_bank_1[IMM_1 + (i >> 1)] & 0xffff);
 
-			int16_t b = (int16_t)RISCReadWord(addr + 2, RISC);
+			int16_t b = (int16_t)RISCReadLong(addr, RISC);
 			accum += a * b;
 			addr += 4;
 		}
@@ -442,11 +443,11 @@ RISC_OPCODE(mmult)
 		{
 			int16_t a;
 			if (i & 0x01)
-				a = (int16_t)((risc_alternate_reg[IMM_1 + (i >> 1)] >> 16) & 0xffff);
+				a = (int16_t)((risc_reg_bank_1[IMM_1 + (i >> 1)] >> 16) & 0xffff);
 			else
-				a = (int16_t)(risc_alternate_reg[IMM_1 + (i >> 1)] & 0xffff);
+				a = (int16_t)(risc_reg_bank_1[IMM_1 + (i >> 1)] & 0xffff);
 
-			int16_t b = (int16_t)RISCReadWord(addr, RISC);
+			int16_t b = (int16_t)RISCReadLong(addr, RISC);
 			accum += a * b;
 			addr += 4 * count;
 		}
