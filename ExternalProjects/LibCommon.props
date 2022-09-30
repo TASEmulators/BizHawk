@@ -3,6 +3,9 @@
 	<PropertyGroup>
 		<RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
 	</PropertyGroup>
+	<ItemGroup>
+		<None Remove="*.sh" />
+	</ItemGroup>
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<Copy SourceFiles="$(OutputPath)$(MSBuildProjectName).dll" DestinationFolder="$(ProjectDir)../../References/" />
 	</Target>
