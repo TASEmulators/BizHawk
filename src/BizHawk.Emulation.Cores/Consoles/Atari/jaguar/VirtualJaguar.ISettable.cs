@@ -81,7 +81,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 
 			[DisplayName("BIOS Revision")]
 			[Description("")]
-			[DefaultValue(BiosRevisions.MSeries)]
+			[DefaultValue(BiosRevisions.KSeries)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public BiosRevisions BiosRevision { get; set; }
 
