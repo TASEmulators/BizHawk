@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 
 			[DisplayName("Skip BIOS")]
 			[Description("Ignored (set to true) for Jaguar CD")]
-			[DefaultValue(true)]
+			[DefaultValue(false)]
 			public bool SkipBIOS { get; set; }
 
 			public enum BiosRevisions
