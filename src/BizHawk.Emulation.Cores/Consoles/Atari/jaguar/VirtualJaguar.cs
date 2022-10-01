@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 				Filename = "virtualjaguar.wbx",
 				SbrkHeapSizeKB = 64 * 1024,
 				SealedHeapSizeKB = 4,
-				InvisibleHeapSizeKB = 4,
+				InvisibleHeapSizeKB = 2 * 1024,
 				PlainHeapSizeKB = 4,
 				MmapHeapSizeKB = 64 * 1024,
 				SkipCoreConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
@@ -250,7 +250,8 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 
 		public DisplayType Region { get; }
 
-		public override int VirtualHeight => (int)Math.Ceiling(BufferHeight * (BufferWidth / 326.0));
+		public override int VirtualWidth => 1304;
+		public override int VirtualHeight => Region is DisplayType.PAL ? 1024 : 960;
 
 		public bool IsJaguarCD => _cd != null;
 		public bool DriveLightEnabled => IsJaguarCD;
