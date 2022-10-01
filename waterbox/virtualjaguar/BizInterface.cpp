@@ -281,14 +281,8 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 	}
 
 	lagged = true;
-	JaguarSetScreenPitch(TOMGetVideoModeWidth());
-	JaguarSetScreenBuffer(f->VideoBuffer);
-
 	JaguarExecuteNew();
-
-	JaguarSetScreenBuffer(nullptr);
-	f->Width = TOMGetVideoModeWidth();
-	f->Height = TOMGetVideoModeHeight();
+	TOMBlit(f->VideoBuffer, f->Width, f->Height);
 
 	u32 samples = 48000 / (vjs.hardwareTypeNTSC ? 60 : 50);
 	SoundCallback(soundBuf, samples * 4);

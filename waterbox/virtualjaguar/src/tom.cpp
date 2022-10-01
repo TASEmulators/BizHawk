@@ -14,6 +14,8 @@
 // JLH  01/20/2011  Change rendering to RGBA, removed unnecessary code
 //
 
+#include "emulibc.h"
+
 #include "tom.h"
 
 #include <string.h>
@@ -84,8 +86,8 @@ int32_t tomTimerCounter;
 uint16_t tom_jerry_int_pending, tom_timer_int_pending, tom_object_int_pending,
 	tom_gpu_int_pending, tom_video_int_pending;
 
-uint32_t * screenBuffer;
-uint32_t screenPitch;
+static uint32_t * scanlines[256];
+static uint32_t scanlineWidths[256];
 
 typedef void (render_xxx_scanline_fn)(uint32_t *);
 
@@ -109,9 +111,9 @@ render_xxx_scanline_fn * scanline_render[] =
 	tom_render_16bpp_rgb_scanline
 };
 
-uint32_t RGB16ToRGB32[0x10000];
-uint32_t CRY16ToRGB32[0x10000];
-uint32_t MIX16ToRGB32[0x10000];
+static uint32_t RGB16ToRGB32[0x10000];
+static uint32_t CRY16ToRGB32[0x10000];
+static uint32_t MIX16ToRGB32[0x10000];
 
 void TOMFillLookupTables(void)
 {
@@ -203,6 +205,7 @@ void tom_render_16bpp_cry_rgb_mix_scanline(uint32_t * backbuffer)
 	uint8_t pwidth = ((GET16(tomRam8, VMODE) & PWIDTH) >> 9) + 1;
 	int16_t startPos = GET16(tomRam8, HDB1) - (vjs.hardwareTypeNTSC ? LEFT_VISIBLE_HC : LEFT_VISIBLE_HC_PAL);
 	startPos /= pwidth;
+	if (startPos > width) startPos = width;
 
 	if (startPos < 0)
 		current_line_buffer += 2 * -startPos;
@@ -237,6 +240,7 @@ void tom_render_16bpp_cry_scanline(uint32_t * backbuffer)
 	uint8_t pwidth = ((GET16(tomRam8, VMODE) & PWIDTH) >> 9) + 1;
 	int16_t startPos = GET16(tomRam8, HDB1) - (vjs.hardwareTypeNTSC ? LEFT_VISIBLE_HC : LEFT_VISIBLE_HC_PAL);
 	startPos /= pwidth;
+	if (startPos > width) startPos = width;
 
 	if (startPos < 0)
 		current_line_buffer += 2 * -startPos;
@@ -271,6 +275,7 @@ void tom_render_24bpp_scanline(uint32_t * backbuffer)
 	uint8_t pwidth = ((GET16(tomRam8, VMODE) & PWIDTH) >> 9) + 1;
 	int16_t startPos = GET16(tomRam8, HDB1) - (vjs.hardwareTypeNTSC ? LEFT_VISIBLE_HC : LEFT_VISIBLE_HC_PAL);
 	startPos /= pwidth;
+	if (startPos > width) startPos = width;
 
 	if (startPos < 0)
 		current_line_buffer += 4 * -startPos;
@@ -324,6 +329,7 @@ void tom_render_16bpp_rgb_scanline(uint32_t * backbuffer)
 	uint8_t pwidth = ((GET16(tomRam8, VMODE) & PWIDTH) >> 9) + 1;
 	int16_t startPos = GET16(tomRam8, HDB1) - (vjs.hardwareTypeNTSC ? LEFT_VISIBLE_HC : LEFT_VISIBLE_HC_PAL);
 	startPos /= pwidth;
+	if (startPos > width) startPos = width;
 
 	if (startPos < 0)
 		current_line_buffer += 2 * -startPos;
@@ -384,28 +390,30 @@ void TOMExecHalfline(uint16_t halfline, bool render)
 
 	uint16_t topVisible = (vjs.hardwareTypeNTSC ? TOP_VISIBLE_VC : TOP_VISIBLE_VC_PAL),
 		bottomVisible = (vjs.hardwareTypeNTSC ? BOTTOM_VISIBLE_VC : BOTTOM_VISIBLE_VC_PAL);
-	uint32_t * TOMCurrentLine = 0;
+	uint32_t TOMCurrentLine = 0;
 
 	if (tomRam8[VP + 1] & 0x01)
-		TOMCurrentLine = &(screenBuffer[((halfline - topVisible) / 2) * screenPitch]);
+		TOMCurrentLine = (halfline - topVisible) / 2;
 	else
-		TOMCurrentLine = &(screenBuffer[(((halfline - topVisible) / 2) * screenPitch * 2) + (field2 ? 0 : screenPitch)]);
+		TOMCurrentLine = (((halfline - topVisible) / 2) * 2) + (field2 ? 0 : 1);
 
-	if ((halfline >= topVisible) && (halfline < bottomVisible))
+	if ((halfline >= topVisible) && (halfline < bottomVisible) && TOMCurrentLine < (vjs.hardwareTypeNTSC ? VIRTUAL_SCREEN_HEIGHT_NTSC : VIRTUAL_SCREEN_HEIGHT_PAL))
 	{
 		if (inActiveDisplayArea)
 		{
-			scanline_render[TOMGetVideoMode()](TOMCurrentLine);
+			scanline_render[TOMGetVideoMode()](scanlines[TOMCurrentLine]);
 		}
 		else
 		{
-			uint32_t * currentLineBuffer = TOMCurrentLine;
+			uint32_t * currentLineBuffer = scanlines[TOMCurrentLine];
 			uint8_t g = tomRam8[BORD1], r = tomRam8[BORD1 + 1], b = tomRam8[BORD2 + 1];
 			uint32_t pixel = (r << 16) | (g << 8) | b;
 
 			for(uint32_t i=0; i<tomWidth; i++)
 				*currentLineBuffer++ = pixel;
 		}
+
+		scanlineWidths[TOMCurrentLine] = tomWidth;
 	}
 }
 
@@ -414,6 +422,11 @@ void TOMExecHalfline(uint16_t halfline, bool render)
 //
 void TOMInit(void)
 {
+	for (uint32_t i = 0; i < 256; i++)
+	{
+		scanlines[i] = alloc_invisible<uint32_t>(LCM_SCREEN_WIDTH);
+	}
+
 	TOMFillLookupTables();
 	OPInit();
 	BlitterInit();
@@ -426,13 +439,11 @@ void TOMDone(void)
 	BlitterDone();
 }
 
-
 uint32_t TOMGetVideoModeWidth(void)
 {
 	uint16_t pwidth = ((GET16(tomRam8, VMODE) & PWIDTH) >> 9) + 1;
-	return (vjs.hardwareTypeNTSC ? RIGHT_VISIBLE_HC - LEFT_VISIBLE_HC : RIGHT_VISIBLE_HC_PAL - LEFT_VISIBLE_HC_PAL) / pwidth;
+	return LCM_SCREEN_WIDTH / pwidth;
 }
-
 
 uint32_t TOMGetVideoModeHeight(void)
 {
@@ -728,4 +739,74 @@ void TOMPITCallback(void)
 		m68k_set_irq(2);
 
 	TOMResetPIT();
+}
+
+void TOMStartFrame(void)
+{
+	memset(scanlineWidths, 0, sizeof(scanlineWidths));
+}
+
+void TOMBlit(uint32_t * videoBuffer, int32_t & width, int32_t & height)
+{
+	uint32_t lines = vjs.hardwareTypeNTSC ? VIRTUAL_SCREEN_HEIGHT_NTSC : VIRTUAL_SCREEN_HEIGHT_PAL;
+	uint32_t targetWidth = scanlineWidths[0];
+	bool multiWidth = false;
+
+	for (uint32_t i = 1; i < lines; i++)
+	{
+		if (targetWidth < scanlineWidths[i])
+		{
+			targetWidth = scanlineWidths[i];
+			multiWidth = true;
+		}
+	}
+
+	if (!targetWidth) // skip rendering this I guess?
+	{
+		width = TOMGetVideoModeWidth();
+		height = lines;
+		return;
+	}
+
+	if (__builtin_expect(multiWidth, false))
+	{
+		for (uint32_t i = 0; i < lines; i++)
+		{
+			uint32_t const w = scanlineWidths[i];
+			if (__builtin_expect(LCM_SCREEN_WIDTH == w, false))
+			{
+				memcpy(videoBuffer, scanlines[i], LCM_SCREEN_WIDTH * sizeof(uint32_t));
+				videoBuffer += LCM_SCREEN_WIDTH;
+			}
+			else if (__builtin_expect(w > 0, true))
+			{
+				uint32_t wf = LCM_SCREEN_WIDTH / w;
+				uint32_t * src = scanlines[i];
+				uint32_t * dstNext = videoBuffer + LCM_SCREEN_WIDTH;
+				for (uint32_t x = 0; x < w; x++)
+				{
+					for (uint32_t n = 0; n < wf; n++)
+						*videoBuffer++ = *src; 
+					src++;
+				}
+				while (videoBuffer < dstNext)
+					*videoBuffer++ = src[-1];
+			}
+			else
+			{
+				videoBuffer += LCM_SCREEN_WIDTH; // skip rendering this line
+			}
+		}
+	}
+	else
+	{
+		for (uint32_t i = 0; i < lines; i++)
+		{
+			memcpy(videoBuffer, scanlines[i], targetWidth * sizeof(uint32_t));
+			videoBuffer += targetWidth;
+		}
+	}
+
+	width = multiWidth ? LCM_SCREEN_WIDTH : targetWidth;
+	height = lines;
 }

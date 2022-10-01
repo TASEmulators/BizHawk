@@ -4,8 +4,6 @@
 #include <stdint.h>
 #include "memory.h"							// For "UNKNOWN" enum
 
-void JaguarSetScreenBuffer(uint32_t * buffer);
-void JaguarSetScreenPitch(uint32_t pitch);
 void JaguarInit(void);
 void JaguarReset(void);
 void JaguarDone(void);

@@ -394,16 +394,6 @@ void JaguarWriteLong(uint32_t offset, uint32_t data, uint32_t who)
 	JaguarWriteWord(offset+2, data & 0xFFFF, who);
 }
 
-void JaguarSetScreenBuffer(uint32_t * buffer)
-{
-	screenBuffer = buffer;
-}
-
-void JaguarSetScreenPitch(uint32_t pitch)
-{
-	screenPitch = pitch;
-}
-
 //
 // Jaguar console initialization
 //
@@ -471,6 +461,7 @@ bool frameDone;
 void JaguarExecuteNew(void)
 {
 	frameDone = false;
+	TOMStartFrame();
 
 	do
 	{

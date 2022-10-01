@@ -16,6 +16,8 @@
 #define VIRTUAL_SCREEN_HEIGHT_NTSC      240
 #define VIRTUAL_SCREEN_HEIGHT_PAL       256
 
+#define LCM_SCREEN_WIDTH                (VIRTUAL_SCREEN_WIDTH * 4)
+
 // 68000 Interrupt bit positions (enabled at $F000E0)
 
 enum { IRQ_VIDEO = 0, IRQ_GPU, IRQ_OPFLAG, IRQ_TIMER, IRQ_DSP };
@@ -53,6 +55,9 @@ void TOMSetPendingGPUInt(void);
 void TOMSetPendingVideoInt(void);
 void TOMResetPIT(void);
 
+void TOMStartFrame(void);
+void TOMBlit(uint32_t * framebuffer, int32_t & width, int32_t & height);
+
 // Exported variables
 
 extern uint32_t tomWidth;
@@ -61,8 +66,5 @@ extern uint8_t tomRam8[];
 extern uint32_t tomTimerPrescaler;
 extern uint32_t tomTimerDivider;
 extern int32_t tomTimerCounter;
-
-extern uint32_t screenPitch;
-extern uint32_t * screenBuffer;
 
 #endif	// __TOM_H__
