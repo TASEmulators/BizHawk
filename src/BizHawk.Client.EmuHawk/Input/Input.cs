@@ -64,7 +64,6 @@ namespace BizHawk.Client.EmuHawk
 			_updateThread.Start();
 		}
 
-		private readonly Dictionary<string, LogicalButton> _modifierState = new Dictionary<string, LogicalButton>();
 		private readonly WorkingDictionary<string, bool> _lastState = new WorkingDictionary<string, bool>();
 		private readonly WorkingDictionary<string, int> _axisValues = new WorkingDictionary<string, int>();
 		private readonly WorkingDictionary<string, float> _axisDeltas = new WorkingDictionary<string, float>();
@@ -118,7 +117,9 @@ namespace BizHawk.Client.EmuHawk
 
 			// don't generate events for things like Ctrl+LeftControl
 			var mods = _modifiers;
-			if (currentModifier is not 0U)
+			if (!newState)
+				mods = 0;
+			else if (currentModifier is not 0U)
 				mods &= ~currentModifier;
 
 			var ie = new InputEvent
@@ -128,35 +129,6 @@ namespace BizHawk.Client.EmuHawk
 					Source = source
 				};
 			_lastState[button1] = newState;
-
-			// track the pressed events with modifiers that we send so that we can send corresponding unpresses with modifiers
-			// this is an interesting idea, which we may need later, but not yet.
-			// for example, you may see this series of events: press:ctrl+c, release:ctrl, release:c
-			// but you might would rather have press:ctrl+c, release:ctrl+c
-			// this code relates the releases to the original presses.
-			// UPDATE - this is necessary for the frame advance key, which has a special meaning when it gets stuck down
-			// so, i am adding it as of 11-sep-2011
-			if (newState)
-			{
-				_modifierState[button1] = ie.LogicalButton;
-			}
-			else
-			{
-				if (_modifierState.TryGetValue(button1, out var buttonModifierState))
-				{
-					if (buttonModifierState != ie.LogicalButton && !_ignoreEventsNextPoll)
-					{
-						_newEvents.Add(
-							new InputEvent
-							{
-								LogicalButton = buttonModifierState,
-								EventType = InputEventType.Release,
-								Source = source
-							});
-					}
-					_modifierState.Remove(button1);
-				}
-			}
 
 			if (!_ignoreEventsNextPoll)
 			{
