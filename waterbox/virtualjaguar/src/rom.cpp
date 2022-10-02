@@ -1,7 +1,7 @@
 //
-// FILE.CPP
+// ROM.CPP
 //
-// File support
+// ROM support
 // by James Hammons
 // (C) 2010 Underground Software
 //
@@ -15,7 +15,7 @@
 // JLH  06/01/2012  Added function to check ZIP file CRCs against file DB
 //
 
-#include "file.h"
+#include "rom.h"
 
 #include <stdarg.h>
 #include <string.h>
@@ -24,7 +24,7 @@
 #include "jaguar.h"
 #include "memory.h"
 
-bool JaguarLoadFile(uint8_t * buffer, uint32_t size)
+bool JaguarLoadROM(uint8_t * buffer, uint32_t size)
 {
 	jaguarROMSize = size;
 
@@ -32,7 +32,7 @@ bool JaguarLoadFile(uint8_t * buffer, uint32_t size)
 
 	EepromInit();
 	jaguarRunAddress = 0x802000;
-	int fileType = ParseFileType(buffer, jaguarROMSize);
+	int fileType = ParseROMType(buffer, jaguarROMSize);
 	jaguarCartInserted = false;
 
 	if (fileType == JST_ROM)
@@ -92,7 +92,7 @@ bool JaguarLoadFile(uint8_t * buffer, uint32_t size)
 	return false;
 }
 
-bool AlpineLoadFile(uint8_t * buffer, uint32_t size)
+bool AlpineLoadROM(uint8_t * buffer, uint32_t size)
 {
 	jaguarROMSize = size;
 
@@ -110,7 +110,7 @@ bool AlpineLoadFile(uint8_t * buffer, uint32_t size)
 	return true;
 }
 
-uint32_t ParseFileType(uint8_t * buffer, uint32_t size)
+uint32_t ParseROMType(uint8_t * buffer, uint32_t size)
 {
 	if (buffer[0] == 0x60 && buffer[1] == 0x1B)
 		return JST_ABS_TYPE1;

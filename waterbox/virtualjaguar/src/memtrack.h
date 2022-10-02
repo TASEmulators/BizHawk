@@ -6,7 +6,6 @@
 
 void MTInit(void);
 void MTReset(void);
-void MTDone(void);
 
 uint16_t MTReadWord(uint32_t addr);
 uint32_t MTReadLong(uint32_t addr);

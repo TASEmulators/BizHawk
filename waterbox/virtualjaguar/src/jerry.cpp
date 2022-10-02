@@ -29,7 +29,7 @@
 #include "wavetable.h"
 #include "cdhle.h"
 
-/*static*/ uint8_t jerry_ram_8[0x10000];
+uint8_t jerry_ram_8[0x10000];
 
 // JERRY Registers (write, offset from $F10000)
 #define JPIT1		0x00
@@ -46,8 +46,6 @@
 #define SCLK		0xA150
 #define SMODE		0xA154
 
-uint8_t analog_x, analog_y;
-
 static uint32_t JERRYPIT1Prescaler;
 static uint32_t JERRYPIT1Divider;
 static uint32_t JERRYPIT2Prescaler;
@@ -56,22 +54,17 @@ static int32_t jerry_timer_1_counter;
 static int32_t jerry_timer_2_counter;
 
 int32_t JERRYI2SInterruptTimer = -1;
-uint32_t jerryI2SCycles;
-uint32_t jerryIntPending;
+static uint32_t jerryI2SCycles;
 
 static uint16_t jerryInterruptMask = 0;
 static uint16_t jerryPendingInterrupt = 0;
 
-// Private function prototypes
+static void JERRYResetPIT1(void);
+static void JERRYResetPIT2(void);
+static void JERRYResetI2S(void);
 
-void JERRYResetPIT1(void);
-void JERRYResetPIT2(void);
-void JERRYResetI2S(void);
-
-void JERRYPIT1Callback(void);
-void JERRYPIT2Callback(void);
-void JERRYI2SCallback(void);
-
+static void JERRYPIT1Callback(void);
+static void JERRYPIT2Callback(void);
 
 void JERRYResetI2S(void)
 {
@@ -86,7 +79,7 @@ void JERRYResetPIT1(void)
 	if (JERRYPIT1Prescaler | JERRYPIT1Divider)
 	{
 		double usecs = (float)(JERRYPIT1Prescaler + 1) * (float)(JERRYPIT1Divider + 1) * RISC_CYCLE_IN_USEC;
-		SetCallbackTime(JERRYPIT1Callback, usecs, EVENT_JERRY);
+		SetCallbackTime(JERRYPIT1Callback, usecs);
 	}
 }
 
@@ -97,7 +90,7 @@ void JERRYResetPIT2(void)
 	if (JERRYPIT1Prescaler | JERRYPIT1Divider)
 	{
 		double usecs = (float)(JERRYPIT2Prescaler + 1) * (float)(JERRYPIT2Divider + 1) * RISC_CYCLE_IN_USEC;
-		SetCallbackTime(JERRYPIT2Callback, usecs, EVENT_JERRY);
+		SetCallbackTime(JERRYPIT2Callback, usecs);
 	}
 }
 
@@ -139,7 +132,7 @@ void JERRYI2SCallback(void)
 	{
 		DSPSetIRQLine(DSPIRQ_SSI, ASSERT_LINE);
 		double usecs = (float)jerryI2SCycles * (vjs.hardwareTypeNTSC ? RISC_CYCLE_IN_USEC : RISC_CYCLE_PAL_IN_USEC);
-		SetCallbackTime(JERRYI2SCallback, usecs, EVENT_JERRY);
+		SetCallbackTime(JERRYI2SCallback, usecs);
 	}
 	else
 	{
@@ -147,7 +140,7 @@ void JERRYI2SCallback(void)
 		{
 			DSPSetIRQLine(DSPIRQ_SSI, ASSERT_LINE);
 		}
-		SetCallbackTime(JERRYI2SCallback, 22.675737, EVENT_JERRY);
+		SetCallbackTime(JERRYI2SCallback, 22.675737);
 	}
 }
 
@@ -185,14 +178,6 @@ void JERRYReset(void)
 	jerryPendingInterrupt = 0x0000;
 
 	DACReset();
-}
-
-void JERRYDone(void)
-{
-	JoystickDone();
-	DACDone();
-	EepromDone();
-	MTDone();
 }
 
 bool JERRYIRQEnabled(int irq)
@@ -262,8 +247,6 @@ uint16_t JERRYReadWord(uint32_t offset, uint32_t who)
 //
 void JERRYWriteByte(uint32_t offset, uint8_t data, uint32_t who)
 {
-	jerry_ram_8[offset & 0xFFFF] = data;
-
 	if ((offset >= DSP_CONTROL_RAM_BASE) && (offset < DSP_CONTROL_RAM_BASE + 0x20))
 	{
 		DSPWriteByte(offset, data, who);
@@ -294,6 +277,11 @@ void JERRYWriteByte(uint32_t offset, uint8_t data, uint32_t who)
 	{
 		EepromWriteByte(offset, data);
 	}
+
+	if (offset >= 0xF1D000 && offset <= 0xF1DFFF)
+		return;
+
+	jerry_ram_8[offset & 0xFFFF] = data;
 }
 
 //
@@ -301,9 +289,6 @@ void JERRYWriteByte(uint32_t offset, uint8_t data, uint32_t who)
 //
 void JERRYWriteWord(uint32_t offset, uint16_t data, uint32_t who)
 {
-	jerry_ram_8[(offset+0) & 0xFFFF] = (data >> 8) & 0xFF;
-	jerry_ram_8[(offset+1) & 0xFFFF] = data & 0xFF;
-
 	if ((offset >= DSP_CONTROL_RAM_BASE) && (offset < DSP_CONTROL_RAM_BASE + 0x20))
 	{
 		DSPWriteWord(offset, data, who);
@@ -335,6 +320,7 @@ void JERRYWriteWord(uint32_t offset, uint16_t data, uint32_t who)
 			case 6:
 				JERRYPIT2Divider = data;
 				JERRYResetPIT2();
+				break;
 		}
 	}
 	else if (offset >= 0xF10020 && offset <= 0xF10022)
@@ -351,16 +337,10 @@ void JERRYWriteWord(uint32_t offset, uint16_t data, uint32_t who)
 	{
 		EepromWriteWord(offset, data);
 	}
-}
 
-int JERRYGetPIT1Frequency(void)
-{
-	int systemClockFrequency = (vjs.hardwareTypeNTSC ? RISC_CLOCK_RATE_NTSC : RISC_CLOCK_RATE_PAL);
-	return systemClockFrequency / ((JERRYPIT1Prescaler + 1) * (JERRYPIT1Divider + 1));
-}
+	if (offset >= 0xF1D000 && offset <= 0xF1DFFF)
+		return;
 
-int JERRYGetPIT2Frequency(void)
-{
-	int systemClockFrequency = (vjs.hardwareTypeNTSC ? RISC_CLOCK_RATE_NTSC : RISC_CLOCK_RATE_PAL);
-	return systemClockFrequency / ((JERRYPIT2Prescaler + 1) * (JERRYPIT2Divider + 1));
+	jerry_ram_8[(offset+0) & 0xFFFF] = (data >> 8) & 0xFF;
+	jerry_ram_8[(offset+1) & 0xFFFF] = data & 0xFF;
 }

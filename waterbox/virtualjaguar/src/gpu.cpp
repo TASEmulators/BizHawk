@@ -59,12 +59,6 @@
 #define REGPAGE			0x4000
 #define DMAEN			0x8000
 
-// External global variables
-
-// Private function prototypes
-
-void GPUUpdateRegisterBanks(void);
-
 static void gpu_opcode_add(void);
 static void gpu_opcode_addc(void);
 static void gpu_opcode_addq(void);
@@ -189,11 +183,6 @@ static uint32_t gpu_inhibit_interrupt;
 
 static uint8_t branch_condition_table[32 * 8];
 
-bool GPURunning(void)
-{
-	return GPU_RUNNING;
-}
-
 void build_branch_condition_table(void)
 {
 	for(int i=0; i<8; i++)
@@ -217,6 +206,54 @@ void build_branch_condition_table(void)
 			branch_condition_table[i * 32 + j] = result;
 		}
 	}
+}
+
+//
+// Change register banks if necessary
+//
+static void GPUUpdateRegisterBanks(void)
+{
+	int bank = (gpu_flags & REGPAGE);
+
+	if (gpu_flags & IMASK)
+		bank = 0;
+
+	if (bank)
+		gpu_reg = gpu_reg_bank_1, gpu_alternate_reg = gpu_reg_bank_0;
+	else
+		gpu_reg = gpu_reg_bank_0, gpu_alternate_reg = gpu_reg_bank_1;
+}
+
+static void GPUHandleIRQs(void)
+{
+	if (gpu_flags & IMASK)
+		return;
+
+	uint32_t bits = (gpu_control >> 6) & 0x1F, mask = (gpu_flags >> 4) & 0x1F;
+
+	bits &= mask;
+	if (!bits)
+		return;
+
+	uint32_t which = 0;
+	if (bits & 0x01)
+		which = 0;
+	if (bits & 0x02)
+		which = 1;
+	if (bits & 0x04)
+		which = 2;
+	if (bits & 0x08)
+		which = 3;
+	if (bits & 0x10)
+		which = 4;
+
+	gpu_flags |= IMASK;
+	GPUUpdateRegisterBanks();
+
+	gpu_reg[31] -= 4;
+	GPUWriteLong(gpu_reg[31], gpu_pc - 2, GPU);
+
+	gpu_pc = gpu_reg[30] = GPU_WORK_RAM_BASE + (which * 0x10);
 }
 
 //
@@ -480,54 +517,6 @@ void GPUWriteLong(uint32_t offset, uint32_t data, uint32_t who)
 	JaguarWriteLong(offset, data, who);
 }
 
-//
-// Change register banks if necessary
-//
-void GPUUpdateRegisterBanks(void)
-{
-	int bank = (gpu_flags & REGPAGE);
-
-	if (gpu_flags & IMASK)
-		bank = 0;
-
-	if (bank)
-		gpu_reg = gpu_reg_bank_1, gpu_alternate_reg = gpu_reg_bank_0;
-	else
-		gpu_reg = gpu_reg_bank_0, gpu_alternate_reg = gpu_reg_bank_1;
-}
-
-void GPUHandleIRQs(void)
-{
-	if (gpu_flags & IMASK)
-		return;
-
-	uint32_t bits = (gpu_control >> 6) & 0x1F, mask = (gpu_flags >> 4) & 0x1F;
-
-	bits &= mask;
-	if (!bits)
-		return;
-
-	uint32_t which = 0;
-	if (bits & 0x01)
-		which = 0;
-	if (bits & 0x02)
-		which = 1;
-	if (bits & 0x04)
-		which = 2;
-	if (bits & 0x08)
-		which = 3;
-	if (bits & 0x10)
-		which = 4;
-
-	gpu_flags |= IMASK;
-	GPUUpdateRegisterBanks();
-
-	gpu_reg[31] -= 4;
-	GPUWriteLong(gpu_reg[31], gpu_pc - 2, GPU);
-
-	gpu_pc = gpu_reg[30] = GPU_WORK_RAM_BASE + (which * 0x10);
-}
-
 void GPUSetIRQLine(int irqline, int state)
 {
 	uint32_t mask = 0x0040 << irqline;
@@ -540,10 +529,14 @@ void GPUSetIRQLine(int irqline, int state)
 	}
 }
 
+bool GPUIsRunning(void)
+{
+	return GPU_RUNNING;
+}
+
 void GPUInit(void)
 {
 	build_branch_condition_table();
-
 	GPUReset();
 }
 
@@ -573,10 +566,6 @@ void GPUReset(void)
 
 	for(uint32_t i=0; i<4096; i+=4)
 		*((uint32_t *)(&gpu_ram_8[i])) = rand();
-}
-
-void GPUDone(void)
-{
 }
 
 //

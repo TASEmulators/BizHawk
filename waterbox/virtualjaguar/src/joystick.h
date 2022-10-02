@@ -33,10 +33,8 @@ BUTTON_PAUSE = 20, BUTTON_LAST = 20 };
 
 void JoystickInit(void);
 void JoystickReset(void);
-void JoystickDone(void);
 void JoystickWriteWord(uint32_t, uint16_t);
 uint16_t JoystickReadWord(uint32_t);
-void JoystickExec(void);
 
 extern uint8_t joypad0Buttons[];
 extern uint8_t joypad1Buttons[];

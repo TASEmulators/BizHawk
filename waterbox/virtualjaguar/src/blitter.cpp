@@ -31,7 +31,7 @@
 
 uint8_t blitter_ram[0x100];
 
-void BlitterMidsummer2(void);
+static void BlitterMidsummer2(void);
 
 #define REG(A)	(((uint32_t)blitter_ram[(A)] << 24) | ((uint32_t)blitter_ram[(A)+1] << 16) \
 				| ((uint32_t)blitter_ram[(A)+2] << 8) | (uint32_t)blitter_ram[(A)+3])
@@ -286,7 +286,7 @@ static int32_t a1_clip_x, a1_clip_y;
 //
 // Generic blit handler
 //
-void blitter_generic(uint32_t cmd)
+static void blitter_generic(uint32_t cmd)
 {
 	uint32_t srcdata, srczdata, dstdata, dstzdata, writedata, inhibit;
 	uint32_t bppSrc = (DSTA2 ? 1 << ((REG(A1_FLAGS) >> 3) & 0x07) : 1 << ((REG(A2_FLAGS) >> 3) & 0x07));
@@ -654,7 +654,7 @@ void blitter_generic(uint32_t cmd)
 	WREG(A2_PIXEL,  (a2_y & 0xFFFF0000) | ((a2_x >> 16) & 0xFFFF));
 }
 
-void blitter_blit(uint32_t cmd)
+static void blitter_blit(uint32_t cmd)
 {
 	uint32_t pitchValue[4] = { 0, 1, 3, 2 };
 	colour_index = 0;
@@ -831,10 +831,6 @@ void BlitterReset(void)
 	memset(blitter_ram, 0x00, 0xA0);
 }
 
-void BlitterDone(void)
-{
-}
-
 uint8_t BlitterReadByte(uint32_t offset, uint32_t who)
 {
 	offset &= 0xFF;
@@ -958,34 +954,33 @@ void BlitterWriteLong(uint32_t offset, uint32_t data, uint32_t who)
 	BlitterWriteWord(offset + 2, data & 0xFFFF, who);
 }
 
-void ADDRGEN(uint32_t &, uint32_t &, bool, bool,
+static void ADDRGEN(uint32_t &, uint32_t &, bool, bool,
 	uint16_t, uint16_t, uint32_t, uint8_t, uint8_t, uint8_t, uint8_t,
 	uint16_t, uint16_t, uint32_t, uint8_t, uint8_t, uint8_t, uint8_t);
-void ADDARRAY(uint16_t * addq, uint8_t daddasel, uint8_t daddbsel, uint8_t daddmode,
+static void ADDARRAY(uint16_t * addq, uint8_t daddasel, uint8_t daddbsel, uint8_t daddmode,
 	uint64_t dstd, uint32_t iinc, uint8_t initcin[], uint64_t initinc, uint16_t initpix,
 	uint32_t istep, uint64_t patd, uint64_t srcd, uint64_t srcz1, uint64_t srcz2,
 	uint32_t zinc, uint32_t zstep);
-void ADD16SAT(uint16_t &r, uint8_t &co, uint16_t a, uint16_t b, uint8_t cin, bool sat, bool eightbit, bool hicinh);
-void ADDAMUX(int16_t &adda_x, int16_t &adda_y, uint8_t addasel, int16_t a1_step_x, int16_t a1_step_y,
+static void ADD16SAT(uint16_t &r, uint8_t &co, uint16_t a, uint16_t b, uint8_t cin, bool sat, bool eightbit, bool hicinh);
+static void ADDAMUX(int16_t &adda_x, int16_t &adda_y, uint8_t addasel, int16_t a1_step_x, int16_t a1_step_y,
 	int16_t a1_stepf_x, int16_t a1_stepf_y, int16_t a2_step_x, int16_t a2_step_y,
 	int16_t a1_inc_x, int16_t a1_inc_y, int16_t a1_incf_x, int16_t a1_incf_y, uint8_t adda_xconst,
 	bool adda_yconst, bool addareg, bool suba_x, bool suba_y);
-void ADDBMUX(int16_t &addb_x, int16_t &addb_y, uint8_t addbsel, int16_t a1_x, int16_t a1_y,
+static void ADDBMUX(int16_t &addb_x, int16_t &addb_y, uint8_t addbsel, int16_t a1_x, int16_t a1_y,
 	int16_t a2_x, int16_t a2_y, int16_t a1_frac_x, int16_t a1_frac_y);
-void DATAMUX(int16_t &data_x, int16_t &data_y, uint32_t gpu_din, int16_t addq_x, int16_t addq_y, bool addqsel);
-void ADDRADD(int16_t &addq_x, int16_t &addq_y, bool a1fracldi,
+static void ADDRADD(int16_t &addq_x, int16_t &addq_y, bool a1fracldi,
 	uint16_t adda_x, uint16_t adda_y, uint16_t addb_x, uint16_t addb_y, uint8_t modx, bool suba_x, bool suba_y);
-void DATA(uint64_t &wdata, uint8_t &dcomp, uint8_t &zcomp, bool &nowrite,
+static void DATA(uint64_t &wdata, uint8_t &dcomp, uint8_t &zcomp, bool &nowrite,
 	bool big_pix, bool cmpdst, uint8_t daddasel, uint8_t daddbsel, uint8_t daddmode, bool daddq_sel, uint8_t data_sel,
 	uint8_t dbinh, uint8_t dend, uint8_t dstart, uint64_t dstd, uint32_t iinc, uint8_t lfu_func, uint64_t &patd, bool patdadd,
 	bool phrase_mode, uint64_t srcd, bool srcdread, bool srczread, bool srcz2add, uint8_t zmode,
 	bool bcompen, bool bkgwren, bool dcompen, uint8_t icount, uint8_t pixsize,
 	uint64_t &srcz, uint64_t dstz, uint32_t zinc);
-void COMP_CTRL(uint8_t &dbinh, bool &nowrite,
+static void COMP_CTRL(uint8_t &dbinh, bool &nowrite,
 	bool bcompen, bool big_pix, bool bkgwren, uint8_t dcomp, bool dcompen, uint8_t icount,
 	uint8_t pixsize, bool phrase_mode, uint8_t srcd, uint8_t zcomp);
 
-void BlitterMidsummer2(void)
+static void BlitterMidsummer2(void)
 {
 	uint32_t cmd = GET32(blitter_ram, COMMAND);
 
@@ -1742,7 +1737,7 @@ void BlitterMidsummer2(void)
 	SET16(blitter_ram, A2_PIXEL + 0, a2_y);
 }
 
-void ADDRGEN(uint32_t &address, uint32_t &pixa, bool gena2, bool zaddr,
+static void ADDRGEN(uint32_t &address, uint32_t &pixa, bool gena2, bool zaddr,
 	uint16_t a1_x, uint16_t a1_y, uint32_t a1_base, uint8_t a1_pitch, uint8_t a1_pixsize, uint8_t a1_width, uint8_t a1_zoffset,
 	uint16_t a2_x, uint16_t a2_y, uint32_t a2_base, uint8_t a2_pitch, uint8_t a2_pixsize, uint8_t a2_width, uint8_t a2_zoffset)
 {
@@ -1774,7 +1769,7 @@ void ADDRGEN(uint32_t &address, uint32_t &pixa, bool gena2, bool zaddr,
 	pixa &= 0x07;
 }
 
-void ADDARRAY(uint16_t * addq, uint8_t daddasel, uint8_t daddbsel, uint8_t daddmode,
+static void ADDARRAY(uint16_t * addq, uint8_t daddasel, uint8_t daddbsel, uint8_t daddmode,
 	uint64_t dstd, uint32_t iinc, uint8_t initcin[], uint64_t initinc, uint16_t initpix,
 	uint32_t istep, uint64_t patd, uint64_t srcd, uint64_t srcz1, uint64_t srcz2,
 	uint32_t zinc, uint32_t zstep)
@@ -1848,7 +1843,7 @@ void ADDARRAY(uint16_t * addq, uint8_t daddasel, uint8_t daddbsel, uint8_t daddm
 		ADD16SAT(addq[i], co[i], adda[i], addb[i], cin[i], sat, eightbit, hicinh);
 }
 
-void ADD16SAT(uint16_t &r, uint8_t &co, uint16_t a, uint16_t b, uint8_t cin, bool sat, bool eightbit, bool hicinh)
+static void ADD16SAT(uint16_t &r, uint8_t &co, uint16_t a, uint16_t b, uint8_t cin, bool sat, bool eightbit, bool hicinh)
 {
 	uint8_t carry[4];
 	uint32_t qt = (a & 0xFF) + (b & 0xFF) + cin;
@@ -1899,7 +1894,7 @@ suba_x, suba_y complement the X and Y values
 
 */
 
-void ADDAMUX(int16_t &adda_x, int16_t &adda_y, uint8_t addasel, int16_t a1_step_x, int16_t a1_step_y,
+static void ADDAMUX(int16_t &adda_x, int16_t &adda_y, uint8_t addasel, int16_t a1_step_x, int16_t a1_step_y,
 	int16_t a1_stepf_x, int16_t a1_stepf_y, int16_t a2_step_x, int16_t a2_step_y,
 	int16_t a1_inc_x, int16_t a1_inc_y, int16_t a1_incf_x, int16_t a1_incf_y, uint8_t adda_xconst,
 	bool adda_yconst, bool addareg, bool suba_x, bool suba_y)
@@ -1928,7 +1923,7 @@ pointers, or the A1 fractional part. It can also be zero, so that the step
 registers load directly into the pointers.
 */
 
-void ADDBMUX(int16_t &addb_x, int16_t &addb_y, uint8_t addbsel, int16_t a1_x, int16_t a1_y,
+static void ADDBMUX(int16_t &addb_x, int16_t &addb_y, uint8_t addbsel, int16_t a1_x, int16_t a1_y,
 	int16_t a2_x, int16_t a2_y, int16_t a1_frac_x, int16_t a1_frac_y)
 {
 	int16_t xterm[4], yterm[4];
@@ -1936,17 +1931,6 @@ void ADDBMUX(int16_t &addb_x, int16_t &addb_y, uint8_t addbsel, int16_t a1_x, in
 	yterm[0] = a1_y, yterm[1] = a2_y, yterm[2] = a1_frac_y, yterm[3] = 0;
 	addb_x = xterm[addbsel & 0x03];
 	addb_y = yterm[addbsel & 0x03];
-}
-
-/**  DATAMUX - Address local data bus selection  ******************
-
-Select between the adder output and the input data bus
-*/
-
-void DATAMUX(int16_t &data_x, int16_t &data_y, uint32_t gpu_din, int16_t addq_x, int16_t addq_y, bool addqsel)
-{
-	data_x = (addqsel ? addq_x : (int16_t)(gpu_din & 0xFFFF));
-	data_y = (addqsel ? addq_y : (int16_t)(gpu_din >> 16));
 }
 
 /******************************************************************
@@ -1969,7 +1953,7 @@ modx[0..2] take values
 
 ******************************************************************/
 
-void ADDRADD(int16_t &addq_x, int16_t &addq_y, bool a1fracldi,
+static void ADDRADD(int16_t &addq_x, int16_t &addq_y, bool a1fracldi,
 	uint16_t adda_x, uint16_t adda_y, uint16_t addb_x, uint16_t addb_y, uint8_t modx, bool suba_x, bool suba_y)
 {
 	static uint16_t co_x = 0, co_y = 0;
@@ -1985,7 +1969,7 @@ void ADDRADD(int16_t &addq_x, int16_t &addq_y, bool a1fracldi,
 	addq_y = addqt_y & 0xFFFF;
 }
 
-void DATA(uint64_t &wdata, uint8_t &dcomp, uint8_t &zcomp, bool &nowrite,
+static void DATA(uint64_t &wdata, uint8_t &dcomp, uint8_t &zcomp, bool &nowrite,
 	bool big_pix, bool cmpdst, uint8_t daddasel, uint8_t daddbsel, uint8_t daddmode, bool daddq_sel, uint8_t data_sel,
 	uint8_t dbinh, uint8_t dend, uint8_t dstart, uint64_t dstd, uint32_t iinc, uint8_t lfu_func, uint64_t &patd, bool patdadd,
 	bool phrase_mode, uint64_t srcd, bool srcdread, bool srczread, bool srcz2add, uint8_t zmode,
@@ -2184,7 +2168,7 @@ performed.  The is taken care of within the zed comparator by
 pipe-lining the comparator inputs where appropriate.
 */
 
-void COMP_CTRL(uint8_t &dbinh, bool &nowrite,
+static void COMP_CTRL(uint8_t &dbinh, bool &nowrite,
 	bool bcompen, bool big_pix, bool bkgwren, uint8_t dcomp, bool dcompen, uint8_t icount,
 	uint8_t pixsize, bool phrase_mode, uint8_t srcd, uint8_t zcomp)
 {

@@ -1,14 +1,13 @@
 #include "jaguar.h"
-#include "file.h"
+#include "rom.h"
 #include "settings.h"
 #include "memory.h"
 #include "tom.h"
 #include "gpu.h"
 #include "dsp.h"
+#include "dac.h"
 #include "joystick.h"
 #include "m68000/m68kinterface.h"
-
-#include "blip_buf.h"
 
 #include <emulibc.h>
 #include <waterboxcore.h>
@@ -34,22 +33,11 @@ struct BizSettings
 	u8 useFastBlitter;
 };
 
-void SoundCallback(u16 * buffer, int length);
-static u16* soundBuf;
-static blip_t* blipL;
-static blip_t* blipR;
-static s16 latchL, latchR;
-
 static void InitCommon(BizSettings* bizSettings)
 {
 	vjs.hardwareTypeNTSC = bizSettings->hardwareTypeNTSC;
 	vjs.useJaguarBIOS = bizSettings->useJaguarBIOS;
 	vjs.useFastBlitter = bizSettings->useFastBlitter;
-	soundBuf = alloc_invisible<u16>(2048);
-	blipL = blip_new(1024);
-	blipR = blip_new(1024);
-	blip_set_rates(blipL, 48000, 44100);
-	blip_set_rates(blipR, 48000, 44100);
 	JaguarInit();
 }
 
@@ -57,9 +45,9 @@ EXPORT bool Init(BizSettings* bizSettings, u8* boot, u8* rom, u32 sz)
 {
 	InitCommon(bizSettings);
 
-	if (!JaguarLoadFile(rom, sz))
+	if (!JaguarLoadROM(rom, sz))
 	{
-		if (!AlpineLoadFile(rom, sz))
+		if (!AlpineLoadROM(rom, sz))
 		{
 			return false;
 		}
@@ -68,7 +56,7 @@ EXPORT bool Init(BizSettings* bizSettings, u8* boot, u8* rom, u32 sz)
 	}
 	else
 	{
-		vjs.hardwareTypeAlpine = ParseFileType(rom, sz) == JST_ALPINE;
+		vjs.hardwareTypeAlpine = ParseROMType(rom, sz) == JST_ALPINE;
 	}
 
 	SET32(jaguarMainRAM, 0, 0x00200000);
@@ -93,7 +81,7 @@ EXPORT void InitWithCd(BizSettings* bizSettings, u8* boot, u8* memtrack)
 	InitCommon(bizSettings);
 	if (memtrack)
 	{
-		JaguarLoadFile(memtrack, 0x20000);
+		JaguarLoadROM(memtrack, 0x20000);
 	}
 	vjs.hardwareTypeAlpine = false;
 
@@ -153,6 +141,7 @@ extern u8 gpu_ram_8[0x1000];
 extern u8 dsp_ram_8[0x2000];
 extern u8 cdRam[0x100];
 extern u8 blitter_ram[0x100];
+extern u8 tomRam8[0x4000];
 extern u8 jerry_ram_8[0x10000];
 static u8 unmapped;
 
@@ -166,11 +155,11 @@ static inline u8* GetSysBusPtr(u64 address)
 		case 0x800000 ... 0xDFFEFF: return &jaguarMainROM[address - 0x800000];
 		case 0xDFFF00 ... 0xDFFFFF: return &cdRam[address & 0xFF];
 		case 0xE00000 ... 0xE3FFFF: return &jagMemSpace[address];
-		case 0xF00000 ... 0xF021FF: return &TOMGetRamPointer()[address & 0x3FFF];
+		case 0xF00000 ... 0xF021FF: return &tomRam8[address & 0x3FFF];
 		case 0xF02200 ... 0xF0229F: return &blitter_ram[address & 0xFF];
-		case 0xF022A0 ... 0xF02FFF: return &TOMGetRamPointer()[address & 0x3FFF];
+		case 0xF022A0 ... 0xF02FFF: return &tomRam8[address & 0x3FFF];
 		case 0xF03000 ... 0xF03FFF: return &gpu_ram_8[address & 0xFFF];
-		case 0xF04000 ... 0xF0FFFF: return &TOMGetRamPointer()[address & 0x3FFF];
+		case 0xF04000 ... 0xF0FFFF: return &tomRam8[address & 0x3FFF];
 		case 0xF10000 ... 0xF1AFFF: return &jerry_ram_8[address & 0xFFFF];
 		case 0xF1B000 ... 0xF1CFFF: return &dsp_ram_8[address - 0xF1B000];
 		case 0xF1D000 ... 0xF1FFFF: return &jerry_ram_8[address & 0xFFFF];
@@ -228,9 +217,9 @@ EXPORT void GetMemoryAreas(MemoryArea* m)
 	m[3].Size = sizeof(dsp_ram_8);
 	m[3].Flags = MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN;
 
-	m[4].Data = TOMGetRamPointer();
+	m[4].Data = tomRam8;
 	m[4].Name = "TOM RAM";
-	m[4].Size = 0x4000;
+	m[4].Size = sizeof(tomRam8);
 	m[4].Flags = MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN;
 
 	m[5].Data = jerry_ram_8;
@@ -261,56 +250,32 @@ EXPORT void GetMemoryAreas(MemoryArea* m)
 
 struct MyFrameInfo : public FrameInfo
 {
-	u32 player1, player2;
-	bool reset;
+	u32 Player1, Player2;
+	bool Reset;
 };
 
 bool lagged;
 
 EXPORT void FrameAdvance(MyFrameInfo* f)
 {
-	if (f->reset)
+	if (f->Reset)
 	{
 		JaguarReset();
 	}
 
 	for (u32 i = 0; i < 21; i++)
 	{
-		joypad0Buttons[i] = (f->player1 >> i) & 1;
-		joypad1Buttons[i] = (f->player2 >> i) & 1;
+		joypad0Buttons[i] = (f->Player1 >> i) & 1;
+		joypad1Buttons[i] = (f->Player2 >> i) & 1;
 	}
 
 	lagged = true;
-	JaguarExecuteNew();
+	DACResetBuffer(f->SoundBuffer);
+
+	JaguarAdvance();
+
 	TOMBlit(f->VideoBuffer, f->Width, f->Height);
-
-	u32 samples = 48000 / (vjs.hardwareTypeNTSC ? 60 : 50);
-	SoundCallback(soundBuf, samples * 4);
-	s16* sb = reinterpret_cast<s16*>(soundBuf);
-	for (u32 i = 0; i < samples; i++)
-	{
-		s16 l = *sb++;
-		if (latchL != l)
-		{
-			blip_add_delta(blipL, i, latchL - l);
-			latchL = l;
-		}
-
-		s16 r = *sb++;
-		if (latchR != r)
-		{
-			blip_add_delta(blipR, i, latchR - r);
-			latchR = r;
-		}
-	}
-
-	blip_end_frame(blipL, samples);
-	blip_end_frame(blipR, samples);
-
-	f->Samples = blip_samples_avail(blipL);
-	blip_read_samples(blipL, f->SoundBuffer + 0, f->Samples, 1);
-	blip_read_samples(blipR, f->SoundBuffer + 1, f->Samples, 1);
-
+	f->Samples = DACResetBuffer(NULL);
 	f->Lagged = lagged;
 }
 

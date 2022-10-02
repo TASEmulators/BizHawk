@@ -443,22 +443,12 @@ void JaguarReset(void)
 	SetCallbackTime(HalflineCallback, (vjs.hardwareTypeNTSC ? 31.777777777 : 32.0));
 }
 
-void JaguarDone(void)
-{
-	CDHLEDone();
-	CDROMDone();
-	GPUDone();
-	DSPDone();
-	TOMDone();
-	JERRYDone();
-}
-
 //
-// New Jaguar execution stack
+// Jaguar execution stack
 // This executes 1 frame's worth of code.
 //
 bool frameDone;
-void JaguarExecuteNew(void)
+void JaguarAdvance(void)
 {
 	frameDone = false;
 	TOMStartFrame();
@@ -468,8 +458,8 @@ void JaguarExecuteNew(void)
 		double timeToNextEvent = GetTimeToNextEvent();
 
 		m68k_execute(USEC_TO_M68K_CYCLES(timeToNextEvent));
-
 		GPUExec(USEC_TO_RISC_CYCLES(timeToNextEvent));
+		DSPExec(USEC_TO_RISC_CYCLES(timeToNextEvent));
 
 		HandleNextEvent();
  	}
@@ -522,11 +512,10 @@ void HalflineCallback(void)
 		m68k_set_irq(2);
 	}
 
-	TOMExecHalfline(vc, true);
+	TOMExecHalfline(vc);
 
 	if ((vc & 0x7FF) == 0)
 	{
-		JoystickExec();
 		frameDone = true;
 	}
 

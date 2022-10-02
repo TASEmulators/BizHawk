@@ -13,8 +13,6 @@
 void DSPInit(void);
 void DSPReset(void);
 void DSPExec(int32_t);
-void DSPDone(void);
-void DSPUpdateRegisterBanks(void);
 void DSPSetIRQLine(int irqline, int state);
 uint8_t DSPReadByte(uint32_t offset, uint32_t who = UNKNOWN);
 uint16_t DSPReadWord(uint32_t offset, uint32_t who = UNKNOWN);

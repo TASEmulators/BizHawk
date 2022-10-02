@@ -31,23 +31,22 @@ enum { MT_IDLE, MT_PHASE1, MT_PHASE2 };
 
 uint8_t mtMem[0x20000];
 bool mtDirty;
-uint8_t mtCommand = MT_NONE;
-uint8_t mtState = MT_IDLE;
+static uint8_t mtCommand;
+static uint8_t mtState;
 
-void MTStateMachine(uint8_t reg, uint16_t data);
+static void MTStateMachine(uint8_t reg, uint16_t data);
 
 void MTInit(void)
 {
 	memset(mtMem, 0xFF, 0x20000);
 	mtDirty = false;
+	MTReset();
 }
 
 void MTReset(void)
 {
-}
-
-void MTDone(void)
-{
+	mtCommand = MT_NONE;
+	mtState = MT_IDLE;
 }
 
 uint16_t MTReadWord(uint32_t addr)
@@ -115,7 +114,7 @@ void MTWriteLong(uint32_t addr, uint32_t data)
 	MTWriteWord(addr + 2, data >> 16);
 }
 
-void MTStateMachine(uint8_t reg, uint16_t data)
+static void MTStateMachine(uint8_t reg, uint16_t data)
 {
 	switch (mtState)
 	{

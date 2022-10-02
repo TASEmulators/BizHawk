@@ -176,7 +176,7 @@ static uint32_t dsp_flags;
 static uint32_t dsp_matrix_control;
 static uint32_t dsp_pointer_to_matrix;
 static uint32_t dsp_data_organization;
-uint32_t dsp_control;
+static uint32_t dsp_control;
 static uint32_t dsp_div_control;
 static uint8_t dsp_flag_z, dsp_flag_n, dsp_flag_c;
 static uint32_t * dsp_reg = NULL, * dsp_alternate_reg = NULL;
@@ -194,7 +194,7 @@ static uint8_t branch_condition_table[32 * 8];
 static uint16_t mirror_table[65536];
 uint8_t dsp_ram_8[0x2000];
 
-void dsp_build_branch_condition_table(void)
+static void dsp_build_branch_condition_table(void)
 {
 	for(int i=0; i<65536; i++)
 	{
@@ -229,6 +229,64 @@ void dsp_build_branch_condition_table(void)
 			branch_condition_table[i * 32 + j] = result;
 		}
 	}
+}
+
+//
+// Update the DSP register file pointers depending on REGPAGE bit
+//
+static void DSPUpdateRegisterBanks(void)
+{
+	int bank = (dsp_flags & REGPAGE);
+
+	if (dsp_flags & IMASK)
+		bank = 0;
+
+	if (bank)
+		dsp_reg = dsp_reg_bank_1, dsp_alternate_reg = dsp_reg_bank_0;
+	else
+		dsp_reg = dsp_reg_bank_0, dsp_alternate_reg = dsp_reg_bank_1;
+}
+
+//
+// Check for and handle any asserted DSP IRQs
+//
+static void DSPHandleIRQs(void)
+{
+	if (dsp_flags & IMASK)
+		return;
+
+	uint32_t bits = ((dsp_control >> 10) & 0x20) | ((dsp_control >> 6) & 0x1F),
+		mask = ((dsp_flags >> 11) & 0x20) | ((dsp_flags >> 4) & 0x1F);
+
+	bits &= mask;
+
+	if (!bits)
+		return;
+
+	int which = 0;
+	if (bits & 0x01)
+		which = 0;
+	if (bits & 0x02)
+		which = 1;
+	if (bits & 0x04)
+		which = 2;
+	if (bits & 0x08)
+		which = 3;
+	if (bits & 0x10)
+		which = 4;
+	if (bits & 0x20)
+		which = 5;
+
+	dsp_flags |= IMASK;
+
+	DSPUpdateRegisterBanks();
+
+	dsp_reg[31] -= 4;
+	dsp_reg[30] = dsp_pc - 2;
+
+	DSPWriteLong(dsp_reg[31], dsp_reg[30], DSP);
+
+	dsp_pc = dsp_reg[30] = DSP_WORK_RAM_BASE + (which * 0x10);
 }
 
 uint8_t DSPReadByte(uint32_t offset, uint32_t who)
@@ -461,64 +519,6 @@ void DSPWriteLong(uint32_t offset, uint32_t data, uint32_t who)
 }
 
 //
-// Update the DSP register file pointers depending on REGPAGE bit
-//
-void DSPUpdateRegisterBanks(void)
-{
-	int bank = (dsp_flags & REGPAGE);
-
-	if (dsp_flags & IMASK)
-		bank = 0;
-
-	if (bank)
-		dsp_reg = dsp_reg_bank_1, dsp_alternate_reg = dsp_reg_bank_0;
-	else
-		dsp_reg = dsp_reg_bank_0, dsp_alternate_reg = dsp_reg_bank_1;
-}
-
-//
-// Check for and handle any asserted DSP IRQs
-//
-void DSPHandleIRQsNP(void)
-{
-	if (dsp_flags & IMASK)
-		return;
-
-	uint32_t bits = ((dsp_control >> 10) & 0x20) | ((dsp_control >> 6) & 0x1F),
-		mask = ((dsp_flags >> 11) & 0x20) | ((dsp_flags >> 4) & 0x1F);
-
-	bits &= mask;
-
-	if (!bits)
-		return;
-
-	int which = 0;
-	if (bits & 0x01)
-		which = 0;
-	if (bits & 0x02)
-		which = 1;
-	if (bits & 0x04)
-		which = 2;
-	if (bits & 0x08)
-		which = 3;
-	if (bits & 0x10)
-		which = 4;
-	if (bits & 0x20)
-		which = 5;
-
-	dsp_flags |= IMASK;
-
-	DSPUpdateRegisterBanks();
-
-	dsp_reg[31] -= 4;
-	dsp_reg[30] = dsp_pc - 2;
-
-	DSPWriteLong(dsp_reg[31], dsp_reg[30], DSP);
-
-	dsp_pc = dsp_reg[30] = DSP_WORK_RAM_BASE + (which * 0x10);
-}
-
-//
 // Set the specified DSP IRQ line to a given state
 //
 void DSPSetIRQLine(int irqline, int state)
@@ -529,7 +529,7 @@ void DSPSetIRQLine(int irqline, int state)
 	if (state)
 	{
 		dsp_control |= mask;
-		DSPHandleIRQsNP();
+		DSPHandleIRQs();
 	}
 }
 
@@ -570,10 +570,6 @@ void DSPReset(void)
 		*((uint32_t *)(&dsp_ram_8[i])) = rand();
 }
 
-void DSPDone(void)
-{
-}
-
 //
 // DSP execution core
 //
@@ -585,7 +581,7 @@ void DSPExec(int32_t cycles)
 
 		if (IMASKCleared && !dsp_inhibit_interrupt)
 		{
-			DSPHandleIRQsNP();
+			DSPHandleIRQs();
 			IMASKCleared = false;
 		}
 

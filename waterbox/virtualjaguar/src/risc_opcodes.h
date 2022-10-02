@@ -202,14 +202,20 @@ RISC_OPCODE(store_r14_indexed)
 {
 	uint32_t address = risc_reg[14] + (risc_convert_zero[IMM_1] << 2);
 	ALERT_UNALIGNED_LONG(address);
-	RISCWriteLong(address & 0xFFFFFFFC, RN, RISC);
+	if (IS_RISC_RAM(address))
+		RISCWriteLong(address & 0xFFFFFFFC, RN, RISC);
+	else
+		RISCWriteLong(address, RN, RISC);
 }
 
 RISC_OPCODE(store_r15_indexed)
 {
 	uint32_t address = risc_reg[15] + (risc_convert_zero[IMM_1] << 2);
 	ALERT_UNALIGNED_LONG(address);
-	RISCWriteLong(address & 0xFFFFFFFC, RN, RISC);
+	if (IS_RISC_RAM(address))
+		RISCWriteLong(address & 0xFFFFFFFC, RN, RISC);
+	else
+		RISCWriteLong(address, RN, RISC);
 }
 
 RISC_OPCODE(load_r14_ri)
@@ -230,14 +236,20 @@ RISC_OPCODE(store_r14_ri)
 {
 	uint32_t address = risc_reg[14] + RM;
 	ALERT_UNALIGNED_LONG(address);
-	RISCWriteLong(address & 0xFFFFFFFC, RN, RISC);
+	if (IS_RISC_RAM(address))
+		RISCWriteLong(address & 0xFFFFFFFC, RN, RISC);
+	else
+		RISCWriteLong(address, RN, RISC);
 }
 
 RISC_OPCODE(store_r15_ri)
 {
 	uint32_t address = risc_reg[15] + RM;
 	ALERT_UNALIGNED_LONG(address);
-	RISCWriteLong(address & 0xFFFFFFFC, RN, RISC);
+	if (IS_RISC_RAM(address))
+		RISCWriteLong(address & 0xFFFFFFFC, RN, RISC);
+	else
+		RISCWriteLong(address, RN, RISC);
 }
 
 RISC_OPCODE(nop)
@@ -259,13 +271,16 @@ RISC_OPCODE(storew)
 	if (IS_RISC_RAM(RM))
 		RISCWriteLong(RM & 0xFFFFFFFC, RN, RISC);
 	else
-		JaguarWriteWord(RM & 0xFFFFFFFE, RN, RISC);
+		JaguarWriteWord(RM, RN, RISC);
 }
 
 RISC_OPCODE(store)
 {
 	ALERT_UNALIGNED_LONG(RM);
-	RISCWriteLong(RM & 0xFFFFFFFC, RN, RISC);
+	if (IS_RISC_RAM(RM))
+		RISCWriteLong(RM & 0xFFFFFFFC, RN, RISC);
+	else
+		RISCWriteLong(RM, RN, RISC);
 }
 
 RISC_OPCODE(loadb)
@@ -283,7 +298,7 @@ RISC_OPCODE(loadw)
 	if (IS_RISC_RAM(RM))
 		RN = RISCReadLong(RM & 0xFFFFFFFC, RISC);
 	else
-		RN = JaguarReadWord(RM & 0xFFFFFFFE, RISC);
+		RN = JaguarReadWord(RM, RISC);
 }
 
 RISC_OPCODE(load)

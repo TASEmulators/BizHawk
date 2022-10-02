@@ -1,7 +1,7 @@
 //
 // Red Color Values for CrY<->RGB Color Conversion
 //
-uint8_t redcv[16][16] = {
+static const uint8_t redcv[16][16] = {
    //  0   1   2   3   4   5   6   7   8   9   A   B   C   D   E   F
    // ----------------------------------------------------------------------
 	{  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},    // 0
@@ -25,7 +25,7 @@ uint8_t redcv[16][16] = {
 //
 // Green Color Values for CrY<->RGB Color Conversion
 //
-uint8_t greencv[16][16] = {
+static const uint8_t greencv[16][16] = {
    //  0   1   2   3   4   5   6   7   8   9   A   B   C   D   E   F
    // ----------------------------------------------------------------------
 	{  0,  17, 34, 51,68, 85, 102,119,136,153,170,187,204,221,238,255},   // 0
@@ -49,7 +49,7 @@ uint8_t greencv[16][16] = {
 //
 // Blue Color Values for CrY<->RGB Color Conversion
 //
-uint8_t bluecv[16][16] = {
+static const uint8_t bluecv[16][16] = {
    //  0   1   2   3   4   5   6   7   8   9   A   B   C   D   E   F
    // ----------------------------------------------------------------------
 	{  255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255},  // 0

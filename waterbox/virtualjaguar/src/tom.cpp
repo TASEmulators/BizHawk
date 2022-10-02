@@ -79,11 +79,11 @@
 #define BOTTOM_VISIBLE_VC_PAL	579
 
 uint8_t tomRam8[0x4000];
-uint32_t tomWidth, tomHeight;
-uint32_t tomTimerPrescaler;
-uint32_t tomTimerDivider;
-int32_t tomTimerCounter;
-uint16_t tom_jerry_int_pending, tom_timer_int_pending, tom_object_int_pending,
+static uint32_t tomWidth, tomHeight;
+static uint32_t tomTimerPrescaler;
+static uint32_t tomTimerDivider;
+static int32_t tomTimerCounter;
+static uint16_t tom_jerry_int_pending, tom_timer_int_pending, tom_object_int_pending,
 	tom_gpu_int_pending, tom_video_int_pending;
 
 static uint32_t * scanlines[256];
@@ -91,15 +91,13 @@ static uint32_t scanlineWidths[256];
 
 typedef void (render_xxx_scanline_fn)(uint32_t *);
 
-// Private function prototypes
+static void tom_render_16bpp_cry_scanline(uint32_t * backbuffer);
+static void tom_render_24bpp_scanline(uint32_t * backbuffer);
+static void tom_render_16bpp_direct_scanline(uint32_t * backbuffer);
+static void tom_render_16bpp_rgb_scanline(uint32_t * backbuffer);
+static void tom_render_16bpp_cry_rgb_mix_scanline(uint32_t * backbuffer);
 
-void tom_render_16bpp_cry_scanline(uint32_t * backbuffer);
-void tom_render_24bpp_scanline(uint32_t * backbuffer);
-void tom_render_16bpp_direct_scanline(uint32_t * backbuffer);
-void tom_render_16bpp_rgb_scanline(uint32_t * backbuffer);
-void tom_render_16bpp_cry_rgb_mix_scanline(uint32_t * backbuffer);
-
-render_xxx_scanline_fn * scanline_render[] =
+static render_xxx_scanline_fn * scanline_render[] =
 {
 	tom_render_16bpp_cry_scanline,
 	tom_render_24bpp_scanline,
@@ -111,11 +109,13 @@ render_xxx_scanline_fn * scanline_render[] =
 	tom_render_16bpp_rgb_scanline
 };
 
+static void TOMResetPIT(void);
+
 static uint32_t RGB16ToRGB32[0x10000];
 static uint32_t CRY16ToRGB32[0x10000];
 static uint32_t MIX16ToRGB32[0x10000];
 
-void TOMFillLookupTables(void)
+static void TOMFillLookupTables(void)
 {
 	for(uint32_t i=0; i<0x10000; i++)
 		RGB16ToRGB32[i] =
@@ -138,12 +138,7 @@ void TOMFillLookupTables(void)
 	}
 }
 
-void TOMSetPendingJERRYInt(void)
-{
-	tom_jerry_int_pending = 1;
-}
-
-void TOMSetPendingTimerInt(void)
+static void TOMSetPendingTimerInt(void)
 {
 	tom_timer_int_pending = 1;
 }
@@ -163,30 +158,15 @@ void TOMSetPendingVideoInt(void)
 	tom_video_int_pending = 1;
 }
 
-uint8_t * TOMGetRamPointer(void)
-{
-	return tomRam8;
-}
-
-uint8_t TOMGetVideoMode(void)
+static uint8_t TOMGetVideoMode(void)
 {
 	uint16_t vmode = GET16(tomRam8, VMODE);
 	return ((vmode & VARMOD) >> 6) | ((vmode & MODE) >> 1);
 }
 
-uint16_t TOMGetVDB(void)
-{
-	return GET16(tomRam8, VDB);
-}
-
 uint16_t TOMGetHC(void)
 {
 	return GET16(tomRam8, HC);
-}
-
-uint16_t TOMGetVP(void)
-{
-	return GET16(tomRam8, VP);
 }
 
 uint16_t TOMGetMEMCON1(void)
@@ -197,7 +177,7 @@ uint16_t TOMGetMEMCON1(void)
 //
 // 16 BPP CRY/RGB mixed mode rendering
 //
-void tom_render_16bpp_cry_rgb_mix_scanline(uint32_t * backbuffer)
+static void tom_render_16bpp_cry_rgb_mix_scanline(uint32_t * backbuffer)
 {
 	uint16_t width = tomWidth;
 	uint8_t * current_line_buffer = (uint8_t *)&tomRam8[0x1800];
@@ -232,7 +212,7 @@ void tom_render_16bpp_cry_rgb_mix_scanline(uint32_t * backbuffer)
 //
 // 16 BPP CRY mode rendering
 //
-void tom_render_16bpp_cry_scanline(uint32_t * backbuffer)
+static void tom_render_16bpp_cry_scanline(uint32_t * backbuffer)
 {
 	uint16_t width = tomWidth;
 	uint8_t * current_line_buffer = (uint8_t *)&tomRam8[0x1800];
@@ -267,7 +247,7 @@ void tom_render_16bpp_cry_scanline(uint32_t * backbuffer)
 //
 // 24 BPP mode rendering
 //
-void tom_render_24bpp_scanline(uint32_t * backbuffer)
+static void tom_render_24bpp_scanline(uint32_t * backbuffer)
 {
 	uint16_t width = tomWidth;
 	uint8_t * current_line_buffer = (uint8_t *)&tomRam8[0x1800];
@@ -304,7 +284,7 @@ void tom_render_24bpp_scanline(uint32_t * backbuffer)
 //
 // 16 BPP direct mode rendering
 //
-void tom_render_16bpp_direct_scanline(uint32_t * backbuffer)
+static void tom_render_16bpp_direct_scanline(uint32_t * backbuffer)
 {
 	uint16_t width = tomWidth;
 	uint8_t * current_line_buffer = (uint8_t *)&tomRam8[0x1800];
@@ -321,7 +301,7 @@ void tom_render_16bpp_direct_scanline(uint32_t * backbuffer)
 //
 // 16 BPP RGB mode rendering
 //
-void tom_render_16bpp_rgb_scanline(uint32_t * backbuffer)
+static void tom_render_16bpp_rgb_scanline(uint32_t * backbuffer)
 {
 	uint16_t width = tomWidth;
 	uint8_t * current_line_buffer = (uint8_t *)&tomRam8[0x1800];
@@ -356,7 +336,7 @@ void tom_render_16bpp_rgb_scanline(uint32_t * backbuffer)
 //
 // Process a single halfline
 //
-void TOMExecHalfline(uint16_t halfline, bool render)
+void TOMExecHalfline(uint16_t halfline)
 {
 	uint16_t field2 = halfline & 0x0800;
 	halfline &= 0x07FF;
@@ -373,17 +353,14 @@ void TOMExecHalfline(uint16_t halfline, bool render)
 
 	if ((halfline >= startingHalfline) && (halfline < endingHalfline))
 	{
-		if (render)
-		{
-			uint8_t * current_line_buffer = (uint8_t *)&tomRam8[0x1800];
-			uint8_t bgHI = tomRam8[BG], bgLO = tomRam8[BG + 1];
+		uint8_t * current_line_buffer = (uint8_t *)&tomRam8[0x1800];
+		uint8_t bgHI = tomRam8[BG], bgLO = tomRam8[BG + 1];
 
-			if (GET16(tomRam8, VMODE) & BGEN)
-				for(uint32_t i=0; i<720; i++)
-					*current_line_buffer++ = bgHI, *current_line_buffer++ = bgLO;
+		if (GET16(tomRam8, VMODE) & BGEN)
+			for(uint32_t i=0; i<720; i++)
+				*current_line_buffer++ = bgHI, *current_line_buffer++ = bgLO;
 
-			OPProcessList(halfline, render);
-		}
+		OPProcessList(halfline);
 	}
 	else
 		inActiveDisplayArea = false;
@@ -424,7 +401,7 @@ void TOMInit(void)
 {
 	for (uint32_t i = 0; i < 256; i++)
 	{
-		scanlines[i] = alloc_invisible<uint32_t>(LCM_SCREEN_WIDTH);
+		scanlines[i] = alloc_invisible<uint32_t>(MAX_SCREEN_WIDTH);
 	}
 
 	TOMFillLookupTables();
@@ -433,19 +410,13 @@ void TOMInit(void)
 	TOMReset();
 }
 
-void TOMDone(void)
-{
-	OPDone();
-	BlitterDone();
-}
-
-uint32_t TOMGetVideoModeWidth(void)
+static uint32_t TOMGetVideoModeWidth(void)
 {
 	uint16_t pwidth = ((GET16(tomRam8, VMODE) & PWIDTH) >> 9) + 1;
-	return LCM_SCREEN_WIDTH / pwidth;
+	return MAX_SCREEN_WIDTH / pwidth;
 }
 
-uint32_t TOMGetVideoModeHeight(void)
+static uint32_t TOMGetVideoModeHeight(void)
 {
 	return (vjs.hardwareTypeNTSC ? 240 : 256);
 }
@@ -561,6 +532,23 @@ uint16_t TOMReadWord(uint32_t offset, uint32_t who)
 	return (TOMReadByte(offset, who) << 8) | TOMReadByte(offset + 1, who);
 }
 
+#define MASK(x) 0xFF00 >> (24 - x), 0xFF
+static const uint8_t videoRegMasks[22]
+{
+	MASK(12), // 0x28 VMODE 11 - 0
+	MASK(16), // 0x2A BORDH 15 - 0
+	MASK(16), // 0x2C BORDL 15 - 0
+	MASK(10), // 0x2E HP     9 - 0
+	MASK(11), // 0x30 HBB   10 - 0
+	MASK(11), // 0x32 HBE   10 - 0
+	MASK(11), // 0x34 HS    10 - 0
+	MASK(11), // 0x36 HVE   10 - 0
+	MASK(11), // 0x38 HDB1  10 - 0
+	MASK(11), // 0x3A HDB2  10 - 0
+	MASK(11), // 0x3C HDE   10 - 0
+};
+#undef MASK
+
 //
 // TOM byte access (write)
 //
@@ -571,8 +559,6 @@ void TOMWriteByte(uint32_t offset, uint8_t data, uint32_t who)
 
 	if ((offset < 0xF00000) || (offset > 0xF03FFF))
 		return;
-
-	tomRam8[offset & 0x3FFF] = data;
 
 	if ((offset >= GPU_CONTROL_RAM_BASE) && (offset < GPU_CONTROL_RAM_BASE+0x20))
 	{
@@ -595,7 +581,6 @@ void TOMWriteByte(uint32_t offset, uint8_t data, uint32_t who)
 	{
 		tomTimerPrescaler = (tomTimerPrescaler & 0xFF00) | data;
 		TOMResetPIT();
-		return;
 	}
 	else if (offset == 0xF00052)
 	{
@@ -611,7 +596,17 @@ void TOMWriteByte(uint32_t offset, uint8_t data, uint32_t who)
 	{
 		offset &= 0x5FF;
 		tomRam8[offset] = data, tomRam8[offset + 0x200] = data;
+		return;
 	}
+
+	offset &= 0x3FFF;
+
+	if (offset == 0x54)
+		data &= 0x03;
+	else if (offset >= 0x28 && offset <= 0x3D)
+		data &= videoRegMasks[offset - 0x28];
+
+	tomRam8[offset] = data;
 }
 
 //
@@ -625,30 +620,23 @@ void TOMWriteWord(uint32_t offset, uint16_t data, uint32_t who)
 	if ((offset < 0xF00000) || (offset > 0xF03FFF))
 		return;
 
-	tomRam8[(offset + 0) & 0x3FFF] = data >> 8;
-	tomRam8[(offset + 1) & 0x3FFF] = data & 0xFF;
-
 	if ((offset >= GPU_CONTROL_RAM_BASE) && (offset < GPU_CONTROL_RAM_BASE+0x20))
 	{
 		GPUWriteWord(offset, data, who);
-		return;
 	}
 	else if ((offset >= GPU_WORK_RAM_BASE) && (offset < GPU_WORK_RAM_BASE+0x1000))
 	{
 		GPUWriteWord(offset, data, who);
-		return;
 	}
 	else if (offset == 0xF00050)
 	{
 		tomTimerPrescaler = data;
 		TOMResetPIT();
-		return;
 	}
 	else if (offset == 0xF00052)
 	{
 		tomTimerDivider = data;
 		TOMResetPIT();
-		return;
 	}
 	else if (offset == 0xF000E0)
 	{
@@ -666,21 +654,24 @@ void TOMWriteWord(uint32_t offset, uint16_t data, uint32_t who)
 	else if ((offset >= 0xF02200) && (offset <= 0xF0229F))
 	{
 		BlitterWriteWord(offset, data, who);
-		return;
 	}
 	else if (offset >= 0xF00400 && offset <= 0xF007FE)
 	{
 		offset &= 0x5FF;
 		SET16(tomRam8, offset, data);
 		SET16(tomRam8, offset + 0x200, data);
+		return;
 	}
 
 	offset &= 0x3FFF;
 
-	if (offset >= 0x30 && offset <= 0x4E)
-		data &= 0x07FF;
-	if (offset == 0x2E || offset == 0x36 || offset == 0x54)
+	if (offset == 0x54)
 		data &= 0x03FF;
+	else if (offset >= 0x28 && offset <= 0x3C)
+		data &= (videoRegMasks[offset - 0x28] << 8) | videoRegMasks[offset - 0x27];
+
+	tomRam8[(offset + 0) & 0x3FFF] = data >> 8;
+	tomRam8[(offset + 1) & 0x3FFF] = data & 0xFF;
 
 	if ((offset >= 0x28) && (offset <= 0x4F))
 	{
@@ -698,9 +689,9 @@ int TOMIRQEnabled(int irq)
 	return tomRam8[INT1 + 1] & (1 << irq);
 }
 
-void TOMPITCallback(void);
+static void TOMPITCallback(void);
 
-void TOMResetPIT(void)
+static void TOMResetPIT(void)
 {
 	RemoveCallback(TOMPITCallback);
 
@@ -711,26 +702,7 @@ void TOMResetPIT(void)
 	}
 }
 
-void TOMExecPIT(uint32_t cycles)
-{
-	if (tomTimerPrescaler)
-	{
-		tomTimerCounter -= cycles;
-
-		if (tomTimerCounter <= 0)
-		{
-			TOMSetPendingTimerInt();
-			GPUSetIRQLine(GPUIRQ_TIMER, ASSERT_LINE);
-
-			if (TOMIRQEnabled(IRQ_TIMER))
-				m68k_set_irq(2);
-
-			TOMResetPIT();
-		}
-	}
-}
-
-void TOMPITCallback(void)
+static void TOMPITCallback(void)
 {
 	TOMSetPendingTimerInt();
     GPUSetIRQLine(GPUIRQ_TIMER, ASSERT_LINE);
@@ -748,17 +720,16 @@ void TOMStartFrame(void)
 
 void TOMBlit(uint32_t * videoBuffer, int32_t & width, int32_t & height)
 {
-	uint32_t lines = vjs.hardwareTypeNTSC ? VIRTUAL_SCREEN_HEIGHT_NTSC : VIRTUAL_SCREEN_HEIGHT_PAL;
+	uint32_t const lines = vjs.hardwareTypeNTSC ? VIRTUAL_SCREEN_HEIGHT_NTSC : VIRTUAL_SCREEN_HEIGHT_PAL;
 	uint32_t targetWidth = scanlineWidths[0];
 	bool multiWidth = false;
 
 	for (uint32_t i = 1; i < lines; i++)
 	{
-		if (targetWidth < scanlineWidths[i])
-		{
-			targetWidth = scanlineWidths[i];
-			multiWidth = true;
-		}
+		uint32_t const w = scanlineWidths[i];
+		multiWidth |= targetWidth != w;
+		if (targetWidth < w)
+			targetWidth = w;
 	}
 
 	if (!targetWidth) // skip rendering this I guess?
@@ -768,21 +739,21 @@ void TOMBlit(uint32_t * videoBuffer, int32_t & width, int32_t & height)
 		return;
 	}
 
-	if (__builtin_expect(multiWidth, false))
+	if (multiWidth)
 	{
 		for (uint32_t i = 0; i < lines; i++)
 		{
 			uint32_t const w = scanlineWidths[i];
-			if (__builtin_expect(LCM_SCREEN_WIDTH == w, false))
+			if (__builtin_expect(MAX_SCREEN_WIDTH == w, false))
 			{
-				memcpy(videoBuffer, scanlines[i], LCM_SCREEN_WIDTH * sizeof(uint32_t));
-				videoBuffer += LCM_SCREEN_WIDTH;
+				memcpy(videoBuffer, scanlines[i], MAX_SCREEN_WIDTH * sizeof(uint32_t));
+				videoBuffer += MAX_SCREEN_WIDTH;
 			}
 			else if (__builtin_expect(w > 0, true))
 			{
-				uint32_t wf = LCM_SCREEN_WIDTH / w;
+				uint32_t const wf = MAX_SCREEN_WIDTH / w;
 				uint32_t * src = scanlines[i];
-				uint32_t * dstNext = videoBuffer + LCM_SCREEN_WIDTH;
+				uint32_t const * const dstNext = videoBuffer + MAX_SCREEN_WIDTH;
 				for (uint32_t x = 0; x < w; x++)
 				{
 					for (uint32_t n = 0; n < wf; n++)
@@ -794,7 +765,7 @@ void TOMBlit(uint32_t * videoBuffer, int32_t & width, int32_t & height)
 			}
 			else
 			{
-				videoBuffer += LCM_SCREEN_WIDTH; // skip rendering this line
+				videoBuffer += MAX_SCREEN_WIDTH; // skip rendering this line
 			}
 		}
 	}
@@ -807,6 +778,6 @@ void TOMBlit(uint32_t * videoBuffer, int32_t & width, int32_t & height)
 		}
 	}
 
-	width = multiWidth ? LCM_SCREEN_WIDTH : targetWidth;
+	width = multiWidth ? MAX_SCREEN_WIDTH : targetWidth;
 	height = lines;
 }

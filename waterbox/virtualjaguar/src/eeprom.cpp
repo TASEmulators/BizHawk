@@ -22,7 +22,6 @@
 uint16_t eeprom_ram[64];
 bool eeprom_dirty;
 
-static void EEPROMSave(void);
 static void eeprom_set_di(uint32_t state);
 static void eeprom_set_cs(uint32_t state);
 static uint32_t eeprom_get_do(void);
@@ -50,15 +49,6 @@ void EepromInit(void)
 
 void EepromReset(void)
 {
-}
-
-void EepromDone(void)
-{
-}
-
-static void EEPROMSave(void)
-{
-	eeprom_dirty = true;
 }
 
 uint8_t EepromReadByte(uint32_t offset)
@@ -164,7 +154,7 @@ static void eeprom_set_di(uint32_t data)
 				for(int i=0; i<64; i++)
 					eeprom_ram[i] = jerry_ee_data;
 
-				EEPROMSave();
+				eeprom_dirty = true;
 			}
 
 			jerry_ee_state = EE_STATE_BUSY;
@@ -198,7 +188,7 @@ static void eeprom_set_di(uint32_t data)
 			if (jerry_writes_enabled)
 			{
 				eeprom_ram[jerry_ee_address_data] = jerry_ee_data;
-				EEPROMSave();
+				eeprom_dirty = true;
 			}
 
 			jerry_ee_state = EE_STATE_BUSY;
@@ -269,7 +259,6 @@ static void eeprom_set_cs(uint32_t)
 	jerry_writes_enabled = 1;
 }
 
-
 static uint32_t eeprom_get_do(void)
 {
 	uint16_t data = 1;
@@ -296,4 +285,3 @@ static uint32_t eeprom_get_do(void)
 
 	return data;
 }
-

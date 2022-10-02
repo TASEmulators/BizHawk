@@ -38,12 +38,8 @@
 #define CONDITION_OP_FLAG_SET		3
 #define CONDITION_SECOND_HALF_LINE	4
 
-// Private function prototypes
-
-void OPProcessFixedBitmap(uint64_t p0, uint64_t p1, bool render);
-void OPProcessScaledBitmap(uint64_t p0, uint64_t p1, uint64_t p2, bool render);
-void OPDiscoverObjects(uint32_t address);
-uint64_t OPLoadPhrase(uint32_t offset);
+static void OPProcessFixedBitmap(uint64_t p0, uint64_t p1);
+static void OPProcessScaledBitmap(uint64_t p0, uint64_t p1, uint64_t p2);
 
 // Local global variables
 
@@ -108,13 +104,7 @@ void OPReset(void)
 static uint32_t object[8192];
 static uint32_t numberOfObjects;
 
-void OPDone(void)
-{
-	numberOfObjects = 0;
-	OPDiscoverObjects(OPGetListPointer());
-}
-
-bool OPObjectExists(uint32_t address)
+static bool OPObjectExists(uint32_t address)
 {
 	for(uint32_t i=0; i<numberOfObjects; i++)
 	{
@@ -125,7 +115,7 @@ bool OPObjectExists(uint32_t address)
 	return false;
 }
 
-void OPDiscoverObjects(uint32_t address)
+static void OPDiscoverObjects(uint32_t address)
 {
 	uint8_t objectType = 0;
 
@@ -152,23 +142,17 @@ void OPDiscoverObjects(uint32_t address)
 	while (objectType != 4);
 }
 
-uint32_t OPGetListPointer(void)
+static uint32_t OPGetListPointer(void)
 {
 	return GET16(tomRam8, 0x20) | (GET16(tomRam8, 0x22) << 16);
 }
 
-uint32_t OPGetStatusRegister(void)
+static uint32_t OPGetStatusRegister(void)
 {
 	return GET16(tomRam8, 0x26);
 }
 
-void OPSetStatusRegister(uint32_t data)
-{
-	tomRam8[0x26] = (data & 0x0000FF00) >> 8;
-	tomRam8[0x27] |= (data & 0xFE);
-}
-
-void OPSetCurrentObject(uint64_t object)
+static void OPSetCurrentObject(uint64_t object)
 {
 	tomRam8[0x17] = object & 0xFF; object >>= 8;
 	tomRam8[0x16] = object & 0xFF; object >>= 8;
@@ -181,14 +165,13 @@ void OPSetCurrentObject(uint64_t object)
 	tomRam8[0x10] = object & 0xFF;
 }
 
-
-uint64_t OPLoadPhrase(uint32_t offset)
+static uint64_t OPLoadPhrase(uint32_t offset)
 {
 	offset &= ~0x07;
 	return ((uint64_t)JaguarReadLong(offset, OP) << 32) | (uint64_t)JaguarReadLong(offset+4, OP);
 }
 
-void OPStorePhrase(uint32_t offset, uint64_t p)
+static void OPStorePhrase(uint32_t offset, uint64_t p)
 {
 	offset &= ~0x07;
 	JaguarWriteLong(offset, p >> 32, OP);
@@ -198,7 +181,7 @@ void OPStorePhrase(uint32_t offset, uint64_t p)
 //
 // Object Processor main routine
 //
-void OPProcessList(int halfline, bool render)
+void OPProcessList(int halfline)
 {
 	halfline &= 0x7FF;
 
@@ -222,7 +205,7 @@ void OPProcessList(int halfline, bool render)
 				if (halfline >= ypos && height > 0)
 				{
 					uint64_t p1 = OPLoadPhrase(oldOPP | 0x08);
-					OPProcessFixedBitmap(p0, p1, render);
+					OPProcessFixedBitmap(p0, p1);
 
 					height--;
 
@@ -253,7 +236,7 @@ void OPProcessList(int halfline, bool render)
 				{
 					uint64_t p1 = OPLoadPhrase(oldOPP | 0x08);
 					uint64_t p2 = OPLoadPhrase(oldOPP | 0x10);
-					OPProcessScaledBitmap(p0, p1, p2, render);
+					OPProcessScaledBitmap(p0, p1, p2);
 
 					uint16_t remainder = (p2 >> 16) & 0xFF;
 					uint8_t vscale = p2 >> 8;
@@ -357,7 +340,7 @@ void OPProcessList(int halfline, bool render)
 //
 // Store fixed size bitmap in line buffer
 //
-void OPProcessFixedBitmap(uint64_t p0, uint64_t p1, bool render)
+static void OPProcessFixedBitmap(uint64_t p0, uint64_t p1)
 {
 	uint8_t depth = (p1 >> 12) & 0x07;
 	int32_t xpos = ((int16_t)((p1 << 4) & 0xFFFF)) >> 4;
@@ -375,14 +358,13 @@ void OPProcessFixedBitmap(uint64_t p0, uint64_t p1, bool render)
 	uint32_t pitch = (p1 >> 15) & 0x07;
 	pitch <<= 3;
 
-	uint8_t * tomRam8 = TOMGetRamPointer();
 	uint8_t * paletteRAM = &tomRam8[0x400];
 	uint16_t * paletteRAM16 = (uint16_t *)paletteRAM;
 
 	if (iwidth == 0)
 		iwidth = 1;
 
-	if (!render || iwidth == 0)
+	if (iwidth == 0)
 		return;
 
 	int32_t startPos = xpos, endPos = xpos +
@@ -620,7 +602,7 @@ void OPProcessFixedBitmap(uint64_t p0, uint64_t p1, bool render)
 //
 // Store scaled bitmap in line buffer
 //
-void OPProcessScaledBitmap(uint64_t p0, uint64_t p1, uint64_t p2, bool render)
+static void OPProcessScaledBitmap(uint64_t p0, uint64_t p1, uint64_t p2)
 {
 	uint8_t depth = (p1 >> 12) & 0x07;
 	int32_t xpos = ((int16_t)((p1 << 4) & 0xFFFF)) >> 4;
@@ -636,7 +618,6 @@ void OPProcessScaledBitmap(uint64_t p0, uint64_t p1, uint64_t p2, bool render)
 	uint8_t index = (p1 >> 37) & 0xFE;
 	uint32_t pitch = (p1 >> 15) & 0x07;
 
-	uint8_t * tomRam8 = TOMGetRamPointer();
 	uint8_t * paletteRAM = &tomRam8[0x400];
 	uint16_t * paletteRAM16 = (uint16_t *)paletteRAM;
 
@@ -645,7 +626,7 @@ void OPProcessScaledBitmap(uint64_t p0, uint64_t p1, uint64_t p2, bool render)
 	int32_t scaledWidthInPixels = (iwidth * phraseWidthToPixels[depth] * hscale) >> 5;
 	uint32_t scaledPhrasePixels = (phraseWidthToPixels[depth] * hscale) >> 5;
 
-	if (!render || iwidth == 0 || hscale == 0)
+	if (iwidth == 0 || hscale == 0)
 		return;
 
 	int32_t startPos = xpos, endPos = xpos +

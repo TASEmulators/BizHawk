@@ -87,7 +87,7 @@ struct instr_def {
 extern const struct instr_def defs68k[];
 extern int n_defs68k;
 
-extern struct instr {
+struct instr {
     long int handler;
     unsigned char dreg;
     unsigned char sreg;
@@ -108,7 +108,9 @@ extern struct instr {
     unsigned int clev:3;
     unsigned int isjmp:1;
     unsigned int unused2:4;
-} *table68k;
+};
+
+extern struct instr table68k[];
 
 extern void read_table68k(void);
 extern void do_merges(void);

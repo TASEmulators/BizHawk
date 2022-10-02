@@ -22,6 +22,7 @@
 #include "readcpu.h"
 
 int nr_cpuop_funcs;
+struct instr table68k[65536];
 
 const struct mnemolookup lookuptab[] = {
 	{ i_ILLG, "ILLEGAL" },
@@ -150,10 +151,6 @@ const struct mnemolookup lookuptab[] = {
 	{ i_ILLG, "" },
 };
 
-
-struct instr * table68k;
-
-
 STATIC_INLINE amodes mode_from_str(const char * str)
 {
 	if (strncmp (str, "Dreg", 4) == 0) return Dreg;
@@ -172,7 +169,6 @@ STATIC_INLINE amodes mode_from_str(const char * str)
 	abort();
 	return 0;
 }
-
 
 STATIC_INLINE amodes mode_from_mr(int mode, int reg)
 {
@@ -203,7 +199,6 @@ STATIC_INLINE amodes mode_from_mr(int mode, int reg)
 	return 0;
 }
 
-
 static void build_insn(int insn)
 {
 	int find = -1;
@@ -220,14 +215,14 @@ static void build_insn(int insn)
 	{
 		switch (id.flaginfo[j].flagset)
 		{
-		case fa_unset: break;
-		case fa_isjmp: isjmp = 1; break;
-		case fa_isbranch: isjmp = 1; break;
-		case fa_zero: flagdead |= 1 << j; break;
-		case fa_one: flagdead |= 1 << j; break;
-		case fa_dontcare: flagdead |= 1 << j; break;
-		case fa_unknown: isjmp = 1; flagdead = -1; goto out1;
-		case fa_set: flagdead |= 1 << j; break;
+			case fa_unset: break;
+			case fa_isjmp: isjmp = 1; break;
+			case fa_isbranch: isjmp = 1; break;
+			case fa_zero: flagdead |= 1 << j; break;
+			case fa_one: flagdead |= 1 << j; break;
+			case fa_dontcare: flagdead |= 1 << j; break;
+			case fa_unknown: isjmp = 1; flagdead = -1; goto out1;
+			case fa_set: flagdead |= 1 << j; break;
 		}
     }
 
@@ -236,11 +231,11 @@ out1:
 	{
 		switch (id.flaginfo[j].flaguse)
 		{
-		case fu_unused: break;
-		case fu_isjmp: isjmp = 1; flaglive |= 1 << j; break;
-		case fu_maybecc: isjmp = 1; flaglive |= 1 << j; break;
-		case fu_unknown: isjmp = 1; flaglive |= 1 << j; break;
-		case fu_used: flaglive |= 1 << j; break;
+			case fu_unused: break;
+			case fu_isjmp: isjmp = 1; flaglive |= 1 << j; break;
+			case fu_maybecc: isjmp = 1; flaglive |= 1 << j; break;
+			case fu_unknown: isjmp = 1; flaglive |= 1 << j; break;
+			case fu_used: flaglive |= 1 << j; break;
 		}
 	}
 
@@ -318,19 +313,19 @@ out1:
 
 				switch (opcstr[pos])
 				{
-				case 'B': sz = sz_byte; break;
-				case 'W': sz = sz_word; break;
-				case 'L': sz = sz_long; break;
-				case 'z':
-					switch (bitval[bitz])
-					{
-					case 0: sz = sz_byte; break;
-					case 1: sz = sz_word; break;
-					case 2: sz = sz_long; break;
+					case 'B': sz = sz_byte; break;
+					case 'W': sz = sz_word; break;
+					case 'L': sz = sz_long; break;
+					case 'z':
+						switch (bitval[bitz])
+						{
+							case 0: sz = sz_byte; break;
+							case 1: sz = sz_word; break;
+							case 2: sz = sz_long; break;
+							default: abort();
+						}
+						break;
 					default: abort();
-					}
-					break;
-				default: abort();
 				}
 			}
 			else
@@ -342,9 +337,9 @@ out1:
 					find = -1;
 					switch (bitval[bitf])
 					{
-					case 0: mnemonic[mnp] = 'R'; break;
-					case 1: mnemonic[mnp] = 'L'; break;
-					default: abort();
+						case 0: mnemonic[mnp] = 'R'; break;
+						case 1: mnemonic[mnp] = 'L'; break;
+						default: abort();
 					}
 				}
 
@@ -365,252 +360,252 @@ out1:
 		usesrc = 1;
 		switch (opcstr[pos++])
 		{
-		case 'D':
-			srcmode = Dreg;
+			case 'D':
+				srcmode = Dreg;
 
-			switch (opcstr[pos++])
-			{
-			case 'r': srcreg = bitval[bitr]; srcgather = 1; srcpos = bitpos[bitr]; break;
-			case 'R': srcreg = bitval[bitR]; srcgather = 1; srcpos = bitpos[bitR]; break;
-			default: abort();
-			}
-
-			break;
-		case 'A':
-			srcmode = Areg;
-
-			switch (opcstr[pos++])
-			{
-			case 'r': srcreg = bitval[bitr]; srcgather = 1; srcpos = bitpos[bitr]; break;
-			case 'R': srcreg = bitval[bitR]; srcgather = 1; srcpos = bitpos[bitR]; break;
-			default: abort();
-			}
-
-			switch (opcstr[pos])
-			{
-			case 'p': srcmode = Apdi; pos++; break;
-			case 'P': srcmode = Aipi; pos++; break;
-			}
-			break;
-
-		case 'L':
-			srcmode = absl;
-			break;
-		case '#':
-			switch (opcstr[pos++])
-			{
-			case 'z': srcmode = imm; break;
-			case '0': srcmode = imm0; break;
-			case '1': srcmode = imm1; break;
-			case '2': srcmode = imm2; break;
-			case 'i':
-				srcmode = immi; srcreg = (int32_t)(int8_t)bitval[biti];
-
-				if (CPU_EMU_SIZE < 4)
+				switch (opcstr[pos++])
 				{
-					srctype = 1;
-					srcgather = 1;
-					srcpos = bitpos[biti];
+					case 'r': srcreg = bitval[bitr]; srcgather = 1; srcpos = bitpos[bitr]; break;
+					case 'R': srcreg = bitval[bitR]; srcgather = 1; srcpos = bitpos[bitR]; break;
+					default: abort();
 				}
 
 				break;
-			case 'j':
-				srcmode = immi; srcreg = bitval[bitj];
+			case 'A':
+				srcmode = Areg;
 
-				if (CPU_EMU_SIZE < 3)
+				switch (opcstr[pos++])
 				{
-					srcgather = 1;
-					srctype = 3;
-					srcpos = bitpos[bitj];
+					case 'r': srcreg = bitval[bitr]; srcgather = 1; srcpos = bitpos[bitr]; break;
+					case 'R': srcreg = bitval[bitR]; srcgather = 1; srcpos = bitpos[bitR]; break;
+					default: abort();
 				}
 
+				switch (opcstr[pos])
+				{
+					case 'p': srcmode = Apdi; pos++; break;
+					case 'P': srcmode = Aipi; pos++; break;
+				}
 				break;
-			case 'J':
-				srcmode = immi; srcreg = bitval[bitJ];
 
-				if (CPU_EMU_SIZE < 5)
-				{
-					srcgather = 1;
-					srctype = 2;
-					srcpos = bitpos[bitJ];
-				}
-
+			case 'L':
+				srcmode = absl;
 				break;
-			case 'k':
-				srcmode = immi; srcreg = bitval[bitk];
-
-				if (CPU_EMU_SIZE < 3)
+			case '#':
+				switch (opcstr[pos++])
 				{
-					srcgather = 1;
-					srctype = 4;
-					srcpos = bitpos[bitk];
-				}
+					case 'z': srcmode = imm; break;
+					case '0': srcmode = imm0; break;
+					case '1': srcmode = imm1; break;
+					case '2': srcmode = imm2; break;
+					case 'i':
+						srcmode = immi; srcreg = (int32_t)(int8_t)bitval[biti];
 
-				break;
-			case 'K':
-				srcmode = immi; srcreg = bitval[bitK];
-
-				if (CPU_EMU_SIZE < 5)
-				{
-					srcgather = 1;
-					srctype = 5;
-					srcpos = bitpos[bitK];
-				}
-
-				break;
-			case 'p':
-				srcmode = immi; srcreg = bitval[bitK];
-
-				if (CPU_EMU_SIZE < 5)
-				{
-					srcgather = 1;
-					srctype = 7;
-					srcpos = bitpos[bitp];
-				}
-
-				break;
-			default: abort();
-			}
-
-			break;
-		case 'd':
-			srcreg = bitval[bitD];
-			srcmode = mode_from_mr(bitval[bitd],bitval[bitD]);
-
-			if (srcmode == am_illg)
-				continue;
-
-			if (CPU_EMU_SIZE < 2
-				&& (srcmode == Areg || srcmode == Dreg || srcmode == Aind
-				|| srcmode == Ad16 || srcmode == Ad8r || srcmode == Aipi
-				|| srcmode == Apdi))
-			{
-				srcgather = 1;
-				srcpos = bitpos[bitD];
-			}
-
-			if (opcstr[pos] == '[')
-			{
-				pos++;
-
-				if (opcstr[pos] == '!')
-				{
-					do
-					{
-						pos++;
-
-						if (mode_from_str(opcstr + pos) == srcmode)
-							goto nomatch;
-
-						pos += 4;
-					}
-					while (opcstr[pos] == ',');
-
-					pos++;
-				}
-				else
-				{
-					if (opcstr[pos + 4] == '-')
-					{
-						if (mode_from_str(opcstr + pos) == srcmode)
-							srcmode = mode_from_str(opcstr + pos + 5);
-						else
-							goto nomatch;
-
-						pos += 10;
-					}
-					else
-					{
-						while(mode_from_str(opcstr + pos) != srcmode)
+						if (CPU_EMU_SIZE < 4)
 						{
-							pos += 4;
-
-							if (opcstr[pos] == ']')
-								goto nomatch;
-
-							pos++;
+							srctype = 1;
+							srcgather = 1;
+							srcpos = bitpos[biti];
 						}
 
-						while(opcstr[pos] != ']')
-							pos++;
-
-						pos++;
 						break;
-					}
+					case 'j':
+						srcmode = immi; srcreg = bitval[bitj];
+
+						if (CPU_EMU_SIZE < 3)
+						{
+							srcgather = 1;
+							srctype = 3;
+							srcpos = bitpos[bitj];
+						}
+
+						break;
+					case 'J':
+						srcmode = immi; srcreg = bitval[bitJ];
+
+						if (CPU_EMU_SIZE < 5)
+						{
+							srcgather = 1;
+							srctype = 2;
+							srcpos = bitpos[bitJ];
+						}
+
+						break;
+					case 'k':
+						srcmode = immi; srcreg = bitval[bitk];
+
+						if (CPU_EMU_SIZE < 3)
+						{
+							srcgather = 1;
+							srctype = 4;
+							srcpos = bitpos[bitk];
+						}
+
+						break;
+					case 'K':
+						srcmode = immi; srcreg = bitval[bitK];
+
+						if (CPU_EMU_SIZE < 5)
+						{
+							srcgather = 1;
+							srctype = 5;
+							srcpos = bitpos[bitK];
+						}
+
+						break;
+					case 'p':
+						srcmode = immi; srcreg = bitval[bitK];
+
+						if (CPU_EMU_SIZE < 5)
+						{
+							srcgather = 1;
+							srctype = 7;
+							srcpos = bitpos[bitp];
+						}
+
+						break;
+					default: abort();
 				}
-			}
 
-			if (srcmode == imm || srcmode == PC16 || srcmode == PC8r)
-				goto nomatch;
+				break;
+			case 'd':
+				srcreg = bitval[bitD];
+				srcmode = mode_from_mr(bitval[bitd],bitval[bitD]);
 
-			break;
-		case 's':
-			srcreg = bitval[bitS];
-			srcmode = mode_from_mr(bitval[bits],bitval[bitS]);
+				if (srcmode == am_illg)
+					continue;
 
-			if (srcmode == am_illg)
-				continue;
-
-			if (CPU_EMU_SIZE < 2
-				&& (srcmode == Areg || srcmode == Dreg || srcmode == Aind
-				|| srcmode == Ad16 || srcmode == Ad8r || srcmode == Aipi
-				|| srcmode == Apdi))
-			{
-				srcgather = 1;
-				srcpos = bitpos[bitS];
-			}
-
-			if (opcstr[pos] == '[')
-			{
-				pos++;
-
-				if (opcstr[pos] == '!')
+				if (CPU_EMU_SIZE < 2
+					&& (srcmode == Areg || srcmode == Dreg || srcmode == Aind
+					|| srcmode == Ad16 || srcmode == Ad8r || srcmode == Aipi
+					|| srcmode == Apdi))
 				{
-					do
-					{
-						pos++;
+					srcgather = 1;
+					srcpos = bitpos[bitD];
+				}
 
-						if (mode_from_str(opcstr + pos) == srcmode)
-							goto nomatch;
-
-						pos += 4;
-					}
-					while (opcstr[pos] == ',');
-
+				if (opcstr[pos] == '[')
+				{
 					pos++;
-				}
-				else
-				{
-					if (opcstr[pos + 4] == '-')
-					{
-						if (mode_from_str(opcstr + pos) == srcmode)
-							srcmode = mode_from_str(opcstr + pos + 5);
-						else
-							goto nomatch;
 
-						pos += 10;
+					if (opcstr[pos] == '!')
+					{
+						do
+						{
+							pos++;
+
+							if (mode_from_str(opcstr + pos) == srcmode)
+								goto nomatch;
+
+							pos += 4;
+						}
+						while (opcstr[pos] == ',');
+
+						pos++;
 					}
 					else
 					{
-						while(mode_from_str(opcstr+pos) != srcmode)
+						if (opcstr[pos + 4] == '-')
 						{
-							pos += 4;
-
-							if (opcstr[pos] == ']')
+							if (mode_from_str(opcstr + pos) == srcmode)
+								srcmode = mode_from_str(opcstr + pos + 5);
+							else
 								goto nomatch;
 
-							pos++;
+							pos += 10;
 						}
+						else
+						{
+							while(mode_from_str(opcstr + pos) != srcmode)
+							{
+								pos += 4;
 
-						while(opcstr[pos] != ']')
+								if (opcstr[pos] == ']')
+									goto nomatch;
+
+								pos++;
+							}
+
+							while(opcstr[pos] != ']')
+								pos++;
+
 							pos++;
+							break;
+						}
+					}
+				}
+
+				if (srcmode == imm || srcmode == PC16 || srcmode == PC8r)
+					goto nomatch;
+
+				break;
+			case 's':
+				srcreg = bitval[bitS];
+				srcmode = mode_from_mr(bitval[bits],bitval[bitS]);
+
+				if (srcmode == am_illg)
+					continue;
+
+				if (CPU_EMU_SIZE < 2
+					&& (srcmode == Areg || srcmode == Dreg || srcmode == Aind
+					|| srcmode == Ad16 || srcmode == Ad8r || srcmode == Aipi
+					|| srcmode == Apdi))
+				{
+					srcgather = 1;
+					srcpos = bitpos[bitS];
+				}
+
+				if (opcstr[pos] == '[')
+				{
+					pos++;
+
+					if (opcstr[pos] == '!')
+					{
+						do
+						{
+							pos++;
+
+							if (mode_from_str(opcstr + pos) == srcmode)
+								goto nomatch;
+
+							pos += 4;
+						}
+						while (opcstr[pos] == ',');
 
 						pos++;
 					}
+					else
+					{
+						if (opcstr[pos + 4] == '-')
+						{
+							if (mode_from_str(opcstr + pos) == srcmode)
+								srcmode = mode_from_str(opcstr + pos + 5);
+							else
+								goto nomatch;
+
+							pos += 10;
+						}
+						else
+						{
+							while(mode_from_str(opcstr+pos) != srcmode)
+							{
+								pos += 4;
+
+								if (opcstr[pos] == ']')
+									goto nomatch;
+
+								pos++;
+							}
+
+							while(opcstr[pos] != ']')
+								pos++;
+
+							pos++;
+						}
+					}
 				}
-			}
-			break;
-		default: abort();
+				break;
+			default: abort();
 		}
 
 		if (srcmode != Areg && srcmode != Dreg && srcmode != Aind
@@ -632,196 +627,196 @@ out1:
 
 		switch (opcstr[pos++])
 		{
-		case 'D':
-			destmode = Dreg;
+			case 'D':
+				destmode = Dreg;
 
-			switch (opcstr[pos++])
-			{
-			case 'r': destreg = bitval[bitr]; dstgather = 1; dstpos = bitpos[bitr]; break;
-			case 'R': destreg = bitval[bitR]; dstgather = 1; dstpos = bitpos[bitR]; break;
-			default: abort();
-			}
+				switch (opcstr[pos++])
+				{
+					case 'r': destreg = bitval[bitr]; dstgather = 1; dstpos = bitpos[bitr]; break;
+					case 'R': destreg = bitval[bitR]; dstgather = 1; dstpos = bitpos[bitR]; break;
+					default: abort();
+				}
 
-			if (dstpos < 0 || dstpos >= 32)
-				abort();
+				if (dstpos < 0 || dstpos >= 32)
+					abort();
 
-			break;
-		case 'A':
-			destmode = Areg;
+				break;
+			case 'A':
+				destmode = Areg;
 
-			switch (opcstr[pos++])
-			{
-			case 'r': destreg = bitval[bitr]; dstgather = 1; dstpos = bitpos[bitr]; break;
-			case 'R': destreg = bitval[bitR]; dstgather = 1; dstpos = bitpos[bitR]; break;
-			case 'x': destreg = 0; dstgather = 0; dstpos = 0; break;
-			default: abort();
-			}
+				switch (opcstr[pos++])
+				{
+					case 'r': destreg = bitval[bitr]; dstgather = 1; dstpos = bitpos[bitr]; break;
+					case 'R': destreg = bitval[bitR]; dstgather = 1; dstpos = bitpos[bitR]; break;
+					case 'x': destreg = 0; dstgather = 0; dstpos = 0; break;
+					default: abort();
+				}
 
-			if (dstpos < 0 || dstpos >= 32)
-				abort();
+				if (dstpos < 0 || dstpos >= 32)
+					abort();
 
-			switch (opcstr[pos])
-			{
-			case 'p': destmode = Apdi; pos++; break;
-			case 'P': destmode = Aipi; pos++; break;
-			}
+				switch (opcstr[pos])
+				{
+					case 'p': destmode = Apdi; pos++; break;
+					case 'P': destmode = Aipi; pos++; break;
+				}
 
-			break;
-		case 'L':
-			destmode = absl;
-			break;
-		case '#':
-			switch (opcstr[pos++])
-			{
-			case 'z': destmode = imm; break;
-			case '0': destmode = imm0; break;
-			case '1': destmode = imm1; break;
-			case '2': destmode = imm2; break;
-			case 'i': destmode = immi; destreg = (int32_t)(int8_t)bitval[biti]; break;
-			case 'j': destmode = immi; destreg = bitval[bitj]; break;
-			case 'J': destmode = immi; destreg = bitval[bitJ]; break;
-			case 'k': destmode = immi; destreg = bitval[bitk]; break;
-			case 'K': destmode = immi; destreg = bitval[bitK]; break;
-			default: abort();
-			}
-			break;
-		case 'd':
-			destreg = bitval[bitD];
-			destmode = mode_from_mr(bitval[bitd],bitval[bitD]);
+				break;
+			case 'L':
+				destmode = absl;
+				break;
+			case '#':
+				switch (opcstr[pos++])
+				{
+					case 'z': destmode = imm; break;
+					case '0': destmode = imm0; break;
+					case '1': destmode = imm1; break;
+					case '2': destmode = imm2; break;
+					case 'i': destmode = immi; destreg = (int32_t)(int8_t)bitval[biti]; break;
+					case 'j': destmode = immi; destreg = bitval[bitj]; break;
+					case 'J': destmode = immi; destreg = bitval[bitJ]; break;
+					case 'k': destmode = immi; destreg = bitval[bitk]; break;
+					case 'K': destmode = immi; destreg = bitval[bitK]; break;
+					default: abort();
+				}
+				break;
+			case 'd':
+				destreg = bitval[bitD];
+				destmode = mode_from_mr(bitval[bitd],bitval[bitD]);
 
-			if (destmode == am_illg)
+				if (destmode == am_illg)
+					continue;
+
+				if (CPU_EMU_SIZE < 1
+					&& (destmode == Areg || destmode == Dreg || destmode == Aind
+					|| destmode == Ad16 || destmode == Ad8r || destmode == Aipi
+					|| destmode == Apdi))
+				{
+					dstgather = 1;
+					dstpos = bitpos[bitD];
+				}
+
+				if (opcstr[pos] == '[')
+				{
+					pos++;
+
+					if (opcstr[pos] == '!')
+					{
+						do
+						{
+							pos++;
+
+							if (mode_from_str(opcstr + pos) == destmode)
+								goto nomatch;
+
+							pos += 4;
+						}
+						while (opcstr[pos] == ',');
+
+						pos++;
+					}
+					else
+					{
+						if (opcstr[pos+4] == '-')
+						{
+							if (mode_from_str(opcstr + pos) == destmode)
+								destmode = mode_from_str(opcstr + pos + 5);
+							else
+								goto nomatch;
+
+							pos += 10;
+						}
+						else
+						{
+							while(mode_from_str(opcstr + pos) != destmode)
+							{
+								pos += 4;
+
+								if (opcstr[pos] == ']')
+									goto nomatch;
+
+								pos++;
+							}
+
+							while(opcstr[pos] != ']')
+								pos++;
+
+							pos++;
+							break;
+						}
+					}
+				}
+
+				if (destmode == imm || destmode == PC16 || destmode == PC8r)
+					goto nomatch;
+
+				break;
+			case 's':
+				destreg = bitval[bitS];
+				destmode = mode_from_mr(bitval[bits], bitval[bitS]);
+
+				if (destmode == am_illg)
 				continue;
-
-			if (CPU_EMU_SIZE < 1
-				&& (destmode == Areg || destmode == Dreg || destmode == Aind
-				|| destmode == Ad16 || destmode == Ad8r || destmode == Aipi
-				|| destmode == Apdi))
-			{
-				dstgather = 1;
-				dstpos = bitpos[bitD];
-			}
-
-			if (opcstr[pos] == '[')
-			{
-				pos++;
-
-				if (opcstr[pos] == '!')
+				if (CPU_EMU_SIZE < 1
+					&& (destmode == Areg || destmode == Dreg || destmode == Aind
+					|| destmode == Ad16 || destmode == Ad8r || destmode == Aipi
+					|| destmode == Apdi))
 				{
-					do
-					{
-						pos++;
-
-						if (mode_from_str(opcstr + pos) == destmode)
-							goto nomatch;
-
-						pos += 4;
-					}
-					while (opcstr[pos] == ',');
-
-					pos++;
+					dstgather = 1;
+					dstpos = bitpos[bitS];
 				}
-				else
-				{
-					if (opcstr[pos+4] == '-')
-					{
-						if (mode_from_str(opcstr + pos) == destmode)
-							destmode = mode_from_str(opcstr + pos + 5);
-						else
-							goto nomatch;
 
-						pos += 10;
+				if (opcstr[pos] == '[')
+				{
+					pos++;
+
+					if (opcstr[pos] == '!')
+					{
+						do
+						{
+							pos++;
+
+							if (mode_from_str(opcstr + pos) == destmode)
+								goto nomatch;
+
+							pos += 4;
+						}
+						while (opcstr[pos] == ',');
+
+						pos++;
 					}
 					else
 					{
-						while(mode_from_str(opcstr + pos) != destmode)
+						if (opcstr[pos+4] == '-')
 						{
-							pos += 4;
-
-							if (opcstr[pos] == ']')
+							if (mode_from_str(opcstr + pos) == destmode)
+								destmode = mode_from_str(opcstr + pos + 5);
+							else
 								goto nomatch;
 
-							pos++;
+							pos += 10;
 						}
-
-						while(opcstr[pos] != ']')
-							pos++;
-
-						pos++;
-						break;
-					}
-				}
-			}
-
-			if (destmode == imm || destmode == PC16 || destmode == PC8r)
-				goto nomatch;
-
-			break;
-		case 's':
-			destreg = bitval[bitS];
-			destmode = mode_from_mr(bitval[bits], bitval[bitS]);
-
-			if (destmode == am_illg)
-			continue;
-			if (CPU_EMU_SIZE < 1
-				&& (destmode == Areg || destmode == Dreg || destmode == Aind
-				|| destmode == Ad16 || destmode == Ad8r || destmode == Aipi
-				|| destmode == Apdi))
-			{
-				dstgather = 1;
-				dstpos = bitpos[bitS];
-			}
-
-			if (opcstr[pos] == '[')
-			{
-				pos++;
-
-				if (opcstr[pos] == '!')
-				{
-					do
-					{
-						pos++;
-
-						if (mode_from_str(opcstr + pos) == destmode)
-							goto nomatch;
-
-						pos += 4;
-					}
-					while (opcstr[pos] == ',');
-
-					pos++;
-				}
-				else
-				{
-					if (opcstr[pos+4] == '-')
-					{
-						if (mode_from_str(opcstr + pos) == destmode)
-							destmode = mode_from_str(opcstr + pos + 5);
 						else
-							goto nomatch;
-
-						pos += 10;
-					}
-					else
-					{
-						while (mode_from_str(opcstr + pos) != destmode)
 						{
-							pos += 4;
+							while (mode_from_str(opcstr + pos) != destmode)
+							{
+								pos += 4;
 
-							if (opcstr[pos] == ']')
-								goto nomatch;
+								if (opcstr[pos] == ']')
+									goto nomatch;
+
+								pos++;
+							}
+
+							while (opcstr[pos] != ']')
+								pos++;
 
 							pos++;
 						}
-
-						while (opcstr[pos] != ']')
-							pos++;
-
-						pos++;
 					}
 				}
-			}
-			break;
-		default: abort();
+				break;
+			default: abort();
 		}
 
 		if (destmode != Areg && destmode != Dreg && destmode != Aind
@@ -890,7 +885,6 @@ nomatch:
 void read_table68k(void)
 {
 	int i;
-	table68k = (struct instr *)malloc(65536 * sizeof(struct instr));
 
 	for(i=0; i<65536; i++)
 	{
@@ -920,24 +914,24 @@ static void handle_merges(long int opcode)
 	{
 		switch (table68k[opcode].stype)
 		{
-		case 0:
-			smsk = 7; sbitdst = 8; break;
-		case 1:
-			smsk = 255; sbitdst = 256; break;
-		case 2:
-			smsk = 15; sbitdst = 16; break;
-		case 3:
-			smsk = 7; sbitdst = 8; break;
-		case 4:
-			smsk = 7; sbitdst = 8; break;
-		case 5:
-			smsk = 63; sbitdst = 64; break;
-		case 7:
-			smsk = 3; sbitdst = 4; break;
-		default:
-			smsk = 0; sbitdst = 0;
-			abort();
-			break;
+			case 0:
+				smsk = 7; sbitdst = 8; break;
+			case 1:
+				smsk = 255; sbitdst = 256; break;
+			case 2:
+				smsk = 15; sbitdst = 16; break;
+			case 3:
+				smsk = 7; sbitdst = 8; break;
+			case 4:
+				smsk = 7; sbitdst = 8; break;
+			case 5:
+				smsk = 63; sbitdst = 64; break;
+			case 7:
+				smsk = 3; sbitdst = 4; break;
+			default:
+				smsk = 0; sbitdst = 0;
+				abort();
+				break;
 		}
 
 		smsk <<= table68k[opcode].spos;

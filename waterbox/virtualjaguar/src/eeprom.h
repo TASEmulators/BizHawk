@@ -9,7 +9,6 @@
 
 void EepromInit(void);
 void EepromReset(void);
-void EepromDone(void);
 
 uint8_t EepromReadByte(uint32_t offset);
 uint16_t EepromReadWord(uint32_t offset);

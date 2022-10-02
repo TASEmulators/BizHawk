@@ -7,8 +7,6 @@
 #ifndef __EVENT_H__
 #define __EVENT_H__
 
-enum { EVENT_MAIN, EVENT_JERRY };
-
 //NTSC Timings...
 #define RISC_CYCLE_IN_USEC			0.03760684198
 #define M68K_CYCLE_IN_USEC			(RISC_CYCLE_IN_USEC * 2)
@@ -23,10 +21,9 @@ enum { EVENT_MAIN, EVENT_JERRY };
 #define USEC_TO_M68K_CYCLES(u) (uint32_t)(((u) / (vjs.hardwareTypeNTSC ? M68K_CYCLE_IN_USEC : M68K_CYCLE_PAL_IN_USEC)) + 0.5)
 
 void InitializeEventList(void);
-void SetCallbackTime(void (* callback)(void), double time, int type = EVENT_MAIN);
+void SetCallbackTime(void (* callback)(void), double time);
 void RemoveCallback(void (* callback)(void));
-void AdjustCallbackTime(void (* callback)(void), double time);
-double GetTimeToNextEvent(int type = EVENT_MAIN);
-void HandleNextEvent(int type = EVENT_MAIN);
+double GetTimeToNextEvent(void);
+void HandleNextEvent(void);
 
 #endif	// __EVENT_H__

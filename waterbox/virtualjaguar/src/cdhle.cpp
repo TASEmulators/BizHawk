@@ -7,6 +7,7 @@
 #include "dac.h"
 #include "dsp.h"
 #include "event.h"
+#include "settings.h"
 #include "m68000/m68kinterface.h"
 
 #include <assert.h>
@@ -20,11 +21,17 @@
 
 #define TOC_BASE_ADDR 0x2C00
 
+// arbitrary number, but something is needed here
+// too short, and games FMVs misbehave (Space Ace is entirely FMVs!!!)
+// too long, and games will time out on CD reads
+// NTSC and PAL probably shouldn't have different timings here... 
+#define CD_DELAY_USECS (vjs.hardwareTypeNTSC ? 270 : 280)
+
 static bool cd_setup;
 static bool cd_initm;
 static bool cd_muted;
 static bool cd_paused;
-bool cd_jerry;
+static bool cd_jerry;
 static uint8_t cd_mode;
 static uint8_t cd_osamp;
 
@@ -232,10 +239,6 @@ void CDHLEReset(void)
 	}
 }
 
-void CDHLEDone(void)
-{
-}
-
 static void RefillCDBuf()
 {
 	memmove(&cd_buf2352[0], &cd_buf2352[cd_buf_pos], cd_buf_rm);
@@ -267,10 +270,10 @@ static void CDHLECallback(void)
 {
 	if (cd_is_reading)
 	{
-		if (!GPURunning())
+		if (!GPUIsRunning())
 			fprintf(stderr, "CDHLECallback called with GPU inactive\n");
 
-		if (GPURunning() && !cd_paused)
+		if (GPUIsRunning() && !cd_paused)
 		{
 			if (cd_buf_rm < 64)
 			{
@@ -299,7 +302,7 @@ static void CDHLECallback(void)
 			//GPUSetIRQLine(GPUIRQ_DSP, ASSERT_LINE);
 		}
 
-		SetCallbackTime(CDHLECallback, 285 >> (cd_mode & 1));
+		SetCallbackTime(CDHLECallback, CD_DELAY_USECS >> (cd_mode & 1));
 	}
 }
 
@@ -337,7 +340,7 @@ static void ResetCallback(void)
 	RemoveCallback(CDHLECallback);
 	if (!cd_jerry)
 	{
-		SetCallbackTime(CDHLECallback, 285 >> (cd_mode & 1));
+		SetCallbackTime(CDHLECallback, CD_DELAY_USECS >> (cd_mode & 1));
 	}
 }
 

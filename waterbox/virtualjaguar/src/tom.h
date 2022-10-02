@@ -16,7 +16,7 @@
 #define VIRTUAL_SCREEN_HEIGHT_NTSC      240
 #define VIRTUAL_SCREEN_HEIGHT_PAL       256
 
-#define LCM_SCREEN_WIDTH                (VIRTUAL_SCREEN_WIDTH * 4)
+#define MAX_SCREEN_WIDTH                (VIRTUAL_SCREEN_WIDTH * 4)
 
 // 68000 Interrupt bit positions (enabled at $F000E0)
 
@@ -24,47 +24,24 @@ enum { IRQ_VIDEO = 0, IRQ_GPU, IRQ_OPFLAG, IRQ_TIMER, IRQ_DSP };
 
 void TOMInit(void);
 void TOMReset(void);
-void TOMDone(void);
 
 uint8_t TOMReadByte(uint32_t offset, uint32_t who = UNKNOWN);
 uint16_t TOMReadWord(uint32_t offset, uint32_t who = UNKNOWN);
 void TOMWriteByte(uint32_t offset, uint8_t data, uint32_t who = UNKNOWN);
 void TOMWriteWord(uint32_t offset, uint16_t data, uint32_t who = UNKNOWN);
 
-void TOMExecHalfline(uint16_t halfline, bool render);
-uint32_t TOMGetVideoModeWidth(void);
-uint32_t TOMGetVideoModeHeight(void);
-uint8_t TOMGetVideoMode(void);
-uint8_t * TOMGetRamPointer(void);
-uint16_t TOMGetHDB(void);
-uint16_t TOMGetVDB(void);
+void TOMExecHalfline(uint16_t halfline);
 uint16_t TOMGetHC(void);
-uint16_t TOMGetVP(void);
 uint16_t TOMGetMEMCON1(void);
-void TOMDumpIORegistersToLog(void);
-
 
 int TOMIRQEnabled(int irq);
-uint16_t TOMIRQControlReg(void);
-void TOMSetIRQLatch(int irq, int enabled);
-void TOMExecPIT(uint32_t cycles);
-void TOMSetPendingJERRYInt(void);
-void TOMSetPendingTimerInt(void);
 void TOMSetPendingObjectInt(void);
 void TOMSetPendingGPUInt(void);
 void TOMSetPendingVideoInt(void);
-void TOMResetPIT(void);
 
 void TOMStartFrame(void);
 void TOMBlit(uint32_t * framebuffer, int32_t & width, int32_t & height);
 
-// Exported variables
-
-extern uint32_t tomWidth;
-extern uint32_t tomHeight;
 extern uint8_t tomRam8[];
-extern uint32_t tomTimerPrescaler;
-extern uint32_t tomTimerDivider;
-extern int32_t tomTimerCounter;
 
 #endif	// __TOM_H__

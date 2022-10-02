@@ -6,7 +6,6 @@
 
 void JaguarInit(void);
 void JaguarReset(void);
-void JaguarDone(void);
 
 uint8_t JaguarReadByte(uint32_t offset, uint32_t who = UNKNOWN);
 uint16_t JaguarReadWord(uint32_t offset, uint32_t who = UNKNOWN);
@@ -15,7 +14,7 @@ void JaguarWriteByte(uint32_t offset, uint8_t data, uint32_t who = UNKNOWN);
 void JaguarWriteWord(uint32_t offset, uint16_t data, uint32_t who = UNKNOWN);
 void JaguarWriteLong(uint32_t offset, uint32_t data, uint32_t who = UNKNOWN);
 
-void JaguarExecuteNew(void);
+void JaguarAdvance(void);
 
 // Exports from JAGUAR.CPP
 

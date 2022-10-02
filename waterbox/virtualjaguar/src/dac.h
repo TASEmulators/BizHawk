@@ -9,7 +9,7 @@
 
 void DACInit(void);
 void DACReset(void);
-void DACDone(void);
+uint32_t DACResetBuffer(void * buffer);
 
 // DAC memory access
 

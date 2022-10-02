@@ -19,12 +19,11 @@
 #include "jaguar.h"
 #include "settings.h"
 
-// Global vars
-
 static uint8_t joystick_ram[4];
 uint8_t joypad0Buttons[21];
 uint8_t joypad1Buttons[21];
 static bool joysticksEnabled;
+bool audioEnabled;
 
 extern bool lagged;
 
@@ -33,20 +32,13 @@ void JoystickInit(void)
 	JoystickReset();
 }
 
-void JoystickExec(void)
-{
-}
-
 void JoystickReset(void)
 {
 	memset(joystick_ram, 0x00, 4);
 	memset(joypad0Buttons, 0, 21);
 	memset(joypad1Buttons, 0, 21);
 	joysticksEnabled = false;
-}
-
-void JoystickDone(void)
-{
+	audioEnabled = false;
 }
 
 uint16_t JoystickReadWord(uint32_t offset)
@@ -140,6 +132,7 @@ void JoystickWriteWord(uint32_t offset, uint16_t data)
 
 	if (offset == 0)
 	{
-		joysticksEnabled = (data & 0x8000 ? true : false);
+		audioEnabled = data & 0x0100;
+		joysticksEnabled = data & 0x8000;
 	}
 }
