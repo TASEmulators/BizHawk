@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 	/// <summary>
 	/// a gameboy/gameboy color emulator wrapped around native C libsameboy
 	/// </summary>
-	[PortedCore(CoreNames.Sameboy, "LIJI32", "0.15.1", "https://github.com/LIJI32/SameBoy")]
+	[PortedCore(CoreNames.Sameboy, "LIJI32", "0.15.6", "https://github.com/LIJI32/SameBoy")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class Sameboy : ICycleTiming, IInputPollable, ILinkable, IRomInfo, IBoardInfo, IGameboyCommon
 	{
@@ -44,8 +44,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 		private readonly LibSameboy.RumbleCallback _rumblecb;
 
-		public Sameboy(CoreComm comm, byte[] gbs, SameboySettings settings, SameboySyncSettings syncSettings)
-			: this(comm, GameInfo.NullInstance, null, settings, syncSettings, false)
+		public Sameboy(CoreComm comm, GameInfo game, byte[] gbs, SameboySettings settings, SameboySyncSettings syncSettings)
+			: this(comm, game, null, settings, syncSettings, false)
 		{
 			var gbsInfo = new LibSameboy.GBSInfo
 			{

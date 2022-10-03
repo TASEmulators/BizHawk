@@ -418,14 +418,13 @@ namespace BizHawk.Client.Common
 			rom = new RomGame(file);
 
 			// hacky for now
-			if (file.Extension == ".exe")
+			rom.GameInfo.System = file.Extension switch
 			{
-				rom.GameInfo.System = VSystemID.Raw.PSX;
-			}
-			else if (file.Extension == ".nsf")
-			{
-				rom.GameInfo.System = VSystemID.Raw.NES;
-			}
+				".exe" => VSystemID.Raw.PSX,
+				".nsf" => VSystemID.Raw.NES,
+				".gbs" => VSystemID.Raw.GB,
+				_ => rom.GameInfo.System,
+			};
 
 			Util.DebugWriteLine(rom.GameInfo.System);
 
@@ -460,6 +459,18 @@ namespace BizHawk.Client.Common
 			{
 				case VSystemID.Raw.GB:
 				case VSystemID.Raw.GBC:
+					if (file.Extension == ".gbs")
+					{
+						nextEmulator = new Sameboy(
+							nextComm,
+							rom.GameInfo,
+							rom.FileData,
+							GetCoreSettings<Sameboy, Sameboy.SameboySettings>(),
+							GetCoreSyncSettings<Sameboy, Sameboy.SameboySyncSettings>()
+						);
+						return;
+					}
+
 					if (_config.GbAsSgb)
 					{
 						game.System = VSystemID.Raw.SGB;
@@ -492,19 +503,6 @@ namespace BizHawk.Client.Common
 				},
 			};
 			nextEmulator = MakeCoreFromCoreInventory(cip, forcedCoreName);
-		}
-
-		private void LoadGBS(string path, CoreComm nextComm, HawkFile file, out IEmulator nextEmulator, out RomGame rom, out GameInfo game)
-		{
-			rom = new RomGame(file);
-			rom.GameInfo.System = VSystemID.Raw.GB;
-			game = rom.GameInfo;
-			nextEmulator = new Sameboy(
-				nextComm,
-				rom.FileData,
-				GetCoreSettings<Sameboy, Sameboy.SameboySettings>(),
-				GetCoreSyncSettings<Sameboy, Sameboy.SameboySyncSettings>()
-			);
 		}
 
 		private void LoadPSF(string path, CoreComm nextComm, HawkFile file, out IEmulator nextEmulator, out RomGame rom, out GameInfo game)
@@ -693,9 +691,6 @@ namespace BizHawk.Client.Common
 							if (!LoadXML(path, nextComm, file, forcedCoreName, out nextEmulator, out rom, out game))
 								return false;
 							break;
-						case ".gbs":
-							LoadGBS(path, nextComm, file, out nextEmulator, out rom, out game);
-							break;
 						case ".psf":
 						case ".minipsf":
 							LoadPSF(path, nextComm, file, out nextEmulator, out rom, out game);
@@ -875,7 +870,7 @@ namespace BizHawk.Client.Common
 
 		/// <remarks>TODO add and handle <see cref="FilesystemFilter.LuaScripts"/> (you can drag-and-drop scripts and there are already non-rom things in this list, so why not?)</remarks>
 		private static readonly FilesystemFilterSet RomFSFilterSet = new FilesystemFilterSet(
-			new FilesystemFilter("Music Files", Array.Empty<string>(), devBuildExtraExts: new[] { "psf", "minipsf", "sid", "nsf" }),
+			new FilesystemFilter("Music Files", Array.Empty<string>(), devBuildExtraExts: new[] { "psf", "minipsf", "sid", "nsf", "gbs" }),
 			new FilesystemFilter("Disc Images", new[] { "cue", "ccd", "mds", "m3u" }),
 			new FilesystemFilter("NES", RomFileExtensions.NES.Concat(new[] { "nsf" }).ToList(), addArchiveExts: true),
 			new FilesystemFilter("Super NES", RomFileExtensions.SNES, addArchiveExts: true),
@@ -883,7 +878,7 @@ namespace BizHawk.Client.Common
 			new FilesystemFilter("PSX Executables (experimental)", Array.Empty<string>(), devBuildExtraExts: new[] { "exe" }),
 			new FilesystemFilter("PSF Playstation Sound File", new[] { "psf", "minipsf" }),
 			new FilesystemFilter("Nintendo 64", RomFileExtensions.N64),
-			new FilesystemFilter("Gameboy", RomFileExtensions.GB, addArchiveExts: true),
+			new FilesystemFilter("Gameboy", RomFileExtensions.GB.Concat(new[] { "gbs" }).ToList(), addArchiveExts: true),
 			new FilesystemFilter("Gameboy Advance", RomFileExtensions.GBA, addArchiveExts: true),
 			new FilesystemFilter("Nintendo DS", RomFileExtensions.NDS),
 			new FilesystemFilter("Master System", RomFileExtensions.SMS, addArchiveExts: true),
