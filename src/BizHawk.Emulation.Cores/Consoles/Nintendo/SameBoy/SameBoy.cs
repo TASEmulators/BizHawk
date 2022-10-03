@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 
 using BizHawk.BizInvoke;
 using BizHawk.Common;
@@ -29,6 +30,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 		private readonly Gameboy.GBDisassembler _disassembler;
 
+		private readonly CoreComm Comm;
+
 		private IntPtr SameboyState { get; set; } = IntPtr.Zero;
 
 		public bool IsCgb { get; set; }
@@ -41,14 +44,68 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 		private readonly LibSameboy.RumbleCallback _rumblecb;
 
+		public Sameboy(CoreComm comm, byte[] gbs, SameboySettings settings, SameboySyncSettings syncSettings)
+			: this(comm, GameInfo.NullInstance, null, settings, syncSettings, false)
+		{
+			var gbsInfo = new LibSameboy.GBSInfo
+			{
+				TrackCount = 0,
+				FirstTrack = 0,
+				Title = new byte[33],
+				Author = new byte[33],
+				Copyright = new byte[33],
+			};
+
+			if (!LibSameboy.sameboy_loadgbs(SameboyState, gbs, gbs.Length, ref gbsInfo))
+			{
+				throw new InvalidOperationException("Core rejected the GBS!");
+			}
+
+			RomDetails = $"Track Count: {gbsInfo.TrackCount}\r\n" +
+				$"First Track: {gbsInfo.FirstTrack}\r\n" +
+				$"Title: {Encoding.UTF8.GetString(gbsInfo.Title).Trim()}\r\n" +
+				$"Author: {Encoding.UTF8.GetString(gbsInfo.Author).Trim()}\r\n" +
+				$"Copyright: {Encoding.UTF8.GetString(gbsInfo.Copyright).Trim()}";
+
+			_firstTrack = gbsInfo.FirstTrack;
+			_lastTrack = gbsInfo.FirstTrack + gbsInfo.TrackCount - 1;
+
+			_curTrack = _firstTrack;
+			LibSameboy.sameboy_switchgbstrack(SameboyState, _curTrack);
+
+			BoardName = "GBS";
+			ControllerDefinition = new ControllerDefinition("GBS Controller")
+			{
+				BoolButtons = { "Previous Track", "Next Track" }
+			}.MakeImmutable();
+
+			Comm = comm;
+
+			_stateBuf = new byte[LibSameboy.sameboy_statelen(SameboyState)];
+		}
+
 		[CoreConstructor(VSystemID.Raw.GB)]
 		[CoreConstructor(VSystemID.Raw.GBC)]
-		public Sameboy(CoreComm comm, GameInfo game, byte[] file, SameboySettings settings, SameboySyncSettings syncSettings, bool deterministic)
+		public Sameboy(CoreLoadParameters<SameboySettings, SameboySyncSettings> lp)
+			: this(lp.Comm, lp.Game, lp.Roms[0].FileData, lp.Settings, lp.SyncSettings, lp.DeterministicEmulationRequested)
+		{
+			var file = lp.Roms[0].FileData;
+
+			RomDetails = $"{lp.Game.Name}\r\n{SHA1Checksum.ComputePrefixedHex(file)}\r\n{MD5Checksum.ComputePrefixedHex(file)}\r\n";
+
+			BoardName = MapperName(file);
+			_hasAcc = BoardName is "MBC7 ROM+ACCEL+EEPROM";
+			ControllerDefinition = Gameboy.Gameboy.CreateControllerDefinition(sgb: false, sub: false, tilt: _hasAcc, rumble: true, remote: false);
+
+			_stateBuf = new byte[LibSameboy.sameboy_statelen(SameboyState)];
+		}
+
+		private Sameboy(CoreComm comm, GameInfo game, byte[] file, SameboySettings settings, SameboySyncSettings syncSettings, bool deterministic)
 		{
 			_serviceProvider = new BasicServiceProvider(this);
 
-			_settings = settings ?? new SameboySettings();
-			_syncSettings = syncSettings ?? new SameboySyncSettings();
+			_settings = settings ?? new();
+			_syncSettings = syncSettings ?? new();
 
 			var model = _syncSettings.ConsoleMode;
 			if (model is SameboySyncSettings.GBModel.Auto)
@@ -86,7 +143,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 				DeterministicEmulation = true;
 			}
 
-			SameboyState = LibSameboy.sameboy_create(file, file.Length, bios, bios.Length, model, realtime, _syncSettings.NoJoypadBounce);
+			SameboyState = LibSameboy.sameboy_create(file, file?.Length ?? 0, bios, bios.Length, model, realtime, _syncSettings.NoJoypadBounce);
 
 			InitMemoryDomains();
 			InitMemoryCallbacks();
@@ -110,14 +167,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			_serviceProvider.Register<IDisassemblable>(_disassembler);
 
 			PutSettings(_settings);
-
-			_stateBuf = new byte[LibSameboy.sameboy_statelen(SameboyState)];
-
-			RomDetails = $"{game.Name}\r\n{SHA1Checksum.ComputePrefixedHex(file)}\r\n{MD5Checksum.ComputePrefixedHex(file)}\r\n";
-			BoardName = MapperName(file);
-
-			_hasAcc = BoardName is "MBC7 ROM+ACCEL+EEPROM";
-			ControllerDefinition = Gameboy.Gameboy.CreateControllerDefinition(sgb: false, sub: false, tilt: _hasAcc, rumble: true, remote: false);
 
 			LibSameboy.sameboy_setrtcdivisoroffset(SameboyState, _syncSettings.RTCDivisorOffset);
 			CycleCount = 0;

@@ -143,7 +143,11 @@ EXPORT biz_t* sameboy_create(u8* romdata, u32 romlen, u8* biosdata, u32 bioslen,
 	biz_t* biz = calloc(1, sizeof (biz_t));
 	GB_random_seed(0);
 	GB_init(&biz->gb, model);
-	GB_load_rom_from_buffer(&biz->gb, romdata, romlen);
+	// this will be NULL if a GBS is going to be loaded later
+	if (romdata)
+	{
+		GB_load_rom_from_buffer(&biz->gb, romdata, romlen);
+	}
 	GB_load_boot_rom_from_buffer(&biz->gb, biosdata, bioslen);
 	GB_set_sample_rate(&biz->gb, GB_get_clock_rate(&biz->gb) / 2 / 8);
 	GB_set_rumble_mode(&biz->gb, GB_RUMBLE_ALL_GAMES);
@@ -169,6 +173,16 @@ EXPORT void sameboy_destroy(biz_t* biz)
 	blip_delete(biz->blip_l);
 	blip_delete(biz->blip_r);
 	free(biz);
+}
+
+EXPORT bool sameboy_loadgbs(biz_t* biz, u8* gbs, u32 gbslen, GB_gbs_info_t* gbsinfo)
+{
+	return GB_load_gbs_from_buffer(&biz->gb, gbs, gbslen, gbsinfo) == 0;
+}
+
+EXPORT void sameboy_switchgbstrack(biz_t* biz, u32 track)
+{
+	GB_gbs_switch_track(&biz->gb, track);
 }
 
 EXPORT void sameboy_setinputcallback(biz_t* biz, input_callback_t callback)

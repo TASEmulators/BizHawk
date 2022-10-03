@@ -15,6 +15,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 		private static readonly IReadOnlyList<string> GB_BUTTON_ORDER_IN_BITMASK = new[] { "Start", "Select", "B", "A", "Down", "Up", "Left", "Right", };
 
+		private readonly int _firstTrack;
+		private readonly int _lastTrack;
+		private int _curTrack = 0;
+		private bool _switchingTrack = false;
+
 		private LibSameboy.Buttons FrameAdvancePrep(IController controller)
 		{
 			_controller = controller;
@@ -30,6 +35,33 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			{
 				LibSameboy.sameboy_reset(SameboyState);
 			}
+
+			var prevTrack = controller.IsPressed("Previous Track");
+			var nextTrack = controller.IsPressed("Next Track");
+
+			if (!_switchingTrack)
+			{
+				if (prevTrack)
+				{
+					if (_curTrack != _firstTrack)
+					{
+						_curTrack--;
+						LibSameboy.sameboy_switchgbstrack(SameboyState, _curTrack);
+						Comm.Notify($"Switching to Track {_curTrack}");
+					}
+				}
+				else if (nextTrack)
+				{
+					if (_curTrack != _lastTrack)
+					{
+						_curTrack++;
+						LibSameboy.sameboy_switchgbstrack(SameboyState, _curTrack);
+						Comm.Notify($"Switching to Track {_curTrack}");
+					}
+				}
+			}
+
+			_switchingTrack = prevTrack || nextTrack;
 
 			IsLagFrame = true;
 

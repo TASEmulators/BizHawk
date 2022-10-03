@@ -47,6 +47,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 		[BizImport(cc)]
 		public abstract void sameboy_destroy(IntPtr core);
 
+		[StructLayout(LayoutKind.Sequential)]
+		public struct GBSInfo
+		{
+			public byte TrackCount;
+			public byte FirstTrack;
+			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 33)]
+			public byte[] Title;
+			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 33)]
+			public byte[] Author;
+			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 33)]
+			public byte[] Copyright;
+		}
+
+		[BizImport(cc, Compatibility = true)]
+		public abstract bool sameboy_loadgbs(IntPtr core, byte[] gbs, int gbslen, ref GBSInfo gbsInfo);
+
+		[BizImport(cc)]
+		public abstract void sameboy_switchgbstrack(IntPtr core, int track);
+
 		[UnmanagedFunctionPointer(cc)]
 		public delegate void InputCallback();
 

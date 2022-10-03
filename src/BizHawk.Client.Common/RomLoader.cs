@@ -10,6 +10,7 @@ using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Libretro;
+using BizHawk.Emulation.Cores.Nintendo.Sameboy;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Sony.PSX;
 using BizHawk.Emulation.Cores.Arcades.MAME;
@@ -493,6 +494,19 @@ namespace BizHawk.Client.Common
 			nextEmulator = MakeCoreFromCoreInventory(cip, forcedCoreName);
 		}
 
+		private void LoadGBS(string path, CoreComm nextComm, HawkFile file, out IEmulator nextEmulator, out RomGame rom, out GameInfo game)
+		{
+			rom = new RomGame(file);
+			rom.GameInfo.System = VSystemID.Raw.GB;
+			game = rom.GameInfo;
+			nextEmulator = new Sameboy(
+				nextComm,
+				rom.FileData,
+				GetCoreSettings<Sameboy, Sameboy.SameboySettings>(),
+				GetCoreSyncSettings<Sameboy, Sameboy.SameboySyncSettings>()
+			);
+		}
+
 		private void LoadPSF(string path, CoreComm nextComm, HawkFile file, out IEmulator nextEmulator, out RomGame rom, out GameInfo game)
 		{
 			// TODO: Why does the PSF loader need CbDeflater provided?  Surely this is a matter internal to it.
@@ -678,6 +692,9 @@ namespace BizHawk.Client.Common
 						case ".xml":
 							if (!LoadXML(path, nextComm, file, forcedCoreName, out nextEmulator, out rom, out game))
 								return false;
+							break;
+						case ".gbs":
+							LoadGBS(path, nextComm, file, out nextEmulator, out rom, out game);
 							break;
 						case ".psf":
 						case ".minipsf":
