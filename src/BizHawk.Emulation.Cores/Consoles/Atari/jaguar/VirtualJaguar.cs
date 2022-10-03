@@ -12,7 +12,7 @@ using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Emulation.Cores.Atari.Jaguar
 {
-	[PortedCore(CoreNames.VirtualJaguar, "Niels Wagenaar, Carwin Jones, Adam Green, James L. Hammons", "2.1.3", "https://icculus.org/virtualjaguar/", isReleased: false)]
+	[PortedCore(CoreNames.VirtualJaguar, "Niels Wagenaar, Carwin Jones, Adam Green, James L. Hammons", "2.1.3", "https://icculus.org/virtualjaguar/")]
 	public partial class VirtualJaguar : WaterboxCore, IRegionable, IDriveLight
 	{
 		private readonly LibVirtualJaguar _core;
@@ -250,8 +250,8 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 
 		public DisplayType Region { get; }
 
-		public override int VirtualWidth => 1304;
-		public override int VirtualHeight => Region is DisplayType.PAL ? 1024 : 960;
+		public override int VirtualWidth => 326;
+		public override int VirtualHeight => Region is DisplayType.PAL ? 256 : 240;
 
 		public bool IsJaguarCD => _cd != null;
 		public bool DriveLightEnabled => IsJaguarCD;
