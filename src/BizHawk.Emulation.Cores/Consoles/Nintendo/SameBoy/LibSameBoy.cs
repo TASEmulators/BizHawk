@@ -126,27 +126,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 		public abstract void sameboy_setscanlinecallback(IntPtr core, ScanlineCallback callback, int sl);
 
 		[BizImport(cc)]
-		public abstract void sameboy_setpalette(IntPtr core, Sameboy.SameboySettings.GBPaletteType which, int[] custompal);
-
-		[BizImport(cc)]
-		public abstract void sameboy_setcolorcorrection(IntPtr core, Sameboy.SameboySettings.ColorCorrectionMode which);
-
-		[BizImport(cc)]
-		public abstract void sameboy_setlighttemperature(IntPtr core, int temperature);
-
-		[BizImport(cc)]
-		public abstract void sameboy_sethighpassfilter(IntPtr core, Sameboy.SameboySettings.HighPassFilterMode which);
-
-		[BizImport(cc)]
-		public abstract void sameboy_setinterferencevolume(IntPtr core, int volume);
-
-		[BizImport(cc)]
 		public abstract void sameboy_setrtcdivisoroffset(IntPtr core, int offset);
 
-		[BizImport(cc)]
-		public abstract void sameboy_setbgwinenabled(IntPtr core, bool enabled);
+		[StructLayout(LayoutKind.Sequential)]
+		public struct NativeSettings
+		{
+			public Sameboy.SameboySettings.GBPaletteType Palette;
+			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 5)]
+			public int[] CustomPalette;
+			public Sameboy.SameboySettings.ColorCorrectionMode ColorCorrectionMode;
+			public int LightTemperature;
+			public Sameboy.SameboySettings.HighPassFilterMode HighPassFilter;
+			public int InterferenceVolume;
+			public int ChannelMask;
+			[MarshalAs(UnmanagedType.U1)]
+			public bool BackgroundEnabled;
+			[MarshalAs(UnmanagedType.U1)]
+			public bool ObjectsEnabled;
+		}
 
-		[BizImport(cc)]
-		public abstract void sameboy_setobjenabled(IntPtr core, bool enabled);
+		[BizImport(cc, Compatibility = true)]
+		public abstract void sameboy_setsettings(IntPtr core, ref NativeSettings settings);
 	}
 }

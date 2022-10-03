@@ -504,6 +504,25 @@ EXPORT void sameboy_setscanlinecallback(biz_t* biz, scanline_callback_t callback
 	GB_set_lcd_line_callback(&biz->gb, callback ? ScanlineCallbackRelay : NULL);
 }
 
+EXPORT void sameboy_setrtcdivisoroffset(biz_t* biz, int offset)
+{
+	double base = GB_get_unmultiplied_clock_rate(&biz->gb) * 2.0;
+	GB_set_rtc_multiplier(&biz->gb, (base + offset) / base);
+}
+
+typedef struct
+{
+	u32 palette;
+	u32 custom_palette[5];
+	GB_color_correction_mode_t color_correction_mode;
+	s32 light_temperature;
+	GB_highpass_mode_t highpass_filter;
+	s32 interference_volume;
+	u32 channel_mask;
+	bool background_enabled;
+	bool objects_enabled;
+} settings_t;
+
 static inline struct GB_color_s argb_to_rgb(u32 argb)
 {
 	struct GB_color_s ret;
@@ -513,16 +532,16 @@ static inline struct GB_color_s argb_to_rgb(u32 argb)
 	return ret;
 }
 
-EXPORT void sameboy_setpalette(biz_t* biz, u32 which, u32* custom_pal)
+EXPORT void sameboy_setsettings(biz_t* biz, settings_t* settings)
 {
 	for (u32 i = 0; i < 4; i++)
 	{
-		biz->custom_pal.colors[3 - i] = argb_to_rgb(custom_pal[i]);
+		biz->custom_pal.colors[3 - i] = argb_to_rgb(settings->custom_palette[i]);
 	}
 
-	biz->custom_pal.colors[4] = argb_to_rgb(custom_pal[4]);
+	biz->custom_pal.colors[4] = argb_to_rgb(settings->custom_palette[4]);
 
-	switch (which)
+	switch (settings->palette)
 	{
 		case 0:
 			GB_set_palette(&biz->gb, &GB_PALETTE_GREY);
@@ -540,40 +559,16 @@ EXPORT void sameboy_setpalette(biz_t* biz, u32 which, u32* custom_pal)
 			GB_set_palette(&biz->gb, &biz->custom_pal);
 			break;
 	}
-}
 
-EXPORT void sameboy_setcolorcorrection(biz_t* biz, GB_color_correction_mode_t which)
-{
-	GB_set_color_correction_mode(&biz->gb, which);
-}
+	for (u32 i = 0; i < GB_N_CHANNELS; i++)
+	{
+		GB_set_channel_muted(&biz->gb, i, !(settings->channel_mask >> i & 1));
+	}
 
-EXPORT void sameboy_setlighttemperature(biz_t* biz, int temperature)
-{
-	GB_set_light_temperature(&biz->gb, temperature / 10.0);
-}
-
-EXPORT void sameboy_sethighpassfilter(biz_t* biz, GB_highpass_mode_t which)
-{
-	GB_set_highpass_filter_mode(&biz->gb, which);
-}
-
-EXPORT void sameboy_setinterferencevolume(biz_t* biz, int volume)
-{
-	GB_set_interference_volume(&biz->gb, volume / 100.0);
-}
-
-EXPORT void sameboy_setrtcdivisoroffset(biz_t* biz, int offset)
-{
-	double base = GB_get_unmultiplied_clock_rate(&biz->gb) * 2.0;
-	GB_set_rtc_multiplier(&biz->gb, (base + offset) / base);
-}
-
-EXPORT void sameboy_setbgwinenabled(biz_t* biz, bool enabled)
-{
-	GB_set_background_rendering_disabled(&biz->gb, !enabled);
-}
-
-EXPORT void sameboy_setobjenabled(biz_t* biz, bool enabled)
-{
-	GB_set_object_rendering_disabled(&biz->gb, !enabled);
+	GB_set_color_correction_mode(&biz->gb, settings->color_correction_mode);
+	GB_set_light_temperature(&biz->gb, settings->light_temperature / 10.0);
+	GB_set_highpass_filter_mode(&biz->gb, settings->highpass_filter);
+	GB_set_interference_volume(&biz->gb, settings->interference_volume / 100.0);
+	GB_set_background_rendering_disabled(&biz->gb, !settings->background_enabled);
+	GB_set_object_rendering_disabled(&biz->gb, !settings->objects_enabled);
 }
