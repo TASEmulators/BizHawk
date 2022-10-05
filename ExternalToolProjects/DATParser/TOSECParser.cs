@@ -72,6 +72,7 @@ namespace BizHawk.DATTool
 					item.Name = g.Value;
 					item.SHA1 = g.Elements("rom").First().Attribute("sha1").Value.ToUpper();
 					item.MD5 = g.Elements("rom").First().Attribute("md5").Value.ToUpper();
+					item.CRC32 = g.Elements("rom").First().Attribute("crc").Value.ToUpper();
 					item.System = GameDB.GetSystemCode(SysType);
 
 					ParseTOSECFlags(item);
