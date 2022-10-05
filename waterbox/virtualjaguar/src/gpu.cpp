@@ -178,6 +178,7 @@ static uint32_t gpu_opcode_second_parameter;
 
 static bool IMASKCleared;
 static uint32_t gpu_inhibit_interrupt;
+static uint32_t gpu_pipeline_countdown;
 
 #define GPU_RUNNING		(gpu_control & 0x01)
 
@@ -222,6 +223,8 @@ static void GPUUpdateRegisterBanks(void)
 		gpu_reg = gpu_reg_bank_1, gpu_alternate_reg = gpu_reg_bank_0;
 	else
 		gpu_reg = gpu_reg_bank_0, gpu_alternate_reg = gpu_reg_bank_1;
+
+	gpu_pipeline_countdown = 0;
 }
 
 static void GPUHandleIRQs(void)
@@ -460,8 +463,18 @@ void GPUWriteLong(uint32_t offset, uint32_t data, uint32_t who)
 				gpu_flag_z = gpu_flags & ZERO_FLAG;
 				gpu_flag_c = (gpu_flags & CARRY_FLAG) >> 1;
 				gpu_flag_n = (gpu_flags & NEGA_FLAG) >> 2;
-				GPUUpdateRegisterBanks();
 				gpu_control &= ~((gpu_flags & CINT04FLAGS) >> 3);
+				if (who == GPU)
+				{
+					if (gpu_pipeline_countdown == 0)
+					{
+						gpu_pipeline_countdown = 2;
+					}
+				}
+				else
+				{
+					GPUUpdateRegisterBanks();
+				}
 				break;
 			}
 			case 0x04:
@@ -562,7 +575,8 @@ void GPUReset(void)
 
 	gpu_flag_z = gpu_flag_n = gpu_flag_c = 0;
 	IMASKCleared = false;
-	memset(gpu_ram_8, 0xFF, 0x1000);
+	gpu_inhibit_interrupt = 0;
+	gpu_pipeline_countdown = 0;
 
 	for(uint32_t i=0; i<4096; i+=4)
 		*((uint32_t *)(&gpu_ram_8[i])) = rand();
@@ -581,6 +595,19 @@ void GPUExec(int32_t cycles)
 		{
 			GPUHandleIRQs();
 			IMASKCleared = false;
+		}
+
+		if (gpu_pipeline_countdown == 0)
+		{
+			if (IMASKCleared && !gpu_inhibit_interrupt)
+			{
+				GPUHandleIRQs();
+				IMASKCleared = false;
+			}
+		}
+		else if (--gpu_pipeline_countdown == 0)
+		{
+			GPUUpdateRegisterBanks();
 		}
 
 		gpu_inhibit_interrupt = 0;

@@ -186,6 +186,7 @@ static uint32_t dsp_opcode_first_parameter;
 static uint32_t dsp_opcode_second_parameter;
 
 static bool IMASKCleared;
+static uint32_t dsp_pipeline_countdown;
 static uint32_t dsp_inhibit_interrupt;
 
 #define DSP_RUNNING	(dsp_control & 0x01)
@@ -245,6 +246,8 @@ static void DSPUpdateRegisterBanks(void)
 		dsp_reg = dsp_reg_bank_1, dsp_alternate_reg = dsp_reg_bank_0;
 	else
 		dsp_reg = dsp_reg_bank_0, dsp_alternate_reg = dsp_reg_bank_1;
+
+	dsp_pipeline_countdown = 0;
 }
 
 //
@@ -452,14 +455,23 @@ void DSPWriteLong(uint32_t offset, uint32_t data, uint32_t who)
 			case 0x00:
 			{
 				IMASKCleared |= (dsp_flags & IMASK) && !(data & IMASK);
-
 				dsp_flags = data & (~IMASK);
 				dsp_flag_z = dsp_flags & 0x01;
 				dsp_flag_c = (dsp_flags >> 1) & 0x01;
 				dsp_flag_n = (dsp_flags >> 2) & 0x01;
-				DSPUpdateRegisterBanks();
 				dsp_control &= ~((dsp_flags & CINT04FLAGS) >> 3);
 				dsp_control &= ~((dsp_flags & CINT5FLAG) >> 1);
+				if (who == DSP)
+				{
+					if (dsp_pipeline_countdown == 0)
+					{
+						dsp_pipeline_countdown = 2;
+					}
+				}
+				else
+				{
+					DSPUpdateRegisterBanks();
+				}
 				break;
 			}
 			case 0x04:
@@ -565,6 +577,8 @@ void DSPReset(void)
 
 	dsp_flag_z = dsp_flag_n = dsp_flag_c = 0;
 	IMASKCleared = false;
+	dsp_inhibit_interrupt = 0;
+	dsp_pipeline_countdown = 0;
 
 	for(uint32_t i=0; i<8192; i+=4)
 		*((uint32_t *)(&dsp_ram_8[i])) = rand();
@@ -579,10 +593,17 @@ void DSPExec(int32_t cycles)
 	{
 		MAYBE_CALLBACK(DSPTraceCallback, dsp_pc, dsp_reg);
 
-		if (IMASKCleared && !dsp_inhibit_interrupt)
+		if (dsp_pipeline_countdown == 0)
 		{
-			DSPHandleIRQs();
-			IMASKCleared = false;
+			if (IMASKCleared && !dsp_inhibit_interrupt)
+			{
+				DSPHandleIRQs();
+				IMASKCleared = false;
+			}
+		}
+		else if (--dsp_pipeline_countdown == 0)
+		{
+			DSPUpdateRegisterBanks();
 		}
 
 		dsp_inhibit_interrupt = 0;

@@ -22,6 +22,7 @@
 	#define RISCReadWord(x, y)		GPUReadWord(x, y)
 	#define RISCReadLong(x, y)		GPUReadLong(x, y)
 	#define RISCWriteLong(x, y, z)	GPUWriteLong(x, y, z)
+	#define RISCUpdateRegisterBanks	GPUUpdateRegisterBanks()
 #elif RISC == 2
 	#define RISC_OPCODE(op)			static void dsp_opcode_##op(void)
 	#define risc_inhibit_interrupt	dsp_inhibit_interrupt
@@ -44,6 +45,7 @@
 	#define RISCReadWord(x, y)		DSPReadWord(x, y)
 	#define RISCReadLong(x, y)		DSPReadLong(x, y)
 	#define RISCWriteLong(x, y, z)	DSPWriteLong(x, y, z)
+	#define RISCUpdateRegisterBanks	DSPUpdateRegisterBanks()
 #else
 	#error RISC improperly defined
 #endif
@@ -90,6 +92,7 @@ RISC_OPCODE(jump)
 		risc_inhibit_interrupt = 1;
 		RISCExec(1);
 		risc_pc = delayed_pc;
+		RISCUpdateRegisterBanks;
 	}
 }
 
@@ -104,6 +107,7 @@ RISC_OPCODE(jr)
 		risc_inhibit_interrupt = 1;
 		RISCExec(1);
 		risc_pc = delayed_pc;
+		RISCUpdateRegisterBanks;
 	}
 }
 
