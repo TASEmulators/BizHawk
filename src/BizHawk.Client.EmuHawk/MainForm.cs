@@ -428,6 +428,19 @@ namespace BizHawk.Client.EmuHawk
 			Controls.Add(_presentationPanel);
 			Controls.SetChildIndex(_presentationPanel, 0);
 
+			// set up networking before ApiManager (in ToolManager)
+			byte[] NetworkingTakeScreenshot()
+				=> (byte[]) new ImageConverter().ConvertTo(MakeScreenshotImage().ToSysdrawingBitmap(), typeof(byte[]));
+			NetworkingHelpers = (
+				_argParser.HTTPAddresses is var (httpGetURL, httpPostURL)
+					? new HttpCommunication(NetworkingTakeScreenshot, httpGetURL, httpPostURL)
+					: null,
+				new MemoryMappedFiles(NetworkingTakeScreenshot, _argParser.MMFFilename),
+				_argParser.SocketAddress is var (socketIP, socketPort)
+					? new SocketServer(NetworkingTakeScreenshot, socketIP, socketPort)
+					: null
+			);
+
 			ExtToolManager = new ExternalToolManager(Config.PathEntries, () => (Emulator.SystemId, Game.Hash));
 			Tools = new ToolManager(this, Config, DisplayManager, ExtToolManager, InputManager, Emulator, MovieSession, Game);
 
@@ -640,18 +653,6 @@ namespace BizHawk.Client.EmuHawk
 					LoadstateCurrentSlot();
 				}
 			}
-
-			// set up networking before Lua
-			byte[] NetworkingTakeScreenshot() => (byte[]) new ImageConverter().ConvertTo(MakeScreenshotImage().ToSysdrawingBitmap(), typeof(byte[]));
-			NetworkingHelpers = (
-				_argParser.HTTPAddresses == null
-					? null
-					: new HttpCommunication(NetworkingTakeScreenshot, _argParser.HTTPAddresses.Value.UrlGet, _argParser.HTTPAddresses.Value.UrlPost),
-				new MemoryMappedFiles(NetworkingTakeScreenshot, _argParser.MMFFilename),
-				_argParser.SocketAddress == null
-					? null
-					: new SocketServer(NetworkingTakeScreenshot, _argParser.SocketAddress.Value.IP, _argParser.SocketAddress.Value.Port)
-			);
 
 			//start Lua Console if requested in the command line arguments
 			if (_argParser.luaConsole)
