@@ -355,31 +355,17 @@ namespace BizHawk.Client.EmuHawk
 			Restart();
 		}
 
+		public void OnSaveState(string path)
+			=> RA.OnSaveState(path);
+
+		public void OnLoadState(string path)
+		{
+			RA.WarnDisableHardcore(null);
+			RA.OnLoadState(path);
+		}
+
 		public void Restart()
 		{
-			EmuClient.BeforeQuickSave += (sender, e) => RA.OnSaveState($"{_mainForm.SaveStatePrefix()}.{e.Name}.State");
-			EmuClient.BeforeQuickLoad += (sender, e) =>
-			{
-				if (RA.HardcoreModeIsActive())
-				{
-					if (!RA.WarnDisableHardcore("Loading quicksave"))
-					{
-						e.Handled = true;
-						return;
-					}
-				}
-
-				RA.OnLoadState($"{_mainForm.SaveStatePrefix()}.{e.Name}.State");
-			};
-
-			EmuClient.StateLoaded += (sender, e) =>
-			{
-				if (RA.HardcoreModeIsActive())
-				{
-					RA.WarnDisableHardcore(null);
-				}
-			};
-
 			var consoleId = SysIdToRAId();
 			RA.SetConsoleID(consoleId);
 

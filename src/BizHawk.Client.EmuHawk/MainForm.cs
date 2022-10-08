@@ -4210,6 +4210,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				OSD.ClearGuiText();
 				EmuClient.OnStateLoaded(this, userFriendlyStateName);
+				RA?.OnLoadState(path);
 
 				if (Tools.Has<LuaConsole>())
 				{
@@ -4288,6 +4289,7 @@ namespace BizHawk.Client.EmuHawk
 				new SavestateFile(Emulator, MovieSession, QuickBmpFile, MovieSession.UserBag).Create(path, Config.Savestates);
 
 				EmuClient.OnStateSaved(this, userFriendlyStateName);
+				RA?.OnSaveState(path);
 
 				if (!suppressOSD)
 				{
