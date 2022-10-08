@@ -422,7 +422,7 @@ namespace BizHawk.Client.EmuHawk
 			if (RA.HardcoreModeIsActive())
 			{
 				// check if anything occured which needs to disable hardcore mode
-				if (MovieSession.Movie.IsActive() || !AllGamesVerified
+				if (MovieSession.Movie.IsActive() || !AllGamesVerified || _mainForm.Config.Rewind.Enabled
 					|| Tools.IsLoaded<LuaConsole>() || Tools.IsLoaded<RamWatch>()
 					|| Tools.IsLoaded<RamSearch>() || Tools.IsLoaded<GameShark>()
 					|| Tools.IsLoaded<SNESGraphicsDebugger>() || Tools.IsLoaded<PceBgViewer>()
