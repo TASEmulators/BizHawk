@@ -334,7 +334,7 @@ namespace BizHawk.Client.EmuHawk
 			_inputManager = inputManager;
 			_getRADropDownItems = getRADropDownItems;
 
-			RA.InitI(_mainForm.Handle, RAInterface.BizHawkEmuID, VersionInfo.GetEmuVersion());
+			RA.InitClient(_mainForm.Handle, "BizHawk", VersionInfo.GetEmuVersion());
 
 			_isActive = () => !Emu.IsNull();
 			_unpause = () => _mainForm.UnpauseEmulator();

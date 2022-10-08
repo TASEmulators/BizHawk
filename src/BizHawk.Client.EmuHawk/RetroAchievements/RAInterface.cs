@@ -9,8 +9,6 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private const CallingConvention cc = CallingConvention.Cdecl;
 
-		public const int BizHawkEmuID = 12; // this is UnknownEmulator for now
-
 		public enum ConsoleID : int
 		{
 			UnknownConsoleID = 0,
@@ -113,11 +111,11 @@ namespace BizHawk.Client.EmuHawk
 
 		[BizImport(cc, Compatibility = true, EntryPoint = "_RA_InitClient")]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		public abstract bool InitClient(IntPtr hwnd, int emuID, string clientVer);
+		public abstract bool InitClient(IntPtr hwnd, string clientName, string clientVer);
 
 		[BizImport(cc, Compatibility = true, EntryPoint = "_RA_InitClientOffline")]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		public abstract bool InitClientOffline(IntPtr hwnd, int emuID, string clientVer);
+		public abstract bool InitClientOffline(IntPtr hwnd, string clientName, string clientVer);
 
 		[UnmanagedFunctionPointer(cc)]
 		[return: MarshalAs(UnmanagedType.Bool)]
