@@ -2960,6 +2960,7 @@ namespace BizHawk.Client.EmuHawk
 			ExtToolManager.Restart(Config.PathEntries);
 			Sound.Config = Config;
 			DisplayManager.UpdateGlobals(Config, Emulator);
+			RA?.Restart();
 			AddOnScreenMessage($"Config file loaded: {iniPath}");
 		}
 
@@ -3060,6 +3061,8 @@ namespace BizHawk.Client.EmuHawk
 
 			float atten = 0;
 
+			RA?.CheckHardcoreModeConditions();
+
 			// BlockFrameAdvance (true when input it being editted in TAStudio) supercedes all other frame advance conditions
 			if ((runFrame || force) && !BlockFrameAdvance)
 			{
@@ -3121,6 +3124,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				MovieSession.HandleFrameBefore();
+
+				RA?.Update();
 
 				if (Config.AutosaveSaveRAM)
 				{
@@ -4000,6 +4005,7 @@ namespace BizHawk.Client.EmuHawk
 			UpdateCoreStatusBarButton();
 			UpdateDumpInfo();
 			SetMainformMovieInfo();
+			RA?.Restart();
 		}
 
 		private void CommitCoreSettingsToConfig()
@@ -4848,5 +4854,15 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public IQuickBmpFile QuickBmpFile { get; } = EmuHawk.QuickBmpFile.INSTANCE;
+
+		private RetroAchievements RA { get; set; }
+
+		private void OpenRetroAchievements()
+		{
+			if (RetroAchievements.IsAvailable)
+			{
+				RA = new(this, InputManager, () => RetroAchievementsSubMenu.DropDownItems);
+			}
+		}
 	}
 }

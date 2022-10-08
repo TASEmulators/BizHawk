@@ -177,6 +177,15 @@ namespace BizHawk.Client.Common
 			Bind("NDS", "Previous Screen Layout");
 			Bind("NDS", "Screen Rotate");
 
+			Bind("RetroAchievements", "Open RA Overlay", "Backtick");
+			Bind("RetroAchievements", "RA Up", "Up");
+			Bind("RetroAchievements", "RA Down", "Down");
+			Bind("RetroAchievements", "RA Left", "Left");
+			Bind("RetroAchievements", "RA Right", "Right");
+			Bind("RetroAchievements", "RA Confirm", "X");
+			Bind("RetroAchievements", "RA Cancel", "Z");
+			Bind("RetroAchievements", "RA Quit", "Backspace");
+
 			AllHotkeys = dict;
 			Groupings = dict.Values.Select(static info => info.TabGroup).Distinct().ToList();
 		}
