@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
-	public interface ISmsGpuView : IEmulatorService
+	public interface ISmsGpuView : ISpecializedEmulatorService
 	{
 		byte[] PatternBuffer { get; }
 		int FrameHeight { get; }

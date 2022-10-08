@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	/// <summary>
 	/// supports the PPU and NT viewers.  do not modify any returned arrays!
 	/// </summary>
-	public interface INESPPUViewable : IEmulatorService
+	public interface INESPPUViewable : ISpecializedEmulatorService
 	{
 		/// <summary>
 		/// get the 512 color overall palette in use

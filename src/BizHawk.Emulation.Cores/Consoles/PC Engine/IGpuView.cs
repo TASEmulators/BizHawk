@@ -4,7 +4,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.PCEngine
 {
-	public interface IPceGpuView : IEmulatorService
+	public interface IPceGpuView : ISpecializedEmulatorService
 	{
 		bool IsSgx { get; }
 		void GetGpuData(int vdc, Action<PceGpuData> callback);

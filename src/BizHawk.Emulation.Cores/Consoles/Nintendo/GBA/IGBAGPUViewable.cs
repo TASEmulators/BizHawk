@@ -4,7 +4,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
-	public interface IGBAGPUViewable : IEmulatorService
+	public interface IGBAGPUViewable : ISpecializedEmulatorService
 	{
 		GBAGPUMemoryAreas GetMemoryAreas();
 

@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// mostly jacked from nestopia's NstBoardBandaiDatach.cpp
 	// very dirty, needs cleanup and such
 
-	public class DatachBarcode : IEmulatorService
+	public class DatachBarcode : ISpecializedEmulatorService
 	{
 		private static readonly byte[,] prefixParityType = new byte[10, 6]
 		{
