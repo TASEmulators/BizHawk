@@ -52,7 +52,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			}
 
 			ser.Register<IVideoProvider>(_board.Vic);
-			ser.Register<IDriveLight>(this);
 
 			_tracer = new TraceBuffer(_board.Cpu.TraceHeader);
 			ser.Register<ITraceable>(_tracer);

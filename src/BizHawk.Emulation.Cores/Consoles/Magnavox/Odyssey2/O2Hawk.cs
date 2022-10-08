@@ -75,7 +75,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 			_frameHz = 60;
 
-			ser.Register<IVideoProvider>(this);
 			ServiceProvider = ser;
 
 			_tracer = new TraceBuffer(cpu.TraceHeader);

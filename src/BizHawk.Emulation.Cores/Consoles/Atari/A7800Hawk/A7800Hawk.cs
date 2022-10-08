@@ -257,8 +257,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			tia.Core = this;
 			pokey.Core = this;
 
-			ser.Register<IVideoProvider>(this);
-			ser.Register<ISoundProvider>(this);
 			ServiceProvider = ser;
 
 			_tracer = new TraceBuffer(cpu.TraceHeader);

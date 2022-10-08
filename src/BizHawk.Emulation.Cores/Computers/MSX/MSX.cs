@@ -141,8 +141,6 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 			blip.SetRates(3579545, 44100);
 
-			(ServiceProvider as BasicServiceProvider).Register<ISoundProvider>(this);
-
 			SetupMemoryDomains();
 
 			Header_Length = LibMSX.MSX_getheaderlength(MSX_Pntr);

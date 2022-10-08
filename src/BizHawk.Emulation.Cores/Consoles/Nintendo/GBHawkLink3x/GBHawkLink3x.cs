@@ -73,9 +73,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 			C = new GBHawk.GBHawk(lp.Comm, lp.Roms[1].Game, lp.Roms[1].RomData, tempSetC, tempSyncC);
 			R = new GBHawk.GBHawk(lp.Comm, lp.Roms[2].Game, lp.Roms[2].RomData, tempSetR, tempSyncR);
 
-			ser.Register<IVideoProvider>(this);
-			ser.Register<ISoundProvider>(this); 
-
 			_tracer = new TraceBuffer(L.cpu.TraceHeader);
 			ser.Register(_tracer);
 

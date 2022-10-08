@@ -55,7 +55,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Tracer = new TraceBuffer(cpu.TraceHeader);
 			ser.Register<ITraceable>(Tracer);
 			ser.Register<IVideoProvider>(videoProvider);
-			ser.Register<ISoundProvider>(this);
 			ser.Register<IStatable>(new StateSerializer(SyncState)
 			{
 				LoadStateCallback = SetupMemoryDomains

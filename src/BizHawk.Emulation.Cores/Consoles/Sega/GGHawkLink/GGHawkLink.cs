@@ -41,9 +41,6 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 			L = new SMS(lp.Comm, lp.Roms[0].Game, lp.Roms[0].RomData, temp_set_L, temp_sync_L);
 			R = new SMS(lp.Comm, lp.Roms[1].Game, lp.Roms[1].RomData, temp_set_R, temp_sync_R);
 
-			ser.Register<IVideoProvider>(this);
-			ser.Register<ISoundProvider>(this); 
-
 			_tracer = new TraceBuffer(L.Cpu.TraceHeader);
 			ser.Register(_tracer);
 

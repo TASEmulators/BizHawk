@@ -117,8 +117,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			BlipL.SetRates(3579545, 44100);
 			BlipR.SetRates(3579545, 44100);
 
-			ser.Register<ISoundProvider>(this);
-
 			SystemRam = new byte[0x2000];
 
 			if (game["CMMapper"])

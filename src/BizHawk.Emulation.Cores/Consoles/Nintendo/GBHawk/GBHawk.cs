@@ -205,7 +205,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ppu.Core = this;
 			serialport.Core = this;
 
-			ser.Register<IVideoProvider>(this);
 			ser.Register<ISoundProvider>(audio);
 			ServiceProvider = ser;
 

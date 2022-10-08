@@ -54,10 +54,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 			CalcClock();
 
-			ser.Register<IVideoProvider>(this);
 			ser.Register<ITraceable>(_tracer);
 			ser.Register<IDisassemblable>(CPU);
-			ser.Register<ISoundProvider>(this);
 			ser.Register<IStatable>(new StateSerializer(SyncState));
 			SetupMemoryDomains();
 		}
