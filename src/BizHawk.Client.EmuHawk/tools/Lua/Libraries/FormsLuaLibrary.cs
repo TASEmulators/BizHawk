@@ -14,6 +14,8 @@ namespace BizHawk.Client.EmuHawk
 	[Description("A library for creating and managing custom dialogs")]
 	public sealed class FormsLuaLibrary : LuaLibraryBase
 	{
+		private const string ERR_MSG_CONTROL_NOT_LPB = "Drawing functions can only be used on PictureBox components.";
+
 		public FormsLuaLibrary(IPlatformLuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
@@ -446,11 +448,13 @@ namespace BizHawk.Client.EmuHawk
 						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
-
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is not LuaPictureBox control)
 					{
-						control.Clear(color1);
+						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
+						return;
 					}
+					control.Clear(color1);
 				}
 			}
 			catch (Exception ex)
@@ -475,11 +479,13 @@ namespace BizHawk.Client.EmuHawk
 						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
-
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is not LuaPictureBox control)
 					{
-						control.Refresh();
+						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
+						return;
 					}
+					control.Refresh();
 				}
 			}
 			catch (Exception ex)
@@ -505,11 +511,13 @@ namespace BizHawk.Client.EmuHawk
 						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
-
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is not LuaPictureBox control)
 					{
-						control.SetDefaultForegroundColor(color1);
+						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
+						return;
 					}
+					control.SetDefaultForegroundColor(color1);
 				}
 			}
 			catch (Exception ex)
@@ -535,11 +543,13 @@ namespace BizHawk.Client.EmuHawk
 						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
-
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is not LuaPictureBox control)
 					{
-						control.SetDefaultBackgroundColor(color1);
+						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
+						return;
 					}
+					control.SetDefaultBackgroundColor(color1);
 				}
 			}
 			catch (Exception ex)
@@ -565,11 +575,13 @@ namespace BizHawk.Client.EmuHawk
 						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
-
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is not LuaPictureBox control)
 					{
-						control.SetDefaultTextBackground(color1);
+						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
+						return;
 					}
+					control.SetDefaultTextBackground(color1);
 				}
 			}
 			catch (Exception ex)
@@ -595,11 +607,13 @@ namespace BizHawk.Client.EmuHawk
 						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
-
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is not LuaPictureBox control)
 					{
-						control.DrawBezier(points, color1);
+						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
+						return;
 					}
+					control.DrawBezier(points, color1);
 				}
 			}
 			catch (Exception ex)
@@ -633,11 +647,13 @@ namespace BizHawk.Client.EmuHawk
 						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
-
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is not LuaPictureBox control)
 					{
-						control.DrawBox(x, y, x2, y2, strokeColor, fillColor);
+						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
+						return;
 					}
+					control.DrawBox(x, y, x2, y2, strokeColor, fillColor);
 				}
 			}
 			catch (Exception ex)
@@ -671,11 +687,13 @@ namespace BizHawk.Client.EmuHawk
 						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
-
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is not LuaPictureBox control)
 					{
-						control.DrawEllipse(x, y, width, height, strokeColor, fillColor);
+						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
+						return;
 					}
+					control.DrawEllipse(x, y, width, height, strokeColor, fillColor);
 				}
 			}
 			catch (Exception ex)
@@ -712,11 +730,13 @@ namespace BizHawk.Client.EmuHawk
 						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
-
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is not LuaPictureBox control)
 					{
-						control.DrawIcon(path1, x, y, width, height);
+						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
+						return;
 					}
+					control.DrawIcon(path1, x, y, width, height);
 				}
 			}
 			catch (Exception ex)
@@ -754,11 +774,13 @@ namespace BizHawk.Client.EmuHawk
 						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
-
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is not LuaPictureBox control)
 					{
-						control.DrawImage(path1, x, y, width, height, cache);
+						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
+						return;
 					}
+					control.DrawImage(path1, x, y, width, height, cache);
 				}
 			}
 			catch (Exception ex)
@@ -783,11 +805,13 @@ namespace BizHawk.Client.EmuHawk
 						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
-
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is not LuaPictureBox control)
 					{
-						control.ClearImageCache();
+						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
+						return;
 					}
+					control.ClearImageCache();
 				}
 			}
 			catch (Exception ex)
@@ -828,11 +852,13 @@ namespace BizHawk.Client.EmuHawk
 						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
-
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is not LuaPictureBox control)
 					{
-						control.DrawImageRegion(path1, source_x, source_y, source_width, source_height, dest_x, dest_y, dest_width, dest_height);
+						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
+						return;
 					}
+					control.DrawImageRegion(path1, source_x, source_y, source_width, source_height, dest_x, dest_y, dest_width, dest_height);
 				}
 			}
 			catch (Exception ex)
@@ -858,11 +884,13 @@ namespace BizHawk.Client.EmuHawk
 						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
-
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is not LuaPictureBox control)
 					{
-						control.DrawLine(x1, y1, x2, y2, color1);
+						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
+						return;
 					}
+					control.DrawLine(x1, y1, x2, y2, color1);
 				}
 			}
 			catch (Exception ex)
@@ -888,11 +916,13 @@ namespace BizHawk.Client.EmuHawk
 						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
-
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is not LuaPictureBox control)
 					{
-						control.DrawAxis(x, y, size, color1);
+						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
+						return;
 					}
+					control.DrawAxis(x, y, size, color1);
 				}
 			}
 			catch (Exception ex)
@@ -927,11 +957,13 @@ namespace BizHawk.Client.EmuHawk
 						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
-
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is not LuaPictureBox control)
 					{
-						control.DrawArc(x, y, width, height, startangle, sweepangle, strokeColor);
+						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
+						return;
 					}
+					control.DrawArc(x, y, width, height, startangle, sweepangle, strokeColor);
 				}
 			}
 			catch (Exception ex)
@@ -967,11 +999,13 @@ namespace BizHawk.Client.EmuHawk
 						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
-
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is not LuaPictureBox control)
 					{
-						control.DrawPie(x, y, width, height, startangle, sweepangle, strokeColor, fillColor);
+						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
+						return;
 					}
+					control.DrawPie(x, y, width, height, startangle, sweepangle, strokeColor, fillColor);
 				}
 			}
 			catch (Exception ex)
@@ -997,11 +1031,13 @@ namespace BizHawk.Client.EmuHawk
 						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
-
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is not LuaPictureBox control)
 					{
-						control.DrawPixel(x, y, color1);
+						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
+						return;
 					}
+					control.DrawPixel(x, y, color1);
 				}
 			}
 			catch (Exception ex)
@@ -1034,11 +1070,13 @@ namespace BizHawk.Client.EmuHawk
 						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
-
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is not LuaPictureBox control)
 					{
-						control.DrawPolygon(points, x, y, strokeColor, fillColor);
+						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
+						return;
 					}
+					control.DrawPolygon(points, x, y, strokeColor, fillColor);
 				}
 			}
 			catch (Exception ex)
@@ -1073,11 +1111,13 @@ namespace BizHawk.Client.EmuHawk
 						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
-
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is not LuaPictureBox control)
 					{
-						control.DrawRectangle(x, y, width, height, strokeColor, fillColor);
+						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
+						return;
 					}
+					control.DrawRectangle(x, y, width, height, strokeColor, fillColor);
 				}
 			}
 			catch (Exception ex)
@@ -1115,11 +1155,13 @@ namespace BizHawk.Client.EmuHawk
 						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
-
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is not LuaPictureBox control)
 					{
-						control.DrawText(x, y, FixString(message), fgColor, bgColor, fontsize, fontfamily, fontstyle, horizalign, vertalign);
+						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
+						return;
 					}
+					control.DrawText(x, y, FixString(message), fgColor, bgColor, fontsize, fontfamily, fontstyle, horizalign, vertalign);
 				}
 			}
 			catch (Exception ex)
@@ -1157,11 +1199,13 @@ namespace BizHawk.Client.EmuHawk
 						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return;
 					}
-
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is not LuaPictureBox control)
 					{
-						control.DrawText(x, y, FixString(message), fgColor, bgColor, fontsize, fontfamily, fontstyle, horizalign, vertalign);
+						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
+						return;
 					}
+					control.DrawText(x, y, FixString(message), fgColor, bgColor, fontsize, fontfamily, fontstyle, horizalign, vertalign);
 				}
 			}
 			catch (Exception ex)
@@ -1187,11 +1231,13 @@ namespace BizHawk.Client.EmuHawk
 						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return 0;
 					}
-
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is not LuaPictureBox control)
 					{
-						return control.GetMouse().X;
+						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
+						return default;
 					}
+					return control.GetMouse().X;
 				}
 			}
 			catch (Exception ex)
@@ -1218,11 +1264,13 @@ namespace BizHawk.Client.EmuHawk
 						LogOutputCallback("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
 						return 0;
 					}
-
-					foreach (var control in form.Controls.OfType<LuaPictureBox>())
+					var match = form.Controls().FirstOrDefault(c => c.Handle == ptr);
+					if (match is not LuaPictureBox control)
 					{
-						return control.GetMouse().Y;
+						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
+						return default;
 					}
+					return control.GetMouse().Y;
 				}
 			}
 			catch (Exception ex)
