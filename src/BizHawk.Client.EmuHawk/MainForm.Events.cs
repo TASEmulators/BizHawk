@@ -302,7 +302,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var args = new LoadRomArgs();
 
-			var filter = RomLoader.RomFilter;
+			var filter = RomLoader.RomFilter.ToString();
 
 			if (oac.Result == AdvancedRomLoaderType.LibretroLaunchGame)
 			{
@@ -494,7 +494,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				InitialDirectory = Config.PathEntries.RomAbsolutePath(Emulator.SystemId),
 				Multiselect = true,
-				Filter = MovieImport.AvailableImporters.ToString("Movie Files"),
+				Filter = MovieImport.AvailableImporters.ToString(),
 				RestoreDirectory = false
 			};
 

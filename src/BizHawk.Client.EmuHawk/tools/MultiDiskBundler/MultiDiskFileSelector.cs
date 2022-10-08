@@ -75,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 			using var ofd = new OpenFileDialog
 			{
 				InitialDirectory = _pathEntries.RomAbsolutePath(),
-				Filter = RomLoader.RomFilter,
+				Filter = RomLoader.RomFilter.ToString(),
 				RestoreDirectory = true
 			};
 

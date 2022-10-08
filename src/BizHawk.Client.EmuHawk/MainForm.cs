@@ -2399,7 +2399,7 @@ namespace BizHawk.Client.EmuHawk
 			using var ofd = new OpenFileDialog
 			{
 				InitialDirectory = Config.PathEntries.RomAbsolutePath(Emulator.SystemId),
-				Filter = RomLoader.RomFilter,
+				Filter = RomLoader.RomFilter.ToString(),
 				RestoreDirectory = false,
 				FilterIndex = _lastOpenRomFilter
 			};
