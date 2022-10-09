@@ -93,7 +93,7 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		public static IVideoProvider AsVideoProviderOrDefault(this IEmulator core)
 		{
-			return core.ServiceProvider.GetService<IVideoProvider>()
+			return core.AsVideoProvider()
 				?? NullVideo.Instance;
 		}
 
@@ -107,16 +107,14 @@ namespace BizHawk.Emulation.Common
 			return core.ServiceProvider.GetService<ISoundProvider>();
 		}
 
-		private static readonly ConditionalWeakTable<IEmulator, ISoundProvider> CachedNullSoundProviders = new ConditionalWeakTable<IEmulator, ISoundProvider>();
+		private static readonly ConditionalWeakTable<IEmulator, NullSound> CachedNullSoundProviders = new();
 
 		/// <summary>
 		/// returns the core's SoundProvider, or a suitable dummy provider
 		/// </summary>
 		public static ISoundProvider AsSoundProviderOrDefault(this IEmulator core)
-		{
-			return core.ServiceProvider.GetService<ISoundProvider>()
-				?? CachedNullSoundProviders.GetValue(core, e => new NullSound(core.VsyncNumerator(), core.VsyncDenominator()));
-		}
+			=> core.AsSoundProvider()
+				?? CachedNullSoundProviders.GetValue(core, static core1 => new NullSound(core1.VsyncNumerator(), core1.VsyncDenominator()));
 
 		public static bool HasMemoryDomains(this IEmulator core)
 		{
