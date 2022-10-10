@@ -390,7 +390,11 @@ namespace BizHawk.Client.EmuHawk
 
 		public void OnLoadState(string path)
 		{
-			HandleHardcoreModeDisable("Loading savestates is not allowed in hardcore mode.");
+			if (RA.HardcoreModeIsActive())
+			{
+				HandleHardcoreModeDisable("Loading savestates is not allowed in hardcore mode.");
+			}
+
 			RA.OnLoadState(path);
 		}
 
