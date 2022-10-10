@@ -4863,7 +4863,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (RetroAchievements.IsAvailable)
 			{
-				if (ShowMessageBox2(
+				if (Config.SkipRATelemetryWarning || ShowMessageBox2(
 					owner: null,
 					text: "By clicking Yes, you agree to allow retroachievements.org to collect the following information:\n" +
 					"\n\u2022 Your RetroAchievements username and password (first login) or token (subsequent logins)." +
@@ -4882,6 +4882,8 @@ namespace BizHawk.Client.EmuHawk
 						RetroAchievementsSubMenu.DropDownItems.Clear();
 						RetroAchievementsSubMenu.DropDownItems.Add(StartRetroAchievementsMenuItem);
 					});
+
+					Config.SkipRATelemetryWarning = true;
 				}
 			}
 		}
