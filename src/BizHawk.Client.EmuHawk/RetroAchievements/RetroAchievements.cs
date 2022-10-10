@@ -549,11 +549,6 @@ namespace BizHawk.Client.EmuHawk
 							HandleHardcoreModeDisable($"Disabling GambatteLink's graphics layers in hardcore mode is not allowed.");
 							return;
 						}
-						if (ss.FrameLength is Gameboy.GambatteSyncSettings.FrameLengthType.UserDefinedFrames)
-						{
-							HandleHardcoreModeDisable($"Using subframes in hardcore mode is not allowed.");
-							return;
-						}
 					}
 				}
 				else if (Emu is Gameboy gb)
