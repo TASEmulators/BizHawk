@@ -383,8 +383,6 @@ namespace BizHawk.Client.EmuHawk
 			RA.InstallSharedFunctionsExt(_isActive, _unpause, _pause, _rebuildMenu, _estimateTitle, _resetEmulator, _loadROM);
 
 			RA.AttemptLogin(true);
-
-			Restart();
 		}
 
 		public void OnSaveState(string path)

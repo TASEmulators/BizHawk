@@ -4883,6 +4883,9 @@ namespace BizHawk.Client.EmuHawk
 						RetroAchievementsSubMenu.DropDownItems.Add(StartRetroAchievementsMenuItem);
 					});
 
+					// note: this can't occur in the ctor, as this may reboot the core, and RA is null during the ctor
+					RA.Restart();
+
 					Config.SkipRATelemetryWarning = true;
 				}
 			}
