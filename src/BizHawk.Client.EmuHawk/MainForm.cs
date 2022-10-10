@@ -4866,12 +4866,12 @@ namespace BizHawk.Client.EmuHawk
 				if (ShowMessageBox2(
 					owner: null,
 					text: "By clicking Yes, you agree to allow retroachievements.org to collect the following information:\n" +
-					"\n• Your RetroAchievements username and password (first login) or token (subsequent logins)." +
-					"\n• The hash of the game(s) you have loaded into BizHawk. (for game identification + achievement unlock + leaderboard submission)" +
-					"\n• The RetroAchievements game ID(s) of the game(s) you have loaded into BizHawk. (for game information + achievement definitions + leaderboard definitions + rich presence definitions + code notes + achievement badges + user unlocks + leaderboard submission + ticket submission)" +
-					"\n• Rich presense data (periodically sent)." +
-					"\n• Whether or not you are currently in \"Hardcore Mode\" (for achievement unlock)." +
-					"\n• Ticket submission type and message (when submitting tickets)",
+					"\n\u2022 Your RetroAchievements username and password (first login) or token (subsequent logins)." +
+					"\n\u2022 The hash of the game(s) you have loaded into BizHawk. (for game identification + achievement unlock + leaderboard submission)" +
+					"\n\u2022 The RetroAchievements game ID(s) of the game(s) you have loaded into BizHawk. (for game information + achievement definitions + leaderboard definitions + rich presence definitions + code notes + achievement badges + user unlocks + leaderboard submission + ticket submission)" +
+					"\n\u2022 Rich presense data (periodically sent)." +
+					"\n\u2022 Whether or not you are currently in \"Hardcore Mode\" (for achievement unlock)." +
+					"\n\u2022 Ticket submission type and message (when submitting tickets)",
 					caption: "Notice",
 					icon: EMsgBoxIcon.Question,
 					useOKCancel: false))
