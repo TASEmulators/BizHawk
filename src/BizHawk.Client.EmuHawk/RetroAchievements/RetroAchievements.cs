@@ -10,10 +10,27 @@ using BizHawk.BizInvoke;
 using BizHawk.Common;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Atari.Atari2600;
+using BizHawk.Emulation.Cores.Computers.MSX;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
+using BizHawk.Emulation.Cores.Consoles.O2Hawk;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive;
+using BizHawk.Emulation.Cores.Nintendo.BSNES;
+using BizHawk.Emulation.Cores.Nintendo.Gameboy;
+using BizHawk.Emulation.Cores.Nintendo.GBA;
+using BizHawk.Emulation.Cores.Nintendo.NES;
+using BizHawk.Emulation.Cores.Nintendo.Sameboy;
+using BizHawk.Emulation.Cores.Nintendo.SNES;
+using BizHawk.Emulation.Cores.Nintendo.SNES9X;
+using BizHawk.Emulation.Cores.Nintendo.SubNESHawk;
+using BizHawk.Emulation.Cores.PCEngine;
+using BizHawk.Emulation.Cores.Sega.MasterSystem;
+using BizHawk.Emulation.Cores.Waterbox;
+using BizHawk.Emulation.Cores.WonderSwan;
 using BizHawk.Emulation.DiscSystem;
+
+// TODO: Auto-update dll system
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -48,14 +65,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool AllGamesVerified { get; set; }
 
-		private readonly MainForm _mainForm;
+		private readonly MainForm _mainForm; // todo: encapsulate MainForm in an interface
 		private readonly InputManager _inputManager;
 
 		private IEmulator Emu => _mainForm.Emulator;
 		private IMemoryDomains Domains => _mainForm.Emulator.AsMemoryDomains();
-		private IEmuClientApi EmuClient => _mainForm.EmuClient;
 		private IGameInfo Game => _mainForm.Game;
 		private IMovieSession MovieSession => _mainForm.MovieSession;
+		private Config Config => _mainForm.Config;
 		private ToolManager Tools => _mainForm.Tools;
 
 		private readonly RAInterface.IsActiveDelegate _isActive;
@@ -360,7 +377,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void OnLoadState(string path)
 		{
-			RA.WarnDisableHardcore(null);
+			HandleHardcoreModeDisable("Loading savestates is not allowed in hardcore mode.");
 			RA.OnLoadState(path);
 		}
 
@@ -403,25 +420,133 @@ namespace BizHawk.Client.EmuHawk
 			_mainForm.UpdateWindowTitle();
 		}
 
+		// "Hardcore Mode" is a mode intended for RA's leaderboard, and places various restrictions on the emulator
+		// To keep changes outside this file minimal, we'll simply check if any problematic condition arises and disable hardcore mode
+		// todo: is this really simpler?
+
+		private static readonly Type[] HardcoreProhibitedTools = new[]
+		{
+			typeof(LuaConsole), typeof(RamWatch), typeof(RamSearch),
+			typeof(GameShark), typeof(SNESGraphicsDebugger), typeof(PceBgViewer),
+			typeof(PceTileViewer), typeof(GenVdpViewer), typeof(SmsVdpViewer),
+			typeof(PCESoundDebugger), typeof(MacroInputTool), typeof(GenericDebugger),
+			typeof(NESNameTableViewer), typeof(TraceLogger), typeof(CDL),
+			typeof(Cheats), typeof(NesPPU), typeof(GbaGpuView),
+			typeof(GbGpuView), typeof(BasicBot), typeof(HexEditor),
+			typeof(TAStudio),
+		};
+
+		private static readonly Dictionary<Type, string[]> CoreGraphicsLayers = new()
+		{
+			[typeof(MSX)] = new[] { "DispBG", "DispOBJ" },
+			[typeof(Atari2600)] = new[] { "ShowBG", "ShowPlayer1", "ShowPlayer2", "ShowMissle1", "ShowMissle2", "ShowBall", "ShowPlayfield" },
+			[typeof(O2Hawk)] = new[] { "Show_Chars", "Show_Quads", "Show_Sprites", "Show_G7400_Sprites", "Show_G7400_BG" },
+			[typeof(BsnesCore)] = new[] { "ShowBG1_0", "ShowBG2_0", "ShowBG3_0", "ShowBG4_0", "ShowBG1_1", "ShowBG2_1", "ShowBG3_1", "ShowBG4_1", "ShowOBJ_0", "ShowOBJ_1", "ShowOBJ_2", "ShowOBJ_3" },
+			[typeof(SubBsnesCore)] = new[] { "ShowBG1_0", "ShowBG2_0", "ShowBG3_0", "ShowBG4_0", "ShowBG1_1", "ShowBG2_1", "ShowBG3_1", "ShowBG4_1", "ShowOBJ_0", "ShowOBJ_1", "ShowOBJ_2", "ShowOBJ_3" },
+			[typeof(Gameboy)] = new[] { "DisplayBG", "DisplayOBJ", "DisplayWindow" },
+			[typeof(MGBAHawk)] = new[] { "DisplayBG0", "DisplayBG1", "DisplayBG2", "DisplayBG3", "DisplayOBJ" },
+			[typeof(NES)] = new[] { "DispBackground", "DispSprites" },
+			[typeof(SubNESHawk)] = new[] { "DispBackground", "DispSprites" },
+			[typeof(Sameboy)] = new[] { "EnableBGWIN", "EnableOBJ" },
+			[typeof(LibsnesCore)] = new[] { "ShowBG1_0", "ShowBG2_0", "ShowBG3_0", "ShowBG4_0", "ShowBG1_1", "ShowBG2_1", "ShowBG3_1", "ShowBG4_1", "ShowOBJ_0", "ShowOBJ_1", "ShowOBJ_2", "ShowOBJ_3" },
+			[typeof(Snes9x)] = new[] { "ShowBg0", "ShowBg1", "ShowBg2", "ShowBg3", "ShowSprites0", "ShowSprites1", "ShowSprites2", "ShowSprites3", "ShowWindow", "ShowTransparency" },
+			[typeof(PCEngine)] = new[] { "ShowBG1", "ShowOBJ1", "ShowBG2", "ShowOBJ2", },
+			[typeof(GPGX)] = new[] { "DrawBGA", "DrawBGB", "DrawBGW", "DrawObj", },
+			[typeof(SMS)] = new[] { "DispBG", "DispOBJ," },
+			[typeof(WonderSwan)] = new[] { "EnableBG", "EnableFG", "EnableSprites", },
+		};
+
+		private void HandleHardcoreModeDisable(string reason)
+		{
+			_mainForm.ModalMessageBox($"{reason} Disabling hardcore mode.", "Warning", EMsgBoxIcon.Warning);
+			RA.WarnDisableHardcore(null);
+		}
+
 		public void CheckHardcoreModeConditions()
 		{
 			if (RA.HardcoreModeIsActive())
 			{
-				// check if anything occured which needs to disable hardcore mode
-				if (MovieSession.Movie.IsActive() || !AllGamesVerified || _mainForm.Config.Rewind.Enabled
-					|| Tools.IsLoaded<LuaConsole>() || Tools.IsLoaded<RamWatch>()
-					|| Tools.IsLoaded<RamSearch>() || Tools.IsLoaded<GameShark>()
-					|| Tools.IsLoaded<SNESGraphicsDebugger>() || Tools.IsLoaded<PceBgViewer>()
-					|| Tools.IsLoaded<PceTileViewer>() || Tools.IsLoaded<GenVdpViewer>()
-					|| Tools.IsLoaded<SmsVdpViewer>() || Tools.IsLoaded<PCESoundDebugger>()
-					|| Tools.IsLoaded<MacroInputTool>() || Tools.IsLoaded<GenericDebugger>()
-					|| Tools.IsLoaded<NESNameTableViewer>() || Tools.IsLoaded<TraceLogger>()
-					|| Tools.IsLoaded<CDL>() || Tools.IsLoaded<Cheats>()
-					|| Tools.IsLoaded<NesPPU>() || Tools.IsLoaded<GbaGpuView>()
-					|| Tools.IsLoaded<GbGpuView>() || Tools.IsLoaded<BasicBot>()
-					|| Tools.IsLoaded<HexEditor>())
+				if (!AllGamesVerified)
 				{
-					RA.WarnDisableHardcore(null);
+					HandleHardcoreModeDisable("All loaded games were not verified.");
+					return;
+				}
+
+				if (MovieSession.Movie.IsPlaying())
+				{
+					HandleHardcoreModeDisable("Playing a movie while in hardcore mode is not allowed.");
+					return;
+				}
+
+				if (_inputManager.ClientControls["Frame Advance"])
+				{
+					HandleHardcoreModeDisable("Frame advancing in hardcore mode is not allowed.");
+					return;
+				}
+
+				if (_mainForm.Rewinder?.Active == true)
+				{
+					HandleHardcoreModeDisable("Enabling Rewind in hardcore mode is not allowed.");
+					return;
+				}
+
+				var fastForward = _inputManager.ClientControls["Fast Forward"] || _mainForm.FastForward;
+				var speedPercent = fastForward ? Config?.SpeedPercentAlternate : Config?.SpeedPercent;
+				if ((speedPercent ?? 100) < 100)
+				{
+					HandleHardcoreModeDisable("Slow motion in hardcore mode is not allowed.");
+					return;
+				}
+
+				foreach (var t in HardcoreProhibitedTools)
+				{
+					if (Tools.IsLoaded(t))
+					{
+						HandleHardcoreModeDisable($"Using {t.Name} in hardcore mode is not allowed.");
+						return;
+					}
+				}
+
+				// can't know what external tools are doing, so just don't allow them here
+				if (Tools.IsLoaded<IExternalToolForm>())
+				{
+					HandleHardcoreModeDisable($"Using external tools in hardcore mode is not allowed.");
+					return;
+				}
+
+				if (Emu is NymaCore nyma)
+				{
+					if (nyma.GetSettings().DisabledLayers.Any())
+					{
+						HandleHardcoreModeDisable($"Disabling {Emu.GetType().Name}'s graphics layers in hardcore mode is not allowed.");
+						return;
+					}
+				}
+				else if (Emu is GambatteLink gl)
+				{
+					foreach (var ss in gl.GetSyncSettings()._linkedSyncSettings)
+					{
+						if (ss.DisplayBG || ss.DisplayOBJ || ss.DisplayWindow)
+						{
+							HandleHardcoreModeDisable($"Disabling GambatteLink's graphics layers in hardcore mode is not allowed.");
+							return;
+						}
+					}
+				}
+				else if (CoreGraphicsLayers.TryGetValue(Emu.GetType(), out var layers))
+				{
+					var settings = _mainForm.GetSettingsAdapterForLoadedCoreUntyped();
+					var s = Emu is Gameboy ? settings.GetSyncSettings() : settings.GetSettings();
+					var t = s.GetType();
+					foreach (var layer in layers)
+					{
+						// annoyingly NES has fields instead of properties for layers
+						if (!(bool)(t.GetProperty(layer)?.GetValue(s) ?? t.GetField(layer).GetValue(s)))
+						{
+							HandleHardcoreModeDisable($"Disabling {Emu.GetType().Name}'s {layer} in hardcore mode is not allowed.");
+							return;
+						}
+					}
 				}
 			}
 		}
