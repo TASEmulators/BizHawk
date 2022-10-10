@@ -259,7 +259,7 @@ namespace BizHawk.Client.EmuHawk
 			tsmiddi.Clear();
 			{
 				var tsi = new ToolStripMenuItem("Shutdown RetroAchievements");
-				tsi.Click += (sender, e) =>
+				tsi.Click += (_, _) =>
 				{
 					RA.Shutdown();
 					_shutdownRACallback();
@@ -277,7 +277,7 @@ namespace BizHawk.Client.EmuHawk
 						Checked = _menuItems[i].Checked != 0,
 					};
 					var id = _menuItems[i].ID;
-					tsi.Click += (sender, e) =>
+					tsi.Click += (_, _) =>
 					{
 						RA.InvokeDialog(id);
 						// ditto here

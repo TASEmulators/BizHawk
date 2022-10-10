@@ -118,7 +118,6 @@ namespace BizHawk.Client.EmuHawk
 		public abstract bool InitClientOffline(IntPtr hwnd, string clientName, string clientVer);
 
 		[UnmanagedFunctionPointer(cc)]
-		[return: MarshalAs(UnmanagedType.Bool)]
 		public delegate bool IsActiveDelegate();
 
 		[UnmanagedFunctionPointer(cc)]
