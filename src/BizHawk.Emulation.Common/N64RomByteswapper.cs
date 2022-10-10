@@ -11,6 +11,22 @@ namespace BizHawk.Emulation.Common
 		/// <remarks>not actually magic, just always the same in commercial carts? https://n64brew.dev/wiki/ROM_Header works all the same</remarks>
 		private static readonly byte[] MAGIC_BYTES = { 0x80, 0x37, 0x12, 0x40 };
 
+		/// <summary>ensures <paramref name="rom"/> is in the rare little-endian (<c>.n64</c>) format, mutating it in-place if necessary</summary>
+		public static void ToN64LittleEndian(Span<byte> rom)
+		{
+			if (rom[0] == MAGIC_BYTES[0]) EndiannessUtils.MutatingByteSwap32(rom); // native (.z64)
+			else if (rom[0] == MAGIC_BYTES[1]) EndiannessUtils.MutatingShortSwap32(rom); // byte-swapped (.v64)
+			// else already rare little-endian .n64
+		}
+
+		/// <summary>ensures <paramref name="rom"/> is in the byte-swapped (<c>.v64</c>) format, mutating it in-place if necessary</summary>
+		public static void ToV64ByteSwapped(Span<byte> rom)
+		{
+			if (rom[0] == MAGIC_BYTES[0]) EndiannessUtils.MutatingByteSwap16(rom); // native (.z64)
+			else if (rom[0] == MAGIC_BYTES[3]) EndiannessUtils.MutatingShortSwap32(rom); // rare little-endian .n64
+			// else already byte-swapped (.v64)
+		}
+
 		/// <summary>ensures <paramref name="rom"/> is in the native (<c>.z64</c>) format, mutating it in-place if necessary</summary>
 		public static void ToZ64Native(Span<byte> rom)
 		{

@@ -45,5 +45,13 @@ namespace BizHawk.Common
 			for (var i = 0; i < ints.Length; i++) ints[i] = BinaryPrimitives.ReverseEndianness(ints[i]);
 #endif
 		}
+
+		/// <summary>swaps pairs of 16-bit words in-place: <c>0xAABBIIJJPPQQYYZZ</c> &lt;=> <c>0xIIJJAABBYYZZPPQQ</c></summary>
+		public static void MutatingShortSwap32(Span<byte> a)
+		{
+			// no need to optimise this further, it's only used in the manual byteswap tool and only between the two less common formats
+			MutatingByteSwap32(a); // calls can be in either order, though this order ensures the length-mod-4 assert is hit immediately
+			MutatingByteSwap16(a);
+		}
 	}
 }
