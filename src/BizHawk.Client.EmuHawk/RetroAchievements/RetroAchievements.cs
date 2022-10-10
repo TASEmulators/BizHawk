@@ -542,7 +542,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					foreach (var ss in gl.GetSyncSettings()._linkedSyncSettings)
 					{
-						if (ss.DisplayBG || ss.DisplayOBJ || ss.DisplayWindow)
+						if (!ss.DisplayBG || !ss.DisplayOBJ || !ss.DisplayWindow)
 						{
 							HandleHardcoreModeDisable($"Disabling GambatteLink's graphics layers in hardcore mode is not allowed.");
 							return;
@@ -552,7 +552,7 @@ namespace BizHawk.Client.EmuHawk
 				else if (Emu is Gameboy gb)
 				{
 					var ss = gb.GetSyncSettings();
-					if (ss.DisplayBG || ss.DisplayOBJ || ss.DisplayWindow)
+					if (!ss.DisplayBG || !ss.DisplayOBJ || !ss.DisplayWindow)
 					{
 						HandleHardcoreModeDisable($"Disabling Gambatte's graphics layers in hardcore mode is not allowed.");
 						return;
