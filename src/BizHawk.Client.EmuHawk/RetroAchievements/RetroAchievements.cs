@@ -84,6 +84,18 @@ namespace BizHawk.Client.EmuHawk
 		private readonly RAInterface.ResetEmulatorDelegate _resetEmulator;
 		private readonly RAInterface.LoadROMDelegate _loadROM;
 
+		private class DummyDomain : MemoryDomain
+		{
+			public static DummyDomain Instance = new();
+
+			public override byte PeekByte(long addr)
+				=> 0xFF;
+
+			public override void PokeByte(long addr, byte val)
+			{
+			}
+		}
+
 		private class MemFunctions
 		{
 			private readonly MemoryDomain _domain;
@@ -702,8 +714,84 @@ namespace BizHawk.Client.EmuHawk
 							mfs.Add(new(domains["CARTRAM"], 0, domains["CARTRAM"].Size));
 						}
 						break;
+					case RAInterface.ConsoleID.GB:
+						if (domains.Has("SGB_ROM"))
+						{
+							// uh oh, BSNESv115+ can't handle this case (todo: Expose more GB memory domains!!!)
+							mfs.Add(new(domains["SGB CARTROM"], 0, 0x8000));
+							mfs.Add(new(DummyDomain.Instance, 0, 0x8000));
+						}
+						else if (domains.Has("SGB CARTROM"))
+						{
+							// not as many domains, but should be functional enough
+							mfs.Add(new(domains["SGB CARTROM"], 0, 0x8000));
+							mfs.Add(new(DummyDomain.Instance, 0, 0x2000));
+							if (domains.Has("SGB CARTRAM"))
+							{
+								if (domains["SGB CARTRAM"].Size == 0x200) // MBC2
+								{
+									for (int i = 0; i < 0x10; i++)
+									{
+										mfs.Add(new(domains["SGB CARTRAM"], 0, 0x200));
+									}
+								}
+								else
+								{
+									mfs.Add(new(domains["SGB CARTRAM"], 0, 0x2000));
+								}
+							}
+							else
+							{
+								mfs.Add(new(DummyDomain.Instance, 0, 0x2000));
+							}
+							mfs.Add(new(domains["SGB WRAM"], 0, 0x2000));
+							mfs.Add(new(domains["SGB WRAM"], 0, 0x1E00));
+							mfs.Add(new(DummyDomain.Instance, 0, 0x180));
+							mfs.Add(new(domains["SGB HRAM"], 0, 0x80));
+						}
+						else
+						{
+							mfs.Add(new(domains.SystemBus, 0, 0xA000));
+							if (domains.Has("CartRAM"))
+							{
+								if (domains["CartRAM"].Size < 0x2000)
+								{
+									mfs.Add(new(domains["CartRAM"], 0, domains["CartRAM"].Size));
+									mfs.Add(new(DummyDomain.Instance, 0, 0x2000 - domains["CartRAM"].Size));
+								}
+								else
+								{
+									mfs.Add(new(domains["CartRAM"], 0, 0x2000));
+								}
+							}
+							else
+							{
+								mfs.Add(new(domains.SystemBus, 0xA000, 0x2000));
+							}
+							mfs.Add(new(domains["WRAM"], 0x1000, 0x1000));
+							mfs.Add(new(domains.SystemBus, 0xE000, 0x2000));
+						}
+						break;
 					case RAInterface.ConsoleID.GBC:
-						mfs.Add(new(domains.SystemBus, 0, domains.SystemBus.Size));
+						mfs.Add(new(domains.SystemBus, 0, 0xA000));
+						if (domains.Has("CartRAM"))
+						{
+							if (domains["CartRAM"].Size < 0x2000)
+							{
+								mfs.Add(new(domains["CartRAM"], 0, domains["CartRAM"].Size));
+								mfs.Add(new(DummyDomain.Instance, 0, 0x2000 - domains["CartRAM"].Size));
+							}
+							else
+							{
+								mfs.Add(new(domains["CartRAM"], 0, 0x2000));
+							}
+						}
+						else
+						{
+							mfs.Add(new(domains.SystemBus, 0xA000, 0x2000));
+						}
+						mfs.Add(new(domains["WRAM"], 0x1000, 0x1000));
+						mfs.Add(new(domains.SystemBus, 0xE000, 0x2000));
 						mfs.Add(new(domains["WRAM"], 0x2000, 0x6000));
 						break;
 					case RAInterface.ConsoleID.SegaCD:
