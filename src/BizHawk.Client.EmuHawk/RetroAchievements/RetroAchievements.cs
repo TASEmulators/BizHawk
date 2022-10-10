@@ -23,6 +23,7 @@ using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.Sameboy;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
+using BizHawk.Emulation.Cores.Nintendo.SubGBHawk;
 using BizHawk.Emulation.Cores.Nintendo.SubNESHawk;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
@@ -456,11 +457,8 @@ namespace BizHawk.Client.EmuHawk
 			[typeof(Atari2600)] = new[] { "ShowBG", "ShowPlayer1", "ShowPlayer2", "ShowMissle1", "ShowMissle2", "ShowBall", "ShowPlayfield" },
 			[typeof(O2Hawk)] = new[] { "Show_Chars", "Show_Quads", "Show_Sprites", "Show_G7400_Sprites", "Show_G7400_BG" },
 			[typeof(BsnesCore)] = new[] { "ShowBG1_0", "ShowBG2_0", "ShowBG3_0", "ShowBG4_0", "ShowBG1_1", "ShowBG2_1", "ShowBG3_1", "ShowBG4_1", "ShowOBJ_0", "ShowOBJ_1", "ShowOBJ_2", "ShowOBJ_3" },
-			[typeof(SubBsnesCore)] = new[] { "ShowBG1_0", "ShowBG2_0", "ShowBG3_0", "ShowBG4_0", "ShowBG1_1", "ShowBG2_1", "ShowBG3_1", "ShowBG4_1", "ShowOBJ_0", "ShowOBJ_1", "ShowOBJ_2", "ShowOBJ_3" },
-			[typeof(Gameboy)] = new[] { "DisplayBG", "DisplayOBJ", "DisplayWindow" },
 			[typeof(MGBAHawk)] = new[] { "DisplayBG0", "DisplayBG1", "DisplayBG2", "DisplayBG3", "DisplayOBJ" },
 			[typeof(NES)] = new[] { "DispBackground", "DispSprites" },
-			[typeof(SubNESHawk)] = new[] { "DispBackground", "DispSprites" },
 			[typeof(Sameboy)] = new[] { "EnableBGWIN", "EnableOBJ" },
 			[typeof(LibsnesCore)] = new[] { "ShowBG1_0", "ShowBG2_0", "ShowBG3_0", "ShowBG4_0", "ShowBG1_1", "ShowBG2_1", "ShowBG3_1", "ShowBG4_1", "ShowOBJ_0", "ShowOBJ_1", "ShowOBJ_2", "ShowOBJ_3" },
 			[typeof(Snes9x)] = new[] { "ShowBg0", "ShowBg1", "ShowBg2", "ShowBg3", "ShowSprites0", "ShowSprites1", "ShowSprites2", "ShowSprites3", "ShowWindow", "ShowTransparency" },
@@ -528,7 +526,13 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 
-				if (Emu is NymaCore nyma)
+				if (Emu is SubNESHawk or SubBsnesCore or SubGBHawk)
+				{
+					// this is mostly due to wonkiness with subframes which can be used as pseudo slowdown
+					HandleHardcoreModeDisable($"Using subframes in hardcore mode is not allowed.");
+					return;
+				}
+				else if (Emu is NymaCore nyma)
 				{
 					if (nyma.GetSettings().DisabledLayers.Any())
 					{
@@ -545,12 +549,30 @@ namespace BizHawk.Client.EmuHawk
 							HandleHardcoreModeDisable($"Disabling GambatteLink's graphics layers in hardcore mode is not allowed.");
 							return;
 						}
+						if (ss.FrameLength is Gameboy.GambatteSyncSettings.FrameLengthType.UserDefinedFrames)
+						{
+							HandleHardcoreModeDisable($"Using subframes in hardcore mode is not allowed.");
+							return;
+						}
+					}
+				}
+				else if (Emu is Gameboy gb)
+				{
+					var ss = gb.GetSyncSettings();
+					if (ss.DisplayBG || ss.DisplayOBJ || ss.DisplayWindow)
+					{
+						HandleHardcoreModeDisable($"Disabling Gambatte's graphics layers in hardcore mode is not allowed.");
+						return;
+					}
+					if (ss.FrameLength is Gameboy.GambatteSyncSettings.FrameLengthType.UserDefinedFrames)
+					{
+						HandleHardcoreModeDisable($"Using subframes in hardcore mode is not allowed.");
+						return;
 					}
 				}
 				else if (CoreGraphicsLayers.TryGetValue(Emu.GetType(), out var layers))
 				{
-					var settings = _mainForm.GetSettingsAdapterForLoadedCoreUntyped();
-					var s = Emu is Gameboy ? settings.GetSyncSettings() : settings.GetSettings();
+					var s = _mainForm.GetSettingsAdapterForLoadedCoreUntyped().GetSettings();
 					var t = s.GetType();
 					foreach (var layer in layers)
 					{
