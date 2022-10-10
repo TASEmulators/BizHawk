@@ -250,11 +250,24 @@ namespace BizHawk.Client.EmuHawk
 		private readonly Func<ToolStripItemCollection> _getRADropDownItems;
 		private readonly RAInterface.MenuItem[] _menuItems = new RAInterface.MenuItem[40];
 
+		private readonly Action _shutdownRACallback;
+
 		private void RebuildMenu()
 		{
 			var numItems = RA.GetPopupMenuItems(_menuItems);
 			var tsmiddi = _getRADropDownItems();
 			tsmiddi.Clear();
+			{
+				var tsi = new ToolStripMenuItem("Shutdown RetroAchievements");
+				tsi.Click += (sender, e) =>
+				{
+					RA.Shutdown();
+					_shutdownRACallback();
+				};
+				tsmiddi.Add(tsi);
+				var tss = new ToolStripSeparator();
+				tsmiddi.Add(tss);
+			}
 			for (int i = 0; i < numItems; i++)
 			{
 				if (_menuItems[i].Label != IntPtr.Zero)
@@ -345,11 +358,12 @@ namespace BizHawk.Client.EmuHawk
 			};
 		}
 
-		public RetroAchievements(MainForm mainForm, InputManager inputManager, Func<ToolStripItemCollection> getRADropDownItems)
+		public RetroAchievements(MainForm mainForm, InputManager inputManager, Func<ToolStripItemCollection> getRADropDownItems, Action shutdownRACallback)
 		{
 			_mainForm = mainForm;
 			_inputManager = inputManager;
 			_getRADropDownItems = getRADropDownItems;
+			_shutdownRACallback = shutdownRACallback;
 
 			RA.InitClient(_mainForm.Handle, "BizHawk", VersionInfo.GetEmuVersion());
 

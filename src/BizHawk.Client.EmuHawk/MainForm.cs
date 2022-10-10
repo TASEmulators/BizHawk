@@ -4876,7 +4876,12 @@ namespace BizHawk.Client.EmuHawk
 					icon: EMsgBoxIcon.Question,
 					useOKCancel: false))
 				{
-					RA = new(this, InputManager, () => RetroAchievementsSubMenu.DropDownItems);
+					RA = new(this, InputManager, () => RetroAchievementsSubMenu.DropDownItems, () =>
+					{
+						RA = null;
+						RetroAchievementsSubMenu.DropDownItems.Clear();
+						RetroAchievementsSubMenu.DropDownItems.Add(StartRetroAchievementsMenuItem);
+					});
 				}
 			}
 		}
