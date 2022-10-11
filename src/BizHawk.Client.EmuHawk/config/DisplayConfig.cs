@@ -268,15 +268,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BtnSelectUserFilter_Click(object sender, EventArgs e)
 		{
-			using var ofd = new OpenFileDialog
-			{
-				Filter = CgShaderPresetsFSFilterSet.ToString(),
-				FileName = _pathSelection
-			};
-			if (!this.ShowDialogAsChild(ofd).IsOk()) return;
+			var result = this.ShowFileOpenDialog(
+				filter: CgShaderPresetsFSFilterSet,
+				initDir: Path.GetDirectoryName(_pathSelection)!,
+				initFileName: _pathSelection);
+			if (result is null) return;
 
 			rbUser.Checked = true;
-			var choice = Path.GetFullPath(ofd.FileName);
+			var choice = Path.GetFullPath(result);
 				
 			//test the preset
 			using (var stream = File.OpenRead(choice))

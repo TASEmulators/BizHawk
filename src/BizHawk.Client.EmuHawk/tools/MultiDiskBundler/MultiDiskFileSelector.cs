@@ -72,20 +72,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BrowseButton_Click(object sender, EventArgs e)
 		{
-			using var ofd = new OpenFileDialog
-			{
-				InitialDirectory = _pathEntries.RomAbsolutePath(),
-				Filter = RomLoader.RomFilter.ToString(),
-				RestoreDirectory = true
-			};
-
-			if (this.ShowDialogWithTempMute(ofd) != DialogResult.OK) return;
-
-			var hawkPath = ofd.FileName;
-
+			var hawkPath = this.ShowFileOpenDialog(
+				discardCWDChange: true,
+				filter: RomLoader.RomFilter,
+				initDir: _pathEntries.RomAbsolutePath());
+			if (hawkPath is null) return;
 			try
 			{
-				var file = new FileInfo(ofd.FileName);
+				FileInfo file = new(hawkPath);
 				var path = EmuHawkUtil.ResolveShortcut(file.FullName);
 
 				using var hf = new HawkFile(path);

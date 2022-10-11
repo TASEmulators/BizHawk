@@ -1609,29 +1609,24 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool RunLibretroCoreChooser()
 		{
-			using var ofd = new OpenFileDialog();
-
-			if (Config.LibretroCore != null)
+			string initFileName = null;
+			string initDir;
+			if (Config.LibretroCore is not null)
 			{
-				(ofd.InitialDirectory, ofd.FileName) = Config.LibretroCore.SplitPathToDirAndFile();
+				(initDir, initFileName) = Config.LibretroCore.SplitPathToDirAndFile();
 			}
 			else
 			{
-				var initDir = Config.PathEntries.AbsolutePathForType(VSystemID.Raw.Libretro, "Cores");
+				initDir = Config.PathEntries.AbsolutePathForType(VSystemID.Raw.Libretro, "Cores");
 				Directory.CreateDirectory(initDir);
-				ofd.InitialDirectory = initDir;
 			}
-
-			ofd.RestoreDirectory = true;
-			ofd.Filter = LibretroCoresFSFilterSet.ToString();
-
-			if (ofd.ShowDialog() == DialogResult.Cancel)
-			{
-				return false;
-			}
-
-			Config.LibretroCore = ofd.FileName;
-
+			var result = this.ShowFileOpenDialog(
+				discardCWDChange: true,
+				filter: LibretroCoresFSFilterSet,
+				initDir: initDir!,
+				initFileName: initFileName);
+			if (result is null) return false;
+			Config.LibretroCore = result;
 			return true;
 		}
 
@@ -2399,25 +2394,20 @@ namespace BizHawk.Client.EmuHawk
 				MainformMenu,
 				new object/*?*/[] { c });
 
-		public static readonly string ConfigFileFSFilterString = new FilesystemFilter("Config File", new[] { "ini" }).ToString();
+		public static readonly FilesystemFilterSet ConfigFileFSFilterSet = new(new FilesystemFilter("Config File", new[] { "ini" }))
+		{
+			AppendAllFilesEntry = false,
+		};
 
 		private void OpenRom()
 		{
-			using var ofd = new OpenFileDialog
-			{
-				InitialDirectory = Config.PathEntries.RomAbsolutePath(Emulator.SystemId),
-				Filter = RomLoader.RomFilter.ToString(),
-				RestoreDirectory = false,
-				FilterIndex = _lastOpenRomFilter
-			};
-
-			if (this.ShowDialogWithTempMute(ofd) != DialogResult.OK) return;
-
-			var file = new FileInfo(ofd.FileName);
-			_lastOpenRomFilter = ofd.FilterIndex;
-
-			var lra = new LoadRomArgs { OpenAdvanced = new OpenAdvanced_OpenRom { Path = file.FullName } };
-			LoadRom(file.FullName, lra);
+			var result = this.ShowFileOpenDialog(
+				filter: RomLoader.RomFilter,
+				filterIndex: ref _lastOpenRomFilter,
+				initDir: Config.PathEntries.RomAbsolutePath(Emulator.SystemId));
+			if (result is null) return;
+			var filePath = new FileInfo(result).FullName;
+			LoadRom(filePath, new LoadRomArgs { OpenAdvanced = new OpenAdvanced_OpenRom { Path = filePath } });
 		}
 
 		private void CoreSyncSettings(object sender, RomLoader.SettingsLoadArgs e)
@@ -3422,20 +3412,16 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						using SaveFileDialog sfd = new()
-						{
-							FileName = $"{Game.FilesystemSafeName()}.{ext}",
-							Filter = new FilesystemFilterSet(new FilesystemFilter(ext, new[] { ext })).ToString(),
-							InitialDirectory = Config.PathEntries.AvAbsolutePath(),
-						};
-
-						if (this.ShowDialogWithTempMute(sfd) == DialogResult.Cancel)
+						var result = this.ShowFileSaveDialog(
+							filter: new(new FilesystemFilter(ext, new[] { ext })),
+							initDir: Config.PathEntries.AvAbsolutePath(),
+							initFileName: $"{Game.FilesystemSafeName()}.{ext}");
+						if (result is null)
 						{
 							aw.Dispose();
 							return;
 						}
-
-						pathForOpenFile = sfd.FileName;
+						pathForOpenFile = result;
 					}
 
 					aw.OpenFile(pathForOpenFile);
@@ -4413,19 +4399,12 @@ namespace BizHawk.Client.EmuHawk
 				file.Directory.Create();
 			}
 
-			using var sfd = new SaveFileDialog
-			{
-				AddExtension = true,
-				DefaultExt = "State",
-				Filter = EmuHawkSaveStatesFSFilterSet.ToString(),
-				InitialDirectory = path,
-				FileName = $"{SaveStatePrefix()}.QuickSave0.State"
-			};
-
-			if (this.ShowDialogWithTempMute(sfd) == DialogResult.OK)
-			{
-				SaveState(sfd.FileName, sfd.FileName);
-			}
+			var result = this.ShowFileSaveDialog(
+				fileExt: "State",
+				filter: EmuHawkSaveStatesFSFilterSet,
+				initDir: path,
+				initFileName: $"{SaveStatePrefix()}.QuickSave0.State");
+			if (result is not null) SaveState(path: result, userFriendlyStateName: result);
 
 			if (Tools.IsLoaded<TAStudio>())
 			{
@@ -4446,21 +4425,12 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			using var ofd = new OpenFileDialog
-			{
-				InitialDirectory = Config.PathEntries.SaveStateAbsolutePath(Game.System),
-				Filter = EmuHawkSaveStatesFSFilterSet.ToString(),
-				RestoreDirectory = true
-			};
-
-			if (this.ShowDialogWithTempMute(ofd) != DialogResult.OK) return;
-
-			if (!File.Exists(ofd.FileName))
-			{
-				return;
-			}
-
-			LoadState(ofd.FileName, Path.GetFileName(ofd.FileName));
+			var result = this.ShowFileOpenDialog(
+				discardCWDChange: true,
+				filter: EmuHawkSaveStatesFSFilterSet,
+				initDir: Config.PathEntries.SaveStateAbsolutePath(Game.System));
+			if (result is null || !File.Exists(result)) return;
+			LoadState(result, Path.GetFileName(result));
 		}
 
 		private void SelectSlot(int slot)
@@ -4661,6 +4631,53 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public IDialogController DialogController => this;
+
+		public IReadOnlyList<string>/*?*/ ShowFileMultiOpenDialog(
+			IDialogParent dialogParent,
+			string/*?*/ filterStr,
+			ref int filterIndex,
+			string initDir,
+			bool discardCWDChange = false,
+			string/*?*/ initFileName = null,
+			bool maySelectMultiple = false,
+			string/*?*/ windowTitle = null)
+		{
+			using OpenFileDialog ofd = new()
+			{
+				FileName = initFileName ?? string.Empty,
+				Filter = filterStr ?? string.Empty,
+				FilterIndex = filterIndex,
+				InitialDirectory = initDir,
+				Multiselect = maySelectMultiple,
+				RestoreDirectory = discardCWDChange,
+				Title = windowTitle ?? string.Empty,
+			};
+			var result = dialogParent.ShowDialogWithTempMute(ofd);
+			filterIndex = ofd.FilterIndex;
+			return result.IsOk() && ofd.FileNames.Length is not 0 ? ofd.FileNames : null;
+		}
+
+		public string/*?*/ ShowFileSaveDialog(
+			IDialogParent dialogParent,
+			bool discardCWDChange,
+			string/*?*/ fileExt,
+			string/*?*/ filterStr,
+			string initDir,
+			string/*?*/ initFileName,
+			bool muteOverwriteWarning)
+		{
+			using SaveFileDialog sfd = new()
+			{
+				DefaultExt = fileExt ?? string.Empty,
+				FileName = initFileName ?? string.Empty,
+				Filter = filterStr ?? string.Empty,
+				InitialDirectory = initDir,
+				OverwritePrompt = !muteOverwriteWarning,
+				RestoreDirectory = discardCWDChange,
+			};
+			var result = dialogParent.ShowDialogWithTempMute(sfd);
+			return result.IsOk() ? sfd.FileName : null;
+		}
 
 		public void ShowMessageBox(
 			IDialogParent/*?*/ owner,

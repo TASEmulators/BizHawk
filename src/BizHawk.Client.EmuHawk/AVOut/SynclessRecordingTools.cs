@@ -37,18 +37,12 @@ namespace BizHawk.Client.EmuHawk
 #if AVI_SUPPORT
 		public void Run()
 		{
-			var ofd = new OpenFileDialog
-			{
-				FileName = $"{_game.FilesystemSafeName()}.syncless.txt",
-				InitialDirectory = _config.PathEntries.AvAbsolutePath()
-			};
+			var result = this.ShowFileOpenDialog(
+				initDir: _config.PathEntries.AvAbsolutePath(),
+				initFileName: $"{_game.FilesystemSafeName()}.syncless.txt");
+			if (result is null) return;
 
-			if (ofd.ShowDialog() == DialogResult.Cancel)
-			{
-				return;
-			}
-
-			_mSynclessConfigFile = ofd.FileName;
+			_mSynclessConfigFile = result;
 			
 			//---- this is pretty crappy:
 			var lines = File.ReadAllLines(_mSynclessConfigFile);
@@ -120,15 +114,11 @@ namespace BizHawk.Client.EmuHawk
 				height = bmp.Height;
 			}
 
-			var sfd = new SaveFileDialog
-			{
-				FileName = Path.ChangeExtension(_mSynclessConfigFile, ".avi")
-			};
-			sfd.InitialDirectory = Path.GetDirectoryName(sfd.FileName);
-			if (sfd.ShowDialog() == DialogResult.Cancel)
-			{
-				return;
-			}
+			var initFileName = Path.ChangeExtension(_mSynclessConfigFile, ".avi");
+			var result = this.ShowFileSaveDialog(
+				initDir: Path.GetDirectoryName(initFileName)!,
+				initFileName: initFileName);
+			if (result is null) return;
 
 			using var avw = new AviWriter(this);
 			avw.SetAudioParameters(44100, 2, 16); // hacky
@@ -136,7 +126,7 @@ namespace BizHawk.Client.EmuHawk
 			avw.SetVideoParameters(width, height);
 			var token = avw.AcquireVideoCodecToken(_config);
 			avw.SetVideoCodecToken(token);
-			avw.OpenFile(sfd.FileName);
+			avw.OpenFile(result);
 			foreach (var fi in _mFrameInfos)
 			{
 				using (var bb = new BitmapBuffer(fi.PngPath, new BitmapLoadOptions()))

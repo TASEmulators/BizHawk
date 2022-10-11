@@ -83,20 +83,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ButtonPal_Click(object sender, EventArgs e)
 		{
-			using var ofd = new OpenFileDialog
-			{
-				InitialDirectory = _config.PathEntries.PalettesAbsolutePathFor(VSystemID.Raw.NES),
-				Filter = FilesystemFilterSet.Palettes.ToString(),
-				RestoreDirectory = true
-			};
-
-			var result = ofd.ShowDialog();
-			if (result != DialogResult.OK)
-			{
-				return;
-			}
-
-			var palette = new HawkFile(ofd.FileName);
+			var result = this.ShowFileOpenDialog(
+				discardCWDChange: true,
+				filter: FilesystemFilterSet.Palettes,
+				initDir: _config.PathEntries.PalettesAbsolutePathFor(VSystemID.Raw.NES));
+			if (result is null) return;
+			HawkFile palette = new(result);
 
 			if (palette.Exists)
 			{

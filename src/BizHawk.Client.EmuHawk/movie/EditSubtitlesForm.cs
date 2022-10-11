@@ -13,13 +13,16 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private static readonly FilesystemFilterSet SubRipFilesFSFilterSet = new(new FilesystemFilter("SubRip Files", new[] { "srt" }));
 
+		private readonly PathEntryCollection _pathEntries;
+
 		private readonly IMovie _selectedMovie;
 		private readonly bool _readOnly;
 
 		public IDialogController DialogController { get; }
 
-		public EditSubtitlesForm(IDialogController dialogController, IMovie movie, bool readOnly)
+		public EditSubtitlesForm(IDialogController dialogController, IMovie movie, PathEntryCollection pathEntries, bool readOnly)
 		{
+			_pathEntries = pathEntries;
 			_selectedMovie = movie;
 			_readOnly = readOnly;
 			DialogController = dialogController;
@@ -202,21 +205,10 @@ namespace BizHawk.Client.EmuHawk
 		private void Export_Click(object sender, EventArgs e)
 		{
 			// Get file to save as
-			using var form = new SaveFileDialog
-			{
-				AddExtension = true,
-				Filter = SubRipFilesFSFilterSet.ToString(),
-			};
-
-			var result = form.ShowDialog();
-			var fileName = form.FileName;
-
-			form.Dispose();
-
-			if (result != DialogResult.OK)
-			{
-				return;
-			}
+			var fileName = this.ShowFileSaveDialog(
+				filter: SubRipFilesFSFilterSet,
+				initDir: _pathEntries.MovieAbsolutePath());
+			if (fileName is null) return;
 
 			double fps;
 			try

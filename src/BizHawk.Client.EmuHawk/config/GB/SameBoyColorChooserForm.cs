@@ -264,18 +264,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Button6_Click(object sender, EventArgs e)
 		{
-			using var ofd = new OpenFileDialog
-			{
-				InitialDirectory = _config.PathEntries.ScreenshotAbsolutePathFor(VSystemID.Raw.GB),
-				Filter = FilesystemFilterSet.Palettes.ToString(),
-				RestoreDirectory = true
-			};
-
-			var result = ofd.ShowDialog(this);
-			if (result.IsOk())
-			{
-				LoadColorFile(ofd.FileName, true);
-			}
+			var result = this.ShowFileOpenDialog(
+				discardCWDChange: true,
+				filter: FilesystemFilterSet.Palettes,
+				initDir: _config.PathEntries.ScreenshotAbsolutePathFor(VSystemID.Raw.GB));
+			if (result is not null) LoadColorFile(result, alert: true);
 		}
 
 		private void ColorChooserForm_DragDrop(object sender, DragEventArgs e)
@@ -300,19 +293,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Button7_Click(object sender, EventArgs e)
 		{
-			using var sfd = new SaveFileDialog
-			{
-				InitialDirectory = _config.PathEntries.PalettesAbsolutePathFor(VSystemID.Raw.GB),
-				FileName = $"{_game.Name}.pal",
-				Filter = FilesystemFilterSet.Palettes.ToString(),
-				RestoreDirectory = true
-			};
-
-			var result = sfd.ShowDialog(this);
-			if (result.IsOk())
-			{
-				SaveColorFile(sfd.FileName);
-			}
+			var result = this.ShowFileSaveDialog(
+				discardCWDChange: true,
+				filter: FilesystemFilterSet.Palettes,
+				initDir: _config.PathEntries.PalettesAbsolutePathFor(VSystemID.Raw.GB),
+				initFileName: $"{_game.Name}.pal");
+			if (result is not null) SaveColorFile(result);
 		}
 
 		private void OK_Click(object sender, EventArgs e)

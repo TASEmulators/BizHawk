@@ -88,19 +88,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				filename = "";
 			}
-
-			// need to be fancy here, so call the ofd constructor directly instead of helper
-			var ofd = new OpenFileDialog
-			{
-				FileName = filename,
-				InitialDirectory = Config.PathEntries.MovieAbsolutePath(),
-				Filter = MoviesFSFilterSet.ToString(),
-			};
-
-			if (this.ShowDialogWithTempMute(ofd).IsOk())
-			{
-				LoadMovieFile(ofd.FileName, false);
-			}
+			var result = this.ShowFileOpenDialog(
+				filter: MoviesFSFilterSet,
+				initDir: Config!.PathEntries.MovieAbsolutePath(),
+				initFileName: filename);
+			if (result is not null) LoadMovieFile(result, askToSave: false);
 		}
 
 		/// <summary>
@@ -792,11 +784,11 @@ namespace BizHawk.Client.EmuHawk
 					{
 						if (DialogController.ShowMessageBox2($"Bad data between frames {lastState} and {Emulator.Frame}. Save the relevant state (raw data)?", "Integrity Failed!"))
 						{
-							var sfd = new SaveFileDialog { FileName = "integrity.fresh" };
-							if (sfd.ShowDialog().IsOk())
+							var result = this.ShowFileSaveDialog(initDir: Config!.PathEntries.ToolsAbsolutePath(), initFileName: "integrity.fresh");
+							if (result is not null)
 							{
-								File.WriteAllBytes(sfd.FileName, state);
-								var path = Path.ChangeExtension(sfd.FileName, ".greenzoned");
+								File.WriteAllBytes(result, state);
+								var path = Path.ChangeExtension(result, ".greenzoned");
 								File.WriteAllBytes(path, greenZone);
 							}
 						}
@@ -1054,7 +1046,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SubtitlesMenuItem_Click(object sender, EventArgs e)
 		{
-			var form = new EditSubtitlesForm(DialogController, CurrentTasMovie, false);
+			using EditSubtitlesForm form = new(DialogController, CurrentTasMovie, Config!.PathEntries, readOnly: false);
 			form.ShowDialog();
 		}
 

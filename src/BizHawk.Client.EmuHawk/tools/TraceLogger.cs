@@ -285,27 +285,29 @@ namespace BizHawk.Client.EmuHawk
 
 		private FileInfo GetFileFromUser()
 		{
-			using var sfd = new SaveFileDialog();
+			string initDir;
+			string initFileName;
 			if (LogFile == null)
 			{
-				sfd.FileName = Game.FilesystemSafeName() + _extension;
-				sfd.InitialDirectory = Config.PathEntries.LogAbsolutePath();
+				initFileName = Game.FilesystemSafeName() + _extension;
+				initDir = Config!.PathEntries.LogAbsolutePath();
 			}
 			else if (!string.IsNullOrWhiteSpace(LogFile.FullName))
 			{
-				sfd.FileName = Game.FilesystemSafeName();
-				sfd.InitialDirectory = Path.GetDirectoryName(LogFile.FullName);
+				initFileName = Game.FilesystemSafeName();
+				initDir = Path.GetDirectoryName(LogFile.FullName) ?? string.Empty;
 			}
 			else
 			{
-				sfd.FileName = Path.GetFileNameWithoutExtension(LogFile.FullName);
-				sfd.InitialDirectory = Config.PathEntries.LogAbsolutePath();
+				initFileName = Path.GetFileNameWithoutExtension(LogFile.FullName);
+				initDir = Config!.PathEntries.LogAbsolutePath();
 			}
-
-			sfd.Filter = LogFilesFSFilterSet.ToString();
-			sfd.RestoreDirectory = true;
-			var result = this.ShowDialogWithTempMute(sfd);
-			return result.IsOk() ? new FileInfo(sfd.FileName) : null;
+			var result = this.ShowFileSaveDialog(
+				discardCWDChange: true,
+				filter: LogFilesFSFilterSet,
+				initDir: initDir,
+				initFileName: initFileName);
+			return result is not null ? new FileInfo(result) : null;
 		}
 
 		private void SaveLogMenuItem_Click(object sender, EventArgs e)

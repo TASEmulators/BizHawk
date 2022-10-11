@@ -198,21 +198,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 			
 			var filterset = _movieSession.Movie.GetFSFilterSet();
-			using var sfd = new SaveFileDialog
-			{
-				InitialDirectory = movieFolderPath,
-				DefaultExt = $".{filterset.Filters[0].Extensions.First()}",
-				FileName = RecordBox.Text,
-				OverwritePrompt = false,
-				Filter = filterset.ToString(),
-			};
-
-			var result = this.ShowDialogWithTempMute(sfd);
-			if (result == DialogResult.OK
-				&& !string.IsNullOrWhiteSpace(sfd.FileName))
-			{
-				RecordBox.Text = sfd.FileName;
-			}
+			var result = this.ShowFileSaveDialog(
+				fileExt: $".{filterset.Filters[0].Extensions.First()}",
+				filter: filterset,
+				initDir: movieFolderPath,
+				initFileName: RecordBox.Text,
+				muteOverwriteWarning: true);
+			if (!string.IsNullOrWhiteSpace(result)) RecordBox.Text = result;
 		}
 
 		private void RecordMovie_Load(object sender, EventArgs e)

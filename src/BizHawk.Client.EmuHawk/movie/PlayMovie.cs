@@ -501,26 +501,24 @@ namespace BizHawk.Client.EmuHawk
 			var indices = MovieView.SelectedIndices;
 			if (indices.Count > 0)
 			{
-				var s = new EditSubtitlesForm(DialogController, _movieList[MovieView.SelectedIndices[0]], true);
+				using EditSubtitlesForm s = new(DialogController, _movieList[MovieView.SelectedIndices[0]], _config.PathEntries, readOnly: true);
 				s.Show();
 			}
 		}
 
 		private void BrowseMovies_Click(object sender, EventArgs e)
 		{
-			using var ofd = new OpenFileDialog
-			{
-				Filter = MoviesFSFilterSet.ToString(),
-				InitialDirectory = _config.PathEntries.MovieAbsolutePath()
-			};
-			if (!this.ShowDialogWithTempMute(ofd).IsOk()) return;
-			var file = new FileInfo(ofd.FileName);
+			var result = this.ShowFileOpenDialog(
+				filter: MoviesFSFilterSet,
+				initDir: _config.PathEntries.MovieAbsolutePath());
+			if (result is null) return;
+			FileInfo file = new(result);
 			if (!file.Exists)
 			{
 				return;
 			}
 
-			int? index = AddMovieToList(ofd.FileName, true);
+			int? index = AddMovieToList(result, true);
 			RefreshMovieList();
 			if (index.HasValue)
 			{

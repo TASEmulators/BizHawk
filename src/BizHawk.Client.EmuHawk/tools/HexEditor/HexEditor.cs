@@ -922,38 +922,24 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private string GetBinarySaveFileFromUser()
-		{
-			using var sfd = new SaveFileDialog
-			{
-				Filter = (_domain.Name is ROM_DOMAIN_NAME
+			=> this.ShowFileSaveDialog(
+				discardCWDChange: true,
+				filter: _domain.Name is ROM_DOMAIN_NAME
 					? CreateBinaryDumpFSFilterSet(Path.GetExtension(RomName).RemovePrefix('.'))
-					: BinFilesFSFilterSet).ToString(),
-				RestoreDirectory = true,
-				InitialDirectory = RomDirectory,
-				FileName = _domain.Name is ROM_DOMAIN_NAME
+					: BinFilesFSFilterSet,
+				initDir: RomDirectory,
+				initFileName: _domain.Name is ROM_DOMAIN_NAME
 					? RomName
-					: Game.FilesystemSafeName(),
-			};
-
-			var result = this.ShowDialogWithTempMute(sfd);
-			return result == DialogResult.OK ? sfd.FileName : "";
-		}
+					: Game.FilesystemSafeName()) ?? string.Empty;
 
 		private string GetSaveFileFromUser()
-		{
-			using var sfd = new SaveFileDialog
-			{
-				FileName = _domain.Name is ROM_DOMAIN_NAME
+			=> this.ShowFileSaveDialog(
+				discardCWDChange: true,
+				filter: HexDumpsFSFilterSet,
+				initDir: RomDirectory,
+				initFileName: _domain.Name is ROM_DOMAIN_NAME
 					? $"{Path.GetFileNameWithoutExtension(RomName)}.txt"
-					: Game.FilesystemSafeName(),
-				Filter = HexDumpsFSFilterSet.ToString(),
-				InitialDirectory = RomDirectory,
-				RestoreDirectory = true
-			};
-
-			var result = this.ShowDialogWithTempMute(sfd);
-			return result == DialogResult.OK ? sfd.FileName : "";
-		}
+					: Game.FilesystemSafeName()) ?? string.Empty;
 
 		private void ResetScrollBar()
 		{
@@ -1275,15 +1261,11 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			using var sfd = new OpenFileDialog
-			{
-				Filter = ImportableFSFilterSet.ToString(),
-				RestoreDirectory = true
-			};
-
-			if (this.ShowDialogWithTempMute(sfd) != DialogResult.OK) return;
-
-			var path = sfd.FileName;
+			var path = this.ShowFileOpenDialog(
+				discardCWDChange: true,
+				filter: ImportableFSFilterSet,
+				initDir: Config!.PathEntries.ToolsAbsolutePath());
+			if (path is null) return;
 
 			using var inf = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
 			long todo = Math.Min(inf.Length, _domain.Size);
@@ -1318,19 +1300,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadTableFileMenuItem_Click(object sender, EventArgs e)
 		{
-			string initialDirectory = Config.PathEntries.ToolsAbsolutePath();
-			var romName = Config.RecentRoms.MostRecent.SubstringAfterLast('|');
-
-			using var ofd = new OpenFileDialog
-			{
-				FileName = $"{Path.GetFileNameWithoutExtension(romName)}.tbl",
-				InitialDirectory = initialDirectory,
-				Filter = TextTablesFSFilterSet.ToString(),
-				RestoreDirectory = false
-			};
-			if (!this.ShowDialogWithTempMute(ofd).IsOk()) return;
-			LoadTable(ofd.FileName);
-			RecentTables.Add(ofd.FileName);
+			var result = this.ShowFileOpenDialog(
+				discardCWDChange: false,
+				filter: TextTablesFSFilterSet,
+				initDir: Config!.PathEntries.ToolsAbsolutePath(),
+				initFileName: $"{Path.GetFileNameWithoutExtension(Config.RecentRoms.MostRecent.SubstringAfterLast('|'))}.tbl");
+			if (result is null) return;
+			LoadTable(result);
+			RecentTables.Add(result);
 			GeneralUpdate();
 		}
 

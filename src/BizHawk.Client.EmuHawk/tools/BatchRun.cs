@@ -130,9 +130,9 @@ namespace BizHawk.Client.EmuHawk
 				DialogController.ShowMessageBox("No results to save!");
 				return;
 			}
-			using var sfd = new SaveFileDialog();
-			if (!sfd.ShowDialog(this).IsOk()) return;
-			using TextWriter tw = new StreamWriter(sfd.FileName);
+			var result = this.ShowFileSaveDialog(initDir: _config.PathEntries.ToolsAbsolutePath());
+			if (result is null) return;
+			using TextWriter tw = new StreamWriter(result);
 			foreach (var r in _mostRecentResults)
 			{
 				r.DumpTo(tw);

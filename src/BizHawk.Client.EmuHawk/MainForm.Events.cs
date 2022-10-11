@@ -319,12 +319,12 @@ namespace BizHawk.Client.EmuHawk
 
 			var args = new LoadRomArgs();
 
-			var filter = RomLoader.RomFilter.ToString();
+			var filter = RomLoader.RomFilter;
 
 			if (oac.Result == AdvancedRomLoaderType.LibretroLaunchGame)
 			{
 				args.OpenAdvanced = new OpenAdvanced_Libretro();
-				filter = oac.SuggestedExtensionFilter;
+				filter = oac.SuggestedExtensionFilter!;
 			}
 			else if (oac.Result == AdvancedRomLoaderType.ClassicLaunchGame)
 			{
@@ -333,31 +333,20 @@ namespace BizHawk.Client.EmuHawk
 			else if (oac.Result == AdvancedRomLoaderType.MameLaunchGame)
 			{
 				args.OpenAdvanced = new OpenAdvanced_MAME();
-				filter = MAMERomsFSFilterSet.ToString();
+				filter = MAMERomsFSFilterSet;
 			}
 			else
 			{
 				throw new InvalidOperationException("Automatic Alpha Sanitizer");
 			}
-
-			/*************************/
-			/* CLONE OF CODE FROM OpenRom (mostly) */
-			using var ofd = new OpenFileDialog
-			{
-				InitialDirectory = Config.PathEntries.RomAbsolutePath(Emulator.SystemId),
-				Filter = filter,
-				RestoreDirectory = false,
-				FilterIndex = _lastOpenRomFilter,
-				Title = "Open Advanced"
-			};
-
-			if (!this.ShowDialogWithTempMute(ofd).IsOk()) return;
-
-			var file = new FileInfo(ofd.FileName);
+			var result = this.ShowFileOpenDialog(
+				filter: filter,
+				filterIndex: ref _lastOpenRomFilter,
+				initDir: Config.PathEntries.RomAbsolutePath(Emulator.SystemId),
+				windowTitle: "Open Advanced");
+			if (result is null) return;
+			FileInfo file = new(result);
 			Config.PathEntries.LastRomPath = file.DirectoryName;
-			_lastOpenRomFilter = ofd.FilterIndex;
-			/*************************/
-
 			LoadRom(file.FullName, args);
 		}
 
@@ -507,21 +496,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ImportMovieMenuItem_Click(object sender, EventArgs e)
 		{
-			using var ofd = new OpenFileDialog
-			{
-				InitialDirectory = Config.PathEntries.RomAbsolutePath(Emulator.SystemId),
-				Multiselect = true,
-				Filter = MovieImport.AvailableImporters.ToString(),
-				RestoreDirectory = false
-			};
-
-			if (this.ShowDialogWithTempMute(ofd).IsOk())
-			{
-				foreach (var fn in ofd.FileNames)
-				{
-					ProcessMovieImport(fn, false);
-				}
-			}
+			var result = this.ShowFileMultiOpenDialog(
+				discardCWDChange: false,
+				filter: MovieImport.AvailableImporters,
+				initDir: Config.PathEntries.RomAbsolutePath(Emulator.SystemId));
+			if (result is not null) foreach (var fn in result) ProcessMovieImport(fn, false);
 		}
 
 		private void SaveMovieMenuItem_Click(object sender, EventArgs e)
@@ -631,17 +610,11 @@ namespace BizHawk.Client.EmuHawk
 		private void ScreenshotAsMenuItem_Click(object sender, EventArgs e)
 		{
 			var (dir, file) = $"{ScreenshotPrefix()}.{DateTime.Now:yyyy-MM-dd HH.mm.ss}.png".SplitPathToDirAndFile();
-			using var sfd = new SaveFileDialog
-			{
-				InitialDirectory = dir,
-				FileName = file,
-				Filter = ScreenshotsFSFilterSet.ToString(),
-			};
-
-			if (this.ShowDialogWithTempMute(sfd).IsOk())
-			{
-				TakeScreenshot(sfd.FileName);
-			}
+			var result = this.ShowFileSaveDialog(
+				filter: ScreenshotsFSFilterSet,
+				initDir: dir,
+				initFileName: file);
+			if (result is not null) TakeScreenshot(result);
 		}
 
 		private void ScreenshotClipboardMenuItem_Click(object sender, EventArgs e)
@@ -1177,16 +1150,13 @@ namespace BizHawk.Client.EmuHawk
 		private void SaveConfigAsMenuItem_Click(object sender, EventArgs e)
 		{
 			var (dir, file) = _getConfigPath().SplitPathToDirAndFile();
-			using var sfd = new SaveFileDialog
+			var result = this.ShowFileSaveDialog(
+				filter: ConfigFileFSFilterSet,
+				initDir: dir,
+				initFileName: file);
+			if (result is not null)
 			{
-				InitialDirectory = dir,
-				FileName = file,
-				Filter = ConfigFileFSFilterString
-			};
-
-			if (this.ShowDialogWithTempMute(sfd).IsOk())
-			{
-				SaveConfig(sfd.FileName);
+				SaveConfig(result);
 				AddOnScreenMessage("Copied settings");
 			}
 		}
@@ -1199,17 +1169,8 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadConfigFromMenuItem_Click(object sender, EventArgs e)
 		{
 			var (dir, file) = _getConfigPath().SplitPathToDirAndFile();
-			using var ofd = new OpenFileDialog
-			{
-				InitialDirectory = dir,
-				FileName = file,
-				Filter = ConfigFileFSFilterString
-			};
-
-			if (this.ShowDialogWithTempMute(ofd).IsOk())
-			{
-				LoadConfigFile(ofd.FileName);
-			}
+			var result = this.ShowFileOpenDialog(filter: ConfigFileFSFilterSet, initDir: dir!, initFileName: file!);
+			if (result is not null) LoadConfigFile(result);
 		}
 
 		private void ToolsSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -1561,16 +1522,14 @@ namespace BizHawk.Client.EmuHawk
 		private void Ti83LoadTIFileMenuItem_Click(object sender, EventArgs e)
 		{
 			if (Emulator is not TI83 ti83) return;
-			using var ofd = new OpenFileDialog
-			{
-				Filter = TI83ProgramFilesFSFilterSet.ToString(),
-				InitialDirectory = Config.PathEntries.RomAbsolutePath(Emulator.SystemId),
-				RestoreDirectory = true
-			};
-			if (!ofd.ShowDialog().IsOk()) return;
+			var result = this.ShowFileOpenDialog(
+				discardCWDChange: true,
+				filter: TI83ProgramFilesFSFilterSet,
+				initDir: Config.PathEntries.RomAbsolutePath(Emulator.SystemId));
+			if (result is null) return;
 			try
 			{
-				ti83.LinkPort.SendFileToCalc(File.OpenRead(ofd.FileName), true);
+				ti83.LinkPort.SendFileToCalc(File.OpenRead(result), true);
 			}
 			catch (IOException ex)
 			{
@@ -1578,7 +1537,7 @@ namespace BizHawk.Client.EmuHawk
 					$"Invalid file format. Reason: {ex.Message} \nForce transfer? This may cause the calculator to crash.";
 				if (this.ShowMessageBox3(owner: null, message, "Upload Failed", EMsgBoxIcon.Question) == true)
 				{
-					ti83.LinkPort.SendFileToCalc(File.OpenRead(ofd.FileName), false);
+					ti83.LinkPort.SendFileToCalc(File.OpenRead(result), false);
 				}
 			}
 		}
@@ -2179,22 +2138,19 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ZXSpectrumExportSnapshotMenuItemMenuItem_Click(object sender, EventArgs e)
 		{
-			using var zxSnapExpDialog = new SaveFileDialog
-			{
-				DefaultExt = "szx",
-				Filter = ZXStateFilesFSFilterSet.ToString(),
-				RestoreDirectory = true,
-				SupportMultiDottedExtensions = true,
-				Title = "EXPERIMENTAL - Export 3rd party snapshot formats"
-			};
-
 			try
 			{
-				if (zxSnapExpDialog.ShowDialog().IsOk())
+				var result = this.ShowFileSaveDialog(
+					discardCWDChange: true,
+					fileExt: "szx",
+//					SupportMultiDottedExtensions = true, // I think this should be enabled globally if we're going to do it --yoshi
+					filter: ZXStateFilesFSFilterSet,
+					initDir: Config.PathEntries.ToolsAbsolutePath());
+				if (result is not null)
 				{
 					var speccy = (ZXSpectrum)Emulator;
 					var snap = speccy.GetSZXSnapshot();
-					File.WriteAllBytes(zxSnapExpDialog.FileName, snap);
+					File.WriteAllBytes(result, snap);
 				}
 			}
 			catch (Exception)
@@ -2489,7 +2445,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (MovieSession.Movie.IsActive())
 			{
-				using var form = new EditSubtitlesForm(this, MovieSession.Movie, MovieSession.ReadOnly);
+				using EditSubtitlesForm form = new(this, MovieSession.Movie, Config.PathEntries, readOnly: MovieSession.ReadOnly);
 				form.ShowDialog();
 			}
 		}

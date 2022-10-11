@@ -430,25 +430,24 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TsmiSetCustomization_Click(object sender, EventArgs e)
 		{
-			using var ofd = new OpenFileDialog
-			{
-				InitialDirectory = _currSelectorDir,
-				RestoreDirectory = true
-			};
+			var result = this.ShowFileOpenDialog(
+				discardCWDChange: true,
+				initDir: _currSelectorDir);
+			if (result is null) return;
+
 			string firmwarePath = _pathEntries.FirmwareAbsolutePath();
-			if (!ofd.ShowDialog().IsOk()) return;
 
 			// remember the location we selected this firmware from, maybe there are others
-			_currSelectorDir = Path.GetDirectoryName(ofd.FileName);
+			_currSelectorDir = Path.GetDirectoryName(result);
 
 			try
 			{
-				using var hf = new HawkFile(ofd.FileName);
+				using HawkFile hf = new(result);
 				// for each selected item, set the user choice (even though multiple selection for this operation is no longer allowed)
 				foreach (ListViewItem lvi in lvFirmwares.SelectedItems)
 				{
 					var fr = (FirmwareRecord) lvi.Tag;
-					string filePath = ofd.FileName;
+					var filePath = result;
 
 					// if the selected file is an archive, allow the user to pick the inside file
 					// to always be copied to the global firmwares directory
@@ -486,7 +485,7 @@ namespace BizHawk.Client.EmuHawk
 								{
 									var fi = new FileInfo(filePath);
 									filePath = Path.Combine(firmwarePath, fi.Name);
-									File.Copy(ofd.FileName, filePath);
+									File.Copy(result, filePath);
 								}
 								catch (Exception ex)
 								{
@@ -582,13 +581,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TbbImport_Click(object sender, EventArgs e)
 		{
-			using var ofd = new OpenFileDialog { Multiselect = true };
-			if (ofd.ShowDialog() != DialogResult.OK)
-			{
-				return;
-			}
-
-			RunImportJob(ofd.FileNames);
+			var result = this.ShowFileMultiOpenDialog(initDir: _pathEntries.FirmwareAbsolutePath());
+			if (result is not null) RunImportJob(result);
 		}
 
 		private bool RunImportJobSingle(string basePath, string f, ref string errors)

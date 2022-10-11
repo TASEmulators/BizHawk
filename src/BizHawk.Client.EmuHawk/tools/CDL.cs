@@ -446,12 +446,10 @@ namespace BizHawk.Client.EmuHawk
 				this.ModalMessageBox("Cannot disassemble with no CDL loaded!", "Alert");
 				return;
 			}
-
-			using var sfd = new SaveFileDialog();
-			var result = sfd.ShowDialog(this);
-			if (result == DialogResult.OK)
+			var result = this.ShowFileSaveDialog(initDir: Config!.PathEntries.ToolsAbsolutePath());
+			if (result is not null)
 			{
-				using var fs = new FileStream(sfd.FileName, FileMode.Create, FileAccess.Write);
+				using var fs = new FileStream(result, FileMode.Create, FileAccess.Write);
 				CodeDataLogger.DisassembleCDL(fs, _cdl);
 			}
 		}

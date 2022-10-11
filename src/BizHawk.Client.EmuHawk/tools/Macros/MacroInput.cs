@@ -265,12 +265,6 @@ namespace BizHawk.Client.EmuHawk
 		private bool SaveMacroAs(MovieZone macro)
 		{
 			string suggestedFolder = SuggestedFolder(Config, Game);
-			using var dialog = new SaveFileDialog
-			{
-				InitialDirectory = suggestedFolder,
-				FileName = macro.Name,
-				Filter = MacrosFSFilterSet.ToString()
-			};
 
 			// Create directory?
 			bool create = false;
@@ -280,34 +274,34 @@ namespace BizHawk.Client.EmuHawk
 				create = true;
 			}
 
-			if (this.ShowDialogWithTempMute(dialog) != DialogResult.OK)
+			var result = this.ShowFileSaveDialog(
+				filter: MacrosFSFilterSet,
+				initDir: suggestedFolder,
+				initFileName: macro.Name);
+			if (result is null)
 			{
 				if (create)
 				{
-					Directory.Delete(dialog.InitialDirectory);
+					Directory.Delete(suggestedFolder);
 				}
 
 				return false;
 			}
 
-			macro.Save(dialog.FileName);
-			Config.RecentMacros.Add(dialog.FileName);
+			macro.Save(result);
+			Config!.RecentMacros.Add(result);
 
 			return true;
 		}
 
 		private MovieZone LoadMacro(IEmulator emulator = null, ToolManager tools = null)
 		{
-			using var dialog = new OpenFileDialog
-			{
-				InitialDirectory = SuggestedFolder(Config, Game),
-				Filter = MacrosFSFilterSet.ToString()
-			};
-
-			if (this.ShowDialogWithTempMute(dialog) != DialogResult.OK) return null;
-
-			Config.RecentMacros.Add(dialog.FileName);
-			return new MovieZone(dialog.FileName, MainForm, emulator ?? Emulator, MovieSession, tools ?? Tools);
+			var result = this.ShowFileOpenDialog(
+				filter: MacrosFSFilterSet,
+				initDir: SuggestedFolder(Config, Game));
+			if (result is null) return null;
+			Config!.RecentMacros.Add(result);
+			return new MovieZone(result, MainForm, emulator ?? Emulator, MovieSession, tools ?? Tools);
 		}
 	}
 }
