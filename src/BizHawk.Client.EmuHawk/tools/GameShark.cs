@@ -12,20 +12,14 @@ using BizHawk.Emulation.Cores;
 // SNES: GoldFinger (Action Replay II) Support?
 namespace BizHawk.Client.EmuHawk
 {
+	[GenEmuServiceProp(typeof(IEmulator), "Emulator")]
+	[GenEmuServiceProp(typeof(IMemoryDomains), "MemoryDomains")]
 	[Tool(
 		released: true,
 		supportedSystems: new[] { VSystemID.Raw.GB, VSystemID.Raw.GBA, VSystemID.Raw.GEN, VSystemID.Raw.N64, VSystemID.Raw.NES, VSystemID.Raw.PSX, VSystemID.Raw.SAT, VSystemID.Raw.SGB, VSystemID.Raw.SMS, VSystemID.Raw.SNES },
 		unsupportedCores: new[] { CoreNames.Snes9X })]
 	public partial class GameShark : ToolFormBase, IToolFormAutoConfig
 	{
-		[RequiredService]
-		// ReSharper disable once UnusedAutoPropertyAccessor.Local
-		private IMemoryDomains MemoryDomains { get; set; }
-
-		[RequiredService]
-		// ReSharper disable once UnusedAutoPropertyAccessor.Local
-		private IEmulator Emulator { get; set; }
-
 		protected override string WindowTitleStatic => "Cheat Code Converter";
 
 		public GameShark()

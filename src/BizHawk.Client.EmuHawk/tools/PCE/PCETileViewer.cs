@@ -9,15 +9,11 @@ using BizHawk.Emulation.Cores.PCEngine;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[GenEmuServiceProp(typeof(IEmulator), "Emulator")]
+	[GenEmuServiceProp(typeof(IPceGpuView), "Viewer")]
 	[SpecializedTool("Tile Viewer")]
 	public partial class PceTileViewer : ToolFormBase, IToolFormAutoConfig
 	{
-		[RequiredService]
-		public IPceGpuView Viewer { get; private set; }
-
-		[RequiredService]
-		public IEmulator Emulator { get; set; }
-
 		private int _bgPalNum;
 		private int _spPalNum;
 

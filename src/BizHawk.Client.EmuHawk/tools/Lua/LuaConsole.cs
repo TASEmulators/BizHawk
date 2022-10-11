@@ -18,6 +18,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[GenEmuServiceProp(typeof(IEmulator), "Emulator")]
 	public partial class LuaConsole : ToolFormBase, IToolFormAutoConfig
 	{
 		private const string IconColumnName = "Icon";
@@ -30,9 +31,6 @@ namespace BizHawk.Client.EmuHawk
 		private readonly List<FileSystemWatcher> _watches = new List<FileSystemWatcher>();
 
 		private readonly int _defaultSplitDistance;
-
-		[RequiredService]
-		private IEmulator Emulator { get; set; }
 
 		private bool _sortReverse;
 		private string _lastColumnSorted;

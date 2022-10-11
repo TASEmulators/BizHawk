@@ -9,14 +9,11 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[GenEmuServiceProp(typeof(IEmulator), "Emulator")]
+	[GenEmuServiceProp(typeof(IPceGpuView), "Viewer")]
 	[SpecializedTool("BG Viewer")]
 	public partial class PceBgViewer : ToolFormBase, IToolFormAutoConfig
 	{
-		[RequiredService]
-		public IPceGpuView Viewer { get; private set; }
-		[RequiredService]
-		public IEmulator Emulator { get; private set; }
-
 		[ConfigPersist]
 		// ReSharper disable once UnusedMember.Local
 		private int RefreshRateConfig

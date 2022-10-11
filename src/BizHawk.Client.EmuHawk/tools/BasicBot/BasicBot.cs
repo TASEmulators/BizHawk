@@ -15,6 +15,9 @@ using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[GenEmuServiceProp(typeof(IEmulator), "Emulator")]
+	[GenEmuServiceProp(typeof(IMemoryDomains), "MemoryDomains")]
+	[GenEmuServiceProp(typeof(IStatable), "StatableCore")] // unused due to loadstating via MainForm; however this service is very much required so the property needs to be present
 	public sealed partial class BasicBot : ToolFormBase, IToolFormAutoConfig
 	{
 		private string _currentFileName = "";
@@ -58,15 +61,6 @@ namespace BizHawk.Client.EmuHawk
 		
 		private bool _previousDisplayMessage;
 		private bool _previousInvisibleEmulation;
-
-		[RequiredService]
-		private IEmulator Emulator { get; set; }
-
-		[RequiredService]
-		private IStatable StatableCore { get; set; }
-
-		[RequiredService]
-		private IMemoryDomains MemoryDomains { get; set; }
 
 		[ConfigPersist]
 		public BasicBotSettings Settings { get; set; }
@@ -272,8 +266,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void Restart()
 		{
-			_ = StatableCore!; // otherwise unused due to loadstating via MainForm; however this service is very much required so the property needs to be present
-
 			if (_currentDomain == null
 				|| MemoryDomains.Contains(_currentDomain))
 			{

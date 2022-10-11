@@ -9,11 +9,9 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[GenEmuServiceProp(typeof(IEmulator), "Emulator")]
 	public partial class VirtualpadTool : ToolFormBase, IToolFormAutoConfig
 	{
-		[RequiredService]
-		private IEmulator Emulator { get; set; }
-
 		[ConfigPersist]
 		public bool StickyPads { get; set; }
 

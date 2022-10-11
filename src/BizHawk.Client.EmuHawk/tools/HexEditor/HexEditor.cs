@@ -21,6 +21,8 @@ using BizHawk.Common.CollectionExtensions;
 namespace BizHawk.Client.EmuHawk
 {
 	// int to long TODO: 32 bit domains have more digits than the hex editor can account for and the address covers up the 0 column
+	[GenEmuServiceProp(typeof(IEmulator), "Emulator")]
+	[GenEmuServiceProp(typeof(IMemoryDomains), "MemoryDomains")]
 	public partial class HexEditor : ToolFormBase, IToolFormAutoConfig
 	{
 		private class NullMemoryDomain : MemoryDomain
@@ -40,12 +42,6 @@ namespace BizHawk.Client.EmuHawk
 				WordSize = 1;
 			}
 		}
-
-		[RequiredService]
-		private IMemoryDomains MemoryDomains { get; set; }
-
-		[RequiredService]
-		private IEmulator Emulator { get; set; }
 
 		private readonly int _fontWidth;
 		private readonly int _fontHeight;

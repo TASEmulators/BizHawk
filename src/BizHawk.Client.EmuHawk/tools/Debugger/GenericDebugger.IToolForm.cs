@@ -7,39 +7,26 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class GenericDebugger : IToolForm
 	{
-		[RequiredService]
-		private IDebuggable Debuggable { get; set; }
-
-		[OptionalService]
-		private IDisassemblable Disassembler { get; set; }
-
-		[RequiredService]
-		private IMemoryDomains MemoryDomains { get; set; }
-
 		private IMemoryCallbackSystem MemoryCallbacks => Debuggable.MemoryCallbacks;
 
 
-		private RegisterValue PCRegister => Debuggable.GetCpuFlagsAndRegisters()[Disassembler.PCRegisterName];
+		private RegisterValue PCRegister
+			=> Debuggable.GetCpuFlagsAndRegisters()[Disassembler!.PCRegisterName];
 
 		// TODO: be cachey with checks that depend on catching exceptions
 		private bool CanUseMemoryCallbacks
 		{
 			get
 			{
-				if (Debuggable != null)
+				try
 				{
-					try
-					{
-						var result = Debuggable.MemoryCallbacks.HasReads;
-						return true;
-					}
-					catch (NotImplementedException)
-					{
-						return false;
-					}
+					_ = MemoryCallbacks.HasReads;
+					return true;
 				}
-
-				return false;
+				catch (NotImplementedException)
+				{
+					return false;
+				}
 			}
 		}
 
@@ -71,7 +58,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				try
 				{
-					Disassembler.Cpu = Disassembler.Cpu;
+					Disassembler!.Cpu = Disassembler.Cpu;
 					return true;
 				}
 				catch (NotImplementedException)

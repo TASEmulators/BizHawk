@@ -36,12 +36,10 @@ using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[GenEmuServiceProp(typeof(IBSNESForGfxDebugger), "Emulator")]
 	public unsafe partial class SNESGraphicsDebugger : ToolFormBase, IToolFormAutoConfig
 	{
 		private readonly List<DisplayTypeItem> displayTypeItems = new List<DisplayTypeItem>();
-
-		[RequiredService]
-		private IBSNESForGfxDebugger Emulator { get; set; }
 
 		[ConfigPersist]
 		public bool UseUserBackdropColor
@@ -105,7 +103,8 @@ namespace BizHawk.Client.EmuHawk
 			UserBackdropColor = -1;
 		}
 
-		private IBSNESForGfxDebugger currentSnesCore;
+		/// <remarks>HACK this seems to be for keeping a reference to the previous global IEmulator, which is a BAD IDEA --yoshi</remarks>
+		private IBSNESForGfxDebugger/*?*/ currentSnesCore = null;
 
 		protected override void OnClosed(EventArgs e)
 		{
@@ -172,10 +171,7 @@ namespace BizHawk.Client.EmuHawk
 			if (currentSnesCore != Emulator)
 			{
 				currentSnesCore?.ScanlineHookManager?.Unregister(this);
-			}
 
-			if (currentSnesCore != Emulator && Emulator != null)
-			{
 				gd = null;
 				suppression = true;
 				comboPalette.SelectedValue = Emulator.CurrPalette;
@@ -185,13 +181,8 @@ namespace BizHawk.Client.EmuHawk
 
 			currentSnesCore = Emulator;
 
-			if (currentSnesCore != null)
-			{
-				if (Visible && checkScanlineControl.Checked)
-					currentSnesCore.ScanlineHookManager?.Register(this, ScanlineHook);
-				else
-					currentSnesCore.ScanlineHookManager?.Unregister(this);
-			}
+			if (Visible && checkScanlineControl.Checked) currentSnesCore.ScanlineHookManager?.Register(this, ScanlineHook);
+			else currentSnesCore.ScanlineHookManager?.Unregister(this);
 		}
 
 		private void ScanlineHook(int line)

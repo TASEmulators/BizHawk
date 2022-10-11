@@ -7,14 +7,10 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public sealed class MemoryApi : IMemoryApi
+	[GenEmuServiceProp(typeof(IEmulator), "Emulator")]
+	[GenEmuServiceProp(typeof(IMemoryDomains), "MemoryDomainCore", IsOptional = true)] // this is required to use every method besides SetBigEndian...
+	public sealed partial class MemoryApi : IMemoryApi
 	{
-		[RequiredService]
-		private IEmulator Emulator { get; set; }
-
-		[OptionalService]
-		private IMemoryDomains MemoryDomainCore { get; set; }
-
 		private readonly Action<string> LogCallback;
 
 		private bool _isBigEndian;

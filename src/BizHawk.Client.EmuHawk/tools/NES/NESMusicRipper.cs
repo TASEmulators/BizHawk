@@ -15,11 +15,9 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[GenEmuServiceProp(typeof(NES), "Nes")]
 	public partial class NESMusicRipper : ToolFormBase, IToolFormAutoConfig
 	{
-		[RequiredService]
-		private NES Nes { get; set; }
-
 		protected override string WindowTitleStatic => "Music Ripper";
 
 		public NESMusicRipper()

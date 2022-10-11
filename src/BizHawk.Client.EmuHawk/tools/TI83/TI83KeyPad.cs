@@ -9,12 +9,9 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[GenEmuServiceProp(typeof(TI83Common), "Emu")] // required but unused
 	public sealed partial class TI83KeyPad : ToolFormBase, IToolFormAutoConfig
 	{
-		[RequiredService]
-		// ReSharper disable once UnusedAutoPropertyAccessor.Local
-		public TI83Common Emu { get; private set; }
-
 		protected override string WindowTitleStatic => "TI-83 Virtual KeyPad";
 
 		public TI83KeyPad()

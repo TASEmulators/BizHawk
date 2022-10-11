@@ -16,14 +16,10 @@ using NLua;
 namespace BizHawk.Client.Common
 {
 	[Description("A library for manipulating the EmuHawk client UI")]
-	public sealed class ClientLuaLibrary : LuaLibraryBase
+	[GenEmuServiceProp(typeof(IEmulator), "Emulator")]
+	[GenEmuServiceProp(typeof(IVideoProvider), "VideoProvider", IsOptional = true)]
+	public sealed partial class ClientLuaLibrary : LuaLibraryBase
 	{
-		[RequiredService]
-		private IEmulator Emulator { get; set; }
-
-		[OptionalService]
-		private IVideoProvider VideoProvider { get; set; }
-
 		public IMainFormForApi MainForm { get; set; }
 
 		public ClientLuaLibrary(IPlatformLuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)

@@ -56,7 +56,7 @@ namespace BizHawk.Client.EmuHawk
 			uint a = _currentDisassemblerAddress;
 			for (int i = 0; i <= lineCount; ++i)
 			{
-				string line = Disassembler.Disassemble(MemoryDomains.SystemBus, a, out var advance);
+				var line = Disassembler!.Disassemble(MemoryDomains.SystemBus, a, out var advance);
 				_disassemblyLines.Add(new DisasmOp(a, advance, line));
 				a += (uint)advance;
 				if (a > BusMaxValue)
@@ -106,7 +106,7 @@ namespace BizHawk.Client.EmuHawk
 			
 			while (true)
 			{
-				Disassembler.Disassemble(MemoryDomains.SystemBus, newaddress, out var bytestoadvance);
+				Disassembler!.Disassemble(MemoryDomains.SystemBus, newaddress, out var bytestoadvance);
 				if (newaddress + bytestoadvance == _currentDisassemblerAddress)
 				{
 					break;

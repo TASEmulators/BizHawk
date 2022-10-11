@@ -4,11 +4,9 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public sealed class MemorySaveStateApi : IMemorySaveStateApi
+	[GenEmuServiceProp(typeof(IStatable), "StatableCore")]
+	public sealed partial class MemorySaveStateApi : IMemorySaveStateApi
 	{
-		[RequiredService]
-		private IStatable StatableCore { get; set; }
-
 		private readonly Action<string> LogCallback;
 
 		private readonly Dictionary<Guid, byte[]> _memorySavestates = new Dictionary<Guid, byte[]>();
