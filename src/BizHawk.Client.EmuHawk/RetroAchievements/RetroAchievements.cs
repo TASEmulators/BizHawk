@@ -768,8 +768,7 @@ namespace BizHawk.Client.EmuHawk
 							{
 								mfs.Add(new(domains.SystemBus, 0xA000, 0x2000));
 							}
-							mfs.Add(new(domains["WRAM"], 0x1000, 0x1000));
-							mfs.Add(new(domains.SystemBus, 0xE000, 0x2000));
+							mfs.Add(new(domains.SystemBus, 0xA000, 0x6000));
 						}
 						break;
 					case RAInterface.ConsoleID.GBC:
@@ -790,7 +789,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							mfs.Add(new(domains.SystemBus, 0xA000, 0x2000));
 						}
-						mfs.Add(new(domains["WRAM"], 0x1000, 0x1000));
+						mfs.Add(new(domains["WRAM"], 0x0000, 0x2000));
 						mfs.Add(new(domains.SystemBus, 0xE000, 0x2000));
 						mfs.Add(new(domains["WRAM"], 0x2000, 0x6000));
 						break;
