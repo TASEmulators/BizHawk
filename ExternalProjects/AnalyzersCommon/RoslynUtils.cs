@@ -13,6 +13,19 @@ public static class RoslynUtils
 		return parent;
 	}
 
+	public static string FullNamespace(this ISymbol? sym)
+	{
+		if (sym is null) return string.Empty;
+		var s = sym.Name;
+		var ns = sym.ContainingNamespace;
+		while (ns is { IsGlobalNamespace: false })
+		{
+			s = $"{ns.Name}.{s}";
+			ns = ns.ContainingNamespace;
+		}
+		return s;
+	}
+
 	private static ITypeSymbol? GetThrownExceptionType(this SemanticModel model, ExpressionSyntax exprSyn)
 		=> exprSyn is ObjectCreationExpressionSyntax
 			? model.GetTypeInfo(exprSyn).Type

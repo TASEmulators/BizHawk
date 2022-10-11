@@ -9,6 +9,8 @@ using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[GenEmuServiceProp(typeof(IEmulator), "Emulator")]
+	[GenEmuServiceProp(typeof(IGameboyCommon), "Gb")]
 	public partial class GBPrinterView : ToolFormBase, IToolFormAutoConfig
 	{
 		private const int PaperWidth = 160;
@@ -17,12 +19,6 @@ namespace BizHawk.Client.EmuHawk
 		private static readonly uint PaperColor = (uint)Color.AntiqueWhite.ToArgb();
 
 		private readonly ColorMatrix _paperAdjustment;
-
-		[RequiredService]
-		public IGameboyCommon Gb { get; private set; }
-
-		[RequiredService]
-		public IEmulator Emulator { get; set; }
 
 		// If we've connected the printer yet
 		private bool _connected;
@@ -54,9 +50,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void GBPrinterView_FormClosed(object sender, FormClosedEventArgs e)
-		{
-			Gb?.SetPrinterCallback(null);
-		}
+			=> Gb.SetPrinterCallback(null);
 
 		public override void Restart()
 		{

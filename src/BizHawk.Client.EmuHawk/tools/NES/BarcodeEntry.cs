@@ -5,11 +5,9 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[GenEmuServiceProp(typeof(DatachBarcode), "Reader")]
 	public partial class BarcodeEntry : ToolFormBase
 	{
-		[RequiredService]
-		private DatachBarcode Reader { get; set; }
-
 		protected override string WindowTitleStatic => "Barcode Entry";
 
 		public BarcodeEntry()

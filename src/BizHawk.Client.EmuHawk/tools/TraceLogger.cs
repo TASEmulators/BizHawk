@@ -11,11 +11,9 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[GenEmuServiceProp(typeof(ITraceable), "Tracer")]
 	public partial class TraceLogger : ToolFormBase, IToolFormAutoConfig
 	{
-		[RequiredService]
-		private ITraceable Tracer { get; set; }
-
 		[ConfigPersist]
 		private int MaxLines { get; set; }
 
@@ -74,11 +72,7 @@ namespace BizHawk.Client.EmuHawk
 			Closing += (o, e) =>
 			{
 				SaveConfigSettings();
-				if (Tracer != null)
-				{
-					Tracer.Sink = null;
-				}
-
+				Tracer.Sink = null;
 				CloseFile();
 			};
 

@@ -12,15 +12,10 @@ using BizHawk.WinForms.Controls;
 
 namespace BizHawk.Client.EmuHawk.ForDebugging
 {
-	internal sealed class N64VideoSettingsFuzzToolForm : ToolFormBase
+	[GenEmuServiceProp(typeof(N64), "Emulator")]
+	internal sealed partial class N64VideoSettingsFuzzToolForm : ToolFormBase
 	{
 		public const string TOOL_NAME = "N64 Video Settings Fuzzer";
-
-		[RequiredService]
-		private N64? _maybeEmulator { get; set; } = null;
-
-		private N64 Emulator
-			=> _maybeEmulator!;
 
 		protected override string WindowTitleStatic
 			=> TOOL_NAME;

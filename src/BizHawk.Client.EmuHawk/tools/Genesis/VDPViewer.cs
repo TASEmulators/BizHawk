@@ -10,12 +10,10 @@ using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[GenEmuServiceProp(typeof(GPGX), "Emu")]
 	[SpecializedTool("VDP Viewer")]
 	public partial class GenVdpViewer : ToolFormBase, IToolFormAutoConfig
 	{
-		[RequiredService]
-		private GPGX Emu { get; set; }
-
 		private GPGX.VDPView _view;
 
 		private int _palIndex;
@@ -124,11 +122,6 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override unsafe void UpdateBefore()
 		{
-			if (Emu == null)
-			{
-				return;
-			}
-
 			using ((_view = Emu.UpdateVDPViewContext()).EnterExit())
 			{
 				int* pal = (int*)_view.ColorCache;

@@ -20,29 +20,15 @@ using BizHawk.Emulation.Cores.WonderSwan;
 namespace BizHawk.Client.Common
 {
 	[Description("A library for interacting with the currently loaded emulator core")]
-	public sealed class EmulationApi : IEmulationApi
+	[GenEmuServiceProp(typeof(IBoardInfo), "BoardInfo", IsOptional = true)]
+	[GenEmuServiceProp(typeof(IDebuggable), "DebuggableCore", IsOptional = true)]
+	[GenEmuServiceProp(typeof(IDisassemblable), "DisassemblableCore", IsOptional = true)]
+	[GenEmuServiceProp(typeof(IEmulator), "Emulator")]
+	[GenEmuServiceProp(typeof(IInputPollable), "InputPollableCore", IsOptional = true)]
+	[GenEmuServiceProp(typeof(IMemoryDomains), "MemoryDomains", IsOptional = true)]
+	[GenEmuServiceProp(typeof(IRegionable), "RegionableCore", IsOptional = true)]
+	public sealed partial class EmulationApi : IEmulationApi
 	{
-		[RequiredService]
-		private IEmulator? Emulator { get; set; }
-
-		[OptionalService]
-		private IBoardInfo? BoardInfo { get; set; }
-
-		[OptionalService]
-		private IDebuggable? DebuggableCore { get; set; }
-
-		[OptionalService]
-		private IDisassemblable? DisassemblableCore { get; set; }
-
-		[OptionalService]
-		private IInputPollable? InputPollableCore { get; set; }
-
-		[OptionalService]
-		private IMemoryDomains? MemoryDomains { get; set; }
-
-		[OptionalService]
-		private IRegionable? RegionableCore { get; set; }
-
 		private readonly Config _config;
 
 		private readonly IGameInfo? _game;
@@ -71,16 +57,16 @@ namespace BizHawk.Client.Common
 		public void DisplayVsync(bool enabled) => _config.VSync = enabled;
 
 		public int FrameCount()
-			=> Emulator!.Frame;
+			=> Emulator.Frame;
 
 		public (string Disasm, int Length) Disassemble(uint pc, string? name = null)
 		{
 			try
 			{
-				if (DisassemblableCore != null)
+				if (DisassemblableCore is not null && MemoryDomains is not null)
 				{
 					var disasm = DisassemblableCore.Disassemble(
-						string.IsNullOrEmpty(name) ? MemoryDomains!.SystemBus : MemoryDomains![name!]!,
+						string.IsNullOrEmpty(name) ? MemoryDomains.SystemBus : MemoryDomains[name!]!,
 						pc,
 						out var l
 					);

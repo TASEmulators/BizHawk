@@ -11,12 +11,10 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[GenEmuServiceProp(typeof(PCEngine), "PCE")]
 	[SpecializedTool("Sound Debugger")]
 	public partial class PCESoundDebugger : ToolFormBase, IToolFormAutoConfig
 	{
-		[RequiredService]
-		private PCEngine PCE { get; set; }
-
 		protected override string WindowTitleStatic => "Sound Debugger";
 
 		public PCESoundDebugger()

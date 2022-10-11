@@ -5,19 +5,26 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[GenEmuServiceProp(typeof(ISaveRam), "SaveRamEmulator", IsOptional = true)]
 	public partial class TAStudio : IToolForm
 	{
 		[RequiredService]
-		public IEmulator Emulator { get; private set; }
+		public IEmulator/*?*/ _maybeEmulator { get; set; } = null;
 
 		[RequiredService]
-		public IStatable StatableEmulator { get; private set; }
+		public IStatable/*?*/ _maybeStatableEmulator { get; set; } = null;
 
 		[RequiredService]
-		public IVideoProvider VideoProvider { get; private set; }
+		public IVideoProvider/*?*/ _maybeVideoProvider { get; set; } = null;
 
-		[OptionalService]
-		public ISaveRam SaveRamEmulator { get; private set; }
+		public IEmulator Emulator
+			=> _maybeEmulator!;
+
+		public IStatable StatableEmulator
+			=> _maybeStatableEmulator!;
+
+		public IVideoProvider VideoProvider
+			=> _maybeVideoProvider!;
 
 		private bool _initializing; // If true, will bypass restart logic, this is necessary since loading projects causes a movie to load which causes a rom to reload causing dialogs to restart
 

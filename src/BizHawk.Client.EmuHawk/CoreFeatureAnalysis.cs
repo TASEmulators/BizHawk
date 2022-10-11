@@ -11,6 +11,7 @@ using BizHawk.Emulation.Cores;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[GenEmuServiceProp(typeof(IEmulator), "Emulator")]
 	public partial class CoreFeatureAnalysis : ToolFormBase, IToolFormAutoConfig
 	{
 		private class CoreInfo
@@ -104,10 +105,6 @@ namespace BizHawk.Client.EmuHawk
 
 		[ConfigPersist]
 		private Dictionary<string, CoreInfo> KnownCores { get; set; }
-
-		// ReSharper disable once UnusedAutoPropertyAccessor.Local
-		[RequiredService]
-		private IEmulator Emulator { get; set; }
 
 		protected override string WindowTitleStatic => "Core Features";
 

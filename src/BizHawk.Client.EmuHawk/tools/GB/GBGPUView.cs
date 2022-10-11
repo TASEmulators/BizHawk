@@ -11,11 +11,9 @@ using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[GenEmuServiceProp(typeof(IGameboyCommon), "Gb")]
 	public partial class GbGpuView : ToolFormBase, IToolFormAutoConfig
 	{
-		[RequiredService]
-		public IGameboyCommon Gb { get; private set; }
-
 		// TODO: freeze semantics are a bit weird: details for a mouseover or freeze are taken from the current
 		// state, not the state at the last callback (and so can be quite different when update is set to manual).
 		// I'm not quite sure what's the best thing to do...
@@ -557,9 +555,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void GbGpuView_FormClosed(object sender, FormClosedEventArgs e)
-		{
-			Gb?.SetScanlineCallback(null, 0);
-		}
+			=> Gb.SetScanlineCallback(null, 0);
 
 		private void radioButtonRefreshFrame_CheckedChanged(object sender, EventArgs e) { ComputeRefreshValues(); }
 		private void radioButtonRefreshScanline_CheckedChanged(object sender, EventArgs e) { ComputeRefreshValues(); }
@@ -617,26 +613,21 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (Gb != null)
+			if (!Visible)
 			{
-				if (!Visible)
+				if (_cbScanlineEmu != -2)
 				{
-					if (_cbScanlineEmu != -2)
-					{
-						_cbScanlineEmu = -2;
-						Gb.SetScanlineCallback(null, 0);
-					}
+					_cbScanlineEmu = -2;
+					Gb.SetScanlineCallback(null, 0);
 				}
-				else
+			}
+			else
+			{
+				if (_cbScanline != _cbScanlineEmu)
 				{
-					if (_cbScanline != _cbScanlineEmu)
-					{
-						_cbScanlineEmu = _cbScanline;
-						if (_cbScanline == -2)
-							Gb.SetScanlineCallback(null, 0);
-						else
-							Gb.SetScanlineCallback(ScanlineCallback, _cbScanline);
-					}
+					_cbScanlineEmu = _cbScanline;
+					if (_cbScanline == -2) Gb.SetScanlineCallback(null, 0);
+					else Gb.SetScanlineCallback(ScanlineCallback, _cbScanline);
 				}
 			}
 		}

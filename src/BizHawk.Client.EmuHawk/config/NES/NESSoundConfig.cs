@@ -5,11 +5,9 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[GenEmuServiceProp(typeof(NES), "NES")]
 	public partial class NESSoundConfig : ToolFormBase
 	{
-		[RequiredService]
-		private NES NES { get; set; }
-
 		private NES.NESSettings _oldSettings;
 		private NES.NESSettings _settings;
 

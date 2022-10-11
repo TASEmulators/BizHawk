@@ -14,6 +14,7 @@ using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[GenEmuServiceProp(typeof(IMemoryDomains), "Core")]
 	public partial class Cheats : ToolFormBase, IToolFormAutoConfig
 	{
 		private const string NameColumn = "NamesColumn";
@@ -70,9 +71,6 @@ namespace BizHawk.Client.EmuHawk
 			_sortedColumn = "";
 			_sortReverse = false;
 		}
-
-		[RequiredService]
-		private IMemoryDomains Core { get; set; }
 
 		[ConfigPersist]
 		public CheatsSettings Settings { get; set; }

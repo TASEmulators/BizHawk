@@ -16,21 +16,15 @@ using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[GenEmuServiceProp(typeof(IDebuggable), "Debuggable", IsOptional = true)]
+	[GenEmuServiceProp(typeof(IEmulator), "Emu")]
+	[GenEmuServiceProp(typeof(IMemoryDomains), "MemoryDomains")]
 	public partial class RamWatch : ToolFormBase, IToolFormAutoConfig
 	{
 		private WatchList _watches;
 
 		private string _sortedColumn;
 		private bool _sortReverse;
-
-		[RequiredService]
-		private IMemoryDomains MemoryDomains { get; set; }
-
-		[RequiredService]
-		private IEmulator Emu { get; set; }
-
-		[OptionalService]
-		private IDebuggable Debuggable { get; set; }
 
 		protected override string WindowTitleStatic => "RAM Watch";
 
@@ -1083,7 +1077,7 @@ namespace BizHawk.Client.EmuHawk
 				SelectedWatches.Any() &&
 				Debuggable != null &&
 				Debuggable.MemoryCallbacksAvailable() &&
-				SelectedWatches.All(w => w.Domain.Name == (MemoryDomains != null ? MemoryDomains.SystemBus.Name : ""));
+				SelectedWatches.All(w => w.Domain.Name == MemoryDomains.SystemBus.Name);
 
 			SplitContextMenuItem.Enabled = MaySplitAllSelected;
 

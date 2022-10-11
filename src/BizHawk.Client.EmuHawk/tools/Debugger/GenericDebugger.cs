@@ -9,6 +9,9 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[GenEmuServiceProp(typeof(IDebuggable), "Debuggable")]
+	[GenEmuServiceProp(typeof(IDisassemblable), "Disassembler", IsOptional = true)]
+	[GenEmuServiceProp(typeof(IMemoryDomains), "MemoryDomains")]
 	public partial class GenericDebugger : ToolFormBase, IToolFormAutoConfig, IControlMainform
 	{
 		private const string AddressColumnName = "Address";
@@ -53,7 +56,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				try
 				{
-					if (CanSetCpu && Disassembler.AvailableCpus.CountIsAtLeast(2))
+					if (CanSetCpu && Disassembler!.AvailableCpus.CountIsAtLeast(2))
 					{
 						var c = new ComboBox
 						{
@@ -74,7 +77,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							Location = new Point(UIHelper.ScaleX(35), UIHelper.ScaleY(23)),
 							Size = new Size(UIHelper.ScaleX(100), UIHelper.ScaleY(15)),
-							Text = Disassembler.Cpu
+							Text = Disassembler!.Cpu,
 						});
 					}
 				}
@@ -84,7 +87,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Location = new Point(UIHelper.ScaleX(35), UIHelper.ScaleY(23)),
 						Size = new Size(UIHelper.ScaleX(100), UIHelper.ScaleY(15)),
-						Text = Disassembler.Cpu
+						Text = Disassembler!.Cpu,
 					});
 				}
 
@@ -187,7 +190,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OnCpuDropDownIndexChanged(object sender, EventArgs e)
 		{
-			Disassembler.Cpu = ((ComboBox) sender).SelectedItem.ToString();
+			Disassembler!.Cpu = ((ComboBox) sender).SelectedItem.ToString();
 		}
 
 		private void RunBtn_Click(object sender, EventArgs e)

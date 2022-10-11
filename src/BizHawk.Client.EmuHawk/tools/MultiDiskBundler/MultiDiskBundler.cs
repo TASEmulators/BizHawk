@@ -16,12 +16,10 @@ using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[GenEmuServiceProp(typeof(IEmulator), "Emulator")]
 	public partial class MultiDiskBundler : ToolFormBase, IToolFormAutoConfig
 	{
 		private XElement _currentXml;
-
-		[RequiredService]
-		public IEmulator Emulator { get; set; }
 
 		protected override string WindowTitleStatic => "Multi-disk Bundler";
 

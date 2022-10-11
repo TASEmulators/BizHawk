@@ -9,15 +9,11 @@ using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[GenEmuServiceProp(typeof(IEmulator), "Emulator")]
+	[GenEmuServiceProp(typeof(ISmsGpuView), "Vdp")]
 	[SpecializedTool("VDP Viewer")]
 	public partial class SmsVdpViewer : ToolFormBase, IToolFormAutoConfig
 	{
-		[RequiredService]
-		private ISmsGpuView Vdp { get; set; }
-
-		[RequiredService]
-		private IEmulator Emulator { get; set; }
-
 		private int _palIndex;
 
 		protected override string WindowTitleStatic => "VDP Viewer";

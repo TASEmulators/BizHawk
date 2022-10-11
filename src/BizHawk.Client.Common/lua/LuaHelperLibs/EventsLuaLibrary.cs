@@ -10,20 +10,12 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Client.Common
 {
 	[Description("A library for registering lua functions to emulator events.\n All events support multiple registered methods.\nAll registered event methods can be named and return a Guid when registered")]
-	public sealed class EventsLuaLibrary : LuaLibraryBase
+	[GenEmuServiceProp(typeof(IDebuggable), "DebuggableCore", IsOptional = true)]
+	[GenEmuServiceProp(typeof(IEmulator), "Emulator")]
+	[GenEmuServiceProp(typeof(IInputPollable), "InputPollableCore", IsOptional = true)]
+	[GenEmuServiceProp(typeof(IMemoryDomains), "Domains", IsOptional = true)]
+	public sealed partial class EventsLuaLibrary : LuaLibraryBase
 	{
-		[OptionalService]
-		private IInputPollable InputPollableCore { get; set; }
-
-		[OptionalService]
-		private IDebuggable DebuggableCore { get; set; }
-
-		[RequiredService]
-		private IEmulator Emulator { get; set; }
-
-		[OptionalService]
-		private IMemoryDomains Domains { get; set; }
-
 		public EventsLuaLibrary(IPlatformLuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
@@ -122,7 +114,7 @@ namespace BizHawk.Client.Common
 					}
 
 					var nlf = _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_MEMEXEC, LogOutputCallback, CurrentFile, name);
-					DebuggableCore.MemoryCallbacks.Add(
+					DebuggableCore!.MemoryCallbacks.Add(
 						new MemoryCallback(ProcessScope(scope), MemoryCallbackType.Execute, "Lua Hook", nlf.MemCallback, address, null));
 					return nlf.Guid.ToString();
 				}
@@ -157,7 +149,7 @@ namespace BizHawk.Client.Common
 					}
 
 					var nlf = _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_MEMEXECANY, LogOutputCallback, CurrentFile, name);
-					DebuggableCore.MemoryCallbacks.Add(new MemoryCallback(
+					DebuggableCore!.MemoryCallbacks.Add(new MemoryCallback(
 						ProcessScope(scope),
 						MemoryCallbackType.Execute,
 						"Lua Hook",
@@ -197,7 +189,7 @@ namespace BizHawk.Client.Common
 					}
 
 					var nlf = _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_MEMREAD, LogOutputCallback, CurrentFile, name);
-					DebuggableCore.MemoryCallbacks.Add(
+					DebuggableCore!.MemoryCallbacks.Add(
 						new MemoryCallback(ProcessScope(scope), MemoryCallbackType.Read, "Lua Hook", nlf.MemCallback, address, null));
 					return nlf.Guid.ToString();
 				}
@@ -232,7 +224,7 @@ namespace BizHawk.Client.Common
 					}
 
 					var nlf = _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_MEMWRITE, LogOutputCallback, CurrentFile, name);
-					DebuggableCore.MemoryCallbacks.Add(
+					DebuggableCore!.MemoryCallbacks.Add(
 						new MemoryCallback(ProcessScope(scope), MemoryCallbackType.Write, "Lua Hook", nlf.MemCallback, address, null));
 					return nlf.Guid.ToString();
 				}
@@ -301,7 +293,7 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					scope = DebuggableCore.MemoryCallbacks.AvailableScopes[0];
+					scope = DebuggableCore!.MemoryCallbacks.AvailableScopes[0];
 				}
 			}
 
@@ -310,7 +302,7 @@ namespace BizHawk.Client.Common
 
 		private bool HasScope(string scope)
 		{
-			return string.IsNullOrWhiteSpace(scope) || DebuggableCore.MemoryCallbacks.AvailableScopes.Contains(scope);
+			return string.IsNullOrWhiteSpace(scope) || DebuggableCore!.MemoryCallbacks.AvailableScopes.Contains(scope);
 		}
 	}
 }

@@ -9,6 +9,8 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[GenEmuServiceProp(typeof(IEmulator), "_emu")]
+	[GenEmuServiceProp(typeof(INESPPUViewable), "_ppu")]
 	public partial class NesPPU : ToolFormBase, IToolFormAutoConfig
 	{
 		// TODO:
@@ -23,11 +25,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private Bitmap _zoomBoxDefaultImage = new Bitmap(64, 64);
 		private bool _forceChange;
-
-		[RequiredService]
-		private INESPPUViewable _ppu { get; set; }
-		[RequiredService]
-		private IEmulator _emu { get; set; }
 
 		[ConfigPersist]
 		private int RefreshRateConfig
@@ -754,9 +751,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void NesPPU_FormClosed(object sender, FormClosedEventArgs e)
-		{
-			_ppu?.RemoveCallback2();
-		}
+			=> _ppu.RemoveCallback2();
 
 		private MemoryDomain _chrRom;
 		private readonly byte[] _chrRomCache = new byte[8192];

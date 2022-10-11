@@ -10,11 +10,9 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[GenEmuServiceProp(typeof(IEmulator), "Emulator")]
 	public partial class ToolBox : ToolFormBase
 	{
-		[RequiredService]
-		private IEmulator Emulator { get; set; }
-
 		protected override string WindowTitleStatic => string.Empty;
 
 		public ToolBox()

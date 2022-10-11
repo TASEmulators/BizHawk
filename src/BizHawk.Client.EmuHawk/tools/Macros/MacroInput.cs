@@ -9,12 +9,10 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[GenEmuServiceProp(typeof(IEmulator), "Emulator")]
 	[Tool(false, null)]
 	public partial class MacroInputTool : ToolFormBase, IToolFormAutoConfig
 	{
-		[RequiredService]
-		private IEmulator Emulator { get; set; }
-
 		public static readonly FilesystemFilterSet MacrosFSFilterSet = new FilesystemFilterSet(new FilesystemFilter("Movie Macros", new[] { "bk2m" }));
 
 		private readonly List<MovieZone> _zones = new List<MovieZone>();

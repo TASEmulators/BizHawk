@@ -10,11 +10,9 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public sealed class GuiApi : IGuiApi
+	[GenEmuServiceProp(typeof(IEmulator), "Emulator")]
+	public sealed partial class GuiApi : IGuiApi
 	{
-		[RequiredService]
-		private IEmulator Emulator { get; set; }
-
 		private readonly Action<string> LogCallback;
 
 		private readonly DisplayManagerBase _displayManager;

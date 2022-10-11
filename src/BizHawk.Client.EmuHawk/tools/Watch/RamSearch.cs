@@ -21,6 +21,9 @@ namespace BizHawk.Client.EmuHawk
 	/// <summary>
 	/// A form designed to search through ram values
 	/// </summary>
+	[GenEmuServiceProp(typeof(IEmulator), "Emu")]
+	[GenEmuServiceProp(typeof(IInputPollable), "InputPollableCore", IsOptional = true)]
+	[GenEmuServiceProp(typeof(IMemoryDomains), "MemoryDomains")]
 	public partial class RamSearch : ToolFormBase, IToolFormAutoConfig
 	{
 		private const int MaxDetailedSize = 1024 * 1024; // 1mb, semi-arbitrary decision, sets the size to check for and automatically switch to fast mode for the user
@@ -94,15 +97,6 @@ namespace BizHawk.Client.EmuHawk
 			Settings = new RamSearchSettings();
 			SetColumns();
 		}
-
-		[RequiredService]
-		public IMemoryDomains MemoryDomains { get; set; }
-
-		[RequiredService]
-		public IEmulator Emu { get; set; }
-
-		[OptionalService]
-		public IInputPollable InputPollableCore { get; set; }
 
 		[ConfigPersist]
 		public RamSearchSettings Settings { get; set; }

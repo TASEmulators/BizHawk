@@ -8,12 +8,10 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
+	[GenEmuServiceProp(typeof(IBoardInfo), "_boardInfo", IsOptional = true)]
 	[Obsolete("use IEmulationApi")]
-	public sealed class GameInfoApi : IGameInfoApi
+	public sealed partial class GameInfoApi : IGameInfoApi
 	{
-		[OptionalService]
-		public IBoardInfo? _boardInfo { get; set; }
-
 		private readonly IGameInfo? _game;
 
 		public GameInfoApi(IGameInfo? game)

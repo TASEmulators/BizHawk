@@ -2,11 +2,9 @@
 
 namespace BizHawk.Client.Common
 {
-	public sealed class MemoryEventsApi : IMemoryEventsApi
+	[GenEmuServiceProp(typeof(IDebuggable), "DebuggableCore")]
+	public sealed partial class MemoryEventsApi : IMemoryEventsApi
 	{
-		[RequiredService]
-		private IDebuggable DebuggableCore { get; set; }
-
 		public void AddReadCallback(MemoryCallbackDelegate cb, uint? address, string domain)
 		{
 			if (DebuggableCore.MemoryCallbacksAvailable())

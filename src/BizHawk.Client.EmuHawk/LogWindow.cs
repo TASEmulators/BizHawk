@@ -12,15 +12,13 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[GenEmuServiceProp(typeof(IEmulator), "Emulator")]
 	public partial class LogWindow : ToolFormBase, IToolFormAutoConfig
 	{
 		// TODO: only show add to game db when this is a Rom details dialog
 		// Let user decide what type (instead of always adding it as a good dump)
 		private readonly List<string> _lines = new List<string>();
 		private LogStream _logStream;
-
-		[RequiredService]
-		private IEmulator Emulator { get; set; }
 
 		private string _windowTitle = "Log Window";
 
