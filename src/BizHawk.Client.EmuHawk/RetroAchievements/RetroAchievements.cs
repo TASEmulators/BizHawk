@@ -637,9 +637,8 @@ namespace BizHawk.Client.EmuHawk
 		// these consoles will use the entire system bus
 		private static readonly RAInterface.ConsoleID[] UseFullSysBus = new[]
 		{
-			RAInterface.ConsoleID.GB, RAInterface.ConsoleID.NES,
-			RAInterface.ConsoleID.C64, RAInterface.ConsoleID.AmstradCPC,
-			RAInterface.ConsoleID.Atari7800,
+			RAInterface.ConsoleID.NES, RAInterface.ConsoleID.C64,
+			RAInterface.ConsoleID.AmstradCPC, RAInterface.ConsoleID.Atari7800,
 		};
 
 		// these consoles will use the entire main memory domain
