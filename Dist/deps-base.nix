@@ -171,9 +171,10 @@ let
 		({ name = "System.Text.Encoding.CodePages"; version = "5.0.0"; sha256 = "1bn2pzaaq4wx9ixirr8151vm5hynn3lmrljcgjx9yghmm4k677k0"; })
 	];
 	since-2_8_1 = [
+		({ name = "Google.FlatBuffers"; version = "22.9.24"; sha256 = "0v72xrzcd7pphjizi2y5amk11nqjvhm7qqcb899rypl91a8vxw04"; })
 		({ name = "Menees.Analyzers"; version = "3.0.8"; sha256 = "1apv06cmnrakaylyh85hjyn380cnj0h53j3pakyp0f4jnpgw0bgf"; })
 		({ name = "Meziantou.Analyzer"; version = "1.0.707"; sha256 = "09drs16fr0xly4k8drznw7pa5f2byjc9km0pm0c3rrhl7jsz4ds5"; })
-		({ name = "Microsoft.AspNetCore.App.Ref"; version = "6.0.6"; sha256 = "08pjgsq2vcsdy4vgff146izvxq5hpg02a8lvih0wcsgghv1m1qki"; })
+		({ name = "Microsoft.AspNetCore.App.Ref"; version = "6.0.8"; sha256 = "1sxl6nsv8magamqbykdr6jnd9q6r1afavc7pzm2jmcqyxv121hv3"; })
 		({ name = "Microsoft.Bcl.HashCode"; version = "1.1.1"; sha256 = "0xwfph92p92d8hgrdiaka4cazqsjpg4ywfxfx6qbk3939f29kzl0"; })
 		({ name = "Nullable"; version = "1.3.1"; sha256 = "0hwrr4q22c0i056dqy3v431rxjv7md910ihz0pjsi16qxsbpw7p7"; })
 		({ name = "StyleCop.Analyzers"; version = "1.2.0-beta.435"; sha256 = "0dirz0av24ds2k7hgpss15y4wlhwlzz22qdjvkq0n3g3sxcckrsy"; })
