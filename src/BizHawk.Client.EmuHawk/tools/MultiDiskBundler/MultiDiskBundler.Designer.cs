@@ -149,7 +149,8 @@
             "ZXSpectrum",
             "AmstradCPC",
             "GGL",
-            "TI83"});
+            "TI83",
+			"Jaguar"});
 			this.SystemDropDown.Location = new System.Drawing.Point(405, 75);
 			this.SystemDropDown.Name = "SystemDropDown";
 			this.SystemDropDown.Size = new System.Drawing.Size(89, 21);
