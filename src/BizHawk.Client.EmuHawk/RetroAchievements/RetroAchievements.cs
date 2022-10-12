@@ -6,6 +6,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 
+using Newtonsoft.Json;
+
 using BizHawk.BizInvoke;
 using BizHawk.Common;
 using BizHawk.Client.Common;
@@ -31,15 +33,13 @@ using BizHawk.Emulation.Cores.Waterbox;
 using BizHawk.Emulation.Cores.WonderSwan;
 using BizHawk.Emulation.DiscSystem;
 
-// TODO: Auto-update dll system
-
 namespace BizHawk.Client.EmuHawk
 {
 	public class RetroAchievements
 	{
-		private static readonly RAInterface RA;
+		private static RAInterface RA;
 
-		private static readonly string _version;
+		private static readonly Version _version;
 
 		public static bool IsAvailable => RA != null;
 		
@@ -52,15 +52,40 @@ namespace BizHawk.Client.EmuHawk
 					throw new NotSupportedException("RetroAchivements is Windows only!");
 				}
 
-				var resolver = new DynamicLibraryImportResolver("RA_Integration.dll", hasLimitedLifetime: false);
+				var resolver = new DynamicLibraryImportResolver("RA_Integration-x64.dll", hasLimitedLifetime: false);
 				RA = BizInvoker.GetInvoker<RAInterface>(resolver, CallingConventionAdapters.Native);
-				_version = Marshal.PtrToStringAnsi(RA.IntegrationVersion());
+				_version = new Version(Marshal.PtrToStringAnsi(RA.IntegrationVersion()));
 				Console.WriteLine($"Loaded RetroAchievements v{_version}");
+				//CheckUpdateRA();
 			}
 			catch
 			{
 				RA = null;
-				_version = "0.0";
+				_version = new Version(0, 0);
+			}
+		}
+
+		private static readonly HttpCommunication _http = new(null, null, null);
+
+		private static Dictionary<string, object> GetJsonDict(string url)
+		{
+			var req = _http.ExecGet(url);
+			return JsonConvert.DeserializeObject<Dictionary<string, object>>(req);
+		}
+
+		private static void CheckUpdateRA()
+		{
+			try
+			{
+				var info = GetJsonDict("https://retroachievements.org/dorequest.php?r=latestintegration");
+				if (info.TryGetValue("Success", out var success) && (bool)success)
+				{
+					var lastestVer = new Version((string)info["LatestVersion"]);
+				}
+			}
+			catch
+			{
+
 			}
 		}
 
@@ -631,7 +656,18 @@ namespace BizHawk.Client.EmuHawk
 				// todo: suppress user inputs with overlay active?
 			}
 
-			RA.DoAchievementsFrame();
+			if (Emu.HasMemoryDomains())
+			{
+				// do this to prevent strain when peeks are spammed
+				using (Domains.MainMemory.EnterExit())
+				{
+					RA.DoAchievementsFrame();
+				}
+			}
+			else
+			{
+				RA.DoAchievementsFrame();
+			}
 		}
 
 		// these consoles will use the entire system bus
