@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 
 using Newtonsoft.Json;
@@ -21,6 +22,9 @@ using BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive;
 using BizHawk.Emulation.Cores.Nintendo.BSNES;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
+using BizHawk.Emulation.Cores.Nintendo.GBHawkLink;
+using BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x;
+using BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.Sameboy;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
@@ -37,55 +41,137 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class RetroAchievements
 	{
+		private static DynamicLibraryImportResolver _resolver;
 		private static RAInterface RA;
+		private static Version _version;
 
-		private static readonly Version _version;
+		private static void AttachDll()
+		{
+			_resolver = new DynamicLibraryImportResolver("RA_Integration-x64.dll", hasLimitedLifetime: true);
+			RA = BizInvoker.GetInvoker<RAInterface>(_resolver, CallingConventionAdapters.Native);
+			_version = new Version(Marshal.PtrToStringAnsi(RA.IntegrationVersion()));
+			Console.WriteLine($"Loaded RetroAchievements v{_version}");
+		}
+
+		private static void DetachDll()
+		{
+			RA?.Shutdown();
+			_resolver?.Dispose();
+			_resolver = null;
+			RA = null;
+			_version = new Version(0, 0);
+		}
 
 		public static bool IsAvailable => RA != null;
-		
+
 		static RetroAchievements()
 		{
 			try
 			{
 				if (OSTailoredCode.IsUnixHost)
 				{
-					throw new NotSupportedException("RetroAchivements is Windows only!");
+					throw new NotSupportedException("RetroAchievements is Windows only!");
 				}
 
-				var resolver = new DynamicLibraryImportResolver("RA_Integration-x64.dll", hasLimitedLifetime: false);
-				RA = BizInvoker.GetInvoker<RAInterface>(resolver, CallingConventionAdapters.Native);
-				_version = new Version(Marshal.PtrToStringAnsi(RA.IntegrationVersion()));
-				Console.WriteLine($"Loaded RetroAchievements v{_version}");
-				//CheckUpdateRA();
+				AttachDll();
 			}
 			catch
 			{
-				RA = null;
-				_version = new Version(0, 0);
+				DetachDll();
 			}
 		}
 
-		private static readonly HttpCommunication _http = new(null, null, null);
-
-		private static Dictionary<string, object> GetJsonDict(string url)
+		private static bool DownloadDll(string url)
 		{
-			var req = _http.ExecGet(url);
-			return JsonConvert.DeserializeObject<Dictionary<string, object>>(req);
+			if (url.StartsWith("http:"))
+			{
+				// force https
+				url = url.Replace("http:", "https:");
+			}
+
+			using var downloadForm = new RAIntegrationDownloaderForm(url);
+			downloadForm.ShowDialog();
+			return downloadForm.DownloadSucceeded();
 		}
 
-		private static void CheckUpdateRA()
+		public static bool CheckUpdateRA(MainForm mainForm)
 		{
 			try
 			{
-				var info = GetJsonDict("https://retroachievements.org/dorequest.php?r=latestintegration");
+				var http = new HttpCommunication(null, "https://retroachievements.org/dorequest.php?r=latestintegration", null);
+				var info = JsonConvert.DeserializeObject<Dictionary<string, object>>(http.ExecGet());
 				if (info.TryGetValue("Success", out var success) && (bool)success)
 				{
 					var lastestVer = new Version((string)info["LatestVersion"]);
+					var minVer = new Version((string)info["MinimumVersion"]);
+
+					if (_version < minVer)
+					{
+						if (mainForm.ShowMessageBox2(
+							owner: null,
+							text: "An update is required to use RetroAchivements. Do you want to download the update now?",
+							caption: "Update",
+							icon: EMsgBoxIcon.Question,
+							useOKCancel: false))
+						{
+							DetachDll();
+							var ret = DownloadDll((string)info["LatestVersionUrlX64"]);
+							AttachDll();
+							return ret;
+						}
+						else
+						{
+							return false;
+						}
+					}
+					else if (_version < lastestVer)
+					{
+						if (mainForm.ShowMessageBox2(
+							owner: null,
+							text: "An optional update is available for RetroAchivements. Do you want to download the update now?",
+							caption: "Update",
+							icon: EMsgBoxIcon.Question,
+							useOKCancel: false))
+						{
+							DetachDll();
+							DownloadDll((string)info["LatestVersionUrlX64"]);
+							AttachDll();
+							return true; // even if this fails, should be OK to use the old dll
+						}
+						else
+						{
+							// don't have to update in this case
+							return true;
+						}
+					}
+					else
+					{
+						return true;
+					}
+				}
+				else
+				{
+					mainForm.ShowMessageBox(
+						owner: null,
+						text: "Failed to fetch update information, cannot start RetroAchivements.",
+						caption: "Error",
+						icon: EMsgBoxIcon.Error);
+
+					return false;
 				}
 			}
-			catch
+			catch (Exception ex)
 			{
+				// is this needed?
+				mainForm.ShowMessageBox(
+					owner: null,
+					text: $"Exception {ex.Message} occurred when fetching update information, cannot start RetroAchivements.",
+					caption: "Error",
+					icon: EMsgBoxIcon.Error);
 
+				DetachDll();
+				AttachDll();
+				return false;
 			}
 		}
 
@@ -111,7 +197,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private class DummyDomain : MemoryDomain
 		{
-			public static DummyDomain Instance = new();
+			public DummyDomain(long size)
+				=> Size = size;
 
 			public override byte PeekByte(long addr)
 				=> 0xFF;
@@ -155,7 +242,7 @@ namespace BizHawk.Client.EmuHawk
 				Marshal.Copy(ret, 0, buffer, end - addr);
 				return end - addr;
 			}
-			
+
 			public MemFunctions(MemoryDomain domain, int domainAddrStart, long bankSize)
 			{
 				_domain = domain;
@@ -196,7 +283,7 @@ namespace BizHawk.Client.EmuHawk
 				if (addr < 0x40)
 				{
 					return (byte)_debuggable.GetCpuFlagsAndRegisters()["SPR" + addr].Value;
-				}	
+				}
 				else if (addr < 0x840)
 				{
 					addr -= 0x40;
@@ -349,7 +436,16 @@ namespace BizHawk.Client.EmuHawk
 				VSystemID.Raw.GB when Emu is IGameboyCommon gb => gb.IsCGBMode() ? RAInterface.ConsoleID.GBC : RAInterface.ConsoleID.GB,
 				VSystemID.Raw.GBA => RAInterface.ConsoleID.GBA,
 				VSystemID.Raw.GBC => RAInterface.ConsoleID.GBC, // Not actually used
-				VSystemID.Raw.GBL => RAInterface.ConsoleID.GB, // actually can be a mix of GB and GBC
+				VSystemID.Raw.GBL => Emu switch // actually can be a mix of GB and GBC
+				{
+					// there's probably a better way for all this
+					GambatteLink gb => gb.IsCGBMode(0) ? RAInterface.ConsoleID.GBC : RAInterface.ConsoleID.GB,
+					// WHY ARE THESE PUBLIC???
+					GBHawkLink gb => gb.L.IsCGBMode() ? RAInterface.ConsoleID.GBC : RAInterface.ConsoleID.GB,
+					GBHawkLink3x gb => gb.L.IsCGBMode() ? RAInterface.ConsoleID.GBC : RAInterface.ConsoleID.GB,
+					GBHawkLink4x gb => gb.A.IsCGBMode() ? RAInterface.ConsoleID.GBC : RAInterface.ConsoleID.GB,
+					_ => RAInterface.ConsoleID.UnknownConsoleID,
+				},
 				VSystemID.Raw.GEN when Emu is GPGX gpgx => gpgx.IsMegaCD ? RAInterface.ConsoleID.SegaCD : RAInterface.ConsoleID.MegaDrive,
 				VSystemID.Raw.GEN when Emu is PicoDrive pico => pico.Is32XActive ? RAInterface.ConsoleID.Sega32X : RAInterface.ConsoleID.MegaDrive,
 				VSystemID.Raw.GG => RAInterface.ConsoleID.GameGear,
@@ -461,10 +557,11 @@ namespace BizHawk.Client.EmuHawk
 
 				AllGamesVerified = !ids.Contains(0);
 
-				if (ids.Count > 0 && ids[0] != 0)
-				{
-					RA.ActivateGame(ids[0]);
-				}
+				RA.ActivateGame(ids.Count > 0 ? ids[0] : 0);
+			}
+			else
+			{
+				RA.ActivateGame(0);
 			}
 
 			CheckHardcoreModeConditions();
@@ -699,6 +796,63 @@ namespace BizHawk.Client.EmuHawk
 			[RAInterface.ConsoleID.SG1000] = new[] { (0xC000, 0x2000), (0x2000, 0x2000), (0x8000, 0x2000) },
 		};
 
+		// GB is a bit complicated, since we could be a single core or a linked core, and GBC wants banks 2-7 of WRAM appended at the end
+		private static void AddGBDomains(List<MemFunctions> mfs, IMemoryDomains domains)
+		{
+			string sysBus, cartRam, wram;
+			if (domains.Has("P1 System Bus")) // GambatteLink
+			{
+				sysBus = "P1 System Bus";
+				cartRam = "P1 CartRAM";
+				wram = "P1 WRAM";
+			}
+			else if (domains.Has("System Bus L")) // GBHawkLink / GBHawkLink3x
+			{
+				sysBus = "System Bus L";
+				cartRam = "Cart RAM L";
+				wram = "Main RAM L";
+			}
+			else if (domains.Has("System Bus A")) // GBHawkLink4x
+			{
+				sysBus = "System Bus A";
+				cartRam = "Cart RAM A";
+				wram = "Main RAM A";
+			}
+			else // Gambatte / GBHawk
+			{
+				sysBus = "System Bus";
+				cartRam = "CartRAM";
+				wram = "WRAM";
+			}
+
+			mfs.Add(new(domains[sysBus], 0, 0xA000));
+			if (domains.Has(cartRam))
+			{
+				if (domains[cartRam].Size == 0x200) // MBC2
+				{
+					for (int i = 0; i < 0x10; i++)
+					{
+						mfs.Add(new(domains[cartRam], 0, 0x200));
+					}
+				}
+				else
+				{
+					mfs.Add(new(domains[cartRam], 0, 0x2000));
+				}
+			}
+			else
+			{
+				mfs.Add(new(domains[sysBus], 0xA000, 0x2000));
+			}
+			mfs.Add(new(domains[sysBus], 0xA000, 0x2000));
+			mfs.Add(new(domains[wram], 0x0000, 0x2000));
+			mfs.Add(new(domains[sysBus], 0xE000, 0x2000));
+			if (domains[wram].Size == 0x8000)
+			{
+				mfs.Add(new(domains[wram], 0x2000, 0x6000));
+			}
+		}
+
 		// anything more complicated will be handled accordingly
 
 		private static IReadOnlyList<MemFunctions> CreateMemoryBanks(
@@ -750,17 +904,18 @@ namespace BizHawk.Client.EmuHawk
 						}
 						break;
 					case RAInterface.ConsoleID.GB:
+					case RAInterface.ConsoleID.GBC:
 						if (domains.Has("SGB_ROM"))
 						{
 							// uh oh, BSNESv115+ can't handle this case (todo: Expose more GB memory domains!!!)
 							mfs.Add(new(domains["SGB CARTROM"], 0, 0x8000));
-							mfs.Add(new(DummyDomain.Instance, 0, 0x8000));
+							mfs.Add(new(new DummyDomain(0x8000), 0, 0x8000));
 						}
 						else if (domains.Has("SGB CARTROM"))
 						{
 							// not as many domains, but should be functional enough
 							mfs.Add(new(domains["SGB CARTROM"], 0, 0x8000));
-							mfs.Add(new(DummyDomain.Instance, 0, 0x2000));
+							mfs.Add(new(new DummyDomain(0x2000), 0, 0x2000));
 							if (domains.Has("SGB CARTRAM"))
 							{
 								if (domains["SGB CARTRAM"].Size == 0x200) // MBC2
@@ -777,56 +932,17 @@ namespace BizHawk.Client.EmuHawk
 							}
 							else
 							{
-								mfs.Add(new(DummyDomain.Instance, 0, 0x2000));
+								mfs.Add(new(new DummyDomain(0x2000), 0, 0x2000));
 							}
 							mfs.Add(new(domains["SGB WRAM"], 0, 0x2000));
 							mfs.Add(new(domains["SGB WRAM"], 0, 0x1E00));
-							mfs.Add(new(DummyDomain.Instance, 0, 0x180));
+							mfs.Add(new(new DummyDomain(0x180), 0, 0x180));
 							mfs.Add(new(domains["SGB HRAM"], 0, 0x80));
 						}
 						else
 						{
-							mfs.Add(new(domains.SystemBus, 0, 0xA000));
-							if (domains.Has("CartRAM"))
-							{
-								if (domains["CartRAM"].Size < 0x2000)
-								{
-									mfs.Add(new(domains["CartRAM"], 0, domains["CartRAM"].Size));
-									mfs.Add(new(DummyDomain.Instance, 0, 0x2000 - domains["CartRAM"].Size));
-								}
-								else
-								{
-									mfs.Add(new(domains["CartRAM"], 0, 0x2000));
-								}
-							}
-							else
-							{
-								mfs.Add(new(domains.SystemBus, 0xA000, 0x2000));
-							}
-							mfs.Add(new(domains.SystemBus, 0xA000, 0x6000));
+							AddGBDomains(mfs, domains);
 						}
-						break;
-					case RAInterface.ConsoleID.GBC:
-						mfs.Add(new(domains.SystemBus, 0, 0xA000));
-						if (domains.Has("CartRAM"))
-						{
-							if (domains["CartRAM"].Size < 0x2000)
-							{
-								mfs.Add(new(domains["CartRAM"], 0, domains["CartRAM"].Size));
-								mfs.Add(new(DummyDomain.Instance, 0, 0x2000 - domains["CartRAM"].Size));
-							}
-							else
-							{
-								mfs.Add(new(domains["CartRAM"], 0, 0x2000));
-							}
-						}
-						else
-						{
-							mfs.Add(new(domains.SystemBus, 0xA000, 0x2000));
-						}
-						mfs.Add(new(domains["WRAM"], 0x0000, 0x2000));
-						mfs.Add(new(domains.SystemBus, 0xE000, 0x2000));
-						mfs.Add(new(domains["WRAM"], 0x2000, 0x6000));
 						break;
 					case RAInterface.ConsoleID.SegaCD:
 						mfs.Add(new(domains["68K RAM"], 0, domains["68K RAM"].Size));
@@ -893,6 +1009,10 @@ namespace BizHawk.Client.EmuHawk
 			return mfs.AsReadOnly();
 		}
 
+		private static int _jaguarLbaOffset; // HACK
+		private static readonly byte[] _jaguarHeader = Encoding.ASCII.GetBytes("ATARI APPROVED DATA HEADER ATRI ");
+		private static readonly byte[] _jaguarBSHeader = Encoding.ASCII.GetBytes("TARA IPARPVODED TA AEHDAREA RT I");
+
 		private static IReadOnlyList<int> GetRAGameIds(IOpenAdvanced ioa, RAInterface.ConsoleID consoleID)
 		{
 			var ret = new List<int>();
@@ -902,7 +1022,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						var ext = Path.GetExtension(Path.GetExtension(ioa.SimplePath.Replace("|", "")).ToLowerInvariant());
 
-						static int HashDisc(string path, RAInterface.ConsoleID consoleID)
+						static int? HashDisc(string path, RAInterface.ConsoleID consoleID, int discCount)
 						{
 							// this shouldn't throw in practice, this is only called when loading was succesful!
 							using var disc = DiscExtensions.CreateAnyType(path, e => throw new Exception(e));
@@ -1028,20 +1148,140 @@ namespace BizHawk.Client.EmuHawk
 									dsr.ReadLBA_2048(0, buf2048, 0);
 									buffer.AddRange(new ArraySegment<byte>(buf2048, 0, 512));
 									break;
+								case RAInterface.ConsoleID.Jaguar:
+									if (discCount == 1) // first session, keep in mind the size of this (note: session 1 is hacked to be disc 1)
+									{
+										_jaguarLbaOffset = disc.Session1.LeadoutTrack.LBA - disc.Session1.FirstInformationTrack.LBA + 150;
+										return null;
+									}
+									else if (discCount == 2) // we want to hash the second session of the disc (which is hacked to be disc 2)
+									{
+										var buf2352 = new byte[2352];
+										// find the boot track header
+										// see https://github.com/TASEmulators/BizHawk/blob/f29113287e88c6a644dbff30f92a9833307aad20/waterbox/virtualjaguar/src/cdhle.cpp#L109-L145
+										var startLba = _jaguarLbaOffset + disc.Session1.FirstInformationTrack.LBA + 150;
+										var numLbas = disc.Session1.FirstInformationTrack.NextTrack.LBA - disc.Session1.FirstInformationTrack.LBA;
+										int bootAddr = 0, bootLen = 0, bootLba = 0, bootOff = 0;
+										bool byteswapped = false, foundHeader = false;
+										for (int i = 0; i < numLbas; i++)
+										{
+											dsr.ReadLBA_2352(startLba + i - _jaguarLbaOffset, buf2352, 0);
+
+											for (int j = 0; j < (2352 - 32 - 4 - 4); j++)
+											{
+												if (buf2352[j] == _jaguarHeader[0])
+												{
+													if (_jaguarHeader.SequenceEqual(new ArraySegment<byte>(buf2352, j, 32)))
+													{
+														bootAddr = (buf2352[j + 32] << 24) | (buf2352[j + 33] << 16) | (buf2352[j + 34] << 8) | buf2352[j + 35];
+														bootLen = (buf2352[j + 36] << 24) | (buf2352[j + 37] << 16) | (buf2352[j + 38] << 8) | buf2352[j + 39];
+														bootLba = startLba + i - _jaguarLbaOffset;
+														bootOff = j + 32 + 4 + 4;
+														byteswapped = false;
+														foundHeader = true;
+														break;
+													}
+												}
+												else if (buf2352[j] == _jaguarBSHeader[0])
+												{
+													if (_jaguarBSHeader.SequenceEqual(new ArraySegment<byte>(buf2352, j, 32)))
+													{
+														bootAddr = (buf2352[j + 33] << 24) | (buf2352[j + 32] << 16) | (buf2352[j + 35] << 8) | buf2352[j + 34];
+														bootLen = (buf2352[j + 37] << 24) | (buf2352[j + 36] << 16) | (buf2352[j + 39] << 8) | buf2352[j + 38];
+														bootLba = startLba + i - _jaguarLbaOffset;
+														bootOff = j + 32 + 4 + 4;
+														byteswapped = true;
+														foundHeader = true;
+														break;
+													}
+												}
+											}
+
+											if (foundHeader)
+											{
+												break;
+											}
+										}
+
+										if (!foundHeader)
+										{
+											return 0;
+										}
+
+										buffer.Add((byte)((bootAddr >> 24) & 0xFF));
+										buffer.Add((byte)((bootAddr >> 16) & 0xFF));
+										buffer.Add((byte)((bootAddr >> 8) & 0xFF));
+										buffer.Add((byte)(bootAddr & 0xFF));
+
+										buffer.Add((byte)((bootLen >> 24) & 0xFF));
+										buffer.Add((byte)((bootLen >> 16) & 0xFF));
+										buffer.Add((byte)((bootLen >> 8) & 0xFF));
+										buffer.Add((byte)(bootLen & 0xFF));
+
+										dsr.ReadLBA_2352(bootLba++, buf2352, 0);
+
+										if (byteswapped)
+										{
+											EndiannessUtils.MutatingByteSwap16(buf2352.AsSpan());
+										}
+
+										buffer.AddRange(new ArraySegment<byte>(buf2352, bootOff, Math.Min(2352 - bootOff, bootLen)));
+										bootLen -= Math.Min(2352 - bootOff, bootLen);
+
+										while (bootLen != 0)
+										{
+											dsr.ReadLBA_2352(bootLba++, buf2352, 0);
+
+											if (byteswapped)
+											{
+												EndiannessUtils.MutatingByteSwap16(buf2352.AsSpan());
+											}
+
+											buffer.AddRange(new ArraySegment<byte>(buf2352, bootOff, Math.Min(2352, bootLen)));
+											bootLen -= Math.Min(2352, bootLen);
+										}
+
+										break;
+									}
+									else
+									{
+										return null; // other sessions aren't hashed, ignore them
+									}
 							}
 
 							var hash = MD5Checksum.ComputeDigestHex(buffer.ToArray());
 							return RA.IdentifyHash(hash);
 						}
 
-						if (ext == ".xml")
+						var discCount = 0;
+
+						if (ext == ".m3u")
+						{
+							using var file = new HawkFile(ioa.SimplePath);
+							using var sr = new StreamReader(file.GetStream());
+							var m3u = M3U_File.Read(sr);
+							m3u.Rebase(Path.GetDirectoryName(ioa.SimplePath));
+							foreach (var entry in m3u.Entries)
+							{
+								var id = HashDisc(entry.Path, consoleID, ++discCount);
+								if (id.HasValue)
+								{
+									ret.Add(id.Value);
+								}
+							}
+						}
+						else if (ext == ".xml")
 						{
 							var xml = XmlGame.Create(new HawkFile(ioa.SimplePath));
 							foreach (var kvp in xml.Assets)
 							{
 								if (Disc.IsValidExtension(Path.GetExtension(kvp.Key)))
 								{
-									ret.Add(HashDisc(kvp.Key, consoleID));
+									var id = HashDisc(kvp.Key, consoleID, ++discCount);
+									if (id.HasValue)
+									{
+										ret.Add(id.Value);
+									}
 								}
 								else
 								{
@@ -1053,7 +1293,11 @@ namespace BizHawk.Client.EmuHawk
 						{
 							if (Disc.IsValidExtension(Path.GetExtension(ext)))
 							{
-								ret.Add(HashDisc(ioa.SimplePath, consoleID));
+								var id = HashDisc(ioa.SimplePath, consoleID, ++discCount);
+								if (id.HasValue)
+								{
+									ret.Add(id.Value);
+								}
 							}
 							else
 							{
