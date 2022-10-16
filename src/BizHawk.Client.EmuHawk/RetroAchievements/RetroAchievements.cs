@@ -844,7 +844,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				mfs.Add(new(domains[sysBus], 0xA000, 0x2000));
 			}
-			mfs.Add(new(domains[sysBus], 0xA000, 0x2000));
 			mfs.Add(new(domains[wram], 0x0000, 0x2000));
 			mfs.Add(new(domains[sysBus], 0xE000, 0x2000));
 			if (domains[wram].Size == 0x8000)
