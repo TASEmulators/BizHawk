@@ -4071,6 +4071,8 @@ namespace BizHawk.Client.EmuHawk
 				StopMovie();
 			}
 
+			RA?.Stop();
+
 			CheatList.SaveOnClose();
 			Emulator.Dispose();
 			Emulator = new NullEmulator();

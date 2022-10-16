@@ -531,6 +531,13 @@ namespace BizHawk.Client.EmuHawk
 			RA.OnLoadState(path);
 		}
 
+		// call this before closing the emulator
+		public void Stop()
+		{
+			RA.ClearMemoryBanks();
+			RA.ActivateGame(0);
+		}
+
 		public void Restart()
 		{
 			var consoleId = SysIdToRAId();
@@ -755,7 +762,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Emu.HasMemoryDomains())
 			{
-				// do this to prevent strain when peeks are spammed
+				// do this to prevent wbx host spam when peeks are spammed
 				using (Domains.MainMemory.EnterExit())
 				{
 					RA.DoAchievementsFrame();
@@ -885,7 +892,24 @@ namespace BizHawk.Client.EmuHawk
 						mfs.Add(new(domains["68K RAM"], 0, domains["68K RAM"].Size));
 						if (domains.Has("SRAM"))
 						{
-							mfs.Add(new(domains["SRAM"], 0, domains["SRAM"].Size));
+							if (domains["SRAM"].Size >= 0x10000) // don't think this can exceed 0x10000, but just in case...
+							{
+								mfs.Add(new(domains["SRAM"], 0, 0x10000));
+							}
+							else
+							{
+								mfs.Add(new(domains["SRAM"], 0, domains["SRAM"].Size));
+								mfs.Add(new(new DummyDomain(0x10000 - domains["SRAM"].Size), 0, 0x10000 - domains["SRAM"].Size));
+							}
+						}
+						else
+						{
+							mfs.Add(new(new DummyDomain(0x10000), 0, 0x10000));
+						}
+						if (domains.Has("32X RAM"))
+						{
+							// nb: not an official RA mapping
+							mfs.Add(new(domains["32X RAM"], 0, domains["32X RAM"].Size));
 						}
 						break;
 					case RAInterface.ConsoleID.SNES:
@@ -1127,7 +1151,7 @@ namespace BizHawk.Client.EmuHawk
 
 										if ("PS-X EXE" == Encoding.ASCII.GetString(buf2048, 0, 8))
 										{
-											exeSize = (buf2048[31] << 24) | (buf2048[30] << 16) | (buf2048[29] << 8) | buf2048[28] + 2048;
+											exeSize = ((buf2048[31] << 24) | (buf2048[30] << 16) | (buf2048[29] << 8) | buf2048[28]) + 2048;
 										}
 
 										buffer.AddRange(new ArraySegment<byte>(buf2048, 0, Math.Min(exeSize, 2048)));
