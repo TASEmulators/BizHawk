@@ -4869,7 +4869,7 @@ namespace BizHawk.Client.EmuHawk
 					"\n\u2022 Your RetroAchievements username and password (first login) or token (subsequent logins)." +
 					"\n\u2022 The hash of the game(s) you have loaded into BizHawk. (for game identification + achievement unlock + leaderboard submission)" +
 					"\n\u2022 The RetroAchievements game ID(s) of the game(s) you have loaded into BizHawk. (for game information + achievement definitions + leaderboard definitions + rich presence definitions + code notes + achievement badges + user unlocks + leaderboard submission + ticket submission)" +
-					"\n\u2022 Rich presence data (periodically sent)." +
+					"\n\u2022 Rich presence data (periodically sent, derived from emulated game memory)." +
 					"\n\u2022 Whether or not you are currently in \"Hardcore Mode\" (for achievement unlock)." +
 					"\n\u2022 Ticket submission type and message (when submitting tickets)." +
 					"\n\nDo you agree to send this information to retroachievements.org?",
