@@ -14,6 +14,7 @@ using BizHawk.Common;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Atari.Atari2600;
+using BizHawk.Emulation.Cores.Atari.Jaguar;
 using BizHawk.Emulation.Cores.Computers.MSX;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Consoles.O2Hawk;
@@ -377,6 +378,28 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly Action _shutdownRACallback;
 
+		private readonly Thread _dialogThread;
+		private volatile bool _dialogThreadActive;
+		private volatile IntPtr _nextDialog;
+
+		private void DialogThreadProc()
+		{
+			while (_dialogThreadActive)
+			{
+				if (_nextDialog != IntPtr.Zero)
+				{
+					RA.InvokeDialog(_nextDialog);
+					_nextDialog = IntPtr.Zero;
+				}
+
+				while (ThreadHacks.PeekMessage(out var msg, IntPtr.Zero, 0, 0, ThreadHacks.PM_REMOVE))
+				{
+					ThreadHacks.TranslateMessage(ref msg);
+					ThreadHacks.DispatchMessage(ref msg);
+				}
+			}
+		}
+
 		private void RebuildMenu()
 		{
 			var numItems = RA.GetPopupMenuItems(_menuItems);
@@ -387,6 +410,12 @@ namespace BizHawk.Client.EmuHawk
 				tsi.Click += (_, _) =>
 				{
 					RA.Shutdown();
+					_dialogThreadActive = false;
+					// block until dialog thread shuts down
+					// (dialog thread will shutdown RA in the end)
+					while (_dialogThread.IsAlive)
+					{
+					}
 					_shutdownRACallback();
 				};
 				tsmiddi.Add(tsi);
@@ -404,8 +433,15 @@ namespace BizHawk.Client.EmuHawk
 					var id = _menuItems[i].ID;
 					tsi.Click += (_, _) =>
 					{
-						RA.InvokeDialog(id);
-						// ditto here
+						_nextDialog = id;
+						while (_nextDialog != IntPtr.Zero)
+						{
+							// we need to message pump while the InvokeDialog is doing things
+							// (although the other thread will pump that dialog's messages once it's created)
+							// todo: can this cause recursion here?
+							Application.DoEvents();
+						}
+
 						_mainForm.UpdateWindowTitle();
 					};
 					tsmiddi.Add(tsi);
@@ -451,7 +487,7 @@ namespace BizHawk.Client.EmuHawk
 				VSystemID.Raw.GG => RAInterface.ConsoleID.GameGear,
 				VSystemID.Raw.GGL => RAInterface.ConsoleID.GameGear, // ???
 				VSystemID.Raw.INTV => RAInterface.ConsoleID.Intellivision,
-				VSystemID.Raw.Jaguar => RAInterface.ConsoleID.Jaguar, // Jaguar CD?
+				VSystemID.Raw.Jaguar when Emu is VirtualJaguar jaguar => jaguar.IsJaguarCD ? RAInterface.ConsoleID.JaguarCD : RAInterface.ConsoleID.Jaguar,
 				VSystemID.Raw.Libretro => RAInterface.ConsoleID.UnknownConsoleID,
 				VSystemID.Raw.Lynx => RAInterface.ConsoleID.Lynx,
 				VSystemID.Raw.MAME => RAInterface.ConsoleID.Arcade,
@@ -475,11 +511,16 @@ namespace BizHawk.Client.EmuHawk
 				VSystemID.Raw.SAT => RAInterface.ConsoleID.Saturn,
 				VSystemID.Raw.Sega32X => RAInterface.ConsoleID.Sega32X, // not actually used
 				VSystemID.Raw.SG => RAInterface.ConsoleID.SG1000,
-				VSystemID.Raw.SGB => RAInterface.ConsoleID.GB, // ???
+				VSystemID.Raw.SGB => RAInterface.ConsoleID.GB,
 				VSystemID.Raw.SGX => RAInterface.ConsoleID.PCEngine, // ???
 				VSystemID.Raw.SGXCD => RAInterface.ConsoleID.PCEngineCD, // ???
 				VSystemID.Raw.SMS => RAInterface.ConsoleID.MasterSystem,
-				VSystemID.Raw.SNES => RAInterface.ConsoleID.SNES, // Check for SGB?
+				VSystemID.Raw.SNES => Emu switch
+				{
+					LibsnesCore libsnes => libsnes.IsSGB ? RAInterface.ConsoleID.GB : RAInterface.ConsoleID.SNES,
+					BsnesCore bsnes => bsnes.IsSGB ? RAInterface.ConsoleID.GB : RAInterface.ConsoleID.SNES,
+					_ => RAInterface.ConsoleID.SNES,
+				},
 				VSystemID.Raw.TI83 => RAInterface.ConsoleID.UnknownConsoleID,
 				VSystemID.Raw.TIC80 => RAInterface.ConsoleID.Tic80,
 				VSystemID.Raw.UZE => RAInterface.ConsoleID.UnknownConsoleID,
@@ -494,6 +535,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public RetroAchievements(MainForm mainForm, InputManager inputManager, Func<ToolStripItemCollection> getRADropDownItems, Action shutdownRACallback)
 		{
+			// hack around winforms message pumping screwing over RA's forms
+			_nextDialog = IntPtr.Zero;
+			_dialogThreadActive = true;
+			_dialogThread = new(DialogThreadProc) { IsBackground = true };
+			_dialogThread.Start();
+
 			_mainForm = mainForm;
 			_inputManager = inputManager;
 			_getRADropDownItems = getRADropDownItems;
@@ -787,9 +834,9 @@ namespace BizHawk.Client.EmuHawk
 			RAInterface.ConsoleID.N64, RAInterface.ConsoleID.PlayStation,
 			RAInterface.ConsoleID.Lynx, RAInterface.ConsoleID.Lynx,
 			RAInterface.ConsoleID.NeoGeoPocket, RAInterface.ConsoleID.Jaguar,
-			RAInterface.ConsoleID.DS, RAInterface.ConsoleID.AppleII,
-			RAInterface.ConsoleID.Vectrex, RAInterface.ConsoleID.Tic80,
-			RAInterface.ConsoleID.PCEngine,
+			RAInterface.ConsoleID.JaguarCD, RAInterface.ConsoleID.DS,
+			RAInterface.ConsoleID.AppleII, RAInterface.ConsoleID.Vectrex,
+			RAInterface.ConsoleID.Tic80, RAInterface.ConsoleID.PCEngine,
 		};
 
 		// these consoles will use part of the system bus at an offset
@@ -1158,7 +1205,7 @@ namespace BizHawk.Client.EmuHawk
 					dsr.ReadLBA_2048(0, buf2048, 0);
 					buffer.AddRange(new ArraySegment<byte>(buf2048, 0, 512));
 					break;
-				case RAInterface.ConsoleID.Jaguar:
+				case RAInterface.ConsoleID.JaguarCD:
 					if (discCount == 2) // we want to hash the second session of the disc (which is hacked to be disc 2)
 					{
 						const string _jaguarHeader = "ATARI APPROVED DATA HEADER ATRI ";
@@ -1238,7 +1285,7 @@ namespace BizHawk.Client.EmuHawk
 						buffer.AddRange(new ArraySegment<byte>(buf2352, bootOff, Math.Min(2352 - bootOff, bootLen)));
 						bootLen -= Math.Min(2352 - bootOff, bootLen);
 
-						while (bootLen != 0)
+						while (bootLen > 0)
 						{
 							dsr.ReadLBA_2352(bootLba++, buf2352, 0);
 
@@ -1248,7 +1295,7 @@ namespace BizHawk.Client.EmuHawk
 							}
 
 							buffer.AddRange(new ArraySegment<byte>(buf2352, 0, Math.Min(2352, bootLen)));
-							bootLen -= Math.Min(2352, bootLen);
+							bootLen -= 2352;
 						}
 
 						break;

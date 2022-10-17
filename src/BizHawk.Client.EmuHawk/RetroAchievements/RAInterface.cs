@@ -88,6 +88,7 @@ namespace BizHawk.Client.EmuHawk
 			IntertonVC4000 = 74,
 			ElektorTVGamesComputer = 75,
 			PCEngineCD = 76,
+			JaguarCD = 77,
 
 			NumConsoleIDs
 		}
