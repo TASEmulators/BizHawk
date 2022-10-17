@@ -432,12 +432,13 @@ namespace BizHawk.Client.EmuHawk
 					var id = _menuItems[i].ID;
 					tsi.Click += (_, _) =>
 					{
+						if (_nextDialog != IntPtr.Zero) return; // recursive call? let's just ignore this
+
 						_nextDialog = id;
 						while (_nextDialog != IntPtr.Zero)
 						{
 							// we need to message pump while the InvokeDialog is doing things
-							// (although the other thread will pump that dialog's messages once it's created)
-							// todo: can this cause recursion here?
+							// (although the other thread will pump that dialog's messages once the dialog is created)
 							Application.DoEvents();
 						}
 
