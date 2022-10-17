@@ -412,7 +412,6 @@ namespace BizHawk.Client.EmuHawk
 					RA.Shutdown();
 					_dialogThreadActive = false;
 					// block until dialog thread shuts down
-					// (dialog thread will shutdown RA in the end)
 					while (_dialogThread.IsAlive)
 					{
 					}
