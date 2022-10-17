@@ -109,7 +109,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						if (mainForm.ShowMessageBox2(
 							owner: null,
-							text: "An update is required to use RetroAchivements. Do you want to download the update now?",
+							text: "An update is required to use RetroAchievements. Do you want to download the update now?",
 							caption: "Update",
 							icon: EMsgBoxIcon.Question,
 							useOKCancel: false))
@@ -128,7 +128,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						if (mainForm.ShowMessageBox2(
 							owner: null,
-							text: "An optional update is available for RetroAchivements. Do you want to download the update now?",
+							text: "An optional update is available for RetroAchievements. Do you want to download the update now?",
 							caption: "Update",
 							icon: EMsgBoxIcon.Question,
 							useOKCancel: false))
@@ -153,7 +153,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					mainForm.ShowMessageBox(
 						owner: null,
-						text: "Failed to fetch update information, cannot start RetroAchivements.",
+						text: "Failed to fetch update information, cannot start RetroAchievements.",
 						caption: "Error",
 						icon: EMsgBoxIcon.Error);
 
@@ -165,7 +165,7 @@ namespace BizHawk.Client.EmuHawk
 				// is this needed?
 				mainForm.ShowMessageBox(
 					owner: null,
-					text: $"Exception {ex.Message} occurred when fetching update information, cannot start RetroAchivements.",
+					text: $"Exception {ex.Message} occurred when fetching update information, cannot start RetroAchievements.",
 					caption: "Error",
 					icon: EMsgBoxIcon.Error);
 
@@ -1032,10 +1032,6 @@ namespace BizHawk.Client.EmuHawk
 			return mfs.AsReadOnly();
 		}
 
-		private static int _jaguarLbaOffset; // HACK
-		private static readonly byte[] _jaguarHeader = Encoding.ASCII.GetBytes("ATARI APPROVED DATA HEADER ATRI ");
-		private static readonly byte[] _jaguarBSHeader = Encoding.ASCII.GetBytes("TARA IPARPVODED TA AEHDAREA RT I");
-
 		private static IReadOnlyList<int> GetRAGameIds(IOpenAdvanced ioa, RAInterface.ConsoleID consoleID)
 		{
 			var ret = new List<int>();
@@ -1172,33 +1168,31 @@ namespace BizHawk.Client.EmuHawk
 									buffer.AddRange(new ArraySegment<byte>(buf2048, 0, 512));
 									break;
 								case RAInterface.ConsoleID.Jaguar:
-									if (discCount == 1) // first session, keep in mind the size of this (note: session 1 is hacked to be disc 1)
+									if (discCount == 2) // we want to hash the second session of the disc (which is hacked to be disc 2)
 									{
-										_jaguarLbaOffset = disc.Session1.LeadoutTrack.LBA - disc.Session1.FirstInformationTrack.LBA + 150;
-										return null;
-									}
-									else if (discCount == 2) // we want to hash the second session of the disc (which is hacked to be disc 2)
-									{
+										const string _jaguarHeader = "ATARI APPROVED DATA HEADER ATRI ";
+										const string _jaguarBSHeader = "TARA IPARPVODED TA AEHDAREA RT I";
 										var buf2352 = new byte[2352];
+
 										// find the boot track header
 										// see https://github.com/TASEmulators/BizHawk/blob/f29113287e88c6a644dbff30f92a9833307aad20/waterbox/virtualjaguar/src/cdhle.cpp#L109-L145
-										var startLba = _jaguarLbaOffset + disc.Session1.FirstInformationTrack.LBA + 150;
+										var startLba = disc.Session1.FirstInformationTrack.LBA;
 										var numLbas = disc.Session1.FirstInformationTrack.NextTrack.LBA - disc.Session1.FirstInformationTrack.LBA;
 										int bootAddr = 0, bootLen = 0, bootLba = 0, bootOff = 0;
 										bool byteswapped = false, foundHeader = false;
 										for (int i = 0; i < numLbas; i++)
 										{
-											dsr.ReadLBA_2352(startLba + i - _jaguarLbaOffset, buf2352, 0);
+											dsr.ReadLBA_2352(startLba + i, buf2352, 0);
 
 											for (int j = 0; j < (2352 - 32 - 4 - 4); j++)
 											{
 												if (buf2352[j] == _jaguarHeader[0])
 												{
-													if (_jaguarHeader.SequenceEqual(new ArraySegment<byte>(buf2352, j, 32)))
+													if (_jaguarHeader == Encoding.ASCII.GetString(buf2352, j, 32))
 													{
 														bootAddr = (buf2352[j + 32] << 24) | (buf2352[j + 33] << 16) | (buf2352[j + 34] << 8) | buf2352[j + 35];
 														bootLen = (buf2352[j + 36] << 24) | (buf2352[j + 37] << 16) | (buf2352[j + 38] << 8) | buf2352[j + 39];
-														bootLba = startLba + i - _jaguarLbaOffset;
+														bootLba = startLba + i;
 														bootOff = j + 32 + 4 + 4;
 														byteswapped = false;
 														foundHeader = true;
@@ -1207,11 +1201,11 @@ namespace BizHawk.Client.EmuHawk
 												}
 												else if (buf2352[j] == _jaguarBSHeader[0])
 												{
-													if (_jaguarBSHeader.SequenceEqual(new ArraySegment<byte>(buf2352, j, 32)))
+													if (_jaguarBSHeader == Encoding.ASCII.GetString(buf2352, j, 32))
 													{
 														bootAddr = (buf2352[j + 33] << 24) | (buf2352[j + 32] << 16) | (buf2352[j + 35] << 8) | buf2352[j + 34];
 														bootLen = (buf2352[j + 37] << 24) | (buf2352[j + 36] << 16) | (buf2352[j + 39] << 8) | buf2352[j + 38];
-														bootLba = startLba + i - _jaguarLbaOffset;
+														bootLba = startLba + i;
 														bootOff = j + 32 + 4 + 4;
 														byteswapped = true;
 														foundHeader = true;
@@ -1231,6 +1225,7 @@ namespace BizHawk.Client.EmuHawk
 											return 0;
 										}
 
+										/*
 										buffer.Add((byte)((bootAddr >> 24) & 0xFF));
 										buffer.Add((byte)((bootAddr >> 16) & 0xFF));
 										buffer.Add((byte)((bootAddr >> 8) & 0xFF));
@@ -1240,6 +1235,7 @@ namespace BizHawk.Client.EmuHawk
 										buffer.Add((byte)((bootLen >> 16) & 0xFF));
 										buffer.Add((byte)((bootLen >> 8) & 0xFF));
 										buffer.Add((byte)(bootLen & 0xFF));
+										*/
 
 										dsr.ReadLBA_2352(bootLba++, buf2352, 0);
 
@@ -1260,7 +1256,7 @@ namespace BizHawk.Client.EmuHawk
 												EndiannessUtils.MutatingByteSwap16(buf2352.AsSpan());
 											}
 
-											buffer.AddRange(new ArraySegment<byte>(buf2352, bootOff, Math.Min(2352, bootLen)));
+											buffer.AddRange(new ArraySegment<byte>(buf2352, 0, Math.Min(2352, bootLen)));
 											bootLen -= Math.Min(2352, bootLen);
 										}
 
