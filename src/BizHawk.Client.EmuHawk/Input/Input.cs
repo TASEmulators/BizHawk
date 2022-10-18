@@ -117,9 +117,7 @@ namespace BizHawk.Client.EmuHawk
 
 			// don't generate events for things like Ctrl+LeftControl
 			var mods = _modifiers;
-			if (!newState)
-				mods = 0;
-			else if (currentModifier is not 0U)
+			if (currentModifier is not 0U)
 				mods &= ~currentModifier;
 
 			var ie = new InputEvent
