@@ -202,7 +202,7 @@ namespace BizHawk.Client.EmuHawk
 				=> Size = size;
 
 			public override byte PeekByte(long addr)
-				=> 0xFF;
+				=> 0;
 
 			public override void PokeByte(long addr, byte val)
 			{
@@ -892,10 +892,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (domains[cartRam].Size == 0x200) // MBC2
 				{
-					for (int i = 0; i < 0x10; i++)
-					{
-						mfs.Add(new(domains[cartRam], 0, 0x200));
-					}
+					mfs.Add(new(domains[cartRam], 0, 0x200));
+					mfs.Add(new(new DummyDomain(0x1E00), 0, 0x1E00));
 				}
 				else
 				{
@@ -942,34 +940,17 @@ namespace BizHawk.Client.EmuHawk
 				{
 					case RAInterface.ConsoleID.MegaDrive:
 					case RAInterface.ConsoleID.Sega32X:
-						// no System Bus on PicoDrive, so let's do this
-						// todo: add System Bus to PicoDrive so this isn't needed
 						mfs.Add(new(domains["68K RAM"], 0, domains["68K RAM"].Size));
-						if (domains.Has("SRAM"))
-						{
-							if (domains["SRAM"].Size >= 0x10000) // don't think this can exceed 0x10000, but just in case...
-							{
-								mfs.Add(new(domains["SRAM"], 0, 0x10000));
-							}
-							else
-							{
-								mfs.Add(new(domains["SRAM"], 0, domains["SRAM"].Size));
-								mfs.Add(new(new DummyDomain(0x10000 - domains["SRAM"].Size), 0, 0x10000 - domains["SRAM"].Size));
-							}
-						}
-						else
-						{
-							mfs.Add(new(new DummyDomain(0x10000), 0, 0x10000));
-						}
 						if (domains.Has("32X RAM"))
 						{
-							// nb: not an official RA mapping
 							mfs.Add(new(domains["32X RAM"], 0, domains["32X RAM"].Size));
+						}
+						if (domains.Has("SRAM"))
+						{
+							mfs.Add(new(domains["SRAM"], 0, domains["SRAM"].Size));
 						}
 						break;
 					case RAInterface.ConsoleID.SNES:
-						// no System Bus on Faust & Snes9x, so let's do this
-						// todo: add System Bus to Faust & Snes9x so this isn't needed
 						mfs.Add(new(domains["WRAM"], 0, domains["WRAM"].Size));
 						// annoying difference in BSNESv115+
 						if (domains.Has("CARTRIDGE_RAM"))
@@ -998,10 +979,8 @@ namespace BizHawk.Client.EmuHawk
 							{
 								if (domains["SGB CARTRAM"].Size == 0x200) // MBC2
 								{
-									for (int i = 0; i < 0x10; i++)
-									{
-										mfs.Add(new(domains["SGB CARTRAM"], 0, 0x200));
-									}
+									mfs.Add(new(domains["SGB CARTRAM"], 0, 0x200));
+									mfs.Add(new(new DummyDomain(0x1E00), 0, 0x1E00));
 								}
 								else
 								{
@@ -1071,10 +1050,10 @@ namespace BizHawk.Client.EmuHawk
 						mfs.Add(new ChanFMemFunctions(domains));
 						break;
 					case RAInterface.ConsoleID.PCEngineCD:
-						mfs.Add(new(domains["SystemBus (21 bit)"], 0x1F0000, 0x2000));
-						mfs.Add(new(domains["SystemBus (21 bit)"], 0x100000, 0x10000));
-						mfs.Add(new(domains["SystemBus (21 bit)"], 0xD0000, 0x30000));
-						mfs.Add(new(domains["SystemBus (21 bit)"], 0x1EE000, 0x800));
+						mfs.Add(new(domains["System Bus (21 bit)"], 0x1F0000, 0x2000));
+						mfs.Add(new(domains["System Bus (21 bit)"], 0x100000, 0x10000));
+						mfs.Add(new(domains["System Bus (21 bit)"], 0xD0000, 0x30000));
+						mfs.Add(new(domains["System Bus (21 bit)"], 0x1EE000, 0x800));
 						break;
 					case RAInterface.ConsoleID.UnknownConsoleID:
 					case RAInterface.ConsoleID.ZXSpectrum: // this doesn't actually have anything standardized, so...
