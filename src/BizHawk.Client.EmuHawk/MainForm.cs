@@ -3001,6 +3001,7 @@ namespace BizHawk.Client.EmuHawk
 				runFrame = true;
 			}
 
+			RA?.Update();
 
 			bool oldFrameAdvanceCondition = InputManager.ClientControls["Frame Advance"] || PressFrameAdvance || HoldFrameAdvance;
 			if (FrameInch)
@@ -3060,8 +3061,6 @@ namespace BizHawk.Client.EmuHawk
 			bool isRewinding = Rewind(ref runFrame, currentTimestamp, out var returnToRecording);
 
 			float atten = 0;
-
-			RA?.CheckHardcoreModeConditions();
 
 			// BlockFrameAdvance (true when input it being editted in TAStudio) supercedes all other frame advance conditions
 			if ((runFrame || force) && !BlockFrameAdvance)
@@ -3125,7 +3124,7 @@ namespace BizHawk.Client.EmuHawk
 
 				MovieSession.HandleFrameBefore();
 
-				RA?.Update();
+				RA?.OnFrameAdvance();
 
 				if (Config.AutosaveSaveRAM)
 				{

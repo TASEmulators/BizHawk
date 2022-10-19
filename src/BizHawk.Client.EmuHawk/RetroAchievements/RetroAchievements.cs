@@ -48,9 +48,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private static void AttachDll()
 		{
-			_resolver = new DynamicLibraryImportResolver("RA_Integration-x64.dll", hasLimitedLifetime: true);
+			_resolver = new("RA_Integration-x64.dll", hasLimitedLifetime: true);
 			RA = BizInvoker.GetInvoker<RAInterface>(_resolver, CallingConventionAdapters.Native);
-			_version = new Version(Marshal.PtrToStringAnsi(RA.IntegrationVersion()));
+			_version = new(Marshal.PtrToStringAnsi(RA.IntegrationVersion()));
 			Console.WriteLine($"Loaded RetroAchievements v{_version}");
 		}
 
@@ -60,7 +60,7 @@ namespace BizHawk.Client.EmuHawk
 			_resolver?.Dispose();
 			_resolver = null;
 			RA = null;
-			_version = new Version(0, 0);
+			_version = new(0, 0);
 		}
 
 		public static bool IsAvailable => RA != null;
@@ -182,7 +182,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly InputManager _inputManager;
 
 		private IEmulator Emu => _mainForm.Emulator;
-		private IMemoryDomains Domains => _mainForm.Emulator.AsMemoryDomains();
+		private IMemoryDomains Domains => Emu.AsMemoryDomains();
 		private IGameInfo Game => _mainForm.Game;
 		private IMovieSession MovieSession => _mainForm.MovieSession;
 		private Config Config => _mainForm.Config;
@@ -276,8 +276,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private class ChanFMemFunctions : MemFunctions
 		{
-			private readonly IMemoryDomains _domains;
 			private readonly IDebuggable _debuggable;
+			private readonly MemoryDomain _vram; // our vram is unpacked, but RA expects it packed
 
 			protected override byte ReadMem(int addr)
 			{
@@ -285,27 +285,14 @@ namespace BizHawk.Client.EmuHawk
 				{
 					return (byte)_debuggable.GetCpuFlagsAndRegisters()["SPR" + addr].Value;
 				}
-				else if (addr < 0x840)
+				else
 				{
 					addr -= 0x40;
-					return (byte)(((_domains["VRAM"].PeekByte(addr * 4 + 0) & 3) << 6)
-						| ((_domains["VRAM"].PeekByte(addr * 4 + 1) & 3) << 4)
-						| ((_domains["VRAM"].PeekByte(addr * 4 + 2) & 3) << 2)
-						| ((_domains["VRAM"].PeekByte(addr * 4 + 3) & 3) << 0));
+					return (byte)(((_vram.PeekByte(addr * 4 + 0) & 3) << 6)
+						| ((_vram.PeekByte(addr * 4 + 1) & 3) << 4)
+						| ((_vram.PeekByte(addr * 4 + 2) & 3) << 2)
+						| ((_vram.PeekByte(addr * 4 + 3) & 3) << 0));
 				}
-				else if (addr < 0x10840)
-				{
-					addr -= 0x840;
-					return _domains.SystemBus.PeekByte(addr);
-				}
-				else if (addr < 0x10C40)
-				{
-					addr -= 0x10840;
-					// this should be Mazes's RAM, but that isn't exposed for us
-					return 0;
-				}
-
-				return 0;
 			}
 
 			protected override void WriteMem(int addr, byte val)
@@ -314,23 +301,13 @@ namespace BizHawk.Client.EmuHawk
 				{
 					_debuggable.SetCpuRegister("SPR" + addr, val);
 				}
-				else if (addr < 0x840)
+				else
 				{
 					addr -= 0x40;
-					_domains["VRAM"].PokeByte(addr * 4 + 0, (byte)((val >> 6) & 3));
-					_domains["VRAM"].PokeByte(addr * 4 + 1, (byte)((val >> 4) & 3));
-					_domains["VRAM"].PokeByte(addr * 4 + 2, (byte)((val >> 2) & 3));
-					_domains["VRAM"].PokeByte(addr * 4 + 3, (byte)((val >> 0) & 3));
-				}
-				else if (addr < 0x10840)
-				{
-					addr -= 0x840;
-					_domains.SystemBus.PokeByte(addr, val);
-				}
-				else if (addr < 0x10C40)
-				{
-					addr -= 0x10840;
-					// this should be Mazes's RAM, but that isn't exposed for us
+					_vram.PokeByte(addr * 4 + 0, (byte)((val >> 6) & 3));
+					_vram.PokeByte(addr * 4 + 1, (byte)((val >> 4) & 3));
+					_vram.PokeByte(addr * 4 + 2, (byte)((val >> 2) & 3));
+					_vram.PokeByte(addr * 4 + 3, (byte)((val >> 0) & 3));
 				}
 			}
 
@@ -360,14 +337,15 @@ namespace BizHawk.Client.EmuHawk
 						((byte*)buffer)[i - addr] = val;
 					}
 				}
+
 				return end - addr;
 			}
 
-			public ChanFMemFunctions(IMemoryDomains domains)
-				: base(null, 0, 0x10C40)
+			public ChanFMemFunctions(IDebuggable debuggable, MemoryDomain vram)
+				: base(null, 0, 0x840)
 			{
-				_domains = domains;
-				_debuggable = (IDebuggable)domains;
+				_debuggable = debuggable;
+				_vram = vram;
 			}
 		}
 
@@ -378,10 +356,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly Action _shutdownRACallback;
 
+		private readonly ThreadLocal<bool> _isMainThread;
+		private bool IsMainThread => _isMainThread.Value;
+
 		private readonly Thread _dialogThread;
 		private volatile bool _dialogThreadActive;
 		private volatile IntPtr _nextDialog;
-		private readonly AutoResetEvent _evt = new(false);
+		private readonly AutoResetEvent _dialogThrottle = new(false);
+
+		private volatile Action _nextDelegateEvent;
+		private readonly AutoResetEvent _delegateEventDone = new(false);
 
 		private void DialogThreadProc()
 		{
@@ -390,7 +374,7 @@ namespace BizHawk.Client.EmuHawk
 				// we want to periodically run this thread to pump messages for RA's dialogs
 				// but we may want to wake this thread up in case a new dialog is present
 				// (or if we want to shutdown this thread)
-				_evt.WaitOne(5);
+				_dialogThrottle.WaitOne(5);
 
 				if (_nextDialog != IntPtr.Zero)
 				{
@@ -417,7 +401,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					RA.Shutdown();
 					_dialogThreadActive = false;
-					_evt.Set();
+					_dialogThrottle.Set();
 					// block until dialog thread shuts down
 					while (_dialogThread.IsAlive)
 					{
@@ -442,12 +426,13 @@ namespace BizHawk.Client.EmuHawk
 						if (_nextDialog != IntPtr.Zero) return; // recursive call? let's just ignore this
 
 						_nextDialog = id;
-						_evt.Set();
+						_dialogThrottle.Set();
 						while (_nextDialog != IntPtr.Zero)
 						{
 							// we need to message pump while the InvokeDialog is doing things
 							// (although the other thread will pump that dialog's messages once the dialog is created)
 							Application.DoEvents();
+							HandleNextDelegate(); // don't let the dialog thread get stuck on a delegate
 						}
 
 						_mainForm.UpdateWindowTitle();
@@ -541,9 +526,41 @@ namespace BizHawk.Client.EmuHawk
 			};
 		}
 
+		void WaitMainThread()
+		{
+			if (IsMainThread)
+			{
+				_nextDelegateEvent();
+			}
+			else
+			{
+				_delegateEventDone.WaitOne();
+			}
+		}
+
+		private bool _isInDelegate = false;
+
+		// ONLY CALL THIS ON THE MAIN THREAD
+		void HandleNextDelegate()
+		{
+			if (!_isInDelegate) // prevent recursion (issue for RebootCore -> Update -> HandleNextDelegate)
+			{
+				var cb = _nextDelegateEvent;
+				if (cb is not null)
+				{
+					_isInDelegate = true;
+					cb();
+					_isInDelegate = false;
+					_delegateEventDone.Set();
+				}
+			}
+		}
+
 		public RetroAchievements(MainForm mainForm, InputManager inputManager, Func<ToolStripItemCollection> getRADropDownItems, Action shutdownRACallback)
 		{
 			// hack around winforms message pumping screwing over RA's forms
+			_isMainThread = new();
+			_isMainThread.Value = true;
 			_nextDialog = IntPtr.Zero;
 			_dialogThreadActive = true;
 			_dialogThread = new(DialogThreadProc) { IsBackground = true };
@@ -556,17 +573,85 @@ namespace BizHawk.Client.EmuHawk
 
 			RA.InitClient(_mainForm.Handle, "BizHawk", VersionInfo.GetEmuVersion());
 
-			_isActive = () => !Emu.IsNull();
-			_unpause = () => _mainForm.UnpauseEmulator();
-			_pause = () => _mainForm.PauseEmulator();
-			_rebuildMenu = RebuildMenu;
+			_isActive = () =>
+			{
+				bool ret = false;
+				_nextDelegateEvent = () =>
+				{
+					ret = !Emu.IsNull();
+					_nextDelegateEvent = null;
+				};
+
+				WaitMainThread();
+				return ret;
+			};
+
+			_unpause = () =>
+			{
+				_nextDelegateEvent = () =>
+				{
+					_mainForm.UnpauseEmulator();
+					_nextDelegateEvent = null;
+				};
+
+				WaitMainThread();
+			};
+
+			_pause = () =>
+			{
+				_nextDelegateEvent = () =>
+				{
+					_mainForm.PauseEmulator();
+					_nextDelegateEvent = null;
+				};
+
+				WaitMainThread();
+			};
+
+			_rebuildMenu = () =>
+			{
+				_nextDelegateEvent = () =>
+				{
+					RebuildMenu();
+					_nextDelegateEvent = null;
+				};
+
+				WaitMainThread();
+			};
+
 			_estimateTitle = buffer =>
 			{
-				var name = Encoding.UTF8.GetBytes(Game?.Name ?? "No Game Info Available");
-				Marshal.Copy(name, 0, buffer, Math.Min(name.Length, 256));
+				_nextDelegateEvent = () =>
+				{
+					var name = Encoding.UTF8.GetBytes(Game?.Name ?? "No Game Info Available");
+					Marshal.Copy(name, 0, buffer, Math.Min(name.Length, 256));
+					_nextDelegateEvent = null;
+				};
+
+				WaitMainThread();
 			};
-			_resetEmulator = () => _mainForm.RebootCore();
-			_loadROM = path => _mainForm.LoadRom(path, new LoadRomArgs { OpenAdvanced = OpenAdvancedSerializer.ParseWithLegacy(path) });
+
+			_resetEmulator = () =>
+			{
+				_nextDelegateEvent = () =>
+				{
+					_mainForm.RebootCore();
+					_nextDelegateEvent = null;
+				};
+
+				WaitMainThread();
+			};
+
+			_loadROM = path =>
+			{
+				_nextDelegateEvent = () =>
+				{
+					_mainForm.LoadRom(path, new LoadRomArgs { OpenAdvanced = OpenAdvancedSerializer.ParseWithLegacy(path) });
+					_nextDelegateEvent = null;
+				};
+
+				WaitMainThread();
+			};
 
 			RA.InstallSharedFunctionsExt(_isActive, _unpause, _pause, _rebuildMenu, _estimateTitle, _resetEmulator, _loadROM);
 
@@ -602,7 +687,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Emu.HasMemoryDomains())
 			{
-				_memFunctions = CreateMemoryBanks(consoleId, Domains);
+				_memFunctions = CreateMemoryBanks(consoleId, Domains, Emu.CanDebug() ? Emu.AsDebuggable() : null);
 
 				for (int i = 0; i < _memFunctions.Count; i++)
 				{
@@ -626,7 +711,7 @@ namespace BizHawk.Client.EmuHawk
 				RA.ActivateGame(0);
 			}
 
-			CheckHardcoreModeConditions();
+			Update();
 			RebuildMenu();
 
 			// workaround a bug in RA which will cause the window title to be changed despite us not calling UpdateAppTitle
@@ -672,7 +757,9 @@ namespace BizHawk.Client.EmuHawk
 			RA.WarnDisableHardcore(null);
 		}
 
-		public void CheckHardcoreModeConditions()
+		private readonly OverrideAdapter _hardcoreHotkeyOverrides = new();
+
+		public void Update()
 		{
 			if (RA.HardcoreModeIsActive())
 			{
@@ -688,17 +775,12 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 
-				if (_inputManager.ClientControls["Frame Advance"])
-				{
-					HandleHardcoreModeDisable("Frame advancing in hardcore mode is not allowed.");
-					return;
-				}
-
-				if (_mainForm.Rewinder?.Active == true)
-				{
-					HandleHardcoreModeDisable("Enabling Rewind in hardcore mode is not allowed.");
-					return;
-				}
+				// suppress rewind and frame advance hotkeys
+				_hardcoreHotkeyOverrides.FrameTick();
+				_hardcoreHotkeyOverrides.SetButton("Frame Advance", false);
+				_hardcoreHotkeyOverrides.SetButton("Rewind", false);
+				_inputManager.ClientControls.Overrides(_hardcoreHotkeyOverrides);
+				_mainForm.FrameInch = false;
 
 				var fastForward = _inputManager.ClientControls["Fast Forward"] || _mainForm.FastForward;
 				var speedPercent = fastForward ? Config?.SpeedPercentAlternate : Config?.SpeedPercent;
@@ -778,19 +860,6 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			}
-		}
-
-		public void Update()
-		{
-			var input = _inputManager.ControllerOutput;
-			foreach (var resetButton in input.Definition.BoolButtons.Where(b => b.Contains("Power") || b.Contains("Reset")))
-			{
-				if (input.IsPressed(resetButton))
-				{
-					RA.OnReset();
-					break;
-				}
-			}
 
 			if (_inputManager.ClientControls["Open RA Overlay"])
 			{
@@ -813,6 +882,21 @@ namespace BizHawk.Client.EmuHawk
 				RA.NavigateOverlay(ref ci);
 
 				// todo: suppress user inputs with overlay active?
+			}
+
+			HandleNextDelegate();
+		}
+
+		public void OnFrameAdvance()
+		{
+			var input = _inputManager.ControllerOutput;
+			foreach (var resetButton in input.Definition.BoolButtons.Where(b => b.Contains("Power") || b.Contains("Reset")))
+			{
+				if (input.IsPressed(resetButton))
+				{
+					RA.OnReset();
+					break;
+				}
 			}
 
 			if (Emu.HasMemoryDomains())
@@ -915,7 +999,7 @@ namespace BizHawk.Client.EmuHawk
 		// anything more complicated will be handled accordingly
 
 		private static IReadOnlyList<MemFunctions> CreateMemoryBanks(
-			RAInterface.ConsoleID consoleId, IMemoryDomains domains)
+			RAInterface.ConsoleID consoleId, IMemoryDomains domains, IDebuggable debuggable)
 		{
 			var mfs = new List<MemFunctions>();
 
@@ -1047,7 +1131,8 @@ namespace BizHawk.Client.EmuHawk
 						break;
 					case RAInterface.ConsoleID.FairchildChannelF:
 						// special case
-						mfs.Add(new ChanFMemFunctions(domains));
+						mfs.Add(new ChanFMemFunctions(debuggable, domains["VRAM"]));
+						mfs.Add(new(domains.SystemBus, 0, domains.SystemBus.Size));
 						break;
 					case RAInterface.ConsoleID.PCEngineCD:
 						mfs.Add(new(domains["System Bus (21 bit)"], 0x1F0000, 0x2000));
