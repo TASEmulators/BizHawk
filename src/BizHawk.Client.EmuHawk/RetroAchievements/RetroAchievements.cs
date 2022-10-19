@@ -427,7 +427,7 @@ namespace BizHawk.Client.EmuHawk
 
 						_nextDialog = id;
 						_dialogThrottle.Set();
-						while (_nextDialog != IntPtr.Zero)
+						while (_nextDialog != IntPtr.Zero && _dialogThread.IsAlive)
 						{
 							// we need to message pump while the InvokeDialog is doing things
 							// (although the other thread will pump that dialog's messages once the dialog is created)
@@ -436,6 +436,14 @@ namespace BizHawk.Client.EmuHawk
 						}
 
 						_mainForm.UpdateWindowTitle();
+
+						// dialog thread died?
+						if (!_dialogThread.IsAlive)
+						{
+							RA.Shutdown();
+							_shutdownRACallback();
+							throw new InvalidOperationException("RetroAchievements dialog thread died unexpectingly???");
+						}
 					};
 					tsmiddi.Add(tsi);
 				}
@@ -526,7 +534,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 		}
 
-		void WaitMainThread()
+		private void WaitMainThread()
 		{
 			if (IsMainThread)
 			{
@@ -541,7 +549,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _isInDelegate = false;
 
 		// ONLY CALL THIS ON THE MAIN THREAD
-		void HandleNextDelegate()
+		private void HandleNextDelegate()
 		{
 			if (!_isInDelegate) // prevent recursion (issue for RebootCore -> Update -> HandleNextDelegate)
 			{
