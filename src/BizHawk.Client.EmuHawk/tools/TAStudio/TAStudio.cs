@@ -600,8 +600,9 @@ namespace BizHawk.Client.EmuHawk
 				Config.DefaultAuthor);
 
 			SetTasMovieCallbacks(tasMovie);
-			tasMovie.ClearChanges(); // Don't ask to save changes here.
-			tasMovie.Save();
+			// QueueNewMovie will write to disk because Changes == true, and RunQueuedMovie will update MovieSession props
+			MovieSession.QueueNewMovie(tasMovie, record: false, Emulator.SystemId, Config.PreferredCores);
+			MovieSession.RunQueuedMovie(recordMode: false, Emulator); //TODO is anything besides setting MovieController (first line in impl.) required?
 			if (HandleMovieLoadStuff(tasMovie))
 			{
 			}
