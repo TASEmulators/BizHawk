@@ -297,6 +297,7 @@
 <!-- creates circular dependency
 		<Compile Update="Properties/Resources.cs" DependentUpon="Resources.resx" />
 -->
+		<Compile Update="RetroAchievements/RetroAchievements.*.cs" DependentUpon="RetroAchievements/RetroAchievements.cs" />
 		<Compile Update="RomStatusPicker.cs" SubType="Form" />
 		<Compile Update="RomStatusPicker.Designer.cs" DependentUpon="RomStatusPicker.cs" />
 		<EmbeddedResource Update="RomStatusPicker.resx" DependentUpon="RomStatusPicker.cs" />

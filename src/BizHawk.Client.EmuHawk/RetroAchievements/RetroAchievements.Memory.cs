@@ -5,6 +5,9 @@ using System.Runtime.InteropServices;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
+// FIXME: These may be called from up to 3 different threads at once! Need to synchronize with the main thread!
+// (Main achievements logic runs through main thread, so thread sync wouldn't cost much performance really)
+
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class RetroAchievements
