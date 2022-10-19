@@ -33,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 		private volatile IntPtr _nextDialog = IntPtr.Zero;
 		private readonly AutoResetEvent _dialogThrottle = new(false);
 
-		private volatile Action _nextDelegateEvent;
+		private volatile Action _nextDelegate;
 		private readonly AutoResetEvent _delegateEventDone = new(false);
 
 		private void DialogThreadProc()
@@ -124,14 +124,15 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void WaitMainThread()
+		private void SendNextDelegate(Action nextDelegate)
 		{
 			if (IsMainThread)
 			{
-				_nextDelegateEvent();
+				nextDelegate();
 			}
 			else
 			{
+				_nextDelegate = nextDelegate;
 				_delegateEventDone.WaitOne();
 			}
 		}
@@ -139,82 +140,34 @@ namespace BizHawk.Client.EmuHawk
 		private bool IsActiveCallback()
 		{
 			bool ret = false;
-			_nextDelegateEvent = () =>
-			{
-				ret = !Emu.IsNull();
-				_nextDelegateEvent = null;
-			};
-
-			WaitMainThread();
+			SendNextDelegate(() => ret = !Emu.IsNull());
 			return ret;
 		}
 
 		private void UnpauseCallback()
-		{
-			_nextDelegateEvent = () =>
-			{
-				_mainForm.UnpauseEmulator();
-				_nextDelegateEvent = null;
-			};
-
-			WaitMainThread();
-		}
+			=> SendNextDelegate(_mainForm.UnpauseEmulator);
 
 		private void PauseCallback()
-		{
-			_nextDelegateEvent = () =>
-			{
-				_mainForm.PauseEmulator();
-				_nextDelegateEvent = null;
-			};
-
-			WaitMainThread();
-		}
+			=> SendNextDelegate(_mainForm.PauseEmulator);
 
 		private void RebuildMenuCallback()
-		{
-			_nextDelegateEvent = () =>
-			{
-				RebuildMenu();
-				_nextDelegateEvent = null;
-			};
-
-			WaitMainThread();
-		}
+			=> SendNextDelegate(RebuildMenu);
 
 		private void EstimateTitleCallback(IntPtr buffer)
-		{
-			_nextDelegateEvent = () =>
+			=> SendNextDelegate(() =>
 			{
 				var name = Encoding.UTF8.GetBytes(Game?.Name ?? "No Game Info Available");
 				Marshal.Copy(name, 0, buffer, Math.Min(name.Length, 256));
-				_nextDelegateEvent = null;
-			};
-
-			WaitMainThread();
-		}
+			});
 
 		private void ResetEmulatorCallback()
-		{
-			_nextDelegateEvent = () =>
-			{
-				_mainForm.RebootCore();
-				_nextDelegateEvent = null;
-			};
-
-			WaitMainThread();
-		}
+			=> SendNextDelegate(() => _mainForm.RebootCore());
 
 		private void LoadROMCallback(string path)
-		{
-			_nextDelegateEvent = () =>
+			=> SendNextDelegate(() =>
 			{
 				_mainForm.LoadRom(path, new LoadRomArgs { OpenAdvanced = OpenAdvancedSerializer.ParseWithLegacy(path) });
-				_nextDelegateEvent = null;
-			};
-
-			WaitMainThread();
-		}
+			});
 
 		private bool _isInDelegate = false;
 
@@ -223,12 +176,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!_isInDelegate) // prevent recursion (issue for RebootCore -> Update -> HandleNextDelegate)
 			{
-				var cb = _nextDelegateEvent;
-				if (cb is not null)
+				var nextDelegate = _nextDelegate;
+				if (nextDelegate is not null)
 				{
 					_isInDelegate = true;
-					cb();
+					nextDelegate();
 					_isInDelegate = false;
+
+					_nextDelegate = null;
 					_delegateEventDone.Set();
 				}
 			}
