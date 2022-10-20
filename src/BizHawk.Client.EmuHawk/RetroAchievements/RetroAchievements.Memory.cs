@@ -82,28 +82,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly RAMemGuard _memGuard;
 
-		private class DummyDomain : MemoryDomain
-		{
-			public DummyDomain(long size)
-				=> Size = size;
-
-			public override byte PeekByte(long addr)
-				=> 0;
-
-			public override void PokeByte(long addr, byte val)
-			{
-			}
-		}
-
 		private class MemFunctions
 		{
 			protected readonly MemoryDomain _domain;
 			private readonly int _domainAddrStart; // addr of _domain where bank begins
 			private readonly int _addressMangler; // of course, let's *not* correct internal core byteswapping!
 
-			public readonly RAInterface.ReadMemoryFunc ReadFunc;
-			public readonly RAInterface.WriteMemoryFunc WriteFunc;
-			public readonly RAInterface.ReadMemoryBlockFunc ReadBlockFunc;
+			public RAInterface.ReadMemoryFunc ReadFunc { get; protected init; }
+			public RAInterface.WriteMemoryFunc WriteFunc { get; protected init; }
+			public RAInterface.ReadMemoryBlockFunc ReadBlockFunc { get; protected init; }
+
 			public readonly int BankSize;
 
 			public RAMemGuard MemGuard { protected get; set; }
@@ -158,7 +146,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
-					return end - addr;
+					return length;
 				}
 			}
 
@@ -181,15 +169,26 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private class NullMemFunctions : MemFunctions
+		{
+			public NullMemFunctions(long bankSize)
+				: base(null, 0, bankSize)
+			{
+				ReadFunc = null;
+				WriteFunc = null;
+				ReadBlockFunc = null;
+			}
+		}
+
 		// this is a complete hack because the libretro Intelli core sucks and so achievements are made expecting this format
 		private class IntelliMemFunctions : MemFunctions
 		{
 			protected override int FixAddr(int addr)
-				=> ((addr - 0x80) >> 1) + (~addr & 1);
+				=> (addr >> 1) + (~addr & 1);
 
 			protected override byte ReadMem(int addr)
 			{
-				if (addr < 0x80 || (addr & 2) != 0)
+				if ((addr & 2) != 0)
 				{
 					return 0;
 				}
@@ -199,7 +198,7 @@ namespace BizHawk.Client.EmuHawk
 
 			protected override void WriteMem(int addr, byte val)
 			{
-				if (addr < 0x80 || (addr & 2) != 0)
+				if ((addr & 2) != 0)
 				{
 					return;
 				}
@@ -209,27 +208,27 @@ namespace BizHawk.Client.EmuHawk
 
 			protected override int ReadMemBlock(int addr, IntPtr buffer, int bytes)
 			{
-				if (addr >= 0x40080)
+				if (addr >= BankSize)
 				{
 					return 0;
 				}
 
 				using (MemGuard.EnterExit())
 				{
-					var end = Math.Min(addr + bytes, 0x40080);
+					var end = Math.Min(addr + bytes, BankSize);
 					var length = end - addr;
 
 					unsafe
 					{
 						for (var i = addr; i < end; i++)
 						{
-							if (i < 0x80 || (i & 2) != 0)
+							if ((i & 2) != 0)
 							{
 								((byte*)buffer)[i - addr] = 0;
 							}
 							else
 							{
-								((byte*)buffer)[i - addr] = (byte)_domain.PeekByte(FixAddr(i));
+								((byte*)buffer)[i - addr] = _domain.PeekByte(FixAddr(i));
 							}
 						}
 					}
@@ -239,7 +238,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			public IntelliMemFunctions(MemoryDomain domain)
-				: base(domain, 0, 0x40080)
+				: base(domain, 0, 0x40000)
 			{
 			}
 		}
@@ -396,7 +395,7 @@ namespace BizHawk.Client.EmuHawk
 				if (domains[cartRam].Size == 0x200) // MBC2
 				{
 					mfs.Add(new(domains[cartRam], 0, 0x200));
-					mfs.Add(new(new DummyDomain(0x1E00), 0, 0x1E00));
+					mfs.Add(new NullMemFunctions(0x1E00));
 				}
 				else
 				{
@@ -472,20 +471,20 @@ namespace BizHawk.Client.EmuHawk
 						if (domains.Has("SGB_ROM"))
 						{
 							// uh oh, BSNESv115+ can't handle this case (todo: Expose more GB memory domains!!!)
-							mfs.Add(new(domains["SGB CARTROM"], 0, 0x8000));
-							mfs.Add(new(new DummyDomain(0x8000), 0, 0x8000));
+							mfs.Add(new(domains["SGB_ROM"], 0, 0x8000));
+							mfs.Add(new NullMemFunctions(0x8000));
 						}
 						else if (domains.Has("SGB CARTROM"))
 						{
 							// not as many domains, but should be functional enough
 							mfs.Add(new(domains["SGB CARTROM"], 0, 0x8000));
-							mfs.Add(new(new DummyDomain(0x2000), 0, 0x2000));
+							mfs.Add(new NullMemFunctions(0x2000));
 							if (domains.Has("SGB CARTRAM"))
 							{
 								if (domains["SGB CARTRAM"].Size == 0x200) // MBC2
 								{
 									mfs.Add(new(domains["SGB CARTRAM"], 0, 0x200));
-									mfs.Add(new(new DummyDomain(0x1E00), 0, 0x1E00));
+									mfs.Add(new NullMemFunctions(0x1E00));
 								}
 								else
 								{
@@ -494,11 +493,11 @@ namespace BizHawk.Client.EmuHawk
 							}
 							else
 							{
-								mfs.Add(new(new DummyDomain(0x2000), 0, 0x2000));
+								mfs.Add(new NullMemFunctions(0x2000));
 							}
 							mfs.Add(new(domains["SGB WRAM"], 0, 0x2000));
 							mfs.Add(new(domains["SGB WRAM"], 0, 0x1E00));
-							mfs.Add(new(new DummyDomain(0x180), 0, 0x180));
+							mfs.Add(new NullMemFunctions(0x180));
 							mfs.Add(new(domains["SGB HRAM"], 0, 0x80));
 						}
 						else
@@ -531,6 +530,7 @@ namespace BizHawk.Client.EmuHawk
 						break;
 					case RAInterface.ConsoleID.Intellivision:
 						// special case
+						mfs.Add(new NullMemFunctions(0x80));
 						mfs.Add(new IntelliMemFunctions(domains.SystemBus));
 						break;
 					case RAInterface.ConsoleID.PCFX:
