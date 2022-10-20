@@ -22,6 +22,7 @@ namespace BizHawk.Client.EmuHawk
 			private readonly SemaphoreSlim _asyncCount;
 			private readonly Func<bool> _needsLock;
 			private readonly ThreadLocal<bool> _isLocked;
+			private readonly Mutex _memMutex;
 
 			public RAMemGuard(SemaphoreSlim count, AutoResetEvent start, AutoResetEvent end, Func<bool> isNotMainThread, SemaphoreSlim asyncCount, Func<bool> needsLock)
 			{
@@ -32,10 +33,13 @@ namespace BizHawk.Client.EmuHawk
 				_asyncCount = asyncCount;
 				_needsLock = needsLock;
 				_isLocked = new();
+				_memMutex = new();
 			}
 
 			public void Enter()
 			{
+				_memMutex.WaitOne();
+
 				if (_isNotMainThread())
 				{
 					if (_needsLock())
@@ -61,6 +65,8 @@ namespace BizHawk.Client.EmuHawk
 
 					_asyncCount.Wait();
 				}
+
+				_memMutex.ReleaseMutex();
 			}
 		}
 
