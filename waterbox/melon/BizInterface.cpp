@@ -84,11 +84,7 @@ static bool LoadDSiWare(u8* TmdData)
 	fread(es_keyY, 16, 1, bios7i);
 	fclose(bios7i);
 
-	FILE* curNAND = Platform::OpenLocalFile(Config::DSiNANDPath, "r+b");
-	if (!curNAND)
-		return false;
-
-	if (!DSi_NAND::Init(curNAND, es_keyY))
+	if (!DSi_NAND::Init(es_keyY))
 		return false;
 
 	bool ret = DSi_NAND::ImportTitle("dsiware.rom", TmdData, false);
@@ -106,11 +102,6 @@ EXPORT bool Init(LoadFlags loadFlags, LoadData* loadData, FirmwareSettings* fwSe
 	bool isDsi = !!(loadFlags & IS_DSI);
 
 	NDS::SetConsoleType(isDsi);
-	// time calls are deterministic under wbx, so this will force the mac address to a constant value instead of relying on whatever is in the firmware
-	// fixme: might want to allow the user to specify mac address?
-	// edit: upstream has ability to set mac address, most work is in frontend now
-	srand(time(NULL));
-	Config::RandomizeMAC = true;
 	biz_time = 0;
 	RTC::RtcCallback = BizRtcCallback;
 
@@ -126,6 +117,7 @@ EXPORT bool Init(LoadFlags loadFlags, LoadData* loadData, FirmwareSettings* fwSe
 		std::string fwMessage(fwSettings->FirmwareMessage, fwSettings->FirmwareMessageLength);
 		fwMessage += '\0';
 		Config::FirmwareMessage = fwMessage;
+		Config::FirmwareMAC = "00:09:BF:0E:49:16"; // TODO: Make configurable
 	}
 
 	NANDFilePtr = isDsi ? new std::stringstream(std::string(loadData->NandData, loadData->NandLen), std::ios_base::in | std::ios_base::out | std::ios_base::binary) : nullptr;
