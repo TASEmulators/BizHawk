@@ -265,13 +265,41 @@ static void ARM9Access(u8* buffer, s64 address, s64 count, bool write)
 	{
 		void (*Write)(u32, u8) = NDS::ConsoleType == 1 ? DSi::ARM9Write8 : NDS::ARM9Write8;
 		while (count--)
-			Write(address++, *buffer++);
+		{
+			if (address < NDS::ARM9->ITCMSize)
+			{
+				NDS::ARM9->ITCM[address++ & (ITCMPhysicalSize - 1)] = *buffer++;
+			}
+			else if ((address & NDS::ARM9->DTCMMask) == NDS::ARM9->DTCMBase)
+			{
+				NDS::ARM9->DTCM[address++ & (DTCMPhysicalSize - 1)] = *buffer++;
+			}
+			else
+			{
+				Write(address++, *buffer++);
+			}
+		}
 	}
 	else
 	{
 		u8 (*Read)(u32) = NDS::ConsoleType == 1 ? DSi::ARM9Read8 : NDS::ARM9Read8;
 		while (count--)
-			*buffer++ = SafeToPeek<true>(address) ? Read(address) : 0, address++;
+		{
+			if (address < NDS::ARM9->ITCMSize)
+			{
+				*buffer++ = NDS::ARM9->ITCM[address & (ITCMPhysicalSize - 1)];
+			}
+			else if ((address & NDS::ARM9->DTCMMask) == NDS::ARM9->DTCMBase)
+			{
+				*buffer++ = NDS::ARM9->DTCM[address & (DTCMPhysicalSize - 1)];
+			}
+			else
+			{
+				*buffer++ = SafeToPeek<true>(address) ? Read(address) : 0;
+			}
+
+			address++;
+		}
 	}
 }
 
@@ -293,40 +321,50 @@ static void ARM7Access(u8* buffer, s64 address, s64 count, bool write)
 
 EXPORT void GetMemoryAreas(MemoryArea *m)
 {
-	m[0].Data = NDS::ARM9BIOS;
-	m[0].Name = "ARM9 BIOS";
-	m[0].Size = sizeof NDS::ARM9BIOS;
-	m[0].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE;
+	m[0].Data = NDS::MainRAM;
+	m[0].Name = "Main RAM";
+	m[0].Size = NDS::MainRAMMaxSize;
+	m[0].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_PRIMARY;
 
-	m[1].Data = NDS::ARM7BIOS;
-	m[1].Name = "ARM7 BIOS";
-	m[1].Size = sizeof NDS::ARM7BIOS;
+	m[1].Data = NDS::SharedWRAM;
+	m[1].Name = "Shared WRAM";
+	m[1].Size = NDS::SharedWRAMSize;
 	m[1].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE;
 
-	m[2].Data = NDS::MainRAM;
-	m[2].Name = "Main RAM";
-	m[2].Size = NDS::MainRAMMaxSize;
-	m[2].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_PRIMARY;
+	m[2].Data = NDS::ARM7WRAM;
+	m[2].Name = "ARM7 WRAM";
+	m[2].Size = NDS::ARM7WRAMSize;
+	m[2].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE;
 
-	m[3].Data = NDS::SharedWRAM;
-	m[3].Name = "Shared WRAM";
-	m[3].Size = NDS::SharedWRAMSize;
+	m[3].Data = NDS::ARM9->ITCM;
+	m[3].Name = "Instruction TCM";
+	m[3].Size = ITCMPhysicalSize;
 	m[3].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE;
 
-	m[4].Data = NDS::ARM7WRAM;
-	m[4].Name = "ARM7 WRAM";
-	m[4].Size = NDS::ARM7WRAMSize;
+	m[4].Data = NDS::ARM9->DTCM;
+	m[4].Name = "Data TCM";
+	m[4].Size = DTCMPhysicalSize;
 	m[4].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE;
 
-	m[5].Data = (void*)ARM9Access;
-	m[5].Name = "ARM9 System Bus";
-	m[5].Size = 1ull << 32;
-	m[5].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_FUNCTIONHOOK;
+	m[5].Data = NDS::ARM9BIOS;
+	m[5].Name = "ARM9 BIOS";
+	m[5].Size = sizeof NDS::ARM9BIOS;
+	m[5].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE;
 
-	m[6].Data = (void*)ARM7Access;
-	m[6].Name = "ARM7 System Bus";
-	m[6].Size = 1ull << 32;
-	m[6].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_FUNCTIONHOOK;
+	m[6].Data = NDS::ARM7BIOS;
+	m[6].Name = "ARM7 BIOS";
+	m[6].Size = sizeof NDS::ARM7BIOS;
+	m[6].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE;
+
+	m[7].Data = (void*)ARM9Access;
+	m[7].Name = "ARM9 System Bus";
+	m[7].Size = 1ull << 32;
+	m[7].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_FUNCTIONHOOK;
+
+	m[8].Data = (void*)ARM7Access;
+	m[8].Name = "ARM7 System Bus";
+	m[8].Size = 1ull << 32;
+	m[8].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_FUNCTIONHOOK;
 
 	// fixme: include more shit
 }
