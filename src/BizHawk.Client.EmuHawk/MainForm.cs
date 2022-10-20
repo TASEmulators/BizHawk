@@ -4882,6 +4882,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						RA = new(this, InputManager, () => RetroAchievementsSubMenu.DropDownItems, () =>
 						{
+							RA.Dispose();
 							RA = null;
 							RetroAchievementsSubMenu.DropDownItems.Clear();
 							RetroAchievementsSubMenu.DropDownItems.Add(StartRetroAchievementsMenuItem);

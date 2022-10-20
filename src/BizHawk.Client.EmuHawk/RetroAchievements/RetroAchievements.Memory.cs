@@ -12,7 +12,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private IReadOnlyList<MemFunctions> _memFunctions;
 
-		private struct RAMemGuard : IMonitor
+		private struct RAMemGuard : IMonitor, IDisposable
 		{
 			private readonly SemaphoreSlim _count;
 			private readonly AutoResetEvent _start;
@@ -34,6 +34,16 @@ namespace BizHawk.Client.EmuHawk
 				_needsLock = needsLock;
 				_isLocked = new();
 				_memMutex = new();
+			}
+
+			public void Dispose()
+			{
+				_count.Dispose();
+				_start.Dispose();
+				_end.Dispose();
+				_asyncCount.Dispose();
+				_isLocked.Dispose();
+				_memMutex.Dispose();
 			}
 
 			public void Enter()

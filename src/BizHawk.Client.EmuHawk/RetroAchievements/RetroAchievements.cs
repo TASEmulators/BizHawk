@@ -8,7 +8,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class RetroAchievements
+	public partial class RetroAchievements : IDisposable
 	{
 		private static RAInterface RA;
 		public static bool IsAvailable => RA != null;
@@ -67,6 +67,14 @@ namespace BizHawk.Client.EmuHawk
 			RA.InstallSharedFunctionsExt(_isActive, _unpause, _pause, _rebuildMenu, _estimateTitle, _resetEmulator, _loadROM);
 
 			RA.AttemptLogin(true);
+		}
+
+		public void Dispose()
+		{
+			_isMainThread.Dispose();
+			_dialogThrottle.Dispose();
+			_delegateEventDone.Dispose();
+			_memGuard.Dispose();
 		}
 
 		public void OnSaveState(string path)
