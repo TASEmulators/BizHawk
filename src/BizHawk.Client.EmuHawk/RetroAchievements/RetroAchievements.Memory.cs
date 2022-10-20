@@ -262,7 +262,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 						else
 						{
-							val = ReadMem(i);
+							val = ReadVRAMPacked(i - 0x40);
 						}
 
 						unsafe
