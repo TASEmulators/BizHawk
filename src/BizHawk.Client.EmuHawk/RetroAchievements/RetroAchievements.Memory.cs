@@ -1,18 +1,51 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-
-// FIXME: These may be called from up to 3 different threads at once! Need to synchronize with the main thread!
-// (Main achievements logic runs through main thread, so thread sync wouldn't cost much performance really)
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class RetroAchievements
 	{
 		private IReadOnlyList<MemFunctions> _memFunctions;
+
+		private struct RAMemGuard : IMonitor
+		{
+			private readonly SemaphoreSlim _count;
+			private readonly AutoResetEvent _start;
+			private readonly AutoResetEvent _end;
+			private readonly Func<bool> _isNotMainThread;
+
+			public RAMemGuard(SemaphoreSlim count, AutoResetEvent start, AutoResetEvent end, Func<bool> isNotMainThread)
+			{
+				_count = count;
+				_start = start;
+				_end = end;
+				_isNotMainThread = isNotMainThread;
+			}
+
+			public void Enter()
+			{
+				if (_isNotMainThread())
+				{
+					_count.Wait();
+					_start.WaitOne();
+				}
+			}
+
+			public void Exit()
+			{
+				if (_isNotMainThread())
+				{
+					_end.Set();
+				}
+			}
+		}
+
+		private readonly RAMemGuard _memGuard;
 
 		private class DummyDomain : MemoryDomain
 		{
@@ -38,15 +71,27 @@ namespace BizHawk.Client.EmuHawk
 			public readonly RAInterface.ReadMemoryBlockFunc ReadBlockFunc;
 			public readonly int BankSize;
 
+			public RAMemGuard MemGuard { protected get; set; }
+
 			protected virtual int FixAddr(int addr)
 				=> _domainAddrStart + addr;
 
 			protected virtual byte ReadMem(int addr)
-				=> _domain.PeekByte(FixAddr(addr) ^ _addressMangler);
+			{
+				using (MemGuard.EnterExit())
+				{
+					return _domain.PeekByte(FixAddr(addr) ^ _addressMangler);
+				}
+			}
 
 			protected virtual void WriteMem(int addr, byte val)
-				=> _domain.PokeByte(FixAddr(addr) ^ _addressMangler, val);
-
+			{
+				using (MemGuard.EnterExit())
+				{
+					_domain.PokeByte(FixAddr(addr) ^ _addressMangler, val);
+				}
+			}
+			
 			protected virtual int ReadMemBlock(int addr, IntPtr buffer, int bytes)
 			{
 				addr = FixAddr(addr);
@@ -56,25 +101,28 @@ namespace BizHawk.Client.EmuHawk
 					return 0;
 				}
 
-				var end = Math.Min(addr + bytes, _domainAddrStart + BankSize);
-				if (_addressMangler == 0)
+				using (MemGuard.EnterExit())
 				{
-					var ret = new byte[end - addr];
-					_domain.BulkPeekByte(((long)addr).RangeToExclusive(end), ret);
-					Marshal.Copy(ret, 0, buffer, end - addr);
-				}
-				else
-				{
-					unsafe
+					var end = Math.Min(addr + bytes, _domainAddrStart + BankSize);
+					if (_addressMangler == 0)
 					{
-						for (var i = addr; i < end; i++)
+						var ret = new byte[end - addr];
+						_domain.BulkPeekByte(((long)addr).RangeToExclusive(end), ret);
+						Marshal.Copy(ret, 0, buffer, end - addr);
+					}
+					else
+					{
+						unsafe
 						{
-							((byte*)buffer)[i - addr] = _domain.PeekByte(i ^ _addressMangler);
+							for (var i = addr; i < end; i++)
+							{
+								((byte*)buffer)[i - addr] = _domain.PeekByte(i ^ _addressMangler);
+							}
 						}
 					}
-				}
 
-				return end - addr;
+					return end - addr;
+				}
 			}
 
 			public MemFunctions(MemoryDomain domain, int domainAddrStart, long bankSize, int addressMangler = 0)
@@ -152,35 +200,45 @@ namespace BizHawk.Client.EmuHawk
 			private readonly IDebuggable _debuggable;
 			private readonly MemoryDomain _vram; // our vram is unpacked, but RA expects it packed
 
+			private byte ReadVRAMPacked(int addr)
+			{
+				return (byte)(((_vram.PeekByte(addr * 4 + 0) & 3) << 6)
+					| ((_vram.PeekByte(addr * 4 + 1) & 3) << 4)
+					| ((_vram.PeekByte(addr * 4 + 2) & 3) << 2)
+					| ((_vram.PeekByte(addr * 4 + 3) & 3) << 0));
+			}
+
 			protected override byte ReadMem(int addr)
 			{
-				if (addr < 0x40)
+				using (MemGuard.EnterExit())
 				{
-					return (byte)_debuggable.GetCpuFlagsAndRegisters()["SPR" + addr].Value;
-				}
-				else
-				{
-					addr -= 0x40;
-					return (byte)(((_vram.PeekByte(addr * 4 + 0) & 3) << 6)
-						| ((_vram.PeekByte(addr * 4 + 1) & 3) << 4)
-						| ((_vram.PeekByte(addr * 4 + 2) & 3) << 2)
-						| ((_vram.PeekByte(addr * 4 + 3) & 3) << 0));
+					if (addr < 0x40)
+					{
+						return (byte)_debuggable.GetCpuFlagsAndRegisters()["SPR" + addr].Value;
+					}
+					else
+					{
+						return ReadVRAMPacked(addr - 0x40);
+					}
 				}
 			}
 
 			protected override void WriteMem(int addr, byte val)
 			{
-				if (addr < 0x40)
+				using (MemGuard.EnterExit())
 				{
-					_debuggable.SetCpuRegister("SPR" + addr, val);
-				}
-				else
-				{
-					addr -= 0x40;
-					_vram.PokeByte(addr * 4 + 0, (byte)((val >> 6) & 3));
-					_vram.PokeByte(addr * 4 + 1, (byte)((val >> 4) & 3));
-					_vram.PokeByte(addr * 4 + 2, (byte)((val >> 2) & 3));
-					_vram.PokeByte(addr * 4 + 3, (byte)((val >> 0) & 3));
+					if (addr < 0x40)
+					{
+						_debuggable.SetCpuRegister("SPR" + addr, val);
+					}
+					else
+					{
+						addr -= 0x40;
+						_vram.PokeByte(addr * 4 + 0, (byte)((val >> 6) & 3));
+						_vram.PokeByte(addr * 4 + 1, (byte)((val >> 4) & 3));
+						_vram.PokeByte(addr * 4 + 2, (byte)((val >> 2) & 3));
+						_vram.PokeByte(addr * 4 + 3, (byte)((val >> 0) & 3));
+					}
 				}
 			}
 
@@ -191,27 +249,30 @@ namespace BizHawk.Client.EmuHawk
 					return 0;
 				}
 
-				var regs = _debuggable.GetCpuFlagsAndRegisters();
-				var end = Math.Min(addr + bytes, BankSize);
-				for (int i = addr; i < end; i++)
+				using (MemGuard.EnterExit())
 				{
-					byte val;
-					if (i < 0x40)
+					var regs = _debuggable.GetCpuFlagsAndRegisters();
+					var end = Math.Min(addr + bytes, BankSize);
+					for (int i = addr; i < end; i++)
 					{
-						val = (byte)regs["SPR" + i].Value;
-					}
-					else
-					{
-						val = ReadMem(i);
+						byte val;
+						if (i < 0x40)
+						{
+							val = (byte)regs["SPR" + i].Value;
+						}
+						else
+						{
+							val = ReadMem(i);
+						}
+
+						unsafe
+						{
+							((byte*)buffer)[i - addr] = val;
+						}
 					}
 
-					unsafe
-					{
-						((byte*)buffer)[i - addr] = val;
-					}
+					return end - addr;
 				}
-
-				return end - addr;
 			}
 
 			public ChanFMemFunctions(IDebuggable debuggable, MemoryDomain vram)

@@ -52,6 +52,8 @@ namespace BizHawk.Client.EmuHawk
 			_getRADropDownItems = getRADropDownItems;
 			_shutdownRACallback = shutdownRACallback;
 
+			_memGuard = new(_memAccessCount, _memAccessReady, _memAccessDone, () => !IsMainThread);
+
 			RA.InitClient(_mainForm.Handle, "BizHawk", VersionInfo.GetEmuVersion());
 
 			_isActive = IsActiveCallback;
@@ -100,6 +102,7 @@ namespace BizHawk.Client.EmuHawk
 
 				for (int i = 0; i < _memFunctions.Count; i++)
 				{
+					_memFunctions[i].MemGuard = _memGuard;
 					RA.InstallMemoryBank(i, _memFunctions[i].ReadFunc, _memFunctions[i].WriteFunc, _memFunctions[i].BankSize);
 					RA.InstallMemoryBankBlockReader(i, _memFunctions[i].ReadBlockFunc);
 				}
@@ -167,6 +170,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			HandleNextDelegate();
+			HandleMemAccess();
 		}
 
 		public void OnFrameAdvance()

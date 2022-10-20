@@ -33,8 +33,13 @@ namespace BizHawk.Client.EmuHawk
 		private volatile IntPtr _nextDialog = IntPtr.Zero;
 		private readonly AutoResetEvent _dialogThrottle = new(false);
 
+		private bool _isInDelegate = false;
 		private volatile Action _nextDelegate;
 		private readonly AutoResetEvent _delegateEventDone = new(false);
+
+		private readonly SemaphoreSlim _memAccessCount = new(2, 2);
+		private readonly AutoResetEvent _memAccessReady = new(false);
+		private readonly AutoResetEvent _memAccessDone = new(false);
 
 		private void DialogThreadProc()
 		{
@@ -102,6 +107,7 @@ namespace BizHawk.Client.EmuHawk
 							// (although the other thread will pump that dialog's messages once the dialog is created)
 							Application.DoEvents();
 							HandleNextDelegate(); // don't let the dialog thread get stuck on a delegate
+							HandleMemAccess(); // or mem access
 						}
 
 						_mainForm.UpdateWindowTitle();
@@ -169,8 +175,6 @@ namespace BizHawk.Client.EmuHawk
 				_mainForm.LoadRom(path, new LoadRomArgs { OpenAdvanced = OpenAdvancedSerializer.ParseWithLegacy(path) });
 			});
 
-		private bool _isInDelegate = false;
-
 		// ONLY CALL THIS ON THE MAIN THREAD
 		private void HandleNextDelegate()
 		{
@@ -186,6 +190,23 @@ namespace BizHawk.Client.EmuHawk
 					_nextDelegate = null;
 					_delegateEventDone.Set();
 				}
+			}
+		}
+
+		// mem access sync technique
+		// mem access count will be 2 to start, this indicates no threads are requesting to access memory
+		// wait will decrement, release will incremented
+		// so when another thread wants to read, it will call wait (ensuring the count is < 2)
+		// and once the main thread is ready, it will call release (restoring the previous count)
+		// mem access ready will ensure the other thread and main thread are actually synced (as count wait will not block)
+		// mem access done will block the main thread until the other thread is done reading
+		private void HandleMemAccess()
+		{
+			while (_memAccessCount.CurrentCount < 2)
+			{
+				_memAccessCount.Release();
+				_memAccessReady.Set();
+				_memAccessDone.WaitOne();
 			}
 		}
 	}
