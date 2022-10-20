@@ -87,7 +87,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private class MemFunctions
 		{
-			private readonly MemoryDomain _domain;
+			protected readonly MemoryDomain _domain;
 			private readonly int _domainAddrStart; // addr of _domain where bank begins
 			private readonly int _addressMangler; // of course, let's *not* correct internal core byteswapping!
 
@@ -129,11 +129,13 @@ namespace BizHawk.Client.EmuHawk
 				using (MemGuard.EnterExit())
 				{
 					var end = Math.Min(addr + bytes, _domainAddrStart + BankSize);
+					var length = end - addr;
+
 					if (_addressMangler == 0)
 					{
-						var ret = new byte[end - addr];
+						var ret = new byte[length];
 						_domain.BulkPeekByte(((long)addr).RangeToExclusive(end), ret);
-						Marshal.Copy(ret, 0, buffer, end - addr);
+						Marshal.Copy(ret, 0, buffer, length);
 					}
 					else
 					{
@@ -202,16 +204,28 @@ namespace BizHawk.Client.EmuHawk
 					return 0;
 				}
 
-				var end = Math.Min(addr + bytes, 0x40080);
-				unsafe
+				using (MemGuard.EnterExit())
 				{
-					for (var i = addr; i < end; i++)
-					{
-						((byte*)buffer)[i - addr] = ReadMem(i);
-					}
-				}
+					var end = Math.Min(addr + bytes, 0x40080);
+					var length = end - addr;
 
-				return end - addr;
+					unsafe
+					{
+						for (var i = addr; i < end; i++)
+						{
+							if (i < 0x80 || (i & 2) != 0)
+							{
+								((byte*)buffer)[i - addr] = 0;
+							}
+							else
+							{
+								((byte*)buffer)[i - addr] = (byte)_domain.PeekByte(FixAddr(i));
+							}
+						}
+					}
+
+					return length;
+				}
 			}
 
 			public IntelliMemFunctions(MemoryDomain domain)
