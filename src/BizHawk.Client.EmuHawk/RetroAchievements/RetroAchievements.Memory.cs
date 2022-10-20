@@ -18,21 +18,34 @@ namespace BizHawk.Client.EmuHawk
 			private readonly AutoResetEvent _start;
 			private readonly AutoResetEvent _end;
 			private readonly Func<bool> _isNotMainThread;
+			// this is more or less a hacky workaround from dialog thread access causing lockups during DoAchievementsFrame
+			private readonly SemaphoreSlim _asyncCount;
+			private readonly Func<bool> _needsLock;
+			private readonly ThreadLocal<bool> _isLocked;
 
-			public RAMemGuard(SemaphoreSlim count, AutoResetEvent start, AutoResetEvent end, Func<bool> isNotMainThread)
+			public RAMemGuard(SemaphoreSlim count, AutoResetEvent start, AutoResetEvent end, Func<bool> isNotMainThread, SemaphoreSlim asyncCount, Func<bool> needsLock)
 			{
 				_count = count;
 				_start = start;
 				_end = end;
 				_isNotMainThread = isNotMainThread;
+				_asyncCount = asyncCount;
+				_needsLock = needsLock;
+				_isLocked = new();
 			}
 
 			public void Enter()
 			{
 				if (_isNotMainThread())
 				{
-					_count.Wait();
-					_start.WaitOne();
+					if (_needsLock())
+					{
+						_count.Wait();
+						_start.WaitOne();
+						_isLocked.Value = true;
+					}
+
+					_asyncCount.Release();
 				}
 			}
 
@@ -40,7 +53,13 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (_isNotMainThread())
 				{
-					_end.Set();
+					if (_isLocked.Value)
+					{
+						_end.Set();
+						_isLocked.Value = false;
+					}
+
+					_asyncCount.Wait();
 				}
 			}
 		}

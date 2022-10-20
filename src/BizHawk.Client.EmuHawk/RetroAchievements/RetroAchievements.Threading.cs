@@ -41,6 +41,9 @@ namespace BizHawk.Client.EmuHawk
 		private readonly AutoResetEvent _memAccessReady = new(false);
 		private readonly AutoResetEvent _memAccessDone = new(false);
 
+		private readonly SemaphoreSlim _asyncAccessCount = new(0, 2);
+		private volatile bool _inRAFrame = false;
+
 		private void DialogThreadProc()
 		{
 			while (_dialogThreadActive)

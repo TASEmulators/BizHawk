@@ -44,7 +44,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// hack around winforms message pumping screwing over RA's forms
 			_dialogThreadActive = true;
-			_dialogThread = new(DialogThreadProc) { IsBackground = true };
+			_dialogThread = new(DialogThreadProc) { IsBackground = true, Name = "RA Dialog Thread" };
 			_dialogThread.Start();
 
 			_mainForm = mainForm;
@@ -52,7 +52,7 @@ namespace BizHawk.Client.EmuHawk
 			_getRADropDownItems = getRADropDownItems;
 			_shutdownRACallback = shutdownRACallback;
 
-			_memGuard = new(_memAccessCount, _memAccessReady, _memAccessDone, () => !IsMainThread);
+			_memGuard = new(_memAccessCount, _memAccessReady, _memAccessDone, () => !IsMainThread, _asyncAccessCount, () => !_inRAFrame);
 
 			RA.InitClient(_mainForm.Handle, "BizHawk", VersionInfo.GetEmuVersion());
 
@@ -190,7 +190,14 @@ namespace BizHawk.Client.EmuHawk
 				// do this to prevent wbx host spam when peeks are spammed
 				using (Domains.MainMemory.EnterExit())
 				{
+					_inRAFrame = true;
+					HandleMemAccess();
 					RA.DoAchievementsFrame();
+					_inRAFrame = false;
+					while (_asyncAccessCount.CurrentCount > 0)
+					{
+						// we'll wait until any async accesses are finished
+					}
 				}
 			}
 			else
