@@ -328,6 +328,16 @@ EXPORT void GetMemoryAreas(MemoryArea *m)
 	m[6].Size = 1ull << 32;
 	m[6].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_FUNCTIONHOOK;
 
+	m[7].Data = NDS::ARM9->ITCM;
+	m[7].Name = "Instruction TCM";
+	m[7].Size = ITCMPhysicalSize;
+	m[7].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE;
+
+	m[8].Data = NDS::ARM9->DTCM;
+	m[8].Name = "Data TCM";
+	m[8].Size = DTCMPhysicalSize;
+	m[8].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE;
+
 	// fixme: include more shit
 }
 
