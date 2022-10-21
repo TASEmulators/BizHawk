@@ -38,6 +38,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public abstract byte snes_bus_read(uint address);
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_bus_write(uint address, byte value);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void* snes_get_sgb_memory_region(int id, out int size);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract byte snes_sgb_bus_read(ushort address);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void snes_sgb_bus_write(ushort address, byte value);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract int snes_sgb_battery_size();
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void snes_sgb_save_battery(byte[] buffer, int size);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void snes_sgb_load_battery(byte[] buffer, int size);
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_set_callbacks(IntPtr[] snesCallbacks);

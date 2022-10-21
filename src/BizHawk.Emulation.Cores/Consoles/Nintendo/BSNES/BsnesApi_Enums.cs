@@ -89,9 +89,8 @@
 
 		public enum SNES_MEMORY
 		{
-			CARTRIDGE_RAM,
-			CARTRIDGE_ROM,
-			SGB_ROM,
+			CARTRAM,
+			CARTROM,
 
 			BSX_RAM,
 			BSX_PRAM,
@@ -104,7 +103,23 @@
 			APURAM,
 			VRAM,
 			OBJECTS,
-			CGRAM
+			CGRAM,
+		}
+
+		// This is a mirror of SameBoy's GB_direct_access_t
+		public enum SGB_MEMORY
+		{
+			ROM,
+			RAM,
+			CARTRAM,
+			VRAM,
+			HRAM,
+			MMIO,
+			BOOTROM,
+			OAM,
+			BGP,
+			OBP,
+			IE,
 		}
 
 		public enum BSNES_INPUT_DEVICE

@@ -20,7 +20,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			byte[] saveRamCopy = new byte[_saveRamSize];
 			using (Api.exe.EnterExit())
 			{
-				Marshal.Copy((IntPtr) _saveRam, saveRamCopy, 0, _saveRamSize);
+				if (IsSGB)
+				{
+					Api.core.snes_sgb_save_battery(saveRamCopy, _saveRamSize);
+				}
+				else
+				{
+					Marshal.Copy((IntPtr) _saveRam, saveRamCopy, 0, _saveRamSize);
+				}
 			}
 
 			return saveRamCopy;
@@ -32,7 +39,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 			using (Api.exe.EnterExit())
 			{
-				Marshal.Copy(data, 0, (IntPtr) _saveRam, _saveRamSize);
+				if (IsSGB)
+				{
+					Api.core.snes_sgb_load_battery(saveRamCopy, _saveRamSize);
+				}
+				else
+				{
+					Marshal.Copy(data, 0, (IntPtr) _saveRam, _saveRamSize);
+				}
 			}
 		}
 	}
