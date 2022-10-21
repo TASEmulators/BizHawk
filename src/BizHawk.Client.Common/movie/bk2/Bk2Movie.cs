@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores;
 
 namespace BizHawk.Client.Common
 {
@@ -74,7 +74,7 @@ namespace BizHawk.Client.Common
 				if (Header.TryGetValue(HeaderKeys.CycleCount, out var numCyclesStr) && Header.TryGetValue(HeaderKeys.ClockRate, out var clockRateStr))
 				{
 					var numCycles = Convert.ToUInt64(numCyclesStr);
-					var clockRate = Convert.ToDouble(clockRateStr);
+					var clockRate = Convert.ToDouble(clockRateStr, CultureInfo.InvariantCulture);
 					dblSeconds = numCycles / clockRate;
 				}
 				else

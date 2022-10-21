@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 
 using BizHawk.Common;
@@ -79,7 +80,7 @@ namespace BizHawk.Client.Common
 				if (Emulator is ICycleTiming cycleCore)
 				{
 					Header[HeaderKeys.CycleCount] = cycleCore.CycleCount.ToString();
-					Header[HeaderKeys.ClockRate] = cycleCore.ClockRate.ToString();
+					Header[HeaderKeys.ClockRate] = cycleCore.ClockRate.ToString(CultureInfo.InvariantCulture);
 				}
 			}
 			else
