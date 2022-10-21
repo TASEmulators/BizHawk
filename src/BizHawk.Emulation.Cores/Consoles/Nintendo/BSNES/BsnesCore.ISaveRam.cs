@@ -37,6 +37,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		{
 			if (_saveRamSize == 0) return;
 
+			if (data.Length != _saveRamSize)
+			{
+				throw new InvalidOperationException("Size of saveram data does not match expected!");
+			}
+
 			using (Api.exe.EnterExit())
 			{
 				if (IsSGB)

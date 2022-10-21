@@ -109,8 +109,8 @@
 		// This is a mirror of SameBoy's GB_direct_access_t
 		public enum SGB_MEMORY
 		{
-			ROM,
-			RAM,
+			CARTROM,
+			WRAM,
 			CARTRAM,
 			VRAM,
 			HRAM,
