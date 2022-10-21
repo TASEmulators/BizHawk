@@ -332,10 +332,6 @@ EXPORT void* snes_get_memory_region(int id, int* size, int* word_size)
             *size = program->superFamicom.program.size();
             *word_size = 1;
             return program->superFamicom.program.data();
-        case SNES_MEMORY::SGB_ROM:
-            *size = program->gameBoy.program.size();
-            *word_size = 1;
-            return program->gameBoy.program.data();
 
         // unused
         case SNES_MEMORY::BSX_RAM:
@@ -408,6 +404,27 @@ EXPORT uint8_t snes_bus_read(unsigned addr)
 EXPORT void snes_bus_write(unsigned addr, uint8_t value)
 {
     bus.write(addr, value);
+}
+
+EXPORT void* snes_get_sgb_memory_region(int id, int* size)
+{
+    if(!emulator->loaded()) return nullptr;
+    if(!GB_is_inited(&icd.sameboy)) return nullptr;
+
+    size_t s = 0;
+    void* ret = GB_get_direct_access(&icd.sameboy, (GB_direct_access_t)id, &s, NULL);
+    *size = s;
+    return ret;
+}
+
+EXPORT uint8_t snes_sgb_bus_read(uint16_t addr)
+{
+    return GB_safe_read_memory(&icd.sameboy, addr);
+}
+
+EXPORT void snes_sgb_bus_write(uint16_t addr, uint8_t value)
+{
+    GB_write_memory(&icd.sameboy, addr, value);
 }
 
 EXPORT void snes_get_cpu_registers(SnesRegisters* registers)
