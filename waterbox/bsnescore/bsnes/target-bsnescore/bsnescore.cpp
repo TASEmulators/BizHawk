@@ -427,6 +427,21 @@ EXPORT void snes_sgb_bus_write(uint16_t addr, uint8_t value)
     GB_write_memory(&icd.sameboy, addr, value);
 }
 
+EXPORT int snes_sgb_battery_size()
+{
+    return GB_save_battery_size(&icd.sameboy);
+}
+
+EXPORT void snes_sgb_save_battery(uint8_t* buffer, int size)
+{
+    GB_save_battery_to_buffer(&icd.sameboy, buffer, size);
+}
+
+EXPORT void snes_sgb_load_battery(uint8_t* buffer, int size)
+{
+    GB_load_battery_from_buffer(&icd.sameboy, buffer, size);
+}
+
 EXPORT void snes_get_cpu_registers(SnesRegisters* registers)
 {
     registers->pc = SuperFamicom::cpu.r.pc.d;
