@@ -48,18 +48,32 @@ namespace BizHawk.Client.EmuHawk
 
 			public void Enter()
 			{
-				_memMutex.WaitOne();
-
 				if (_isNotMainThread())
 				{
+					_memMutex.WaitOne();
+					_asyncCount.Release();
+
 					if (_needsLock())
 					{
 						_count.Wait();
 						_start.WaitOne();
 						_isLocked.Value = true;
 					}
-
-					_asyncCount.Release();
+				}
+				else
+				{
+					// in some cases we may need to service out mem accesses currently stuck waiting
+					// (if they're waiting here, they can't release the mutex)
+					// we're the main thread, so it's safe to do this here
+					while (!_memMutex.WaitOne(0))
+					{
+						while (_count.CurrentCount < 2)
+						{
+							_count.Release();
+							_start.Set();
+							_end.WaitOne();
+						}
+					}
 				}
 			}
 

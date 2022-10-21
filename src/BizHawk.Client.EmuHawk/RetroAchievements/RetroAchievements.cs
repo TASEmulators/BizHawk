@@ -195,7 +195,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Emu.HasMemoryDomains())
 			{
-				// do this to prevent wbx host spam when peeks are spammed
+				// we want to EnterExit to prevent wbx host spam when peeks are spammed
 				using (Domains.MainMemory.EnterExit())
 				{
 					_inRAFrame = true;
@@ -205,6 +205,9 @@ namespace BizHawk.Client.EmuHawk
 					while (_asyncAccessCount.CurrentCount > 0)
 					{
 						// we'll wait until any async accesses are finished
+						// note there is a potential for a locked read to occur
+						// due to _inRAFrame being false now
+						HandleMemAccess();
 					}
 				}
 			}
