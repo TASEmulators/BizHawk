@@ -44,6 +44,90 @@ namespace BizHawk.Client.EmuHawk
 		private readonly SemaphoreSlim _asyncAccessCount = new(0, 2);
 		private volatile bool _inRAFrame = false;
 
+		private readonly RAMemGuard _memGuard;
+
+		private struct RAMemGuard : IMonitor, IDisposable
+		{
+			private readonly SemaphoreSlim _count;
+			private readonly AutoResetEvent _start;
+			private readonly AutoResetEvent _end;
+			private readonly Func<bool> _isNotMainThread;
+			// this is more or less a hacky workaround from dialog thread access causing lockups during DoAchievementsFrame
+			private readonly SemaphoreSlim _asyncCount;
+			private readonly Func<bool> _needsLock;
+			private readonly ThreadLocal<bool> _isLocked;
+			private readonly Mutex _memMutex;
+
+			public RAMemGuard(SemaphoreSlim count, AutoResetEvent start, AutoResetEvent end, Func<bool> isNotMainThread, SemaphoreSlim asyncCount, Func<bool> needsLock)
+			{
+				_count = count;
+				_start = start;
+				_end = end;
+				_isNotMainThread = isNotMainThread;
+				_asyncCount = asyncCount;
+				_needsLock = needsLock;
+				_isLocked = new();
+				_memMutex = new();
+			}
+
+			public void Dispose()
+			{
+				_count.Dispose();
+				_start.Dispose();
+				_end.Dispose();
+				_asyncCount.Dispose();
+				_isLocked.Dispose();
+				_memMutex.Dispose();
+			}
+
+			public void Enter()
+			{
+				if (_isNotMainThread())
+				{
+					_memMutex.WaitOne();
+					_asyncCount.Release();
+
+					if (_needsLock())
+					{
+						_count.Wait();
+						_start.WaitOne();
+						_isLocked.Value = true;
+					}
+				}
+				else
+				{
+					// in some cases we may need to service out mem accesses currently stuck waiting
+					// (if they're waiting here, they can't release the mutex)
+					// we're the main thread, so it's safe to do this here
+					while (!_memMutex.WaitOne(0))
+					{
+						while (_count.CurrentCount < 2)
+						{
+							_count.Release();
+							_start.Set();
+							_end.WaitOne();
+						}
+					}
+				}
+			}
+
+			public void Exit()
+			{
+				if (_isNotMainThread())
+				{
+					if (_isLocked.Value)
+					{
+						_end.Set();
+						_isLocked.Value = false;
+					}
+
+					_asyncCount.Wait();
+				}
+
+				_memMutex.ReleaseMutex();
+			}
+		}
+
 		private void DialogThreadProc()
 		{
 			while (_dialogThreadActive)
