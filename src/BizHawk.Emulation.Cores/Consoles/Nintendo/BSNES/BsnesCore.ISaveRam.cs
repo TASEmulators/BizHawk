@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 {
 	public unsafe partial class BsnesCore : ISaveRam
 	{
-		private byte* _saveRam;
+		private IntPtr _saveRam;
 		private int _saveRamSize;
 
 		// yeah this is not the best. this will basically always return true as long as the saveRam exists.
@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				}
 				else
 				{
-					Marshal.Copy((IntPtr) _saveRam, saveRamCopy, 0, _saveRamSize);
+					Marshal.Copy(_saveRam, saveRamCopy, 0, _saveRamSize);
 				}
 			}
 
@@ -41,11 +41,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			{
 				if (IsSGB)
 				{
-					Api.core.snes_sgb_load_battery(saveRamCopy, _saveRamSize);
+					Api.core.snes_sgb_load_battery(data, _saveRamSize);
 				}
 				else
 				{
-					Marshal.Copy(data, 0, (IntPtr) _saveRam, _saveRamSize);
+					Marshal.Copy(data, 0, _saveRam, _saveRamSize);
 				}
 			}
 		}

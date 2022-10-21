@@ -1,3 +1,4 @@
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 
@@ -48,44 +49,47 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		public bool FrameAdvance(IController controller, bool render, bool renderSound = true)
 		{
-			_bsnesCore.FrameAdvancePre(controller, render, renderSound);
-
-			_bsnesCore.IsLagFrame = true;
-			bool framePassed = false;
-
-			bool resetSignal = controller.IsPressed("Reset");
-			bool powerSignal = controller.IsPressed("Power");
-
-			if (resetSignal || powerSignal)
+			using (_bsnesCore.Api.EnterExit())
 			{
-				int resetInstruction = controller.AxisValue("Reset Instruction");
-				for (int i = 0; i < resetInstruction; i++)
+				_bsnesCore.FrameAdvancePre(controller, render, renderSound);
+
+				_bsnesCore.IsLagFrame = true;
+				bool framePassed = false;
+
+				bool resetSignal = controller.IsPressed("Reset");
+				bool powerSignal = controller.IsPressed("Power");
+
+				if (resetSignal || powerSignal)
 				{
-					framePassed = _bsnesCore.Api.core.snes_cpu_step();
-					if (framePassed) break;
+					int resetInstruction = controller.AxisValue("Reset Instruction");
+					for (int i = 0; i < resetInstruction; i++)
+					{
+						framePassed = _bsnesCore.Api.core.snes_cpu_step();
+						if (framePassed) break;
+					}
+
+					if (resetSignal)
+					{
+						_bsnesCore.Api.core.snes_reset();
+					}
+
+					if (powerSignal)
+					{
+						_bsnesCore.Api.core.snes_power();
+					}
+				}
+				else
+				{
+					// run the core for one (sub-)frame
+					bool subFrameRequested = controller.IsPressed("Subframe");
+					framePassed = _bsnesCore.Api.core.snes_run(subFrameRequested);
 				}
 
-				if (resetSignal)
-				{
-					_bsnesCore.Api.core.snes_reset();
-				}
+				if (!framePassed) _bsnesCore.IsLagFrame = false;
+				_bsnesCore.FrameAdvancePost();
 
-				if (powerSignal)
-				{
-					_bsnesCore.Api.core.snes_power();
-				}
+				return true;
 			}
-			else
-			{
-				// run the core for one (sub-)frame
-				bool subFrameRequested = controller.IsPressed("Subframe");
-				framePassed = _bsnesCore.Api.core.snes_run(subFrameRequested);
-			}
-
-			if (!framePassed) _bsnesCore.IsLagFrame = false;
-			_bsnesCore.FrameAdvancePost();
-
-			return true;
 		}
 
 		public int Frame => _bsnesCore.Frame;

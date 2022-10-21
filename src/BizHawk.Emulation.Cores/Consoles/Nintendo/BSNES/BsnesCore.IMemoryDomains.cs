@@ -8,16 +8,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 	{
 		private MemoryDomainList _memoryDomains;
 
-		private unsafe void SetMemoryDomains()
+		private void SetMemoryDomains()
 		{
 			List<MemoryDomain> mm = new();
 			foreach (int i in Enum.GetValues(typeof(BsnesApi.SNES_MEMORY)))
 			{
-				void* data = Api.core.snes_get_memory_region(i, out int size, out int wordSize);
-				if (data == null) continue;
+				var data = Api.core.snes_get_memory_region(i, out var size, out var wordSize);
+				if (data == IntPtr.Zero) continue;
 				if (i == (int) BsnesApi.SNES_MEMORY.CARTRAM)
 				{
-					_saveRam = (byte*) data;
+					_saveRam = data;
 					_saveRamSize = size;
 				}
 				mm.Add(new MemoryDomainIntPtrMonitor(Enum.GetName(typeof(BsnesApi.SNES_MEMORY), i).Replace('_', ' '), MemoryDomain.Endian.Little, (IntPtr) data, size, true, wordSize, Api));
@@ -34,13 +34,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			{
 				foreach (int i in Enum.GetValues(typeof(BsnesApi.SGB_MEMORY)))
 				{
-					void* data = Api.core.snes_get_sgb_memory_region(i, out int size);
-					if (data == null || size == 0) continue;
-					if (i == (int)BsnesApi.SGB_MEMORY.CARTRAM)
-					{
-						_saveRam = (byte*)data;
-						_saveRamSize = size;
-					}
+					var data = Api.core.snes_get_sgb_memory_region(i, out var size);
+					if (data == IntPtr.Zero || size == 0) continue;
 					mm.Add(new MemoryDomainIntPtrMonitor("SGB " + Enum.GetName(typeof(BsnesApi.SGB_MEMORY), i), MemoryDomain.Endian.Little, (IntPtr) data, size, true, 1, Api));
 				}
 
@@ -51,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 					address => Api.core.snes_sgb_bus_read((ushort) address),
 					(address, value) => Api.core.snes_sgb_bus_write((ushort) address, value), wordSize: 1));
 
-				_saveRam = null;
+				_saveRam = IntPtr.Zero;
 				_saveRamSize = Api.core.snes_sgb_battery_size();
 			}
 
