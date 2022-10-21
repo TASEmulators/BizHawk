@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 
 using BizHawk.Common;
@@ -44,7 +45,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// hack around winforms message pumping screwing over RA's forms
 			_dialogThreadActive = true;
-			_dialogThread = new(DialogThreadProc) { IsBackground = true, Name = "RA Dialog Thread" };
+			// since the dialog thread needs to wait around for the main thread, we'll give it less priority
+			_dialogThread = new(DialogThreadProc) { IsBackground = true, Priority = ThreadPriority.BelowNormal, Name = "RA Dialog Thread" };
 			_dialogThread.Start();
 
 			_mainForm = mainForm;
@@ -72,7 +74,6 @@ namespace BizHawk.Client.EmuHawk
 		public void Dispose()
 		{
 			_isMainThread.Dispose();
-			_dialogThrottle.Dispose();
 			_delegateEventDone.Dispose();
 			_memGuard.Dispose();
 		}

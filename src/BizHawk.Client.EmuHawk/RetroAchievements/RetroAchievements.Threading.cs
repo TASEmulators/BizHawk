@@ -31,7 +31,6 @@ namespace BizHawk.Client.EmuHawk
 		private readonly Thread _dialogThread;
 		private volatile bool _dialogThreadActive;
 		private volatile IntPtr _nextDialog = IntPtr.Zero;
-		private readonly AutoResetEvent _dialogThrottle = new(false);
 
 		private bool _isInDelegate = false;
 		private volatile Action _nextDelegate;
@@ -132,11 +131,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			while (_dialogThreadActive)
 			{
-				// we want to periodically run this thread to pump messages for RA's dialogs
-				// but we may want to wake this thread up in case a new dialog is present
-				// (or if we want to shutdown this thread)
-				_dialogThrottle.WaitOne(5);
-
 				if (_nextDialog != IntPtr.Zero)
 				{
 					RA.InvokeDialog(_nextDialog);
@@ -148,6 +142,8 @@ namespace BizHawk.Client.EmuHawk
 					ThreadHacks.TranslateMessage(ref msg);
 					ThreadHacks.DispatchMessage(ref msg);
 				}
+
+				Thread.Yield();
 			}
 		}
 
@@ -162,7 +158,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					RA.Shutdown();
 					_dialogThreadActive = false;
-					_dialogThrottle.Set();
 					// block until dialog thread shuts down
 					while (_dialogThread.IsAlive)
 					{
@@ -187,7 +182,6 @@ namespace BizHawk.Client.EmuHawk
 						if (_nextDialog != IntPtr.Zero) return; // recursive call? let's just ignore this
 
 						_nextDialog = id;
-						_dialogThrottle.Set();
 						while (_nextDialog != IntPtr.Zero && _dialogThread.IsAlive)
 						{
 							// we need to message pump while the InvokeDialog is doing things

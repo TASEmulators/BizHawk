@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Threading;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
