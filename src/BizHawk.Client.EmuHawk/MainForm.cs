@@ -46,7 +46,7 @@ using BizHawk.WinForms.Controls;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class MainForm : FormBase, IDialogParent, IMainFormForApi, IMainFormForTools
+	public partial class MainForm : FormBase, IDialogParent, IMainFormForApi, IMainFormForTools, IMainFormForRetroAchievements
 	{
 		private void MainForm_Load(object sender, EventArgs e)
 		{
@@ -4865,7 +4865,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenRetroAchievements()
 		{
-			RA = RetroAchievements.CreateImpl(Config, this, InputManager, RetroAchievementsSubMenu.DropDownItems, () =>
+			RA = RetroAchievements.CreateImpl(this, InputManager, Tools, () => Config, RetroAchievementsSubMenu.DropDownItems, () =>
 			{
 				RA.Dispose();
 				RA = null;

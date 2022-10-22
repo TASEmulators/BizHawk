@@ -48,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly AutoResetEvent _memAccessReady = new(false);
 		private readonly AutoResetEvent _memAccessGo = new(false);
 		private readonly AutoResetEvent _memAccessDone = new(false);
-		private readonly RetroAchievements.RAMemGuard _memGuard;
+		private readonly RAMemGuard _memGuard;
 
 		private void RebuildMenu()
 		{
@@ -88,7 +88,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void HandleHardcoreModeDisable(string reason)
 		{
-			_mainForm.ModalMessageBox($"{reason} Disabling hardcore mode.", "Warning", EMsgBoxIcon.Warning);
+			_mainForm.ShowMessageBox(null, $"{reason} Disabling hardcore mode.", "Warning", EMsgBoxIcon.Warning);
 			RA.WarnDisableHardcore(null);
 		}
 
@@ -98,8 +98,9 @@ namespace BizHawk.Client.EmuHawk
 		protected override int IdentifyRom(byte[] rom)
 			=> RA.IdentifyRom(rom, rom.Length);
 
-		public RAIntegration(MainForm mainForm, InputManager inputManager, ToolStripItemCollection raDropDownItems, Action shutdownRACallback)
-			: base(mainForm, inputManager, raDropDownItems, shutdownRACallback)
+		public RAIntegration(IMainFormForRetroAchievements mainForm, InputManager inputManager, ToolManager tools,
+			Func<Config> getConfig, ToolStripItemCollection raDropDownItems, Action shutdownRACallback)
+			: base(mainForm, inputManager, tools, getConfig, raDropDownItems, shutdownRACallback)
 		{
 			_memGuard = new(_memAccessReady, _memAccessGo, _memAccessDone);
 

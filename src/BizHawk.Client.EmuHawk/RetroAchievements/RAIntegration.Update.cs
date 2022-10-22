@@ -45,7 +45,7 @@ namespace BizHawk.Client.EmuHawk
 			return downloadForm.DownloadSucceeded();
 		}
 
-		public static bool CheckUpdateRA(MainForm mainForm)
+		public static bool CheckUpdateRA(IMainFormForRetroAchievements mainForm)
 		{
 			try
 			{

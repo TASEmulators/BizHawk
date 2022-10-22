@@ -84,8 +84,8 @@ namespace BizHawk.Client.EmuHawk
 			_mainForm.FrameInch = false;
 
 			var fastForward = _inputManager.ClientControls["Fast Forward"] || _mainForm.FastForward;
-			var speedPercent = fastForward ? Config?.SpeedPercentAlternate : Config?.SpeedPercent;
-			if ((speedPercent ?? 100) < 100)
+			var speedPercent = fastForward ? _getConfig().SpeedPercentAlternate : _getConfig().SpeedPercent;
+			if (speedPercent < 100)
 			{
 				HandleHardcoreModeDisable("Slow motion in hardcore mode is not allowed.");
 				return;
@@ -93,7 +93,7 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var t in HardcoreProhibitedTools)
 			{
-				if (Tools.IsLoaded(t))
+				if (_tools.IsLoaded(t))
 				{
 					HandleHardcoreModeDisable($"Using {t.Name} in hardcore mode is not allowed.");
 					return;
@@ -101,7 +101,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// can't know what external tools are doing, so just don't allow them here
-			if (Tools.IsLoaded<IExternalToolForm>())
+			if (_tools.IsLoaded<IExternalToolForm>())
 			{
 				HandleHardcoreModeDisable($"Using external tools in hardcore mode is not allowed.");
 				return;

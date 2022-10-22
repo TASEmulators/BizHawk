@@ -9,8 +9,10 @@ namespace BizHawk.Client.EmuHawk
 {
 	public abstract partial class RetroAchievements : IRetroAchievements
 	{
-		protected readonly MainForm _mainForm; // todo: encapsulate MainForm in an interface
+		protected readonly IMainFormForRetroAchievements _mainForm;
 		protected readonly InputManager _inputManager;
+		protected readonly ToolManager _tools;
+		protected readonly Func<Config> _getConfig;
 		protected readonly ToolStripItemCollection _raDropDownItems;
 		protected readonly Action _shutdownRACallback;
 
@@ -18,25 +20,26 @@ namespace BizHawk.Client.EmuHawk
 		protected IMemoryDomains Domains => Emu.AsMemoryDomains();
 		protected IGameInfo Game => _mainForm.Game;
 		protected IMovieSession MovieSession => _mainForm.MovieSession;
-		protected Config Config => _mainForm.Config;
-		protected ToolManager Tools => _mainForm.Tools;
-
 
 		protected IReadOnlyList<MemFunctions> _memFunctions;
 
-		protected RetroAchievements(MainForm mainForm, InputManager inputManager, ToolStripItemCollection raDropDownItems, Action shutdownRACallback)
+		protected RetroAchievements(IMainFormForRetroAchievements mainForm, InputManager inputManager, ToolManager tools, 
+			Func<Config> getConfig, ToolStripItemCollection raDropDownItems, Action shutdownRACallback)
 		{
 			_mainForm = mainForm;
 			_inputManager = inputManager;
+			_tools = tools;
+			_getConfig = getConfig;
 			_raDropDownItems = raDropDownItems;
 			_shutdownRACallback = shutdownRACallback;
 		}
 
-		public static IRetroAchievements CreateImpl(Config config, MainForm mainForm, InputManager inputManager, ToolStripItemCollection raDropDownItems, Action shutdownRACallback)
+		public static IRetroAchievements CreateImpl(IMainFormForRetroAchievements mainForm, InputManager inputManager, ToolManager tools,
+			Func<Config> getConfig, ToolStripItemCollection raDropDownItems, Action shutdownRACallback)
 		{
 			if (RAIntegration.IsAvailable)
 			{
-				if (config.SkipRATelemetryWarning || mainForm.ShowMessageBox2(
+				if (getConfig().SkipRATelemetryWarning || mainForm.ShowMessageBox2(
 					owner: null,
 					text: "In order to use RetroAchievements, some information needs to be sent to retroachievements.org:\n" +
 					"\n\u2022 Your RetroAchievements username and password (first login) or token (subsequent logins)." +
@@ -52,12 +55,12 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (RAIntegration.CheckUpdateRA(mainForm))
 					{
-						var ret = new RAIntegration(mainForm, inputManager, raDropDownItems, shutdownRACallback);
+						var ret = new RAIntegration(mainForm, inputManager, tools, getConfig, raDropDownItems, shutdownRACallback);
 
 						// note: this can't occur in the ctor, as this may reboot the core, and RA is null during the ctor
 						ret.Restart();
 
-						config.SkipRATelemetryWarning = true;
+						getConfig().SkipRATelemetryWarning = true;
 
 						return ret;
 					}
