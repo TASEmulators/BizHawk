@@ -44,7 +44,7 @@ ifneq ($(filter %.cpp,$(SRCS)),)
 EXTRA_LIBS := -lc++ -lc++abi -lunwind $(EXTRA_LIBS)
 endif
 
-_OBJS := $(addsuffix .o,$(SRCS))
+_OBJS := $(addsuffix .o,$(abspath (SRCS)))
 OBJS := $(patsubst $(ROOT_DIR)%,$(OBJ_DIR)%,$(_OBJS))
 DOBJS := $(patsubst $(ROOT_DIR)%,$(DOBJ_DIR)%,$(_OBJS))
 
