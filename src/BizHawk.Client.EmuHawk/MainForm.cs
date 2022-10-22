@@ -822,6 +822,9 @@ namespace BizHawk.Client.EmuHawk
 				DisplayManager = null;
 			}
 
+			RA?.Dispose();
+			RA = null;
+
 			if (disposing)
 			{
 				components?.Dispose();
@@ -4858,43 +4861,17 @@ namespace BizHawk.Client.EmuHawk
 
 		public IQuickBmpFile QuickBmpFile { get; } = EmuHawk.QuickBmpFile.INSTANCE;
 
-		private RetroAchievements RA { get; set; }
+		private IRetroAchievements RA { get; set; }
 
 		private void OpenRetroAchievements()
 		{
-			if (RetroAchievements.IsAvailable)
+			RA = RetroAchievements.CreateImpl(Config, this, InputManager, RetroAchievementsSubMenu.DropDownItems, () =>
 			{
-				if (Config.SkipRATelemetryWarning || ShowMessageBox2(
-					owner: null,
-					text: "In order to use RetroAchievements, some information needs to be sent to retroachievements.org:\n" +
-					"\n\u2022 Your RetroAchievements username and password (first login) or token (subsequent logins)." +
-					"\n\u2022 The hash of the game(s) you have loaded into BizHawk. (for game identification + achievement unlock + leaderboard submission)" +
-					"\n\u2022 The RetroAchievements game ID(s) of the game(s) you have loaded into BizHawk. (for game information + achievement definitions + leaderboard definitions + rich presence definitions + code notes + achievement badges + user unlocks + leaderboard submission + ticket submission)" +
-					"\n\u2022 Rich presence data (periodically sent, derived from emulated game memory)." +
-					"\n\u2022 Whether or not you are currently in \"Hardcore Mode\" (for achievement unlock)." +
-					"\n\u2022 Ticket submission type and message (when submitting tickets)." +
-					"\n\nDo you agree to send this information to retroachievements.org?",
-					caption: "Notice",
-					icon: EMsgBoxIcon.Question,
-					useOKCancel: false))
-				{
-					if (RetroAchievements.CheckUpdateRA(this))
-					{
-						RA = new(this, InputManager, () => RetroAchievementsSubMenu.DropDownItems, () =>
-						{
-							RA.Dispose();
-							RA = null;
-							RetroAchievementsSubMenu.DropDownItems.Clear();
-							RetroAchievementsSubMenu.DropDownItems.Add(StartRetroAchievementsMenuItem);
-						});
-
-						// note: this can't occur in the ctor, as this may reboot the core, and RA is null during the ctor
-						RA.Restart();
-
-						Config.SkipRATelemetryWarning = true;
-					}
-				}
-			}
+				RA.Dispose();
+				RA = null;
+				RetroAchievementsSubMenu.DropDownItems.Clear();
+				RetroAchievementsSubMenu.DropDownItems.Add(StartRetroAchievementsMenuItem);
+			});
 		}
 	}
 }

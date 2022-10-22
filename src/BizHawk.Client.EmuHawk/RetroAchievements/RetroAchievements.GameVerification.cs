@@ -9,11 +9,13 @@ using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class RetroAchievements
+	public abstract partial class RetroAchievements
 	{
-		private bool AllGamesVerified { get; set; }
+		protected bool AllGamesVerified { get; set; }
+		protected abstract int IdentifyHash(string hash);
+		protected abstract int IdentifyRom(byte[] rom);
 
-		private static int? HashDisc(string path, RAInterface.ConsoleID consoleID, int discCount)
+		private int? HashDisc(string path, ConsoleID consoleID, int discCount)
 		{
 			// this shouldn't throw in practice, this is only called when loading was succesful!
 			using var disc = DiscExtensions.CreateAnyType(path, e => throw new Exception(e));
@@ -27,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 
 			switch (consoleID)
 			{
-				case RAInterface.ConsoleID.PCEngineCD:
+				case ConsoleID.PCEngineCD:
 					{
 						dsr.ReadLBA_2048(1, buf2048, 0);
 						buffer.AddRange(new ArraySegment<byte>(buf2048, 128 - 22, 22));
@@ -40,7 +42,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 						break;
 					}
-				case RAInterface.ConsoleID.PCFX:
+				case ConsoleID.PCFX:
 					{
 						dsr.ReadLBA_2048(1, buf2048, 0);
 						buffer.AddRange(new ArraySegment<byte>(buf2048, 0, 128));
@@ -53,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 						break;
 					}
-				case RAInterface.ConsoleID.PlayStation:
+				case ConsoleID.PlayStation:
 					{
 						int GetFileSector(string filename, out int filesize)
 						{
@@ -134,12 +136,12 @@ namespace BizHawk.Client.EmuHawk
 
 						break;
 					}
-				case RAInterface.ConsoleID.SegaCD:
-				case RAInterface.ConsoleID.Saturn:
+				case ConsoleID.SegaCD:
+				case ConsoleID.Saturn:
 					dsr.ReadLBA_2048(0, buf2048, 0);
 					buffer.AddRange(new ArraySegment<byte>(buf2048, 0, 512));
 					break;
-				case RAInterface.ConsoleID.JaguarCD:
+				case ConsoleID.JaguarCD:
 					if (discCount == 2) // we want to hash the second session of the disc (which is hacked to be disc 2)
 					{
 						const string _jaguarHeader = "ATARI APPROVED DATA HEADER ATRI ";
@@ -150,7 +152,7 @@ namespace BizHawk.Client.EmuHawk
 						// see https://github.com/TASEmulators/BizHawk/blob/f29113287e88c6a644dbff30f92a9833307aad20/waterbox/virtualjaguar/src/cdhle.cpp#L109-L145
 						var startLba = disc.Session1.FirstInformationTrack.LBA;
 						var numLbas = disc.Session1.FirstInformationTrack.NextTrack.LBA - disc.Session1.FirstInformationTrack.LBA;
-						int bootAddr = 0, bootLen = 0, bootLba = 0, bootOff = 0;
+						int bootLen = 0, bootLba = 0, bootOff = 0;
 						bool byteswapped = false, foundHeader = false;
 						for (int i = 0; i < numLbas; i++)
 						{
@@ -162,7 +164,6 @@ namespace BizHawk.Client.EmuHawk
 								{
 									if (_jaguarHeader == Encoding.ASCII.GetString(buf2352, j, 32))
 									{
-										bootAddr = (buf2352[j + 32] << 24) | (buf2352[j + 33] << 16) | (buf2352[j + 34] << 8) | buf2352[j + 35];
 										bootLen = (buf2352[j + 36] << 24) | (buf2352[j + 37] << 16) | (buf2352[j + 38] << 8) | buf2352[j + 39];
 										bootLba = startLba + i;
 										bootOff = j + 32 + 4 + 4;
@@ -175,7 +176,6 @@ namespace BizHawk.Client.EmuHawk
 								{
 									if (_jaguarBSHeader == Encoding.ASCII.GetString(buf2352, j, 32))
 									{
-										bootAddr = (buf2352[j + 33] << 24) | (buf2352[j + 32] << 16) | (buf2352[j + 35] << 8) | buf2352[j + 34];
 										bootLen = (buf2352[j + 37] << 24) | (buf2352[j + 36] << 16) | (buf2352[j + 39] << 8) | buf2352[j + 38];
 										bootLba = startLba + i;
 										bootOff = j + 32 + 4 + 4;
@@ -196,18 +196,6 @@ namespace BizHawk.Client.EmuHawk
 						{
 							return 0;
 						}
-
-						/*
-						buffer.Add((byte)((bootAddr >> 24) & 0xFF));
-						buffer.Add((byte)((bootAddr >> 16) & 0xFF));
-						buffer.Add((byte)((bootAddr >> 8) & 0xFF));
-						buffer.Add((byte)(bootAddr & 0xFF));
-
-						buffer.Add((byte)((bootLen >> 24) & 0xFF));
-						buffer.Add((byte)((bootLen >> 16) & 0xFF));
-						buffer.Add((byte)((bootLen >> 8) & 0xFF));
-						buffer.Add((byte)(bootLen & 0xFF));
-						*/
 
 						dsr.ReadLBA_2352(bootLba++, buf2352, 0);
 
@@ -241,10 +229,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var hash = MD5Checksum.ComputeDigestHex(buffer.ToArray());
-			return RA.IdentifyHash(hash);
+			return IdentifyHash(hash);
 		}
 
-		private static IReadOnlyList<int> GetRAGameIds(IOpenAdvanced ioa, RAInterface.ConsoleID consoleID)
+		protected IReadOnlyList<int> GetRAGameIds(IOpenAdvanced ioa, ConsoleID consoleID)
 		{
 			var ret = new List<int>();
 			switch (ioa.TypeName)
@@ -284,7 +272,7 @@ namespace BizHawk.Client.EmuHawk
 								}
 								else
 								{
-									ret.Add(RA.IdentifyRom(kvp.Value, kvp.Value.Length));
+									ret.Add(IdentifyRom(kvp.Value));
 								}
 							}
 						}
@@ -302,7 +290,7 @@ namespace BizHawk.Client.EmuHawk
 							{
 								using var file = new HawkFile(ioa.SimplePath);
 								var rom = file.ReadAllBytes();
-								ret.Add(RA.IdentifyRom(rom, rom.Length));
+								ret.Add(IdentifyRom(rom));
 							}
 						}
 						break;
@@ -312,7 +300,7 @@ namespace BizHawk.Client.EmuHawk
 						// Arcade wants to just hash the filename (with no extension)
 						var name = Encoding.UTF8.GetBytes(Path.GetFileNameWithoutExtension(ioa.SimplePath));
 						var hash = MD5Checksum.ComputeDigestHex(name);
-						ret.Add(RA.IdentifyHash(hash));
+						ret.Add(IdentifyHash(hash));
 						break;
 					}
 				case OpenAdvancedTypes.LibretroNoGame:
@@ -323,7 +311,7 @@ namespace BizHawk.Client.EmuHawk
 						// can't know what's here exactly, so we'll just hash the entire thing
 						using var file = new HawkFile(ioa.SimplePath);
 						var rom = file.ReadAllBytes();
-						ret.Add(RA.IdentifyRom(rom, rom.Length));
+						ret.Add(IdentifyRom(rom));
 						break;
 					}
 			}

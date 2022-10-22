@@ -85,7 +85,7 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var tab in HotkeyInfo.Groupings)
 			{
-				if (tab == "RetroAchievements" && !RetroAchievements.IsAvailable)
+				if (tab == "RetroAchievements" && !RAIntegration.IsAvailable)
 				{
 					continue; // skip RA hotkeys if it can't be used
 				}

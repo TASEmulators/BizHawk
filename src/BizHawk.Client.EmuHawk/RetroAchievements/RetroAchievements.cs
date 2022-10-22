@@ -1,221 +1,84 @@
 using System;
-using System.Linq;
-using System.Threading;
+using System.Collections.Generic;
 using System.Windows.Forms;
 
-using BizHawk.Common;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class RetroAchievements : IDisposable
+	public abstract partial class RetroAchievements : IRetroAchievements
 	{
-		private static RAInterface RA;
-		public static bool IsAvailable => RA != null;
+		protected readonly MainForm _mainForm; // todo: encapsulate MainForm in an interface
+		protected readonly InputManager _inputManager;
+		protected readonly ToolStripItemCollection _raDropDownItems;
+		protected readonly Action _shutdownRACallback;
 
-		static RetroAchievements()
+		protected IEmulator Emu => _mainForm.Emulator;
+		protected IMemoryDomains Domains => Emu.AsMemoryDomains();
+		protected IGameInfo Game => _mainForm.Game;
+		protected IMovieSession MovieSession => _mainForm.MovieSession;
+		protected Config Config => _mainForm.Config;
+		protected ToolManager Tools => _mainForm.Tools;
+
+
+		protected IReadOnlyList<MemFunctions> _memFunctions;
+
+		protected RetroAchievements(MainForm mainForm, InputManager inputManager, ToolStripItemCollection raDropDownItems, Action shutdownRACallback)
 		{
-			try
-			{
-				if (OSTailoredCode.IsUnixHost)
-				{
-					throw new NotSupportedException("RetroAchievements is Windows only!");
-				}
-
-				AttachDll();
-			}
-			catch
-			{
-				DetachDll();
-			}
-		}
-
-		private readonly MainForm _mainForm; // todo: encapsulate MainForm in an interface
-		private readonly InputManager _inputManager;
-
-		private IEmulator Emu => _mainForm.Emulator;
-		private IMemoryDomains Domains => Emu.AsMemoryDomains();
-		private IGameInfo Game => _mainForm.Game;
-		private IMovieSession MovieSession => _mainForm.MovieSession;
-		private Config Config => _mainForm.Config;
-		private ToolManager Tools => _mainForm.Tools;
-
-		public RetroAchievements(MainForm mainForm, InputManager inputManager, Func<ToolStripItemCollection> getRADropDownItems, Action shutdownRACallback)
-		{
-			// hack around winforms message pumping screwing over RA's forms
-			_dialogThreadActive = true;
-			// since the dialog thread needs to wait around for the main thread, we'll give it less priority
-			_dialogThread = new(DialogThreadProc) { IsBackground = true, Priority = ThreadPriority.BelowNormal, Name = "RA Dialog Thread" };
-			_dialogThread.Start();
-
 			_mainForm = mainForm;
 			_inputManager = inputManager;
-			_getRADropDownItems = getRADropDownItems;
+			_raDropDownItems = raDropDownItems;
 			_shutdownRACallback = shutdownRACallback;
-
-			_memGuard = new(_memAccessCount, _memAccessReady, _memAccessDone, () => !IsMainThread, _asyncAccessCount, () => !_inRAFrame);
-
-			RA.InitClient(_mainForm.Handle, "BizHawk", VersionInfo.GetEmuVersion());
-
-			_isActive = IsActiveCallback;
-			_unpause = UnpauseCallback;
-			_pause = PauseCallback;
-			_rebuildMenu = RebuildMenuCallback;
-			_estimateTitle = EstimateTitleCallback;
-			_resetEmulator = ResetEmulatorCallback;
-			_loadROM = LoadROMCallback;
-
-			RA.InstallSharedFunctionsExt(_isActive, _unpause, _pause, _rebuildMenu, _estimateTitle, _resetEmulator, _loadROM);
-
-			RA.AttemptLogin(true);
 		}
 
-		public void Dispose()
+		public static IRetroAchievements CreateImpl(Config config, MainForm mainForm, InputManager inputManager, ToolStripItemCollection raDropDownItems, Action shutdownRACallback)
 		{
-			_isMainThread.Dispose();
-			_delegateEventDone.Dispose();
-			_memGuard.Dispose();
-		}
-
-		public void OnSaveState(string path)
-			=> RA.OnSaveState(path);
-
-		public void OnLoadState(string path)
-		{
-			if (RA.HardcoreModeIsActive())
+			if (RAIntegration.IsAvailable)
 			{
-				HandleHardcoreModeDisable("Loading savestates is not allowed in hardcore mode.");
-			}
-
-			RA.OnLoadState(path);
-		}
-
-		// call this before closing the emulator
-		public void Stop()
-		{
-			RA.ClearMemoryBanks();
-			RA.ActivateGame(0);
-		}
-
-		public void Restart()
-		{
-			var consoleId = SystemIdToConsoleId();
-			RA.SetConsoleID(consoleId);
-
-			RA.ClearMemoryBanks();
-
-			if (Emu.HasMemoryDomains())
-			{
-				_memFunctions = CreateMemoryBanks(consoleId, Domains, Emu.CanDebug() ? Emu.AsDebuggable() : null);
-
-				for (int i = 0; i < _memFunctions.Count; i++)
+				if (config.SkipRATelemetryWarning || mainForm.ShowMessageBox2(
+					owner: null,
+					text: "In order to use RetroAchievements, some information needs to be sent to retroachievements.org:\n" +
+					"\n\u2022 Your RetroAchievements username and password (first login) or token (subsequent logins)." +
+					"\n\u2022 The hash of the game(s) you have loaded into BizHawk. (for game identification + achievement unlock + leaderboard submission)" +
+					"\n\u2022 The RetroAchievements game ID(s) of the game(s) you have loaded into BizHawk. (for game information + achievement definitions + leaderboard definitions + rich presence definitions + code notes + achievement badges + user unlocks + leaderboard submission + ticket submission)" +
+					"\n\u2022 Rich presence data (periodically sent, derived from emulated game memory)." +
+					"\n\u2022 Whether or not you are currently in \"Hardcore Mode\" (for achievement unlock)." +
+					"\n\u2022 Ticket submission type and message (when submitting tickets)." +
+					"\n\nDo you agree to send this information to retroachievements.org?",
+					caption: "Notice",
+					icon: EMsgBoxIcon.Question,
+					useOKCancel: false))
 				{
-					_memFunctions[i].MemGuard = _memGuard;
-					RA.InstallMemoryBank(i, _memFunctions[i].ReadFunc, _memFunctions[i].WriteFunc, _memFunctions[i].BankSize);
-					RA.InstallMemoryBankBlockReader(i, _memFunctions[i].ReadBlockFunc);
-				}
-			}
-
-			AllGamesVerified = true;
-
-			if (_mainForm.CurrentlyOpenRomArgs is not null)
-			{
-				var ids = GetRAGameIds(_mainForm.CurrentlyOpenRomArgs.OpenAdvanced, consoleId);
-
-				AllGamesVerified = !ids.Contains(0);
-
-				RA.ActivateGame(ids.Count > 0 ? ids[0] : 0);
-			}
-			else
-			{
-				RA.ActivateGame(0);
-			}
-
-			Update();
-			RebuildMenu();
-
-			// workaround a bug in RA which will cause the window title to be changed despite us not calling UpdateAppTitle
-			_mainForm.UpdateWindowTitle();
-
-			// note: this can only catch quicksaves (probably only case of accidential use from hotkeys)
-			_mainForm.EmuClient.BeforeQuickLoad += (_, e) =>
-			{
-				if (RA.HardcoreModeIsActive())
-				{
-					e.Handled = !RA.WarnDisableHardcore("load a quicksave");
-				}
-			};
-		}
-
-		public void Update()
-		{
-			if (RA.HardcoreModeIsActive())
-			{
-				CheckHardcoreModeConditions();
-			}
-
-			if (_inputManager.ClientControls["Open RA Overlay"])
-			{
-				RA.SetPaused(true);
-			}
-
-			if (RA.IsOverlayFullyVisible())
-			{
-				var ci = new RAInterface.ControllerInput
-				{
-					UpPressed = _inputManager.ClientControls["RA Up"],
-					DownPressed = _inputManager.ClientControls["RA Down"],
-					LeftPressed = _inputManager.ClientControls["RA Left"],
-					RightPressed = _inputManager.ClientControls["RA Right"],
-					ConfirmPressed = _inputManager.ClientControls["RA Confirm"],
-					CancelPressed = _inputManager.ClientControls["RA Cancel"],
-					QuitPressed = _inputManager.ClientControls["RA Quit"],
-				};
-
-				RA.NavigateOverlay(ref ci);
-
-				// todo: suppress user inputs with overlay active?
-			}
-
-			HandleNextDelegate();
-			HandleMemAccess();
-		}
-
-		public void OnFrameAdvance()
-		{
-			var input = _inputManager.ControllerOutput;
-			foreach (var resetButton in input.Definition.BoolButtons.Where(b => b.Contains("Power") || b.Contains("Reset")))
-			{
-				if (input.IsPressed(resetButton))
-				{
-					RA.OnReset();
-					break;
-				}
-			}
-
-			if (Emu.HasMemoryDomains())
-			{
-				// we want to EnterExit to prevent wbx host spam when peeks are spammed
-				using (Domains.MainMemory.EnterExit())
-				{
-					_inRAFrame = true;
-					HandleMemAccess();
-					RA.DoAchievementsFrame();
-					_inRAFrame = false;
-					while (_asyncAccessCount.CurrentCount > 0)
+					if (RAIntegration.CheckUpdateRA(mainForm))
 					{
-						// we'll wait until any async accesses are finished
-						// note there is a potential for a locked read to occur
-						// due to _inRAFrame being false now
-						HandleMemAccess();
+						var ret = new RAIntegration(mainForm, inputManager, raDropDownItems, shutdownRACallback);
+
+						// note: this can't occur in the ctor, as this may reboot the core, and RA is null during the ctor
+						ret.Restart();
+
+						config.SkipRATelemetryWarning = true;
+
+						return ret;
 					}
 				}
 			}
-			else
-			{
-				RA.DoAchievementsFrame();
-			}
+
+			return null;
 		}
+
+		public abstract void Update();
+
+		public abstract void OnFrameAdvance();
+
+		public abstract void Restart();
+
+		public abstract void Stop();
+
+		public abstract void OnSaveState(string path);
+
+		public abstract void OnLoadState(string path);
+
+		public abstract void Dispose();
 	}
 }

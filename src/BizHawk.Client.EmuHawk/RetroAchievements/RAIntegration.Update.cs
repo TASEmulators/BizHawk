@@ -10,7 +10,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class RetroAchievements
+	public partial class RAIntegration
 	{
 		private static DynamicLibraryImportResolver _resolver;
 		private static Version _version;

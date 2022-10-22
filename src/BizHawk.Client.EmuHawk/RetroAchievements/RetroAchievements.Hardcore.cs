@@ -23,7 +23,7 @@ using BizHawk.Emulation.Cores.WonderSwan;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class RetroAchievements
+	public abstract partial class RetroAchievements
 	{
 		// "Hardcore Mode" is a mode intended for RA's leaderboard, and places various restrictions on the emulator
 		// To keep changes outside this file minimal, we'll simply check if any problematic condition arises and disable hardcore mode
@@ -58,15 +58,11 @@ namespace BizHawk.Client.EmuHawk
 			[typeof(WonderSwan)] = new[] { "EnableBG", "EnableFG", "EnableSprites", },
 		};
 
-		private void HandleHardcoreModeDisable(string reason)
-		{
-			_mainForm.ModalMessageBox($"{reason} Disabling hardcore mode.", "Warning", EMsgBoxIcon.Warning);
-			RA.WarnDisableHardcore(null);
-		}
-
 		private readonly OverrideAdapter _hardcoreHotkeyOverrides = new();
 
-		public void CheckHardcoreModeConditions()
+		protected abstract void HandleHardcoreModeDisable(string reason);
+
+		protected void CheckHardcoreModeConditions()
 		{
 			if (!AllGamesVerified)
 			{
