@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 {
-	public abstract unsafe class BsnesCoreImpl
+	public abstract class BsnesCoreImpl
 	{
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_set_audio_enabled(bool enabled);
@@ -91,7 +91,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public abstract bool snes_msu_sync();
 	}
 
-	public unsafe partial class BsnesApi : IDisposable, IMonitor, IStatable
+	public partial class BsnesApi : IDisposable, IMonitor, IStatable
 	{
 		internal WaterboxHost exe;
 		internal BsnesCoreImpl core;

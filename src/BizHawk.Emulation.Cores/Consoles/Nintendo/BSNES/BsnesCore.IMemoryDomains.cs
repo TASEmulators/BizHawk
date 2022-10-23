@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 					_saveRam = data;
 					_saveRamSize = size;
 				}
-				mm.Add(new MemoryDomainIntPtrMonitor(Enum.GetName(typeof(BsnesApi.SNES_MEMORY), i).Replace('_', ' '), MemoryDomain.Endian.Little, (IntPtr) data, size, true, wordSize, Api));
+				mm.Add(new MemoryDomainIntPtrMonitor(Enum.GetName(typeof(BsnesApi.SNES_MEMORY), i)!.Replace('_', ' '), MemoryDomain.Endian.Little, data, size, true, wordSize, Api));
 			}
 
 			mm.Add(new MemoryDomainDelegate(
@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				{
 					var data = Api.core.snes_get_sgb_memory_region(i, out var size);
 					if (data == IntPtr.Zero || size == 0) continue;
-					mm.Add(new MemoryDomainIntPtrMonitor("SGB " + Enum.GetName(typeof(BsnesApi.SGB_MEMORY), i), MemoryDomain.Endian.Little, (IntPtr) data, size, true, 1, Api));
+					mm.Add(new MemoryDomainIntPtrMonitor("SGB " + Enum.GetName(typeof(BsnesApi.SGB_MEMORY), i), MemoryDomain.Endian.Little, data, size, true, 1, Api));
 				}
 
 				mm.Add(new MemoryDomainDelegate(

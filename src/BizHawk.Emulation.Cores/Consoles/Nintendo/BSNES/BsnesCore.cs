@@ -291,7 +291,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				int si = y / heightMultiplier * pitch;
 				for (int x = 0; x < width * widthMultiplier; x++)
 				{
-					_videoBuffer[di++] = palette[vp[si + x / widthMultiplier] & 0x7FFF];
+					_videoBuffer[di++] = palette[vp![si + x / widthMultiplier] & 0x7FFF];
 				}
 			}
 		}

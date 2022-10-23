@@ -5,7 +5,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 {
-	public unsafe partial class BsnesCore : ISaveRam
+	public partial class BsnesCore : ISaveRam
 	{
 		private IntPtr _saveRam;
 		private int _saveRamSize;
