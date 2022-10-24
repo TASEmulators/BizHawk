@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 		public static IRetroAchievements CreateImpl(IMainFormForRetroAchievements mainForm, InputManager inputManager, ToolManager tools,
 			Func<Config> getConfig, ToolStripItemCollection raDropDownItems, Action shutdownRACallback)
 		{
-			if (RAIntegration.IsAvailable)
+			if (RAIntegration.IsAvailable && false)
 			{
 				if (getConfig().SkipRATelemetryWarning || mainForm.ShowMessageBox2(
 					owner: null,
@@ -67,7 +67,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			return null;
+			return new RCheevos(mainForm, inputManager, tools, getConfig, raDropDownItems, shutdownRACallback);
 		}
 
 		public abstract void Update();

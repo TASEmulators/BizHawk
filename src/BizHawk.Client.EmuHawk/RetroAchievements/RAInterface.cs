@@ -20,19 +20,19 @@ namespace BizHawk.Client.EmuHawk
 		[BizImport(cc, EntryPoint = "_RA_HostUrl")]
 		public abstract IntPtr HostUrl();
 
-		[BizImport(cc, Compatibility = true, EntryPoint = "_RA_InitI")]
+		[BizImport(cc, EntryPoint = "_RA_InitI")]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public abstract bool InitI(IntPtr hwnd, int emuID, string clientVer);
 
-		[BizImport(cc, Compatibility = true, EntryPoint = "_RA_InitOffline")]
+		[BizImport(cc, EntryPoint = "_RA_InitOffline")]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public abstract bool InitOffline(IntPtr hwnd, int emuID, string clientVer);
 
-		[BizImport(cc, Compatibility = true, EntryPoint = "_RA_InitClient")]
+		[BizImport(cc, EntryPoint = "_RA_InitClient")]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public abstract bool InitClient(IntPtr hwnd, string clientName, string clientVer);
 
-		[BizImport(cc, Compatibility = true, EntryPoint = "_RA_InitClientOffline")]
+		[BizImport(cc, EntryPoint = "_RA_InitClientOffline")]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public abstract bool InitClientOffline(IntPtr hwnd, string clientName, string clientVer);
 
@@ -82,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 		[BizImport(cc, EntryPoint = "_RA_InvokeDialog")]
 		public abstract void InvokeDialog(IntPtr lparam);
 
-		[BizImport(cc, Compatibility = true, EntryPoint = "_RA_SetUserAgentDetail")]
+		[BizImport(cc, EntryPoint = "_RA_SetUserAgentDetail")]
 		public abstract void SetUserAgentDetail(string detail);
 
 		[BizImport(cc, Compatibility = true, EntryPoint = "_RA_AttemptLogin")]
@@ -100,11 +100,11 @@ namespace BizHawk.Client.EmuHawk
 		[BizImport(cc, EntryPoint = "_RA_InstallMemoryBankBlockReader")]
 		public abstract void InstallMemoryBankBlockReader(int bankID, RetroAchievements.ReadMemoryBlockFunc reader);
 
-		[BizImport(cc, Compatibility = true, EntryPoint = "_RA_Shutdown")]
+		[BizImport(cc, EntryPoint = "_RA_Shutdown")]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public abstract bool Shutdown();
 
-		[BizImport(cc, Compatibility = true, EntryPoint = "_RA_IsOverlayFullyVisible")]
+		[BizImport(cc, EntryPoint = "_RA_IsOverlayFullyVisible")]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public abstract bool IsOverlayFullyVisible();
 
@@ -139,13 +139,13 @@ namespace BizHawk.Client.EmuHawk
 		[BizImport(cc, EntryPoint = "_RA_IdentifyRom")]
 		public abstract int IdentifyRom(byte[] rom, int romSize);
 
-		[BizImport(cc, Compatibility = true, EntryPoint = "_RA_IdentifyHash")]
+		[BizImport(cc, EntryPoint = "_RA_IdentifyHash")]
 		public abstract int IdentifyHash(string hash);
 
 		[BizImport(cc, EntryPoint = "_RA_ActivateGame")]
 		public abstract void ActivateGame(int gameId);
 
-		[BizImport(cc, Compatibility = true, EntryPoint = "_RA_OnLoadNewRom")]
+		[BizImport(cc, EntryPoint = "_RA_OnLoadNewRom")]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public abstract bool OnLoadNewRom(byte[] rom, int romSize);
 
@@ -162,27 +162,27 @@ namespace BizHawk.Client.EmuHawk
 		[BizImport(cc, EntryPoint = "_RA_ResumeRepaint")]
 		public abstract void ResumeRepaint();
 
-		[BizImport(cc, Compatibility = true, EntryPoint = "_RA_UpdateAppTitle")]
+		[BizImport(cc, EntryPoint = "_RA_UpdateAppTitle")]
 		public abstract void UpdateAppTitle(string message);
 
-		[BizImport(cc, Compatibility = true, EntryPoint = "_RA_UserName")]
-		public abstract string UserName();
+		[BizImport(cc, EntryPoint = "_RA_UserName")]
+		public abstract IntPtr UserName();
 
-		[BizImport(cc, Compatibility = true, EntryPoint = "_RA_HardcoreModeIsActive")]
+		[BizImport(cc, EntryPoint = "_RA_HardcoreModeIsActive")]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public abstract bool HardcoreModeIsActive();
 
-		[BizImport(cc, Compatibility = true, EntryPoint = "_RA_WarnDisableHardcore")]
+		[BizImport(cc, EntryPoint = "_RA_WarnDisableHardcore")]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public abstract bool WarnDisableHardcore(string activity);
 
 		[BizImport(cc, EntryPoint = "_RA_OnReset")]
 		public abstract void OnReset();
 
-		[BizImport(cc, Compatibility = true, EntryPoint = "_RA_OnSaveState")]
+		[BizImport(cc, EntryPoint = "_RA_OnSaveState")]
 		public abstract void OnSaveState(string filename);
 
-		[BizImport(cc, Compatibility = true, EntryPoint = "_RA_OnLoadState")]
+		[BizImport(cc, EntryPoint = "_RA_OnLoadState")]
 		public abstract void OnLoadState(string filename);
 
 		[BizImport(cc, EntryPoint = "_RA_CaptureState")]

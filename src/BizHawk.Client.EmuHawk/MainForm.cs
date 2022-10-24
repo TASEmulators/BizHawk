@@ -4872,6 +4872,8 @@ namespace BizHawk.Client.EmuHawk
 				RetroAchievementsSubMenu.DropDownItems.Clear();
 				RetroAchievementsSubMenu.DropDownItems.Add(StartRetroAchievementsMenuItem);
 			});
+
+			RA.Restart();
 		}
 	}
 }

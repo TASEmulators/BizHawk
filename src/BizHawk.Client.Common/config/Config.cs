@@ -135,6 +135,8 @@ namespace BizHawk.Client.Common
 		public string UpdateIgnoreVersion { get; set; } = "";
 		public bool SkipOutdatedOsCheck { get; set; }
 		public bool SkipRATelemetryWarning { get; set; }
+		public string RAUsername { get; set; } = "";
+		public string RAToken { get; set; } = "";
 
 		/// <summary>
 		/// Makes a .bak file before any saveram-writing operation (could be extended to make timestamped backups)
