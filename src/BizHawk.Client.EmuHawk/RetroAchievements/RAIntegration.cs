@@ -123,14 +123,10 @@ namespace BizHawk.Client.EmuHawk
 			RA.AttemptLogin(true);
 		}
 
-		private bool _disposed = false;
-
 		public override void Dispose()
 		{
-			if (_disposed) return;
 			RA?.Shutdown();
 			_memGuard.Dispose();
-			_disposed = true;
 		}
 
 		public override void OnSaveState(string path)

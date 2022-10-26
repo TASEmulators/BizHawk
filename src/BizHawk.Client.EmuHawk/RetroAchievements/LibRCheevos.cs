@@ -119,8 +119,8 @@ namespace BizHawk.Client.EmuHawk
 			public IntPtr post_data;
 			public rc_api_buffer_t buffer;
 
-			public string URL => Marshal.PtrToStringAnsi(url);
-			public string PostData => Marshal.PtrToStringAnsi(post_data);
+			public string URL => Mershul.PtrToStringUtf8(url);
+			public string PostData => Mershul.PtrToStringUtf8(post_data);
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -129,6 +129,8 @@ namespace BizHawk.Client.EmuHawk
 			public int succeeded;
 			public IntPtr error_message;
 			public rc_api_buffer_t buffer;
+
+			public string ErrorMessage => Mershul.PtrToStringUtf8(error_message);
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -149,9 +151,9 @@ namespace BizHawk.Client.EmuHawk
 			public IntPtr display_name;
 			public rc_api_response_t response;
 
-			public string Username => Marshal.PtrToStringAnsi(username);
-			public string ApiToken => Marshal.PtrToStringAnsi(api_token);
-			public string DisplayName => Marshal.PtrToStringAnsi(display_name);
+			public string Username => Mershul.PtrToStringUtf8(username);
+			public string ApiToken => Mershul.PtrToStringUtf8(api_token);
+			public string DisplayName => Mershul.PtrToStringUtf8(display_name);
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -230,11 +232,11 @@ namespace BizHawk.Client.EmuHawk
 			public long created; // time_t?
 			public long updated; // time_t?
 
-			public string Title => Marshal.PtrToStringAnsi(title);
-			public string Description => Marshal.PtrToStringAnsi(description);
-			public string Definition => Marshal.PtrToStringAnsi(definition);
-			public string Author => Marshal.PtrToStringAnsi(author);
-			public string BadgeName => Marshal.PtrToStringAnsi(badge_name);
+			public string Title => Mershul.PtrToStringUtf8(title);
+			public string Description => Mershul.PtrToStringUtf8(description);
+			public string Definition => Mershul.PtrToStringUtf8(definition);
+			public string Author => Mershul.PtrToStringUtf8(author);
+			public string BadgeName => Mershul.PtrToStringUtf8(badge_name);
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -248,9 +250,9 @@ namespace BizHawk.Client.EmuHawk
 			public int lower_is_better;
 			public int hidden;
 
-			public string Title => Marshal.PtrToStringAnsi(title);
-			public string Description => Marshal.PtrToStringAnsi(description);
-			public string Definition => Marshal.PtrToStringAnsi(definition);
+			public string Title => Mershul.PtrToStringUtf8(title);
+			public string Description => Mershul.PtrToStringUtf8(description);
+			public string Definition => Mershul.PtrToStringUtf8(definition);
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -267,9 +269,9 @@ namespace BizHawk.Client.EmuHawk
 			public int num_leaderboards;
 			public rc_api_response_t response;
 
-			public string Title => Marshal.PtrToStringAnsi(title);
-			public string ImageName => Marshal.PtrToStringAnsi(image_name);
-			public string RichPresenceScript => Marshal.PtrToStringAnsi(rich_presence_script);
+			public string Title => Mershul.PtrToStringUtf8(title);
+			public string ImageName => Mershul.PtrToStringUtf8(image_name);
+			public string RichPresenceScript => Mershul.PtrToStringUtf8(rich_presence_script);
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -347,10 +349,18 @@ namespace BizHawk.Client.EmuHawk
 		[StructLayout(LayoutKind.Sequential)]
 		public struct rc_api_ping_request_t
 		{
-			public IntPtr username;
-			public IntPtr api_token;
+			public string username;
+			public string api_token;
 			public int game_id;
-			public IntPtr rich_presence;
+			public string rich_presence;
+
+			public rc_api_ping_request_t(string username, string api_token, int game_id, string rich_presence)
+			{
+				this.username = username;
+				this.api_token = api_token;
+				this.game_id = game_id;
+				this.rich_presence = rich_presence;
+			}
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -371,11 +381,20 @@ namespace BizHawk.Client.EmuHawk
 		[StructLayout(LayoutKind.Sequential)]
 		public struct rc_api_submit_lboard_entry_request_t
 		{
-			public IntPtr username;
-			public IntPtr api_token;
+			public string username;
+			public string api_token;
 			public int leaderboard_id;
 			public int score;
-			public IntPtr game_hash;
+			public string game_hash;
+
+			public rc_api_submit_lboard_entry_request_t(string username, string api_token, int leaderboard_id, int score, string game_hash)
+			{
+				this.username = username;
+				this.api_token = api_token;
+				this.leaderboard_id = leaderboard_id;
+				this.score = score;
+				this.game_hash = game_hash;
+			}
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -414,23 +433,42 @@ namespace BizHawk.Client.EmuHawk
 			public IntPtr entries;
 			public int num_entries;
 			public rc_api_response_t response;
+
+			public string Title => Mershul.PtrToStringUtf8(title);
+			public string Description => Mershul.PtrToStringUtf8(description);
+			public string Definition => Mershul.PtrToStringUtf8(definition);
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct rc_api_fetch_achievement_info_request_t
 		{
-			public IntPtr username;
-			public IntPtr api_token;
+			public string username;
+			public string api_token;
 			public int achievement_id;
 			public int first_entry;
 			public int count;
 			public int friends_only;
+
+			public rc_api_fetch_achievement_info_request_t(string username, string api_token, int achievement_id, int first_entry, int count, int friends_only)
+			{
+				this.username = username;
+				this.api_token = api_token;
+				this.achievement_id = achievement_id;
+				this.first_entry = first_entry;
+				this.count = count;
+				this.friends_only = friends_only;
+			}
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct rc_api_fetch_games_list_request_t
 		{
 			public int console_id;
+
+			public rc_api_fetch_games_list_request_t(int console_id)
+			{
+				this.console_id = console_id;
+			}
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -439,7 +477,15 @@ namespace BizHawk.Client.EmuHawk
 			public int leaderboard_id;
 			public int count;
 			public int first_entry;
-			public IntPtr username;
+			public string username;
+
+			public rc_api_fetch_leaderboard_info_request_t(int leaderboard_id, int count, int first_entry, string username)
+			{
+				this.leaderboard_id = leaderboard_id;
+				this.count = count;
+				this.first_entry = first_entry;
+				this.username = username;
+			}
 		}
 
 		[UnmanagedFunctionPointer(cc)]
@@ -507,7 +553,7 @@ namespace BizHawk.Client.EmuHawk
 		public abstract IntPtr rc_runtime_get_lboard(ref rc_runtime_t runtime, int id);
 
 		[BizImport(cc)]
-		public abstract IntPtr rc_runtime_get_richpresence(ref rc_runtime_t runtime);
+		public abstract int rc_runtime_get_richpresence(ref rc_runtime_t runtime, byte[] buffer, int buffersize, rc_peek_t peek, IntPtr ud, IntPtr unused);
 
 		[BizImport(cc)]
 		[return: MarshalAs(UnmanagedType.Bool)]
@@ -517,7 +563,7 @@ namespace BizHawk.Client.EmuHawk
 		public abstract rc_error_t rc_runtime_format_achievement_measured(ref rc_runtime_t runtime, int id, byte[] buffer, long buffer_size);
 
 		[BizImport(cc)]
-		public abstract rc_error_t rc_runtime_format_lboard_value(byte[] buffer, int size, int value, int format);
+		public abstract int rc_runtime_format_lboard_value(byte[] buffer, int size, int value, int format);
 
 		[BizImport(cc)]
 		public abstract void rc_runtime_deactivate_achievement(ref rc_runtime_t runtime, int id);

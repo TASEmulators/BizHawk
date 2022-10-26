@@ -37,37 +37,33 @@ namespace BizHawk.Client.EmuHawk
 		public static IRetroAchievements CreateImpl(IMainFormForRetroAchievements mainForm, InputManager inputManager, ToolManager tools,
 			Func<Config> getConfig, ToolStripItemCollection raDropDownItems, Action shutdownRACallback)
 		{
-			if (RAIntegration.IsAvailable && false)
+			if (getConfig().SkipRATelemetryWarning || mainForm.ShowMessageBox2(
+				owner: null,
+				text: "In order to use RetroAchievements, some information needs to be sent to retroachievements.org:\n" +
+				"\n\u2022 Your RetroAchievements username and password (first login) or token (subsequent logins)." +
+				"\n\u2022 The hash of the game(s) you have loaded into BizHawk. (for game identification + achievement unlock + leaderboard submission)" +
+				"\n\u2022 The RetroAchievements game ID(s) of the game(s) you have loaded into BizHawk. (for game information + achievement definitions + leaderboard definitions + rich presence definitions + code notes + achievement badges + user unlocks + leaderboard submission + ticket submission)" +
+				"\n\u2022 Rich presence data (periodically sent, derived from emulated game memory)." +
+				"\n\u2022 Whether or not you are currently in \"Hardcore Mode\" (for achievement unlock)." +
+				"\n\u2022 Ticket submission type and message (when submitting tickets)." +
+				"\n\nDo you agree to send this information to retroachievements.org?",
+				caption: "Notice",
+				icon: EMsgBoxIcon.Question,
+				useOKCancel: false))
 			{
-				if (getConfig().SkipRATelemetryWarning || mainForm.ShowMessageBox2(
-					owner: null,
-					text: "In order to use RetroAchievements, some information needs to be sent to retroachievements.org:\n" +
-					"\n\u2022 Your RetroAchievements username and password (first login) or token (subsequent logins)." +
-					"\n\u2022 The hash of the game(s) you have loaded into BizHawk. (for game identification + achievement unlock + leaderboard submission)" +
-					"\n\u2022 The RetroAchievements game ID(s) of the game(s) you have loaded into BizHawk. (for game information + achievement definitions + leaderboard definitions + rich presence definitions + code notes + achievement badges + user unlocks + leaderboard submission + ticket submission)" +
-					"\n\u2022 Rich presence data (periodically sent, derived from emulated game memory)." +
-					"\n\u2022 Whether or not you are currently in \"Hardcore Mode\" (for achievement unlock)." +
-					"\n\u2022 Ticket submission type and message (when submitting tickets)." +
-					"\n\nDo you agree to send this information to retroachievements.org?",
-					caption: "Notice",
-					icon: EMsgBoxIcon.Question,
-					useOKCancel: false))
+				getConfig().SkipRATelemetryWarning = true;
+
+				if (RAIntegration.IsAvailable && RAIntegration.CheckUpdateRA(mainForm) && false)
 				{
-					if (RAIntegration.CheckUpdateRA(mainForm))
-					{
-						var ret = new RAIntegration(mainForm, inputManager, tools, getConfig, raDropDownItems, shutdownRACallback);
-
-						// note: this can't occur in the ctor, as this may reboot the core, and RA is null during the ctor
-						ret.Restart();
-
-						getConfig().SkipRATelemetryWarning = true;
-
-						return ret;
-					}
+					return new RAIntegration(mainForm, inputManager, tools, getConfig, raDropDownItems, shutdownRACallback);
+				}
+				else
+				{
+					return new RCheevos(mainForm, inputManager, tools, getConfig, raDropDownItems, shutdownRACallback);
 				}
 			}
 
-			return new RCheevos(mainForm, inputManager, tools, getConfig, raDropDownItems, shutdownRACallback);
+			return null;
 		}
 
 		public abstract void Update();
