@@ -560,7 +560,7 @@ namespace BizHawk.Client.EmuHawk
 		public abstract bool rc_runtime_get_achievement_measured(ref rc_runtime_t runtime, int id, out int measured_value, out int measured_target);
 
 		[BizImport(cc)]
-		public abstract rc_error_t rc_runtime_format_achievement_measured(ref rc_runtime_t runtime, int id, byte[] buffer, long buffer_size);
+		public abstract int rc_runtime_format_achievement_measured(ref rc_runtime_t runtime, int id, byte[] buffer, long buffer_size);
 
 		[BizImport(cc)]
 		public abstract int rc_runtime_format_lboard_value(byte[] buffer, int size, int value, int format);

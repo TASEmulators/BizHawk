@@ -4,9 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Media;
-using System.Net;
 using System.Net.Http;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,8 +30,12 @@ namespace BizHawk.Client.EmuHawk
 			_lib = BizInvoker.GetInvoker<LibRCheevos>(resolver, CallingConventionAdapters.Native);
 		}
 
-		// NOTE: these are net48 only...
-		// this logic should probably be 
+		private readonly RCheevosGameInfoForm _gameInfoForm = new();
+		private readonly RCheevosAchievementListForm _cheevoListForm = new();
+
+		// NOTE: these are net framework only...
+		// this logic should probably be the main sound class
+		// this shouldn't be a blocker to moving to net core anyways
 		private static readonly SoundPlayer _loginSound = new(Path.Combine(PathUtils.ExeDirectoryPath, "overlay/login.wav"));
 		private static readonly SoundPlayer _unlockSound = new(Path.Combine(PathUtils.ExeDirectoryPath, "overlay/unlock.wav"));
 		private static readonly SoundPlayer _lboardStartSound = new(Path.Combine(PathUtils.ExeDirectoryPath, "overlay/lb.wav"));
@@ -42,12 +44,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private LibRCheevos.rc_runtime_t _runtime;
 
-		private readonly Dictionary<int, (ReadMemoryFunc func, int start)> _readMap = new();
+		private readonly Dictionary<int, (ReadMemoryFunc Func, int Start)> _readMap = new();
 
 		private ConsoleID _consoleId;
 
 		private string _gameHash;
-		private Dictionary<string, int> _cachedGameIds = new(); // keep around IDs per hash to avoid unneeded API calls for a single RebootCore
+		private readonly Dictionary<string, int> _cachedGameIds = new(); // keep around IDs per hash to avoid unneeded API calls for a single RebootCore
 
 		private GameData _gameData;
 		private readonly Dictionary<int, GameData> _cachedGameDatas = new(); // keep game data around to avoid unneeded API calls for a simple RebootCore
@@ -57,15 +59,22 @@ namespace BizHawk.Client.EmuHawk
 		private string Username, ApiToken;
 		private bool LoggedIn => !string.IsNullOrEmpty(Username) && !string.IsNullOrEmpty(ApiToken);
 
+		private ToolStripMenuItem _hardcoreModeMenuItem;
+		private bool _hardcoreMode;
+
 		private bool CheevosActive { get; set; }
 		private bool LBoardsActive { get; set; }
 		private bool RichPresenceActive { get; set; }
-		private bool HardcoreMode { get; set; }
+		private bool HardcoreMode
+		{
+			get => _hardcoreMode;
+			set => _hardcoreModeMenuItem.Checked = value;
+		}
 		private bool AllowUnofficialCheevos { get; set; }
 
 		private ManualResetEvent InitLoginDone { get; }
 
-		private class Cheevo
+		public class Cheevo
 		{
 			public int ID { get; }
 			public int Points { get; }
@@ -152,7 +161,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private class LBoard
+		public class LBoard
 		{
 			public int ID { get; }
 			public int Format { get; }
@@ -199,7 +208,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private class GameData
+		public class GameData
 		{
 			public int GameID { get; }
 			public ConsoleID ConsoleID { get; }
@@ -268,6 +277,9 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
+			public int TotalCheevoPoints(bool hardcore)
+				=> _cheevos?.Values.Sum(c => (c.IsEnabled && !c.Invalid && c.IsUnlocked(hardcore)) ? c.Points : 0) ?? 0;
+
 			public unsafe GameData(in LibRCheevos.rc_api_fetch_game_data_response_t resp, Func<bool> allowUnofficialCheevos)
 			{
 				GameID = resp.id;
@@ -332,6 +344,14 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GameID = 0;
 			}
+		}
+
+		private readonly byte[] _cheevoFormatBuffer = new byte[1024];
+
+		public string GetCheevoProgress(int id)
+		{
+			var len = _lib.rc_runtime_format_achievement_measured(ref _runtime, id, _cheevoFormatBuffer, _cheevoFormatBuffer.Length);
+			return Encoding.ASCII.GetString(_cheevoFormatBuffer, 0, len);
 		}
 
 		private event Action LoginStatusChanged;
@@ -406,12 +426,12 @@ namespace BizHawk.Client.EmuHawk
 			};
 			enableHardcoreItem.CheckedChanged += (_, _) =>
 			{
-				HardcoreMode ^= true;
+				_hardcoreMode ^= true;
 				enableLboardsItem.Enabled = HardcoreMode;
 
 				if (HardcoreMode)
 				{
-					HardcoreMode = _mainForm.RebootCore(); // unset hardcore mode if we fail to reboot core somehow
+					_hardcoreMode = _mainForm.RebootCore(); // unset hardcore mode if we fail to reboot core somehow
 				}
 				else
 				{
@@ -419,6 +439,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 			};
 			raDropDownItems.Add(enableHardcoreItem);
+
+			_hardcoreModeMenuItem = enableHardcoreItem;
 
 			var enableUnofficialCheevosItem = new ToolStripMenuItem("Test Unofficial Achievements")
 			{
@@ -430,6 +452,24 @@ namespace BizHawk.Client.EmuHawk
 
 			tss = new ToolStripSeparator();
 			raDropDownItems.Add(tss);
+
+			var viewGameInfoItem = new ToolStripMenuItem("View Game Info");
+			viewGameInfoItem.Click += (_, _) =>
+			{
+				_gameInfoForm.OnFrameAdvance(_gameData.GameBadge, _gameData.TotalCheevoPoints(HardcoreMode),
+					CurrentLboard is null ? "N/A" : $"{CurrentLboard.Description} ({CurrentLboard.Score})");
+
+				_gameInfoForm.Show();
+			};
+			raDropDownItems.Add(viewGameInfoItem);
+
+			var viewCheevoListItem = new ToolStripMenuItem("View Achievement List");
+			viewCheevoListItem.Click += (_, _) =>
+			{
+				_cheevoListForm.OnFrameAdvance(_gameData.GetCheevoById, HardcoreMode, true);
+				_cheevoListForm.Show();
+			};
+			raDropDownItems.Add(viewCheevoListItem);
 		}
 
 		private static readonly HttpClient _http = new();
@@ -643,7 +683,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_mainForm.ShowMessageBox(null, $"{reason} Disabling hardcore mode.", "Warning", EMsgBoxIcon.Warning);
 			HardcoreMode = false;
-			ToSoftcoreMode();
 		}
 
 		private async Task<int> SendHashAsync(string hash)
@@ -721,7 +760,7 @@ namespace BizHawk.Client.EmuHawk
 			CheevosActive = config.RACheevosActive;
 			LBoardsActive = config.RALBoardsActive;
 			RichPresenceActive = config.RARichPresenceActive;
-			HardcoreMode = config.RAHardcoreMode;
+			_hardcoreMode = config.RAHardcoreMode;
 			AllowUnofficialCheevos = config.RAAllowUnofficialCheevos;
 
 			BuildMenu(raDropDownItems);
@@ -731,6 +770,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_lib.rc_runtime_destroy(ref _runtime);
 			Stop();
+			_gameInfoForm.Dispose();
+			_cheevoListForm.Dispose();
 		}
 
 		public override void OnSaveState(string path)
@@ -960,6 +1001,9 @@ namespace BizHawk.Client.EmuHawk
 			// validate addresses now that we have cheevos init
 			_lib.rc_runtime_validate_addresses(ref _runtime, EventHandlerCallback, address => _readMap.ContainsKey(address));
 
+			_gameInfoForm.Restart(_gameData.Title, _gameHash, _gameData.TotalCheevoPoints(HardcoreMode));
+			_cheevoListForm.Restart(_gameData.GameID == 0 ? Array.Empty<Cheevo>() : _gameData.CheevoEnumerable, GetCheevoProgress);
+
 			Update();
 
 			// note: this can only catch quicksaves (probably only case of accidential use from hotkeys)
@@ -1108,7 +1152,8 @@ namespace BizHawk.Client.EmuHawk
 
 							if (!lboard.Hidden)
 							{
-								_mainForm.AddOnScreenMessage($"Leaderboard Attempt Started! ({lboard.Score})");
+								CurrentLboard = lboard;
+								_mainForm.AddOnScreenMessage($"Leaderboard Attempt Started!");
 								_mainForm.AddOnScreenMessage(lboard.Description);
 								_lboardStartSound.Play();
 							}
@@ -1125,6 +1170,11 @@ namespace BizHawk.Client.EmuHawk
 						{
 							if (!lboard.Hidden)
 							{
+								if (lboard == CurrentLboard)
+								{
+									CurrentLboard = null;
+								}
+
 								_mainForm.AddOnScreenMessage($"Leaderboard Attempt Failed! ({lboard.Score})");
 								_mainForm.AddOnScreenMessage(lboard.Description);
 								_lboardFailedSound.Play();
@@ -1158,6 +1208,11 @@ namespace BizHawk.Client.EmuHawk
 
 							if (!lboard.Hidden)
 							{
+								if (lboard == CurrentLboard)
+								{
+									CurrentLboard = null;
+								}
+
 								_mainForm.AddOnScreenMessage($"Leaderboard Attempt Complete! ({lboard.Score})");
 								_mainForm.AddOnScreenMessage(lboard.Description);
 								_unlockSound.Play();
@@ -1198,7 +1253,7 @@ namespace BizHawk.Client.EmuHawk
 		private int PeekCallback(int address, int num_bytes, IntPtr ud)
 		{
 			byte Peek(int addr)
-				=> _readMap.TryGetValue(addr, out var reader) ? reader.func(addr - reader.start) : (byte)0;
+				=> _readMap.TryGetValue(addr, out var reader) ? reader.Func(addr - reader.Start) : (byte)0;
 
 			return num_bytes switch
 			{
@@ -1208,6 +1263,8 @@ namespace BizHawk.Client.EmuHawk
 				_ => throw new InvalidOperationException($"Requested {num_bytes} in {nameof(PeekCallback)}"),
 			};
 		}
+
+		private LBoard CurrentLboard { get; set; }
 
 		public override void OnFrameAdvance()
 		{
@@ -1237,6 +1294,17 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				_lib.rc_runtime_do_frame(ref _runtime, EventHandlerCallback, PeekCallback, IntPtr.Zero, IntPtr.Zero);
+			}
+
+			if (_gameInfoForm.IsShown)
+			{
+				_gameInfoForm.OnFrameAdvance(_gameData.GameBadge, _gameData.TotalCheevoPoints(HardcoreMode),
+					CurrentLboard is null ? "N/A" : $"{CurrentLboard.Description} ({CurrentLboard.Score})");
+			}
+
+			if (_cheevoListForm.IsShown)
+			{
+				_cheevoListForm.OnFrameAdvance(_gameData.GetCheevoById, HardcoreMode);
 			}
 		}
 	}
