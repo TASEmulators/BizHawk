@@ -53,7 +53,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				getConfig().SkipRATelemetryWarning = true;
 
-				if (RAIntegration.IsAvailable && RAIntegration.CheckUpdateRA(mainForm) && false)
+				if (RAIntegration.IsAvailable && RAIntegration.CheckUpdateRA(mainForm))
 				{
 					return new RAIntegration(mainForm, inputManager, tools, getConfig, raDropDownItems, shutdownRACallback);
 				}
