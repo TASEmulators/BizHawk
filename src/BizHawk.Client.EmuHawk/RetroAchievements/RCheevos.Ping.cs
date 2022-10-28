@@ -16,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 			var res = LibRCheevos.rc_error_t.RC_INVALID_STATE;
 			if (_lib.rc_api_init_start_session_request(out var api_req, ref api_params) == LibRCheevos.rc_error_t.RC_OK)
 			{
-				var serv_req = await SendAPIRequest(api_req).ConfigureAwait(false);
+				var serv_req = await SendAPIRequest(in api_req).ConfigureAwait(false);
 				res = _lib.rc_api_process_start_session_response(out var resp, serv_req);
 				_lib.rc_api_destroy_start_session_response(ref resp);
 			}
@@ -34,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 			var api_params = new LibRCheevos.rc_api_ping_request_t(username, api_token, id, rich_presence);
 			if (_lib.rc_api_init_ping_request(out var api_req, ref api_params) == LibRCheevos.rc_error_t.RC_OK)
 			{
-				var serv_req = await SendAPIRequest(api_req).ConfigureAwait(false);
+				var serv_req = await SendAPIRequest(in api_req).ConfigureAwait(false);
 				_lib.rc_api_process_ping_response(out var resp, serv_req);
 				_lib.rc_api_destroy_ping_response(ref resp);
 			}

@@ -47,7 +47,7 @@ namespace BizHawk.Client.EmuHawk
 				var api_params = new LibRCheevos.rc_api_fetch_user_unlocks_request_t(username, api_token, GameID, hardcore);
 				if (_lib.rc_api_init_fetch_user_unlocks_request(out var api_req, ref api_params) == LibRCheevos.rc_error_t.RC_OK)
 				{
-					var serv_req = await SendAPIRequest(api_req).ConfigureAwait(false);
+					var serv_req = await SendAPIRequest(in api_req).ConfigureAwait(false);
 					if (_lib.rc_api_process_fetch_user_unlocks_response(out var resp, serv_req) == LibRCheevos.rc_error_t.RC_OK)
 					{
 						unsafe
@@ -165,7 +165,7 @@ namespace BizHawk.Client.EmuHawk
 			var ret = 0;
 			if (_lib.rc_api_init_resolve_hash_request(out var api_req, ref api_params) == LibRCheevos.rc_error_t.RC_OK)
 			{
-				var serv_req = await SendAPIRequest(api_req).ConfigureAwait(false);
+				var serv_req = await SendAPIRequest(in api_req).ConfigureAwait(false);
 				if (_lib.rc_api_process_resolve_hash_response(out var resp, serv_req) == LibRCheevos.rc_error_t.RC_OK)
 				{
 					ret = resp.game_id;
@@ -220,7 +220,7 @@ namespace BizHawk.Client.EmuHawk
 			var ret = new GameData();
 			if (_lib.rc_api_init_fetch_game_data_request(out var api_req, ref api_params) == LibRCheevos.rc_error_t.RC_OK)
 			{
-				var serv_req = SendAPIRequest(api_req).ConfigureAwait(false).GetAwaiter().GetResult();
+				var serv_req = SendAPIRequest(in api_req).ConfigureAwait(false).GetAwaiter().GetResult();
 				if (_lib.rc_api_process_fetch_game_data_response(out var resp, serv_req) == LibRCheevos.rc_error_t.RC_OK)
 				{
 					ret = new(in resp, allowUnofficialCheevos);
@@ -243,7 +243,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				try
 				{
-					var serv_resp = await SendAPIRequest(api_req).ConfigureAwait(false);
+					var serv_resp = await SendAPIRequest(in api_req).ConfigureAwait(false);
 					ret = new Bitmap(new MemoryStream(serv_resp));
 				}
 				catch

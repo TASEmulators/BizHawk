@@ -171,7 +171,7 @@ namespace BizHawk.Client.EmuHawk
 			var res = LibRCheevos.rc_error_t.RC_INVALID_STATE;
 			if (_lib.rc_api_init_award_achievement_request(out var api_req, ref api_params) == LibRCheevos.rc_error_t.RC_OK)
 			{
-				var serv_req = await SendAPIRequest(api_req).ConfigureAwait(false);
+				var serv_req = await SendAPIRequest(in api_req).ConfigureAwait(false);
 				res = _lib.rc_api_process_award_achievement_response(out var resp, serv_req);
 				_lib.rc_api_destroy_award_achievement_response(ref resp);
 			}

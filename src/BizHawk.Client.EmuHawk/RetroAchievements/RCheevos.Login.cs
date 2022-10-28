@@ -21,7 +21,7 @@ namespace BizHawk.Client.EmuHawk
 			var api_params = new LibRCheevos.rc_api_login_request_t(username, null, password);
 			if (_lib.rc_api_init_login_request(out var api_req, ref api_params) == LibRCheevos.rc_error_t.RC_OK)
 			{
-				var serv_req = await SendAPIRequest(api_req).ConfigureAwait(false);
+				var serv_req = await SendAPIRequest(in api_req).ConfigureAwait(false);
 				if (_lib.rc_api_process_login_response(out var resp, serv_req) == LibRCheevos.rc_error_t.RC_OK)
 				{
 					Username = resp.Username;
@@ -52,7 +52,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (_lib.rc_api_init_login_request(out var api_req, ref api_params) == LibRCheevos.rc_error_t.RC_OK)
 				{
-					var serv_req = await SendAPIRequest(api_req).ConfigureAwait(false);
+					var serv_req = await SendAPIRequest(in api_req).ConfigureAwait(false);
 					if (_lib.rc_api_process_login_response(out var resp, serv_req) == LibRCheevos.rc_error_t.RC_OK)
 					{
 						Username = resp.Username;

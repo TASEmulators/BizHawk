@@ -39,7 +39,7 @@ namespace BizHawk.Client.EmuHawk
 			return await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
 		}
 
-		private static Task<byte[]> SendAPIRequest(LibRCheevos.rc_api_request_t api_req)
+		private static Task<byte[]> SendAPIRequest(in LibRCheevos.rc_api_request_t api_req)
 			=> api_req.post_data != IntPtr.Zero ? HttpPost(api_req.URL, api_req.PostData) : HttpGet(api_req.URL);
 	}
 }
