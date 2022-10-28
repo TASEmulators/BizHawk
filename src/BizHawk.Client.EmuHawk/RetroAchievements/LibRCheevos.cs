@@ -647,37 +647,37 @@ namespace BizHawk.Client.EmuHawk
 		public abstract void rc_api_destroy_request(ref rc_api_request_t request);
 
 		[BizImport(cc, Compatibility = true)]
-		public abstract rc_error_t rc_api_process_login_response(out rc_api_login_response_t response, string server_response);
+		public abstract rc_error_t rc_api_process_login_response(out rc_api_login_response_t response, byte[] server_response);
 
 		[BizImport(cc, Compatibility = true)]
-		public abstract rc_error_t rc_api_process_start_session_response(out rc_api_start_session_response_t response, string server_response);
+		public abstract rc_error_t rc_api_process_start_session_response(out rc_api_start_session_response_t response, byte[] server_response);
 
 		[BizImport(cc, Compatibility = true)]
-		public abstract rc_error_t rc_api_process_resolve_hash_response(out rc_api_resolve_hash_response_t response, string server_response);
+		public abstract rc_error_t rc_api_process_resolve_hash_response(out rc_api_resolve_hash_response_t response, byte[] server_response);
 
 		[BizImport(cc, Compatibility = true)]
-		public abstract rc_error_t rc_api_process_fetch_game_data_response(out rc_api_fetch_game_data_response_t response, string server_response);
+		public abstract rc_error_t rc_api_process_fetch_game_data_response(out rc_api_fetch_game_data_response_t response, byte[] server_response);
 
 		[BizImport(cc, Compatibility = true)]
-		public abstract rc_error_t rc_api_process_fetch_user_unlocks_response(out rc_api_fetch_user_unlocks_response_t response, string server_response);
+		public abstract rc_error_t rc_api_process_fetch_user_unlocks_response(out rc_api_fetch_user_unlocks_response_t response, byte[] server_response);
 
 		[BizImport(cc, Compatibility = true)]
-		public abstract rc_error_t rc_api_process_fetch_achievement_info_response(out rc_api_fetch_achievement_info_response_t response, string server_response);
+		public abstract rc_error_t rc_api_process_fetch_achievement_info_response(out rc_api_fetch_achievement_info_response_t response, byte[] server_response);
 
 		[BizImport(cc, Compatibility = true)]
-		public abstract rc_error_t rc_api_process_fetch_leaderboard_info_response(out rc_api_fetch_leaderboard_info_response_t response, string server_response);
+		public abstract rc_error_t rc_api_process_fetch_leaderboard_info_response(out rc_api_fetch_leaderboard_info_response_t response, byte[] server_response);
 
 		[BizImport(cc, Compatibility = true)]
-		public abstract rc_error_t rc_api_process_award_achievement_response(out rc_api_award_achievement_response_t response, string server_response);
+		public abstract rc_error_t rc_api_process_award_achievement_response(out rc_api_award_achievement_response_t response, byte[] server_response);
 
 		[BizImport(cc, Compatibility = true)]
-		public abstract rc_error_t rc_api_process_submit_lboard_entry_response(out rc_api_submit_lboard_entry_response_t response, string server_response);
+		public abstract rc_error_t rc_api_process_submit_lboard_entry_response(out rc_api_submit_lboard_entry_response_t response, byte[] server_response);
 
 		[BizImport(cc, Compatibility = true)]
-		public abstract rc_error_t rc_api_process_ping_response(out rc_api_ping_response_t response, string server_response);
+		public abstract rc_error_t rc_api_process_ping_response(out rc_api_ping_response_t response, byte[] server_response);
 
 		[BizImport(cc, Compatibility = true)]
-		public abstract rc_error_t rc_api_process_fetch_games_list_response(out rc_api_fetch_games_list_response_t response, string server_response);
+		public abstract rc_error_t rc_api_process_fetch_games_list_response(out rc_api_fetch_games_list_response_t response, byte[] server_response);
 
 		[BizImport(cc, Compatibility = true)]
 		public abstract void rc_api_destroy_login_response(ref rc_api_login_response_t response);

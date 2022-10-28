@@ -19,16 +19,16 @@ namespace BizHawk.Client.EmuHawk
 			Shown += (_, _) => IsShown = true;
 		}
 
-		public void Restart(string gameTitle, string gameHash, int totalPoints)
+		public void Restart(string gameTitle, int totalPoints, string richPresence)
 		{
 			titleTextBox.Text = gameTitle;
-			hashBox.Text = gameHash;
 			totalPointsBox.Text = totalPoints.ToString();
 			currentLboardBox.Text = "N/A";
+			richPresenceBox.Text = richPresence;
 			_iconLoaded = false;
 		}
 
-		public void OnFrameAdvance(Bitmap gameIcon, int totalPoints, string lboardStr)
+		public void OnFrameAdvance(Bitmap gameIcon, int totalPoints, string lboardStr, string richPresence)
 		{
 			// probably bad idea to set this every frame, so
 			if (!_iconLoaded && gameIcon is not null)
@@ -39,6 +39,7 @@ namespace BizHawk.Client.EmuHawk
 
 			totalPointsBox.Text = totalPoints.ToString();
 			currentLboardBox.Text = lboardStr;
+			richPresenceBox.Text = richPresence;
 		}
 
 		private void RCheevosGameInfoForm_FormClosing(object sender, FormClosingEventArgs e)

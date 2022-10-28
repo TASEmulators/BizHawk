@@ -1,19 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Media;
-using System.Net.Http;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using BizHawk.BizInvoke;
 using BizHawk.Common;
 using BizHawk.Common.IOExtensions;
-using BizHawk.Common.PathExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
@@ -30,334 +23,20 @@ namespace BizHawk.Client.EmuHawk
 			_lib = BizInvoker.GetInvoker<LibRCheevos>(resolver, CallingConventionAdapters.Native);
 		}
 
-		private readonly RCheevosGameInfoForm _gameInfoForm = new();
-		private readonly RCheevosAchievementListForm _cheevoListForm = new();
-		private readonly RCheevosLeaderboardListForm _lboardListForm = new();
-
-		// NOTE: these are net framework only...
-		// this logic should probably be the main sound class
-		// this shouldn't be a blocker to moving to net core anyways
-		private static readonly SoundPlayer _loginSound = new(Path.Combine(PathUtils.ExeDirectoryPath, "overlay/login.wav"));
-		private static readonly SoundPlayer _unlockSound = new(Path.Combine(PathUtils.ExeDirectoryPath, "overlay/unlock.wav"));
-		private static readonly SoundPlayer _lboardStartSound = new(Path.Combine(PathUtils.ExeDirectoryPath, "overlay/lb.wav"));
-		private static readonly SoundPlayer _lboardFailedSound = new(Path.Combine(PathUtils.ExeDirectoryPath, "overlay/lbcancel.wav"));
-		private static readonly SoundPlayer _infoSound = new(Path.Combine(PathUtils.ExeDirectoryPath, "overlay/info.wav"));
-
 		private LibRCheevos.rc_runtime_t _runtime;
 
 		private readonly Dictionary<int, (ReadMemoryFunc Func, int Start)> _readMap = new();
 
-		private ConsoleID _consoleId;
-
-		private string _gameHash;
-		private readonly Dictionary<string, int> _cachedGameIds = new(); // keep around IDs per hash to avoid unneeded API calls for a simple RebootCore
-
-		private GameData _gameData;
-		private readonly Dictionary<int, GameData> _cachedGameDatas = new(); // keep game data around to avoid unneeded API calls for a simple RebootCore
-
-		private string CurrentRichPresence { get; set; }
-
-		private string Username, ApiToken;
-		private bool LoggedIn => !string.IsNullOrEmpty(Username) && !string.IsNullOrEmpty(ApiToken);
-
 		private ToolStripMenuItem _hardcoreModeMenuItem;
 		private bool _hardcoreMode;
 
-		private bool CheevosActive { get; set; }
-		private bool LBoardsActive { get; set; }
-		private bool RichPresenceActive { get; set; }
 		private bool HardcoreMode
 		{
 			get => _hardcoreMode;
 			set => _hardcoreModeMenuItem.Checked = value;
 		}
 
-		private bool EnableSoundEffects { get; set; }
-		private bool AllowUnofficialCheevos { get; set; }
-
-		private ManualResetEvent InitLoginDone { get; }
-
-		public class Cheevo
-		{
-			public int ID { get; }
-			public int Points { get; }
-			public LibRCheevos.rc_runtime_achievement_category_t Category { get; }
-			public string Title { get; }
-			public string Description { get; }
-			public string Definition { get; }
-			public string Author { get; }
-			private string BadgeName { get; }
-			public Bitmap BadgeUnlocked { get; private set; }
-			public Bitmap BadgeLocked { get; private set; }
-			public DateTime Created { get; }
-			public DateTime Updated { get; }
-
-			public bool IsSoftcoreUnlocked { get; set; }
-			public bool IsHardcoreUnlocked { get; set; }
-
-			public bool IsUnlocked(bool hardcore)
-				=> hardcore ? IsHardcoreUnlocked : IsSoftcoreUnlocked;
-			public void SetUnlocked(bool hardcore, bool unlocked)
-			{
-				if (hardcore)
-				{
-					IsHardcoreUnlocked = unlocked;
-				}
-				else
-				{
-					IsSoftcoreUnlocked = unlocked;
-				}
-			}
-
-			public bool IsPrimed { get; set; }
-			private Func<bool> AllowUnofficialCheevos { get; }
-			public bool Invalid { get; set; }
-			public bool IsEnabled => !Invalid && (IsOfficial || AllowUnofficialCheevos());
-			public bool IsOfficial => Category is LibRCheevos.rc_runtime_achievement_category_t.RC_ACHIEVEMENT_CATEGORY_CORE;
-
-			public async void LoadImages()
-			{
-				BadgeUnlocked = await GetImage(BadgeName, LibRCheevos.rc_api_image_type_t.RC_IMAGE_TYPE_ACHIEVEMENT).ConfigureAwait(false);
-				BadgeLocked = await GetImage(BadgeName, LibRCheevos.rc_api_image_type_t.RC_IMAGE_TYPE_ACHIEVEMENT_LOCKED).ConfigureAwait(false);
-			}
-
-			public Cheevo(in LibRCheevos.rc_api_achievement_definition_t cheevo, Func<bool> allowUnofficialCheevos)
-			{
-				ID = cheevo.id;
-				Points = cheevo.points;
-				Category = cheevo.category;
-				Title = cheevo.Title;
-				Description = cheevo.Description;
-				Definition = cheevo.Definition;
-				Author = cheevo.Author;
-				BadgeName = cheevo.BadgeName;
-				BadgeUnlocked = null;
-				BadgeLocked = null;
-				Created = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(cheevo.created).ToLocalTime();
-				Updated = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(cheevo.updated).ToLocalTime();
-				IsSoftcoreUnlocked = false;
-				IsHardcoreUnlocked = false;
-				IsPrimed = false;
-				AllowUnofficialCheevos = allowUnofficialCheevos;
-				Invalid = false;
-			}
-
-			public Cheevo(in Cheevo cheevo, Func<bool> allowUnofficialCheevos)
-			{
-				ID = cheevo.ID;
-				Points = cheevo.Points;
-				Category = cheevo.Category;
-				Title = cheevo.Title;
-				Description = cheevo.Description;
-				Definition = cheevo.Definition;
-				Author = cheevo.Author;
-				BadgeName = cheevo.BadgeName;
-				BadgeUnlocked = null;
-				BadgeLocked = null;
-				Created = cheevo.Created;
-				Updated = cheevo.Updated;
-				IsSoftcoreUnlocked = false;
-				IsHardcoreUnlocked = false;
-				IsPrimed = false;
-				AllowUnofficialCheevos = allowUnofficialCheevos;
-				Invalid = false;
-			}
-		}
-
-		public class LBoard
-		{
-			public int ID { get; }
-			public int Format { get; }
-			public string Title { get; }
-			public string Description { get; }
-			public string Definition { get; }
-			public bool LowerIsBetter { get; }
-			public bool Hidden { get; }
-			public bool Invalid { get; set; }
-			public string Score { get; private set; }
-
-			private readonly byte[] _scoreFormatBuffer = new byte[1024];
-
-			public void SetScore(int val)
-			{
-				var len = _lib.rc_runtime_format_lboard_value(_scoreFormatBuffer, _scoreFormatBuffer.Length, val, Format);
-				Score = Encoding.ASCII.GetString(_scoreFormatBuffer, 0, len);
-			}
-
-			public LBoard(in LibRCheevos.rc_api_leaderboard_definition_t lboard)
-			{
-				ID = lboard.id;
-				Format = lboard.format;
-				Title = lboard.Title;
-				Description = lboard.Description;
-				Definition = lboard.Definition;
-				LowerIsBetter = lboard.lower_is_better != 0;
-				Hidden = lboard.hidden != 0;
-				Invalid = false;
-				SetScore(0);
-			}
-
-			public LBoard(in LBoard lboard)
-			{
-				ID = lboard.ID;
-				Format = lboard.Format;
-				Title = lboard.Title;
-				Description = lboard.Description;
-				Definition = lboard.Definition;
-				LowerIsBetter = lboard.LowerIsBetter;
-				Hidden = lboard.Hidden;
-				Invalid = false;
-				SetScore(0);
-			}
-		}
-
-		public class GameData
-		{
-			public int GameID { get; }
-			public ConsoleID ConsoleID { get; }
-			public string Title { get; }
-			private string ImageName { get; }
-			public Bitmap GameBadge { get; private set; }
-			public string RichPresenseScript { get; }
-
-			private readonly IReadOnlyDictionary<int, Cheevo> _cheevos;
-			private readonly IReadOnlyDictionary<int, LBoard> _lboards;
-
-			public IEnumerable<Cheevo> CheevoEnumerable => _cheevos.Values;
-			public IEnumerable<LBoard> LBoardEnumerable => _lboards.Values;
-
-			public Cheevo GetCheevoById(int i) => _cheevos[i];
-			public LBoard GetLboardById(int i) => _lboards[i];
-			
-			public ManualResetEvent SoftcoreInitUnlocksReady { get; }
-			public ManualResetEvent HardcoreInitUnlocksReady { get; }
-
-			public async Task InitUnlocks(string username, string api_token, bool hardcore)
-			{
-				var api_params = new LibRCheevos.rc_api_fetch_user_unlocks_request_t(username, api_token, GameID, hardcore);
-				if (_lib.rc_api_init_fetch_user_unlocks_request(out var api_req, ref api_params) == LibRCheevos.rc_error_t.RC_OK)
-				{
-					var serv_req = await SendAPIRequest(api_req).ConfigureAwait(false);
-					if (_lib.rc_api_process_fetch_user_unlocks_response(out var resp, serv_req) == LibRCheevos.rc_error_t.RC_OK)
-					{
-						unsafe
-						{
-							var unlocks = (int*)resp.achievement_ids;
-							for (int i = 0; i < resp.num_achievement_ids; i++)
-							{
-								if (_cheevos.TryGetValue(unlocks[i], out var cheevo))
-								{
-									cheevo.SetUnlocked(hardcore, true);
-								}
-							}
-						}
-					}
-
-					_lib.rc_api_destroy_fetch_user_unlocks_response(ref resp);
-				}
-
-				_lib.rc_api_destroy_request(ref api_req);
-
-				if (hardcore)
-				{
-					HardcoreInitUnlocksReady?.Set();
-				}
-				else
-				{
-					SoftcoreInitUnlocksReady?.Set();
-				}
-			}
-
-			public async Task LoadImages()
-			{
-				GameBadge = await GetImage(ImageName, LibRCheevos.rc_api_image_type_t.RC_IMAGE_TYPE_GAME).ConfigureAwait(false);
-
-				if (_cheevos is null) return;
-
-				foreach (var cheevo in _cheevos.Values)
-				{
-					cheevo.LoadImages();
-				}
-			}
-
-			public int TotalCheevoPoints(bool hardcore)
-				=> _cheevos?.Values.Sum(c => (c.IsEnabled && !c.Invalid && c.IsUnlocked(hardcore)) ? c.Points : 0) ?? 0;
-
-			public unsafe GameData(in LibRCheevos.rc_api_fetch_game_data_response_t resp, Func<bool> allowUnofficialCheevos)
-			{
-				GameID = resp.id;
-				ConsoleID = resp.console_id;
-				Title = resp.Title;
-				ImageName = resp.ImageName;
-				GameBadge = null;
-				RichPresenseScript = resp.RichPresenceScript;
-
-				var cheevos = new Dictionary<int, Cheevo>();
-				var cptr = (LibRCheevos.rc_api_achievement_definition_t*)resp.achievements;
-				for (int i = 0; i < resp.num_achievements; i++)
-				{
-					cheevos.Add(cptr[i].id, new(in cptr[i], allowUnofficialCheevos));
-				}
-
-				_cheevos = cheevos;
-
-				var lboards = new Dictionary<int, LBoard>();
-				var lptr = (LibRCheevos.rc_api_leaderboard_definition_t*)resp.leaderboards;
-				for (int i = 0; i < resp.num_leaderboards; i++)
-				{
-					lboards.Add(lptr[i].id, new(in lptr[i]));
-				}
-
-				_lboards = lboards;
-
-				SoftcoreInitUnlocksReady = new(false);
-				HardcoreInitUnlocksReady = new(false);
-			}
-
-			public GameData(GameData gameData, Func<bool> allowUnofficialCheevos)
-			{
-				GameID = gameData.GameID;
-				ConsoleID = gameData.ConsoleID;
-				Title = gameData.Title;
-				ImageName = gameData.ImageName;
-				GameBadge = null;
-				RichPresenseScript = gameData.RichPresenseScript;
-
-				var cheevos = new Dictionary<int, Cheevo>();
-				foreach (var cheevo in gameData.CheevoEnumerable)
-				{
-					cheevos.Add(cheevo.ID, new(in cheevo, allowUnofficialCheevos));
-				}
-
-				_cheevos = cheevos;
-
-				var lboards = new Dictionary<int, LBoard>();
-				foreach (var lboard in gameData.LBoardEnumerable)
-				{
-					lboards.Add(lboard.ID, new(in lboard));
-				}
-
-				_lboards = lboards;
-
-				SoftcoreInitUnlocksReady = new(false);
-				HardcoreInitUnlocksReady = new(false);
-			}
-
-			public GameData()
-			{
-				GameID = 0;
-			}
-		}
-
-		private readonly byte[] _cheevoFormatBuffer = new byte[1024];
-
-		public string GetCheevoProgress(int id)
-		{
-			var len = _lib.rc_runtime_format_achievement_measured(ref _runtime, id, _cheevoFormatBuffer, _cheevoFormatBuffer.Length);
-			return Encoding.ASCII.GetString(_cheevoFormatBuffer, 0, len);
-		}
-
-		private event Action LoginStatusChanged;
+		private bool _firstRestart = true;
 
 		private void BuildMenu(ToolStripItemCollection raDropDownItems)
 		{
@@ -382,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 			loginItem.Click += (_, _) =>
 			{
 				Login();
-				firstRestart = true; // kinda
+				_firstRestart = true; // kinda
 				Restart();
 				LoginStatusChanged();
 			};
@@ -476,7 +155,8 @@ namespace BizHawk.Client.EmuHawk
 			viewGameInfoItem.Click += (_, _) =>
 			{
 				_gameInfoForm.OnFrameAdvance(_gameData.GameBadge, _gameData.TotalCheevoPoints(HardcoreMode),
-					CurrentLboard is null ? "N/A" : $"{CurrentLboard.Description} ({CurrentLboard.Score})");
+					CurrentLboard is null ? "N/A" : $"{CurrentLboard.Description} ({CurrentLboard.Score})",
+					CurrentRichPresence ?? "N/A");
 
 				_gameInfoForm.Show();
 			};
@@ -499,276 +179,11 @@ namespace BizHawk.Client.EmuHawk
 			raDropDownItems.Add(viewLboardListItem);
 		}
 
-		private static readonly HttpClient _http = new();
-
-		private static async Task<byte[]> HttpGet(string url)
-		{
-			_http.DefaultRequestHeaders.ConnectionClose = false;
-			var response = await _http.GetAsync(url).ConfigureAwait(false);
-			if (response.IsSuccessStatusCode)
-			{
-				return await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
-			}
-			return null;
-		}
-
-		private static async Task<byte[]> HttpPost(string url, string post)
-		{
-			_http.DefaultRequestHeaders.ConnectionClose = true;
-			HttpResponseMessage response;
-			try
-			{
-				response = await _http.PostAsync(url + "?" + post, null).ConfigureAwait(false);
-			}
-			catch (Exception e)
-			{
-				return Encoding.UTF8.GetBytes(e.ToString());
-			}
-			if (!response.IsSuccessStatusCode)
-			{
-				return null;
-			}
-			return await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
-		}
-
-		private static Task<byte[]> SendAPIRequestAsync(LibRCheevos.rc_api_request_t api_req)
-		{
-			var ret = api_req.post_data != IntPtr.Zero
-				? HttpPost(api_req.URL, api_req.PostData)
-				: HttpGet(api_req.URL);
-
-			return ret;
-		}
-
-		private static async Task<string> SendAPIRequest(LibRCheevos.rc_api_request_t api_req)
-		{
-			var bytes = await SendAPIRequestReturnRaw(api_req).ConfigureAwait(false);
-			return Encoding.UTF8.GetString(bytes);
-		}
-
-		private static Task<byte[]> SendAPIRequestReturnRaw(LibRCheevos.rc_api_request_t api_req)
-			=> api_req.post_data != IntPtr.Zero ? HttpPost(api_req.URL, api_req.PostData) : HttpGet(api_req.URL);
-
-		private async Task<bool> LoginCallback(string username, string password)
-		{
-			Username = null;
-			ApiToken = null;
-
-			var api_params = new LibRCheevos.rc_api_login_request_t(username, null, password);
-			if (_lib.rc_api_init_login_request(out var api_req, ref api_params) == LibRCheevos.rc_error_t.RC_OK)
-			{
-				var serv_req = await SendAPIRequest(api_req).ConfigureAwait(false);
-				if (_lib.rc_api_process_login_response(out var resp, serv_req) == LibRCheevos.rc_error_t.RC_OK)
-				{
-					Username = resp.Username;
-					ApiToken = resp.ApiToken;
-				}
-
-				_lib.rc_api_destroy_login_response(ref resp);
-			}
-
-			_lib.rc_api_destroy_request(ref api_req);
-
-			return LoggedIn;
-		}
-
-		private async void Login()
-		{
-			var config = _getConfig();
-			Username = config.RAUsername;
-			ApiToken = config.RAToken;
-
-			if (LoggedIn)
-			{
-				// OK, Username and ApiToken are probably valid, let's ensure they are now
-				var api_params = new LibRCheevos.rc_api_login_request_t(Username, ApiToken, null);
-
-				Username = null;
-				ApiToken = null;
-
-				if (_lib.rc_api_init_login_request(out var api_req, ref api_params) == LibRCheevos.rc_error_t.RC_OK)
-				{
-					var serv_req = await SendAPIRequest(api_req).ConfigureAwait(false);
-					if (_lib.rc_api_process_login_response(out var resp, serv_req) == LibRCheevos.rc_error_t.RC_OK)
-					{
-						Username = resp.Username;
-						ApiToken = resp.ApiToken;
-					}
-
-					_lib.rc_api_destroy_login_response(ref resp);
-				}
-
-				_lib.rc_api_destroy_request(ref api_req);
-			}
-
-			if (LoggedIn)
-			{
-				config.RAUsername = Username;
-				config.RAToken = ApiToken;
-				InitLoginDone.Set();
-				if (EnableSoundEffects) _loginSound.Play();
-				return;
-			}
-
-			using var loginForm = new RCheevosLoginForm(LoginCallback);
-			loginForm.ShowDialog();
-			
-			config.RAUsername = Username;
-			config.RAToken = ApiToken;
-			InitLoginDone.Set();
-
-			if (LoggedIn && EnableSoundEffects)
-			{
-				_loginSound.Play();
-			}
-		}
-
-		private void Logout()
-		{
-			var config = _getConfig();
-			config.RAUsername = Username = string.Empty;
-			config.RAToken = ApiToken = string.Empty;
-			_cachedGameDatas.Clear(); // no longer valid
-			// should be fine to leave other things be, they'll be reinit on login
-		}
-
-		private static async Task InitGameGataAsync(GameData gameData, string username, string api_token, bool hardcore)
-		{
-			await gameData.InitUnlocks(username, api_token, hardcore).ConfigureAwait(false);
-			await gameData.InitUnlocks(username, api_token, !hardcore).ConfigureAwait(false);
-			await gameData.LoadImages().ConfigureAwait(false);
-		}
-
-		private static async void InitGameGata(GameData gameData, string username, string api_token, bool hardcore)
-			=> await InitGameGataAsync(gameData, username, api_token, hardcore);
-
-		private static async Task<bool> StartGameSessionAsync(string username, string api_token, int id)
-		{
-			var api_params = new LibRCheevos.rc_api_start_session_request_t(username, api_token, id);
-			var res = LibRCheevos.rc_error_t.RC_INVALID_STATE;
-			if (_lib.rc_api_init_start_session_request(out var api_req, ref api_params) == LibRCheevos.rc_error_t.RC_OK)
-			{
-				var serv_req = await SendAPIRequest(api_req).ConfigureAwait(false);
-				res = _lib.rc_api_process_start_session_response(out var resp, serv_req);
-				_lib.rc_api_destroy_start_session_response(ref resp);
-			}
-
-			_lib.rc_api_destroy_request(ref api_req);
-			return res == LibRCheevos.rc_error_t.RC_OK;
-		}
-
-		// todo: warn on failure?
-		private static async void StartGameSession(string username, string api_token, int id)
-			=> await StartGameSessionAsync(username, api_token, id).ConfigureAwait(false);
-
-		private static GameData GetGameData(string username, string api_token, int id, Func<bool> allowUnofficialCheevos)
-		{
-			var api_params = new LibRCheevos.rc_api_fetch_game_data_request_t(username, api_token, id);
-			var ret = new GameData();
-			if (_lib.rc_api_init_fetch_game_data_request(out var api_req, ref api_params) == LibRCheevos.rc_error_t.RC_OK)
-			{
-				var serv_req = SendAPIRequest(api_req).ConfigureAwait(false).GetAwaiter().GetResult();
-				if (_lib.rc_api_process_fetch_game_data_response(out var resp, serv_req) == LibRCheevos.rc_error_t.RC_OK)
-				{
-					ret = new(in resp, allowUnofficialCheevos);
-				}
-
-				_lib.rc_api_destroy_fetch_game_data_response(ref resp);
-			}
-
-			_lib.rc_api_destroy_request(ref api_req);
-			return ret;
-		}
-
-		private static async Task<Bitmap> GetImage(string image_name, LibRCheevos.rc_api_image_type_t image_type)
-		{
-			if (image_name is null) return null;
-
-			var api_params = new LibRCheevos.rc_api_fetch_image_request_t(image_name, image_type);
-			Bitmap ret = null;
-			if (_lib.rc_api_init_fetch_image_request(out var api_req, ref api_params) == LibRCheevos.rc_error_t.RC_OK)
-			{
-				try
-				{
-					var serv_resp = await SendAPIRequestReturnRaw(api_req).ConfigureAwait(false);
-					ret = new Bitmap(new MemoryStream(serv_resp));
-				}
-				catch
-				{
-					ret = null;
-				}
-			}
-
-			_lib.rc_api_destroy_request(ref api_req);
-			return ret;
-		}
-
 		protected override void HandleHardcoreModeDisable(string reason)
 		{
 			_mainForm.ShowMessageBox(null, $"{reason} Disabling hardcore mode.", "Warning", EMsgBoxIcon.Warning);
 			HardcoreMode = false;
 		}
-
-		private async Task<int> SendHashAsync(string hash)
-		{
-			var api_params = new LibRCheevos.rc_api_resolve_hash_request_t(null, null, hash);
-			var ret = 0;
-			if (_lib.rc_api_init_resolve_hash_request(out var api_req, ref api_params) == LibRCheevos.rc_error_t.RC_OK)
-			{
-				var serv_req = await SendAPIRequest(api_req).ConfigureAwait(false);
-				if (_lib.rc_api_process_resolve_hash_response(out var resp, serv_req) == LibRCheevos.rc_error_t.RC_OK)
-				{
-					ret = resp.game_id;
-				}
-
-				_lib.rc_api_destroy_resolve_hash_response(ref resp);
-			}
-
-			_lib.rc_api_destroy_request(ref api_req);
-			return ret;
-		}
-
-		protected override int IdentifyHash(string hash)
-		{
-			_gameHash ??= hash;
-
-			if (_cachedGameIds.ContainsKey(hash))
-			{
-				return _cachedGameIds[hash];
-			}
-
-			var ret = SendHashAsync(hash).ConfigureAwait(false).GetAwaiter().GetResult();
-			_cachedGameIds.Add(hash, ret);
-			return ret;
-		}
-
-		protected override int IdentifyRom(byte[] rom)
-		{
-			var hash = new byte[33];
-			if (_lib.rc_hash_generate_from_buffer(hash, _consoleId, rom, rom.Length))
-			{
-				return IdentifyHash(Encoding.ASCII.GetString(hash, 0, 32));
-			}
-
-			_gameHash ??= "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE";
-			return 0;
-		}
-
-		private static async Task SendPingAsync(string username, string api_token, int id, string rich_presence)
-		{
-			var api_params = new LibRCheevos.rc_api_ping_request_t(username, api_token, id, rich_presence);
-			if (_lib.rc_api_init_ping_request(out var api_req, ref api_params) == LibRCheevos.rc_error_t.RC_OK)
-			{
-				var serv_req = await SendAPIRequest(api_req).ConfigureAwait(false);
-				_lib.rc_api_process_ping_response(out var resp, serv_req);
-				_lib.rc_api_destroy_ping_response(ref resp);
-			}
-
-			_lib.rc_api_destroy_request(ref api_req);
-		}
-
-		private static async void SendPing(string username, string api_token, int id, string rich_presence)
-			=> await SendPingAsync(username, api_token, id, rich_presence).ConfigureAwait(false);
 
 		public RCheevos(IMainFormForRetroAchievements mainForm, InputManager inputManager, ToolManager tools,
 			Func<Config> getConfig, ToolStripItemCollection raDropDownItems, Action shutdownRACallback)
@@ -852,70 +267,11 @@ namespace BizHawk.Client.EmuHawk
 			config.RAAllowUnofficialCheevos = AllowUnofficialCheevos;
 		}
 
-		private void ToggleUnofficialCheevos()
-		{
-			if (_gameData.GameID == 0)
-			{
-				AllowUnofficialCheevos ^= true;
-				return;
-			}
-
-			var initReady = HardcoreMode ? _gameData.HardcoreInitUnlocksReady : _gameData.SoftcoreInitUnlocksReady;
-			initReady.WaitOne();
-
-			foreach (var cheevo in _gameData.CheevoEnumerable)
-			{
-				if (cheevo.IsEnabled && !cheevo.IsUnlocked(HardcoreMode))
-				{
-					_lib.rc_runtime_deactivate_achievement(ref _runtime, cheevo.ID);
-				}
-			}
-
-			AllowUnofficialCheevos ^= true;
-
-			foreach (var cheevo in _gameData.CheevoEnumerable)
-			{
-				if (cheevo.IsEnabled && !cheevo.IsUnlocked(HardcoreMode))
-				{
-					_lib.rc_runtime_activate_achievement(ref _runtime, cheevo.ID, cheevo.Definition, IntPtr.Zero, 0);
-				}
-			}
-		}
-
-		private void ToSoftcoreMode()
-		{
-			if (_gameData == null || _gameData.GameID == 0) return;
-
-			_gameData.SoftcoreInitUnlocksReady.WaitOne();
-
-			foreach (var cheevo in _gameData.CheevoEnumerable)
-			{
-				if (cheevo.IsEnabled && !cheevo.IsUnlocked(false))
-				{
-					_lib.rc_runtime_deactivate_achievement(ref _runtime, cheevo.ID);
-				}
-			}
-
-			_gameData.HardcoreInitUnlocksReady.WaitOne();
-
-			foreach (var cheevo in _gameData.CheevoEnumerable)
-			{
-				if (cheevo.IsEnabled && !cheevo.IsUnlocked(true))
-				{
-					_lib.rc_runtime_activate_achievement(ref _runtime, cheevo.ID, cheevo.Definition, IntPtr.Zero, 0);
-				}
-			}
-
-			Update();
-		}
-
-		private bool firstRestart = true;
-
 		public override void Restart()
 		{
-			if (firstRestart)
+			if (_firstRestart)
 			{
-				firstRestart = false;
+				_firstRestart = false;
 				if (HardcoreMode)
 				{
 					HardcoreMode = _mainForm.RebootCore(); // unset hardcore mode if we fail to reboot core somehow
@@ -991,7 +347,7 @@ namespace BizHawk.Client.EmuHawk
 					_cachedGameDatas.Remove(gameId);
 					_cachedGameDatas.Add(gameId, _gameData);
 
-					InitGameGata(_gameData, Username, ApiToken, HardcoreMode);
+					InitGameData(_gameData, Username, ApiToken, HardcoreMode);
 
 					foreach (var lboard in _gameData.LBoardEnumerable)
 					{
@@ -1028,7 +384,7 @@ namespace BizHawk.Client.EmuHawk
 			// validate addresses now that we have cheevos init
 			_lib.rc_runtime_validate_addresses(ref _runtime, EventHandlerCallback, address => _readMap.ContainsKey(address));
 
-			_gameInfoForm.Restart(_gameData.Title, _gameHash, _gameData.TotalCheevoPoints(HardcoreMode));
+			_gameInfoForm.Restart(_gameData.Title, _gameData.TotalCheevoPoints(HardcoreMode), CurrentRichPresence ?? "N/A");
 			_cheevoListForm.Restart(_gameData.GameID == 0 ? Array.Empty<Cheevo>() : _gameData.CheevoEnumerable, GetCheevoProgress);
 			_lboardListForm.Restart(_gameData.GameID == 0 ? Array.Empty<LBoard>() : _gameData.LBoardEnumerable);
 
@@ -1044,10 +400,6 @@ namespace BizHawk.Client.EmuHawk
 			};
 		}
 
-		private readonly byte[] _richPresenceBuffer = new byte[1024];
-		private DateTime _lastPingTime = DateTime.Now;
-		private static readonly TimeSpan _pingCooldown = new(10000000 * 120); // 2 minutes
-
 		public override void Update()
 		{
 			if (!LoggedIn)
@@ -1062,68 +414,9 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_gameData.GameID != 0)
 			{
-				if (RichPresenceActive)
-				{
-					var len = _lib.rc_runtime_get_richpresence(ref _runtime, _richPresenceBuffer, _richPresenceBuffer.Length, PeekCallback, IntPtr.Zero, IntPtr.Zero);
-					CurrentRichPresence = Encoding.UTF8.GetString(_richPresenceBuffer, 0, len);
-				}
-				else
-				{
-					CurrentRichPresence = null;
-				}
-
-				var now = DateTime.Now;
-				if ((now - _lastPingTime) >= _pingCooldown)
-				{
-					SendPing(Username, ApiToken, _gameData.GameID, CurrentRichPresence);
-					_lastPingTime = now;
-				}
+				CheckPing();
 			}
 		}
-
-		private static async Task SendUnlockAchievementAsync(string username, string api_token, int id, bool hardcore, string hash)
-		{
-			var api_params = new LibRCheevos.rc_api_award_achievement_request_t(username, api_token, id, hardcore, hash);
-			var res = LibRCheevos.rc_error_t.RC_INVALID_STATE;
-			if (_lib.rc_api_init_award_achievement_request(out var api_req, ref api_params) == LibRCheevos.rc_error_t.RC_OK)
-			{
-				var serv_req = await SendAPIRequest(api_req).ConfigureAwait(false);
-				res = _lib.rc_api_process_award_achievement_response(out var resp, serv_req);
-				_lib.rc_api_destroy_award_achievement_response(ref resp);
-			}
-
-			_lib.rc_api_destroy_request(ref api_req);
-
-			if (res != LibRCheevos.rc_error_t.RC_OK)
-			{
-				// todo: warn user? correct local version of cheevos?
-			}
-		}
-
-		private static async void SendUnlockAchievement(string username, string api_token, int id, bool hardcore, string hash)
-			=> await SendUnlockAchievementAsync(username, api_token, id, hardcore, hash).ConfigureAwait(false);
-
-		private static async Task SendTriggerLeaderboardAsync(string username, string api_token, int id, int value, string hash)
-		{
-			var api_params = new LibRCheevos.rc_api_submit_lboard_entry_request_t(username, api_token, id, value, hash);
-			var res = LibRCheevos.rc_error_t.RC_INVALID_STATE;
-			if (_lib.rc_api_init_submit_lboard_entry_request(out var api_req, ref api_params) == LibRCheevos.rc_error_t.RC_OK)
-			{
-				var serv_req = await SendAPIRequest(api_req).ConfigureAwait(false);
-				res = _lib.rc_api_process_submit_lboard_entry_response(out var resp, serv_req);
-				_lib.rc_api_destroy_submit_lboard_entry_response(ref resp);
-			}
-
-			_lib.rc_api_destroy_request(ref api_req);
-
-			if (res != LibRCheevos.rc_error_t.RC_OK)
-			{
-				// todo: warn user?
-			}
-		}
-
-		private static async void SendTriggerLeaderboard(string username, string api_token, int id, int value, string hash)
-			=> await SendTriggerLeaderboardAsync(username, api_token, id, value, hash).ConfigureAwait(false);
 
 		private unsafe void EventHandlerCallback(IntPtr runtime_event)
 		{
@@ -1292,8 +585,6 @@ namespace BizHawk.Client.EmuHawk
 			};
 		}
 
-		private LBoard CurrentLboard { get; set; }
-
 		public override void OnFrameAdvance()
 		{
 			if (!LoggedIn)
@@ -1327,7 +618,8 @@ namespace BizHawk.Client.EmuHawk
 			if (_gameInfoForm.IsShown)
 			{
 				_gameInfoForm.OnFrameAdvance(_gameData.GameBadge, _gameData.TotalCheevoPoints(HardcoreMode),
-					CurrentLboard is null ? "N/A" : $"{CurrentLboard.Description} ({CurrentLboard.Score})");
+					CurrentLboard is null ? "N/A" : $"{CurrentLboard.Description} ({CurrentLboard.Score})",
+					CurrentRichPresence ?? "N/A");
 			}
 
 			if (_cheevoListForm.IsShown)
