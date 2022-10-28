@@ -45,7 +45,7 @@ namespace BizHawk.Client.EmuHawk
 				"\n\u2022 The RetroAchievements game ID(s) of the game(s) you have loaded into BizHawk. (for game information + achievement definitions + leaderboard definitions + rich presence definitions + code notes + achievement badges + user unlocks + leaderboard submission + ticket submission)" +
 				"\n\u2022 Rich presence data (periodically sent, derived from emulated game memory)." +
 				"\n\u2022 Whether or not you are currently in \"Hardcore Mode\" (for achievement unlock)." +
-				"\n\u2022 Ticket submission type and message (when submitting tickets)." +
+				"\n\u2022 Ticket submission type and message (when submitting tickets with RAIntegration)." + // todo: add this to our impl? doesn't seem to be supported in rcheevos...
 				"\n\nDo you agree to send this information to retroachievements.org?",
 				caption: "Notice",
 				icon: EMsgBoxIcon.Question,

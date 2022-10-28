@@ -369,5 +369,6 @@ namespace BizHawk.Client.Common
 		public bool RAHardcoreMode { get; set; }
 		public bool RASoundEffects { get; set; } = true;
 		public bool RAAllowUnofficialCheevos { get; set; }
+		public bool RAAutostart { get; set; }
 	}
 }

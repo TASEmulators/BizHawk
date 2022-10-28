@@ -59,6 +59,15 @@ namespace BizHawk.Client.EmuHawk
 				var tsi = new ToolStripMenuItem("Shutdown RetroAchievements");
 				tsi.Click += (_, _) => _shutdownRACallback();
 				tsmiddi.Add(tsi);
+
+				tsi = new ToolStripMenuItem("Autostart RetroAchievements")
+				{
+					Checked = _getConfig().RAAutostart,
+					CheckOnClick = true,
+				};
+				tsi.CheckedChanged += (_, _) => _getConfig().RAAutostart ^= true;
+				tsmiddi.Add(tsi);
+
 				var tss = new ToolStripSeparator();
 				tsmiddi.Add(tss);
 			}

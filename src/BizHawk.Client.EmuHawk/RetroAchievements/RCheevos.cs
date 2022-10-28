@@ -367,6 +367,14 @@ namespace BizHawk.Client.EmuHawk
 			shutDownRAItem.Click += (_, _) => _shutdownRACallback();
 			raDropDownItems.Add(shutDownRAItem);
 
+			var autoStartRAItem = new ToolStripMenuItem("Autostart RetroAchievements")
+			{
+				Checked = _getConfig().RAAutostart,
+				CheckOnClick = true,
+			};
+			autoStartRAItem.CheckedChanged += (_, _) => _getConfig().RAAutostart ^= true;
+			raDropDownItems.Add(autoStartRAItem);
+
 			var loginItem = new ToolStripMenuItem("Login")
 			{
 				Visible = !LoggedIn

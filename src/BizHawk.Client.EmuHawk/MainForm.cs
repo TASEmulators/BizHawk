@@ -682,6 +682,11 @@ namespace BizHawk.Client.EmuHawk
 
 			SynchChrome();
 
+			if (Config.RAAutostart)
+			{
+				OpenRetroAchievements();
+			}
+
 			_presentationPanel.Control.Paint += (o, e) =>
 			{
 				// I would like to trigger a repaint here, but this isn't done yet
@@ -4865,12 +4870,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenRetroAchievements()
 		{
-			RA = RetroAchievements.CreateImpl(this, InputManager, Tools, () => Config, RetroAchievementsSubMenu.DropDownItems, () =>
+			RA = RetroAchievements.CreateImpl(this, InputManager, Tools, () => Config, RetroAchievementsMenuItem.DropDownItems, () =>
 			{
 				RA.Dispose();
 				RA = null;
-				RetroAchievementsSubMenu.DropDownItems.Clear();
-				RetroAchievementsSubMenu.DropDownItems.Add(StartRetroAchievementsMenuItem);
+				RetroAchievementsMenuItem.DropDownItems.Clear();
+				RetroAchievementsMenuItem.DropDownItems.Add(StartRetroAchievementsMenuItem);
 			});
 
 			RA?.Restart();
