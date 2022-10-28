@@ -20,12 +20,22 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 			FormClosing += RCheevosAchievementListForm_FormClosing;
 			Shown += (_, _) => IsShown = true;
+			_cheevoForms = Array.Empty<RCheevosAchievementForm>();
 			_updateCooldown = 5; // only update every 5 frames / 12 fps (as this is rather expensive to update)
+		}
+
+		private void DisposeCheevoForms()
+		{
+			foreach (var cheevoForm in _cheevoForms)
+			{
+				cheevoForm.Dispose();
+			}
 		}
 
 		public void Restart(IEnumerable<RCheevos.Cheevo> cheevos, Func<int, string> getCheevoProgress)
 		{
 			flowLayoutPanel1.Controls.Clear();
+			DisposeCheevoForms();
 			var cheevoForms = new List<RCheevosAchievementForm>();
 			foreach (var cheevo in cheevos)
 			{
@@ -35,7 +45,7 @@ namespace BizHawk.Client.EmuHawk
 			flowLayoutPanel1.Controls.AddRange(_cheevoForms);
 		}
 
-		public void OnFrameAdvance(Func<int, RCheevos.Cheevo> getCheevoById, bool hardcore, bool forceUpdate = false)
+		public void OnFrameAdvance(bool hardcore, bool forceUpdate = false)
 		{
 			_updateCooldown--;
 			if (_updateCooldown == 0 || forceUpdate)
@@ -44,8 +54,20 @@ namespace BizHawk.Client.EmuHawk
 
 				for (int i = 0; i < _cheevoForms.Length; i++)
 				{
-					_cheevoForms[i].OnFrameAdvance(getCheevoById(_cheevoForms[i].CheevoID), hardcore);
+					_cheevoForms[i].OnFrameAdvance(hardcore);
 				}
+
+				var reorderedForms = _cheevoForms.OrderByDescending(f => f.OrderByKey()).ToArray();
+
+				for (int i = 0; i < _cheevoForms.Length; i++)
+				{
+					if (_cheevoForms[i] != reorderedForms[i])
+					{
+						flowLayoutPanel1.Controls.SetChildIndex(reorderedForms[i], i);
+					}
+				}
+
+				_cheevoForms = reorderedForms;
 			}
 		}
 

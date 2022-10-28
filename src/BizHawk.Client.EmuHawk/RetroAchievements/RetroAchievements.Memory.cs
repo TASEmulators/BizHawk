@@ -313,6 +313,7 @@ namespace BizHawk.Client.EmuHawk
 		private static readonly ConsoleID[] UseFullSysBus = new[]
 		{
 			ConsoleID.NES, ConsoleID.C64, ConsoleID.AmstradCPC, ConsoleID.Atari7800,
+			ConsoleID.Arcade, // not sure about this
 		};
 
 		// these consoles will use the entire main memory domain

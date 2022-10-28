@@ -32,6 +32,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly RCheevosGameInfoForm _gameInfoForm = new();
 		private readonly RCheevosAchievementListForm _cheevoListForm = new();
+		private readonly RCheevosLeaderboardListForm _lboardListForm = new();
 
 		// NOTE: these are net framework only...
 		// this logic should probably be the main sound class
@@ -49,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 		private ConsoleID _consoleId;
 
 		private string _gameHash;
-		private readonly Dictionary<string, int> _cachedGameIds = new(); // keep around IDs per hash to avoid unneeded API calls for a single RebootCore
+		private readonly Dictionary<string, int> _cachedGameIds = new(); // keep around IDs per hash to avoid unneeded API calls for a simple RebootCore
 
 		private GameData _gameData;
 		private readonly Dictionary<int, GameData> _cachedGameDatas = new(); // keep game data around to avoid unneeded API calls for a simple RebootCore
@@ -70,6 +71,8 @@ namespace BizHawk.Client.EmuHawk
 			get => _hardcoreMode;
 			set => _hardcoreModeMenuItem.Checked = value;
 		}
+
+		private bool EnableSoundEffects { get; set; }
 		private bool AllowUnofficialCheevos { get; set; }
 
 		private ManualResetEvent InitLoginDone { get; }
@@ -442,6 +445,14 @@ namespace BizHawk.Client.EmuHawk
 
 			_hardcoreModeMenuItem = enableHardcoreItem;
 
+			var enableSoundEffectsItem = new ToolStripMenuItem("Enable Sound Effects")
+			{
+				Checked = EnableSoundEffects,
+				CheckOnClick = true
+			};
+			enableSoundEffectsItem.CheckedChanged += (_, _) => EnableSoundEffects ^= true;
+			raDropDownItems.Add(enableSoundEffectsItem);
+
 			var enableUnofficialCheevosItem = new ToolStripMenuItem("Test Unofficial Achievements")
 			{
 				Checked = AllowUnofficialCheevos,
@@ -466,10 +477,18 @@ namespace BizHawk.Client.EmuHawk
 			var viewCheevoListItem = new ToolStripMenuItem("View Achievement List");
 			viewCheevoListItem.Click += (_, _) =>
 			{
-				_cheevoListForm.OnFrameAdvance(_gameData.GetCheevoById, HardcoreMode, true);
+				_cheevoListForm.OnFrameAdvance(HardcoreMode, true);
 				_cheevoListForm.Show();
 			};
 			raDropDownItems.Add(viewCheevoListItem);
+
+			var viewLboardListItem = new ToolStripMenuItem("View Leaderboard List");
+			viewLboardListItem.Click += (_, _) =>
+			{
+				_lboardListForm.OnFrameAdvance(true);
+				_lboardListForm.Show();
+			};
+			raDropDownItems.Add(viewLboardListItem);
 		}
 
 		private static readonly HttpClient _http = new();
@@ -579,10 +598,7 @@ namespace BizHawk.Client.EmuHawk
 				config.RAUsername = Username;
 				config.RAToken = ApiToken;
 				InitLoginDone.Set();
-				if (LoggedIn)
-				{
-					_loginSound.Play();
-				}
+				if (EnableSoundEffects) _loginSound.Play();
 				return;
 			}
 
@@ -593,7 +609,7 @@ namespace BizHawk.Client.EmuHawk
 			config.RAToken = ApiToken;
 			InitLoginDone.Set();
 
-			if (LoggedIn)
+			if (LoggedIn && EnableSoundEffects)
 			{
 				_loginSound.Play();
 			}
@@ -761,6 +777,7 @@ namespace BizHawk.Client.EmuHawk
 			LBoardsActive = config.RALBoardsActive;
 			RichPresenceActive = config.RARichPresenceActive;
 			_hardcoreMode = config.RAHardcoreMode;
+			EnableSoundEffects = config.RASoundEffects;
 			AllowUnofficialCheevos = config.RAAllowUnofficialCheevos;
 
 			BuildMenu(raDropDownItems);
@@ -772,6 +789,7 @@ namespace BizHawk.Client.EmuHawk
 			Stop();
 			_gameInfoForm.Dispose();
 			_cheevoListForm.Dispose();
+			_lboardListForm.Dispose();
 		}
 
 		public override void OnSaveState(string path)
@@ -822,6 +840,7 @@ namespace BizHawk.Client.EmuHawk
 			config.RALBoardsActive = LBoardsActive;
 			config.RARichPresenceActive = RichPresenceActive;
 			config.RAHardcoreMode = HardcoreMode;
+			config.RASoundEffects = EnableSoundEffects;
 			config.RAAllowUnofficialCheevos = AllowUnofficialCheevos;
 		}
 
@@ -1003,6 +1022,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_gameInfoForm.Restart(_gameData.Title, _gameHash, _gameData.TotalCheevoPoints(HardcoreMode));
 			_cheevoListForm.Restart(_gameData.GameID == 0 ? Array.Empty<Cheevo>() : _gameData.CheevoEnumerable, GetCheevoProgress);
+			_lboardListForm.Restart(_gameData.GameID == 0 ? Array.Empty<LBoard>() : _gameData.LBoardEnumerable);
 
 			Update();
 
@@ -1115,7 +1135,7 @@ namespace BizHawk.Client.EmuHawk
 							var prefix = HardcoreMode ? "[HARDCORE] " : "";
 							_mainForm.AddOnScreenMessage($"{prefix}Achievement Unlocked!");
 							_mainForm.AddOnScreenMessage(cheevo.Description);
-							_unlockSound.Play();
+							if (EnableSoundEffects) _unlockSound.Play();
 
 							if (cheevo.IsOfficial)
 							{
@@ -1136,7 +1156,7 @@ namespace BizHawk.Client.EmuHawk
 							var prefix = HardcoreMode ? "[HARDCORE] " : "";
 							_mainForm.AddOnScreenMessage($"{prefix}Achievement Primed!");
 							_mainForm.AddOnScreenMessage(cheevo.Description);
-							_infoSound.Play();
+							if (EnableSoundEffects) _infoSound.Play();
 						}
 
 						break;
@@ -1155,7 +1175,7 @@ namespace BizHawk.Client.EmuHawk
 								CurrentLboard = lboard;
 								_mainForm.AddOnScreenMessage($"Leaderboard Attempt Started!");
 								_mainForm.AddOnScreenMessage(lboard.Description);
-								_lboardStartSound.Play();
+								if (EnableSoundEffects) _lboardStartSound.Play();
 							}
 						}
 
@@ -1177,7 +1197,7 @@ namespace BizHawk.Client.EmuHawk
 
 								_mainForm.AddOnScreenMessage($"Leaderboard Attempt Failed! ({lboard.Score})");
 								_mainForm.AddOnScreenMessage(lboard.Description);
-								_lboardFailedSound.Play();
+								if (EnableSoundEffects) _lboardFailedSound.Play();
 							}
 
 							lboard.SetScore(0);
@@ -1215,7 +1235,7 @@ namespace BizHawk.Client.EmuHawk
 
 								_mainForm.AddOnScreenMessage($"Leaderboard Attempt Complete! ({lboard.Score})");
 								_mainForm.AddOnScreenMessage(lboard.Description);
-								_unlockSound.Play();
+								if (EnableSoundEffects) _unlockSound.Play();
 							}
 						}
 
@@ -1242,7 +1262,7 @@ namespace BizHawk.Client.EmuHawk
 							var prefix = HardcoreMode ? "[HARDCORE] " : "";
 							_mainForm.AddOnScreenMessage($"{prefix}Achievement Unprimed!");
 							_mainForm.AddOnScreenMessage(cheevo.Description);
-							_infoSound.Play();
+							if (EnableSoundEffects) _infoSound.Play();
 						}
 
 						break;
@@ -1304,7 +1324,12 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_cheevoListForm.IsShown)
 			{
-				_cheevoListForm.OnFrameAdvance(_gameData.GetCheevoById, HardcoreMode);
+				_cheevoListForm.OnFrameAdvance(HardcoreMode);
+			}
+
+			if (_lboardListForm.IsShown)
+			{
+				_lboardListForm.OnFrameAdvance();
 			}
 		}
 	}

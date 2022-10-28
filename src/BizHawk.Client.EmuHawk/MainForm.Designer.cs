@@ -1475,7 +1475,6 @@ namespace BizHawk.Client.EmuHawk
 			this.RetroAchievementsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
 				StartRetroAchievementsMenuItem});
 			this.RetroAchievementsSubMenu.Text = "&RetroAchievements";
-			this.RetroAchievementsSubMenu.Visible = RAIntegration.IsAvailable;
 			// 
 			// StartRetroAchievementsMenuItem
 			// 

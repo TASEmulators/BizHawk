@@ -367,6 +367,7 @@ namespace BizHawk.Client.Common
 		public bool RALBoardsActive { get; set; }
 		public bool RARichPresenceActive { get; set; } = true;
 		public bool RAHardcoreMode { get; set; }
+		public bool RASoundEffects { get; set; } = true;
 		public bool RAAllowUnofficialCheevos { get; set; }
 	}
 }
