@@ -325,7 +325,7 @@ namespace BizHawk.Client.EmuHawk
 		};
 
 		// these consoles will use part of the system bus at an offset
-		private static readonly Dictionary<ConsoleID, (int, int)[]> UsePartialSysBus = new()
+		private static readonly Dictionary<ConsoleID, (int Start, int Size)[]> UsePartialSysBus = new()
 		{
 			[ConsoleID.MasterSystem] = new[] { (0xC000, 0x2000) },
 			[ConsoleID.GameGear] = new[] { (0xC000, 0x2000) },
@@ -335,65 +335,31 @@ namespace BizHawk.Client.EmuHawk
 			[ConsoleID.SG1000] = new[] { (0xC000, 0x2000), (0x2000, 0x2000), (0x8000, 0x2000) },
 		};
 
-		// GB is a bit complicated, since we could be a single core or a linked core, and GBC wants banks 2-7 of WRAM appended at the end
-		private static void AddGBDomains(List<MemFunctions> mfs, IMemoryDomains domains)
-		{
-			string sysBus, cartRam, wram;
-			if (domains.Has("P1 System Bus")) // GambatteLink
-			{
-				sysBus = "P1 System Bus";
-				cartRam = "P1 CartRAM";
-				wram = "P1 WRAM";
-			}
-			else if (domains.Has("System Bus L")) // GBHawkLink / GBHawkLink3x
-			{
-				sysBus = "System Bus L";
-				cartRam = "Cart RAM L";
-				wram = "Main RAM L";
-			}
-			else if (domains.Has("System Bus A")) // GBHawkLink4x
-			{
-				sysBus = "System Bus A";
-				cartRam = "Cart RAM A";
-				wram = "Main RAM A";
-			}
-			else // Gambatte / GBHawk
-			{
-				sysBus = "System Bus";
-				cartRam = "CartRAM";
-				wram = "WRAM";
-			}
-
-			mfs.Add(new(domains[sysBus], 0, 0xA000));
-			if (domains.Has(cartRam))
-			{
-				if (domains[cartRam].Size == 0x200) // MBC2
-				{
-					mfs.Add(new(domains[cartRam], 0, 0x200));
-					mfs.Add(new NullMemFunctions(0x1E00));
-				}
-				else
-				{
-					mfs.Add(new(domains[cartRam], 0, 0x2000));
-				}
-			}
-			else
-			{
-				mfs.Add(new(domains[sysBus], 0xA000, 0x2000));
-			}
-			mfs.Add(new(domains[wram], 0x0000, 0x2000));
-			mfs.Add(new(domains[sysBus], 0xE000, 0x2000));
-			if (domains[wram].Size == 0x8000)
-			{
-				mfs.Add(new(domains[wram], 0x2000, 0x6000));
-			}
-		}
-
 		// anything more complicated will be handled accordingly
 
 		protected static IReadOnlyList<MemFunctions> CreateMemoryBanks(ConsoleID consoleId, IMemoryDomains domains, IDebuggable debuggable)
 		{
 			var mfs = new List<MemFunctions>();
+
+			void TryAddDomain(string domain, int? size = null, int addressMangler = 0)
+			{
+				if (domains.Has(domain))
+				{
+					if (size.HasValue && domains[domain].Size < size.Value)
+					{
+						mfs.Add(new(domains[domain], 0, domains[domain].Size, addressMangler));
+						mfs.Add(new NullMemFunctions(size.Value - domains[domain].Size));
+					}
+					else
+					{
+						mfs.Add(new(domains[domain], 0, size ?? domains[domain].Size, addressMangler));
+					}
+				}
+				else if (size.HasValue)
+				{
+					mfs.Add(new NullMemFunctions(size.Value));
+				}
+			}
 
 			if (Array.Exists(UseFullSysBus, id => id == consoleId))
 			{
@@ -407,7 +373,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				foreach (var pair in pairs)
 				{
-					mfs.Add(new(domains.SystemBus, pair.Item1, pair.Item2));
+					mfs.Add(new(domains.SystemBus, pair.Start, pair.Size));
 				}
 			}
 			else
@@ -417,66 +383,70 @@ namespace BizHawk.Client.EmuHawk
 					case ConsoleID.MegaDrive:
 					case ConsoleID.Sega32X:
 						mfs.Add(new(domains["68K RAM"], 0, domains["68K RAM"].Size, 1));
-						if (domains.Has("32X RAM"))
-						{
-							mfs.Add(new(domains["32X RAM"], 0, domains["32X RAM"].Size, 1));
-						}
-						if (domains.Has("SRAM"))
-						{
-							// our picodrive doesn't byteswap its SRAM, so...
-							var isGpgx = domains["SRAM"] is MemoryDomainIntPtrSwap16Monitor;
-							mfs.Add(new(domains["SRAM"], 0, domains["SRAM"].Size, isGpgx ? 1 : 0));
-						}
+						TryAddDomain("32X RAM", addressMangler: 1);
+						// our picodrive doesn't byteswap its SRAM, so...
+						TryAddDomain("SRAM", addressMangler: domains["SRAM"] is MemoryDomainIntPtrSwap16Monitor ? 1 : 0);
 						break;
 					case ConsoleID.SNES:
 						mfs.Add(new(domains["WRAM"], 0, domains["WRAM"].Size));
-						// annoying difference in BSNESv115+
-						if (domains.Has("CARTRIDGE_RAM"))
-						{
-							mfs.Add(new(domains["CARTRIDGE_RAM"], 0, domains["CARTRIDGE_RAM"].Size));
-						}
-						else if (domains.Has("CARTRAM"))
-						{
-							mfs.Add(new(domains["CARTRAM"], 0, domains["CARTRAM"].Size));
-						}
+						TryAddDomain("CARTRAM");
+						// sufami B sram
+						// don't think this is actually hooked up at all anyways...
+						TryAddDomain("CARTRAM B"); // Snes9x
+						TryAddDomain("SUFAMI TURBO B RAM"); // new BSNES
 						break;
 					case ConsoleID.GB:
 					case ConsoleID.GBC:
-						if (domains.Has("SGB_ROM"))
+						if (domains.Has("SGB CARTROM"))
 						{
-							// uh oh, BSNESv115+ can't handle this case (todo: Expose more GB memory domains!!!)
-							mfs.Add(new(domains["SGB_ROM"], 0, 0x8000));
-							mfs.Add(new NullMemFunctions(0x8000));
-						}
-						else if (domains.Has("SGB CARTROM"))
-						{
-							// not as many domains, but should be functional enough
+							// old BSNES doesn't have as many domains
+							// but it should still suffice in practice
 							mfs.Add(new(domains["SGB CARTROM"], 0, 0x8000));
-							mfs.Add(new NullMemFunctions(0x2000));
-							if (domains.Has("SGB CARTRAM"))
-							{
-								if (domains["SGB CARTRAM"].Size == 0x200) // MBC2
-								{
-									mfs.Add(new(domains["SGB CARTRAM"], 0, 0x200));
-									mfs.Add(new NullMemFunctions(0x1E00));
-								}
-								else
-								{
-									mfs.Add(new(domains["SGB CARTRAM"], 0, 0x2000));
-								}
-							}
-							else
-							{
-								mfs.Add(new NullMemFunctions(0x2000));
-							}
+							TryAddDomain("SGB VRAM", 0x2000);
+							TryAddDomain("SGB CARTRAM", 0x2000);
 							mfs.Add(new(domains["SGB WRAM"], 0, 0x2000));
 							mfs.Add(new(domains["SGB WRAM"], 0, 0x1E00));
-							mfs.Add(new NullMemFunctions(0x180));
-							mfs.Add(new(domains["SGB HRAM"], 0, 0x80));
+							TryAddDomain("SGB OAM", 0xA0);
+							TryAddDomain("SGB System Bus", 0xE0);
+							TryAddDomain("SGB HRAM", 0x80);
+							TryAddDomain("SGB IE");
 						}
 						else
 						{
-							AddGBDomains(mfs, domains);
+							string sysBus, cartRam, wram;
+							if (domains.Has("P1 System Bus")) // GambatteLink
+							{
+								sysBus = "P1 System Bus";
+								cartRam = "P1 CartRAM";
+								wram = "P1 WRAM";
+							}
+							else if (domains.Has("System Bus L")) // GBHawkLink / GBHawkLink3x
+							{
+								sysBus = "System Bus L";
+								cartRam = "Cart RAM L";
+								wram = "Main RAM L";
+							}
+							else if (domains.Has("System Bus A")) // GBHawkLink4x
+							{
+								sysBus = "System Bus A";
+								cartRam = "Cart RAM A";
+								wram = "Main RAM A";
+							}
+							else // Gambatte / GBHawk
+							{
+								sysBus = "System Bus";
+								cartRam = "CartRAM";
+								wram = "WRAM";
+							}
+
+							mfs.Add(new(domains[sysBus], 0, 0xA000));
+							TryAddDomain(cartRam, 0x2000);
+							mfs.Add(new(domains[wram], 0x0000, 0x2000));
+							mfs.Add(new(domains[sysBus], 0xE000, 0x2000));
+							if (domains[wram].Size == 0x8000)
+							{
+								mfs.Add(new(domains[wram], 0x2000, 0x6000));
+							}
 						}
 						break;
 					case ConsoleID.SegaCD:
@@ -515,14 +485,8 @@ namespace BizHawk.Client.EmuHawk
 						break;
 					case ConsoleID.WonderSwan:
 						mfs.Add(new(domains["RAM"], 0, domains["RAM"].Size));
-						if (domains.Has("SRAM"))
-						{
-							mfs.Add(new(domains["SRAM"], 0, domains["SRAM"].Size));
-						}
-						else if (domains.Has("EEPROM"))
-						{
-							mfs.Add(new(domains["EEPROM"], 0, domains["EEPROM"].Size));
-						}
+						TryAddDomain("SRAM");
+						TryAddDomain("EEPROM");
 						break;
 					case ConsoleID.FairchildChannelF:
 						// special case
