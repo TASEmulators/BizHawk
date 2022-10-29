@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 {
-	public abstract unsafe class BsnesCoreImpl
+	public abstract class BsnesCoreImpl
 	{
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_set_audio_enabled(bool enabled);
@@ -25,19 +25,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public abstract void snes_set_hooks_enabled(bool readHookEnabled, bool writeHookEnabled, bool executeHookEnabled);
 
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract short* snes_get_audiobuffer_and_size(out int size);
+		public abstract IntPtr snes_get_audiobuffer_and_size(out int size);
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract BsnesApi.SNES_REGION snes_get_region();
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract BsnesApi.SNES_MAPPER snes_get_mapper();
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void* snes_get_memory_region(int id, out int size, out int wordSize);
+		public abstract IntPtr snes_get_memory_region(int id, out int size, out int wordSize);
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract int snes_peek_logical_register(BsnesApi.SNES_REGISTER register);
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract byte snes_bus_read(uint address);
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_bus_write(uint address, byte value);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract IntPtr snes_get_sgb_memory_region(int id, out int size);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract byte snes_sgb_bus_read(ushort address);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void snes_sgb_bus_write(ushort address, byte value);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract int snes_sgb_battery_size();
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void snes_sgb_save_battery(byte[] buffer, int size);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void snes_sgb_load_battery(byte[] buffer, int size);
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_set_callbacks(IntPtr[] snesCallbacks);
@@ -79,7 +91,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public abstract bool snes_msu_sync();
 	}
 
-	public unsafe partial class BsnesApi : IDisposable, IMonitor, IStatable
+	public partial class BsnesApi : IDisposable, IMonitor, IStatable
 	{
 		internal WaterboxHost exe;
 		internal BsnesCoreImpl core;
@@ -170,7 +182,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			}
 		}
 
-		public delegate void snes_video_frame_t(ushort* data, int width, int height, int pitch);
+		public delegate void snes_video_frame_t(IntPtr data, int width, int height, int pitch);
 		public delegate short snes_input_poll_t(int port, int index, int id);
 		public delegate void snes_controller_latch_t();
 		public delegate void snes_no_lag_t(bool sgb_poll);
