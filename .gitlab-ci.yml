@@ -127,13 +127,13 @@ check_style:
     name: "$CI_HAWK_ARTIFACT_NAME"
     paths:
     - "$CI_HAWK_ARTIFACT_NAME_TAR"
-  image: nixos/nix:latest
+  image: alpine:latest
   needs:
   - build_asms_release
   - job: build_asms_debug
     artifacts: false
   script:
-  - nix-shell -p stdenvNoCC --run 'Dist/Package.sh "linux-x64"'
+  - Dist/Package.sh 'linux-x64'
   - cd packaged_output
   - tar -cf "../$CI_HAWK_ARTIFACT_NAME_TAR" *
   stage: package
@@ -144,13 +144,13 @@ check_style:
     name: "$CI_HAWK_ARTIFACT_NAME"
     paths:
     - ./*
-  image: nixos/nix:latest
+  image: alpine:latest
   needs:
   - build_asms_release
   - job: build_asms_debug
     artifacts: false
   script:
-  - nix-shell -p stdenvNoCC --run 'Dist/Package.sh "windows-x64"'
+  - Dist/Package.sh 'windows-x64'
     # now we replace $CI_PROJECT_DIR with $CI_PROJECT_DIR/packaged_output, so that the archival step will put everything at the top level
   - mv packaged_output ..
   - cd ..

@@ -319,6 +319,11 @@ namespace BizHawk.Client.EmuHawk
 				SyncColorSelection();
 				RenderView();
 				RenderPalette();
+
+				var viewerMousePosition = viewer.PointToClient(Cursor.Position);
+				if (viewer.ClientRectangle.Contains(viewerMousePosition))
+					UpdateViewerMouseover(viewerMousePosition); // ensure everything is in the correct state if the mouse is currently hovering the viewer
+
 				RenderTileView();
 				//these are likely to be changing all the time
 				UpdateColorDetails();

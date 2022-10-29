@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 {
 	[PortedCore(CoreNames.Bsnes115, "bsnes team", "v115+", "https://github.com/bsnes-emu/bsnes")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
-	public unsafe partial class BsnesCore : IEmulator, IDebuggable, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable, ISettable<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings>, IBSNESForGfxDebugger
+	public partial class BsnesCore : IEmulator, IDebuggable, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable, ISettable<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings>, IBSNESForGfxDebugger
 	{
 		[CoreConstructor(VSystemID.Raw.SGB)]
 		[CoreConstructor(VSystemID.Raw.SNES)]
@@ -245,8 +245,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		public ScanlineHookManager ScanlineHookManager => null;
 
-		private void snes_video_refresh(ushort* data, int width, int height, int pitch)
+		private unsafe void snes_video_refresh(IntPtr data, int width, int height, int pitch)
 		{
+			ushort* vp = (ushort*)data;
 			int widthMultiplier = 1;
 			int heightMultiplier = 1;
 			if (_settings.CropSGBFrame && IsSGB)
@@ -276,7 +277,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			{
 				for (int y = 39; y < 39 + 144; y++)
 				{
-					ushort* sp = data + y * pitch + 48;
+					ushort* sp = vp + y * pitch + 48;
 					for (int x = 0; x < 160; x++)
 					{
 						_videoBuffer[di++] = palette[*sp++ & 0x7FFF];
@@ -290,7 +291,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				int si = y / heightMultiplier * pitch;
 				for (int x = 0; x < width * widthMultiplier; x++)
 				{
-					_videoBuffer[di++] = palette[data[si + x / widthMultiplier] & 0x7FFF];
+					_videoBuffer[di++] = palette[vp![si + x / widthMultiplier] & 0x7FFF];
 				}
 			}
 		}
