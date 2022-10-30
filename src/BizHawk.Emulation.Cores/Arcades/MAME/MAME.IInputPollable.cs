@@ -17,8 +17,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		public static ControllerDefinition MAMEController = new("MAME Controller");
 
 		private IController _controller = NullController.Instance;
-		private readonly SortedDictionary<string, string> _fieldsPorts = new SortedDictionary<string, string>();
-		private SortedDictionary<string, string> _romHashes = new SortedDictionary<string, string>();
+		private readonly SortedDictionary<string, string> _fieldsPorts = new();
+		private SortedDictionary<string, string> _romHashes = new();
 
 		private void GetInputFields()
 		{

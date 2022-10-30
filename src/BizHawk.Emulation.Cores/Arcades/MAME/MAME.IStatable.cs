@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Arcades.MAME
@@ -13,16 +15,19 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		{
 			writer.Write(_mameSaveBuffer.Length);
 
-			LibMAME.SaveError err = LibMAME.mame_save_buffer(_mameSaveBuffer, out int length);
-
-			if (length != _mameSaveBuffer.Length)
+			using (this.EnterExit())
 			{
-				throw new InvalidOperationException("Savestate buffer size mismatch!");
-			}
+				var err = LibMAME.mame_save_buffer(_mameSaveBuffer, out int length);
 
-			if (err != LibMAME.SaveError.NONE)
-			{
-				throw new InvalidOperationException("MAME LOADSTATE ERROR: " + err.ToString());
+				if (length != _mameSaveBuffer.Length)
+				{
+					throw new InvalidOperationException("Savestate buffer size mismatch!");
+				}
+
+				if (err != LibMAME.SaveError.NONE)
+				{
+					throw new InvalidOperationException("MAME SAVESTATE ERROR: " + err.ToString());
+				}
 			}
 
 			writer.Write(_mameSaveBuffer);
@@ -41,11 +46,15 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 
 			reader.Read(_mameSaveBuffer, 0, _mameSaveBuffer.Length);
-			LibMAME.SaveError err = LibMAME.mame_load_buffer(_mameSaveBuffer, _mameSaveBuffer.Length);
 
-			if (err != LibMAME.SaveError.NONE)
+			using (this.EnterExit())
 			{
-				throw new InvalidOperationException("MAME SAVESTATE ERROR: " + err.ToString());
+				var err = LibMAME.mame_load_buffer(_mameSaveBuffer, _mameSaveBuffer.Length);
+
+				if (err != LibMAME.SaveError.NONE)
+				{
+					throw new InvalidOperationException("MAME LOADSTATE ERROR: " + err.ToString());
+				}
 			}
 
 			Frame = reader.ReadInt32();

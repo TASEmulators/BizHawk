@@ -61,7 +61,11 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				return;
 			}
 
-			_frameBuffer = new int[expectedSize];
+			if (_frameBuffer.Length < expectedSize)
+			{
+				_frameBuffer = new int[expectedSize];
+			}
+			
 			Marshal.Copy(ptr, _frameBuffer, 0, expectedSize);
 
 			if (!LibMAME.mame_lua_free_string(ptr))

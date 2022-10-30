@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Arcades.MAME
@@ -10,9 +11,10 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		public bool CanProvideAsync => false;
 		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
-		private readonly Queue<short> _audioSamples = new Queue<short>();
-		private readonly int _sampleRate = 44100;
-		private long _soundRemainder = 0;
+		private readonly Queue<short> _audioSamples = new();
+		private const int _sampleRate = 44100;
+		private int _samplesPerFrame;
+		private short[] _sampleBuffer;
 
 		public void SetSyncMode(SyncSoundMode mode)
 		{
@@ -22,37 +24,34 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 		}
 
+		private void InitSound()
+		{
+			_samplesPerFrame = (int)Math.Ceiling(((long)_sampleRate * (long)VsyncDenominator / (double)VsyncNumerator));
+			_sampleBuffer = new short[_samplesPerFrame * 2];
+		}
+
 		/*
 		 * GetSamplesSync() and MAME
 		 * 
 		 * MAME generates samples 50 times per second, regardless of the VBlank
 		 * rate of the emulated machine. It then uses complicated logic to
 		 * output the required amount of audio to the OS driver and to the AVI,
-		 * where it's meant to tie flashed samples to video frame duration.
+		 * where it's meant to tie flushed samples to video frame duration.
 		 * 
 		 * I'm doing my own logic here for now. I grab MAME's audio buffer
 		 * whenever it's filled (MAMESoundCallback()) and enqueue it.
 		 * 
-		 * Whenever Hawk wants new audio, I dequeue it, while preserving the
-		 * fractinal part of the sample count, to use it later.
+		 * Whenever Hawk wants new audio, I dequeue it, but never more than the
+		 * maximum samples a frame contains, keeping pending samples for the next frame
 		 */
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			long nSampNumerator = _sampleRate * (long)VsyncDenominator + _soundRemainder;
-			nsamp = (int)(nSampNumerator / VsyncNumerator);			
-			_soundRemainder = nSampNumerator % VsyncNumerator; // exactly remember fractional parts of an audio sample
-			samples = new short[nsamp * 2];
+			samples = _sampleBuffer;
+			nsamp = Math.Min(_samplesPerFrame, _audioSamples.Count / 2);
 
 			for (int i = 0; i < nsamp * 2; i++)
 			{
-				if (_audioSamples.Any())
-				{
-					samples[i] = _audioSamples.Dequeue();
-				}
-				else
-				{
-					samples[i] = 0;
-				}
+				samples[i] = _audioSamples.Dequeue();
 			}
 		}
 
@@ -63,7 +62,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		public void DiscardSamples()
 		{
-			_soundRemainder = 0;
 			_audioSamples.Clear();
 		}
 	}

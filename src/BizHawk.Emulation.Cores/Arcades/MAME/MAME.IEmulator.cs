@@ -10,31 +10,26 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		public IEmulatorServiceProvider ServiceProvider { get; }
 		public ControllerDefinition ControllerDefinition => MAMEController;
 
-		private bool _memAccess = false;
-		private bool _paused = true;
-		private bool _exiting = false;
-		private bool _frameDone = true;
-
 		public bool FrameAdvance(IController controller, bool render, bool renderSound = true)
 		{
-			if (_exiting)
+			if (IsCrashed)
 			{
 				return false;
 			}
 
 			_controller = controller;
-			_paused = false;
-			_frameDone = false;
 
-			if (_memAccess)
-			{
-				_mamePeriodicComplete.WaitOne();
-			}
+			// signal to mame we want to frame advance
+			_mameCmd = MAME_CMD.STEP;
+			SafeWaitEvent(_mameCommandComplete);
 
-			for (; _frameDone == false;)
-			{
-				_mameFrameComplete.WaitOne();
-			}
+			// tell mame the next periodic callback will update video
+			_mameCmd = MAME_CMD.VIDEO;
+			_mameCommandWaitDone.Set();
+
+			// wait until the mame thread is done updating video
+			SafeWaitEvent(_mameCommandComplete);
+			_mameCommandWaitDone.Set();
 
 			Frame++;
 
@@ -55,7 +50,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		public void Dispose()
 		{
-			_exiting = true;
+			_mameCmd = MAME_CMD.EXIT;
+			_mameCommandWaitDone.Set();
 			_mameThread.Join();
 			_mameSaveBuffer = new byte[0];
 			_hawkSaveBuffer = new byte[0];
