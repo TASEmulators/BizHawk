@@ -509,6 +509,7 @@ namespace BizHawk.Client.EmuHawk
 								mfs.Add(new(domain, 0, domain.Size));
 							}
 						}
+						break;
 					case ConsoleID.UnknownConsoleID:
 					case ConsoleID.ZXSpectrum: // this doesn't actually have anything standardized, so...
 					default:
