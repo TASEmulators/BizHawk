@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+
 using static BizHawk.Emulation.Cores.Arcades.MAME.MAME;
 
 namespace BizHawk.Emulation.Cores.Arcades.MAME
@@ -93,7 +94,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType) => sourceType == typeof(string);
 			public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType) => destinationType == typeof(string);
 			public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
-				=> new StandardValuesCollection(Setting.Options.Select(e => e.Key).ToList());
+				=> new(Setting.Options.Select(e => e.Key).ToList());
 			public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
 				=> Setting.Options.SingleOrDefault(d => d.Value == (string)value).Key ?? Setting.DefaultValue;
 			public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)

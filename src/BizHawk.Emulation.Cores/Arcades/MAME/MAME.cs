@@ -73,20 +73,21 @@ made that way to make the buffer persist actoss C API calls.
 */
 
 using System;
+using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Diagnostics;
-using System.Linq;
+
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Arcades.MAME
 {
 	[PortedCore(CoreNames.MAME, "MAMEDev", "0.231", "https://github.com/mamedev/mame.git", isReleased: false)]
 	public partial class MAME : IEmulator, IVideoProvider, ISoundProvider, ISettable<object, MAME.MAMESyncSettings>, IStatable, IInputPollable
 	{
-		public MAME(string dir, string file, MAME.MAMESyncSettings syncSettings, out string gamename)
+		public MAME(string dir, string file, MAMESyncSettings syncSettings, out string gamename)
 		{
 			try
 			{
@@ -102,11 +103,12 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			ServiceProvider = new BasicServiceProvider(this);
 
-			_syncSettings = syncSettings ?? new MAMESyncSettings();
+			_syncSettings = syncSettings ?? new();
 
 			_mameThread = new Thread(ExecuteMAMEThread);
 			_mameThread.Start();
-			_mameStartupComplete.WaitOne();
+
+			SafeWaitEvent(_mameStartupComplete);
 
 			gamename = _gameFullName;
 
@@ -117,16 +119,33 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 		}
 
+		private bool IsCrashed => !_mameThread.IsAlive;
+
+		// use this instead of a standard WaitOne on the main thread
+		// throws if the mame thread dies
+		private void SafeWaitEvent(WaitHandle waiter)
+		{
+			while (!waiter.WaitOne(200))
+			{
+				// timed out, check the other thread is dead
+				if (IsCrashed)
+				{
+					throw new Exception("MAME thread died unexpectingly?");
+				}
+			}
+		}
+
 		private string _gameFullName = "Arcade";
 		private string _gameShortName = "arcade";
 		private readonly string _gameDirectory;
 		private readonly string _gameFileName;
 		private string _loadFailure = "";
+
 		private readonly Thread _mameThread;
-		private readonly ManualResetEvent _mameStartupComplete = new ManualResetEvent(false);
-		private readonly ManualResetEvent _mameFrameComplete = new ManualResetEvent(false);
-		private readonly ManualResetEvent _memoryAccessComplete = new ManualResetEvent(false);
-		private readonly AutoResetEvent _mamePeriodicComplete = new AutoResetEvent(false);
+		private readonly ManualResetEvent _mameStartupComplete = new(false);
+		private readonly AutoResetEvent _mameCommandComplete = new(false);
+		private readonly AutoResetEvent _mameCommandWaitDone = new(false);
+
 		private LibMAME.PeriodicCallbackDelegate _periodicCallback;
 		private LibMAME.SoundCallbackDelegate _soundCallback;
 		private LibMAME.BootCallbackDelegate _bootCallback;
@@ -218,46 +237,46 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				$"MAMEHawk is { version }");
 		}
 
+		private enum MAME_CMD
+		{
+			NO_CMD = -1,
+			STEP,
+			VIDEO,
+			EXIT,
+			WAIT,
+		}
+
+		private volatile MAME_CMD _mameCmd = MAME_CMD.NO_CMD;
+
 		private void MAMEPeriodicCallback()
 		{
-			if (_exiting)
+			if (_mameCmd != MAME_CMD.NO_CMD)
 			{
-				LibMAME.mame_lua_execute(MAMELuaCommand.Exit);
-				_exiting = false;
-			}
-
-			for (; _memAccess;)
-			{
-				_mamePeriodicComplete.Set();
-				_memoryAccessComplete.WaitOne();
-
-				if (!_frameDone && !_paused || _exiting) // FrameAdvance() has been requested
+				switch (_mameCmd)
 				{
-					_memAccess = false;
-					return;
+					case MAME_CMD.STEP:
+						SendInput();
+						LibMAME.mame_lua_execute(MAMELuaCommand.Step);
+						break;
+					case MAME_CMD.VIDEO:
+						UpdateVideo();
+						break;
+					case MAME_CMD.EXIT:
+						LibMAME.mame_lua_execute(MAMELuaCommand.Exit);
+						break;
+					case MAME_CMD.WAIT:
+						break;
 				}
-			}
 
-			//int MAMEFrame = LibMAME.mame_lua_get_int(MAMELuaCommand.GetFrameNumber);
-
-			if (!_paused)
-			{
-				SendInput();
-				LibMAME.mame_lua_execute(MAMELuaCommand.Step);
-				_frameDone = false;
-				_paused = true;
-			}
-			else if (!_frameDone)
-			{
-				UpdateVideo();
-				_frameDone = true;
-				_mameFrameComplete.Set();
+				_mameCmd = MAME_CMD.NO_CMD;
+				_mameCommandComplete.Set();
+				_mameCommandWaitDone.WaitOne();
 			}
 		}
 
 		private void MAMESoundCallback()
 		{
-			int bytesPerSample = 2;
+			const int bytesPerSample = 2;
 			IntPtr ptr = LibMAME.mame_lua_get_string(MAMELuaCommand.GetSamples, out var lengthInBytes);
 
 			if (ptr == IntPtr.Zero)
@@ -270,7 +289,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			unsafe
 			{
-				short* pSample = (short*)ptr.ToPointer();
+				short* pSample = (short*)ptr;
 				for (int i = 0; i < numSamples; i++)
 				{
 					_audioSamples.Enqueue(*(pSample + i));
@@ -292,6 +311,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			UpdateVideo();
 			UpdateAspect();
 			UpdateFramerate();
+			InitSound();
 			InitMemoryDomains();
 			GetInputFields();
 			GetROMsInfo();
@@ -327,7 +347,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 		}
 
-		private class MAMELuaCommand
+		private static class MAMELuaCommand
 		{
 			// commands
 			public const string Step = "emu.step()";

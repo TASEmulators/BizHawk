@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
@@ -10,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 	{
 		public object GetSettings() => null;
 		public PutSettingsDirtyBits PutSettings(object o) => PutSettingsDirtyBits.None;
-		public List<DriverSetting> CurrentDriverSettings = new List<DriverSetting>();
+		public List<DriverSetting> CurrentDriverSettings = new();
 		private MAMESyncSettings _syncSettings;
 
 		public MAMESyncSettings GetSyncSettings()
@@ -28,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		public class MAMESyncSettings
 		{
-			public SortedDictionary<string, string> DriverSettings { get; set; } = new SortedDictionary<string, string>();
+			public SortedDictionary<string, string> DriverSettings { get; set; } = new();
 
 			public static bool NeedsReboot(MAMESyncSettings x, MAMESyncSettings y)
 			{
@@ -37,9 +38,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			public MAMESyncSettings Clone()
 			{
-				return new MAMESyncSettings
+				return new()
 				{
-					DriverSettings = new SortedDictionary<string, string>(DriverSettings)
+					DriverSettings = new(DriverSettings)
 				};
 			}
 		}
@@ -47,16 +48,16 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		public void FetchDefaultGameSettings()
 		{
 			string DIPSwitchTags = MameGetString(MAMELuaCommand.GetDIPSwitchTags);
-			string[] tags = DIPSwitchTags.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+			string[] tags = DIPSwitchTags.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
 
 			foreach (string tag in tags)
 			{
 				string DIPSwitchFields = MameGetString(MAMELuaCommand.GetDIPSwitchFields(tag));
-				string[] fieldNames = DIPSwitchFields.Split(new char[] { '^' }, StringSplitOptions.RemoveEmptyEntries);
+				string[] fieldNames = DIPSwitchFields.Split(new[] { '^' }, StringSplitOptions.RemoveEmptyEntries);
 
 				foreach (string fieldName in fieldNames)
 				{
-					DriverSetting setting = new DriverSetting()
+					DriverSetting setting = new()
 					{
 						Name = fieldName,
 						GameName = _gameShortName,
@@ -67,11 +68,11 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					};
 
 					string DIPSwitchOptions = MameGetString(MAMELuaCommand.GetDIPSwitchOptions(tag, fieldName));
-					string[] options = DIPSwitchOptions.Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
+					string[] options = DIPSwitchOptions.Split(new[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
 
 					foreach(string option in options)
 					{
-						string[] opt = option.Split(new char[] { '~' }, StringSplitOptions.RemoveEmptyEntries);
+						string[] opt = option.Split(new[] { '~' }, StringSplitOptions.RemoveEmptyEntries);
 						setting.Options.Add(opt[0], opt[1]);
 					}
 
@@ -96,10 +97,10 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private void GetROMsInfo()
 		{
 			string ROMsInfo = MameGetString(MAMELuaCommand.GetROMsInfo);
-			string[] ROMs = ROMsInfo.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+			string[] ROMs = ROMsInfo.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
 			string tempDefault = "";
 
-			DriverSetting setting = new DriverSetting()
+			DriverSetting setting = new()
 			{
 				Name = "BIOS",
 				GameName = _gameShortName,
@@ -168,7 +169,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				Name = null;
 				GameName = null;
 				DefaultValue = null;
-				Options = new SortedDictionary<string, string>();
+				Options = new();
 			}
 		}
 
