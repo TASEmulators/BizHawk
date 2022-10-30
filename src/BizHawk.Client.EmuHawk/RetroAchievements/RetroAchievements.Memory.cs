@@ -313,7 +313,6 @@ namespace BizHawk.Client.EmuHawk
 		private static readonly ConsoleID[] UseFullSysBus = new[]
 		{
 			ConsoleID.NES, ConsoleID.C64, ConsoleID.AmstradCPC, ConsoleID.Atari7800,
-			ConsoleID.Arcade, // not sure about this
 		};
 
 		// these consoles will use the entire main memory domain
@@ -502,6 +501,14 @@ namespace BizHawk.Client.EmuHawk
 					case ConsoleID.N64:
 						mfs.Add(new(domains.MainMemory, 0, domains.MainMemory.Size, 3));
 						break;
+					case ConsoleID.Arcade:
+						foreach (var domain in domains)
+						{
+							if (domain.Name.Contains("ram"))
+							{
+								mfs.Add(new(domain, 0, domain.Size));
+							}
+						}
 					case ConsoleID.UnknownConsoleID:
 					case ConsoleID.ZXSpectrum: // this doesn't actually have anything standardized, so...
 					default:
