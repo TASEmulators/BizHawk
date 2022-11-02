@@ -92,7 +92,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				, "-skip_gameinfo"                      // forbid this blocking screen that requires user input
 				, "-nothrottle"                         // forbid throttling to "real" speed of the device
 				, "-update_in_pause"                    // ^ including frame-advancing
-				, "-rompath",                      ""   // mame doesn't load roms from full paths, only from dirs to scan
+				, "-rompath",                       ""  // mame doesn't load roms from full paths, only from dirs to scan
 				, "-joystick_contradictory"             // allow L+R/U+D on digital joystick
 				, "-nonvram_save"                       // prevent dumping non-volatile ram to disk
 				, "-artpath",           "mame/artwork"  // path to load artowrk from
