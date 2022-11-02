@@ -476,15 +476,6 @@ namespace BizHawk.Client.Common
 						game.System = VSystemID.Raw.SGB;
 					}
 					break;
-				case VSystemID.Raw.MAME:
-					nextEmulator = new MAME(
-						file.Directory,
-						file.CanonicalName,
-						GetCoreSyncSettings<MAME, MAME.MAMESyncSettings>(),
-						out var gameName
-					);
-					rom.GameInfo.Name = gameName;
-					return;
 			}
 			var cip = new CoreInventoryParameters(this)
 			{
