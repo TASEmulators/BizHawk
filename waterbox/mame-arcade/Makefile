@@ -19,7 +19,7 @@ COMMONFLAGS := -fvisibility=hidden -I$(WATERBOX_DIR)/emulibc -I$(WATERBOX_DIR)/l
 	-Wall -mcmodel=large -mstack-protector-guard=global -no-pie -fno-pic -fno-pie \
 	-fcf-protection=none -MD -MP -Wno-format-overflow -Wfatal-errors -DWATERBOX
 CCFLAGS := $(COMMONFLAGS)
-CXXFLAGS := $(COMMONFLAGS) -I$(SYSROOT)/include/c++/v1 -fno-use-cxa-atexit
+CXXFLAGS := $(COMMONFLAGS) -I$(SYSROOT)/include/c++/v1 -fno-use-cxa-atexit -fvisibility-inlines-hidden
 LDFLAGS := -static -Wl,--eh-frame-hdr -T $(LINKSCRIPT)
 
 EXTRA_LIBS := -lc++ -lc++abi -lunwind -L $(SYSROOT)/lib/linux -lclang_rt.builtins-x86_64
@@ -51,14 +51,10 @@ $(TARGET_RELEASE): $(EMULIBC_OBJS) $(LINKSCRIPT)
 $(TARGET_DEBUG): $(EMULIBC_DOBJS) $(LINKSCRIPT)
 	@mkdir -p $(DOBJ_DIR)
 	@$(MAKE) SUBTARGET=arcade MAIN_SHARED_LIB=1 OPTIMIZE=0 DEBUG=1 SYMBOLS=1 SYMLEVEL=3 PTR64=1 PLATFORM=x86_64 REGENIE=1 DEPRECATED=0 NOWERROR=1 VERBOSE=1 \
-		NO_USE_PORTAUDIO=1 DONT_USE_NETWORK=1 NO_USE_MIDI=1 NO_OPENGL=1 NO_X11=1 NO_USE_XINPUT=1 USE_BUNDLED_LIB_SDL2=1 \
+		NO_USE_PORTAUDIO=1 NO_USE_PULSEAUDIO=1 DONT_USE_NETWORK=1 NO_USE_MIDI=1 NO_OPENGL=1 NO_X11=1 NO_USE_XINPUT=1 USE_BUNDLED_LIB_SDL2=1 \
 		BIN_DIR="$(OUT_DIR)" OVERRIDE_CC="$(CC)" OVERRIDE_CXX="$(CC)" OVERRIDE_LD="$(CC)" ARCHOPTS_C="$(CCFLAGS)" \
 		ARCHOPTS_CXX="$(CXXFLAGS)" LDOPTS="$(LDFLAGS) $(CCFLAGS) $(EMULIBC_OBJS) $(EXTRA_LIBS)" linux_x64 -C $(ROOT_DIR)/mame
-	@mv -f $(OUT_DIR)/libmamearcade.so $(TARGET_DEBUG)
-	@strip --strip-all --keep-symbol=mame_launch --keep-symbol=mame_set_sound_callback --keep-symbol=mame_set_log_callback \
-	--keep-symbol=mame_lua_execute --keep-symbol=mame_lua_get_int --keep-symbol=mame_lua_get_double \
-	--keep-symbol=mame_lua_get_bool --keep-symbol=mame_lua_get_string --keep-symbol=mame_lua_free_string \
-	--keep-symbol=mame_coswitch --keep-symbol=mame_read_byte --keep-symbol=co_clean --keep-symbol=ecl_seal $(TARGET_DEBUG)
+	@mv -f $(OUT_DIR)/libmamearcaded.so $(TARGET_DEBUG)
 
 install: $(TARGET_RELEASE)
 	@cp -f $< $(OUTPUTDLL_DIR)
