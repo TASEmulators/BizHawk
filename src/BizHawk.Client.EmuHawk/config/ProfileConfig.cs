@@ -10,6 +10,7 @@ using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.Cores.ColecoVision;
 using BizHawk.Emulation.Cores.Atari.Atari2600;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
+using BizHawk.Emulation.Cores.Nintendo.GBA;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -142,6 +143,11 @@ namespace BizHawk.Client.EmuHawk
 			var s = GetSyncSettings<Gameboy, Gameboy.GambatteSyncSettings>();
 			s.EnableBIOS = false;
 			PutSyncSettings<Gameboy>(s);
+
+			// GBA
+			var mGBASettings = GetSyncSettings<MGBAHawk, MGBAHawk.SyncSettings>();
+			mGBASettings.SkipBios = true;
+			PutSyncSettings<MGBAHawk>(mGBASettings);
 		}
 
 		private void SetLongPlay()
@@ -221,7 +227,11 @@ namespace BizHawk.Client.EmuHawk
 			var s = GetSyncSettings<Gameboy, Gameboy.GambatteSyncSettings>();
 			s.EnableBIOS = true;
 			PutSyncSettings<Gameboy>(s);
-			
+
+			// GBA
+			var mGBASettings = GetSyncSettings<MGBAHawk, MGBAHawk.SyncSettings>();
+			mGBASettings.SkipBios = false;
+			PutSyncSettings<MGBAHawk>(mGBASettings);
 		}
 
 		private void SetN64Tas()
