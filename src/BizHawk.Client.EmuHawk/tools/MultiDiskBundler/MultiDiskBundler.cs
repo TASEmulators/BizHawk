@@ -29,6 +29,23 @@ namespace BizHawk.Client.EmuHawk
 		{
 			InitializeComponent();
 			Icon = Properties.Resources.DualIcon;
+			SystemDropDown.Items.AddRange(new[]
+			{
+				VSystemID.Raw.AmstradCPC,
+				VSystemID.Raw.AppleII,
+				VSystemID.Raw.C64,
+				VSystemID.Raw.GBL,
+				VSystemID.Raw.GEN,
+				VSystemID.Raw.GGL,
+				VSystemID.Raw.Jaguar,
+				VSystemID.Raw.MAME,
+				VSystemID.Raw.NDS,
+				VSystemID.Raw.PCFX,
+				VSystemID.Raw.PSX,
+				VSystemID.Raw.SAT,
+				VSystemID.Raw.TI83,
+				VSystemID.Raw.ZXSpectrum,
+			});
 		}
 
 		private void MultiGameCreator_Load(object sender, EventArgs e) => Restart();
