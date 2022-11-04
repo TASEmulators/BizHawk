@@ -12,7 +12,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Arcades.MAME
 {
-	[PortedCore(CoreNames.MAME, "MAMEDev", "0.231", "https://github.com/mamedev/mame.git", isReleased: false)]
+	[PortedCore(CoreNames.MAME, "MAMEDev", "0.249", "https://github.com/mamedev/mame.git", isReleased: false)]
 	public partial class MAME
 	{
 		[CoreConstructor(VSystemID.Raw.MAME)]

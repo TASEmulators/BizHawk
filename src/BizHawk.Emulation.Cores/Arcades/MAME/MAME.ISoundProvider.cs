@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private void InitSound()
 		{
-			_samplesPerFrame = (int)Math.Ceiling(((long)_sampleRate * (long)VsyncDenominator / (double)VsyncNumerator));
+			_samplesPerFrame = (int)Math.Ceiling(_sampleRate * (long)VsyncDenominator / (double)VsyncNumerator);
 			_sampleBuffer = new short[_samplesPerFrame * 2];
 		}
 

@@ -14,17 +14,15 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		[FeatureNotImplemented]
 		public IInputCallbackSystem InputCallbacks => throw new NotImplementedException();
 
-		public static ControllerDefinition MAMEController = new("MAME Controller");
+		private readonly ControllerDefinition MAMEController = new("MAME Controller");
 
-		private IController _controller = NullController.Instance;
 		private readonly SortedDictionary<string, string> _fieldsPorts = new();
-		private SortedDictionary<string, string> _romHashes = new();
+		private readonly SortedDictionary<string, string> _romHashes = new();
 
 		private void GetInputFields()
 		{
 			string inputFields = MameGetString(MAMELuaCommand.GetInputFields);
 			string[] portFields = inputFields.Split(';');
-			MAMEController = new("MAME Controller");
 			MAMEController.BoolButtons.Clear();
 			_fieldsPorts.Clear();
 
@@ -42,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			MAMEController.MakeImmutable();
 		}
 
-		private void SendInput()
+		private void SendInput(IController controller)
 		{
 			foreach (var fieldPort in _fieldsPorts)
 			{
@@ -50,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					"manager.machine.ioport" +
 					$".ports  [\"{ fieldPort.Value }\"]" +
 					$".fields [\"{ fieldPort.Key   }\"]" +
-					$":set_value({ (_controller.IsPressed(fieldPort.Key) ? 1 : 0) })");
+					$":set_value({ (controller.IsPressed(fieldPort.Key) ? 1 : 0) })");
 			}
 		}
 	}
