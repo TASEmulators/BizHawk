@@ -10,14 +10,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private const CallingConvention cc = CallingConvention.Cdecl;
 
 		// enums
-		public enum OutputChannel
+		public enum OutputChannel : int
 		{
 			ERROR, WARNING, INFO, DEBUG, VERBOSE, LOG, COUNT
-		}
-
-		public enum SaveError
-		{
-			NONE, NOT_FOUND, ILLEGAL_REGISTRATIONS, INVALID_HEADER, READ_ERROR, WRITE_ERROR, DISABLED
 		}
 
 		// constants
@@ -38,6 +33,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		[BizImport(cc)]
 		public abstract char mame_read_byte(uint address);
 
+		[BizImport(cc)]
+		public abstract int mame_get_sound(short[] samples);
+
 		// execute
 		[BizImport(cc)]
 		public abstract void mame_lua_execute(string code);
@@ -46,9 +44,10 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		[BizImport(cc)]
 		public abstract int mame_lua_get_int(string code);
 
-		// get double (internally cast to long)
+		// get long
+		// nb: this is actually a double cast to long internally
 		[BizImport(cc)]
-		public abstract long mame_lua_get_double(string code);
+		public abstract long mame_lua_get_long(string code);
 
 		// get bool
 		[BizImport(cc)]
@@ -73,13 +72,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		// free string
 		[BizImport(cc)]
 		public abstract bool mame_lua_free_string(IntPtr pointer);
-
-		// sound
-		[UnmanagedFunctionPointer(cc)]
-		public delegate void SoundCallbackDelegate();
-
-		[BizImport(cc)]
-		public abstract void mame_set_sound_callback(SoundCallbackDelegate cb);
 
 		// log
 		[UnmanagedFunctionPointer(cc)]

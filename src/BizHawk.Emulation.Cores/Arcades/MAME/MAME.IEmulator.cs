@@ -27,7 +27,16 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				SendInput(controller);
 				_core.mame_lua_execute(MAMELuaCommand.Step);
 				_core.mame_coswitch();
-				UpdateVideo();
+				UpdateSound();
+				if (render)
+				{
+					UpdateVideo();
+				}
+			}
+
+			if (!renderSound)
+			{
+				DiscardSamples();
 			}
 
 			Frame++;

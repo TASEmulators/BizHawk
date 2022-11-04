@@ -83,7 +83,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			var systemBusAddressShift = _core.mame_lua_get_int(MAMELuaCommand.GetSpaceAddressShift);
 			var dataWidth = _core.mame_lua_get_int(MAMELuaCommand.GetSpaceDataWidth) >> 3; // mame returns in bits
-			var size = _core.mame_lua_get_double(MAMELuaCommand.GetSpaceAddressMask) + dataWidth;
+			var size = _core.mame_lua_get_long(MAMELuaCommand.GetSpaceAddressMask) + dataWidth;
 			var endianString = MameGetString(MAMELuaCommand.GetSpaceEndianness);
 			var deviceName = MameGetString(MAMELuaCommand.GetMainCPUName);
 			//var addrSize = (size * 2).ToString();

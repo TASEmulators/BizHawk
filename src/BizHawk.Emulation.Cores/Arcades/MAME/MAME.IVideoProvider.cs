@@ -22,14 +22,14 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private void UpdateFramerate()
 		{
 			VsyncNumerator = 1000000000;
-			long refresh = _core.mame_lua_get_double(MAMELuaCommand.GetRefresh);
+			long refresh = _core.mame_lua_get_long(MAMELuaCommand.GetRefresh);
 			VsyncDenominator = (int)(refresh / 1000000000);
 		}
 
 		private void UpdateAspect()
 		{
-			int x = (int)_core.mame_lua_get_double(MAMELuaCommand.GetBoundX);
-			int y = (int)_core.mame_lua_get_double(MAMELuaCommand.GetBoundY);
+			int x = (int)_core.mame_lua_get_long(MAMELuaCommand.GetBoundX);
+			int y = (int)_core.mame_lua_get_long(MAMELuaCommand.GetBoundY);
 			VirtualHeight = BufferWidth > BufferHeight * x / y
 				? BufferWidth * y / x
 				: BufferHeight;

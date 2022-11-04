@@ -24,7 +24,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			_syncSettings = lp.SyncSettings ?? new();
 
-			_soundCallback = MAMESoundCallback;
 			_logCallback = MAMELogCallback;
 
 			_exe = new(new()
@@ -42,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			using (_exe.EnterExit())
 			{
-				_adapter = CallingConventionAdapters.MakeWaterbox(new Delegate[] { _soundCallback, _logCallback }, _exe);
+				_adapter = CallingConventionAdapters.MakeWaterbox(new[] { _logCallback }, _exe);
 				_core = BizInvoker.GetInvoker<LibMAME>(_exe, _exe, _adapter);
 				StartMAME(lp.Roms.Select(r => r.RomPath));
 			}
@@ -62,7 +61,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private readonly WaterboxHost _exe;
 		private readonly ICallingConventionAdapter _adapter;
 
-		private readonly LibMAME.SoundCallbackDelegate _soundCallback;
 		private readonly LibMAME.LogCallbackDelegate _logCallback;
 
 		private readonly string _gameFileName;
@@ -72,7 +70,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private void StartMAME(IEnumerable<string> roms)
 		{
-			_core.mame_set_sound_callback(_soundCallback);
 			_core.mame_set_log_callback(_logCallback);
 
 			foreach (var rom in roms)
@@ -127,7 +124,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				UpdateVideo();
 				UpdateAspect();
 				UpdateFramerate();
-				InitSound();
 				InitMemoryDomains();
 				GetInputFields();
 				GetROMsInfo();
@@ -176,34 +172,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				$"MAME is { mameVersion }\n" +
 				$"MAMEHawk is { version }");
 		}
-
-		private void MAMESoundCallback()
-		{
-			const int bytesPerSample = 2;
-			IntPtr ptr = _core.mame_lua_get_string(MAMELuaCommand.GetSamples, out var lengthInBytes);
-
-			if (ptr == IntPtr.Zero)
-			{
-				Console.WriteLine("LibMAME ERROR: audio buffer pointer is null");
-				return;
-			}
-
-			int numSamples = lengthInBytes / bytesPerSample;
-
-			unsafe
-			{
-				short* pSample = (short*)ptr;
-				for (int i = 0; i < numSamples; i++)
-				{
-					_audioSamples.Enqueue(*(pSample + i));
-				}
-			}
-
-			if (!_core.mame_lua_free_string(ptr))
-			{
-				Console.WriteLine("LibMAME ERROR: audio buffer wasn't freed");
-			}
-		}
 		
 		private void MAMELogCallback(LibMAME.OutputChannel channel, int size, string data)
 		{
@@ -221,7 +189,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			if (!data.Contains("pause = "))
 			{
 				Console.WriteLine(
-					$"[MAME { channel.ToString() }] " +
+					$"[MAME { channel }] " +
 					$"{ data.Replace('\n', ' ') }");
 			}
 		}
