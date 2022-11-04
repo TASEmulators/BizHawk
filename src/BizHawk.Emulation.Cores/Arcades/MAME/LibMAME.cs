@@ -54,6 +54,18 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		[BizImport(cc)]
 		public abstract bool mame_lua_get_bool(string code);
 
+		/// <summary>
+		/// MAME's luaengine uses lua strings to return C strings as well as
+		/// binary buffers. You're meant to know which you're going to get and
+		/// handle that accordingly. When we want to get a C string, we
+		/// Marshal.PtrToStringAnsi(). With buffers, we Marshal.Copy()
+		/// to our new buffer. MameGetString() only covers the former
+		/// because it's the same steps every time, while buffers use to
+		/// need aditional logic. In both cases MAME wants us to manually
+		/// free the string buffer. It's made that way to make the buffer
+		/// persist actoss C API calls.
+		/// </summary>
+
 		// get string
 		[BizImport(cc)]
 		public abstract IntPtr mame_lua_get_string(string code, out int length);
