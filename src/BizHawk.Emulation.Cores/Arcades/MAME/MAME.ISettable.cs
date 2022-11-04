@@ -63,7 +63,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 						GameName = _gameShortName,
 						LuaCode = MAMELuaCommand.InputField(tag, fieldName),
 						Type = SettingType.DIPSWITCH,
-						DefaultValue = LibMAME.mame_lua_get_int(
+						DefaultValue = _core.mame_lua_get_int(
 							$"return { MAMELuaCommand.InputField(tag, fieldName) }.defvalue").ToString()
 					};
 
@@ -89,7 +89,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 				if (s != null && s.Type == SettingType.DIPSWITCH)
 				{
-					LibMAME.mame_lua_execute($"{ s.LuaCode }.user_value = { setting.Value }");
+					_core.mame_lua_execute($"{ s.LuaCode }.user_value = { setting.Value }");
 				}
 			}
 		}

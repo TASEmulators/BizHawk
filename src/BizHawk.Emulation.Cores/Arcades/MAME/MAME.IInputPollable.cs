@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		{
 			foreach (var fieldPort in _fieldsPorts)
 			{
-				LibMAME.mame_lua_execute(
+				_core.mame_lua_execute(
 					"manager.machine.ioport" +
 					$".ports  [\"{ fieldPort.Value }\"]" +
 					$".fields [\"{ fieldPort.Key   }\"]" +
