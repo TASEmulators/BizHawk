@@ -295,16 +295,24 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DoSelectedIndexChange()
 		{
-			if (SelectedCheats.Any())
-			{
-				var cheat = SelectedCheats.First();
-				CheatEditor.SetCheat(cheat);
-				CheatGroupBox.Text = $"Editing Cheat {cheat.Name} - {cheat.AddressStr}";
-			}
-			else
+			var selected = SelectedCheats.Take(2).ToList(); // is this saving that much overhead by not enumerating the whole selection? could display the row count if we did
+			if (selected.Count is 0)
 			{
 				CheatEditor.ClearForm();
 				CheatGroupBox.Text = "New Cheat";
+				CheatGroupBox.Enabled = true;
+			}
+			else if (selected.Count is 1)
+			{
+				CheatEditor.SetCheat(selected[0]);
+				CheatGroupBox.Text = $"Editing Cheat {selected[0].Name} - {selected[0].AddressStr}";
+				CheatGroupBox.Enabled = true;
+			}
+			else
+			{
+				CheatGroupBox.Enabled = false;
+				CheatEditor.ClearForm();
+				CheatGroupBox.Text = "Multiple Cheats Selected";
 			}
 		}
 

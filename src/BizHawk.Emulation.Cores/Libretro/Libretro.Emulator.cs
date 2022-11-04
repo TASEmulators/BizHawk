@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -71,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 				bridge.LibretroBridge_SetDirectories(cbHandler, SystemDirectory, SaveDirectory, CoreDirectory, CoreAssetsDirectory);
 
-				ControllerDefinition = CreateControllerDefinition();
+				ControllerDefinition = ControllerDef;
 
 				// check if we're just analysing the core and the core path matches the loaded core path anyways
 				if (analysis && corePath == LoadedCorePath)
@@ -279,39 +281,70 @@ namespace BizHawk.Emulation.Cores.Libretro
 			return true;
 		}
 
-		public static ControllerDefinition CreateControllerDefinition()
+		private static readonly LibretroControllerDef ControllerDef = new();
+
+		public class LibretroControllerDef : ControllerDefinition
 		{
-			ControllerDefinition definition = new("LibRetro Controls"/*for compatibility*/);
+			private const string CAT_KEYBOARD = "RetroKeyboard";
 
-			foreach (var item in new[] {
-					"P1 {0} Up", "P1 {0} Down", "P1 {0} Left", "P1 {0} Right", "P1 {0} Select", "P1 {0} Start", "P1 {0} Y", "P1 {0} B", "P1 {0} X", "P1 {0} A", "P1 {0} L", "P1 {0} R",
-					"P2 {0} Up", "P2 {0} Down", "P2 {0} Left", "P2 {0} Right", "P2 {0} Select", "P2 {0} Start", "P2 {0} Y", "P2 {0} B", "P2 {0} X", "P2 {0} A", "P2 {0} L", "P2 {0} R",
-			})
-				definition.BoolButtons.Add(string.Format(item, "RetroPad"));
+			public const string PFX_RETROPAD = "RetroPad ";
 
-			definition.BoolButtons.Add("Pointer Pressed"); //TODO: this isnt showing up in the binding panel. I don't want to find out why.
-			definition.AddXYPair("Pointer {0}", AxisPairOrientation.RightAndUp, (-32767).RangeTo(32767), 0);
-
-			foreach (var key in new[]{
-				"Key Backspace", "Key Tab", "Key Clear", "Key Return", "Key Pause", "Key Escape",
-				"Key Space", "Key Exclaim", "Key QuoteDbl", "Key Hash", "Key Dollar", "Key Ampersand", "Key Quote", "Key LeftParen", "Key RightParen", "Key Asterisk", "Key Plus", "Key Comma", "Key Minus", "Key Period", "Key Slash",
-				"Key 0", "Key 1", "Key 2", "Key 3", "Key 4", "Key 5", "Key 6", "Key 7", "Key 8", "Key 9",
-				"Key Colon", "Key Semicolon", "Key Less", "Key Equals", "Key Greater", "Key Question", "Key At", "Key LeftBracket", "Key Backslash", "Key RightBracket", "Key Caret", "Key Underscore", "Key Backquote",
-				"Key A", "Key B", "Key C", "Key D", "Key E", "Key F", "Key G", "Key H", "Key I", "Key J", "Key K", "Key L", "Key M", "Key N", "Key O", "Key P", "Key Q", "Key R", "Key S", "Key T", "Key U", "Key V", "Key W", "Key X", "Key Y", "Key Z",
-				"Key Delete",
-				"Key KP0", "Key KP1", "Key KP2", "Key KP3", "Key KP4", "Key KP5", "Key KP6", "Key KP7", "Key KP8", "Key KP9",
-				"Key KP_Period", "Key KP_Divide", "Key KP_Multiply", "Key KP_Minus", "Key KP_Plus", "Key KP_Enter", "Key KP_Equals",
-				"Key Up", "Key Down", "Key Right", "Key Left", "Key Insert", "Key Home", "Key End", "Key PageUp", "Key PageDown",
-				"Key F1", "Key F2", "Key F3", "Key F4", "Key F5", "Key F6", "Key F7", "Key F8", "Key F9", "Key F10", "Key F11", "Key F12", "Key F13", "Key F14", "Key F15",
-				"Key NumLock", "Key CapsLock", "Key ScrollLock", "Key RShift", "Key LShift", "Key RCtrl", "Key LCtrl", "Key RAlt", "Key LAlt", "Key RMeta", "Key LMeta", "Key LSuper", "Key RSuper", "Key Mode", "Key Compose",
-				"Key Help", "Key Print", "Key SysReq", "Key Break", "Key Menu", "Key Power", "Key Euro", "Key Undo"
-			})
+			public LibretroControllerDef()
+				: base(name: "LibRetro Controls"/*for compatibility*/)
 			{
-				definition.BoolButtons.Add(key);
-				definition.CategoryLabels[key] = "RetroKeyboard";
+				for (var player = 1; player <= 2; player++) foreach (var button in new[] { "Up", "Down", "Left", "Right", "Select", "Start", "Y", "B", "X", "A", "L", "R" })
+				{
+					BoolButtons.Add($"P{player} {PFX_RETROPAD}{button}");
+				}
+
+				BoolButtons.Add("Pointer Pressed");
+				this.AddXYPair("Pointer {0}", AxisPairOrientation.RightAndUp, (-32767).RangeTo(32767), 0);
+
+				foreach (var s in new[] {
+					"Backspace", "Tab", "Clear", "Return", "Pause", "Escape",
+					"Space", "Exclaim", "QuoteDbl", "Hash", "Dollar", "Ampersand", "Quote", "LeftParen", "RightParen", "Asterisk", "Plus", "Comma", "Minus", "Period", "Slash",
+					"0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+					"Colon", "Semicolon", "Less", "Equals", "Greater", "Question", "At", "LeftBracket", "Backslash", "RightBracket", "Caret", "Underscore", "Backquote",
+					"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
+					"Delete",
+					"KP0", "KP1", "KP2", "KP3", "KP4", "KP5", "KP6", "KP7", "KP8", "KP9",
+					"KP_Period", "KP_Divide", "KP_Multiply", "KP_Minus", "KP_Plus", "KP_Enter", "KP_Equals",
+					"Up", "Down", "Right", "Left", "Insert", "Home", "End", "PageUp", "PageDown",
+					"F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12", "F13", "F14", "F15",
+					"NumLock", "CapsLock", "ScrollLock", "RShift", "LShift", "RCtrl", "LCtrl", "RAlt", "LAlt", "RMeta", "LMeta", "LSuper", "RSuper", "Mode", "Compose",
+					"Help", "Print", "SysReq", "Break", "Menu", "Power", "Euro", "Undo"
+				})
+				{
+					var buttonName = $"Key {s}";
+					BoolButtons.Add(buttonName);
+					CategoryLabels[buttonName] = CAT_KEYBOARD;
+				}
+
+				MakeImmutable();
 			}
 
-			return definition.MakeImmutable();
+			protected override IReadOnlyList<IReadOnlyList<string>> GenOrderedControls()
+			{
+				// all this is to remove the keyboard buttons from P0 and put them in P3 so they appear at the end of the input display
+				var players = base.GenOrderedControls().ToList();
+				List<string> retroKeyboard = new();
+				var p0 = (List<string>) players[0];
+				for (var i = 0; i < p0.Count; /* incremented in body */)
+				{
+					var buttonName = p0[i];
+					if (CategoryLabels.TryGetValue(buttonName, out var v) && v is CAT_KEYBOARD)
+					{
+						retroKeyboard.Add(buttonName);
+						p0.RemoveAt(i);
+					}
+					else
+					{
+						i++;
+					}
+				}
+				players.Add(retroKeyboard);
+				return players;
+			}
 		}
 
 		public ControllerDefinition ControllerDefinition { get; }

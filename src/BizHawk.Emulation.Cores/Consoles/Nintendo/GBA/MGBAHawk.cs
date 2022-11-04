@@ -27,30 +27,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			_syncSettings = syncSettings ?? new SyncSettings();
 			_settings = settings ?? new Settings();
-			DeterministicEmulation = deterministic;
 
 			var bios = comm.CoreFileProvider.GetFirmware(new("GBA", "Bios"));
-			DeterministicEmulation &= bios != null;
+			if (bios is { Length: not 0x4000 }) throw new InvalidOperationException("BIOS must be exactly 16384 bytes!");
+			if (deterministic && bios is null) throw new MissingFirmwareException("A BIOS is required for deterministic recordings!");
+			DeterministicEmulation = deterministic
+				|| (bios is not null && !_syncSettings.RTCUseRealTime); // in this case, the core is deterministic even though it wasn't asked to be
 
-			if (DeterministicEmulation != deterministic)
-			{
-				throw new MissingFirmwareException("A BIOS is required for deterministic recordings!");
-			}
-
-			if (!DeterministicEmulation && bios != null && !_syncSettings.RTCUseRealTime && !_syncSettings.SkipBios)
-			{
-				// in these situations, this core is deterministic even though it wasn't asked to be
-				DeterministicEmulation = true;
-			}
-
-			if (bios != null && bios.Length != 16384)
-			{
-				throw new InvalidOperationException("BIOS must be exactly 16384 bytes!");
-			}
-
-			var skipBios = !DeterministicEmulation && _syncSettings.SkipBios;
-
-			Core = LibmGBA.BizCreate(bios, file, file.Length, GetOverrideInfo(_syncSettings), skipBios);
+			Core = LibmGBA.BizCreate(
+				bios,
+				file,
+				file.Length,
+				GetOverrideInfo(_syncSettings),
+				skipBios: _syncSettings.SkipBios);
 			if (Core == IntPtr.Zero)
 			{
 				throw new InvalidOperationException($"{nameof(LibmGBA.BizCreate)}() returned NULL!  Bad BIOS? and/or ROM?");

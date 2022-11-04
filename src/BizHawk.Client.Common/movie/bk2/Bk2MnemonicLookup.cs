@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Libretro;
 
 // ReSharper disable StyleCop.SA1509
 namespace BizHawk.Client.Common
@@ -21,6 +23,7 @@ namespace BizHawk.Client.Common
 					key = key.Substring(3);
 				}
 			}
+			key = key.RemovePrefix(LibretroEmulator.LibretroControllerDef.PFX_RETROPAD);
 
 			if (SystemOverrides.TryGetValue(systemId, out var overridesForSys) && overridesForSys.TryGetValue(key, out var c))
 			{
