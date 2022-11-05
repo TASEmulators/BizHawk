@@ -116,8 +116,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			if (_core.mame_launch(args.Count, args.ToArray()) == 0)
 			{
 				_core.mame_lua_execute(MAMELuaCommand.Pause);
-				// advance to the next periodic callback while paused (to ensure no emulation is done)
-				_core.mame_coswitch();
 
 				CheckVersions();
 				UpdateGameName();
@@ -125,10 +123,14 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				UpdateAspect();
 				UpdateFramerate();
 				InitMemoryDomains();
+				InitSaveRam();
 				GetInputFields();
 				GetROMsInfo();
 				FetchDefaultGameSettings();
 				OverrideGameSettings();
+
+				// advance to the first periodic callback while paused (to ensure no emulation is done)
+				_core.mame_coswitch();
 			}
 
 			foreach (var rom in roms)
