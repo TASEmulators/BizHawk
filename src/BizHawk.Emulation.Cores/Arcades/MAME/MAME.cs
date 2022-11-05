@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			_syncSettings = lp.SyncSettings ?? new();
 
 			_logCallback = MAMELogCallback;
-			_filenameCallback = name => _nvramFileNameList.Add(name);
+			_filenameCallback = name => _nvramFilenames.Add(name);
 
 			_exe = new(new()
 			{
