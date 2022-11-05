@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
@@ -17,14 +18,13 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private readonly ControllerDefinition MAMEController = new("MAME Controller");
 
 		private readonly SortedDictionary<string, string> _fieldsPorts = new();
+		private readonly SortedDictionary<string, string> _fieldsAnalog = new();
 		private readonly SortedDictionary<string, string> _romHashes = new();
 
 		private void GetInputFields()
 		{
-			string inputFields = MameGetString(MAMELuaCommand.GetInputFields);
-			string[] portFields = inputFields.Split(';');
-			MAMEController.BoolButtons.Clear();
-			_fieldsPorts.Clear();
+			var portFields = MameGetString(MAMELuaCommand.GetPortFields).Split(';');
+			var analogFields = MameGetString(MAMELuaCommand.GetAnalogFields).Split(';');
 
 			foreach (string portField in portFields)
 			{
@@ -34,6 +34,21 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					var field = portField.SubstringAfterLast(',');
 					_fieldsPorts.Add(field, tag);
 					MAMEController.BoolButtons.Add(field);
+				}
+			}
+
+			foreach (string analogField in analogFields)
+			{
+				if (analogField != string.Empty)
+				{
+					var keys = analogField.Split(',');
+					var tag = keys[0];
+					var field = keys[1];
+					_fieldsAnalog.Add(field, tag);
+					var def = int.Parse(keys[2]);
+					var min = int.Parse(keys[3]);
+					var max = int.Parse(keys[4]);
+					MAMEController.AddAxis(field, min.RangeTo(max), def);
 				}
 			}
 
@@ -49,6 +64,15 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					$".ports  [\"{ fieldPort.Value }\"]" +
 					$".fields [\"{ fieldPort.Key   }\"]" +
 					$":set_value({ (controller.IsPressed(fieldPort.Key) ? 1 : 0) })");
+			}
+
+			foreach (var fieldAnalog in _fieldsAnalog)
+			{
+				_core.mame_lua_execute(
+					"manager.machine.ioport" +
+					$".ports  [\"{fieldAnalog.Value}\"]" +
+					$".fields [\"{fieldAnalog.Key}\"]" +
+					$":set_value({controller.AxisValue(fieldAnalog.Key)})");
 			}
 		}
 	}
