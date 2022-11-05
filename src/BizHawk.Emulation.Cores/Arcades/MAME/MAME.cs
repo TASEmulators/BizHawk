@@ -248,7 +248,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				"end " +
 				"table.sort(final) " +
 				"return table.concat(final)";
-			public const string GetPortFields =
+			public const string GetButtonFields =
 				"local final = {} " +
 				"for tag, _ in pairs(manager.machine.ioport.ports) do " +
 					"for name, field in pairs(manager.machine.ioport.ports[tag].fields) do " +

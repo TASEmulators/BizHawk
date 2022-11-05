@@ -23,15 +23,15 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private void GetInputFields()
 		{
-			var portFields = MameGetString(MAMELuaCommand.GetPortFields).Split(';');
+			var buttonFields = MameGetString(MAMELuaCommand.GetButtonFields).Split(';');
 			var analogFields = MameGetString(MAMELuaCommand.GetAnalogFields).Split(';');
 
-			foreach (string portField in portFields)
+			foreach (string buttonField in buttonFields)
 			{
-				if (portField != string.Empty)
+				if (buttonField != string.Empty)
 				{
-					var tag = portField.SubstringBefore(',');
-					var field = portField.SubstringAfterLast(',');
+					var tag = buttonField.SubstringBefore(',');
+					var field = buttonField.SubstringAfterLast(',');
 					_fieldsPorts.Add(field, tag);
 					MAMEController.BoolButtons.Add(field);
 				}
