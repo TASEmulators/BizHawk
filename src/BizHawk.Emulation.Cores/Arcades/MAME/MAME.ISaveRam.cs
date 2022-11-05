@@ -8,14 +8,16 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 {
 	public partial class MAME : ISaveRam
 	{
+		private readonly LibMAME.FilenameCallbackDelegate _filenameCallback;
+		private readonly List<string> _nvramFileNameList = new();
 		private string[] _nvramFileNames = Array.Empty<string>();
 		private const string NVRAM_MAGIC = "MAMEHAWK_NVRAM";
 
 		private void InitSaveRam()
 		{
 			var nvramFileNames = new List<string>();
-			_core.mame_nvram_get_filenames(name => nvramFileNames.Add(name));
-			_nvramFileNames = nvramFileNames.ToArray();
+			_core.mame_nvram_get_filenames(_filenameCallback);
+			_nvramFileNames = _nvramFileNameList.ToArray();
 		}
 
 		public bool SaveRamModified => _nvramFileNames.Length > 0;

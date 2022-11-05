@@ -25,6 +25,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			_syncSettings = lp.SyncSettings ?? new();
 
 			_logCallback = MAMELogCallback;
+			_filenameCallback = name => _nvramFileNameList.Add(name);
 
 			_exe = new(new()
 			{
@@ -41,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			using (_exe.EnterExit())
 			{
-				_adapter = CallingConventionAdapters.MakeWaterbox(new[] { _logCallback }, _exe);
+				_adapter = CallingConventionAdapters.MakeWaterbox(new Delegate[] { _logCallback, _filenameCallback }, _exe);
 				_core = BizInvoker.GetInvoker<LibMAME>(_exe, _exe, _adapter);
 				StartMAME(lp.Roms.Select(r => r.RomPath));
 			}
