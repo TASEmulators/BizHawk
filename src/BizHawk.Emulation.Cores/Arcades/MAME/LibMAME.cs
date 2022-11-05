@@ -36,6 +36,25 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		[BizImport(cc)]
 		public abstract int mame_get_sound(short[] samples);
 
+		[UnmanagedFunctionPointer(cc)]
+		public delegate void FilenameCallbackDelegate(string name);
+
+		[BizImport(cc)]
+		public abstract void mame_nvram_get_filenames(FilenameCallbackDelegate cb);
+
+		[BizImport(cc)]
+		public abstract void mame_nvram_save();
+
+		[BizImport(cc)]
+		public abstract void mame_nvram_load();
+
+		// log
+		[UnmanagedFunctionPointer(cc)]
+		public delegate void LogCallbackDelegate(OutputChannel channel, int size, string data);
+
+		[BizImport(cc)]
+		public abstract void mame_set_log_callback(LogCallbackDelegate cb);
+
 		// execute
 		[BizImport(cc)]
 		public abstract void mame_lua_execute(string code);
@@ -72,12 +91,5 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		// free string
 		[BizImport(cc)]
 		public abstract bool mame_lua_free_string(IntPtr pointer);
-
-		// log
-		[UnmanagedFunctionPointer(cc)]
-		public delegate void LogCallbackDelegate(OutputChannel channel, int size, string data);
-
-		[BizImport(cc)]
-		public abstract void mame_set_log_callback(LogCallbackDelegate cb);
 	}
 }

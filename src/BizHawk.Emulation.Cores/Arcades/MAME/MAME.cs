@@ -91,10 +91,10 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				, "-update_in_pause"                    // ^ including frame-advancing
 				, "-rompath",                       ""  // mame doesn't load roms from full paths, only from dirs to scan
 				, "-joystick_contradictory"             // allow L+R/U+D on digital joystick
-				, "-nonvram_save"                       // prevent dumping non-volatile ram to disk
-				, "-artpath",           "mame/artwork"  // path to load artowrk from
-				, "-diff_directory",       "mame/diff"  // hdd diffs, whenever stuff is written back to an image
-				, "-cfg_directory",                "?"  // send invalid path to prevent cfg handling
+				, "-nvram_directory",               ""  // path to nvram from
+				, "-artpath",                      "?"  // path to artwork
+				, "-diff_directory",               "?"  // path to hdd diffs
+				, "-cfg_directory",                "?"  // path to config
 				, "-volume",                     "-32"  // lowest attenuation means mame osd remains silent
 				, "-output",                 "console"  // print everything to hawk console
 				, "-samplerate", _sampleRate.ToString() // match hawk samplerate
