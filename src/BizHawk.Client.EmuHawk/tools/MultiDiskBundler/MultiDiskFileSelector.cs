@@ -82,32 +82,29 @@ namespace BizHawk.Client.EmuHawk
 				FileInfo file = new(hawkPath);
 				var path = EmuHawkUtil.ResolveShortcut(file.FullName);
 
-				using var hf = new HawkFile(path);
-				if (hf.IsArchive)
-				{
-					// archive - run the archive chooser
-					if (SystemString == VSystemID.Raw.PSX || SystemString == VSystemID.Raw.PCFX || SystemString == VSystemID.Raw.SAT)
-					{
-						DialogController.ShowMessageBox("Using archives with PSX, PCFX or SATURN is not currently recommended/supported.");
-						return;
-					}
-
-					using var ac = new ArchiveChooser(new HawkFile(hawkPath));
-					int memIdx = -1;
-
-					if (ac.ShowDialog(this) == DialogResult.OK)
-					{
-						memIdx = ac.SelectedMemberIndex;
-					}
-
-					var intName = hf.ArchiveItems[memIdx];
-					PathBox.Text = $"{hawkPath}|{intName.Name}";
-				}
-				else
+				using HawkFile hf = new(path);
+				if (!hf.IsArchive)
 				{
 					// file is not an archive
 					PathBox.Text = hawkPath;
+					return;
 				}
+				// else archive - run the archive chooser
+
+				if (SystemString is VSystemID.Raw.PSX or VSystemID.Raw.PCFX or VSystemID.Raw.SAT)
+				{
+					DialogController.ShowMessageBox("Using archives with PSX, PCFX or SATURN is not currently recommended/supported.");
+					return;
+				}
+
+				using ArchiveChooser ac = new(new(hawkPath)); //TODO can we pass hf here instead of instantiating a new HawkFile?
+				if (!this.ShowDialogAsChild(ac).IsOk()
+					|| ac.SelectedMemberIndex < 0 || hf.ArchiveItems.Count <= ac.SelectedMemberIndex)
+				{
+					return;
+				}
+
+				PathBox.Text = $"{hawkPath}|{hf.ArchiveItems[ac.SelectedMemberIndex].Name}";
 			}
 			catch
 			{
