@@ -41,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// Movie recording must be active (check TAStudio because opening a project re-loads the ROM,
 			// which resets tools before the movie session becomes active)
-			if (!CurrentMovie.IsActive() && !Tools.IsLoaded<TAStudio>())
+			if (CurrentMovie.NotActive() && !Tools.IsLoaded<TAStudio>())
 			{
 				DialogController.ShowMessageBox("In order to use this tool you must be recording a movie.");
 				Close();

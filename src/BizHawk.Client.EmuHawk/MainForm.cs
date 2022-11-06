@@ -4006,7 +4006,7 @@ namespace BizHawk.Client.EmuHawk
 				Config.PutCoreSettings(settable.GetSettings(), t);
 			}
 
-			if (settable.HasSyncSettings && !MovieSession.Movie.IsActive())
+			if (settable.HasSyncSettings && MovieSession.Movie.NotActive())
 			{
 				// don't trample config with loaded-from-movie settings
 				Config.PutCoreSyncSettings(settable.GetSyncSettings(), t);

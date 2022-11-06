@@ -1251,7 +1251,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 			const int DONT_PROMPT_BEFORE_FRAME = 2 * 60 * 60; // 2 min @ 60 fps
-			if (!MovieSession.Movie.IsActive() && Emulator.Frame > DONT_PROMPT_BEFORE_FRAME // if playing casually (not recording) AND played for enough frames (prompting always would be annoying)...
+			if (MovieSession.Movie.NotActive() && Emulator.Frame > DONT_PROMPT_BEFORE_FRAME // if playing casually (not recording) AND played for enough frames (prompting always would be annoying)...
 				&& !this.ModalMessageBox2("This will reload the rom without saving. Launch TAStudio anyway?", "Confirmation")) // ...AND user responds "No" to "Open TAStudio?", then cancel
 			{
 				return;
@@ -1326,11 +1326,9 @@ namespace BizHawk.Client.EmuHawk
 				|| (Emulator is SubNESHawk sub && sub.IsVs);
 
 			NESSoundChannelsMenuItem.Enabled = Tools.IsAvailable<NESSoundConfig>();
-			MovieSettingsMenuItem.Enabled = (Emulator is NES || Emulator is SubNESHawk)
-				&& !MovieSession.Movie.IsActive();
+			MovieSettingsMenuItem.Enabled = Emulator is NES or SubNESHawk && MovieSession.Movie.NotActive();
 
-			NesControllerSettingsMenuItem.Enabled = Tools.IsAvailable<NesControllerSettings>()
-				&& !MovieSession.Movie.IsActive();
+			NesControllerSettingsMenuItem.Enabled = Tools.IsAvailable<NesControllerSettings>() && MovieSession.Movie.NotActive();
 
 			BarcodeReaderMenuItem.Enabled = ServiceInjector.IsAvailable(Emulator.ServiceProvider, typeof(BarcodeEntry));
 
