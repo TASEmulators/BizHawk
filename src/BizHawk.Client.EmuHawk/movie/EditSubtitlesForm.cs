@@ -196,7 +196,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			using var s = new SubtitleMaker { Sub = GetRow(c[0].Index) };
-			if (s.ShowDialog() == DialogResult.OK)
+			if (s.ShowDialog().IsOk())
 			{
 				ChangeRow(s.Sub, SubGrid.SelectedRows[0].Index);
 			}

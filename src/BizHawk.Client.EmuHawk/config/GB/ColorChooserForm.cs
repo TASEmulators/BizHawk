@@ -147,15 +147,12 @@ namespace BizHawk.Client.EmuHawk
 			dlg.CustomColors = customs;
 			dlg.FullOpen = true;
 
-			var result = dlg.ShowDialog(this);
+			if (!this.ShowDialogAsChild(dlg).IsOk()) return;
 
-			if (result == DialogResult.OK)
+			if (_colors[i] != dlg.Color)
 			{
-				if (_colors[i] != dlg.Color)
-				{
-					_colors[i] = dlg.Color;
-					panel.BackColor = _colors[i];
-				}
+				_colors[i] = dlg.Color;
+				panel.BackColor = _colors[i];
 			}
 		}
 

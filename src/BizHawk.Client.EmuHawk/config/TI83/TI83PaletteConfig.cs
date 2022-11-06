@@ -60,7 +60,7 @@ namespace BizHawk.Client.EmuHawk
 				CustomColors = new[] { customColor }
 			};
 
-			if (dlg.ShowDialog() == DialogResult.OK)
+			if (dlg.ShowDialog().IsOk())
 			{
 				BackgroundPanel.BackColor = dlg.Color;
 			}
@@ -81,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 				CustomColors = new[] { customColor }
 			};
 
-			if (dlg.ShowDialog() == DialogResult.OK)
+			if (dlg.ShowDialog().IsOk())
 			{
 				ForeGroundPanel.BackColor = dlg.Color;
 			}

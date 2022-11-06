@@ -350,15 +350,9 @@ namespace BizHawk.Client.EmuHawk
 				Message = "Max lines to display in the window",
 				InitialValue = MaxLines.ToString()
 			};
-
-			if (this.ShowDialogWithTempMute(prompt) == DialogResult.OK)
-			{
-				var max = int.Parse(prompt.PromptText);
-				if (max > 0)
-				{
-					MaxLines = max;
-				}
-			}
+			if (!this.ShowDialogWithTempMute(prompt).IsOk()) return;
+			var max = int.Parse(prompt.PromptText);
+			if (max > 0) MaxLines = max;
 		}
 
 		private void SegmentSizeMenuItem_Click(object sender, EventArgs e)
@@ -370,12 +364,9 @@ namespace BizHawk.Client.EmuHawk
 				Message = "Log file segment size in megabytes\nSetting 0 disables segmentation",
 				InitialValue = FileSizeCap.ToString()
 			};
-
-			if (this.ShowDialogWithTempMute(prompt) == DialogResult.OK)
-			{
-				FileSizeCap = int.Parse(prompt.PromptText);
-				_splitFile = FileSizeCap != 0;
-			}
+			if (!this.ShowDialogWithTempMute(prompt).IsOk()) return;
+			FileSizeCap = int.Parse(prompt.PromptText);
+			_splitFile = FileSizeCap != 0;
 		}
 
 		private void LoggingEnabled_CheckedChanged(object sender, EventArgs e)

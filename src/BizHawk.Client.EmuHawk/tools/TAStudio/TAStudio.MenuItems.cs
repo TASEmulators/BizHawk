@@ -67,7 +67,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
-			=> RecentSubMenu.ReplaceDropDownItems(Settings.RecentTas.RecentMenu(MainForm, DummyLoadProject, "Project"));
+			=> RecentSubMenu.ReplaceDropDownItems(Settings.RecentTas.RecentMenu(this, DummyLoadProject, "Project"));
 
 		private void NewTasMenuItem_Click(object sender, EventArgs e)
 		{
@@ -248,7 +248,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void RecentMacrosMenuItem_DropDownOpened(object sender, EventArgs e)
-			=> recentMacrosToolStripMenuItem.ReplaceDropDownItems(Config!.RecentMacros.RecentMenu(MainForm, DummyLoadMacro, "Macro", noAutoload: true));
+			=> recentMacrosToolStripMenuItem.ReplaceDropDownItems(Config!.RecentMacros.RecentMenu(this, DummyLoadMacro, "Macro", noAutoload: true));
 
 		private void ToBk2MenuItem_Click(object sender, EventArgs e)
 		{
@@ -1185,12 +1185,9 @@ namespace BizHawk.Client.EmuHawk
 				Message = "Frames per tick:",
 				InitialValue = TasView.ScrollSpeed.ToString()
 			};
-			var result = MainForm.DoWithTempMute(() => inputPrompt.ShowDialog());
-			if (result == DialogResult.OK)
-			{
-				TasView.ScrollSpeed = int.Parse(inputPrompt.PromptText);
-				Settings.ScrollSpeed = TasView.ScrollSpeed;
-			}
+			if (!this.ShowDialogWithTempMute(inputPrompt).IsOk()) return;
+			TasView.ScrollSpeed = int.Parse(inputPrompt.PromptText);
+			Settings.ScrollSpeed = TasView.ScrollSpeed;
 		}
 
 		private void SetUpToolStripColumns()

@@ -454,18 +454,9 @@ namespace BizHawk.Client.EmuHawk
 					if (hf.IsArchive)
 					{
 						var ac = new ArchiveChooser(new HawkFile(filePath));
-						int memIdx;
+						if (!ac.ShowDialog(this).IsOk()) return;
 
-						if (ac.ShowDialog(this) == DialogResult.OK)
-						{
-							memIdx = ac.SelectedMemberIndex;
-						}
-						else
-						{
-							return;
-						}
-
-						var insideFile = hf.BindArchiveMember(memIdx);
+						var insideFile = hf.BindArchiveMember(ac.SelectedMemberIndex);
 						var fileData = insideFile.ReadAllBytes();
 
 						// write to file in the firmwares folder

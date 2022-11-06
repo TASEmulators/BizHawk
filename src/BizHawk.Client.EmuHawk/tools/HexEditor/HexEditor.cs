@@ -1332,7 +1332,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void RecentTablesSubMenu_DropDownOpened(object sender, EventArgs e)
-			=> RecentTablesSubMenu.ReplaceDropDownItems(RecentTables.RecentMenu(MainForm, LoadFileFromRecent, "Session"));
+			=> RecentTablesSubMenu.ReplaceDropDownItems(RecentTables.RecentMenu(this, LoadFileFromRecent, "Session"));
 
 		private void EditMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
@@ -1562,9 +1562,7 @@ namespace BizHawk.Client.EmuHawk
 				Message = "Enter a hexadecimal value"
 			};
 
-			var result = this.ShowDialogWithTempMute(inputPrompt);
-
-			if (result == DialogResult.OK && inputPrompt.PromptText.IsHex())
+			if (this.ShowDialogWithTempMute(inputPrompt).IsOk() && inputPrompt.PromptText.IsHex())
 			{
 				GoToAddress(long.Parse(inputPrompt.PromptText, NumberStyles.HexNumber));
 			}

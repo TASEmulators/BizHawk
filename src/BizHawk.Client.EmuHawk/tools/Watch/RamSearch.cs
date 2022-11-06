@@ -971,7 +971,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
-			=> RecentSubMenu.ReplaceDropDownItems(Settings.RecentSearches.RecentMenu(MainForm, LoadFileFromRecent, "Search", noAutoload: true));
+			=> RecentSubMenu.ReplaceDropDownItems(Settings.RecentSearches.RecentMenu(this, LoadFileFromRecent, "Search", noAutoload: true));
 
 		private void OpenMenuItem_Click(object sender, EventArgs e)
 		{

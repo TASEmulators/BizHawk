@@ -288,7 +288,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
-			=> RecentSubMenu.ReplaceDropDownItems(_recent.RecentMenu(MainForm, LoadFile, "Session"));
+			=> RecentSubMenu.ReplaceDropDownItems(_recent.RecentMenu(this, LoadFile, "Session"));
 
 		private void NewFileLogic()
 		{

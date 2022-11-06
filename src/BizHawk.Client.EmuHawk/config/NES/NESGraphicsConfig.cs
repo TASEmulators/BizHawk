@@ -164,7 +164,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ChangeBG()
 		{
-			if (BGColorDialog.ShowDialog() == DialogResult.OK)
+			if (BGColorDialog.ShowDialog().IsOk())
 			{
 				SetColorBox();
 			}
