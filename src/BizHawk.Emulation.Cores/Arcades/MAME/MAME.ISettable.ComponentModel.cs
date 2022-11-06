@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			SettingInfo = settingInfo;
 		}
 
-		public PropertyInfo SettingInfo { get; }
+		private PropertyInfo SettingInfo { get; }
 		protected object ConvertFromString(string s) => Converter.ConvertFromString(s);
 		protected string ConvertToString(object o) => Converter.ConvertToString(o);
 		public override bool CanResetValue(object component) => true;
@@ -90,19 +90,21 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 	public class MAMEPropertyDescriptor : PropertyDescriptor
 	{
-		public MAMEPropertyDescriptor(DriverSetting setting) : base(setting.LookupKey, new Attribute[0])
+		public MAMEPropertyDescriptor(DriverSetting setting)
+			: base(setting.LookupKey, new Attribute[0])
 		{
 			Setting = setting;
+			Converter = new MyTypeConverter(Setting);
 		}
 
-		public DriverSetting Setting { get; private set; }
+		private DriverSetting Setting { get; }
 		protected object ConvertFromString(string s) => s;
 		protected string ConvertToString(object o) => (string)o;
 		public override bool CanResetValue(object component) => true;
 		public override bool ShouldSerializeValue(object component)
 			=> ((MAMESyncSettings)component).DriverSettings.ContainsKey(Setting.LookupKey);
 		public override Type PropertyType => typeof(string);
-		public override TypeConverter Converter => new MyTypeConverter { Setting = Setting };
+		public override TypeConverter Converter { get; }
 		public override Type ComponentType => typeof(List<DriverSetting>);
 		public override bool IsReadOnly => false;
 		public override string Name => Setting.LookupKey;
@@ -135,7 +137,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private class MyTypeConverter : TypeConverter
 		{
-			public DriverSetting Setting { get; set; }
+			public MyTypeConverter(DriverSetting setting)
+				=> Setting = setting;
+			private DriverSetting Setting { get; }
 			public override bool GetStandardValuesExclusive(ITypeDescriptorContext context) => true;
 			public override bool GetStandardValuesSupported(ITypeDescriptorContext context) => true;
 			public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType) => sourceType == typeof(string);
