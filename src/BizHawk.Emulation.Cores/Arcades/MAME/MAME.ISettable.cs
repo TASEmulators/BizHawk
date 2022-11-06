@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 using BizHawk.Common;
@@ -27,20 +28,43 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
+		public class MAMERTCSettings
+		{
+			[DisplayName("Initial Time")]
+			[Description("Initial time of emulation.")]
+			[DefaultValue(typeof(DateTime), "2010-01-01")]
+			[TypeConverter(typeof(BizDateTimeConverter))]
+			public DateTime InitialTime { get; set; }
+
+			[DisplayName("Use Real Time")]
+			[Description("If true, RTC clock will be based off of real time instead of emulated time. Ignored (set to false) when recording a movie.")]
+			[DefaultValue(false)]
+			public bool UseRealTime { get; set; }
+
+			public MAMERTCSettings()
+				=> SettingsUtil.SetDefaultValues(this);
+
+			public MAMERTCSettings Clone()
+				=> (MAMERTCSettings)MemberwiseClone();
+		}
+
 		public class MAMESyncSettings
 		{
+			public MAMERTCSettings RTCSettings { get; set; } = new();
 			public SortedDictionary<string, string> DriverSettings { get; set; } = new();
 
 			public static bool NeedsReboot(MAMESyncSettings x, MAMESyncSettings y)
 			{
-				return !DeepEquality.DeepEquals(x.DriverSettings, y.DriverSettings);
+				return !DeepEquality.DeepEquals(x.RTCSettings, y.RTCSettings)
+					|| !DeepEquality.DeepEquals(x.DriverSettings, y.DriverSettings);
 			}
 
 			public MAMESyncSettings Clone()
 			{
 				return new()
 				{
-					DriverSettings = new(DriverSettings)
+					RTCSettings = RTCSettings.Clone(),
+					DriverSettings = new(DriverSettings),
 				};
 			}
 		}

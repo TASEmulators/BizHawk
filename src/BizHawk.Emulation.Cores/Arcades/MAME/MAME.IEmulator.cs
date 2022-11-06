@@ -1,14 +1,12 @@
 ﻿using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using System;
-using System.Diagnostics;
 
 namespace BizHawk.Emulation.Cores.Arcades.MAME
 {
 	public partial class MAME : IEmulator
 	{
 		public string SystemId => VSystemID.Raw.MAME;
-		public bool DeterministicEmulation => true;
+		public bool DeterministicEmulation { get; }
 		public int Frame { get; private set; }
 		public IEmulatorServiceProvider ServiceProvider { get; }
 		public ControllerDefinition ControllerDefinition => MAMEController;

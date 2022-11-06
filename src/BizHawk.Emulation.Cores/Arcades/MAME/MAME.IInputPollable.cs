@@ -57,23 +57,25 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private void SendInput(IController controller)
 		{
+			var inputCmd = string.Empty;
+
 			foreach (var fieldPort in _fieldsPorts)
 			{
-				_core.mame_lua_execute(
-					"manager.machine.ioport" +
-					$".ports  [\"{ fieldPort.Value }\"]" +
-					$".fields [\"{ fieldPort.Key   }\"]" +
-					$":set_value({ (controller.IsPressed(fieldPort.Key) ? 1 : 0) })");
+				inputCmd += "manager.machine.ioport" +
+					$".ports  [\"{fieldPort.Value}\"]" +
+					$".fields [\"{fieldPort.Key}\"]" +
+					$":set_value({(controller.IsPressed(fieldPort.Key) ? 1 : 0)})\n";
 			}
 
 			foreach (var fieldAnalog in _fieldsAnalog)
 			{
-				_core.mame_lua_execute(
-					"manager.machine.ioport" +
+				inputCmd += "manager.machine.ioport" +
 					$".ports  [\"{fieldAnalog.Value}\"]" +
 					$".fields [\"{fieldAnalog.Key}\"]" +
-					$":set_value({controller.AxisValue(fieldAnalog.Key)})");
+					$":set_value({controller.AxisValue(fieldAnalog.Key)})\n";
 			}
+
+			_core.mame_lua_execute(inputCmd);
 		}
 	}
 }

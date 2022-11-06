@@ -61,6 +61,13 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		[BizImport(cc)]
 		public abstract void mame_set_log_callback(LogCallbackDelegate cb);
 
+		// base time
+		[UnmanagedFunctionPointer(cc)]
+		public delegate long BaseTimeCallbackDelegate();
+
+		[BizImport(cc)]
+		public abstract void mame_set_base_time_callback(BaseTimeCallbackDelegate cb);
+
 		// execute
 		[BizImport(cc)]
 		public abstract void mame_lua_execute(string code);

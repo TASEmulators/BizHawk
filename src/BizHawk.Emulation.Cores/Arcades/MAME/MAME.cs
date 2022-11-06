@@ -24,7 +24,10 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			_syncSettings = lp.SyncSettings ?? new();
 
+			DeterministicEmulation = !_syncSettings.RTCSettings.UseRealTime || lp.DeterministicEmulationRequested;
+
 			_logCallback = MAMELogCallback;
+			_baseTimeCallback = MAMEBaseTimeCallback;
 			_filenameCallback = name => _nvramFilenames.Add(name);
 
 			_exe = new(new()
@@ -42,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			using (_exe.EnterExit())
 			{
-				_adapter = CallingConventionAdapters.MakeWaterbox(new Delegate[] { _logCallback, _filenameCallback }, _exe);
+				_adapter = CallingConventionAdapters.MakeWaterbox(new Delegate[] { _logCallback, _baseTimeCallback, _filenameCallback }, _exe);
 				_core = BizInvoker.GetInvoker<LibMAME>(_exe, _exe, _adapter);
 				StartMAME(lp.Roms.Select(r => r.RomPath));
 			}
@@ -63,6 +66,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private readonly ICallingConventionAdapter _adapter;
 
 		private readonly LibMAME.LogCallbackDelegate _logCallback;
+		private readonly LibMAME.BaseTimeCallbackDelegate _baseTimeCallback;
 
 		private readonly string _gameFileName;
 		private string _gameFullName = "Arcade";
@@ -72,6 +76,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private void StartMAME(IEnumerable<string> roms)
 		{
 			_core.mame_set_log_callback(_logCallback);
+			_core.mame_set_base_time_callback(_baseTimeCallback);
 
 			foreach (var rom in roms)
 			{
@@ -199,6 +204,14 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					$"[MAME { channel }] " +
 					$"{ data.Replace('\n', ' ') }");
 			}
+		}
+
+		private static readonly DateTime _epoch = new(1970, 1, 1, 0, 0, 0);
+
+		private long MAMEBaseTimeCallback()
+		{
+			var start = DeterministicEmulation ? _syncSettings.RTCSettings.InitialTime : DateTime.Now;
+			return (long)(start - _epoch).TotalSeconds;
 		}
 
 		private static class MAMELuaCommand
