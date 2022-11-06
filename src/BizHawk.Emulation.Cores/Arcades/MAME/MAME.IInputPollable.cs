@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			var buttonFields = MameGetString(MAMELuaCommand.GetButtonFields).Split(';');
 			var analogFields = MameGetString(MAMELuaCommand.GetAnalogFields).Split(';');
 
-			foreach (string buttonField in buttonFields)
+			foreach (var buttonField in buttonFields)
 			{
 				if (buttonField != string.Empty)
 				{
@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				}
 			}
 
-			foreach (string analogField in analogFields)
+			foreach (var analogField in analogFields)
 			{
 				if (analogField != string.Empty)
 				{

@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private void UpdateFramerate()
 		{
 			VsyncNumerator = 1000000000;
-			long refresh = _core.mame_lua_get_long(MAMELuaCommand.GetRefresh);
+			var refresh = _core.mame_lua_get_long(MAMELuaCommand.GetRefresh);
 			VsyncDenominator = (int)(refresh / 1000000000);
 		}
 
@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			BufferWidth = width;
 			BufferHeight = height;
-			int numPixels = width * height;
+			var numPixels = width * height;
 
 			if (_frameBuffer.Length < numPixels)
 			{

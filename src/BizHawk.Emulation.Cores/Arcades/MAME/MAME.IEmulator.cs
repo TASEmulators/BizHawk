@@ -1,5 +1,7 @@
 ﻿using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using System;
+using System.Diagnostics;
 
 namespace BizHawk.Emulation.Cores.Arcades.MAME
 {

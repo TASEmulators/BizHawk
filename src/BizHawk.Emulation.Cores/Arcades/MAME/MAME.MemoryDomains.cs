@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 {
 	public partial class MAME
 	{
-		private IMemoryDomains _memoryDomains;
+		private MemoryDomainList _memoryDomains;
 
 		public class MAMEMemoryDomain : MemoryDomain
 		{
@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			var deviceName = MameGetString(MAMELuaCommand.GetMainCPUName);
 			//var addrSize = (size * 2).ToString();
 
-			MemoryDomain.Endian endian = MemoryDomain.Endian.Unknown;
+			var endian = MemoryDomain.Endian.Unknown;
 
 			if (endianString == "little")
 			{
@@ -101,7 +101,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			var mapCount = _core.mame_lua_get_int(MAMELuaCommand.GetSpaceMapCount);
 
-			for (int i = 1; i <= mapCount; i++)
+			for (var i = 1; i <= mapCount; i++)
 			{
 				var read = MameGetString($"return { MAMELuaCommand.SpaceMap }[{ i }].read.handlertype");
 				var write = MameGetString($"return { MAMELuaCommand.SpaceMap }[{ i }].write.handlertype");
@@ -120,8 +120,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			domains.Add(new MAMEMemoryDomain(deviceName + " : System Bus", size, endian, dataWidth, false, _core, _exe, 0, systemBusAddressShift, size));
 			domains.Add(_exe.GetPagesDomain());
 
-			_memoryDomains = new MemoryDomainList(domains);
-			((MemoryDomainList)_memoryDomains).SystemBus = _memoryDomains[deviceName + " : System Bus"];
+			_memoryDomains = new(domains);
+			_memoryDomains.SystemBus = _memoryDomains[deviceName + " : System Bus"];
 			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(_memoryDomains);
 		}
 	}

@@ -109,7 +109,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			if (_syncSettings.DriverSettings.TryGetValue(
 				MAMELuaCommand.MakeLookupKey(_gameFileName.Split('.')[0], LibMAME.BIOS_LUA_CODE),
-				out string value))
+				out var value))
 			{
 				args.AddRange(new[] { "-bios", value });
 			}
@@ -124,7 +124,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				UpdateAspect();
 				UpdateFramerate();
 				InitMemoryDomains();
-				InitSaveRam();
+				GetNVRAMFilenames();
 				GetInputFields();
 				GetROMsInfo();
 				FetchDefaultGameSettings();
@@ -146,7 +146,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private string MameGetString(string command)
 		{
-			IntPtr ptr = _core.mame_lua_get_string(command, out var lengthInBytes);
+			var ptr = _core.mame_lua_get_string(command, out var lengthInBytes);
 
 			if (ptr == IntPtr.Zero)
 			{

@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private readonly List<string> _nvramFilenames = new();
 		private const string NVRAM_MAGIC = "MAMEHAWK_NVRAM";
 
-		private void InitSaveRam()
+		private void GetNVRAMFilenames()
 		{
 			_core.mame_nvram_get_filenames(_filenameCallback);
 		}
@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			writer.Write(NVRAM_MAGIC);
 			writer.Write(_nvramFilenames.Count);
 
-			for (int i = 0; i < _nvramFilenames.Count; i++)
+			for (var i = 0; i < _nvramFilenames.Count; i++)
 			{
 				var res = _exe.RemoveTransientFile(_nvramFilenames[i]);
 				writer.Write(_nvramFilenames[i]);
@@ -82,7 +82,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			try
 			{
-				for (int i = 0; i < cnt; i++)
+				for (var i = 0; i < cnt; i++)
 				{
 					var name = reader.ReadString();
 					if (name != _nvramFilenames[i])
