@@ -697,6 +697,7 @@ namespace BizHawk.Client.EmuHawk
 							{
 								AxisEditColumn = buttonName;
 								BeginAxisMouseEdit(e.Y);
+								Cursor = Cursors.SizeNS;
 							}
 
 							RefreshDialog();
@@ -904,6 +905,8 @@ namespace BizHawk.Client.EmuHawk
 			_axisEditYPos = -1; // exit mouse edit mode
 
 			MainForm.BlockFrameAdvance = false;
+
+			Cursor = Cursors.Default;
 
 			RefreshDialog(); // Even if no edits happened, the undo form may need updating because we potentially ended a batch.
 		}
