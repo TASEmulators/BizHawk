@@ -38,40 +38,18 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private void UpdateVideo()
 		{
-			BufferWidth = _core.mame_lua_get_int(MAMELuaCommand.GetWidth);
-			BufferHeight = _core.mame_lua_get_int(MAMELuaCommand.GetHeight);
-			int expectedSize = BufferWidth * BufferHeight;
-			int bytesPerPixel = 4;
-			IntPtr ptr = _core.mame_lua_get_string(MAMELuaCommand.GetPixels, out var lengthInBytes);
+			_core.mame_video_get_dimensions(out var width, out var height);
 
-			if (ptr == IntPtr.Zero)
+			BufferWidth = width;
+			BufferHeight = height;
+			int numPixels = width * height;
+
+			if (_frameBuffer.Length < numPixels)
 			{
-				Console.WriteLine("LibMAME ERROR: frame buffer pointer is null");
-				return;
+				_frameBuffer = new int[numPixels];
 			}
 
-			if (expectedSize * bytesPerPixel != lengthInBytes)
-			{
-				Console.WriteLine(
-					"LibMAME ERROR: frame buffer has wrong size\n" +
-					$"width:    { BufferWidth                  } pixels\n" +
-					$"height:   { BufferHeight                 } pixels\n" +
-					$"expected: { expectedSize * bytesPerPixel } bytes\n" +
-					$"received: { lengthInBytes                } bytes\n");
-				return;
-			}
-
-			if (_frameBuffer.Length < expectedSize)
-			{
-				_frameBuffer = new int[expectedSize];
-			}
-			
-			Marshal.Copy(ptr, _frameBuffer, 0, expectedSize);
-
-			if (!_core.mame_lua_free_string(ptr))
-			{
-				Console.WriteLine("LibMAME ERROR: frame buffer wasn't freed");
-			}
+			_core.mame_video_get_pixels(_frameBuffer);
 		}
 	}
 }

@@ -34,7 +34,13 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		public abstract char mame_read_byte(uint address);
 
 		[BizImport(cc)]
-		public abstract int mame_get_sound(short[] samples);
+		public abstract int mame_sound_get_samples(short[] buffer);
+
+		[BizImport(cc)]
+		public abstract int mame_video_get_dimensions(out int width, out int height);
+
+		[BizImport(cc)]
+		public abstract int mame_video_get_pixels(int[] buffer);
 
 		[UnmanagedFunctionPointer(cc)]
 		public delegate void FilenameCallbackDelegate(string name);

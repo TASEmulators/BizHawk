@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				Path = lp.Comm.CoreFileProvider.DllPath(),
 				SbrkHeapSizeKB = 128 * 1024,
 				InvisibleHeapSizeKB = 4,
-				MmapHeapSizeKB = 128 * 1024,
+				MmapHeapSizeKB = 1024 * 1024,
 				PlainHeapSizeKB = 4,
 				SealedHeapSizeKB = 4,
 				SkipCoreConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private readonly string _gameFileName;
 		private string _gameFullName = "Arcade";
 		private string _gameShortName = "arcade";
-		private string _loadFailure = "";
+		private string _loadFailure = string.Empty;
 
 		private void StartMAME(IEnumerable<string> roms)
 		{
@@ -132,6 +132,10 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 				// advance to the first periodic callback while paused (to ensure no emulation is done)
 				_core.mame_coswitch();
+			}
+			else if (_loadFailure == string.Empty)
+			{
+				_loadFailure = "Unknown load error occurred???";
 			}
 
 			foreach (var rom in roms)

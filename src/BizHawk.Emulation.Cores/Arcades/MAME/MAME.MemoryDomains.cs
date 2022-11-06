@@ -118,6 +118,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 
 			domains.Add(new MAMEMemoryDomain(deviceName + " : System Bus", size, endian, dataWidth, false, _core, _exe, 0, systemBusAddressShift, size));
+			domains.Add(_exe.GetPagesDomain());
 
 			_memoryDomains = new MemoryDomainList(domains);
 			((MemoryDomainList)_memoryDomains).SystemBus = _memoryDomains[deviceName + " : System Bus"];

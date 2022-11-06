@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private void UpdateSound()
 		{
-			_nsamps = _core.mame_get_sound(_sampleBuffer);
+			_nsamps = _core.mame_sound_get_samples(_sampleBuffer);
 		}
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
