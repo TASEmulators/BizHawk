@@ -692,10 +692,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			RecentSubMenu.DropDownItems.Clear();
-			RecentSubMenu.DropDownItems.AddRange(Config.RecentWatches.RecentMenu(MainForm, LoadFileFromRecent, "Watches"));
-		}
+			=> RecentSubMenu.ReplaceDropDownItems(Config!.RecentWatches.RecentMenu(MainForm, LoadFileFromRecent, "Watches"));
 
 		private void WatchesSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -725,12 +722,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void MemoryDomainsSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			MemoryDomainsSubMenu.DropDownItems.Clear();
-			MemoryDomainsSubMenu.DropDownItems.AddRange(
-				MemoryDomains.MenuItems(SetMemoryDomain, CurrentDomain.Name)
-				.ToArray());
-		}
+			=> MemoryDomainsSubMenu.ReplaceDropDownItems(MemoryDomains.MenuItems(SetMemoryDomain, CurrentDomain.Name).ToArray());
 
 		private void NewWatchMenuItem_Click(object sender, EventArgs e)
 		{

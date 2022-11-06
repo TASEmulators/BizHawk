@@ -67,10 +67,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			RecentSubMenu.DropDownItems.Clear();
-			RecentSubMenu.DropDownItems.AddRange(Settings.RecentTas.RecentMenu(MainForm, DummyLoadProject, "Project"));
-		}
+			=> RecentSubMenu.ReplaceDropDownItems(Settings.RecentTas.RecentMenu(MainForm, DummyLoadProject, "Project"));
 
 		private void NewTasMenuItem_Click(object sender, EventArgs e)
 		{
@@ -251,10 +248,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void RecentMacrosMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			recentMacrosToolStripMenuItem.DropDownItems.Clear();
-			recentMacrosToolStripMenuItem.DropDownItems.AddRange(Config.RecentMacros.RecentMenu(MainForm, DummyLoadMacro, "Macro", noAutoload: true));
-		}
+			=> recentMacrosToolStripMenuItem.ReplaceDropDownItems(Config!.RecentMacros.RecentMenu(MainForm, DummyLoadMacro, "Macro", noAutoload: true));
 
 		private void ToBk2MenuItem_Click(object sender, EventArgs e)
 		{

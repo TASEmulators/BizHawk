@@ -971,10 +971,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			RecentSubMenu.DropDownItems.Clear();
-			RecentSubMenu.DropDownItems.AddRange(Settings.RecentSearches.RecentMenu(MainForm, LoadFileFromRecent, "Search", noAutoload: true));
-		}
+			=> RecentSubMenu.ReplaceDropDownItems(Settings.RecentSearches.RecentMenu(MainForm, LoadFileFromRecent, "Search", noAutoload: true));
 
 		private void OpenMenuItem_Click(object sender, EventArgs e)
 		{
@@ -1051,12 +1048,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void MemoryDomainsSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			MemoryDomainsSubMenu.DropDownItems.Clear();
-			MemoryDomainsSubMenu.DropDownItems.AddRange(
-				MemoryDomains.MenuItems(SetMemoryDomain, _searches.Domain.Name, MaxSupportedSize)
-				.ToArray());
-		}
+			=> MemoryDomainsSubMenu.ReplaceDropDownItems(MemoryDomains.MenuItems(SetMemoryDomain, _searches.Domain.Name, MaxSupportedSize).ToArray());
 
 		private void SizeSubMenu_DropDownOpened(object sender, EventArgs e)
 		{

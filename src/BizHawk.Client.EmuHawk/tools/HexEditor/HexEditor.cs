@@ -1332,10 +1332,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void RecentTablesSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			RecentTablesSubMenu.DropDownItems.Clear();
-			RecentTablesSubMenu.DropDownItems.AddRange(RecentTables.RecentMenu(MainForm, LoadFileFromRecent, "Session"));
-		}
+			=> RecentTablesSubMenu.ReplaceDropDownItems(RecentTables.RecentMenu(MainForm, LoadFileFromRecent, "Session"));
 
 		private void EditMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
@@ -1518,10 +1515,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MemoryDomainsMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			MemoryDomainsMenuItem.DropDownItems.Clear();
-			MemoryDomainsMenuItem.DropDownItems.AddRange(
-				MemoryDomains.MenuItems(SetMemoryDomain, _domain.Name)
-				.ToArray());
+			MemoryDomainsMenuItem.ReplaceDropDownItems(MemoryDomains.MenuItems(SetMemoryDomain, _domain.Name).ToArray());
 
 			if (_romDomain != null)
 			{

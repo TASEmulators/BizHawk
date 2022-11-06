@@ -133,6 +133,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return tabControl.TabPages.Cast<TabPage>();
 		}
+
+		public static void ReplaceDropDownItems(this ToolStripDropDownItem menu, params ToolStripItem[] items)
+		{
+			menu.DropDownItems.Clear();
+			menu.DropDownItems.AddRange(items);
+		}
 	}
 
 	public static class ListViewExtensions

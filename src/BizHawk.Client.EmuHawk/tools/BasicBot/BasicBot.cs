@@ -307,10 +307,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			RecentSubMenu.DropDownItems.Clear();
-			RecentSubMenu.DropDownItems.AddRange(Settings.RecentBotFiles.RecentMenu(MainForm, LoadFileFromRecent, "Bot Parameters"));
-		}
+			=> RecentSubMenu.ReplaceDropDownItems(Settings.RecentBotFiles.RecentMenu(MainForm, LoadFileFromRecent, "Bot Parameters"));
 
 		private void NewMenuItem_Click(object sender, EventArgs e)
 		{
@@ -394,12 +391,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void MemoryDomainsMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			MemoryDomainsMenuItem.DropDownItems.Clear();
-			MemoryDomainsMenuItem.DropDownItems.AddRange(
-				MemoryDomains.MenuItems(SetMemoryDomain, _currentDomain.Name)
-				.ToArray());
-		}
+			=> MemoryDomainsMenuItem.ReplaceDropDownItems(MemoryDomains.MenuItems(SetMemoryDomain, _currentDomain.Name).ToArray());
 
 		private void BigEndianMenuItem_Click(object sender, EventArgs e)
 		{

@@ -344,10 +344,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			RecentSubMenu.DropDownItems.Clear();
-			RecentSubMenu.DropDownItems.AddRange(Config.Cheats.Recent.RecentMenu(MainForm, LoadFileFromRecent, "Cheats"));
-		}
+			=> RecentSubMenu.ReplaceDropDownItems(Config!.Cheats.Recent.RecentMenu(MainForm, LoadFileFromRecent, "Cheats"));
 
 		private void NewMenuItem_Click(object sender, EventArgs e)
 		{

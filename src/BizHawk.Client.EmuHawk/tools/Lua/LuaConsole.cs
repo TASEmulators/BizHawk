@@ -761,16 +761,10 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void RecentSessionsSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			RecentSessionsSubMenu.DropDownItems.Clear();
-			RecentSessionsSubMenu.DropDownItems.AddRange(Config.RecentLuaSession.RecentMenu(MainForm, LoadSessionFromRecent, "Session"));
-		}
+			=> RecentSessionsSubMenu.ReplaceDropDownItems(Config!.RecentLuaSession.RecentMenu(MainForm, LoadSessionFromRecent, "Session"));
 
 		private void RecentScriptsSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			RecentScriptsSubMenu.DropDownItems.Clear();
-			RecentScriptsSubMenu.DropDownItems.AddRange(Config.RecentLua.RecentMenu(MainForm, LoadLuaFile, "Script"));
-		}
+			=> RecentScriptsSubMenu.ReplaceDropDownItems(Config!.RecentLua.RecentMenu(MainForm, LoadLuaFile, "Script"));
 
 		private void NewSessionMenuItem_Click(object sender, EventArgs e)
 		{
