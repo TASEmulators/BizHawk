@@ -96,7 +96,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				if (SystemID == VSystemID.Raw.MAME && Header.TryGetValue(HeaderKeys.VsyncAttoseconds, out var vsyncAttoStr))
+				if (SystemID == VSystemID.Raw.Arcade && Header.TryGetValue(HeaderKeys.VsyncAttoseconds, out var vsyncAttoStr))
 				{
 					const decimal attosInSec = 1000000000000000000;
 					return (double)(attosInSec / Convert.ToUInt64(vsyncAttoStr));

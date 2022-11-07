@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 	[PortedCore(CoreNames.MAME, "MAMEDev", "0.249", "https://github.com/mamedev/mame.git", isReleased: false)]
 	public partial class MAME : IRomInfo
 	{
-		[CoreConstructor(VSystemID.Raw.MAME)]
+		[CoreConstructor(VSystemID.Raw.Arcade)]
 		public MAME(CoreLoadParameters<object, MAMESyncSettings> lp)
 		{
 			_gameFileName = Path.GetFileName(lp.Roms[0].RomPath);
@@ -49,10 +49,10 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			{
 				_adapter = CallingConventionAdapters.MakeWaterbox(new Delegate[] { _logCallback, _baseTimeCallback, _filenameCallback }, _exe);
 				_core = BizInvoker.GetInvoker<LibMAME>(_exe, _exe, _adapter);
-				StartMAME(lp.Roms.Select(static r => r.RomPath));
+				StartMAME(lp.Roms.Select(static r => (r.FileData, Path.GetFileName(r.RomPath))));
 			}
 
-			if (_loadFailure != "")
+			if (_loadFailure != string.Empty)
 			{
 				Dispose();
 				throw new Exception("\n\n" + _loadFailure);
@@ -87,15 +87,14 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private string _gameShortName = "arcade";
 		private string _loadFailure = string.Empty;
 
-		private void StartMAME(IEnumerable<string> roms)
+		private void StartMAME(IEnumerable<(byte[] Data, string Name)> roms)
 		{
 			_core.mame_set_log_callback(_logCallback);
 			_core.mame_set_base_time_callback(_baseTimeCallback);
 
-			foreach (var rom in roms)
+			foreach (var (data, name) in roms)
 			{
-				var b = File.ReadAllBytes(rom);
-				_exe.AddReadonlyFile(b, Path.GetFileName(rom));
+				_exe.AddReadonlyFile(data, name);
 			}
 
 			// https://docs.mamedev.org/commandline/commandline-index.html
@@ -157,9 +156,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				_loadFailure = "Unknown load error occurred???";
 			}
 
-			foreach (var rom in roms)
+			foreach (var (_, name) in roms)
 			{
-				_exe.RemoveReadonlyFile(Path.GetFileName(rom));
+				_exe.RemoveReadonlyFile(name);
 			}
 		}
 
@@ -170,7 +169,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			if (ptr == IntPtr.Zero)
 			{
 				Console.WriteLine("LibMAME ERROR: string buffer pointer is null");
-				return "";
+				return string.Empty;
 			}
 
 			var ret = Marshal.PtrToStringAnsi(ptr, lengthInBytes);

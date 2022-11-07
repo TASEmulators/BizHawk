@@ -511,7 +511,7 @@ namespace BizHawk.Client.Common
 				["CLR"] = 'c',
 				["ENT"] = 'e'
 			},
-			[VSystemID.Raw.MAME] = new()
+			[VSystemID.Raw.Arcade] = new()
 			{
 				["1 Player Start"] = '1',
 				["2 Players Start"] = '2',

@@ -780,6 +780,8 @@ namespace BizHawk.Client.Common
 
 			public static readonly IReadOnlyCollection<string> AppleII = new[] { "dsk", "do", "po" };
 
+			public static readonly IReadOnlyCollection<string> Arcade = new[] { "zip", "chd" };
+
 			public static readonly IReadOnlyCollection<string> C64 = new[] { "prg", "d64", "g64", "crt", "tap" };
 
 			public static readonly IReadOnlyCollection<string> Coleco = new[] { "col" };
@@ -897,6 +899,7 @@ namespace BizHawk.Client.Common
 			new FilesystemFilter("Uzebox", RomFileExtensions.UZE),
 			new FilesystemFilter("Vectrex", RomFileExtensions.VEC),
 			new FilesystemFilter("MSX", RomFileExtensions.MSX),
+			new FilesystemFilter("Arcade", RomFileExtensions.Arcade),
 			FilesystemFilter.EmuHawkSaveStates)
 		{
 			CombinedEntryDesc = "Everything",

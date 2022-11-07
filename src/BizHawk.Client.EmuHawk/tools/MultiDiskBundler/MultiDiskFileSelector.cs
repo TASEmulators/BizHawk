@@ -82,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 				FileInfo file = new(hawkPath);
 				var path = EmuHawkUtil.ResolveShortcut(file.FullName);
 
-				using HawkFile hf = new(path, allowArchives: SystemString != VSystemID.Raw.MAME);
+				using HawkFile hf = new(path, allowArchives: SystemString != VSystemID.Raw.Arcade);
 				if (!hf.IsArchive)
 				{
 					// file is not an archive

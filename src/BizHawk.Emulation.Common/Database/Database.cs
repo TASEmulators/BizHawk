@@ -403,10 +403,8 @@ namespace BizHawk.Emulation.Common
 					game.AddOption("VEC", "true");
 					break;
 
-				// refactor to use mame db (output of "mame -listxml" command)
-				// there's no good definition for Arcade anymore, so we might limit to coin-based machines?
 				case ".ZIP":
-					game.System = VSystemID.Raw.MAME;
+					game.System = VSystemID.Raw.Arcade;
 					break;
 			}
 

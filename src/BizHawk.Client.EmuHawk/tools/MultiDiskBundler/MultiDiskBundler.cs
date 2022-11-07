@@ -35,12 +35,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				VSystemID.Raw.AmstradCPC,
 				VSystemID.Raw.AppleII,
+				VSystemID.Raw.Arcade,
 				VSystemID.Raw.C64,
 				VSystemID.Raw.GBL,
 				VSystemID.Raw.GEN,
 				VSystemID.Raw.GGL,
 				VSystemID.Raw.Jaguar,
-				VSystemID.Raw.MAME,
 				VSystemID.Raw.NDS,
 				VSystemID.Raw.PCFX,
 				VSystemID.Raw.PSX,
@@ -58,7 +58,7 @@ namespace BizHawk.Client.EmuHawk
 			AddButton_Click(null, null);
 			AddButton_Click(null, null);
 
-			if (!Game.IsNullInstance() &&  !MainForm.CurrentlyOpenRom.EndsWith(".xml"))
+			if (!Game.IsNullInstance() && !MainForm.CurrentlyOpenRom.EndsWith(".xml"))
 			{
 				if (MainForm.CurrentlyOpenRom.Contains("|"))
 				{
