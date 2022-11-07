@@ -88,7 +88,7 @@ namespace BizHawk.Client.EmuHawk
 				var file = new FileInfo(ofd.FileName);
 				var path = EmuHawkUtil.ResolveShortcut(file.FullName);
 
-				using var hf = new HawkFile(path);
+				using var hf = new HawkFile(path, allowArchives: SystemString != VSystemID.Raw.MAME);
 				if (hf.IsArchive)
 				{
 					// archive - run the archive chooser
