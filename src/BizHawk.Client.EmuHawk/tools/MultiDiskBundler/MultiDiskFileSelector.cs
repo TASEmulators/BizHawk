@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using BizHawk.Common;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Arcades.MAME;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -16,7 +17,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public IDialogController DialogController { get; }
 
-		public string SystemString { get; set; } = "";
+		private readonly Func<string> _getSystemNameCallback;
+
+		private readonly Action<string> _setSystemNameCallback;
 
 		public string Path
 		{
@@ -31,11 +34,14 @@ namespace BizHawk.Client.EmuHawk
 			OnNameChanged(EventArgs.Empty);
 		}
 
-		public MultiDiskFileSelector(IDialogController dialogController, PathEntryCollection pathEntries, Func<string> getLoadedRomNameCallback)
+		public MultiDiskFileSelector(IDialogController dialogController, PathEntryCollection pathEntries,
+			Func<string> getLoadedRomNameCallback, Func<string> getSystemNameCallback, Action<string> setSystemNameCallback)
 		{
 			DialogController = dialogController;
 			_pathEntries = pathEntries;
 			_getLoadedRomNameCallback = getLoadedRomNameCallback;
+			_getSystemNameCallback = getSystemNameCallback;
+			_setSystemNameCallback = setSystemNameCallback;
 			InitializeComponent();
 			PathBox.TextChanged += HandleLabelTextChanged;
 		}
@@ -81,8 +87,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				FileInfo file = new(hawkPath);
 				var path = EmuHawkUtil.ResolveShortcut(file.FullName);
+				var systemName = _getSystemNameCallback();
 
-				using HawkFile hf = new(path, allowArchives: SystemString != VSystemID.Raw.Arcade);
+				using HawkFile hf = new(path, allowArchives: systemName != VSystemID.Raw.Arcade);
 				if (!hf.IsArchive)
 				{
 					// file is not an archive
@@ -91,7 +98,16 @@ namespace BizHawk.Client.EmuHawk
 				}
 				// else archive - run the archive chooser
 
-				if (SystemString is VSystemID.Raw.PSX or VSystemID.Raw.PCFX or VSystemID.Raw.SAT)
+				if (MAMEMachineDB.IsMAMEMachine(hawkPath))
+				{
+					// TODO Should we be notifying user about this? What if they want to override this behavior?
+					DialogController.ShowMessageBox("Zip file identified as an Arcade ROM, setting system to Arcade.");
+					PathBox.Text = hawkPath;
+					_setSystemNameCallback(VSystemID.Raw.Arcade);
+					return;
+				}
+
+				if (systemName is VSystemID.Raw.PSX or VSystemID.Raw.PCFX or VSystemID.Raw.SAT)
 				{
 					DialogController.ShowMessageBox("Using archives with PSX, PCFX or SATURN is not currently recommended/supported.");
 					return;

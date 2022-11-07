@@ -147,7 +147,8 @@ namespace BizHawk.Client.EmuHawk
 				Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top
 			};
 
-			var mdf = new MultiDiskFileSelector(MainForm, Config.PathEntries, () => MainForm.CurrentlyOpenRom)
+			var mdf = new MultiDiskFileSelector(MainForm, Config.PathEntries, () => MainForm.CurrentlyOpenRom,
+				() => SystemDropDown.SelectedItem.ToString(), systemId => SystemDropDown.SelectedItem = systemId)
 			{
 				Location = UIHelper.Scale(new Point(7, 12)),
 				Width = groupBox.ClientSize.Width - UIHelper.ScaleX(13),
@@ -155,7 +156,6 @@ namespace BizHawk.Client.EmuHawk
 			};
 
 			mdf.NameChanged += FileSelector_NameChanged;
-			mdf.SystemString = SystemDropDown.SelectedText;
 
 			groupBox.Controls.Add(mdf);
 			FileSelectorPanel.Controls.Add(groupBox);
@@ -284,27 +284,6 @@ namespace BizHawk.Client.EmuHawk
 		private void SystemDropDown_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			Recalculate();
-			do
-			{
-				foreach (Control ctrl in FileSelectorPanel.Controls)
-				{
-					ctrl.Dispose();
-				}
-			} while (FileSelectorPanel.Controls.Count != 0);
-
-			if (SystemDropDown.SelectedItem.ToString() == VSystemID.Raw.GB)
-			{
-				AddButton.Enabled = false;
-				btnRemove.Enabled = false;
-			}
-			else
-			{
-				AddButton.Enabled = true;
-				btnRemove.Enabled = true;
-			}
-			AddButton_Click(null, null);
-			AddButton_Click(null, null);
 		}
-
 	}
 }
