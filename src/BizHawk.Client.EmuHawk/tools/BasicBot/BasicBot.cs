@@ -17,6 +17,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public sealed partial class BasicBot : ToolFormBase, IToolFormAutoConfig
 	{
+		private static readonly FilesystemFilterSet BotFilesFSFilterSet = new(new FilesystemFilter("Bot files", new[] { "bot" }));
+
 		private string _currentFileName = "";
 
 		private string CurrentFileName
@@ -123,7 +125,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// Movie recording must be active (check TAStudio because opening a project re-loads the ROM,
 			// which resets tools before the movie session becomes active)
-			if (!CurrentMovie.IsActive() && !Tools.IsLoaded<TAStudio>())
+			if (CurrentMovie.NotActive() && !Tools.IsLoaded<TAStudio>())
 			{
 				DialogController.ShowMessageBox("In order to use this tool you must be recording a movie.");
 				Close();
@@ -305,10 +307,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			RecentSubMenu.DropDownItems.Clear();
-			RecentSubMenu.DropDownItems.AddRange(Settings.RecentBotFiles.RecentMenu(MainForm, LoadFileFromRecent, "Bot Parameters"));
-		}
+			=> RecentSubMenu.ReplaceDropDownItems(Settings.RecentBotFiles.RecentMenu(this, LoadFileFromRecent, "Bot Parameters"));
 
 		private void NewMenuItem_Click(object sender, EventArgs e)
 		{
@@ -346,10 +345,9 @@ namespace BizHawk.Client.EmuHawk
 		private void OpenMenuItem_Click(object sender, EventArgs e)
 		{
 			var file = OpenFileDialog(
-					CurrentFileName,
-					Config.PathEntries.ToolsAbsolutePath(),
-					"Bot files",
-					"bot");
+				currentFile: CurrentFileName,
+				path: Config!.PathEntries.ToolsAbsolutePath(),
+				BotFilesFSFilterSet);
 
 			if (file != null)
 			{
@@ -374,10 +372,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var file = SaveFileDialog(
-				fileName,
-				Config.PathEntries.ToolsAbsolutePath(),
-				"Bot files",
-				"bot",
+				currentFile: fileName,
+				path: Config!.PathEntries.ToolsAbsolutePath(),
+				BotFilesFSFilterSet,
 				this);
 
 			if (file != null)
@@ -394,12 +391,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void MemoryDomainsMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			MemoryDomainsMenuItem.DropDownItems.Clear();
-			MemoryDomainsMenuItem.DropDownItems.AddRange(
-				MemoryDomains.MenuItems(SetMemoryDomain, _currentDomain.Name)
-				.ToArray());
-		}
+			=> MemoryDomainsMenuItem.ReplaceDropDownItems(MemoryDomains.MenuItems(SetMemoryDomain, _currentDomain.Name).ToArray());
 
 		private void BigEndianMenuItem_Click(object sender, EventArgs e)
 		{

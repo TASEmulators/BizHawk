@@ -23,9 +23,8 @@ namespace BizHawk.Client.EmuHawk.ForDebugging
 			SzTextBoxEx txtBaseFile = new() { Size = new(224, 23) };
 			void ChooseBaseFile()
 			{
-				using OpenFileDialog ofd = new() { InitialDirectory = Config!.PathEntries.RomAbsolutePath() };
-				this.ShowDialogAsChild(ofd);
-				txtBaseFile.Text = ofd.FileName;
+				var filename = this.ShowFileOpenDialog(initDir: Config!.PathEntries.RomAbsolutePath());
+				if (filename is not null) txtBaseFile.Text = filename;
 			}
 			ComboBox comboFormats = new()
 			{
@@ -36,19 +35,16 @@ namespace BizHawk.Client.EmuHawk.ForDebugging
 			SzTextBoxEx txtTargetFile = new() { Size = new(224, 23) };
 			void ChooseTargetFile()
 			{
-				using SaveFileDialog sfd = new()
-				{
-					DefaultExt = comboFormats.SelectedIndex switch
+				var filename = this.ShowFileSaveDialog(
+					fileExt: comboFormats.SelectedIndex switch
 					{
 						0 => "n64",
 						1 => "v64",
 						2 => "z64",
-						_ => string.Empty
+						_ => null
 					},
-					InitialDirectory = Config!.PathEntries.RomAbsolutePath(),
-				};
-				this.ShowDialogAsChild(sfd);
-				txtTargetFile.Text = sfd.FileName;
+					initDir: Config!.PathEntries.RomAbsolutePath());
+				if (filename is not null) txtTargetFile.Text = filename;
 			}
 			void DoConvert()
 			{

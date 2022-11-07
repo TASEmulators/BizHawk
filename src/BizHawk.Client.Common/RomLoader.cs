@@ -861,7 +861,7 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <remarks>TODO add and handle <see cref="FilesystemFilter.LuaScripts"/> (you can drag-and-drop scripts and there are already non-rom things in this list, so why not?)</remarks>
-		private static readonly FilesystemFilterSet RomFSFilterSet = new FilesystemFilterSet(
+		public static readonly FilesystemFilterSet RomFilter = new(
 			new FilesystemFilter("Music Files", Array.Empty<string>(), devBuildExtraExts: new[] { "psf", "minipsf", "sid", "nsf", "gbs" }),
 			new FilesystemFilter("Disc Images", new[] { "cue", "ccd", "mds", "m3u" }),
 			new FilesystemFilter("NES", RomFileExtensions.NES.Concat(new[] { "nsf" }).ToList(), addArchiveExts: true),
@@ -897,16 +897,16 @@ namespace BizHawk.Client.Common
 			new FilesystemFilter("Uzebox", RomFileExtensions.UZE),
 			new FilesystemFilter("Vectrex", RomFileExtensions.VEC),
 			new FilesystemFilter("MSX", RomFileExtensions.MSX),
-			FilesystemFilter.EmuHawkSaveStates
-		);
+			FilesystemFilter.EmuHawkSaveStates)
+		{
+			CombinedEntryDesc = "Everything",
+		};
 
-		public static readonly IReadOnlyCollection<string> KnownRomExtensions = RomFSFilterSet.Filters
+		public static readonly IReadOnlyCollection<string> KnownRomExtensions = RomFilter.Filters
 			.SelectMany(f => f.Extensions)
 			.Distinct()
 			.Except(FilesystemFilter.ArchiveExtensions.Concat(new[] { "State" }))
 			.Select(s => $".{s.ToUpperInvariant()}") // this is what's expected at call-site
 			.ToList();
-
-		public static readonly string RomFilter = RomFSFilterSet.ToString("Everything");
 	}
 }

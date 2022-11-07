@@ -20,6 +20,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class CDL : ToolFormBase, IToolFormAutoConfig
 	{
+		private static readonly FilesystemFilterSet CDLFilesFSFilterSet = new(new FilesystemFilter("Code Data Logger Files", new[] { "cdl" }));
+
 		private RecentFiles _recentFld = new RecentFiles();
 
 		[ConfigPersist]
@@ -286,10 +288,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			RecentSubMenu.DropDownItems.Clear();
-			RecentSubMenu.DropDownItems.AddRange(_recent.RecentMenu(MainForm, LoadFile, "Session"));
-		}
+			=> RecentSubMenu.ReplaceDropDownItems(_recent.RecentMenu(this, LoadFile, "Session"));
 
 		private void NewFileLogic()
 		{
@@ -320,10 +319,9 @@ namespace BizHawk.Client.EmuHawk
 		private void OpenMenuItem_Click(object sender, EventArgs e)
 		{
 			var file = OpenFileDialog(
-				_currentFilename,
-				Config.PathEntries.LogAbsolutePath(),
-				"Code Data Logger Files",
-				"cdl");
+				currentFile: _currentFilename,
+				path: Config!.PathEntries.LogAbsolutePath(),
+				CDLFilesFSFilterSet);
 
 			if (file == null)
 				return;
@@ -374,10 +372,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var file = SaveFileDialog(
-				fileName,
-				Config.PathEntries.LogAbsolutePath(),
-				"Code Data Logger Files",
-				"cdl",
+				currentFile: fileName,
+				path: Config!.PathEntries.LogAbsolutePath(),
+				CDLFilesFSFilterSet,
 				this);
 
 			if (file == null)
@@ -402,10 +399,9 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				var file = OpenFileDialog(
-					_currentFilename,
-					Config.PathEntries.LogAbsolutePath(),
-					"Code Data Logger Files",
-					"cdl");
+					currentFile: _currentFilename,
+					path: Config!.PathEntries.LogAbsolutePath(),
+					CDLFilesFSFilterSet);
 
 				if (file != null)
 				{
@@ -447,12 +443,10 @@ namespace BizHawk.Client.EmuHawk
 				this.ModalMessageBox("Cannot disassemble with no CDL loaded!", "Alert");
 				return;
 			}
-
-			using var sfd = new SaveFileDialog();
-			var result = sfd.ShowDialog(this);
-			if (result == DialogResult.OK)
+			var result = this.ShowFileSaveDialog(initDir: Config!.PathEntries.ToolsAbsolutePath());
+			if (result is not null)
 			{
-				using var fs = new FileStream(sfd.FileName, FileMode.Create, FileAccess.Write);
+				using var fs = new FileStream(result, FileMode.Create, FileAccess.Write);
 				CodeDataLogger.DisassembleCDL(fs, _cdl);
 			}
 		}

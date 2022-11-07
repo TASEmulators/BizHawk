@@ -197,22 +197,14 @@ namespace BizHawk.Client.EmuHawk
 				else throw;
 			}
 			
-			var preferredExt = _movieSession.Movie?.PreferredExtension ?? "bk2";
-			using var sfd = new SaveFileDialog
-			{
-				InitialDirectory = movieFolderPath,
-				DefaultExt = $".{preferredExt}",
-				FileName = RecordBox.Text,
-				OverwritePrompt = false,
-				Filter = new FilesystemFilterSet(new FilesystemFilter("Movie Files", new[] { preferredExt })).ToString()
-			};
-
-			var result = this.ShowDialogWithTempMute(sfd);
-			if (result == DialogResult.OK
-				&& !string.IsNullOrWhiteSpace(sfd.FileName))
-			{
-				RecordBox.Text = sfd.FileName;
-			}
+			var filterset = _movieSession.Movie.GetFSFilterSet();
+			var result = this.ShowFileSaveDialog(
+				fileExt: $".{filterset.Filters[0].Extensions.First()}",
+				filter: filterset,
+				initDir: movieFolderPath,
+				initFileName: RecordBox.Text,
+				muteOverwriteWarning: true);
+			if (!string.IsNullOrWhiteSpace(result)) RecordBox.Text = result;
 		}
 
 		private void RecordMovie_Load(object sender, EventArgs e)

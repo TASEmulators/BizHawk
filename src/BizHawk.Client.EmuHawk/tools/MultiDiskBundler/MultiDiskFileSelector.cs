@@ -72,48 +72,39 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BrowseButton_Click(object sender, EventArgs e)
 		{
-			using var ofd = new OpenFileDialog
-			{
-				InitialDirectory = _pathEntries.RomAbsolutePath(),
-				Filter = RomLoader.RomFilter,
-				RestoreDirectory = true
-			};
-
-			if (this.ShowDialogWithTempMute(ofd) != DialogResult.OK) return;
-
-			var hawkPath = ofd.FileName;
-
+			var hawkPath = this.ShowFileOpenDialog(
+				discardCWDChange: true,
+				filter: RomLoader.RomFilter,
+				initDir: _pathEntries.RomAbsolutePath());
+			if (hawkPath is null) return;
 			try
 			{
-				var file = new FileInfo(ofd.FileName);
+				FileInfo file = new(hawkPath);
 				var path = EmuHawkUtil.ResolveShortcut(file.FullName);
 
-				using var hf = new HawkFile(path, allowArchives: SystemString != VSystemID.Raw.MAME);
-				if (hf.IsArchive)
-				{
-					// archive - run the archive chooser
-					if (SystemString == VSystemID.Raw.PSX || SystemString == VSystemID.Raw.PCFX || SystemString == VSystemID.Raw.SAT)
-					{
-						DialogController.ShowMessageBox("Using archives with PSX, PCFX or SATURN is not currently recommended/supported.");
-						return;
-					}
-
-					using var ac = new ArchiveChooser(new HawkFile(hawkPath));
-					int memIdx = -1;
-
-					if (ac.ShowDialog(this) == DialogResult.OK)
-					{
-						memIdx = ac.SelectedMemberIndex;
-					}
-
-					var intName = hf.ArchiveItems[memIdx];
-					PathBox.Text = $"{hawkPath}|{intName.Name}";
-				}
-				else
+				using HawkFile hf = new(path, allowArchives: SystemString != VSystemID.Raw.MAME);
+				if (!hf.IsArchive)
 				{
 					// file is not an archive
 					PathBox.Text = hawkPath;
+					return;
 				}
+				// else archive - run the archive chooser
+
+				if (SystemString is VSystemID.Raw.PSX or VSystemID.Raw.PCFX or VSystemID.Raw.SAT)
+				{
+					DialogController.ShowMessageBox("Using archives with PSX, PCFX or SATURN is not currently recommended/supported.");
+					return;
+				}
+
+				using ArchiveChooser ac = new(new(hawkPath)); //TODO can we pass hf here instead of instantiating a new HawkFile?
+				if (!this.ShowDialogAsChild(ac).IsOk()
+					|| ac.SelectedMemberIndex < 0 || hf.ArchiveItems.Count <= ac.SelectedMemberIndex)
+				{
+					return;
+				}
+
+				PathBox.Text = $"{hawkPath}|{hf.ArchiveItems[ac.SelectedMemberIndex].Name}";
 			}
 			catch
 			{

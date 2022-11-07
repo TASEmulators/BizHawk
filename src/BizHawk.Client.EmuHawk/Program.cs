@@ -41,19 +41,26 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			static void CheckLib(string dllToLoad, string desc)
+			foreach (var (dllToLoad, desc) in new[]
+			{
+				("vcruntime140_1.dll", "Microsoft Visual C++ Redistributable for Visual Studio 2015, 2017 and 2019 (x64)"),
+				("msvcr100.dll", "Microsoft Visual C++ 2010 SP1 Runtime (x64)"), // for Mupen64Plus, and some others
+			})
 			{
 				var p = OSTC.LinkedLibManager.LoadOrZero(dllToLoad);
-				if (p == IntPtr.Zero)
+				if (p != IntPtr.Zero)
 				{
-					using (var box = new ExceptionBox($"EmuHawk needs {desc} in order to run! See the readme on GitHub for more info. (EmuHawk will now close.) Internal error message: {OSTC.LinkedLibManager.GetErrorMessage()}")) box.ShowDialog();
-					Process.GetCurrentProcess().Kill();
-					return;
+					OSTC.LinkedLibManager.FreeByPtr(p);
+					continue;
 				}
-				OSTC.LinkedLibManager.FreeByPtr(p);
+				// else it's missing or corrupted
+				using (ExceptionBox box = new($"EmuHawk needs {desc} in order to run! See the readme on GitHub for more info. (EmuHawk will now close.) Internal error message: {OSTC.LinkedLibManager.GetErrorMessage()}"))
+				{
+					box.ShowDialog();
+				}
+				Process.GetCurrentProcess().Kill();
+				return;
 			}
-			CheckLib("vcruntime140_1.dll", "Microsoft Visual C++ Redistributable for Visual Studio 2015, 2017 and 2019 (x64)");
-			CheckLib("msvcr100.dll", "Microsoft Visual C++ 2010 SP1 Runtime (x64)"); // for Mupen64Plus, and some others
 
 			// this will look in subdirectory "dll" to load pinvoked stuff
 			var dllDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");

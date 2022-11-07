@@ -7,6 +7,8 @@ using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Common.PathExtensions;
+
 using NLua;
 
 namespace BizHawk.Client.EmuHawk
@@ -386,19 +388,14 @@ namespace BizHawk.Client.EmuHawk
 			[LuaArbitraryStringParam] string initialDirectory = null,
 			[LuaASCIIStringParam] string filter = null)
 		{
-			var openFileDialog1 = new OpenFileDialog();
-			if (initialDirectory is not null) openFileDialog1.InitialDirectory = FixString(initialDirectory);
-			if (fileName is not null) openFileDialog1.FileName = FixString(fileName);
-
-			openFileDialog1.AddExtension = true;
-			openFileDialog1.Filter = filter ?? FilesystemFilter.AllFilesEntry;
-
-			if (openFileDialog1.ShowDialog() == DialogResult.OK)
-			{
-				return UnFixString(openFileDialog1.FileName);
-			}
-
-			return "";
+			var initFileName = fileName is null ? null : FixString(fileName);
+			var initDir = initialDirectory is null ? null : FixString(initialDirectory);
+			if (initDir is null && initFileName is not null) initDir = Path.GetDirectoryName(initFileName);
+			var result = ((IDialogParent) MainForm).ShowFileOpenDialog(
+				filterStr: filter ?? FilesystemFilter.AllFilesEntry,
+				initDir: initDir ?? PathEntries.LuaAbsolutePath(),
+				initFileName: initFileName);
+			return result is not null ? UnFixString(result) : string.Empty;
 		}
 
 		[LuaMethodExample("local inforpic = forms.pictureBox( 333, 2, 48, 18, 24 );")]

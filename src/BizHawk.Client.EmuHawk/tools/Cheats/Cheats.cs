@@ -27,6 +27,8 @@ namespace BizHawk.Client.EmuHawk
 		private const string TypeColumn = "DisplayTypeColumn";
 		private const string ComparisonTypeColumn = "ComparisonTypeColumn";
 
+		private static readonly FilesystemFilterSet CheatsFSFilterSet = new(new FilesystemFilter("Cheat Files", new[] { "cht" }));
+
 		private string _sortedColumn;
 		private bool _sortReverse;
 
@@ -147,10 +149,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var file = SaveFileDialog(
-				fileName,
-				Config.PathEntries.CheatsAbsolutePath(Game.System),
-				"Cheat Files",
-				"cht",
+				currentFile: fileName,
+				path: Config!.PathEntries.CheatsAbsolutePath(Game.System),
+				CheatsFSFilterSet,
 				this);
 
 			return file != null && MainForm.CheatList.SaveFile(file.FullName);
@@ -343,10 +344,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			RecentSubMenu.DropDownItems.Clear();
-			RecentSubMenu.DropDownItems.AddRange(Config.Cheats.Recent.RecentMenu(MainForm, LoadFileFromRecent, "Cheats"));
-		}
+			=> RecentSubMenu.ReplaceDropDownItems(Config!.Cheats.Recent.RecentMenu(this, LoadFileFromRecent, "Cheats"));
 
 		private void NewMenuItem_Click(object sender, EventArgs e)
 		{
@@ -356,10 +354,9 @@ namespace BizHawk.Client.EmuHawk
 		private void OpenMenuItem_Click(object sender, EventArgs e)
 		{
 			var file = OpenFileDialog(
-				MainForm.CheatList.CurrentFileName,
-				Config.PathEntries.CheatsAbsolutePath(Game.System),
-				"Cheat Files",
-				"cht");
+				currentFile: MainForm.CheatList.CurrentFileName,
+				path: Config!.PathEntries.CheatsAbsolutePath(Game.System),
+				CheatsFSFilterSet);
 
 			LoadFile(file, append: sender == AppendMenuItem);
 		}

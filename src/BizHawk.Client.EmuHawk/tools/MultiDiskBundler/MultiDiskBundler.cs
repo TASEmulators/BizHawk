@@ -18,6 +18,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class MultiDiskBundler : ToolFormBase, IToolFormAutoConfig
 	{
+		private static readonly FilesystemFilterSet BundlesFSFilterSet = new(new FilesystemFilter("XML Files", new[] { "xml" }));
+
 		private XElement _currentXml;
 
 		[RequiredService]
@@ -269,20 +271,14 @@ namespace BizHawk.Client.EmuHawk
 					filename = Path.ChangeExtension(Game.FilesystemSafeName(), ".xml");
 				}
 
-				initialDirectory = Path.GetDirectoryName(filename);
+				initialDirectory = Path.GetDirectoryName(filename) ?? string.Empty;
 			}
 
-			using var sfd = new SaveFileDialog
-			{
-				FileName = filename,
-				InitialDirectory = initialDirectory,
-				Filter = new FilesystemFilterSet(new FilesystemFilter("XML Files", new[] { "xml" })).ToString()
-			};
-
-			if (this.ShowDialogWithTempMute(sfd) != DialogResult.Cancel)
-			{
-				NameBox.Text = sfd.FileName;
-			}
+			var result = this.ShowFileSaveDialog(
+				filter: BundlesFSFilterSet,
+				initDir: initialDirectory,
+				initFileName: filename);
+			if (result is not null) NameBox.Text = result;
 		}
 
 		private void SystemDropDown_SelectedIndexChanged(object sender, EventArgs e)
