@@ -193,7 +193,7 @@ namespace BizHawk.Client.Common
 				return collection.AbsolutePathFor(collection[PathEntryCollection.GLOBAL, "ROM"].Path, PathEntryCollection.GLOBAL);
 			}
 
-			if (collection.UseRecentForRoms) return PathUtils.SpecialRecentsDir;
+			if (collection.UseRecentForRoms) return /*PathUtils.SpecialRecentsDir*/string.Empty; // instructs OpenFileDialog to use the dir of the most recently-opened file, a behaviour consistent with previous versions, even though it may never have been intended; this system will be overhauled when adding #1574
 
 			var path = collection[systemId, "ROM"];
 
