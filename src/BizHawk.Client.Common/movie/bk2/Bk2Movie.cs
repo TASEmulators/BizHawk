@@ -98,8 +98,8 @@ namespace BizHawk.Client.Common
 			{
 				if (SystemID == VSystemID.Raw.MAME && Header.TryGetValue("VsyncAttoseconds", out var vsyncAttoStr))
 				{
-					const double attosInSec = 1000000000000000000;
-					return attosInSec / Convert.ToUInt64(vsyncAttoStr);
+					const decimal attosInSec = 1000000000000000000;
+					return (double)(attosInSec / Convert.ToUInt64(vsyncAttoStr));
 				}
 				else
 				{
