@@ -288,7 +288,7 @@ namespace BizHawk.Client.Common
 
 			if (emulator is MAME mame)
 			{
-				movie.HeaderEntries.Add("VsyncAttoseconds", mame.VsyncAttoseconds.ToString());
+				movie.HeaderEntries.Add(HeaderKeys.VsyncAttoseconds, mame.VsyncAttoseconds.ToString());
 			}
 
 			if (emulator is ICycleTiming)
