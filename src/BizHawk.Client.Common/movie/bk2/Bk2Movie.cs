@@ -92,7 +92,21 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public double FrameRate => PlatformFrameRates.GetFrameRate(SystemID, IsPal);
+		public double FrameRate
+		{
+			get
+			{
+				if (SystemID == VSystemID.Raw.MAME && Header.TryGetValue("VsyncAttoseconds", out var vsyncAttoStr))
+				{
+					const double attosInSec = 1000000000000000000;
+					return attosInSec / Convert.ToUInt64(vsyncAttoStr);
+				}
+				else
+				{
+					return PlatformFrameRates.GetFrameRate(SystemID, IsPal);
+				}
+			}
+		}
 
 		public IStringLog GetLogEntries() => Log;
 

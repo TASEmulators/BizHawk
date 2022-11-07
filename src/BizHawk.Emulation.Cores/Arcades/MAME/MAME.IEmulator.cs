@@ -17,15 +17,15 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		/// intervals while paused. In our implementation, MAME's emulation
 		/// runs in a separate co-thread, which we swap over with mame_coswitch
 		/// On a periodic callback, control will be switched back to the host
-		/// co-thread. If emu.step() is called, then the next periodic callback
-		/// will occur once a frame is done, making mame_coswitch act like a frame advance.
+		/// co-thread. If MAME is internally unpaused, then the next periodic
+		/// callback will occur once a frame is done, making mame_coswitch
+		/// act like a frame advance.
 		/// </summary>
 		public bool FrameAdvance(IController controller, bool render, bool renderSound = true)
 		{
 			using (_exe.EnterExit())
 			{
 				SendInput(controller);
-				_core.mame_lua_execute(MAMELuaCommand.Step);
 				_core.mame_coswitch();
 				UpdateSound();
 				if (render)

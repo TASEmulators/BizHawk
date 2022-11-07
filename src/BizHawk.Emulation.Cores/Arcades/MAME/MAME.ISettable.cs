@@ -161,7 +161,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					}
 					else
 					{
-						hashdata = hashdata.Replace("R", " CRC:").Replace("S", " SHA:");
+						hashdata = hashdata.Replace("R", "CRC:").Replace("S", " SHA:");
 						_romHashes.Add(name, hashdata);
 					}
 				}

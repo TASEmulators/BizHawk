@@ -5,6 +5,7 @@ using System.Linq;
 using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Arcades.MAME;
 using BizHawk.Emulation.Cores.Atari.Jaguar;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
@@ -283,6 +284,11 @@ namespace BizHawk.Client.Common
 			if (emulator is VirtualJaguar jag && jag.IsJaguarCD)
 			{
 				movie.HeaderEntries.Add("IsJaguarCD", "1");
+			}
+
+			if (emulator is MAME mame)
+			{
+				movie.HeaderEntries.Add("VsyncAttoseconds", mame.VsyncAttoseconds.ToString());
 			}
 
 			if (emulator is ICycleTiming)

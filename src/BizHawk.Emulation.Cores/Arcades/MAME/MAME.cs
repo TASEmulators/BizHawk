@@ -2,18 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
 
 using BizHawk.BizInvoke;
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Arcades.MAME
 {
 	[PortedCore(CoreNames.MAME, "MAMEDev", "0.249", "https://github.com/mamedev/mame.git", isReleased: false)]
-	public partial class MAME
+	public partial class MAME : IRomInfo
 	{
 		[CoreConstructor(VSystemID.Raw.MAME)]
 		public MAME(CoreLoadParameters<object, MAMESyncSettings> lp)
@@ -47,16 +49,26 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			{
 				_adapter = CallingConventionAdapters.MakeWaterbox(new Delegate[] { _logCallback, _baseTimeCallback, _filenameCallback }, _exe);
 				_core = BizInvoker.GetInvoker<LibMAME>(_exe, _exe, _adapter);
-				StartMAME(lp.Roms.Select(r => r.RomPath));
+				StartMAME(lp.Roms.Select(static r => r.RomPath));
 			}
-
-			lp.Game.Name = _gameFullName;
 
 			if (_loadFailure != "")
 			{
 				Dispose();
 				throw new Exception("\n\n" + _loadFailure);
 			}
+
+			RomDetails = _gameFullName + "\r\n" + string.Join("\r\n", _romHashes.Select(static r => $"{r.Key} - {r.Value}"));
+
+			// concat all SHA1 hashes together (unprefixed), then hash that
+			var hashes = string.Concat(_romHashes
+				.Select(static r => r.Value.Split(' ')
+				.First(static s => s.StartsWith("SHA:"))
+				.RemovePrefix("SHA:")));
+
+			lp.Game.Name = _gameFullName;
+			lp.Game.Hash = SHA1Checksum.ComputeDigestHex(Encoding.ASCII.GetBytes(hashes));
+			lp.Game.Status = RomStatus.GoodDump;
 
 			_exe.Seal();
 		}
@@ -67,6 +79,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private readonly LibMAME.LogCallbackDelegate _logCallback;
 		private readonly LibMAME.BaseTimeCallbackDelegate _baseTimeCallback;
+
+		public string RomDetails { get; }
 
 		private readonly string _gameFileName;
 		private string _gameFullName = "Arcade";
@@ -121,8 +135,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			if (_core.mame_launch(args.Count, args.ToArray()) == 0)
 			{
-				_core.mame_lua_execute(MAMELuaCommand.Pause);
-
 				CheckVersions();
 				UpdateGameName();
 				UpdateVideo();
@@ -136,7 +148,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				OverrideGameSettings();
 
 				// advance to the first periodic callback while paused (to ensure no emulation is done)
+				_core.mame_lua_execute(MAMELuaCommand.Pause);
 				_core.mame_coswitch();
+				_core.mame_lua_execute(MAMELuaCommand.Unpause);
 			}
 			else if (_loadFailure == string.Empty)
 			{

@@ -19,11 +19,17 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private int[] _frameBuffer = new int[0];
 
+		/// <summary>
+		/// Attoseconds for the emulated system's vsync rate.
+		/// Use this to calculate a precise movie time
+		/// </summary>
+		public long VsyncAttoseconds { get; private set; }
+
 		private void UpdateFramerate()
 		{
 			VsyncNumerator = 1000000000;
-			var refresh = _core.mame_lua_get_long(MAMELuaCommand.GetRefresh);
-			VsyncDenominator = (int)(refresh / 1000000000);
+			VsyncAttoseconds = _core.mame_lua_get_long(MAMELuaCommand.GetRefresh);
+			VsyncDenominator = (int)(VsyncAttoseconds / 1000000000);
 		}
 
 		private void UpdateAspect()
