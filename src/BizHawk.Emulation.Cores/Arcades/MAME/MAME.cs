@@ -30,13 +30,14 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			_logCallback = MAMELogCallback;
 			_baseTimeCallback = MAMEBaseTimeCallback;
+			_inputPollCallback = InputCallbacks.Call;
 			_filenameCallback = name => _nvramFilenames.Add(name);
 
 			_exe = new(new()
 			{
 				Filename = "libmamearcade.wbx",
 				Path = lp.Comm.CoreFileProvider.DllPath(),
-				SbrkHeapSizeKB = 128 * 1024,
+				SbrkHeapSizeKB = 512 * 1024,
 				InvisibleHeapSizeKB = 4,
 				MmapHeapSizeKB = 1024 * 1024,
 				PlainHeapSizeKB = 4,
@@ -47,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			using (_exe.EnterExit())
 			{
-				_adapter = CallingConventionAdapters.MakeWaterbox(new Delegate[] { _logCallback, _baseTimeCallback, _filenameCallback }, _exe);
+				_adapter = CallingConventionAdapters.MakeWaterbox(new Delegate[] { _logCallback, _baseTimeCallback, _inputPollCallback, _filenameCallback }, _exe);
 				_core = BizInvoker.GetInvoker<LibMAME>(_exe, _exe, _adapter);
 				StartMAME(lp.Roms);
 			}
@@ -79,12 +80,14 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private readonly LibMAME.LogCallbackDelegate _logCallback;
 		private readonly LibMAME.BaseTimeCallbackDelegate _baseTimeCallback;
+		private readonly LibMAME.InputPollCallbackDelegate _inputPollCallback;
 
 		public string RomDetails { get; }
 
 		private readonly string _gameFileName;
 		private string _gameFullName = "Arcade";
 		private string _gameShortName = "arcade";
+		private readonly SortedList<string, string> _romHashes = new();
 		private string _loadFailure = string.Empty;
 
 		private void StartMAME(List<IRomAsset> roms)

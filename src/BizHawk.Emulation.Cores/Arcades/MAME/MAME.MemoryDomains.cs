@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				try
 				{
 					_monitor.Enter();
-					return (byte)_core.mame_read_byte((uint)addr << _systemBusAddressShift);
+					return _core.mame_read_byte((uint)addr << _systemBusAddressShift);
 				}
 				finally
 				{

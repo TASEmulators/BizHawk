@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			using (_exe.EnterExit())
 			{
 				SendInput(controller);
-				_core.mame_coswitch();
+				IsLagFrame = _core.mame_coswitch();
 				UpdateSound();
 				if (render)
 				{
@@ -56,9 +56,13 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			IsLagFrame = false;
 		}
 
+		private bool _disposed = false;
+
 		public void Dispose()
 		{
+			if (_disposed) return;
 			_exe.Dispose();
+			_disposed = true;
 		}
 	}
 }

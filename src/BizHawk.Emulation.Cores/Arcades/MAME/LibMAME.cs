@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Text;
 
 using BizHawk.BizInvoke;
 
@@ -28,10 +29,16 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		public abstract uint mame_launch(int argc, string[] argv);
 
 		[BizImport(cc)]
-		public abstract void mame_coswitch();
+		public abstract bool mame_coswitch();
 
 		[BizImport(cc)]
-		public abstract char mame_read_byte(uint address);
+		public abstract byte mame_read_byte(uint address);
+
+		[BizImport(cc)]
+		public abstract IntPtr mame_input_get_field_ptr(string tag, string field);
+
+		[BizImport(cc)]
+		public abstract void mame_input_set_fields(IntPtr[] fields, int[] inputs, int length);
 
 		[BizImport(cc)]
 		public abstract int mame_sound_get_samples(short[] buffer);
@@ -67,6 +74,13 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		[BizImport(cc)]
 		public abstract void mame_set_base_time_callback(BaseTimeCallbackDelegate cb);
+
+		// input poll
+		[UnmanagedFunctionPointer(cc)]
+		public delegate void InputPollCallbackDelegate();
+
+		[BizImport(cc)]
+		public abstract void mame_set_input_poll_callback(InputPollCallbackDelegate cb);
 
 		// execute
 		[BizImport(cc)]
