@@ -19,8 +19,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly Func<string> _getSystemNameCallback;
 
-		private readonly Action<string> _setSystemNameCallback;
-
 		public string Path
 		{
 			get => PathBox.Text;
@@ -35,13 +33,12 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public MultiDiskFileSelector(IDialogController dialogController, PathEntryCollection pathEntries,
-			Func<string> getLoadedRomNameCallback, Func<string> getSystemNameCallback, Action<string> setSystemNameCallback)
+			Func<string> getLoadedRomNameCallback, Func<string> getSystemNameCallback)
 		{
 			DialogController = dialogController;
 			_pathEntries = pathEntries;
 			_getLoadedRomNameCallback = getLoadedRomNameCallback;
 			_getSystemNameCallback = getSystemNameCallback;
-			_setSystemNameCallback = setSystemNameCallback;
 			InitializeComponent();
 			PathBox.TextChanged += HandleLabelTextChanged;
 		}
@@ -89,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 				var path = EmuHawkUtil.ResolveShortcut(file.FullName);
 				var systemName = _getSystemNameCallback();
 
-				using HawkFile hf = new(path, allowArchives: systemName != VSystemID.Raw.Arcade);
+				using HawkFile hf = new(path, allowArchives: !MAMEMachineDB.IsMAMEMachine(hawkPath));
 				if (!hf.IsArchive)
 				{
 					// file is not an archive
@@ -97,15 +94,6 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 				// else archive - run the archive chooser
-
-				if (MAMEMachineDB.IsMAMEMachine(hawkPath))
-				{
-					// TODO Should we be notifying user about this? What if they want to override this behavior?
-					DialogController.ShowMessageBox("Zip file identified as an Arcade ROM, setting system to Arcade.");
-					PathBox.Text = hawkPath;
-					_setSystemNameCallback(VSystemID.Raw.Arcade);
-					return;
-				}
 
 				if (systemName is VSystemID.Raw.PSX or VSystemID.Raw.PCFX or VSystemID.Raw.SAT)
 				{

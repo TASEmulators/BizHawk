@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		/// <summary>
 		/// blocks until the DB is done loading
 		/// </summary>
-		private static EventWaitHandle _acquire;
+		private static ManualResetEvent _acquire;
 
 		private readonly HashSet<string> MachineDB = new();
 
@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		public static void Initialize(string basePath)
 		{
 			if (_acquire != null) throw new InvalidOperationException("MAME Machine DB multiply initialized");
-			_acquire = new EventWaitHandle(false, EventResetMode.ManualReset);
+			_acquire = new(false);
 
 			var sw = Stopwatch.StartNew();
 			ThreadPool.QueueUserWorkItem(_ =>

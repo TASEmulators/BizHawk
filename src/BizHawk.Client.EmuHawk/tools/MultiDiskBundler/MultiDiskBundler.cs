@@ -147,8 +147,8 @@ namespace BizHawk.Client.EmuHawk
 				Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top
 			};
 
-			var mdf = new MultiDiskFileSelector(MainForm, Config.PathEntries, () => MainForm.CurrentlyOpenRom,
-				() => SystemDropDown.SelectedItem?.ToString(), systemId => SystemDropDown.SelectedItem = systemId)
+			var mdf = new MultiDiskFileSelector(MainForm, Config.PathEntries,
+				() => MainForm.CurrentlyOpenRom, () => SystemDropDown.SelectedItem?.ToString())
 			{
 				Location = UIHelper.Scale(new Point(7, 12)),
 				Width = groupBox.ClientSize.Width - UIHelper.ScaleX(13),

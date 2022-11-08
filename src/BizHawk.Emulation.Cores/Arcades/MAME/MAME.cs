@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			{
 				_adapter = CallingConventionAdapters.MakeWaterbox(new Delegate[] { _logCallback, _baseTimeCallback, _filenameCallback }, _exe);
 				_core = BizInvoker.GetInvoker<LibMAME>(_exe, _exe, _adapter);
-				StartMAME(lp.Roms.Select(static r => (r.FileData, Path.GetFileName(r.RomPath))));
+				StartMAME(lp.Roms);
 			}
 
 			if (_loadFailure != string.Empty)
@@ -87,14 +87,22 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private string _gameShortName = "arcade";
 		private string _loadFailure = string.Empty;
 
-		private void StartMAME(IEnumerable<(byte[] Data, string Name)> roms)
+		private void StartMAME(List<IRomAsset> roms)
 		{
 			_core.mame_set_log_callback(_logCallback);
 			_core.mame_set_base_time_callback(_baseTimeCallback);
 
-			foreach (var (data, name) in roms)
+			var gameName = _gameFileName.Split('.')[0];
+
+			// mame expects chd files in a folder of the game name
+			string MakeFileName(IRomAsset rom)
+				=> rom.Extension == ".chd"
+					? gameName + '/' + Path.GetFileNameWithoutExtension(rom.RomPath) + rom.Extension
+					: Path.GetFileNameWithoutExtension(rom.RomPath) + rom.Extension;
+
+			foreach (var rom in roms)
 			{
-				_exe.AddReadonlyFile(data, name);
+				_exe.AddReadonlyFile(rom.FileData, MakeFileName(rom));
 			}
 
 			// https://docs.mamedev.org/commandline/commandline-index.html
@@ -126,7 +134,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			};
 
 			if (_syncSettings.DriverSettings.TryGetValue(
-				MAMELuaCommand.MakeLookupKey(_gameFileName.Split('.')[0], LibMAME.BIOS_LUA_CODE),
+				MAMELuaCommand.MakeLookupKey(gameName, LibMAME.BIOS_LUA_CODE),
 				out var value))
 			{
 				args.AddRange(new[] { "-bios", value });
@@ -156,9 +164,13 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				_loadFailure = "Unknown load error occurred???";
 			}
 
-			foreach (var (_, name) in roms)
+			foreach (var rom in roms)
 			{
-				_exe.RemoveReadonlyFile(name);
+				// only close non-chd files
+				if (rom.Extension != ".chd")
+				{
+					_exe.RemoveReadonlyFile(MakeFileName(rom));
+				}
 			}
 		}
 
