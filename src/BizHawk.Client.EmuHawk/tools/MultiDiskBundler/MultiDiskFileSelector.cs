@@ -75,16 +75,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BrowseButton_Click(object sender, EventArgs e)
 		{
+			var systemName = _getSystemNameCallback();
 			var hawkPath = this.ShowFileOpenDialog(
 				discardCWDChange: true,
 				filter: RomLoader.RomFilter,
-				initDir: _pathEntries.UseRecentForRoms ? string.Empty : _pathEntries.RomAbsolutePath());
+				initDir: _pathEntries.UseRecentForRoms ? string.Empty : _pathEntries.RomAbsolutePath(systemName));
 			if (hawkPath is null) return;
 			try
 			{
 				FileInfo file = new(hawkPath);
 				var path = EmuHawkUtil.ResolveShortcut(file.FullName);
-				var systemName = _getSystemNameCallback();
 
 				using HawkFile hf = new(path, allowArchives: !MAMEMachineDB.IsMAMEMachine(hawkPath));
 				if (!hf.IsArchive)
