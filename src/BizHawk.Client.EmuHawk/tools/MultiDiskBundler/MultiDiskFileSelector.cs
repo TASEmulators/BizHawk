@@ -78,7 +78,7 @@ namespace BizHawk.Client.EmuHawk
 			var hawkPath = this.ShowFileOpenDialog(
 				discardCWDChange: true,
 				filter: RomLoader.RomFilter,
-				initDir: _pathEntries.RomAbsolutePath());
+				initDir: _pathEntries.UseRecentForRoms ? string.Empty : _pathEntries.RomAbsolutePath());
 			if (hawkPath is null) return;
 			try
 			{
