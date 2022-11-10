@@ -261,7 +261,9 @@ namespace BizHawk.Client.EmuHawk
 		private void BrowseBtn_Click(object sender, EventArgs e)
 		{
 			string filename = "";
-			string initialDirectory = Config.PathEntries.MultiDiskAbsolutePath();
+			string initialDirectory = Config.PathEntries.UseRecentForRoms
+				? string.Empty
+				: Config.PathEntries.MultiDiskAbsolutePath();
 
 			if (!Game.IsNullInstance())
 			{
