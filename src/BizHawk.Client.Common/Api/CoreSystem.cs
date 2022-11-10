@@ -36,7 +36,7 @@
 		GGL,
 		ChannelF,
 		Odyssey2,
-		MAME,
+		Arcade,
 		MSX,
 		SuperGameBoy,
 		UzeBox,

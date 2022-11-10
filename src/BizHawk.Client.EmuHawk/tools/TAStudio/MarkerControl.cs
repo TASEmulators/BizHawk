@@ -254,12 +254,11 @@ namespace BizHawk.Client.EmuHawk
 				i.Location = point;
 			}
 
-			if (this.ShowDialogWithTempMute(i) == DialogResult.OK)
-			{
-				marker.Message = i.PromptText;
-				UpdateTextColumnWidth();
-				UpdateValues();
-			}
+			if (!this.ShowDialogWithTempMute(i).IsOk()) return;
+
+			marker.Message = i.PromptText;
+			UpdateTextColumnWidth();
+			UpdateValues();
 		}
 
 		public void EditMarkerFramePopUp(TasMovieMarker marker)

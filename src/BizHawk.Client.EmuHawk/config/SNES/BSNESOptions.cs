@@ -44,33 +44,31 @@ namespace BizHawk.Client.EmuHawk
 			};
 
 			var result = dialogParent.ShowDialogAsChild(dlg);
-			if (result == DialogResult.OK)
-			{
-				s.AlwaysDoubleSize = dlg.AlwaysDoubleSize;
-				s.CropSGBFrame = dlg.CropSGBFrame;
-				ss.Entropy = dlg.Entropy;
-				ss.RegionOverride = dlg.RegionOverride;
-				ss.Hotfixes = dlg.Hotfixes;
-				ss.FastPPU = dlg.FastPPU;
-				ss.FastDSP = dlg.FastDSP;
-				ss.FastCoprocessors = dlg.FastCoprocessors;
-				ss.UseSGB2 = dlg.UseSGB2;
-				s.ShowOBJ_0 = dlg.ShowObj1;
-				s.ShowOBJ_1 = dlg.ShowObj2;
-				s.ShowOBJ_2 = dlg.ShowObj3;
-				s.ShowOBJ_3 = dlg.ShowObj4;
-				s.ShowBG1_0 = dlg.ShowBg1_0;
-				s.ShowBG1_1 = dlg.ShowBg1_1;
-				s.ShowBG2_0 = dlg.ShowBg2_0;
-				s.ShowBG2_1 = dlg.ShowBg2_1;
-				s.ShowBG3_0 = dlg.ShowBg3_0;
-				s.ShowBG3_1 = dlg.ShowBg3_1;
-				s.ShowBG4_0 = dlg.ShowBg4_0;
-				s.ShowBG4_1 = dlg.ShowBg4_1;
+			if (!result.IsOk()) return result;
 
-				settable.PutCoreSettings(s);
-				settable.PutCoreSyncSettings(ss);
-			}
+			s.AlwaysDoubleSize = dlg.AlwaysDoubleSize;
+			s.CropSGBFrame = dlg.CropSGBFrame;
+			ss.Entropy = dlg.Entropy;
+			ss.RegionOverride = dlg.RegionOverride;
+			ss.Hotfixes = dlg.Hotfixes;
+			ss.FastPPU = dlg.FastPPU;
+			ss.FastDSP = dlg.FastDSP;
+			ss.FastCoprocessors = dlg.FastCoprocessors;
+			ss.UseSGB2 = dlg.UseSGB2;
+			s.ShowOBJ_0 = dlg.ShowObj1;
+			s.ShowOBJ_1 = dlg.ShowObj2;
+			s.ShowOBJ_2 = dlg.ShowObj3;
+			s.ShowOBJ_3 = dlg.ShowObj4;
+			s.ShowBG1_0 = dlg.ShowBg1_0;
+			s.ShowBG1_1 = dlg.ShowBg1_1;
+			s.ShowBG2_0 = dlg.ShowBg2_0;
+			s.ShowBG2_1 = dlg.ShowBg2_1;
+			s.ShowBG3_0 = dlg.ShowBg3_0;
+			s.ShowBG3_1 = dlg.ShowBg3_1;
+			s.ShowBG4_0 = dlg.ShowBg4_0;
+			s.ShowBG4_1 = dlg.ShowBg4_1;
+			settable.PutCoreSettings(s);
+			settable.PutCoreSyncSettings(ss);
 			return result;
 		}
 

@@ -22,6 +22,7 @@ namespace BizHawk.Client.Common
 		private static readonly Dictionary<string, string> _displayNameLookup = new()
 		{
 			[GLOBAL] = "Global",
+			[VSystemID.Raw.Arcade] = "Arcade",
 			[VSystemID.Raw.INTV] = "Intellivision",
 			[VSystemID.Raw.NES] = "NES",
 			[VSystemID.Raw.SNES] = "SNES",
@@ -197,6 +198,8 @@ namespace BizHawk.Client.Common
 			CommonEntriesFor(VSystemID.Raw.AmstradCPC, basePath: Path.Combine(".", "AmstradCPC"), omitSaveRAM: true),
 
 			CommonEntriesFor(VSystemID.Raw.AppleII, basePath: Path.Combine(".", "Apple II"), omitSaveRAM: true),
+
+			CommonEntriesFor(VSystemID.Raw.Arcade, basePath: Path.Combine(".", "Arcade")),
 
 			CommonEntriesFor(VSystemID.Raw.C64, basePath: Path.Combine(".", "C64"), omitSaveRAM: true),
 

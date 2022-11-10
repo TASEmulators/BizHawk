@@ -129,11 +129,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using var dlg = new CGBColorChooserForm();
 			dlg.LoadType(s);
-			var result = parent.ShowDialogAsChild(dlg);
-			if (result == DialogResult.OK)
-			{
-				s.CGBColors = dlg._type;
-			}
+			if (!parent.ShowDialogAsChild(dlg).IsOk()) return;
+			s.CGBColors = dlg._type;
 		}
 	}
 }

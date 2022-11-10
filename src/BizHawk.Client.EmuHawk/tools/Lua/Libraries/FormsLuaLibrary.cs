@@ -7,6 +7,8 @@ using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Common.PathExtensions;
+
 using NLua;
 
 namespace BizHawk.Client.EmuHawk
@@ -386,19 +388,14 @@ namespace BizHawk.Client.EmuHawk
 			[LuaArbitraryStringParam] string initialDirectory = null,
 			[LuaASCIIStringParam] string filter = null)
 		{
-			var openFileDialog1 = new OpenFileDialog();
-			if (initialDirectory is not null) openFileDialog1.InitialDirectory = FixString(initialDirectory);
-			if (fileName is not null) openFileDialog1.FileName = FixString(fileName);
-
-			openFileDialog1.AddExtension = true;
-			openFileDialog1.Filter = filter ?? FilesystemFilter.AllFilesEntry;
-
-			if (openFileDialog1.ShowDialog() == DialogResult.OK)
-			{
-				return UnFixString(openFileDialog1.FileName);
-			}
-
-			return "";
+			var initFileName = fileName is null ? null : FixString(fileName);
+			var initDir = initialDirectory is null ? null : FixString(initialDirectory);
+			if (initDir is null && initFileName is not null) initDir = Path.GetDirectoryName(initFileName);
+			var result = ((IDialogParent) MainForm).ShowFileOpenDialog(
+				filterStr: filter ?? FilesystemFilter.AllFilesEntry,
+				initDir: initDir ?? PathEntries.LuaAbsolutePath(),
+				initFileName: initFileName);
+			return result is not null ? UnFixString(result) : string.Empty;
 		}
 
 		[LuaMethodExample("local inforpic = forms.pictureBox( 333, 2, 48, 18, 24 );")]
@@ -823,7 +820,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethodExample("forms.drawImageRegion( 334, \"C:\\image.bmp\", 11, 22, 33, 44, 21, 43, 34, 45 );")]
 		[LuaMethod(
 			"drawImageRegion",
-			"draws a given region of an image file from the given path at the given coordinate, and optionally with the given size")]
+			"Draws a region of the given image file at the given location on the canvas, and optionally resizes it before drawing. On the TASVideos Wiki, consult this diagram to see its usage: [https://user-images.githubusercontent.com/13409956/198868522-55dc1e5f-ae67-4ebb-a75f-558656cb4468.png|alt=Diagram showing how to use forms.drawImageRegion]")]
 		public void DrawImageRegion(
 			int componentHandle,
 			[LuaArbitraryStringParam] string path,

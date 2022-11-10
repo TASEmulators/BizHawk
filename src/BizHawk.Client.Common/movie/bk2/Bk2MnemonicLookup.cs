@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Libretro;
 
 // ReSharper disable StyleCop.SA1509
 namespace BizHawk.Client.Common
@@ -21,6 +23,7 @@ namespace BizHawk.Client.Common
 					key = key.Substring(3);
 				}
 			}
+			key = key.RemovePrefix(LibretroEmulator.LibretroControllerDef.PFX_RETROPAD);
 
 			if (SystemOverrides.TryGetValue(systemId, out var overridesForSys) && overridesForSys.TryGetValue(key, out var c))
 			{
@@ -508,7 +511,7 @@ namespace BizHawk.Client.Common
 				["CLR"] = 'c',
 				["ENT"] = 'e'
 			},
-			[VSystemID.Raw.MAME] = new()
+			[VSystemID.Raw.Arcade] = new()
 			{
 				["1 Player Start"] = '1',
 				["2 Players Start"] = '2',
@@ -518,6 +521,7 @@ namespace BizHawk.Client.Common
 				["6 Players Start"] = '6',
 				["7 Players Start"] = '7',
 				["8 Players Start"] = '8',
+				["Attack"] = 'a',
 				["Board 0 (SW4)"] = '0',
 				["Board 1 (SW5)"] = '1',
 				["Board 2 (SW6)"] = '2',
@@ -546,13 +550,12 @@ namespace BizHawk.Client.Common
 				["Handle A"] = 'A',
 				["Handle B"] = 'B',
 				["Jab Punch"] = 'J',
+				["Jump"] = 'j',
 				["Left Stick/Up"] = '^',
 				["Left Stick/Down"] = 'v',
 				["Left Stick/Left"] = '<',
 				["Left Stick/Right"] = '>',
 				["Light"] = 'l',
-				["Lightgun X"] = 'X',
-				["Lightgun Y"] = 'Y',
 				["Medium"] = 'm',
 				["Paddle"] = 'P',
 				["Pedal 1"] = '1',

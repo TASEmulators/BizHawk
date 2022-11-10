@@ -11,6 +11,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class ToolFormBase : FormBase, IToolForm, IDialogParent
 	{
+		private static readonly FilesystemFilterSet WatchFilesFSFilterSet = new(new FilesystemFilter("Watch Files", new[] { "wch" }));
+
 		protected ToolManager Tools { get; private set; }
 
 		protected DisplayManager DisplayManager { get; private set; }
@@ -76,55 +78,42 @@ namespace BizHawk.Client.EmuHawk
 		protected virtual void FastUpdateBefore() { }
 		protected virtual void FastUpdateAfter() { }
 
-		public FileInfo OpenFileDialog(string currentFile, string path, string fileType, string fileExt)
-		{
-			return OpenFileDialog(currentFile, path, new FilesystemFilterSet(new FilesystemFilter(fileType, new[] { fileExt })));
-		}
 		public FileInfo OpenFileDialog(string currentFile, string path, FilesystemFilterSet filterSet)
 		{
 			Directory.CreateDirectory(path);
-			using var ofd = new OpenFileDialog
-			{
-				FileName = !string.IsNullOrWhiteSpace(currentFile)
+			var result = this.ShowFileOpenDialog(
+				discardCWDChange: true,
+				filter: filterSet,
+				initDir: path,
+				initFileName: !string.IsNullOrWhiteSpace(currentFile)
 					? Path.GetFileName(currentFile)
-					: $"{Game.FilesystemSafeName()}.{filterSet.Filters.FirstOrDefault()?.Extensions.FirstOrDefault()}",
-				InitialDirectory = path,
-				Filter = filterSet.ToString(),
-				RestoreDirectory = true
-			};
-
-			var result = this.ShowDialogWithTempMute(ofd);
-			return result.IsOk() ? new FileInfo(ofd.FileName) : null;
+					: $"{Game.FilesystemSafeName()}.{filterSet.Filters.FirstOrDefault()?.Extensions.FirstOrDefault()}");
+			return result is not null ? new FileInfo(result) : null;
 		}
 
-		public static FileInfo SaveFileDialog(string currentFile, string path, string fileType, string fileExt, IDialogParent parent)
-		{
-			return SaveFileDialog(currentFile, path, new FilesystemFilterSet(new FilesystemFilter(fileType, new[] { fileExt })), parent);
-		}
 		public static FileInfo SaveFileDialog(string currentFile, string path, FilesystemFilterSet filterSet, IDialogParent parent)
 		{
 			Directory.CreateDirectory(path);
-			using var sfd = new SaveFileDialog
-			{
-				FileName = Path.GetFileName(currentFile),
-				InitialDirectory = path,
-				Filter = filterSet.ToString(),
-				RestoreDirectory = true
-			};
-
-			var result = parent.ShowDialogWithTempMute(sfd);
-			return result.IsOk() ? new FileInfo(sfd.FileName) : null;
+			var result = parent.ShowFileSaveDialog(
+				discardCWDChange: true,
+				filter: filterSet,
+				initDir: path,
+				initFileName: Path.GetFileName(currentFile));
+			return result is not null ? new FileInfo(result) : null;
 		}
 
 		public FileInfo GetWatchFileFromUser(string currentFile)
-		{
-			return OpenFileDialog(currentFile, Config.PathEntries.WatchAbsolutePath(), "Watch Files", "wch");
-		}
+			=> OpenFileDialog(
+				currentFile: currentFile,
+				path: Config!.PathEntries.WatchAbsolutePath(),
+				WatchFilesFSFilterSet);
 
 		public FileInfo GetWatchSaveFileFromUser(string currentFile)
-		{
-			return SaveFileDialog(currentFile, Config.PathEntries.WatchAbsolutePath(), "Watch Files", "wch", this);
-		}
+			=> SaveFileDialog(
+				currentFile: currentFile,
+				path: Config!.PathEntries.WatchAbsolutePath(),
+				WatchFilesFSFilterSet,
+				this);
 
 		public void ViewInHexEditor(MemoryDomain domain, IEnumerable<long> addresses, WatchSize size)
 		{

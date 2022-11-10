@@ -11,11 +11,14 @@ using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Arcades.MAME;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class PlayMovie : Form, IDialogParent
 	{
+		private static readonly FilesystemFilterSet MoviesFSFilterSet = new(FilesystemFilter.BizHawkMovies, FilesystemFilter.TAStudioProjects);
+
 		private readonly Func<FirmwareID, string, string> _canProvideFirmware;
 
 		private readonly IMainFormForTools _mainForm;
@@ -403,6 +406,13 @@ namespace BizHawk.Client.EmuHawk
 							item.ToolTipText = $"Expected: {v}\n Actual: {_emulator.SystemId}";
 						}
 						break;
+					case HeaderKeys.VsyncAttoseconds:
+						if (_emulator is MAME mame && mame.VsyncAttoseconds != Convert.ToInt64(v))
+						{
+							item.BackColor = Color.Pink;
+							item.ToolTipText = $"Expected: {v}\n Actual: {mame.VsyncAttoseconds}";
+						}
+						break;
 					default:
 						if (k.Contains("_Firmware_"))
 						{
@@ -499,35 +509,29 @@ namespace BizHawk.Client.EmuHawk
 			var indices = MovieView.SelectedIndices;
 			if (indices.Count > 0)
 			{
-				var s = new EditSubtitlesForm(DialogController, _movieList[MovieView.SelectedIndices[0]], true);
+				using EditSubtitlesForm s = new(DialogController, _movieList[MovieView.SelectedIndices[0]], _config.PathEntries, readOnly: true);
 				s.Show();
 			}
 		}
 
 		private void BrowseMovies_Click(object sender, EventArgs e)
 		{
-			using var ofd = new OpenFileDialog
+			var result = this.ShowFileOpenDialog(
+				filter: MoviesFSFilterSet,
+				initDir: _config.PathEntries.MovieAbsolutePath());
+			if (result is null) return;
+			FileInfo file = new(result);
+			if (!file.Exists)
 			{
-				Filter = new FilesystemFilterSet(FilesystemFilter.BizHawkMovies, FilesystemFilter.TAStudioProjects).ToString(),
-				InitialDirectory = _config.PathEntries.MovieAbsolutePath()
-			};
+				return;
+			}
 
-			var result = this.ShowDialogWithTempMute(ofd);
-			if (result == DialogResult.OK)
+			int? index = AddMovieToList(result, true);
+			RefreshMovieList();
+			if (index.HasValue)
 			{
-				var file = new FileInfo(ofd.FileName);
-				if (!file.Exists)
-				{
-					return;
-				}
-
-				int? index = AddMovieToList(ofd.FileName, true);
-				RefreshMovieList();
-				if (index.HasValue)
-				{
-					MovieView.SelectedIndices.Clear();
-					MovieView.Items[index.Value].Selected = true;
-				}
+				MovieView.SelectedIndices.Clear();
+				MovieView.Items[index.Value].Selected = true;
 			}
 		}
 

@@ -147,14 +147,10 @@ namespace BizHawk.Client.EmuHawk
 
 			cd.Color = c;
 
-			if (cd.ShowDialog() == DialogResult.OK)
-			{
-				var color = cd.Color;
-				var col = color.ToArgb();
-				_bgColor = col;
+			if (!cd.ShowDialog().IsOk()) return;
 
-				SetBtnColor();
-			}
+			_bgColor = cd.Color.ToArgb();
+			SetBtnColor();
 		}
 	}
 }

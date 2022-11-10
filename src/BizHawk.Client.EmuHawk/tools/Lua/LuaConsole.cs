@@ -24,6 +24,10 @@ namespace BizHawk.Client.EmuHawk
 		private const string ScriptColumnName = "Script";
 		private const string PathColumnName = "PathName";
 
+		private static readonly FilesystemFilterSet JustScriptsFSFilterSet = new(FilesystemFilter.LuaScripts);
+
+		private static readonly FilesystemFilterSet ScriptsAndTextFilesFSFilterSet = new(FilesystemFilter.LuaScripts, FilesystemFilter.TextFiles);
+
 		private static readonly FilesystemFilterSet SessionsFSFilterSet = new FilesystemFilterSet(new FilesystemFilter("Lua Session Files", new[] { "luases" }));
 
 		private readonly LuaAutocompleteInstaller _luaAutoInstaller = new LuaAutocompleteInstaller();
@@ -650,26 +654,23 @@ namespace BizHawk.Client.EmuHawk
 
 		private FileInfo GetSaveFileFromUser()
 		{
-			var sfd = new SaveFileDialog();
+			string initDir;
+			string initFileName;
 			if (!string.IsNullOrWhiteSpace(LuaImp.ScriptList.Filename))
 			{
-				(sfd.InitialDirectory, sfd.FileName, _) = LuaImp.ScriptList.Filename.SplitPathToDirFileAndExt();
-			}
-			else if (!Game.IsNullInstance())
-			{
-				sfd.FileName = Game.FilesystemSafeName();
-				sfd.InitialDirectory = Config.PathEntries.LuaAbsolutePath();
+				(initDir, initFileName, _) = LuaImp.ScriptList.Filename.SplitPathToDirFileAndExt();
 			}
 			else
 			{
-				sfd.FileName = "NULL";
-				sfd.InitialDirectory = Config.PathEntries.LuaAbsolutePath();
+				initDir = Config!.PathEntries.LuaAbsolutePath();
+				initFileName = Game.IsNullInstance() ? "NULL" : Game.FilesystemSafeName();
 			}
-
-			sfd.Filter = SessionsFSFilterSet.ToString();
-			sfd.RestoreDirectory = true;
-			var result = this.ShowDialogWithTempMute(sfd);
-			return result.IsOk() ? new FileInfo(sfd.FileName) : null;
+			var result = this.ShowFileSaveDialog(
+				discardCWDChange: true,
+				filter: SessionsFSFilterSet,
+				initDir: initDir,
+				initFileName: initFileName);
+			return result is not null ? new FileInfo(result) : null;
 		}
 
 		private void SaveSessionAs()
@@ -760,16 +761,10 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void RecentSessionsSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			RecentSessionsSubMenu.DropDownItems.Clear();
-			RecentSessionsSubMenu.DropDownItems.AddRange(Config.RecentLuaSession.RecentMenu(MainForm, LoadSessionFromRecent, "Session"));
-		}
+			=> RecentSessionsSubMenu.ReplaceDropDownItems(Config!.RecentLuaSession.RecentMenu(this, LoadSessionFromRecent, "Session"));
 
 		private void RecentScriptsSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			RecentScriptsSubMenu.DropDownItems.Clear();
-			RecentScriptsSubMenu.DropDownItems.AddRange(Config.RecentLua.RecentMenu(MainForm, LoadLuaFile, "Script"));
-		}
+			=> RecentScriptsSubMenu.ReplaceDropDownItems(Config!.RecentLua.RecentMenu(this, LoadLuaFile, "Script"));
 
 		private void NewSessionMenuItem_Click(object sender, EventArgs e)
 		{
@@ -787,18 +782,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var initDir = Config!.PathEntries.LuaAbsolutePath();
 			Directory.CreateDirectory(initDir);
-			var ofd = new OpenFileDialog
-			{
-				InitialDirectory = initDir,
-				Filter = SessionsFSFilterSet.ToString(),
-				RestoreDirectory = true,
-				Multiselect = false
-			};
-			var result = this.ShowDialogWithTempMute(ofd);
-			if (result.IsOk() && !string.IsNullOrWhiteSpace(ofd.FileName))
-			{
-				LoadLuaSession(ofd.FileName);
-			}
+			var result = this.ShowFileOpenDialog(
+				discardCWDChange: true,
+				filter: SessionsFSFilterSet,
+				initDir: initDir);
+			if (result is not null) LoadLuaSession(result);
 		}
 
 		private void SaveSessionMenuItem_Click(object sender, EventArgs e)
@@ -846,54 +834,41 @@ namespace BizHawk.Client.EmuHawk
 				initDir = Config!.PathEntries.LuaAbsolutePath();
 				ext = Path.GetFileNameWithoutExtension(Game.Name);
 			}
-			var sfd = new SaveFileDialog
+			var result = this.ShowFileSaveDialog(
+				fileExt: ".lua",
+				filter: JustScriptsFSFilterSet,
+				initDir: initDir,
+				initFileName: ext);
+			if (string.IsNullOrWhiteSpace(result)) return;
+			string defaultTemplate = "while true do\n\temu.frameadvance();\nend";
+			File.WriteAllText(result, defaultTemplate);
+			LuaImp.ScriptList.Add(new LuaFile(Path.GetFileNameWithoutExtension(result), result));
+			Config!.RecentLua.Add(result);
+			UpdateDialog();
+			Process.Start(new ProcessStartInfo
 			{
-				InitialDirectory = initDir,
-				DefaultExt = ".lua",
-				FileName = ext,
-				OverwritePrompt = true,
-				Filter = new FilesystemFilterSet(FilesystemFilter.LuaScripts).ToString()
-			};
-
-			var result = this.ShowDialogWithTempMute(sfd);
-			if (result.IsOk() && !string.IsNullOrWhiteSpace(sfd.FileName))
-			{
-				string defaultTemplate = "while true do\n\temu.frameadvance();\nend";
-				File.WriteAllText(sfd.FileName, defaultTemplate);
-				LuaImp.ScriptList.Add(new LuaFile(Path.GetFileNameWithoutExtension(sfd.FileName), sfd.FileName));
-				Config.RecentLua.Add(sfd.FileName);
-				UpdateDialog();
-				Process.Start(new ProcessStartInfo
-				{
-					Verb = "Open",
-					FileName = sfd.FileName
-				});
-				AddFileWatches();
-			}
+				Verb = "Open",
+				FileName = result,
+			});
+			AddFileWatches();
 		}
 
 		private void OpenScriptMenuItem_Click(object sender, EventArgs e)
 		{
 			var initDir = Config!.PathEntries.LuaAbsolutePath();
 			Directory.CreateDirectory(initDir);
-			var ofd = new OpenFileDialog
+			var result = this.ShowFileMultiOpenDialog(
+				discardCWDChange: true,
+				filter: ScriptsAndTextFilesFSFilterSet,
+				initDir: initDir);
+			if (result is null) return;
+			foreach (var file in result)
 			{
-				InitialDirectory = initDir,
-				Filter = new FilesystemFilterSet(FilesystemFilter.LuaScripts, FilesystemFilter.TextFiles).ToString(),
-				RestoreDirectory = true,
-				Multiselect = true
-			};
-			var result = this.ShowDialogWithTempMute(ofd);
-			if (result.IsOk() && ofd.FileNames != null)
-			{
-				foreach (var file in ofd.FileNames)
-				{
-					LoadLuaFile(file);
-					Config.RecentLua.Add(file);
-				}
-
-				UpdateDialog();
+				LoadLuaFile(file);
+				Config.RecentLua.Add(file);
 			}
+
+			UpdateDialog();
 		}
 
 		private void ToggleScriptMenuItem_Click(object sender, EventArgs e)
@@ -998,28 +973,22 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				var (dir, fileNoExt, _) = script.Path.SplitPathToDirFileAndExt();
-				var sfd = new SaveFileDialog
+				var result = this.ShowFileSaveDialog(
+					fileExt: ".lua",
+					filter: JustScriptsFSFilterSet,
+					initDir: dir,
+					initFileName: $"{fileNoExt} (1)");
+				if (result is null) return;
+				string text = File.ReadAllText(script.Path);
+				File.WriteAllText(result, text);
+				LuaImp.ScriptList.Add(new LuaFile(Path.GetFileNameWithoutExtension(result), result));
+				Config!.RecentLua.Add(result);
+				UpdateDialog();
+				Process.Start(new ProcessStartInfo
 				{
-					InitialDirectory = dir,
-					DefaultExt = ".lua",
-					FileName = $"{fileNoExt} (1)",
-					OverwritePrompt = true,
-					Filter = new FilesystemFilterSet(FilesystemFilter.LuaScripts).ToString()
-				};
-
-				if (sfd.ShowDialog().IsOk())
-				{
-					string text = File.ReadAllText(script.Path);
-					File.WriteAllText(sfd.FileName, text);
-					LuaImp.ScriptList.Add(new LuaFile(Path.GetFileNameWithoutExtension(sfd.FileName), sfd.FileName));
-					Config.RecentLua.Add(sfd.FileName);
-					UpdateDialog();
-					Process.Start(new ProcessStartInfo
-					{
-						Verb = "Open",
-						FileName = sfd.FileName
-					});
-				}
+					Verb = "Open",
+					FileName = result,
+				});
 			}
 		}
 

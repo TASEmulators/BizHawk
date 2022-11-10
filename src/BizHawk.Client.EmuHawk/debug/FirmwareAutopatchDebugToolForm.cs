@@ -32,9 +32,8 @@ namespace BizHawk.Client.EmuHawk.ForDebugging
 			SzTextBoxEx txtBaseFile = new() { Size = new(224, 23) };
 			void ShowBaseFilePicker()
 			{
-				using OpenFileDialog ofd = new() { InitialDirectory = Config!.PathEntries.FirmwareAbsolutePath() };
-				this.ShowDialogAsChild(ofd);
-				txtBaseFile.Text = ofd.FileName;
+				var filename = this.ShowFileSaveDialog(initDir: Config!.PathEntries.FirmwareAbsolutePath());
+				if (filename is not null) txtBaseFile.Text = filename;
 			}
 			CheckBoxEx cbDryRun = new() { Checked = true, Text = "dry run (skip writing to disk)" };
 			void DoPatch()

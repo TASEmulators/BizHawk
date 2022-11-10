@@ -75,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 				PlayRecordStatusButton.ToolTipText = "Movie is in record mode";
 				PlayRecordStatusButton.Visible = true;
 			}
-			else if (!MovieSession.Movie.IsActive())
+			else if (MovieSession.Movie.NotActive())
 			{
 				PlayRecordStatusButton.Image = Properties.Resources.Blank;
 				PlayRecordStatusButton.ToolTipText = "No movie is active";

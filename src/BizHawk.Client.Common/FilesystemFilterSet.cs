@@ -9,29 +9,33 @@ namespace BizHawk.Client.Common
 {
 	public sealed class FilesystemFilterSet
 	{
-		private string? _allSer = null;
+		private string? _ser = null;
 
-		public readonly IReadOnlyCollection<FilesystemFilter> Filters;
+		public bool AppendAllFilesEntry { get; init; } = true;
+
+		public string? CombinedEntryDesc { get; init; } = null;
+
+		private IReadOnlyCollection<string> CombinedExts
+			=> Filters.SelectMany(static filter => filter.Extensions).Distinct().Order().ToList();
+
+		public readonly IReadOnlyList<FilesystemFilter> Filters;
 
 		public FilesystemFilterSet(params FilesystemFilter[] filters)
+			=> Filters = filters;
+
+		public override string ToString()
 		{
-			Filters = filters;
+			if (_ser is null)
+			{
+				var entries = Filters.Select(static filter => filter.ToString()).ToList();
+				if (CombinedEntryDesc is not null) entries.Insert(0, FilesystemFilter.SerializeEntry(CombinedEntryDesc, CombinedExts));
+				if (AppendAllFilesEntry) entries.Add(FilesystemFilter.AllFilesEntry);
+				_ser = string.Join("|", entries);
+			}
+			return _ser;
 		}
 
-		/// <remarks>appends <c>All Files</c> entry (calls <see cref="ToString(bool)"/> with <see langword="true"/>), return value is a valid <c>Filter</c> for <c>Save-</c>/<c>OpenFileDialog</c></remarks>
-		public override string ToString() => ToString(true);
-
-		/// <remarks>call other overload to prepend combined entry, return value is a valid <c>Filter</c> for <c>Save-</c>/<c>OpenFileDialog</c></remarks>
-		public string ToString(bool addAllFilesEntry) => addAllFilesEntry
-			? $"{ToString(false)}|{FilesystemFilter.AllFilesEntry}"
-			: string.Join("|", Filters.Select(filter => filter.ToString()));
-
-		/// <remarks>call other overload (omit <paramref name="combinedEntryDesc"/>) to not prepend combined entry, return value is a valid <c>Filter</c> for <c>Save-</c>/<c>OpenFileDialog</c></remarks>
-		public string ToString(string combinedEntryDesc, bool addAllFilesEntry = true)
-		{
-			_allSer ??= FilesystemFilter.SerializeEntry(combinedEntryDesc, Filters.SelectMany(static filter => filter.Extensions).Distinct().Order().ToList());
-			return $"{_allSer}|{ToString(addAllFilesEntry)}";
-		}
+		public static readonly FilesystemFilterSet Palettes = new(new FilesystemFilter("Palette Files", new[] { "pal" }));
 
 		public static readonly FilesystemFilterSet Screenshots = new FilesystemFilterSet(FilesystemFilter.PNGs, new FilesystemFilter(".bmp Files", new[] { "bmp" }));
 	}

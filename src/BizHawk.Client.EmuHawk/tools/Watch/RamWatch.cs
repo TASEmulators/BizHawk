@@ -404,7 +404,7 @@ namespace BizHawk.Client.EmuHawk
 
 				we.SetWatch(SelectedWatches.First().Domain, SelectedWatches, duplicate ? WatchEditor.Mode.Duplicate : WatchEditor.Mode.Edit);
 
-				if (this.ShowDialogWithTempMute(we) == DialogResult.OK)
+				if (this.ShowDialogWithTempMute(we).IsOk())
 				{
 					if (duplicate)
 					{
@@ -434,7 +434,7 @@ namespace BizHawk.Client.EmuHawk
 					TextInputType = InputPrompt.InputType.Text
 				};
 
-				if (this.ShowDialogWithTempMute(inputPrompt) == DialogResult.OK)
+				if (this.ShowDialogWithTempMute(inputPrompt).IsOk())
 				{
 					Changes();
 
@@ -692,10 +692,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			RecentSubMenu.DropDownItems.Clear();
-			RecentSubMenu.DropDownItems.AddRange(Config.RecentWatches.RecentMenu(MainForm, LoadFileFromRecent, "Watches"));
-		}
+			=> RecentSubMenu.ReplaceDropDownItems(Config!.RecentWatches.RecentMenu(this, LoadFileFromRecent, "Watches"));
 
 		private void WatchesSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -725,12 +722,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void MemoryDomainsSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			MemoryDomainsSubMenu.DropDownItems.Clear();
-			MemoryDomainsSubMenu.DropDownItems.AddRange(
-				MemoryDomains.MenuItems(SetMemoryDomain, CurrentDomain.Name)
-				.ToArray());
-		}
+			=> MemoryDomainsSubMenu.ReplaceDropDownItems(MemoryDomains.MenuItems(SetMemoryDomain, CurrentDomain.Name).ToArray());
 
 		private void NewWatchMenuItem_Click(object sender, EventArgs e)
 		{
@@ -740,15 +732,12 @@ namespace BizHawk.Client.EmuHawk
 				MemoryDomains = MemoryDomains
 			};
 			we.SetWatch(CurrentDomain);
-			this.ShowDialogWithTempMute(we);
-			if (we.DialogResult == DialogResult.OK)
-			{
-				_watches.Add(we.Watches[0]);
-				Changes();
-				UpdateWatchCount();
-				WatchListView.RowCount = _watches.Count;
-				GeneralUpdate();
-			}
+			if (!this.ShowDialogWithTempMute(we).IsOk()) return;
+			_watches.Add(we.Watches[0]);
+			Changes();
+			UpdateWatchCount();
+			WatchListView.RowCount = _watches.Count;
+			GeneralUpdate();
 		}
 
 		private void EditWatchMenuItem_Click(object sender, EventArgs e)

@@ -27,8 +27,10 @@ namespace BizHawk.Client.Common
 		public static readonly FilesystemFilterSet AvailableImporters = new FilesystemFilterSet(
 			Importers.Values.OrderBy(attr => attr.Emulator)
 				.Select(attr => new FilesystemFilter(attr.Emulator, new[] { attr.Extension.Substring(1) })) // substring removes initial '.'
-				.ToArray()
-		);
+				.ToArray())
+			{
+				CombinedEntryDesc = "Movie Files",
+			};
 
 		// Attempt to import another type of movie file into a movie object.
 		public static ImportResult ImportFile(

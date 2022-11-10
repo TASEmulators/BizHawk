@@ -13,6 +13,10 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class TraceLogger : ToolFormBase, IToolFormAutoConfig
 	{
+		private static readonly FilesystemFilterSet LogFilesFSFilterSet = new(
+			new FilesystemFilter("Log Files", new[] { "log" }),
+			FilesystemFilter.TextFiles);
+
 		[RequiredService]
 		private ITraceable Tracer { get; set; }
 
@@ -281,30 +285,29 @@ namespace BizHawk.Client.EmuHawk
 
 		private FileInfo GetFileFromUser()
 		{
-			using var sfd = new SaveFileDialog();
+			string initDir;
+			string initFileName;
 			if (LogFile == null)
 			{
-				sfd.FileName = Game.FilesystemSafeName() + _extension;
-				sfd.InitialDirectory = Config.PathEntries.LogAbsolutePath();
+				initFileName = Game.FilesystemSafeName() + _extension;
+				initDir = Config!.PathEntries.LogAbsolutePath();
 			}
 			else if (!string.IsNullOrWhiteSpace(LogFile.FullName))
 			{
-				sfd.FileName = Game.FilesystemSafeName();
-				sfd.InitialDirectory = Path.GetDirectoryName(LogFile.FullName);
+				initFileName = Game.FilesystemSafeName();
+				initDir = Path.GetDirectoryName(LogFile.FullName) ?? string.Empty;
 			}
 			else
 			{
-				sfd.FileName = Path.GetFileNameWithoutExtension(LogFile.FullName);
-				sfd.InitialDirectory = Config.PathEntries.LogAbsolutePath();
+				initFileName = Path.GetFileNameWithoutExtension(LogFile.FullName);
+				initDir = Config!.PathEntries.LogAbsolutePath();
 			}
-
-			sfd.Filter = new FilesystemFilterSet(
-				new FilesystemFilter("Log Files", new[] { "log" }),
-				FilesystemFilter.TextFiles
-			).ToString();
-			sfd.RestoreDirectory = true;
-			var result = this.ShowDialogWithTempMute(sfd);
-			return result.IsOk() ? new FileInfo(sfd.FileName) : null;
+			var result = this.ShowFileSaveDialog(
+				discardCWDChange: true,
+				filter: LogFilesFSFilterSet,
+				initDir: initDir,
+				initFileName: initFileName);
+			return result is not null ? new FileInfo(result) : null;
 		}
 
 		private void SaveLogMenuItem_Click(object sender, EventArgs e)
@@ -347,15 +350,9 @@ namespace BizHawk.Client.EmuHawk
 				Message = "Max lines to display in the window",
 				InitialValue = MaxLines.ToString()
 			};
-
-			if (this.ShowDialogWithTempMute(prompt) == DialogResult.OK)
-			{
-				var max = int.Parse(prompt.PromptText);
-				if (max > 0)
-				{
-					MaxLines = max;
-				}
-			}
+			if (!this.ShowDialogWithTempMute(prompt).IsOk()) return;
+			var max = int.Parse(prompt.PromptText);
+			if (max > 0) MaxLines = max;
 		}
 
 		private void SegmentSizeMenuItem_Click(object sender, EventArgs e)
@@ -367,12 +364,9 @@ namespace BizHawk.Client.EmuHawk
 				Message = "Log file segment size in megabytes\nSetting 0 disables segmentation",
 				InitialValue = FileSizeCap.ToString()
 			};
-
-			if (this.ShowDialogWithTempMute(prompt) == DialogResult.OK)
-			{
-				FileSizeCap = int.Parse(prompt.PromptText);
-				_splitFile = FileSizeCap != 0;
-			}
+			if (!this.ShowDialogWithTempMute(prompt).IsOk()) return;
+			FileSizeCap = int.Parse(prompt.PromptText);
+			_splitFile = FileSizeCap != 0;
 		}
 
 		private void LoggingEnabled_CheckedChanged(object sender, EventArgs e)

@@ -27,6 +27,8 @@ namespace BizHawk.Client.EmuHawk
 		private const string TypeColumn = "DisplayTypeColumn";
 		private const string ComparisonTypeColumn = "ComparisonTypeColumn";
 
+		private static readonly FilesystemFilterSet CheatsFSFilterSet = new(new FilesystemFilter("Cheat Files", new[] { "cht" }));
+
 		private string _sortedColumn;
 		private bool _sortReverse;
 
@@ -147,10 +149,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var file = SaveFileDialog(
-				fileName,
-				Config.PathEntries.CheatsAbsolutePath(Game.System),
-				"Cheat Files",
-				"cht",
+				currentFile: fileName,
+				path: Config!.PathEntries.CheatsAbsolutePath(Game.System),
+				CheatsFSFilterSet,
 				this);
 
 			return file != null && MainForm.CheatList.SaveFile(file.FullName);
@@ -295,16 +296,24 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DoSelectedIndexChange()
 		{
-			if (SelectedCheats.Any())
-			{
-				var cheat = SelectedCheats.First();
-				CheatEditor.SetCheat(cheat);
-				CheatGroupBox.Text = $"Editing Cheat {cheat.Name} - {cheat.AddressStr}";
-			}
-			else
+			var selected = SelectedCheats.Take(2).ToList(); // is this saving that much overhead by not enumerating the whole selection? could display the row count if we did
+			if (selected.Count is 0)
 			{
 				CheatEditor.ClearForm();
 				CheatGroupBox.Text = "New Cheat";
+				CheatGroupBox.Enabled = true;
+			}
+			else if (selected.Count is 1)
+			{
+				CheatEditor.SetCheat(selected[0]);
+				CheatGroupBox.Text = $"Editing Cheat {selected[0].Name} - {selected[0].AddressStr}";
+				CheatGroupBox.Enabled = true;
+			}
+			else
+			{
+				CheatGroupBox.Enabled = false;
+				CheatEditor.ClearForm();
+				CheatGroupBox.Text = "Multiple Cheats Selected";
 			}
 		}
 
@@ -335,10 +344,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			RecentSubMenu.DropDownItems.Clear();
-			RecentSubMenu.DropDownItems.AddRange(Config.Cheats.Recent.RecentMenu(MainForm, LoadFileFromRecent, "Cheats"));
-		}
+			=> RecentSubMenu.ReplaceDropDownItems(Config!.Cheats.Recent.RecentMenu(this, LoadFileFromRecent, "Cheats"));
 
 		private void NewMenuItem_Click(object sender, EventArgs e)
 		{
@@ -348,10 +354,9 @@ namespace BizHawk.Client.EmuHawk
 		private void OpenMenuItem_Click(object sender, EventArgs e)
 		{
 			var file = OpenFileDialog(
-				MainForm.CheatList.CurrentFileName,
-				Config.PathEntries.CheatsAbsolutePath(Game.System),
-				"Cheat Files",
-				"cht");
+				currentFile: MainForm.CheatList.CurrentFileName,
+				path: Config!.PathEntries.CheatsAbsolutePath(Game.System),
+				CheatsFSFilterSet);
 
 			LoadFile(file, append: sender == AppendMenuItem);
 		}

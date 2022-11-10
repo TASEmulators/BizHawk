@@ -14,6 +14,11 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class TAStudio
 	{
+		private static readonly FilesystemFilterSet MoviesFSFilterSet = new(
+			new FilesystemFilter("All Available Files", MovieService.MovieExtensions.Reverse().ToArray()),
+			FilesystemFilter.TAStudioProjects,
+			FilesystemFilter.BizHawkMovies);
+
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			ToBk2MenuItem.Enabled =
@@ -62,10 +67,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			RecentSubMenu.DropDownItems.Clear();
-			RecentSubMenu.DropDownItems.AddRange(Settings.RecentTas.RecentMenu(MainForm, DummyLoadProject, "Project"));
-		}
+			=> RecentSubMenu.ReplaceDropDownItems(Settings.RecentTas.RecentMenu(this, DummyLoadProject, "Project"));
 
 		private void NewTasMenuItem_Click(object sender, EventArgs e)
 		{
@@ -77,31 +79,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenTasMenuItem_Click(object sender, EventArgs e)
 		{
-			if (AskSaveChanges())
+			if (!AskSaveChanges()) return;
+			var filename = CurrentTasMovie.Filename;
+			if (string.IsNullOrWhiteSpace(filename) || filename == DefaultTasProjName())
 			{
-				var filename = CurrentTasMovie.Filename;
-				if (string.IsNullOrWhiteSpace(filename) || filename == DefaultTasProjName())
-				{
-					filename = "";
-				}
-
-				// need to be fancy here, so call the ofd constructor directly instead of helper
-				var ofd = new OpenFileDialog
-				{
-					FileName = filename,
-					InitialDirectory = Config.PathEntries.MovieAbsolutePath(),
-					Filter = new FilesystemFilterSet(
-						new FilesystemFilter("All Available Files", MovieService.MovieExtensions.Reverse().ToArray()),
-						FilesystemFilter.TAStudioProjects,
-						FilesystemFilter.BizHawkMovies
-					).ToString()
-				};
-
-				if (this.ShowDialogWithTempMute(ofd).IsOk())
-				{
-					LoadMovieFile(ofd.FileName, false);
-				}
+				filename = "";
 			}
+			var result = this.ShowFileOpenDialog(
+				filter: MoviesFSFilterSet,
+				initDir: Config!.PathEntries.MovieAbsolutePath(),
+				initFileName: filename);
+			if (result is not null) LoadMovieFile(result, askToSave: false);
 		}
 
 		/// <summary>
@@ -260,10 +248,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void RecentMacrosMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			recentMacrosToolStripMenuItem.DropDownItems.Clear();
-			recentMacrosToolStripMenuItem.DropDownItems.AddRange(Config.RecentMacros.RecentMenu(MainForm, DummyLoadMacro, "Macro", noAutoload: true));
-		}
+			=> recentMacrosToolStripMenuItem.ReplaceDropDownItems(Config!.RecentMacros.RecentMenu(this, DummyLoadMacro, "Macro", noAutoload: true));
 
 		private void ToBk2MenuItem_Click(object sender, EventArgs e)
 		{
@@ -793,11 +778,11 @@ namespace BizHawk.Client.EmuHawk
 					{
 						if (DialogController.ShowMessageBox2($"Bad data between frames {lastState} and {Emulator.Frame}. Save the relevant state (raw data)?", "Integrity Failed!"))
 						{
-							var sfd = new SaveFileDialog { FileName = "integrity.fresh" };
-							if (sfd.ShowDialog().IsOk())
+							var result = this.ShowFileSaveDialog(initDir: Config!.PathEntries.ToolsAbsolutePath(), initFileName: "integrity.fresh");
+							if (result is not null)
 							{
-								File.WriteAllBytes(sfd.FileName, state);
-								var path = Path.ChangeExtension(sfd.FileName, ".greenzoned");
+								File.WriteAllBytes(result, state);
+								var path = Path.ChangeExtension(result, ".greenzoned");
 								File.WriteAllBytes(path, greenZone);
 							}
 						}
@@ -1055,7 +1040,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SubtitlesMenuItem_Click(object sender, EventArgs e)
 		{
-			var form = new EditSubtitlesForm(DialogController, CurrentTasMovie, false);
+			using EditSubtitlesForm form = new(DialogController, CurrentTasMovie, Config!.PathEntries, readOnly: false);
 			form.ShowDialog();
 		}
 
@@ -1200,12 +1185,9 @@ namespace BizHawk.Client.EmuHawk
 				Message = "Frames per tick:",
 				InitialValue = TasView.ScrollSpeed.ToString()
 			};
-			var result = MainForm.DoWithTempMute(() => inputPrompt.ShowDialog());
-			if (result == DialogResult.OK)
-			{
-				TasView.ScrollSpeed = int.Parse(inputPrompt.PromptText);
-				Settings.ScrollSpeed = TasView.ScrollSpeed;
-			}
+			if (!this.ShowDialogWithTempMute(inputPrompt).IsOk()) return;
+			TasView.ScrollSpeed = int.Parse(inputPrompt.PromptText);
+			Settings.ScrollSpeed = TasView.ScrollSpeed;
 		}
 
 		private void SetUpToolStripColumns()
