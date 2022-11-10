@@ -21,6 +21,7 @@ namespace BizHawk.Client.Common
 		public const string SyncSettings = "SyncSettings";
 		public const string CycleCount = "CycleCount";
 		public const string ClockRate = "ClockRate";
+		public const string VsyncAttoseconds = "VsyncAttoseconds"; // used for Arcade due to it representing thousands of different systems with different vsync rates
 		public const string Core = "Core";
 
 		public static bool Contains(string val) =>

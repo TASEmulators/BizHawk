@@ -8,6 +8,7 @@ using BizHawk.Common;
 using BizHawk.Common.IOExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Arcades.MAME;
 
 namespace BizHawk.Client.Common
 {
@@ -76,7 +77,7 @@ namespace BizHawk.Client.Common
 							fullPath = Path.Combine(fullPath, filename.SubstringBefore('|'));
 							try
 							{
-								using var hf = new HawkFile(fullPath);
+								using var hf = new HawkFile(fullPath, allowArchives: !MAMEMachineDB.IsMAMEMachine(fullPath));
 								if (hf.IsArchive)
 								{
 									var archiveItem = hf.ArchiveItems.First(ai => ai.Name == filename.Split('|').Skip(1).First());

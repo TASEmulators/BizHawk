@@ -476,15 +476,6 @@ namespace BizHawk.Client.Common
 						game.System = VSystemID.Raw.SGB;
 					}
 					break;
-				case VSystemID.Raw.MAME:
-					nextEmulator = new MAME(
-						file.Directory,
-						file.CanonicalName,
-						GetCoreSyncSettings<MAME, MAME.MAMESyncSettings>(),
-						out var gameName
-					);
-					rom.GameInfo.Name = gameName;
-					return;
 			}
 			var cip = new CoreInventoryParameters(this)
 			{
@@ -548,6 +539,7 @@ namespace BizHawk.Client.Common
 							RomData = kvp.Value,
 							FileData = kvp.Value, // TODO: Hope no one needed anything special here
 							Extension = Path.GetExtension(kvp.Key),
+							RomPath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(path.SubstringBefore('|')), kvp.Key)),
 							Game = Database.GetGameInfo(kvp.Value, Path.GetFileName(kvp.Key))
 						})
 						.ToList(),
@@ -604,7 +596,7 @@ namespace BizHawk.Client.Common
 			}
 
 			bool allowArchives = true;
-			if (OpenAdvanced is OpenAdvanced_MAME) allowArchives = false;
+			if (OpenAdvanced is OpenAdvanced_MAME || MAMEMachineDB.IsMAMEMachine(path)) allowArchives = false;
 			using var file = new HawkFile(path, false, allowArchives);
 			if (!file.Exists && OpenAdvanced is not OpenAdvanced_LibretroNoGame) return false; // if the provided file doesn't even exist, give up! (unless libretro no game is used)
 
@@ -788,6 +780,8 @@ namespace BizHawk.Client.Common
 
 			public static readonly IReadOnlyCollection<string> AppleII = new[] { "dsk", "do", "po" };
 
+			public static readonly IReadOnlyCollection<string> Arcade = new[] { "zip", "chd" };
+
 			public static readonly IReadOnlyCollection<string> C64 = new[] { "prg", "d64", "g64", "crt", "tap" };
 
 			public static readonly IReadOnlyCollection<string> Coleco = new[] { "col" };
@@ -905,6 +899,7 @@ namespace BizHawk.Client.Common
 			new FilesystemFilter("Uzebox", RomFileExtensions.UZE),
 			new FilesystemFilter("Vectrex", RomFileExtensions.VEC),
 			new FilesystemFilter("MSX", RomFileExtensions.MSX),
+			new FilesystemFilter("Arcade", RomFileExtensions.Arcade),
 			FilesystemFilter.EmuHawkSaveStates)
 		{
 			CombinedEntryDesc = "Everything",

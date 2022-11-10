@@ -51,3 +51,7 @@
 	path = libmupen64plus/mupen64plus-video-angrylion-rdp
 	url = https://github.com/TASEmulators/angrylion-rdp.git
 	branch = biz_mupen64plus
+[submodule "waterbox/mame-arcade/mame"]
+	path = waterbox/mame-arcade/mame
+	url = https://github.com/TASEmulators/mame.git
+	branch = mamehawk0249

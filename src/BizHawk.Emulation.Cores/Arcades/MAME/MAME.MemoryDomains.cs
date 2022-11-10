@@ -6,45 +6,19 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Arcades.MAME
 {
-	public partial class MAME : IMonitor
+	public partial class MAME
 	{
-		private IMemoryDomains _memoryDomains;
-
-		private int _enterCount;
-
-		public void Enter()
-		{
-			if (_enterCount == 0)
-			{
-				_mameCmd = MAME_CMD.WAIT;
-				SafeWaitEvent(_mameCommandComplete);
-			}
-
-			_enterCount++;
-		}
-
-		public void Exit()
-		{
-			if (_enterCount <= 0)
-			{
-				throw new InvalidOperationException();
-			}
-			else if (_enterCount == 1)
-			{
-				_mameCommandWaitDone.Set();
-			}
-
-			_enterCount--;
-		}
+		private MemoryDomainList _memoryDomains;
 
 		public class MAMEMemoryDomain : MemoryDomain
 		{
+			private readonly LibMAME _core;
 			private readonly IMonitor _monitor;
 			private readonly int _firstOffset;
 			private readonly int _systemBusAddressShift;
 			private readonly long _systemBusSize;
 
-			public MAMEMemoryDomain(string name, long size, Endian endian, int dataWidth, bool writable, IMonitor monitor, int firstOffset, int systemBusAddressShift, long systemBusSize)
+			public MAMEMemoryDomain(string name, long size, Endian endian, int dataWidth, bool writable, LibMAME core, IMonitor monitor, int firstOffset, int systemBusAddressShift, long systemBusSize)
 			{
 				Name = name;
 				Size = size;
@@ -52,6 +26,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				WordSize = dataWidth;
 				Writable = writable;
 
+				_core = core;
 				_monitor = monitor;
 				_firstOffset = firstOffset;
 				_systemBusAddressShift = systemBusAddressShift;
@@ -67,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				try
 				{
 					_monitor.Enter();
-					return (byte)LibMAME.mame_read_byte((uint)addr << _systemBusAddressShift);
+					return _core.mame_read_byte((uint)addr << _systemBusAddressShift);
 				}
 				finally
 				{
@@ -86,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					try
 					{
 						_monitor.Enter();
-						LibMAME.mame_lua_execute($"{MAMELuaCommand.GetSpace}:write_u8({addr << _systemBusAddressShift}, {val})");
+						_core.mame_lua_execute($"{MAMELuaCommand.GetSpace}:write_u8({addr << _systemBusAddressShift}, {val})");
 					}
 					finally
 					{
@@ -106,14 +81,14 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		{
 			var domains = new List<MemoryDomain>();
 
-			var systemBusAddressShift = LibMAME.mame_lua_get_int(MAMELuaCommand.GetSpaceAddressShift);
-			var dataWidth = LibMAME.mame_lua_get_int(MAMELuaCommand.GetSpaceDataWidth) >> 3; // mame returns in bits
-			var size = (long)LibMAME.mame_lua_get_double(MAMELuaCommand.GetSpaceAddressMask) + dataWidth;
+			var systemBusAddressShift = _core.mame_lua_get_int(MAMELuaCommand.GetSpaceAddressShift);
+			var dataWidth = _core.mame_lua_get_int(MAMELuaCommand.GetSpaceDataWidth) >> 3; // mame returns in bits
+			var size = _core.mame_lua_get_long(MAMELuaCommand.GetSpaceAddressMask) + dataWidth;
 			var endianString = MameGetString(MAMELuaCommand.GetSpaceEndianness);
 			var deviceName = MameGetString(MAMELuaCommand.GetMainCPUName);
 			//var addrSize = (size * 2).ToString();
 
-			MemoryDomain.Endian endian = MemoryDomain.Endian.Unknown;
+			var endian = MemoryDomain.Endian.Unknown;
 
 			if (endianString == "little")
 			{
@@ -124,28 +99,29 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				endian = MemoryDomain.Endian.Big;
 			}
 
-			var mapCount = LibMAME.mame_lua_get_int(MAMELuaCommand.GetSpaceMapCount);
+			var mapCount = _core.mame_lua_get_int(MAMELuaCommand.GetSpaceMapCount);
 
-			for (int i = 1; i <= mapCount; i++)
+			for (var i = 1; i <= mapCount; i++)
 			{
 				var read = MameGetString($"return { MAMELuaCommand.SpaceMap }[{ i }].read.handlertype");
 				var write = MameGetString($"return { MAMELuaCommand.SpaceMap }[{ i }].write.handlertype");
 
 				if (read == "ram" && write == "ram" || read == "rom")
 				{
-					var firstOffset = LibMAME.mame_lua_get_int($"return { MAMELuaCommand.SpaceMap }[{ i }].address_start");
-					var lastOffset = LibMAME.mame_lua_get_int($"return { MAMELuaCommand.SpaceMap }[{ i }].address_end");
+					var firstOffset = _core.mame_lua_get_int($"return { MAMELuaCommand.SpaceMap }[{ i }].address_start");
+					var lastOffset = _core.mame_lua_get_int($"return { MAMELuaCommand.SpaceMap }[{ i }].address_end");
 					var name = $"{ deviceName } : { read } : 0x{ firstOffset:X}-0x{ lastOffset:X}";
 
 					domains.Add(new MAMEMemoryDomain(name, lastOffset - firstOffset + 1, endian,
-						dataWidth, read != "rom", this, firstOffset, systemBusAddressShift, size));
+						dataWidth, read != "rom", _core, _exe, firstOffset, systemBusAddressShift, size));
 				}
 			}
 
-			domains.Add(new MAMEMemoryDomain(deviceName + " : System Bus", size, endian, dataWidth, false, this, 0, systemBusAddressShift, size));
+			domains.Add(new MAMEMemoryDomain(deviceName + " : System Bus", size, endian, dataWidth, false, _core, _exe, 0, systemBusAddressShift, size));
+			domains.Add(_exe.GetPagesDomain());
 
-			_memoryDomains = new MemoryDomainList(domains);
-			((MemoryDomainList)_memoryDomains).SystemBus = _memoryDomains[deviceName + " : System Bus"];
+			_memoryDomains = new(domains);
+			_memoryDomains.SystemBus = _memoryDomains[deviceName + " : System Bus"];
 			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(_memoryDomains);
 		}
 	}

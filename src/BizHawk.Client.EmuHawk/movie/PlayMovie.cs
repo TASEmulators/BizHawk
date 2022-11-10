@@ -11,6 +11,7 @@ using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Arcades.MAME;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -403,6 +404,13 @@ namespace BizHawk.Client.EmuHawk
 						{
 							item.BackColor = Color.Pink;
 							item.ToolTipText = $"Expected: {v}\n Actual: {_emulator.SystemId}";
+						}
+						break;
+					case HeaderKeys.VsyncAttoseconds:
+						if (_emulator is MAME mame && mame.VsyncAttoseconds != Convert.ToInt64(v))
+						{
+							item.BackColor = Color.Pink;
+							item.ToolTipText = $"Expected: {v}\n Actual: {mame.VsyncAttoseconds}";
 						}
 						break;
 					default:

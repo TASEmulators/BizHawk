@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using BizHawk.Common;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Arcades.MAME;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -16,7 +17,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public IDialogController DialogController { get; }
 
-		public string SystemString { get; set; } = "";
+		private readonly Func<string> _getSystemNameCallback;
 
 		public string Path
 		{
@@ -31,11 +32,13 @@ namespace BizHawk.Client.EmuHawk
 			OnNameChanged(EventArgs.Empty);
 		}
 
-		public MultiDiskFileSelector(IDialogController dialogController, PathEntryCollection pathEntries, Func<string> getLoadedRomNameCallback)
+		public MultiDiskFileSelector(IDialogController dialogController, PathEntryCollection pathEntries,
+			Func<string> getLoadedRomNameCallback, Func<string> getSystemNameCallback)
 		{
 			DialogController = dialogController;
 			_pathEntries = pathEntries;
 			_getLoadedRomNameCallback = getLoadedRomNameCallback;
+			_getSystemNameCallback = getSystemNameCallback;
 			InitializeComponent();
 			PathBox.TextChanged += HandleLabelTextChanged;
 		}
@@ -72,17 +75,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BrowseButton_Click(object sender, EventArgs e)
 		{
+			var systemName = _getSystemNameCallback();
 			var hawkPath = this.ShowFileOpenDialog(
 				discardCWDChange: true,
 				filter: RomLoader.RomFilter,
-				initDir: _pathEntries.RomAbsolutePath());
+				initDir: _pathEntries.UseRecentForRoms ? string.Empty : _pathEntries.RomAbsolutePath(systemName));
 			if (hawkPath is null) return;
 			try
 			{
 				FileInfo file = new(hawkPath);
 				var path = EmuHawkUtil.ResolveShortcut(file.FullName);
 
-				using HawkFile hf = new(path);
+				using HawkFile hf = new(path, allowArchives: !MAMEMachineDB.IsMAMEMachine(hawkPath));
 				if (!hf.IsArchive)
 				{
 					// file is not an archive
@@ -91,7 +95,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				// else archive - run the archive chooser
 
-				if (SystemString is VSystemID.Raw.PSX or VSystemID.Raw.PCFX or VSystemID.Raw.SAT)
+				if (systemName is VSystemID.Raw.PSX or VSystemID.Raw.PCFX or VSystemID.Raw.SAT)
 				{
 					DialogController.ShowMessageBox("Using archives with PSX, PCFX or SATURN is not currently recommended/supported.");
 					return;
