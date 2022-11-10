@@ -22,6 +22,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				AlwaysDoubleSize = s.AlwaysDoubleSize,
 				CropSGBFrame = s.CropSGBFrame,
+				NoPPUSpriteLimit = s.NoPPUSpriteLimit,
 				Entropy = ss.Entropy,
 				RegionOverride = ss.RegionOverride,
 				Hotfixes = ss.Hotfixes,
@@ -48,6 +49,7 @@ namespace BizHawk.Client.EmuHawk
 
 			s.AlwaysDoubleSize = dlg.AlwaysDoubleSize;
 			s.CropSGBFrame = dlg.CropSGBFrame;
+			s.NoPPUSpriteLimit = dlg.NoPPUSpriteLimit;
 			ss.Entropy = dlg.Entropy;
 			ss.RegionOverride = dlg.RegionOverride;
 			ss.Hotfixes = dlg.Hotfixes;
@@ -84,6 +86,12 @@ namespace BizHawk.Client.EmuHawk
 			init => cbCropSGBFrame.Checked = value;
 		}
 
+		private bool NoPPUSpriteLimit
+		{
+			get => cbNoPPUSpriteLimit.Checked;
+			init => cbNoPPUSpriteLimit.Checked = value;
+		}
+
 		private bool Hotfixes
 		{
 			get => cbGameHotfixes.Checked;
@@ -93,7 +101,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool FastPPU
 		{
 			get => cbFastPPU.Checked;
-			init => cbDoubleSize.Enabled = cbFastPPU.Checked = value;
+			init => cbDoubleSize.Enabled = cbNoPPUSpriteLimit.Enabled = cbFastPPU.Checked = value;
 		}
 
 		private bool FastDSP
@@ -154,7 +162,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FastPPU_CheckedChanged(object sender, EventArgs e)
 		{
-			cbDoubleSize.Enabled = cbFastPPU.Checked;
+			cbDoubleSize.Enabled = cbNoPPUSpriteLimit.Enabled = cbFastPPU.Checked;
 		}
 	}
 }

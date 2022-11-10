@@ -57,6 +57,7 @@
             this.cbUseSGB2 = new System.Windows.Forms.CheckBox();
             this.cbFastDSP = new System.Windows.Forms.CheckBox();
             this.cbFastCoprocessor = new System.Windows.Forms.CheckBox();
+            this.cbNoPPUSpriteLimit = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -86,7 +87,7 @@
             // cbDoubleSize
             // 
             this.cbDoubleSize.AutoSize = true;
-            this.cbDoubleSize.Location = new System.Drawing.Point(18, 16);
+            this.cbDoubleSize.Location = new System.Drawing.Point(16, 16);
             this.cbDoubleSize.Name = "cbDoubleSize";
             this.cbDoubleSize.Size = new System.Drawing.Size(178, 17);
             this.cbDoubleSize.TabIndex = 6;
@@ -95,7 +96,7 @@
             // 
             // lblDoubleSize
             // 
-            this.lblDoubleSize.Location = new System.Drawing.Point(33, 34);
+            this.lblDoubleSize.Location = new System.Drawing.Point(31, 33);
             this.lblDoubleSize.MaximumSize = new System.Drawing.Size(260, 0);
             this.lblDoubleSize.Name = "lblDoubleSize";
             this.lblDoubleSize.Text = "Some games are changing the resolution constantly (e.g. SD3) so this option can f" +
@@ -269,14 +270,14 @@
             "None",
             "Low",
             "High"});
-            this.EntropyBox.Location = new System.Drawing.Point(18, 173);
+            this.EntropyBox.Location = new System.Drawing.Point(16, 175);
             this.EntropyBox.Name = "EntropyBox";
             this.EntropyBox.Size = new System.Drawing.Size(128, 21);
             this.EntropyBox.TabIndex = 14;
             // 
             // lblEntropy
             // 
-            this.lblEntropy.Location = new System.Drawing.Point(15, 157);
+            this.lblEntropy.Location = new System.Drawing.Point(13, 159);
             this.lblEntropy.Name = "lblEntropy";
             this.lblEntropy.Text = "Entropy";
             // 
@@ -288,21 +289,21 @@
             "Auto",
             "NTSC",
             "PAL"});
-            this.RegionBox.Location = new System.Drawing.Point(159, 173);
+            this.RegionBox.Location = new System.Drawing.Point(161, 175);
             this.RegionBox.Name = "RegionBox";
             this.RegionBox.Size = new System.Drawing.Size(128, 21);
             this.RegionBox.TabIndex = 15;
             // 
             // lblRegion
             // 
-            this.lblRegion.Location = new System.Drawing.Point(156, 157);
+            this.lblRegion.Location = new System.Drawing.Point(158, 159);
             this.lblRegion.Name = "lblRegion";
             this.lblRegion.Text = "Region";
             // 
             // cbGameHotfixes
             // 
             this.cbGameHotfixes.AutoSize = true;
-            this.cbGameHotfixes.Location = new System.Drawing.Point(18, 107);
+            this.cbGameHotfixes.Location = new System.Drawing.Point(16, 112);
             this.cbGameHotfixes.Name = "cbGameHotfixes";
             this.cbGameHotfixes.Size = new System.Drawing.Size(93, 17);
             this.cbGameHotfixes.TabIndex = 22;
@@ -312,7 +313,7 @@
             // cbFastPPU
             // 
             this.cbFastPPU.AutoSize = true;
-            this.cbFastPPU.Location = new System.Drawing.Point(159, 107);
+            this.cbFastPPU.Location = new System.Drawing.Point(161, 112);
             this.cbFastPPU.Name = "cbFastPPU";
             this.cbFastPPU.Size = new System.Drawing.Size(90, 17);
             this.cbFastPPU.TabIndex = 23;
@@ -323,7 +324,7 @@
             // cbCropSGBFrame
             // 
             this.cbCropSGBFrame.AutoSize = true;
-            this.cbCropSGBFrame.Location = new System.Drawing.Point(18, 84);
+            this.cbCropSGBFrame.Location = new System.Drawing.Point(16, 89);
             this.cbCropSGBFrame.Name = "cbCropSGBFrame";
             this.cbCropSGBFrame.Size = new System.Drawing.Size(105, 17);
             this.cbCropSGBFrame.TabIndex = 27;
@@ -333,7 +334,7 @@
             // cbUseSGB2
             // 
             this.cbUseSGB2.AutoSize = true;
-            this.cbUseSGB2.Location = new System.Drawing.Point(159, 84);
+            this.cbUseSGB2.Location = new System.Drawing.Point(161, 89);
             this.cbUseSGB2.Name = "cbUseSGB2";
             this.cbUseSGB2.Size = new System.Drawing.Size(76, 17);
             this.cbUseSGB2.TabIndex = 30;
@@ -343,7 +344,7 @@
             // cbFastDSP
             // 
             this.cbFastDSP.AutoSize = true;
-            this.cbFastDSP.Location = new System.Drawing.Point(18, 130);
+            this.cbFastDSP.Location = new System.Drawing.Point(16, 135);
             this.cbFastDSP.Name = "cbFastDSP";
             this.cbFastDSP.Size = new System.Drawing.Size(101, 17);
             this.cbFastDSP.TabIndex = 34;
@@ -353,12 +354,22 @@
             // cbFastCoprocessor
             // 
             this.cbFastCoprocessor.AutoSize = true;
-            this.cbFastCoprocessor.Location = new System.Drawing.Point(159, 130);
+            this.cbFastCoprocessor.Location = new System.Drawing.Point(161, 135);
             this.cbFastCoprocessor.Name = "cbFastCoprocessor";
             this.cbFastCoprocessor.Size = new System.Drawing.Size(138, 17);
             this.cbFastCoprocessor.TabIndex = 35;
             this.cbFastCoprocessor.Text = "Coprocessor Fast Mode";
             this.cbFastCoprocessor.UseVisualStyleBackColor = true;
+            // 
+            // cbPPUNoSpriteLimit
+            // 
+            this.cbNoPPUSpriteLimit.AutoSize = true;
+            this.cbNoPPUSpriteLimit.Location = new System.Drawing.Point(161, 66);
+            this.cbNoPPUSpriteLimit.Name = "cbNoPPUSpriteLimit";
+            this.cbNoPPUSpriteLimit.Size = new System.Drawing.Size(113, 17);
+            this.cbNoPPUSpriteLimit.TabIndex = 39;
+            this.cbNoPPUSpriteLimit.Text = "No PPU sprite limit";
+            this.cbNoPPUSpriteLimit.UseVisualStyleBackColor = true;
             // 
             // BSNESOptions
             // 
@@ -367,6 +378,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(304, 379);
+            this.Controls.Add(this.cbNoPPUSpriteLimit);
             this.Controls.Add(this.cbFastCoprocessor);
             this.Controls.Add(this.cbFastDSP);
             this.Controls.Add(this.cbUseSGB2);
@@ -427,5 +439,6 @@
 		private System.Windows.Forms.CheckBox cbUseSGB2;
 		private System.Windows.Forms.CheckBox cbFastDSP;
 		private System.Windows.Forms.CheckBox cbFastCoprocessor;
+		private System.Windows.Forms.CheckBox cbNoPPUSpriteLimit;
 	}
 }

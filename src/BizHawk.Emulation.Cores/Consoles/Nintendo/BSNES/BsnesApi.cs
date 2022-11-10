@@ -23,6 +23,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public abstract void snes_set_trace_enabled(bool enabled);
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_set_hooks_enabled(bool readHookEnabled, bool writeHookEnabled, bool executeHookEnabled);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void snes_set_ppu_sprite_limit_enabled(bool enabled);
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract IntPtr snes_get_audiobuffer_and_size(out int size);
@@ -178,7 +180,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				exe.Dispose();
 				exe = null;
 				core = null;
-				// serializedSize = 0;
 			}
 		}
 
@@ -283,27 +284,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			_readonlyFiles.RemoveAll(s => !s.StartsWith("msu1/"));
 		}
 
-		// TODO: confirm that the serializedSize is CONSTANT for any given game,
-		// else this might be problematic
-		// private int serializedSize;// = 284275;
+		// private int serializedSize;
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
-			// if (serializedSize == 0)
-			// serializedSize = _core.snes_serialized_size();
-			// TODO: do some profiling and testing to check whether this is actually better than _exe.SaveStateBinary(writer);
-			// re-adding bsnes's own serialization will need to be done once it's confirmed to be deterministic, aka after libco update
+			// commented code left for debug purposes; created savestates are native bsnes savestates
+			// and therefor compatible across minor core updates
 
+			// if (serializedSize == 0) serializedSize = core.snes_serialized_size();
 			// byte[] serializedData = new byte[serializedSize];
-			// _core.snes_serialize(serializedData, serializedSize);
+			// core.snes_serialize(serializedData, serializedSize);
 			// writer.Write(serializedData);
 			exe.SaveStateBinary(writer);
 		}
 
 		public void LoadStateBinary(BinaryReader reader)
 		{
+			// if (serializedSize == 0) serializedSize = core.snes_serialized_size();
 			// byte[] serializedData = reader.ReadBytes(serializedSize);
-			// _core.snes_unserialize(serializedData, serializedSize);
+			// core.snes_unserialize(serializedData, serializedSize);
 			exe.LoadStateBinary(reader);
 			core.snes_msu_sync();
 		}

@@ -64,6 +64,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 			public bool AlwaysDoubleSize { get; set; }
 			public bool CropSGBFrame { get; set; }
+			public bool NoPPUSpriteLimit { get; set; }
 
 			public SnesSettings Clone()
 			{
