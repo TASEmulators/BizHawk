@@ -17,7 +17,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private int? HashDisc(string path, ConsoleID consoleID, int discCount)
 		{
-			// this shouldn't throw in practice, this is only called when loading was succesful!
+			// this shouldn't throw in practice, this is only called when loading was successful!
 			using var disc = DiscExtensions.CreateAnyType(path, e => throw new Exception(e));
 			var dsr = new DiscSectorReader(disc)
 			{
@@ -124,13 +124,13 @@ namespace BizHawk.Client.EmuHawk
 							exeSize = ((buf2048[31] << 24) | (buf2048[30] << 16) | (buf2048[29] << 8) | buf2048[28]) + 2048;
 						}
 
-						buffer.AddRange(new ArraySegment<byte>(buf2048, 0, Math.Min(exeSize, 2048)));
+						buffer.AddRange(new ArraySegment<byte>(buf2048, 0, Math.Min(2048, exeSize)));
 						exeSize -= 2048;
 
 						while (exeSize > 0)
 						{
 							dsr.ReadLBA_2048(sector++, buf2048, 0);
-							buffer.AddRange(new ArraySegment<byte>(buf2048, 0, Math.Min(exeSize, 2048)));
+							buffer.AddRange(new ArraySegment<byte>(buf2048, 0, Math.Min(2048, exeSize)));
 							exeSize -= 2048;
 						}
 
@@ -205,7 +205,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 
 						buffer.AddRange(new ArraySegment<byte>(buf2352, bootOff, Math.Min(2352 - bootOff, bootLen)));
-						bootLen -= Math.Min(2352 - bootOff, bootLen);
+						bootLen -= 2352 - bootOff;
 
 						while (bootLen > 0)
 						{
@@ -229,6 +229,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var hash = MD5Checksum.ComputeDigestHex(buffer.ToArray());
+			return IdentifyHash(hash);
+		}
+
+		private int HashArcade(string path)
+		{
+			// Arcade wants to just hash the filename (with no extension)
+			var name = Encoding.UTF8.GetBytes(Path.GetFileNameWithoutExtension(path));
+			var hash = MD5Checksum.ComputeDigestHex(name);
 			return IdentifyHash(hash);
 		}
 
@@ -262,6 +270,12 @@ namespace BizHawk.Client.EmuHawk
 							var xml = XmlGame.Create(new HawkFile(ioa.SimplePath));
 							foreach (var kvp in xml.Assets)
 							{
+								if (consoleID is ConsoleID.Arcade)
+								{
+									ret.Add(HashArcade(kvp.Key));
+									break;
+								}
+
 								if (Disc.IsValidExtension(Path.GetExtension(kvp.Key)))
 								{
 									var id = HashDisc(kvp.Key, consoleID, ++discCount);
@@ -278,6 +292,12 @@ namespace BizHawk.Client.EmuHawk
 						}
 						else
 						{
+							if (consoleID is ConsoleID.Arcade)
+							{
+								ret.Add(HashArcade(ioa.SimplePath));
+								break;
+							}
+
 							if (Disc.IsValidExtension(Path.GetExtension(ext)))
 							{
 								var id = HashDisc(ioa.SimplePath, consoleID, ++discCount);
@@ -297,10 +317,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				case OpenAdvancedTypes.MAME:
 					{
-						// Arcade wants to just hash the filename (with no extension)
-						var name = Encoding.UTF8.GetBytes(Path.GetFileNameWithoutExtension(ioa.SimplePath));
-						var hash = MD5Checksum.ComputeDigestHex(name);
-						ret.Add(IdentifyHash(hash));
+						ret.Add(HashArcade(ioa.SimplePath));
 						break;
 					}
 				case OpenAdvancedTypes.LibretroNoGame:
