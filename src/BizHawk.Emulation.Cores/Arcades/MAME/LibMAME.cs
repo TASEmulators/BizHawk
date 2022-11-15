@@ -98,19 +98,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		[BizImport(cc)]
 		public abstract long mame_lua_get_long(string code);
 
-		/// <summary>
-		/// Struct for indirectly returning doubles
-		/// This is needed due to floating point types
-		/// being unsupported by the msabi to sysv adapter
-		/// </summary>
-		public struct IndirectDouble
-		{
-			public double val;
-		}
-
 		// get double
 		[BizImport(cc)]
-		public abstract void mame_lua_get_double(string code, out IndirectDouble ret);
+		public abstract void mame_lua_get_double(string code, out double ret);
 
 		// get string
 		[BizImport(cc)]

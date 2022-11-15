@@ -36,10 +36,10 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		{
 			_core.mame_lua_get_double(MAMELuaCommand.GetBoundX, out var x);
 			_core.mame_lua_get_double(MAMELuaCommand.GetBoundY, out var y);
-			VirtualHeight = BufferWidth > BufferHeight * x.val / y.val
-				? (int)Math.Round(BufferWidth * y.val / x.val)
+			VirtualHeight = BufferWidth > BufferHeight * x / y
+				? (int)Math.Round(BufferWidth * y / x)
 				: BufferHeight;
-			VirtualWidth = (int)Math.Round(VirtualHeight * x.val / y.val);
+			VirtualWidth = (int)Math.Round(VirtualHeight * x / y);
 		}
 
 		private void UpdateVideo()
