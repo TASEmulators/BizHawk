@@ -229,26 +229,25 @@ namespace BizHawk.BizInvoke
 		/// </summary>
 		private class MsHostSysVGuest : ICallingConventionAdapter
 		{
-			// This is implemented by using thunks defined in the waterbox native code, and putting stubs on top of them that close over the
-			// function pointer parameter.
+			// This is implemented by using thunks defined in a small dll, and putting stubs on top of them that close over the
+			// function pointer parameter. A dll is used here to easily set unwind information (allowing SEH exceptions to work).
 
 			private const int BlockSize = 32;
 			private static readonly IImportResolver ThunkDll;
 
 			static MsHostSysVGuest()
 			{
-				// If needed, these can be split out from waterboxhost.dll; they're not directly related to anything waterbox does.
-				ThunkDll = new DynamicLibraryImportResolver(OSTailoredCode.IsUnixHost ? "libwaterboxhost.so" : "waterboxhost.dll", hasLimitedLifetime: false);
+				ThunkDll = new DynamicLibraryImportResolver("libbizabiadapter_msabi_sysv.dll", hasLimitedLifetime: false);
 			}
 
 			private readonly MemoryBlock _memory;
-			private readonly object _sync = new object();
+			private readonly object _sync = new();
 			private readonly WeakReference?[] _refs;
 
 			public MsHostSysVGuest()
 			{
-				int size = 4 * 1024 * 1024;
-				_memory = new MemoryBlock((ulong)size);
+				const int size = 4 * 1024 * 1024;
+				_memory = new((ulong)size);
 				_refs = new WeakReference[size / BlockSize];
 			}
 
@@ -274,7 +273,7 @@ namespace BizHawk.BizInvoke
 			private static void VerifyParameter(Type type)
 			{
 				if (type == typeof(float) || type == typeof(double))
-					throw new NotSupportedException("floating point not supported");
+					return; // note only 4 floating point args can be used at once, this is checked later
 				if (type == typeof(void) || type.IsPrimitive || type.IsEnum)
 					return;
 				if (type.IsPointer || typeof(Delegate).IsAssignableFrom(type))
@@ -289,8 +288,9 @@ namespace BizHawk.BizInvoke
 				VerifyParameter(pp.ReturnType);
 				foreach (var ppp in pp.ParameterTypes)
 					VerifyParameter(ppp);
-				var ret = pp.ParameterTypes.Count;
-				if (ret >= 7)
+				var ret = pp.ParameterTypes.Count(t => t != typeof(float) && t != typeof(double));
+				var fargs = pp.ParameterTypes.Count - ret;
+				if (ret >= 7 || fargs >= 5)
 					throw new InvalidOperationException("Too many parameters to marshal!");
 				return ret;
 			}
@@ -345,7 +345,7 @@ namespace BizHawk.BizInvoke
 					else
 					{
 						return GetArrivalFunctionPointer(
-							Marshal.GetFunctionPointerForDelegate(d), new ParameterInfo(d.GetType()), d);
+							Marshal.GetFunctionPointerForDelegate(d), new(d.GetType()), d);
 					}
 				}
 			}
@@ -367,7 +367,7 @@ namespace BizHawk.BizInvoke
 				lock (_sync)
 				{
 					var index = FindFreeIndex();
-					var count = VerifyDelegateSignature(new ParameterInfo(delegateType));
+					var count = VerifyDelegateSignature(new(delegateType));
 					WriteThunk(ThunkDll.GetProcAddrOrThrow($"depart{count}"), p, index);
 					var ret = Marshal.GetDelegateForFunctionPointer(GetThunkAddress(index), delegateType);
 					SetLifetime(index, ret);
