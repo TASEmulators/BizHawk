@@ -66,6 +66,13 @@ EXPORT_FUNCS 6
 	dd RVA(xarrive)
 %endmacro
 
+; https://docs.microsoft.com/en-us/cpp/build/exception-handling-x64
+
+%define UWOP_PUSH_NONVOL 0
+%define UWOP_ALLOC_LARGE 1
+%define UWOP_ALLOC_SMALL 2
+%define UWOP_SAVE_XMM128 8
+
 section .pdata rdata align=4
 
 	DEPART_UNWIND_ENTRY 0
@@ -87,45 +94,43 @@ section .pdata rdata align=4
 	dd RVA(arrive6_end)
 	dd RVA(xarrive6)
 
-; https://docs.microsoft.com/en-us/cpp/build/exception-handling-x64
-
 section .xdata rdata align=8
 
 	xdepart:
 		db 1, 72, 24, 0
-		db 68, 0x68
+		db 68, (0x6 << 4) | UWOP_SAVE_XMM128
 		dw 0
-		db 63, 0x78
+		db 63, (0x7 << 4) | UWOP_SAVE_XMM128
 		dw 1
-		db 57, 0x88
+		db 57, (0x8 << 4) | UWOP_SAVE_XMM128
 		dw 2
-		db 51, 0x98
+		db 51, (0x9 << 4) | UWOP_SAVE_XMM128
 		dw 3
-		db 45, 0xA8
+		db 45, (0xA << 4) | UWOP_SAVE_XMM128
 		dw 4
-		db 39, 0xB8
+		db 39, (0xB << 4) | UWOP_SAVE_XMM128
 		dw 5
-		db 33, 0xC8
+		db 33, (0xC << 4) | UWOP_SAVE_XMM128
 		dw 6
-		db 27, 0xD8
+		db 27, (0xD << 4) | UWOP_SAVE_XMM128
 		dw 7
-		db 18, 0xE8
+		db 18, (0xE << 4) | UWOP_SAVE_XMM128
 		dw 8
-		db 9, 0xF8
+		db 9, (0xF << 4) | UWOP_SAVE_XMM128
 		dw 9
-		db 2, 0x01
+		db 2, (0x0 << 4) | UWOP_ALLOC_LARGE
 		dw 0x15
-		db 1, 0x70
-		db 0, 0x60
+		db 1, (0x7 << 4) | UWOP_PUSH_NONVOL
+		db 0, (0x6 << 4) | UWOP_PUSH_NONVOL
 
 	xarrive:
 		db 1, 4, 1, 0
-		db 4, 0x42
+		db 0, (0x4 << 4) | UWOP_ALLOC_SMALL
 		dw 0
 
 	xarrive6:
 		db 1, 4, 1, 0
-		db 4, 0x62
+		db 0, (0x6 << 4) | UWOP_ALLOC_SMALL
 		dw 0
 
 section .text
