@@ -273,7 +273,7 @@ namespace BizHawk.BizInvoke
 			private static void VerifyParameter(Type type)
 			{
 				if (type == typeof(float) || type == typeof(double))
-					return; // note only 4 floating point args can be used at once, this is checked later
+					return;
 				if (type == typeof(void) || type.IsPrimitive || type.IsEnum)
 					return;
 				if (type.IsPointer || typeof(Delegate).IsAssignableFrom(type))
@@ -290,8 +290,13 @@ namespace BizHawk.BizInvoke
 					VerifyParameter(ppp);
 				var ret = pp.ParameterTypes.Count(t => t != typeof(float) && t != typeof(double));
 				var fargs = pp.ParameterTypes.Count - ret;
-				if (ret >= 7 || fargs >= 5)
+				if (ret > 6 || fargs > 4)
 					throw new InvalidOperationException("Too many parameters to marshal!");
+				// a function may only use exclusively floating point args or integer/pointer args
+				// mixing these is not supported, due to complex differences with how msabi and sysv
+				// decide which register to use when dealing with this mixing
+				if (ret > 0 && fargs > 0)
+					throw new NotSupportedException("Mixed integer/pointer and floating point parameters are not supported!");
 				return ret;
 			}
 
