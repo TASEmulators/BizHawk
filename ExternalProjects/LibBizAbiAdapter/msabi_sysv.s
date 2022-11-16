@@ -143,7 +143,7 @@ section .text
 	; departX are msabi functions that call a sysv function and returns its result.
 	; arriveX are sysv functions that call a msabi function and returns its result. 
 	; The function is passed as a hidden parameter in rax, and should take X pointer or integer type arguments.
-	; The function passed may also have at most 4 floating point arguments.
+	; If the function contains no pointer or integer type arguments, then it may instead have, at most, 4 floating point arguments.
 
 	depart0:
 		START_DEPART
