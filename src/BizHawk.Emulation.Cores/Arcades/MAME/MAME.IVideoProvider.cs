@@ -34,8 +34,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private void UpdateAspect()
 		{
-			_core.mame_lua_get_double(MAMELuaCommand.GetBoundX, out var x);
-			_core.mame_lua_get_double(MAMELuaCommand.GetBoundY, out var y);
+			var x = _core.mame_lua_get_double(MAMELuaCommand.GetBoundX);
+			var y = _core.mame_lua_get_double(MAMELuaCommand.GetBoundY);
 			VirtualHeight = BufferWidth > BufferHeight * x / y
 				? (int)Math.Round(BufferWidth * y / x)
 				: BufferHeight;

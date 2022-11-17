@@ -100,7 +100,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		// get double
 		[BizImport(cc)]
-		public abstract void mame_lua_get_double(string code, out double ret);
+		public abstract double mame_lua_get_double(string code);
 
 		// get string
 		[BizImport(cc)]
@@ -108,6 +108,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		// free string
 		[BizImport(cc)]
-		public abstract bool mame_lua_free_string(IntPtr pointer);
+		public abstract void mame_lua_free_string(IntPtr pointer);
 	}
 }

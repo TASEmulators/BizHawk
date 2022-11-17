@@ -188,12 +188,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 
 			var ret = Marshal.PtrToStringAnsi(ptr, lengthInBytes);
-
-			if (!_core.mame_lua_free_string(ptr))
-			{
-				Console.WriteLine("LibMAME ERROR: string buffer wasn't freed");
-			}
-
+			_core.mame_lua_free_string(ptr);
 			return ret;
 		}
 
