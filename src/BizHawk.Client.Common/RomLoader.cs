@@ -780,7 +780,7 @@ namespace BizHawk.Client.Common
 
 			public static readonly IReadOnlyCollection<string> AppleII = new[] { "dsk", "do", "po" };
 
-			public static readonly IReadOnlyCollection<string> Arcade = new[] { "zip", "chd" };
+			public static readonly IReadOnlyCollection<string> Arcade = new[] { "zip", "7z", "chd" };
 
 			public static readonly IReadOnlyCollection<string> C64 = new[] { "prg", "d64", "g64", "crt", "tap" };
 

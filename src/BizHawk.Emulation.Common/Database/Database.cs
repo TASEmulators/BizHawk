@@ -404,6 +404,7 @@ namespace BizHawk.Emulation.Common
 					break;
 
 				case ".ZIP":
+				case ".7Z":
 					game.System = VSystemID.Raw.Arcade;
 					break;
 			}
