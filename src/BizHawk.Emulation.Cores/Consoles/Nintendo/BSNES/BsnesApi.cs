@@ -25,6 +25,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public abstract void snes_set_hooks_enabled(bool readHookEnabled, bool writeHookEnabled, bool executeHookEnabled);
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_set_ppu_sprite_limit_enabled(bool enabled);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void snes_set_overscan_enabled(bool enabled);
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract IntPtr snes_get_audiobuffer_and_size(out int size);

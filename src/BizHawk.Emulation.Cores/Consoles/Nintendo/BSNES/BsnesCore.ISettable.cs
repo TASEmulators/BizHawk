@@ -65,6 +65,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			public bool AlwaysDoubleSize { get; set; }
 			public bool CropSGBFrame { get; set; }
 			public bool NoPPUSpriteLimit { get; set; }
+			public bool ShowOverscan { get; set; }
+			public BsnesApi.ASPECT_RATIO_CORRECTION AspectRatioCorrection { get; set; } = BsnesApi.ASPECT_RATIO_CORRECTION.Auto;
 
 			public SnesSettings Clone()
 			{

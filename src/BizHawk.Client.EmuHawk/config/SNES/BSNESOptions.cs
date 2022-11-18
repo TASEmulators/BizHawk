@@ -23,6 +23,8 @@ namespace BizHawk.Client.EmuHawk
 				AlwaysDoubleSize = s.AlwaysDoubleSize,
 				CropSGBFrame = s.CropSGBFrame,
 				NoPPUSpriteLimit = s.NoPPUSpriteLimit,
+				ShowOverscan = s.ShowOverscan,
+				AspectRatioCorrection = s.AspectRatioCorrection,
 				Entropy = ss.Entropy,
 				RegionOverride = ss.RegionOverride,
 				Hotfixes = ss.Hotfixes,
@@ -50,6 +52,8 @@ namespace BizHawk.Client.EmuHawk
 			s.AlwaysDoubleSize = dlg.AlwaysDoubleSize;
 			s.CropSGBFrame = dlg.CropSGBFrame;
 			s.NoPPUSpriteLimit = dlg.NoPPUSpriteLimit;
+			s.ShowOverscan = dlg.ShowOverscan;
+			s.AspectRatioCorrection = dlg.AspectRatioCorrection;
 			ss.Entropy = dlg.Entropy;
 			ss.RegionOverride = dlg.RegionOverride;
 			ss.Hotfixes = dlg.Hotfixes;
@@ -90,6 +94,18 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get => cbNoPPUSpriteLimit.Checked;
 			init => cbNoPPUSpriteLimit.Checked = value;
+		}
+
+		private bool ShowOverscan
+		{
+			get => cbShowOverscan.Checked;
+			init => cbShowOverscan.Checked = value;
+		}
+
+		private BsnesApi.ASPECT_RATIO_CORRECTION AspectRatioCorrection
+		{
+			get => (BsnesApi.ASPECT_RATIO_CORRECTION)AspectRatioCorrectionBox.SelectedIndex;
+			init => AspectRatioCorrectionBox.SelectedIndex = (int)value;
 		}
 
 		private bool Hotfixes

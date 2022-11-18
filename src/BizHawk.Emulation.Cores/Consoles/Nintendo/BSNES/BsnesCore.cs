@@ -248,8 +248,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		private unsafe void snes_video_refresh(IntPtr data, int width, int height, int pitch)
 		{
 			ushort* vp = (ushort*)data;
-			int widthMultiplier = 1;
-			int heightMultiplier = 1;
 			if (_settings.CropSGBFrame && IsSGB)
 			{
 				BufferWidth = 160;
@@ -257,13 +255,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			}
 			else
 			{
-				if (_settings.AlwaysDoubleSize)
-				{
-					if (width == 256) widthMultiplier = 2;
-					if (height == 224) heightMultiplier = 2;
-				}
-				BufferWidth = width * widthMultiplier;
-				BufferHeight = height * heightMultiplier;
+				BufferWidth = width;
+				BufferHeight = height;
 			}
 
 			int size = BufferWidth * BufferHeight;
@@ -275,7 +268,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			int di = 0;
 			if (_settings.CropSGBFrame && IsSGB)
 			{
-				for (int y = 39; y < 39 + 144; y++)
+				int initialY = _settings.ShowOverscan ? 47 : 39;
+				for (int y = initialY; y < initialY + 144; y++)
 				{
 					ushort* sp = vp + y * pitch + 48;
 					for (int x = 0; x < 160; x++)
@@ -286,12 +280,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				return;
 			}
 
-			for (int y = 0; y < height * heightMultiplier; y++)
+			for (int y = 0; y < height; y++)
 			{
-				int si = y / heightMultiplier * pitch;
-				for (int x = 0; x < width * widthMultiplier; x++)
+				int si = y * pitch;
+				for (int x = 0; x < width; x++)
 				{
-					_videoBuffer[di++] = palette[vp![si + x / widthMultiplier] & 0x7FFF];
+					_videoBuffer[di++] = palette[vp![si++] & 0x7FFF];
 				}
 			}
 		}
