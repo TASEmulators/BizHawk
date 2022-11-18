@@ -62,14 +62,15 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			RomDetails = _gameFullName + "\r\n" + string.Join("\r\n", _romHashes.Select(static r => $"{r.Key} - {r.Value}"));
 
 			// concat all SHA1 hashes together (unprefixed), then hash that
-			var hashes = string.Concat(_romHashes
-				.Select(static r => r.Value.Split(' ')
+			var hashes = string.Concat(_romHashes.Values
+				.Where(static s => s.Contains("SHA:"))
+				.Select(static s => s.Split(' ')
 				.First(static s => s.StartsWith("SHA:"))
 				.RemovePrefix("SHA:")));
 
 			lp.Game.Name = _gameFullName;
 			lp.Game.Hash = SHA1Checksum.ComputeDigestHex(Encoding.ASCII.GetBytes(hashes));
-			lp.Game.Status = RomStatus.GoodDump;
+			lp.Game.Status = _romHashes.Values.Any(static s => s is "NO GOOD DUMP KNOWN") ? RomStatus.Unknown : RomStatus.GoodDump;
 
 			_exe.Seal();
 		}
@@ -282,7 +283,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			public const string GetROMsInfo =
 				"local final = {} " +
 				"for __, r in pairs(manager.machine.devices[\":\"].roms) do " +
-					"if (r:hashdata() ~= \"\") then " +
+					"if (r:hashdata() == \"!\") then " +
+						"table.insert(final, string.format(\"%s~%s~%s;\", r:name(), \"NO GOOD DUMP KNOWN\", r:flags())) " +
+					"elseif (r:hashdata() ~= \"\") then " +
 						"table.insert(final, string.format(\"%s~%s~%s;\", r:name(), r:hashdata(), r:flags())) " +
 					"end " +
 				"end " +
