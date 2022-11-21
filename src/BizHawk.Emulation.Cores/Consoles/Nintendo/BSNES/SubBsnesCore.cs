@@ -10,6 +10,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 	{
 		[CoreConstructor(VSystemID.Raw.SGB)]
 		[CoreConstructor(VSystemID.Raw.SNES)]
+		[CoreConstructor(VSystemID.Raw.BSX)]
 		public SubBsnesCore(CoreLoadParameters<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings> loadParameters)
 		{
 			_bsnesCore = new BsnesCore(loadParameters, true);

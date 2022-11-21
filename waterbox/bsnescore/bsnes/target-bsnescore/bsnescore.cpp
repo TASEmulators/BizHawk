@@ -219,7 +219,21 @@ EXPORT void snes_load_cartridge_super_gameboy(
 
     program->load();
 }
-// Note that bsmemory and sufamiturbo (a and b) are never loaded
+
+EXPORT void snes_load_cartridge_bsx(
+  const uint8_t* rom_data, const uint8_t* bsx_rom_data, int rom_size, int bsx_rom_size
+) {
+    emulator->connect(ID::Port::Expansion, ID::Device::Satellaview);
+
+    program->superFamicom.raw_data.resize(rom_size);
+    memcpy(program->superFamicom.raw_data.data(), rom_data, rom_size);
+
+    program->bsMemory.program.resize(bsx_rom_size);
+    memcpy(program->bsMemory.program.data(), bsx_rom_data, bsx_rom_size);
+
+    program->load();
+}
+// Note that sufamiturbo (a and b) are never loaded
 // I have no idea what that is but it probably should be supported frontend
 
 
@@ -336,7 +350,6 @@ EXPORT void* snes_get_memory_region(int id, int* size, int* word_size)
             *word_size = 1;
             return program->superFamicom.program.data();
 
-        // unused
         case SNES_MEMORY::BSX_RAM:
             if (!cartridge.has.BSMemorySlot) break;
             *size = mcc.rom.size();
@@ -347,6 +360,8 @@ EXPORT void* snes_get_memory_region(int id, int* size, int* word_size)
             *size = mcc.psram.size();
             *word_size = 1;
             return mcc.psram.data();
+
+        // unused
         case SNES_MEMORY::SUFAMI_TURBO_A_RAM:
             if (!cartridge.has.SufamiTurboSlotA) break;
             *size = sufamiturboA.ram.size();

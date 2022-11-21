@@ -17,6 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 	{
 		[CoreConstructor(VSystemID.Raw.SGB)]
 		[CoreConstructor(VSystemID.Raw.SNES)]
+		[CoreConstructor(VSystemID.Raw.BSX)]
 		public BsnesCore(CoreLoadParameters<SnesSettings, SnesSyncSettings> loadParameters) : this(loadParameters, false) { }
 		public BsnesCore(CoreLoadParameters<SnesSettings, SnesSyncSettings> loadParameters, bool subframe = false)
 		{
@@ -28,8 +29,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			_syncSettings = loadParameters.SyncSettings ?? new SnesSyncSettings();
 			SystemId = loadParameters.Game.System;
 			_isSGB = SystemId == VSystemID.Raw.SGB;
+			bool IsBSX = loadParameters.Game.System == VSystemID.Raw.BSX;
 
 			byte[] sgbRomData = null;
+			byte[] bsxRomData = null;
 			if (_isSGB)
 			{
 				if ((loadParameters.Roms[0].RomData[0x143] & 0xc0) == 0xc0)
@@ -42,6 +45,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 					: CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("SNES", "Rom_SGB"), "SGB1 Rom is required for SGB1 emulation.");
 
 				loadParameters.Game.FirmwareHash = SHA1Checksum.ComputeDigestHex(sgbRomData);
+			}
+			else if (IsBSX)
+			{
+				bsxRomData = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new FirmwareID("SNES", "Rom_BSX"), "BS-X rom is required for BS-X emulation");
 			}
 
 			BsnesApi.SnesCallbacks callbacks = new()
@@ -89,6 +96,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			{
 				Api.core.snes_load_cartridge_super_gameboy(sgbRomData, loadParameters.Roms[0].RomData,
 					sgbRomData!.Length, loadParameters.Roms[0].RomData.Length);
+			}
+			else if (IsBSX)
+			{
+				Api.core.snes_load_cartridge_bsx(bsxRomData, loadParameters.Roms[0].RomData,
+					bsxRomData!.Length, loadParameters.Roms[0].RomData.Length);
 			}
 			else
 			{

@@ -250,6 +250,9 @@ namespace BizHawk.Emulation.Common
 				case ".SMC":
 					game.System = VSystemID.Raw.SNES;
 					break;
+				case ".BS":
+					game.System = VSystemID.Raw.BSX;
+					break;
 
 				case ".GB":
 					game.System = VSystemID.Raw.GB;

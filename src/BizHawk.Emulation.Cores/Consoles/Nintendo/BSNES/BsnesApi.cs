@@ -80,6 +80,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public abstract void snes_load_cartridge_normal(byte[] romData, int romSize);
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_load_cartridge_super_gameboy(byte[] romData, byte[] sgbRomData, int romSize, int sgbRomSize);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void snes_load_cartridge_bsx(byte[] romData, byte[] bsxRomData, int romSize, int bsxRomSize);
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_get_cpu_registers(ref BsnesApi.CpuRegisters registers);
@@ -159,7 +161,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				SbrkHeapSizeKB = 12 * 1024,
 				InvisibleHeapSizeKB = 140 * 1024, // TODO: Roms get saved here and in mmap, consider consolidating?
 				MmapHeapSizeKB = 33 * 1024, // TODO: check whether this needs to be larger; it depends on the rom size
-				PlainHeapSizeKB = 1 * 1024,
+				PlainHeapSizeKB = 4 * 1024,
 				SealedHeapSizeKB = 0,
 				SkipCoreConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),

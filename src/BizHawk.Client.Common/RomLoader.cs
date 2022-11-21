@@ -842,7 +842,7 @@ namespace BizHawk.Client.Common
 
 			public static readonly IReadOnlyCollection<string> SMS = new[] { "sms", "gg", "sg" };
 
-			public static readonly IReadOnlyCollection<string> SNES = new[] { "smc", "sfc", "xml" };
+			public static readonly IReadOnlyCollection<string> SNES = new[] { "smc", "sfc", "xml", "bs" };
 
 			public static readonly IReadOnlyCollection<string> TI83 = new[] { "83g", "83l", "83p" };
 
