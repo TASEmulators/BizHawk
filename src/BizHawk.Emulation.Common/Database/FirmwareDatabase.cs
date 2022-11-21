@@ -89,6 +89,7 @@ namespace BizHawk.Emulation.Common
 			Option("SNES", "Rom_SGB", in sgbA_Beta);
 			Option("SNES", "Rom_SGB", in sgbB, FirmwareOptionStatus.Ideal);
 			Option("SNES", "Rom_SGB2", in sgb2, FirmwareOptionStatus.Ideal);
+			FirmwareAndOption("604556B2E62860AF18DB5A77F2956EBC75450020", 1048576, "SNES", "Rom_BSX", "SNES_BS-X.sfc", "BS-X Rom (BS-X Sore wa Namae o Nusumareta Machi no Monogatari)");
 			FirmwareAndOption("A002F4EFBA42775A31185D443F3ED1790B0E949A", 3072, "SNES", "CX4", "SNES_cx4.rom", "CX4 Rom");
 			FirmwareAndOption("188D471FEFEA71EB53F0EE7064697FF0971B1014", 8192, "SNES", "DSP1", "SNES_dsp1.rom", "DSP1 Rom");
 			FirmwareAndOption("78B724811F5F18D8C67669D9390397EB1A47A5E2", 8192, "SNES", "DSP1b", "SNES_dsp1b.rom", "DSP1b Rom");

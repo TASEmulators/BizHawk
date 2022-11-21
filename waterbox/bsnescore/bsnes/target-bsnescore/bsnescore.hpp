@@ -10,7 +10,7 @@ enum SNES_MEMORY {
     CARTRIDGE_RAM,
     CARTRIDGE_ROM,
 
-    // bsx and sufamiturbo unused cause unsupported by frontend
+    // sufamiturbo unused cause unsupported by frontend
     BSX_RAM,
     BSX_PRAM,
     SUFAMI_TURBO_A_RAM,
