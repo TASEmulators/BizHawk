@@ -350,6 +350,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void gpgx_set_draw_mask(DrawMask mask);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void gpgx_set_sprite_limit_enabled(bool enabled);
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void gpgx_write_m68k_bus(uint addr, byte data);
