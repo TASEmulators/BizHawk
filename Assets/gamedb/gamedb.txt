@@ -15,7 +15,7 @@
 #include gamedb_n64.txt
 #include gamedb_nds.txt
 #include gamedb_nes.txt
-#include gamedb_Odyssey2.txt
+#include gamedb_odyssey2.txt
 #include gamedb_pce_cd.txt
 #include gamedb_pce_hucards.txt
 #include gamedb_psx.txt
