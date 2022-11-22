@@ -585,6 +585,28 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		private void LoadMAME(string path, CoreComm nextComm, HawkFile file, out IEmulator nextEmulator, out RomGame rom, out GameInfo game, out bool cancel)
+		{
+			try
+			{
+				LoadOther(nextComm, file, null, out nextEmulator, out rom, out game, out cancel);
+			}
+			catch (Exception mex) // ok, MAME threw, let's try another core...
+			{
+				try
+				{
+					using var f = new HawkFile(path, allowArchives: true);
+					if (!HandleArchiveBinding(f)) throw;
+					LoadOther(nextComm, f, null, out nextEmulator, out rom, out game, out cancel);
+				}
+				catch (Exception oex)
+				{
+					if (mex == oex) throw mex;
+					throw new AggregateException(mex, oex);
+				}
+			}
+		}
+
 		public bool LoadRom(string path, CoreComm nextComm, string launchLibretroCore, string forcedCoreName = null, int recursiveCount = 0)
 		{
 			if (path == null) return false;
@@ -686,6 +708,10 @@ namespace BizHawk.Client.Common
 						case ".psf":
 						case ".minipsf":
 							LoadPSF(path, nextComm, file, out nextEmulator, out rom, out game);
+							break;
+						case ".zip" when forcedCoreName is null:
+						case ".7z" when forcedCoreName is null:
+							LoadMAME(path, nextComm, file, out nextEmulator, out rom, out game, out cancel);
 							break;
 						default:
 							if (Disc.IsValidExtension(ext))
