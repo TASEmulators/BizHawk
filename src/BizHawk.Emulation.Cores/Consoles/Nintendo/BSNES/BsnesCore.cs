@@ -99,7 +99,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			}
 			else if (IsBSX)
 			{
-				Api.core.snes_load_cartridge_bsx(bsxRomData, loadParameters.Roms[0].RomData,
+				Api.core.snes_load_cartridge_bsmemory(bsxRomData, loadParameters.Roms[0].RomData,
 					bsxRomData!.Length, loadParameters.Roms[0].RomData.Length);
 			}
 			else

@@ -220,16 +220,16 @@ EXPORT void snes_load_cartridge_super_gameboy(
     program->load();
 }
 
-EXPORT void snes_load_cartridge_bsx(
-  const uint8_t* rom_data, const uint8_t* bsx_rom_data, int rom_size, int bsx_rom_size
+EXPORT void snes_load_cartridge_bsmemory(
+  const uint8_t* rom_data, const uint8_t* bsmemory_rom_data, int rom_size, int bsmemory_rom_size
 ) {
     emulator->connect(ID::Port::Expansion, ID::Device::Satellaview);
 
     program->superFamicom.raw_data.resize(rom_size);
     memcpy(program->superFamicom.raw_data.data(), rom_data, rom_size);
 
-    program->bsMemory.program.resize(bsx_rom_size);
-    memcpy(program->bsMemory.program.data(), bsx_rom_data, bsx_rom_size);
+    program->bsMemory.program.resize(bsmemory_rom_size);
+    memcpy(program->bsMemory.program.data(), bsmemory_rom_data, bsmemory_rom_size);
 
     program->load();
 }
@@ -350,12 +350,12 @@ EXPORT void* snes_get_memory_region(int id, int* size, int* word_size)
             *word_size = 1;
             return program->superFamicom.program.data();
 
-        case SNES_MEMORY::BSX_RAM:
+        case SNES_MEMORY::BSMEMORY_ROM:
             if (!cartridge.has.BSMemorySlot) break;
-            *size = mcc.rom.size();
+            *size = bsmemory.memory.size();
             *word_size = 1;
-            return mcc.rom.data();
-        case SNES_MEMORY::BSX_PRAM:
+            return bsmemory.memory.data();
+        case SNES_MEMORY::BSMEMORY_PSRAM:
             if (!cartridge.has.BSMemorySlot) break;
             *size = mcc.psram.size();
             *word_size = 1;
