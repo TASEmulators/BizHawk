@@ -81,7 +81,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_load_cartridge_super_gameboy(byte[] romData, byte[] sgbRomData, int romSize, int sgbRomSize);
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void snes_load_cartridge_bsx(byte[] romData, byte[] bsxRomData, int romSize, int bsxRomSize);
+		public abstract void snes_load_cartridge_bsmemory(byte[] romData, byte[] bsmemoryRomData, int romSize, int bsmemoryRomSize);
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_get_cpu_registers(ref BsnesApi.CpuRegisters registers);
