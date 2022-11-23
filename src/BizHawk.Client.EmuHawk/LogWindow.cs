@@ -152,7 +152,8 @@ namespace BizHawk.Client.EmuHawk
 			var sb = new StringBuilder();
 			lock(_lines)
 				foreach (int i in virtualListView1.SelectedIndices)
-					sb.AppendLine(_lines[i]);
+					sb.AppendLine(_lines[i].Replace("MD5:", "").Replace("SHA1:", ""));
+
 			if (sb.Length > 0)
 				Clipboard.SetText(sb.ToString(), TextDataFormat.Text);
 		}
