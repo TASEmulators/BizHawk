@@ -51,6 +51,7 @@ namespace BizHawk.Emulation.Common
 			foreach (var kvp in copyFrom.Axes) Axes.Add(kvp);
 			HapticsChannels.AddRange(copyFrom.HapticsChannels);
 			CategoryLabels = copyFrom.CategoryLabels;
+			_orderedControls = copyFrom._orderedControls;
 			MakeImmutable();
 		}
 
