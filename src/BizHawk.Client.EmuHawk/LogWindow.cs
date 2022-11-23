@@ -109,11 +109,6 @@ namespace BizHawk.Client.EmuHawk
 			append(str, true);
 		}
 
-		public void Append(string str)
-		{
-			append(str, false);
-		}
-
 		private void BtnClear_Click(object sender, EventArgs e)
 		{
 			lock (_lines)
