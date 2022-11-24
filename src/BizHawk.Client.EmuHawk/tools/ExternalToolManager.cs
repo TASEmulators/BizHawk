@@ -71,7 +71,11 @@ namespace BizHawk.Client.EmuHawk
 		private ToolStripMenuItem GenerateToolTipFromFileName(string fileName)
 		{
 			if (fileName == null) throw new Exception();
-			var item = new ToolStripMenuItem(Path.GetFileName(fileName)) { Enabled = false };
+			var item = new ToolStripMenuItem(Path.GetFileName(fileName))
+			{
+				Enabled = false,
+				Image = Properties.Resources.ExclamationRed,
+			};
 			try
 			{
 				if (!OSTailoredCode.IsUnixHost) MotWHack.RemoveMOTW(fileName);
@@ -89,6 +93,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					foreach (var depFilename in toolAttribute.LoadAssemblyFiles) Assembly.LoadFrom($"{_paths[PathEntryCollection.GLOBAL, "External Tools"].Path}/{depFilename}");
 				}
+
+				item.Image = null; // no errors, remove error icon
 				var embeddedIconAttr = allAttrs.OfType<ExternalToolEmbeddedIconAttribute>().FirstOrDefault();
 				if (embeddedIconAttr != null)
 				{

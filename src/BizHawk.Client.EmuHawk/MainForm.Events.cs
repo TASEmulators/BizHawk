@@ -1205,18 +1205,10 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var item in ExtToolManager.ToolStripMenu)
 			{
-				if (item.Tag is ValueTuple<string, string> tuple)
+				if (item.Enabled && item.Tag is ValueTuple<string, string> tuple)
 				{
-					if (item.Enabled)
-					{
-						item.Click += (clickEventSender, clickEventArgs) => Tools.LoadExternalToolForm(tuple.Item1, tuple.Item2);
-					}
+					item.Click += (_, _) => Tools.LoadExternalToolForm(tuple.Item1, tuple.Item2);
 				}
-				else
-				{
-					item.Image = Properties.Resources.ExclamationRed;
-				}
-
 				ExternalToolMenuItem.DropDownItems.Add(item);
 			}
 
