@@ -14,9 +14,51 @@ namespace BizHawk.Client.EmuHawk
 {
 	public sealed class ExternalToolManager
 	{
+		public struct MenuItemInfo
+		{
+			private readonly string _asmChecksum;
+
+			private readonly string _asmFilename;
+
+			private readonly string _entryPointTypeName;
+
+			private readonly ExternalToolManager _extToolMan;
+
+			private bool _skipExtToolWarning;
+
+			public MenuItemInfo(
+				ExternalToolManager extToolMan,
+				string asmChecksum,
+				string asmFilename,
+				string entryPointTypeName)
+			{
+				_asmChecksum = asmChecksum;
+				_asmFilename = asmFilename;
+				_entryPointTypeName = entryPointTypeName;
+				_extToolMan = extToolMan;
+				_skipExtToolWarning = _extToolMan._config.TrustedExtTools.TryGetValue(_asmFilename, out var s) && s == _asmChecksum;
+			}
+
+			public void TryLoad()
+			{
+				var success = _extToolMan._loadCallback(
+					/*toolPath:*/ _asmFilename,
+					/*customFormTypeName:*/ _entryPointTypeName,
+					/*skipExtToolWarning:*/ _skipExtToolWarning);
+				if (!success || _skipExtToolWarning) return;
+				_skipExtToolWarning = true;
+				_extToolMan._config.TrustedExtTools[_asmFilename] = _asmChecksum;
+			}
+		}
+
+		private Config _config;
+
 		private readonly Func<(string SysID, string Hash)> _getLoadedRomInfoCallback;
 
-		private PathEntryCollection _paths;
+		private readonly Func<string, string, bool, bool> _loadCallback;
+
+		private PathEntryCollection _paths
+			=> _config.PathEntries;
 
 		private FileSystemWatcher DirectoryMonitor;
 
@@ -24,15 +66,19 @@ namespace BizHawk.Client.EmuHawk
 
 		internal readonly IList<string> PossibleExtToolTypeNames = new List<string>();
 
-		public ExternalToolManager(PathEntryCollection paths, Func<(string SysID, string Hash)> getLoadedRomInfoCallback)
+		public ExternalToolManager(
+			Config config,
+			Func<(string SysID, string Hash)> getLoadedRomInfoCallback,
+			Func<string, string, bool, bool> loadCallback)
 		{
 			_getLoadedRomInfoCallback = getLoadedRomInfoCallback;
-			Restart(paths);
+			_loadCallback = loadCallback;
+			Restart(config);
 		}
 
-		public void Restart(PathEntryCollection paths)
+		public void Restart(Config config)
 		{
-			_paths = paths;
+			_config = config;
 			if (DirectoryMonitor != null)
 			{
 				DirectoryMonitor.Created -= DirectoryMonitor_Created;
@@ -65,7 +111,7 @@ namespace BizHawk.Client.EmuHawk
 
 		/// <summary>Generates a <see cref="ToolStripMenuItem"/> from an assembly at <paramref name="fileName"/> containing an external tool.</summary>
 		/// <returns>
-		/// a <see cref="ToolStripMenuItem"/> with its <see cref="ToolStripItem.Tag"/> containing a <c>(string, string)</c>;
+		/// a <see cref="ToolStripMenuItem"/> with its <see cref="ToolStripItem.Tag"/> containing a <see cref="MenuItemInfo"/>;
 		/// the first is the assembly path (<paramref name="fileName"/>) and the second is the <see cref="Type.FullName"/> of the entry point form's type
 		/// </returns>
 		private ToolStripMenuItem GenerateToolTipFromFileName(string fileName)
@@ -79,7 +125,8 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				if (!OSTailoredCode.IsUnixHost) MotWHack.RemoveMOTW(fileName);
-				var externalToolFile = Assembly.LoadFrom(fileName);
+				var asmBytes = File.ReadAllBytes(fileName);
+				var externalToolFile = Assembly.Load(asmBytes);
 				var entryPoint = externalToolFile.GetTypes()
 					.SingleOrDefault(t => typeof(IExternalToolForm).IsAssignableFrom(t) && t.GetCustomAttributes().OfType<ExternalToolAttribute>().Any());
 				if (entryPoint == null) throw new ExternalToolAttribute.MissingException();
@@ -102,7 +149,13 @@ namespace BizHawk.Client.EmuHawk
 					if (rawIcon != null) item.Image = new Bitmap(rawIcon);
 				}
 				item.Text = toolAttribute.Name;
-				item.Tag = (externalToolFile.Location, entryPoint.FullName); // Tag set => no errors (show custom icon even when disabled)
+				MenuItemInfo menuItemInfo = new(
+					this,
+					asmChecksum: SHA1Checksum.ComputePrefixedHex(asmBytes),
+					asmFilename: fileName,
+					entryPointTypeName: entryPoint.FullName);
+				item.Tag = menuItemInfo;
+				item.Click += (_, _) => menuItemInfo.TryLoad();
 				PossibleExtToolTypeNames.Add(entryPoint.AssemblyQualifiedName);
 				if (applicabilityAttrs.Count == 1)
 				{

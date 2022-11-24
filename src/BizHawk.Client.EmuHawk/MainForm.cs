@@ -450,7 +450,13 @@ namespace BizHawk.Client.EmuHawk
 					: null
 			);
 
-			ExtToolManager = new ExternalToolManager(Config.PathEntries, () => (Emulator.SystemId, Game.Hash));
+			ExtToolManager = new(
+				Config,
+				() => (Emulator.SystemId, Game.Hash),
+				(toolPath, customFormTypeName, skipExtToolWarning) => Tools!.LoadExternalToolForm(
+					toolPath: toolPath,
+					customFormTypeName: customFormTypeName,
+					skipExtToolWarning: skipExtToolWarning) is not null);
 			Tools = new ToolManager(this, Config, DisplayManager, ExtToolManager, InputManager, Emulator, MovieSession, Game);
 
 			// TODO GL - move these event handlers somewhere less obnoxious line in the On* overrides
@@ -2956,7 +2962,7 @@ namespace BizHawk.Client.EmuHawk
 			InitControls(); // rebind hotkeys
 			InputManager.SyncControls(Emulator, MovieSession, Config);
 			Tools.Restart(Config, Emulator, Game);
-			ExtToolManager.Restart(Config.PathEntries);
+			ExtToolManager.Restart(Config);
 			Sound.Config = Config;
 			DisplayManager.UpdateGlobals(Config, Emulator);
 			AddOnScreenMessage($"Config file loaded: {iniPath}");
