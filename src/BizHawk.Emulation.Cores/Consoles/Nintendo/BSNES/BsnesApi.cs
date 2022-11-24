@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract BsnesApi.SNES_REGION snes_get_region();
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract BsnesApi.SNES_MAPPER snes_get_mapper();
+		public abstract IntPtr snes_get_board();
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract IntPtr snes_get_memory_region(int id, out int size, out int wordSize);
 		[BizImport(CallingConvention.Cdecl)]

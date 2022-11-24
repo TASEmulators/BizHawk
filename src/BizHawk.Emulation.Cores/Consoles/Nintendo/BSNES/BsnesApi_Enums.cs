@@ -151,21 +151,6 @@
 			High
 		}
 
-		public enum SNES_MAPPER : byte
-		{
-			LOROM = 0,
-			HIROM = 1,
-			EXLOROM = 2,
-			EXHIROM = 3,
-			SUPERFXROM = 4,
-			SA1ROM = 5,
-			SPC7110ROM = 6,
-			BSCLOROM = 7,
-			BSCHIROM = 8,
-			BSXROM = 9,
-			STROM = 10
-		}
-
 		public enum SNES_REGION : uint
 		{
 			NTSC = 0,

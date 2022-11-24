@@ -312,22 +312,12 @@ EXPORT short* snes_get_audiobuffer_and_size(int& out_size) {
     return audioBuffer.data();
 }
 
-EXPORT char snes_get_mapper(void) {
-    string board = program->superFamicom.document["game/board"].text();
-    string mapper = board.split('-', 1)[0];
-    if (mapper == "LOROM") return 0;
-    if (mapper == "HIROM") return 1;
-    if (mapper == "EXLOROM") return 2;
-    if (mapper == "EXHIROM") return 3;
-    if (mapper == "SUPERFXROM") return 4;
-    if (mapper == "SA1ROM") return 5;
-    if (mapper == "SPC7110ROM") return 6;
-    if (mapper == "BSCLOROM") return 7;
-    if (mapper == "BSCHIROM") return 8;
-    if (mapper == "BSXROM") return 9;
-    if (mapper == "STROM") return 10;
+const char* board;
+EXPORT const char* snes_get_board(void)
+{
+    if (!board) board = program->superFamicom.document["game/board"].text().data();
 
-    return -1;
+    return board;
 }
 
 EXPORT void* snes_get_memory_region(int id, int* size, int* word_size)

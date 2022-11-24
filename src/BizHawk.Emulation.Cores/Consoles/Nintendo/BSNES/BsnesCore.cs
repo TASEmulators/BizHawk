@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.Base_Implementations;
@@ -12,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 {
 	[PortedCore(CoreNames.Bsnes115, "bsnes team", "v115+", "https://github.com/bsnes-emu/bsnes")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
-	public partial class BsnesCore : IEmulator, IDebuggable, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable, ISettable<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings>, IBSNESForGfxDebugger
+	public partial class BsnesCore : IEmulator, IDebuggable, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable, ISettable<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings>, IBSNESForGfxDebugger, IBoardInfo
 	{
 		[CoreConstructor(VSystemID.Raw.SGB)]
 		[CoreConstructor(VSystemID.Raw.SNES)]
@@ -85,8 +86,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 			if (IsSGB)
 			{
-				ser.Register<IBoardInfo>(new SGBBoardInfo());
-
 				Api.core.snes_load_cartridge_super_gameboy(sgbRomData, loadParameters.Roms[0].RomData,
 					sgbRomData!.Length, loadParameters.Roms[0].RomData.Length);
 			}
@@ -95,6 +94,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				Api.core.snes_load_cartridge_normal(loadParameters.Roms[0].RomData, loadParameters.Roms[0].RomData.Length);
 			}
 
+			using (Api.EnterExit()) this.BoardName = Marshal.PtrToStringAnsi(Api.core.snes_get_board());
 			_region = Api.core.snes_get_region();
 			if (_region == BsnesApi.SNES_REGION.NTSC)
 			{
@@ -130,11 +130,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		private bool _disposed;
 
 		public bool IsSGB { get; }
-
-		private class SGBBoardInfo : IBoardInfo
-		{
-			public string BoardName => "SGB";
-		}
+		public string BoardName { get; }
 
 		internal BsnesApi Api { get; }
 
