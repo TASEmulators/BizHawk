@@ -205,7 +205,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void Restart()
 		{
-			if (!(MainForm.CurrentlyOpenRomArgs.OpenAdvanced is OpenAdvanced_MAME))
+			if (Emulator.SystemId is not VSystemID.Raw.Arcade)
 			{
 				_rom = GetRomBytes();
 				_romDomain = new MemoryDomainByteArray(ROM_DOMAIN_NAME, MemoryDomain.Endian.Little, _rom, writable: true, wordSize: 1);
