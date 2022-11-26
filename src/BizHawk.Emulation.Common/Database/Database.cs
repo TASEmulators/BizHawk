@@ -248,10 +248,16 @@ namespace BizHawk.Emulation.Common
 
 				case ".SFC":
 				case ".SMC":
-					game.System = VSystemID.Raw.SNES;
-					break;
 				case ".BS":
-					game.System = VSystemID.Raw.BSX;
+					if (SatellaviewFileTypeDetector.IsSatellaviewRom(romData, out var warnings))
+					{
+						game.System = VSystemID.Raw.BSX;
+						foreach (var s in warnings) Console.WriteLine(s);
+					}
+					else
+					{
+						game.System = VSystemID.Raw.SNES;
+					}
 					break;
 
 				case ".GB":
