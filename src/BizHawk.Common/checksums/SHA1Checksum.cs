@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 
 using BizHawk.Common.BufferExtensions;
+using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Common
 {
@@ -70,15 +71,7 @@ namespace BizHawk.Common
 
 		public static byte[] ComputeConcat(byte[] dataA, byte[] dataB)
 		{
-			if (LibBizHash.BizSupportsShaInstructions())
-			{
-				var concat = new byte[dataA.Length + dataB.Length];
-				Array.Copy(sourceArray: dataA, destinationArray: concat, length: dataA.Length);
-				Array.Copy(
-					sourceArray: dataB, sourceIndex: 0,
-					destinationArray: concat, destinationIndex: dataA.Length, length: dataB.Length);
-				return UnmanagedImpl(concat);
-			}
+			if (LibBizHash.BizSupportsShaInstructions()) return UnmanagedImpl(dataA.ConcatArray(dataB));
 			using var impl = IncrementalHash.CreateHash(HashAlgorithmName.SHA1);
 			impl.AppendData(dataA);
 			impl.AppendData(dataB);
