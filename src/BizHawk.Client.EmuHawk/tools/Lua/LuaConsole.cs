@@ -299,23 +299,13 @@ namespace BizHawk.Client.EmuHawk
 
 			var processedPath = Config.PathEntries.TryMakeRelative(path);
 
-			var alreadyInSession = luaLibsImpl.ScriptList.Any(t => processedPath == t.Path);
-			if (alreadyInSession)
+			var alreadyLoadedFile = luaLibsImpl.ScriptList.FirstOrDefault(t => processedPath == t.Path);
+			if (alreadyLoadedFile is not null)
 			{
-				foreach (var file in luaLibsImpl.ScriptList
-					.Where(file => processedPath == file.Path
-						&& file.Enabled == false
-						&& !Settings.DisableLuaScriptsOnLoad))
+				if (!alreadyLoadedFile.Enabled && !Settings.DisableLuaScriptsOnLoad)
 				{
-					if (file.Thread is not null)
-					{
-						file.Toggle();
-					}
-
-					break;
+					ToggleLuaScript(alreadyLoadedFile);
 				}
-
-				RunLuaScripts();
 			}
 			else
 			{
