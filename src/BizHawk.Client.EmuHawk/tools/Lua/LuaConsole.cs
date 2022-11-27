@@ -285,7 +285,8 @@ namespace BizHawk.Client.EmuHawk
 				Path = dir,
 				Filter = file,
 				NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName,
-				EnableRaisingEvents = true
+				EnableRaisingEvents = true,
+				SynchronizingObject = this, // invoke event handlers on GUI thread
 			};
 
 			// TODO, Deleted and Renamed events
@@ -308,7 +309,10 @@ namespace BizHawk.Client.EmuHawk
 		private void OnChanged(object source, FileSystemEventArgs e)
 		{
 			var script = LuaImp.ScriptList.FirstOrDefault(s => s.Path == e.FullPath && s.Enabled);
-			if (script != null) Invoke((MethodInvoker) (() => RefreshLuaScript(script)));
+			if (script is not null)
+			{
+				RefreshLuaScript(script);
+			}
 		}
 
 		public void LoadLuaFile(string path)
