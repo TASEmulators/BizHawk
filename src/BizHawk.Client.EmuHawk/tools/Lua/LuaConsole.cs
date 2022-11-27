@@ -203,9 +203,7 @@ namespace BizHawk.Client.EmuHawk
 				// we don't use runningScripts here as the other scripts need to be stopped too
 				foreach (var file in luaLibsImpl.ScriptList)
 				{
-					if (file.Enabled) luaLibsImpl.CallExitEvent(file);
-					luaLibsImpl.RegisteredFunctions.RemoveForFile(file, Emulator);
-					file.Stop();
+					DisableLuaScript(file);
 				}
 			}
 
@@ -1509,11 +1507,24 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (!file.Enabled && file.Thread is not null)
 			{
+				DisableLuaScript(file);
+				// there used to be a call here which did a redraw of the Gui/OSD, which included a call to `Tools.UpdateToolsAfter` --yoshi
+			}
+		}
+
+		private void DisableLuaScript(LuaFile file)
+		{
+			if (LuaImp is not Win32LuaLibraries luaLibsImpl) return;
+
+			if (file.IsSeparator) return;
+
+			file.State = LuaFile.RunState.Disabled;
+
+			if (file.Thread is not null)
+			{
 				luaLibsImpl.CallExitEvent(file);
 				luaLibsImpl.RegisteredFunctions.RemoveForFile(file, Emulator);
-				luaLibsImpl.CallExitEvent(file);
 				file.Stop();
-				// there used to be a call here which did a redraw of the Gui/OSD, which included a call to `Tools.UpdateToolsAfter` --yoshi
 			}
 		}
 
