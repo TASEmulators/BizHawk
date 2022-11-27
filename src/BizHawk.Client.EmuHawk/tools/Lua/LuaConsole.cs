@@ -354,6 +354,14 @@ namespace BizHawk.Client.EmuHawk
 			LuaImp.ScriptList.Remove(item);
 		}
 
+		private void RemoveAllLuaFiles()
+		{
+			while (LuaImp.ScriptList.Count > 0)
+			{
+				RemoveLuaFile(LuaImp.ScriptList[LuaImp.ScriptList.Count - 1]);
+			}
+		}
+
 		private void UpdateDialog()
 		{
 			LuaListView.RowCount = LuaImp.ScriptList.Count;
@@ -489,6 +497,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool LoadLuaSession(string path)
 		{
+			RemoveAllLuaFiles();
+
 			var result = LuaImp.ScriptList.Load(path, Settings.DisableLuaScriptsOnLoad);
 
 			foreach (var script in LuaImp.ScriptList)
@@ -743,6 +753,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (result)
 			{
+				RemoveAllLuaFiles();
 				LuaImp.ScriptList.Clear();
 				ClearOutputWindow();
 				UpdateDialog();
