@@ -736,11 +736,13 @@ namespace BizHawk.Client.EmuHawk
 			return true;
 		}
 
-		private static void UpdateRegisteredFunctionsDialog()
+		private void UpdateRegisteredFunctionsDialog()
 		{
+			if (LuaImp is null) return;
+
 			foreach (var form in Application.OpenForms.OfType<LuaRegisteredFunctionsList>().ToList())
 			{
-				form.UpdateValues();
+				form.UpdateValues(LuaImp.RegisteredFunctions);
 			}
 		}
 
