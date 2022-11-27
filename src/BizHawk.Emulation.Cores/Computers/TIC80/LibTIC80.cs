@@ -139,7 +139,7 @@ namespace BizHawk.Emulation.Cores.Computers.TIC80
 		}
 
 		[BizImport(CC)]
-		public abstract bool Init(byte[] rom, int sz, bool[] inputsEnabled);
+		public abstract bool Init(byte[] rom, int sz, bool[] inputsActive);
 
 		[BizImport(CC)]
 		public abstract void SetInputs(ref TIC80Inputs inputs);

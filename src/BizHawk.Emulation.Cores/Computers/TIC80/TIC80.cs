@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -7,7 +8,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Computers.TIC80
 {
-	[PortedCore(CoreNames.TIC80, "nesbox", "v1.0.2164", "https://tic80.com/", isReleased: false)]
+	[PortedCore(CoreNames.TIC80, "nesbox", "v1.0.2164", "https://tic80.com/")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), })]
 	public partial class TIC80 : WaterboxCore
 	{
@@ -49,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Computers.TIC80
 			});
 
 			var rom = lp.Roms[0].FileData;
-			var inputsEnabled = new bool[6]
+			var inputsActive = new bool[6]
 			{
 				_syncSettings.Gamepad1,
 				_syncSettings.Gamepad2,
@@ -59,19 +60,22 @@ namespace BizHawk.Emulation.Cores.Computers.TIC80
 				_syncSettings.Keyboard,
 			};
 
-			if (!_core.Init(rom, rom.Length, inputsEnabled))
+			if (!_core.Init(rom, rom.Length, inputsActive))
 			{
 				throw new InvalidOperationException("Init returned false!");
 			}
 
-			// inputsEnabled is mutated in Init call
-			// as such any Autodetects in inputsEnabled will be set to True or False
-			ControllerDefinition = CreateControllerDefinition(inputsEnabled);
+			// note: InputsActive is mutated in Init call
+			// any items not available for the game will be set to false
+			ControllerDefinition = CreateControllerDefinition(inputsActive);
+			InputsActive = Array.AsReadOnly(inputsActive);
 			PostInit();
 
 			DeterministicEmulation = lp.DeterministicEmulationRequested || (!_syncSettings.UseRealTime);
 			InitializeRtc(_syncSettings.InitialTime);
 		}
+
+		public readonly ReadOnlyCollection<bool> InputsActive;
 
 		private static readonly IReadOnlyCollection<KeyValuePair<string, LibTIC80.TIC80Keys>> KeyMap = MakeKeyMap();
 
@@ -89,13 +93,13 @@ namespace BizHawk.Emulation.Cores.Computers.TIC80
 			return Array.AsReadOnly(ret);
 		}
 
-		private static ControllerDefinition CreateControllerDefinition(bool[] inputsEnabled)
+		private static ControllerDefinition CreateControllerDefinition(bool[] inputsActive)
 		{
 			var ret = new ControllerDefinition("TIC-80 Controller");
 
 			for (int i = 0; i < 4; i++)
 			{
-				if (inputsEnabled[i])
+				if (inputsActive[i])
 				{
 					foreach (var b in Enum.GetValues(typeof(LibTIC80.TIC80Gamepad)))
 					{
@@ -104,7 +108,7 @@ namespace BizHawk.Emulation.Cores.Computers.TIC80
 				}
 			}
 
-			if (inputsEnabled[4])
+			if (inputsActive[4])
 			{
 				ret.AddXYPair("Mouse Position {0}", AxisPairOrientation.RightAndUp, (-128).RangeTo(127), 0);
 				ret.BoolButtons.Add("Mouse Left Click");
@@ -130,7 +134,7 @@ namespace BizHawk.Emulation.Cores.Computers.TIC80
 				}
 			}
 
-			if (inputsEnabled[5])
+			if (inputsActive[5])
 			{
 				foreach (var k in Enum.GetValues(typeof(LibTIC80.TIC80Keys)))
 				{
