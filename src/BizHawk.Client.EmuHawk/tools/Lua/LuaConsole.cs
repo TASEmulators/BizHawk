@@ -31,7 +31,7 @@ namespace BizHawk.Client.EmuHawk
 		private static readonly FilesystemFilterSet SessionsFSFilterSet = new FilesystemFilterSet(new FilesystemFilter("Lua Session Files", new[] { "luases" }));
 
 		private readonly LuaAutocompleteInstaller _luaAutoInstaller = new LuaAutocompleteInstaller();
-		private readonly List<FileSystemWatcher> _watches = new List<FileSystemWatcher>();
+		private readonly Dictionary<LuaFile, FileSystemWatcher> _watches = new();
 
 		private readonly int _defaultSplitDistance;
 
@@ -261,24 +261,24 @@ namespace BizHawk.Client.EmuHawk
 				ClearFileWatches();
 				foreach (var item in LuaImp.ScriptList.Where(s => !s.IsSeparator))
 				{
-					var processedPath = Config.PathEntries.TryMakeRelative(item.Path);
-					string pathToLoad = ProcessPath(processedPath);
-
-					CreateFileWatcher(pathToLoad);
+					CreateFileWatcher(item);
 				}
 			}
 		}
 
 		private void ClearFileWatches()
 		{
-			foreach (var watch in _watches)
+			foreach (var watch in _watches.Values)
 				watch.Dispose();
 			_watches.Clear();
 		}
 
-		private void CreateFileWatcher(string path)
+		private void CreateFileWatcher(LuaFile item)
 		{
-			var (dir, file) = path.SplitPathToDirAndFile();
+			if (_watches.ContainsKey(item))
+				return;
+
+			var (dir, file) = item.Path.MakeProgramRelativePath().SplitPathToDirAndFile();
 			var watcher = new FileSystemWatcher
 			{
 				Path = dir,
@@ -289,28 +289,25 @@ namespace BizHawk.Client.EmuHawk
 			};
 
 			// TODO, Deleted and Renamed events
-			watcher.Changed += OnChanged;
+			watcher.Changed += (_, _) => OnLuaFileChanged(item);
 
-			_watches.Add(watcher);
+			_watches.Add(item, watcher);
 		}
 
-		private void RemoveFileWatcher(string path)
+		private void RemoveFileWatcher(LuaFile item)
 		{
-			var (dir, file) = path.SplitPathToDirAndFile();
-			var watcher = _watches.Find(watcher => watcher.Path == dir && watcher.Filter == file);
-			if (watcher != null)
+			if (_watches.TryGetValue(item, out var watcher))
 			{
-				_watches.Remove(watcher);
+				_watches.Remove(item);
 				watcher.Dispose();
 			}
 		}
 
-		private void OnChanged(object source, FileSystemEventArgs e)
+		private void OnLuaFileChanged(LuaFile item)
 		{
-			var script = LuaImp.ScriptList.FirstOrDefault(s => s.Path == e.FullPath && s.Enabled);
-			if (script is not null)
+			if (item.Enabled && LuaImp?.ScriptList.Contains(item) == true)
 			{
-				RefreshLuaScript(script);
+				RefreshLuaScript(item);
 			}
 		}
 
@@ -348,7 +345,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (Settings.ReloadOnScriptFileChange)
 				{
-					CreateFileWatcher(processedPath);
+					CreateFileWatcher(luaFile);
 				}
 			}
 
@@ -374,7 +371,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!item.IsSeparator)
 			{
 				LuaImp.RegisteredFunctions.RemoveForFile(item, Emulator);
-				RemoveFileWatcher(item.Path);
+				RemoveFileWatcher(item);
 			}
 			LuaImp.ScriptList.Remove(item);
 		}
