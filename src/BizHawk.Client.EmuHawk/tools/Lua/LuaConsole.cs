@@ -305,7 +305,7 @@ namespace BizHawk.Client.EmuHawk
 				foreach (var file in luaLibsImpl.ScriptList
 					.Where(file => processedPath == file.Path
 						&& file.Enabled == false
-						&& !Config.DisableLuaScriptsOnLoad))
+						&& !Settings.DisableLuaScriptsOnLoad))
 				{
 					if (file.Thread is not null)
 					{
@@ -325,7 +325,7 @@ namespace BizHawk.Client.EmuHawk
 				LuaListView.RowCount = luaLibsImpl.ScriptList.Count;
 				Config.RecentLua.Add(processedPath);
 
-				if (!Config.DisableLuaScriptsOnLoad)
+				if (!Settings.DisableLuaScriptsOnLoad)
 				{
 					luaFile.State = LuaFile.RunState.Running;
 					EnableLuaFile(luaFile);
@@ -1079,14 +1079,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			DisableScriptsOnLoadMenuItem.Checked = Config.DisableLuaScriptsOnLoad;
+			DisableScriptsOnLoadMenuItem.Checked = Settings.DisableLuaScriptsOnLoad;
 			ReturnAllIfNoneSelectedMenuItem.Checked = Settings.ToggleAllIfNoneSelected;
 			ReloadWhenScriptFileChangesMenuItem.Checked = Settings.ReloadOnScriptFileChange;
 		}
 
 		private void DisableScriptsOnLoadMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.DisableLuaScriptsOnLoad ^= true;
+			Settings.DisableLuaScriptsOnLoad ^= true;
 		}
 
 		private void ToggleAllIfNoneSelectedMenuItem_Click(object sender, EventArgs e)
