@@ -909,6 +909,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (IOException)
 			{
+				item.State = LuaFile.RunState.Disabled;
 				WriteLine($"Unable to access file {item.Path}");
 			}
 			catch (Exception ex)
