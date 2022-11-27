@@ -501,15 +501,23 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var result = LuaImp.ScriptList.Load(path, Settings.DisableLuaScriptsOnLoad);
 
-			RunLuaScripts();
-			UpdateDialog();
-			LuaImp.ScriptList.Changes = false;
-
-			Config.RecentLuaSession.Add(path);
 			foreach (var script in LuaImp.ScriptList)
 			{
-				Config.RecentLua.Add(script.Path);
+				if (!script.IsSeparator)
+				{
+					if (script.Enabled)
+					{
+						EnableLuaFile(script);
+					}
+
+					Config.RecentLua.Add(script.Path);
+				}
 			}
+
+			LuaImp.ScriptList.Changes = false;
+			Config.RecentLuaSession.Add(path);
+			UpdateDialog();
+			AddFileWatches();
 
 			ClearOutputWindow();
 			return result;
@@ -678,8 +686,6 @@ namespace BizHawk.Client.EmuHawk
 					Config.RecentLuaSession.HandleLoadError(MainForm, path);
 				}
 			}
-
-			AddFileWatches();
 		}
 
 		public override bool AskSaveChanges()
