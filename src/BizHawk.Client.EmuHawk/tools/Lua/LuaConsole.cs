@@ -209,6 +209,7 @@ namespace BizHawk.Client.EmuHawk
 
 			LuaFileList newScripts = new(LuaImp?.ScriptList, onChanged: SessionChangedCallback);
 			LuaFunctionList registeredFuncList = new(onChanged: UpdateRegisteredFunctionsDialog);
+			(LuaImp as Win32LuaLibraries)?.Close();
 			LuaImp = new Win32LuaLibraries(
 				newScripts,
 				registeredFuncList,
