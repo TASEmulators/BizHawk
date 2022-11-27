@@ -334,6 +334,26 @@ namespace BizHawk.Client.EmuHawk
 			UpdateDialog();
 		}
 
+		public void RemoveLuaFile(string path)
+		{
+			if (LuaImp is not Win32LuaLibraries luaLibsImpl) return;
+
+			var processedPath = Config.PathEntries.TryMakeRelative(path);
+
+			var luaFile = luaLibsImpl.ScriptList.FirstOrDefault(t => processedPath == t.Path);
+			if (luaFile is not null)
+			{
+				RemoveLuaFile(luaFile);
+				UpdateDialog();
+			}
+		}
+
+		private void RemoveLuaFile(LuaFile item)
+		{
+			LuaImp.RegisteredFunctions.RemoveForFile(item, Emulator);
+			LuaImp.ScriptList.Remove(item);
+		}
+
 		private void UpdateDialog()
 		{
 			LuaListView.RowCount = LuaImp.ScriptList.Count;
@@ -902,8 +922,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				foreach (var item in items)
 				{
-					LuaImp.RegisteredFunctions.RemoveForFile(item, Emulator);
-					LuaImp.ScriptList.Remove(item);
+					RemoveLuaFile(item);
 				}
 
 				UpdateDialog();
