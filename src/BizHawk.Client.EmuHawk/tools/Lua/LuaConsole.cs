@@ -341,36 +341,6 @@ namespace BizHawk.Client.EmuHawk
 			UpdateRegisteredFunctionsDialog();
 		}
 
-		private void RunLuaScripts()
-		{
-			foreach (var file in LuaImp.ScriptList.Where(s => !s.IsSeparator))
-			{
-				if (!file.Enabled && file.Thread is null)
-				{
-					try
-					{
-						LuaSandbox.Sandbox(null, () =>
-						{
-							string pathToLoad = ProcessPath(file.Path);
-							LuaImp.SpawnAndSetFileThread(file.Path, file);
-							LuaSandbox.CreateSandbox(file.Thread, Path.GetDirectoryName(pathToLoad));
-						}, () =>
-						{
-							file.State = LuaFile.RunState.Disabled;
-						});
-					}
-					catch (Exception e)
-					{
-						DialogController.ShowMessageBox(e.ToString());
-					}
-				}
-				else
-				{
-					file.Stop();
-				}
-			}
-		}
-
 		private void SessionChangedCallback()
 		{
 			OutputMessages.Text =
