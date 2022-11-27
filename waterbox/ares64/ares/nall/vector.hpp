@@ -99,9 +99,9 @@ struct vector_base {
   auto removeByValue(const T& value) -> bool;
 
   auto takeLeft() -> T;
-  auto takeFirst() -> T { return move(takeLeft()); }
+  auto takeFirst() -> T { return std::move(takeLeft()); }
   auto takeRight() -> T;
-  auto takeLast() -> T { return move(takeRight()); }
+  auto takeLast() -> T { return std::move(takeRight()); }
   auto take(u64 offset) -> T;
 
   //iterator.hpp

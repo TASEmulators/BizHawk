@@ -287,6 +287,7 @@ struct CPU : Thread {
     auto systemCall() -> void;
     auto breakpoint() -> void;
     auto reservedInstruction() -> void;
+    auto reservedInstructionCop2() -> void;
     auto coprocessor0() -> void;
     auto coprocessor1() -> void;
     auto coprocessor2() -> void;
@@ -342,6 +343,20 @@ struct CPU : Thread {
     r64 hi;
     u64 pc;  //program counter
   } ipu;
+
+  //algorithms.cpp
+  template<typename T> auto roundNearest(f32 f) -> T;
+  template<typename T> auto roundNearest(f64 f) -> T;
+  template<typename T> auto roundCeil(f32 f) -> T;
+  template<typename T> auto roundCeil(f64 f) -> T;
+  template<typename T> auto roundCurrent(f32 f) -> T;
+  template<typename T> auto roundCurrent(f64 f) -> T;
+  template<typename T> auto roundFloor(f32 f) -> T;
+  template<typename T> auto roundFloor(f64 f) -> T;
+  template<typename T> auto roundTrunc(f32 f) -> T;
+  template<typename T> auto roundTrunc(f64 f) -> T;
+  auto squareRoot(f32 f) -> f32;
+  auto squareRoot(f64 f) -> f64;
 
   //interpreter-ipu.cpp
   auto ADD(r64& rd, cr64& rs, cr64& rt) -> void;
@@ -631,18 +646,37 @@ struct CPU : Thread {
         n1 unimplementedOperation = 0;
       } cause;
       n1 compare = 0;
-      n1 flushed = 0;
+      n1 flushSubnormals = 0;
     } csr;
   } fpu;
 
   //interpreter-fpu.cpp
+  float_env fenv;
+
   template<typename T> auto fgr(u32) -> T&;
   auto getControlRegisterFPU(n5) -> u32;
   auto setControlRegisterFPU(n5, n32) -> void;
+  template<bool CVT> auto checkFPUExceptions() -> bool;
+  auto fpeDivisionByZero() -> bool;
+  auto fpeInexact() -> bool;
+  auto fpeUnderflow() -> bool;
+  auto fpeOverflow() -> bool;
+  auto fpeInvalidOperation() -> bool;
+  auto fpeUnimplemented() -> bool;
+  auto fpuCheckStart() -> bool;
+  auto fpuCheckInput(f32& f) -> bool;
+  auto fpuCheckInput(f64& f) -> bool;
+  auto fpuCheckOutput(f32& f) -> bool;
+  auto fpuCheckOutput(f64& f) -> bool;
+  auto fpuClearCause() -> void;
+  template<typename DST, typename SF>
+  auto fpuCheckInputConv(SF& f) -> bool;
 
   auto BC1(bool value, bool likely, s16 imm) -> void;
   auto CFC1(r64& rt, u8 rd) -> void;
   auto CTC1(cr64& rt, u8 rd) -> void;
+  auto DCFC1(r64& rt, u8 rd) -> void;
+  auto DCTC1(cr64& rt, u8 rd) -> void;
   auto DMFC1(r64& rt, u8 fs) -> void;
   auto DMTC1(cr64& rt, u8 fs) -> void;
   auto FABS_S(u8 fd, u8 fs) -> void;
@@ -651,8 +685,12 @@ struct CPU : Thread {
   auto FADD_D(u8 fd, u8 fs, u8 ft) -> void;
   auto FCEIL_L_S(u8 fd, u8 fs) -> void;
   auto FCEIL_L_D(u8 fd, u8 fs) -> void;
+  auto FCEIL_L_W(u8 fd, u8 fs) -> void;
+  auto FCEIL_L_L(u8 fd, u8 fs) -> void;
   auto FCEIL_W_S(u8 fd, u8 fs) -> void;
   auto FCEIL_W_D(u8 fd, u8 fs) -> void;
+  auto FCEIL_W_W(u8 fd, u8 fs) -> void;
+  auto FCEIL_W_L(u8 fd, u8 fs) -> void;
   auto FC_EQ_S(u8 fs, u8 ft) -> void;
   auto FC_EQ_D(u8 fs, u8 ft) -> void;
   auto FC_F_S(u8 fs, u8 ft) -> void;
@@ -685,22 +723,32 @@ struct CPU : Thread {
   auto FC_ULT_D(u8 fs, u8 ft) -> void;
   auto FC_UN_S(u8 fs, u8 ft) -> void;
   auto FC_UN_D(u8 fs, u8 ft) -> void;
+  auto FCVT_S_S(u8 fd, u8 fs) -> void;
   auto FCVT_S_D(u8 fd, u8 fs) -> void;
   auto FCVT_S_W(u8 fd, u8 fs) -> void;
   auto FCVT_S_L(u8 fd, u8 fs) -> void;
   auto FCVT_D_S(u8 fd, u8 fs) -> void;
+  auto FCVT_D_D(u8 fd, u8 fs) -> void;
   auto FCVT_D_W(u8 fd, u8 fs) -> void;
   auto FCVT_D_L(u8 fd, u8 fs) -> void;
   auto FCVT_L_S(u8 fd, u8 fs) -> void;
   auto FCVT_L_D(u8 fd, u8 fs) -> void;
+  auto FCVT_L_W(u8 fd, u8 fs) -> void;
+  auto FCVT_L_L(u8 fd, u8 fs) -> void;
   auto FCVT_W_S(u8 fd, u8 fs) -> void;
   auto FCVT_W_D(u8 fd, u8 fs) -> void;
+  auto FCVT_W_W(u8 fd, u8 fs) -> void;
+  auto FCVT_W_L(u8 fd, u8 fs) -> void;
   auto FDIV_S(u8 fd, u8 fs, u8 ft) -> void;
   auto FDIV_D(u8 fd, u8 fs, u8 ft) -> void;
   auto FFLOOR_L_S(u8 fd, u8 fs) -> void;
   auto FFLOOR_L_D(u8 fd, u8 fs) -> void;
+  auto FFLOOR_L_W(u8 fd, u8 fs) -> void;
+  auto FFLOOR_L_L(u8 fd, u8 fs) -> void;
   auto FFLOOR_W_S(u8 fd, u8 fs) -> void;
   auto FFLOOR_W_D(u8 fd, u8 fs) -> void;
+  auto FFLOOR_W_W(u8 fd, u8 fs) -> void;
+  auto FFLOOR_W_L(u8 fd, u8 fs) -> void;
   auto FMOV_S(u8 fd, u8 fs) -> void;
   auto FMOV_D(u8 fd, u8 fs) -> void;
   auto FMUL_S(u8 fd, u8 fs, u8 ft) -> void;
@@ -709,22 +757,44 @@ struct CPU : Thread {
   auto FNEG_D(u8 fd, u8 fs) -> void;
   auto FROUND_L_S(u8 fd, u8 fs) -> void;
   auto FROUND_L_D(u8 fd, u8 fs) -> void;
+  auto FROUND_L_W(u8 fd, u8 fs) -> void;
+  auto FROUND_L_L(u8 fd, u8 fs) -> void;
   auto FROUND_W_S(u8 fd, u8 fs) -> void;
   auto FROUND_W_D(u8 fd, u8 fs) -> void;
+  auto FROUND_W_W(u8 fd, u8 fs) -> void;
+  auto FROUND_W_L(u8 fd, u8 fs) -> void;
   auto FSQRT_S(u8 fd, u8 fs) -> void;
   auto FSQRT_D(u8 fd, u8 fs) -> void;
   auto FSUB_S(u8 fd, u8 fs, u8 ft) -> void;
   auto FSUB_D(u8 fd, u8 fs, u8 ft) -> void;
   auto FTRUNC_L_S(u8 fd, u8 fs) -> void;
   auto FTRUNC_L_D(u8 fd, u8 fs) -> void;
+  auto FTRUNC_L_W(u8 fd, u8 fs) -> void;
+  auto FTRUNC_L_L(u8 fd, u8 fs) -> void;
   auto FTRUNC_W_S(u8 fd, u8 fs) -> void;
   auto FTRUNC_W_D(u8 fd, u8 fs) -> void;
+  auto FTRUNC_W_W(u8 fd, u8 fs) -> void;
+  auto FTRUNC_W_L(u8 fd, u8 fs) -> void;
   auto LDC1(u8 ft, cr64& rs, s16 imm) -> void;
   auto LWC1(u8 ft, cr64& rs, s16 imm) -> void;
   auto MFC1(r64& rt, u8 fs) -> void;
   auto MTC1(cr64& rt, u8 fs) -> void;
   auto SDC1(u8 ft, cr64& rs, s16 imm) -> void;
   auto SWC1(u8 ft, cr64& rs, s16 imm) -> void;
+  auto COP1UNIMPLEMENTED() -> void;
+
+  //interpreter-cop2.cpp
+  struct COP2 {
+    u64 latch;
+  } cop2;
+
+  auto MFC2(r64& rt, u8 rd) -> void;
+  auto DMFC2(r64& rt, u8 rd) -> void;
+  auto CFC2(r64& rt, u8 rd) -> void;
+  auto MTC2(cr64& rt, u8 rd) -> void;
+  auto DMTC2(cr64& rt, u8 rd) -> void;
+  auto CTC2(cr64& rt, u8 rd) -> void;
+  auto COP2INVALID() -> void;
 
   //decoder.cpp
   auto decoderEXECUTE() -> void;
@@ -732,8 +802,8 @@ struct CPU : Thread {
   auto decoderREGIMM() -> void;
   auto decoderSCC() -> void;
   auto decoderFPU() -> void;
+  auto decoderCOP2() -> void;
 
-  auto COP2() -> void;
   auto COP3() -> void;
   auto INVALID() -> void;
 
@@ -795,6 +865,7 @@ struct CPU : Thread {
     auto emitREGIMM(u32 instruction) -> bool;
     auto emitSCC(u32 instruction) -> bool;
     auto emitFPU(u32 instruction) -> bool;
+    auto emitCOP2(u32 instruction) -> bool;
 
     bump_allocator allocator;
     Pool* pools[1 << 21];  //2_MiB * sizeof(void*) == 16_MiB

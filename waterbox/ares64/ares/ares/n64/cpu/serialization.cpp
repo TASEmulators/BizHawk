@@ -136,7 +136,9 @@ auto CPU::serialize(serializer& s) -> void {
   s(fpu.csr.cause.invalidOperation);
   s(fpu.csr.cause.unimplementedOperation);
   s(fpu.csr.compare);
-  s(fpu.csr.flushed);
+  s(fpu.csr.flushSubnormals);
+
+  s(cop2.latch);
 
   if constexpr(Accuracy::CPU::Recompiler) {
     recompiler.reset();

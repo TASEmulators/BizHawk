@@ -1,31 +1,60 @@
-auto RSP::Recompiler::pool(u12 address) -> Pool* {
-  if(context[address >> 8]) return context[address >> 8];
-
-  auto hashcode = XXH3_64bits(self.imem.data + address, 256);
-
-  PoolHashPair pair;
-  pair.pool = (Pool*)allocator.acquire();
-  pair.hashcode = hashcode;
-
-  auto result = pools[address >> 8].find(pair);
-  if(result) {
-    return context[address >> 8] = result->pool;
+auto RSP::Recompiler::measure(u12 address) -> u12 {
+  u12 start = address;
+  bool hasBranched = 0;
+  while(true) {
+    u32 instruction = self.imem.read<Word>(address);
+    bool branched = isTerminal(instruction);
+    address += 4;
+    if(hasBranched || address == start) break;
+    hasBranched = branched;
   }
 
-  allocator.reserve(sizeof(Pool));
-  if(auto result = pools[address >> 8].insert(pair)) {
-    return context[address >> 8] = result->pool;
-  }
+  return address - start;
+}
 
-  throw;  //should never occur
+auto RSP::Recompiler::hash(u12 address, u12 size) -> u64 {
+  u12 end = address + size;
+  if(address < end) {
+    return XXH3_64bits(self.imem.data + address, size);
+  } else {
+    return XXH3_64bits(self.imem.data + address, self.imem.size - address)
+         ^ XXH3_64bits(self.imem.data, end);
+  }
 }
 
 auto RSP::Recompiler::block(u12 address) -> Block* {
-  if(auto block = pool(address)->blocks[address >> 2 & 0x3ff]) return block;
+  if(dirty) {
+    u12 address = 0;
+    for(auto& block : context) {
+      if(block && (dirty & mask(address, block->size)) != 0) {
+        block = nullptr;
+      }
+      address += 4;
+    }
+    dirty = 0;
+  }
+
+  if(auto block = context[address >> 2]) return block;
+
+  auto size = measure(address);
+  auto hashcode = hash(address, size);
+
+  BlockHashPair pair;
+  pair.hashcode = hashcode;
+  if(auto result = blocks.find(pair)) {
+    return context[address >> 2] = result->block;
+  }
+
   auto block = emit(address);
-  pool(address)->blocks[address >> 2 & 0x3ff] = block;
+  assert(block->size == size);
   memory::jitprotect(true);
-  return block;
+
+  pair.block = block;
+  if(auto result = blocks.insert(pair)) {
+    return context[address >> 2] = result->block;
+  }
+
+  throw;  //should never occur
 }
 
 auto RSP::Recompiler::emit(u12 address) -> Block* {
@@ -40,13 +69,14 @@ auto RSP::Recompiler::emit(u12 address) -> Block* {
   auto block = (Block*)allocator.acquire(sizeof(Block));
   beginFunction(3);
 
+  u12 start = address;
   bool hasBranched = 0;
   while(true) {
     u32 instruction = self.imem.read<Word>(address);
     bool branched = emitEXECUTE(instruction);
     call(&RSP::instructionEpilogue);
     address += 4;
-    if(hasBranched || (address & 0xffc) == 0) break;  //IMEM boundary
+    if(hasBranched || address == start) break;
     hasBranched = branched;
     testJumpEpilog();
   }
@@ -54,6 +84,7 @@ auto RSP::Recompiler::emit(u12 address) -> Block* {
 
   memory::jitprotect(false);
   block->code = endFunction();
+  block->size = address - start;
 
 //print(hex(PC, 8L), " ", instructions, " ", size(), "\n");
   return block;
@@ -1351,6 +1382,64 @@ auto RSP::Recompiler::emitSWC2(u32 instruction) -> bool {
   }
   #undef E
   #undef i7
+
+  return 0;
+}
+
+auto RSP::Recompiler::isTerminal(u32 instruction) -> bool {
+  switch(instruction >> 26) {
+
+  //SPECIAL
+  case 0x00: {
+    switch(instruction & 0x3f) {
+
+    //JR Rs
+    case 0x08:
+    //JALR Rd,Rs
+    case 0x09:
+    //BREAK
+    case 0x0d:
+      return 1;
+
+    }
+
+    break;
+  }
+
+  //REGIMM
+  case 0x01: {
+    switch(instruction >> 16 & 0x1f) {
+
+    //BLTZ Rs,i16
+    case 0x00:
+    //BGEZ Rs,i16
+    case 0x01:
+    //BLTZAL Rs,i16
+    case 0x10:
+    //BGEZAL Rs,i16
+    case 0x11:
+      return 1;
+
+    }
+
+    break;
+  }
+
+  //J n26
+  case 0x02:
+  //JAL n26
+  case 0x03:
+  //BEQ Rs,Rt,i16
+  case 0x04:
+  //BNE Rs,Rt,i16
+  case 0x05:
+  //BLEZ Rs,i16
+  case 0x06:
+  //BGTZ Rs,i16
+  case 0x07:
+    return 1;
+
+  }
 
   return 0;
 }

@@ -27,7 +27,7 @@ struct shared_pointer_this_base{};
 template<typename T>
 struct shared_pointer {
   template<typename... P> static auto create(P&&... p) {
-    return shared_pointer<T>{new T{forward<P>(p)...}};
+    return shared_pointer<T>{new T{std::forward<P>(p)...}};
   }
 
   using type = T;
@@ -57,7 +57,7 @@ struct shared_pointer {
   }
 
   shared_pointer(shared_pointer&& source) {
-    operator=(move(source));
+    operator=(std::move(source));
   }
 
   template<typename U, typename = enable_if_t<is_compatible<U>::value>>
@@ -67,7 +67,7 @@ struct shared_pointer {
 
   template<typename U, typename = enable_if_t<is_compatible<U>::value>>
   shared_pointer(shared_pointer<U>&& source) {
-    operator=<U>(move(source));
+    operator=<U>(std::move(source));
   }
 
   template<typename U, typename = enable_if_t<is_compatible<U>::value>>
@@ -279,13 +279,13 @@ struct shared_pointer_this : shared_pointer_this_base {
 
 template<typename T, typename... P>
 auto shared_pointer_make(P&&... p) -> shared_pointer<T> {
-  return shared_pointer<T>{new T{forward<P>(p)...}};
+  return shared_pointer<T>{new T{std::forward<P>(p)...}};
 }
 
 template<typename T>
 struct shared_pointer_new : shared_pointer<T> {
   shared_pointer_new(const shared_pointer<T>& source) : shared_pointer<T>(source) {}
-  template<typename... P> shared_pointer_new(P&&... p) : shared_pointer<T>(new T(forward<P>(p)...)) {}
+  template<typename... P> shared_pointer_new(P&&... p) : shared_pointer<T>(new T(std::forward<P>(p)...)) {}
 };
 
 }

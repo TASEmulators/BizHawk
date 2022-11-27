@@ -828,6 +828,8 @@ namespace BizHawk.Client.Common
 
 			public static readonly IReadOnlyCollection<string> N64 = new[] { "z64", "v64", "n64" };
 
+			public static readonly IReadOnlyCollection<string> N64DD = new[] { "ndd" };
+
 			public static readonly IReadOnlyCollection<string> NDS = new[] { "nds" };
 
 			public static readonly IReadOnlyCollection<string> NES = new[] { "nes", "fds", "unf" };
@@ -870,6 +872,7 @@ namespace BizHawk.Client.Common
 				.Concat(Lynx)
 				.Concat(MSX)
 				.Concat(N64)
+				.Concat(N64DD)
 				.Concat(NDS)
 				.Concat(NES)
 				.Concat(NGP)
@@ -898,6 +901,7 @@ namespace BizHawk.Client.Common
 			new FilesystemFilter("PSX Executables (experimental)", Array.Empty<string>(), devBuildExtraExts: new[] { "exe" }),
 			new FilesystemFilter("PSF Playstation Sound File", new[] { "psf", "minipsf" }),
 			new FilesystemFilter("Nintendo 64", RomFileExtensions.N64),
+			new FilesystemFilter("Nintendo 64 Disk Drive", RomFileExtensions.N64DD),
 			new FilesystemFilter("Gameboy", RomFileExtensions.GB.Concat(new[] { "gbs" }).ToList(), addArchiveExts: true),
 			new FilesystemFilter("Gameboy Advance", RomFileExtensions.GBA, addArchiveExts: true),
 			new FilesystemFilter("Nintendo DS", RomFileExtensions.NDS),

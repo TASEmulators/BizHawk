@@ -33,14 +33,14 @@ template<typename T> struct variant_copy<T> {
 
 template<typename T, typename... P> struct variant_move {
   constexpr variant_move(u32 index, u32 assigned, void* target, void* source) {
-    if(index == assigned) new(target) T(move(*((T*)source)));
+    if(index == assigned) new(target) T(std::move(*((T*)source)));
     else variant_move<P...>(index + 1, assigned, target, source);
   }
 };
 
 template<typename T> struct variant_move<T> {
   constexpr variant_move(u32 index, u32 assigned, void* target, void* source) {
-    if(index == assigned) new(target) T(move(*((T*)source)));
+    if(index == assigned) new(target) T(std::move(*((T*)source)));
   }
 };
 
@@ -74,9 +74,9 @@ template<typename F, typename T> struct variant_equals<F, T> {
 template<typename... P> struct variant final {  //final as destructor is not virtual
   variant() : assigned(0) {}
   variant(const variant& source) { operator=(source); }
-  variant(variant&& source) { operator=(move(source)); }
+  variant(variant&& source) { operator=(std::move(source)); }
   template<typename T> variant(const T& value) { operator=(value); }
-  template<typename T> variant(T&& value) { operator=(move(value)); }
+  template<typename T> variant(T&& value) { operator=(std::move(value)); }
   ~variant() { reset(); }
 
   explicit operator bool() const { return assigned; }
@@ -112,12 +112,14 @@ template<typename... P> struct variant final {  //final as destructor is not vir
   }
 
   auto& operator=(const variant& source) {
+    if(this == &source) return *this;
     reset();
     if(assigned = source.assigned) variant_copy<P...>(1, source.assigned, (void*)data, (void*)source.data);
     return *this;
   }
 
   auto& operator=(variant&& source) {
+    if(this == &source) return *this;
     reset();
     if(assigned = source.assigned) variant_move<P...>(1, source.assigned, (void*)data, (void*)source.data);
     source.assigned = 0;
@@ -135,7 +137,7 @@ template<typename... P> struct variant final {  //final as destructor is not vir
   template<typename T> auto& operator=(T&& value) {
     static_assert(variant_index<1, T, P...>::index, "type not in variant");
     reset();
-    new((void*)&data) T(move(value));
+    new((void*)&data) T(std::move(value));
     assigned = variant_index<1, T, P...>::index;
     return *this;
   }

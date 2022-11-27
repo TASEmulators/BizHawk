@@ -38,7 +38,7 @@ auto CPU::decoderEXECUTE() -> void {
   op(0x0f, LUI, RT, IMMu16);
   jp(0x10, SCC);
   jp(0x11, FPU);
-  br(0x12, COP2);
+  jp(0x12, COP2);
   br(0x13, COP3);
   br(0x14, BEQL, RS, RT, IMMi16);
   br(0x15, BNEL, RS, RT, IMMi16);
@@ -70,19 +70,19 @@ auto CPU::decoderEXECUTE() -> void {
   op(0x2f, CACHE, OP >> 16 & 31, RS, IMMi16);
   op(0x30, LL, RT, RS, IMMi16);
   op(0x31, LWC1, FT, RS, IMMi16);
-  br(0x32, COP2);  //LWC2
+  jp(0x32, COP2);  //LWC2
   br(0x33, COP3);  //LWC3
   op(0x34, LLD, RT, RS, IMMi16);
   op(0x35, LDC1, FT, RS, IMMi16);
-  br(0x36, COP2);  //LDC2
+  jp(0x36, COP2);  //LDC2
   op(0x37, LD, RT, RS, IMMi16);
   op(0x38, SC, RT, RS, IMMi16);
   op(0x39, SWC1, FT, RS, IMMi16);
-  br(0x3a, COP2);  //SWC2
+  jp(0x3a, COP2);  //SWC2
   br(0x3b, COP3);  //SWC3
   op(0x3c, SCD, RT, RS, IMMi16);
   op(0x3d, SDC1, FT, RS, IMMi16);
-  br(0x3e, COP2);  //SDC2
+  jp(0x3e, COP2);  //SDC2
   op(0x3f, SD, RT, RS, IMMi16);
   }
 }
@@ -229,11 +229,11 @@ auto CPU::decoderFPU() -> void {
   op(0x00, MFC1, RT, FS);
   op(0x01, DMFC1, RT, FS);
   op(0x02, CFC1, RT, RDn);
-  br(0x03, INVALID);
+  br(0x03, DCFC1, RT, RDn);
   op(0x04, MTC1, RT, FS);
   op(0x05, DMTC1, RT, FS);
   op(0x06, CTC1, RT, RDn);
-  br(0x07, INVALID);
+  br(0x07, DCTC1, RT, RDn);
   br(0x08, BC1, OP >> 16 & 1, OP >> 17 & 1, IMMi16);
   br(0x09, INVALID);
   br(0x0a, INVALID);
@@ -262,6 +262,7 @@ auto CPU::decoderFPU() -> void {
   op(0x0d, FTRUNC_W_S, FD, FS);
   op(0x0e, FCEIL_W_S, FD, FS);
   op(0x0f, FFLOOR_W_S, FD, FS);
+  op(0x20, FCVT_S_S, FD, FS);
   op(0x21, FCVT_D_S, FD, FS);
   op(0x24, FCVT_W_S, FD, FS);
   op(0x25, FCVT_L_S, FD, FS);
@@ -302,6 +303,7 @@ auto CPU::decoderFPU() -> void {
   op(0x0e, FCEIL_W_D, FD, FS);
   op(0x0f, FFLOOR_W_D, FD, FS);
   op(0x20, FCVT_S_D, FD, FS);
+  op(0x21, FCVT_D_D, FD, FS);
   op(0x24, FCVT_W_D, FD, FS);
   op(0x25, FCVT_L_D, FD, FS);
   op(0x30, FC_F_D, FS, FT);
@@ -324,25 +326,53 @@ auto CPU::decoderFPU() -> void {
 
   if((OP >> 21 & 31) == 20)
   switch(OP & 0x3f) {
+  op(0x08, FROUND_L_W, FD, FS);
+  op(0x09, FTRUNC_L_W, FD, FS);
+  op(0x0a, FCEIL_L_W, FD, FS);
+  op(0x0b, FFLOOR_L_W, FD, FS);
+  op(0x0c, FROUND_W_W, FD, FS);
+  op(0x0d, FTRUNC_W_W, FD, FS);
+  op(0x0e, FCEIL_W_W, FD, FS);
+  op(0x0f, FFLOOR_W_W, FD, FS);
   op(0x20, FCVT_S_W, FD, FS);
   op(0x21, FCVT_D_W, FD, FS);
+  op(0x24, FCVT_W_W, FD, FS);
+  op(0x25, FCVT_L_W, FD, FS);
   }
 
   if((OP >> 21 & 31) == 21)
   switch(OP & 0x3f) {
+  op(0x08, FROUND_L_L, FD, FS);
+  op(0x09, FTRUNC_L_L, FD, FS);
+  op(0x0a, FCEIL_L_L, FD, FS);
+  op(0x0b, FFLOOR_L_L, FD, FS);
+  op(0x0c, FROUND_W_L, FD, FS);
+  op(0x0d, FTRUNC_W_L, FD, FS);
+  op(0x0e, FCEIL_W_L, FD, FS);
+  op(0x0f, FFLOOR_W_L, FD, FS);
   op(0x20, FCVT_S_L, FD, FS);
   op(0x21, FCVT_D_L, FD, FS);
+  op(0x24, FCVT_W_L, FD, FS);
+  op(0x25, FCVT_L_L, FD, FS);
   }
 
   //undefined instructions do not throw a reserved instruction exception
 }
 
-auto CPU::COP2() -> void {
-  exception.coprocessor2();
+auto CPU::decoderCOP2() -> void {
+  switch(OP >> 21 & 0x1f) {
+  op(0x00, MFC2, RT, RDn);
+  op(0x01, DMFC2, RT, RDn);
+  op(0x02, CFC2, RT, RDn);
+  op(0x04, MTC2, RT, RDn);
+  op(0x05, DMTC2, RT, RDn);
+  op(0x06, CTC2, RT, RDn);
+  }
+  COP2INVALID();
 }
 
 auto CPU::COP3() -> void {
-  exception.coprocessor3();
+  exception.reservedInstruction();
 }
 
 auto CPU::INVALID() -> void {

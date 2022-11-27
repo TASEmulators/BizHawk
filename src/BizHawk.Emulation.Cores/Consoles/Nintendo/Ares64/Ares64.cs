@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -8,7 +9,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 {
-	[PortedCore(CoreNames.Ares64, "ares team, Near", "v128", "https://ares-emulator.github.io/")]
+	[PortedCore(CoreNames.Ares64, "ares team, Near", "v130.1", "https://ares-emu.net/")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), })]
 	public partial class Ares64 : WaterboxCore, IRegionable
 	{
@@ -31,6 +32,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 		{
 			_settings = lp.Settings ?? new();
 			_syncSettings = lp.SyncSettings ?? new();
+
+			DeterministicEmulation = lp.DeterministicEmulationRequested || (!_syncSettings.UseRealTime);
+			InitializeRtc(_syncSettings.InitialTime);
 
 			ControllerSettings = new[]
 			{
@@ -55,12 +59,34 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 				SkipMemoryConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			}, new[] { _tracecb, });
 
-			var rom = lp.Roms[0].RomData;
+			static bool IsGBRom(byte[] rom)
+			{
+				// GB roms will have the nintendo logo at 0x104 - 0x133
+				const string ninLogoSha1 = "0745FDEF34132D1B3D488CFBDF0379A39FD54B4C";
+				return ninLogoSha1 == SHA1Checksum.ComputeDigestHex(new ReadOnlySpan<byte>(rom).Slice(0x104, 48));
+			}
 
-			Region = rom[0x3E] switch
+			var gbRoms = lp.Roms.FindAll(r => IsGBRom(r.FileData)).Select(r => r.FileData).ToList();
+			var rom = lp.Roms.Find(r => !gbRoms.Contains(r.FileData) && (char)r.RomData[0x3B] is 'N' or 'C')?.RomData;
+			var disk = lp.Roms.Find(r => !gbRoms.Contains(r.FileData) && (char)r.RomData[0x3B] is 'D' or 'E')?.RomData;
+
+			if (rom is null && disk is null)
+			{
+				if (gbRoms.Count == 0 && lp.Roms.Count == 1) // let's just assume it's an N64 ROM then
+				{
+					rom = lp.Roms[0].RomData;
+				}
+				else
+				{
+					throw new Exception("Could not identify ROM or Disk with given files!");
+				}
+			}
+
+			var regionByte = rom is null ? 0 : rom[0x3E];
+			Region = regionByte switch
 			{
 				0x44 or 0x46 or 0x49 or 0x50 or 0x53 or 0x55 or 0x58 or 0x59 => DisplayType.PAL,
-				_ => DisplayType.NTSC,
+				_ => DisplayType.NTSC, // note that N64DD is only valid as NTSC
 			};
 
 			var pal = Region == DisplayType.PAL;
@@ -71,43 +97,56 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 				VsyncDenominator = 1;
 			}
 
-			LibAres64.LoadFlags loadFlags = 0;
-			if (_syncSettings.RestrictAnalogRange)
-				loadFlags |= LibAres64.LoadFlags.RestrictAnalogRange;
-			if (pal)
-				loadFlags |= LibAres64.LoadFlags.Pal;
-			if (_settings.Deinterlacer == LibAres64.DeinterlacerType.Bob)
-				loadFlags |= LibAres64.LoadFlags.BobDeinterlace;
-
 			var pif = Zstd.DecompressZstdStream(new MemoryStream(pal ? Resources.PIF_PAL_ROM.Value : Resources.PIF_NTSC_ROM.Value)).ToArray();
 
-			var gbRoms = new byte[][] { null, null, null, null };
-			var numGbRoms = lp.Roms.Count - 1;
-			for (int i = 0; i < numGbRoms; i++)
+			IsDD = disk is not null;
+			byte[] ipl = null;
+			if (IsDD)
 			{
-				gbRoms[i] = lp.Roms[i + 1].RomData;
+				ipl = _syncSettings.IPLVersion switch
+				{
+					LibAres64.IplVer.Japan => lp.Comm.CoreFileProvider.GetFirmwareOrThrow(new("N64DD", "IPL JPN")),
+					LibAres64.IplVer.Dev => lp.Comm.CoreFileProvider.GetFirmwareOrThrow(new("N64DD", "IPL DEV")),
+					LibAres64.IplVer.USA => lp.Comm.CoreFileProvider.GetFirmwareOrThrow(new("N64DD", "IPL USA")),
+					_ => throw new InvalidOperationException(),
+				};
 			}
+
+			byte[] GetGBRomOrNull(int n)
+				=> n < gbRoms.Count ? gbRoms[n] : null;
 
 			unsafe
 			{
-				fixed (byte* pifPtr = pif, romPtr = rom, gb1RomPtr = gbRoms[0], gb2RomPtr = gbRoms[1], gb3RomPtr = gbRoms[2], gb4RomPtr = gbRoms[3]) 
+				fixed (byte*
+					pifPtr = pif,
+					iplPtr = ipl,
+					romPtr = rom,
+					diskPtr = disk,
+					gb1RomPtr = GetGBRomOrNull(0),
+					gb2RomPtr = GetGBRomOrNull(1),
+					gb3RomPtr = GetGBRomOrNull(2),
+					gb4RomPtr = GetGBRomOrNull(3)) 
 				{
-					var loadData = new LibAres64.LoadData()
+					var loadData = new LibAres64.LoadData
 					{
 						PifData = (IntPtr)pifPtr,
 						PifLen = pif.Length,
+						IplData = (IntPtr)iplPtr,
+						IplLen = ipl?.Length ?? 0,
 						RomData = (IntPtr)romPtr,
-						RomLen = rom.Length,
+						RomLen = rom?.Length ?? 0,
+						DiskData = (IntPtr)diskPtr,
+						DiskLen = disk?.Length ?? 0,
 						Gb1RomData = (IntPtr)gb1RomPtr,
-						Gb1RomLen = gbRoms[0]?.Length ?? 0,
+						Gb1RomLen = GetGBRomOrNull(0)?.Length ?? 0,
 						Gb2RomData = (IntPtr)gb2RomPtr,
-						Gb2RomLen = gbRoms[1]?.Length ?? 0,
+						Gb2RomLen = GetGBRomOrNull(1)?.Length ?? 0,
 						Gb3RomData = (IntPtr)gb3RomPtr,
-						Gb3RomLen = gbRoms[2]?.Length ?? 0,
+						Gb3RomLen = GetGBRomOrNull(2)?.Length ?? 0,
 						Gb4RomData = (IntPtr)gb4RomPtr,
-						Gb4RomLen = gbRoms[3]?.Length ?? 0,
+						Gb4RomLen = GetGBRomOrNull(3)?.Length ?? 0,
 					};
-					if (!_core.Init(ref loadData, ControllerSettings, loadFlags))
+					if (!_core.Init(ref loadData, ControllerSettings, pal, _settings.Deinterlacer == LibAres64.DeinterlacerType.Bob, GetRtcTime(!DeterministicEmulation)))
 					{
 						throw new InvalidOperationException("Init returned false!");
 					}
@@ -121,9 +160,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 
 			_disassembler = new(_core);
 			_serviceProvider.Register<IDisassemblable>(_disassembler);
-
-			DeterministicEmulation = lp.DeterministicEmulationRequested || (!_syncSettings.UseRealTime);
-			InitializeRtc(_syncSettings.InitialTime);
 		}
 
 		public DisplayType Region { get; }
@@ -133,6 +169,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 		private ControllerDefinition N64Controller { get; }
 
 		public LibAres64.ControllerType[] ControllerSettings { get; }
+
+		public bool IsDD { get; }
 
 		private static ControllerDefinition CreateControllerDefinition(LibAres64.ControllerType[] controllerSettings)
 		{
@@ -161,7 +199,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 					ret.BoolButtons.Add($"P{i + 1} C Right");
 					ret.BoolButtons.Add($"P{i + 1} L");
 					ret.BoolButtons.Add($"P{i + 1} R");
-					ret.AddXYPair($"P{i + 1} {{0}} Axis", AxisPairOrientation.RightAndUp, (-128).RangeTo(127), 0);
+					ret.AddXYPair($"P{i + 1} {{0}} Axis", AxisPairOrientation.RightAndUp, (-128).RangeTo(127), 0, new CircularAxisConstraint("Natural Circle", $"P{i + 1} Y Axis", 127.0f));
 					if (controllerSettings[i] == LibAres64.ControllerType.Rumblepak)
 					{
 						ret.HapticsChannels.Add($"P{i + 1} Rumble Pak");

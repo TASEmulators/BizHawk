@@ -7,6 +7,7 @@ using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Arcades.MAME;
 using BizHawk.Emulation.Cores.Atari.Jaguar;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
@@ -284,6 +285,11 @@ namespace BizHawk.Client.Common
 			if (emulator is VirtualJaguar jag && jag.IsJaguarCD)
 			{
 				movie.HeaderEntries.Add("IsJaguarCD", "1");
+			}
+
+			if (emulator is Ares64 ares && ares.IsDD)
+			{
+				movie.HeaderEntries.Add("IsDD", "1");
 			}
 
 			if (emulator is MAME mame)

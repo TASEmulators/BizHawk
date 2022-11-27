@@ -1,6 +1,7 @@
 auto CPU::Debugger::load(Node::Object parent) -> void {
   tracer.instruction = parent->append<Node::Debugger::Tracer::Instruction>("Instruction", "CPU");
   tracer.instruction->setAddressBits(64, 2);
+  tracer.instruction->setDepth(64);
 
   tracer.exception = parent->append<Node::Debugger::Tracer::Notification>("Exception", "CPU");
   tracer.interrupt = parent->append<Node::Debugger::Tracer::Notification>("Interrupt", "CPU");
@@ -48,6 +49,7 @@ auto CPU::Debugger::exception(u8 code) -> void {
     case 15: type = "floating point"; break;
     case 23: type = "watch address"; break;
     }
+    type.append(string{" (PC=", hex(cpu.ipu.pc, 16L), ")"});
     tracer.exception->notify(type);
   }
 }

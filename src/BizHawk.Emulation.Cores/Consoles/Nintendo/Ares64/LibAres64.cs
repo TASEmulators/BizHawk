@@ -43,6 +43,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			Bob,
 		}
 
+		public enum IplVer : uint
+		{
+			Japan,
+			Dev,
+			USA,
+		}
+
 		[StructLayout(LayoutKind.Sequential)]
 		public new class FrameInfo : LibWaterboxCore.FrameInfo
 		{
@@ -69,33 +76,29 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			public bool Power;
 		}
 
-		[Flags]
-		public enum LoadFlags : uint
-		{
-			RestrictAnalogRange = 1 << 0,
-			Pal = 1 << 1,
-			BobDeinterlace = 1 << 2, // weave otherwise
-		}
-
 		[StructLayout(LayoutKind.Sequential)]
 		public struct LoadData
 		{
 			public IntPtr PifData;
-			public int PifLen;
+			public long PifLen;
+			public IntPtr IplData;
+			public long IplLen;
 			public IntPtr RomData;
-			public int RomLen;
+			public long RomLen;
+			public IntPtr DiskData;
+			public long DiskLen;
 			public IntPtr Gb1RomData;
-			public int Gb1RomLen;
+			public long Gb1RomLen;
 			public IntPtr Gb2RomData;
-			public int Gb2RomLen;
+			public long Gb2RomLen;
 			public IntPtr Gb3RomData;
-			public int Gb3RomLen;
+			public long Gb3RomLen;
 			public IntPtr Gb4RomData;
-			public int Gb4RomLen;
+			public long Gb4RomLen;
 		}
 
 		[BizImport(CC)]
-		public abstract bool Init(ref LoadData loadData, ControllerType[] controllerSettings, LoadFlags loadFlags);
+		public abstract bool Init(ref LoadData loadData, ControllerType[] controllerSettings, bool isPal, bool bobDeinterlace, long initTime);
 
 		[BizImport(CC)]
 		public abstract bool GetRumbleStatus(int num);

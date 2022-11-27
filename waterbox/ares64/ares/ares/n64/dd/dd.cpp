@@ -3,41 +3,149 @@
 namespace ares::Nintendo64 {
 
 DD dd;
+#include "controller.cpp"
+#include "drive.cpp"
+#include "rtc.cpp"
 #include "io.cpp"
 #include "debugger.cpp"
 #include "serialization.cpp"
 
 auto DD::load(Node::Object parent) -> void {
-  node = parent->append<Node::Object>("Disk Drive");
+  obj = parent->append<Node::Object>("Nintendo 64DD");
+  port = obj->append<Node::Port>("Disk Drive");
+  port->setFamily("Nintendo 64DD");
+  port->setType("Floppy Disk");
+  port->setHotSwappable(true);
+  port->setAllocate([&](auto name) { return allocate(port); });
+  port->setConnect([&] { return connect(); });
+  port->setDisconnect([&] { return disconnect(); });
 
   iplrom.allocate(4_MiB);
   c2s.allocate(0x400);
   ds.allocate(0x100);
   ms.allocate(0x40);
+  rtc.allocate(0x10);
 
-  if(node->setPak(pak = platform->pak(node))) {
-    if(auto fp = pak->read("64dd.ipl.rom")) {
-      iplrom.load(fp);
-    }
+  // TODO: Detect correct CIC from ipl rom
+  if(auto fp = system.pak->read("64dd.ipl.rom")) {
+    iplrom.load(fp);
   }
 
-  debugger.load(node);
+  debugger.load(parent->append<Node::Object>("Nintendo 64DD"));
 }
 
 auto DD::unload() -> void {
+  if(!node) return;
+  disconnect();
+
   debugger = {};
   iplrom.reset();
   c2s.reset();
   ds.reset();
   ms.reset();
-  pak.reset();
+  rtc.reset();
+  disk.reset();
+  port.reset();
   node.reset();
+  obj.reset();
+}
+
+auto DD::allocate(Node::Port parent) -> Node::Peripheral {
+  return node = parent->append<Node::Peripheral>("Nintendo 64DD Disk");
+}
+
+auto DD::connect() -> void {
+  if(!node->setPak(pak = platform->pak(node))) return;
+
+  information = {};
+  information.title = pak->attribute("title");
+
+  if(iplrom) {
+    string id;
+    id.append((char)iplrom.read<Byte>(0x3b));
+    id.append((char)iplrom.read<Byte>(0x3c));
+    id.append((char)iplrom.read<Byte>(0x3d));
+    id.append((char)iplrom.read<Byte>(0x3e));
+    if(id.match("NDDJ")) dd.information.cic = "CIC-NUS-8303";
+    if(id.match("NDDE")) dd.information.cic = "CIC-NUS-DDUS";
+    if(id.match("NDXJ")) dd.information.cic = "CIC-NUS-8401";
+  }
+
+  if(auto fp = pak->read("program.disk.error")) {
+    error.allocate(fp->size());
+    error.load(fp);
+  }
+
+  if(auto fp = pak->read("program.disk")) {
+    disk.allocate(fp->size());
+    disk.load(fp);
+  }
+
+  rtcLoad();
+}
+
+auto DD::disconnect() -> void {
+  if(!port) return;
+
+  save();
+  pak.reset();
+  information = {};
+}
+
+auto DD::save() -> void {
+  /*if(disk)
+  if(auto fp = pak->write("program.disk")) {
+    disk.save(fp);
+  }*/
+  
+  rtcSave();
 }
 
 auto DD::power(bool reset) -> void {
   c2s.fill();
   ds.fill();
   ms.fill();
+
+  irq = {};
+  ctl = {};
+  io = {};
+  state = {};
+
+  io.status.resetState = 1;
+  io.id = 3;
+  if(dd.information.cic.match("CIC-NUS-8401")) io.id = 4;
+  
+  motorStop();
+
+  queue.insert(Queue::DD_Clock_Tick, 187'500'000);
+  queue.remove(Queue::DD_MECHA_Response);
+  queue.remove(Queue::DD_BM_Request);
+  lower(IRQ::MECHA);
+  lower(IRQ::BM);
+}
+
+auto DD::raise(IRQ source) -> void {
+  debugger.interrupt((u32)source);
+  switch(source) {
+  case IRQ::MECHA: irq.mecha.line = 1; break;
+  case IRQ::BM: irq.bm.line = 1; break;
+  }
+  poll();
+}
+
+auto DD::lower(IRQ source) -> void {
+  switch(source) {
+  case IRQ::MECHA: irq.mecha.line = 0; break;
+  case IRQ::BM: irq.bm.line = 0; break;
+  }
+  poll();
+}
+
+auto DD::poll() -> void {
+  bool line = 0;
+  line |= irq.mecha.line & irq.mecha.mask;
+  line |= irq.bm.line & irq.bm.mask;
+  cpu.scc.cause.interruptPending.bit(3) = line;
 }
 
 }

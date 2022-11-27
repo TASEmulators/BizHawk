@@ -98,7 +98,7 @@ auto BizPlatform::audio(ares::Node::Audio::Stream stream) -> void
 		stream->read(buf);
 		soundbuf[nsamps * 2 + 0] = (s16)std::clamp(buf[0] * 32768, -32768.0, 32767.0);
 		soundbuf[nsamps * 2 + 1] = (s16)std::clamp(buf[1] * 32768, -32768.0, 32767.0);
-		if (!hack) nsamps++;
+		if (nsamps < 1023) nsamps++;
 	}
 }
 
@@ -117,17 +117,11 @@ auto BizPlatform::input(ares::Node::Input::Input node) -> void
 static ares::Node::System root = nullptr;
 static BizPlatform* platform = nullptr;
 static array_view<u8>* pifData = nullptr;
+static array_view<u8>* iplData = nullptr;
 static array_view<u8>* romData = nullptr;
+static array_view<u8>* diskData = nullptr;
 static array_view<u8>* saveData = nullptr;
 static array_view<u8>* gbRomData[4] = { nullptr, nullptr, nullptr, nullptr, };
-
-static inline void HackeryDoo()
-{
-	platform->hack = true;
-	root->run();
-	root->run();
-	platform->hack = false;
-}
 
 typedef enum
 {
@@ -353,29 +347,26 @@ static inline SaveType DetectSaveType(u8* rom)
 	return ret;
 }
 
-namespace ares::Nintendo64 { extern bool RestrictAnalogRange; extern bool BobDeinterlace; }
+namespace ares::Nintendo64 { extern bool BobDeinterlace; }
 
 typedef struct
 {
 	u8* GbRomData;
-	u32 GbRomLen;
+	u64 GbRomLen;
 } GbRom;
 
 typedef struct
 {
 	u8* PifData;
-	u32 PifLen;
+	u64 PifLen;
+	u8* IplData;
+	u64 IplLen;
 	u8* RomData;
-	u32 RomLen;
+	u64 RomLen;
+	u8* DiskData;
+	u64 DiskLen;
 	GbRom GbRoms[4];
 } LoadData;
-
-typedef enum
-{
-	RESTRICT_ANALOG_RANGE = 1 << 0,
-	IS_PAL = 1 << 1,
-	BOB_DEINTERLACE = 1 << 2, // weave otherwise (todo: implement this)
-} LoadFlags;
 
 #define SET_RTC_CALLBACK(NUM) do { \
 	if (auto pad = dynamic_cast<ares::Nintendo64::Gamepad*>(ares::Nintendo64::controllerPort##NUM.device.data())) \
@@ -387,23 +378,11 @@ typedef enum
 	} \
 } while (0)
 
-EXPORT bool Init(LoadData* loadData, ControllerType* controllers, LoadFlags loadFlags)
+static bool LoadRom(LoadData* loadData, bool isPal)
 {
-	platform = new BizPlatform;
-	platform->bizpak = new vfs::directory;
-
 	u8* data;
 	u32 len;
 	string name;
-
-	bool pal = loadFlags & IS_PAL;
-
-	name = pal ? "pif.pal.rom" : "pif.ntsc.rom";
-	len = loadData->PifLen;
-	data = new u8[len];
-	memcpy(data, loadData->PifData, len);
-	pifData = new array_view<u8>(data, len);
-	platform->bizpak->append(name, *pifData);
 
 	name = "program.rom";
 	len = loadData->RomLen;
@@ -412,16 +391,13 @@ EXPORT bool Init(LoadData* loadData, ControllerType* controllers, LoadFlags load
 	romData = new array_view<u8>(data, len);
 	platform->bizpak->append(name, *romData);
 
-	string region = pal ? "PAL" : "NTSC";
-	platform->bizpak->setAttribute("region", region);
-
-	string cic = pal ? "CIC-NUS-7101" : "CIC-NUS-6102";
+	string cic = isPal ? "CIC-NUS-7101" : "CIC-NUS-6102";
 	u32 crc32 = Hash::CRC32({&data[0x40], 0x9C0}).value();
-	if (crc32 == 0x1DEB51A9) cic = pal ? "CIC-NUS-7102" : "CIC-NUS-6101";
-	if (crc32 == 0xC08E5BD6) cic = pal ? "CIC-NUS-7101" : "CIC-NUS-6102";
-	if (crc32 == 0x03B8376A) cic = pal ? "CIC-NUS-7103" : "CIC-NUS-6103";
-	if (crc32 == 0xCF7F41DC) cic = pal ? "CIC-NUS-7105" : "CIC-NUS-6105";
-	if (crc32 == 0xD1059C6A) cic = pal ? "CIC-NUS-7106" : "CIC-NUS-6106";
+	if (crc32 == 0x1DEB51A9) cic = isPal ? "CIC-NUS-7102" : "CIC-NUS-6101";
+	if (crc32 == 0xC08E5BD6) cic = isPal ? "CIC-NUS-7101" : "CIC-NUS-6102";
+	if (crc32 == 0x03B8376A) cic = isPal ? "CIC-NUS-7103" : "CIC-NUS-6103";
+	if (crc32 == 0xCF7F41DC) cic = isPal ? "CIC-NUS-7105" : "CIC-NUS-6105";
+	if (crc32 == 0xD1059C6A) cic = isPal ? "CIC-NUS-7106" : "CIC-NUS-6106";
 	platform->bizpak->setAttribute("cic", cic);
 
 	SaveType save = DetectSaveType(data);
@@ -443,6 +419,100 @@ EXPORT bool Init(LoadData* loadData, ControllerType* controllers, LoadFlags load
 		platform->bizpak->append(name, *saveData);
 	}
 
+	if (auto port = root->find<ares::Node::Port>("Cartridge Slot"))
+	{
+		port->allocate();
+		port->connect();
+	}
+	else
+	{
+		return false;
+	}
+
+	return true;
+}
+
+static bool LoadDisk(LoadData* loadData)
+{
+	u8* data;
+	u32 len;
+	string name;
+
+	name = "64dd.ipl.rom";
+	len = loadData->IplLen;
+	data = new u8[len];
+	memcpy(data, loadData->IplData, len);
+	iplData = new array_view<u8>(data, len);
+	platform->bizpak->append(name, *iplData);
+
+	name = "program.disk";
+	len = loadData->DiskLen;
+	data = new u8[len];
+	memcpy(data, loadData->DiskData, len);
+	diskData = new array_view<u8>(data, len);
+	platform->bizpak->append(name, *diskData);
+
+	ares::Nintendo64::dd.rtcCallback = GetBizTime;
+
+	if (auto port = root->find<ares::Node::Port>("Nintendo 64DD/Disk Drive"))
+	{
+		port->allocate();
+		port->connect();
+	}
+	else
+	{
+		return false;
+	}
+
+	return true;
+}
+
+EXPORT bool Init(LoadData* loadData, ControllerType* controllers, bool isPal, bool bobDeinterlace, u64 initTime)
+{
+	platform = new BizPlatform;
+	platform->bizpak = new vfs::directory;
+	biztime = initTime;
+
+	u8* data;
+	u32 len;
+	string name;
+
+	name = isPal ? "pif.pal.rom" : "pif.ntsc.rom";
+	len = loadData->PifLen;
+	data = new u8[len];
+	memcpy(data, loadData->PifData, len);
+	pifData = new array_view<u8>(data, len);
+	platform->bizpak->append(name, *pifData);
+
+	string region = isPal ? "PAL" : "NTSC";
+	platform->bizpak->setAttribute("region", region);
+
+	ares::platform = platform;
+
+	name = {"[Nintendo] Nintendo 64 (", region, ")"};
+	if (loadData->DiskData) name = {"[Nintendo] Nintendo 64DD (", region, ")"};
+
+	if (!ares::Nintendo64::load(root, name))
+	{
+		return false;
+	}
+
+	if (loadData->RomData)
+	{
+		if (!LoadRom(loadData, isPal))
+		{
+			return false;
+		}
+	}
+
+	if (loadData->DiskData)
+	{
+		if (!LoadDisk(loadData))
+		{
+			return false;
+		}
+	}
+
 	for (int i = 0; i < 4; i++)
 	{
 		if (loadData->GbRoms[i].GbRomData)
@@ -452,23 +522,6 @@ EXPORT bool Init(LoadData* loadData, ControllerType* controllers, LoadFlags load
 			memcpy(data, loadData->GbRoms[i].GbRomData, len);
 			gbRomData[i] = new array_view<u8>(data, len);
 		}
-	}
-
-	ares::platform = platform;
-
-	if (!ares::Nintendo64::load(root, {"[Nintendo] Nintendo 64 (", region, ")"}))
-	{
-		return false;
-	}
-
-	if (auto port = root->find<ares::Node::Port>("Cartridge Slot"))
-	{
-		port->allocate();
-		port->connect();
-	}
-	else
-	{
-		return false;
 	}
 
 	for (int i = 0, j = 0; i < 4; i++)
@@ -525,11 +578,9 @@ EXPORT bool Init(LoadData* loadData, ControllerType* controllers, LoadFlags load
 	SET_RTC_CALLBACK(3);
 	SET_RTC_CALLBACK(4);
 
-	ares::Nintendo64::RestrictAnalogRange = loadFlags & RESTRICT_ANALOG_RANGE;
-	ares::Nintendo64::BobDeinterlace = loadFlags & BOB_DEINTERLACE;
+	ares::Nintendo64::BobDeinterlace = bobDeinterlace;
 
 	root->power(false);
-	HackeryDoo();
 	return true;
 }
 
@@ -726,15 +777,15 @@ struct MyFrameInfo : public FrameInfo
 
 EXPORT void FrameAdvance(MyFrameInfo* f)
 {
+	biztime = f->Time;
+
 	if (f->Power)
 	{
 		root->power(false);
-		HackeryDoo();
 	}
 	else if (f->Reset)
 	{
 		root->power(true);
-		HackeryDoo();
 	}
 
 	UPDATE_CONTROLLER(1);
@@ -744,7 +795,6 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 
 	platform->lagged = true;
 	platform->nsamps = 0;
-	biztime = f->Time;
 
 	root->run();
 

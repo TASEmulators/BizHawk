@@ -74,10 +74,7 @@ static const sljit_u8 reg_map[SLJIT_NUMBER_OF_REGISTERS + 3] = {
 
 #define CHECK_EXTRA_REGS(p, w, do) \
 	if (p >= SLJIT_R3 && p <= SLJIT_S3) { \
-		if (p <= compiler->scratches) \
-			w = (2 * SSIZE_OF(sw)) + ((p) - SLJIT_R3) * SSIZE_OF(sw); \
-		else \
-			w = SLJIT_LOCALS_OFFSET_BASE + ((p) - SLJIT_S2) * SSIZE_OF(sw); \
+		w = (2 * SSIZE_OF(sw)) + ((p) - SLJIT_R3) * SSIZE_OF(sw); \
 		p = SLJIT_MEM1(SLJIT_SP); \
 		do; \
 	}

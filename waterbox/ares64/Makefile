@@ -7,7 +7,7 @@ CXXFLAGS := -std=c++17 -msse4.2 \
 	-I../libco -I.$(ROOT_DIR)/ares/ -I.$(ROOT_DIR)/ares/thirdparty/ -I.$(ARES_PATH) \
 	-Werror=int-to-pointer-cast -Wno-unused-but-set-variable -Wno-format-security \
 	-Wno-parentheses -Wno-reorder -Wno-unused-variable -Wno-delete-non-virtual-dtor \
-	-Wno-sign-compare -Wno-switch -Wno-unused-local-typedefs \
+	-Wno-sign-compare -Wno-switch -Wno-unused-local-typedefs -Wno-bool-operation \
 	-fno-strict-aliasing -fwrapv -fno-operator-names \
 	-I.$(ANGRYLION_PATH) -DANGRYLION_RDP
 
@@ -26,8 +26,6 @@ SRCS_N64 = \
 	$(ARES_PATH)/n64/cartridge/cartridge.cpp \
 	$(ARES_PATH)/n64/controller/controller.cpp \
 	$(ARES_PATH)/n64/dd/dd.cpp \
-	$(ARES_PATH)/n64/sp/sp.cpp \
-	$(ARES_PATH)/n64/dp/dp.cpp \
 	$(ARES_PATH)/n64/mi/mi.cpp \
 	$(ARES_PATH)/n64/vi/vi.cpp \
 	$(ARES_PATH)/n64/ai/ai.cpp \
@@ -37,8 +35,8 @@ SRCS_N64 = \
 	$(ARES_PATH)/n64/si/si.cpp \
 	$(ARES_PATH)/n64/rdram/rdram.cpp \
 	$(ARES_PATH)/n64/cpu/cpu.cpp \
-	$(ARES_PATH)/n64/rdp/rdp.cpp \
-	$(ARES_PATH)/n64/rsp/rsp.cpp
+	$(ARES_PATH)/n64/rsp/rsp.cpp \
+	$(ARES_PATH)/n64/rdp/rdp.cpp
 
 SRCS_ANGRYLION = \
 	$(ANGRYLION_PATH)/main.cpp \

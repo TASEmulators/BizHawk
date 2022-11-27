@@ -2,7 +2,7 @@
 
 namespace ares::Memory {
 
-#if defined(PLATFORM_MACOS) && defined(ARCHITECTURE_ARM64)
+#if defined(PLATFORM_MACOS)
 //stub for unsupported platforms
 FixedAllocator::FixedAllocator() {
 }

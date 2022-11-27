@@ -3,7 +3,9 @@
 
 #define XXH_INLINE_ALL
 #include <xxhash.h>
+#include <float.h>
 #include <ares/ares.hpp>
+#include <nall/float-env.hpp>
 #include <nall/hashset.hpp>
 #include <nall/recompiler/generic/generic.hpp>
 #include <component/processor/sm5k/sm5k.hpp>
@@ -33,6 +35,8 @@ namespace ares::Nintendo64 {
     static inline auto PAL() -> bool;
   };
 
+  inline static auto _DD() -> bool;
+
   struct Thread {
     auto reset() -> void {
       clock = 0;
@@ -53,6 +57,10 @@ namespace ares::Nintendo64 {
       PI_BUS_Write,
       SI_DMA_Read,
       SI_DMA_Write,
+      DD_Clock_Tick,
+      DD_MECHA_Response,
+      DD_BM_Request,
+      DD_Motor_Mode,
     };
   };
   extern Queue queue;

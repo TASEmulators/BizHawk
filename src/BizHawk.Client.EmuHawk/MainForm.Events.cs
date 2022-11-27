@@ -1856,6 +1856,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void Ares64SubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			N64CircularAnalogRangeMenuItem.Checked = Config.N64UseCircularAnalogConstraint;
+		}
+
+		private void Ares64SettingsMenuItem_Click(object sender, EventArgs e)
+			=> OpenGenericCoreConfigFor<Ares64>(CoreNames.Ares64 + " Settings");
+
 		private DialogResult OpenGambatteLinkSettingsDialog(ISettingsAdapter settable)
 			=> GBLPrefs.DoGBLPrefsDialog(Config, this, Game, MovieSession, settable);
 
@@ -2736,7 +2744,10 @@ namespace BizHawk.Client.EmuHawk
 			items.Add(a7800HawkSubmenu);
 
 			// Ares64
-			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Ares64, CreateGenericCoreConfigItem<Ares64>(CoreNames.Ares64)));
+			var ares64AnalogConstraintItem = CreateSettingsItem("Circular Analog Range", N64CircularAnalogRangeMenuItem_Click);
+			var ares64Submenu = CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Ares64, CreateGenericCoreConfigItem<Ares64>(CoreNames.Ares64));
+			ares64Submenu.DropDownOpened += (_, _) => ares64AnalogConstraintItem.Checked = Config.N64UseCircularAnalogConstraint;
+			items.Add(ares64Submenu);
 
 			// Atari2600Hawk
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Atari2600Hawk, CreateGenericCoreConfigItem<Atari2600>(CoreNames.Atari2600Hawk)));
