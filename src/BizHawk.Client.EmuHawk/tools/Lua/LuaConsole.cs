@@ -279,6 +279,11 @@ namespace BizHawk.Client.EmuHawk
 				return;
 
 			var (dir, file) = item.Path.MakeProgramRelativePath().SplitPathToDirAndFile();
+
+			// prevent error when (auto)loading session referencing scripts in deleted/renamed directories
+			if (!Directory.Exists(dir))
+				return;
+
 			var watcher = new FileSystemWatcher
 			{
 				Path = dir,
