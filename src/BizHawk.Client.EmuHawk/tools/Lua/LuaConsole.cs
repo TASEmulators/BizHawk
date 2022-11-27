@@ -127,6 +127,7 @@ namespace BizHawk.Client.EmuHawk
 					
 					DisplayManager.ClearApiHawkSurfaces();
 					ResetDrawSurfacePadding();
+					ClearFileWatches();
 					(LuaImp as Win32LuaLibraries)?.Close();
 					DisplayManager.OSD.ClearGuiText();
 				}
@@ -258,7 +259,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Settings.ReloadOnScriptFileChange)
 			{
-				_watches.Clear();
+				ClearFileWatches();
 				foreach (var item in LuaImp.ScriptList.Where(s => !s.IsSeparator))
 				{
 					var processedPath = Config.PathEntries.TryMakeRelative(item.Path);
@@ -267,6 +268,13 @@ namespace BizHawk.Client.EmuHawk
 					CreateFileWatcher(pathToLoad);
 				}
 			}
+		}
+
+		private void ClearFileWatches()
+		{
+			foreach (var watch in _watches)
+				watch.Dispose();
+			_watches.Clear();
 		}
 
 		private void CreateFileWatcher(string path)
@@ -286,9 +294,19 @@ namespace BizHawk.Client.EmuHawk
 			_watches.Add(watcher);
 		}
 
+		private void RemoveFileWatcher(string path)
+		{
+			var (dir, file) = path.SplitPathToDirAndFile();
+			var watcher = _watches.Find(watcher => watcher.Path == dir && watcher.Filter == file);
+			if (watcher != null)
+			{
+				_watches.Remove(watcher);
+				watcher.Dispose();
+			}
+		}
+
 		private void OnChanged(object source, FileSystemEventArgs e)
 		{
-			// Even after _watches is cleared, these callbacks hang around! So this check is necessary
 			var script = LuaImp.ScriptList.FirstOrDefault(s => s.Path == e.FullPath && s.Enabled);
 			if (script != null) Invoke((MethodInvoker) (() => RefreshLuaScript(script)));
 		}
@@ -350,7 +368,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RemoveLuaFile(LuaFile item)
 		{
-			LuaImp.RegisteredFunctions.RemoveForFile(item, Emulator);
+			if (!item.IsSeparator)
+			{
+				LuaImp.RegisteredFunctions.RemoveForFile(item, Emulator);
+				RemoveFileWatcher(item.Path);
+			}
 			LuaImp.ScriptList.Remove(item);
 		}
 
@@ -1100,7 +1122,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				_watches.Clear();
+				ClearFileWatches();
 			}
 		}
 
