@@ -687,13 +687,9 @@ namespace BizHawk.Client.EmuHawk
 			var file = GetSaveFileFromUser();
 			if (file != null)
 			{
-				var path = Config.PathEntries
-					.AbsolutePathFor(file.FullName, "")
-					.MakeRelativeTo(Path.GetDirectoryName(file.FullName));
-				LuaImp.ScriptList.Save(path);
-
-				Config.RecentLuaSession.Add(file.FullName); // TODO: should path be used here?
-				OutputMessages.Text = $"{Path.GetFileName(LuaImp.ScriptList.Filename)} saved.";
+				LuaImp.ScriptList.Save(file.FullName);
+				Config.RecentLuaSession.Add(file.FullName);
+				OutputMessages.Text = $"{file.Name} saved.";
 			}
 		}
 
