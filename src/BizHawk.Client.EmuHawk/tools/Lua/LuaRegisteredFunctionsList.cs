@@ -10,7 +10,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private readonly IMainFormForApi _mainForm;
 
-		private readonly LuaFunctionList _registeredFunctions;
+		private LuaFunctionList _registeredFunctions;
 
 		public LuaRegisteredFunctionsList(IMainFormForApi mainForm, LuaFunctionList registeredFunctions)
 		{
@@ -22,8 +22,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public Point StartLocation { get; set; } = new Point(0, 0);
 
-		public void UpdateValues()
+		public void UpdateValues(LuaFunctionList registeredFunctions)
 		{
+			_registeredFunctions = registeredFunctions;
 			PopulateListView();
 		}
 
