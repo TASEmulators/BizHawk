@@ -62,6 +62,17 @@ namespace BizHawk.Client.Common
 			return new Bk2Controller("", definition ?? MovieController.Definition);
 		}
 
+		// Hack only used for TAStudio when starting a new movie
+		// This is due to needing to save a "dummy" default.tasproj
+		// This dummy file's initial save bypasses the normal queue/run
+		// new movie code (which normally sets the controller), although
+		// once it saves it goes through the normal queue/run code anyway.
+		// TODO: Stop relying on this dummy file so we do not need this ugly hack
+		public void SetMovieController(ControllerDefinition definition)
+		{
+			MovieController = new Bk2Controller(definition);
+		}
+
 		public void HandleFrameBefore()
 		{
 			if (Movie.NotActive())
