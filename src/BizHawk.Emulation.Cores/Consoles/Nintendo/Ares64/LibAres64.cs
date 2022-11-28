@@ -87,6 +87,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			public long RomLen;
 			public IntPtr DiskData;
 			public long DiskLen;
+			public IntPtr DiskErrorData;
+			public long DiskErrorLen;
 			public IntPtr Gb1RomData;
 			public long Gb1RomLen;
 			public IntPtr Gb2RomData;
