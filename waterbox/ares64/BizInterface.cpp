@@ -120,6 +120,7 @@ static array_view<u8>* pifData = nullptr;
 static array_view<u8>* iplData = nullptr;
 static array_view<u8>* romData = nullptr;
 static array_view<u8>* diskData = nullptr;
+static array_view<u8>* diskErrorData = nullptr;
 static array_view<u8>* saveData = nullptr;
 static array_view<u8>* gbRomData[4] = { nullptr, nullptr, nullptr, nullptr, };
 
@@ -365,6 +366,8 @@ typedef struct
 	u64 RomLen;
 	u8* DiskData;
 	u64 DiskLen;
+	u8* DiskErrorData;
+	u64 DiskErrorLen;
 	GbRom GbRoms[4];
 } LoadData;
 
@@ -438,19 +441,19 @@ static bool LoadDisk(LoadData* loadData)
 	u32 len;
 	string name;
 
-	name = "64dd.ipl.rom";
-	len = loadData->IplLen;
-	data = new u8[len];
-	memcpy(data, loadData->IplData, len);
-	iplData = new array_view<u8>(data, len);
-	platform->bizpak->append(name, *iplData);
-
 	name = "program.disk";
 	len = loadData->DiskLen;
 	data = new u8[len];
 	memcpy(data, loadData->DiskData, len);
 	diskData = new array_view<u8>(data, len);
 	platform->bizpak->append(name, *diskData);
+
+	name = "program.disk.error";
+	len = loadData->DiskErrorLen;
+	data = new u8[len];
+	memcpy(data, loadData->DiskErrorData, len);
+	diskErrorData = new array_view<u8>(data, len);
+	platform->bizpak->append(name, *diskErrorData);
 
 	ares::Nintendo64::dd.rtcCallback = GetBizTime;
 
@@ -471,6 +474,7 @@ EXPORT bool Init(LoadData* loadData, ControllerType* controllers, bool isPal, bo
 {
 	platform = new BizPlatform;
 	platform->bizpak = new vfs::directory;
+	ares::platform = platform;
 	biztime = initTime;
 
 	u8* data;
@@ -484,13 +488,22 @@ EXPORT bool Init(LoadData* loadData, ControllerType* controllers, bool isPal, bo
 	pifData = new array_view<u8>(data, len);
 	platform->bizpak->append(name, *pifData);
 
+	// needs to be loaded before ares::Nintendo64::load
+	if (loadData->IplData)
+	{
+		name = "64dd.ipl.rom";
+		len = loadData->IplLen;
+		data = new u8[len];
+		memcpy(data, loadData->IplData, len);
+		iplData = new array_view<u8>(data, len);
+		platform->bizpak->append(name, *iplData);
+	}
+
 	string region = isPal ? "PAL" : "NTSC";
 	platform->bizpak->setAttribute("region", region);
 
-	ares::platform = platform;
-
 	name = {"[Nintendo] Nintendo 64 (", region, ")"};
-	if (loadData->DiskData) name = {"[Nintendo] Nintendo 64DD (", region, ")"};
+	if (loadData->DiskData) name = "[Nintendo] Nintendo 64DD (NTSC-J)"; // todo: handle this better (name doesn't really matter at this point)
 
 	if (!ares::Nintendo64::load(root, name))
 	{
