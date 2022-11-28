@@ -213,7 +213,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		private void snes_controller_latch()
 		{
-			InputCallbacks.Call();
+			InputCallbacks.Call(99); //TODO
 		}
 
 		private readonly int[] palette = new int[0x8000];

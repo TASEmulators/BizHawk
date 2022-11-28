@@ -123,8 +123,9 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public void GetControllerState(IController controller)
 		{
-			InputCallbacks.Call();
+			InputCallbacks.Call(1);
 			controller_state_1 = _controllerDeck.ReadPort1(controller);
+			InputCallbacks.Call(2);
 			controller_state_2 = _controllerDeck.ReadPort2(controller);
 
 			kb_state_row = 8; // nothing pressed

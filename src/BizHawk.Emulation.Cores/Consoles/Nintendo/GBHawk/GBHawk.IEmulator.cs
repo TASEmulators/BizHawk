@@ -356,7 +356,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public void GetControllerState(IController controller)
 		{
-			InputCallbacks.Call();
+			InputCallbacks.Call(1);
 			controller_state = _controllerDeck.ReadPort1(controller);
 			(Acc_X_state, Acc_Y_state) = _controllerDeck.ReadAcc1(controller);
 		}

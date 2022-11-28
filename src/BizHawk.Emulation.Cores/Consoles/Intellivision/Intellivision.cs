@@ -111,11 +111,11 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		private void GetControllerState(IController controller)
 		{
-			InputCallbacks.Call();
-
+			InputCallbacks.Call(1);
 			ushort port1 = _controllerDeck.ReadPort1(controller);
 			_psg.Register[15] = (ushort)(0xFF - port1);
 
+			InputCallbacks.Call(2);
 			ushort port2 = _controllerDeck.ReadPort2(controller);
 			_psg.Register[14] = (ushort)(0xFF - port2);
 		}

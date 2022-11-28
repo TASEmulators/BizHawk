@@ -28,10 +28,10 @@
 
 		private byte ReadInput()
 		{
-			InputCallbacks.Call();
+			int player = _selectedController + 1;
+			InputCallbacks.Call(player);
 			byte value = 0x3F;
 
-			int player = _selectedController + 1;
 			if (player < 6)
 			{
 				_lagged = false;

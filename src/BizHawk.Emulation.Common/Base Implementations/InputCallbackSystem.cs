@@ -9,18 +9,18 @@ namespace BizHawk.Emulation.Common
 	/// by any core
 	/// </summary>
 	/// <seealso cref="IInputCallbackSystem" />
-	public class InputCallbackSystem : List<Action>, IInputCallbackSystem
+	public class InputCallbackSystem : List<Action<int>>, IInputCallbackSystem
 	{
-		public void Call()
+		public void Call(int gamepadIndex)
 		{
 			foreach (var action in this)
 			{
-				action();
+				action(gamepadIndex);
 			}
 		}
 
 		// TODO: these just happen to be all the add/remove methods the client uses, to be thorough the others should be overriden as well
-		public void RemoveAll(IEnumerable<Action> actions)
+		public void RemoveAll(IEnumerable<Action<int>> actions)
 		{
 			var hadAny = this.Any();
 
@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Common
 			Changes(hadAny, hasAny);
 		}
 
-		public new void Add(Action item)
+		public new void Add(Action<int> item)
 		{
 			var hadAny = this.Any();
 			base.Add(item);
@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Common
 			Changes(hadAny, hasAny);
 		}
 
-		public new bool Remove(Action item)
+		public new bool Remove(Action<int> item)
 		{
 			var hadAny = this.Any();
 			var result = base.Remove(item);

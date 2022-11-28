@@ -990,10 +990,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 
 		public void GetControllerState(IController controller)
 		{
-			InputCallbacks.Call();
+			InputCallbacks.Call(1);
 			A_controller = _controllerDeck.ReadPort1(controller);
+			InputCallbacks.Call(2);
 			B_controller = _controllerDeck.ReadPort2(controller);
+			InputCallbacks.Call(3);
 			C_controller = _controllerDeck.ReadPort3(controller);
+			InputCallbacks.Call(4);
 			D_controller = _controllerDeck.ReadPort4(controller);
 		}
 

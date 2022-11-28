@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			_serviceProvider = new BasicServiceProvider(this);
 			SystemId = c.SystemId;
 			CoreComm = comm;
-			_inputCallback = InputCallbacks.Call;
+			_inputCallback = () => InputCallbacks.Call(99); //TODO
 		}
 
 		protected T PreInit<T>(WaterboxOptions options, IEnumerable<Delegate> allExtraDelegates = null)

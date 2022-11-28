@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		private void InputCb()
 		{
 			// most things are already handled in the core, this is just for event.oninputpoll
-			InputCallbacks.Call();
+			InputCallbacks.Call(1);
 		}
 		private InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
 		public IInputCallbackSystem InputCallbacks => _inputCallbacks;

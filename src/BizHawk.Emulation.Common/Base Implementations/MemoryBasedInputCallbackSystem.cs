@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Common
 	/// </summary>
 	public class MemoryBasedInputCallbackSystem : IInputCallbackSystem
 	{
-		private readonly List<Action> _inputCallbacks = new List<Action>();
+		private readonly List<Action<int>> _inputCallbacks = new();
 
 		public MemoryBasedInputCallbackSystem(IDebuggable debuggableCore, string scope, IEnumerable<uint> addresses)
 		{
@@ -39,36 +39,36 @@ namespace BizHawk.Emulation.Common
 		{
 			foreach (var action in _inputCallbacks)
 			{
-				action.Invoke();
+				action.Invoke(0);
 			}
 		}
 
-		public IEnumerator<Action> GetEnumerator() => _inputCallbacks.GetEnumerator();
+		public IEnumerator<Action<int>> GetEnumerator() => _inputCallbacks.GetEnumerator();
 
 		IEnumerator IEnumerable.GetEnumerator() => _inputCallbacks.GetEnumerator();
 
-		public void Add(Action item) => _inputCallbacks.Add(item);
+		public void Add(Action<int> item) => _inputCallbacks.Add(item);
 
 		public void Clear()
 		{
 			_inputCallbacks.Clear();
 		}
 
-		public bool Contains(Action item) => _inputCallbacks.Contains(item);
+		public bool Contains(Action<int> item) => _inputCallbacks.Contains(item);
 
-		public void CopyTo(Action[] array, int arrayIndex) => _inputCallbacks.CopyTo(array, arrayIndex);
+		public void CopyTo(Action<int>[] array, int arrayIndex) => _inputCallbacks.CopyTo(array, arrayIndex);
 
-		public bool Remove(Action item) => _inputCallbacks.Remove(item);
+		public bool Remove(Action<int> item) => _inputCallbacks.Remove(item);
 
 		public int Count => _inputCallbacks.Count;
 		public bool IsReadOnly => false;
 
-		public void Call()
+		public void Call(int gamepadIndex)
 		{
 			throw new InvalidOperationException("This implementation does not require being called directly");
 		}
 
-		public void RemoveAll(IEnumerable<Action> actions)
+		public void RemoveAll(IEnumerable<Action<int>> actions)
 		{
 			foreach (var action in actions)
 			{

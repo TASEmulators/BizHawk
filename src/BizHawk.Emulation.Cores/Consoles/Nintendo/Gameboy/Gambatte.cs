@@ -306,7 +306,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		private LibGambatte.Buttons ControllerCallback(IntPtr p)
 		{
-			InputCallbacks.Call();
+			InputCallbacks.Call(99); //TODO
 			IsLagFrame = false;
 			if (IsSgb)
 			{

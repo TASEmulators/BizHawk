@@ -249,17 +249,18 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public void GetControllerState(IController controller)
 		{
-			InputCallbacks.Call();
-
+			InputCallbacks.Call(1);
 			p1_state = _controllerDeck.ReadPort1(controller);
-			p2_state = _controllerDeck.ReadPort2(controller);
 			p1_fire = _controllerDeck.ReadFire1(controller);
-			p2_fire = _controllerDeck.ReadFire2(controller);
 			p1_fire_2x = _controllerDeck.ReadFire1_2x(controller);
-			p2_fire_2x = _controllerDeck.ReadFire2_2x(controller);
 			p1_is_2button = _controllerDeck.Is_2_button1(controller);
-			p2_is_2button = _controllerDeck.Is_2_button2(controller);
 			p1_is_lightgun = _controllerDeck.Is_LightGun1(controller, out p1_lightgun_x, out p1_lightgun_y);
+
+			InputCallbacks.Call(2);
+			p2_state = _controllerDeck.ReadPort2(controller);
+			p2_fire = _controllerDeck.ReadFire2(controller);
+			p2_fire_2x = _controllerDeck.ReadFire2_2x(controller);
+			p2_is_2button = _controllerDeck.Is_2_button2(controller);
 			p2_is_lightgun = _controllerDeck.Is_LightGun2(controller, out p2_lightgun_x, out p2_lightgun_y);
 		}
 

@@ -29,8 +29,6 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		{
 			bool noInput = true;
 
-			InputCallbacks.Call();
-
 			lock (this)
 			{
 				for (int i = 0; i < ButtonsConsole.Length; i++)
@@ -55,6 +53,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					}
 				}
 
+				InputCallbacks.Call(1);
 				for (int i = 0; i < ButtonsRight.Length; i++)
 				{
 					var key = "P1 " + ButtonsRight[i];
@@ -67,6 +66,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					}
 				}
 
+				InputCallbacks.Call(2);
 				for (int i = 0; i < ButtonsLeft.Length; i++)
 				{
 					var key = "P2 " + ButtonsLeft[i];

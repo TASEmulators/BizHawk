@@ -216,7 +216,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 					MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
 				}
 			};
-			_machine.Memory.InputCallback = InputCallbacks.Call;
+			_machine.Memory.InputCallback = () => InputCallbacks.Call(1);
 		}
 
 		private bool _useRealTime;

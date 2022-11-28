@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		/// <param name="i">Id of controller to update and shove</param>
 		public int GetControllerInput(int i)
 		{
-			_emuCore.InputCallbacks.Call();
+			_emuCore.InputCallbacks.Call(i + 1);
 			ThisFrameInputPolled = true;
 
 			// Analog stick right = +X
