@@ -1,15 +1,17 @@
 NEED_LIBCO := 1
 
 ARES_PATH = $(ROOT_DIR)/ares/ares
-ANGRYLION_PATH = $(ROOT_DIR)/ares/thirdparty/angrylion-rdp/mylittle-nocomment
+THIRDPARTY_PATH = $(ROOT_DIR)/ares/thirdparty
+ANGRYLION_PATH = $(THIRDPARTY_PATH)/angrylion-rdp/mylittle-nocomment
+SLJIT_PATH = $(THIRDPARTY_PATH)/sljit/sljit_src
 
-CXXFLAGS := -std=c++17 -msse4.2 \
-	-I../libco -I.$(ROOT_DIR)/ares/ -I.$(ROOT_DIR)/ares/thirdparty/ -I.$(ARES_PATH) \
+CXXFLAGS := -std=gnu++17 -march=nehalem \
+	-I../libco -I.$(ROOT_DIR)/ares -I.$(ARES_PATH) -I.$(THIRDPARTY_PATH) -I.$(ANGRYLION_PATH) \
 	-Werror=int-to-pointer-cast -Wno-unused-but-set-variable -Wno-format-security \
 	-Wno-parentheses -Wno-reorder -Wno-unused-variable -Wno-delete-non-virtual-dtor \
 	-Wno-sign-compare -Wno-switch -Wno-unused-local-typedefs -Wno-bool-operation \
-	-fno-strict-aliasing -fwrapv -fno-operator-names \
-	-I.$(ANGRYLION_PATH) -DANGRYLION_RDP
+	-fno-strict-aliasing -fwrapv -fno-operator-names -fexpensive-optimizations \
+	-DSLJIT_HAVE_CONFIG_PRE=1 -DSLJIT_HAVE_CONFIG_POST=1
 
 TARGET = ares64.wbx
 
@@ -42,6 +44,12 @@ SRCS_ANGRYLION = \
 	$(ANGRYLION_PATH)/main.cpp \
 	$(ANGRYLION_PATH)/n64video.cpp
 
-SRCS = $(SRCS_PROCESSORS) $(SRCS_ARES) $(SRCS_N64) $(SRCS_ANGRYLION) BizInterface.cpp
+#note these are not actually used as recompiler is disabled
+#these still need to be built though if you want a debug build
+SRCS_SLJIT = \
+	$(SLJIT_PATH)/sljitLir.c \
+	$(THIRDPARTY_PATH)/sljitAllocator.cpp
+
+SRCS = $(SRCS_PROCESSORS) $(SRCS_ARES) $(SRCS_N64) $(SRCS_ANGRYLION) $(SRCS_SLJIT) BizInterface.cpp
 
 include ../common.mak

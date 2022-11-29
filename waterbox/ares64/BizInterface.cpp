@@ -3,8 +3,6 @@
 #include <emulibc.h>
 #include <waterboxcore.h>
 
-#include <vector>
-
 #define EXPORT extern "C" ECL_EXPORT
 
 typedef enum
@@ -396,11 +394,15 @@ static bool LoadRom(LoadData* loadData, bool isPal)
 
 	string cic = isPal ? "CIC-NUS-7101" : "CIC-NUS-6102";
 	u32 crc32 = Hash::CRC32({&data[0x40], 0x9C0}).value();
-	if (crc32 == 0x1DEB51A9) cic = isPal ? "CIC-NUS-7102" : "CIC-NUS-6101";
+	if (crc32 == 0x1DEB51A9) cic = "CIC-NUS-6101";
+	if (crc32 == 0xEC8B1325) cic = "CIC-NUS-7102";
 	if (crc32 == 0xC08E5BD6) cic = isPal ? "CIC-NUS-7101" : "CIC-NUS-6102";
 	if (crc32 == 0x03B8376A) cic = isPal ? "CIC-NUS-7103" : "CIC-NUS-6103";
 	if (crc32 == 0xCF7F41DC) cic = isPal ? "CIC-NUS-7105" : "CIC-NUS-6105";
 	if (crc32 == 0xD1059C6A) cic = isPal ? "CIC-NUS-7106" : "CIC-NUS-6106";
+	if (crc32 == 0x0C965795) cic = "CIC-NUS-8303";
+	if (crc32 == 0x10C68B18) cic = "CIC-NUS-8401";
+	if (crc32 == 0x8FEBA21E) cic = "CIC-NUS-DDUS";
 	platform->bizpak->setAttribute("cic", cic);
 
 	SaveType save = DetectSaveType(data);
@@ -455,8 +457,6 @@ static bool LoadDisk(LoadData* loadData)
 	diskErrorData = new array_view<u8>(data, len);
 	platform->bizpak->append(name, *diskErrorData);
 
-	ares::Nintendo64::dd.rtcCallback = GetBizTime;
-
 	if (auto port = root->find<ares::Node::Port>("Nintendo 64DD/Disk Drive"))
 	{
 		port->allocate();
@@ -475,7 +475,9 @@ EXPORT bool Init(LoadData* loadData, ControllerType* controllers, bool isPal, bo
 	platform = new BizPlatform;
 	platform->bizpak = new vfs::directory;
 	ares::platform = platform;
+
 	biztime = initTime;
+	ares::Nintendo64::dd.rtcCallback = GetBizTime;
 
 	u8* data;
 	u32 len;
