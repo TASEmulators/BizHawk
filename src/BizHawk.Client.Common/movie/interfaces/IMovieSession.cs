@@ -63,7 +63,7 @@ namespace BizHawk.Client.Common
 		/// TODO: Stop relying on this dummy file so we do not need this ugly hack
 		/// </summary>
 		/// <param name="definition">current IEmulator ControllerDefinition</param>
-		public void SetMovieController(ControllerDefinition definition);
+		void SetMovieController(ControllerDefinition definition);
 
 		void HandleFrameBefore();
 		void HandleFrameAfter();
