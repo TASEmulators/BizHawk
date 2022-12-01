@@ -15,23 +15,8 @@ namespace BizHawk.Tests.Client.Common.Lua
 	[TestClass]
 	public class LuaTests
 	{
-		private static readonly NLua.Lua LuaInstance = new();
+		private static readonly NLua.Lua LuaInstance = new() { State = { Encoding = Encoding.UTF8 } };
 		private static readonly NLuaTableHelper _th = new(LuaInstance, Console.WriteLine);
-
-		// NOTE: NET6 changed Default encoding behavior.
-		// It no longer represents the default ANSI encoding
-		// Rather it now represents the "default encoding for this NET implementation"
-		// on Win10 this seems to just be an alias to UTF8, so it doesn't work here
-
-		private static string? FixString(string? s)
-			=> s is null
-				? null
-				: Encoding.UTF8.GetString(s.ToCharCodepointArray());
-
-		private static string? UnFixString(string? s)
-			=> s is null
-				? null
-				: StringExtensions.CharCodepointsToString(Encoding.UTF8.GetBytes(s));
 
 		private static object? ExpectedValue { get; set; }
 
@@ -102,10 +87,7 @@ namespace BizHawk.Tests.Client.Common.Lua
 
 		[LuaMethod("pass_string", "")]
 		public static void PassString(string? o)
-		{
-			Assert.IsTrue(FixString(o) == (string?)ExpectedValue);
-			Assert.IsTrue(o == UnFixString((string?)ExpectedValue));
-		}
+			=> Assert.IsTrue(o == (string?)ExpectedValue);
 
 		[LuaMethod("pass_color", "")]
 		public static void PassColor(object? o)
@@ -149,7 +131,7 @@ namespace BizHawk.Tests.Client.Common.Lua
 						o!.Call(d);
 						break;
 					case string s:
-						o!.Call(UnFixString(s));
+						o!.Call(s);
 						break;
 					case NLua.LuaTable t:
 						o!.Call(t);
@@ -232,7 +214,7 @@ namespace BizHawk.Tests.Client.Common.Lua
 
 		[LuaMethod("return_string", "")]
 		public static string? ReturnString()
-			=> UnFixString((string?)ReturnValue);
+			=> (string?)ReturnValue;
 
 		[LuaMethod("return_table", "")]
 		public static NLua.LuaTable? ReturnTable()
@@ -323,8 +305,7 @@ namespace BizHawk.Tests.Client.Common.Lua
 		public void Lua_Return_String_Utf8()
 		{
 			var ret = (string)LuaInstance.DoString("return \"こんにちは\"")[0];
-			Assert.IsTrue(FixString(ret) == "こんにちは");
-			Assert.IsTrue(ret == UnFixString("こんにちは"));
+			Assert.IsTrue(ret == "こんにちは");
 		}
 
 		[TestMethod]
@@ -698,16 +679,16 @@ namespace BizHawk.Tests.Client.Common.Lua
 			LuaInstance.DoString("pass_bool(true)");
 		}
 
-		/*
-		[TestMethod]
+		// this doesn't work for some reason
+		// just results in an exception due to "Invalid arguments to method call"
+		/*[TestMethod]
 		public void Net_Argument_S8()
 		{
 			ExpectedValue = (sbyte)123;
-			LuaInstance.DoString("pass_s8(123)");
+			LuaInstance.DoString("pass_s8(0)");
 			ExpectedValue = (sbyte)-123;
 			LuaInstance.DoString("pass_s8(-123)");
-		}
-		*/
+		}*/
 
 		[TestMethod]
 		public void Net_Argument_U8()
@@ -790,6 +771,11 @@ namespace BizHawk.Tests.Client.Common.Lua
 			ExpectedValue = -123.0M;
 			LuaInstance.DoString("pass_f128(-123.0)");
 		}
+
+		// these don't work either, although these make a bit more sense
+		// IntPtr/UIntPtr are meant as handles to "userdata"
+		// so raw integers result in "Invalid arguments to method call"
+		// not sure why char doesn't work (same exception here)
 
 		/*
 		[TestMethod]
