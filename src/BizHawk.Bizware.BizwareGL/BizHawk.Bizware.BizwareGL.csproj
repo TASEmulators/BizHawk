@@ -9,7 +9,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Cyotek.Drawing.BitmapFont" Version="2.0.2" />
-		<PackageReference Include="System.Drawing.Common" Version="5.0.2" />
+		<PackageReference Include="System.Drawing.Common" Version="5.0.3" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Common/BizHawk.Common.csproj" />
 	</ItemGroup>
 	<ItemGroup>
