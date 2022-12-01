@@ -602,7 +602,7 @@ namespace BizHawk.Client.EmuHawk
 				Config.DefaultAuthor);
 
 			SetTasMovieCallbacks(tasMovie);
-			((MovieSession) MovieSession).SetMovieController(Emulator.ControllerDefinition); //HACK
+			MovieSession.SetMovieController(Emulator.ControllerDefinition); // hack, see interface comment
 			tasMovie.ClearChanges(); // Don't ask to save changes here.
 			tasMovie.Save();
 			if (HandleMovieLoadStuff(tasMovie))

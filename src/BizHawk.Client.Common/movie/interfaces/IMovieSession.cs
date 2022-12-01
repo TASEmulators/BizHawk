@@ -54,6 +54,17 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		IMovieController GenerateMovieController(ControllerDefinition definition = null);
 
+		/// <summary>
+		/// Hack only used for TAStudio when starting a new movie
+		/// This is due to needing to save a "dummy" default.tasproj
+		/// This dummy file's initial save bypasses the normal queue/run
+		/// new movie code (which normally sets the controller), although
+		/// once it saves it goes through the normal queue/run code anyway.
+		/// TODO: Stop relying on this dummy file so we do not need this ugly hack
+		/// </summary>
+		/// <param name="definition">current IEmulator ControllerDefinition</param>
+		public void SetMovieController(ControllerDefinition definition);
+
 		void HandleFrameBefore();
 		void HandleFrameAfter();
 		void HandleSaveState(TextWriter writer);
