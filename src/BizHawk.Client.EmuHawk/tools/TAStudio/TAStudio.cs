@@ -602,11 +602,16 @@ namespace BizHawk.Client.EmuHawk
 				Config.DefaultAuthor);
 
 			SetTasMovieCallbacks(tasMovie);
+			MovieSession.SetMovieController(Emulator.ControllerDefinition); // hack, see interface comment
 			tasMovie.ClearChanges(); // Don't ask to save changes here.
 			tasMovie.Save();
 			if (HandleMovieLoadStuff(tasMovie))
 			{
 			}
+			// let's not keep this longer than we actually need
+			// the user will be prompted to enter a proper name
+			// when they want to save
+			File.Delete(tasMovie.Filename);
 
 			// clear all selections
 			TasView.DeselectAll();
@@ -780,11 +785,16 @@ namespace BizHawk.Client.EmuHawk
 					filename = SuggestedTasProjName();
 				}
 
-				var file = SaveFileDialog(
-					currentFile: filename,
-					path: Config!.PathEntries.MovieAbsolutePath(),
-					TAStudioProjectsFSFilterSet,
-					this);
+				FileInfo file;
+				do
+				{
+					file = SaveFileDialog(
+						currentFile: filename,
+						path: Config!.PathEntries.MovieAbsolutePath(),
+						TAStudioProjectsFSFilterSet,
+						this);
+				}
+				while (file?.FullName == DefaultTasProjName()); // disallow saving as this reserved filename
 
 				if (file != null)
 				{
