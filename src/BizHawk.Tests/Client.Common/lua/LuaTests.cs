@@ -685,7 +685,7 @@ namespace BizHawk.Tests.Client.Common.Lua
 		public void Net_Argument_S8()
 		{
 			ExpectedValue = (sbyte)123;
-			LuaInstance.DoString("pass_s8(0)");
+			LuaInstance.DoString("pass_s8(123)");
 			ExpectedValue = (sbyte)-123;
 			LuaInstance.DoString("pass_s8(-123)");
 		}*/
