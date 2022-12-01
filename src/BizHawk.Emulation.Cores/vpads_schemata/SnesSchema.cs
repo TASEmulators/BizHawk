@@ -11,7 +11,6 @@ using BizHawk.Emulation.Cores.Waterbox;
 namespace BizHawk.Emulation.Cores
 {
 	[Schema(VSystemID.Raw.SNES)]
-	// ReSharper disable once UnusedMember.Global
 	public class SnesSchema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)

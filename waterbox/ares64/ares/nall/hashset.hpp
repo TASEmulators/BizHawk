@@ -17,20 +17,22 @@ struct hashset {
   hashset() = default;
   hashset(u32 length) : length(bit::round(length)) {}
   hashset(const hashset& source) { operator=(source); }
-  hashset(hashset&& source) { operator=(move(source)); }
+  hashset(hashset&& source) { operator=(std::move(source)); }
   ~hashset() { reset(); }
 
   auto operator=(const hashset& source) -> hashset& {
+    if(this == &source) return *this;
     reset();
     if(source.pool) {
-      for(u32 n : range(source.count)) {
-        insert(*source.pool[n]);
+      for(u32 n : range(source.length)) {
+        if(source.pool[n]) insert(*source.pool[n]);
       }
     }
     return *this;
   }
 
   auto operator=(hashset&& source) -> hashset& {
+    if(this == &source) return *this;
     reset();
     pool = source.pool;
     length = source.length;
@@ -53,7 +55,7 @@ struct hashset {
           pool[n] = nullptr;
         }
       }
-      delete pool;
+      delete[] pool;
       pool = nullptr;
     }
     length = 8;
@@ -61,6 +63,8 @@ struct hashset {
   }
 
   auto reserve(u32 size) -> void {
+    if(length >= size) return;
+
     //ensure all items will fit into pool (with <= 50% load) and amortize growth
     size = bit::round(max(size, count << 1));
     T** copy = new T*[size]();
@@ -76,7 +80,7 @@ struct hashset {
       }
     }
 
-    delete pool;
+    delete[] pool;
     pool = copy;
     length = size;
   }
@@ -98,15 +102,20 @@ struct hashset {
 
     //double pool size when load is >= 50%
     if(count >= (length >> 1)) reserve(length << 1);
-    count++;
 
     u32 hash = value.hash() & (length - 1);
-    while(pool[hash]) if(++hash >= length) hash = 0;
+    while(pool[hash]) {
+      if(value == *pool[hash]) return nothing;
+      if(++hash >= length) hash = 0;
+    }
+    count++;
     pool[hash] = new T(value);
 
     return *pool[hash];
   }
 
+#if 0
+  //does not work! todo: implement tombstones or rehashing to fill gaps.
   auto remove(const T& value) -> bool {
     if(!pool) return false;
 
@@ -123,6 +132,7 @@ struct hashset {
 
     return false;
   }
+#endif
 
 protected:
   T** pool = nullptr;

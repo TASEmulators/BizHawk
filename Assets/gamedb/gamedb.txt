@@ -7,6 +7,7 @@
 #include gamedb_gb.txt
 #include gamedb_gba.txt
 #include gamedb_gbc.txt
+#include gamedb_jaguar.txt
 #include gamedb_lynx.txt
 #include gamedb_msx.txt
 ;#include gamedb_msx1-L.txt (legacy?)
@@ -14,7 +15,7 @@
 #include gamedb_n64.txt
 #include gamedb_nds.txt
 #include gamedb_nes.txt
-#include gamedb_Odyssey2.txt
+#include gamedb_odyssey2.txt
 #include gamedb_pce_cd.txt
 #include gamedb_pce_hucards.txt
 #include gamedb_psx.txt

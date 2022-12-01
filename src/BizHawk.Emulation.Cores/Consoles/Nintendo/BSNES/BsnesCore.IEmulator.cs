@@ -15,26 +15,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{
-			FrameAdvancePre(controller, render, renderSound);
-
-			bool resetSignal = controller.IsPressed("Reset");
-			if (resetSignal)
+			using (Api.EnterExit())
 			{
-				Api.core.snes_reset();
+				FrameAdvancePre(controller, render, renderSound);
+
+				bool resetSignal = controller.IsPressed("Reset");
+				if (resetSignal)
+				{
+					Api.core.snes_reset();
+				}
+
+				bool powerSignal = controller.IsPressed("Power");
+				if (powerSignal)
+				{
+					Api.core.snes_power();
+				}
+
+				IsLagFrame = true;
+				// run the core for one frame
+				Api.core.snes_run(false);
+				FrameAdvancePost();
+
+				return true;
 			}
-
-			bool powerSignal = controller.IsPressed("Power");
-			if (powerSignal)
-			{
-				Api.core.snes_power();
-			}
-
-			IsLagFrame = true;
-			// run the core for one frame
-			Api.core.snes_run(false);
-			FrameAdvancePost();
-
-			return true;
 		}
 
 		internal void FrameAdvancePre(IController controller, bool render, bool renderSound)
@@ -62,6 +65,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			Api.core.snes_set_trace_enabled(_tracer.IsEnabled());
 			Api.core.snes_set_video_enabled(render);
 			Api.core.snes_set_audio_enabled(renderSound);
+			Api.core.snes_set_ppu_sprite_limit_enabled(!_settings.NoPPUSpriteLimit);
+			Api.core.snes_set_overscan_enabled(_settings.ShowOverscan);
 		}
 
 		internal void FrameAdvancePost()
@@ -76,18 +81,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			}
 		}
 
-		private unsafe int UpdateAudioBuffer()
+		private int UpdateAudioBuffer()
 		{
-			using (Api.exe.EnterExit())
-			{
-				short* rawAudioBuffer = Api.core.snes_get_audiobuffer_and_size(out int size);
-				if (size == 0) return 0;
-				if (size > _audioBuffer.Length)
-					_audioBuffer = new short[size];
-				Marshal.Copy((IntPtr) rawAudioBuffer, _audioBuffer, 0, size);
+			var rawAudioBuffer = Api.core.snes_get_audiobuffer_and_size(out var size);
+			if (size == 0) return 0;
+			if (size > _audioBuffer.Length)
+				_audioBuffer = new short[size];
+			Marshal.Copy(rawAudioBuffer, _audioBuffer, 0, size);
 
-				return size;
-			}
+			return size;
 		}
 
 		public int Frame { get; private set; }

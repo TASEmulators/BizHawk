@@ -124,7 +124,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		}
 
 		[UnmanagedFunctionPointer(CC)]
-		public delegate void TraceCallback(TraceMask type, IntPtr regs, IntPtr disasm, uint cyclesOff);
+		public delegate void TraceCallback(TraceMask type, uint opcode, IntPtr regs, IntPtr disasm, uint cyclesOff);
 
 		[BizImport(CC)]
 		public abstract void SetTraceCallback(TraceCallback callback, TraceMask mask);

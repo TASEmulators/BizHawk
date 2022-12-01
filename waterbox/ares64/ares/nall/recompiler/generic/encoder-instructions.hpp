@@ -44,6 +44,13 @@
                    x.fst, x.snd, \
                    y.fst, y.snd, \
                    z.fst, z.snd); \
+  } \
+  template<typename U, typename V> \
+  auto name(unused, U y, V z, sljit_s32 flags = 0) { \
+    sljit_emit_op2u(compiler, \
+                   SLJIT_##op | flags, \
+                   y.fst, y.snd, \
+                   z.fst, z.snd); \
   }
 
   OP2(add32, ADD32)
@@ -118,34 +125,6 @@
 
   //meta instructions
 
-  auto mov32_to_c(mem m, int sign) {
-#if defined(ARCHITECTURE_AMD64)
-    cmp32(imm(0), m, set_c);
-#elif defined(ARCHITECTURE_ARM64)
-    if(sign < 0) {
-      cmp32(imm(0), m, set_c);
-    } else {
-      cmp32(m, imm(1), set_c);
-    }
-#else
-#error "Unimplemented architecture"
-#endif
-  }
-
-  auto mov32_from_c(reg r, int sign) {
-#if defined(ARCHITECTURE_AMD64)
-    mov32(r, imm(0));
-    addc32(r, r, r);
-#elif defined(ARCHITECTURE_ARM64)
-    mov32(r, imm(0));
-    addc32(r, r, r);
-    if(sign < 0) {
-      xor32(r, r, imm(1));
-    }
-#else
-#error "Unimplemented architecture"
-#endif
-  }
 
   auto lea(reg r, sreg base, sljit_sw offset) {
     add64(r, base, imm(offset));

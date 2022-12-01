@@ -197,9 +197,9 @@ namespace BizHawk.Client.Common
 		[LuaMethod("openrom", "opens the Open ROM dialog")]
 		public void OpenRom([LuaArbitraryStringParam] string path)
 		{
-			_luaLibsImpl.IsRebootingCore = true;
+			_luaLibsImpl.IsUpdateSupressed = _luaLibsImpl.IsRebootingCore = true;
 			APIs.EmuClient.OpenRom(path);
-			_luaLibsImpl.IsRebootingCore = false;
+			_luaLibsImpl.IsUpdateSupressed = _luaLibsImpl.IsRebootingCore = false;
 		}
 
 		[LuaMethodExample("client.opentasstudio( );")]
@@ -231,9 +231,9 @@ namespace BizHawk.Client.Common
 		[LuaMethod("reboot_core", "Reboots the currently loaded core")]
 		public void RebootCore()
 		{
-			_luaLibsImpl.IsRebootingCore = true;
+			_luaLibsImpl.IsUpdateSupressed = _luaLibsImpl.IsRebootingCore = true;
 			APIs.EmuClient.RebootCore();
-			_luaLibsImpl.IsRebootingCore = false;
+			_luaLibsImpl.IsUpdateSupressed = _luaLibsImpl.IsRebootingCore = false;
 		}
 
 		[LuaMethodExample("local incliscr = client.screenheight( );")]

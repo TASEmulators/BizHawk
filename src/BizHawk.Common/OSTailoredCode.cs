@@ -91,6 +91,8 @@ namespace BizHawk.Common
 
 			/// <exception cref="InvalidOperationException">could not find library</exception>
 			IntPtr LoadOrThrow(string dllToLoad);
+
+			string GetErrorMessage();
 		}
 
 		private class UnixMonoLLManager : ILinkedLibManager
@@ -128,6 +130,12 @@ namespace BizHawk.Common
 				return ret != IntPtr.Zero ? ret : throw new InvalidOperationException($"got null pointer from {nameof(dlopen)}, error: {Marshal.PtrToStringAnsi(dlerror())}");
 			}
 
+			public string GetErrorMessage()
+			{
+				var errCharPtr = dlerror();
+				return errCharPtr == IntPtr.Zero ? "No error present" : Marshal.PtrToStringAnsi(errCharPtr);
+			}
+
 			private const int RTLD_NOW = 2;
 		}
 
@@ -140,6 +148,19 @@ namespace BizHawk.Common
 
 			[DllImport("kernel32.dll")]
 			private static extern uint GetLastError();
+
+			private enum FORMAT_MESSAGE : uint
+			{
+				ALLOCATE_BUFFER = 0x00000100,
+				IGNORE_INSERTS = 0x00000200,
+				FROM_SYSTEM = 0x00001000,
+			}
+
+			[DllImport("kernel32.dll")]
+			private static extern int FormatMessageA(FORMAT_MESSAGE flags, IntPtr source, uint messageId, uint languageId, out IntPtr outMsg, int size, IntPtr args);
+
+			[DllImport("kernel32.dll")]
+			private static extern IntPtr LocalFree(IntPtr hMem); // use this to free a message from FORMAT_MESSAGE.ALLOCATE_BUFFER
 
 			[DllImport("kernel32.dll", SetLastError = true)] // had BestFitMapping = false, ThrowOnUnmappableChar = true
 			private static extern IntPtr GetProcAddress(IntPtr hModule, string procName); // param procName was annotated `[MarshalAs(UnmanagedType.LPStr)]`
@@ -163,6 +184,16 @@ namespace BizHawk.Common
 			{
 				var ret = LoadOrZero(dllToLoad);
 				return ret != IntPtr.Zero ? ret : throw new InvalidOperationException($"got null pointer from {nameof(LoadLibrary)}, error code: {GetLastError()}");
+			}
+
+			public string GetErrorMessage()
+			{
+				var errCode = GetLastError();
+				var sz = FormatMessageA(FORMAT_MESSAGE.ALLOCATE_BUFFER | FORMAT_MESSAGE.FROM_SYSTEM | FORMAT_MESSAGE.IGNORE_INSERTS,
+					IntPtr.Zero, errCode, 0, out var buffer, 1024, IntPtr.Zero);
+				var ret = Marshal.PtrToStringAnsi(buffer, sz);
+				_ = LocalFree(buffer);
+				return ret;
 			}
 		}
 

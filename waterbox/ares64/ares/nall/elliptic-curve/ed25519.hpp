@@ -57,17 +57,17 @@ private:
 
   template<typename... P> auto input(Hash::SHA512& hash, u256 value, P&&... p) const -> void {
     for(u32 byte : range(32)) hash.input(u8(value >> byte * 8));
-    input(hash, forward<P>(p)...);
+    input(hash, std::forward<P>(p)...);
   }
 
   template<typename... P> auto input(Hash::SHA512& hash, array_view<u8> value, P&&... p) const -> void {
     hash.input(value);
-    input(hash, forward<P>(p)...);
+    input(hash, std::forward<P>(p)...);
   }
 
   template<typename... P> auto hash(P&&... p) const -> u512 {
     Hash::SHA512 hash;
-    input(hash, forward<P>(p)...);
+    input(hash, std::forward<P>(p)...);
     u512 result;
     for(auto byte : reverse(hash.output())) result = result << 8 | byte;
     return result;

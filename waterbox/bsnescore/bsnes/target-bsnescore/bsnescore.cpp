@@ -11,8 +11,7 @@ using namespace SuperFamicom;
 
 
 //zero 05-sep-2012
-// currently unused; was only used in the graphics debugger as far as i can see
-int snes_peek_logical_register(int reg)
+EXPORT int snes_peek_logical_register(SNES_REGISTER reg)
 {
     if (SuperFamicom::system.fastPPU())
     switch(reg)
@@ -21,88 +20,88 @@ int snes_peek_logical_register(int reg)
         // 3-may-2021 above timestamp left for reference because i like it
 
         //$2105
-        case SNES_REG_BG_MODE: return ppufast.io.bgMode;
-        case SNES_REG_BG3_PRIORITY: return ppufast.io.bgPriority;
-        case SNES_REG_BG1_TILESIZE: return ppufast.io.bg1.tileSize;
-        case SNES_REG_BG2_TILESIZE: return ppufast.io.bg2.tileSize;
-        case SNES_REG_BG3_TILESIZE: return ppufast.io.bg3.tileSize;
-        case SNES_REG_BG4_TILESIZE: return ppufast.io.bg4.tileSize;
+        case BG_MODE: return ppufast.io.bgMode;
+        case BG3_PRIORITY: return ppufast.io.bgPriority;
+        case BG1_TILESIZE: return ppufast.io.bg1.tileSize;
+        case BG2_TILESIZE: return ppufast.io.bg2.tileSize;
+        case BG3_TILESIZE: return ppufast.io.bg3.tileSize;
+        case BG4_TILESIZE: return ppufast.io.bg4.tileSize;
             //$2107
-        case SNES_REG_BG1_SCADDR: return ppufast.io.bg1.screenAddress >> 8;
-        case SNES_REG_BG1_SCSIZE: return ppufast.io.bg1.screenSize;
+        case BG1_SCADDR: return ppufast.io.bg1.screenAddress >> 8;
+        case BG1_SCSIZE: return ppufast.io.bg1.screenSize;
             //$2108
-        case SNES_REG_BG2_SCADDR: return ppufast.io.bg2.screenAddress >> 8;
-        case SNES_REG_BG2_SCSIZE: return ppufast.io.bg2.screenSize;
+        case BG2_SCADDR: return ppufast.io.bg2.screenAddress >> 8;
+        case BG2_SCSIZE: return ppufast.io.bg2.screenSize;
             //$2109
-        case SNES_REG_BG3_SCADDR: return ppufast.io.bg3.screenAddress >> 8;
-        case SNES_REG_BG3_SCSIZE: return ppufast.io.bg3.screenSize;
+        case BG3_SCADDR: return ppufast.io.bg3.screenAddress >> 8;
+        case BG3_SCSIZE: return ppufast.io.bg3.screenSize;
             //$210A
-        case SNES_REG_BG4_SCADDR: return ppufast.io.bg4.screenAddress >> 8;
-        case SNES_REG_BG4_SCSIZE: return ppufast.io.bg4.screenSize;
+        case BG4_SCADDR: return ppufast.io.bg4.screenAddress >> 8;
+        case BG4_SCSIZE: return ppufast.io.bg4.screenSize;
             //$210B
-        case SNES_REG_BG1_TDADDR: return ppufast.io.bg1.tiledataAddress >> 12;
-        case SNES_REG_BG2_TDADDR: return ppufast.io.bg2.tiledataAddress >> 12;
+        case BG1_TDADDR: return ppufast.io.bg1.tiledataAddress >> 12;
+        case BG2_TDADDR: return ppufast.io.bg2.tiledataAddress >> 12;
             //$210C
-        case SNES_REG_BG3_TDADDR: return ppufast.io.bg3.tiledataAddress >> 12;
-        case SNES_REG_BG4_TDADDR: return ppufast.io.bg4.tiledataAddress >> 12;
+        case BG3_TDADDR: return ppufast.io.bg3.tiledataAddress >> 12;
+        case BG4_TDADDR: return ppufast.io.bg4.tiledataAddress >> 12;
             //$2133 SETINI
-        case SNES_REG_SETINI_MODE7_EXTBG: return ppufast.io.extbg;
-        case SNES_REG_SETINI_HIRES: return ppufast.io.pseudoHires;
-        case SNES_REG_SETINI_OVERSCAN: return ppufast.io.overscan;
-        case SNES_REG_SETINI_OBJ_INTERLACE: return ppufast.io.obj.interlace;
-        case SNES_REG_SETINI_SCREEN_INTERLACE: return ppufast.io.interlace;
+        case SETINI_MODE7_EXTBG: return ppufast.io.extbg;
+        case SETINI_HIRES: return ppufast.io.pseudoHires;
+        case SETINI_OVERSCAN: return ppufast.io.overscan;
+        case SETINI_OBJ_INTERLACE: return ppufast.io.obj.interlace;
+        case SETINI_SCREEN_INTERLACE: return ppufast.io.interlace;
             //$2130 CGWSEL
-        case SNES_REG_CGWSEL_COLORMASK: return ppufast.io.col.window.aboveMask;
-        case SNES_REG_CGWSEL_COLORSUBMASK: return ppufast.io.col.window.belowMask;
-        case SNES_REG_CGWSEL_ADDSUBMODE: return ppufast.io.col.blendMode;
-        case SNES_REG_CGWSEL_DIRECTCOLOR: return ppufast.io.col.directColor;
+        case CGWSEL_COLORMASK: return ppufast.io.col.window.aboveMask;
+        case CGWSEL_COLORSUBMASK: return ppufast.io.col.window.belowMask;
+        case CGWSEL_ADDSUBMODE: return ppufast.io.col.blendMode;
+        case CGWSEL_DIRECTCOLOR: return ppufast.io.col.directColor;
             //$2101 OBSEL
-        case SNES_REG_OBSEL_NAMEBASE: return ppufast.io.obj.tiledataAddress >> 13; // TODO: figure out why these shifts are only in specific places
-        case SNES_REG_OBSEL_NAMESEL: return ppufast.io.obj.nameselect;
-        case SNES_REG_OBSEL_SIZE: return ppufast.io.obj.baseSize;
+        case OBSEL_NAMEBASE: return ppufast.io.obj.tiledataAddress >> 13;
+        case OBSEL_NAMESEL: return ppufast.io.obj.nameselect;
+        case OBSEL_SIZE: return ppufast.io.obj.baseSize;
             //$2131 CGADDSUB
         //enum { BG1 = 0, BG2 = 1, BG3 = 2, BG4 = 3, OAM = 4, BACK = 5, COL = 5 };
-        case SNES_REG_CGADDSUB_BG1: return ppufast.io.col.enable[PPUfast::Source::BG1];
-        case SNES_REG_CGADDSUB_BG2: return ppufast.io.col.enable[PPUfast::Source::BG2];
-        case SNES_REG_CGADDSUB_BG3: return ppufast.io.col.enable[PPUfast::Source::BG3];
-        case SNES_REG_CGADDSUB_BG4: return ppufast.io.col.enable[PPUfast::Source::BG4];
-        case SNES_REG_CGADDSUB_OBJ: return ppufast.io.col.enable[PPUfast::Source::OBJ2];
-        case SNES_REG_CGADDSUB_BACKDROP: return ppufast.io.col.enable[PPUfast::Source::COL];
-        case SNES_REG_CGADDSUB_HALF: return ppufast.io.col.halve;
-        case SNES_REG_CGADDSUB_MODE: return ppufast.io.col.mathMode;
+        case CGADDSUB_BG1: return ppufast.io.col.enable[PPUfast::Source::BG1];
+        case CGADDSUB_BG2: return ppufast.io.col.enable[PPUfast::Source::BG2];
+        case CGADDSUB_BG3: return ppufast.io.col.enable[PPUfast::Source::BG3];
+        case CGADDSUB_BG4: return ppufast.io.col.enable[PPUfast::Source::BG4];
+        case CGADDSUB_OBJ: return ppufast.io.col.enable[PPUfast::Source::OBJ2];
+        case CGADDSUB_BACKDROP: return ppufast.io.col.enable[PPUfast::Source::COL];
+        case CGADDSUB_HALF: return ppufast.io.col.halve;
+        case CGADDSUB_MODE: return ppufast.io.col.mathMode;
             //$212C TM
-        case SNES_REG_TM_BG1: return ppufast.io.bg1.aboveEnable;
-        case SNES_REG_TM_BG2: return ppufast.io.bg2.aboveEnable;
-        case SNES_REG_TM_BG3: return ppufast.io.bg3.aboveEnable;
-        case SNES_REG_TM_BG4: return ppufast.io.bg4.aboveEnable;
-        case SNES_REG_TM_OBJ: return ppufast.io.obj.aboveEnable;
+        case TM_BG1: return ppufast.io.bg1.aboveEnable;
+        case TM_BG2: return ppufast.io.bg2.aboveEnable;
+        case TM_BG3: return ppufast.io.bg3.aboveEnable;
+        case TM_BG4: return ppufast.io.bg4.aboveEnable;
+        case TM_OBJ: return ppufast.io.obj.aboveEnable;
             //$212D TS
-        case SNES_REG_TS_BG1: return ppufast.io.bg1.belowEnable;
-        case SNES_REG_TS_BG2: return ppufast.io.bg2.belowEnable;
-        case SNES_REG_TS_BG3: return ppufast.io.bg3.belowEnable;
-        case SNES_REG_TS_BG4: return ppufast.io.bg4.belowEnable;
-        case SNES_REG_TS_OBJ: return ppufast.io.obj.belowEnable;
+        case TS_BG1: return ppufast.io.bg1.belowEnable;
+        case TS_BG2: return ppufast.io.bg2.belowEnable;
+        case TS_BG3: return ppufast.io.bg3.belowEnable;
+        case TS_BG4: return ppufast.io.bg4.belowEnable;
+        case TS_OBJ: return ppufast.io.obj.belowEnable;
             //Mode7 regs
-        case SNES_REG_M7SEL_HFLIP: return ppufast.io.mode7.hflip;
-        case SNES_REG_M7SEL_VFLIP: return ppufast.io.mode7.vflip;
-        case SNES_REG_M7SEL_REPEAT: return ppufast.io.mode7.repeat;
-        case SNES_REG_M7A: return ppufast.io.mode7.a;
-        case SNES_REG_M7B: return ppufast.io.mode7.b;
-        case SNES_REG_M7C: return ppufast.io.mode7.c;
-        case SNES_REG_M7D: return ppufast.io.mode7.d;
-        case SNES_REG_M7X: return ppufast.io.mode7.x;
-        case SNES_REG_M7Y: return ppufast.io.mode7.y;
+        case M7SEL_HFLIP: return ppufast.io.mode7.hflip;
+        case M7SEL_VFLIP: return ppufast.io.mode7.vflip;
+        case M7SEL_REPEAT: return ppufast.io.mode7.repeat;
+        case M7A: return ppufast.io.mode7.a;
+        case M7B: return ppufast.io.mode7.b;
+        case M7C: return ppufast.io.mode7.c;
+        case M7D: return ppufast.io.mode7.d;
+        case M7X: return ppufast.io.mode7.x;
+        case M7Y: return ppufast.io.mode7.y;
             //BG scroll regs
-        case SNES_REG_BG1HOFS: return ppufast.io.bg1.hoffset;
-        case SNES_REG_BG1VOFS: return ppufast.io.bg1.voffset;
-        case SNES_REG_BG2HOFS: return ppufast.io.bg2.hoffset;
-        case SNES_REG_BG2VOFS: return ppufast.io.bg2.voffset;
-        case SNES_REG_BG3HOFS: return ppufast.io.bg3.hoffset;
-        case SNES_REG_BG3VOFS: return ppufast.io.bg3.voffset;
-        case SNES_REG_BG4HOFS: return ppufast.io.bg4.hoffset;
-        case SNES_REG_BG4VOFS: return ppufast.io.bg4.voffset;
-        case SNES_REG_M7HOFS: return ppufast.io.mode7.hoffset; // TODO figure out what that comment means .regs.m7_hofs & 0x1FFF; //rememebr to make these signed with <<19>>19
-        case SNES_REG_M7VOFS: return ppufast.io.mode7.voffset; //rememebr to make these signed with <<19>>19
+        case BG1HOFS: return ppufast.io.bg1.hoffset & 0x3FF; // copied from old bsnes impl; not sure why this & exists
+        case BG1VOFS: return ppufast.io.bg1.voffset & 0x3FF; // copied from old bsnes impl; not sure why this & exists
+        case BG2HOFS: return ppufast.io.bg2.hoffset & 0x3FF; // copied from old bsnes impl; not sure why this & exists
+        case BG2VOFS: return ppufast.io.bg2.voffset & 0x3FF; // copied from old bsnes impl; not sure why this & exists
+        case BG3HOFS: return ppufast.io.bg3.hoffset & 0x3FF; // copied from old bsnes impl; not sure why this & exists
+        case BG3VOFS: return ppufast.io.bg3.voffset & 0x3FF; // copied from old bsnes impl; not sure why this & exists
+        case BG4HOFS: return ppufast.io.bg4.hoffset & 0x3FF; // copied from old bsnes impl; not sure why this & exists
+        case BG4VOFS: return ppufast.io.bg4.voffset & 0x3FF; // copied from old bsnes impl; not sure why this & exists
+        case M7HOFS: return ppufast.io.mode7.hoffset & 0x1FFF;
+        case M7VOFS: return ppufast.io.mode7.voffset & 0x1FFF;
     }
     else; // no fast ppu
     // TODO: potentially provide register values even in this case? currently all those are private in ppu.hpp
@@ -265,6 +264,20 @@ EXPORT void snes_set_hooks_enabled(bool read_hook_enabled, bool write_hook_enabl
     platform->executeHookEnabled = execute_hook_enabled;
 }
 
+EXPORT void snes_set_ppu_sprite_limit_enabled(bool enabled)
+{
+    if (!SuperFamicom::system.fastPPU()) return;
+
+    // see ppu-fast/ppu.cpp in PPU::power(...)
+    ppufast.ItemLimit = enabled ? 32 : 128;
+    ppufast.TileLimit = enabled ? 34 : 128;
+}
+
+EXPORT void snes_set_overscan_enabled(bool enabled)
+{
+    program->overscan = enabled;
+}
+
 
 uint8_t* snes_get_effective_saveram(int* ram_size) {
     if (cartridge.has.SA1) {
@@ -333,10 +346,6 @@ EXPORT void* snes_get_memory_region(int id, int* size, int* word_size)
             *size = program->superFamicom.program.size();
             *word_size = 1;
             return program->superFamicom.program.data();
-        case SNES_MEMORY::SGB_ROM:
-            *size = program->gameBoy.program.size();
-            *word_size = 1;
-            return program->gameBoy.program.data();
 
         // unused
         case SNES_MEMORY::BSX_RAM:
@@ -386,8 +395,11 @@ EXPORT void* snes_get_memory_region(int id, int* size, int* word_size)
             *size = sizeof(ppufast.vram);
             *word_size = sizeof(*ppufast.vram);
             return ppufast.vram;
-        // case SNES_MEMORY::OAM: // probably weird since bsnes uses "object"s instead of bytes for oam rn
-            // return (uint8_t*) ppufast.objects;
+        case SNES_MEMORY::OBJECTS: // returns a pointer to an array of "objects", not raw OAM memory
+            if (!fast_ppu) break;
+            *size = sizeof(ppufast.objects);
+            *word_size = sizeof(*ppufast.objects);
+            return (void*) ppufast.objects;
         case SNES_MEMORY::CGRAM:
             if (!fast_ppu) break;
             *size = sizeof(ppufast.cgram);
@@ -406,6 +418,42 @@ EXPORT uint8_t snes_bus_read(unsigned addr)
 EXPORT void snes_bus_write(unsigned addr, uint8_t value)
 {
     bus.write(addr, value);
+}
+
+EXPORT void* snes_get_sgb_memory_region(int id, int* size)
+{
+    if(!emulator->loaded()) return nullptr;
+    if(!GB_is_inited(&icd.sameboy)) return nullptr;
+
+    size_t s = 0;
+    void* ret = GB_get_direct_access(&icd.sameboy, (GB_direct_access_t)id, &s, NULL);
+    *size = s;
+    return ret;
+}
+
+EXPORT uint8_t snes_sgb_bus_read(uint16_t addr)
+{
+    return GB_safe_read_memory(&icd.sameboy, addr);
+}
+
+EXPORT void snes_sgb_bus_write(uint16_t addr, uint8_t value)
+{
+    GB_write_memory(&icd.sameboy, addr, value);
+}
+
+EXPORT int snes_sgb_battery_size()
+{
+    return GB_save_battery_size(&icd.sameboy);
+}
+
+EXPORT void snes_sgb_save_battery(uint8_t* buffer, int size)
+{
+    GB_save_battery_to_buffer(&icd.sameboy, buffer, size);
+}
+
+EXPORT void snes_sgb_load_battery(uint8_t* buffer, int size)
+{
+    GB_load_battery_from_buffer(&icd.sameboy, buffer, size);
 }
 
 EXPORT void snes_get_cpu_registers(SnesRegisters* registers)

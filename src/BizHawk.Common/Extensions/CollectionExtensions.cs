@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
@@ -120,6 +121,33 @@ namespace BizHawk.Common.CollectionExtensions
 				return;
 			}
 			foreach (var item in collection) list.Add(item);
+		}
+
+		/// <returns>
+		/// portion of <paramref name="dest"/> that was written to,
+		/// unless either span is empty, in which case the other reference is returned<br/>
+		/// if <paramref name="dest"/> is too small, returns <see cref="Span{T}.Empty"/>
+		/// </returns>
+		public static ReadOnlySpan<T> ConcatArray<T>(this ReadOnlySpan<T> a, ReadOnlySpan<T> b, Span<T> dest)
+		{
+			if (b.Length is 0) return a;
+			if (a.Length is 0) return b;
+			var combinedLen = a.Length + b.Length;
+			if (combinedLen < dest.Length) return Span<T>.Empty;
+			a.CopyTo(dest);
+			b.CopyTo(dest.Slice(start: a.Length));
+			return dest.Slice(start: 0, length: combinedLen);
+		}
+
+		/// <returns>freshly-allocated array, unless either array is empty, in which case the other reference is returned</returns>
+		public static T[] ConcatArray<T>(this T[] a, T[] b)
+		{
+			if (b.Length is 0) return a;
+			if (a.Length is 0) return b;
+			var combined = new T[a.Length + b.Length];
+			var returned = ((ReadOnlySpan<T>) a).ConcatArray(b, combined);
+			Debug.Assert(returned == combined);
+			return combined;
 		}
 
 		public static bool CountIsAtLeast<T>(this IEnumerable<T> collection, int n)

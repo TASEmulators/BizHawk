@@ -16,7 +16,7 @@ struct Instance {
   auto construct(P&&... p) {
     if(constructed) return;
     constructed = true;
-    new((void*)(&instance.object)) T(forward<P>(p)...);
+    new((void*)(&instance.object)) T(std::forward<P>(p)...);
   }
 
   auto destruct() -> void {

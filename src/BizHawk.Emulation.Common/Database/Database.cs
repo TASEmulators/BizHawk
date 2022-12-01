@@ -27,21 +27,13 @@ namespace BizHawk.Emulation.Common
 
 		private static string _userRoot = null;
 
-		private static string RemoveHashType(string hash)
-		{
-			hash = hash.ToUpper();
-			if (hash.StartsWith("MD5:"))
-			{
-				hash = hash.Substring(4);
-			}
-
-			if (hash.StartsWith("SHA1:"))
-			{
-				hash = hash.Substring(5);
-			}
-
-			return hash;
-		}
+		/// <summary>
+		/// Removes hash type if present and enforces an uppercase hash
+		/// </summary>
+		/// <param name="hash">The hash to format, this is typically prefixed with a type (e.g. sha1:)</param>
+		/// <returns>formatted hash</returns>
+		private static string FormatHash(string hash)
+			=> hash.Substring(hash.IndexOf(':') + 1).ToUpperInvariant();
 
 		private static void LoadDatabase_Escape(string line, bool inUser, bool silent)
 		{
@@ -132,8 +124,7 @@ namespace BizHawk.Emulation.Common
 
 					var game = new CompactGameInfo
 					{
-						Hash = RemoveHashType(items[0].ToUpper()),
-						// remove a hash type identifier. well don't really need them for indexing (they're just there for human purposes)
+						Hash = FormatHash(items[0]),
 						Status = items[1].Trim()
 							switch
 						{
@@ -203,8 +194,8 @@ namespace BizHawk.Emulation.Common
 		{
 			acquire.WaitOne();
 
-			var hashNoType = RemoveHashType(hash);
-			DB.TryGetValue(hashNoType, out var cgi);
+			var hashFormatted = FormatHash(hash);
+			DB.TryGetValue(hashFormatted, out var cgi);
 			if (cgi == null)
 			{
 				Console.WriteLine($"DB: hash {hash} not in game database.");
@@ -346,6 +337,7 @@ namespace BizHawk.Emulation.Common
 				case ".Z64":
 				case ".V64":
 				case ".N64":
+				case ".NDD":
 					game.System = VSystemID.Raw.N64;
 					break;
 
@@ -356,6 +348,11 @@ namespace BizHawk.Emulation.Common
 				case ".WS":
 				case ".WSC":
 					game.System = VSystemID.Raw.WSWAN;
+					break;
+
+				case ".J64":
+				case ".JAG":
+					game.System = VSystemID.Raw.Jaguar;
 					break;
 
 				case ".LNX":
@@ -407,10 +404,9 @@ namespace BizHawk.Emulation.Common
 					game.AddOption("VEC", "true");
 					break;
 
-				// refactor to use mame db (output of "mame -listxml" command)
-				// there's no good definition for Arcade anymore, so we might limit to coin-based machines?
 				case ".ZIP":
-					game.System = VSystemID.Raw.MAME;
+				case ".7Z":
+					game.System = VSystemID.Raw.Arcade;
 					break;
 			}
 

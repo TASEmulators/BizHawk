@@ -23,6 +23,16 @@ void StopEmu()
 {
 }
 
+int InstanceID()
+{
+	return 0;
+}
+
+std::string InstanceFileSuffix()
+{
+	return "";
+}
+
 int GetConfigInt(ConfigEntry entry)
 {
 	const int imgsizes[] = {0, 256, 512, 1024, 2048, 4096};
@@ -71,7 +81,6 @@ bool GetConfigBool(ConfigEntry entry)
 		case DSiSD_ReadOnly: return Config::DSiSDReadOnly != 0;
 		case DSiSD_FolderSync: return Config::DSiSDFolderSync != 0;
 
-		case Firm_RandomizeMAC: return Config::RandomizeMAC != 0;
 		case Firm_OverrideSettings: return Config::FirmwareOverrideSettings != 0;
 
 		case UseRealTime: return Config::UseRealTime != 0;
@@ -247,12 +256,45 @@ void MP_DeInit()
 {
 }
 
-int MP_SendPacket(u8* data, int len)
+void MP_Begin()
+{
+}
+
+void MP_End()
+{
+}
+
+int MP_SendPacket(u8* data, int len, u64 timestamp)
 {
 	return 0;
 }
 
-int MP_RecvPacket(u8* data, bool block)
+int MP_RecvPacket(u8* data, u64* timestamp)
+{
+	return 0;
+}
+
+int MP_SendCmd(u8* data, int len, u64 timestamp)
+{
+	return 0;
+}
+
+int MP_SendReply(u8* data, int len, u64 timestamp, u16 aid)
+{
+	return 0;
+}
+
+int MP_SendAck(u8* data, int len, u64 timestamp)
+{
+	return 0;
+}
+
+int MP_RecvHostPacket(u8* data, u64* timestamp)
+{
+	return 0;
+}
+
+u16 MP_RecvReplies(u8* data, u64 timestamp, u16 aidmask)
 {
 	return 0;
 }
@@ -278,6 +320,19 @@ int LAN_RecvPacket(u8* data)
 
 void Sleep(u64 usecs)
 {
+}
+
+void Camera_Start(int num)
+{
+}
+
+void Camera_Stop(int num)
+{
+}
+
+void Camera_CaptureFrame(int num, u32* frame, int width, int height, bool yuv)
+{
+	// TODO
 }
 
 }

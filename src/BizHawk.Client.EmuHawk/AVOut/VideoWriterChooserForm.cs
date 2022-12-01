@@ -96,19 +96,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			dlg.checkBoxASync.Checked = audioSync;
-			var result = owner.ShowDialogAsChild(dlg);
 
-			IVideoWriter ret;
-
-			if (result == DialogResult.OK && dlg.listBox1.SelectedIndex != -1)
+			IVideoWriter ret = null;
+			if (owner.ShowDialogAsChild(dlg).IsOk()
+				&& dlg.listBox1.SelectedIndex is not -1)
 			{
 				var vwi = (VideoWriterInfo)dlg.listBox1.SelectedItem;
 				ret = vwi.Create(owner);
 				config.VideoWriter = vwi.Attribs.ShortName;
-			}
-			else
-			{
-				ret = null;
 			}
 
 			if (ret != null && dlg.checkBoxResize.Checked)

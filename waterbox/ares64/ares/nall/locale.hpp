@@ -42,7 +42,7 @@ struct Locale {
 
   template<typename... P>
   auto operator()(string ns, string input, P&&... p) const -> string {
-    vector<string> arguments{forward<P>(p)...};
+    vector<string> arguments{std::forward<P>(p)...};
     if(selected) {
       for(auto node : selected().document) {
         if(node.name() == "namespace" && node.text() == ns) {
@@ -66,12 +66,12 @@ struct Locale {
 
     template<typename... P>
     auto operator()(string input, P&&... p) const -> string {
-      return _locale(_namespace, input, forward<P>(p)...);
+      return _locale(_namespace, input, std::forward<P>(p)...);
     }
 
     template<typename... P>
     auto tr(string input, P&&... p) const -> string {
-      return _locale(_namespace, input, forward<P>(p)...);
+      return _locale(_namespace, input, std::forward<P>(p)...);
     }
 
   private:

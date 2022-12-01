@@ -1,39 +1,42 @@
-﻿using BizHawk.Emulation.Common;
+﻿using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Arcades.MAME
 {
 	public partial class MAME : IEmulator
 	{
-		public string SystemId => VSystemID.Raw.MAME;
-		public bool DeterministicEmulation => true;
+		public string SystemId => VSystemID.Raw.Arcade;
+		public bool DeterministicEmulation { get; }
 		public int Frame { get; private set; }
 		public IEmulatorServiceProvider ServiceProvider { get; }
 		public ControllerDefinition ControllerDefinition => MAMEController;
 
-		private bool _memAccess = false;
-		private bool _paused = true;
-		private bool _exiting = false;
-		private bool _frameDone = true;
-
+		/// <summary>
+		/// MAME fires the periodic callback on every video and debugger update,
+		/// which happens every VBlank and also repeatedly at certain time
+		/// intervals while paused. In our implementation, MAME's emulation
+		/// runs in a separate co-thread, which we swap over with mame_coswitch
+		/// On a periodic callback, control will be switched back to the host
+		/// co-thread. If MAME is internally unpaused, then the next periodic
+		/// callback will occur once a frame is done, making mame_coswitch
+		/// act like a frame advance.
+		/// </summary>
 		public bool FrameAdvance(IController controller, bool render, bool renderSound = true)
 		{
-			if (_exiting)
+			using (_exe.EnterExit())
 			{
-				return false;
+				SendInput(controller);
+				IsLagFrame = _core.mame_coswitch();
+				UpdateSound();
+				if (render)
+				{
+					UpdateVideo();
+				}
 			}
 
-			_controller = controller;
-			_paused = false;
-			_frameDone = false;
-
-			if (_memAccess)
+			if (!renderSound)
 			{
-				_mamePeriodicComplete.WaitOne();
-			}
-
-			for (; _frameDone == false;)
-			{
-				_mameFrameComplete.WaitOne();
+				DiscardSamples();
 			}
 
 			Frame++;
@@ -53,12 +56,13 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			IsLagFrame = false;
 		}
 
+		private bool _disposed = false;
+
 		public void Dispose()
 		{
-			_exiting = true;
-			_mameThread.Join();
-			_mameSaveBuffer = new byte[0];
-			_hawkSaveBuffer = new byte[0];
+			if (_disposed) return;
+			_exe.Dispose();
+			_disposed = true;
 		}
 	}
 }

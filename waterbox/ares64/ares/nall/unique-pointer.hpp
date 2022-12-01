@@ -5,7 +5,7 @@ namespace nall {
 template<typename T>
 struct unique_pointer {
   template<typename... P> static auto create(P&&... p) {
-    return unique_pointer<T>{new T{forward<P>(p)...}};
+    return unique_pointer<T>{new T{std::forward<P>(p)...}};
   }
 
   using type = T;

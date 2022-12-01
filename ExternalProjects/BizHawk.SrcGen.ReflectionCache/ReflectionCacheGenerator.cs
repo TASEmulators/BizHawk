@@ -31,7 +31,7 @@ namespace BizHawk.SrcGen.ReflectionCache
 			private string CalcNamespace()
 			{
 				// black magic wizardry to find common prefix https://stackoverflow.com/a/35081977
-				var ns = new string(_namespaces.First()
+				var ns = new string(_namespaces[0]
 					.Substring(0, _namespaces.Min(s => s.Length))
 					.TakeWhile((c, i) => _namespaces.All(s => s[i] == c))
 					.ToArray());
@@ -44,7 +44,7 @@ namespace BizHawk.SrcGen.ReflectionCache
 				{
 					SimpleNameSyntax simple => simple.Identifier.ValueText,
 					QualifiedNameSyntax qual => $"{Ser(qual.Left)}.{Ser(qual.Right)}",
-					_ => throw new Exception()
+					_ => throw new InvalidOperationException()
 				};
 				if (_namespace != null || syntaxNode is not NamespaceDeclarationSyntax syn) return;
 				var newNS = Ser(syn.Name);

@@ -26,5 +26,8 @@ namespace BizHawk.Emulation.Cores.Properties {
 		internal static readonly Lazy<byte[]> TMDS = new(() => ReadEmbeddedByteArray("tmds.zip.zst"));
 		internal static readonly Lazy<byte[]> PIF_PAL_ROM = new(() => ReadEmbeddedByteArray("pif.pal.rom.zst"));
 		internal static readonly Lazy<byte[]> PIF_NTSC_ROM = new(() => ReadEmbeddedByteArray("pif.ntsc.rom.zst"));
+		internal static readonly Lazy<byte[]> JAGUAR_KSERIES_ROM = new(() => ReadEmbeddedByteArray("JAGUAR_KSERIES.ROM.zst"));
+		internal static readonly Lazy<byte[]> JAGUAR_MSERIES_ROM = new(() => ReadEmbeddedByteArray("JAGUAR_MSERIES.ROM.zst"));
+		internal static readonly Lazy<byte[]> JAGUAR_MEMTRACK_ROM = new(() => ReadEmbeddedByteArray("JAGUAR_MEMTRACK.ROM.zst"));
 	}
 }

@@ -10,6 +10,7 @@ using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Libretro;
+using BizHawk.Emulation.Cores.Nintendo.Sameboy;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Sony.PSX;
 using BizHawk.Emulation.Cores.Arcades.MAME;
@@ -417,14 +418,13 @@ namespace BizHawk.Client.Common
 			rom = new RomGame(file);
 
 			// hacky for now
-			if (file.Extension == ".exe")
+			rom.GameInfo.System = file.Extension switch
 			{
-				rom.GameInfo.System = VSystemID.Raw.PSX;
-			}
-			else if (file.Extension == ".nsf")
-			{
-				rom.GameInfo.System = VSystemID.Raw.NES;
-			}
+				".exe" => VSystemID.Raw.PSX,
+				".nsf" => VSystemID.Raw.NES,
+				".gbs" => VSystemID.Raw.GB,
+				_ => rom.GameInfo.System,
+			};
 
 			Util.DebugWriteLine(rom.GameInfo.System);
 
@@ -459,20 +459,23 @@ namespace BizHawk.Client.Common
 			{
 				case VSystemID.Raw.GB:
 				case VSystemID.Raw.GBC:
+					if (file.Extension == ".gbs")
+					{
+						nextEmulator = new Sameboy(
+							nextComm,
+							rom.GameInfo,
+							rom.FileData,
+							GetCoreSettings<Sameboy, Sameboy.SameboySettings>(),
+							GetCoreSyncSettings<Sameboy, Sameboy.SameboySyncSettings>()
+						);
+						return;
+					}
+
 					if (_config.GbAsSgb)
 					{
 						game.System = VSystemID.Raw.SGB;
 					}
 					break;
-				case VSystemID.Raw.MAME:
-					nextEmulator = new MAME(
-						file.Directory,
-						file.CanonicalName,
-						GetCoreSyncSettings<MAME, MAME.MAMESyncSettings>(),
-						out var gameName
-					);
-					rom.GameInfo.Name = gameName;
-					return;
 			}
 			var cip = new CoreInventoryParameters(this)
 			{
@@ -536,6 +539,7 @@ namespace BizHawk.Client.Common
 							RomData = kvp.Value,
 							FileData = kvp.Value, // TODO: Hope no one needed anything special here
 							Extension = Path.GetExtension(kvp.Key),
+							RomPath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(path.SubstringBefore('|')), kvp.Key)),
 							Game = Database.GetGameInfo(kvp.Value, Path.GetFileName(kvp.Key))
 						})
 						.ToList(),
@@ -581,6 +585,28 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		private void LoadMAME(string path, CoreComm nextComm, HawkFile file, out IEmulator nextEmulator, out RomGame rom, out GameInfo game, out bool cancel)
+		{
+			try
+			{
+				LoadOther(nextComm, file, null, out nextEmulator, out rom, out game, out cancel);
+			}
+			catch (Exception mex) // ok, MAME threw, let's try another core...
+			{
+				try
+				{
+					using var f = new HawkFile(path, allowArchives: true);
+					if (!HandleArchiveBinding(f)) throw;
+					LoadOther(nextComm, f, null, out nextEmulator, out rom, out game, out cancel);
+				}
+				catch (Exception oex)
+				{
+					if (mex == oex) throw mex;
+					throw new AggregateException(mex, oex);
+				}
+			}
+		}
+
 		public bool LoadRom(string path, CoreComm nextComm, string launchLibretroCore, string forcedCoreName = null, int recursiveCount = 0)
 		{
 			if (path == null) return false;
@@ -592,7 +618,7 @@ namespace BizHawk.Client.Common
 			}
 
 			bool allowArchives = true;
-			if (OpenAdvanced is OpenAdvanced_MAME) allowArchives = false;
+			if (OpenAdvanced is OpenAdvanced_MAME || MAMEMachineDB.IsMAMEMachine(path)) allowArchives = false;
 			using var file = new HawkFile(path, false, allowArchives);
 			if (!file.Exists && OpenAdvanced is not OpenAdvanced_LibretroNoGame) return false; // if the provided file doesn't even exist, give up! (unless libretro no game is used)
 
@@ -682,6 +708,10 @@ namespace BizHawk.Client.Common
 						case ".psf":
 						case ".minipsf":
 							LoadPSF(path, nextComm, file, out nextEmulator, out rom, out game);
+							break;
+						case ".zip" when forcedCoreName is null:
+						case ".7z" when forcedCoreName is null:
+							LoadMAME(path, nextComm, file, out nextEmulator, out rom, out game, out cancel);
 							break;
 						default:
 							if (Disc.IsValidExtension(ext))
@@ -776,6 +806,8 @@ namespace BizHawk.Client.Common
 
 			public static readonly IReadOnlyCollection<string> AppleII = new[] { "dsk", "do", "po" };
 
+			public static readonly IReadOnlyCollection<string> Arcade = new[] { "zip", "7z", "chd" };
+
 			public static readonly IReadOnlyCollection<string> C64 = new[] { "prg", "d64", "g64", "crt", "tap" };
 
 			public static readonly IReadOnlyCollection<string> Coleco = new[] { "col" };
@@ -788,11 +820,15 @@ namespace BizHawk.Client.Common
 
 			public static readonly IReadOnlyCollection<string> INTV = new[] { "int", "bin", "rom" };
 
+			public static readonly IReadOnlyCollection<string> Jaguar = new[] { "j64", "jag" };
+
 			public static readonly IReadOnlyCollection<string> Lynx = new[] { "lnx" };
 
 			public static readonly IReadOnlyCollection<string> MSX = new[] { "cas", "dsk", "mx1", "rom" };
 
 			public static readonly IReadOnlyCollection<string> N64 = new[] { "z64", "v64", "n64" };
+
+			public static readonly IReadOnlyCollection<string> N64DD = new[] { "ndd" };
 
 			public static readonly IReadOnlyCollection<string> NDS = new[] { "nds" };
 
@@ -832,9 +868,11 @@ namespace BizHawk.Client.Common
 				.Concat(GBA)
 				.Concat(GEN)
 				.Concat(INTV)
+				.Concat(Jaguar)
 				.Concat(Lynx)
 				.Concat(MSX)
 				.Concat(N64)
+				.Concat(N64DD)
 				.Concat(NDS)
 				.Concat(NES)
 				.Concat(NGP)
@@ -854,8 +892,8 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <remarks>TODO add and handle <see cref="FilesystemFilter.LuaScripts"/> (you can drag-and-drop scripts and there are already non-rom things in this list, so why not?)</remarks>
-		private static readonly FilesystemFilterSet RomFSFilterSet = new FilesystemFilterSet(
-			new FilesystemFilter("Music Files", Array.Empty<string>(), devBuildExtraExts: new[] { "psf", "minipsf", "sid", "nsf" }),
+		public static readonly FilesystemFilterSet RomFilter = new(
+			new FilesystemFilter("Music Files", Array.Empty<string>(), devBuildExtraExts: new[] { "psf", "minipsf", "sid", "nsf", "gbs" }),
 			new FilesystemFilter("Disc Images", new[] { "cue", "ccd", "mds", "m3u" }),
 			new FilesystemFilter("NES", RomFileExtensions.NES.Concat(new[] { "nsf" }).ToList(), addArchiveExts: true),
 			new FilesystemFilter("Super NES", RomFileExtensions.SNES, addArchiveExts: true),
@@ -863,13 +901,15 @@ namespace BizHawk.Client.Common
 			new FilesystemFilter("PSX Executables (experimental)", Array.Empty<string>(), devBuildExtraExts: new[] { "exe" }),
 			new FilesystemFilter("PSF Playstation Sound File", new[] { "psf", "minipsf" }),
 			new FilesystemFilter("Nintendo 64", RomFileExtensions.N64),
-			new FilesystemFilter("Gameboy", RomFileExtensions.GB, addArchiveExts: true),
+			new FilesystemFilter("Nintendo 64 Disk Drive", RomFileExtensions.N64DD),
+			new FilesystemFilter("Gameboy", RomFileExtensions.GB.Concat(new[] { "gbs" }).ToList(), addArchiveExts: true),
 			new FilesystemFilter("Gameboy Advance", RomFileExtensions.GBA, addArchiveExts: true),
 			new FilesystemFilter("Nintendo DS", RomFileExtensions.NDS),
 			new FilesystemFilter("Master System", RomFileExtensions.SMS, addArchiveExts: true),
 			new FilesystemFilter("PC Engine", RomFileExtensions.PCE.Concat(new[] { "cue", "ccd", "mds" }).ToList(), addArchiveExts: true),
 			new FilesystemFilter("Atari 2600", RomFileExtensions.A26, devBuildExtraExts: new[] { "bin" }, addArchiveExts: true),
 			new FilesystemFilter("Atari 7800", RomFileExtensions.A78, devBuildExtraExts: new[] { "bin" }, addArchiveExts: true),
+			new FilesystemFilter("Atari Jaguar", RomFileExtensions.Jaguar, addArchiveExts: true),
 			new FilesystemFilter("Atari Lynx", RomFileExtensions.Lynx, addArchiveExts: true),
 			new FilesystemFilter("ColecoVision", RomFileExtensions.Coleco, addArchiveExts: true),
 			new FilesystemFilter("IntelliVision", RomFileExtensions.INTV, addArchiveExts: true),
@@ -889,16 +929,17 @@ namespace BizHawk.Client.Common
 			new FilesystemFilter("Uzebox", RomFileExtensions.UZE),
 			new FilesystemFilter("Vectrex", RomFileExtensions.VEC),
 			new FilesystemFilter("MSX", RomFileExtensions.MSX),
-			FilesystemFilter.EmuHawkSaveStates
-		);
+			new FilesystemFilter("Arcade", RomFileExtensions.Arcade),
+			FilesystemFilter.EmuHawkSaveStates)
+		{
+			CombinedEntryDesc = "Everything",
+		};
 
-		public static readonly IReadOnlyCollection<string> KnownRomExtensions = RomFSFilterSet.Filters
+		public static readonly IReadOnlyCollection<string> KnownRomExtensions = RomFilter.Filters
 			.SelectMany(f => f.Extensions)
 			.Distinct()
 			.Except(FilesystemFilter.ArchiveExtensions.Concat(new[] { "State" }))
 			.Select(s => $".{s.ToUpperInvariant()}") // this is what's expected at call-site
 			.ToList();
-
-		public static readonly string RomFilter = RomFSFilterSet.ToString("Everything");
 	}
 }

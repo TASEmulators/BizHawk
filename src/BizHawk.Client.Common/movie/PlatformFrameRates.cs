@@ -43,6 +43,9 @@ namespace BizHawk.Client.Common
 			["GEN"] = 53693175 / (3420.0 * 262),
 			["GEN_PAL"] = 53203424 / (3420.0 * 313),
 
+			["Jaguar"] = 60,
+			["Jaguar_PAL"] = 50,
+
 			// while the number of scanlines per frame is software controlled and variable, we
 			// enforce exactly 262 (NTSC) 312 (PAL) per reference time frame
 			["A26"] = 315000000.0 / 88.0 / 262.0 / 228.0, // 59.922751013550531429197560173856
@@ -71,7 +74,9 @@ namespace BizHawk.Client.Common
 			["UZE"] = 60.016319939602,
 			["VEC"] = 50,
 			["O2"] = 60,
-			["O2_PAL"] = 50
+			["O2_PAL"] = 50,
+
+			["TIC80"] = 60,
 		};
 
 		public static double GetFrameRate(string systemId, bool pal)

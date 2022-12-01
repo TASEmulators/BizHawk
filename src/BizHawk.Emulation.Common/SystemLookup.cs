@@ -9,6 +9,7 @@ namespace BizHawk.Emulation.Common
 		{
 			new(VSystemID.Raw.A26, "Atari 2600"),
 			new(VSystemID.Raw.A78, "Atari 7800"),
+			new(VSystemID.Raw.Jaguar, "Atari Jaguar"),
 			new(VSystemID.Raw.Lynx, "Atari Lynx"),
 			new(VSystemID.Raw.NES, "NES"),
 			new(VSystemID.Raw.SNES, "Super NES"),

@@ -25,10 +25,12 @@ namespace BizHawk.Client.EmuHawk
 			JumpToMarkerToolStripMenuItem.Image = Resources.JumpTo;
 			ScrollToMarkerToolStripMenuItem.Image = Resources.ScrollTo;
 			EditMarkerToolStripMenuItem.Image = Resources.Pencil;
+			EditMarkerFrameToolStripMenuItem.Image = Resources.Clock;
 			AddMarkerToolStripMenuItem.Image = Resources.Add;
 			RemoveMarkerToolStripMenuItem.Image = Resources.Delete;
 			JumpToMarkerButton.Image = Resources.JumpTo;
 			EditMarkerButton.Image = Resources.Pencil;
+			EditMarkerFrameButton.Image = Resources.Clock;
 			AddMarkerButton.Image = Resources.Add;
 			RemoveMarkerButton.Image = Resources.Delete;
 			ScrollToMarkerButton.Image = Resources.ScrollTo;
@@ -123,6 +125,7 @@ namespace BizHawk.Client.EmuHawk
 		private void MarkerContextMenu_Opening(object sender, CancelEventArgs e)
 		{
 			EditMarkerToolStripMenuItem.Enabled =
+				EditMarkerFrameToolStripMenuItem.Enabled =
 				RemoveMarkerToolStripMenuItem.Enabled =
 					MarkerInputRoll.AnyRowsSelected && MarkerView.FirstSelectedRowIndex is not 0;
 
@@ -148,6 +151,11 @@ namespace BizHawk.Client.EmuHawk
 		private void EditMarkerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			if (MarkerView.AnyRowsSelected) EditMarkerPopUp(FirstSelectedMarker);
+		}
+
+		private void EditMarkerFrameToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (MarkerView.AnyRowsSelected) EditMarkerFramePopUp(FirstSelectedMarker);
 		}
 
 		private void AddMarkerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -246,12 +254,36 @@ namespace BizHawk.Client.EmuHawk
 				i.Location = point;
 			}
 
-			if (this.ShowDialogWithTempMute(i) == DialogResult.OK)
+			if (!this.ShowDialogWithTempMute(i).IsOk()) return;
+
+			marker.Message = i.PromptText;
+			UpdateTextColumnWidth();
+			UpdateValues();
+		}
+
+		public void EditMarkerFramePopUp(TasMovieMarker marker)
+		{
+			var markerFrame = marker.Frame;
+			var i = new InputPrompt
 			{
-				marker.Message = i.PromptText;
-				UpdateTextColumnWidth();
-				UpdateValues();
+				Text = $"Marker for frame {markerFrame}",
+				TextInputType = InputPrompt.InputType.Unsigned,
+				Message = "Enter a frame number",
+				InitialValue = Markers.IsMarker(markerFrame)
+					? Markers.PreviousOrCurrent(markerFrame).Frame.ToString()
+					: "0",
+			};
+
+			if (!this.ShowDialogWithTempMute(i).IsOk()
+				|| !int.TryParse(i.PromptText, out var promptValue)
+				|| Markers.IsMarker(promptValue)) // don't move to frame with an existing marker
+			{
+				return;
 			}
+			Markers.Move(marker.Frame, promptValue);
+			UpdateTextColumnWidth();
+			UpdateValues();
+			Tastudio.RefreshDialog();
 		}
 
 		public void UpdateValues()
@@ -272,6 +304,7 @@ namespace BizHawk.Client.EmuHawk
 		private void MarkerView_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			EditMarkerButton.Enabled =
+				EditMarkerFrameButton.Enabled =
 				RemoveMarkerButton.Enabled =
 					MarkerInputRoll.AnyRowsSelected && MarkerView.FirstSelectedRowIndex is not 0;
 

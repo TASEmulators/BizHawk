@@ -25,7 +25,7 @@ struct string_pascal {
   }
 
   string_pascal(const string_pascal& source) { operator=(source); }
-  string_pascal(string_pascal&& source) { operator=(move(source)); }
+  string_pascal(string_pascal&& source) { operator=(std::move(source)); }
 
   ~string_pascal() {
     if(_data) memory::free(_data);

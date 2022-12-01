@@ -65,9 +65,9 @@ namespace BizHawk.Client.Common
 			AutoFireController = BindToDefinitionAF(emulator, config.AllTrollersAutoFire, config.AutofireOn, config.AutofireOff);
 
 			// allow propagating controls that are in the current controller definition but not in the prebaked one
-			// these two lines shouldn't be required anymore under the new system?
-			ActiveController.ForceType(new ControllerDefinition(def));
-			ClickyVirtualPadController.Definition = new ControllerDefinition(def);
+			// these two lines shouldn't be required anymore under the new system? --natt 2013
+			// they were mostly not required, see #3458 --yoshi 2022
+			ClickyVirtualPadController.Definition = def;
 
 			// Wire up input chain
 

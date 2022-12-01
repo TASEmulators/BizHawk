@@ -21,6 +21,7 @@ auto RSP::Debugger::load(Node::Object parent) -> void {
 
   tracer.instruction = parent->append<Node::Debugger::Tracer::Instruction>("Instruction", "RSP");
   tracer.instruction->setAddressBits(12, 2);
+  tracer.instruction->setDepth(64);
 
   tracer.io = parent->append<Node::Debugger::Tracer::Notification>("I/O", "RSP");
 }

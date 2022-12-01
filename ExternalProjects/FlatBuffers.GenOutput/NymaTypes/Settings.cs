@@ -7,13 +7,13 @@ namespace NymaTypes
 
 using global::System;
 using global::System.Collections.Generic;
-using global::FlatBuffers;
+using global::Google.FlatBuffers;
 
 public struct Settings : IFlatbufferObject
 {
   private Table __p;
   public ByteBuffer ByteBuffer { get { return __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_1_12_0(); }
+  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_22_9_24(); }
   public static Settings GetRootAsSettings(ByteBuffer _bb) { return GetRootAsSettings(_bb, new Settings()); }
   public static Settings GetRootAsSettings(ByteBuffer _bb, Settings obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
   public void __init(int _i, ByteBuffer _bb) { __p = new Table(_i, _bb); }
@@ -33,6 +33,8 @@ public struct Settings : IFlatbufferObject
   public static void AddValues(FlatBufferBuilder builder, VectorOffset ValuesOffset) { builder.AddOffset(0, ValuesOffset.Value, 0); }
   public static VectorOffset CreateValuesVector(FlatBufferBuilder builder, Offset<NymaTypes.Setting>[] data) { builder.StartVector(4, data.Length, 4); for (int i = data.Length - 1; i >= 0; i--) builder.AddOffset(data[i].Value); return builder.EndVector(); }
   public static VectorOffset CreateValuesVectorBlock(FlatBufferBuilder builder, Offset<NymaTypes.Setting>[] data) { builder.StartVector(4, data.Length, 4); builder.Add(data); return builder.EndVector(); }
+  public static VectorOffset CreateValuesVectorBlock(FlatBufferBuilder builder, ArraySegment<Offset<NymaTypes.Setting>> data) { builder.StartVector(4, data.Count, 4); builder.Add(data); return builder.EndVector(); }
+  public static VectorOffset CreateValuesVectorBlock(FlatBufferBuilder builder, IntPtr dataPtr, int sizeInBytes) { builder.StartVector(1, sizeInBytes, 1); builder.Add<Offset<NymaTypes.Setting>>(dataPtr, sizeInBytes); return builder.EndVector(); }
   public static void StartValuesVector(FlatBufferBuilder builder, int numElems) { builder.StartVector(4, numElems, 4); }
   public static Offset<NymaTypes.Settings> EndSettings(FlatBufferBuilder builder) {
     int o = builder.EndTable();
@@ -59,7 +61,7 @@ public struct Settings : IFlatbufferObject
       builder,
       _Values);
   }
-};
+}
 
 public class SettingsT
 {

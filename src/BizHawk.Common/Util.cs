@@ -11,6 +11,12 @@ namespace BizHawk.Common
 {
 	public static unsafe class Util
 	{
+		[Conditional("DEBUG")]
+		public static void BreakDebuggerIfAttached()
+		{
+			if (Debugger.IsAttached) Debugger.Break();
+		}
+
 		public static void CopyStream(Stream src, Stream dest, long len)
 		{
 			const int size = 0x2000;

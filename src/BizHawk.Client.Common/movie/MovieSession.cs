@@ -64,7 +64,7 @@ namespace BizHawk.Client.Common
 
 		public void HandleFrameBefore()
 		{
-			if (!Movie.IsActive())
+			if (Movie.NotActive())
 			{
 				LatchInputToUser();
 			}

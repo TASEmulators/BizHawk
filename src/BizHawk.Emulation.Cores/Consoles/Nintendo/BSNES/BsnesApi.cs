@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 {
-	public abstract unsafe class BsnesCoreImpl
+	public abstract class BsnesCoreImpl
 	{
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_set_audio_enabled(bool enabled);
@@ -23,19 +23,37 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public abstract void snes_set_trace_enabled(bool enabled);
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_set_hooks_enabled(bool readHookEnabled, bool writeHookEnabled, bool executeHookEnabled);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void snes_set_ppu_sprite_limit_enabled(bool enabled);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void snes_set_overscan_enabled(bool enabled);
 
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract short* snes_get_audiobuffer_and_size(out int size);
+		public abstract IntPtr snes_get_audiobuffer_and_size(out int size);
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract BsnesApi.SNES_REGION snes_get_region();
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract BsnesApi.SNES_MAPPER snes_get_mapper();
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void* snes_get_memory_region(int id, out int size, out int wordSize);
+		public abstract IntPtr snes_get_memory_region(int id, out int size, out int wordSize);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract int snes_peek_logical_register(BsnesApi.SNES_REGISTER register);
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract byte snes_bus_read(uint address);
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_bus_write(uint address, byte value);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract IntPtr snes_get_sgb_memory_region(int id, out int size);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract byte snes_sgb_bus_read(ushort address);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void snes_sgb_bus_write(ushort address, byte value);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract int snes_sgb_battery_size();
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void snes_sgb_save_battery(byte[] buffer, int size);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void snes_sgb_load_battery(byte[] buffer, int size);
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void snes_set_callbacks(IntPtr[] snesCallbacks);
@@ -77,7 +95,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public abstract bool snes_msu_sync();
 	}
 
-	public unsafe partial class BsnesApi : IDisposable, IMonitor, IStatable
+	public partial class BsnesApi : IDisposable, IMonitor, IStatable
 	{
 		internal WaterboxHost exe;
 		internal BsnesCoreImpl core;
@@ -164,11 +182,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				exe.Dispose();
 				exe = null;
 				core = null;
-				// serializedSize = 0;
 			}
 		}
 
-		public delegate void snes_video_frame_t(ushort* data, int width, int height, int pitch);
+		public delegate void snes_video_frame_t(IntPtr data, int width, int height, int pitch);
 		public delegate short snes_input_poll_t(int port, int index, int id);
 		public delegate void snes_controller_latch_t();
 		public delegate void snes_no_lag_t(bool sgb_poll);
@@ -269,27 +286,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			_readonlyFiles.RemoveAll(s => !s.StartsWith("msu1/"));
 		}
 
-		// TODO: confirm that the serializedSize is CONSTANT for any given game,
-		// else this might be problematic
-		// private int serializedSize;// = 284275;
+		// private int serializedSize;
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
-			// if (serializedSize == 0)
-			// serializedSize = _core.snes_serialized_size();
-			// TODO: do some profiling and testing to check whether this is actually better than _exe.SaveStateBinary(writer);
-			// re-adding bsnes's own serialization will need to be done once it's confirmed to be deterministic, aka after libco update
+			// commented code left for debug purposes; created savestates are native bsnes savestates
+			// and therefor compatible across minor core updates
 
+			// if (serializedSize == 0) serializedSize = core.snes_serialized_size();
 			// byte[] serializedData = new byte[serializedSize];
-			// _core.snes_serialize(serializedData, serializedSize);
+			// core.snes_serialize(serializedData, serializedSize);
 			// writer.Write(serializedData);
 			exe.SaveStateBinary(writer);
 		}
 
 		public void LoadStateBinary(BinaryReader reader)
 		{
+			// if (serializedSize == 0) serializedSize = core.snes_serialized_size();
 			// byte[] serializedData = reader.ReadBytes(serializedSize);
-			// _core.snes_unserialize(serializedData, serializedSize);
+			// core.snes_unserialize(serializedData, serializedSize);
 			exe.LoadStateBinary(reader);
 			core.snes_msu_sync();
 		}

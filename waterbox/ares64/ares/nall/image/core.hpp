@@ -7,7 +7,7 @@ inline image::image(const image& source) {
 }
 
 inline image::image(image&& source) {
-  operator=(forward<image>(source));
+  operator=(std::forward<image>(source));
 }
 
 inline image::image(bool endian, u32 depth, u64 alphaMask, u64 redMask, u64 greenMask, u64 blueMask) {

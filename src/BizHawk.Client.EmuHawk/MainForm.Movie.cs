@@ -13,6 +13,15 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (movie is null) throw new ArgumentNullException(paramName: nameof(movie));
 
+			if (CheatList.AnyActive)
+			{
+				var result = this.ModalMessageBox3(
+					caption: "Cheats warning",
+					text: "Continue playback with cheats enabled?\nChoosing \"No\" will disable cheats but not remove them.",
+					icon: EMsgBoxIcon.Question);
+				if (result is null) return false;
+				if (result is false) CheatList.DisableAll();
+			}
 			var oldPreferredCores = new Dictionary<string, string>(Config.PreferredCores);
 			try
 			{
@@ -66,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 				PlayRecordStatusButton.ToolTipText = "Movie is in record mode";
 				PlayRecordStatusButton.Visible = true;
 			}
-			else if (!MovieSession.Movie.IsActive())
+			else if (MovieSession.Movie.NotActive())
 			{
 				PlayRecordStatusButton.Image = Properties.Resources.Blank;
 				PlayRecordStatusButton.ToolTipText = "No movie is active";

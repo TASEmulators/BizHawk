@@ -1135,6 +1135,92 @@ static sljit_s32 emit_fast_return(struct sljit_compiler *compiler, sljit_s32 src
 	return SLJIT_SUCCESS;
 }
 
+/* --------------------------------------------------------------------- */
+/*  Memory operations                                                    */
+/* --------------------------------------------------------------------- */
+
+SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_mem(struct sljit_compiler *compiler, sljit_s32 type,
+	sljit_s32 reg,
+	sljit_s32 mem, sljit_sw memw)
+{
+	sljit_u8* inst;
+	sljit_s32 i, next, reg_idx, offset;
+	sljit_u8 regs[2];
+
+	CHECK_ERROR();
+	CHECK(check_sljit_emit_mem(compiler, type, reg, mem, memw));
+
+	if (!(reg & REG_PAIR_MASK)) {
+		if (type & (SLJIT_MEM_PRE | SLJIT_MEM_POST))
+			return SLJIT_ERR_UNSUPPORTED;
+
+		return sljit_emit_mem_unaligned(compiler, type, reg, mem, memw);
+	}
+
+	ADJUST_LOCAL_OFFSET(mem, memw);
+
+	regs[0] = U8(REG_PAIR_FIRST(reg));
+	regs[1] = U8(REG_PAIR_SECOND(reg));
+
+	next = SSIZE_OF(sw);
+
+	if (!(type & SLJIT_MEM_STORE) && (regs[0] == (mem & REG_MASK) || regs[0] == OFFS_REG(mem))) {
+		if (regs[1] == (mem & REG_MASK) || regs[1] == OFFS_REG(mem)) {
+			/* None of them are virtual register so TMP_REG1 will not be used. */
+			EMIT_MOV(compiler, TMP_REG1, 0, OFFS_REG(mem), 0);
+
+			if (regs[1] == OFFS_REG(mem))
+				next = -SSIZE_OF(sw);
+
+			mem = (mem & ~OFFS_REG_MASK) | TO_OFFS_REG(TMP_REG1);
+		} else {
+			next = -SSIZE_OF(sw);
+
+			if (!(mem & OFFS_REG_MASK))
+				memw += SSIZE_OF(sw);
+		}
+	}
+
+	for (i = 0; i < 2; i++) {
+		reg_idx = next > 0 ? i : (i ^ 0x1);
+		reg = regs[reg_idx];
+
+		offset = -1;
+
+		if (reg >= SLJIT_R3 && reg <= SLJIT_S3) {
+			offset = (2 * SSIZE_OF(sw)) + ((reg) - SLJIT_R3) * SSIZE_OF(sw);
+			reg = TMP_REG1;
+
+			if (type & SLJIT_MEM_STORE)
+				EMIT_MOV(compiler, TMP_REG1, 0, SLJIT_MEM1(SLJIT_SP), offset);
+		}
+
+		if ((mem & OFFS_REG_MASK) && (reg_idx == 1)) {
+			inst = (sljit_u8*)ensure_buf(compiler, (sljit_uw)(1 + 4));
+			FAIL_IF(!inst);
+
+			INC_SIZE(4);
+
+			inst[0] = (type & SLJIT_MEM_STORE) ? MOV_rm_r : MOV_r_rm;
+			inst[1] = 0x44 | U8(reg_map[reg] << 3);
+			inst[2] = U8(memw << 6) | U8(reg_map[OFFS_REG(mem)] << 3) | reg_map[mem & REG_MASK];
+			inst[3] = sizeof(sljit_sw);
+		} else if (type & SLJIT_MEM_STORE) {
+			EMIT_MOV(compiler, mem, memw, reg, 0);
+		} else {
+			EMIT_MOV(compiler, reg, 0, mem, memw);
+		}
+
+		if (!(mem & OFFS_REG_MASK))
+			memw += next;
+
+		if (!(type & SLJIT_MEM_STORE) && offset != -1)
+			EMIT_MOV(compiler, SLJIT_MEM1(SLJIT_SP), offset, TMP_REG1, 0);
+	}
+
+	return SLJIT_SUCCESS;
+}
+
 static sljit_s32 skip_frames_before_return(struct sljit_compiler *compiler)
 {
 	sljit_sw size;

@@ -13,7 +13,13 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 {
 	public static class ToolExtensions
 	{
-		public static ToolStripItem[] RecentMenu(this RecentFiles recent, IMainFormForTools mainForm, Action<string> loadFileCallback, string entrySemantic, bool noAutoload = false, bool romLoading = false)
+		public static ToolStripItem[] RecentMenu(
+			this RecentFiles recent,
+			IDialogParent mainForm,
+			Action<string> loadFileCallback,
+			string entrySemantic,
+			bool noAutoload = false,
+			bool romLoading = false)
 		{
 			var items = new List<ToolStripItem>();
 
@@ -204,13 +210,9 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 					Message = "Number of recent files to track",
 					InitialValue = recent.MAX_RECENT_FILES.ToString()
 				};
-				var result = mainForm.DoWithTempMute(() => prompt.ShowDialog());
-				if (result == DialogResult.OK)
-				{
-					int val = int.Parse(prompt.PromptText);
-					if (val > 0)
-						recent.MAX_RECENT_FILES = val;
-				}
+				if (!mainForm.ShowDialogWithTempMute(prompt).IsOk()) return;
+				var val = int.Parse(prompt.PromptText);
+				if (val > 0) recent.MAX_RECENT_FILES = val;
 			};
 			items.Add(settingsItem);
 

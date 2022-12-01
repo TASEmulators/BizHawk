@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -800,9 +801,17 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private bool IsVisible(int index) => FirstVisibleRow.RangeTo(LastFullyVisibleRow).Contains(index);
+		private bool IsVisible(int index)
+		{
+			Debug.Assert(FirstVisibleRow < LastFullyVisibleRow);
+			return FirstVisibleRow <= index && index <= LastFullyVisibleRow;
+		}
 
-		public bool IsPartiallyVisible(int index) => FirstVisibleRow.RangeTo(LastVisibleRow).Contains(index);
+		public bool IsPartiallyVisible(int index)
+		{
+			Debug.Assert(FirstVisibleRow < LastVisibleRow);
+			return FirstVisibleRow <= index && index <= LastVisibleRow;
+		}
 
 		/// <summary>
 		/// Gets the number of rows currently visible including partially visible rows.

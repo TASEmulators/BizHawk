@@ -22,6 +22,7 @@ namespace BizHawk.Client.Common
 		private static readonly Dictionary<string, string> _displayNameLookup = new()
 		{
 			[GLOBAL] = "Global",
+			[VSystemID.Raw.Arcade] = "Arcade",
 			[VSystemID.Raw.INTV] = "Intellivision",
 			[VSystemID.Raw.NES] = "NES",
 			[VSystemID.Raw.SNES] = "SNES",
@@ -44,6 +45,7 @@ namespace BizHawk.Client.Common
 			[VSystemID.Raw.N64] = "N64",
 			[VSystemID.Raw.SAT] = "Saturn",
 			[VSystemID.Raw.WSWAN] = "WonderSwan",
+			[VSystemID.Raw.Jaguar] = "Jaguar",
 			[VSystemID.Raw.Lynx] = "Lynx",
 			[VSystemID.Raw.AppleII] = "Apple II",
 			[VSystemID.Raw.Libretro] = "Libretro",
@@ -182,7 +184,6 @@ namespace BizHawk.Client.Common
 				new(GLOBAL, "Watch (.wch)", Path.Combine(".", ".")),
 				new(GLOBAL, "Debug Logs", Path.Combine(".", "")),
 				new(GLOBAL, "Macros", Path.Combine(".", "Movies", "Macros")),
-				new(GLOBAL, "TAStudio states", Path.Combine(".", "Movies", "TAStudio states")),
 				new(GLOBAL, "Multi-Disk Bundles", Path.Combine(".", "")),
 				new(GLOBAL, "External Tools", Path.Combine(".", "ExternalTools")),
 				new(GLOBAL, "Temp Files", ""),
@@ -197,6 +198,8 @@ namespace BizHawk.Client.Common
 			CommonEntriesFor(VSystemID.Raw.AmstradCPC, basePath: Path.Combine(".", "AmstradCPC"), omitSaveRAM: true),
 
 			CommonEntriesFor(VSystemID.Raw.AppleII, basePath: Path.Combine(".", "Apple II"), omitSaveRAM: true),
+
+			CommonEntriesFor(VSystemID.Raw.Arcade, basePath: Path.Combine(".", "Arcade")),
 
 			CommonEntriesFor(VSystemID.Raw.C64, basePath: Path.Combine(".", "C64"), omitSaveRAM: true),
 
@@ -226,6 +229,8 @@ namespace BizHawk.Client.Common
 			new[] {
 				PalettesEntryFor(VSystemID.Raw.INTV),
 			},
+
+			CommonEntriesFor(VSystemID.Raw.Jaguar, basePath: Path.Combine(".", "Jaguar")),
 
 			new[] {
 				BaseEntryFor(VSystemID.Raw.Libretro, Path.Combine(".", "Libretro")),

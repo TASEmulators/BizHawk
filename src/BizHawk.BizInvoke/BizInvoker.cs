@@ -388,12 +388,20 @@ namespace BizHawk.BizInvoke
 				pli.EmitLoad();
 			}
 
+			bool WantsWinAPIBool()
+			{
+				var attrs = baseMethod.ReturnTypeCustomAttributes.GetCustomAttributes(typeof(MarshalAsAttribute), false);
+				return attrs.Length > 0 && ((MarshalAsAttribute)attrs[0]).Value is UnmanagedType.Bool;
+			}
+
 			il.Emit(OpCodes.Ldarg_0);
 			il.Emit(OpCodes.Ldfld, field);
 			il.EmitCalli(
 				OpCodes.Calli,
 				nativeCall,
-				returnType == typeof(bool) ? typeof(byte) : returnType, // undo winapi style bool garbage
+				returnType != typeof(bool) || WantsWinAPIBool()
+				? returnType
+				: typeof(byte), // undo winapi style bool garbage by default
 				paramLoadInfos.Select(p => p.NativeType).ToArray());
 
 			if (monitorField != null) // monitor: finally exit

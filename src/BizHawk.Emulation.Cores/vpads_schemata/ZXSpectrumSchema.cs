@@ -7,7 +7,6 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Emulation.Cores
 {
 	[Schema(VSystemID.Raw.ZXSpectrum)]
-	// ReSharper disable once UnusedMember.Global
 	internal class ZxSpectrumSchema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)

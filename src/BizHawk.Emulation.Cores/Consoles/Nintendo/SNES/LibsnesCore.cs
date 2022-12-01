@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 	[PortedCore(CoreNames.Bsnes, "byuu", "v87", "https://github.com/bsnes-emu/bsnes/tree/386ac87d21d14fafd15162d480a111209c9955ba")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public unsafe partial class LibsnesCore : IEmulator, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable, ICodeDataLogger,
-		IDebuggable, ISettable<LibsnesCore.SnesSettings, LibsnesCore.SnesSyncSettings>
+		IDebuggable, ISettable<LibsnesCore.SnesSettings, LibsnesCore.SnesSyncSettings>, IBSNESForGfxDebugger
 	{
 		[CoreConstructor(VSystemID.Raw.SGB)]
 		[CoreConstructor(VSystemID.Raw.SNES)]
@@ -235,7 +235,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public SnesColors.ColorType CurrPalette { get; private set; }
 
-		public MyScanlineHookManager ScanlineHookManager { get; }
+		public void SetPalette(SnesColors.ColorType palette)
+		{
+			var s = GetSettings();
+			s.Palette = Enum.GetName(typeof(SnesColors.ColorType), palette);
+			PutSettings(s);
+		}
+
+		public ISNESGraphicsDecoder CreateGraphicsDecoder()
+			=> new SNESGraphicsDecoder(Api, CurrPalette);
+
+		public ScanlineHookManager ScanlineHookManager { get; }
 
 		public class MyScanlineHookManager : ScanlineHookManager
 		{
@@ -362,14 +372,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				int idx = msg.IndexOf("AF:");
 				_tracer.Put(new(disassembly: msg.Substring(0, idx).TrimEnd(), registerInfo: msg.Substring(idx)));
 			}
-		}
-
-		private void SetPalette(SnesColors.ColorType pal)
-		{
-			CurrPalette = pal;
-			int[] tmp = SnesColors.GetLUT(pal);
-			fixed (int* p = &tmp[0])
-				Api.QUERY_set_color_lut((IntPtr)p);
 		}
 
 		private void ReadHook(uint addr)
@@ -633,7 +635,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		private void RefreshPalette()
 		{
-			SetPalette((SnesColors.ColorType)Enum.Parse(typeof(SnesColors.ColorType), _settings.Palette, false));
+			CurrPalette = (SnesColors.ColorType)Enum.Parse(typeof(SnesColors.ColorType), _settings.Palette, false);
+			int[] tmp = SnesColors.GetLUT(CurrPalette);
+			fixed (int* p = &tmp[0])
+				Api.QUERY_set_color_lut((IntPtr)p);
 		}
 	}
 }

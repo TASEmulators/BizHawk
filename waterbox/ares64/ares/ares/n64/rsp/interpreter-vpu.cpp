@@ -36,6 +36,7 @@ auto RSP::r128::operator()(u32 index) const -> r128 {
   }
 
   if constexpr(Accuracy::RSP::SIMD) {
+    #if ARCHITECTURE_SUPPORTS_SSE4_1
     static const __m128i shuffle[16] = {
       //vector
       _mm_set_epi8(15,14,13,12,11,10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0),  //01234567
@@ -60,6 +61,7 @@ auto RSP::r128::operator()(u32 index) const -> r128 {
     };
     //todo: benchmark to see if testing for cases 0&1 to return value directly is faster
     return {uint128_t(_mm_shuffle_epi8(v128, shuffle[index]))};
+    #endif
   }
 }
 
@@ -103,8 +105,10 @@ auto RSP::CFC2(r32& rt, u8 rd) -> void {
   }
 
   if constexpr(Accuracy::RSP::SIMD) {
+    #if ARCHITECTURE_SUPPORTS_SSE4_1
     static const v128 reverse = _mm_set_epi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
     rt.u32 = s16(_mm_movemask_epi8(_mm_shuffle_epi8(_mm_packs_epi16(hi, lo), reverse)));
+    #endif
   }
 }
 
@@ -126,9 +130,11 @@ auto RSP::CTC2(cr32& rt, u8 rd) -> void {
   }
 
   if constexpr(Accuracy::RSP::SIMD) {
+    #if ARCHITECTURE_SUPPORTS_SSE4_1
     static const v128 mask = _mm_set_epi16(0x0101, 0x0202, 0x0404, 0x0808, 0x1010, 0x2020, 0x4040, 0x8080);
     lo->v128 = _mm_cmpeq_epi8(_mm_and_si128(_mm_shuffle_epi8(r128{~rt.u32 >> 0}, zero), mask), zero);
     hi->v128 = _mm_cmpeq_epi8(_mm_and_si128(_mm_shuffle_epi8(r128{~rt.u32 >> 8}, zero), mask), zero);
+    #endif
   }
 }
 
@@ -481,6 +487,7 @@ auto RSP::VABS(r128& vd, cr128& vs, cr128& vt) -> void {
   }
 
   if constexpr(Accuracy::RSP::SIMD) {
+    #if ARCHITECTURE_SUPPORTS_SSE4_1
     r128 vs0, slt;
     vs0  = _mm_cmpeq_epi16(vs, zero);
     slt  = _mm_srai_epi16(vs, 15);
@@ -488,6 +495,7 @@ auto RSP::VABS(r128& vd, cr128& vs, cr128& vt) -> void {
     vd   = _mm_xor_si128(vd, slt);
     ACCL = _mm_sub_epi16(vd, slt);
     vd   = _mm_subs_epi16(vd, slt);
+    #endif
   }
 }
 
@@ -505,6 +513,7 @@ auto RSP::VADD(r128& vd, cr128& vs, cr128& vt) -> void {
   }
 
   if constexpr(Accuracy::RSP::SIMD) {
+    #if ARCHITECTURE_SUPPORTS_SSE4_1
     r128 vte = vt(e), sum, min, max;
     sum  = _mm_add_epi16(vs, vte);
     ACCL = _mm_sub_epi16(sum, VCOL);
@@ -514,6 +523,7 @@ auto RSP::VADD(r128& vd, cr128& vs, cr128& vt) -> void {
     vd   = _mm_adds_epi16(min, max);
     VCOL = zero;
     VCOH = zero;
+    #endif
   }
 }
 
@@ -531,6 +541,7 @@ auto RSP::VADDC(r128& vd, cr128& vs, cr128& vt) -> void {
   }
 
   if constexpr(Accuracy::RSP::SIMD) {
+    #if ARCHITECTURE_SUPPORTS_SSE4_1
     r128 vte = vt(e), sum;
     sum  = _mm_adds_epu16(vs, vte);
     ACCL = _mm_add_epi16(vs, vte);
@@ -538,6 +549,7 @@ auto RSP::VADDC(r128& vd, cr128& vs, cr128& vt) -> void {
     VCOL = _mm_cmpeq_epi16(VCOL, zero);
     VCOH = zero;
     vd   = ACCL;
+    #endif
   }
 }
 
@@ -552,8 +564,10 @@ auto RSP::VAND(r128& vd, cr128& vs, cr128& vt) -> void {
   }
 
   if constexpr(Accuracy::RSP::SIMD) {
+    #if ARCHITECTURE_SUPPORTS_SSE4_1
     ACCL = _mm_and_si128(vs, vt(e));
     vd   = ACCL;
+    #endif
   }
 }
 
@@ -584,6 +598,7 @@ auto RSP::VCH(r128& vd, cr128& vs, cr128& vt) -> void {
   }
 
   if constexpr(Accuracy::RSP::SIMD) {
+    #if ARCHITECTURE_SUPPORTS_SSE4_1
     r128 vte = vt(e), nvt, diff, diff0, vtn, dlez, dgez, mask;
     VCOL  = _mm_xor_si128(vs, vte);
     VCOL  = _mm_cmplt_epi16(VCOL, zero);
@@ -604,6 +619,7 @@ auto RSP::VCH(r128& vd, cr128& vs, cr128& vt) -> void {
     mask  = _mm_blendv_epi8(VCCH, VCCL, VCOL);
     ACCL  = _mm_blendv_epi8(vs, nvt, mask);
     vd    = ACCL;
+    #endif
   }
 }
 
@@ -639,6 +655,7 @@ auto RSP::VCL(r128& vd, cr128& vs, cr128& vt) -> void {
   }
 
   if constexpr(Accuracy::RSP::SIMD) {
+    #if ARCHITECTURE_SUPPORTS_SSE4_1
     r128 vte = vt(e), nvt, diff, ncarry, nvce, diff0, lec1, lec2, leeq, geeq, le, ge, mask;
     nvt    = _mm_xor_si128(vte, VCOL);
     nvt    = _mm_sub_epi16(nvt, VCOL);
@@ -666,6 +683,7 @@ auto RSP::VCL(r128& vd, cr128& vs, cr128& vt) -> void {
     VCOL   = zero;
     VCE    = zero;
     vd     = ACCL;
+    #endif
   }
 }
 
@@ -689,6 +707,7 @@ auto RSP::VCR(r128& vd, cr128& vs, cr128& vt) -> void {
   }
 
   if constexpr(Accuracy::RSP::SIMD) {
+    #if ARCHITECTURE_SUPPORTS_SSE4_1
     r128 vte = vt(e), sign, dlez, dgez, nvt, mask;
     sign = _mm_xor_si128(vs, vte);
     sign = _mm_srai_epi16(sign, 15);
@@ -705,6 +724,7 @@ auto RSP::VCR(r128& vd, cr128& vs, cr128& vt) -> void {
     VCOL = zero;
     VCOH = zero;
     VCE  = zero;
+    #endif
   }
 }
 
@@ -722,6 +742,7 @@ auto RSP::VEQ(r128& vd, cr128& vs, cr128& vt) -> void {
   }
 
   if constexpr(Accuracy::RSP::SIMD) {
+    #if ARCHITECTURE_SUPPORTS_SSE4_1
     r128 vte = vt(e), eq;
     eq   = _mm_cmpeq_epi16(vs, vte);
     VCCL = _mm_andnot_si128(VCOH, eq);
@@ -730,6 +751,7 @@ auto RSP::VEQ(r128& vd, cr128& vs, cr128& vt) -> void {
     VCOH = zero;
     VCOL = zero;
     vd   = ACCL;
+    #endif
   }
 }
 
@@ -747,6 +769,7 @@ auto RSP::VGE(r128& vd, cr128& vs, cr128& vt) -> void {
   }
 
   if constexpr(Accuracy::RSP::SIMD) {
+    #if ARCHITECTURE_SUPPORTS_SSE4_1
     r128 vte = vt(e), eq, gt, es;
     eq   = _mm_cmpeq_epi16(vs, vte);
     gt   = _mm_cmpgt_epi16(vs, vte);
@@ -758,6 +781,7 @@ auto RSP::VGE(r128& vd, cr128& vs, cr128& vt) -> void {
     VCOH = zero;
     VCOL = zero;
     vd   = ACCL;
+    #endif
   }
 }
 
@@ -775,6 +799,7 @@ auto RSP::VLT(r128& vd, cr128& vs, cr128& vt) -> void {
   }
 
   if constexpr(Accuracy::RSP::SIMD) {
+    #if ARCHITECTURE_SUPPORTS_SSE4_1
     r128 vte = vt(e), eq, lt;
     eq   = _mm_cmpeq_epi16(vs, vte);
     lt   = _mm_cmplt_epi16(vs, vte);
@@ -786,6 +811,7 @@ auto RSP::VLT(r128& vd, cr128& vs, cr128& vt) -> void {
     VCOH = zero;
     VCOL = zero;
     vd   = ACCL;
+    #endif
   }
 }
 
@@ -805,6 +831,7 @@ auto RSP::VMACF(r128& vd, cr128& vs, cr128& vt) -> void {
   }
 
   if constexpr(Accuracy::RSP::SIMD) {
+    #if ARCHITECTURE_SUPPORTS_SSE4_1
     r128 vte = vt(e), lo, md, hi, carry, omask;
     lo    = _mm_mullo_epi16(vs, vte);
     hi    = _mm_mulhi_epi16(vs, vte);
@@ -840,6 +867,7 @@ auto RSP::VMACF(r128& vd, cr128& vs, cr128& vt) -> void {
       md    = _mm_andnot_si128(hmask, md);
       vd    = _mm_or_si128(omask, md);
     }
+    #endif
   }
 }
 
@@ -867,6 +895,7 @@ auto RSP::VMADH(r128& vd, cr128& vs, cr128& vt) -> void {
   }
 
   if constexpr(Accuracy::RSP::SIMD) {
+    #if ARCHITECTURE_SUPPORTS_SSE4_1
     r128 vte = vt(e), lo, hi, omask;
     lo    = _mm_mullo_epi16(vs, vte);
     hi    = _mm_mulhi_epi16(vs, vte);
@@ -879,6 +908,7 @@ auto RSP::VMADH(r128& vd, cr128& vs, cr128& vt) -> void {
     lo    = _mm_unpacklo_epi16(ACCM, ACCH);
     hi    = _mm_unpackhi_epi16(ACCM, ACCH);
     vd    = _mm_packs_epi32(lo, hi);
+    #endif
   }
 }
 
@@ -893,6 +923,7 @@ auto RSP::VMADL(r128& vd, cr128& vs, cr128& vt) -> void {
   }
 
   if constexpr(Accuracy::RSP::SIMD) {
+    #if ARCHITECTURE_SUPPORTS_SSE4_1
     r128 vte = vt(e), hi, omask, nhi, nmd, shi, smd, cmask, cval;
     hi    = _mm_mulhi_epu16(vs, vte);
     omask = _mm_adds_epu16(ACCL, hi);
@@ -912,6 +943,7 @@ auto RSP::VMADL(r128& vd, cr128& vs, cr128& vt) -> void {
     cmask = _mm_and_si128(smd, shi);
     cval  = _mm_cmpeq_epi16(nhi, zero);
     vd    = _mm_blendv_epi8(cval, ACCL, cmask);
+    #endif
   }
 }
 
@@ -926,6 +958,7 @@ auto RSP::VMADM(r128& vd, cr128& vs, cr128& vt) -> void {
   }
 
   if constexpr(Accuracy::RSP::SIMD) {
+    #if ARCHITECTURE_SUPPORTS_SSE4_1
     r128 vte = vt(e), lo, hi, sign, vta, omask;
     lo    = _mm_mullo_epi16(vs, vte);
     hi    = _mm_mulhi_epu16(vs, vte);
@@ -947,6 +980,7 @@ auto RSP::VMADM(r128& vd, cr128& vs, cr128& vt) -> void {
     lo    = _mm_unpacklo_epi16(ACCM, ACCH);
     hi    = _mm_unpackhi_epi16(ACCM, ACCH);
     vd    = _mm_packs_epi32(lo, hi);
+    #endif
   }
 }
 
@@ -961,6 +995,7 @@ auto RSP::VMADN(r128& vd, cr128& vs, cr128& vt) -> void {
   }
 
   if constexpr(Accuracy::RSP::SIMD) {
+    #if ARCHITECTURE_SUPPORTS_SSE4_1
     r128 vte = vt(e), lo, hi, sign, vsa, omask, nhi, nmd, shi, smd, cmask, cval;
     lo    = _mm_mullo_epi16(vs, vte);
     hi    = _mm_mulhi_epu16(vs, vte);
@@ -986,6 +1021,7 @@ auto RSP::VMADN(r128& vd, cr128& vs, cr128& vt) -> void {
     cmask = _mm_and_si128(smd, shi);
     cval  = _mm_cmpeq_epi16(nhi, zero);
     vd    = _mm_blendv_epi8(cval, ACCL, cmask);
+    #endif
   }
 }
 
@@ -1009,10 +1045,12 @@ auto RSP::VMRG(r128& vd, cr128& vs, cr128& vt) -> void {
   }
 
   if constexpr(Accuracy::RSP::SIMD) {
+    #if ARCHITECTURE_SUPPORTS_SSE4_1
     ACCL = _mm_blendv_epi8(vt(e), vs, VCCL);
     VCOH = zero;
     VCOL = zero;
     vd   = ACCL;
+    #endif
   }
 }
 
@@ -1027,6 +1065,7 @@ auto RSP::VMUDH(r128& vd, cr128& vs, cr128& vt) -> void {
   }
 
   if constexpr(Accuracy::RSP::SIMD) {
+    #if ARCHITECTURE_SUPPORTS_SSE4_1
     r128 vte = vt(e), lo, hi;
     ACCL = zero;
     ACCM = _mm_mullo_epi16(vs, vte);
@@ -1034,6 +1073,7 @@ auto RSP::VMUDH(r128& vd, cr128& vs, cr128& vt) -> void {
     lo   = _mm_unpacklo_epi16(ACCM, ACCH);
     hi   = _mm_unpackhi_epi16(ACCM, ACCH);
     vd   = _mm_packs_epi32(lo, hi);
+    #endif
   }
 }
 
@@ -1048,10 +1088,12 @@ auto RSP::VMUDL(r128& vd, cr128& vs, cr128& vt) -> void {
   }
 
   if constexpr(Accuracy::RSP::SIMD) {
+    #if ARCHITECTURE_SUPPORTS_SSE4_1
     ACCL = _mm_mulhi_epu16(vs, vt(e));
     ACCM = zero;
     ACCH = zero;
     vd   = ACCL;
+    #endif
   }
 }
 
@@ -1066,6 +1108,7 @@ auto RSP::VMUDM(r128& vd, cr128& vs, cr128& vt) -> void {
   }
 
   if constexpr(Accuracy::RSP::SIMD) {
+    #if ARCHITECTURE_SUPPORTS_SSE4_1
     r128 vte = vt(e), sign, vta;
     ACCL = _mm_mullo_epi16(vs, vte);
     ACCM = _mm_mulhi_epu16(vs, vte);
@@ -1074,6 +1117,7 @@ auto RSP::VMUDM(r128& vd, cr128& vs, cr128& vt) -> void {
     ACCM = _mm_sub_epi16(ACCM, vta);
     ACCH = _mm_srai_epi16(ACCM, 15);
     vd   = ACCM;
+    #endif
   }
 }
 
@@ -1088,6 +1132,7 @@ auto RSP::VMUDN(r128& vd, cr128& vs, cr128& vt) -> void {
   }
 
   if constexpr(Accuracy::RSP::SIMD) {
+    #if ARCHITECTURE_SUPPORTS_SSE4_1
     r128 vte = vt(e), sign, vsa;
     ACCL = _mm_mullo_epi16(vs, vte);
     ACCM = _mm_mulhi_epu16(vs, vte);
@@ -1096,6 +1141,7 @@ auto RSP::VMUDN(r128& vd, cr128& vs, cr128& vt) -> void {
     ACCM = _mm_sub_epi16(ACCM, vsa);
     ACCH = _mm_srai_epi16(ACCM, 15);
     vd   = ACCL;
+    #endif
   }
 }
 
@@ -1115,6 +1161,7 @@ auto RSP::VMULF(r128& vd, cr128& vs, cr128& vt) -> void {
   }
 
   if constexpr(Accuracy::RSP::SIMD) {
+    #if ARCHITECTURE_SUPPORTS_SSE4_1
     r128 vte = vt(e), lo, hi, round, sign1, sign2, neq, eq, neg;
     lo    = _mm_mullo_epi16(vs, vte);
     round = _mm_cmpeq_epi16(zero, zero);
@@ -1138,6 +1185,7 @@ auto RSP::VMULF(r128& vd, cr128& vs, cr128& vt) -> void {
       hi   = _mm_or_si128(ACCM, neg);
       vd   = _mm_andnot_si128(ACCH, hi);
     }
+    #endif
   }
 }
 
@@ -1165,9 +1213,11 @@ auto RSP::VNAND(r128& vd, cr128& vs, cr128& vt) -> void {
   }
 
   if constexpr(Accuracy::RSP::SIMD) {
+    #if ARCHITECTURE_SUPPORTS_SSE4_1
     ACCL = _mm_and_si128(vs, vt(e));
     ACCL = _mm_xor_si128(ACCL, invert);
     vd   = ACCL;
+    #endif
   }
 }
 
@@ -1185,6 +1235,7 @@ auto RSP::VNE(r128& vd, cr128& vs, cr128& vt) -> void {
   }
 
   if constexpr(Accuracy::RSP::SIMD) {
+    #if ARCHITECTURE_SUPPORTS_SSE4_1
     r128 vte = vt(e), eq, ne;
     eq   = _mm_cmpeq_epi16(vs, vte);
     ne   = _mm_cmpeq_epi16(eq, zero);
@@ -1195,6 +1246,7 @@ auto RSP::VNE(r128& vd, cr128& vs, cr128& vt) -> void {
     VCOH = zero;
     VCOL = zero;
     vd   = ACCL;
+    #endif
   }
 }
 
@@ -1212,9 +1264,11 @@ auto RSP::VNOR(r128& vd, cr128& vs, cr128& vt) -> void {
   }
 
   if constexpr(Accuracy::RSP::SIMD) {
+    #if ARCHITECTURE_SUPPORTS_SSE4_1
     ACCL = _mm_or_si128(vs, vt(e));
     ACCL = _mm_xor_si128(ACCL, invert);
     vd   = ACCL;
+    #endif
   }
 }
 
@@ -1229,9 +1283,11 @@ auto RSP::VNXOR(r128& vd, cr128& vs, cr128& vt) -> void {
   }
 
   if constexpr(Accuracy::RSP::SIMD) {
+    #if ARCHITECTURE_SUPPORTS_SSE4_1
     ACCL = _mm_xor_si128(vs, vt(e));
     ACCL = _mm_xor_si128(ACCL, invert);
     vd   = ACCL;
+    #endif
   }
 }
 
@@ -1246,8 +1302,10 @@ auto RSP::VOR(r128& vd, cr128& vs, cr128& vt) -> void {
   }
 
   if constexpr(Accuracy::RSP::SIMD) {
+    #if ARCHITECTURE_SUPPORTS_SSE4_1
     ACCL = _mm_or_si128(vs, vt(e));
     vd   = ACCL;
+    #endif
   }
 }
 
@@ -1359,6 +1417,7 @@ auto RSP::VSUB(r128& vd, cr128& vs, cr128& vt) -> void {
   }
 
   if constexpr(Accuracy::RSP::SIMD) {
+    #if ARCHITECTURE_SUPPORTS_SSE4_1
     r128 vte = vt(e), udiff, sdiff, ov;
     udiff = _mm_sub_epi16(vte, VCOL);
     sdiff = _mm_subs_epi16(vte, VCOL);
@@ -1368,6 +1427,7 @@ auto RSP::VSUB(r128& vd, cr128& vs, cr128& vt) -> void {
     vd    = _mm_adds_epi16(vd, ov);
     VCOL  = zero;
     VCOH  = zero;
+    #endif
   }
 }
 
@@ -1385,6 +1445,7 @@ auto RSP::VSUBC(r128& vd, cr128& vs, cr128& vt) -> void {
   }
 
   if constexpr(Accuracy::RSP::SIMD) {
+    #if ARCHITECTURE_SUPPORTS_SSE4_1
     r128 vte = vt(e), equal, udiff, diff0;
     udiff = _mm_subs_epu16(vs, vte);
     equal = _mm_cmpeq_epi16(vs, vte);
@@ -1393,6 +1454,7 @@ auto RSP::VSUBC(r128& vd, cr128& vs, cr128& vt) -> void {
     VCOL  = _mm_andnot_si128(equal, diff0);
     ACCL  = _mm_sub_epi16(vs, vte);
     vd    = ACCL;
+    #endif
   }
 }
 
@@ -1407,8 +1469,10 @@ auto RSP::VXOR(r128& vd, cr128& vs, cr128& vt) -> void {
   }
 
   if constexpr(Accuracy::RSP::SIMD) {
+    #if ARCHITECTURE_SUPPORTS_SSE4_1
     ACCL = _mm_xor_si128(vs, vt(e));
     vd   = ACCL;
+    #endif
   }
 }
 
@@ -1424,9 +1488,11 @@ auto RSP::VZERO(r128& vd, cr128& vs, cr128& vt) -> void {
   }
 
   if constexpr(Accuracy::RSP::SIMD) {
+    #if ARCHITECTURE_SUPPORTS_SSE4_1
     r128 vte = vt(e), sum, min, max;
     ACCL = _mm_add_epi16(vs, vte);
     vd   = _mm_xor_si128(vd, vd);
+    #endif
   }
 }
 

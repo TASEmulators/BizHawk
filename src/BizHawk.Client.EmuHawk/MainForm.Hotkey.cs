@@ -10,6 +10,36 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private bool CheckHotkey(string trigger)
 		{
+			void SelectAndSaveToSlot(int slot)
+			{
+				SaveQuickSave($"QuickSave{slot}");
+				Config.SaveSlot = slot;
+				UpdateStatusSlots();
+			}
+			void SelectAndLoadFromSlot(int slot)
+			{
+				LoadQuickSave($"QuickSave{slot}");
+				Config.SaveSlot = slot;
+				UpdateStatusSlots();
+			}
+			void ToggleGambatteSyncSetting(
+				string name,
+				Func<Gameboy.GambatteSyncSettings, bool> getter,
+				Action<Gameboy.GambatteSyncSettings, bool> setter)
+			{
+				if (Emulator is not Gameboy gb) return;
+				if (gb.DeterministicEmulation)
+				{
+					AddOnScreenMessage($"{name} cannot be toggled during movie recording.");
+					return;
+				}
+				var ss = gb.GetSyncSettings();
+				var newState = !getter(ss);
+				setter(ss, newState);
+				gb.PutSyncSettings(ss);
+				AddOnScreenMessage($"{name} toggled {(newState ? "on" : "off")}");
+			}
+
 			switch (trigger)
 			{
 				default:
@@ -24,8 +54,7 @@ namespace BizHawk.Client.EmuHawk
 					FrameInch = true;
 					return false;
 				case "Toggle Throttle":
-					Config.Unthrottled ^= true;
-					ThrottleMessage();
+					ToggleUnthrottled();
 					break;
 				case "Soft Reset":
 					SoftReset();
@@ -34,10 +63,10 @@ namespace BizHawk.Client.EmuHawk
 					HardReset();
 					break;
 				case "Quick Load":
-					LoadQuickSave($"QuickSave{Config.SaveSlot}");
+					LoadstateCurrentSlot();
 					break;
 				case "Quick Save":
-					SaveQuickSave($"QuickSave{Config.SaveSlot}");
+					SavestateCurrentSlot();
 					break;
 				case "Clear Autohold":
 					ClearAutohold();
@@ -48,12 +77,7 @@ namespace BizHawk.Client.EmuHawk
 				case "Screen Raw to Clipboard":
 					// Ctrl+C clash. any tool that has such acc must check this.
 					// maybe check if mainform has focus instead?
-					if (Tools.IsLoaded<TAStudio>() && Tools.Get<TAStudio>().ContainsFocus)
-					{
-						break;
-					}
-
-					TakeScreenshotToClipboard();
+					if (!(Tools.IsLoaded<TAStudio>() && Tools.Get<TAStudio>().ContainsFocus)) TakeScreenshotToClipboard();
 					break;
 				case "Screen Client to Clipboard":
 					TakeScreenshotClientToClipboard();
@@ -68,7 +92,7 @@ namespace BizHawk.Client.EmuHawk
 					CloseRom();
 					break;
 				case "Load Last ROM":
-					LoadRomFromRecent(Config.RecentRoms.MostRecent);
+					LoadMostRecentROM();
 					break;
 				case "Flush SaveRAM":
 					FlushSaveRAM();
@@ -80,11 +104,7 @@ namespace BizHawk.Client.EmuHawk
 					ToggleFrameCounter();
 					break;
 				case "Lag Counter":
-					if (Emulator.CanPollInput())
-					{
-						ToggleLagCounter();
-					}
-
+					if (Emulator.CanPollInput()) ToggleLagCounter();
 					break;
 				case "Input Display":
 					ToggleInputDisplay();
@@ -105,7 +125,7 @@ namespace BizHawk.Client.EmuHawk
 					ToggleSound();
 					break;
 				case "Exit Program":
-					_exitRequestPending = true;
+					ScheduleShutdown();
 					break;
 				case "Record A/V":
 					RecordAv();
@@ -141,104 +161,64 @@ namespace BizHawk.Client.EmuHawk
 
 				// Save States
 				case "Save State 0":
-					SaveQuickSave("QuickSave0");
-					Config.SaveSlot = 0;
-					UpdateStatusSlots();
+					SelectAndSaveToSlot(0);
 					break;
 				case "Save State 1":
-					SaveQuickSave("QuickSave1");
-					Config.SaveSlot = 1;
-					UpdateStatusSlots();
+					SelectAndSaveToSlot(1);
 					break;
 				case "Save State 2":
-					SaveQuickSave("QuickSave2");
-					Config.SaveSlot = 2;
-					UpdateStatusSlots();
+					SelectAndSaveToSlot(2);
 					break;
 				case "Save State 3":
-					SaveQuickSave("QuickSave3");
-					Config.SaveSlot = 3;
-					UpdateStatusSlots();
+					SelectAndSaveToSlot(3);
 					break;
 				case "Save State 4":
-					SaveQuickSave("QuickSave4");
-					Config.SaveSlot = 4;
-					UpdateStatusSlots();
+					SelectAndSaveToSlot(4);
 					break;
 				case "Save State 5":
-					SaveQuickSave("QuickSave5");
-					Config.SaveSlot = 5;
-					UpdateStatusSlots();
+					SelectAndSaveToSlot(5);
 					break;
 				case "Save State 6":
-					SaveQuickSave("QuickSave6");
-					Config.SaveSlot = 6;
-					UpdateStatusSlots();
+					SelectAndSaveToSlot(6);
 					break;
 				case "Save State 7":
-					SaveQuickSave("QuickSave7");
-					Config.SaveSlot = 7;
-					UpdateStatusSlots();
+					SelectAndSaveToSlot(7);
 					break;
 				case "Save State 8":
-					SaveQuickSave("QuickSave8");
-					Config.SaveSlot = 8;
-					UpdateStatusSlots();
+					SelectAndSaveToSlot(8);
 					break;
 				case "Save State 9":
-					SaveQuickSave("QuickSave9");
-					Config.SaveSlot = 9;
-					UpdateStatusSlots();
+					SelectAndSaveToSlot(9);
 					break;
 				case "Load State 0":
-					LoadQuickSave("QuickSave0");
-					Config.SaveSlot = 0;
-					UpdateStatusSlots();
+					SelectAndLoadFromSlot(0);
 					break;
 				case "Load State 1":
-					LoadQuickSave("QuickSave1");
-					Config.SaveSlot = 1;
-					UpdateStatusSlots();
+					SelectAndLoadFromSlot(1);
 					break;
 				case "Load State 2":
-					LoadQuickSave("QuickSave2");
-					Config.SaveSlot = 2;
-					UpdateStatusSlots();
+					SelectAndLoadFromSlot(2);
 					break;
 				case "Load State 3":
-					LoadQuickSave("QuickSave3");
-					Config.SaveSlot = 3;
-					UpdateStatusSlots();
+					SelectAndLoadFromSlot(3);
 					break;
 				case "Load State 4":
-					LoadQuickSave("QuickSave4");
-					Config.SaveSlot = 4;
-					UpdateStatusSlots();
+					SelectAndLoadFromSlot(4);
 					break;
 				case "Load State 5":
-					LoadQuickSave("QuickSave5");
-					Config.SaveSlot = 5;
-					UpdateStatusSlots();
+					SelectAndLoadFromSlot(5);
 					break;
 				case "Load State 6":
-					LoadQuickSave("QuickSave6");
-					Config.SaveSlot = 6;
-					UpdateStatusSlots();
+					SelectAndLoadFromSlot(6);
 					break;
 				case "Load State 7":
-					LoadQuickSave("QuickSave7");
-					Config.SaveSlot = 7;
-					UpdateStatusSlots();
+					SelectAndLoadFromSlot(7);
 					break;
 				case "Load State 8":
-					LoadQuickSave("QuickSave8");
-					Config.SaveSlot = 8;
-					UpdateStatusSlots();
+					SelectAndLoadFromSlot(8);
 					break;
 				case "Load State 9":
-					LoadQuickSave("QuickSave9");
-					Config.SaveSlot = 9;
-					UpdateStatusSlots();
+					SelectAndLoadFromSlot(9);
 					break;
 
 				case "Select State 0":
@@ -324,26 +304,16 @@ namespace BizHawk.Client.EmuHawk
 					Tools.Load<Cheats>();
 					break;
 				case "Toggle All Cheats":
-					if (CheatList.Any())
-					{
-						string type = " (mixed)";
-						if (CheatList.All(c => c.Enabled))
-						{
-							type = " (off)";
-						}
-						else if (CheatList.All(c => !c.Enabled))
-						{
-							type = " (on)";
-						}
-
-						foreach (var x in CheatList)
-						{
-							x.Toggle();
-						}
-
-						AddOnScreenMessage($"Cheats toggled{type}");
-					}
-
+					var cheats = CheatList.Where(static c => !c.IsSeparator).ToList();
+					if (cheats.Count is 0) break;
+					var firstWasEnabled = cheats[0].Enabled;
+					var kind = cheats.All(c => c.Enabled == firstWasEnabled)
+						? firstWasEnabled
+							? "off"
+							: "on"
+						: "mixed";
+					foreach (var x in cheats) x.Toggle();
+					AddOnScreenMessage($"Cheats toggled ({kind})");
 					break;
 				case "TAStudio":
 					TAStudioMenuItem_Click(null, null);
@@ -357,314 +327,119 @@ namespace BizHawk.Client.EmuHawk
 
 				// RAM Search
 				case "Do Search":
-					if (Tools.IsLoaded<RamSearch>())
-					{
-						Tools.RamSearch.DoSearch();
-					}
-					else
-					{
-						return false;
-					}
-
+					if (!Tools.IsLoaded<RamSearch>()) return false;
+					Tools.RamSearch.DoSearch();
 					break;
 				case "New Search":
-					if (Tools.IsLoaded<RamSearch>())
-					{
-						Tools.RamSearch.NewSearch();
-					}
-					else
-					{
-						return false;
-					}
-
+					if (!Tools.IsLoaded<RamSearch>()) return false;
+					Tools.RamSearch.NewSearch();
 					break;
 				case "Previous Compare To":
-					if (Tools.IsLoaded<RamSearch>())
-					{
-						Tools.RamSearch.NextCompareTo(reverse: true);
-					}
-					else
-					{
-						return false;
-					}
-
+					if (!Tools.IsLoaded<RamSearch>()) return false;
+					Tools.RamSearch.NextCompareTo(reverse: true);
 					break;
 				case "Next Compare To":
-					if (Tools.IsLoaded<RamSearch>())
-					{
-						Tools.RamSearch.NextCompareTo();
-					}
-					else
-					{
-						return false;
-					}
-
+					if (!Tools.IsLoaded<RamSearch>()) return false;
+					Tools.RamSearch.NextCompareTo();
 					break;
 				case "Previous Operator":
-					if (Tools.IsLoaded<RamSearch>())
-					{
-						Tools.RamSearch.NextOperator(reverse: true);
-					}
-					else
-					{
-						return false;
-					}
-
+					if (!Tools.IsLoaded<RamSearch>()) return false;
+					Tools.RamSearch.NextOperator(reverse: true);
 					break;
 				case "Next Operator":
-					if (Tools.IsLoaded<RamSearch>())
-					{
-						Tools.RamSearch.NextOperator();
-					}
-					else
-					{
-						return false;
-					}
-
+					if (!Tools.IsLoaded<RamSearch>()) return false;
+					Tools.RamSearch.NextOperator();
 					break;
 
 				// TAStudio
 				case "Add Branch":
-					if (Tools.IsLoaded<TAStudio>())
-					{
-						Tools.TAStudio.AddBranchExternal();
-					}
-					else
-					{
-						return false;
-					}
-
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.AddBranchExternal();
 					break;
 				case "Delete Branch":
-					if (Tools.IsLoaded<TAStudio>())
-					{
-						Tools.TAStudio.RemoveBranchExternal();
-					}
-					else
-					{
-						return false;
-					}
-
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.RemoveBranchExternal();
 					break;
 				case "Show Cursor":
-					if (Tools.IsLoaded<TAStudio>())
-					{
-						Tools.TAStudio.SetVisibleFrame();
-						Tools.TAStudio.RefreshDialog();
-					}
-					else
-					{
-						return false;
-					}
-
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.SetVisibleFrame();
+					Tools.TAStudio.RefreshDialog();
 					break;
 				case "Toggle Follow Cursor":
-					if (Tools.IsLoaded<TAStudio>())
-					{
-						Tools.TAStudio.TasPlaybackBox.FollowCursor ^= true;
-					}
-					else
-					{
-						return false;
-					}
-
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.TasPlaybackBox.FollowCursor ^= true;
 					break;
 				case "Toggle Auto-Restore":
-					if (Tools.IsLoaded<TAStudio>())
-					{
-						Tools.TAStudio.TasPlaybackBox.AutoRestore ^= true;
-					}
-					else
-					{
-						return false;
-					}
-
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.TasPlaybackBox.AutoRestore ^= true;
 					break;
 				case "Toggle Turbo Seek":
-					if (Tools.IsLoaded<TAStudio>())
-					{
-						Tools.TAStudio.TasPlaybackBox.TurboSeek ^= true;
-					}
-					else
-					{
-						return false;
-					}
-
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.TasPlaybackBox.TurboSeek ^= true;
 					break;
 				case "Undo":
-					if (Tools.IsLoaded<TAStudio>())
-					{
-						Tools.TAStudio.UndoExternal();
-					}
-					else
-					{
-						return false;
-					}
-
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.UndoExternal();
 					break;
 				case "Redo":
-					if (Tools.IsLoaded<TAStudio>())
-					{
-						Tools.TAStudio.RedoExternal();
-					}
-					else
-					{
-						return false;
-					}
-
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.RedoExternal();
 					break;
 				case "Sel. bet. Markers":
-					if (Tools.IsLoaded<TAStudio>())
-					{
-						Tools.TAStudio.SelectBetweenMarkersExternal();
-					}
-					else
-					{
-						return false;
-					}
-					
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.SelectBetweenMarkersExternal();
 					break;
 				case "Select All":
-					if (Tools.IsLoaded<TAStudio>())
-					{
-						Tools.TAStudio.SelectAllExternal();
-					}
-					else
-					{
-						return false;
-					}
-					
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.SelectAllExternal();
 					break;
 				case "Reselect Clip.":
-					if (Tools.IsLoaded<TAStudio>())
-					{
-						Tools.TAStudio.ReselectClipboardExternal();
-					}
-					else
-					{
-						return false;
-					}
-					
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.ReselectClipboardExternal();
 					break;
 				case "Clear Frames":
-					if (Tools.IsLoaded<TAStudio>())
-					{
-						Tools.TAStudio.ClearFramesExternal();
-					}
-					else
-					{
-						return false;
-					}
-
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.ClearFramesExternal();
 					break;
 				case "Insert Frame":
-					if (Tools.IsLoaded<TAStudio>())
-					{
-						Tools.TAStudio.InsertFrameExternal();
-					}
-					else
-					{
-						return false;
-					}
-
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.InsertFrameExternal();
 					break;
 				case "Insert # Frames":
-					if (Tools.IsLoaded<TAStudio>())
-					{
-						Tools.TAStudio.InsertNumFramesExternal();
-					}
-					else
-					{
-						return false;
-					}
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.InsertNumFramesExternal();
 					break;
 				case "Delete Frames":
-					if (Tools.IsLoaded<TAStudio>())
-					{
-						Tools.TAStudio.DeleteFramesExternal();
-					}
-					else
-					{
-						return false;
-					}
-
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.DeleteFramesExternal();
 					break;
 				case "Clone Frames":
-					if (Tools.IsLoaded<TAStudio>())
-					{
-						Tools.TAStudio.CloneFramesExternal();
-					}
-					else
-					{
-						return false;
-					}
-
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.CloneFramesExternal();
 					break;
 				case "Analog Increment":
-					if (Tools.IsLoaded<TAStudio>())
-					{
-						Tools.TAStudio.AnalogIncrementByOne();
-					}
-					else
-					{
-						return false;
-					}
-
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.AnalogIncrementByOne();
 					break;
 				case "Analog Decrement":
-					if (Tools.IsLoaded<TAStudio>())
-					{
-						Tools.TAStudio.AnalogDecrementByOne();
-					}
-					else
-					{
-						return false;
-					}
-
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.AnalogDecrementByOne();
 					break;
 				case "Analog Incr. by 10":
-					if (Tools.IsLoaded<TAStudio>())
-					{
-						Tools.TAStudio.AnalogIncrementByTen();
-					}
-					else
-					{
-						return false;
-					}
-
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.AnalogIncrementByTen();
 					break;
 				case "Analog Decr. by 10":
-					if (Tools.IsLoaded<TAStudio>())
-					{
-						Tools.TAStudio.AnalogDecrementByTen();
-					}
-					else
-					{
-						return false;
-					}
-
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.AnalogDecrementByTen();
 					break;
 				case "Analog Maximum":
-					if (Tools.IsLoaded<TAStudio>())
-					{
-						Tools.TAStudio.AnalogMax();
-					}
-					else
-					{
-						return false;
-					}
-
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.AnalogMax();
 					break;
 				case "Analog Minimum":
-					if (Tools.IsLoaded<TAStudio>())
-					{
-						Tools.TAStudio.AnalogMin();
-					}
-					else
-					{
-						return false;
-					}
-
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.AnalogMin();
 					break;
 
 				// SNES
@@ -695,55 +470,22 @@ namespace BizHawk.Client.EmuHawk
 
 				// GB
 				case "GB Toggle BG":
-					if (Emulator is Gameboy gb)
-					{
-						if (!gb.DeterministicEmulation)
-						{
-							var ss = gb.GetSyncSettings();
-							ss.DisplayBG ^= true;
-							gb.PutSyncSettings(ss);
-							AddOnScreenMessage($"BG toggled {(ss.DisplayBG ? "on" : "off")}");
-						}
-						else
-						{
-							AddOnScreenMessage($"BG cannot be toggled during movie recording.");
-						}
-					}
-
+					ToggleGambatteSyncSetting(
+						"BG",
+						static ss => ss.DisplayBG,
+						static (ss, newState) => ss.DisplayBG = newState);
 					break;
 				case "GB Toggle Obj":
-					if (Emulator is Gameboy gb2)
-					{
-						if (!gb2.DeterministicEmulation)
-						{
-							var ss = gb2.GetSyncSettings();
-							ss.DisplayOBJ ^= true;
-							gb2.PutSyncSettings(ss);
-							AddOnScreenMessage($"OBJ toggled {(ss.DisplayOBJ ? "on" : "off")}");
-						}
-						else
-						{
-							AddOnScreenMessage($"OBJ cannot be toggled during movie recording.");
-						}
-					}
-
+					ToggleGambatteSyncSetting(
+						"OBJ",
+						static ss => ss.DisplayOBJ,
+						static (ss, newState) => ss.DisplayOBJ = newState);
 					break;
 				case "GB Toggle Window":
-					if (Emulator is Gameboy gb3)
-					{
-						if (!gb3.DeterministicEmulation)
-						{
-							var ss = gb3.GetSyncSettings();
-							ss.DisplayWindow ^= true;
-							gb3.PutSyncSettings(ss);
-							AddOnScreenMessage($"WIN toggled {(ss.DisplayWindow ? "on" : "off")}");
-						}
-						else
-						{
-							AddOnScreenMessage($"WIN cannot be toggled during movie recording.");
-						}
-					}
-
+					ToggleGambatteSyncSetting(
+						"WIN",
+						static ss => ss.DisplayWindow,
+						static (ss, newState) => ss.DisplayWindow = newState);
 					break;
 
 				// Analog
@@ -847,6 +589,14 @@ namespace BizHawk.Client.EmuHawk
 				case "Turbo":
 				case "Rewind":
 				case "Fast Forward":
+				case "Open RA Overlay":
+				case "RA Up":
+				case "RA Down":
+				case "RA Left":
+				case "RA Right":
+				case "RA Confirm":
+				case "RA Cancel":
+				case "RA Quit":
 					return true;
 			}
 		}

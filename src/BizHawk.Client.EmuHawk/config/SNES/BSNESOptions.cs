@@ -22,6 +22,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				AlwaysDoubleSize = s.AlwaysDoubleSize,
 				CropSGBFrame = s.CropSGBFrame,
+				NoPPUSpriteLimit = s.NoPPUSpriteLimit,
+				ShowOverscan = s.ShowOverscan,
+				AspectRatioCorrection = s.AspectRatioCorrection,
 				Entropy = ss.Entropy,
 				RegionOverride = ss.RegionOverride,
 				Hotfixes = ss.Hotfixes,
@@ -44,33 +47,34 @@ namespace BizHawk.Client.EmuHawk
 			};
 
 			var result = dialogParent.ShowDialogAsChild(dlg);
-			if (result == DialogResult.OK)
-			{
-				s.AlwaysDoubleSize = dlg.AlwaysDoubleSize;
-				s.CropSGBFrame = dlg.CropSGBFrame;
-				ss.Entropy = dlg.Entropy;
-				ss.RegionOverride = dlg.RegionOverride;
-				ss.Hotfixes = dlg.Hotfixes;
-				ss.FastPPU = dlg.FastPPU;
-				ss.FastDSP = dlg.FastDSP;
-				ss.FastCoprocessors = dlg.FastCoprocessors;
-				ss.UseSGB2 = dlg.UseSGB2;
-				s.ShowOBJ_0 = dlg.ShowObj1;
-				s.ShowOBJ_1 = dlg.ShowObj2;
-				s.ShowOBJ_2 = dlg.ShowObj3;
-				s.ShowOBJ_3 = dlg.ShowObj4;
-				s.ShowBG1_0 = dlg.ShowBg1_0;
-				s.ShowBG1_1 = dlg.ShowBg1_1;
-				s.ShowBG2_0 = dlg.ShowBg2_0;
-				s.ShowBG2_1 = dlg.ShowBg2_1;
-				s.ShowBG3_0 = dlg.ShowBg3_0;
-				s.ShowBG3_1 = dlg.ShowBg3_1;
-				s.ShowBG4_0 = dlg.ShowBg4_0;
-				s.ShowBG4_1 = dlg.ShowBg4_1;
+			if (!result.IsOk()) return result;
 
-				settable.PutCoreSettings(s);
-				settable.PutCoreSyncSettings(ss);
-			}
+			s.AlwaysDoubleSize = dlg.AlwaysDoubleSize;
+			s.CropSGBFrame = dlg.CropSGBFrame;
+			s.NoPPUSpriteLimit = dlg.NoPPUSpriteLimit;
+			s.ShowOverscan = dlg.ShowOverscan;
+			s.AspectRatioCorrection = dlg.AspectRatioCorrection;
+			ss.Entropy = dlg.Entropy;
+			ss.RegionOverride = dlg.RegionOverride;
+			ss.Hotfixes = dlg.Hotfixes;
+			ss.FastPPU = dlg.FastPPU;
+			ss.FastDSP = dlg.FastDSP;
+			ss.FastCoprocessors = dlg.FastCoprocessors;
+			ss.UseSGB2 = dlg.UseSGB2;
+			s.ShowOBJ_0 = dlg.ShowObj1;
+			s.ShowOBJ_1 = dlg.ShowObj2;
+			s.ShowOBJ_2 = dlg.ShowObj3;
+			s.ShowOBJ_3 = dlg.ShowObj4;
+			s.ShowBG1_0 = dlg.ShowBg1_0;
+			s.ShowBG1_1 = dlg.ShowBg1_1;
+			s.ShowBG2_0 = dlg.ShowBg2_0;
+			s.ShowBG2_1 = dlg.ShowBg2_1;
+			s.ShowBG3_0 = dlg.ShowBg3_0;
+			s.ShowBG3_1 = dlg.ShowBg3_1;
+			s.ShowBG4_0 = dlg.ShowBg4_0;
+			s.ShowBG4_1 = dlg.ShowBg4_1;
+			settable.PutCoreSettings(s);
+			settable.PutCoreSyncSettings(ss);
 			return result;
 		}
 
@@ -86,6 +90,24 @@ namespace BizHawk.Client.EmuHawk
 			init => cbCropSGBFrame.Checked = value;
 		}
 
+		private bool NoPPUSpriteLimit
+		{
+			get => cbNoPPUSpriteLimit.Checked;
+			init => cbNoPPUSpriteLimit.Checked = value;
+		}
+
+		private bool ShowOverscan
+		{
+			get => cbShowOverscan.Checked;
+			init => cbShowOverscan.Checked = value;
+		}
+
+		private BsnesApi.ASPECT_RATIO_CORRECTION AspectRatioCorrection
+		{
+			get => (BsnesApi.ASPECT_RATIO_CORRECTION)AspectRatioCorrectionBox.SelectedIndex;
+			init => AspectRatioCorrectionBox.SelectedIndex = (int)value;
+		}
+
 		private bool Hotfixes
 		{
 			get => cbGameHotfixes.Checked;
@@ -95,7 +117,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool FastPPU
 		{
 			get => cbFastPPU.Checked;
-			init => cbDoubleSize.Enabled = cbFastPPU.Checked = value;
+			init => cbDoubleSize.Enabled = cbNoPPUSpriteLimit.Enabled = cbFastPPU.Checked = value;
 		}
 
 		private bool FastDSP
@@ -156,7 +178,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FastPPU_CheckedChanged(object sender, EventArgs e)
 		{
-			cbDoubleSize.Enabled = cbFastPPU.Checked;
+			cbDoubleSize.Enabled = cbNoPPUSpriteLimit.Enabled = cbFastPPU.Checked;
 		}
 	}
 }

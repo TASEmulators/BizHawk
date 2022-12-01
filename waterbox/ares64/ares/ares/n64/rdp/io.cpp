@@ -20,7 +20,7 @@ auto RDP::readWord(u32 address) -> u32 {
   if(address == 3) {
     //DPC_STATUS
     data.bit( 0) = command.source;
-    data.bit( 1) = command.freeze;
+    data.bit( 1) = command.freeze || command.crashed;
     data.bit( 2) = command.flush;
     data.bit( 3) = command.startGclk;
     data.bit( 4) = command.tmemBusy > 0;
@@ -88,9 +88,9 @@ auto RDP::writeWord(u32 address, u32 data_) -> void {
     if(data.bit(3)) command.freeze = 1;
     if(data.bit(4)) command.flush = 0;
     if(data.bit(5)) command.flush = 1;
-    if(data.bit(6)) command.tmemBusy = 0;
-    if(data.bit(7)) command.pipeBusy = 0;
-    if(data.bit(8)) command.bufferBusy = 0;
+    if(data.bit(6) && !command.crashed) command.tmemBusy = 0;
+    if(data.bit(7) && !command.crashed) command.pipeBusy = 0;
+    if(data.bit(8) && !command.crashed) command.bufferBusy = 0;
     if(data.bit(9)) command.clock = 0;
   }
 
@@ -174,7 +174,8 @@ auto RDP::IO::writeWord(u32 address, u32 data_) -> void {
 }
 
 auto RDP::flushCommands() -> void {
-  if(command.freeze) return;
+  if(command.freeze || command.crashed) return;
+  command.bufferBusy = 1;
   command.pipeBusy = 1;
   command.startGclk = 1;
   if(command.end > command.current) render();

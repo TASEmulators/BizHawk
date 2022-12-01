@@ -33,7 +33,7 @@ struct Object : shared_pointer_this<Object> {
   template<typename T, typename... P>
   auto prepend(P&&... p) -> Node::Object {
     using Type = typename T::type;
-    return prepend(shared_pointer<Type>::create(forward<P>(p)...));
+    return prepend(shared_pointer<Type>::create(std::forward<P>(p)...));
   }
 
   auto append(Node::Object node) -> Node::Object {
@@ -47,7 +47,7 @@ struct Object : shared_pointer_this<Object> {
   template<typename T, typename... P>
   auto append(P&&... p) -> Node::Object {
     using Type = typename T::type;
-    return append(shared_pointer<Type>::create(forward<P>(p)...));
+    return append(shared_pointer<Type>::create(std::forward<P>(p)...));
   }
 
   auto remove(Node::Object node) -> void {

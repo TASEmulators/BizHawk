@@ -7,6 +7,28 @@ namespace BizHawk.Client.Common
 {
 	public sealed class NamedLuaFunction : INamedLuaFunction
 	{
+		public const string EVENT_TYPE_CONSOLECLOSE = "OnConsoleClose";
+
+		public const string EVENT_TYPE_ENGINESTOP = "OnExit";
+
+		public const string EVENT_TYPE_INPUTPOLL = "OnInputPoll";
+
+		public const string EVENT_TYPE_LOADSTATE = "OnSavestateLoad";
+
+		public const string EVENT_TYPE_MEMEXEC = "OnMemoryExecute";
+
+		public const string EVENT_TYPE_MEMEXECANY = "OnMemoryExecuteAny";
+
+		public const string EVENT_TYPE_MEMREAD = "OnMemoryRead";
+
+		public const string EVENT_TYPE_MEMWRITE = "OnMemoryWrite";
+
+		public const string EVENT_TYPE_POSTFRAME = "OnFrameEnd";
+
+		public const string EVENT_TYPE_PREFRAME = "OnFrameStart";
+
+		public const string EVENT_TYPE_SAVESTATE = "OnSavestateSave";
+
 		private readonly LuaFunction _function;
 
 		public NamedLuaFunction(LuaFunction function, string theEvent, Action<string> logCallback, LuaFile luaFile, string name = null)

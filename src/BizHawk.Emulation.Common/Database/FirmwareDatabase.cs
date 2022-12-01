@@ -16,6 +16,8 @@ namespace BizHawk.Emulation.Common
 
 		public static readonly IReadOnlyDictionary<string, FirmwareFile> FirmwareFilesByHash;
 
+		public static readonly IReadOnlyDictionary<FirmwareOption, FirmwareFile> FirmwareFilesByOption;
+
 		public static readonly IReadOnlyCollection<FirmwareOption> FirmwareOptions;
 
 		public static readonly IReadOnlyCollection<FirmwareRecord> FirmwareRecords;
@@ -26,6 +28,7 @@ namespace BizHawk.Emulation.Common
 		{
 			List<FirmwarePatchOption> allPatches = new();
 			Dictionary<string, FirmwareFile> filesByHash = new();
+			Dictionary<FirmwareOption, FirmwareFile> filesByOption = new();
 			List<FirmwareOption> options = new();
 			List<FirmwareRecord> records = new();
 
@@ -45,7 +48,11 @@ namespace BizHawk.Emulation.Common
 						isBad: isBad);
 
 			void Option(string systemId, string id, in FirmwareFile ff, FirmwareOptionStatus status = FirmwareOptionStatus.Acceptable)
-				=> options.Add(new(new(systemId, id), ff.Hash, ff.Size, ff.IsBad ? FirmwareOptionStatus.Bad : status));
+			{
+				var option = new FirmwareOption(new(systemId, id), ff.Hash, ff.Size, ff.IsBad ? FirmwareOptionStatus.Bad : status);
+				options.Add(option);
+				filesByOption[option] = ff;
+			}
 
 			void Firmware(string systemId, string id, string desc)
 				=> records.Add(new(new(systemId, id), desc));
@@ -453,6 +460,16 @@ namespace BizHawk.Emulation.Common
 			var fxscsi = File("65482A23AC5C10A6095AEE1DB5824CCA54EAD6E5", 512 * 1024, "PCFX_fx-scsi.rom", "PCFX SCSI ROM");
 			Option("PCFX", "SCSIROM", in fxscsi);
 
+			Firmware("N64DD", "IPL JPN", "N64DD Japan IPL");
+			var ddv10 = File("58670C0063793A8F3BE957D71D937B618829BA9E", 4 * 1024 * 1024, "64DD_IPL_v10_JPN.bin", "N64DD JPN IPL v1.0 (Beta)");
+			var ddv11 = File("B3E26DBB4E945F78C918FABC5B9E60FCF262C47B", 4 * 1024 * 1024, "64DD_IPL_v11_JPN.bin", "N64DD JPN IPL v1.1 (Beta)");
+			var ddv12 = File("BF861922DCB78C316360E3E742F4F70FF63C9BC3", 4 * 1024 * 1024, "64DD_IPL_v12_JPN.bin", "N64DD JPN IPL v1.2 (Retail)");
+			Option("N64DD", "IPL JPN", in ddv10, FirmwareOptionStatus.Unacceptable);
+			Option("N64DD", "IPL JPN", in ddv11, FirmwareOptionStatus.Unacceptable);
+			Option("N64DD", "IPL JPN", in ddv12, FirmwareOptionStatus.Ideal);
+			FirmwareAndOption("10C4173C2A7EB09C6579818F72EF18FA0B6D32DE", 4 * 1024 * 1024, "N64DD", "IPL DEV", "64DD_IPL_DEV.bin", "N64DD Development IPL");
+			FirmwareAndOption("3C5B93CA231550C68693A14F03CEA8D5DBD1BE9E", 4 * 1024 * 1024, "N64DD", "IPL USA", "64DD_IPL_USA.bin", "N64DD Prototype USA IPL");
+
 			/*Firmware("PS2", "BIOS", "PS2 Bios");
 			Option("PS2", "BIOS", File("FBD54BFC020AF34008B317DCB80B812DD29B3759", 4 * 1024 * 1024, "ps2-0230j-20080220.bin", "PS2 Bios"));
 			Option("PS2", "BIOS", File("8361D615CC895962E0F0838489337574DBDC9173", 4 * 1024 * 1024, "ps2-0220a-20060905.bin", "PS2 Bios"));
@@ -463,6 +480,7 @@ namespace BizHawk.Emulation.Common
 
 			AllPatches = allPatches;
 			FirmwareFilesByHash = filesByHash;
+			FirmwareFilesByOption = filesByOption;
 			FirmwareOptions = options;
 			FirmwareRecords = records;
 		}

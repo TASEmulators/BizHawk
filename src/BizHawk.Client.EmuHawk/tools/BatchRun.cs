@@ -125,22 +125,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ButtonDump_Click(object sender, EventArgs e)
 		{
-			if (_mostRecentResults != null)
-			{
-				using var sfd = new SaveFileDialog();
-				var result = sfd.ShowDialog(this);
-				if (result == DialogResult.OK)
-				{
-					using TextWriter tw = new StreamWriter(sfd.FileName);
-					foreach (var r in _mostRecentResults)
-					{
-						r.DumpTo(tw);
-					}
-				}
-			}
-			else
+			if (_mostRecentResults is null)
 			{
 				DialogController.ShowMessageBox("No results to save!");
+				return;
+			}
+			var result = this.ShowFileSaveDialog(initDir: _config.PathEntries.ToolsAbsolutePath());
+			if (result is null) return;
+			using TextWriter tw = new StreamWriter(result);
+			foreach (var r in _mostRecentResults)
+			{
+				r.DumpTo(tw);
 			}
 		}
 	}

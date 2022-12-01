@@ -8,10 +8,12 @@ CPU cpu;
 #include "tlb.cpp"
 #include "memory.cpp"
 #include "exceptions.cpp"
+#include "algorithms.cpp"
 #include "interpreter.cpp"
 #include "interpreter-ipu.cpp"
 #include "interpreter-scc.cpp"
 #include "interpreter-fpu.cpp"
+#include "interpreter-cop2.cpp"
 #include "recompiler.cpp"
 #include "debugger.cpp"
 #include "serialization.cpp"
@@ -57,6 +59,10 @@ auto CPU::synchronize() -> void {
     case Queue::PI_BUS_Write:  return pi.writeFinished();
     case Queue::SI_DMA_Read:   return si.dmaRead();
     case Queue::SI_DMA_Write:  return si.dmaWrite();
+    case Queue::DD_Clock_Tick:  return dd.rtcTickClock();
+    case Queue::DD_MECHA_Response:  return dd.mechaResponse();
+    case Queue::DD_BM_Request:  return dd.bmRequest();
+    case Queue::DD_Motor_Mode:  return dd.motorChange();
     }
   });
 
@@ -132,7 +138,8 @@ auto CPU::power(bool reset) -> void {
   scc = {};
   for(auto& r : fpu.r) r.u64 = 0;
   fpu.csr = {};
-  fesetround(FE_TONEAREST);
+  cop2 = {};
+  fenv.setRound(float_env::toNearest);
   context.setMode();
 
   if constexpr(Accuracy::CPU::Recompiler) {

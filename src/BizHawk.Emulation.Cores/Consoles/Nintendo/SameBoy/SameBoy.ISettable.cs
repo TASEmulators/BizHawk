@@ -18,13 +18,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 		public PutSettingsDirtyBits PutSettings(SameboySettings o)
 		{
-			LibSameboy.sameboy_setpalette(SameboyState, o.GBPalette, o.GetCustomPalette());
-			LibSameboy.sameboy_setcolorcorrection(SameboyState, o.ColorCorrection);
-			LibSameboy.sameboy_setlighttemperature(SameboyState, o.LightTemperature);
-			LibSameboy.sameboy_sethighpassfilter(SameboyState, o.HighPassFilter);
-			LibSameboy.sameboy_setinterferencevolume(SameboyState, o.InterferenceVolume);
-			LibSameboy.sameboy_setbgwinenabled(SameboyState, o.EnableBGWIN);
-			LibSameboy.sameboy_setobjenabled(SameboyState, o.EnableOBJ);
+			var settings = new LibSameboy.NativeSettings
+			{
+				Palette = o.GBPalette,
+				CustomPalette = o.GetCustomPalette(),
+				ColorCorrectionMode = o.ColorCorrection,
+				LightTemperature = o.LightTemperature,
+				HighPassFilter = o.HighPassFilter,
+				InterferenceVolume = o.InterferenceVolume,
+				ChannelMask = o.GetChannelMask(),
+				BackgroundEnabled = o.EnableBGWIN,
+				ObjectsEnabled = o.EnableOBJ,
+			};
+			LibSameboy.sameboy_setsettings(SameboyState, ref settings);
 			_disassembler.UseRGBDSSyntax = o.UseRGBDSSyntax;
 			_settings = o;
 			return PutSettingsDirtyBits.None;
@@ -131,6 +137,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 				get => _interferencevolume;
 				set => _interferencevolume = Math.Max(0, Math.Min(100, value));
 			}
+
+			[DisplayName("Enable Channel 1")]
+			[Description("")]
+			[DefaultValue(true)]
+			public bool EnableCH1 { get; set; }
+
+			[DisplayName("Enable Channel 2")]
+			[Description("")]
+			[DefaultValue(true)]
+			public bool EnableCH2 { get; set; }
+
+			[DisplayName("Enable Channel 3")]
+			[Description("")]
+			[DefaultValue(true)]
+			public bool EnableCH3 { get; set; }
+
+			[DisplayName("Enable Channel 4")]
+			[Description("")]
+			[DefaultValue(true)]
+			public bool EnableCH4 { get; set; }
+
+			public int GetChannelMask()
+				=> (EnableCH1 ? 1 : 0) | (EnableCH2 ? 2 : 0) | (EnableCH3 ? 4 : 0) | (EnableCH4 ? 8 : 0);
 
 			[DisplayName("Enable Background/Window")]
 			[Description("")]

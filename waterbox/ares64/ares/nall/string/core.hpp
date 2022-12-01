@@ -30,16 +30,16 @@ inline auto string::operator()(u32 position, char fallback) const -> char {
 
 template<typename... P> inline auto string::assign(P&&... p) -> string& {
   resize(0);
-  return append(forward<P>(p)...);
+  return append(std::forward<P>(p)...);
 }
 
 template<typename T, typename... P> inline auto string::prepend(const T& value, P&&... p) -> string& {
-  if constexpr(sizeof...(p)) prepend(forward<P>(p)...);
+  if constexpr(sizeof...(p)) prepend(std::forward<P>(p)...);
   return _prepend(make_string(value));
 }
 
 template<typename... P> inline auto string::prepend(const nall::string_format& value, P&&... p) -> string& {
-  if constexpr(sizeof...(p)) prepend(forward<P>(p)...);
+  if constexpr(sizeof...(p)) prepend(std::forward<P>(p)...);
   return format(value);
 }
 
@@ -52,13 +52,13 @@ template<typename T> inline auto string::_prepend(const stringify<T>& source) ->
 
 template<typename T, typename... P> inline auto string::append(const T& value, P&&... p) -> string& {
   _append(make_string(value));
-  if constexpr(sizeof...(p) > 0) append(forward<P>(p)...);
+  if constexpr(sizeof...(p) > 0) append(std::forward<P>(p)...);
   return *this;
 }
 
 template<typename... P> inline auto string::append(const nall::string_format& value, P&&... p) -> string& {
   format(value);
-  if constexpr(sizeof...(p)) append(forward<P>(p)...);
+  if constexpr(sizeof...(p)) append(std::forward<P>(p)...);
   return *this;
 }
 

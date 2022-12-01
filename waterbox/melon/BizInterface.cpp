@@ -84,11 +84,7 @@ static bool LoadDSiWare(u8* TmdData)
 	fread(es_keyY, 16, 1, bios7i);
 	fclose(bios7i);
 
-	FILE* curNAND = Platform::OpenLocalFile(Config::DSiNANDPath, "r+b");
-	if (!curNAND)
-		return false;
-
-	if (!DSi_NAND::Init(curNAND, es_keyY))
+	if (!DSi_NAND::Init(es_keyY))
 		return false;
 
 	bool ret = DSi_NAND::ImportTitle("dsiware.rom", TmdData, false);
@@ -106,11 +102,6 @@ EXPORT bool Init(LoadFlags loadFlags, LoadData* loadData, FirmwareSettings* fwSe
 	bool isDsi = !!(loadFlags & IS_DSI);
 
 	NDS::SetConsoleType(isDsi);
-	// time calls are deterministic under wbx, so this will force the mac address to a constant value instead of relying on whatever is in the firmware
-	// fixme: might want to allow the user to specify mac address?
-	// edit: upstream has ability to set mac address, most work is in frontend now
-	srand(time(NULL));
-	Config::RandomizeMAC = true;
 	biz_time = 0;
 	RTC::RtcCallback = BizRtcCallback;
 
@@ -126,6 +117,7 @@ EXPORT bool Init(LoadFlags loadFlags, LoadData* loadData, FirmwareSettings* fwSe
 		std::string fwMessage(fwSettings->FirmwareMessage, fwSettings->FirmwareMessageLength);
 		fwMessage += '\0';
 		Config::FirmwareMessage = fwMessage;
+		Config::FirmwareMAC = "00:09:BF:0E:49:16"; // TODO: Make configurable
 	}
 
 	NANDFilePtr = isDsi ? new std::stringstream(std::string(loadData->NandData, loadData->NandLen), std::ios_base::in | std::ios_base::out | std::ios_base::binary) : nullptr;
@@ -265,13 +257,41 @@ static void ARM9Access(u8* buffer, s64 address, s64 count, bool write)
 	{
 		void (*Write)(u32, u8) = NDS::ConsoleType == 1 ? DSi::ARM9Write8 : NDS::ARM9Write8;
 		while (count--)
-			Write(address++, *buffer++);
+		{
+			if (address < NDS::ARM9->ITCMSize)
+			{
+				NDS::ARM9->ITCM[address++ & (ITCMPhysicalSize - 1)] = *buffer++;
+			}
+			else if ((address & NDS::ARM9->DTCMMask) == NDS::ARM9->DTCMBase)
+			{
+				NDS::ARM9->DTCM[address++ & (DTCMPhysicalSize - 1)] = *buffer++;
+			}
+			else
+			{
+				Write(address++, *buffer++);
+			}
+		}
 	}
 	else
 	{
 		u8 (*Read)(u32) = NDS::ConsoleType == 1 ? DSi::ARM9Read8 : NDS::ARM9Read8;
 		while (count--)
-			*buffer++ = SafeToPeek<true>(address) ? Read(address) : 0, address++;
+		{
+			if (address < NDS::ARM9->ITCMSize)
+			{
+				*buffer++ = NDS::ARM9->ITCM[address & (ITCMPhysicalSize - 1)];
+			}
+			else if ((address & NDS::ARM9->DTCMMask) == NDS::ARM9->DTCMBase)
+			{
+				*buffer++ = NDS::ARM9->DTCM[address & (DTCMPhysicalSize - 1)];
+			}
+			else
+			{
+				*buffer++ = SafeToPeek<true>(address) ? Read(address) : 0;
+			}
+
+			address++;
+		}
 	}
 }
 
@@ -293,40 +313,50 @@ static void ARM7Access(u8* buffer, s64 address, s64 count, bool write)
 
 EXPORT void GetMemoryAreas(MemoryArea *m)
 {
-	m[0].Data = NDS::ARM9BIOS;
-	m[0].Name = "ARM9 BIOS";
-	m[0].Size = sizeof NDS::ARM9BIOS;
-	m[0].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE;
+	m[0].Data = NDS::MainRAM;
+	m[0].Name = "Main RAM";
+	m[0].Size = NDS::MainRAMMaxSize;
+	m[0].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_PRIMARY;
 
-	m[1].Data = NDS::ARM7BIOS;
-	m[1].Name = "ARM7 BIOS";
-	m[1].Size = sizeof NDS::ARM7BIOS;
+	m[1].Data = NDS::SharedWRAM;
+	m[1].Name = "Shared WRAM";
+	m[1].Size = NDS::SharedWRAMSize;
 	m[1].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE;
 
-	m[2].Data = NDS::MainRAM;
-	m[2].Name = "Main RAM";
-	m[2].Size = NDS::MainRAMMaxSize;
-	m[2].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_PRIMARY;
+	m[2].Data = NDS::ARM7WRAM;
+	m[2].Name = "ARM7 WRAM";
+	m[2].Size = NDS::ARM7WRAMSize;
+	m[2].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE;
 
-	m[3].Data = NDS::SharedWRAM;
-	m[3].Name = "Shared WRAM";
-	m[3].Size = NDS::SharedWRAMSize;
+	m[3].Data = NDS::ARM9->ITCM;
+	m[3].Name = "Instruction TCM";
+	m[3].Size = ITCMPhysicalSize;
 	m[3].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE;
 
-	m[4].Data = NDS::ARM7WRAM;
-	m[4].Name = "ARM7 WRAM";
-	m[4].Size = NDS::ARM7WRAMSize;
+	m[4].Data = NDS::ARM9->DTCM;
+	m[4].Name = "Data TCM";
+	m[4].Size = DTCMPhysicalSize;
 	m[4].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE;
 
-	m[5].Data = (void*)ARM9Access;
-	m[5].Name = "ARM9 System Bus";
-	m[5].Size = 1ull << 32;
-	m[5].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_FUNCTIONHOOK;
+	m[5].Data = NDS::ARM9BIOS;
+	m[5].Name = "ARM9 BIOS";
+	m[5].Size = sizeof NDS::ARM9BIOS;
+	m[5].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE;
 
-	m[6].Data = (void*)ARM7Access;
-	m[6].Name = "ARM7 System Bus";
-	m[6].Size = 1ull << 32;
-	m[6].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_FUNCTIONHOOK;
+	m[6].Data = NDS::ARM7BIOS;
+	m[6].Name = "ARM7 BIOS";
+	m[6].Size = sizeof NDS::ARM7BIOS;
+	m[6].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE;
+
+	m[7].Data = (void*)ARM9Access;
+	m[7].Name = "ARM9 System Bus";
+	m[7].Size = 1ull << 32;
+	m[7].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_FUNCTIONHOOK;
+
+	m[8].Data = (void*)ARM7Access;
+	m[8].Name = "ARM7 System Bus";
+	m[8].Size = 1ull << 32;
+	m[8].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_FUNCTIONHOOK;
 
 	// fixme: include more shit
 }
@@ -471,31 +501,31 @@ EXPORT void SetMemoryCallback(u32 which, void (*callback)(u32 addr))
 }
 
 TraceMask_t TraceMask = TRACE_NONE;
-static void (*TraceCallback)(TraceMask_t, u32*, u8*, u32) = nullptr;
-#define TRACE_STRING_LENGTH 64
+static void (*TraceCallback)(TraceMask_t, u32, u32*, char*, u32) = nullptr;
+#define TRACE_STRING_LENGTH 80
 typedef enum {
 	ARMv4T, //ARM v4, THUMB v1
 	ARMv5TE, //ARM v5, THUMB v2
 	ARMv6, //ARM v6, THUMB v3
 } ARMARCH; //only 32-bit legacy architectures with THUMB support
-extern "C" unsigned int Disassemble_thumb(unsigned int code, unsigned char str[TRACE_STRING_LENGTH], unsigned int it, const unsigned char* cond, ARMARCH tv);
-extern "C" void Disassemble_arm(unsigned int code, unsigned char str[TRACE_STRING_LENGTH], ARMARCH av);
+extern "C" u32 Disassemble_thumb(u32 code, char str[TRACE_STRING_LENGTH], ARMARCH tv);
+extern "C" void Disassemble_arm(u32 code, char str[TRACE_STRING_LENGTH], ARMARCH av);
 
 void TraceTrampoline(TraceMask_t type, u32* regs, u32 opcode)
 {
-	static unsigned char disasm[TRACE_STRING_LENGTH];
+	static char disasm[TRACE_STRING_LENGTH];
 	memset(disasm, 0, sizeof disasm);
 	switch (type) {
-		case TRACE_ARM7_THUMB: Disassemble_thumb(opcode, disasm, 0, nullptr, ARMv4T); break;
+		case TRACE_ARM7_THUMB: Disassemble_thumb(opcode, disasm, ARMv4T); break;
 		case TRACE_ARM7_ARM: Disassemble_arm(opcode, disasm, ARMv4T); break;
-		case TRACE_ARM9_THUMB: Disassemble_thumb(opcode, disasm, 0, nullptr, ARMv5TE); break;
+		case TRACE_ARM9_THUMB: Disassemble_thumb(opcode, disasm, ARMv5TE); break;
 		case TRACE_ARM9_ARM: Disassemble_arm(opcode, disasm, ARMv5TE); break;
 		default: __builtin_unreachable();
 	}
-	TraceCallback(type, regs, disasm, NDS::GetSysClockCycles(2));
+	TraceCallback(type, opcode, regs, disasm, NDS::GetSysClockCycles(2));
 }
 
-EXPORT void SetTraceCallback(void (*callback)(TraceMask_t mask, u32* regs, u8* disasm, u32 cyclesOff), TraceMask_t mask)
+EXPORT void SetTraceCallback(void (*callback)(TraceMask_t mask, u32 opcode, u32* regs, char* disasm, u32 cyclesOff), TraceMask_t mask)
 {
 	TraceCallback = callback;
 	TraceMask = callback ? mask : TRACE_NONE;
@@ -503,12 +533,12 @@ EXPORT void SetTraceCallback(void (*callback)(TraceMask_t mask, u32* regs, u8* d
 
 EXPORT void GetDisassembly(TraceMask_t type, u32 opcode, char* ret)
 {
-	static unsigned char disasm[TRACE_STRING_LENGTH];
+	static char disasm[TRACE_STRING_LENGTH];
 	memset(disasm, 0, sizeof disasm);
 	switch (type) {
-		case TRACE_ARM7_THUMB: Disassemble_thumb(opcode, disasm, 0, nullptr, ARMv4T); break;
+		case TRACE_ARM7_THUMB: Disassemble_thumb(opcode, disasm, ARMv4T); break;
 		case TRACE_ARM7_ARM: Disassemble_arm(opcode, disasm, ARMv4T); break;
-		case TRACE_ARM9_THUMB: Disassemble_thumb(opcode, disasm, 0, nullptr, ARMv5TE); break;
+		case TRACE_ARM9_THUMB: Disassemble_thumb(opcode, disasm, ARMv5TE); break;
 		case TRACE_ARM9_ARM: Disassemble_arm(opcode, disasm, ARMv5TE); break;
 		default: __builtin_unreachable();
 	}

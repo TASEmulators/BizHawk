@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers.Binary;
 using System.ComponentModel;
 
 // ReSharper disable UnusedMember.Global
@@ -99,26 +100,16 @@ namespace BizHawk.Client.Common
 		[LuaMethodExample("local usbitbyt = bit.byteswap_16( 100 );")]
 		[LuaMethod("byteswap_16", "Byte swaps 'short', i.e. bit.byteswap_16(0xFF00) would return 0x00FF")]
 		public static ushort Byteswap16(ushort val)
-		{
-			return (ushort)((val & 0xFFU) << 8 | (val & 0xFF00U) >> 8);
-		}
+			=> BinaryPrimitives.ReverseEndianness(val);
 
 		[LuaMethodExample("local uibitbyt = bit.byteswap_32( 1000 );")]
 		[LuaMethod("byteswap_32", "Byte swaps 'dword'")]
 		public static uint Byteswap32(uint val)
-		{
-			return (val & 0x000000FFU) << 24 | (val & 0x0000FF00U) << 8 |
-				(val & 0x00FF0000U) >> 8 | (val & 0xFF000000U) >> 24;
-		}
+			=> BinaryPrimitives.ReverseEndianness(val);
 
 		[LuaMethodExample("local ulbitbyt = bit.byteswap_64( 10000 );")]
-		[LuaMethod("byteswap_64", "Byte swaps 'long'")]
+		[LuaMethod("byteswap_64", "Byte swaps 'long' (NOTE: You may get unexpected results for large numbers! In current Lua engines, all numbers are double-precision floating-point, even if you intended to use integers.)")]
 		public static ulong Byteswap64(ulong val)
-		{
-			return (val & 0x00000000000000FFUL) << 56 | (val & 0x000000000000FF00UL) << 40 |
-				(val & 0x0000000000FF0000UL) << 24 | (val & 0x00000000FF000000UL) << 8 |
-				(val & 0x000000FF00000000UL) >> 8 | (val & 0x0000FF0000000000UL) >> 24 |
-				(val & 0x00FF000000000000UL) >> 40 | (val & 0xFF00000000000000UL) >> 56;
-		}
+			=> BinaryPrimitives.ReverseEndianness(val);
 	}
 }

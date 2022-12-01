@@ -213,8 +213,6 @@ auto Gamepad::comm(n8 send, n8 recv, n8 input[], n8 output[]) -> n2 {
   return status;
 }
 
-bool RestrictAnalogRange;
-
 auto Gamepad::read() -> n32 {
   platform->input(x);
   platform->input(y);
@@ -233,53 +231,9 @@ auto Gamepad::read() -> n32 {
   platform->input(z);
   platform->input(start);
 
-  auto ax = x->value() * 1.0;
-  auto ay = y->value() * 1.0;
-
-  if (RestrictAnalogRange) {
-      //scale {-128 ... +127} to {-84 ... +84}
-      ax = ax * 85.0 / 127.0;
-      ay = ay * 85.0 / 127.0;
-
-      //create square dead-zone in range {-7 ... +7}
-      auto lengthAbsoluteX = abs (ax);
-      auto lengthAbsoluteY = abs (ay);
-      if (lengthAbsoluteX < 7.0) {
-        lengthAbsoluteX = 0.0;
-        ax *= lengthAbsoluteX;
-      }
-      if (lengthAbsoluteY < 7.0) {
-        lengthAbsoluteY = 0.0;
-        ay *= lengthAbsoluteY;
-      }
-      
-      //create outer circular dead-zone in ranges {-inf ... -85} and {+85 ... +inf} and scale between the two dead-zones according to the two-dimensional length
-      auto length = sqrt(ax * ax + ay * ay);
-      if(length > 85.0) {
-        length = 85.0 / length;
-      } else {
-        length = (length - 7.0) * 85.0 / (85.0 - 7.0) / length;
-      }
-      ax *= length;
-      ay *= length;
-
-      //bound diagonals to an octagonal range {-68 ... +68}
-      if(ax != 0.0 && ay != 0.0) {
-        auto slope = ay / ax;
-        auto edgex = copysign(85.0 / (abs(slope) + 16.0 / 69.0), ax);
-        auto edgey = copysign(min(abs(edgex * slope), 85.0 / (1.0 / abs(slope) + 16.0 / 69.0)), ay);
-        edgex = edgey / slope;
-
-        auto scale = sqrt(edgex * edgex + edgey * edgey) / 85.0;
-        ax *= scale;
-        ay *= scale;
-      }
-  }
-
   n32 data;
-  //data.byte(0) = -ay;
-  data.byte(0) = +ay;
-  data.byte(1) = +ax;
+  data.byte(0) = y->value();
+  data.byte(1) = x->value();
   data.bit(16) = cameraRight->value();
   data.bit(17) = cameraLeft->value();
   data.bit(18) = cameraDown->value();

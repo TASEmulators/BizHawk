@@ -1,8 +1,6 @@
 #include <n64/n64.hpp>
 
-#if defined(ANGRYLION_RDP)
 #include "Gfx #1.3.h"
-#endif
 
 namespace ares::Nintendo64 {
 
@@ -16,19 +14,22 @@ auto RDP::load(Node::Object parent) -> void {
   node = parent->append<Node::Object>("RDP");
   debugger.load(node);
 
-  #if defined(ANGRYLION_RDP)
-  puts("starting RDP video");
   angrylion::RomOpen();
-  #endif
 }
 
 auto RDP::unload() -> void {
   debugger = {};
   node.reset();
 
-  #if defined(ANGRYLION_RDP)
   angrylion::RomClosed();
-  #endif
+}
+
+auto RDP::crash(const char *reason) -> void {
+  debug(unusual, "[RDP] software triggered a hardware bug; RDP crashed and will stop responding. Reason: ", reason);
+  command.crashed = 1;
+  //guard against asynchronous reporting of crash state. We want the RDP to report that it's busy forever
+  command.pipeBusy = 1;
+  command.bufferBusy = 1;
 }
 
 auto RDP::main() -> void {

@@ -24,8 +24,10 @@ using BizHawk.Bizware.BizwareGL;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.Base_Implementations;
 using BizHawk.Emulation.Cores;
+using BizHawk.Emulation.Cores.Arcades.MAME;
 using BizHawk.Emulation.Cores.Calculators.TI83;
 using BizHawk.Emulation.Cores.Consoles.NEC.PCE;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Consoles.SNK;
 using BizHawk.Emulation.Cores.Nintendo.BSNES;
@@ -46,8 +48,15 @@ using BizHawk.WinForms.Controls;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class MainForm : FormBase, IDialogParent, IMainFormForApi, IMainFormForTools
+	public partial class MainForm : FormBase, IDialogParent, IMainFormForApi, IMainFormForTools, IMainFormForRetroAchievements
 	{
+		private static readonly FilesystemFilterSet EmuHawkSaveStatesFSFilterSet = new(FilesystemFilter.EmuHawkSaveStates);
+
+		private static readonly FilesystemFilterSet LibretroCoresFSFilterSet = new(new FilesystemFilter("Libretro Cores", new[] { OSTailoredCode.IsUnixHost ? "so" : "dll" }))
+		{
+			AppendAllFilesEntry = false,
+		};
+
 		private void MainForm_Load(object sender, EventArgs e)
 		{
 			UpdateWindowTitle();
@@ -348,6 +357,7 @@ namespace BizHawk.Client.EmuHawk
 				userRoot: Path.Combine(PathUtils.DataDirectoryPath, "gamedb"),
 				silent: true);
 			BootGodDb.Initialize(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb"));
+			MAMEMachineDB.Initialize(Path.Combine(PathUtils.ExeDirectoryPath, "gamedb"));
 
 			_argParser = cliFlags;
 			_getConfigPath = getConfigPath;
@@ -428,7 +438,26 @@ namespace BizHawk.Client.EmuHawk
 			Controls.Add(_presentationPanel);
 			Controls.SetChildIndex(_presentationPanel, 0);
 
-			ExtToolManager = new ExternalToolManager(Config.PathEntries, () => (Emulator.SystemId, Game.Hash));
+			// set up networking before ApiManager (in ToolManager)
+			byte[] NetworkingTakeScreenshot()
+				=> (byte[]) new ImageConverter().ConvertTo(MakeScreenshotImage().ToSysdrawingBitmap(), typeof(byte[]));
+			NetworkingHelpers = (
+				_argParser.HTTPAddresses is var (httpGetURL, httpPostURL)
+					? new HttpCommunication(NetworkingTakeScreenshot, httpGetURL, httpPostURL)
+					: null,
+				new MemoryMappedFiles(NetworkingTakeScreenshot, _argParser.MMFFilename),
+				_argParser.SocketAddress is var (socketIP, socketPort)
+					? new SocketServer(NetworkingTakeScreenshot, socketIP, socketPort)
+					: null
+			);
+
+			ExtToolManager = new(
+				Config,
+				() => (Emulator.SystemId, Game.Hash),
+				(toolPath, customFormTypeName, skipExtToolWarning) => Tools!.LoadExternalToolForm(
+					toolPath: toolPath,
+					customFormTypeName: customFormTypeName,
+					skipExtToolWarning: skipExtToolWarning) is not null);
 			Tools = new ToolManager(this, Config, DisplayManager, ExtToolManager, InputManager, Emulator, MovieSession, Game);
 
 			// TODO GL - move these event handlers somewhere less obnoxious line in the On* overrides
@@ -497,20 +526,24 @@ namespace BizHawk.Client.EmuHawk
 
 			InputManager.ResetMainControllers(_autofireNullControls);
 			InputManager.AutofireStickyXorAdapter.SetOnOffPatternFromConfig(Config.AutofireOn, Config.AutofireOff);
+			var savedOutputMethod = Config.SoundOutputMethod;
+			if (savedOutputMethod is ESoundOutputMethod.Dummy) Config.SoundOutputMethod = HostCapabilityDetector.HasDirectX ? ESoundOutputMethod.DirectSound : ESoundOutputMethod.OpenAL;
 			try
 			{
 				Sound = new Sound(Handle, Config, () => Emulator.VsyncRate());
 			}
 			catch
 			{
-				string message = "Couldn't initialize sound device! Try changing the output method in Sound config.";
-				if (Config.SoundOutputMethod == ESoundOutputMethod.DirectSound)
+				if (savedOutputMethod is not ESoundOutputMethod.Dummy)
 				{
-					message = "Couldn't initialize DirectSound! Things may go poorly for you. Try changing your sound driver to 44.1khz instead of 48khz in mmsys.cpl.";
+					ShowMessageBox(
+						owner: null,
+						text: savedOutputMethod is ESoundOutputMethod.DirectSound
+							? "Couldn't initialize DirectSound! Things may go poorly for you. Try changing your sound driver to 44.1khz instead of 48khz in mmsys.cpl."
+							: "Couldn't initialize sound device! Try changing the output method in Sound config.",
+						caption: "Initialization Error",
+						EMsgBoxIcon.Error);
 				}
-
-				ShowMessageBox(owner: null, message, "Initialization Error", EMsgBoxIcon.Error);
-
 				Config.SoundOutputMethod = ESoundOutputMethod.Dummy;
 				Sound = new Sound(Handle, Config, () => Emulator.VsyncRate());
 			}
@@ -552,7 +585,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (Config.RecentRoms.AutoLoad && !Config.RecentRoms.Empty)
 			{
-				LoadRomFromRecent(Config.RecentRoms.MostRecent);
+				LoadMostRecentROM();
 			}
 
 			if (_argParser.audiosync.HasValue)
@@ -633,21 +666,9 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (Config.AutoLoadLastSaveSlot)
 				{
-					LoadQuickSave($"QuickSave{Config.SaveSlot}");
+					LoadstateCurrentSlot();
 				}
 			}
-
-			// set up networking before Lua
-			byte[] NetworkingTakeScreenshot() => (byte[]) new ImageConverter().ConvertTo(MakeScreenshotImage().ToSysdrawingBitmap(), typeof(byte[]));
-			NetworkingHelpers = (
-				_argParser.HTTPAddresses == null
-					? null
-					: new HttpCommunication(NetworkingTakeScreenshot, _argParser.HTTPAddresses.Value.UrlGet, _argParser.HTTPAddresses.Value.UrlPost),
-				new MemoryMappedFiles(NetworkingTakeScreenshot, _argParser.MMFFilename),
-				_argParser.SocketAddress == null
-					? null
-					: new SocketServer(NetworkingTakeScreenshot, _argParser.SocketAddress.Value.IP, _argParser.SocketAddress.Value.Port)
-			);
 
 			//start Lua Console if requested in the command line arguments
 			if (_argParser.luaConsole)
@@ -676,6 +697,11 @@ namespace BizHawk.Client.EmuHawk
 			SetMainformMovieInfo();
 
 			SynchChrome();
+
+			if (Config.RAAutostart)
+			{
+				OpenRetroAchievements();
+			}
 
 			_presentationPanel.Control.Paint += (o, e) =>
 			{
@@ -816,6 +842,9 @@ namespace BizHawk.Client.EmuHawk
 				DisplayManager.Dispose();
 				DisplayManager = null;
 			}
+
+			RA?.Dispose();
+			RA = null;
 
 			if (disposing)
 			{
@@ -1597,29 +1626,24 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool RunLibretroCoreChooser()
 		{
-			using var ofd = new OpenFileDialog();
-
-			if (Config.LibretroCore != null)
+			string initFileName = null;
+			string initDir;
+			if (Config.LibretroCore is not null)
 			{
-				(ofd.InitialDirectory, ofd.FileName) = Config.LibretroCore.SplitPathToDirAndFile();
+				(initDir, initFileName) = Config.LibretroCore.SplitPathToDirAndFile();
 			}
 			else
 			{
-				var initDir = Config.PathEntries.AbsolutePathForType(VSystemID.Raw.Libretro, "Cores");
+				initDir = Config.PathEntries.AbsolutePathForType(VSystemID.Raw.Libretro, "Cores");
 				Directory.CreateDirectory(initDir);
-				ofd.InitialDirectory = initDir;
 			}
-
-			ofd.RestoreDirectory = true;
-			ofd.Filter = new FilesystemFilter("Libretro Cores", new[] { OSTailoredCode.IsUnixHost ? "so" : "dll" }).ToString();
-
-			if (ofd.ShowDialog() == DialogResult.Cancel)
-			{
-				return false;
-			}
-
-			Config.LibretroCore = ofd.FileName;
-
+			var result = this.ShowFileOpenDialog(
+				discardCWDChange: true,
+				filter: LibretroCoresFSFilterSet,
+				initDir: initDir!,
+				initFileName: initFileName);
+			if (result is null) return false;
+			Config.LibretroCore = result;
 			return true;
 		}
 
@@ -1985,6 +2009,7 @@ namespace BizHawk.Client.EmuHawk
 			PSXSubMenu.Visible = false;
 			ColecoSubMenu.Visible = false;
 			N64SubMenu.Visible = false;
+			Ares64SubMenu.Visible = false;
 			GBLSubMenu.Visible = false;
 			AppleSubMenu.Visible = false;
 			C64SubMenu.Visible = false;
@@ -2017,6 +2042,9 @@ namespace BizHawk.Client.EmuHawk
 				case VSystemID.Raw.N64 when Emulator is N64:
 					N64SubMenu.Visible = true;
 					break;
+				case VSystemID.Raw.N64 when Emulator is Ares64:
+					Ares64SubMenu.Visible = true;
+					break;
 				case VSystemID.Raw.NES:
 					NESSubMenu.Visible = true;
 					break;
@@ -2042,21 +2070,17 @@ namespace BizHawk.Client.EmuHawk
 				case VSystemID.Raw.SNES when Emulator is LibsnesCore { IsSGB: true }: // doesn't use "SGB" sysID
 					SNESSubMenu.Text = "&SGB";
 					SNESSubMenu.Visible = true;
-					SnesGfxDebuggerMenuItem.Visible = true;
 					break;
 				case VSystemID.Raw.SNES when Emulator is LibsnesCore { IsSGB: false }:
 					SNESSubMenu.Text = "&SNES";
 					SNESSubMenu.Visible = true;
-					SnesGfxDebuggerMenuItem.Visible = true;
 					break;
 				case VSystemID.Raw.SNES when Emulator is BsnesCore bsnesCore:
 					SNESSubMenu.Text = bsnesCore.IsSGB ? "&SGB" : "&SNES";
-					SnesGfxDebuggerMenuItem.Visible = false;
 					SNESSubMenu.Visible = true;
 					break;
 				case VSystemID.Raw.SNES when Emulator is SubBsnesCore subBsnesCore:
 					SNESSubMenu.Text = subBsnesCore.IsSGB ? "&SGB" : "&SNES";
-					SnesGfxDebuggerMenuItem.Visible = false;
 					SNESSubMenu.Visible = true;
 					break;
 				default:
@@ -2382,46 +2406,29 @@ namespace BizHawk.Client.EmuHawk
 			base.WndProc(ref m);
 		}
 
-		// sends an alt+mnemonic combination
+		/// <summary>HACK to send an alt+mnemonic combination</summary>
 		private void SendAltKeyChar(char c)
-		{
-			switch (OSTailoredCode.CurrentOS)
-			{
-				case OSTailoredCode.DistinctOS.Linux:
-				case OSTailoredCode.DistinctOS.macOS:
-					// no mnemonics for you
-					break;
-				case OSTailoredCode.DistinctOS.Windows:
-					//HACK
-					var _ = typeof(ToolStrip).InvokeMember(
-						"ProcessMnemonicInternal",
-						BindingFlags.NonPublic | BindingFlags.InvokeMethod | BindingFlags.Instance,
-						null,
-						MainformMenu,
-						new object[] { c });
-					break;
-			}
-		}
+			=> _ = typeof(ToolStrip).InvokeMember(
+				OSTailoredCode.IsUnixHost ? "ProcessMnemonic" : "ProcessMnemonicInternal",
+				BindingFlags.NonPublic | BindingFlags.InvokeMethod | BindingFlags.Instance,
+				null,
+				MainformMenu,
+				new object/*?*/[] { c });
 
-		public static readonly string ConfigFileFSFilterString = new FilesystemFilter("Config File", new[] { "ini" }).ToString();
+		public static readonly FilesystemFilterSet ConfigFileFSFilterSet = new(new FilesystemFilter("Config File", new[] { "ini" }))
+		{
+			AppendAllFilesEntry = false,
+		};
 
 		private void OpenRom()
 		{
-			using var ofd = new OpenFileDialog
-			{
-				InitialDirectory = Config.PathEntries.RomAbsolutePath(Emulator.SystemId),
-				Filter = RomLoader.RomFilter,
-				RestoreDirectory = false,
-				FilterIndex = _lastOpenRomFilter
-			};
-
-			if (this.ShowDialogWithTempMute(ofd) != DialogResult.OK) return;
-
-			var file = new FileInfo(ofd.FileName);
-			_lastOpenRomFilter = ofd.FilterIndex;
-
-			var lra = new LoadRomArgs { OpenAdvanced = new OpenAdvanced_OpenRom { Path = file.FullName } };
-			LoadRom(file.FullName, lra);
+			var result = this.ShowFileOpenDialog(
+				filter: RomLoader.RomFilter,
+				filterIndex: ref _lastOpenRomFilter,
+				initDir: Config.PathEntries.RomAbsolutePath(Emulator.SystemId));
+			if (result is null) return;
+			var filePath = new FileInfo(result).FullName;
+			LoadRom(filePath, new LoadRomArgs { OpenAdvanced = new OpenAdvanced_OpenRom { Path = filePath } });
 		}
 
 		private void CoreSyncSettings(object sender, RomLoader.SettingsLoadArgs e)
@@ -2968,9 +2975,10 @@ namespace BizHawk.Client.EmuHawk
 			InitControls(); // rebind hotkeys
 			InputManager.SyncControls(Emulator, MovieSession, Config);
 			Tools.Restart(Config, Emulator, Game);
-			ExtToolManager.Restart(Config.PathEntries);
+			ExtToolManager.Restart(Config);
 			Sound.Config = Config;
 			DisplayManager.UpdateGlobals(Config, Emulator);
+			RA?.Restart();
 			AddOnScreenMessage($"Config file loaded: {iniPath}");
 		}
 
@@ -3011,6 +3019,7 @@ namespace BizHawk.Client.EmuHawk
 				runFrame = true;
 			}
 
+			RA?.Update();
 
 			bool oldFrameAdvanceCondition = InputManager.ClientControls["Frame Advance"] || PressFrameAdvance || HoldFrameAdvance;
 			if (FrameInch)
@@ -3132,6 +3141,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				MovieSession.HandleFrameBefore();
+
+				RA?.OnFrameAdvance();
 
 				if (Config.AutosaveSaveRAM)
 				{
@@ -3426,20 +3437,16 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						using SaveFileDialog sfd = new()
-						{
-							FileName = $"{Game.FilesystemSafeName()}.{ext}",
-							Filter = new FilesystemFilterSet(new FilesystemFilter(ext, new[] { ext })).ToString(),
-							InitialDirectory = Config.PathEntries.AvAbsolutePath(),
-						};
-
-						if (this.ShowDialogWithTempMute(sfd) == DialogResult.Cancel)
+						var result = this.ShowFileSaveDialog(
+							filter: new(new FilesystemFilter(ext, new[] { ext })),
+							initDir: Config.PathEntries.AvAbsolutePath(),
+							initFileName: $"{Game.FilesystemSafeName()}.{ext}");
+						if (result is null)
 						{
 							aw.Dispose();
 							return;
 						}
-
-						pathForOpenFile = sfd.FileName;
+						pathForOpenFile = result;
 					}
 
 					aw.OpenFile(pathForOpenFile);
@@ -3620,10 +3627,7 @@ namespace BizHawk.Client.EmuHawk
 				if (_autoDumpLength == 0) // finish
 				{
 					StopAv();
-					if (_argParser._autoCloseOnDump)
-					{
-						_exitRequestPending = true;
-					}
+					if (_argParser._autoCloseOnDump) ScheduleShutdown();
 				}
 			}
 		}
@@ -3961,7 +3965,7 @@ namespace BizHawk.Client.EmuHawk
 					Tools.UpdateCheatRelatedTools(null, null);
 					if (!MovieSession.NewMovieQueued && Config.AutoLoadLastSaveSlot && HasSlot(Config.SaveSlot))
 					{
-						LoadQuickSave($"QuickSave{Config.SaveSlot}");
+						LoadstateCurrentSlot();
 					}
 
 					if (FirmwareManager.RecentlyServed.Count > 0)
@@ -4014,6 +4018,7 @@ namespace BizHawk.Client.EmuHawk
 			UpdateCoreStatusBarButton();
 			UpdateDumpInfo();
 			SetMainformMovieInfo();
+			RA?.Restart();
 		}
 
 		private void CommitCoreSettingsToConfig()
@@ -4027,7 +4032,7 @@ namespace BizHawk.Client.EmuHawk
 				Config.PutCoreSettings(settable.GetSettings(), t);
 			}
 
-			if (settable.HasSyncSettings && !MovieSession.Movie.IsActive())
+			if (settable.HasSyncSettings && MovieSession.Movie.NotActive())
 			{
 				// don't trample config with loaded-from-movie settings
 				Config.PutCoreSyncSettings(settable.GetSyncSettings(), t);
@@ -4079,6 +4084,8 @@ namespace BizHawk.Client.EmuHawk
 				StopMovie();
 			}
 
+			RA?.Stop();
+
 			CheatList.SaveOnClose();
 			Emulator.Dispose();
 			Emulator = new NullEmulator();
@@ -4090,7 +4097,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AutoSaveStateIfConfigured()
 		{
-			if (Config.AutoSaveLastSaveSlot && Emulator.HasSavestates()) SaveQuickSave($"QuickSave{Config.SaveSlot}");
+			if (Config.AutoSaveLastSaveSlot && Emulator.HasSavestates()) SavestateCurrentSlot();
 		}
 
 		public bool GameIsClosing { get; private set; } // Lets tools make better decisions when being called by CloseGame
@@ -4218,6 +4225,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				OSD.ClearGuiText();
 				EmuClient.OnStateLoaded(this, userFriendlyStateName);
+				RA?.OnLoadState(path);
 
 				if (Tools.Has<LuaConsole>())
 				{
@@ -4296,6 +4304,7 @@ namespace BizHawk.Client.EmuHawk
 				new SavestateFile(Emulator, MovieSession, QuickBmpFile, MovieSession.UserBag).Create(path, Config.Savestates);
 
 				EmuClient.OnStateSaved(this, userFriendlyStateName);
+				RA?.OnSaveState(path);
 
 				if (!suppressOSD)
 				{
@@ -4420,19 +4429,12 @@ namespace BizHawk.Client.EmuHawk
 				file.Directory.Create();
 			}
 
-			using var sfd = new SaveFileDialog
-			{
-				AddExtension = true,
-				DefaultExt = "State",
-				Filter = new FilesystemFilterSet(FilesystemFilter.EmuHawkSaveStates).ToString(),
-				InitialDirectory = path,
-				FileName = $"{SaveStatePrefix()}.QuickSave0.State"
-			};
-
-			if (this.ShowDialogWithTempMute(sfd) == DialogResult.OK)
-			{
-				SaveState(sfd.FileName, sfd.FileName);
-			}
+			var result = this.ShowFileSaveDialog(
+				fileExt: "State",
+				filter: EmuHawkSaveStatesFSFilterSet,
+				initDir: path,
+				initFileName: $"{SaveStatePrefix()}.QuickSave0.State");
+			if (result is not null) SaveState(path: result, userFriendlyStateName: result);
 
 			if (Tools.IsLoaded<TAStudio>())
 			{
@@ -4453,21 +4455,12 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			using var ofd = new OpenFileDialog
-			{
-				InitialDirectory = Config.PathEntries.SaveStateAbsolutePath(Game.System),
-				Filter = new FilesystemFilterSet(FilesystemFilter.EmuHawkSaveStates).ToString(),
-				RestoreDirectory = true
-			};
-
-			if (this.ShowDialogWithTempMute(ofd) != DialogResult.OK) return;
-
-			if (!File.Exists(ofd.FileName))
-			{
-				return;
-			}
-
-			LoadState(ofd.FileName, Path.GetFileName(ofd.FileName));
+			var result = this.ShowFileOpenDialog(
+				discardCWDChange: true,
+				filter: EmuHawkSaveStatesFSFilterSet,
+				initDir: Config.PathEntries.SaveStateAbsolutePath(Game.System));
+			if (result is null || !File.Exists(result)) return;
+			LoadState(result, Path.GetFileName(result));
 		}
 
 		private void SelectSlot(int slot)
@@ -4669,6 +4662,53 @@ namespace BizHawk.Client.EmuHawk
 
 		public IDialogController DialogController => this;
 
+		public IReadOnlyList<string>/*?*/ ShowFileMultiOpenDialog(
+			IDialogParent dialogParent,
+			string/*?*/ filterStr,
+			ref int filterIndex,
+			string initDir,
+			bool discardCWDChange = false,
+			string/*?*/ initFileName = null,
+			bool maySelectMultiple = false,
+			string/*?*/ windowTitle = null)
+		{
+			using OpenFileDialog ofd = new()
+			{
+				FileName = initFileName ?? string.Empty,
+				Filter = filterStr ?? string.Empty,
+				FilterIndex = filterIndex,
+				InitialDirectory = initDir,
+				Multiselect = maySelectMultiple,
+				RestoreDirectory = discardCWDChange,
+				Title = windowTitle ?? string.Empty,
+			};
+			var result = dialogParent.ShowDialogWithTempMute(ofd);
+			filterIndex = ofd.FilterIndex;
+			return result.IsOk() && ofd.FileNames.Length is not 0 ? ofd.FileNames : null;
+		}
+
+		public string/*?*/ ShowFileSaveDialog(
+			IDialogParent dialogParent,
+			bool discardCWDChange,
+			string/*?*/ fileExt,
+			string/*?*/ filterStr,
+			string initDir,
+			string/*?*/ initFileName,
+			bool muteOverwriteWarning)
+		{
+			using SaveFileDialog sfd = new()
+			{
+				DefaultExt = fileExt ?? string.Empty,
+				FileName = initFileName ?? string.Empty,
+				Filter = filterStr ?? string.Empty,
+				InitialDirectory = initDir,
+				OverwritePrompt = !muteOverwriteWarning,
+				RestoreDirectory = discardCWDChange,
+			};
+			var result = dialogParent.ShowDialogWithTempMute(sfd);
+			return result.IsOk() ? sfd.FileName : null;
+		}
+
 		public void ShowMessageBox(
 			IDialogParent/*?*/ owner,
 			string text,
@@ -4862,5 +4902,20 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public IQuickBmpFile QuickBmpFile { get; } = EmuHawk.QuickBmpFile.INSTANCE;
+
+		private IRetroAchievements RA { get; set; }
+
+		private void OpenRetroAchievements()
+		{
+			RA = RetroAchievements.CreateImpl(this, InputManager, Tools, () => Config, RetroAchievementsMenuItem.DropDownItems, () =>
+			{
+				RA.Dispose();
+				RA = null;
+				RetroAchievementsMenuItem.DropDownItems.Clear();
+				RetroAchievementsMenuItem.DropDownItems.Add(StartRetroAchievementsMenuItem);
+			});
+
+			RA?.Restart();
+		}
 	}
 }

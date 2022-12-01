@@ -907,8 +907,7 @@ namespace BizHawk.Client.EmuHawk
 				Message = "Enter a hexadecimal value"
 			};
 
-			var result = this.ShowDialogWithTempMute(prompt);
-			while (result.IsOk())
+			while (this.ShowDialogWithTempMute(prompt).IsOk())
 			{
 				try
 				{
@@ -972,10 +971,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			RecentSubMenu.DropDownItems.Clear();
-			RecentSubMenu.DropDownItems.AddRange(Settings.RecentSearches.RecentMenu(MainForm, LoadFileFromRecent, "Search", noAutoload: true));
-		}
+			=> RecentSubMenu.ReplaceDropDownItems(Settings.RecentSearches.RecentMenu(this, LoadFileFromRecent, "Search", noAutoload: true));
 
 		private void OpenMenuItem_Click(object sender, EventArgs e)
 		{
@@ -1052,12 +1048,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void MemoryDomainsSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			MemoryDomainsSubMenu.DropDownItems.Clear();
-			MemoryDomainsSubMenu.DropDownItems.AddRange(
-				MemoryDomains.MenuItems(SetMemoryDomain, _searches.Domain.Name, MaxSupportedSize)
-				.ToArray());
-		}
+			=> MemoryDomainsSubMenu.ReplaceDropDownItems(MemoryDomains.MenuItems(SetMemoryDomain, _searches.Domain.Name, MaxSupportedSize).ToArray());
 
 		private void SizeSubMenu_DropDownOpened(object sender, EventArgs e)
 		{

@@ -1029,6 +1029,42 @@
 			"YES": "Y",
 			"NO": "N",
 			"ENT": "KeypadEnter"
+		},
+		"Jaguar Controller": {
+			"P1 Up": "Up",
+			"P1 Down": "Down",
+			"P1 Left": "Left",
+			"P1 Right": "Right",
+			"P1 A": "C",
+			"P1 B": "X",
+			"P1 C": "Z",
+			"P1 Option": "Space",
+			"P1 Pause": "Enter",
+			"P1 0": "Keypad0",
+			"P1 1": "Keypad1",
+			"P1 2": "Keypad2",
+			"P1 3": "Keypad3",
+			"P1 4": "Keypad4",
+			"P1 5": "Keypad5",
+			"P1 6": "Keypad6",
+			"P1 7": "Keypad7",
+			"P1 8": "Keypad8",
+			"P1 9": "Keypad9",
+			"P1 Asterisk": "KeypadMultiply",
+			"P1 Pound": "KeypadDivide",
+		},
+		"TIC-80 Controller": {
+			"P1 Up": "Up",
+			"P1 Down": "Down",
+			"P1 Left": "Left",
+			"P1 Right": "Right",
+			"P1 A": "X",
+			"P1 B": "Z",
+			"P1 X": "S",
+			"P1 Y": "A",
+			"Mouse Left Click": "Z",
+			"Mouse Middle Click": "X",
+			"Mouse Right Click": "C",
 		}
 	},
 	"AllTrollersAutoFire": {
@@ -1391,6 +1427,18 @@
 				"Value": "X2 LeftThumbY Axis",
 				"Mult": -1.0,
 				"Deadzone": 0.1
+			}
+		},
+		"TIC-80 Controller": {
+			"Mouse X Position": {
+				"Value": "WMouse X",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			},
+			"Mouse Y Position": {
+				"Value": "WMouse Y",
+				"Mult": 1.0,
+				"Deadzone": 0.0
 			}
 		}
 	},
