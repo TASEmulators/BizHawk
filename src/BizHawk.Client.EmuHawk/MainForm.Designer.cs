@@ -214,6 +214,8 @@ namespace BizHawk.Client.EmuHawk
 			this.ExternalToolMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.dummyExternalTool = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.BatchRunnerMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.RetroAchievementsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.StartRetroAchievementsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.NESSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.NESPPUViewerMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.NESNametableViewerMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -1368,6 +1370,7 @@ namespace BizHawk.Client.EmuHawk
 			this.MacroToolMenuItem,
 			this.VirtualPadMenuItem,
 			this.BasicBotMenuItem,
+			this.RetroAchievementsMenuItem,
 			this.toolStripSeparator11,
 			this.CheatsMenuItem,
 			this.GameSharkConverterMenuItem,
@@ -1437,6 +1440,17 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.BasicBotMenuItem.Text = "Basic Bot";
 			this.BasicBotMenuItem.Click += new System.EventHandler(this.BasicBotMenuItem_Click);
+			// 
+			// RetroAchievementsMenuItem
+			// 
+			this.RetroAchievementsMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			StartRetroAchievementsMenuItem});
+			this.RetroAchievementsMenuItem.Text = "&RetroAchievements";
+			// 
+			// StartRetroAchievementsMenuItem
+			// 
+			this.StartRetroAchievementsMenuItem.Text = "&Start RetroAchievements";
+			this.StartRetroAchievementsMenuItem.Click += new System.EventHandler(this.StartRetroAchievementsMenuItem_Click);
 			// 
 			// CheatsMenuItem
 			// 
@@ -2459,6 +2473,8 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ViewSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ConfigSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ToolsSubMenu;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RetroAchievementsMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx StartRetroAchievementsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx HelpSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx PauseMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator1;

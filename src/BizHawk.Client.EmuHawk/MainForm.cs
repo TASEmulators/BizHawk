@@ -48,7 +48,7 @@ using BizHawk.WinForms.Controls;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class MainForm : FormBase, IDialogParent, IMainFormForApi, IMainFormForTools
+	public partial class MainForm : FormBase, IDialogParent, IMainFormForApi, IMainFormForTools, IMainFormForRetroAchievements
 	{
 		private static readonly FilesystemFilterSet EmuHawkSaveStatesFSFilterSet = new(FilesystemFilter.EmuHawkSaveStates);
 
@@ -698,6 +698,11 @@ namespace BizHawk.Client.EmuHawk
 
 			SynchChrome();
 
+			if (Config.RAAutostart)
+			{
+				OpenRetroAchievements();
+			}
+
 			_presentationPanel.Control.Paint += (o, e) =>
 			{
 				// I would like to trigger a repaint here, but this isn't done yet
@@ -837,6 +842,9 @@ namespace BizHawk.Client.EmuHawk
 				DisplayManager.Dispose();
 				DisplayManager = null;
 			}
+
+			RA?.Dispose();
+			RA = null;
 
 			if (disposing)
 			{
@@ -2970,6 +2978,7 @@ namespace BizHawk.Client.EmuHawk
 			ExtToolManager.Restart(Config);
 			Sound.Config = Config;
 			DisplayManager.UpdateGlobals(Config, Emulator);
+			RA?.Restart();
 			AddOnScreenMessage($"Config file loaded: {iniPath}");
 		}
 
@@ -3010,6 +3019,7 @@ namespace BizHawk.Client.EmuHawk
 				runFrame = true;
 			}
 
+			RA?.Update();
 
 			bool oldFrameAdvanceCondition = InputManager.ClientControls["Frame Advance"] || PressFrameAdvance || HoldFrameAdvance;
 			if (FrameInch)
@@ -3131,6 +3141,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				MovieSession.HandleFrameBefore();
+
+				RA?.OnFrameAdvance();
 
 				if (Config.AutosaveSaveRAM)
 				{
@@ -4006,6 +4018,7 @@ namespace BizHawk.Client.EmuHawk
 			UpdateCoreStatusBarButton();
 			UpdateDumpInfo();
 			SetMainformMovieInfo();
+			RA?.Restart();
 		}
 
 		private void CommitCoreSettingsToConfig()
@@ -4070,6 +4083,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				StopMovie();
 			}
+
+			RA?.Stop();
 
 			CheatList.SaveOnClose();
 			Emulator.Dispose();
@@ -4210,6 +4225,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				OSD.ClearGuiText();
 				EmuClient.OnStateLoaded(this, userFriendlyStateName);
+				RA?.OnLoadState(path);
 
 				if (Tools.Has<LuaConsole>())
 				{
@@ -4288,6 +4304,7 @@ namespace BizHawk.Client.EmuHawk
 				new SavestateFile(Emulator, MovieSession, QuickBmpFile, MovieSession.UserBag).Create(path, Config.Savestates);
 
 				EmuClient.OnStateSaved(this, userFriendlyStateName);
+				RA?.OnSaveState(path);
 
 				if (!suppressOSD)
 				{
@@ -4885,5 +4902,20 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public IQuickBmpFile QuickBmpFile { get; } = EmuHawk.QuickBmpFile.INSTANCE;
+
+		private IRetroAchievements RA { get; set; }
+
+		private void OpenRetroAchievements()
+		{
+			RA = RetroAchievements.CreateImpl(this, InputManager, Tools, () => Config, RetroAchievementsMenuItem.DropDownItems, () =>
+			{
+				RA.Dispose();
+				RA = null;
+				RetroAchievementsMenuItem.DropDownItems.Clear();
+				RetroAchievementsMenuItem.DropDownItems.Add(StartRetroAchievementsMenuItem);
+			});
+
+			RA?.Restart();
+		}
 	}
 }

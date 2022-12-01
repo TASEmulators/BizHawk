@@ -358,7 +358,19 @@ namespace BizHawk.Client.Common
 		public int OSDMessageDuration { get; set; } = 2;
 
 		public Queue<string> RecentCores { get; set; } = new();
-
+		
 		public Dictionary<string, string> TrustedExtTools { get; set; } = new();
+
+		// RetroAchievements settings
+		public bool SkipRATelemetryWarning { get; set; }
+		public string RAUsername { get; set; } = "";
+		public string RAToken { get; set; } = "";
+		public bool RACheevosActive { get; set; } = true;
+		public bool RALBoardsActive { get; set; }
+		public bool RARichPresenceActive { get; set; } = true;
+		public bool RAHardcoreMode { get; set; }
+		public bool RASoundEffects { get; set; } = true;
+		public bool RAAllowUnofficialCheevos { get; set; }
+		public bool RAAutostart { get; set; }
 	}
 }

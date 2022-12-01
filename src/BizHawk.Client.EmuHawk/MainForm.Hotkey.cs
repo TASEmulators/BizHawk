@@ -589,6 +589,14 @@ namespace BizHawk.Client.EmuHawk
 				case "Turbo":
 				case "Rewind":
 				case "Fast Forward":
+				case "Open RA Overlay":
+				case "RA Up":
+				case "RA Down":
+				case "RA Left":
+				case "RA Right":
+				case "RA Confirm":
+				case "RA Cancel":
+				case "RA Quit":
 					return true;
 			}
 		}

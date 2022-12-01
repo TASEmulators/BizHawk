@@ -1314,6 +1314,11 @@ namespace BizHawk.Client.EmuHawk
 			form.ShowDialog();
 		}
 
+		private void StartRetroAchievementsMenuItem_Click(object sender, EventArgs e)
+		{
+			OpenRetroAchievements();
+		}
+
 		private void NesSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			var boardName = Emulator.HasBoardInfo() ? Emulator.AsBoardInfo().BoardName : null;

@@ -85,6 +85,11 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var tab in HotkeyInfo.Groupings)
 			{
+				if (tab == "RAIntegration" && !RAIntegration.IsAvailable)
+				{
+					continue; // skip RA hotkeys if it can't be used
+				}
+
 				var tb = new TabPage { Name = tab, Text = tab };
 				var bindings = HotkeyInfo.AllHotkeys.Where(kvp => kvp.Value.TabGroup == tab)
 					.OrderBy(static kvp => kvp.Value.Ordinal).ThenBy(static kvp => kvp.Value.DisplayName);
