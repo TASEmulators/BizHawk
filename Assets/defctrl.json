@@ -896,7 +896,7 @@
 			"P1 R3": "X1 RightThumb, Y",
 			"P1 Right Stick, Button": "X1 RightThumb, Y",
 			"P1 MODE": "D",
-			"P1 Analog": "D",
+			"P1 Analog": "D"
 		},
 		"Lynx Controller": {
 			"Up": "Up",
@@ -1051,7 +1051,7 @@
 			"P1 8": "Keypad8",
 			"P1 9": "Keypad9",
 			"P1 Asterisk": "KeypadMultiply",
-			"P1 Pound": "KeypadDivide",
+			"P1 Pound": "KeypadDivide"
 		},
 		"TIC-80 Controller": {
 			"P1 Up": "Up",
@@ -1064,7 +1064,7 @@
 			"P1 Y": "A",
 			"Mouse Left Click": "Z",
 			"Mouse Middle Click": "X",
-			"Mouse Right Click": "C",
+			"Mouse Right Click": "C"
 		}
 	},
 	"AllTrollersAutoFire": {
@@ -1243,8 +1243,6 @@
 				"Deadzone": 0.0
 			}
 		},
-		"WonderSwan Controller": {},
-		"Lynx Controller": {},
 		"PSX Front Panel": {
 			"P1 LStick X": {
 				"Value": "X1 LeftThumbX Axis",
@@ -1267,7 +1265,6 @@
 				"Deadzone": 0.1
 			}
 		},
-		"Apple IIe Keyboard": {},
 		"LibRetro Controls": {
 			"Pointer X": {
 				"Value": "WMouse X",
@@ -1324,8 +1321,6 @@
 				"Deadzone": 0.1
 			}
 		},
-		"VirtualBoy Controller": {},
-		"NeoGeo Portable Controller": {},
 		"Saturn Controller": {
 			"P1 Right Stick Horizontal": {
 				"Value": "X1 RightThumbX Axis",
