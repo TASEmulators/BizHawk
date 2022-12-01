@@ -69,8 +69,8 @@ namespace BizHawk.Tests.Client.Common.Lua
 		public static void PassF64(double? o)
 			=> Assert.IsTrue(o == (double?)ExpectedValue);
 
-		[LuaMethod("pass_f128", "")]
-		public static void PassF128(decimal? o)
+		[LuaMethod("pass_decimal", "")]
+		public static void PassDecimal(decimal? o)
 			=> Assert.IsTrue(o == (decimal?)ExpectedValue);
 
 		[LuaMethod("pass_intptr", "")]
@@ -196,8 +196,8 @@ namespace BizHawk.Tests.Client.Common.Lua
 		public static double? ReturnF64()
 			=> (double?)ReturnValue;
 
-		[LuaMethod("return_f128", "")]
-		public static decimal? ReturnF128()
+		[LuaMethod("return_decimal", "")]
+		public static decimal? ReturnDecimal()
 			=> (decimal?)ReturnValue;
 
 		[LuaMethod("return_intptr", "")]
@@ -462,7 +462,7 @@ namespace BizHawk.Tests.Client.Common.Lua
 			Assert.IsTrue((bool)LuaInstance.DoString("return return_u64() == nil")[0]);
 			Assert.IsTrue((bool)LuaInstance.DoString("return return_f32() == nil")[0]);
 			Assert.IsTrue((bool)LuaInstance.DoString("return return_f64() == nil")[0]);
-			Assert.IsTrue((bool)LuaInstance.DoString("return return_f128() == nil")[0]);
+			Assert.IsTrue((bool)LuaInstance.DoString("return return_decimal() == nil")[0]);
 			Assert.IsTrue((bool)LuaInstance.DoString("return return_intptr() == nil")[0]);
 			Assert.IsTrue((bool)LuaInstance.DoString("return return_uintptr() == nil")[0]);
 			Assert.IsTrue((bool)LuaInstance.DoString("return return_char() == nil")[0]);
@@ -563,12 +563,12 @@ namespace BizHawk.Tests.Client.Common.Lua
 		}
 
 		[TestMethod]
-		public void Net_Return_F128()
+		public void Net_Return_Decimal()
 		{
 			ReturnValue = 123.0M;
-			Assert.IsTrue((bool)LuaInstance.DoString("return return_f128() == 123.0")[0]);
+			Assert.IsTrue((bool)LuaInstance.DoString("return return_decimal() == 123.0")[0]);
 			ReturnValue = -123.0M;
-			Assert.IsTrue((bool)LuaInstance.DoString("return return_f128() == -123.0")[0]);
+			Assert.IsTrue((bool)LuaInstance.DoString("return return_decimal() == -123.0")[0]);
 		}
 
 		[TestMethod]
@@ -660,7 +660,7 @@ namespace BizHawk.Tests.Client.Common.Lua
 			LuaInstance.DoString("pass_u64(nil)");
 			LuaInstance.DoString("pass_f32(nil)");
 			LuaInstance.DoString("pass_f64(nil)");
-			LuaInstance.DoString("pass_f128(nil)");
+			LuaInstance.DoString("pass_decimal(nil)");
 			LuaInstance.DoString("pass_intptr(nil)");
 			LuaInstance.DoString("pass_uintptr(nil)");
 			LuaInstance.DoString("pass_char(nil)");
@@ -764,12 +764,12 @@ namespace BizHawk.Tests.Client.Common.Lua
 		}
 
 		[TestMethod]
-		public void Net_Argument_F128()
+		public void Net_Argument_Decimal()
 		{
 			ExpectedValue = 123.0M;
-			LuaInstance.DoString("pass_f128(123.0)");
+			LuaInstance.DoString("pass_decimal(123.0)");
 			ExpectedValue = -123.0M;
-			LuaInstance.DoString("pass_f128(-123.0)");
+			LuaInstance.DoString("pass_decimal(-123.0)");
 		}
 
 		// these don't work either, although these make a bit more sense
