@@ -64,7 +64,7 @@ namespace BizHawk.Client.Common
 
 		public void SetMovieController(ControllerDefinition definition)
 		{
-			MovieController = new Bk2Controller(definition);
+			MovieController = GenerateMovieController(definition);
 		}
 
 		public void HandleFrameBefore()
