@@ -53,7 +53,7 @@ namespace BizHawk.Client.EmuHawk
 					Row("greenZone_InputLog", "Input Log"),
 					Row("greenZone_InputLog_Stated", "Savestate"),
 					Row("greenZone_InputLog_Invalidated", "Invalidated"),
-					Row("lagZone_FrameCol", "Frame Column (Lag)"),
+					Row("lagZone_FrameCol", "Frame# Column (Lag)"),
 					Row("lagZone_InputLog", "Input Log (Lag)"),
 					Row("lagZone_InputLog_Stated", "Savestate (Lag)"),
 					Row("lagZone_InputLog_Invalidated", "Invalidated (Lag)"),
