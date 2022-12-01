@@ -209,11 +209,9 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 
-				runningScripts = luaLibsImpl.ScriptList.Where(lf => lf.Enabled).ToList();
-
-				foreach (var file in runningScripts)
+				foreach (var file in luaLibsImpl.ScriptList)
 				{
-					luaLibsImpl.CallExitEvent(file);
+					if (file.Enabled) luaLibsImpl.CallExitEvent(file);
 					luaLibsImpl.RegisteredFunctions.RemoveForFile(file, Emulator);
 					file.Stop();
 				}
