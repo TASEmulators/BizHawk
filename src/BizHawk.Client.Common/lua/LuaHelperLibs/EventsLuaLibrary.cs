@@ -44,7 +44,7 @@ namespace BizHawk.Client.Common
 			Log($"{scope} is not an available scope for {Emulator.Attributes().CoreName}");
 		}
 
-		[LuaMethod("can_use_callback_params", "Returns whether EmuHawk will pass arguments to callbacks. This version passes arguments to \"memory\" callbacks, so this function will return true for that input. (It returns false for any other input.) This tells you whether hacks for older versions w/o parameter support are necessary.")]
+		[LuaMethod("can_use_callback_params", "Returns whether EmuHawk will pass arguments to callbacks. This version passes arguments to \"memory\" callbacks (RAM/ROM/bus R/W), so this function will return true for that input. (It returns false for any other input.) This tells you whether hacks for older versions w/o parameter support are necessary.")]
 		[LuaMethodExample("local mem_callback = event.can_use_callback_params(\"memory\") and mem_callback or mem_callback_pre_29;")]
 		public bool CanUseCallbackParams([LuaEnumStringParam] string subset = null)
 			=> subset is "memory";
@@ -101,10 +101,23 @@ namespace BizHawk.Client.Common
 			=> _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_LOADSTATE, LogOutputCallback, CurrentFile, name)
 				.Guid.ToString();
 
-		[LuaMethodExample("local steveonm = event.onmemoryexecute(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after the given address is executed by the core\" );\r\n\tend\r\n\t, 0x200, \"Frame name\", \"System Bus\" );")]
+		[LuaDeprecatedMethod]
 		[LuaMethod("onmemoryexecute", "Fires after the given address is executed by the core")]
 		[return: LuaASCIIStringParam]
 		public string OnMemoryExecute(
+			LuaFunction luaf,
+			uint address,
+			[LuaArbitraryStringParam] string name = null,
+			[LuaASCIIStringParam] string scope = null)
+		{
+//			Log("Deprecated function event.onmemoryexecute() used, replace the call with event.on_bus_exec().");
+			return OnBusExec(luaf, address, name: name, scope: scope);
+		}
+
+		[LuaMethodExample("local exec_cb_id = event.on_bus_exec(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after the given address is executed by the core\" );\r\n\tend\r\n\t, 0x200, \"Frame name\", \"System Bus\" );")]
+		[LuaMethod("on_bus_exec", "Fires after the given address is executed by the core")]
+		[return: LuaASCIIStringParam]
+		public string OnBusExec(
 			LuaFunction luaf,
 			uint address,
 			[LuaArbitraryStringParam] string name = null,
@@ -137,10 +150,22 @@ namespace BizHawk.Client.Common
 			return Guid.Empty.ToString();
 		}
 
-		[LuaMethodExample("local steveonm = event.onmemoryexecuteany(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after any address is executed by the core (CPU-intensive)\" );\r\n\tend\r\n\t, \"Frame name\", \"System Bus\" );")]
+		[LuaDeprecatedMethod]
 		[LuaMethod("onmemoryexecuteany", "Fires after any address is executed by the core (CPU-intensive)")]
 		[return: LuaASCIIStringParam]
 		public string OnMemoryExecuteAny(
+			LuaFunction luaf,
+			[LuaArbitraryStringParam] string name = null,
+			[LuaASCIIStringParam] string scope = null)
+		{
+//			Log("Deprecated function event.onmemoryexecuteany(...) used, replace the call with event.on_bus_exec_any(...).");
+			return OnBusExecAny(luaf, name: name, scope: scope);
+		}
+
+		[LuaMethodExample("local exec_cb_id = event.on_bus_exec_any(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after any address is executed by the core (CPU-intensive)\" );\r\n\tend\r\n\t, \"Frame name\", \"System Bus\" );")]
+		[LuaMethod("on_bus_exec_any", "Fires after any address is executed by the core (CPU-intensive)")]
+		[return: LuaASCIIStringParam]
+		public string OnBusExecAny(
 			LuaFunction luaf,
 			[LuaArbitraryStringParam] string name = null,
 			[LuaASCIIStringParam] string scope = null)
@@ -177,10 +202,23 @@ namespace BizHawk.Client.Common
 			return Guid.Empty.ToString();
 		}
 
-		[LuaMethodExample("local steveonm = event.onmemoryread(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after the given address is read by the core. If no address is given, it will attach to every memory read\" );\r\n\tend\r\n\t, 0x200, \"Frame name\" );")]
+		[LuaDeprecatedMethod]
 		[LuaMethod("onmemoryread", "Fires after the given address is read by the core. If no address is given, it will attach to every memory read")]
 		[return: LuaASCIIStringParam]
 		public string OnMemoryRead(
+			LuaFunction luaf,
+			uint? address = null,
+			[LuaArbitraryStringParam] string name = null,
+			[LuaASCIIStringParam] string scope = null)
+		{
+//			Log("Deprecated function event.onmemoryread(...) used, replace the call with event.on_bus_read(...).");
+			return OnBusRead(luaf, address, name: name, scope: scope);
+		}
+
+		[LuaMethodExample("local exec_cb_id = event.on_bus_read(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after the given address is read by the core. If no address is given, it will attach to every memory read\" );\r\n\tend\r\n\t, 0x200, \"Frame name\" );")]
+		[LuaMethod("on_bus_read", "Fires after the given address is read by the core. If no address is given, it will attach to every memory read")]
+		[return: LuaASCIIStringParam]
+		public string OnBusRead(
 			LuaFunction luaf,
 			uint? address = null,
 			[LuaArbitraryStringParam] string name = null,
@@ -212,10 +250,23 @@ namespace BizHawk.Client.Common
 			return Guid.Empty.ToString();
 		}
 
-		[LuaMethodExample("local steveonm = event.onmemorywrite(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after the given address is written by the core. If no address is given, it will attach to every memory write\" );\r\n\tend\r\n\t, 0x200, \"Frame name\" );")]
+		[LuaDeprecatedMethod]
 		[LuaMethod("onmemorywrite", "Fires after the given address is written by the core. If no address is given, it will attach to every memory write")]
 		[return: LuaASCIIStringParam]
 		public string OnMemoryWrite(
+			LuaFunction luaf,
+			uint? address = null,
+			[LuaArbitraryStringParam] string name = null,
+			[LuaASCIIStringParam] string scope = null)
+		{
+//			Log("Deprecated function event.onmemorywrite(...) used, replace the call with event.on_bus_write(...).");
+			return OnBusWrite(luaf, address, name: name, scope: scope);
+		}
+
+		[LuaMethodExample("local exec_cb_id = event.on_bus_write(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after the given address is written by the core. If no address is given, it will attach to every memory write\" );\r\n\tend\r\n\t, 0x200, \"Frame name\" );")]
+		[LuaMethod("on_bus_write", "Fires after the given address is written by the core. If no address is given, it will attach to every memory write")]
+		[return: LuaASCIIStringParam]
+		public string OnBusWrite(
 			LuaFunction luaf,
 			uint? address = null,
 			[LuaArbitraryStringParam] string name = null,
@@ -279,7 +330,7 @@ namespace BizHawk.Client.Common
 			=> _luaLibsImpl.RemoveNamedFunctionMatching(nlf => nlf.Name == name);
 
 		[LuaMethodExample("local scopes = event.availableScopes();")]
-		[LuaMethod("availableScopes", "Lists the available scopes that can be passed into memory events")]
+		[LuaMethod("availableScopes", "Lists the available scopes that can be specified for on_bus_* events")]
 		[return: LuaASCIIStringParam]
 		public LuaTable AvailableScopes()
 		{
