@@ -53,6 +53,24 @@ namespace BizHawk.Client.Common
 			return octal;
 		}
 
+		[LuaMethodExample("local s = bizstring.pad_end(\"hm\", 5, 'm'); -- \"hmmmm\"")]
+		[LuaMethod("pad_end", "Appends zero or more of pad_char to the end (right) of str until it's at least length chars long. If pad_char is not a string exactly one char long, its first char will be used, or ' ' if it's empty.")]
+		[return: LuaArbitraryStringParam]
+		public static string PadEnd(
+			[LuaArbitraryStringParam] string str,
+			int length,
+			[LuaArbitraryStringParam] string pad_char)
+				=> str.PadRight(length, pad_char.Length is 0 ? ' ' : pad_char[0]);
+
+		[LuaMethodExample("local s = bizstring.pad_start(tostring(0x1A3792D4), 11, ' '); -- \"  439849684\"")]
+		[LuaMethod("pad_start", "Prepends zero or more of pad_char to the start (left) of str until it's at least length chars long. If pad_char is not a string exactly one char long, its first char will be used, or ' ' if it's empty.")]
+		[return: LuaArbitraryStringParam]
+		public static string PadStart(
+			[LuaArbitraryStringParam] string str,
+			int length,
+			[LuaArbitraryStringParam] string pad_char)
+				=> str.PadLeft(length, pad_char.Length is 0 ? ' ' : pad_char[0]);
+
 		[LuaMethodExample("local stbiztri = bizstring.trim( \"Some trim string\t \" );")]
 		[LuaMethod("trim", "returns a string that trims whitespace on the left and right ends of the string")]
 		[return: LuaArbitraryStringParam]
