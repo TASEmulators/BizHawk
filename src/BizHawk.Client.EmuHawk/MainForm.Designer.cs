@@ -1370,14 +1370,14 @@ namespace BizHawk.Client.EmuHawk
 			this.MacroToolMenuItem,
 			this.VirtualPadMenuItem,
 			this.BasicBotMenuItem,
-			this.RetroAchievementsMenuItem,
 			this.toolStripSeparator11,
 			this.CheatsMenuItem,
 			this.GameSharkConverterMenuItem,
 			this.toolStripSeparator29,
 			this.MultiDiskBundlerFileMenuItem,
+			this.BatchRunnerMenuItem,
 			this.ExternalToolMenuItem,
-			this.BatchRunnerMenuItem});
+			this.RetroAchievementsMenuItem});
 			this.ToolsSubMenu.Text = "&Tools";
 			this.ToolsSubMenu.DropDownOpened += new System.EventHandler(this.ToolsSubMenu_DropDownOpened);
 			// 
