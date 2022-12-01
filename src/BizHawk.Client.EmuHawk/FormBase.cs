@@ -66,7 +66,17 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnLoad(EventArgs e)
 		{
-			base.OnLoad(e);
+			try
+			{
+				base.OnLoad(e);
+			}
+			catch (Exception ex)
+			{
+				using ExceptionBox box = new(ex);
+				box.ShowDialog(owner: this);
+				Close();
+				return;
+			}
 			if (OSTailoredCode.IsUnixHost) FixBackColorOnControls(this);
 			UpdateWindowTitle();
 		}
