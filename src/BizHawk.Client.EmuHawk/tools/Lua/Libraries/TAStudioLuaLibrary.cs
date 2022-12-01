@@ -352,7 +352,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Engaged())
 			{
-				Tastudio.AddColumn(FixString(name), FixString(text), width, ColumnType.Text);
+				Tastudio.AddColumn(name, text, width, ColumnType.Text);
 			}
 		}
 
@@ -360,7 +360,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("setbranchtext", "adds the given message to the existing branch, or to the branch that will be created next if branch index is not specified")]
 		public void SetBranchText([LuaArbitraryStringParam] string text, int? index = null)
 		{
-			var text1 = FixString(text);
+			var text1 = text;
 			if (index != null)
 			{
 				var branch = Tastudio.CurrentTasMovie.Branches[index.Value];
@@ -387,7 +387,7 @@ namespace BizHawk.Client.EmuHawk
 					var table = _th.CreateTable();
 					table["Id"] = b.Uuid.ToString();
 					table["Frame"] = b.Frame;
-					table["Text"] = UnFixString(b.UserText);
+					table["Text"] = b.UserText;
 					return table;
 				}),
 				indexFrom: 0);
@@ -441,7 +441,7 @@ namespace BizHawk.Client.EmuHawk
 				var marker = Tastudio.CurrentTasMovie.Markers.Get(frame);
 				if (marker != null)
 				{
-					return UnFixString(marker.Message);
+					return marker.Message;
 				}
 			}
 
@@ -469,7 +469,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Engaged())
 			{
-				var message1 = FixString(message);
+				var message1 = message;
 				var marker = Tastudio.CurrentTasMovie.Markers.Get(frame);
 				if (marker != null)
 				{

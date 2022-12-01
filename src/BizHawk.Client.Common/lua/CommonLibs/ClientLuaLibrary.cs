@@ -198,7 +198,7 @@ namespace BizHawk.Client.Common
 		public void OpenRom([LuaArbitraryStringParam] string path)
 		{
 			_luaLibsImpl.IsUpdateSupressed = _luaLibsImpl.IsRebootingCore = true;
-			APIs.EmuClient.OpenRom(FixString(path));
+			APIs.EmuClient.OpenRom(path);
 			_luaLibsImpl.IsUpdateSupressed = _luaLibsImpl.IsRebootingCore = false;
 		}
 
@@ -244,7 +244,7 @@ namespace BizHawk.Client.Common
 		[LuaMethodExample("client.screenshot( \"C:\\\" );")]
 		[LuaMethod("screenshot", "if a parameter is passed it will function as the Screenshot As menu item of EmuHawk, else it will function as the Screenshot menu item")]
 		public void Screenshot([LuaArbitraryStringParam] string path = null)
-			=> APIs.EmuClient.Screenshot(FixString(path));
+			=> APIs.EmuClient.Screenshot(path);
 
 		[LuaMethodExample("client.screenshottoclipboard( );")]
 		[LuaMethod("screenshottoclipboard", "Performs the same function as EmuHawk's Screenshot To Clipboard menu item")]

@@ -276,10 +276,7 @@ namespace BizHawk.Client.Common
 		[LuaMethodExample("if ( event.unregisterbyname( \"Function name\" ) ) then\r\n\tconsole.log( \"Removes the first registered function that matches Name.If a function is found and remove the function will return true.If unable to find a match, the function will return false.\" );\r\nend;")]
 		[LuaMethod("unregisterbyname", "Removes the first registered function that matches Name. If a function is found and remove the function will return true. If unable to find a match, the function will return false.")]
 		public bool UnregisterByName([LuaArbitraryStringParam] string name)
-		{
-			var name1 = FixString(name);
-			return _luaLibsImpl.RemoveNamedFunctionMatching(nlf => nlf.Name == name1);
-		}
+			=> _luaLibsImpl.RemoveNamedFunctionMatching(nlf => nlf.Name == name);
 
 		[LuaMethodExample("local scopes = event.availableScopes();")]
 		[LuaMethod("availableScopes", "Lists the available scopes that can be passed into memory events")]

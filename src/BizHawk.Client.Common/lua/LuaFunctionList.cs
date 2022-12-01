@@ -47,7 +47,7 @@ namespace BizHawk.Client.Common
 
 		public void RemoveForFile(LuaFile file, IEmulator emulator)
 		{
-			var functionsToRemove = _functions.Where(l => l.LuaFile.Path == file.Path || l.LuaFile.Thread == file.Thread).ToList();
+			var functionsToRemove = _functions.Where(l => l.LuaFile.Path == file.Path || ReferenceEquals(l.LuaFile.Thread, file.Thread)).ToList();
 
 			foreach (var function in functionsToRemove)
 			{

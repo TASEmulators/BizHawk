@@ -86,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 			"SetTitle",
 			"Sets the canvas window title")]
 		public void SetTitle([LuaArbitraryStringParam] string title)
-			=> Text = LuaLibraryBase.FixString(title);
+			=> Text = title;
 
 		[LuaMethodExample(
 			"LuaCanvas.SetLocation( 16, 32 );")]
@@ -222,7 +222,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				luaPictureBox.DrawIcon(LuaLibraryBase.FixString(path), x, y, width, height);
+				luaPictureBox.DrawIcon(path, x, y, width, height);
 			}
 			catch (Exception ex)
 			{
@@ -243,7 +243,7 @@ namespace BizHawk.Client.EmuHawk
 			int? height = null,
 			bool cache = true)
 		{
-			var path1 = LuaLibraryBase.FixString(path);
+			var path1 = path;
 			if (!File.Exists(path1))
 			{
 				LogOutputCallback($"File not found: {path1}\nScript Terminated");
@@ -278,7 +278,7 @@ namespace BizHawk.Client.EmuHawk
 			int? destWidth = null,
 			int? destHeight = null)
 		{
-			var path1 = LuaLibraryBase.FixString(path);
+			var path1 = path;
 			if (!File.Exists(path1))
 			{
 				LogOutputCallback($"File not found: {path1}\nScript Terminated");
@@ -416,7 +416,7 @@ namespace BizHawk.Client.EmuHawk
 			[LuaEnumStringParam] string horizontalAlign = null,
 			[LuaEnumStringParam] string verticalAlign = null)
 		{
-			luaPictureBox.DrawText(x, y, LuaLibraryBase.FixString(message), _th.SafeParseColor(foreColor), _th.SafeParseColor(backColor), fontSize, fontFamily, fontStyle, horizontalAlign, verticalAlign);
+			luaPictureBox.DrawText(x, y, message, _th.SafeParseColor(foreColor), _th.SafeParseColor(backColor), fontSize, fontFamily, fontStyle, horizontalAlign, verticalAlign);
 		}
 
 		[LuaMethodExample(
@@ -436,7 +436,7 @@ namespace BizHawk.Client.EmuHawk
 			[LuaEnumStringParam] string horizontalAlign = null,
 			[LuaEnumStringParam] string verticalAlign = null)
 		{
-			luaPictureBox.DrawText(x, y, LuaLibraryBase.FixString(message), _th.SafeParseColor(foreColor), _th.SafeParseColor(backColor), fontSize, fontFamily, fontStyle, horizontalAlign, verticalAlign);
+			luaPictureBox.DrawText(x, y, message, _th.SafeParseColor(foreColor), _th.SafeParseColor(backColor), fontSize, fontFamily, fontStyle, horizontalAlign, verticalAlign);
 		}
 
 
@@ -466,7 +466,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("save_image_to_disk", "Saves everything that's been drawn to a .png file at the given path. Relative paths are relative to the path set for \"Screenshots\" for the current system.")]
 		public void SaveImageToDisk([LuaArbitraryStringParam] string path)
 		{
-			luaPictureBox.Image.Save(LuaLibraryBase.FixString(path).MakeAbsolute(_emuLib.PathEntries.ScreenshotAbsolutePathFor(_emuLib.GetSystemId())));
+			luaPictureBox.Image.Save(path.MakeAbsolute(_emuLib.PathEntries.ScreenshotAbsolutePathFor(_emuLib.GetSystemId())));
 		}
 	}
 }

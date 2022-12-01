@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 
 using NLua;
@@ -34,7 +35,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var foundAttrs = method.GetCustomAttributes(typeof(LuaMethodAttribute), false);
 					if (foundAttrs.Length == 0) continue;
-					if (instance != null) _lua.RegisterFunction($"{name}.{((LuaMethodAttribute) foundAttrs[0]).Name}", instance, method);
+					if (instance != null) _lua.RegisterFunction($"{name}.{((LuaMethodAttribute)foundAttrs[0]).Name}", instance, method);
 					LibraryFunction libFunc = new(
 						name,
 						type.GetCustomAttributes(typeof(DescriptionAttribute), false).Cast<DescriptionAttribute>()
@@ -58,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (true /*NLua.Lua.WhichLua == "NLua"*/) _lua["keepalives"] = _lua.NewTable();
+			_lua.State.Encoding = Encoding.UTF8;
 			_th = new NLuaTableHelper(_lua, LogToLuaConsole);
 			_displayManager = displayManager;
 			_inputManager = inputManager;
@@ -76,7 +77,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (VersionInfo.DeveloperBuild || lib.GetCustomAttribute<LuaLibraryAttribute>(inherit: false)?.Released == true)
 				{
-					var instance = (LuaLibraryBase) Activator.CreateInstance(lib, this, _apiContainer, (Action<string>) LogToLuaConsole);
+					var instance = (LuaLibraryBase)Activator.CreateInstance(lib, this, _apiContainer, (Action<string>)LogToLuaConsole);
 					ServiceInjector.UpdateServices(serviceProvider, instance);
 
 					// TODO: make EmuHawk libraries have a base class with common properties such as this
@@ -126,14 +127,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly DisplayManagerBase _displayManager;
 
-		private GuiApi GuiAPI => (GuiApi) _apiContainer.Gui;
+		private GuiApi GuiAPI => (GuiApi)_apiContainer.Gui;
 
 		private readonly InputManager _inputManager;
 
 		private readonly MainForm _mainForm;
 
-		private Lua _lua = new Lua();
-		private Lua _currThread;
+		private Lua _lua = new();
+		private LuaThread _currThread;
 
 		private readonly NLuaTableHelper _th;
 
@@ -145,7 +146,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private EmulationLuaLibrary EmulationLuaLibrary => (EmulationLuaLibrary)Libraries[typeof(EmulationLuaLibrary)];
 
-		public string EngineName => Lua.WhichLua;
+		public string EngineName => "KeraLua";
 
 		public bool IsRebootingCore { get; set; }
 
@@ -256,7 +257,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			foreach (var exitCallback in RegisteredFunctions
 				.Where(l => l.Event == NamedLuaFunction.EVENT_TYPE_ENGINESTOP
-					&& (l.LuaFile.Path == lf.Path || l.LuaFile.Thread == lf.Thread))
+					&& (l.LuaFile.Path == lf.Path || ReferenceEquals(l.LuaFile.Thread, lf.Thread)))
 				.ToList())
 			{
 				exitCallback.Call();
@@ -276,7 +277,7 @@ namespace BizHawk.Client.EmuHawk
 			RegisteredFunctions.Clear(_mainForm.Emulator);
 			ScriptList.Clear();
 			FormsLibrary.DestroyAll();
-			_lua.Close();
+			_lua.Dispose();
 			_lua = new Lua();
 		}
 
@@ -287,47 +288,36 @@ namespace BizHawk.Client.EmuHawk
 			LuaFile luaFile,
 			[LuaArbitraryStringParam] string name = null)
 		{
-			var nlf = new NamedLuaFunction(function, theEvent, logCallback, luaFile, LuaLibraryBase.FixString(name));
+			var nlf = new NamedLuaFunction(function, theEvent, logCallback, luaFile, name);
 			RegisteredFunctions.Add(nlf);
 			return nlf;
 		}
 
 		public bool RemoveNamedFunctionMatching(Func<INamedLuaFunction, bool> predicate)
 		{
-			var nlf = (NamedLuaFunction) RegisteredFunctions.FirstOrDefault(predicate);
+			var nlf = (NamedLuaFunction)RegisteredFunctions.FirstOrDefault(predicate);
 			if (nlf == null) return false;
 			RegisteredFunctions.Remove(nlf, _mainForm.Emulator);
 			return true;
 		}
 
-		public Lua SpawnCoroutine(string file)
+		public LuaThread SpawnCoroutine(string file)
 		{
-			var lua = _lua.NewThread();
 			var content = File.ReadAllText(file);
-			var main = lua.LoadString(content, "main");
-			lua.Push(main); // push main function on to stack for subsequent resuming
-			if (true /*NLua.Lua.WhichLua == "NLua"*/)
-			{
-				_lua.GetTable("keepalives")[lua] = 1;
-				//this not being run is the origin of a memory leak if you restart scripts too many times
-				_lua.Pop();
-			}
-			return lua;
+			var main = _lua.LoadString(content, "main");
+			_lua.NewThread(main, out var ret);
+			ret.State.Encoding = Encoding.UTF8;
+			return ret;
 		}
 
 		public void SpawnAndSetFileThread(string pathToLoad, LuaFile lf)
 		{
+			lf.LuaRef = _lua; // ref kept around for DetachFromScript in NamedLuaFunction
 			lf.Thread = SpawnCoroutine(pathToLoad);
 		}
 
 		public void ExecuteString(string command)
-		{
-			_currThread = _lua.NewThread();
-			_currThread.DoString(command);
-			if (true /*NLua.Lua.WhichLua == "NLua"*/) _lua.Pop();
-		}
-
-		public void RunScheduledDisposes() => _lua.RunScheduledDisposes();
+			=> _lua.DoString(command);
 
 		public (bool WaitForFrame, bool Terminated) ResumeScript(LuaFile lf)
 		{
@@ -337,13 +327,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				LuaLibraryBase.SetCurrentThread(lf);
 
-				var execResult = _currThread.Resume(0);
+				var execResult = _currThread.State.Resume(null, 0);
 				GuiAPI.ThisIsTheLuaAutounlockHack();
-
-				_lua.RunScheduledDisposes(); // TODO: I don't think this is needed anymore, we run this regularly anyway
-
-				// not sure how this is going to work out, so do this too
-				_currThread.RunScheduledDisposes();
 
 				_currThread = null;
 				var result = execResult == 0
@@ -372,12 +357,12 @@ namespace BizHawk.Client.EmuHawk
 		private void Frameadvance()
 		{
 			FrameAdvanceRequested = true;
-			_currThread.Yield(0);
+			_currThread.State.Yield(0);
 		}
 
 		private void EmuYield()
 		{
-			_currThread.Yield(0);
+			_currThread.State.Yield(0);
 		}
 	}
 }

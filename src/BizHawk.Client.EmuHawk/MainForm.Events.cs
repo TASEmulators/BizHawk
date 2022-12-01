@@ -990,11 +990,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CustomizeMenuItem_Click(object sender, EventArgs e)
 		{
-			var prevLuaEngine = Config.LuaEngine;
 			using var form = new EmuHawkOptions(Config, BumpAutoFlushSaveRamTimer);
 			if (!form.ShowDialog().IsOk()) return;
 			AddOnScreenMessage("Custom configurations saved.");
-			if (Config.LuaEngine != prevLuaEngine) AddOnScreenMessage("Restart EmuHawk for Lua change to take effect");
 		}
 
 		private void ProfilesMenuItem_Click(object sender, EventArgs e)

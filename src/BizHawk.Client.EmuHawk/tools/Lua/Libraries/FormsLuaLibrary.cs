@@ -46,7 +46,7 @@ namespace BizHawk.Client.EmuHawk
 			=> control.Size = UIHelper.Scale(new Size(width, height));
 
 		private static void SetText(Control control, [LuaArbitraryStringParam] string caption)
-			=> control.Text = FixString(caption) ?? string.Empty;
+			=> control.Text = caption ?? string.Empty;
 
 		[LuaMethodExample("forms.addclick( 332, function()\r\n\tconsole.log( \"adds the given lua function as a click event to the given control\" );\r\nend );")]
 		[LuaMethod("addclick", "adds the given lua function as a click event to the given control")]
@@ -186,7 +186,7 @@ namespace BizHawk.Client.EmuHawk
 				return 0;
 			}
 
-			var dropdownItems = _th.EnumerateValues<string>(items).Select(FixString).ToList();
+			var dropdownItems = _th.EnumerateValues<string>(items).ToList();
 			dropdownItems.Sort();
 
 			var dropdown = new LuaDropDown(dropdownItems);
@@ -217,14 +217,14 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						return UnFixString(form.GetType().GetProperty(property).GetValue(form, null).ToString());
+						return form.GetType().GetProperty(property).GetValue(form, null).ToString();
 					}
 
 					foreach (Control control in form.Controls)
 					{
 						if (control.Handle == ptr)
 						{
-							return UnFixString(control.GetType().GetProperty(property).GetValue(control, null).ToString());
+							return control.GetType().GetProperty(property).GetValue(control, null).ToString();
 						}
 					}
 				}
@@ -249,14 +249,14 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (form.Handle == ptr)
 					{
-						return UnFixString(form.Text);
+						return form.Text;
 					}
 
 					foreach (Control control in form.Controls)
 					{
 						if (control.Handle == ptr)
 						{
-							return UnFixString(control is LuaDropDown dd ? dd.SelectedItem.ToString() : control.Text);
+							return control is LuaDropDown dd ? dd.SelectedItem.ToString() : control.Text;
 						}
 					}
 				}
@@ -388,14 +388,12 @@ namespace BizHawk.Client.EmuHawk
 			[LuaArbitraryStringParam] string initialDirectory = null,
 			[LuaASCIIStringParam] string filter = null)
 		{
-			var initFileName = fileName is null ? null : FixString(fileName);
-			var initDir = initialDirectory is null ? null : FixString(initialDirectory);
-			if (initDir is null && initFileName is not null) initDir = Path.GetDirectoryName(initFileName);
+			if (initialDirectory is null && fileName is not null) initialDirectory = Path.GetDirectoryName(fileName);
 			var result = ((IDialogParent) MainForm).ShowFileOpenDialog(
 				filterStr: filter ?? FilesystemFilter.AllFilesEntry,
-				initDir: initDir ?? PathEntries.LuaAbsolutePath(),
-				initFileName: initFileName);
-			return result is not null ? UnFixString(result) : string.Empty;
+				initDir: initialDirectory ?? PathEntries.LuaAbsolutePath(),
+				initFileName: fileName);
+			return result ?? string.Empty;
 		}
 
 		[LuaMethodExample("local inforpic = forms.pictureBox( 333, 2, 48, 18, 24 );")]
@@ -711,10 +709,9 @@ namespace BizHawk.Client.EmuHawk
 			int? width = null,
 			int? height = null)
 		{
-			var path1 = FixString(path);
-			if (!File.Exists(path1))
+			if (!File.Exists(path))
 			{
-				LogOutputCallback($"File not found: {path1}\nScript Terminated");
+				LogOutputCallback($"File not found: {path}\nScript Terminated");
 				return;
 			}
 			try
@@ -733,7 +730,7 @@ namespace BizHawk.Client.EmuHawk
 						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
 						return;
 					}
-					control.DrawIcon(path1, x, y, width, height);
+					control.DrawIcon(path, x, y, width, height);
 				}
 			}
 			catch (Exception ex)
@@ -755,10 +752,9 @@ namespace BizHawk.Client.EmuHawk
 			int? height = null,
 			bool cache = true)
 		{
-			var path1 = FixString(path);
-			if (!File.Exists(path1))
+			if (!File.Exists(path))
 			{
-				LogOutputCallback($"File not found: {path1}\nScript Terminated");
+				LogOutputCallback($"File not found: {path}\nScript Terminated");
 				return;
 			}
 			try
@@ -777,7 +773,7 @@ namespace BizHawk.Client.EmuHawk
 						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
 						return;
 					}
-					control.DrawImage(path1, x, y, width, height, cache);
+					control.DrawImage(path, x, y, width, height, cache);
 				}
 			}
 			catch (Exception ex)
@@ -833,10 +829,9 @@ namespace BizHawk.Client.EmuHawk
 			int? dest_width = null,
 			int? dest_height = null)
 		{
-			var path1 = FixString(path);
-			if (!File.Exists(path1))
+			if (!File.Exists(path))
 			{
-				LogOutputCallback($"File not found: {path1}\nScript Terminated");
+				LogOutputCallback($"File not found: {path}\nScript Terminated");
 				return;
 			}
 			try
@@ -855,7 +850,7 @@ namespace BizHawk.Client.EmuHawk
 						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
 						return;
 					}
-					control.DrawImageRegion(path1, source_x, source_y, source_width, source_height, dest_x, dest_y, dest_width, dest_height);
+					control.DrawImageRegion(path, source_x, source_y, source_width, source_height, dest_x, dest_y, dest_width, dest_height);
 				}
 			}
 			catch (Exception ex)
@@ -1158,7 +1153,7 @@ namespace BizHawk.Client.EmuHawk
 						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
 						return;
 					}
-					control.DrawText(x, y, FixString(message), fgColor, bgColor, fontsize, fontfamily, fontstyle, horizalign, vertalign);
+					control.DrawText(x, y, message, fgColor, bgColor, fontsize, fontfamily, fontstyle, horizalign, vertalign);
 				}
 			}
 			catch (Exception ex)
@@ -1202,7 +1197,7 @@ namespace BizHawk.Client.EmuHawk
 						LogOutputCallback(ERR_MSG_CONTROL_NOT_LPB);
 						return;
 					}
-					control.DrawText(x, y, FixString(message), fgColor, bgColor, fontsize, fontfamily, fontstyle, horizalign, vertalign);
+					control.DrawText(x, y, message, fgColor, bgColor, fontsize, fontfamily, fontstyle, horizalign, vertalign);
 				}
 			}
 			catch (Exception ex)
@@ -1298,7 +1293,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							if (control is LuaDropDown ldd)
 							{
-								var dropdownItems = _th.EnumerateValues<string>(items).Select(FixString).ToList();
+								var dropdownItems = _th.EnumerateValues<string>(items).ToList();
 								if (alphabetize) dropdownItems.Sort();
 								ldd.SetItems(dropdownItems);
 							}

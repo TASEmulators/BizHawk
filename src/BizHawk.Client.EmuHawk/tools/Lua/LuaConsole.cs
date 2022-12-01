@@ -318,7 +318,7 @@ namespace BizHawk.Client.EmuHawk
 						&& file.Enabled == false
 						&& !Config.DisableLuaScriptsOnLoad))
 				{
-					if (file.Thread != null)
+					if (file.Thread is not null)
 					{
 						file.Toggle();
 					}
@@ -366,7 +366,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			foreach (var file in LuaImp.ScriptList.Where(s => !s.IsSeparator))
 			{
-				if (!file.Enabled && file.Thread == null)
+				if (!file.Enabled && file.Thread is null)
 				{
 					try
 					{
@@ -601,7 +601,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			foreach (var lf in luaLibsImpl.ScriptList.Where(l => l.Enabled && l.Thread != null && !l.Paused))
+			foreach (var lf in luaLibsImpl.ScriptList.Where(l => l.Enabled && l.Thread is not null && !l.Paused))
 			{
 				try
 				{
@@ -632,12 +632,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					DialogController.ShowMessageBox(ex.ToString());
 				}
-			}
-
-			luaLibsImpl.RunScheduledDisposes();
-			foreach (var nlf in luaLibsImpl.RegisteredFunctions)
-			{
-				nlf.LuaFile.Thread.RunScheduledDisposes();
 			}
 
 			_messageCount = 0;
@@ -1496,12 +1490,12 @@ namespace BizHawk.Client.EmuHawk
 
 			file.Toggle();
 
-			if (file.Enabled && file.Thread == null)
+			if (file.Enabled && file.Thread is null)
 			{
 				luaLibsImpl.RegisteredFunctions.RemoveForFile(file, Emulator); // First remove any existing registered functions for this file
 				EnableLuaFile(file);
 			}
-			else if (!file.Enabled && file.Thread != null)
+			else if (!file.Enabled && file.Thread is not null)
 			{
 				luaLibsImpl.CallExitEvent(file);
 				luaLibsImpl.RegisteredFunctions.RemoveForFile(file, Emulator);

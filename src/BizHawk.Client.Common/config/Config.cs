@@ -150,9 +150,6 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public int FlushSaveRamFrames { get; set; }
 
-		/// <remarks>Don't rename this without changing <c>BizHawk.Client.EmuHawk.Program.CurrentDomain_AssemblyResolve</c></remarks>
-		public ELuaEngine LuaEngine { get; set; } = OSTailoredCode.IsUnixHost ? ELuaEngine.NLuaPlusKopiLua : ELuaEngine.LuaPlusLuaInterface;
-
 		public bool TurboSeek { get; set; }
 
 		public ClientProfile SelectedProfile { get; set; } = ClientProfile.Unknown;
