@@ -92,7 +92,7 @@ inline auto Thread::synchronize(Thread& thread, P&&... p) -> void {
     co_switch(thread.handle());
   }
   //convenience: allow synchronizing multiple threads with one function call.
-  if constexpr(sizeof...(p) > 0) synchronize(forward<P>(p)...);
+  if constexpr(sizeof...(p) > 0) synchronize(std::forward<P>(p)...);
 }
 
 inline auto Thread::serialize(serializer& s) -> void {

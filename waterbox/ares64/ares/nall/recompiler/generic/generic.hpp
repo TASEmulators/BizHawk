@@ -8,9 +8,11 @@ namespace nall::recompiler {
     sljit_label* epilogue = nullptr;
 
     generic(bump_allocator& alloc) : allocator(alloc) {}
+    ~generic() { /*resetCompiler();*/ }
 
-    auto beginFunction(int args) {
+    auto beginFunction(int args) -> void {
       assert(args <= 3);
+      resetCompiler();
       compiler = sljit_create_compiler(nullptr, &allocator);
 
       sljit_s32 options = 0;
@@ -27,21 +29,25 @@ namespace nall::recompiler {
 
     auto endFunction() -> u8* {
       u8* code = (u8*)sljit_generate_code(compiler);
-      sljit_free_compiler(compiler);
-      compiler = nullptr;
-      epilogue = nullptr;
+      resetCompiler();
       return code;
     }
 
-    auto testJumpEpilog() {
+    auto resetCompiler() -> void {
+      if(compiler) sljit_free_compiler(compiler);
+      compiler = nullptr;
+      epilogue = nullptr;
+    }
+
+    auto testJumpEpilog() -> void {
       sljit_set_label(sljit_emit_cmp(compiler, SLJIT_NOT_EQUAL | SLJIT_32, SLJIT_RETURN_REG, 0, SLJIT_IMM, 0), epilogue);
     }
 
-    auto jumpEpilog() {
+    auto jumpEpilog() -> void {
       sljit_set_label(sljit_emit_jump(compiler, SLJIT_JUMP), epilogue);
     }
 
-    auto setLabel(sljit_jump* jump) {
+    auto setLabel(sljit_jump* jump) -> void {
       sljit_set_label(jump, sljit_emit_label(compiler));
     }
 

@@ -89,6 +89,7 @@ namespace BizHawk.Client.EmuHawk
 			["ChannelF"] = "Channel F",
 			["VEC"] = "Vectrex",
 			["MSX"] = "MSX",
+			["N64DD"] = "N64 Disk Drive",
 //			["PS2"] = "Sony PlayStation 2",
 		};
 

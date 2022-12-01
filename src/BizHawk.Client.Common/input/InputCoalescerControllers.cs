@@ -1,7 +1,7 @@
 #nullable enable
 
 using System.Linq;
-
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -20,8 +20,11 @@ namespace BizHawk.Client.Common
 			Buttons[button] = state;
 			ProcessSubsets(button, state);
 			if (state) return;
-			// when a button is released, all modified variants of it are released as well
-			foreach (var k in Buttons.Keys.Where(k => k.EndsWith($"+{ie.LogicalButton.Button}")).ToList()) Buttons[k] = false;
+			// when a button or modifier key is released, all modified key variants with it are released as well
+			foreach (var k in Buttons.Keys.Where(k =>
+						k.EndsWith($"+{ie.LogicalButton.Button}") || k.StartsWith($"{ie.LogicalButton.Button}+") || k.Contains($"+{ie.LogicalButton.Button}+"))
+						.ToArray())
+				Buttons[k] = false;
 		}
 	}
 
@@ -29,6 +32,13 @@ namespace BizHawk.Client.Common
 	{
 		protected override void ProcessSubsets(string button, bool state)
 		{
+			// we don't want a release of e.g. "Ctrl+E" to release Ctrl as well
+			if (!state)
+			{
+				Buttons[button.SubstringAfterLast('+')] = state;
+				return;
+			}
+
 			// For controller input, we want Shift+X to register as both Shift and X (for Keyboard controllers)
 			foreach (var s in button.Split('+')) Buttons[s] = state;
 		}

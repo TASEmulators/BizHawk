@@ -27,6 +27,7 @@ using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Arcades.MAME;
 using BizHawk.Emulation.Cores.Calculators.TI83;
 using BizHawk.Emulation.Cores.Consoles.NEC.PCE;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Consoles.SNK;
 using BizHawk.Emulation.Cores.Nintendo.BSNES;
@@ -450,7 +451,13 @@ namespace BizHawk.Client.EmuHawk
 					: null
 			);
 
-			ExtToolManager = new ExternalToolManager(Config.PathEntries, () => (Emulator.SystemId, Game.Hash));
+			ExtToolManager = new(
+				Config,
+				() => (Emulator.SystemId, Game.Hash),
+				(toolPath, customFormTypeName, skipExtToolWarning) => Tools!.LoadExternalToolForm(
+					toolPath: toolPath,
+					customFormTypeName: customFormTypeName,
+					skipExtToolWarning: skipExtToolWarning) is not null);
 			Tools = new ToolManager(this, Config, DisplayManager, ExtToolManager, InputManager, Emulator, MovieSession, Game);
 
 			// TODO GL - move these event handlers somewhere less obnoxious line in the On* overrides
@@ -2002,6 +2009,7 @@ namespace BizHawk.Client.EmuHawk
 			PSXSubMenu.Visible = false;
 			ColecoSubMenu.Visible = false;
 			N64SubMenu.Visible = false;
+			Ares64SubMenu.Visible = false;
 			GBLSubMenu.Visible = false;
 			AppleSubMenu.Visible = false;
 			C64SubMenu.Visible = false;
@@ -2033,6 +2041,9 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case VSystemID.Raw.N64 when Emulator is N64:
 					N64SubMenu.Visible = true;
+					break;
+				case VSystemID.Raw.N64 when Emulator is Ares64:
+					Ares64SubMenu.Visible = true;
 					break;
 				case VSystemID.Raw.NES:
 					NESSubMenu.Visible = true;
@@ -2964,7 +2975,7 @@ namespace BizHawk.Client.EmuHawk
 			InitControls(); // rebind hotkeys
 			InputManager.SyncControls(Emulator, MovieSession, Config);
 			Tools.Restart(Config, Emulator, Game);
-			ExtToolManager.Restart(Config.PathEntries);
+			ExtToolManager.Restart(Config);
 			Sound.Config = Config;
 			DisplayManager.UpdateGlobals(Config, Emulator);
 			RA?.Restart();

@@ -12,11 +12,12 @@ auto RSP::dmaTransferStep() -> void {
   auto& region = !dma.current.pbusRegion ? dmem : imem;
 
   if(dma.busy.read) {
+    if constexpr(Accuracy::RSP::Recompiler) {
+      if(dma.current.pbusRegion) {
+        recompiler.invalidate(dma.current.pbusAddress, dma.current.length + 8);
+      }
+    }
     for(u32 i = 0; i <= dma.current.length; i += 8) {
-        if constexpr(Accuracy::RSP::Recompiler) {
-            if(dma.current.pbusRegion) recompiler.invalidate(dma.current.pbusAddress);
-        }
-
         u64 data = rdram.ram.read<Dual>(dma.current.dramAddress);
         region.write<Dual>(dma.current.pbusAddress, data);
         dma.current.dramAddress += 8;

@@ -14,7 +14,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Arcades.MAME
 {
-	[PortedCore(CoreNames.MAME, "MAMEDev", "0.249", "https://github.com/mamedev/mame.git", isReleased: false)]
+	[PortedCore(CoreNames.MAME, "MAMEDev", "0.250", "https://github.com/mamedev/mame.git", isReleased: false)]
 	public partial class MAME : IRomInfo
 	{
 		[CoreConstructor(VSystemID.Raw.Arcade)]
@@ -62,14 +62,15 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			RomDetails = _gameFullName + "\r\n" + string.Join("\r\n", _romHashes.Select(static r => $"{r.Key} - {r.Value}"));
 
 			// concat all SHA1 hashes together (unprefixed), then hash that
-			var hashes = string.Concat(_romHashes
-				.Select(static r => r.Value.Split(' ')
+			var hashes = string.Concat(_romHashes.Values
+				.Where(static s => s.Contains("SHA:"))
+				.Select(static s => s.Split(' ')
 				.First(static s => s.StartsWith("SHA:"))
 				.RemovePrefix("SHA:")));
 
 			lp.Game.Name = _gameFullName;
 			lp.Game.Hash = SHA1Checksum.ComputeDigestHex(Encoding.ASCII.GetBytes(hashes));
-			lp.Game.Status = RomStatus.GoodDump;
+			lp.Game.Status = _romHashes.Values.Any(static s => s is "NO GOOD DUMP KNOWN") ? RomStatus.Unknown : RomStatus.GoodDump;
 
 			_exe.Seal();
 		}
@@ -188,12 +189,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 
 			var ret = Marshal.PtrToStringAnsi(ptr, lengthInBytes);
-
-			if (!_core.mame_lua_free_string(ptr))
-			{
-				Console.WriteLine("LibMAME ERROR: string buffer wasn't freed");
-			}
-
+			_core.mame_lua_free_string(ptr);
 			return ret;
 		}
 
@@ -287,7 +283,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			public const string GetROMsInfo =
 				"local final = {} " +
 				"for __, r in pairs(manager.machine.devices[\":\"].roms) do " +
-					"if (r:hashdata() ~= \"\") then " +
+					"if (r:hashdata() == \"!\") then " +
+						"table.insert(final, string.format(\"%s~%s~%s;\", r:name(), \"NO GOOD DUMP KNOWN\", r:flags())) " +
+					"elseif (r:hashdata() ~= \"\") then " +
 						"table.insert(final, string.format(\"%s~%s~%s;\", r:name(), r:hashdata(), r:flags())) " +
 					"end " +
 				"end " +

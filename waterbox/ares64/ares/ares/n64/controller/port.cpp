@@ -25,6 +25,7 @@ auto ControllerPort::save() -> void {
 }
 
 auto ControllerPort::allocate(string name) -> Node::Peripheral {
+  device = {};
   if(name == "Gamepad") device = new Gamepad(port);
   if(name == "Mouse"  ) device = new Mouse(port);
   if(device) return device->node;

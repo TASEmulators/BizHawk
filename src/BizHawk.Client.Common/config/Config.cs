@@ -358,6 +358,8 @@ namespace BizHawk.Client.Common
 		public int OSDMessageDuration { get; set; } = 2;
 
 		public Queue<string> RecentCores { get; set; } = new();
+		
+		public Dictionary<string, string> TrustedExtTools { get; set; } = new();
 
 		// RetroAchievements settings
 		public bool SkipRATelemetryWarning { get; set; }

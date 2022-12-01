@@ -54,7 +54,7 @@
 [submodule "waterbox/mame-arcade/mame"]
 	path = waterbox/mame-arcade/mame
 	url = https://github.com/TASEmulators/mame.git
-	branch = mamehawk0249
+	branch = mamehawk0250
 [submodule "ExternalProjects/librcheevos/rcheevos"]
 	path = ExternalProjects/librcheevos/rcheevos
 	url = https://github.com/RetroAchievements/rcheevos.git

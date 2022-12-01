@@ -44,10 +44,10 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		public abstract int mame_sound_get_samples(short[] buffer);
 
 		[BizImport(cc)]
-		public abstract int mame_video_get_dimensions(out int width, out int height);
+		public abstract void mame_video_get_dimensions(out int width, out int height);
 
 		[BizImport(cc)]
-		public abstract int mame_video_get_pixels(int[] buffer);
+		public abstract void mame_video_get_pixels(int[] buffer);
 
 		[UnmanagedFunctionPointer(cc)]
 		public delegate void FilenameCallbackDelegate(string name);
@@ -86,30 +86,21 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		[BizImport(cc)]
 		public abstract void mame_lua_execute(string code);
 
+		// get bool
+		[BizImport(cc)]
+		public abstract bool mame_lua_get_bool(string code);
+
 		// get int
 		[BizImport(cc)]
 		public abstract int mame_lua_get_int(string code);
 
 		// get long
-		// nb: this is actually a double cast to long internally
 		[BizImport(cc)]
 		public abstract long mame_lua_get_long(string code);
 
-		// get bool
+		// get double
 		[BizImport(cc)]
-		public abstract bool mame_lua_get_bool(string code);
-
-		/// <summary>
-		/// MAME's luaengine uses lua strings to return C strings as well as
-		/// binary buffers. You're meant to know which you're going to get and
-		/// handle that accordingly. When we want to get a C string, we
-		/// Marshal.PtrToStringAnsi(). With buffers, we Marshal.Copy()
-		/// to our new buffer. MameGetString() only covers the former
-		/// because it's the same steps every time, while buffers use to
-		/// need aditional logic. In both cases MAME wants us to manually
-		/// free the string buffer. It's made that way to make the buffer
-		/// persist actoss C API calls.
-		/// </summary>
+		public abstract double mame_lua_get_double(string code);
 
 		// get string
 		[BizImport(cc)]
@@ -117,6 +108,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		// free string
 		[BizImport(cc)]
-		public abstract bool mame_lua_free_string(IntPtr pointer);
+		public abstract void mame_lua_free_string(IntPtr pointer);
 	}
 }

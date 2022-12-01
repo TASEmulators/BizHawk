@@ -210,8 +210,11 @@ auto PIF::scan() -> void {
     if(over) {
       ram.write<Byte>(recvOffset, 0x40 | recv & 0x3f);
     }
-    for(u32 index : range(recv)) {
-      ram.write<Byte>(offset++, output[index]);
+
+    if (valid) {
+      for(u32 index : range(recv)) {
+        ram.write<Byte>(offset++, output[index]);
+      }
     }
     channel++;
   }
@@ -275,7 +278,7 @@ auto PIF::challenge() -> void {
 }
 
 auto PIF::power(bool reset) -> void {
-  string pifrom = cartridge.region() == "NTSC" ? "pif.ntsc.rom" : "pif.pal.rom";
+  string pifrom = Region::PAL() ? "pif.pal.rom" : "pif.ntsc.rom";
   if(auto fp = system.pak->read(pifrom)) {
     rom.load(fp);
   }
@@ -284,21 +287,24 @@ auto PIF::power(bool reset) -> void {
   io = {};
 
   //write CIC seeds into PIF RAM so that cartridge checksum function passes
-  string cic = cartridge.cic();
+  string cic = cartridge.node ? cartridge.cic() : dd.cic();
   n8 seed = 0x3f;
   n1 version = 0;
+  n1 type = 0;
   if(cic == "CIC-NUS-6101" || cic == "CIC-NUS-7102") seed = 0x3f, version = 1;
   if(cic == "CIC-NUS-6102" || cic == "CIC-NUS-7101") seed = 0x3f;
   if(cic == "CIC-NUS-6103" || cic == "CIC-NUS-7103") seed = 0x78;
   if(cic == "CIC-NUS-6105" || cic == "CIC-NUS-7105") seed = 0x91;
   if(cic == "CIC-NUS-6106" || cic == "CIC-NUS-7106") seed = 0x85;
+  if(cic == "CIC-NUS-8303" || cic == "CIC-NUS-8401") seed = 0xdd, type = 1;
+  if(cic == "CIC-NUS-DDUS") seed = 0xde, type = 1;
 
   n32 data;
   data.bit(0, 7) = 0x3f;     //CIC IPL2 seed
   data.bit(8,15) = seed;     //CIC IPL3 seed
   data.bit(17)   = reset;    //osResetType (0 = power; 1 = reset (NMI))
   data.bit(18)   = version;  //osVersion
-  data.bit(19)   = 0;        //osRomType (0 = Gamepak; 1 = 64DD)
+  data.bit(19)   = type;     //osRomType (0 = Gamepak; 1 = 64DD)
   ram.write<Word>(0x24, data);
 }
 

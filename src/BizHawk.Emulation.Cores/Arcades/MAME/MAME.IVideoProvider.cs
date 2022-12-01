@@ -34,12 +34,12 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private void UpdateAspect()
 		{
-			int x = (int)_core.mame_lua_get_long(MAMELuaCommand.GetBoundX);
-			int y = (int)_core.mame_lua_get_long(MAMELuaCommand.GetBoundY);
+			var x = _core.mame_lua_get_double(MAMELuaCommand.GetBoundX);
+			var y = _core.mame_lua_get_double(MAMELuaCommand.GetBoundY);
 			VirtualHeight = BufferWidth > BufferHeight * x / y
-				? BufferWidth * y / x
+				? (int)Math.Round(BufferWidth * y / x)
 				: BufferHeight;
-			VirtualWidth = VirtualHeight * x / y;
+			VirtualWidth = (int)Math.Round(VirtualHeight * x / y);
 		}
 
 		private void UpdateVideo()

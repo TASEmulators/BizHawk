@@ -1,5 +1,15 @@
 auto DD::Debugger::load(Node::Object parent) -> void {
+  tracer.interrupt = parent->append<Node::Debugger::Tracer::Notification>("Interrupt", "DD");
   tracer.io = parent->append<Node::Debugger::Tracer::Notification>("I/O", "DD");
+}
+
+auto DD::Debugger::interrupt(u8 source) -> void {
+  if(unlikely(tracer.interrupt->enabled())) {
+    string type = "unknown";
+    if(source == (u32)DD::IRQ::MECHA) type = "MECHA";
+    if(source == (u32)DD::IRQ::BM) type = "BM";
+    tracer.interrupt->notify(type);
+  }
 }
 
 auto DD::Debugger::io(bool mode, u32 address, u32 data) -> void {

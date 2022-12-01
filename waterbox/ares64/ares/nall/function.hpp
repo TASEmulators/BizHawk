@@ -26,7 +26,7 @@ template<typename R, typename... P> struct function<auto (P...) -> R> {
   ~function() { if(callback) delete callback; }
 
   explicit operator bool() const { return callback; }
-  auto operator()(P... p) const -> R { return (*callback)(forward<P>(p)...); }
+  auto operator()(P... p) const -> R { return (*callback)(std::forward<P>(p)...); }
   auto reset() -> void { if(callback) { delete callback; callback = nullptr; } }
 
   auto operator=(const function& source) -> function& {
@@ -54,7 +54,7 @@ private:
 
   struct global : container {
     auto (*function)(P...) -> R;
-    auto operator()(P... p) const -> R { return function(forward<P>(p)...); }
+    auto operator()(P... p) const -> R { return function(std::forward<P>(p)...); }
     auto copy() const -> container* { return new global(function); }
     global(auto (*function)(P...) -> R) : function(function) {}
   };
@@ -62,14 +62,14 @@ private:
   template<typename C> struct member : container {
     auto (C::*function)(P...) -> R;
     C* object;
-    auto operator()(P... p) const -> R { return (object->*function)(forward<P>(p)...); }
+    auto operator()(P... p) const -> R { return (object->*function)(std::forward<P>(p)...); }
     auto copy() const -> container* { return new member(function, object); }
     member(auto (C::*function)(P...) -> R, C* object) : function(function), object(object) {}
   };
 
   template<typename L> struct lambda : container {
     mutable L object;
-    auto operator()(P... p) const -> R { return object(forward<P>(p)...); }
+    auto operator()(P... p) const -> R { return object(std::forward<P>(p)...); }
     auto copy() const -> container* { return new lambda(object); }
     lambda(const L& object) : object(object) {}
   };

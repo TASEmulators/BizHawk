@@ -337,6 +337,7 @@ namespace BizHawk.Emulation.Common
 				case ".Z64":
 				case ".V64":
 				case ".N64":
+				case ".NDD":
 					game.System = VSystemID.Raw.N64;
 					break;
 
@@ -404,6 +405,7 @@ namespace BizHawk.Emulation.Common
 					break;
 
 				case ".ZIP":
+				case ".7Z":
 					game.System = VSystemID.Raw.Arcade;
 					break;
 			}

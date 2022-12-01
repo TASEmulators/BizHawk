@@ -178,5 +178,13 @@
 			NTSC,
 			PAL
 		}
+
+		public enum ASPECT_RATIO_CORRECTION : uint
+		{
+			None,
+			Auto,
+			NTSC,
+			PAL
+		}
 	}
 }

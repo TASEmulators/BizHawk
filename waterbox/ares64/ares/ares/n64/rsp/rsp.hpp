@@ -175,7 +175,7 @@ struct RSP : Thread, Memory::IO<RSP> {
   //vpu.cpp: Vector Processing Unit
   union r128 {
     struct { uint128_t u128; };
-#if defined(ARCHITECTURE_AMD64) || defined(ARCHITECTURE_ARM64)
+#if ARCHITECTURE_SUPPORTS_SSE4_1
     struct {   __m128i v128; };
 
     operator __m128i() const { return v128; }
@@ -334,31 +334,31 @@ struct RSP : Thread, Memory::IO<RSP> {
       }
 
       u8* code;
+      u12 size;
     };
 
-    struct Pool {
-      Block* blocks[1024];
-    };
-
-    struct PoolHashPair {
-      auto operator==(const PoolHashPair& source) const -> bool { return hashcode == source.hashcode; }
-      auto operator< (const PoolHashPair& source) const -> bool { return hashcode <  source.hashcode; }
+    struct BlockHashPair {
+      auto operator==(const BlockHashPair& source) const -> bool { return hashcode == source.hashcode; }
+      auto operator< (const BlockHashPair& source) const -> bool { return hashcode <  source.hashcode; }
       auto hash() const -> u32 { return hashcode; }
 
-      Pool* pool;
-      u32 hashcode;
+      Block* block;
+      u64 hashcode;
     };
 
     auto reset() -> void {
-      for(auto n : range(16)) context[n] = nullptr;
-      for(auto n : range(16)) pools[n].reset();
+      context.fill();
+      blocks.reset();
+      dirty = 0;
     }
 
-    auto invalidate(u32 address) -> void {
-      context[address >> 8] = nullptr;
+    auto invalidate(u12 address, u12 size = 1) -> void {
+      dirty |= mask(address, size);
     }
 
-    auto pool(u12 address) -> Pool*;
+    auto measure(u12 address) -> u12;
+    auto hash(u12 address, u12 size) -> u64;
+
     auto block(u12 address) -> Block*;
 
     auto emit(u12 address) -> Block*;
@@ -370,9 +370,22 @@ struct RSP : Thread, Memory::IO<RSP> {
     auto emitLWC2(u32 instruction) -> bool;
     auto emitSWC2(u32 instruction) -> bool;
 
+    auto isTerminal(u32 instruction) -> bool;
+
+    static auto mask(u12 address, u12 size) -> u64 {
+      //1 bit per 64 bytes
+      u6 s = address >> 6;
+      u6 e = address + size - 1 >> 6;
+      u64 smask = ~0ull << s;
+      u64 emask = ~0ull >> 63 - e;
+      //handle wraparound
+      return s <= e ? smask & emask : smask | emask;
+    }
+
     bump_allocator allocator;
-    Pool* context[16];
-    set<PoolHashPair> pools[16];
+    array<Block*[1024]> context;
+    hashset<BlockHashPair> blocks;
+    u64 dirty;
   } recompiler{*this};
 
   struct Disassembler {

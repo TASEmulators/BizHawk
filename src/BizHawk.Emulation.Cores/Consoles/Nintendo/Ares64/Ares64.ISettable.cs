@@ -11,9 +11,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 		private Ares64Settings _settings;
 		private Ares64SyncSettings _syncSettings;
 
-		public Ares64Settings GetSettings() => _settings.Clone();
+		public Ares64Settings GetSettings()
+			=> _settings.Clone();
 
-		public Ares64SyncSettings GetSyncSettings() => _syncSettings.Clone();
+		public Ares64SyncSettings GetSyncSettings()
+			=> _syncSettings.Clone();
 
 		public PutSettingsDirtyBits PutSettings(Ares64Settings o)
 		{
@@ -37,11 +39,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			[DefaultValue(LibAres64.DeinterlacerType.Weave)]
 			public LibAres64.DeinterlacerType Deinterlacer { get; set; }
 
-			public Ares64Settings() => SettingsUtil.SetDefaultValues(this);
+			public Ares64Settings()
+				=> SettingsUtil.SetDefaultValues(this);
 
-			public Ares64Settings Clone() => MemberwiseClone() as Ares64Settings;
+			public Ares64Settings Clone()
+				=> (Ares64Settings)MemberwiseClone();
 
-			public static bool NeedsReboot(Ares64Settings x, Ares64Settings y) => !DeepEquality.DeepEquals(x, y);
+			public static bool NeedsReboot(Ares64Settings x, Ares64Settings y)
+				=> !DeepEquality.DeepEquals(x, y);
 		}
 
 		public class Ares64SyncSettings
@@ -56,6 +61,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			[Description("If true, RTC clock will be based off of real time instead of emulated time. Ignored (set to false) when recording a movie.")]
 			[DefaultValue(false)]
 			public bool UseRealTime { get; set; }
+
+			[DisplayName("DD IPL Version")]
+			[Description("")]
+			[DefaultValue(LibAres64.IplVer.Japan)]
+			public LibAres64.IplVer IPLVersion { get; set; }
 
 			[DisplayName("Player 1 Controller")]
 			[Description("")]
@@ -77,16 +87,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			[DefaultValue(LibAres64.ControllerType.Unplugged)]
 			public LibAres64.ControllerType P4Controller { get; set; }
 
-			[DisplayName("Restrict Analog Range")]
-			[Description("Restricts analog range to account for physical limitations.")]
-			[DefaultValue(false)]
-			public bool RestrictAnalogRange { get; set; }
+			public Ares64SyncSettings()
+				=> SettingsUtil.SetDefaultValues(this);
 
-			public Ares64SyncSettings() => SettingsUtil.SetDefaultValues(this);
+			public Ares64SyncSettings Clone()
+				=> (Ares64SyncSettings)MemberwiseClone();
 
-			public Ares64SyncSettings Clone() => MemberwiseClone() as Ares64SyncSettings;
-
-			public static bool NeedsReboot(Ares64SyncSettings x, Ares64SyncSettings y) => !DeepEquality.DeepEquals(x, y);
+			public static bool NeedsReboot(Ares64SyncSettings x, Ares64SyncSettings y)
+				=> !DeepEquality.DeepEquals(x, y);
 		}
 	}
 }

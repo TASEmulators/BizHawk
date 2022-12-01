@@ -16,12 +16,13 @@ struct ODBC {
     auto operator=(const Statement& source) -> Statement& = delete;
 
     Statement(SQLHANDLE statement) : _statement(statement) {}
-    Statement(Statement&& source) { operator=(move(source)); }
+    Statement(Statement&& source) { operator=(std::move(source)); }
 
     auto operator=(Statement&& source) -> Statement& {
+      if(this == &source) return *this;
       _statement = source._statement;
       _output = source._output;
-      _values = move(source._values);
+      _values = std::move(source._values);
       source._statement = nullptr;
       source._output = 0;
       return *this;
@@ -98,7 +99,7 @@ struct ODBC {
     auto operator=(const Query& source) -> Query& = delete;
 
     Query(SQLHANDLE statement) : Statement(statement) {}
-    Query(Query&& source) : Statement(source._statement) { operator=(move(source)); }
+    Query(Query&& source) : Statement(source._statement) { operator=(std::move(source)); }
 
     ~Query() {
       if(statement()) {
@@ -108,8 +109,10 @@ struct ODBC {
     }
 
     auto operator=(Query&& source) -> Query& {
-      Statement::operator=(move(source));
-      _bindings = move(source._bindings);
+      if(this == &source) return *this;
+      if(statement()) SQLFreeHandle(SQL_HANDLE_STMT, _statement);
+      Statement::operator=(std::move(source));
+      _bindings = std::move(source._bindings);
       _result = source._result;
       _input = source._input;
       _stepped = source._stepped;
@@ -278,7 +281,7 @@ struct ODBC {
     _result = SQLPrepareA(_statement, (SQLCHAR*)statement.data(), SQL_NTS);
     if(!success()) return {nullptr};
 
-    bind(query, forward<P>(p)...);
+    bind(query, std::forward<P>(p)...);
     return query;
   }
 
@@ -288,7 +291,7 @@ private:
   auto bind(Query&) -> void {}
   template<typename T, typename... P> auto bind(Query& query, const T& value, P&&... p) -> void {
     query.bind(value);
-    bind(query, forward<P>(p)...);
+    bind(query, std::forward<P>(p)...);
   }
 
   SQLHANDLE _environment = nullptr;

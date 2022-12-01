@@ -30,7 +30,7 @@ template<typename T> struct set {
 
   set() = default;
   set(const set& source) { operator=(source); }
-  set(set&& source) { operator=(move(source)); }
+  set(set&& source) { operator=(std::move(source)); }
   set(std::initializer_list<T> list) { for(auto& value : list) insert(value); }
   ~set() { reset(); }
 
@@ -44,6 +44,7 @@ template<typename T> struct set {
 
   auto operator=(set&& source) -> set& {
     if(this == &source) return *this;
+    reset();
     root = source.root;
     nodes = source.nodes;
     source.root = nullptr;
@@ -79,7 +80,7 @@ template<typename T> struct set {
 
   template<typename... P> auto insert(const T& value, P&&... p) -> bool {
     bool result = insert(value);
-    insert(forward<P>(p)...) | result;
+    insert(std::forward<P>(p)...) | result;
     return result;
   }
 
@@ -93,7 +94,7 @@ template<typename T> struct set {
 
   template<typename... P> auto remove(const T& value, P&&... p) -> bool {
     bool result = remove(value);
-    return remove(forward<P>(p)...) | result;
+    return remove(std::forward<P>(p)...) | result;
   }
 
   struct base_iterator {

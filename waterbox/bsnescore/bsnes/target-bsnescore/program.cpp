@@ -428,7 +428,7 @@ auto Program::loadBSMemory() -> bool {
 auto Program::videoFrame(const uint16* data, uint pitch, uint width, uint height, uint scale) -> void {
 
 	// note: scale is not used currently, but as bsnes has builtin scaling support (something something mode 7)
-	// we might actually wanna make use of that? also overscan might always be false rn, will need to check
+	// we might actually wanna make use of that?
 	pitch >>= 1;
 	if (!overscan)
 	{
@@ -437,7 +437,7 @@ auto Program::videoFrame(const uint16* data, uint pitch, uint width, uint height
 		height -= 16 * multiplier;
 	}
 
-	fprintf(stderr, "got a video frame with dimensions h: %d, w: %d, p: %d, overscan: %d, scale: %d\n", height, width, pitch, overscan, scale);
+	// fprintf(stderr, "got a video frame with dimensions h: %d, w: %d, p: %d, overscan: %d, scale: %d\n", height, width, pitch, overscan, scale);
 
  	snesCallbacks.snes_video_frame(data, width, height, pitch);
 }

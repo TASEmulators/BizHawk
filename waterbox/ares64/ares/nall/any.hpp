@@ -8,7 +8,7 @@ namespace nall {
 struct any {
   any() = default;
   any(const any& source) { operator=(source); }
-  any(any&& source) { operator=(move(source)); }
+  any(any&& source) { operator=(std::move(source)); }
   template<typename T> any(const T& value) { operator=(value); }
   ~any() { reset(); }
 
@@ -52,12 +52,14 @@ struct any {
   }
 
   auto operator=(const any& source) -> any& {
+    if(this == &source) return *this;
     if(container) { delete container; container = nullptr; }
     if(source.container) container = source.container->copy();
     return *this;
   }
 
   auto operator=(any&& source) -> any& {
+    if(this == &source) return *this;
     if(container) delete container;
     container = source.container;
     source.container = nullptr;

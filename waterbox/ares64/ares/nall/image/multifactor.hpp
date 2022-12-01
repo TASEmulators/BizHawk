@@ -7,7 +7,7 @@ inline multiFactorImage::multiFactorImage(const multiFactorImage& source) {
 }
 
 inline multiFactorImage::multiFactorImage(multiFactorImage&& source) {
-  operator=(forward<multiFactorImage>(source));
+  operator=(std::forward<multiFactorImage>(source));
 }
 
 inline multiFactorImage::multiFactorImage(const image& lowDPI, const image& highDPI) {
@@ -20,7 +20,7 @@ inline multiFactorImage::multiFactorImage(const image& source) {
 }
 
 inline multiFactorImage::multiFactorImage(image&& source) {
-    operator=(forward<multiFactorImage>(source));
+    operator=(std::forward<multiFactorImage>(source));
 }
 
 inline multiFactorImage::multiFactorImage() {

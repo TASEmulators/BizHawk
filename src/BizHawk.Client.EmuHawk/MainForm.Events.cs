@@ -1202,28 +1202,27 @@ namespace BizHawk.Client.EmuHawk
 		private void ExternalToolMenuItem_DropDownOpening(object sender, EventArgs e)
 		{
 			ExternalToolMenuItem.DropDownItems.Clear();
-
-			foreach (var item in ExtToolManager.ToolStripMenu)
-			{
-				if (item.Tag is ValueTuple<string, string> tuple)
-				{
-					if (item.Enabled)
-					{
-						item.Click += (clickEventSender, clickEventArgs) => Tools.LoadExternalToolForm(tuple.Item1, tuple.Item2);
-					}
-				}
-				else
-				{
-					item.Image = Properties.Resources.ExclamationRed;
-				}
-
-				ExternalToolMenuItem.DropDownItems.Add(item);
-			}
-
+			ExternalToolMenuItem.DropDownItems.AddRange(ExtToolManager.ToolStripMenu.Cast<ToolStripItem>().ToArray());
 			if (ExternalToolMenuItem.DropDownItems.Count == 0)
 			{
 				ExternalToolMenuItem.DropDownItems.Add("None");
 			}
+			if (Config.TrustedExtTools.Count is 0) return;
+
+			ExternalToolMenuItem.DropDownItems.Add(new ToolStripSeparatorEx());
+			ToolStripMenuItemEx forgetTrustedItem = new() { Text = "Forget trusted tools" };
+			forgetTrustedItem.Click += (_, _) =>
+			{
+				if (this.ModalMessageBox2(
+					caption: "Forget trusted ext. tools?",
+					text: "This will cause the warning about running third-party code to show again for all the ext. tools you've previously loaded.\n" +
+						"(If a tool has been loaded this session, the warning may not appear until EmuHawk is restarted.)",
+					useOKCancel: true))
+				{
+					Config.TrustedExtTools.Clear();
+				}
+			};
+			ExternalToolMenuItem.DropDownItems.Add(forgetTrustedItem);
 		}
 
 		private void ToolBoxMenuItem_Click(object sender, EventArgs e)
@@ -1861,6 +1860,14 @@ namespace BizHawk.Client.EmuHawk
 				FlagNeedsReboot();
 			}
 		}
+
+		private void Ares64SubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			N64CircularAnalogRangeMenuItem.Checked = Config.N64UseCircularAnalogConstraint;
+		}
+
+		private void Ares64SettingsMenuItem_Click(object sender, EventArgs e)
+			=> OpenGenericCoreConfigFor<Ares64>(CoreNames.Ares64 + " Settings");
 
 		private DialogResult OpenGambatteLinkSettingsDialog(ISettingsAdapter settable)
 			=> GBLPrefs.DoGBLPrefsDialog(Config, this, Game, MovieSession, settable);
@@ -2742,7 +2749,10 @@ namespace BizHawk.Client.EmuHawk
 			items.Add(a7800HawkSubmenu);
 
 			// Ares64
-			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Ares64, CreateGenericCoreConfigItem<Ares64>(CoreNames.Ares64)));
+			var ares64AnalogConstraintItem = CreateSettingsItem("Circular Analog Range", N64CircularAnalogRangeMenuItem_Click);
+			var ares64Submenu = CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Ares64, CreateGenericCoreConfigItem<Ares64>(CoreNames.Ares64));
+			ares64Submenu.DropDownOpened += (_, _) => ares64AnalogConstraintItem.Checked = Config.N64UseCircularAnalogConstraint;
+			items.Add(ares64Submenu);
 
 			// Atari2600Hawk
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Atari2600Hawk, CreateGenericCoreConfigItem<Atari2600>(CoreNames.Atari2600Hawk)));

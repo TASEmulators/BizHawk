@@ -173,7 +173,6 @@ namespace nall {
   struct Architecture {
     static constexpr bool x86   = 1;
     static constexpr bool amd64 = 0;
-    static constexpr bool sse41 = 0;
     static constexpr bool arm64 = 0;
     static constexpr bool arm32 = 0;
     static constexpr bool ppc64 = 0;
@@ -181,14 +180,12 @@ namespace nall {
   };
 #elif defined(__amd64__) || defined(_M_AMD64)
   #define ARCHITECTURE_AMD64
+  #if defined(__SSE4_1__)
+    #define ARCHITECTURE_SUPPORTS_SSE4_1 1
+  #endif
   struct Architecture {
     static constexpr bool x86   = 0;
     static constexpr bool amd64 = 1;
-    #ifdef __SSE4_1__
-    static constexpr bool sse41 = 1;
-    #else
-    static constexpr bool sse41 = 0;
-    #endif
     static constexpr bool arm64 = 0;
     static constexpr bool arm32 = 0;
     static constexpr bool ppc64 = 0;
@@ -196,10 +193,10 @@ namespace nall {
   };
 #elif defined(__aarch64__)
   #define ARCHITECTURE_ARM64
+  #define ARCHITECTURE_SUPPORTS_SSE4_1 1 // simulated via sse2neon.h
   struct Architecture {
     static constexpr bool x86   = 0;
     static constexpr bool amd64 = 0;
-    static constexpr bool sse41 = 1; // simulated via sse2neon.h
     static constexpr bool arm64 = 1;
     static constexpr bool arm32 = 0;
     static constexpr bool ppc64 = 0;
@@ -210,7 +207,6 @@ namespace nall {
   struct Architecture {
     static constexpr bool x86   = 0;
     static constexpr bool amd64 = 0;
-    static constexpr bool sse41 = 0;
     static constexpr bool arm64 = 0;
     static constexpr bool arm32 = 1;
     static constexpr bool ppc64 = 0;
@@ -221,7 +217,6 @@ namespace nall {
   struct Architecture {
     static constexpr bool x86   = 0;
     static constexpr bool amd64 = 0;
-    static constexpr bool sse41 = 0;
     static constexpr bool arm64 = 0;
     static constexpr bool arm32 = 0;
     static constexpr bool ppc64 = 1;
@@ -232,7 +227,6 @@ namespace nall {
   struct Architecture {
     static constexpr bool x86   = 0;
     static constexpr bool amd64 = 0;
-    static constexpr bool sse41 = 0;
     static constexpr bool arm64 = 0;
     static constexpr bool arm32 = 0;
     static constexpr bool ppc64 = 0;
@@ -240,6 +234,10 @@ namespace nall {
   };
 #else
   #error "unable to detect architecture"
+#endif
+
+#if !defined(ARCHITECTURE_SUPPORTS_SSE4_1)
+  #define ARCHITECTURE_SUPPORTS_SSE4_1 0
 #endif
 
 /* Endian detection */

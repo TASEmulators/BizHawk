@@ -28,8 +28,14 @@ struct thread {
   auto operator=(const thread&) -> thread& = delete;
 
   thread() = default;
-  thread(thread&&) = default;
-  auto operator=(thread&&) -> thread& = default;
+  thread(thread&& source) { operator=(std::move(source)); }
+
+  auto operator=(thread&& source) -> thread& {
+    if(this == &source) return *this;
+    handle = source.handle;
+    source.handle = 0;
+    return *this;
+  }
 
   auto join() -> void;
 
@@ -54,7 +60,10 @@ inline auto _threadCallback(void* parameter) -> void* {
 }
 
 inline auto thread::join() -> void {
-  pthread_join(handle, nullptr);
+  if(handle) {
+    pthread_join(handle, nullptr);
+    handle = 0;
+  }
 }
 
 inline auto thread::create(const function<void (uintptr)>& callback, uintptr parameter, u32 stacksize) -> thread {
@@ -91,11 +100,12 @@ struct thread {
   auto operator=(const thread&) -> thread& = delete;
 
   thread() = default;
-  thread(thread&& source) { operator=(move(source)); }
+  thread(thread&& source) { operator=(std::move(source)); }
 
   ~thread() { close(); }
 
   auto operator=(thread&& source) -> thread& {
+    if(this == &source) return *this;
     close();
     handle = source.handle;
     source.handle = 0;

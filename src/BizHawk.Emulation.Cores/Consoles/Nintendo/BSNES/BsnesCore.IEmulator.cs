@@ -65,6 +65,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			Api.core.snes_set_trace_enabled(_tracer.IsEnabled());
 			Api.core.snes_set_video_enabled(render);
 			Api.core.snes_set_audio_enabled(renderSound);
+			Api.core.snes_set_ppu_sprite_limit_enabled(!_settings.NoPPUSpriteLimit);
+			Api.core.snes_set_overscan_enabled(_settings.ShowOverscan);
 		}
 
 		internal void FrameAdvancePost()

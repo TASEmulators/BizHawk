@@ -7,7 +7,6 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
-using BizHawk.WinForms.Controls;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -31,7 +30,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public static readonly ToolStripRenderer GlobalToolStripRenderer = new ToolStripProfessionalRenderer(new LinuxColorTable());
+		public static readonly ToolStripSystemRenderer GlobalToolStripRenderer = new();
 
 		private string? _windowTitleStatic;
 

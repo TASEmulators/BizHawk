@@ -264,6 +264,20 @@ EXPORT void snes_set_hooks_enabled(bool read_hook_enabled, bool write_hook_enabl
     platform->executeHookEnabled = execute_hook_enabled;
 }
 
+EXPORT void snes_set_ppu_sprite_limit_enabled(bool enabled)
+{
+    if (!SuperFamicom::system.fastPPU()) return;
+
+    // see ppu-fast/ppu.cpp in PPU::power(...)
+    ppufast.ItemLimit = enabled ? 32 : 128;
+    ppufast.TileLimit = enabled ? 34 : 128;
+}
+
+EXPORT void snes_set_overscan_enabled(bool enabled)
+{
+    program->overscan = enabled;
+}
+
 
 uint8_t* snes_get_effective_saveram(int* ram_size) {
     if (cartridge.has.SA1) {

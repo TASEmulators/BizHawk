@@ -22,7 +22,7 @@ namespace BizHawk.Client.Common
 			foreach (var channel in Definition.HapticsChannels) _haptics[channel] = 0;
 		}
 
-		public ControllerDefinition Definition { get; private set; }
+		public ControllerDefinition Definition { get; }
 
 		public bool IsPressed(string button) => _buttons[button];
 
@@ -40,9 +40,6 @@ namespace BizHawk.Client.Common
 		private readonly Dictionary<string, AnalogBind> _axisBindings = new Dictionary<string, AnalogBind>();
 		private readonly Dictionary<string, int> _haptics = new WorkingDictionary<string, int>();
 		private readonly Dictionary<string, FeedbackBind> _feedbackBindings = new Dictionary<string, FeedbackBind>();
-
-		/// <summary>don't do this</summary>
-		public void ForceType(ControllerDefinition newType) => Definition = newType;
 
 		public bool this[string button] => IsPressed(button);
 

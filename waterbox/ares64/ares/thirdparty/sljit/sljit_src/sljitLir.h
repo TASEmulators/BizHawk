@@ -829,6 +829,7 @@ SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_fast_enter(struct sljit_compiler *
 #define SLJIT_MEM1(r1)		(SLJIT_MEM | (r1))
 #define SLJIT_MEM2(r1, r2)	(SLJIT_MEM | (r1) | ((r2) << 8))
 #define SLJIT_IMM		0x40
+#define SLJIT_REG_PAIR(r1, r2)	((r1) | ((r2) << 8))
 
 /* Sets 32 bit operation mode on 64 bit CPUs. This option is ignored on
    32 bit CPUs. When this option is set for an arithmetic operation, only
@@ -1440,18 +1441,31 @@ SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_cmov(struct sljit_compiler *compil
      In general, the performance of unaligned memory accesses are often
      lower than aligned and should be avoided.
 
+   When a pair of registers is passed in reg argument:
+     Emit instructions for moving data between a register pair and
+     memory. The register pair can be specified by the SLJIT_REG_PAIR
+     macro. The first register is loaded from or stored into the
+     location specified by the mem/memw arguments, and the end address
+     of this operation is the starting address of the data transfer
+     between the second register and memory. The type argument must
+     be SLJIT_MOV. The SLJIT_MEM_UNALIGNED flag and its options are
+     allowed for this operation.
+
    When SLJIT_MEM_PRE or SLJIT_MEM_POST is set in type argument:
      Emit a single memory load or store with update instruction.
      When the requested instruction form is not supported by the CPU,
      it returns with SLJIT_ERR_UNSUPPORTED instead of emulating the
      instruction. This allows specializing tight loops based on
      the supported instruction forms (see SLJIT_MEM_SUPP flag).
+     Absolute address (SLJIT_MEM0) forms are never supported
+     and the base (first) register specified by the mem argument
+     must not be SLJIT_SP and must also be different from the
+     register specified by the reg argument.
 
    type must be between SLJIT_MOV and SLJIT_MOV_P and can be
      combined with SLJIT_MEM_* flags.
-   reg is the source or destination register, and must be
-     different from the base register of the mem operand
-     when SLJIT_MEM_PRE or SLJIT_MEM_POST is passed
+   reg is a register or register pair, which is the source or
+     destination of the operation.
    mem must be a memory operand
 
    Flags: - (does not modify flags) */

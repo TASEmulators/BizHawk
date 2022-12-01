@@ -13,7 +13,7 @@ template<typename T> auto vector<T>::sort(const function<bool (const T& lhs, con
 template<typename T> auto vector<T>::reverse() -> void {
   vector<T> reversed;
   for(u64 n : range(size())) reversed.prepend(_pool[n]);
-  operator=(move(reversed));
+  operator=(std::move(reversed));
 }
 
 template<typename T> auto vector<T>::find(const function<bool (const T& lhs)>& comparator) -> maybe<u64> {

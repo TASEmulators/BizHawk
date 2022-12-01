@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+
 using BizHawk.Common;
 
 namespace BizHawk.Client.Common
@@ -67,7 +68,88 @@ namespace BizHawk.Client.Common
 		void CopyTo(int index, string[] array, int arrayIndex, int count);
 	}
 
-	internal class ListStringLog : List<string>, IStringLog
+	/// <summary>
+	/// A list that grows in fixed 16MB increments
+	/// This delays 2GB OOM exceptions from occurring
+	/// (due to .NET doubling the internal array on resize)
+	/// </summary>
+	/// <typeparam name="T">the type for the list</typeparam>
+	internal class FixedGrowthList<T> : IEnumerable<T>
+	{
+		private const int GROW_AMOUNT = 16 * 1024 * 1024;
+		private readonly List<T> _backingList = new();
+
+		public void Add(T value)
+		{
+			if (_backingList.Count == _backingList.Capacity)
+			{
+				_backingList.Capacity += GROW_AMOUNT;
+			}
+
+			_backingList.Add(value);
+		}
+
+		public void Insert(int index, T item)
+		{
+			if (_backingList.Count == _backingList.Capacity)
+			{
+				_backingList.Capacity += GROW_AMOUNT;
+			}
+
+			_backingList.Insert(index, item);
+		}
+
+		public void AddRange(IEnumerable<T> collection)
+		{
+			if (collection is ICollection<T> c)
+			{
+				var count = c.Count;
+				while ((_backingList.Capacity - _backingList.Count) <= count)
+				{
+					_backingList.Capacity += GROW_AMOUNT;
+				}
+				_backingList.AddRange(collection);
+			}
+			else
+			{
+				foreach (var item in collection)
+				{
+					Add(item);
+				}
+			}
+		}
+
+		public void InsertRange(int index, IEnumerable<T> collection)
+		{
+			if (collection is ICollection<T> c)
+			{
+				var count = c.Count;
+				while ((_backingList.Capacity - _backingList.Count) <= count)
+				{
+					_backingList.Capacity += GROW_AMOUNT;
+				}
+				_backingList.InsertRange(index, collection);
+			}
+			else
+			{
+				foreach (var item in collection)
+				{
+					Insert(index++, item);
+				}
+			}
+		}
+
+		public T this[int index] { get => _backingList[index]; set => _backingList[index] = value; }
+		public int Count => _backingList.Count;
+		public void Clear() => _backingList.Clear();
+		public void CopyTo(int index, T[] array, int arrayIndex, int count) => _backingList.CopyTo(index, array, arrayIndex, count);
+		public IEnumerator<T> GetEnumerator() => _backingList.GetEnumerator();
+		public void RemoveAt(int index) => _backingList.RemoveAt(index);
+		public void RemoveRange(int index, int count) => _backingList.RemoveRange(index, count);
+		IEnumerator IEnumerable.GetEnumerator() => _backingList.GetEnumerator();
+	}
+
+	internal class ListStringLog : FixedGrowthList<string>, IStringLog
 	{
 		public IStringLog Clone()
 		{
@@ -88,7 +170,7 @@ namespace BizHawk.Client.Common
 	internal class StreamStringLog : IStringLog
 	{
 		private readonly Stream _stream;
-		private readonly List<long> _offsets = new List<long>();
+		private readonly FixedGrowthList<long> _offsets = new();
 		private readonly BinaryWriter _bw;
 		private readonly BinaryReader _br;
 		private readonly bool _mDisk;

@@ -168,7 +168,7 @@ template<typename T> auto fill(void* target, u32 capacity, const T& value) -> T*
 
 template<typename T, typename U, typename... P> auto assign(T* target, const U& value, P&&... p) -> void {
   *target++ = value;
-  assign(target, forward<P>(p)...);
+  assign(target, std::forward<P>(p)...);
 }
 
 template<u32 size, typename T> auto readl(const void* source) -> T {
@@ -204,7 +204,7 @@ inline auto map(u32 size, bool executable) -> void* {
   int flags = MAP_ANON | MAP_PRIVATE;
   if(executable) {
     prot |= PROT_EXEC;
-    #if defined(PLATFORM_MACOS) && defined(ARCHITECTURE_ARM64)
+    #if defined(PLATFORM_MACOS)
     flags |= MAP_JIT;
     #endif
   }
@@ -238,7 +238,7 @@ inline auto protect(void* target, u32 size, bool executable) -> void {
 }
 
 inline auto jitprotect(bool executable) -> void {
-  #if defined(PLATFORM_MACOS) && defined(ARCHITECTURE_ARM64)
+  #if defined(PLATFORM_MACOS)
   if(__builtin_available(macOS 11.0, *)) {
     pthread_jit_write_protect_np(executable);
   }

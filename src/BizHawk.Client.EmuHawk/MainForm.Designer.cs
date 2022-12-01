@@ -265,6 +265,8 @@ namespace BizHawk.Client.EmuHawk
 			this.ColecoUseSGMMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.N64SubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.N64PluginSettingsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.Ares64SubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.Ares64SettingsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.N64ControllerSettingsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator23 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.N64CircularAnalogRangeMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -397,6 +399,7 @@ namespace BizHawk.Client.EmuHawk
 			this.SNESSubMenu,
 			this.ColecoSubMenu,
 			this.N64SubMenu,
+			this.Ares64SubMenu,
 			this.GBLSubMenu,
 			this.AppleSubMenu,
 			this.C64SubMenu,
@@ -1769,6 +1772,19 @@ namespace BizHawk.Client.EmuHawk
 			this.N64ExpansionSlotMenuItem.Text = "&Use Expansion Slot";
 			this.N64ExpansionSlotMenuItem.Click += new System.EventHandler(this.N64ExpansionSlotMenuItem_Click);
 			// 
+			// Ares64SubMenu
+			// 
+			this.Ares64SubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.Ares64SettingsMenuItem,
+			this.N64CircularAnalogRangeMenuItem});
+			this.Ares64SubMenu.Text = "N64";
+			this.Ares64SubMenu.DropDownOpened += new System.EventHandler(this.Ares64SubMenu_DropDownOpened);
+			// 
+			// Ares64SettingsMenuItem
+			// 
+			this.Ares64SettingsMenuItem.Text = "Settings...";
+			this.Ares64SettingsMenuItem.Click += new System.EventHandler(this.Ares64SettingsMenuItem_Click);
+			// 
 			// GBLSubMenu
 			// 
 			this.GBLSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -2649,6 +2665,8 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator29;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx N64SubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx N64PluginSettingsMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx Ares64SubMenu;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx Ares64SettingsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ConfigContextMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RewindOptionsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx FirmwaresMenuItem;

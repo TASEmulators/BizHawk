@@ -23,6 +23,7 @@ struct RDP : Thread, Memory::IO<RDP> {
   auto main() -> void;
   auto step(u32 clocks) -> void;
   auto power(bool reset) -> void;
+  auto crash(const char *reason) -> void;
 
   //render.cpp
   auto render() -> void;
@@ -82,6 +83,7 @@ struct RDP : Thread, Memory::IO<RDP> {
     n24 tmemBusy;
     n1  source;  //0 = RDRAM, 1 = DMEM
     n1  freeze;
+    n1  crashed;
     n1  flush;
     n1  startValid;
     n1  endValid;
