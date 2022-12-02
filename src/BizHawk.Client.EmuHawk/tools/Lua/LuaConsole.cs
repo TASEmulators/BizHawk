@@ -400,34 +400,20 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (LuaImp.ScriptList[index].Paused)
+			bitmap = LuaImp.ScriptList[index].State switch
 			{
-				bitmap = Resources.Pause;
-			}
-			else if (LuaImp.ScriptList[index].Enabled)
-			{
-				bitmap = Resources.ts_h_arrow_green;
-			}
-			else
-			{
-				bitmap = Resources.Stop;
-			}
+				LuaFile.RunState.Running => Resources.ts_h_arrow_green,
+				LuaFile.RunState.Paused => Resources.Pause,
+				_ => Resources.Stop
+			};
 		}
 
 		private void LuaListView_QueryItemBkColor(int index, RollColumn column, ref Color color)
 		{
-			if (LuaImp.ScriptList[index].IsSeparator)
-			{
-				color = BackColor;
-			}
-			else if (LuaImp.ScriptList[index].Enabled && !LuaImp.ScriptList[index].Paused)
-			{
-				color = Color.LightCyan;
-			}
-			else if (LuaImp.ScriptList[index].Enabled && LuaImp.ScriptList[index].Paused)
-			{
-				color = Color.LightPink;
-			}
+			var lf = LuaImp.ScriptList[index];
+			if (lf.IsSeparator) color = BackColor;
+			else if (lf.Paused) color = Color.LightPink;
+			else if (lf.Enabled) color = Color.LightCyan;
 		}
 
 		private void LuaListView_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
@@ -459,7 +445,7 @@ namespace BizHawk.Client.EmuHawk
 			var message = "";
 			var total = LuaImp.ScriptList.Count(file => !file.IsSeparator);
 			var active = LuaImp.ScriptList.Count(file => !file.IsSeparator && file.Enabled);
-			var paused = LuaImp.ScriptList.Count(file => !file.IsSeparator && file.Enabled && file.Paused);
+			var paused = LuaImp.ScriptList.Count(static lf => !lf.IsSeparator && lf.Paused);
 
 			if (total == 1)
 			{
@@ -606,7 +592,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			foreach (var lf in luaLibsImpl.ScriptList.Where(l => l.Enabled && l.Thread is not null && !l.Paused))
+			foreach (var lf in luaLibsImpl.ScriptList.Where(static lf => lf.State is LuaFile.RunState.Running && lf.Thread is not null))
 			{
 				try
 				{
