@@ -155,7 +155,7 @@ namespace BizHawk.Client.EmuHawk
 			_config.Savestates.CompressionLevelNormal = 5;
 
 			// SNES
-			_config.PreferredCores[VSystemID.Raw.SNES] = CoreNames.Bsnes;
+			_config.PreferredCores[VSystemID.Raw.SNES] = CoreNames.Bsnes115;
 
 			// SMS
 			var smsSettings = GetSyncSettings<SMS, SMS.SmsSyncSettings>();
@@ -199,7 +199,7 @@ namespace BizHawk.Client.EmuHawk
 			PutSyncSettings<N64>(n64Settings);
 
 			// SNES
-			_config.PreferredCores[VSystemID.Raw.SNES] = CoreNames.Bsnes;
+			_config.PreferredCores[VSystemID.Raw.SNES] = CoreNames.Bsnes115;
 
 			// Genesis
 			var genesisSettings = GetSyncSettings<GPGX, GPGX.GPGXSyncSettings>();
