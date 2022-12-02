@@ -327,11 +327,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				LuaLibraryBase.SetCurrentThread(lf);
 
-				var execResult = _currThread.State.Resume(null, 0);
+				var execResult = _currThread.Resume();
 				GuiAPI.ThisIsTheLuaAutounlockHack();
 
 				_currThread = null;
-				var result = execResult == 0
+				var result = execResult == KeraLua.LuaStatus.OK
 					? (WaitForFrame: false, Terminated: true) // terminated
 					: (WaitForFrame: FrameAdvanceRequested, Terminated: false); // yielded
 
@@ -357,12 +357,12 @@ namespace BizHawk.Client.EmuHawk
 		private void Frameadvance()
 		{
 			FrameAdvanceRequested = true;
-			_currThread.State.Yield(0);
+			_currThread.Yield();
 		}
 
 		private void EmuYield()
 		{
-			_currThread.State.Yield(0);
+			_currThread.Yield();
 		}
 	}
 }
