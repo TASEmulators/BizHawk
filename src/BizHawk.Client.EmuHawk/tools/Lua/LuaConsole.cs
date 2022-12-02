@@ -126,19 +126,7 @@ namespace BizHawk.Client.EmuHawk
 					Settings.Columns = LuaListView.AllColumns;
 					
 					DisplayManager.ClearApiHawkSurfaces();
-
-					if (DisplayManager.ClientExtraPadding != (0, 0, 0, 0))
-					{
-						DisplayManager.ClientExtraPadding = (0, 0, 0, 0);
-						MainForm.FrameBufferResized();
-					}
-
-					if (DisplayManager.GameExtraPadding != (0, 0, 0, 0))
-					{
-						DisplayManager.GameExtraPadding = (0, 0, 0, 0);
-						MainForm.FrameBufferResized();
-					}
-
+					ResetDrawSurfacePadding();
 					(LuaImp as Win32LuaLibraries)?.Close();
 					DisplayManager.OSD.ClearGuiText();
 				}
@@ -585,6 +573,22 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void ResetDrawSurfacePadding()
+		{
+			var resized = false;
+			if (DisplayManager.ClientExtraPadding != (0, 0, 0, 0))
+			{
+				DisplayManager.ClientExtraPadding = (0, 0, 0, 0);
+				resized = true;
+			}
+			if (DisplayManager.GameExtraPadding != (0, 0, 0, 0))
+			{
+				DisplayManager.GameExtraPadding = (0, 0, 0, 0);
+				resized = true;
+			}
+			if (resized) MainForm.FrameBufferResized();
+		}
+
 		/// <summary>
 		/// resumes suspended Co-routines
 		/// </summary>
@@ -950,6 +954,7 @@ namespace BizHawk.Client.EmuHawk
 				UpdateDialog();
 				DisplayManager.ClearApiHawkSurfaces();
 				DisplayManager.OSD.ClearGuiText();
+				if (!LuaImp.ScriptList.Any(static lf => !lf.IsSeparator)) ResetDrawSurfacePadding(); // just removed last script, reset padding
 			}
 		}
 
