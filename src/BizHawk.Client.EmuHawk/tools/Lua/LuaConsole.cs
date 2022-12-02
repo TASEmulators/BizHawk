@@ -948,6 +948,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				UpdateDialog();
+				DisplayManager.ClearApiHawkSurfaces();
+				DisplayManager.OSD.ClearGuiText();
 			}
 		}
 
