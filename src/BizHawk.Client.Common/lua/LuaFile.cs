@@ -58,7 +58,7 @@ namespace BizHawk.Client.Common
 
 			if (State == RunState.Running && Thread.State.Status == KeraLua.LuaStatus.OK)
 			{
-				Thread.State.Yield(0); // we MUST yield this thread, else old references to lua libs might be used (and those may contain references to a Dispose()'d emulator)
+				Thread.Yield(); // we MUST yield this thread, else old references to lua libs might be used (and those may contain references to a Dispose()'d emulator)
 			}
 
 			State = RunState.Disabled;
