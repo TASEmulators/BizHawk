@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+
+using NLua;
 
 // ReSharper disable UnusedMember.Global
 namespace BizHawk.Client.Common
@@ -37,5 +40,11 @@ namespace BizHawk.Client.Common
 		[LuaMethod("containskey", "returns whether or not there is an entry for the given key")]
 		public bool ContainsKey([LuaArbitraryStringParam] string key)
 			=> APIs.UserData.ContainsKey(key);
+
+		[LuaMethodExample("console.writeline(#userdata.get_keys());")]
+		[LuaMethod("get_keys", "returns a list-like table of valid keys")]
+		[return: LuaArbitraryStringParam]
+		public LuaTable GetKeys()
+			=> _th.ListToTable((List<string>) APIs.UserData.Keys); //HACK cast will succeed as long as impl. returns Dictionary<K, V>.Keys.ToList() as IROC<K>
 	}
 }
