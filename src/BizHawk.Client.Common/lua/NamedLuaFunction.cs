@@ -31,11 +31,12 @@ namespace BizHawk.Client.Common
 
 		private readonly LuaFunction _function;
 
-		public NamedLuaFunction(LuaFunction function, string theEvent, Action<string> logCallback, LuaFile luaFile, string name = null)
+		public NamedLuaFunction(LuaFunction function, string theEvent, Action<string> logCallback, LuaFile luaFile, Func<LuaThread> createThreadCallback, string name = null)
 		{
 			_function = function;
 			Name = name ?? "Anonymous";
 			Event = theEvent;
+			CreateThreadCallback = createThreadCallback;
 
 			// When would a file be null?
 			// When a script is loaded with a callback, but no infinite loop so it closes
@@ -71,14 +72,13 @@ namespace BizHawk.Client.Common
 
 		public void DetachFromScript()
 		{
-			var lua = LuaFile.LuaRef;
-			lua.NewThread(out var thread);
+			var thread = CreateThreadCallback();
 
 			// Current dir will have to do for now, but this will inevitably not be desired
 			// Users will expect it to be the same directly as the thread that spawned this callback
 			// But how do we know what that directory was?
 			LuaSandbox.CreateSandbox(thread, ".");
-			LuaFile = new LuaFile(".") { LuaRef = lua, Thread = thread };
+			LuaFile = new LuaFile(".") { Thread = thread };
 		}
 
 		public Guid Guid { get; }
@@ -86,6 +86,8 @@ namespace BizHawk.Client.Common
 		public string Name { get; }
 
 		public LuaFile LuaFile { get; private set; }
+
+		private Func<LuaThread> CreateThreadCallback { get; }
 
 		public string Event { get; }
 

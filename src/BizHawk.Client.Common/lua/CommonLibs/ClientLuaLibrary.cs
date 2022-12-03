@@ -73,7 +73,11 @@ namespace BizHawk.Client.Common
 		[LuaMethodExample("client.closerom( );")]
 		[LuaMethod("closerom", "Closes the loaded Rom")]
 		public void CloseRom()
-			=> APIs.EmuClient.CloseRom();
+		{
+			_luaLibsImpl.IsRebootingCore = true;
+			APIs.EmuClient.CloseRom();
+			_luaLibsImpl.IsRebootingCore = false;
+		}
 
 		[LuaMethodExample("client.enablerewind( true );")]
 		[LuaMethod("enablerewind", "Sets whether or not the rewind feature is enabled")]
@@ -197,9 +201,9 @@ namespace BizHawk.Client.Common
 		[LuaMethod("openrom", "opens the Open ROM dialog")]
 		public void OpenRom([LuaArbitraryStringParam] string path)
 		{
-			_luaLibsImpl.IsUpdateSupressed = _luaLibsImpl.IsRebootingCore = true;
+			_luaLibsImpl.IsRebootingCore = true;
 			APIs.EmuClient.OpenRom(path);
-			_luaLibsImpl.IsUpdateSupressed = _luaLibsImpl.IsRebootingCore = false;
+			_luaLibsImpl.IsRebootingCore = false;
 		}
 
 		[LuaMethodExample("client.opentasstudio( );")]
@@ -231,9 +235,9 @@ namespace BizHawk.Client.Common
 		[LuaMethod("reboot_core", "Reboots the currently loaded core")]
 		public void RebootCore()
 		{
-			_luaLibsImpl.IsUpdateSupressed = _luaLibsImpl.IsRebootingCore = true;
+			_luaLibsImpl.IsRebootingCore = true;
 			APIs.EmuClient.RebootCore();
-			_luaLibsImpl.IsUpdateSupressed = _luaLibsImpl.IsRebootingCore = false;
+			_luaLibsImpl.IsRebootingCore = false;
 		}
 
 		[LuaMethodExample("local incliscr = client.screenheight( );")]

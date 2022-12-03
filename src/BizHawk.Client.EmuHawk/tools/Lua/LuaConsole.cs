@@ -197,6 +197,9 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 
+				runningScripts = luaLibsImpl.ScriptList.Where(lf => lf.Enabled).ToList();
+
+				// we don't use runningScripts here as the other scripts need to be stopped too
 				foreach (var file in luaLibsImpl.ScriptList)
 				{
 					if (file.Enabled) luaLibsImpl.CallExitEvent(file);
@@ -538,7 +541,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void UpdateBefore()
 		{
-			if (!(LuaImp is Win32LuaLibraries luaLibsImpl) || luaLibsImpl.IsUpdateSupressed)
+			if (LuaImp is not Win32LuaLibraries luaLibsImpl || luaLibsImpl.IsUpdateSupressed)
 			{
 				return;
 			}
@@ -548,7 +551,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void UpdateAfter()
 		{
-			if (!(LuaImp is Win32LuaLibraries luaLibsImpl) || LuaImp.IsUpdateSupressed)
+			if (LuaImp is not Win32LuaLibraries luaLibsImpl || luaLibsImpl.IsUpdateSupressed)
 			{
 				return;
 			}
@@ -595,7 +598,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="includeFrameWaiters">should frame waiters be waken up? only use this immediately before a frame of emulation</param>
 		public void ResumeScripts(bool includeFrameWaiters)
 		{
-			if (!(LuaImp is Win32LuaLibraries luaLibsImpl)
+			if (LuaImp is not Win32LuaLibraries luaLibsImpl
 				|| !luaLibsImpl.ScriptList.Any()
 				|| luaLibsImpl.IsUpdateSupressed
 				|| (MainForm.IsTurboing && !Config.RunLuaDuringTurbo))
@@ -612,8 +615,8 @@ namespace BizHawk.Client.EmuHawk
 						var prohibit = lf.FrameWaiting && !includeFrameWaiters;
 						if (!prohibit)
 						{
-							var result = luaLibsImpl.ResumeScript(lf);
-							if (result.Terminated)
+							var (waitForFrame, terminated) = luaLibsImpl.ResumeScript(lf);
+							if (terminated)
 							{
 								luaLibsImpl.CallExitEvent(lf);
 								lf.Stop();
@@ -621,7 +624,7 @@ namespace BizHawk.Client.EmuHawk
 								UpdateDialog();
 							}
 
-							lf.FrameWaiting = result.WaitForFrame;
+							lf.FrameWaiting = waitForFrame;
 						}
 					}, () =>
 					{

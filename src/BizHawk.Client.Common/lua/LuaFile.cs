@@ -37,7 +37,6 @@ namespace BizHawk.Client.Common
 		public bool Enabled => State != RunState.Disabled;
 		public bool Paused => State == RunState.Paused;
 		public bool IsSeparator { get; }
-		public Lua LuaRef { get; set; }
 		public LuaThread Thread { get; set; }
 		public bool FrameWaiting { get; set; }
 		public string CurrentDirectory { get; set; }
@@ -56,13 +55,7 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			if (State == RunState.Running && Thread.State.Status == KeraLua.LuaStatus.OK)
-			{
-				Thread.Yield(); // we MUST yield this thread, else old references to lua libs might be used (and those may contain references to a Dispose()'d emulator)
-			}
-
 			State = RunState.Disabled;
-			LuaRef = null;
 			Thread.Dispose();
 			Thread = null;
 		}

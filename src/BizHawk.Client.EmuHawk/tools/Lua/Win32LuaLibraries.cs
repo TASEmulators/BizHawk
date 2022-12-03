@@ -288,7 +288,8 @@ namespace BizHawk.Client.EmuHawk
 			LuaFile luaFile,
 			[LuaArbitraryStringParam] string name = null)
 		{
-			var nlf = new NamedLuaFunction(function, theEvent, logCallback, luaFile, name);
+			var nlf = new NamedLuaFunction(function, theEvent, logCallback, luaFile,
+				() => { _lua.NewThread(out var thread); return thread; }, name);
 			RegisteredFunctions.Add(nlf);
 			return nlf;
 		}
@@ -311,10 +312,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public void SpawnAndSetFileThread(string pathToLoad, LuaFile lf)
-		{
-			lf.LuaRef = _lua; // ref kept around for DetachFromScript in NamedLuaFunction
-			lf.Thread = SpawnCoroutine(pathToLoad);
-		}
+			=> lf.Thread = SpawnCoroutine(pathToLoad);
 
 		public void ExecuteString(string command)
 			=> _lua.DoString(command);
