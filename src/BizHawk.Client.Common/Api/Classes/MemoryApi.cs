@@ -246,11 +246,13 @@ namespace BizHawk.Client.Common
 			var d = NamedDomainOrCurrent(domain);
 			if (addr < 0) LogCallback($"Warning: Attempted reads on addresses {addr}..-1 outside range of domain {d.Name} in {nameof(ReadByteRange)}()");
 			var lastReqAddr = addr + length - 1;
-			var indexAfterLast = Math.Min(lastReqAddr, d.Size - 1) - addr + 1;
+			var indexAfterLast = Math.Min(Math.Max(-1L, lastReqAddr), d.Size - 1L) + 1L;
+			var iSrc = Math.Min(Math.Max(0L, addr), d.Size);
+			var iDst = iSrc - addr;
 			var bytes = new byte[length];
 			using (d.EnterExit())
 			{
-				for (var i = addr < 0 ? -addr : 0; i != indexAfterLast; i++) bytes[i] = d.PeekByte(addr + i);
+				while (iSrc < indexAfterLast) bytes[iDst++] = d.PeekByte(iSrc++);
 			}
 			if (lastReqAddr >= d.Size) LogCallback($"Warning: Attempted reads on addresses {d.Size}..{lastReqAddr} outside range of domain {d.Name} in {nameof(ReadByteRange)}()");
 			return bytes;
@@ -266,10 +268,12 @@ namespace BizHawk.Client.Common
 			}
 			if (addr < 0) LogCallback($"Warning: Attempted writes on addresses {addr}..-1 outside range of domain {d.Name} in {nameof(WriteByteRange)}()");
 			var lastReqAddr = addr + memoryblock.Count - 1;
-			var indexAfterLast = Math.Min(lastReqAddr, d.Size - 1) - addr + 1;
+			var indexAfterLast = Math.Min(Math.Max(-1L, lastReqAddr), d.Size - 1L) + 1L;
+			var iDst = Math.Min(Math.Max(0L, addr), d.Size);
+			var iSrc = checked((int) (iDst - addr));
 			using (d.EnterExit())
 			{
-				for (var i = addr < 0 ? (int)-addr : 0; i != indexAfterLast; i++) d.PokeByte(addr + i, memoryblock[i]);
+				while (iDst < indexAfterLast) d.PokeByte(iDst++, memoryblock[iSrc++]);
 			}
 			if (lastReqAddr >= d.Size) LogCallback($"Warning: Attempted writes on addresses {d.Size}..{lastReqAddr} outside range of domain {d.Name} in {nameof(WriteByteRange)}()");
 		}
