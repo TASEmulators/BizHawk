@@ -42,6 +42,7 @@ namespace BizHawk.Client.Common
 			string? urlPost = null;
 			bool? audiosync = null;
 			string? openExtToolDll = null;
+			List<(string Key, string Value)>? userdataUnparsedPairs = null;
 			string? cmdRom = null;
 
 			for (var i = 0; i < args.Length; i++)
@@ -157,6 +158,16 @@ namespace BizHawk.Client.Common
 					// - dll path matches given string; or dll filename matches given string with or without `.dll`
 					openExtToolDll = arg.Substring(20);
 				}
+				else if (argDowncased.StartsWith("--userdata="))
+				{
+					userdataUnparsedPairs = new();
+					foreach (var s in arg.Substring(11).Split(';'))
+					{
+						var iColon = s.IndexOf(':');
+						if (iColon is -1) throw new ArgParserException("malformed userdata (';' without ':')");
+						userdataUnparsedPairs.Add((s.Substring(startIndex: 0, length: iColon), s.Substring(iColon + 1)));
+					}
+				}
 				else
 				{
 					cmdRom = arg;
@@ -200,6 +211,7 @@ namespace BizHawk.Client.Common
 				httpAddresses: httpAddresses,
 				audiosync: audiosync,
 				openExtToolDll: openExtToolDll,
+				userdataUnparsedPairs: userdataUnparsedPairs,
 				cmdRom: cmdRom
 			);
 		}

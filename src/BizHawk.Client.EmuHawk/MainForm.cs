@@ -690,6 +690,18 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
+			if (_argParser.UserdataUnparsedPairs is {} pairs) foreach (var (k, v) in pairs)
+			{
+				MovieSession.UserBag[k] = v switch
+				{
+					"true" => true,
+					"false" => false,
+					_ when int.TryParse(v, out var i) => i,
+					_ when double.TryParse(v, out var d) => d,
+					_ => v
+				};
+			}
+
 			//start Lua Console if requested in the command line arguments
 			if (_argParser.luaConsole)
 			{
