@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common
 		private IEmulator Emulator { get; set; }
 
 		[OptionalService]
-		private IMemoryDomains MemoryDomainCore { get; set; }
+		public IMemoryDomains MemoryDomainCore { get; set; }
 
 		private readonly Action<string> LogCallback;
 
