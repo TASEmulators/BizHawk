@@ -333,9 +333,7 @@ namespace BizHawk.Client.EmuHawk
 				if (a_bits == 16) bytes = 2;
 				else if (a_bits == 8) bytes = 1;
 				else throw new InvalidOperationException($"only 8/16 bits audio are supported by {nameof(AviWriter)} and you chose: {a_bits}");
-				if (a_channels == 1) { }
-				else if (a_channels == 2) { }
-				else throw new InvalidOperationException($"only 1/2 channels audio are supported by {nameof(AviWriter)} and you chose: {a_channels}");
+				if (a_channels is not (1 or 2)) throw new InvalidOperationException($"only 1/2 channels audio are supported by {nameof(AviWriter)} and you chose: {a_channels}");
 				wfex.Init();
 				wfex.nBlockAlign = (ushort)(bytes * a_channels);
 				wfex.nChannels = (ushort)a_channels;

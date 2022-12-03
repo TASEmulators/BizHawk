@@ -288,12 +288,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 		private void CreateTrack1Pregap()
 		{
-			if (OUT_CompiledCueTracks[1].PregapLength.Sector == 0) { }
-			else if (OUT_CompiledCueTracks[1].PregapLength.Sector == 150) { }
-			else
-			{
-				Error("Track 1 specified an illegal pregap. It's being ignored and replaced with a 00:02:00 pregap");
-			}
+			if (OUT_CompiledCueTracks[1].PregapLength.Sector is not (0 or 150)) Error("Track 1 specified an illegal pregap. It's being ignored and replaced with a 00:02:00 pregap");
 			OUT_CompiledCueTracks[1].PregapLength = new Timestamp(150);
 		}
 

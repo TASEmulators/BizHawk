@@ -605,9 +605,7 @@ namespace BizHawk.Client.EmuHawk
 			MovieSession.SetMovieController(Emulator.ControllerDefinition); // hack, see interface comment
 			tasMovie.ClearChanges(); // Don't ask to save changes here.
 			tasMovie.Save();
-			if (HandleMovieLoadStuff(tasMovie))
-			{
-			}
+			_ = HandleMovieLoadStuff(tasMovie);
 			// let's not keep this longer than we actually need
 			// the user will be prompted to enter a proper name
 			// when they want to save

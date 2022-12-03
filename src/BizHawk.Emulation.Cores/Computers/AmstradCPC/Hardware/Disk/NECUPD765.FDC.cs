@@ -637,8 +637,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 						int buffPos = 0;
 						int sectorSize = 0;
+#pragma warning disable CS0219
 						int maxTransferCap = 0;
-						if (maxTransferCap > 0) { }
+//						if (maxTransferCap > 0) { }
+#pragma warning restore CS0219
 
 						// calculate requested size of data required
 						if (ActiveCommandParams.SectorSize == 0)
@@ -950,8 +952,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 						int buffPos = 0;
 						int sectorSize = 0;
-						int maxTransferCap = 0;
-						if (maxTransferCap > 0) { }
+						int maxTransferCap = 0; // why doesn't this get flagged for CS0219?
+//						if (maxTransferCap > 0) { }
 
 						// calculate requested size of data required
 						if (ActiveCommandParams.SectorSize == 0)

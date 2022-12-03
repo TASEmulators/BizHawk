@@ -79,7 +79,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			//this is speculative:
 			//well, nothing to be done here..
-			if (ret.FirstRecordedTrackNumber == -1) { }
+//			if (ret.FirstRecordedTrackNumber == -1) { }
 			if (ret.LastRecordedTrackNumber == -1) { ret.LastRecordedTrackNumber = maxFoundTrack; }
 			if (ret.Session1Format == SessionFormat.None) ret.Session1Format = SessionFormat.Type00_CDROM_CDDA;
 
