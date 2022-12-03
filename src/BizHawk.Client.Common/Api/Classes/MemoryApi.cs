@@ -185,10 +185,8 @@ namespace BizHawk.Client.Common
 
 		public void SetBigEndian(bool enabled = true) => _isBigEndian = enabled;
 
-		public List<string> GetMemoryDomainList() =>
-			DomainList
-				.Select(domain => domain.Name)
-				.ToList();
+		public IReadOnlyCollection<string> GetMemoryDomainList()
+			=> DomainList.Select(static domain => domain.Name).ToList();
 
 		public uint GetMemoryDomainSize(string name = null) => (uint) NamedDomainOrCurrent(name).Size;
 
@@ -243,7 +241,7 @@ namespace BizHawk.Client.Common
 
 		public void WriteByte(long addr, uint value, string domain = null) => WriteUnsigned(addr, value, 1, domain);
 
-		public List<byte> ReadByteRange(long addr, int length, string domain = null)
+		public IReadOnlyList<byte> ReadByteRange(long addr, int length, string domain = null)
 		{
 			var d = NamedDomainOrCurrent(domain);
 			if (addr < 0) LogCallback($"Warning: Attempted reads on addresses {addr}..-1 outside range of domain {d.Name} in {nameof(ReadByteRange)}()");
@@ -255,10 +253,10 @@ namespace BizHawk.Client.Common
 				for (var i = addr < 0 ? -addr : 0; i != indexAfterLast; i++) bytes[i] = d.PeekByte(addr + i);
 			}
 			if (lastReqAddr >= d.Size) LogCallback($"Warning: Attempted reads on addresses {d.Size}..{lastReqAddr} outside range of domain {d.Name} in {nameof(ReadByteRange)}()");
-			return bytes.ToList();
+			return bytes;
 		}
 
-		public void WriteByteRange(long addr, List<byte> memoryblock, string domain = null)
+		public void WriteByteRange(long addr, IReadOnlyList<byte> memoryblock, string domain = null)
 		{
 			var d = NamedDomainOrCurrent(domain);
 			if (!d.Writable)
