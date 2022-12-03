@@ -264,14 +264,14 @@ namespace BizHawk.Client.Common
 				LogCallback($"Error: the domain {d.Name} is not writable");
 				return;
 			}
-			if (addr < 0) LogCallback($"Warning: Attempted reads on addresses {addr}..-1 outside range of domain {d.Name} in {nameof(WriteByteRange)}()");
+			if (addr < 0) LogCallback($"Warning: Attempted writes on addresses {addr}..-1 outside range of domain {d.Name} in {nameof(WriteByteRange)}()");
 			var lastReqAddr = addr + memoryblock.Count - 1;
 			var indexAfterLast = Math.Min(lastReqAddr, d.Size - 1) - addr + 1;
 			using (d.EnterExit())
 			{
 				for (var i = addr < 0 ? (int)-addr : 0; i != indexAfterLast; i++) d.PokeByte(addr + i, memoryblock[i]);
 			}
-			if (lastReqAddr >= d.Size) LogCallback($"Warning: Attempted reads on addresses {d.Size}..{lastReqAddr} outside range of domain {d.Name} in {nameof(WriteByteRange)}()");
+			if (lastReqAddr >= d.Size) LogCallback($"Warning: Attempted writes on addresses {d.Size}..{lastReqAddr} outside range of domain {d.Name} in {nameof(WriteByteRange)}()");
 		}
 
 		public float ReadFloat(long addr, string domain = null)
