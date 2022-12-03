@@ -260,6 +260,26 @@ namespace BizHawk.Client.Common
 			return newBytes;
 		}
 
+		public bool ReadByteRange(ulong srcStartOffset, Span<byte> dstBuffer, string domain = null)
+		{
+			var d = NamedDomainOrCurrent(domain);
+			if (srcStartOffset >= (ulong) d.Size)
+			{
+				LogCallback($"Warning: attempted read of {srcStartOffset} outside the memory size of {d.Size}");
+				return false;
+			}
+			try
+			{
+				d.BulkPeekByte(srcStartOffset, dstBuffer);
+				return true;
+			}
+			catch (Exception e)
+			{
+				LogCallback($"bulk-peek threw {e.GetType().Name}: {e.Message}");
+				return false;
+			}
+		}
+
 		public void WriteByteRange(long addr, IReadOnlyList<byte> memoryblock, string domain = null)
 		{
 			var d = NamedDomainOrCurrent(domain);
