@@ -79,7 +79,7 @@ namespace BizHawk.Client.EmuHawk
 
 			protected virtual byte ReadMem(int addr)
 			{
-				using (MemGuard?.EnterExit())
+				using (MemGuard.EnterExit())
 				{
 					return _domain.PeekByte(FixAddr(addr) ^ _addressMangler);
 				}
@@ -87,7 +87,7 @@ namespace BizHawk.Client.EmuHawk
 
 			protected virtual void WriteMem(int addr, byte val)
 			{
-				using (MemGuard?.EnterExit())
+				using (MemGuard.EnterExit())
 				{
 					_domain.PokeByte(FixAddr(addr) ^ _addressMangler, val);
 				}
@@ -102,7 +102,7 @@ namespace BizHawk.Client.EmuHawk
 					return 0;
 				}
 
-				using (MemGuard?.EnterExit())
+				using (MemGuard.EnterExit())
 				{
 					var end = Math.Min(addr + bytes, _domainAddrStart + BankSize);
 					var length = end - addr;
@@ -191,7 +191,7 @@ namespace BizHawk.Client.EmuHawk
 					return 0;
 				}
 
-				using (MemGuard?.EnterExit())
+				using (MemGuard.EnterExit())
 				{
 					var end = Math.Min(addr + bytes, BankSize);
 					var length = end - addr;
@@ -236,7 +236,7 @@ namespace BizHawk.Client.EmuHawk
 
 			protected override byte ReadMem(int addr)
 			{
-				using (MemGuard?.EnterExit())
+				using (MemGuard.EnterExit())
 				{
 					if (addr < 0x40)
 					{
@@ -251,7 +251,7 @@ namespace BizHawk.Client.EmuHawk
 
 			protected override void WriteMem(int addr, byte val)
 			{
-				using (MemGuard?.EnterExit())
+				using (MemGuard.EnterExit())
 				{
 					if (addr < 0x40)
 					{
@@ -275,7 +275,7 @@ namespace BizHawk.Client.EmuHawk
 					return 0;
 				}
 
-				using (MemGuard?.EnterExit())
+				using (MemGuard.EnterExit())
 				{
 					var regs = _debuggable.GetCpuFlagsAndRegisters();
 					var end = Math.Min(addr + bytes, BankSize);
