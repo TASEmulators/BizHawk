@@ -66,6 +66,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 				return ninLogoSha1 == SHA1Checksum.ComputeDigestHex(new ReadOnlySpan<byte>(rom).Slice(0x104, 48));
 			}
 
+			// TODO: this is normally handled frontend side
+			// except XML files don't go through RomGame
+			// (probably should, but needs refactoring)
+			foreach (var d in lp.Roms.Select(static r => r.RomData))
+			{
+				// magic N64 rom bytes are 0x80, 0x37, 0x12, 0x40
+				// this should hopefully only ever detect N64 roms and not other kinds of files sent through here...
+				if ((d[1] is 0x80 && d[0] is 0x37 && d[3] is 0x12 && d[2] is 0x40) // .v64 byteswapped
+					|| (d[3] is 0x80 && d[2] is 0x37 && d[1] is 0x12 && d[0] is 0x40) // .n64 little-endian
+					|| (d[0] is 0x80 && d[1] is 0x37 && d[2] is 0x12 && d[3] is 0x40)) // .z64 native
+				{
+					N64RomByteswapper.ToZ64Native(d);
+				}
+			}
+
 			var gbRoms = lp.Roms.FindAll(r => IsGBRom(r.FileData)).Select(r => r.FileData).ToArray();
 			var rom = lp.Roms.Find(r => !gbRoms.Contains(r.FileData) && (char)r.RomData[0x3B] is 'N' or 'C')?.RomData;
 			var (disk, error) = TransformDisk(lp.Roms.Find(r => !gbRoms.Contains(r.FileData) && r.RomData != rom)?.FileData);
