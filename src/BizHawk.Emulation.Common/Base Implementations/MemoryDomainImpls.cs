@@ -251,14 +251,9 @@ namespace BizHawk.Emulation.Common
 		{
 			if ((ulong)addr < (ulong)Size)
 			{
-				try
+				using (_monitor.EnterExit())
 				{
-					_monitor.Enter();
 					return ((byte*)Data)[addr];
-				}
-				finally
-				{
-					_monitor.Exit();
 				}
 			}
 
@@ -271,14 +266,9 @@ namespace BizHawk.Emulation.Common
 			{
 				if ((ulong)addr < (ulong)Size)
 				{
-					try
+					using (_monitor.EnterExit())
 					{
-						_monitor.Enter();
 						((byte*)Data)[addr] = val;
-					}
-					finally
-					{
-						_monitor.Exit();
 					}
 				}
 				else
@@ -361,14 +351,9 @@ namespace BizHawk.Emulation.Common
 		{
 			if ((ulong)addr < (ulong)Size)
 			{
-				try
+				using (_monitor.EnterExit())
 				{
-					_monitor.Enter();
 					return ((byte*)Data)[addr ^ 1];
-				}
-				finally
-				{
-					_monitor.Exit();
 				}
 			}
 
@@ -381,14 +366,9 @@ namespace BizHawk.Emulation.Common
 			{
 				if ((ulong)addr < (ulong)Size)
 				{
-					try
+					using (_monitor.EnterExit())
 					{
-						_monitor.Enter();
 						((byte*)Data)[addr ^ 1] = val;
-					}
-					finally
-					{
-						_monitor.Exit();
 					}
 				}
 				else

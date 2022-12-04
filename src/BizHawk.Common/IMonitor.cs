@@ -19,7 +19,8 @@ namespace BizHawk.Common
 			// yes, this can be null
 			private readonly IMonitor? _m;
 
-			public EnterExitWrapper(IMonitor? m)
+			// disallow public construction outside of EnterExit extension
+			internal EnterExitWrapper(IMonitor? m)
 			{
 				_m = m;
 				_m?.Enter();

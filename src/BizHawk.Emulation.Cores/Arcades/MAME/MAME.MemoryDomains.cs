@@ -35,38 +35,18 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			public override byte PeekByte(long addr)
 			{
-				if (addr < 0 || addr >= _systemBusSize) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
-
+				if ((ulong)addr < (ulong)_systemBusSize) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
 				addr += _firstOffset;
-
-				try
-				{
-					_monitor.Enter();
-					return _core.mame_read_byte((uint)addr << _systemBusAddressShift);
-				}
-				finally
-				{
-					_monitor.Exit();	
-				}
+				return _core.mame_read_byte((uint)addr << _systemBusAddressShift);
 			}
 
 			public override void PokeByte(long addr, byte val)
 			{
 				if (Writable)
 				{
-					if (addr < 0 || addr >= _systemBusSize) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
-
+					if ((ulong)addr < (ulong)_systemBusSize) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
 					addr += _firstOffset;
-
-					try
-					{
-						_monitor.Enter();
-						_core.mame_lua_execute($"{MAMELuaCommand.GetSpace}:write_u8({addr << _systemBusAddressShift}, {val})");
-					}
-					finally
-					{
-						_monitor.Exit();
-					}
+					_core.mame_lua_execute($"{MAMELuaCommand.GetSpace}:write_u8({addr << _systemBusAddressShift}, {val})");
 				}
 			}
 

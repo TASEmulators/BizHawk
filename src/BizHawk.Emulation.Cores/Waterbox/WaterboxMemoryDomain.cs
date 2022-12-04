@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public static WaterboxMemoryDomain Create(MemoryArea m, WaterboxHost monitor)
 		{
 			return m.Flags.HasFlag(MemoryDomainFlags.FunctionHook)
-				? (WaterboxMemoryDomain)new WaterboxMemoryDomainFunc(m, monitor)
+				? new WaterboxMemoryDomainFunc(m, monitor)
 				: new WaterboxMemoryDomainPointer(m, monitor);
 		}
 
@@ -73,14 +73,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			if ((ulong)addr < (ulong)Size)
 			{
-				try
+				using (_monitor.EnterExit())
 				{
-					_monitor.Enter();
 					return ((byte*)_data)[addr ^ _addressMangler];
-				}
-				finally
-				{
-					_monitor.Exit();
 				}
 			}
 
@@ -93,14 +88,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				if ((ulong)addr < (ulong)Size)
 				{
-					try
+					using (_monitor.EnterExit())
 					{
-						_monitor.Enter();
 						((byte*)_data)[addr ^ _addressMangler] = val;
-					}
-					finally
-					{
-						_monitor.Exit();
 					}
 				}
 				else
@@ -123,14 +113,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 			if (start < (ulong)Size && (start + count) <= (ulong)Size)
 			{
-				try
+				using (_monitor.EnterExit())
 				{
-					_monitor.Enter();
 					Marshal.Copy(Z.US((ulong)_data + start), values, 0, (int)count);
-				}
-				finally
-				{
-					_monitor.Exit();
 				}
 			}
 			else
