@@ -51,19 +51,12 @@ namespace BizHawk.Client.EmuHawk.ForDebugging
 				try
 				{
 					var rom = File.ReadAllBytes(txtBaseFile.Text);
-					switch (comboFormats.SelectedIndex) // can't have Action<Span<byte>> (System.Buffers.SpanAction isn't suitable) or I'd be able to have a tiny switch expr >:( --yoshi
+					_ = comboFormats.SelectedIndex switch
 					{
-						case 0:
-							N64RomByteswapper.ToN64LittleEndian(rom);
-							break;
-						case 1:
-							N64RomByteswapper.ToV64ByteSwapped(rom);
-							break;
-						case 2:
-						default:
-							N64RomByteswapper.ToZ64Native(rom);
-							break;
-					}
+						0 => N64RomByteswapper.ToN64LittleEndian(rom),
+						1 => N64RomByteswapper.ToV64ByteSwapped(rom),
+						_ => N64RomByteswapper.ToZ64Native(rom)
+					};
 					File.WriteAllBytes(txtTargetFile.Text, rom);
 					this.ModalMessageBox($"wrote {txtTargetFile.Text}\n{SHA1Checksum.ComputePrefixedHex(rom)}");
 				}

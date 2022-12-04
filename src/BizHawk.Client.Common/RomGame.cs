@@ -96,7 +96,7 @@ namespace BizHawk.Client.Common
 				RomData = DeInterleaveSMD(RomData);
 			}
 
-			if (file.Extension is ".n64" or ".v64" or ".z64") N64RomByteswapper.ToZ64Native(RomData); //TODO don't use file extension for N64 rom detection (yes that means detecting all formats before converting to Z64)
+			if (file.Extension is ".n64" or ".v64" or ".z64") _ = N64RomByteswapper.ToZ64Native(RomData); //TODO don't use file extension for N64 rom detection (yes that means detecting all formats before converting to Z64)
 
 			// note: this will be taking several hashes, of a potentially large amount of data.. yikes!
 			GameInfo = Database.GetGameInfo(RomData, file.Name);

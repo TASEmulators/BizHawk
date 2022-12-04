@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 
 using BizHawk.Common;
 
@@ -8,31 +9,67 @@ namespace BizHawk.Emulation.Common
 	/// <remarks>http://n64dev.org/romformats.html</remarks>
 	public static class N64RomByteswapper
 	{
+		private static readonly byte[] MAGIC_BYTES_LE = { 0x37, 0x80, 0x40, 0x12 };
+
 		/// <remarks>not actually magic, just always the same in commercial carts? https://n64brew.dev/wiki/ROM_Header works all the same</remarks>
-		private static readonly byte[] MAGIC_BYTES = { 0x80, 0x37, 0x12, 0x40 };
+		private static readonly byte[] MAGIC_BYTES_NATIVE = { 0x80, 0x37, 0x12, 0x40 };
+
+		private static readonly byte[] MAGIC_BYTES_SWAPPED = { 0x40, 0x12, 0x37, 0x80 };
 
 		/// <summary>ensures <paramref name="rom"/> is in the rare little-endian (<c>.n64</c>) format, mutating it in-place if necessary</summary>
-		public static void ToN64LittleEndian(Span<byte> rom)
+		/// <returns><see langword="true"/> iff <paramref name="rom"/> was one of the 3 valid formats</returns>
+		public static bool ToN64LittleEndian(Span<byte> rom)
 		{
-			if (rom[0] == MAGIC_BYTES[0]) EndiannessUtils.MutatingByteSwap32(rom); // native (.z64)
-			else if (rom[0] == MAGIC_BYTES[1]) EndiannessUtils.MutatingShortSwap32(rom); // byte-swapped (.v64)
-			// else already rare little-endian .n64
+			var romMagicBytes = rom.Slice(start: 0, length: 4);
+			if (romMagicBytes.SequenceEqual(MAGIC_BYTES_NATIVE))
+			{
+				EndiannessUtils.MutatingByteSwap32(rom);
+				return true;
+			}
+			if (romMagicBytes.SequenceEqual(MAGIC_BYTES_SWAPPED))
+			{
+				EndiannessUtils.MutatingShortSwap32(rom);
+				return true;
+			}
+			return romMagicBytes.SequenceEqual(MAGIC_BYTES_LE);
 		}
 
 		/// <summary>ensures <paramref name="rom"/> is in the byte-swapped (<c>.v64</c>) format, mutating it in-place if necessary</summary>
-		public static void ToV64ByteSwapped(Span<byte> rom)
+		/// <returns><see langword="true"/> iff <paramref name="rom"/> was one of the 3 valid formats</returns>
+		public static bool ToV64ByteSwapped(Span<byte> rom)
 		{
-			if (rom[0] == MAGIC_BYTES[0]) EndiannessUtils.MutatingByteSwap16(rom); // native (.z64)
-			else if (rom[0] == MAGIC_BYTES[3]) EndiannessUtils.MutatingShortSwap32(rom); // rare little-endian .n64
-			// else already byte-swapped (.v64)
+			var romMagicBytes = rom.Slice(start: 0, length: 4);
+			if (romMagicBytes.SequenceEqual(MAGIC_BYTES_NATIVE))
+			{
+				EndiannessUtils.MutatingByteSwap16(rom);
+				return true;
+			}
+			if (romMagicBytes.SequenceEqual(MAGIC_BYTES_SWAPPED)) return true;
+			if (romMagicBytes.SequenceEqual(MAGIC_BYTES_LE))
+			{
+				EndiannessUtils.MutatingShortSwap32(rom);
+				return true;
+			}
+			return false;
 		}
 
 		/// <summary>ensures <paramref name="rom"/> is in the native (<c>.z64</c>) format, mutating it in-place if necessary</summary>
-		public static void ToZ64Native(Span<byte> rom)
+		/// <returns><see langword="true"/> iff <paramref name="rom"/> was one of the 3 valid formats</returns>
+		public static bool ToZ64Native(Span<byte> rom)
 		{
-			if (rom[0] == MAGIC_BYTES[1]) EndiannessUtils.MutatingByteSwap16(rom); // byte-swapped (.v64)
-			else if (rom[0] == MAGIC_BYTES[3]) EndiannessUtils.MutatingByteSwap32(rom); // rare little-endian .n64
-			// else already native (.z64)
+			var romMagicBytes = rom.Slice(start: 0, length: 4);
+			if (romMagicBytes.SequenceEqual(MAGIC_BYTES_NATIVE)) return true;
+			if (romMagicBytes.SequenceEqual(MAGIC_BYTES_SWAPPED))
+			{
+				EndiannessUtils.MutatingByteSwap16(rom);
+				return true;
+			}
+			if (romMagicBytes.SequenceEqual(MAGIC_BYTES_LE))
+			{
+				EndiannessUtils.MutatingByteSwap32(rom);
+				return true;
+			}
+			return false;
 		}
 	}
 }
