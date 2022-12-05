@@ -54,7 +54,7 @@ namespace BizHawk.Client.Common.movie.import
 				ss.LeftPort = port1 switch
 				{
 					"none" => BsnesApi.BSNES_PORT1_INPUT_DEVICE.None,
-					// "gamepad16" => BsnesApi.BSNES_PORT1_INPUT_DEVICE.ExtendedGamepad, // coming soon (hopefully)
+					"gamepad16" => BsnesApi.BSNES_PORT1_INPUT_DEVICE.ExtendedGamepad,
 					"multitap" => BsnesApi.BSNES_PORT1_INPUT_DEVICE.SuperMultitap,
 					"multitap16" => BsnesApi.BSNES_PORT1_INPUT_DEVICE.Payload,
 					_ => BsnesApi.BSNES_PORT1_INPUT_DEVICE.Gamepad
@@ -68,7 +68,7 @@ namespace BizHawk.Client.Common.movie.import
 				ss.RightPort = port2 switch
 				{
 					"none" => BsnesApi.BSNES_INPUT_DEVICE.None,
-					// "gamepad16" => BsnesApi.BSNES_INPUT_DEVICE.ExtendedGamepad, // coming soon (hopefully)
+					"gamepad16" => BsnesApi.BSNES_INPUT_DEVICE.ExtendedGamepad,
 					"multitap" => BsnesApi.BSNES_INPUT_DEVICE.SuperMultitap,
 					"multitap16" => BsnesApi.BSNES_INPUT_DEVICE.Payload,
 					// will these even work lol

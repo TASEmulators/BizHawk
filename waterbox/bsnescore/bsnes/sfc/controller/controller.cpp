@@ -47,6 +47,7 @@ auto ControllerPort::connect(uint deviceID) -> void {
   switch(deviceID) { default:
   case ID::Device::None: device = new Controller(port); break;
   case ID::Device::Gamepad: device = new Gamepad(port); break;
+  case ID::Device::ExtendedGamepad: device = new Gamepad(port, true); break;
   case ID::Device::Mouse: device = new Mouse(port); break;
   case ID::Device::SuperMultitap: device = new SuperMultitap(port, false); break;
   case ID::Device::Payload: device = new SuperMultitap(port, true); break;

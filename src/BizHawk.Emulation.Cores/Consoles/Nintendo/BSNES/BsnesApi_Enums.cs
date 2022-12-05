@@ -126,12 +126,13 @@
 		{
 			None = 0,
 			Gamepad = 1,
-			Mouse = 2,
-			SuperMultitap = 3,
-			Payload = 4,
-			SuperScope = 5,
-			Justifier = 6,
-			Justifiers = 7
+			ExtendedGamepad = 2,
+			Mouse = 3,
+			SuperMultitap = 4,
+			Payload = 5,
+			SuperScope = 6,
+			Justifier = 7,
+			Justifiers = 8
 		}
 
 		/// this a subset of the <see cref="BSNES_INPUT_DEVICE"/> enum with all lightgun controllers removed
@@ -139,9 +140,10 @@
 		{
 			None = 0,
 			Gamepad = 1,
-			Mouse = 2,
-			SuperMultitap = 3,
-			Payload = 4
+			ExtendedGamepad = 2,
+			Mouse = 3,
+			SuperMultitap = 4,
+			Payload = 5
 		}
 
 		public enum ENTROPY

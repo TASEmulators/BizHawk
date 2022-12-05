@@ -17,6 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			{
 				BSNES_INPUT_DEVICE.None => new BsnesUnpluggedController(),
 				BSNES_INPUT_DEVICE.Gamepad => new BsnesController(),
+				BSNES_INPUT_DEVICE.ExtendedGamepad => new BsnesExtendedController(),
 				BSNES_INPUT_DEVICE.Mouse => new BsnesMouseController
 				{
 					LimitAnalogChangeSensitivity = ss.LimitAnalogChangeSensitivity
@@ -123,6 +124,48 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public short GetState(IController controller, int index, int id)
 		{
 			if (id >= 12)
+				return 0;
+
+			return (short) (controller.IsPressed(Buttons[id]) ? 1 : 0);
+		}
+	}
+	internal class BsnesExtendedController : IBsnesController
+	{
+		private static readonly string[] Buttons =
+		{
+			"0Up", "0Down", "0Left", "0Right", "0B", "0A", "0Y", "0X", "0L", "0R", "0Select", "0Start", "0Extra1", "0Extra2", "0Extra3", "0Extra4"
+		};
+
+		private static readonly Dictionary<string, int> DisplayButtonOrder = new()
+		{
+			["0B"] = 0,
+			["0Y"] = 1,
+			["0Select"] = 2,
+			["0Start"] = 3,
+			["0Up"] = 4,
+			["0Down"] = 5,
+			["0Left"] = 6,
+			["0Right"] = 7,
+			["0A"] = 8,
+			["0X"] = 9,
+			["0L"] = 10,
+			["0R"] = 11,
+			["0Extra1"] = 12,
+			["0Extra2"] = 13,
+			["0Extra3"] = 14,
+			["0Extra4"] = 15
+		};
+
+		private static readonly ControllerDefinition _definition = new("(SNES Controller fragment)")
+		{
+			BoolButtons = Buttons.OrderBy(b => DisplayButtonOrder[b]).ToList()
+		};
+
+		public ControllerDefinition Definition => _definition;
+
+		public short GetState(IController controller, int index, int id)
+		{
+			if (id >= 16)
 				return 0;
 
 			return (short) (controller.IsPressed(Buttons[id]) ? 1 : 0);

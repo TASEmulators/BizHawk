@@ -134,6 +134,9 @@ namespace BizHawk.Emulation.Cores
 					case BsnesApi.BSNES_INPUT_DEVICE.Gamepad:
 						yield return StandardController(playerNum);
 						break;
+					case BsnesApi.BSNES_INPUT_DEVICE.ExtendedGamepad:
+						yield return ExtendedStandardController(playerNum);
+						break;
 					case BsnesApi.BSNES_INPUT_DEVICE.Mouse:
 						yield return Mouse(playerNum);
 						break;
