@@ -9,13 +9,16 @@ namespace BizHawk.Client.Common
 {
 	public sealed class MovieApi : IMovieApi
 	{
+		private readonly IMainFormForApi _mainForm;
+
 		private readonly IMovieSession _movieSession;
 
 		private readonly Action<string> LogCallback;
 
-		public MovieApi(Action<string> logCallback, IMovieSession movieSession)
+		public MovieApi(Action<string> logCallback, IMainFormForApi mainForm, IMovieSession movieSession)
 		{
 			LogCallback = logCallback;
+			_mainForm = mainForm;
 			_movieSession = movieSession;
 		}
 
@@ -103,7 +106,8 @@ namespace BizHawk.Client.Common
 
 		public void SetRerecordCounting(bool counting) => _movieSession.Movie.IsCountingRerecords = counting;
 
-		public void Stop() => _movieSession.StopMovie();
+		public void Stop()
+			=> _mainForm.StopMovie();
 
 		public double GetFps()
 		{

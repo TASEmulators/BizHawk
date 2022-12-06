@@ -86,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 			UpdateStatusSlots();
 		}
 
-		private void StopMovie(bool saveChanges = true)
+		public void StopMovie(bool saveChanges = true)
 		{
 			if (IsSlave && Master.WantsToControlStopMovie)
 			{
