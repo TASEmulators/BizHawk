@@ -87,6 +87,9 @@ namespace BizHawk.Client.Common
 		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
 		void StepRunLoop_Throttle();
 
+		/// <remarks>only referenced from <see cref="MovieApi"/></remarks>
+		void StopMovie(bool saveChanges = true);
+
 		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
 		void TakeScreenshot();
 
