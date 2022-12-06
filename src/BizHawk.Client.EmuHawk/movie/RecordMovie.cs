@@ -148,25 +148,32 @@ namespace BizHawk.Client.EmuHawk
 			AutoScaleMode = AutoScaleMode.Font;
 			CancelButton = Cancel;
 			ClientSize = new(478, 163);
+			FormBorderStyle = FormBorderStyle.FixedDialog;
 			Icon = Properties.Resources.TAStudioIcon;
 			MaximizeBox = false;
-			MaximumSize = new(1440, 201);
 			MinimizeBox = false;
-			MinimumSize = new(425, 201);
 			StartPosition = FormStartPosition.CenterParent;
 			Text = "Record Movie";
-			Controls.Add(groupBox1);
-			Controls.Add(OK);
-			Controls.Add(Cancel);
+			Controls.Add(new FlowLayoutPanel
+			{
+				Controls =
+				{
+					groupBox1,
+					new SingleRowFLP
+					{
+						Controls = { OK, Cancel },
+					},
+				},
+				FlowDirection = FlowDirection.RightToLeft, // going for two rows so the buttons are right-aligned
+				Margin = Padding.Empty,
+				Size = new(464, 144),
+			});
 			Load += RecordMovie_Load;
 			if (OSTailoredCode.IsUnixHost) Load += (_, _) =>
 			{
 				//HACK to make this usable on Linux. No clue why this Form in particular is so much worse, maybe the GroupBox? --yoshi
 				groupBox1.Height -= 24;
 				DefaultAuthorCheckBox.Location += new Size(0, 32);
-				var s = new Size(0, 40);
-				OK.Location += s;
-				Cancel.Location += s;
 			};
 
 			groupBox1.ResumeLayout(performLayout: false);
