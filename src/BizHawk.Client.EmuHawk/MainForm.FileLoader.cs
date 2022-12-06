@@ -87,7 +87,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private bool LoadMovie(string filename, string archive = null)
+		public bool LoadMovie(string filename, string archive = null)
 		{
 			if (Emulator.IsNull())
 			{

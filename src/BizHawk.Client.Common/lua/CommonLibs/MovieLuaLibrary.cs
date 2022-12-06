@@ -72,6 +72,16 @@ namespace BizHawk.Client.Common
 		public string Mode()
 			=> APIs.Movie.Mode();
 
+		[LuaMethodExample(@"movie.play_from_start(""C:\\moviename.ext"");")]
+		[LuaMethod("play_from_start", "Resets the core to frame 0 with the currently loaded movie in playback mode. If a path to a movie is specified, attempts to load it, then continues with playback if it was successful. Returns true iff successful.")]
+		public bool PlayFromStart([LuaArbitraryStringParam] string path = "")
+		{
+			_luaLibsImpl.IsRebootingCore = true;
+			var success = APIs.Movie.PlayFromStart(path);
+			_luaLibsImpl.IsRebootingCore = false;
+			return success;
+		}
+
 		[LuaMethodExample("movie.save( \"C:\\moviename.ext\" );")]
 		[LuaMethod("save", "Saves the current movie to the disc. If the filename is provided (no extension or path needed), the movie is saved under the specified name to the current movie directory. The filename may contain a subdirectory, it will be created if it doesn't exist. Existing files won't get overwritten.")]
 		public void Save([LuaArbitraryStringParam] string filename = "")

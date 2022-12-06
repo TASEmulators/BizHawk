@@ -15,6 +15,14 @@ namespace BizHawk.Client.Common
 		bool IsLoaded();
 		int Length();
 		string Mode();
+
+		/// <summary>
+		/// Resets the core to frame 0 with the currently loaded movie in playback mode.
+		/// If <paramref name="path"/> is specified, attempts to load it, then continues with playback if it was successful.
+		/// </summary>
+		/// <returns>true iff successful</returns>
+		bool PlayFromStart(string path = "");
+
 		void Save(string filename = "");
 		void SetReadOnly(bool readOnly);
 		void SetRerecordCount(ulong count);

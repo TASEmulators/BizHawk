@@ -99,7 +99,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private bool RestartMovie()
+		public bool RestartMovie()
 		{
 			if (IsSlave && Master.WantsToControlRestartMovie) return Master.RestartMovie();
 			if (!MovieSession.Movie.IsActive()) return false;
