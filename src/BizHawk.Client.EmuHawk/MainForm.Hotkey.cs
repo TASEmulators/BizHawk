@@ -278,7 +278,7 @@ namespace BizHawk.Client.EmuHawk
 					StopMovie();
 					break;
 				case "Play from beginning":
-					RestartMovie();
+					_ = RestartMovie();
 					break;
 				case "Save Movie":
 					SaveMovie();

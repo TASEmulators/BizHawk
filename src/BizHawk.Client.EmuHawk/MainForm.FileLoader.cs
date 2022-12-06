@@ -87,25 +87,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void LoadMovie(string filename, string archive = null)
+		private bool LoadMovie(string filename, string archive = null)
 		{
 			if (Emulator.IsNull())
 			{
 				OpenRom();
-				if (Emulator.IsNull())
-				{
-					return;
-				}
+				if (Emulator.IsNull()) return false;
 			}
-
-			if (Tools.IsLoaded<TAStudio>())
-			{
-				Tools.TAStudio.LoadMovieFile(filename);
-			}
-			else
-			{
-				StartNewMovie(MovieSession.Get(filename), false);
-			}
+			return Tools.IsLoaded<TAStudio>()
+				? Tools.TAStudio.LoadMovieFile(filename)
+				: StartNewMovie(MovieSession.Get(filename), false);
 		}
 
 		private void LoadRom(string filename, string archive = null)
@@ -299,10 +290,8 @@ namespace BizHawk.Client.EmuHawk
 								if (sortedFiles[LoadOrdering.MovieFile].Count + sortedFiles[LoadOrdering.LegacyMovieFile].Count > 1)
 									break;
 
-								if (value == LoadOrdering.MovieFile)
-									LoadMovie(filename, fileInformation.ArchiveName);
-								else
-									LoadLegacyMovie(filename, fileInformation.ArchiveName);
+								if (value == LoadOrdering.MovieFile) _ = LoadMovie(filename, fileInformation.ArchiveName);
+								else LoadLegacyMovie(filename, fileInformation.ArchiveName);
 								break;
 						}
 						break;

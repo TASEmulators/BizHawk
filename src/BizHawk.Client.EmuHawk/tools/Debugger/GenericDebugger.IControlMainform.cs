@@ -32,7 +32,9 @@
 		public bool Rewind() => false;
 
 		public bool WantsToControlRestartMovie => false;
-		public void RestartMovie() { }
+
+		public bool RestartMovie()
+			=> false;
 
 		// TODO: We want to prevent movies and probably other things
 	}

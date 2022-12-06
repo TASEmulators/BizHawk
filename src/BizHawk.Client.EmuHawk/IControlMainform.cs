@@ -55,6 +55,6 @@
 
 		bool WantsToControlRestartMovie { get; }
 
-		void RestartMovie();
+		bool RestartMovie();
 	}
 }

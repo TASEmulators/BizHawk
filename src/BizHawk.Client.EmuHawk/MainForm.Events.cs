@@ -484,9 +484,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void PlayFromBeginningMenuItem_Click(object sender, EventArgs e)
-		{
-			RestartMovie();
-		}
+			=> _ = RestartMovie();
 
 		private void ImportMovieMenuItem_Click(object sender, EventArgs e)
 		{
