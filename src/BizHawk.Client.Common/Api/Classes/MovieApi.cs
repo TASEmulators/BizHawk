@@ -106,8 +106,8 @@ namespace BizHawk.Client.Common
 
 		public void SetRerecordCounting(bool counting) => _movieSession.Movie.IsCountingRerecords = counting;
 
-		public void Stop()
-			=> _mainForm.StopMovie();
+		public void Stop(bool saveChanges = true)
+			=> _mainForm.StopMovie(saveChanges: saveChanges);
 
 		public double GetFps()
 		{

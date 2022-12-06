@@ -19,7 +19,9 @@ namespace BizHawk.Client.Common
 		void SetReadOnly(bool readOnly);
 		void SetRerecordCount(ulong count);
 		void SetRerecordCounting(bool counting);
-		void Stop();
+
+		void Stop(bool saveChanges = true);
+
 		double GetFps();
 		IReadOnlyDictionary<string, string> GetHeader();
 		IReadOnlyList<string> GetComments();

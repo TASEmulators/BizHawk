@@ -93,9 +93,9 @@ namespace BizHawk.Client.Common
 			=> APIs.Movie.SetRerecordCounting(counting);
 
 		[LuaMethodExample("movie.stop( );")]
-		[LuaMethod("stop", "Stops the current movie")]
-		public void Stop()
-			=> APIs.Movie.Stop();
+		[LuaMethod("stop", "Stops the current movie. Pass false to discard changes.")]
+		public void Stop(bool saveChanges = true)
+			=> APIs.Movie.Stop(saveChanges);
 
 		[LuaMethodExample("local domovget = movie.getfps( );")]
 		[LuaMethod("getfps", "If a movie is loaded, gets the frames per second used by the movie to determine the movie length time")]
