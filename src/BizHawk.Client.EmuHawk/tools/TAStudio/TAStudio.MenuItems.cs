@@ -95,39 +95,42 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Load the movie with the given filename within TAStudio.
 		/// </summary>
-		public void LoadMovieFile(string filename, bool askToSave = true)
+		public bool LoadMovieFile(string filename, bool askToSave = true)
 		{
-			if (askToSave && !AskSaveChanges())
-			{
-				return;
-			}
-			
+			if (askToSave && !AskSaveChanges()) return false;
 			if (filename.EndsWith(MovieService.TasMovieExtension))
 			{
 				LoadFileWithFallback(filename);
+				return true; //TODO should this return false if it fell back to a new project?
 			}
-			else if (filename.EndsWith(MovieService.StandardMovieExtension))
+			if (filename.EndsWith(MovieService.StandardMovieExtension))
 			{
-				var result1 = DialogController.ShowMessageBox2("This is a regular movie, a new project must be created from it to use in TAStudio\nProceed?", "Convert movie", EMsgBoxIcon.Question, useOKCancel: true);
-				if (result1)
+				if (!DialogController.ShowMessageBox2(
+					caption: "Convert movie",
+					icon: EMsgBoxIcon.Question,
+					text: "This is a regular movie, a new project must be created from it to use in TAStudio\nProceed?",
+					useOKCancel: true))
 				{
-					_initializing = true; // Starting a new movie causes a core reboot
-					WantsToControlReboot = false;
-					_engaged = false;
-					MainForm.StartNewMovie(MovieSession.Get(filename), false);
-					ConvertCurrentMovieToTasproj();
-					_initializing = false;
-					StartNewMovieWrapper(CurrentTasMovie);
-					_engaged = true;
-					WantsToControlReboot = true;
-					SetUpColumns();
-					UpdateWindowTitle();
+					return false;
 				}
+				_initializing = true; // Starting a new movie causes a core reboot
+				WantsToControlReboot = false;
+				_engaged = false;
+				MainForm.StartNewMovie(MovieSession.Get(filename), false);
+				ConvertCurrentMovieToTasproj();
+				_initializing = false;
+				var success = StartNewMovieWrapper(CurrentTasMovie);
+				_engaged = true;
+				WantsToControlReboot = true;
+				SetUpColumns();
+				UpdateWindowTitle();
+				return success; //TODO is this correct?
 			}
-			else
-			{
-				DialogController.ShowMessageBox("This is not a BizHawk movie!", "Movie load error", EMsgBoxIcon.Error);
-			}
+			DialogController.ShowMessageBox(
+				caption: "Movie load error",
+				icon: EMsgBoxIcon.Error,
+				text: "This is not a BizHawk movie!");
+			return false;
 		}
 
 		private void SaveTasMenuItem_Click(object sender, EventArgs e)

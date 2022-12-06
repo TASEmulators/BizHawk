@@ -120,15 +120,14 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool WantsToControlRestartMovie { get; }
 
-		public void RestartMovie()
+		public bool RestartMovie()
 		{
-			if (AskSaveChanges())
-			{
-				WantsToControlStopMovie = false;
-				StartNewMovieWrapper(CurrentTasMovie);
-				WantsToControlStopMovie = true;
-				RefreshDialog();
-			}
+			if (!AskSaveChanges()) return false;
+			WantsToControlStopMovie = false;
+			var success = StartNewMovieWrapper(CurrentTasMovie);
+			WantsToControlStopMovie = true;
+			RefreshDialog();
+			return success;
 		}
 
 		public bool WantsToControlReboot { get; private set; } = true;
