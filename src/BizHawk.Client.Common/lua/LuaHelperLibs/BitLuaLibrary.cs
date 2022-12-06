@@ -13,6 +13,7 @@ namespace BizHawk.Client.Common
 
 		public override string Name => "bit";
 
+		[LuaDeprecatedMethod]
 		[LuaMethodExample("local uibitban = bit.band( 1000, 4 );")]
 		[LuaMethod("band", "Bitwise AND of 'val' against 'amt'")]
 		public static uint Band(uint val, uint amt)
@@ -20,6 +21,7 @@ namespace BizHawk.Client.Common
 			return val & amt;
 		}
 
+		[LuaDeprecatedMethod]
 		[LuaMethodExample("local uibitbno = bit.bnot( 1000 );")]
 		[LuaMethod("bnot", "Bitwise NOT of 'val'")]
 		public static uint Bnot(uint val)
@@ -27,6 +29,7 @@ namespace BizHawk.Client.Common
 			return ~val;
 		}
 
+		[LuaDeprecatedMethod]
 		[LuaMethodExample("local uibitbor = bit.bor( 1000, 4 );")]
 		[LuaMethod("bor", "Bitwise OR of 'val' against 'amt'")]
 		public static uint Bor(uint val, uint amt)
@@ -34,6 +37,7 @@ namespace BizHawk.Client.Common
 			return val | amt;
 		}
 
+		[LuaDeprecatedMethod]
 		[LuaMethodExample("local uibitbxo = bit.bxor( 1000, 4 );")]
 		[LuaMethod("bxor", "Bitwise XOR of 'val' against 'amt'")]
 		public static uint Bxor(uint val, uint amt)
@@ -41,6 +45,7 @@ namespace BizHawk.Client.Common
 			return val ^ amt;
 		}
 
+		[LuaDeprecatedMethod]
 		[LuaMethodExample("local uibitlsh = bit.lshift( 1000, 4 );")]
 		[LuaMethod("lshift", "Logical shift left of 'val' by 'amt' bits")]
 		public static uint Lshift(uint val, int amt)
@@ -62,6 +67,7 @@ namespace BizHawk.Client.Common
 			return (val >> amt) | (val << (32 - amt));
 		}
 
+		[LuaDeprecatedMethod]
 		[LuaMethodExample("local uibitrsh = bit.rshift( 1000, 4 );")]
 		[LuaMethod("rshift", "Logical shift right of 'val' by 'amt' bits")]
 		public static uint Rshift(uint val, int amt)
