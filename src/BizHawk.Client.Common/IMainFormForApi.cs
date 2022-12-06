@@ -60,6 +60,14 @@ namespace BizHawk.Client.Common
 		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		int GetApproxFramerate();
 
+		/// <summary>
+		/// essentially <c>return MainForm.StartNewMovie(MovieSession.Get(filename), record: false);</c>,
+		/// but also ensures a rom is loaded, and defers to TAStudio
+		/// </summary>
+		/// <param name="archive">unused</param>
+		/// <remarks>only referenced from <see cref="MovieApi"/></remarks>
+		bool LoadMovie(string filename, string archive = null);
+
 		/// <remarks>only referenced from <see cref="SaveStateApi"/></remarks>
 		void LoadQuickSave(string quickSlotName, bool suppressOSD = false);
 
@@ -76,6 +84,9 @@ namespace BizHawk.Client.Common
 
 		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
 		void Render();
+
+		/// <remarks>only referenced from <see cref="MovieApi"/></remarks>
+		bool RestartMovie();
 
 		/// <remarks>only referenced from <see cref="SaveStateApi"/></remarks>
 		void SaveQuickSave(string quickSlotName, bool fromLua = false, bool suppressOSD = false);

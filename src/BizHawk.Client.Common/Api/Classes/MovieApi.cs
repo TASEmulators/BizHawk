@@ -100,6 +100,31 @@ namespace BizHawk.Client.Common
 
 		public string Mode() => (_movieSession.Movie?.Mode ?? MovieMode.Inactive).ToString().ToUpper();
 
+		public bool PlayFromStart(string path = "")
+		{
+			if (string.IsNullOrEmpty(path))
+			{
+				try
+				{
+					return _mainForm.RestartMovie();
+				}
+				catch (Exception e)
+				{
+					LogCallback($"caught {e.GetType().Name} while trying to restart movie: {e.Message}");
+					return false;
+				}
+			}
+			try
+			{
+				return _mainForm.LoadMovie(filename: path);
+			}
+			catch (Exception e)
+			{
+				LogCallback($"caught {e.GetType().Name} while trying to load movie: {e.Message}");
+				return false;
+			}
+		}
+
 		public void SetReadOnly(bool readOnly) => _movieSession.ReadOnly = readOnly;
 
 		public void SetRerecordCount(ulong count) => _movieSession.Movie.Rerecords = count;
