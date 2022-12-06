@@ -225,14 +225,12 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var file in runningScripts)
 			{
-				string pathToLoad = ProcessPath(file.Path);
-
 				try
 				{
 					LuaSandbox.Sandbox(file.Thread, () =>
 					{
-						LuaImp.SpawnAndSetFileThread(pathToLoad, file);
-						LuaSandbox.CreateSandbox(file.Thread, Path.GetDirectoryName(pathToLoad));
+						LuaImp.SpawnAndSetFileThread(file.Path, file);
+						LuaSandbox.CreateSandbox(file.Thread, Path.GetDirectoryName(file.Path));
 						file.State = LuaFile.RunState.Running;
 					}, () =>
 					{
@@ -278,7 +276,7 @@ namespace BizHawk.Client.EmuHawk
 			if (_watches.ContainsKey(item))
 				return;
 
-			var (dir, file) = item.Path.MakeProgramRelativePath().SplitPathToDirAndFile();
+			var (dir, file) = item.Path.SplitPathToDirAndFile();
 
 			// prevent error when (auto)loading session referencing scripts in deleted/renamed directories
 			if (!Directory.Exists(dir))
@@ -320,9 +318,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!(LuaImp is Win32LuaLibraries luaLibsImpl)) return;
 
-			var processedPath = Config.PathEntries.TryMakeRelative(path);
+			var absolutePath = Path.GetFullPath(path);
 
-			var alreadyLoadedFile = luaLibsImpl.ScriptList.FirstOrDefault(t => processedPath == t.Path);
+			var alreadyLoadedFile = luaLibsImpl.ScriptList.FirstOrDefault(t => absolutePath == t.Path);
 			if (alreadyLoadedFile is not null)
 			{
 				if (!alreadyLoadedFile.Enabled && !Settings.DisableLuaScriptsOnLoad)
@@ -332,11 +330,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				var luaFile = new LuaFile("", processedPath);
+				var luaFile = new LuaFile("", absolutePath);
 
 				luaLibsImpl.ScriptList.Add(luaFile);
 				LuaListView.RowCount = luaLibsImpl.ScriptList.Count;
-				Config.RecentLua.Add(processedPath);
+				Config.RecentLua.Add(absolutePath);
 
 				if (!Settings.DisableLuaScriptsOnLoad)
 				{
@@ -361,9 +359,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (LuaImp is not Win32LuaLibraries luaLibsImpl) return;
 
-			var processedPath = Config.PathEntries.TryMakeRelative(path);
+			var absolutePath = Path.GetFullPath(path);
 
-			var luaFile = luaLibsImpl.ScriptList.FirstOrDefault(t => processedPath == t.Path);
+			var luaFile = luaLibsImpl.ScriptList.FirstOrDefault(t => absolutePath == t.Path);
 			if (luaFile is not null)
 			{
 				RemoveLuaFile(luaFile);
@@ -899,12 +897,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				LuaSandbox.Sandbox(null, () =>
 				{
-					string pathToLoad = Path.IsPathRooted(item.Path)
-					? item.Path
-					: item.Path.MakeProgramRelativePath();
-
-					luaLibsImpl.SpawnAndSetFileThread(pathToLoad, item);
-					LuaSandbox.CreateSandbox(item.Thread, Path.GetDirectoryName(pathToLoad));
+					luaLibsImpl.SpawnAndSetFileThread(item.Path, item);
+					LuaSandbox.CreateSandbox(item.Thread, Path.GetDirectoryName(item.Path));
 				}, () =>
 				{
 					item.State = LuaFile.RunState.Disabled;
@@ -933,13 +927,6 @@ namespace BizHawk.Client.EmuHawk
 			UpdateDialog();
 		}
 
-		private string ProcessPath(string path)
-		{
-			return Path.IsPathRooted(path)
-				? path
-				: path.MakeProgramRelativePath();
-		}
-
 		private void EditScriptMenuItem_Click(object sender, EventArgs e)
 		{
 			foreach (var file in SelectedFiles)
@@ -947,7 +934,7 @@ namespace BizHawk.Client.EmuHawk
 				Process.Start(new ProcessStartInfo
 				{
 					Verb = "Open",
-					FileName = ProcessPath(file.Path)
+					FileName = file.Path
 				});
 			}
 		}
