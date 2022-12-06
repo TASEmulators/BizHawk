@@ -58,8 +58,14 @@ namespace BizHawk.Client.Common
 			}
 			catch (NLua.Exceptions.LuaException ex)
 			{
-				Console.WriteLine(ex);
-				DefaultLogger(ex.ToString());
+				var exStr = ex.ToString() + '\n';
+				if (ex.InnerException is not null)
+				{
+					exStr += ex.InnerException.ToString() + '\n';
+				}
+
+				Console.Write(exStr);
+				DefaultLogger(exStr);
 				exceptionCallback?.Invoke();
 			}
 			finally
