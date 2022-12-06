@@ -185,84 +185,92 @@ namespace BizHawk.Client.EmuHawk
 
 		public void CallSaveStateEvent(string name)
 		{
-			try
+			using (GuiAPI.ThisIsTheLuaAutoUnlockHack())
 			{
-				foreach (var lf in RegisteredFunctions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_SAVESTATE).ToList())
+				try
 				{
-					lf.Call(name);
+					foreach (var lf in RegisteredFunctions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_SAVESTATE).ToList())
+					{
+						lf.Call(name);
+					}
 				}
-				GuiAPI.ThisIsTheLuaAutounlockHack();
-			}
-			catch (Exception e)
-			{
-				GuiAPI.ThisIsTheLuaAutounlockHack();
-				LogToLuaConsole($"error running function attached by lua function event.onsavestate\nError message: {e.Message}");
+				catch (Exception e)
+				{
+					LogToLuaConsole($"error running function attached by lua function event.onsavestate\nError message: {e.Message}");
+				}
 			}
 		}
 
 		public void CallLoadStateEvent(string name)
 		{
-			try
+			using (GuiAPI.ThisIsTheLuaAutoUnlockHack())
 			{
-				foreach (var lf in RegisteredFunctions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_LOADSTATE).ToList())
+				try
 				{
-					lf.Call(name);
+					foreach (var lf in RegisteredFunctions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_LOADSTATE).ToList())
+					{
+						lf.Call(name);
+					}
 				}
-				GuiAPI.ThisIsTheLuaAutounlockHack();
-			}
-			catch (Exception e)
-			{
-				GuiAPI.ThisIsTheLuaAutounlockHack();
-				LogToLuaConsole($"error running function attached by lua function event.onloadstate\nError message: {e.Message}");
+				catch (Exception e)
+				{
+					LogToLuaConsole($"error running function attached by lua function event.onloadstate\nError message: {e.Message}");
+				}
 			}
 		}
 
 		public void CallFrameBeforeEvent()
 		{
 			if (IsUpdateSupressed) return;
-			try
+
+			using (GuiAPI.ThisIsTheLuaAutoUnlockHack())
 			{
-				foreach (var lf in RegisteredFunctions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_PREFRAME).ToList())
+				try
 				{
-					lf.Call();
+					foreach (var lf in RegisteredFunctions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_PREFRAME).ToList())
+					{
+						lf.Call();
+					}
 				}
-				GuiAPI.ThisIsTheLuaAutounlockHack();
-			}
-			catch (Exception e)
-			{
-				GuiAPI.ThisIsTheLuaAutounlockHack();
-				LogToLuaConsole($"error running function attached by lua function event.onframestart\nError message: {e.Message}");
+				catch (Exception e)
+				{
+					LogToLuaConsole($"error running function attached by lua function event.onframestart\nError message: {e.Message}");
+				}
 			}
 		}
 
 		public void CallFrameAfterEvent()
 		{
 			if (IsUpdateSupressed) return;
-			try
+
+			using (GuiAPI.ThisIsTheLuaAutoUnlockHack())
 			{
-				foreach (var lf in RegisteredFunctions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_POSTFRAME).ToList())
+				try
 				{
-					lf.Call();
+					foreach (var lf in RegisteredFunctions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_POSTFRAME).ToList())
+					{
+						lf.Call();
+					}
 				}
-				GuiAPI.ThisIsTheLuaAutounlockHack();
-			}
-			catch (Exception e)
-			{
-				GuiAPI.ThisIsTheLuaAutounlockHack();
-				LogToLuaConsole($"error running function attached by lua function event.onframeend\nError message: {e.Message}");
+				catch (Exception e)
+				{
+					LogToLuaConsole($"error running function attached by lua function event.onframeend\nError message: {e.Message}");
+				}
 			}
 		}
 
 		public void CallExitEvent(LuaFile lf)
 		{
-			foreach (var exitCallback in RegisteredFunctions
-				.Where(l => l.Event == NamedLuaFunction.EVENT_TYPE_ENGINESTOP
-					&& (l.LuaFile.Path == lf.Path || ReferenceEquals(l.LuaFile.Thread, lf.Thread)))
-				.ToList())
+			using (GuiAPI.ThisIsTheLuaAutoUnlockHack())
 			{
-				exitCallback.Call();
+				foreach (var exitCallback in RegisteredFunctions
+					.Where(l => l.Event == NamedLuaFunction.EVENT_TYPE_ENGINESTOP
+						&& (l.LuaFile.Path == lf.Path || ReferenceEquals(l.LuaFile.Thread, lf.Thread)))
+					.ToList())
+				{
+					exitCallback.Call();
+				}
 			}
-			GuiAPI.ThisIsTheLuaAutounlockHack();
 		}
 
 		public void Close()
@@ -319,31 +327,31 @@ namespace BizHawk.Client.EmuHawk
 
 		public (bool WaitForFrame, bool Terminated) ResumeScript(LuaFile lf)
 		{
-			_currThread = lf.Thread;
-
-			try
+			using (GuiAPI.ThisIsTheLuaAutoUnlockHack())
 			{
-				LuaLibraryBase.SetCurrentThread(lf);
+				_currThread = lf.Thread;
 
-				var execResult = _currThread.Resume();
-				GuiAPI.ThisIsTheLuaAutounlockHack();
+				try
+				{
+					LuaLibraryBase.SetCurrentThread(lf);
 
-				_currThread = null;
-				var result = execResult == KeraLua.LuaStatus.OK
-					? (WaitForFrame: false, Terminated: true) // terminated
-					: (WaitForFrame: FrameAdvanceRequested, Terminated: false); // yielded
+					var execResult = _currThread.Resume();
 
-				FrameAdvanceRequested = false;
-				return result;
-			}
-			catch (Exception)
-			{
-				GuiAPI.ThisIsTheLuaAutounlockHack();
-				throw;
-			}
-			finally
-			{
-				LuaLibraryBase.ClearCurrentThread();
+					_currThread = null;
+					var result = execResult switch
+					{
+						KeraLua.LuaStatus.OK => (WaitForFrame: false, Terminated: true),
+						KeraLua.LuaStatus.Yield => (WaitForFrame: FrameAdvanceRequested, Terminated: false),
+						_ => throw new InvalidOperationException($"{nameof(_currThread.Resume)}() returned {execResult}?")
+					};
+
+					FrameAdvanceRequested = false;
+					return result;
+				}
+				finally
+				{
+					LuaLibraryBase.ClearCurrentThread();
+				}
 			}
 		}
 

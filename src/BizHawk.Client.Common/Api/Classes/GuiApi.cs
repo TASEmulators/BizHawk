@@ -151,11 +151,22 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void ThisIsTheLuaAutounlockHack()
+		public readonly ref struct LuaAutoUnlockHack
 		{
-			UnlockSurface(DisplaySurfaceID.EmuCore);
-			UnlockSurface(DisplaySurfaceID.Client);
+			private readonly GuiApi _guiApi;
+
+			internal LuaAutoUnlockHack(GuiApi guiApi)
+				=> _guiApi = guiApi;
+
+			public void Dispose()
+			{
+				_guiApi.UnlockSurface(DisplaySurfaceID.EmuCore);
+				_guiApi.UnlockSurface(DisplaySurfaceID.Client);
+			}
 		}
+
+		public LuaAutoUnlockHack ThisIsTheLuaAutoUnlockHack()
+			=> new(this);
 
 		public void DrawNew(string name, bool clear)
 		{

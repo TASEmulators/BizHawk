@@ -591,7 +591,9 @@ namespace BizHawk.Tests.Client.Common.Lua
 		public void Net_Return_Char()
 		{
 			ReturnValue = 'a';
-			Assert.IsTrue((bool)LuaInstance.DoString($"return return_char() == {(byte)'a'}")[0]);
+			Assert.IsTrue((bool)LuaInstance.DoString($"return return_char() == {(ushort)'a'}")[0]);
+			ReturnValue = 'こ';
+			Assert.IsTrue((bool)LuaInstance.DoString($"return return_char() == {(ushort)'こ'}")[0]);
 		}
 
 		[TestMethod]
@@ -612,7 +614,7 @@ namespace BizHawk.Tests.Client.Common.Lua
 		public void Net_Return_Color()
 		{
 			ReturnValue = ExpectedValue = Color.Aqua;
-			LuaInstance.DoString("return pass_color(return_color())");
+			LuaInstance.DoString("pass_color(return_color())");
 		}
 
 		[TestMethod]
@@ -679,16 +681,14 @@ namespace BizHawk.Tests.Client.Common.Lua
 			LuaInstance.DoString("pass_bool(true)");
 		}
 
-		// this doesn't work for some reason
-		// just results in an exception due to "Invalid arguments to method call"
-		/*[TestMethod]
+		[TestMethod]
 		public void Net_Argument_S8()
 		{
 			ExpectedValue = (sbyte)123;
 			LuaInstance.DoString("pass_s8(123)");
 			ExpectedValue = (sbyte)-123;
 			LuaInstance.DoString("pass_s8(-123)");
-		}*/
+		}
 
 		[TestMethod]
 		public void Net_Argument_U8()
@@ -772,13 +772,11 @@ namespace BizHawk.Tests.Client.Common.Lua
 			LuaInstance.DoString("pass_decimal(-123.0)");
 		}
 
-		// these don't work either, although these make a bit more sense
+		// these don't work, although there is reasoning behind this
 		// IntPtr/UIntPtr are meant as handles to "userdata"
 		// so raw integers result in "Invalid arguments to method call"
-		// not sure why char doesn't work (same exception here)
 
-		/*
-		[TestMethod]
+		/*[TestMethod]
 		public void Net_Argument_IntPtr()
 		{
 			ExpectedValue = (IntPtr)123;
@@ -787,20 +785,21 @@ namespace BizHawk.Tests.Client.Common.Lua
 			LuaInstance.DoString("pass_intptr(-123)");
 		}*/
 
-		/*
-		[TestMethod]
+		/*[TestMethod]
 		public void Net_Argument_UIntPtr()
 		{
 			ExpectedValue = (UIntPtr)123;
 			LuaInstance.DoString("pass_uintptr(123)");
 		}*/
 
-		/*[TestMethod]
+		[TestMethod]
 		public void Net_Argument_Char()
 		{
 			ExpectedValue = 'a';
-			LuaInstance.DoString($"pass_char({(byte)'a'})");
-		}*/
+			LuaInstance.DoString($"pass_char({(ushort)'a'})");
+			ExpectedValue = 'こ';
+			LuaInstance.DoString($"pass_char({(ushort)'こ'})");
+		}
 
 		[TestMethod]
 		public void Net_Argument_String()
@@ -814,6 +813,19 @@ namespace BizHawk.Tests.Client.Common.Lua
 		{
 			ExpectedValue = "こんにちは";
 			LuaInstance.DoString($"pass_string(\"こんにちは\")");
+		}
+
+		[TestMethod]
+		public void Net_Argument_String_Implicit_Number_Conversion()
+		{
+			ExpectedValue = "123";
+			LuaInstance.DoString("pass_string(123)");
+			ExpectedValue = "-123";
+			LuaInstance.DoString("pass_string(-123)");
+			ExpectedValue = "0.321";
+			LuaInstance.DoString("pass_string(0.321)");
+			ExpectedValue = "-0.321";
+			LuaInstance.DoString("pass_string(-0.321)");
 		}
 
 		[TestMethod]
