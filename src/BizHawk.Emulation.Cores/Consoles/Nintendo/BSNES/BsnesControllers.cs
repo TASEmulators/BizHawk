@@ -348,7 +348,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			{
 				0 => (short) controller.AxisValue($"{index}Justifier X"),
 				1 => (short) controller.AxisValue($"{index}Justifier Y"),
-				2 or 3 => (short) (controller.IsPressed(Definition.BoolButtons[index * 2 + id]) ? 1 : 0),
+				2 or 3 => (short) (controller.IsPressed(Definition.BoolButtons[index * 2 + id - 2]) ? 1 : 0),
 				_ => 0
 			};
 		}
