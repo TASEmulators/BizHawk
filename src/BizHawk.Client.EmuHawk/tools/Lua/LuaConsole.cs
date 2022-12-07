@@ -373,7 +373,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!item.IsSeparator)
 			{
-				LuaImp.RegisteredFunctions.RemoveForFile(item, Emulator);
+				DisableLuaScript(item);
 				RemoveFileWatcher(item);
 			}
 			LuaImp.ScriptList.Remove(item);
