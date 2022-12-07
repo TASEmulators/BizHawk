@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using BizHawk.Common.PathExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -107,6 +108,7 @@ namespace BizHawk.Client.Common
 		{
 			using var sw = new StreamWriter(path);
 			var sb = new StringBuilder();
+			var saveDirectory = Path.GetDirectoryName(Path.GetFullPath(path));
 			foreach (var file in this)
 			{
 				if (file.IsSeparator)
@@ -118,7 +120,7 @@ namespace BizHawk.Client.Common
 					sb
 						.Append(file.Enabled ? "1" : "0")
 						.Append(' ')
-						.Append(file.Path)
+						.Append(file.Path.MakeRelativeTo(saveDirectory))
 						.AppendLine();
 				}
 			}
