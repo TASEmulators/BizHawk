@@ -2,8 +2,10 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using BizHawk.Common;
+
 using BizHawk.Emulation.Common;
+
+using CommunityToolkit.HighPerformance;
 
 namespace BizHawk.Client.Common
 {
@@ -117,7 +119,6 @@ namespace BizHawk.Client.Common
 				{
 					_buffer.Capture(_masterFrame, underlyingStream_ =>
 					{
-						var zeldas = SpanStream.GetOrBuild(underlyingStream_);
 						if (_master.Length < _scratch.Length)
 						{
 							var replacement = new byte[_scratch.Length];
@@ -128,7 +129,7 @@ namespace BizHawk.Client.Common
 						var lengthHolder = _masterLength;
 						var lengthHolderSpan = new ReadOnlySpan<byte>(&lengthHolder, 4);
 
-						zeldas.Write(lengthHolderSpan);
+						underlyingStream_.Write(lengthHolderSpan);
 
 						fixed (byte* older_ = _master)
 						fixed (byte* newer_ = _scratch)
@@ -150,8 +151,8 @@ namespace BizHawk.Client.Common
 									{
 										// Save on [to, from]
 										lengthHolder = (int)(from - to);
-										zeldas.Write(lengthHolderSpan);
-										zeldas.Write(new ReadOnlySpan<byte>(to, lengthHolder * 4));
+										underlyingStream_.Write(lengthHolderSpan);
+										underlyingStream_.Write(new ReadOnlySpan<byte>(to, lengthHolder * 4));
 									}
 									to = older;
 								}
@@ -161,7 +162,7 @@ namespace BizHawk.Client.Common
 									{
 										// encode gap [from, to]
 										lengthHolder = (int)(to - from) | IS_GAP;
-										zeldas.Write(lengthHolderSpan);
+										underlyingStream_.Write(lengthHolderSpan);
 									}
 									from = older;
 								}
@@ -170,7 +171,7 @@ namespace BizHawk.Client.Common
 							{
 								// encode gap [from, to]
 								lengthHolder = (int)(to - from) | IS_GAP;
-								zeldas.Write(lengthHolderSpan);
+								underlyingStream_.Write(lengthHolderSpan);
 							}
 							if (lastOldIndex > lastIndex)
 							{
@@ -180,8 +181,8 @@ namespace BizHawk.Client.Common
 							{
 								// Save on [to, from]
 								lengthHolder = (int)(from - to);
-								zeldas.Write(lengthHolderSpan);
-								zeldas.Write(new ReadOnlySpan<byte>(to, lengthHolder * 4));
+								underlyingStream_.Write(lengthHolderSpan);
+								underlyingStream_.Write(new ReadOnlySpan<byte>(to, lengthHolder * 4));
 							}
 						}
 
@@ -204,13 +205,12 @@ namespace BizHawk.Client.Common
 			var lengthHolder = 0;
 			var lengthHolderSpan = new Span<byte>(&lengthHolder, 4);
 			using var rs = state.GetReadStream();
-			var zeldas = SpanStream.GetOrBuild(rs);
-			zeldas.Read(lengthHolderSpan);
+			rs.Read(lengthHolderSpan);
 			_masterLength = lengthHolder;
 			fixed (byte* buffer_ = _master)
 			{
 				int* buffer = (int*)buffer_;
-				while (zeldas.Read(lengthHolderSpan) == 4)
+				while (rs.Read(lengthHolderSpan) is 4)
 				{
 					if ((lengthHolder & IS_GAP) != 0)
 					{
@@ -218,7 +218,7 @@ namespace BizHawk.Client.Common
 					}
 					else
 					{
-						zeldas.Read(new Span<byte>(buffer, lengthHolder * 4));
+						rs.Read(new Span<byte>(buffer, lengthHolder * 4));
 						buffer += lengthHolder;
 					}
 				}
@@ -257,7 +257,7 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
-		private class SaveStateStream : Stream, ISpanStream
+		private class SaveStateStream : Stream
 		{
 			public SaveStateStream(ZeldaWinder owner)
 			{
@@ -281,7 +281,10 @@ namespace BizHawk.Client.Common
 			public override void SetLength(long value) => throw new IOException();
 			public override void Write(byte[] buffer, int offset, int count)
 			{
-				Write(new ReadOnlySpan<byte>(buffer, offset, count));
+				var requestedSize = _position + count;
+				MaybeResize(requestedSize);
+				buffer.AsSpan(start: offset, length: count).CopyTo(_dest.AsSpan(start: _position, length: count));
+				_position = requestedSize;
 			}
 			private void MaybeResize(int requestedSize)
 			{
@@ -292,13 +295,6 @@ namespace BizHawk.Client.Common
 					_dest = replacement;
 				}
 			}
-			public void Write(ReadOnlySpan<byte> buffer)
-			{
-				var requestedSize = _position + buffer.Length;
-				MaybeResize(requestedSize);
-				buffer.CopyTo(new Span<byte>(_dest, _position, buffer.Length));
-				_position = requestedSize;
-			}
 			public override void WriteByte(byte value)
 			{
 				var requestedSize = _position + 1;
@@ -306,7 +302,6 @@ namespace BizHawk.Client.Common
 				_dest[_position] = value;
 				_position = requestedSize;
 			}
-			public int Read(Span<byte> buffer) => throw new IOException();
 		}
 	}
 }

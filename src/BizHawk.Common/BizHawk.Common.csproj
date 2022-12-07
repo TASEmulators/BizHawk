@@ -7,11 +7,12 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 	<ItemGroup>
+		<PackageReference Include="CommunityToolkit.HighPerformance" Version="8.0.0-preview3" /><!-- earlier versions are affected by CommunityToolkit/dotnet#74, later versions need System.Memory bumped -->
 		<PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
 		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
 		<PackageReference Include="System.Memory" Version="4.5.4" />
 		<PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" PrivateAssets="all" />
-		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />
+		<PackageReference Update="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />
 	</ItemGroup>
 	<ItemGroup>
 		<!-- target in Version project generates VersionInfo.gen.cs; note that the Version project MUST BE FIRST in solution file -->

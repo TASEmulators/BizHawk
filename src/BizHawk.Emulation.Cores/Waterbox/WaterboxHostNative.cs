@@ -4,6 +4,8 @@ using System.Runtime.InteropServices;
 using BizHawk.BizInvoke;
 using BizHawk.Common;
 
+using CommunityToolkit.HighPerformance;
+
 namespace BizHawk.Emulation.Cores.Waterbox
 {
 	public unsafe abstract class WaterboxHostNative
@@ -75,13 +77,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public static WriteCallback MakeCallbackForWriter(Stream s)
 		{
-			var ss = SpanStream.GetOrBuild(s);
 			return (_unused, data, size) =>
 			{
 				try
 				{
-					var count = (int)size;
-					ss.Write(new ReadOnlySpan<byte>((void*)data, (int)size));
+					s.Write(new ReadOnlySpan<byte>((void*) data, (int) size));
 					return 0;
 				}
 				catch
@@ -92,14 +92,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		}
 		public static ReadCallback MakeCallbackForReader(Stream s)
 		{
-			var ss = SpanStream.GetOrBuild(s);
 			return (_unused, data, size) =>
 			{
 				try
 				{
-					var count = (int)size;
-					var n = ss.Read(new Span<byte>((void*)data, count));
-					return Z.SS(n);
+					return Z.SS(s.Read(new Span<byte>((void*) data, (int) size)));
 				}
 				catch
 				{

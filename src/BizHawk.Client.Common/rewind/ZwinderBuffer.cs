@@ -7,6 +7,8 @@ using BizHawk.BizInvoke;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
+using CommunityToolkit.HighPerformance;
+
 namespace BizHawk.Client.Common
 {
 	public class ZwinderBuffer : IDisposable
@@ -324,7 +326,6 @@ namespace BizHawk.Client.Common
 			{
 				var startByte = _states[_firstStateIndex].Start;
 				var endByte = (_states[HeadStateIndex].Start + _states[HeadStateIndex].Size) & _sizeMask;
-				var destStream = SpanStream.GetOrBuild(writer.BaseStream);
 				if (startByte > endByte)
 				{
 					_backingStore.Position = startByte;
@@ -391,7 +392,7 @@ namespace BizHawk.Client.Common
 			return ret;
 		}
 
-		private sealed class SaveStateStream : Stream, ISpanStream
+		private sealed class SaveStateStream : Stream
 		{
 			/// <summary>
 			///
@@ -410,7 +411,6 @@ namespace BizHawk.Client.Common
 			public SaveStateStream(Stream backingStore, long offset, long mask, long notifySize, Func<long> notifySizeReached)
 			{
 				_backingStore = backingStore;
-				_backingStoreSS = SpanStream.GetOrBuild(backingStore);
 				_offset = offset;
 				_mask = mask;
 				_notifySize = notifySize;
@@ -418,7 +418,6 @@ namespace BizHawk.Client.Common
 			}
 
 			private readonly Stream _backingStore;
-			private readonly ISpanStream _backingStoreSS;
 			private readonly long _offset;
 			private readonly long _mask;
 			private long _position;
@@ -438,19 +437,14 @@ namespace BizHawk.Client.Common
 			public override int Read(byte[] buffer, int offset, int count) => throw new IOException();
 			public override long Seek(long offset, SeekOrigin origin) => throw new IOException();
 			public override void SetLength(long value) => throw new IOException();
-			public int Read(Span<byte> buffer) => throw new IOException();
 
 			public override void Write(byte[] buffer, int offset, int count)
 			{
-				Write(new ReadOnlySpan<byte>(buffer, offset, count));
-			}
-
-			public void Write(ReadOnlySpan<byte> buffer)
-			{
-				long requestedSize = _position + buffer.Length;
+				var buffer1 = new ReadOnlySpan<byte>(buffer, offset, count);
+				long requestedSize = _position + count;
 				while (requestedSize > _notifySize)
 					_notifySize = _notifySizeReached();
-				long n = buffer.Length;
+				long n = buffer1.Length;
 				if (n > 0)
 				{
 					var start = (_position + _offset) & _mask;
@@ -459,8 +453,8 @@ namespace BizHawk.Client.Common
 					if (end < start)
 					{
 						long m = BufferLength - start;
-						_backingStoreSS.Write(buffer.Slice(0, (int)m));
-						buffer = buffer.Slice((int)m);
+						_backingStore.Write(buffer1.Slice(start: 0, length: (int) m));
+						buffer1 = buffer1.Slice((int) m);
 						n -= m;
 						_position += m;
 						start = 0;
@@ -468,7 +462,7 @@ namespace BizHawk.Client.Common
 					}
 					if (n > 0)
 					{
-						_backingStoreSS.Write(buffer);
+						_backingStore.Write(buffer1);
 						_position += n;
 					}
 				}
@@ -485,12 +479,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private sealed class LoadStateStream : Stream, ISpanStream
+		private sealed class LoadStateStream : Stream
 		{
 			public LoadStateStream(Stream backingStore, long offset, long size, long mask)
 			{
 				_backingStore = backingStore;
-				_backingStoreSS = SpanStream.GetOrBuild(backingStore);
 				_offset = offset;
 				_size = size;
 				_mask = mask;
@@ -498,7 +491,6 @@ namespace BizHawk.Client.Common
 			}
 
 			private readonly Stream _backingStore;
-			private readonly ISpanStream _backingStoreSS;
 			private readonly long _offset;
 			private readonly long _size;
 			private long _position;
@@ -518,12 +510,8 @@ namespace BizHawk.Client.Common
 
 			public override int Read(byte[] buffer, int offset, int count)
 			{
-				return Read(new Span<byte>(buffer, offset, count));
-			}
-
-			public int Read(Span<byte> buffer)
-			{
-				long n = Math.Min(_size - _position, buffer.Length);
+				var buffer1 = new Span<byte>(buffer, offset, count);
+				long n = Math.Min(_size - _position, count);
 				int ret = (int)n;
 				if (n > 0)
 				{
@@ -532,9 +520,8 @@ namespace BizHawk.Client.Common
 					if (end < start)
 					{
 						long m = BufferLength - start;
-						if (_backingStoreSS.Read(buffer.Slice(0, (int)m)) != (int)m)
-							throw new IOException("Unexpected end of underlying buffer");
-						buffer = buffer.Slice((int)m);
+						if (_backingStore.Read(buffer1.Slice(start: 0, length: (int) m)) != m) throw new IOException("Unexpected end of underlying buffer");
+						buffer1 = buffer1.Slice((int) m);
 						n -= m;
 						_position += m;
 						start = 0;
@@ -542,8 +529,7 @@ namespace BizHawk.Client.Common
 					}
 					if (n > 0)
 					{
-						if (_backingStoreSS.Read(buffer.Slice(0, (int)n)) != (int)n)
-							throw new IOException("Unexpected end of underlying buffer");
+						if (_backingStore.Read(buffer1.Slice(start: 0, length: (int) n)) != n) throw new IOException("Unexpected end of underlying buffer");
 						_position += n;
 					}
 				}
@@ -571,8 +557,6 @@ namespace BizHawk.Client.Common
 			public override long Seek(long offset, SeekOrigin origin) => throw new IOException();
 			public override void SetLength(long value) => throw new IOException();
 			public override void Write(byte[] buffer, int offset, int count) => throw new IOException();
-
-			public void Write(ReadOnlySpan<byte> buffer) => throw new IOException();
 		}
 	}
 }

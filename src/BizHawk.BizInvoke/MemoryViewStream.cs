@@ -1,7 +1,5 @@
 using System;
 using System.IO;
-using System.Runtime.InteropServices;
-using BizHawk.Common;
 
 namespace BizHawk.BizInvoke
 {
@@ -9,7 +7,7 @@ namespace BizHawk.BizInvoke
 	/// Create a stream that allows read/write over a set of unmanaged memory pointers
 	/// The validity and lifetime of those pointers is YOUR responsibility
 	/// </summary>
-	public unsafe class MemoryViewStream : Stream, ISpanStream
+	public unsafe class MemoryViewStream : Stream
 	{
 		public MemoryViewStream(bool readable, bool writable, long ptr, long length)
 		{
@@ -53,20 +51,15 @@ namespace BizHawk.BizInvoke
 
 		private byte* CurrentPointer() => (byte*)Z.SS(_ptr + _pos);
 
-		public int Read(Span<byte> buffer)
+		public override int Read(byte[] buffer, int offset, int count)
 		{
 			if (!_readable)
 				throw new IOException();
 			EnsureNotDisposed();
-			var count = (int)Math.Min(buffer.Length, _length - _pos);
-			new ReadOnlySpan<byte>(CurrentPointer(), count).CopyTo(buffer);
-			_pos += count;
-			return count;
-		}
-
-		public override int Read(byte[] buffer, int offset, int count)
-		{
-			return Read(new Span<byte>(buffer, offset, count));
+			var count1 = (int) Math.Min(count, _length - _pos);
+			new ReadOnlySpan<byte>(CurrentPointer(), count1).CopyTo(buffer.AsSpan(start: offset, length: count));
+			_pos += count1;
+			return count1;
 		}
 
 		public override int ReadByte()
@@ -108,20 +101,14 @@ namespace BizHawk.BizInvoke
 			throw new IOException();
 		}
 
-		public void Write(ReadOnlySpan<byte> buffer)
+		public override void Write(byte[] buffer, int offset, int count)
 		{
 			if (!_writable)
 				throw new IOException();
 			EnsureNotDisposed();
-			if (_pos + buffer.Length > _length)
-				throw new IOException("End of non-resizable stream");
-			buffer.CopyTo(new Span<byte>(CurrentPointer(), buffer.Length));
-			_pos += buffer.Length;
-		}
-
-		public override void Write(byte[] buffer, int offset, int count)
-		{
-			Write(new ReadOnlySpan<byte>(buffer, offset, count));
+			if (_pos + count > _length) throw new IOException("End of non-resizable stream");
+			buffer.AsSpan(start: offset, length: count).CopyTo(new Span<byte>(CurrentPointer(), count));
+			_pos += count;
 		}
 
 		public override void WriteByte(byte value)
