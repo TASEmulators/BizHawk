@@ -9,12 +9,12 @@ namespace BizHawk.Emulation.Common
 	/// <remarks>http://n64dev.org/romformats.html</remarks>
 	public static class N64RomByteswapper
 	{
-		private static readonly byte[] MAGIC_BYTES_LE = { 0x37, 0x80, 0x40, 0x12 };
+		private static readonly byte[] MAGIC_BYTES_LE = { 0x40, 0x12, 0x37, 0x80 };
 
 		/// <remarks>not actually magic, just always the same in commercial carts? https://n64brew.dev/wiki/ROM_Header works all the same</remarks>
 		private static readonly byte[] MAGIC_BYTES_NATIVE = { 0x80, 0x37, 0x12, 0x40 };
 
-		private static readonly byte[] MAGIC_BYTES_SWAPPED = { 0x40, 0x12, 0x37, 0x80 };
+		private static readonly byte[] MAGIC_BYTES_SWAPPED = { 0x37, 0x80, 0x40, 0x12 };
 
 		/// <summary>ensures <paramref name="rom"/> is in the rare little-endian (<c>.n64</c>) format, mutating it in-place if necessary</summary>
 		/// <returns><see langword="true"/> iff <paramref name="rom"/> was one of the 3 valid formats</returns>
