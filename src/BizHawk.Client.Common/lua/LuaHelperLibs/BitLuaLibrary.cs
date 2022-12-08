@@ -27,13 +27,13 @@ namespace BizHawk.Client.Common
 		[LuaMethod("bnot", "Bitwise NOT of 'val'")]
 		public uint Bnot(uint val)
 		{
-			Log("Using bit.bnot is deprecated, use the ~ operator instead.");
+			Log("Using bit.bnot is deprecated, use the ~a operator instead.");
 			return ~val;
 		}
 
 		[LuaDeprecatedMethod]
 		[LuaMethodExample("local uibitbor = bit.bor( 1000, 4 );")]
-		[LuaMethod("bor", "Bitwise OR of 'val' against 'amt'.")]
+		[LuaMethod("bor", "Bitwise OR of 'val' against 'amt'")]
 		public uint Bor(uint val, uint amt)
 		{
 			Log("Using bit.bor is deprecated, use the | operator instead.");
@@ -45,7 +45,7 @@ namespace BizHawk.Client.Common
 		[LuaMethod("bxor", "Bitwise XOR of 'val' against 'amt'")]
 		public uint Bxor(uint val, uint amt)
 		{
-			Log("Using bit.bxor is deprecated, use the ~ operator instead.");
+			Log("Using bit.bxor is deprecated, use the a ~ b operator instead.");
 			return val ^ amt;
 		}
 
@@ -120,7 +120,7 @@ namespace BizHawk.Client.Common
 			=> BinaryPrimitives.ReverseEndianness(val);
 
 		[LuaMethodExample("local ulbitbyt = bit.byteswap_64( 10000 );")]
-		[LuaMethod("byteswap_64", "Byte swaps 'long' (NOTE: You may get unexpected results for large numbers! In current Lua engines, all numbers are double-precision floating-point, even if you intended to use integers.)")]
+		[LuaMethod("byteswap_64", "Byte swaps 'long'")]
 		public static ulong Byteswap64(ulong val)
 			=> BinaryPrimitives.ReverseEndianness(val);
 	}

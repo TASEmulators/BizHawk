@@ -18,6 +18,8 @@ namespace BizHawk.Client.Common
 				.AppendLine()
 				.AppendLine("As you might expect, Lua scripts execute top to bottom once, so to run something every frame you'll need to end the script with an infinite loop (or you could set a callback on one of the events instead). Make sure to call {{emu.frameadvance}} or {{emu.yield}} in the loop or your script will hang EmuHawk and then crash!")
 				.AppendLine()
+				.AppendLine("Lua supports integer arithmetic starting with BizHawk 2.9. Note {{~}} is both bitwise NOT and XOR. Some of the {{bit}} helper functions remain, but you should try to avoid them if you need performance (or [https://github.com/TASEmulators/BizHawk-ExternalTools/wiki|switch to .NET]).")
+				.AppendLine()
 				.AppendLine("FCEUX users: While this API surface may look similar, even functions with the same name may take different arguments, or behave differently in a way that isn't immediately obvious.")
 				.AppendLine()
 				.AppendLine(@"__Types and notation__
@@ -48,7 +50,7 @@ namespace BizHawk.Client.Common
 				.AppendLine()
 				.AppendLine(@"__Common parameter meanings__
 * {{ulong addr}}/{{long addr}}/{{uint addr}}/{{int addr}} in memory functions
-** Relative to the specified domain (or the ""current"" domain, see above).
+** Relative to the specified domain (or the ""current"" domain, see below).
 ** Some memory events allow {{nil}} for the address. That will hook on all addresses.
 * {{string domain}} in memory functions
 ** The name of a memory domain. The list of valid domains is returned by {{memory.getmemorydomainlist}}, or can be seen in various tools such as the Hex Editor.
@@ -67,8 +69,8 @@ namespace BizHawk.Client.Common
 ** If you pass {{nil}} or omit the argument, the ""current"" surface is used. This can be set with {{gui.use_surface}}.
 * other {{string}} parameters in drawing functions
 ** See the relevant function's documentation.
-* {{int handle}} in forms functions
-** These handles are returned by {{forms.newform}} and the various control creation functions such as {{forms.checkbox}}.
+* {{long handle}} in forms functions
+** These handles are returned by {{forms.newform}} and the various control creation functions such as {{forms.checkbox}}. Do not attempt to re-use them across script restarts or do arithmetic with them.
 * {{string guid}}/{{string name}} in event functions
 ** The ''name'' of a callback is an optional parameter in all the event subscription functions. The ''ID'' of a callback is what's returned by the subscription function. Multiple callbacks can share the same name, but IDs are unique.
 ");
