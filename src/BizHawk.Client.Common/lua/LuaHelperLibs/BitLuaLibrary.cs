@@ -16,40 +16,45 @@ namespace BizHawk.Client.Common
 		[LuaDeprecatedMethod]
 		[LuaMethodExample("local uibitban = bit.band( 1000, 4 );")]
 		[LuaMethod("band", "Bitwise AND of 'val' against 'amt'")]
-		public static uint Band(uint val, uint amt)
+		public uint Band(uint val, uint amt)
 		{
+			Log("Using bit.band is deprecated, use the & operator instead.");
 			return val & amt;
 		}
 
 		[LuaDeprecatedMethod]
 		[LuaMethodExample("local uibitbno = bit.bnot( 1000 );")]
 		[LuaMethod("bnot", "Bitwise NOT of 'val'")]
-		public static uint Bnot(uint val)
+		public uint Bnot(uint val)
 		{
+			Log("Using bit.bnot is deprecated, use the ~ operator instead.");
 			return ~val;
 		}
 
 		[LuaDeprecatedMethod]
 		[LuaMethodExample("local uibitbor = bit.bor( 1000, 4 );")]
-		[LuaMethod("bor", "Bitwise OR of 'val' against 'amt'")]
-		public static uint Bor(uint val, uint amt)
+		[LuaMethod("bor", "Bitwise OR of 'val' against 'amt'.")]
+		public uint Bor(uint val, uint amt)
 		{
+			Log("Using bit.bor is deprecated, use the | operator instead.");
 			return val | amt;
 		}
 
 		[LuaDeprecatedMethod]
 		[LuaMethodExample("local uibitbxo = bit.bxor( 1000, 4 );")]
 		[LuaMethod("bxor", "Bitwise XOR of 'val' against 'amt'")]
-		public static uint Bxor(uint val, uint amt)
+		public uint Bxor(uint val, uint amt)
 		{
+			Log("Using bit.bxor is deprecated, use the ~ operator instead.");
 			return val ^ amt;
 		}
 
 		[LuaDeprecatedMethod]
 		[LuaMethodExample("local uibitlsh = bit.lshift( 1000, 4 );")]
 		[LuaMethod("lshift", "Logical shift left of 'val' by 'amt' bits")]
-		public static uint Lshift(uint val, int amt)
+		public uint Lshift(uint val, int amt)
 		{
+			Log("Using bit.lshift is deprecated, use the << operator instead.");
 			return val << amt;
 		}
 
@@ -70,8 +75,9 @@ namespace BizHawk.Client.Common
 		[LuaDeprecatedMethod]
 		[LuaMethodExample("local uibitrsh = bit.rshift( 1000, 4 );")]
 		[LuaMethod("rshift", "Logical shift right of 'val' by 'amt' bits")]
-		public static uint Rshift(uint val, int amt)
+		public uint Rshift(uint val, int amt)
 		{
+			Log("Using bit.rshift is deprecated, use the >> operator instead.");
 			return val >> amt;
 		}
 
