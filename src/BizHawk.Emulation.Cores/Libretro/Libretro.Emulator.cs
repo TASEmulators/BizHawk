@@ -234,6 +234,11 @@ namespace BizHawk.Emulation.Cores.Libretro
 		private void FrameAdvancePrep(IController controller)
 		{
 			UpdateInput(controller);
+
+			if (controller.IsPressed("Reset"))
+			{
+				api.retro_reset();
+			}
 		}
 
 		private void FrameAdvancePost(bool render, bool renderSound)
@@ -319,6 +324,8 @@ namespace BizHawk.Emulation.Cores.Libretro
 					BoolButtons.Add(buttonName);
 					CategoryLabels[buttonName] = CAT_KEYBOARD;
 				}
+
+				BoolButtons.Add("Reset");
 
 				MakeImmutable();
 			}
