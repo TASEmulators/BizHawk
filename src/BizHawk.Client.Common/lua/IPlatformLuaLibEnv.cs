@@ -4,6 +4,7 @@ using NLua;
 
 namespace BizHawk.Client.Common
 {
+	/// <remarks>TODO replace with impl.</remarks>
 	public interface IPlatformLuaLibEnv
 	{
 		LuaDocumentation Docs { get; }
