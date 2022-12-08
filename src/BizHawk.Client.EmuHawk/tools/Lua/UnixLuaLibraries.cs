@@ -41,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 			string theEvent,
 			Action<string> logCallback,
 			LuaFile luaFile,
-			[LuaArbitraryStringParam] string name = null)
+			string name = null)
 				=> null;
 
 		public NLuaTableHelper GetTableHelper() => null;

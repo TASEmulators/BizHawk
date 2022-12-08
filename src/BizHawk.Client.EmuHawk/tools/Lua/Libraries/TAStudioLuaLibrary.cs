@@ -172,7 +172,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("")]
 		[LuaMethod("submitinputchange", "")]
-		public void SubmitInputChange(int frame, [LuaASCIIStringParam] string button, bool value)
+		public void SubmitInputChange(int frame, string button, bool value)
 		{
 			if (Engaged())
 			{
@@ -209,7 +209,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("")]
 		[LuaMethod("submitanalogchange", "")]
-		public void SubmitAnalogChange(int frame, [LuaASCIIStringParam] string button, float value)
+		public void SubmitAnalogChange(int frame, string button, float value)
 		{
 			if (Engaged())
 			{
@@ -348,7 +348,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethod("addcolumn", "")]
-		public void AddColumn([LuaArbitraryStringParam] string name, [LuaArbitraryStringParam] string text, int width)
+		public void AddColumn(string name, string text, int width)
 		{
 			if (Engaged())
 			{
@@ -358,7 +358,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("tastudio.setbranchtext( \"Some text\", 1 );")]
 		[LuaMethod("setbranchtext", "adds the given message to the existing branch, or to the branch that will be created next if branch index is not specified")]
-		public void SetBranchText([LuaArbitraryStringParam] string text, int? index = null)
+		public void SetBranchText(string text, int? index = null)
 		{
 			var text1 = text;
 			if (index != null)
@@ -377,7 +377,6 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("local nltasget = tastudio.getbranches( );")]
 		[LuaMethod("getbranches", "Returns a list of the current tastudio branches.  Each entry will have the Id, Frame, and Text properties of the branch")]
-		[return: LuaArbitraryStringParam]
 		public LuaTable GetBranches()
 		{
 			if (!Engaged()) return _th.CreateTable();
@@ -395,8 +394,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("local nltasget = tastudio.getbranchinput( \"97021544-2454-4483-824f-47f75e7fcb6a\", 500 );")]
 		[LuaMethod("getbranchinput", "Gets the controller state of the given frame with the given branch identifier")]
-		[return: LuaASCIIStringParam]
-		public LuaTable GetBranchInput([LuaASCIIStringParam] string branchId, int frame)
+		public LuaTable GetBranchInput(string branchId, int frame)
 		{
 			var table = _th.CreateTable();
 			if (!Engaged()) return table;
@@ -433,7 +431,6 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("local sttasget = tastudio.getmarker( 500 );")]
 		[LuaMethod("getmarker", "returns the marker text at the given frame, or an empty string if there is no marker for the given frame")]
-		[return: LuaArbitraryStringParam]
 		public string GetMarker(int frame)
 		{
 			if (Engaged())
@@ -465,7 +462,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("tastudio.setmarker( 500, \"Some message\" );")]
 		[LuaMethod("setmarker", "Adds or sets a marker at the given frame, with an optional message")]
-		public void SetMarker(int frame, [LuaArbitraryStringParam] string message = null)
+		public void SetMarker(int frame, string message = null)
 		{
 			if (Engaged())
 			{

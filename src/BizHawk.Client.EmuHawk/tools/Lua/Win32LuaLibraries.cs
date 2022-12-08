@@ -43,19 +43,6 @@ namespace BizHawk.Client.EmuHawk
 						method
 					);
 					Docs.Add(libFunc);
-#if DEBUG
-					// these don't catch object or LuaTable!
-					if (method.GetParameters().Any(static pi => pi.ParameterType == typeof(string)
-						&& !pi.CustomAttributes.Any(static a => typeof(LuaStringParamAttributeBase).IsAssignableFrom(a.AttributeType))))
-					{
-						Console.WriteLine($"Lua function {name}.{libFunc.Name} has an unclassified string param");
-					}
-					if (method.ReturnParameter!.ParameterType == typeof(string)
-						&& !method.ReturnParameter.CustomAttributes.Any(static a => typeof(LuaStringParamAttributeBase).IsAssignableFrom(a.AttributeType)))
-					{
-						Console.WriteLine($"Lua function {name}.{libFunc.Name} has an unclassified string return value");
-					}
-#endif
 				}
 			}
 
@@ -290,7 +277,7 @@ namespace BizHawk.Client.EmuHawk
 			string theEvent,
 			Action<string> logCallback,
 			LuaFile luaFile,
-			[LuaArbitraryStringParam] string name = null)
+			string name = null)
 		{
 			var nlf = new NamedLuaFunction(function, theEvent, logCallback, luaFile,
 				() => { _lua.NewThread(out var thread); return thread; }, name);

@@ -30,7 +30,7 @@ namespace BizHawk.Client.Common
 			string theEvent,
 			Action<string> logCallback,
 			LuaFile luaFile,
-			[LuaArbitraryStringParam] string name = null);
+			string name = null);
 
 		NLuaTableHelper GetTableHelper();
 

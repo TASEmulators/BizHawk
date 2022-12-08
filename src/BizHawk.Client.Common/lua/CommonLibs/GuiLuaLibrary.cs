@@ -23,7 +23,7 @@ namespace BizHawk.Client.Common
 #pragma warning disable CS0612
 		[LuaDeprecatedMethod]
 		[LuaMethod("DrawNew", "Changes drawing target to the specified lua surface name. This may clobber any previous drawing to this surface (pass false if you don't want it to)")]
-		public void DrawNew([LuaEnumStringParam] string name, bool? clear = true)
+		public void DrawNew(string name, bool? clear = true)
 			=> APIs.Gui.DrawNew(name, clear ?? true);
 
 		[LuaDeprecatedMethod]
@@ -34,12 +34,12 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("gui.addmessage( \"Some message\" );")]
 		[LuaMethod("addmessage", "Adds a message to the OSD's message area")]
-		public void AddMessage([LuaArbitraryStringParam] string message)
+		public void AddMessage(string message)
 			=> APIs.Gui.AddMessage(message);
 
 		[LuaMethodExample("gui.clearGraphics( );")]
 		[LuaMethod("clearGraphics", "clears all lua drawn graphics from the screen")]
-		public void ClearGraphics([LuaEnumStringParam] string surfaceName = null)
+		public void ClearGraphics(string surfaceName = null)
 			=> APIs.Gui.ClearGraphics(surfaceID: UseOrFallback(surfaceName));
 
 		[LuaMethodExample("gui.cleartext( );")]
@@ -64,7 +64,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("gui.defaultPixelFont( \"Arial Narrow\");")]
 		[LuaMethod("defaultPixelFont", "Sets the default font to use in gui.pixelText(). Two font families are available, \"fceux\" and \"gens\" (or  \"0\" and \"1\" respectively), \"gens\" is used by default")]
-		public void SetDefaultPixelFont([LuaASCIIStringParam] string fontfamily)
+		public void SetDefaultPixelFont(string fontfamily)
 			=> APIs.Gui.SetDefaultPixelFont(fontfamily);
 
 		[LuaMethodExample("gui.drawBezier( { { 5, 10 }, { 10, 10 }, { 10, 20 }, { 5, 20 } }, 0x000000FF );")]
@@ -72,7 +72,7 @@ namespace BizHawk.Client.Common
 		public void DrawBezier(
 			LuaTable points,
 			[LuaColorParam] object color,
-			[LuaEnumStringParam] string surfaceName = null)
+			string surfaceName = null)
 		{
 			try
 			{
@@ -105,7 +105,7 @@ namespace BizHawk.Client.Common
 			int y2,
 			[LuaColorParam] object line = null,
 			[LuaColorParam] object background = null,
-			[LuaEnumStringParam] string surfaceName = null)
+			string surfaceName = null)
 				=> APIs.Gui.DrawBox(x, y, x2, y2, _th.SafeParseColor(line), _th.SafeParseColor(background), surfaceID: UseOrFallback(surfaceName));
 
 		[LuaMethodExample("gui.drawEllipse( 16, 32, 77, 99, 0x007F00FF, 0x7F7F7FFF );")]
@@ -117,30 +117,30 @@ namespace BizHawk.Client.Common
 			int height,
 			[LuaColorParam] object line = null,
 			[LuaColorParam] object background = null,
-			[LuaEnumStringParam] string surfaceName = null)
+			string surfaceName = null)
 				=> APIs.Gui.DrawEllipse(x, y, width, height, _th.SafeParseColor(line), _th.SafeParseColor(background), surfaceID: UseOrFallback(surfaceName));
 
 		[LuaMethodExample("gui.drawIcon( \"C:\\sample.ico\", 16, 32, 18, 24 );")]
 		[LuaMethod("drawIcon", "draws an Icon (.ico) file from the given path at the given coordinate. width and height are optional. If specified, it will resize the image accordingly")]
 		public void DrawIcon(
-			[LuaArbitraryStringParam] string path,
+			string path,
 			int x,
 			int y,
 			int? width = null,
 			int? height = null,
-			[LuaEnumStringParam] string surfaceName = null)
+			string surfaceName = null)
 				=> APIs.Gui.DrawIcon(path, x, y, width, height, surfaceID: UseOrFallback(surfaceName));
 
 		[LuaMethodExample("gui.drawImage( \"C:\\sample.bmp\", 16, 32, 18, 24, false );")]
 		[LuaMethod("drawImage", "draws an image file from the given path at the given coordinate. width and height are optional. If specified, it will resize the image accordingly")]
 		public void DrawImage(
-			[LuaArbitraryStringParam] string path,
+			string path,
 			int x,
 			int y,
 			int? width = null,
 			int? height = null,
 			bool cache = true,
-			[LuaEnumStringParam] string surfaceName = null)
+			string surfaceName = null)
 				=> APIs.Gui.DrawImage(path, x, y, width, height, cache, surfaceID: UseOrFallback(surfaceName));
 
 		[LuaMethodExample("gui.clearImageCache( );")]
@@ -151,7 +151,7 @@ namespace BizHawk.Client.Common
 		[LuaMethodExample("gui.drawImageRegion( \"C:\\sample.png\", 11, 22, 33, 44, 21, 43, 34, 45 );")]
 		[LuaMethod("drawImageRegion", "draws a given region of an image file from the given path at the given coordinate, and optionally with the given size")]
 		public void DrawImageRegion(
-			[LuaArbitraryStringParam] string path,
+			string path,
 			int source_x,
 			int source_y,
 			int source_width,
@@ -160,7 +160,7 @@ namespace BizHawk.Client.Common
 			int dest_y,
 			int? dest_width = null,
 			int? dest_height = null,
-			[LuaEnumStringParam] string surfaceName = null)
+			string surfaceName = null)
 				=> APIs.Gui.DrawImageRegion(path, source_x, source_y, source_width, source_height, dest_x, dest_y, dest_width, dest_height, surfaceID: UseOrFallback(surfaceName));
 
 		[LuaMethodExample("gui.drawLine( 161, 321, 162, 322, 0xFFFFFFFF );")]
@@ -171,7 +171,7 @@ namespace BizHawk.Client.Common
 			int x2,
 			int y2,
 			[LuaColorParam] object color = null,
-			[LuaEnumStringParam] string surfaceName = null)
+			string surfaceName = null)
 				=> APIs.Gui.DrawLine(x1, y1, x2, y2, _th.SafeParseColor(color), surfaceID: UseOrFallback(surfaceName));
 
 		[LuaMethodExample("gui.drawAxis( 16, 32, 15, 0xFFFFFFFF );")]
@@ -181,7 +181,7 @@ namespace BizHawk.Client.Common
 			int y,
 			int size,
 			[LuaColorParam] object color = null,
-			[LuaEnumStringParam] string surfaceName = null)
+			string surfaceName = null)
 				=> APIs.Gui.DrawAxis(x, y, size, _th.SafeParseColor(color), surfaceID: UseOrFallback(surfaceName));
 
 		[LuaMethodExample("gui.drawPie( 16, 32, 77, 99, 180, 90, 0x007F00FF, 0x7F7F7FFF );")]
@@ -195,7 +195,7 @@ namespace BizHawk.Client.Common
 			int sweepangle,
 			[LuaColorParam] object line = null,
 			[LuaColorParam] object background = null,
-			[LuaEnumStringParam] string surfaceName = null)
+			string surfaceName = null)
 				=> APIs.Gui.DrawPie(x, y, width, height, startangle, sweepangle, _th.SafeParseColor(line), _th.SafeParseColor(background), surfaceID: UseOrFallback(surfaceName));
 
 		[LuaMethodExample("gui.drawPixel( 16, 32, 0xFFFFFFFF );")]
@@ -204,7 +204,7 @@ namespace BizHawk.Client.Common
 			int x,
 			int y,
 			[LuaColorParam] object color = null,
-			[LuaEnumStringParam] string surfaceName = null)
+			string surfaceName = null)
 				=> APIs.Gui.DrawPixel(x, y, _th.SafeParseColor(color), surfaceID: UseOrFallback(surfaceName));
 
 		[LuaMethodExample("gui.drawPolygon( { { 5, 10 }, { 10, 10 }, { 10, 20 }, { 5, 20 } }, 10, 30, 0x007F00FF, 0x7F7F7FFF );")]
@@ -215,7 +215,7 @@ namespace BizHawk.Client.Common
 			int? offsetY = null,
 			[LuaColorParam] object line = null,
 			[LuaColorParam] object background = null,
-			[LuaEnumStringParam] string surfaceName = null)
+			string surfaceName = null)
 		{
 			var pointsList = _th.EnumerateValues<LuaTable>(points)
 				.Select(table => _th.EnumerateValues<long>(table).ToList()).ToList();
@@ -245,7 +245,7 @@ namespace BizHawk.Client.Common
 			int height,
 			[LuaColorParam] object line = null,
 			[LuaColorParam] object background = null,
-			[LuaEnumStringParam] string surfaceName = null)
+			string surfaceName = null)
 				=> APIs.Gui.DrawRectangle(x, y, width, height, _th.SafeParseColor(line), _th.SafeParseColor(background), surfaceID: UseOrFallback(surfaceName));
 
 		[LuaMethodExample("gui.drawString( 16, 32, \"Some message\", 0x7F0000FF, 0x00007FFF, 8, \"Arial Narrow\", \"bold\", \"center\", \"middle\" );")]
@@ -253,15 +253,15 @@ namespace BizHawk.Client.Common
 		public void DrawString(
 			int x,
 			int y,
-			[LuaArbitraryStringParam] string message,
+			string message,
 			[LuaColorParam] object forecolor = null,
 			[LuaColorParam] object backcolor = null,
 			int? fontsize = null,
-			[LuaASCIIStringParam] string fontfamily = null,
-			[LuaEnumStringParam] string fontstyle = null,
-			[LuaEnumStringParam] string horizalign = null,
-			[LuaEnumStringParam] string vertalign = null,
-			[LuaEnumStringParam] string surfaceName = null)
+			string fontfamily = null,
+			string fontstyle = null,
+			string horizalign = null,
+			string vertalign = null,
+			string surfaceName = null)
 		{
 			DrawText(x, y, message, _th.SafeParseColor(forecolor), _th.SafeParseColor(backcolor), fontsize, fontfamily, fontstyle, horizalign, vertalign, surfaceName: surfaceName);
 		}
@@ -271,15 +271,15 @@ namespace BizHawk.Client.Common
 		public void DrawText(
 			int x,
 			int y,
-			[LuaArbitraryStringParam] string message,
+			string message,
 			[LuaColorParam] object forecolor = null,
 			[LuaColorParam] object backcolor = null,
 			int? fontsize = null,
-			[LuaASCIIStringParam] string fontfamily = null,
-			[LuaEnumStringParam] string fontstyle = null,
-			[LuaEnumStringParam] string horizalign = null,
-			[LuaEnumStringParam] string vertalign = null,
-			[LuaEnumStringParam] string surfaceName = null)
+			string fontfamily = null,
+			string fontstyle = null,
+			string horizalign = null,
+			string vertalign = null,
+			string surfaceName = null)
 				=> APIs.Gui.DrawString(x, y, message, _th.SafeParseColor(forecolor), _th.SafeParseColor(backcolor), fontsize, fontfamily, fontstyle, horizalign, vertalign, surfaceID: UseOrFallback(surfaceName));
 
 		[LuaMethodExample("gui.pixelText( 16, 32, \"Some message\", 0x7F0000FF, 0x00007FFF, \"Arial Narrow\" );")]
@@ -287,11 +287,11 @@ namespace BizHawk.Client.Common
 		public void DrawText(
 			int x,
 			int y,
-			[LuaArbitraryStringParam] string message,
+			string message,
 			[LuaColorParam] object forecolor = null,
 			[LuaColorParam] object backcolor = null,
-			[LuaASCIIStringParam] string fontfamily = null,
-			[LuaEnumStringParam] string surfaceName = null)
+			string fontfamily = null,
+			string surfaceName = null)
 				=> APIs.Gui.DrawText(x, y, message, _th.SafeParseColor(forecolor), _th.SafeParseColor(backcolor) ?? APIs.Gui.GetDefaultTextBackground().Value, fontfamily, surfaceID: UseOrFallback(surfaceName));
 
 		[LuaMethodExample("gui.text( 16, 32, \"Some message\", 0x7F0000FF, \"bottomleft\" );")]
@@ -299,20 +299,19 @@ namespace BizHawk.Client.Common
 		public void Text(
 			int x,
 			int y,
-			[LuaArbitraryStringParam] string message,
+			string message,
 			[LuaColorParam] object forecolor = null,
-			[LuaEnumStringParam] string anchor = null)
+			string anchor = null)
 				=> APIs.Gui.Text(x, y, message, _th.SafeParseColor(forecolor), anchor);
 
 		[LuaMethodExample("local nlguicre = gui.createcanvas( 77, 99, 2, 48 );")]
 		[LuaMethod("createcanvas", "Creates a canvas of the given size and, if specified, the given coordinates.")]
-		[return: LuaArbitraryStringParam] // too hard to do properly
 		public LuaTable Text(int width, int height, int? x = null, int? y = null)
 			=> CreateLuaCanvasCallback(width, height, x, y);
 
 		[LuaMethodExample("gui.use_surface( \"client\" );")]
 		[LuaMethod("use_surface", "Stores the name of a surface to draw on, so you don't need to pass it to every draw function. The default is \"emucore\", and the other valid value is \"client\".")]
-		public void UseSurface([LuaEnumStringParam] string surfaceName)
+		public void UseSurface(string surfaceName)
 		{
 			if (surfaceName == null)
 			{

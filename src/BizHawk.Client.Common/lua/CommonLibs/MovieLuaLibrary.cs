@@ -25,19 +25,16 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local stmovfil = movie.filename( );")]
 		[LuaMethod("filename", "Returns the file name including path of the currently loaded movie")]
-		[return: LuaArbitraryStringParam]
 		public string Filename()
 			=> APIs.Movie.Filename();
 
 		[LuaMethodExample("local nlmovget = movie.getinput( 500 );")]
 		[LuaMethod("getinput", "Returns a table of buttons pressed on a given frame of the loaded movie")]
-		[return: LuaASCIIStringParam]
 		public LuaTable GetInput(int frame, int? controller = null)
 			=> _th.DictToTable(APIs.Movie.GetInput(frame, controller));
 
 		[LuaMethodExample("local stmovget = movie.getinputasmnemonic( 500 );")]
 		[LuaMethod("getinputasmnemonic", "Returns the input of a given frame of the loaded movie in a raw inputlog string")]
-		[return: LuaASCIIStringParam]
 		public string GetInputAsMnemonic(int frame)
 			=> APIs.Movie.GetInputAsMnemonic(frame);
 
@@ -68,13 +65,12 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local stmovmod = movie.mode( );")]
 		[LuaMethod("mode", "Returns the mode of the current movie. Possible modes: \"PLAY\", \"RECORD\", \"FINISHED\", \"INACTIVE\"")]
-		[return: LuaEnumStringParam]
 		public string Mode()
 			=> APIs.Movie.Mode();
 
 		[LuaMethodExample(@"movie.play_from_start(""C:\\moviename.ext"");")]
 		[LuaMethod("play_from_start", "Resets the core to frame 0 with the currently loaded movie in playback mode. If a path to a movie is specified, attempts to load it, then continues with playback if it was successful. Returns true iff successful.")]
-		public bool PlayFromStart([LuaArbitraryStringParam] string path = "")
+		public bool PlayFromStart(string path = "")
 		{
 			_luaLibsImpl.IsRebootingCore = true;
 			var success = APIs.Movie.PlayFromStart(path);
@@ -84,7 +80,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("movie.save( \"C:\\moviename.ext\" );")]
 		[LuaMethod("save", "Saves the current movie to the disc. If the filename is provided (no extension or path needed), the movie is saved under the specified name to the current movie directory. The filename may contain a subdirectory, it will be created if it doesn't exist. Existing files won't get overwritten.")]
-		public void Save([LuaArbitraryStringParam] string filename = "")
+		public void Save(string filename = "")
 			=> APIs.Movie.Save(filename);
 
 		[LuaMethodExample("movie.setreadonly( false );")]
@@ -114,19 +110,16 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local nlmovget = movie.getheader( );")]
 		[LuaMethod("getheader", "If a movie is active, will return the movie header as a lua table")]
-		[return: LuaArbitraryStringParam]
 		public LuaTable GetHeader()
 			=> _th.DictToTable(APIs.Movie.GetHeader());
 
 		[LuaMethodExample("local nlmovget = movie.getcomments( );")]
 		[LuaMethod("getcomments", "If a movie is active, will return the movie comments as a lua table")]
-		[return: LuaArbitraryStringParam]
 		public LuaTable GetComments()
 			=> _th.ListToTable(APIs.Movie.GetComments(), indexFrom: 0);
 
 		[LuaMethodExample("local nlmovget = movie.getsubtitles( );")]
 		[LuaMethod("getsubtitles", "If a movie is active, will return the movie subtitles as a lua table")]
-		[return: LuaArbitraryStringParam]
 		public LuaTable GetSubtitles()
 			=> _th.ListToTable(APIs.Movie.GetSubtitles(), indexFrom: 0);
 	}

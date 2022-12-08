@@ -11,7 +11,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("savestate.load( \"C:\\state.bin\" );")]
 		[LuaMethod("load", "Loads a savestate with the given path. If EmuHawk is deferring quicksaves, to TAStudio for example, that form will do what it likes (and the path is ignored).")]
-		public void Load([LuaArbitraryStringParam] string path, bool suppressOSD = false)
+		public void Load(string path, bool suppressOSD = false)
 		{
 			_luaLibsImpl.IsUpdateSupressed = true;
 
@@ -33,7 +33,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("savestate.save( \"C:\\state.bin\" );")]
 		[LuaMethod("save", "Saves a state at the given path. If EmuHawk is deferring quicksaves, to TAStudio for example, that form will do what it likes (and the path is ignored).")]
-		public void Save([LuaArbitraryStringParam] string path, bool suppressOSD = false)
+		public void Save(string path, bool suppressOSD = false)
 			=> APIs.SaveState.Save(path, suppressOSD);
 
 		[LuaMethodExample("savestate.saveslot( 7 );")]

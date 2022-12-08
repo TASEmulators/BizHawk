@@ -38,8 +38,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local obemudis = emu.disassemble( 0x8000 );")]
 		[LuaMethod("disassemble", "Returns the disassembly object (disasm string and length int) for the given PC address. Uses System Bus domain if no domain name provided")]
-		[return: LuaASCIIStringParam]
-		public LuaTable Disassemble(uint pc, [LuaASCIIStringParam] string name = "")
+		public LuaTable Disassemble(uint pc, string name = "")
 		{
 			var (disasm, length) = APIs.Emulation.Disassemble(pc, name);
 			if (length is 0) return null;
@@ -52,18 +51,17 @@ namespace BizHawk.Client.Common
 		// TODO: what about 64 bit registers?
 		[LuaMethodExample("local inemuget = emu.getregister( emu.getregisters( )[ 0 ] );")]
 		[LuaMethod("getregister", "returns the value of a cpu register or flag specified by name. For a complete list of possible registers or flags for a given core, use getregisters")]
-		public int GetRegister([LuaASCIIStringParam] string name)
+		public int GetRegister(string name)
 			=> (int?) APIs.Emulation.GetRegister(name) ?? 0;
 
 		[LuaMethodExample("local nlemuget = emu.getregisters( );")]
 		[LuaMethod("getregisters", "returns the complete set of available flags and registers for a given core")]
-		[return: LuaASCIIStringParam]
 		public LuaTable GetRegisters()
 			=> _th.DictToTable(APIs.Emulation.GetRegisters());
 
 		[LuaMethodExample("emu.setregister( emu.getregisters( )[ 0 ], -1000 );")]
 		[LuaMethod("setregister", "sets the given register name to the given value")]
-		public void SetRegister([LuaASCIIStringParam] string register, int value)
+		public void SetRegister(string register, int value)
 			=> APIs.Emulation.SetRegister(register, value);
 
 		[LuaMethodExample("local inemutot = emu.totalexecutedcycles( );")]
@@ -73,7 +71,6 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local stemuget = emu.getsystemid( );")]
 		[LuaMethod("getsystemid", "Returns the ID string of the current core loaded. Note: No ROM loaded will return the string NULL")]
-		[return: LuaASCIIStringParam]
 		public string GetSystemId()
 			=> APIs.Emulation.GetSystemId();
 
@@ -121,19 +118,16 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local stemuget = emu.getdisplaytype();")]
 		[LuaMethod("getdisplaytype", "returns the display type (PAL vs NTSC) that the emulator is currently running in")]
-		[return: LuaEnumStringParam]
 		public string GetDisplayType()
 			=> APIs.Emulation.GetDisplayType();
 
 		[LuaMethodExample("local stemuget = emu.getboardname();")]
 		[LuaMethod("getboardname", "returns (if available) the board name of the loaded ROM")]
-		[return: LuaASCIIStringParam]
 		public string GetBoardName()
 			=> APIs.Emulation.GetBoardName();
 
 		[LuaDeprecatedMethod]
 		[LuaMethod("getluacore", "returns the name of the Lua core currently in use")]
-		[return: LuaEnumStringParam]
 		public string GetLuaBackend()
 		{
 			Log("Deprecated function emu.getluacore() used, replace the call with client.get_lua_engine().");
