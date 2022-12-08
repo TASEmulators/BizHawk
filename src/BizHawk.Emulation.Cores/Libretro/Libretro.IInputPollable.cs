@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			// joypad port 1
 			for (uint i = 0; i < input.Length; i++)
 			{
-				input[i] = retro_input_state(controller, 0, (uint)LibretroApi.RETRO_DEVICE.JOYPAD, 1, i);
+				input[i] = retro_input_state(controller, 1, (uint)LibretroApi.RETRO_DEVICE.JOYPAD, 0, i);
 			}
 			bridge.LibretroBridge_SetInput(cbHandler, LibretroApi.RETRO_DEVICE.JOYPAD, 1, input);
 			input = new short[(int)LibretroApi.RETRO_DEVICE_ID_POINTER.LAST];
