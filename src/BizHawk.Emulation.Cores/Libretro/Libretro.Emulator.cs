@@ -136,8 +136,8 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 			if (inited)
 			{
-				api.retro_deinit();
 				api.retro_unload_game();
+				api.retro_deinit();
 				inited = false;
 			}
 
