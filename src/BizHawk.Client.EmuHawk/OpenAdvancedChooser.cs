@@ -83,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				var coreComm = _createCoreComm();
-				using var retro = new LibretroEmulator(coreComm, _game, core, true);
+				using var retro = new LibretroHost(coreComm, _game, core, true);
 				btnLibretroLaunchGame.Enabled = true;
 				if (retro.Description.SupportsNoGame)
 					btnLibretroLaunchNoGame.Enabled = true;

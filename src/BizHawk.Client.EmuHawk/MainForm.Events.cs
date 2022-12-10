@@ -2837,7 +2837,7 @@ namespace BizHawk.Client.EmuHawk
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Gpgx, CreateGenericCoreConfigItem<GPGX>(CoreNames.Gpgx)));
 
 			// Handy
-			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.Handy, CreateGenericCoreConfigItem<Lynx>(CoreNames.Handy))); // as Handy doesn't implement `IStatable<,>`, this opens an empty `GenericCoreConfig`, which is dumb, but matches the existing behaviour
+			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.Handy, CreateGenericCoreConfigItem<Lynx>(CoreNames.Handy))); // as Handy doesn't implement `ISettable<,>`, this opens an empty `GenericCoreConfig`, which is dumb, but matches the existing behaviour
 
 			// HyperNyma
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.HyperNyma, CreateGenericNymaCoreConfigItem<HyperNyma>(CoreNames.HyperNyma, HyperNyma.CachedSettingsInfo)));
@@ -2852,7 +2852,7 @@ namespace BizHawk.Client.EmuHawk
 			items.Add(CreateCoreSubmenu(
 				VSystemCategory.Other,
 				CoreNames.Libretro,
-				CreateGenericCoreConfigItem<LibretroEmulator>(CoreNames.Libretro))); // as Libretro doesn't implement `IStatable<,>`, this opens an empty `GenericCoreConfig`, which is dumb, but matches the existing behaviour
+				CreateGenericCoreConfigItem<LibretroHost>(CoreNames.Libretro))); // as Libretro doesn't implement `ISettable<,>`, this opens an empty `GenericCoreConfig`, which is dumb, but matches the existing behaviour
 
 			// MAME
 			var mameSettingsItem = CreateSettingsItem("Settings...", (_, _) => OpenGenericCoreConfig());
@@ -3016,7 +3016,7 @@ namespace BizHawk.Client.EmuHawk
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.TurboNyma, CreateGenericNymaCoreConfigItem<TurboNyma>(CoreNames.TurboNyma, TurboNyma.CachedSettingsInfo)));
 
 			// uzem
-			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Uzem, CreateGenericCoreConfigItem<Uzem>(CoreNames.Uzem))); // as uzem doesn't implement `IStatable<,>`, this opens an empty `GenericCoreConfig`, which is dumb, but matches the existing behaviour
+			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Uzem, CreateGenericCoreConfigItem<Uzem>(CoreNames.Uzem))); // as uzem doesn't implement `ISettable<,>`, this opens an empty `GenericCoreConfig`, which is dumb, but matches the existing behaviour
 
 			// VectrexHawk
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.VectrexHawk, CreateGenericCoreConfigItem<VectrexHawk>(CoreNames.VectrexHawk)));

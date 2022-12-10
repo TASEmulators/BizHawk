@@ -637,7 +637,7 @@ namespace BizHawk.Client.Common
 					// must be done before LoadNoGame (which triggers retro_init and the paths to be consumed by the core)
 					// game name == name of core
 					Game = game = new GameInfo { Name = Path.GetFileNameWithoutExtension(launchLibretroCore), System = VSystemID.Raw.Libretro };
-					var retro = new LibretroEmulator(nextComm, game, launchLibretroCore);
+					var retro = new LibretroHost(nextComm, game, launchLibretroCore);
 					nextEmulator = retro;
 
 					if (retro.Description.SupportsNoGame && string.IsNullOrEmpty(path))

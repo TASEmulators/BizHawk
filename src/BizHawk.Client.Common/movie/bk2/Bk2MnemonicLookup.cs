@@ -23,7 +23,7 @@ namespace BizHawk.Client.Common
 					key = key.Substring(3);
 				}
 			}
-			key = key.RemovePrefix(LibretroEmulator.LibretroControllerDef.PFX_RETROPAD);
+			key = key.RemovePrefix(LibretroHost.LibretroControllerDef.PFX_RETROPAD);
 
 			if (SystemOverrides.TryGetValue(systemId, out var overridesForSys) && overridesForSys.TryGetValue(key, out var c))
 			{
