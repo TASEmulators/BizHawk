@@ -813,7 +813,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethodExample("forms.drawImageRegion( 334, \"C:\\image.bmp\", 11, 22, 33, 44, 21, 43, 34, 45 );")]
 		[LuaMethod(
 			"drawImageRegion",
-			"Draws a region of the given image file at the given location on the canvas, and optionally resizes it before drawing. On the TASVideos Wiki, consult this diagram to see its usage: [https://user-images.githubusercontent.com/13409956/198868522-55dc1e5f-ae67-4ebb-a75f-558656cb4468.png|alt=Diagram showing how to use forms.drawImageRegion]")]
+			"Draws a region of the given image file at the given location on the canvas, and optionally resizes it before drawing. Consult this diagram to see its usage (renders embedded on the TASVideos Wiki): [https://user-images.githubusercontent.com/13409956/198868522-55dc1e5f-ae67-4ebb-a75f-558656cb4468.png|alt=Diagram showing how to use forms.drawImageRegion]")]
 		public void DrawImageRegion(
 			long componentHandle,
 			string path,

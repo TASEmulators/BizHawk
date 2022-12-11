@@ -44,7 +44,7 @@ namespace BizHawk.Client.Common
 			Log($"{scope} is not an available scope for {Emulator.Attributes().CoreName}");
 		}
 
-		[LuaMethod("can_use_callback_params", "Returns whether EmuHawk will pass arguments to callbacks. This version passes arguments to \"memory\" callbacks (RAM/ROM/bus R/W), so this function will return true for that input. (It returns false for any other input.) This tells you whether hacks for older versions w/o parameter support are necessary.")]
+		[LuaMethod("can_use_callback_params", "Returns whether EmuHawk will pass arguments to callbacks. The current version passes arguments to \"memory\" callbacks (RAM/ROM/bus R/W), so this function will return true for that input. (It returns false for any other input.) This tells you whether it's necessary to enable workarounds/hacks because a script is running in a version without parameter support.")]
 		[LuaMethodExample("local mem_callback = event.can_use_callback_params(\"memory\") and mem_callback or mem_callback_pre_29;")]
 		public bool CanUseCallbackParams(string subset = null)
 			=> subset is "memory";

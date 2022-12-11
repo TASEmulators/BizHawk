@@ -45,7 +45,7 @@ namespace BizHawk.Client.Common
 		[LuaMethod("bxor", "Bitwise XOR of 'val' against 'amt'")]
 		public uint Bxor(uint val, uint amt)
 		{
-			Log("Using bit.bxor is deprecated, use the a ~ b operator instead.");
+			Log("Using bit.bxor is deprecated, use the a ~ b operator instead (not a typo, ^ is pow).");
 			return val ^ amt;
 		}
 

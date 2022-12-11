@@ -18,9 +18,9 @@ namespace BizHawk.Client.Common
 				.AppendLine()
 				.AppendLine("As you might expect, Lua scripts execute top to bottom once, so to run something every frame you'll need to end the script with an infinite loop (or you could set a callback on one of the events instead). Make sure to call {{emu.frameadvance}} or {{emu.yield}} in the loop or your script will hang EmuHawk and then crash!")
 				.AppendLine()
-				.AppendLine("Lua supports integer arithmetic starting with BizHawk 2.9. Note {{~}} is both bitwise NOT and XOR. Some of the {{bit}} helper functions remain, but you should try to avoid them if you need performance (or [https://github.com/TASEmulators/BizHawk-ExternalTools/wiki|switch to .NET]).")
+				.AppendLine("Lua supports integer arithmetic starting with BizHawk 2.9. Note {{~}} is both bitwise NOT and XOR. Some of the {{bit}} helper functions remain, but you should try to avoid them if you need performance (or [https://github.com/TASEmulators/BizHawk-ExternalTools/wiki|switch to .NET]). If you're getting overwhelmed with deprecation warnings while trying to migrate a script, add this one-liner at the top: {{bit = (require \"migration_helpers\").EmuHawk_pre_2_9_bit();}}")
 				.AppendLine()
-				.AppendLine("FCEUX users: While this API surface may look similar, even functions with the same name may take different arguments, or behave differently in a way that isn't immediately obvious.")
+				.AppendLine("FCEUX users: While this API surface may look similar, even functions with the same name may take different arguments, or behave differently in a way that isn't immediately obvious. (TODO: create a migration helper function for FCEUX)")
 				.AppendLine()
 				.AppendLine(@"__Types and notation__
 * [[]] (brackets)
