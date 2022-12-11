@@ -14,12 +14,12 @@ namespace BizHawk.Emulation.Common
 {
 	public static class Database
 	{
-		private static readonly Dictionary<string, CompactGameInfo> DB = new Dictionary<string, CompactGameInfo>();
+		private static readonly Dictionary<string, CompactGameInfo> DB = new();
 
 		/// <summary>
 		/// blocks until the DB is done loading
 		/// </summary>
-		private static readonly EventWaitHandle acquire = new EventWaitHandle(false, EventResetMode.ManualReset);
+		private static readonly ManualResetEvent _acquire = new(false);
 
 		private static string _bundledRoot = null;
 
@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Common
 			if (File.Exists(filename))
 			{
 				if (!silent) Util.DebugWriteLine($"loading external game database {line} ({(searchUser ? "user" : "bundled")})");
-				initializeWork(filename, inUser: searchUser, silent: silent);
+				InitializeWork(filename, inUser: searchUser, silent: silent);
 			}
 			else if (inUser)
 			{
@@ -94,7 +94,7 @@ namespace BizHawk.Emulation.Common
 
 		private static bool initialized = false;
 
-		private static void initializeWork(string path, bool inUser, bool silent)
+		private static void InitializeWork(string path, bool inUser, bool silent)
 		{
 			if (!inUser) _expected.Remove(Path.GetFileName(path));
 			//reminder: this COULD be done on several threads, if it takes even longer
@@ -168,8 +168,6 @@ namespace BizHawk.Emulation.Common
 					Util.DebugWriteLine($"Error parsing database entry: {line}");
 				}
 			}
-
-			acquire.Set();
 		}
 
 		public static void InitializeDatabase(string bundledRoot, string userRoot, bool silent)
@@ -183,16 +181,17 @@ namespace BizHawk.Emulation.Common
 			_expected = new DirectoryInfo(_bundledRoot!).EnumerateFiles("*.txt").Select(static fi => fi.Name).ToList();
 
 			var stopwatch = Stopwatch.StartNew();
-			ThreadPool.QueueUserWorkItem(_=> {
-				initializeWork(Path.Combine(bundledRoot, "gamedb.txt"), inUser: false, silent: silent);
+			ThreadPool.QueueUserWorkItem(_ => {
+				InitializeWork(Path.Combine(bundledRoot, "gamedb.txt"), inUser: false, silent: silent);
 				if (_expected.Count is not 0) Util.DebugWriteLine($"extra bundled gamedb files were not #included: {string.Join(", ", _expected)}");
 				Util.DebugWriteLine("GameDB load: " + stopwatch.Elapsed + " sec");
+				_acquire.Set();
 			});
 		}
 
 		public static GameInfo CheckDatabase(string hash)
 		{
-			acquire.WaitOne();
+			_acquire.WaitOne();
 
 			var hashFormatted = FormatHash(hash);
 			DB.TryGetValue(hashFormatted, out var cgi);
@@ -207,7 +206,7 @@ namespace BizHawk.Emulation.Common
 
 		public static GameInfo GetGameInfo(byte[] romData, string fileName)
 		{
-			acquire.WaitOne();
+			_acquire.WaitOne();
 
 			var hashSHA1 = SHA1Checksum.ComputeDigestHex(romData);
 			if (DB.TryGetValue(hashSHA1, out var cgi))
