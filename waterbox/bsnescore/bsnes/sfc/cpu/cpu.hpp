@@ -165,7 +165,9 @@ private:
 
   struct ALU {
     uint mpyctr = 0;
+    uint mpylast = 0;
     uint divctr = 0;
+    uint divlast = 0;
     uint shift = 0;
   } alu;
 

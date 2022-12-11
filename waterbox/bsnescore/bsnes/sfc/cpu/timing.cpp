@@ -143,13 +143,19 @@ auto CPU::scanline() -> void {
 auto CPU::aluEdge() -> void {
   if(alu.mpyctr) {
     alu.mpyctr--;
+    if (!alu.mpyctr)
+      alu.mpylast = 1;
     if(io.rddiv & 1) io.rdmpy += alu.shift;
     io.rddiv >>= 1;
     alu.shift <<= 1;
   }
+  else
+    alu.mpylast = 0;
 
   if(alu.divctr) {
     alu.divctr--;
+    if (!alu.divctr)
+      alu.divlast = 1;
     io.rddiv <<= 1;
     alu.shift >>= 1;
     if(io.rdmpy >= alu.shift) {
@@ -157,6 +163,8 @@ auto CPU::aluEdge() -> void {
       io.rddiv |= 1;
     }
   }
+  else
+    alu.divlast = 0;
 }
 
 auto CPU::dmaEdge() -> void {

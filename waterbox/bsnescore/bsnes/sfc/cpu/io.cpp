@@ -159,8 +159,10 @@ auto CPU::writeCPU(uint addr, uint8 data) -> void {
     io.rddiv = io.wrmpyb << 8 | io.wrmpya;
 
     if(!configuration.hacks.cpu.fastMath) {
-      alu.mpyctr = 8;  //perform multiplication over the next eight cycles
-      alu.shift = io.wrmpyb;
+      if (!alu.mpylast) {
+        alu.mpyctr = 8;  //perform multiplication over the next eight cycles
+        alu.shift = io.wrmpyb;
+      }
     } else {
       io.rdmpy = io.wrmpya * io.wrmpyb;
     }
@@ -178,12 +180,14 @@ auto CPU::writeCPU(uint addr, uint8 data) -> void {
     io.rdmpy = io.wrdiva;
     if(alu.mpyctr || alu.divctr) return;
 
-    io.wrdivb = data;
-
     if(!configuration.hacks.cpu.fastMath) {
-      alu.divctr = 16;  //perform division over the next sixteen cycles
-      alu.shift = io.wrdivb << 16;
+      if (!alu.divlast) {
+        io.wrdivb = data;
+        alu.divctr = 16;  //perform division over the next sixteen cycles
+        alu.shift = io.wrdivb << 16;
+      }
     } else {
+      io.wrdivb = data;
       if(io.wrdivb) {
         io.rddiv = io.wrdiva / io.wrdivb;
         io.rdmpy = io.wrdiva % io.wrdivb;
