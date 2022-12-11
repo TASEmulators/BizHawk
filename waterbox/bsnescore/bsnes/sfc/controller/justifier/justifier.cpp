@@ -90,9 +90,7 @@ auto Justifier::latch(bool data) -> void {
 }
 
 auto Justifier::latch() -> void {
-  /* active value is inverted here ... */
-
-  if(active != 0) {
+  if(!active) {
     int nx = platform->inputPoll(port, device, 0 + X);
     int ny = platform->inputPoll(port, device, 0 + Y);
     player1.x = max(-16, min(256 + 16, nx + player1.x));
@@ -100,8 +98,7 @@ auto Justifier::latch() -> void {
     bool offscreen = (player1.x < 0 || player1.y < 0 || player1.x >= 256 || player1.y >= (int)ppu.vdisp());
     if(!offscreen) ppu.latchCounters(player1.x, player1.y);
   }
-
-  if(active != 1) {
+  else {
     int nx = platform->inputPoll(port, device, 4 + X);
     int ny = platform->inputPoll(port, device, 4 + Y);
     player2.x = max(-16, min(256 + 16, nx + player2.x));
