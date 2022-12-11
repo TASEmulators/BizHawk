@@ -104,6 +104,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_lua.RegisterFunction("print", this, typeof(Win32LuaLibraries).GetMethod(nameof(Print)));
+			if (OSTailoredCode.IsUnixHost)
+			{
+				// add %exe%/Lua to library resolution pathset (LUA_PATH)
+				// this is done already on windows, but not on linux it seems?
+				var packageTable = (LuaTable) _lua["package"];
+				var luaPath = PathEntries.LuaAbsolutePath();
+				packageTable["path"] = $"{luaPath}/?.lua;{luaPath}?/init.lua;{packageTable["path"]}";
+			}
 
 			EmulationLuaLibrary.FrameAdvanceCallback = Frameadvance;
 			EmulationLuaLibrary.YieldCallback = EmuYield;
