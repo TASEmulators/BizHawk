@@ -164,7 +164,7 @@ auto PPU::power(bool reset) -> void {
 
   //$2133  SETINI
   io.extbg = random();
-  io.pseudoHires = random();
+  if (!reset) io.pseudoHires = random();
   io.overscan = false;
   io.interlace = false;
 
@@ -174,14 +174,16 @@ auto PPU::power(bool reset) -> void {
   //$213d  OPVCT
   io.vcounter = 0;
 
-  mosaic.power();
-  bg1.power();
-  bg2.power();
-  bg3.power();
-  bg4.power();
-  obj.power();
-  window.power();
-  screen.power();
+  if (!reset) {
+    mosaic.power();
+    bg1.power();
+    bg2.power();
+    bg3.power();
+    bg4.power();
+    obj.power();
+    window.power();
+    screen.power();
+  }
 
   updateVideoMode();
 }

@@ -195,7 +195,7 @@ auto PPU::power(bool reset) -> void {
   }
 
   latch = {};
-  io = {};
+  if (!reset) io = {};
   updateVideoMode();
 
   #undef ppu
