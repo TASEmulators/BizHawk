@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 
 using NLua;
 
@@ -8,7 +7,7 @@ namespace BizHawk.Client.Common
 {
 	public sealed class MovieLuaLibrary : LuaLibraryBase
 	{
-		public MovieLuaLibrary(IPlatformLuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+		public MovieLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "movie";

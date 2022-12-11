@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 using NLua;
 
@@ -9,7 +8,7 @@ namespace BizHawk.Client.Common
 {
 	public sealed class JoypadLuaLibrary : LuaLibraryBase
 	{
-		public JoypadLuaLibrary(IPlatformLuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+		public JoypadLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "joypad";

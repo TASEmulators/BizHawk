@@ -12,7 +12,7 @@ namespace BizHawk.Client.Common
 	[Description("Main memory library reads and writes from the Main memory domain (the default memory domain set by any given core)")]
 	public sealed class MainMemoryLuaLibrary : LuaLibraryBase
 	{
-		public MainMemoryLuaLibrary(IPlatformLuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+		public MainMemoryLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "mainmemory";

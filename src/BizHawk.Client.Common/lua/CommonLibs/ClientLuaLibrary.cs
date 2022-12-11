@@ -26,7 +26,7 @@ namespace BizHawk.Client.Common
 
 		public IMainFormForApi MainForm { get; set; }
 
-		public ClientLuaLibrary(IPlatformLuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+		public ClientLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "client";
@@ -332,7 +332,7 @@ namespace BizHawk.Client.Common
 			=> _th.EnumerateToLuaTable(APIs.Tool.AvailableTools.Select(tool => tool.Name.ToLower()), indexFrom: 0);
 
 		[LuaMethodExample("local nlcliget = client.gettool( \"Tool name\" );")]
-		[LuaMethod("gettool", "Returns an object that represents a tool of the given name (not case sensitive). If the tool is not open, it will be loaded if available. Use gettools to get a list of names")]
+		[LuaMethod("gettool", "Returns an object that represents a tool of the given name (not case sensitive). If the tool is not open, it will be loaded if available. Use getavailabletools to get a list of names")]
 		public LuaTable GetTool(string name)
 		{
 			var selectedTool = APIs.Tool.GetTool(name);

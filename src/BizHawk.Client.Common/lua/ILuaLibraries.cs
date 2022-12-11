@@ -2,10 +2,11 @@ using System;
 
 using NLua;
 
+using BizHawk.Emulation.Common;
+
 namespace BizHawk.Client.Common
 {
-	/// <remarks>TODO replace with impl.</remarks>
-	public interface IPlatformLuaLibEnv
+	public interface ILuaLibraries
 	{
 		LuaDocumentation Docs { get; }
 
@@ -26,6 +27,14 @@ namespace BizHawk.Client.Common
 
 		void CallSaveStateEvent(string name);
 
+		void CallFrameBeforeEvent();
+
+		void CallFrameAfterEvent();
+
+		void CallExitEvent(LuaFile lf);
+
+		void Close();
+
 		INamedLuaFunction CreateAndRegisterNamedFunction(
 			LuaFunction function,
 			string theEvent,
@@ -35,8 +44,14 @@ namespace BizHawk.Client.Common
 
 		NLuaTableHelper GetTableHelper();
 
+		void Restart(IEmulatorServiceProvider newServiceProvider, Config config, IEmulator emulator, IGameInfo game);
+
 		bool RemoveNamedFunctionMatching(Func<INamedLuaFunction, bool> predicate);
 
 		void SpawnAndSetFileThread(string pathToLoad, LuaFile lf);
+
+		void ExecuteString(string command);
+
+		(bool WaitForFrame, bool Terminated) ResumeScript(LuaFile lf);
 	}
 }

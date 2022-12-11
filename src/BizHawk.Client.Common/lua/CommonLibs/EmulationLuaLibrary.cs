@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 
 using NLua;
@@ -14,7 +13,7 @@ namespace BizHawk.Client.Common
 		public Action FrameAdvanceCallback { get; set; }
 		public Action YieldCallback { get; set; }
 
-		public EmulationLuaLibrary(IPlatformLuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+		public EmulationLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "emu";

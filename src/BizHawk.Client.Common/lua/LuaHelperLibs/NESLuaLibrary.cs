@@ -15,7 +15,7 @@ namespace BizHawk.Client.Common
 	[Description("Functions related specifically to Nes Cores")]
 	public sealed class NESLuaLibrary : LuaLibraryBase
 	{
-		public NESLuaLibrary(IPlatformLuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+		public NESLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "nes";

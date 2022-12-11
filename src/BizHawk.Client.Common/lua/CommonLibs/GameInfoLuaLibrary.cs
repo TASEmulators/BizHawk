@@ -10,7 +10,7 @@ namespace BizHawk.Client.Common
 {
 	public sealed class GameInfoLuaLibrary : LuaLibraryBase
 	{
-		public GameInfoLuaLibrary(IPlatformLuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+		public GameInfoLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "gameinfo";

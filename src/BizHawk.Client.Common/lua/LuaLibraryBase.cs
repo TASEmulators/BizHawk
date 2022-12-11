@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Text;
 using System.Threading;
-
-using BizHawk.Common;
-using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -12,7 +7,7 @@ namespace BizHawk.Client.Common
 	{
 		public PathEntryCollection PathEntries { get; set; }
 
-		protected LuaLibraryBase(IPlatformLuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+		protected LuaLibraryBase(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 		{
 			LogOutputCallback = logOutputCallback;
 			_luaLibsImpl = luaLibsImpl;
@@ -24,7 +19,7 @@ namespace BizHawk.Client.Common
 		protected static LuaFile CurrentFile { get; private set; }
 
 		private static Thread _currentHostThread;
-		private static readonly object ThreadMutex = new object();
+		private static readonly object ThreadMutex = new();
 
 		public abstract string Name { get; }
 
@@ -32,7 +27,7 @@ namespace BizHawk.Client.Common
 
 		protected readonly Action<string> LogOutputCallback;
 
-		protected readonly IPlatformLuaLibEnv _luaLibsImpl;
+		protected readonly ILuaLibraries _luaLibsImpl;
 
 		protected readonly NLuaTableHelper _th;
 

@@ -10,7 +10,7 @@ namespace BizHawk.Client.Common
 	[Description("Functions specific to NDSHawk (functions may not run when an NDS game is not loaded)")]
 	public sealed class NDSLuaLibrary : LuaLibraryBase
 	{
-		public NDSLuaLibrary(IPlatformLuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+		public NDSLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "nds";

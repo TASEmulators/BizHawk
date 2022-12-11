@@ -12,7 +12,7 @@ namespace BizHawk.Client.Common
 	{
 		public override string Name => "bizstring";
 
-		public StringLuaLibrary(IPlatformLuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+		public StringLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		[LuaMethodExample("local stbizhex = bizstring.hex( -12345 );")]

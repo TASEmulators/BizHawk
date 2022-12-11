@@ -15,9 +15,9 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public class Win32LuaLibraries : IPlatformLuaLibEnv
+	public class LuaLibraries : ILuaLibraries
 	{
-		public Win32LuaLibraries(
+		public LuaLibraries(
 			LuaFileList scriptList,
 			LuaFunctionList registeredFuncList,
 			IEmulatorServiceProvider serviceProvider,
@@ -46,7 +46,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			_lua.State.Encoding = Encoding.UTF8;
 			_th = new NLuaTableHelper(_lua, LogToLuaConsole);
 			_displayManager = displayManager;
 			_inputManager = inputManager;
@@ -103,7 +102,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			_lua.RegisterFunction("print", this, typeof(Win32LuaLibraries).GetMethod(nameof(Print)));
+			_lua.RegisterFunction("print", this, typeof(LuaLibraries).GetMethod(nameof(Print)));
 			if (OSTailoredCode.IsUnixHost)
 			{
 				// add %exe%/Lua to library resolution pathset (LUA_PATH)
@@ -113,7 +112,7 @@ namespace BizHawk.Client.EmuHawk
 				packageTable["path"] = $"{luaPath}/?.lua;{luaPath}?/init.lua;{packageTable["path"]}";
 			}
 
-			EmulationLuaLibrary.FrameAdvanceCallback = Frameadvance;
+			EmulationLuaLibrary.FrameAdvanceCallback = FrameAdvance;
 			EmulationLuaLibrary.YieldCallback = EmuYield;
 
 			EnumerateLuaFunctions(nameof(LuaCanvas), typeof(LuaCanvas), null); // add LuaCanvas to Lua function reference table
@@ -129,7 +128,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly MainForm _mainForm;
 
-		private Lua _lua = new();
+		private Lua _lua = new() { State = { Encoding = Encoding.UTF8 } };
 		private LuaThread _currThread;
 
 		private readonly NLuaTableHelper _th;
@@ -142,6 +141,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private EmulationLuaLibrary EmulationLuaLibrary => (EmulationLuaLibrary)Libraries[typeof(EmulationLuaLibrary)];
 
+		// nb: KeraLua isn't really the engine, NLua does the heavy lifting (KeraLua is just a thin layer for native lua)
+		// this is just done to differentiate against the old NLua engine, which was backed by KopiLua (c# impl of lua) instead of KeraLua
 		public string EngineName => "KeraLua";
 
 		public bool IsRebootingCore { get; set; }
@@ -277,7 +278,7 @@ namespace BizHawk.Client.EmuHawk
 			ScriptList.Clear();
 			FormsLibrary.DestroyAll();
 			_lua.Dispose();
-			_lua = new Lua();
+			_lua = null;
 		}
 
 		public INamedLuaFunction CreateAndRegisterNamedFunction(
@@ -306,7 +307,6 @@ namespace BizHawk.Client.EmuHawk
 			var content = File.ReadAllText(file);
 			var main = _lua.LoadString(content, "main");
 			_lua.NewThread(main, out var ret);
-			ret.State.Encoding = Encoding.UTF8;
 			return ret;
 		}
 
@@ -349,7 +349,7 @@ namespace BizHawk.Client.EmuHawk
 			_logToLuaConsoleCallback(outputs);
 		}
 
-		private void Frameadvance()
+		private void FrameAdvance()
 		{
 			FrameAdvanceRequested = true;
 			_currThread.Yield();

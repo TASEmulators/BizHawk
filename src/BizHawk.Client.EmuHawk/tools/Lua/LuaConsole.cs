@@ -128,7 +128,7 @@ namespace BizHawk.Client.EmuHawk
 					DisplayManager.ClearApiHawkSurfaces();
 					ResetDrawSurfacePadding();
 					ClearFileWatches();
-					(LuaImp as Win32LuaLibraries)?.Close();
+					LuaImp?.Close();
 					DisplayManager.OSD.ClearGuiText();
 				}
 				else
@@ -146,7 +146,7 @@ namespace BizHawk.Client.EmuHawk
 			_defaultSplitDistance = splitContainer1.SplitterDistance;
 		}
 
-		public IPlatformLuaLibEnv LuaImp { get; private set; }
+		public ILuaLibraries LuaImp { get; private set; }
 
 		private IEnumerable<LuaFile> SelectedItems =>  LuaListView.SelectedRows.Select(index => LuaImp.ScriptList[index]);
 
@@ -185,21 +185,22 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void Restart()
 		{
-			var runningScripts = new List<LuaFile>();
+			List<LuaFile> runningScripts = new();
 
-			if (LuaImp is Win32LuaLibraries luaLibsImpl) // Things we need to do with the existing LuaImp before we can make a new one
+			// Things we need to do with the existing LuaImp before we can make a new one
+			if (LuaImp is not null)
 			{
-				if (luaLibsImpl.IsRebootingCore)
+				if (LuaImp.IsRebootingCore)
 				{
 					// Even if the lua console is self-rebooting from client.reboot_core() we still want to re-inject dependencies
-					luaLibsImpl.Restart(Emulator.ServiceProvider, Config, Emulator, Game);
+					LuaImp.Restart(Emulator.ServiceProvider, Config, Emulator, Game);
 					return;
 				}
 
-				runningScripts = luaLibsImpl.ScriptList.Where(lf => lf.Enabled).ToList();
+				runningScripts = LuaImp.ScriptList.Where(lf => lf.Enabled).ToList();
 
 				// we don't use runningScripts here as the other scripts need to be stopped too
-				foreach (var file in luaLibsImpl.ScriptList)
+				foreach (var file in LuaImp.ScriptList)
 				{
 					DisableLuaScript(file);
 				}
@@ -207,8 +208,8 @@ namespace BizHawk.Client.EmuHawk
 
 			LuaFileList newScripts = new(LuaImp?.ScriptList, onChanged: SessionChangedCallback);
 			LuaFunctionList registeredFuncList = new(onChanged: UpdateRegisteredFunctionsDialog);
-			(LuaImp as Win32LuaLibraries)?.Close();
-			LuaImp = new Win32LuaLibraries(
+			LuaImp?.Close();
+			LuaImp = new LuaLibraries(
 				newScripts,
 				registeredFuncList,
 				Emulator.ServiceProvider,
@@ -306,7 +307,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OnLuaFileChanged(LuaFile item)
 		{
-			if (item.Enabled && LuaImp?.ScriptList.Contains(item) == true)
+			if (item.Enabled && LuaImp.ScriptList.Contains(item) == true)
 			{
 				RefreshLuaScript(item);
 			}
@@ -314,11 +315,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadLuaFile(string path)
 		{
-			if (!(LuaImp is Win32LuaLibraries luaLibsImpl)) return;
-
 			var absolutePath = Path.GetFullPath(path);
 
-			var alreadyLoadedFile = luaLibsImpl.ScriptList.FirstOrDefault(t => absolutePath == t.Path);
+			var alreadyLoadedFile = LuaImp.ScriptList.FirstOrDefault(t => absolutePath == t.Path);
 			if (alreadyLoadedFile is not null)
 			{
 				if (!alreadyLoadedFile.Enabled && !Settings.DisableLuaScriptsOnLoad)
@@ -330,8 +329,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var luaFile = new LuaFile("", absolutePath);
 
-				luaLibsImpl.ScriptList.Add(luaFile);
-				LuaListView.RowCount = luaLibsImpl.ScriptList.Count;
+				LuaImp.ScriptList.Add(luaFile);
+				LuaListView.RowCount = LuaImp.ScriptList.Count;
 				Config.RecentLua.Add(absolutePath);
 
 				if (!Settings.DisableLuaScriptsOnLoad)
@@ -355,11 +354,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public void RemoveLuaFile(string path)
 		{
-			if (LuaImp is not Win32LuaLibraries luaLibsImpl) return;
-
 			var absolutePath = Path.GetFullPath(path);
 
-			var luaFile = luaLibsImpl.ScriptList.FirstOrDefault(t => absolutePath == t.Path);
+			var luaFile = LuaImp.ScriptList.FirstOrDefault(t => absolutePath == t.Path);
 			if (luaFile is not null)
 			{
 				RemoveLuaFile(luaFile);
@@ -548,22 +545,22 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void UpdateBefore()
 		{
-			if (LuaImp is not Win32LuaLibraries luaLibsImpl || luaLibsImpl.IsUpdateSupressed)
+			if (LuaImp.IsUpdateSupressed)
 			{
 				return;
 			}
 
-			luaLibsImpl.CallFrameBeforeEvent();
+			LuaImp.CallFrameBeforeEvent();
 		}
 
 		protected override void UpdateAfter()
 		{
-			if (LuaImp is not Win32LuaLibraries luaLibsImpl || luaLibsImpl.IsUpdateSupressed)
+			if (LuaImp.IsUpdateSupressed)
 			{
 				return;
 			}
 
-			luaLibsImpl.CallFrameAfterEvent();
+			LuaImp.CallFrameAfterEvent();
 			ResumeScripts(true);
 		}
 
@@ -605,15 +602,14 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="includeFrameWaiters">should frame waiters be waken up? only use this immediately before a frame of emulation</param>
 		public void ResumeScripts(bool includeFrameWaiters)
 		{
-			if (LuaImp is not Win32LuaLibraries luaLibsImpl
-				|| !luaLibsImpl.ScriptList.Any()
-				|| luaLibsImpl.IsUpdateSupressed
+			if (!LuaImp.ScriptList.Any()
+				|| LuaImp.IsUpdateSupressed
 				|| (MainForm.IsTurboing && !Config.RunLuaDuringTurbo))
 			{
 				return;
 			}
 
-			foreach (var lf in luaLibsImpl.ScriptList.Where(static lf => lf.State is LuaFile.RunState.Running && lf.Thread is not null))
+			foreach (var lf in LuaImp.ScriptList.Where(static lf => lf.State is LuaFile.RunState.Running && lf.Thread is not null))
 			{
 				try
 				{
@@ -622,10 +618,10 @@ namespace BizHawk.Client.EmuHawk
 						var prohibit = lf.FrameWaiting && !includeFrameWaiters;
 						if (!prohibit)
 						{
-							var (waitForFrame, terminated) = luaLibsImpl.ResumeScript(lf);
+							var (waitForFrame, terminated) = LuaImp.ResumeScript(lf);
 							if (terminated)
 							{
-								luaLibsImpl.CallExitEvent(lf);
+								LuaImp.CallExitEvent(lf);
 								lf.Stop();
 								DetachRegisteredFunctions(lf);
 								UpdateDialog();
@@ -876,9 +872,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ToggleScriptMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!(LuaImp is Win32LuaLibraries luaLibsImpl)) return;
 			var files = !SelectedFiles.Any() && Settings.ToggleAllIfNoneSelected
-				? luaLibsImpl.ScriptList
+				? LuaImp.ScriptList
 				: SelectedFiles;
 			foreach (var file in files)
 			{
@@ -890,12 +885,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void EnableLuaFile(LuaFile item)
 		{
-			if (!(LuaImp is Win32LuaLibraries luaLibsImpl)) return;
 			try
 			{
 				LuaSandbox.Sandbox(null, () =>
 				{
-					luaLibsImpl.SpawnAndSetFileThread(item.Path, item);
+					LuaImp.SpawnAndSetFileThread(item.Path, item);
 					LuaSandbox.CreateSandbox(item.Thread, Path.GetDirectoryName(item.Path));
 				}, () =>
 				{
@@ -1355,9 +1349,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RefreshScriptMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!(LuaImp is Win32LuaLibraries luaLibsImpl)) return;
 			var files = !SelectedFiles.Any() && Settings.ToggleAllIfNoneSelected
-				? luaLibsImpl.ScriptList
+				? LuaImp.ScriptList
 				: SelectedFiles;
 			foreach (var file in files) RefreshLuaScript(file);
 			UpdateDialog();
@@ -1372,12 +1365,6 @@ namespace BizHawk.Client.EmuHawk
 				// TODO: Maybe make these try-catches more general
 				if (!string.IsNullOrWhiteSpace(InputBox.Text))
 				{
-					if (!(LuaImp is Win32LuaLibraries luaLibsImpl))
-					{
-						WriteLine("can't use the REPL either dude");
-						return;
-					}
-
 					if (InputBox.Text.Contains("emu.frameadvance("))
 					{
 						WriteLine("emu.frameadvance() can not be called from the console");
@@ -1386,12 +1373,12 @@ namespace BizHawk.Client.EmuHawk
 
 					LuaSandbox.Sandbox(null, () =>
 					{
-						luaLibsImpl.ExecuteString($"console.log({InputBox.Text})");
+						LuaImp.ExecuteString($"console.log({InputBox.Text})");
 					}, () =>
 					{
 						LuaSandbox.Sandbox(null, () =>
 						{
-							luaLibsImpl.ExecuteString(InputBox.Text);
+							LuaImp.ExecuteString(InputBox.Text);
 
 							if (OutputBox.Text == consoleBeforeCall)
 							{
@@ -1473,11 +1460,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LuaListView_DoubleClick(object sender, EventArgs e)
 		{
-			if (!(LuaImp is Win32LuaLibraries luaLibsImpl)) return;
 			var index = LuaListView.CurrentCell?.RowIndex;
-			if (index < luaLibsImpl.ScriptList.Count)
+			if (index < LuaImp.ScriptList.Count)
 			{
-				var file = luaLibsImpl.ScriptList[index.Value];
+				var file = LuaImp.ScriptList[index.Value];
 				ToggleLuaScript(file);
 				UpdateDialog();
 			}
@@ -1485,8 +1471,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ToggleLuaScript(LuaFile file)
 		{
-			if (!(LuaImp is Win32LuaLibraries luaLibsImpl)) return;
-
 			if (file.IsSeparator)
 			{
 				return;
@@ -1496,7 +1480,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (file.Enabled && file.Thread is null)
 			{
-				luaLibsImpl.RegisteredFunctions.RemoveForFile(file, Emulator); // First remove any existing registered functions for this file
+				LuaImp.RegisteredFunctions.RemoveForFile(file, Emulator); // First remove any existing registered functions for this file
 				EnableLuaFile(file);
 			}
 			else if (!file.Enabled && file.Thread is not null)
@@ -1508,16 +1492,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DisableLuaScript(LuaFile file)
 		{
-			if (LuaImp is not Win32LuaLibraries luaLibsImpl) return;
-
 			if (file.IsSeparator) return;
 
 			file.State = LuaFile.RunState.Disabled;
 
 			if (file.Thread is not null)
 			{
-				luaLibsImpl.CallExitEvent(file);
-				luaLibsImpl.RegisteredFunctions.RemoveForFile(file, Emulator);
+				LuaImp.CallExitEvent(file);
+				LuaImp.RegisteredFunctions.RemoveForFile(file, Emulator);
 				file.Stop();
 			}
 		}
