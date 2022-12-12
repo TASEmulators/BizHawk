@@ -84,6 +84,7 @@ namespace BizHawk.Client.EmuHawk
 
 			UpdateWindowTitle();
 			UpdateStatusSlots();
+			Tools.UpdateValues<VirtualpadTool>();
 		}
 
 		public void StopMovie(bool saveChanges = true)
