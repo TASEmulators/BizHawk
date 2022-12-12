@@ -147,6 +147,8 @@ namespace BizHawk.Client.EmuHawk
 			CreatePads();
 		}
 
+		protected override void GeneralUpdate() => UpdateAfter();
+
 		protected override void UpdateAfter()
 		{
 			if (!IsHandleCreated || IsDisposed)
