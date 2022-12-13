@@ -310,6 +310,10 @@ namespace BizHawk.Client.EmuHawk
 			if (item.Enabled && LuaImp.ScriptList.Contains(item) == true)
 			{
 				RefreshLuaScript(item);
+				if (!item.Enabled)
+				{
+					UpdateDialog();
+				}
 			}
 		}
 
