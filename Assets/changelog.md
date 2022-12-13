@@ -51,6 +51,9 @@
 	- (ApiHawk) changed injector to include non-public properties when looking for `ApiContainer`
 	- (ApiHawk) deprecated `CoreSystem` enum in favour of `VSystemID` const strings
 	- (Lua) fixed encoding bug which caused e.g. Japanese text to become mojibake/garbled (#190, #2041)
+- Other cores:
+	- ZXHawk:
+		- removed redundant `ZXSpectrumPokeMemory` tool
 
 [13456e51b CPP] (Virtu) changed RTC to use deterministic time when recording instead of system time
 
@@ -138,8 +141,6 @@ seems to have been a null reference on init. saving seems to still function fine
 [114124c82 CPP] BSNES Region Override (#3169) WRITEME
 
 [4bac1bbf1 CPP] (melonDS) fixed SaveRAM not getting written to disk when unloading/reloading core (#3165)
-
-[6cb44e0e8 Yoshi] (ZXHawk) removed redundant `ZXSpectrumPokeMemory` tool
 
 [0ff69c560 CPP] fixed SXROM Detection (#3170) WRITEME
 
