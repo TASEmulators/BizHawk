@@ -1,0 +1,10 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="$(ProjectDir)../NET48ExternalToolForm.targets" />
+	<Import Project="$(ProjectDir)../ExtToolCommon.props" />
+	<PropertyGroup>
+		<LangVersion>6</LangVersion>
+	</PropertyGroup>
+	<ItemGroup>
+		<Compile Include="**/*.fs" />
+	</ItemGroup>
+</Project>
