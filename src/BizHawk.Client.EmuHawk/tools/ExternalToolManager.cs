@@ -138,7 +138,20 @@ namespace BizHawk.Client.EmuHawk
 				var toolAttribute = allAttrs.OfType<ExternalToolAttribute>().First();
 				if (toolAttribute.LoadAssemblyFiles != null)
 				{
-					foreach (var depFilename in toolAttribute.LoadAssemblyFiles) Assembly.LoadFrom($"{_paths[PathEntryCollection.GLOBAL, "External Tools"].Path}/{depFilename}");
+					foreach (var depFilename in toolAttribute.LoadAssemblyFiles)
+					{
+						var s = $"{_paths[PathEntryCollection.GLOBAL, "External Tools"].Path}/{depFilename}";
+						Console.WriteLine($"=======\nloading {s}");
+						try
+						{
+							Console.WriteLine(Assembly.LoadFrom(s).FullName);
+						}
+						catch (Exception e)
+						{
+							Console.WriteLine(e);
+							throw;
+						}
+					}
 				}
 
 				item.Image = null; // no errors, remove error icon

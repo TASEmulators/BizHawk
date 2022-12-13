@@ -6,5 +6,6 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<Compile Include="**/*.fs" />
+		<NET48ExternalToolFormDependency Include="$(OutputPath)FSharp.Core.dll" />
 	</ItemGroup>
 </Project>

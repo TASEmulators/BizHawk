@@ -640,8 +640,13 @@ namespace BizHawk.Client.EmuHawk
 					_owner.ShowMessageBox("It seems that the object CustomMainForm does not have a public default constructor. Please review the code.", "No, no, no. Wrong Way !", EMsgBoxIcon.Warning);
 					return null;
 				}
-				catch (TypeLoadException)
+				catch (TypeLoadException e)
 				{
+					Console.WriteLine("=======");
+					Console.WriteLine(e);
+					Console.WriteLine("=======");
+					Console.WriteLine(e.InnerException);
+					Console.WriteLine("=======");
 					_owner.ShowMessageBox("It seems that the object CustomMainForm does not exists. Please review the code.", "No, no, no. Wrong Way !", EMsgBoxIcon.Warning);
 					return null;
 				}
