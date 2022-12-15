@@ -2,13 +2,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
-	public class MGBAMemoryCallbackSystem : IMemoryCallbackSystem
+	public class MGBAMemoryCallbackSystem : IMemoryCallbackSystem, IDisposable
 	{
-		private readonly MGBAHawk _mgba;
+		private LibmGBA _mgba;
+		private IntPtr _core;
 		private readonly LibmGBA.MemCallback _readWriteCallback;
 		private readonly LibmGBA.ExecCallback _executeCallback;
 		private readonly Dictionary<uint, MemoryCallbackDelegate> _readCallbacks = new();
@@ -16,9 +18,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		private readonly Dictionary<uint, MemoryCallbackDelegate> _execCallbacks = new();
 		private readonly List<CallbackContainer> _callbacks = new();
 
-		public MGBAMemoryCallbackSystem(MGBAHawk mgba)
+		public MGBAMemoryCallbackSystem(LibmGBA mgba, IntPtr core)
 		{
 			_mgba = mgba;
+			_core = core;
 			_readWriteCallback = RunReadWriteCallback;
 			_executeCallback = RunExecCallback;
 		}
@@ -63,12 +66,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			if (container.Callback.Type == MemoryCallbackType.Execute)
 			{
-				MGBAHawk.ZZHacky.BizSetExecCallback(_mgba.Core, _executeCallback);
+				_mgba.BizSetExecCallback(_core, _executeCallback);
 			}
 			else
 			{
-				container.ID = MGBAHawk.ZZHacky.BizSetWatchpoint(_mgba.Core, callback.Address.Value, container.WatchPointType);
-				MGBAHawk.ZZHacky.BizSetMemCallback(_mgba.Core, _readWriteCallback);
+				container.ID = _mgba.BizSetWatchpoint(_core, callback.Address.Value, container.WatchPointType);
+				_mgba.BizSetMemCallback(_core, _readWriteCallback);
 			}
 
 			var cbDict = container.Callback.Type switch
@@ -101,12 +104,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 				if (!HasExecutes)
 				{
-					MGBAHawk.ZZHacky.BizSetExecCallback(_mgba.Core, null);
+					_mgba.BizSetExecCallback(_core, null);
 				}
 			}
 			else
 			{
-				if (!MGBAHawk.ZZHacky.BizClearWatchpoint(_mgba.Core, cb.ID))
+				if (!_mgba.BizClearWatchpoint(_core, cb.ID))
 				{
 					throw new InvalidOperationException("Unable to clear watchpoint???");
 				}
@@ -126,7 +129,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 				if (!HasReads && !HasWrites)
 				{
-					MGBAHawk.ZZHacky.BizSetMemCallback(_mgba.Core, null);
+					_mgba.BizSetMemCallback(_core, null);
 				}
 			}
 		}
@@ -196,31 +199,37 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				cb?.Invoke(pc, 0, (uint)MemoryCallbackFlags.AccessExecute);
 			}
 		}
-	}
 
-	internal class CallbackContainer
-	{
-		public CallbackContainer(IMemoryCallback callBack)
+		public void Dispose()
 		{
-			Callback = callBack;
+			_mgba = null;
+			_core = IntPtr.Zero;
 		}
 
-		public IMemoryCallback Callback { get; }
-
-		// the core returns this when setting a wp and needs it to clear that wp
-		public int ID { get; set; }
-
-		public LibmGBA.mWatchpointType WatchPointType
+		private class CallbackContainer
 		{
-			get
+			public CallbackContainer(IMemoryCallback callBack)
 			{
-				return Callback.Type switch
+				Callback = callBack;
+			}
+
+			public IMemoryCallback Callback { get; }
+
+			// the core returns this when setting a wp and needs it to clear that wp
+			public long ID { get; set; }
+
+			public LibmGBA.mWatchpointType WatchPointType
+			{
+				get
 				{
-					MemoryCallbackType.Read => LibmGBA.mWatchpointType.WATCHPOINT_READ,
-					MemoryCallbackType.Write => LibmGBA.mWatchpointType.WATCHPOINT_WRITE,
-					MemoryCallbackType.Execute => throw new NotImplementedException("Executes can not be used from watch points."),
-					_ => throw new InvalidOperationException("Invalid callback type"),
-				};
+					return Callback.Type switch
+					{
+						MemoryCallbackType.Read => LibmGBA.mWatchpointType.WATCHPOINT_READ,
+						MemoryCallbackType.Write => LibmGBA.mWatchpointType.WATCHPOINT_WRITE,
+						MemoryCallbackType.Execute => throw new NotImplementedException("Executes can not be used from watch points."),
+						_ => throw new InvalidOperationException("Invalid callback type"),
+					};
+				}
 			}
 		}
 	}

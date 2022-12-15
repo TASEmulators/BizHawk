@@ -1,19 +1,16 @@
 ﻿using System;
-using System.Text;
+
 using BizHawk.BizInvoke;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
-	[PortedCore(CoreNames.Mgba, "endrift", "0.9.1", "https://mgba.io/")]
+	[PortedCore(CoreNames.Mgba, "endrift", "0.10", "https://mgba.io/")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(IRegionable) })]
-	public partial class MGBAHawk : IEmulator, IVideoProvider, ISoundProvider, IGBAGPUViewable,
-		ISaveRam, IStatable, IInputPollable, ISettable<MGBAHawk.Settings, MGBAHawk.SyncSettings>,
-		IDebuggable
+	public partial class MGBAHawk
 	{
 		private static readonly LibmGBA LibmGBA;
-		public static LibmGBA ZZHacky => LibmGBA;
 
 		static MGBAHawk()
 		{
@@ -22,24 +19,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			LibmGBA = BizInvoker.GetInvoker<LibmGBA>(resolver, CallingConventionAdapters.Native);
 		}
 
-		[CoreConstructor(VSystemID.Raw.GBA)]
-		public MGBAHawk(byte[] file, CoreComm comm, SyncSettings syncSettings, Settings settings, bool deterministic, GameInfo game)
-		{
-			_syncSettings = syncSettings ?? new SyncSettings();
-			_settings = settings ?? new Settings();
+		private IntPtr Core;
 
-			var bios = comm.CoreFileProvider.GetFirmware(new("GBA", "Bios"));
+		[CoreConstructor(VSystemID.Raw.GBA)]
+		public MGBAHawk(CoreLoadParameters<Settings, SyncSettings> lp)
+		{
+			_syncSettings = lp.SyncSettings ?? new();
+			_settings = lp.Settings ?? new();
+
+			var bios = lp.Comm.CoreFileProvider.GetFirmware(new("GBA", "Bios"));
 			if (bios is { Length: not 0x4000 }) throw new InvalidOperationException("BIOS must be exactly 16384 bytes!");
-			if (deterministic && bios is null) throw new MissingFirmwareException("A BIOS is required for deterministic recordings!");
-			DeterministicEmulation = deterministic
+			if (lp.DeterministicEmulationRequested && bios is null) throw new MissingFirmwareException("A BIOS is required for deterministic recordings!");
+			DeterministicEmulation = lp.DeterministicEmulationRequested
 				|| (bios is not null && !_syncSettings.RTCUseRealTime); // in this case, the core is deterministic even though it wasn't asked to be
+			var rom = lp.Roms[0].FileData;
+			var overrides = GetOverrideInfo(_syncSettings);
 
 			Core = LibmGBA.BizCreate(
 				bios,
-				file,
-				file.Length,
-				GetOverrideInfo(_syncSettings),
+				rom,
+				rom.Length,
+				ref overrides,
 				skipBios: _syncSettings.SkipBios);
+
 			if (Core == IntPtr.Zero)
 			{
 				throw new InvalidOperationException($"{nameof(LibmGBA.BizCreate)}() returned NULL!  Bad BIOS? and/or ROM?");
@@ -47,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			try
 			{
-				CreateMemoryDomains(file.Length);
+				CreateMemoryDomains(rom.Length);
 				var ser = new BasicServiceProvider(this);
 				ser.Register<IDisassemblable>(new ArmV4Disassembler());
 				ser.Register<IMemoryDomains>(_memoryDomains);
@@ -57,9 +59,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 				const string TRACE_HEADER = "ARM7: PC, machine code, mnemonic, operands, registers";
 				Tracer = new TraceBuffer(TRACE_HEADER);
-				_tracecb = msg => Tracer.Put(_traceInfo(msg));
+				_tracecb = MakeTrace;
 				ser.Register(Tracer);
-				MemoryCallbacks = new MGBAMemoryCallbackSystem(this);
+				_memoryCallbacks = new(LibmGBA, Core);
 			}
 			catch
 			{
@@ -67,117 +69,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				throw;
 			}
 
-			InputCallback = new LibmGBA.InputCallback(InputCb);
+			// most things are already handled in the core, this is just for event.oninputpoll
+			InputCallback = InputCallbacks.Call;
 			LibmGBA.BizSetInputCallback(Core, InputCallback);
 		}
-
-		public IEmulatorServiceProvider ServiceProvider { get; }
-
-		public ControllerDefinition ControllerDefinition => GBAController;
-
-		private ITraceable Tracer { get; }
-
-		private LibmGBA.TraceCallback _tracecb { get; set; }
-
-		private TraceInfo _traceInfo(string msg)
-		{
-			var disasm = msg.Split('|')[1];
-			var split = disasm.Split(':');
-			var machineCode = split[0].PadLeft(8);
-			var instruction = split[1].Trim();
-			var regs = GetCpuFlagsAndRegisters();
-			var wordSize = (regs["CPSR"].Value & 32) == 0 ? 4UL : 2UL;
-			var pc = regs["R15"].Value - wordSize * 2;
-			var sb = new StringBuilder();
-
-			for (var i = 0; i < RegisterNames.Length; i++)
-			{
-				sb.Append($" { RegisterNames[i] }:{ regs[RegisterNames[i]].Value:X8}");
-			}
-
-			return new(
-				disassembly: $"{pc:X8}: { machineCode }  { instruction }".PadRight(50),
-				registerInfo: sb.ToString());
-		}
-
-		public bool FrameAdvance(IController controller, bool render, bool renderSound = true)
-		{
-			if (controller.IsPressed("Power"))
-			{
-				LibmGBA.BizReset(Core);
-
-				// BizReset caused memorydomain pointers to change.
-				WireMemoryDomainPointers();
-			}
-
-			LibmGBA.BizSetTraceCallback(Core, Tracer.IsEnabled() ? _tracecb : null);
-
-			IsLagFrame = LibmGBA.BizAdvance(
-				Core,
-				LibmGBA.GetButtons(controller),
-				render ? _videobuff : _dummyvideobuff,
-				ref _nsamp,
-				renderSound ? _soundbuff : _dummysoundbuff,
-				RTCTime(),
-				(short)controller.AxisValue("Tilt X"),
-				(short)controller.AxisValue("Tilt Y"),
-				(short)controller.AxisValue("Tilt Z"),
-				(byte)(255 - controller.AxisValue("Light Sensor")));
-
-			if (IsLagFrame)
-			{
-				LagCount++;
-			}
-
-			// this should be called in hblank on the appropriate line, but until we implement that, just do it here
-			_scanlinecb?.Invoke();
-
-			Frame++;
-
-			return true;
-		}
-
-		public int Frame { get; private set; }
-
-		public string SystemId => VSystemID.Raw.GBA;
-
-		public bool DeterministicEmulation { get; }
-
-		public void ResetCounters()
-		{
-			Frame = 0;
-			LagCount = 0;
-			IsLagFrame = false;
-		}
-
-		public void Dispose()
-		{
-			if (Core != IntPtr.Zero)
-			{
-				LibmGBA.BizDestroy(Core);
-				Core = IntPtr.Zero;
-			}
-		}
-
-		public GBAGPUMemoryAreas GetMemoryAreas()
-		{
-			return _gpumem;
-		}
-
-		public void SetScanlineCallback(Action callback, int scanline)
-		{
-			_scanlinecb = callback;
-		}
-
-		private readonly byte[] _saveScratch = new byte[262144];
-		internal IntPtr Core;
 
 		private static LibmGBA.OverrideInfo GetOverrideInfo(SyncSettings syncSettings)
 		{
 			var ret = new LibmGBA.OverrideInfo
 			{
 				Savetype = syncSettings.OverrideSaveType,
-				Hardware = LibmGBA.Hardware.None
+				Hardware = LibmGBA.Hardware.None,
+				IdleLoop = LibmGBA.OverrideInfo.IDLE_LOOP_NONE,
+				VbaBugCompat = syncSettings.OverrideVbaBugCompat,
+				DetectPokemonRomHacks = syncSettings.OverridePokemonRomhackDetect
 			};
 
 			if (syncSettings.OverrideRtc is SyncSettings.HardwareSelection.Autodetect)
@@ -233,27 +138,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			return ret;
 		}
 
-		private Action _scanlinecb;
-
-		private GBAGPUMemoryAreas _gpumem;
+		private static readonly DateTime _epoch = new(1970, 1, 1);
 
 		private long RTCTime()
 		{
 			if (!DeterministicEmulation && _syncSettings.RTCUseRealTime)
 			{
-				return (long)DateTime.Now.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+				return (long)DateTime.Now.Subtract(_epoch).TotalSeconds;
 			}
 
-			long baseTime = (long)_syncSettings.RTCInitialTime.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+			long baseTime = (long)_syncSettings.RTCInitialTime.Subtract(_epoch).TotalSeconds;
 			long increment = Frame * 4389L >> 18;
 			return baseTime + increment;
 		}
-
-		public static readonly ControllerDefinition GBAController = new ControllerDefinition("GBA Controller")
-		{
-			BoolButtons = { "Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "L", "R", "Power" }
-		}.AddXYZTriple("Tilt {0}", (-32767).RangeTo(32767), 0)
-			.AddAxis("Light Sensor", 0.RangeTo(255), 0)
-			.MakeImmutable();
 	}
 }

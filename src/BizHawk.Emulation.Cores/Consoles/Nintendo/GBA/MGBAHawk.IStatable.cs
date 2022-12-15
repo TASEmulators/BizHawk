@@ -7,18 +7,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
 	public partial class MGBAHawk : IStatable
 	{
-		private byte[] _savebuff = new byte[0];
+		private byte[] _savebuff = Array.Empty<byte>();
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
-			IntPtr p = IntPtr.Zero;
-			int size = 0;
-			if (!LibmGBA.BizStartGetState(Core, ref p, ref size))
+			if (!LibmGBA.BizStartGetState(Core, out var p, out var size))
 			{
 				throw new InvalidOperationException("Core failed to save!");
 			}
 
-			if (size != _savebuff.Length)
+			if (size > _savebuff.Length)
 			{
 				_savebuff = new byte[size];
 			}
@@ -37,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public void LoadStateBinary(BinaryReader reader)
 		{
 			int length = reader.ReadInt32();
-			if (length != _savebuff.Length)
+			if (length > _savebuff.Length)
 			{
 				_savebuff = new byte[length];
 			}
