@@ -18,4 +18,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool EnableSoundEffects { get; set; }
 	}
+
+	public static class SoundPlayerExtensions
+	{
+		public static void PlayNoExceptions(this SoundPlayer sound)
+		{
+			try
+			{
+				sound.Play();
+			}
+			catch
+			{
+			}
+		}
+	}
 }

@@ -1,28 +1,25 @@
 using System;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class RCheevos
 	{
-		private static readonly HttpClient _http = new();
+		private static readonly HttpClient _http = new() { DefaultRequestHeaders = { ConnectionClose = true } };
 
 		private static async Task<byte[]> HttpGet(string url)
 		{
-			_http.DefaultRequestHeaders.ConnectionClose = false;
 			var response = await _http.GetAsync(url).ConfigureAwait(false);
 			if (response.IsSuccessStatusCode)
 			{
 				return await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
 			}
-			return null;
+			return new byte[1];
 		}
 
 		private static async Task<byte[]> HttpPost(string url, string post)
 		{
-			_http.DefaultRequestHeaders.ConnectionClose = true;
 			HttpResponseMessage response;
 			try
 			{
@@ -30,11 +27,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception e)
 			{
-				return Encoding.UTF8.GetBytes(e.ToString()); // bleh
+				Console.WriteLine(e);
+				return new byte[1];
 			}
 			if (!response.IsSuccessStatusCode)
 			{
-				return null;
+				return new byte[1];
 			}
 			return await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
 		}

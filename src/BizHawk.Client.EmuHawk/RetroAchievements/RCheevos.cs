@@ -436,7 +436,7 @@ namespace BizHawk.Client.EmuHawk
 							var prefix = HardcoreMode ? "[HARDCORE] " : "";
 							_mainForm.AddOnScreenMessage($"{prefix}Achievement Unlocked!");
 							_mainForm.AddOnScreenMessage(cheevo.Description);
-							if (EnableSoundEffects) _unlockSound.Play();
+							if (EnableSoundEffects) _unlockSound.PlayNoExceptions();
 
 							if (cheevo.IsOfficial)
 							{
@@ -457,7 +457,7 @@ namespace BizHawk.Client.EmuHawk
 							var prefix = HardcoreMode ? "[HARDCORE] " : "";
 							_mainForm.AddOnScreenMessage($"{prefix}Achievement Primed!");
 							_mainForm.AddOnScreenMessage(cheevo.Description);
-							if (EnableSoundEffects) _infoSound.Play();
+							if (EnableSoundEffects) _infoSound.PlayNoExceptions();
 						}
 
 						break;
@@ -476,7 +476,7 @@ namespace BizHawk.Client.EmuHawk
 								CurrentLboard = lboard;
 								_mainForm.AddOnScreenMessage($"Leaderboard Attempt Started!");
 								_mainForm.AddOnScreenMessage(lboard.Description);
-								if (EnableSoundEffects) _lboardStartSound.Play();
+								if (EnableSoundEffects) _lboardStartSound.PlayNoExceptions();
 							}
 						}
 
@@ -498,7 +498,7 @@ namespace BizHawk.Client.EmuHawk
 
 								_mainForm.AddOnScreenMessage($"Leaderboard Attempt Failed! ({lboard.Score})");
 								_mainForm.AddOnScreenMessage(lboard.Description);
-								if (EnableSoundEffects) _lboardFailedSound.Play();
+								if (EnableSoundEffects) _lboardFailedSound.PlayNoExceptions();
 							}
 
 							lboard.SetScore(0);
@@ -536,7 +536,7 @@ namespace BizHawk.Client.EmuHawk
 
 								_mainForm.AddOnScreenMessage($"Leaderboard Attempt Complete! ({lboard.Score})");
 								_mainForm.AddOnScreenMessage(lboard.Description);
-								if (EnableSoundEffects) _unlockSound.Play();
+								if (EnableSoundEffects) _unlockSound.PlayNoExceptions();
 							}
 						}
 
@@ -563,7 +563,7 @@ namespace BizHawk.Client.EmuHawk
 							var prefix = HardcoreMode ? "[HARDCORE] " : "";
 							_mainForm.AddOnScreenMessage($"{prefix}Achievement Unprimed!");
 							_mainForm.AddOnScreenMessage(cheevo.Description);
-							if (EnableSoundEffects) _infoSound.Play();
+							if (EnableSoundEffects) _infoSound.PlayNoExceptions();
 						}
 
 						break;
