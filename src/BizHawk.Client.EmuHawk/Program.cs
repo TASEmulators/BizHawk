@@ -52,7 +52,7 @@ namespace BizHawk.Client.EmuHawk
 						continue;
 					}
 					// else it's missing or corrupted
-					using (ExceptionBox box = new($"EmuHawk needs {soToLoad} in order to run! You will need to install it via your distro's package manager. (EmuHawk will now close.) Internal error message: {OSTC.LinkedLibManager.GetErrorMessage()}"))
+					using (ExceptionBox box = new($"EmuHawk needs {soToLoad} in order to run! You will need to install it via your distro's package manager. (EmuHawk will now close.)"))
 					{
 						box.ShowDialog();
 					}
