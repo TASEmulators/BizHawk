@@ -58,6 +58,8 @@
 		- fixed `InvalidOperationException` when using SMS peripherals (#3282)
 	- Snes9x:
 		- fixed typo in sound settings bitfield (#1208)
+	- TurboNyma:
+		- updated to Mednafen 1.29.0
 	- Virtu:
 		- fixed some internal state not being overwritten by savestates
 		- changed RTC to use deterministic time when recording instead of (host) system time
@@ -84,8 +86,6 @@
 [e6d74c316 CPP] (Faust) updated to Mednafen 1.29.0
 
 [e6d74c316 CPP] (HyperNyma) updated to Mednafen 1.29.0
-
-[e6d74c316 CPP] (TurboNyma) updated to Mednafen 1.29.0
 
 [e6d74c316 CPP] (NeoPop) updated to Mednafen 1.29.0
 
