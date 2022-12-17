@@ -80,6 +80,7 @@
 		- updated to Mednafen 1.29.0
 	- NesHawk:
 		- relaxed restriction on VRC1 PRG registers, so they can be larger than the original VRC1 chip allows (for rom-expanding hacks)
+		- "un-implemented" `ICycleTiming` so that NesHawk no longer tries to use the cycle timing intended for SubNesHawk
 	- Nymashock:
 		- updated to Mednafen 1.29.0
 		- fixed disc switching
@@ -106,8 +107,6 @@
 		- removed redundant `ZXSpectrumPokeMemory` tool
 
 [c496c97c8 CPP] remove some render off logic (this might not be sync safe), move threaded rendering to a sync setting (this probably doesn't affect sync, but best be safe here) WRITEME
-
-[97a11ec08 CPP] fix NESHawk mistakenly having cycle count complained about WRITEME
 
 [db7d72be9 Morilli] update nonfunctional bsnes links WRITEME
 
