@@ -51,6 +51,9 @@
 	- (ApiHawk) changed injector to include non-public properties when looking for `ApiContainer`
 	- (ApiHawk) deprecated `CoreSystem` enum in favour of `VSystemID` const strings
 	- (Lua) fixed encoding bug which caused e.g. Japanese text to become mojibake/garbled (#190, #2041)
+- New and graduating cores:
+	- TIC-80:
+		- added a new experimental core for the TIC-80 fantasy computer, using nesbox's own reference implementation
 - Other cores:
 	- BSNESv115+:
 		- reworked Payload peripheral and fixed Virtual Pads
@@ -87,8 +90,6 @@
 		- updated to Mednafen 1.29.0
 	- ZXHawk:
 		- removed redundant `ZXSpectrumPokeMemory` tool
-
-[2c3b6b3cd CPP] (TIC-80) new core (nesbox' own reference implementation)
 
 [0174abde6 CPP] (a26) fix crash when pushing Select on Karate title screen
 
