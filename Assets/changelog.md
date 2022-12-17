@@ -78,6 +78,18 @@
 		- removed redundant `AmstradCpcPokeMemory` tool
 	- Faust:
 		- updated to Mednafen 1.29.0
+	- Gambatte:
+		- improved MBC1/MBC1M emulation
+		- improved HuC1 emulation and implement HuC1 IR support
+		- improved HuC3 emulation and implement support for mapper sound (HuC3 is currently the only use case)
+		- implemented MMM01 emulation
+		- implemented M161 emulation
+		- improved heuristics for various multicart mappers and remove the multicart detection setting (now effectively always true)
+		- cleaned up the mapper internals, IR, and RTC code
+		- made various optimizations to the CPU loop and read/write code (around 10-15% performance increase)
+		- trimmed down initial time settings to a single setting, using total number of seconds
+		- implemented quirk with bit 4 of rLCDC, fixes cgb-acid-hell testrom compliance
+		- fixed sprite priority in CGB-DMG mode
 	- Genplus-gx:
 		- stopped byteswapping Z80 domains (#3290)
 		- changed default peripheral to 3-button Genesis gamepad (#2775, #3262)
@@ -127,8 +139,6 @@
 [c496c97c8 CPP] remove some render off logic (this might not be sync safe), move threaded rendering to a sync setting (this probably doesn't affect sync, but best be safe here) WRITEME
 
 [db7d72be9 Morilli] update nonfunctional bsnes links WRITEME
-
-[a68c835a4 CPP] (Gambatte) update gambatte WRITEME (m161, MBC1, HuC1, HuC3, MMM01)
 
 [6e4a5a96a CPP] (melonDS) reset caches after load state WRITEME
 
