@@ -210,7 +210,7 @@ auto CPU::checkFPUExceptions() -> bool {
 
 #define CHECK_FPE_IMPL(type, operation, convert) ({ \
   fenv.clearExcept(); \
-  type res = [&]() noinline -> type { return operation; }(); \
+  type res = [&]() noinline { return operation; }(); \
   if (checkFPUExceptions<convert>()) return; \
   (res); \
 })

@@ -596,6 +596,7 @@ EXPORT bool Init(LoadData* loadData, ControllerType* controllers, bool isPal, bo
 	ares::Nintendo64::BobDeinterlace = bobDeinterlace;
 
 	root->power(false);
+	root->run(); // HACK, first frame dirties a ton of memory, so we emulate it then seal (this should be investigated, not sure why 60MBish of memory would be dirtied in a single frame?)
 	return true;
 }
 
