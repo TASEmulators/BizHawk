@@ -60,10 +60,12 @@
 		- updated to Mednafen 1.29.0
 	- Nymashock:
 		- updated to Mednafen 1.29.0
+		- fixed disc switching
 	- SameBoy:
 		- updated to interim version after 0.14.7, fixing some bugs and adding GB palette customiser (#3185, #3239)
 	- Saturnus:
 		- updated to Mednafen 1.29.0
+		- fixed disc switching
 	- SMSHawk:
 		- fixed `InvalidOperationException` when using SMS peripherals (#3282)
 	- Snes9x:
@@ -92,8 +94,6 @@
 [0174abde6 CPP] (a26) fix crash when pushing Select on Karate title screen
 
 [f5d8c0fb1 Yoshi] (Genplus-gx) changed default peripheral to 3-button Genesis gamepad (#2775, #3262)
-
-[1c27c73c8 CPP] fixed disc switching for Nymashock and Saturnus
 
 [cd9327a10 CPP] (mGBA) updated to interim version after 0.9.3
 
