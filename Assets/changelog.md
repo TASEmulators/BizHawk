@@ -70,6 +70,7 @@
 		- improved peripheral selection for P1
 		- reimplemented MSU1 properly
 		- added fast DSP and fast coprocessor settings
+		- fixed crash when loading a savestate after a reset (#3173)
 	- CPCHawk:
 		- removed redundant `AmstradCpcPokeMemory` tool
 	- Faust:
@@ -126,8 +127,6 @@
 seems to have been a null reference on init. saving seems to still function fine after this change WRITEME
 
 [a68c835a4 CPP] (Gambatte) update gambatte WRITEME (m161, MBC1, HuC1, HuC3, MMM01)
-
-[3726cc629 Morilli] fixed #3173 by only calling bus.map() on initial power, not subsequent calls (#3176) WRITEME
 
 [6e4a5a96a CPP] (melonDS) reset caches after load state WRITEME
 
