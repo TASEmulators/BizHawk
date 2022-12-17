@@ -93,6 +93,7 @@
 	- NesHawk:
 		- relaxed restriction on VRC1 PRG registers, so they can be larger than the original VRC1 chip allows (for rom-expanding hacks)
 		- fixed PGR writes for VRC1 not using mask for address
+		- fixed SXROM detection (#3168)
 		- "un-implemented" `ICycleTiming` so that NesHawk no longer tries to use the cycle timing intended for SubNesHawk
 	- Nymashock:
 		- updated to Mednafen 1.29.0
@@ -137,8 +138,6 @@ seems to have been a null reference on init. saving seems to still function fine
 [4bfb3ba48 CPP] (melonDS) don't state these big caches WRITEME
 
 [46c2d6faf CPP] (melonDS) Cleanups & Updates & Prep For Multithread Rendering Support & Prep For DSi NAND bs (#3174) WRITEME
-
-[0ff69c560 CPP] fixed SXROM Detection (#3170) WRITEME
 
 [7b857e7ac alyosha] SMS: only update tone on second byte write, filter out highest frequency, fixes #3160 WRITEME
 
