@@ -52,6 +52,8 @@
 	- (ApiHawk) deprecated `CoreSystem` enum in favour of `VSystemID` const strings
 	- (Lua) fixed encoding bug which caused e.g. Japanese text to become mojibake/garbled (#190, #2041)
 - Other cores:
+	- Snes9x:
+		- fixed typo in sound settings bitfield (#1208)
 	- Virtu:
 		- fixed some internal state not being overwritten by savestates
 		- changed RTC to use deterministic time when recording instead of (host) system time
@@ -97,8 +99,6 @@
 [3fe168ad0 CPP] (melonDS) updated to interim version after 0.9.4
 
 [9a73be0e2 CPP] (SameBoy) updated to interim version after 0.14.7, fixing some bugs and adding GB palette customiser (#3185, #3239)
-
-[c93ceae46 Yoshi] fixed typo in Snes9x sound settings bitfield (#1208)
 
 [25fb81698 CPP] (Libretro) rewrote Libretro host implementation, fixing some crashes, adding memory domains, and slightly improving performance (#3211, #3216)
 
