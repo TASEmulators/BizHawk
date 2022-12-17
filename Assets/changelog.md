@@ -52,6 +52,8 @@
 	- (ApiHawk) deprecated `CoreSystem` enum in favour of `VSystemID` const strings
 	- (Lua) fixed encoding bug which caused e.g. Japanese text to become mojibake/garbled (#190, #2041)
 - Other cores:
+	- SMSHawk:
+		- fixed `InvalidOperationException` when using SMS peripherals (#3282)
 	- Snes9x:
 		- fixed typo in sound settings bitfield (#1208)
 	- Virtu:
@@ -61,8 +63,6 @@
 		- removed redundant `ZXSpectrumPokeMemory` tool
 
 [948049bb2 CPP] (Genplus-gx) stopped byteswapping Z80 domains (#3290)
-
-[5afb6ca45 Yoshi] fixed `InvalidOperationException` when using SMS peripherals (#3282)
 
 [1d4e7dd3f Morilli] (BSNESv115+) rework Payload peripheral and fix Virtual Pads
 
