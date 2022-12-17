@@ -52,6 +52,8 @@
 	- (ApiHawk) deprecated `CoreSystem` enum in favour of `VSystemID` const strings
 	- (Lua) fixed encoding bug which caused e.g. Japanese text to become mojibake/garbled (#190, #2041)
 - Other cores:
+	- Faust:
+		- updated to Mednafen 1.29.0
 	- HyperNyma:
 		- updated to Mednafen 1.29.0
 	- NeoPop:
@@ -92,8 +94,6 @@
 [f5d8c0fb1 Yoshi] (Genplus-gx) changed default peripheral to 3-button Genesis gamepad (#2775, #3262)
 
 [1c27c73c8 CPP] fixed disc switching for Nymashock and Saturnus
-
-[e6d74c316 CPP] (Faust) updated to Mednafen 1.29.0
 
 [cd9327a10 CPP] (mGBA) updated to interim version after 0.9.3
 
