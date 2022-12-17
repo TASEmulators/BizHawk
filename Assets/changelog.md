@@ -60,6 +60,7 @@
 	- BSNESv115+:
 		- reworked Payload peripheral and fixed Virtual Pads
 		- improved peripheral selection for P1
+		- reimplemented MSU1 properly
 		- added fast DSP and fast coprocessor settings
 	- CPCHawk:
 		- removed redundant `AmstradCpcPokeMemory` tool
@@ -115,10 +116,6 @@
 
 [688adf27e CPP] resolve #3192
 seems to have been a null reference on init. saving seems to still function fine after this change WRITEME
-
-[339d34413 Morilli] Implement msu1 handling for bsnes115+ (#3190) WRITEME
-
-[da2a20e55 Morilli] BSNESv115+: Some general cleanup, remove nonfunctional msu1 code WRITEME
 
 [a68c835a4 CPP] (Gambatte) update gambatte WRITEME (m161, MBC1, HuC1, HuC3, MMM01)
 
