@@ -65,6 +65,8 @@
 - Other cores:
 	- A2600Hawk:
 		- fixed crash when pushing Select on Karate title screen
+	- (old) BSNES:
+		- fixed graphics debugger exception when freezing a tile (#3195)
 	- BSNESv115+:
 		- reworked Payload peripheral and fixed Virtual Pads
 		- improved peripheral selection for P1
@@ -125,8 +127,6 @@
 [c496c97c8 CPP] remove some render off logic (this might not be sync safe), move threaded rendering to a sync setting (this probably doesn't affect sync, but best be safe here) WRITEME
 
 [db7d72be9 Morilli] update nonfunctional bsnes links WRITEME
-
-[672ad1579 Morilli] fixed #3195 WRITEME
 
 [a68c835a4 CPP] (Gambatte) update gambatte WRITEME (m161, MBC1, HuC1, HuC3, MMM01)
 
