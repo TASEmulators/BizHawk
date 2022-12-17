@@ -19,7 +19,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 	{
 		private readonly LibMelonDS _core;
 		private readonly NDSDisassembler _disassembler;
-		private SpeexResampler _resampler;
 
 		[CoreConstructor(VSystemID.Raw.NDS)]
 		public NDS(CoreLoadParameters<NDSSettings, NDSSyncSettings> lp)
@@ -210,22 +209,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				_core.SetThreadStartCallback(_threadstartcb);
 			}
 
-			_resampler = new SpeexResampler(SpeexResampler.Quality.QUALITY_DEFAULT, 32768, 44100, 32768, 44100, null, this);
-			_serviceProvider.Register<ISoundProvider>(_resampler);
-
 			_disassembler = new(_core);
 			_serviceProvider.Register<IDisassemblable>(_disassembler);
 
 			const string TRACE_HEADER = "ARM9+ARM7: Opcode address, opcode, registers (r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, SP, LR, PC, Cy, CpuMode)";
 			Tracer = new TraceBuffer(TRACE_HEADER);
 			_serviceProvider.Register(Tracer);
-		}
-
-		public override void Dispose()
-		{
-			base.Dispose();
-			_resampler?.Dispose();
-			_resampler = null;
 		}
 
 		private static bool RomIsWare(byte[] file)
