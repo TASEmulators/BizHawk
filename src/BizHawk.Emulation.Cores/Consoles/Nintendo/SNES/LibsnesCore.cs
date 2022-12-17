@@ -100,7 +100,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			// start up audio resampler
 			InitAudio();
-			ser.Register<ISoundProvider>(_resampler);
 
 			// strip header
 			if ((romData?.Length & 0x7FFF) == 512)
@@ -218,7 +217,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		private IController _controller;
 		private readonly LoadParams _currLoadParams;
-		private SpeexResampler _resampler;
 		private int _timeFrameCounter;
 		private bool _disposed;
 
@@ -622,16 +620,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		//  var ret = api.snes_get_memory_data(id);
 		//  return ret;
 		//}
-
-		private void InitAudio()
-		{
-			_resampler = new SpeexResampler((SpeexResampler.Quality)6, 64081, 88200, 32041, 44100);
-		}
-
-		private void snes_audio_sample(ushort left, ushort right)
-		{
-			_resampler.EnqueueSample((short)left, (short)right);
-		}
 
 		private void RefreshPalette()
 		{
