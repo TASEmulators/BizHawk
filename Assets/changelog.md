@@ -73,6 +73,7 @@
 		- rewrote Libretro host implementation, fixing some crashes, adding memory domains, and slightly improving performance (#3211, #3216)
 	- melonDS:
 		- updated to interim version after 0.9.4
+		- fixed SaveRAM not getting written to disk when unloading/reloading core (#3165)
 	- mGBA:
 		- updated to interim version after 0.9.3, fixing a softlock in Hamtaro: Ham Ham Heartbreak (#2541)
 	- NeoPop:
@@ -138,8 +139,6 @@ seems to have been a null reference on init. saving seems to still function fine
 [9411e659b zeromus] (NesHawk) WritePrg really needs to be masking the address... there's no way it's correct, otherwise. WRITEME
 
 [114124c82 CPP] BSNES Region Override (#3169) WRITEME
-
-[4bac1bbf1 CPP] (melonDS) fixed SaveRAM not getting written to disk when unloading/reloading core (#3165)
 
 [0ff69c560 CPP] fixed SXROM Detection (#3170) WRITEME
 
