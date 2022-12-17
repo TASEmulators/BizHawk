@@ -71,6 +71,7 @@
 		- reimplemented MSU1 properly
 		- added fast DSP and fast coprocessor settings
 		- fixed crash when loading a savestate after a reset (#3173)
+		- added region override setting
 	- CPCHawk:
 		- removed redundant `AmstradCpcPokeMemory` tool
 	- Faust:
@@ -136,8 +137,6 @@ seems to have been a null reference on init. saving seems to still function fine
 [4bfb3ba48 CPP] (melonDS) don't state these big caches WRITEME
 
 [46c2d6faf CPP] (melonDS) Cleanups & Updates & Prep For Multithread Rendering Support & Prep For DSi NAND bs (#3174) WRITEME
-
-[114124c82 CPP] BSNES Region Override (#3169) WRITEME
 
 [0ff69c560 CPP] fixed SXROM Detection (#3170) WRITEME
 
