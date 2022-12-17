@@ -105,6 +105,7 @@
 		- fixed disc switching
 	- SMSHawk:
 		- fixed `InvalidOperationException` when using SMS peripherals (#3282)
+		- fixed screechy/static audio during Sega logo in Ys (Japan) (#3160)
 	- Snes9x:
 		- fixed typo in sound settings bitfield (#1208)
 	- T. S. T.:
@@ -138,8 +139,6 @@ seems to have been a null reference on init. saving seems to still function fine
 [4bfb3ba48 CPP] (melonDS) don't state these big caches WRITEME
 
 [46c2d6faf CPP] (melonDS) Cleanups & Updates & Prep For Multithread Rendering Support & Prep For DSi NAND bs (#3174) WRITEME
-
-[7b857e7ac alyosha] SMS: only update tone on second byte write, filter out highest frequency, fixes #3160 WRITEME
 
 ## changes from 2.7 to 2.8
 
