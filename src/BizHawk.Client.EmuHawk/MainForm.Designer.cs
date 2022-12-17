@@ -479,52 +479,52 @@ namespace BizHawk.Client.EmuHawk
 			// SaveState1MenuItem
 			// 
 			this.SaveState1MenuItem.Text = "1";
-			this.SaveState1MenuItem.Click += new System.EventHandler(this.Savestate1MenuItem_Click);
+			this.SaveState1MenuItem.Click += new System.EventHandler(this.QuickSavestateMenuItem_Click);
 			// 
 			// SaveState2MenuItem
 			// 
 			this.SaveState2MenuItem.Text = "2";
-			this.SaveState2MenuItem.Click += new System.EventHandler(this.Savestate2MenuItem_Click);
+			this.SaveState2MenuItem.Click += new System.EventHandler(this.QuickSavestateMenuItem_Click);
 			// 
 			// SaveState3MenuItem
 			// 
 			this.SaveState3MenuItem.Text = "3";
-			this.SaveState3MenuItem.Click += new System.EventHandler(this.Savestate3MenuItem_Click);
+			this.SaveState3MenuItem.Click += new System.EventHandler(this.QuickSavestateMenuItem_Click);
 			// 
 			// SaveState4MenuItem
 			// 
 			this.SaveState4MenuItem.Text = "4";
-			this.SaveState4MenuItem.Click += new System.EventHandler(this.Savestate4MenuItem_Click);
+			this.SaveState4MenuItem.Click += new System.EventHandler(this.QuickSavestateMenuItem_Click);
 			// 
 			// SaveState5MenuItem
 			// 
 			this.SaveState5MenuItem.Text = "5";
-			this.SaveState5MenuItem.Click += new System.EventHandler(this.Savestate5MenuItem_Click);
+			this.SaveState5MenuItem.Click += new System.EventHandler(this.QuickSavestateMenuItem_Click);
 			// 
 			// SaveState6MenuItem
 			// 
 			this.SaveState6MenuItem.Text = "6";
-			this.SaveState6MenuItem.Click += new System.EventHandler(this.Savestate6MenuItem_Click);
+			this.SaveState6MenuItem.Click += new System.EventHandler(this.QuickSavestateMenuItem_Click);
 			// 
 			// SaveState7MenuItem
 			// 
 			this.SaveState7MenuItem.Text = "7";
-			this.SaveState7MenuItem.Click += new System.EventHandler(this.Savestate7MenuItem_Click);
+			this.SaveState7MenuItem.Click += new System.EventHandler(this.QuickSavestateMenuItem_Click);
 			// 
 			// SaveState8MenuItem
 			// 
 			this.SaveState8MenuItem.Text = "8";
-			this.SaveState8MenuItem.Click += new System.EventHandler(this.Savestate8MenuItem_Click);
+			this.SaveState8MenuItem.Click += new System.EventHandler(this.QuickSavestateMenuItem_Click);
 			// 
 			// SaveState9MenuItem
 			// 
 			this.SaveState9MenuItem.Text = "9";
-			this.SaveState9MenuItem.Click += new System.EventHandler(this.Savestate9MenuItem_Click);
+			this.SaveState9MenuItem.Click += new System.EventHandler(this.QuickSavestateMenuItem_Click);
 			// 
 			// SaveState0MenuItem
 			// 
 			this.SaveState0MenuItem.Text = "0";
-			this.SaveState0MenuItem.Click += new System.EventHandler(this.Savestate0MenuItem_Click);
+			this.SaveState0MenuItem.Click += new System.EventHandler(this.QuickSavestateMenuItem_Click);
 			// 
 			// SaveNamedStateMenuItem
 			// 
@@ -560,52 +560,52 @@ namespace BizHawk.Client.EmuHawk
 			// LoadState1MenuItem
 			// 
 			this.LoadState1MenuItem.Text = "1";
-			this.LoadState1MenuItem.Click += new System.EventHandler(this.Loadstate1MenuItem_Click);
+			this.LoadState1MenuItem.Click += new System.EventHandler(this.QuickLoadstateMenuItem_Click);
 			// 
 			// LoadState2MenuItem
 			// 
 			this.LoadState2MenuItem.Text = "2";
-			this.LoadState2MenuItem.Click += new System.EventHandler(this.Loadstate2MenuItem_Click);
+			this.LoadState2MenuItem.Click += new System.EventHandler(this.QuickLoadstateMenuItem_Click);
 			// 
 			// LoadState3MenuItem
 			// 
 			this.LoadState3MenuItem.Text = "3";
-			this.LoadState3MenuItem.Click += new System.EventHandler(this.Loadstate3MenuItem_Click);
+			this.LoadState3MenuItem.Click += new System.EventHandler(this.QuickLoadstateMenuItem_Click);
 			// 
 			// LoadState4MenuItem
 			// 
 			this.LoadState4MenuItem.Text = "4";
-			this.LoadState4MenuItem.Click += new System.EventHandler(this.Loadstate4MenuItem_Click);
+			this.LoadState4MenuItem.Click += new System.EventHandler(this.QuickLoadstateMenuItem_Click);
 			// 
 			// LoadState5MenuItem
 			// 
 			this.LoadState5MenuItem.Text = "5";
-			this.LoadState5MenuItem.Click += new System.EventHandler(this.Loadstate5MenuItem_Click);
+			this.LoadState5MenuItem.Click += new System.EventHandler(this.QuickLoadstateMenuItem_Click);
 			// 
 			// LoadState6MenuItem
 			// 
 			this.LoadState6MenuItem.Text = "6";
-			this.LoadState6MenuItem.Click += new System.EventHandler(this.Loadstate6MenuItem_Click);
+			this.LoadState6MenuItem.Click += new System.EventHandler(this.QuickLoadstateMenuItem_Click);
 			// 
 			// LoadState7MenuItem
 			// 
 			this.LoadState7MenuItem.Text = "7";
-			this.LoadState7MenuItem.Click += new System.EventHandler(this.Loadstate7MenuItem_Click);
+			this.LoadState7MenuItem.Click += new System.EventHandler(this.QuickLoadstateMenuItem_Click);
 			// 
 			// LoadState8MenuItem
 			// 
 			this.LoadState8MenuItem.Text = "8";
-			this.LoadState8MenuItem.Click += new System.EventHandler(this.Loadstate8MenuItem_Click);
+			this.LoadState8MenuItem.Click += new System.EventHandler(this.QuickLoadstateMenuItem_Click);
 			// 
 			// LoadState9MenuItem
 			// 
 			this.LoadState9MenuItem.Text = "9";
-			this.LoadState9MenuItem.Click += new System.EventHandler(this.Loadstate9MenuItem_Click);
+			this.LoadState9MenuItem.Click += new System.EventHandler(this.QuickLoadstateMenuItem_Click);
 			// 
 			// LoadState0MenuItem
 			// 
 			this.LoadState0MenuItem.Text = "0";
-			this.LoadState0MenuItem.Click += new System.EventHandler(this.Loadstate0MenuItem_Click);
+			this.LoadState0MenuItem.Click += new System.EventHandler(this.QuickLoadstateMenuItem_Click);
 			// 
 			// LoadNamedStateMenuItem
 			// 
