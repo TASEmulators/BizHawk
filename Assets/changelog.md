@@ -52,6 +52,8 @@
 	- (ApiHawk) deprecated `CoreSystem` enum in favour of `VSystemID` const strings
 	- (Lua) fixed encoding bug which caused e.g. Japanese text to become mojibake/garbled (#190, #2041)
 - Other cores:
+	- BSNESv115+:
+		- reworked Payload peripheral and fixed Virtual Pads
 	- Faust:
 		- updated to Mednafen 1.29.0
 	- Genplus-gx:
@@ -84,8 +86,6 @@
 		- updated to Mednafen 1.29.0
 	- ZXHawk:
 		- removed redundant `ZXSpectrumPokeMemory` tool
-
-[1d4e7dd3f Morilli] (BSNESv115+) rework Payload peripheral and fix Virtual Pads
 
 [363afcd55 Morilli] (BSNESv115+) improve peripheral selection for P1
 
