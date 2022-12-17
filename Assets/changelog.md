@@ -58,6 +58,8 @@
 		- fixed `InvalidOperationException` when using SMS peripherals (#3282)
 	- Snes9x:
 		- fixed typo in sound settings bitfield (#1208)
+	- T. S. T.:
+		- updated to Mednafen 1.29.0
 	- TurboNyma:
 		- updated to Mednafen 1.29.0
 	- Virtu:
@@ -88,8 +90,6 @@
 [e6d74c316 CPP] (HyperNyma) updated to Mednafen 1.29.0
 
 [e6d74c316 CPP] (NeoPop) updated to Mednafen 1.29.0
-
-[e6d74c316 CPP] (T. S. T.) updated to Mednafen 1.29.0
 
 [e6d74c316 CPP] (Nymashock) updated to Mednafen 1.29.0
 
