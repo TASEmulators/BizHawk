@@ -67,6 +67,8 @@
 		- changed default peripheral to 3-button Genesis gamepad (#2775, #3262)
 	- HyperNyma:
 		- updated to Mednafen 1.29.0
+	- mGBA:
+		- updated to interim version after 0.9.3, fixing a softlock in Hamtaro: Ham Ham Heartbreak (#2541)
 	- NeoPop:
 		- updated to Mednafen 1.29.0
 	- Nymashock:
@@ -93,8 +95,6 @@
 		- updated to Mednafen 1.29.0
 	- ZXHawk:
 		- removed redundant `ZXSpectrumPokeMemory` tool
-
-[cd9327a10 CPP] (mGBA) updated to interim version after 0.9.3
 
 [0d42459be Yoshi] (CPCHawk) removed redundant `AmstradCpcPokeMemory` tool
 
