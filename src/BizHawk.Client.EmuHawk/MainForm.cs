@@ -662,7 +662,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (_argParser.cmdLoadSlot != null)
 				{
-					LoadQuickSave($"QuickSave{_argParser.cmdLoadSlot}");
+					LoadQuickSave(_argParser.cmdLoadSlot.Value);
 				}
 				else if (Config.AutoLoadLastSaveSlot)
 				{
@@ -4249,13 +4249,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void LoadQuickSave(string quickSlotName, bool suppressOSD = false)
+		public void LoadQuickSave(int slot, bool suppressOSD = false)
 		{
 			if (!Emulator.HasSavestates())
 			{
 				return;
 			}
-
+			var quickSlotName = $"QuickSave{slot}";
 			EmuClient.OnBeforeQuickLoad(this, quickSlotName, out var handled);
 			if (handled)
 			{
@@ -4316,13 +4316,13 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// TODO: should backup logic be stuffed in into Client.Common.SaveStateManager?
-		public void SaveQuickSave(string quickSlotName, bool fromLua = false, bool suppressOSD = false)
+		public void SaveQuickSave(int slot, bool suppressOSD = false, bool fromLua = false)
 		{
 			if (!Emulator.HasSavestates())
 			{
 				return;
 			}
-
+			var quickSlotName = $"QuickSave{slot}";
 			EmuClient.OnBeforeQuickSave(this, quickSlotName, out var handled);
 			if (handled)
 			{

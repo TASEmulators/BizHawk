@@ -152,17 +152,8 @@ namespace BizHawk.Client.EmuHawk
 				.OfType<BotControlsRow>()
 				.ToDictionary(tkey => tkey.ButtonName, tvalue => tvalue.Probability);
 		
-		private string SelectedSlot
-		{
-			get
-			{
-				char num = StartFromSlotBox.SelectedItem
-					.ToString()
-					.Last();
-
-				return $"QuickSave{num}";
-			}
-		}
+		private int SelectedSlot
+			=> (1 + StartFromSlotBox.SelectedIndex) % 10;
 
 		private long Attempts
 		{

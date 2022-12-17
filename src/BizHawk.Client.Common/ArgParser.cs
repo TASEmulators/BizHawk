@@ -181,7 +181,7 @@ namespace BizHawk.Client.Common
 			}
 
 			parsed = new ParsedCLIFlags(
-				cmdLoadSlot: cmdLoadSlot,
+				cmdLoadSlot: cmdLoadSlot is null ? null : int.Parse(cmdLoadSlot),
 				cmdLoadState: cmdLoadState,
 				cmdConfigFile: cmdConfigFile,
 				cmdMovie: cmdMovie,

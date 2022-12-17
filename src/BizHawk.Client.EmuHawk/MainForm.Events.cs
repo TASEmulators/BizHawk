@@ -352,12 +352,12 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void QuickSavestateMenuItem_Click(object sender, EventArgs e)
-			=> SaveQuickSave($"QuickSave{((MenuItem) sender).Text}");
+			=> SaveQuickSave(int.Parse(((MenuItem) sender).Text));
 
 		private void SaveNamedStateMenuItem_Click(object sender, EventArgs e) => SaveStateAs();
 
 		private void QuickLoadstateMenuItem_Click(object sender, EventArgs e)
-			=> LoadQuickSave($"QuickSave{((MenuItem) sender).Text}");
+			=> LoadQuickSave(int.Parse(((MenuItem) sender).Text));
 
 		private void LoadNamedStateMenuItem_Click(object sender, EventArgs e) => LoadStateAs();
 
@@ -401,17 +401,13 @@ namespace BizHawk.Client.EmuHawk
 			=> SavestateCurrentSlot();
 
 		private void SavestateCurrentSlot()
-		{
-			SaveQuickSave($"QuickSave{Config.SaveSlot}");
-		}
+			=> SaveQuickSave(Config.SaveSlot);
 
 		private void LoadCurrentSlotMenuItem_Click(object sender, EventArgs e)
 			=> LoadstateCurrentSlot();
 
 		private void LoadstateCurrentSlot()
-		{
-			LoadQuickSave($"QuickSave{Config.SaveSlot}");
-		}
+			=> LoadQuickSave(Config.SaveSlot);
 
 		private void FlushSaveRAMMenuItem_Click(object sender, EventArgs e)
 		{
@@ -2525,17 +2521,8 @@ namespace BizHawk.Client.EmuHawk
 			if (sender == Slot9StatusButton) slot = 9;
 			if (sender == Slot0StatusButton) slot = 0;
 
-			if (e.Button == MouseButtons.Left)
-			{
-				if (HasSlot(slot))
-				{
-					LoadQuickSave($"QuickSave{slot}");
-				}
-			}
-			else if (e.Button == MouseButtons.Right)
-			{
-				SaveQuickSave($"QuickSave{slot}");
-			}
+			if (e.Button is MouseButtons.Right) SaveQuickSave(slot);
+			else if (e.Button is MouseButtons.Left && HasSlot(slot)) LoadQuickSave(slot);
 		}
 
 		private void KeyPriorityStatusLabel_Click(object sender, EventArgs e)

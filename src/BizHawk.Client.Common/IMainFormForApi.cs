@@ -69,7 +69,7 @@ namespace BizHawk.Client.Common
 		bool LoadMovie(string filename, string archive = null);
 
 		/// <remarks>only referenced from <see cref="SaveStateApi"/></remarks>
-		void LoadQuickSave(string quickSlotName, bool suppressOSD = false);
+		void LoadQuickSave(int slot, bool suppressOSD = false);
 
 		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
 		bool LoadRom(string path, LoadRomArgs args);
@@ -89,7 +89,7 @@ namespace BizHawk.Client.Common
 		bool RestartMovie();
 
 		/// <remarks>only referenced from <see cref="SaveStateApi"/></remarks>
-		void SaveQuickSave(string quickSlotName, bool fromLua = false, bool suppressOSD = false);
+		void SaveQuickSave(int slot, bool suppressOSD = false, bool fromLua = false);
 
 		void SaveState(string path, string userFriendlyStateName, bool fromLua = false, bool suppressOSD = false);
 

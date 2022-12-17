@@ -6,7 +6,7 @@ namespace BizHawk.Client.Common
 {
 	public readonly struct ParsedCLIFlags
 	{
-		public readonly string? cmdLoadSlot;
+		public readonly int? cmdLoadSlot;
 
 		public readonly string? cmdLoadState;
 
@@ -46,7 +46,8 @@ namespace BizHawk.Client.Common
 
 		public readonly string? cmdRom;
 
-		public ParsedCLIFlags(string? cmdLoadSlot,
+		public ParsedCLIFlags(
+			int? cmdLoadSlot,
 			string? cmdLoadState,
 			string? cmdConfigFile,
 			string? cmdMovie,

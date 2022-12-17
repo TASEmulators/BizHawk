@@ -1,8 +1,6 @@
 ﻿using System;
 using System.IO;
 
-using BizHawk.Common;
-
 namespace BizHawk.Client.Common
 {
 	public sealed class SaveStateApi : ISaveStateApi
@@ -30,14 +28,14 @@ namespace BizHawk.Client.Common
 
 		public void LoadSlot(int slotNum, bool suppressOSD)
 		{
-			if (0.RangeTo(9).Contains(slotNum)) _mainForm.LoadQuickSave($"QuickSave{slotNum}", suppressOSD);
+			if (slotNum is >= 0 and <= 9) _mainForm.LoadQuickSave(slotNum, suppressOSD: suppressOSD);
 		}
 
 		public void Save(string path, bool suppressOSD) => _mainForm.SaveState(path, path, true, suppressOSD);
 
 		public void SaveSlot(int slotNum, bool suppressOSD)
 		{
-			if (0.RangeTo(9).Contains(slotNum)) _mainForm.SaveQuickSave($"QuickSave{slotNum}", true, suppressOSD);
+			if (slotNum is >= 0 and <= 9) _mainForm.SaveQuickSave(slotNum, suppressOSD: suppressOSD, fromLua: true);
 		}
 	}
 }

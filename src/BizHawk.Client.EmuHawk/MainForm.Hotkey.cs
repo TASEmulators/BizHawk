@@ -12,13 +12,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			void SelectAndSaveToSlot(int slot)
 			{
-				SaveQuickSave($"QuickSave{slot}");
+				SaveQuickSave(slot);
 				Config.SaveSlot = slot;
 				UpdateStatusSlots();
 			}
 			void SelectAndLoadFromSlot(int slot)
 			{
-				LoadQuickSave($"QuickSave{slot}");
+				LoadQuickSave(slot);
 				Config.SaveSlot = slot;
 				UpdateStatusSlots();
 			}
