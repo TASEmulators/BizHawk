@@ -69,6 +69,8 @@
 		- changed default peripheral to 3-button Genesis gamepad (#2775, #3262)
 	- HyperNyma:
 		- updated to Mednafen 1.29.0
+	- melonDS:
+		- updated to interim version after 0.9.4
 	- mGBA:
 		- updated to interim version after 0.9.3, fixing a softlock in Hamtaro: Ham Ham Heartbreak (#2541)
 	- NeoPop:
@@ -97,8 +99,6 @@
 		- updated to Mednafen 1.29.0
 	- ZXHawk:
 		- removed redundant `ZXSpectrumPokeMemory` tool
-
-[3fe168ad0 CPP] (melonDS) updated to interim version after 0.9.4
 
 [25fb81698 CPP] (Libretro) rewrote Libretro host implementation, fixing some crashes, adding memory domains, and slightly improving performance (#3211, #3216)
 
