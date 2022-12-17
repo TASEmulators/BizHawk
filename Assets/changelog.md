@@ -52,6 +52,8 @@
 	- (ApiHawk) deprecated `CoreSystem` enum in favour of `VSystemID` const strings
 	- (Lua) fixed encoding bug which caused e.g. Japanese text to become mojibake/garbled (#190, #2041)
 - Other cores:
+	- Nymashock:
+		- updated to Mednafen 1.29.0
 	- SameBoy:
 		- updated to interim version after 0.14.7, fixing some bugs and adding GB palette customiser (#3185, #3239)
 	- Saturnus:
@@ -92,8 +94,6 @@
 [e6d74c316 CPP] (HyperNyma) updated to Mednafen 1.29.0
 
 [e6d74c316 CPP] (NeoPop) updated to Mednafen 1.29.0
-
-[e6d74c316 CPP] (Nymashock) updated to Mednafen 1.29.0
 
 [cd9327a10 CPP] (mGBA) updated to interim version after 0.9.3
 
