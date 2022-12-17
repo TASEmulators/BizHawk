@@ -446,12 +446,11 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 	memcpy(f->VideoBuffer + SingleScreenSize, GPU::Framebuffer[GPU::FrontBuffer][1], SingleScreenSize * sizeof (u32));
 	f->Width = 256;
 	f->Height = 384;
-	f->Samples = SPU::GetOutputSize() / 2;
-	SPU::ReadOutput(f->SoundBuffer, f->Samples);
-	if (f->Samples < 547) // hack
+	f->Samples = SPU::ReadOutput(f->SoundBuffer);
+	if (f->Samples < 737) // hack
 	{
-		memset(f->SoundBuffer + (f->Samples * 2), 0, ((547 * 2) - (f->Samples * 2)) * sizeof (u16));
-		f->Samples = 547;
+		memset(f->SoundBuffer + (f->Samples * 2), 0, ((737 * 2) - (f->Samples * 2)) * sizeof (u16));
+		f->Samples = 737;
 	}
 	f->Cycles = NDS::GetSysClockCycles(2);
 	f->Lagged = NDS::LagFrameFlag;

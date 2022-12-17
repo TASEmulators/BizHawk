@@ -16,7 +16,6 @@ CORE_SRCS = \
 	ARMInterpreter_ALU.cpp \
 	ARMInterpreter_Branch.cpp \
 	ARMInterpreter_LoadStore.cpp \
-	Config.cpp \
 	CP15.cpp \
 	CRC32.cpp \
 	DMA.cpp \
@@ -39,7 +38,6 @@ CORE_SRCS = \
 	GPU3D_Soft.cpp \
 	NDS.cpp \
 	NDSCart.cpp \
-	NDSCart_SRAMManager.cpp \
 	RTC.cpp \
 	Savestate.cpp \
 	SPI.cpp \
@@ -67,7 +65,8 @@ FATFS_SRCS = \
 MISC_SRCS = \
 	sha1/sha1.c \
 	tiny-AES-c/aes.c \
-	xxhash/xxhash.c
+	xxhash/xxhash.c \
+	blip_buf/blip_buf.c \
 
 SRCS = \
 	$(addprefix melonDS/src/,$(CORE_SRCS)) \
