@@ -54,6 +54,7 @@
 - Other cores:
 	- BSNESv115+:
 		- reworked Payload peripheral and fixed Virtual Pads
+		- improved peripheral selection for P1
 	- Faust:
 		- updated to Mednafen 1.29.0
 	- Genplus-gx:
@@ -86,8 +87,6 @@
 		- updated to Mednafen 1.29.0
 	- ZXHawk:
 		- removed redundant `ZXSpectrumPokeMemory` tool
-
-[363afcd55 Morilli] (BSNESv115+) improve peripheral selection for P1
 
 [2c3b6b3cd CPP] (TIC-80) new core (nesbox' own reference implementation)
 
