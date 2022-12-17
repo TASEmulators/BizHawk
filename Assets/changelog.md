@@ -60,6 +60,8 @@
 	- BSNESv115+:
 		- reworked Payload peripheral and fixed Virtual Pads
 		- improved peripheral selection for P1
+	- CPCHawk:
+		- removed redundant `AmstradCpcPokeMemory` tool
 	- Faust:
 		- updated to Mednafen 1.29.0
 	- Genplus-gx:
@@ -95,8 +97,6 @@
 		- updated to Mednafen 1.29.0
 	- ZXHawk:
 		- removed redundant `ZXSpectrumPokeMemory` tool
-
-[0d42459be Yoshi] (CPCHawk) removed redundant `AmstradCpcPokeMemory` tool
 
 [3fe168ad0 CPP] (melonDS) updated to interim version after 0.9.4
 
