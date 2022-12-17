@@ -141,8 +141,6 @@
 	- ZXHawk:
 		- removed redundant `ZXSpectrumPokeMemory` tool
 
-[db7d72be9 Morilli] update nonfunctional bsnes links WRITEME
-
 ## changes from 2.7 to 2.8
 
 - Misc. changes to EmuHawk:
