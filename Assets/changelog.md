@@ -64,6 +64,7 @@
 		- updated to Mednafen 1.29.0
 	- Genplus-gx:
 		- stopped byteswapping Z80 domains (#3290)
+		- changed default peripheral to 3-button Genesis gamepad (#2775, #3262)
 	- HyperNyma:
 		- updated to Mednafen 1.29.0
 	- NeoPop:
@@ -92,8 +93,6 @@
 		- updated to Mednafen 1.29.0
 	- ZXHawk:
 		- removed redundant `ZXSpectrumPokeMemory` tool
-
-[f5d8c0fb1 Yoshi] (Genplus-gx) changed default peripheral to 3-button Genesis gamepad (#2775, #3262)
 
 [cd9327a10 CPP] (mGBA) updated to interim version after 0.9.3
 
