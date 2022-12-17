@@ -54,6 +54,8 @@
 - Other cores:
 	- SameBoy:
 		- updated to interim version after 0.14.7, fixing some bugs and adding GB palette customiser (#3185, #3239)
+	- Saturnus:
+		- updated to Mednafen 1.29.0
 	- SMSHawk:
 		- fixed `InvalidOperationException` when using SMS peripherals (#3282)
 	- Snes9x:
@@ -92,8 +94,6 @@
 [e6d74c316 CPP] (NeoPop) updated to Mednafen 1.29.0
 
 [e6d74c316 CPP] (Nymashock) updated to Mednafen 1.29.0
-
-[e6d74c316 CPP] (Saturnus) updated to Mednafen 1.29.0
 
 [cd9327a10 CPP] (mGBA) updated to interim version after 0.9.3
 
