@@ -36,30 +36,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (OSTC.IsUnixHost)
 			{
-				// for Unix, we'll check a few system libraries and wire up the event handler
-
-				foreach (var soToLoad in new[]
-				{
-					"libspeexdsp.so.1", // for old BSNES and melonDS (TODO: should we remove this dependency? old BSNES will be axed soon enough, BlipBuffer could probably work well enough for melonDS?)
-					"liblua54.so", // lua console (TODO: should we rather just disable lua console if this cannot be found?)
-					// there are some other dependencies, but mono will provide them anyways
-				})
-				{
-					var p = OSTC.LinkedLibManager.LoadOrZero(soToLoad);
-					if (p != IntPtr.Zero)
-					{
-						OSTC.LinkedLibManager.FreeByPtr(p);
-						continue;
-					}
-					// else it's missing or corrupted
-					using (ExceptionBox box = new($"EmuHawk needs {soToLoad} in order to run! You will need to install it via your distro's package manager. (EmuHawk will now close.)"))
-					{
-						box.ShowDialog();
-					}
-					Process.GetCurrentProcess().Kill();
-					return;
-				}
-
+				// for Unix, skip everything else and just wire up the event handler
 				AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 				return;
 			}
