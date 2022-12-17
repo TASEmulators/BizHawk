@@ -52,6 +52,8 @@
 	- (ApiHawk) deprecated `CoreSystem` enum in favour of `VSystemID` const strings
 	- (Lua) fixed encoding bug which caused e.g. Japanese text to become mojibake/garbled (#190, #2041)
 - Other cores:
+	- SameBoy:
+		- updated to interim version after 0.14.7, fixing some bugs and adding GB palette customiser (#3185, #3239)
 	- SMSHawk:
 		- fixed `InvalidOperationException` when using SMS peripherals (#3282)
 	- Snes9x:
@@ -97,8 +99,6 @@
 [0d42459be Yoshi] (CPCHawk) removed redundant `AmstradCpcPokeMemory` tool
 
 [3fe168ad0 CPP] (melonDS) updated to interim version after 0.9.4
-
-[9a73be0e2 CPP] (SameBoy) updated to interim version after 0.14.7, fixing some bugs and adding GB palette customiser (#3185, #3239)
 
 [25fb81698 CPP] (Libretro) rewrote Libretro host implementation, fixing some crashes, adding memory domains, and slightly improving performance (#3211, #3216)
 
