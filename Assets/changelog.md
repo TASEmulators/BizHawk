@@ -94,6 +94,7 @@
 		- relaxed restriction on VRC1 PRG registers, so they can be larger than the original VRC1 chip allows (for rom-expanding hacks)
 		- fixed PGR writes for VRC1 not using mask for address
 		- fixed SXROM detection (#3168)
+		- fixed crash for Namco 163 mapper (#3192)
 		- "un-implemented" `ICycleTiming` so that NesHawk no longer tries to use the cycle timing intended for SubNesHawk
 	- Nymashock:
 		- updated to Mednafen 1.29.0
@@ -126,9 +127,6 @@
 [db7d72be9 Morilli] update nonfunctional bsnes links WRITEME
 
 [672ad1579 Morilli] fixed #3195 WRITEME
-
-[688adf27e CPP] resolve #3192
-seems to have been a null reference on init. saving seems to still function fine after this change WRITEME
 
 [a68c835a4 CPP] (Gambatte) update gambatte WRITEME (m161, MBC1, HuC1, HuC3, MMM01)
 
