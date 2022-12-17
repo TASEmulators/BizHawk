@@ -60,6 +60,7 @@
 	- BSNESv115+:
 		- reworked Payload peripheral and fixed Virtual Pads
 		- improved peripheral selection for P1
+		- added fast DSP and fast coprocessor settings
 	- CPCHawk:
 		- removed redundant `AmstradCpcPokeMemory` tool
 	- Faust:
@@ -114,8 +115,6 @@
 
 [688adf27e CPP] resolve #3192
 seems to have been a null reference on init. saving seems to still function fine after this change WRITEME
-
-[3d039934a Morilli] BSNESv115+: expose fast dsp and fast coprocessor options WRITEME
 
 [339d34413 Morilli] Implement msu1 handling for bsnes115+ (#3190) WRITEME
 
