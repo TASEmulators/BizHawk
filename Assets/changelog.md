@@ -55,6 +55,8 @@
 	- TIC-80:
 		- added a new experimental core for the TIC-80 fantasy computer, using nesbox's own reference implementation
 - Other cores:
+	- A2600Hawk:
+		- fixed crash when pushing Select on Karate title screen
 	- BSNESv115+:
 		- reworked Payload peripheral and fixed Virtual Pads
 		- improved peripheral selection for P1
@@ -90,8 +92,6 @@
 		- updated to Mednafen 1.29.0
 	- ZXHawk:
 		- removed redundant `ZXSpectrumPokeMemory` tool
-
-[0174abde6 CPP] (a26) fix crash when pushing Select on Karate title screen
 
 [f5d8c0fb1 Yoshi] (Genplus-gx) changed default peripheral to 3-button Genesis gamepad (#2775, #3262)
 
