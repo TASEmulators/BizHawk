@@ -52,10 +52,10 @@
 	- (ApiHawk) deprecated `CoreSystem` enum in favour of `VSystemID` const strings
 	- (Lua) fixed encoding bug which caused e.g. Japanese text to become mojibake/garbled (#190, #2041)
 - Other cores:
+	- Virtu:
+		- changed RTC to use deterministic time when recording instead of (host) system time
 	- ZXHawk:
 		- removed redundant `ZXSpectrumPokeMemory` tool
-
-[13456e51b CPP] (Virtu) changed RTC to use deterministic time when recording instead of system time
 
 [948049bb2 CPP] (Genplus-gx) stopped byteswapping Z80 domains (#3290)
 
