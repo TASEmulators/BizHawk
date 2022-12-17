@@ -77,6 +77,8 @@
 		- updated to interim version after 0.9.3, fixing a softlock in Hamtaro: Ham Ham Heartbreak (#2541)
 	- NeoPop:
 		- updated to Mednafen 1.29.0
+	- NesHawk:
+		- relaxed restriction on VRC1 PRG registers, so they can be larger than the original VRC1 chip allows (for rom-expanding hacks)
 	- Nymashock:
 		- updated to Mednafen 1.29.0
 		- fixed disc switching
@@ -134,8 +136,6 @@ seems to have been a null reference on init. saving seems to still function fine
 [46c2d6faf CPP] (melonDS) Cleanups & Updates & Prep For Multithread Rendering Support & Prep For DSi NAND bs (#3174) WRITEME
 
 [9411e659b zeromus] (NesHawk) WritePrg really needs to be masking the address... there's no way it's correct, otherwise. WRITEME
-
-[fcce7b64d zeromus] (NesHawk) relaxed restriction on vrc1 PRG registers, so they can be larger than the original vrc1 chip allows (for rom-expanding hacks)
 
 [114124c82 CPP] BSNES Region Override (#3169) WRITEME
 
