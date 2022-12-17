@@ -52,6 +52,14 @@
 	- (ApiHawk) deprecated `CoreSystem` enum in favour of `VSystemID` const strings
 	- (Lua) fixed encoding bug which caused e.g. Japanese text to become mojibake/garbled (#190, #2041)
 - New and graduating cores:
+	- Ares64:
+		- removed the Ares64 (Performance) core and renamed Ares64 (Accuracy) to Ares64, now no longer experimental
+		- updated to interim version after v128
+		- integrated Angrylion-rdp for RDP and VI emulation, avoiding many issues the MAME RDP had
+		- fixed A/V Sync when interlaced
+		- added Transfer Pak support and N64 Mouse support
+		- added more debugging features (tracer, disassembler, get registers, System Bus domain)
+		- fixed tracer regression from upstream update
 	- TIC-80:
 		- added a new experimental core for the TIC-80 fantasy computer, using nesbox's own reference implementation
 - Other cores:
@@ -118,8 +126,6 @@
 seems to have been a null reference on init. saving seems to still function fine after this change WRITEME
 
 [a68c835a4 CPP] (Gambatte) update gambatte WRITEME (m161, MBC1, HuC1, HuC3, MMM01)
-
-[ccac4d100 CPP] Ares64 WRITEME
 
 [3726cc629 Morilli] fixed #3173 by only calling bus.map() on initial power, not subsequent calls (#3176) WRITEME
 
