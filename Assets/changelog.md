@@ -54,6 +54,8 @@
 - Other cores:
 	- Faust:
 		- updated to Mednafen 1.29.0
+	- Genplus-gx:
+		- stopped byteswapping Z80 domains (#3290)
 	- HyperNyma:
 		- updated to Mednafen 1.29.0
 	- NeoPop:
@@ -82,8 +84,6 @@
 		- updated to Mednafen 1.29.0
 	- ZXHawk:
 		- removed redundant `ZXSpectrumPokeMemory` tool
-
-[948049bb2 CPP] (Genplus-gx) stopped byteswapping Z80 domains (#3290)
 
 [1d4e7dd3f Morilli] (BSNESv115+) rework Payload peripheral and fix Virtual Pads
 
