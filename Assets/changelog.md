@@ -69,6 +69,8 @@
 		- changed default peripheral to 3-button Genesis gamepad (#2775, #3262)
 	- HyperNyma:
 		- updated to Mednafen 1.29.0
+	- Libretro:
+		- rewrote Libretro host implementation, fixing some crashes, adding memory domains, and slightly improving performance (#3211, #3216)
 	- melonDS:
 		- updated to interim version after 0.9.4
 	- mGBA:
@@ -99,8 +101,6 @@
 		- updated to Mednafen 1.29.0
 	- ZXHawk:
 		- removed redundant `ZXSpectrumPokeMemory` tool
-
-[25fb81698 CPP] (Libretro) rewrote Libretro host implementation, fixing some crashes, adding memory domains, and slightly improving performance (#3211, #3216)
 
 [c496c97c8 CPP] remove some render off logic (this might not be sync safe), move threaded rendering to a sync setting (this probably doesn't affect sync, but best be safe here) WRITEME
 
