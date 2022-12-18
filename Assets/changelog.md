@@ -34,6 +34,7 @@
 	- fixed MSX rom loading
 	- made file extension check for disc images case-insensitive
 	- fixed Debugger breakpoint crash with mGBA (#3287)
+	- added warning dialog when running as Superuser/Administrator
 - Linux port:
 	- fixed various file pickers using case-sensitive file extensions
 	- changed default Lua engine to "NLua+KopiLua" which doesn't seem to crash on normal Mono builds like the other one does
@@ -199,8 +200,6 @@ fixes 7e00b7892
 this fixes a bug in 1df6ce4e38946564765dab9227ed093b5f33812f, where an incorrect modifier state could be set, causing the release event to not actually release the key. I also don't see a reason to not just not set modifiers.
 For example: "Hold Tab", "Hold Shift", "Release Tab" would send a "Release:Shift+Tab" event which failed to release Tab, even though that key was initially pressed without Shift.
 So, instead of trying to match the right modifiers and keys just send the released key without modifier state and let the Receive() function do the work.
-
-[8db15d6951 Yoshi] Show warning dialog when running as Superuser/Administrator
 
 [767e30eee5 Yoshi] Also rename bundled CPC firmware files (see #3494)
 fixes 5be8b0aab
