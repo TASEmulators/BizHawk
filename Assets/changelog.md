@@ -52,6 +52,7 @@
 	- (ApiHawk) changed injector to include non-public properties when looking for `ApiContainer`
 	- (ApiHawk) deprecated `CoreSystem` enum in favour of `VSystemID` const strings
 	- (Lua) fixed encoding bug which caused e.g. Japanese text to become mojibake/garbled (#190, #2041)
+	- (ApiHawk/Lua) added `IMovieApi.PlayFromStart`/`movie.play_from_start` (#384)
 - New and graduating cores:
 	- Ares64:
 		- removed the Ares64 (Performance) core and renamed Ares64 (Accuracy) to Ares64, now no longer experimental
@@ -294,8 +295,6 @@ fixes 45fbdb484
 
 [01ab9416b5 kalimag] Make script paths in .luases relative to .luases path
 Restore behavior before 99dc0e03df4c4cd20420507a06dd9987cbdf7140
-
-[df4df517b8 Yoshi] Add `IMovieApi.PlayFromStart`/`movie.play_from_start` (resolves #384)
 
 [7fdc3f992d Yoshi] Propagate success through to caller for movie load/restart
 
