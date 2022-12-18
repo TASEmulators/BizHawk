@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.InteropServices;
-using System.Security;
 using System.Text;
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
@@ -365,9 +364,6 @@ namespace BizHawk.BizInvoke
 				CallingConventions.HasThis,
 				returnType,
 				paramTypes);
-
-			// live dangerously
-			method.SetCustomAttribute(new(typeof(SuppressUnmanagedCodeSecurityAttribute).GetConstructor(Type.EmptyTypes), Array.Empty<object>()));
 
 			var il = method.GetILGenerator();
 
