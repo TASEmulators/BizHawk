@@ -117,7 +117,9 @@ namespace BizHawk.Client.EmuHawk
 
 			// don't generate events for things like Ctrl+LeftControl
 			var mods = _modifiers;
-			if (currentModifier is not 0U)
+			if (!newState)
+				mods = 0; // don't set mods for release events, handle releasing all corresponding buttons later in InputCoalescer.Receive()
+			else if (currentModifier is not 0U)
 				mods &= ~currentModifier;
 
 			var ie = new InputEvent

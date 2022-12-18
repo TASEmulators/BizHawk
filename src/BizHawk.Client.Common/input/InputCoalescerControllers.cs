@@ -1,7 +1,6 @@
 #nullable enable
 
 using System.Linq;
-using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -32,13 +31,6 @@ namespace BizHawk.Client.Common
 	{
 		protected override void ProcessSubsets(string button, bool state)
 		{
-			// we don't want a release of e.g. "Ctrl+E" to release Ctrl as well
-			if (!state)
-			{
-				Buttons[button.SubstringAfterLast('+')] = state;
-				return;
-			}
-
 			// For controller input, we want Shift+X to register as both Shift and X (for Keyboard controllers)
 			foreach (var s in button.Split('+')) Buttons[s] = state;
 		}
