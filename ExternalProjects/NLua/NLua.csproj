@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<RootNamespace>NLua</RootNamespace>
+		<AssemblyName>NLua</AssemblyName>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<WarningsAsErrors />
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<Optimize>true</Optimize>
+		<DebugType>portable</DebugType>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<WarningsAsErrors />
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Reference Include="BizHawk.BizInvoke" HintPath="../../output/dll/BizHawk.BizInvoke.dll" />
+		<Reference Include="BizHawk.Common" HintPath="../../output/dll/BizHawk.Common.dll" />
+	</ItemGroup>
+
+	<Import Project="../LibCommon.props" />
+	<PropertyGroup>
+		<Nullable>disable</Nullable>
+	</PropertyGroup>
+</Project>

@@ -128,7 +128,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly MainForm _mainForm;
 
-		private Lua _lua = new() { State = { Encoding = Encoding.UTF8 } };
+		private Lua _lua = new();
 		private LuaThread _currThread;
 
 		private readonly NLuaTableHelper _th;
@@ -141,9 +141,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private EmulationLuaLibrary EmulationLuaLibrary => (EmulationLuaLibrary)Libraries[typeof(EmulationLuaLibrary)];
 
-		// nb: KeraLua isn't really the engine, NLua does the heavy lifting (KeraLua is just a thin layer for native lua)
-		// this is just done to differentiate against the old NLua engine, which was backed by KopiLua (c# impl of lua) instead of KeraLua
-		public string EngineName => "KeraLua";
+		public string EngineName => "NLua+Lua";
 
 		public bool IsRebootingCore { get; set; }
 
@@ -330,8 +328,8 @@ namespace BizHawk.Client.EmuHawk
 				_currThread = null;
 				var result = execResult switch
 				{
-					KeraLua.LuaStatus.OK => (WaitForFrame: false, Terminated: true),
-					KeraLua.LuaStatus.Yield => (WaitForFrame: FrameAdvanceRequested, Terminated: false),
+					LuaStatus.OK => (WaitForFrame: false, Terminated: true),
+					LuaStatus.Yield => (WaitForFrame: FrameAdvanceRequested, Terminated: false),
 					_ => throw new InvalidOperationException($"{nameof(_currThread.Resume)}() returned {execResult}?")
 				};
 

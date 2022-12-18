@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 
 using BizHawk.Client.Common;
-using BizHawk.Common.StringExtensions;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -15,7 +12,7 @@ namespace BizHawk.Tests.Client.Common.Lua
 	[TestClass]
 	public class LuaTests
 	{
-		private static readonly NLua.Lua LuaInstance = new() { State = { Encoding = Encoding.UTF8 } };
+		private static readonly NLua.Lua LuaInstance = new();
 		private static readonly NLuaTableHelper _th = new(LuaInstance, Console.WriteLine);
 
 		private static object? ExpectedValue { get; set; }

@@ -9,34 +9,78 @@
     ".NETStandard,Version=v2.0/": {
       "NLua/1.0.0": {
         "dependencies": {
-          "KeraLua": "1.3.2",
-          "Microsoft.SourceLink.GitHub": "1.1.0",
-          "NETStandard.Library": "2.0.3"
+          "DotNetAnalyzers.DocumentationAnalyzers": "1.0.0-beta.59",
+          "Menees.Analyzers": "3.0.8",
+          "Meziantou.Analyzer": "1.0.707",
+          "NETStandard.Library": "2.0.3",
+          "Nullable": "1.3.1",
+          "StyleCop.Analyzers": "1.2.0-beta.435",
+          "BizHawk.BizInvoke": "1.0.0.0",
+          "BizHawk.Common": "1.0.0.0"
         },
         "runtime": {
           "NLua.dll": {}
         }
       },
-      "KeraLua/1.3.2": {
-        "runtime": {
-          "lib/netstandard2.0/KeraLua.dll": {
-            "assemblyVersion": "1.3.2.0",
-            "fileVersion": "1.3.2.0"
-          }
-        }
-      },
-      "Microsoft.Build.Tasks.Git/1.1.0": {},
-      "Microsoft.NETCore.Platforms/1.1.0": {},
-      "Microsoft.SourceLink.Common/1.1.0": {},
-      "Microsoft.SourceLink.GitHub/1.1.0": {
+      "DotNetAnalyzers.DocumentationAnalyzers/1.0.0-beta.59": {
         "dependencies": {
-          "Microsoft.Build.Tasks.Git": "1.1.0",
-          "Microsoft.SourceLink.Common": "1.1.0"
+          "DotNetAnalyzers.DocumentationAnalyzers.Unstable": "1.0.0.59"
         }
       },
+      "DotNetAnalyzers.DocumentationAnalyzers.Unstable/1.0.0.59": {},
+      "Menees.Analyzers/3.0.8": {},
+      "Meziantou.Analyzer/1.0.707": {},
+      "Microsoft.NETCore.Platforms/1.1.0": {},
       "NETStandard.Library/2.0.3": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "1.1.0"
+        }
+      },
+      "Nullable/1.3.1": {},
+      "StyleCop.Analyzers/1.2.0-beta.435": {
+        "dependencies": {
+          "StyleCop.Analyzers.Unstable": "1.2.0.435"
+        }
+      },
+      "StyleCop.Analyzers.Unstable/1.2.0.435": {},
+      "BizHawk.BizInvoke/1.0.0.0": {
+        "runtime": {
+          "BizHawk.BizInvoke.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "BizHawk.Common/1.0.0.0": {
+        "runtime": {
+          "BizHawk.Common.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "System.Memory/4.0.1.1": {
+        "runtime": {
+          "System.Memory.dll": {
+            "assemblyVersion": "4.0.1.1",
+            "fileVersion": "4.6.28619.1"
+          }
+        }
+      },
+      "System.Numerics.Vectors/4.1.4.0": {
+        "runtime": {
+          "System.Numerics.Vectors.dll": {
+            "assemblyVersion": "4.1.4.0",
+            "fileVersion": "4.6.26515.6"
+          }
+        }
+      },
+      "System.Buffers/4.0.3.0": {
+        "runtime": {
+          "System.Buffers.dll": {
+            "assemblyVersion": "4.0.3.0",
+            "fileVersion": "4.6.28619.1"
+          }
         }
       }
     }
@@ -47,19 +91,33 @@
       "serviceable": false,
       "sha512": ""
     },
-    "KeraLua/1.3.2": {
+    "DotNetAnalyzers.DocumentationAnalyzers/1.0.0-beta.59": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-NXqBDEUC2WbAE43Yx/x+PNfv80SLorUuZLU+2Y71rYSRgmY2vYfmI6+8yINYPRTrySecbaEVRQFlcGJllyYi6g==",
-      "path": "keralua/1.3.2",
-      "hashPath": "keralua.1.3.2.nupkg.sha512"
+      "sha512": "sha512-+cjn5bzar9cqDABF2SUsMEof8yoMXSNdHYdpCVNnj/M/cRACbKYHzYpgilSEvFlHGuolzJJ2WN++/EXwBzSsYQ==",
+      "path": "dotnetanalyzers.documentationanalyzers/1.0.0-beta.59",
+      "hashPath": "dotnetanalyzers.documentationanalyzers.1.0.0-beta.59.nupkg.sha512"
     },
-    "Microsoft.Build.Tasks.Git/1.1.0": {
+    "DotNetAnalyzers.DocumentationAnalyzers.Unstable/1.0.0.59": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-DD84CsvKf+hfDBbYXIvBXeY7JGfbtoIMMjlPGVaKIp6aWoIdL5EJbWvk+skGkM7/Weezj3q1a89nTPAcGlGcpw==",
-      "path": "microsoft.build.tasks.git/1.1.0",
-      "hashPath": "microsoft.build.tasks.git.1.1.0.nupkg.sha512"
+      "sha512": "sha512-ekGYoPsAGTJs5cFbRdzfHKX2n2DzEATZyowGw3QJnozelzmhQ5tGCJhyolN5NWDq1p/GkBPKgRcQ5QGTKxaGrA==",
+      "path": "dotnetanalyzers.documentationanalyzers.unstable/1.0.0.59",
+      "hashPath": "dotnetanalyzers.documentationanalyzers.unstable.1.0.0.59.nupkg.sha512"
+    },
+    "Menees.Analyzers/3.0.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-26WtDVJZe2CEpCqJ16uR0KkCBLwDsHrr4lLSH4JZzUWoYqIQPgpwkh/9VXNJzi5bFeKn/gL0Sz77eFoNaArkhA==",
+      "path": "menees.analyzers/3.0.8",
+      "hashPath": "menees.analyzers.3.0.8.nupkg.sha512"
+    },
+    "Meziantou.Analyzer/1.0.707": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-8NklUjV3DHVxfyCbPYlwVtBjeNLF23lcS1QUBZt5ri1pxqr2UaVcg/uD+l0ZxwSnwTwTxX6A+Rfn+WksnBsLsg==",
+      "path": "meziantou.analyzer/1.0.707",
+      "hashPath": "meziantou.analyzer.1.0.707.nupkg.sha512"
     },
     "Microsoft.NETCore.Platforms/1.1.0": {
       "type": "package",
@@ -68,26 +126,58 @@
       "path": "microsoft.netcore.platforms/1.1.0",
       "hashPath": "microsoft.netcore.platforms.1.1.0.nupkg.sha512"
     },
-    "Microsoft.SourceLink.Common/1.1.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-TyGnSaCanfxunClp2af9jpXY127q7g5tiOv0XN/JGcalyKwYusYp06BUGSmCopg/GhmJJSiR/9PS0suXHCGxtw==",
-      "path": "microsoft.sourcelink.common/1.1.0",
-      "hashPath": "microsoft.sourcelink.common.1.1.0.nupkg.sha512"
-    },
-    "Microsoft.SourceLink.GitHub/1.1.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-DD/LF81k5ODHCfPnBCds97N6KKSS1X1NiDcJYUUpiTu5mmuPktZplhYFrAPQPktMBKvNMdwFrwJ7Fqa3tyTIuA==",
-      "path": "microsoft.sourcelink.github/1.1.0",
-      "hashPath": "microsoft.sourcelink.github.1.1.0.nupkg.sha512"
-    },
     "NETStandard.Library/2.0.3": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-st47PosZSHrjECdjeIzZQbzivYBJFv6P2nv4cj2ypdI204DO+vZ7l5raGMiX4eXMJ53RfOIg+/s4DHVZ54Nu2A==",
       "path": "netstandard.library/2.0.3",
       "hashPath": "netstandard.library.2.0.3.nupkg.sha512"
+    },
+    "Nullable/1.3.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Mk4ZVDfAORTjvckQprCSehi1XgOAAlk5ez06Va/acRYEloN9t6d6zpzJRn5MEq7+RnagyFIq9r+kbWzLGd+6QA==",
+      "path": "nullable/1.3.1",
+      "hashPath": "nullable.1.3.1.nupkg.sha512"
+    },
+    "StyleCop.Analyzers/1.2.0-beta.435": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-TADk7vdGXtfTnYCV7GyleaaRTQjfoSfZXprQrVMm7cSJtJbFc1QIbWPyLvrgrfGdfHbGmUPvaN4ODKNxg2jgPQ==",
+      "path": "stylecop.analyzers/1.2.0-beta.435",
+      "hashPath": "stylecop.analyzers.1.2.0-beta.435.nupkg.sha512"
+    },
+    "StyleCop.Analyzers.Unstable/1.2.0.435": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ouwPWZxbOV3SmCZxIRqHvljkSzkCyi1tDoMzQtDb/bRP8ctASV/iRJr+A2Gdj0QLaLmWnqTWDrH82/iP+X80Lg==",
+      "path": "stylecop.analyzers.unstable/1.2.0.435",
+      "hashPath": "stylecop.analyzers.unstable.1.2.0.435.nupkg.sha512"
+    },
+    "BizHawk.BizInvoke/1.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "BizHawk.Common/1.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "System.Memory/4.0.1.1": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "System.Numerics.Vectors/4.1.4.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "System.Buffers/4.0.3.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
     }
   }
 }
