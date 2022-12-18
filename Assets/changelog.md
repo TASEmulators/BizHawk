@@ -61,6 +61,9 @@
 	- Virtu:
 		- fixed some internal state not being overwritten by savestates
 		- changed RTC to use deterministic time when recording instead of (host) system time
+	- VirtualBoyee:
+		- refactored core to use the same Nyma system as the other Mednafen ports
+		- updated to Mednafen 1.29.0
 	- ZXHawk:
 		- removed redundant `ZXSpectrumPokeMemory` tool
 
@@ -77,8 +80,6 @@
 [f5d8c0fb1 Yoshi] (Genplus-gx) changed default peripheral to 3-button Genesis gamepad (#2775, #3262)
 
 [1c27c73c8 CPP] fixed disc switching for Nymashock and Saturnus
-
-[0c95088e0 CPP] (VirtualBoyee) updated to Mednafen 1.29.0
 
 [e6d74c316 CPP] (Faust) updated to Mednafen 1.29.0
 
