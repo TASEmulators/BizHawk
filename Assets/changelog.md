@@ -53,13 +53,12 @@
 	- (Lua) fixed encoding bug which caused e.g. Japanese text to become mojibake/garbled (#190, #2041)
 - Other cores:
 	- Virtu:
+		- fixed some internal state not being overwritten by savestates
 		- changed RTC to use deterministic time when recording instead of (host) system time
 	- ZXHawk:
 		- removed redundant `ZXSpectrumPokeMemory` tool
 
 [948049bb2 CPP] (Genplus-gx) stopped byteswapping Z80 domains (#3290)
-
-[4df256cd6 CPP] (Virtu) fixed some internal state not being overwritten by savestates
 
 [5afb6ca45 Yoshi] fixed `InvalidOperationException` when using SMS peripherals (#3282)
 
