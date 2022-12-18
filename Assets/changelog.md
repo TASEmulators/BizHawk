@@ -100,6 +100,11 @@
 	- melonDS:
 		- updated to interim version after 0.9.4
 		- fixed SaveRAM not getting written to disk when unloading/reloading core (#3165)
+		- implemented threaded renderer support
+		- replaced darm with a new DS centric disassembler, fixing various issues with tracing/disassembly
+		- split ARM7/touch screen polls to an "alt lag" variable and added a setting for whether to consider this "alt lag" (#3278)
+		- reduced state size a bit
+		- did various internal cleanups
 	- mGBA:
 		- updated to interim version after 0.9.3, fixing a softlock in Hamtaro: Ham Ham Heartbreak (#2541)
 	- NeoPop:
@@ -136,17 +141,7 @@
 	- ZXHawk:
 		- removed redundant `ZXSpectrumPokeMemory` tool
 
-[c496c97c8 CPP] remove some render off logic (this might not be sync safe), move threaded rendering to a sync setting (this probably doesn't affect sync, but best be safe here) WRITEME
-
 [db7d72be9 Morilli] update nonfunctional bsnes links WRITEME
-
-[6e4a5a96a CPP] (melonDS) reset caches after load state WRITEME
-
-[8b6f1c96d CPP] (melonDS) don't state sound buffers too WRITEME
-
-[4bfb3ba48 CPP] (melonDS) don't state these big caches WRITEME
-
-[46c2d6faf CPP] (melonDS) Cleanups & Updates & Prep For Multithread Rendering Support & Prep For DSi NAND bs (#3174) WRITEME
 
 ## changes from 2.7 to 2.8
 
