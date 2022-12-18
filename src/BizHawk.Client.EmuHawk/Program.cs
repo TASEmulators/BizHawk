@@ -242,7 +242,19 @@ namespace BizHawk.Client.EmuHawk
 				_ = SetDllDirectory(dllDir);
 			}
 
-			Util.DebugWriteLine(EmuHawkUtil.CLRHostHasElevatedPrivileges ? "running as Superuser/Administrator" : "running as unprivileged user");
+			if (EmuHawkUtil.CLRHostHasElevatedPrivileges)
+			{
+				using MsgBox dialog = new(
+					title: "This EmuHawk is privileged",
+					message: $"EmuHawk detected it {(OSTC.IsUnixHost ? "is running as root (Superuser)" : "has Administrator privileges")}.\n"
+						+ "This is a bad idea.",
+					boxIcon: MessageBoxIcon.Warning);
+				dialog.ShowDialog();
+			}
+			else
+			{
+				Util.DebugWriteLine("running as unprivileged user");
+			}
 
 			var exitCode = 0;
 			try
