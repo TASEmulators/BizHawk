@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			cdl["WRAM"] = new byte[MemoryDomains["WRAM"]!.Size];
 
-			var found = MemoryDomains["Cart RAM"];
+			var found = MemoryDomains["CartRAM"];
 			if (found is not null) cdl["CartRAM"] = new byte[found.Size];
 
 			cdl.SubType = "GB";
