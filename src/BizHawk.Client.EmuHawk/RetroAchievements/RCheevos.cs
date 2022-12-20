@@ -33,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool HardcoreMode
 		{
 			get => _hardcoreMode;
-			set => _hardcoreModeMenuItem.Checked = value;
+			set => _hardcoreMode = _hardcoreModeMenuItem.Checked = value;
 		}
 
 		private bool _firstRestart = true;
