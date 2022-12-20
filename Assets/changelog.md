@@ -39,6 +39,7 @@
 	- fixed the autoselection of a movie when opening the Play Movie dialog
 	- fixed `%recent%` being expanded to the wrong path
 	- added warning when loading a `.bot` into the Basic Bot which was made on a different game or system, or on an older version
+	- fixed window title being blank when chromeless mode is enabled
 - Linux port:
 	- fixed various file pickers using case-sensitive file extensions
 	- changed default Lua engine to "NLua+KopiLua" which doesn't seem to crash on normal Mono builds like the other one does
@@ -1057,9 +1058,6 @@ fixes 89972a35791966046c816b75efa482b950603059
 [1452f831af Yoshi] Fix Lua Wiki export, add more notes to fill in some of the holes
 frameadvance loop is documented now so for the first time you can write a script
 without reading someone else's :O imagine that
-
-[7bb4b28093 Yoshi] Remove dumb in `MainForm.WindowTitle` so you can see FPS w/ chromeless
-(window title is shown in the toolbar / application switcher on Win and Linux)
 
 [22a328cd36 Yoshi] Remove unused service props
 unused since 1ce8a368d and 70e0954f2, respectively
