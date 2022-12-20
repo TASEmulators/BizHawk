@@ -72,6 +72,48 @@ namespace BizHawk.BizInvoke
 		}
 
 		/// <summary>
+		/// Compute the offset to the 0th element of an array of value types
+		/// </summary>
+		/// <returns></returns>
+		public static int ComputeValueArrayElementOffset()
+		{
+			var arr = new int[4];
+			int ret;
+			fixed (int* p = arr)
+			{
+				U u = new(new U2(arr));
+				ret = (int)((ulong)(UIntPtr) p - (ulong) u.First!.P);
+			}
+			return ret;
+		}
+
+		/// <summary>
+		/// Compute the offset to the 0th element of an array of object types
+		/// Slow, so cache it if you need it.
+		/// </summary>
+		/// <returns></returns>
+		public static int ComputeObjectArrayElementOffset()
+		{
+			var obj = new object[4];
+			var method = new DynamicMethod("ComputeObjectArrayElementOffsetHelper", typeof(int), new[] { typeof(object[]) }, typeof(string).Module, true);
+			var il = method.GetILGenerator();
+			var local = il.DeclareLocal(typeof(object[]), true);
+			il.Emit(OpCodes.Ldarg_0);
+			il.Emit(OpCodes.Stloc, local);
+			il.Emit(OpCodes.Ldarg_0);
+			il.Emit(OpCodes.Ldc_I4_0);
+			il.Emit(OpCodes.Ldelema, typeof(object));
+			il.Emit(OpCodes.Conv_I);
+			il.Emit(OpCodes.Ldarg_0);
+			il.Emit(OpCodes.Conv_I);
+			il.Emit(OpCodes.Sub);
+			il.Emit(OpCodes.Conv_I4);
+			il.Emit(OpCodes.Ret);
+			var del = (Func<object[], int>)method.CreateDelegate(typeof(Func<object[], int>));
+			return del(obj);
+		}
+
+		/// <summary>
 		/// Compute the byte offset of a field relative to a pointer to the class instance.
 		/// Slow, so cache it if you need it.
 		/// </summary>

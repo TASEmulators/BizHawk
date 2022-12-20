@@ -86,6 +86,10 @@ namespace BizHawk.BizInvoke
 		/// How far into a string pointer the first chair is.
 		/// </summary>
 		private static readonly int StringOffset;
+		/// <summary>
+		/// How far into a value array type element 0 is.
+		/// </summary>
+		private static readonly int ValueArrayElementOffset;
 
 		static BizInvoker()
 		{
@@ -94,6 +98,7 @@ namespace BizHawk.BizInvoke
 			ImplModuleBuilder = ImplAssemblyBuilder.DefineDynamicModule("BizInvokerModule");
 			ClassFieldOffset = BizInvokerUtilities.ComputeClassFirstFieldOffset();
 			StringOffset = BizInvokerUtilities.ComputeStringOffset();
+			ValueArrayElementOffset = BizInvokerUtilities.ComputeValueArrayElementOffset();
 		}
 
 		/// <summary>
@@ -546,9 +551,10 @@ namespace BizHawk.BizInvoke
 						il.Emit(OpCodes.Ldarg, (short)idx);
 						il.Emit(OpCodes.Dup);
 						il.Emit(OpCodes.Stloc, loc);
-						il.Emit(OpCodes.Ldc_I4_0);
-						il.Emit(OpCodes.Ldelema, et);
 						il.Emit(OpCodes.Conv_I);
+						il.Emit(OpCodes.Ldc_I4, ValueArrayElementOffset);
+						il.Emit(OpCodes.Conv_I);
+						il.Emit(OpCodes.Add);
 						il.Emit(OpCodes.Br, end);
 
 						il.MarkLabel(isNull);
