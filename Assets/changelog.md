@@ -51,7 +51,7 @@
 	- (ApiHawk/Lua) improved how removing a memory callback from within a callback is processed (#1823)
 	- (Lua) fixed setting size of Lua Forms (#3034)
 	- (ApiHawk) changed injector to include non-public properties when looking for `ApiContainer`
-	- (ApiHawk) deprecated `CoreSystem` enum in favour of `VSystemID` const strings
+	- (ApiHawk) deprecated some `ExternalToolApplicability.*` attributes
 	- (Lua) fixed encoding bug which caused e.g. Japanese text to become mojibake/garbled (#190, #2041)
 	- (ApiHawk/Lua) added `IMovieApi.PlayFromStart`/`movie.play_from_start` (#384)
 	- (ApiHawk/Lua) added `saveChanges` parameter to `IMovieApi.Stop`/`movie.stop`
@@ -1293,8 +1293,6 @@ appends 596bd03ebe2a7721c42a8293dbf98e37e2413638 for speedup for those domains
 
 [596bd03ebe CPP] expose a possible IMonitor for memory domains, use it to speed up RAM Search for waterbox cores (25-30% speedup?)
 see #3296
-
-[f1162d4912 Yoshi] Rename (copy+deprecate) `RomWhitelist`-->`RomList`
 
 [806830c314 feos] nymashock: resolve !s and hide some columns in tastudio
 
