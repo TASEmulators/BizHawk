@@ -253,10 +253,8 @@ namespace BizHawk.Client.Common
 
 			if (emulator is IGameboyCommon gb)
 			{
-				if (gb.IsCGBMode())
-				{
-					movie.HeaderEntries.Add(gb.IsCGBDMGMode() ? "IsCGBDMGMode" : "IsCGBMode", "1");
-				}
+				//TODO doesn't IsCGBDMGMode imply IsCGBMode?
+				if (gb.IsCGBMode) movie.HeaderEntries.Add(gb.IsCGBDMGMode ? "IsCGBDMGMode" : "IsCGBMode", "1");
 			}
 
 			if (emulator is SMS sms)

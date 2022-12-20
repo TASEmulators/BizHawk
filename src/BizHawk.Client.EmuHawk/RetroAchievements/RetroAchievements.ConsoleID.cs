@@ -3,11 +3,6 @@ using BizHawk.Emulation.Cores.Atari.Jaguar;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive;
-using BizHawk.Emulation.Cores.Nintendo.BSNES;
-using BizHawk.Emulation.Cores.Nintendo.Gameboy;
-using BizHawk.Emulation.Cores.Nintendo.GBHawkLink;
-using BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x;
-using BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 
 namespace BizHawk.Client.EmuHawk
@@ -114,19 +109,12 @@ namespace BizHawk.Client.EmuHawk
 				VSystemID.Raw.DEBUG => ConsoleID.UnknownConsoleID,
 				VSystemID.Raw.Dreamcast => ConsoleID.Dreamcast,
 				VSystemID.Raw.GameCube => ConsoleID.GameCube,
-				VSystemID.Raw.GB when Emu is IGameboyCommon gb => gb.IsCGBMode() ? ConsoleID.GBC : ConsoleID.GB,
+				VSystemID.Raw.GB when Emu is IGameboyCommon { IsCGBMode: true } => ConsoleID.GBC,
+				VSystemID.Raw.GB => ConsoleID.GB,
 				VSystemID.Raw.GBA => ConsoleID.GBA,
 				VSystemID.Raw.GBC => ConsoleID.GBC, // Not actually used
-				VSystemID.Raw.GBL => Emu switch // actually can be a mix of GB and GBC
-				{
-					// there's probably a better way for all this
-					GambatteLink gb => gb.IsCGBMode(0) ? ConsoleID.GBC : ConsoleID.GB,
-					// WHY ARE THESE PUBLIC???
-					GBHawkLink gb => gb.L.IsCGBMode() ? ConsoleID.GBC : ConsoleID.GB,
-					GBHawkLink3x gb => gb.L.IsCGBMode() ? ConsoleID.GBC : ConsoleID.GB,
-					GBHawkLink4x gb => gb.A.IsCGBMode() ? ConsoleID.GBC : ConsoleID.GB,
-					_ => ConsoleID.UnknownConsoleID,
-				},
+				VSystemID.Raw.GBL when Emu is ILinkedGameBoyCommon { First: { IsCGBMode: true } } => ConsoleID.GBC,
+				VSystemID.Raw.GBL => ConsoleID.GB, // actually can be a mix of GB and GBC
 				VSystemID.Raw.GEN when Emu is GPGX gpgx => gpgx.IsMegaCD ? ConsoleID.SegaCD : ConsoleID.MegaDrive,
 				VSystemID.Raw.GEN when Emu is PicoDrive pico => pico.Is32XActive ? ConsoleID.Sega32X : ConsoleID.MegaDrive,
 				VSystemID.Raw.GG => ConsoleID.GameGear,

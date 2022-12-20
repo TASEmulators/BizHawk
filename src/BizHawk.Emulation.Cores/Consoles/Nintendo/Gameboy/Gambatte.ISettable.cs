@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		{
 			_settings = o;
 			_disassembler.UseRGBDSSyntax = _settings.RgbdsSyntax;
-			if (IsCGBMode() || IsSgb)
+			if (IsCGBMode || IsSgb)
 			{
 				SetCGBColors(_settings.CGBColors);
 			}

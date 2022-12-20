@@ -226,9 +226,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			DeterministicEmulation = true;
 		}
 
-		public bool IsCGBMode() => is_GBC;
+		public bool IsCGBMode
+			=> is_GBC; //TODO inline
 
-		public bool IsCGBDMGMode() => is_GB_in_GBC;
+		public bool IsCGBDMGMode
+			=> is_GB_in_GBC; //TODO inline
 
 		/// <summary>
 		/// Produces a palette in the form that certain frontend inspection tools.

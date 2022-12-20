@@ -2065,7 +2065,7 @@ namespace BizHawk.Client.EmuHawk
 				case VSystemID.Raw.GBC:
 				case VSystemID.Raw.SGB when Emulator is Gameboy:
 					GBSubMenu.Visible = true;
-					SameBoyColorChooserMenuItem.Visible = Emulator is Sameboy sameboy && !sameboy.IsCGBMode(); // palette config only works in DMG mode
+					SameBoyColorChooserMenuItem.Visible = Emulator is Sameboy { IsCGBMode: false }; // palette config only works in DMG mode
 					break;
 				case VSystemID.Raw.SGB when Emulator is BsnesCore or SubBsnesCore:
 				case VSystemID.Raw.SNES when Emulator is LibsnesCore { IsSGB: true }: // doesn't use "SGB" sysID

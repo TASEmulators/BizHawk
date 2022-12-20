@@ -36,9 +36,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 		public bool IsCgb { get; set; }
 
-		public bool IsCGBMode() => IsCgb;
+		public bool IsCGBMode
+			=> IsCgb; //TODO inline
 
-		public bool IsCGBDMGMode() => LibSameboy.sameboy_iscgbdmg(SameboyState);
+		public bool IsCGBDMGMode
+			=> LibSameboy.sameboy_iscgbdmg(SameboyState);
 
 		private readonly LibSameboy.InputCallback _inputcb;
 

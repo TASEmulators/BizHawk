@@ -161,8 +161,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 						"Disable BIOS in sync settings to boot this game");
 				}
 
-				if (!_syncSettings.EnableBIOS && IsCgb && IsCGBDMGMode()) // without a bios, we need to set the palette for cgbdmg ourselves
+				if (!_syncSettings.EnableBIOS && IsCGBMode && IsCGBDMGMode) //TODO doesn't IsCGBDMGMode imply IsCGBMode?
 				{
+					// without a bios, we need to set the palette for cgbdmg ourselves
 					int[] cgbDmgColors = new int[] { 0xFFFFFF, 0x7BFF31, 0x0063C5, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000 };
 					if (file[0x14B] == 0x01 || (file[0x14B] == 0x33 && file[0x144] == '0' && file[0x145] == '1')) // Nintendo licencees get special palettes
 					{
@@ -337,22 +338,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			return RemoteCommand;
 		}
 
-		/// <summary>
-		/// true if the emulator is currently emulating CGB
-		/// </summary>
-		public bool IsCGBMode()
-		{
-			//return LibGambatte.gambatte_iscgb(GambatteState);
-			return IsCgb;
-		}
-		
-		/// <summary>
-		/// true if the emulator is currently emulating CGB in DMG compatibility mode (NOTE: this mode does not take affect until the bootrom unmaps itself)
-		/// </summary>
-		public bool IsCGBDMGMode()
-		{
-			return LibGambatte.gambatte_iscgbdmg(GambatteState);
-		}
+		public bool IsCGBMode
+#if true
+			=> IsCgb; //TODO inline
+#else
+			=> LibGambatte.gambatte_iscgb(GambatteState);
+#endif
+
+		public bool IsCGBDMGMode
+			=> LibGambatte.gambatte_iscgbdmg(GambatteState);
 
 		private InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
 

@@ -94,7 +94,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void Restart()
 		{
-			_cgb = Gb.IsCGBMode();
+			_cgb = Gb.IsCGBMode;
 			_lcdc = 0;
 
 			label4.Enabled = _cgb;
