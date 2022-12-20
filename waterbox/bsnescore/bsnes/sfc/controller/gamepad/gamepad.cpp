@@ -7,7 +7,10 @@ Gamepad::Gamepad(uint port, bool isPayloadController) : Controller(port), isPayl
 auto Gamepad::data() -> uint2 {
   if(counter >= 16) return 1;
   if(latched == 1) return platform->inputPoll(port, device, B);
-  if (counter >= 12 && !isPayload) return 0;  //12-15: signature
+  if (counter >= 12 && !isPayload) {
+    counter++;
+    return 0;  //12-15: signature
+  }
 
   //note: D-pad physically prevents up+down and left+right from being pressed at the same time
   // patched this "fix" out because it is handled in bizhawk frontend and fixing it here does not seem right anyway
