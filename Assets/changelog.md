@@ -59,6 +59,7 @@
 	- (ApiHawk/Lua) added `saveChanges` parameter to `IMovieApi.Stop`/`movie.stop`
 	- (ApiHawk/Lua) fixed edge cases for `MemoryApi.{Read,Write}ByteRange`/`{memory,mainmemory}.read_bytes_as_{array,dict}`/`{memory,mainmemory}.write_bytes_as_array`
 	- (ApiHawk/Lua) added `IUserDataApi.Keys`/`userdata.get_keys`
+	- (ApiHawk) fixed trying to load tool Forms when services aren't satisfied, causing NREs (#3329)
 - New and graduating cores:
 	- Ares64:
 		- removed the Ares64 (Performance) core and renamed Ares64 (Accuracy) to Ares64, now no longer experimental
@@ -1085,9 +1086,6 @@ an assert to `RomLoader` in case a bug is introduced later
 [ea5e8b70d3 Yoshi] Fix compilation of ext. tools
 
 [8dcea24703 Yoshi] Fix `GameInfo.NullInstance` having a name... why did it have a name
-
-[d796210437 Yoshi] Cancel tool loading when services aren't satisfied (fixes #3329)
-also cleaned up other calls
 
 [070e7035b3 Yoshi] Ensure there can be no edge cases involving SGXCD sysID
 breaks config, in case you care about setting a custom save dir for PCE
