@@ -36,6 +36,7 @@
 	- fixed Debugger breakpoint crash with mGBA (#3287)
 	- added warning dialog when running as Superuser/Administrator
 	- fixed overlapping UI elements in `Config` > `Controllers...` when Windows UI scale is not 100% (#2605)
+	- fixed the autoselection of a movie when opening the Play Movie dialog
 - Linux port:
 	- fixed various file pickers using case-sensitive file extensions
 	- changed default Lua engine to "NLua+KopiLua" which doesn't seem to crash on normal Mono builds like the other one does
@@ -1076,9 +1077,6 @@ fixes empty address fields being saved as `0x0`, see #3326
 
 [140e340a8d Yoshi] Add Analyzer rule to warn of `FirstOrDefault` on list of structs
 
-[8453c0e44d Yoshi] Fix exception on opening Play Movie dialog with multiple movies
-fixes 9211007a1
-
 [bd58bde07c Yoshi] Hopefully block edge cases where global `GameInfo` is uninitialised
 `Game == null` conditions in `MainForm` ctor looked unreachable, so I changed
 them to `Game.IsNullInstance()` which is what I assume was intended, and added
@@ -1122,10 +1120,6 @@ tipped me off to this
 
 [0309cdc4bc Yoshi] Disable MEN015 "Use Preferred Terms" (spellcheck)
 you're supposed to be able to configure this but I couldn't figure it out
-
-[9211007a18 Yoshi] Fix bug in `PlayMovie.PreHighlightMovie` heuristics
-for the record, the bug was that it had `_movieList[indices[0]]` in the loop
-instead of `_movieList[indices[i]]`
 
 [3f2a07e582 Yoshi] Fix remaining MA0098 code style warnings
 "Use indexer instead of LINQ methods"
