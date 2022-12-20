@@ -55,6 +55,7 @@
 	- (Lua) fixed encoding bug which caused e.g. Japanese text to become mojibake/garbled (#190, #2041)
 	- (ApiHawk/Lua) added `IMovieApi.PlayFromStart`/`movie.play_from_start` (#384)
 	- (ApiHawk/Lua) added `saveChanges` parameter to `IMovieApi.Stop`/`movie.stop`
+	- (ApiHawk/Lua) fixed edge cases for `MemoryApi.{Read,Write}ByteRange`/`{memory,mainmemory}.read_bytes_as_{array,dict}`/`{memory,mainmemory}.write_bytes_as_array`
 - New and graduating cores:
 	- Ares64:
 		- removed the Ares64 (Performance) core and renamed Ares64 (Accuracy) to Ares64, now no longer experimental
@@ -399,12 +400,6 @@ fixes 82c3b471a, 9660c16a0
 [3dd36f5f07 CPP] revert the explicit try/finally use for PeekByte/PokeByte monitor domain methods, testing seems to show the ref struct use makes EnterExit allocation (now forced to the stack) a non-issue performance wise
 
 [f01463e2b3 CPP] Convert EnterExitWrapper to a readonly ref struct, this should be a speedup in all cases. Will need to experiment to see if this mean the try/finally from #3296 can be avoided
-
-[d508b734d6 Yoshi] Fix `MemoryApi.{Read,Write}ByteRange` edge cases
-
-[af44a85cfd Yoshi] Add unit tests for `IMemoryApi.{Read,Write}ByteRange`
-
-[dc4efc3644 Yoshi] Fix typos and whitespace in `MemoryApi.cs`
 
 [1bdff05442 Yoshi] Use read-only collection types in `IMemoryApi`
 
