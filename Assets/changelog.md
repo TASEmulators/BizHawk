@@ -35,6 +35,7 @@
 	- made file extension check for disc images case-insensitive
 	- fixed Debugger breakpoint crash with mGBA (#3287)
 	- added warning dialog when running as Superuser/Administrator
+	- fixed overlapping UI elements in `Config` > `Controllers...` when Windows UI scale is not 100% (#2605)
 - Linux port:
 	- fixed various file pickers using case-sensitive file extensions
 	- changed default Lua engine to "NLua+KopiLua" which doesn't seem to crash on normal Mono builds like the other one does
@@ -365,9 +366,6 @@ how ironic
 [62f6f3b471 Yoshi] Fix Win32LuaLibraries init'ing incorrectly on `DeveloperBuild = false`
 
 [b04260bee7 CPP] fix unwrapped lua exceptions not being correctly thrown
-
-[def5df44fa Yoshi] Fix double call to `UIHelper.ScaleX` in `ControllerConfig` (see #2605)
-fixes 93c47b87b
 
 [5e6c4a2bbd Morilli] fix justifier controller never working oops
 
