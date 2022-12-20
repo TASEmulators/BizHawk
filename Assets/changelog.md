@@ -37,6 +37,7 @@
 	- added warning dialog when running as Superuser/Administrator
 	- fixed overlapping UI elements in `Config` > `Controllers...` when Windows UI scale is not 100% (#2605)
 	- fixed the autoselection of a movie when opening the Play Movie dialog
+	- fixed `%recent%` being expanded to the wrong path
 - Linux port:
 	- fixed various file pickers using case-sensitive file extensions
 	- changed default Lua engine to "NLua+KopiLua" which doesn't seem to crash on normal Mono builds like the other one does
@@ -576,9 +577,6 @@ with assembly being used, we can guarantee rax will not be stomped by compiler w
 
 [066297d5e7 CPP] MAME Waterbox (#3437)
 
-[e7e587d625 Yoshi] Restore old behaviour of "Always use recent path for ROMs"
-fixes 41d46dd37, see #1574
-
 [948084a97e Yoshi] Use `Movie.NotActive` extension instead of negated `IsActive`
 
 [84cc71e454 Yoshi] Use `DialogResult.IsOk` extension everywhere and clean up
@@ -1112,11 +1110,6 @@ If the Copy button is enabled, but there is no best attempt recorded, it will cr
 
 [d142555ec3 Yoshi] Enable MA0066 and fix noncompliance
 "Hash table unfriendly type is used in a hash table"
-
-[41d46dd37d Yoshi] Fix `%recent%` in Paths config
-broken since introduction in 017743133 (pre-1.0 according to GitHub)
-also enabled MA0052 "Replace constant Enum.ToString with nameof", which is what
-tipped me off to this
 
 [0309cdc4bc Yoshi] Disable MEN015 "Use Preferred Terms" (spellcheck)
 you're supposed to be able to configure this but I couldn't figure it out
