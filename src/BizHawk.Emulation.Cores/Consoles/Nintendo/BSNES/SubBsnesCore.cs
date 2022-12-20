@@ -37,8 +37,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		private readonly BsnesCore _bsnesCore;
 
-		public bool IsSGB => _bsnesCore.IsSGB;
-
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
 		public ControllerDefinition ControllerDefinition => _bsnesCore.ControllerDefinition;

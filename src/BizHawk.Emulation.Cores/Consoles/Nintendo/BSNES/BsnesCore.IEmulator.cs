@@ -94,7 +94,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		public int Frame { get; private set; }
 
-		public string SystemId => VSystemID.Raw.SNES;
+		public string SystemId { get; }
 
 		public bool DeterministicEmulation => true;
 

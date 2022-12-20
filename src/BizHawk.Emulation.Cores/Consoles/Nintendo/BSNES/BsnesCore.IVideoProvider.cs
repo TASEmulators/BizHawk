@@ -10,13 +10,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			get
 			{
 				double virtualWidth = BufferWidth * PixelAspectRatio;
-				if (!IsSGB && BufferWidth == 256 && (BufferHeight > 240 || _settings.AlwaysDoubleSize)) virtualWidth *= 2;
+				if (!_isSGB && BufferWidth == 256 && (BufferHeight > 240 || _settings.AlwaysDoubleSize)) virtualWidth *= 2;
 
 				return (int)Math.Round(virtualWidth);
 			}
 		}
 
-		public int VirtualHeight => !IsSGB && BufferHeight <= 240 && (BufferWidth > 256 || _settings.AlwaysDoubleSize) ? BufferHeight * 2 : BufferHeight;
+		public int VirtualHeight => !_isSGB && BufferHeight <= 240 && (BufferWidth > 256 || _settings.AlwaysDoubleSize) ? BufferHeight * 2 : BufferHeight;
 
 		public int BufferWidth { get; private set; } = 256;
 

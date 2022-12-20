@@ -27,10 +27,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			CoreComm = loadParameters.Comm;
 			_settings = loadParameters.Settings ?? new SnesSettings();
 			_syncSettings = loadParameters.SyncSettings ?? new SnesSyncSettings();
+			SystemId = loadParameters.Game.System;
+			_isSGB = SystemId == VSystemID.Raw.SGB;
 
-			IsSGB = loadParameters.Game.System == VSystemID.Raw.SGB;
 			byte[] sgbRomData = null;
-			if (IsSGB)
+			if (_isSGB)
 			{
 				if ((loadParameters.Roms[0].RomData[0x143] & 0xc0) == 0xc0)
 				{
@@ -84,7 +85,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			InitAudio();
 			ser.Register<ISoundProvider>(_soundProvider);
 
-			if (IsSGB)
+			if (_isSGB)
 			{
 				Api.core.snes_load_cartridge_super_gameboy(sgbRomData, loadParameters.Roms[0].RomData,
 					sgbRomData!.Length, loadParameters.Roms[0].RomData.Length);
@@ -127,9 +128,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		private IController _controller;
 		private SimpleSyncSoundProvider _soundProvider;
 		private readonly string _romPath;
+		private readonly bool _isSGB;
 		private bool _disposed;
 
-		public bool IsSGB { get; }
 		public string BoardName { get; }
 
 		internal BsnesApi Api { get; }
@@ -201,7 +202,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		private void snes_no_lag(bool sgbPoll)
 		{
 			// gets called whenever there was input read in the core
-			if (!IsSGB || sgbPoll)
+			if (!_isSGB || sgbPoll)
 			{
 				IsLagFrame = false;
 			}
@@ -244,7 +245,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		private unsafe void snes_video_refresh(IntPtr data, int width, int height, int pitch)
 		{
 			ushort* vp = (ushort*)data;
-			if (_settings.CropSGBFrame && IsSGB)
+			if (_settings.CropSGBFrame && _isSGB)
 			{
 				BufferWidth = 160;
 				BufferHeight = 144;
@@ -262,7 +263,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			}
 
 			int di = 0;
-			if (_settings.CropSGBFrame && IsSGB)
+			if (_settings.CropSGBFrame && _isSGB)
 			{
 				int initialY = _settings.ShowOverscan ? 47 : 39;
 				for (int y = initialY; y < initialY + 144; y++)

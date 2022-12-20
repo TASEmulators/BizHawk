@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				address => Api.core.snes_bus_read((uint) address),
 				(address, value) => Api.core.snes_bus_write((uint) address, value), wordSize: 4));
 
-			if (IsSGB)
+			if (_isSGB)
 			{
 				foreach (int i in Enum.GetValues(typeof(BsnesApi.SGB_MEMORY)))
 				{
@@ -55,8 +55,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			_memoryDomains = new(mm);
 			((BasicServiceProvider) ServiceProvider).Register<IMemoryDomains>(_memoryDomains);
 
-			_memoryDomains.MainMemory = _memoryDomains[IsSGB ? "SGB WRAM" : "WRAM"];
-			_memoryDomains.SystemBus = _memoryDomains[IsSGB ? "SGB System Bus" : "System Bus"];
+			_memoryDomains.MainMemory = _memoryDomains[_isSGB ? "SGB WRAM" : "WRAM"];
+			_memoryDomains.SystemBus = _memoryDomains[_isSGB ? "SGB System Bus" : "System Bus"];
 		}
 	}
 }

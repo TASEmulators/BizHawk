@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			byte[] saveRamCopy = new byte[_saveRamSize];
 			using (Api.exe.EnterExit())
 			{
-				if (IsSGB)
+				if (_isSGB)
 				{
 					Api.core.snes_sgb_save_battery(saveRamCopy, _saveRamSize);
 				}
@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 			using (Api.exe.EnterExit())
 			{
-				if (IsSGB)
+				if (_isSGB)
 				{
 					Api.core.snes_sgb_load_battery(data, _saveRamSize);
 				}

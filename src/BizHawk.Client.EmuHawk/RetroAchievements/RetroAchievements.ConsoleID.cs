@@ -159,12 +159,8 @@ namespace BizHawk.Client.EmuHawk
 				VSystemID.Raw.SGX => ConsoleID.PCEngine, // ???
 				VSystemID.Raw.SGXCD => ConsoleID.PCEngineCD, // ???
 				VSystemID.Raw.SMS => ConsoleID.MasterSystem,
-				VSystemID.Raw.SNES => Emu switch
-				{
-					LibsnesCore libsnes => libsnes.IsSGB ? ConsoleID.GB : ConsoleID.SNES,
-					BsnesCore bsnes => bsnes.IsSGB ? ConsoleID.GB : ConsoleID.SNES,
-					_ => ConsoleID.SNES,
-				},
+				VSystemID.Raw.SNES when Emu is LibsnesCore libsnes => libsnes.IsSGB ? ConsoleID.GB : ConsoleID.SNES,
+				VSystemID.Raw.SNES => ConsoleID.SNES,
 				VSystemID.Raw.TI83 => ConsoleID.UnknownConsoleID,
 				VSystemID.Raw.TIC80 => ConsoleID.Tic80,
 				VSystemID.Raw.UZE => ConsoleID.UnknownConsoleID,
