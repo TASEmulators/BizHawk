@@ -56,6 +56,7 @@
 	- (ApiHawk/Lua) added `IMovieApi.PlayFromStart`/`movie.play_from_start` (#384)
 	- (ApiHawk/Lua) added `saveChanges` parameter to `IMovieApi.Stop`/`movie.stop`
 	- (ApiHawk/Lua) fixed edge cases for `MemoryApi.{Read,Write}ByteRange`/`{memory,mainmemory}.read_bytes_as_{array,dict}`/`{memory,mainmemory}.write_bytes_as_array`
+	- (ApiHawk/Lua) added `IUserDataApi.Keys`/`userdata.get_keys`
 - New and graduating cores:
 	- Ares64:
 		- removed the Ares64 (Performance) core and renamed Ares64 (Accuracy) to Ares64, now no longer experimental
@@ -402,8 +403,6 @@ fixes 82c3b471a, 9660c16a0
 [f01463e2b3 CPP] Convert EnterExitWrapper to a readonly ref struct, this should be a speedup in all cases. Will need to experiment to see if this mean the try/finally from #3296 can be avoided
 
 [1bdff05442 Yoshi] Use read-only collection types in `IMemoryApi`
-
-[cba206efec Yoshi] Add `IUserDataApi.Keys`/`userdata.get_keys`
 
 [c2d5a9c931 Yoshi] Banish empty conditional blocks
 
