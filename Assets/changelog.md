@@ -38,6 +38,7 @@
 	- fixed overlapping UI elements in `Config` > `Controllers...` when Windows UI scale is not 100% (#2605)
 	- fixed the autoselection of a movie when opening the Play Movie dialog
 	- fixed `%recent%` being expanded to the wrong path
+	- added warning when loading a `.bot` into the Basic Bot which was made on a different game or system, or on an older version
 - Linux port:
 	- fixed various file pickers using case-sensitive file extensions
 	- changed default Lua engine to "NLua+KopiLua" which doesn't seem to crash on normal Mono builds like the other one does
@@ -1071,8 +1072,6 @@ unused since 1ce8a368d and 70e0954f2, respectively
 
 [787b413913 Yoshi] Change Basic Bot's addresses to `ulong?`
 fixes empty address fields being saved as `0x0`, see #3326
-
-[5f572442c4 Yoshi] Save game info to `.bot` files and check when loading (resolves #3340)
 
 [140e340a8d Yoshi] Add Analyzer rule to warn of `FirstOrDefault` on list of structs
 
