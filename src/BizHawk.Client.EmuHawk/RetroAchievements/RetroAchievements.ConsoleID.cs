@@ -115,12 +115,14 @@ namespace BizHawk.Client.EmuHawk
 				VSystemID.Raw.GBC => ConsoleID.GBC, // Not actually used
 				VSystemID.Raw.GBL when Emu is ILinkedGameBoyCommon { First: { IsCGBMode: true } } => ConsoleID.GBC,
 				VSystemID.Raw.GBL => ConsoleID.GB, // actually can be a mix of GB and GBC
-				VSystemID.Raw.GEN when Emu is GPGX gpgx => gpgx.IsMegaCD ? ConsoleID.SegaCD : ConsoleID.MegaDrive,
-				VSystemID.Raw.GEN when Emu is PicoDrive pico => pico.Is32XActive ? ConsoleID.Sega32X : ConsoleID.MegaDrive,
+				VSystemID.Raw.GEN when Emu is GPGX { IsMegaCD: true } => ConsoleID.SegaCD,
+				VSystemID.Raw.GEN when Emu is PicoDrive { Is32XActive: true } => ConsoleID.Sega32X,
+				VSystemID.Raw.GEN => ConsoleID.MegaDrive,
 				VSystemID.Raw.GG => ConsoleID.GameGear,
 				VSystemID.Raw.GGL => ConsoleID.GameGear, // ???
 				VSystemID.Raw.INTV => ConsoleID.Intellivision,
-				VSystemID.Raw.Jaguar when Emu is VirtualJaguar jaguar => jaguar.IsJaguarCD ? ConsoleID.JaguarCD : ConsoleID.Jaguar,
+				VSystemID.Raw.Jaguar when Emu is VirtualJaguar { IsJaguarCD: true } => ConsoleID.JaguarCD,
+				VSystemID.Raw.Jaguar => ConsoleID.Jaguar,
 				VSystemID.Raw.Libretro => ConsoleID.UnknownConsoleID,
 				VSystemID.Raw.Lynx => ConsoleID.Lynx,
 				VSystemID.Raw.MSX => ConsoleID.MSX,
@@ -147,7 +149,7 @@ namespace BizHawk.Client.EmuHawk
 				VSystemID.Raw.SGX => ConsoleID.PCEngine, // ???
 				VSystemID.Raw.SGXCD => ConsoleID.PCEngineCD, // ???
 				VSystemID.Raw.SMS => ConsoleID.MasterSystem,
-				VSystemID.Raw.SNES when Emu is LibsnesCore libsnes => libsnes.IsSGB ? ConsoleID.GB : ConsoleID.SNES,
+				VSystemID.Raw.SNES when Emu is LibsnesCore { IsSGB: true } => ConsoleID.GB,
 				VSystemID.Raw.SNES => ConsoleID.SNES,
 				VSystemID.Raw.TI83 => ConsoleID.UnknownConsoleID,
 				VSystemID.Raw.TIC80 => ConsoleID.Tic80,
