@@ -854,7 +854,7 @@ namespace BizHawk.Client.Common
 
 			public static readonly IReadOnlyCollection<string> VEC = new[] { "vec" };
 
-			public static readonly IReadOnlyCollection<string> WSWAN = new[] { "ws", "wsc" };
+			public static readonly IReadOnlyCollection<string> WSWAN = new[] { "ws", "wsc", "pc2" };
 
 			public static readonly IReadOnlyCollection<string> ZXSpectrum = new[] { "tzx", "tap", "dsk", "pzx" };
 

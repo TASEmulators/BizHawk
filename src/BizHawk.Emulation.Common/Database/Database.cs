@@ -346,6 +346,7 @@ namespace BizHawk.Emulation.Common
 
 				case ".WS":
 				case ".WSC":
+				case ".PC2"
 					game.System = VSystemID.Raw.WSWAN;
 					break;
 
