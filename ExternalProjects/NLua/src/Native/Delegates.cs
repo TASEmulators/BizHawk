@@ -73,14 +73,4 @@ namespace NLua
 	[SuppressUnmanagedCodeSecurity]
 	[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 	public delegate voidptr_t LuaAlloc(voidptr_t ud, voidptr_t ptr, size_t osize, size_t nsize);
-
-	/// <summary>
-	/// Type for warning functions
-	/// </summary>
-	/// <param name="ud"></param>
-	/// <param name="msg"></param>
-	/// <param name="tocont"></param>
-	[SuppressUnmanagedCodeSecurity]
-	[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-	public delegate void LuaWarnFunction(voidptr_t ud, charptr_t msg, int tocont);
 }

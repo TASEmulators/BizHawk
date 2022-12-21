@@ -21,14 +21,14 @@ using lua_Writer = System.IntPtr;
 using size_t = System.UIntPtr;
 using voidptr_t = System.IntPtr;
 
+#pragma warning disable SA1121 // Use built-in type alias
+
 namespace NLua
 {
 	[SuppressUnmanagedCodeSecurity]
-	public abstract class NativeMethods
+	public abstract class LuaNativeMethods
 	{
-		private const CallingConvention cc = CallingConvention.Cdecl;
-
-#pragma warning disable SA1121 // Use built-in type alias
+		protected const CallingConvention cc = CallingConvention.Cdecl;
 
 		[BizImport(cc)]
 		public abstract int lua_absindex(lua_State luaState, int idx);
@@ -67,12 +67,6 @@ namespace NLua
 		public abstract int lua_error(lua_State luaState);
 
 		[BizImport(cc)]
-		public abstract int lua_gc(lua_State luaState, int what, int data);
-
-		[BizImport(cc, EntryPoint = "lua_gc")]
-		public abstract int lua_gc_2(lua_State luaState, int what, int data, int data2);
-
-		[BizImport(cc)]
 		public abstract lua_Alloc lua_getallocf(lua_State luaState, ref voidptr_t ud);
 
 		[BizImport(cc)]
@@ -82,31 +76,10 @@ namespace NLua
 		public abstract int lua_getglobal(lua_State luaState, string name);
 
 		[BizImport(cc)]
-		public abstract lua_Hook lua_gethook(lua_State luaState);
-
-		[BizImport(cc)]
-		public abstract int lua_gethookcount(lua_State luaState);
-
-		[BizImport(cc)]
-		public abstract int lua_gethookmask(lua_State luaState);
-
-		[BizImport(cc)]
 		public abstract int lua_geti(lua_State luaState, int index, long i);
 
 		[BizImport(cc)]
-		public abstract int lua_getinfo(lua_State luaState, string what, lua_Debug ar);
-
-		[BizImport(cc)]
-		public abstract int lua_getiuservalue(lua_State luaState, int idx, int n);
-
-		[BizImport(cc)]
-		public abstract charptr_t lua_getlocal(lua_State luaState, lua_Debug ar, int n);
-
-		[BizImport(cc)]
 		public abstract int lua_getmetatable(lua_State luaState, int index);
-
-		[BizImport(cc)]
-		public abstract int lua_getstack(lua_State luaState, int level, lua_Debug n);
 
 		[BizImport(cc)]
 		public abstract int lua_gettable(lua_State luaState, int index);
@@ -151,9 +124,6 @@ namespace NLua
 
 		[BizImport(cc)]
 		public abstract lua_State lua_newthread(lua_State luaState);
-
-		[BizImport(cc)]
-		public abstract voidptr_t lua_newuserdatauv(lua_State luaState, size_t size, int nuvalue);
 
 		[BizImport(cc)]
 		public abstract int lua_next(lua_State luaState, int index);
@@ -219,12 +189,6 @@ namespace NLua
 		public abstract void lua_rawsetp(lua_State luaState, int index, voidptr_t p);
 
 		[BizImport(cc)]
-		public abstract int lua_resetthread(lua_State luaState);
-
-		[BizImport(cc)]
-		public abstract int lua_resume(lua_State luaState, lua_State from, int nargs, out int results);
-
-		[BizImport(cc)]
 		public abstract void lua_rotate(lua_State luaState, int index, int n);
 
 		[BizImport(cc)]
@@ -237,16 +201,7 @@ namespace NLua
 		public abstract void lua_setglobal(lua_State luaState, string key);
 
 		[BizImport(cc)]
-		public abstract void lua_sethook(lua_State luaState, lua_Hook f, int mask, int count);
-
-		[BizImport(cc)]
 		public abstract void lua_seti(lua_State luaState, int index, long n);
-
-		[BizImport(cc)]
-		public abstract void lua_setiuservalue(lua_State luaState, int index, int n);
-
-		[BizImport(cc)]
-		public abstract charptr_t lua_setlocal(lua_State luaState, lua_Debug ar, int n);
 
 		[BizImport(cc)]
 		public abstract void lua_setmetatable(lua_State luaState, int objIndex);
@@ -261,9 +216,6 @@ namespace NLua
 		public abstract charptr_t lua_setupvalue(lua_State luaState, int funcIndex, int n);
 
 		[BizImport(cc)]
-		public abstract void lua_setwarnf(lua_State luaState, lua_WarnFunction warningFunctionPtr, voidptr_t ud);
-
-		[BizImport(cc)]
 		public abstract int lua_status(lua_State luaState);
 
 		[BizImport(cc)]
@@ -274,9 +226,6 @@ namespace NLua
 
 		[BizImport(cc)]
 		public abstract lua_CFunction lua_tocfunction(lua_State luaState, int index);
-
-		[BizImport(cc)]
-		public abstract lua_CFunction lua_toclose(lua_State luaState, int index);
 
 		[BizImport(cc)]
 		public abstract lua_Integer lua_tointegerx(lua_State luaState, int index, out int isNum);
@@ -307,12 +256,6 @@ namespace NLua
 
 		[BizImport(cc)]
 		public abstract void lua_upvaluejoin(lua_State luaState, int funcIndex1, int n1, int funcIndex2, int n2);
-
-		[BizImport(cc)]
-		public abstract lua_Number lua_version(lua_State luaState);
-
-		[BizImport(cc)]
-		public abstract void lua_warning(lua_State luaState, string msg, int tocont);
 
 		[BizImport(cc)]
 		public abstract void lua_xmove(lua_State from, lua_State to, int n);
@@ -426,14 +369,39 @@ namespace NLua
 			int level);
 
 		[BizImport(cc)]
-		public abstract int luaL_typeerror(lua_State luaState, int arg, string typeName);
-
-		[BizImport(cc)]
 		public abstract void luaL_unref(lua_State luaState, int registryIndex, int reference);
 
 		[BizImport(cc)]
 		public abstract void luaL_where(lua_State luaState, int level);
+	}
 
-#pragma warning restore SA1121 // Use built-in type alias
+	public abstract class Lua54NativeMethods : LuaNativeMethods
+	{
+		[BizImport(cc)]
+		public abstract int lua_resume(lua_State luaState, lua_State from, int nargs, out int results);
+
+		[BizImport(cc)]
+		public abstract voidptr_t lua_newuserdatauv(lua_State luaState, size_t size, int nuvalue);
+
+		[BizImport(cc)]
+		public abstract void lua_setiuservalue(lua_State luaState, int index, int n);
+
+		[BizImport(cc)]
+		public abstract int lua_getiuservalue(lua_State luaState, int idx, int n);
+	}
+
+	public abstract class Lua53NativeMethods : LuaNativeMethods
+	{
+		[BizImport(cc)]
+		public abstract int lua_resume(lua_State luaState, lua_State from, int nargs);
+
+		[BizImport(cc)]
+		public abstract voidptr_t lua_newuserdata(lua_State luaState, size_t size);
+
+		[BizImport(cc)]
+		public abstract void lua_setuservalue(lua_State luaState, int index);
+
+		[BizImport(cc)]
+		public abstract int lua_getuservalue(lua_State luaState, int idx);
 	}
 }

@@ -35,9 +35,9 @@ namespace NLua
 			_translator = interpreter.Translator;
 		}
 
-		/*
-			* Resumes this thread
-			*/
+		/// <summary>
+		/// Resumes this thread
+		/// </summary>
 		public LuaStatus Resume()
 		{
 			// We leave nothing on the stack if we error
@@ -80,19 +80,6 @@ namespace NLua
 		public void Yield()
 		{
 			_luaState.Yield(0);
-		}
-
-		/// <summary>
-		/// Resets this thread, cleaning its call stack and closing all pending to-be-closed variables.
-		/// </summary>
-		public int Reset()
-		{
-			int oldTop = _luaState.GetTop();
-
-			int statusCode = _luaState.ResetThread();  /* close its tbc variables */
-
-			_luaState.SetTop(oldTop);
-			return statusCode;
 		}
 
 		public void XMove(LuaState to, object val, int index = 1)

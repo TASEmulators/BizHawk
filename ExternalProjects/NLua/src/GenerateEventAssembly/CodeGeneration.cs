@@ -65,13 +65,13 @@ namespace NLua
 			}
 		}
 
-		/*
-			* Generates an implementation of klass, if it is an interface, or
-			* a subclass of klass that delegates its virtual methods to a Lua table.
-			*/
+		/// <summary>
+		/// Generates an implementation of klass, if it is an interface, or
+		/// a subclass of klass that delegates its virtual methods to a Lua table.
+		/// </summary>
 		public void GenerateClass(Type klass, out Type newType, out Type[][] returnTypes)
 		{
-			throw new NotImplementedException (" Emit not available on .NET Standard ");
+			throw new NotImplementedException("Emit not available on .NET Standard");
 		}
 
 		internal void GetReturnTypesFromMethod(MethodInfo method, out Type[] returnTypes)

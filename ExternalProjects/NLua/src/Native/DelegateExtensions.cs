@@ -100,21 +100,5 @@ namespace NLua
 
 			return Marshal.GetFunctionPointerForDelegate<LuaAlloc>(d);
 		}
-
-		public static LuaWarnFunction ToLuaWarning(this IntPtr ptr)
-		{
-			if (ptr == IntPtr.Zero)
-				return null;
-
-			return Marshal.GetDelegateForFunctionPointer<LuaWarnFunction>(ptr);
-		}
-
-		public static IntPtr ToFunctionPointer(this LuaWarnFunction d)
-		{
-			if (d == null)
-				return IntPtr.Zero;
-
-			return Marshal.GetFunctionPointerForDelegate<LuaWarnFunction>(d);
-		}
 	}
 }

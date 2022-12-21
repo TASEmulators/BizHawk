@@ -42,9 +42,9 @@ namespace NLua
 			return lua.CallFunction(this, args);
 		}
 
-		/*
-			* Pushes the function into the Lua stack
-			*/
+		/// <summary>
+		/// Pushes the function into the Lua stack
+		/// </summary>
 		internal void Push(LuaState luaState)
 		{
 			Lua lua;

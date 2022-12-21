@@ -5,11 +5,10 @@
 	/// </summary>
 	public enum LuaRegistry
 	{
-		/* LUAI_MAXSTACK 1000000 */
 		/// <summary>
 		/// pseudo-index used by registry table
 		/// </summary>
-		Index = -1000000 - 1000
+		Index = -1000000 - 1000 // LUAI_MAXSTACK 1000000
 	}
 
 	/// <summary>

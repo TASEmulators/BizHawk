@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 
 using BizHawk.BizInvoke;
 using BizHawk.Common;
+
+using NLua.Exceptions;
 
 namespace NLua
 {
@@ -13,13 +16,62 @@ namespace NLua
 	/// </summary>
 	public class LuaState : IDisposable
 	{
-		private static readonly NativeMethods NativeMethods;
+		private static readonly LuaNativeMethods NativeMethods;
+
+		public static bool IsAvailable => NativeMethods != null;
+		public static bool IsLua53 => NativeMethods is Lua53NativeMethods;
 
 		static LuaState()
 		{
-			var resolver = new DynamicLibraryImportResolver(
-				OSTailoredCode.IsUnixHost ? "liblua5.4.so" : "lua54.dll", hasLimitedLifetime: false);
-			NativeMethods = BizInvoker.GetInvoker<NativeMethods>(resolver, CallingConventionAdapters.Native);
+			DynamicLibraryImportResolver resolver = null;
+
+			// linux is tricky as we want to use the system lua library
+			// but old (but not yet EOL) distros may not have lua 5.4
+			// we can safely use lua 5.3 for our purposes, hope the
+			// user's distro at least provides lua 5.3!
+			if (OSTailoredCode.IsUnixHost)
+			{
+				bool TryLoad(string name)
+				{
+					try
+					{
+						resolver = new(name, hasLimitedLifetime: false);
+						return true;
+					}
+					catch
+					{
+						return false;
+					}
+				}
+
+				foreach (var (luaSo, isLua54) in new[]
+				{
+					("liblua.so.5.4.4", true),
+					("liblua.so.5.4", true),
+					("liblua5.4.so", true),
+					("liblua5.4.so.0", true),
+					("liblua.so.5.3.6", false),
+					("liblua.so.5.3", false),
+					("liblua5.3.so", false),
+					("liblua5.3.so.0", false),
+				})
+				{
+					if (TryLoad(luaSo))
+					{
+						NativeMethods = isLua54
+							? BizInvoker.GetInvoker<Lua54NativeMethods>(resolver, CallingConventionAdapters.Native)
+							: BizInvoker.GetInvoker<Lua53NativeMethods>(resolver, CallingConventionAdapters.Native);
+						break;
+					}
+				}
+			}
+			else
+			{
+				// we provide the lua dll on windows
+				// if this crashes the user's dll folder is probably fubar'd
+				resolver = new("lua54.dll", hasLimitedLifetime: false);
+				NativeMethods = BizInvoker.GetInvoker<Lua54NativeMethods>(resolver, CallingConventionAdapters.Native);
+			}
 		}
 
 		private IntPtr _luaState;
@@ -37,8 +89,8 @@ namespace NLua
 		public Encoding Encoding { get; set; }
 
 		/// <summary>
-		///  Returns a pointer to a raw memory area associated with the given Lua state. The application can use this area for any purpose; Lua does not use it for anything.
-		///  Each new thread has this area initialized with a copy of the area of the main thread. 
+		/// Returns a pointer to a raw memory area associated with the given Lua state. The application can use this area for any purpose; Lua does not use it for anything.
+		/// Each new thread has this area initialized with a copy of the area of the main thread. 
 		/// </summary>
 		/// <returns></returns>
 		public IntPtr ExtraSpace => _luaState - IntPtr.Size;
@@ -195,12 +247,12 @@ namespace NLua
 		}
 
 		/// <summary>
-		///  Calls a function. 
-		///  To call a function you must use the following protocol: first, the function to be called is pushed onto the stack; then, the arguments to the function are pushed in direct order;
-		///  that is, the first argument is pushed first. Finally you call lua_call; nargs is the number of arguments that you pushed onto the stack.
-		///  All arguments and the function value are popped from the stack when the function is called. The function results are pushed onto the stack when the function returns.
-		///  The number of results is adjusted to nresults, unless nresults is LUA_MULTRET. In this case, all results from the function are pushed;
-		///  Lua takes care that the returned values fit into the stack space, but it does not ensure any extra space in the stack. The function results are pushed onto the stack in direct order (the first result is pushed first), so that after the call the last result is on the top of the stack. 
+		/// Calls a function. 
+		/// To call a function you must use the following protocol: first, the function to be called is pushed onto the stack; then, the arguments to the function are pushed in direct order;
+		/// that is, the first argument is pushed first. Finally you call lua_call; nargs is the number of arguments that you pushed onto the stack.
+		/// All arguments and the function value are popped from the stack when the function is called. The function results are pushed onto the stack when the function returns.
+		/// The number of results is adjusted to nresults, unless nresults is LUA_MULTRET. In this case, all results from the function are pushed;
+		/// Lua takes care that the returned values fit into the stack space, but it does not ensure any extra space in the stack. The function results are pushed onto the stack in direct order (the first result is pushed first), so that after the call the last result is on the top of the stack. 
 		/// </summary>
 		/// <param name="arguments"></param>
 		/// <param name="results"></param>
@@ -295,29 +347,6 @@ namespace NLua
 		}
 
 		/// <summary>
-		/// Controls the garbage collector. 
-		/// </summary>
-		/// <param name="what"></param>
-		/// <param name="data"></param>
-		/// <returns></returns>
-		public int GarbageCollector(LuaGC what, int data)
-		{
-			return NativeMethods.lua_gc(_luaState, (int)what, data);
-		}
-
-		/// <summary>
-		/// Controls the garbage collector. 
-		/// </summary>
-		/// <param name="what"></param>
-		/// <param name="data">passed to lua_gc vargs</param>
-		/// <param name="data2">passed to lua_gc vargs</param>
-		/// <returns></returns>
-		public int GarbageCollector(LuaGC what, int data, int data2)
-		{
-			return NativeMethods.lua_gc_2(_luaState, (int)what, data, data2);
-		}
-
-		/// <summary>
 		/// Returns the memory-allocation function of a given state. If ud is not NULL, Lua stores in *ud the opaque pointer given when the memory-allocator function was set. 
 		/// </summary>
 		/// <param name="ud"></param>
@@ -328,7 +357,7 @@ namespace NLua
 		}
 
 		/// <summary>
-		///  Pushes onto the stack the value t[k], where t is the value at the given index. As in Lua, this function may trigger a metamethod for the "index" event (see §2.4).
+		/// Pushes onto the stack the value t[k], where t is the value at the given index. As in Lua, this function may trigger a metamethod for the "index" event (see §2.4).
 		/// Returns the type of the pushed value. 
 		/// </summary>
 		/// <param name="index"></param>
@@ -340,7 +369,7 @@ namespace NLua
 		}
 
 		/// <summary>
-		///  Pushes onto the stack the value t[k], where t is the value at the given index. As in Lua, this function may trigger a metamethod for the "index" event (see §2.4).
+		/// Pushes onto the stack the value t[k], where t is the value at the given index. As in Lua, this function may trigger a metamethod for the "index" event (see §2.4).
 		/// Returns the type of the pushed value. 
 		/// </summary>
 		/// <param name="index"></param>
@@ -372,80 +401,6 @@ namespace NLua
 			return (LuaType)NativeMethods.lua_geti(_luaState, index, i);
 		}
 
-
-		/// <summary>
-		/// Gets information about a specific function or function invocation. 
-		/// </summary>
-		/// <param name="what"></param>
-		/// <param name="ar"></param>
-		/// <returns>This function returns false on error (for instance, an invalid option in what). </returns>
-		public bool GetInfo(string what, IntPtr ar)
-		{
-			return NativeMethods.lua_getinfo(_luaState, what, ar) != 0;
-		}
-
-		/// <summary>
-		/// Gets information about a specific function or function invocation. 
-		/// </summary>
-		/// <param name="what"></param>
-		/// <param name="ar"></param>
-		/// <returns>This function returns false on error (for instance, an invalid option in what). </returns>
-		public bool GetInfo(string what, ref LuaDebug ar)
-		{
-			IntPtr pDebug = Marshal.AllocHGlobal(Marshal.SizeOf(ar));
-			bool ret = false;
-			try
-			{
-				Marshal.StructureToPtr(ar, pDebug, false);
-
-				ret = GetInfo(what, pDebug);
-				ar = LuaDebug.FromIntPtr(pDebug);
-
-			}
-			finally
-			{
-				Marshal.FreeHGlobal(pDebug);
-			}
-			return ret;
-		}
-
-		/// <summary>
-		/// Gets information about a local variable of a given activation record or a given function. 
-		/// </summary>
-		/// <param name="ar"></param>
-		/// <param name="n"></param>
-		/// <returns></returns>
-		public string GetLocal(IntPtr ar, int n)
-		{
-			IntPtr ptr = NativeMethods.lua_getlocal(_luaState, ar, n);
-			return Marshal.PtrToStringAnsi(ptr);
-		}
-
-		/// <summary>
-		/// Gets information about a local variable of a given activation record or a given function. 
-		/// </summary>
-		/// <param name="ar"></param>
-		/// <param name="n"></param>
-		/// <returns></returns>
-		public string GetLocal(LuaDebug ar, int n)
-		{
-			IntPtr pDebug = Marshal.AllocHGlobal(Marshal.SizeOf(ar));
-			string ret = string.Empty;
-			try
-			{
-				Marshal.StructureToPtr(ar, pDebug, false);
-
-				ret = GetLocal(pDebug, n);
-				ar = LuaDebug.FromIntPtr(pDebug);
-
-			}
-			finally
-			{
-				Marshal.FreeHGlobal(pDebug);
-			}
-			return ret;
-		}
-
 		/// <summary>
 		/// If the value at the given index has a metatable, the function pushes that metatable onto the stack and returns 1
 		/// </summary>
@@ -455,43 +410,6 @@ namespace NLua
 		{
 			return NativeMethods.lua_getmetatable(_luaState, index) != 0;
 		}
-
-		/// <summary>
-		/// Gets information about the interpreter runtime stack. 
-		/// </summary>
-		/// <param name="level"></param>
-		/// <param name="ar"></param>
-		/// <returns></returns>
-		public int GetStack(int level, IntPtr ar)
-		{
-			return NativeMethods.lua_getstack(_luaState, level, ar);
-		}
-
-		/// <summary>
-		/// Gets information about the interpreter runtime stack. 
-		/// </summary>
-		/// <param name="level"></param>
-		/// <param name="ar"></param>
-		/// <returns></returns>
-		public int GetStack(int level, ref LuaDebug ar)
-		{
-			IntPtr pDebug = Marshal.AllocHGlobal(Marshal.SizeOf(ar));
-			int ret = 0;
-			try
-			{
-				Marshal.StructureToPtr(ar, pDebug, false);
-
-				ret = GetStack(level, pDebug);
-				ar = LuaDebug.FromIntPtr(pDebug);
-
-			}
-			finally
-			{
-				Marshal.FreeHGlobal(pDebug);
-			}
-			return ret;
-		}
-
 
 		/// <summary>
 		/// Pushes onto the stack the value t[k], where t is the value at the given index and k is the value at the top of the stack. 
@@ -521,24 +439,24 @@ namespace NLua
 		public int GetTop() => NativeMethods.lua_gettop(_luaState);
 
 		/// <summary>
-		///  Pushes onto the stack the n-th user value associated with the full userdata at the given index and returns the type of the pushed value.
+		/// Pushes onto the stack the user value associated with the full userdata at the given index and returns the type of the pushed value.
 		/// If the userdata does not have that value, pushes nil and returns LUA_TNONE.
 		/// </summary>
 		/// <param name="index"></param>
-		/// <param name="nth"></param>
-		/// <returns>Returns the type of the pushed value. </returns>
-		public int GetIndexedUserValue(int index, int nth) => NativeMethods.lua_getiuservalue(_luaState, index, nth);
+		/// <returns></returns>
+		public int GetUserValue(int index)
+			=> NativeMethods switch
+			{
+				Lua54NativeMethods lua54 => lua54.lua_getiuservalue(_luaState, index, 1),
+				Lua53NativeMethods lua53 => lua53.lua_getuservalue(_luaState, index),
+				null => throw new LuaException($"{nameof(NativeMethods)} is null?"),
+				_ => throw new InvalidOperationException()
+			};
 
 		/// <summary>
-		/// Compatibility GetIndexedUserValue with constant 1
-		/// </summary>
-		/// <param name="index"></param>
-		/// <returns></returns>
-		public int GetUserValue(int index) => GetIndexedUserValue(index, 1);
-		/// <summary>
-		///  Gets information about the n-th upvalue of the closure at index funcindex. It pushes the upvalue's value onto the stack and returns its name. Returns NULL (and pushes nothing) when the index n is greater than the number of upvalues.
-		///  For C functions, this function uses the empty string "" as a name for all upvalues. (For Lua functions, upvalues are the external local variables that the function uses, and that are consequently included in its closure.)
-		///  Upvalues have no particular order, as they are active through the whole function. They are numbered in an arbitrary order. 
+		/// Gets information about the n-th upvalue of the closure at index funcindex. It pushes the upvalue's value onto the stack and returns its name. Returns NULL (and pushes nothing) when the index n is greater than the number of upvalues.
+		/// For C functions, this function uses the empty string "" as a name for all upvalues. (For Lua functions, upvalues are the external local variables that the function uses, and that are consequently included in its closure.)
+		/// Upvalues have no particular order, as they are active through the whole function. They are numbered in an arbitrary order. 
 		/// </summary>
 		/// <param name="functionIndex"></param>
 		/// <param name="n"></param>
@@ -549,22 +467,6 @@ namespace NLua
 			return Marshal.PtrToStringAnsi(ptr);
 		}
 
-
-		/// <summary>
-		/// Returns the current hook function. 
-		/// </summary>
-		public LuaHookFunction Hook => NativeMethods.lua_gethook(_luaState).ToLuaHookFunction();
-
-		/// <summary>
-		/// Returns the current hook count. 
-		/// </summary>
-		public int HookCount => NativeMethods.lua_gethookcount(_luaState);
-
-		/// <summary>
-		/// Returns the current hook mask. 
-		/// </summary>
-		public LuaHookMask HookMask => (LuaHookMask)NativeMethods.lua_gethookmask(_luaState);
-
 		/// <summary>
 		/// Moves the top element into the given valid index, shifting up the elements above this index to open space. This function cannot be called with a pseudo-index, because a pseudo-index is not an actual stack position. 
 		/// </summary>
@@ -572,49 +474,49 @@ namespace NLua
 		public void Insert(int index) => NativeMethods.lua_rotate(_luaState, index, 1);
 
 		/// <summary>
-		/// Returns  if the value at the given index is a boolean
+		/// Returns if the value at the given index is a boolean
 		/// </summary>
 		/// <param name="index"></param>
 		/// <returns></returns>
 		public bool IsBoolean(int index) => Type(index) == LuaType.Boolean;
 
 		/// <summary>
-		/// Returns  if the value at the given index is a C(#) function
+		/// Returns if the value at the given index is a C(#) function
 		/// </summary>
 		/// <param name="index"></param>
 		/// <returns></returns>
 		public bool IsCFunction(int index) => NativeMethods.lua_iscfunction(_luaState, index) != 0;
 
 		/// <summary>
-		/// Returns  if the value at the given index is a function
+		/// Returns if the value at the given index is a function
 		/// </summary>
 		/// <param name="index"></param>
 		/// <returns></returns>
 		public bool IsFunction(int index) => Type(index) == LuaType.Function;
 
 		/// <summary>
-		/// Returns  if the value at the given index is an integer
+		/// Returns if the value at the given index is an integer
 		/// </summary>
 		/// <param name="index"></param>
 		/// <returns></returns>
 		public bool IsInteger(int index) => NativeMethods.lua_isinteger(_luaState, index) != 0;
 
 		/// <summary>
-		/// Returns  if the value at the given index is light user data
+		/// Returns if the value at the given index is light user data
 		/// </summary>
 		/// <param name="index"></param>
 		/// <returns></returns>
 		public bool IsLightUserData(int index) => Type(index) == LuaType.LightUserData;
 
 		/// <summary>
-		/// Returns  if the value at the given index is nil
+		/// Returns if the value at the given index is nil
 		/// </summary>
 		/// <param name="index"></param>
 		/// <returns></returns>
 		public bool IsNil(int index) => Type(index) == LuaType.Nil;
 
 		/// <summary>
-		/// Returns  if the value at the given index is none
+		/// Returns if the value at the given index is none
 		/// </summary>
 		/// <param name="index"></param>
 		/// <returns></returns>
@@ -628,14 +530,14 @@ namespace NLua
 		public bool IsNoneOrNil(int index) => IsNone(index) || IsNil(index);
 
 		/// <summary>
-		/// Returns  if the value at the given index is a number
+		/// Returns if the value at the given index is a number
 		/// </summary>
 		/// <param name="index"></param>
 		/// <returns></returns>
 		public bool IsNumber(int index) => NativeMethods.lua_isnumber(_luaState, index) != 0;
 
 		/// <summary>
-		/// Returns  if the value at the given index is a string or a number (which is always convertible to a string)
+		/// Returns if the value at the given index is a string or a number (which is always convertible to a string)
 		/// </summary>
 		/// <param name="index"></param>
 		/// <returns></returns>
@@ -645,7 +547,7 @@ namespace NLua
 		}
 
 		/// <summary>
-		/// Returns  if the value at the given index is a string
+		/// Returns if the value at the given index is a string
 		/// NOTE: This is different from the lua_isstring, which return true if the value is a number
 		/// </summary>
 		/// <param name="index"></param>
@@ -653,28 +555,28 @@ namespace NLua
 		public bool IsString(int index) => Type(index) == LuaType.String;
 
 		/// <summary>
-		/// Returns  if the value at the given index is a table. 
+		/// Returns if the value at the given index is a table. 
 		/// </summary>
 		/// <param name="index"></param>
 		/// <returns></returns>
 		public bool IsTable(int index) => Type(index) == LuaType.Table;
 
 		/// <summary>
-		/// Returns  if the value at the given index is a thread. 
+		/// Returns if the value at the given index is a thread. 
 		/// </summary>
 		/// <param name="index"></param>
 		/// <returns></returns>
 		public bool IsThread(int index) => Type(index) == LuaType.Thread;
 
 		/// <summary>
-		/// Returns  if the value at the given index is a user data. 
+		/// Returns if the value at the given index is a user data. 
 		/// </summary>
 		/// <param name="index"></param>
 		/// <returns></returns>
 		public bool IsUserData(int index) => NativeMethods.lua_isuserdata(_luaState, index) != 0;
 
 		/// <summary>
-		/// Returns  if the given coroutine can yield, and 0 otherwise
+		/// Returns if the given coroutine can yield, and 0 otherwise
 		/// </summary>
 		public bool IsYieldable => NativeMethods.lua_isyieldable(_luaState) != 0;
 
@@ -722,25 +624,21 @@ namespace NLua
 		}
 
 		/// <summary>
-		///  This function creates and pushes on the stack a new full userdata, with nuvalue associated Lua values, called user values, plus an associated block of raw memory with size bytes. (The user values can be set and read with the functions lua_setiuservalue and lua_getiuservalue.)
-		///  The function returns the address of the block of memory.
+		/// This function creates and pushes on the stack a new full userdata,
+		/// with nuvalue associated Lua values, called user values, plus an
+		/// associated block of raw memory with size bytes. (The user values
+		/// can be set and read with the functions lua_setiuservalue and lua_getiuservalue.)
+		/// The function returns the address of the block of memory.
 		/// </summary>
-		/// <param name="size"></param>
-		/// <param name="uv"></param>
-		/// <returns></returns>
-		public IntPtr NewIndexedUserData(int size, int uv)
-		{
-			return NativeMethods.lua_newuserdatauv(_luaState, (UIntPtr)size, uv);
-		}
-
-		/// <summary>
-		/// Compatibility NewIndexedUserData with constant parameter
-		/// </summary>
-		/// <param name="size"></param>
-		/// <returns></returns>
 		public IntPtr NewUserData(int size)
 		{
-			return NewIndexedUserData(size, 1);
+			return NativeMethods switch
+			{
+				Lua54NativeMethods lua54 => lua54.lua_newuserdatauv(_luaState, (UIntPtr)size, 1),
+				Lua53NativeMethods lua53 => lua53.lua_newuserdata(_luaState, (UIntPtr)size),
+				null => throw new LuaException($"{nameof(NativeMethods)} is null?"),
+				_ => throw new InvalidOperationException()
+			};
 		}
 
 		/// <summary>
@@ -796,13 +694,13 @@ namespace NLua
 		public void PushBoolean(bool b) => NativeMethods.lua_pushboolean(_luaState, b ? 1 : 0);
 
 		/// <summary>
-		///  Pushes a new C closure onto the stack. When a C function is created, it is possible to associate 
-		///  some values with it, thus creating a C closure (see §4.4); these values are then accessible to the function 
-		///  whenever it is called. To associate values with a C function, first these values must be pushed onto the 
-		///  stack (when there are multiple values, the first value is pushed first). 
-		///  Then lua_pushcclosure is called to create and push the C function onto the stack, 
-		///  with the argument n telling how many values will be associated with the function. 
-		///  lua_pushcclosure also pops these values from the stack. 
+		/// Pushes a new C closure onto the stack. When a C function is created, it is possible to associate 
+		/// some values with it, thus creating a C closure (see §4.4); these values are then accessible to the function 
+		/// whenever it is called. To associate values with a C function, first these values must be pushed onto the 
+		/// stack (when there are multiple values, the first value is pushed first). 
+		/// Then lua_pushcclosure is called to create and push the C function onto the stack, 
+		/// with the argument n telling how many values will be associated with the function. 
+		/// lua_pushcclosure also pops these values from the stack. 
 		/// </summary>
 		/// <param name="function"></param>
 		/// <param name="n"></param>
@@ -827,6 +725,7 @@ namespace NLua
 		{
 			_ = NativeMethods.lua_rawgeti(_luaState, (int)LuaRegistry.Index, (int)LuaRegistryIndex.Globals);
 		}
+
 		/// <summary>
 		/// Pushes an integer with value n onto the stack. 
 		/// </summary>
@@ -1033,8 +932,8 @@ namespace NLua
 		}
 
 		/// <summary>
-		///  Does the equivalent of t[i] = v, where t is the table at the given index and v is the value at the top of the stack.
-		///  This function pops the value from the stack. The assignment is raw, that is, it does not invoke the __newindex metamethod. 
+		/// Does the equivalent of t[i] = v, where t is the table at the given index and v is the value at the top of the stack.
+		/// This function pops the value from the stack. The assignment is raw, that is, it does not invoke the __newindex metamethod. 
 		/// </summary>
 		/// <param name="index">index of table</param>
 		/// <param name="i">value</param>
@@ -1044,8 +943,8 @@ namespace NLua
 		}
 
 		/// <summary>
-		///  Does the equivalent of t[i] = v, where t is the table at the given index and v is the value at the top of the stack.
-		///  This function pops the value from the stack. The assignment is raw, that is, it does not invoke the __newindex metamethod. 
+		/// Does the equivalent of t[i] = v, where t is the table at the given index and v is the value at the top of the stack.
+		/// This function pops the value from the stack. The assignment is raw, that is, it does not invoke the __newindex metamethod. 
 		/// </summary>
 		/// <param name="index"></param>
 		/// <param name="i"></param>
@@ -1102,42 +1001,26 @@ namespace NLua
 
 		/// <summary>
 		/// Starts and resumes a coroutine in the given thread L.
-		/// To start a coroutine, you push onto the thread stack the main function plus any arguments; then you call lua_resume, with nargs being the number of arguments.This call returns when the coroutine suspends or finishes its execution. When it returns, * nresults is updated and the top of the stack contains the* nresults values passed to lua_yield or returned by the body function. lua_resume returns LUA_YIELD if the coroutine yields, LUA_OK if the coroutine finishes its execution without errors, or an error code in case of errors (see lua_pcall). In case of errors, the error object is on the top of the stack.
-		/// To resume a coroutine, you clear its stack, push only the values to be passed as results from yield, and then call lua_resume.
-		/// The parameter from represents the coroutine that is resuming L. If there is no such coroutine, this parameter can be NULL.  
+		/// To start a coroutine, you push onto the thread stack
+		/// the main function plus any arguments; then you call lua_resume,
+		/// with nargs being the number of arguments.This call returns when
+		/// the coroutine suspends or finishes its execution.
+		/// lua_resume returns LUA_YIELD if the coroutine yields,
+		/// LUA_OK if the coroutine finishes its execution without errors,
+		/// or an error code in case of errors (see lua_pcall).
+		/// In case of errors, the error object is on the top of the stack.
 		/// </summary>
-		/// <param name="from"></param>
-		/// <param name="arguments"></param>
-		/// <param name="results"></param>
-		/// <returns></returns>
-		public LuaStatus Resume(LuaState from, int arguments, out int results)
-		{
-			return (LuaStatus)NativeMethods.lua_resume(_luaState, from?._luaState ?? IntPtr.Zero, arguments, out results);
-		}
-
-		/// <summary>
-		/// Compatibility Resume without results.
-		/// </summary>
-		/// <param name="from"></param>
-		/// <param name="arguments"></param>
-		/// <returns></returns>
 		public LuaStatus Resume(LuaState from, int arguments)
-		{
-			int ignore;
-			return (LuaStatus)NativeMethods.lua_resume(_luaState, from?._luaState ?? IntPtr.Zero, arguments, out ignore);
-		}
+			=> NativeMethods switch
+			{
+				Lua54NativeMethods lua54 => (LuaStatus)lua54.lua_resume(_luaState, from?._luaState ?? IntPtr.Zero, arguments, out _),
+				Lua53NativeMethods lua53 => (LuaStatus)lua53.lua_resume(_luaState, from?._luaState ?? IntPtr.Zero, arguments),
+				null => throw new LuaException($"{nameof(NativeMethods)} is null?"),
+				_ => throw new InvalidOperationException()
+			};
 
 		/// <summary>
-		/// Resets a thread, cleaning its call stack and closing all pending to-be-closed variables. Returns a status code: LUA_OK for no errors in closing methods, or an error status otherwise. In case of error, leaves the error object on the top of the stack, 
-		/// </summary>
-		/// <returns></returns>
-		public int ResetThread()
-		{
-			return NativeMethods.lua_resetthread(_luaState);
-		}
-
-		/// <summary>
-		///  Rotates the stack elements between the valid index idx and the top of the stack. The elements are rotated n positions in the direction of the top, for a positive n, or -n positions in the direction of the bottom, for a negative n. The absolute value of n must not be greater than the size of the slice being rotated. This function cannot be called with a pseudo-index, because a pseudo-index is not an actual stack position. 
+		/// Rotates the stack elements between the valid index idx and the top of the stack. The elements are rotated n positions in the direction of the top, for a positive n, or -n positions in the direction of the bottom, for a negative n. The absolute value of n must not be greater than the size of the slice being rotated. This function cannot be called with a pseudo-index, because a pseudo-index is not an actual stack position. 
 		/// </summary>
 		/// <param name="index"></param>
 		/// <param name="n"></param>
@@ -1167,19 +1050,6 @@ namespace NLua
 		}
 
 		/// <summary>
-		/// Sets the debugging hook function. 
-		/// 
-		/// Argument f is the hook function. mask specifies on which events the hook will be called: it is formed by a bitwise OR of the constants
-		/// </summary>
-		/// <param name="hookFunction">Hook function callback</param>
-		/// <param name="mask">hook mask</param>
-		/// <param name="count">count (used only with LuaHookMas.Count)</param>
-		public void SetHook(LuaHookFunction hookFunction, LuaHookMask mask, int count)
-		{
-			NativeMethods.lua_sethook(_luaState, hookFunction.ToFunctionPointer(), (int)mask, count);
-		}
-
-		/// <summary>
 		/// Pops a value from the stack and sets it as the new value of global name. 
 		/// </summary>
 		/// <param name="name"></param>
@@ -1199,43 +1069,6 @@ namespace NLua
 		}
 
 		/// <summary>
-		/// Sets the value of a local variable of a given activation record. It assigns the value at the top of the stack to the variable and returns its name. It also pops the value from the stack. 
-		/// </summary>
-		/// <param name="ar"></param>
-		/// <param name="n"></param>
-		/// <returns>Returns NULL (and pops nothing) when the index is greater than the number of active local variables. </returns>
-		public string SetLocal(IntPtr ar, int n)
-		{
-			IntPtr ptr = NativeMethods.lua_setlocal(_luaState, ar, n);
-			return Marshal.PtrToStringAnsi(ptr);
-		}
-
-		/// <summary>
-		/// Sets the value of a local variable of a given activation record. It assigns the value at the top of the stack to the variable and returns its name. It also pops the value from the stack. 
-		/// </summary>
-		/// <param name="ar"></param>
-		/// <param name="n"></param>
-		/// <returns>Returns NULL (and pops nothing) when the index is greater than the number of active local variables. </returns>
-		public string SetLocal(LuaDebug ar, int n)
-		{
-			IntPtr pDebug = Marshal.AllocHGlobal(Marshal.SizeOf(ar));
-			string ret = string.Empty;
-			try
-			{
-				Marshal.StructureToPtr(ar, pDebug, false);
-
-				ret = SetLocal(pDebug, n);
-				ar = LuaDebug.FromIntPtr(pDebug);
-
-			}
-			finally
-			{
-				Marshal.FreeHGlobal(pDebug);
-			}
-			return ret;
-		}
-
-		/// <summary>
 		/// Pops a table from the stack and sets it as the new metatable for the value at the given index. 
 		/// </summary>
 		/// <param name="index"></param>
@@ -1245,7 +1078,7 @@ namespace NLua
 		}
 
 		/// <summary>
-		///  Does the equivalent to t[k] = v, where t is the value at the given index, v is the value at the top of the stack, and k is the value just below the top
+		/// Does the equivalent to t[k] = v, where t is the value at the given index, v is the value at the top of the stack, and k is the value just below the top
 		/// </summary>
 		/// <param name="index"></param>
 		public void SetTable(int index)
@@ -1275,34 +1108,23 @@ namespace NLua
 		}
 
 		/// <summary>
-		/// Sets the warning function to be used by Lua to emit warnings (see lua_WarnFunction). The ud parameter sets the value ud passed to the warning function.
+		/// Pops a value from the stack and sets it as the new user value associated to the full userdata at the given index. Returns 0 if the userdata does not have that value. 
 		/// </summary>
-		/// <param name="function"></param>
-		/// <param name="userData"></param>
-		public void SetWarningFunction(LuaWarnFunction function, IntPtr userData)
+		/// <param name="index"></param>
+		public void SetUserValue(int index)
 		{
-			NativeMethods.lua_setwarnf(_luaState, function.ToFunctionPointer(), userData);
+			switch (NativeMethods)
+			{
+				case Lua54NativeMethods lua54: lua54.lua_setiuservalue(_luaState, index, 1); break;
+				case Lua53NativeMethods lua53: lua53.lua_setuservalue(_luaState, index); break;
+			}
+
+			throw new LuaException($"{nameof(NativeMethods)} is null?");
 		}
 
 		/// <summary>
-		///  Pops a value from the stack and sets it as the new n-th user value associated to the full userdata at the given index. Returns 0 if the userdata does not have that value. 
-		/// </summary>
-		/// <param name="index"></param>
-		/// <param name="nth"></param>
-		public void SetIndexedUserValue(int index, int nth)
-		{
-			NativeMethods.lua_setiuservalue(_luaState, index, nth);
-		}
-
-		/// <summary>
-		/// Compatibility SetIndexedUserValue with constant 1
-		/// </summary>
-		/// <param name="index"></param>
-		public void SetUserValue(int index) => SetIndexedUserValue(index, 1);
-
-		/// <summary>
-		///  The status can be 0 (LUA_OK) for a normal thread, an error code if the thread finished the execution of a lua_resume with an error, or LUA_YIELD if the thread is suspended. 
-		///  You can only call functions in threads with status LUA_OK. You can resume threads with status LUA_OK (to start a new coroutine) or LUA_YIELD (to resume a coroutine). 
+		/// The status can be 0 (LUA_OK) for a normal thread, an error code if the thread finished the execution of a lua_resume with an error, or LUA_YIELD if the thread is suspended. 
+		/// You can only call functions in threads with status LUA_OK. You can resume threads with status LUA_OK (to start a new coroutine) or LUA_YIELD (to resume a coroutine). 
 		/// </summary>
 		public LuaStatus Status => (LuaStatus)NativeMethods.lua_status(_luaState);
 
@@ -1334,17 +1156,6 @@ namespace NLua
 		public LuaNativeFunction ToCFunction(int index)
 		{
 			return NativeMethods.lua_tocfunction(_luaState, index).ToLuaFunction();
-		}
-
-		/// <summary>
-		///  Marks the given index in the stack as a to-be-closed "variable" (see §3.3.8). Like a to-be-closed variable in Lua, the value at that index in the stack will be closed when it goes out of scope. Here, in the context of a C function, to go out of scope means that the running function returns to Lua, there is an error, or the index is removed from the stack through lua_settop or lua_pop. An index marked as to-be-closed should not be removed from the stack by any other function in the API except lua_settop or lua_pop.
-		/// This function should not be called for an index that is equal to or below an already marked to-be-closed index.
-		/// This function can raise an out-of-memory error. In that case, the value in the given index is immediately closed, as if it was already marked. 
-		/// </summary>
-		/// <param name="index"></param>
-		public void ToClose(int index)
-		{
-			NativeMethods.lua_toclose(_luaState, index);
 		}
 
 		/// <summary>
@@ -1459,8 +1270,8 @@ namespace NLua
 		}
 
 		/// <summary>
-		///  Converts the value at the given index to a generic C pointer (void*). The value can be a userdata, a table, a thread, or a function; otherwise, lua_topointer returns NULL. Different objects will give different pointers. There is no way to convert the pointer back to its original value.
-		///  Typically this function is used only for hashing and debug information. 
+		/// Converts the value at the given index to a generic C pointer (void*). The value can be a userdata, a table, a thread, or a function; otherwise, lua_topointer returns NULL. Different objects will give different pointers. There is no way to convert the pointer back to its original value.
+		/// Typically this function is used only for hashing and debug information. 
 		/// </summary>
 		/// <param name="index"></param>
 		/// <returns></returns>
@@ -1547,7 +1358,7 @@ namespace NLua
 		}
 
 		/// <summary>
-		///  Returns a unique identifier for the upvalue numbered n from the closure at index funcindex.
+		/// Returns a unique identifier for the upvalue numbered n from the closure at index funcindex.
 		/// </summary>
 		/// <param name="functionIndex"></param>
 		/// <param name="n"></param>
@@ -1584,13 +1395,17 @@ namespace NLua
 		/// </summary>
 		/// <returns></returns>
 		public double Version()
-		{
-			return NativeMethods.lua_version(_luaState);
-		}
+			=> NativeMethods switch
+			{
+				Lua54NativeMethods => 504,
+				Lua53NativeMethods => 503,
+				null => throw new LuaException($"{nameof(NativeMethods)} is null?"),
+				_ => throw new InvalidOperationException()
+			};
 
 		/// <summary>
-		///  Exchange values between different threads of the same state.
-		///  This function pops n values from the current stack, and pushes them onto the stack to. 
+		/// Exchange values between different threads of the same state.
+		/// This function pops n values from the current stack, and pushes them onto the stack to. 
 		/// </summary>
 		/// <param name="to"></param>
 		/// <param name="n"></param>
@@ -1613,7 +1428,7 @@ namespace NLua
 		}
 
 		/// <summary>
-		///  Yields a coroutine (thread). When a C function calls lua_yieldk, the running coroutine suspends its execution, and the call to lua_resume that started this coroutine returns
+		/// Yields a coroutine (thread). When a C function calls lua_yieldk, the running coroutine suspends its execution, and the call to lua_resume that started this coroutine returns
 		/// </summary>
 		/// <param name="results">Number of values from the stack that will be passed as results to lua_resume.</param>
 		/// <param name="context"></param>
@@ -1625,7 +1440,7 @@ namespace NLua
 			return NativeMethods.lua_yieldk(_luaState, results, (IntPtr)context, k);
 		}
 
-		/* Auxialiary Library Functions */
+		// Auxialiary Library Functions
 
 		/// <summary>
 		/// Checks whether cond is true. If it is not, raises an error with a standard message
@@ -2185,17 +2000,6 @@ namespace NLua
 		{
 			NativeMethods.luaL_unref(_luaState, (int)tableIndex, reference);
 		}
-
-		/// <summary>
-		/// Emits a warning with the given message. A message in a call with tocont true should be continued in another call to this function. 
-		/// </summary>
-		/// <param name="message"></param>
-		/// <param name="toContinue"></param>
-		public void Warning(string message, bool toContinue)
-		{
-			NativeMethods.lua_warning(_luaState, message, toContinue ? 1 : 0);
-		}
-
 
 		/// <summary>
 		/// Pushes onto the stack a string identifying the current position of the control at level lvl in the call stack

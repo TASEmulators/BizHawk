@@ -4,34 +4,14 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-using NLua.Event;
 using NLua.Method;
 using NLua.Exceptions;
 using NLua.Extensions;
-
 
 namespace NLua
 {
 	public class Lua : IDisposable
 	{
-		/// <summary>
-		/// Event that is raised when an exception occures during a hook call.
-		/// </summary>
-		public event EventHandler<HookExceptionEventArgs> HookException;
-
-		/// <summary>
-		/// Event when lua hook callback is called
-		/// </summary>
-		/// <remarks>
-		/// Is only raised if SetDebugHook is called before.
-		/// </remarks>
-		public event EventHandler<DebugHookEventArgs> DebugHook;
-
-		/// <summary>
-		/// lua hook calback delegate
-		/// </summary>
-		private LuaHookFunction _hookCallback;
-
 		private readonly LuaGlobals _globals = new LuaGlobals();
 
 		private LuaState _luaState;
@@ -920,83 +900,6 @@ namespace NLua
 		}
 
 		/// <summary>
-		/// Activates the debug hook
-		/// </summary>
-		/// <param name = "mask">Mask</param>
-		/// <param name = "count">Count</param>
-		/// <returns>see lua docs. -1 if hook is already set</returns>
-		public int SetDebugHook(LuaHookMask mask, int count)
-		{
-			if (_hookCallback == null)
-			{
-				_hookCallback = DebugHookCallback;
-				_luaState.SetHook(_hookCallback, mask, count);
-			}
-
-			return -1;
-		}
-
-		/// <summary>
-		/// Removes the debug hook
-		/// </summary>
-		public void RemoveDebugHook()
-		{
-			_hookCallback = null;
-			_luaState.SetHook(null, LuaHookMask.Disabled, 0);
-		}
-
-		/// <summary>
-		/// Gets the hook mask.
-		/// </summary>
-		/// <returns>hook mask</returns>
-		public LuaHookMask GetHookMask()
-		{
-			return _luaState.HookMask;
-		}
-
-		/// <summary>
-		/// Gets the hook count
-		/// </summary>
-		/// <returns>see lua docs</returns>
-		public int GetHookCount()
-		{
-			return _luaState.HookCount;
-		}
-
-
-		/// <summary>
-		/// Gets local (see lua docs)
-		/// </summary>
-		/// <param name = "luaDebug">lua debug structure</param>
-		/// <param name = "n">see lua docs</param>
-		/// <returns>see lua docs</returns>
-		public string GetLocal(LuaDebug luaDebug, int n)
-		{
-			return _luaState.GetLocal(luaDebug, n);
-		}
-
-		/// <summary>
-		/// Sets local (see lua docs)
-		/// </summary>
-		/// <param name = "luaDebug">lua debug structure</param>
-		/// <param name = "n">see lua docs</param>
-		/// <returns>see lua docs</returns>
-		public string SetLocal(LuaDebug luaDebug, int n)
-		{
-			return _luaState.SetLocal(luaDebug, n);
-		}
-
-		public int GetStack(int level, ref LuaDebug ar)
-		{
-			return _luaState.GetStack(level, ref ar);
-		}
-
-		public bool GetInfo(string what, ref LuaDebug ar)
-		{
-			return _luaState.GetInfo(what, ref ar);
-		}
-
-		/// <summary>
 		/// Gets up value (see lua docs)
 		/// </summary>
 		/// <param name = "funcindex">see lua docs</param>
@@ -1016,49 +919,6 @@ namespace NLua
 		public string SetUpValue(int funcindex, int n)
 		{
 			return _luaState.SetUpValue(funcindex, n);
-		}
-
-		/// <summary>
-		/// Delegate that is called on lua hook callback
-		/// </summary>
-		/// <param name = "luaState">lua state</param>
-		/// <param name = "luaDebug">Pointer to LuaDebug (lua_debug) structure</param>
-		internal static void DebugHookCallback(IntPtr luaState, IntPtr luaDebug)
-		{
-			var state = LuaState.FromIntPtr(luaState);
-
-			state.GetStack(0, luaDebug);
-
-			if (!state.GetInfo("Snlu", luaDebug))
-				return;
-
-			var debug = LuaDebug.FromIntPtr(luaDebug);
-
-			ObjectTranslator translator = ObjectTranslatorPool.Instance.Find(state);
-			Lua lua = translator.Interpreter;
-			lua.DebugHookCallbackInternal(debug);
-		}
-
-		private void DebugHookCallbackInternal(LuaDebug luaDebug)
-		{
-			try
-			{
-				var temp = DebugHook;
-
-				if (temp != null)
-					temp(this, new DebugHookEventArgs(luaDebug));
-			}
-			catch (Exception ex)
-			{
-				OnHookException(new HookExceptionEventArgs(ex));
-			}
-		}
-
-		private void OnHookException(HookExceptionEventArgs e)
-		{
-			var temp = HookException;
-			if (temp != null)
-				temp(this, e);
 		}
 
 		/// <summary>
