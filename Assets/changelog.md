@@ -114,6 +114,7 @@
 		- updated to Mednafen 1.29.0
 	- Libretro:
 		- rewrote Libretro host implementation, fixing some crashes, adding memory domains, and slightly improving performance (#3211, #3216)
+		- fixed input display (#3360)
 	- melonDS:
 		- updated to interim version after 0.9.4
 		- fixed SaveRAM not getting written to disk when unloading/reloading core (#3165)
@@ -615,9 +616,6 @@ also disable skip BIOS with TAS profile and enable with Casual profile
 also removed `DeterministicEmulation ||= !SkipBios`, does it matter?
 
 [77f824ab55 Yoshi] Clean up `MGBAHawk.DeterministicEmulation` assignment
-
-[13a01340de Yoshi] Refactor Libretro ControllerDef generation, fixing input display
-see #3360
 
 [781c152bf6 Yoshi] Remove old ControllerDef copying that was messing with ControlsOrdered
 
