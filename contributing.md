@@ -14,10 +14,10 @@ Jump to:
 	- [iso-parser](#iso-parser)
 	- [libmupen64plus](#libmupen64plus)
 	- [LibretroBridge](#libretrobridge)
-	- [LuaInterface](#luainterface)
 	- [Mednadisc](#mednadisc)
 	- [Misc. submodules](#misc-submodules)
 	- [MSXHawk](#msxhawk)
+	- [NLua](#nlua)
 	- [Nyma cores](#nyma-cores)
 	- [Octoshock](#octoshock)
 	- [QuickNES](#quicknes)
@@ -181,13 +181,6 @@ Uses C++.
 
 
 
-## LuaInterface
-> Part of EmuHawk's Lua host.
-
-Uses C#; you will need the .NET SDK or an IDE which includes it. See the [.NET section](#for-any-net-project).
-
-
-
 ## Mednadisc
 > Library for reading disc images, ported from Mednafen.
 
@@ -221,6 +214,13 @@ Uses C++.
 > The unmanaged side of the MSXHawk core.
 
 Uses C++.
+
+
+
+## NLua
+> Part of EmuHawk's Lua host.
+
+Uses C#; you will need the .NET SDK or an IDE which includes it. See the [.NET section](#for-any-net-project).
 
 
 
