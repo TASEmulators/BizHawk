@@ -69,6 +69,7 @@
 	- (ApiHawk) fixed trying to load tool Forms when services aren't satisfied, causing NREs (#3329)
 	- (ApiHawk) fixed HTTP and sockets not being initialised in time for tools autoloaded on startup
 	- (Lua) fixed the `forms.*` functions for `LuaPictureBox`es erroneously affecting every form instead of the one specified (#3395)
+	- (ApiHawk) added "memory" of which ext. tools the user has vetted so the prompt does not appear when restarting EmuHawk
 - New and graduating cores:
 	- Ares64:
 		- removed the Ares64 (Performance) core and renamed Ares64 (Accuracy) to Ares64, now no longer experimental
@@ -501,8 +502,6 @@ fixes b1602dae0
 [bae71326bf CPP] Fix hex editor for MAME when Open Advanced is not used
 
 [9a0403617b Yoshi] Clean up SHA1
-
-[4566b744d9 Yoshi] Remember trusted ext. tools
 
 [f9ac3c4b32 Yoshi] Clean up `MainForm.ExternalToolMenuItem_DropDownOpening`
 
