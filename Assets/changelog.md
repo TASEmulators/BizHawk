@@ -49,6 +49,7 @@
 	- added short-circuit to Mupen64Plus loading to avoid error messages and any strange failure state
 	- adjusted alignment and size of UI elements in Record Movie dialog so they don't overlap... again
 	- enabled menu mnemonics (Alt+X) for MainForm
+	- fixed inconsistent application of colours from GTK theme when Mono is able to use it
 - TAStudio:
 	- fixed "Select between Markers" hotkey not working
 	- fixed `.tasproj` headers being written differently based on locale (i.e. ',' instead of '.')
@@ -524,10 +525,6 @@ this is mostly to workaround OOM issues with VERY large movies (>134217728 frame
 so large just the list of string references is "too big" and exceeds the .net 2GB limit.
 even the on disk method fails here, as the offsets list (note, long and reference are the same size) becomes too big
 this probably gives a bit of speedup for "normal" movies, as the generous 16MB growth amount would likely be plenty for the movie, although i haven't test this much
-
-[b967e6028d Yoshi] Fix inconsistent application of colours from GTK theme, if available
-still no idea why I can set dark theme on Ubuntu but not Manjaro, but now menus
-won't use a white-to-black gradient with white text
 
 [0711c2b1d6 Yoshi] Also downcase Odyssey² gamedb filename in import line
 fixes 5a4dc9fd8
