@@ -66,6 +66,7 @@
 	- (ApiHawk/Lua) added `IUserDataApi.Keys`/`userdata.get_keys`
 	- (ApiHawk) fixed trying to load tool Forms when services aren't satisfied, causing NREs (#3329)
 	- (ApiHawk) fixed HTTP and sockets not being initialised in time for tools autoloaded on startup
+	- (Lua) fixed the `forms.*` functions for `LuaPictureBox`es erroneously affecting every form instead of the one specified (#3395)
 - New and graduating cores:
 	- Ares64:
 		- removed the Ares64 (Performance) core and renamed Ares64 (Accuracy) to Ares64, now no longer experimental
@@ -686,10 +687,6 @@ fixes 158c897702
 [5b859960e9 Yoshi] Move types for debug menu to own files
 
 [82c3b471a5 Yoshi] Minor refactors to byteswapping (N64 rom loading and Lua bit library)
-
-[bb4ba2184f Yoshi] Fix `forms.*` acting on every LuaPictureBox, not the specified one
-fixes #3395
-this has been broken since introduction in 2ddadeae2
 
 [2fa46efda6 CPP] add jaguar db, change db parser to prefer the strongest hash available, fix potential edge case if a crc32: prefix is present (and simplify the code)
 
