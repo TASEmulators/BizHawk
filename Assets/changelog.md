@@ -45,6 +45,7 @@
 	- changed default Lua engine to "NLua+KopiLua" which doesn't seem to crash on normal Mono builds like the other one does
 	- added short-circuit to Mupen64Plus loading to avoid error messages and any strange failure state
 	- adjusted alignment and size of UI elements in Record Movie dialog so they don't overlap... again
+	- enabled menu mnemonics (Alt+X) for MainForm
 - TAStudio:
 	- fixed "Select between Markers" hotkey not working
 	- fixed `.tasproj` headers being written differently based on locale (i.e. ',' instead of '.')
@@ -879,8 +880,6 @@ un-"implement" the nonfunctional scanlinehookmanager as well as the non-function
 * Clean up diff of `comboPalette_SelectedIndexChanged`
 * Fix crash
 Co-authored-by: Yoshi
-
-[28d62e69d7 Yoshi] Enable menu mnemonics (Alt+X) for MainForm on Linux
 
 [f024986ffc brunovalads] Added 'Edit marker frame' feature (squashed PR #3351)
 * Added 'Edit marker frame' feature
