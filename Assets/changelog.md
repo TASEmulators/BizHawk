@@ -42,6 +42,7 @@
 	- fixed window title being blank when chromeless mode is enabled
 	- improved handling of host sound init failure
 	- added prompt for if you start movie playback while cheats are enabled (#3389)
+	- improved cheat editing UX
 - Linux port:
 	- fixed various file pickers using case-sensitive file extensions
 	- changed default Lua engine to "NLua+KopiLua" which doesn't seem to crash on normal Mono builds like the other one does
@@ -624,13 +625,6 @@ see #3360
 reverts 8dcea2470
 `PathEntryCollection.RetroSystemAbsolutePath` extension didn't like this, there
 may be others, and I don't want to look through them all
-
-[3e79e68d1d Yoshi] Dedup in `CheatEdit.GetCheat`
-
-[414c21609b Yoshi] Disallow updating cheats when multiple rows selected (resolves #1726)
-
-[5ae23c63bf Yoshi] Change "Edit" button in Cheats dialog to read "Overwrite"
-kept the mnemonic because idk
 
 [fd2772707b Yoshi] Update `forms.drawImageRegion` documentation with a diagram
 only embeds on TASVideos Wiki, which I held off on updating because there are a
