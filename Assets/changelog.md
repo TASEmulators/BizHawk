@@ -64,6 +64,7 @@
 	- (ApiHawk/Lua) fixed edge cases for `MemoryApi.{Read,Write}ByteRange`/`{memory,mainmemory}.read_bytes_as_{array,dict}`/`{memory,mainmemory}.write_bytes_as_array`
 	- (ApiHawk/Lua) added `IUserDataApi.Keys`/`userdata.get_keys`
 	- (ApiHawk) fixed trying to load tool Forms when services aren't satisfied, causing NREs (#3329)
+	- (ApiHawk) fixed HTTP and sockets not being initialised in time for tools autoloaded on startup
 - New and graduating cores:
 	- Ares64:
 		- removed the Ares64 (Performance) core and renamed Ares64 (Accuracy) to Ares64, now no longer experimental
@@ -690,8 +691,6 @@ fixes #3395
 this has been broken since introduction in 2ddadeae2
 
 [7930a79cef Yoshi] Prompt to disable cheats when starting movie playback (resolves #3389)
-
-[28c53cfa21 Yoshi] Fix `APIContainer.Comm` not having `HTTP`/`Sockets` on first boot
 
 [2fa46efda6 CPP] add jaguar db, change db parser to prefer the strongest hash available, fix potential edge case if a crc32: prefix is present (and simplify the code)
 
