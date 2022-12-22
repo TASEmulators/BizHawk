@@ -40,6 +40,7 @@
 	- fixed `%recent%` being expanded to the wrong path
 	- added warning when loading a `.bot` into the Basic Bot which was made on a different game or system, or on an older version
 	- fixed window title being blank when chromeless mode is enabled
+	- improved handling of host sound init failure
 - Linux port:
 	- fixed various file pickers using case-sensitive file extensions
 	- changed default Lua engine to "NLua+KopiLua" which doesn't seem to crash on normal Mono builds like the other one does
@@ -851,14 +852,6 @@ also fixed line ending
 [483258a04d CPP] virtualjaguar port, resolves #1907
 
 [34c504d7b9 CPP] update ds disassembler
-
-[d2965c2185 Yoshi] If dummy sound chosen in config, try DirectSound (maybe fixes #3379)
-- if DirectSound fails (i.e. dummy is in config for a reason), then skip the
-error dialog as the user has probably seen it already, and set it back to dummy
-- if DirectSound succeeds, leave it, it will be written to config (there's a
-mute setting for people who really don't want sound)
-- copied the init config code so s/DirectSound/OpenAL/ on Linux
-- could probably try OpenAL on Windows when DirectSound fails but whatever
 
 [707ec53bd5 Yoshi] Move `SoundConfig.ApplyNewSoundDevice` logic to callsite
 
