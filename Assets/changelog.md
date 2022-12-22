@@ -41,6 +41,7 @@
 	- added warning when loading a `.bot` into the Basic Bot which was made on a different game or system, or on an older version
 	- fixed window title being blank when chromeless mode is enabled
 	- improved handling of host sound init failure
+	- added prompt for if you start movie playback while cheats are enabled (#3389)
 - Linux port:
 	- fixed various file pickers using case-sensitive file extensions
 	- changed default Lua engine to "NLua+KopiLua" which doesn't seem to crash on normal Mono builds like the other one does
@@ -689,8 +690,6 @@ fixes 158c897702
 [bb4ba2184f Yoshi] Fix `forms.*` acting on every LuaPictureBox, not the specified one
 fixes #3395
 this has been broken since introduction in 2ddadeae2
-
-[7930a79cef Yoshi] Prompt to disable cheats when starting movie playback (resolves #3389)
 
 [2fa46efda6 CPP] add jaguar db, change db parser to prefer the strongest hash available, fix potential edge case if a crc32: prefix is present (and simplify the code)
 
