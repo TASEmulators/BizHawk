@@ -76,6 +76,7 @@
 	- (Lua) added `bizstring.pad_{start,end}` convenience functions
 	- (Lua) changed Lua Console to trigger a clear of drawing surfaces and the OSD when removing a Lua script, and to reset padding when removing the last script
 	- (ApiHawk) changed some parameter and return types from `List` to more suitable read-only collection types
+	- (Lua) fixed `require` not looking in Lua dir on Linux
 - New and graduating cores:
 	- Ares64:
 		- removed the Ares64 (Performance) core and renamed Ares64 (Accuracy) to Ares64, now no longer experimental
@@ -285,10 +286,6 @@ fixes 49cd836e1, c7781d1c1
 see 49cd836e1, #3485
 put `bit = (require "migration_helpers").EmuHawk_pre_2_9_bit();` at top of file
 can now easily add helpers for migrating from other emulators
-
-[cbb335fec2 Yoshi] Fix Lua `require` not looking in Lua dir on Linux
-see #3485
-thanks to @CasualPokePlayer for research and initial implementation
 
 [9e4836d300 CPP] libretro handling cleanup, reorg some of this, fix some input cases, better domain names funsie found in this cleanup: can't use `in` params with the BizInvoker as it doesn't like the read only semantics (results in some exception in CreateType)
 
