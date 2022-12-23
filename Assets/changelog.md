@@ -74,6 +74,7 @@
 	- (ApiHawk/Lua) added length prefix to `ICommApi.Sockets.SendScreenshot`/`comm.socketServerScreenShot` to match `SendString`/`socketServerSend`
 	- (Lua) renamed (deprecated) `event.onmemory{read,write,exec,execany}` to `event.on_bus_{read,write,exec,exec_any}` (#759)
 	- (Lua) added `bizstring.pad_{start,end}` convenience functions
+	- (Lua) changed Lua Console to trigger a clear of drawing surfaces and the OSD when removing a Lua script, and to reset padding when removing the last script
 - New and graduating cores:
 	- Ares64:
 		- removed the Ares64 (Performance) core and renamed Ares64 (Accuracy) to Ares64, now no longer experimental
@@ -433,13 +434,6 @@ fixes 82c3b471a, 9660c16a0
 [51f01efdc4 CPP] Properly handle errors when running a lua script, using Resume/Yield methods added to the LuaThread class (see https://github.com/TASEmulators/NLua/commit/f904fa0d53b06c67dd8e9b409dcbb9fa8aa721f2)
 
 [ae11dcc6af Morilli] replace default bsnes with bsnes115
-
-[6174398fb4 Yoshi] Also reset padding when removing last Lua script (resolves #1509)
-
-[a9756b60a2 Yoshi] Clear OSD + surfaces when removing a Lua script (resolves #3014)
-they were already being cleared when closing the Lua Console
-note the "Erase Stale/Stuck Lua Drawing Layers" button does not clear OSD,
-leaving that as it is for now
 
 [2efae13af4 CPP] prevent some NREs occurring with the new Lua stuff
 
