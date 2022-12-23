@@ -43,6 +43,7 @@
 	- improved handling of host sound init failure
 	- added prompt for if you start movie playback while cheats are enabled (#3389)
 	- improved cheat editing UX
+	- removed default bindings for virtual keyboards
 - Linux port:
 	- fixed various file pickers using case-sensitive file extensions
 	- changed default Lua engine to "NLua+KopiLua" which doesn't seem to crash on normal Mono builds like the other one does
@@ -443,10 +444,6 @@ leaving that as it is for now
 [999e487557 Yoshi] Add `bizstring.pad_{start,end}` helpers
 
 [ca72f113df Yoshi] Rename `event.onmemory*`, phase 1 (resolves #759)
-
-[ec3a23259c Yoshi] Remove default bindings for keyboards (resolves #3257)
-and the Libretro mouse (leaving the other mice because you need to choose them
-as peripherals for the axes to be bindable)
 
 [42455ac4a3 Yoshi] Fix syntax in `defctrl.json` and remove empty objects
 
