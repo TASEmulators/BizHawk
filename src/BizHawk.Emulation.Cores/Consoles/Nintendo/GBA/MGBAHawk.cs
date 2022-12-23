@@ -40,7 +40,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				rom,
 				rom.Length,
 				ref overrides,
-				skipBios: _syncSettings.SkipBios);
+				skipBios: _syncSettings.SkipBios && !lp.DeterministicEmulationRequested);
+
+			// the core might ignore our request to run the bios intro if the game cannot boot with the bios intro: that's okay
 
 			if (Core == IntPtr.Zero)
 			{
