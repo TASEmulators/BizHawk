@@ -70,6 +70,7 @@
 	- (ApiHawk) fixed HTTP and sockets not being initialised in time for tools autoloaded on startup
 	- (Lua) fixed the `forms.*` functions for `LuaPictureBox`es erroneously affecting every form instead of the one specified (#3395)
 	- (ApiHawk) added "memory" of which ext. tools the user has vetted so the prompt does not appear when restarting EmuHawk
+	- (ApiHawk/Lua) added length prefix to `ICommApi.Sockets.SendScreenshot`/`comm.socketServerScreenShot` to match `SendString`/`socketServerSend`
 - New and graduating cores:
 	- Ares64:
 		- removed the Ares64 (Performance) core and renamed Ares64 (Accuracy) to Ares64, now no longer experimental
@@ -491,9 +492,6 @@ obviously only benefits forms inheriting `FormBase`
 [9420c8b21c CPP] merge latest ares, hook up its new N64DD support, make ares use AxisContraint (see #3453), some other cleanups here
 
 [c23b063733 CPP] basic virtualpad + default controls for TIC80, mark it as released
-
-[c49a8d338c Yoshi] Prefix `socketServerScreenShot` blob with length too (resolves #3461)
-fixes b1602dae0
 
 [b8182f9149 Yoshi] Extract `ConcatArray` helper
 
