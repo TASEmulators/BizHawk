@@ -36,6 +36,7 @@
 	- fixed Debugger breakpoint crash with mGBA (#3287)
 	- added warning dialog when running as Superuser/Administrator
 	- fixed overlapping UI elements in `Config` > `Controllers...` when Windows UI scale is not 100% (#2605)
+	- fixed overlapping UI elements in Record Movie dialog when Windows UI scale is not 100% and on Linux (#2605)
 	- fixed the autoselection of a movie when opening the Play Movie dialog
 	- fixed `%recent%` being expanded to the wrong path
 	- added warning when loading a `.bot` into the Basic Bot which was made on a different game or system, or on an older version
@@ -48,7 +49,6 @@
 	- fixed various file pickers using case-sensitive file extensions
 	- changed default Lua engine to "NLua+KopiLua" which doesn't seem to crash on normal Mono builds like the other one does
 	- added short-circuit to Mupen64Plus loading to avoid error messages and any strange failure state
-	- adjusted alignment and size of UI elements in Record Movie dialog so they don't overlap... again
 	- enabled menu mnemonics (Alt+X) for MainForm
 	- fixed inconsistent application of colours from GTK theme when Mono is able to use it
 - TAStudio:
@@ -372,14 +372,6 @@ Previously, scripts would display as enabled but not actually run until toggled 
 [14e713837b kalimag] Change remaining `Config.DisableLuaScriptsOnLoad` refs to Settings
 Resolve inconsistent use of duplicate property on `Config` and `LuaConsoleSettings`, finishes partial refactoring from 324a50a
 This will effectively reset this setting to default in existing configs.
-
-[a8e0192281 Yoshi] Use FLPs so UI scale doesn't break Record Movie dialog (see #2605)
-disables resizing the dialog; default is big enough and the `TextBox`es can
-scroll
-
-[632f063073 Yoshi] Cleanup `RecordMovie` ctor
-
-[400b1b589b Yoshi] Inline `RecordMovie.InitializeComponent` (Designer file)
 
 [102874e480 Yoshi] Fix N64 header detection being swapped (fixes #3477)
 fixes abeaa2a10
