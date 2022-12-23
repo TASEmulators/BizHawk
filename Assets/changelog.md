@@ -72,6 +72,7 @@
 	- (Lua) fixed the `forms.*` functions for `LuaPictureBox`es erroneously affecting every form instead of the one specified (#3395)
 	- (ApiHawk) added "memory" of which ext. tools the user has vetted so the prompt does not appear when restarting EmuHawk
 	- (ApiHawk/Lua) added length prefix to `ICommApi.Sockets.SendScreenshot`/`comm.socketServerScreenShot` to match `SendString`/`socketServerSend`
+	- (Lua) renamed (deprecated) `event.onmemory{read,write,exec,execany}` to `event.on_bus_{read,write,exec,exec_any}` (#759)
 - New and graduating cores:
 	- Ares64:
 		- removed the Ares64 (Performance) core and renamed Ares64 (Accuracy) to Ares64, now no longer experimental
@@ -442,8 +443,6 @@ leaving that as it is for now
 [2efae13af4 CPP] prevent some NREs occurring with the new Lua stuff
 
 [999e487557 Yoshi] Add `bizstring.pad_{start,end}` helpers
-
-[ca72f113df Yoshi] Rename `event.onmemory*`, phase 1 (resolves #759)
 
 [42455ac4a3 Yoshi] Fix syntax in `defctrl.json` and remove empty objects
 
