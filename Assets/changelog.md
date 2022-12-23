@@ -75,6 +75,7 @@
 	- (Lua) renamed (deprecated) `event.onmemory{read,write,exec,execany}` to `event.on_bus_{read,write,exec,exec_any}` (#759)
 	- (Lua) added `bizstring.pad_{start,end}` convenience functions
 	- (Lua) changed Lua Console to trigger a clear of drawing surfaces and the OSD when removing a Lua script, and to reset padding when removing the last script
+	- (ApiHawk) changed some parameter and return types from `List` to more suitable read-only collection types
 - New and graduating cores:
 	- Ares64:
 		- removed the Ares64 (Performance) core and renamed Ares64 (Accuracy) to Ares64, now no longer experimental
@@ -420,8 +421,6 @@ fixes 82c3b471a, 9660c16a0
 [3dd36f5f07 CPP] revert the explicit try/finally use for PeekByte/PokeByte monitor domain methods, testing seems to show the ref struct use makes EnterExit allocation (now forced to the stack) a non-issue performance wise
 
 [f01463e2b3 CPP] Convert EnterExitWrapper to a readonly ref struct, this should be a speedup in all cases. Will need to experiment to see if this mean the try/finally from #3296 can be avoided
-
-[1bdff05442 Yoshi] Use read-only collection types in `IMemoryApi`
 
 [c2d5a9c931 Yoshi] Banish empty conditional blocks
 
