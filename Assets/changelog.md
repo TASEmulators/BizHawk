@@ -54,7 +54,7 @@
 	- (Lua) added arguments to memory callback functions (cb will be called with addr, val, flags)—check `event.can_use_callback_params("memory")` when writing polyfills
 	- (ApiHawk) merged `IGameInfoApi` into `IEmulationApi`, and some other minor API method signature changes
 	- (ApiHawk/Lua) fixed `event.onmemoryread` behaviour under mGBA (#3230)
-	- (ApiHawk/Lua) improved how removing a memory callback from within a callback is processed (#1823)
+	- (ApiHawk/Lua) improved how removing callbacks from within a callback is processed (#1823)
 	- (Lua) fixed setting size of Lua Forms (#3034)
 	- (ApiHawk) changed injector to include non-public properties when looking for `ApiContainer`
 	- (ApiHawk) deprecated some `ExternalToolApplicability.*` attributes
@@ -763,12 +763,6 @@ left a `Debug.Assert`
 [f8a4524df7 CPP] add in missing platform framerates, add in Jaguar CD iding for movie file, fix aspect ratio for jaguar
 
 [79d43dab1d Yoshi] Extract constants used for `NamedLuaFunction.Event`
-
-[9815b377d1 Yoshi] Also protect against mutation of `IEnumerable` for `onconsoleclose`
-see 7a26546cf, fixes dc66b4357
-
-[7a26546cfc Yoshi] Maybe fix mutation of IEnumerable (`InvalidOperationException`)
-fixes 3024bc0d0
 
 [f0529fde28 CPP] (virtualjaguar) stop a CD transfer when address is greater than the end, rather than greater than or equal to, fixes battle morph
 
