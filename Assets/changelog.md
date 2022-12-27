@@ -172,16 +172,11 @@
 
 [HEAD]
 
-[e2ca00c8c4 Yoshi] Fix symlinks cp'd as regular files
-fixes 339915c01
-
 [05ff3ab40c CPP] merge some mGBA upstream commits, partially revert c891cc2cb5eb16968506a5ef8531595f204437d9 (upstream commits makes our changes not really needed)
 
 [c2a5b37799 CPP] Update contributing guide for the new Lua setup
 
 [bc12fcca87 Yoshi] Minor revision to EmuHawk contribution guide
-
-[00d450075e CPP] oops forgot a colon here
 
 [c7c5ed229d CPP] add pc2 extension for wonderswan
 these are pocket challenge v2 roms, which is some handheld system which is actually just a wonderswan inside so these roms work anyways with cygne
@@ -192,17 +187,10 @@ these are pocket challenge v2 roms, which is some handheld system which is actua
 
 [603530d540 Morilli] set gcAllowVeryLargeObjects to allow 2GB+ arrays
 
-[79857a3b71 Morilli] Revert "make a new "FixedGrowthList" and use it for the StringLogs"
-This reverts commit da5fae0b01abbdcb91a5f65c8a7e03b1600b4aef.
-
 [66c19cfcb2 natt] Support marshalling arrays of length 0 through BizInvoker
 Such arrays will be marshalled with valid and unique pointers that can be compared but not read from or written to.
 
-[5b0fe947df CPP] fix #3498
-
 [576ab3174b Morilli] best-effort fix bundled smw lua script
-
-[6678fb4296 Yoshi] More cleanup of switch in `RetroAchievements.SystemIdToConsoleId`
 
 [7703ee5f37 Yoshi] Refactor `IGameboyCommon.IsCGBMode`
 
@@ -214,8 +202,6 @@ fixes 81fe56fa6
 [f668e09048 Morilli] fix dumb mistake in bsnes gamepad controller
 fixes 96cc3f874558dd8ed2048c889005437018e9bb57
 apparently this was only an issue in sgb?
-
-[cee263e272 CPP] oops didn't mean to checkin this experiment (it doesn't do anything actually)
 
 [339915c013 CPP] check-in NLua to main repo combine NLua with KeraLua (KeraLua is "gone" now I guess) make it use the BizInvoker (so now it can properly handle the liblua5.4.so and lua54.dll names differing), also delete the liblua54.so. minor speedup when creating a new empty table make lua default to UTF8 internally, so we don't need to manually change the state's encoding
 
@@ -242,16 +228,7 @@ fixes 5be8b0aab
 
 [5e9e9ac289 CPP] remove libspeexdsp use in old bsnes core
 
-[c794d90878 Yoshi] Revert switch to system-wide Lua install on Linux
-reverts ab355d469 and 25795d237
-
-[05962cfd93 CPP] more proper fix for compilation issue with some gcc versions with ares fixes 2989a73430f2677e5a0fbbfceedb8dedbd9bfb11
-
 [2989a73430 CPP] workaround ares state size being blown up, fix compilation issue in some gcc versions
-
-[25795d2372 CPP] remove GetErrorMessage call for Linux dep checks
-
-[ab355d4693 CPP] check some system lib deps on Linux and force user to provide their own liblua54 from package managers
 
 [2187602dc1 CPP] fix Package.sh too fixes 91e400bdd9959fff3c6f7cc9f2e9a4be255603c8
 
@@ -309,9 +286,6 @@ fixes 1452f831a, 82c3b471a, b687dea1b, 49cd836e1
 [56d66ca555 CPP] add reset support to libretro, resolves #3482
 
 [1fc08e3d95 CPP] Use NLua's MethodCache if possible for MethodBase based lua functions (see https://github.com/TASEmulators/NLua/commit/0ed3085ec301fe4da6751ca545407f9d264b0e83)
-
-[4caa99afe3 Yoshi] Remove Lua in Mono warning as it's no longer relevant
-fixes 45fbdb484
 
 [01ab9416b5 kalimag] Make script paths in .luases relative to .luases path
 Restore behavior before 99dc0e03df4c4cd20420507a06dd9987cbdf7140
@@ -382,8 +356,6 @@ how ironic
 [96cc3f8745 Morilli] BSNESv115: implement an extended gamepad controller with 4 extra buttons
 this is a breaking change for existing movies, but only when a non-gamepad controller was used, which is rare
 
-[339994c5a7 CPP] change these to using var
-
 [b687dea1b0 CPP] change every IntPtr<->int cast to IntPtr<->long. we got 64 bit integers with lua now, and a pointer is 64 bits, so might avoid some dumb bug due to truncations and some ungodly amount of ram being used TODO: see if we can skip this cast nonsense. the lua tests indicate IntPtr should pass through fine, being considered "userdata", probably better so the user can't just pass raw numbers for the handle.
 
 [bc79664461 CPP] fix implicit lua number to .net conversion fix .net exceptions not halting the running script fix inconsistency with stdout and lua console printing errors, both should end in a newline now print the inner exception of a lua exception (i.e. the .net extension) if possible
@@ -406,17 +378,9 @@ fixes 82c3b471a, 9660c16a0
 
 [9660c16a0a CPP] fix N64 roms coming through multidisk bundler in ares
 
-[3dd36f5f07 CPP] revert the explicit try/finally use for PeekByte/PokeByte monitor domain methods, testing seems to show the ref struct use makes EnterExit allocation (now forced to the stack) a non-issue performance wise
-
-[f01463e2b3 CPP] Convert EnterExitWrapper to a readonly ref struct, this should be a speedup in all cases. Will need to experiment to see if this mean the try/finally from #3296 can be avoided
-
-[c2d5a9c931 Yoshi] Banish empty conditional blocks
-
 [84d2866f53 Yoshi] Clean up usage of `LuaFile.Enabled`/`Paused`
 
 [f798021bba CPP] CloseRom acts like rebooting the core, so make it just reset Lua libs (more properly fixes #3226 without any yield nonsense) Slight revert of 2efae13af4f9dd5ca233a31b9085195829f6a513 (still want to set running scripts as it's used later) Fix detaching registered functions (old logic was broken, Stop would null out the LuaRef used for creating the new dummy thread for the detached function. best solution i've come up with is to simply pass a callback over for creating the thread, nicely encapsulating that functionality) Various cleanups, don't need VS complaining about old pattern matching code here anymore...
-
-[15b2264cb4 CPP] Use LuaThread Yield here instead of directly using LuaState's
 
 [51f01efdc4 CPP] Properly handle errors when running a lua script, using Resume/Yield methods added to the LuaThread class (see https://github.com/TASEmulators/NLua/commit/f904fa0d53b06c67dd8e9b409dcbb9fa8aa721f2)
 
@@ -445,10 +409,6 @@ obviously only benefits forms inheriting `FormBase`
 
 [bace52c4f8 feos] fix #2119
 
-[47c494a5a6 dependabot] Bump System.Drawing.Common in main solution (#3464)
-
-[6edac4bd2f dependabot] Bump System.Drawing.Common in HawkQuantizer (#3463)
-
 [45fbdb4844 CPP] Move to NLua/KeraLua/Lua5.4 (#3361)
 
 [fdbb34dff6 CPP] Lua tests (#3373)
@@ -457,10 +417,6 @@ obviously only benefits forms inheriting `FormBase`
 
 [eb1cef1ffc CPP] update mame to 0.250
 
-[137634cf89 CPP] add some missing updates to ares, cleanup build process a bit
-
-[8667dd9ee7 CPP] c# to previous commit
-
 [8818f79bb0 CPP] actually make N64DD support work
 
 [6baee38717 CPP] add n64 to multidisk bundler list
@@ -468,8 +424,6 @@ obviously only benefits forms inheriting `FormBase`
 [9420c8b21c CPP] merge latest ares, hook up its new N64DD support, make ares use AxisContraint (see #3453), some other cleanups here
 
 [c23b063733 CPP] basic virtualpad + default controls for TIC80, mark it as released
-
-[b8182f9149 Yoshi] Extract `ConcatArray` helper
 
 [1df6ce4e38 Morilli] Fix key release events with modifiers not getting handled correctly (#3402)
 
@@ -481,8 +435,6 @@ obviously only benefits forms inheriting `FormBase`
 
 [e269bfd49f adelikat] Log window - when copying pasting "MD5:2345" and Sha1, strip the md5 and sha1 out.  I just want the number if I'm copying pasting the single line.  If someone finds this objectionable, feel free to revert, but this savesme a lot of time
 
-[392d126173 adelikat] remove an unused method
-
 [683aa263a0 Yoshi] Include `ControllerDefinition._orderedControls` in clone ctor
 I don't think this is used, but as the caching was new in 2.8, going to include
 this just in case
@@ -490,14 +442,6 @@ this just in case
 [52acda9a02 Yoshi] Re-add an assignment in `InputManager.SyncControls` (fixes #3458)
 partially reverts 781c152bf
 also removed now-unused method `Controller.ForceType`
-
-[3f352792a6 CPP] remove unused using from experiments in previous commit
-
-[da5fae0b01 CPP] make a new "FixedGrowthList" and use it for the StringLogs
-this is mostly to workaround OOM issues with VERY large movies (>134217728 frames).
-so large just the list of string references is "too big" and exceeds the .net 2GB limit.
-even the on disk method fails here, as the offsets list (note, long and reference are the same size) becomes too big
-this probably gives a bit of speedup for "normal" movies, as the generous 16MB growth amount would likely be plenty for the movie, although i haven't test this much
 
 [0711c2b1d6 Yoshi] Also downcase Odyssey² gamedb filename in import line
 fixes 5a4dc9fd8
@@ -526,13 +470,9 @@ reverts d6d2e4c6f
 
 [2804ad3041 CPP] fix crashes in mame due to bad single thread handling
 
-[d507246033 CPP] c# side for previous commit
-
 [44944e1d70 CPP] more simple string and double handling, allow SaveRAM usage with different bios files
 
 [d0266816a5 CPP] Fix #3448. Support MAME 7z romsets
-
-[4479fec74d CPP] Add in the actual c# code for 5ae44704662e20bed09ce2ca421854afb778f73e Apparently forgot to actually add this in for the commit >:
 
 [5ae4470466 CPP] Correct floating point arg support with msabi<->sysv adapter
 While msabi and sysv do agree what to do with floating point args for 4 floating point args (pass in xmm0-4), they dont agree what to do with mixing
@@ -545,8 +485,6 @@ make a small dll for handling the msabi<->sysv adapter, using only assembly (tak
 additionally, allow floating point arguments. this really only needs to occur on the c# side. msabi and sysv agree on the first 4 floating point args and for returns, so no work actually has to be done adapting these
 with assembly being used, we can guarantee rax will not be stomped by compiler whims (and avoid potential floating point args from being trashed)
 
-[a0de42b1b3 CPP] remove struct hack, it's not actually needed out double is System.Double& while double is System.Double, so it doesn't actually trip paramenter verifier
-
 [eec86ad81a CPP] Use actual doubles for figuring out aspect ratio Fixes issues when mame sends over < 1 bounds which round down to 0 with a long cast (resulting in div by 0 exceptions) Also fix some oopsies with incorrect function signatures. Remove MAME string docs as they aren't really relevant anymore, as only MameGetString handles lua string handling now
 
 [64044845a6 CPP] resolve erroneous LibMAME errors due to mame_lua_get_string returning nullptr with an empty string (now will only do so on an error) add back in mame_lua_get_double, to be used to resolve other issues (c# code pending...)
@@ -557,42 +495,11 @@ with assembly being used, we can guarantee rax will not be stomped by compiler w
 
 [066297d5e7 CPP] MAME Waterbox (#3437)
 
-[948084a97e Yoshi] Use `Movie.NotActive` extension instead of negated `IsActive`
-
-[84cc71e454 Yoshi] Use `DialogResult.IsOk` extension everywhere and clean up
-
-[36cb62a792 Yoshi] Create and use `ToolStripDropDownItem.ReplaceDropDownItems` extension
-
-[5df9879842 Yoshi] Refactor `MultiDiskFileSelector.BrowseButton_Click`
-
-[04f34ac7af Yoshi] Add `Util.BreakDebuggerIfAttached` helper
-
-[f1f0f1695c Yoshi] Encapsulate `OpenFileDialog`/`SaveFileDialog`
-
-[2db5235319 Yoshi] Cache and reuse `FilesystemFilterSet`s
-
-[1232157cc1 Yoshi] Improve caching of `FilesystemFilterSet.ToString`
-
-[1b5ec471e0 Yoshi] Disable SA1015 "Closing generic bracket should be followed by a space"
-
-[c153505b58 Yoshi] Invert some conditionals to reduce nesting
-
-[df63853cd5 Yoshi] Add `IDialogParent` interface to a couple of config dialogs
-
-[8949b1aa6b Yoshi] Make sure `CheckLib` in `Program` static ctor disposes GUI properly
-
 [c891cc2cb5 Yoshi] Don't ignore mGBA skip BIOS setting when recording (resolves #2465)
 also disable skip BIOS with TAS profile and enable with Casual profile
 also removed `DeterministicEmulation ||= !SkipBios`, does it matter?
 
-[77f824ab55 Yoshi] Clean up `MGBAHawk.DeterministicEmulation` assignment
-
 [781c152bf6 Yoshi] Remove old ControllerDef copying that was messing with ControlsOrdered
-
-[a8f571f2d6 Yoshi] Reinstate `GameInfo.NullInstance`'s name, and only instantiate it once
-reverts 8dcea2470
-`PathEntryCollection.RetroSystemAbsolutePath` extension didn't like this, there
-may be others, and I don't want to look through them all
 
 [fd2772707b Yoshi] Update `forms.drawImageRegion` documentation with a diagram
 only embeds on TASVideos Wiki, which I held off on updating because there are a
@@ -613,18 +520,11 @@ So, we can just give hawk 1/FPS worth of samples every GetSamplesSync, if they a
 * Various cleanups, avoid unneeded unsafe use, a little better EnterExit use
 Co-authored-by: Morilli
 
-[02d1542e40 Yoshi] GitLab CI: Switch to Alpine Docker images where possible
-partially reverts cdeec7cfb
-
 [256a8617e9 Morilli] Fix #3399 by always calling UpdateViewerMouseover
-
-[cdeec7cfb4 Yoshi] GitLab CI: Pin Nix Docker image
 
 [2d6c0af570 CPP] Fix oops from fe9e97e505b5454ffd637e96b84e6c1d3f34e9a1
 
 [fe9e97e505 CPP] Fix #3425
-
-[e073173a8c Morilli] Update make-all-cores.sh
 
 [dd33e92a9f CPP] ensure ClockRate in the Bk2Header uses . instead of ,
 
@@ -644,18 +544,9 @@ Co-authored-by: CPP
 [cbe298b467 Yoshi] Nix expr: Add FlatBuffers package
 fixes 158c897702
 
-[2b4d9c0c7d Yoshi] Add debug utility to byteswap N64 roms
-
-[5b859960e9 Yoshi] Move types for debug menu to own files
-
 [82c3b471a5 Yoshi] Minor refactors to byteswapping (N64 rom loading and Lua bit library)
 
 [2fa46efda6 CPP] add jaguar db, change db parser to prefer the strongest hash available, fix potential edge case if a crc32: prefix is present (and simplify the code)
-
-[5382d4d345 CPP] Revert ""cheat" around the lack of pipeline emulation, delaying bankswitches/imask clears (note: branching resets the pipeline)"
-This reverts commit d5a47490ff25373b13fafb12fe8a5bb088148115.
-
-[d5a47490ff CPP] "cheat" around the lack of pipeline emulation, delaying bankswitches/imask clears (note: branching resets the pipeline)
 
 [c547a20f8e CPP] Use `LoadOther` for GBS files, cleanup the code a little, update SameBoy version info
 
@@ -691,12 +582,6 @@ This reverts commit d5a47490ff25373b13fafb12fe8a5bb088148115.
 
 [baa3bdf948 CPP] (virtualjaguar) rework dsp and gpu opcodes to come from the same source, fix some wrong opcodes (partially fixes Club Drive and Baldies music)
 
-[7b060bada4 Yoshi] Build external .NET projects in GitLab CI weekly slow builds
-
-[466d052c2d Yoshi] Clean up project files of external .NET projects
-
-[65f5aecfa6 Yoshi] Fix warnings in external .NET projects
-
 [04fcf59afe Yoshi] Update C++ FlatBuffers lib, check in new codegen, and rebuild cores
 
 [158c897702 Yoshi] Use `Google.FlatBuffers` NuGet package and check in new Nyma codegen
@@ -707,9 +592,6 @@ works on real Linux, using Nix if installed
 
 [ddac50eb30 Yoshi] Pull musl submodule
 
-[5544bc526a Yoshi] Add missing import
-fixes 9e9e041bb
-
 [9e9e041bba Yoshi] Fix AOoRE when loading TAStudio w/ cheats(?)
 partially reverts dd4f9aaf6
 InputRoll code is too inscrutable for me to determine the actual cause so I just
@@ -719,13 +601,7 @@ left a `Debug.Assert`
 
 [f8a4524df7 CPP] add in missing platform framerates, add in Jaguar CD iding for movie file, fix aspect ratio for jaguar
 
-[79d43dab1d Yoshi] Extract constants used for `NamedLuaFunction.Event`
-
 [f0529fde28 CPP] (virtualjaguar) stop a CD transfer when address is greater than the end, rather than greater than or equal to, fixes battle morph
-
-[70a21ee07e CPP] push c# side for memtrack support
-
-[6388e4a0a8 CPP] more vjaguar cleanup
 
 [80cf3a0c48 CPP] (virtualjaguar) memtrack support, fix bug with event system, various cleanups
 
@@ -739,8 +615,6 @@ left a `Debug.Assert`
 this is still very wrong (needs something smarter for timing) but seems to make games intros not puke garbage sound now
 
 [c2ae5bfa0e CPP] jagcd cd_initm support, fix some bugs
-
-[b2bacdecd2 Yoshi] Fix double call to pure method
 
 [1f9337d225 CPP] fix loading in byteswapped jag cds
 
@@ -804,8 +678,6 @@ also fixed line ending
 
 [34c504d7b9 CPP] update ds disassembler
 
-[707ec53bd5 Yoshi] Move `SoundConfig.ApplyNewSoundDevice` logic to callsite
-
 [6f0953aaa3 Morilli] Implement snes graphics debugger for the new bsnes core (#3367)
 * Partial port of graphics debugger to new BSNES
 * minimal "working" copy-paste
@@ -851,8 +723,6 @@ fixes a515672
 
 [13069d08f4 CPP] fix gpgx pattern cache invalidation, resolves #3363
 
-[14f470a9a7 Yoshi] Improve encapsulation of `ToolFormBase` props
-
 [faf4a8b24f Yoshi] Remove unused "TAStudio states" path
 TAStudio prop unused since 5bf21e391, path was still in use until b1296dd9b
 
@@ -865,9 +735,6 @@ TAStudio prop unused since 5bf21e391, path was still in use until b1296dd9b
 [61c34eca74 Yoshi] Minor refactor to not mutate local in `TAStudio.TasView_MouseDown`
 
 [352977c7ea CPP] speedup HashRegion/ReadByteRange/WriteByteRange for waterbox cores (doesn't do anything for non-wbx cores)
-
-[5906fd154e Yoshi] Fix typo
-fixes a95c4f182
 
 [afdfa065bd CPP] missed apostrophe somehow
 
@@ -882,8 +749,6 @@ no sure if these are the result of a .NET SDK update or my NuGet experiment
 
 [3a3494aedb Yoshi] Add missing attribute to `events.can_use_callback_params` param
 
-[f973ef91dd Yoshi] Nix expr: Add libzstd to rundeps
-
 [8d484ac196 Yoshi] Hardcode edge cases in `MovieConversionExtensions` to pass test
 the argument in every real call is from `IMovie.Filename`, which is never
 assigned null, and I don't think it's assigned anything but an absolute path
@@ -896,19 +761,7 @@ assigned null, and I don't think it's assigned anything but an absolute path
 it doesn't make any sense to split this string into dir+filename, it shouldn't
 contain a slash
 
-[2b59cfc1c4 Yoshi] Small refactor in `DiscMountJob.RunBizHawk`
-
-[10478e23f1 Yoshi] Remove redundant dir exists checks
-
-[f228b01bdf Yoshi] Rename `IMainFormForTools.SetWindowText` to `UpdateWindowTitle`
-in practice there is only one implementation and it just called the other method
-(which is inherited from `FormBase`)
-
-[a5a68af3f9 Yoshi] Disable MEN007 "Use a single return"
-
 [d5bf542a3c Yoshi] Cache `ToolStripRenderer` used by `FormBase.FixBackColorOnControls`
-
-[322ed164bf Yoshi] Remove backing field of `FormBase.BlocksInputWhenFocused`
 
 [3958348e94 peteyus] Add auto save state on close (squashed PR #3218)
 resolves #1861
@@ -924,33 +777,17 @@ resolves #1861
 [f1fc05fe60 CPP] quick fix some graphical bugs
 this isn't right but should suffice in practice most of the time
 
-[7ffa605b28 Morilli] BSNESv115: fix crash when audio output is disabled
-(fixes 039d822144b8db81a5608c3152bf7ec807a00ea4)
-
 [039d822144 Morilli] BSNESv115+: Replace the 'snes_audio_sample' callback with a dynamic audio sample vector to reduce callbacks (#3010)
 * BSNESv115+: Replace the 'snes_audio_sample' callback with a dynamic audio sample vector to reduce callbacks
 * fix integration for subbsnes core
 * reduce buffer allocations
 - also make frame setter private now that it's possible
 
-[f1e11dfc36 Morilli] simplify Stream.ReadAllBytes extension and use it more
-
 [31c7f59e86 CPP] fix some edge cases with new zip compression
 
 [0ff4aca182 CPP] (Gambatte) Remote control controls and remote control emulation expanded to HuC1 IR and CGB IR (previously only done in HuC3)
 
 [aba3359dde Yoshi] Add CPP's testroms to GB testroms project
-
-[18a7201004 Yoshi] Fix building testroms project
-fixes b8d5dd899
-also addressed code style warnings and fixed a typo in GambatteSuite.BeforeAll
-note the last acid suite fail is gone after a recent SameBoy update,
-unfortunately the same update added a bunch of fails in the mealybug suite,
-though the suite itself needs updating too
-
-[a5652ee3bc Yoshi] Backport `IEnumerable.Order`/`OrderDescending` shorthand
-at time of writing, in .NET 7 preview
-https://github.com/dotnet/runtime/pull/70525
 
 [929432086f Morilli] BSNESv115: add dedicated subframe core (#3281)
 * BSNESv115: allow subframe inputs
@@ -968,15 +805,7 @@ requires re-implementing the "FrameAdvance" function in the subframe core
 Also make SGB work here. A bit of a joke since you really can only abuse it for subframe resets, but might as well especially with the settings implying it's possible (and someone is bound to complain).
 Co-authored-by: CPP
 
-[1a27aae45b CPP] update sameboy
-
 [b8444f8bd2 CPP] update ares
-
-[b1207b9c2c Yoshi] Further fix test execution on GitLab CI
-
-[afb0b8a435 CPP] maybe fix tests?
-
-[4ce1ec2e37 Yoshi] Fix test execution on Linux / GitLab CI
 
 [5be8b0aab9 CPP] Zstd Compression (#3345)
 Deflate compression in rewinder is now zstd compression
@@ -990,8 +819,6 @@ Full hash of a ~731MB disc took only ~369 ms with this, and the generic CRC32 is
 SHA1 should perform 4x faster if the user's CPU supports the SHA instructions.
 Co-authored-by: Yoshi
 Co-authored-by: Morilli
-
-[0236a820ec Yoshi] Unindent `RomLoader.MakeGameFromDisc`
 
 [8f153fd503 Yoshi] Restore PS2 sysID and add some others from RomLoader
 
@@ -1009,12 +836,8 @@ unused since 1ce8a368d and 70e0954f2, respectively
 
 [d3c42f5dfc CPP] Only shift right by 1 for volume with Gambatte, sounds very close to SameBoy, probably resolves #3338
 
-[ccc11be896 Yoshi] Explicitly discard required-but-unused `IStatable` service prop
-
 [787b413913 Yoshi] Change Basic Bot's addresses to `ulong?`
 fixes empty address fields being saved as `0x0`, see #3326
-
-[140e340a8d Yoshi] Add Analyzer rule to warn of `FirstOrDefault` on list of structs
 
 [bd58bde07c Yoshi] Hopefully block edge cases where global `GameInfo` is uninitialised
 `Game == null` conditions in `MainForm` ctor looked unreachable, so I changed
@@ -1022,10 +845,6 @@ them to `Game.IsNullInstance()` which is what I assume was intended, and added
 an assert to `RomLoader` in case a bug is introduced later
 
 [d84da4ec4b CPP] wire up sameboy's rumble
-
-[ea5e8b70d3 Yoshi] Fix compilation of ext. tools
-
-[8dcea24703 Yoshi] Fix `GameInfo.NullInstance` having a name... why did it have a name
 
 [070e7035b3 Yoshi] Ensure there can be no edge cases involving SGXCD sysID
 breaks config, in case you care about setting a custom save dir for PCE
@@ -1043,56 +862,6 @@ If the Copy button is enabled, but there is no best attempt recorded, it will cr
 
 [d8fc32f1a8 CPP] (mGBA) Add in missing save types
 
-[0f6e6a5a03 Yoshi] Enable MA0084 and fix noncompliance (except in Cores)
-"Local variable should not hide other symbols"
-
-[d142555ec3 Yoshi] Enable MA0066 and fix noncompliance
-"Hash table unfriendly type is used in a hash table"
-
-[0309cdc4bc Yoshi] Disable MEN015 "Use Preferred Terms" (spellcheck)
-you're supposed to be able to configure this but I couldn't figure it out
-
-[3f2a07e582 Yoshi] Fix remaining MA0098 code style warnings
-"Use indexer instead of LINQ methods"
-fixes 17df5673d, forgot I was in the middle of this when I pushed
-
-[17df5673d2 Yoshi] Enable MA0098 and fix noncompliance
-"Use indexer instead of LINQ methods"
-
-[ee11385f10 Yoshi] Enable MA0031 and fix noncompliance
-"Optimize Enumerable.Count() usage"
-
-[b1ad34839a Yoshi] Enable MA0029 and fix noncompliance
-"Combine LINQ methods"
-
-[26b6a1c4a9 Yoshi] Enable MA0020 and fix noncompliance
-"Use direct methods instead of LINQ methods"
-
-[697c10e3e6 Yoshi] Enable MA0015 and fix noncompliance
-"Specify the parameter name in ArgumentException"
-needed to update package because this rule was broken until now
-
-[92c4714be1 Yoshi] Enable CA2208 and MA0043 and fix noncompliance
-"Instantiate argument exceptions correctly" and
-"Use nameof operator in ArgumentException"
-
-[5a8a24e936 Yoshi] Enable MA0054 and fix noncompliance
-"Embed the caught exception as innerException"
-
-[8ac4dabaf7 Yoshi] Enable MA0012 and MA0014 and fix noncompliance
-"Do not raise reserved exception type" and
-"Do not raise System.ApplicationException type"
-now mostly compliant with
-https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/using-standard-exception-types
-
-[a2fef59fe1 Yoshi] Add Analyzer rule to prohibit `typeof(T).ToString()`
-
-[f3f90a4cd5 Yoshi] Add Analyzer rules to prohibit `this.GetType()`
-seriously Meziantou is a godsend
-
-[dcc8957be3 Yoshi] Fast-fail Analyzer properly, fix typo
-thanks to https://www.meziantou.net/working-with-types-in-a-roslyn-analyzer.htm
-
 [4956bae3a2 Yoshi] Improve error message for `IToolFormAutoConfig` ext. tool missing menu
 
 [480ce3b925 CPP] fix minor miscompilation of gambatte-linux, update LibGambatte to reflect API changes wrt CameraCallback
@@ -1101,16 +870,8 @@ thanks to https://www.meziantou.net/working-with-types-in-a-roslyn-analyzer.htm
 
 [d209ba289f CPP] various gambatte updates / bugfixes
 
-[4a7ed563b6 Yoshi] Revert "Pin and downgrade Nix Docker image"
-This reverts commit 93bb90b584e428353cda228cc9881f33fc014974.
-
-[84886b7395 Yoshi] Nix expr: quick fix for deps
-fixes 6b4e526a4
-
 [9bb96fbadc Yoshi] Update doc comments to reflect thrown exception change
 fixes 4f98733c2
-
-[8434a2fd70 Yoshi] Add another note about which .NET target the BizHawk projects use
 
 [6b325ff56c Yoshi] Refactor `BasicBot.IsBetter`
 
@@ -1136,48 +897,9 @@ Includes primitive contributor license agreement; when creating a PR, contributo
 
 [94e85f1079 Yoshi] Set `Form.Owner` to MainForm for Lua-made forms
 
-[3fddcdb2c5 Yoshi] Add Analyzer rule to enforce throwing in `[FeatureNotImplemented]`
-
-[26e02033f2 Yoshi] Do the analysis for BHI1005 properly
-
-[6b4e526a44 Yoshi] Actually run all the Analyzers for ext. tools, update Analyzers
-fixes 6f372820a
-
 [ece2d8d68c tom_mai78101] Added NOT operator to Basic Bot.
 
-[5379de9a6e Yoshi] Enable MA0019 and fix noncompliance
-"Use EventArgs.Empty" (instead of ctor)
-
-[4f98733c29 Yoshi] Add Analyzer to enforce exception type for default switch branches
-
-[90fe31529e Yoshi] Replace `InvalidDataException` with `InvalidOperationException`
-This should be safe because we never filter caught exceptions by this type. I
-assume these were all typos, this exception has something to do with Streams.
-
-[e8c867979a Yoshi] Minor fixes to ext. tool project files
-
 [f8c847af40 CPP] add missing TMD for Zombie Skape, improve error message when TMD cannot be found
-
-[a7db24490c Yoshi] Enable BHI1002 and fix noncompliance
-"Do not use anonymous types (classes)"
-
-[eb4e8d6cd7 Yoshi] Change return type of `IEmulationApi.Disassemble` to tuple
-
-[056db314d4 Yoshi] Enable BHI1001 and fix noncompliance
-"Do not use anonymous delegates"
-
-[395aa0755b Yoshi] Add `BizHawk.Analyzer` project
-
-[6f372820a7 Yoshi] Allow C# 10 in satellite projects, enable Analyzers on ext. tools
-
-[0405e6399d Yoshi] Add `Meziantou.Analyzers` NuGet package
-
-[6077bcf5af Yoshi] Enable "strict" compiler flag and fix noncompliance
-couldn't find official docs for this, but I got it from:
-https://www.meziantou.net/csharp-compiler-strict-mode.htm
-and it definitely does SOMETHING
-
-[730594e1c5 Yoshi] Fix improperly-nested quotation in YAML
 
 [a6823e3afa Yoshi] Add core port request Issue template
 
@@ -1188,20 +910,13 @@ resolves #2843
 
 [1948721991 tom_mai78101] Increased Basic Bot max frames from 999 to 9999.
 
-[4e7b003306 Morilli] -_-
-this shouldn't be necessary imo, but oh well
-
 [2308ba1ecc tom_mai78101] Added "Clear Output" button to Lua Console (squashed PR #3307)
 * Added "Clear Output" button to Lua Console tool.
 * Swapped out indentation from tabs to space from Line 248 through 249 for consistency.
 * Swapped out indentation from tabs to spaces for consistency.
 * Added a custom "Clear Console" icon to Bizhawk.
 
-[bdcd37215c Morilli] Fix outstanding issues from 011f4bfe03bc545b3dfac8d4d870b255d44dacf7
-
 [0d3c7b7e0c CPP] (Libretro) Implement SET_SYSTEM_AV_INFO and SET_GEOMETRY
-
-[799dc4a2f0 Morilli] Prevent CoreSettings->Recent menu flying in
 
 [8642513572 CPP] sameboy color correction option, make default for gambatte
 
@@ -1223,8 +938,6 @@ see #3296
 
 [318c1a7fea feos] tastudio: don't autorestore if current frame remained valid
 1b8b4b492623f25b0aa322901c2009de9071ebb4 removed an important bit of logic that set `_triggerAutoRestore` to false in certain cases. but simply putting the same line back there doesn't fix the problem, probably due to major refactorings over the years. so I'm adding it right into `GoToLastEmulatedFrameIfNecessary()` which is still called properly when it's needed. `JumpToGreenzone()` is kinda redundant now since it contains the same check, but it's used from the outside, and I didn't feel like refactoring this part.
-
-[c5902bff54 CPP] update sameboy to latest upstream
 
 [369bdbe9a6 tom_mai78101] Fixed the "To PC" button not updating the disassembler view (squashed PR #3299)
 * Fixed the "To PC" button from not updating the disassembler view in the Debugger window.
