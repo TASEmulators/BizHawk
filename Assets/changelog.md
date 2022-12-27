@@ -116,6 +116,8 @@
 		- trimmed down initial time settings to a single setting, using total number of seconds
 		- implemented quirk with bit 4 of rLCDC, fixes cgb-acid-hell testrom compliance
 		- fixed sprite priority in CGB-DMG mode
+	- GBHawk
+		- fixed Code-Data Logger crashing due to typo'd mem domain name (#3497)
 	- Genplus-gx:
 		- stopped byteswapping Z80 domains (#3290)
 		- changed default peripheral to 3-button Genesis gamepad (#2775, #3262)
@@ -212,9 +214,6 @@ fixes 81fe56fa6
 [f668e09048 Morilli] fix dumb mistake in bsnes gamepad controller
 fixes 96cc3f874558dd8ed2048c889005437018e9bb57
 apparently this was only an issue in sgb?
-
-[aa0e2d6a5f Yoshi] Use new CartRAM domain name in GBHawk's CDL impl. (fixes #3497)
-fixes 7e00b7892
 
 [cee263e272 CPP] oops didn't mean to checkin this experiment (it doesn't do anything actually)
 
