@@ -17,6 +17,7 @@ let
 		({ name = "Nullable"; version = "1.3.0"; sha256 = "1h4m6as8ahkjm6adz42rnp33kgxgkn0aj7a1m09c73w4fps1ypcd"; })
 		({ name = "StyleCop.Analyzers"; version = "1.2.0-beta.333"; sha256 = "0ayfbwm5lqw0y9gshvdw1a0jym21bzrw7qv41n504hnq3sjdxjh6"; })
 		({ name = "StyleCop.Analyzers.Unstable"; version = "1.2.0.333"; sha256 = "04jkfv3azqvd1nd2fsi0gi3mcrxjj9cf5cmavhbcqc5ibjjrarjz"; })
+		({ name = "System.Drawing.Common"; version = "5.0.2"; sha256 = "08kgiywg5whhw80xshlrp0q9mkl8hlkgqdsnk1gm6bb898f1l3gs"; })
 	];
 	since-2_7 = [
 		({ name = "Cyotek.Drawing.BitmapFont"; version = "2.0.2"; sha256 = "0h1s1h7bs3iaxmyv1gi5r0712kf40njljdcff52i87fi9jz76lj9"; })
@@ -73,7 +74,6 @@ let
 		({ name = "System.Diagnostics.Tools"; version = "4.3.0"; sha256 = "0in3pic3s2ddyibi8cvgl102zmvp9r9mchh82ns9f0ms4basylw1"; })
 		({ name = "System.Diagnostics.TraceSource"; version = "4.3.0"; sha256 = "1kyw4d7dpjczhw6634nrmg7yyyzq72k75x38y0l0nwhigdlp1766"; })
 		({ name = "System.Diagnostics.Tracing"; version = "4.3.0"; sha256 = "1m3bx6c2s958qligl67q7grkwfz3w53hpy7nc97mh6f7j5k168c4"; })
-		({ name = "System.Drawing.Common"; version = "5.0.2"; sha256 = "08kgiywg5whhw80xshlrp0q9mkl8hlkgqdsnk1gm6bb898f1l3gs"; })
 		({ name = "System.Dynamic.Runtime"; version = "4.0.11"; sha256 = "1pla2dx8gkidf7xkciig6nifdsb494axjvzvann8g2lp3dbqasm9"; })
 		({ name = "System.Globalization"; version = "4.0.11"; sha256 = "070c5jbas2v7smm660zaf1gh0489xanjqymkvafcs4f8cdrs1d5d"; })
 		({ name = "System.Globalization"; version = "4.3.0"; sha256 = "1cp68vv683n6ic2zqh2s1fn4c2sd87g5hpp6l4d4nj4536jz98ki"; })
@@ -174,11 +174,12 @@ let
 		({ name = "Google.FlatBuffers"; version = "22.9.24"; sha256 = "0v72xrzcd7pphjizi2y5amk11nqjvhm7qqcb899rypl91a8vxw04"; })
 		({ name = "Menees.Analyzers"; version = "3.0.8"; sha256 = "1apv06cmnrakaylyh85hjyn380cnj0h53j3pakyp0f4jnpgw0bgf"; })
 		({ name = "Meziantou.Analyzer"; version = "1.0.707"; sha256 = "09drs16fr0xly4k8drznw7pa5f2byjc9km0pm0c3rrhl7jsz4ds5"; })
-		({ name = "Microsoft.AspNetCore.App.Ref"; version = "6.0.8"; sha256 = "1sxl6nsv8magamqbykdr6jnd9q6r1afavc7pzm2jmcqyxv121hv3"; })
+		({ name = "Microsoft.AspNetCore.App.Ref"; version = "6.0.9"; sha256 = "16zdir94cacz2qrndspkyvwq7gp0cp20wdixkazfzxk8h5fhgbzw"; })
 		({ name = "Microsoft.Bcl.HashCode"; version = "1.1.1"; sha256 = "0xwfph92p92d8hgrdiaka4cazqsjpg4ywfxfx6qbk3939f29kzl0"; })
 		({ name = "Nullable"; version = "1.3.1"; sha256 = "0hwrr4q22c0i056dqy3v431rxjv7md910ihz0pjsi16qxsbpw7p7"; })
 		({ name = "StyleCop.Analyzers"; version = "1.2.0-beta.435"; sha256 = "0dirz0av24ds2k7hgpss15y4wlhwlzz22qdjvkq0n3g3sxcckrsy"; })
 		({ name = "StyleCop.Analyzers.Unstable"; version = "1.2.0.435"; sha256 = "1jv4ha4y2c9922n21yf2dvfkmi8qfa8z28gk5zsqdyck08izp9mh"; })
+		({ name = "System.Drawing.Common"; version = "5.0.3"; sha256 = "1rnvqh5hwsqvxgn9g8g98sppg32llhk4y45lgv4dw0q6k945pgcy"; })
 	];
 in {
 	hawk_2_7   = until-2_8 ++ until-2_8_1 ++ since-2_7;
