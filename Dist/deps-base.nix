@@ -1,24 +1,4 @@
-let
-	until-2_8 = [
-		({ name = "Microsoft.AspNetCore.App.Ref"; version = "5.0.0"; sha256 = "0d7sjr89zwq0wxirf8la05hfalv9nhvlczg1c7a508k8aw79jvfg"; })
-		({ name = "Microsoft.CodeCoverage"; version = "16.10.0"; sha256 = "0nimrz7araj72d4ckpkqprvg6rgdv5y1bvmv63pqqbphbif9fjd1"; })
-		({ name = "Microsoft.NET.Test.Sdk"; version = "16.10.0"; sha256 = "1rz5d3h2427xp86qm8l35bs7xkl93771gk8401bsd7mrrad86nwb"; })
-		({ name = "Microsoft.TestPlatform.ObjectModel"; version = "16.10.0"; sha256 = "062llwghbmf5vhrczylyzhlflhd5lx05607aipmximd66p50wzbk"; })
-		({ name = "Microsoft.TestPlatform.TestHost"; version = "16.10.0"; sha256 = "1lhwwxlylmklp8wwirfmdc4dzfp2h8fxgw847cqy8by8h5wcwbjc"; })
-		({ name = "MSTest.TestAdapter"; version = "2.2.3"; sha256 = "14lfcagmcqv2kqyaanxdrhh57v6g7h790v6k9sicdbmahwnkkia2"; })
-		({ name = "MSTest.TestFramework"; version = "2.2.3"; sha256 = "1ycmya48212j4295qwldyzpm20001zdlmzna0zi9m3jvhlvhjggg"; })
-		({ name = "SharpCompress"; version = "0.26.0"; sha256 = "03cygf8p44j1bfn6z9cn2xrw6zhvhq17xac1sph5rgq7vq2m5iq5"; })
-		({ name = "System.Runtime.CompilerServices.Unsafe"; version = "4.7.1"; sha256 = "119br3pd85lq8zcgh4f60jzmv1g976q1kdgi3hvqdlhfbw6siz2j"; })
-		({ name = "System.Text.Encoding.CodePages"; version = "4.7.1"; sha256 = "1y1hdap9qbl7vp74j8s9zcbh3v1rnrrvcc55wj1hl6has2v3qh1r"; })
-	];
-	until-2_8_1 = [
-		({ name = "Menees.Analyzers"; version = "2.0.4"; sha256 = "0nvg9jw99066cf3aqg3iqllsabq8l100wbki62yq8ldmqlygg0wr"; })
-		({ name = "Microsoft.NETCore.Platforms"; version = "3.1.1"; sha256 = "05hmaygd5131rnqi6ipv7agsbpi7ka18779vw45iw6b385l7n987"; })
-		({ name = "Nullable"; version = "1.3.0"; sha256 = "1h4m6as8ahkjm6adz42rnp33kgxgkn0aj7a1m09c73w4fps1ypcd"; })
-		({ name = "StyleCop.Analyzers"; version = "1.2.0-beta.333"; sha256 = "0ayfbwm5lqw0y9gshvdw1a0jym21bzrw7qv41n504hnq3sjdxjh6"; })
-		({ name = "StyleCop.Analyzers.Unstable"; version = "1.2.0.333"; sha256 = "04jkfv3azqvd1nd2fsi0gi3mcrxjj9cf5cmavhbcqc5ibjjrarjz"; })
-		({ name = "System.Drawing.Common"; version = "5.0.2"; sha256 = "08kgiywg5whhw80xshlrp0q9mkl8hlkgqdsnk1gm6bb898f1l3gs"; })
-	];
+{ lib ? (import <nixpkgs> {}).lib }: let
 	since-2_7 = [
 		({ name = "Cyotek.Drawing.BitmapFont"; version = "2.0.2"; sha256 = "0h1s1h7bs3iaxmyv1gi5r0712kf40njljdcff52i87fi9jz76lj9"; })
 		({ name = "DotNetAnalyzers.DocumentationAnalyzers"; version = "1.0.0-beta.59"; sha256 = "03kllr1f52jq5a0b1fa2s57yz1bp0awh36n4dk679nqgbg6m8flj"; })
@@ -158,6 +138,18 @@ let
 		({ name = "System.Xml.XDocument"; version = "4.0.11"; sha256 = "0n4lvpqzy9kc7qy1a4acwwd7b7pnvygv895az5640idl2y9zbz18"; })
 		({ name = "System.Xml.XDocument"; version = "4.3.0"; sha256 = "08h8fm4l77n0nd4i4fk2386y809bfbwqb7ih9d7564ifcxr5ssxd"; })
 	];
+	until-2_8 = [
+		({ name = "Microsoft.AspNetCore.App.Ref"; version = "5.0.0"; sha256 = "0d7sjr89zwq0wxirf8la05hfalv9nhvlczg1c7a508k8aw79jvfg"; })
+		({ name = "Microsoft.CodeCoverage"; version = "16.10.0"; sha256 = "0nimrz7araj72d4ckpkqprvg6rgdv5y1bvmv63pqqbphbif9fjd1"; })
+		({ name = "Microsoft.NET.Test.Sdk"; version = "16.10.0"; sha256 = "1rz5d3h2427xp86qm8l35bs7xkl93771gk8401bsd7mrrad86nwb"; })
+		({ name = "Microsoft.TestPlatform.ObjectModel"; version = "16.10.0"; sha256 = "062llwghbmf5vhrczylyzhlflhd5lx05607aipmximd66p50wzbk"; })
+		({ name = "Microsoft.TestPlatform.TestHost"; version = "16.10.0"; sha256 = "1lhwwxlylmklp8wwirfmdc4dzfp2h8fxgw847cqy8by8h5wcwbjc"; })
+		({ name = "MSTest.TestAdapter"; version = "2.2.3"; sha256 = "14lfcagmcqv2kqyaanxdrhh57v6g7h790v6k9sicdbmahwnkkia2"; })
+		({ name = "MSTest.TestFramework"; version = "2.2.3"; sha256 = "1ycmya48212j4295qwldyzpm20001zdlmzna0zi9m3jvhlvhjggg"; })
+		({ name = "SharpCompress"; version = "0.26.0"; sha256 = "03cygf8p44j1bfn6z9cn2xrw6zhvhq17xac1sph5rgq7vq2m5iq5"; })
+		({ name = "System.Runtime.CompilerServices.Unsafe"; version = "4.7.1"; sha256 = "119br3pd85lq8zcgh4f60jzmv1g976q1kdgi3hvqdlhfbw6siz2j"; })
+		({ name = "System.Text.Encoding.CodePages"; version = "4.7.1"; sha256 = "1y1hdap9qbl7vp74j8s9zcbh3v1rnrrvcc55wj1hl6has2v3qh1r"; })
+	];
 	since-2_8 = [
 		({ name = "Microsoft.CodeCoverage"; version = "17.0.0"; sha256 = "18gdbsqf6i79ld4ikqr4jhx9ndsggm865b5xj1xmnmgg12ydp19a"; })
 		({ name = "Microsoft.NET.Test.Sdk"; version = "17.0.0"; sha256 = "0bknyf5kig5icwjxls7pcn51x2b2qf91dz9qv67fl70v6cczaz2r"; })
@@ -170,7 +162,15 @@ let
 		({ name = "System.Runtime.CompilerServices.Unsafe"; version = "5.0.0"; sha256 = "02k25ivn50dmqx5jn8hawwmz24yf0454fjd823qk6lygj9513q4x"; })
 		({ name = "System.Text.Encoding.CodePages"; version = "5.0.0"; sha256 = "1bn2pzaaq4wx9ixirr8151vm5hynn3lmrljcgjx9yghmm4k677k0"; })
 	];
-	since-2_8_1 = [
+	until-2_9 = [
+		({ name = "Menees.Analyzers"; version = "2.0.4"; sha256 = "0nvg9jw99066cf3aqg3iqllsabq8l100wbki62yq8ldmqlygg0wr"; })
+		({ name = "Microsoft.NETCore.Platforms"; version = "3.1.1"; sha256 = "05hmaygd5131rnqi6ipv7agsbpi7ka18779vw45iw6b385l7n987"; })
+		({ name = "Nullable"; version = "1.3.0"; sha256 = "1h4m6as8ahkjm6adz42rnp33kgxgkn0aj7a1m09c73w4fps1ypcd"; })
+		({ name = "StyleCop.Analyzers"; version = "1.2.0-beta.333"; sha256 = "0ayfbwm5lqw0y9gshvdw1a0jym21bzrw7qv41n504hnq3sjdxjh6"; })
+		({ name = "StyleCop.Analyzers.Unstable"; version = "1.2.0.333"; sha256 = "04jkfv3azqvd1nd2fsi0gi3mcrxjj9cf5cmavhbcqc5ibjjrarjz"; })
+		({ name = "System.Drawing.Common"; version = "5.0.2"; sha256 = "08kgiywg5whhw80xshlrp0q9mkl8hlkgqdsnk1gm6bb898f1l3gs"; })
+	];
+	since-2_9 = [
 		({ name = "Google.FlatBuffers"; version = "22.9.24"; sha256 = "0v72xrzcd7pphjizi2y5amk11nqjvhm7qqcb899rypl91a8vxw04"; })
 		({ name = "Menees.Analyzers"; version = "3.0.8"; sha256 = "1apv06cmnrakaylyh85hjyn380cnj0h53j3pakyp0f4jnpgw0bgf"; })
 		({ name = "Meziantou.Analyzer"; version = "1.0.707"; sha256 = "09drs16fr0xly4k8drznw7pa5f2byjc9km0pm0c3rrhl7jsz4ds5"; })
@@ -181,8 +181,15 @@ let
 		({ name = "StyleCop.Analyzers.Unstable"; version = "1.2.0.435"; sha256 = "1jv4ha4y2c9922n21yf2dvfkmi8qfa8z28gk5zsqdyck08izp9mh"; })
 		({ name = "System.Drawing.Common"; version = "5.0.3"; sha256 = "1rnvqh5hwsqvxgn9g8g98sppg32llhk4y45lgv4dw0q6k945pgcy"; })
 	];
-in {
-	hawk_2_7   = until-2_8 ++ until-2_8_1 ++ since-2_7;
-	hawk_2_8   =              until-2_8_1 ++ since-2_7 ++ since-2_8;
-	hawk_2_8_1 =                             since-2_7 ++ since-2_8 ++ since-2_8_1;
-}
+	partialLists = [
+		until-2_8
+		until-2_9
+		since-2_7
+		since-2_8
+		since-2_9
+	];
+	versions = [ "hawk-2_7" "hawk-2_8" "hawk-2_9" ];
+	versionCount = builtins.length versions;
+	f = i: builtins.foldl' (a: b: a ++ b) [] (lib.sublist i versionCount partialLists);
+in assert (builtins.length partialLists) == versionCount * 2 - 1;
+	builtins.listToAttrs (lib.imap0 (i: name: { inherit name; value = f i; }) versions)

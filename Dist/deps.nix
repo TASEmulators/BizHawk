@@ -1,1 +1,1 @@
-{ fetchNuGet }: map fetchNuGet (import ./deps-base.nix).hawk_2_8_1
+{ fetchNuGet }: map fetchNuGet (import ./deps-base.nix {}).hawk-2_9
