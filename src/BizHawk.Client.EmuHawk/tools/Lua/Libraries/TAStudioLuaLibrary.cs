@@ -139,7 +139,7 @@ namespace BizHawk.Client.EmuHawk
 				_luaLibsImpl.IsUpdateSupressed = true;
 
 				int f;
-				if (frame is double frameNumber)
+				if (frame is long frameNumber)
 				{
 					f = (int)frameNumber;
 				}
