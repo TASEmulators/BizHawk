@@ -9,7 +9,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BizHawk.Tests.Client.Common.Lua
 {
+#if !SKIP_PLATFORM_TESTS
 	[TestClass]
+#endif
 	public class LuaTests
 	{
 		private static readonly NLua.Lua LuaInstance = new();
