@@ -11,11 +11,20 @@
 		public bool WantsToControlSavestates => false;
 
 		public void SaveState() { }
-		public void LoadState() { }
+
+		public bool LoadState()
+			=> false;
+
 		public void SaveStateAs() { }
-		public void LoadStateAs() { }
+
+		public bool LoadStateAs()
+			=> false;
+
 		public void SaveQuickSave(int slot) { }
-		public void LoadQuickSave(int slot) { }
+
+		public bool LoadQuickSave(int slot)
+			=> false;
+
 		public bool SelectSlot(int slot) => false;
 		public bool PreviousSlot() => false;
 		public bool NextSlot() => false;

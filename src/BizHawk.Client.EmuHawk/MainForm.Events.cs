@@ -406,7 +406,7 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadCurrentSlotMenuItem_Click(object sender, EventArgs e)
 			=> LoadstateCurrentSlot();
 
-		private void LoadstateCurrentSlot()
+		private bool LoadstateCurrentSlot()
 			=> LoadQuickSave(Config.SaveSlot);
 
 		private void FlushSaveRAMMenuItem_Click(object sender, EventArgs e)
@@ -2522,7 +2522,7 @@ namespace BizHawk.Client.EmuHawk
 			if (sender == Slot0StatusButton) slot = 10;
 
 			if (e.Button is MouseButtons.Right) SaveQuickSave(slot);
-			else if (e.Button is MouseButtons.Left && HasSlot(slot)) LoadQuickSave(slot);
+			else if (e.Button is MouseButtons.Left && HasSlot(slot)) _ = LoadQuickSave(slot);
 		}
 
 		private void KeyPriorityStatusLabel_Click(object sender, EventArgs e)

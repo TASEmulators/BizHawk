@@ -210,15 +210,14 @@ namespace BizHawk.Client.EmuHawk
 			Tastudio.RefreshDialog();
 		}
 
-		private void LoadSelectedBranch()
+		private bool LoadSelectedBranch()
 		{
-			if (SelectedBranch != null)
-			{
-				Branches.Current = BranchView.FirstSelectedRowIndex;
-				LoadBranch(SelectedBranch);
-				BranchView.Refresh();
-				Tastudio.MainForm.AddOnScreenMessage($"Loaded branch {Branches.Current + 1}");
-			}
+			if (SelectedBranch == null) return false;
+			Branches.Current = BranchView.FirstSelectedRowIndex;
+			LoadBranch(SelectedBranch);
+			BranchView.Refresh();
+			Tastudio.MainForm.AddOnScreenMessage($"Loaded branch {Branches.Current + 1}");
+			return true;
 		}
 
 		private void BranchesContextMenu_Opening(object sender, CancelEventArgs e)
@@ -247,7 +246,7 @@ namespace BizHawk.Client.EmuHawk
 			Tastudio.MainForm.AddOnScreenMessage($"Added branch {Branches.Current + 1}");
 		}
 
-		private void PrepareHistoryAndLoadSelectedBranch()
+		private bool PrepareHistoryAndLoadSelectedBranch()
 		{
 			_backupBranch = CreateBranch();
 
@@ -263,11 +262,11 @@ namespace BizHawk.Client.EmuHawk
 			toolTip1.SetToolTip(UndoBranchButton, "Undo Branch Load");
 			_branchUndo = BranchUndo.Load;
 
-			if (BranchView.AnyRowsSelected)
-			{
-				LoadSelectedBranch();
-				LoadedCallback?.Invoke(BranchView.FirstSelectedRowIndex);
-			}
+			if (!BranchView.AnyRowsSelected) return false; // why'd we do all that then
+
+			var success = LoadSelectedBranch();
+			LoadedCallback?.Invoke(BranchView.FirstSelectedRowIndex);
+			return success;
 		}
 
 		private void LoadBranchToolStripMenuItem_Click(object sender, EventArgs e)
@@ -405,11 +404,11 @@ namespace BizHawk.Client.EmuHawk
 			AddBranchToolStripMenuItem_Click(null, null);
 		}
 
-		public void LoadBranchExternal(int slot = -1)
+		public bool LoadBranchExternal(int slot = -1)
 		{
 			if (Tastudio.AxisEditingMode)
 			{
-				return;
+				return false;
 			}
 
 			if (slot != -1)
@@ -422,11 +421,11 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					NonExistentBranchMessage(slot);
-					return;
+					return false;
 				}
 			}
 
-			PrepareHistoryAndLoadSelectedBranch();
+			return PrepareHistoryAndLoadSelectedBranch();
 		}
 
 		public void UpdateBranchExternal(int slot = -1)

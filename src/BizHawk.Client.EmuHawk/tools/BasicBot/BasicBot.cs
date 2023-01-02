@@ -453,7 +453,7 @@ namespace BizHawk.Client.EmuHawk
 
 			InputManager.SyncControls(Emulator, MovieSession, Config);
 
-			MainForm.LoadQuickSave(SelectedSlot, true); // Triggers an UpdateValues call
+			_ = MainForm.LoadQuickSave(SelectedSlot, true); // Triggers an UpdateValues call
 			_lastFrameAdvanced = Emulator.Frame;
 			_doNotUpdateValues = false;
 			_startFrame = Emulator.Frame;
@@ -904,7 +904,7 @@ namespace BizHawk.Client.EmuHawk
 					reset_curent(Attempts);
 					_doNotUpdateValues = true;
 					PressButtons(true);
-					MainForm.LoadQuickSave(SelectedSlot, true);
+					_ = MainForm.LoadQuickSave(SelectedSlot, true);
 					_lastFrameAdvanced = Emulator.Frame;
 					_doNotUpdateValues = false;
 					return;
@@ -1034,7 +1034,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_doNotUpdateValues = true;
 			PressButtons(true);
-			MainForm.LoadQuickSave(SelectedSlot, true); // Triggers an UpdateValues call
+			_ = MainForm.LoadQuickSave(SelectedSlot, true); // Triggers an UpdateValues call
 			_lastFrameAdvanced = Emulator.Frame;
 			_doNotUpdateValues = false;
 			_startFrame = Emulator.Frame;

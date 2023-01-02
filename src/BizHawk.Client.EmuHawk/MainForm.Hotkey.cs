@@ -18,7 +18,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			void SelectAndLoadFromSlot(int slot)
 			{
-				LoadQuickSave(slot);
+				_ = LoadQuickSave(slot);
 				Config.SaveSlot = slot;
 				UpdateStatusSlots();
 			}
@@ -63,7 +63,7 @@ namespace BizHawk.Client.EmuHawk
 					HardReset();
 					break;
 				case "Quick Load":
-					LoadstateCurrentSlot();
+					_ = LoadstateCurrentSlot();
 					break;
 				case "Quick Save":
 					SavestateCurrentSlot();
@@ -255,7 +255,7 @@ namespace BizHawk.Client.EmuHawk
 					SaveStateAs();
 					break;
 				case "Load Named State":
-					LoadStateAs();
+					_ = LoadStateAs();
 					break;
 				case "Previous Slot":
 					PreviousSlot();

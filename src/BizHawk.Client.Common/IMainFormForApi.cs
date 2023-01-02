@@ -69,12 +69,12 @@ namespace BizHawk.Client.Common
 		bool LoadMovie(string filename, string archive = null);
 
 		/// <remarks>only referenced from <see cref="SaveStateApi"/></remarks>
-		void LoadQuickSave(int slot, bool suppressOSD = false);
+		bool LoadQuickSave(int slot, bool suppressOSD = false);
 
 		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
 		bool LoadRom(string path, LoadRomArgs args);
 
-		void LoadState(string combine, string name, bool suppressOSD = false);
+		bool LoadState(string path, string userFriendlyStateName, bool suppressOSD = false);
 
 		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
 		void PauseEmulator();

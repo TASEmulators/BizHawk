@@ -658,15 +658,17 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (_argParser.cmdLoadState != null)
 				{
-					LoadState(_argParser.cmdLoadState, Path.GetFileName(_argParser.cmdLoadState));
+					_ = LoadState(
+						path: _argParser.cmdLoadState,
+						userFriendlyStateName: Path.GetFileName(_argParser.cmdLoadState));
 				}
 				else if (_argParser.cmdLoadSlot != null)
 				{
-					LoadQuickSave(_argParser.cmdLoadSlot.Value);
+					_ = LoadQuickSave(_argParser.cmdLoadSlot.Value);
 				}
 				else if (Config.AutoLoadLastSaveSlot)
 				{
-					LoadstateCurrentSlot();
+					_ = LoadstateCurrentSlot();
 				}
 			}
 
@@ -3958,7 +3960,7 @@ namespace BizHawk.Client.EmuHawk
 					Tools.UpdateCheatRelatedTools(null, null);
 					if (!MovieSession.NewMovieQueued && Config.AutoLoadLastSaveSlot && HasSlot(Config.SaveSlot))
 					{
-						LoadstateCurrentSlot();
+						_ = LoadstateCurrentSlot();
 					}
 
 					if (FirmwareManager.RecentlyServed.Count > 0)
@@ -4201,23 +4203,15 @@ namespace BizHawk.Client.EmuHawk
 			return int.Parse(slot.Substring(slot.Length - 1, 1));
 		}
 
-		public void LoadState(string path, string userFriendlyStateName, bool suppressOSD = false) // Move to client.common
+		public bool LoadState(string path, string userFriendlyStateName, bool suppressOSD = false) // Move to client.common
 		{
-			if (!Emulator.HasSavestates())
-			{
-				return;
-			}
-
-			if (IsSavestateSlave)
-			{
-				Master.LoadState();
-				return;
-			}
+			if (!Emulator.HasSavestates()) return false;
+			if (IsSavestateSlave) return Master.LoadState();
 
 			if (!new SavestateFile(Emulator, MovieSession, QuickBmpFile, MovieSession.UserBag).Load(path, this))
 			{
 				AddOnScreenMessage("Loadstate error!");
-				return;
+				return false;
 			}
 
 			OSD.ClearGuiText();
@@ -4246,36 +4240,27 @@ namespace BizHawk.Client.EmuHawk
 			{
 				AddOnScreenMessage($"Loaded state: {userFriendlyStateName}");
 			}
+			return true;
 		}
 
-		public void LoadQuickSave(int slot, bool suppressOSD = false)
+		public bool LoadQuickSave(int slot, bool suppressOSD = false)
 		{
-			if (!Emulator.HasSavestates())
-			{
-				return;
-			}
+			if (!Emulator.HasSavestates()) return false;
+
 			var quickSlotName = $"QuickSave{slot % 10}";
 			EmuClient.OnBeforeQuickLoad(this, quickSlotName, out var handled);
-			if (handled)
-			{
-				return;
-			}
+			if (handled) return true; // not sure
 
-			if (IsSavestateSlave)
-			{
-				Master.LoadQuickSave(SlotToInt(quickSlotName));
-				return;
-			}
+			if (IsSavestateSlave) return Master.LoadQuickSave(SlotToInt(quickSlotName));
 
 			var path = $"{SaveStatePrefix()}.{quickSlotName}.State";
 			if (!File.Exists(path))
 			{
 				AddOnScreenMessage($"Unable to load {quickSlotName}.State");
-
-				return;
+				return false;
 			}
 
-			LoadState(path, quickSlotName, suppressOSD);
+			return LoadState(path: path, userFriendlyStateName: quickSlotName, suppressOSD: suppressOSD);
 		}
 
 		public void SaveState(string path, string userFriendlyStateName, bool fromLua = false, bool suppressOSD = false)
@@ -4434,25 +4419,17 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void LoadStateAs()
+		private bool LoadStateAs()
 		{
-			if (!Emulator.HasSavestates())
-			{
-				return;
-			}
-
-			if (IsSavestateSlave)
-			{
-				Master.LoadStateAs();
-				return;
-			}
+			if (!Emulator.HasSavestates()) return false;
+			if (IsSavestateSlave) return Master.LoadStateAs();
 
 			var result = this.ShowFileOpenDialog(
 				discardCWDChange: true,
 				filter: EmuHawkSaveStatesFSFilterSet,
 				initDir: Config.PathEntries.SaveStateAbsolutePath(Game.System));
-			if (result is null || !File.Exists(result)) return;
-			LoadState(result, Path.GetFileName(result));
+			if (result is null || !File.Exists(result)) return false;
+			return LoadState(path: result, userFriendlyStateName: Path.GetFileName(result));
 		}
 
 		private void SelectSlot(int slot)

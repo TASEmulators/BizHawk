@@ -88,7 +88,7 @@ namespace BizHawk.Client.Common
 		/// Load a savestate specified by its name
 		/// </summary>
 		/// <param name="name">Savestate friendly name</param>
-		void LoadState(string name);
+		bool LoadState(string name);
 
 		/// <summary>
 		/// Raised before a quickload is done (just after pressing shortcut button)

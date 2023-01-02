@@ -15,25 +15,21 @@ namespace BizHawk.Client.EmuHawk
 			BookMarkControl.UpdateBranchExternal();
 		}
 
-		public void LoadState()
-		{
-			BookMarkControl.LoadBranchExternal();
-		}
+		public bool LoadState()
+			=> BookMarkControl.LoadBranchExternal();
 
 		public void SaveStateAs()
 		{
 			// dummy
 		}
 
-		public void LoadStateAs()
-		{
-			// dummy
-		}
+		public bool LoadStateAs()
+			=> false;
 
 		public void SaveQuickSave(int slot)
 			=> BookMarkControl.UpdateBranchExternal(slot - 1);
 
-		public void LoadQuickSave(int slot)
+		public bool LoadQuickSave(int slot)
 			=> BookMarkControl.LoadBranchExternal(slot - 1);
 
 		public bool SelectSlot(int slot)

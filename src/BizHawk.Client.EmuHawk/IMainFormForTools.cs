@@ -65,7 +65,7 @@ namespace BizHawk.Client.EmuHawk
 		void FrameBufferResized();
 
 		/// <remarks>only referenced from <see cref="BasicBot"/></remarks>
-		void LoadQuickSave(int slot, bool suppressOSD = false);
+		bool LoadQuickSave(int slot, bool suppressOSD = false);
 
 		/// <remarks>only referenced from <see cref="MultiDiskBundler"/></remarks>
 		bool LoadRom(string path, LoadRomArgs args);

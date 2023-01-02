@@ -108,10 +108,8 @@ namespace BizHawk.Client.EmuHawk
 			LoadRom(filename, args);
 		}
 
-		private void LoadStateFile(string filename, string archive = null)
-		{
-			LoadState(filename, Path.GetFileName(filename));
-		}
+		private bool LoadStateFile(string filename, string archive = null)
+			=> LoadState(path: filename, userFriendlyStateName: Path.GetFileName(filename));
 
 		private void LoadWatch(string filename, string archive = null)
 		{
@@ -267,7 +265,7 @@ namespace BizHawk.Client.EmuHawk
 								LoadRom(filename, fileInformation.ArchiveName);
 								break;
 							case LoadOrdering.State:
-								LoadStateFile(filename, fileInformation.ArchiveName);
+								_ = LoadStateFile(filename, fileInformation.ArchiveName);
 								break;
 							case LoadOrdering.Watch:
 								LoadWatch(filename, fileInformation.ArchiveName);
