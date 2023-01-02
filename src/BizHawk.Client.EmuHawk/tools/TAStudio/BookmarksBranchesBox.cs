@@ -247,7 +247,7 @@ namespace BizHawk.Client.EmuHawk
 			Tastudio.MainForm.AddOnScreenMessage($"Added branch {Branches.Current + 1}");
 		}
 
-		private void LoadBranchToolStripMenuItem_Click(object sender, EventArgs e)
+		private void PrepareHistoryAndLoadSelectedBranch()
 		{
 			_backupBranch = CreateBranch();
 
@@ -269,6 +269,9 @@ namespace BizHawk.Client.EmuHawk
 				LoadedCallback?.Invoke(BranchView.FirstSelectedRowIndex);
 			}
 		}
+
+		private void LoadBranchToolStripMenuItem_Click(object sender, EventArgs e)
+			=> PrepareHistoryAndLoadSelectedBranch();
 
 		private void UpdateBranchToolStripMenuItem_Click(object sender, EventArgs e)
 		{
@@ -423,7 +426,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			LoadBranchToolStripMenuItem_Click(null, null);
+			PrepareHistoryAndLoadSelectedBranch();
 		}
 
 		public void UpdateBranchExternal(int slot = -1)
@@ -610,7 +613,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Tastudio.Settings.LoadBranchOnDoubleClick)
 			{
-				LoadBranchToolStripMenuItem_Click(null, null);
+				PrepareHistoryAndLoadSelectedBranch();
 			}
 		}
 
