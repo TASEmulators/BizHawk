@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -22,21 +23,21 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			for (int i = 0; i < 10; i++)
+			for (int i = 1; i <= 10; i++)
 			{
 				if (movie is ITasMovie tasMovie)
 				{
-					_slots[(i + 1) % 10] = i < tasMovie.Branches.Count;
+					_slots[i - 1] = (i - 1) < tasMovie.Branches.Count;
 				}
 				else
 				{
-					var file = new FileInfo($"{saveStatePrefix}.QuickSave{i}.State");
+					var file = new FileInfo($"{saveStatePrefix}.QuickSave{i % 10}.State");
 					if (file.Directory != null && file.Directory.Exists == false)
 					{
 						file.Directory.Create();
 					}
 
-					_slots[i] = file.Exists;
+					_slots[i - 1] = file.Exists;
 				}
 			}
 		}
@@ -54,7 +55,7 @@ namespace BizHawk.Client.Common
 			}
 
 			Update(emulator, movie, savestatePrefix);
-			return _slots[slot];
+			return _slots[slot - 1];
 		}
 
 		public void ClearRedoList()
@@ -67,10 +68,11 @@ namespace BizHawk.Client.Common
 
 		public void ToggleRedo(IMovie movie, int slot)
 		{
-			if (0.RangeTo(9).Contains(slot) && !(movie is ITasMovie)) _redo[slot] ^= true;
+			if (slot is >= 1 and <= 10 && movie is not ITasMovie) _redo[slot - 1] ^= true;
 		}
 
-		public bool IsRedo(IMovie movie, int slot) => 0.RangeTo(9).Contains(slot) && !(movie is ITasMovie) && _redo[slot];
+		public bool IsRedo(IMovie movie, int slot)
+			=> slot is >= 1 and <= 10 && movie is not ITasMovie && _redo[slot - 1];
 
 		public void SwapBackupSavestate(IMovie movie, string path, int currentSlot)
 		{

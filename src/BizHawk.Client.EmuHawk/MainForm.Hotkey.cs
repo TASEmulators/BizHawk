@@ -160,9 +160,6 @@ namespace BizHawk.Client.EmuHawk
 					break;
 
 				// Save States
-				case "Save State 0":
-					SelectAndSaveToSlot(0);
-					break;
 				case "Save State 1":
 					SelectAndSaveToSlot(1);
 					break;
@@ -190,8 +187,8 @@ namespace BizHawk.Client.EmuHawk
 				case "Save State 9":
 					SelectAndSaveToSlot(9);
 					break;
-				case "Load State 0":
-					SelectAndLoadFromSlot(0);
+				case "Save State 10":
+					SelectAndSaveToSlot(10);
 					break;
 				case "Load State 1":
 					SelectAndLoadFromSlot(1);
@@ -220,10 +217,10 @@ namespace BizHawk.Client.EmuHawk
 				case "Load State 9":
 					SelectAndLoadFromSlot(9);
 					break;
-
-				case "Select State 0":
-					SelectSlot(0);
+				case "Load State 10":
+					SelectAndLoadFromSlot(10);
 					break;
+
 				case "Select State 1":
 					SelectSlot(1);
 					break;
@@ -250,6 +247,9 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "Select State 9":
 					SelectSlot(9);
+					break;
+				case "Select State 10":
+					SelectSlot(10);
 					break;
 				case "Save Named State":
 					SaveStateAs();

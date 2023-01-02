@@ -523,7 +523,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// SaveState0MenuItem
 			// 
-			this.SaveState0MenuItem.Text = "0";
+			this.SaveState0MenuItem.Text = "10";
 			this.SaveState0MenuItem.Click += new System.EventHandler(this.QuickSavestateMenuItem_Click);
 			// 
 			// SaveNamedStateMenuItem
@@ -604,7 +604,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// LoadState0MenuItem
 			// 
-			this.LoadState0MenuItem.Text = "0";
+			this.LoadState0MenuItem.Text = "10";
 			this.LoadState0MenuItem.Click += new System.EventHandler(this.QuickLoadstateMenuItem_Click);
 			// 
 			// LoadNamedStateMenuItem
@@ -640,7 +640,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// SelectSlot0MenuItem
 			// 
-			this.SelectSlot0MenuItem.Text = "Select Slot 0";
+			this.SelectSlot0MenuItem.Text = "Select Slot 10";
 			this.SelectSlot0MenuItem.Click += new System.EventHandler(this.SelectSlotMenuItems_Click);
 			// 
 			// SelectSlot1MenuItem
@@ -2149,7 +2149,7 @@ namespace BizHawk.Client.EmuHawk
 			// Slot0StatusButton
 			// 
 			this.Slot0StatusButton.Text = "0";
-			this.Slot0StatusButton.ToolTipText = "Save slot 0";
+			this.Slot0StatusButton.ToolTipText = "Save slot 10";
 			this.Slot0StatusButton.MouseUp += new System.Windows.Forms.MouseEventHandler(this.SlotStatusButtons_MouseUp);
 			// 
 			// CheatStatusButton

@@ -133,7 +133,7 @@ namespace BizHawk.Client.EmuHawk
 			SetSlotFont(SaveState7MenuItem, 7);
 			SetSlotFont(SaveState8MenuItem, 8);
 			SetSlotFont(SaveState9MenuItem, 9);
-			SetSlotFont(SaveState0MenuItem, 0);
+			SetSlotFont(SaveState0MenuItem, 10);
 
 			AutosaveLastSlotMenuItem.Checked = Config.AutoSaveLastSaveSlot;
 
@@ -146,7 +146,7 @@ namespace BizHawk.Client.EmuHawk
 			SaveState7MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save State 7"];
 			SaveState8MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save State 8"];
 			SaveState9MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save State 9"];
-			SaveState0MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save State 0"];
+			SaveState0MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save State 10"];
 			SaveNamedStateMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Save Named State"];
 		}
 
@@ -161,7 +161,7 @@ namespace BizHawk.Client.EmuHawk
 			LoadState7MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Load State 7"];
 			LoadState8MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Load State 8"];
 			LoadState9MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Load State 9"];
-			LoadState0MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Load State 0"];
+			LoadState0MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Load State 10"];
 			LoadNamedStateMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Load Named State"];
 
 			AutoloadLastSlotMenuItem.Checked = Config.AutoLoadLastSaveSlot;
@@ -175,7 +175,7 @@ namespace BizHawk.Client.EmuHawk
 			LoadState7MenuItem.Enabled = HasSlot(7);
 			LoadState8MenuItem.Enabled = HasSlot(8);
 			LoadState9MenuItem.Enabled = HasSlot(9);
-			LoadState0MenuItem.Enabled = HasSlot(0);
+			LoadState0MenuItem.Enabled = HasSlot(10);
 		}
 
 		private void SaveSlotSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -189,7 +189,7 @@ namespace BizHawk.Client.EmuHawk
 			SelectSlot7MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 7"];
 			SelectSlot8MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 8"];
 			SelectSlot9MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 9"];
-			SelectSlot0MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 0"];
+			SelectSlot0MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 10"];
 			PreviousSlotMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Previous Slot"];
 			NextSlotMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Next Slot"];
 			SaveToCurrentSlotMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Quick Save"];
@@ -204,7 +204,7 @@ namespace BizHawk.Client.EmuHawk
 			SelectSlot7MenuItem.Checked = Config.SaveSlot == 7;
 			SelectSlot8MenuItem.Checked = Config.SaveSlot == 8;
 			SelectSlot9MenuItem.Checked = Config.SaveSlot == 9;
-			SelectSlot0MenuItem.Checked = Config.SaveSlot == 0;
+			SelectSlot0MenuItem.Checked = Config.SaveSlot is 10;
 		}
 
 		private void SaveRamSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -381,7 +381,7 @@ namespace BizHawk.Client.EmuHawk
 			else if (sender == SelectSlot7MenuItem) Config.SaveSlot = 7;
 			else if (sender == SelectSlot8MenuItem) Config.SaveSlot = 8;
 			else if (sender == SelectSlot9MenuItem) Config.SaveSlot = 9;
-			else if (sender == SelectSlot0MenuItem) Config.SaveSlot = 0;
+			else if (sender == SelectSlot0MenuItem) Config.SaveSlot = 10;
 
 			UpdateStatusSlots();
 			SaveSlotSelectedMessage();
@@ -2358,7 +2358,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			var file = new FileInfo($"{SaveStatePrefix()}.QuickSave{Config.SaveSlot}.State.bak");
+			var file = new FileInfo($"{SaveStatePrefix()}.QuickSave{Config.SaveSlot % 10}.State.bak");
 
 			if (file.Exists)
 			{
@@ -2477,7 +2477,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UndoSavestateContextMenuItem_Click(object sender, EventArgs e)
 		{
-			_stateSlots.SwapBackupSavestate(MovieSession.Movie, $"{SaveStatePrefix()}.QuickSave{Config.SaveSlot}.State", Config.SaveSlot);
+			_stateSlots.SwapBackupSavestate(MovieSession.Movie, $"{SaveStatePrefix()}.QuickSave{Config.SaveSlot % 10}.State", Config.SaveSlot);
 			AddOnScreenMessage($"Save slot {Config.SaveSlot} restored.");
 		}
 
@@ -2509,7 +2509,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SlotStatusButtons_MouseUp(object sender, MouseEventArgs e)
 		{
-			int slot = 0;
+			var slot = 10;
 			if (sender == Slot1StatusButton) slot = 1;
 			if (sender == Slot2StatusButton) slot = 2;
 			if (sender == Slot3StatusButton) slot = 3;
@@ -2519,7 +2519,7 @@ namespace BizHawk.Client.EmuHawk
 			if (sender == Slot7StatusButton) slot = 7;
 			if (sender == Slot8StatusButton) slot = 8;
 			if (sender == Slot9StatusButton) slot = 9;
-			if (sender == Slot0StatusButton) slot = 0;
+			if (sender == Slot0StatusButton) slot = 10;
 
 			if (e.Button is MouseButtons.Right) SaveQuickSave(slot);
 			else if (e.Button is MouseButtons.Left && HasSlot(slot)) LoadQuickSave(slot);

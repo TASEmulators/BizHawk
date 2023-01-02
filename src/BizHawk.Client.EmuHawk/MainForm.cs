@@ -2626,7 +2626,7 @@ namespace BizHawk.Client.EmuHawk
 			Slot7StatusButton.ForeColor = SlotForeColor(7);
 			Slot8StatusButton.ForeColor = SlotForeColor(8);
 			Slot9StatusButton.ForeColor = SlotForeColor(9);
-			Slot0StatusButton.ForeColor = SlotForeColor(0);
+			Slot0StatusButton.ForeColor = SlotForeColor(10);
 
 			Slot1StatusButton.BackColor = SlotBackColor(1);
 			Slot2StatusButton.BackColor = SlotBackColor(2);
@@ -2637,7 +2637,7 @@ namespace BizHawk.Client.EmuHawk
 			Slot7StatusButton.BackColor = SlotBackColor(7);
 			Slot8StatusButton.BackColor = SlotBackColor(8);
 			Slot9StatusButton.BackColor = SlotBackColor(9);
-			Slot0StatusButton.BackColor = SlotBackColor(0);
+			Slot0StatusButton.BackColor = SlotBackColor(10);
 
 			SaveSlotsStatusLabel.Visible =
 				Slot1StatusButton.Visible =
@@ -4254,7 +4254,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return;
 			}
-			var quickSlotName = $"QuickSave{slot}";
+			var quickSlotName = $"QuickSave{slot % 10}";
 			EmuClient.OnBeforeQuickLoad(this, quickSlotName, out var handled);
 			if (handled)
 			{
@@ -4321,7 +4321,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return;
 			}
-			var quickSlotName = $"QuickSave{slot}";
+			var quickSlotName = $"QuickSave{slot % 10}";
 			EmuClient.OnBeforeQuickSave(this, quickSlotName, out var handled);
 			if (handled)
 			{
@@ -4476,19 +4476,8 @@ namespace BizHawk.Client.EmuHawk
 				var handled = Master.PreviousSlot();
 				if (handled) return;
 			}
-			if (Config.SaveSlot == 0)
-			{
-				Config.SaveSlot = 9; // Wrap to end of slot list
-			}
-			else if (Config.SaveSlot > 9)
-			{
-				Config.SaveSlot = 9; // Meh, just in case
-			}
-			else
-			{
-				Config.SaveSlot--;
-			}
-
+			Config.SaveSlot++;
+			if (Config.SaveSlot < 1) Config.SaveSlot = 10;
 			SaveSlotSelectedMessage();
 			UpdateStatusSlots();
 		}
@@ -4501,19 +4490,8 @@ namespace BizHawk.Client.EmuHawk
 				var handled = Master.NextSlot();
 				if (handled) return;
 			}
-			if (Config.SaveSlot >= 9)
-			{
-				Config.SaveSlot = 0; // Wrap to beginning of slot list
-			}
-			else if (Config.SaveSlot < 0)
-			{
-				Config.SaveSlot = 0; // Meh, just in case
-			}
-			else
-			{
-				Config.SaveSlot++;
-			}
-
+			Config.SaveSlot++;
+			if (Config.SaveSlot > 10) Config.SaveSlot = 1;
 			SaveSlotSelectedMessage();
 			UpdateStatusSlots();
 		}

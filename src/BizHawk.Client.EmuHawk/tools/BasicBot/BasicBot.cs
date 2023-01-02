@@ -153,7 +153,7 @@ namespace BizHawk.Client.EmuHawk
 				.ToDictionary(tkey => tkey.ButtonName, tvalue => tvalue.Probability);
 		
 		private int SelectedSlot
-			=> (1 + StartFromSlotBox.SelectedIndex) % 10;
+			=> 1 + StartFromSlotBox.SelectedIndex;
 
 		private long Attempts
 		{

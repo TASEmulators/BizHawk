@@ -958,7 +958,7 @@ namespace BizHawk.Client.EmuHawk
 			"Slot 7",
 			"Slot 8",
 			"Slot 9",
-			"Slot 0"});
+			"Slot 10"});
 			this.StartFromSlotBox.Location = new System.Drawing.Point(71, 25);
 			this.StartFromSlotBox.Name = "StartFromSlotBox";
 			this.StartFromSlotBox.Size = new System.Drawing.Size(75, 21);
