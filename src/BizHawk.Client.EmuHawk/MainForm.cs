@@ -4214,38 +4214,37 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (new SavestateFile(Emulator, MovieSession, QuickBmpFile, MovieSession.UserBag).Load(path, this))
-			{
-				OSD.ClearGuiText();
-				EmuClient.OnStateLoaded(this, userFriendlyStateName);
-				RA?.OnLoadState(path);
-
-				if (Tools.Has<LuaConsole>())
-				{
-					Tools.LuaConsole.LuaImp.CallLoadStateEvent(userFriendlyStateName);
-				}
-
-				SetMainformMovieInfo();
-				Tools.UpdateToolsBefore();
-				UpdateToolsAfter();
-				UpdateToolsLoadstate();
-				InputManager.AutoFireController.ClearStarts();
-
-				//we don't want to analyze how to intermix movies, rewinding, and states
-				//so purge rewind history when loading a state while doing a movie
-				if (!IsRewindSlave && MovieSession.Movie.IsActive())
-				{
-					Rewinder?.Clear();
-				}
-
-				if (!suppressOSD)
-				{
-					AddOnScreenMessage($"Loaded state: {userFriendlyStateName}");
-				}
-			}
-			else
+			if (!new SavestateFile(Emulator, MovieSession, QuickBmpFile, MovieSession.UserBag).Load(path, this))
 			{
 				AddOnScreenMessage("Loadstate error!");
+				return;
+			}
+
+			OSD.ClearGuiText();
+			EmuClient.OnStateLoaded(this, userFriendlyStateName);
+			RA?.OnLoadState(path);
+
+			if (Tools.Has<LuaConsole>())
+			{
+				Tools.LuaConsole.LuaImp.CallLoadStateEvent(userFriendlyStateName);
+			}
+
+			SetMainformMovieInfo();
+			Tools.UpdateToolsBefore();
+			UpdateToolsAfter();
+			UpdateToolsLoadstate();
+			InputManager.AutoFireController.ClearStarts();
+
+			//we don't want to analyze how to intermix movies, rewinding, and states
+			//so purge rewind history when loading a state while doing a movie
+			if (!IsRewindSlave && MovieSession.Movie.IsActive())
+			{
+				Rewinder?.Clear();
+			}
+
+			if (!suppressOSD)
+			{
+				AddOnScreenMessage($"Loaded state: {userFriendlyStateName}");
 			}
 		}
 
@@ -4458,83 +4457,65 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SelectSlot(int slot)
 		{
-			if (Emulator.HasSavestates())
+			if (!Emulator.HasSavestates()) return;
+			if (IsSavestateSlave)
 			{
-				if (IsSavestateSlave)
-				{
-					var handled = Master.SelectSlot(slot);
-					if (handled)
-					{
-						return;
-					}
-				}
-
-				Config.SaveSlot = slot;
-				SaveSlotSelectedMessage();
-				UpdateStatusSlots();
+				var handled = Master.SelectSlot(slot);
+				if (handled) return;
 			}
+			Config.SaveSlot = slot;
+			SaveSlotSelectedMessage();
+			UpdateStatusSlots();
 		}
 
 		private void PreviousSlot()
 		{
-			if (Emulator.HasSavestates())
+			if (!Emulator.HasSavestates()) return;
+			if (IsSavestateSlave)
 			{
-				if (IsSavestateSlave)
-				{
-					var handled = Master.PreviousSlot();
-					if (handled)
-					{
-						return;
-					}
-				}
-
-				if (Config.SaveSlot == 0)
-				{
-					Config.SaveSlot = 9; // Wrap to end of slot list
-				}
-				else if (Config.SaveSlot > 9)
-				{
-					Config.SaveSlot = 9; // Meh, just in case
-				}
-				else
-				{
-					Config.SaveSlot--;
-				}
-
-				SaveSlotSelectedMessage();
-				UpdateStatusSlots();
+				var handled = Master.PreviousSlot();
+				if (handled) return;
 			}
+			if (Config.SaveSlot == 0)
+			{
+				Config.SaveSlot = 9; // Wrap to end of slot list
+			}
+			else if (Config.SaveSlot > 9)
+			{
+				Config.SaveSlot = 9; // Meh, just in case
+			}
+			else
+			{
+				Config.SaveSlot--;
+			}
+
+			SaveSlotSelectedMessage();
+			UpdateStatusSlots();
 		}
 
 		private void NextSlot()
 		{
-			if (Emulator.HasSavestates())
+			if (!Emulator.HasSavestates()) return;
+			if (IsSavestateSlave)
 			{
-				if (IsSavestateSlave)
-				{
-					var handled = Master.NextSlot();
-					if (handled)
-					{
-						return;
-					}
-				}
-
-				if (Config.SaveSlot >= 9)
-				{
-					Config.SaveSlot = 0; // Wrap to beginning of slot list
-				}
-				else if (Config.SaveSlot < 0)
-				{
-					Config.SaveSlot = 0; // Meh, just in case
-				}
-				else
-				{
-					Config.SaveSlot++;
-				}
-
-				SaveSlotSelectedMessage();
-				UpdateStatusSlots();
+				var handled = Master.NextSlot();
+				if (handled) return;
 			}
+			if (Config.SaveSlot >= 9)
+			{
+				Config.SaveSlot = 0; // Wrap to beginning of slot list
+			}
+			else if (Config.SaveSlot < 0)
+			{
+				Config.SaveSlot = 0; // Meh, just in case
+			}
+			else
+			{
+				Config.SaveSlot++;
+			}
+
+			SaveSlotSelectedMessage();
+			UpdateStatusSlots();
 		}
 
 		private void CaptureRewind(bool suppressCaptureRewind)
