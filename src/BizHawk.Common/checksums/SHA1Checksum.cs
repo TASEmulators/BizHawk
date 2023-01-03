@@ -17,7 +17,7 @@ namespace BizHawk.Common
 		/// <remarks>in bits</remarks>
 		internal const int EXPECTED_LENGTH = 160;
 
-		internal const string PREFIX = "SHA1";
+		public const string PREFIX = "SHA1";
 
 		public /*static readonly*/const string Dummy = "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE";
 

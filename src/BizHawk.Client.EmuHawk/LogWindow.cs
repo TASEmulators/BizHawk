@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
+using BizHawk.Common.StringExtensions;
 
 // todo - perks - pause, copy to clipboard, backlog length limiting
 
@@ -149,13 +150,28 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ButtonCopy_Click(object sender, EventArgs e)
 		{
-			var sb = new StringBuilder();
-			lock(_lines)
-				foreach (int i in virtualListView1.SelectedIndices)
-					sb.AppendLine(_lines[i].Replace("MD5:", "").Replace("SHA1:", ""));
-
-			if (sb.Length > 0)
-				Clipboard.SetText(sb.ToString(), TextDataFormat.Text);
+			string s;
+			lock (_lines)
+			{
+				if (virtualListView1.SelectedIndices.Count > 1)
+				{
+					StringBuilder sb = new();
+					foreach (int i in virtualListView1.SelectedIndices) sb.AppendLine(_lines[i]);
+					s = sb.ToString();
+				}
+				else if (virtualListView1.SelectedIndices.Count is 1)
+				{
+					s = _lines[virtualListView1.SelectedIndices[0]]
+						.RemovePrefix(SHA1Checksum.PREFIX + ":")
+						.RemovePrefix(MD5Checksum.PREFIX + ":");
+				}
+				else
+				{
+					return;
+				}
+			}
+			s = s.Trim();
+			if (!string.IsNullOrWhiteSpace(s)) Clipboard.SetText(s, TextDataFormat.Text);
 		}
 
 		private void ButtonCopyAll_Click(object sender, EventArgs e)
