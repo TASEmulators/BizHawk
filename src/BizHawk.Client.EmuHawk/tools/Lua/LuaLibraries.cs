@@ -171,6 +171,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				lib.APIs = _apiContainer;
 				ServiceInjector.UpdateServices(newServiceProvider, lib);
+				lib.Restarted();
 			}
 		}
 

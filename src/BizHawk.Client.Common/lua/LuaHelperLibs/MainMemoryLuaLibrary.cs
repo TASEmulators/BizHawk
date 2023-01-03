@@ -25,6 +25,12 @@ namespace BizHawk.Client.Common
 
 		private string MainMemName => _mainMemName ??= APIs.Memory.MainMemoryName;
 
+		public override void Restarted()
+		{
+			_mainMemDomain = null;
+			_mainMemName = null;
+		}
+
 		[LuaMethodExample("local stmaiget = mainmemory.getname( );")]
 		[LuaMethod("getname", "returns the name of the domain defined as main memory for the given core")]
 		public string GetName()

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading;
 
+using BizHawk.Emulation.Common;
+
 namespace BizHawk.Client.Common
 {
 	public abstract class LuaLibraryBase
@@ -39,6 +41,9 @@ namespace BizHawk.Client.Common
 				CurrentFile = null;
 			}
 		}
+
+		/// <remarks>for implementors to reset any fields whose value depends on <see cref="APIs"/> or a <see cref="IEmulatorService">service</see></remarks>
+		public virtual void Restarted() {}
 
 		/// <exception cref="InvalidOperationException">attempted to have Lua running in two host threads at once</exception>
 		public static void SetCurrentThread(LuaFile luaFile)
