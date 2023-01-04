@@ -519,6 +519,7 @@ namespace BizHawk.Client.EmuHawk
 					FormBase { BlocksInputWhenFocused: false } => AllowInput.All,
 					ControllerConfig => AllowInput.All,
 					HotkeyConfig => AllowInput.All,
+					LuaWinform { BlocksInputWhenFocused: false } => AllowInput.All,
 					_ => AllowInput.None
 				}
 			);
