@@ -128,8 +128,8 @@ namespace BizHawk.Emulation.Common
 						Status = items[1].Trim()
 							switch
 						{
-							"B" => RomStatus.BadDump,
-							"V" => RomStatus.BadDump,
+							"B" => RomStatus.BadDump, // see /Assets/gamedb/gamedb.txt
+							"V" => RomStatus.BadDump, // see /Assets/gamedb/gamedb.txt
 							"T" => RomStatus.TranslatedRom,
 							"O" => RomStatus.Overdump,
 							"I" => RomStatus.Bios,
