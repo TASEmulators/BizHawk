@@ -196,13 +196,14 @@ namespace BizHawk.Client.Common
 		public void OpenRamSearch()
 			=> APIs.Tool.OpenRamSearch();
 
-		[LuaMethodExample("client.openrom( \"C:\\\" );")]
-		[LuaMethod("openrom", "opens the Open ROM dialog")]
-		public void OpenRom(string path)
+		[LuaMethodExample("client.openrom( \"C:\\rom.bin\" );")]
+		[LuaMethod("openrom", "Loads a ROM from the given path. Returns true if the ROM was successfully loaded, otherwise false.")]
+		public bool OpenRom(string path)
 		{
 			_luaLibsImpl.IsRebootingCore = true;
-			APIs.EmuClient.OpenRom(path);
+			var success = APIs.EmuClient.OpenRom(path);
 			_luaLibsImpl.IsRebootingCore = false;
+			return success;
 		}
 
 		[LuaMethodExample("client.opentasstudio( );")]

@@ -307,7 +307,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					OpenAdvanced = new OpenAdvanced_LibretroNoGame(Config.LibretroCore)
 				};
-				LoadRom("", argsNoGame);
+				_ = LoadRom(string.Empty, argsNoGame);
 				return;
 			}
 
@@ -341,7 +341,7 @@ namespace BizHawk.Client.EmuHawk
 			if (result is null) return;
 			FileInfo file = new(result);
 			Config.PathEntries.LastRomPath = file.DirectoryName;
-			LoadRom(file.FullName, args);
+			_ = LoadRom(file.FullName, args);
 		}
 
 		private void CloseRomMenuItem_Click(object sender, EventArgs e)

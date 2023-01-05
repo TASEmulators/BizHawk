@@ -99,13 +99,13 @@ namespace BizHawk.Client.EmuHawk
 				: StartNewMovie(MovieSession.Get(filename), false);
 		}
 
-		private void LoadRom(string filename, string archive = null)
+		private bool LoadRom(string filename, string archive = null)
 		{
 			var args = new LoadRomArgs
 			{
 				OpenAdvanced = new OpenAdvanced_OpenRom {Path = filename}
 			};
-			LoadRom(filename, args);
+			return LoadRom(filename, args);
 		}
 
 		private bool LoadStateFile(string filename, string archive = null)
@@ -262,7 +262,7 @@ namespace BizHawk.Client.EmuHawk
 						switch (value)
 						{
 							case LoadOrdering.Rom:
-								LoadRom(filename, fileInformation.ArchiveName);
+								_ = LoadRom(filename, fileInformation.ArchiveName);
 								break;
 							case LoadOrdering.State:
 								_ = LoadStateFile(filename, fileInformation.ArchiveName);

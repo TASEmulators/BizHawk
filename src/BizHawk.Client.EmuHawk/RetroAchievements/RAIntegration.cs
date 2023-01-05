@@ -125,7 +125,7 @@ namespace BizHawk.Client.EmuHawk
 				Marshal.Copy(name, 0, buffer, Math.Min(name.Length, 256));
 			};
 			_resetEmulator = () => _mainForm.RebootCore();
-			_loadROM = path => _mainForm.LoadRom(path, new LoadRomArgs { OpenAdvanced = OpenAdvancedSerializer.ParseWithLegacy(path) });
+			_loadROM = path => _ = _mainForm.LoadRom(path, new LoadRomArgs { OpenAdvanced = OpenAdvancedSerializer.ParseWithLegacy(path) });
 
 			RA.InstallSharedFunctionsExt(_isActive, _unpause, _pause, _rebuildMenu, _estimateTitle, _resetEmulator, _loadROM);
 

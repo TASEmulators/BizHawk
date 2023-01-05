@@ -10,7 +10,7 @@ namespace BizHawk.Client.Common
 		public override string Name => "savestate";
 
 		[LuaMethodExample("savestate.load( \"C:\\state.bin\" );")]
-		[LuaMethod("load", "Loads a savestate with the given path. If EmuHawk is deferring quicksaves, to TAStudio for example, that form will do what it likes (and the path is ignored).")]
+		[LuaMethod("load", "Loads a savestate with the given path. Returns true iff succeeded. If EmuHawk is deferring quicksaves, to TAStudio for example, that form will do what it likes (and the path is ignored).")]
 		public bool Load(string path, bool suppressOSD = false)
 		{
 			_luaLibsImpl.IsUpdateSupressed = true;
@@ -20,7 +20,7 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethodExample("savestate.loadslot( 7 );")]
-		[LuaMethod("loadslot", "Loads the savestate at the given slot number (must be an integer between 0 and 9). If EmuHawk is deferring quicksaves, to TAStudio for example, that form will do what it likes with the slot number.")]
+		[LuaMethod("loadslot", "Loads the savestate at the given slot number (must be an integer between 1 and 10). Returns true iff succeeded. If EmuHawk is deferring quicksaves, to TAStudio for example, that form will do what it likes with the slot number.")]
 		public bool LoadSlot(int slotNum, bool suppressOSD = false)
 		{
 			_luaLibsImpl.IsUpdateSupressed = true;
@@ -35,7 +35,7 @@ namespace BizHawk.Client.Common
 			=> APIs.SaveState.Save(path, suppressOSD);
 
 		[LuaMethodExample("savestate.saveslot( 7 );")]
-		[LuaMethod("saveslot", "Saves a state at the given save slot (must be an integer between 0 and 9). If EmuHawk is deferring quicksaves, to TAStudio for example, that form will do what it likes with the slot number.")]
+		[LuaMethod("saveslot", "Saves a state at the given save slot (must be an integer between 1 and 10). If EmuHawk is deferring quicksaves, to TAStudio for example, that form will do what it likes with the slot number.")]
 		public void SaveSlot(int slotNum, bool suppressOSD = false)
 			=> APIs.SaveState.SaveSlot(slotNum, suppressOSD);
 	}
