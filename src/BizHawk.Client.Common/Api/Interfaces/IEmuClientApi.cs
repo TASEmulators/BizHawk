@@ -125,7 +125,7 @@ namespace BizHawk.Client.Common
 		/// <param name="stateName">User friendly name for saved state</param>
 		void OnStateSaved(object sender, string stateName);
 
-		void OpenRom(string path);
+		bool OpenRom(string path);
 
 		void Pause();
 
