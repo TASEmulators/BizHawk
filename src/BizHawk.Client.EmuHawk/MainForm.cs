@@ -577,7 +577,7 @@ namespace BizHawk.Client.EmuHawk
 				// Commandline should always override auto-load
 				var ioa = OpenAdvancedSerializer.ParseWithLegacy(_argParser.cmdRom);
 				if (ioa is OpenAdvanced_OpenRom oaor) ioa = new OpenAdvanced_OpenRom { Path = oaor.Path.MakeAbsolute() }; // fixes #3224; should this be done for all the IOpenAdvanced types? --yoshi
-				LoadRom(ioa.SimplePath, new LoadRomArgs { OpenAdvanced = ioa });
+				_ = LoadRom(ioa.SimplePath, new LoadRomArgs { OpenAdvanced = ioa });
 				if (Game.IsNullInstance())
 				{
 					ShowMessageBox(owner: null, $"Failed to load {_argParser.cmdRom} specified on commandline");
@@ -2423,7 +2423,7 @@ namespace BizHawk.Client.EmuHawk
 				initDir: Config.PathEntries.RomAbsolutePath(Emulator.SystemId));
 			if (result is null) return;
 			var filePath = new FileInfo(result).FullName;
-			LoadRom(filePath, new LoadRomArgs { OpenAdvanced = new OpenAdvanced_OpenRom { Path = filePath } });
+			_ = LoadRom(filePath, new LoadRomArgs { OpenAdvanced = new OpenAdvanced_OpenRom { Path = filePath } });
 		}
 
 		private void CoreSyncSettings(object sender, RomLoader.SettingsLoadArgs e)
@@ -3676,7 +3676,7 @@ namespace BizHawk.Client.EmuHawk
 						// Retry loading the ROM here. This leads to recursion, as the original call to LoadRom has not exited yet,
 						// but unless the user tries and fails to set his firmware a lot of times, nothing should happen.
 						// Refer to how RomLoader implemented its LoadRom method for a potential fix on this.
-						LoadRom(e.RomPath, _currentLoadRomArgs);
+						_ = LoadRom(e.RomPath, _currentLoadRomArgs);
 					}
 				}
 			}
@@ -4827,7 +4827,7 @@ namespace BizHawk.Client.EmuHawk
 			//in case this all sounds insanely sketchy to you, remember, the main 99% use case is double clicking roms in explorer
 
 			//BANZAIIIIIIIIIIIIIIIIIIIIIIIIIII
-			LoadRom(args[0]);
+			_ = LoadRom(args[0]);
 		}
 
 		public IQuickBmpFile QuickBmpFile { get; } = EmuHawk.QuickBmpFile.INSTANCE;

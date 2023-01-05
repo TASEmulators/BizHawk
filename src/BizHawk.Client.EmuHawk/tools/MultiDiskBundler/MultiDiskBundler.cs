@@ -133,7 +133,7 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 
 			var lra = new LoadRomArgs { OpenAdvanced = new OpenAdvanced_OpenRom { Path = fileInfo.FullName } };
-			MainForm.LoadRom(fileInfo.FullName, lra);
+			_ = MainForm.LoadRom(fileInfo.FullName, lra);
 		}
 
 		private void AddButton_Click(object sender, EventArgs e)

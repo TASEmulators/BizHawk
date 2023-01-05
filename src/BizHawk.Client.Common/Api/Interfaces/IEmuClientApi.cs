@@ -88,6 +88,7 @@ namespace BizHawk.Client.Common
 		/// Load a savestate specified by its name
 		/// </summary>
 		/// <param name="name">Savestate friendly name</param>
+		/// <returns><see langword="true"/> iff succeeded</returns>
 		bool LoadState(string name);
 
 		/// <summary>
