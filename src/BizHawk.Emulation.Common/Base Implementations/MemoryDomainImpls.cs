@@ -54,11 +54,11 @@ namespace BizHawk.Emulation.Common
 		{
 			if (_bulkPeekUshort != null)
 			{
-				_bulkPeekUshort.Invoke(addresses, EndianType == Endian.Big, values);
+				_bulkPeekUshort.Invoke(addresses, bigEndian, values);
 			}
 			else
 			{
-				base.BulkPeekUshort(addresses, EndianType == Endian.Big, values);
+				base.BulkPeekUshort(addresses, bigEndian, values);
 			}
 		}
 
@@ -66,11 +66,11 @@ namespace BizHawk.Emulation.Common
 		{
 			if (_bulkPeekUint != null)
 			{
-				_bulkPeekUint.Invoke(addresses, EndianType == Endian.Big, values);
+				_bulkPeekUint.Invoke(addresses, bigEndian, values);
 			}
 			else
 			{
-				base.BulkPeekUint(addresses, EndianType == Endian.Big, values);
+				base.BulkPeekUint(addresses, bigEndian, values);
 			}
 		}
 
