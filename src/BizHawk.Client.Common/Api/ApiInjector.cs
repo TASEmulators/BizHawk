@@ -17,7 +17,12 @@ namespace BizHawk.Client.Common
 		{
 			Type targetType = target.GetType();
 			object[] tmp = new object[1];
-
+			foreach (var mi in targetType.GetProperties(ReflectionExtensions.DI_TARGET_PROPS)
+				.Where(static pi => pi.PropertyType == typeof(ApiContainer))
+				.Select(static pi => pi.SetMethod))
+			{
+				mi?.Invoke(target, new object[] { null });
+			}
 			foreach (var propinfo in
 				targetType.GetPropertiesWithAttrib(typeof(RequiredApiAttribute))
 				.Concat(targetType.GetPropertiesWithAttrib(typeof(OptionalApiAttribute))))
