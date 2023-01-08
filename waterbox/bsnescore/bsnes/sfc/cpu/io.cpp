@@ -16,7 +16,7 @@ auto CPU::readCPU(uint addr, uint8 data) -> uint8 {
   case 0x4016:  //JOYSER0
     data &= 0xfc;
     data |= controllerPort1.device->data();
-    if (!io.autoJoypadPoll) platform->notify("NO_LAG");
+    platform->notify("NO_LAG");
     return data;
 
   //todo: it is not known what happens when reading from this register during auto-joypad polling
@@ -24,7 +24,7 @@ auto CPU::readCPU(uint addr, uint8 data) -> uint8 {
     data &= 0xe0;
     data |= 0x1c;  //pins are connected to GND
     data |= controllerPort2.device->data();
-    if (!io.autoJoypadPoll) platform->notify("NO_LAG");
+    platform->notify("NO_LAG");
     return data;
 
   case 0x4210:  //RDNMI

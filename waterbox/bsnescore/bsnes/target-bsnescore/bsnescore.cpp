@@ -208,7 +208,6 @@ EXPORT void snes_load_cartridge_normal(
     program->load();
 }
 
-// TODO: merged_rom_sizes is bad, fix this
 EXPORT void snes_load_cartridge_super_gameboy(
   const uint8_t* rom_data, const uint8_t* sgb_rom_data, int rom_size, int sgb_rom_size
 ) {
