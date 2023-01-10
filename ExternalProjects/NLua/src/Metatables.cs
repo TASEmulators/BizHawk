@@ -1549,26 +1549,9 @@ namespace NLua
 			if (!currentNetParam.GetCustomAttributes(typeof(ParamArrayAttribute), false).Any())
 				return false;
 
-			bool isParamArray = nLuaParams < currentLuaParam;
-
-			LuaType  luaType = luaState.Type(currentLuaParam);
-
-			if (luaType == LuaType.Table)
-			{
-				extractValue = _translator.typeChecker.GetExtractor(typeof(LuaTable));
-				if (extractValue != null)
-					return true;
-			}
-			else
-			{
-				Type paramElementType = currentNetParam.ParameterType.GetElementType();
-
-				extractValue = _translator.typeChecker.CheckLuaType(luaState, currentLuaParam, paramElementType);
-
-				if (extractValue != null)
-					return true;
-			}
-			return isParamArray;
+			var paramElementType = currentNetParam.ParameterType.GetElementType();
+			extractValue = _translator.typeChecker.CheckLuaType(luaState, currentLuaParam, paramElementType);
+			return extractValue != null;
 		}
 	}
 }
