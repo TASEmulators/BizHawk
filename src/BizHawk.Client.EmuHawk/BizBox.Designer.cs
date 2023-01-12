@@ -60,7 +60,7 @@
 			this.pictureBox1.Location = new System.Drawing.Point(12, 10);
 			this.pictureBox1.Name = "pictureBox1";
 			this.pictureBox1.Size = new System.Drawing.Size(164, 164);
-			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
 			this.pictureBox1.TabIndex = 1;
 			this.pictureBox1.TabStop = false;
 			// 
@@ -73,7 +73,7 @@
 			this.linkLabel1.Size = new System.Drawing.Size(102, 13);
 			this.linkLabel1.TabIndex = 2;
 			this.linkLabel1.TabStop = true;
-			this.linkLabel1.Text = "Bizhawk Homepage";
+			this.linkLabel1.Text = "BizHawk Homepage";
 			this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
 			// 
 			// label3
@@ -81,14 +81,14 @@
 			this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.label3.Location = new System.Drawing.Point(197, 10);
 			this.label3.Name = "label3";
-			this.label3.Text = "BizHawk";
+			this.label3.Text = "EmuHawk";
 			// 
 			// label4
 			// 
 			this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.label4.Location = new System.Drawing.Point(207, 31);
 			this.label4.Name = "label4";
-			this.label4.Text = "\"A multi-platform emulator...\r\nfor productive people.\"";
+			this.label4.Text = "\"A multi-system emulator...\r\nfor productive people.\"";
 			// 
 			// CoreInfoPanel
 			// 
@@ -178,7 +178,7 @@
 			this.MinimumSize = new System.Drawing.Size(453, 253);
 			this.Name = "BizBox";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = " BizHawk";
+			this.Text = "About EmuHawk";
 			this.Load += new System.EventHandler(this.BizBox_Load);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			this.ResumeLayout(false);
