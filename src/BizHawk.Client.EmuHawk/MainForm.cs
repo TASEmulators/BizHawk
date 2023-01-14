@@ -4454,7 +4454,7 @@ namespace BizHawk.Client.EmuHawk
 				var handled = Master.PreviousSlot();
 				if (handled) return;
 			}
-			Config.SaveSlot++;
+			Config.SaveSlot--;
 			if (Config.SaveSlot < 1) Config.SaveSlot = 10;
 			SaveSlotSelectedMessage();
 			UpdateStatusSlots();
