@@ -158,6 +158,9 @@ namespace BizHawk.Client.EmuHawk
 				case "Toggle Key Priority":
 					ToggleKeyPriority();
 					break;
+				case "Toggle Messages":
+					Config.DisplayMessages ^= true;
+					break;
 
 				// Save States
 				case "Save State 1":
