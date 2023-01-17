@@ -10,7 +10,7 @@ CXXFLAGS := -std=gnu++17 -march=nehalem \
 	-Werror=int-to-pointer-cast -Wno-unused-but-set-variable -Wno-format-security \
 	-Wno-parentheses -Wno-reorder -Wno-unused-variable -Wno-delete-non-virtual-dtor \
 	-Wno-sign-compare -Wno-switch -Wno-unused-local-typedefs -Wno-bool-operation \
-	-fno-strict-aliasing -fwrapv -fno-operator-names -fexpensive-optimizations \
+	-fno-strict-aliasing -fwrapv -fno-operator-names \
 	-DSLJIT_HAVE_CONFIG_PRE=1 -DSLJIT_HAVE_CONFIG_POST=1
 
 TARGET = ares64.wbx

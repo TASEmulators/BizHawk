@@ -23,18 +23,18 @@ print-%: ;
 
 #LD_PLUGIN := $(shell gcc --print-file-name=liblto_plugin.so)
 
-CC := $(SYSROOT)/bin/musl-gcc
+CC := $(SYSROOT)/bin/musl-clang
 COMMONFLAGS := -fvisibility=hidden -I$(WATERBOX_DIR)/emulibc -Wall -mcmodel=large \
-	-mstack-protector-guard=global -no-pie -fno-pic -fno-pie -fcf-protection=none \
+	-mstack-protector-guard=global -fno-pic -fno-pie -fcf-protection=none \
 	-MD -MP
-CCFLAGS := $(CCFLAGS) $(COMMONFLAGS)
-LDFLAGS := $(LDFLAGS) -static -Wl,--eh-frame-hdr -T $(LINKSCRIPT) #-Wl,--plugin,$(LD_PLUGIN)
+CCFLAGS := $(COMMONFLAGS) $(CCFLAGS)
+LDFLAGS := $(LDFLAGS) -static -Wl,-no-pie,--eh-frame-hdr -T $(LINKSCRIPT) #-Wl,--plugin,$(LD_PLUGIN)
 CCFLAGS_DEBUG := -O0 -g
 CCFLAGS_RELEASE := -O3 -flto
 CCFLAGS_RELEASE_ASONLY := -O3
 LDFLAGS_DEBUG :=
 LDFLAGS_RELEASE :=
-CXXFLAGS := $(CXXFLAGS) $(COMMONFLAGS) -I$(SYSROOT)/include/c++/v1 -fno-use-cxa-atexit
+CXXFLAGS := $(COMMONFLAGS) $(CXXFLAGS) -I$(SYSROOT)/include/c++/v1 -fno-use-cxa-atexit
 CXXFLAGS_DEBUG := -O0 -g
 CXXFLAGS_RELEASE := -O3 -flto
 CXXFLAGS_RELEASE_ASONLY := -O3

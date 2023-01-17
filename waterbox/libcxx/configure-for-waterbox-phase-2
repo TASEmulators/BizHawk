@@ -10,11 +10,12 @@ cp -n "/usr/include/linux/version.h" "$SYSROOT/include/linux"
 rm -rf build2
 mkdir build2
 cd build2
-export CFLAGS="-mcmodel=large -mstack-protector-guard=global -fno-use-cxa-atexit -no-pie -fno-pic -fno-pie"
-export CXXFLAGS="-mcmodel=large -mstack-protector-guard=global -fno-use-cxa-atexit -no-pie -fno-pic -fno-pie"
+export CFLAGS="-mcmodel=large -mstack-protector-guard=global -fno-use-cxa-atexit -fno-pic -fno-pie"
+export CXXFLAGS="-mcmodel=large -mstack-protector-guard=global -fno-use-cxa-atexit -fno-pic -fno-pie"
+export LDFLAGS="-no-pie"
 cmake \
-	-DCMAKE_C_COMPILER="$SYSROOT/bin/musl-gcc" \
-	-DCMAKE_CXX_COMPILER="$SYSROOT/bin/musl-gcc" \
+	-DCMAKE_C_COMPILER="$SYSROOT/bin/musl-clang" \
+	-DCMAKE_CXX_COMPILER="$SYSROOT/bin/musl-clang" \
 	-DLIBCXX_ENABLE_SHARED=OFF \
 	-DLIBCXX_ENABLE_EXPERIMENTAL_LIBRARY=OFF \
 	-DLIBCXX_CXX_ABI="libcxxabi" \
@@ -28,6 +29,6 @@ cmake \
 	-DLIBCXX_INCLUDE_BENCHMARKS=OFF \
 	-DLIBCXX_STATICALLY_LINK_ABI_IN_STATIC_LIBRARY=OFF \
 	-DCMAKE_INSTALL_PREFIX="$SYSROOT" \
-	-DCMAKE_AR="/usr/bin/gcc-ar" \
-	-DCMAKE_RANLIB="/usr/bin/gcc-ranlib" \
+	-DCMAKE_AR="/usr/bin/llvm-ar" \
+	-DCMAKE_RANLIB="/usr/bin/llvm-ranlib" \
 	$LLVMDIR/libcxx

@@ -6,11 +6,12 @@ if [ -z "$LLVMDIR" ]; then export LLVMDIR="$(realpath "$(dirname "$0")/../llvm-p
 rm -rf build1
 mkdir build1
 cd build1
-export CFLAGS="-mcmodel=large -mstack-protector-guard=global -fno-use-cxa-atexit -no-pie -fno-pic -fno-pie"
-export CXXFLAGS="-mcmodel=large -mstack-protector-guard=global -fno-use-cxa-atexit -no-pie -fno-pic -fno-pie"
+export CFLAGS="-mcmodel=large -mstack-protector-guard=global -fno-use-cxa-atexit -fno-pic -fno-pie"
+export CXXFLAGS="-mcmodel=large -mstack-protector-guard=global -fno-use-cxa-atexit -fno-pic -fno-pie"
+export LDFLAGS="-no-pie"
 cmake \
-	-DCMAKE_C_COMPILER="$SYSROOT/bin/musl-gcc" \
-	-DCMAKE_CXX_COMPILER="$SYSROOT/bin/musl-gcc" \
+	-DCMAKE_C_COMPILER="$SYSROOT/bin/musl-clang" \
+	-DCMAKE_CXX_COMPILER="$SYSROOT/bin/musl-clang" \
 	-DLIBCXXABI_ENABLE_EXCEPTIONS=ON \
 	-DLIBCXXABI_ENABLE_PIC=OFF \
 	-DLIBCXXABI_ENABLE_SHARED=OFF \
@@ -21,7 +22,8 @@ cmake \
 	-DLIBCXXABI_INCLUDE_TESTS=OFF \
 	-DLIBCXXABI_LINK_TESTS_WITH_SHARED_LIBCXXABI=OFF \
 	-DLIBCXXABI_LIBCXX_INCLUDES="$LLVMDIR/libcxx/include" \
+	-DLIBCXXABI_LIBUNWIND_INCLUDES="$LLVMDIR/libunwind/include" \
 	-DCMAKE_INSTALL_PREFIX="$SYSROOT" \
-	-DCMAKE_AR="/usr/bin/gcc-ar" \
-	-DCMAKE_RANLIB="/usr/bin/gcc-ranlib" \
+	-DCMAKE_AR="/usr/bin/llvm-ar" \
+	-DCMAKE_RANLIB="/usr/bin/llvm-ranlib" \
 	$LLVMDIR/libcxxabi
