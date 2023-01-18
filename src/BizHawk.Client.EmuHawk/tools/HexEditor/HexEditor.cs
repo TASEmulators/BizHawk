@@ -645,7 +645,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetMemoryDomain(string name)
 		{
-			if (!(MainForm.CurrentlyOpenRomArgs.OpenAdvanced is OpenAdvanced_MAME) && name == _romDomain.Name)
+			if (_romDomain is not null && name == _romDomain.Name)
 			{
 				_domain = _romDomain;
 			}
