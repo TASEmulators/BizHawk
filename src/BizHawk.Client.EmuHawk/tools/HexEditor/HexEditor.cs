@@ -215,6 +215,10 @@ namespace BizHawk.Client.EmuHawk
 					_domain = _romDomain;
 				}
 			}
+			else
+			{
+				_romDomain = null;
+			}
 			
 			_domain = MemoryDomains.Any(x => x.Name == _domain.Name)
 				? MemoryDomains[_domain.Name]
