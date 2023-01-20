@@ -2668,7 +2668,21 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void FormDragDrop(object sender, DragEventArgs e)
-			=> PathsFromDragDrop = (string[]) e.Data.GetData(DataFormats.FileDrop);
+			=> this.BeginInvoke(((Action<DragEventArgs>)(args =>
+			{
+				var pathsFromDragDrop = (string[])args.Data.GetData(DataFormats.FileDrop);
+				if (pathsFromDragDrop is not null) this.DoWithTempMute(() =>
+				{
+					try
+					{
+						FormDragDrop_internal(pathsFromDragDrop);
+					}
+					catch (Exception ex)
+					{
+						ShowMessageBox(owner: null, $"Exception on drag and drop:\n{ex}");
+					}
+				});
+			})), e);
 
 		private enum VSystemCategory : int
 		{

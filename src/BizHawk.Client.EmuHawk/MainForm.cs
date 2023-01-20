@@ -765,6 +765,9 @@ namespace BizHawk.Client.EmuHawk
 
 			InitializeFpsData();
 
+			int frameCount = 0;
+			const int MessageCheckFrame = 5;
+
 			for (; ; )
 			{
 				Input.Instance.Update();
@@ -810,7 +813,9 @@ namespace BizHawk.Client.EmuHawk
 
 				Render();
 
-				CheckMessages();
+				++frameCount;
+				if (0 == (frameCount % MessageCheckFrame))
+					CheckMessages();
 
 				if (_exitRequestPending)
 				{
@@ -2301,30 +2306,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				ScreenSaver.ResetTimerPeriodically();
 			}
-
-			if (PathsFromDragDrop is not null) this.DoWithTempMute(() =>
-			{
-				try
-				{
-					FormDragDrop_internal();
-				}
-				catch (Exception ex)
-				{
-					ShowMessageBox(owner: null, $"Exception on drag and drop:\n{ex}");
-				}
-				PathsFromDragDrop = null;
-			});
-
-			List<string[]> todo = new();
-			lock (_singleInstanceForwardedArgs)
-			{
-				if (_singleInstanceForwardedArgs.Count > 0)
-				{
-					todo = new List<string[]>(_singleInstanceForwardedArgs);
-					_singleInstanceForwardedArgs.Clear();
-				}
-			}
-			foreach (var args in todo) SingleInstanceProcessArgs(args);
 		}
 
 		private void AutohideCursor(bool hide)
@@ -4691,7 +4672,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private Mutex _singleInstanceMutex;
 		private NamedPipeServerStream _singleInstanceServer;
-		private readonly List<string[]> _singleInstanceForwardedArgs = new();
 
 		private bool SingleInstanceInit(string[] args)
 		{
@@ -4796,8 +4776,7 @@ namespace BizHawk.Client.EmuHawk
 				var args = payloadString.Split('|').Select(a => Encoding.UTF8.GetString(a.HexStringToBytes())).ToArray();
 
 				Console.WriteLine("RECEIVED SINGLE INSTANCE FORWARDED ARGS:");
-				lock (_singleInstanceForwardedArgs)
-					_singleInstanceForwardedArgs.Add(args);
+				this.BeginInvoke((Action<string[]>)this.SingleInstanceProcessArgs, new object[] { args });
 			}
 			catch (ObjectDisposedException)
 			{

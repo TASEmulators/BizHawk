@@ -209,7 +209,9 @@ namespace BizHawk.Client.Common.Filters
 
 		private void CrunchNumbers()
 		{
-			MatrixStack top = new MatrixStack(), bot = new MatrixStack();
+			MatrixTransformSlim top = new MatrixTransformSlim(), bot = new MatrixTransformSlim();
+			top.Init();
+			bot.Init();
 
 			//-----------------------------------
 			//set up transforms for each screen based on screen control values
