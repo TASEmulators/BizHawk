@@ -21,8 +21,6 @@
 
 #include <sstream>
 
-#define EXPORT extern "C" ECL_EXPORT
-
 static GPU::RenderSettings biz_render_settings { false, 1, false };
 static bool biz_skip_fw;
 static time_t biz_time;
@@ -93,7 +91,7 @@ static bool LoadDSiWare(u8* TmdData)
 	return ret;
 }
 
-EXPORT bool Init(LoadFlags loadFlags, LoadData* loadData, FirmwareSettings* fwSettings)
+ECL_EXPORT bool Init(LoadFlags loadFlags, LoadData* loadData, FirmwareSettings* fwSettings)
 {
 	Config::ExternalBIOSEnable = !!(loadFlags & USE_REAL_BIOS);
 	Config::AudioBitrate = loadData->AudioBitrate;
@@ -152,13 +150,13 @@ EXPORT bool Init(LoadFlags loadFlags, LoadData* loadData, FirmwareSettings* fwSe
 namespace NDSCart { extern CartCommon* Cart; }
 extern bool NdsSaveRamIsDirty;
 
-EXPORT void PutSaveRam(u8* data, u32 len)
+ECL_EXPORT void PutSaveRam(u8* data, u32 len)
 {
 	NDS::LoadSave(data, len);
 	NdsSaveRamIsDirty = false;
 }
 
-EXPORT void GetSaveRam(u8* data)
+ECL_EXPORT void GetSaveRam(u8* data)
 {
 	if (NDSCart::Cart)
 	{
@@ -167,12 +165,12 @@ EXPORT void GetSaveRam(u8* data)
 	}
 }
 
-EXPORT s32 GetSaveRamLength()
+ECL_EXPORT s32 GetSaveRamLength()
 {
 	return NDSCart::Cart ? NDSCart::Cart->GetSaveLen() : 0;
 }
 
-EXPORT bool SaveRamIsDirty()
+ECL_EXPORT bool SaveRamIsDirty()
 {
 	return NdsSaveRamIsDirty;
 }
@@ -311,7 +309,7 @@ static void ARM7Access(u8* buffer, s64 address, s64 count, bool write)
 	}
 }
 
-EXPORT void GetMemoryAreas(MemoryArea *m)
+ECL_EXPORT void GetMemoryAreas(MemoryArea *m)
 {
 	m[0].Data = NDS::MainRAM;
 	m[0].Name = "Main RAM";
@@ -394,7 +392,7 @@ static void MicFeedNoise(s8 vol)
 
 static bool RunningFrame = false;
 
-EXPORT void FrameAdvance(MyFrameInfo* f)
+ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 {
 	RunningFrame = true;
 
@@ -465,22 +463,22 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 
 void (*InputCallback)() = nullptr;
 
-EXPORT void SetInputCallback(void (*callback)())
+ECL_EXPORT void SetInputCallback(void (*callback)())
 {
 	InputCallback = callback;
 }
 
-EXPORT void GetRegs(u32* regs)
+ECL_EXPORT void GetRegs(u32* regs)
 {
 	NDS::GetRegs(regs);
 }
 
-EXPORT void SetReg(s32 ncpu, s32 index, s32 val)
+ECL_EXPORT void SetReg(s32 ncpu, s32 index, s32 val)
 {
 	NDS::SetReg(ncpu, index, val);
 }
 
-EXPORT u32 GetCallbackCycleOffset()
+ECL_EXPORT u32 GetCallbackCycleOffset()
 {
 	return RunningFrame ? NDS::GetSysClockCycles(2) : 0;
 }
@@ -489,7 +487,7 @@ void (*ReadCallback)(u32) = nullptr;
 void (*WriteCallback)(u32) = nullptr;
 void (*ExecuteCallback)(u32) = nullptr;
 
-EXPORT void SetMemoryCallback(u32 which, void (*callback)(u32 addr))
+ECL_EXPORT void SetMemoryCallback(u32 which, void (*callback)(u32 addr))
 {
 	switch (which)
 	{
@@ -524,13 +522,13 @@ void TraceTrampoline(TraceMask_t type, u32* regs, u32 opcode)
 	TraceCallback(type, opcode, regs, disasm, NDS::GetSysClockCycles(2));
 }
 
-EXPORT void SetTraceCallback(void (*callback)(TraceMask_t mask, u32 opcode, u32* regs, char* disasm, u32 cyclesOff), TraceMask_t mask)
+ECL_EXPORT void SetTraceCallback(void (*callback)(TraceMask_t mask, u32 opcode, u32* regs, char* disasm, u32 cyclesOff), TraceMask_t mask)
 {
 	TraceCallback = callback;
 	TraceMask = callback ? mask : TRACE_NONE;
 }
 
-EXPORT void GetDisassembly(TraceMask_t type, u32 opcode, char* ret)
+ECL_EXPORT void GetDisassembly(TraceMask_t type, u32 opcode, char* ret)
 {
 	static char disasm[TRACE_STRING_LENGTH];
 	memset(disasm, 0, sizeof disasm);
@@ -551,17 +549,17 @@ namespace Platform
 	extern void (*ThreadStartCallback)();
 }
 
-EXPORT uintptr_t GetFrameThreadProc()
+ECL_EXPORT uintptr_t GetFrameThreadProc()
 {
 	return Platform::FrameThreadProc;
 }
 
-EXPORT void SetThreadStartCallback(void (*callback)())
+ECL_EXPORT void SetThreadStartCallback(void (*callback)())
 {
 	Platform::ThreadStartCallback = callback;
 }
 
-EXPORT u32 GetNANDSize()
+ECL_EXPORT u32 GetNANDSize()
 {
 	if (NANDFilePtr)
 	{
@@ -572,7 +570,7 @@ EXPORT u32 GetNANDSize()
 	return 0;
 }
 
-EXPORT void GetNANDData(char* buf)
+ECL_EXPORT void GetNANDData(char* buf)
 {
 	if (NANDFilePtr)
 	{
@@ -584,7 +582,7 @@ EXPORT void GetNANDData(char* buf)
 
 namespace GPU { void ResetVRAMCache(); }
 
-EXPORT void ResetCaches()
+ECL_EXPORT void ResetCaches()
 {
 	GPU::ResetVRAMCache();
 }

@@ -3,32 +3,23 @@ set -e
 if [ -z "$SYSROOT" ]; then export SYSROOT="$(realpath "$(dirname "$0")/../sysroot")"; fi
 if [ -z "$LLVMDIR" ]; then export LLVMDIR="$(realpath "$(dirname "$0")/../llvm-project")"; fi
 
-#libcxx needs this one trivial file to autodetect sendfile(2), which musl does support
-mkdir -p "$SYSROOT/include/linux"
-cp -n "/usr/include/linux/version.h" "$SYSROOT/include/linux"
-
 rm -rf build2
 mkdir build2
 cd build2
 export CFLAGS="-mcmodel=large -mstack-protector-guard=global -fno-use-cxa-atexit -fno-pic -fno-pie"
-export CXXFLAGS="-mcmodel=large -mstack-protector-guard=global -fno-use-cxa-atexit -fno-pic -fno-pie"
-export LDFLAGS="-no-pie"
+export CXXFLAGS="-mcmodel=large -mstack-protector-guard=global -fno-use-cxa-atexit -fno-pic -fno-pie -I$SYSROOT/include/c++/v1/"
+export LDFLAGS="-Wl,-no-pie"
 cmake \
 	-DCMAKE_C_COMPILER="$SYSROOT/bin/musl-clang" \
 	-DCMAKE_CXX_COMPILER="$SYSROOT/bin/musl-clang" \
-	-DLIBCXX_ENABLE_SHARED=OFF \
-	-DLIBCXX_ENABLE_EXPERIMENTAL_LIBRARY=OFF \
-	-DLIBCXX_CXX_ABI="libcxxabi" \
-	-DLIBCXX_CXX_ABI_INCLUDE_PATHS="$LLVMDIR/libcxxabi/include" \
-	-DLIBCXX_ENABLE_STATIC_ABI_LIBRARY=ON \
-	-DLIBCXX_ENABLE_EXCEPTIONS=ON \
-	-DLIBCXX_ENABLE_RTTI=ON \
-	-DLIBCXX_HAS_MUSL_LIBC=ON \
-	-DLIBCXX_USE_COMPILER_RT=ON \
-	-DLIBCXX_INCLUDE_TESTS=OFF \
-	-DLIBCXX_INCLUDE_BENCHMARKS=OFF \
-	-DLIBCXX_STATICALLY_LINK_ABI_IN_STATIC_LIBRARY=OFF \
+	-DLIBCXXABI_ENABLE_EXCEPTIONS=ON \
+	-DLIBCXXABI_ENABLE_SHARED=OFF \
+	-DLIBCXXABI_BAREMETAL=ON \
+	-DLIBCXXABI_SILENT_TERMINATE=ON \
+	-DLIBCXXABI_USE_LLVM_UNWINDER=ON \
+	-DLIBCXXABI_USE_COMPILER_RT=ON \
+	-DLIBCXXABI_INCLUDE_TESTS=OFF \
 	-DCMAKE_INSTALL_PREFIX="$SYSROOT" \
-	-DCMAKE_AR="/usr/bin/llvm-ar" \
-	-DCMAKE_RANLIB="/usr/bin/llvm-ranlib" \
-	$LLVMDIR/libcxx
+	-DCMAKE_AR="$(which llvm-ar)" \
+	-DCMAKE_RANLIB="$(which llvm-ranlib)" \
+	$LLVMDIR/libcxxabi

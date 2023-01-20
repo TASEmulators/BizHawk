@@ -8,21 +8,25 @@ mkdir build-
 cd build-
 export CFLAGS="-mcmodel=large -mstack-protector-guard=global -fno-pic -fno-pie"
 export CXXFLAGS="-mcmodel=large -mstack-protector-guard=global -fno-pic -fno-pie"
-export LDFLAGS="-no-pie"
+export LDFLAGS="-Wl,-no-pie"
 cmake \
 	-DCMAKE_C_COMPILER="$SYSROOT/bin/musl-clang" \
 	-DCMAKE_CXX_COMPILER="$SYSROOT/bin/musl-clang" \
+	-DCMAKE_ASM_COMPILER="$SYSROOT/bin/musl-clang" \
 	-DCOMPILER_RT_BUILD_CRT=OFF \
 	-DCOMPILER_RT_BUILD_SANITIZERS=OFF \
 	-DCOMPILER_RT_BUILD_XRAY=OFF \
 	-DCOMPILER_RT_BUILD_LIBFUZZER=OFF \
 	-DCOMPILER_RT_BUILD_PROFILE=OFF \
+	-DCOMPILER_RT_BUILD_MEMPROF=OFF \
+	-DCOMPILER_RT_BUILD_ORC=OFF \
+	-DCOMPILER_RT_BUILD_GWP_ASAN=OFF \
 	-DCOMPILER_RT_CAN_EXECUTE_TESTS=OFF \
 	-DCOMPILER_RT_USE_BUILTINS_LIBRARY=ON \
 	-UCOMPILER_RT_BAREMETAL_BUILD \
 	-DCOMPILER_RT_BAREMETAL_BUILD=ON \
+	-DCOMPILER_RT_HAS_FPIC_FLAG=OFF \
 	-DCMAKE_INSTALL_PREFIX="$SYSROOT" \
-	-DCMAKE_AR="/usr/bin/llvm-ar" \
-	-DCMAKE_RANLIB="/usr/bin/llvm-ranlib" \
-	-DTARGET_TRIPLE="x86_64-pc-linux-gnu" \
+	-DCMAKE_AR="$(which llvm-ar)" \
+	-DCMAKE_RANLIB="$(which llvm-ranlib)" \
 	$LLVMDIR/compiler-rt

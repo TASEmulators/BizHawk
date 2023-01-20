@@ -1,0 +1,110 @@
+#!/bin/sh
+set -e
+if [ -z "$SYSROOT" ]; then export SYSROOT="$(realpath "$(dirname "$0")/../sysroot")"; fi
+if [ -z "$LLVMDIR" ]; then export LLVMDIR="$(realpath "$(dirname "$0")/../llvm-project")"; fi
+
+# no building here, just copying intrinsic headers from llvm-project/clang/lib/Headers
+
+export CLANG_INCLUDE_DIR=$LLVMDIR/clang/lib/Headers
+export INTRINSIC_DIR=$SYSROOT/intrinsics/x86_64 # this will need to change for ARM support
+
+rm -rf $SYSROOT/intrinsics
+mkdir -p $INTRINSIC_DIR
+cp $CLANG_INCLUDE_DIR/xmmintrin.h $INTRINSIC_DIR/xmmintrin.h
+cp $CLANG_INCLUDE_DIR/adxintrin.h $INTRINSIC_DIR/adxintrin.h
+cp $CLANG_INCLUDE_DIR/ammintrin.h $INTRINSIC_DIR/ammintrin.h
+cp $CLANG_INCLUDE_DIR/amxintrin.h $INTRINSIC_DIR/amxintrin.h
+cp $CLANG_INCLUDE_DIR/avx2intrin.h $INTRINSIC_DIR/avx2intrin.h
+cp $CLANG_INCLUDE_DIR/avx512bf16intrin.h $INTRINSIC_DIR/avx512bf16intrin.h
+cp $CLANG_INCLUDE_DIR/avx512bitalgintrin.h $INTRINSIC_DIR/avx512bitalgintrin.h
+cp $CLANG_INCLUDE_DIR/avx512bwintrin.h $INTRINSIC_DIR/avx512bwintrin.h
+cp $CLANG_INCLUDE_DIR/avx512cdintrin.h $INTRINSIC_DIR/avx512cdintrin.h
+cp $CLANG_INCLUDE_DIR/avx512dqintrin.h $INTRINSIC_DIR/avx512dqintrin.h
+cp $CLANG_INCLUDE_DIR/avx512erintrin.h $INTRINSIC_DIR/avx512erintrin.h
+cp $CLANG_INCLUDE_DIR/avx512fintrin.h $INTRINSIC_DIR/avx512fintrin.h
+cp $CLANG_INCLUDE_DIR/avx512fp16intrin.h $INTRINSIC_DIR/avx512fp16intrin.h
+cp $CLANG_INCLUDE_DIR/avx512ifmaintrin.h $INTRINSIC_DIR/avx512ifmaintrin.h
+cp $CLANG_INCLUDE_DIR/avx512ifmavlintrin.h $INTRINSIC_DIR/avx512ifmavlintrin.h
+cp $CLANG_INCLUDE_DIR/avx512pfintrin.h $INTRINSIC_DIR/avx512pfintrin.h
+cp $CLANG_INCLUDE_DIR/avx512vbmi2intrin.h $INTRINSIC_DIR/avx512vbmi2intrin.h
+cp $CLANG_INCLUDE_DIR/avx512vbmiintrin.h $INTRINSIC_DIR/avx512vbmiintrin.h
+cp $CLANG_INCLUDE_DIR/avx512vbmivlintrin.h $INTRINSIC_DIR/avx512vbmivlintrin.h
+cp $CLANG_INCLUDE_DIR/avx512vlbf16intrin.h $INTRINSIC_DIR/avx512vlbf16intrin.h
+cp $CLANG_INCLUDE_DIR/avx512vlbitalgintrin.h $INTRINSIC_DIR/avx512vlbitalgintrin.h
+cp $CLANG_INCLUDE_DIR/avx512vlbwintrin.h $INTRINSIC_DIR/avx512vlbwintrin.h
+cp $CLANG_INCLUDE_DIR/avx512vlcdintrin.h $INTRINSIC_DIR/avx512vlcdintrin.h
+cp $CLANG_INCLUDE_DIR/avx512vldqintrin.h $INTRINSIC_DIR/avx512vldqintrin.h
+cp $CLANG_INCLUDE_DIR/avx512vlfp16intrin.h $INTRINSIC_DIR/avx512vlfp16intrin.h
+cp $CLANG_INCLUDE_DIR/avx512vlintrin.h $INTRINSIC_DIR/avx512vlintrin.h
+cp $CLANG_INCLUDE_DIR/avx512vlvbmi2intrin.h $INTRINSIC_DIR/avx512vlvbmi2intrin.h
+cp $CLANG_INCLUDE_DIR/avx512vlvnniintrin.h $INTRINSIC_DIR/avx512vlvnniintrin.h
+cp $CLANG_INCLUDE_DIR/avx512vlvp2intersectintrin.h $INTRINSIC_DIR/avx512vlvp2intersectintrin.h
+cp $CLANG_INCLUDE_DIR/avx512vnniintrin.h $INTRINSIC_DIR/avx512vnniintrin.h
+cp $CLANG_INCLUDE_DIR/avx512vp2intersectintrin.h $INTRINSIC_DIR/avx512vp2intersectintrin.h
+cp $CLANG_INCLUDE_DIR/avx512vpopcntdqintrin.h $INTRINSIC_DIR/avx512vpopcntdqintrin.h
+cp $CLANG_INCLUDE_DIR/avx512vpopcntdqvlintrin.h $INTRINSIC_DIR/avx512vpopcntdqvlintrin.h
+cp $CLANG_INCLUDE_DIR/avxintrin.h $INTRINSIC_DIR/avxintrin.h
+cp $CLANG_INCLUDE_DIR/avxvnniintrin.h $INTRINSIC_DIR/avxvnniintrin.h
+cp $CLANG_INCLUDE_DIR/bmi2intrin.h $INTRINSIC_DIR/bmi2intrin.h
+cp $CLANG_INCLUDE_DIR/bmiintrin.h $INTRINSIC_DIR/bmiintrin.h
+cp $CLANG_INCLUDE_DIR/cetintrin.h $INTRINSIC_DIR/cetintrin.h
+cp $CLANG_INCLUDE_DIR/cldemoteintrin.h $INTRINSIC_DIR/cldemoteintrin.h
+cp $CLANG_INCLUDE_DIR/clflushoptintrin.h $INTRINSIC_DIR/clflushoptintrin.h
+cp $CLANG_INCLUDE_DIR/clwbintrin.h $INTRINSIC_DIR/clwbintrin.h
+cp $CLANG_INCLUDE_DIR/clzerointrin.h $INTRINSIC_DIR/clzerointrin.h
+cp $CLANG_INCLUDE_DIR/crc32intrin.h $INTRINSIC_DIR/crc32intrin.h
+cp $CLANG_INCLUDE_DIR/emmintrin.h $INTRINSIC_DIR/emmintrin.h
+cp $CLANG_INCLUDE_DIR/enqcmdintrin.h $INTRINSIC_DIR/enqcmdintrin.h
+cp $CLANG_INCLUDE_DIR/f16cintrin.h $INTRINSIC_DIR/f16cintrin.h
+cp $CLANG_INCLUDE_DIR/fma4intrin.h $INTRINSIC_DIR/fma4intrin.h
+cp $CLANG_INCLUDE_DIR/fmaintrin.h $INTRINSIC_DIR/fmaintrin.h
+cp $CLANG_INCLUDE_DIR/fxsrintrin.h $INTRINSIC_DIR/fxsrintrin.h
+cp $CLANG_INCLUDE_DIR/gfniintrin.h $INTRINSIC_DIR/gfniintrin.h
+cp $CLANG_INCLUDE_DIR/hresetintrin.h $INTRINSIC_DIR/hresetintrin.h
+cp $CLANG_INCLUDE_DIR/ia32intrin.h $INTRINSIC_DIR/ia32intrin.h
+cp $CLANG_INCLUDE_DIR/immintrin.h $INTRINSIC_DIR/immintrin.h
+cp $CLANG_INCLUDE_DIR/invpcidintrin.h $INTRINSIC_DIR/invpcidintrin.h
+cp $CLANG_INCLUDE_DIR/keylockerintrin.h $INTRINSIC_DIR/keylockerintrin.h
+cp $CLANG_INCLUDE_DIR/lwpintrin.h $INTRINSIC_DIR/lwpintrin.h
+cp $CLANG_INCLUDE_DIR/lzcntintrin.h $INTRINSIC_DIR/lzcntintrin.h
+cp $CLANG_INCLUDE_DIR/mm3dnow.h $INTRINSIC_DIR/mm3dnow.h
+cp $CLANG_INCLUDE_DIR/mmintrin.h $INTRINSIC_DIR/mmintrin.h
+cp $CLANG_INCLUDE_DIR/movdirintrin.h $INTRINSIC_DIR/movdirintrin.h
+cp $CLANG_INCLUDE_DIR/mwaitxintrin.h $INTRINSIC_DIR/mwaitxintrin.h
+cp $CLANG_INCLUDE_DIR/nmmintrin.h $INTRINSIC_DIR/nmmintrin.h
+cp $CLANG_INCLUDE_DIR/pconfigintrin.h $INTRINSIC_DIR/pconfigintrin.h
+cp $CLANG_INCLUDE_DIR/pkuintrin.h $INTRINSIC_DIR/pkuintrin.h
+cp $CLANG_INCLUDE_DIR/pmmintrin.h $INTRINSIC_DIR/pmmintrin.h
+cp $CLANG_INCLUDE_DIR/popcntintrin.h $INTRINSIC_DIR/popcntintrin.h
+cp $CLANG_INCLUDE_DIR/prfchwintrin.h $INTRINSIC_DIR/prfchwintrin.h
+cp $CLANG_INCLUDE_DIR/ptwriteintrin.h $INTRINSIC_DIR/ptwriteintrin.h
+cp $CLANG_INCLUDE_DIR/rdpruintrin.h $INTRINSIC_DIR/rdpruintrin.h
+cp $CLANG_INCLUDE_DIR/rdseedintrin.h $INTRINSIC_DIR/rdseedintrin.h
+cp $CLANG_INCLUDE_DIR/rtmintrin.h $INTRINSIC_DIR/rtmintrin.h
+cp $CLANG_INCLUDE_DIR/serializeintrin.h $INTRINSIC_DIR/serializeintrin.h
+cp $CLANG_INCLUDE_DIR/sgxintrin.h $INTRINSIC_DIR/sgxintrin.h
+cp $CLANG_INCLUDE_DIR/shaintrin.h $INTRINSIC_DIR/shaintrin.h
+cp $CLANG_INCLUDE_DIR/smmintrin.h $INTRINSIC_DIR/smmintrin.h
+cp $CLANG_INCLUDE_DIR/tbmintrin.h $INTRINSIC_DIR/tbmintrin.h
+cp $CLANG_INCLUDE_DIR/tmmintrin.h $INTRINSIC_DIR/tmmintrin.h
+cp $CLANG_INCLUDE_DIR/tsxldtrkintrin.h $INTRINSIC_DIR/tsxldtrkintrin.h
+cp $CLANG_INCLUDE_DIR/uintrintrin.h $INTRINSIC_DIR/uintrintrin.h
+cp $CLANG_INCLUDE_DIR/vaesintrin.h $INTRINSIC_DIR/vaesintrin.h
+cp $CLANG_INCLUDE_DIR/vpclmulqdqintrin.h $INTRINSIC_DIR/vpclmulqdqintrin.h
+cp $CLANG_INCLUDE_DIR/waitpkgintrin.h $INTRINSIC_DIR/waitpkgintrin.h
+cp $CLANG_INCLUDE_DIR/wbnoinvdintrin.h $INTRINSIC_DIR/wbnoinvdintrin.h
+cp $CLANG_INCLUDE_DIR/__wmmintrin_aes.h $INTRINSIC_DIR/__wmmintrin_aes.h
+cp $CLANG_INCLUDE_DIR/wmmintrin.h $INTRINSIC_DIR/wmmintrin.h
+cp $CLANG_INCLUDE_DIR/__wmmintrin_pclmul.h $INTRINSIC_DIR/__wmmintrin_pclmul.h
+cp $CLANG_INCLUDE_DIR/x86gprintrin.h $INTRINSIC_DIR/x86gprintrin.h
+cp $CLANG_INCLUDE_DIR/x86intrin.h $INTRINSIC_DIR/x86intrin.h
+cp $CLANG_INCLUDE_DIR/xmmintrin.h $INTRINSIC_DIR/xmmintrin.h
+cp $CLANG_INCLUDE_DIR/xopintrin.h $INTRINSIC_DIR/xopintrin.h
+cp $CLANG_INCLUDE_DIR/xsavecintrin.h $INTRINSIC_DIR/xsavecintrin.h
+cp $CLANG_INCLUDE_DIR/xsaveintrin.h $INTRINSIC_DIR/xsaveintrin.h
+cp $CLANG_INCLUDE_DIR/xsaveoptintrin.h $INTRINSIC_DIR/xsaveoptintrin.h
+cp $CLANG_INCLUDE_DIR/xsavesintrin.h $INTRINSIC_DIR/xsavesintrin.h
+cp $CLANG_INCLUDE_DIR/xtestintrin.h $INTRINSIC_DIR/xtestintrin.h
+cp $CLANG_INCLUDE_DIR/cet.h $INTRINSIC_DIR/cet.h
+cp $CLANG_INCLUDE_DIR/cpuid.h $INTRINSIC_DIR/cpuid.h
+cp $CLANG_INCLUDE_DIR/mm_malloc.h $INTRINSIC_DIR/mm_malloc.h

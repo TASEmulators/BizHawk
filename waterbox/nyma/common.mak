@@ -1,5 +1,7 @@
 # common things across all mednafen cores
 
+NEED_INTRINSICS := 1
+
 MEDNAFLAGS := \
 	-Imednafen -Icommon -Imednafen/src/trio \
 	-DHAVE_CONFIG_H=1 -DMDFN_DISABLE_NO_OPT_ERRWARN=1 \
@@ -7,16 +9,12 @@ MEDNAFLAGS := \
 	-fno-strict-aliasing \
 	-fomit-frame-pointer \
 	-fsigned-char \
-	-fno-aggressive-loop-optimizations \
 	-fno-fast-math \
 	-fno-unsafe-math-optimizations \
 	-fjump-tables \
 	-mfunction-return=keep \
-	-mindirect-branch=keep \
-	-mno-indirect-branch-register \
 	-Wall -Wshadow -Wempty-body -Wignored-qualifiers \
 	-Wvla -Wvariadic-macros -Wdisabled-optimization -Werror=write-strings \
-	--param max-gcse-memory=300000000 \
 	-Dprivate=public # the gods have abandoned us
 
 CCFLAGS := $(MEDNAFLAGS) -std=gnu99

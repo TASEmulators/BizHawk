@@ -27,6 +27,9 @@ CC := $(SYSROOT)/bin/musl-clang
 COMMONFLAGS := -fvisibility=hidden -I$(WATERBOX_DIR)/emulibc -Wall -mcmodel=large \
 	-mstack-protector-guard=global -fno-pic -fno-pie -fcf-protection=none \
 	-MD -MP
+ifdef NEED_INTRINSICS
+COMMONFLAGS := $(COMMONFLAGS) -I$(SYSROOT)/intrinsics/x86_64
+endif
 CCFLAGS := $(COMMONFLAGS) $(CCFLAGS)
 LDFLAGS := $(LDFLAGS) -static -Wl,-no-pie,--eh-frame-hdr -T $(LINKSCRIPT) #-Wl,--plugin,$(LD_PLUGIN)
 CCFLAGS_DEBUG := -O0 -g
@@ -95,13 +98,13 @@ $(TARGET_DEBUG): $(DOBJS) $(EMULIBC_DOBJS) $(LINKSCRIPT)
 install: $(TARGET_RELEASE)
 	@cp -f $< $(OUTPUTDLL_DIR)
 	@zstd --stdout --ultra -22 --threads=0 $< > $(OUTPUTDLL_DIR)/$(TARGET).zst
-	@cp $(OUTPUTDLL_DIR)/$(TARGET).zst $(OUTPUTDLLCOPY_DIR)/$(TARGET).zst || true
+	@cp $(OUTPUTDLL_DIR)/$(TARGET).zst $(OUTPUTDLLCOPY_DIR)/$(TARGET).zst 2> /dev/null || true
 	@echo Release build of $(TARGET) installed.
 
 install-debug: $(TARGET_DEBUG)
 	@cp -f $< $(OUTPUTDLL_DIR)
 	@zstd --stdout --ultra -22 --threads=0 $< > $(OUTPUTDLL_DIR)/$(TARGET).zst
-	@cp $(OUTPUTDLL_DIR)/$(TARGET).zst $(OUTPUTDLLCOPY_DIR)/$(TARGET).zst || true
+	@cp $(OUTPUTDLL_DIR)/$(TARGET).zst $(OUTPUTDLLCOPY_DIR)/$(TARGET).zst 2> /dev/null || true
 	@echo Debug build of $(TARGET) installed.
 
 else

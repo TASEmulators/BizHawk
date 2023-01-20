@@ -597,9 +597,8 @@ void new_emuthread()
 //DLL INTERFACE
 
 #include <emulibc.h>
-#define EXPORT extern "C" ECL_EXPORT
 
-EXPORT void* DllInit()
+ECL_EXPORT void* DllInit()
 {
 	#define T(s,n) static_assert(offsetof(CommStruct,s)==n,#n)
 	T(cmd, 0);
@@ -640,7 +639,7 @@ EXPORT void* DllInit()
 	return &comm;
 }
 
-EXPORT void Message(eMessage msg)
+ECL_EXPORT void Message(eMessage msg)
 {
 	if (msg == eMessage_Resume)
 	{
@@ -679,18 +678,18 @@ EXPORT void Message(eMessage msg)
 
 
 //receives the given buffer and COPIES it. use this for returning values from SIGs
-EXPORT void CopyBuffer(int id, void* ptr, int32 size)
+ECL_EXPORT void CopyBuffer(int id, void* ptr, int32 size)
 {
 	comm.CopyBuffer(id, ptr, size);
 }
 
 //receives the given buffer and STASHES IT. use this (carefully) for sending params for CMDs
-EXPORT void SetBuffer(int id, void* ptr, int32 size)
+ECL_EXPORT void SetBuffer(int id, void* ptr, int32 size)
 {
 	comm.SetBuffer(id, ptr, size);
 }
 
-EXPORT void PostLoadState()
+ECL_EXPORT void PostLoadState()
 {
 	SNES::ppu.flush_tiledata_cache();
 }

@@ -278,7 +278,7 @@ template<typename T> alwaysinline auto ror(const Pair& lhs, const T& rhs) -> Pai
   return lhs >> rhs | lhs << (PairBits - rhs);
 }
 
-#define EI enable_if_t<is_integral<T>::value>
+#define EI /*typename =*/ enable_if_t<is_integral<T>::value>
 
 template<typename T, EI> auto& operator*= (T& lhs, const Pair& rhs) { return lhs = lhs *  T(rhs); }
 template<typename T, EI> auto& operator/= (T& lhs, const Pair& rhs) { return lhs = lhs /  T(rhs); }

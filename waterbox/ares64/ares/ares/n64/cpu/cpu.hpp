@@ -821,7 +821,8 @@ struct CPU : Thread {
     };
 
     struct Pool {
-      Block* blocks[1 << 6];
+      Block blocks[1 << 6];
+      bool dirty;
     };
 
     auto reset() -> void {
@@ -841,13 +842,14 @@ struct CPU : Thread {
       auto pool = pools[address >> 8 & 0x1fffff];
       if(!pool) return;
       memory::jitprotect(false);
-      pool->blocks[address >> 2 & 0x3f] = nullptr;
+      pool->blocks[address >> 2 & 0x3f].code = nullptr;
       memory::jitprotect(true);
       #endif
     }
 
     auto invalidatePool(u32 address) -> void {
-      pools[address >> 8 & 0x1fffff] = nullptr;
+      auto pool = pools[address >> 8 & 0x1fffff];
+      if(pool && pool->dirty) memory::fill(pool, sizeof(Pool));
     }
 
     auto invalidateRange(u32 address, u32 length) -> void {
@@ -857,9 +859,9 @@ struct CPU : Thread {
     }
 
     auto pool(u32 address) -> Pool*;
-    auto block(u32 address) -> Block*;
+    auto block(u32 address) -> Block&;
 
-    auto emit(u32 address) -> Block*;
+    auto emit(u32 address, Block& block) -> void;
     auto emitEXECUTE(u32 instruction) -> bool;
     auto emitSPECIAL(u32 instruction) -> bool;
     auto emitREGIMM(u32 instruction) -> bool;
@@ -868,7 +870,7 @@ struct CPU : Thread {
     auto emitCOP2(u32 instruction) -> bool;
 
     bump_allocator allocator;
-    Pool* pools[1 << 21];  //2_MiB * sizeof(void*) == 16_MiB
+    Pool** pools = alloc_invisible<Pool*>(1 << 21);  //2_MiB * sizeof(void*) == 16_MiB
   } recompiler{*this};
 
   struct Disassembler {
