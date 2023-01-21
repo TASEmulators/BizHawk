@@ -45,19 +45,18 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			};
 
 			N64Controller = CreateControllerDefinition(ControllerSettings);
-			_tracecb = MakeTrace;
 
 			_core = PreInit<LibAres64>(new WaterboxOptions
 			{
 				Filename = "ares64.wbx",
 				SbrkHeapSizeKB = 2 * 1024,
 				SealedHeapSizeKB = 4,
-				InvisibleHeapSizeKB = 6 * 1024,
+				InvisibleHeapSizeKB = 22 * 1024,
 				PlainHeapSizeKB = 4,
 				MmapHeapSizeKB = 512 * 1024,
 				SkipCoreConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
-			}, new[] { _tracecb, });
+			});
 
 			static bool IsGBRom(byte[] rom)
 			{
@@ -154,7 +153,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 						Gb4RomData = (IntPtr)gb4RomPtr,
 						Gb4RomLen = GetGBRomOrNull(3)?.Length ?? 0,
 					};
-					if (!_core.Init(ref loadData, ControllerSettings, pal, _settings.Deinterlacer == LibAres64.DeinterlacerType.Bob, GetRtcTime(!DeterministicEmulation)))
+					if (!_core.Init(ref loadData, ControllerSettings, pal, GetRtcTime(!DeterministicEmulation)))
 					{
 						throw new InvalidOperationException("Init returned false!");
 					}
@@ -162,9 +161,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			}
 
 			PostInit();
-
-			Tracer = new TraceBuffer("r3400: PC, mnemonic, operands, registers (GPRs, MultLO, MultHI)");
-			_serviceProvider.Register(Tracer);
 
 			_disassembler = new(_core);
 			_serviceProvider.Register<IDisassemblable>(_disassembler);
@@ -257,8 +253,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
-			_core.SetTraceCallback(Tracer.IsEnabled() ? _tracecb : null);
-
 			for (int i = 0; i < 4; i++)
 			{
 				if (ControllerSettings[i] == LibAres64.ControllerType.Rumblepak)
@@ -290,8 +284,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 
 				Reset = controller.IsPressed("Reset"),
 				Power = controller.IsPressed("Power"),
+				
+				BobDeinterlacer = _settings.Deinterlacer == LibAres64.DeinterlacerType.Bob,
+				FastVI = true,
+				SkipDraw = !render,
 			};
 		}
+
+		protected override void LoadStateBinaryInternal(BinaryReader reader)
+			=>_core.PostLoadState();
 
 		// creates an "error table" for the disk
 		// see https://github.com/ares-emulator/ares/blob/09aa6346c71a770fc68e9540d86156dd4769d677/mia/medium/nintendo-64dd.cpp#L102-L189
