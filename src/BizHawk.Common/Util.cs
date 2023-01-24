@@ -78,6 +78,22 @@ namespace BizHawk.Common
 			return a.All(kvp => b.TryGetValue(kvp.Key, out var bVal) && comparer.Equals(kvp.Value, bVal));
 		}
 
+#if NET6_0
+		public static string DescribeIsNull<T>(T? obj, [CallerArgumentExpression("boxed")] string expr = default)
+#else
+		public static string DescribeIsNull<T>(T? obj, string expr)
+#endif
+			where T : class
+			=> $"{expr} is {(obj is null ? "null" : "not null")}";
+
+#if NET6_0
+		public static string DescribeIsNullValT<T>(T? boxed, [CallerArgumentExpression("boxed")] string expr = default)
+#else
+		public static string DescribeIsNullValT<T>(T? boxed, string expr)
+#endif
+			where T : struct
+			=> $"{expr} is {(boxed is null ? "null" : "not null")}";
+
 		/// <param name="filesize">in bytes</param>
 		/// <returns>human-readable filesize (converts units up to tebibytes)</returns>
 		public static string FormatFileSize(long filesize)
