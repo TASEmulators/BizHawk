@@ -48,16 +48,67 @@
 	- fix key releases not getting handled correctly when modifier keys are pressed (#3327)
 	- fix KeyLog not being respected in TAStudio and custom LogKey getting discarded (#2843)
 	- fix hang with "Go to Address" dialog in RamSearch (#3384)
+	- fix a crash when selecting user shaders (#3495)
+	- fix gamedb loading not blocking when loading a rom, potentially causing a miss with a slow hdd (#3489)
+	- support marshalling arrays of length 0 through BizInvoker, fixing a crash with lua
+	- fix crashes when setting absurdly large padding values (#3321)
+	- make `DisplayConfig` defaults button set padding back to 0
+	- add auto save state on close (#1861)
+	- zstd compression is used instead of deflate compression where possible (rewind, .wbx cores, internal resource files, binary blobs in movies, savestates, etc)
+	- hardware accelerated CRC32 and SHA1 algorithms are used if the user's hardware allows it
+	- block edge cases where global `GameInfo` is uninitialised
+	- improve error message for `IToolFormAutoConfig` ext. tool missing menu
+	- add hash for newly discovered GBC-GBA bootrom
+	- ensure there can be no edge cases involving SGXCD sysID
+	- add more system ids internally (for better errors for currently unsupported systems)
+	- cache `ToolStripRenderer` used by `FormBase.FixBackColorOnControls`
+	- refactor `IGameInfo.FilesystemSafeName` extension
+	- add and use 2 extension methods for splitting path into dir+filename
+	- hardcoded certain edge cases in `MovieConversionExtensions`
+	- removed gongshell, added "simple" code for opening win32 context menu (gongshell's only actual use) (#2261)
+	- fixed firmware fields using a dummy checksum using the wrong firmware info (#3159)
+	- added way to obtain error message in ILinkedLibManager (used to display an error code for initial library checks)
+	- added quick failure if EmuHawk is somehow running as a 32 bit process (likely due to bad .NET config, see #3375)
+	- fixed "Toggle All Cheats" hotkey behaviour
+	- cleaned up `MainForm.CheckHotkey`
+	- deduplicated some code in `MainForm`
+	- did minor refactors to byteswapping (N64 rom loading and Lua bit library)
 - Linux port:
 	- fixed various file pickers using case-sensitive file extensions
-	- changed default Lua engine to "NLua+KopiLua" which doesn't seem to crash on normal Mono builds like the other one does
 	- added short-circuit to Mupen64Plus loading to avoid error messages and any strange failure state
 	- enabled menu mnemonics (Alt+X) for MainForm
 	- fixed inconsistent application of colours from GTK theme when Mono is able to use it
+- Basic Bot:
+	- increased max frames from 999 to 9999
+	- added NOT operator
+	- fixed anchor points and a misaligned label
+	- fixed code logic error for 3 way tie breakers
+	- refactor `BasicBot.IsBetter`
+	- fixed issue where the Copy button was not toggled on/off properly
+	- change addresses to `ulong?` (fixes empty address fields being saved as `0x0`)
+- RAM Watch:
+	- fix CTRL+A not working properly
+- RAM Search:
+	- added Select All/None
+	- switch `_watchList` from a List to an Array (faster)
+- Debugger:
+	- fixed the "To PC" button not updating the disassembler view
 - TAStudio:
 	- fixed "Select between Markers" hotkey not working
 	- fixed `.tasproj` headers being written differently based on locale (i.e. ',' instead of '.')
+	- don't autorestore if current frame remained valid
+	- refactors for selection in `InputRoll`, standardising behaviour of Select All and Insert Separator buttons
+	- resolve some inputs showing ! in Nymashock and hide some columns by default
+	- when starting new `.tasproj` from SaveRAM, don't clone SaveRAM twice
+	- did minor refactor to prevent mutation local in `TAStudio.TasView_MouseDown`
+	- fixed modifier key check in `TAStudio.TasView_MouseDown`
+	- removed unused "TAStudio states" path
+	- added 'Edit marker frame' feature
+	- fixed `ArgumentOutOfRangeException` when loading TAStudio with cheats
 - Lua/ApiHawk:
+	- (Lua) replace the two lua engines with an updated version of NLua, backed internally by native lua 5.4
+	- (Lua) rely on a system provided lua 5.4 .so (or lua 5.3 if needed) when on Linux, resolving issues due to providing our own lua
+	- (Lua) add in a migration helper for lua bitwise ops (put `bit = (require "migration_helpers").EmuHawk_pre_2_9_bit();` at top of file)
 	- (Lua) added arguments to memory callback functions (cb will be called with addr, val, flags)—check `event.can_use_callback_params("memory")` when writing polyfills
 	- (ApiHawk) merged `IGameInfoApi` into `IEmulationApi`, and some other minor API method signature changes
 	- (ApiHawk/Lua) fixed `event.onmemoryread` behaviour under mGBA (#3230)
@@ -81,6 +132,19 @@
 	- (ApiHawk) changed some parameter and return types from `List` to more suitable read-only collection types
 	- (Lua) fixed `require` not looking in Lua dir on Linux
 	- (Lua) fixed and updated some bundled lua scripts: `Gargoyles.lua`, `Earthworm Jim 2.lua`, `Super Mario World.lua`
+	- (Lua) added "Clear Output" button to Lua Console
+	- (Lua) fix documentation error in `client.gettool`
+	- (ApiHawk/Lua) have `MemoryDomain` inherit `IMonitor`, which can be used to avoid waterbox overhead for many nonsequential memory accesses (already used internally to speedup RAM Search and some lua functions; no-op for non-waterbox cores) (#3296)
+	- (Lua) set `Form.Owner` to MainForm for Lua-made forms
+	- (Lua) fixed wiki export, add more notes to fill in some of the holes
+	- (Lua) documented frameadvance loop
+	- (Lua) documented socket response format
+- Meta:
+	- adjust wording in Issue templates
+	- add core port request Issue template
+	- add contributor's guide
+	- add more testroms to GB testroms project
+	- updated `PcxFileTypePlugin.HawkQuantizer` project file to match others
 - New and graduating cores:
 	- Ares64:
 		- removed the Ares64 (Performance) core and renamed Ares64 (Accuracy) to Ares64, now no longer experimental
@@ -90,11 +154,24 @@
 		- added Transfer Pak support and N64 Mouse support
 		- added more debugging features (tracer, disassembler, get registers, System Bus domain)
 		- fixed tracer regression from upstream update
+		- enabled SIMD RSP implementation
+	- VirtualJaguar
+		- new core for Jaguar and Jaguar CD emulation!
+		- core has had a fair bit of modifications from upstream for better accuracy and Jaguar CD support
+		- due to the lack of multisession support, a CD has to be split into multiple CDs for each session currently
 	- TIC-80:
-		- added a new experimental core for the TIC-80 fantasy computer, using nesbox's own reference implementation
+		- added a new core for the TIC-80 fantasy computer, using nesbox's own reference implementation
+		- added settings for enabling/disabling controllers
 	- SubBSNESv115+:
 		- subframe capable variant of the BSNESv115+ core (#3281)
 		- allows subframe inputs and delayed resets
+	- MAME:
+		- technically not "new" as c# side code was always present, the actual MAME library is now included in the main package (although still experimental)
+		- MAME has been waterboxed, hopefully fixing all sync issues
+		- added in various missing mnemonics (more likely remain, please report!)
+		- resolved erroneous LibMAME errors due to mame_lua_get_string returning NULL with an empty string
+		- use actual doubles for figuring out aspect ratio (fixes potential divide by 0 exception)
+		
 	- DobieStation:
 		- This PS2 core has been removed due to being unusuably slow and not very accurate
 - Other cores:
@@ -102,11 +179,11 @@
 		- fixed crash when pushing Select on Karate title screen
 	- (old) BSNES:
 		- fixed graphics debugger exception when freezing a tile (#3195)
-		- remove libspeex dependency
-		- fix a possible `IndexOutOfRangeException` in the graphics debugger (#3399)
-		- also fix a potential `DivideByZeroException` (#3398)
+		- removed libspeex dependency
+		- fixed a possible `IndexOutOfRangeException` in the graphics debugger (#3399)
+		- also fixed a potential `DivideByZeroException` (#3398)
 	- BSNESv115+:
-		- make this core default in places where the old BSNES core was
+		- made this core default in places where the old BSNES core was
 		- reworked Payload peripheral and fixed Virtual Pads
 		- improved peripheral selection for P1
 		- reimplemented MSU1 properly
@@ -114,17 +191,19 @@
 		- fixed crash when loading a savestate after a reset (#3173)
 		- added region override setting
 		- added overscan and aspect ratio correction settings
-		- implement an `ExtendedGamepad` controller which acts like a normal gamepad with 4 extra buttons
-		- pull upstream, fix justifier controller and apply misc. core fixes
+		- implemented an `ExtendedGamepad` controller which acts like a normal gamepad with 4 extra buttons
+		- pulled upstream, fixed justifier controller and applied misc. core fixes
 		- added option to disable ppu sprite limit (#3440)
-		- implement SNES graphics debugger
-		- update internal sameboy version for SGB by linking it to the standalone sameboy core, fix SGB saveRAM
-		- fix CARTROM and CARTRAM memory domain names (#3405), provide SGB memory domains, set MainMemory and SystemBus domains properly
+		- implemented SNES graphics debugger
+		- updated internal sameboy version for SGB by linking it to the standalone sameboy core, fix SGB saveRAM
+		- fixed CARTROM and CARTRAM memory domain names (#3405), provide SGB memory domains, set MainMemory and SystemBus domains properly
 		- provide a more proper `IBoardInfo`, provide `SGB` SystemId when in SGB mode
 	- SubBSNESv115+:
 		- fix LsmvImport in numerous ways and import as SubBSNESv115 movies to allow handling subframe inputs and delayed resets
 	- CPCHawk:
 		- removed redundant `AmstradCpcPokeMemory` tool
+	- Cygne:
+		- allowed .pc2 (Pocket Challenge v2) files to be loaded
 	- Faust:
 		- updated to Mednafen 1.29.0
 	- Gambatte:
@@ -134,35 +213,53 @@
 		- implemented MMM01 emulation
 		- implemented M161 emulation
 		- improved heuristics for various multicart mappers and remove the multicart detection setting (now effectively always true)
+		- implemented remote control controls, expanded remote control emulation for HuC1 IR and CGB IR (previously only HuC3 IR had this implemented, using a hardcoded value)
 		- cleaned up the mapper internals, IR, and RTC code
 		- made various optimizations to the CPU loop and read/write code (around 10-15% performance increase)
 		- trimmed down initial time settings to a single setting, using total number of seconds
 		- implemented quirk with bit 4 of rLCDC, fixes cgb-acid-hell testrom compliance
 		- fixed sprite priority in CGB-DMG mode
-		- Prevent crashes due to "negative" numbers being added to the sound buffer pointer (#3425)
+		- prevent crashes due to "negative" numbers being added to the sound buffer pointer (#3425)
 		- fixed audio output being too quiet (#3338)
+		- added a CGB color correction option using the same formula as SameBoy, and made that the default
 	- GBHawk
 		- fixed Code-Data Logger crashing due to typo'd mem domain name (#3497)
 	- Genplus-gx:
 		- stopped byteswapping Z80 domains (#3290)
 		- changed default peripheral to 3-button Genesis gamepad (#2775, #3262)
 		- added option to disable ppu sprite limit (#3440)
+		- prevent svp dereferences when not using an svp cart (#3297)
+		- give NHL 96 (Genesis) SRAM (#3300)
+		- fixed disc swapping, re-enabled the disc buttons
+		- fixed disabled layers being wrongly re-enabled on a load state (#3388)
+		- fixed pattern cache invalidation (#3363)
 	- HyperNyma:
 		- updated to Mednafen 1.29.0
 	- Libretro:
 		- rewrote Libretro host implementation, fixing some crashes, adding memory domains, and slightly improving performance (#3211, #3216)
 		- fixed input display (#3360)
+		- implemented needed environment functions for resolution changes
+		- added reset support (#3482)
 	- melonDS:
 		- updated to interim version after 0.9.5
 		- fixed SaveRAM not getting written to disk when unloading/reloading core (#3165)
 		- implemented threaded renderer support
 		- replaced darm with a new DS centric disassembler, fixing various issues with tracing/disassembly
+		- r13/r14/r15 reported as sp/lr/pc for tracelogs
 		- split ARM7/touch screen polls to an "alt lag" variable and added a setting for whether to consider this "alt lag" (#3278)
 		- reduced state size a bit
 		- improve audio resampling; get rid of libspeex dependency
+		- added missing TMD for Zombie Skape, improved error message when TMD cannot be found
+		- ensured firmware settings match up with sync settings if real firmware is not used (#3377)
 		- did various internal cleanups
 	- mGBA:
 		- updated to interim version after 0.10.0, fixing a softlock in Hamtaro: Ham Ham Heartbreak (#2541)
+		- implemented save override support with EEPROM512 and SRAM512
+	- Mupen64Plus
+		- always savestate expansion pak regardless of settings, resolves some desyncs/crashes due to shoddy no expansion pak implementation (#3092, #3328)
+		- fixed changing expansion pack setting
+		- added angrylion as yet another graphics plugin
+		- fixed mistake in angrylion implementation (#3372)
 	- NeoPop:
 		- updated to Mednafen 1.29.0
 	- NesHawk:
@@ -174,11 +271,16 @@
 	- Nymashock:
 		- updated to Mednafen 1.29.0
 		- fixed disc switching
+		- fixed light guns (#3359)
+		- wired up rumble support
 	- SameBoy:
-		- updated to interim version after 0.14.7, fixing some bugs and adding GB palette customiser (#3185, #3239)
+		- updated to interim version after 0.15.7, fixing some bugs (#3185)
+		- added GB palette customiser (#3239)
+		- wired up rumble support
 	- Saturnus:
 		- updated to Mednafen 1.29.0
 		- fixed disc switching
+		- fixed light guns (#3359)
 	- SMSHawk:
 		- fixed `InvalidOperationException` when using SMS peripherals (#3282)
 		- fixed screechy/static audio during Sega logo in Ys (Japan) (#3160)
@@ -196,58 +298,22 @@
 		- updated to Mednafen 1.29.0
 	- ZXHawk:
 		- removed redundant `ZXSpectrumPokeMemory` tool
-
 [HEAD]
-
-[c2a5b37799 CPP] Update contributing guide for the new Lua setup
-
-[bc12fcca87 Yoshi] Minor revision to EmuHawk contribution guide
-
-[c7c5ed229d CPP] add pc2 extension for wonderswan
-these are pocket challenge v2 roms, which is some handheld system which is actually just a wonderswan inside so these roms work anyways with cygne
-
-[91ce98ef12 CPP] better handle lua on linux, be compatible with lua 5.3 (we don't actually use any API exclusive to 5.4 so no real change in this case)
-
-[66c19cfcb2 natt] Support marshalling arrays of length 0 through BizInvoker
-Such arrays will be marshalled with valid and unique pointers that can be compared but not read from or written to.
 
 [7703ee5f37 Yoshi] Refactor `IGameboyCommon.IsCGBMode`
 
-[339915c013 CPP] check-in NLua to main repo combine NLua with KeraLua (KeraLua is "gone" now I guess) make it use the BizInvoker (so now it can properly handle the liblua5.4.so and lua54.dll names differing), also delete the liblua54.so. minor speedup when creating a new empty table make lua default to UTF8 internally, so we don't need to manually change the state's encoding
-
-[a1da5753ee CPP] check-in NLua to main repo combine NLua with KeraLua (KeraLua is "gone" now I guess) make it use the BizInvoker (so now it can properly handle the liblua5.4.so and lua54.dll names differing), also delete the liblua54.so. minor speedup when creating a new empty table make lua default to UTF8 internally, so we don't need to manually change the state's encoding
-
 [767e30eee5 Yoshi] Also rename bundled CPC firmware files (see #3494)
 fixes 5be8b0aab
-
-[8d5f7b5478 CPP] make selecting user shaders not crash with the default empty string path Path.GetDirectoryName throws if it is handed an empty string apparently
 
 [a680739c6e Yoshi] Rename bundled ZX Spectrum firmware file (resolves #3494)
 fixes 5be8b0aab
 
 [2989a73430 CPP] workaround ares state size being blown up, fix compilation issue in some gcc versions
 
-[2187602dc1 CPP] fix Package.sh too fixes 91e400bdd9959fff3c6f7cc9f2e9a4be255603c8
-
-[91e400bdd9 CPP] fix QuickTestBuildAndPackage to include the "overlay" folder (meant for RetroAchievements stuff)
-
-[767cc9059d CPP] Improve handling of RA http requests, add some handling in case RA sound files are missing. Normally this shouldn't be needed as docs specify if the wav file fails to load it plays the default beep sound, except actually it just throws in practice??? The 2.9 rcs apparently have the "overlay" folder missing, so the sound files aren't present. I'm assuming there's some issue with build scripts there for releases...
-
-[27f6800d45 CPP] fix #3489 (InitializeWork is called by itself for each gamedb file #include'd, so the event would have been set once the first gamedb file is loaded, oops), do some other cleanup here
-
 [b3c7f0fa48 CPP] IPlatformLuaLibEnv -> ILuaLibraries / Win32LuaLibraries -> LuaLibraries, cleanup usage of it, fix doc error in client.gettool
 
 [f101cb5a54 Yoshi] Additional corrections to newly-added Lua documentation
 fixes 49cd836e1, c7781d1c1
-
-[c7781d1c17 Yoshi] Add Lua migration helper library for bitwise ops
-see 49cd836e1, #3485
-put `bit = (require "migration_helpers").EmuHawk_pre_2_9_bit();` at top of file
-can now easily add helpers for migrating from other emulators
-
-[9e4836d300 CPP] libretro handling cleanup, reorg some of this, fix some input cases, better domain names funsie found in this cleanup: can't use `in` params with the BizInvoker as it doesn't like the read only semantics (results in some exception in CreateType)
-
-[64d693e63f CPP] call retro_unload_game before retro_deinit (libretro api specifies retro_unload_game be called before retro_deinit, in practice cores don't really care but best fix this)
 
 [29443dae49 CPP] fix #3484
 
@@ -260,8 +326,6 @@ fixes 45fbdb484
 fixes 1452f831a, 82c3b471a, b687dea1b, 49cd836e1
 
 [49cd836e18 CPP] log warning when using the deprecated lua bit functions
-
-[56d66ca555 CPP] add reset support to libretro, resolves #3482
 
 [1fc08e3d95 CPP] Use NLua's MethodCache if possible for MethodBase based lua functions (see https://github.com/TASEmulators/NLua/commit/0ed3085ec301fe4da6751ca545407f9d264b0e83)
 
@@ -437,25 +501,9 @@ make a small dll for handling the msabi<->sysv adapter, using only assembly (tak
 additionally, allow floating point arguments. this really only needs to occur on the c# side. msabi and sysv agree on the first 4 floating point args and for returns, so no work actually has to be done adapting these
 with assembly being used, we can guarantee rax will not be stomped by compiler whims (and avoid potential floating point args from being trashed)
 
-[eec86ad81a CPP] Use actual doubles for figuring out aspect ratio Fixes issues when mame sends over < 1 bounds which round down to 0 with a long cast (resulting in div by 0 exceptions) Also fix some oopsies with incorrect function signatures. Remove MAME string docs as they aren't really relevant anymore, as only MameGetString handles lua string handling now
-
-[64044845a6 CPP] resolve erroneous LibMAME errors due to mame_lua_get_string returning nullptr with an empty string (now will only do so on an error) add back in mame_lua_get_double, to be used to resolve other issues (c# code pending...)
-
-[715f4f497c CPP] add some missing mame mnemonics
-
-[066297d5e7 CPP] MAME Waterbox (#3437)
-
 [fd2772707b Yoshi] Update `forms.drawImageRegion` documentation with a diagram
 only embeds on TASVideos Wiki, which I held off on updating because there are a
 lot of changes and we can do them all at once
-
-[8ee75879e6 CPP] Rework MAME integration a bit
-The periodic callback is now used as a way to service "commands" sent from the main thread
-Upon servicing a command, the mame thread will set the current command to NO_CMD then wait for the main thread allow the mame thread to continue
-During this wait, the main thread may optionally set the next command (done here for STEP -> VIDEO), ensuring the next callback will service that command
-A dummy "WAIT" command can be sent to trigger this waiting behavior, allowing the main thread to safely touch mame while the mame thread is frozen (important for mem accesses and probably savestates?)
-A/V sync is also reworked. We can assume that 1/50 of a second worth of samples will be sent each sound callback. We can also assume 1/FPS of a second worth of time will be advanced each frame advance
-So, we can just give hawk 1/FPS worth of samples every GetSamplesSync, if they are available. If we have less (probable on first few frames), we'll just give all the samples, and hope it balances out later.
 
 [c8d4e606af CPP] suppress updates while rebooting core, fixes #3424
 
@@ -466,45 +514,17 @@ So, we can just give hawk 1/FPS worth of samples every GetSamplesSync, if they a
 * reorder mem domains a bit, add TCM to ARM9 System Bus, build
 Co-authored-by: CPP
 
-[f29113287e CPP] add Jaguar to MultiDiskBundler menu
-
-[82c3b471a5 Yoshi] Minor refactors to byteswapping (N64 rom loading and Lua bit library)
-
-[2fa46efda6 CPP] add jaguar db, change db parser to prefer the strongest hash available, fix potential edge case if a crc32: prefix is present (and simplify the code)
-
-[c547a20f8e CPP] Use `LoadOther` for GBS files, cleanup the code a little, update SameBoy version info
-
 [9528a2030f CPP] GBS support using SameBoy
 
 [0c6f0523a0 CPP] Update sameboy, expose audio channel enable/disabling, cleanup settings to go through a single call/struct
 
 [7f8b4b8c87 CPP] fix whitespace in default controls (fixes 8732e561a1d70974ad60ca145b1aeed03ca8cc45)
 
-[8732e561a1 CPP] Better Jaguar Virtual Width/Height Jaguar VPad Proper Jaguar default controls Remove a lot of unneeded `ReSharper disable once UnusedMember.Global` in vpads (Global has been gone for a while now...) Set VirtualJaguar to released
-
-[71f2676ad8 CPP] more virtualjaguar cleanup, fix various bugs, have the DSP run more in sync with the CPU/GPU (makes Zoop boot, Doom is much less laggy, various missing sound issues are no longer present)
-
-[2e5c62f632 CPP] default Jaguar bios to not be skipped, some games rely on Jaguar bios running on boot
-
-[be771c134c CPP] default to KSeries bios instead of MSeries bios, as it seems to be more compatible
-
-[5f509525bc CPP] (virtualjaguar) less screen changing spam
-
-[98be50057a CPP] (virtualjaguar) proper mulitwidth support, fixes Doom
-
 [a59d66dfdd CPP] proper fix for mmult opcode, properly fixes Baldies music
 
 [7efafc18da Yoshi] Extract helper code for Analyzers and Source Generators
 
 [1fbb95a353 Yoshi] Make MSBuild ignore shell scripts for external .NET projects
-
-[929b034321 CPP] fix bad fix to risc jr, & 0x10 seems to be correct according to battle morph and blue lightning...
-
-[95c06e0b6e CPP] better fix for d7810f6ea90e3674a56c728848109c3f54a54906, remove incorrect comment
-
-[f1a3e02e89 CPP] revert some of baa3bdf948f79bcb768e360a80e3cbadca4ac598, as it caused regressions elsewhere, make GPU interrupts not stupid (makes Myst stop crashing with NTSC)
-
-[baa3bdf948 CPP] (virtualjaguar) rework dsp and gpu opcodes to come from the same source, fix some wrong opcodes (partially fixes Club Drive and Baldies music)
 
 [04fcf59afe Yoshi] Update C++ FlatBuffers lib, check in new codegen, and rebuild cores
 
@@ -513,300 +533,6 @@ Co-authored-by: CPP
 [cf0053fd3c Yoshi] Update FlatBuffers codegen script for Nyma cores
 uses latest (they switched from SemVer to dates, so 22.9.24 follows 2.0.8)
 works on real Linux, using Nix if installed
-
-[ddac50eb30 Yoshi] Pull musl submodule
-
-[9e9e041bba Yoshi] Fix AOoRE when loading TAStudio w/ cheats(?)
-partially reverts dd4f9aaf6
-InputRoll code is too inscrutable for me to determine the actual cause so I just
-left a `Debug.Assert`
-
-[d7810f6ea9 CPP] fix buggy TOM writes, fixes Baldies
-
-[f8a4524df7 CPP] add in missing platform framerates, add in Jaguar CD iding for movie file, fix aspect ratio for jaguar
-
-[f0529fde28 CPP] (virtualjaguar) stop a CD transfer when address is greater than the end, rather than greater than or equal to, fixes battle morph
-
-[80cf3a0c48 CPP] (virtualjaguar) memtrack support, fix bug with event system, various cleanups
-
-[94bb881d00 CPP] better completely wrong cd timings, fix some bad risc opcodes, fixes FMVs in jag cd games
-
-[b84ef509ec CPP] fix circular buffer, fix 24bpp mode
-
-[bc83c9c917 CPP] adjust jagcd timing
-this is still very wrong (needs something smarter for timing) but seems to make games intros not puke garbage sound now
-
-[c2ae5bfa0e CPP] jagcd cd_initm support, fix some bugs
-
-[1f9337d225 CPP] fix loading in byteswapped jag cds
-
-[ceff5f3e90 CPP] jagcd progress, fix jaguar lag when dsp is polling inputs
-
-[3cbdd36fe0 Yoshi] Deduplicate some code in `MainForm`
-
-[728f393eb1 Yoshi] Clean up `MainForm.CheckHotkey`
-
-[d7c79a5f03 Yoshi] Fix "Toggle All Cheats" hotkey behaviour re: separators
-
-[3122078dfd CPP] tweak jaguar cpu tracelogger
-
-[ff5c8d4e52 CPP] more jag disasm tweaks
-
-[c92c2bf661 CPP] fix jag risc disasm
-
-[38b4b98fc0 CPP] minor touchups to jag risc disassembler
-
-[c9618b3f92 CPP] c# side to jag debugging improvements
-
-[740cd1f8d4 CPP] more reg get/setting and tracing support for gpu/dsp
-
-[ef18a76064 CPP] improve jaguar system bus, add more jaguar memory domains
-
-[d8825deb8d CPP] fix non-word alignment hack
-
-[8194e5ff4b CPP] add hacks to support byteswapped and/or non-word aligned jagcds
-
-[801a783c69 CPP] fix gpu/dsp ram domains
-
-[6113f3c17b CPP] partial jagcd support (doesn't seem to completely work here) fix some issues with vjaguar cleanup add mem/trace callbacks and get/set reg support
-
-[d50454b37a CPP] cleanup vjaguar code
-
-[71e3dfed74 CPP] fix #3388
-
-[38d3d36199 CPP] fix opcode address in exec callbacks + tracing (thanks prefetch) sp/lr/pc for r13/r14/r15 for tracing fix a bad for threaded renderer's thread start callback
-
-[e242d35a22 CPP] pull latest sameboy, rework build system into a makefile
-
-[5e34dc6166 CPP] Always savestate expansion pak regardless of settings.
-All the disable expansion pak setting actually does is tell the game the expansion pak is not available.
-However, not all games actually abide by this, some will use the expansion pak area anyways.
-Video plugins also end up just using a "segfault test" to determine if the expansion pak is present or not
-So video plugins may use the expansion pak area too
-This ends up causing savestates sometimes just crashing the game if the expansion pak ends up used
-Resolves #3092, other state issues might be solved with this (I suspect #3328 is caused by this)
-
-[de38781081 CPP] Implement Rumble for Nyma
-
-[de1e7eef69 Yoshi] Document socket response format
-
-[1bf2bb758c Yoshi] Change serialisation of Jaguar VSystemID
-also fixed line ending
-
-[483258a04d CPP] virtualjaguar port, resolves #1907
-
-[34c504d7b9 CPP] update ds disassembler
-
-[f024986ffc brunovalads] Added 'Edit marker frame' feature (squashed PR #3351)
-* Added 'Edit marker frame' feature
-* Changed Edit Marker Frame icon to clock
-* Hotkey tooltip + Prevent changing to a frame that already has marker
-* Forgot to delete this icon, was replaced by Clock.png
-* De-rookie here and there
-* Clean up diff
-
-[09e8c7a9b6 CPP] ensure ds firmware settings represent sync settings if real firmware isn't used
-resolves possible cause for #3377
-
-[70906c9004 CPP] quick fail is the user is somehow running EmuHawk as a 32 bit process
-
-[e198122691 CPP] output a more helpful error message on windows for GetErrorMessage
-
-[06226e78cf CPP] add way to obtain error message in ILinkedLibManager, use it to display an error code for init lib checks
-
-[463780a875 CPP] more cleanly deal with dummy hashes
-fixes a515672
-
-[a515672d4d CPP] fix #3159
-
-[13069d08f4 CPP] fix gpgx pattern cache invalidation, resolves #3363
-
-[faf4a8b24f Yoshi] Remove unused "TAStudio states" path
-TAStudio prop unused since 5bf21e391, path was still in use until b1296dd9b
-
-[f1ef8d0887 CPP] fix oopsie in angrylion, resolves #3372
-
-[c761d6d807 CPP] fix changing mupen expansion pack setting
-
-[a344ee2288 Yoshi] Fix modifier key check in `TAStudio.TasView_MouseDown`
-
-[61c34eca74 Yoshi] Minor refactor to not mutate local in `TAStudio.TasView_MouseDown`
-
-[352977c7ea CPP] speedup HashRegion/ReadByteRange/WriteByteRange for waterbox cores (doesn't do anything for non-wbx cores)
-
-[afdfa065bd CPP] missed apostrophe somehow
-
-[9174d17bd8 CPP] tic80 settings for enabling/disabling controllers, proper mnemonics
-
-[98a8cdf693 CPP] remove gongshell, add "simple" code for opening win32 context menu (gongshell's only actual use), re: #2261
-
-[d58a4a07f5 Yoshi] Update `PcxFileTypePlugin.HawkQuantizer` project file to match others
-
-[3a3494aedb Yoshi] Add missing attribute to `events.can_use_callback_params` param
-
-[8d484ac196 Yoshi] Hardcode edge cases in `MovieConversionExtensions` to pass test
-the argument in every real call is from `IMovie.Filename`, which is never
-assigned null, and I don't think it's assigned anything but an absolute path
-
-[2ecb572892 CPP] fix nyma light guns, resolves #3359
-
-[7cde8bb466 Yoshi] Add and use 2 extension methods for splitting path into dir+filename
-
-[dce961357a Yoshi] Refactor `IGameInfo.FilesystemSafeName` extension
-it doesn't make any sense to split this string into dir+filename, it shouldn't
-contain a slash
-
-[d5bf542a3c Yoshi] Cache `ToolStripRenderer` used by `FormBase.FixBackColorOnControls`
-
-[3958348e94 peteyus] Add auto save state on close (squashed PR #3218)
-resolves #1861
-* Add configuration for auto-saving state on exit
-* Update MainForm to auto save on close game if configured
-* Fix config serialization test.
-* Revert unnecessary changes to Designer file
-* Move autosave configuration into Save States menu off of File
-* Undo previous test changes
-* Remove explicit size on menu item.
-* Fix logic
-
-[f1fc05fe60 CPP] quick fix some graphical bugs
-this isn't right but should suffice in practice most of the time
-
-[31c7f59e86 CPP] fix some edge cases with new zip compression
-
-[0ff4aca182 CPP] (Gambatte) Remote control controls and remote control emulation expanded to HuC1 IR and CGB IR (previously only done in HuC3)
-
-[aba3359dde Yoshi] Add CPP's testroms to GB testroms project
-
-[5be8b0aab9 CPP] Zstd Compression (#3345)
-Deflate compression in rewinder is now zstd compression
-Binary blobs in zip files are zstd compressed (text is uncompresed for user ease).
-All wbx cores and resources are re-compressed with zstd, wbx build scripts are changed to account for this. Shaves off a bit with download size and it's faster to decompress to.
-
-[32e8afcedc CPP] Implement hardware accelerated CRC32 and SHA1, using them if possible (#3348)
-* Implement hardware accelerated CRC32 and SHA1, use them if possible.
-CRC32's generic function is also replaced with zlib's as it is much more performant than our implementation
-Full hash of a ~731MB disc took only ~369 ms with this, and the generic CRC32 isn't so far behind at ~659 ms
-SHA1 should perform 4x faster if the user's CPU supports the SHA instructions.
-Co-authored-by: Yoshi
-Co-authored-by: Morilli
-
-[8f153fd503 Yoshi] Restore PS2 sysID and add some others from RomLoader
-
-[1452f831af Yoshi] Fix Lua Wiki export, add more notes to fill in some of the holes
-frameadvance loop is documented now so for the first time you can write a script
-without reading someone else's :O imagine that
-
-[5c48cb96fd Yoshi] When starting new `.tasproj` from SaveRAM, don't clone array twice
-
-[787b413913 Yoshi] Change Basic Bot's addresses to `ulong?`
-fixes empty address fields being saved as `0x0`, see #3326
-
-[bd58bde07c Yoshi] Hopefully block edge cases where global `GameInfo` is uninitialised
-`Game == null` conditions in `MainForm` ctor looked unreachable, so I changed
-them to `Game.IsNullInstance()` which is what I assume was intended, and added
-an assert to `RomLoader` in case a bug is introduced later
-
-[d84da4ec4b CPP] wire up sameboy's rumble
-
-[070e7035b3 Yoshi] Ensure there can be no edge cases involving SGXCD sysID
-breaks config, in case you care about setting a custom save dir for PCE
-
-[cb468ba806 CPP] pull in latest sameboy master, add stub camera pixel callback to prevent nondeterminism, wire disabling joypad bounce as a sync setting, various cleanup
-
-[e2a36c7242 zeromus] DisplayConfig defaults button should whack the padding back to 0
-
-[3b181ba6e4 zeromus] DisplayManager - fix crashes when setting absurdly large padding values (fixes #3321)
-
-[6eafdf7156 tom_mai78101] Fixed issue where the Copy button in Basic Bot is not toggled on/off properly.
-If the Copy button is enabled, but there is no best attempt recorded, it will crash BasicBot / EmuHawk if it attempts to copy a null Log of the best attempt.
-
-[d8fc32f1a8 CPP] (mGBA) Add in missing save types
-
-[4956bae3a2 Yoshi] Improve error message for `IToolFormAutoConfig` ext. tool missing menu
-
-[9bb96fbadc Yoshi] Update doc comments to reflect thrown exception change
-fixes 4f98733c2
-
-[6b325ff56c Yoshi] Refactor `BasicBot.IsBetter`
-
-[008a5953f6 tom_mai78101] Fixed code logic error in BasicBot
-It was comparing with itself when it's comparing the Tie Breaker 3 value.
-
-[c02975c757 CPP] merge aresv129, enable SIMD RSP
-
-[8289c1051b CPP] add hash for newly discovered GBC-GBA bootrom
-
-[efbef0bbda tom_mai78101] Fixed Basic Bot anchor points.
-Also fixed a misaligned label.
-
-[e2fb6017b7 tom_mai78101] Added missing NOT operators from the dropdown menu.
-
-[7e54322901 Yoshi] Add contributor's guide (squashed PR #3292)
-Includes primitive contributor license agreement; when creating a PR, contributors will need to check a box confirming they're not infringing on any copyrights.
-
-[94e85f1079 Yoshi] Set `Form.Owner` to MainForm for Lua-made forms
-
-[ece2d8d68c tom_mai78101] Added NOT operator to Basic Bot.
-
-[f8c847af40 CPP] add missing TMD for Zombie Skape, improve error message when TMD cannot be found
-
-[a6823e3afa Yoshi] Add core port request Issue template
-
-[730905b6c3 Yoshi] Adjust wording in Issue templates
-
-[1948721991 tom_mai78101] Increased Basic Bot max frames from 999 to 9999.
-
-[2308ba1ecc tom_mai78101] Added "Clear Output" button to Lua Console (squashed PR #3307)
-* Added "Clear Output" button to Lua Console tool.
-* Swapped out indentation from tabs to space from Line 248 through 249 for consistency.
-* Swapped out indentation from tabs to spaces for consistency.
-* Added a custom "Clear Console" icon to Bizhawk.
-
-[0d3c7b7e0c CPP] (Libretro) Implement SET_SYSTEM_AV_INFO and SET_GEOMETRY
-
-[8642513572 CPP] sameboy color correction option, make default for gambatte
-
-[e41d1a996e CPP] fix gpgx_swap_disc, re-enable disk buttons (seems to work?)
-
-[011f4bfe03 Morilli] Further imrpove RamSearch performance
-- switch _watchList from a List to an array
-- more Domain.EnterExit usage
-
-[9e90290b87 CPP] make MemoryDomain implement IMonitor (default is no-op Enter/Exit), cleanup, remove wrapper use (has a lot of churn itself), probably better performance with bulk functions
-
-[fe22d61b3a Morilli] Save Monitor for all Monitor MemoryDomains
-appends 596bd03ebe2a7721c42a8293dbf98e37e2413638 for speedup for those domains
-
-[596bd03ebe CPP] expose a possible IMonitor for memory domains, use it to speed up RAM Search for waterbox cores (25-30% speedup?)
-see #3296
-
-[806830c314 feos] nymashock: resolve !s and hide some columns in tastudio
-
-[318c1a7fea feos] tastudio: don't autorestore if current frame remained valid
-1b8b4b492623f25b0aa322901c2009de9071ebb4 removed an important bit of logic that set `_triggerAutoRestore` to false in certain cases. but simply putting the same line back there doesn't fix the problem, probably due to major refactorings over the years. so I'm adding it right into `GoToLastEmulatedFrameIfNecessary()` which is still called properly when it's needed. `JumpToGreenzone()` is kinda redundant now since it contains the same check, but it's used from the outside, and I didn't feel like refactoring this part.
-
-[369bdbe9a6 tom_mai78101] Fixed the "To PC" button not updating the disassembler view (squashed PR #3299)
-* Fixed the "To PC" button from not updating the disassembler view in the Debugger window.
-* Fixed the calls being reversed, per feedback.
-
-[b8f8b41f2c CPP] Give NHL 96 (Genesis) SRAM (fixes #3300)
-
-[206dcaf49b Yoshi] Refactors for selection in `InputRoll`
-also standardises behaviour of Select All and Insert Separator buttons
-see e88fa8135
-
-[5875df4b76 CPP] prevent svp dereferences when not using an svp cart (fixes #3297)
-
-[e88fa81358 tom_mai78101] Added Select All/None to RAM Search (squashed PR #3295)
-* Added the ability to select all addresses / deselect all addresses in the RAM Search window.
-* Fixed logic error. This now makes more intuitive sense, in that, if a portion of the rows were selected, and you do Select All, it should select the unselected rows along with the selected rows.
-* Simplify condition
-Co-authored-by: Yoshi
-
-[a86591c595 tom_mai78101] Fixed RAM Watch not having CTRL+A working properly.
-
-[d9c828ef57 CPP] deterministic emulation means not real time
 
 ## changes from 2.7 to 2.8
 
