@@ -810,7 +810,11 @@ namespace BizHawk.Client.EmuHawk
 
 				Render();
 
+				IDisposable raMemHack = (RA as RAIntegration)?.ThisIsTheRAMemHack();
+
 				CheckMessages();
+
+				if (RA is RAIntegration) raMemHack!.Dispose();
 
 				if (_exitRequestPending)
 				{
@@ -2296,8 +2300,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CheckMessages()
 		{
-			using var raMemHack = (RA as RAIntegration)?.ThisIsTheRAMemHack();
-
 			Application.DoEvents();
 			if (ActiveForm != null)
 			{
