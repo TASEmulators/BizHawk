@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
+using BizHawk.BizInvoke;
 using BizHawk.Common;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
@@ -13,9 +14,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class RAIntegration : RetroAchievements
 	{
-		private static RAInterface RA;
-		public static bool IsAvailable => RA != null;
-
+		private readonly RAInterface RA;
+		
 		static RAIntegration()
 		{
 			try
@@ -116,6 +116,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_memGuard = new(_memLock, _memSema, _memSync);
 			_memAccess = new(_memLock, _memSema, _memSync);
+			
+			RA = BizInvoker.GetInvoker<RAInterface>(_resolver, _memAccess, CallingConventionAdapters.Native);
 
 			RA.InitClient(_mainForm.Handle, "BizHawk", VersionInfo.GetEmuVersion());
 
@@ -153,11 +155,10 @@ namespace BizHawk.Client.EmuHawk
 				HandleHardcoreModeDisable("Loading savestates is not allowed in hardcore mode.");
 			}
 
-			using var access = _memAccess.EnterExit();
 			RA.OnLoadState(path);
 		}
 		
-		private static void QuickLoadCallback(object _, BeforeQuickLoadEventArgs e)
+		private void QuickLoadCallback(object _, BeforeQuickLoadEventArgs e)
 		{
 			if (RA.HardcoreModeIsActive())
 			{
@@ -236,8 +237,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void Update()
 		{
-			using var access = _memAccess.EnterExit();
-
 			if (RA.HardcoreModeIsActive())
 			{
 				CheckHardcoreModeConditions();
@@ -268,8 +267,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void OnFrameAdvance()
 		{
-			using var access = _memAccess.EnterExit();
-
 			var input = _inputManager.ControllerOutput;
 			if (input.Definition.BoolButtons.Any(b => (b.Contains("Power") || b.Contains("Reset")) && input.IsPressed(b)))
 			{

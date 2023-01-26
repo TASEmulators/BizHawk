@@ -12,23 +12,35 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class RAIntegration
 	{
+		private static RAInterface _RA;
 		private static DynamicLibraryImportResolver _resolver;
 		private static Version _version;
+		
+		public static bool IsAvailable => _RA != null;
+
+		// can't have both a proxy with a monitor and without one, so...
+		private class DummyMonitor : IMonitor
+		{
+			public void Enter() {}
+			public void Exit() {}
+
+			public static readonly DummyMonitor Singleton = new();
+		}
 
 		private static void AttachDll()
 		{
 			_resolver = new("RA_Integration-x64.dll", hasLimitedLifetime: true);
-			RA = BizInvoker.GetInvoker<RAInterface>(_resolver, CallingConventionAdapters.Native);
-			_version = new(Marshal.PtrToStringAnsi(RA.IntegrationVersion())!);
+			_RA = BizInvoker.GetInvoker<RAInterface>(_resolver, DummyMonitor.Singleton, CallingConventionAdapters.Native);
+			_version = new(Marshal.PtrToStringAnsi(_RA.IntegrationVersion())!);
 			Console.WriteLine($"Loaded RetroAchievements v{_version}");
 		}
 
 		private static void DetachDll()
 		{
-			RA?.Shutdown();
+			_RA?.Shutdown();
 			_resolver?.Dispose();
 			_resolver = null;
-			RA = null;
+			_RA = null;
 			_version = new(0, 0);
 		}
 
