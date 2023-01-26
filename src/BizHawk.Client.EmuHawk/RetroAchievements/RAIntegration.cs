@@ -281,5 +281,9 @@ namespace BizHawk.Client.EmuHawk
 				RA.DoAchievementsFrame();
 			}
 		}
+
+		// FIXME: THIS IS GARBAGE
+		public RAMemGuard.AccessWrapper? ThisIsTheRAMemHack()
+			=> _memGuard.GetAccess();
 	}
 }

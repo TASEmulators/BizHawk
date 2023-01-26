@@ -2296,6 +2296,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CheckMessages()
 		{
+			using var raMemHack = (RA as RAIntegration)?.ThisIsTheRAMemHack();
+
 			Application.DoEvents();
 			if (ActiveForm != null)
 			{

@@ -21,8 +21,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				lock (MemSync)
 				{
-					MemSema.Wait();
 					MemLock.Wait();
+					MemSema.Wait();
 				}
 			}
 
@@ -37,7 +37,8 @@ namespace BizHawk.Client.EmuHawk
 				MemSema.Dispose();
 			}
 
-			public readonly ref struct AccessWrapper
+			// can't be a ref struct due to ThisIsTheRAMemHack :(
+			public readonly struct AccessWrapper : IDisposable
 			{
 				private readonly RAMemGuard _guard;
 
