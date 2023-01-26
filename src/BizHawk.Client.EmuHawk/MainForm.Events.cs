@@ -352,12 +352,12 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void QuickSavestateMenuItem_Click(object sender, EventArgs e)
-			=> SaveQuickSave(int.Parse(((MenuItem) sender).Text));
+			=> SaveQuickSave(int.Parse(((ToolStripMenuItem) sender).Text));
 
 		private void SaveNamedStateMenuItem_Click(object sender, EventArgs e) => SaveStateAs();
 
 		private void QuickLoadstateMenuItem_Click(object sender, EventArgs e)
-			=> LoadQuickSave(int.Parse(((MenuItem) sender).Text));
+			=> LoadQuickSave(int.Parse(((ToolStripMenuItem) sender).Text));
 
 		private void LoadNamedStateMenuItem_Click(object sender, EventArgs e) => LoadStateAs();
 
