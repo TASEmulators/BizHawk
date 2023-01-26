@@ -810,11 +810,11 @@ namespace BizHawk.Client.EmuHawk
 
 				Render();
 
-				IDisposable raMemHack = (RA as RAIntegration)?.ThisIsTheRAMemHack();
+				var raMemHack = (RA as RAIntegration)?.ThisIsTheRAMemHack();
 
 				CheckMessages();
 
-				if (RA is RAIntegration) raMemHack!.Dispose();
+				if (RA is not null) raMemHack?.Dispose();
 
 				if (_exitRequestPending)
 				{
