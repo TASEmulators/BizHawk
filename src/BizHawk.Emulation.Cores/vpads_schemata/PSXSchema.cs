@@ -111,7 +111,7 @@ namespace BizHawk.Emulation.Cores
 
 		private static PadSchema NymaDualShockController(int controller)
 		{
-			var stickRanges = new[] { new AxisSpec(0.RangeTo(0xFFFF), 0x8000), new AxisSpec(0.RangeTo(0xFFFF), 0x8000, isReversed: true) };
+			var stickRanges = new[] { new AxisSpec(0.RangeTo(0xFF), 0x80), new AxisSpec(0.RangeTo(0xFF), 0x80, isReversed: true) };
 			return new PadSchema
 			{
 				Size = new Size(500, 290),

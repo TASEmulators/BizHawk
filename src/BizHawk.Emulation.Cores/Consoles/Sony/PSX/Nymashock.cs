@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 
@@ -9,6 +10,29 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 	[PortedCore(CoreNames.Nymashock, "Mednafen Team", "1.29.0", "https://mednafen.github.io/releases/")]
 	public class Nymashock : NymaCore, IRegionable, ICycleTiming
 	{
+		protected override void AddAxis(
+			ControllerDefinition ret,
+			string name,
+			bool isReversed,
+			ref ControllerThunk thunk,
+			int thunkWriteOffset)
+		{
+			if (name.EndsWith(" Left Stick Up / Down") || name.EndsWith(" Left Stick Left / Right")
+				|| name.EndsWith(" Right Stick Up / Down") || name.EndsWith(" Right Stick Left / Right"))
+			{
+				ret.AddAxis(name, 0.RangeTo(0xFF), 0x80, isReversed);
+				thunk = (c, b) =>
+				{
+					b[thunkWriteOffset] = 0;
+					b[thunkWriteOffset + 1] = (byte) c.AxisValue(name);
+				};
+			}
+			else
+			{
+				base.AddAxis(ret, name, isReversed: isReversed, ref thunk, thunkWriteOffset);
+			}
+		}
+
 		private Nymashock(CoreComm comm)
 			: base(comm, VSystemID.Raw.NULL, null, null, null)
 		{

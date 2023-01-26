@@ -19,10 +19,31 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private readonly byte[] _inputPortData = new byte[MAX_INPUT_DATA];
 		private readonly string _controllerDeckName;
 
+		protected delegate void AddAxisHook(
+			ControllerDefinition ret,
+			string name,
+			bool isReversed,
+			ref ControllerThunk thunk,
+			int thunkWriteOffset);
+
+		protected virtual void AddAxis(
+			ControllerDefinition ret,
+			string name,
+			bool isReversed,
+			ref ControllerThunk thunk,
+			int thunkWriteOffset)
+				=> ret.AddAxis(name, 0.RangeTo(0xFFFF), 0x8000, isReversed);
+
 		private void InitControls(List<NPortInfoT> allPorts, int numCds, ref SystemInfo si)
 		{
 			_controllerAdapter = new ControllerAdapter(
-				allPorts, _syncSettingsActual.PortDevices, OverrideButtonName, numCds, ref si, ComputeHiddenPorts(),
+				allPorts,
+				_syncSettingsActual.PortDevices,
+				OverrideButtonName,
+				numCds,
+				ref si,
+				ComputeHiddenPorts(),
+				AddAxis,
 				_controllerDeckName);
 			_nyma.SetInputDevices(_controllerAdapter.Devices);
 			ControllerDefinition = _controllerAdapter.Definition;
@@ -45,6 +66,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				int numCds,
 				ref SystemInfo systemInfo,
 				HashSet<string> hiddenPorts,
+				AddAxisHook addAxisHook,
 				string controllerDeckName)
 			{
 				ControllerDefinition ret = new(controllerDeckName)
@@ -178,15 +200,15 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							{
 								var data = input.Extra.AsAxis();
 								var fullName = $"{name} {overrideName(data.NameNeg)} / {overrideName(data.NamePos)}";
-
-								ret.AddAxis(fullName, 0.RangeTo(0xFFFF), 0x8000, (input.Flags & AxisFlags.InvertCo) != 0);
-								ret.CategoryLabels[fullName] = category;
-								_thunks.Add((c, b) =>
+								ControllerThunk thunk = (c, b) =>
 								{
 									var val = c.AxisValue(fullName);
 									b[byteStart] = (byte)val;
 									b[byteStart + 1] = (byte)(val >> 8);
-								});
+								};
+								addAxisHook(ret, fullName, (input.Flags & AxisFlags.InvertCo) is not 0, ref thunk, byteStart);
+								ret.CategoryLabels[fullName] = category;
+								_thunks.Add(thunk);
 								break;
 							}
 							case InputType.AxisRel:
