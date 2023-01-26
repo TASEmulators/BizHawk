@@ -133,6 +133,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RA?.Shutdown();
 			_memGuard.Dispose();
+			_mainForm.EmuClient.BeforeQuickLoad -= QuickLoadCallback;
 		}
 
 		public override void OnSaveState(string path)
@@ -146,6 +147,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			RA.OnLoadState(path);
+		}
+		
+		private static void QuickLoadCallback(object _, BeforeQuickLoadEventArgs e)
+		{
+			if (RA.HardcoreModeIsActive())
+			{
+				e.Handled = !RA.WarnDisableHardcore("load a quicksave");
+			}
 		}
 
 		public override void Stop()
@@ -214,13 +223,7 @@ namespace BizHawk.Client.EmuHawk
 			_mainForm.UpdateWindowTitle();
 
 			// note: this can only catch quicksaves (probably only case of accidential use from hotkeys)
-			_mainForm.EmuClient.BeforeQuickLoad += (_, e) =>
-			{
-				if (RA.HardcoreModeIsActive())
-				{
-					e.Handled = !RA.WarnDisableHardcore("load a quicksave");
-				}
-			};
+			_mainForm.EmuClient.BeforeQuickLoad += QuickLoadCallback;
 		}
 
 		public override void Update()

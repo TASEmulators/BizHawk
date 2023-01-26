@@ -213,6 +213,7 @@ namespace BizHawk.Client.EmuHawk
 			_gameInfoForm.Dispose();
 			_cheevoListForm.Dispose();
 			_lboardListForm.Dispose();
+			_mainForm.EmuClient.BeforeQuickLoad -= QuickLoadCallback;
 		}
 
 		public override void OnSaveState(string path)
@@ -251,6 +252,14 @@ namespace BizHawk.Client.EmuHawk
 			using var file = File.OpenRead(path + ".rap");
 			var buffer = file.ReadAllBytes();
 			_lib.rc_runtime_deserialize_progress(ref _runtime, buffer, IntPtr.Zero);
+		}
+		
+		private void QuickLoadCallback(object _, BeforeQuickLoadEventArgs e)
+		{
+			if (HardcoreMode)
+			{
+				e.Handled = _mainForm.ShowMessageBox2(null, "Loading a quicksave is not allowed in hardcode mode. Abort loading state?", "Warning", EMsgBoxIcon.Warning);
+			}
 		}
 
 		// not sure if we really need to do anything here...
@@ -385,13 +394,7 @@ namespace BizHawk.Client.EmuHawk
 			Update();
 
 			// note: this can only catch quicksaves (probably only case of accidential use from hotkeys)
-			_mainForm.EmuClient.BeforeQuickLoad += (_, e) =>
-			{
-				if (HardcoreMode)
-				{
-					e.Handled = _mainForm.ShowMessageBox2(null, "Loading a quicksave is not allowed in hardcode mode. Abort loading state?", "Warning", EMsgBoxIcon.Warning);
-				}
-			};
+			_mainForm.EmuClient.BeforeQuickLoad += QuickLoadCallback;
 		}
 
 		public override void Update()
