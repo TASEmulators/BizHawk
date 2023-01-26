@@ -102,7 +102,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly byte[] _cheevoFormatBuffer = new byte[1024];
 
-		public string GetCheevoProgress(int id)
+		private string GetCheevoProgress(int id)
 		{
 			var len = _lib.rc_runtime_format_achievement_measured(ref _runtime, id, _cheevoFormatBuffer, _cheevoFormatBuffer.Length);
 			return Encoding.ASCII.GetString(_cheevoFormatBuffer, 0, len);

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 
@@ -10,45 +11,55 @@ namespace BizHawk.Client.EmuHawk
 {
 	public abstract partial class RetroAchievements
 	{
-		public struct RAMemGuard : IMonitor, IDisposable
+		public class RAMemGuard : IMonitor, IDisposable
 		{
-			private readonly AutoResetEvent _start, _go, _end;
-			private readonly ThreadLocal<bool> _isMainThread;
-
-			private bool IsNotMainThread => !_isMainThread.Value;
-
-			public RAMemGuard(AutoResetEvent start, AutoResetEvent go, AutoResetEvent end)
-			{
-				_start = start;
-				_go = go;
-				_end = end;
-				_isMainThread = new() { Value = true };
-			}
-
-			public void Dispose()
-			{
-				_start.Dispose();
-				_go.Dispose();
-				_end.Dispose();
-				_isMainThread.Dispose();
-			}
+			private readonly ManualResetEventSlim MemLock = new(false);
+			private readonly SemaphoreSlim MemSema = new(1);
+			private readonly object MemSync = new();
 
 			public void Enter()
 			{
-				if (IsNotMainThread)
+				lock (MemSync)
 				{
-					_start.Set();
-					_go.WaitOne();
+					MemSema.Wait();
+					MemLock.Wait();
 				}
 			}
 
 			public void Exit()
 			{
-				if (IsNotMainThread)
+				MemSema.Release();
+			}
+
+			public void Dispose()
+			{
+				MemLock.Dispose();
+				MemSema.Dispose();
+			}
+
+			public readonly ref struct AccessWrapper
+			{
+				private readonly RAMemGuard _guard;
+
+				internal AccessWrapper(RAMemGuard guard)
 				{
-					_end.Set();
+					_guard = guard;
+					_guard.MemLock.Set();
+				}
+
+				public void Dispose()
+				{
+					lock (_guard.MemSync)
+					{
+						_guard.MemLock.Reset();
+						_guard.MemSema.Wait();
+						_guard.MemSema.Release();
+					}
 				}
 			}
+
+			public AccessWrapper GetAccess()
+				=> new(this);
 		}
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -60,7 +71,7 @@ namespace BizHawk.Client.EmuHawk
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate int ReadMemoryBlockFunc(int address, IntPtr buffer, int bytes);
 
-		public class MemFunctions
+		protected class MemFunctions
 		{
 			protected readonly MemoryDomain _domain;
 			private readonly int _domainAddrStart; // addr of _domain where bank begins
@@ -72,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 
 			public readonly int BankSize;
 
-			public RAMemGuard? MemGuard { get; set; }
+			public RAMemGuard MemGuard { get; set; }
 
 			protected virtual int FixAddr(int addr)
 				=> _domainAddrStart + addr;
@@ -119,7 +130,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							for (var i = addr; i < end; i++)
 							{
-								((byte*)buffer)[i - addr] = _domain.PeekByte(i ^ _addressMangler);
+								((byte*)buffer)![i - addr] = _domain.PeekByte(i ^ _addressMangler);
 							}
 						}
 					}
@@ -202,11 +213,11 @@ namespace BizHawk.Client.EmuHawk
 						{
 							if ((i & 2) != 0)
 							{
-								((byte*)buffer)[i - addr] = 0;
+								((byte*)buffer)![i - addr] = 0;
 							}
 							else
 							{
-								((byte*)buffer)[i - addr] = _domain.PeekByte(FixAddr(i));
+								((byte*)buffer)![i - addr] = _domain.PeekByte(FixAddr(i));
 							}
 						}
 					}
@@ -279,7 +290,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var regs = _debuggable.GetCpuFlagsAndRegisters();
 					var end = Math.Min(addr + bytes, BankSize);
-					for (int i = addr; i < end; i++)
+					for (var i = addr; i < end; i++)
 					{
 						byte val;
 						if (i < 0x40)
@@ -293,7 +304,7 @@ namespace BizHawk.Client.EmuHawk
 
 						unsafe
 						{
-							((byte*)buffer)[i - addr] = val;
+							((byte*)buffer)![i - addr] = val;
 						}
 					}
 
@@ -310,13 +321,13 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// these consoles will use the entire system bus
-		private static readonly ConsoleID[] UseFullSysBus = new[]
+		private static readonly ConsoleID[] UseFullSysBus =
 		{
 			ConsoleID.NES, ConsoleID.C64, ConsoleID.AmstradCPC, ConsoleID.Atari7800,
 		};
 
 		// these consoles will use the entire main memory domain
-		private static readonly ConsoleID[] UseFullMainMem = new[]
+		private static readonly ConsoleID[] UseFullMainMem =
 		{
 			ConsoleID.PlayStation, ConsoleID.Lynx, ConsoleID.Lynx, ConsoleID.NeoGeoPocket,
 			ConsoleID.Jaguar, ConsoleID.JaguarCD, ConsoleID.DS, ConsoleID.AppleII,
@@ -370,10 +381,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (UsePartialSysBus.TryGetValue(consoleId, out var pairs))
 			{
-				foreach (var pair in pairs)
-				{
-					mfs.Add(new(domains.SystemBus, pair.Start, pair.Size));
-				}
+				mfs.AddRange(pairs.Select(pair => new MemFunctions(domains.SystemBus, pair.Start, pair.Size)));
 			}
 			else
 			{
@@ -502,13 +510,8 @@ namespace BizHawk.Client.EmuHawk
 						mfs.Add(new(domains.MainMemory, 0, domains.MainMemory.Size, 3));
 						break;
 					case ConsoleID.Arcade:
-						foreach (var domain in domains)
-						{
-							if (domain.Name.Contains("ram"))
-							{
-								mfs.Add(new(domain, 0, domain.Size));
-							}
-						}
+						mfs.AddRange(domains.Where(domain => domain.Name.Contains("ram"))
+							.Select(domain => new MemFunctions(domain, 0, domain.Size)));
 						break;
 					case ConsoleID.UnknownConsoleID:
 					case ConsoleID.ZXSpectrum: // this doesn't actually have anything standardized, so...

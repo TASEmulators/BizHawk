@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_resolver = new("RA_Integration-x64.dll", hasLimitedLifetime: true);
 			RA = BizInvoker.GetInvoker<RAInterface>(_resolver, CallingConventionAdapters.Native);
-			_version = new(Marshal.PtrToStringAnsi(RA.IntegrationVersion()));
+			_version = new(Marshal.PtrToStringAnsi(RA.IntegrationVersion())!);
 			Console.WriteLine($"Loaded RetroAchievements v{_version}");
 		}
 
@@ -58,58 +58,42 @@ namespace BizHawk.Client.EmuHawk
 
 					if (_version < minVer)
 					{
-						if (mainForm.ShowMessageBox2(
-							owner: null,
-							text: "An update is required to use RetroAchievements. Do you want to download the update now?",
-							caption: "Update",
-							icon: EMsgBoxIcon.Question,
-							useOKCancel: false))
-						{
-							DetachDll();
-							var ret = DownloadDll((string)info["LatestVersionUrlX64"]);
-							AttachDll();
-							return ret;
-						}
-						else
-						{
-							return false;
-						}
+						if (!mainForm.ShowMessageBox2(
+								owner: null,
+								text:
+								"An update is required to use RetroAchievements. Do you want to download the update now?",
+								caption: "Update",
+								icon: EMsgBoxIcon.Question,
+								useOKCancel: false)) return false;
+						DetachDll();
+						var ret = DownloadDll((string)info["LatestVersionUrlX64"]);
+						AttachDll();
+						return ret;
 					}
-					else if (_version < lastestVer)
-					{
-						if (mainForm.ShowMessageBox2(
-							owner: null,
-							text: "An optional update is available for RetroAchievements. Do you want to download the update now?",
-							caption: "Update",
-							icon: EMsgBoxIcon.Question,
-							useOKCancel: false))
-						{
-							DetachDll();
-							DownloadDll((string)info["LatestVersionUrlX64"]);
-							AttachDll();
-							return true; // even if this fails, should be OK to use the old dll
-						}
-						else
-						{
-							// don't have to update in this case
-							return true;
-						}
-					}
-					else
-					{
-						return true;
-					}
-				}
-				else
-				{
-					mainForm.ShowMessageBox(
-						owner: null,
-						text: "Failed to fetch update information, cannot start RetroAchievements.",
-						caption: "Error",
-						icon: EMsgBoxIcon.Error);
 
-					return false;
+					if (_version >= lastestVer) return true;
+
+					if (!mainForm.ShowMessageBox2(
+							owner: null,
+							text:
+							"An optional update is available for RetroAchievements. Do you want to download the update now?",
+							caption: "Update",
+							icon: EMsgBoxIcon.Question,
+							useOKCancel: false)) return true;
+
+					DetachDll();
+					DownloadDll((string)info["LatestVersionUrlX64"]);
+					AttachDll();
+					return true; // even if this fails, should be OK to use the old dll
 				}
+
+				mainForm.ShowMessageBox(
+					owner: null,
+					text: "Failed to fetch update information, cannot start RetroAchievements.",
+					caption: "Error",
+					icon: EMsgBoxIcon.Error);
+
+				return false;
 			}
 			catch (Exception ex)
 			{

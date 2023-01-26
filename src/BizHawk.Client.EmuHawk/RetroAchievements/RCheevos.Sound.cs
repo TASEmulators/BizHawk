@@ -29,6 +29,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch
 			{
+				// ignored
 			}
 		}
 	}

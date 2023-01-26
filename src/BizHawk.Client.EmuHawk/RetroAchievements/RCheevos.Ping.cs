@@ -7,7 +7,6 @@ namespace BizHawk.Client.EmuHawk
 	public partial class RCheevos
 	{
 		private bool RichPresenceActive { get; set; }
-
 		private string CurrentRichPresence { get; set; }
 
 		private static async Task<bool> StartGameSessionAsync(string username, string api_token, int id)
@@ -63,11 +62,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var now = DateTime.Now;
-			if ((now - _lastPingTime) >= _pingCooldown)
-			{
-				SendPing(Username, ApiToken, _gameData.GameID, CurrentRichPresence);
-				_lastPingTime = now;
-			}
+			if (now - _lastPingTime < _pingCooldown) return;
+			SendPing(Username, ApiToken, _gameData.GameID, CurrentRichPresence);
+			_lastPingTime = now;
 		}
 	}
 }

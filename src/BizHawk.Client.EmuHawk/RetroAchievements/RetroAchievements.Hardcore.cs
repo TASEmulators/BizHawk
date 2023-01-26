@@ -29,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 		// To keep changes outside this file minimal, we'll simply check if any problematic condition arises and disable hardcore mode
 		// (with the exception of frame advance and rewind, which we can just suppress)
 
-		private static readonly Type[] HardcoreProhibitedTools = new[]
+		private static readonly Type[] HardcoreProhibitedTools =
 		{
 			typeof(LuaConsole), typeof(RamWatch), typeof(RamSearch),
 			typeof(GameShark), typeof(SNESGraphicsDebugger), typeof(PceBgViewer),
@@ -93,11 +93,9 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var t in HardcoreProhibitedTools)
 			{
-				if (_tools.IsLoaded(t))
-				{
-					HandleHardcoreModeDisable($"Using {t.Name} in hardcore mode is not allowed.");
-					return;
-				}
+				if (!_tools.IsLoaded(t)) continue;
+				HandleHardcoreModeDisable($"Using {t.Name} in hardcore mode is not allowed.");
+				return;
 			}
 
 			// can't know what external tools are doing, so just don't allow them here
@@ -107,58 +105,53 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (Emu is SubNESHawk or SubBsnesCore or SubGBHawk)
+			switch (Emu)
 			{
-				// this is mostly due to wonkiness with subframes which can be used as pseudo slowdown
-				HandleHardcoreModeDisable($"Using subframes in hardcore mode is not allowed.");
-				return;
-			}
-			else if (Emu is NymaCore nyma)
-			{
-				if (nyma.GetSettings().DisabledLayers.Any())
-				{
-					HandleHardcoreModeDisable($"Disabling {Emu.GetType().Name}'s graphics layers in hardcore mode is not allowed.");
-					return;
-				}
-			}
-			else if (Emu is GambatteLink gl)
-			{
-				foreach (var ss in gl.GetSyncSettings()._linkedSyncSettings)
-				{
-					if (!ss.DisplayBG || !ss.DisplayOBJ || !ss.DisplayWindow)
+				case SubNESHawk or SubBsnesCore or SubGBHawk:
+					// this is mostly due to wonkiness with subframes which can be used as pseudo slowdown
+					HandleHardcoreModeDisable($"Using subframes in hardcore mode is not allowed.");
+					break;
+				case NymaCore nyma:
+					if (nyma.GetSettings().DisabledLayers.Any())
+					{
+						HandleHardcoreModeDisable($"Disabling {Emu.GetType().Name}'s graphics layers in hardcore mode is not allowed.");
+					}
+					break;
+				case GambatteLink gl:
+					if (gl.GetSyncSettings()._linkedSyncSettings.Any(ss => !ss.DisplayBG || !ss.DisplayOBJ || !ss.DisplayWindow))
 					{
 						HandleHardcoreModeDisable($"Disabling GambatteLink's graphics layers in hardcore mode is not allowed.");
-						return;
 					}
-				}
-			}
-			else if (Emu is Gameboy gb)
-			{
-				var ss = gb.GetSyncSettings();
-				if (!ss.DisplayBG || !ss.DisplayOBJ || !ss.DisplayWindow)
+					break;
+				case Gameboy gb:
 				{
-					HandleHardcoreModeDisable($"Disabling Gambatte's graphics layers in hardcore mode is not allowed.");
-					return;
-				}
-				if (ss.FrameLength is Gameboy.GambatteSyncSettings.FrameLengthType.UserDefinedFrames)
-				{
-					HandleHardcoreModeDisable($"Using subframes in hardcore mode is not allowed.");
-					return;
-				}
-			}
-			else if (CoreGraphicsLayers.TryGetValue(Emu.GetType(), out var layers))
-			{
-				var s = _mainForm.GetSettingsAdapterForLoadedCoreUntyped().GetSettings();
-				var t = s.GetType();
-				foreach (var layer in layers)
-				{
-					// annoyingly NES has fields instead of properties for layers
-					if (!(bool)(t.GetProperty(layer)?.GetValue(s) ?? t.GetField(layer).GetValue(s)))
+					var ss = gb.GetSyncSettings();
+					if (!ss.DisplayBG || !ss.DisplayOBJ || !ss.DisplayWindow)
 					{
-						HandleHardcoreModeDisable($"Disabling {Emu.GetType().Name}'s {layer} in hardcore mode is not allowed.");
-						return;
+						HandleHardcoreModeDisable($"Disabling Gambatte's graphics layers in hardcore mode is not allowed.");
 					}
+					else if (ss.FrameLength is Gameboy.GambatteSyncSettings.FrameLengthType.UserDefinedFrames)
+					{
+						HandleHardcoreModeDisable($"Using subframes in hardcore mode is not allowed.");
+					}
+					break;
 				}
+				default:
+					if (CoreGraphicsLayers.TryGetValue(Emu.GetType(), out var layers))
+					{
+						var s = _mainForm.GetSettingsAdapterForLoadedCoreUntyped().GetSettings();
+						var t = s.GetType();
+						foreach (var layer in layers)
+						{
+							// annoyingly NES has fields instead of properties for layers
+							if ((bool)(t.GetProperty(layer)
+									?.GetValue(s) ?? t.GetField(layer)
+									.GetValue(s))) continue;
+							HandleHardcoreModeDisable($"Disabling {Emu.GetType().Name}'s {layer} in hardcore mode is not allowed.");
+							return;
+						}
+					}
+					break;
 			}
 		}
 	}

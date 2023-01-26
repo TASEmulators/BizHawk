@@ -43,12 +43,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly RAInterface.MenuItem[] _menuItems = new RAInterface.MenuItem[40];
 
-		// Memory may be accessed by another thread (for rich presence)
+		// Memory may be accessed by another thread (mainly rich presence, some other things too)
 		// and peeks for us are not thread safe, so we need to guard it
-		private readonly AutoResetEvent _memAccessReady = new(false);
-		private readonly AutoResetEvent _memAccessGo = new(false);
-		private readonly AutoResetEvent _memAccessDone = new(false);
-		private readonly RAMemGuard _memGuard;
+		private readonly RAMemGuard _memGuard = new();
+
+		private bool _firstRestart = true;
 
 		private void RebuildMenu()
 		{
@@ -111,8 +110,6 @@ namespace BizHawk.Client.EmuHawk
 			Func<Config> getConfig, ToolStripItemCollection raDropDownItems, Action shutdownRACallback)
 			: base(mainForm, inputManager, tools, getConfig, raDropDownItems, shutdownRACallback)
 		{
-			_memGuard = new(_memAccessReady, _memAccessGo, _memAccessDone);
-
 			RA.InitClient(_mainForm.Handle, "BizHawk", VersionInfo.GetEmuVersion());
 
 			_isActive = () => !Emu.IsNull();
@@ -125,7 +122,7 @@ namespace BizHawk.Client.EmuHawk
 				Marshal.Copy(name, 0, buffer, Math.Min(name.Length, 256));
 			};
 			_resetEmulator = () => _mainForm.RebootCore();
-			_loadROM = path => _ = _mainForm.LoadRom(path, new LoadRomArgs { OpenAdvanced = OpenAdvancedSerializer.ParseWithLegacy(path) });
+			_loadROM = path => _ = _mainForm.LoadRom(path, new() { OpenAdvanced = OpenAdvancedSerializer.ParseWithLegacy(path) });
 
 			RA.InstallSharedFunctionsExt(_isActive, _unpause, _pause, _rebuildMenu, _estimateTitle, _resetEmulator, _loadROM);
 
@@ -159,6 +156,25 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void Restart()
 		{
+			if (_firstRestart)
+			{
+				_firstRestart = false;
+				if (RA.HardcoreModeIsActive())
+				{
+					if (!_mainForm.RebootCore())
+					{
+						// unset hardcore mode if we fail to reboot core somehow
+						HandleHardcoreModeDisable("Failed to reboot core.");
+					}
+					if (RA.HardcoreModeIsActive() && _mainForm.CurrentlyOpenRomArgs is not null)
+					{
+						// if we aren't hardcore anymore, we failed to reboot the core (and didn't call Restart probably)
+						// if CurrentlyOpenRomArgs is null, then Restart won't be called (as RebootCore returns true immediately), so
+						return;
+					}
+				}
+			}
+
 			var consoleId = SystemIdToConsoleId();
 			RA.SetConsoleID(consoleId);
 
@@ -168,7 +184,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_memFunctions = CreateMemoryBanks(consoleId, Domains, Emu.CanDebug() ? Emu.AsDebuggable() : null);
 
-				for (int i = 0; i < _memFunctions.Count; i++)
+				for (var i = 0; i < _memFunctions.Count; i++)
 				{
 					_memFunctions[i].MemGuard = _memGuard;
 					RA.InstallMemoryBank(i, _memFunctions[i].ReadFunc, _memFunctions[i].WriteFunc, _memFunctions[i].BankSize);
@@ -209,6 +225,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void Update()
 		{
+			using var access = _memGuard.GetAccess();
+
 			if (RA.HardcoreModeIsActive())
 			{
 				CheckHardcoreModeConditions();
@@ -219,41 +237,32 @@ namespace BizHawk.Client.EmuHawk
 				RA.SetPaused(true);
 			}
 
-			if (RA.IsOverlayFullyVisible())
+			if (!RA.IsOverlayFullyVisible()) return;
+
+			var ci = new RAInterface.ControllerInput
 			{
-				var ci = new RAInterface.ControllerInput
-				{
-					UpPressed = _inputManager.ClientControls["RA Up"],
-					DownPressed = _inputManager.ClientControls["RA Down"],
-					LeftPressed = _inputManager.ClientControls["RA Left"],
-					RightPressed = _inputManager.ClientControls["RA Right"],
-					ConfirmPressed = _inputManager.ClientControls["RA Confirm"],
-					CancelPressed = _inputManager.ClientControls["RA Cancel"],
-					QuitPressed = _inputManager.ClientControls["RA Quit"],
-				};
+				UpPressed = _inputManager.ClientControls["RA Up"],
+				DownPressed = _inputManager.ClientControls["RA Down"],
+				LeftPressed = _inputManager.ClientControls["RA Left"],
+				RightPressed = _inputManager.ClientControls["RA Right"],
+				ConfirmPressed = _inputManager.ClientControls["RA Confirm"],
+				CancelPressed = _inputManager.ClientControls["RA Cancel"],
+				QuitPressed = _inputManager.ClientControls["RA Quit"],
+			};
 
-				RA.NavigateOverlay(ref ci);
+			RA.NavigateOverlay(ref ci);
 
-				// todo: suppress user inputs with overlay active?
-			}
-
-			if (_memAccessReady.WaitOne(0))
-			{
-				_memAccessGo.Set();
-				_memAccessDone.WaitOne();
-			}
+			// todo: suppress user inputs with overlay active?
 		}
 
 		public override void OnFrameAdvance()
 		{
+			using var access = _memGuard.GetAccess();
+
 			var input = _inputManager.ControllerOutput;
-			foreach (var resetButton in input.Definition.BoolButtons.Where(b => b.Contains("Power") || b.Contains("Reset")))
+			if (input.Definition.BoolButtons.Any(b => (b.Contains("Power") || b.Contains("Reset")) && input.IsPressed(b)))
 			{
-				if (input.IsPressed(resetButton))
-				{
-					RA.OnReset();
-					break;
-				}
+				RA.OnReset();
 			}
 
 			if (Emu.HasMemoryDomains())

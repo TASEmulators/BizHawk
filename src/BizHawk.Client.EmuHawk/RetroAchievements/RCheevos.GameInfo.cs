@@ -53,9 +53,9 @@ namespace BizHawk.Client.EmuHawk
 						unsafe
 						{
 							var unlocks = (int*)resp.achievement_ids;
-							for (int i = 0; i < resp.num_achievement_ids; i++)
+							for (var i = 0; i < resp.num_achievement_ids; i++)
 							{
-								if (_cheevos.TryGetValue(unlocks[i], out var cheevo))
+								if (_cheevos.TryGetValue(unlocks![i], out var cheevo))
 								{
 									cheevo.SetUnlocked(hardcore, true);
 								}
@@ -104,18 +104,18 @@ namespace BizHawk.Client.EmuHawk
 
 				var cheevos = new Dictionary<int, Cheevo>();
 				var cptr = (LibRCheevos.rc_api_achievement_definition_t*)resp.achievements;
-				for (int i = 0; i < resp.num_achievements; i++)
+				for (var i = 0; i < resp.num_achievements; i++)
 				{
-					cheevos.Add(cptr[i].id, new(in cptr[i], allowUnofficialCheevos));
+					cheevos.Add(cptr![i].id, new(in cptr[i], allowUnofficialCheevos));
 				}
 
 				_cheevos = cheevos;
 
 				var lboards = new Dictionary<int, LBoard>();
 				var lptr = (LibRCheevos.rc_api_leaderboard_definition_t*)resp.leaderboards;
-				for (int i = 0; i < resp.num_leaderboards; i++)
+				for (var i = 0; i < resp.num_leaderboards; i++)
 				{
-					lboards.Add(lptr[i].id, new(in lptr[i]));
+					lboards.Add(lptr![i].id, new(in lptr[i]));
 				}
 
 				_lboards = lboards;
@@ -133,21 +133,8 @@ namespace BizHawk.Client.EmuHawk
 				GameBadge = null;
 				RichPresenseScript = gameData.RichPresenseScript;
 
-				var cheevos = new Dictionary<int, Cheevo>();
-				foreach (var cheevo in gameData.CheevoEnumerable)
-				{
-					cheevos.Add(cheevo.ID, new(in cheevo, allowUnofficialCheevos));
-				}
-
-				_cheevos = cheevos;
-
-				var lboards = new Dictionary<int, LBoard>();
-				foreach (var lboard in gameData.LBoardEnumerable)
-				{
-					lboards.Add(lboard.ID, new(in lboard));
-				}
-
-				_lboards = lboards;
+				_cheevos = gameData.CheevoEnumerable.ToDictionary<Cheevo, int, Cheevo>(cheevo => cheevo.ID, cheevo => new(in cheevo, allowUnofficialCheevos));
+				_lboards = gameData.LBoardEnumerable.ToDictionary<LBoard, int, LBoard>(lboard => lboard.ID, lboard => new(in lboard));
 
 				SoftcoreInitUnlocksReady = new(false);
 				HardcoreInitUnlocksReady = new(false);
@@ -159,7 +146,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private async Task<int> SendHashAsync(string hash)
+		private static async Task<int> SendHashAsync(string hash)
 		{
 			var api_params = new LibRCheevos.rc_api_resolve_hash_request_t(null, null, hash);
 			var ret = 0;
@@ -244,7 +231,7 @@ namespace BizHawk.Client.EmuHawk
 				try
 				{
 					var serv_resp = await SendAPIRequest(in api_req).ConfigureAwait(false);
-					ret = new Bitmap(new MemoryStream(serv_resp));
+					ret = new(new MemoryStream(serv_resp));
 				}
 				catch
 				{

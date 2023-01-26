@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 using BizHawk.Common;
@@ -48,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 						buffer.AddRange(new ArraySegment<byte>(buf2048, 0, 128));
 						var bootSector = (buf2048[35] << 24) | (buf2048[34] << 16) | (buf2048[33] << 8) | buf2048[32];
 						var numSectors = (buf2048[39] << 24) | (buf2048[38] << 16) | (buf2048[37] << 8) | buf2048[36];
-						for (int i = 0; i < numSectors; i++)
+						for (var i = 0; i < numSectors; i++)
 						{
 							dsr.ReadLBA_2048(bootSector + i, buf2048, 0);
 							buffer.AddRange(buf2048);
@@ -82,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 							return -1;
 						}
 
-						string exePath = "PSX.EXE";
+						var exePath = "PSX.EXE";
 
 						// find SYSTEM.CNF sector
 						var sector = GetFileSector("SYSTEM.CNF", out _);
@@ -154,36 +155,30 @@ namespace BizHawk.Client.EmuHawk
 						var numLbas = disc.Session1.FirstInformationTrack.NextTrack.LBA - disc.Session1.FirstInformationTrack.LBA;
 						int bootLen = 0, bootLba = 0, bootOff = 0;
 						bool byteswapped = false, foundHeader = false;
-						for (int i = 0; i < numLbas; i++)
+						for (var i = 0; i < numLbas; i++)
 						{
 							dsr.ReadLBA_2352(startLba + i, buf2352, 0);
 
-							for (int j = 0; j < (2352 - 32 - 4 - 4); j++)
+							for (var  j = 0; j < 2352 - 32 - 4 - 4; j++)
 							{
 								if (buf2352[j] == _jaguarHeader[0])
 								{
-									if (_jaguarHeader == Encoding.ASCII.GetString(buf2352, j, 32))
-									{
-										bootLen = (buf2352[j + 36] << 24) | (buf2352[j + 37] << 16) | (buf2352[j + 38] << 8) | buf2352[j + 39];
-										bootLba = startLba + i;
-										bootOff = j + 32 + 4 + 4;
-										byteswapped = false;
-										foundHeader = true;
-										break;
-									}
+									if (_jaguarHeader != Encoding.ASCII.GetString(buf2352, j, 32)) continue;
+									bootLen = (buf2352[j + 36] << 24) | (buf2352[j + 37] << 16) | (buf2352[j + 38] << 8) | buf2352[j + 39];
+									bootLba = startLba + i;
+									bootOff = j + 32 + 4 + 4;
+									byteswapped = false;
+									foundHeader = true;
+									break;
 								}
-								else if (buf2352[j] == _jaguarBSHeader[0])
-								{
-									if (_jaguarBSHeader == Encoding.ASCII.GetString(buf2352, j, 32))
-									{
-										bootLen = (buf2352[j + 37] << 24) | (buf2352[j + 36] << 16) | (buf2352[j + 39] << 8) | buf2352[j + 38];
-										bootLba = startLba + i;
-										bootOff = j + 32 + 4 + 4;
-										byteswapped = true;
-										foundHeader = true;
-										break;
-									}
-								}
+
+								if (buf2352[j] != _jaguarBSHeader[0] || _jaguarBSHeader != Encoding.ASCII.GetString(buf2352, j, 32)) continue;
+								bootLen = (buf2352[j + 37] << 24) | (buf2352[j + 36] << 16) | (buf2352[j + 39] << 8) | buf2352[j + 38];
+								bootLba = startLba + i;
+								bootOff = j + 32 + 4 + 4;
+								byteswapped = true;
+								foundHeader = true;
+								break;
 							}
 
 							if (foundHeader)
@@ -256,14 +251,9 @@ namespace BizHawk.Client.EmuHawk
 							using var sr = new StreamReader(file.GetStream());
 							var m3u = M3U_File.Read(sr);
 							m3u.Rebase(Path.GetDirectoryName(ioa.SimplePath));
-							foreach (var entry in m3u.Entries)
-							{
-								var id = HashDisc(entry.Path, consoleID, ++discCount);
-								if (id.HasValue)
-								{
-									ret.Add(id.Value);
-								}
-							}
+							ret.AddRange(m3u.Entries.Select(entry => HashDisc(entry.Path, consoleID, ++discCount))
+								.Where(id => id.HasValue)
+								.Select(id => id.Value));
 						}
 						else if (ext == ".xml")
 						{

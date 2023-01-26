@@ -246,12 +246,11 @@ namespace BizHawk.Client.EmuHawk
 
 			_lib.rc_runtime_reset(ref _runtime);
 
-			if (File.Exists(path + ".rap"))
-			{
-				using var file = File.OpenRead(path + ".rap");
-				var buffer = file.ReadAllBytes();
-				_lib.rc_runtime_deserialize_progress(ref _runtime, buffer, IntPtr.Zero);
-			}
+			if (!File.Exists(path + ".rap")) return;
+
+			using var file = File.OpenRead(path + ".rap");
+			var buffer = file.ReadAllBytes();
+			_lib.rc_runtime_deserialize_progress(ref _runtime, buffer, IntPtr.Zero);
 		}
 
 		// not sure if we really need to do anything here...
@@ -333,14 +332,9 @@ namespace BizHawk.Client.EmuHawk
 
 				if (gameId != 0)
 				{
-					if (_cachedGameDatas.TryGetValue(gameId, out var cachedGameData))
-					{
-						_gameData = new GameData(cachedGameData, () => AllowUnofficialCheevos);
-					}
-					else
-					{
-						_gameData = GetGameData(Username, ApiToken, gameId, () => AllowUnofficialCheevos);
-					}
+					_gameData = _cachedGameDatas.TryGetValue(gameId, out var cachedGameData)
+						? new(cachedGameData, () => AllowUnofficialCheevos)
+						: GetGameData(Username, ApiToken, gameId, () => AllowUnofficialCheevos);
 
 					StartGameSession(Username, ApiToken, gameId);
 
@@ -373,12 +367,12 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					_gameData = new GameData();
+					_gameData = new();
 				}
 			}
 			else
 			{
-				_gameData = new GameData();
+				_gameData = new();
 			}
 
 			// validate addresses now that we have cheevos init
@@ -593,13 +587,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var input = _inputManager.ControllerOutput;
-			foreach (var resetButton in input.Definition.BoolButtons.Where(b => b.Contains("Power") || b.Contains("Reset")))
+			if (input.Definition.BoolButtons.Any(b => (b.Contains("Power") || b.Contains("Reset")) && input.IsPressed(b)))
 			{
-				if (input.IsPressed(resetButton))
-				{
-					_lib.rc_runtime_reset(ref _runtime);
-					break;
-				}
+				_lib.rc_runtime_reset(ref _runtime);
 			}
 
 			if (Emu.HasMemoryDomains())
