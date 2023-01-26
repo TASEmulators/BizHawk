@@ -45,7 +45,11 @@ namespace BizHawk.Client.EmuHawk
 
 		// Memory may be accessed by another thread (mainly rich presence, some other things too)
 		// and peeks for us are not thread safe, so we need to guard it
-		private readonly RAMemGuard _memGuard = new();
+		private readonly ManualResetEventSlim _memLock = new(false);
+		private readonly SemaphoreSlim _memSema = new(1);
+		private readonly object _memSync = new();
+		private readonly RAMemGuard _memGuard;
+		private readonly RAMemAccess _memAccess;
 
 		private bool _firstRestart = true;
 
@@ -110,6 +114,9 @@ namespace BizHawk.Client.EmuHawk
 			Func<Config> getConfig, ToolStripItemCollection raDropDownItems, Action shutdownRACallback)
 			: base(mainForm, inputManager, tools, getConfig, raDropDownItems, shutdownRACallback)
 		{
+			_memGuard = new(_memLock, _memSema, _memSync);
+			_memAccess = new(_memLock, _memSema, _memSync);
+
 			RA.InitClient(_mainForm.Handle, "BizHawk", VersionInfo.GetEmuVersion());
 
 			_isActive = () => !Emu.IsNull();
@@ -146,6 +153,7 @@ namespace BizHawk.Client.EmuHawk
 				HandleHardcoreModeDisable("Loading savestates is not allowed in hardcore mode.");
 			}
 
+			using var access = _memAccess.EnterExit();
 			RA.OnLoadState(path);
 		}
 		
@@ -228,7 +236,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void Update()
 		{
-			using var access = _memGuard.GetAccess();
+			using var access = _memAccess.EnterExit();
 
 			if (RA.HardcoreModeIsActive())
 			{
@@ -260,7 +268,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void OnFrameAdvance()
 		{
-			using var access = _memGuard.GetAccess();
+			using var access = _memAccess.EnterExit();
 
 			var input = _inputManager.ControllerOutput;
 			if (input.Definition.BoolButtons.Any(b => (b.Contains("Power") || b.Contains("Reset")) && input.IsPressed(b)))
@@ -283,7 +291,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// FIXME: THIS IS GARBAGE
-		public RAMemGuard.AccessWrapper? ThisIsTheRAMemHack()
-			=> _memGuard.GetAccess();
+		public IMonitor ThisIsTheRAMemHack()
+			=> _memAccess;
 	}
 }

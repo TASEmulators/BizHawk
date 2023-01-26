@@ -11,56 +11,86 @@ namespace BizHawk.Client.EmuHawk
 {
 	public abstract partial class RetroAchievements
 	{
-		public class RAMemGuard : IMonitor, IDisposable
+		protected class RAMemGuard : IMonitor, IDisposable
 		{
-			private readonly ManualResetEventSlim MemLock = new(false);
-			private readonly SemaphoreSlim MemSema = new(1);
-			private readonly object MemSync = new();
+			private readonly ManualResetEventSlim _memLock;
+			private readonly SemaphoreSlim _memSema;
+			private readonly object _memSync;
+
+			public RAMemGuard(ManualResetEventSlim memLock, SemaphoreSlim memSema, object memSync)
+			{
+				_memLock = memLock;
+				_memSema = memSema;
+				_memSync = memSync;
+			}
 
 			public void Enter()
 			{
-				lock (MemSync)
+				lock (_memSync)
 				{
-					MemLock.Wait();
-					MemSema.Wait();
+					_memLock.Wait();
+					_memSema.Wait();
 				}
 			}
 
 			public void Exit()
 			{
-				MemSema.Release();
+				_memSema.Release();
 			}
 
 			public void Dispose()
 			{
-				MemLock.Dispose();
-				MemSema.Dispose();
+				_memLock.Dispose();
+				_memSema.Dispose();
+			}
+		}
+
+		protected class RAMemAccess : IMonitor
+		{
+			private readonly ManualResetEventSlim _memLock;
+			private readonly SemaphoreSlim _memSema;
+			private readonly object _memSync;
+			private int _refCount;
+
+			public RAMemAccess(ManualResetEventSlim memLock, SemaphoreSlim memSema, object memSync)
+			{
+				_memLock = memLock;
+				_memSema = memSema;
+				_memSync = memSync;
+				_refCount = 0;
 			}
 
-			// can't be a ref struct due to ThisIsTheRAMemHack :(
-			public readonly struct AccessWrapper : IDisposable
+			public void Enter()
 			{
-				private readonly RAMemGuard _guard;
-
-				internal AccessWrapper(RAMemGuard guard)
+				if (_refCount == 0)
 				{
-					_guard = guard;
-					_guard.MemLock.Set();
+					_memLock.Set();
 				}
 
-				public void Dispose()
+				_refCount++;
+			}
+
+			public void Exit()
+			{
+				switch (_refCount)
 				{
-					lock (_guard.MemSync)
+					case <= 0:
+						throw new InvalidOperationException($"Invalid {nameof(_refCount)}");
+					case 1:
 					{
-						_guard.MemLock.Reset();
-						_guard.MemSema.Wait();
-						_guard.MemSema.Release();
+						lock (_memSync)
+						{
+							_memLock.Reset();
+							_memSema.Wait();
+							_memSema.Release();
+						}
+
+						break;
 					}
 				}
-			}
 
-			public AccessWrapper GetAccess()
-				=> new(this);
+				_refCount--;
+			}
 		}
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]

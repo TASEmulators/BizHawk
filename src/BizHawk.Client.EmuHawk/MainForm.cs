@@ -810,11 +810,16 @@ namespace BizHawk.Client.EmuHawk
 
 				Render();
 
+				// HACK: RAIntegration might peek at memory during messages
+				// we need this to allow memory access here, otherwise it will deadlock
 				var raMemHack = (RA as RAIntegration)?.ThisIsTheRAMemHack();
+				raMemHack?.Enter();
 
 				CheckMessages();
 
-				if (RA is not null) raMemHack?.Dispose();
+				// RA == null possibly due MainForm Dispose disposing RA (which case Exit is not valid anymore)
+				// RA != null possibly due to RA object being created (which case raMemHack is null, as RA was null before)
+				if (RA is not null) raMemHack?.Exit();
 
 				if (_exitRequestPending)
 				{
