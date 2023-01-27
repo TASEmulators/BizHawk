@@ -25,6 +25,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private LibRCheevos.rc_runtime_t _runtime;
 
+		private readonly LibRCheevos.rc_runtime_event_handler_t _eventcb;
+		private readonly LibRCheevos.rc_peek_t _peekcb;
+
 		private readonly Dictionary<int, (ReadMemoryFunc Func, int Start)> _readMap = new();
 
 		private ToolStripMenuItem _hardcoreModeMenuItem;
@@ -194,6 +197,9 @@ namespace BizHawk.Client.EmuHawk
 			InitLoginDone = new(false);
 			Login();
 			InitLoginDone.WaitOne();
+
+			_eventcb = EventHandlerCallback;
+			_peekcb = PeekCallback;
 
 			var config = _getConfig();
 			CheevosActive = config.RACheevosActive;
@@ -385,7 +391,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// validate addresses now that we have cheevos init
-			_lib.rc_runtime_validate_addresses(ref _runtime, EventHandlerCallback, address => _readMap.ContainsKey(address));
+			// ReSharper disable once ConvertToLocalFunction
+			LibRCheevos.rc_runtime_validate_address_t peekcb = address => _readMap.ContainsKey(address);
+			_lib.rc_runtime_validate_addresses(ref _runtime, _eventcb, peekcb);
 
 			_gameInfoForm.Restart(_gameData.Title, _gameData.TotalCheevoPoints(HardcoreMode), CurrentRichPresence ?? "N/A");
 			_cheevoListForm.Restart(_gameData.GameID == 0 ? Array.Empty<Cheevo>() : _gameData.CheevoEnumerable, GetCheevoProgress);
@@ -600,12 +608,12 @@ namespace BizHawk.Client.EmuHawk
 				// we want to EnterExit to prevent wbx host spam when peeks are spammed
 				using (Domains.MainMemory.EnterExit())
 				{
-					_lib.rc_runtime_do_frame(ref _runtime, EventHandlerCallback, PeekCallback, IntPtr.Zero, IntPtr.Zero);
+					_lib.rc_runtime_do_frame(ref _runtime, _eventcb, _peekcb, IntPtr.Zero, IntPtr.Zero);
 				}
 			}
 			else
 			{
-				_lib.rc_runtime_do_frame(ref _runtime, EventHandlerCallback, PeekCallback, IntPtr.Zero, IntPtr.Zero);
+				_lib.rc_runtime_do_frame(ref _runtime, _eventcb, _peekcb, IntPtr.Zero, IntPtr.Zero);
 			}
 
 			if (_gameInfoForm.IsShown)

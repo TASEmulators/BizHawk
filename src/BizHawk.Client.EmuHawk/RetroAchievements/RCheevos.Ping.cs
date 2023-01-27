@@ -53,7 +53,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (RichPresenceActive)
 			{
-				var len = _lib.rc_runtime_get_richpresence(ref _runtime, _richPresenceBuffer, _richPresenceBuffer.Length, PeekCallback, IntPtr.Zero, IntPtr.Zero);
+				var len = _lib.rc_runtime_get_richpresence(ref _runtime, _richPresenceBuffer, _richPresenceBuffer.Length, _peekcb, IntPtr.Zero, IntPtr.Zero);
 				CurrentRichPresence = Encoding.UTF8.GetString(_richPresenceBuffer, 0, len);
 			}
 			else
