@@ -3,6 +3,9 @@ set -e
 if [ -z "$SYSROOT" ]; then export SYSROOT="$(realpath "$(dirname "$0")/../sysroot")"; fi
 if [ -z "$LLVMDIR" ]; then export LLVMDIR="$(realpath "$(dirname "$0")/../llvm-project")"; fi
 
+# this step is skipped on gcc (which just uses host headers, unfortunately)
+if [ -f "$SYSROOT/bin/musl-gcc" ]; then exit; fi
+
 # no building here, just copying intrinsic headers from llvm-project/clang/lib/Headers
 
 export CLANG_INCLUDE_DIR=$LLVMDIR/clang/lib/Headers
