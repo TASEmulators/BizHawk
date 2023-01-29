@@ -23,7 +23,13 @@ print-%: ;
 
 #LD_PLUGIN := $(shell gcc --print-file-name=liblto_plugin.so)
 
+ifeq (,$(wildcard $(SYSROOT)/bin/musl-clang))
 CC := $(SYSROOT)/bin/musl-clang
+else ifeq (,$(wildcard $(SYSROOT)/bin/musl-gcc))
+CC := $(SYSROOT)/bin/musl-gcc
+else
+$(error Compiler not found in sysroot)
+endif
 COMMONFLAGS := -fvisibility=hidden -I$(WATERBOX_DIR)/emulibc -Wall -mcmodel=large \
 	-mstack-protector-guard=global -fno-pic -fno-pie -fcf-protection=none \
 	-MD -MP
@@ -31,7 +37,7 @@ ifdef NEED_INTRINSICS
 COMMONFLAGS := $(COMMONFLAGS) -I$(SYSROOT)/intrinsics/x86_64
 endif
 CCFLAGS := $(COMMONFLAGS) $(CCFLAGS)
-LDFLAGS := $(LDFLAGS) -static -Wl,-no-pie,--eh-frame-hdr -T $(LINKSCRIPT) #-Wl,--plugin,$(LD_PLUGIN)
+LDFLAGS := $(LDFLAGS) -static -Wl,--no-pie,--eh-frame-hdr -T $(LINKSCRIPT) #-Wl,--plugin,$(LD_PLUGIN)
 CCFLAGS_DEBUG := -O0 -g
 CCFLAGS_RELEASE := -O3 -flto
 CCFLAGS_RELEASE_ASONLY := -O3
