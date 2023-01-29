@@ -17,7 +17,7 @@ MEDNAFLAGS := \
 	-Wvla -Wvariadic-macros -Wdisabled-optimization -Werror=write-strings \
 	-Dprivate=public # the gods have abandoned us
 
-ifeq (,$(wildcard ../sysroot/bin/musl-gcc))
+ifneq (,$(wildcard ../sysroot/bin/musl-gcc))
 MEDNAFLAGS := $(MEDNAFLAGS) -fno-aggressive-loop-optimizations \
 	-mindirect-branch=keep -mno-indirect-branch-register \
 	--param max-gcse-memory=300000000

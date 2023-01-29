@@ -23,9 +23,9 @@ print-%: ;
 
 #LD_PLUGIN := $(shell gcc --print-file-name=liblto_plugin.so)
 
-ifeq (,$(wildcard $(SYSROOT)/bin/musl-clang))
+ifneq (,$(wildcard $(SYSROOT)/bin/musl-clang))
 CC := $(SYSROOT)/bin/musl-clang
-else ifeq (,$(wildcard $(SYSROOT)/bin/musl-gcc))
+else ifneq (,$(wildcard $(SYSROOT)/bin/musl-gcc))
 CC := $(SYSROOT)/bin/musl-gcc
 else
 $(error Compiler not found in sysroot)
