@@ -17,6 +17,12 @@ MEDNAFLAGS := \
 	-Wvla -Wvariadic-macros -Wdisabled-optimization -Werror=write-strings \
 	-Dprivate=public # the gods have abandoned us
 
+ifeq (,$(wildcard ../sysroot/bin/musl-gcc))
+MEDNAFLAGS := $(MEDNAFLAGS) -fno-aggressive-loop-optimizations \
+	-mindirect-branch=keep -mno-indirect-branch-register \
+	--param max-gcse-memory=300000000
+endif
+
 CCFLAGS := $(MEDNAFLAGS) -std=gnu99
 CXXFLAGS := $(MEDNAFLAGS) -std=gnu++11
 EXTRA_LIBS := -lz
