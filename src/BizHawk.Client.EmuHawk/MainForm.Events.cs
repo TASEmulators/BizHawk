@@ -441,7 +441,7 @@ namespace BizHawk.Client.EmuHawk
 			EnsureCoreIsAccurate();
 
 			using var form = new RecordMovie(this, Config, Game, Emulator, MovieSession, FirmwareManager);
-			form.ShowDialog();
+			this.ShowDialogWithTempMute(form);
 		}
 
 		private string CanProvideFirmware(FirmwareID id, string hash)
@@ -455,7 +455,7 @@ namespace BizHawk.Client.EmuHawk
 		private void PlayMovieMenuItem_Click(object sender, EventArgs e)
 		{
 			using var form = new PlayMovie(this, Config, Game, Emulator, MovieSession, CanProvideFirmware);
-			form.ShowDialog();
+			this.ShowDialogWithTempMute(form);
 		}
 
 		private void StopMovieMenuItem_Click(object sender, EventArgs e)
@@ -544,7 +544,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ConfigAndRecordAVMenuItem_Click(object sender, EventArgs e)
 		{
-			if (OSTailoredCode.IsUnixHost) new MsgBox("Most of these options will cause crashes on Linux.", "A/V instability warning", MessageBoxIcon.Warning).ShowDialog();
+			if (OSTailoredCode.IsUnixHost)
+			{
+				using MsgBox dialog = new("Most of these options will cause crashes on Linux.", "A/V instability warning", MessageBoxIcon.Warning);
+				this.ShowDialogWithTempMute(dialog);
+			}
 			RecordAv();
 		}
 
@@ -859,7 +863,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ControllersMenuItem_Click(object sender, EventArgs e)
 		{
 			using var controller = new ControllerConfig(this, Emulator, Config);
-			if (!controller.ShowDialog().IsOk()) return;
+			if (!this.ShowDialogWithTempMute(controller).IsOk()) return;
 			AddOnScreenMessage("Controller settings saved");
 
 			InitControls();
@@ -869,7 +873,7 @@ namespace BizHawk.Client.EmuHawk
 		private void HotkeysMenuItem_Click(object sender, EventArgs e)
 		{
 			using var hotkeyConfig = new HotkeyConfig(Config);
-			if (!hotkeyConfig.ShowDialog().IsOk()) return;
+			if (!this.ShowDialogWithTempMute(hotkeyConfig).IsOk()) return;
 			AddOnScreenMessage("Hotkey settings saved");
 
 			InitControls();
@@ -887,26 +891,26 @@ namespace BizHawk.Client.EmuHawk
 					Config.PathEntries,
 					retryLoadRom: true,
 					reloadRomPath: args.RomPath);
-				var result = configForm.ShowDialog();
+				var result = this.ShowDialogWithTempMute(configForm);
 				args.Retry = result == DialogResult.Retry;
 			}
 			else
 			{
 				using var configForm = new FirmwaresConfig(this, FirmwareManager, Config.FirmwareUserSpecifications, Config.PathEntries);
-				configForm.ShowDialog();
+				this.ShowDialogWithTempMute(configForm);
 			}
 		}
 
 		private void MessagesMenuItem_Click(object sender, EventArgs e)
 		{
 			using var form = new MessageConfig(Config);
-			if (form.ShowDialog().IsOk()) AddOnScreenMessage("Message settings saved");
+			if (this.ShowDialogWithTempMute(form).IsOk()) AddOnScreenMessage("Message settings saved");
 		}
 
 		private void PathsMenuItem_Click(object sender, EventArgs e)
 		{
 			using var form = new PathConfig(Config.PathEntries, Game.System, newPath => MovieSession.BackupDirectory = newPath);
-			if (form.ShowDialog().IsOk()) AddOnScreenMessage("Path settings saved");
+			if (this.ShowDialogWithTempMute(form).IsOk()) AddOnScreenMessage("Path settings saved");
 		}
 
 		private void SoundMenuItem_Click(object sender, EventArgs e)
@@ -921,7 +925,7 @@ namespace BizHawk.Client.EmuHawk
 			var oldOutputMethod = Config.SoundOutputMethod;
 			var oldDevice = Config.SoundDevice;
 			using var form = new SoundConfig(this, Config, GetDeviceNamesCallback);
-			if (!form.ShowDialog().IsOk()) return;
+			if (!this.ShowDialogWithTempMute(form).IsOk()) return;
 
 			AddOnScreenMessage("Sound settings saved");
 			if (Config.SoundOutputMethod == oldOutputMethod && Config.SoundDevice == oldDevice)
@@ -940,22 +944,20 @@ namespace BizHawk.Client.EmuHawk
 		private void AutofireMenuItem_Click(object sender, EventArgs e)
 		{
 			using var form = new AutofireConfig(Config, InputManager.AutoFireController, InputManager.AutofireStickyXorAdapter);
-			if (form.ShowDialog().IsOk()) AddOnScreenMessage("Autofire settings saved");
+			if (this.ShowDialogWithTempMute(form).IsOk()) AddOnScreenMessage("Autofire settings saved");
 		}
 
 		private void RewindOptionsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator.HasSavestates())
-			{
-				using var form = new RewindConfig(Config, CreateRewinder, () => this.Rewinder, Emulator.AsStatable());
-				if (form.ShowDialog().IsOk()) AddOnScreenMessage("Rewind and State settings saved");
-			}
+			if (!Emulator.HasSavestates()) return;
+			using RewindConfig form = new(Config, CreateRewinder, () => this.Rewinder, Emulator.AsStatable());
+			if (this.ShowDialogWithTempMute(form).IsOk()) AddOnScreenMessage("Rewind and State settings saved");
 		}
 
 		private void FileExtensionsMenuItem_Click(object sender, EventArgs e)
 		{
 			using var form = new FileExtensionPreferences(Config.PreferredPlatformsForExtensions);
-			if (form.ShowDialog().IsOk()) AddOnScreenMessage("Rom Extension Preferences changed");
+			if (this.ShowDialogWithTempMute(form).IsOk()) AddOnScreenMessage("Rom Extension Preferences changed");
 		}
 
 		private void BumpAutoFlushSaveRamTimer()
@@ -969,14 +971,14 @@ namespace BizHawk.Client.EmuHawk
 		private void CustomizeMenuItem_Click(object sender, EventArgs e)
 		{
 			using var form = new EmuHawkOptions(Config, BumpAutoFlushSaveRamTimer);
-			if (!form.ShowDialog().IsOk()) return;
+			if (!this.ShowDialogWithTempMute(form).IsOk()) return;
 			AddOnScreenMessage("Custom configurations saved.");
 		}
 
 		private void ProfilesMenuItem_Click(object sender, EventArgs e)
 		{
 			using var form = new ProfileConfig(Config, this);
-			if (!form.ShowDialog().IsOk()) return;
+			if (!this.ShowDialogWithTempMute(form).IsOk()) return;
 			AddOnScreenMessage("Profile settings saved");
 
 			// We hide the FirstBoot items since the user setup a Profile
@@ -1287,7 +1289,7 @@ namespace BizHawk.Client.EmuHawk
 		private void BatchRunnerMenuItem_Click(object sender, EventArgs e)
 		{
 			using var form = new BatchRun(this, Config, CreateCoreComm);
-			form.ShowDialog();
+			this.ShowDialogWithTempMute(form);
 		}
 
 		private void StartRetroAchievementsMenuItem_Click(object sender, EventArgs e)
@@ -1653,11 +1655,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PsxHashDiscsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is Octoshock psx)
-			{
-				using var form = new PSXHashDiscs(psx);
-				form.ShowDialog();
-			}
+			if (Emulator is not Octoshock psx) return;
+			using PSXHashDiscs form = new(psx);
+			this.ShowDialogWithTempMute(form);
 		}
 
 		private void SnesSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -2283,7 +2283,7 @@ namespace BizHawk.Client.EmuHawk
 		private void AboutMenuItem_Click(object sender, EventArgs e)
 		{
 			using var form = new BizBox();
-			form.ShowDialog();
+			this.ShowDialogWithTempMute(form);
 		}
 
 		private void MainFormContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
@@ -2423,11 +2423,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ViewSubtitlesContextMenuItem_Click(object sender, EventArgs e)
 		{
-			if (MovieSession.Movie.IsActive())
-			{
-				using EditSubtitlesForm form = new(this, MovieSession.Movie, Config.PathEntries, readOnly: MovieSession.ReadOnly);
-				form.ShowDialog();
-			}
+			if (MovieSession.Movie.NotActive()) return;
+			using EditSubtitlesForm form = new(this, MovieSession.Movie, Config.PathEntries, readOnly: MovieSession.ReadOnly);
+			this.ShowDialogWithTempMute(form);
 		}
 
 		private void AddSubtitleContextMenuItem_Click(object sender, EventArgs e)
@@ -2454,25 +2452,17 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			subForm.Sub = sub;
+			if (!this.ShowDialogWithTempMute(subForm).IsOk()) return;
 
-			if (subForm.ShowDialog().IsOk())
-			{
-				if (index >= 0)
-				{
-					MovieSession.Movie.Subtitles.RemoveAt(index);
-				}
-
-				MovieSession.Movie.Subtitles.Add(subForm.Sub);
-			}
+			if (index >= 0) MovieSession.Movie.Subtitles.RemoveAt(index);
+			MovieSession.Movie.Subtitles.Add(subForm.Sub);
 		}
 
 		private void ViewCommentsContextMenuItem_Click(object sender, EventArgs e)
 		{
-			if (MovieSession.Movie.IsActive())
-			{
-				using var form = new EditCommentsForm(MovieSession.Movie, MovieSession.ReadOnly);
-				form.ShowDialog();
-			}
+			if (MovieSession.Movie.NotActive()) return;
+			using EditCommentsForm form = new(MovieSession.Movie, MovieSession.ReadOnly);
+			this.ShowDialogWithTempMute(form);
 		}
 
 		private void UndoSavestateContextMenuItem_Click(object sender, EventArgs e)
@@ -2549,7 +2539,7 @@ namespace BizHawk.Client.EmuHawk
 			// We do not check if the user is actually setting a profile here.
 			// This is intentional.
 			using var profileForm = new ProfileConfig(Config, this);
-			profileForm.ShowDialog();
+			this.ShowDialogWithTempMute(profileForm);
 			Config.FirstBoot = false;
 			ProfileFirstBootLabel.Visible = false;
 		}

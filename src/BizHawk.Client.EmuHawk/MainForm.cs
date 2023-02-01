@@ -3431,7 +3431,7 @@ namespace BizHawk.Client.EmuHawk
 					if (ext == "<directory>")
 					{
 						using var fbd = new FolderBrowserEx();
-						if (fbd.ShowDialog() == DialogResult.Cancel)
+						if (this.ShowDialogWithTempMute(fbd) is DialogResult.Cancel)
 						{
 							aw.Dispose();
 							return;
@@ -3707,8 +3707,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				RomGame = rom
 			};
-
-			platformChooser.ShowDialog();
+			this.ShowDialogWithTempMute(platformChooser);
 			return platformChooser.PlatformChoice;
 		}
 
@@ -4365,13 +4364,7 @@ namespace BizHawk.Client.EmuHawk
 
 				box.MaximumSize = UIHelper.Scale(new Size(575, 175));
 				box.SetMessageToAutoSize();
-
-				var result = box.ShowDialog();
-
-				if (result != DialogResult.Yes)
-				{
-					return false;
-				}
+				if (this.ShowDialogWithTempMute(box) is not DialogResult.Yes) return false;
 
 				disableCurrentCore();
 				RebootCore();
