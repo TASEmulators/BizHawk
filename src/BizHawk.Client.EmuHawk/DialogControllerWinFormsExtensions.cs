@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -21,6 +22,9 @@ namespace BizHawk.Client.EmuHawk
 			=> dialogParent.DialogController.DoWithTempMute(() => dialog.ShowDialog(dialogParent.AsWinFormsHandle()));
 
 		public static DialogResult ShowDialogWithTempMute(this IDialogParent dialogParent, Form dialog)
+			=> dialogParent.DialogController.DoWithTempMute(() => dialog.ShowDialog(dialogParent.AsWinFormsHandle()));
+
+		public static DialogResult ShowDialogWithTempMute(this IDialogParent dialogParent, FolderBrowserEx dialog)
 			=> dialogParent.DialogController.DoWithTempMute(() => dialog.ShowDialog(dialogParent.AsWinFormsHandle()));
 
 		public static DialogResult ShowMessageBox(
