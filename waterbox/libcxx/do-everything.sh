@@ -1,5 +1,6 @@
 #!/bin/sh
 set -e
+./setup-llvm.sh
 ./configure-for-waterbox-phase-- && cd build- && make -j && make install && cd ..
 printf "completed phase -1\n"
 ./configure-for-waterbox-phase-0 && cd build0 && make -j && make install && cd ..
