@@ -950,7 +950,12 @@ namespace BizHawk.Client.EmuHawk
 		private void RewindOptionsMenuItem_Click(object sender, EventArgs e)
 		{
 			if (!Emulator.HasSavestates()) return;
-			using RewindConfig form = new(Config, CreateRewinder, () => this.Rewinder, Emulator.AsStatable());
+			using RewindConfig form = new(
+				Config,
+				PlatformFrameRates.GetFrameRate(Emulator.SystemId, Emulator.HasRegions() && Emulator.AsRegionable().Region is DisplayType.PAL), // why isn't there a helper for this
+				Emulator.AsStatable(),
+				CreateRewinder,
+				() => this.Rewinder);
 			if (this.ShowDialogWithTempMute(form).IsOk()) AddOnScreenMessage("Rewind and State settings saved");
 		}
 

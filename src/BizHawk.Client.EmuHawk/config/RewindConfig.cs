@@ -12,15 +12,23 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly Config _config;
 
+		private readonly double _framerate;
+
 		private readonly Action _recreateRewinder;
 
 		private readonly Func<IRewinder> _getRewinder;
 
 		private readonly IStatable _statableCore;
 
-		public RewindConfig(Config config, Action recreateRewinder, Func<IRewinder> getRewinder, IStatable statableCore)
+		public RewindConfig(
+			Config config,
+			double framerate,
+			IStatable statableCore,
+			Action recreateRewinder,
+			Func<IRewinder> getRewinder)
 		{
 			_config = config;
+			_framerate = framerate;
 			_recreateRewinder = recreateRewinder;
 			_getRewinder = getRewinder;
 			_statableCore = statableCore;
@@ -150,7 +158,7 @@ namespace BizHawk.Client.EmuHawk
 				estFrames = bufferSize / (double) _avgStateSize;
 			}
 			ApproxFramesLabel.Text = $"{estFrames:n0} frames";
-			EstTimeLabel.Text = $"{estFrames / 3600.0:n} minutes";
+			EstTimeLabel.Text = $"{estFrames / _framerate / 60.0:n} minutes";
 		}
 
 		private void BufferSizeUpDown_ValueChanged(object sender, EventArgs e)
