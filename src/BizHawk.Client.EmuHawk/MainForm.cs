@@ -2141,29 +2141,18 @@ namespace BizHawk.Client.EmuHawk
 			settingsMenuItem.Click += GenericCoreSettingsMenuItem_Click;
 			GenericCoreSubMenu.DropDownItems.Add(settingsMenuItem);
 
-			var specializedTools = SpecializedTools
-				.Where(t => Tools.IsAvailable(t))
-				.OrderBy(t => t.Name)
-				.ToList();
+			var specializedTools = SpecializedTools.Where(Tools.IsAvailable).OrderBy(static t => t.Name).ToList();
+			if (specializedTools.Count is 0) return;
 
-			if (specializedTools.Any())
+			GenericCoreSubMenu.DropDownItems.Add(new ToolStripSeparator());
+			foreach (var toolType in specializedTools)
 			{
-				GenericCoreSubMenu.DropDownItems.Add(new ToolStripSeparator());
-				foreach (var tool in specializedTools)
+				ToolStripMenuItem item = new()
 				{
-					var dispName = tool.GetCustomAttribute<SpecializedToolAttribute>().DisplayName;
-					var item = new ToolStripMenuItem
-					{
-						Text = "&" + dispName
-					};
-
-					item.Click += (o, e) =>
-					{
-						Tools.Load(tool);
-					};
-
-					GenericCoreSubMenu.DropDownItems.Add(item);
-				}
+					Text = $"&{toolType.GetCustomAttribute<SpecializedToolAttribute>().DisplayName}",
+				};
+				item.Click += (_, _) => Tools.Load(toolType);
+				GenericCoreSubMenu.DropDownItems.Add(item);
 			}
 		}
 
