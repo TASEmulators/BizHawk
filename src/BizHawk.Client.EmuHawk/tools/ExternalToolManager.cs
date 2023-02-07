@@ -18,13 +18,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			private readonly string _asmChecksum;
 
-			private readonly string _asmFilename;
-
 			private readonly string _entryPointTypeName;
 
 			private readonly ExternalToolManager _extToolMan;
 
 			private bool _skipExtToolWarning;
+
+			public readonly string AsmFilename;
 
 			public MenuItemInfo(
 				ExternalToolManager extToolMan,
@@ -33,21 +33,21 @@ namespace BizHawk.Client.EmuHawk
 				string entryPointTypeName)
 			{
 				_asmChecksum = asmChecksum;
-				_asmFilename = asmFilename;
 				_entryPointTypeName = entryPointTypeName;
 				_extToolMan = extToolMan;
-				_skipExtToolWarning = _extToolMan._config.TrustedExtTools.TryGetValue(_asmFilename, out var s) && s == _asmChecksum;
+				_skipExtToolWarning = _extToolMan._config.TrustedExtTools.TryGetValue(asmFilename, out var s) && s == _asmChecksum;
+				AsmFilename = asmFilename;
 			}
 
 			public void TryLoad()
 			{
 				var success = _extToolMan._loadCallback(
-					/*toolPath:*/ _asmFilename,
+					/*toolPath:*/ AsmFilename,
 					/*customFormTypeName:*/ _entryPointTypeName,
 					/*skipExtToolWarning:*/ _skipExtToolWarning);
 				if (!success || _skipExtToolWarning) return;
 				_skipExtToolWarning = true;
-				_extToolMan._config.TrustedExtTools[_asmFilename] = _asmChecksum;
+				_extToolMan._config.TrustedExtTools[AsmFilename] = _asmChecksum;
 			}
 		}
 
