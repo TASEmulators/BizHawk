@@ -19,6 +19,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private static readonly Lazy<IReadOnlyCollection<Type>> ToolTypes = new(() => EmuHawk.ReflectionCache.Types
 			.Where(static t => typeof(IToolForm).IsAssignableFrom(t) && typeof(Form).IsAssignableFrom(t))
+#if DEBUG
+			.Where(static t => t.Namespace is not "BizHawk.Client.EmuHawk.ForDebugging")
+#endif
 			.Where(VersionInfo.DeveloperBuild
 				? static t => true
 				: static t => !t.GetCustomAttributes(false).OfType<ToolAttribute>().Any(static a => !a.Released))
@@ -65,6 +68,18 @@ namespace BizHawk.Client.EmuHawk
 					Text = name,
 				};
 				tsb.Click += (_, _) => Tools.Load(t);
+				ToolBoxStrip.Items.Add(tsb);
+			}
+			foreach (var tsi in ((MainForm) MainForm).ExtToolManager.ToolStripItems) //TODO nicer encapsulation
+			{
+				if (!tsi.Enabled) continue;
+				ToolStripButton tsb = new() {
+					DisplayStyle = ToolStripItemDisplayStyle.Image,
+					Image = tsi.Image ?? IconMissingIcon.Value,
+					Text = tsi.Text,
+				};
+				var info = (ExternalToolManager.MenuItemInfo) tsi.Tag;
+				tsb.Click += (_, _) => info.TryLoad();
 				ToolBoxStrip.Items.Add(tsb);
 			}
 		}

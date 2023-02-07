@@ -1019,7 +1019,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly IGL GL;
 
-		private readonly ExternalToolManager ExtToolManager;
+		internal readonly ExternalToolManager ExtToolManager;
 
 		public readonly ToolManager Tools;
 
