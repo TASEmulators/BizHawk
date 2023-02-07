@@ -261,34 +261,51 @@ namespace BizHawk.Client.EmuHawk
 			ProfilesMenuItem.Image = Properties.Resources.Profile;
 			SaveConfigMenuItem.Image = Properties.Resources.Save;
 			LoadConfigMenuItem.Image = Properties.Resources.LoadConfig;
-			ToolBoxMenuItem.Image = Properties.Resources.ToolBox;
-			RamWatchMenuItem.Image = Properties.Resources.Watch;
-			RamSearchMenuItem.Image = Properties.Resources.Search;
-			LuaConsoleMenuItem.Image = Properties.Resources.TextDoc;
-			TAStudioMenuItem.Image = Properties.Resources.TAStudio;
-			HexEditorMenuItem.Image = Properties.Resources.Poke;
-			TraceLoggerMenuItem.Image = Properties.Resources.Pencil;
-			DebuggerMenuItem.Image = Properties.Resources.Bug;
-			CodeDataLoggerMenuItem.Image = Properties.Resources.CdLogger;
-			VirtualPadMenuItem.Image = Properties.Resources.GameController;
-			BasicBotMenuItem.Image = Properties.Resources.BasicBotBit;
-			CheatsMenuItem.Image = Properties.Resources.Freeze;
-			GameSharkConverterMenuItem.Image = Properties.Resources.Shark;
-			MultiDiskBundlerFileMenuItem.Image = Properties.Resources.SaveConfig;
+			(ToolBoxMenuItem.Image, /*ToolBoxMenuItem.Text*/_) = ToolManager.IconAndNameCache[typeof(ToolBox)]
+				= (/*ToolBox.ToolIcon.ToBitmap()*/Properties.Resources.ToolBox, "Tool Box");
+			(RamWatchMenuItem.Image, /*RamWatchMenuItem.Text*/_) = ToolManager.IconAndNameCache[typeof(RamWatch)]
+				= (/*RamWatch.ToolIcon.ToBitmap()*/Properties.Resources.Watch, "RAM Watch");
+			(RamSearchMenuItem.Image, /*RamSearchMenuItem.Text*/_) = ToolManager.IconAndNameCache[typeof(RamSearch)]
+				= (/*RamSearch.ToolIcon.ToBitmap()*/Properties.Resources.Search, "RAM Search");
+			(LuaConsoleMenuItem.Image, /*LuaConsoleMenuItem.Text*/_) = ToolManager.IconAndNameCache[typeof(LuaConsole)]
+				= (/*LuaConsole.ToolIcon.ToBitmap()*/Properties.Resources.TextDoc, "Lua Console");
+			(TAStudioMenuItem.Image, /*TAStudioMenuItem.Text*/_) = ToolManager.IconAndNameCache[typeof(TAStudio)]
+				= (/*TAStudio.ToolIcon.ToBitmap()*/Properties.Resources.TAStudio, "TAStudio");
+			(HexEditorMenuItem.Image, /*HexEditorMenuItem.Text*/_) = ToolManager.IconAndNameCache[typeof(HexEditor)]
+				= (/*HexEditor.ToolIcon.ToBitmap()*/Properties.Resources.Poke, "Hex Editor");
+			(TraceLoggerMenuItem.Image, /*TraceLoggerMenuItem.Text*/_) = ToolManager.IconAndNameCache[typeof(TraceLogger)]
+				= (/*TraceLogger.ToolIcon.ToBitmap()*/Properties.Resources.Pencil, "Trace Logger");
+			(DebuggerMenuItem.Image, /*DebuggerMenuItem.Text*/_) = ToolManager.IconAndNameCache[typeof(GenericDebugger)]
+				= (/*GenericDebugger.ToolIcon.ToBitmap()*/Properties.Resources.Bug, "Debugger");
+			(CodeDataLoggerMenuItem.Image, /*CodeDataLoggerMenuItem.Text*/_) = ToolManager.IconAndNameCache[typeof(CDL)]
+				= (/*CDL.ToolIcon.ToBitmap()*/Properties.Resources.CdLogger, "Code Data Logger");
+			(VirtualPadMenuItem.Image, /*VirtualPadMenuItem.Text*/_) = ToolManager.IconAndNameCache[typeof(VirtualpadTool)]
+				= (/*VirtualpadTool.ToolIcon.ToBitmap()*/Properties.Resources.GameController, "Virtual Pads");
+			(BasicBotMenuItem.Image, /*BasicBotMenuItem.Text*/_) = ToolManager.IconAndNameCache[typeof(BasicBot)]
+				= (/*BasicBot.ToolIcon.ToBitmap()*/Properties.Resources.BasicBotBit, "Basic Bot");
+			(CheatsMenuItem.Image, /*CheatsMenuItem.Text*/_) = ToolManager.IconAndNameCache[typeof(Cheats)]
+				= (/*Cheats.ToolIcon.ToBitmap()*/Properties.Resources.Freeze, "Cheats");
+			(GameSharkConverterMenuItem.Image, /*GameSharkConverterMenuItem.Text*/_) = ToolManager.IconAndNameCache[typeof(GameShark)]
+				= (/*GameShark.ToolIcon.ToBitmap()*/Properties.Resources.Shark, "Cheat Code Converter");
+			(MultiDiskBundlerFileMenuItem.Image, /*MultiDiskBundlerFileMenuItem.Text*/_) = ToolManager.IconAndNameCache[typeof(MultiDiskBundler)]
+				= (/*MultiDiskBundler.ToolIcon.ToBitmap()*/Properties.Resources.SaveConfig, "Multi-disk Bundler");
 			NesControllerSettingsMenuItem.Image = Properties.Resources.GameController;
 			NESGraphicSettingsMenuItem.Image = Properties.Resources.TvIcon;
 			NESSoundChannelsMenuItem.Image = Properties.Resources.Audio;
-			KeypadMenuItem.Image = Properties.Resources.Calculator;
+			(KeypadMenuItem.Image, /*KeypadMenuItem.Text*/_) = ToolManager.IconAndNameCache[typeof(TI83KeyPad)]
+				= (/*TI83KeyPad.ToolIcon.ToBitmap()*/Properties.Resources.Calculator, "TI-83 Virtual KeyPad");
 			PSXControllerSettingsMenuItem.Image = Properties.Resources.GameController;
 			SNESControllerConfigurationMenuItem.Image = Properties.Resources.GameController;
-			SnesGfxDebuggerMenuItem.Image = Properties.Resources.Bug;
+			(SnesGfxDebuggerMenuItem.Image, /*SnesGfxDebuggerMenuItem.Text*/_) = ToolManager.IconAndNameCache[typeof(SNESGraphicsDebugger)]
+				= (/*SNESGraphicsDebugger.ToolIcon.ToBitmap()*/Properties.Resources.Bug, "Graphics Debugger");
 			ColecoControllerSettingsMenuItem.Image = Properties.Resources.GameController;
 			N64PluginSettingsMenuItem.Image = Properties.Resources.Monitor;
 			N64ControllerSettingsMenuItem.Image = Properties.Resources.GameController;
 			IntVControllerSettingsMenuItem.Image = Properties.Resources.GameController;
 			OnlineHelpMenuItem.Image = Properties.Resources.Help;
 			ForumsMenuItem.Image = Properties.Resources.TAStudio;
-			FeaturesMenuItem.Image = Properties.Resources.KitchenSink;
+			(FeaturesMenuItem.Image, /*FeaturesMenuItem.Text*/_) = ToolManager.IconAndNameCache[typeof(CoreFeatureAnalysis)]
+				= (/*CoreFeatureAnalysis.ToolIcon.ToBitmap()*/Properties.Resources.KitchenSink, "Core Features");
 			AboutMenuItem.Image = Properties.Resources.CorpHawkSmall;
 			DumpStatusButton.Image = Properties.Resources.Blank;
 			PlayRecordStatusButton.Image = Properties.Resources.Blank;
@@ -2147,10 +2164,8 @@ namespace BizHawk.Client.EmuHawk
 			GenericCoreSubMenu.DropDownItems.Add(new ToolStripSeparator());
 			foreach (var toolType in specializedTools)
 			{
-				ToolStripMenuItem item = new()
-				{
-					Text = $"&{toolType.GetCustomAttribute<SpecializedToolAttribute>().DisplayName}",
-				};
+				var (icon, name) = Tools.GetIconAndNameFor(toolType);
+				ToolStripMenuItem item = new() { Image = icon, Text = $"&{name}" };
 				item.Click += (_, _) => Tools.Load(toolType);
 				GenericCoreSubMenu.DropDownItems.Add(item);
 			}

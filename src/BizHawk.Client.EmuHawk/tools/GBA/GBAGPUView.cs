@@ -14,6 +14,9 @@ namespace BizHawk.Client.EmuHawk
 	[SpecializedTool("GPU Viewer")]
 	public partial class GbaGpuView : ToolFormBase, IToolFormAutoConfig
 	{
+		public static Icon ToolIcon
+			=> Properties.Resources.GbaIcon.Value;
+
 		[RequiredService]
 		private IGBAGPUViewable GBA { get; set; }
 
@@ -34,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 		public GbaGpuView()
 		{
 			InitializeComponent();
-			Icon = Properties.Resources.GbaIcon.Value;
+			Icon = ToolIcon;
 			// TODO: hook up something
 			// we do this twice to avoid having to & 0x7fff with every color
 			int[] tmp = GBColors.GetLut(GBColors.ColorType.vivid);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
@@ -15,6 +16,9 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class LogWindow : ToolFormBase, IToolFormAutoConfig
 	{
+		public static Icon ToolIcon
+			=> Properties.Resources.CommandWindow;
+
 		// TODO: only show add to game db when this is a Rom details dialog
 		// Let user decide what type (instead of always adding it as a good dump)
 		private readonly List<string> _lines = new List<string>();
@@ -32,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 		public LogWindow()
 		{
 			InitializeComponent();
-			Icon = Properties.Resources.CommandWindow;
+			Icon = ToolIcon;
 			AddToGameDbBtn.Image = Properties.Resources.Add;
 			Closing += (o, e) =>
 			{

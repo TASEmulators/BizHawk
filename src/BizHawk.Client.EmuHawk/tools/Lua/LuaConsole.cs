@@ -30,6 +30,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private static readonly FilesystemFilterSet SessionsFSFilterSet = new FilesystemFilterSet(new FilesystemFilter("Lua Session Files", new[] { "luases" }));
 
+		public static Icon ToolIcon
+			=> Resources.TextDocIcon;
+
 		private readonly LuaAutocompleteInstaller _luaAutoInstaller = new LuaAutocompleteInstaller();
 		private readonly Dictionary<LuaFile, FileSystemWatcher> _watches = new();
 
@@ -117,7 +120,7 @@ namespace BizHawk.Client.EmuHawk
 			InsertSeparatorToolbarItem.Image = Resources.InsertSeparator;
 			EraseToolbarItem.Image = Resources.Erase;
 			RecentScriptsSubMenu.Image = Resources.Recent;
-			Icon = Resources.TextDocIcon;
+			Icon = ToolIcon;
 
 			Closing += (o, e) =>
 			{

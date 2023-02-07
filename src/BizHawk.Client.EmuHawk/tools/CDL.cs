@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 
@@ -21,6 +22,9 @@ namespace BizHawk.Client.EmuHawk
 	public partial class CDL : ToolFormBase, IToolFormAutoConfig
 	{
 		private static readonly FilesystemFilterSet CDLFilesFSFilterSet = new(new FilesystemFilter("Code Data Logger Files", new[] { "cdl" }));
+
+		public static Icon ToolIcon
+			=> Resources.CdLoggerIcon;
 
 		private RecentFiles _recentFld = new RecentFiles();
 
@@ -75,7 +79,7 @@ namespace BizHawk.Client.EmuHawk
 			tsbLoggingActive.Image = Resources.Placeholder;
 			tsbViewUpdate.Image = Resources.Placeholder;
 			tsbExportText.Image = Resources.LoadConfig;
-			Icon = Resources.CdLoggerIcon;
+			Icon = ToolIcon;
 
 			tsbViewStyle.SelectedIndex = 0;
 

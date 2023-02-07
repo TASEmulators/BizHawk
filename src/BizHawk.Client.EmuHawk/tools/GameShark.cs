@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
@@ -18,6 +19,9 @@ namespace BizHawk.Client.EmuHawk
 		unsupportedCores: new[] { CoreNames.Snes9X })]
 	public partial class GameShark : ToolFormBase, IToolFormAutoConfig
 	{
+		public static Icon ToolIcon
+			=> Properties.Resources.SharkIcon;
+
 		[RequiredService]
 		// ReSharper disable once UnusedAutoPropertyAccessor.Local
 		private IMemoryDomains MemoryDomains { get; set; }
@@ -31,7 +35,7 @@ namespace BizHawk.Client.EmuHawk
 		public GameShark()
 		{
 			InitializeComponent();
-			Icon = Properties.Resources.SharkIcon;
+			Icon = ToolIcon;
 		}
 
 		private void Go_Click(object sender, EventArgs e)

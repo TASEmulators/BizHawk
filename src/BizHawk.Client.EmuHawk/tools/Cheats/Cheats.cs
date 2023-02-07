@@ -29,6 +29,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private static readonly FilesystemFilterSet CheatsFSFilterSet = new(new FilesystemFilter("Cheat Files", new[] { "cht" }));
 
+		public static Icon ToolIcon
+			=> Resources.FreezeIcon;
+
 		private string _sortedColumn;
 		private bool _sortReverse;
 
@@ -37,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 		public Cheats()
 		{
 			InitializeComponent();
-			Icon = Resources.FreezeIcon;
+			Icon = ToolIcon;
 			ToggleContextMenuItem.Image = Resources.Refresh;
 			RemoveContextMenuItem.Image = Resources.Delete;
 			DisableAllContextMenuItem.Image = Resources.Stop;

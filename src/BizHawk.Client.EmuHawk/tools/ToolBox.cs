@@ -14,6 +14,9 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private static readonly Lazy<Image> IconMissingIcon = new(() => Properties.Resources.Logo.ToBitmap());
 
+		public static Icon ToolIcon
+			=> Properties.Resources.ToolBoxIcon;
+
 		private static readonly Lazy<IReadOnlyCollection<Type>> ToolTypes = new(() => EmuHawk.ReflectionCache.Types
 			.Where(static t => typeof(IToolForm).IsAssignableFrom(t) && typeof(Form).IsAssignableFrom(t))
 			.Where(VersionInfo.DeveloperBuild
@@ -29,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 		public ToolBox()
 		{
 			InitializeComponent();
-			Icon = Properties.Resources.ToolBoxIcon;
+			Icon = ToolIcon;
 		}
 
 		private void ToolBox_Load(object sender, EventArgs e)
@@ -55,33 +58,11 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var t in ToolTypes.Value)
 			{
 				if (!ServiceInjector.IsAvailable(Emulator.ServiceProvider, t)) continue;
-				Icon/*?*/ image_t = null;
-				if (t.FullName == "BizHawk.Client.EmuHawk.CoreFeatureAnalysis") { image_t = Properties.Resources.Logo; }
-				if (t.FullName == "BizHawk.Client.EmuHawk.LogWindow")			{ image_t = Properties.Resources.CommandWindow; }
-				if (t.FullName == "BizHawk.Client.EmuHawk.LuaConsole")			{ image_t = Properties.Resources.TextDocIcon; }
-				if (t.FullName == "BizHawk.Client.EmuHawk.MacroInputTool")		{ image_t = Properties.Resources.TAStudioIcon; }
-				if (t.FullName == "BizHawk.Client.EmuHawk.MultiDiskBundler")	{ image_t = Properties.Resources.DualIcon; }
-				if (t.FullName == "BizHawk.Client.EmuHawk.VirtualpadTool")		{ image_t = Properties.Resources.GameControllerIcon; }
-				if (t.FullName == "BizHawk.Client.EmuHawk.BasicBot")			{ image_t = Properties.Resources.BasicBot; }
-				if (t.FullName == "BizHawk.Client.EmuHawk.CDL")					{ image_t = Properties.Resources.CdLoggerIcon; }
-				if (t.FullName == "BizHawk.Client.EmuHawk.Cheats")				{ image_t = Properties.Resources.BugIcon; }
-				if (t.FullName == "BizHawk.Client.EmuHawk.GenericDebugger")		{ image_t = Properties.Resources.BugIcon; }
-				if (t.FullName == "BizHawk.Client.EmuHawk.GameShark")			{ image_t = Properties.Resources.SharkIcon; }
-				if (t.FullName == "BizHawk.Client.EmuHawk.GBPrinterView")		{ image_t = Properties.Resources.GambatteIcon; }
-				if (t.FullName == "BizHawk.Client.EmuHawk.GbGpuView")			{ image_t = Properties.Resources.GambatteIcon; }
-				if (t.FullName == "BizHawk.Client.EmuHawk.HexEditor")			{ image_t = Properties.Resources.FreezeIcon; }
-				if (t.FullName == "BizHawk.Client.EmuHawk.TAStudio")			{ image_t = Properties.Resources.TAStudioIcon; }
-				if (t.FullName == "BizHawk.Client.EmuHawk.TraceLogger")			{ image_t = Properties.Resources.PencilIcon; }
-				if (t.FullName == "BizHawk.Client.EmuHawk.RamSearch")			{ image_t = Properties.Resources.SearchIcon; }
-				if (t.FullName == "BizHawk.Client.EmuHawk.RamWatch")			{ image_t = Properties.Resources.WatchIcon; }
-				if (t.FullName == "BizHawk.Client.EmuHawk.NESSoundConfig")		{ image_t = Properties.Resources.NesControllerIcon; }
-				if (t.FullName == "BizHawk.Client.EmuHawk.NESMusicRipper")		{ image_t = Properties.Resources.NesControllerIcon; }
-				if (t.FullName == "BizHawk.Client.EmuHawk.NesPPU")				{ image_t = Properties.Resources.MonitorIcon; }
-				if (t.FullName == "BizHawk.Client.EmuHawk.NESNameTableViewer")	{ image_t = Properties.Resources.MonitorIcon; }
-				if (t.FullName == "BizHawk.Client.EmuHawk.SmsVdpViewer")		{ image_t = Properties.Resources.SmsIcon; }
+				var (icon, name) = Tools.GetIconAndNameFor(t);
 				ToolStripButton tsb = new() {
 					DisplayStyle = ToolStripItemDisplayStyle.Image,
-					Image = image_t?.ToBitmap() ?? IconMissingIcon.Value,
+					Image = icon ?? IconMissingIcon.Value,
+					Text = name,
 				};
 				tsb.Click += (_, _) => Tools.Load(t);
 				ToolBoxStrip.Items.Add(tsb);

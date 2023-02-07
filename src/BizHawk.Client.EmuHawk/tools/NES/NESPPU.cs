@@ -16,6 +16,10 @@ namespace BizHawk.Client.EmuHawk
 		// Speedups
 		// Smarter refreshing?  only refresh when things of changed, perhaps peek at the ppu to when the pattern table has changed, or sprites have moved
 		// Maybe 48 individual bitmaps for sprites is faster than the overhead of redrawing all that transparent space
+
+		public static Icon ToolIcon
+			=> Properties.Resources.NesControllerIcon;
+
 		private readonly byte[] _ppuBusPrev = new byte[0x3000];
 		private readonly byte[] _palRamPrev = new byte[0x20];
 
@@ -49,7 +53,7 @@ namespace BizHawk.Client.EmuHawk
 		public NesPPU()
 		{
 			InitializeComponent();
-			Icon = Properties.Resources.NesControllerIcon;
+			Icon = ToolIcon;
 			CalculateFormSize();
 		}
 

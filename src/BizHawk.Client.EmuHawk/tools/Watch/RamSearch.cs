@@ -26,6 +26,9 @@ namespace BizHawk.Client.EmuHawk
 		private const int MaxDetailedSize = 1024 * 1024; // 1mb, semi-arbitrary decision, sets the size to check for and automatically switch to fast mode for the user
 		private const int MaxSupportedSize = 1024 * 1024 * 64; // 64mb, semi-arbitrary decision, sets the maximum size RAM Search will support (as it will crash beyond this)
 
+		public static Icon ToolIcon
+			=> Resources.SearchIcon;
+
 		// TODO: DoSearch grabs the state of widgets and passes it to the engine before running, so rip out code that is attempting to keep the state up to date through change events
 		private string _currentFileName = "";
 
@@ -48,7 +51,7 @@ namespace BizHawk.Client.EmuHawk
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 
 			InitializeComponent();
-			Icon = Resources.SearchIcon;
+			Icon = ToolIcon;
 			SearchMenuItem.Image = Resources.Search;
 			DoSearchContextMenuItem.Image = Resources.Search;
 			NewSearchContextMenuItem.Image = Resources.Restart;

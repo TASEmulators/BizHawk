@@ -18,6 +18,9 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public static readonly FilesystemFilterSet TAStudioProjectsFSFilterSet = new(FilesystemFilter.TAStudioProjects);
 
+		public static Icon ToolIcon
+			=> Resources.TAStudioIcon;
+
 		public override bool BlocksInputWhenFocused => IsInMenuLoop;
 
 		public new IMainFormForTools MainForm => base.MainForm;
@@ -125,7 +128,7 @@ namespace BizHawk.Client.EmuHawk
 			recentMacrosToolStripMenuItem.Image = Resources.Recent;
 			TASEditorManualOnlineMenuItem.Image = Resources.Help;
 			ForumThreadMenuItem.Image = Resources.TAStudio;
-			Icon = Resources.TAStudioIcon;
+			Icon = ToolIcon;
 
 			_defaultMainSplitDistance = MainVertialSplit.SplitterDistance;
 			_defaultBranchMarkerSplitDistance = BranchesMarkersSplit.SplitterDistance;

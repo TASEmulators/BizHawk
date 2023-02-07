@@ -19,6 +19,9 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private static readonly FilesystemFilterSet BotFilesFSFilterSet = new(new FilesystemFilter("Bot files", new[] { "bot" }));
 
+		public static Icon ToolIcon
+			=> Resources.BasicBot;
+
 		private string _currentFileName = "";
 
 		private string CurrentFileName
@@ -91,7 +94,7 @@ namespace BizHawk.Client.EmuHawk
 		public BasicBot()
 		{
 			InitializeComponent();
-			Icon = Resources.BasicBot;
+			Icon = ToolIcon;
 			NewMenuItem.Image = Resources.NewFile;
 			OpenMenuItem.Image = Resources.OpenFile;
 			SaveMenuItem.Image = Resources.SaveAs;

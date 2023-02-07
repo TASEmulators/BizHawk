@@ -16,6 +16,9 @@ namespace BizHawk.Client.EmuHawk
 		// the bg color
 		private static readonly uint PaperColor = (uint)Color.AntiqueWhite.ToArgb();
 
+		public static Icon ToolIcon
+			=> Properties.Resources.GambatteIcon;
+
 		private readonly ColorMatrix _paperAdjustment;
 
 		[RequiredService]
@@ -35,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 		public GBPrinterView()
 		{
 			InitializeComponent();
-			Icon = Properties.Resources.GambatteIcon;
+			Icon = ToolIcon;
 
 			// adjust the color of the printed output to be more papery
 			_paperAdjustment = new ColorMatrix

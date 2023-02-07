@@ -102,6 +102,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public static Icon ToolIcon
+			=> Properties.Resources.Logo;
+
 		[ConfigPersist]
 		private Dictionary<string, CoreInfo> KnownCores { get; set; }
 
@@ -114,7 +117,7 @@ namespace BizHawk.Client.EmuHawk
 		public CoreFeatureAnalysis()
 		{
 			InitializeComponent();
-			Icon = Properties.Resources.Logo;
+			Icon = ToolIcon;
 			KnownCores = new Dictionary<string, CoreInfo>();
 		}
 

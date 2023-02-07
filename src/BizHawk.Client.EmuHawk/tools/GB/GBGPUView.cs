@@ -13,6 +13,9 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class GbGpuView : ToolFormBase, IToolFormAutoConfig
 	{
+		public static Icon ToolIcon
+			=> Properties.Resources.GambatteIcon;
+
 		[RequiredService]
 		public IGameboyCommon Gb { get; private set; }
 
@@ -69,7 +72,7 @@ namespace BizHawk.Client.EmuHawk
 		public GbGpuView()
 		{
 			InitializeComponent();
-			Icon = Properties.Resources.GambatteIcon;
+			Icon = ToolIcon;
 			bmpViewBG.ChangeBitmapSize(256, 256);
 			bmpViewWin.ChangeBitmapSize(256, 256);
 			bmpViewTiles1.ChangeBitmapSize(128, 192);

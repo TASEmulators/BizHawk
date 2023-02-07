@@ -20,6 +20,9 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private static readonly FilesystemFilterSet BundlesFSFilterSet = new(new FilesystemFilter("XML Files", new[] { "xml" }));
 
+		public static Icon ToolIcon
+			=> Properties.Resources.DualIcon;
+
 		private XElement _currentXml;
 
 		[RequiredService]
@@ -30,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 		public MultiDiskBundler()
 		{
 			InitializeComponent();
-			Icon = Properties.Resources.DualIcon;
+			Icon = ToolIcon;
 			SystemDropDown.Items.AddRange(new[]
 			{
 				VSystemID.Raw.AmstradCPC,

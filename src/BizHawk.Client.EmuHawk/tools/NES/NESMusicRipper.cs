@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -22,6 +23,9 @@ namespace BizHawk.Client.EmuHawk
 			AppendAllFilesEntry = false,
 		};
 
+		public static Icon ToolIcon
+			=> Properties.Resources.NesControllerIcon;
+
 		[RequiredService]
 		private NES Nes { get; set; }
 
@@ -30,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 		public NESMusicRipper()
 		{
 			InitializeComponent();
-			Icon = Properties.Resources.NesControllerIcon;
+			Icon = ToolIcon;
 			SyncContents();
 		}
 

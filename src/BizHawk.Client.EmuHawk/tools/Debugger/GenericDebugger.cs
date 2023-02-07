@@ -14,12 +14,15 @@ namespace BizHawk.Client.EmuHawk
 		private const string AddressColumnName = "Address";
 		private const string InstructionColumnName = "Instruction";
 
+		public static Icon ToolIcon
+			=> Properties.Resources.BugIcon;
+
 		protected override string WindowTitleStatic => "Debugger";
 
 		public GenericDebugger()
 		{
 			InitializeComponent();
-			Icon = Properties.Resources.BugIcon;
+			Icon = ToolIcon;
 			Closing += (o, e) => DisengageDebugger();
 
 			DisassemblerView.QueryItemText += DisassemblerView_QueryItemText;

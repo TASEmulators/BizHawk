@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 using System.IO;
 
@@ -16,6 +17,9 @@ namespace BizHawk.Client.EmuHawk
 		private IEmulator Emulator { get; set; }
 
 		public static readonly FilesystemFilterSet MacrosFSFilterSet = new FilesystemFilterSet(new FilesystemFilter("Movie Macros", new[] { "bk2m" }));
+
+		public static Icon ToolIcon
+			=> Properties.Resources.TAStudioIcon;
 
 		private readonly List<MovieZone> _zones = new List<MovieZone>();
 		private readonly List<int> _unsavedZones = new List<int>();
@@ -34,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_initializing = true;
 			InitializeComponent();
-			Icon = Properties.Resources.TAStudioIcon;
+			Icon = ToolIcon;
 		}
 
 		private void MacroInputTool_Load(object sender, EventArgs e)

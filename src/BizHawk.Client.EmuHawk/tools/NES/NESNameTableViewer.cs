@@ -13,6 +13,10 @@ namespace BizHawk.Client.EmuHawk
 	{
 		// TODO:
 		// Show Scroll Lines + UI Toggle
+
+		public static Icon ToolIcon
+			=> Properties.Resources.NesControllerIcon;
+
 		[RequiredService]
 		private INESPPUViewable _ppu { get; set; }
 		[RequiredService]
@@ -32,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 		public NESNameTableViewer()
 		{
 			InitializeComponent();
-			Icon = Properties.Resources.NesControllerIcon;
+			Icon = ToolIcon;
 		}
 
 		private void NESNameTableViewer_Load(object sender, EventArgs e)

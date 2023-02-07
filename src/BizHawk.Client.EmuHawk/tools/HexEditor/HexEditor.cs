@@ -53,6 +53,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private static readonly FilesystemFilterSet TextTablesFSFilterSet = new(new FilesystemFilter("Text Table Files", new[] { "tbl" }));
 
+		public static Icon ToolIcon
+			=> Resources.PokeIcon;
+
 		private static FilesystemFilterSet CreateBinaryDumpFSFilterSet(string ext)
 			=> new(new FilesystemFilter("Binary", new[] { ext }));
 
@@ -148,7 +151,7 @@ namespace BizHawk.Client.EmuHawk
 			if (OSTailoredCode.IsUnixHost) _fontHeight -= MAGIC_FIX_NUMBER_H;
 
 			InitializeComponent();
-			Icon = Resources.PokeIcon;
+			Icon = ToolIcon;
 			SaveMenuItem.Image = Resources.SaveAs;
 			CopyMenuItem.Image = Resources.Duplicate;
 			PasteMenuItem.Image = Resources.Paste;

@@ -18,6 +18,9 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class RamWatch : ToolFormBase, IToolFormAutoConfig
 	{
+		public static Icon ToolIcon
+			=> Resources.WatchIcon;
+
 		private WatchList _watches;
 
 		private string _sortedColumn;
@@ -81,7 +84,7 @@ namespace BizHawk.Client.EmuHawk
 			MoveDownMenuItem.Image = Resources.MoveDown;
 			MoveTopMenuItem.Image = Resources.MoveTop;
 			MoveBottomMenuItem.Image = Resources.MoveBottom;
-			Icon = Resources.WatchIcon;
+			Icon = ToolIcon;
 
 			Settings = new RamWatchSettings();
 
