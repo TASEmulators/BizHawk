@@ -57,9 +57,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly Func<string, string, bool, bool> _loadCallback;
 
-		private PathEntryCollection _paths
-			=> _config.PathEntries;
-
 		private FileSystemWatcher DirectoryMonitor;
 
 		private readonly List<ToolStripMenuItem> MenuItems = new List<ToolStripMenuItem>();
@@ -84,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 				DirectoryMonitor.Created -= DirectoryMonitor_Created;
 				DirectoryMonitor.Dispose();
 			}
-			var path = _paths[PathEntryCollection.GLOBAL, "External Tools"].Path;
+			var path = _config.PathEntries[PathEntryCollection.GLOBAL, "External Tools"].Path;
 			if (Directory.Exists(path))
 			{
 				DirectoryMonitor = new FileSystemWatcher(path, "*.dll")
@@ -110,10 +107,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		/// <summary>Generates a <see cref="ToolStripMenuItem"/> from an assembly at <paramref name="fileName"/> containing an external tool.</summary>
-		/// <returns>
-		/// a <see cref="ToolStripMenuItem"/> with its <see cref="ToolStripItem.Tag"/> containing a <see cref="MenuItemInfo"/>;
-		/// the first is the assembly path (<paramref name="fileName"/>) and the second is the <see cref="Type.FullName"/> of the entry point form's type
-		/// </returns>
+		/// <returns>a <see cref="ToolStripMenuItem"/> with its <see cref="ToolStripItem.Tag"/> containing a <see cref="MenuItemInfo"/></returns>
 		private ToolStripMenuItem GenerateToolTipFromFileName(string fileName)
 		{
 			if (fileName == null) throw new Exception();
@@ -138,7 +132,7 @@ namespace BizHawk.Client.EmuHawk
 				var toolAttribute = allAttrs.OfType<ExternalToolAttribute>().First();
 				if (toolAttribute.LoadAssemblyFiles != null)
 				{
-					foreach (var depFilename in toolAttribute.LoadAssemblyFiles) Assembly.LoadFrom($"{_paths[PathEntryCollection.GLOBAL, "External Tools"].Path}/{depFilename}");
+					foreach (var depFilename in toolAttribute.LoadAssemblyFiles) Assembly.LoadFrom($"{_config.PathEntries[PathEntryCollection.GLOBAL, "External Tools"].Path}/{depFilename}");
 				}
 
 				item.Image = null; // no errors, remove error icon
@@ -157,7 +151,7 @@ namespace BizHawk.Client.EmuHawk
 				item.Tag = menuItemInfo;
 				item.Click += (_, _) => menuItemInfo.TryLoad();
 				PossibleExtToolTypeNames.Add(entryPoint.AssemblyQualifiedName);
-				if (applicabilityAttrs.Count == 1)
+				if (applicabilityAttrs.Count is 1)
 				{
 					var (system, loadedRomHash) = _getLoadedRomInfoCallback();
 					if (applicabilityAttrs[0].NotApplicableTo(system))
@@ -210,10 +204,7 @@ namespace BizHawk.Client.EmuHawk
 			MenuItems.Add(GenerateToolTipFromFileName(e.FullPath));
 		}
 
-		/// <summary>
-		/// Gets a prebuild <see cref="ToolStripMenuItem"/>
-		/// This list auto-updated by the <see cref="ExternalToolManager"/> itself
-		/// </summary>
-		public IEnumerable<ToolStripMenuItem> ToolStripMenu => MenuItems;
+		public IReadOnlyCollection<ToolStripItem> ToolStripItems
+			=> MenuItems;
 	}
 }

@@ -186,7 +186,7 @@ namespace BizHawk.Client.EmuHawk
 			var requestedExtToolDll = _argParser.openExtToolDll;
 			if (requestedExtToolDll != null)
 			{
-				var found = ExtToolManager.ToolStripMenu.Where(static item => item.Enabled)
+				var found = ExtToolManager.ToolStripItems.Where(static item => item.Enabled)
 					.Select(static item => (ExternalToolManager.MenuItemInfo) item.Tag)
 					.FirstOrNull(info => info.AsmFilename == requestedExtToolDll
 						|| Path.GetFileName(info.AsmFilename) == requestedExtToolDll
