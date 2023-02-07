@@ -131,6 +131,9 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
+			typeof(Form).GetField(OSTC.IsUnixHost ? "default_icon" : "defaultIcon", BindingFlags.NonPublic | BindingFlags.Static)
+				.SetValue(null, Properties.Resources.Logo);
+
 			TempFileManager.Start();
 
 			HawkFile.DearchivalMethod = SharpCompressDearchivalMethod.Instance;
