@@ -164,7 +164,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			[DisplayName("Skip Firmware")]
 			[Description("If true, initial firmware boot will be skipped. Forced true if firmware cannot be booted (no real bios or missing firmware).")]
-			[DefaultValue(false)]
+			[DefaultValue(true)]
 			public bool SkipFirmware { get; set; }
 
 			[DisplayName("Firmware Override")]

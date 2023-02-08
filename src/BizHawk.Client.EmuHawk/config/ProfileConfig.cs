@@ -137,6 +137,11 @@ namespace BizHawk.Client.EmuHawk
 			// NES
 			_config.PreferredCores[VSystemID.Raw.NES] = CoreNames.QuickNes;
 
+			// NDS
+			var ssMelonDS = GetSyncSettings<NDS, NDS.NDSSyncSettings>();
+			ssMelonDS.SkipFirmware = true;
+			PutSyncSettings<NDS>(ssMelonDS);
+
 			// GB
 			_config.PreferredCores[VSystemID.Raw.GB] = CoreNames.Gambatte;
 			_config.PreferredCores[VSystemID.Raw.GBC] = CoreNames.Gambatte;
@@ -220,6 +225,12 @@ namespace BizHawk.Client.EmuHawk
 
 			// NES
 			_config.PreferredCores[VSystemID.Raw.NES] = CoreNames.NesHawk;
+
+			// NDS
+			var ssMelonDS = GetSyncSettings<NDS, NDS.NDSSyncSettings>();
+			ssMelonDS.SkipFirmware = false;
+			ssMelonDS.UseRealBIOS = true;
+			PutSyncSettings<NDS>(ssMelonDS);
 
 			// GB
 			_config.PreferredCores[VSystemID.Raw.GB] = CoreNames.Gambatte;
