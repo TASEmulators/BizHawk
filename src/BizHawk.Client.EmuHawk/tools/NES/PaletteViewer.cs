@@ -70,5 +70,15 @@ namespace BizHawk.Client.EmuHawk
 			}
 			return false;
 		}
+
+		public void ScreenshotToClipboard()
+		{
+			var b = new Bitmap(Width, Height);
+			var rect = new Rectangle(new Point(0, 0), Size);
+			DrawToBitmap(b, rect);
+
+			using var img = b;
+			Clipboard.SetImage(img);
+		}
 	}
 }

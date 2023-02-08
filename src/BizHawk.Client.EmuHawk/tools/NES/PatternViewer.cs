@@ -29,5 +29,15 @@ namespace BizHawk.Client.EmuHawk
 			e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
 			e.Graphics.DrawImageUnscaled(Pattern, 0, 0);
 		}
+
+		public void ScreenshotToClipboard()
+		{
+			var b = new Bitmap(Width, Height);
+			var rect = new Rectangle(new Point(0, 0), Size);
+			DrawToBitmap(b, rect);
+
+			using var img = b;
+			Clipboard.SetImage(img);
+		}
 	}
 }
