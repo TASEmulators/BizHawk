@@ -11,6 +11,7 @@ using BizHawk.Emulation.Cores.ColecoVision;
 using BizHawk.Emulation.Cores.Atari.Atari2600;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 
 namespace BizHawk.Client.EmuHawk
 {
