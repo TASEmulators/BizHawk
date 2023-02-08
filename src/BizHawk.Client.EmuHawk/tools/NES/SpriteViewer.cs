@@ -22,7 +22,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Display(Graphics g)
 		{
-			g.DrawImage(Sprites, 1, 1);
+			g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+			g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
+			g.DrawImageUnscaled(Sprites, 1, 1);
 		}
 
 		private void SpriteViewer_Paint(object sender, PaintEventArgs e)
