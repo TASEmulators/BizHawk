@@ -25,7 +25,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PatternViewer_Paint(object sender, PaintEventArgs e)
 		{
-			e.Graphics.DrawImage(Pattern, 0, 0);
+			e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+			e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
+			e.Graphics.DrawImageUnscaled(Pattern, 0, 0);
 		}
 	}
 }
