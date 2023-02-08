@@ -1,2 +1,2 @@
 #!/bin/sh
-dotnet build -c Release -m
+dotnet build -c Release -m "$@"
