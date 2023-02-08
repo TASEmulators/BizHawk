@@ -247,25 +247,21 @@ namespace BizHawk.Client.EmuHawk
 				_ = SetDllDirectory(dllDir);
 			}
 
-			//skip privilege 
-			bool skipPrivilegesCheck = false;
-			var oldVersions = new[] { OSTC.WindowsVersion.XP, OSTC.WindowsVersion.Vista, OSTC.WindowsVersion._7, OSTC.WindowsVersion._8, OSTC.WindowsVersion._8_1 };
-			if(OSTC.HostWindowsVersion.HasValue)
-				if(oldVersions.Contains(OSTC.HostWindowsVersion.Value.Version))
-					skipPrivilegesCheck = true;
-
-			if (EmuHawkUtil.CLRHostHasElevatedPrivileges && !skipPrivilegesCheck)
+			if (OSTC.HostWindowsVersion is null || OSTC.HostWindowsVersion.Value.Version >= OSTC.WindowsVersion._10) // "windows isn't capable of being useful for non-administrators until windows 10" --zeromus
 			{
-				using MsgBox dialog = new(
-					title: "This EmuHawk is privileged",
-					message: $"EmuHawk detected it {(OSTC.IsUnixHost ? "is running as root (Superuser)" : "has Administrator privileges")}.\n"
-						+ "This is a bad idea.",
-					boxIcon: MessageBoxIcon.Warning);
-				dialog.ShowDialog();
-			}
-			else
-			{
-				Util.DebugWriteLine("running as unprivileged user");
+				if (EmuHawkUtil.CLRHostHasElevatedPrivileges)
+				{
+					using MsgBox dialog = new(
+						title: "This EmuHawk is privileged",
+						message: $"EmuHawk detected it {(OSTC.IsUnixHost ? "is running as root (Superuser)" : "has Administrator privileges")}.\n"
+							+ "This is a bad idea.",
+						boxIcon: MessageBoxIcon.Warning);
+					dialog.ShowDialog();
+				}
+				else
+				{
+					Util.DebugWriteLine("running as unprivileged user");
+				}
 			}
 
 			var exitCode = 0;
