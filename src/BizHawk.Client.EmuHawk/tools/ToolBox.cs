@@ -18,13 +18,12 @@ namespace BizHawk.Client.EmuHawk
 			=> Properties.Resources.ToolBoxIcon;
 
 		private static readonly Lazy<IReadOnlyCollection<Type>> ToolTypes = new(() => EmuHawk.ReflectionCache.Types
-			.Where(static t => typeof(IToolForm).IsAssignableFrom(t) && typeof(Form).IsAssignableFrom(t))
-#if DEBUG
-			.Where(static t => t.Namespace is not "BizHawk.Client.EmuHawk.ForDebugging")
+			.Where(static t => typeof(IToolForm).IsAssignableFrom(t) && typeof(Form).IsAssignableFrom(t)
+#if DEBUG // these tools are simply not compiled in Release config
+				&& t.Namespace is not "BizHawk.Client.EmuHawk.ForDebugging"
 #endif
-			.Where(VersionInfo.DeveloperBuild
-				? static t => true
-				: static t => !t.GetCustomAttributes(false).OfType<ToolAttribute>().Any(static a => !a.Released))
+				&& (VersionInfo.DeveloperBuild
+					|| !t.GetCustomAttributes(false).OfType<ToolAttribute>().Any(static a => !a.Released)))
 			.Except(new[] { typeof(ToolBox), typeof(ToolFormBase) }).ToList());
 
 		[RequiredService]
