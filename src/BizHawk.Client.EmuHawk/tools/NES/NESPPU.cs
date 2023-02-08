@@ -551,7 +551,41 @@ namespace BizHawk.Client.EmuHawk
 			byte[] ppuBus = _ppu.GetPPUBus(); // caching is quicker, but not really correct in this case
 
 			bool is8x16 = _ppu.SPTall;
-			var spriteNumber = ((e.Y / 24) * 16) + (e.X / 16);
+			
+			//figure out which sprite we're over
+			int spriteSlotY = e.Y / 8;
+			int spriteSlotX = e.X / 8;
+
+			//exclude mouse over empty area (vertical). this depends on how big the sprites are
+			if (is8x16)
+			{
+				if (spriteSlotY % 3 == 2)
+					return;
+			}
+			else
+			{
+				if (spriteSlotY % 3 != 0)
+					return;
+			}
+
+			//exclude mouse over empty area to the right of sprites
+			if (spriteSlotX % 2 == 1)
+				return;
+
+			//convert these 8x8 "slots" we've been working on to more sensible slots
+			spriteSlotX /= 2;
+			spriteSlotY /= 3;
+
+			//if these were utterly senseless slots (so far out of range) then bail
+			if (spriteSlotX < 0 || spriteSlotX >= 16)
+				return;
+
+			if (spriteSlotY < 0 || spriteSlotY >= 4)
+				return;
+
+			//find the final sprite number that's being hovered
+			var spriteNumber = spriteSlotY * 16 + spriteSlotX;
+
 			int x = oam[(spriteNumber * 4) + 3];
 			int y = oam[spriteNumber * 4];
 			var color = oam[(spriteNumber * 4) + 2] & 0x03;
