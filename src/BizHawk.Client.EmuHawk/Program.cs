@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -246,7 +247,14 @@ namespace BizHawk.Client.EmuHawk
 				_ = SetDllDirectory(dllDir);
 			}
 
-			if (EmuHawkUtil.CLRHostHasElevatedPrivileges)
+			//skip privilege 
+			bool skipPrivilegesCheck = false;
+			var oldVersions = new[] { OSTC.WindowsVersion.XP, OSTC.WindowsVersion.Vista, OSTC.WindowsVersion._7, OSTC.WindowsVersion._8, OSTC.WindowsVersion._8_1 };
+			if(OSTC.HostWindowsVersion.HasValue)
+				if(oldVersions.Contains(OSTC.HostWindowsVersion.Value.Version))
+					skipPrivilegesCheck = true;
+
+			if (EmuHawkUtil.CLRHostHasElevatedPrivileges && !skipPrivilegesCheck)
 			{
 				using MsgBox dialog = new(
 					title: "This EmuHawk is privileged",
