@@ -370,7 +370,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			[ConsoleID.MasterSystem] = new[] { (0xC000, 0x2000) },
 			[ConsoleID.GameGear] = new[] { (0xC000, 0x2000) },
-			[ConsoleID.Atari2600] = new[] { (0, 0x80) },
 			[ConsoleID.Colecovision] = new[] { (0x6000, 0x400) },
 			[ConsoleID.GBA] = new[] { (0x3000000, 0x8000), (0x2000000, 0x40000) },
 			[ConsoleID.SG1000] = new[] { (0xC000, 0x2000), (0x2000, 0x2000), (0x8000, 0x2000) },
@@ -493,6 +492,9 @@ namespace BizHawk.Client.EmuHawk
 						break;
 					case ConsoleID.MagnavoxOdyssey:
 						mfs.Add(new(domains["CPU RAM"], 0, domains["CPU RAM"].Size));
+						mfs.Add(new(domains["Main RAM"], 0, domains["Main RAM"].Size));
+						break;
+					case ConsoleID.Atari2600:
 						mfs.Add(new(domains["Main RAM"], 0, domains["Main RAM"].Size));
 						break;
 					case ConsoleID.VirtualBoy:
