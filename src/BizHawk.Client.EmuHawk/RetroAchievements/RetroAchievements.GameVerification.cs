@@ -28,30 +28,44 @@ namespace BizHawk.Client.EmuHawk
 			var buf2048 = new byte[2048];
 			var buffer = new List<byte>();
 
+			int FirstDataTrackLBA()
+			{
+				var toc = disc.TOC;
+				for (var t = toc.FirstRecordedTrackNumber; t <= toc.LastRecordedTrackNumber; t++)
+				{
+					if (toc.TOCItems[t]
+						.IsData) return toc.TOCItems[t].LBA;
+				}
+
+				throw new InvalidOperationException("Could not find first data track for hashing");
+			}
+
 			switch (consoleID)
 			{
 				case ConsoleID.PCEngineCD:
 					{
-						dsr.ReadLBA_2048(1, buf2048, 0);
+						var slba = FirstDataTrackLBA();
+						dsr.ReadLBA_2048(slba + 1, buf2048, 0);
 						buffer.AddRange(new ArraySegment<byte>(buf2048, 128 - 22, 22));
-						var bootSector = (buf2048[2] << 16) | (buf2048[1] << 8) | buf2048[0];
+						var bootSector = (buf2048[0] << 16) | (buf2048[1] << 8) | buf2048[2];
 						var numSectors = buf2048[3];
-						for (int i = 0; i < numSectors; i++)
+						for (var i = 0; i < numSectors; i++)
 						{
-							dsr.ReadLBA_2048(bootSector + i, buf2048, 0);
+							dsr.ReadLBA_2048(slba + bootSector + i, buf2048, 0);
 							buffer.AddRange(buf2048);
 						}
 						break;
 					}
 				case ConsoleID.PCFX:
 					{
-						dsr.ReadLBA_2048(1, buf2048, 0);
+						var slba = FirstDataTrackLBA();
+						dsr.ReadLBA_2048(slba + 1, buf2048, 0);
 						buffer.AddRange(new ArraySegment<byte>(buf2048, 0, 128));
 						var bootSector = (buf2048[35] << 24) | (buf2048[34] << 16) | (buf2048[33] << 8) | buf2048[32];
 						var numSectors = (buf2048[39] << 24) | (buf2048[38] << 16) | (buf2048[37] << 8) | buf2048[36];
 						for (var i = 0; i < numSectors; i++)
 						{
-							dsr.ReadLBA_2048(bootSector + i, buf2048, 0);
+							dsr.ReadLBA_2048(slba + bootSector + i, buf2048, 0);
 							buffer.AddRange(buf2048);
 						}
 						break;
