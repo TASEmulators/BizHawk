@@ -106,19 +106,14 @@ namespace BizHawk.Client.Common
 			if (Movie is ITasMovie tasMovie)
 			{
 				tasMovie.GreenzoneCurrentFrame();
-				if (tasMovie.IsPlayingOrFinished() && Movie.Emulator.Frame >= tasMovie.InputLogLength)
+				if (tasMovie.IsPlayingOrFinished() && Settings.MovieEndAction == MovieEndAction.Record && Movie.Emulator.Frame >= tasMovie.InputLogLength)
 				{
-					if (Settings.MovieEndAction == MovieEndAction.Record)
-					{
-						HandleFrameLoopForRecordMode();
-					}
-					else
-					{
-						HandlePlaybackEnd();
-					}
+					HandleFrameLoopForRecordMode();
+					return;
 				}
 			}
-			else if (Movie.IsPlaying() && Movie.Emulator.Frame >= Movie.InputLogLength)
+
+			if (Movie.IsPlaying() && Movie.Emulator.Frame >= Movie.InputLogLength)
 			{
 				HandlePlaybackEnd();
 			}
