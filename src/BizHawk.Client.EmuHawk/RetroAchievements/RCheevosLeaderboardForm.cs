@@ -15,6 +15,7 @@ namespace BizHawk.Client.EmuHawk
 			titleBox.Text = lboard.Title;
 			descriptionBox.Text = lboard.Description;
 			scoreBox.Text = lboard.Score;
+			lowerIsBetterBox.Checked = lboard.LowerIsBetter;
 			_lboard = lboard;
 			TopLevel = false;
 			Show();

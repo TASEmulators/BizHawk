@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace BizHawk.Client.EmuHawk
@@ -35,26 +36,17 @@ namespace BizHawk.Client.EmuHawk
 		{
 			flowLayoutPanel1.Controls.Clear();
 			DisposeLboardForms();
-			var lboardForms = new List<RCheevosLeaderboardForm>();
-			foreach (var lboard in lboards)
-			{
-				lboardForms.Add(new(lboard));
-			}
-			_lboardForms = lboardForms.ToArray();
+			_lboardForms = lboards.Select(lboard => new RCheevosLeaderboardForm(lboard)).ToArray();
 			flowLayoutPanel1.Controls.AddRange(_lboardForms);
 		}
 
 		public void OnFrameAdvance(bool forceUpdate = false)
 		{
-			_updateCooldown--;
-			if (_updateCooldown == 0 || forceUpdate)
+			if (--_updateCooldown > 0 && !forceUpdate) return;
+			_updateCooldown = 5;
+			foreach (var lb in _lboardForms)
 			{
-				_updateCooldown = 5;
-
-				for (int i = 0; i < _lboardForms.Length; i++)
-				{
-					_lboardForms[i].OnFrameAdvance();
-				}
+				lb.OnFrameAdvance();
 			}
 		}
 
