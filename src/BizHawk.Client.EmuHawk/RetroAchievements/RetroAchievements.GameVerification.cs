@@ -78,7 +78,7 @@ namespace BizHawk.Client.EmuHawk
 							var sector = (buf2048[160] << 16) | (buf2048[159] << 8) | buf2048[158];
 							dsr.ReadLBA_2048(sector, buf2048, 0);
 							var index = 0;
-							while ((index + 33 + filename.Length) < 2048)
+							while (index + 33 + filename.Length < 2048)
 							{
 								var term = buf2048[index + 33 + filename.Length];
 								if (term == ';' || term == '\0')
@@ -107,9 +107,10 @@ namespace BizHawk.Client.EmuHawk
 							dsr.ReadLBA_2048(sector, buf2048, 0);
 							exePath = Encoding.ASCII.GetString(buf2048);
 
-							// "BOOT = cdrom:\" precedes the path
+							// "BOOT = cdrom:\" or "BOOT = cdrom:" precedes the path
 							var index = exePath.IndexOf("BOOT = cdrom:\\");
-							if (index < 0) break;
+							if (index < 0) index = exePath.IndexOf("BOOT = cdrom:") - 1;
+							if (index < -1) break;
 							exePath = exePath.Remove(0, index + 14);
 
 							// end of the path has ;
