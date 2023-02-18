@@ -11,7 +11,6 @@ namespace BizHawk.Emulation.Common
 		typeof(ICodeDataLogger),
 		typeof(IDebuggable),
 		typeof(IDisassemblable),
-		typeof(IDriveLight),
 		typeof(IInputPollable),
 		typeof(IMemoryDomains),
 		typeof(IRegionable),
