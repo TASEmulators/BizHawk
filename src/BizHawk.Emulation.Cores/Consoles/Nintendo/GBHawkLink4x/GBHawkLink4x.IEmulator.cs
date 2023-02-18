@@ -1053,12 +1053,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 
 		public uint[] color_palette = new uint[4];
 
-		public void GetSamplesSync(out short[] samples, out int nsamp)
+		public void GetSyncSoundSamples(out short[] samples, out int nsamp)
 		{
-			A.audio.GetSamplesSync(out var temp_samp_A, out var nsamp_A);
-			B.audio.GetSamplesSync(out var temp_samp_B, out var nsamp_B);
-			C.audio.GetSamplesSync(out var temp_samp_C, out var nsamp_C);
-			D.audio.GetSamplesSync(out var temp_samp_D, out var nsamp_D);
+			A.audio.GetSyncSoundSamples(out var temp_samp_A, out var nsamp_A);
+			B.audio.GetSyncSoundSamples(out var temp_samp_B, out var nsamp_B);
+			C.audio.GetSyncSoundSamples(out var temp_samp_C, out var nsamp_C);
+			D.audio.GetSyncSoundSamples(out var temp_samp_D, out var nsamp_D);
 
 			if (Link4xSettings.AudioSet == GBLink4xSettings.AudioSrc.A)
 			{

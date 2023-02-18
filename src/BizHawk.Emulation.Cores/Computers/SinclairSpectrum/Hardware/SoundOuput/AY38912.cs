@@ -699,7 +699,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			_audioBuffer = new short[_samplesPerFrame * 2];
 		}
 
-		public void GetSamplesSync(out short[] samples, out int nsamp)
+		public void GetSyncSoundSamples(out short[] samples, out int nsamp)
 		{
 			nsamp = _samplesPerFrame;
 			samples = _audioBuffer;

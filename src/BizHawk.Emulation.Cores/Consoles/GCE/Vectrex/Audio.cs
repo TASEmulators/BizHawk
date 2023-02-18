@@ -331,7 +331,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			_blip.SetRates(1500000, 44100);
 		}
 
-		public void GetSamplesSync(out short[] samples, out int nsamp)
+		public void GetSyncSoundSamples(out short[] samples, out int nsamp)
 		{
 			_blip.EndFrame(master_audio_clock);
 

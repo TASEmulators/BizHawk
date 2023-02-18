@@ -373,7 +373,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		private BlipBuffer _blip = new BlipBuffer(4096);
 
-		public void GetSamplesSync(out short[] samples, out int nsamp)
+		public void GetSyncSoundSamples(out short[] samples, out int nsamp)
 		{
 			_blip.EndFrame(master_audio_clock);
 			

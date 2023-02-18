@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
 	public partial class TIA : ISyncSoundProvider
 	{
-		public void GetSamplesSync(out short[] samples, out int nsamp)
+		public void GetSyncSoundSamples(out short[] samples, out int nsamp)
 		{
 			short[] ret = new short[_spf * 2];
 			GetSamples(ret);

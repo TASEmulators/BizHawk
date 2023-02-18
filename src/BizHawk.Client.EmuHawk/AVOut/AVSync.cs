@@ -29,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 			_soundRemainder = nSampNum % FpsNum;
 
 			samples = new short[nsamp * Channels];
-			asyncSoundProvider.GetSamplesAsync(samples);
+			asyncSoundProvider.GetAsyncSoundSamples(samples);
 			samplesProvided = (int)nsamp;
 
 			W.AddFrame(v);
@@ -77,7 +77,7 @@ namespace BizHawk.Client.EmuHawk
 		public void DumpAV(IVideoProvider v, ISyncSoundProvider syncSoundProvider, out short[] samples, out int samplesProvided)
 		{
 			VerifyParams();
-			syncSoundProvider.GetSamplesSync(out samples, out samplesProvided);
+			syncSoundProvider.GetSyncSoundSamples(out samples, out samplesProvided);
 			_exAudioNum += samplesProvided * (long)FpsNum;
 
 			// todo: scan for duplicate frames (ie, video content exactly matches previous frame) and for them, skip the threshone step

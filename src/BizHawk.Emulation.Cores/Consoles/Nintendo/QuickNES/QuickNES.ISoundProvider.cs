@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		private readonly short[] _stereoBuff = new short[2048];
 		private int _numSamples;
 
-		public void GetSamplesSync(out short[] samples, out int nsamp)
+		public void GetSyncSoundSamples(out short[] samples, out int nsamp)
 		{
 			samples = _stereoBuff;
 			nsamp = _numSamples;

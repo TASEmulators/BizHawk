@@ -21,7 +21,7 @@ namespace BizHawk.Client.Common
 			_outputProvider.DiscardSamples();
 		}
 
-		public void GetSamplesAsync(short[] samples)
+		public void GetAsyncSoundSamples(short[] samples)
 		{
 			_outputProvider.GetSamples(samples);
 		}

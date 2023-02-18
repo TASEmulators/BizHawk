@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Common
 		/// If the core is not in async mode, this should throw an InvalidOperationException
 		/// </summary>
 		/// <exception cref="InvalidOperationException"></exception>
-		void GetSamplesAsync(short[] samples);
+		void GetAsyncSoundSamples(short[] samples);
 	}
 
 	/// <summary>
@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Common
 		/// If the core is not in sync mode, this should throw an InvalidOperationException
 		/// </summary>
 		/// <exception cref="InvalidOperationException"></exception>
-		void GetSamplesSync(out short[] samples, out int nsamp);
+		void GetSyncSoundSamples(out short[] samples, out int nsamp);
 	}
 
 	/// <summary>implementor can operate as either <see cref="IAsyncSoundProvider"/> or <see cref="ISyncSoundProvider"/></summary>

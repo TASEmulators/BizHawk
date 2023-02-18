@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Common.Base_Implementations
 			_nsamp = nsamp;
 		}
 
-		public void GetSamplesSync(out short[] samples, out int nsamp)
+		public void GetSyncSoundSamples(out short[] samples, out int nsamp)
 		{
 			samples = _buffer;
 			nsamp = _nsamp;

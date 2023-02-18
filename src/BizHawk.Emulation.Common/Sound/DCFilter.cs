@@ -96,9 +96,9 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public void GetSamplesAsync(short[] samples)
+		public void GetAsyncSoundSamples(short[] samples)
 		{
-			((IAsyncSoundProvider) _soundProvider).GetSamplesAsync(samples);
+			((IAsyncSoundProvider) _soundProvider).GetAsyncSoundSamples(samples);
 			PushThroughSamples(samples, samples.Length);
 		}
 
@@ -107,9 +107,9 @@ namespace BizHawk.Emulation.Common
 			_soundProvider.DiscardSamples();
 		}
 
-		public void GetSamplesSync(out short[] samples, out int nsamp)
+		public void GetSyncSoundSamples(out short[] samples, out int nsamp)
 		{
-			((ISyncSoundProvider) _soundProvider).GetSamplesSync(out var sampIn, out var nsampIn);
+			((ISyncSoundProvider) _soundProvider).GetSyncSoundSamples(out var sampIn, out var nsampIn);
 			short[] ret = new short[nsampIn * 2];
 			PushThroughSamples(sampIn, ret, nsampIn * 2);
 			samples = ret;

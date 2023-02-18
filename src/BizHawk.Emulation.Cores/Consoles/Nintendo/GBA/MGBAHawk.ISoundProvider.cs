@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		private readonly short[] _dummysoundbuff = new short[2048];
 		private int _nsamp;
 
-		public void GetSamplesSync(out short[] samples, out int nsamp)
+		public void GetSyncSoundSamples(out short[] samples, out int nsamp)
 		{
 			nsamp = _nsamp;
 			samples = _soundbuff;

@@ -114,7 +114,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 		}
 
-		public void GetSamplesSync(out short[] samples, out int nsamp)
+		public void GetSyncSoundSamples(out short[] samples, out int nsamp)
 		{
 			samples = null;
 			nsamp = 0;
@@ -122,7 +122,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// get samples from all the providers
 			foreach (var sp in SoundProviders)
 			{
-				sp.SoundProvider.GetSamplesSync(out var samp, out var sampCount);
+				sp.SoundProvider.GetSyncSoundSamples(out var samp, out var sampCount);
 				sp.NSamp = sampCount;
 				sp.Buffer = samp;
 			}

@@ -134,7 +134,7 @@ namespace BizHawk.Emulation.Cores.Sound
 			_blip.Clear();
 		}
 
-		public void GetSamplesSync(out short[] samples, out int nsamp)
+		public void GetSyncSoundSamples(out short[] samples, out int nsamp)
 		{
 			_blip.EndFrame((uint)_clocksPerFrame);
 			nsamp = _blip.SamplesAvailable();

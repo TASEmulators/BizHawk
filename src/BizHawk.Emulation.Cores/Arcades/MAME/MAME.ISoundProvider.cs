@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			_nsamps = _core.mame_sound_get_samples(_sampleBuffer);
 		}
 
-		public void GetSamplesSync(out short[] samples, out int nsamp)
+		public void GetSyncSoundSamples(out short[] samples, out int nsamp)
 		{
 			samples = _sampleBuffer;
 			nsamp = _nsamps;

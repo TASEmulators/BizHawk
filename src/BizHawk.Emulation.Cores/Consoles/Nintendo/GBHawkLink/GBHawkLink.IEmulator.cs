@@ -298,10 +298,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 		public uint[] color_palette = new uint[4];
 
-		public void GetSamplesSync(out short[] samples, out int nsamp)
+		public void GetSyncSoundSamples(out short[] samples, out int nsamp)
 		{
-			L.audio.GetSamplesSync(out var tempSampL, out var nsampL);
-			R.audio.GetSamplesSync(out var tempSampR, out var nsampR);
+			L.audio.GetSyncSoundSamples(out var tempSampL, out var nsampL);
+			R.audio.GetSyncSoundSamples(out var tempSampR, out var nsampR);
 
 			if (linkSettings.AudioSet == GBLinkSettings.AudioSrc.Left)
 			{

@@ -181,7 +181,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Config.SoundThrottle)
 				{
-					((ISyncSoundProvider) _outputProvider.BaseSoundProvider).GetSamplesSync(out samples, out sampleCount);
+					((ISyncSoundProvider) _outputProvider.BaseSoundProvider).GetSyncSoundSamples(out samples, out sampleCount);
 					sampleOffset = 0;
 
 					if (isSecondaryThrottlingDisabled && sampleCount > samplesNeeded)
@@ -224,7 +224,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				samples = new short[samplesNeeded * ChannelCount];
 
-				_bufferedAsync.GetSamplesAsync(samples);
+				_bufferedAsync.GetAsyncSoundSamples(samples);
 
 				sampleOffset = 0;
 				sampleCount = samplesNeeded;

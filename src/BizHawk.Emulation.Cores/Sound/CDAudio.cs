@@ -140,7 +140,7 @@ namespace BizHawk.Emulation.Cores.Components
 			}
 		}
 
-		public void GetSamplesAsync(short[] samples)
+		public void GetAsyncSoundSamples(short[] samples)
 		{
 			if (Mode != CDAudioMode_Playing)
 				return;

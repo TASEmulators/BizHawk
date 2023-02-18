@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			_outSamps = 0;
 		}
 
-		public void GetSamplesSync(out short[] samples, out int nsamp)
+		public void GetSyncSoundSamples(out short[] samples, out int nsamp)
 		{
 			samples = _sampleBuffer;
 			nsamp = _outSamps;

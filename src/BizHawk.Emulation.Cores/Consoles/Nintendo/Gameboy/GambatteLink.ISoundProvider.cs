@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
 	public partial class GambatteLink : ISyncSoundProvider
 	{
-		public void GetSamplesSync(out short[] samples, out int nsamp)
+		public void GetSyncSoundSamples(out short[] samples, out int nsamp)
 		{
 			nsamp = _sampleBufferContains;
 			samples = SampleBuffer;

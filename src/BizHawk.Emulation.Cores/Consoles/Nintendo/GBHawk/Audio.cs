@@ -1192,7 +1192,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				((NOISE_enable ? 1 : 0) << 3));
 		}
 
-		public void GetSamplesSync(out short[] samples, out int nsamp)
+		public void GetSyncSoundSamples(out short[] samples, out int nsamp)
 		{
 			_blip_L.EndFrame(master_audio_clock);
 			_blip_R.EndFrame(master_audio_clock);

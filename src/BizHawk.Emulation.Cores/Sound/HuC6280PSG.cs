@@ -151,7 +151,7 @@ namespace BizHawk.Emulation.Cores.Components
 
 		private SyncSoundMode SyncMode = SyncSoundMode.Sync;
 
-		public void GetSamplesSync(out short[] samples, out int nsamp)
+		public void GetSyncSoundSamples(out short[] samples, out int nsamp)
 		{
 			if (SyncMode != SyncSoundMode.Sync)
 			{
@@ -159,12 +159,12 @@ namespace BizHawk.Emulation.Cores.Components
 			}
 
 			short[] ret = new short[_spf * 2];
-			GetSamplesAsync(ret);
+			GetAsyncSoundSamples(ret);
 			samples = ret;
 			nsamp = _spf;
 		}
 
-		public void GetSamplesAsync(short[] samples)
+		public void GetAsyncSoundSamples(short[] samples)
 		{
 			int elapsedCycles = (int)(frameStopTime - frameStartTime);
 			int start = 0;

@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		private readonly short[] _samples = new short[4096];
 		private int _nsamp;
 
-		public void GetSamplesSync(out short[] samples, out int nsamp)
+		public void GetSyncSoundSamples(out short[] samples, out int nsamp)
 		{
 			nsamp = _nsamp;
 			samples = _samples;

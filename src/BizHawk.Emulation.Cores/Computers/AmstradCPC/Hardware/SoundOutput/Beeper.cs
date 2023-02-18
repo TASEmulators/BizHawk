@@ -142,7 +142,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			blip.Clear();
 		}
 
-		public void GetSamplesSync(out short[] samples, out int nsamp)
+		public void GetSyncSoundSamples(out short[] samples, out int nsamp)
 		{
 			blip.EndFrame((uint)_tStatesPerFrame);
 			nsamp = blip.SamplesAvailable();

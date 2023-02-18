@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			_sampleClock = 0;
 		}
 
-		public void GetSamplesSync(out short[] samples, out int nsamp)
+		public void GetSyncSoundSamples(out short[] samples, out int nsamp)
 		{
 			_blip.EndFrame((uint)_sampleClock);
 			_sampleClock = 0;

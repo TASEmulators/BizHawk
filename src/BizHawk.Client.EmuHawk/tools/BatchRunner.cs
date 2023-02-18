@@ -172,7 +172,7 @@ namespace BizHawk.Client.EmuHawk
 						// some cores really really really like it if you drain their audio every frame
 						if (emu.HasSoundProvider())
 						{
-							((ISyncSoundProvider) emu.AsSoundProvider()).GetSamplesSync(out _, out _);
+							((ISyncSoundProvider) emu.AsSoundProvider()).GetSyncSoundSamples(out _, out _);
 						}
 
 						_current.Frames++;

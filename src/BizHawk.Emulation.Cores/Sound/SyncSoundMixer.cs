@@ -166,7 +166,7 @@ namespace BizHawk.Emulation.Cores.Components
 			}
 		}
 
-		public void GetSamplesSync(out short[] samples, out int nsamp)
+		public void GetSyncSoundSamples(out short[] samples, out int nsamp)
 		{
 			// fetch samples from all the providers
 			foreach (var sp in _soundProviders)
@@ -254,7 +254,7 @@ namespace BizHawk.Emulation.Cores.Components
 			/// </summary>
 			public void GetSamples()
 			{
-				SoundProvider.GetSamplesSync(out InputBuffer, out InputNSamp);
+				SoundProvider.GetSyncSoundSamples(out InputBuffer, out InputNSamp);
 			}
 
 			/// <summary>

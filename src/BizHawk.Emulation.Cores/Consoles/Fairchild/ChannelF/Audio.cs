@@ -72,7 +72,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			lastCycle = 0;
 		}
 
-		public void GetSamplesSync(out short[] samples, out int nsamp)
+		public void GetSyncSoundSamples(out short[] samples, out int nsamp)
 		{
 			AudioChange();
 

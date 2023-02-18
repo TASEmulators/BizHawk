@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		private readonly short[] sbuff = new short[1536];
 		private int sbuffcontains = 0;
 
-		public void GetSamplesSync(out short[] samples, out int nsamp)
+		public void GetSyncSoundSamples(out short[] samples, out int nsamp)
 		{
 			samples = sbuff;
 			nsamp = sbuffcontains;

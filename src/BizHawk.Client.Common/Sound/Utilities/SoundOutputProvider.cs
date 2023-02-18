@@ -210,7 +210,7 @@ namespace BizHawk.Client.Common
 			{
 				throw new InvalidOperationException("Base sound provider must be in sync mode.");
 			}
-			syncProvider.GetSamplesSync(out var samples, out var count);
+			syncProvider.GetSyncSoundSamples(out var samples, out var count);
 
 			bool correctedEmptyFrame = false;
 			if (count == 0)

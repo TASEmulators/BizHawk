@@ -204,11 +204,11 @@ namespace BizHawk.Emulation.Common
 			_outbuf2pos += nsamp * 2;
 		}
 
-		public void GetSamplesSync(out short[] samples, out int nsamp)
+		public void GetSyncSoundSamples(out short[] samples, out int nsamp)
 		{
 			if (_input != null)
 			{
-				_input.GetSamplesSync(out var sampin, out int nsampin);
+				_input.GetSyncSoundSamples(out var sampin, out int nsampin);
 				EnqueueSamples(sampin, nsampin);
 			}
 

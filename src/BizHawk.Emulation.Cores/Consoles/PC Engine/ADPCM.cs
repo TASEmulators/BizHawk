@@ -306,7 +306,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 		}
 
-		public void GetSamplesAsync(short[] samples)
+		public void GetAsyncSoundSamples(short[] samples)
 		{
 			_synchronizer.OutputSamples(samples, samples.Length / 2);
 		}

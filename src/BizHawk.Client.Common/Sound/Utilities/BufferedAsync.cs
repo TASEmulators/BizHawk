@@ -57,7 +57,7 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <exception cref="InvalidOperationException"><see cref="BaseSoundProvider"/> is not an <see cref="IAsyncSoundProvider"/></exception>
-		public void GetSamplesAsync(short[] samples)
+		public void GetAsyncSoundSamples(short[] samples)
 		{
 			int samplesToGenerate = SamplesInOneFrame;
 			if (buffer.Count > samples.Length + MaxExcessSamples)
@@ -73,7 +73,7 @@ namespace BizHawk.Client.Common
 			{
 				throw new InvalidOperationException("Base sound provider must be in async mode.");
 			}
-			asyncProvider.GetSamplesAsync(mySamples);
+			asyncProvider.GetAsyncSoundSamples(mySamples);
 
 			foreach (short s in mySamples)
 			{

@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 {
 	public partial class AppleII : ISyncSoundProvider
 	{
-		public void GetSamplesSync(out short[] samples, out int nsamp)
+		public void GetSyncSoundSamples(out short[] samples, out int nsamp)
 		{
 			_machine.Memory.Speaker.GetSamples(out samples, out nsamp);
 		}

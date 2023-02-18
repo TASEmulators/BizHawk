@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		internal int OldSl;
 		internal int OldSr;
 
-		public void GetSamplesSync(out short[] samples, out int nsamp)
+		public void GetSyncSoundSamples(out short[] samples, out int nsamp)
 		{
 			if (!disablePSG)
 			{

@@ -322,7 +322,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		}
 
-		public void GetSamplesSync(out short[] samples, out int nsamp)
+		public void GetSyncSoundSamples(out short[] samples, out int nsamp)
 		{
 			samples = _soundBuffer;
 			nsamp = _numSamples;

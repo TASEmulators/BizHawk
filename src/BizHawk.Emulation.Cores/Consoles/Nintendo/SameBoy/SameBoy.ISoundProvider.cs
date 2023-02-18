@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			_soundoutbuffcontains = 0;
 		}
 
-		public void GetSamplesSync(out short[] samples, out int nsamp)
+		public void GetSyncSoundSamples(out short[] samples, out int nsamp)
 		{
 			samples = _soundoutbuff;
 			nsamp = _soundoutbuffcontains;

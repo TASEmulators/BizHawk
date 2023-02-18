@@ -327,13 +327,13 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 		public uint[] color_palette = new uint[4];
 
-		public void GetSamplesSync(out short[] samples, out int nsamp)
+		public void GetSyncSoundSamples(out short[] samples, out int nsamp)
 		{
 			short[] temp_samp_L = new short[735 * 2];
 			short[] temp_samp_R = new short[735 * 2];
 
-			L.GetSamplesSync(out temp_samp_L, out int nsamp_L);
-			R.GetSamplesSync(out temp_samp_R, out int nsamp_R);
+			L.GetSyncSoundSamples(out temp_samp_L, out int nsamp_L);
+			R.GetSyncSoundSamples(out temp_samp_R, out int nsamp_R);
 
 			if (linkSettings.AudioSet == GGLinkSettings.AudioSrc.Left)
 			{

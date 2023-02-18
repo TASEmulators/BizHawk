@@ -182,7 +182,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 		private const int blipbuffsize = 4500;
 
-		public void GetSamplesSync(out short[] samples, out int nsamp)
+		public void GetSyncSoundSamples(out short[] samples, out int nsamp)
 		{
 			uint f_clock = LibMSX.MSX_get_audio(MSX_Pntr, Aud, ref num_samp);
 

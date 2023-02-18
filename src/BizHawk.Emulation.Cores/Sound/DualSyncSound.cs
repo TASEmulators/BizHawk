@@ -36,8 +36,8 @@ namespace BizHawk.Emulation.Cores.Sound
 
 		public void Fetch()
 		{
-			_left.GetSamplesSync(out var sampl, out int nsampl);
-			_right.GetSamplesSync(out var sampr, out var nsampr);
+			_left.GetSyncSoundSamples(out var sampl, out int nsampl);
+			_right.GetSyncSoundSamples(out var sampr, out var nsampr);
 
 			int n = Math.Min(nsampl + _leftOverflowCount, nsampr + _rightOverflowCount);
 			
@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Sound
 		{
 		}
 
-		public void GetSamplesSync(out short[] samples, out int nsamp)
+		public void GetSyncSoundSamples(out short[] samples, out int nsamp)
 		{
 			samples = _samp;
 			nsamp = _nsamp;

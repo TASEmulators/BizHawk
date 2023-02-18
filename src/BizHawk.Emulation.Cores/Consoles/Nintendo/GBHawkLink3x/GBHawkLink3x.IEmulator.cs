@@ -467,11 +467,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 		public static readonly uint[] color_palette_BW = { 0xFFFFFFFF , 0xFFAAAAAA, 0xFF555555, 0xFF000000 };
 		public static readonly uint[] color_palette_Gr = { 0xFFA4C505, 0xFF88A905, 0xFF1D551D, 0xFF052505 };
 
-		public void GetSamplesSync(out short[] samples, out int nsamp)
+		public void GetSyncSoundSamples(out short[] samples, out int nsamp)
 		{
-			L.audio.GetSamplesSync(out var tempSampL, out var nsampL);
-			C.audio.GetSamplesSync(out var tempSampC, out var nsampC);
-			R.audio.GetSamplesSync(out var tempSampR, out var nsampR);
+			L.audio.GetSyncSoundSamples(out var tempSampL, out var nsampL);
+			C.audio.GetSyncSoundSamples(out var tempSampC, out var nsampC);
+			R.audio.GetSyncSoundSamples(out var tempSampR, out var nsampR);
 
 			if (Link3xSettings.AudioSet == GBLink3xSettings.AudioSrc.Left)
 			{
