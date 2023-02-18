@@ -17,20 +17,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			else
 				ClockRate = (283.75 * 15625.0 + 25.0) * 4.8;
 
-			BasicServiceProvider ser = new(this);
-			ser.Register(_bsnesCore.ServiceProvider.GetService<IDebuggable>());
-			ser.Register(_bsnesCore.ServiceProvider.GetService<IVideoProvider>());
-			ser.Register(_bsnesCore.ServiceProvider.GetService<ISaveRam>());
-			ser.Register(_bsnesCore.ServiceProvider.GetService<IStatable>());
-			ser.Register(_bsnesCore.ServiceProvider.GetService<IInputPollable>());
-			ser.Register(_bsnesCore.ServiceProvider.GetService<IRegionable>());
-			ser.Register(_bsnesCore.ServiceProvider.GetService<ISettable<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings>>());
-			ser.Register(_bsnesCore.ServiceProvider.GetService<IBSNESForGfxDebugger>());
-			ser.Register(_bsnesCore.ServiceProvider.GetService<IBoardInfo>());
-			ser.Register(_bsnesCore.ServiceProvider.GetService<ISoundProvider>());
-			ser.Register(_bsnesCore.ServiceProvider.GetService<IMemoryDomains>());
-			ser.Register(_bsnesCore.ServiceProvider.GetService<IDisassemblable>());
-			ser.Register(_bsnesCore.ServiceProvider.GetService<ITraceable>());
+			BasicServiceProvider ser = new(_bsnesCore);
+			ser.Register<ICycleTiming>(this);
+			ser.Register<IEmulator>(this);
 			ServiceProvider = ser;
 		}
 
