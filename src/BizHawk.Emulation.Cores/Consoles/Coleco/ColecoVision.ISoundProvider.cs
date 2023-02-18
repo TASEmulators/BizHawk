@@ -4,7 +4,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.ColecoVision
 {
-	public partial class ColecoVision : ISoundProvider
+	public partial class ColecoVision : ISyncSoundProvider
 	{
 		private readonly SN76489col PSG;
 		private readonly AY_3_8910_SGM SGM_sound;
@@ -15,23 +15,6 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		{
 			_blip.Clear();
 			_sampleClock = 0;
-		}
-
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Async is not available");
-		}
-
-		public bool CanProvideAsync => false;
-
-		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
-
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			if (mode != SyncSoundMode.Sync)
-			{
-				throw new InvalidOperationException("Only Sync mode is supported.");
-			}
 		}
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)

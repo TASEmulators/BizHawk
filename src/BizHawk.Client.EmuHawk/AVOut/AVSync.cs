@@ -15,17 +15,10 @@ namespace BizHawk.Client.EmuHawk
 		private long _soundRemainder; // audio timekeeping for video dumping
 
 		/// <exception cref="InvalidOperationException">
-		/// <paramref name="asyncSoundProvider"/>'s mode is not <see cref="SyncSoundMode.Async"/>, or
 		/// A/V parameters haven't been set (need to call <see cref="AVStretcher.SetAudioParameters"/> and <see cref="AVStretcher.SetMovieParameters"/>)
 		/// </exception>
-		public void DumpAV(IVideoProvider v, ISoundProvider asyncSoundProvider, out short[] samples, out int samplesProvided)
+		public void DumpAV(IVideoProvider v, IAsyncSoundProvider asyncSoundProvider, out short[] samples, out int samplesProvided)
 		{
-			// Sound refactor TODO: we could try set it here, but we want the client to be responsible for mode switching? There may be non-trivial complications with when to switch modes that we don't want this object worrying about
-			if (asyncSoundProvider.SyncMode != SyncSoundMode.Async)
-			{
-				throw new InvalidOperationException("Only async mode is supported, set async mode before passing in the sound provider");
-			}
-
 			if (!ASet || !VSet)
 				throw new InvalidOperationException("Must set params first!");
 
@@ -81,15 +74,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		/// <exception cref="InvalidOperationException"><paramref name="syncSoundProvider"/>'s mode is not <see cref="SyncSoundMode.Sync"/></exception>
-		public void DumpAV(IVideoProvider v, ISoundProvider syncSoundProvider, out short[] samples, out int samplesProvided)
+		public void DumpAV(IVideoProvider v, ISyncSoundProvider syncSoundProvider, out short[] samples, out int samplesProvided)
 		{
-			// Sound refactor TODO: we could just set it here, but we want the client to be responsible for mode switching? There may be non-trivial complications with when to switch modes that we don't want this object worrying about
-			if (syncSoundProvider.SyncMode != SyncSoundMode.Sync)
-			{
-				throw new InvalidOperationException("Only sync mode is supported, set sync mode before passing in the sound provider");
-			}
-
 			VerifyParams();
 			syncSoundProvider.GetSamplesSync(out samples, out samplesProvided);
 			_exAudioNum += samplesProvided * (long)FpsNum;

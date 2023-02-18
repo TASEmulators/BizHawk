@@ -3,13 +3,11 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
-	public partial class QuickNES : ISoundProvider
+	public partial class QuickNES : ISyncSoundProvider
 	{
 		private readonly short[] _monoBuff = new short[1024];
 		private readonly short[] _stereoBuff = new short[2048];
 		private int _numSamples;
-
-		public bool CanProvideAsync => false;
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
@@ -20,21 +18,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		public void DiscardSamples()
 		{
 			// Nothing to do
-		}
-
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			if (mode == SyncSoundMode.Async)
-			{
-				throw new NotSupportedException("Async mode is not supported.");
-			}
-		}
-
-		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
-
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new InvalidOperationException("Async mode is not supported.");
 		}
 
 		private void InitAudio()

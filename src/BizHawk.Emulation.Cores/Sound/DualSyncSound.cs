@@ -6,10 +6,10 @@ namespace BizHawk.Emulation.Cores.Sound
 	/// <summary>
 	/// this thing more or less ASSumes that the two cores input to it both provide the same number of samples in each go
 	/// </summary>
-	public class DualSyncSound : ISoundProvider
+	public class DualSyncSound : ISyncSoundProvider
 	{
-		private readonly ISoundProvider _left;
-		private readonly ISoundProvider _right;
+		private readonly ISyncSoundProvider _left;
+		private readonly ISyncSoundProvider _right;
 		private int _nsamp;
 		private short[] _samp = new short[0];
 
@@ -18,8 +18,7 @@ namespace BizHawk.Emulation.Cores.Sound
 		private readonly short[] _rightOverflow = new short[32];
 		private int _rightOverflowCount = 0;
 
-
-		public DualSyncSound(ISoundProvider left, ISoundProvider right)
+		public DualSyncSound(ISyncSoundProvider left, ISyncSoundProvider right)
 		{
 			_left = left;
 			_right = right;
@@ -62,29 +61,14 @@ namespace BizHawk.Emulation.Cores.Sound
 			_nsamp = n;
 		}
 
-		public bool CanProvideAsync => false;
-
-		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
-
 		public void DiscardSamples()
 		{
-		}
-
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new InvalidOperationException();
 		}
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
 			samples = _samp;
 			nsamp = _nsamp;
-		}
-
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			if (mode != SyncSoundMode.Sync)
-				throw new InvalidOperationException();
 		}
 	}
 }

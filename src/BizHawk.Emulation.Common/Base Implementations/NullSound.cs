@@ -7,24 +7,18 @@ namespace BizHawk.Emulation.Common
 	/// that simply outputs "silence"
 	/// </summary>
 	/// <seealso cref="ISoundProvider" />
-	public class NullSound : ISoundProvider
+	public class NullSound : IAsyncSoundProvider, ISoundProvider, ISyncSoundProvider
 	{
 		private readonly long _spfNumerator;
 		private readonly long _spfDenominator;
 		private long _remainder;
 		private short[] _buff = Array.Empty<short>();
 
-		private NullSound()
-		{
-			SyncMode = SyncSoundMode.Sync;
-		}
-
 		/// <summary>
 		/// Initializes a new instance of the <see cref="NullSound"/> class
 		/// that provides an exact number of audio samples per call when in sync mode
 		/// </summary>
 		public NullSound(int spf)
-			: this()
 		{
 			_spfNumerator = spf;
 			_spfDenominator = 1;
@@ -40,11 +34,9 @@ namespace BizHawk.Emulation.Common
 			_spfDenominator = fpsNum;
 		}
 
-		public bool CanProvideAsync => true;
+		private SyncSoundMode SyncMode = SyncSoundMode.Sync;
 
-		public SyncSoundMode SyncMode { get; private set; }
-
-		/// <exception cref="InvalidOperationException"><see cref="SyncMode"/> is not <see cref="SyncSoundMode.Sync"/> (call <see cref="SetSyncMode"/>)</exception>
+		/// <exception cref="InvalidOperationException"><see cref="SyncMode"/> is not <see cref="SyncSoundMode.Sync"/> (call <see cref="AsSyncProvider"/>)</exception>
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
 			if (SyncMode != SyncSoundMode.Sync)
@@ -68,12 +60,7 @@ namespace BizHawk.Emulation.Common
 		{
 		}
 
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			SyncMode = mode;
-		}
-
-		/// <exception cref="InvalidOperationException"><see cref="SyncMode"/> is not <see cref="SyncSoundMode.Async"/> (call <see cref="SetSyncMode"/>)</exception>
+		/// <exception cref="InvalidOperationException"><see cref="SyncMode"/> is not <see cref="SyncSoundMode.Async"/> (call <see cref="AsAsyncProvider"/>)</exception>
 		public void GetSamplesAsync(short[] samples)
 		{
 			if (SyncMode != SyncSoundMode.Async)
@@ -82,6 +69,18 @@ namespace BizHawk.Emulation.Common
 			}
 
 			Array.Clear(samples, 0, samples.Length);
+		}
+
+		public IAsyncSoundProvider AsAsyncProvider()
+		{
+			SyncMode = SyncSoundMode.Async;
+			return this;
+		}
+
+		public ISyncSoundProvider AsSyncProvider()
+		{
+			SyncMode = SyncSoundMode.Sync;
+			return this;
 		}
 	}
 }

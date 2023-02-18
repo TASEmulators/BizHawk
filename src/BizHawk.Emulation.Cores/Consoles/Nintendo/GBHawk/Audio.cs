@@ -8,7 +8,7 @@ using BizHawk.Common.NumberExtensions;
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
 	// Audio Emulation
-	public class Audio : ISoundProvider
+	public class Audio : ISyncSoundProvider
 	{
 		public GBHawk Core { get; set; }
 
@@ -1192,18 +1192,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				((NOISE_enable ? 1 : 0) << 3));
 		}
 
-		public bool CanProvideAsync => false;
-
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			if (mode != SyncSoundMode.Sync)
-			{
-				throw new InvalidOperationException("Only Sync mode is supported_");
-			}
-		}
-
-		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
-
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
 			_blip_L.EndFrame(master_audio_clock);
@@ -1220,11 +1208,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 
 			master_audio_clock = 0;
-		}
-
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Async is not available");
 		}
 
 		public void DiscardSamples()

@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// This implementation uses BlipBuffer and should *always* output at 44100 with 882 samples per frame
 	/// (so that it can be mixed easily further down the line)
 	/// </summary>
-	public class Beeper : ISoundProvider, IBeeperDevice
+	public class Beeper : IBeeperDevice, ISyncSoundProvider
 	{
 		/// <summary>
 		/// Sample Rate 
@@ -135,21 +135,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 
 			LastPulse = pulse;
-		}
-
-		public bool CanProvideAsync => false;
-
-		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
-
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			if (mode != SyncSoundMode.Sync)
-				throw new InvalidOperationException("Only Sync mode is supported.");
-		}
-
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Async is not available");
 		}
 
 		public void DiscardSamples()

@@ -1006,7 +1006,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private IVideoProvider _currentVideoProvider = NullVideo.Instance;
 
-		private ISoundProvider _currentSoundProvider = new NullSound(44100 / 60); // Reasonable default until we have a core instance
+		private ISoundProviderBase _currentSoundProvider = new NullSound(44100 / 60); // Reasonable default until we have a core instance
+
+		private void ForceSyncSound(ref ISoundProviderBase soundProvider)
+			=> soundProvider = ((ISoundProvider) soundProvider).AsSyncProvider();
 
 		/// <remarks>don't use this, use <see cref="Config"/></remarks>
 		private readonly Func<Config> _getGlobalConfig;
@@ -1683,8 +1686,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private AutofireController _autofireNullControls;
 
-		// Sound refactor TODO: we can enforce async mode here with a property that gets/sets this but does an async check
-		private ISoundProvider _aviSoundInputAsync; // Note: This sound provider must be in async mode!
+		private IAsyncSoundProvider _aviSoundInputAsync;
 
 		private SimpleSyncSoundProvider _dumpProxy; // an audio proxy used for dumping
 		private bool _dumpaudiosync; // set true to for experimental AV dumping
@@ -2015,8 +2017,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				bool useAsyncMode = _currentSoundProvider.CanProvideAsync && !Config.SoundThrottle;
-				_currentSoundProvider.SetSyncMode(useAsyncMode ? SyncSoundMode.Async : SyncSoundMode.Sync);
+				if (Config.SoundThrottle && _currentSoundProvider is not ISyncSoundProvider) ForceSyncSound(ref _currentSoundProvider);
 				Sound.SetInputPin(_currentSoundProvider);
 			}
 		}
@@ -3476,20 +3477,12 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_dumpaudiosync)
 			{
-				_currentSoundProvider.SetSyncMode(SyncSoundMode.Sync);
+				ForceSyncSound(ref _currentSoundProvider);
 			}
 			else
 			{
-				if (_currentSoundProvider.CanProvideAsync)
-				{
-					_currentSoundProvider.SetSyncMode(SyncSoundMode.Async);
-					_aviSoundInputAsync = _currentSoundProvider;
-				}
-				else
-				{
-					_currentSoundProvider.SetSyncMode(SyncSoundMode.Sync);
-					_aviSoundInputAsync = new SyncToAsyncProvider(() => Emulator.VsyncRate(), _currentSoundProvider);
-				}
+				_aviSoundInputAsync = _currentSoundProvider as IAsyncSoundProvider
+					?? new SyncToAsyncProvider(() => Emulator.VsyncRate(), (ISyncSoundProvider) _currentSoundProvider);
 			}
 
 			_dumpProxy = new SimpleSyncSoundProvider();
@@ -3611,7 +3604,7 @@ namespace BizHawk.Client.EmuHawk
 					int nsamp;
 					if (_dumpaudiosync)
 					{
-						((VideoStretcher) _currAviWriter).DumpAV(output, _currentSoundProvider, out samp, out nsamp);
+						((VideoStretcher) _currAviWriter).DumpAV(output, (ISyncSoundProvider) _currentSoundProvider, out samp, out nsamp);
 					}
 					else
 					{

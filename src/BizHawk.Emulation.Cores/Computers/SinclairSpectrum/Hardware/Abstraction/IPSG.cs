@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// <summary>
 	/// Represents a PSG device (in this case an AY-3-891x)
 	/// </summary>
-	public interface IPSG : ISoundProvider, IPortIODevice
+	public interface IPSG : IPortIODevice, ISyncSoundProvider
 	{
 		/// <summary>
 		/// Initlization routine

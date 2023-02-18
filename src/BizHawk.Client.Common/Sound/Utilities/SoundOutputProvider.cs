@@ -78,7 +78,7 @@ namespace BizHawk.Client.Common
 
 		private int EffectiveMaxSamplesDeficit => _maxSamplesDeficit + _targetExtraSamples;
 
-		public ISoundProvider BaseSoundProvider { get; set; }
+		public ISoundProviderBase BaseSoundProvider { get; set; }
 
 		public void DiscardSamples()
 		{
@@ -206,11 +206,11 @@ namespace BizHawk.Client.Common
 
 		private void GetSamplesFromBase(ref double scaleFactor)
 		{
-			if (BaseSoundProvider.SyncMode != SyncSoundMode.Sync)
+			if (BaseSoundProvider is not ISyncSoundProvider syncProvider)
 			{
 				throw new InvalidOperationException("Base sound provider must be in sync mode.");
 			}
-			BaseSoundProvider.GetSamplesSync(out var samples, out var count);
+			syncProvider.GetSamplesSync(out var samples, out var count);
 
 			bool correctedEmptyFrame = false;
 			if (count == 0)

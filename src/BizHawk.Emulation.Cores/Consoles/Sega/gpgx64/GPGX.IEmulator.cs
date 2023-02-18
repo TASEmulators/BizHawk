@@ -3,7 +3,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
-	public partial class GPGX : IEmulator, ISoundProvider
+	public partial class GPGX : IEmulator
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 

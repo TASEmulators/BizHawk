@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
-	public partial class A7800Hawk : IEmulator, IVideoProvider, ISoundProvider
+	public partial class A7800Hawk : IEmulator, ISyncSoundProvider, IVideoProvider
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
@@ -373,18 +373,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		private BlipBuffer _blip = new BlipBuffer(4096);
 
-		public bool CanProvideAsync => false;
-
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			if (mode != SyncSoundMode.Sync)
-			{
-				throw new InvalidOperationException("Only Sync mode is supported.");
-			}
-		}
-
-		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
-
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
 			_blip.EndFrame(master_audio_clock);
@@ -402,11 +390,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			master_audio_clock = 0;
 			temp = 0;
-		}
-
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Async is not available");
 		}
 
 		public void DiscardSamples()

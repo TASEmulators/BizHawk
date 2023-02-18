@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// <summary>
 	/// Represents a PSG device (in this case an AY-3-891x)
 	/// </summary>
-	public interface IPSG : ISoundProvider
+	public interface IPSG : ISyncSoundProvider
 	{
 		/// <summary>
 		/// Initialization routine

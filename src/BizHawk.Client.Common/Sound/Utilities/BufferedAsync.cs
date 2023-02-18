@@ -30,9 +30,9 @@ namespace BizHawk.Client.Common
 	 * TODO: For systems that _really_ don't need BufferedAsync (pce not turbocd, sms), make a way to signal
 	 *       that and then bypass the BufferedAsync.
 	 */
-	public sealed class BufferedAsync : ISoundProvider, IBufferedSoundProvider
+	public sealed class BufferedAsync : IAsyncSoundProvider, IBufferedSoundProvider
 	{
-		public ISoundProvider BaseSoundProvider { get; set; }
+		public ISoundProviderBase BaseSoundProvider { get; set; }
 
 		private readonly Queue<short> buffer = new Queue<short>(MaxExcessSamples);
 
@@ -56,7 +56,7 @@ namespace BizHawk.Client.Common
 			BaseSoundProvider?.DiscardSamples();
 		}
 
-		/// <exception cref="InvalidOperationException"><see cref="BaseSoundProvider"/>.<see cref="ISoundProvider.SyncMode"/> is not <see cref="SyncSoundMode.Async"/></exception>
+		/// <exception cref="InvalidOperationException"><see cref="BaseSoundProvider"/> is not an <see cref="IAsyncSoundProvider"/></exception>
 		public void GetSamplesAsync(short[] samples)
 		{
 			int samplesToGenerate = SamplesInOneFrame;
@@ -69,11 +69,11 @@ namespace BizHawk.Client.Common
 
 			var mySamples = new short[samplesToGenerate];
 
-			if (BaseSoundProvider.SyncMode != SyncSoundMode.Async)
+			if (BaseSoundProvider is not IAsyncSoundProvider asyncProvider)
 			{
 				throw new InvalidOperationException("Base sound provider must be in async mode.");
 			}
-			BaseSoundProvider.GetSamplesAsync(mySamples);
+			asyncProvider.GetSamplesAsync(mySamples);
 
 			foreach (short s in mySamples)
 			{
@@ -84,25 +84,6 @@ namespace BizHawk.Client.Common
 			{
 				samples[i] = buffer.Dequeue();
 			}
-		}
-
-		public bool CanProvideAsync => true;
-
-		public SyncSoundMode SyncMode => SyncSoundMode.Async;
-
-		/// <exception cref="NotSupportedException"><paramref name="mode"/> is not <see cref="SyncSoundMode.Async"/></exception>
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			if (mode != SyncSoundMode.Async)
-			{
-				throw new NotSupportedException("Sync mode is not supported.");
-			}
-		}
-
-		/// <exception cref="InvalidOperationException">always</exception>
-		public void GetSamplesSync(out short[] samples, out int nsamp)
-		{
-			throw new InvalidOperationException("Sync mode is not supported.");
 		}
 	}
 }

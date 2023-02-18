@@ -6,7 +6,7 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
 	// Emulates the TIA
-	public partial class TIA : IVideoProvider, ISoundProvider
+	public partial class TIA : ISyncSoundProvider, IVideoProvider
 	{
 		static TIA()
 		{

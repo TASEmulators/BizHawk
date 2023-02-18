@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 {
 	[PortedCore(CoreNames.Handy, "K. Wilkins, Mednafen Team", "mednafen 0-9-34-1", "http://mednafen.sourceforge.net/")]
 	[ServiceNotApplicable(new[] { typeof(ISettable<,>) })]
-	public partial class Lynx : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IInputPollable
+	public partial class Lynx : IEmulator, IInputPollable, ISaveRam, IStatable, ISyncSoundProvider, IVideoProvider
 	{
 		private static readonly LibLynx LibLynx;
 

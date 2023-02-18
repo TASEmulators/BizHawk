@@ -8,7 +8,9 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Emulation.Cores.Computers.MSX
 {
 	[Core(CoreNames.MSXHawk, "", isReleased: true)]
-	public partial class MSX : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IInputPollable, IRegionable, ISettable<MSX.MSXSettings, MSX.MSXSyncSettings>
+	public partial class MSX : IEmulator,
+		IInputPollable, ISaveRam, ISettable<MSX.MSXSettings, MSX.MSXSyncSettings>, ISyncSoundProvider, IVideoProvider,
+		IRegionable
 	{
 		[CoreConstructor(VSystemID.Raw.MSX)]
 		public MSX(CoreLoadParameters<MSXSettings, MSXSyncSettings> lp)

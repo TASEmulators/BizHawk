@@ -82,7 +82,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 			// start up audio resampler
 			InitAudio();
-			ser.Register<ISoundProvider>(_soundProvider);
+			ser.Register<ISyncSoundProvider>(_soundProvider);
 
 			if (_isSGB)
 			{

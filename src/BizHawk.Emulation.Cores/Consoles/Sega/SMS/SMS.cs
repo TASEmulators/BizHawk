@@ -15,8 +15,9 @@ using BizHawk.Emulation.Cores.Components.Z80A;
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
 	[Core(CoreNames.SMSHawk, "Vecna")]
-	public partial class SMS : IEmulator, ISoundProvider, ISaveRam, IInputPollable, IRegionable,
-		IDebuggable, ISettable<SMS.SmsSettings, SMS.SmsSyncSettings>, ICodeDataLogger
+	public partial class SMS : IEmulator,
+		ICodeDataLogger, IDebuggable, IInputPollable, ISaveRam, ISettable<SMS.SmsSettings, SMS.SmsSyncSettings>, ISyncSoundProvider,
+		IRegionable
 	{
 		[CoreConstructor(VSystemID.Raw.SMS)]
 		[CoreConstructor(VSystemID.Raw.SG)]

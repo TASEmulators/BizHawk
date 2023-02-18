@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Components
 
 	// Sound refactor TODO: IMixedSoundProvider must inherit ISoundProvider
 	// TODo: this provides "fake" sync sound by hardcoding the number of samples
-	public sealed class HuC6280PSG : ISoundProvider, IMixedSoundProvider
+	public sealed class HuC6280PSG : IMixedSoundProvider, ISoundProvider, ISyncSoundProvider
 	{
 		private readonly int _spf;
 		public class PSGChannel
@@ -149,10 +149,7 @@ namespace BizHawk.Emulation.Cores.Components
 
 		public void DiscardSamples() { }
 
-		public bool CanProvideAsync => true;
-
-		public void SetSyncMode(SyncSoundMode mode) => SyncMode = mode;
-		public SyncSoundMode SyncMode { get; private set; }
+		private SyncSoundMode SyncMode = SyncSoundMode.Sync;
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
@@ -281,6 +278,18 @@ namespace BizHawk.Emulation.Cores.Components
 			public byte Register;
 			public byte Value;
 			public long Time;
+		}
+
+		public IAsyncSoundProvider AsAsyncProvider()
+		{
+			SyncMode = SyncSoundMode.Async;
+			return this;
+		}
+
+		public ISyncSoundProvider AsSyncProvider()
+		{
+			SyncMode = SyncSoundMode.Sync;
+			return this;
 		}
 	}
 }

@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 	/// <summary>
 	/// Audio related functions
 	/// </summary>
-	public partial class ChannelF : ISoundProvider
+	public partial class ChannelF : ISyncSoundProvider
 	{
 		private readonly double SampleRate = 44100;
 		private int SamplesPerFrame;
@@ -63,21 +63,6 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					startPos += (int)CyclesPerSample;
 				}
 			}
-		}
-
-		public bool CanProvideAsync => false;
-
-		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
-
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			if (mode != SyncSoundMode.Sync)
-				throw new InvalidOperationException("Only Sync mode is supported.");
-		}
-
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Async is not available");
 		}
 
 		public void DiscardSamples()

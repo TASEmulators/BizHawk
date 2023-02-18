@@ -9,26 +9,22 @@ namespace BizHawk.Emulation.Cores.Components
 	/// <summary>
 	/// An interface that extends a sound provider to provide mixing capabilities through the SoundMixer class
 	/// </summary>
-	internal interface IMixedSoundProvider : ISoundProvider
+	internal interface IMixedSoundProvider : IAsyncSoundProvider
 	{
 		int MaxVolume { get; set; }
 	}
 
 	// This is a straightforward class to mix/chain multiple ISoundProvider sources.
 	// Relies on a hack of passing in the samples per frame for sync sound abilities
-	internal sealed class SoundMixer : ISoundProvider
+	internal sealed class SoundMixer : IAsyncSoundProvider, ISoundProvider, ISyncSoundProvider
 	{
 		private readonly int _spf;
 		private readonly List<IMixedSoundProvider> _soundProviders;
 
 		public SoundMixer(int spf, params IMixedSoundProvider[] soundProviders)
 		{
-			if (soundProviders.Any(s => !s.CanProvideAsync))
-			{
-				throw new InvalidOperationException("Sound mixer only works with async sound currently");
-			}
-
-			_soundProviders = new List<IMixedSoundProvider>(soundProviders);
+			_soundProviders = soundProviders.OfType<IAsyncSoundProvider>().Select(static o => (IMixedSoundProvider) o).ToList();
+			if (_soundProviders.Count != soundProviders.Length) throw new ArgumentException(paramName: nameof(soundProviders), message: "Sound mixer only works with async sound currently");
 			_spf = spf;
 		}
 
@@ -45,10 +41,7 @@ namespace BizHawk.Emulation.Cores.Components
 			}
 		}
 
-		public bool CanProvideAsync => true;
-
-		public void SetSyncMode(SyncSoundMode mode) => SyncMode = mode;
-		public SyncSoundMode SyncMode { get; private set; }
+		private SyncSoundMode SyncMode = SyncSoundMode.Sync;
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
@@ -79,6 +72,18 @@ namespace BizHawk.Emulation.Cores.Components
 			{
 				source.MaxVolume = eachVolume;
 			}
+		}
+
+		public IAsyncSoundProvider AsAsyncProvider()
+		{
+			SyncMode = SyncSoundMode.Async;
+			return this;
+		}
+
+		public ISyncSoundProvider AsSyncProvider()
+		{
+			SyncMode = SyncSoundMode.Sync;
+			return this;
 		}
 	}
 }

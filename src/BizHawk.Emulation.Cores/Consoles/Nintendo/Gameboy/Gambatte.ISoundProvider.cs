@@ -4,10 +4,8 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
-	public partial class Gameboy : ISoundProvider
+	public partial class Gameboy : ISyncSoundProvider
 	{
-		public bool CanProvideAsync => false;
-
 		public void DiscardSamples()
 		{
 			_soundoutbuffcontains = 0;
@@ -17,21 +15,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		{
 			samples = _soundoutbuff;
 			nsamp = _soundoutbuffcontains;
-		}
-
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			if (mode == SyncSoundMode.Async)
-			{
-				throw new NotSupportedException("Async mode is not supported.");
-			}
-		}
-
-		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
-
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new InvalidOperationException("Async mode is not supported.");
 		}
 
 		internal bool Muted => _settings.Muted;

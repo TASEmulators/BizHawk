@@ -11,7 +11,7 @@ using BizHawk.Emulation.Cores.Components.M6502;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public partial class NES : IEmulator, ISoundProvider/*, ICycleTiming*/
+	public partial class NES : IEmulator, ISyncSoundProvider/*, ICycleTiming*/
 	{
 		internal static class RomChecksums
 		{
@@ -86,8 +86,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public int old_s = 0;
 
-		public bool CanProvideAsync => false;
-
 		internal void ResetControllerDefinition(bool subframe)
 		{
 			ControllerDefinition = null;
@@ -122,21 +120,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			ControllerDefinition.MakeImmutable();
 		}
-
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			if (mode != SyncSoundMode.Sync)
-			{
-				throw new NotSupportedException("Only sync mode is supported");
-			}
-		}
-
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Async not supported");
-		}
-
-		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
 		public void Dispose()
 		{

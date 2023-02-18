@@ -205,7 +205,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ppu.Core = this;
 			serialport.Core = this;
 
-			ser.Register<ISoundProvider>(audio);
+			ser.Register<ISyncSoundProvider>(audio);
 			ServiceProvider = ser;
 
 			_ = PutSettings(settings ?? new GBSettings());

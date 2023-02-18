@@ -4,7 +4,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Libretro
 {
-	public partial class LibretroHost : ISoundProvider
+	public partial class LibretroHost : ISyncSoundProvider
 	{
 		private const int OUT_SAMPLE_RATE = 44100;
 
@@ -86,28 +86,11 @@ namespace BizHawk.Emulation.Cores.Libretro
 			_blipR.ReadSamplesRight(_outSampBuf, _outSamps);
 		}
 
-		public bool CanProvideAsync => false;
-
-		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
-
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			if (mode == SyncSoundMode.Async)
-			{
-				throw new NotSupportedException("Async mode is not supported.");
-			}
-		}
-
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
 			nsamp = _outSamps;
 			samples = _outSampBuf;
 			DiscardSamples();
-		}
-
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new InvalidOperationException("Async mode is not supported.");
 		}
 
 		public void DiscardSamples()

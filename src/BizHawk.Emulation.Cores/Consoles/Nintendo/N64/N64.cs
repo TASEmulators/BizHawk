@@ -89,7 +89,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			_audioProvider = new N64Audio(api);
 			_inputProvider = new N64Input(this.AsInputPollable(), api, _syncSettings.Controllers);
 			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(_videoProvider);
-			(ServiceProvider as BasicServiceProvider).Register<ISoundProvider>(_audioProvider.Resampler);
+			((BasicServiceProvider) ServiceProvider).Register<ISyncSoundProvider>(_audioProvider.Resampler);
 
 			switch (Region)
 			{

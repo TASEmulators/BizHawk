@@ -7,8 +7,7 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Emulation.Cores.WonderSwan
 {
 	[PortedCore(CoreNames.Cygne, "Dox, Mednafen Team", "1.24.3", "https://mednafen.github.io/releases/")]
-	public partial class WonderSwan : IEmulator, IVideoProvider, ISoundProvider,
-		IInputPollable, IDebuggable
+	public partial class WonderSwan : IEmulator, IDebuggable, IInputPollable, ISyncSoundProvider, IVideoProvider
 	{
 		[CoreConstructor(VSystemID.Raw.WSWAN)]
 		public WonderSwan(byte[] file, bool deterministic, WonderSwan.Settings settings, WonderSwan.SyncSettings syncSettings)

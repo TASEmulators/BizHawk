@@ -14,9 +14,9 @@ using BizHawk.BizInvoke;
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
 	[PortedCore(CoreNames.QuickNes, "", "0.7.0", "https://github.com/kode54/QuickNES")]
-	public sealed partial class QuickNES : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IInputPollable,
-		IBoardInfo, IVideoLogicalOffsets, IStatable, IDebuggable,
-		ISettable<QuickNES.QuickNESSettings, QuickNES.QuickNESSyncSettings>, INESPPUViewable
+	public sealed partial class QuickNES : IEmulator,
+		IDebuggable, IInputPollable, ISaveRam, ISettable<QuickNES.QuickNESSettings, QuickNES.QuickNESSyncSettings>, IStatable, ISyncSoundProvider, IVideoProvider,
+		IBoardInfo, INESPPUViewable, IVideoLogicalOffsets
 	{
 		static QuickNES()
 		{

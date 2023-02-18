@@ -8,8 +8,8 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {
-	public abstract class WaterboxCore : IEmulator, IVideoProvider, ISoundProvider, IStatable,
-		IInputPollable, ISaveRam
+	public abstract class WaterboxCore : IEmulator,
+		IInputPollable, ISaveRam, IStatable, ISyncSoundProvider, IVideoProvider
 	{
 		private LibWaterboxCore _core;
 		protected WaterboxHost _exe;
@@ -322,23 +322,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		}
 
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			if (mode == SyncSoundMode.Async)
-			{
-				throw new NotSupportedException("Async mode is not supported.");
-			}
-		}
-
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
 			samples = _soundBuffer;
 			nsamp = _numSamples;
-		}
-
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new InvalidOperationException("Async mode is not supported.");
 		}
 
 		public void DiscardSamples()
@@ -347,8 +334,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		protected short[] _soundBuffer;
 		protected int _numSamples;
-		public bool CanProvideAsync => false;
-		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
 		public virtual int[] GetVideoBuffer()
 		{

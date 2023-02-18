@@ -30,7 +30,9 @@ using BizHawk.Emulation.DiscSystem;
 namespace BizHawk.Emulation.Cores.Sony.PSX
 {
 	[PortedCore(CoreNames.Octoshock, "Mednafen Team")]
-	public unsafe partial class Octoshock : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IDriveLight, ISettable<Octoshock.Settings, Octoshock.SyncSettings>, IRegionable, IInputPollable, IRomInfo
+	public unsafe partial class Octoshock : IEmulator,
+		IInputPollable, ISaveRam, ISettable<Octoshock.Settings, Octoshock.SyncSettings>, IStatable, ISyncSoundProvider, IVideoProvider,
+		IDriveLight, IRegionable, IRomInfo
 	{
 		public Octoshock(CoreComm comm, PSF psf, Octoshock.Settings settings, Octoshock.SyncSettings syncSettings)
 		{
@@ -944,23 +946,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public void DiscardSamples()
 		{
 			sbuffcontains = 0;
-		}
-
-		public bool CanProvideAsync => false;
-
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			if (mode == SyncSoundMode.Async)
-			{
-				throw new NotSupportedException("Async mode is not supported.");
-			}
-		}
-
-		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
-
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new InvalidOperationException("Async mode is not supported.");
 		}
 
 		public byte[] CloneSaveRam()

@@ -110,7 +110,7 @@ namespace BizHawk.Client.EmuHawk
 		/// on its SyncMode property. Once attached, the sync mode must not change unless
 		/// the pin is re-attached.
 		/// </summary>
-		public void SetInputPin(ISoundProvider source)
+		public void SetInputPin(ISoundProviderBase source)
 		{
 			if (_bufferedProvider != null)
 			{
@@ -121,11 +121,11 @@ namespace BizHawk.Client.EmuHawk
 
 			if (source == null) return;
 
-			if (source.SyncMode == SyncSoundMode.Sync)
+			if (source is ISyncSoundProvider)
 			{
 				_bufferedProvider = _outputProvider;
 			}
-			else if (source.SyncMode == SyncSoundMode.Async)
+			else if (source is IAsyncSoundProvider)
 			{
 				_bufferedAsync.RecalculateMagic(_getCoreVsyncRateCallback());
 				_bufferedProvider = _bufferedAsync;
@@ -181,7 +181,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Config.SoundThrottle)
 				{
-					_outputProvider.BaseSoundProvider.GetSamplesSync(out samples, out sampleCount);
+					((ISyncSoundProvider) _outputProvider.BaseSoundProvider).GetSamplesSync(out samples, out sampleCount);
 					sampleOffset = 0;
 
 					if (isSecondaryThrottlingDisabled && sampleCount > samplesNeeded)

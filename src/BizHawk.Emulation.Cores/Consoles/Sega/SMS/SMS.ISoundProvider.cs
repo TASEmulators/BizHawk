@@ -4,7 +4,7 @@ using BizHawk.Emulation.Cores.Components;
 
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
-	public partial class SMS : ISoundProvider
+	public partial class SMS : ISyncSoundProvider
 	{
 		private readonly YM2413 YM2413;
 		internal BlipBuffer BlipL { get; set; } = new BlipBuffer(4096);
@@ -13,17 +13,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		internal uint SampleClock;
 		internal int OldSl;
 		internal int OldSr;
-
-		public bool CanProvideAsync => false;
-		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
-
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			if (mode != SyncSoundMode.Sync)
-			{
-				throw new NotSupportedException("Only sync mode is supported");
-			}
-		}
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
@@ -48,11 +37,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 
 			SampleClock = 0;
-		}
-
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Async not supported");
 		}
 
 		public void DiscardSamples()

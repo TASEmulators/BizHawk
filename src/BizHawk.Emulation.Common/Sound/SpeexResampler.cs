@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Common
 	/// <summary>
 	/// junk wrapper around LibSpeexDSP.  quite inefficient.  will be replaced
 	/// </summary>
-	public class SpeexResampler : IDisposable, ISoundProvider
+	public class SpeexResampler : IDisposable, ISyncSoundProvider
 	{
 		private static readonly LibSpeexDSP NativeDSP;
 		static SpeexResampler()
@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Common
 		}
 
 		// to accept an ISyncSoundProvider input
-		private readonly ISoundProvider _input;
+		private readonly ISyncSoundProvider _input;
 
 		// function to call to dispatch output
 		private readonly Action<short[], int> _drainer;
@@ -84,13 +84,13 @@ namespace BizHawk.Emulation.Common
 		/// <param name="ratioden">denominator of sample rate change ratio (inrate / outrate)</param>
 		/// <param name="sratein">sampling rate in, rounded to nearest hz</param>
 		/// <param name="srateout">sampling rate out, rounded to nearest hz</param>
-		/// <param name="drainer">function which accepts output as produced. if null, act as an <see cref="ISoundProvider"/></param>
+		/// <param name="drainer">function which accepts output as produced. if null, act as an <see cref="ISyncSoundProvider"/></param>
 		/// <param name="input">source to take input from when output is requested. if null, no auto-fetching</param>
 		/// <exception cref="ArgumentException"><paramref name="drainer"/> and <paramref name="input"/> are both non-null</exception>
 		/// <exception cref="Exception">unmanaged call failed</exception>
-		public SpeexResampler(Quality quality, uint rationum, uint ratioden, uint sratein, uint srateout, Action<short[], int> drainer = null, ISoundProvider input = null)
+		public SpeexResampler(Quality quality, uint rationum, uint ratioden, uint sratein, uint srateout, Action<short[], int> drainer = null, ISyncSoundProvider input = null)
 		{
-			if (drainer is not null && input is not null) throw new ArgumentException(message: $"Can't autofetch without being an {nameof(ISoundProvider)}?", paramName: nameof(input));
+			if (drainer is not null && input is not null) throw new ArgumentException(message: $"Can't autofetch without being an {nameof(ISyncSoundProvider)}?", paramName: nameof(input));
 
 			var err = LibSpeexDSP.RESAMPLER_ERR.SUCCESS;
 			_st = NativeDSP.speex_resampler_init_frac(2, rationum, ratioden, sratein, srateout, quality, ref err);
@@ -221,25 +221,6 @@ namespace BizHawk.Emulation.Common
 		public void DiscardSamples()
 		{
 			_outbuf2pos = 0;
-		}
-
-		public bool CanProvideAsync => false;
-
-		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
-
-		/// <exception cref="InvalidOperationException">always</exception>
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new InvalidOperationException("Async mode is not supported.");
-		}
-
-		/// <exception cref="NotSupportedException"><paramref name="mode"/> is <see cref="SyncSoundMode.Async"/></exception>
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			if (mode == SyncSoundMode.Async)
-			{
-				throw new NotSupportedException("Async mode is not supported.");
-			}
 		}
 	}
 }

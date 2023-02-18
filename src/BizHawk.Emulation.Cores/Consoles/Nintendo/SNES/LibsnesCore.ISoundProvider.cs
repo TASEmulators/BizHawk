@@ -3,7 +3,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
-	public partial class LibsnesCore : ISoundProvider
+	public partial class LibsnesCore : ISyncSoundProvider
 	{
 		private readonly BlipBuffer _blipL = new(4096);
 		private readonly BlipBuffer _blipR = new(4096);
@@ -61,23 +61,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			_blipL.ReadSamplesLeft(_sampleBuffer, _outSamps);
 			_blipR.ReadSamplesRight(_sampleBuffer, _outSamps);
-		}
-
-		public bool CanProvideAsync => false;
-
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new InvalidOperationException("Async mode is not supported.");
-		}
-
-		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
-
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			if (mode == SyncSoundMode.Async)
-			{
-				throw new NotSupportedException("Async mode is not supported.");
-			}
 		}
 	}
 }

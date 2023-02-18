@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 			ppu.Core = this;
 			ppu.set_region(is_pal, is_G7400);
-			ser.Register<ISoundProvider>(ppu);
+			ser.Register<ISyncSoundProvider>(ppu);
 
 			_vidbuffer = new int[372 * pic_height];
 			frame_buffer = new int[320 * pic_height];

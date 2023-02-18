@@ -4,7 +4,7 @@ using System.Text;
 
 namespace BizHawk.Emulation.Cores.Computers.MSX
 {
-	public partial class MSX : IEmulator, ISoundProvider, IVideoProvider
+	public partial class MSX : IEmulator, ISyncSoundProvider, IVideoProvider
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
@@ -181,23 +181,6 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		public uint num_samp;
 
 		private const int blipbuffsize = 4500;
-
-		public bool CanProvideAsync => false;
-
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			if (mode != SyncSoundMode.Sync)
-			{
-				throw new NotSupportedException("Only sync mode is supported");
-			}
-		}
-
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Async not supported");
-		}
-
-		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{

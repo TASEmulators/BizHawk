@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 {
 	[PortedCore(CoreNames.Virtu, "fool")]
 	[ServiceNotApplicable(new[] { typeof(ISaveRam) })]
-	public partial class AppleII : IEmulator, ISoundProvider, IVideoProvider, IStatable, IDriveLight
+	public partial class AppleII : IEmulator, IStatable, ISyncSoundProvider, IVideoProvider, IDriveLight
 	{
 		static AppleII()
 		{

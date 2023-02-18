@@ -6,16 +6,16 @@ using System.Linq;
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
 	/// <summary>
-	/// My attempt at mixing multiple ISoundProvider sources together and outputting another ISoundProvider
-	/// Currently only supports SyncSoundMode.Sync
-	/// Attached ISoundProvider sources must already be stereo 44.1khz and ideally sound buffers should be the same length (882)
+	/// My attempt at mixing multiple <see cref="ISyncSoundProvider"/> sources together and outputting another <see cref="ISyncSoundProvider"/><br/>
+	/// Currently does not support <see cref="IAsyncSoundProvider"/><br/>
+	/// Attached ISyncSoundProvider sources must already be stereo 44.1khz and ideally sound buffers should be the same length (882)
 	/// (if not, only 882 samples of their buffer will be used)
 	/// </summary>
-	internal sealed class SoundProviderMixer : ISoundProvider
+	internal sealed class SoundProviderMixer : ISyncSoundProvider
 	{
 		private class Provider
 		{
-			public ISoundProvider SoundProvider { get; set; }
+			public ISyncSoundProvider SoundProvider { get; set; }
 			public string ProviderDescription { get; set; }
 			public int MaxVolume { get; set; }
 			public short[] Buffer { get; set; }
@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		private readonly List<Provider> SoundProviders;
 
-		public SoundProviderMixer(params ISoundProvider[] soundProviders)
+		public SoundProviderMixer(params ISyncSoundProvider[] soundProviders)
 		{
 			SoundProviders = new List<Provider>();
 
@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			EqualizeVolumes();
 		}
 
-		public SoundProviderMixer(short maxVolume, string description, params ISoundProvider[] soundProviders)
+		public SoundProviderMixer(short maxVolume, string description, params ISyncSoundProvider[] soundProviders)
 		{
 			SoundProviders = new List<Provider>();
 
@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			EqualizeVolumes();
 		}
 
-		public void AddSource(ISoundProvider source, string description)
+		public void AddSource(ISyncSoundProvider source, string description)
 		{
 			SoundProviders.Add(new Provider
 			{
@@ -76,7 +76,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			EqualizeVolumes();
 		}
 
-		public void AddSource(ISoundProvider source, short maxVolume, string description)
+		public void AddSource(ISyncSoundProvider source, short maxVolume, string description)
 		{
 			SoundProviders.Add(new Provider
 			{
@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			EqualizeVolumes();
 		}
 
-		public void DisableSource(ISoundProvider source)
+		public void DisableSource(ISyncSoundProvider source)
 		{
 			SoundProviders.RemoveAll(a => a.SoundProvider == source);
 			EqualizeVolumes();
@@ -104,20 +104,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			{
 				source.MaxVolume = eachVolume;
 			}
-		}
-
-		public bool CanProvideAsync => false;
-		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
-
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			if (mode != SyncSoundMode.Sync)
-				throw new InvalidOperationException("Only Sync mode is supported.");
-		}
-
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Async is not available");
 		}
 
 		public void DiscardSamples()
@@ -147,7 +133,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			if (!sameCount)
 			{
-				// this is a bit hacky, really all ISoundProviders should be supplying 44100 with 882 samples per frame.
+				// this is a bit hacky, really all ISyncSoundProviders should be supplying 44100 with 882 samples per frame.
 				// we will make sure this happens (no matter how it sounds)
 				if (SoundProviders.Count > 1)
 				{

@@ -5,20 +5,10 @@ namespace BizHawk.Emulation.Common.Base_Implementations
 	/// <summary>
 	/// A simple sound provider that will operate in sync mode only, offering back whatever data was sent in PutSamples
 	/// </summary>
-	public class SimpleSyncSoundProvider : ISoundProvider
+	public class SimpleSyncSoundProvider : ISyncSoundProvider
 	{
 		private short[] _buffer = Array.Empty<short>();
 		private int _nsamp;
-
-		public bool CanProvideAsync => false;
-
-		/// <exception cref="ArgumentException"><paramref name="mode"/> is not <see cref="SyncSoundMode.Sync"/></exception>
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			if (mode is not SyncSoundMode.Sync) throw new ArgumentException(message: "Only supports Sync mode", paramName: nameof(mode));
-		}
-
-		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
 		/// <summary>
 		/// Add samples to be output.  no queueing; must be drained every frame
@@ -44,12 +34,6 @@ namespace BizHawk.Emulation.Common.Base_Implementations
 			samples = _buffer;
 			nsamp = _nsamp;
 			_nsamp = 0;
-		}
-
-		/// <exception cref="NotImplementedException">always</exception>
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotImplementedException();
 		}
 
 		public void DiscardSamples()

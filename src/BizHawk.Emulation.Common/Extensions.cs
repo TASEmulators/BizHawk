@@ -98,21 +98,18 @@ namespace BizHawk.Emulation.Common
 		}
 
 		public static bool HasSoundProvider(this IEmulator core)
-		{
-			return core != null && core.ServiceProvider.HasService<ISoundProvider>();
-		}
+			=> core is not null
+				&& (core.ServiceProvider.HasService<ISyncSoundProvider>() || core.ServiceProvider.HasService<IAsyncSoundProvider>());
 
-		public static ISoundProvider AsSoundProvider(this IEmulator core)
-		{
-			return core.ServiceProvider.GetService<ISoundProvider>();
-		}
+		public static ISoundProviderBase AsSoundProvider(this IEmulator core)
+			=> core.ServiceProvider.GetService<ISyncSoundProvider>() as ISoundProviderBase ?? core.ServiceProvider.GetService<IAsyncSoundProvider>();
 
 		private static readonly ConditionalWeakTable<IEmulator, NullSound> CachedNullSoundProviders = new();
 
 		/// <summary>
 		/// returns the core's SoundProvider, or a suitable dummy provider
 		/// </summary>
-		public static ISoundProvider AsSoundProviderOrDefault(this IEmulator core)
+		public static ISoundProviderBase AsSoundProviderOrDefault(this IEmulator core)
 			=> core.AsSoundProvider()
 				?? CachedNullSoundProviders.GetValue(core, static core1 => new NullSound(core1.VsyncNumerator(), core1.VsyncDenominator()));
 

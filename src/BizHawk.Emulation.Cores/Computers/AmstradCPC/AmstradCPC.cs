@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			ser.Register<IStatable>(new StateSerializer(SyncState));
 
 			// initialize sound mixer and attach the various ISoundProvider devices
-			SoundMixer = new SoundProviderMixer((int)(32767 / 10), "Tape Audio", (ISoundProvider)_machine.TapeBuzzer);
+			SoundMixer = new SoundProviderMixer((int)(32767 / 10), "Tape Audio", (ISyncSoundProvider) _machine.TapeBuzzer);
 			if (_machine.AYDevice != null)
 				SoundMixer.AddSource(_machine.AYDevice, "AY-3-3912");
 
@@ -86,7 +86,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				((Beeper)_machine.TapeBuzzer).Volume = ((AmstradCPCSettings)settings).TapeVolume;
 			}
 
-			ser.Register<ISoundProvider>(SoundMixer);
+			ser.Register<ISyncSoundProvider>(SoundMixer);
 
 			HardReset();
 			SetupMemoryDomains();

@@ -4,7 +4,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 {
-	public partial class GBHawkLink4x : IEmulator, IVideoProvider, ISoundProvider
+	public partial class GBHawkLink4x : IEmulator, ISyncSoundProvider, IVideoProvider
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
@@ -1053,18 +1053,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 
 		public uint[] color_palette = new uint[4];
 
-		public bool CanProvideAsync => false;
-
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			if (mode != SyncSoundMode.Sync)
-			{
-				throw new InvalidOperationException("Only Sync mode is supported_");
-			}
-		}
-
-		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
-
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
 			A.audio.GetSamplesSync(out var temp_samp_A, out var nsamp_A);
@@ -1097,11 +1085,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 				samples = new short[0];
 				nsamp = 0;
 			}
-		}
-
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Async is not available");
 		}
 
 		public void DiscardSamples()

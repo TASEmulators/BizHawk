@@ -317,22 +317,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		}
 
 		public int MaxVolume { get; set; }
-		public bool CanProvideAsync => true;
-
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			if (mode != SyncSoundMode.Async)
-			{
-				throw new NotImplementedException("Only async currently supported.");
-			}
-		}
-
-		public SyncSoundMode SyncMode => SyncSoundMode.Async;
-
-		public void GetSamplesSync(out short[] samples, out int nsamp)
-		{
-			throw new NotImplementedException("Sync sound not yet supported");
-		}
 
 		// ***************************************************************************
 

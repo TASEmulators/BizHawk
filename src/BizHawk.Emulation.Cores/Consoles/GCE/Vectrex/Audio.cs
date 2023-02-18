@@ -7,7 +7,7 @@ using BizHawk.Common.NumberExtensions;
 namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 {
 	// An AY_3_8912
-	public class Audio : ISoundProvider
+	public class Audio : ISyncSoundProvider
 	{
 		public VectrexHawk Core { get; set; }
 
@@ -331,18 +331,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			_blip.SetRates(1500000, 44100);
 		}
 
-		public bool CanProvideAsync => false;
-
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			if (mode != SyncSoundMode.Sync)
-			{
-				throw new InvalidOperationException("Only Sync mode is supported_");
-			}
-		}
-
-		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
-
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
 			_blip.EndFrame(master_audio_clock);
@@ -359,11 +347,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			}
 
 			master_audio_clock = 0;
-		}
-
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Async is not available");
 		}
 
 		public void DiscardSamples()

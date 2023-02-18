@@ -100,7 +100,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			ppu.Core = this;
 			serialport.Core = this;
 
-			ser.Register<ISoundProvider>(audio);
+			ser.Register<ISyncSoundProvider>(audio);
 			ServiceProvider = ser;
 
 			_settings = new object(); // TODO: wtf is this

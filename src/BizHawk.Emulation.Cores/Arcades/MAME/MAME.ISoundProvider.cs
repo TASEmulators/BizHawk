@@ -4,22 +4,11 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Arcades.MAME
 {
-	public partial class MAME : ISoundProvider
+	public partial class MAME : ISyncSoundProvider
 	{
-		public bool CanProvideAsync => false;
-		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
-
 		private const int _sampleRate = 44100;
 		private readonly short[] _sampleBuffer = new short[_sampleRate * 2]; // MAME internally guarentees refresh rate is never < 1Hz
 		private int _nsamps = 0;
-
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			if (mode == SyncSoundMode.Async)
-			{
-				throw new NotSupportedException("Async mode is not supported.");
-			}
-		}
 
 		private void UpdateSound()
 		{
@@ -30,11 +19,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		{
 			samples = _sampleBuffer;
 			nsamp = _nsamps;
-		}
-
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new InvalidOperationException("Async mode is not supported.");
 		}
 
 		public void DiscardSamples()

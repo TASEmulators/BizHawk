@@ -4,10 +4,8 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 {
-	public partial class Sameboy : ISoundProvider
+	public partial class Sameboy : ISyncSoundProvider
 	{
-		public bool CanProvideAsync => false;
-
 		public void DiscardSamples()
 		{
 			_soundoutbuffcontains = 0;
@@ -18,21 +16,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			samples = _soundoutbuff;
 			nsamp = _soundoutbuffcontains;
 			DiscardSamples();
-		}
-
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			if (mode == SyncSoundMode.Async)
-			{
-				throw new NotSupportedException("Async mode is not supported.");
-			}
-		}
-
-		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
-
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new InvalidOperationException("Async mode is not supported.");
 		}
 
 		private int _soundoutbuffcontains = 0;

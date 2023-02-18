@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			_psg.Reset();
 
 			ser.Register<IVideoProvider>(_stic);
-			ser.Register<ISoundProvider>(_psg);
+			ser.Register<ISyncSoundProvider>(_psg);
 
 			Connect();
 

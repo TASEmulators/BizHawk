@@ -7,9 +7,9 @@ namespace BizHawk.Emulation.Common
 	/// <summary>
 	/// implements a DC block filter on top of an ISoundProvider.  rather simple.
 	/// </summary>
-	public sealed class DCFilter : ISoundProvider
+	public sealed class DCFilter : IAsyncSoundProvider, ISoundProvider, ISyncSoundProvider
 	{
-		private readonly ISoundProvider _soundProvider;
+		private readonly ISoundProviderBase _soundProvider;
 		private readonly int _depth;
 
 		private int _latchL;
@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Common
 
 		/// <exception cref="ArgumentNullException"><paramref name="input"/> is null</exception>
 		/// <exception cref="ArgumentOutOfRangeException"><paramref name="filterWidth"/> is not in 8..65536</exception>
-		public DCFilter(ISoundProvider input, int filterWidth)
+		public DCFilter(ISoundProviderBase input, int filterWidth)
 		{
 			if (input is null) throw new ArgumentNullException(paramName: nameof(input));
 			if (filterWidth is < 8 or > 65536) throw new ArgumentOutOfRangeException(paramName: nameof(filterWidth), filterWidth, message: "invalid width");
@@ -98,7 +98,7 @@ namespace BizHawk.Emulation.Common
 
 		public void GetSamplesAsync(short[] samples)
 		{
-			_soundProvider.GetSamplesAsync(samples);
+			((IAsyncSoundProvider) _soundProvider).GetSamplesAsync(samples);
 			PushThroughSamples(samples, samples.Length);
 		}
 
@@ -109,21 +109,23 @@ namespace BizHawk.Emulation.Common
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			_soundProvider.GetSamplesSync(out var sampIn, out var nsampIn);
-
+			((ISyncSoundProvider) _soundProvider).GetSamplesSync(out var sampIn, out var nsampIn);
 			short[] ret = new short[nsampIn * 2];
 			PushThroughSamples(sampIn, ret, nsampIn * 2);
 			samples = ret;
 			nsamp = nsampIn;
 		}
 
-		public SyncSoundMode SyncMode => _soundProvider.SyncMode;
-
-		public bool CanProvideAsync => _soundProvider.CanProvideAsync;
-
-		public void SetSyncMode(SyncSoundMode mode)
+		public IAsyncSoundProvider AsAsyncProvider()
 		{
-			_soundProvider.SetSyncMode(mode);
+			if (_soundProvider is not IAsyncSoundProvider) throw new NotSupportedException("wrapped sound provider does not support async mode");
+			return this;
+		}
+
+		public ISyncSoundProvider AsSyncProvider()
+		{
+			if (_soundProvider is not ISyncSoundProvider) throw new NotSupportedException("wrapped sound provider does not support sync mode");
+			return this;
 		}
 	}
 }

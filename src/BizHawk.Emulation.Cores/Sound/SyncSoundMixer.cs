@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Components
 	/// 
 	/// This is currently used in the ZX Spectrum and CPC cores but others may find it useful in future
 	/// </summary>
-	public sealed class SyncSoundMixer : ISoundProvider
+	public sealed class SyncSoundMixer : ISyncSoundProvider
 	{
 		/// <summary>
 		/// Currently attached ChildProviders
@@ -81,7 +81,7 @@ namespace BizHawk.Emulation.Cores.Components
 		/// </summary>
 		/// <param name="source">The source ISoundProvider</param>
 		/// <param name="sourceDescription">An ident string for the ISoundProvider (useful when debugging)</param>
-		public void PinSource(ISoundProvider source, string sourceDescription)
+		public void PinSource(ISyncSoundProvider source, string sourceDescription)
 		{
 			PinSource(source, sourceDescription, FinalMaxVolume);
 		}
@@ -92,7 +92,7 @@ namespace BizHawk.Emulation.Cores.Components
 		/// <param name="source">The source ISoundProvider</param>
 		/// <param name="sourceDescription">An ident string for the ISoundProvider (useful when debugging)</param>
 		/// <param name="sourceMaxVolume">The MaxVolume level for this particular ISoundProvider</param>
-		public void PinSource(ISoundProvider source, string sourceDescription, short sourceMaxVolume)
+		public void PinSource(ISyncSoundProvider source, string sourceDescription, short sourceMaxVolume)
 		{
 			_soundProviders.Add(new ChildProvider
 			{
@@ -158,20 +158,6 @@ namespace BizHawk.Emulation.Cores.Components
 			return lookup.InputNSamp;
 		}
 
-		public bool CanProvideAsync => false;
-		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
-
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			if (mode != SyncSoundMode.Sync)
-				throw new InvalidOperationException("Only Sync mode is supported.");
-		}
-
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Async is not available");
-		}
-
 		public void DiscardSamples()
 		{
 			foreach (var soundSource in _soundProviders)
@@ -231,7 +217,7 @@ namespace BizHawk.Emulation.Cores.Components
 			/// <summary>
 			/// The Child ISoundProvider
 			/// </summary>
-			public ISoundProvider SoundProvider;
+			public ISyncSoundProvider SoundProvider;
 
 			/// <summary>
 			/// Identification string

@@ -6,7 +6,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Intellivision
 {
-	public sealed class PSG : ISoundProvider
+	public sealed class PSG : ISyncSoundProvider
 	{
 		private readonly BlipBuffer _blip = new BlipBuffer(4096);
 		private short[] _sampleBuffer = new short[0];
@@ -38,23 +38,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		{
 			_blip.Clear();
 			_sampleClock = 0;
-		}
-
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Async is not available");
-		}
-
-		public bool CanProvideAsync => false;
-
-		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
-
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			if (mode != SyncSoundMode.Sync)
-			{
-				throw new InvalidOperationException("Only Sync mode is supported.");
-			}
 		}
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)

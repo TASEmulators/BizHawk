@@ -13,7 +13,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 {
-	public class PPU : ISoundProvider
+	public class PPU : ISyncSoundProvider
 	{
 		public O2Hawk Core { get; set; }
 
@@ -1469,18 +1469,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			ser.Sync(nameof(latch_x_y), ref latch_x_y);
 		}
 
-		public bool CanProvideAsync => false;
-
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			if (mode != SyncSoundMode.Sync)
-			{
-				throw new InvalidOperationException("Only Sync mode is supported_");
-			}
-		}
-
-		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
-
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
 			_blip_C.EndFrame(master_audio_clock);
@@ -1500,11 +1488,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			}
 
 			master_audio_clock = 0;
-		}
-
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Async is not available");
 		}
 
 		public void DiscardSamples()

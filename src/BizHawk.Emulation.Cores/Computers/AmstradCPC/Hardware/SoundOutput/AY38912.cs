@@ -702,21 +702,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			_lastStateRendered = cycle;
 		}
 
-		public bool CanProvideAsync => false;
-
-		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
-
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			if (mode != SyncSoundMode.Sync)
-				throw new InvalidOperationException("Only Sync mode is supported.");
-		}
-
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Async is not available");
-		}
-
 		public void DiscardSamples()
 		{
 			_audioBuffer = new short[_samplesPerFrame * 2];
