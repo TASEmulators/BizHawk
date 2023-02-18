@@ -7,13 +7,11 @@ namespace BizHawk.Emulation.Common
 	[Core("NullHawk", "")]
 	[ServiceNotApplicable(new[] {
 		typeof(IVideoProvider),
-		typeof(IBoardInfo),
 		typeof(ICodeDataLogger),
 		typeof(IDebuggable),
 		typeof(IDisassemblable),
 		typeof(IInputPollable),
 		typeof(IMemoryDomains),
-		typeof(IRegionable),
 		typeof(ISaveRam),
 		typeof(ISettable<,>),
 		typeof(ISoundProvider),

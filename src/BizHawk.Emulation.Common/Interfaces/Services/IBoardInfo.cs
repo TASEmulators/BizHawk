@@ -5,7 +5,7 @@
 	/// Currently the board name is the only property but this could be expanded to support more detailed information
 	/// </summary>
 	/// <seealso cref="IEmulator"/>
-	public interface IBoardInfo : IEmulatorService
+	public interface IBoardInfo : ISpecializedEmulatorService
 	{
 		/// <summary>
 		/// Gets the identifying information about a "mapper", cart, board or similar capability.
