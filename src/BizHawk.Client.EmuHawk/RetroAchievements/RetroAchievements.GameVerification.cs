@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 		private int? HashDisc(string path, ConsoleID consoleID, int discCount)
 		{
 			// this shouldn't throw in practice, this is only called when loading was successful!
-			using var disc = DiscExtensions.CreateAnyType(path, e => throw new Exception(e));
+			using var disc = DiscExtensions.CreateAnyType(path, e => throw new(e));
 			var dsr = new DiscSectorReader(disc)
 			{
 				Policy = { DeterministicClearBuffer = false } // let's make this a little faster
@@ -107,16 +107,19 @@ namespace BizHawk.Client.EmuHawk
 							dsr.ReadLBA_2048(sector, buf2048, 0);
 							exePath = Encoding.ASCII.GetString(buf2048);
 
-							// "BOOT = cdrom:\" or "BOOT = cdrom:" precedes the path
-							var index = exePath.IndexOf("BOOT = cdrom:\\");
-							if (index < 0) index = exePath.IndexOf("BOOT = cdrom:") - 1;
+							// "BOOT = cdrom:" precedes the path
+							var index = exePath.IndexOf("BOOT = cdrom:");
 							if (index < -1) break;
-							exePath = exePath.Remove(0, index + 14);
+							exePath = exePath.Remove(0, index + 13);
+
+							// the path might start with a number of slashes, remove these
+							index = 0;
+							while (index < exePath.Length && exePath[index] is '\\') index++;
 
 							// end of the path has ;
 							var end = exePath.IndexOf(';');
 							if (end < 0) break;
-							exePath = exePath.Substring(0, end);
+							exePath = exePath.Substring(index, end - index);
 						}
 
 						buffer.AddRange(Encoding.ASCII.GetBytes(exePath));

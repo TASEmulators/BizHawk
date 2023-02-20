@@ -1,6 +1,7 @@
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Atari.Jaguar;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
@@ -89,6 +90,7 @@ namespace BizHawk.Client.EmuHawk
 			ElektorTVGamesComputer = 75,
 			PCEngineCD = 76,
 			JaguarCD = 77,
+			DSi = 78,
 
 			NumConsoleIDs
 		}
@@ -127,6 +129,7 @@ namespace BizHawk.Client.EmuHawk
 				VSystemID.Raw.Lynx => ConsoleID.Lynx,
 				VSystemID.Raw.MSX => ConsoleID.MSX,
 				VSystemID.Raw.N64 => ConsoleID.N64,
+				VSystemID.Raw.NDS when Emu is NDS { IsDSi: true } => ConsoleID.DSi,
 				VSystemID.Raw.NDS => ConsoleID.DS,
 				VSystemID.Raw.NeoGeoCD => ConsoleID.NeoGeoCD,
 				VSystemID.Raw.NES => ConsoleID.NES,
