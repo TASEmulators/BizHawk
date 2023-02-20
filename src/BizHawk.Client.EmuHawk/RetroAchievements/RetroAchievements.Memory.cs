@@ -361,8 +361,8 @@ namespace BizHawk.Client.EmuHawk
 		private static readonly ConsoleID[] UseFullMainMem =
 		{
 			ConsoleID.PlayStation, ConsoleID.Lynx, ConsoleID.Lynx, ConsoleID.NeoGeoPocket,
-			ConsoleID.Jaguar, ConsoleID.JaguarCD, ConsoleID.DS, ConsoleID.AppleII,
-			ConsoleID.Vectrex, ConsoleID.Tic80, ConsoleID.PCEngine,
+			ConsoleID.Jaguar, ConsoleID.JaguarCD, ConsoleID.DS, ConsoleID.DSi,
+			ConsoleID.AppleII, ConsoleID.Vectrex, ConsoleID.Tic80, ConsoleID.PCEngine,
 		};
 
 		// these consoles will use part of the system bus at an offset
