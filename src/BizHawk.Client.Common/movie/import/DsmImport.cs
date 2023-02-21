@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
-
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
@@ -63,9 +63,8 @@ namespace BizHawk.Client.Common
 				}
 				else if (line.StartsWith("rtcStartNew"))
 				{
-					//TODO: what is this format?? 2010-JAN-01 00:00:00:000
-					//var time = DateTime.Parse(ParseHeader(line, "rtcStartNew"));
-					//syncSettings.TimeAtBoot = (uint)new DateTimeOffset(time.ToLocalTime()).ToUnixTimeSeconds();
+					string rtcTime = ParseHeader(line, "rtcStartNew");
+					syncSettings.InitialTime = DateTime.ParseExact(rtcTime, "yyyy'-'MMM'-'dd' 'HH':'mm':'ss':'fff", DateTimeFormatInfo.InvariantInfo);
 				}
 				else if (line.StartsWith("comment author"))
 				{
