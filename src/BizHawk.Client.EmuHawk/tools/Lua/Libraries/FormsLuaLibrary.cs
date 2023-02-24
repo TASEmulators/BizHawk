@@ -415,9 +415,8 @@ namespace BizHawk.Client.EmuHawk
 			if (width.HasValue && height.HasValue)
 			{
 				pictureBox.LuaResize(width.Value, height.Value);
+				SetSize(pictureBox, width.Value, height.Value);
 			}
-
-			SetSize(pictureBox, width.Value, height.Value);
 
 			return (long)pictureBox.Handle;
 		}
