@@ -14,7 +14,7 @@
 	- improved UX of loading a savestate from an older (or newer) version
 	- fixed shaders' height being used for width
 	- finished UX for merging/unmerging LShift+RShift and other modifier keys (#3184, #3257)
-	- fixed `.dsm` importer which relied on non-deterministic `Dictionary` (hashmap) ordering for axis names
+	- fixed `.dsm` importer which relied on non-deterministic `Dictionary` (hashmap) ordering for axis names, also parse RTC in DsmImport
 	- stopped offering to remove missing file from recent roms when it's not actually missing, it just failed to load (#3006)
 	- fixed hotkeys triggering accidentally in Virtual Pad on Windows (#3087)
 	- increased precision when tweaking axis sensitivity/deadzone (#3038)
@@ -73,6 +73,18 @@
 	- cleaned up `MainForm.CheckHotkey`
 	- deduplicated some code in `MainForm`
 	- did minor refactors to byteswapping (N64 rom loading and Lua bit library)
+	- implemented RetroAchievements support (#3407)
+	- several misc. changes to the About dialog
+	- fixed pause at end of movie when playing a tasproj without tastudio
+	- fixed NaN values displaying in RewindConfig, use system's canonical framerate for rewind duration estimate
+	- various NES PPU viewer fixes
+	- updated Windows version check to reflect 8.1 EOL
+	- fix audio not getting muted when opening modal dialogs (see #3545)
+	- added hotkey for toggling on screen messages
+	- finished renaming quicksave slot 0 to 10
+	- strip "SHA1:" and "MD5:" when copying lines in the log window
+	- have TAS profile also enable NDS BIOS
+	- improved DisplaySurface performance (#3517)
 - Linux port:
 	- fixed various file pickers using case-sensitive file extensions
 	- added short-circuit to Mupen64Plus loading to avoid error messages and any strange failure state
@@ -105,9 +117,18 @@
 	- removed unused "TAStudio states" path
 	- added 'Edit marker frame' feature
 	- fixed `ArgumentOutOfRangeException` when loading TAStudio with cheats
+	- improved input copy/paste behavior (#3506)
+	- fixed incorrect behavior when switching systems and improve handling of `default.tasproj` (#3462)
+	- improved clarity of label texts in custom color dialog (#2119)
+- Hex Editor:
+	- fixed incorrect handling of big / little endian (#3516)
+	- unset ROM domain when loading MAME ROM
+	- fixed hex editor for MAME when Open Advanced is not used
 - Lua/ApiHawk:
-	- (Lua) replace the two lua engines with an updated version of NLua, backed internally by native lua 5.4
+	- (Lua) replace the two lua engines with an updated version of NLua, backed internally by native lua 5.4.4
+	- (Lua) update lua documentation in reflection of new lua features
 	- (Lua) rely on a system provided lua 5.4 .so (or lua 5.3 if needed) when on Linux, resolving issues due to providing our own lua
+	- (Lua) various changes due to real integer support in new lua; deprecate lua bit functions which have direct operator counterparts in new lua
 	- (Lua) add in a migration helper for lua bitwise ops (put `bit = (require "migration_helpers").EmuHawk_pre_2_9_bit();` at top of file)
 	- (Lua) added arguments to memory callback functions (cb will be called with addr, val, flags)—check `event.can_use_callback_params("memory")` when writing polyfills
 	- (ApiHawk) merged `IGameInfoApi` into `IEmulationApi`, and some other minor API method signature changes
@@ -139,12 +160,19 @@
 	- (Lua) fixed wiki export, add more notes to fill in some of the holes
 	- (Lua) documented frameadvance loop
 	- (Lua) documented socket response format
+	- (Lua) fixed possible crash in print (#3513)
+	- (Lua) fixed `mainmemory` lib keeping reference to unloaded core's memdomain
+	- (Lua) suppress updates while rebooting core (#3424)
+	- (Lua) fixed various things in the LuaConsole (#3476)
+	- (ApiHawk/Lua) return success bool from `OpenRom` APIs (#3514)
+	- (Lua) fixed unwrapped lua exceptions not being correctly thrown
 - Meta:
 	- adjust wording in Issue templates
 	- add core port request Issue template
 	- add contributor's guide
 	- add more testroms to GB testroms project
 	- updated `PcxFileTypePlugin.HawkQuantizer` project file to match others
+	- updated TASVideos URL in GitHub security policy
 - New and graduating cores:
 	- Ares64:
 		- removed the Ares64 (Performance) core and renamed Ares64 (Accuracy) to Ares64, now no longer experimental
@@ -166,12 +194,11 @@
 		- subframe capable variant of the BSNESv115+ core (#3281)
 		- allows subframe inputs and delayed resets
 	- MAME:
-		- technically not "new" as c# side code was always present, the actual MAME library is now included in the main package (although still experimental)
-		- MAME has been waterboxed, hopefully fixing all sync issues
+		- technically not "new" as c# side code was always present, the actual MAME library is now included in the main package
+		- MAME has been waterboxed and updated to 0.250, hopefully fixing all sync issues
 		- added in various missing mnemonics (more likely remain, please report!)
 		- resolved erroneous LibMAME errors due to mame_lua_get_string returning NULL with an empty string
 		- use actual doubles for figuring out aspect ratio (fixes potential divide by 0 exception)
-		
 	- DobieStation:
 		- This PS2 core has been removed due to being unusuably slow and not very accurate
 - Other cores:
@@ -198,10 +225,12 @@
 		- updated internal sameboy version for SGB by linking it to the standalone sameboy core, fix SGB saveRAM
 		- fixed CARTROM and CARTRAM memory domain names (#3405), provide SGB memory domains, set MainMemory and SystemBus domains properly
 		- provide a more proper `IBoardInfo`, provide `SGB` SystemId when in SGB mode
+		- fixed lag detection in certain games
 	- SubBSNESv115+:
-		- fix LsmvImport in numerous ways and import as SubBSNESv115 movies to allow handling subframe inputs and delayed resets
+		- fixed LsmvImport in numerous ways and import as SubBSNESv115 movies to allow handling subframe inputs and delayed resets
 	- CPCHawk:
 		- removed redundant `AmstradCpcPokeMemory` tool
+		- renamed some bundled firmware files (#3494)
 	- Cygne:
 		- allowed .pc2 (Pocket Challenge v2) files to be loaded
 	- Faust:
@@ -255,6 +284,7 @@
 	- mGBA:
 		- updated to interim version after 0.10.0, fixing a softlock in Hamtaro: Ham Ham Heartbreak (#2541)
 		- implemented save override support with EEPROM512 and SRAM512
+		- correctly account for multiboot GBA ROMs (#3421)
 	- Mupen64Plus
 		- always savestate expansion pak regardless of settings, resolves some desyncs/crashes due to shoddy no expansion pak implementation (#3092, #3328)
 		- fixed changing expansion pack setting
@@ -273,6 +303,7 @@
 		- fixed disc switching
 		- fixed light guns (#3359)
 		- wired up rumble support
+		- improve analog input range (#3528)
 	- SameBoy:
 		- updated to interim version after 0.15.7, fixing some bugs (#3185)
 		- added GB palette customiser (#3239)
@@ -298,113 +329,63 @@
 		- updated to Mednafen 1.29.0
 	- ZXHawk:
 		- removed redundant `ZXSpectrumPokeMemory` tool
+		- renamed some bundled firmware files (#3494)
 [HEAD]
 
-[7703ee5f37 Yoshi] Refactor `IGameboyCommon.IsCGBMode`
+[1a30f6551 YoshiRulz] Use LuaPictureBox' custom resize in all cases
 
-[767e30eee5 Yoshi] Also rename bundled CPC firmware files (see #3494)
-fixes 5be8b0aab
+[2c3fb6877 CasualPokePlayer] fix PictureBox when width or height is null
 
-[a680739c6e Yoshi] Rename bundled ZX Spectrum firmware file (resolves #3494)
-fixes 5be8b0aab
+[5bdbe110e YoshiRulz] Make ext. tool build scripts pass args through to dotnet
 
-[2989a73430 CPP] workaround ares state size being blown up, fix compilation issue in some gcc versions
+[1ca610b42 YoshiRulz] Set default `Form.Icon` to corphawk
+not sure about this, and I think it also affects ext. tools
 
-[b3c7f0fa48 CPP] IPlatformLuaLibEnv -> ILuaLibraries / Win32LuaLibraries -> LuaLibraries, cleanup usage of it, fix doc error in client.gettool
+[e7884f679 YoshiRulz] Hide debug tools from Tool Box and add ext. tools
 
-[f101cb5a54 Yoshi] Additional corrections to newly-added Lua documentation
-fixes 49cd836e1, c7781d1c1
+[8b7cba96b YoshiRulz] Use a single-source-of-truth for tools' icons in menus and Tool Box
+reverts 733b6c49b
+some more `[SpecializedTool]`s have icons now
 
-[29443dae49 CPP] fix #3484
+[a86860faa YoshiRulz] Fix `--open-ext-tool-dll`
+fixes 4566b744d
 
-[c4f4c793da Yoshi] Remove unused `IPlatformLuaLibEnv` implementation
+[e8dd2e94f CasualPokePlayer] Fix crashes when using menu item for save/load quicksave
+fixes 22ba0d5c25288defc39254f62e9885043d8edcd3
 
-[5197c36a5d Yoshi] Remove `[Lua*StringParam]` as they're no longer relevant
-fixes 45fbdb484
+[cd1d647d7 CasualPokePlayer] linux build for recent gambatte updates, also fix a minor potential build error when zlib is completely unavailable (it was getting linked even though there was no need for it to be linked)
 
-[5c0143d6f6 Yoshi] Minor corrections to newly-added Lua documentation
-fixes 1452f831a, 82c3b471a, b687dea1b, 49cd836e1
+[0dc4f99f9 CasualPokePlayer] yet another time fix in gambatte, should be the last one
 
-[49cd836e18 CPP] log warning when using the deprecated lua bit functions
+[b56fcaef1 CasualPokePlayer] another gambatte time fix, should prevent long periods of pausing from causing rtc overflows in real time mode
 
-[1fc08e3d95 CPP] Use NLua's MethodCache if possible for MethodBase based lua functions (see https://github.com/TASEmulators/NLua/commit/0ed3085ec301fe4da6751ca545407f9d264b0e83)
+[86545197c CasualPokePlayer] [Gambatte] Cleanup time code, probably fix a bug that caused time to incorrectly advance when loading in a save file
 
-[01ab9416b5 kalimag] Make script paths in .luases relative to .luases path
-Restore behavior before 99dc0e03df4c4cd20420507a06dd9987cbdf7140
+[bc823f479 YoshiRulz] Clear props of type `ApiContainer` when clearing injected API props
+
+[3c00c24fc YoshiRulz] Fix `ApiInjector` trying to set get-only props of type `ApiContainer`
+
+[0591d2e2d YoshiRulz] Pass through input/hotkeys while Lua form is focused
+to restore previous behaviour, call `forms.setproperty(form_handle,
+"BlocksInputWhenFocused", true);`
+
+[af9f5b9b9 YoshiRulz] Add some sort of documentation for B/V gamedb flags
+
+[ec6fe5fcf YoshiRulz] Change loadstate methods to return a bool indicating success
+
+[fcf7ac1fa YoshiRulz] Change first param of `{Save,Load}QuickSave` from string to int
+also swapped bool params of `SaveQuickSave`
+
+[22ba0d5c2 YoshiRulz] Dedup click handlers for `File` > `Save State` and `Load State`
+`File` > `Save Slot` already did this
 
 [7fdc3f992d Yoshi] Propagate success through to caller for movie load/restart
 
 [e0a7a39b0d Yoshi] Have `IMovieApi.Stop` implementation use `MainForm.StopMovie`
 
-[596e8d9198 kalimag] Call `onexit` and cleanup when removing lua script
-
-[50fc7e28da kalimag] Make "Stop all scripts" behave the same as toggling them off
-
-[817b258a79 kalimag] Remove relative path manipulation in `LuaConsole`
-
-[f625771cd0 kalimag] Don't create FileSystemWatcher for missing directories
-
-[cf2b83b102 kalimag] Disable lua script if loading fails
-
-[bd53807b0f kalimag] Store `LuaFile` `FileSystemWatcher` in dictionary
-Avoid path string comparisons, `FileSystemWatcher` events may format relative paths differently
-
-[6aa7c48402 kalimag] Update Lua registered functions window after restart
-Make registered functions window show functions for new LuaImp after core restart/reopening the Lua console
-
-[ee66faba0b kalimag] Clean up old LuaImp before creating new one
-Prevents memory/resource leak
-Causes open forms to be closed on core restart
-
-[3a70fb65f8 kalimag] Refactor disabling Lua script into separate method
-
-[7c7ac64ae6 kalimag] Stop discarding Lua session save directory
-Previously any path would into ".\foo.luases" and be saved in exe dir
-
-[9ee788195a kalimag] Improve Lua `FileSystemWatcher` thread safety
-Make FSW invoke the entire event handler on main thread.
-Avoids theoretical race condition and thread safety issues with the linq query.
-
-[733a8bee88 kalimag] Dispose FileSystemWatchers in LuaConsole
-
-[28d6415190 kalimag] Remove running scripts before loading session
-Clean up scripts instead of just clearing script list
-
-[cc10de4033 kalimag] Refactor removing Lua scripts into separate method
-
-[564a1e4a67 kalimag] Remove obsolete `LuaConsole.RunLuaScripts`
-Method is mostly a duplicate of `EnableLuaFile`, only called when loading a session or an already loaded script.
-In either case it didn't actually start the scripts due to an inverted condition, and would stop running scripts without doing the required cleanup.
-
-[5d143ca879 kalimag] Properly start scripts after loading Lua session
-Previously, scripts would display as enabled but not actually run until toggled off and on.
-
-[0effd435f6 kalimag] Fix issues when opening same Lua script multiple times
-
-[14e713837b kalimag] Change remaining `Config.DisableLuaScriptsOnLoad` refs to Settings
-Resolve inconsistent use of duplicate property on `Config` and `LuaConsoleSettings`, finishes partial refactoring from 324a50a
-This will effectively reset this setting to default in existing configs.
-
-[102874e480 Yoshi] Fix N64 header detection being swapped (fixes #3477)
-fixes abeaa2a10
-how ironic
-
-[62f6f3b471 Yoshi] Fix Win32LuaLibraries init'ing incorrectly on `DeveloperBuild = false`
-
-[b04260bee7 CPP] fix unwrapped lua exceptions not being correctly thrown
-
 [b687dea1b0 CPP] change every IntPtr<->int cast to IntPtr<->long. we got 64 bit integers with lua now, and a pointer is 64 bits, so might avoid some dumb bug due to truncations and some ungodly amount of ram being used TODO: see if we can skip this cast nonsense. the lua tests indicate IntPtr should pass through fine, being considered "userdata", probably better so the user can't just pass raw numbers for the handle.
 
-[bc79664461 CPP] fix implicit lua number to .net conversion fix .net exceptions not halting the running script fix inconsistency with stdout and lua console printing errors, both should end in a newline now print the inner exception of a lua exception (i.e. the .net extension) if possible
-
-[eb00019c86 CPP] fix passing numbers for string args in .net lua functions (old engine had this behavior, granted "bad user" if they relied on this), add appropriate test fix passing sbyte/char as args, add appropriate tests cleanup the lua auto unlock hack, using a nice ref struct + dispose to handle it
-
-[920682688b CPP] deprecate lua bit functions which have direct operator counterparts in new lua
-
 [dcd570bf87 CPP] fix mainmemory.write_bytes_as_dict
-
-[abeaa2a106 Yoshi] Be less lazy about N64 header detection in byteswapper
-fixes 82c3b471a, 9660c16a0
 
 [9660c16a0a CPP] fix N64 roms coming through multidisk bundler in ares
 
@@ -414,36 +395,8 @@ fixes 82c3b471a, 9660c16a0
 
 [51f01efdc4 CPP] Properly handle errors when running a lua script, using Resume/Yield methods added to the LuaThread class (see https://github.com/TASEmulators/NLua/commit/f904fa0d53b06c67dd8e9b409dcbb9fa8aa721f2)
 
-[2efae13af4 CPP] prevent some NREs occurring with the new Lua stuff
-
-[42455ac4a3 Yoshi] Fix syntax in `defctrl.json` and remove empty objects
-
-[6381448472 Yoshi] decimal is not floating-point
-fixes fdbb34dff
-
-[5603e5ac01 Yoshi] Reorder items in Tools menu
-
 [3dcc3ff89f Yoshi] Improve handling of exceptions thrown in `Form.Load` handlers
 obviously only benefits forms inheriting `FormBase`
-
-[9393e1b764 CPP] Fix #3417 and improve handling of `default.tasproj` (squashed PR #3462)
-* Fix #3417 and improve handling of default.tasproj
-* expose SetMovieController in the MovieSession interface (please don't rely on it anywhere else)
-* don't use this explicit public in the interface
-(is this mentioned anywhere? i assume this is proper style)
-* use this helper function
-
-[10a38270e5 feos] forgot a char
-
-[bace52c4f8 feos] fix #2119
-
-[45fbdb4844 CPP] Move to NLua/KeraLua/Lua5.4 (#3361)
-
-[fdbb34dff6 CPP] Lua tests (#3373)
-
-[92c1cdff22 CPP] RetroAchievements Support (#3407)
-
-[eb1cef1ffc CPP] update mame to 0.250
 
 [8818f79bb0 CPP] actually make N64DD support work
 
@@ -451,63 +404,23 @@ obviously only benefits forms inheriting `FormBase`
 
 [9420c8b21c CPP] merge latest ares, hook up its new N64DD support, make ares use AxisContraint (see #3453), some other cleanups here
 
-[c23b063733 CPP] basic virtualpad + default controls for TIC80, mark it as released
-
-[bae71326bf CPP] Fix hex editor for MAME when Open Advanced is not used
-
-[9a0403617b Yoshi] Clean up SHA1
-
-[f9ac3c4b32 Yoshi] Clean up `MainForm.ExternalToolMenuItem_DropDownOpening`
-
-[e269bfd49f adelikat] Log window - when copying pasting "MD5:2345" and Sha1, strip the md5 and sha1 out.  I just want the number if I'm copying pasting the single line.  If someone finds this objectionable, feel free to revert, but this savesme a lot of time
-
-[683aa263a0 Yoshi] Include `ControllerDefinition._orderedControls` in clone ctor
-I don't think this is used, but as the caching was new in 2.8, going to include
-this just in case
-
-[0711c2b1d6 Yoshi] Also downcase Odyssey² gamedb filename in import line
-fixes 5a4dc9fd8
-
 [248e87b6d1 CPP] try to load a different core if an autodetected mame rom ends up failing to load
-
-[5a4dc9fd88 Yoshi] Downcase Odyssey² gamedb filename to match others
 
 [937872eaf6 Yoshi] Fix malformed PC Engine gamedb entry
 broken since addition in 8295e6d65 ("Sounds" was interpreted as the sysID)
-
-[a5ab31643f Yoshi] Remove malformed SMS gamedb entry
-reverts d6d2e4c6f
-(it's missing a tab, plus this is a duplicate of the entry above)
 
 [51826c4c17 CPP] Fix wrong MBC5 mapper being given a battery
 0x1A is MBC5+RAM, 0x1B is MBC5+RAM+BATTERY
 
 [0bd182e6cc CPP] properly handle "NO GOOD DUMP KNOWN" mame rom hashes (note, these roms are not actually in the romset, so the singular hash in movies doesn't have to be affected here)
 
-[2804ad3041 CPP] fix crashes in mame due to bad single thread handling
-
 [44944e1d70 CPP] more simple string and double handling, allow SaveRAM usage with different bios files
 
 [d0266816a5 CPP] Fix #3448. Support MAME 7z romsets
 
-[5ae4470466 CPP] Correct floating point arg support with msabi<->sysv adapter
-While msabi and sysv do agree what to do with floating point args for 4 floating point args (pass in xmm0-4), they dont agree what to do with mixing
-msabi will choose the register corresponding with argument position. so if you have (int foo, float bar), bar will use xmm1
-sysv instead will choose the first register available in the group. so with the previous example, you instead have bar using xmm0
-the simple solution is to simply prohibit mixed args for now. maybe someday we could support mixing, but that's probably overkill (best use a struct at that point)
-
-[62c3b4b8e3 CPP] Use a small dll for handling the msabi<->sysv adapter (#3451)
-make a small dll for handling the msabi<->sysv adapter, using only assembly (taken from generated optimized rustc output) and handcrafted unwind information (c# exceptions in a callback seem to work fine in testing)
-additionally, allow floating point arguments. this really only needs to occur on the c# side. msabi and sysv agree on the first 4 floating point args and for returns, so no work actually has to be done adapting these
-with assembly being used, we can guarantee rax will not be stomped by compiler whims (and avoid potential floating point args from being trashed)
-
 [fd2772707b Yoshi] Update `forms.drawImageRegion` documentation with a diagram
 only embeds on TASVideos Wiki, which I held off on updating because there are a
 lot of changes and we can do them all at once
-
-[c8d4e606af CPP] suppress updates while rebooting core, fixes #3424
-
-[b81728b2dc CPP] Correctly account for multiboot GBA ROMs, fixes #3421
 
 [ad85be7bed Prcuvu] Register TCM areas for melonDS core (#3420)
 * Register TCM areas for melonDS core
@@ -518,21 +431,10 @@ Co-authored-by: CPP
 
 [0c6f0523a0 CPP] Update sameboy, expose audio channel enable/disabling, cleanup settings to go through a single call/struct
 
-[7f8b4b8c87 CPP] fix whitespace in default controls (fixes 8732e561a1d70974ad60ca145b1aeed03ca8cc45)
-
 [a59d66dfdd CPP] proper fix for mmult opcode, properly fixes Baldies music
-
-[7efafc18da Yoshi] Extract helper code for Analyzers and Source Generators
 
 [1fbb95a353 Yoshi] Make MSBuild ignore shell scripts for external .NET projects
 
-[04fcf59afe Yoshi] Update C++ FlatBuffers lib, check in new codegen, and rebuild cores
-
-[158c897702 Yoshi] Use `Google.FlatBuffers` NuGet package and check in new Nyma codegen
-
-[cf0053fd3c Yoshi] Update FlatBuffers codegen script for Nyma cores
-uses latest (they switched from SemVer to dates, so 22.9.24 follows 2.0.8)
-works on real Linux, using Nix if installed
 
 ## changes from 2.7 to 2.8
 
