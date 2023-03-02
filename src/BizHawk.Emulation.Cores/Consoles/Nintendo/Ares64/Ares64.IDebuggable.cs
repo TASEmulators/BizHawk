@@ -49,8 +49,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 		[FeatureNotImplemented]
 		public IMemoryCallbackSystem MemoryCallbacks => throw new NotImplementedException();
 
-		public bool CanStep(StepType type) => false;
-
 		[FeatureNotImplemented]
 		public long TotalExecutedCycles => throw new NotImplementedException();
 

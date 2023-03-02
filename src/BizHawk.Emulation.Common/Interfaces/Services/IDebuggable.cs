@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Common
 {
 	/// <summary>
@@ -12,6 +14,12 @@ namespace BizHawk.Emulation.Common
 	/// </summary>
 	public interface IDebuggable : IEmulatorService
 	{
+		public static class MethodDefaultImpls
+		{
+			public static bool CanStep(IDebuggable self, StepType type)
+				=> false;
+		}
+
 		/// <summary>
 		/// Returns a list of CPU registers and their current state
 		/// </summary>
@@ -31,6 +39,7 @@ namespace BizHawk.Emulation.Common
 		/// Informs the calling code whether or not the given step type is implemented,
 		/// if false, a NotImplementedException will be thrown if Step is called with the given value
 		/// </summary>
+		[VirtualMethod]
 		bool CanStep(StepType type);
 
 		/// <summary>

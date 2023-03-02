@@ -43,8 +43,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			_core.SetReg(ncpu == 9 ? 0 : 1, index, value);
 		}
 
-		public bool CanStep(StepType type) => false;
-
 		[FeatureNotImplemented]
 		public void Step(StepType type) => throw new NotImplementedException();
 

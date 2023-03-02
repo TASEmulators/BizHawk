@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Common
 	/// A generic linked implementation of IDebuggable that can be used by any link core
 	/// </summary>
 	/// <seealso cref="IDebuggable" />
-	public class LinkedDebuggable : IDebuggable
+	public partial class LinkedDebuggable : IDebuggable
 	{
 		private readonly IEmulator[] _linkedCores;
 		private readonly int _numCores;
@@ -45,8 +45,6 @@ namespace BizHawk.Emulation.Common
 		}
 
 		public IMemoryCallbackSystem MemoryCallbacks { get; }
-
-		public bool CanStep(StepType type) => false;
 
 		[FeatureNotImplemented]
 		public void Step(StepType type) => throw new NotImplementedException();

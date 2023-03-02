@@ -12,6 +12,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<Analyzer Include="$(ProjectDir)../../References/BizHawk.SrcGen.ReflectionCache.dll" />
+		<Analyzer Include="$(ProjectDir)../../References/BizHawk.SrcGen.VIM.dll" />
 	</ItemGroup>
 	<ItemGroup Condition=" '$(Configuration)' != 'Debug' ">
 		<Compile Remove="$(ProjectDir)debug/**/*" />

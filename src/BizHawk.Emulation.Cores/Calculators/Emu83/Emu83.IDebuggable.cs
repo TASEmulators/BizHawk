@@ -30,8 +30,6 @@ namespace BizHawk.Emulation.Cores.Calculators.Emu83
 		[FeatureNotImplemented]
 		public void SetCpuRegister(string register, int value) => throw new NotImplementedException();
 
-		public bool CanStep(StepType type) => false;
-
 		[FeatureNotImplemented]
 		public void Step(StepType type) => throw new NotImplementedException();
 
