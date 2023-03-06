@@ -31,7 +31,6 @@
             this.btnOk = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.cbDoubleSize = new System.Windows.Forms.CheckBox();
-            this.lblDoubleSize = new BizHawk.WinForms.Controls.LocLabelEx();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.lblPriority1 = new BizHawk.WinForms.Controls.LocLabelEx();
             this.lblPriority0 = new BizHawk.WinForms.Controls.LocLabelEx();
@@ -48,9 +47,7 @@
             this.Obj2Checkbox = new System.Windows.Forms.CheckBox();
             this.Obj1Checkbox = new System.Windows.Forms.CheckBox();
             this.EntropyBox = new System.Windows.Forms.ComboBox();
-            this.lblEntropy = new BizHawk.WinForms.Controls.LocLabelEx();
             this.RegionBox = new System.Windows.Forms.ComboBox();
-            this.lblRegion = new BizHawk.WinForms.Controls.LocLabelEx();
             this.cbGameHotfixes = new System.Windows.Forms.CheckBox();
             this.cbFastPPU = new System.Windows.Forms.CheckBox();
             this.cbCropSGBFrame = new System.Windows.Forms.CheckBox();
@@ -59,18 +56,23 @@
             this.cbFastCoprocessor = new System.Windows.Forms.CheckBox();
             this.cbNoPPUSpriteLimit = new System.Windows.Forms.CheckBox();
             this.AspectRatioCorrectionBox = new System.Windows.Forms.ComboBox();
-            this.lblAspectRatioCorrection = new BizHawk.WinForms.Controls.LocLabelEx();
             this.cbShowOverscan = new System.Windows.Forms.CheckBox();
+            this.SatellaviewCartridgeBox = new System.Windows.Forms.ComboBox();
+            this.lblSatellaviewCartridge = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.lblAspectRatioCorrection = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.lblRegion = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.lblEntropy = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.lblDoubleSize = new BizHawk.WinForms.Controls.LocLabelEx();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnOk
             // 
             this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOk.Location = new System.Drawing.Point(136, 368);
+            this.btnOk.Location = new System.Drawing.Point(136, 392);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 23);
-            this.btnOk.TabIndex = 25;
+            this.btnOk.TabIndex = 26;
             this.btnOk.Text = "OK";
             this.btnOk.UseVisualStyleBackColor = true;
             this.btnOk.Click += new System.EventHandler(this.BtnOk_Click);
@@ -79,7 +81,7 @@
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(217, 368);
+            this.btnCancel.Location = new System.Drawing.Point(217, 392);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 0;
@@ -96,14 +98,6 @@
             this.cbDoubleSize.TabIndex = 1;
             this.cbDoubleSize.Text = "Always Double-Size Framebuffer";
             this.cbDoubleSize.UseVisualStyleBackColor = true;
-            // 
-            // lblDoubleSize
-            // 
-            this.lblDoubleSize.Location = new System.Drawing.Point(31, 33);
-            this.lblDoubleSize.MaximumSize = new System.Drawing.Size(260, 0);
-            this.lblDoubleSize.Name = "lblDoubleSize";
-            this.lblDoubleSize.Text = "Some games are changing the resolution constantly (e.g. SD3) so this option can f" +
-    "orce the SNES output to stay double-size always.";
             // 
             // groupBox1
             // 
@@ -123,7 +117,7 @@
             this.groupBox1.Controls.Add(this.Obj3Checkbox);
             this.groupBox1.Controls.Add(this.Obj2Checkbox);
             this.groupBox1.Controls.Add(this.Obj1Checkbox);
-            this.groupBox1.Location = new System.Drawing.Point(18, 245);
+            this.groupBox1.Location = new System.Drawing.Point(18, 269);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(274, 115);
             this.groupBox1.TabIndex = 13;
@@ -152,7 +146,7 @@
             this.Bg4_0Checkbox.Location = new System.Drawing.Point(128, 93);
             this.Bg4_0Checkbox.Name = "Bg4_0Checkbox";
             this.Bg4_0Checkbox.Size = new System.Drawing.Size(62, 17);
-            this.Bg4_0Checkbox.TabIndex = 23;
+            this.Bg4_0Checkbox.TabIndex = 24;
             this.Bg4_0Checkbox.Text = "BG 4    ";
             this.Bg4_0Checkbox.UseVisualStyleBackColor = true;
             // 
@@ -163,7 +157,7 @@
             this.Bg3_0Checkbox.Location = new System.Drawing.Point(128, 72);
             this.Bg3_0Checkbox.Name = "Bg3_0Checkbox";
             this.Bg3_0Checkbox.Size = new System.Drawing.Size(62, 17);
-            this.Bg3_0Checkbox.TabIndex = 21;
+            this.Bg3_0Checkbox.TabIndex = 22;
             this.Bg3_0Checkbox.Text = "BG 3    ";
             this.Bg3_0Checkbox.UseVisualStyleBackColor = true;
             // 
@@ -174,7 +168,7 @@
             this.Bg2_0Checkbox.Location = new System.Drawing.Point(128, 51);
             this.Bg2_0Checkbox.Name = "Bg2_0Checkbox";
             this.Bg2_0Checkbox.Size = new System.Drawing.Size(62, 17);
-            this.Bg2_0Checkbox.TabIndex = 19;
+            this.Bg2_0Checkbox.TabIndex = 20;
             this.Bg2_0Checkbox.Text = "BG 2    ";
             this.Bg2_0Checkbox.UseVisualStyleBackColor = true;
             // 
@@ -185,7 +179,7 @@
             this.Bg1_0Checkbox.Location = new System.Drawing.Point(128, 30);
             this.Bg1_0Checkbox.Name = "Bg1_0Checkbox";
             this.Bg1_0Checkbox.Size = new System.Drawing.Size(62, 17);
-            this.Bg1_0Checkbox.TabIndex = 17;
+            this.Bg1_0Checkbox.TabIndex = 18;
             this.Bg1_0Checkbox.Text = "BG 1    ";
             this.Bg1_0Checkbox.UseVisualStyleBackColor = true;
             // 
@@ -195,7 +189,7 @@
             this.Bg4_1Checkbox.Location = new System.Drawing.Point(234, 94);
             this.Bg4_1Checkbox.Name = "Bg4_1Checkbox";
             this.Bg4_1Checkbox.Size = new System.Drawing.Size(15, 14);
-            this.Bg4_1Checkbox.TabIndex = 24;
+            this.Bg4_1Checkbox.TabIndex = 25;
             this.Bg4_1Checkbox.UseVisualStyleBackColor = true;
             // 
             // Bg3_1Checkbox
@@ -204,7 +198,7 @@
             this.Bg3_1Checkbox.Location = new System.Drawing.Point(234, 73);
             this.Bg3_1Checkbox.Name = "Bg3_1Checkbox";
             this.Bg3_1Checkbox.Size = new System.Drawing.Size(15, 14);
-            this.Bg3_1Checkbox.TabIndex = 22;
+            this.Bg3_1Checkbox.TabIndex = 23;
             this.Bg3_1Checkbox.UseVisualStyleBackColor = true;
             // 
             // Bg2_1Checkbox
@@ -213,7 +207,7 @@
             this.Bg2_1Checkbox.Location = new System.Drawing.Point(234, 52);
             this.Bg2_1Checkbox.Name = "Bg2_1Checkbox";
             this.Bg2_1Checkbox.Size = new System.Drawing.Size(15, 14);
-            this.Bg2_1Checkbox.TabIndex = 20;
+            this.Bg2_1Checkbox.TabIndex = 21;
             this.Bg2_1Checkbox.UseVisualStyleBackColor = true;
             // 
             // Bg1_1Checkbox
@@ -222,7 +216,7 @@
             this.Bg1_1Checkbox.Location = new System.Drawing.Point(234, 31);
             this.Bg1_1Checkbox.Name = "Bg1_1Checkbox";
             this.Bg1_1Checkbox.Size = new System.Drawing.Size(15, 14);
-            this.Bg1_1Checkbox.TabIndex = 18;
+            this.Bg1_1Checkbox.TabIndex = 19;
             this.Bg1_1Checkbox.UseVisualStyleBackColor = true;
             // 
             // Obj4Checkbox
@@ -231,7 +225,7 @@
             this.Obj4Checkbox.Location = new System.Drawing.Point(21, 93);
             this.Obj4Checkbox.Name = "Obj4Checkbox";
             this.Obj4Checkbox.Size = new System.Drawing.Size(55, 17);
-            this.Obj4Checkbox.TabIndex = 16;
+            this.Obj4Checkbox.TabIndex = 17;
             this.Obj4Checkbox.Text = "OBJ 4";
             this.Obj4Checkbox.UseVisualStyleBackColor = true;
             // 
@@ -241,7 +235,7 @@
             this.Obj3Checkbox.Location = new System.Drawing.Point(21, 72);
             this.Obj3Checkbox.Name = "Obj3Checkbox";
             this.Obj3Checkbox.Size = new System.Drawing.Size(55, 17);
-            this.Obj3Checkbox.TabIndex = 15;
+            this.Obj3Checkbox.TabIndex = 16;
             this.Obj3Checkbox.Text = "OBJ 3";
             this.Obj3Checkbox.UseVisualStyleBackColor = true;
             // 
@@ -251,7 +245,7 @@
             this.Obj2Checkbox.Location = new System.Drawing.Point(21, 51);
             this.Obj2Checkbox.Name = "Obj2Checkbox";
             this.Obj2Checkbox.Size = new System.Drawing.Size(55, 17);
-            this.Obj2Checkbox.TabIndex = 14;
+            this.Obj2Checkbox.TabIndex = 15;
             this.Obj2Checkbox.Text = "OBJ 2";
             this.Obj2Checkbox.UseVisualStyleBackColor = true;
             // 
@@ -261,7 +255,7 @@
             this.Obj1Checkbox.Location = new System.Drawing.Point(21, 30);
             this.Obj1Checkbox.Name = "Obj1Checkbox";
             this.Obj1Checkbox.Size = new System.Drawing.Size(55, 17);
-            this.Obj1Checkbox.TabIndex = 13;
+            this.Obj1Checkbox.TabIndex = 14;
             this.Obj1Checkbox.Text = "OBJ 1";
             this.Obj1Checkbox.UseVisualStyleBackColor = true;
             // 
@@ -269,49 +263,37 @@
             // 
             this.EntropyBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.EntropyBox.FormattingEnabled = true;
-            this.EntropyBox.Location = new System.Drawing.Point(17, 219);
+            this.EntropyBox.Location = new System.Drawing.Point(17, 198);
             this.EntropyBox.Name = "EntropyBox";
             this.EntropyBox.Size = new System.Drawing.Size(128, 21);
-            this.EntropyBox.TabIndex = 11;
-            // 
-            // lblEntropy
-            // 
-            this.lblEntropy.Location = new System.Drawing.Point(14, 203);
-            this.lblEntropy.Name = "lblEntropy";
-            this.lblEntropy.Text = "Entropy";
+            this.EntropyBox.TabIndex = 10;
             // 
             // RegionBox
             // 
             this.RegionBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.RegionBox.FormattingEnabled = true;
-            this.RegionBox.Location = new System.Drawing.Point(162, 219);
+            this.RegionBox.Location = new System.Drawing.Point(162, 243);
             this.RegionBox.Name = "RegionBox";
             this.RegionBox.Size = new System.Drawing.Size(128, 21);
-            this.RegionBox.TabIndex = 12;
-            // 
-            // lblRegion
-            // 
-            this.lblRegion.Location = new System.Drawing.Point(159, 203);
-            this.lblRegion.Name = "lblRegion";
-            this.lblRegion.Text = "Region";
+            this.RegionBox.TabIndex = 13;
             // 
             // cbGameHotfixes
             // 
             this.cbGameHotfixes.AutoSize = true;
-            this.cbGameHotfixes.Location = new System.Drawing.Point(16, 105);
+            this.cbGameHotfixes.Location = new System.Drawing.Point(161, 81);
             this.cbGameHotfixes.Name = "cbGameHotfixes";
             this.cbGameHotfixes.Size = new System.Drawing.Size(93, 17);
-            this.cbGameHotfixes.TabIndex = 4;
+            this.cbGameHotfixes.TabIndex = 3;
             this.cbGameHotfixes.Text = "Game hotfixes";
             this.cbGameHotfixes.UseVisualStyleBackColor = true;
             // 
             // cbFastPPU
             // 
             this.cbFastPPU.AutoSize = true;
-            this.cbFastPPU.Location = new System.Drawing.Point(161, 105);
+            this.cbFastPPU.Location = new System.Drawing.Point(161, 129);
             this.cbFastPPU.Name = "cbFastPPU";
             this.cbFastPPU.Size = new System.Drawing.Size(90, 17);
-            this.cbFastPPU.TabIndex = 5;
+            this.cbFastPPU.TabIndex = 7;
             this.cbFastPPU.Text = "Use fast PPU";
             this.cbFastPPU.UseVisualStyleBackColor = true;
             this.cbFastPPU.CheckedChanged += new System.EventHandler(this.FastPPU_CheckedChanged);
@@ -329,40 +311,40 @@
             // cbUseSGB2
             // 
             this.cbUseSGB2.AutoSize = true;
-            this.cbUseSGB2.Location = new System.Drawing.Point(161, 81);
+            this.cbUseSGB2.Location = new System.Drawing.Point(16, 105);
             this.cbUseSGB2.Name = "cbUseSGB2";
             this.cbUseSGB2.Size = new System.Drawing.Size(76, 17);
-            this.cbUseSGB2.TabIndex = 3;
+            this.cbUseSGB2.TabIndex = 4;
             this.cbUseSGB2.Text = "Use SGB2";
             this.cbUseSGB2.UseVisualStyleBackColor = true;
             // 
             // cbFastDSP
             // 
             this.cbFastDSP.AutoSize = true;
-            this.cbFastDSP.Location = new System.Drawing.Point(16, 129);
+            this.cbFastDSP.Location = new System.Drawing.Point(161, 105);
             this.cbFastDSP.Name = "cbFastDSP";
             this.cbFastDSP.Size = new System.Drawing.Size(101, 17);
-            this.cbFastDSP.TabIndex = 6;
+            this.cbFastDSP.TabIndex = 5;
             this.cbFastDSP.Text = "DSP Fast Mode";
             this.cbFastDSP.UseVisualStyleBackColor = true;
             // 
             // cbFastCoprocessor
             // 
             this.cbFastCoprocessor.AutoSize = true;
-            this.cbFastCoprocessor.Location = new System.Drawing.Point(161, 129);
+            this.cbFastCoprocessor.Location = new System.Drawing.Point(161, 153);
             this.cbFastCoprocessor.Name = "cbFastCoprocessor";
             this.cbFastCoprocessor.Size = new System.Drawing.Size(138, 17);
-            this.cbFastCoprocessor.TabIndex = 7;
+            this.cbFastCoprocessor.TabIndex = 9;
             this.cbFastCoprocessor.Text = "Coprocessor Fast Mode";
             this.cbFastCoprocessor.UseVisualStyleBackColor = true;
             // 
             // cbNoPPUSpriteLimit
             // 
             this.cbNoPPUSpriteLimit.AutoSize = true;
-            this.cbNoPPUSpriteLimit.Location = new System.Drawing.Point(16, 177);
+            this.cbNoPPUSpriteLimit.Location = new System.Drawing.Point(16, 153);
             this.cbNoPPUSpriteLimit.Name = "cbNoPPUSpriteLimit";
             this.cbNoPPUSpriteLimit.Size = new System.Drawing.Size(113, 17);
-            this.cbNoPPUSpriteLimit.TabIndex = 9;
+            this.cbNoPPUSpriteLimit.TabIndex = 8;
             this.cbNoPPUSpriteLimit.Text = "No PPU sprite limit";
             this.cbNoPPUSpriteLimit.UseVisualStyleBackColor = true;
             // 
@@ -370,26 +352,61 @@
             // 
             this.AspectRatioCorrectionBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.AspectRatioCorrectionBox.FormattingEnabled = true;
-            this.AspectRatioCorrectionBox.Location = new System.Drawing.Point(162, 174);
+            this.AspectRatioCorrectionBox.Location = new System.Drawing.Point(162, 198);
             this.AspectRatioCorrectionBox.Name = "AspectRatioCorrectionBox";
             this.AspectRatioCorrectionBox.Size = new System.Drawing.Size(128, 21);
-            this.AspectRatioCorrectionBox.TabIndex = 10;
-            // 
-            // lblAspectRatioCorrection
-            // 
-            this.lblAspectRatioCorrection.Location = new System.Drawing.Point(159, 158);
-            this.lblAspectRatioCorrection.Name = "lblAspectRatioCorrection";
-            this.lblAspectRatioCorrection.Text = "Aspect Ratio Correction";
+            this.AspectRatioCorrectionBox.TabIndex = 11;
             // 
             // cbShowOverscan
             // 
             this.cbShowOverscan.AutoSize = true;
-            this.cbShowOverscan.Location = new System.Drawing.Point(16, 153);
+            this.cbShowOverscan.Location = new System.Drawing.Point(16, 129);
             this.cbShowOverscan.Name = "cbShowOverscan";
             this.cbShowOverscan.Size = new System.Drawing.Size(102, 17);
-            this.cbShowOverscan.TabIndex = 8;
+            this.cbShowOverscan.TabIndex = 6;
             this.cbShowOverscan.Text = "Show Overscan";
             this.cbShowOverscan.UseVisualStyleBackColor = true;
+            // 
+            // SatellaviewCartridgeBox
+            // 
+            this.SatellaviewCartridgeBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.SatellaviewCartridgeBox.FormattingEnabled = true;
+            this.SatellaviewCartridgeBox.Location = new System.Drawing.Point(17, 243);
+            this.SatellaviewCartridgeBox.Name = "SatellaviewCartridgeBox";
+            this.SatellaviewCartridgeBox.Size = new System.Drawing.Size(128, 21);
+            this.SatellaviewCartridgeBox.TabIndex = 12;
+            // 
+            // lblSatellaviewCartridge
+            // 
+            this.lblSatellaviewCartridge.Location = new System.Drawing.Point(14, 227);
+            this.lblSatellaviewCartridge.Name = "lblSatellaviewCartridge";
+            this.lblSatellaviewCartridge.Text = "Satellaview cartridge";
+            // 
+            // lblAspectRatioCorrection
+            // 
+            this.lblAspectRatioCorrection.Location = new System.Drawing.Point(159, 182);
+            this.lblAspectRatioCorrection.Name = "lblAspectRatioCorrection";
+            this.lblAspectRatioCorrection.Text = "Aspect Ratio Correction";
+            // 
+            // lblRegion
+            // 
+            this.lblRegion.Location = new System.Drawing.Point(159, 227);
+            this.lblRegion.Name = "lblRegion";
+            this.lblRegion.Text = "Region";
+            // 
+            // lblEntropy
+            // 
+            this.lblEntropy.Location = new System.Drawing.Point(14, 182);
+            this.lblEntropy.Name = "lblEntropy";
+            this.lblEntropy.Text = "Entropy";
+            // 
+            // lblDoubleSize
+            // 
+            this.lblDoubleSize.Location = new System.Drawing.Point(31, 33);
+            this.lblDoubleSize.MaximumSize = new System.Drawing.Size(260, 0);
+            this.lblDoubleSize.Name = "lblDoubleSize";
+            this.lblDoubleSize.Text = "Some games are changing the resolution constantly (e.g. SD3) so this option can f" +
+    "orce the SNES output to stay double-size always.";
             // 
             // BSNESOptions
             // 
@@ -397,7 +414,9 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(304, 399);
+            this.ClientSize = new System.Drawing.Size(304, 423);
+            this.Controls.Add(this.SatellaviewCartridgeBox);
+            this.Controls.Add(this.lblSatellaviewCartridge);
             this.Controls.Add(this.cbShowOverscan);
             this.Controls.Add(this.AspectRatioCorrectionBox);
             this.Controls.Add(this.lblAspectRatioCorrection);
@@ -467,5 +486,7 @@
 		private System.Windows.Forms.ComboBox AspectRatioCorrectionBox;
 		private WinForms.Controls.LocLabelEx lblAspectRatioCorrection;
 		private System.Windows.Forms.CheckBox cbShowOverscan;
+		private WinForms.Controls.LocLabelEx lblSatellaviewCartridge;
+		private System.Windows.Forms.ComboBox SatellaviewCartridgeBox;
 	}
 }

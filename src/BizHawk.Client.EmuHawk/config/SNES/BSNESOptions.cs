@@ -23,6 +23,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			EntropyBox.PopulateFromEnum(_syncSettings.Entropy);
 			AspectRatioCorrectionBox.PopulateFromEnum(_settings.AspectRatioCorrection);
+			SatellaviewCartridgeBox.PopulateFromEnum(_syncSettings.SatellaviewCartridge);
 			RegionBox.PopulateFromEnum(_syncSettings.RegionOverride);
 		}
 
@@ -70,6 +71,7 @@ namespace BizHawk.Client.EmuHawk
 			ss.FastDSP = dlg.FastDSP;
 			ss.FastCoprocessors = dlg.FastCoprocessors;
 			ss.UseSGB2 = dlg.UseSGB2;
+			ss.SatellaviewCartridge = dlg.SatellaviewCartridge;
 			s.ShowOBJ_0 = dlg.ShowObj1;
 			s.ShowOBJ_1 = dlg.ShowObj2;
 			s.ShowOBJ_2 = dlg.ShowObj3;
@@ -146,7 +148,9 @@ namespace BizHawk.Client.EmuHawk
 		private BsnesApi.ENTROPY Entropy => (BsnesApi.ENTROPY) EntropyBox.SelectedIndex;
 
 		private BsnesApi.REGION_OVERRIDE RegionOverride => (BsnesApi.REGION_OVERRIDE)RegionBox.SelectedIndex;
-		
+
+		private BsnesCore.SATELLAVIEW_CARTRIDGE SatellaviewCartridge => (BsnesCore.SATELLAVIEW_CARTRIDGE)SatellaviewCartridgeBox.SelectedIndex;
+
 		private bool ShowObj1 { get => Obj1Checkbox.Checked; init => Obj1Checkbox.Checked = value; }
 		private bool ShowObj2 { get => Obj2Checkbox.Checked; init => Obj2Checkbox.Checked = value; }
 		private bool ShowObj3 { get => Obj3Checkbox.Checked; init => Obj3Checkbox.Checked = value; }
