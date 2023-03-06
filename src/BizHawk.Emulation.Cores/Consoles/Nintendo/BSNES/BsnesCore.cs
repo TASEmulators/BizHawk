@@ -29,10 +29,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			_syncSettings = loadParameters.SyncSettings ?? new SnesSyncSettings();
 			SystemId = loadParameters.Game.System;
 			_isSGB = SystemId == VSystemID.Raw.SGB;
-			bool IsBSX = loadParameters.Game.System == VSystemID.Raw.BSX;
 
 			byte[] sgbRomData = null;
-			byte[] bsxRomData = null;
 			if (_isSGB)
 			{
 				if ((loadParameters.Roms[0].RomData[0x143] & 0xc0) == 0xc0)
@@ -45,10 +43,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 					: CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("SNES", "Rom_SGB"), "SGB1 Rom is required for SGB1 emulation.");
 
 				loadParameters.Game.FirmwareHash = SHA1Checksum.ComputeDigestHex(sgbRomData);
-			}
-			else if (IsBSX)
-			{
-				bsxRomData = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new FirmwareID("SNES", "Rom_BSX"), "BS-X rom is required for BS-X emulation");
 			}
 
 			BsnesApi.SnesCallbacks callbacks = new()
@@ -92,15 +86,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			InitAudio();
 			ser.Register<ISoundProvider>(_soundProvider);
 
-			if (_isSGB)
+			if (SystemId == VSystemID.Raw.BSX)
+			{
+				SATELLAVIEW_CARTRIDGE slottedCartridge = _syncSettings.SatellaviewCartridge;
+				if (slottedCartridge == SATELLAVIEW_CARTRIDGE.Autodetect)
+				{
+					// TODO
+					slottedCartridge = SATELLAVIEW_CARTRIDGE.Rom_BSX;
+				}
+				byte[] cartridgeData = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new FirmwareID("BSX", slottedCartridge.ToString()));
+				Api.core.snes_load_cartridge_bsmemory(cartridgeData, loadParameters.Roms[0].RomData,
+					cartridgeData.Length, loadParameters.Roms[0].RomData.Length);
+			}
+			else if (_isSGB)
 			{
 				Api.core.snes_load_cartridge_super_gameboy(sgbRomData, loadParameters.Roms[0].RomData,
 					sgbRomData!.Length, loadParameters.Roms[0].RomData.Length);
-			}
-			else if (IsBSX)
-			{
-				Api.core.snes_load_cartridge_bsmemory(bsxRomData, loadParameters.Roms[0].RomData,
-					bsxRomData!.Length, loadParameters.Roms[0].RomData.Length);
 			}
 			else
 			{

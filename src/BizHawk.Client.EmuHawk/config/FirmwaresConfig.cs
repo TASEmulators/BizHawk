@@ -64,6 +64,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			["NES"] = "NES",
 			["SNES"] = "SNES",
+			["BSX"] = "SNES+Satellaview",
 			["PCECD"] = "PCE-CD",
 			["SAT"] = "Saturn",
 			["A78"] = "Atari 7800",

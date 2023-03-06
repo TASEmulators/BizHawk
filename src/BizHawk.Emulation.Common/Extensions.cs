@@ -23,6 +23,7 @@ namespace BizHawk.Emulation.Common
 			[VSystemID.Raw.AmstradCPC] = "Amstrad CPC",
 			[VSystemID.Raw.AppleII] = "Apple II",
 			[VSystemID.Raw.Arcade] = "Arcade",
+			[VSystemID.Raw.BSX] = "Satellaview",
 			[VSystemID.Raw.C64] = "Commodore 64",
 			[VSystemID.Raw.ChannelF] = "Channel F",
 			[VSystemID.Raw.Coleco] = "ColecoVision",
