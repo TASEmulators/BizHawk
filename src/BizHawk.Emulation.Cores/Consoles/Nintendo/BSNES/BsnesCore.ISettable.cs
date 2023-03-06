@@ -4,6 +4,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 {
 	public partial class BsnesCore : ISettable<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings>
 	{
+		// names need to exactly match the firmware db names
+		public enum SATELLAVIEW_CARTRIDGE
+		{
+			Autodetect,
+			Rom_BSX,
+			Rom_Mahjong,
+			Rom_GNEXT,
+			Rom_RPG_Tsukuru,
+			Rom_SameGame,
+			Rom_DS96,
+			Rom_Ongaku_Tsukuru,
+			Rom_SoundNovel_Tsukuru,
+			Rom_Tsuri
+		}
+
 		public SnesSettings GetSettings()
 		{
 			return _settings with {};
@@ -101,6 +116,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			public bool FastCoprocessors { get; set; } = true;
 
 			public bool UseSGB2 { get; set; } = true;
+
+			public SATELLAVIEW_CARTRIDGE SatellaviewCartridge { get; set; } = SATELLAVIEW_CARTRIDGE.Autodetect;
 		}
 	}
 }

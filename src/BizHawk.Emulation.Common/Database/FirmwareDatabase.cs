@@ -89,7 +89,6 @@ namespace BizHawk.Emulation.Common
 			Option("SNES", "Rom_SGB", in sgbA_Beta);
 			Option("SNES", "Rom_SGB", in sgbB, FirmwareOptionStatus.Ideal);
 			Option("SNES", "Rom_SGB2", in sgb2, FirmwareOptionStatus.Ideal);
-			FirmwareAndOption("604556B2E62860AF18DB5A77F2956EBC75450020", 1048576, "SNES", "Rom_BSX", "SNES_BS-X.sfc", "BS-X Rom (BS-X Sore wa Namae o Nusumareta Machi no Monogatari)");
 			FirmwareAndOption("A002F4EFBA42775A31185D443F3ED1790B0E949A", 3072, "SNES", "CX4", "SNES_cx4.rom", "CX4 Rom");
 			FirmwareAndOption("188D471FEFEA71EB53F0EE7064697FF0971B1014", 8192, "SNES", "DSP1", "SNES_dsp1.rom", "DSP1 Rom");
 			FirmwareAndOption("78B724811F5F18D8C67669D9390397EB1A47A5E2", 8192, "SNES", "DSP1b", "SNES_dsp1b.rom", "DSP1b Rom");
@@ -99,6 +98,17 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption("6472828403DE3589433A906E2C3F3D274C0FF008", 53248, "SNES", "ST010", "SNES_st010.rom", "ST010 Rom");
 			FirmwareAndOption("FECBAE2CEC76C710422486BAA186FFA7CA1CF925", 53248, "SNES", "ST011", "SNES_st011.rom", "ST011 Rom");
 			FirmwareAndOption("91383B92745CC7CC4F15409AC5BC2C2F699A43F1", 163840, "SNES", "ST018", "SNES_st018.rom", "ST018 Rom");
+
+			// see SATELLAVIEW_CARTRIDGE enum in BsnesCore
+			FirmwareAndOption("604556B2E62860AF18DB5A77F2956EBC75450020", 1048576, "BSX", "Rom_BSX", "Satellaview_BS-X.sfc", "BS-X Rom");
+			FirmwareAndOption("8417556B5CE22FB9BC4026FE28F7AEE348A76FD9", 1048576, "BSX", "Rom_Mahjong", "Satellaview_Mahjong.sfc", "Joushou Mahjong Tenpai Rom");
+			FirmwareAndOption("356A3D60E9FABFF4B4CEC66277C9A6B717C958CE", 1572864, "BSX", "Rom_GNEXT", "Satellaview_GNEXT.sfc", "SD Gundam G-Next Rom");
+			FirmwareAndOption("95F31DFB31200E31E80007CC66A32E2C1A7B02BE", 2097152, "BSX", "Rom_RPG_Tsukuru", "Satellaview_RPG_Tsukuru.sfc", "RPG Tsukūru 2 Rom");
+			FirmwareAndOption("A6AD0F89C3E75327D70AA0F0239C7B06F151E0A4", 1048576, "BSX", "Rom_SameGame", "Satellaview_SameGame.sfc", "SameGame Rom");
+			FirmwareAndOption("24AF9A5A78635EC493BBBC2540AB98BD161C5798", 3145728, "BSX", "Rom_DS96", "Satellaview_Derby_Stallion_96.sfc", "Derby Stallion 96 Rom");
+			FirmwareAndOption("337E0C4BDBF544787B543A1FB83AFBA7526191B9", 1048576, "BSX", "Rom_Ongaku_Tsukuru", "Satellaview_Ongaku_Tsukuru.sfc", "Ongaku Tsukūru: Kanadēru Rom");
+			FirmwareAndOption("A9B124948A19BB5A295EC208FCA8180476BDFEBB", 3145728, "BSX", "Rom_SoundNovel_Tsukuru", "Satellaview_SoundNovel_Tsukuru.sfc", "Sound-Novel Tsukūru Rom");
+			FirmwareAndOption("357AC4826297A6496035E3951CACDA55DCAE4B1B", 4194304, "BSX", "Rom_Tsuri", "Satellaview_Bass_Tsuri.sfc", "Itoi Shigesato no Bass Tsuri No. 1 Rom");
 
 			FirmwareAndOption("79F5FF55DD10187C7FD7B8DAAB0B3FFBD1F56A2C", 262144, "PCECD", "Bios", "PCECD_3.0-(J).pce", "Super CD Bios (J)");
 			FirmwareAndOption("014881A959E045E00F4DB8F52955200865D40280", 32768, "PCECD", "GE-Bios", "PCECD_gecard.pce", "Games Express CD Card (Japan)");
