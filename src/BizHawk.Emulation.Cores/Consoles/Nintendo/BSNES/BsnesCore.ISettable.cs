@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 	{
 		public SnesSettings GetSettings()
 		{
-			return _settings.Clone();
+			return _settings with {};
 		}
 
 		SNES.IBSNESForGfxDebugger.SettingsObj SNES.IBSNESForGfxDebugger.GetSettings()
@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		public SnesSyncSettings GetSyncSettings()
 		{
-			return _syncSettings.Clone();
+			return _syncSettings with {};
 		}
 
 		public PutSettingsDirtyBits PutSettings(SnesSettings o)
@@ -29,25 +29,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		public PutSettingsDirtyBits PutSyncSettings(SnesSyncSettings o)
 		{
-			bool ret = o.LeftPort != _syncSettings.LeftPort
-				|| o.RightPort != _syncSettings.RightPort
-				|| o.LimitAnalogChangeSensitivity != _syncSettings.LimitAnalogChangeSensitivity
-				|| o.Entropy != _syncSettings.Entropy
-				|| o.RegionOverride != _syncSettings.RegionOverride
-				|| o.Hotfixes != _syncSettings.Hotfixes
-				|| o.FastPPU != _syncSettings.FastPPU
-				|| o.FastDSP != _syncSettings.FastDSP
-				|| o.FastCoprocessors != _syncSettings.FastCoprocessors
-				|| o.UseSGB2 != _syncSettings.UseSGB2;
-
+			bool changed = o != _syncSettings;
 			_syncSettings = o;
-			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
+			return changed ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
 		private SnesSettings _settings;
 		private SnesSyncSettings _syncSettings;
 
-		public class SnesSettings : SNES.IBSNESForGfxDebugger.SettingsObj
+		public record SnesSettings : SNES.IBSNESForGfxDebugger.SettingsObj
 		{
 			public bool ShowBG1_0 { get; set; } = true;
 			public bool ShowBG2_0 { get; set; } = true;
@@ -67,14 +57,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			public bool NoPPUSpriteLimit { get; set; }
 			public bool ShowOverscan { get; set; }
 			public BsnesApi.ASPECT_RATIO_CORRECTION AspectRatioCorrection { get; set; } = BsnesApi.ASPECT_RATIO_CORRECTION.Auto;
-
-			public SnesSettings Clone()
-			{
-				return (SnesSettings) MemberwiseClone();
-			}
 		}
 
-		public class SnesSyncSettings
+		public record SnesSyncSettings
 		{
 			public BsnesApi.BSNES_PORT1_INPUT_DEVICE LeftPort { get; set; } = BsnesApi.BSNES_PORT1_INPUT_DEVICE.Gamepad;
 
@@ -95,11 +80,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			public bool FastCoprocessors { get; set; } = true;
 
 			public bool UseSGB2 { get; set; } = true;
-
-			public SnesSyncSettings Clone()
-			{
-				return (SnesSyncSettings) MemberwiseClone();
-			}
 		}
 	}
 }
