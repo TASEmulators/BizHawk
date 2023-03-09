@@ -2045,7 +2045,8 @@ namespace BizHawk.Client.EmuHawk
 			zXSpectrumToolStripMenuItem.Visible = false;
 			amstradCPCToolStripMenuItem.Visible = false;
 
-			switch (Emulator.SystemId)
+			var sysID = Emulator.SystemId;
+			switch (sysID)
 			{
 				case VSystemID.Raw.NULL:
 					break;
@@ -2095,13 +2096,12 @@ namespace BizHawk.Client.EmuHawk
 					GBSubMenu.Visible = true;
 					SameBoyColorChooserMenuItem.Visible = Emulator is Sameboy { IsCGBMode: false }; // palette config only works in DMG mode
 					break;
-				case VSystemID.Raw.SGB when Emulator is BsnesCore or SubBsnesCore:
-				case VSystemID.Raw.SNES when Emulator is LibsnesCore { IsSGB: true }: // doesn't use "SGB" sysID
-					SNESSubMenu.Text = "&SGB";
+				case VSystemID.Raw.SNES when Emulator is LibsnesCore oldBSNES: // doesn't use "SGB" sysID, always "SNES"
+					SNESSubMenu.Text = oldBSNES.IsSGB ? "&SGB" : "&SNES";
 					SNESSubMenu.Visible = true;
 					break;
-				case VSystemID.Raw.SNES when Emulator is LibsnesCore or BsnesCore or SubBsnesCore:
-					SNESSubMenu.Text = "&SNES";
+				case var _ when Emulator is BsnesCore or SubBsnesCore:
+					SNESSubMenu.Text = $"&{sysID}";
 					SNESSubMenu.Visible = true;
 					break;
 				default:
