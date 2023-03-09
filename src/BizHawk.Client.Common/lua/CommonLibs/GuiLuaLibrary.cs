@@ -249,7 +249,7 @@ namespace BizHawk.Client.Common
 				=> APIs.Gui.DrawRectangle(x, y, width, height, _th.SafeParseColor(line), _th.SafeParseColor(background), surfaceID: UseOrFallback(surfaceName));
 
 		[LuaMethodExample("gui.drawString( 16, 32, \"Some message\", 0x7F0000FF, 0x00007FFF, 8, \"Arial Narrow\", \"bold\", \"center\", \"middle\" );")]
-		[LuaMethod("drawString", "Alias of gui.drawText()")]
+		[LuaMethod("drawString", "Draws the given message in the emulator screen space (like all draw functions) at the given x,y coordinates and the given color. The default color is white. A fontfamily can be specified and is monospace generic if none is specified (font family options are the same as the .NET FontFamily class). The fontsize default is 12. The default font style is regular. Font style options are regular, bold, italic, strikethrough, underline. Horizontal alignment options are left (default), center, or right. Vertical alignment options are bottom (default), middle, or top. Alignment options specify which ends of the text will be drawn at the x and y coordinates. For pixel-perfect font look, make sure to disable aspect ratio correction.")]
 		public void DrawString(
 			int x,
 			int y,
@@ -262,12 +262,22 @@ namespace BizHawk.Client.Common
 			string horizalign = null,
 			string vertalign = null,
 			string surfaceName = null)
-		{
-			DrawText(x, y, message, _th.SafeParseColor(forecolor), _th.SafeParseColor(backcolor), fontsize, fontfamily, fontstyle, horizalign, vertalign, surfaceName: surfaceName);
-		}
+				=> APIs.Gui.DrawString(
+					x: x,
+					y: y,
+					message: message,
+					forecolor: _th.SafeParseColor(forecolor),
+					backcolor: _th.SafeParseColor(backcolor),
+					fontsize: fontsize,
+					fontfamily: fontfamily,
+					fontstyle: fontstyle,
+					horizalign: horizalign,
+					vertalign: vertalign,
+					surfaceID: UseOrFallback(surfaceName));
 
+		/// <remarks>TODO do this in Lua binding code?</remarks>
 		[LuaMethodExample("gui.drawText( 16, 32, \"Some message\", 0x7F0000FF, 0x00007FFF, 8, \"Arial Narrow\", \"bold\", \"center\", \"middle\" );")]
-		[LuaMethod("drawText", "Draws the given message in the emulator screen space (like all draw functions) at the given x,y coordinates and the given color. The default color is white. A fontfamily can be specified and is monospace generic if none is specified (font family options are the same as the .NET FontFamily class). The fontsize default is 12. The default font style is regular. Font style options are regular, bold, italic, strikethrough, underline. Horizontal alignment options are left (default), center, or right. Vertical alignment options are bottom (default), middle, or top. Alignment options specify which ends of the text will be drawn at the x and y coordinates. For pixel-perfect font look, make sure to disable aspect ratio correction.")]
+		[LuaMethod("drawText", "alias for gui.drawString")]
 		public void DrawText(
 			int x,
 			int y,
@@ -280,11 +290,22 @@ namespace BizHawk.Client.Common
 			string horizalign = null,
 			string vertalign = null,
 			string surfaceName = null)
-				=> APIs.Gui.DrawString(x, y, message, _th.SafeParseColor(forecolor), _th.SafeParseColor(backcolor), fontsize, fontfamily, fontstyle, horizalign, vertalign, surfaceID: UseOrFallback(surfaceName));
+				=> DrawString(
+					x: x,
+					y: y,
+					message: message,
+					forecolor: forecolor,
+					backcolor: backcolor,
+					fontsize: fontsize,
+					fontfamily: fontfamily,
+					fontstyle: fontstyle,
+					horizalign: horizalign,
+					vertalign: vertalign,
+					surfaceName: surfaceName);
 
 		[LuaMethodExample("gui.pixelText( 16, 32, \"Some message\", 0x7F0000FF, 0x00007FFF, \"Arial Narrow\" );")]
 		[LuaMethod("pixelText", "Draws the given message in the emulator screen space (like all draw functions) at the given x,y coordinates and the given color. The default color is white. Two font families are available, \"fceux\" and \"gens\" (or  \"0\" and \"1\" respectively), both are monospace and have the same size as in the emulators they've been taken from. If no font family is specified, it uses \"gens\" font, unless that's overridden via gui.defaultPixelFont()")]
-		public void DrawText(
+		public void PixelText(
 			int x,
 			int y,
 			string message,
@@ -306,7 +327,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local nlguicre = gui.createcanvas( 77, 99, 2, 48 );")]
 		[LuaMethod("createcanvas", "Creates a canvas of the given size and, if specified, the given coordinates.")]
-		public LuaTable Text(int width, int height, int? x = null, int? y = null)
+		public LuaTable CreateCanvas(int width, int height, int? x = null, int? y = null)
 			=> CreateLuaCanvasCallback(width, height, x, y);
 
 		[LuaMethodExample("gui.use_surface( \"client\" );")]

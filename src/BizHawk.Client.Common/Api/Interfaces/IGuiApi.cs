@@ -51,8 +51,14 @@ namespace BizHawk.Client.Common
 		void DrawPixel(int x, int y, Color? color = null, DisplaySurfaceID? surfaceID = null);
 		void DrawPolygon(Point[] points, Color? line = null, Color? background = null, DisplaySurfaceID? surfaceID = null);
 		void DrawRectangle(int x, int y, int width, int height, Color? line = null, Color? background = null, DisplaySurfaceID? surfaceID = null);
+
+		/// <remarks>exposed to Lua as <c>gui.drawString</c> and alias <c>gui.drawText</c></remarks>
 		void DrawString(int x, int y, string message, Color? forecolor = null, Color? backcolor = null, int? fontsize = null, string fontfamily = null, string fontstyle = null, string horizalign = null, string vertalign = null, DisplaySurfaceID? surfaceID = null);
+
+		/// <remarks>exposed to Lua as <c>gui.pixelText</c></remarks>
 		void DrawText(int x, int y, string message, Color? forecolor = null, Color? backcolor = null, string fontfamily = null, DisplaySurfaceID? surfaceID = null);
+
+		/// <remarks>exposed to Lua as <c>gui.text</c></remarks>
 		void Text(int x, int y, string message, Color? forecolor = null, string anchor = null);
 	}
 }
