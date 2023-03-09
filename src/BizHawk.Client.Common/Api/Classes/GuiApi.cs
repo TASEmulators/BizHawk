@@ -544,6 +544,23 @@ namespace BizHawk.Client.Common
 		}
 
 		public void DrawText(int x, int y, string message, Color? forecolor = null, Color? backcolor = null, string fontfamily = null, DisplaySurfaceID? surfaceID = null)
+			=> PixelText(
+				x: x,
+				y: y,
+				message: message,
+				forecolor: forecolor,
+				backcolor: backcolor,
+				fontfamily: fontfamily,
+				surfaceID: surfaceID);
+
+		public void PixelText(
+			int x,
+			int y,
+			string message,
+			Color? forecolor = null,
+			Color? backcolor = null,
+			string fontfamily = null,
+			DisplaySurfaceID? surfaceID = null)
 		{
 			try
 			{
