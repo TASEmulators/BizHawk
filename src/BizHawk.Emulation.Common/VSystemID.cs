@@ -20,7 +20,6 @@ namespace BizHawk.Emulation.Common
 			public const string AmstradCPC = "AmstradCPC";
 			public const string AppleII = "AppleII";
 			public const string Arcade = "Arcade";
-			public const string BSX = "BSX";
 			public const string C64 = "C64";
 			public const string ChannelF = "ChannelF";
 			public const string Coleco = "Coleco";
@@ -56,6 +55,7 @@ namespace BizHawk.Emulation.Common
 			public const string PSP = "PSP";
 			public const string PSX = "PSX";
 			public const string SAT = "SAT";
+			public const string Satellaview = "BSX";
 			public const string Sega32X = "32X";
 			public const string SG = "SG";
 			public const string SGB = "SGB";

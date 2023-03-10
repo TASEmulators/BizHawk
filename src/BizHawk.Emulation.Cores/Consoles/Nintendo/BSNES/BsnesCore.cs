@@ -15,9 +15,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class BsnesCore : IEmulator, IDebuggable, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable, ISettable<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings>, IBSNESForGfxDebugger, IBoardInfo
 	{
+		[CoreConstructor(VSystemID.Raw.Satellaview)]
 		[CoreConstructor(VSystemID.Raw.SGB)]
 		[CoreConstructor(VSystemID.Raw.SNES)]
-		[CoreConstructor(VSystemID.Raw.BSX)]
 		public BsnesCore(CoreLoadParameters<SnesSettings, SnesSyncSettings> loadParameters) : this(loadParameters, false) { }
 		public BsnesCore(CoreLoadParameters<SnesSettings, SnesSyncSettings> loadParameters, bool subframe = false)
 		{
@@ -86,7 +86,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			InitAudio();
 			ser.Register<ISoundProvider>(_soundProvider);
 
-			if (SystemId == VSystemID.Raw.BSX)
+			if (_isSGB)
+			{
+				Api.core.snes_load_cartridge_super_gameboy(sgbRomData, loadParameters.Roms[0].RomData,
+					sgbRomData!.Length, loadParameters.Roms[0].RomData.Length);
+			}
+			else if (SystemId is VSystemID.Raw.Satellaview)
 			{
 				SATELLAVIEW_CARTRIDGE slottedCartridge = _syncSettings.SatellaviewCartridge;
 				if (slottedCartridge == SATELLAVIEW_CARTRIDGE.Autodetect)
@@ -105,11 +110,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				byte[] cartridgeData = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new FirmwareID("BSX", slottedCartridge.ToString()));
 				Api.core.snes_load_cartridge_bsmemory(cartridgeData, loadParameters.Roms[0].RomData,
 					cartridgeData.Length, loadParameters.Roms[0].RomData.Length);
-			}
-			else if (_isSGB)
-			{
-				Api.core.snes_load_cartridge_super_gameboy(sgbRomData, loadParameters.Roms[0].RomData,
-					sgbRomData!.Length, loadParameters.Roms[0].RomData.Length);
 			}
 			else
 			{
