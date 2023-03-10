@@ -9,24 +9,33 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class BSNESOptions : Form
 	{
-		private BSNESOptions()
+		private readonly BsnesCore.SnesSettings _settings;
+		private readonly BsnesCore.SnesSyncSettings _syncSettings;
+
+		private BSNESOptions(BsnesCore.SnesSettings s, BsnesCore.SnesSyncSettings ss)
 		{
+			_settings = s;
+			_syncSettings = ss;
 			InitializeComponent();
+		}
+
+		private void OnLoad(object sender, EventArgs e)
+		{
+			EntropyBox.PopulateFromEnum(_syncSettings.Entropy);
+			AspectRatioCorrectionBox.PopulateFromEnum(_settings.AspectRatioCorrection);
+			RegionBox.PopulateFromEnum(_syncSettings.RegionOverride);
 		}
 
 		public static DialogResult DoSettingsDialog(IDialogParent dialogParent, ISettingsAdapter settable)
 		{
 			var s = (BsnesCore.SnesSettings) settable.GetSettings();
 			var ss = (BsnesCore.SnesSyncSettings) settable.GetSyncSettings();
-			using var dlg = new BSNESOptions
+			using var dlg = new BSNESOptions(s, ss)
 			{
 				AlwaysDoubleSize = s.AlwaysDoubleSize,
 				CropSGBFrame = s.CropSGBFrame,
 				NoPPUSpriteLimit = s.NoPPUSpriteLimit,
 				ShowOverscan = s.ShowOverscan,
-				AspectRatioCorrection = s.AspectRatioCorrection,
-				Entropy = ss.Entropy,
-				RegionOverride = ss.RegionOverride,
 				Hotfixes = ss.Hotfixes,
 				FastPPU = ss.FastPPU,
 				FastDSP = ss.FastDSP,
@@ -102,11 +111,7 @@ namespace BizHawk.Client.EmuHawk
 			init => cbShowOverscan.Checked = value;
 		}
 
-		private BsnesApi.ASPECT_RATIO_CORRECTION AspectRatioCorrection
-		{
-			get => (BsnesApi.ASPECT_RATIO_CORRECTION)AspectRatioCorrectionBox.SelectedIndex;
-			init => AspectRatioCorrectionBox.SelectedIndex = (int)value;
-		}
+		private BsnesApi.ASPECT_RATIO_CORRECTION AspectRatioCorrection => (BsnesApi.ASPECT_RATIO_CORRECTION)AspectRatioCorrectionBox.SelectedIndex;
 
 		private bool Hotfixes
 		{
@@ -138,18 +143,10 @@ namespace BizHawk.Client.EmuHawk
 			init => cbUseSGB2.Checked = value;
 		}
 
-		private BsnesApi.ENTROPY Entropy
-		{
-			get => (BsnesApi.ENTROPY) EntropyBox.SelectedIndex;
-			init => EntropyBox.SelectedIndex = (int) value;
-		}
+		private BsnesApi.ENTROPY Entropy => (BsnesApi.ENTROPY) EntropyBox.SelectedIndex;
 
-		private BsnesApi.REGION_OVERRIDE RegionOverride
-		{
-			get => (BsnesApi.REGION_OVERRIDE)RegionBox.SelectedIndex;
-			init => RegionBox.SelectedIndex = (int)value;
-		}
-
+		private BsnesApi.REGION_OVERRIDE RegionOverride => (BsnesApi.REGION_OVERRIDE)RegionBox.SelectedIndex;
+		
 		private bool ShowObj1 { get => Obj1Checkbox.Checked; init => Obj1Checkbox.Checked = value; }
 		private bool ShowObj2 { get => Obj2Checkbox.Checked; init => Obj2Checkbox.Checked = value; }
 		private bool ShowObj3 { get => Obj3Checkbox.Checked; init => Obj3Checkbox.Checked = value; }

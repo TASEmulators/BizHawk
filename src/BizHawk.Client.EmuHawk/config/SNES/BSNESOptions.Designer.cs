@@ -269,10 +269,6 @@
             // 
             this.EntropyBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.EntropyBox.FormattingEnabled = true;
-            this.EntropyBox.Items.AddRange(new object[] {
-            "None",
-            "Low",
-            "High"});
             this.EntropyBox.Location = new System.Drawing.Point(17, 219);
             this.EntropyBox.Name = "EntropyBox";
             this.EntropyBox.Size = new System.Drawing.Size(128, 21);
@@ -288,10 +284,6 @@
             // 
             this.RegionBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.RegionBox.FormattingEnabled = true;
-            this.RegionBox.Items.AddRange(new object[] {
-            "Auto",
-            "NTSC",
-            "PAL"});
             this.RegionBox.Location = new System.Drawing.Point(162, 219);
             this.RegionBox.Name = "RegionBox";
             this.RegionBox.Size = new System.Drawing.Size(128, 21);
@@ -378,11 +370,6 @@
             // 
             this.AspectRatioCorrectionBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.AspectRatioCorrectionBox.FormattingEnabled = true;
-            this.AspectRatioCorrectionBox.Items.AddRange(new object[] {
-            "None",
-            "Auto",
-            "NTSC",
-            "PAL"});
             this.AspectRatioCorrectionBox.Location = new System.Drawing.Point(162, 174);
             this.AspectRatioCorrectionBox.Name = "AspectRatioCorrectionBox";
             this.AspectRatioCorrectionBox.Size = new System.Drawing.Size(128, 21);
@@ -437,6 +424,7 @@
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "BSNES Options";
+            this.Load += new System.EventHandler(this.OnLoad);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
