@@ -91,8 +91,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				SATELLAVIEW_CARTRIDGE slottedCartridge = _syncSettings.SatellaviewCartridge;
 				if (slottedCartridge == SATELLAVIEW_CARTRIDGE.Autodetect)
 				{
-					// TODO
-					slottedCartridge = SATELLAVIEW_CARTRIDGE.Rom_BSX;
+					if (loadParameters.Game.NotInDatabase)
+					{
+						CoreComm.ShowMessage("Unable to autodetect satellaview base cartridge for unknown game. Falling back to BS-X cartridge.");
+						slottedCartridge = SATELLAVIEW_CARTRIDGE.Rom_BSX;
+					}
+					else
+					{
+						// query gamedb for slotted cartridge id, assume BS-X cartridge if not otherwise specified in gamedb
+						slottedCartridge = (SATELLAVIEW_CARTRIDGE)loadParameters.Game.GetInt("baseCartridge", (int)SATELLAVIEW_CARTRIDGE.Rom_BSX);
+					}
 				}
 				byte[] cartridgeData = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new FirmwareID("BSX", slottedCartridge.ToString()));
 				Api.core.snes_load_cartridge_bsmemory(cartridgeData, loadParameters.Roms[0].RomData,
