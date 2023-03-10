@@ -251,7 +251,7 @@ namespace BizHawk.Emulation.Common
 				case ".BS":
 					if (SatellaviewFileTypeDetector.IsSatellaviewRom(romData, out var warnings))
 					{
-						game.System = VSystemID.Raw.BSX;
+						game.System = VSystemID.Raw.Satellaview;
 						foreach (var s in warnings) Console.WriteLine(s);
 					}
 					else
