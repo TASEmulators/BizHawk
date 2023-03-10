@@ -25,7 +25,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 			this._romPath = Path.ChangeExtension(loadParameters.Roms[0].RomPath, null);
 			CoreComm = loadParameters.Comm;
-			_settings = loadParameters.Settings ?? new SnesSettings();
 			_syncSettings = loadParameters.SyncSettings ?? new SnesSyncSettings();
 			SystemId = loadParameters.Game.System;
 			_isSGB = SystemId == VSystemID.Raw.SGB;
@@ -80,6 +79,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			};
 			Api.core.snes_init(ref snesInitData);
 			Api.SetCallbacks(callbacks);
+			PutSettings(loadParameters.Settings ?? new SnesSettings());
 
 			// start up audio resampler
 			InitAudio();

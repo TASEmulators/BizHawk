@@ -19,6 +19,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		public PutSettingsDirtyBits PutSettings(SnesSettings o)
 		{
+			if (o != _settings)
+			{
+				var enables = new BsnesApi.LayerEnables
+				{
+					BG1_Prio0 = o.ShowBG1_0,
+					BG1_Prio1 = o.ShowBG1_1,
+					BG2_Prio0 = o.ShowBG2_0,
+					BG2_Prio1 = o.ShowBG2_1,
+					BG3_Prio0 = o.ShowBG3_0,
+					BG3_Prio1 = o.ShowBG3_1,
+					BG4_Prio0 = o.ShowBG4_0,
+					BG4_Prio1 = o.ShowBG4_1,
+					Obj_Prio0 = o.ShowOBJ_0,
+					Obj_Prio1 = o.ShowOBJ_1,
+					Obj_Prio2 = o.ShowOBJ_2,
+					Obj_Prio3 = o.ShowOBJ_3
+				};
+				Api.core.snes_set_layer_enables(ref enables);
+				Api.core.snes_set_ppu_sprite_limit_enabled(!o.NoPPUSpriteLimit);
+				Api.core.snes_set_overscan_enabled(o.ShowOverscan);
+			}
 			_settings = o;
 
 			return PutSettingsDirtyBits.None;
