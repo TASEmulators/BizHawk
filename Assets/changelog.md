@@ -85,6 +85,11 @@
 	- strip "SHA1:" and "MD5:" when copying lines in the log window
 	- have TAS profile also enable NDS BIOS
 	- improved DisplaySurface performance (#3517)
+	- fix malformed PC Engine gamedb entry ("Sounds" was interpreted as the sysID)
+	- add N64 to multidisk bundler list
+	- add some sort of documentation for B/V gamedb flags
+	- use a single-source-of-truth for tools' icons in menus and Tool Box
+	- hide debug tools from Tool Box and add ext. tools
 - Linux port:
 	- fixed various file pickers using case-sensitive file extensions
 	- added short-circuit to Mupen64Plus loading to avoid error messages and any strange failure state
@@ -166,6 +171,18 @@
 	- (Lua) fixed various things in the LuaConsole (#3476)
 	- (ApiHawk/Lua) return success bool from `OpenRom` APIs (#3514)
 	- (Lua) fixed unwrapped lua exceptions not being correctly thrown
+	- (Lua) properly handle errors when running a lua script, using Resume/Yield methods added to the LuaThread class (see https://github.com/TASEmulators/NLua/commit/f904fa0d53b06c67dd8e9b409dcbb9fa8aa721f2)
+	- (Lua) fix mainmemory.write_bytes_as_dict
+	- (ApiHawk) have `IMovieApi.Stop` implementation use `MainForm.StopMovie`
+	- (Lua) Pass through input/hotkeys while Lua form is focused
+to restore previous behaviour, call `forms.setproperty(form_handle,
+"BlocksInputWhenFocused", true);`
+	- (ApiHawk) fix `--open-ext-tool-dll`
+	- (Lua) fix PictureBox when width or height is null
+	- (Lua) use LuaPictureBox' custom resize in all cases
+	- (ApiHawk) make ext. tool build scripts pass args through to dotnet
+	- (Lua) `CloseRom` acts like rebooting the core, so make it just reset Lua libs (fixes #3226)
+	- (Lua) fix detaching registered functions
 - Meta:
 	- adjust wording in Issue templates
 	- add core port request Issue template
@@ -173,6 +190,7 @@
 	- add more testroms to GB testroms project
 	- updated `PcxFileTypePlugin.HawkQuantizer` project file to match others
 	- updated TASVideos URL in GitHub security policy
+	- make MSBuild ignore shell scripts for external .NET projects
 - New and graduating cores:
 	- Ares64:
 		- removed the Ares64 (Performance) core and renamed Ares64 (Accuracy) to Ares64, now no longer experimental
@@ -183,6 +201,8 @@
 		- added more debugging features (tracer, disassembler, get registers, System Bus domain)
 		- fixed tracer regression from upstream update
 		- enabled SIMD RSP implementation
+		- added N64DD support
+		- made Ares use AxisContraint (see #3453)
 	- VirtualJaguar
 		- new core for Jaguar and Jaguar CD emulation!
 		- core has had a fair bit of modifications from upstream for better accuracy and Jaguar CD support
@@ -199,6 +219,7 @@
 		- added in various missing mnemonics (more likely remain, please report!)
 		- resolved erroneous LibMAME errors due to mame_lua_get_string returning NULL with an empty string
 		- use actual doubles for figuring out aspect ratio (fixes potential divide by 0 exception)
+		- support MAME 7z romsets (#3448)
 	- DobieStation:
 		- This PS2 core has been removed due to being unusuably slow and not very accurate
 - Other cores:
@@ -251,8 +272,10 @@
 		- prevent crashes due to "negative" numbers being added to the sound buffer pointer (#3425)
 		- fixed audio output being too quiet (#3338)
 		- added a CGB color correction option using the same formula as SameBoy, and made that the default
+		- time fixes (long periods of pausing causing rtc overflows in real time mode; time incorrectly advancing when loading in a save file)
 	- GBHawk
 		- fixed Code-Data Logger crashing due to typo'd mem domain name (#3497)
+		- fixed wrong MBC5 mapper being given a battery
 	- Genplus-gx:
 		- stopped byteswapping Z80 domains (#3290)
 		- changed default peripheral to 3-button Genesis gamepad (#2775, #3262)
@@ -281,6 +304,7 @@
 		- added missing TMD for Zombie Skape, improved error message when TMD cannot be found
 		- ensured firmware settings match up with sync settings if real firmware is not used (#3377)
 		- did various internal cleanups
+		- add TCM memory areas for melonDS core (#3420)
 	- mGBA:
 		- updated to interim version after 0.10.0, fixing a softlock in Hamtaro: Ham Ham Heartbreak (#2541)
 		- implemented save override support with EEPROM512 and SRAM512
@@ -308,6 +332,8 @@
 		- updated to interim version after 0.15.7, fixing some bugs (#3185)
 		- added GB palette customiser (#3239)
 		- wired up rumble support
+		- exposed audio channel enable/disabling
+		- .GBS support
 	- Saturnus:
 		- updated to Mednafen 1.29.0
 		- fixed disc switching
@@ -330,110 +356,6 @@
 	- ZXHawk:
 		- removed redundant `ZXSpectrumPokeMemory` tool
 		- renamed some bundled firmware files (#3494)
-[HEAD]
-
-[1a30f6551 YoshiRulz] Use LuaPictureBox' custom resize in all cases
-
-[2c3fb6877 CasualPokePlayer] fix PictureBox when width or height is null
-
-[5bdbe110e YoshiRulz] Make ext. tool build scripts pass args through to dotnet
-
-[1ca610b42 YoshiRulz] Set default `Form.Icon` to corphawk
-not sure about this, and I think it also affects ext. tools
-
-[e7884f679 YoshiRulz] Hide debug tools from Tool Box and add ext. tools
-
-[8b7cba96b YoshiRulz] Use a single-source-of-truth for tools' icons in menus and Tool Box
-reverts 733b6c49b
-some more `[SpecializedTool]`s have icons now
-
-[a86860faa YoshiRulz] Fix `--open-ext-tool-dll`
-fixes 4566b744d
-
-[e8dd2e94f CasualPokePlayer] Fix crashes when using menu item for save/load quicksave
-fixes 22ba0d5c25288defc39254f62e9885043d8edcd3
-
-[cd1d647d7 CasualPokePlayer] linux build for recent gambatte updates, also fix a minor potential build error when zlib is completely unavailable (it was getting linked even though there was no need for it to be linked)
-
-[0dc4f99f9 CasualPokePlayer] yet another time fix in gambatte, should be the last one
-
-[b56fcaef1 CasualPokePlayer] another gambatte time fix, should prevent long periods of pausing from causing rtc overflows in real time mode
-
-[86545197c CasualPokePlayer] [Gambatte] Cleanup time code, probably fix a bug that caused time to incorrectly advance when loading in a save file
-
-[bc823f479 YoshiRulz] Clear props of type `ApiContainer` when clearing injected API props
-
-[3c00c24fc YoshiRulz] Fix `ApiInjector` trying to set get-only props of type `ApiContainer`
-
-[0591d2e2d YoshiRulz] Pass through input/hotkeys while Lua form is focused
-to restore previous behaviour, call `forms.setproperty(form_handle,
-"BlocksInputWhenFocused", true);`
-
-[af9f5b9b9 YoshiRulz] Add some sort of documentation for B/V gamedb flags
-
-[ec6fe5fcf YoshiRulz] Change loadstate methods to return a bool indicating success
-
-[fcf7ac1fa YoshiRulz] Change first param of `{Save,Load}QuickSave` from string to int
-also swapped bool params of `SaveQuickSave`
-
-[22ba0d5c2 YoshiRulz] Dedup click handlers for `File` > `Save State` and `Load State`
-`File` > `Save Slot` already did this
-
-[7fdc3f992d Yoshi] Propagate success through to caller for movie load/restart
-
-[e0a7a39b0d Yoshi] Have `IMovieApi.Stop` implementation use `MainForm.StopMovie`
-
-[b687dea1b0 CPP] change every IntPtr<->int cast to IntPtr<->long. we got 64 bit integers with lua now, and a pointer is 64 bits, so might avoid some dumb bug due to truncations and some ungodly amount of ram being used TODO: see if we can skip this cast nonsense. the lua tests indicate IntPtr should pass through fine, being considered "userdata", probably better so the user can't just pass raw numbers for the handle.
-
-[dcd570bf87 CPP] fix mainmemory.write_bytes_as_dict
-
-[9660c16a0a CPP] fix N64 roms coming through multidisk bundler in ares
-
-[84d2866f53 Yoshi] Clean up usage of `LuaFile.Enabled`/`Paused`
-
-[f798021bba CPP] CloseRom acts like rebooting the core, so make it just reset Lua libs (more properly fixes #3226 without any yield nonsense) Slight revert of 2efae13af4f9dd5ca233a31b9085195829f6a513 (still want to set running scripts as it's used later) Fix detaching registered functions (old logic was broken, Stop would null out the LuaRef used for creating the new dummy thread for the detached function. best solution i've come up with is to simply pass a callback over for creating the thread, nicely encapsulating that functionality) Various cleanups, don't need VS complaining about old pattern matching code here anymore...
-
-[51f01efdc4 CPP] Properly handle errors when running a lua script, using Resume/Yield methods added to the LuaThread class (see https://github.com/TASEmulators/NLua/commit/f904fa0d53b06c67dd8e9b409dcbb9fa8aa721f2)
-
-[3dcc3ff89f Yoshi] Improve handling of exceptions thrown in `Form.Load` handlers
-obviously only benefits forms inheriting `FormBase`
-
-[8818f79bb0 CPP] actually make N64DD support work
-
-[6baee38717 CPP] add n64 to multidisk bundler list
-
-[9420c8b21c CPP] merge latest ares, hook up its new N64DD support, make ares use AxisContraint (see #3453), some other cleanups here
-
-[248e87b6d1 CPP] try to load a different core if an autodetected mame rom ends up failing to load
-
-[937872eaf6 Yoshi] Fix malformed PC Engine gamedb entry
-broken since addition in 8295e6d65 ("Sounds" was interpreted as the sysID)
-
-[51826c4c17 CPP] Fix wrong MBC5 mapper being given a battery
-0x1A is MBC5+RAM, 0x1B is MBC5+RAM+BATTERY
-
-[0bd182e6cc CPP] properly handle "NO GOOD DUMP KNOWN" mame rom hashes (note, these roms are not actually in the romset, so the singular hash in movies doesn't have to be affected here)
-
-[44944e1d70 CPP] more simple string and double handling, allow SaveRAM usage with different bios files
-
-[d0266816a5 CPP] Fix #3448. Support MAME 7z romsets
-
-[fd2772707b Yoshi] Update `forms.drawImageRegion` documentation with a diagram
-only embeds on TASVideos Wiki, which I held off on updating because there are a
-lot of changes and we can do them all at once
-
-[ad85be7bed Prcuvu] Register TCM areas for melonDS core (#3420)
-* Register TCM areas for melonDS core
-* reorder mem domains a bit, add TCM to ARM9 System Bus, build
-Co-authored-by: CPP
-
-[9528a2030f CPP] GBS support using SameBoy
-
-[0c6f0523a0 CPP] Update sameboy, expose audio channel enable/disabling, cleanup settings to go through a single call/struct
-
-[a59d66dfdd CPP] proper fix for mmult opcode, properly fixes Baldies music
-
-[1fbb95a353 Yoshi] Make MSBuild ignore shell scripts for external .NET projects
 
 
 ## changes from 2.7 to 2.8
