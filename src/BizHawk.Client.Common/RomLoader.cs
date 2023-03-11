@@ -266,6 +266,10 @@ namespace BizHawk.Client.Common
 					game.System = VSystemID.Raw.PCE;
 					break;
 
+				case DiscType.JaguarCD:
+					game.System = VSystemID.Raw.Jaguar;
+					break;
+
 				case DiscType.Amiga:
 					throw NoCoreForSystem(VSystemID.Raw.Amiga);
 				case DiscType.CDi:

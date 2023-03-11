@@ -15,28 +15,28 @@ namespace BizHawk.Emulation.DiscSystem
 
 		private readonly int IN_LastRecordedTrackNumber;
 
-		private readonly SessionFormat IN_Session1Format;
+		private readonly SessionFormat IN_SessionFormat;
 
 		private readonly int IN_LeadoutTimestamp;
 
 		/// <param name="firstRecordedTrackNumber">"First Recorded Track Number" value for TOC (usually 1)</param>
 		/// <param name="lastRecordedTrackNumber">"Last Recorded Track Number" value for TOC</param>
-		/// <param name="session1Format">The session format for this TOC</param>
+		/// <param name="sessionFormat">The session format for this TOC</param>
 		/// <param name="leadoutTimestamp">The absolute timestamp of the lead-out track</param>
 		public Synthesize_A0A1A2_Job(
 			int firstRecordedTrackNumber,
 			int lastRecordedTrackNumber,
-			SessionFormat session1Format,
+			SessionFormat sessionFormat,
 			int leadoutTimestamp)
 		{
 			IN_FirstRecordedTrackNumber = firstRecordedTrackNumber;
 			IN_LastRecordedTrackNumber = lastRecordedTrackNumber;
-			IN_Session1Format = session1Format;
+			IN_SessionFormat = sessionFormat;
 			IN_LeadoutTimestamp = leadoutTimestamp;
 		}
 
 		/// <summary>appends the new entries to the provided list</summary>
-		/// <exception cref="InvalidOperationException"><see cref="IN_Session1Format"/> is <see cref="SessionFormat.None"/> or a non-member</exception>
+		/// <exception cref="InvalidOperationException"><see cref="IN_SessionFormat"/> is <see cref="SessionFormat.None"/> or a non-member</exception>
 		public void Run(List<RawTOCEntry> entries)
 		{
 			//NOTE: entries are inserted at the beginning due to observations of CCD indicating they might need to be that way
@@ -46,24 +46,24 @@ namespace BizHawk.Emulation.DiscSystem
 
 			//ADR (q-Mode) is necessarily 0x01 for a RawTOCEntry
 			const int kADR = 1;
-			const int kUnknownControl = 0;
+			const EControlQ kUnknownControl = 0;
 
-			sq.SetStatus(kADR, (EControlQ)kUnknownControl);
+			sq.SetStatus(kADR, kUnknownControl);
 
 			//first recorded track number:
 			sq.q_index.BCDValue = 0xA0;
 			sq.ap_min.DecimalValue = IN_FirstRecordedTrackNumber;
-			switch(IN_Session1Format)
+			sq.ap_sec.DecimalValue = IN_SessionFormat switch
 			{
 				//TODO these probably shouldn't be decimal values
-				case SessionFormat.Type00_CDROM_CDDA: sq.ap_sec.DecimalValue = 0x00; break;
-				case SessionFormat.Type10_CDI: sq.ap_sec.DecimalValue = 0x10; break;
-				case SessionFormat.Type20_CDXA: sq.ap_sec.DecimalValue = 0x20; break;
-				default: throw new InvalidOperationException("Invalid Session1Format");
-			}
+				SessionFormat.Type00_CDROM_CDDA => 0x00,
+				SessionFormat.Type10_CDI => 0x10,
+				SessionFormat.Type20_CDXA => 0x20,
+				_ => throw new InvalidOperationException("Invalid SessionFormat")
+			};
 			sq.ap_frame.DecimalValue = 0;
 
-			entries.Insert(0, new RawTOCEntry { QData = sq });
+			entries.Insert(0, new() { QData = sq });
 
 			//last recorded track number:
 			sq.q_index.BCDValue = 0xA1;
@@ -71,13 +71,13 @@ namespace BizHawk.Emulation.DiscSystem
 			sq.ap_sec.DecimalValue = 0;
 			sq.ap_frame.DecimalValue = 0;
 
-			entries.Insert(1, new RawTOCEntry { QData = sq });
+			entries.Insert(1, new() { QData = sq });
 
 			//leadout:
 			sq.q_index.BCDValue = 0xA2;
 			sq.AP_Timestamp = IN_LeadoutTimestamp;
 
-			entries.Insert(2, new RawTOCEntry { QData = sq });
+			entries.Insert(2, new() { QData = sq });
 		}
 	}
 }

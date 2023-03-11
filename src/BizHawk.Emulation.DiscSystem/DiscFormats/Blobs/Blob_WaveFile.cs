@@ -75,7 +75,7 @@ namespace BizHawk.Emulation.DiscSystem
 				//acquire the start of the data chunk
 				var dataChunk = (RiffMaster.RiffSubchunk) dataChunks[0];
 				waveDataStreamPos = dataChunk.Position;
-				mDataLength = dataChunk.Length;
+				Length = dataChunk.Length;
 			}
 			catch(Exception)
 			{
@@ -92,8 +92,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		private RiffMaster RiffSource;
 		private long waveDataStreamPos;
-		private long mDataLength;
-		public long Length => mDataLength;
+		public long Length { get; private set; }
 
 		public void Dispose()
 		{

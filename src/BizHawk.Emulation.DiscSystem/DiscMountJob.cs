@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-
+using System.Linq;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.DiscSystem.CUE;
 
@@ -80,27 +80,32 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				OUT_Disc.Name = Path.GetFileName(IN_FromPath);
 
-				//generate toc and structure:
-				//1. TOCRaw from RawTOCEntries
-				var tocSynth = new Synthesize_DiscTOC_From_RawTOCEntries_Job(OUT_Disc.RawTOCEntries);
-				tocSynth.Run();
-				OUT_Disc.TOC = tocSynth.Result;
-				//2. Structure from TOCRaw
-				var structureSynth = new Synthesize_DiscStructure_From_DiscTOC_Job(OUT_Disc, OUT_Disc.TOC);
-				structureSynth.Run();
-				OUT_Disc.Structure = structureSynth.Result;
-
+				//generate toc and session tracks:
+				for (var i = 1; i < OUT_Disc.Sessions.Count; i++)
+				{
+					var session = OUT_Disc.Sessions[i];
+					//1. TOC from RawTOCEntries
+					var tocSynth = new Synthesize_DiscTOC_From_RawTOCEntries_Job(session.RawTOCEntries);
+					tocSynth.Run();
+					session.TOC = tocSynth.Result;
+					//2. DiscTracks from TOC
+					var tracksSynth = new Synthesize_DiscTracks_From_DiscTOC_Job(OUT_Disc, session);
+					tracksSynth.Run();
+				}
+				
 				//insert a synth provider to take care of the leadout track
 				//currently, we let mednafen take care of its own leadout track (we'll make that controllable later)
+				//TODO: This currently doesn't work well with multisessions (only the last session can have a leadout read with the current model)
+				//(although note only VirtualJaguar currently deals with multisession discs and it doesn't care about the leadout so far)
 				if (IN_DiscInterface != DiscInterface.MednaDisc)
 				{
 					var ss_leadout = new SS_Leadout
 					{
-						SessionNumber = 1,
+						SessionNumber = OUT_Disc.Sessions.Count - 1,
 						Policy = IN_DiscMountPolicy
 					};
-					Func<int, bool> condition = (int lba) => lba >= OUT_Disc.Session1.LeadoutLBA;
-					new ConditionalSectorSynthProvider().Install(OUT_Disc, condition, ss_leadout);
+					bool Condition(int lba) => lba >= OUT_Disc.Sessions[OUT_Disc.Sessions.Count - 1].LeadoutLBA;
+					new ConditionalSectorSynthProvider().Install(OUT_Disc, Condition, ss_leadout);
 				}
 
 				//apply SBI if it exists
@@ -186,7 +191,7 @@ namespace BizHawk.Emulation.DiscSystem
 			switch (ext.ToLowerInvariant())
 			{
 				case ".ccd":
-					OUT_Disc = new CCD_Format().LoadCCDToDisc(IN_FromPath, IN_DiscMountPolicy);
+					OUT_Disc = CCD_Format.LoadCCDToDisc(IN_FromPath, IN_DiscMountPolicy);
 					break;
 				case ".cue":
 					LoadCue(dir, File.ReadAllText(IN_FromPath));
@@ -204,7 +209,7 @@ namespace BizHawk.Emulation.DiscSystem
 							INDEX 01 00:00:00");
 					break;
 				case ".mds":
-					OUT_Disc = new MDS_Format().LoadMDSToDisc(IN_FromPath, IN_DiscMountPolicy);
+					OUT_Disc = MDS_Format.LoadMDSToDisc(IN_FromPath, IN_DiscMountPolicy);
 					break;
 			}
 

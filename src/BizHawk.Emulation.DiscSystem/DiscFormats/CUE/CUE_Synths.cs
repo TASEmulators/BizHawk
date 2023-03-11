@@ -96,7 +96,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			Array.Clear(job.DestBuffer2448, job.DestOffset, 2352);
 
 			byte mode = 255;
-			int form = -1;
+			var form = -1;
 			switch (TrackType)
 			{
 				case CueTrackType.Audio:
@@ -135,14 +135,17 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 					SynthUtils.SectorHeader(job.DestBuffer2448, job.DestOffset + 0, job.LBA, mode);
 			}
 
-			if (mode == 1)
+			switch (mode)
 			{
-				if ((job.Parts & ESectorSynthPart.ECMAny) != 0)
-					SynthUtils.ECM_Mode1(job.DestBuffer2448, job.DestOffset + 0, job.LBA);
-			}
-			if (mode == 2 && form == 2)
-			{
-				SynthUtils.EDC_Mode2_Form2(job.DestBuffer2448, job.DestOffset);
+				case 1:
+				{
+					if ((job.Parts & ESectorSynthPart.ECMAny) != 0)
+						SynthUtils.ECM_Mode1(job.DestBuffer2448, job.DestOffset + 0, job.LBA);
+					break;
+				}
+				case 2 when form == 2:
+					SynthUtils.EDC_Mode2_Form2(job.DestBuffer2448, job.DestOffset);
+					break;
 			}
 
 			SynthSubchannelAsNeed(job);

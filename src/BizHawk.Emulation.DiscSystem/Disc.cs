@@ -29,33 +29,26 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 
 		/// <summary>
-		/// The DiscStructure corresponding to the TOCRaw
+		/// This is a 1-indexed list of sessions (session 1 is at [1])
+		/// To prevent duplicate Add(null) calls around the code, we'll have it already have [0] with null
+		/// So the first Add() call will put a session at [1], the second will put a session at [2], and so on
 		/// </summary>
-		public DiscStructure Structure;
+		public readonly IList<DiscSession> Sessions = new List<DiscSession> { null };
 
 		/// <summary>
-		/// DiscStructure.Session 1 of the disc, since that's all that's needed most of the time.
+		/// Session 1 of the disc, since that's all that's needed most of the time.
 		/// </summary>
-		public DiscStructure.Session Session1 => Structure.Sessions[1];
+		public DiscSession Session1 => Sessions[1];
+
+		/// <summary>
+		/// The DiscTOC corresponding to Session1.
+		/// </summary>
+		public DiscTOC TOC => Session1.TOC;
 
 		/// <summary>
 		/// The name of a disc. Loosely based on the filename. Just for informational purposes.
 		/// </summary>
 		public string Name;
-
-		/// <summary>
-		/// The DiscTOCRaw corresponding to the RawTOCEntries.
-		/// TODO - there's one of these for every session, so... having one here doesn't make sense
-		/// so...
-		/// TODO - remove me
-		/// </summary>
-		public DiscTOC TOC;
-
-		/// <summary>
-		/// The raw TOC entries found in the lead-in track.
-		/// These aren't very useful, but theyre one of the most lowest-level data structures from which other TOC-related stuff is derived
-		/// </summary>
-		public List<RawTOCEntry> RawTOCEntries = new List<RawTOCEntry>();
 
 		/// <summary>
 		/// Free-form optional memos about the disc
@@ -110,7 +103,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// The sectors on the disc. Don't use this directly! Use the SectorSynthProvider instead.
 		/// TODO - eliminate this entirely and do entirely with the delegate (much faster disc loading... but massively annoying architecture inside-out logic)
 		/// </summary>
-		internal List<ISectorSynthJob2448> _Sectors = new List<ISectorSynthJob2448>();
+		internal List<ISectorSynthJob2448> _Sectors = new();
 
 		/// <summary>
 		/// ISectorSynthProvider instance for the disc. May be daisy-chained

@@ -48,14 +48,10 @@ namespace BizHawk.Emulation.DiscSystem
 		/// makes a BCD2 from a decimal number. don't supply a number > 99 or you might not like the results
 		/// </summary>
 		public static BCD2 FromDecimal(int d)
-		{
-			return new BCD2 { DecimalValue = d };
-		}
+			=> new() { DecimalValue = d };
 
 		public static BCD2 FromBCD(byte b)
-		{
-			return new BCD2 { BCDValue = b };
-		}
+			=> new() { BCDValue = b };
 
 		public static int BCDToInt(byte n)
 		{
@@ -65,29 +61,25 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public static byte IntToBCD(int n)
 		{
-			int tens = Math.DivRem(n, 10, out var ones);
+			var tens = Math.DivRem(n, 10, out var ones);
 			return (byte)((tens << 4) | ones);
 		}
 
 		public override string ToString()
-		{
-			return BCDValue.ToString("X2");
-		}
+			=> BCDValue.ToString("X2");
 	}
 
 	public static class MSF
 	{
 		public static int ToInt(int m, int s, int f)
-		{
-				return m * 60 * 75 + s * 75 + f;
-		}
+			=> m * 60 * 75 + s * 75 + f;
 	}
 
 	/// <summary>
 	/// todo - rename to MSF? It can specify durations, so maybe it should be not suggestive of timestamp
 	/// TODO - can we maybe use BCD2 in here
 	/// </summary>
-	public struct Timestamp
+	public readonly struct Timestamp
 	{
 		/// <summary>
 		/// Checks if the string is a legit MSF. It's strict.

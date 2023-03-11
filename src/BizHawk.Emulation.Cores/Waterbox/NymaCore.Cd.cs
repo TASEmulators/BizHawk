@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			// everything that's not commented, we're sure about
 			t.FirstTrack = tin.FirstRecordedTrackNumber;
 			t.LastTrack = tin.LastRecordedTrackNumber;
-			t.DiskType = (int)tin.Session1Format;
+			t.DiskType = (int)tin.SessionFormat;
 			for (int i = 0; i < 101; i++)
 			{
 				t.Tracks[i].Adr = tin.TOCItems[i].Exists ? 1 : 0; // ????

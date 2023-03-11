@@ -1,6 +1,6 @@
 using System.IO;
 using System.Collections.Generic;
-
+using System.Linq;
 using BizHawk.Common.PathExtensions;
 
 namespace BizHawk.Emulation.DiscSystem.CUE
@@ -45,17 +45,17 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		{
 			IsHardcodedResolve = true;
 			fisBaseDir = new MyFileInfo[hardcodes.Count];
-			int i = 0;
+			var i = 0;
 			foreach (var kvp in hardcodes)
 			{
-				fisBaseDir[i++] = new MyFileInfo { FullName = kvp.Key, FileInfo = new FileInfo(kvp.Value) };
+				fisBaseDir[i++] = new() { FullName = kvp.Key, FileInfo = new(kvp.Value) };
 			}
 		}
 
 		private MyFileInfo[] MyFileInfosFromFileInfos(FileInfo[] fis)
 		{
 			var myfis = new MyFileInfo[fis.Length];
-			for (int i = 0; i < fis.Length; i++)
+			for (var i = 0; i < fis.Length; i++)
 			{
 				myfis[i].FileInfo = fis[i];
 				myfis[i].FullName = fis[i].FullName;
@@ -97,33 +97,31 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				//it's a little unclear whether we should go for a whitelist or a blacklist here.
 				//there's similar numbers of cases either way.
 				//perhaps we could code both (and prefer choices from the whitelist)
-				if (ext == ".cue" || ext == ".sbi" || ext == ".ccd" || ext == ".sub")
+				if (ext is ".cue" or ".sbi" or ".ccd" or ".sub")
 					continue;
 
 				//continuing the bad plan: forbid archives (always a wrong choice, not supported anyway)
 				//we should have a list prioritized by extension and score that way
-				if (ext == ".7z" || ext == ".rar" || ext == ".zip" || ext == ".bz2" || ext == ".gz")
+				if (ext is ".7z" or ".rar" or ".zip" or ".bz2" or ".gz")
 					continue;
 
-				string fragment = Path.GetFileNameWithoutExtension(fi.FullName);
+				var fragment = Path.GetFileNameWithoutExtension(fi.FullName);
 				//match files with differing extensions
-				int cmp = string.Compare(fragment, targetFragment, !caseSensitive);
+				var cmp = string.Compare(fragment, targetFragment, !caseSensitive);
 				if (cmp != 0)
 					//match files with another extension added on (likely to be mygame.bin.ecm)
 					cmp = string.Compare(fragment, targetFile, !caseSensitive);
 				if (cmp == 0)
 				{
 					//take care to add an exact match at the beginning
-					if (fi.FullName.ToLowerInvariant() == Path.Combine(baseDir,path).ToLowerInvariant())
+					if (fi.FullName.ToLowerInvariant() == Path.Combine(baseDir, path).ToLowerInvariant())
 						results.Insert(0, fi.FileInfo);
 					else
 						results.Add(fi.FileInfo);
 				}
 			}
-			var ret = new List<string>();
-			foreach (var fi in results)
-				ret.Add(fi.FullName);
-			return ret;
+
+			return results.Select(fi => fi.FullName).ToList();
 		}
 	}
 }

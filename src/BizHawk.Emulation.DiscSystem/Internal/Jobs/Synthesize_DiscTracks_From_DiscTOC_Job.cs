@@ -1,55 +1,46 @@
 using System;
+using System.Collections.Generic;
 
 namespace BizHawk.Emulation.DiscSystem
 {
-	internal class Synthesize_DiscStructure_From_DiscTOC_Job
+	internal class Synthesize_DiscTracks_From_DiscTOC_Job
 	{
 		private readonly Disc IN_Disc;
 
-		private readonly DiscTOC TOCRaw;
+		private readonly DiscSession IN_Session;
+		
+		private DiscTOC TOCRaw => IN_Session.TOC;
+		private IList<DiscTrack> Tracks => IN_Session.Tracks;
 
-		public Synthesize_DiscStructure_From_DiscTOC_Job(Disc disc, DiscTOC tocRaw)
+		public Synthesize_DiscTracks_From_DiscTOC_Job(Disc disc, DiscSession session)
 		{
 			IN_Disc = disc;
-			TOCRaw = tocRaw;
+			IN_Session = session;
 		}
-
-		public DiscStructure Result { get; private set; }
 
 		/// <exception cref="InvalidOperationException">first track of <see cref="TOCRaw"/> is not <c>1</c></exception>
 		public void Run()
 		{
 			var dsr = new DiscSectorReader(IN_Disc) { Policy = { DeterministicClearBuffer = false } };
 
-			Result = new DiscStructure();
-			var session = new DiscStructure.Session();
-			Result.Sessions.Add(null); //placeholder session for reindexing
-			Result.Sessions.Add(session);
-
-			session.Number = 1;
-
-			if (TOCRaw.FirstRecordedTrackNumber != 1)
-				throw new InvalidOperationException($"Unsupported: {nameof(TOCRaw.FirstRecordedTrackNumber)} != 1");
-
 			//add a lead-in track
-			session.Tracks.Add(new DiscStructure.Track
+			Tracks.Add(new()
 			{
 				Number = 0,
 				Control = EControlQ.None, //we'll set this later
 				LBA = -new Timestamp(99,99,99).Sector //obvious garbage
 			});
 
-			int ntracks = TOCRaw.LastRecordedTrackNumber - TOCRaw.FirstRecordedTrackNumber + 1;
-			for (int i = 0; i < ntracks; i++)
+			for (var i = TOCRaw.FirstRecordedTrackNumber; i <= TOCRaw.LastRecordedTrackNumber; i++)
 			{
-				var item = TOCRaw.TOCItems[i + 1];
-				var track = new DiscStructure.Track
+				var item = TOCRaw.TOCItems[i];
+				var track = new DiscTrack
 				{
-					Number = i + 1,
+					Number = i,
 					Control = item.Control,
 					LBA = item.LBA
 				};
-				session.Tracks.Add(track);
+				Tracks.Add(track);
 
 				if (!item.IsData)
 					track.Mode = 0;
@@ -67,25 +58,25 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 
 			//add lead-out track
-			session.Tracks.Add(new DiscStructure.Track
+			Tracks.Add(new()
 			{
 				Number = 0xA0, //right?
 				//kind of a guess, but not completely
-				Control = session.Tracks[session.Tracks.Count -1 ].Control,
-				Mode = session.Tracks[session.Tracks.Count - 1].Mode,
+				Control = Tracks[Tracks.Count - 1].Control,
+				Mode = Tracks[Tracks.Count - 1].Mode,
 				LBA = TOCRaw.LeadoutLBA
 			});
 
 			//link track list
-			for (int i = 0; i < session.Tracks.Count - 1; i++)
+			for (var i = 0; i < Tracks.Count - 1; i++)
 			{
-				session.Tracks[i].NextTrack = session.Tracks[i + 1];
+				Tracks[i].NextTrack = Tracks[i + 1];
 			}
 
 			//fix lead-in track type
 			//guesses:
-			session.Tracks[0].Control = session.Tracks[1].Control;
-			session.Tracks[0].Mode = session.Tracks[1].Mode;
+			Tracks[0].Control = Tracks[TOCRaw.FirstRecordedTrackNumber].Control;
+			Tracks[0].Mode = Tracks[TOCRaw.FirstRecordedTrackNumber].Mode;
 		}
 	}
 }

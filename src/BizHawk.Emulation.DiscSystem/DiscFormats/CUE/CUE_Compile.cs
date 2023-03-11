@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			FileMSF = fileMSF;
 		}
 
-		public override readonly string ToString() => $"I#{Number:D2} {FileMSF}";
+		public override string ToString() => $"I#{Number:D2} {FileMSF}";
 	}
 
 	/// <summary>
@@ -79,7 +79,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		}
 	}
 
-	internal class CompiledDiscInfo
+	internal class CompiledSessionInfo
 	{
 		public int FirstRecordedTrackNumber, LastRecordedTrackNumber;
 		public SessionFormat SessionFormat;
@@ -89,6 +89,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 	{
 		public int BlobIndex;
 		public int Number;
+		public int Session;
 			
 		/// <summary>
 		/// A track that's final in a file gets its length from the length of the file; other tracks lengths are determined from the succeeding track
@@ -101,7 +102,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		/// </summary>
 		public bool IsFirstInFile;
 
-		public CompiledCDText CDTextData = new CompiledCDText();
+		public readonly CompiledCDText CDTextData = new();
 		public Timestamp PregapLength, PostgapLength;
 		public CueTrackFlags Flags = CueTrackFlags.None;
 		public CueTrackType TrackType = CueTrackType.Unknown;
@@ -132,9 +133,9 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		}
 
 		/// <summary>
-		/// output: high level disc info
+		/// output: high level session info (most of the time, this only has 1 session)
 		/// </summary>
-		public CompiledDiscInfo OUT_CompiledDiscInfo { get; private set; }
+		public List<CompiledSessionInfo> OUT_CompiledSessionInfo { get; private set; }
 
 		/// <summary>
 		/// output: CD-Text set at the global level (before any track commands)
@@ -160,37 +161,33 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		/// </summary>
 		public int OUT_LoadTime { get; private set; }
 
-		//-----------------------------------------------------------------
-
 		private CompiledCDText curr_cdtext;
 		private int curr_blobIndex = -1;
-		private CompiledCueTrack curr_track = null;
-		private CompiledCueFile curr_file = null;
-		private bool discinfo_session1Format_determined = false;
-		private bool curr_fileHasTrack = false;
+		private int curr_session = 1;
+		private CompiledCueTrack curr_track;
+		private CompiledCueFile curr_file;
+		private bool sessionFormatDetermined;
+		private bool curr_fileHasTrack;
 
 		private void UpdateDiscInfo(CUE_File.Command.TRACK trackCommand)
 		{
-			if (OUT_CompiledDiscInfo.FirstRecordedTrackNumber == 0)
-				OUT_CompiledDiscInfo.FirstRecordedTrackNumber = trackCommand.Number;
-			OUT_CompiledDiscInfo.LastRecordedTrackNumber = trackCommand.Number;
-			if (!discinfo_session1Format_determined)
+			var sessionInfo = OUT_CompiledSessionInfo[curr_session];
+			if (sessionInfo.FirstRecordedTrackNumber == 0)
+				sessionInfo.FirstRecordedTrackNumber = trackCommand.Number;
+			sessionInfo.LastRecordedTrackNumber = trackCommand.Number;
+			if (!sessionFormatDetermined)
 			{
 				switch (trackCommand.Type)
 				{
 					case CueTrackType.Mode2_2336:
 					case CueTrackType.Mode2_2352:
-						OUT_CompiledDiscInfo.SessionFormat = SessionFormat.Type20_CDXA;
-						discinfo_session1Format_determined = true;
+						sessionInfo.SessionFormat = SessionFormat.Type20_CDXA;
+						sessionFormatDetermined = true;
 						break;
-
 					case CueTrackType.CDI_2336:
 					case CueTrackType.CDI_2352:
-						OUT_CompiledDiscInfo.SessionFormat = SessionFormat.Type10_CDI;
-						discinfo_session1Format_determined = true;
-						break;
-
-					default:
+						sessionInfo.SessionFormat = SessionFormat.Type10_CDI;
+						sessionFormatDetermined = true;
 						break;
 				}
 			}
@@ -220,7 +217,6 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			//TODO - smart audio file resolving only for AUDIO types. not BINARY or MOTOROLA or AIFF or ECM or what have you
 
 			var options = Resolver.Resolve(f.Path);
-			string choice = null;
 			if (options.Count == 0)
 			{
 				Error($"Couldn't resolve referenced cue file: {f.Path} ; you can commonly repair the cue file yourself, or a file might be missing");
@@ -228,12 +224,10 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				OUT_CompiledCueFiles.Add(null);
 				return;
 			}
-			else
-			{
-				choice = options[0];
-				if (options.Count > 1)
-					Warn($"Multiple options resolving referenced cue file; choosing: {Path.GetFileName(choice)}");
-			}
+
+			var choice = options[0];
+			if (options.Count > 1)
+				Warn($"Multiple options resolving referenced cue file; choosing: {Path.GetFileName(choice)}");
 
 			var cfi = new CompiledCueFile();
 			curr_file = cfi;
@@ -244,43 +238,53 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			//determine the CueFileInfo's type, based on extension and extra checking
 			//TODO - once we reorganize the file ID stuff, do legit checks here (this is completely redundant with the fileID system
 			//TODO - decode vs stream vs unpossible policies in input policies object (including ffmpeg availability-checking callback (results can be cached))
-			string blobPathExt = Path.GetExtension(choice).ToUpperInvariant();
-			if (blobPathExt == ".BIN" || blobPathExt == ".IMG") cfi.Type = CompiledCueFileType.BIN;
-			else if (blobPathExt == ".ISO") cfi.Type = CompiledCueFileType.BIN;
-			else if (blobPathExt == ".WAV")
+			var blobPathExt = Path.GetExtension(choice).ToUpperInvariant();
+			switch (blobPathExt)
 			{
-				//quickly, check the format. turn it to DecodeAudio if it can't be supported
-				//TODO - fix exception-throwing inside
-				//TODO - verify stream-disposing semantics
-				var fs = File.OpenRead(choice);
-				using var blob = new Blob_WaveFile();
-				try
+				case ".BIN" or ".IMG" or ".RAW":
+				case ".ISO":
+					cfi.Type = CompiledCueFileType.BIN;
+					break;
+				case ".WAV":
 				{
-					blob.Load(fs);
-					cfi.Type = CompiledCueFileType.WAVE;
+					//quickly, check the format. turn it to DecodeAudio if it can't be supported
+					//TODO - fix exception-throwing inside
+					//TODO - verify stream-disposing semantics
+					var fs = File.OpenRead(choice);
+					using var blob = new Blob_WaveFile();
+					try
+					{
+						blob.Load(fs);
+						cfi.Type = CompiledCueFileType.WAVE;
+					}
+					catch
+					{
+						cfi.Type = CompiledCueFileType.DecodeAudio;
+					}
+
+					break;
 				}
-				catch
-				{
+				case ".APE":
+				case ".MP3":
+				case ".MPC":
+				case ".FLAC":
 					cfi.Type = CompiledCueFileType.DecodeAudio;
-				}
-			}
-			else if (blobPathExt == ".APE") cfi.Type = CompiledCueFileType.DecodeAudio;
-			else if (blobPathExt == ".MP3") cfi.Type = CompiledCueFileType.DecodeAudio;
-			else if (blobPathExt == ".MPC") cfi.Type = CompiledCueFileType.DecodeAudio;
-			else if (blobPathExt == ".FLAC") cfi.Type = CompiledCueFileType.DecodeAudio;
-			else if (blobPathExt == ".ECM")
-			{
-				cfi.Type = CompiledCueFileType.ECM;
-				if (!Blob_ECM.IsECM(choice))
+					break;
+				case ".ECM":
 				{
-					Error($"an ECM file was specified or detected, but it isn't a valid ECM file: {Path.GetFileName(choice)}");
-					cfi.Type = CompiledCueFileType.Unknown;
+					cfi.Type = CompiledCueFileType.ECM;
+					if (!Blob_ECM.IsECM(choice))
+					{
+						Error($"an ECM file was specified or detected, but it isn't a valid ECM file: {Path.GetFileName(choice)}");
+						cfi.Type = CompiledCueFileType.Unknown;
+					}
+
+					break;
 				}
-			}
-			else
-			{
-				Error($"Unknown cue file type. Since it's likely an unsupported compression, this is an error: {Path.GetFileName(choice)}");
-				cfi.Type = CompiledCueFileType.Unknown;
+				default:
+					Error($"Unknown cue file type. Since it's likely an unsupported compression, this is an error: {Path.GetFileName(choice)}");
+					cfi.Type = CompiledCueFileType.Unknown;
+					break;
 			}
 
 			//TODO - check for mismatches between track types and file types, or is that best done when interpreting the commands?
@@ -289,7 +293,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		private void CreateTrack1Pregap()
 		{
 			if (OUT_CompiledCueTracks[1].PregapLength.Sector is not (0 or 150)) Error("Track 1 specified an illegal pregap. It's being ignored and replaced with a 00:02:00 pregap");
-			OUT_CompiledCueTracks[1].PregapLength = new Timestamp(150);
+			OUT_CompiledCueTracks[1].PregapLength = new(150);
 		}
 
 		private void FinalAnalysis()
@@ -304,21 +308,23 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			//we could check the format of the wav file here, though
 
 			//score the cost of loading the file
-			bool needsCodec = false;
+			var needsCodec = false;
 			OUT_LoadTime = 0;
-			foreach (var cfi in OUT_CompiledCueFiles)
+			foreach (var cfi in OUT_CompiledCueFiles.Where(cfi => cfi is not null))
 			{
-				if (cfi == null)
-					continue;
-				if (cfi.Type == CompiledCueFileType.DecodeAudio)
+				switch (cfi.Type)
 				{
-					needsCodec = true;
-					OUT_LoadTime = Math.Max(OUT_LoadTime, 10);
+					case CompiledCueFileType.DecodeAudio:
+						needsCodec = true;
+						OUT_LoadTime = Math.Max(OUT_LoadTime, 10);
+						break;
+					case CompiledCueFileType.SeekAudio:
+						needsCodec = true;
+						break;
+					case CompiledCueFileType.ECM:
+						OUT_LoadTime = Math.Max(OUT_LoadTime, 1);
+						break;
 				}
-				if (cfi.Type == CompiledCueFileType.SeekAudio)
-					needsCodec = true;
-				if (cfi.Type == CompiledCueFileType.ECM)
-					OUT_LoadTime = Math.Max(OUT_LoadTime, 1);
 			}
 
 			//check whether processing was available
@@ -327,7 +333,6 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				if (!FFmpegService.QueryServiceAvailable()) Warn("Decoding service will be required for further processing, but is not available");
 			}
 		}
-
 
 		private void CloseTrack()
 		{
@@ -341,10 +346,10 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				//this is the kind of thing I sought to solve originally by 'interpreting' the file, but it seems easy enough to handle this way
 				//my carlin.cue tests this but test cases shouldn't be hard to find
 				var fileMSF = curr_track.IsFirstInFile
-					? new Timestamp(0)
+					? new(0)
 					: curr_track.Indexes[0].FileMSF; // else, same MSF as index 1 will make it effectively nonexistent
 
-				curr_track.Indexes.Insert(0, new CompiledCueIndex(0, fileMSF));
+				curr_track.Indexes.Insert(0, new(0, fileMSF));
 			}
 
 			OUT_CompiledCueTracks.Add(curr_track);
@@ -354,18 +359,19 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		private void OpenTrack(CUE_File.Command.TRACK trackCommand)
 		{
 			//assert that a file is open
-			if(curr_file == null)
+			if (curr_file == null)
 			{
 				Error("Track command encountered with no active file");
 				throw new DiscJobAbortException();
 			}
 
-			curr_track = new CompiledCueTrack();
+			curr_track = new();
 
 			//spill cdtext data into this track
 			curr_cdtext = curr_track.CDTextData;
 		
 			curr_track.BlobIndex = curr_blobIndex;
+			curr_track.Session = curr_session;
 			curr_track.Number = trackCommand.Number;
 			curr_track.TrackType = trackCommand.Type;
 
@@ -383,31 +389,31 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 		private void AddIndex(CUE_File.Command.INDEX indexCommand)
 		{
-			curr_track.Indexes.Add(new CompiledCueIndex(indexCommand.Number, indexCommand.Timestamp));
+			curr_track.Indexes.Add(new(indexCommand.Number, indexCommand.Timestamp));
 		}
 
 		public override void Run()
 		{
-			//in params
-			var cue = IN_CueFile;
-
 			//output state
-			OUT_GlobalCDText = new CompiledCDText();
-			OUT_CompiledDiscInfo = new CompiledDiscInfo();
-			OUT_CompiledCueFiles = new List<CompiledCueFile>();
-			OUT_CompiledCueTracks = new List<CompiledCueTrack>();
+			OUT_GlobalCDText = new();
+			OUT_CompiledCueFiles = new();
+			OUT_CompiledCueTracks = new();
 
 			//add a track 0, for addressing convenience.
 			//note: for future work, track 0 may need emulation (accessible by very negative LBA--the TOC is stored there)
-			var track0 = new CompiledCueTrack() {
+			var track0 = new CompiledCueTrack
+			{
 				Number = 0,
 			};
 			OUT_CompiledCueTracks.Add(track0);
 
+			// similarly, session 0 is added as a null entry, with session 1 added in for the actual first entry
+			OUT_CompiledSessionInfo = new() { null, new() };
+
 			//global cd text will acquire the cdtext commands set before track commands
 			curr_cdtext  = OUT_GlobalCDText;
 
-			foreach (var cmd in cue.Commands) switch (cmd)
+			foreach (var cmd in IN_CueFile.Commands) switch (cmd)
 			{
 				case CUE_File.Command.CATALOG:
 				case CUE_File.Command.CDTEXTFILE:
@@ -434,6 +440,16 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 					// flags can only be set when a track command is running
 					if (curr_track == null) Warn("Ignoring invalid flag commands outside of a track command");
 					else curr_track.Flags |= flagsCmd.Flags; // take care to |= it here, so the data flag doesn't get cleared
+					break;
+				case CUE_File.Command.SESSION session:
+					if (session.Number == curr_session) break; // this may occur for SESSION 1 at the beginning, so we'll silence warnings from this
+					if (session.Number != curr_session + 1) Warn("Ignoring non-sequential session commands"); // TODO: should this be allowed? doesn't make sense here...
+					else
+					{
+						curr_session = session.Number;
+						OUT_CompiledSessionInfo.Add(new());
+						sessionFormatDetermined = false;
+					}
 					break;
 				case CUE_File.Command.TRACK trackCmd:
 					CloseTrack();
@@ -466,9 +482,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			FinalAnalysis();
 
 			FinishLog();
-			
-		} //Run()
+		}
 
-	} //class CompileCueJob
-
-} //namespace BizHawk.Emulation.DiscSystem
+	}
+}

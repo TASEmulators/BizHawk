@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 
 			var bios = Zstd.DecompressZstdStream(new MemoryStream(brev.Value)).ToArray();
 
-			var settings = new LibVirtualJaguar.Settings()
+			var settings = new LibVirtualJaguar.Settings
 			{
 				NTSC = _syncSettings.NTSC,
 				UseBIOS = !_syncSettings.SkipBIOS,
@@ -78,23 +78,9 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 
 			if (lp.Discs.Count > 0)
 			{
-#if false
 				_cd = lp.Discs[0].DiscData;
 				_cdReader = new(_cd);
-#else
-				if (lp.Discs.Count == 1)
-				{
-					throw new InvalidOperationException("Jaguar CD currently requires each session split into separate discs");
-				}
 
-				_cd = new Disc[lp.Discs.Count];
-				_cdReader = new DiscSectorReader[lp.Discs.Count];
-				for (int i = 0; i < lp.Discs.Count; i++)
-				{
-					_cd[i] = lp.Discs[i].DiscData;
-					_cdReader[i] = new(lp.Discs[i].DiscData);
-				}
-#endif
 				_core.SetCdCallbacks(_cdTocCallback, _cdReadCallback);
 
 				_saveRamSize = _syncSettings.UseMemoryTrack ? 0x20000 : 0;
@@ -259,24 +245,23 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 
 		private readonly LibVirtualJaguar.CDTOCCallback _cdTocCallback;
 		private readonly LibVirtualJaguar.CDReadCallback _cdReadCallback;
-
-		// uh oh, we don't actually have multisession disc support, so...
-		// TODO: get rid of this hack once we have proper multisession disc support
-#if false
+		
 		private readonly Disc _cd;
 		private readonly DiscSectorReader _cdReader;
+		private readonly byte[] _buf2352 = new byte[2352];
 
 		private void CDTOCCallback(IntPtr dst)
 		{
-			var lastLeadOutTs = new Timestamp(_cd.TOC.LeadoutLBA + 150);
+			var nsessions = _cd.Sessions.Count - 1;
+			var lastLeadOutTs = new Timestamp(_cd.Sessions[nsessions].LeadoutLBA + 150);
 
 			var toc = new LibVirtualJaguar.TOC
 			{
 				Padding0 = 0,
 				Padding1 = 0,
-				NumSessions = (byte)(_cd.Structure.Sessions.Count - 1),
+				NumSessions = (byte)nsessions,
 				MinTrack = (byte)_cd.TOC.FirstRecordedTrackNumber,
-				MaxTrack = (byte)_cd.TOC.LastRecordedTrackNumber,
+				MaxTrack = (byte)_cd.Sessions[nsessions].TOC.LastRecordedTrackNumber,
 				LastLeadOutMins = lastLeadOutTs.MIN,
 				LastLeadOutSecs = lastLeadOutTs.SEC,
 				LastLeadOutFrames = lastLeadOutTs.FRAC,
@@ -284,86 +269,24 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 			};
 
 			var trackNum = 0;
-			for (int i = 1; i < _cd.Structure.Sessions.Count; i++)
+			for (var i = 1; i < _cd.Sessions.Count; i++)
 			{
-				var session = _cd.Structure.Sessions[i];
-				for (int j = 1; j < session.InformationTrackCount; j++)
-				{
-					var track = session.Tracks[trackNum];
-					toc.Tracks[i].TrackNum = (byte)track.Number;
-					var ts = new Timestamp(track.LBA + 150);
-					toc.Tracks[i].StartMins = ts.MIN;
-					toc.Tracks[i].StartSecs = ts.SEC;
-					toc.Tracks[i].StartFrames = ts.FRAC;
-					toc.Tracks[i].SessionNum = (byte)(i - 1);
-					var durTs = new Timestamp(track.NextTrack.LBA - track.LBA);
-					toc.Tracks[i].DurMins = durTs.MIN;
-					toc.Tracks[i].DurSecs = durTs.SEC;
-					toc.Tracks[i].DurFrames = durTs.FRAC;
-					trackNum++;
-				}
-			}
-
-			Marshal.StructureToPtr(toc, dst, false);
-		}
-
-		private void CDReadCallback(int lba, IntPtr dst)
-		{
-			var buf = new byte[2352];
-			_cdReader.ReadLBA_2352(lba, buf, 0);
-			Marshal.Copy(buf, 0, dst, 2352);
-			DriveLightOn = true;
-		}
-
-#else
-
-		private readonly Disc[] _cd;
-		private readonly DiscSectorReader[] _cdReader;
-		private int[] _cdLbaOffsets;
-
-		private void CDTOCCallback(IntPtr dst)
-		{
-			var lastLeadOutTs = new Timestamp(_cd.Sum(c => c.TOC.LeadoutLBA) + _cd.Length * 150);
-
-			var toc = new LibVirtualJaguar.TOC
-			{
-				Padding0 = 0,
-				Padding1 = 0,
-				NumSessions = (byte)_cd.Length,
-				MinTrack = (byte)_cd[0].TOC.FirstRecordedTrackNumber,
-				MaxTrack = (byte)(_cd[0].TOC.FirstRecordedTrackNumber + _cd.Sum(c => c.Session1.InformationTrackCount - c.TOC.FirstRecordedTrackNumber)),
-				LastLeadOutMins = lastLeadOutTs.MIN,
-				LastLeadOutSecs = lastLeadOutTs.SEC,
-				LastLeadOutFrames = lastLeadOutTs.FRAC,
-				Tracks = new LibVirtualJaguar.TOC.Track[127],
-			};
-
-			var trackNum = 0;
-			var lbaOffset = 0;
-			var trackOffset = 0;
-			_cdLbaOffsets = new int[_cd.Length];
-			for (int i = 0; i < _cd.Length; i++)
-			{
-				var session = _cd[i].Session1;
-				for (int j = 0; j < session.InformationTrackCount; j++)
+				var session = _cd.Sessions[i];
+				for (var j = 0; j < session.InformationTrackCount; j++)
 				{
 					var track = session.Tracks[j + 1];
-					toc.Tracks[trackNum].TrackNum = (byte)(trackOffset + track.Number);
-					var ts = new Timestamp(lbaOffset + track.LBA + 150);
+					toc.Tracks[trackNum].TrackNum = (byte)track.Number;
+					var ts = new Timestamp(track.LBA + 150);
 					toc.Tracks[trackNum].StartMins = ts.MIN;
 					toc.Tracks[trackNum].StartSecs = ts.SEC;
 					toc.Tracks[trackNum].StartFrames = ts.FRAC;
-					toc.Tracks[trackNum].SessionNum = (byte)i;
+					toc.Tracks[trackNum].SessionNum = (byte)(i - 1);
 					var durTs = new Timestamp(track.NextTrack.LBA - track.LBA);
 					toc.Tracks[trackNum].DurMins = durTs.MIN;
 					toc.Tracks[trackNum].DurSecs = durTs.SEC;
 					toc.Tracks[trackNum].DurFrames = durTs.FRAC;
 					trackNum++;
 				}
-
-				trackOffset += session.InformationTrackCount;
-				lbaOffset += session.LeadoutTrack.LBA - session.FirstInformationTrack.LBA + 150;
-				_cdLbaOffsets[i] = lbaOffset;
 			}
 
 			Marshal.StructureToPtr(toc, dst, false);
@@ -371,19 +294,9 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 
 		private void CDReadCallback(int lba, IntPtr dst)
 		{
-			var buf = new byte[2352];
-			for (int i = 0; i < _cdReader.Length; i++)
-			{
-				if (lba < _cdLbaOffsets[i])
-				{
-					_cdReader[i].ReadLBA_2352(lba - (i == 0 ? 0 : _cdLbaOffsets[i - 1]), buf, 0);
-					break;
-				}
-			}
-
-			Marshal.Copy(buf, 0, dst, 2352);
+			_cdReader.ReadLBA_2352(lba, _buf2352, 0);
+			Marshal.Copy(_buf2352, 0, dst, 2352);
 			DriveLightOn = true;
 		}
-#endif
 	}
 }

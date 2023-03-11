@@ -45,8 +45,8 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			public string ReadToken() { return ReadToken(Mode.Normal); }
 			public string ReadLine()
 			{
-				int len = str.Length;
-				string ret = str.Substring(index, len - index);
+				var len = str.Length;
+				var ret = str.Substring(index, len - index);
 				index = len;
 				EOF = true;
 				return ret;
@@ -61,16 +61,16 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			{
 				if (EOF) return null;
 
-				bool isPath = mode == Mode.Quotable;
+				var isPath = mode == Mode.Quotable;
 
-				int startIndex = index;
-				bool inToken = false;
-				bool inQuote = false;
+				var startIndex = index;
+				var inToken = false;
+				var inQuote = false;
 				for (; ; )
 				{
-					bool done = false;
-					char c = str[index];
-					bool isWhiteSpace = (c == ' ' || c == '\t');
+					var done = false;
+					var c = str[index];
+					var isWhiteSpace = c is ' ' or '\t';
 
 					if (isWhiteSpace)
 					{
@@ -86,7 +86,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 					}
 					else
 					{
-						bool startedQuote = false;
+						var startedQuote = false;
 						if (!inToken)
 						{
 							startIndex = index;
@@ -120,7 +120,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 					if (done) break;
 				}
 
-				string ret = str.Substring(startIndex, index - startIndex);
+				var ret = str.Substring(startIndex, index - startIndex);
 
 				if (mode == Mode.Quotable)
 					ret = ret.Trim('"');
@@ -129,28 +129,26 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			}
 		}
 
-		private void LoadFromString(ParseCueJob job)
+		private void LoadFromString()
 		{
-			string cueString = job.IN_CueString;
-			TextReader tr = new StringReader(cueString);
+			TextReader tr = new StringReader(IN_CueString);
 
-			for (; ; )
+			while (true)
 			{
-				job.CurrentLine++;
-				string line = tr.ReadLine();
-				if (line == null) break;
-				line = line.Trim();
-				if (line == "") continue;
+				CurrentLine++;
+				var line = tr.ReadLine()?.Trim();
+				if (line is null) break;
+				if (line == string.Empty) continue;
 				var clp = new CueLineParser(line);
 
-				string key = clp.ReadToken().ToUpperInvariant();
+				var key = clp.ReadToken().ToUpperInvariant();
 				
 				//remove nonsense at beginning
 				if (!IN_Strict)
 				{
 					while (key.Length > 0)
 					{
-						char c = key[0];
+						var c = key[0];
 						if(c == ';') break;
 						if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) break;
 						key = key.Substring(1);
@@ -167,22 +165,22 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				else switch (key)
 				{
 					default:
-						job.Warn($"Unknown command: {key}");
+						Warn($"Unknown command: {key}");
 						break;
 
 					case "CATALOG":
 						if (OUT_CueFile.GlobalDiscInfo.Catalog != null)
-							job.Warn("Multiple CATALOG commands detected. Subsequent ones are ignored.");
+							Warn("Multiple CATALOG commands detected. Subsequent ones are ignored.");
 						else if (clp.EOF)
-							job.Warn("Ignoring empty CATALOG command");
+							Warn("Ignoring empty CATALOG command");
 						else OUT_CueFile.Commands.Add(OUT_CueFile.GlobalDiscInfo.Catalog = new CUE_File.Command.CATALOG(clp.ReadToken()));
 						break;
 
 					case "CDTEXTFILE":
 						if (OUT_CueFile.GlobalDiscInfo.CDTextFile != null)
-							job.Warn("Multiple CDTEXTFILE commands detected. Subsequent ones are ignored.");
+							Warn("Multiple CDTEXTFILE commands detected. Subsequent ones are ignored.");
 						else if (clp.EOF)
-							job.Warn("Ignoring empty CDTEXTFILE command");
+							Warn("Ignoring empty CDTEXTFILE command");
 						else OUT_CueFile.Commands.Add(OUT_CueFile.GlobalDiscInfo.CDTextFile = new CUE_File.Command.CDTEXTFILE(clp.ReadPath()));
 						break;
 
@@ -192,7 +190,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 							CueFileType ft;
 							if (clp.EOF)
 							{
-								job.Error("FILE command is missing file type.");
+								Error("FILE command is missing file type.");
 								ft = CueFileType.Unspecified;
 							}
 							else
@@ -201,7 +199,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 								switch (strType)
 								{
 									default:
-										job.Error($"Unknown FILE type: {strType}");
+										Error($"Unknown FILE type: {strType}");
 										ft = CueFileType.Unspecified;
 										break;
 									case "BINARY": ft = CueFileType.BINARY; break;
@@ -225,7 +223,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 								{
 									case "DATA":
 									default:
-										job.Warn($"Unknown FLAG: {flag}");
+										Warn($"Unknown FLAG: {flag}");
 										break;
 									case "DCP": flags |= CueTrackFlags.DCP; break;
 									case "4CH": flags |= CueTrackFlags._4CH; break;
@@ -234,7 +232,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 								}
 							}
 							if (flags == CueTrackFlags.None)
-								job.Warn("Empty FLAG command");
+								Warn("Empty FLAG command");
 							OUT_CueFile.Commands.Add(new CUE_File.Command.FLAGS(flags));
 						}
 						break;
@@ -243,16 +241,16 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 						{
 							if (clp.EOF)
 							{
-								job.Error("Incomplete INDEX command");
+								Error("Incomplete INDEX command");
 								break;
 							}
-							string strindexnum = clp.ReadToken();
+							var strindexnum = clp.ReadToken();
 							if (!int.TryParse(strindexnum, out var indexnum) || indexnum < 0 || indexnum > 99)
 							{
-								job.Error($"Invalid INDEX number: {strindexnum}");
+								Error($"Invalid INDEX number: {strindexnum}");
 								break;
 							}
-							string str_timestamp = clp.ReadToken();
+							var str_timestamp = clp.ReadToken();
 							var ts = new Timestamp(str_timestamp);
 							if (!ts.Valid && !IN_Strict)
 							{
@@ -263,7 +261,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 							if (!ts.Valid)
 							{
 								if (IN_Strict)
-									job.Error($"Invalid INDEX timestamp: {str_timestamp}");
+									Error($"Invalid INDEX timestamp: {str_timestamp}");
 								break;
 							}
 							OUT_CueFile.Commands.Add(new CUE_File.Command.INDEX(indexnum, ts));
@@ -272,14 +270,14 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 					case "ISRC":
 						if (OUT_CueFile.GlobalDiscInfo.ISRC != null)
-							job.Warn("Multiple ISRC commands detected. Subsequent ones are ignored.");
+							Warn("Multiple ISRC commands detected. Subsequent ones are ignored.");
 						else if (clp.EOF)
-							job.Warn("Ignoring empty ISRC command");
+							Warn("Ignoring empty ISRC command");
 						else
 						{
 							var isrc = clp.ReadToken();
 							if (isrc.Length != 12)
-								job.Warn($"Invalid ISRC code ignored: {isrc}");
+								Warn($"Invalid ISRC code ignored: {isrc}");
 							else
 							{
 								OUT_CueFile.Commands.Add(OUT_CueFile.GlobalDiscInfo.ISRC = new CUE_File.Command.ISRC(isrc));
@@ -297,7 +295,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 							var str_msf = clp.ReadToken();
 							var msf = new Timestamp(str_msf);
 							if (!msf.Valid)
-								job.Error($"Ignoring {{0}} with invalid length MSF: {str_msf}", key);
+								Error($"Ignoring {{0}} with invalid length MSF: {str_msf}", key);
 							else
 							{
 								if (key == "POSTGAP")
@@ -309,8 +307,21 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 						break;
 
 					case "REM":
-						OUT_CueFile.Commands.Add(new CUE_File.Command.REM(clp.ReadLine()));
-						break;
+						{
+							var comment = clp.ReadLine();
+							// cues don't support multiple sessions themselves, but it is common for rips to put SESSION # in REM fields
+							// so, if we have such a REM, we'll check if the comment starts with SESSION, and interpret that as a session "command"
+							var trimmed = comment.Trim();
+							if (trimmed.ToUpperInvariant().StartsWith("SESSION ") && int.TryParse(trimmed.Substring(8), out var number) && number > 0)
+							{
+								OUT_CueFile.Commands.Add(new CUE_File.Command.SESSION(number));
+								break;
+							}
+							
+							OUT_CueFile.Commands.Add(new CUE_File.Command.REM(comment));
+							break;
+						}
+
 
 					case "SONGWRITER":
 						OUT_CueFile.Commands.Add(new CUE_File.Command.SONGWRITER(clp.ReadPath() ?? ""));
@@ -324,14 +335,14 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 						{
 							if (clp.EOF)
 							{
-								job.Error("Incomplete TRACK command");
+								Error("Incomplete TRACK command");
 								break;
 							}
 
-							string str_tracknum = clp.ReadToken();
-							if (!int.TryParse(str_tracknum, out int tracknum) || tracknum < 1 || tracknum > 99)
+							var str_tracknum = clp.ReadToken();
+							if (!int.TryParse(str_tracknum, out var tracknum) || tracknum is < 1 or > 99)
 							{
-								job.Error($"Invalid TRACK number: {str_tracknum}");
+								Error($"Invalid TRACK number: {str_tracknum}");
 								break;
 							}
 
@@ -342,7 +353,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 							switch (str_trackType.ToUpperInvariant())
 							{
 								default:
-									job.Error($"Unknown TRACK type: {str_trackType}");
+									Error($"Unknown TRACK type: {str_trackType}");
 									tt = CueTrackType.Unknown;
 									break;
 								case "AUDIO": tt = CueTrackType.Audio; break;
@@ -368,21 +379,18 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 						//add a comment
 						OUT_CueFile.Commands.Add(new CUE_File.Command.COMMENT(remainder));
 					}
-					else job.Warn($"Unknown text at end of line after processing command: {key}");
+					else Warn($"Unknown text at end of line after processing command: {key}");
 				}
 
 			} //end cue parsing loop
 
-			job.FinishLog();
-		} //LoadFromString
+			FinishLog();
+		}
 
 		public override void Run()
 		{
-			OUT_CueFile = new CUE_File();
-			LoadFromString(this);
+			OUT_CueFile = new();
+			LoadFromString();
 		}
 	}
-
-
-
-} //namespace
+}

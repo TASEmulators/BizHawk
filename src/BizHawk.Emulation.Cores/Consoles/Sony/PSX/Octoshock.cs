@@ -420,7 +420,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			private int ShockDisc_ReadTOC(IntPtr opaque, OctoshockDll.ShockTOC* read_target, OctoshockDll.ShockTOCTrack* tracks101)
 			{
-				read_target->disc_type = (byte)Disc.TOC.Session1Format;
+				read_target->disc_type = (byte)Disc.TOC.SessionFormat;
 				read_target->first_track = (byte)Disc.TOC.FirstRecordedTrackNumber; //i _think_ that's what is meant here
 				read_target->last_track = (byte)Disc.TOC.LastRecordedTrackNumber; //i _think_ that's what is meant here
 
