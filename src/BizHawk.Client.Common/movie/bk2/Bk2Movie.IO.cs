@@ -37,17 +37,19 @@ namespace BizHawk.Client.Common
 				return false;
 			}
 
-			using var bl = ZipStateLoader.LoadAndDetect(Filename, true);
-			if (bl == null)
+			try
 			{
-				return false;
+				using var bl = ZipStateLoader.LoadAndDetect(Filename, true);
+				if (bl is null) return false;
+				ClearBeforeLoad();
+				LoadFields(bl, preload);
+				Changes = false;
+				return true;
 			}
-
-			ClearBeforeLoad();
-			LoadFields(bl, preload);
-
-			Changes = false;
-			return true;
+			catch (InvalidDataException e) when (e.StackTrace.Contains("ZipArchive.ReadEndOfCentralDirectory"))
+			{
+				throw new Exception("Archive appears to be corrupt. Make a backup, then try to repair it with e.g. 7-Zip.", e);
+			}
 		}
 
 		public bool PreLoadHeaderAndLength() => Load(true);
