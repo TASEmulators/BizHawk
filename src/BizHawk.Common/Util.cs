@@ -79,7 +79,7 @@ namespace BizHawk.Common
 		}
 
 #if NET6_0
-		public static string DescribeIsNull<T>(T? obj, [CallerArgumentExpression("boxed")] string expr = default)
+		public static string DescribeIsNull<T>(T? obj, [CallerArgumentExpression("obj")] string expr = default)
 #else
 		public static string DescribeIsNull<T>(T? obj, string expr)
 #endif
