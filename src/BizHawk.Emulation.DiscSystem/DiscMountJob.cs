@@ -193,6 +193,9 @@ namespace BizHawk.Emulation.DiscSystem
 				case ".ccd":
 					OUT_Disc = CCD_Format.LoadCCDToDisc(IN_FromPath, IN_DiscMountPolicy);
 					break;
+				case ".cdi":
+					OUT_Disc = CDI_Format.LoadCDIToDisc(IN_FromPath, IN_DiscMountPolicy);
+					break;
 				case ".cue":
 					LoadCue(dir, File.ReadAllText(IN_FromPath));
 					break;

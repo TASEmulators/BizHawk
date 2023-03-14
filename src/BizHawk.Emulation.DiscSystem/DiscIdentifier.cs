@@ -403,9 +403,15 @@ namespace BizHawk.Emulation.DiscSystem
 			if (_disc.Sessions.Count > 2 && !_disc.Sessions[2].TOC.TOCItems[_disc.Sessions[2].TOC.FirstRecordedTrackNumber].IsData)
 			{
 				var data = new byte[2352];
-				_dsr.ReadLBA_2352(_disc.Sessions[2].Tracks[1].LBA, data, 0);
-				var s = Encoding.ASCII.GetString(data);
-				return s.Contains("ATARI APPROVED DATA HEADER ATRI") || s.Contains("TARA IPARPVODED TA AEHDAREA RT");
+				for (var i = 0; i < 2; i++)
+				{
+					_dsr.ReadLBA_2352(_disc.Sessions[2].Tracks[1].LBA + i, data, 0);
+					var s = Encoding.ASCII.GetString(data);
+					if (s.Contains("ATARI APPROVED DATA HEADER ATRI") || s.Contains("TARA IPARPVODED TA AEHDAREA RT"))
+					{
+						return true;
+					}
+				}
 			}
 
 			return false;

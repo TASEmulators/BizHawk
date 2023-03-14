@@ -3880,7 +3880,7 @@ namespace BizHawk.Client.EmuHawk
 							var ext = Path.GetExtension(xmlGame.AssetFullPaths[xg])?.ToLowerInvariant();
 
 							var (filename, data) = xmlGame.Assets[xg];
-							if (ext == ".cue" || ext == ".ccd" || ext == ".toc" || ext == ".mds")
+							if (ext is ".cue" or ".ccd" or ".cdi" or ".toc" or ".mds")
 							{
 								xSw.WriteLine(Path.GetFileNameWithoutExtension(filename));
 								xSw.WriteLine("SHA1:N/A");

@@ -898,7 +898,7 @@ namespace BizHawk.Client.Common
 		/// <remarks>TODO add and handle <see cref="FilesystemFilter.LuaScripts"/> (you can drag-and-drop scripts and there are already non-rom things in this list, so why not?)</remarks>
 		public static readonly FilesystemFilterSet RomFilter = new(
 			new FilesystemFilter("Music Files", Array.Empty<string>(), devBuildExtraExts: new[] { "psf", "minipsf", "sid", "nsf", "gbs" }),
-			new FilesystemFilter("Disc Images", new[] { "cue", "ccd", "mds", "m3u" }),
+			new FilesystemFilter("Disc Images", new[] { "cue", "ccd", "cdi", "mds", "m3u" }),
 			new FilesystemFilter("NES", RomFileExtensions.NES.Concat(new[] { "nsf" }).ToList(), addArchiveExts: true),
 			new FilesystemFilter("Super NES", RomFileExtensions.SNES, addArchiveExts: true),
 			new FilesystemFilter("PlayStation", new[] { "cue", "ccd", "mds", "m3u" }),
