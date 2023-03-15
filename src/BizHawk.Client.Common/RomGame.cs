@@ -114,17 +114,28 @@ namespace BizHawk.Client.Common
 			if (patch is null) return;
 			using var patchFile = new HawkFile(patch);
 			patchFile.BindFirstOf(".ips");
+			if (!patchFile.IsBound) patchFile.BindFirstOf(".bps");
 			if (!patchFile.IsBound) return;
 			var patchBytes = patchFile.GetStream().ReadAllBytes();
 			if (BPSPatcher.IsIPSFile(patchBytes))
 			{
 				RomData = BPSPatcher.Patch(RomData, new BPSPatcher.IPSPayload(patchBytes));
 			}
+			else if (BPSPatcher.IsBPSFile(patchBytes, out var patchStruct))
+			{
+				var ignoreBaseChecksum = true; //TODO check base checksum and ask user before continuing
+				RomData = BPSPatcher.Patch(StripSNESDumpHeader(RomData), patchStruct, out var checksumsMatch);
+				if (!checksumsMatch && !ignoreBaseChecksum) throw new Exception("BPS patch didn't produce the expected output");
+			}
 			else
 			{
 				throw new Exception("doesn't appear to be a BPS or IPS patch");
 			}
 		}
+
+		/// <remarks>https://snes.nesdev.org/wiki/ROM_file_formats#Detecting_Headered_ROM</remarks>
+		private static ReadOnlySpan<byte> StripSNESDumpHeader(ReadOnlySpan<byte> rom)
+			=> rom.Length % 512 is 0 ? rom : rom.Slice(start: 512);
 
 		private static byte[] DeInterleaveSMD(byte[] source)
 		{

@@ -223,6 +223,21 @@ namespace BizHawk.Common.CollectionExtensions
 		private static T ReturnSelf<T>(this T self)
 			=> self;
 
+		public static bool ReversedSequenceEqual<T>(this ReadOnlySpan<T> a, ReadOnlySpan<T> b)
+			where T : IEquatable<T>
+		{
+			var len = a.Length;
+			if (len != b.Length) return false;
+			if (len is 0) return true;
+			var i = 0;
+			while (i < len)
+			{
+				if (!a[i].Equals(b[len - 1 - i])) return false;
+				i++;
+			}
+			return true;
+		}
+
 		public static bool IsSortedAsc<T>(this IReadOnlyList<T> list)
 			where T : IComparable<T>
 		{
