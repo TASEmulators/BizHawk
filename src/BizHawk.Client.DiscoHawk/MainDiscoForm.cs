@@ -90,7 +90,7 @@ namespace BizHawk.Client.DiscoHawk
 
 		private void LblMagicDragArea_DragEnter(object sender, DragEventArgs e)
 		{
-			List<string> files = ValidateDrop(e.Data);
+			var files = ValidateDrop(e.Data);
 			e.Effect = files.Count > 0
 				? DragDropEffects.Link
 				: DragDropEffects.None;
@@ -99,14 +99,14 @@ namespace BizHawk.Client.DiscoHawk
 		private static List<string> ValidateDrop(IDataObject ido)
 		{
 			var ret = new List<string>();
-			string[] files = (string[])ido.GetData(DataFormats.FileDrop);
-			if (files == null) return new List<string>();
-			foreach (string str in files)
+			var files = (string[])ido.GetData(DataFormats.FileDrop);
+			if (files == null) return new();
+			foreach (var str in files)
 			{
 				var ext = Path.GetExtension(str) ?? string.Empty;
-				if(!ext.In(".CUE", ".ISO", ".CCD", ".MDS"))
+				if(!ext.In(".CUE", ".ISO", ".CCD", ".CDI", ".MDS"))
 				{
-					return new List<string>();
+					return new();
 				}
 
 				ret.Add(str);
