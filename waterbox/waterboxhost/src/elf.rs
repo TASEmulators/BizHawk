@@ -112,7 +112,7 @@ impl ElfLoader {
 							return Err(anyhow!("When aligned, {} partially overlaps .invis from above -- check linkscript.", s.name))
 						}
 					} else {
-						if s.name != ".invis" {
+						if s.addr.align_expand().size != 0 && s.name != ".invis" {
 							return Err(anyhow!("When aligned, {} partially overlays .invis -- check linkscript", s.name))
 						}
 					}
