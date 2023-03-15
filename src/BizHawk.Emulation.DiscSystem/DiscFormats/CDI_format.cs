@@ -364,7 +364,9 @@ namespace BizHawk.Emulation.DiscSystem
 				if (cdif.DiscInfo.DiscSize != cdif.Tracks.Sum(t => t.TrackLength))
 				{
 					//throw new CDIParseException("Malformed CDI format: Disc size mismatch!");
-					//this seems to be wrong?
+					//this seems to be wrong? seen: DiscSize == 272440, TrackLength sum == 261190 (02:30:00 difference?)
+					//EDIT: This must be the leadout and leadin tracks being included! first leadout is 6750, leadins are 4500, 6750+4500=11250
+					//Seems the blob doesn't include leadin and leadout directly anyways
 				}
 
 				var volumeIdLen = br.ReadByte();
@@ -396,7 +398,8 @@ namespace BizHawk.Emulation.DiscSystem
 				
 				if (stream.Position != stream.Length - 4)
 				{
-					throw new CDIParseException("Malformed CDI format: Did not reach end of footer after parsing!");
+					//throw new CDIParseException("Malformed CDI format: Did not reach end of footer after parsing!");
+					//not sure about this
 				}
 
 				return cdif;

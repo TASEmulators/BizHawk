@@ -16,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 		protected abstract int IdentifyHash(string hash);
 		protected abstract int IdentifyRom(byte[] rom);
 
-		private int? HashDisc(string path, ConsoleID consoleID, int discCount)
+		private int HashDisc(string path, ConsoleID consoleID)
 		{
 			// this shouldn't throw in practice, this is only called when loading was successful!
 			using var disc = DiscExtensions.CreateAnyType(path, e => throw new(e));
@@ -161,42 +161,50 @@ namespace BizHawk.Client.EmuHawk
 					buffer.AddRange(new ArraySegment<byte>(buf2048, 0, 512));
 					break;
 				case ConsoleID.JaguarCD:
-					if (discCount == 2) // we want to hash the second session of the disc (which is hacked to be disc 2)
+					// we want to hash the second session of the disc
+					if (disc.Sessions.Count > 2)
 					{
-						const string _jaguarHeader = "ATARI APPROVED DATA HEADER ATRI ";
-						const string _jaguarBSHeader = "TARA IPARPVODED TA AEHDAREA RT I";
+						const string _jaguarHeader = "ATARI APPROVED DATA HEADER ATRI";
+						const string _jaguarBSHeader = "TARA IPARPVODED TA AEHDAREA RT";
+						var bootSession = disc.Sessions[2];
 						var buf2352 = new byte[2352];
 
 						// find the boot track header
 						// see https://github.com/TASEmulators/BizHawk/blob/f29113287e88c6a644dbff30f92a9833307aad20/waterbox/virtualjaguar/src/cdhle.cpp#L109-L145
-						var startLba = disc.Session1.FirstInformationTrack.LBA;
-						var numLbas = disc.Session1.FirstInformationTrack.NextTrack.LBA - disc.Session1.FirstInformationTrack.LBA;
+						var startLba = bootSession.FirstInformationTrack.LBA;
+						var numLbas = bootSession.FirstInformationTrack.NextTrack.LBA - bootSession.FirstInformationTrack.LBA;
 						int bootLen = 0, bootLba = 0, bootOff = 0;
 						bool byteswapped = false, foundHeader = false;
 						for (var i = 0; i < numLbas; i++)
 						{
 							dsr.ReadLBA_2352(startLba + i, buf2352, 0);
 
-							for (var  j = 0; j < 2352 - 32 - 4 - 4; j++)
+							for (var j = 0; j < 2352 - 32 - 4 - 4; j++)
 							{
 								if (buf2352[j] == _jaguarHeader[0])
 								{
-									if (_jaguarHeader != Encoding.ASCII.GetString(buf2352, j, 32)) continue;
-									bootLen = (buf2352[j + 36] << 24) | (buf2352[j + 37] << 16) | (buf2352[j + 38] << 8) | buf2352[j + 39];
-									bootLba = startLba + i;
-									bootOff = j + 32 + 4 + 4;
-									byteswapped = false;
-									foundHeader = true;
-									break;
+									if (_jaguarHeader == Encoding.ASCII.GetString(buf2352, j, 32 - 1))
+									{
+										bootLen = (buf2352[j + 36] << 24) | (buf2352[j + 37] << 16) | (buf2352[j + 38] << 8) | buf2352[j + 39];
+										bootLba = startLba + i;
+										bootOff = j + 32 + 4 + 4;
+										byteswapped = false;
+										foundHeader = true;
+										break;
+									}
 								}
-
-								if (buf2352[j] != _jaguarBSHeader[0] || _jaguarBSHeader != Encoding.ASCII.GetString(buf2352, j, 32)) continue;
-								bootLen = (buf2352[j + 37] << 24) | (buf2352[j + 36] << 16) | (buf2352[j + 39] << 8) | buf2352[j + 38];
-								bootLba = startLba + i;
-								bootOff = j + 32 + 4 + 4;
-								byteswapped = true;
-								foundHeader = true;
-								break;
+								else if (buf2352[j] == _jaguarBSHeader[0])
+								{
+									if (_jaguarBSHeader == Encoding.ASCII.GetString(buf2352, j, 32 - 2))
+									{
+										bootLen = (buf2352[j + 37] << 24) | (buf2352[j + 36] << 16) | (buf2352[j + 39] << 8) | buf2352[j + 38];
+										bootLba = startLba + i;
+										bootOff = j + 32 + 4 + 4;
+										byteswapped = true;
+										foundHeader = true;
+										break;
+									}
+								}
 							}
 
 							if (foundHeader)
@@ -235,10 +243,8 @@ namespace BizHawk.Client.EmuHawk
 
 						break;
 					}
-					else
-					{
-						return null; // other sessions aren't hashed, ignore them
-					}
+
+					return 0;
 			}
 
 			var hash = MD5Checksum.ComputeDigestHex(buffer.ToArray());
@@ -261,7 +267,6 @@ namespace BizHawk.Client.EmuHawk
 				case OpenAdvancedTypes.OpenRom:
 					{
 						var ext = Path.GetExtension(Path.GetExtension(ioa.SimplePath.Replace("|", "")).ToLowerInvariant());
-						var discCount = 0;
 
 						if (ext == ".m3u")
 						{
@@ -269,9 +274,7 @@ namespace BizHawk.Client.EmuHawk
 							using var sr = new StreamReader(file.GetStream());
 							var m3u = M3U_File.Read(sr);
 							m3u.Rebase(Path.GetDirectoryName(ioa.SimplePath));
-							ret.AddRange(m3u.Entries.Select(entry => HashDisc(entry.Path, consoleID, ++discCount))
-								.Where(id => id.HasValue)
-								.Select(id => id.Value));
+							ret.AddRange(m3u.Entries.Select(entry => HashDisc(entry.Path, consoleID)));
 						}
 						else if (ext == ".xml")
 						{
@@ -284,18 +287,9 @@ namespace BizHawk.Client.EmuHawk
 									break;
 								}
 
-								if (Disc.IsValidExtension(Path.GetExtension(kvp.Key)))
-								{
-									var id = HashDisc(kvp.Key, consoleID, ++discCount);
-									if (id.HasValue)
-									{
-										ret.Add(id.Value);
-									}
-								}
-								else
-								{
-									ret.Add(IdentifyRom(kvp.Value));
-								}
+								ret.Add(Disc.IsValidExtension(Path.GetExtension(kvp.Key))
+									? HashDisc(kvp.Key, consoleID)
+									: IdentifyRom(kvp.Value));
 							}
 						}
 						else
@@ -308,11 +302,7 @@ namespace BizHawk.Client.EmuHawk
 
 							if (Disc.IsValidExtension(Path.GetExtension(ext)))
 							{
-								var id = HashDisc(ioa.SimplePath, consoleID, ++discCount);
-								if (id.HasValue)
-								{
-									ret.Add(id.Value);
-								}
+								ret.Add(HashDisc(ioa.SimplePath, consoleID));
 							}
 							else
 							{
