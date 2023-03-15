@@ -10,6 +10,7 @@
 		<LangVersion>10.0</LangVersion>
 		<NoWarn>SA0001</NoWarn>
 		<Nullable>enable</Nullable>
+		<PathMap>$(MSBuildProjectDirectory)=${$(MSBuildProjectName)}/</PathMap>
 		<PlatformTarget>AnyCPU</PlatformTarget>
 		<RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
 		<RunCodeAnalysis>false</RunCodeAnalysis>

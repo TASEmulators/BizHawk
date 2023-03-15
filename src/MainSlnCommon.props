@@ -8,6 +8,7 @@
 		<MSBuildWarningsAsMessages>NU1702</MSBuildWarningsAsMessages>
 		<NoWarn>$(NoWarn);CS1573;CS1591</NoWarn>
 		<OutputPath>$(MSBuildProjectDirectory)/../../output/dll</OutputPath>
+		<PathMap>$(SolutionDir)=/</PathMap>
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(MachineRunAnalyzersDuringBuild)' == '' ">
