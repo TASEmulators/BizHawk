@@ -2,6 +2,7 @@
 using System.Globalization;
 
 using BizHawk.Common;
+using BizHawk.Common.IOExtensions;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 
@@ -110,14 +111,18 @@ namespace BizHawk.Client.Common
 
 			CheckForPatchOptions();
 
-			if (patch != null)
+			if (patch is null) return;
+			using var patchFile = new HawkFile(patch);
+			patchFile.BindFirstOf(".ips");
+			if (!patchFile.IsBound) return;
+			var patchBytes = patchFile.GetStream().ReadAllBytes();
+			if (BPSPatcher.IsIPSFile(patchBytes))
 			{
-				using var patchFile = new HawkFile(patch);
-				patchFile.BindFirstOf(".ips");
-				if (patchFile.IsBound)
-				{
-					RomData = IPS.Patch(RomData, patchFile.GetStream());
-				}
+				RomData = BPSPatcher.Patch(RomData, new BPSPatcher.IPSPayload(patchBytes));
+			}
+			else
+			{
+				throw new Exception("doesn't appear to be a BPS or IPS patch");
 			}
 		}
 
