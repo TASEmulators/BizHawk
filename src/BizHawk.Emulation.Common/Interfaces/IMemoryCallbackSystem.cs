@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Common
 		/// Executes all matching callbacks for the given address and domain
 		/// </summary>
 		/// <param name="addr">The address to check for callbacks</param>
-		/// <param name="value">The value contained (or written to) addr</param>
+		/// <param name="value">For reads/execs, the value read/executed; for writes, the value to be written. Cores may pass the default <c>0</c> if write/exec is partially implemented.</param>
 		/// <param name="flags">The callback flags relevant to this access</param>
 		/// <param name="scope">The scope that the address pertains to. Must be a value in <see cref="AvailableScopes"/></param>
 		void CallMemoryCallbacks(uint addr, uint value, uint flags, string scope);

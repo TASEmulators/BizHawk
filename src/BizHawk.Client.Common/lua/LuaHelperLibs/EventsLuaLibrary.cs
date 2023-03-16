@@ -98,7 +98,7 @@ namespace BizHawk.Client.Common
 				.Guid.ToString();
 
 		[LuaDeprecatedMethod]
-		[LuaMethod("onmemoryexecute", "Fires after the given address is executed by the core")]
+		[LuaMethod("onmemoryexecute", "Fires immediately before the given address is executed by the core")]
 		public string OnMemoryExecute(
 			LuaFunction luaf,
 			uint address,
@@ -109,8 +109,8 @@ namespace BizHawk.Client.Common
 			return OnBusExec(luaf, address, name: name, scope: scope);
 		}
 
-		[LuaMethodExample("local exec_cb_id = event.on_bus_exec(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after the given address is executed by the core\" );\r\n\tend\r\n\t, 0x200, \"Frame name\", \"System Bus\" );")]
-		[LuaMethod("on_bus_exec", "Fires after the given address is executed by the core")]
+		[LuaMethodExample("local exec_cb_id = event.on_bus_exec(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires immediately before the given address is executed by the core\" );\r\n\tend\r\n\t, 0x200, \"Frame name\", \"System Bus\" );")]
+		[LuaMethod("on_bus_exec", "Fires immediately before the given address is executed by the core")]
 		public string OnBusExec(
 			LuaFunction luaf,
 			uint address,
@@ -145,7 +145,7 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaDeprecatedMethod]
-		[LuaMethod("onmemoryexecuteany", "Fires after any address is executed by the core (CPU-intensive)")]
+		[LuaMethod("onmemoryexecuteany", "Fires immediately before any address is executed by the core (CPU-intensive)")]
 		public string OnMemoryExecuteAny(
 			LuaFunction luaf,
 			string name = null,
@@ -155,8 +155,8 @@ namespace BizHawk.Client.Common
 			return OnBusExecAny(luaf, name: name, scope: scope);
 		}
 
-		[LuaMethodExample("local exec_cb_id = event.on_bus_exec_any(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after any address is executed by the core (CPU-intensive)\" );\r\n\tend\r\n\t, \"Frame name\", \"System Bus\" );")]
-		[LuaMethod("on_bus_exec_any", "Fires after any address is executed by the core (CPU-intensive)")]
+		[LuaMethodExample("local exec_cb_id = event.on_bus_exec_any(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires immediately before every instruction executed (in the specified scope) by the core (CPU-intensive)\" );\r\n\tend\r\n\t, \"Frame name\", \"System Bus\" );")]
+		[LuaMethod("on_bus_exec_any", "Fires immediately before every instruction executed (in the specified scope) by the core (CPU-intensive)")]
 		public string OnBusExecAny(
 			LuaFunction luaf,
 			string name = null,
