@@ -10,7 +10,6 @@
 		<LangVersion>10.0</LangVersion>
 		<NoWarn>SA0001</NoWarn>
 		<Nullable>enable</Nullable>
-		<PathMap>$(MSBuildProjectDirectory)=${$(MSBuildProjectName)}/</PathMap>
 		<PlatformTarget>AnyCPU</PlatformTarget>
 		<RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
 		<RunCodeAnalysis>false</RunCodeAnalysis>
@@ -26,6 +25,7 @@
 		<DebugType>portable</DebugType>
 		<DefineConstants>TRACE</DefineConstants>
 		<Optimize>true</Optimize>
+		<PathMap>$(MSBuildProjectDirectory)=${$(MSBuildProjectName)}/</PathMap>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(MachineExtraCompilationFlag)' != '' ">
 		<DefineConstants>$(DefineConstants);$(MachineExtraCompilationFlag)</DefineConstants>
