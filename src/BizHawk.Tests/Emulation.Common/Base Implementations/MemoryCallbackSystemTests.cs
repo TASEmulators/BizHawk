@@ -257,6 +257,37 @@ namespace BizHawk.Tests.Emulation.Common
 				"Callback list is incorrect");
 		}
 
+		[TestMethod]
+		public void TestRemovingSelfWithinCallback()
+		{
+			MemoryCallback callback1 = new(ScopeA, MemoryCallbackType.Read, "Callback 1", _testCallbacks.Callback1, null, null);
+
+			MemoryCallback? callback2 = null;
+			var callback2invoked = false;
+			MemoryCallbackDelegate callback = (_, _, _) =>
+			{
+				callback2invoked = true;
+				_memoryCallbackSystem.Remove(callback2!.Callback);
+			};
+
+			callback2 = new(ScopeA, MemoryCallbackType.Read, "Callback 2", callback, null, null);
+			MemoryCallback callback3 = new(ScopeA, MemoryCallbackType.Read, "Callback 3", _testCallbacks.Callback3, null, null);
+
+			_memoryCallbackSystem.Add(callback1);
+			_memoryCallbackSystem.Add(callback2);
+			_memoryCallbackSystem.Add(callback3);
+
+			_memoryCallbackSystem.CallMemoryCallbacks(0, 0, (uint) MemoryCallbackFlags.AccessRead, ScopeA);
+
+			Assert.AreEqual(1, _testCallbacks.Callback1Invocations.Count, "Callback 1 not invoked correctly");
+			Assert.IsTrue(callback2invoked, "Callback 2 not invoked");
+			Assert.AreEqual(1, _testCallbacks.Callback3Invocations.Count, "Callback 3 not invoked correctly");
+			CollectionAssert.AreEqual(
+				new[] { callback1, callback3 },
+				_memoryCallbackSystem.ToList(),
+				"Callback list is incorrect");
+		}
+
 		private sealed class TestCallbackHolder
 		{
 			public List<(uint Address, uint Value, uint Flags)> Callback1Invocations { get; } = new();
