@@ -880,25 +880,22 @@ namespace BizHawk.Client.EmuHawk
 			InputManager.SyncControls(Emulator, MovieSession, Config);
 		}
 
+		private void OpenFWConfigRomLoadFailed(RomLoader.RomErrorArgs args)
+		{
+			using FirmwaresConfig configForm = new(
+				this,
+				FirmwareManager,
+				Config.FirmwareUserSpecifications,
+				Config.PathEntries,
+				retryLoadRom: true,
+				reloadRomPath: args.RomPath);
+			args.Retry = this.ShowDialogWithTempMute(configForm) is DialogResult.Retry;
+		}
+
 		private void FirmwaresMenuItem_Click(object sender, EventArgs e)
 		{
-			if (e is RomLoader.RomErrorArgs args)
-			{
-				using var configForm = new FirmwaresConfig(
-					this,
-					FirmwareManager,
-					Config.FirmwareUserSpecifications,
-					Config.PathEntries,
-					retryLoadRom: true,
-					reloadRomPath: args.RomPath);
-				var result = this.ShowDialogWithTempMute(configForm);
-				args.Retry = result == DialogResult.Retry;
-			}
-			else
-			{
-				using var configForm = new FirmwaresConfig(this, FirmwareManager, Config.FirmwareUserSpecifications, Config.PathEntries);
-				this.ShowDialogWithTempMute(configForm);
-			}
+			using var configForm = new FirmwaresConfig(this, FirmwareManager, Config.FirmwareUserSpecifications, Config.PathEntries);
+			this.ShowDialogWithTempMute(configForm);
 		}
 
 		private void MessagesMenuItem_Click(object sender, EventArgs e)

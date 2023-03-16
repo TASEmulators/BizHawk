@@ -3694,7 +3694,7 @@ namespace BizHawk.Client.EmuHawk
 					text: "The core needs certain firmware to load this rom.\n\nOpen the firmware manager now?",
 					useOKCancel: true))
 				{
-					FirmwaresMenuItem_Click(null, e);
+					OpenFWConfigRomLoadFailed(e);
 					if (e.Retry)
 					{
 						// Retry loading the ROM here. This leads to recursion, as the original call to LoadRom has not exited yet,
