@@ -3688,12 +3688,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.Type == RomLoader.LoadErrorType.MissingFirmware)
 			{
-				var result = ShowMessageBox2(
-					owner: null,
-					"You are missing the needed firmware files to load this Rom\n\nWould you like to open the firmware manager now and configure your firmwares?",
-					e.Message,
-					EMsgBoxIcon.Error);
-				if (result)
+				if (this.ShowMessageBox2(
+					caption: e.Message,
+					icon: EMsgBoxIcon.Error,
+					text: "The core needs certain firmware to load this rom.\n\nOpen the firmware manager now?",
+					useOKCancel: true))
 				{
 					FirmwaresMenuItem_Click(null, e);
 					if (e.Retry)
