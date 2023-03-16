@@ -10,6 +10,9 @@
 		<OutputPath>$(ProjectDir)../../output/dll</OutputPath>
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
 	</PropertyGroup>
+	<PropertyGroup Condition=" '$(MachineRunAnalyzersDuringBuild)' == '' ">
+		<RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
+	</PropertyGroup>
 	<ItemGroup>
 		<Analyzer Include="$(ProjectDir)../../References/BizHawk.SrcGen.ReflectionCache.dll" />
 	</ItemGroup>

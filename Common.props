@@ -11,7 +11,7 @@
 		<NoWarn>SA0001</NoWarn>
 		<Nullable>enable</Nullable>
 		<PlatformTarget>AnyCPU</PlatformTarget>
-		<RunAnalyzersDuringBuild Condition=" '$(MachineRunAnalyzersDuringBuild)' == '' ">false</RunAnalyzersDuringBuild>
+		<RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
 		<RunCodeAnalysis>false</RunCodeAnalysis>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">

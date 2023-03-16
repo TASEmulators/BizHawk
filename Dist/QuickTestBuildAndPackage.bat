@@ -12,7 +12,7 @@ git --version > NUL
 dotnet build ..\BizHawk.sln -c Release --no-incremental
 @if not errorlevel 0 goto DOTNETBUILDFAILED
 rem -p:Platform="Any CPU"
-rem -p:MachineRunAnalyzersDuringBuild=true
+rem -p:RunAnalyzersDuringBuild=true
 
 rem we have to do this twice right now
 dotnet build ..\BizHawk.sln -c Release

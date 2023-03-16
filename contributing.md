@@ -114,7 +114,8 @@ On the command-line, from root of the repo run `Dist/BuildRelease.sh` (Unix) or 
 There are 2 build configurations. Besides `Release` there is `Debug`, which *does not run* bytecode optimisations, *does not remove* debugging symbols, *enables* additional logging and assertions, and *enables* some features. On Windows, a `Debug` executable will spawn a console window for stdout. Note there is also a "stronger" release build in the form of `VersionInfo.DeveloperBuild == false`, which is only used by GitLab CI for preparing a release (during `Dist/UpdateVersionInfoForRelease.sh`).
 
 We have an automated test suite in the solution which runs in CI, though you can and should run it before pushing.
-There are also various Analyzers (static code analysis plugins) for detecting common mistakes and checking code style. Not every style rule is currently enabled, so please make sure you use CRLF, tabs, and [Allman braces](https://en.wikipedia.org/wiki/Indentation_style#Allman_style) (but don't try to fix code you're not working on).
+There are also [various Analyzers](https://github.com/TASEmulators/BizHawk/wiki/Roslyn-Analyzers-(third-party)) (static code analysis plugins) for detecting common mistakes and checking code style. These are disabled by default for the main solution; pass `-p:RunAnalyzersDuringBuild=true` to the build script, or set the env. var `MachineRunAnalyzersDuringBuild=1`.
+In addition, not every style rule is currently enabled, so please make sure you use CRLF, tabs, and [Allman braces](https://en.wikipedia.org/wiki/Indentation_style#Allman_style) (but don't try to fix code you're not working on).
 
 There are additional test suites specifically for regression-testing cores—these are not included in the solution and need to be run manually. See [the base project's readme](https://github.com/TASEmulators/BizHawk/blob/master/src/BizHawk.Tests.Testroms.GB/readme.md) for details.
 
