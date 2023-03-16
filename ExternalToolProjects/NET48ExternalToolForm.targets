@@ -3,31 +3,31 @@
 		<TargetFramework>net48</TargetFramework>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(BIZHAWK_DATA_HOME)' == '' ">
-		<BIZHAWK_DATA_HOME>$(ProjectDir)../../output/</BIZHAWK_DATA_HOME>
+		<BIZHAWK_DATA_HOME>$(MSBuildProjectDirectory)/../../output/</BIZHAWK_DATA_HOME>
 	</PropertyGroup>
 	<ItemGroup>
 		<Reference Include="System.Windows.Forms" />
 		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />
 		<Reference Include="BizHawk.Client.Common"
-			HintPath="$(ProjectDir)../../output/dll/BizHawk.Client.Common.dll"
+			HintPath="$(MSBuildProjectDirectory)/../../output/dll/BizHawk.Client.Common.dll"
 			Private="true" />
 		<Reference Include="BizHawk.Client.EmuHawk"
-			HintPath="$(ProjectDir)../../output/EmuHawk.exe"
+			HintPath="$(MSBuildProjectDirectory)/../../output/EmuHawk.exe"
 			Private="true" />
 		<Reference Include="BizHawk.Common"
-			HintPath="$(ProjectDir)../../output/dll/BizHawk.Common.dll"
+			HintPath="$(MSBuildProjectDirectory)/../../output/dll/BizHawk.Common.dll"
 			Private="true" />
 		<Reference Include="BizHawk.Emulation.Common"
-			HintPath="$(ProjectDir)../../output/dll/BizHawk.Emulation.Common.dll"
+			HintPath="$(MSBuildProjectDirectory)/../../output/dll/BizHawk.Emulation.Common.dll"
 			Private="true" />
 		<Reference Include="BizHawk.Emulation.Cores"
-			HintPath="$(ProjectDir)../../output/dll/BizHawk.Emulation.Cores.dll"
+			HintPath="$(MSBuildProjectDirectory)/../../output/dll/BizHawk.Emulation.Cores.dll"
 			Private="true" />
 		<Reference Include="BizHawk.Emulation.DiscSystem"
-			HintPath="$(ProjectDir)../../output/dll/BizHawk.Emulation.DiscSystem.dll"
+			HintPath="$(MSBuildProjectDirectory)/../../output/dll/BizHawk.Emulation.DiscSystem.dll"
 			Private="true" />
 		<Reference Include="BizHawk.WinForms.Controls"
-			HintPath="$(ProjectDir)../../output/dll/BizHawk.WinForms.Controls.dll"
+			HintPath="$(MSBuildProjectDirectory)/../../output/dll/BizHawk.WinForms.Controls.dll"
 			Private="true" />
 	</ItemGroup>
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">

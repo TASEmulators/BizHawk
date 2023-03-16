@@ -1,7 +1,7 @@
 <Project>
 	<Import Project="../Common.props" />
 	<PropertyGroup>
-		<OutputPath>$(ProjectDir)bin/$(Configuration)/</OutputPath>
+		<OutputPath>$(MSBuildProjectDirectory)/bin/$(Configuration)/</OutputPath>
 	</PropertyGroup>
 	<ItemGroup>
 		<None Remove="*.sh" />

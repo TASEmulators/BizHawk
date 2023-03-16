@@ -3,20 +3,20 @@
 	<PropertyGroup>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<DefineConstants>$(DefineConstants);AVI_SUPPORT</DefineConstants>
-		<DocumentationFile>$(ProjectDir)bin/doc_comments.xml</DocumentationFile>
+		<DocumentationFile>$(MSBuildProjectDirectory)/bin/doc_comments.xml</DocumentationFile>
 		<LangVersion>9.0</LangVersion>
 		<MSBuildWarningsAsMessages>NU1702</MSBuildWarningsAsMessages>
 		<NoWarn>$(NoWarn);CS1573;CS1591</NoWarn>
-		<OutputPath>$(ProjectDir)../../output/dll</OutputPath>
+		<OutputPath>$(MSBuildProjectDirectory)/../../output/dll</OutputPath>
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(MachineRunAnalyzersDuringBuild)' == '' ">
 		<RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
 	</PropertyGroup>
 	<ItemGroup>
-		<Analyzer Include="$(ProjectDir)../../References/BizHawk.SrcGen.ReflectionCache.dll" />
+		<Analyzer Include="$(MSBuildProjectDirectory)/../../References/BizHawk.SrcGen.ReflectionCache.dll" />
 	</ItemGroup>
 	<ItemGroup Condition=" '$(Configuration)' != 'Debug' ">
-		<Compile Remove="$(ProjectDir)debug/**/*" />
+		<Compile Remove="$(MSBuildProjectDirectory)/debug/**/*" />
 	</ItemGroup>
 </Project>

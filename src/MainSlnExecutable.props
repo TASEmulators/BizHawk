@@ -2,7 +2,7 @@
 	<Import Project="MainSlnCommon.props" />
 	<PropertyGroup>
 		<DefineConstants>$(DefineConstants);EXE_PROJECT</DefineConstants>
-		<OutputPath>$(ProjectDir)../../output</OutputPath>
+		<OutputPath>$(MSBuildProjectDirectory)/../../output</OutputPath>
 		<TargetName>$(MSBuildProjectName.Substring($([MSBuild]::Add($(MSBuildProjectName.LastIndexOf('.')), 1))))</TargetName>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -12,7 +12,7 @@
 		<OutputType>WinExe</OutputType>
 	</PropertyGroup>
 	<ItemGroup>
-		<Compile Include="$(ProjectDir)../BizHawk.Common/OSTailoredCode.cs" />
+		<Compile Include="$(MSBuildProjectDirectory)/../BizHawk.Common/OSTailoredCode.cs" />
 	</ItemGroup>
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<ItemGroup>
