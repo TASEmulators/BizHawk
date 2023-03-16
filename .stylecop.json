@@ -1,5 +1,5 @@
 {
-	"$schema": "https://raw.githubusercontent.com/DotNetAnalyzers/StyleCopAnalyzers/1.2.0-beta.113/StyleCop.Analyzers/StyleCop.Analyzers/Settings/stylecop.schema.json",
+	"$schema": "https://raw.githubusercontent.com/DotNetAnalyzers/StyleCopAnalyzers/1.2.0-beta.435/StyleCop.Analyzers/StyleCop.Analyzers/Settings/stylecop.schema.json",
 	"settings": {
 		"documentationRules": {
 			"documentExposedElements": false,
