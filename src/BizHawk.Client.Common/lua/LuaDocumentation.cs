@@ -41,8 +41,9 @@ namespace BizHawk.Client.Common
 ** a string containing a CSS3/X11 color name e.g. ""blue"", ""palegoldenrod""; or
 ** a Color created with forms.createcolor.
 ** As noted above, luacolor? indicates nil may also be passed.
-* luaf
-** A Lua function. Note that these are always parameters, and never return values of a call
+* nluafunc
+** A Lua function. Note that these are always parameters, and never return values of a call.
+** Some callbacks will be called with arguments, if the function you register has the right number of parameters. This will be noted in the registration function's docs.
 * table
 ** A standard Lua table
 * something else

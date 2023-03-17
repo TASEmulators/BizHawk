@@ -98,7 +98,7 @@ namespace BizHawk.Client.Common
 				.Guid.ToString();
 
 		[LuaDeprecatedMethod]
-		[LuaMethod("onmemoryexecute", "Fires immediately before the given address is executed by the core")]
+		[LuaMethod("onmemoryexecute", "Fires immediately before the given address is executed by the core. Your callback can have 3 parameters {{(addr, val, flags)}}. {{val}} is the value to be executed (or {{0}} always, if this feature is only partially implemented).")]
 		public string OnMemoryExecute(
 			LuaFunction luaf,
 			uint address,
@@ -109,8 +109,8 @@ namespace BizHawk.Client.Common
 			return OnBusExec(luaf, address, name: name, scope: scope);
 		}
 
-		[LuaMethodExample("local exec_cb_id = event.on_bus_exec(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires immediately before the given address is executed by the core\" );\r\n\tend\r\n\t, 0x200, \"Frame name\", \"System Bus\" );")]
-		[LuaMethod("on_bus_exec", "Fires immediately before the given address is executed by the core")]
+		[LuaMethodExample("local exec_cb_id = event.on_bus_exec(\r\n\tfunction(addr, val, flags)\r\n\t\tconsole.log( \"Fires immediately before the given address is executed by the core. {{val}} is the value to be executed (or {{0}} always, if this feature is only partially implemented).\" );\r\n\tend\r\n\t, 0x200, \"Frame name\", \"System Bus\" );")]
+		[LuaMethod("on_bus_exec", "Fires immediately before the given address is executed by the core. Your callback can have 3 parameters {{(addr, val, flags)}}. {{val}} is the value to be executed (or {{0}} always, if this feature is only partially implemented).")]
 		public string OnBusExec(
 			LuaFunction luaf,
 			uint address,
@@ -145,7 +145,7 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaDeprecatedMethod]
-		[LuaMethod("onmemoryexecuteany", "Fires immediately before any address is executed by the core (CPU-intensive)")]
+		[LuaMethod("onmemoryexecuteany", "Fires immediately before every instruction executed (in the specified scope) by the core (CPU-intensive). Your callback can have 3 parameters {{(addr, val, flags)}}. {{val}} is the value to be executed (or {{0}} always, if this feature is only partially implemented).")]
 		public string OnMemoryExecuteAny(
 			LuaFunction luaf,
 			string name = null,
@@ -155,8 +155,8 @@ namespace BizHawk.Client.Common
 			return OnBusExecAny(luaf, name: name, scope: scope);
 		}
 
-		[LuaMethodExample("local exec_cb_id = event.on_bus_exec_any(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires immediately before every instruction executed (in the specified scope) by the core (CPU-intensive)\" );\r\n\tend\r\n\t, \"Frame name\", \"System Bus\" );")]
-		[LuaMethod("on_bus_exec_any", "Fires immediately before every instruction executed (in the specified scope) by the core (CPU-intensive)")]
+		[LuaMethodExample("local exec_cb_id = event.on_bus_exec_any(\r\n\tfunction(addr, val, flags)\r\n\t\tconsole.log( \"Fires immediately before every instruction executed (in the specified scope) by the core (CPU-intensive). {{val}} is the value to be executed (or {{0}} always, if this feature is only partially implemented).\" );\r\n\tend\r\n\t, \"Frame name\", \"System Bus\" );")]
+		[LuaMethod("on_bus_exec_any", "Fires immediately before every instruction executed (in the specified scope) by the core (CPU-intensive). Your callback can have 3 parameters {{(addr, val, flags)}}. {{val}} is the value to be executed (or {{0}} always, if this feature is only partially implemented).")]
 		public string OnBusExecAny(
 			LuaFunction luaf,
 			string name = null,
@@ -195,7 +195,7 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaDeprecatedMethod]
-		[LuaMethod("onmemoryread", "Fires after the given address is read by the core. If no address is given, it will attach to every memory read")]
+		[LuaMethod("onmemoryread", "Fires immediately before the given address is read by the core. Your callback can have 3 parameters {{(addr, val, flags)}}. {{val}} is the value read. If no address is given, it will fire on every memory read.")]
 		public string OnMemoryRead(
 			LuaFunction luaf,
 			uint? address = null,
@@ -206,8 +206,8 @@ namespace BizHawk.Client.Common
 			return OnBusRead(luaf, address, name: name, scope: scope);
 		}
 
-		[LuaMethodExample("local exec_cb_id = event.on_bus_read(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after the given address is read by the core. If no address is given, it will attach to every memory read\" );\r\n\tend\r\n\t, 0x200, \"Frame name\" );")]
-		[LuaMethod("on_bus_read", "Fires after the given address is read by the core. If no address is given, it will attach to every memory read")]
+		[LuaMethodExample("local exec_cb_id = event.on_bus_read(\r\n\tfunction(addr, val, flags)\r\n\t\tconsole.log( \"Fires immediately before the given address is read by the core. {{val}} is the value read. If no address is given, it will fire on every memory read.\" );\r\n\tend\r\n\t, 0x200, \"Frame name\" );")]
+		[LuaMethod("on_bus_read", "Fires immediately before the given address is read by the core. Your callback can have 3 parameters {{(addr, val, flags)}}. {{val}} is the value read. If no address is given, it will fire on every memory read.")]
 		public string OnBusRead(
 			LuaFunction luaf,
 			uint? address = null,
@@ -241,7 +241,7 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaDeprecatedMethod]
-		[LuaMethod("onmemorywrite", "Fires after the given address is written by the core. If no address is given, it will attach to every memory write")]
+		[LuaMethod("onmemorywrite", "Fires immediately before the given address is written by the core. Your callback can have 3 parameters {{(addr, val, flags)}}. {{val}} is the value to be written (or {{0}} always, if this feature is only partially implemented). If no address is given, it will fire on every memory write.")]
 		public string OnMemoryWrite(
 			LuaFunction luaf,
 			uint? address = null,
@@ -252,8 +252,8 @@ namespace BizHawk.Client.Common
 			return OnBusWrite(luaf, address, name: name, scope: scope);
 		}
 
-		[LuaMethodExample("local exec_cb_id = event.on_bus_write(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after the given address is written by the core. If no address is given, it will attach to every memory write\" );\r\n\tend\r\n\t, 0x200, \"Frame name\" );")]
-		[LuaMethod("on_bus_write", "Fires after the given address is written by the core. If no address is given, it will attach to every memory write")]
+		[LuaMethodExample("local exec_cb_id = event.on_bus_write(\r\n\tfunction(addr, val, flags)\r\n\t\tconsole.log( \"Fires immediately before the given address is written by the core. {{val}} is the value to be written (or {{0}} always, if this feature is only partially implemented). If no address is given, it will fire on every memory write.\" );\r\n\tend\r\n\t, 0x200, \"Frame name\" );")]
+		[LuaMethod("on_bus_write", "Fires immediately before the given address is written by the core. Your callback can have 3 parameters {{(addr, val, flags)}}. {{val}} is the value to be written (or {{0}} always, if this feature is only partially implemented). If no address is given, it will fire on every memory write.")]
 		public string OnBusWrite(
 			LuaFunction luaf,
 			uint? address = null,
