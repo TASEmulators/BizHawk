@@ -261,6 +261,9 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public void AbortQueuedMovie()
+			=> _queuedMovie = null;
+
 		public void StopMovie(bool saveChanges = true)
 		{
 			if (Movie.IsActive())

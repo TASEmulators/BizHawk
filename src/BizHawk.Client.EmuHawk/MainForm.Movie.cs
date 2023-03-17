@@ -48,6 +48,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			finally
 			{
+				MovieSession.AbortQueuedMovie();
 				Config.PreferredCores = oldPreferredCores;
 			}
 
