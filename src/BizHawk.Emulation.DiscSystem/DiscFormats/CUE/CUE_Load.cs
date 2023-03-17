@@ -337,8 +337,13 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 								sectorSize = 2048;
 								break;
 
-							default:
+							case CueTrackType.CDI_2336:
 							case CueTrackType.Mode2_2336:
+								ss = new SS_Mode2_2336();
+								sectorSize = 2336;
+								break;
+
+							default:
 								throw new InvalidOperationException($"Not supported: {cct.TrackType}");
 						}
 

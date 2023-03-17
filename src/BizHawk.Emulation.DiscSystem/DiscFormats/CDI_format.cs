@@ -557,7 +557,7 @@ namespace BizHawk.Emulation.DiscSystem
 						SS_Base synth = track.ReadMode switch
 						{
 							0 => new SS_Mode1_2048(),
-							1 => throw new NotSupportedException("Mode2/2336"), // TODO
+							1 => new SS_Mode2_2336(),
 							2 => new SS_2352(),
 							3 => new SS_CDI_RawQ(),
 							4 => new SS_CDI_RawPQRSTUVW(),
