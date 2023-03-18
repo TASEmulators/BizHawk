@@ -184,7 +184,7 @@ impl ElfLoader {
 	}
 	pub fn seal(&mut self, b: &mut MemoryBlock) {
 		for section in self.sections.iter() {
-			if section_name_is_readonly(section.name.as_str()) {
+			if section.addr.align_expand().size != 0 && section_name_is_readonly(section.name.as_str()) {
 				b.mprotect(section.addr.align_expand(), Protection::R).unwrap();
 			}
 		}
