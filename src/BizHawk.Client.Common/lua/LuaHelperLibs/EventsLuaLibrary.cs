@@ -92,7 +92,7 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethodExample("local steveonl = event.onloadstate(\r\n\tfunction()\r\n\tconsole.log( \"Fires after a state is loaded. Receives a lua function name, and registers it to the event immediately following a successful savestate event\" );\r\nend\", \"Frame name\" );")]
-		[LuaMethod("onloadstate", "Fires after a state is loaded. Receives a lua function name, and registers it to the event immediately following a successful savestate event")]
+		[LuaMethod("onloadstate", "Fires after a state is loaded. Your callback can have 1 parameter, which will be the name of the loaded state.")]
 		public string OnLoadState(LuaFunction luaf, string name = null)
 			=> _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_LOADSTATE, LogOutputCallback, CurrentFile, name)
 				.Guid.ToString();
@@ -287,7 +287,7 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethodExample("local steveons = event.onsavestate(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after a state is saved\" );\r\n\tend\r\n\t, \"Frame name\" );")]
-		[LuaMethod("onsavestate", "Fires after a state is saved")]
+		[LuaMethod("onsavestate", "Fires after a state is saved. Your callback can have 1 parameter, which will be the name of the saved state.")]
 		public string OnSaveState(LuaFunction luaf, string name = null)
 			=> _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_SAVESTATE, LogOutputCallback, CurrentFile, name)
 				.Guid.ToString();
