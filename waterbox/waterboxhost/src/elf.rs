@@ -145,10 +145,12 @@ impl ElfLoader {
 				if segment.is_executable() { "X" } else { " " },
 				addr.size
 			);
-			// TODO:  Using no_replace false here because the linker puts eh_frame_hdr in a separate segment that overlaps the other RO segment???
-			b.mmap_fixed(prot_addr, Protection::RW, false)?;
-			b.copy_from_external(&data[segment.file_range()], addr.start)?;
-			b.mprotect(prot_addr, prot)?;
+			if prot_addr.size != 0 {
+				// TODO:  Using no_replace false here because the linker puts eh_frame_hdr in a separate segment that overlaps the other RO segment???
+				b.mmap_fixed(prot_addr, Protection::RW, false)?;
+				b.copy_from_external(&data[segment.file_range()], addr.start)?;
+				b.mprotect(prot_addr, prot)?;
+			}
 		}
 
 		match info_area_opt {
@@ -184,7 +186,7 @@ impl ElfLoader {
 	}
 	pub fn seal(&mut self, b: &mut MemoryBlock) {
 		for section in self.sections.iter() {
-			if section_name_is_readonly(section.name.as_str()) {
+			if section.addr.align_expand().size != 0 && section_name_is_readonly(section.name.as_str()) {
 				b.mprotect(section.addr.align_expand(), Protection::R).unwrap();
 			}
 		}
