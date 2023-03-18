@@ -16,6 +16,8 @@ namespace BizHawk.Client.EmuHawk
 	[LuaLibrary(released: true)]
 	public sealed class TAStudioLuaLibrary : LuaLibraryBase
 	{
+		private static readonly IDictionary<string, Icon> _iconCache = new Dictionary<string, Icon>();
+
 		public ToolManager Tools { get; set; }
 
 		public TAStudioLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
@@ -505,7 +507,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodExample("tastudio.onqueryitemicon( function( currentindex, itemname )\r\n\tconsole.log( \"called during the icon draw event of the tastudio listview. luaf must be a function that takes 2 params: index, column.  The first is the integer row index of the listview, and the 2nd is the string column name. luaf should return a value that can be parsed into a .NET Color object (string color name, or integer value)\" );\r\nend );")]
-		[LuaMethod("onqueryitemicon", "Called during the icon draw event of the tastudio listview. {{luaf}} must be a function that takes 2 params: {{(index, column)}}. The first is the integer row index of the listview, and the 2nd is the string column name. The callback should return a string, the path to the image file to be displayed.")]
+		[LuaMethod("onqueryitemicon", "Called during the icon draw event of the tastudio listview. {{luaf}} must be a function that takes 2 params: {{(index, column)}}. The first is the integer row index of the listview, and the 2nd is the string column name. The callback should return a string, the path to the {{.ico}} file to be displayed. The file will be cached, so if you change the file on disk, call {{tastudio.clearIconCache()}}.")]
 		public void OnQueryItemIcon(LuaFunction luaf)
 		{
 			if (Engaged())
@@ -516,13 +518,21 @@ namespace BizHawk.Client.EmuHawk
 					if (result?[0] != null)
 					{
 						string path = result[0].ToString();
-						Icon icon = new Icon(path);
+						if (!_iconCache.TryGetValue(path, out var icon)) _iconCache[path] = icon = new(path);
 						return icon.ToBitmap();
 					}
 
 					return null;
 				};
 			}
+		}
+
+		[LuaMethodExample("tastudio.clearIconCache();")]
+		[LuaMethod("clearIconCache", "Clears the cache that is built up by using {{tastudio.onqueryitemicon}}, so that changes to the icons on disk can be picked up.")]
+		public void ClearIconCache()
+		{
+			foreach (var icon in _iconCache.Values) icon.Dispose();
+			_iconCache.Clear();
 		}
 
 		[LuaMethodExample("tastudio.ongreenzoneinvalidated( function( currentindex )\r\n\tconsole.log( \"Called whenever the greenzone is invalidated.\" );\r\nend );")]
