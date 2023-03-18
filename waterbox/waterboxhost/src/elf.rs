@@ -145,10 +145,12 @@ impl ElfLoader {
 				if segment.is_executable() { "X" } else { " " },
 				addr.size
 			);
-			// TODO:  Using no_replace false here because the linker puts eh_frame_hdr in a separate segment that overlaps the other RO segment???
-			b.mmap_fixed(prot_addr, Protection::RW, false)?;
-			b.copy_from_external(&data[segment.file_range()], addr.start)?;
-			b.mprotect(prot_addr, prot)?;
+			if prot_addr.size != 0 {
+				// TODO:  Using no_replace false here because the linker puts eh_frame_hdr in a separate segment that overlaps the other RO segment???
+				b.mmap_fixed(prot_addr, Protection::RW, false)?;
+				b.copy_from_external(&data[segment.file_range()], addr.start)?;
+				b.mprotect(prot_addr, prot)?;
+			}
 		}
 
 		match info_area_opt {
