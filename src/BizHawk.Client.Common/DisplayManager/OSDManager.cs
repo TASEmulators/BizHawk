@@ -172,6 +172,7 @@ namespace BizHawk.Client.Common
 				try
 				{
 					var point = GetCoordinates(g, text.Position, text.Message);
+					if (point.Y >= g.ClipBounds.Height) continue; // simple optimisation; don't bother drawing off-screen
 					g.DrawString(text.Message, MessageFont, text.ForeColor, point.X, point.Y);
 				}
 				catch (Exception)
