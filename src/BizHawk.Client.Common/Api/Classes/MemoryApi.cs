@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using BizHawk.Common;
+using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -216,6 +217,7 @@ namespace BizHawk.Client.Common
 		/// <exception cref="ArgumentOutOfRangeException">range defined by <paramref name="addr"/> and <paramref name="count"/> extends beyond the bound of <paramref name="domain"/> (or <see cref="Domain"/> if null)</exception>
 		public string HashRegion(long addr, int count, string domain = null)
 		{
+			if (count is 0) return SHA256Checksum.EmptyFile;
 			var d = NamedDomainOrCurrent(domain);
 			if (!0L.RangeToExclusive(d.Size).Contains(addr))
 			{
@@ -232,7 +234,7 @@ namespace BizHawk.Client.Common
 			var data = new byte[count];
 			using (d.EnterExit())
 			{
-				for (var i = 0; i < count; i++) data[i] = d.PeekByte(addr + i);
+				d.BulkPeekByte(addr.RangeToExclusive(addr + count), data);
 			}
 			return SHA256Checksum.ComputeDigestHex(data);
 		}
@@ -249,13 +251,13 @@ namespace BizHawk.Client.Common
 			var indexAfterLast = Math.Min(Math.Max(-1L, lastReqAddr), d.Size - 1L) + 1L;
 			var iSrc = Math.Min(Math.Max(0L, addr), d.Size);
 			var iDst = iSrc - addr;
-			var bytes = new byte[length];
-			using (d.EnterExit())
-			{
-				while (iSrc < indexAfterLast) bytes[iDst++] = d.PeekByte(iSrc++);
-			}
+			var bytes = new byte[indexAfterLast - iSrc];
+			if (iSrc < indexAfterLast) using (d.EnterExit()) d.BulkPeekByte(iSrc.RangeToExclusive(indexAfterLast), bytes);
 			if (lastReqAddr >= d.Size) LogCallback($"Warning: Attempted reads on addresses {d.Size}..{lastReqAddr} outside range of domain {d.Name} in {nameof(ReadByteRange)}()");
-			return bytes;
+			if (bytes.Length == length) return bytes;
+			var newBytes = new byte[length];
+			if (bytes.Length is not 0) Array.Copy(sourceArray: bytes, sourceIndex: 0, destinationArray: newBytes, destinationIndex: iDst, length: bytes.Length);
+			return newBytes;
 		}
 
 		public void WriteByteRange(long addr, IReadOnlyList<byte> memoryblock, string domain = null)
