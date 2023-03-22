@@ -32,6 +32,4 @@ cmake \
 	-DCOMPILER_RT_BAREMETAL_BUILD=ON \
 	-DCOMPILER_RT_HAS_FPIC_FLAG=OFF \
 	-DCMAKE_INSTALL_PREFIX="$SYSROOT" \
-	-DCMAKE_AR="$(which llvm-ar)" \
-	-DCMAKE_RANLIB="$(which llvm-ranlib)" \
 	$LLVMDIR/compiler-rt

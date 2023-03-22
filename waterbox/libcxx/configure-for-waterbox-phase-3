@@ -16,6 +16,7 @@ mkdir -p $INTRINSIC_DIR
 cp $CLANG_INCLUDE_DIR/xmmintrin.h $INTRINSIC_DIR/xmmintrin.h
 cp $CLANG_INCLUDE_DIR/adxintrin.h $INTRINSIC_DIR/adxintrin.h
 cp $CLANG_INCLUDE_DIR/ammintrin.h $INTRINSIC_DIR/ammintrin.h
+cp $CLANG_INCLUDE_DIR/amxfp16intrin.h $INTRINSIC_DIR/amxfp16intrin.h
 cp $CLANG_INCLUDE_DIR/amxintrin.h $INTRINSIC_DIR/amxintrin.h
 cp $CLANG_INCLUDE_DIR/avx2intrin.h $INTRINSIC_DIR/avx2intrin.h
 cp $CLANG_INCLUDE_DIR/avx512bf16intrin.h $INTRINSIC_DIR/avx512bf16intrin.h
@@ -46,7 +47,10 @@ cp $CLANG_INCLUDE_DIR/avx512vnniintrin.h $INTRINSIC_DIR/avx512vnniintrin.h
 cp $CLANG_INCLUDE_DIR/avx512vp2intersectintrin.h $INTRINSIC_DIR/avx512vp2intersectintrin.h
 cp $CLANG_INCLUDE_DIR/avx512vpopcntdqintrin.h $INTRINSIC_DIR/avx512vpopcntdqintrin.h
 cp $CLANG_INCLUDE_DIR/avx512vpopcntdqvlintrin.h $INTRINSIC_DIR/avx512vpopcntdqvlintrin.h
+cp $CLANG_INCLUDE_DIR/avxifmaintrin.h $INTRINSIC_DIR/avxifmaintrin.h
 cp $CLANG_INCLUDE_DIR/avxintrin.h $INTRINSIC_DIR/avxintrin.h
+cp $CLANG_INCLUDE_DIR/avxneconvertintrin.h $INTRINSIC_DIR/avxneconvertintrin.h
+cp $CLANG_INCLUDE_DIR/avxvnniint8intrin.h $INTRINSIC_DIR/avxvnniint8intrin.h
 cp $CLANG_INCLUDE_DIR/avxvnniintrin.h $INTRINSIC_DIR/avxvnniintrin.h
 cp $CLANG_INCLUDE_DIR/bmi2intrin.h $INTRINSIC_DIR/bmi2intrin.h
 cp $CLANG_INCLUDE_DIR/bmiintrin.h $INTRINSIC_DIR/bmiintrin.h
@@ -55,6 +59,7 @@ cp $CLANG_INCLUDE_DIR/cldemoteintrin.h $INTRINSIC_DIR/cldemoteintrin.h
 cp $CLANG_INCLUDE_DIR/clflushoptintrin.h $INTRINSIC_DIR/clflushoptintrin.h
 cp $CLANG_INCLUDE_DIR/clwbintrin.h $INTRINSIC_DIR/clwbintrin.h
 cp $CLANG_INCLUDE_DIR/clzerointrin.h $INTRINSIC_DIR/clzerointrin.h
+cp $CLANG_INCLUDE_DIR/cmpccxaddintrin.h $INTRINSIC_DIR/cmpccxaddintrin.h
 cp $CLANG_INCLUDE_DIR/crc32intrin.h $INTRINSIC_DIR/crc32intrin.h
 cp $CLANG_INCLUDE_DIR/emmintrin.h $INTRINSIC_DIR/emmintrin.h
 cp $CLANG_INCLUDE_DIR/enqcmdintrin.h $INTRINSIC_DIR/enqcmdintrin.h
@@ -79,8 +84,10 @@ cp $CLANG_INCLUDE_DIR/pconfigintrin.h $INTRINSIC_DIR/pconfigintrin.h
 cp $CLANG_INCLUDE_DIR/pkuintrin.h $INTRINSIC_DIR/pkuintrin.h
 cp $CLANG_INCLUDE_DIR/pmmintrin.h $INTRINSIC_DIR/pmmintrin.h
 cp $CLANG_INCLUDE_DIR/popcntintrin.h $INTRINSIC_DIR/popcntintrin.h
+cp $CLANG_INCLUDE_DIR/prfchiintrin.h $INTRINSIC_DIR/prfchiintrin.h
 cp $CLANG_INCLUDE_DIR/prfchwintrin.h $INTRINSIC_DIR/prfchwintrin.h
 cp $CLANG_INCLUDE_DIR/ptwriteintrin.h $INTRINSIC_DIR/ptwriteintrin.h
+cp $CLANG_INCLUDE_DIR/raointintrin.h $INTRINSIC_DIR/raointintrin.h
 cp $CLANG_INCLUDE_DIR/rdpruintrin.h $INTRINSIC_DIR/rdpruintrin.h
 cp $CLANG_INCLUDE_DIR/rdseedintrin.h $INTRINSIC_DIR/rdseedintrin.h
 cp $CLANG_INCLUDE_DIR/rtmintrin.h $INTRINSIC_DIR/rtmintrin.h
