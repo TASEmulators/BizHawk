@@ -1124,6 +1124,12 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					// ordinarily, an alt release with nothing else would move focus to the MenuBar. but that is sort of useless, and hard to implement exactly right.
+
+					if (Config.ShowContextMenu && ie.ToString() == "Press:Apps" && ContainsFocus)
+					{
+						// same as right-click
+						MainFormContextMenu.Show(PointToScreen(new(0, MainformMenu.Height)));
+					}
 				}
 
 				// zero 09-sep-2012 - all input is eligible for controller input. not sure why the above was done.
