@@ -24,7 +24,7 @@ $(TARGET_RELEASE):
 	@$(MAKE) SUBTARGET=arcade WATERBOX=1 OPTIMIZE=s DEPRECATED=0 NOWERROR=1 \
 		WBX_DIR=$(WATERBOX_DIR) BUILDDIR=$(OBJ_DIR) -C $(ROOT_DIR)/mame
 	@mv -f $(ROOT_DIR)/mame/$(TARGET) $(TARGET_RELEASE)
-	@strip --strip-all -wK "mame_*" -K "co_clean" -K "ecl_seal" $(TARGET_RELEASE)
+	@strip --strip-all -wK "mame_*" -K "co_clean" -K "ecl_seal" -K "__wbxsysinfo" $(TARGET_RELEASE)
 
 $(TARGET_DEBUG):
 	@$(MAKE) SUBTARGET=arcade WATERBOX=1 OPTIMIZE=g DEBUG=1 SYMBOLS=1 PROFILER=0 DEPRECATED=0 NOWERROR=1 \
