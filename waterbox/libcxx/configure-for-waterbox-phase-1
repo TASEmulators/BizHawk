@@ -14,9 +14,9 @@ echo "#define FUTEX_WAIT_PRIVATE 128\n#define FUTEX_WAKE_PRIVATE 129" > "$SYSROO
 rm -rf build1
 mkdir build1
 cd build1
-export ASMFLAGS="-mcmodel=large -mstack-protector-guard=global -fno-use-cxa-atexit -fno-pic -fno-pie -fcf-protection=none"
-export CFLAGS="-mcmodel=large -mstack-protector-guard=global -fno-use-cxa-atexit -fno-pic -fno-pie -fcf-protection=none"
-export CXXFLAGS="-mcmodel=large -mstack-protector-guard=global -fno-use-cxa-atexit -fno-pic -fno-pie -fcf-protection=none"
+export ASMFLAGS="-w -mcmodel=large -mstack-protector-guard=global -fno-pic -fno-pie -fcf-protection=none"
+export CFLAGS="-w -mcmodel=large -mstack-protector-guard=global -fno-pic -fno-pie -fcf-protection=none"
+export CXXFLAGS="-w -mcmodel=large -mstack-protector-guard=global -fno-pic -fno-pie -fcf-protection=none -fno-use-cxa-atexit"
 export LDFLAGS="-Wl,--no-pie"
 
 cmake \
