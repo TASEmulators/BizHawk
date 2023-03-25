@@ -606,11 +606,7 @@ namespace BizHawk.Client.EmuHawk
 				LoadMostRecentROM();
 			}
 
-			if (_argParser.audiosync.HasValue)
-			{
-				Config.VideoWriterAudioSync = _argParser.audiosync.Value;
-			}
-
+			Config.VideoWriterAudioSyncEffective = _argParser.audiosync ?? Config.VideoWriterAudioSync;
 			_autoDumpLength = _argParser._autoDumpLength;
 			if (_argParser.cmdMovie != null)
 			{
@@ -1705,10 +1701,6 @@ namespace BizHawk.Client.EmuHawk
 		private ISoundProvider _aviSoundInputAsync; // Note: This sound provider must be in async mode!
 
 		private SimpleSyncSoundProvider _dumpProxy; // an audio proxy used for dumping
-		private bool _dumpaudiosync; // set true to for experimental AV dumping
-		private int _avwriterResizew;
-		private int _avwriterResizeh;
-		private bool _avwriterpad;
 
 		private bool _windowClosedAndSafeToExitProcess;
 		private int _exitCode;
@@ -3358,7 +3350,6 @@ namespace BizHawk.Client.EmuHawk
 				videoWriterName = Config.VideoWriter;
 			}
 
-			_dumpaudiosync = Config.VideoWriterAudioSync;
 			if (unattended && !string.IsNullOrEmpty(videoWriterName))
 			{
 				aw = VideoWriterInventory.GetVideoWriter(videoWriterName, this);
@@ -3369,11 +3360,7 @@ namespace BizHawk.Client.EmuHawk
 					VideoWriterInventory.GetAllWriters(),
 					this,
 					Emulator,
-					Config,
-					out _avwriterResizew,
-					out _avwriterResizeh,
-					out _avwriterpad,
-					ref _dumpaudiosync);
+					Config);
 			}
 
 			if (aw == null)
@@ -3392,19 +3379,11 @@ namespace BizHawk.Client.EmuHawk
 				const bool usingAvi = false;
 #endif
 
-				if (_dumpaudiosync)
-				{
-					aw = new VideoStretcher(aw);
-				}
-				else
-				{
-					aw = new AudioStretcher(aw);
-				}
-
+				aw = Config.VideoWriterAudioSyncEffective ? new VideoStretcher(aw) : new AudioStretcher(aw);
 				aw.SetMovieParameters(Emulator.VsyncNumerator(), Emulator.VsyncDenominator());
-				if (_avwriterResizew > 0 && _avwriterResizeh > 0)
+				if (Config.AVWriterResize.Width > 0 && Config.AVWriterResize.Height > 0)
 				{
-					aw.SetVideoParameters(_avwriterResizew, _avwriterResizeh);
+					aw.SetVideoParameters(Config.AVWriterResize.Width, Config.AVWriterResize.Height);
 				}
 				else
 				{
@@ -3492,7 +3471,7 @@ namespace BizHawk.Client.EmuHawk
 				throw;
 			}
 
-			if (_dumpaudiosync)
+			if (Config.VideoWriterAudioSyncEffective)
 			{
 				_currentSoundProvider.SetSyncMode(SyncSoundMode.Sync);
 			}
@@ -3567,7 +3546,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					IVideoProvider output;
 					IDisposable disposableOutput = null;
-					if (_avwriterResizew > 0 && _avwriterResizeh > 0)
+					if (Config.AVWriterResize.Width > 0 && Config.AVWriterResize.Height > 0)
 					{
 						BitmapBuffer bbIn = null;
 						Bitmap bmpIn = null;
@@ -3579,11 +3558,11 @@ namespace BizHawk.Client.EmuHawk
 
 							bbIn.DiscardAlpha();
 
-							var bmpOut = new Bitmap(_avwriterResizew, _avwriterResizeh, PixelFormat.Format32bppArgb);
+							Bitmap bmpOut = new(width: Config.AVWriterResize.Width, height: Config.AVWriterResize.Height, PixelFormat.Format32bppArgb);
 							bmpIn = bbIn.ToSysdrawingBitmap();
 							using (var g = Graphics.FromImage(bmpOut))
 							{
-								if (_avwriterpad)
+								if (Config.AVWriterPad)
 								{
 									g.Clear(Color.FromArgb(_currentVideoProvider.BackgroundColor));
 									g.DrawImageUnscaled(bmpIn, (bmpOut.Width - bmpIn.Width) / 2, (bmpOut.Height - bmpIn.Height) / 2);
@@ -3627,7 +3606,7 @@ namespace BizHawk.Client.EmuHawk
 
 					short[] samp;
 					int nsamp;
-					if (_dumpaudiosync)
+					if (Config.VideoWriterAudioSyncEffective)
 					{
 						((VideoStretcher) _currAviWriter).DumpAV(output, _currentSoundProvider, out samp, out nsamp);
 					}

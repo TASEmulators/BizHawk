@@ -276,6 +276,9 @@ namespace BizHawk.Client.Common
 		public int GifWriterDelay { get; set; } = -1;
 		public bool VideoWriterAudioSync { get; set; } = true;
 
+		[JsonIgnore]
+		public bool VideoWriterAudioSyncEffective;
+
 		// Emulation core settings
 		internal Dictionary<string, JToken> CoreSettings { get; set; } = new Dictionary<string, JToken>();
 		internal Dictionary<string, JToken> CoreSyncSettings { get; set; } = new Dictionary<string, JToken>();
@@ -368,5 +371,9 @@ namespace BizHawk.Client.Common
 		public bool RASoundEffects { get; set; } = true;
 		public bool RAAllowUnofficialCheevos { get; set; }
 		public bool RAAutostart { get; set; }
+
+		public bool AVWriterPad { get; set; } = false;
+
+		public (int Width, int Height) AVWriterResize { get; set; } = (0, 0);
 	}
 }
