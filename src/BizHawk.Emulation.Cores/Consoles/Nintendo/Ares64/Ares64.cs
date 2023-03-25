@@ -286,13 +286,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 				Power = controller.IsPressed("Power"),
 				
 				BobDeinterlacer = _settings.Deinterlacer == LibAres64.DeinterlacerType.Bob,
-				FastVI = true,
+				FastVI = _settings.FastVI,
 				SkipDraw = !render,
 			};
 		}
 
 		protected override void LoadStateBinaryInternal(BinaryReader reader)
-			=>_core.PostLoadState();
+			=> _core.PostLoadState();
 
 		// creates an "error table" for the disk
 		// see https://github.com/ares-emulator/ares/blob/09aa6346c71a770fc68e9540d86156dd4769d677/mia/medium/nintendo-64dd.cpp#L102-L189
