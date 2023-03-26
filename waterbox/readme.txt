@@ -9,7 +9,7 @@ It consists of a modified musl libc, and build scripts to tie it all together.
 	PREPARE A WIN10 WORKSTATION:
 	Using the guidance at (https://docs.microsoft.com/en-us/windows/wsl/wsl2-kernel & https://docs.microsoft.com/en-us/windows/wsl/install-win10):
 	1. Install WSL2 
-	2. Install Ubuntu 22.04.1 LTS (https://apps.microsoft.com/store/detail/ubuntu-22041-lts/9PN20MSR04DW)
+	2. Install Ubuntu 22.04.2 LTS (https://apps.microsoft.com/store/detail/ubuntu-22042-lts/9PN20MSR04DW)
 	3. Clone the bizhawk repository. You can use it through /mnt or /home if you really like
 	4. The waterbox toolchain has a choice between gcc and clang. Currently, clang is the preferred compiler due to its generally superior performance all around.
 	4a. (Clang) Install build tools: sudo apt-get update && sudo apt-get install make cmake clang lld llvm zstd
@@ -69,5 +69,6 @@ It consists of a modified musl libc, and build scripts to tie it all together.
 	cd snes9x && make install
 	cd tic80 && make install
 	cd uzem && make install
+	cd virtualjaguar && make install
 
 Be aware MAME takes a very long while to build. Following suit, the provided make-all-cores.sh will only make MAME if INCLUDE_MAME is exported (e.g. `INCLUDE_MAME=1 ./make-all-cores.sh`).
