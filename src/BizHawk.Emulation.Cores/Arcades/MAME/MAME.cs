@@ -14,7 +14,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Arcades.MAME
 {
-	[PortedCore(CoreNames.MAME, "MAMEDev", "0.250", "https://github.com/mamedev/mame.git", isReleased: true)]
+	[PortedCore(CoreNames.MAME, "MAMEDev", "0.252", "https://github.com/mamedev/mame.git")]
 	public partial class MAME : IRomInfo
 	{
 		[CoreConstructor(VSystemID.Raw.Arcade)]
@@ -32,6 +32,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			_baseTimeCallback = MAMEBaseTimeCallback;
 			_inputPollCallback = InputCallbacks.Call;
 			_filenameCallback = name => _nvramFilenames.Add(name);
+			_infoCallback = info => lp.Comm.Notify(info);
 
 			_exe = new(new()
 			{
@@ -48,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			using (_exe.EnterExit())
 			{
-				_adapter = CallingConventionAdapters.MakeWaterbox(new Delegate[] { _logCallback, _baseTimeCallback, _inputPollCallback, _filenameCallback }, _exe);
+				_adapter = CallingConventionAdapters.MakeWaterbox(new Delegate[] { _logCallback, _baseTimeCallback, _inputPollCallback, _filenameCallback, _infoCallback }, _exe);
 				_core = BizInvoker.GetInvoker<LibMAME>(_exe, _exe, _adapter);
 				StartMAME(lp.Roms);
 			}
@@ -56,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			if (_loadFailure != string.Empty)
 			{
 				Dispose();
-				throw new Exception("\n\n" + _loadFailure);
+				throw new("\n\n" + _loadFailure);
 			}
 
 			RomDetails = _gameFullName + "\r\n" + string.Join("\r\n", _romHashes.Select(static r => $"{r.Key} - {r.Value}"));
@@ -72,6 +73,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			lp.Game.Hash = SHA1Checksum.ComputeDigestHex(Encoding.ASCII.GetBytes(hashes));
 			lp.Game.Status = _romHashes.Values.Any(static s => s is "NO GOOD DUMP KNOWN") ? RomStatus.Unknown : RomStatus.GoodDump;
 
+			_core.mame_info_get_warnings_string(_infoCallback);
+			_infoCallback = null;
+
 			_exe.Seal();
 		}
 
@@ -82,6 +86,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private readonly LibMAME.LogCallbackDelegate _logCallback;
 		private readonly LibMAME.BaseTimeCallbackDelegate _baseTimeCallback;
 		private readonly LibMAME.InputPollCallbackDelegate _inputPollCallback;
+		private readonly LibMAME.InfoCallbackDelegate _infoCallback;
 
 		public string RomDetails { get; }
 
