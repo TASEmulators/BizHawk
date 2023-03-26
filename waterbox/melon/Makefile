@@ -1,5 +1,3 @@
-NEED_INTRINSICS := 1
-
 CCFLAGS := -Wno-incompatible-pointer-types-discards-qualifiers -Wno-pointer-sign
 
 CXXFLAGS := -DMELONDS_VERSION="" \

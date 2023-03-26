@@ -33,11 +33,6 @@ endif
 COMMONFLAGS := -fvisibility=hidden -I$(WATERBOX_DIR)/emulibc -Wall -mcmodel=large \
 	-mstack-protector-guard=global -fno-pic -fno-pie -fcf-protection=none \
 	-MD -MP
-ifdef NEED_INTRINSICS
-ifeq ($(CC),$(SYSROOT)/bin/musl-clang)
-COMMONFLAGS := $(COMMONFLAGS) -I$(SYSROOT)/intrinsics/x86_64
-endif
-endif
 CCFLAGS := $(COMMONFLAGS) $(CCFLAGS)
 LDFLAGS := $(LDFLAGS) -static -no-pie -Wl,--eh-frame-hdr -T $(LINKSCRIPT) #-Wl,--plugin,$(LD_PLUGIN)
 CCFLAGS_DEBUG := -O0 -g

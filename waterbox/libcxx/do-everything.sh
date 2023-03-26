@@ -9,5 +9,3 @@ printf "completed phase 0\n"
 printf "completed phase 1\n"
 ./configure-for-waterbox-phase-2 && cd build2 && make -j && make install && cd ..
 printf "completed phase 2\n"
-./configure-for-waterbox-phase-3
-printf "completed phase 3\n"

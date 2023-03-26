@@ -1,7 +1,5 @@
 # common things across all mednafen cores
 
-NEED_INTRINSICS := 1
-
 MEDNAFLAGS := \
 	-Imednafen -Icommon -Imednafen/src/trio \
 	-DHAVE_CONFIG_H=1 -DMDFN_DISABLE_NO_OPT_ERRWARN=1 \

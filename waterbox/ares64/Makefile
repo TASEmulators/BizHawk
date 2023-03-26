@@ -1,5 +1,4 @@
 NEED_LIBCO := 1
-NEED_INTRINSICS := 1
 
 ARES_PATH = $(ROOT_DIR)/ares/ares
 THIRDPARTY_PATH = $(ROOT_DIR)/ares/thirdparty
