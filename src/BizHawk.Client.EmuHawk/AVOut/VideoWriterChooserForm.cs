@@ -68,8 +68,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				checkBoxASync = { Checked = config.VideoWriterAudioSyncEffective },
 				checkBoxPad = { Checked = config.AVWriterPad },
-				numericTextBoxH = { Text = Math.Max(0, config.AVWriterResize.Height).ToString() },
-				numericTextBoxW = { Text = Math.Max(0, config.AVWriterResize.Width).ToString() },
+				numericTextBoxH = { Text = Math.Max(0, config.AVWriterResizeHeight).ToString() },
+				numericTextBoxW = { Text = Math.Max(0, config.AVWriterResizeWidth).ToString() },
 				labelDescriptionBody = { Text = "" }
 			};
 
@@ -106,7 +106,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (ret is not null)
 			{
-				config.AVWriterResize = dlg.checkBoxResize.Checked
+				(config.AVWriterResizeWidth, config.AVWriterResizeHeight) = dlg.checkBoxResize.Checked
 					? (dlg.numericTextBoxW.IntValue, dlg.numericTextBoxH.IntValue)
 					: (-1, -1);
 				config.AVWriterPad = dlg.checkBoxPad.Checked;

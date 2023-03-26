@@ -374,6 +374,8 @@ namespace BizHawk.Client.Common
 
 		public bool AVWriterPad { get; set; } = false;
 
-		public (int Width, int Height) AVWriterResize { get; set; } = (0, 0);
+		public int AVWriterResizeHeight { get; set; } = 0;
+
+		public int AVWriterResizeWidth { get; set; } = 0;
 	}
 }

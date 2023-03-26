@@ -3381,9 +3381,9 @@ namespace BizHawk.Client.EmuHawk
 
 				aw = Config.VideoWriterAudioSyncEffective ? new VideoStretcher(aw) : new AudioStretcher(aw);
 				aw.SetMovieParameters(Emulator.VsyncNumerator(), Emulator.VsyncDenominator());
-				if (Config.AVWriterResize.Width > 0 && Config.AVWriterResize.Height > 0)
+				if (Config.AVWriterResizeWidth > 0 && Config.AVWriterResizeHeight > 0)
 				{
-					aw.SetVideoParameters(Config.AVWriterResize.Width, Config.AVWriterResize.Height);
+					aw.SetVideoParameters(Config.AVWriterResizeWidth, Config.AVWriterResizeHeight);
 				}
 				else
 				{
@@ -3546,7 +3546,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					IVideoProvider output;
 					IDisposable disposableOutput = null;
-					if (Config.AVWriterResize.Width > 0 && Config.AVWriterResize.Height > 0)
+					if (Config.AVWriterResizeWidth > 0 && Config.AVWriterResizeHeight > 0)
 					{
 						BitmapBuffer bbIn = null;
 						Bitmap bmpIn = null;
@@ -3558,7 +3558,7 @@ namespace BizHawk.Client.EmuHawk
 
 							bbIn.DiscardAlpha();
 
-							Bitmap bmpOut = new(width: Config.AVWriterResize.Width, height: Config.AVWriterResize.Height, PixelFormat.Format32bppArgb);
+							Bitmap bmpOut = new(width: Config.AVWriterResizeWidth, height: Config.AVWriterResizeHeight, PixelFormat.Format32bppArgb);
 							bmpIn = bbIn.ToSysdrawingBitmap();
 							using (var g = Graphics.FromImage(bmpOut))
 							{
