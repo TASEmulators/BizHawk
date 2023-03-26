@@ -11,14 +11,14 @@ cd build0
 export ASMFLAGS="-w -mcmodel=large -mstack-protector-guard=global -fno-pic -fno-pie -fcf-protection=none"
 export CFLAGS="-w -mcmodel=large -mstack-protector-guard=global -fno-pic -fno-pie -fcf-protection=none"
 export CXXFLAGS="-w -mcmodel=large -mstack-protector-guard=global -fno-pic -fno-pie -fcf-protection=none -fno-use-cxa-atexit"
-export LDFLAGS="-Wl,--no-pie"
+export LDFLAGS="-no-pie"
 
 # libunwind cmake script never actually does enable_language(ASM) or project(... ASM) it would seem
 # this is probably due to this being intended to be called from another script
 # but this ends up breaking our standalone building of libunwind
 # there isn't a simple fix with a command line option, so...
 
-echo "enable_language(ASM)\nadd_subdirectory($LLVMDIR/libunwind .)" > CMakeLists.txt
+printf "%s\n%s\n" "enable_language(ASM)" "add_subdirectory($LLVMDIR/libunwind .)" > CMakeLists.txt
 
 cmake \
 	-DCMAKE_ASM_COMPILER="$CC" \

@@ -11,7 +11,7 @@ cd build-
 export ASMFLAGS="-w -mcmodel=large -mstack-protector-guard=global -fno-pic -fno-pie -fcf-protection=none"
 export CFLAGS="-w -mcmodel=large -mstack-protector-guard=global -fno-pic -fno-pie -fcf-protection=none"
 export CXXFLAGS="-w -mcmodel=large -mstack-protector-guard=global -fno-pic -fno-pie -fcf-protection=none -fno-use-cxa-atexit"
-export LDFLAGS="-Wl,--no-pie"
+export LDFLAGS="-no-pie"
 
 cmake \
 	-DCMAKE_ASM_COMPILER="$CC" \
