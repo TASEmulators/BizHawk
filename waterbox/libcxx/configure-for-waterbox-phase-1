@@ -14,13 +14,11 @@ printf "%s\n%s\n" "#define FUTEX_WAIT_PRIVATE 128" "#define FUTEX_WAKE_PRIVATE 1
 rm -rf build1
 mkdir build1
 cd build1
-export ASMFLAGS="-w -mcmodel=large -mstack-protector-guard=global -fno-pic -fno-pie -fcf-protection=none"
 export CFLAGS="-w -mcmodel=large -mstack-protector-guard=global -fno-pic -fno-pie -fcf-protection=none"
 export CXXFLAGS="-w -mcmodel=large -mstack-protector-guard=global -fno-pic -fno-pie -fcf-protection=none -fno-use-cxa-atexit"
 export LDFLAGS="-no-pie"
 
 cmake \
-	-DCMAKE_ASM_COMPILER="$CC" \
 	-DCMAKE_C_COMPILER="$CC" \
 	-DCMAKE_CXX_COMPILER="$CC" \
 	-DLIBCXX_ENABLE_SHARED=OFF \
