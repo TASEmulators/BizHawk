@@ -34,7 +34,7 @@ COMMONFLAGS := -fvisibility=hidden -I$(WATERBOX_DIR)/emulibc -Wall -mcmodel=larg
 	-mstack-protector-guard=global -fno-pic -fno-pie -fcf-protection=none \
 	-MD -MP
 CCFLAGS := $(COMMONFLAGS) $(CCFLAGS)
-LDFLAGS := $(LDFLAGS) -static -no-pie -Wl,--eh-frame-hdr -T $(LINKSCRIPT) #-Wl,--plugin,$(LD_PLUGIN)
+LDFLAGS := $(LDFLAGS) -static -no-pie -Wl,--eh-frame-hdr,-O2 -T $(LINKSCRIPT) #-Wl,--plugin,$(LD_PLUGIN)
 CCFLAGS_DEBUG := -O0 -g
 CCFLAGS_RELEASE := -O3 -flto
 CCFLAGS_RELEASE_ASONLY := -O3
