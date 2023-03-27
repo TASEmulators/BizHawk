@@ -22,12 +22,21 @@ It consists of a modified musl libc, and build scripts to tie it all together.
 	3. If you wish to clone bizhawk on your host system (slower but maybe more convenient), you can use a VMWare shared folder and: `sudo mount -t drvfs Z: /mnt/z -o rw,relatime,metadata,uid=1000,gid=1000` (WSL won't auto-mount the shared drive)
 
 	PREPARE A LINUX WORKSTATION:
-	1. Debian/Ubuntu based distros work fine with the WIN10 Workstation instructions (confirmed working with Debian 11). Other distros should be able provide the needed programs in their package managers. make, cmake, gcc/g++ or clang/clang++, ld or lld (lld is required for clang), gcc-ar/gcc-ranlib or llvm-ar/llv-ranlib (which one you choose doesn't matter), llvm-config, zstd.
+	1. Debian/Ubuntu based distros work fine with the WIN10 Workstation instructions (confirmed working with Debian 11). Other distros should be able provide the needed programs in their package managers. make, cmake, gcc/g++ or clang/clang++, ld or lld (lld is required for clang), gcc-ar/gcc-ranlib or llvm-ar/llvm-ranlib (which pair you choose doesn't matter), llvm-config, zstd.
+	2. For older Debian/Ubuntu based distros, the package manager might not provide a recent enough compiler for the waterbox toolchain. In these cases, it is recommended to obtain clang and other llvm tools from llvm's apt repository: https://apt.llvm.org/
 
 2. Clone bizhawk sources
 	* Make sure git's core.autocrlf is set to false, as the alternatives cause git to modify the line endings in .sh-looking files which WILL break the build process, from the very first step.
 	* This is NOT git's default. You will need to change it!! Go ahead and set it false globally permanently, since do you really want git modifying files?
-	* Make sure you have initialized and updated the needed submodules in the waterbox directory (for example, /waterbox/llvm-project and /waterbox/musl, etc.)
+	* Make sure you have initialized and updated the needed submodules in the waterbox directory, a listing of these is here:
+		* waterbox/musl (required for the entire waterbox toolchain)
+		* waterbox/ares64/ares/thirdparty/angrylion-rdp (required for ares64)
+		* submodules/sameboy/libsameboy (required for new BSNES)
+		* waterbox/mame-arcade/mame (required for MAME)
+		* waterbox/melon/melonDS (required for melonDS)
+		* waterbox/nyma/mednafen (required for all Nyma cores)
+		* waterbox/snes9x (required for Snes9x)
+	* waterbox/llvm-project is needed for the entire waterbox toolchain, but initializing and updating this is handled automatically by later scripts, so you do not need to do anything about this
 
 3. Consider whether it is time to update your build environment (i.e. sudo apt-get upgrade). Build environment tools are generally best kept at the latest version, to ensure top performance for our users.
 
