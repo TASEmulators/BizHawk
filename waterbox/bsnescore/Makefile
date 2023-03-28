@@ -4,6 +4,7 @@ CXXFLAGS := -std=c++17 \
 	-I../libco -I./bsnes \
 	-Werror=int-to-pointer-cast \
 	-Wno-parentheses -Wno-sign-compare -Wno-unused-variable -Wno-trigraphs -Wno-switch -Wno-reorder -Wno-misleading-indentation \
+	-Wno-unqualified-std-cast-call -Wno-mismatched-tags -Wno-overloaded-virtual -Wno-bitwise-instead-of-logical \
 	-fno-threadsafe-statics -fno-strict-aliasing -fwrapv
 
 CCFLAGS := -std=c11 -DGB_INTERNAL -DGB_DISABLE_DEBUGGER -DGB_DISABLE_CHEATS -D_GNU_SOURCE -DGB_VERSION= \

@@ -63,7 +63,7 @@ public:
   }
 
   void remove() {
-    if(size > 0) resize(size - 1);  //remove last element only
+    if(size() > 0) resize(size() - 1);  //remove last element only
   }
 
   void remove(unsigned index, unsigned count = 1) {

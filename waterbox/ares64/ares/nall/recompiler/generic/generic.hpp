@@ -8,7 +8,7 @@ namespace nall::recompiler {
     sljit_label* epilogue = nullptr;
 
     generic(bump_allocator& alloc) : allocator(alloc) {}
-    ~generic() { /*resetCompiler();*/ }
+    ~generic() { resetCompiler(); }
 
     auto beginFunction(int args) -> void {
       assert(args <= 3);

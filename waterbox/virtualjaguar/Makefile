@@ -5,7 +5,7 @@ COMMON_FLAGS := -fno-strict-aliasing -fwrapv -I./src/ -I./src/m68000 \
 
 CCFLAGS := -std=c11 $(COMMON_FLAGS) -Wno-implicit-function-declaration
 
-CXXFLAGS := -std=c++11 $(COMMON_FLAGS)
+CXXFLAGS := -std=c++17 $(COMMON_FLAGS)
 
 TARGET = virtualjaguar.wbx
 

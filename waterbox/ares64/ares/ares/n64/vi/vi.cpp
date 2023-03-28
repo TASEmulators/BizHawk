@@ -1,6 +1,6 @@
 #include <n64/n64.hpp>
 
-#include "Gfx #1.3.h"
+#include "angrylion.h"
 
 namespace ares::Nintendo64 {
 
@@ -8,6 +8,10 @@ VI vi;
 #include "io.cpp"
 #include "debugger.cpp"
 #include "serialization.cpp"
+
+bool BobDeinterlace = false;
+bool FastVI = false;
+u32* OutFrameBuffer;
 
 auto VI::load(Node::Object parent) -> void {
   node = parent->append<Node::Object>("VI");
@@ -55,9 +59,8 @@ auto VI::main() -> void {
     io.vcounter = 0;
     io.field = io.field + 1 & io.serrate;
     
-    angrylion::UpdateScreen();
-    refreshed = true;
-    screen->frame();
+    angrylion::UpdateScreen(FastVI);
+    refresh();
   }
 
   if(Region::NTSC()) step(system.frequency() / 60 / 262);
@@ -68,15 +71,9 @@ auto VI::step(u32 clocks) -> void {
   Thread::clock += clocks;
 }
 
-bool BobDeinterlace = 0;
-
 auto VI::refresh() -> void {
-  u32 width = 640;
-  u32 height = Region::PAL() ? 576 : 480;
-  screen->setViewport(0, 0, width, height);
-  u32* src = angrylion::FinalizeFrame(BobDeinterlace);
-  u32* dst = screen->pixels(1).data();
-  memcpy(dst, src, width * height * sizeof(u32));
+  angrylion::FinalizeFrame(BobDeinterlace);
+  refreshed = true;
 }
 
 auto VI::power(bool reset) -> void {

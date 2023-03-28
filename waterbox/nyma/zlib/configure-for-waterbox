@@ -1,6 +1,8 @@
 #!/bin/sh
 MYPATH="`dirname \"$0\"`"
 SYSROOT="`realpath \"$MYPATH/../../sysroot\"`"
-export CC=$SYSROOT/bin/musl-gcc
-export CFLAGS="-O3 -mcmodel=large -mstack-protector-guard=global -no-pie -fno-pic -fno-pie"
+if [ -f "$SYSROOT/bin/musl-gcc" ]; then export CC="$SYSROOT/bin/musl-gcc"; fi
+if [ -f "$SYSROOT/bin/musl-clang" ]; then export CC="$SYSROOT/bin/musl-clang"; fi
+export CFLAGS="-O3 -mcmodel=large -mstack-protector-guard=global -fno-pic -fno-pie -fcf-protection=none"
+export LDFLAGS="-no-pie"
 ./configure --static --prefix=$SYSROOT

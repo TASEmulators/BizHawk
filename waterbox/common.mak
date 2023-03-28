@@ -23,18 +23,24 @@ print-%: ;
 
 #LD_PLUGIN := $(shell gcc --print-file-name=liblto_plugin.so)
 
+ifneq (,$(wildcard $(SYSROOT)/bin/musl-clang))
+CC := $(SYSROOT)/bin/musl-clang
+else ifneq (,$(wildcard $(SYSROOT)/bin/musl-gcc))
 CC := $(SYSROOT)/bin/musl-gcc
+else
+$(error Compiler not found in sysroot)
+endif
 COMMONFLAGS := -fvisibility=hidden -I$(WATERBOX_DIR)/emulibc -Wall -mcmodel=large \
-	-mstack-protector-guard=global -no-pie -fno-pic -fno-pie -fcf-protection=none \
+	-mstack-protector-guard=global -fno-pic -fno-pie -fcf-protection=none \
 	-MD -MP
-CCFLAGS := $(CCFLAGS) $(COMMONFLAGS)
-LDFLAGS := $(LDFLAGS) -static -Wl,--eh-frame-hdr -T $(LINKSCRIPT) #-Wl,--plugin,$(LD_PLUGIN)
+CCFLAGS := $(COMMONFLAGS) $(CCFLAGS)
+LDFLAGS := $(LDFLAGS) -static -no-pie -Wl,--eh-frame-hdr,-O2 -T $(LINKSCRIPT) #-Wl,--plugin,$(LD_PLUGIN)
 CCFLAGS_DEBUG := -O0 -g
 CCFLAGS_RELEASE := -O3 -flto
 CCFLAGS_RELEASE_ASONLY := -O3
 LDFLAGS_DEBUG :=
 LDFLAGS_RELEASE :=
-CXXFLAGS := $(CXXFLAGS) $(COMMONFLAGS) -I$(SYSROOT)/include/c++/v1 -fno-use-cxa-atexit
+CXXFLAGS := $(COMMONFLAGS) $(CXXFLAGS) -I$(SYSROOT)/include/c++/v1 -fno-use-cxa-atexit -fvisibility-inlines-hidden
 CXXFLAGS_DEBUG := -O0 -g
 CXXFLAGS_RELEASE := -O3 -flto
 CXXFLAGS_RELEASE_ASONLY := -O3
@@ -95,13 +101,13 @@ $(TARGET_DEBUG): $(DOBJS) $(EMULIBC_DOBJS) $(LINKSCRIPT)
 install: $(TARGET_RELEASE)
 	@cp -f $< $(OUTPUTDLL_DIR)
 	@zstd --stdout --ultra -22 --threads=0 $< > $(OUTPUTDLL_DIR)/$(TARGET).zst
-	@cp $(OUTPUTDLL_DIR)/$(TARGET).zst $(OUTPUTDLLCOPY_DIR)/$(TARGET).zst || true
+	@cp $(OUTPUTDLL_DIR)/$(TARGET).zst $(OUTPUTDLLCOPY_DIR)/$(TARGET).zst 2> /dev/null || true
 	@echo Release build of $(TARGET) installed.
 
 install-debug: $(TARGET_DEBUG)
 	@cp -f $< $(OUTPUTDLL_DIR)
 	@zstd --stdout --ultra -22 --threads=0 $< > $(OUTPUTDLL_DIR)/$(TARGET).zst
-	@cp $(OUTPUTDLL_DIR)/$(TARGET).zst $(OUTPUTDLLCOPY_DIR)/$(TARGET).zst || true
+	@cp $(OUTPUTDLL_DIR)/$(TARGET).zst $(OUTPUTDLLCOPY_DIR)/$(TARGET).zst 2> /dev/null || true
 	@echo Debug build of $(TARGET) installed.
 
 else

@@ -1,6 +1,6 @@
 struct Accuracy {
   //enable all accuracy flags
-  static constexpr bool Reference = 1;
+  static constexpr bool Reference = 0;
 
   struct CPU {
     static constexpr bool Interpreter = 0 | Reference;
@@ -15,7 +15,7 @@ struct Accuracy {
     static constexpr bool Recompiler = !Interpreter;
 
     //VU instructions
-    static constexpr bool SISD = 0;// | Reference | !ARCHITECTURE_SUPPORTS_SSE4_1;
+    static constexpr bool SISD = 0 | Reference | !ARCHITECTURE_SUPPORTS_SSE4_1;
     static constexpr bool SIMD = !SISD;
   };
 

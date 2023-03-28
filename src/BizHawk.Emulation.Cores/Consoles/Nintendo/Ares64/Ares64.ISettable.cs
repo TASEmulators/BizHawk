@@ -19,9 +19,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 
 		public PutSettingsDirtyBits PutSettings(Ares64Settings o)
 		{
-			var ret = Ares64Settings.NeedsReboot(_settings, o);
 			_settings = o;
-			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
+			return PutSettingsDirtyBits.None;
 		}
 
 		public PutSettingsDirtyBits PutSyncSettings(Ares64SyncSettings o)
@@ -39,14 +38,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			[DefaultValue(LibAres64.DeinterlacerType.Weave)]
 			public LibAres64.DeinterlacerType Deinterlacer { get; set; }
 
+			[DisplayName("Skip VI Processing")]
+			[Description("Skips video filtering done by the VI. Gives a minor performance boost but may worsen video quality.")]
+			[DefaultValue(false)]
+			public bool FastVI { get; set; }
+
 			public Ares64Settings()
 				=> SettingsUtil.SetDefaultValues(this);
 
 			public Ares64Settings Clone()
 				=> (Ares64Settings)MemberwiseClone();
-
-			public static bool NeedsReboot(Ares64Settings x, Ares64Settings y)
-				=> !DeepEquality.DeepEquals(x, y);
 		}
 
 		public class Ares64SyncSettings

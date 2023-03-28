@@ -818,7 +818,7 @@ void p32x_event_schedule_sh2(SH2 *sh2, enum p32x_event event, int after);
 void p32x_schedule_hint(SH2 *sh2, int m68k_cycles);
 
 // 32x/memory.c
-struct Pico32xMem *Pico32xMem;
+extern struct Pico32xMem *Pico32xMem;
 unsigned int PicoRead8_32x(unsigned int a);
 unsigned int PicoRead16_32x(unsigned int a);
 void PicoWrite8_32x(unsigned int a, unsigned int d);

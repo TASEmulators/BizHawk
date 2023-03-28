@@ -4,15 +4,17 @@ auto CPU::Recompiler::pool(u32 address) -> Pool* {
   return pool;
 }
 
-auto CPU::Recompiler::block(u32 address) -> Block* {
-  if(auto block = pool(address)->blocks[address >> 2 & 0x3f]) return block;
-  auto block = emit(address);
-  pool(address)->blocks[address >> 2 & 0x3f] = block;
+auto CPU::Recompiler::block(u32 address) -> Block& {
+  auto pool = this->pool(address);
+  auto& block = pool->blocks[address >> 2 & 0x3f];
+  if(block.code) return block;
+  emit(address, block);
+  pool->dirty = true;
   memory::jitprotect(true);
   return block;
 }
 
-auto CPU::Recompiler::emit(u32 address) -> Block* {
+auto CPU::Recompiler::emit(u32 address, Block& block) -> void {
   if(unlikely(allocator.available() < 1_MiB)) {
     print("CPU allocator flush\n");
     memory::jitprotect(false);
@@ -21,7 +23,6 @@ auto CPU::Recompiler::emit(u32 address) -> Block* {
     reset();
   }
 
-  auto block = (Block*)allocator.acquire(sizeof(Block));
   beginFunction(3);
 
   bool hasBranched = 0;
@@ -42,10 +43,9 @@ auto CPU::Recompiler::emit(u32 address) -> Block* {
   jumpEpilog();
 
   memory::jitprotect(false);
-  block->code = endFunction();
+  block.code = endFunction();
 
 //print(hex(PC, 8L), " ", instructions, " ", size(), "\n");
-  return block;
 }
 
 #define Sa  (instruction >>  6 & 31)

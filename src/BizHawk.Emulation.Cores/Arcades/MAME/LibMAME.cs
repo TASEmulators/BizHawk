@@ -61,6 +61,13 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		[BizImport(cc)]
 		public abstract void mame_nvram_load();
 
+		// info
+		[UnmanagedFunctionPointer(cc)]
+		public delegate void InfoCallbackDelegate(string info);
+
+		[BizImport(cc)]
+		public abstract void mame_info_get_warnings_string(InfoCallbackDelegate cb);
+
 		// log
 		[UnmanagedFunctionPointer(cc)]
 		public delegate void LogCallbackDelegate(OutputChannel channel, int size, string data);

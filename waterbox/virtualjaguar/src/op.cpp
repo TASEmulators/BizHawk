@@ -101,47 +101,6 @@ void OPReset(void)
 {
 }
 
-static uint32_t object[8192];
-static uint32_t numberOfObjects;
-
-static bool OPObjectExists(uint32_t address)
-{
-	for(uint32_t i=0; i<numberOfObjects; i++)
-	{
-		if (address == object[i])
-			return true;
-	}
-
-	return false;
-}
-
-static void OPDiscoverObjects(uint32_t address)
-{
-	uint8_t objectType = 0;
-
-	do
-	{
-		if (OPObjectExists(address))
-			return;
-
-		object[numberOfObjects++] = address;
-
-		uint32_t hi = JaguarReadLong(address + 0, OP);
-		uint32_t lo = JaguarReadLong(address + 4, OP);
-		objectType = lo & 0x07;
-		uint32_t link = ((hi << 11) | (lo >> 21)) & 0x3FFFF8;
-
-		if (objectType == 3)
-		{
-			if (((lo & 0xFFFF) != 0x7FFB) && ((lo & 0xFFFF) != 0x8003))
-				OPDiscoverObjects(address + 8);
-		}
-
-		address = link;
-	}
-	while (objectType != 4);
-}
-
 static uint32_t OPGetListPointer(void)
 {
 	return GET16(tomRam8, 0x20) | (GET16(tomRam8, 0x22) << 16);

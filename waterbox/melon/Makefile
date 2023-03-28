@@ -1,10 +1,12 @@
-CCFLAGS := -Wno-discarded-qualifiers -Wno-pointer-sign
+CCFLAGS := -Wno-incompatible-pointer-types-discards-qualifiers -Wno-pointer-sign
 
 CXXFLAGS := -DMELONDS_VERSION="" \
 	-I./melonDS/src -I./melonDS/src/teakra/include \
 	-Wall -Wextra -Werror=int-to-pointer-cast \
 	-Wfatal-errors -Wno-unused-parameter -Wno-unused-variable \
 	-Wno-unused-but-set-variable -Wno-sign-compare \
+	-Wno-deprecated-declarations -Wno-missing-braces \
+	-Wno-bitwise-instead-of-logical -Wno-unused-private-field \
 	-fno-strict-aliasing -std=c++17
 
 TARGET = melonDS.wbx

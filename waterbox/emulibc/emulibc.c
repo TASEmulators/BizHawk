@@ -17,7 +17,7 @@ struct __WbxSysLayout {
 	struct __AddressRange plain;
 	struct __AddressRange mmap;
 };
-__attribute__((section(".invis"))) __attribute__((visibility("default"))) struct __WbxSysLayout __wbxsysinfo;
+ECL_INVISIBLE ECL_EXPORT struct __WbxSysLayout __wbxsysinfo;
 
 void* alloc_helper(size_t size, const struct __AddressRange* range, unsigned long* current, const char* name)
 {

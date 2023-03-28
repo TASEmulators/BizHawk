@@ -3,8 +3,6 @@
 #include <emulibc.h>
 #include <waterboxcore.h>
 
-#define EXPORT extern "C" ECL_EXPORT
-
 typedef enum
 {
 	Unplugged,
@@ -44,22 +42,15 @@ struct BizPlatform : ares::Platform
 {
 	auto attach(ares::Node::Object) -> void override;
 	auto pak(ares::Node::Object) -> ares::VFS::Pak override;
-	auto log(string_view) -> void override;
-	auto video(ares::Node::Video::Screen, const u32*, u32, u32, u32) -> void override;
 	auto audio(ares::Node::Audio::Stream) -> void override;
 	auto input(ares::Node::Input::Input) -> void override;
 
 	ares::VFS::Pak bizpak = nullptr;
-	u32* videobuf = nullptr;
-	u32 pitch = 0;
-	u32 width = 0;
-	u32 height = 0;
 	u16* soundbuf = alloc_invisible<u16>(1024 * 2);
 	u32 nsamps = 0;
 	bool hack = false;
 	void (*inputcb)() = nullptr;
 	bool lagged = true;
-	void (*tracecb)(const char*) = nullptr;
 };
 
 auto BizPlatform::attach(ares::Node::Object node) -> void
@@ -73,19 +64,6 @@ auto BizPlatform::attach(ares::Node::Object node) -> void
 auto BizPlatform::pak(ares::Node::Object) -> ares::VFS::Pak
 {
 	return bizpak;
-}
-
-auto BizPlatform::log(string_view message) -> void
-{
-	if (tracecb) tracecb(message.data());
-}
-
-auto BizPlatform::video(ares::Node::Video::Screen screen, const u32* data, u32 pitch, u32 width, u32 height) -> void
-{
-	videobuf = (u32*)data;
-	this->pitch = pitch >> 2;
-	this->width = width;
-	this->height = height;
 }
 
 auto BizPlatform::audio(ares::Node::Audio::Stream stream) -> void
@@ -346,7 +324,11 @@ static inline SaveType DetectSaveType(u8* rom)
 	return ret;
 }
 
-namespace ares::Nintendo64 { extern bool BobDeinterlace; }
+namespace ares::Nintendo64
+{
+	extern bool BobDeinterlace;
+	extern bool FastVI;
+}
 
 typedef struct
 {
@@ -470,7 +452,13 @@ static bool LoadDisk(LoadData* loadData)
 	return true;
 }
 
-EXPORT bool Init(LoadData* loadData, ControllerType* controllers, bool isPal, bool bobDeinterlace, u64 initTime)
+namespace angrylion
+{
+	extern u32 * OutFrameBuffer;
+	extern u32 OutHeight;
+}
+
+ECL_EXPORT bool Init(LoadData* loadData, ControllerType* controllers, bool isPal, u64 initTime)
 {
 	platform = new BizPlatform;
 	platform->bizpak = new vfs::directory;
@@ -478,6 +466,9 @@ EXPORT bool Init(LoadData* loadData, ControllerType* controllers, bool isPal, bo
 
 	biztime = initTime;
 	ares::Nintendo64::dd.rtcCallback = GetBizTime;
+
+	angrylion::OutFrameBuffer = NULL;
+	angrylion::OutHeight = isPal ? 576 : 480;
 
 	u8* data;
 	u32 len;
@@ -593,8 +584,6 @@ EXPORT bool Init(LoadData* loadData, ControllerType* controllers, bool isPal, bo
 	SET_RTC_CALLBACK(3);
 	SET_RTC_CALLBACK(4);
 
-	ares::Nintendo64::BobDeinterlace = bobDeinterlace;
-
 	root->power(false);
 	root->run(); // HACK, first frame dirties a ton of memory, so we emulate it then seal (this should be investigated, not sure why 60MBish of memory would be dirtied in a single frame?)
 	return true;
@@ -602,7 +591,7 @@ EXPORT bool Init(LoadData* loadData, ControllerType* controllers, bool isPal, bo
 
 // todo: might need to account for mbc5 rumble?
 // largely pointless tho
-EXPORT bool GetRumbleStatus(u32 num)
+ECL_EXPORT bool GetRumbleStatus(u32 num)
 {
 	ares::Nintendo64::Gamepad* c = nullptr;
 	switch (num)
@@ -710,7 +699,7 @@ static void SysBusAccess(u8* buffer, u64 address, u64 count, bool write)
 	}
 }
 
-EXPORT void GetMemoryAreas(MemoryArea *m)
+ECL_EXPORT void GetMemoryAreas(MemoryArea *m)
 {
 	int i = 0;
 	ADD_MEMORY_DOMAIN(rdram.ram, "RDRAM", MEMORYAREA_FLAGS_PRIMARY);
@@ -760,6 +749,10 @@ struct MyFrameInfo : public FrameInfo
 
 	bool Reset;
 	bool Power;
+
+	bool BobDeinterlace;
+	bool FastVI;
+	bool SkipDraw;
 };
 
 #define UPDATE_CONTROLLER(NUM) do { \
@@ -791,8 +784,13 @@ struct MyFrameInfo : public FrameInfo
 	} \
 } while (0)
 
-EXPORT void FrameAdvance(MyFrameInfo* f)
+ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 {
+	ares::Nintendo64::BobDeinterlace = f->BobDeinterlace;
+	ares::Nintendo64::FastVI = f->FastVI;
+
+	angrylion::OutFrameBuffer = f->SkipDraw ? NULL : f->VideoBuffer;
+
 	biztime = f->Time;
 
 	if (f->Power)
@@ -814,16 +812,8 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 
 	root->run();
 
-	f->Width = platform->width;
-	f->Height = platform->height;
-	u32* src = platform->videobuf;
-	u32* dst = f->VideoBuffer;
-	for (int i = 0; i < f->Height; i++)
-	{
-		memcpy(dst, src, f->Width * 4);
-		dst += f->Width;
-		src += platform->pitch;
-	}
+	f->Width = 640;
+	f->Height = angrylion::OutHeight;
 
 	f->Samples = platform->nsamps;
 	memcpy(f->SoundBuffer, platform->soundbuf, f->Samples * 4);
@@ -831,24 +821,23 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 	f->Lagged = platform->lagged;
 }
 
-EXPORT void SetInputCallback(void (*callback)())
+ECL_EXPORT void SetInputCallback(void (*callback)())
 {
 	platform->inputcb = callback;
 }
 
-EXPORT void GetDisassembly(u32 address, u32 instruction, char* buf)
+ECL_EXPORT void PostLoadState()
+{
+	ares::Nintendo64::cpu.recompiler.reset();
+}
+
+ECL_EXPORT void GetDisassembly(u32 address, u32 instruction, char* buf)
 {
 	auto s = ares::Nintendo64::cpu.disassembler.disassemble(address, instruction).strip();
 	strcpy(buf, s.data());
 }
 
-EXPORT void SetTraceCallback(void (*callback)(const char*))
-{
-	ares::Nintendo64::cpu.debugger.tracer.instruction->setEnabled(!!callback);
-	platform->tracecb = callback;
-}
-
-EXPORT void GetRegisters(u64* buf)
+ECL_EXPORT void GetRegisters(u64* buf)
 {
 	for (int i = 0; i < 32; i++)
 	{

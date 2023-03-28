@@ -14,8 +14,6 @@
 
 #include <string.h>
 
-#define EXPORT extern "C" ECL_EXPORT
-
 typedef int8_t s8;
 typedef int16_t s16;
 typedef int32_t s32;
@@ -41,7 +39,7 @@ static void InitCommon(BizSettings* bizSettings)
 	JaguarInit();
 }
 
-EXPORT bool Init(BizSettings* bizSettings, u8* boot, u8* rom, u32 sz)
+ECL_EXPORT bool Init(BizSettings* bizSettings, u8* boot, u8* rom, u32 sz)
 {
 	InitCommon(bizSettings);
 
@@ -70,13 +68,13 @@ EXPORT bool Init(BizSettings* bizSettings, u8* boot, u8* rom, u32 sz)
 void (*cd_toc_callback)(void * dest);
 void (*cd_read_callback)(int32_t lba, void * dest);
 
-EXPORT void SetCdCallbacks(void (*ctc)(void * dest), void (*cdrc)(int32_t lba, void * dest))
+ECL_EXPORT void SetCdCallbacks(void (*ctc)(void * dest), void (*cdrc)(int32_t lba, void * dest))
 {
 	cd_toc_callback = ctc;
 	cd_read_callback = cdrc;
 }
 
-EXPORT void InitWithCd(BizSettings* bizSettings, u8* boot, u8* memtrack)
+ECL_EXPORT void InitWithCd(BizSettings* bizSettings, u8* boot, u8* memtrack)
 {
 	InitCommon(bizSettings);
 	if (memtrack)
@@ -104,12 +102,12 @@ static inline bool IsMemTrack()
 	return jaguarMainROMCRC32 == 0xFDF37F47;
 }
 
-EXPORT bool SaveRamIsDirty()
+ECL_EXPORT bool SaveRamIsDirty()
 {
 	return IsMemTrack() ? mtDirty : eeprom_dirty;
 }
 
-EXPORT void GetSaveRam(u8* dst)
+ECL_EXPORT void GetSaveRam(u8* dst)
 {
 	if (IsMemTrack())
 	{
@@ -123,7 +121,7 @@ EXPORT void GetSaveRam(u8* dst)
 	}
 }
 
-EXPORT void PutSaveRam(u8* src)
+ECL_EXPORT void PutSaveRam(u8* src)
 {
 	if (IsMemTrack())
 	{
@@ -185,7 +183,7 @@ static void SysBusAccess(u8* buffer, u64 address, u64 count, bool write)
 	}
 }
 
-EXPORT void GetMemoryAreas(MemoryArea* m)
+ECL_EXPORT void GetMemoryAreas(MemoryArea* m)
 {
 	m[0].Data = jaguarMainRAM;
 	m[0].Name = "DRAM";
@@ -256,7 +254,7 @@ struct MyFrameInfo : public FrameInfo
 
 bool lagged;
 
-EXPORT void FrameAdvance(MyFrameInfo* f)
+ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 {
 	if (f->Reset)
 	{
@@ -281,7 +279,7 @@ EXPORT void FrameAdvance(MyFrameInfo* f)
 
 void (*InputCallback)() = 0;
 
-EXPORT void SetInputCallback(void (*callback)())
+ECL_EXPORT void SetInputCallback(void (*callback)())
 {
 	InputCallback = callback;
 }
@@ -290,7 +288,7 @@ void (*ReadCallback)(u32) = 0;
 void (*WriteCallback)(u32) = 0;
 void (*ExecuteCallback)(u32) = 0;
 
-EXPORT void SetMemoryCallbacks(void (*rcb)(u32), void (*wcb)(u32), void (*ecb)(u32))
+ECL_EXPORT void SetMemoryCallbacks(void (*rcb)(u32), void (*wcb)(u32), void (*ecb)(u32))
 {
 	ReadCallback = rcb;
 	WriteCallback = wcb;
@@ -301,7 +299,7 @@ void (*CPUTraceCallback)(u32*) = 0;
 void (*GPUTraceCallback)(u32, u32*) = 0;
 void (*DSPTraceCallback)(u32, u32*) = 0;
 
-EXPORT void SetTraceCallbacks(void (*ccb)(u32*), void (*gcb)(u32, u32*), void (*dcb)(u32, u32*))
+ECL_EXPORT void SetTraceCallbacks(void (*ccb)(u32*), void (*gcb)(u32, u32*), void (*dcb)(u32, u32*))
 {
 	CPUTraceCallback = ccb;
 	GPUTraceCallback = gcb;
@@ -311,7 +309,7 @@ EXPORT void SetTraceCallbacks(void (*ccb)(u32*), void (*gcb)(u32, u32*), void (*
 extern u32 gpu_pc;
 extern u32 dsp_pc;
 
-EXPORT void GetRegisters(u32* regs)
+ECL_EXPORT void GetRegisters(u32* regs)
 {
 	for (u32 i = 0; i < 18; i++)
 	{
@@ -325,7 +323,7 @@ EXPORT void GetRegisters(u32* regs)
 	regs[147] = dsp_pc;
 }
 
-EXPORT void SetRegister(u32 which, u32 val)
+ECL_EXPORT void SetRegister(u32 which, u32 val)
 {
 	switch (which)
 	{
