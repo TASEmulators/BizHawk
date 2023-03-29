@@ -13,6 +13,7 @@ auto VI::readWord(u32 address) -> u32 {
     data.bit( 7)    = io.reserved.bit(7);
     data.bit( 8, 9) = io.antialias;
     data.bit(10,15) = io.reserved.bit(10,15);
+    data.bit(16)    = io.dedither;
   }
 
   if(address == 1) {
@@ -114,6 +115,7 @@ auto VI::writeWord(u32 address, u32 data_) -> void {
     io.reserved.bit(7)     = data.bit( 7);
     io.antialias           = data.bit( 8, 9);
     io.reserved.bit(10,15) = data.bit(10,15);
+    io.dedither            = data.bit(16);
   }
 
   if(address == 1) {
