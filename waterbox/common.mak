@@ -42,7 +42,7 @@ LDFLAGS_DEBUG :=
 LDFLAGS_RELEASE :=
 CXXFLAGS := $(COMMONFLAGS) $(CXXFLAGS) -I$(SYSROOT)/include/c++/v1 -fno-use-cxa-atexit -fvisibility-inlines-hidden
 CXXFLAGS_DEBUG := -O0 -g
-CXXFLAGS_RELEASE := -O3 -flto
+CXXFLAGS_RELEASE := -O3 -flto -DNDEBUG
 CXXFLAGS_RELEASE_ASONLY := -O3
 
 EXTRA_LIBS := -L $(SYSROOT)/lib/linux -lclang_rt.builtins-x86_64 $(EXTRA_LIBS)
