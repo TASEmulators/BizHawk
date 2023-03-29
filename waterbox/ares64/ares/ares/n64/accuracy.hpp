@@ -3,7 +3,7 @@ struct Accuracy {
   static constexpr bool Reference = 0;
 
   struct CPU {
-    static constexpr bool Interpreter = 0 | Reference;
+    static constexpr bool Interpreter = 0 | Reference | !recompiler::generic::supported;
     static constexpr bool Recompiler = !Interpreter;
 
     //exceptions when the CPU accesses unaligned memory addresses
@@ -11,7 +11,7 @@ struct Accuracy {
   };
 
   struct RSP {
-    static constexpr bool Interpreter = 0 | Reference;
+    static constexpr bool Interpreter = 0 | Reference | !recompiler::generic::supported;
     static constexpr bool Recompiler = !Interpreter;
 
     //VU instructions
@@ -21,5 +21,10 @@ struct Accuracy {
 
   struct RDRAM {
     static constexpr bool Broadcasting = 0;
+  };
+
+  struct PIF {
+    // Emulate a region-locked console
+    static constexpr bool RegionLock = false;
   };
 };

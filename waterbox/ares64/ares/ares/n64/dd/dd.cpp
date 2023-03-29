@@ -93,10 +93,12 @@ auto DD::disconnect() -> void {
 }
 
 auto DD::save() -> void {
-  /*if(disk)
+#if false
+  if(disk)
   if(auto fp = pak->write("program.disk")) {
     disk.save(fp);
-  }*/
+  }
+#endif
   
   rtcSave();
 }

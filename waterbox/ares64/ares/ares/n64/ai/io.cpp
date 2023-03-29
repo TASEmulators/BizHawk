@@ -1,4 +1,4 @@
-auto AI::readWord(u32 address) -> u32 {
+auto AI::readWord(u32 address, u32& cycles) -> u32 {
   address = (address & 0xfffff) >> 2;
   n32 data;
 
@@ -21,7 +21,7 @@ auto AI::readWord(u32 address) -> u32 {
   return data;
 }
 
-auto AI::writeWord(u32 address, u32 data_) -> void {
+auto AI::writeWord(u32 address, u32 data_, u32& cycles) -> void {
   address = (address & 0xfffff) >> 2;
   n32 data = data_;
 

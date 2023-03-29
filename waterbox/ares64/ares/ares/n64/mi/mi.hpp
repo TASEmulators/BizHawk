@@ -1,6 +1,6 @@
 //MIPS Interface
 
-struct MI : Memory::IO<MI> {
+struct MI : Memory::RCP<MI> {
   Node::Object node;
 
   struct Debugger {
@@ -27,8 +27,8 @@ struct MI : Memory::IO<MI> {
   auto power(bool reset) -> void;
 
   //io.cpp
-  auto readWord(u32 address) -> u32;
-  auto writeWord(u32 address, u32 data) -> void;
+  auto readWord(u32 address, u32& cycles) -> u32;
+  auto writeWord(u32 address, u32 data, u32& cycles) -> void;
 
   //serialization.cpp
   auto serialize(serializer&) -> void;

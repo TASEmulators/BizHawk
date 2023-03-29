@@ -102,7 +102,7 @@ struct HChaCha20 : protected ChaCha20 {
 //192-bit nonce; 64-bit x 64-byte (256GB) counter
 struct XChaCha20 : ChaCha20 {
   XChaCha20(u256 key, u192 nonce, u64 counter = 0):
-  ChaCha20(HChaCha20(key, nonce).key(), nonce >> 128, counter) {
+  ChaCha20(HChaCha20(key, u128(nonce)).key(), nonce >> 128, counter) {
   }
 };
 

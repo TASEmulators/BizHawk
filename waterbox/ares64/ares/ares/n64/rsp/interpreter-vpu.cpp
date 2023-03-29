@@ -11,6 +11,23 @@
 #define DIVOUT vpu.divout
 #define DIVDP  vpu.divdp
 
+static auto countLeadingZeros(u32 value) -> u32 {
+  assert(value);
+#if defined(COMPILER_MICROSOFT)
+  unsigned long index;
+  _BitScanReverse(&index, value);
+  return index ^ 31;
+#elif __has_builtin(__builtin_clz)
+  return __builtin_clz(value);
+#else
+  s32 index;
+  for(index = 31; index >= 0; --index) {
+    if(value >> index & 1) break;
+  }
+  return 31 - index;
+#endif
+}
+
 auto RSP::r128::operator()(u32 index) const -> r128 {
   if constexpr(Accuracy::RSP::SISD) {
     r128 v{*this};
@@ -60,7 +77,9 @@ auto RSP::r128::operator()(u32 index) const -> r128 {
       _mm_set_epi8( 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0),  //77777777
     };
     //todo: benchmark to see if testing for cases 0&1 to return value directly is faster
-    return {uint128_t(_mm_shuffle_epi8(v128, shuffle[index]))};
+    r128 v;
+    v = _mm_shuffle_epi8(v128, shuffle[index]);
+    return v;
     #endif
   }
 }
@@ -132,8 +151,8 @@ auto RSP::CTC2(cr32& rt, u8 rd) -> void {
   if constexpr(Accuracy::RSP::SIMD) {
     #if ARCHITECTURE_SUPPORTS_SSE4_1
     static const v128 mask = _mm_set_epi16(0x0101, 0x0202, 0x0404, 0x0808, 0x1010, 0x2020, 0x4040, 0x8080);
-    lo->v128 = _mm_cmpeq_epi8(_mm_and_si128(_mm_shuffle_epi8(r128{~rt.u32 >> 0}, zero), mask), zero);
-    hi->v128 = _mm_cmpeq_epi8(_mm_and_si128(_mm_shuffle_epi8(r128{~rt.u32 >> 8}, zero), mask), zero);
+    lo->v128 = _mm_cmpeq_epi8(_mm_and_si128(_mm_set1_epi8(~rt.u32 >> 0), mask), zero);
+    hi->v128 = _mm_cmpeq_epi8(_mm_and_si128(_mm_set1_epi8(~rt.u32 >> 8), mask), zero);
     #endif
   }
 }
@@ -1321,7 +1340,7 @@ auto RSP::VRCP(r128& vd, u8 de, cr128& vt) -> void {
   } else if(input == -32768) {
     result = 0xffff'0000;
   } else {
-    u32 shift = __builtin_clz(data);
+    u32 shift = countLeadingZeros(data);
     u32 index = (u64(data) << shift & 0x7fc0'0000) >> 22;
     result = reciprocals[index];
     result = (0x10000 | result) << 14;
@@ -1373,7 +1392,7 @@ auto RSP::VRSQ(r128& vd, u8 de, cr128& vt) -> void {
   } else if(input == -32768) {
     result = 0xffff'0000;
   } else {
-    u32 shift = __builtin_clz(data);
+    u32 shift = countLeadingZeros(data);
     u32 index = (u64(data) << shift & 0x7fc0'0000) >> 22;
     result = inverseSquareRoots[index & 0x1fe | shift & 1];
     result = (0x10000 | result) << 14;

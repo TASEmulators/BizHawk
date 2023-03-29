@@ -1,6 +1,6 @@
 //Reality Display Processor
 
-struct RDP : Thread, Memory::IO<RDP> {
+struct RDP : Thread, Memory::RCP<RDP> {
   Node::Object node;
 
   struct Debugger {
@@ -66,8 +66,8 @@ struct RDP : Thread, Memory::IO<RDP> {
   auto setColorImage() -> void;
 
   //io.cpp
-  auto readWord(u32 address) -> u32;
-  auto writeWord(u32 address, u32 data) -> void;
+  auto readWord(u32 address, u32& cycles) -> u32;
+  auto writeWord(u32 address, u32 data, u32& cycles) -> void;
   auto flushCommands() -> void;
 
   //serialization.cpp
@@ -333,13 +333,13 @@ struct RDP : Thread, Memory::IO<RDP> {
     } x, y;
   } fillRectangle_;
 
-  struct IO : Memory::IO<IO> {
+  struct IO : Memory::RCP<IO> {
     RDP& self;
     IO(RDP& self) : self(self) {}
 
     //io.cpp
-    auto readWord(u32 address) -> u32;
-    auto writeWord(u32 address, u32 data) -> void;
+    auto readWord(u32 address, u32& cycles) -> u32;
+    auto writeWord(u32 address, u32 data, u32& cycles) -> void;
 
     struct BIST {
       n1 check;

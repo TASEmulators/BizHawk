@@ -2,7 +2,7 @@ struct Mbc3 : Mbc {
   explicit Mbc3(Memory::Readable& rom_, Memory::Writable& ram_, bool rtc) : Mbc(rom_, ram_), hasRtc(rtc) { reset(); }
 
   inline auto rtcUpdate() -> void {
-    u64 diff = rtcCallback() - lastTime;
+    u64 diff = platform->time() - lastTime;
     lastTime += diff;
     if(!rtcHalt) {
       s8 seconds = rtcSeconds;
@@ -146,6 +146,4 @@ private:
   n8 rtcLatches[5] = {};
 
   u64 lastTime = 0;
-public:
-  std::function<u64()> rtcCallback = []() { return 0; };
 };

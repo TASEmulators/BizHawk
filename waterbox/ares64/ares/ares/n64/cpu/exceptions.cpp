@@ -1,8 +1,7 @@
 auto CPU::Exception::trigger(u32 code, u32 coprocessor, bool tlbMiss) -> void {
   self.debugger.exception(code);
 
-  u64 vectorBase = !self.scc.status.vectorLocation ? 0x8000'0000 : 0xbfc0'0200;
-  if(self.context.bits == 64) vectorBase = (s32)vectorBase;
+  u64 vectorBase = !self.scc.status.vectorLocation ? (s32)0x8000'0000 : (s32)0xbfc0'0200;
 
   u16 vectorOffset = 0x0180;
   if(tlbMiss) {
@@ -51,3 +50,12 @@ auto CPU::Exception::arithmeticOverflow()      -> void { trigger(12); }
 auto CPU::Exception::trap()                    -> void { trigger(13); }
 auto CPU::Exception::floatingPoint()           -> void { trigger(15); }
 auto CPU::Exception::watchAddress()            -> void { trigger(23); }
+
+auto CPU::Exception::nmi() -> void {
+  self.scc.status.vectorLocation = 1;
+  self.scc.status.tlbShutdown = 0;
+  self.scc.status.softReset = 0;
+  self.scc.status.errorLevel = 1;
+  self.scc.epcError = self.ipu.pc;
+  self.ipu.pc = 0xffff'ffff'bfc0'0000;
+}

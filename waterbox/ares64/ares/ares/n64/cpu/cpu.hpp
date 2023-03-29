@@ -10,6 +10,7 @@ struct CPU : Thread {
     auto instruction() -> void;
     auto exception(u8 code) -> void;
     auto interrupt(u8 mask) -> void;
+    auto nmi() -> void;
     auto tlbWrite(u32 index) -> void;
     auto tlbModification(u64 address) -> void;
     auto tlbLoad(u64 address, u64 physical) -> void;
@@ -83,7 +84,7 @@ struct CPU : Thread {
 
     enum Endian : bool { Little, Big };
     enum Mode : u32 { Kernel, Supervisor, User };
-    enum Segment : u32 { Unused, Mapped, Cached, Direct, Kernel64, Supervisor64, User64 };
+    enum Segment : u32 { Unused, Mapped, Cached, Direct, Cached32, Direct32, Kernel64, Supervisor64, User64 };
 
     auto littleEndian() const -> bool { return endian == Endian::Little; }
     auto bigEndian() const -> bool { return endian == Endian::Big; }
@@ -147,26 +148,26 @@ struct CPU : Thread {
         cpu.step(48);
         valid = 1;
         tag   = address & ~0x0000'0fff;
-        words[0] = bus.read<Word>(tag | index | 0x00);
-        words[1] = bus.read<Word>(tag | index | 0x04);
-        words[2] = bus.read<Word>(tag | index | 0x08);
-        words[3] = bus.read<Word>(tag | index | 0x0c);
-        words[4] = bus.read<Word>(tag | index | 0x10);
-        words[5] = bus.read<Word>(tag | index | 0x14);
-        words[6] = bus.read<Word>(tag | index | 0x18);
-        words[7] = bus.read<Word>(tag | index | 0x1c);
+        words[0] = cpu.busRead<Word>(tag | index | 0x00);
+        words[1] = cpu.busRead<Word>(tag | index | 0x04);
+        words[2] = cpu.busRead<Word>(tag | index | 0x08);
+        words[3] = cpu.busRead<Word>(tag | index | 0x0c);
+        words[4] = cpu.busRead<Word>(tag | index | 0x10);
+        words[5] = cpu.busRead<Word>(tag | index | 0x14);
+        words[6] = cpu.busRead<Word>(tag | index | 0x18);
+        words[7] = cpu.busRead<Word>(tag | index | 0x1c);
       }
 
       auto writeBack(CPU& cpu) -> void {
         cpu.step(48);
-        bus.write<Word>(tag | index | 0x00, words[0]);
-        bus.write<Word>(tag | index | 0x04, words[1]);
-        bus.write<Word>(tag | index | 0x08, words[2]);
-        bus.write<Word>(tag | index | 0x0c, words[3]);
-        bus.write<Word>(tag | index | 0x10, words[4]);
-        bus.write<Word>(tag | index | 0x14, words[5]);
-        bus.write<Word>(tag | index | 0x18, words[6]);
-        bus.write<Word>(tag | index | 0x1c, words[7]);
+        cpu.busWrite<Word>(tag | index | 0x00, words[0]);
+        cpu.busWrite<Word>(tag | index | 0x04, words[1]);
+        cpu.busWrite<Word>(tag | index | 0x08, words[2]);
+        cpu.busWrite<Word>(tag | index | 0x0c, words[3]);
+        cpu.busWrite<Word>(tag | index | 0x10, words[4]);
+        cpu.busWrite<Word>(tag | index | 0x14, words[5]);
+        cpu.busWrite<Word>(tag | index | 0x18, words[6]);
+        cpu.busWrite<Word>(tag | index | 0x1c, words[7]);
       }
 
       auto read(u32 address) const -> u32 { return words[address >> 2 & 7]; }
@@ -259,9 +260,12 @@ struct CPU : Thread {
 
   auto segment(u64 vaddr) -> Context::Segment;
   auto devirtualize(u64 vaddr) -> maybe<u64>;
-  auto fetch(u64 vaddr) -> u32;
+  auto fetch(u64 vaddr) -> maybe<u32>;
+  template<u32 Size> auto busWrite(u32 address, u64 data) -> void;
+  template<u32 Size> auto busRead(u32 address) -> u64;
   template<u32 Size> auto read(u64 vaddr) -> maybe<u64>;
   template<u32 Size> auto write(u64 vaddr, u64 data) -> bool;
+  template<u32 Size> auto vaddrAlignedError(u64 vaddr, bool write) -> bool;
   auto addressException(u64 vaddr) -> void;
 
   //serialization.cpp
@@ -296,6 +300,7 @@ struct CPU : Thread {
     auto trap() -> void;
     auto floatingPoint() -> void;
     auto watchAddress() -> void;
+    auto nmi() -> void;
   } exception{*this};
 
   enum Interrupt : u32 {
@@ -317,8 +322,6 @@ struct CPU : Thread {
     struct {   int64_t s64; };
     struct {  uint64_t u64; };
     struct { float64_t f64; };
-    auto s128() const ->  int128_t { return  (int128_t)s64; }
-    auto u128() const -> uint128_t { return (uint128_t)u64; }
   };
   using cr64 = const r64;
 
@@ -594,6 +597,7 @@ struct CPU : Thread {
 
     //other
     n64 latch;
+    n1 nmiPending;
   } scc;
 
   //interpreter-scc.cpp
@@ -821,8 +825,7 @@ struct CPU : Thread {
     };
 
     struct Pool {
-      Block blocks[1 << 6];
-      bool dirty;
+      Block* blocks[1 << 6];
     };
 
     auto reset() -> void {
@@ -842,14 +845,13 @@ struct CPU : Thread {
       auto pool = pools[address >> 8 & 0x1fffff];
       if(!pool) return;
       memory::jitprotect(false);
-      pool->blocks[address >> 2 & 0x3f].code = nullptr;
+      pool->blocks[address >> 2 & 0x3f] = nullptr;
       memory::jitprotect(true);
       #endif
     }
 
     auto invalidatePool(u32 address) -> void {
-      auto pool = pools[address >> 8 & 0x1fffff];
-      if(pool && pool->dirty) memory::fill(pool, sizeof(Pool));
+      pools[address >> 8 & 0x1fffff] = nullptr;
     }
 
     auto invalidateRange(u32 address, u32 length) -> void {
@@ -859,9 +861,9 @@ struct CPU : Thread {
     }
 
     auto pool(u32 address) -> Pool*;
-    auto block(u32 address) -> Block&;
+    auto block(u32 address) -> Block*;
 
-    auto emit(u32 address, Block& block) -> void;
+    auto emit(u32 address) -> Block*;
     auto emitEXECUTE(u32 instruction) -> bool;
     auto emitSPECIAL(u32 instruction) -> bool;
     auto emitREGIMM(u32 instruction) -> bool;

@@ -1,5 +1,30 @@
 This file is the short summary of the API changes:
 
+02.02.2022 - Backward compatible
+    All SLJIT_SET_* constants are
+    even numbers.
+
+27.01.2022 - Non-backward compatible
+    The arguments of sljit_emit_shift_into
+    are changed.
+
+17.12.2022 - Non-backward compatible
+    Replace sljit_emit_fast_enter and
+    sljit_get_return_address with
+    sljit_emit_op_dst.
+
+13.12.2022 - Non-backward compatible
+    Replace SLJIT_NOT with SLJIT_XOR.
+
+10.11.2022 - Non-backward compatible
+    Extract the pre/post update operations from
+    sljit_emit_mem to sljit_emit_mem_update
+    and sljit_emit_fmem to sljit_emit_fmem_update.
+
+04.11.2022 - Non-backward compatible
+    The SLJIT_32 flag is combined with the type
+    argument of cmov, not the dst_reg.
+
 16.06.2022 - Non-backward compatible
     Remove SLJIT_ENTER_CDECL and SLJIT_CALL_CDECL.
     The default calling mode is cdecl now.
@@ -8,7 +33,7 @@ This file is the short summary of the API changes:
     Floating point comparison types are renamed.
 
 01.03.2022 - Non-backward compatible
-    Remove SLJIT_NEG. Instead substraction from
+    Remove SLJIT_NEG. Instead subtraction from
     immedate 0 is preferred.
 
 31.01.2022 - Non-backward compatible

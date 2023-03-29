@@ -3,6 +3,8 @@
 #if defined(SLJIT)
 namespace nall::recompiler {
   struct generic {
+    static constexpr bool supported = Architecture::amd64 | Architecture::arm64 | Architecture::ppc64;
+
     bump_allocator& allocator;
     sljit_compiler* compiler = nullptr;
     sljit_label* epilogue = nullptr;

@@ -7,19 +7,16 @@
 #include <ares/ares.hpp>
 #include <nall/float-env.hpp>
 #include <nall/hashset.hpp>
+#include <nall/queue.hpp>
 #include <nall/recompiler/generic/generic.hpp>
 #include <component/processor/sm5k/sm5k.hpp>
 
 #if defined(ARCHITECTURE_AMD64)
 #include <nmmintrin.h>
 using v128 = __m128i;
-#elif defined(ARCHITECTURE_ARM64)
+#elif defined(ARCHITECTURE_ARM64) && !defined(COMPILER_MICROSOFT)
 #include <sse2neon.h>
 using v128 = __m128i;
-#endif
-
-#if defined(VULKAN)
-  #include <n64/vulkan/vulkan.hpp>
 #endif
 
 namespace ares::Nintendo64 {
@@ -57,6 +54,8 @@ namespace ares::Nintendo64 {
       PI_BUS_Write,
       SI_DMA_Read,
       SI_DMA_Write,
+      SI_BUS_Write,
+      RTC_Tick,
       DD_Clock_Tick,
       DD_MECHA_Response,
       DD_BM_Request,
@@ -65,10 +64,16 @@ namespace ares::Nintendo64 {
   };
   extern Queue queue;
 
+  struct BCD {
+    static auto encode(u8 value) -> u8 { return value / 10 << 4 | value % 10; }
+    static auto decode(u8 value) -> u8 { return (value >> 4) * 10 + (value & 15); }
+  };
+
   #include <n64/accuracy.hpp>
   #include <n64/memory/memory.hpp>
   #include <n64/system/system.hpp>
   #include <n64/cartridge/cartridge.hpp>
+  #include <n64/cic/cic.hpp>
   #include <n64/controller/controller.hpp>
   #include <n64/dd/dd.hpp>
   #include <n64/mi/mi.hpp>

@@ -3,7 +3,9 @@
 #include <nall/file.hpp>
 #include <nall/maybe.hpp>
 #include <nall/string.hpp>
-//#include <libchdr/chd.h>
+#if false
+#include <libchdr/chd.h>
+#endif
 
 namespace nall::Decode {
 
@@ -35,7 +37,9 @@ struct CHD {
   vector<Track> tracks;
 private:
   file_buffer fp;
-  //chd_file* chd = nullptr;
+#if false
+  chd_file* chd = nullptr;
+#endif
   const int chd_sector_size = 2352 + 96;
   size_t chd_hunk_size;
   vector<u8> chd_hunk_buffer;
@@ -43,9 +47,11 @@ private:
 };
 
 inline CHD::~CHD() {
-  /*if (chd != nullptr) {
+#if false
+  if (chd != nullptr) {
      chd_close(chd);
-  }*/
+  }
+#endif
 }
 
 inline auto CHD::load(const string& location) -> bool {
@@ -56,8 +62,8 @@ inline auto CHD::load(const string& location) -> bool {
   }
 
   return false;
-
-  /*chd_error err = chd_open_file(fp.handle(), CHD_OPEN_READ, nullptr, &chd);
+#if false
+  chd_error err = chd_open_file(fp.handle(), CHD_OPEN_READ, nullptr, &chd);
   if (err != CHDERR_NONE) {
     print("CHD: Failed to open ", location, ": ", chd_error_string(err), "\n");
     return false;
@@ -112,7 +118,7 @@ inline auto CHD::load(const string& location) -> bool {
 
     // We currently only support RAW and audio tracks; log an error and exit if we see anything different
     auto typeStr = string{type};
-    if (!(typeStr.find("_RAW") || typeStr.find("AUDIO"))) {
+    if (!(typeStr.find("_RAW") || typeStr.find("AUDIO") || typeStr.find("MODE1"))) {
       print("CHD: Unsupported track type: ", type, "\n");
       return false;
     }
@@ -180,18 +186,20 @@ inline auto CHD::load(const string& location) -> bool {
     tracks.append(track);
   }
 
-  return true;*/
+  return true;
+#endif
 }
 
 inline auto CHD::read(u32 sector) -> vector<u8> {
   // Convert LBA in CD-ROM to LBA in CHD
-  /*for(auto& track : tracks) {
+#if false
+  for(auto& track : tracks) {
     for(auto& index : track.indices) {
       if (sector >= index.lba && sector <= index.end) {
         auto chd_lba = (sector - index.lba) + index.chd_lba;
 
         vector<u8> output;
-        output.resize(2352);
+        output.resize(track.type == "MODE1" ? 2048 : 2352);
 
         int hunk = (chd_lba * chd_sector_size) / chd_hunk_size;
         int offset = (chd_lba * chd_sector_size) % chd_hunk_size;
@@ -215,7 +223,7 @@ inline auto CHD::read(u32 sector) -> vector<u8> {
             dst_ptr += sizeof(value);
           }
         } else {
-          std::copy(chd_hunk_buffer.data() + offset, chd_hunk_buffer.data() + offset + 2352, output.data());
+          std::copy(chd_hunk_buffer.data() + offset, chd_hunk_buffer.data() + offset + output.size(), output.data());
         }
 
         return output;
@@ -223,7 +231,8 @@ inline auto CHD::read(u32 sector) -> vector<u8> {
     }
   }
 
-  print("CHD: Attempting to read from unmapped sector ", sector, "\n");*/
+  print("CHD: Attempting to read from unmapped sector ", sector, "\n");
+#endif
   return {};
 }
 

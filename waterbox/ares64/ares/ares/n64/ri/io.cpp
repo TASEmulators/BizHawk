@@ -1,4 +1,4 @@
-auto RI::readWord(u32 address) -> u32 {
+auto RI::readWord(u32 address, u32& cycles) -> u32 {
   address = (address & 0xfffff) >> 2;
   n32 data = 0;
 
@@ -58,7 +58,7 @@ auto RI::readWord(u32 address) -> u32 {
   return data;
 }
 
-auto RI::writeWord(u32 address, u32 data_) -> void {
+auto RI::writeWord(u32 address, u32 data_, u32& cycles) -> void {
   address = (address & 0xfffff) >> 2;
   n32 data = data_;
 

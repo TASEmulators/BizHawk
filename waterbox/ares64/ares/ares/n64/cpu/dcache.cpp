@@ -11,21 +11,21 @@ template<u32 Size> auto CPU::DataCache::Line::fill(u32 address, u64 data) -> voi
   switch(address & 8) {
   case 0:
     if constexpr(Size != Dual) {
-      words[0] = bus.read<Word>(tag | index | 0x0);
-      words[1] = bus.read<Word>(tag | index | 0x4);
+      words[0] = cpu.busRead<Word>(tag | index | 0x0);
+      words[1] = cpu.busRead<Word>(tag | index | 0x4);
     }
     write<Size>(address, data);
-    words[2] = bus.read<Word>(tag | index | 0x8);
-    words[3] = bus.read<Word>(tag | index | 0xc);
+    words[2] = cpu.busRead<Word>(tag | index | 0x8);
+    words[3] = cpu.busRead<Word>(tag | index | 0xc);
     break;
   case 8:
     if constexpr(Size != Dual) {
-      words[2] = bus.read<Word>(tag | index | 0x8);
-      words[3] = bus.read<Word>(tag | index | 0xc);
+      words[2] = cpu.busRead<Word>(tag | index | 0x8);
+      words[3] = cpu.busRead<Word>(tag | index | 0xc);
     }
     write<Size>(address, data);
-    words[0] = bus.read<Word>(tag | index | 0x0);
-    words[1] = bus.read<Word>(tag | index | 0x4);
+    words[0] = cpu.busRead<Word>(tag | index | 0x0);
+    words[1] = cpu.busRead<Word>(tag | index | 0x4);
     break;
   }
 }
@@ -38,16 +38,16 @@ auto CPU::DataCache::Line::fill(u32 address) -> void {
   //read words according to critical doubleword first scheme
   switch(address & 8) {
   case 0:
-    words[0] = bus.read<Word>(tag | index | 0x0);
-    words[1] = bus.read<Word>(tag | index | 0x4);
-    words[2] = bus.read<Word>(tag | index | 0x8);
-    words[3] = bus.read<Word>(tag | index | 0xc);
+    words[0] = cpu.busRead<Word>(tag | index | 0x0);
+    words[1] = cpu.busRead<Word>(tag | index | 0x4);
+    words[2] = cpu.busRead<Word>(tag | index | 0x8);
+    words[3] = cpu.busRead<Word>(tag | index | 0xc);
     break;
   case 8:
-    words[2] = bus.read<Word>(tag | index | 0x8);
-    words[3] = bus.read<Word>(tag | index | 0xc);
-    words[0] = bus.read<Word>(tag | index | 0x0);
-    words[1] = bus.read<Word>(tag | index | 0x4);
+    words[2] = cpu.busRead<Word>(tag | index | 0x8);
+    words[3] = cpu.busRead<Word>(tag | index | 0xc);
+    words[0] = cpu.busRead<Word>(tag | index | 0x0);
+    words[1] = cpu.busRead<Word>(tag | index | 0x4);
     break;
   }
 }
@@ -55,10 +55,10 @@ auto CPU::DataCache::Line::fill(u32 address) -> void {
 auto CPU::DataCache::Line::writeBack() -> void {
   cpu.step(40);
   dirty = 0;
-  bus.write<Word>(tag | index | 0x0, words[0]);
-  bus.write<Word>(tag | index | 0x4, words[1]);
-  bus.write<Word>(tag | index | 0x8, words[2]);
-  bus.write<Word>(tag | index | 0xc, words[3]);
+  cpu.busWrite<Word>(tag | index | 0x0, words[0]);
+  cpu.busWrite<Word>(tag | index | 0x4, words[1]);
+  cpu.busWrite<Word>(tag | index | 0x8, words[2]);
+  cpu.busWrite<Word>(tag | index | 0xc, words[3]);
 }
 
 auto CPU::DataCache::line(u32 address) -> Line& {

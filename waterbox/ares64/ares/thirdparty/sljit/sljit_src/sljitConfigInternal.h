@@ -61,6 +61,8 @@ extern "C" {
      SLJIT_BIG_ENDIAN : big endian architecture
      SLJIT_UNALIGNED : unaligned memory accesses for non-fpu operations are supported
      SLJIT_FPU_UNALIGNED : unaligned memory accesses for fpu operations are supported
+     SLJIT_MASKED_SHIFT : all word shifts are always masked
+     SLJIT_MASKED_SHIFT32 : all 32 bit shifts are always masked
      SLJIT_INDIRECT_CALL : see SLJIT_FUNC_ADDR() for more information
 
    Constants:
@@ -134,23 +136,23 @@ extern "C" {
 /********************************************************/
 
 #if (defined SLJIT_CONFIG_AUTO && SLJIT_CONFIG_AUTO)
-
 #ifndef _WIN32
 
 #if defined(__i386__) || defined(__i386)
 #define SLJIT_CONFIG_X86_32 1
 #elif defined(__x86_64__)
 #define SLJIT_CONFIG_X86_64 1
-#elif defined(__arm__) || defined(__ARM__)
-#ifdef __thumb2__
-#define SLJIT_CONFIG_ARM_THUMB2 1
-#elif defined(__ARM_ARCH_7__) || defined(__ARM_ARCH_7A__) || defined(__ARM_ARCH_7R__)
-#define SLJIT_CONFIG_ARM_V7 1
-#else
-#define SLJIT_CONFIG_ARM_V5 1
-#endif
-#elif defined (__aarch64__)
+#elif defined(__aarch64__)
 #define SLJIT_CONFIG_ARM_64 1
+#elif defined(__thumb2__)
+#define SLJIT_CONFIG_ARM_THUMB2 1
+#elif (defined(__ARM_ARCH) && __ARM_ARCH >= 7) || \
+	((defined(__ARM_ARCH_7__) || defined(__ARM_ARCH_7A__) || defined(__ARM_ARCH_7R__) || defined(__ARM_ARCH_7S__)) \
+	 || (defined(__ARM_ARCH_8A__) || defined(__ARM_ARCH_8R__)) \
+	 || (defined(__ARM_ARCH_9A__)))
+#define SLJIT_CONFIG_ARM_V7 1
+#elif defined(__arm__) || defined (__ARM__)
+#define SLJIT_CONFIG_ARM_V5 1
 #elif defined(__ppc64__) || defined(__powerpc64__) || (defined(_ARCH_PPC64) && defined(__64BIT__)) || (defined(_POWER) && defined(__64BIT__))
 #define SLJIT_CONFIG_PPC_64 1
 #elif defined(__ppc__) || defined(__powerpc__) || defined(_ARCH_PPC) || defined(_ARCH_PWR) || defined(_ARCH_PWR2) || defined(_POWER)
@@ -603,7 +605,7 @@ typedef double sljit_f64;
 #endif
 #endif /* SLJIT_INDIRECT_CALL */
 
-/* The offset which needs to be substracted from the return address to
+/* The offset which needs to be subtracted from the return address to
 determine the next executed instruction after return. */
 #ifndef SLJIT_RETURN_ADDRESS_OFFSET
 #define SLJIT_RETURN_ADDRESS_OFFSET 0
@@ -631,11 +633,13 @@ SLJIT_API_FUNC_ATTRIBUTE void sljit_free_unused_memory_exec(void);
 #if (defined SLJIT_PROT_EXECUTABLE_ALLOCATOR && SLJIT_PROT_EXECUTABLE_ALLOCATOR)
 SLJIT_API_FUNC_ATTRIBUTE sljit_sw sljit_exec_offset(void* ptr);
 #define SLJIT_EXEC_OFFSET(ptr) sljit_exec_offset(ptr)
-#else
-#define SLJIT_EXEC_OFFSET(ptr) 0
 #endif
 
 #endif /* SLJIT_EXECUTABLE_ALLOCATOR */
+
+#ifndef SLJIT_EXEC_OFFSET
+#define SLJIT_EXEC_OFFSET(ptr) 0
+#endif
 
 /**********************************************/
 /* Registers and locals offset determination. */
@@ -649,6 +653,8 @@ SLJIT_API_FUNC_ATTRIBUTE sljit_sw sljit_exec_offset(void* ptr);
 #define SLJIT_NUMBER_OF_SAVED_FLOAT_REGISTERS 0
 #define SLJIT_LOCALS_OFFSET_BASE (8 * SSIZE_OF(sw))
 #define SLJIT_PREF_SHIFT_REG SLJIT_R2
+#define SLJIT_MASKED_SHIFT 1
+#define SLJIT_MASKED_SHIFT32 1
 
 #elif (defined SLJIT_CONFIG_X86_64 && SLJIT_CONFIG_X86_64)
 
@@ -664,6 +670,8 @@ SLJIT_API_FUNC_ATTRIBUTE sljit_sw sljit_exec_offset(void* ptr);
 #define SLJIT_LOCALS_OFFSET_BASE (4 * SSIZE_OF(sw))
 #endif /* !_WIN64 */
 #define SLJIT_PREF_SHIFT_REG SLJIT_R3
+#define SLJIT_MASKED_SHIFT 1
+#define SLJIT_MASKED_SHIFT32 1
 
 #elif (defined SLJIT_CONFIG_ARM_V5 && SLJIT_CONFIG_ARM_V5) || (defined SLJIT_CONFIG_ARM_V7 && SLJIT_CONFIG_ARM_V7)
 
@@ -688,6 +696,8 @@ SLJIT_API_FUNC_ATTRIBUTE sljit_sw sljit_exec_offset(void* ptr);
 #define SLJIT_NUMBER_OF_FLOAT_REGISTERS 30
 #define SLJIT_NUMBER_OF_SAVED_FLOAT_REGISTERS 8
 #define SLJIT_LOCALS_OFFSET_BASE (2 * (sljit_s32)sizeof(sljit_sw))
+#define SLJIT_MASKED_SHIFT 1
+#define SLJIT_MASKED_SHIFT32 1
 
 #elif (defined SLJIT_CONFIG_PPC && SLJIT_CONFIG_PPC)
 
@@ -717,6 +727,8 @@ SLJIT_API_FUNC_ATTRIBUTE sljit_sw sljit_exec_offset(void* ptr);
 #define SLJIT_NUMBER_OF_FLOAT_REGISTERS 29
 #define SLJIT_NUMBER_OF_SAVED_FLOAT_REGISTERS 8
 #endif
+#define SLJIT_MASKED_SHIFT 1
+#define SLJIT_MASKED_SHIFT32 1
 
 #elif (defined SLJIT_CONFIG_RISCV && SLJIT_CONFIG_RISCV)
 
@@ -725,6 +737,8 @@ SLJIT_API_FUNC_ATTRIBUTE sljit_sw sljit_exec_offset(void* ptr);
 #define SLJIT_LOCALS_OFFSET_BASE 0
 #define SLJIT_NUMBER_OF_FLOAT_REGISTERS 30
 #define SLJIT_NUMBER_OF_SAVED_FLOAT_REGISTERS 12
+#define SLJIT_MASKED_SHIFT 1
+#define SLJIT_MASKED_SHIFT32 1
 
 #elif (defined SLJIT_CONFIG_S390X && SLJIT_CONFIG_S390X)
 
@@ -754,6 +768,7 @@ SLJIT_API_FUNC_ATTRIBUTE sljit_sw sljit_exec_offset(void* ptr);
 #define SLJIT_NUMBER_OF_FLOAT_REGISTERS 15
 #define SLJIT_NUMBER_OF_SAVED_FLOAT_REGISTERS 8
 #define SLJIT_LOCALS_OFFSET_BASE SLJIT_S390X_DEFAULT_STACK_FRAME_SIZE
+#define SLJIT_MASKED_SHIFT 1
 
 #elif (defined SLJIT_CONFIG_UNSUPPORTED && SLJIT_CONFIG_UNSUPPORTED)
 

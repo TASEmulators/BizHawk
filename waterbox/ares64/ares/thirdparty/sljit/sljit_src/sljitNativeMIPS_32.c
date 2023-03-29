@@ -44,6 +44,35 @@ static SLJIT_INLINE sljit_s32 emit_const(struct sljit_compiler *compiler, sljit_
 	return push_inst(compiler, ORI | S(dst) | T(dst) | IMM(init_value), DR(dst));
 }
 
+SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_fcopy(struct sljit_compiler *compiler, sljit_s32 op,
+	sljit_s32 freg, sljit_s32 reg)
+{
+	sljit_s32 reg2;
+	sljit_ins inst;
+
+	CHECK_ERROR();
+	CHECK(check_sljit_emit_fcopy(compiler, op, freg, reg));
+
+	if (reg & REG_PAIR_MASK) {
+		reg2 = REG_PAIR_SECOND(reg);
+		reg = REG_PAIR_FIRST(reg);
+
+		inst = T(reg2) | FS(freg) | (1 << 11);
+
+		if (op == SLJIT_COPY_TO_F64)
+			FAIL_IF(push_inst(compiler, MTC1 | inst, MOVABLE_INS));
+		else
+			FAIL_IF(push_inst(compiler, MFC1 | inst, DR(reg2)));
+	}
+
+	inst = T(reg) | FS(freg);
+
+	if (GET_OPCODE(op) == SLJIT_COPY_TO_F64)
+		return push_inst(compiler, MTC1 | inst, MOVABLE_INS);
+
+	return push_inst(compiler, MFC1 | inst, DR(reg));
+}
+
 SLJIT_API_FUNC_ATTRIBUTE void sljit_set_jump_addr(sljit_uw addr, sljit_uw new_target, sljit_sw executable_offset)
 {
 	sljit_ins *inst = (sljit_ins *)addr;
@@ -267,7 +296,7 @@ SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_icall(struct sljit_compiler *compi
 
 	if ((type & 0xff) == SLJIT_CALL_REG_ARG) {
 		if (type & SLJIT_CALL_RETURN) {
-			if (src >= SLJIT_FIRST_SAVED_REG && src <= SLJIT_S0) {
+			if (src >= SLJIT_FIRST_SAVED_REG && src <= (SLJIT_S0 - SLJIT_KEPT_SAVEDS_COUNT(compiler->options))) {
 				FAIL_IF(push_inst(compiler, ADDU | S(src) | TA(0) | D(PIC_ADDR_REG), DR(PIC_ADDR_REG)));
 				src = PIC_ADDR_REG;
 				srcw = 0;

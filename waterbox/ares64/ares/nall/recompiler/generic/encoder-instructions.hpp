@@ -30,8 +30,6 @@
   OP1(mov64_s16, MOV_S16)
   OP1(mov64_u32, MOV_U32)
   OP1(mov64_s32, MOV_S32)
-  OP1(not32, NOT32)
-  OP1(not64, NOT)
 #undef OP1
 
   //2 operand instructions
@@ -71,10 +69,20 @@
   OP2(xor64, XOR)
   OP2(shl32, SHL32)
   OP2(shl64, SHL)
+  OP2(mshl32, MSHL32)
+  OP2(mshl64, MSHL)
   OP2(lshr32, LSHR32)
   OP2(lshr64, LSHR)
+  OP2(mlshr32, MLSHR32)
+  OP2(mlshr64, MLSHR)
   OP2(ashr32, ASHR32)
   OP2(ashr64, ASHR)
+  OP2(mashr32, MASHR32)
+  OP2(mashr64, MASHR)
+  OP2(rotl32, ROTL32)
+  OP2(rotl64, ROTL)
+  OP2(rotr32, ROTR32)
+  OP2(rotr64, ROTR)
 #undef OP2
 
   //compare instructions

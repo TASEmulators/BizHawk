@@ -134,9 +134,9 @@ private:
               memory::assign(target + 0, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff);  //sync
               memory::assign(target + 6, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00);  //sync
               auto [minute, second, frame] = CD::MSF(lbaFileBase + index.lba + sector);
-              target[12] = CD::BCD::encode(minute);
-              target[13] = CD::BCD::encode(second);
-              target[14] = CD::BCD::encode(frame);
+              target[12] = BCD::encode(minute);
+              target[13] = BCD::encode(second);
+              target[14] = BCD::encode(frame);
               target[15] = 0x01;  //mode
               filedata.read({target + 16, length});
               CD::RSPC::encodeMode1({target, 2352});
@@ -215,7 +215,20 @@ private:
         for(s32 sector : range(index.sectorCount())) {
           auto target = _image.data() + 2448ull * (LeadInSectors + index.lba + sector);
           auto sectorData = chd.read(lba);
-          memory::copy(target, 2352, sectorData.data(), sectorData.size());
+          if(sectorData.size() == 2048) {
+            //ISO: generate header + parity data
+            memory::assign(target + 0, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff);  //sync
+            memory::assign(target + 6, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00);  //sync
+            auto [minute, second, frame] = CD::MSF(index.lba + sector);
+            target[12] = BCD::encode(minute);
+            target[13] = BCD::encode(second);
+            target[14] = BCD::encode(frame);
+            target[15] = 0x01;  //mode
+            memory::copy(target + 16, 2048, sectorData.data(), sectorData.size());
+            CD::RSPC::encodeMode1({target, 2352});
+          } else {
+            memory::copy(target, 2352, sectorData.data(), sectorData.size());
+          }
           lba++;
         }
       }

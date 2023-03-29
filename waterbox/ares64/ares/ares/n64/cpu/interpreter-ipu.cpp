@@ -252,9 +252,19 @@ auto CPU::DADDU(r64& rd, cr64& rs, cr64& rt) -> void {
 auto CPU::DDIV(cr64& rs, cr64& rt) -> void {
   if(!context.kernelMode() && context.bits == 32) return exception.reservedInstruction();
   if(rt.s64) {
+    #if defined(_MSC_VER) || !defined(__SIZEOF_INT128__)
+    if(rs.s64 != (-1LL << 63) || rt.s64 != -1LL) {
+      LO.u64 = rs.s64 / rt.s64;
+      HI.u64 = rs.s64 % rt.s64;
+    } else {
+      LO.u64 = rs.s64;
+      HI.u64 = 0;
+    }
+    #else
     //cast to i128 to prevent exception on INT64_MIN / -1
     LO.u64 = s128(rs.s64) / s128(rt.s64);
     HI.u64 = s128(rs.s64) % s128(rt.s64);
+    #endif
   } else {
     LO.u64 = rs.s64 < 0 ? +1 : -1;
     HI.u64 = rs.s64;
@@ -301,17 +311,41 @@ auto CPU::DIVU(cr64& rs, cr64& rt) -> void {
 
 auto CPU::DMULT(cr64& rs, cr64& rt) -> void {
   if(!context.kernelMode() && context.bits == 32) return exception.reservedInstruction();
-  u128 result = rs.s128() * rt.s128();
+#if defined(COMPILER_MICROSOFT) && (defined(ARCHITECTURE_AMD64) || defined(ARCHITECTURE_ARM64))
+  #if defined(ARCHITECTURE_AMD64)
+  LO.s64 = _mul128(rs.s64, rt.s64, &HI.s64);
+  #else
+	LO.s64 = rs.s64 * rt.s64;
+	HI.s64 = __mulh(rs.s64, rt.s64);
+  #endif
+#else
+  #if defined(__SIZEOF_INT128__)
+  u128 result = s128(rs.s64) * s128(rt.s64);
+  #else
+  u128 result = u128(rs.u64) * u128(rt.u64);
+  if(rs.s64 < 0) result -= u128(rt.u64) << 64;
+  if(rt.s64 < 0) result -= u128(rs.u64) << 64;
+  #endif
   LO.u64 = result >>  0;
   HI.u64 = result >> 64;
+#endif
   step(8);
 }
 
 auto CPU::DMULTU(cr64& rs, cr64& rt) -> void {
   if(!context.kernelMode() && context.bits == 32) return exception.reservedInstruction();
-  u128 result = rs.u128() * rt.u128();
+#if defined(COMPILER_MICROSOFT) && (defined(ARCHITECTURE_AMD64) || defined(ARCHITECTURE_ARM64))
+  #if defined(ARCHITECTURE_AMD64)
+  LO.u64 = _umul128(rs.u64, rt.u64, &HI.u64);
+  #else
+	LO.u64 = rs.u64 * rt.u64;
+	HI.u64 = __umulh(rs.u64, rt.u64);
+  #endif
+#else
+  u128 result = u128(rs.u64) * u128(rt.u64);
   LO.u64 = result >>  0;
   HI.u64 = result >> 64;
+#endif
   step(8);
 }
 

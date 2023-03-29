@@ -25,7 +25,7 @@ struct Stream : Audio {
   template<typename... P>
   auto frame(P&&... p) -> void {
     if(runAhead()) return;
-    f64 samples[sizeof...(p)] = {std::forward<P>(p)...};
+    f64 samples[sizeof...(p)] = {f64(std::forward<P>(p))...};
     write(samples);
   }
 

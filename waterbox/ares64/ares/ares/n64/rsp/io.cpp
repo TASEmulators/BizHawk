@@ -1,4 +1,4 @@
-auto RSP::readWord(u32 address) -> u32 {
+auto RSP::readWord(u32 address, u32& cycles) -> u32 {
   if(address <= 0x0403'ffff) {
     if(address & 0x1000) return imem.read<Word>(address);
     else                 return dmem.read<Word>(address);
@@ -67,7 +67,7 @@ auto RSP::ioRead(u32 address) -> u32 {
   return data;
 }
 
-auto RSP::writeWord(u32 address, u32 data) -> void {
+auto RSP::writeWord(u32 address, u32 data, u32& cycles) -> void {
   if(address <= 0x0403'ffff) {
     if(address & 0x1000) return recompiler.invalidate(address & 0xfff), imem.write<Word>(address, data);
     else                 return dmem.write<Word>(address, data);
@@ -156,7 +156,7 @@ auto RSP::ioWrite(u32 address, u32 data_) -> void {
   debugger.ioSCC(Write, address, data);
 }
 
-auto RSP::Status::readWord(u32 address) -> u32 {
+auto RSP::Status::readWord(u32 address, u32& cycles) -> u32 {
   address = (address & 0x7ffff) >> 2;
   n32 data;
 
@@ -177,7 +177,7 @@ auto RSP::Status::readWord(u32 address) -> u32 {
   return data;
 }
 
-auto RSP::Status::writeWord(u32 address, u32 data_) -> void {
+auto RSP::Status::writeWord(u32 address, u32 data_, u32& cycles) -> void {
   address = (address & 0x7ffff) >> 2;
   n32 data = data_;
 

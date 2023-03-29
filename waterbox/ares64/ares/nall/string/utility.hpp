@@ -161,7 +161,7 @@ template<typename T> inline auto fromReal(char* result, T value) -> u32 {
   //Windows C-runtime does not support long double via sprintf()
   sprintf(buffer, "%f", (double)value);
   #else
-  sprintf(buffer, "%Lf", (long double)value);
+  snprintf(buffer, sizeof(buffer), "%Lf", (long double)value);
   #endif
 
   //remove excess 0's in fraction (2.500000 -> 2.5)

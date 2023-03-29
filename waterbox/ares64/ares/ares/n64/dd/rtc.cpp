@@ -1,7 +1,9 @@
 auto DD::rtcLoad() -> void {
-  /*if(auto fp = system.pak->read("time.rtc")) {
+#if false
+  if(auto fp = system.pak->read("time.rtc")) {
     rtc.load(fp);
-  }*/
+  }
+#endif
 
   n64 check = 0;
   for(auto n : range(8)) check.byte(n) = rtc.read<Byte>(n);
@@ -11,17 +13,19 @@ auto DD::rtcLoad() -> void {
   for(auto n : range(8)) timestamp.byte(n) = rtc.read<Byte>(8 + n);
   if(!~timestamp) return;  //new save file
 
-  timestamp = rtcCallback() - timestamp;
+  timestamp = platform->time() - timestamp;
   while(timestamp--) rtcTickSecond();
 }
 
 auto DD::rtcSave() -> void {
-  n64 timestamp = rtcCallback();
+  n64 timestamp = platform->time();
   for(auto n : range(8)) rtc.write<Byte>(8 + n, timestamp.byte(n));
 
-  /*if(auto fp = system.pak->write("time.rtc")) {
+#if false
+  if(auto fp = system.pak->write("time.rtc")) {
     rtc.save(fp);
-  }*/
+  }
+#endif
 }
 
 auto DD::rtcTick(u32 offset) -> void {

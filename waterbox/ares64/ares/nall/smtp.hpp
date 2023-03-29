@@ -1,17 +1,17 @@
 #pragma once
 
-#include <nall/base64.hpp>
 #include <nall/stdint.hpp>
 #include <nall/string.hpp>
+#include <nall/file.hpp>
+#include <nall/location.hpp>
+#include <nall/random.hpp>
+#include <nall/encode/base64.hpp>
 
 #if !defined(PLATFORM_WINDOWS)
   #include <sys/types.h>
   #include <sys/socket.h>
   #include <netinet/in.h>
   #include <netdb.h>
-#else
-  #include <winsock2.h>
-  #include <ws2tcpip.h>
 #endif
 
 namespace nall {
@@ -102,7 +102,7 @@ inline auto SMTP::attachment(const u8* data, u32 size, string name) -> void {
 
 inline auto SMTP::attachment(string filename, string name) -> bool {
   if(!file::exists(filename)) return false;
-  if(name == "") name = notdir(filename);
+  if(name == "") name = Location::file(filename);
   auto buffer = file::read(filename);
   info.attachments.append({std::move(buffer), name});
   return true;
@@ -117,101 +117,6 @@ inline auto SMTP::body(string body, Format format) -> void {
   info.format = format;
 }
 
-inline auto SMTP::send() -> bool {
-  info.message.append("From: =?UTF-8?B?", Base64::encode(contact(info.from)), "?=\r\n");
-  info.message.append("To: =?UTF-8?B?", Base64::encode(contacts(info.to)), "?=\r\n");
-  info.message.append("Cc: =?UTF-8?B?", Base64::encode(contacts(info.cc)), "?=\r\n");
-  info.message.append("Subject: =?UTF-8?B?", Base64::encode(info.subject), "?=\r\n");
-
-  string uniqueID = boundary();
-
-  info.message.append("MIME-Version: 1.0\r\n");
-  info.message.append("Content-Type: multipart/mixed; boundary=", uniqueID, "\r\n");
-  info.message.append("\r\n");
-
-  string format = (info.format == Format::Plain ? "text/plain" : "text/html");
-
-  info.message.append("--", uniqueID, "\r\n");
-  info.message.append("Content-Type: ", format, "; charset=UTF-8\r\n");
-  info.message.append("Content-Transfer-Encoding: base64\r\n");
-  info.message.append("\r\n");
-  info.message.append(split(Base64::encode(info.body)), "\r\n");
-  info.message.append("\r\n");
-
-  for(auto& attachment : info.attachments) {
-    info.message.append("--", uniqueID, "\r\n");
-    info.message.append("Content-Type: application/octet-stream\r\n");
-    info.message.append("Content-Transfer-Encoding: base64\r\n");
-    info.message.append("Content-Disposition: attachment; size=", attachment.buffer.size(), "; filename*=UTF-8''", filename(attachment.name), "\r\n");
-    info.message.append("\r\n");
-    info.message.append(split(Base64::encode(attachment.buffer)), "\r\n");
-    info.message.append("\r\n");
-  }
-
-  info.message.append("--", uniqueID, "--\r\n");
-
-  addrinfo hints;
-  memset(&hints, 0, sizeof(addrinfo));
-  hints.ai_family = AF_UNSPEC;
-  hints.ai_socktype = SOCK_STREAM;
-  hints.ai_flags = AI_PASSIVE;
-
-  addrinfo* serverinfo;
-  s32 status = getaddrinfo(info.server, string(info.port), &hints, &serverinfo);
-  if(status != 0) return false;
-
-  s32 sock = socket(serverinfo->ai_family, serverinfo->ai_socktype, serverinfo->ai_protocol);
-  if(sock == -1) return false;
-
-  s32 result = connect(sock, serverinfo->ai_addr, serverinfo->ai_addrlen);
-  if(result == -1) return false;
-
-  string response;
-  info.response.append(response = recv(sock));
-  if(!response.beginswith("220 ")) { close(sock); return false; }
-
-  send(sock, {"HELO ", info.server, "\r\n"});
-  info.response.append(response = recv(sock));
-  if(!response.beginswith("250 ")) { close(sock); return false; }
-
-  send(sock, {"MAIL FROM: <", info.from.mail, ">\r\n"});
-  info.response.append(response = recv(sock));
-  if(!response.beginswith("250 ")) { close(sock); return false; }
-
-  for(auto& contact : info.to) {
-    send(sock, {"RCPT TO: <", contact.mail, ">\r\n"});
-    info.response.append(response = recv(sock));
-    if(!response.beginswith("250 ")) { close(sock); return false; }
-  }
-
-  for(auto& contact : info.cc) {
-    send(sock, {"RCPT TO: <", contact.mail, ">\r\n"});
-    info.response.append(response = recv(sock));
-    if(!response.beginswith("250 ")) { close(sock); return false; }
-  }
-
-  for(auto& contact : info.bcc) {
-    send(sock, {"RCPT TO: <", contact.mail, ">\r\n"});
-    info.response.append(response = recv(sock));
-    if(!response.beginswith("250 ")) { close(sock); return false; }
-  }
-
-  send(sock, {"DATA\r\n"});
-  info.response.append(response = recv(sock));
-  if(!response.beginswith("354 ")) { close(sock); return false; }
-
-  send(sock, {info.message, "\r\n", ".\r\n"});
-  info.response.append(response = recv(sock));
-  if(!response.beginswith("250 ")) { close(sock); return false; }
-
-  send(sock, {"QUIT\r\n"});
-  info.response.append(response = recv(sock));
-//if(!response.beginswith("221 ")) { close(sock); return false; }
-
-  close(sock);
-  return true;
-}
-
 inline auto SMTP::message() -> string {
   return info.message;
 }
@@ -220,42 +125,18 @@ inline auto SMTP::response() -> string {
   return info.response;
 }
 
-inline auto SMTP::send(s32 sock, const string& text) -> bool {
-  const char* data = text.data();
-  u32 size = text.size();
-  while(size) {
-    s32 length = ::send(sock, (const char*)data, size, 0);
-    if(length == -1) return false;
-    data += length;
-    size -= length;
-  }
-  return true;
-}
-
-inline auto SMTP::recv(s32 sock) -> string {
-  vector<u8> buffer;
-  while(true) {
-    char c;
-    if(::recv(sock, &c, sizeof(char), 0) < 1) break;
-    buffer.append(c);
-    if(c == '\n') break;
-  }
-  buffer.append(0);
-  return buffer;
-}
-
 inline auto SMTP::boundary() -> string {
-  random_lfsr random;
+  PRNG::LFSR random;
   random.seed(time(0));
   string boundary;
-  for(u32 n = 0; n < 16; n++) boundary.append(hex<2>(random()));
+  for(u32 n = 0; n < 16; n++) boundary.append(hex(random.random(), 2L));
   return boundary;
 }
 
 inline auto SMTP::filename(const string& filename) -> string {
   string result;
   for(auto& n : filename) {
-    if(n <= 32 || n >= 127) result.append("%", hex<2>(n));
+    if(n <= 32 || n >= 127) result.append("%", hex(n, 2L));
     else result.append(n);
   }
   return result;
@@ -292,23 +173,8 @@ inline auto SMTP::split(const string& text) -> string {
   return result;
 }
 
-#if defined(API_WINDOWS)
-inline auto SMTP::close(s32 sock) -> s32 {
-  return closesocket(sock);
 }
 
-inline SMTP::SMTP() {
-  s32 sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-  if(sock == INVALID_SOCKET && WSAGetLastError() == WSANOTINITIALISED) {
-    WSADATA wsaData;
-    if(WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
-      WSACleanup();
-      return;
-    }
-  } else {
-    close(sock);
-  }
-}
+#if defined(NALL_HEADER_ONLY)
+  #include <nall/smtp.cpp>
 #endif
-
-}

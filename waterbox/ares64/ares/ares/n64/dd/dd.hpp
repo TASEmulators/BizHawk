@@ -1,6 +1,8 @@
 //Disk Drive
 
-struct DD : Memory::IO<DD> {
+#include <nall/bcd.hpp>
+
+struct DD : Memory::PI<DD> {
   Node::Object obj;
   Node::Port port;
   Node::Peripheral node;
@@ -65,6 +67,8 @@ struct DD : Memory::IO<DD> {
   auto rtcTickSecond() -> void;
 
   //io.cpp
+  auto readHalf(u32 address) -> u16;
+  auto writeHalf(u32 address, u16 data) -> void;
   auto readWord(u32 address) -> u32;
   auto writeWord(u32 address, u32 data) -> void;
 
@@ -75,13 +79,6 @@ struct DD : Memory::IO<DD> {
     string title;
     string cic;
   } information;
-
-  struct BCD {
-    static auto encode(u8 value) -> u8 { return value / 10 << 4 | value % 10; }
-    static auto decode(u8 value) -> u8 { return (value >> 4) * 10 + (value & 15); }
-  };
-
-  std::function<u64()> rtcCallback = []() { return 0; };
 
 private:
   struct Interrupt {

@@ -116,9 +116,9 @@ struct SQLite3 {
     auto& bind(u32 column, u64 value) { sqlite3_bind_int64(_statement, 1 + column, value); return *this; }
     auto& bind(u32 column, intmax value) { sqlite3_bind_int64(_statement, 1 + column, value); return *this; }
     auto& bind(u32 column, uintmax value) { sqlite3_bind_int64(_statement, 1 + column, value); return *this; }
-    auto& bind(u32 column, nall::boolean value) { sqlite3_bind_int64(_statement, 1 + column, value); return *this; }
-    auto& bind(u32 column, nall::integer value) { sqlite3_bind_int64(_statement, 1 + column, value); return *this; }
-    auto& bind(u32 column, nall::natural value) { sqlite3_bind_int64(_statement, 1 + column, value); return *this; }
+    auto& bind(u32 column, nall::Boolean value) { sqlite3_bind_int64(_statement, 1 + column, value); return *this; }
+    auto& bind(u32 column, nall::Integer value) { sqlite3_bind_int64(_statement, 1 + column, value); return *this; }
+    auto& bind(u32 column, nall::Natural value) { sqlite3_bind_int64(_statement, 1 + column, value); return *this; }
     auto& bind(u32 column, f64 value) { sqlite3_bind_double(_statement, 1 + column, value); return *this; }
     auto& bind(u32 column, const nall::string& value) { sqlite3_bind_text(_statement, 1 + column, value.data(), value.size(), SQLITE_TRANSIENT); return *this; }
     auto& bind(u32 column, const vector<u8>& value) { sqlite3_bind_blob(_statement, 1 + column, value.data(), value.size(), SQLITE_TRANSIENT); return *this; }
@@ -131,9 +131,9 @@ struct SQLite3 {
     auto& bind(u64 value) { return bind(_input++, value); }
     auto& bind(intmax value) { return bind(_input++, value); }
     auto& bind(uintmax value) { return bind(_input++, value); }
-    auto& bind(nall::boolean value) { return bind(_input++, value); }
-    auto& bind(nall::integer value) { return bind(_input++, value); }
-    auto& bind(nall::natural value) { return bind(_input++, value); }
+    auto& bind(nall::Boolean value) { return bind(_input++, value); }
+    auto& bind(nall::Integer value) { return bind(_input++, value); }
+    auto& bind(nall::Natural value) { return bind(_input++, value); }
     auto& bind(f64 value) { return bind(_input++, value); }
     auto& bind(const nall::string& value) { return bind(_input++, value); }
     auto& bind(const vector<u8>& value) { return bind(_input++, value); }

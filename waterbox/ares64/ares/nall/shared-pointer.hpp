@@ -27,7 +27,7 @@ struct shared_pointer_this_base{};
 template<typename T>
 struct shared_pointer {
   template<typename... P> static auto create(P&&... p) {
-    return shared_pointer<T>{new T{std::forward<P>(p)...}};
+    return shared_pointer<T>{new T(std::forward<P>(p)...)};
   }
 
   using type = T;

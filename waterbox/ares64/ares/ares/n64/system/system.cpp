@@ -40,7 +40,6 @@ auto System::game() -> string {
 auto System::run() -> void {
   while(!vi.refreshed) cpu.main();
   vi.refreshed = false;
-  if (!pif.io.romLockout) pif.run();
 }
 
 auto System::load(Node::System& root, string name) -> bool {
@@ -120,7 +119,7 @@ auto System::unload() -> void {
 }
 
 auto System::save() -> void {
-/*
+#if false
   if(!node) return;
   cartridge.save();
   controllerPort1.save();
@@ -128,7 +127,7 @@ auto System::save() -> void {
   controllerPort3.save();
   controllerPort4.save();
   if(_DD()) dd.save();
-*/
+#endif
 }
 
 auto System::power(bool reset) -> void {
@@ -146,6 +145,7 @@ auto System::power(bool reset) -> void {
   ai.power(reset);
   pi.power(reset);
   pif.power(reset);
+  cic.power(reset);
   ri.power(reset);
   si.power(reset);
   cpu.power(reset);

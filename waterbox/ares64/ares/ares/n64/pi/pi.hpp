@@ -1,6 +1,6 @@
 //Peripheral Interface
 
-struct PI : Memory::IO<PI> {
+struct PI : Memory::RCP<PI> {
   Node::Object node;
 
   struct Debugger {
@@ -28,10 +28,10 @@ struct PI : Memory::IO<PI> {
   auto ioWrite(u32 address, u32 data) -> void;
 
   //bus.hpp
-  auto readWord(u32 address) -> u32;
-  auto writeWord(u32 address, u32 data) -> void;
+  auto readWord(u32 address, u32& cycles) -> u32;
+  auto writeWord(u32 address, u32 data, u32& cycles) -> void;
   auto writeFinished() -> void;
-  auto writeForceFinish() -> void;
+  auto writeForceFinish() -> u32;
   template <u32 Size>
   auto busRead(u32 address) -> u32;
   template <u32 Size>

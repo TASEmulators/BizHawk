@@ -476,6 +476,6 @@ auto CPU::Disassembler::ccrRegisterValue(u32 index) const -> string {
 
 template<typename... P>
 auto CPU::Disassembler::hint(P&&... p) const -> string {
-  if(showColors) return {"\e[0m\e[37m", std::forward<P>(p)..., "\e[0m"};
+  if(showColors) return {terminal::csi, "0m", terminal::csi, "37m", std::forward<P>(p)..., terminal::csi, "0m"};
   return {std::forward<P>(p)...};
 }

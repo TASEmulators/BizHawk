@@ -68,7 +68,7 @@ struct file : inode {
     struct __stat64 data;
     _wstat64(utf16_t(filename), &data);
     #endif
-    return S_ISREG(data.st_mode) ? data.st_size : 0u;
+    return (data.st_mode & S_IFMT) == S_IFREG ? data.st_size : 0u;
   }
 
   static auto read(const string& filename) -> vector<u8> {

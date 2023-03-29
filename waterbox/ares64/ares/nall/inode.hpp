@@ -6,6 +6,22 @@
 #include <nall/platform.hpp>
 #include <nall/string.hpp>
 
+#if !defined(F_OK)
+  #define F_OK 0
+#endif
+
+#if !defined(X_OK)
+  #define X_OK 1
+#endif
+
+#if !defined(W_OK)
+  #define W_OK 2
+#endif
+
+#if !defined(R_OK)
+  #define R_OK 4
+#endif
+
 namespace nall {
 
 struct inode {
@@ -31,15 +47,7 @@ struct inode {
     return access(name, X_OK) == 0;
   }
 
-  static auto hidden(const string& name) -> bool {
-    #if defined(PLATFORM_WINDOWS)
-    auto attributes = GetFileAttributes(utf16_t(name));
-    return attributes & FILE_ATTRIBUTE_HIDDEN;
-    #else
-    //todo: is this really the best way to do this? stat doesn't have S_ISHIDDEN ...
-    return name.split("/").last().beginsWith(".");
-    #endif
-  }
+  static auto hidden(const string& name) -> bool;
 
   static auto mode(const string& name) -> u32 {
     struct stat data{};
@@ -161,3 +169,7 @@ struct inode {
 };
 
 }
+
+#if defined(NALL_HEADER_ONLY)
+  #include <nall/inode.cpp>
+#endif

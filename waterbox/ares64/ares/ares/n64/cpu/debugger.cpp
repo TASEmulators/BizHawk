@@ -69,6 +69,12 @@ auto CPU::Debugger::interrupt(u8 mask) -> void {
   }
 }
 
+auto CPU::Debugger::nmi() -> void {
+  if(unlikely(tracer.exception->enabled())) {
+    tracer.exception->notify("NMI");
+  }
+}
+
 auto CPU::Debugger::tlbWrite(u32 index) -> void {
   if(unlikely(tracer.tlb->enabled())) {
     auto entry = cpu.tlb.entry[index & 31];

@@ -1,4 +1,4 @@
-auto RDP::readWord(u32 address) -> u32 {
+auto RDP::readWord(u32 address, u32& cycles) -> u32 {
   address = (address & 0xfffff) >> 2;
   n32 data;
 
@@ -56,7 +56,7 @@ auto RDP::readWord(u32 address) -> u32 {
   return data;
 }
 
-auto RDP::writeWord(u32 address, u32 data_) -> void {
+auto RDP::writeWord(u32 address, u32 data_, u32& cycles) -> void {
   address = (address & 0xfffff) >> 2;
   n32 data = data_;
 
@@ -113,7 +113,7 @@ auto RDP::writeWord(u32 address, u32 data_) -> void {
   debugger.ioDPC(Write, address, data);
 }
 
-auto RDP::IO::readWord(u32 address) -> u32 {
+auto RDP::IO::readWord(u32 address, u32& cycles) -> u32 {
   address = (address & 0xfffff) >> 2;
   n32 data;
 
@@ -144,7 +144,7 @@ auto RDP::IO::readWord(u32 address) -> u32 {
   return data;
 }
 
-auto RDP::IO::writeWord(u32 address, u32 data_) -> void {
+auto RDP::IO::writeWord(u32 address, u32 data_, u32& cycles) -> void {
   address = (address & 0xfffff) >> 2;
   n32 data = data_;
 

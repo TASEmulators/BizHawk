@@ -18,6 +18,7 @@ template<s32 Precision, s32 Index> struct BitField<Precision, Index> {
   enum : type { mask = 1ull << shift };
 
   BitField(const BitField&) = delete;
+  BitField(BitField&&) = default;
 
   auto& operator=(const BitField& source) {
     target = target & ~mask | (bool)source << shift;
@@ -72,6 +73,7 @@ template<s32 Precision> struct BitField<Precision> {
     void>>>>;
 
   BitField(const BitField&) = delete;
+  BitField(BitField&&) = default;
 
   auto& operator=(const BitField& source) {
     target = target & ~mask | (bool)source << shift;

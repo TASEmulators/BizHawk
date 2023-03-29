@@ -490,10 +490,10 @@ auto RSP::Disassembler::sccRegisterName(u32 index) const -> string {
 }
 
 auto RSP::Disassembler::sccRegisterValue(u32 index) const -> string {
-  u32 value = 0;
-  if(index <= 6) value = rsp.readWord((index & 7) << 2);
+  u32 value = 0; u32 cycles;
+  if(index <= 6) value = rsp.readWord((index & 7) << 2, cycles);
   if(index == 7) value = self.status.semaphore;  //rsp.readSCC(7) has side-effects
-  if(index >= 8) value = rdp.readWord((index & 7) << 2);
+  if(index >= 8) value = rdp.readWord((index & 7) << 2, cycles);
   if(showValues) return {sccRegisterName(index), hint("{$", hex(value, 8L), "}")};
   return sccRegisterName(index);
 }
@@ -525,6 +525,6 @@ auto RSP::Disassembler::ccrRegisterValue(u32 index) const -> string {
 
 template<typename... P>
 auto RSP::Disassembler::hint(P&&... p) const -> string {
-  if(showColors) return {"\e[0m\e[37m", std::forward<P>(p)..., "\e[0m"};
+  if(showColors) return {terminal::csi, "0m", terminal::csi, "37m", std::forward<P>(p)..., terminal::csi, "0m"};
   return {std::forward<P>(p)...};
 }
