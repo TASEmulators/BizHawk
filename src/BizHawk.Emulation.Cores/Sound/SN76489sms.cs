@@ -193,11 +193,11 @@ namespace BizHawk.Emulation.Cores.Components
 					noise_bit = noise.Bit(0);
 					if (noise_type)
 					{
-						noise = (((noise & 1) ^ ((noise >> 1) & 1)) << 14) | (noise >> 1);						
+						noise = (((noise & 1) ^ ((noise >> 1) & 1)) << 15) | (noise >> 1);						
 					}
 					else
 					{
-						noise = ((noise & 1) << 14) | (noise >> 1);
+						noise = ((noise & 1) << 15) | (noise >> 1);
 					}
 
 					if (noise_rate == 0)
