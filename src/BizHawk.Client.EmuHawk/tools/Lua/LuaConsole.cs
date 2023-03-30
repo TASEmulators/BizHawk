@@ -825,6 +825,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NewScriptMenuItem_Click(object sender, EventArgs e)
 		{
+			var luaDir = Config!.PathEntries.LuaAbsolutePath();
 			string initDir;
 			string ext;
 			if (!string.IsNullOrWhiteSpace(LuaImp.ScriptList.Filename))
@@ -833,7 +834,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				initDir = Config!.PathEntries.LuaAbsolutePath();
+				initDir = luaDir;
 				ext = Path.GetFileNameWithoutExtension(Game.Name);
 			}
 			var result = this.ShowFileSaveDialog(
@@ -842,8 +843,11 @@ namespace BizHawk.Client.EmuHawk
 				initDir: initDir,
 				initFileName: ext);
 			if (string.IsNullOrWhiteSpace(result)) return;
-			string defaultTemplate = "while true do\n\temu.frameadvance();\nend";
-			File.WriteAllText(result, defaultTemplate);
+			const string TEMPLATE_FILENAME = ".template.lua";
+			var templatePath = Path.Combine(luaDir, TEMPLATE_FILENAME);
+			const string DEF_TEMPLATE_CONTENTS = "-- This template lives at `.../Lua/.template.lua`.\nwhile true do\n\t-- Code here will run once when the script is loaded, then after each emulated frame.\n\temu.frameadvance();\nend\n";
+			if (!File.Exists(templatePath)) File.WriteAllText(path: templatePath, contents: DEF_TEMPLATE_CONTENTS);
+			File.Copy(sourceFileName: templatePath, destFileName: result);
 			LuaImp.ScriptList.Add(new LuaFile(Path.GetFileNameWithoutExtension(result), result));
 			Config!.RecentLua.Add(result);
 			UpdateDialog();
