@@ -93,16 +93,16 @@ auto Justifier::latch() -> void {
   if(!active) {
     int nx = platform->inputPoll(port, device, 0 + X);
     int ny = platform->inputPoll(port, device, 0 + Y);
-    player1.x = max(-16, min(256 + 16, nx + player1.x));
-    player1.y = max(-16, min((int)ppu.vdisp() + 16, ny + player1.y));
+    player1.x = max(-16, min(256 + 16, nx));
+    player1.y = max(-16, min((int)ppu.vdisp() + 16, ny));
     bool offscreen = (player1.x < 0 || player1.y < 0 || player1.x >= 256 || player1.y >= (int)ppu.vdisp());
     if(!offscreen) ppu.latchCounters(player1.x, player1.y);
   }
   else {
     int nx = platform->inputPoll(port, device, 4 + X);
     int ny = platform->inputPoll(port, device, 4 + Y);
-    player2.x = max(-16, min(256 + 16, nx + player2.x));
-    player2.y = max(-16, min((int)ppu.vdisp() + 16, ny + player2.y));
+    player2.x = max(-16, min(256 + 16, nx));
+    player2.y = max(-16, min((int)ppu.vdisp() + 16, ny));
     bool offscreen = (player2.x < 0 || player2.y < 0 || player2.x >= 256 || player2.y >= (int)ppu.vdisp());
     if(!offscreen) ppu.latchCounters(player2.x, player2.y);
   }

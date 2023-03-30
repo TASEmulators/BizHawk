@@ -209,7 +209,7 @@ auto PPU::refresh() -> void {
       }
     }
   }
-  if(auto device = controllerPort2.device) device->draw(output, pitch * sizeof(uint16), width, height);
+  if(configuration.video.drawCursor) if(auto device = controllerPort2.device) device->draw(output, pitch * sizeof(uint16), width, height);
   platform->videoFrame(output, pitch * sizeof(uint16), width, height, /* scale = */ 1);
 }
 

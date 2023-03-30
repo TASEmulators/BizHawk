@@ -25,6 +25,7 @@ struct Configuration {
   struct Video {
     bool blurEmulation = true;
     bool colorEmulation = true;
+    bool drawCursor = true;
   } video;
 
   struct Hacks {

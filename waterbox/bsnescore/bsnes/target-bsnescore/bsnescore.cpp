@@ -291,6 +291,11 @@ EXPORT void snes_set_overscan_enabled(bool enabled)
     program->overscan = enabled;
 }
 
+EXPORT void snes_set_cursor_enabled(bool enabled)
+{
+    emulator->configure("Video/DrawCursor", enabled);
+}
+
 
 uint8_t* snes_get_effective_saveram(int* ram_size) {
     if (cartridge.has.SA1) {
