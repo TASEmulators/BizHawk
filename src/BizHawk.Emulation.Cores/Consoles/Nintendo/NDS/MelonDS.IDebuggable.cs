@@ -5,18 +5,18 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
-	partial class NDS : IDebuggable
+	public partial class NDS : IDebuggable
 	{
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			uint[] regs = new uint[2 * 16];
+			var regs = new uint[2 * 16];
 			_core.GetRegs(regs);
 
 			var ret = new Dictionary<string, RegisterValue>();
-			for (int i = 0; i < 2; i++)
+			for (var i = 0; i < 2; i++)
 			{
-				int ncpu = i == 0 ? 9 : 7;
-				for (int j = 0; j < 16; j++)
+				var ncpu = i == 0 ? 9 : 7;
+				for (var j = 0; j < 16; j++)
 				{
 					ret["ARM" + ncpu + " r" + j] = regs[i * 16 + j];
 				}
@@ -30,13 +30,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			{
 				throw new InvalidOperationException("Wrong String Length???");
 			}
-			int ncpu = int.Parse(register.Substring(3, 1));
-			if (ncpu != 9 && ncpu != 7)
+			var ncpu = int.Parse(register.Substring(3, 1));
+			if (ncpu is not (9 or 7))
 			{
 				throw new InvalidOperationException("Invalid CPU???");
 			}
-			int index = int.Parse(register.Substring(6, register.Length - 6));
-			if (index < 0 || index > 15)
+			var index = int.Parse(register.Substring(6, register.Length - 6));
+			if (index is < 0 or > 15)
 			{
 				throw new InvalidOperationException("Invalid Reg Index???");
 			}
@@ -63,7 +63,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			LibMelonDS.MemoryCallback CreateCallback(MemoryCallbackFlags flags, Func<bool> getHasCBOfType)
 			{
 				var rawFlags = (uint)flags;
-				return (address) =>
+				return address =>
 				{
 					if (getHasCBOfType())
 					{

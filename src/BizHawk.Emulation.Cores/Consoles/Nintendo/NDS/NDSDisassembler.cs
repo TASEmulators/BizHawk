@@ -43,14 +43,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			if (Cpu.Length == 14)
 			{
 				addr &= ~1u;
-				uint op = m.PeekByte(addr) | (uint)m.PeekByte(addr + 1) << 8;
+				var op = m.PeekByte(addr) | (uint)m.PeekByte(addr + 1) << 8;
 				_core.GetDisassembly(type, op, ret);
 				length = 2;
 			}
 			else
 			{
 				addr &= ~3u;
-				uint op = m.PeekByte(addr)
+				var op = m.PeekByte(addr)
 					| (uint)m.PeekByte(addr + 1) << 8
 					| (uint)m.PeekByte(addr + 2) << 16
 					| (uint)m.PeekByte(addr + 3) << 24;

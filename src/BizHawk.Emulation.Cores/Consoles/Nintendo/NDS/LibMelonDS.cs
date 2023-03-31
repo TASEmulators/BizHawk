@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			USE_REAL_BIOS = 0x01,
 			SKIP_FIRMWARE = 0x02,
 			GBA_CART_PRESENT = 0x04,
-			RESERVED_FLAG = 0x08,
+			CLEAR_NAND = 0x08,
 			FIRMWARE_OVERRIDE = 0x10,
 			IS_DSI = 0x20,
 			LOAD_DSIWARE = 0x40,
@@ -97,6 +97,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		[BizImport(CC)]
 		public abstract bool SaveRamIsDirty();
+
+		[BizImport(CC)]
+		public abstract void ImportDSiWareSavs(uint titleId);
+
+		[BizImport(CC)]
+		public abstract void ExportDSiWareSavs(uint titleId);
+
+		[BizImport(CC)]
+		public abstract void DSiWareSavsLength(uint titleId, out int publicSavSize, out int privateSavSize, out int bannerSavSize);
 
 		[BizImport(CC)]
 		public abstract void GetRegs(uint[] regs);

@@ -13,7 +13,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
-	[PortedCore(CoreNames.MelonDS, "Arisotura", "0.9.4", "http://melonds.kuribo64.net/")]
+	[PortedCore(CoreNames.MelonDS, "Arisotura", "0.9.5", "https://melonds.kuribo64.net/")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(IRegionable) })]
 	public partial class NDS : WaterboxCore
 	{
@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		[CoreConstructor(VSystemID.Raw.NDS)]
 		public NDS(CoreLoadParameters<NDSSettings, NDSSyncSettings> lp)
-			: base(lp.Comm, new Configuration
+			: base(lp.Comm, new()
 			{
 				DefaultWidth = 256,
 				DefaultHeight = 384,
@@ -34,28 +34,29 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				SystemId = VSystemID.Raw.NDS,
 			})
 		{
-			_syncSettings = lp.SyncSettings ?? new NDSSyncSettings();
-			_settings = lp.Settings ?? new NDSSettings();
+			_syncSettings = lp.SyncSettings ?? new();
+			_settings = lp.Settings ?? new();
 
 			IsDSi = _syncSettings.UseDSi;
 
 			var roms = lp.Roms.Select(r => r.RomData).ToList();
+			
+			DSiTitleId = GetDSiTitleId(roms[0]);
+			IsDSi |= IsDSiWare;
 
 			if (roms.Count > (IsDSi ? 1 : 3))
 			{
 				throw new InvalidOperationException("Wrong number of ROMs!");
 			}
 
-			IsDSiWare = IsDSi && RomIsWare(roms[0]);
-
-			bool gbacartpresent = roms.Count > 1;
-			bool gbasrampresent = roms.Count == 3;
+			var gbacartpresent = roms.Count > 1;
+			var gbasrampresent = roms.Count == 3;
 
 			InitMemoryCallbacks();
 			_tracecb = MakeTrace;
 			_threadstartcb = ThreadStartCallback;
 
-			_core = PreInit<LibMelonDS>(new WaterboxOptions
+			_core = PreInit<LibMelonDS>(new()
 			{
 				Filename = "melonDS.wbx",
 				SbrkHeapSizeKB = 2 * 1024,
@@ -91,13 +92,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				? CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "firmwarei"))
 				: CoreComm.CoreFileProvider.GetFirmware(new("NDS", "firmware"));
 
-			var tmd = IsDSi && IsDSiWare
-				? GetTMDData(roms[0])
+			var tmd = IsDSiWare
+				? GetTMDData(DSiTitleId.Full)
 				: null;
 
-			bool skipfw = _syncSettings.SkipFirmware || !_syncSettings.UseRealBIOS || fw == null;
+			var skipfw = _syncSettings.SkipFirmware || !_syncSettings.UseRealBIOS || fw == null;
 
-			LibMelonDS.LoadFlags loadFlags = LibMelonDS.LoadFlags.NONE;
+			var loadFlags = LibMelonDS.LoadFlags.NONE;
 
 			if (_syncSettings.UseRealBIOS || IsDSi)
 				loadFlags |= LibMelonDS.LoadFlags.USE_REAL_BIOS;
@@ -105,11 +106,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				loadFlags |= LibMelonDS.LoadFlags.SKIP_FIRMWARE;
 			if (gbacartpresent)
 				loadFlags |= LibMelonDS.LoadFlags.GBA_CART_PRESENT;
+			if (IsDSi && (_syncSettings.ClearNAND || lp.DeterministicEmulationRequested))
+				loadFlags |= LibMelonDS.LoadFlags.CLEAR_NAND; // TODO: need a way to send through multiple DSiWare titles at once for this approach
 			if (fw is null || _syncSettings.FirmwareOverride || lp.DeterministicEmulationRequested)
 				loadFlags |= LibMelonDS.LoadFlags.FIRMWARE_OVERRIDE;
 			if (IsDSi)
 				loadFlags |= LibMelonDS.LoadFlags.IS_DSI;
-			if (IsDSi && IsDSiWare)
+			if (IsDSiWare)
 				loadFlags |= LibMelonDS.LoadFlags.LOAD_DSIWARE;
 			if (_syncSettings.ThreadedRendering)
 				loadFlags |= LibMelonDS.LoadFlags.THREADED_RENDERING;
@@ -122,7 +125,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			fwSettings.FirmwareBirthdayMonth = _syncSettings.FirmwareBirthdayMonth;
 			fwSettings.FirmwareBirthdayDay = _syncSettings.FirmwareBirthdayDay;
 			fwSettings.FirmwareFavouriteColour = _syncSettings.FirmwareFavouriteColour;
-			var message = _syncSettings.FirmwareMessage.Length != 0 ? Encoding.UTF8.GetBytes(_syncSettings.FirmwareMessage) : new byte[1] { 0 };
+			var message = _syncSettings.FirmwareMessage.Length != 0 ? Encoding.UTF8.GetBytes(_syncSettings.FirmwareMessage) : new byte[1];
 			fwSettings.FirmwareMessageLength = message.Length;
 
 			var loadData = new LibMelonDS.LoadData
@@ -217,27 +220,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			_serviceProvider.Register(Tracer);
 		}
 
-		private static bool RomIsWare(byte[] file)
-		{
-			uint lowerWareTitleId = 0;
-			for (int i = 0; i < 4; i++)
-			{
-				lowerWareTitleId <<= 8;
-				lowerWareTitleId |= file[0x237 - i];
-			}
-			return lowerWareTitleId == 0x00030004;
-		}
-
-		private static byte[] GetTMDData(byte[] ware)
+		private static (ulong Full, uint Upper, uint Lower) GetDSiTitleId(byte[] file)
 		{
 			ulong titleId = 0;
-			for (int i = 0; i < 8; i++)
+			for (var i = 0; i < 8; i++)
 			{
 				titleId <<= 8;
-				titleId |= ware[0x237 - i];
+				titleId |= file[0x237 - i];
 			}
+			return (titleId, (uint)(titleId >> 32), (uint)(titleId & 0xFFFFFFFFU));
+		}
+
+		private static byte[] GetTMDData(ulong titleId)
+		{
 			using var zip = new ZipArchive(Zstd.DecompressZstdStream(new MemoryStream(Resources.TMDS.Value)), ZipArchiveMode.Read, false);
-			using var tmd = zip.GetEntry($"{titleId:x16}.tmd")?.Open() ?? throw new Exception($"Cannot find TMD for title ID {titleId:x16}, please report");
+			using var tmd = zip.GetEntry($"{titleId:x16}.tmd")?.Open() ?? throw new($"Cannot find TMD for title ID {titleId:x16}, please report");
 			var ret = new byte[tmd.Length];
 			tmd.Read(ret, 0, (int)tmd.Length);
 			return ret;
@@ -246,7 +243,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		// todo: wire this up w/ frontend
 		public byte[] GetNAND()
 		{
-			int length = _core.GetNANDSize();
+			var length = _core.GetNANDSize();
 
 			if (length > 0)
 			{
@@ -255,12 +252,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				return ret;
 			}
 
-			return new byte[0];
+			return null;
 		}
 
 		public bool IsDSi { get; }
 
-		public bool IsDSiWare { get; }
+		public bool IsDSiWare => DSiTitleId.Upper == 0x00030004;
+
+		private (ulong Full, uint Upper, uint Lower) DSiTitleId { get; }
 
 		public override ControllerDefinition ControllerDefinition => NDSController;
 
@@ -275,7 +274,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			.AddAxis("GBA Light Sensor", 0.RangeTo(10), 0)
 			.MakeImmutable();
 
-		private LibMelonDS.Buttons GetButtons(IController c)
+		private static LibMelonDS.Buttons GetButtons(IController c)
 		{
 			LibMelonDS.Buttons b = 0;
 			if (c.IsPressed("Up"))

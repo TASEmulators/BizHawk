@@ -5,6 +5,7 @@ using System.Linq;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Atari.Atari2600;
 using BizHawk.Emulation.Cores.Computers.MSX;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 using BizHawk.Emulation.Cores.Consoles.O2Hawk;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Nintendo.BSNES;
@@ -133,6 +134,15 @@ namespace BizHawk.Client.EmuHawk
 					else if (ss.FrameLength is Gameboy.GambatteSyncSettings.FrameLengthType.UserDefinedFrames)
 					{
 						HandleHardcoreModeDisable($"Using subframes in hardcore mode is not allowed.");
+					}
+					break;
+				}
+				case NDS { IsDSi: true } nds:
+				{
+					var ss = nds.GetSyncSettings();
+					if (!ss.ClearNAND)
+					{
+						HandleHardcoreModeDisable("Disabling DSi NAND clear in hardcore mode is not allowed.");
 					}
 					break;
 				}
