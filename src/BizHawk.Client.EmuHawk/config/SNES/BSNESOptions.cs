@@ -37,6 +37,7 @@ namespace BizHawk.Client.EmuHawk
 				CropSGBFrame = s.CropSGBFrame,
 				NoPPUSpriteLimit = s.NoPPUSpriteLimit,
 				ShowOverscan = s.ShowOverscan,
+				ShowCursor = s.ShowCursor,
 				Hotfixes = ss.Hotfixes,
 				FastPPU = ss.FastPPU,
 				FastDSP = ss.FastDSP,
@@ -63,6 +64,7 @@ namespace BizHawk.Client.EmuHawk
 			s.CropSGBFrame = dlg.CropSGBFrame;
 			s.NoPPUSpriteLimit = dlg.NoPPUSpriteLimit;
 			s.ShowOverscan = dlg.ShowOverscan;
+			s.ShowCursor = dlg.ShowCursor;
 			s.AspectRatioCorrection = dlg.AspectRatioCorrection;
 			ss.Entropy = dlg.Entropy;
 			ss.RegionOverride = dlg.RegionOverride;
@@ -111,6 +113,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get => cbShowOverscan.Checked;
 			init => cbShowOverscan.Checked = value;
+		}
+
+		private bool ShowCursor
+		{
+			get => cbShowCursor.Checked;
+			init => cbShowCursor.Checked = value;
 		}
 
 		private BsnesApi.ASPECT_RATIO_CORRECTION AspectRatioCorrection => (BsnesApi.ASPECT_RATIO_CORRECTION)AspectRatioCorrectionBox.SelectedIndex;
