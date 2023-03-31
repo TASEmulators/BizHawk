@@ -93,7 +93,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			public bool CropSGBFrame { get; set; }
 			public bool NoPPUSpriteLimit { get; set; }
 			public bool ShowOverscan { get; set; }
-			public bool ShowCursor { get; set; }
+			public bool ShowCursor { get; set; } = true;
 			public BsnesApi.ASPECT_RATIO_CORRECTION AspectRatioCorrection { get; set; } = BsnesApi.ASPECT_RATIO_CORRECTION.Auto;
 		}
 
