@@ -21,6 +21,8 @@
 
 #include <sstream>
 
+constexpr u32 DSIWARE_CATEGORY = 0x00030004;
+
 static GPU::RenderSettings biz_render_settings { false, 1, false };
 static bool biz_skip_fw;
 static time_t biz_time;
@@ -36,7 +38,7 @@ typedef enum
 	USE_REAL_BIOS = 0x01,
 	SKIP_FIRMWARE = 0x02,
 	GBA_CART_PRESENT = 0x04,
-	RESERVED_FLAG = 0x08,
+	CLEAR_NAND = 0x08,
 	FIRMWARE_OVERRIDE = 0x10,
 	IS_DSI = 0x20,
 	LOAD_DSIWARE = 0x40,
@@ -71,26 +73,6 @@ typedef struct
 
 extern std::stringstream* NANDFilePtr;
 
-static bool LoadDSiWare(u8* TmdData)
-{
-	FILE* bios7i = Platform::OpenLocalFile(Config::DSiBIOS7Path, "rb");
-	if (!reinterpret_cast<void*>(bios7i))
-		return false;
-
-	u8 es_keyY[16];
-	fseek(bios7i, 0x8308, SEEK_SET);
-	fread(es_keyY, 16, 1, bios7i);
-	fclose(bios7i);
-
-	if (!DSi_NAND::Init(es_keyY))
-		return false;
-
-	bool ret = DSi_NAND::ImportTitle("dsiware.rom", TmdData, false);
-
-	DSi_NAND::DeInit();
-	return ret;
-}
-
 ECL_EXPORT bool Init(LoadFlags loadFlags, LoadData* loadData, FirmwareSettings* fwSettings)
 {
 	Config::ExternalBIOSEnable = !!(loadFlags & USE_REAL_BIOS);
@@ -120,10 +102,41 @@ ECL_EXPORT bool Init(LoadFlags loadFlags, LoadData* loadData, FirmwareSettings* 
 
 	NANDFilePtr = isDsi ? new std::stringstream(std::string(loadData->NandData, loadData->NandLen), std::ios_base::in | std::ios_base::out | std::ios_base::binary) : nullptr;
 
-	if (isDsi && (loadFlags & LOAD_DSIWARE))
+	if (isDsi)
 	{
-		if (!LoadDSiWare(loadData->TmdData))
+		FILE* bios7i = Platform::OpenLocalFile(Config::DSiBIOS7Path, "rb");
+		if (!bios7i)
 			return false;
+
+		u8 es_keyY[16];
+		fseek(bios7i, 0x8308, SEEK_SET);
+		fread(es_keyY, 16, 1, bios7i);
+		fclose(bios7i);
+
+		if (!DSi_NAND::Init(es_keyY))
+			return false;
+
+		if (loadFlags & CLEAR_NAND)
+		{
+			std::vector<u32> titlelist;
+			DSi_NAND::ListTitles(DSIWARE_CATEGORY, titlelist);
+
+			for (auto& title : titlelist)
+			{
+				DSi_NAND::DeleteTitle(DSIWARE_CATEGORY, title);
+			}
+		}
+
+		if (loadFlags & LOAD_DSIWARE)
+		{
+			if (!DSi_NAND::ImportTitle("dsiware.rom", loadData->TmdData, false))
+			{
+				DSi_NAND::DeInit();
+				return false;
+			}
+		}
+
+		DSi_NAND::DeInit();
 	}
 
 	if (!NDS::Init()) return false;
@@ -165,7 +178,7 @@ ECL_EXPORT void GetSaveRam(u8* data)
 	}
 }
 
-ECL_EXPORT s32 GetSaveRamLength()
+ECL_EXPORT u32 GetSaveRamLength()
 {
 	return NDSCart::Cart ? NDSCart::Cart->GetSaveLen() : 0;
 }
@@ -173,6 +186,44 @@ ECL_EXPORT s32 GetSaveRamLength()
 ECL_EXPORT bool SaveRamIsDirty()
 {
 	return NdsSaveRamIsDirty;
+}
+
+ECL_EXPORT void ImportDSiWareSavs(u32 titleId)
+{
+	if (DSi_NAND::Init(&DSi::ARM7iBIOS[0x8308]))
+	{
+		DSi_NAND::ImportTitleData(DSIWARE_CATEGORY, titleId, DSi_NAND::TitleData_PublicSav, "public.sav");
+		DSi_NAND::ImportTitleData(DSIWARE_CATEGORY, titleId, DSi_NAND::TitleData_PrivateSav, "private.sav");
+		DSi_NAND::ImportTitleData(DSIWARE_CATEGORY, titleId, DSi_NAND::TitleData_BannerSav, "banner.sav");
+		DSi_NAND::DeInit();
+	}
+}
+
+ECL_EXPORT void ExportDSiWareSavs(u32 titleId)
+{
+	if (DSi_NAND::Init(&DSi::ARM7iBIOS[0x8308]))
+	{
+		DSi_NAND::ExportTitleData(DSIWARE_CATEGORY, titleId, DSi_NAND::TitleData_PublicSav, "public.sav");
+		DSi_NAND::ExportTitleData(DSIWARE_CATEGORY, titleId, DSi_NAND::TitleData_PrivateSav, "private.sav");
+		DSi_NAND::ExportTitleData(DSIWARE_CATEGORY, titleId, DSi_NAND::TitleData_BannerSav, "banner.sav");
+		DSi_NAND::DeInit();
+	}
+}
+
+ECL_EXPORT void DSiWareSavsLength(u32 titleId, u32* publicSavSize, u32* privateSavSize, u32* bannerSavSize)
+{
+	*publicSavSize = *privateSavSize = *bannerSavSize = 0;
+	if (DSi_NAND::Init(&DSi::ARM7iBIOS[0x8308]))
+	{
+		u32 version;
+		NDSHeader header{};
+
+		DSi_NAND::GetTitleInfo(DSIWARE_CATEGORY, titleId, version, &header, nullptr);
+		*publicSavSize = header.DSiPublicSavSize;
+		*privateSavSize = header.DSiPrivateSavSize;
+		*bannerSavSize = (header.AppFlags & 0x04) ? 0x4000 : 0;
+		DSi_NAND::DeInit();
+	}
 }
 
 /* excerpted from gbatek
