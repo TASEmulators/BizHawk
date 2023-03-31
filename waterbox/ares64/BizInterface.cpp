@@ -845,10 +845,13 @@ ECL_EXPORT void SetInputCallback(void (*callback)())
 
 ECL_EXPORT void PostLoadState()
 {
+	// fixme: make it so we can actually use this approach (there's various invalidation problems with the recompiler atm)
+#if false
 	ares::Nintendo64::cpu.recompiler.allocator.release(bump_allocator::zero_fill);
 	ares::Nintendo64::cpu.recompiler.reset();
 	ares::Nintendo64::rsp.recompiler.allocator.release(bump_allocator::zero_fill);
 	ares::Nintendo64::rsp.recompiler.reset();
+#endif
 }
 
 ECL_EXPORT void GetDisassembly(u32 address, u32 instruction, char* buf)

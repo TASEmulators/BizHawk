@@ -872,7 +872,7 @@ struct CPU : Thread {
     auto emitCOP2(u32 instruction) -> bool;
 
     bump_allocator allocator;
-    Pool** pools = alloc_invisible<Pool*>(1 << 21);  //2_MiB * sizeof(void*) == 16_MiB
+    Pool* pools[1 << 21];  //2_MiB * sizeof(void*) == 16_MiB
   } recompiler{*this};
 
   struct Disassembler {
