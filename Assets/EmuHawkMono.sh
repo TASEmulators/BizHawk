@@ -8,7 +8,7 @@ libpath=""
 if [ "$(command -v lsb_release)" ]; then
 	case "$(lsb_release -i | cut -c17- | tr -d "\n" | tr A-Z a-z)" in
 		"arch"|"artix"|"manjarolinux") libpath="/usr/lib";;
-		"fedora") libpath="/usr/lib64";;
+		"fedora"|"gentoo") libpath="/usr/lib64";;
 		"debian"|"linuxmint"|"pop"|"ubuntu") libpath="/usr/lib/x86_64-linux-gnu";;
 	esac
 else
