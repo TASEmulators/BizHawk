@@ -169,6 +169,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 		{
 			ser.Sync(nameof(WriteProtected), ref WriteProtected);
 
+			// cpp: the below comment is wrong (at least now), writes are implemented (see ExecuteFlux() in Drive1541)
+			// I'm not yet going to uncomment this, due to the noted performance issues
+			// Not sure where performance issues would truly lie, suppose it's probably due to new array spam
+			// Something just a bit smarter would fix such issues
+
 			// Currently nothing actually writes to _tracks and so it is always the same as _originalMedia
 			// So commenting out this (very slow) code for now
 			// If/when disk writing is implemented, Disk.cs should implement ISaveRam as a means of file storage of the new disk state

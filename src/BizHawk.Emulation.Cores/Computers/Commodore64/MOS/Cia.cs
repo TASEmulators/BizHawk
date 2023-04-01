@@ -559,10 +559,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			ser.Sync(nameof(_newCra), ref _newCra);
 			ser.Sync(nameof(_newCrb), ref _newCrb);
 			ser.Sync(nameof(_flagLatch), ref _flagLatch);
-
-			ser.Sync(nameof(_todCounter), ref _todCounter);
 			ser.Sync(nameof(_lastCnt), ref _lastCnt);
 			ser.Sync(nameof(_thisCnt), ref _thisCnt);
+			ser.Sync(nameof(_tbCntTaCnt), ref _tbCntTaCnt);
+			ser.Sync(nameof(_todCounter), ref _todCounter);
 		}
 	}
 }
