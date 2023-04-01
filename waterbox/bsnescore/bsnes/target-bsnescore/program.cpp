@@ -334,6 +334,8 @@ auto Program::load() -> void {
 }
 
 auto Program::load(uint id, string name, string type, vector<string> options) -> Emulator::Platform::Load {
+	// This needs to occur here rather than snes_init, as callbacks aren't set yet then
+	emulator->synchronize(time());
 
 	if (id == 1)
 	{
