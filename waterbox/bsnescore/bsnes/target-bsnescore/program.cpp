@@ -29,6 +29,7 @@ struct Program : Emulator::Platform
 	auto readHook(uint address) -> void override;
 	auto writeHook(uint address, uint8 value) -> void override;
 	auto execHook(uint address) -> void override;
+	auto time() -> int64 override;
 
 	auto load() -> void;
 	auto loadSuperFamicom() -> bool;
@@ -492,6 +493,11 @@ auto Program::writeHook(uint address, uint8 value) -> void
 auto Program::execHook(uint address) -> void
 {
 	snesCallbacks.snes_exec_hook(address);
+}
+
+auto Program::time() -> int64
+{
+	return snesCallbacks.snes_time();
 }
 
 auto Program::getBackdropColor() -> uint16

@@ -155,7 +155,7 @@ auto EpsonRTC::load(const uint8* data) -> void {
     timestamp |= data[8 + byte] << (byte * 8);
   }
 
-  uint64 diff = (uint64)time(0) - timestamp;
+  uint64 diff = (uint64)platform->time() - timestamp;
   while(diff >= 60 * 60 * 24) { tickDay(); diff -= 60 * 60 * 24; }
   while(diff >= 60 * 60) { tickHour(); diff -= 60 * 60; }
   while(diff >= 60) { tickMinute(); diff -= 60; }
@@ -172,7 +172,7 @@ auto EpsonRTC::save(uint8* data) -> void {
   data[6] = weekday << 0 | resync << 3 | hold << 4 | calendar << 5 | irqflag << 6 | roundseconds << 7;
   data[7] = irqmask << 0 | irqduty << 1 | irqperiod << 2 | pause << 4 | stop << 5 | atime << 6 | test << 7;
 
-  uint64 timestamp = (uint64)time(0);
+  uint64 timestamp = (uint64)platform->time();
   for(auto byte : range(8)) {
     data[8 + byte] = timestamp;
     timestamp >>= 8;

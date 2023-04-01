@@ -56,6 +56,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				readHookCb = ReadHook,
 				writeHookCb = WriteHook,
 				execHookCb = ExecHook,
+				timeCb = snes_time,
 				msuOpenCb = msu_open,
 				msuSeekCb = msu_seek,
 				msuReadCb = msu_read,
@@ -65,6 +66,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			Api = new BsnesApi(CoreComm.CoreFileProvider.DllPath(), CoreComm, callbacks.AllDelegatesInMemoryOrder());
 
 			_controllers = new BsnesControllers(_syncSettings, subframe);
+
+			DeterministicEmulation = !_syncSettings.UseRealTime || loadParameters.DeterministicEmulationRequested;
+			InitializeRtc(_syncSettings.InitialTime);
 
 			generate_palette();
 			BsnesApi.SnesInitData snesInitData = new()
@@ -339,6 +343,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				MemoryCallbacks.CallMemoryCallbacks(addr, 0, (uint) MemoryCallbackFlags.AccessExecute, "System Bus");
 			}
 		}
+
+		private static readonly DateTime _epoch = new(1970, 1, 1, 0, 0, 0);
+		private long _clockTime;
+		private int _clockRemainder;
+
+		protected void InitializeRtc(DateTime start)
+			=> _clockTime = (long)(start - _epoch).TotalSeconds;
+
+		private void AdvanceRtc()
+		{
+			_clockRemainder += VsyncDenominator;
+			if (_clockRemainder >= VsyncNumerator)
+			{
+				_clockRemainder -= VsyncNumerator;
+				_clockTime++;
+			}
+		}
+
+		private long snes_time()
+			=> DeterministicEmulation ? _clockTime : (long)(DateTime.Now - _epoch).TotalSeconds;
 
 		private FileStream _currentMsuTrack;
 

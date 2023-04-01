@@ -198,6 +198,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public delegate void snes_read_hook_t(uint address);
 		public delegate void snes_write_hook_t(uint address, byte value);
 		public delegate void snes_exec_hook_t(uint address);
+		public delegate long snes_time_t();
 		public delegate void snes_msu_open_t(ushort track_id);
 		public delegate void snes_msu_seek_t(long offset, bool relative);
 		public delegate byte snes_msu_read_t();
@@ -248,6 +249,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			public snes_read_hook_t readHookCb;
 			public snes_write_hook_t writeHookCb;
 			public snes_exec_hook_t execHookCb;
+			public snes_time_t timeCb;
 			public snes_msu_open_t msuOpenCb;
 			public snes_msu_seek_t msuSeekCb;
 			public snes_msu_read_t msuReadCb;

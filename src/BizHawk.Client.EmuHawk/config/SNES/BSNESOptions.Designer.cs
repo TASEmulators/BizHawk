@@ -64,13 +64,16 @@
 			this.lblRegion = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.lblEntropy = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.lblDoubleSize = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.cbUseRealTime = new System.Windows.Forms.CheckBox();
+			this.dtpInitialTime = new System.Windows.Forms.DateTimePicker();
+			this.lblInitialTime = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// btnOk
 			// 
 			this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnOk.Location = new System.Drawing.Point(136, 405);
+			this.btnOk.Location = new System.Drawing.Point(136, 439);
 			this.btnOk.Name = "btnOk";
 			this.btnOk.Size = new System.Drawing.Size(75, 23);
 			this.btnOk.TabIndex = 26;
@@ -82,7 +85,7 @@
 			// 
 			this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Location = new System.Drawing.Point(217, 405);
+			this.btnCancel.Location = new System.Drawing.Point(217, 439);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(75, 23);
 			this.btnCancel.TabIndex = 0;
@@ -118,7 +121,7 @@
 			this.groupBox1.Controls.Add(this.Obj3Checkbox);
 			this.groupBox1.Controls.Add(this.Obj2Checkbox);
 			this.groupBox1.Controls.Add(this.Obj1Checkbox);
-			this.groupBox1.Location = new System.Drawing.Point(18, 282);
+			this.groupBox1.Location = new System.Drawing.Point(18, 316);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(274, 115);
 			this.groupBox1.TabIndex = 13;
@@ -264,7 +267,7 @@
 			// 
 			this.EntropyBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.EntropyBox.FormattingEnabled = true;
-			this.EntropyBox.Location = new System.Drawing.Point(16, 215);
+			this.EntropyBox.Location = new System.Drawing.Point(16, 249);
 			this.EntropyBox.Name = "EntropyBox";
 			this.EntropyBox.Size = new System.Drawing.Size(128, 21);
 			this.EntropyBox.TabIndex = 10;
@@ -273,7 +276,7 @@
 			// 
 			this.RegionBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.RegionBox.FormattingEnabled = true;
-			this.RegionBox.Location = new System.Drawing.Point(162, 255);
+			this.RegionBox.Location = new System.Drawing.Point(161, 289);
 			this.RegionBox.Name = "RegionBox";
 			this.RegionBox.Size = new System.Drawing.Size(128, 21);
 			this.RegionBox.TabIndex = 13;
@@ -353,7 +356,7 @@
 			// 
 			this.AspectRatioCorrectionBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.AspectRatioCorrectionBox.FormattingEnabled = true;
-			this.AspectRatioCorrectionBox.Location = new System.Drawing.Point(161, 215);
+			this.AspectRatioCorrectionBox.Location = new System.Drawing.Point(161, 249);
 			this.AspectRatioCorrectionBox.Name = "AspectRatioCorrectionBox";
 			this.AspectRatioCorrectionBox.Size = new System.Drawing.Size(128, 21);
 			this.AspectRatioCorrectionBox.TabIndex = 11;
@@ -382,32 +385,32 @@
 			// 
 			this.SatellaviewCartridgeBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.SatellaviewCartridgeBox.FormattingEnabled = true;
-			this.SatellaviewCartridgeBox.Location = new System.Drawing.Point(16, 255);
+			this.SatellaviewCartridgeBox.Location = new System.Drawing.Point(16, 289);
 			this.SatellaviewCartridgeBox.Name = "SatellaviewCartridgeBox";
 			this.SatellaviewCartridgeBox.Size = new System.Drawing.Size(128, 21);
 			this.SatellaviewCartridgeBox.TabIndex = 12;
 			// 
 			// lblSatellaviewCartridge
 			// 
-			this.lblSatellaviewCartridge.Location = new System.Drawing.Point(14, 239);
+			this.lblSatellaviewCartridge.Location = new System.Drawing.Point(16, 273);
 			this.lblSatellaviewCartridge.Name = "lblSatellaviewCartridge";
 			this.lblSatellaviewCartridge.Text = "Satellaview cartridge";
 			// 
 			// lblAspectRatioCorrection
 			// 
-			this.lblAspectRatioCorrection.Location = new System.Drawing.Point(159, 198);
+			this.lblAspectRatioCorrection.Location = new System.Drawing.Point(159, 233);
 			this.lblAspectRatioCorrection.Name = "lblAspectRatioCorrection";
 			this.lblAspectRatioCorrection.Text = "Aspect Ratio Correction";
 			// 
 			// lblRegion
 			// 
-			this.lblRegion.Location = new System.Drawing.Point(159, 239);
+			this.lblRegion.Location = new System.Drawing.Point(159, 273);
 			this.lblRegion.Name = "lblRegion";
 			this.lblRegion.Text = "Region";
 			// 
 			// lblEntropy
 			// 
-			this.lblEntropy.Location = new System.Drawing.Point(13, 198);
+			this.lblEntropy.Location = new System.Drawing.Point(13, 233);
 			this.lblEntropy.Name = "lblEntropy";
 			this.lblEntropy.Text = "Entropy";
 			// 
@@ -419,13 +422,42 @@
 			this.lblDoubleSize.Text = "Some games are changing the resolution constantly (e.g. SD3) so this option can f" +
 	"orce the SNES output to stay double-size always.";
 			// 
+			// cbUseRealTime
+			// 
+			this.cbUseRealTime.AutoSize = true;
+			this.cbUseRealTime.Location = new System.Drawing.Point(161, 176);
+			this.cbUseRealTime.Name = "cbUseRealTime";
+			this.cbUseRealTime.Size = new System.Drawing.Size(96, 17);
+			this.cbUseRealTime.TabIndex = 27;
+			this.cbUseRealTime.Text = "Use Real Time";
+			this.cbUseRealTime.UseVisualStyleBackColor = true;
+			// 
+			// dtpInitialTime
+			// 
+			this.dtpInitialTime.CustomFormat = "yyyy-MM-dd HH:mm:ss";
+			this.dtpInitialTime.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+			this.dtpInitialTime.Location = new System.Drawing.Point(79, 203);
+			this.dtpInitialTime.MinDate = new System.DateTime(1970, 1, 1, 0, 0, 0, 0);
+			this.dtpInitialTime.Name = "dtpInitialTime";
+			this.dtpInitialTime.Size = new System.Drawing.Size(206, 20);
+			this.dtpInitialTime.TabIndex = 27;
+			// 
+			// lblInitialTime
+			// 
+			this.lblInitialTime.Location = new System.Drawing.Point(15, 202);
+			this.lblInitialTime.MaximumSize = new System.Drawing.Size(260, 0);
+			this.lblInitialTime.Name = "lblInitialTime";
+			this.lblInitialTime.Padding = new System.Windows.Forms.Padding(0, 4, 0, 4);
+			this.lblInitialTime.Text = "Initial Time";
+			// 
 			// BSNESOptions
 			// 
 			this.AcceptButton = this.btnOk;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.btnCancel;
-			this.ClientSize = new System.Drawing.Size(304, 436);
+			this.ClientSize = new System.Drawing.Size(304, 470);
+			this.Controls.Add(this.lblInitialTime);
 			this.Controls.Add(this.SatellaviewCartridgeBox);
 			this.Controls.Add(this.lblSatellaviewCartridge);
 			this.Controls.Add(this.cbShowCursor);
@@ -446,6 +478,8 @@
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.lblDoubleSize);
 			this.Controls.Add(this.cbDoubleSize);
+			this.Controls.Add(this.cbUseRealTime);
+			this.Controls.Add(this.dtpInitialTime);
 			this.Controls.Add(this.btnCancel);
 			this.Controls.Add(this.btnOk);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -501,5 +535,8 @@
 		private System.Windows.Forms.CheckBox cbShowCursor;
 		private WinForms.Controls.LocLabelEx lblSatellaviewCartridge;
 		private System.Windows.Forms.ComboBox SatellaviewCartridgeBox;
+		private System.Windows.Forms.CheckBox cbUseRealTime;
+		private System.Windows.Forms.DateTimePicker dtpInitialTime;
+		private WinForms.Controls.LocLabelEx lblInitialTime;
 	}
 }

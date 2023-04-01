@@ -43,6 +43,8 @@ namespace BizHawk.Client.EmuHawk
 				FastDSP = ss.FastDSP,
 				FastCoprocessors = ss.FastCoprocessors,
 				UseSGB2 = ss.UseSGB2,
+				UseRealTime = ss.UseRealTime,
+				InitialTime = ss.InitialTime,
 				ShowObj1 = s.ShowOBJ_0,
 				ShowObj2 = s.ShowOBJ_1,
 				ShowObj3 = s.ShowOBJ_2,
@@ -74,6 +76,8 @@ namespace BizHawk.Client.EmuHawk
 			ss.FastCoprocessors = dlg.FastCoprocessors;
 			ss.UseSGB2 = dlg.UseSGB2;
 			ss.SatellaviewCartridge = dlg.SatellaviewCartridge;
+			ss.UseRealTime = dlg.UseRealTime;
+			ss.InitialTime = dlg.InitialTime;
 			s.ShowOBJ_0 = dlg.ShowObj1;
 			s.ShowOBJ_1 = dlg.ShowObj2;
 			s.ShowOBJ_2 = dlg.ShowObj3;
@@ -151,6 +155,18 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get => cbUseSGB2.Checked;
 			init => cbUseSGB2.Checked = value;
+		}
+
+		private bool UseRealTime
+		{
+			get => cbUseRealTime.Checked;
+			init => cbUseRealTime.Checked = value;
+		}
+
+		private DateTime InitialTime
+		{
+			get => dtpInitialTime.Value;
+			init => dtpInitialTime.Value = value;
 		}
 
 		private BsnesApi.ENTROPY Entropy => (BsnesApi.ENTROPY) EntropyBox.SelectedIndex;

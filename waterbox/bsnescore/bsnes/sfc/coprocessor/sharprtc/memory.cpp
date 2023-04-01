@@ -46,7 +46,7 @@ auto SharpRTC::load(const uint8* data) -> void {
     timestamp |= data[8 + byte] << (byte * 8);
   }
 
-  uint64 diff = (uint64)time(0) - timestamp;
+  uint64 diff = (uint64)platform->time() - timestamp;
   while(diff >= 60 * 60 * 24) { tickDay(); diff -= 60 * 60 * 24; }
   while(diff >= 60 * 60) { tickHour(); diff -= 60 * 60; }
   while(diff >= 60) { tickMinute(); diff -= 60; }
@@ -59,7 +59,7 @@ auto SharpRTC::save(uint8* data) -> void {
     data[byte] |= rtcRead(byte * 2 + 1) << 4;
   }
 
-  uint64 timestamp = (uint64)time(nullptr);
+  uint64 timestamp = (uint64)platform->time();
   for(auto byte : range(8)) {
     data[8 + byte] = timestamp;
     timestamp >>= 8;

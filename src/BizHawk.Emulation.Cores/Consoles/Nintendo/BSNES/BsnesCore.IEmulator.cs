@@ -55,6 +55,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			int numSamples = UpdateAudioBuffer();
 			_soundProvider.PutSamples(_audioBuffer, numSamples / 2);
 			Frame++;
+			AdvanceRtc();
 
 			if (IsLagFrame)
 			{
@@ -77,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		public string SystemId { get; }
 
-		public bool DeterministicEmulation => true;
+		public bool DeterministicEmulation { get; }
 
 		public void ResetCounters()
 		{
