@@ -348,10 +348,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		private long _clockTime;
 		private int _clockRemainder;
 
-		protected void InitializeRtc(DateTime start)
+		private void InitializeRtc(DateTime start)
 			=> _clockTime = (long)(start - _epoch).TotalSeconds;
 
-		private void AdvanceRtc()
+		internal void AdvanceRtc()
 		{
 			_clockRemainder += VsyncDenominator;
 			if (_clockRemainder >= VsyncNumerator)

@@ -81,6 +81,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				}
 
 				if (!framePassed) _bsnesCore.IsLagFrame = false;
+				if (framePassed) _bsnesCore.AdvanceRtc();
 				_bsnesCore.FrameAdvancePost();
 
 				return true;

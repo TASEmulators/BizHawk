@@ -34,6 +34,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				IsLagFrame = true;
 				// run the core for one frame
 				Api.core.snes_run(false);
+				AdvanceRtc();
 				FrameAdvancePost();
 
 				return true;
@@ -55,7 +56,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			int numSamples = UpdateAudioBuffer();
 			_soundProvider.PutSamples(_audioBuffer, numSamples / 2);
 			Frame++;
-			AdvanceRtc();
 
 			if (IsLagFrame)
 			{
