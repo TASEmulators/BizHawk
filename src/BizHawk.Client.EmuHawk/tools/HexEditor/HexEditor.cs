@@ -1237,6 +1237,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
+				SaveMenuItem.Visible = false;
 				SaveAsBinaryMenuItem.Text = "Save as binary...";
 			}
 
