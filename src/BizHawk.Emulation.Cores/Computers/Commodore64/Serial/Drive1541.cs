@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 		private int _cpuClockNum;
 		private int _ratioDifference;
 		private int _driveLightOffTime;
-		private int[] _trackImageData = new int[1];
+		private int[] _trackImageData;
 		public Func<int> ReadIec = () => 0xFF;
 		public Action DebuggerStep;
 		public readonly Chip23128 DriveRom;
@@ -100,8 +100,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 			ser.Sync("SystemCpuClockNumerator", ref _cpuClockNum);
 			ser.Sync("SystemDriveCpuRatioDifference", ref _ratioDifference);
 			ser.Sync("DriveLightOffTime", ref _driveLightOffTime);
-			// feos: drop 400KB of ROM data from savestates
-			//ser.Sync("TrackImageData", ref _trackImageData, useNull: false);
+
+			// set _trackImageData back to the correct reference
+			_trackImageData = _disk?.GetDataForTrack(_trackNumber);
 
 			ser.Sync("DiskDensityCounter", ref _diskDensityCounter);
 			ser.Sync("DiskSupplementaryCounter", ref _diskSupplementaryCounter);

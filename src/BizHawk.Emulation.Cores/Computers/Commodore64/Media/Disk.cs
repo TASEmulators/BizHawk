@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 		public const int FluxBitsPerTrack = 16000000 / 5;
 		public const int FluxEntriesPerTrack = FluxBitsPerTrack / FluxBitsPerEntry;
 		private readonly int[][] _tracks;
-		private readonly int[] _originalMedia;
+		private readonly int[][] _originalMedia;
 		public bool Valid;
 		public bool WriteProtected;
 
@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 			WriteProtected = false;
 			_tracks = new int[trackCapacity][];
 			FillMissingTracks();
-			_originalMedia = SerializeTracks(_tracks);
+			_originalMedia = _tracks.Select(t => (int[])t.Clone()).ToArray();
 			Valid = true;
 		}
 
@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 
 			FillMissingTracks();
 			Valid = true;
-			_originalMedia = SerializeTracks(_tracks);
+			_originalMedia = _tracks.Select(t => (int[])t.Clone()).ToArray();
 		}
 
 		private int[] ConvertToFluxTransitions(int density, byte[] bytes, int fluxBitOffset)
@@ -136,59 +136,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 			return _tracks[halftrack];
 		}
 
-		/// <summary>
-		/// Combine the tracks into a single bitstream.
-		/// </summary>
-		private int[] SerializeTracks(int[][] tracks)
-		{
-			var trackCount = tracks.Length;
-			var result = new int[trackCount * FluxEntriesPerTrack];
-			for (var i = 0; i < trackCount; i++)
-			{
-				Array.Copy(tracks[i], 0, result, i * FluxEntriesPerTrack, FluxEntriesPerTrack);
-			}
-			return result;
-		}
-
-		/// <summary>
-		/// Split a bitstream into tracks.
-		/// </summary>
-		private int[][] DeserializeTracks(int[] data)
-		{
-			var trackCount = data.Length / FluxEntriesPerTrack;
-			var result = new int[trackCount][];
-			for (var i = 0; i < trackCount; i++)
-			{
-				result[i] = new int[FluxEntriesPerTrack];
-				Array.Copy(data, i * FluxEntriesPerTrack, result[i], 0, FluxEntriesPerTrack);
-			}
-			return result;
-		}
-
 		public void SyncState(Serializer ser)
 		{
 			ser.Sync(nameof(WriteProtected), ref WriteProtected);
 
-			// cpp: the below comment is wrong (at least now), writes are implemented (see ExecuteFlux() in Drive1541)
-			// I'm not yet going to uncomment this, due to the noted performance issues
-			// Not sure where performance issues would truly lie, suppose it's probably due to new array spam
-			// Something just a bit smarter would fix such issues
-
-			// Currently nothing actually writes to _tracks and so it is always the same as _originalMedia
-			// So commenting out this (very slow) code for now
-			// If/when disk writing is implemented, Disk.cs should implement ISaveRam as a means of file storage of the new disk state
-			// And this code needs to be rethought to be reasonably performant
-			//if (ser.IsReader)
-			//{
-			//	var mediaState = new int[_originalMedia.Length];
-			//	SaveState.SyncDelta("MediaState", ser, _originalMedia, ref mediaState);
-			//	_tracks = DeserializeTracks(mediaState);
-			//}
-			//else if (ser.IsWriter)
-			//{
-			//	var mediaState = SerializeTracks(_tracks);
-			//	SaveState.SyncDelta("MediaState", ser, _originalMedia, ref mediaState);
-			//}
+			for (var i = 0; i < _tracks.Length; i++)
+			{
+				ser.SyncDelta("MediaState", _originalMedia[i], _tracks[i]);
+			}
 		}
 	}
 }

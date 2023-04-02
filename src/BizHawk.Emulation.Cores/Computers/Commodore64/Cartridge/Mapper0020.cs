@@ -100,8 +100,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			ser.Sync("CommandLatch55", ref _commandLatchAa);
 			ser.Sync("CommandLatchAA", ref _commandLatchAa);
 			ser.Sync("InternalROMState", ref _internalRomState);
-			SaveState.SyncDelta("MediaStateA", ser, _originalMediaA, ref _banksA);
-			SaveState.SyncDelta("MediaStateB", ser, _originalMediaB, ref _banksB);
+			ser.SyncDelta("MediaStateA", _originalMediaA, _banksA);
+			ser.SyncDelta("MediaStateB", _originalMediaB, _banksB);
 			DriveLightOn = _boardLed;
 		}
 

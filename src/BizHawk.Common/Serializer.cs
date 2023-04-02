@@ -748,6 +748,22 @@ namespace BizHawk.Common
 			}
 		}
 
+		public void SyncDelta<T>(string name, T[] original, T[] data)
+			where T : unmanaged
+		{
+			if (IsReader)
+			{
+				var delta = Array.Empty<byte>();
+				Sync(name, ref delta, useNull: false);
+				DeltaSerializer.ApplyDelta<T>(original, data, delta);
+			}
+			else
+			{
+				var delta = DeltaSerializer.GetDelta<T>(original, data);
+				Sync(name, ref delta, useNull: false);
+			}
+		}
+
 		private BinaryReader _br;
 		private BinaryWriter _bw;
 		private TextReader _tr;
