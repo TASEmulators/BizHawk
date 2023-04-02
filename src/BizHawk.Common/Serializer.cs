@@ -8,6 +8,8 @@ using System.IO;
 using BizHawk.Common.IOExtensions;
 using BizHawk.Common.BufferExtensions;
 
+using CommunityToolkit.HighPerformance;
+
 namespace BizHawk.Common
 {
 	public unsafe class Serializer
@@ -759,8 +761,16 @@ namespace BizHawk.Common
 			}
 			else
 			{
-				var delta = DeltaSerializer.GetDelta<T>(original, data).ToArray(); // TODO: don't create array here (need .net update to write span to binary writer)
-				Sync(name, ref delta, useNull: false);
+				if (IsText)
+				{
+					var delta = DeltaSerializer.GetDelta<T>(original, data).ToArray();
+					Sync(name, ref delta, useNull: false); // this is allocation heavy regardless
+				}
+				else
+				{
+					var delta = DeltaSerializer.GetDelta<T>(original, data);
+					_bw.WriteByteBuffer(delta);
+				}
 			}
 		}
 

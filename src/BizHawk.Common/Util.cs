@@ -7,6 +7,8 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 
+using CommunityToolkit.HighPerformance;
+
 namespace BizHawk.Common
 {
 	public static unsafe class Util
@@ -388,6 +390,12 @@ namespace BizHawk.Common
 				bw.Write(data.Length);
 				bw.Write(data);
 			}
+		}
+
+		public static void WriteByteBuffer(this BinaryWriter bw, ReadOnlySpan<byte> data)
+		{
+			bw.Write(data.Length);
+			bw.BaseStream.Write(data);
 		}
 	}
 }
