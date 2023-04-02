@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 				addr =>
 				{
 					if (addr is < 0 or > 0x10000) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
-					return (byte)_machine.Memory.PeekMainRam((int)addr);
+					return _machine.Memory.PeekMainRam((int)addr);
 				},
 				(addr, value) =>
 				{
@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 				addr =>
 				{
 					if (addr is < 0 or > 0x10000) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
-					return (byte)_machine.Memory.PeekAuxRam((int)addr);
+					return _machine.Memory.PeekAuxRam((int)addr);
 				},
 				(addr, value) =>
 				{
