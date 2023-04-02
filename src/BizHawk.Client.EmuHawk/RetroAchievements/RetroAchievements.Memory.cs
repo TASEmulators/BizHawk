@@ -507,6 +507,10 @@ namespace BizHawk.Client.EmuHawk
 						// todo: make this MainMemory
 						mfs.Add(new(domains["RAM"], 0, domains["RAM"].Size));
 						break;
+					case ConsoleID.AppleII:
+						mfs.Add(new(domains["Main RAM"], 0, domains["Main RAM"].Size));
+						mfs.Add(new(domains["Auxiliary RAM"], 0, domains["Auxiliary RAM"].Size));
+						break;
 					case ConsoleID.Saturn:
 						// todo: add System Bus so this isn't needed
 						mfs.Add(new(domains["Work Ram Low"], 0, domains["Work Ram Low"].Size));

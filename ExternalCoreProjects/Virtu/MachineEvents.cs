@@ -37,10 +37,10 @@ namespace Jellyfish.Virtu
 		{
 			if (ser.IsReader)
 			{
-				int[] usedDelta = new int[0];
-				int[] usedType = new int[0];
-				int[] freeDelta = new int[0];
-				int[] freeType = new int[0];
+				int[] usedDelta = Array.Empty<int>();
+				int[] usedType = Array.Empty<int>();
+				int[] freeDelta = Array.Empty<int>();
+				int[] freeType = Array.Empty<int>();
 
 				ser.Sync("UsedDelta", ref usedDelta, false);
 				ser.Sync("UsedType", ref usedType, false);
