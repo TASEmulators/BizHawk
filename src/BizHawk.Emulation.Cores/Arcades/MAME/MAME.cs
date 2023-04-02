@@ -331,6 +331,10 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				"table.sort(final) " +
 				"return table.concat(final)";
 
+			public static string GetFramerateDenominator(int frequency) =>
+				"for k,v in pairs(manager.machine.screens) do " +
+					$"return emu.attotime(0, v.refresh_attoseconds):as_ticks({ frequency }) " +
+				"end";
 			public static string MakeLookupKey(string gameName, string luaCode) =>
 				$"[{ gameName }] { luaCode }";
 			public static string InputField(string tag, string fieldName) =>
