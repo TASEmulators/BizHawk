@@ -759,7 +759,7 @@ namespace BizHawk.Common
 			}
 			else
 			{
-				var delta = DeltaSerializer.GetDelta<T>(original, data);
+				var delta = DeltaSerializer.GetDelta<T>(original, data).ToArray(); // TODO: don't create array here (need .net update to write span to binary writer)
 				Sync(name, ref delta, useNull: false);
 			}
 		}

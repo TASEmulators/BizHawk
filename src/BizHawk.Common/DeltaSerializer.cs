@@ -9,7 +9,7 @@ namespace BizHawk.Common
 	/// </summary>
 	public static class DeltaSerializer
 	{
-		public static byte[] GetDelta<T>(ReadOnlySpan<T> original, ReadOnlySpan<T> data)
+		public static ReadOnlySpan<byte> GetDelta<T>(ReadOnlySpan<T> original, ReadOnlySpan<T> data)
 			where T : unmanaged
 		{
 			var orignalAsBytes = MemoryMarshal.AsBytes(original);
@@ -94,7 +94,7 @@ namespace BizHawk.Common
 				}
 			}
 
-			return ret.Slice(0, retSize).ToArray();
+			return ret.Slice(0, retSize);
 		}
 
 		public static void ApplyDelta<T>(ReadOnlySpan<T> original, Span<T> data, ReadOnlySpan<byte> delta)
