@@ -142,7 +142,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 
 			for (var i = 0; i < _tracks.Length; i++)
 			{
-				ser.SyncDelta("MediaState", _originalMedia[i], _tracks[i]);
+				ser.SyncDelta($"MediaState{i}", _originalMedia[i], _tracks[i]);
 			}
 		}
 	}
