@@ -126,7 +126,7 @@ namespace BizHawk.Common
 				{
 					header = -header;
 
-					if (header < dataEnd - dataPos || header < deltaEnd - deltaPos)
+					if (dataEnd - dataPos < header || deltaEnd - deltaPos < header)
 					{
 						throw new InvalidOperationException("Corrupt delta header!");
 					}
@@ -140,7 +140,7 @@ namespace BizHawk.Common
 				}
 				else // sameness block
 				{
-					if (header < dataEnd - dataPos)
+					if (dataEnd - dataPos < header)
 					{
 						throw new InvalidOperationException("Corrupt delta header!");
 					}
@@ -149,6 +149,11 @@ namespace BizHawk.Common
 				}
 
 				dataPos += header;
+			}
+
+			if (dataPos != dataEnd)
+			{
+				throw new InvalidOperationException("Did not reach end of data after applying delta!");
 			}
 		}
 	}
