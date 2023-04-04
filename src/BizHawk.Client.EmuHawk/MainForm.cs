@@ -26,6 +26,7 @@ using BizHawk.Emulation.Common.Base_Implementations;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Arcades.MAME;
 using BizHawk.Emulation.Cores.Calculators.TI83;
+using BizHawk.Emulation.Cores.Computers.Commodore64;
 using BizHawk.Emulation.Cores.Consoles.NEC.PCE;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
@@ -1921,7 +1922,7 @@ namespace BizHawk.Client.EmuHawk
 					byte[] sram;
 
 					// some cores might not know how big the saveram ought to be, so just send it the whole file
-					if (Emulator is MGBAHawk || Emulator is NeoGeoPort || (Emulator is NES && (Emulator as NES).BoardName == "FDS"))
+					if (Emulator is C64 or MGBAHawk or NeoGeoPort or NES { BoardName: "FDS" })
 					{
 						sram = File.ReadAllBytes(saveRamPath);
 					}

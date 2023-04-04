@@ -26,7 +26,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 			_tracks = new int[trackCapacity][];
 			FillMissingTracks();
 			_originalMedia = _tracks.Select(t => (int[])t.Clone()).ToArray();
-			_usedTracks = new bool[trackCapacity];
 			Valid = true;
 		}
 
@@ -49,7 +48,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 			FillMissingTracks();
 			Valid = true;
 			_originalMedia = _tracks.Select(t => (int[])t.Clone()).ToArray();
-			_usedTracks = new bool[trackCapacity];
 		}
 
 		private int[] ConvertToFluxTransitions(int density, byte[] bytes, int fluxBitOffset)
@@ -135,29 +133,41 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 			}
 		}
 
+		public void AttachTracker(bool[] usedTracks)
+		{
+			if (_tracks.Length != usedTracks.Length)
+			{
+				throw new InvalidOperationException("track and tracker length mismatch! (this should be impossible, please report)");
+			}
+
+			_usedTracks = usedTracks;
+		}
+
+		/// <summary>
+		/// Generic update of the deltas stored in Drive1541's ISaveRam implementation.
+		/// deltaUpdateCallback will be called for each track which has been possibly dirtied
+		/// </summary>
+		/// <param name="deltaUpdateCallback">callback</param>
+		public void DeltaUpdate(Action<int, int[], int[]> deltaUpdateCallback)
+		{
+			for (var i = 0; i < _tracks.Length; i++)
+			{
+				if (_usedTracks[i])
+				{
+					deltaUpdateCallback(i, _originalMedia[i], _tracks[i]);
+				}
+			}
+		}
+
 		public int[] GetDataForTrack(int halftrack)
 		{
-			_usedTracks[halftrack] = true; // TODO: probably can be smarter about this with the WriteProtected flag
+			_usedTracks[halftrack] = true;
 			return _tracks[halftrack];
 		}
 
 		public void SyncState(Serializer ser)
 		{
 			ser.Sync(nameof(WriteProtected), ref WriteProtected);
-			var oldUsedTracks = _usedTracks; // Sync changes reference if loading state (we don't care in the saving state case)
-			ser.Sync(nameof(_usedTracks), ref _usedTracks, useNull: false);
-
-			for (var i = 0; i < _tracks.Length; i++)
-			{
-				if (_usedTracks[i])
-				{
-					ser.SyncDelta($"MediaState{i}", _originalMedia[i], _tracks[i]);
-				}
-				else if (ser.IsReader && oldUsedTracks[i]) // _tracks[i] might be different, but in the state it wasn't, so just copy _originalMedia[i]
-				{
-					_originalMedia[i].AsSpan().CopyTo(_tracks[i]);
-				}
-			}
 		}
 	}
 }

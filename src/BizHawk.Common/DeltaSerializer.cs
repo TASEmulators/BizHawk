@@ -5,30 +5,42 @@ namespace BizHawk.Common
 {
 	/// <summary>
 	/// Serializes deltas between data, mainly for ROM like structures which are actually writable, and therefore the differences need to be saved
-	/// Uses simple RLE encoding to keep the size down
+	/// Uses a simple delta format in order to keep size down
+	/// DELTA FORMAT DETAILS FOLLOWS
+	/// The format comprises of an indeterminate amount of blocks. These blocks start with a 4 byte header. This header is read as a native endian 32-bit two's complement signed integer.
+	/// If the header is positive, then the header indicates the amount of bytes which are identical between the original and current spans.
+	/// Positive headers are blocks by themselves, so the next header will proceed immediately after a positive header.
+	/// If the header is negative, then the header indicates the negation of the amount of bytes which differ between the original and current spans.
+	/// A negative header will have the negated header amount of bytes proceed it, which will be the bitwise XOR between the original and differing bytes.
+	/// A header of -0x80000000 is considered ill-formed.
+	/// This format does not stipulate requirements for whether blocks of non-differing bytes necessarily will use a positive header.
+	/// Thus, an implementation is free to use negative headers only, although without combination of positive headers, this will obviously not have great results wrt final size.
+	/// More practically, an implementation may want to avoid using positive headers when the block is rather small (e.g. smaller than the header itself, and thus not shrinking the result).
+	/// Subsequently, it may not mind putting some identical bytes within the negative header's block.
+	/// XORing the same values result in 0, so doing this will not leave trace of the original data.
 	/// </summary>
 	public static class DeltaSerializer
 	{
-		public static ReadOnlySpan<byte> GetDelta<T>(ReadOnlySpan<T> original, ReadOnlySpan<T> data)
+		public static ReadOnlySpan<byte> GetDelta<T>(ReadOnlySpan<T> original, ReadOnlySpan<T> current)
 			where T : unmanaged
 		{
 			var orignalAsBytes = MemoryMarshal.AsBytes(original);
-			var dataAsBytes = MemoryMarshal.AsBytes(data);
+			var currentAsBytes = MemoryMarshal.AsBytes(current);
 
-			if (orignalAsBytes.Length != dataAsBytes.Length)
+			if (orignalAsBytes.Length != currentAsBytes.Length)
 			{
-				throw new InvalidOperationException($"{nameof(orignalAsBytes.Length)} must equal {nameof(dataAsBytes.Length)}");
+				throw new InvalidOperationException($"{nameof(orignalAsBytes.Length)} must equal {nameof(currentAsBytes.Length)}");
 			}
 
 			var index = 0;
-			var end = dataAsBytes.Length;
+			var end = currentAsBytes.Length;
 			var ret = new byte[end + 4].AsSpan(); // worst case scenario size (i.e. everything is different)
 			var retSize = 0;
 
 			while (index < end)
 			{
 				var blockStart = index;
-				while (index < end && orignalAsBytes[index] == dataAsBytes[index])
+				while (index < end && orignalAsBytes[index] == currentAsBytes[index])
 				{
 					index++;
 				}
@@ -40,7 +52,7 @@ namespace BizHawk.Common
 					var different = 0;
 					while (index < end && same < 8) // in case we hit end of span before, this does nothing and different is 0
 					{
-						if (orignalAsBytes[index] != dataAsBytes[index])
+						if (orignalAsBytes[index] != currentAsBytes[index])
 						{
 							different++;
 							same = 0; // note: same is set to 0 on first iteration
@@ -68,7 +80,7 @@ namespace BizHawk.Common
 						retSize += 4;
 						for (var i = blockStart; i < index - same; i++)
 						{
-							ret[retSize++] = (byte)(orignalAsBytes[i] ^ dataAsBytes[i]);
+							ret[retSize++] = (byte)(orignalAsBytes[i] ^ currentAsBytes[i]);
 						}
 					}
 
@@ -76,7 +88,7 @@ namespace BizHawk.Common
 					{
 						if (same == 8)
 						{
-							while (index < end && orignalAsBytes[index] == dataAsBytes[index])
+							while (index < end && orignalAsBytes[index] == currentAsBytes[index])
 							{
 								index++;
 							}
@@ -97,19 +109,19 @@ namespace BizHawk.Common
 			return ret.Slice(0, retSize);
 		}
 
-		public static void ApplyDelta<T>(ReadOnlySpan<T> original, Span<T> data, ReadOnlySpan<byte> delta)
+		public static void ApplyDelta<T>(ReadOnlySpan<T> original, Span<T> current, ReadOnlySpan<byte> delta)
 			where T : unmanaged
 		{
 			var orignalAsBytes = MemoryMarshal.AsBytes(original);
-			var dataAsBytes = MemoryMarshal.AsBytes(data);
+			var currentAsBytes = MemoryMarshal.AsBytes(current);
 
-			if (orignalAsBytes.Length != dataAsBytes.Length)
+			if (orignalAsBytes.Length != currentAsBytes.Length)
 			{
-				throw new InvalidOperationException($"{nameof(orignalAsBytes.Length)} must equal {nameof(dataAsBytes.Length)}");
+				throw new InvalidOperationException($"{nameof(orignalAsBytes.Length)} must equal {nameof(currentAsBytes.Length)}");
 			}
 
 			var dataPos = 0;
-			var dataEnd = dataAsBytes.Length;
+			var dataEnd = currentAsBytes.Length;
 			var deltaPos = 0;
 			var deltaEnd = delta.Length;
 
@@ -126,14 +138,14 @@ namespace BizHawk.Common
 				{
 					header = -header;
 
-					if (dataEnd - dataPos < header || deltaEnd - deltaPos < header)
+					if (header == int.MinValue || dataEnd - dataPos < header || deltaEnd - deltaPos < header)
 					{
 						throw new InvalidOperationException("Corrupt delta header!");
 					}
 
 					for (var i = 0; i < header; i++)
 					{
-						dataAsBytes[dataPos + i] = (byte)(orignalAsBytes[dataPos + i] ^ delta[deltaPos + i]);
+						currentAsBytes[dataPos + i] = (byte)(orignalAsBytes[dataPos + i] ^ delta[deltaPos + i]);
 					}
 
 					deltaPos += header;
@@ -145,7 +157,7 @@ namespace BizHawk.Common
 						throw new InvalidOperationException("Corrupt delta header!");
 					}
 
-					orignalAsBytes.Slice(dataPos, header).CopyTo(dataAsBytes.Slice(dataPos, header));
+					orignalAsBytes.Slice(dataPos, header).CopyTo(currentAsBytes.Slice(dataPos, header));
 				}
 
 				dataPos += header;

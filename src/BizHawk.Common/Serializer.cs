@@ -748,18 +748,18 @@ namespace BizHawk.Common
 			}
 		}
 
-		public void SyncDelta<T>(string name, T[] original, T[] data)
+		public void SyncDelta<T>(string name, T[] original, T[] current)
 			where T : unmanaged
 		{
 			if (IsReader)
 			{
 				var delta = Array.Empty<byte>();
 				Sync(name, ref delta, useNull: false);
-				DeltaSerializer.ApplyDelta<T>(original, data, delta);
+				DeltaSerializer.ApplyDelta<T>(original, current, delta);
 			}
 			else
 			{
-				var delta = DeltaSerializer.GetDelta<T>(original, data).ToArray(); // TODO: don't create array here (need .net update to write span to binary writer)
+				var delta = DeltaSerializer.GetDelta<T>(original, current).ToArray(); // TODO: don't create array here (need .net update to write span to binary writer)
 				Sync(name, ref delta, useNull: false);
 			}
 		}

@@ -202,7 +202,7 @@ namespace BizHawk.Client.Common
 
 			CommonEntriesFor(VSystemID.Raw.Arcade, basePath: Path.Combine(".", "Arcade")),
 
-			CommonEntriesFor(VSystemID.Raw.C64, basePath: Path.Combine(".", "C64"), omitSaveRAM: true),
+			CommonEntriesFor(VSystemID.Raw.C64, basePath: Path.Combine(".", "C64")),
 
 			CommonEntriesFor(VSystemID.Raw.ChannelF, basePath: Path.Combine(".", "Channel F"), omitSaveRAM: true),
 

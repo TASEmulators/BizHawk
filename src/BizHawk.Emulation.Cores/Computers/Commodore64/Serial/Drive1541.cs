@@ -1,13 +1,15 @@
 ﻿using System;
+using System.IO;
 
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.M6502;
 using BizHawk.Emulation.Cores.Computers.Commodore64.Media;
 using BizHawk.Emulation.Cores.Computers.Commodore64.MOS;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 {
-	public sealed partial class Drive1541 : SerialPortDevice
+	public sealed partial class Drive1541 : SerialPortDevice, ISaveRam
 	{
 		private Disk _disk;
 		private int _bitHistory;
@@ -51,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 			public void WriteMemory(ushort address, byte value) => _drive.Write(address, value);
 		}
 
-		public Drive1541(int clockNum, int clockDen)
+		public Drive1541(int clockNum, int clockDen, Func<int> getCurrentDiskNumber)
 		{
 			DriveRom = new Chip23128();
 			_cpu = new MOS6502X<CpuLink>(new CpuLink(this))
@@ -65,6 +67,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 
 			_cpuClockNum = clockNum;
 			_driveCpuClockNum = clockDen * 16000000; // 16mhz
+			_getCurrentDiskNumber = getCurrentDiskNumber;
 		}
 
 		public override void SyncState(Serializer ser)
@@ -101,9 +104,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 			ser.Sync("SystemDriveCpuRatioDifference", ref _ratioDifference);
 			ser.Sync("DriveLightOffTime", ref _driveLightOffTime);
 
-			// set _trackImageData back to the correct reference
-			_trackImageData = _disk?.GetDataForTrack(_trackNumber);
-
 			ser.Sync("DiskDensityCounter", ref _diskDensityCounter);
 			ser.Sync("DiskSupplementaryCounter", ref _diskSupplementaryCounter);
 			ser.Sync("DiskFluxReversalDetected", ref _diskFluxReversalDetected);
@@ -123,6 +123,34 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 			ser.Sync("DiskWriteLatch", ref _diskWriteLatch);
 			ser.Sync("DiskOutputBits", ref _diskOutputBits);
 			ser.Sync("DiskWriteProtected", ref _diskWriteProtected);
+
+			if (ser.IsReader)
+			{
+				ResetDeltas();
+			}
+			else
+			{
+				SaveDeltas();
+			}
+
+			for (var i = 0; i < _usedDiskTracks.Length; i++)
+			{
+				ser.Sync($"_usedDiskTracks{i}", ref _usedDiskTracks[i], useNull: false);
+				for (var j = 0; j < 84; j++)
+				{
+					ser.Sync($"DiskDeltas{i},{j}", ref _diskDeltas[i, j], useNull: true);
+				}
+			}
+
+			_disk?.AttachTracker(_usedDiskTracks[_getCurrentDiskNumber()]);
+
+			if (ser.IsReader)
+			{
+				LoadDeltas();
+			}
+
+			// set _trackImageData back to the correct reference
+			_trackImageData = _disk?.GetDataForTrack(_trackNumber);
 		}
 
 		public override void ExecutePhase()
@@ -206,6 +234,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 		public void InsertMedia(Disk disk)
 		{
 			_disk = disk;
+			_disk?.AttachTracker(_usedDiskTracks[_getCurrentDiskNumber()]);
 			UpdateMediaData();
 		}
 
@@ -228,6 +257,97 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 			_disk = null;
 			_trackImageData = null;
 			_diskBits = 0;
+		}
+
+		// ISaveRam implementation
+
+		// this is some extra state used to keep savestate size down, as most tracks don't get used
+		// we keep it here for all disks as we need to remember it when swapping disks around
+		// _usedDiskTracks.Length also doubles as a way to remember the disk count
+		private bool[][] _usedDiskTracks;
+		private byte[,][] _diskDeltas;
+		private readonly Func<int> _getCurrentDiskNumber;
+
+		public void InitSaveRam(int diskCount)
+		{
+			_usedDiskTracks = new bool[diskCount][];
+			_diskDeltas = new byte[diskCount, 84][];
+			for (var i = 0; i < diskCount; i++)
+			{
+				_usedDiskTracks[i] = new bool[84];
+			}
+		}
+
+		public bool SaveRamModified => true;
+
+		public byte[] CloneSaveRam()
+		{
+			SaveDeltas(); // update the current deltas
+
+			using var ms = new MemoryStream();
+			using var bw = new BinaryWriter(ms);
+			bw.Write(_usedDiskTracks.Length);
+			for (var i = 0; i < _usedDiskTracks.Length; i++)
+			{
+				bw.WriteByteBuffer(_usedDiskTracks[i].ToUByteBuffer());
+				for (var j = 0; j < 84; j++)
+				{
+					bw.WriteByteBuffer(_diskDeltas[i, j]);
+				}
+			}
+
+			return ms.ToArray();
+		}
+
+		public void StoreSaveRam(byte[] data)
+		{
+			using var ms = new MemoryStream(data, false);
+			using var br = new BinaryReader(ms);
+
+			var ndisks = br.ReadInt32();
+			if (ndisks != _usedDiskTracks.Length)
+			{
+				throw new InvalidOperationException("Disk count mismatch!");
+			}
+
+			ResetDeltas();
+
+			for (var i = 0; i < _usedDiskTracks.Length; i++)
+			{
+				_usedDiskTracks[i] = br.ReadByteBuffer(returnNull: false)!.ToBoolBuffer();
+				for (var j = 0; j < 84; j++)
+				{
+					_diskDeltas[i, j] = br.ReadByteBuffer(returnNull: true);
+				}
+			}
+
+			_disk?.AttachTracker(_usedDiskTracks[_getCurrentDiskNumber()]);
+			LoadDeltas(); // load up new deltas
+			_usedDiskTracks[_getCurrentDiskNumber()][_trackNumber] = true; // make sure this gets set to true now
+		}
+
+		public void SaveDeltas()
+		{
+			_disk?.DeltaUpdate((tracknum, original, current) =>
+			{
+				_diskDeltas[_getCurrentDiskNumber(), tracknum] = DeltaSerializer.GetDelta<int>(original, current).ToArray();
+			});
+		}
+
+		public void LoadDeltas()
+		{
+			_disk?.DeltaUpdate((tracknum, original, current) =>
+			{
+				DeltaSerializer.ApplyDelta<int>(original, current, _diskDeltas[_getCurrentDiskNumber(), tracknum]);
+			});
+		}
+
+		private void ResetDeltas()
+		{
+			_disk?.DeltaUpdate(static (_, original, current) =>
+			{
+				original.AsSpan().CopyTo(current);
+			});
 		}
 	}
 }

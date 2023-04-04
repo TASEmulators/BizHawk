@@ -15,7 +15,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			ser.Sync(nameof(CurrentDisk), ref _currentDisk);
 			if (oldDisk != _currentDisk)
 			{
-				InitDisk();
+				// don't use InitDisk here, no need to load in soon to be overwritten deltas
+				InitMedia(_roms[_currentDisk]);
 			}
 			ser.Sync("PreviousDiskPressed", ref _prevPressed);
 			ser.Sync("NextDiskPressed", ref _nextPressed);
