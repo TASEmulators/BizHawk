@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 				return ext switch
 				{
 					".DSK" or ".PO" or ".DO" or ".NIB" => (romAssert.FileData, ext),
-					".2mg" => throw new NotSupportedException("Unsupported extension .2mg!"), // TODO: add a way to support this (we have hashes of this format in our db it seems?)
+					".2MG" => throw new NotSupportedException("Unsupported extension .2mg!"), // TODO: add a way to support this (we have hashes of this format in our db it seems?)
 					_ => (romAssert.FileData, ".DSK") // no idea, let's assume it's just a .DSK?
 				};
 			}
