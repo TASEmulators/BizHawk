@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		private void SaveDelta()
 		{
-			_machine.DiskIIController.Drive1.DeltaUpdate((original, current) =>
+			_machine.DiskIIController.Drive1.DeltaUpdate((current, original) =>
 			{
 				_diskDeltas[CurrentDisk] = DeltaSerializer.GetDelta<byte>(original, current).ToArray();
 			});
@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		private void LoadDelta(bool maybeDifferent)
 		{
-			_machine.DiskIIController.Drive1.DeltaUpdate((original, current) =>
+			_machine.DiskIIController.Drive1.DeltaUpdate((current, original) =>
 			{
 				if (_diskDeltas[CurrentDisk] is not null)
 				{
