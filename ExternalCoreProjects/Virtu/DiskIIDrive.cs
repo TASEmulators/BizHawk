@@ -1,4 +1,6 @@
-﻿namespace Jellyfish.Virtu
+﻿using System;
+
+namespace Jellyfish.Virtu
 {
 	public sealed class DiskIIDrive
 	{
@@ -29,8 +31,6 @@
 			ser.Sync(nameof(_trackNumber), ref _trackNumber);
 			ser.Sync(nameof(_trackOffset), ref _trackOffset);
 			ser.Sync(nameof(_trackData), ref _trackData, false);
-			
-			// TODO: save the delta, this is saving the rom into save states
 			_disk?.Sync(ser);
 		}
 
@@ -120,5 +120,11 @@
 
 		private const int TrackNumberMax = 0x44;
 		private const int PhaseCount = 4;
+
+		public void DeltaUpdate(Action<byte[], byte[]> callback)
+		{
+			FlushTrack();
+			_disk.DeltaUpdate(callback);
+		}
 	}
 }

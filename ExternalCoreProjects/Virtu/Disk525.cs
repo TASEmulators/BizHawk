@@ -4,19 +4,26 @@ namespace Jellyfish.Virtu
 {
 	internal abstract class Disk525
 	{
-		protected byte[] Data;
+		protected readonly byte[] Data;
+		private readonly byte[] Original;
 		public bool IsWriteProtected;
 
 		protected Disk525(byte[] data, bool isWriteProtected)
 		{
 			Data = data;
+			Original = (byte[])data.Clone();
 			IsWriteProtected = isWriteProtected;
 		}
 
 		public virtual void Sync(IComponentSerializer ser)
 		{
-			ser.Sync(nameof(Data), ref Data, false);
+			ser.SyncDelta("DataDelta", Original, Data);
 			ser.Sync(nameof(IsWriteProtected), ref IsWriteProtected);
+		}
+
+		public void DeltaUpdate(Action<byte[], byte[]> callback)
+		{
+			callback(Data, Original);
 		}
 
 		public static Disk525 CreateDisk(string name, byte[] data, bool isWriteProtected)

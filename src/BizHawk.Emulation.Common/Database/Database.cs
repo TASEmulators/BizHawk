@@ -379,6 +379,7 @@ namespace BizHawk.Emulation.Common
 
 				case ".PO":
 				case ".DO":
+				case ".NIB":
 					game.System = VSystemID.Raw.AppleII;
 					break;
 

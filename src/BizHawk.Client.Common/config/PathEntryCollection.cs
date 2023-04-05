@@ -198,7 +198,7 @@ namespace BizHawk.Client.Common
 
 			CommonEntriesFor(VSystemID.Raw.AmstradCPC, basePath: Path.Combine(".", "AmstradCPC"), omitSaveRAM: true),
 
-			CommonEntriesFor(VSystemID.Raw.AppleII, basePath: Path.Combine(".", "Apple II"), omitSaveRAM: true),
+			CommonEntriesFor(VSystemID.Raw.AppleII, basePath: Path.Combine(".", "Apple II")),
 
 			CommonEntriesFor(VSystemID.Raw.Arcade, basePath: Path.Combine(".", "Arcade")),
 

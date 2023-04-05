@@ -30,6 +30,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		private void SyncState(AppleSerializer ser)
 		{
 			int version = 2;
+			var oldCurrentDisk = CurrentDisk;
 			ser.BeginSection(nameof(AppleII));
 			ser.Sync(nameof(version), ref version);
 			ser.Sync("Frame", ref _frame);
@@ -66,8 +67,25 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			_machine.NoSlotClock.Sync(ser);
 			ser.EndSection();
 
+			// disk change, we need to swap disks so SyncDelta works later
+			if (CurrentDisk != oldCurrentDisk)
+			{
+				_machine.DiskIIController.Drive1.InsertDisk("junk" + _romSet[CurrentDisk].Extension, (byte[])_romSet[CurrentDisk].Data.Clone(), false);
+			}
+
 			ser.BeginSection("DiskIIController");
 			_machine.DiskIIController.Sync(ser);
+			ser.EndSection();
+
+			ser.BeginSection("InactiveDisks");
+			for (var i = 0; i < DiskCount; i++)
+			{
+				// the current disk is handled in DiskIIController
+				if (i != CurrentDisk)
+				{
+					ser.Sync($"DiskDelta{i}", ref _diskDeltas[i], useNull: true);
+				}
+			}
 			ser.EndSection();
 
 			ser.EndSection();

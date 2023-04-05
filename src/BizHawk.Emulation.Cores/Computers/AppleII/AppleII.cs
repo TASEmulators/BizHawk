@@ -23,22 +23,30 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		[CoreConstructor(VSystemID.Raw.AppleII)]
 		public AppleII(CoreLoadParameters<Settings, SyncSettings> lp)
 		{
-			_romSet = lp.Roms.Select(r => r.RomData).ToList();
+			static (byte[], string) GetRomAndExt(IRomAsset romAssert)
+			{
+				var ext = romAssert.Extension.ToUpperInvariant();
+				return ext switch
+				{
+					".DSK" or ".PO" or ".DO" or ".NIB" => (romAssert.FileData, ext),
+					".2mg" => throw new NotSupportedException("Unsupported extension .2mg!"), // TODO: add a way to support this (we have hashes of this format in our db it seems?)
+					_ => (romAssert.FileData, ".DSK") // no idea, let's assume it's just a .DSK?
+				};
+			}
+					
+			_romSet = lp.Roms.Select(GetRomAndExt).ToList();
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 
 			const string TRACE_HEADER = "6502: PC, opcode, register (A, X, Y, P, SP, Cy), flags (NVTBDIZC)";
 			_tracer = new TraceBuffer(TRACE_HEADER);
 
-			_disk1 = _romSet[0];
-
 			_appleIIRom = lp.Comm.CoreFileProvider.GetFirmwareOrThrow(new(SystemId, "AppleIIe"), "The Apple IIe BIOS firmware is required");
 			_diskIIRom = lp.Comm.CoreFileProvider.GetFirmwareOrThrow(new(SystemId, "DiskII"), "The DiskII firmware is required");
 
 			_machine = new Components(_appleIIRom, _diskIIRom);
 
-			// make a writable memory stream cloned from the rom.
-			// for junk.dsk the .dsk is important because it determines the format from that
+			InitSaveRam();
 			InitDisk();
 
 			ser.Register<ITraceable>(_tracer);
@@ -55,11 +63,10 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		private static readonly ControllerDefinition AppleIIController;
 
-		private readonly List<byte[]> _romSet = new List<byte[]>();
+		private readonly List<(byte[] Data, string Extension)> _romSet;
 		private readonly ITraceable _tracer;
 
 		private readonly Components _machine;
-		private byte[] _disk1;
 		private readonly byte[] _appleIIRom;
 		private readonly byte[] _diskIIRom;
 
@@ -75,12 +82,14 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		public void SetDisk(int discNum)
 		{
+			SaveDelta();
 			CurrentDisk = discNum;
 			InitDisk();
 		}
 
 		private void IncrementDisk()
 		{
+			SaveDelta();
 			CurrentDisk++;
 			if (CurrentDisk >= _romSet.Count)
 			{
@@ -92,6 +101,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		private void DecrementDisk()
 		{
+			SaveDelta();
 			CurrentDisk--;
 			if (CurrentDisk < 0)
 			{
@@ -103,11 +113,10 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		private void InitDisk()
 		{
-			_disk1 = _romSet[CurrentDisk];
-
 			// make a writable memory stream cloned from the rom.
-			// for junk.dsk the .dsk is important because it determines the format from that
-			_machine.Memory.DiskIIController.Drive1.InsertDisk("junk.dsk", (byte[])_disk1.Clone(), false);
+			// the extension is important here because it determines the format from that
+			_machine.DiskIIController.Drive1.InsertDisk("junk" + _romSet[CurrentDisk].Extension, (byte[])_romSet[CurrentDisk].Data.Clone(), false);
+			LoadDelta(false);
 		}
 
 		private static readonly List<string> RealButtons = new List<string>(Keyboard.GetKeyNames()
@@ -120,7 +129,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		};
 
 		public bool DriveLightEnabled => true;
-		public bool DriveLightOn => _machine.Memory.DiskIIController.DriveLight;
+		public bool DriveLightOn => _machine.DiskIIController.DriveLight;
 
 		private bool _nextPressed;
 		private bool _prevPressed;
