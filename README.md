@@ -45,6 +45,7 @@ The BizHawk common features (across all cores) are:
 Supported consoles and computers:
 
 * Apple II
+* Arcade machines
 * Atari
 	* Video Computer System / 2600
 	* 7800
@@ -280,6 +281,7 @@ In the table below, core names in **bold** are accuracy-focused and acceptable o
 System | Cores
 --:|:--
 Apple II | **Virtu**
+Arcade | **MAME**
 Atari 2600 | **Atari2600Hawk**
 Atari 7800 | **A7800Hawk**
 Atari Lynx | **Handy**
@@ -314,7 +316,6 @@ ZX Spectrum | **ZXHawk**
 There are also works-in-progress for:
 * Amstrad CPC (home-grown core)
 * Fairchild Channel F (home-grown core)
-* [MAME](https://mamedev.org)
 * others maybe ([candidates](https://gitlab.com/TASVideos/BizHawk/snippets/1890492))
 
 Please don't bother core devs about these WIPs unless you're looking to contribute in some way.
