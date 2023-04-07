@@ -11,7 +11,7 @@ namespace BizHawk.Common
 		/// Bump this immediately after release.
 		/// Only use '0'..'9' and '.' or it will fail to parse and the new version notification won't work.
 		/// </remarks>
-		public static readonly string MainVersion = "2.9";
+		public static readonly string MainVersion = "2.9.1";
 
 		public static readonly string ReleaseDate = "April 7, 2023";
 
