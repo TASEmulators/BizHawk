@@ -29,15 +29,11 @@ namespace BizHawk.Client.Common
 
 		public override string Name => "event";
 
-		private void LogMemoryCallbacksNotImplemented()
-		{
-			Log($"{Emulator.Attributes().CoreName} does not implement memory callbacks");
-		}
+		private void LogMemoryCallbacksNotImplemented(bool isWildcard)
+			=> Log($"{Emulator.Attributes().CoreName} does not implement {(isWildcard ? "wildcard " : string.Empty)}memory callbacks");
 
-		private void LogMemoryExecuteCallbacksNotImplemented()
-		{
-			Log($"{Emulator.Attributes().CoreName} does not implement memory execute callbacks");
-		}
+		private void LogMemoryExecuteCallbacksNotImplemented(bool isWildcard)
+			=> Log($"{Emulator.Attributes().CoreName} does not implement {(isWildcard ? "wildcard " : string.Empty)}memory execute callbacks");
 
 		private void LogScopeNotAvailable(string scope)
 		{
@@ -136,11 +132,11 @@ namespace BizHawk.Client.Common
 			}
 			catch (NotImplementedException)
 			{
-				LogMemoryExecuteCallbacksNotImplemented();
+				LogMemoryExecuteCallbacksNotImplemented(isWildcard: false);
 				return Guid.Empty.ToString();
 			}
 
-			LogMemoryExecuteCallbacksNotImplemented();
+			LogMemoryExecuteCallbacksNotImplemented(isWildcard: false);
 			return Guid.Empty.ToString();
 		}
 
@@ -190,7 +186,7 @@ namespace BizHawk.Client.Common
 			{
 				// fall through
 			}
-			LogMemoryExecuteCallbacksNotImplemented();
+			LogMemoryExecuteCallbacksNotImplemented(isWildcard: true);
 			return Guid.Empty.ToString();
 		}
 
@@ -232,11 +228,11 @@ namespace BizHawk.Client.Common
 			}
 			catch (NotImplementedException)
 			{
-				LogMemoryCallbacksNotImplemented();
+				LogMemoryCallbacksNotImplemented(isWildcard: address is null);
 				return Guid.Empty.ToString();
 			}
 
-			LogMemoryCallbacksNotImplemented();
+			LogMemoryCallbacksNotImplemented(isWildcard: address is null);
 			return Guid.Empty.ToString();
 		}
 
@@ -278,11 +274,11 @@ namespace BizHawk.Client.Common
 			}
 			catch (NotImplementedException)
 			{
-				LogMemoryCallbacksNotImplemented();
+				LogMemoryCallbacksNotImplemented(isWildcard: address is null);
 				return Guid.Empty.ToString();
 			}
 
-			LogMemoryCallbacksNotImplemented();
+			LogMemoryCallbacksNotImplemented(isWildcard: address is null);
 			return Guid.Empty.ToString();
 		}
 
