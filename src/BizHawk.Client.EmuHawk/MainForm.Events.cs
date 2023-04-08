@@ -1840,9 +1840,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void Ares64SubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			N64CircularAnalogRangeMenuItem.Checked = Config.N64UseCircularAnalogConstraint;
-		}
+			=> Ares64CircularAnalogRangeMenuItem.Checked = Config.N64UseCircularAnalogConstraint;
 
 		private void Ares64SettingsMenuItem_Click(object sender, EventArgs e)
 			=> OpenGenericCoreConfigFor<Ares64>(CoreNames.Ares64 + " Settings");
