@@ -3007,7 +3007,6 @@ namespace BizHawk.Client.EmuHawk
 			SyncThrottle();
 			_throttle.signal_frameAdvance = _runloopFrameAdvance;
 			_throttle.signal_continuousFrameAdvancing = _runloopFrameProgress;
-			if (_lastFastForwardingOrRewinding) _throttle.signal_paused = false;
 
 			_throttle.Step(Config, Sound, allowSleep: true, forceFrameSkip: -1);
 		}
