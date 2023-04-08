@@ -17,8 +17,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		}
 
 		// constants
-		public const int ROMENTRYTYPE_SYSTEM_BIOS = 9;
-		public const int ROMENTRYTYPE_DEFAULT_BIOS = 10;
+		public const int ROMENTRYTYPE_SYSTEM_BIOS = 8;
+		public const int ROMENTRYTYPE_DEFAULT_BIOS = 9;
 		public const int ROMENTRY_TYPEMASK = 15;
 		public const int BIOS_INDEX = 24;
 		public const int BIOS_FIRST = 1;
