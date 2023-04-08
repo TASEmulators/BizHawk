@@ -270,6 +270,7 @@ namespace BizHawk.Client.EmuHawk
 			this.N64ControllerSettingsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator23 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.N64CircularAnalogRangeMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.Ares64CircularAnalogRangeMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.MupenStyleLagMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.N64ExpansionSlotMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.GBLSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -1776,7 +1777,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.Ares64SubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
 			this.Ares64SettingsMenuItem,
-			this.N64CircularAnalogRangeMenuItem});
+			this.Ares64CircularAnalogRangeMenuItem});
 			this.Ares64SubMenu.Text = "N64";
 			this.Ares64SubMenu.DropDownOpened += new System.EventHandler(this.Ares64SubMenu_DropDownOpened);
 			// 
@@ -1784,6 +1785,11 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.Ares64SettingsMenuItem.Text = "Settings...";
 			this.Ares64SettingsMenuItem.Click += new System.EventHandler(this.Ares64SettingsMenuItem_Click);
+			// 
+			// Ares64CircularAnalogRangeMenuItem
+			// 
+			this.Ares64CircularAnalogRangeMenuItem.Text = "Circular Analog Range";
+			this.Ares64CircularAnalogRangeMenuItem.Click += new System.EventHandler(this.N64CircularAnalogRangeMenuItem_Click);
 			// 
 			// GBLSubMenu
 			// 
@@ -2708,6 +2714,7 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator22;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator23;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx N64CircularAnalogRangeMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx Ares64CircularAnalogRangeMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx paletteToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ProfilesMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SynclessRecordingMenuItem;
