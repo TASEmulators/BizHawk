@@ -103,13 +103,24 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_lua.RegisterFunction("print", this, typeof(LuaLibraries).GetMethod(nameof(Print)));
+
+			var packageTable = (LuaTable) _lua["package"];
+			var luaPath = PathEntries.LuaAbsolutePath();
 			if (OSTailoredCode.IsUnixHost)
 			{
 				// add %exe%/Lua to library resolution pathset (LUA_PATH)
 				// this is done already on windows, but not on linux it seems?
-				var packageTable = (LuaTable) _lua["package"];
-				var luaPath = PathEntries.LuaAbsolutePath();
 				packageTable["path"] = $"{luaPath}/?.lua;{luaPath}?/init.lua;{packageTable["path"]}";
+				// we need to modifiy the cpath so it looks at our lua dir too, and remove the relative pathing
+				// we do this on Windows too, but keep in mind Linux uses .so and Windows use .dll
+				// TODO: Does the relative pathing issue Windows has also affect Linux? I'd assume so...
+				packageTable["cpath"] = $"{luaPath}/?.so;{luaPath}/loadall.so;{packageTable["cpath"]}";
+				packageTable["cpath"] = ((string)packageTable["cpath"]).Replace(";./?.so", "");
+			}
+			else
+			{
+				packageTable["cpath"] = $"{luaPath}\\?.dll;{luaPath}\\loadall.dll;{packageTable["cpath"]}";
+				packageTable["cpath"] = ((string)packageTable["cpath"]).Replace(";.\\?.dll", "");
 			}
 
 			EmulationLuaLibrary.FrameAdvanceCallback = FrameAdvance;
