@@ -203,13 +203,7 @@ namespace BizHawk.Emulation.DiscSystem
 					// make a fake .cue file to represent this .iso and mount that
 					// however... to save many users from a stupid mistake, check if the size is NOT a multiple of 2048 (but IS a multiple of 2352) and in that case consider it a mode2 disc
 					//TODO try it both ways and check the disc type to use whichever one succeeds in identifying a disc type
-					var len = new FileInfo(IN_FromPath).Length;
-					LoadCue(
-						dir,
-						$@"
-					FILE ""{file}"" BINARY
-						TRACK 01 {(len % 2048 is not 0 && len % 2352 is 0 ? "MODE2/2352" : "MODE1/2048")}
-							INDEX 01 00:00:00");
+					LoadCue(cueDirPath: dir, cueContent: GenerateCue(binFilename: file, binFilePath: IN_FromPath));
 					break;
 				case ".mds":
 					OUT_Disc = MDS_Format.LoadMDSToDisc(IN_FromPath, IN_DiscMountPolicy);
@@ -219,5 +213,21 @@ namespace BizHawk.Emulation.DiscSystem
 			// set up the lowest level synth provider
 			if (OUT_Disc != null) OUT_Disc.SynthProvider = new ArraySectorSynthProvider { Sectors = OUT_Disc._Sectors, FirstLBA = -150 };
 		}
+
+		public static string GenerateCue(string binFilename, bool isMode2)
+			=> $@"FILE ""{binFilename}"" BINARY
+  TRACK 01 {(isMode2 ? "MODE2/2352" : "MODE1/2048")}
+    INDEX 01 00:00:00";
+
+		public static string GenerateCue(string binFilename, string binFilePath)
+		{
+			var len = new FileInfo(binFilePath).Length;
+			return GenerateCue(binFilename, isMode2: len % 2048 is not 0 && len % 2352 is 0);
+		}
+
+		public static void CreateSyntheticCue(string cueFilePath, string binFilePath)
+			=> File.WriteAllText(
+				path: cueFilePath,
+				contents: GenerateCue(binFilename: binFilePath/*abs is fine here*/, binFilePath: binFilePath)); //TODO as with .iso, may want to try both
 	}
 }

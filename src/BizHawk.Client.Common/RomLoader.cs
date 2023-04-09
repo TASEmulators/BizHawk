@@ -416,13 +416,21 @@ namespace BizHawk.Client.Common
 			throw new AggregateException("No core could load the game", exceptions);
 		}
 
-		private void LoadOther(CoreComm nextComm, HawkFile file, string forcedCoreName, out IEmulator nextEmulator, out RomGame rom, out GameInfo game, out bool cancel)
+		private void LoadOther(
+			CoreComm nextComm,
+			HawkFile file,
+			string ext,
+			string forcedCoreName,
+			out IEmulator nextEmulator,
+			out RomGame rom,
+			out GameInfo game,
+			out bool cancel)
 		{
 			cancel = false;
 			rom = new RomGame(file);
 
 			// hacky for now
-			rom.GameInfo.System = file.Extension switch
+			rom.GameInfo.System = ext switch
 			{
 				".exe" => VSystemID.Raw.PSX,
 				".nsf" => VSystemID.Raw.NES,
@@ -463,7 +471,7 @@ namespace BizHawk.Client.Common
 			{
 				case VSystemID.Raw.GB:
 				case VSystemID.Raw.GBC:
-					if (file.Extension == ".gbs")
+					if (ext == ".gbs")
 					{
 						nextEmulator = new Sameboy(
 							nextComm,
@@ -479,6 +487,34 @@ namespace BizHawk.Client.Common
 					{
 						game.System = VSystemID.Raw.SGB;
 					}
+					break;
+				case VSystemID.Raw.PSX when ext is ".bin":
+					const string FILE_EXT_CUE = ".cue";
+					var cuePath = TempFileManager.GetTempFilename(friendlyName: "syn", dotAndExtension: FILE_EXT_CUE, delete: false);
+					DiscMountJob.CreateSyntheticCue(cueFilePath: cuePath, binFilePath: file.Name);
+					var gameBak = game;
+					var nextEmulatorBak = nextEmulator;
+					try
+					{
+						if (LoadDisc(
+							path: cuePath,
+							nextComm,
+							new(cuePath),
+							ext: FILE_EXT_CUE,
+							forcedCoreName: forcedCoreName,
+							out nextEmulator,
+							out game))
+						{
+							return;
+						}
+						Console.WriteLine("synthesised .cue failed to load");
+					}
+					catch (Exception e)
+					{
+						Console.WriteLine($"synthesised .cue failed to load: {e}");
+					}
+					game = gameBak;
+					nextEmulator = nextEmulatorBak;
 					break;
 			}
 			var cip = new CoreInventoryParameters(this)
@@ -589,11 +625,19 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private void LoadMAME(string path, CoreComm nextComm, HawkFile file, out IEmulator nextEmulator, out RomGame rom, out GameInfo game, out bool cancel)
+		private void LoadMAME(
+			string path,
+			CoreComm nextComm,
+			HawkFile file,
+			string ext,
+			out IEmulator nextEmulator,
+			out RomGame rom,
+			out GameInfo game,
+			out bool cancel)
 		{
 			try
 			{
-				LoadOther(nextComm, file, null, out nextEmulator, out rom, out game, out cancel);
+				LoadOther(nextComm, file, ext: ext, forcedCoreName: null, out nextEmulator, out rom, out game, out cancel);
 			}
 			catch (Exception mex) // ok, MAME threw, let's try another core...
 			{
@@ -601,7 +645,7 @@ namespace BizHawk.Client.Common
 				{
 					using var f = new HawkFile(path, allowArchives: true);
 					if (!HandleArchiveBinding(f)) throw;
-					LoadOther(nextComm, f, null, out nextEmulator, out rom, out game, out cancel);
+					LoadOther(nextComm, f, ext: ext, forcedCoreName: null, out nextEmulator, out rom, out game, out cancel);
 				}
 				catch (Exception oex)
 				{
@@ -715,7 +759,7 @@ namespace BizHawk.Client.Common
 							break;
 						case ".zip" when forcedCoreName is null:
 						case ".7z" when forcedCoreName is null:
-							LoadMAME(path, nextComm, file, out nextEmulator, out rom, out game, out cancel);
+							LoadMAME(path: path, nextComm, file, ext: ext, out nextEmulator, out rom, out game, out cancel);
 							break;
 						default:
 							if (Disc.IsValidExtension(ext))
@@ -727,7 +771,16 @@ namespace BizHawk.Client.Common
 							}
 							else
 							{
-								LoadOther(nextComm, file, forcedCoreName, out nextEmulator, out rom, out game, out cancel); // must be called after LoadXML because of SNES hacks
+								// must be called after LoadXML because of SNES hacks
+								LoadOther(
+									nextComm,
+									file,
+									ext: ext,
+									forcedCoreName: forcedCoreName,
+									out nextEmulator,
+									out rom,
+									out game,
+									out cancel);
 							}
 							break;
 					}
@@ -901,7 +954,7 @@ namespace BizHawk.Client.Common
 			new FilesystemFilter("Disc Images", new[] { "cue", "ccd", "cdi", "mds", "m3u" }),
 			new FilesystemFilter("NES", RomFileExtensions.NES.Concat(new[] { "nsf" }).ToList(), addArchiveExts: true),
 			new FilesystemFilter("Super NES", RomFileExtensions.SNES, addArchiveExts: true),
-			new FilesystemFilter("PlayStation", new[] { "cue", "ccd", "mds", "m3u" }),
+			new FilesystemFilter("PlayStation", new[] { "bin", "cue", "ccd", "mds", "m3u" }),
 			new FilesystemFilter("PSX Executables (experimental)", Array.Empty<string>(), devBuildExtraExts: new[] { "exe" }),
 			new FilesystemFilter("PSF Playstation Sound File", new[] { "psf", "minipsf" }),
 			new FilesystemFilter("Nintendo 64", RomFileExtensions.N64),
