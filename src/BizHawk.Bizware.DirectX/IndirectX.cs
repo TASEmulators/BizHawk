@@ -17,13 +17,7 @@ namespace BizHawk.Bizware.DirectX
 		public static ISoundOutput CreateDSSoundOutput(IHostAudioManager sound, IntPtr mainWindowHandle, string chosenDeviceName)
 			=> new DirectSoundSoundOutput(sound, mainWindowHandle, chosenDeviceName);
 
-		public static ISoundOutput CreateXAudio2SoundOutput(IHostAudioManager sound, string chosenDeviceName)
-			=> new XAudio2SoundOutput(sound, chosenDeviceName);
-
 		public static IEnumerable<string> GetDSSinkNames()
 			=> DirectSoundSoundOutput.GetDeviceNames();
-
-		public static IEnumerable<string> GetXAudio2SinkNames()
-			=> XAudio2SoundOutput.GetDeviceNames();
 	}
 }

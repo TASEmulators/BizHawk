@@ -52,7 +52,7 @@ namespace BizHawk.Client.EmuHawk
 				_outputDevice = config.SoundOutputMethod switch
 				{
 					ESoundOutputMethod.DirectSound => IndirectX.CreateDSSoundOutput(this, mainWindowHandle, config.SoundDevice),
-					ESoundOutputMethod.XAudio2 => new Bizware.SharpAudio.XAudio2SoundOutput(this, config.SoundDevice),
+					ESoundOutputMethod.XAudio2 => new XAudio2SoundOutput(this, config.SoundDevice),
 					ESoundOutputMethod.OpenAL => new OpenALSoundOutput(this, config.SoundDevice),
 					_ => new DummySoundOutput(this)
 				};

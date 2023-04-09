@@ -915,7 +915,7 @@ namespace BizHawk.Client.EmuHawk
 			static IEnumerable<string> GetDeviceNamesCallback(ESoundOutputMethod outputMethod) => outputMethod switch
 			{
 				ESoundOutputMethod.DirectSound => IndirectX.GetDSSinkNames(),
-				ESoundOutputMethod.XAudio2 => Bizware.SharpAudio.XAudio2SoundOutput.GetDeviceNames(),
+				ESoundOutputMethod.XAudio2 => XAudio2SoundOutput.GetDeviceNames(),
 				ESoundOutputMethod.OpenAL => OpenALSoundOutput.GetDeviceNames(),
 				_ => Enumerable.Empty<string>()
 			};
