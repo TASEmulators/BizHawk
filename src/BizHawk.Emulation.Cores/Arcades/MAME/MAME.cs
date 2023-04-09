@@ -21,18 +21,24 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		public MAME(CoreLoadParameters<object, MAMESyncSettings> lp)
 		{
 			_gameFileName = Path.GetFileName(lp.Roms[0].RomPath).ToLowerInvariant();
-
-			ServiceProvider = new BasicServiceProvider(this);
-
 			_syncSettings = lp.SyncSettings ?? new();
 
+			ServiceProvider = new BasicServiceProvider(this);
 			DeterministicEmulation = !_syncSettings.RTCSettings.UseRealTime || lp.DeterministicEmulationRequested;
 
 			_logCallback = MAMELogCallback;
 			_baseTimeCallback = MAMEBaseTimeCallback;
 			_inputPollCallback = InputCallbacks.Call;
 			_filenameCallback = name => _nvramFilenames.Add(name);
-			_infoCallback = info => lp.Comm.Notify(info);
+			_infoCallback = info =>
+			{
+				var text = info.Replace(". ", "\n").Replace("\n\n", "\n");
+				lp.Comm.Notify(text);
+				RomDetails =
+					_gameFullName + "\r\n\r\n" +
+					text + (text == "" ? "" : "\r\n") +
+					string.Join("\r\n", _romHashes.Select(static r => $"{r.Value} - {r.Key}"));
+			};
 
 			_exe = new(new()
 			{
@@ -60,8 +66,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				throw new("\n\n" + _loadFailure);
 			}
 
-			RomDetails = _gameFullName + "\r\n" + string.Join("\r\n", _romHashes.Select(static r => $"{r.Key} - {r.Value}"));
-
 			// concat all SHA1 hashes together (unprefixed), then hash that
 			var hashes = string.Concat(_romHashes.Values
 				.Where(static s => s.Contains("SHA:"))
@@ -88,13 +92,13 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private readonly LibMAME.InputPollCallbackDelegate _inputPollCallback;
 		private readonly LibMAME.InfoCallbackDelegate _infoCallback;
 
-		public string RomDetails { get; }
+		public string RomDetails { get; set; }
 
 		private readonly string _gameFileName;
 		private string _gameFullName = "Arcade";
 		private string _gameShortName = "arcade";
-		private readonly SortedList<string, string> _romHashes = new();
 		private string _loadFailure = string.Empty;
+		private readonly SortedList<string, string> _romHashes = new();
 
 		private void StartMAME(List<IRomAsset> roms)
 		{
