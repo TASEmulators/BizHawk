@@ -1905,7 +1905,10 @@ namespace BizHawk.Client.EmuHawk
 				DumpStatusButton.ToolTipText = "Verified good dump";
 			}
 
-			if (_multiDiskMode)
+			if (_multiDiskMode && !(
+				Game.Status == RomStatus.Imperfect ||
+				Game.Status == RomStatus.Unimplemented ||
+				Game.Status == RomStatus.NotWorking))
 			{
 				DumpStatusButton.ToolTipText = "Multi-disk bundler";
 				DumpStatusButton.Image = Properties.Resources.RetroQuestion;
@@ -3865,6 +3868,7 @@ namespace BizHawk.Client.EmuHawk
 					Config.RecentCores.Enqueue(Emulator.Attributes().CoreName);
 					while (Config.RecentCores.Count > 5) Config.RecentCores.Dequeue();
 					InputManager.SyncControls(Emulator, MovieSession, Config);
+					_multiDiskMode = false;
 
 					if (oaOpenrom != null && Path.GetExtension(oaOpenrom.Path.Replace("|", "")).ToLowerInvariant() == ".xml" && !(Emulator is LibsnesCore))
 					{
