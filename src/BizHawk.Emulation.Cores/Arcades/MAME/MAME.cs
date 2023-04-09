@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -33,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			_infoCallback = info =>
 			{
 				var text = info.Replace(". ", "\n").Replace("\n\n", "\n");
-				lp.Comm.Notify(text);
+				lp.Comm.Notify(text, 4 * Regex.Matches(text, "\n").Count);
 				RomDetails =
 					_gameFullName + "\r\n\r\n" +
 					text + (text == "" ? "" : "\r\n") +
