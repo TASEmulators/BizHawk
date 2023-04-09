@@ -9,6 +9,10 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<Reference Include="SharpAudio" HintPath="$(ProjectDir)../../References/SharpAudio.dll" Private="true" />
+		<Reference Include="SharpAudio.ALBinding" HintPath="$(ProjectDir)../../References/SharpAudio.ALBinding.dll" Private="true" />
+		<PackageReference Include="Vortice.MediaFoundation" Version="2.4.2" />
+		<PackageReference Include="Vortice.XAudio2" Version="2.4.2" />
+		<PackageReference Include="NativeLibraryLoader" Version="1.0.12" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Client.Common/BizHawk.Client.Common.csproj" />
 	</ItemGroup>
 </Project>

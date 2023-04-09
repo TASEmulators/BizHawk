@@ -16,6 +16,7 @@ namespace BizHawk.Bizware.SharpAudio
 		private AudioSource _sourceVoice;
 		private BufferPool _bufferPool;
 		private long _runningSamplesQueued;
+		private bool _playing;
 
 		protected SharpAudioSoundOutput(AudioBackend backend, IHostAudioManager sound, string chosenDeviceName)
 		{
@@ -58,15 +59,21 @@ namespace BizHawk.Bizware.SharpAudio
 
 			_sourceVoice = _engine.CreateSource();
 
-			_bufferPool = new(_engine, new()
+			var format = new AudioFormat()
 			{
 				SampleRate = _sound.SampleRate,
 				BitsPerSample = (short) (_sound.BytesPerSample * 8),
 				Channels = (short) _sound.ChannelCount,
-			});
+			};
+
+			_bufferPool = new(_engine, format);
 			_runningSamplesQueued = 0;
 
-			_sourceVoice.Play();
+			/*var buffer = _engine.CreateBuffer();
+			buffer.BufferData(IntPtr.Zero, 0, format);
+			_sourceVoice.QueueBuffer(buffer);*/
+
+			//_sourceVoice.Play();
 		}
 
 		public void StopSound()
@@ -79,6 +86,7 @@ namespace BizHawk.Bizware.SharpAudio
 			_bufferPool = null;
 
 			BufferSizeSamples = 0;
+			_playing = false;
 		}
 
 		public int CalculateSamplesNeeded()
@@ -101,7 +109,13 @@ namespace BizHawk.Bizware.SharpAudio
 			var byteCount = sampleCount * _sound.BlockAlign;
 			var item = _bufferPool.Obtain(byteCount);
 			MemoryMarshal.AsBytes(samples.AsSpan()).Slice(sampleOffset * _sound.BlockAlign, byteCount).CopyTo(item.Bytes);
+			//Buffer.BlockCopy(samples, sampleOffset * _sound.BlockAlign, item.Bytes, 0, byteCount);
 			_sourceVoice.QueueBuffer(item.AudioBuffer);
+			if (!_playing)
+			{
+				_sourceVoice.Play();
+				_playing = true;
+			}
 			_runningSamplesQueued += sampleCount;
 		}
 

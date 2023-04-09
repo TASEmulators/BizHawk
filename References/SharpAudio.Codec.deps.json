@@ -7,13 +7,15 @@
   "targets": {
     ".NETStandard,Version=v2.0": {},
     ".NETStandard,Version=v2.0/": {
-      "SharpAudio.Codec/1.0.0": {
+      "SharpAudio.Codec/1.0.63-beta-g004ba006d1": {
         "dependencies": {
           "FFmpeg.AutoGen": "4.4.1.1",
           "IndexRange": "1.0.1-beta.1",
+          "Microsoft.SourceLink.GitHub": "1.0.0",
           "NETStandard.Library": "2.0.3",
           "NLayer.Core": "1.15.0",
           "NVorbis": "0.10.3",
+          "Nerdbank.GitVersioning": "3.4.205",
           "SharpAudio": "1.0.0",
           "System.Memory": "4.5.5"
         },
@@ -45,6 +47,7 @@
           }
         }
       },
+      "Microsoft.Build.Tasks.Git/1.0.0": {},
       "Microsoft.CSharp/4.0.1": {
         "dependencies": {
           "System.Collections": "4.0.11",
@@ -106,6 +109,13 @@
       },
       "Microsoft.NETCore.Platforms/1.1.0": {},
       "Microsoft.NETCore.Targets/1.0.1": {},
+      "Microsoft.SourceLink.Common/1.0.0": {},
+      "Microsoft.SourceLink.GitHub/1.0.0": {
+        "dependencies": {
+          "Microsoft.Build.Tasks.Git": "1.0.0",
+          "Microsoft.SourceLink.Common": "1.0.0"
+        }
+      },
       "NativeLibraryLoader/1.0.12": {
         "dependencies": {
           "Microsoft.Extensions.DependencyModel": "2.0.3"
@@ -117,6 +127,7 @@
           }
         }
       },
+      "Nerdbank.GitVersioning/3.4.205": {},
       "NETStandard.Library/2.0.3": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "1.1.0"
@@ -725,7 +736,7 @@
     }
   },
   "libraries": {
-    "SharpAudio.Codec/1.0.0": {
+    "SharpAudio.Codec/1.0.63-beta-g004ba006d1": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
@@ -750,6 +761,13 @@
       "sha512": "sha512-MalY0Y/uM/LjXtHfX/26l2VtN4LDNZ2OE3aumNOHDLsT4fNYy2hiHXI4CXCqKpNUNm7iJ2brrc4J89UdaL56FA==",
       "path": "microsoft.bcl.hashcode/1.1.1",
       "hashPath": "microsoft.bcl.hashcode.1.1.1.nupkg.sha512"
+    },
+    "Microsoft.Build.Tasks.Git/1.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-z2fpmmt+1Jfl+ZnBki9nSP08S1/tbEOxFdsK1rSR+LBehIJz1Xv9/6qOOoGNqlwnAGGVGis1Oj6S8Kt9COEYlQ==",
+      "path": "microsoft.build.tasks.git/1.0.0",
+      "hashPath": "microsoft.build.tasks.git.1.0.0.nupkg.sha512"
     },
     "Microsoft.CSharp/4.0.1": {
       "type": "package",
@@ -786,12 +804,33 @@
       "path": "microsoft.netcore.targets/1.0.1",
       "hashPath": "microsoft.netcore.targets.1.0.1.nupkg.sha512"
     },
+    "Microsoft.SourceLink.Common/1.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-G8DuQY8/DK5NN+3jm5wcMcd9QYD90UV7MiLmdljSJixi3U/vNaeBKmmXUqI4DJCOeWizIUEh4ALhSt58mR+5eg==",
+      "path": "microsoft.sourcelink.common/1.0.0",
+      "hashPath": "microsoft.sourcelink.common.1.0.0.nupkg.sha512"
+    },
+    "Microsoft.SourceLink.GitHub/1.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-aZyGyGg2nFSxix+xMkPmlmZSsnGQ3w+mIG23LTxJZHN+GPwTQ5FpPgDo7RMOq+Kcf5D4hFWfXkGhoGstawX13Q==",
+      "path": "microsoft.sourcelink.github/1.0.0",
+      "hashPath": "microsoft.sourcelink.github.1.0.0.nupkg.sha512"
+    },
     "NativeLibraryLoader/1.0.12": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-1gvCOZS9TBC7w9KZ2sXQuPX5TMV6jaZYIOQAz27Wjk/yX02LNVjGJ26OQn4TFkXFc926vhDiHmZUXY6I98haYA==",
       "path": "nativelibraryloader/1.0.12",
       "hashPath": "nativelibraryloader.1.0.12.nupkg.sha512"
+    },
+    "Nerdbank.GitVersioning/3.4.205": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-NWUhCkYARhLEO5aJrp+Hrcr7vbiYovdNIbVI77uUEfGfCoZWSiryWb3wux9WEfCI8Uw1s6aQjR5gOO5VWqZKLw==",
+      "path": "nerdbank.gitversioning/3.4.205",
+      "hashPath": "nerdbank.gitversioning.3.4.205.nupkg.sha512"
     },
     "NETStandard.Library/2.0.3": {
       "type": "package",
