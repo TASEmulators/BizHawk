@@ -38,6 +38,22 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					_gameFullName + "\r\n\r\n" +
 					text + (text == "" ? "" : "\r\n") +
 					string.Join("\r\n", _romHashes.Select(static r => $"{r.Value} - {r.Key}"));
+
+				if (text.ToLower().Contains("imperfect"))
+				{
+					lp.Game.Status = RomStatus.Imperfect;
+				}
+
+				if (text.ToLower().Contains("unemulated"))
+				{
+					lp.Game.Status = RomStatus.Unimplemented;
+				}
+
+				if (text.ToLower().Contains("doesn't work"))
+				{
+					lp.Game.Status = RomStatus.NotWorking;
+				}
+
 			};
 
 			_exe = new(new()
