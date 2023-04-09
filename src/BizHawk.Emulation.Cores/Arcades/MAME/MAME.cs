@@ -36,7 +36,12 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				var text = info.Replace(". ", "\n").Replace("\n\n", "\n");
 				lp.Comm.Notify(text, 4 * Regex.Matches(text, "\n").Count);
 				RomDetails =
-					_gameFullName + "\r\n\r\n" +
+					$"Full Name:    { _gameFullName }\r\n" +
+					$"Short Name:   { _gameShortName }\r\n" +
+					$"Resolution:   { BufferWidth }x{ BufferHeight }\r\n" +
+					$"Aspect Ratio: { _wAspect }:{ _hAspect }\r\n" +
+					$"Framerate:    { (float)VsyncNumerator / VsyncDenominator } " +
+					$"({ VsyncNumerator } / { VsyncDenominator })\r\n\r\n" +
 					text + (text == "" ? "" : "\r\n") +
 					string.Join("\r\n", _romHashes.Select(static r => $"{r.Value} - {r.Key}"));
 
