@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			if (game["PAL"] && Region != DisplayType.PAL)
 			{
 				Region = DisplayType.PAL;
-				comm.Notify("Display was forced to PAL mode for game compatibility.");
+				comm.Notify("Display was forced to PAL mode for game compatibility.", null);
 			}
 
 			if (IsGameGear)
@@ -65,13 +65,13 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			if (game["Japan"] && _region != SmsSyncSettings.Regions.Japan)
 			{
 				_region = SmsSyncSettings.Regions.Japan;
-				comm.Notify("Region was forced to Japan for game compatibility.");
+				comm.Notify("Region was forced to Japan for game compatibility.", null);
 			}
 
 			if (game["Korea"] && _region != SmsSyncSettings.Regions.Korea)
 			{
 				_region = SmsSyncSettings.Regions.Korea;
-				comm.Notify("Region was forced to Korea for game compatibility.");
+				comm.Notify("Region was forced to Korea for game compatibility.", null);
 			}
 
 			if ((game.NotInDatabase || game["FM"]) && SyncSettings.EnableFm && !IsGameGear)

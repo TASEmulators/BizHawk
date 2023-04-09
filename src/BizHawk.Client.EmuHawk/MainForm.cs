@@ -976,7 +976,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public static bool DisableSecondaryThrottling { get; set; }
 
-		public void AddOnScreenMessage(string message) => OSD.AddMessage(message);
+		public void AddOnScreenMessage(string message, int? duration = null) => OSD.AddMessage(message, duration);
 
 		public void ClearHolds()
 		{

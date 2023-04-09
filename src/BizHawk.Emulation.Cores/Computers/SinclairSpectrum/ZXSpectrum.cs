@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			{
 				if (!DeterministicEmulation)
 				{
-					CoreComm.Notify("Forcing Deterministic Emulation");
+					CoreComm.Notify("Forcing Deterministic Emulation", null);
 				}
 
 				DeterministicEmulation = lp.DeterministicEmulationRequested;
