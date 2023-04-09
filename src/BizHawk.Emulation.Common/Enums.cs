@@ -33,6 +33,10 @@
 		Unknown,
 		Bios,
 		Overdump,
-		NotInDatabase
+		NotInDatabase,
+		// MAME
+		Imperfect,
+		Unimplemented,
+		NotWorking
 	}
 }

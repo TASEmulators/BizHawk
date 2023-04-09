@@ -1884,6 +1884,21 @@ namespace BizHawk.Client.EmuHawk
 				DumpStatusButton.Image = Properties.Resources.Hack;
 				DumpStatusButton.ToolTipText = "Warning: ROM of Unknown Character";
 			}
+			else if (Game.Status == RomStatus.Imperfect)
+			{
+				DumpStatusButton.Image = Properties.Resources.RetroQuestion;
+				DumpStatusButton.ToolTipText = "Warning: Imperfect emulation";
+			}
+			else if (Game.Status == RomStatus.Unimplemented)
+			{
+				DumpStatusButton.Image = Properties.Resources.ExclamationRed;
+				DumpStatusButton.ToolTipText = "Warning: Unemulated features";
+			}
+			else if (Game.Status == RomStatus.NotWorking)
+			{
+				DumpStatusButton.Image = Properties.Resources.ExclamationRed;
+				DumpStatusButton.ToolTipText = "Warning: The game does not work";
+			}
 			else
 			{
 				DumpStatusButton.Image = Properties.Resources.GreenCheck;
