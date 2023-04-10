@@ -44,6 +44,27 @@ namespace BizHawk.Common
 				})
 				?? orig; // don't MakeAbsolute, just pass through and hope something lower-level magically makes it work
 
+		// hack for Lua since it needs to be opened as global for modules to find lua symbols
+		[DllImport("libdl.so.2")]
+		private static extern IntPtr dlopen(string fileName, int flags);
+		public void UnixMakeGlobal(string path)
+		{
+			if (!OSTailoredCode.IsUnixHost)
+			{
+				throw new NotSupportedException("This method is not suitable for non-Unix hosts");
+			}
+
+			OSTailoredCode.LinkedLibManager.FreeByPtr(_p);
+			path = UnixResolveFilePath(path);
+			_p = dlopen(path, 0x102 /* RTLD_NOW | RTLD_GLOBAL */);
+			if (_p == IntPtr.Zero)
+			{
+				// I guess RTLD_GLOBAL isn't supported?
+				Console.WriteLine($"Attempt to globalize {path} failed! Reverting back to local load...");
+				_p = OSTailoredCode.LinkedLibManager.LoadOrThrow(path);
+			}
+		}
+
 		private IntPtr _p;
 
 		public readonly bool HasLimitedLifetime;

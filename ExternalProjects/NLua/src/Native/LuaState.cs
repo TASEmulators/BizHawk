@@ -57,6 +57,7 @@ namespace NLua
 				{
 					if (TryLoad(luaSo))
 					{
+						resolver.UnixMakeGlobal(luaSo);
 						NativeMethods = isLua54
 							? BizInvoker.GetInvoker<Lua54NativeMethods>(resolver, CallingConventionAdapters.Native)
 							: BizInvoker.GetInvoker<Lua53NativeMethods>(resolver, CallingConventionAdapters.Native);
