@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+
 using BizHawk.Client.Common;
 
-using Vortice.XAudio2;
 using Vortice.MediaFoundation;
 using Vortice.Multimedia;
+using Vortice.XAudio2;
 
 namespace BizHawk.Bizware.DirectX
 {
