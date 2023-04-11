@@ -114,7 +114,8 @@ namespace BizHawk.Bizware.SilkNET
 			if (sampleOffset != 0)
 			{
 				AllocateTempSampleBuffer(sampleCount);
-				Buffer.BlockCopy(samples, sampleOffset * _sound.BlockAlign, _tempSampleBuffer, 0, byteCount);
+				samples.AsSpan(sampleOffset * _sound.BlockAlign, byteCount / 2)
+					.CopyTo(_tempSampleBuffer);
 				samples = _tempSampleBuffer;
 			}
 			var buffer = _bufferPool.Obtain(byteCount);
