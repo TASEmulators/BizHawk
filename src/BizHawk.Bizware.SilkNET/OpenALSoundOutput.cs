@@ -4,17 +4,28 @@ using System.Linq;
 
 using BizHawk.Client.Common;
 
-using OpenTK.Audio;
-using OpenTK.Audio.OpenAL;
+using Silk.NET.Core.Native;
+using Silk.NET.OpenAL;
+using Silk.NET.OpenAL.Extensions.Creative;
+using Silk.NET.OpenAL.Extensions.Enumeration;
 
-namespace BizHawk.Bizware.OpenTK3
+namespace BizHawk.Bizware.SilkNET
 {
 	public class OpenALSoundOutput : ISoundOutput
 	{
+		private static readonly AL _al = AL.GetApi();
+		private static readonly ALContext _alc = ALContext.GetApi();
+
+		private static unsafe T GetExtensionOrNull<T>() where T : NativeExtension<ALContext>
+			=> _alc.TryGetExtension<T>(null, out var ext) ? ext : null;
+
+		private static readonly EnumerateAll _enumAllExt = GetExtensionOrNull<EnumerateAll>();
+		private static readonly Enumeration _enumExt = GetExtensionOrNull<Enumeration>();
+
 		private bool _disposed;
 		private readonly IHostAudioManager _sound;
 		private AudioContext _context;
-		private int _sourceID;
+		private uint _sourceID;
 		private BufferPool _bufferPool;
 		private int _currentSamplesQueued;
 		private short[] _tempSampleBuffer;
@@ -22,7 +33,7 @@ namespace BizHawk.Bizware.OpenTK3
 		public OpenALSoundOutput(IHostAudioManager sound, string chosenDeviceName)
 		{
 			_sound = sound;
-			_context = new AudioContext(
+			_context = new(
 				GetDeviceNames().Contains(chosenDeviceName) ? chosenDeviceName : null,
 				_sound.SampleRate
 			);
@@ -39,11 +50,9 @@ namespace BizHawk.Bizware.OpenTK3
 		}
 
 		public static IEnumerable<string> GetDeviceNames()
-		{
-			return !Alc.IsExtensionPresent(IntPtr.Zero, "ALC_ENUMERATION_EXT")
-				? Enumerable.Empty<string>()
-				: Alc.GetString(IntPtr.Zero, AlcGetStringList.AllDevicesSpecifier);
-		}
+			=> _enumAllExt?.GetStringList(GetEnumerateAllContextStringList.AllDevicesSpecifier)
+				?? _enumExt?.GetStringList(GetEnumerationContextStringList.DeviceSpecifiers)
+				?? Enumerable.Empty<string>();
 
 		private int BufferSizeSamples { get; set; }
 
@@ -51,7 +60,7 @@ namespace BizHawk.Bizware.OpenTK3
 
 		public void ApplyVolumeSettings(double volume)
 		{
-			AL.Source(_sourceID, ALSourcef.Gain, (float)volume);
+			_al.SetSourceProperty(_sourceID, SourceFloat.Gain, (float)volume);
 		}
 
 		public void StartSound()
@@ -59,17 +68,16 @@ namespace BizHawk.Bizware.OpenTK3
 			BufferSizeSamples = _sound.MillisecondsToSamples(_sound.ConfigBufferSizeMs);
 			MaxSamplesDeficit = BufferSizeSamples;
 
-			_sourceID = AL.GenSource();
+			_sourceID = _al.GenSource();
 
-			_bufferPool = new BufferPool();
+			_bufferPool = new();
 			_currentSamplesQueued = 0;
 		}
 
 		public void StopSound()
 		{
-			AL.SourceStop(_sourceID);
-
-			AL.DeleteSource(_sourceID);
+			_al.SourceStop(_sourceID);
+			_al.DeleteSource(_sourceID);
 
 			_bufferPool.Dispose();
 			_bufferPool = null;
@@ -79,18 +87,18 @@ namespace BizHawk.Bizware.OpenTK3
 
 		public int CalculateSamplesNeeded()
 		{
-			int currentSamplesPlayed = GetSource(ALGetSourcei.SampleOffset);
-			ALSourceState sourceState = AL.GetSourceState(_sourceID);
-			bool isInitializing = sourceState == ALSourceState.Initial;
-			bool detectedUnderrun = sourceState == ALSourceState.Stopped;
+			var currentSamplesPlayed = GetSource(GetSourceInteger.SampleOffset);
+			var sourceState = GetSourceState();
+			var isInitializing = sourceState == SourceState.Initial;
+			var detectedUnderrun = sourceState == SourceState.Stopped;
 			if (detectedUnderrun)
 			{
 				// SampleOffset should reset to 0 when stopped; update the queued sample count to match
 				UnqueueProcessedBuffers();
 				currentSamplesPlayed = 0;
 			}
-			int samplesAwaitingPlayback = _currentSamplesQueued - currentSamplesPlayed;
-			int samplesNeeded = Math.Max(BufferSizeSamples - samplesAwaitingPlayback, 0);
+			var samplesAwaitingPlayback = _currentSamplesQueued - currentSamplesPlayed;
+			var samplesNeeded = Math.Max(BufferSizeSamples - samplesAwaitingPlayback, 0);
 			if (isInitializing || detectedUnderrun)
 			{
 				_sound.HandleInitializationOrUnderrun(detectedUnderrun, ref samplesNeeded);
@@ -98,11 +106,11 @@ namespace BizHawk.Bizware.OpenTK3
 			return samplesNeeded;
 		}
 
-		public void WriteSamples(short[] samples, int sampleOffset, int sampleCount)
+		public unsafe void WriteSamples(short[] samples, int sampleOffset, int sampleCount)
 		{
 			if (sampleCount == 0) return;
 			UnqueueProcessedBuffers();
-			int byteCount = sampleCount * _sound.BlockAlign;
+			var byteCount = sampleCount * _sound.BlockAlign;
 			if (sampleOffset != 0)
 			{
 				AllocateTempSampleBuffer(sampleCount);
@@ -110,35 +118,43 @@ namespace BizHawk.Bizware.OpenTK3
 				samples = _tempSampleBuffer;
 			}
 			var buffer = _bufferPool.Obtain(byteCount);
-			AL.BufferData(buffer.BufferID, ALFormat.Stereo16, samples, byteCount, _sound.SampleRate);
-			AL.SourceQueueBuffer(_sourceID, buffer.BufferID);
-			_currentSamplesQueued += sampleCount;
-			if (AL.GetSourceState(_sourceID) != ALSourceState.Playing)
+			fixed (short* sptr = samples)
 			{
-				AL.SourcePlay(_sourceID);
+				_al.BufferData(buffer.BufferID, BufferFormat.Stereo16, sptr, byteCount, _sound.SampleRate);
+			}
+			var bid = buffer.BufferID;
+			_al.SourceQueueBuffers(_sourceID, 1, &bid);
+			_currentSamplesQueued += sampleCount;
+			if (GetSourceState() != SourceState.Playing)
+			{
+				_al.SourcePlay(_sourceID);
 			}
 		}
 
-		private void UnqueueProcessedBuffers()
+		private unsafe void UnqueueProcessedBuffers()
 		{
-			int releaseCount = GetSource(ALGetSourcei.BuffersProcessed);
-			for (int i = 0; i < releaseCount; i++)
+			var releaseCount = GetSource(GetSourceInteger.BuffersProcessed);
+			var bids = stackalloc uint[releaseCount];
+			_al.SourceUnqueueBuffers(_sourceID, releaseCount, bids);
+			for (var i = 0; i < releaseCount; i++)
 			{
-				AL.SourceUnqueueBuffer(_sourceID);
 				var releasedBuffer = _bufferPool.ReleaseOne();
 				_currentSamplesQueued -= releasedBuffer.Length / _sound.BlockAlign;
 			}
 		}
 
-		private int GetSource(ALGetSourcei param)
+		private int GetSource(GetSourceInteger param)
 		{
-			AL.GetSource(_sourceID, param, out var value);
+			_al.GetSourceProperty(_sourceID, param, out var value);
 			return value;
 		}
 
+		private SourceState GetSourceState()
+			=> (SourceState)GetSource(GetSourceInteger.SourceState);
+
 		private void AllocateTempSampleBuffer(int sampleCount)
 		{
-			int length = sampleCount * _sound.ChannelCount;
+			var length = sampleCount * _sound.ChannelCount;
 			if (_tempSampleBuffer == null || _tempSampleBuffer.Length < length)
 			{
 				_tempSampleBuffer = new short[length];
@@ -147,14 +163,14 @@ namespace BizHawk.Bizware.OpenTK3
 
 		private class BufferPool : IDisposable
 		{
-			private readonly Stack<BufferPoolItem> _availableItems = new Stack<BufferPoolItem>();
-			private readonly Queue<BufferPoolItem> _obtainedItems = new Queue<BufferPoolItem>();
+			private readonly Stack<BufferPoolItem> _availableItems = new();
+			private readonly Queue<BufferPoolItem> _obtainedItems = new();
 
 			public void Dispose()
 			{
-				foreach (BufferPoolItem item in _availableItems.Concat(_obtainedItems))
+				foreach (var item in _availableItems.Concat(_obtainedItems))
 				{
-					AL.DeleteBuffer(item.BufferID);
+					_al.DeleteBuffer(item.BufferID);
 				}
 				_availableItems.Clear();
 				_obtainedItems.Clear();
@@ -162,7 +178,7 @@ namespace BizHawk.Bizware.OpenTK3
 
 			public BufferPoolItem Obtain(int length)
 			{
-				BufferPoolItem item = _availableItems.Count != 0 ? _availableItems.Pop() : new BufferPoolItem();
+				var item = _availableItems.Count != 0 ? _availableItems.Pop() : new();
 				item.Length = length;
 				_obtainedItems.Enqueue(item);
 				return item;
@@ -170,19 +186,19 @@ namespace BizHawk.Bizware.OpenTK3
 
 			public BufferPoolItem ReleaseOne()
 			{
-				BufferPoolItem item = _obtainedItems.Dequeue();
+				var item = _obtainedItems.Dequeue();
 				_availableItems.Push(item);
 				return item;
 			}
 
 			public class BufferPoolItem
 			{
-				public int BufferID { get; private set; }
+				public uint BufferID { get; }
 				public int Length { get; set; }
 
 				public BufferPoolItem()
 				{
-					BufferID = AL.GenBuffer();
+					BufferID = _al.GenBuffer();
 				}
 			}
 		}

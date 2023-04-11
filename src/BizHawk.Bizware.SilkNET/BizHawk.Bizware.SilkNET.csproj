@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+	</PropertyGroup>
+	<Import Project="../MainSlnCommon.props" />
+	<PropertyGroup>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<Nullable>disable</Nullable>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Silk.NET.OpenAL" Version="2.17.1" />
+		<PackageReference Include="Silk.NET.OpenAL.Extensions.Creative" Version="2.17.1" />
+		<PackageReference Include="Silk.NET.OpenAL.Extensions.Enumeration" Version="2.17.1" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Client.Common/BizHawk.Client.Common.csproj" />
+	</ItemGroup>
+</Project>
