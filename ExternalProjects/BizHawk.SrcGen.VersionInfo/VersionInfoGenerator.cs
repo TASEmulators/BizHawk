@@ -46,12 +46,12 @@ public class VersionInfoGenerator : ISourceGenerator
 		string source = $@"// This file (VersionInfo.g.cs) is auto-generated. Any edits will be overwritten before compilation.
 namespace BizHawk.Common
 {{
-    public static partial class VersionInfo
-    {{
+	public static partial class VersionInfo
+	{{
 		public const string SVN_REV = ""{rev}"";
-        public const string GIT_BRANCH = ""{branch}"";
-        public const string GIT_SHORTHASH = ""{shortHash}"";
-    }}
+		public const string GIT_BRANCH = ""{branch}"";
+		public const string GIT_SHORTHASH = ""{shortHash}"";
+	}}
 }}
 ";
 
