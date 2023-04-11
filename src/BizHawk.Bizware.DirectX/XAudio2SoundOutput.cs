@@ -125,7 +125,7 @@ namespace BizHawk.Bizware.DirectX
 			_bufferPool.Release(_sourceVoice.State.BuffersQueued);
 			var byteCount = sampleCount * _sound.BlockAlign;
 			var item = _bufferPool.Obtain(byteCount);
-			samples.AsSpan(sampleOffset * _sound.BlockAlign, byteCount / 2)
+			samples.AsSpan(sampleOffset * _sound.BlockAlign / 2, byteCount / 2)
 				.CopyTo(item.AudioBuffer.AsSpan<short>());
 			item.AudioBuffer.AudioBytes = byteCount;
 			_sourceVoice.SubmitSourceBuffer(item.AudioBuffer);
