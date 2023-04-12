@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+
 using BizHawk.Common;
 
 using Vortice.DirectInput;
@@ -31,19 +33,25 @@ namespace BizHawk.Bizware.DirectX
 					var joystick = _directInput.CreateDevice(device.InstanceGuid);
 					joystick.SetCooperativeLevel(mainFormHandle, CooperativeLevel.Background | CooperativeLevel.NonExclusive);
 					joystick.SetDataFormat<RawJoystickState>();
+#if false
 					foreach (var deviceObject in joystick.GetObjects())
 					{
-						var dictFi = typeof(IDirectInputDevice8).GetField("_mapNameToObjectFormat", BindingFlags.Instance | BindingFlags.NonPublic)!;
-						var dict = (Dictionary<string, ObjectDataFormat>)dictFi.GetValue(joystick);
-						foreach (var name in dict.Keys)
-						{
-							Console.WriteLine(name);
-						}
 						if ((deviceObject.ObjectId.Flags & DeviceObjectTypeFlags.Axis) != 0)
 						{
-							joystick.GetObjectPropertiesByName(string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", deviceObject.Name)).Range = new(-1000, 1000);
+							joystick.GetObjectPropertiesByName(deviceObject.Name).Range = new(-1000, 1000);
 						}
 					}
+#else
+					// using a hack due to GetObjectPropertiesByName needing a non-localized name and GetObjects returns localized names (FUCK YOU MICROSOFT)
+					// note that PropertyHowType.Byoffset is part of an internal enum, so can't use it directly
+					var dict = (Dictionary<string, ObjectDataFormat>)typeof(IDirectInputDevice8)
+						.GetField("_mapNameToObjectFormat", BindingFlags.Instance | BindingFlags.NonPublic)!
+						.GetValue(joystick);
+					foreach (var odf in dict.Where(odf => (odf.Value.TypeFlags & DeviceObjectTypeFlags.Axis) != 0))
+					{
+						joystick.GetObjectPropertiesByName(odf.Key).Range = new(-1000, 1000);
+					}
+#endif
 					joystick.Acquire();
 
 					var p = new GamePad(joystick, Devices.Count);
