@@ -34,12 +34,9 @@ namespace BizHawk.Bizware.DirectX
 					joystick.SetCooperativeLevel(mainFormHandle, CooperativeLevel.Background | CooperativeLevel.NonExclusive);
 					joystick.SetDataFormat<RawJoystickState>();
 #if false
-					foreach (var deviceObject in joystick.GetObjects())
+					foreach (var deviceObject in joystick.GetObjects(DeviceObjectTypeFlags.Axis))
 					{
-						if ((deviceObject.ObjectId.Flags & DeviceObjectTypeFlags.Axis) != 0)
-						{
-							joystick.GetObjectPropertiesByName(deviceObject.Name).Range = new(-1000, 1000);
-						}
+						joystick.GetObjectPropertiesByName(deviceObject.Name).Range = new(-1000, 1000);
 					}
 #else
 					// using a hack due to GetObjectPropertiesByName needing a non-localized name and GetObjects returns localized names (FUCK YOU MICROSOFT)
@@ -47,9 +44,10 @@ namespace BizHawk.Bizware.DirectX
 					var dict = (Dictionary<string, ObjectDataFormat>)typeof(IDirectInputDevice8)
 						.GetField("_mapNameToObjectFormat", BindingFlags.Instance | BindingFlags.NonPublic)!
 						.GetValue(joystick);
-					foreach (var odf in dict.Where(odf => (odf.Value.TypeFlags & DeviceObjectTypeFlags.Axis) != 0))
+
+					foreach (var deviceObject in joystick.GetObjects(DeviceObjectTypeFlags.Axis))
 					{
-						joystick.GetObjectPropertiesByName(odf.Key).Range = new(-1000, 1000);
+						joystick.GetObjectPropertiesByName(dict.Values.First(odf => odf.Offset == deviceObject.Offset).Name!).Range = new(-1000, 1000);
 					}
 #endif
 					joystick.Acquire();
