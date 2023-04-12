@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Reflection;
 using BizHawk.Common;
 
 using Vortice.DirectInput;
@@ -33,9 +33,15 @@ namespace BizHawk.Bizware.DirectX
 					joystick.SetDataFormat<RawJoystickState>();
 					foreach (var deviceObject in joystick.GetObjects())
 					{
+						var dictFi = typeof(IDirectInputDevice8).GetField("_mapNameToObjectFormat", BindingFlags.Instance | BindingFlags.NonPublic)!;
+						var dict = (Dictionary<string, ObjectDataFormat>)dictFi.GetValue(joystick);
+						foreach (var name in dict.Keys)
+						{
+							Console.WriteLine(name);
+						}
 						if ((deviceObject.ObjectId.Flags & DeviceObjectTypeFlags.Axis) != 0)
 						{
-							joystick.GetObjectPropertiesByName(deviceObject.Name).Range = new(-1000, 1000);
+							joystick.GetObjectPropertiesByName(string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", deviceObject.Name)).Range = new(-1000, 1000);
 						}
 					}
 					joystick.Acquire();
