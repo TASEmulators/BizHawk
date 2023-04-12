@@ -5,6 +5,8 @@ using System.IO.Pipes;
 
 using BizHawk.Client.Common;
 
+using DInputKey = Vortice.DirectInput.Key;
+
 // this is not a very safe or pretty protocol, I'm not proud of it
 namespace BizHawk.Bizware.DirectX
 {
@@ -16,34 +18,39 @@ namespace BizHawk.Bizware.DirectX
 			t.Start();
 		}
 
-
-		private static readonly List<KeyEvent> PendingEventList = new List<KeyEvent>();
-		private static readonly List<KeyEvent> EventList = new List<KeyEvent>();
+		private static readonly List<KeyEvent> PendingEventList = new();
+		private static readonly List<KeyEvent> EventList = new();
 
 		private static void IPCThread()
 		{
-			string pipeName = $"bizhawk-pid-{System.Diagnostics.Process.GetCurrentProcess().Id}-IPCKeyInput";
+			var pipeName = $"bizhawk-pid-{System.Diagnostics.Process.GetCurrentProcess().Id}-IPCKeyInput";
 
-
-			for (; ; )
+			while (true)
 			{
 				using var pipe = new NamedPipeServerStream(pipeName, PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous, 1024, 1024);
 				try
 				{
 					pipe.WaitForConnection();
 
-					BinaryReader br = new BinaryReader(pipe);
+					var br = new BinaryReader(pipe);
 
-					for (; ; )
+					while (true)
 					{
-						int e = br.ReadInt32();
-						bool pressed = (e & 0x80000000) != 0;
+						var e = br.ReadInt32();
+						var pressed = (e & 0x80000000) != 0;
 						lock (PendingEventList)
-							PendingEventList.Add(new KeyEvent(KeyInput.KeyEnumMap[e & 0x7FFFFFFF], pressed));
+						{
+							PendingEventList.Add(new(KeyInput.KeyEnumMap[(DInputKey)(e & 0x7FFFFFFF)], pressed));
+						}
 					}
 				}
-				catch { }
+				catch
+				{
+					// ignored
+				}
 			}
+
+			// ReSharper disable once FunctionNeverReturns
 		}
 
 		public static IEnumerable<KeyEvent> Update()

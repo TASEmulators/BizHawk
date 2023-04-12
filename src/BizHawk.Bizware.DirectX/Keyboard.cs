@@ -6,23 +6,22 @@ using System.Linq;
 
 using BizHawk.Client.Common;
 
-using SlimDX;
-using SlimDX.DirectInput;
+using Vortice.DirectInput;
 
 using static BizHawk.Common.Win32Imports;
 
-using DInputKey = SlimDX.DirectInput.Key;
+using DInputKey = Vortice.DirectInput.Key;
 using WinFormsKey = System.Windows.Forms.Keys;
 
 namespace BizHawk.Bizware.DirectX
 {
 	internal static class KeyInput
 	{
-		private static DirectInput? _directInput;
+		private static IDirectInput8? _directInput;
 
-		private static Keyboard? _keyboard;
+		private static IDirectInputDevice8? _keyboard;
 
-		private static readonly object _lockObj = new object();
+		private static readonly object _lockObj = new();
 
 		public static void Initialize(IntPtr mainFormHandle)
 		{
@@ -30,10 +29,11 @@ namespace BizHawk.Bizware.DirectX
 			{
 				Cleanup();
 
-				_directInput = new DirectInput();
+				_directInput = DInput.DirectInput8Create();
 
-				_keyboard = new Keyboard(_directInput);
-				_keyboard.SetCooperativeLevel(mainFormHandle, CooperativeLevel.Background | CooperativeLevel.Nonexclusive);
+				_keyboard = _directInput.CreateDevice(PredefinedDevice.SysKeyboard);
+				_keyboard.SetCooperativeLevel(mainFormHandle, CooperativeLevel.Background | CooperativeLevel.NonExclusive);
+				_keyboard.SetDataFormat<RawKeyboardState>();
 				_keyboard.Properties.BufferSize = 8;
 			}
 		}
@@ -51,22 +51,24 @@ namespace BizHawk.Bizware.DirectX
 
 		public static IEnumerable<KeyEvent> Update(Config config)
 		{
-			DistinctKey Mapped(DInputKey k) => KeyEnumMap[(int) (config.HandleAlternateKeyboardLayouts ? MapToRealKeyViaScanCode(k) : k)];
+			DistinctKey Mapped(DInputKey k) => KeyEnumMap[config.HandleAlternateKeyboardLayouts ? MapToRealKeyViaScanCode(k) : k];
 
 			lock (_lockObj)
 			{
-				if (_keyboard == null || _keyboard.Acquire().IsFailure || _keyboard.Poll().IsFailure) return Enumerable.Empty<KeyEvent>();
+				if (_keyboard == null || _keyboard.Acquire().Failure || _keyboard.Poll().Failure) return Enumerable.Empty<KeyEvent>();
 
 				var eventList = new List<KeyEvent>();
 				while (true)
 				{
-					var events = _keyboard.GetBufferedData();
-					if (Result.Last.IsFailure || events.Count == 0) return eventList;
-
-					foreach (var e in events)
+					try
 					{
-						foreach (var k in e.PressedKeys) eventList.Add(new KeyEvent(Mapped(k), pressed: true));
-						foreach (var k in e.ReleasedKeys) eventList.Add(new KeyEvent(Mapped(k), pressed: false));
+						var events = _keyboard.GetBufferedKeyboardData();
+						if (events.Length == 0) return eventList;
+						eventList.AddRange(events.Select(e => new KeyEvent(Mapped(e.Key), e.IsPressed)));
+					}
+					catch (SharpGen.Runtime.SharpGenException)
+					{
+						return eventList;
 					}
 				}
 			}
@@ -124,7 +126,7 @@ namespace BizHawk.Bizware.DirectX
 				DInputKey.Applications => 0xE05DU,
 //				DInputKey.AT => 0x91U,
 //				DInputKey.AX => 0x96U,
-				DInputKey.Backspace => 0x000EU,
+				DInputKey.Back => 0x000EU,
 				DInputKey.Backslash => 0x002BU,
 //				DInputKey.Calculator => 0xA1U,
 				DInputKey.CapsLock => 0x003AU,
@@ -132,7 +134,7 @@ namespace BizHawk.Bizware.DirectX
 				DInputKey.Comma => 0x0033U,
 				DInputKey.Convert => 0x0079U,
 				DInputKey.Delete => 0x0053U,
-				DInputKey.DownArrow => 0x0050U,
+				DInputKey.Down => 0x0050U,
 				DInputKey.End => 0x004FU,
 				DInputKey.Equals => 0x000DU,
 				DInputKey.Escape => 0x0001U,
@@ -158,7 +160,7 @@ namespace BizHawk.Bizware.DirectX
 //				DInputKey.Kanji => 0x94U,
 				DInputKey.LeftBracket => 0x001AU,
 				DInputKey.LeftControl => 0x001DU,
-				DInputKey.LeftArrow => 0x004BU,
+				DInputKey.Left => 0x004BU,
 				DInputKey.LeftAlt => 0x0038U,
 				DInputKey.LeftShift => 0x002AU,
 				DInputKey.LeftWindowsKey => 0xE05BU,
@@ -184,11 +186,11 @@ namespace BizHawk.Bizware.DirectX
 //				DInputKey.NumberPadComma => 0xB3U,
 //				DInputKey.NumberPadEnter => 0x9CU,
 //				DInputKey.NumberPadEquals => 0x8DU,
-				DInputKey.NumberPadMinus => 0x004AU,
-//				DInputKey.NumberPadPeriod => 0x53U,
-				DInputKey.NumberPadPlus => 0x004EU,
-				DInputKey.NumberPadSlash => 0xE035U,
-				DInputKey.NumberPadStar => 0x0037U,
+				DInputKey.Subtract => 0x004AU,
+//				DInputKey.Decimal => 0x53U,
+				DInputKey.Add => 0x004EU,
+				DInputKey.Divide => 0xE035U,
+				DInputKey.Multiply => 0x0037U,
 				DInputKey.Oem102 => 0x0056U,
 				DInputKey.PageDown => 0x0051U,
 				DInputKey.PageUp => 0x0049U,
@@ -200,7 +202,7 @@ namespace BizHawk.Bizware.DirectX
 				DInputKey.RightBracket => 0x001BU,
 				DInputKey.RightControl => 0xE01DU,
 				DInputKey.Return => 0x001CU,
-				DInputKey.RightArrow => 0x004DU,
+				DInputKey.Right => 0x004DU,
 				DInputKey.RightAlt => 0xE038U,
 				DInputKey.RightShift => 0x0036U,
 				DInputKey.RightWindowsKey => 0xE05CU,
@@ -214,7 +216,7 @@ namespace BizHawk.Bizware.DirectX
 				DInputKey.Tab => 0x000FU,
 //				DInputKey.Underline => 0x93U,
 //				DInputKey.Unlabeled => 0x97U,
-				DInputKey.UpArrow => 0x0048U,
+				DInputKey.Up => 0x0048U,
 				DInputKey.VolumeDown => 0xE02EU,
 				DInputKey.VolumeUp => 0xE030U,
 //				DInputKey.Wake => 0x00E3U,
@@ -273,7 +275,7 @@ namespace BizHawk.Bizware.DirectX
 				WinFormsKey.Apps => DInputKey.Applications,
 //				WinFormsKey. => DInputKey.AT,
 //				WinFormsKey. => DInputKey.AX,
-				WinFormsKey.Back => DInputKey.Backspace,
+				WinFormsKey.Back => DInputKey.Back,
 				WinFormsKey.OemPipe => DInputKey.Backslash,
 //				WinFormsKey. => DInputKey.Calculator,
 				WinFormsKey.Capital => DInputKey.CapsLock,
@@ -281,7 +283,7 @@ namespace BizHawk.Bizware.DirectX
 				WinFormsKey.Oemcomma => DInputKey.Comma,
 				WinFormsKey.IMEConvert => DInputKey.Convert,
 				WinFormsKey.Delete => DInputKey.Delete,
-				WinFormsKey.Down => DInputKey.DownArrow,
+				WinFormsKey.Down => DInputKey.Down,
 				WinFormsKey.End => DInputKey.End,
 				WinFormsKey.Oemplus => DInputKey.Equals,
 				WinFormsKey.Escape => DInputKey.Escape,
@@ -307,7 +309,7 @@ namespace BizHawk.Bizware.DirectX
 //				WinFormsKey.KanjiMode => DInputKey.Kanji,
 				WinFormsKey.OemOpenBrackets => DInputKey.LeftBracket,
 				WinFormsKey.LControlKey => DInputKey.LeftControl,
-				WinFormsKey.Left => DInputKey.LeftArrow,
+				WinFormsKey.Left => DInputKey.Left,
 				WinFormsKey.LMenu => DInputKey.LeftAlt,
 				WinFormsKey.LShiftKey => DInputKey.LeftShift,
 				WinFormsKey.LWin => DInputKey.LeftWindowsKey,
@@ -333,11 +335,11 @@ namespace BizHawk.Bizware.DirectX
 //				WinFormsKey. => DInputKey.NumberPadComma,
 //				WinFormsKey. => DInputKey.NumberPadEnter,
 //				WinFormsKey. => DInputKey.NumberPadEquals,
-				WinFormsKey.Subtract => DInputKey.NumberPadMinus,
-//				WinFormsKey.Decimal => DInputKey.NumberPadPeriod,
-				WinFormsKey.Add => DInputKey.NumberPadPlus,
-				WinFormsKey.Divide => DInputKey.NumberPadSlash,
-				WinFormsKey.Multiply => DInputKey.NumberPadStar,
+				WinFormsKey.Subtract => DInputKey.Subtract,
+//				WinFormsKey.Decimal => DInputKey.Decimal,
+				WinFormsKey.Add => DInputKey.Add,
+				WinFormsKey.Divide => DInputKey.Divide,
+				WinFormsKey.Multiply => DInputKey.Multiply,
 				WinFormsKey.OemBackslash => DInputKey.Oem102,
 				WinFormsKey.Next => DInputKey.PageDown,
 				WinFormsKey.Prior => DInputKey.PageUp,
@@ -349,7 +351,7 @@ namespace BizHawk.Bizware.DirectX
 				WinFormsKey.OemCloseBrackets => DInputKey.RightBracket,
 				WinFormsKey.RControlKey => DInputKey.RightControl,
 				WinFormsKey.Return => DInputKey.Return,
-				WinFormsKey.Right => DInputKey.RightArrow,
+				WinFormsKey.Right => DInputKey.Right,
 				WinFormsKey.RMenu => DInputKey.RightAlt,
 				WinFormsKey.RShiftKey => DInputKey.RightShift,
 				WinFormsKey.RWin => DInputKey.RightWindowsKey,
@@ -363,7 +365,7 @@ namespace BizHawk.Bizware.DirectX
 				WinFormsKey.Tab => DInputKey.Tab,
 //				WinFormsKey. => DInputKey.Underline,
 //				WinFormsKey. => DInputKey.Unlabeled,
-				WinFormsKey.Up => DInputKey.UpArrow,
+				WinFormsKey.Up => DInputKey.Up,
 				WinFormsKey.VolumeDown => DInputKey.VolumeDown,
 				WinFormsKey.VolumeUp => DInputKey.VolumeUp,
 //				WinFormsKey. => DInputKey.Wake,
@@ -379,153 +381,153 @@ namespace BizHawk.Bizware.DirectX
 			};
 		}
 
-		internal static readonly IReadOnlyList<DistinctKey> KeyEnumMap = new List<DistinctKey>
+		internal static readonly IReadOnlyDictionary<DInputKey, DistinctKey> KeyEnumMap = new Dictionary<DInputKey, DistinctKey>
 		{
-			DistinctKey.D0,
-			DistinctKey.D1,
-			DistinctKey.D2,
-			DistinctKey.D3,
-			DistinctKey.D4,
-			DistinctKey.D5,
-			DistinctKey.D6,
-			DistinctKey.D7,
-			DistinctKey.D8,
-			DistinctKey.D9,
-			DistinctKey.A,
-			DistinctKey.B,
-			DistinctKey.C,
-			DistinctKey.D,
-			DistinctKey.E,
-			DistinctKey.F,
-			DistinctKey.G,
-			DistinctKey.H,
-			DistinctKey.I,
-			DistinctKey.J,
-			DistinctKey.K,
-			DistinctKey.L,
-			DistinctKey.M,
-			DistinctKey.N,
-			DistinctKey.O,
-			DistinctKey.P,
-			DistinctKey.Q,
-			DistinctKey.R,
-			DistinctKey.S,
-			DistinctKey.T,
-			DistinctKey.U,
-			DistinctKey.V,
-			DistinctKey.W,
-			DistinctKey.X,
-			DistinctKey.Y,
-			DistinctKey.Z,
-			DistinctKey.AbntC1,
-			DistinctKey.AbntC2,
-			DistinctKey.OemQuotes,
-			DistinctKey.Apps,
-			DistinctKey.Unknown, // AT
-			DistinctKey.Unknown, // AX
-			DistinctKey.Back,
-			DistinctKey.OemPipe, // Backslash
-			DistinctKey.Unknown, // Calculator
-			DistinctKey.CapsLock,
-			DistinctKey.Unknown, // Colon
-			DistinctKey.OemComma,
-			DistinctKey.ImeConvert,
-			DistinctKey.Delete,
-			DistinctKey.Down,
-			DistinctKey.End,
-			DistinctKey.OemPlus,
-			DistinctKey.Escape,
-			DistinctKey.F1,
-			DistinctKey.F2,
-			DistinctKey.F3,
-			DistinctKey.F4,
-			DistinctKey.F5,
-			DistinctKey.F6,
-			DistinctKey.F7,
-			DistinctKey.F8,
-			DistinctKey.F9,
-			DistinctKey.F10,
-			DistinctKey.F11,
-			DistinctKey.F12,
-			DistinctKey.F13,
-			DistinctKey.F14,
-			DistinctKey.F15,
-			DistinctKey.OemTilde,
-			DistinctKey.Home,
-			DistinctKey.Insert,
-			DistinctKey.KanaMode,
-			DistinctKey.KanjiMode,
-			DistinctKey.OemOpenBrackets,
-			DistinctKey.LeftCtrl,
-			DistinctKey.Left,
-			DistinctKey.LeftAlt,
-			DistinctKey.LeftShift,
-			DistinctKey.LWin,
-			DistinctKey.LaunchMail,
-			DistinctKey.SelectMedia,
-			DistinctKey.MediaStop,
-			DistinctKey.OemMinus,
-			DistinctKey.VolumeMute,
-			DistinctKey.Unknown, // MyComputer
-			DistinctKey.MediaNextTrack,
-			DistinctKey.ImeNonConvert,
-			DistinctKey.NumLock,
-			DistinctKey.NumPad0,
-			DistinctKey.NumPad1,
-			DistinctKey.NumPad2,
-			DistinctKey.NumPad3,
-			DistinctKey.NumPad4,
-			DistinctKey.NumPad5,
-			DistinctKey.NumPad6,
-			DistinctKey.NumPad7,
-			DistinctKey.NumPad8,
-			DistinctKey.NumPad9,
-			DistinctKey.Separator,
-			DistinctKey.NumPadEnter,
-			DistinctKey.OemPlus, // NumberPadEquals
-			DistinctKey.Subtract,
-			DistinctKey.Decimal,
-			DistinctKey.Add,
-			DistinctKey.Divide,
-			DistinctKey.Multiply,
-			DistinctKey.OemBackslash, // Oem102
-			DistinctKey.PageDown,
-			DistinctKey.PageUp,
-			DistinctKey.Pause,
-			DistinctKey.OemPeriod,
-			DistinctKey.MediaPlayPause,
-			DistinctKey.Unknown, // Power
-			DistinctKey.MediaPreviousTrack,
-			DistinctKey.OemCloseBrackets,
-			DistinctKey.RightCtrl,
-			DistinctKey.Return,
-			DistinctKey.Right,
-			DistinctKey.RightAlt,
-			DistinctKey.RightShift,
-			DistinctKey.RWin,
-			DistinctKey.Scroll,
-			DistinctKey.OemSemicolon,
-			DistinctKey.OemQuestion, // Slash
-			DistinctKey.Sleep,
-			DistinctKey.Space,
-			DistinctKey.MediaStop,
-			DistinctKey.PrintScreen,
-			DistinctKey.Tab,
-			DistinctKey.Unknown, // Underline
-			DistinctKey.Unknown, // Unlabeled
-			DistinctKey.Up,
-			DistinctKey.VolumeDown,
-			DistinctKey.VolumeUp,
-			DistinctKey.Sleep, // Wake
-			DistinctKey.BrowserBack,
-			DistinctKey.BrowserFavorites,
-			DistinctKey.BrowserForward,
-			DistinctKey.BrowserHome,
-			DistinctKey.BrowserRefresh,
-			DistinctKey.BrowserSearch,
-			DistinctKey.BrowserStop,
-			DistinctKey.Unknown, // Yen
-			DistinctKey.Unknown // Unknown
+			[DInputKey.D0] = DistinctKey.D0,
+			[DInputKey.D1] = DistinctKey.D1,
+			[DInputKey.D2] = DistinctKey.D2,
+			[DInputKey.D3] = DistinctKey.D3,
+			[DInputKey.D4] = DistinctKey.D4,
+			[DInputKey.D5] = DistinctKey.D5,
+			[DInputKey.D6] = DistinctKey.D6,
+			[DInputKey.D7] = DistinctKey.D7,
+			[DInputKey.D8] = DistinctKey.D8,
+			[DInputKey.D9] = DistinctKey.D9,
+			[DInputKey.A] = DistinctKey.A,
+			[DInputKey.B] = DistinctKey.B,
+			[DInputKey.C] = DistinctKey.C,
+			[DInputKey.D] = DistinctKey.D,
+			[DInputKey.E] = DistinctKey.E,
+			[DInputKey.F] = DistinctKey.F,
+			[DInputKey.G] = DistinctKey.G,
+			[DInputKey.H] = DistinctKey.H,
+			[DInputKey.I] = DistinctKey.I,
+			[DInputKey.J] = DistinctKey.J,
+			[DInputKey.K] = DistinctKey.K,
+			[DInputKey.L] = DistinctKey.L,
+			[DInputKey.M] = DistinctKey.M,
+			[DInputKey.N] = DistinctKey.N,
+			[DInputKey.O] = DistinctKey.O,
+			[DInputKey.P] = DistinctKey.P,
+			[DInputKey.Q] = DistinctKey.Q,
+			[DInputKey.R] = DistinctKey.R,
+			[DInputKey.S] = DistinctKey.S,
+			[DInputKey.T] = DistinctKey.T,
+			[DInputKey.U] = DistinctKey.U,
+			[DInputKey.V] = DistinctKey.V,
+			[DInputKey.W] = DistinctKey.W,
+			[DInputKey.X] = DistinctKey.X,
+			[DInputKey.Y] = DistinctKey.Y,
+			[DInputKey.Z] = DistinctKey.Z,
+			[DInputKey.AbntC1] = DistinctKey.AbntC1,
+			[DInputKey.AbntC2] = DistinctKey.AbntC2,
+			[DInputKey.Apostrophe] = DistinctKey.OemQuotes,
+			[DInputKey.Applications] = DistinctKey.Apps,
+			[DInputKey.AT] = DistinctKey.Unknown,
+			[DInputKey.AX] = DistinctKey.Unknown,
+			[DInputKey.Back] = DistinctKey.Back,
+			[DInputKey.Backslash] = DistinctKey.OemPipe,
+			[DInputKey.Calculator] = DistinctKey.Unknown,
+			[DInputKey.CapsLock] = DistinctKey.CapsLock,
+			[DInputKey.Colon] = DistinctKey.Unknown,
+			[DInputKey.Comma] = DistinctKey.OemComma,
+			[DInputKey.Convert] = DistinctKey.ImeConvert,
+			[DInputKey.Delete] = DistinctKey.Delete,
+			[DInputKey.Down] = DistinctKey.Down,
+			[DInputKey.End] = DistinctKey.End,
+			[DInputKey.Equals] = DistinctKey.OemPlus,
+			[DInputKey.Escape] = DistinctKey.Escape,
+			[DInputKey.F1] = DistinctKey.F1,
+			[DInputKey.F2] = DistinctKey.F2,
+			[DInputKey.F3] = DistinctKey.F3,
+			[DInputKey.F4] = DistinctKey.F4,
+			[DInputKey.F5] = DistinctKey.F5,
+			[DInputKey.F6] = DistinctKey.F6,
+			[DInputKey.F7] = DistinctKey.F7,
+			[DInputKey.F8] = DistinctKey.F8,
+			[DInputKey.F9] = DistinctKey.F9,
+			[DInputKey.F10] = DistinctKey.F10,
+			[DInputKey.F11] = DistinctKey.F11,
+			[DInputKey.F12] = DistinctKey.F12,
+			[DInputKey.F13] = DistinctKey.F13,
+			[DInputKey.F14] = DistinctKey.F14,
+			[DInputKey.F15] = DistinctKey.F15,
+			[DInputKey.Grave] = DistinctKey.OemTilde,
+			[DInputKey.Home] = DistinctKey.Home,
+			[DInputKey.Insert] = DistinctKey.Insert,
+			[DInputKey.Kana] = DistinctKey.KanaMode,
+			[DInputKey.Kanji] = DistinctKey.KanjiMode,
+			[DInputKey.LeftBracket] = DistinctKey.OemOpenBrackets,
+			[DInputKey.LeftControl] = DistinctKey.LeftCtrl,
+			[DInputKey.Left] = DistinctKey.Left,
+			[DInputKey.LeftAlt] = DistinctKey.LeftAlt,
+			[DInputKey.LeftShift] = DistinctKey.LeftShift,
+			[DInputKey.LeftWindowsKey] = DistinctKey.LWin,
+			[DInputKey.Mail] = DistinctKey.LaunchMail,
+			[DInputKey.MediaSelect] = DistinctKey.SelectMedia,
+			[DInputKey.MediaStop] = DistinctKey.MediaStop,
+			[DInputKey.Minus] = DistinctKey.OemMinus,
+			[DInputKey.Mute] = DistinctKey.VolumeMute,
+			[DInputKey.MyComputer] = DistinctKey.Unknown,
+			[DInputKey.NextTrack] = DistinctKey.MediaNextTrack,
+			[DInputKey.NoConvert] = DistinctKey.ImeNonConvert,
+			[DInputKey.NumberLock] = DistinctKey.NumLock,
+			[DInputKey.NumberPad0] = DistinctKey.NumPad0,
+			[DInputKey.NumberPad1] = DistinctKey.NumPad1,
+			[DInputKey.NumberPad2] = DistinctKey.NumPad2,
+			[DInputKey.NumberPad3] = DistinctKey.NumPad3,
+			[DInputKey.NumberPad4] = DistinctKey.NumPad4,
+			[DInputKey.NumberPad5] = DistinctKey.NumPad5,
+			[DInputKey.NumberPad6] = DistinctKey.NumPad6,
+			[DInputKey.NumberPad7] = DistinctKey.NumPad7,
+			[DInputKey.NumberPad8] = DistinctKey.NumPad8,
+			[DInputKey.NumberPad9] = DistinctKey.NumPad9,
+			[DInputKey.NumberPadComma] = DistinctKey.Separator,
+			[DInputKey.NumberPadEnter] = DistinctKey.NumPadEnter,
+			[DInputKey.NumberPadEquals] = DistinctKey.OemPlus,
+			[DInputKey.Subtract] = DistinctKey.Subtract,
+			[DInputKey.Decimal] = DistinctKey.Decimal,
+			[DInputKey.Add] = DistinctKey.Add,
+			[DInputKey.Divide] = DistinctKey.Divide,
+			[DInputKey.Multiply] = DistinctKey.Multiply,
+			[DInputKey.Oem102] = DistinctKey.OemBackslash,
+			[DInputKey.PageDown] = DistinctKey.PageDown,
+			[DInputKey.PageUp] = DistinctKey.PageUp,
+			[DInputKey.Pause] = DistinctKey.Pause,
+			[DInputKey.Period] = DistinctKey.OemPeriod,
+			[DInputKey.PlayPause] = DistinctKey.MediaPlayPause,
+			[DInputKey.Power] = DistinctKey.Unknown,
+			[DInputKey.PreviousTrack] = DistinctKey.MediaPreviousTrack,
+			[DInputKey.RightBracket] = DistinctKey.OemCloseBrackets,
+			[DInputKey.RightControl] = DistinctKey.RightCtrl,
+			[DInputKey.Return] = DistinctKey.Return,
+			[DInputKey.Right] = DistinctKey.Right,
+			[DInputKey.RightAlt] = DistinctKey.RightAlt,
+			[DInputKey.RightShift] = DistinctKey.RightShift,
+			[DInputKey.RightWindowsKey] = DistinctKey.RWin,
+			[DInputKey.ScrollLock] = DistinctKey.Scroll,
+			[DInputKey.Semicolon] = DistinctKey.OemSemicolon,
+			[DInputKey.Slash] = DistinctKey.OemQuestion,
+			[DInputKey.Sleep] = DistinctKey.Sleep,
+			[DInputKey.Space] = DistinctKey.Space,
+			[DInputKey.Stop] = DistinctKey.MediaStop,
+			[DInputKey.PrintScreen] = DistinctKey.PrintScreen,
+			[DInputKey.Tab] = DistinctKey.Tab,
+			[DInputKey.Underline] = DistinctKey.Unknown,
+			[DInputKey.Unlabeled] = DistinctKey.Unknown,
+			[DInputKey.Up] = DistinctKey.Up,
+			[DInputKey.VolumeDown] = DistinctKey.VolumeDown,
+			[DInputKey.VolumeUp] = DistinctKey.VolumeUp,
+			[DInputKey.Wake] = DistinctKey.Sleep,
+			[DInputKey.WebBack] = DistinctKey.BrowserBack,
+			[DInputKey.WebFavorites] = DistinctKey.BrowserFavorites,
+			[DInputKey.WebForward] = DistinctKey.BrowserForward,
+			[DInputKey.WebHome] = DistinctKey.BrowserHome,
+			[DInputKey.WebRefresh] = DistinctKey.BrowserRefresh,
+			[DInputKey.WebSearch] = DistinctKey.BrowserSearch,
+			[DInputKey.WebStop] = DistinctKey.BrowserStop,
+			[DInputKey.Yen] = DistinctKey.Unknown,
+			[DInputKey.Unknown] = DistinctKey.Unknown
 		};
 	}
 }

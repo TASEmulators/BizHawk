@@ -3,16 +3,15 @@ using System.Collections.Generic;
 
 using BizHawk.Common;
 
-using SlimDX;
-using SlimDX.DirectInput;
+using Vortice.DirectInput;
 
 namespace BizHawk.Bizware.DirectX
 {
 	internal sealed class GamePad
 	{
-		private static readonly object SyncObj = new object();
-		private static readonly List<GamePad> Devices = new List<GamePad>();
-		private static DirectInput _directInput;
+		private static readonly object SyncObj = new();
+		private static readonly List<GamePad> Devices = new();
+		private static IDirectInput8 _directInput;
 
 		public static void Initialize(IntPtr mainFormHandle)
 		{
@@ -20,27 +19,28 @@ namespace BizHawk.Bizware.DirectX
 			{
 				Cleanup();
 
-				_directInput = new DirectInput();
+				_directInput = DInput.DirectInput8Create();
 
-				foreach (DeviceInstance device in _directInput.GetDevices(DeviceClass.GameController, DeviceEnumerationFlags.AttachedOnly))
+				foreach (var device in _directInput.GetDevices(DeviceClass.GameControl, DeviceEnumerationFlags.AttachedOnly))
 				{
 					Console.WriteLine("joy device: {0} `{1}`", device.InstanceGuid, device.ProductName);
 
 					if (device.ProductName.Contains("XBOX 360") || device.ProductName.Contains("Xbox One") || device.ProductName.Contains("XINPUT"))
 						continue; // Don't input XBOX 360 controllers into here; we'll process them via XInput (there are limitations in some trigger axes when xbox pads go over xinput)
 
-					var joystick = new Joystick(_directInput, device.InstanceGuid);
-					joystick.SetCooperativeLevel(mainFormHandle, CooperativeLevel.Background | CooperativeLevel.Nonexclusive);
-					foreach (DeviceObjectInstance deviceObject in joystick.GetObjects())
+					var joystick = _directInput.CreateDevice(device.InstanceGuid);
+					joystick.SetCooperativeLevel(mainFormHandle, CooperativeLevel.Background | CooperativeLevel.NonExclusive);
+					joystick.SetDataFormat<JoystickUpdate>();
+					foreach (var deviceObject in joystick.GetObjects())
 					{
-						if ((deviceObject.ObjectType & ObjectDeviceType.Axis) != 0)
+						if ((deviceObject.ObjectId.Flags & DeviceObjectTypeFlags.Axis) != 0)
 						{
-							joystick.GetObjectPropertiesById((int)deviceObject.ObjectType).SetRange(-1000, 1000);
+							joystick.GetObjectPropertiesByName(deviceObject.Name).Range = new(-1000, 1000);
 						}
 					}
 					joystick.Acquire();
 
-					GamePad p = new GamePad(joystick, Devices.Count);
+					var p = new GamePad(joystick, Devices.Count);
 					Devices.Add(p);
 				}
 			}
@@ -89,10 +89,10 @@ namespace BizHawk.Bizware.DirectX
 
 		// ********************************** Instance Members **********************************
 
-		private readonly Joystick _joystick;
-		private JoystickState _state = new JoystickState();
+		private readonly IDirectInputDevice8 _joystick;
+		private JoystickState _state = new();
 
-		private GamePad(Joystick joystick, int index)
+		private GamePad(IDirectInputDevice8 joystick, int index)
 		{
 			_joystick = joystick;
 			PlayerNumber = index + 1;
@@ -105,7 +105,7 @@ namespace BizHawk.Bizware.DirectX
 		{
 			try
 			{
-				if (_joystick.Acquire().IsFailure)
+				if (_joystick.Acquire().Failure)
 					return;
 			}
 			catch
@@ -114,15 +114,19 @@ namespace BizHawk.Bizware.DirectX
 			}
 
 			if (_joystick.Poll()
-				.IsFailure)
+				.Failure)
 			{
 				return;
 			}
 
-			_state = _joystick.GetCurrentState();
-			if (Result.Last.IsFailure)
+			try
+			{
+				_joystick.GetCurrentJoystickState(ref _state);
+			}
+			catch (SharpGen.Runtime.SharpGenException)
+			{
 				// do something?
-				return;
+			}
 		}
 
 		public IEnumerable<(string AxisID, float Value)> GetAxes()
@@ -130,7 +134,7 @@ namespace BizHawk.Bizware.DirectX
 			var pis = typeof(JoystickState).GetProperties();
 			foreach (var pi in pis)
 			{
-				yield return (pi.Name, 10.0f * (float)(int)pi.GetValue(_state, null));
+				yield return (pi.Name, 10.0f * (int)pi.GetValue(_state, null));
 			}
 		}
 
@@ -226,22 +230,22 @@ namespace BizHawk.Bizware.DirectX
 
 			// i don't know what the "Slider"s do, so they're omitted for the moment
 
-			for (int i = 0; i < _state.GetButtons().Length; i++)
+			for (var i = 0; i < _state.Buttons.Length; i++)
 			{
-				int j = i;
-				AddItem($"B{i + 1}", () => _state.IsPressed(j));
+				var j = i;
+				AddItem($"B{i + 1}", () => _state.Buttons[j]);
 			}
 
-			for (int i = 0; i < _state.GetPointOfViewControllers().Length; i++)
+			for (var i = 0; i < _state.PointOfViewControllers.Length; i++)
 			{
-				int j = i;
+				var j = i;
 				AddItem($"POV{i + 1}U", () => {
-					var t = _state.GetPointOfViewControllers()[j];
+					var t = _state.PointOfViewControllers[j];
 					return 0.RangeTo(4500).Contains(t) || 31500.RangeToExclusive(36000).Contains(t);
 				});
-				AddItem($"POV{i + 1}D", () => 13500.RangeTo(22500).Contains(_state.GetPointOfViewControllers()[j]));
-				AddItem($"POV{i + 1}L", () => 22500.RangeTo(31500).Contains(_state.GetPointOfViewControllers()[j]));
-				AddItem($"POV{i + 1}R", () => 4500.RangeTo(13500).Contains(_state.GetPointOfViewControllers()[j]));
+				AddItem($"POV{i + 1}D", () => 13500.RangeTo(22500).Contains(_state.PointOfViewControllers[j]));
+				AddItem($"POV{i + 1}L", () => 22500.RangeTo(31500).Contains(_state.PointOfViewControllers[j]));
+				AddItem($"POV{i + 1}R", () => 4500.RangeTo(13500).Contains(_state.PointOfViewControllers[j]));
 			}
 		}
 
@@ -252,18 +256,17 @@ namespace BizHawk.Bizware.DirectX
 			// I should just look for C++ examples instead of trying to look for SlimDX examples
 
 			var parameters = new EffectParameters
-				{
-					Duration = 0x2710,
-					Gain = 0x2710,
-					SamplePeriod = 0,
-					TriggerButton = 0,
-					TriggerRepeatInterval = 0x2710,
-					Flags = EffectFlags.None
-				};
+			{
+				Duration = 0x2710,
+				Gain = 0x2710,
+				SamplePeriod = 0,
+				TriggerButton = 0,
+				TriggerRepeatInterval = 0x2710,
+				Flags = EffectFlags.None
+			};
 			parameters.GetAxes(out var temp1, out var temp2);
 			parameters.SetAxes(temp1, temp2);
-			var effect = new Effect(_joystick, EffectGuid.ConstantForce);
-			effect.SetParameters(parameters);
+			var effect = _joystick.CreateEffect(EffectGuid.ConstantForce, parameters);
 			effect.Start(1);
 		}
 	}

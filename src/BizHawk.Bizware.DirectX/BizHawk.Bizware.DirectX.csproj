@@ -8,8 +8,10 @@
 		<Nullable>disable</Nullable>
 	</PropertyGroup>
 	<ItemGroup>
+		<PackageReference Include="Vortice.DirectInput" Version="2.4.2" />
 		<PackageReference Include="Vortice.MediaFoundation" Version="2.4.2" />
 		<PackageReference Include="Vortice.XAudio2" Version="2.4.2" />
+		<PackageReference Include="Vortice.XInput" Version="2.4.2" />
 	</ItemGroup>
 	<ItemGroup>
 		<Reference Include="System.Windows.Forms" />
