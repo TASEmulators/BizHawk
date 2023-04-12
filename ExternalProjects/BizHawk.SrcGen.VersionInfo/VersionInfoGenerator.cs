@@ -17,7 +17,9 @@ public class VersionInfoGenerator : ISourceGenerator
 	{
 		var startInfo = new ProcessStartInfo("git", arguments)
 		{
-			RedirectStandardOutput = true
+			RedirectStandardOutput = true,
+			CreateNoWindow = true,
+			UseShellExecute = false // this is just required for visual studio (:
 		};
 		try
 		{
