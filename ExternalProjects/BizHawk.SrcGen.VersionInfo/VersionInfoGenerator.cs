@@ -44,9 +44,9 @@ public class VersionInfoGenerator : ISourceGenerator
 		// FIXME: This should probably be done in a better way, but I haven't found any
 		string projectDir = Path.GetDirectoryName(context.Compilation.SyntaxTrees.First(x => x.HasCompilationUnitRoot && x.FilePath.Contains("BizHawk.Common")).FilePath)!;
 
-		string? rev = ExecuteGitWithArguments($"-C {projectDir} rev-list HEAD --count");
-		string? branch = ExecuteGitWithArguments($"-C {projectDir} rev-parse --abbrev-ref HEAD");
-		string? shortHash = ExecuteGitWithArguments($"-C {projectDir} log -1 --format=\"%h\"");
+		var rev = ExecuteGitWithArguments($"-C {projectDir} rev-list HEAD --count") ?? string.Empty;
+		var branch = ExecuteGitWithArguments($"-C {projectDir} rev-parse --abbrev-ref HEAD") ?? "master";
+		var shortHash = ExecuteGitWithArguments($"-C {projectDir} log -1 --format=\"%h\"") ?? "000000000";
 
 		// Generated source code
 		string source = $@"namespace BizHawk.Common
