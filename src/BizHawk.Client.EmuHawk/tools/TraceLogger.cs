@@ -22,7 +22,10 @@ namespace BizHawk.Client.EmuHawk
 			FilesystemFilter.TextFiles);
 
 		[RequiredService]
-		private ITraceable Tracer { get; set; }
+		public ITraceable _tracerCore { get; set; }
+
+		private ITraceable Tracer
+			=> _tracerCore!;
 
 		[ConfigPersist]
 		private int MaxLines { get; set; }
@@ -82,11 +85,7 @@ namespace BizHawk.Client.EmuHawk
 			Closing += (o, e) =>
 			{
 				SaveConfigSettings();
-				if (Tracer != null)
-				{
-					Tracer.Sink = null;
-				}
-
+				Tracer.Sink = null;
 				CloseFile();
 			};
 

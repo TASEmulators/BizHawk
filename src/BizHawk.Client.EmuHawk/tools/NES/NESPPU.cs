@@ -29,9 +29,16 @@ namespace BizHawk.Client.EmuHawk
 		private bool _forceChange;
 
 		[RequiredService]
-		private INESPPUViewable _ppu { get; set; }
+		public INESPPUViewable _nesCore { get; set; }
+
+		private INESPPUViewable _ppu
+			=> _nesCore!;
+
 		[RequiredService]
-		private IEmulator _emu { get; set; }
+		public IEmulator _core { get; set; }
+
+		private IEmulator _emu
+			=> _core!;
 
 		[ConfigPersist]
 		private int RefreshRateConfig
@@ -792,9 +799,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void NesPPU_FormClosed(object sender, FormClosedEventArgs e)
-		{
-			_ppu?.RemoveCallback2();
-		}
+			=> _ppu.RemoveCallback2();
 
 		private MemoryDomain _chrRom;
 		private readonly byte[] _chrRomCache = new byte[8192];

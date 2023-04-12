@@ -18,9 +18,16 @@ namespace BizHawk.Client.EmuHawk
 			=> Properties.Resources.NesControllerIcon;
 
 		[RequiredService]
-		private INESPPUViewable _ppu { get; set; }
+		public INESPPUViewable _nesCore { get; set; }
+
+		private INESPPUViewable _ppu
+			=> _nesCore!;
+
 		[RequiredService]
-		private IEmulator _emu { get; set; }
+		public IEmulator _core { get; set; }
+
+		private IEmulator _emu
+			=> _core!;
 
 		[ConfigPersist]
 		private int RefreshRateConfig
@@ -221,9 +228,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void NESNameTableViewer_FormClosed(object sender, FormClosedEventArgs e)
-		{
-			_ppu?.RemoveCallback1();
-		}
+			=> _ppu.RemoveCallback1();
 
 		private void ScanlineTextBox_TextChanged(object sender, EventArgs e)
 		{

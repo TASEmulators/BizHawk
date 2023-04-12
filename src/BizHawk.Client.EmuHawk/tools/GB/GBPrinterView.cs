@@ -22,7 +22,10 @@ namespace BizHawk.Client.EmuHawk
 		private readonly ColorMatrix _paperAdjustment;
 
 		[RequiredService]
-		public IGameboyCommon Gb { get; private set; }
+		public IGameboyCommon/*?*/ _gbCore { get; set; }
+
+		private IGameboyCommon Gb
+			=> _gbCore!;
 
 		[RequiredService]
 		public IEmulator Emulator { get; set; }
@@ -57,9 +60,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void GBPrinterView_FormClosed(object sender, FormClosedEventArgs e)
-		{
-			Gb?.SetPrinterCallback(null);
-		}
+			=> Gb.SetPrinterCallback(null);
 
 		public override void Restart()
 		{
