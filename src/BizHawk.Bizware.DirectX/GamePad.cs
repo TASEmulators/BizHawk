@@ -30,7 +30,7 @@ namespace BizHawk.Bizware.DirectX
 
 					var joystick = _directInput.CreateDevice(device.InstanceGuid);
 					joystick.SetCooperativeLevel(mainFormHandle, CooperativeLevel.Background | CooperativeLevel.NonExclusive);
-					joystick.SetDataFormat<JoystickUpdate>();
+					joystick.SetDataFormat<RawJoystickState>();
 					foreach (var deviceObject in joystick.GetObjects())
 					{
 						if ((deviceObject.ObjectId.Flags & DeviceObjectTypeFlags.Axis) != 0)
