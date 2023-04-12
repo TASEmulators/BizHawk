@@ -14,8 +14,6 @@
 		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />
 	</ItemGroup>
 	<ItemGroup>
-		<!-- target in Version project generates VersionInfo.gen.cs; note that the Version project MUST BE FIRST in solution file -->
-		<ProjectReference Include="$(ProjectDir)../BizHawk.Version/BizHawk.Version.csproj" ReferenceOutputAssembly="false" />
-		<Compile Update="VersionInfo.gen.cs" DependentUpon="VersionInfo.cs" />
+		<Analyzer Include="$(MSBuildProjectDirectory)/../../References/BizHawk.SrcGen.VersionInfo.dll" />
 	</ItemGroup>
 </Project>

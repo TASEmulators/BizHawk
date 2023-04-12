@@ -14,11 +14,6 @@ dotnet build ..\BizHawk.sln -c Release --no-incremental
 rem -p:Platform="Any CPU"
 rem -p:RunAnalyzersDuringBuild=true
 
-rem we have to do this twice right now
-dotnet build ..\BizHawk.sln -c Release
-
-@if errorlevel 1 goto DOTNETBUILDFAILED
-
 rmdir /s /q temp
 del /s %NAME%
 cd ..\output
@@ -27,7 +22,7 @@ rem slimdx has a way of not making it into the output directory, so this is a go
 copy ..\..\SlimDx.dll
 
 rem Now, we're about to zip and then unzip. Why, you ask? Because that's just the way this evolved.
-..\dist\zip.exe -X -r ..\Dist\%NAME% EmuHawk.exe EmuHawk.exe.config DiscoHawk.exe DiscoHawk.exe.config defctrl.json EmuHawkMono.sh dll Shaders gamedb Tools NES\Palettes Lua Gameboy\Palettes overlay -x *.pdb -x *.lib -x *.pgd -x *.ipdb -x *.iobj -x *.exp -x dll\libsneshawk-64*.exe -x *.ilk -x dll\gpgx.elf -x dll\miniclient.* 
+..\dist\zip.exe -X -r ..\Dist\%NAME% EmuHawk.exe EmuHawk.exe.config DiscoHawk.exe DiscoHawk.exe.config defctrl.json EmuHawkMono.sh dll Shaders gamedb Tools NES\Palettes Lua Gameboy\Palettes overlay -x *.pdb -x *.lib -x *.pgd -x *.ipdb -x *.iobj -x *.exp -x dll\libsneshawk-64*.exe -x *.ilk -x dll\gpgx.elf -x dll\miniclient.*
 
 cd ..\Dist
 .\unzip.exe %NAME% -d temp
@@ -81,4 +76,3 @@ goto END
 set ERRORLEVEL=1
 @echo missing git.exe. can't make distro without that.
 :END
-
