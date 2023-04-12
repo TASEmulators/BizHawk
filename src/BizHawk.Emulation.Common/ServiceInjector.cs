@@ -11,22 +11,6 @@ namespace BizHawk.Emulation.Common
 	public static class ServiceInjector
 	{
 		/// <summary>
-		/// clears all services from a target
-		/// </summary>
-		public static void ClearServices(object target)
-		{
-			Type targetType = target.GetType();
-			object?[] tmp = { null };
-
-			foreach (var propInfo in
-				targetType.GetPropertiesWithAttrib(typeof(RequiredServiceAttribute))
-				.Concat(targetType.GetPropertiesWithAttrib(typeof(OptionalServiceAttribute))))
-			{
-				propInfo.GetSetMethod(true).Invoke(target, tmp);
-			}
-		}
-
-		/// <summary>
 		/// Feeds the target its required services.
 		/// </summary>
 		/// <returns>false if update failed</returns>
