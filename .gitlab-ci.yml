@@ -99,9 +99,7 @@ check_style:
     when: always
     allow_failure: false
   script:
-  - cd src/BizHawk.Version
-  - dotnet build -c Release # configuration doesn't really matter as the assembly is empty
-  - ../../Dist/BuildRelease.sh -p:RunAnalyzersDuringBuild=true
+  - Dist/BuildRelease.sh -p:RunAnalyzersDuringBuild=true
   stage: test
 
 .disabled_job_infersharp:
