@@ -18,7 +18,10 @@ namespace BizHawk.Client.EmuHawk
 			=> Properties.Resources.GbaIcon.Value;
 
 		[RequiredService]
-		private IGBAGPUViewable GBA { get; set; }
+		public IGBAGPUViewable/*?*/ _gbaCore { get; set; }
+
+		private IGBAGPUViewable GBA
+			=> _gbaCore!;
 
 		// emulator memory areas
 		private IntPtr _vram;
@@ -797,9 +800,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void GbaGpuView_FormClosed(object sender, FormClosedEventArgs e)
-		{
-			GBA?.SetScanlineCallback(null, 0);
-		}
+			=> GBA.SetScanlineCallback(null, 0);
 
 		private void timerMessage_Tick(object sender, EventArgs e)
 		{
