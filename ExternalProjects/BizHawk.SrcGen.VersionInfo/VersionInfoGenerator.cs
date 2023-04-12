@@ -27,7 +27,11 @@ public class VersionInfoGenerator : ISourceGenerator
 		}
 		catch (Exception e)
 		{
+#if DEBUG
 			return $"{e.GetType()}: {e.Message}";
+#else
+			return null;
+#endif
 		}
 	}
 
@@ -43,8 +47,7 @@ public class VersionInfoGenerator : ISourceGenerator
 		string? shortHash = ExecuteGitWithArguments($"-C {projectDir} log -1 --format=\"%h\"");
 
 		// Generated source code
-		string source = $@"// This file (VersionInfo.g.cs) is auto-generated. Any edits will be overwritten before compilation.
-namespace BizHawk.Common
+		string source = $@"namespace BizHawk.Common
 {{
 	public static partial class VersionInfo
 	{{
