@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
 
@@ -47,7 +48,7 @@ namespace BizHawk.Bizware.DirectX
 
 					foreach (var deviceObject in joystick.GetObjects(DeviceObjectTypeFlags.Axis))
 					{
-						joystick.GetObjectPropertiesByName(dict.Values.First(odf => odf.Offset == deviceObject.Offset).Name!).Range = new(-1000, 1000);
+						joystick.GetObjectPropertiesByName(dict.Values.First(odf => odf.Guid == deviceObject.ObjectType).Name!).Range = new(-1000, 1000);
 					}
 #endif
 					joystick.Acquire();
@@ -141,13 +142,11 @@ namespace BizHawk.Bizware.DirectX
 			}
 		}
 
+		private static readonly ImmutableArray<PropertyInfo> _axesPropertyInfos = typeof(JoystickState).GetProperties().Where(pi => pi.PropertyType == typeof(int)).ToImmutableArray();
+
 		public IEnumerable<(string AxisID, float Value)> GetAxes()
 		{
-			var pis = typeof(JoystickState).GetProperties();
-			foreach (var pi in pis)
-			{
-				yield return (pi.Name, 10.0f * (int)pi.GetValue(_state, null));
-			}
+			return _axesPropertyInfos.Select(pi => (pi.Name, 10.0f * (int)pi.GetValue(_state)));
 		}
 
 		/// <summary>FOR DEBUGGING ONLY</summary>
@@ -172,8 +171,8 @@ namespace BizHawk.Bizware.DirectX
 
 		public int NumButtons { get; private set; }
 
-		private readonly List<string> _names = new List<string>();
-		private readonly List<Func<bool>> _actions = new List<Func<bool>>();
+		private readonly List<string> _names = new();
+		private readonly List<Func<bool>> _actions = new();
 
 		private void AddItem(string name, Func<bool> callback)
 		{
