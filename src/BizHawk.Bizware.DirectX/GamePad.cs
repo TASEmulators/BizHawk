@@ -35,13 +35,19 @@ namespace BizHawk.Bizware.DirectX
 					joystick.SetCooperativeLevel(mainFormHandle, CooperativeLevel.Background | CooperativeLevel.NonExclusive);
 					joystick.SetDataFormat<RawJoystickState>();
 #if false
+					// GetObjects returns localized names, so this doesn't actually work
 					foreach (var deviceObject in joystick.GetObjects(DeviceObjectTypeFlags.Axis))
 					{
 						joystick.GetObjectPropertiesByName(deviceObject.Name).Range = new(-1000, 1000);
 					}
+#elif false
+					// when https://github.com/amerkoleci/Vortice.Windows/issues/393 is fixed, this is what we should do
+					foreach (var deviceObject in joystick.GetObjects(DeviceObjectTypeFlags.Axis))
+					{
+						joystick.GetObjectPropertiesById(deviceObject.ObjectId).Range = new(-1000, 1000);
+					}
 #else
-					// using a hack due to GetObjectPropertiesByName needing a non-localized name and GetObjects returns localized names (FUCK YOU MICROSOFT)
-					// note that PropertyHowType.Byoffset is part of an internal enum, so can't use it directly
+					// hack due to the above problems
 					var dict = (Dictionary<string, ObjectDataFormat>)typeof(IDirectInputDevice8)
 						.GetField("_mapNameToObjectFormat", BindingFlags.Instance | BindingFlags.NonPublic)!
 						.GetValue(joystick);
