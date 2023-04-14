@@ -22,7 +22,7 @@ namespace BizHawk.Tests.Client.Common.cheats
 			public IEnumerable<object?[]> GetData(MethodInfo methodInfo)
 				=> GenerateNonsense ? NonsenseData : RealData;
 
-			public string GetDisplayName(MethodInfo methodInfo, object?[] data)
+			public string? GetDisplayName(MethodInfo methodInfo, object?[]? data)
 			{
 				static string Format(object? o) => o switch
 				{
@@ -31,7 +31,7 @@ namespace BizHawk.Tests.Client.Common.cheats
 					string s => $"\"{s}\"",
 					_ => o.ToString()!
 				};
-				return $"{methodInfo.Name}({string.Join(", ", data.Select(Format))})";
+				return data is null ? null : $"{methodInfo.Name}({string.Join(", ", data.Select(Format))})";
 			}
 		}
 
