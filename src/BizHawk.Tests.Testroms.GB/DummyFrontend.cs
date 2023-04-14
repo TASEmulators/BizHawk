@@ -198,7 +198,7 @@ namespace BizHawk.Tests.Testroms.GB
 			var (core, biosWaitDuration) = init(
 				efp,
 				_config,
-				new(Console.WriteLine, Console.WriteLine, efp, CoreComm.CorePreferencesFlags.None));
+				new(Console.WriteLine, (s, _) => Console.WriteLine(s), efp, CoreComm.CorePreferencesFlags.None));
 			Core = core;
 			_controller = new(Core.ControllerDefinition);
 			FrameAdvanceTo(biosWaitDuration);
