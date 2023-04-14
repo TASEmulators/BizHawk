@@ -100,7 +100,10 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 						setting.Options.Add(opt[0], opt[1]);
 					}
 
-					CurrentDriverSettings.Add(setting);
+					if (options.Any())
+					{
+						CurrentDriverSettings.Add(setting);
+					}
 				}
 			}
 		}
