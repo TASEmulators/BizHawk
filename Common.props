@@ -32,8 +32,8 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="DotNetAnalyzers.DocumentationAnalyzers" Version="1.0.0-beta.59" PrivateAssets="all" />
-		<PackageReference Include="Menees.Analyzers" Version="3.0.8" PrivateAssets="all" />
-		<PackageReference Include="Meziantou.Analyzer" Version="1.0.707" PrivateAssets="all" />
+		<PackageReference Include="Menees.Analyzers" Version="3.0.10" PrivateAssets="all" />
+		<PackageReference Include="Meziantou.Analyzer" Version="2.0.33" PrivateAssets="all" />
 		<PackageReference Include="Nullable" Version="1.3.1" PrivateAssets="all" />
 		<PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.435" PrivateAssets="all" /><!-- don't forget to update .stylecop.json at the same time -->
 		<Analyzer Include="$(MSBuildProjectDirectory)/../../References/BizHawk.Analyzer.dll" />
@@ -43,7 +43,7 @@
 		<GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
 	</PropertyGroup>
 	<ItemGroup Condition=" $(IsTargetingNetFramework) ">
-		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
-		<PackageReference Include="System.Resources.Extensions" Version="5.0.0" />
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+		<PackageReference Include="System.Resources.Extensions" Version="7.0.0" PrivateAssets="all" />
 	</ItemGroup>
 </Project>

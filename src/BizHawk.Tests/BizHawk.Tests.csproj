@@ -11,10 +11,10 @@
 		<OutputPath>$(ProjectDir)../../test_output</OutputPath>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" PrivateAssets="all" />
-		<PackageReference Include="MSTest.TestAdapter" Version="2.2.8" PrivateAssets="all" />
-		<PackageReference Include="MSTest.TestFramework" Version="2.2.8" PrivateAssets="all" />
-		<PackageReference Include="JunitXml.TestLogger" Version="3.0.98" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" PrivateAssets="all" />
+		<PackageReference Include="MSTest.TestAdapter" Version="3.0.2" PrivateAssets="all" />
+		<PackageReference Include="MSTest.TestFramework" Version="3.0.2" PrivateAssets="all" />
+		<PackageReference Include="JunitXml.TestLogger" Version="3.0.124" PrivateAssets="all" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Client.Common/BizHawk.Client.Common.csproj" />
 		<Reference Include="NLua, Version=1.4.1.0, Culture=neutral, PublicKeyToken=null, processorArchitecture=MSIL" SpecificVersion="false" HintPath="$(ProjectDir)../../References/NLua.dll" Private="true" />
 		<None Include="$(ProjectDir)../../Assets/dll/lua54.dll" CopyToOutputDirectory="PreserveNewest" />
