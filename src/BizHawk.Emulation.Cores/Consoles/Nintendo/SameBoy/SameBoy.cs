@@ -102,7 +102,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			_stateBuf = new byte[LibSameboy.sameboy_statelen(SameboyState)];
 		}
 
-		private Sameboy(CoreComm comm, GameInfo game, byte[] file, SameboySettings settings, SameboySyncSettings syncSettings, bool deterministic)
+		public Sameboy(
+			CoreComm comm,
+			GameInfo game,
+			byte[] file,
+			SameboySettings settings,
+			SameboySyncSettings syncSettings,
+			bool deterministic)
 		{
 			_serviceProvider = new BasicServiceProvider(this);
 
