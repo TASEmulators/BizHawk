@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			_stateBuf = new byte[LibSameboy.sameboy_statelen(SameboyState)];
 		}
 
-		public Sameboy(
+		private Sameboy(
 			CoreComm comm,
 			GameInfo game,
 			byte[] file,
