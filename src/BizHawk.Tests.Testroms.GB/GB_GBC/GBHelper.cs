@@ -50,6 +50,29 @@ namespace BizHawk.Tests.Testroms.GB
 				=> $"{Variant} in {CoreName}{(UseBIOS ? string.Empty : " (no BIOS)")}";
 		}
 
+		public readonly struct DummyRomAsset : IRomAsset
+		{
+			private readonly byte[] _fileData;
+
+			public string? Extension
+				=> throw new NotImplementedException();
+
+			public byte[]? FileData
+				=> _fileData;
+
+			public GameInfo? Game
+				=> throw new NotImplementedException();
+
+			public byte[]? RomData
+				=> throw new NotImplementedException();
+
+			public string? RomPath
+				=> throw new NotImplementedException();
+
+			public DummyRomAsset(byte[] fileData)
+				=> _fileData = fileData;
+		}
+
 		private static readonly GambatteSettings GambatteSettings = new() { CGBColors = GBColors.ColorType.vivid };
 
 		private static readonly GambatteSyncSettings GambatteSyncSettings_GB_NOBIOS = new() { ConsoleMode = GambatteSyncSettings.ConsoleModeType.GB, EnableBIOS = false, FrameLength = GambatteSyncSettings.FrameLengthType.EqualLengthFrames };
@@ -167,7 +190,15 @@ namespace BizHawk.Tests.Testroms.GB
 				{
 					CoreNames.Gambatte => new Gameboy(coreComm, game, rom, GambatteSettings, GetGambatteSyncSettings(setup.Variant, setup.UseBIOS), deterministic: true),
 					CoreNames.GbHawk => new GBHawk(coreComm, game, rom, new(), GetGBHawkSyncSettings(setup.Variant)),
-					CoreNames.Sameboy => new Sameboy(coreComm, game, rom, SameBoySettings, GetSameBoySyncSettings(setup.Variant, setup.UseBIOS), deterministic: true),
+					CoreNames.Sameboy => new Sameboy(new CoreLoadParameters<SameboySettings, SameboySyncSettings>
+					{
+						Comm = coreComm,
+						DeterministicEmulationRequested = true,
+						Game = game,
+						Roms = { new DummyRomAsset(rom) },
+						Settings = SameBoySettings,
+						SyncSettings = GetSameBoySyncSettings(setup.Variant, setup.UseBIOS),
+					}),
 					_ => throw new InvalidOperationException("unknown GB core")
 				};
 				var biosWaitDuration = setup.UseBIOS || setup.CoreName is CoreNames.Sameboy
