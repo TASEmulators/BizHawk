@@ -27,14 +27,17 @@ public class VersionInfoGenerator : ISourceGenerator
 			git.WaitForExit();
 			return git.StandardOutput.ReadLine();
 		}
+#if DEBUG
 		catch (Exception e)
 		{
-#if DEBUG
 			return $"{e.GetType()}: {e.Message}";
-#else
-			return null;
-#endif
 		}
+#else
+		catch (Exception)
+		{
+			return null;
+		}
+#endif
 	}
 
 	public void Execute(GeneratorExecutionContext context)
