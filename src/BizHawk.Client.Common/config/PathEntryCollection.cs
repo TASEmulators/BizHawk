@@ -127,7 +127,7 @@ namespace BizHawk.Client.Common
 
 		private PathEntry TryGetDebugPath(string system, string type)
 		{
-			if (Paths.Any(p => p.IsSystem(system)))
+			if (Paths.Exists(p => p.IsSystem(system)))
 			{
 				// we have the system, but not the type.  don't attempt to add an unknown type
 				return null;
@@ -144,7 +144,7 @@ namespace BizHawk.Client.Common
 			// Add missing entries
 			foreach (var defaultPath in Defaults.Value)
 			{
-				if (!Paths.Any(p => p.System == defaultPath.System && p.Type == defaultPath.Type)) Paths.Add(defaultPath);
+				if (!Paths.Exists(p => p.System == defaultPath.System && p.Type == defaultPath.Type)) Paths.Add(defaultPath);
 			}
 
 			var entriesToRemove = new List<PathEntry>();

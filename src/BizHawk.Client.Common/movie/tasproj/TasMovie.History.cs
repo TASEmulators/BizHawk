@@ -199,13 +199,7 @@ namespace BizHawk.Client.Common
 			UndoIndex--;
 
 			_recordingBatch = false;
-
-			if (batch.All(a => a.GetType() == typeof(MovieActionMarker)))
-			{
-				return _movie.InputLogLength;
-			}
-
-			return PreviousUndoFrame;
+			return batch.TrueForAll(static a => a is MovieActionMarker) ? _movie.InputLogLength : PreviousUndoFrame;
 		}
 
 		/// <summary>
@@ -227,13 +221,7 @@ namespace BizHawk.Client.Common
 			}
 
 			_recordingBatch = false;
-
-			if (batch.All(a => a.GetType() == typeof(MovieActionMarker)))
-			{
-				return _movie.InputLogLength;
-			}
-
-			return PreviousRedoFrame;
+			return batch.TrueForAll(static a => a is MovieActionMarker) ? _movie.InputLogLength : PreviousRedoFrame;
 		}
 
 		public bool CanUndo => UndoIndex > -1;
@@ -511,7 +499,7 @@ namespace BizHawk.Client.Common
 		}
 	}
 
-	public class MovieActionMarker : IMovieAction
+	public sealed class MovieActionMarker : IMovieAction
 	{
 		public int FirstFrame { get; }
 		public int LastFrame { get; }

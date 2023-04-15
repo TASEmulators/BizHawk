@@ -161,7 +161,7 @@ namespace BizHawk.Client.EmuHawk
 					.Select(tuple => tuple.SysID)
 					.Distinct().ToList();
 				releasedCoreSysIDs.Add(VSystemID.Raw.Libretro); // core not actually marked as released, but we still want to show it
-				systems.RemoveAll(tuple => !releasedCoreSysIDs.Any(sysID => PathEntryCollection.InGroup(sysID, tuple.SysGroup)));
+				systems.RemoveAll(tuple => !releasedCoreSysIDs.Exists(sysID => PathEntryCollection.InGroup(sysID, tuple.SysGroup)));
 			}
 			foreach (var (sys, dispName) in systems) AddTabPageForSystem(sys, dispName);
 

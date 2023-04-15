@@ -139,11 +139,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RamSearch_Load(object sender, EventArgs e)
 		{
-			// Hack for previous config settings
-			if (Settings.Columns.Any(c => string.IsNullOrWhiteSpace(c.Text)))
-			{
-				Settings = new RamSearchSettings();
-			}
+			if (Settings.Columns.Exists(static c => string.IsNullOrWhiteSpace(c.Text))) Settings = new(); //HACK for previous config settings
 
 			RamSearchMenu.Items.Add(WatchListView.ToColumnsMenu(ColumnToggleCallback));
 

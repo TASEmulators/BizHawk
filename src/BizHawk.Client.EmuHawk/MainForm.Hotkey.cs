@@ -310,7 +310,7 @@ namespace BizHawk.Client.EmuHawk
 					var cheats = CheatList.Where(static c => !c.IsSeparator).ToList();
 					if (cheats.Count is 0) break;
 					var firstWasEnabled = cheats[0].Enabled;
-					var kind = cheats.All(c => c.Enabled == firstWasEnabled)
+					var kind = cheats.TrueForAll(c => c.Enabled == firstWasEnabled)
 						? firstWasEnabled
 							? "off"
 							: "on"

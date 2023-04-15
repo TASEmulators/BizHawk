@@ -78,7 +78,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Functions.Add(new FunctionInfo(method, service));
 				}
-				Complete = Functions.All(f => f.Complete);
+				Complete = Functions.TrueForAll(static f => f.Complete);
 			}
 		}
 

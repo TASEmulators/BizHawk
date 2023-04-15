@@ -173,22 +173,15 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Watches.Count > 1)
 			{
-				// Aggregate state
-				var hasBig = Watches.Any(x => x.BigEndian);
-				var hasLittle = Watches.Any(x => x.BigEndian == false);
-
-				if (hasBig && hasLittle)
+				var firstWasBE = Watches[0].BigEndian;
+				if (Watches.TrueForAll(w => w.BigEndian == firstWasBE))
 				{
-					BigEndianCheckBox.Checked = true;
-					BigEndianCheckBox.CheckState = CheckState.Indeterminate;
-				}
-				else if (hasBig)
-				{
-					BigEndianCheckBox.Checked = true;
+					BigEndianCheckBox.Checked = firstWasBE;
 				}
 				else
 				{
-					BigEndianCheckBox.Checked = false;
+					BigEndianCheckBox.Checked = true;
+					BigEndianCheckBox.CheckState = CheckState.Indeterminate;
 				}
 			}
 			else if (Watches.Count == 1)
