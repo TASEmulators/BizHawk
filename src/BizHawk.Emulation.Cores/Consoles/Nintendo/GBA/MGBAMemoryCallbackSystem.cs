@@ -29,21 +29,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public string[] AvailableScopes { get; } = { "System Bus" };
 		public bool ExecuteCallbacksAvailable => true;
 
-		public bool HasReads => _callbacks.Any(c => c.Callback.Type == MemoryCallbackType.Read);
-		public bool HasWrites => _callbacks.Any(c => c.Callback.Type == MemoryCallbackType.Write);
-		public bool HasExecutes => _callbacks.Any(c => c.Callback.Type == MemoryCallbackType.Execute);
+		public bool HasReads
+			=> _callbacks.Exists(static c => c.Callback.Type is MemoryCallbackType.Read);
 
-		public bool HasReadsForScope(string scope) =>
-			_callbacks.Any(c => c.Callback.Scope == scope
-				&& c.Callback.Type == MemoryCallbackType.Read);
+		public bool HasWrites
+			=> _callbacks.Exists(static c => c.Callback.Type is MemoryCallbackType.Write);
 
-		public bool HasWritesForScope(string scope) =>
-			_callbacks.Any(c => c.Callback.Scope == scope
-				&& c.Callback.Type == MemoryCallbackType.Write);
+		public bool HasExecutes
+			=> _callbacks.Exists(static c => c.Callback.Type is MemoryCallbackType.Execute);
 
-		public bool HasExecutesForScope(string scope) =>
-			_callbacks.Any(c => c.Callback.Scope == scope
-				&& c.Callback.Type == MemoryCallbackType.Execute);
+		public bool HasReadsForScope(string scope)
+			=> _callbacks.Exists(c => c.Callback.Type is MemoryCallbackType.Read && c.Callback.Scope == scope);
+
+		public bool HasWritesForScope(string scope)
+			=> _callbacks.Exists(c => c.Callback.Type is MemoryCallbackType.Write && c.Callback.Scope == scope);
+
+		public bool HasExecutesForScope(string scope)
+			=> _callbacks.Exists(c => c.Callback.Type is MemoryCallbackType.Execute && c.Callback.Scope == scope);
 
 		public void Add(IMemoryCallback callback)
 		{

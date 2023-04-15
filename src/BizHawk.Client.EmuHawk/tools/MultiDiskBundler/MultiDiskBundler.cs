@@ -211,10 +211,7 @@ namespace BizHawk.Client.EmuHawk
 						throw new Exception("Xml Filename can not be blank");
 					}
 
-					if (names.Any(string.IsNullOrWhiteSpace))
-					{
-						throw new Exception("Rom Names can not be blank");
-					}
+					if (names.Exists(string.IsNullOrWhiteSpace)) throw new Exception("Rom Names can not be blank");
 
 					var system = SystemDropDown.SelectedItem?.ToString();
 

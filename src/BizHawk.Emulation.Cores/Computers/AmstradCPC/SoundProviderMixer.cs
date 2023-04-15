@@ -142,8 +142,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 
 			// are all the sample lengths the same?
-			var firstEntry = SoundProviders[0];
-			bool sameCount = SoundProviders.All(s => s.NSamp == firstEntry.NSamp);
+			var firstEntry = SoundProviders[0].NSamp;
+			var sameCount = SoundProviders.TrueForAll(s => s.NSamp == firstEntry);
 
 			if (!sameCount)
 			{

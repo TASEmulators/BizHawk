@@ -234,9 +234,7 @@ namespace BizHawk.DATTool
 			{
 				"alpha", "beta", "preview", "pre-release", "proto"
 			};
-
-			bool b = DS.Any(s.Contains);
-			return b;
+			return DS.Exists(s.Contains);
 		}
 
 		public static bool IsCopyrightStatus(string s)
@@ -245,9 +243,7 @@ namespace BizHawk.DATTool
 			{
 				"CW", "CW-R", "FW", "GW", "GW-R", "LW", "PD", "SW", "SW-R"
 			};
-
-			bool b = CS.Any(s.Contains);
-			return b;
+			return CS.Exists(s.Contains);
 		}
 
 		public static bool IsLanguageFlag(string s)
@@ -270,7 +266,7 @@ namespace BizHawk.DATTool
 					}
 				}
 
-				//b = LC.Any(s.Contains);
+//				b = LC.Exists(s.Contains);
 			}
 
 			return b;
@@ -297,7 +293,7 @@ namespace BizHawk.DATTool
 					}
 				}
 
-				//b = CC.Any(s.Contains);
+//				b = CC.Exists(s.Contains);
 			}
 
 			return b;

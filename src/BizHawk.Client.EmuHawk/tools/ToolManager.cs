@@ -465,14 +465,12 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		/// <typeparam name="T">Type of tool to check</typeparam>
 		public bool Has<T>() where T : IToolForm
-		{
-			return _tools.Any(t => t is T && t.IsActive);
-		}
+			=> _tools.Exists(static t => t is T && t.IsActive);
 
 		/// <returns><see langword="true"/> iff a tool of the given <paramref name="toolType"/> is <see cref="IToolForm.IsActive">active</see></returns>
 		public bool Has(Type toolType)
 			=> typeof(IToolForm).IsAssignableFrom(toolType)
-				&& _tools.Any(t => toolType.IsInstanceOfType(t) && t.IsActive);
+				&& _tools.Exists(t => toolType.IsInstanceOfType(t) && t.IsActive);
 
 		/// <summary>
 		/// Gets the instance of T, or creates and returns a new instance

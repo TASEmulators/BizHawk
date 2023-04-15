@@ -33,7 +33,7 @@ namespace BizHawk.SrcGen.ReflectionCache
 				// black magic wizardry to find common prefix https://stackoverflow.com/a/35081977
 				var ns = new string(_namespaces[0]
 					.Substring(0, _namespaces.Min(s => s.Length))
-					.TakeWhile((c, i) => _namespaces.All(s => s[i] == c))
+					.TakeWhile((c, i) => _namespaces.TrueForAll(s => s[i] == c))
 					.ToArray());
 				return ns[ns.Length - 1] == '.' ? ns.Substring(0, ns.Length - 1) : ns; // trim trailing '.' (can't use BizHawk.Common from Source Generators)
 			}

@@ -157,11 +157,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LuaConsole_Load(object sender, EventArgs e)
 		{
-			// Hack for previous config settings
-			if (Settings.Columns.Any(c => c.Text == null))
-			{
-				Settings = new LuaConsoleSettings();
-			}
+			if (Settings.Columns.Exists(static c => c.Text is null)) Settings = new(); //HACK for previous config settings
 
 			if (Config.RecentLuaSession.AutoLoad && !Config.RecentLuaSession.Empty)
 			{
