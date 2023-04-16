@@ -31,13 +31,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			this._romPath = Path.ChangeExtension(loadParameters.Roms[0].RomPath, null);
 			CoreComm = loadParameters.Comm;
 			_syncSettings = loadParameters.SyncSettings ?? new SnesSyncSettings();
-			SystemId = loadParameters.Game.System;
-			_isSGB = SystemId == VSystemID.Raw.SGB;
+			_isSGB = loadParameters.Game.System is VSystemID.Raw.GB or VSystemID.Raw.GBC;
+			SystemId = _isSGB ? VSystemID.Raw.SGB : loadParameters.Game.System;
 			_currentMsuTrack = new ProxiedFile();
 
 			byte[] sgbRomData = null;
 			if (_isSGB)
 			{
+				SystemId = VSystemID.Raw.SGB;
 				if ((loadParameters.Roms[0].RomData[0x143] & 0xc0) == 0xc0)
 				{
 					throw new CGBNotSupportedException();

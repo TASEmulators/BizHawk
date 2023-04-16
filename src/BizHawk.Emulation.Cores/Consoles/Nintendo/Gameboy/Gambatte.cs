@@ -22,8 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		[CoreConstructor(VSystemID.Raw.GB)]
 		[CoreConstructor(VSystemID.Raw.GBC)]
-		[CoreConstructor(VSystemID.Raw.SGB)]
-		public Gameboy(CoreComm comm, IGameInfo game, byte[] file, GambatteSettings settings, GambatteSyncSettings syncSettings, bool deterministic)
+		public Gameboy(CoreComm comm, GameInfo game, byte[] file, GambatteSettings settings, GambatteSyncSettings syncSettings, bool deterministic)
 		{
 			_serviceProvider = new(this);
 			_serviceProvider.Register<IDisassemblable>(_disassembler);
