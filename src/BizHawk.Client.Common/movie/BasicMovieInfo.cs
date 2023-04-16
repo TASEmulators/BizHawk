@@ -161,7 +161,12 @@ namespace BizHawk.Client.Common
 				if (bl is null) return false;
 				ClearBeforeLoad();
 				LoadFields(bl);
-				LoadFramecount(bl);
+				if (FrameCount == 0)
+				{
+					// only iterate the input log if it hasn't been loaded already
+					LoadFramecount(bl);
+				}
+
 				return true;
 			}
 			catch (InvalidDataException e) when (e.StackTrace.Contains("ZipArchive.ReadEndOfCentralDirectory"))
