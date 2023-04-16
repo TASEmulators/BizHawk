@@ -1,91 +1,120 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Text;
+
+using BizHawk.BizInvoke;
 
 namespace BizHawk.Emulation.Cores.Arcades.MAME
 {
-	public static class LibMAME
+	public abstract class LibMAME
 	{
-		internal const string dll = "libmamearcade.dll"; // libmamearcade.dll libpacshd.dll
 		private const CallingConvention cc = CallingConvention.Cdecl;
 
 		// enums
-		public enum OutputChannel
+		public enum OutputChannel : int
 		{
 			ERROR, WARNING, INFO, DEBUG, VERBOSE, LOG, COUNT
 		}
 
-		public enum SaveError
-		{
-			NONE, NOT_FOUND, ILLEGAL_REGISTRATIONS, INVALID_HEADER, READ_ERROR, WRITE_ERROR, DISABLED
-		}
-
 		// constants
-		public const int ROMENTRYTYPE_SYSTEM_BIOS = 9;
-		public const int ROMENTRYTYPE_DEFAULT_BIOS = 10;
+		public const int ROMENTRYTYPE_SYSTEM_BIOS = 8;
+		public const int ROMENTRYTYPE_DEFAULT_BIOS = 9;
 		public const int ROMENTRY_TYPEMASK = 15;
 		public const int BIOS_INDEX = 24;
 		public const int BIOS_FIRST = 1;
 		public const string BIOS_LUA_CODE = "bios";
 
 		// main launcher
-		[DllImport(dll, CallingConvention = cc)]
-		public static extern uint mame_launch(int argc, string[] argv);
+		[BizImport(cc, Compatibility = true)]
+		public abstract uint mame_launch(int argc, string[] argv);
 
-		[DllImport(dll, CallingConvention = cc)]
-		public static extern char mame_read_byte(uint address);
+		[BizImport(cc)]
+		public abstract bool mame_coswitch();
 
-		[DllImport(dll, CallingConvention = cc)]
-		public static extern SaveError mame_save_buffer(byte[] buf, out int length);
+		[BizImport(cc)]
+		public abstract byte mame_read_byte(uint address);
 
-		[DllImport(dll, CallingConvention = cc)]
-		public static extern SaveError mame_load_buffer(byte[] buf, int length);
+		[BizImport(cc)]
+		public abstract IntPtr mame_input_get_field_ptr(string tag, string field);
 
-		// execute
-		[DllImport(dll, CallingConvention = cc)]
-		public static extern void mame_lua_execute(string code);
+		[BizImport(cc)]
+		public abstract void mame_input_set_fields(IntPtr[] fields, int[] inputs, int length);
 
-		// get int
-		[DllImport(dll, CallingConvention = cc)]
-		public static extern int mame_lua_get_int(string code);
+		[BizImport(cc)]
+		public abstract int mame_sound_get_samples(short[] buffer);
 
-		// get double
-		[DllImport(dll, CallingConvention = cc)]
-		public static extern double mame_lua_get_double(string code);
+		[BizImport(cc)]
+		public abstract void mame_video_get_dimensions(out int width, out int height);
 
-		// get bool
-		[DllImport(dll, CallingConvention = cc)]
-		public static extern bool mame_lua_get_bool(string code);
+		[BizImport(cc)]
+		public abstract void mame_video_get_pixels(int[] buffer);
 
-		// get string
-		[DllImport(dll, CallingConvention = cc)]
-		public static extern IntPtr mame_lua_get_string(string code, out int length);
+		[UnmanagedFunctionPointer(cc)]
+		public delegate void FilenameCallbackDelegate(string name);
 
-		// free string
-		[DllImport(dll, CallingConvention = cc)]
-		public static extern bool mame_lua_free_string(IntPtr pointer);
+		[BizImport(cc)]
+		public abstract void mame_nvram_get_filenames(FilenameCallbackDelegate cb);
 
-		// periodic
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate void PeriodicCallbackDelegate();
-		[DllImport(dll, CallingConvention = cc)]
-		public static extern void mame_set_periodic_callback(PeriodicCallbackDelegate cb);
+		[BizImport(cc)]
+		public abstract void mame_nvram_save();
 
-		// sound
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate void SoundCallbackDelegate();
-		[DllImport(dll, CallingConvention = cc)]
-		public static extern void mame_set_sound_callback(SoundCallbackDelegate cb);
+		[BizImport(cc)]
+		public abstract void mame_nvram_load();
 
-		// boot
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate void BootCallbackDelegate();
-		[DllImport(dll, CallingConvention = cc)]
-		public static extern void mame_set_boot_callback(BootCallbackDelegate cb);
+		// info
+		[UnmanagedFunctionPointer(cc)]
+		public delegate void InfoCallbackDelegate(string info);
+
+		[BizImport(cc)]
+		public abstract void mame_info_get_warnings_string(InfoCallbackDelegate cb);
 
 		// log
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		[UnmanagedFunctionPointer(cc)]
 		public delegate void LogCallbackDelegate(OutputChannel channel, int size, string data);
-		[DllImport(dll, CallingConvention = cc)]
-		public static extern void mame_set_log_callback(LogCallbackDelegate cb);
+
+		[BizImport(cc)]
+		public abstract void mame_set_log_callback(LogCallbackDelegate cb);
+
+		// base time
+		[UnmanagedFunctionPointer(cc)]
+		public delegate long BaseTimeCallbackDelegate();
+
+		[BizImport(cc)]
+		public abstract void mame_set_base_time_callback(BaseTimeCallbackDelegate cb);
+
+		// input poll
+		[UnmanagedFunctionPointer(cc)]
+		public delegate void InputPollCallbackDelegate();
+
+		[BizImport(cc)]
+		public abstract void mame_set_input_poll_callback(InputPollCallbackDelegate cb);
+
+		// execute
+		[BizImport(cc)]
+		public abstract void mame_lua_execute(string code);
+
+		// get bool
+		[BizImport(cc)]
+		public abstract bool mame_lua_get_bool(string code);
+
+		// get int
+		[BizImport(cc)]
+		public abstract int mame_lua_get_int(string code);
+
+		// get long
+		[BizImport(cc)]
+		public abstract long mame_lua_get_long(string code);
+
+		// get double
+		[BizImport(cc)]
+		public abstract double mame_lua_get_double(string code);
+
+		// get string
+		[BizImport(cc)]
+		public abstract IntPtr mame_lua_get_string(string code, out int length);
+
+		// free string
+		[BizImport(cc)]
+		public abstract void mame_lua_free_string(IntPtr pointer);
 	}
 }

@@ -19,9 +19,9 @@ namespace BizHawk.Client.Common
 			["NES_PAL"] = 50.006977968268290849,
 			["FDS"] = 60.098813897440515532,
 			["FDS_PAL"] = 50.006977968268290849,
-			["SNES"] = 21477272.0 / (4 * 341 * 262), // 60.098475521
+			["SNES"] = 21477272.0 / (4 * 341 * 262 - 2), // 60.0988118623
 			["SNES_PAL"] = 21281370.0 / (4 * 341 * 312), // 50.0069789082
-			["SGB"] = 21477272.0 / (4 * 341 * 262), // 60.098475521
+			["SGB"] = 21477272.0 / (4 * 341 * 262 - 2), // 60.0988118623
 			["SGB_PAL"] = 21281370.0 / (4 * 341 * 312), // 50.0069789082
 			["PCE"] = 7159090.90909090 / 455 / 263, // 59.8261054535
 			["PCECD"] = 7159090.90909090 / 455 / 263, // 59.8261054535
@@ -42,6 +42,9 @@ namespace BizHawk.Client.Common
 			["NDS"] = 33513982.0 / 560190.0, // 59.8260982881
 			["GEN"] = 53693175 / (3420.0 * 262),
 			["GEN_PAL"] = 53203424 / (3420.0 * 313),
+
+			["Jaguar"] = 60,
+			["Jaguar_PAL"] = 50,
 
 			// while the number of scanlines per frame is software controlled and variable, we
 			// enforce exactly 262 (NTSC) 312 (PAL) per reference time frame
@@ -71,7 +74,9 @@ namespace BizHawk.Client.Common
 			["UZE"] = 60.016319939602,
 			["VEC"] = 50,
 			["O2"] = 60,
-			["O2_PAL"] = 50
+			["O2_PAL"] = 50,
+
+			["TIC80"] = 60,
 		};
 
 		public static double GetFrameRate(string systemId, bool pal)

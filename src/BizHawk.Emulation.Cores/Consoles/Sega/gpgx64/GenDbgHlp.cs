@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 	 * 3) support an ignore list of symbols
 	 */
 
-	public class GenDbgHlp : IDisposable
+	public sealed class GenDbgHlp : IDisposable
 	{
 		// config
 		private const string modulename = "libgenplusgx.dll";
@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public void SaveState(int statenum)
 		{
-			if (disposed) throw new ObjectDisposedException(this.GetType().ToString());
+			if (disposed) throw new ObjectDisposedException(nameof(GenDbgHlp));
 
 			data[statenum] ??= new byte[length];
 
@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public unsafe void Cmp(int statex, int statey)
 		{
-			if (disposed) throw new ObjectDisposedException(this.GetType().ToString());
+			if (disposed) throw new ObjectDisposedException(nameof(GenDbgHlp));
 			List<Tuple<int, int>> bads = new List<Tuple<int, int>>();
 
 			byte[] x = data[statex];
@@ -134,7 +134,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public List<Symbol> Find(IntPtr addr, int length)
 		{
-			if (disposed) throw new ObjectDisposedException(this.GetType().ToString());
+			if (disposed) throw new ObjectDisposedException(nameof(GenDbgHlp));
 			Symbol min = new Symbol { addr = addr };
 			Symbol max = new Symbol { addr = addr + length };
 

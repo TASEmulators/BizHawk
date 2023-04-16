@@ -26,6 +26,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			bool ret = GPGXSettings.NeedsReboot(_settings, o);
 			_settings = o;
 			Core.gpgx_set_draw_mask(_settings.GetDrawMask());
+			Core.gpgx_set_sprite_limit_enabled(!_settings.NoSpriteLimit);
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
@@ -182,18 +183,30 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				set => _PadScreen320 = value;
 			}
 
-
 			[DeepEqualsIgnore]
 			[JsonIgnore]
 			private bool _Backdrop;
 
 			[DisplayName("Use custom backdrop color")]
 			[Description("Filler when layers are off")]
-			[DefaultValue((bool)false)]
+			[DefaultValue(false)]
 			public bool Backdrop
 			{
 				get => _Backdrop;
 				set => _Backdrop = value;
+			}
+
+			[DeepEqualsIgnore]
+			[JsonIgnore]
+			private bool _noSpriteLimit;
+
+			[DisplayName("Remove Per-Line Sprite Limit")]
+			[Description("Removes the original sprite-per-scanline hardware limit")]
+			[DefaultValue(false)]
+			public bool NoSpriteLimit
+			{
+				get => _noSpriteLimit;
+				set => _noSpriteLimit = value;
 			}
 
 

@@ -10,6 +10,11 @@ protected:
   Memory::Writable& ram;
 };
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wgnu-case-range"
+
 #include "mbc1.hpp"
 #include "mbc3.hpp"
 #include "mbc5.hpp"
+
+#pragma clang diagnostic pop

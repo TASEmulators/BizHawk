@@ -4,15 +4,16 @@ namespace ares::Nintendo64 {
 
 CPU cpu;
 #include "context.cpp"
-#include "icache.cpp"
 #include "dcache.cpp"
 #include "tlb.cpp"
 #include "memory.cpp"
 #include "exceptions.cpp"
+#include "algorithms.cpp"
 #include "interpreter.cpp"
 #include "interpreter-ipu.cpp"
 #include "interpreter-scc.cpp"
 #include "interpreter-fpu.cpp"
+#include "interpreter-cop2.cpp"
 #include "recompiler.cpp"
 #include "debugger.cpp"
 #include "serialization.cpp"
@@ -45,10 +46,12 @@ auto CPU::synchronize() -> void {
    ai.clock -= clocks;
   rsp.clock -= clocks;
   rdp.clock -= clocks;
+  pif.clock -= clocks;
   while( vi.clock < 0)  vi.main();
   while( ai.clock < 0)  ai.main();
   while(rsp.clock < 0) rsp.main();
   while(rdp.clock < 0) rdp.main();
+  while(pif.clock < 0) pif.main();
 
   queue.step(clocks, [](u32 event) {
     switch(event) {
@@ -58,6 +61,12 @@ auto CPU::synchronize() -> void {
     case Queue::PI_BUS_Write:  return pi.writeFinished();
     case Queue::SI_DMA_Read:   return si.dmaRead();
     case Queue::SI_DMA_Write:  return si.dmaWrite();
+    case Queue::SI_BUS_Write:  return si.writeFinished();
+    case Queue::RTC_Tick:      return cartridge.rtc.tick();
+    case Queue::DD_Clock_Tick:  return dd.rtcTickClock();
+    case Queue::DD_MECHA_Response:  return dd.mechaResponse();
+    case Queue::DD_BM_Request:  return dd.bmRequest();
+    case Queue::DD_Motor_Mode:  return dd.motorChange();
     }
   });
 
@@ -76,16 +85,24 @@ auto CPU::instruction() -> void {
       return exception.interrupt();
     }
   }
+  if (scc.nmiPending) {
+    debugger.nmi();
+    step(1);
+    return exception.nmi();
+  }
 
   if constexpr(Accuracy::CPU::Recompiler) {
-    auto address = devirtualize(ipu.pc)(0);
-    auto block = recompiler.block(address);
-    block->execute(*this);
+    if (auto address = devirtualize(ipu.pc)) {
+      auto block = recompiler.block(*address);
+      block->execute(*this);
+    }
   }
 
   if constexpr(Accuracy::CPU::Interpreter) {
     pipeline.address = ipu.pc;
-    pipeline.instruction = fetch(ipu.pc);
+    auto data = fetch(ipu.pc);
+    if (!data) return;
+    pipeline.instruction = *data;
     debugger.instruction();
     decoderEXECUTE();
     instructionEpilogue();
@@ -133,12 +150,13 @@ auto CPU::power(bool reset) -> void {
   scc = {};
   for(auto& r : fpu.r) r.u64 = 0;
   fpu.csr = {};
-  fesetround(FE_TONEAREST);
+  cop2 = {};
+  fenv.setRound(float_env::toNearest);
   context.setMode();
 
   if constexpr(Accuracy::CPU::Recompiler) {
-    auto buffer = ares::Memory::FixedAllocator::get().tryAcquire(64_MiB);
-    recompiler.allocator.resize(64_MiB, bump_allocator::executable | bump_allocator::zero_fill, buffer);
+    auto buffer = ares::Memory::FixedAllocator::get().tryAcquire(4_MiB);
+    recompiler.allocator.resize(4_MiB, bump_allocator::executable | bump_allocator::zero_fill, buffer);
     recompiler.reset();
   }
 }

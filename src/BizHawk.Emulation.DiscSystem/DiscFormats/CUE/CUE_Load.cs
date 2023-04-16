@@ -20,7 +20,6 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
-
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.DiscSystem.CUE
@@ -72,19 +71,17 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		}
 
 		private List<BlobInfo> BlobInfos;
-		private readonly List<TrackInfo> TrackInfos = new List<TrackInfo>();
-
+		private readonly List<TrackInfo> TrackInfos = new();
 
 		private void MountBlobs()
 		{
-			IBlob file_blob = null;
-
-			BlobInfos = new List<BlobInfo>();
+			BlobInfos = new();
 			foreach (var ccf in IN_CompileJob.OUT_CompiledCueFiles)
 			{
 				var bi = new BlobInfo();
 				BlobInfos.Add(bi);
 
+				IBlob file_blob;
 				switch (ccf.Type)
 				{
 					case CompiledCueFileType.BIN:
@@ -118,8 +115,8 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 							{
 								throw new DiscReferenceException(ccf.FullPath, "No decoding service was available (make sure ffmpeg.exe is available. Even though this may be a wav, ffmpeg is used to load oddly formatted wave files. If you object to this, please send us a note and we'll see what we can do. It shouldn't be too hard.)");
 							}
-							AudioDecoder dec = new AudioDecoder();
-							byte[] buf = dec.AcquireWaveData(ccf.FullPath);
+							AudioDecoder dec = new();
+							var buf = dec.AcquireWaveData(ccf.FullPath);
 							var blob = new Blob_WaveFile();
 							OUT_Disc.DisposableResources.Add(file_blob = blob);
 							blob.Load(new MemoryStream(buf));
@@ -128,23 +125,20 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 						}
 					default:
 						throw new InvalidOperationException();
-				} //switch(file type)
+				}
 
 				//wrap all the blobs with zero padding
 				bi.Blob = new Blob_ZeroPadAdapter(file_blob, bi.Length);
 			}
 		}
 
-
 		private void AnalyzeTracks()
 		{
 			var compiledTracks = IN_CompileJob.OUT_CompiledCueTracks;
 
-			for(int t=0;t<compiledTracks.Count;t++)
+			foreach (var cct in compiledTracks)
 			{
-				var cct = compiledTracks[t];
-
-				TrackInfos.Add(new TrackInfo(cct));
+				TrackInfos.Add(new(cct));
 
 				//OH NO! CANT DO THIS!
 				//need to read sectors from file to reliably know its ending size.
@@ -158,11 +152,13 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			}
 		}
 
+		private DiscSession CurrentSession = new() { Number = 1 };
+
 		private void EmitRawTOCEntry(CompiledCueTrack cct)
 		{
 			SubchannelQ toc_sq = default;
 			//absent some kind of policy for how to set it, this is a safe assumption:
-			byte toc_ADR = 1;
+			const byte toc_ADR = 1;
 			toc_sq.SetStatus(toc_ADR, (EControlQ)(int)cct.Flags);
 			toc_sq.q_tno.BCDValue = 0; //kind of a little weird here.. the track number becomes the 'point' and put in the index instead. 0 is the track number here.
 			toc_sq.q_index = BCD2.FromDecimal(cct.Number);
@@ -171,20 +167,33 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			toc_sq.sec = BCD2.FromDecimal(0);
 			toc_sq.frame = BCD2.FromDecimal(0);
 			toc_sq.AP_Timestamp = OUT_Disc._Sectors.Count;
-			OUT_Disc.RawTOCEntries.Add(new RawTOCEntry { QData = toc_sq });
+			CurrentSession.RawTOCEntries.Add(new() { QData = toc_sq });
+		}
+
+		private void CloseSession()
+		{
+			//add RawTOCEntries A0 A1 A2 to round out the TOC
+			var sessionInfo = IN_CompileJob.OUT_CompiledSessionInfo[CurrentSession.Number];
+			var TOCMiscInfo = new Synthesize_A0A1A2_Job(
+				firstRecordedTrackNumber: sessionInfo.FirstRecordedTrackNumber,
+				lastRecordedTrackNumber: sessionInfo.LastRecordedTrackNumber,
+				sessionFormat: sessionInfo.SessionFormat,
+				leadoutTimestamp: OUT_Disc._Sectors.Count);
+
+			TOCMiscInfo.Run(CurrentSession.RawTOCEntries);
+			OUT_Disc.Sessions.Add(CurrentSession);
+			CurrentSession = null;
 		}
 
 		public override void Run()
 		{
 			//params
-			var compiled = IN_CompileJob;
-			var context = compiled.IN_CueContext;
-			OUT_Disc = new Disc();
+			var context = IN_CompileJob.IN_CueContext;
+			OUT_Disc = new();
 
 			//generation state
-			int curr_index;
-			int curr_blobIndex = -1;
-			int curr_blobMSF = -1;
+			var curr_blobIndex = -1;
+			var curr_blobMSF = -1;
 			BlobInfo curr_blobInfo = null;
 			long curr_blobOffset = -1;
 
@@ -197,20 +206,38 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 			//loop from track 1 to 99
 			//(track 0 isnt handled yet, that's way distant work)
-			for (int t = 1; t < TrackInfos.Count; t++)
+			for (var t = 1; t < TrackInfos.Count; t++)
 			{
-				TrackInfo ti = TrackInfos[t];
-				CompiledCueTrack cct = ti.CompiledCueTrack;
+				var ti = TrackInfos[t];
+				var cct = ti.CompiledCueTrack;
+
+				if (CurrentSession.Number != cct.Session)
+				{
+					if (cct.Session != CurrentSession.Number + 1)
+					{
+						// error in case a session isn't just incrementing
+						// maybe we can allow this, but that ends up being complicated here
+						// not like any actual rip is going to have nonsequential sessions
+						// edit: actually this is enforced parsing side, so this is probably silly here
+						throw new InvalidOperationException("Track session change was not incremental");
+					}
+
+					CloseSession();
+					CurrentSession = new()
+					{
+						Number = cct.Session
+					};
+				}
 
 				//---------------------------------
 				//setup track pregap processing
 				//per "Example 05" on digitalx.org, pregap can come from index specification and pregap command
-				int specifiedPregapLength = cct.PregapLength.Sector;
-				int impliedPregapLength = cct.Indexes[1].FileMSF.Sector - cct.Indexes[0].FileMSF.Sector;
-				int totalPregapLength = specifiedPregapLength + impliedPregapLength;
+				var specifiedPregapLength = cct.PregapLength.Sector;
+				var impliedPregapLength = cct.Indexes[1].FileMSF.Sector - cct.Indexes[0].FileMSF.Sector;
+				var totalPregapLength = specifiedPregapLength + impliedPregapLength;
 
 				//from now on we'll track relative timestamp and increment it continually
-				int relMSF = -totalPregapLength;
+				var relMSF = -totalPregapLength;
 
 				//read more at policies declaration
 				//if (!context.DiscMountPolicy.CUE_PauseContradictionModeA)
@@ -231,11 +258,11 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				}
 
 				//work until the next track is reached, or the end of the current file is reached, depending on the track type
-				curr_index = 0;
-				for (; ; )
+				var curr_index = 0;
+				while (true)
 				{
-					bool trackDone = false;
-					bool generateGap = false;
+					var trackDone = false;
+					var generateGap = false;
 
 					if (specifiedPregapLength > 0)
 					{
@@ -246,7 +273,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 					else
 					{
 						//if burning through the file, select the appropriate index by inspecting the next index and seeing if we've reached it
-						for (; ; )
+						while (true)
 						{
 							if (curr_index == cct.Indexes.Count - 1)
 								break;
@@ -265,8 +292,8 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 					//select the track type for the subQ
 					//it's obviously the same as the main track type usually, but during a pregap it can be different
-					TrackInfo qTrack = ti;
-					int qRelMSF = relMSF;
+					var qTrack = ti;
+					var qRelMSF = relMSF;
 					if (curr_index == 0)
 					{
 						//tweak relMSF due to ambiguity/contradiction in yellowbook docs
@@ -287,14 +314,14 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 					}
 
 					//generate the right kind of sector synth for this track
-					SS_Base ss = null;
+					SS_Base ss;
 					if (generateGap)
 					{
 						ss = new SS_Gap { TrackType = qTrack.CompiledCueTrack.TrackType };
 					}
 					else
 					{
-						int sectorSize = int.MaxValue;
+						int sectorSize;
 						switch (qTrack.CompiledCueTrack.TrackType)
 						{
 							case CueTrackType.Audio:
@@ -310,12 +337,17 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 								sectorSize = 2048;
 								break;
 
-							default:
+							case CueTrackType.CDI_2336:
 							case CueTrackType.Mode2_2336:
+								ss = new SS_Mode2_2336();
+								sectorSize = 2336;
+								break;
+
+							default:
 								throw new InvalidOperationException($"Not supported: {cct.TrackType}");
 						}
 
-						ss.Blob = curr_blobInfo.Blob;
+						ss.Blob = curr_blobInfo!.Blob;
 						ss.BlobOffset = curr_blobOffset;
 						curr_blobOffset += sectorSize;
 						curr_blobMSF++;
@@ -324,7 +356,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 					ss.Policy = context.DiscMountPolicy;
 
 					//setup subQ
-					byte ADR = 1; //absent some kind of policy for how to set it, this is a safe assumption:
+					const byte ADR = 1; //absent some kind of policy for how to set it, this is a safe assumption:
 					ss.sq.SetStatus(ADR, (EControlQ)(int)qTrack.CompiledCueTrack.Flags);
 					ss.sq.q_tno = BCD2.FromDecimal(cct.Number);
 					ss.sq.q_index = BCD2.FromDecimal(curr_index);
@@ -341,7 +373,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 					if (cct.IsFinalInFile)
 					{
 						//sometimes, break when the file is exhausted
-						if (curr_blobOffset >= curr_blobInfo.Length)
+						if (curr_blobOffset >= curr_blobInfo!.Length)
 							trackDone = true;
 					}
 					else
@@ -358,16 +390,16 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 				//---------------------------------
 				//gen postgap sectors
-				int specifiedPostgapLength = cct.PostgapLength.Sector;
-				for (int s = 0; s < specifiedPostgapLength; s++)
+				var specifiedPostgapLength = cct.PostgapLength.Sector;
+				for (var s = 0; s < specifiedPostgapLength; s++)
 				{
 					var ss = new SS_Gap
 					{
-						TrackType = cct.TrackType  // TODO - old track type in some < -150 cases?
+						TrackType = cct.TrackType // TODO - old track type in some < -150 cases?
 					};
 
 					//-subq-
-					byte ADR = 1;
+					const byte ADR = 1;
 					ss.sq.SetStatus(ADR, (EControlQ)(int)cct.Flags);
 					ss.sq.q_tno = BCD2.FromDecimal(cct.Number);
 					ss.sq.q_index = BCD2.FromDecimal(curr_index);
@@ -381,18 +413,9 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 					OUT_Disc._Sectors.Add(ss);
 					relMSF++;
 				}
+			}
 
-
-			} //end track loop
-
-
-			//add RawTOCEntries A0 A1 A2 to round out the TOC
-			var TOCMiscInfo = new Synthesize_A0A1A2_Job(
-				firstRecordedTrackNumber: IN_CompileJob.OUT_CompiledDiscInfo.FirstRecordedTrackNumber,
-				lastRecordedTrackNumber: IN_CompileJob.OUT_CompiledDiscInfo.LastRecordedTrackNumber,
-				session1Format: IN_CompileJob.OUT_CompiledDiscInfo.SessionFormat,
-				leadoutTimestamp: OUT_Disc._Sectors.Count);
-			TOCMiscInfo.Run(OUT_Disc.RawTOCEntries);
+			CloseSession();
 
 			//TODO - generate leadout, or delegates at least
 
@@ -400,8 +423,6 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			//OUT_Disc.Structure.Synthesize_TOCPointsFromSessions();
 
 			//FinishLog();
-
-		} //Run()
-	} //class LoadCueJob
-} //namespace BizHawk.Emulation.DiscSystem
-
+		}
+	}
+}

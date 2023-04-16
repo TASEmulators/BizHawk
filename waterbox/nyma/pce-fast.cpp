@@ -62,7 +62,7 @@ namespace MDFN_IEN_PCE_FAST
 uint8 HucReadVirtual(unsigned int A)
 {
 	uint8 wmpr = HuCPU.MPR[A >> 13];
-	return HuCPU.PCERead[wmpr]((wmpr << 13) | (A & 0x1FFF));
+	return HuCPU.FastMap[wmpr][A & 0x1FFF];
 }
 void HucWriteVirtual(unsigned int A, uint8 V)
 {
@@ -72,7 +72,7 @@ void HucWriteVirtual(unsigned int A, uint8 V)
 uint8 HucReadActual(unsigned int A)
 {
 	uint8 wmpr = A >> 13;
-	return HuCPU.PCERead[wmpr](A);
+	return HuCPU.FastMap[wmpr][A & 0x1FFF];
 }
 void HucWriteActual(unsigned int A, uint8 V)
 {

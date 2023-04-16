@@ -79,6 +79,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				LagCount++;
 			}
 
+			if (renderSound)
+			{
+				ProcessSoundEnd();
+			}
+
 			return true;
 		}
 
@@ -106,7 +111,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 
 			Api.Dispose();
-			_resampler.Dispose();
+			_blipL.Dispose();
+			_blipR.Dispose();
 
 			_disposed = true;
 		}

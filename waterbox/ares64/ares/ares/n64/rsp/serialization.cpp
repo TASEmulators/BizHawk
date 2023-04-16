@@ -27,15 +27,15 @@ auto RSP::serialize(serializer& s) -> void {
   s(branch.pc);
   s(branch.state);
 
-  for(auto& r : vpu.r) s(r.u128);
-  s(vpu.acch.u128);
-  s(vpu.accm.u128);
-  s(vpu.accl.u128);
-  s(vpu.vcoh.u128);
-  s(vpu.vcol.u128);
-  s(vpu.vcch.u128);
-  s(vpu.vccl.u128);
-  s(vpu.vce.u128);
+  for(auto& r : vpu.r) s(r);
+  s(vpu.acch);
+  s(vpu.accm);
+  s(vpu.accl);
+  s(vpu.vcoh);
+  s(vpu.vcol);
+  s(vpu.vcch);
+  s(vpu.vccl);
+  s(vpu.vce);
   s(vpu.divin);
   s(vpu.divout);
   s(vpu.divdp);
@@ -52,4 +52,9 @@ auto RSP::DMA::Regs::serialize(serializer& s) -> void {
   s(length);
   s(skip);
   s(count);
+}
+
+auto RSP::r128::serialize(serializer& s) -> void {
+  s(u128.lo);
+  s(u128.hi);
 }

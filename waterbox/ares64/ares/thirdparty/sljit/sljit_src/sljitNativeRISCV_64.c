@@ -28,6 +28,8 @@ static sljit_s32 load_immediate(struct sljit_compiler *compiler, sljit_s32 dst_r
 {
 	sljit_sw high;
 
+	SLJIT_ASSERT(dst_r != tmp_r);
+
 	if (imm <= SIMM_MAX && imm >= SIMM_MIN)
 		return push_inst(compiler, ADDI | RD(dst_r) | RS1(TMP_ZERO) | IMM_I(imm));
 
@@ -122,6 +124,25 @@ static sljit_s32 load_immediate(struct sljit_compiler *compiler, sljit_s32 dst_r
 
 	FAIL_IF(push_inst(compiler, SLLI | RD(tmp_r) | RS1(tmp_r) | IMM_I((high & 0x1000) ? 20 : 32)));
 	return push_inst(compiler, XOR | RD(dst_r) | RS1(dst_r) | RS2(tmp_r));
+}
+
+SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_fcopy(struct sljit_compiler *compiler, sljit_s32 op,
+	sljit_s32 freg, sljit_s32 reg)
+{
+	sljit_ins inst;
+
+	CHECK_ERROR();
+	CHECK(check_sljit_emit_fcopy(compiler, op, freg, reg));
+
+	if (GET_OPCODE(op) == SLJIT_COPY_TO_F64)
+		inst = FMV_W_X | RS1(reg) | FRD(freg);
+	else
+		inst = FMV_X_W | FRS1(freg) | RD(reg);
+
+	if (!(op & SLJIT_32))
+		inst |= (sljit_ins)1 << 25;
+
+	return push_inst(compiler, inst);
 }
 
 static SLJIT_INLINE sljit_s32 emit_const(struct sljit_compiler *compiler, sljit_s32 dst, sljit_sw init_value, sljit_ins last_ins)

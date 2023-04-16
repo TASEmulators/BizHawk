@@ -51,6 +51,7 @@ namespace BizHawk.Emulation.Common
 			foreach (var kvp in copyFrom.Axes) Axes.Add(kvp);
 			HapticsChannels.AddRange(copyFrom.HapticsChannels);
 			CategoryLabels = copyFrom.CategoryLabels;
+			_orderedControls = copyFrom._orderedControls;
 			MakeImmutable();
 		}
 
@@ -146,7 +147,7 @@ namespace BizHawk.Emulation.Common
 				}
 
 				// Hack for things like gameboy/ti-83 as opposed to genesis with no controllers plugged in
-				return allNames.Any(b => b.StartsWith("Up")) ? 1 : 0;
+				return allNames.Exists(static b => b.StartsWith("Up")) ? 1 : 0;
 			}
 		}
 

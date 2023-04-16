@@ -86,15 +86,15 @@ auto RSP::power(bool reset) -> void {
   for(auto& r : ipu.r) r.u32 = 0;
   ipu.pc = 0;
   branch = {};
-  for(auto& r : vpu.r) r.u128 = 0;
-  vpu.acch.u128 = 0;
-  vpu.accm.u128 = 0;
-  vpu.accl.u128 = 0;
-  vpu.vcoh.u128 = 0;
-  vpu.vcol.u128 = 0;
-  vpu.vcch.u128 = 0;
-  vpu.vccl.u128 = 0;
-  vpu.vce.u128 = 0;
+  for(auto& r : vpu.r) r = zero;
+  vpu.acch = zero;
+  vpu.accm = zero;
+  vpu.accl = zero;
+  vpu.vcoh = zero;
+  vpu.vcol = zero;
+  vpu.vcch = zero;
+  vpu.vccl = zero;
+  vpu.vce = zero;
   vpu.divin = 0;
   vpu.divout = 0;
   vpu.divdp = 0;
@@ -115,8 +115,8 @@ auto RSP::power(bool reset) -> void {
   }
 
   if constexpr(Accuracy::RSP::Recompiler) {
-    auto buffer = ares::Memory::FixedAllocator::get().tryAcquire(64_MiB);
-    recompiler.allocator.resize(64_MiB, bump_allocator::executable | bump_allocator::zero_fill, buffer);
+    auto buffer = ares::Memory::FixedAllocator::get().tryAcquire(4_MiB);
+    recompiler.allocator.resize(4_MiB, bump_allocator::executable | bump_allocator::zero_fill, buffer);
     recompiler.reset();
   }
 

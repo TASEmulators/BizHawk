@@ -225,7 +225,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 		protected abstract void SyncStateInternal(Serializer ser);
 
-		public virtual void SyncState(Serializer ser)
+		public void SyncState(Serializer ser)
 		{
 			ser.Sync(nameof(pinExRom), ref pinExRom);
 			ser.Sync(nameof(pinGame), ref pinGame);
@@ -235,6 +235,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 			ser.Sync(nameof(_driveLightEnabled), ref _driveLightEnabled);
 			ser.Sync(nameof(_driveLightOn), ref _driveLightOn);
+
+			SyncStateInternal(ser);
 		}
 
 		public bool Valid => validCartridge;

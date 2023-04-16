@@ -6,21 +6,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 {
 	public partial class BsnesCore
 	{
-		private IMemoryDomains _memoryDomains;
+		private MemoryDomainList _memoryDomains;
 
-		private unsafe void SetMemoryDomains()
+		private void SetMemoryDomains()
 		{
 			List<MemoryDomain> mm = new();
 			foreach (int i in Enum.GetValues(typeof(BsnesApi.SNES_MEMORY)))
 			{
-				void* data = Api.core.snes_get_memory_region(i, out int size, out int wordSize);
-				if (data == null) continue;
-				if (i == (int) BsnesApi.SNES_MEMORY.CARTRIDGE_RAM)
+				var data = Api.core.snes_get_memory_region(i, out var size, out var wordSize);
+				if (data == IntPtr.Zero) continue;
+				if (i == (int) BsnesApi.SNES_MEMORY.CARTRAM)
 				{
-					_saveRam = (byte*) data;
+					_saveRam = data;
 					_saveRamSize = size;
 				}
-				mm.Add(new MemoryDomainIntPtrMonitor(Enum.GetName(typeof(BsnesApi.SNES_MEMORY), i), MemoryDomain.Endian.Little, (IntPtr) data, size, true, wordSize, Api));
+				mm.Add(new MemoryDomainIntPtrMonitor(Enum.GetName(typeof(BsnesApi.SNES_MEMORY), i)!.Replace('_', ' '), MemoryDomain.Endian.Little, data, size, true, wordSize, Api));
 			}
 
 			mm.Add(new MemoryDomainDelegate(
@@ -29,10 +29,34 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				MemoryDomain.Endian.Little,
 				address => Api.core.snes_bus_read((uint) address),
 				(address, value) => Api.core.snes_bus_write((uint) address, value), wordSize: 4));
+
+			if (_isSGB)
+			{
+				foreach (int i in Enum.GetValues(typeof(BsnesApi.SGB_MEMORY)))
+				{
+					var data = Api.core.snes_get_sgb_memory_region(i, out var size);
+					if (data == IntPtr.Zero || size == 0) continue;
+					mm.Add(new MemoryDomainIntPtrMonitor("SGB " + Enum.GetName(typeof(BsnesApi.SGB_MEMORY), i), MemoryDomain.Endian.Little, data, size, true, 1, Api));
+				}
+
+				mm.Add(new MemoryDomainDelegate(
+					"SGB System Bus",
+					0x10000,
+					MemoryDomain.Endian.Little,
+					address => Api.core.snes_sgb_bus_read((ushort) address),
+					(address, value) => Api.core.snes_sgb_bus_write((ushort) address, value), wordSize: 1));
+
+				_saveRam = IntPtr.Zero;
+				_saveRamSize = Api.core.snes_sgb_battery_size();
+			}
+
 			mm.Add(Api.exe.GetPagesDomain());
 
-			_memoryDomains = new MemoryDomainList(mm);
-			((BasicServiceProvider) ServiceProvider).Register(_memoryDomains);
+			_memoryDomains = new(mm);
+			((BasicServiceProvider) ServiceProvider).Register<IMemoryDomains>(_memoryDomains);
+
+			_memoryDomains.MainMemory = _memoryDomains[_isSGB ? "SGB WRAM" : "WRAM"];
+			_memoryDomains.SystemBus = _memoryDomains[_isSGB ? "SGB System Bus" : "System Bus"];
 		}
 	}
 }

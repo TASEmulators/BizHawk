@@ -1,11 +1,16 @@
-Gamepad::Gamepad(uint port) : Controller(port) {
+Gamepad::Gamepad(uint port, bool isPayloadController) : Controller(port), isPayload(isPayloadController) {
+  device = isPayloadController ? ID::Device::ExtendedGamepad : ID::Device::Gamepad;
   latched = 0;
   counter = 0;
 }
 
 auto Gamepad::data() -> uint2 {
   if(counter >= 16) return 1;
-  if(latched == 1) return platform->inputPoll(port, ID::Device::Gamepad, B);
+  if(latched == 1) return platform->inputPoll(port, device, B);
+  if (counter >= 12 && !isPayload) {
+    counter++;
+    return 0;  //12-15: signature
+  }
 
   //note: D-pad physically prevents up+down and left+right from being pressed at the same time
   // patched this "fix" out because it is handled in bizhawk frontend and fixing it here does not seem right anyway
@@ -22,9 +27,12 @@ auto Gamepad::data() -> uint2 {
   case  9: return x;
   case 10: return l;
   case 11: return r;
+  case 12: return extra1;
+  case 13: return extra2;
+  case 14: return extra3;
+  case 15: return extra4;
   }
-
-  return 0;  //12-15: signature
+  unreachable;
 }
 
 auto Gamepad::latch(bool data) -> void {
@@ -34,17 +42,22 @@ auto Gamepad::latch(bool data) -> void {
 
   if(latched == 0) {
     if (port == ID::Port::Controller1) platform->notify("LATCH");
-    b      = platform->inputPoll(port, ID::Device::Gamepad, B);
-    y      = platform->inputPoll(port, ID::Device::Gamepad, Y);
-    select = platform->inputPoll(port, ID::Device::Gamepad, Select);
-    start  = platform->inputPoll(port, ID::Device::Gamepad, Start);
-    up     = platform->inputPoll(port, ID::Device::Gamepad, Up);
-    down   = platform->inputPoll(port, ID::Device::Gamepad, Down);
-    left   = platform->inputPoll(port, ID::Device::Gamepad, Left);
-    right  = platform->inputPoll(port, ID::Device::Gamepad, Right);
-    a      = platform->inputPoll(port, ID::Device::Gamepad, A);
-    x      = platform->inputPoll(port, ID::Device::Gamepad, X);
-    l      = platform->inputPoll(port, ID::Device::Gamepad, L);
-    r      = platform->inputPoll(port, ID::Device::Gamepad, R);
+    b      = platform->inputPoll(port, device, B);
+    y      = platform->inputPoll(port, device, Y);
+    select = platform->inputPoll(port, device, Select);
+    start  = platform->inputPoll(port, device, Start);
+    up     = platform->inputPoll(port, device, Up);
+    down   = platform->inputPoll(port, device, Down);
+    left   = platform->inputPoll(port, device, Left);
+    right  = platform->inputPoll(port, device, Right);
+    a      = platform->inputPoll(port, device, A);
+    x      = platform->inputPoll(port, device, X);
+    l      = platform->inputPoll(port, device, L);
+    r      = platform->inputPoll(port, device, R);
+    if (!isPayload) return;
+    extra1 = platform->inputPoll(port, device, Extra1);
+    extra2 = platform->inputPoll(port, device, Extra2);
+    extra3 = platform->inputPoll(port, device, Extra3);
+    extra4 = platform->inputPoll(port, device, Extra4);
   }
 }

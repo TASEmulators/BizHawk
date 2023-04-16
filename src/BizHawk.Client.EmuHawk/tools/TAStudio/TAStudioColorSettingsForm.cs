@@ -48,17 +48,17 @@ namespace BizHawk.Client.EmuHawk
 				Controls =
 				{
 //					Row("currentFrame_FrameCol", "CurrentFrame: FrameCol"),
-					Row("currentFrame_InputLog", "CurrentFrame: InputLog"),
-					Row("greenZone_FrameCol", "GreenZone: FrameCol"),
-					Row("greenZone_InputLog", "GreenZone InputLog: Normal"),
-					Row("greenZone_InputLog_Stated", "GreenZone InputLog: Stated"),
-					Row("greenZone_InputLog_Invalidated", "GreenZone InputLog: Invalidated"),
-					Row("lagZone_FrameCol", "LagZone: FrameCol"),
-					Row("lagZone_InputLog", "LagZone InputLog: Normal"),
-					Row("lagZone_InputLog_Stated", "LagZone InputLog: Stated"),
-					Row("lagZone_InputLog_Invalidated", "LagZone InputLog: Invalidated"),
-					Row("marker_FrameCol", "Marker: FrameCol"),
-					Row("analogEdit_Col", "AnalogEdit: Col"),
+					Row("currentFrame_InputLog", "Emulated Frame Cursor"),
+					Row("greenZone_FrameCol", "Frame# Column"),
+					Row("greenZone_InputLog", "Input Log"),
+					Row("greenZone_InputLog_Stated", "Savestate"),
+					Row("greenZone_InputLog_Invalidated", "Invalidated"),
+					Row("lagZone_FrameCol", "Frame# Column (Lag)"),
+					Row("lagZone_InputLog", "Input Log (Lag)"),
+					Row("lagZone_InputLog_Stated", "Savestate (Lag)"),
+					Row("lagZone_InputLog_Invalidated", "Invalidated (Lag)"),
+					Row("marker_FrameCol", "Marker"),
+					Row("analogEdit_Col", "Analog Edit Mode"),
 				},
 			};
 

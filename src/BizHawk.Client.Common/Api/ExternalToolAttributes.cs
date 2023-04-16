@@ -34,6 +34,29 @@ namespace BizHawk.Client.Common
 		}
 
 		[AttributeUsage(AttributeTargets.Class)]
+		public sealed class RomList : ExternalToolApplicabilityAttributeBase
+		{
+			private readonly IList<string> _romHashes;
+
+			private readonly string _sysID;
+
+			public RomList(string sysID, params string[] romHashes)
+			{
+				if (sysID is VSystemID.Raw.NULL) throw new ArgumentException("there are no roms for the NULL system", nameof(sysID));
+				if (!romHashes.All(NumericStringExtensions.IsHex)) throw new ArgumentException("misformatted hash", nameof(romHashes));
+				_romHashes = romHashes.ToList();
+				_sysID = sysID;
+			}
+
+			public override bool NotApplicableTo(string sysID)
+				=> sysID != _sysID;
+
+			public override bool NotApplicableTo(string romHash, string? sysID)
+				=> sysID != _sysID || !_romHashes.Contains(romHash);
+		}
+
+		[AttributeUsage(AttributeTargets.Class)]
+		[Obsolete("renamed RomWhitelist-->RomList")]
 		public sealed class RomWhitelist : ExternalToolApplicabilityAttributeBase
 		{
 			private readonly IList<string> _romHashes;

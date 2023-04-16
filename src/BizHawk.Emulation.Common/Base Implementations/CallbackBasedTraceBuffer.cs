@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace BizHawk.Emulation.Common
 {
@@ -58,7 +57,7 @@ namespace BizHawk.Emulation.Common
 
 				if (_sink != null)
 				{
-					var scope = DebuggableCore.MemoryCallbacks.AvailableScopes.First(); // This will be an issue when cores use this trace buffer and utilize multiple scopes
+					var scope = DebuggableCore.MemoryCallbacks.AvailableScopes[0]; // This will be an issue when cores use this trace buffer and utilize multiple scopes
 					DebuggableCore.MemoryCallbacks.Add(new TracingMemoryCallback(TraceFromCallback, scope));
 				}
 			}

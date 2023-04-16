@@ -26,10 +26,12 @@ namespace BizHawk.Tests.Common.MultiPredicateSort
 				SortedByYDescThenXDesc,
 				Unsorted.OrderByDescending(t => t.Y).ThenByDescending(t => t.X)
 			);
+#pragma warning disable MA0030
 			AssertSequenceEqual(
 				SortedByYDescThenXDesc,
 				Unsorted.OrderByDescending(t => t.X).OrderByDescending(t => t.Y)
 			);
+#pragma warning restore MA0030
 		}
 
 		[TestMethod]

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-
 using BizHawk.Common;
 
 namespace BizHawk.Client.Common
@@ -8,14 +7,20 @@ namespace BizHawk.Client.Common
 	public partial class Bk2Movie
 	{
 		protected IStringLog Log { get; set; } = StringLogUtil.MakeStringLog();
-		protected string LogKey { get; set; } = "";
+		public string LogKey { get; set; }
 
 		public void WriteInputLog(TextWriter writer)
 		{
 			writer.WriteLine("[Input]");
-
-			var lg = LogGeneratorInstance(Session.MovieController);
-			writer.WriteLine(lg.GenerateLogKey());
+			if (string.IsNullOrEmpty(LogKey))
+			{
+				var lg = LogGeneratorInstance(Session.MovieController);
+				writer.WriteLine(lg.GenerateLogKey());
+			}
+			else
+			{
+				writer.WriteLine($"LogKey:{LogKey}");
+			}
 
 			foreach (var record in Log)
 			{

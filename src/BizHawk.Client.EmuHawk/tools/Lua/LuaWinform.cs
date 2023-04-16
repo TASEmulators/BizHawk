@@ -13,6 +13,8 @@ namespace BizHawk.Client.EmuHawk
 		private readonly string _currentDirectory = Environment.CurrentDirectory;
 		private readonly LuaFile _ownerFile;
 
+		public bool BlocksInputWhenFocused { get; set; } = true;
+
 		public LuaWinform(LuaFile ownerFile, Action<IntPtr> formsWindowClosedCallback)
 		{
 			_ownerFile = ownerFile;

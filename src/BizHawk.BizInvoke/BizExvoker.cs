@@ -59,12 +59,8 @@ namespace BizHawk.BizInvoke
 			public DelegateStorage(Type type)
 			{
 				var methods = type.GetMethods(BindingFlags.Instance | BindingFlags.Public)
-				.Select(m => new
-				{
-					Info = m,
-					Attr = m.GetCustomAttributes(true).OfType<BizExportAttribute>().FirstOrDefault()
-				})
-				.Where(a => a.Attr != null);
+					.Select(static m => (Info: m, Attr: m.GetCustomAttributes(true).OfType<BizExportAttribute>().FirstOrDefault()))
+					.Where(static a => a.Attr is not null);
 
 				var typeBuilder = ImplModuleBuilder.DefineType($"Bizhawk.BizExvokeHolder{type.Name}", TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed);
 

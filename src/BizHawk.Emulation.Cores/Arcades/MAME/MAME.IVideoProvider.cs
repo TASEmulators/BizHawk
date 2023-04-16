@@ -18,56 +18,46 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		public int VsyncDenominator { get; private set; } = 1;
 
 		private int[] _frameBuffer = new int[0];
+		private double _wAspect = 1;
+		private double _hAspect = 1;
+
+		/// <summary>
+		/// Attoseconds for the emulated system's vsync rate.
+		/// Use this to calculate a precise movie time
+		/// </summary>
+		public long VsyncAttoseconds { get; private set; }
 
 		private void UpdateFramerate()
 		{
-			VsyncNumerator = 1000000000;
-			long refresh = (long)LibMAME.mame_lua_get_double(MAMELuaCommand.GetRefresh);
-			VsyncDenominator = (int)(refresh / 1000000000);
+			VsyncAttoseconds = _core.mame_lua_get_long(MAMELuaCommand.GetRefresh);
+			VsyncNumerator = 0x3ffffffc;
+			VsyncDenominator = _core.mame_lua_get_int(MAMELuaCommand.GetFramerateDenominator(VsyncNumerator));
 		}
 
 		private void UpdateAspect()
 		{
-			int x = (int)LibMAME.mame_lua_get_double(MAMELuaCommand.GetBoundX);
-			int y = (int)LibMAME.mame_lua_get_double(MAMELuaCommand.GetBoundY);
-			VirtualHeight = BufferWidth > BufferHeight * x / y
-				? BufferWidth * y / x
+			_wAspect = _core.mame_lua_get_double(MAMELuaCommand.GetBoundX);
+			_hAspect = _core.mame_lua_get_double(MAMELuaCommand.GetBoundY);
+			VirtualHeight = BufferWidth > BufferHeight * _wAspect / _hAspect
+				? (int)Math.Round(BufferWidth * _hAspect / _wAspect)
 				: BufferHeight;
-			VirtualWidth = VirtualHeight * x / y;
+			VirtualWidth = (int)Math.Round(VirtualHeight * _wAspect / _hAspect);
 		}
 
 		private void UpdateVideo()
 		{
-			BufferWidth = LibMAME.mame_lua_get_int(MAMELuaCommand.GetWidth);
-			BufferHeight = LibMAME.mame_lua_get_int(MAMELuaCommand.GetHeight);
-			int expectedSize = BufferWidth * BufferHeight;
-			int bytesPerPixel = 4;
-			IntPtr ptr = LibMAME.mame_lua_get_string(MAMELuaCommand.GetPixels, out var lengthInBytes);
+			_core.mame_video_get_dimensions(out var width, out var height);
 
-			if (ptr == IntPtr.Zero)
+			BufferWidth = width;
+			BufferHeight = height;
+			var numPixels = width * height;
+
+			if (_frameBuffer.Length < numPixels)
 			{
-				Console.WriteLine("LibMAME ERROR: frame buffer pointer is null");
-				return;
+				_frameBuffer = new int[numPixels];
 			}
 
-			if (expectedSize * bytesPerPixel != lengthInBytes)
-			{
-				Console.WriteLine(
-					"LibMAME ERROR: frame buffer has wrong size\n" +
-					$"width:    { BufferWidth                  } pixels\n" +
-					$"height:   { BufferHeight                 } pixels\n" +
-					$"expected: { expectedSize * bytesPerPixel } bytes\n" +
-					$"received: { lengthInBytes                } bytes\n");
-				return;
-			}
-
-			_frameBuffer = new int[expectedSize];
-			Marshal.Copy(ptr, _frameBuffer, 0, expectedSize);
-
-			if (!LibMAME.mame_lua_free_string(ptr))
-			{
-				Console.WriteLine("LibMAME ERROR: frame buffer wasn't freed");
-			}
+			_core.mame_video_get_pixels(_frameBuffer);
 		}
 	}
 }

@@ -12,7 +12,7 @@ template<typename T> vector<T>::vector(const vector<T>& source) {
 }
 
 template<typename T> vector<T>::vector(vector<T>&& source) {
-  operator=(move(source));
+  operator=(std::move(source));
 }
 
 template<typename T> vector<T>::~vector() {

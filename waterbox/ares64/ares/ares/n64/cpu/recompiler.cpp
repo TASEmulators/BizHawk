@@ -24,9 +24,10 @@ auto CPU::Recompiler::emit(u32 address) -> Block* {
   auto block = (Block*)allocator.acquire(sizeof(Block));
   beginFunction(3);
 
+  u32 memCycles;
   bool hasBranched = 0;
   while(true) {
-    u32 instruction = bus.read<Word>(address);
+    u32 instruction = bus.read<Word>(address, memCycles);
     bool branched = emitEXECUTE(instruction);
     if(unlikely(instruction == 0x1000'ffff)) {
       //accelerate idle loops
@@ -204,8 +205,7 @@ auto CPU::Recompiler::emitEXECUTE(u32 instruction) -> bool {
 
   //COP2
   case 0x12: {
-    call(&CPU::COP2);
-    return 1;
+    return emitCOP2(instruction);
   }
 
   //COP3
@@ -285,7 +285,7 @@ auto CPU::Recompiler::emitEXECUTE(u32 instruction) -> bool {
   }
 
   //INVALID
-  case 0x1c ... 0x1f: {
+  case range4(0x1c, 0x1f): {
     call(&CPU::INVALID);
     return 1;
   }
@@ -454,7 +454,7 @@ auto CPU::Recompiler::emitEXECUTE(u32 instruction) -> bool {
 
   //LWC2
   case 0x32: {
-    call(&CPU::COP2);
+    call(&CPU::COP2INVALID);
     return 1;
   }
 
@@ -484,7 +484,7 @@ auto CPU::Recompiler::emitEXECUTE(u32 instruction) -> bool {
 
   //LDC2
   case 0x36: {
-    call(&CPU::COP2);
+    call(&CPU::COP2INVALID);
     return 1;
   }
 
@@ -517,7 +517,7 @@ auto CPU::Recompiler::emitEXECUTE(u32 instruction) -> bool {
 
   //SWC2
   case 0x3a: {
-    call(&CPU::COP2);
+    call(&CPU::COP2INVALID);
     return 1;
   }
 
@@ -547,7 +547,7 @@ auto CPU::Recompiler::emitEXECUTE(u32 instruction) -> bool {
 
   //SDC2
   case 0x3e: {
-    call(&CPU::COP2);
+    call(&CPU::COP2INVALID);
     return 1;
   }
 
@@ -600,9 +600,7 @@ auto CPU::Recompiler::emitSPECIAL(u32 instruction) -> bool {
 
   //SLLV Rd,Rt,Rs
   case 0x04: {
-    mov32(reg(0), mem(Rt32));
-    and32(reg(1), mem(Rs32), imm(31));
-    shl32(reg(0), reg(0), reg(1));
+    mshl32(reg(0), mem(Rt32), mem(Rs32));
     mov64_s32(reg(0), reg(0));
     mov64(mem(Rd), reg(0));
     return 0;
@@ -616,9 +614,7 @@ auto CPU::Recompiler::emitSPECIAL(u32 instruction) -> bool {
 
   //SRLV Rd,Rt,RS
   case 0x06: {
-    mov32(reg(0), mem(Rt32));
-    and32(reg(1), mem(Rs32), imm(31));
-    lshr32(reg(0), reg(0), reg(1));
+    mlshr32(reg(0), mem(Rt32), mem(Rs32));
     mov64_s32(reg(0), reg(0));
     mov64(mem(Rd), reg(0));
     return 0;
@@ -626,7 +622,7 @@ auto CPU::Recompiler::emitSPECIAL(u32 instruction) -> bool {
 
   //SRAV Rd,Rt,Rs
   case 0x07: {
-    and32(reg(1), mem(Rs32), imm(31));
+    and64(reg(1), mem(Rs), imm(31));
     ashr64(reg(0), mem(Rt), reg(1));
     mov64_s32(reg(0), reg(0));
     mov64(mem(Rd), reg(0));
@@ -649,7 +645,7 @@ auto CPU::Recompiler::emitSPECIAL(u32 instruction) -> bool {
   }
 
   //INVALID
-  case 0x0a ... 0x0b: {
+  case range2(0x0a, 0x0b): {
     call(&CPU::INVALID);
     return 1;
   }
@@ -854,13 +850,13 @@ auto CPU::Recompiler::emitSPECIAL(u32 instruction) -> bool {
   //NOR Rd,Rs,Rt
   case 0x27: {
     or64(reg(0), mem(Rs), mem(Rt));
-    not64(reg(0), reg(0));
+    xor64(reg(0), reg(0), imm(-1));
     mov64(mem(Rd), reg(0));
     return 0;
   }
 
   //INVALID
-  case 0x28 ... 0x29: {
+  case range2(0x28, 0x29): {
     call(&CPU::INVALID);
     return 1;
   }
@@ -1082,7 +1078,7 @@ auto CPU::Recompiler::emitREGIMM(u32 instruction) -> bool {
   }
 
   //INVALID
-  case 0x04 ... 0x07: {
+  case range4(0x04, 0x07): {
     call(&CPU::INVALID);
     return 1;
   }
@@ -1180,7 +1176,7 @@ auto CPU::Recompiler::emitREGIMM(u32 instruction) -> bool {
   }
 
   //INVALID
-  case 0x14 ... 0x1f: {
+  case range12(0x14, 0x1f): {
     call(&CPU::INVALID);
     return 1;
   }
@@ -1210,7 +1206,7 @@ auto CPU::Recompiler::emitSCC(u32 instruction) -> bool {
   }
 
   //INVALID
-  case 0x02 ... 0x03: {
+  case range2(0x02, 0x03): {
     call(&CPU::INVALID);
     return 1;
   }
@@ -1232,7 +1228,7 @@ auto CPU::Recompiler::emitSCC(u32 instruction) -> bool {
   }
 
   //INVALID
-  case 0x06 ... 0x0f: {
+  case range10(0x06, 0x0f): {
     call(&CPU::INVALID);
     return 1;
   }
@@ -1303,9 +1299,9 @@ auto CPU::Recompiler::emitFPU(u32 instruction) -> bool {
     return 0;
   }
 
-  //INVALID
+  //DCFC1 Rt,Rd
   case 0x03: {
-    call(&CPU::INVALID);
+    call(&CPU::COP1UNIMPLEMENTED);
     return 1;
   }
 
@@ -1333,9 +1329,9 @@ auto CPU::Recompiler::emitFPU(u32 instruction) -> bool {
     return 0;
   }
 
-  //INVALID
+  //DCTC1 Rt,Rd
   case 0x07: {
-    call(&CPU::INVALID);
+    call(&CPU::COP1UNIMPLEMENTED);
     return 1;
   }
 
@@ -1349,7 +1345,7 @@ auto CPU::Recompiler::emitFPU(u32 instruction) -> bool {
   }
 
   //INVALID
-  case 0x09 ... 0x0f: {
+  case range7(0x09, 0x0f): {
     call(&CPU::INVALID);
     return 1;
   }
@@ -1488,6 +1484,14 @@ auto CPU::Recompiler::emitFPU(u32 instruction) -> bool {
     mov32(reg(1), imm(Fdn));
     mov32(reg(2), imm(Fsn));
     call(&CPU::FFLOOR_W_S);
+    return 0;
+  }
+
+  //FCVT.S.S Fd,Fs
+  case 0x20: {
+    mov32(reg(1), imm(Fdn));
+    mov32(reg(2), imm(Fsn));
+    call(&CPU::FCVT_S_S);
     return 0;
   }
 
@@ -1788,6 +1792,14 @@ auto CPU::Recompiler::emitFPU(u32 instruction) -> bool {
     return 0;
   }
 
+  //FCVT.D.D Fd,Fs
+  case 0x21: {
+    mov32(reg(1), imm(Fdn));
+    mov32(reg(2), imm(Fsn));
+    call(&CPU::FCVT_D_D);
+    return 0;
+  }
+
   //FCVT.W.D Fd,Fs
   case 0x24: {
     mov32(reg(1), imm(Fdn));
@@ -1935,7 +1947,16 @@ auto CPU::Recompiler::emitFPU(u32 instruction) -> bool {
   }
 
   if((instruction >> 21 & 31) == 20)
-  switch(instruction & 0x3f) {
+  switch(instruction & 0x3f) {    
+  case range8(0x08, 0x0f): {
+    call(&CPU::COP1UNIMPLEMENTED);
+    return 1;
+  }
+
+  case range2(0x24, 0x25): {
+    call(&CPU::COP1UNIMPLEMENTED);
+    return 1;
+  }
 
   //FCVT.S.W Fd,Fs
   case 0x20: {
@@ -1957,6 +1978,14 @@ auto CPU::Recompiler::emitFPU(u32 instruction) -> bool {
 
   if((instruction >> 21 & 31) == 21)
   switch(instruction & 0x3f) {
+  case range8(0x08, 0x0f): {
+    call(&CPU::COP1UNIMPLEMENTED);
+    return 1;
+  }
+  case range2(0x24, 0x25): {
+    call(&CPU::COP1UNIMPLEMENTED);
+    return 1;
+  }
 
   //FCVT.S.L
   case 0x20: {
@@ -1976,6 +2005,73 @@ auto CPU::Recompiler::emitFPU(u32 instruction) -> bool {
 
   }
 
+  return 0;
+}
+
+auto CPU::Recompiler::emitCOP2(u32 instruction) -> bool {
+  switch(instruction >> 21 & 0x1f) {
+
+  //MFC2 Rt,Rd
+  case 0x00: {
+    lea(reg(1), Rt);
+    mov32(reg(2), imm(Rdn));
+    call(&CPU::MFC2);
+    return 0;
+  }
+
+  //DMFC2 Rt,Rd
+  case 0x01: {
+    lea(reg(1), Rt);
+    mov32(reg(2), imm(Rdn));
+    call(&CPU::DMFC2);
+    return 0;
+  }
+
+  //CFC2 Rt,Rd
+  case 0x02: {
+    lea(reg(1), Rt);
+    mov32(reg(2), imm(Rdn));
+    call(&CPU::CFC2);
+    return 0;
+  }
+
+  //INVALID
+  case 0x03: {
+    call(&CPU::COP2INVALID);
+    return 1;
+  }
+
+  //MTC0 Rt,Rd
+  case 0x04: {
+    lea(reg(1), Rt);
+    mov32(reg(2), imm(Rdn));
+    call(&CPU::MTC2);
+    return 0;
+  }
+
+  //DMTC2 Rt,Rd
+  case 0x05: {
+    lea(reg(1), Rt);
+    mov32(reg(2), imm(Rdn));
+    call(&CPU::DMTC2);
+    return 0;
+  }
+
+  //CTC2 Rt,Rd
+  case 0x06: {
+    lea(reg(1), Rt);
+    mov32(reg(2), imm(Rdn));
+    call(&CPU::CTC2);
+    return 0;
+  }
+
+  //INVALID
+  case range9(0x07, 0x0f): {
+    call(&CPU::COP2INVALID);
+    return 1;
+  }
+
+  }
   return 0;
 }
 

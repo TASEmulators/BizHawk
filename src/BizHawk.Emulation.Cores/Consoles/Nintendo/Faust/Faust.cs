@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Faust
 	public class Faust : NymaCore, IRegionable
 	{
 		private Faust(CoreComm comm)
-			: base(comm, null, null, null, null)
+			: base(comm, VSystemID.Raw.NULL, null, null, null)
 		{
 		}
 

@@ -16,9 +16,11 @@ namespace BizHawk.Client.EmuHawk
 	[LuaLibrary(released: true)]
 	public sealed class TAStudioLuaLibrary : LuaLibraryBase
 	{
+		private static readonly IDictionary<string, Icon> _iconCache = new Dictionary<string, Icon>();
+
 		public ToolManager Tools { get; set; }
 
-		public TAStudioLuaLibrary(IPlatformLuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+		public TAStudioLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "tastudio";
@@ -139,7 +141,7 @@ namespace BizHawk.Client.EmuHawk
 				_luaLibsImpl.IsUpdateSupressed = true;
 
 				int f;
-				if (frame is double frameNumber)
+				if (frame is long frameNumber)
 				{
 					f = (int)frameNumber;
 				}
@@ -172,7 +174,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("")]
 		[LuaMethod("submitinputchange", "")]
-		public void SubmitInputChange(int frame, [LuaASCIIStringParam] string button, bool value)
+		public void SubmitInputChange(int frame, string button, bool value)
 		{
 			if (Engaged())
 			{
@@ -209,7 +211,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("")]
 		[LuaMethod("submitanalogchange", "")]
-		public void SubmitAnalogChange(int frame, [LuaASCIIStringParam] string button, float value)
+		public void SubmitAnalogChange(int frame, string button, float value)
 		{
 			if (Engaged())
 			{
@@ -348,19 +350,19 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethod("addcolumn", "")]
-		public void AddColumn([LuaArbitraryStringParam] string name, [LuaArbitraryStringParam] string text, int width)
+		public void AddColumn(string name, string text, int width)
 		{
 			if (Engaged())
 			{
-				Tastudio.AddColumn(FixString(name), FixString(text), width, ColumnType.Text);
+				Tastudio.AddColumn(name, text, width, ColumnType.Text);
 			}
 		}
 
 		[LuaMethodExample("tastudio.setbranchtext( \"Some text\", 1 );")]
 		[LuaMethod("setbranchtext", "adds the given message to the existing branch, or to the branch that will be created next if branch index is not specified")]
-		public void SetBranchText([LuaArbitraryStringParam] string text, int? index = null)
+		public void SetBranchText(string text, int? index = null)
 		{
-			var text1 = FixString(text);
+			var text1 = text;
 			if (index != null)
 			{
 				var branch = Tastudio.CurrentTasMovie.Branches[index.Value];
@@ -377,24 +379,24 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("local nltasget = tastudio.getbranches( );")]
 		[LuaMethod("getbranches", "Returns a list of the current tastudio branches.  Each entry will have the Id, Frame, and Text properties of the branch")]
-		[return: LuaArbitraryStringParam]
 		public LuaTable GetBranches()
 		{
 			if (!Engaged()) return _th.CreateTable();
 			return _th.EnumerateToLuaTable(
-				Tastudio.CurrentTasMovie.Branches.Select(b => new
+				Tastudio.CurrentTasMovie.Branches.Select(b =>
 				{
-					Id = b.Uuid.ToString(),
-					b.Frame,
-					Text = UnFixString(b.UserText)
+					var table = _th.CreateTable();
+					table["Id"] = b.Uuid.ToString();
+					table["Frame"] = b.Frame;
+					table["Text"] = b.UserText;
+					return table;
 				}),
 				indexFrom: 0);
 		}
 
 		[LuaMethodExample("local nltasget = tastudio.getbranchinput( \"97021544-2454-4483-824f-47f75e7fcb6a\", 500 );")]
 		[LuaMethod("getbranchinput", "Gets the controller state of the given frame with the given branch identifier")]
-		[return: LuaASCIIStringParam]
-		public LuaTable GetBranchInput([LuaASCIIStringParam] string branchId, int frame)
+		public LuaTable GetBranchInput(string branchId, int frame)
 		{
 			var table = _th.CreateTable();
 			if (!Engaged()) return table;
@@ -431,7 +433,6 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("local sttasget = tastudio.getmarker( 500 );")]
 		[LuaMethod("getmarker", "returns the marker text at the given frame, or an empty string if there is no marker for the given frame")]
-		[return: LuaArbitraryStringParam]
 		public string GetMarker(int frame)
 		{
 			if (Engaged())
@@ -439,7 +440,7 @@ namespace BizHawk.Client.EmuHawk
 				var marker = Tastudio.CurrentTasMovie.Markers.Get(frame);
 				if (marker != null)
 				{
-					return UnFixString(marker.Message);
+					return marker.Message;
 				}
 			}
 
@@ -463,11 +464,11 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("tastudio.setmarker( 500, \"Some message\" );")]
 		[LuaMethod("setmarker", "Adds or sets a marker at the given frame, with an optional message")]
-		public void SetMarker(int frame, [LuaArbitraryStringParam] string message = null)
+		public void SetMarker(int frame, string message = null)
 		{
 			if (Engaged())
 			{
-				var message1 = FixString(message);
+				var message1 = message;
 				var marker = Tastudio.CurrentTasMovie.Markers.Get(frame);
 				if (marker != null)
 				{
@@ -492,7 +493,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodExample("tastudio.onqueryitemtext( function( currentindex, itemname )\r\n\tconsole.log( \"called during the text draw event of the tastudio listview. luaf must be a function that takes 2 params: index, column.  The first is the integer row index of the listview, and the 2nd is the string column name. luaf should return a value that can be parsed into a .NET Color object (string color name, or integer value)\" );\r\nend );")]
-		[LuaMethod("onqueryitemtext", "called during the text draw event of the tastudio listview. luaf must be a function that takes 2 params: index, column.  The first is the integer row index of the listview, and the 2nd is the string column name. luaf should return a value that can be parsed into a .NET Color object (string color name, or integer value)")]
+		[LuaMethod("onqueryitemtext", "Called during the text draw event of the tastudio listview. {{luaf}} must be a function that takes 2 params: {{(index, column)}}. The first is the integer row index of the listview, and the 2nd is the string column name. The callback should return a string to be displayed.")]
 		public void OnQueryItemText(LuaFunction luaf)
 		{
 			if (Engaged())
@@ -506,7 +507,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodExample("tastudio.onqueryitemicon( function( currentindex, itemname )\r\n\tconsole.log( \"called during the icon draw event of the tastudio listview. luaf must be a function that takes 2 params: index, column.  The first is the integer row index of the listview, and the 2nd is the string column name. luaf should return a value that can be parsed into a .NET Color object (string color name, or integer value)\" );\r\nend );")]
-		[LuaMethod("onqueryitemicon", "called during the icon draw event of the tastudio listview. luaf must be a function that takes 2 params: index, column.  The first is the integer row index of the listview, and the 2nd is the string column name. luaf should return a value that can be parsed into a .NET Color object (string color name, or integer value)")]
+		[LuaMethod("onqueryitemicon", "Called during the icon draw event of the tastudio listview. {{luaf}} must be a function that takes 2 params: {{(index, column)}}. The first is the integer row index of the listview, and the 2nd is the string column name. The callback should return a string, the path to the {{.ico}} file to be displayed. The file will be cached, so if you change the file on disk, call {{tastudio.clearIconCache()}}.")]
 		public void OnQueryItemIcon(LuaFunction luaf)
 		{
 			if (Engaged())
@@ -517,7 +518,7 @@ namespace BizHawk.Client.EmuHawk
 					if (result?[0] != null)
 					{
 						string path = result[0].ToString();
-						Icon icon = new Icon(path);
+						if (!_iconCache.TryGetValue(path, out var icon)) _iconCache[path] = icon = new(path);
 						return icon.ToBitmap();
 					}
 
@@ -526,8 +527,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("tastudio.ongreenzoneinvalidated( function( currentindex, itemname )\r\n\tconsole.log( \"called whenever the greenzone is invalidated and returns the first frame that was invalidated\" );\r\nend );")]
-		[LuaMethod("ongreenzoneinvalidated", "called whenever the greenzone is invalidated and returns the first frame that was invalidated")]
+		[LuaMethodExample("tastudio.clearIconCache();")]
+		[LuaMethod("clearIconCache", "Clears the cache that is built up by using {{tastudio.onqueryitemicon}}, so that changes to the icons on disk can be picked up.")]
+		public void ClearIconCache()
+		{
+			foreach (var icon in _iconCache.Values) icon.Dispose();
+			_iconCache.Clear();
+		}
+
+		[LuaMethodExample("tastudio.ongreenzoneinvalidated( function( currentindex )\r\n\tconsole.log( \"Called whenever the greenzone is invalidated.\" );\r\nend );")]
+		[LuaMethod("ongreenzoneinvalidated", "Called whenever the greenzone is invalidated. Your callback can have 1 parameter, which will be the index of the first row that was invalidated.")]
 		public void OnGreenzoneInvalidated(LuaFunction luaf)
 		{
 			if (Engaged())
@@ -539,7 +548,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("tastudio.ongreenzoneinvalidated( function( currentindex, itemname )\r\n\tconsole.log( \"called whenever the greenzone is invalidated and returns the first frame that was invalidated\" );\r\nend );")]
+		[LuaMethodExample("tastudio.onbranchload( function( currentindex )\r\n\tconsole.log( \"Called whenever a branch is loaded.\" );\r\nend );")]
 		[LuaMethod("onbranchload", "called whenever a branch is loaded. luaf must be a function that takes the integer branch index as a parameter")]
 		public void OnBranchLoad(LuaFunction luaf)
 		{

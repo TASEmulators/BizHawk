@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.DiscSystem
 			SectorSize = 2048;
 			Disc = disc;
 			NumSectors = disc.Session1.LeadoutLBA;
-			dsr = new DiscSectorReader(disc);
+			dsr = new(disc);
 
 			//following the provided view
 			switch (view)
@@ -114,18 +114,18 @@ namespace BizHawk.Emulation.DiscSystem
 		//TODO - I'm not sure everything in here makes sense right now..
 		public override int Read(byte[] buffer, int offset, int count)
 		{
-			long remainInDisc = Length - currPosition;
+			var remainInDisc = Length - currPosition;
 			if (count > remainInDisc)
 				count = (int)Math.Min(remainInDisc, int.MaxValue);
 
-			int remain = count;
-			int readed = 0;
+			var remain = count;
+			var readed = 0;
 			while (remain > 0)
 			{
-				int lba = (int)(currPosition / SectorSize);
-				int lba_within = (int)(currPosition % SectorSize);
-				int todo = remain;
-				int remains_in_lba = SectorSize - lba_within;
+				var lba = (int)(currPosition / SectorSize);
+				var lba_within = (int)(currPosition % SectorSize);
+				var todo = remain;
+				var remains_in_lba = SectorSize - lba_within;
 				if (remains_in_lba < todo)
 					todo = remains_in_lba;
 				if (cachedSector != lba)

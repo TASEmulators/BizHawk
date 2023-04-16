@@ -61,7 +61,7 @@ inline auto string::format(const nall::string_format& params) -> type& {
 
 template<typename T, typename... P> inline auto string_format::append(const T& value, P&&... p) -> string_format& {
   vector<string>::append(value);
-  return append(forward<P>(p)...);
+  return append(std::forward<P>(p)...);
 }
 
 inline auto string_format::append() -> string_format& {
@@ -69,13 +69,13 @@ inline auto string_format::append() -> string_format& {
 }
 
 template<typename... P> inline auto print(P&&... p) -> void {
-  string s{forward<P>(p)...};
+  string s{std::forward<P>(p)...};
   fwrite(s.data(), 1, s.size(), stdout);
   fflush(stdout);
 }
 
 template<typename... P> inline auto print(FILE* fp, P&&... p) -> void {
-  string s{forward<P>(p)...};
+  string s{std::forward<P>(p)...};
   fwrite(s.data(), 1, s.size(), fp);
   if(fp == stdout || fp == stderr) fflush(fp);
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 
 using BizHawk.BizInvoke;
 using BizHawk.Common;
@@ -12,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 	/// <summary>
 	/// a gameboy/gameboy color emulator wrapped around native C libsameboy
 	/// </summary>
-	[PortedCore(CoreNames.Sameboy, "LIJI32", "0.14.7", "https://github.com/LIJI32/SameBoy")]
+	[PortedCore(CoreNames.Sameboy, "LIJI32", "0.15.6", "https://github.com/LIJI32/SameBoy")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class Sameboy : ICycleTiming, IInputPollable, ILinkable, IRomInfo, IBoardInfo, IGameboyCommon
 	{
@@ -29,24 +30,90 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 		private readonly Gameboy.GBDisassembler _disassembler;
 
+		private readonly CoreComm Comm;
+
 		private IntPtr SameboyState { get; set; } = IntPtr.Zero;
 
 		public bool IsCgb { get; set; }
 
-		public bool IsCGBMode() => IsCgb;
+		public bool IsCGBMode
+			=> IsCgb; //TODO inline
 
-		public bool IsCGBDMGMode() => LibSameboy.sameboy_iscgbdmg(SameboyState);
+		public bool IsCGBDMGMode
+			=> LibSameboy.sameboy_iscgbdmg(SameboyState);
 
 		private readonly LibSameboy.InputCallback _inputcb;
 
+		private readonly LibSameboy.RumbleCallback _rumblecb;
+
+		public Sameboy(CoreComm comm, GameInfo game, byte[] gbs, SameboySettings settings, SameboySyncSettings syncSettings)
+			: this(comm, game, null, settings, syncSettings, false)
+		{
+			var gbsInfo = new LibSameboy.GBSInfo
+			{
+				TrackCount = 0,
+				FirstTrack = 0,
+				Title = new byte[33],
+				Author = new byte[33],
+				Copyright = new byte[33],
+			};
+
+			if (!LibSameboy.sameboy_loadgbs(SameboyState, gbs, gbs.Length, ref gbsInfo))
+			{
+				throw new InvalidOperationException("Core rejected the GBS!");
+			}
+
+			RomDetails = $"Track Count: {gbsInfo.TrackCount}\r\n" +
+				$"First Track: {gbsInfo.FirstTrack}\r\n" +
+				$"Title: {Encoding.UTF8.GetString(gbsInfo.Title).Trim()}\r\n" +
+				$"Author: {Encoding.UTF8.GetString(gbsInfo.Author).Trim()}\r\n" +
+				$"Copyright: {Encoding.UTF8.GetString(gbsInfo.Copyright).Trim()}";
+
+			_firstTrack = gbsInfo.FirstTrack;
+			_lastTrack = gbsInfo.FirstTrack + gbsInfo.TrackCount - 1;
+
+			_curTrack = _firstTrack;
+			LibSameboy.sameboy_switchgbstrack(SameboyState, _curTrack);
+
+			BoardName = "GBS";
+			ControllerDefinition = new ControllerDefinition("GBS Controller")
+			{
+				BoolButtons = { "Previous Track", "Next Track" }
+			}.MakeImmutable();
+
+			Comm = comm;
+
+			_stateBuf = new byte[LibSameboy.sameboy_statelen(SameboyState)];
+		}
+
 		[CoreConstructor(VSystemID.Raw.GB)]
 		[CoreConstructor(VSystemID.Raw.GBC)]
-		public Sameboy(CoreComm comm, GameInfo game, byte[] file, SameboySettings settings, SameboySyncSettings syncSettings, bool deterministic)
+		public Sameboy(CoreLoadParameters<SameboySettings, SameboySyncSettings> lp)
+			: this(lp.Comm, lp.Game, lp.Roms[0].FileData, lp.Settings, lp.SyncSettings, lp.DeterministicEmulationRequested)
+		{
+			var file = lp.Roms[0].FileData;
+
+			RomDetails = $"{lp.Game.Name}\r\n{SHA1Checksum.ComputePrefixedHex(file)}\r\n{MD5Checksum.ComputePrefixedHex(file)}\r\n";
+
+			BoardName = MapperName(file);
+			_hasAcc = BoardName is "MBC7 ROM+ACCEL+EEPROM";
+			ControllerDefinition = Gameboy.Gameboy.CreateControllerDefinition(sgb: false, sub: false, tilt: _hasAcc, rumble: true, remote: false);
+
+			_stateBuf = new byte[LibSameboy.sameboy_statelen(SameboyState)];
+		}
+
+		private Sameboy(
+			CoreComm comm,
+			GameInfo game,
+			byte[] file,
+			SameboySettings settings,
+			SameboySyncSettings syncSettings,
+			bool deterministic)
 		{
 			_serviceProvider = new BasicServiceProvider(this);
 
-			_settings = settings ?? new SameboySettings();
-			_syncSettings = syncSettings ?? new SameboySyncSettings();
+			_settings = settings ?? new();
+			_syncSettings = syncSettings ?? new();
 
 			var model = _syncSettings.ConsoleMode;
 			if (model is SameboySyncSettings.GBModel.Auto)
@@ -63,16 +130,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			{
 				FirmwareID fwid = new(
 					IsCgb ? "GBC" : "GB",
-					_syncSettings.ConsoleMode is SameboySyncSettings.GBModel.GB_MODEL_AGB
+					_syncSettings.ConsoleMode >= SameboySyncSettings.GBModel.GB_MODEL_AGB
 					? "AGB"
 					: "World");
 				bios = comm.CoreFileProvider.GetFirmwareOrThrow(fwid, "BIOS Not Found, Cannot Load.  Change SyncSettings to run without BIOS.");
 			}
 			else
 			{
-				bios = Util.DecompressGzipFile(new MemoryStream(IsCgb
-					? _syncSettings.ConsoleMode is SameboySyncSettings.GBModel.GB_MODEL_AGB ? Resources.SameboyAgbBoot.Value : Resources.SameboyCgbBoot.Value
-					: Resources.SameboyDmgBoot.Value));
+				bios = Zstd.DecompressZstdStream(new MemoryStream(IsCgb
+					? _syncSettings.ConsoleMode >= SameboySyncSettings.GBModel.GB_MODEL_AGB ? Resources.SameboyAgbBoot.Value : Resources.SameboyCgbBoot.Value
+					: Resources.SameboyDmgBoot.Value)).ToArray();
 			}
 
 			DeterministicEmulation = false;
@@ -84,16 +151,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 				DeterministicEmulation = true;
 			}
 
-			SameboyState = LibSameboy.sameboy_create(file, file.Length, bios, bios.Length, model, realtime);
+			SameboyState = LibSameboy.sameboy_create(file, file?.Length ?? 0, bios, bios.Length, model, realtime, _syncSettings.NoJoypadBounce);
 
 			InitMemoryDomains();
 			InitMemoryCallbacks();
 
 			_inputcb = InputCallback;
-			LibSameboy.sameboy_setinputcallback(SameboyState, _inputcb);
+			_rumblecb = RumbleCallback;
 			_tracecb = MakeTrace;
-			LibSameboy.sameboy_settracecallback(SameboyState, null);
 
+			LibSameboy.sameboy_setinputcallback(SameboyState, _inputcb);
+			LibSameboy.sameboy_setrumblecallback(SameboyState, _rumblecb);
+
+			LibSameboy.sameboy_settracecallback(SameboyState, null);
 			LibSameboy.sameboy_setscanlinecallback(SameboyState, null, 0);
 			LibSameboy.sameboy_setprintercallback(SameboyState, null);
 
@@ -105,14 +175,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			_serviceProvider.Register<IDisassemblable>(_disassembler);
 
 			PutSettings(_settings);
-
-			_stateBuf = new byte[LibSameboy.sameboy_statelen(SameboyState)];
-
-			RomDetails = $"{game.Name}\r\n{SHA1Checksum.ComputePrefixedHex(file)}\r\n{MD5Checksum.ComputePrefixedHex(file)}\r\n";
-			BoardName = MapperName(file);
-
-			_hasAcc = BoardName is "MBC7 ROM+ACCEL+EEPROM";
-			ControllerDefinition = Gameboy.Gameboy.CreateControllerDefinition(sgb: false, sub: false, tilt: _hasAcc);
 
 			LibSameboy.sameboy_setrtcdivisoroffset(SameboyState, _syncSettings.RTCDivisorOffset);
 			CycleCount = 0;
@@ -138,6 +200,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 		{
 			IsLagFrame = false;
 			_inputCallbacks.Call();
+		}
+
+		private void RumbleCallback(int amplitude)
+		{
+			_controller.SetHapticChannelStrength("Rumble", amplitude);
 		}
 
 		public bool LinkConnected
@@ -187,7 +254,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			var _bgpal = IntPtr.Zero;
 			var _sppal = IntPtr.Zero;
 			var _oam = IntPtr.Zero;
-			int unused = 0;
+			long unused = 0;
 			if (!LibSameboy.sameboy_getmemoryarea(SameboyState, LibSameboy.MemoryAreas.VRAM, ref _vram, ref unused)
 				|| !LibSameboy.sameboy_getmemoryarea(SameboyState, LibSameboy.MemoryAreas.BGPRGB, ref _bgpal, ref unused)
 				|| !LibSameboy.sameboy_getmemoryarea(SameboyState, LibSameboy.MemoryAreas.OBPRGB, ref _sppal, ref unused)

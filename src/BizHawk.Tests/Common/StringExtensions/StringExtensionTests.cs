@@ -68,6 +68,15 @@ namespace BizHawk.Tests.Common.StringExtensions
 		}
 
 		[TestMethod]
+		public void TestSubstringAfterLast()
+		{
+			// fewer tests for SubstringAfterLast as its implementation should match SubstringAfter, save for using LastIndexOf
+
+			Assert.AreEqual("ab", "abcdabcdab".SubstringAfterLast('d', qrs));
+			Assert.AreEqual(qrs, "abcdabcdab".SubstringAfterLast('x', qrs));
+		}
+
+		[TestMethod]
 		public void TestSubstringBefore()
 		{
 			Assert.AreEqual("abc", abcdef.SubstringBefore('d', qrs));

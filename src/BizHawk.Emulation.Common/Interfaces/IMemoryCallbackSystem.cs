@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Common
 {
-
+	/// <param name="value">For reads/execs, the value read/executed; for writes, the value to be written. Cores may pass the default <c>0</c> if write/exec is partially implemented.</param>
 	public delegate void MemoryCallbackDelegate(uint address, uint value, uint flags);
 
 	/// <summary>
@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Common
 		/// Executes all matching callbacks for the given address and domain
 		/// </summary>
 		/// <param name="addr">The address to check for callbacks</param>
-		/// <param name="value">The value contained (or written to) addr</param>
+		/// <param name="value">For reads/execs, the value read/executed; for writes, the value to be written. Cores may pass the default <c>0</c> if write/exec is partially implemented.</param>
 		/// <param name="flags">The callback flags relevant to this access</param>
 		/// <param name="scope">The scope that the address pertains to. Must be a value in <see cref="AvailableScopes"/></param>
 		void CallMemoryCallbacks(uint addr, uint value, uint flags, string scope);
@@ -99,11 +99,15 @@ namespace BizHawk.Emulation.Common
 	/// This service defines a memory callback used by an IMemoryCallbackSystem implementation
 	/// </summary>
 	/// <seealso cref="IMemoryCallbackSystem"/>
+	/// <seealso cref="MemoryCallbackDelegate"/>
 	public interface IMemoryCallback
 	{
 		MemoryCallbackType Type { get; }
 		string Name { get; }
+
+		/// <seealso cref="MemoryCallbackDelegate"/>
 		MemoryCallbackDelegate Callback { get; }
+
 		uint? Address { get; }
 		uint? AddressMask { get; }
 		string Scope { get; }

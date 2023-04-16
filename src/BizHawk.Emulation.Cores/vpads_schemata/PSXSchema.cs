@@ -10,7 +10,6 @@ using BizHawk.Emulation.Cores.Sony.PSX;
 namespace BizHawk.Emulation.Cores
 {
 	[Schema(VSystemID.Raw.PSX)]
-	// ReSharper disable once UnusedMember.Global
 	public class PsxSchema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
@@ -63,7 +62,7 @@ namespace BizHawk.Emulation.Cores
 						"guncon" => NymaGunCon(num),
 						"justifier" => NymaKonamiJustifier(num),
 						"dancepad" => NymaDancePad(num),
-						_ => throw new NotSupportedException($"device {device} is not supported"),
+						_ => throw new InvalidOperationException($"device {device} is not supported")
 					};
 				}
 
@@ -112,7 +111,7 @@ namespace BizHawk.Emulation.Cores
 
 		private static PadSchema NymaDualShockController(int controller)
 		{
-			var stickRanges = new[] { new AxisSpec(0.RangeTo(0xFFFF), 0x8000), new AxisSpec(0.RangeTo(0xFFFF), 0x8000, isReversed: true) };
+			var stickRanges = new[] { new AxisSpec(0.RangeTo(0xFF), 0x80), new AxisSpec(0.RangeTo(0xFF), 0x80, isReversed: true) };
 			return new PadSchema
 			{
 				Size = new Size(500, 290),

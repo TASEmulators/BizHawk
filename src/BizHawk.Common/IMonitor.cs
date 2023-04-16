@@ -11,32 +11,23 @@ namespace BizHawk.Common
 
 	public static class MonitorExtensions
 	{
-		public static IDisposable EnterExit(this IMonitor m)
+		public static EnterExitWrapper EnterExit(this IMonitor m)
+			=> new(m);
+
+		public readonly ref struct EnterExitWrapper
 		{
-			var ret = new EnterExitWrapper(m);
-			m.Enter();
-			return ret;
-		}
+			// yes, this can be null
+			private readonly IMonitor? _m;
 
-		private class EnterExitWrapper : IDisposable
-		{
-			private readonly IMonitor _m;
-
-			private bool _disposed;
-
-			public EnterExitWrapper(IMonitor m)
+			// disallow public construction outside of EnterExit extension
+			internal EnterExitWrapper(IMonitor? m)
 			{
 				_m = m;
+				_m?.Enter();
 			}
 
 			public void Dispose()
-			{
-				if (!_disposed)
-				{
-					_m.Exit();
-					_disposed = true;
-				}
-			}
+				=> _m?.Exit();
 		}
 	}
 }

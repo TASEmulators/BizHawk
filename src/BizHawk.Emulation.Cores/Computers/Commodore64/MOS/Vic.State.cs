@@ -188,6 +188,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			ser.Sync(nameof(_enableIntSpriteCollision), ref _enableIntSpriteCollision);
 			ser.Sync(nameof(_enableIntSpriteDataCollision), ref _enableIntSpriteDataCollision);
 			ser.Sync(nameof(_extraColorMode), ref _extraColorMode);
+			ser.Sync(nameof(_hblank), ref _hblank);
 			ser.Sync(nameof(_idle), ref _idle);
 			ser.Sync(nameof(_intLightPen), ref _intLightPen);
 			ser.Sync(nameof(_intRaster), ref _intRaster);
@@ -214,6 +215,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			ser.Sync(nameof(_refreshCounter), ref _refreshCounter);
 			ser.Sync(nameof(_renderEnabled), ref _renderEnabled);
 			ser.Sync(nameof(_rowSelect), ref _rowSelect);
+			ser.Sync(nameof(_srColor0), ref _srColor0);
+			ser.Sync(nameof(_srColor1), ref _srColor1);
+			ser.Sync(nameof(_srColor2), ref _srColor2);
+			ser.Sync(nameof(_srColor3), ref _srColor3);
+			ser.Sync(nameof(_srColorEnable), ref _srColorEnable);
+			ser.Sync(nameof(_srData1), ref _srData1);
 			ser.Sync(nameof(_spriteBackgroundCollisionClearPending), ref _spriteBackgroundCollisionClearPending);
 			ser.Sync(nameof(_spriteSpriteCollisionClearPending), ref _spriteSpriteCollisionClearPending);
 			ser.Sync(nameof(_spriteMulticolor0), ref _spriteMulticolor0);

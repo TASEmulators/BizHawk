@@ -3,12 +3,13 @@ using System.Linq;
 
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
 	[PortedCore(CoreNames.GambatteLink, "sinamas/natt")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
-	public partial class GambatteLink : ILinkable, IRomInfo
+	public partial class GambatteLink : ILinkable, ILinkedGameBoyCommon, IRomInfo
 	{
 		[CoreConstructor(VSystemID.Raw.GBL)]
 		public GambatteLink(CoreLoadParameters<GambatteLinkSettings, GambatteLinkSyncSettings> lp)
@@ -50,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				_linkedCores[i].ConnectInputCallbackSystem(_inputCallbacks);
 				_linkedCores[i].ConnectMemoryCallbackSystem(_memoryCallbacks, i);
 				isAnySgb = isAnySgb || isSgb(i);
-				_linkedConts[i] = new SaveController(Gameboy.CreateControllerDefinition(sgb: isSgb(i), sub: false, tilt: false));
+				_linkedConts[i] = new SaveController(Gameboy.CreateControllerDefinition(sgb: isSgb(i), sub: false, tilt: false, rumble: false, remote: false));
 				_linkedBlips[i] = new BlipBuffer(1024);
 				_linkedBlips[i].SetRates(2097152 * 2, 44100);
 				_linkedOverflow[i] = 0;
@@ -138,10 +139,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		private readonly SaveController[] _linkedConts;
 
-		public bool IsCGBMode(int which)
-		{
-			return which < _numCores && _linkedCores[which].IsCGBMode();
-		}
+		public IGameboyCommon First
+			=> _linkedCores[0];
 
 		private ControllerDefinition GBLinkController { get; }
 

@@ -2,7 +2,6 @@
 using System.Text;
 using System.IO;
 using System.Reflection;
-using System.Linq;
 
 using BizHawk.Common.StringExtensions;
 
@@ -79,24 +78,14 @@ namespace BizHawk.Common.PathExtensions
 			//TODO merge this with the Windows implementation in MakeRelativeTo
 			static FileAttributes GetPathAttribute(string path1)
 			{
-				var di = new DirectoryInfo(path1.Split('|').First());
-				if (di.Exists)
-				{
-					return FileAttributes.Directory;
-				}
-
-				var fi = new FileInfo(path1.Split('|').First());
-				if (fi.Exists)
-				{
-					return FileAttributes.Normal;
-				}
-
+				if (Directory.Exists(path1.SubstringBefore('|'))) return FileAttributes.Directory;
+				if (File.Exists(path1.SubstringBefore('|'))) return FileAttributes.Normal;
 				throw new FileNotFoundException();
 			}
 			var path = new StringBuilder(260 /* = MAX_PATH */);
 			return Win32Imports.PathRelativePathTo(path, fromPath, GetPathAttribute(fromPath), toPath, GetPathAttribute(toPath))
 				? path.ToString()
-				: throw new ArgumentException("Paths must have a common prefix");
+				: throw new ArgumentException(message: "Paths must have a common prefix", paramName: nameof(toPath));
 		}
 
 		/// <returns>absolute path (OS-dependent) equivalent to <paramref name="path"/></returns>
@@ -161,6 +150,17 @@ namespace BizHawk.Common.PathExtensions
 		public static bool PathIsSet(this string path) => !string.IsNullOrWhiteSpace(path) && path != "." && path != "./" && path != ".\\";
 
 		public static string RemoveInvalidFileSystemChars(this string name) => string.Concat(name.Split(Path.GetInvalidFileNameChars()));
+
+		public static (string? Dir, string File) SplitPathToDirAndFile(this string path)
+			=> (Path.GetDirectoryName(path), Path.GetFileName(path));
+
+		public static (string? Dir, string FileNoExt, string? FileExt) SplitPathToDirFileAndExt(this string path)
+			=> (
+				Path.GetDirectoryName(path),
+				Path.GetFileNameWithoutExtension(path),
+				Path.GetExtension(path) is { Length: not 0 } ext
+					? ext
+					: null);
 	}
 
 	public static class PathUtils
@@ -179,6 +179,9 @@ namespace BizHawk.Common.PathExtensions
 		/// <returns>absolute path of the parent dir of DiscoHawk.exe/EmuHawk.exe, commonly referred to as <c>%exe%</c> though none of our code adds it to the environment</returns>
 		/// <remarks>returned string omits trailing slash</remarks>
 		public static readonly string ExeDirectoryPath;
+
+		public static string SpecialRecentsDir
+			=> Environment.GetFolderPath(Environment.SpecialFolder.Recent, Environment.SpecialFolderOption.DoNotVerify);
 
 		static PathUtils()
 		{

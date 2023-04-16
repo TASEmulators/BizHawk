@@ -431,14 +431,17 @@ auto SA1::writeIOSA1(uint address, uint8 data) -> void {
         mmio.mr = (uint32)((int16)mmio.ma * (int16)mmio.mb);
         mmio.mb = 0;
       } else {
-        //unsigned division
+        //signed division
         if(mmio.mb == 0) {
           mmio.mr = 0;
         } else {
           int16 dividend = mmio.ma;
           uint16 divisor = mmio.mb;
-          uint16 remainder = dividend >= 0 ? uint16(dividend % divisor) : uint16((dividend % divisor + divisor) % divisor);
-          uint16 quotient = (dividend - remainder) / divisor;
+          //sa1 division rounds toward negative infinity, but C division rounds toward zero
+          //adding divisor*65536 ensures it rounds down
+          uint32 dividend_ext = dividend + (uint32)divisor*65536;
+          uint16 remainder = dividend_ext % divisor;
+          uint16 quotient = dividend_ext / divisor - 65536;
           mmio.mr = remainder << 16 | quotient;
         }
         mmio.ma = 0;

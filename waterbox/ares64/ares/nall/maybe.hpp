@@ -13,14 +13,14 @@ struct maybe {
   maybe() {}
   maybe(nothing_t) {}
   maybe(const T& source) { operator=(source); }
-  maybe(T&& source) { operator=(move(source)); }
+  maybe(T&& source) { operator=(std::move(source)); }
   maybe(const maybe& source) { operator=(source); }
-  maybe(maybe&& source) { operator=(move(source)); }
+  maybe(maybe&& source) { operator=(std::move(source)); }
   ~maybe() { reset(); }
 
   auto operator=(nothing_t) -> maybe& { reset(); return *this; }
   auto operator=(const T& source) -> maybe& { reset(); _valid = true; new(&_value.t) T(source); return *this; }
-  auto operator=(T&& source) -> maybe& { reset(); _valid = true; new(&_value.t) T(move(source)); return *this; }
+  auto operator=(T&& source) -> maybe& { reset(); _valid = true; new(&_value.t) T(std::move(source)); return *this; }
 
   auto operator=(const maybe& source) -> maybe& {
     if(this == &source) return *this;
@@ -32,7 +32,7 @@ struct maybe {
   auto operator=(maybe&& source) -> maybe& {
     if(this == &source) return *this;
     reset();
-    if(_valid = source._valid) new(&_value.t) T(move(source.get()));
+    if(_valid = source._valid) new(&_value.t) T(std::move(source.get()));
     return *this;
   }
 

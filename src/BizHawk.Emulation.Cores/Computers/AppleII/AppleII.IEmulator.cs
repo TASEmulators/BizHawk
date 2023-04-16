@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		public string SystemId => VSystemID.Raw.AppleII;
 
-		public bool DeterministicEmulation => true;
+		public bool DeterministicEmulation { get; }
 
 		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{

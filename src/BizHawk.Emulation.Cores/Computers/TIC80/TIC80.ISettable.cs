@@ -46,6 +46,36 @@ namespace BizHawk.Emulation.Cores.Computers.TIC80
 
 		public class TIC80SyncSettings
 		{
+			[DisplayName("Gamepad 1 Enable")]
+			[Description("Ignored if game does not support gamepads.")]
+			[DefaultValue(true)]
+			public bool Gamepad1 { get; set; }
+
+			[DisplayName("Gamepad 2 Enable")]
+			[Description("Ignored if game does not support gamepads.")]
+			[DefaultValue(false)]
+			public bool Gamepad2 { get; set; }
+
+			[DisplayName("Gamepad 3 Enable")]
+			[Description("Ignored if game does not support gamepads.")]
+			[DefaultValue(false)]
+			public bool Gamepad3 { get; set; }
+
+			[DisplayName("Gamepad 4 Enable")]
+			[Description("Ignored if game does not support gamepads.")]
+			[DefaultValue(false)]
+			public bool Gamepad4 { get; set; }
+
+			[DisplayName("Mouse Enable")]
+			[Description("Ignored if game does not support the mouse.")]
+			[DefaultValue(true)]
+			public bool Mouse { get; set; }
+
+			[DisplayName("Keyboard Enable")]
+			[Description("Ignored if game does not support the keyboard.")]
+			[DefaultValue(true)]
+			public bool Keyboard { get; set; }
+
 			[DisplayName("Initial Time")]
 			[Description("Initial time of emulation.")]
 			[DefaultValue(typeof(DateTime), "2010-01-01")]

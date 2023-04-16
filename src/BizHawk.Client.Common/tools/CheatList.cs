@@ -46,6 +46,9 @@ namespace BizHawk.Client.Common
 
 		public int ActiveCount => _cheatList.Count(c => c.Enabled);
 
+		public bool AnyActive
+			=> _cheatList.Exists(static c => c.Enabled);
+
 		public bool Changes
 		{
 			get => _changes;
@@ -65,9 +68,8 @@ namespace BizHawk.Client.Common
 
 		public Cheat this[int index] => _cheatList[index];
 
-		public Cheat this[MemoryDomain domain, long address] =>
-			_cheatList.FirstOrDefault(cheat => cheat.Domain == domain && cheat.Address == address);
-
+		public Cheat this[MemoryDomain domain, long address]
+			=> _cheatList.Find(cheat => cheat.Domain == domain && cheat.Address == address);
 
 		public IEnumerator<Cheat> GetEnumerator() => _cheatList.GetEnumerator();
 
@@ -109,10 +111,7 @@ namespace BizHawk.Client.Common
 		/// <exception cref="ArgumentNullException"><paramref name="cheat"/> is null</exception>
 		public void Add(Cheat cheat)
 		{
-			if (cheat is null)
-			{
-				throw new ArgumentNullException($"{nameof(cheat)} can not be null");
-			}
+			if (cheat is null) throw new ArgumentNullException(paramName: nameof(cheat));
 
 			if (cheat.IsSeparator)
 			{
@@ -145,7 +144,7 @@ namespace BizHawk.Client.Common
 		public void Insert(int index, Cheat cheat)
 		{
 			cheat.Changed += CheatChanged;
-			if (_cheatList.Any(c => c.Domain == cheat.Domain && c.Address == cheat.Address))
+			if (_cheatList.Exists(c => c.Domain == cheat.Domain && c.Address == cheat.Address))
 			{
 				_cheatList.First(c => c.Domain == cheat.Domain && c.Address == cheat.Address).Enable();
 			}
@@ -184,9 +183,7 @@ namespace BizHawk.Client.Common
 		}
 
 		public bool Contains(Cheat cheat)
-		{
-			return _cheatList.Any(c => c == cheat);
-		}
+			=> _cheatList.Exists(c => c == cheat);
 
 		public void CopyTo(Cheat[] array, int arrayIndex)
 		{
@@ -228,13 +225,7 @@ namespace BizHawk.Client.Common
 		}
 
 		public bool IsActive(MemoryDomain domain, long address)
-		{
-			return _cheatList.Any(cheat =>
-					!cheat.IsSeparator &&
-					cheat.Enabled &&
-					cheat.Domain == domain
-					&& cheat.Contains(address));
-		}
+			=> _cheatList.Exists(cheat => !cheat.IsSeparator && cheat.Enabled && cheat.Domain == domain && cheat.Contains(address));
 
 		public void SaveOnClose()
 		{

@@ -6,6 +6,8 @@
 --  Git repository: https://github.com/rodamaral/smw-tas
 ---------------------------------------------------------------------------
 
+bit = (require "migration_helpers").EmuHawk_pre_2_9_bit();
+
 --#############################################################################
 -- CONFIG:
 
@@ -948,9 +950,11 @@ local Nextframe, Starting_subframe_next_frame, Starting_subframe_next_frame, Fin
 local function bizhawk_status()
     Movie_active = movie.isloaded()  -- BizHawk
     Readonly = movie.getreadonly()  -- BizHawk
-    Framecount = movie.length()  -- BizHawk
+    if Movie_active then
+        Framecount = movie.length()  -- BizHawk
+        Rerecords = movie.getrerecordcount()  -- BizHawk
+    end
     Lagcount = emu.lagcount()  -- BizHawk
-    Rerecords = movie.getrerecordcount()  -- BizHawk
     Is_lagged = emu.islagged()  -- BizHawk
     Game_region = emu.getdisplaytype()  -- BizHawk
     
@@ -2616,7 +2620,7 @@ local function yoshi()
         if eat_id == SMW.null_sprite_id and tongue_len == 0 and tongue_timer == 0 and tongue_wait == 0 then
             Text_opacity = 0.2
         end
-        draw_text(x_text, y_text + h, fmt("(%0s, %0s) %02d, %d, %d",
+        draw_text(x_text, y_text + h, fmt("(%s, %s) %02d, %d, %d",
                             eat_id_str, eat_type_str, tongue_len, tongue_wait, tongue_timer), COLOUR.yoshi)
         ;
         

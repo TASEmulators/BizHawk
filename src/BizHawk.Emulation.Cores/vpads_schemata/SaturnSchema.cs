@@ -10,7 +10,6 @@ using BizHawk.Emulation.Cores.Waterbox;
 namespace BizHawk.Emulation.Cores
 {
 	[Schema(VSystemID.Raw.SAT)]
-	// ReSharper disable once UnusedMember.Global
 	public class SaturnSchema : IVirtualPadSchema
 	{
 		private static readonly AxisSpec AxisRange = new AxisSpec(0.RangeTo(0xffff), 0x8000);

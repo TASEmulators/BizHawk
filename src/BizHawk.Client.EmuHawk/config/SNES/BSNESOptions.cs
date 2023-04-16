@@ -9,26 +9,42 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class BSNESOptions : Form
 	{
-		private BSNESOptions()
+		private readonly BsnesCore.SnesSettings _settings;
+		private readonly BsnesCore.SnesSyncSettings _syncSettings;
+
+		private BSNESOptions(BsnesCore.SnesSettings s, BsnesCore.SnesSyncSettings ss)
 		{
+			_settings = s;
+			_syncSettings = ss;
 			InitializeComponent();
+		}
+
+		private void OnLoad(object sender, EventArgs e)
+		{
+			EntropyBox.PopulateFromEnum(_syncSettings.Entropy);
+			AspectRatioCorrectionBox.PopulateFromEnum(_settings.AspectRatioCorrection);
+			SatellaviewCartridgeBox.PopulateFromEnum(_syncSettings.SatellaviewCartridge);
+			RegionBox.PopulateFromEnum(_syncSettings.RegionOverride);
 		}
 
 		public static DialogResult DoSettingsDialog(IDialogParent dialogParent, ISettingsAdapter settable)
 		{
 			var s = (BsnesCore.SnesSettings) settable.GetSettings();
 			var ss = (BsnesCore.SnesSyncSettings) settable.GetSyncSettings();
-			using var dlg = new BSNESOptions
+			using var dlg = new BSNESOptions(s, ss)
 			{
 				AlwaysDoubleSize = s.AlwaysDoubleSize,
 				CropSGBFrame = s.CropSGBFrame,
-				Entropy = ss.Entropy,
-				RegionOverride = ss.RegionOverride,
+				NoPPUSpriteLimit = s.NoPPUSpriteLimit,
+				ShowOverscan = s.ShowOverscan,
+				ShowCursor = s.ShowCursor,
 				Hotfixes = ss.Hotfixes,
 				FastPPU = ss.FastPPU,
 				FastDSP = ss.FastDSP,
 				FastCoprocessors = ss.FastCoprocessors,
 				UseSGB2 = ss.UseSGB2,
+				UseRealTime = ss.UseRealTime,
+				InitialTime = ss.InitialTime,
 				ShowObj1 = s.ShowOBJ_0,
 				ShowObj2 = s.ShowOBJ_1,
 				ShowObj3 = s.ShowOBJ_2,
@@ -44,33 +60,38 @@ namespace BizHawk.Client.EmuHawk
 			};
 
 			var result = dialogParent.ShowDialogAsChild(dlg);
-			if (result == DialogResult.OK)
-			{
-				s.AlwaysDoubleSize = dlg.AlwaysDoubleSize;
-				s.CropSGBFrame = dlg.CropSGBFrame;
-				ss.Entropy = dlg.Entropy;
-				ss.RegionOverride = dlg.RegionOverride;
-				ss.Hotfixes = dlg.Hotfixes;
-				ss.FastPPU = dlg.FastPPU;
-				ss.FastDSP = dlg.FastDSP;
-				ss.FastCoprocessors = dlg.FastCoprocessors;
-				ss.UseSGB2 = dlg.UseSGB2;
-				s.ShowOBJ_0 = dlg.ShowObj1;
-				s.ShowOBJ_1 = dlg.ShowObj2;
-				s.ShowOBJ_2 = dlg.ShowObj3;
-				s.ShowOBJ_3 = dlg.ShowObj4;
-				s.ShowBG1_0 = dlg.ShowBg1_0;
-				s.ShowBG1_1 = dlg.ShowBg1_1;
-				s.ShowBG2_0 = dlg.ShowBg2_0;
-				s.ShowBG2_1 = dlg.ShowBg2_1;
-				s.ShowBG3_0 = dlg.ShowBg3_0;
-				s.ShowBG3_1 = dlg.ShowBg3_1;
-				s.ShowBG4_0 = dlg.ShowBg4_0;
-				s.ShowBG4_1 = dlg.ShowBg4_1;
+			if (!result.IsOk()) return result;
 
-				settable.PutCoreSettings(s);
-				settable.PutCoreSyncSettings(ss);
-			}
+			s.AlwaysDoubleSize = dlg.AlwaysDoubleSize;
+			s.CropSGBFrame = dlg.CropSGBFrame;
+			s.NoPPUSpriteLimit = dlg.NoPPUSpriteLimit;
+			s.ShowOverscan = dlg.ShowOverscan;
+			s.ShowCursor = dlg.ShowCursor;
+			s.AspectRatioCorrection = dlg.AspectRatioCorrection;
+			ss.Entropy = dlg.Entropy;
+			ss.RegionOverride = dlg.RegionOverride;
+			ss.Hotfixes = dlg.Hotfixes;
+			ss.FastPPU = dlg.FastPPU;
+			ss.FastDSP = dlg.FastDSP;
+			ss.FastCoprocessors = dlg.FastCoprocessors;
+			ss.UseSGB2 = dlg.UseSGB2;
+			ss.SatellaviewCartridge = dlg.SatellaviewCartridge;
+			ss.UseRealTime = dlg.UseRealTime;
+			ss.InitialTime = dlg.InitialTime;
+			s.ShowOBJ_0 = dlg.ShowObj1;
+			s.ShowOBJ_1 = dlg.ShowObj2;
+			s.ShowOBJ_2 = dlg.ShowObj3;
+			s.ShowOBJ_3 = dlg.ShowObj4;
+			s.ShowBG1_0 = dlg.ShowBg1_0;
+			s.ShowBG1_1 = dlg.ShowBg1_1;
+			s.ShowBG2_0 = dlg.ShowBg2_0;
+			s.ShowBG2_1 = dlg.ShowBg2_1;
+			s.ShowBG3_0 = dlg.ShowBg3_0;
+			s.ShowBG3_1 = dlg.ShowBg3_1;
+			s.ShowBG4_0 = dlg.ShowBg4_0;
+			s.ShowBG4_1 = dlg.ShowBg4_1;
+			settable.PutCoreSettings(s);
+			settable.PutCoreSyncSettings(ss);
 			return result;
 		}
 
@@ -86,6 +107,26 @@ namespace BizHawk.Client.EmuHawk
 			init => cbCropSGBFrame.Checked = value;
 		}
 
+		private bool NoPPUSpriteLimit
+		{
+			get => cbNoPPUSpriteLimit.Checked;
+			init => cbNoPPUSpriteLimit.Checked = value;
+		}
+
+		private bool ShowOverscan
+		{
+			get => cbShowOverscan.Checked;
+			init => cbShowOverscan.Checked = value;
+		}
+
+		private bool ShowCursor
+		{
+			get => cbShowCursor.Checked;
+			init => cbShowCursor.Checked = value;
+		}
+
+		private BsnesApi.ASPECT_RATIO_CORRECTION AspectRatioCorrection => (BsnesApi.ASPECT_RATIO_CORRECTION)AspectRatioCorrectionBox.SelectedIndex;
+
 		private bool Hotfixes
 		{
 			get => cbGameHotfixes.Checked;
@@ -95,7 +136,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool FastPPU
 		{
 			get => cbFastPPU.Checked;
-			init => cbDoubleSize.Enabled = cbFastPPU.Checked = value;
+			init => cbDoubleSize.Enabled = cbNoPPUSpriteLimit.Enabled = cbFastPPU.Checked = value;
 		}
 
 		private bool FastDSP
@@ -116,17 +157,23 @@ namespace BizHawk.Client.EmuHawk
 			init => cbUseSGB2.Checked = value;
 		}
 
-		private BsnesApi.ENTROPY Entropy
+		private bool UseRealTime
 		{
-			get => (BsnesApi.ENTROPY) EntropyBox.SelectedIndex;
-			init => EntropyBox.SelectedIndex = (int) value;
+			get => cbUseRealTime.Checked;
+			init => cbUseRealTime.Checked = value;
 		}
 
-		private BsnesApi.REGION_OVERRIDE RegionOverride
+		private DateTime InitialTime
 		{
-			get => (BsnesApi.REGION_OVERRIDE)RegionBox.SelectedIndex;
-			init => RegionBox.SelectedIndex = (int)value;
+			get => dtpInitialTime.Value;
+			init => dtpInitialTime.Value = value;
 		}
+
+		private BsnesApi.ENTROPY Entropy => (BsnesApi.ENTROPY) EntropyBox.SelectedIndex;
+
+		private BsnesApi.REGION_OVERRIDE RegionOverride => (BsnesApi.REGION_OVERRIDE)RegionBox.SelectedIndex;
+
+		private BsnesCore.SATELLAVIEW_CARTRIDGE SatellaviewCartridge => (BsnesCore.SATELLAVIEW_CARTRIDGE)SatellaviewCartridgeBox.SelectedIndex;
 
 		private bool ShowObj1 { get => Obj1Checkbox.Checked; init => Obj1Checkbox.Checked = value; }
 		private bool ShowObj2 { get => Obj2Checkbox.Checked; init => Obj2Checkbox.Checked = value; }
@@ -156,7 +203,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FastPPU_CheckedChanged(object sender, EventArgs e)
 		{
-			cbDoubleSize.Enabled = cbFastPPU.Checked;
+			cbDoubleSize.Enabled = cbNoPPUSpriteLimit.Enabled = cbFastPPU.Checked;
 		}
 	}
 }

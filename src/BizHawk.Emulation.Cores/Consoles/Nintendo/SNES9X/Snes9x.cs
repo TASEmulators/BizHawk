@@ -198,7 +198,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			public void ApplyState(IController controller, short[] input, int offset)
 			{
 				foreach (var s in Definition.Axes.Keys)
-					input[offset++] = (short)(controller.AxisValue(s));
+					input[offset++] = (short)controller.AxisValue(s);
 				foreach (var s in Definition.BoolButtons)
 					input[offset++] = (short)(controller.IsPressed(s) ? 1 : 0);
 			}
@@ -208,7 +208,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 		{
 			private static readonly ControllerDefinition _definition
 				= new ControllerDefinition("(SNES Controller fragment)") { BoolButtons = { "0Mouse Left", "0Mouse Right" } }
-					.AddXYPair("0Mouse {0}", AxisPairOrientation.RightAndUp, (-127).RangeTo(127), 0); //TODO verify direction against hardware
+					.AddXYPair("0Mouse {0}", AxisPairOrientation.RightAndDown, (-127).RangeTo(127), 0); //TODO verify direction against hardware
 
 			public override ControllerDefinition Definition => _definition;
 		}
@@ -216,7 +216,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 		private class SuperScope : Analog
 		{
 			private static readonly ControllerDefinition _definition
-				= new ControllerDefinition("(SNES Controller fragment)") { BoolButtons = { "0Trigger", "0Cursor", "0Turbo", "0Pause" } }
+				= new ControllerDefinition("(SNES Controller fragment)") { BoolButtons = { "0Trigger", "0Cursor", "0Turbo", "0Pause", "0Offscreen" } }
 					.AddLightGun("0Scope {0}");
 
 			public override ControllerDefinition Definition => _definition;
@@ -225,7 +225,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 		private class Justifier : Analog
 		{
 			private static readonly ControllerDefinition _definition
-				= new ControllerDefinition("(SNES Controller fragment)") { BoolButtons = { "0Trigger", "0Start" } }
+				= new ControllerDefinition("(SNES Controller fragment)") { BoolButtons = { "0Trigger", "0Start", "0Offscreen" } }
 					.AddLightGun("0Justifier {0}");
 
 			public override ControllerDefinition Definition => _definition;

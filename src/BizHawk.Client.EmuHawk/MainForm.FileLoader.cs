@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
+using BizHawk.Common.PathExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -31,10 +32,10 @@ namespace BizHawk.Client.EmuHawk
 			public string FileName { get; }
 			public string ArchiveName { get; }
 
-			public FileInformation(string directory, string file, string archive)
+			public FileInformation((string Dir, string File) FilePathSplit, string archive)
 			{
-				DirectoryName = directory;
-				FileName = file;
+				DirectoryName = FilePathSplit.Dir;
+				FileName = FilePathSplit.File;
 				ArchiveName = archive;
 			}
 		}
@@ -86,40 +87,29 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void LoadMovie(string filename, string archive = null)
+		public bool LoadMovie(string filename, string archive = null)
 		{
 			if (Emulator.IsNull())
 			{
 				OpenRom();
-				if (Emulator.IsNull())
-				{
-					return;
-				}
+				if (Emulator.IsNull()) return false;
 			}
-
-			if (Tools.IsLoaded<TAStudio>())
-			{
-				Tools.TAStudio.LoadMovieFile(filename);
-			}
-			else
-			{
-				StartNewMovie(MovieSession.Get(filename), false);
-			}
+			return Tools.IsLoaded<TAStudio>()
+				? Tools.TAStudio.LoadMovieFile(filename)
+				: StartNewMovie(MovieSession.Get(filename), false);
 		}
 
-		private void LoadRom(string filename, string archive = null)
+		private bool LoadRom(string filename, string archive = null)
 		{
 			var args = new LoadRomArgs
 			{
 				OpenAdvanced = new OpenAdvanced_OpenRom {Path = filename}
 			};
-			LoadRom(filename, args);
+			return LoadRom(filename, args);
 		}
 
-		private void LoadStateFile(string filename, string archive = null)
-		{
-			LoadState(filename, Path.GetFileName(filename));
-		}
+		private bool LoadStateFile(string filename, string archive = null)
+			=> LoadState(path: filename, userFriendlyStateName: Path.GetFileName(filename));
 
 		private void LoadWatch(string filename, string archive = null)
 		{
@@ -132,7 +122,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (string file in fileList)
 			{
 				var ext = Path.GetExtension(file)?.ToUpperInvariant() ?? "";
-				FileInformation fileInformation = new FileInformation(Path.GetDirectoryName(file), Path.GetFileName(file), archive);
+				FileInformation fileInformation = new(file.SplitPathToDirAndFile(), archive);
 
 				switch (ext)
 				{
@@ -266,16 +256,16 @@ namespace BizHawk.Client.EmuHawk
 					case 0:
 						break;
 					case 1:
-						var fileInformation = sortedFiles[value].First();
+						var fileInformation = sortedFiles[value][0];
 						string filename = Path.Combine(new[] { fileInformation.DirectoryName, fileInformation.FileName });
 
 						switch (value)
 						{
 							case LoadOrdering.Rom:
-								LoadRom(filename, fileInformation.ArchiveName);
+								_ = LoadRom(filename, fileInformation.ArchiveName);
 								break;
 							case LoadOrdering.State:
-								LoadStateFile(filename, fileInformation.ArchiveName);
+								_ = LoadStateFile(filename, fileInformation.ArchiveName);
 								break;
 							case LoadOrdering.Watch:
 								LoadWatch(filename, fileInformation.ArchiveName);
@@ -298,10 +288,8 @@ namespace BizHawk.Client.EmuHawk
 								if (sortedFiles[LoadOrdering.MovieFile].Count + sortedFiles[LoadOrdering.LegacyMovieFile].Count > 1)
 									break;
 
-								if (value == LoadOrdering.MovieFile)
-									LoadMovie(filename, fileInformation.ArchiveName);
-								else
-									LoadLegacyMovie(filename, fileInformation.ArchiveName);
+								if (value == LoadOrdering.MovieFile) _ = LoadMovie(filename, fileInformation.ArchiveName);
+								else LoadLegacyMovie(filename, fileInformation.ArchiveName);
 								break;
 						}
 						break;

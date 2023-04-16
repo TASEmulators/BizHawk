@@ -7,7 +7,7 @@ struct emitter {
   template<typename... P>
   alwaysinline auto byte(u8 data, P&&... p) {
     span.write(data);
-    byte(forward<P>(p)...);
+    byte(std::forward<P>(p)...);
   }
 
   alwaysinline auto word(u16 data) {

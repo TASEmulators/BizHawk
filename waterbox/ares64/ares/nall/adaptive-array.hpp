@@ -43,7 +43,7 @@ struct adaptive_array {
   }
 
   auto append(T&& value) -> void {
-    new(_pool.t + _size++) T(move(value));
+    new(_pool.t + _size++) T(std::move(value));
   }
 
   auto begin() { return &_pool.t[0]; }

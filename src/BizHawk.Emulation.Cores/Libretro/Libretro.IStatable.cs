@@ -5,48 +5,55 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Libretro
 {
-	public partial class LibretroEmulator : IStatable
+	// not all Libretro cores implement savestates
+	// we use this so we can optionally register IStatable
+	// todo: this can probably be genericized
+	public class StatableLibretro : IStatable
 	{
-		private byte[] _stateBuf;
-		private long _stateLen;
+		private readonly LibretroHost _host;
+		private readonly LibretroApi _api;
+		private readonly byte[] _stateBuf;
+
+		public StatableLibretro(LibretroHost host, LibretroApi api, int maxSize)
+		{
+			_host = host;
+			_api = api;
+			_stateBuf = new byte[maxSize];
+		}
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
-			UpdateCallbackHandler();
-
-			_stateLen = api.retro_serialize_size();
-			if (_stateBuf.LongLength != _stateLen)
+			var len = checked((int)_api.retro_serialize_size());
+			if (len > _stateBuf.Length)
 			{
-				_stateBuf = new byte[_stateLen];
+				throw new Exception("Core attempted to grow state size. This is not allowed per the libretro API.");
 			}
 
-			var d = new RetroData(_stateBuf, _stateLen);
-			api.retro_serialize(d.PinnedData, d.Length);
-			writer.Write(_stateBuf.Length);
-			writer.Write(_stateBuf);
-			// other variables
-			writer.Write(Frame);
-			writer.Write(LagCount);
-			writer.Write(IsLagFrame);
+			_api.retro_serialize(_stateBuf, len);
+			writer.Write(len);
+			writer.Write(_stateBuf, 0, len);
+
+			// host variables
+			writer.Write(_host.Frame);
+			writer.Write(_host.LagCount);
+			writer.Write(_host.IsLagFrame);
 		}
 
 		public void LoadStateBinary(BinaryReader reader)
 		{
-			UpdateCallbackHandler();
-
-			var newlen = reader.ReadInt32();
-			if (newlen > _stateBuf.Length)
+			var len = reader.ReadInt32();
+			if (len > _stateBuf.Length)
 			{
-				throw new Exception("Unexpected buffer size");
+				throw new Exception("State buffer size exceeded the core's maximum state size!");
 			}
 
-			reader.Read(_stateBuf, 0, newlen);
-			var d = new RetroData(_stateBuf, _stateLen);
-			api.retro_unserialize(d.PinnedData, d.Length);
-			// other variables
-			Frame = reader.ReadInt32();
-			LagCount = reader.ReadInt32();
-			IsLagFrame = reader.ReadBoolean();
+			reader.Read(_stateBuf, 0, len);
+			_api.retro_unserialize(_stateBuf, len);
+
+			// host variables
+			_host.Frame = reader.ReadInt32();
+			_host.LagCount = reader.ReadInt32();
+			_host.IsLagFrame = reader.ReadBoolean();
 		}
 	}
 }

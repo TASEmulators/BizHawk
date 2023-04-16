@@ -53,7 +53,8 @@ extern "C" {
 /* #define SLJIT_CONFIG_PPC_64 1 */
 /* #define SLJIT_CONFIG_MIPS_32 1 */
 /* #define SLJIT_CONFIG_MIPS_64 1 */
-/* #define SLJIT_CONFIG_SPARC_32 1 */
+/* #define SLJIT_CONFIG_RISCV_32 1 */
+/* #define SLJIT_CONFIG_RISCV_64 1 */
 /* #define SLJIT_CONFIG_S390X 1 */
 
 /* #define SLJIT_CONFIG_AUTO 1 */
@@ -95,7 +96,9 @@ extern "C" {
 
 /* Executable code allocation:
    If SLJIT_EXECUTABLE_ALLOCATOR is not defined, the application should
-   define SLJIT_MALLOC_EXEC, SLJIT_FREE_EXEC, and SLJIT_EXEC_OFFSET. */
+   define SLJIT_MALLOC_EXEC and SLJIT_FREE_EXEC.
+   Optionally, depending on the implementation used for the allocator,
+   SLJIT_EXEC_OFFSET and SLJIT_UPDATE_WX_FLAGS might also be needed. */
 #ifndef SLJIT_EXECUTABLE_ALLOCATOR
 /* Enabled by default. */
 #define SLJIT_EXECUTABLE_ALLOCATOR 1
@@ -126,17 +129,6 @@ extern "C" {
 #endif
 
 #endif /* !SLJIT_EXECUTABLE_ALLOCATOR */
-
-/* Force cdecl calling convention even if a better calling
-   convention (e.g. fastcall) is supported by the C compiler.
-   If this option is disabled (this is the default), functions
-   called from JIT should be defined with SLJIT_FUNC attribute.
-   Standard C functions can still be called by using the
-   SLJIT_CALL_CDECL jump type. */
-#ifndef SLJIT_USE_CDECL_CALLING_CONVENTION
-/* Disabled by default */
-#define SLJIT_USE_CDECL_CALLING_CONVENTION 0
-#endif
 
 /* Return with error when an invalid argument is passed. */
 #ifndef SLJIT_ARGUMENT_CHECKS

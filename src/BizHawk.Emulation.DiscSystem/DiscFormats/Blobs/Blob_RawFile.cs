@@ -10,21 +10,22 @@ namespace BizHawk.Emulation.DiscSystem
 			set
 			{
 				physicalPath = value;
-				length = new FileInfo(physicalPath).Length;
+				Length = new FileInfo(physicalPath).Length;
 			}
 		}
 
 		private string physicalPath;
-		private long length;
 
 		public readonly long Offset = 0;
 
 		private BufferedStream fs;
+		
 		public void Dispose()
 		{
 			fs?.Dispose();
 			fs = null;
 		}
+		
 		public int Read(long byte_pos, byte[] buffer, int offset, int count)
 		{
 			//use quite a large buffer, because normally we will be reading these sequentially but in small chunks.
@@ -34,12 +35,13 @@ namespace BizHawk.Emulation.DiscSystem
 			//really, we need a smarter asynchronous read-ahead buffer. that requires substantially more engineering, some kind of 'DiscUniverse' of carefully managed threads and such.
 
 			const int buffersize = 2352 * 75 * 2;
-			fs ??= new BufferedStream(new FileStream(physicalPath, FileMode.Open, FileAccess.Read, FileShare.Read), buffersize);
-			long target = byte_pos + Offset;
+			fs ??= new(new FileStream(physicalPath, FileMode.Open, FileAccess.Read, FileShare.Read), buffersize);
+			var target = byte_pos + Offset;
 			if (fs.Position != target)
 				fs.Position = target;
 			return fs.Read(buffer, offset, count);
 		}
-		public long Length => length;
+		
+		public long Length { get; private set; }
 	}
 }

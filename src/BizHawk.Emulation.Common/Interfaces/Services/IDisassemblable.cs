@@ -46,11 +46,7 @@ namespace BizHawk.Emulation.Common
 			get => _cpu ??= AvailableCpus.First();
 			set
 			{
-				if (!AvailableCpus.Contains(value))
-				{
-					throw new ArgumentException();
-				}
-
+				if (!AvailableCpus.Contains(value)) throw new ArgumentException(message: $"must be the name of a CPU with disassembly available (see {nameof(AvailableCpus)})", paramName: nameof(value));
 				_cpu = value;
 			}
 		}

@@ -11,8 +11,6 @@ local box   = gui.drawBox
 local text  = gui.text
 local ptext = gui.pixelText
 local line  = gui.drawLine
-local AND   = bit.band
-local SHIFT = bit.rshift
 
 --== RAM addresses ==--
 local levnum      = 0xff00ba
@@ -129,11 +127,11 @@ local function CamhackHUD()
 end
 
 local function PosToIndex(x, y)
-	return math.floor(x/16)+math.floor(y/16)*xblocks
+	return (x // 16)+(y // 16)*xblocks
 end
 
 local function IndexToPos(i)
-	return { x=(i%xblocks)*16, y=math.floor(i/xblocks)*16 }
+	return { x=(i%xblocks)*16, y=(i // xblocks)*16 }
 end
 
 local function InBounds(x, minimum, maximum)
@@ -153,9 +151,9 @@ local function GetBlock(x, y)
 		local x2  = x1+size-1
 		local y1  = y/div-camy/div
 		local y2  = y1+size-1
-		local d4  = rw(mapline_tab+SHIFT(y, 4)*2)
+		local d4  = rw(mapline_tab+(y >> 4)*2)
 		local a1  = r24(LevelFlr+1)
-		local d1  = SHIFT(rw(MapA_Buff+d4+SHIFT(x, 4)*2), 1)
+		local d1  = rw(MapA_Buff+d4+(x >> 4)*2) >> 1
 		final.block = rb(a1+d1+2)
 		d1 = rw(a1+d1)
 		a1 = r24(LevelCon+1)+d1
@@ -326,7 +324,7 @@ local function Objects()
 	if working > 0 then return end
 	for i=0, 63 do
 		local base = GlobalBase+i*128
-		local flag2 = AND(rb(base+0x49), 0x10) -- active
+		local flag2 = rb(base+0x49) & 0x10 -- active
 		if flag2 == 0x10 then
 			local xpos  = rw (base+0x00)
 			local ypos  = rw (base+0x02)
@@ -390,7 +388,7 @@ local function PostRndRoll()
 			local y     = (ypos-camy)/div
 			local num   = id/6
 			local ymsg  = 0
-			local yoffs = math.floor((i-1)/MsgCutoff)*14
+			local yoffs = ((i-1) // MsgCutoff)*14
 			local name  = types[num]
 			local color = 0xffffff00
 			
@@ -477,7 +475,7 @@ event.onframeend(function()
 end)
 
 event.onmemoryexecute(function()
-	local a0 = AND(emu.getregister("M68K A0"), 0xffffff)
+	local a0 = emu.getregister("M68K A0") & 0xffffff
 	if a0 ~= 0xff4044 then
 		for i = 1, 200 do
 			if MsgTable[i] == nil then
@@ -506,7 +504,7 @@ local function main()
 	backy    = camy
 	Xspd     = Xpos-XposLast
 	Yspd     = Ypos-YposLast
-	facing   = AND(rb(GolBase+0x48), 2) -- object flag 1
+	facing   = rb(GolBase+0x48) & 2 -- object flag 1
 	if working > 0 then MsgTable = {} end
 	Background()
 	PlayerBoxes()
@@ -519,4 +517,5 @@ end
 while true do
 	main()
 	emu.frameadvance()
+	gui.clearGraphics()
 end

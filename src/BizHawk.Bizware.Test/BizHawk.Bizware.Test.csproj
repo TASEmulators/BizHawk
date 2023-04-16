@@ -9,7 +9,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<Reference Include="System.Windows.Forms" />
-		<PackageReference Include="OpenTK" Version="3.3.2" PrivateAssets="all" NoWarn="NU1701" />
+		<PackageReference Include="OpenTK" Version="3.3.3" PrivateAssets="all" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Client.EmuHawk/BizHawk.Client.EmuHawk.csproj" />
 		<EmbeddedResource Include="TestImages/**/*" />
 	</ItemGroup>

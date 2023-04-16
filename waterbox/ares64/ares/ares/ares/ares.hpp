@@ -10,10 +10,12 @@
 #include <nall/any.hpp>
 #include <nall/array.hpp>
 #include <nall/bump-allocator.hpp>
+#include <nall/case-range.hpp>
 #include <nall/chrono.hpp>
 #include <nall/directory.hpp>
 #include <nall/dl.hpp>
 #include <nall/endian.hpp>
+#include <nall/hashset.hpp>
 #include <nall/image.hpp>
 #include <nall/literals.hpp>
 #include <nall/priority-queue.hpp>
@@ -37,10 +39,11 @@
 #include <nall/hash/crc32.hpp>
 #include <nall/hash/sha256.hpp>
 using namespace nall;
+using namespace nall::primitives;
 
 namespace ares {
   static const string Name       = "ares";
-  static const string Version    = "128";
+  static const string Version    = "132";
   static const string Copyright  = "ares team, Near";
   static const string License    = "ISC";
   static const string LicenseURI = "https://opensource.org/licenses/ISC";
@@ -49,7 +52,6 @@ namespace ares {
 
   //incremented only when serialization format changes
   static const u32    SerializerSignature = 0x31545342;  //"BST1" (little-endian)
-  static const string SerializerVersion   = "128";
 
   namespace VFS {
     using Pak = shared_pointer<vfs::directory>;

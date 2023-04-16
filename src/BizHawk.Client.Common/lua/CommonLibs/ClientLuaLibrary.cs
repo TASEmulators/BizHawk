@@ -26,7 +26,7 @@ namespace BizHawk.Client.Common
 
 		public IMainFormForApi MainForm { get; set; }
 
-		public ClientLuaLibrary(IPlatformLuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+		public ClientLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "client";
@@ -73,7 +73,11 @@ namespace BizHawk.Client.Common
 		[LuaMethodExample("client.closerom( );")]
 		[LuaMethod("closerom", "Closes the loaded Rom")]
 		public void CloseRom()
-			=> APIs.EmuClient.CloseRom();
+		{
+			_luaLibsImpl.IsRebootingCore = true;
+			APIs.EmuClient.CloseRom();
+			_luaLibsImpl.IsRebootingCore = false;
+		}
 
 		[LuaMethodExample("client.enablerewind( true );")]
 		[LuaMethod("enablerewind", "Sets whether or not the rewind feature is enabled")]
@@ -86,7 +90,6 @@ namespace BizHawk.Client.Common
 			=> APIs.EmuClient.FrameSkip(numFrames);
 
 		[LuaMethod("get_lua_engine", "returns the name of the Lua engine currently in use")]
-		[return: LuaASCIIStringParam]
 		public string GetLuaEngine()
 			=> _luaLibsImpl.EngineName;
 
@@ -193,13 +196,14 @@ namespace BizHawk.Client.Common
 		public void OpenRamSearch()
 			=> APIs.Tool.OpenRamSearch();
 
-		[LuaMethodExample("client.openrom( \"C:\\\" );")]
-		[LuaMethod("openrom", "opens the Open ROM dialog")]
-		public void OpenRom([LuaArbitraryStringParam] string path)
+		[LuaMethodExample("client.openrom( \"C:\\rom.bin\" );")]
+		[LuaMethod("openrom", "Loads a ROM from the given path. Returns true if the ROM was successfully loaded, otherwise false.")]
+		public bool OpenRom(string path)
 		{
 			_luaLibsImpl.IsRebootingCore = true;
-			APIs.EmuClient.OpenRom(FixString(path));
+			var success = APIs.EmuClient.OpenRom(path);
 			_luaLibsImpl.IsRebootingCore = false;
+			return success;
 		}
 
 		[LuaMethodExample("client.opentasstudio( );")]
@@ -243,8 +247,8 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("client.screenshot( \"C:\\\" );")]
 		[LuaMethod("screenshot", "if a parameter is passed it will function as the Screenshot As menu item of EmuHawk, else it will function as the Screenshot menu item")]
-		public void Screenshot([LuaArbitraryStringParam] string path = null)
-			=> APIs.EmuClient.Screenshot(FixString(path));
+		public void Screenshot(string path = null)
+			=> APIs.EmuClient.Screenshot(path);
 
 		[LuaMethodExample("client.screenshottoclipboard( );")]
 		[LuaMethod("screenshottoclipboard", "Performs the same function as EmuHawk's Screenshot To Clipboard menu item")]
@@ -278,7 +282,6 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local curSpeed = client.getconfig().SpeedPercent")]
 		[LuaMethod("getconfig", "gets the current config settings object")]
-		[return: LuaArbitraryStringParam] // too hard to do properly
 		public object GetConfig()
 			=> ((EmulationApi) APIs.Emulation).ForbiddenConfigReference;
 
@@ -319,7 +322,6 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local incbhver = client.getversion( );")]
 		[LuaMethod("getversion", "Returns the current stable BizHawk version")]
-		[return: LuaASCIIStringParam]
 		public static string GetVersion()
 		{
 			return VersionInfo.MainVersion;
@@ -327,14 +329,12 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local nlcliget = client.getavailabletools( );")]
 		[LuaMethod("getavailabletools", "Returns a list of the tools currently open")]
-		[return: LuaASCIIStringParam]
 		public LuaTable GetAvailableTools()
 			=> _th.EnumerateToLuaTable(APIs.Tool.AvailableTools.Select(tool => tool.Name.ToLower()), indexFrom: 0);
 
 		[LuaMethodExample("local nlcliget = client.gettool( \"Tool name\" );")]
-		[LuaMethod("gettool", "Returns an object that represents a tool of the given name (not case sensitive). If the tool is not open, it will be loaded if available. Use gettools to get a list of names")]
-		[return: LuaArbitraryStringParam] // too hard to do properly
-		public LuaTable GetTool([LuaASCIIStringParam] string name)
+		[LuaMethod("gettool", "Returns an object that represents a tool of the given name (not case sensitive). If the tool is not open, it will be loaded if available. Use getavailabletools to get a list of names")]
+		public LuaTable GetTool(string name)
 		{
 			var selectedTool = APIs.Tool.GetTool(name);
 			return selectedTool == null ? null : _th.ObjectToTable(selectedTool);
@@ -342,8 +342,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local nlclicre = client.createinstance( \"objectname\" );")]
 		[LuaMethod("createinstance", "returns a default instance of the given type of object if it exists (not case sensitive). Note: This will only work on objects which have a parameterless constructor.  If no suitable type is found, or the type does not have a parameterless constructor, then nil is returned")]
-		[return: LuaArbitraryStringParam] // too hard to do properly
-		public LuaTable CreateInstance([LuaASCIIStringParam] string name)
+		public LuaTable CreateInstance(string name)
 		{
 			var instance = APIs.Tool.CreateInstance(name);
 			return instance == null ? null : _th.ObjectToTable(instance);
@@ -386,7 +385,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("client.addcheat(\"NNNPAK\");")]
 		[LuaMethod("addcheat", "adds a cheat code, if supported")]
-		public void AddCheat([LuaASCIIStringParam] string code)
+		public void AddCheat(string code)
 		{
 			if (string.IsNullOrWhiteSpace(code))
 			{
@@ -415,7 +414,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("client.removecheat(\"NNNPAK\");")]
 		[LuaMethod("removecheat", "removes a cheat, if it already exists")]
-		public void RemoveCheat([LuaASCIIStringParam] string code)
+		public void RemoveCheat(string code)
 		{
 			if (string.IsNullOrWhiteSpace(code))
 			{

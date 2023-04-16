@@ -11,6 +11,9 @@ typedef std::uint16_t u16;
 typedef std::uint32_t u32;
 typedef std::uint64_t u64;
 
+typedef float f32;
+typedef double f64;
+
 typedef u8 boolean;
 
 #define EXPORT extern "C" __attribute__((visibility("default")))
@@ -353,6 +356,24 @@ enum class RETRO_LOG {
 	WARN,
 	ERROR,
 	DUMMY = INT_MAX,
+};
+
+struct retro_game_geometry {
+	u32 base_width;
+	u32 base_height;
+	u32 max_width;
+	u32 max_height;
+	f32 aspect_ratio;
+};
+
+struct retro_system_timing {
+	f64 fps;
+	f64 sample_rate;
+};
+
+struct retro_system_av_info {
+	retro_game_geometry geometry;
+	retro_system_timing timing;
 };
 
 struct retro_variable {

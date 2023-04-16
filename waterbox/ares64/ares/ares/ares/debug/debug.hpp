@@ -4,19 +4,19 @@ struct Debug {
   auto reset() -> void;
 
   template<typename... P> auto unhandled(P&&... p) -> void {
-    return _unhandled({forward<P>(p)...});
+    return _unhandled({std::forward<P>(p)...});
   }
 
   template<typename... P> auto unimplemented(P&&... p) -> void {
-    return _unimplemented({forward<P>(p)...});
+    return _unimplemented({std::forward<P>(p)...});
   }
 
   template<typename... P> auto unusual(P&&... p) -> void {
-    return _unusual({forward<P>(p)...});
+    return _unusual({std::forward<P>(p)...});
   }
 
   template<typename... P> auto unverified(P&&... p) -> void {
-    return _unverified({forward<P>(p)...});
+    return _unverified({std::forward<P>(p)...});
   }
 
 private:

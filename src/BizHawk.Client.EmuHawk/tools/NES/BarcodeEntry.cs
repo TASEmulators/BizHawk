@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Drawing;
+
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Common;
@@ -7,6 +9,9 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class BarcodeEntry : ToolFormBase
 	{
+		public static Icon ToolIcon
+			=> Properties.Resources.NesControllerIcon;
+
 		[RequiredService]
 		private DatachBarcode Reader { get; set; }
 
@@ -15,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 		public BarcodeEntry()
 		{
 			InitializeComponent();
-			Icon = Properties.Resources.NesControllerIcon;
+			Icon = ToolIcon;
 		}
 
 		public override void Restart()

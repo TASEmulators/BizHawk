@@ -13,5 +13,7 @@
 		void Sync(string name, ref byte[] val, bool useNull);
 		void Sync(string name, ref ushort[] val, bool useNull);
 		void Sync(string name, ref int[] val, bool useNull);
+
+		void SyncDelta<T>(string name, T[] original, T[] current) where T : unmanaged;
 	}
 }

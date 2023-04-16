@@ -90,7 +90,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		{
 			ser.Sync("BankMask", ref _bankMask);
 			ser.Sync("BankNumber", ref _bankNumber);
-			ser.Sync("CurrentBank", ref _currentBank, useNull: false);
+
+			if (ser.IsReader)
+			{
+				BankSet(_bankNumber);
+			}
 		}
 
 		protected void BankSet(int index)
@@ -129,17 +133,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		public override void WriteDE00(int addr, int val)
 		{
 			BankSet(addr);
-		}
-
-		public override void SyncState(Serializer ser)
-		{
-			ser.Sync(nameof(_bankMask), ref _bankMask);
-			ser.Sync(nameof(_bankNumber), ref _bankNumber);
-			base.SyncState(ser);
-			if (ser.IsReader)
-			{
-				BankSet(_bankNumber);
-			}
 		}
 	}
 }

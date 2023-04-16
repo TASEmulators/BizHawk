@@ -8,8 +8,10 @@
   typedef int64_t intmax_t;
   #if defined(_WIN64)
   typedef int64_t intptr_t;
+  typedef int64_t ssize_t;
   #else
   typedef int32_t intptr_t;
+  typedef int32_t ssize_t;
   #endif
 
   typedef unsigned char uint8_t;
@@ -80,4 +82,7 @@ using f64 = float64_t;
 #if defined(__SIZEOF_INT128__)
   using s128 =  int128_t;
   using u128 = uint128_t;
+#else
+  //arithmetic.hpp
+  namespace nall { struct u128; }
 #endif

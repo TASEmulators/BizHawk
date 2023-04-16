@@ -7,13 +7,36 @@ namespace BizHawk.Client.Common
 {
 	public sealed class NamedLuaFunction : INamedLuaFunction
 	{
+		public const string EVENT_TYPE_CONSOLECLOSE = "OnConsoleClose";
+
+		public const string EVENT_TYPE_ENGINESTOP = "OnExit";
+
+		public const string EVENT_TYPE_INPUTPOLL = "OnInputPoll";
+
+		public const string EVENT_TYPE_LOADSTATE = "OnSavestateLoad";
+
+		public const string EVENT_TYPE_MEMEXEC = "OnMemoryExecute";
+
+		public const string EVENT_TYPE_MEMEXECANY = "OnMemoryExecuteAny";
+
+		public const string EVENT_TYPE_MEMREAD = "OnMemoryRead";
+
+		public const string EVENT_TYPE_MEMWRITE = "OnMemoryWrite";
+
+		public const string EVENT_TYPE_POSTFRAME = "OnFrameEnd";
+
+		public const string EVENT_TYPE_PREFRAME = "OnFrameStart";
+
+		public const string EVENT_TYPE_SAVESTATE = "OnSavestateSave";
+
 		private readonly LuaFunction _function;
 
-		public NamedLuaFunction(LuaFunction function, string theEvent, Action<string> logCallback, LuaFile luaFile, string name = null)
+		public NamedLuaFunction(LuaFunction function, string theEvent, Action<string> logCallback, LuaFile luaFile, Func<LuaThread> createThreadCallback, string name = null)
 		{
 			_function = function;
 			Name = name ?? "Anonymous";
 			Event = theEvent;
+			CreateThreadCallback = createThreadCallback;
 
 			// When would a file be null?
 			// When a script is loaded with a callback, but no infinite loop so it closes
@@ -49,8 +72,8 @@ namespace BizHawk.Client.Common
 
 		public void DetachFromScript()
 		{
-			var thread = new Lua();
-				
+			var thread = CreateThreadCallback();
+
 			// Current dir will have to do for now, but this will inevitably not be desired
 			// Users will expect it to be the same directly as the thread that spawned this callback
 			// But how do we know what that directory was?
@@ -63,6 +86,8 @@ namespace BizHawk.Client.Common
 		public string Name { get; }
 
 		public LuaFile LuaFile { get; private set; }
+
+		private Func<LuaThread> CreateThreadCallback { get; }
 
 		public string Event { get; }
 

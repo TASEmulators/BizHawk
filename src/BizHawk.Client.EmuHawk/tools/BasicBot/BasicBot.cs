@@ -17,6 +17,11 @@ namespace BizHawk.Client.EmuHawk
 {
 	public sealed partial class BasicBot : ToolFormBase, IToolFormAutoConfig
 	{
+		private static readonly FilesystemFilterSet BotFilesFSFilterSet = new(new FilesystemFilter("Bot files", new[] { "bot" }));
+
+		public static Icon ToolIcon
+			=> Resources.BasicBot;
+
 		private string _currentFileName = "";
 
 		private string CurrentFileName
@@ -62,7 +67,6 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
 
-		// Unused, due to the use of MainForm to loadstate, but this needs to be kept here in order to establish an IStatable dependency
 		[RequiredService]
 		private IStatable StatableCore { get; set; }
 
@@ -90,7 +94,7 @@ namespace BizHawk.Client.EmuHawk
 		public BasicBot()
 		{
 			InitializeComponent();
-			Icon = Resources.BasicBot;
+			Icon = ToolIcon;
 			NewMenuItem.Image = Resources.NewFile;
 			OpenMenuItem.Image = Resources.OpenFile;
 			SaveMenuItem.Image = Resources.SaveAs;
@@ -124,7 +128,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// Movie recording must be active (check TAStudio because opening a project re-loads the ROM,
 			// which resets tools before the movie session becomes active)
-			if (!CurrentMovie.IsActive() && !Tools.IsLoaded<TAStudio>())
+			if (CurrentMovie.NotActive() && !Tools.IsLoaded<TAStudio>())
 			{
 				DialogController.ShowMessageBox("In order to use this tool you must be recording a movie.");
 				Close();
@@ -151,17 +155,8 @@ namespace BizHawk.Client.EmuHawk
 				.OfType<BotControlsRow>()
 				.ToDictionary(tkey => tkey.ButtonName, tvalue => tvalue.Probability);
 		
-		private string SelectedSlot
-		{
-			get
-			{
-				char num = StartFromSlotBox.SelectedItem
-					.ToString()
-					.Last();
-
-				return $"QuickSave{num}";
-			}
-		}
+		private int SelectedSlot
+			=> 1 + StartFromSlotBox.SelectedIndex;
 
 		private long Attempts
 		{
@@ -189,88 +184,64 @@ namespace BizHawk.Client.EmuHawk
 			set => FrameLengthNumeric.Value = value;
 		}
 
-		public int MaximizeAddress
+		private ulong? MaximizeAddress
 		{
-			get => MaximizeAddressBox.ToRawInt() ?? 0;
-			set => MaximizeAddressBox.SetFromRawInt(value);
+			get => MaximizeAddressBox.ToU64();
+			set => MaximizeAddressBox.SetFromU64(value);
 		}
 
-		public int MaximizeValue
+		private int MaximizeValue
+			=> GetRamValue(MaximizeAddress);
+
+		private ulong? TieBreaker1Address
 		{
-			get
-			{
-				int? addr = MaximizeAddressBox.ToRawInt();
-				return addr.HasValue ? GetRamValue(addr.Value) : 0;
-			}
+			get => TieBreaker1Box.ToU64();
+			set => TieBreaker1Box.SetFromU64(value);
 		}
 
-		public int TieBreaker1Address
+		private int TieBreaker1Value
+			=> GetRamValue(TieBreaker1Address);
+
+		private ulong? TieBreaker2Address
 		{
-			get => TieBreaker1Box.ToRawInt() ?? 0;
-			set => TieBreaker1Box.SetFromRawInt(value);
+			get => TieBreaker2Box.ToU64();
+			set => TieBreaker2Box.SetFromU64(value);
 		}
 
-		public int TieBreaker1Value
+		private int TieBreaker2Value
+			=> GetRamValue(TieBreaker2Address);
+
+		private ulong? TieBreaker3Address
 		{
-			get
-			{
-				int? addr = TieBreaker1Box.ToRawInt();
-				return addr.HasValue ? GetRamValue(addr.Value) : 0;
-			}
+			get => TieBreaker3Box.ToU64();
+			set => TieBreaker3Box.SetFromU64(value);
 		}
 
-		public int TieBreaker2Address
-		{
-			get => TieBreaker2Box.ToRawInt() ?? 0;
-			set => TieBreaker2Box.SetFromRawInt(value);
-		}
-
-		public int TieBreaker2Value
-		{
-			get
-			{
-				int? addr = TieBreaker2Box.ToRawInt();
-				return addr.HasValue ? GetRamValue(addr.Value) : 0;
-			}
-		}
-
-		public int TieBreaker3Address
-		{
-			get => TieBreaker3Box.ToRawInt() ?? 0;
-			set => TieBreaker3Box.SetFromRawInt(value);
-		}
-
-		public int TieBreaker3Value
-		{
-			get
-			{
-				int? addr = TieBreaker3Box.ToRawInt();
-				return addr.HasValue ? GetRamValue(addr.Value) : 0;
-			}
-		}
+		private int TieBreaker3Value
+			=> GetRamValue(TieBreaker3Address);
 
 		public byte MainComparisonType
 		{
 			get => (byte)MainOperator.SelectedIndex;
-			set => MainOperator.SelectedIndex = value < 5 ? value : 0;
+			set => MainOperator.SelectedIndex = value < 6 ? value : 0;
 		}
 
 		public byte Tie1ComparisonType
 		{
 			get => (byte)Tiebreak1Operator.SelectedIndex;
-			set => Tiebreak1Operator.SelectedIndex = value < 5 ? value : 0;
+			set => Tiebreak1Operator.SelectedIndex = value < 6 ? value : 0;
 		}
 
 		public byte Tie2ComparisonType
 		{
 			get => (byte)Tiebreak2Operator.SelectedIndex;
-			set => Tiebreak2Operator.SelectedIndex = value < 5 ? value : 0;
+			set => Tiebreak2Operator.SelectedIndex = value < 6 ? value : 0;
 		}
 
 		public byte Tie3ComparisonType
 		{
 			get => (byte)Tiebreak3Operator.SelectedIndex;
-			set => Tiebreak3Operator.SelectedIndex = value < 5 ? value : 0;
+			set => Tiebreak3Operator.SelectedIndex = value < 6 ? value : 0;
 		}
 
 		public string FromSlot
@@ -297,6 +268,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void Restart()
 		{
+			_ = StatableCore!; // otherwise unused due to loadstating via MainForm; however this service is very much required so the property needs to be present
+
 			if (_currentDomain == null
 				|| MemoryDomains.Contains(_currentDomain))
 			{
@@ -328,10 +301,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			RecentSubMenu.DropDownItems.Clear();
-			RecentSubMenu.DropDownItems.AddRange(Settings.RecentBotFiles.RecentMenu(MainForm, LoadFileFromRecent, "Bot Parameters"));
-		}
+			=> RecentSubMenu.ReplaceDropDownItems(Settings.RecentBotFiles.RecentMenu(this, LoadFileFromRecent, "Bot Parameters"));
 
 		private void NewMenuItem_Click(object sender, EventArgs e)
 		{
@@ -369,14 +339,13 @@ namespace BizHawk.Client.EmuHawk
 		private void OpenMenuItem_Click(object sender, EventArgs e)
 		{
 			var file = OpenFileDialog(
-					CurrentFileName,
-					Config.PathEntries.ToolsAbsolutePath(),
-					"Bot files",
-					"bot");
+				currentFile: CurrentFileName,
+				path: Config!.PathEntries.ToolsAbsolutePath(),
+				BotFilesFSFilterSet);
 
 			if (file != null)
 			{
-				LoadBotFile(file.FullName);
+				_ = LoadBotFile(file.FullName);
 			}
 		}
 
@@ -397,10 +366,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var file = SaveFileDialog(
-				fileName,
-				Config.PathEntries.ToolsAbsolutePath(),
-				"Bot files",
-				"bot",
+				currentFile: fileName,
+				path: Config!.PathEntries.ToolsAbsolutePath(),
+				BotFilesFSFilterSet,
 				this);
 
 			if (file != null)
@@ -417,12 +385,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void MemoryDomainsMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			MemoryDomainsMenuItem.DropDownItems.Clear();
-			MemoryDomainsMenuItem.DropDownItems.AddRange(
-				MemoryDomains.MenuItems(SetMemoryDomain, _currentDomain.Name)
-				.ToArray());
-		}
+			=> MemoryDomainsMenuItem.ReplaceDropDownItems(MemoryDomains.MenuItems(SetMemoryDomain, _currentDomain.Name).ToArray());
 
 		private void BigEndianMenuItem_Click(object sender, EventArgs e)
 		{
@@ -493,7 +456,7 @@ namespace BizHawk.Client.EmuHawk
 
 			InputManager.SyncControls(Emulator, MovieSession, Config);
 
-			MainForm.LoadQuickSave(SelectedSlot, true); // Triggers an UpdateValues call
+			_ = MainForm.LoadQuickSave(SelectedSlot, true); // Triggers an UpdateValues call
 			_lastFrameAdvanced = Emulator.Frame;
 			_doNotUpdateValues = false;
 			_startFrame = Emulator.Frame;
@@ -570,10 +533,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			public BotAttempt Best { get; set; }
 			public Dictionary<string, double> ControlProbabilities { get; set; }
-			public int Maximize { get; set; }
-			public int TieBreaker1 { get; set; }
-			public int TieBreaker2 { get; set; }
-			public int TieBreaker3 { get; set; }
+			public ulong? Maximize { get; set; }
+			public ulong? TieBreaker1 { get; set; }
+			public ulong? TieBreaker2 { get; set; }
+			public ulong? TieBreaker3 { get; set; }
 			public byte ComparisonTypeMain { get; set; }
 			public byte ComparisonTypeTie1 { get; set; }
 			public byte ComparisonTypeTie2 { get; set; }
@@ -594,12 +557,17 @@ namespace BizHawk.Client.EmuHawk
 			public string MemoryDomain { get; set; }
 			public bool BigEndian { get; set; }
 			public int DataSize { get; set; }
+
+			public string HawkVersion { get; set; }
+			public string SysID { get; set; }
+			public string CoreName { get; set; }
+			public string GameName { get; set; }
 		}
 
 		private void LoadFileFromRecent(string path)
 		{
 			var result = LoadBotFile(path);
-			if (!result)
+			if (!result && !File.Exists(path))
 			{
 				Settings.RecentBotFiles.HandleLoadError(MainForm, path);
 			}
@@ -607,15 +575,60 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool LoadBotFile(string path)
 		{
-			var file = new FileInfo(path);
-			if (!file.Exists)
+			BotData botData;
+			try
 			{
+				botData = (BotData) ConfigService.LoadWithType(File.ReadAllText(path));
+			}
+			catch (Exception e)
+			{
+				using ExceptionBox dialog = new(e);
+				this.ShowDialogAsChild(dialog);
 				return false;
 			}
+			if (botData.SysID != Emulator.SystemId)
+			{
+				this.ModalMessageBox(text: $"This file was made for a different system ({botData.SysID}).");
+				if (!string.IsNullOrEmpty(botData.SysID)) return false; // there's little chance the file would load without throwing, and if it did, it wouldn't be useful
+				// else grandfathered (made with old version, sysID unknowable), user has been warned
+			}
+			// if something else is off, though, let the user decide
+			var hawkVersionMatches = VersionInfo.DeveloperBuild || botData.HawkVersion == VersionInfo.GetEmuVersion();
+			var coreNameMatches = botData.CoreName == Emulator.Attributes().CoreName;
+			var gameNameMatches = botData.GameName == Game.Name;
+			if (!(hawkVersionMatches && coreNameMatches && gameNameMatches))
+			{
+				var s = hawkVersionMatches
+					? coreNameMatches
+						? string.Empty
+						: $" with a different core ({botData.CoreName ?? "unknown"})"
+					: coreNameMatches
+						? " with a different version of EmuHawk"
+						: $" with a different core ({botData.CoreName ?? "unknown"}) on a different version of EmuHawk";
+				if (!gameNameMatches) s = $"for a different game ({botData.GameName ?? "unknown"}){s}";
+				if (!this.ModalMessageBox2(
+					text: $"This file was made {s}. Load it anyway?",
+					caption: "Confirm file load",
+					icon: EMsgBoxIcon.Question))
+				{
+					return false;
+				}
+			}
+			try
+			{
+				LoadBotFileInner(botData, path);
+				return true;
+			}
+			catch (Exception e)
+			{
+				using ExceptionBox dialog = new(e);
+				this.ShowDialogAsChild(dialog);
+				return false;
+			}
+		}
 
-			var json = File.ReadAllText(path);
-			var botData = (BotData)ConfigService.LoadWithType(json);
-
+		private void LoadBotFileInner(BotData botData, string path)
+		{
 			_bestBotAttempt.Attempt = botData.Best.Attempt;
 			_bestBotAttempt.Maximize = botData.Best.Maximize;
 			_bestBotAttempt.TieBreak1 = botData.Best.TieBreak1;
@@ -714,7 +727,6 @@ namespace BizHawk.Client.EmuHawk
 			MessageLabel.Text = $"{Path.GetFileNameWithoutExtension(path)} loaded";
 
 			AssessRunButtonStatus();
-			return true;
 		}
 
 		private void SaveBotFile(string path)
@@ -745,7 +757,11 @@ namespace BizHawk.Client.EmuHawk
 				Frames = Frames,
 				MemoryDomain = _currentDomain.Name,
 				BigEndian = _bigEndian,
-				DataSize = _dataSize
+				DataSize = _dataSize,
+				HawkVersion = VersionInfo.GetEmuVersion(),
+				SysID = Emulator.SystemId,
+				CoreName = Emulator.Attributes().CoreName,
+				GameName = Game.Name,
 			};
 
 			var json = ConfigService.SaveWithType(data);
@@ -817,8 +833,10 @@ namespace BizHawk.Client.EmuHawk
 			TieBreaker3Box.SetHexProperties(_currentDomain.Size);
 		}
 
-		private int GetRamValue(int addr)
+		private int GetRamValue(ulong? address)
 		{
+			if (address is null) return 0;
+			var addr = checked((long) address); //TODO MemoryDomain needs converting one day
 			var val = _dataSize switch
 			{
 				1 => _currentDomain.PeekByte(addr),
@@ -889,7 +907,7 @@ namespace BizHawk.Client.EmuHawk
 					reset_curent(Attempts);
 					_doNotUpdateValues = true;
 					PressButtons(true);
-					MainForm.LoadQuickSave(SelectedSlot, true);
+					_ = MainForm.LoadQuickSave(SelectedSlot, true);
 					_lastFrameAdvanced = Emulator.Frame;
 					_doNotUpdateValues = false;
 					return;
@@ -915,49 +933,29 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool IsBetter(BotAttempt comparison, BotAttempt current)
 		{
-			if (!TestValue(MainComparisonType, current.Maximize, comparison.Maximize))
-			{
-				return false;
-			}
-
-			if (current.Maximize == comparison.Maximize)
-			{
-				if (!TestValue(Tie1ComparisonType, current.TieBreak1, comparison.TieBreak1))
+			static bool TestValue(byte operation, int currentValue, int bestValue)
+				=> operation switch
 				{
-					return false;
-				}
+					0 => (currentValue > bestValue),
+					1 => (currentValue >= bestValue),
+					2 => (currentValue == bestValue),
+					3 => (currentValue <= bestValue),
+					4 => (currentValue < bestValue),
+					5 => (currentValue != bestValue),
+					_ => false
+				};
 
-				if (current.TieBreak1 == comparison.TieBreak1)
-				{
-					if (!TestValue(Tie2ComparisonType, current.TieBreak2, comparison.TieBreak2))
-					{
-						return false;
-					}
+			if (!TestValue(MainComparisonType, current.Maximize, comparison.Maximize)) return false;
+			if (current.Maximize != comparison.Maximize) return true;
 
-					if (current.TieBreak2 == comparison.TieBreak2)
-					{
-						if (!TestValue(Tie3ComparisonType, current.TieBreak3, current.TieBreak3))
-						{
-							return false;
-						}
-					}
-				}
-			}
+			if (!TestValue(Tie1ComparisonType, current.TieBreak1, comparison.TieBreak1)) return false;
+			if (current.TieBreak1 != comparison.TieBreak1) return true;
 
-			return true;
-		}
+			if (!TestValue(Tie2ComparisonType, current.TieBreak2, comparison.TieBreak2)) return false;
+			if (current.TieBreak2 != comparison.TieBreak2) return true;
 
-		private bool TestValue(byte operation, int currentValue, int bestValue)
-		{
-			return operation switch
-			{
-				0 => (currentValue > bestValue),
-				1 => (currentValue >= bestValue),
-				2 => (currentValue == bestValue),
-				3 => (currentValue <= bestValue),
-				4 => (currentValue < bestValue),
-				_ => false
-			};
+			if (!TestValue(Tie3ComparisonType, current.TieBreak3, comparison.TieBreak3)) return false;
+			/*if (current.TieBreak3 != comparison.TieBreak3)*/ return true;
 		}
 
 		private void UpdateBestAttempt()
@@ -978,6 +976,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				BestAttemptLogLabel.Text = sb.ToString();
 				PlayBestButton.Enabled = true;
+				btnCopyBestInput.Enabled = true;
 			}
 			else
 			{
@@ -989,6 +988,7 @@ namespace BizHawk.Client.EmuHawk
 				BestTieBreak3Box.Text = "";
 				BestAttemptLogLabel.Text = "";
 				PlayBestButton.Enabled = false;
+				btnCopyBestInput.Enabled = false;
 			}
 		}
 
@@ -1037,7 +1037,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_doNotUpdateValues = true;
 			PressButtons(true);
-			MainForm.LoadQuickSave(SelectedSlot, true); // Triggers an UpdateValues call
+			_ = MainForm.LoadQuickSave(SelectedSlot, true); // Triggers an UpdateValues call
 			_lastFrameAdvanced = Emulator.Frame;
 			_doNotUpdateValues = false;
 			_startFrame = Emulator.Frame;
@@ -1070,10 +1070,7 @@ namespace BizHawk.Client.EmuHawk
 				return "At least one control must have a probability greater than 0.";
 			}
 
-			if (!MaximizeAddressBox.ToRawInt().HasValue)
-			{
-				return "A main value address is required.";
-			}
+			if (MaximizeAddress is null) return "A main value address is required.";
 
 			if (FrameLengthNumeric.Value == 0)
 			{

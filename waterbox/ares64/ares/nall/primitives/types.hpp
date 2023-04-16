@@ -1,6 +1,6 @@
 #pragma once
 
-namespace nall {
+namespace nall::primitives {
   using boolean = Boolean;
   using natural = Natural<>;
   using integer = Integer<>;

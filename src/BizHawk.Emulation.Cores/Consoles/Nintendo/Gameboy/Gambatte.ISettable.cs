@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		{
 			_settings = o;
 			_disassembler.UseRGBDSSyntax = _settings.RgbdsSyntax;
-			if (IsCGBMode() || IsSgb)
+			if (IsCGBMode || IsSgb)
 			{
 				SetCGBColors(_settings.CGBColors);
 			}
@@ -86,7 +86,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			public GambatteSettings()
 			{
 				GBPalette = (int[])DefaultPalette.Clone();
-				CGBColors = GBColors.ColorType.gambatte;
+				CGBColors = GBColors.ColorType.sameboy;
 				RgbdsSyntax = true;
 				ShowBorder = true;
 			}
@@ -140,7 +140,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			[Description("Initial time of emulation in seconds.")]
 			[DefaultValue(typeof(ulong), "0")]
 			public ulong InitialTime { get; set; }
-			
+
+			[DisplayName("Enable remote control")]
+			[Description("Adds control for the command sent from a TV remote pointed to the system or cart IR.")]
+			[DefaultValue(false)]
+			public bool EnableRemote { get; set; }
+
 			public enum FrameLengthType
 			{
 				[Display(Name = "VBlank Driven Frames")]

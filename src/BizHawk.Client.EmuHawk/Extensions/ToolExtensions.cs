@@ -2,6 +2,7 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Windows.Forms;
+
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
@@ -12,7 +13,13 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 {
 	public static class ToolExtensions
 	{
-		public static ToolStripItem[] RecentMenu(this RecentFiles recent, IMainFormForTools mainForm, Action<string> loadFileCallback, string entrySemantic, bool noAutoload = false, bool romLoading = false)
+		public static ToolStripItem[] RecentMenu(
+			this RecentFiles recent,
+			IDialogParent mainForm,
+			Action<string> loadFileCallback,
+			string entrySemantic,
+			bool noAutoload = false,
+			bool romLoading = false)
 		{
 			var items = new List<ToolStripItem>();
 
@@ -113,16 +120,20 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 							tsmiCopyFile.Click += (o, ev) => { Clipboard.SetFileDropList(lame); };
 							tsdd.Items.Add(tsmiCopyFile);
 
-							var tsmiTest = new ToolStripMenuItem { Text = "&Shell Context Menu" };
-							tsmiTest.Click += (o, ev) =>
+							if (!OSTailoredCode.IsUnixHost)
 							{
-								var si = new GongSolutions.Shell.ShellItem(hf.FullPathWithoutMember);
-								var scm = new GongSolutions.Shell.ShellContextMenu(si);
-								var tsddi = o as ToolStripDropDownItem;
-								tsddi.Owner.Update();
-								scm.ShowContextMenu(tsddi.Owner, new System.Drawing.Point(0, 0));
-							};
-							tsdd.Items.Add(tsmiTest);
+								var tsmiTest = new ToolStripMenuItem { Text = "&Shell Context Menu" };
+								tsmiTest.Click += (o, ev) =>
+								{
+									var tsddi = o as ToolStripDropDownItem;
+									tsddi.Owner.Update();
+									using var menu = new ContextMenu();
+									using var dummy = new Control();
+									Win32ShellContextMenu.ShowContextMenu(
+										hf.FullPathWithoutMember, menu.Handle, dummy.Handle, tsddi.Owner.Location.X, tsddi.Owner.Location.Y);
+								};
+								tsdd.Items.Add(tsmiTest);
+							}
 
 							tsdd.Items.Add(new ToolStripSeparator());
 						}
@@ -199,13 +210,9 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 					Message = "Number of recent files to track",
 					InitialValue = recent.MAX_RECENT_FILES.ToString()
 				};
-				var result = mainForm.DoWithTempMute(() => prompt.ShowDialog());
-				if (result == DialogResult.OK)
-				{
-					int val = int.Parse(prompt.PromptText);
-					if (val > 0)
-						recent.MAX_RECENT_FILES = val;
-				}
+				if (!mainForm.ShowDialogWithTempMute(prompt).IsOk()) return;
+				var val = int.Parse(prompt.PromptText);
+				if (val > 0) recent.MAX_RECENT_FILES = val;
 			};
 			items.Add(settingsItem);
 

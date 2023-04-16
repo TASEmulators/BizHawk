@@ -32,9 +32,9 @@ namespace BizHawk.Client.Common
 			_dialogParent = dialogParent;
 			_quickBmpFile = quickBmpFile;
 			_pauseCallback = pauseCallback
-				?? throw new ArgumentNullException($"{nameof(pauseCallback)} cannot be null.");
+				?? throw new ArgumentNullException(paramName: nameof(pauseCallback));
 			_modeChangedCallback = modeChangedCallback
-				?? throw new ArgumentNullException($"{nameof(modeChangedCallback)} CannotUnloadAppDomainException be null.");
+				?? throw new ArgumentNullException(paramName: nameof(modeChangedCallback));
 		}
 
 		public IMovieConfig Settings { get; }
@@ -62,9 +62,14 @@ namespace BizHawk.Client.Common
 			return new Bk2Controller("", definition ?? MovieController.Definition);
 		}
 
+		public void SetMovieController(ControllerDefinition definition)
+		{
+			MovieController = GenerateMovieController(definition);
+		}
+
 		public void HandleFrameBefore()
 		{
-			if (!Movie.IsActive())
+			if (Movie.NotActive())
 			{
 				LatchInputToUser();
 			}
@@ -101,19 +106,14 @@ namespace BizHawk.Client.Common
 			if (Movie is ITasMovie tasMovie)
 			{
 				tasMovie.GreenzoneCurrentFrame();
-				if (tasMovie.IsPlayingOrFinished() && Movie.Emulator.Frame >= tasMovie.InputLogLength)
+				if (tasMovie.IsPlayingOrFinished() && Settings.MovieEndAction == MovieEndAction.Record && Movie.Emulator.Frame >= tasMovie.InputLogLength)
 				{
-					if (Settings.MovieEndAction == MovieEndAction.Record)
-					{
-						HandleFrameLoopForRecordMode();
-					}
-					else
-					{
-						HandlePlaybackEnd();
-					}
+					HandleFrameLoopForRecordMode();
+					return;
 				}
 			}
-			else if (Movie.IsPlaying() && Movie.Emulator.Frame >= Movie.InputLogLength)
+
+			if (Movie.IsPlaying() && Movie.Emulator.Frame >= Movie.InputLogLength)
 			{
 				HandlePlaybackEnd();
 			}
@@ -260,6 +260,9 @@ namespace BizHawk.Client.Common
 				Movie.StartNewPlayback();
 			}
 		}
+
+		public void AbortQueuedMovie()
+			=> _queuedMovie = null;
 
 		public void StopMovie(bool saveChanges = true)
 		{

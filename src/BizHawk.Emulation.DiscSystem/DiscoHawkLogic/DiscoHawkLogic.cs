@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using BizHawk.Client.DiscoHawk;
+using BizHawk.Common.PathExtensions;
 
 namespace BizHawk.Emulation.DiscSystem
 {
@@ -255,8 +256,8 @@ namespace BizHawk.Emulation.DiscSystem
 				errorCallback(job.OUT_Log);
 				return false;
 			}
-			var baseName = Path.GetFileNameWithoutExtension(inputPath);
-			var outfile = Path.Combine(Path.GetDirectoryName(inputPath), $"{baseName}_hawked.ccd");
+			var (dir, baseName, _) = inputPath.SplitPathToDirFileAndExt();
+			var outfile = Path.Combine(dir!, $"{baseName}_hawked.ccd");
 			CCD_Format.Dump(disc, outfile);
 			return true;
 		}
@@ -311,8 +312,7 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				if (infile is null) return;
 				using var disc = Disc.LoadAutomagic(infile);
-				var path = Path.GetDirectoryName(infile);
-				var filename = Path.GetFileNameWithoutExtension(infile);
+				var (path, filename, _) = infile.SplitPathToDirFileAndExt();
 				bool? CheckOverwrite(string mp3Path)
 				{
 					if (overwrite) return true; // overwrite

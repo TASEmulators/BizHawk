@@ -6,7 +6,7 @@ namespace BizHawk.Client.Common
 {
 	public readonly struct ParsedCLIFlags
 	{
-		public readonly string? cmdLoadSlot;
+		public readonly int? cmdLoadSlot;
 
 		public readonly string? cmdLoadState;
 
@@ -36,6 +36,8 @@ namespace BizHawk.Client.Common
 
 		public readonly (string IP, int Port)? SocketAddress;
 
+		public readonly IReadOnlyList<(string Key, string Value)>? UserdataUnparsedPairs;
+
 		public readonly string? MMFFilename;
 
 		public readonly (string? UrlGet, string? UrlPost)? HTTPAddresses;
@@ -46,7 +48,8 @@ namespace BizHawk.Client.Common
 
 		public readonly string? cmdRom;
 
-		public ParsedCLIFlags(string? cmdLoadSlot,
+		public ParsedCLIFlags(
+			int? cmdLoadSlot,
 			string? cmdLoadState,
 			string? cmdConfigFile,
 			string? cmdMovie,
@@ -65,6 +68,7 @@ namespace BizHawk.Client.Common
 			(string? UrlGet, string? UrlPost)? httpAddresses,
 			bool? audiosync,
 			string? openExtToolDll,
+			IReadOnlyList<(string Key, string Value)>? userdataUnparsedPairs,
 			string? cmdRom)
 		{
 			this.cmdLoadSlot = cmdLoadSlot;
@@ -86,6 +90,7 @@ namespace BizHawk.Client.Common
 			HTTPAddresses = httpAddresses;
 			this.audiosync = audiosync;
 			this.openExtToolDll = openExtToolDll;
+			UserdataUnparsedPairs = userdataUnparsedPairs;
 			this.cmdRom = cmdRom;
 		}
 	}

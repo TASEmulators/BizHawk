@@ -10,20 +10,18 @@ namespace BizHawk.Client.Common
 {
 	public sealed class GameInfoLuaLibrary : LuaLibraryBase
 	{
-		public GameInfoLuaLibrary(IPlatformLuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+		public GameInfoLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "gameinfo";
 
 		[LuaMethodExample("local stgamget = gameinfo.getromname( );")]
 		[LuaMethod("getromname", "returns the name of the currently loaded rom, if a rom is loaded")]
-		[return: LuaArbitraryStringParam]
 		public string GetRomName()
-			=> UnFixString(APIs.Emulation.GetGameInfo()?.Name) ?? string.Empty;
+			=> APIs.Emulation.GetGameInfo()?.Name ?? string.Empty;
 
 		[LuaMethodExample("local stgamget = gameinfo.getromhash( );")]
 		[LuaMethod("getromhash", "returns the hash of the currently loaded rom, if a rom is loaded")]
-		[return: LuaASCIIStringParam]
 		public string GetRomHash()
 			=> APIs.Emulation.GetGameInfo()?.Hash ?? string.Empty;
 
@@ -34,7 +32,6 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local stgamget = gameinfo.getstatus( );")]
 		[LuaMethod("getstatus", "returns the game database status of the currently loaded rom. Statuses are for example: GoodDump, BadDump, Hack, Unknown, NotInDatabase")]
-		[return: LuaEnumStringParam]
 		public string GetStatus()
 			=> (APIs.Emulation.GetGameInfo()?.Status)?.ToString();
 
@@ -45,13 +42,11 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local stgamget = gameinfo.getboardtype( );")]
 		[LuaMethod("getboardtype", "returns identifying information about the 'mapper' or similar capability used for this game.  empty if no such useful distinction can be drawn")]
-		[return: LuaArbitraryStringParam]
 		public string GetBoardType()
-			=> UnFixString(APIs.Emulation.GetBoardName());
+			=> APIs.Emulation.GetBoardName();
 
 		[LuaMethodExample("local nlgamget = gameinfo.getoptions( );")]
 		[LuaMethod("getoptions", "returns the game options for the currently loaded rom. Options vary per platform")]
-		[return: LuaASCIIStringParam] // these had better be just flags and not anything localised --yoshi
 		public LuaTable GetOptions()
 			=> _th.DictToTable(APIs.Emulation.GetGameOptions());
 	}

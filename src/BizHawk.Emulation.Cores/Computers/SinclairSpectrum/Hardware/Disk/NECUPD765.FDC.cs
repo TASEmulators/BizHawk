@@ -337,8 +337,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 						}
 
 						int buffPos = 0;
-						int sectorSize = 0;
+						int sectorSize = 0; // why doesn't this get flagged for CS0219?
+#pragma warning disable CS0219
 						int maxTransferCap = 0;
+#pragma warning restore CS0219
 
 						// calculate requested size of data required
 						if (ActiveCommandParams.SectorSize == 0)
@@ -353,7 +355,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 							if (!CMD_FLAG_MF)
 								maxTransferCap = 3328;
 
-							if (maxTransferCap == 0) { }
+//							if (maxTransferCap is 0) { }
 						}
 						else
 						{
@@ -646,8 +648,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 						int buffPos = 0;
 						int sectorSize = 0;
+#pragma warning disable CS0219
 						int maxTransferCap = 0;
-						if (maxTransferCap > 0) { }
+//						if (maxTransferCap > 0) { }
+#pragma warning restore CS0219
 
 						// calculate requested size of data required
 						if (ActiveCommandParams.SectorSize == 0)
@@ -959,8 +963,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 						int buffPos = 0;
 						int sectorSize = 0;
+#pragma warning disable CS0219
 						int maxTransferCap = 0;
-						if (maxTransferCap > 0) { }
+//						if (maxTransferCap > 0) { }
+#pragma warning restore CS0219
 
 						// calculate requested size of data required
 						if (ActiveCommandParams.SectorSize == 0)
@@ -2517,9 +2523,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			cmdByte = cByte;
 
 			// lookup the command
-			var cmd = CommandList.FirstOrDefault(a => a.CommandCode == cmdByte);
-
-			if (cmd == null)
+			var i = CommandList.FindIndex(a => a.CommandCode == cmdByte);
+			if (i is -1)
 			{
 				// no command found - use invalid
 				CMDIndex = CommandList.Count - 1;
@@ -2527,7 +2532,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			else
 			{
 				// valid command found
-				CMDIndex = CommandList.FindIndex(a => a.CommandCode == cmdByte);
+				CMDIndex = i;
 
 				// check validity of command byte flags
 				// if a flag is set but not valid for this command then it is invalid

@@ -100,7 +100,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					}
 					else if (address < 0xA000u) // vram (may be banked on CGB in CGB enhanced mode)
 					{
-						if (IsCGBMode() && !IsCGBDMGMode())
+						if (IsCGBMode && !IsCGBDMGMode)
 						{
 							address += (uint)(bank * 0x2000);
 						}
@@ -120,7 +120,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					}
 					else if (address < 0xE000u) // wram bank x (always one for dmg/cgb in dmg mode)
 					{
-						if (IsCGBMode() && !IsCGBDMGMode())
+						if (IsCGBMode && !IsCGBDMGMode)
 						{
 							address += (uint)(bank * 0x1000);
 						}

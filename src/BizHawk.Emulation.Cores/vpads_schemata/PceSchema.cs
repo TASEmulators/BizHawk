@@ -10,12 +10,13 @@ using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores
 {
+	[Schema(VSystemID.Raw.SGXCD)]
+	public class SgxCdSchema : PceSchema { }
+
 	[Schema(VSystemID.Raw.PCECD)]
-	// ReSharper disable once UnusedMember.Global
 	public class PceCdSchema : PceSchema { }
 
 	[Schema(VSystemID.Raw.SGX)]
-	// ReSharper disable once UnusedMember.Global
 	public class SgxSchema : PceSchema { }
 
 	[Schema(VSystemID.Raw.PCE)]

@@ -150,13 +150,13 @@
     if(ds.reg == rsp || ds.reg == r12) emit.sib(0, 4, 4);
   alwaysinline auto adc(reg8 rt, dis ds) { op(0x12); }
   alwaysinline auto add(reg8 rt, dis ds) { op(0x02); }
-  alwaysinline auto and(reg8 rt, dis ds) { op(0x22); }
+  alwaysinline auto and_(reg8 rt, dis ds) { op(0x22); }
   alwaysinline auto cmp(reg8 rt, dis ds) { op(0x3a); }
   alwaysinline auto mov(reg8 rt, dis ds) { op(0x8a); }
-  alwaysinline auto or (reg8 rt, dis ds) { op(0x0a); }
+  alwaysinline auto or_(reg8 rt, dis ds) { op(0x0a); }
   alwaysinline auto sbb(reg8 rt, dis ds) { op(0x1a); }
   alwaysinline auto sub(reg8 rt, dis ds) { op(0x2a); }
-  alwaysinline auto xor(reg8 rt, dis ds) { op(0x32); }
+  alwaysinline auto xor_(reg8 rt, dis ds) { op(0x32); }
   #undef op
 
   //op reg8,[reg64+imm8]
@@ -168,13 +168,13 @@
     emit.byte(ds.imm);
   alwaysinline auto adc(reg8 rt, dis8 ds) { op(0x12); }
   alwaysinline auto add(reg8 rt, dis8 ds) { op(0x02); }
-  alwaysinline auto and(reg8 rt, dis8 ds) { op(0x22); }
+  alwaysinline auto and_(reg8 rt, dis8 ds) { op(0x22); }
   alwaysinline auto cmp(reg8 rt, dis8 ds) { op(0x3a); }
   alwaysinline auto mov(reg8 rt, dis8 ds) { op(0x8a); }
-  alwaysinline auto or (reg8 rt, dis8 ds) { op(0x0a); }
+  alwaysinline auto or_(reg8 rt, dis8 ds) { op(0x0a); }
   alwaysinline auto sbb(reg8 rt, dis8 ds) { op(0x1a); }
   alwaysinline auto sub(reg8 rt, dis8 ds) { op(0x2a); }
-  alwaysinline auto xor(reg8 rt, dis8 ds) { op(0x32); }
+  alwaysinline auto xor_(reg8 rt, dis8 ds) { op(0x32); }
   #undef op
 
   //op reg32,[reg64]
@@ -185,13 +185,13 @@
     if(ds.reg == rsp || ds.reg == r12) emit.sib(0, 4, 4);
   alwaysinline auto adc(reg32 rt, dis ds) { op(0x13); }
   alwaysinline auto add(reg32 rt, dis ds) { op(0x03); }
-  alwaysinline auto and(reg32 rt, dis ds) { op(0x23); }
+  alwaysinline auto and_(reg32 rt, dis ds) { op(0x23); }
   alwaysinline auto cmp(reg32 rt, dis ds) { op(0x3b); }
   alwaysinline auto mov(reg32 rt, dis ds) { op(0x8b); }
-  alwaysinline auto or (reg32 rt, dis ds) { op(0x0b); }
+  alwaysinline auto or_(reg32 rt, dis ds) { op(0x0b); }
   alwaysinline auto sbb(reg32 rt, dis ds) { op(0x1b); }
   alwaysinline auto sub(reg32 rt, dis ds) { op(0x2b); }
-  alwaysinline auto xor(reg32 rt, dis ds) { op(0x33); }
+  alwaysinline auto xor_(reg32 rt, dis ds) { op(0x33); }
   #undef op
 
   //op reg32,[reg64+imm8]
@@ -203,13 +203,13 @@
     emit.byte(ds.imm);
   alwaysinline auto adc(reg32 rt, dis8 ds) { op(0x13); }
   alwaysinline auto add(reg32 rt, dis8 ds) { op(0x03); }
-  alwaysinline auto and(reg32 rt, dis8 ds) { op(0x23); }
+  alwaysinline auto and_(reg32 rt, dis8 ds) { op(0x23); }
   alwaysinline auto cmp(reg32 rt, dis8 ds) { op(0x3b); }
   alwaysinline auto mov(reg32 rt, dis8 ds) { op(0x8b); }
-  alwaysinline auto or (reg32 rt, dis8 ds) { op(0x0b); }
+  alwaysinline auto or_(reg32 rt, dis8 ds) { op(0x0b); }
   alwaysinline auto sbb(reg32 rt, dis8 ds) { op(0x1b); }
   alwaysinline auto sub(reg32 rt, dis8 ds) { op(0x2b); }
-  alwaysinline auto xor(reg32 rt, dis8 ds) { op(0x33); }
+  alwaysinline auto xor_(reg32 rt, dis8 ds) { op(0x33); }
   #undef op
 
   //op reg64,[reg64]
@@ -220,13 +220,13 @@
     if(ds.reg == rsp || ds.reg == r12) emit.sib(0, 4, 4);
   alwaysinline auto adc(reg64 rt, dis ds) { op(0x13); }
   alwaysinline auto add(reg64 rt, dis ds) { op(0x03); }
-  alwaysinline auto and(reg64 rt, dis ds) { op(0x23); }
+  alwaysinline auto and_(reg64 rt, dis ds) { op(0x23); }
   alwaysinline auto cmp(reg64 rt, dis ds) { op(0x3b); }
   alwaysinline auto mov(reg64 rt, dis ds) { op(0x8b); }
-  alwaysinline auto or (reg64 rt, dis ds) { op(0x0b); }
+  alwaysinline auto or_(reg64 rt, dis ds) { op(0x0b); }
   alwaysinline auto sbb(reg64 rt, dis ds) { op(0x1b); }
   alwaysinline auto sub(reg64 rt, dis ds) { op(0x2b); }
-  alwaysinline auto xor(reg64 rt, dis ds) { op(0x33); }
+  alwaysinline auto xor_(reg64 rt, dis ds) { op(0x33); }
   #undef op
 
   //op reg64,[reg64+imm8]
@@ -238,13 +238,13 @@
     emit.byte(ds.imm);
   alwaysinline auto adc(reg64 rt, dis8 ds) { op(0x13); }
   alwaysinline auto add(reg64 rt, dis8 ds) { op(0x03); }
-  alwaysinline auto and(reg64 rt, dis8 ds) { op(0x23); }
+  alwaysinline auto and_(reg64 rt, dis8 ds) { op(0x23); }
   alwaysinline auto cmp(reg64 rt, dis8 ds) { op(0x3b); }
   alwaysinline auto mov(reg64 rt, dis8 ds) { op(0x8b); }
-  alwaysinline auto or (reg64 rt, dis8 ds) { op(0x0b); }
+  alwaysinline auto or_(reg64 rt, dis8 ds) { op(0x0b); }
   alwaysinline auto sbb(reg64 rt, dis8 ds) { op(0x1b); }
   alwaysinline auto sub(reg64 rt, dis8 ds) { op(0x2b); }
-  alwaysinline auto xor(reg64 rt, dis8 ds) { op(0x33); }
+  alwaysinline auto xor_(reg64 rt, dis8 ds) { op(0x33); }
   #undef op
 
   //op reg64,[reg64+imm32]
@@ -256,13 +256,13 @@
     emit.dword(ds.imm);
   alwaysinline auto adc(reg64 rt, dis32 ds) { op(0x13); }
   alwaysinline auto add(reg64 rt, dis32 ds) { op(0x03); }
-  alwaysinline auto and(reg64 rt, dis32 ds) { op(0x23); }
+  alwaysinline auto and_(reg64 rt, dis32 ds) { op(0x23); }
   alwaysinline auto cmp(reg64 rt, dis32 ds) { op(0x3b); }
   alwaysinline auto mov(reg64 rt, dis32 ds) { op(0x8b); }
-  alwaysinline auto or (reg64 rt, dis32 ds) { op(0x0b); }
+  alwaysinline auto or_(reg64 rt, dis32 ds) { op(0x0b); }
   alwaysinline auto sbb(reg64 rt, dis32 ds) { op(0x1b); }
   alwaysinline auto sub(reg64 rt, dis32 ds) { op(0x2b); }
-  alwaysinline auto xor(reg64 rt, dis32 ds) { op(0x33); }
+  alwaysinline auto xor_(reg64 rt, dis32 ds) { op(0x33); }
   #undef op
 
   //op [reg64+imm8],reg8
@@ -274,13 +274,13 @@
     emit.byte(dt.imm);
   alwaysinline auto adc(dis8 dt, reg8 rs) { op(0x10); }
   alwaysinline auto add(dis8 dt, reg8 rs) { op(0x00); }
-  alwaysinline auto and(dis8 dt, reg8 rs) { op(0x20); }
+  alwaysinline auto and_(dis8 dt, reg8 rs) { op(0x20); }
   alwaysinline auto cmp(dis8 dt, reg8 rs) { op(0x38); }
   alwaysinline auto mov(dis8 dt, reg8 rs) { op(0x88); }
-  alwaysinline auto or (dis8 dt, reg8 rs) { op(0x08); }
+  alwaysinline auto or_(dis8 dt, reg8 rs) { op(0x08); }
   alwaysinline auto sbb(dis8 dt, reg8 rs) { op(0x18); }
   alwaysinline auto sub(dis8 dt, reg8 rs) { op(0x28); }
-  alwaysinline auto xor(dis8 dt, reg8 rs) { op(0x30); }
+  alwaysinline auto xor_(dis8 dt, reg8 rs) { op(0x30); }
   #undef op
 
   //op reg64,imm32
@@ -290,12 +290,12 @@
     emit.modrm(3, group, rt & 7); \
     emit.dword(is.data);
   alwaysinline auto add(reg64 rt, imm32 is) { op(0); }
-  alwaysinline auto or (reg64 rt, imm32 is) { op(1); }
+  alwaysinline auto or_(reg64 rt, imm32 is) { op(1); }
   alwaysinline auto adc(reg64 rt, imm32 is) { op(2); }
   alwaysinline auto sbb(reg64 rt, imm32 is) { op(3); }
-  alwaysinline auto and(reg64 rt, imm32 is) { op(4); }
+  alwaysinline auto and_(reg64 rt, imm32 is) { op(4); }
   alwaysinline auto sub(reg64 rt, imm32 is) { op(5); }
-  alwaysinline auto xor(reg64 rt, imm32 is) { op(6); }
+  alwaysinline auto xor_(reg64 rt, imm32 is) { op(6); }
   alwaysinline auto cmp(reg64 rt, imm32 is) { op(7); }
   #undef op
 
@@ -325,13 +325,13 @@
     if(dt.reg == rsp || dt.reg == r12) emit.sib(0, 4, 4);
   alwaysinline auto adc(dis dt, reg32 rs) { op(0x11); }
   alwaysinline auto add(dis dt, reg32 rs) { op(0x01); }
-  alwaysinline auto and(dis dt, reg32 rs) { op(0x21); }
+  alwaysinline auto and_(dis dt, reg32 rs) { op(0x21); }
   alwaysinline auto cmp(dis dt, reg32 rs) { op(0x39); }
   alwaysinline auto mov(dis dt, reg32 rs) { op(0x89); }
-  alwaysinline auto or (dis dt, reg32 rs) { op(0x09); }
+  alwaysinline auto or_(dis dt, reg32 rs) { op(0x09); }
   alwaysinline auto sbb(dis dt, reg32 rs) { op(0x19); }
   alwaysinline auto sub(dis dt, reg32 rs) { op(0x29); }
-  alwaysinline auto xor(dis dt, reg32 rs) { op(0x31); }
+  alwaysinline auto xor_(dis dt, reg32 rs) { op(0x31); }
   #undef op
 
   //op [reg64+imm8],reg32
@@ -343,13 +343,13 @@
     emit.byte(dt.imm);
   alwaysinline auto adc(dis8 dt, reg32 rs) { op(0x11); }
   alwaysinline auto add(dis8 dt, reg32 rs) { op(0x01); }
-  alwaysinline auto and(dis8 dt, reg32 rs) { op(0x21); }
+  alwaysinline auto and_(dis8 dt, reg32 rs) { op(0x21); }
   alwaysinline auto cmp(dis8 dt, reg32 rs) { op(0x39); }
   alwaysinline auto mov(dis8 dt, reg32 rs) { op(0x89); }
-  alwaysinline auto or (dis8 dt, reg32 rs) { op(0x09); }
+  alwaysinline auto or_(dis8 dt, reg32 rs) { op(0x09); }
   alwaysinline auto sbb(dis8 dt, reg32 rs) { op(0x19); }
   alwaysinline auto sub(dis8 dt, reg32 rs) { op(0x29); }
-  alwaysinline auto xor(dis8 dt, reg32 rs) { op(0x31); }
+  alwaysinline auto xor_(dis8 dt, reg32 rs) { op(0x31); }
   #undef op
 
   //op [reg64],reg64
@@ -360,13 +360,13 @@
     if(dt.reg == rsp || dt.reg == r12) emit.sib(0, 4, 4);
   alwaysinline auto adc(dis dt, reg64 rs) { op(0x11); }
   alwaysinline auto add(dis dt, reg64 rs) { op(0x01); }
-  alwaysinline auto and(dis dt, reg64 rs) { op(0x21); }
+  alwaysinline auto and_(dis dt, reg64 rs) { op(0x21); }
   alwaysinline auto cmp(dis dt, reg64 rs) { op(0x39); }
   alwaysinline auto mov(dis dt, reg64 rs) { op(0x89); }
-  alwaysinline auto or (dis dt, reg64 rs) { op(0x09); }
+  alwaysinline auto or_(dis dt, reg64 rs) { op(0x09); }
   alwaysinline auto sbb(dis dt, reg64 rs) { op(0x19); }
   alwaysinline auto sub(dis dt, reg64 rs) { op(0x29); }
-  alwaysinline auto xor(dis dt, reg64 rs) { op(0x31); }
+  alwaysinline auto xor_(dis dt, reg64 rs) { op(0x31); }
   #undef op
 
   //op [reg64+imm8],reg64
@@ -378,13 +378,13 @@
     emit.byte(dt.imm);
   alwaysinline auto adc(dis8 dt, reg64 rs) { op(0x11); }
   alwaysinline auto add(dis8 dt, reg64 rs) { op(0x01); }
-  alwaysinline auto and(dis8 dt, reg64 rs) { op(0x21); }
+  alwaysinline auto and_(dis8 dt, reg64 rs) { op(0x21); }
   alwaysinline auto cmp(dis8 dt, reg64 rs) { op(0x39); }
   alwaysinline auto mov(dis8 dt, reg64 rs) { op(0x89); }
-  alwaysinline auto or (dis8 dt, reg64 rs) { op(0x09); }
+  alwaysinline auto or_(dis8 dt, reg64 rs) { op(0x09); }
   alwaysinline auto sbb(dis8 dt, reg64 rs) { op(0x19); }
   alwaysinline auto sub(dis8 dt, reg64 rs) { op(0x29); }
-  alwaysinline auto xor(dis8 dt, reg64 rs) { op(0x31); }
+  alwaysinline auto xor_(dis8 dt, reg64 rs) { op(0x31); }
   #undef op
 
   //op [reg64+imm32],reg64
@@ -396,13 +396,13 @@
     emit.dword(dt.imm);
   alwaysinline auto adc(dis32 dt, reg64 rs) { op(0x11); }
   alwaysinline auto add(dis32 dt, reg64 rs) { op(0x01); }
-  alwaysinline auto and(dis32 dt, reg64 rs) { op(0x21); }
+  alwaysinline auto and_(dis32 dt, reg64 rs) { op(0x21); }
   alwaysinline auto cmp(dis32 dt, reg64 rs) { op(0x39); }
   alwaysinline auto mov(dis32 dt, reg64 rs) { op(0x89); }
-  alwaysinline auto or (dis32 dt, reg64 rs) { op(0x09); }
+  alwaysinline auto or_(dis32 dt, reg64 rs) { op(0x09); }
   alwaysinline auto sbb(dis32 dt, reg64 rs) { op(0x19); }
   alwaysinline auto sub(dis32 dt, reg64 rs) { op(0x29); }
-  alwaysinline auto xor(dis32 dt, reg64 rs) { op(0x31); }
+  alwaysinline auto xor_(dis32 dt, reg64 rs) { op(0x31); }
   #undef op
 
   //op reg32,reg8
@@ -581,14 +581,14 @@
     emit.modrm(3, rs & 7, rt & 7);
   alwaysinline auto adc (reg8 rt, reg8 rs) { op(0x10); }
   alwaysinline auto add (reg8 rt, reg8 rs) { op(0x00); }
-  alwaysinline auto and (reg8 rt, reg8 rs) { op(0x20); }
+  alwaysinline auto and_(reg8 rt, reg8 rs) { op(0x20); }
   alwaysinline auto cmp (reg8 rt, reg8 rs) { op(0x38); }
   alwaysinline auto mov (reg8 rt, reg8 rs) { op(0x88); }
-  alwaysinline auto or  (reg8 rt, reg8 rs) { op(0x08); }
+  alwaysinline auto or_ (reg8 rt, reg8 rs) { op(0x08); }
   alwaysinline auto sbb (reg8 rt, reg8 rs) { op(0x18); }
   alwaysinline auto sub (reg8 rt, reg8 rs) { op(0x28); }
   alwaysinline auto test(reg8 rt, reg8 rs) { op(0x84); }
-  alwaysinline auto xor (reg8 rt, reg8 rs) { op(0x30); }
+  alwaysinline auto xor_(reg8 rt, reg8 rs) { op(0x30); }
   #undef op
 
   #define op(code) \
@@ -598,14 +598,14 @@
     emit.modrm(3, rs & 7, rt & 7);
   alwaysinline auto adc (reg16 rt, reg16 rs) { op(0x11); }
   alwaysinline auto add (reg16 rt, reg16 rs) { op(0x01); }
-  alwaysinline auto and (reg16 rt, reg16 rs) { op(0x21); }
+  alwaysinline auto and_(reg16 rt, reg16 rs) { op(0x21); }
   alwaysinline auto cmp (reg16 rt, reg16 rs) { op(0x39); }
   alwaysinline auto mov (reg16 rt, reg16 rs) { op(0x89); }
-  alwaysinline auto or  (reg16 rt, reg16 rs) { op(0x09); }
+  alwaysinline auto or_ (reg16 rt, reg16 rs) { op(0x09); }
   alwaysinline auto sbb (reg16 rt, reg16 rs) { op(0x19); }
   alwaysinline auto sub (reg16 rt, reg16 rs) { op(0x29); }
   alwaysinline auto test(reg16 rt, reg16 rs) { op(0x85); }
-  alwaysinline auto xor (reg16 rt, reg16 rs) { op(0x31); }
+  alwaysinline auto xor_(reg16 rt, reg16 rs) { op(0x31); }
   #undef op
 
   #define op(code) \
@@ -614,14 +614,14 @@
     emit.modrm(3, rs & 7, rt & 7);
   alwaysinline auto adc (reg32 rt, reg32 rs) { op(0x11); }
   alwaysinline auto add (reg32 rt, reg32 rs) { op(0x01); }
-  alwaysinline auto and (reg32 rt, reg32 rs) { op(0x21); }
+  alwaysinline auto and_(reg32 rt, reg32 rs) { op(0x21); }
   alwaysinline auto cmp (reg32 rt, reg32 rs) { op(0x39); }
   alwaysinline auto mov (reg32 rt, reg32 rs) { op(0x89); }
-  alwaysinline auto or  (reg32 rt, reg32 rs) { op(0x09); }
+  alwaysinline auto or_ (reg32 rt, reg32 rs) { op(0x09); }
   alwaysinline auto sbb (reg32 rt, reg32 rs) { op(0x19); }
   alwaysinline auto sub (reg32 rt, reg32 rs) { op(0x29); }
   alwaysinline auto test(reg32 rt, reg32 rs) { op(0x85); }
-  alwaysinline auto xor (reg32 rt, reg32 rs) { op(0x31); }
+  alwaysinline auto xor_(reg32 rt, reg32 rs) { op(0x31); }
   #undef op
 
   #define op(code) \
@@ -630,14 +630,14 @@
     emit.modrm(3, rs & 7, rt & 7);
   alwaysinline auto adc (reg64 rt, reg64 rs) { op(0x11); }
   alwaysinline auto add (reg64 rt, reg64 rs) { op(0x01); }
-  alwaysinline auto and (reg64 rt, reg64 rs) { op(0x21); }
+  alwaysinline auto and_(reg64 rt, reg64 rs) { op(0x21); }
   alwaysinline auto cmp (reg64 rt, reg64 rs) { op(0x39); }
   alwaysinline auto mov (reg64 rt, reg64 rs) { op(0x89); }
-  alwaysinline auto or  (reg64 rt, reg64 rs) { op(0x09); }
+  alwaysinline auto or_ (reg64 rt, reg64 rs) { op(0x09); }
   alwaysinline auto sbb (reg64 rt, reg64 rs) { op(0x19); }
   alwaysinline auto sub (reg64 rt, reg64 rs) { op(0x29); }
   alwaysinline auto test(reg64 rt, reg64 rs) { op(0x85); }
-  alwaysinline auto xor (reg64 rt, reg64 rs) { op(0x31); }
+  alwaysinline auto xor_(reg64 rt, reg64 rs) { op(0x31); }
   #undef op
 
   #define op(code) \
@@ -647,12 +647,12 @@
     emit.byte(is.data);
   alwaysinline auto adc(reg32 rt, imm8 is) { op(2); }
   alwaysinline auto add(reg32 rt, imm8 is) { op(0); }
-  alwaysinline auto and(reg32 rt, imm8 is) { op(4); }
+  alwaysinline auto and_(reg32 rt, imm8 is) { op(4); }
   alwaysinline auto cmp(reg32 rt, imm8 is) { op(7); }
-  alwaysinline auto or (reg32 rt, imm8 is) { op(1); }
+  alwaysinline auto or_(reg32 rt, imm8 is) { op(1); }
   alwaysinline auto sbb(reg32 rt, imm8 is) { op(3); }
   alwaysinline auto sub(reg32 rt, imm8 is) { op(5); }
-  alwaysinline auto xor(reg32 rt, imm8 is) { op(6); }
+  alwaysinline auto xor_(reg32 rt, imm8 is) { op(6); }
   #undef op
 
   #define op(code) \
@@ -662,12 +662,12 @@
     emit.byte(is.data);
   alwaysinline auto adc(reg64 rt, imm8 is) { op(2); }
   alwaysinline auto add(reg64 rt, imm8 is) { op(0); }
-  alwaysinline auto and(reg64 rt, imm8 is) { op(4); }
+  alwaysinline auto and_(reg64 rt, imm8 is) { op(4); }
   alwaysinline auto cmp(reg64 rt, imm8 is) { op(7); }
-  alwaysinline auto or (reg64 rt, imm8 is) { op(1); }
+  alwaysinline auto or_(reg64 rt, imm8 is) { op(1); }
   alwaysinline auto sbb(reg64 rt, imm8 is) { op(3); }
   alwaysinline auto sub(reg64 rt, imm8 is) { op(5); }
-  alwaysinline auto xor(reg64 rt, imm8 is) { op(6); }
+  alwaysinline auto xor_(reg64 rt, imm8 is) { op(6); }
   #undef op
 
   #define op(code, group) \
@@ -682,12 +682,12 @@
     }
   alwaysinline auto adc(reg8 rt, imm8 is) { op(0x14, 2); }
   alwaysinline auto add(reg8 rt, imm8 is) { op(0x04, 0); }
-  alwaysinline auto and(reg8 rt, imm8 is) { op(0x24, 4); }
+  alwaysinline auto and_(reg8 rt, imm8 is) { op(0x24, 4); }
   alwaysinline auto cmp(reg8 rt, imm8 is) { op(0x3c, 7); }
-  alwaysinline auto or (reg8 rt, imm8 is) { op(0x0c, 1); }
+  alwaysinline auto or_(reg8 rt, imm8 is) { op(0x0c, 1); }
   alwaysinline auto sbb(reg8 rt, imm8 is) { op(0x1c, 3); }
   alwaysinline auto sub(reg8 rt, imm8 is) { op(0x2c, 5); }
-  alwaysinline auto xor(reg8 rt, imm8 is) { op(0x34, 6); }
+  alwaysinline auto xor_(reg8 rt, imm8 is) { op(0x34, 6); }
   #undef op
 
   #define op(code, group) \
@@ -702,19 +702,19 @@
     }
   alwaysinline auto adc(reg32 rt, imm32 is) { op(0x15, 2); }
   alwaysinline auto add(reg32 rt, imm32 is) { op(0x05, 0); }
-  alwaysinline auto and(reg32 rt, imm32 is) { op(0x25, 4); }
+  alwaysinline auto and_(reg32 rt, imm32 is) { op(0x25, 4); }
   alwaysinline auto cmp(reg32 rt, imm32 is) { op(0x3d, 7); }
-  alwaysinline auto or (reg32 rt, imm32 is) { op(0x0d, 1); }
+  alwaysinline auto or_(reg32 rt, imm32 is) { op(0x0d, 1); }
   alwaysinline auto sbb(reg32 rt, imm32 is) { op(0x1d, 3); }
   alwaysinline auto sub(reg32 rt, imm32 is) { op(0x2d, 5); }
-  alwaysinline auto xor(reg32 rt, imm32 is) { op(0x35, 6); }
+  alwaysinline auto xor_(reg32 rt, imm32 is) { op(0x35, 6); }
   #undef op
 
   #define op(code) \
     emit.rex(0, 0, 0, rt & 8); \
     emit.byte(0xf7); \
     emit.modrm(3, code, rt & 7);
-  alwaysinline auto not (reg32 rt) { op(2); }
+  alwaysinline auto not_(reg32 rt) { op(2); }
   alwaysinline auto neg (reg32 rt) { op(3); }
   alwaysinline auto mul (reg32 rt) { op(4); }
   alwaysinline auto imul(reg32 rt) { op(5); }
@@ -726,7 +726,7 @@
     emit.rex(1, 0, 0, rt & 8); \
     emit.byte(0xf7); \
     emit.modrm(3, code, rt & 7);
-  alwaysinline auto not (reg64 rt) { op(2); }
+  alwaysinline auto not_(reg64 rt) { op(2); }
   alwaysinline auto neg (reg64 rt) { op(3); }
   alwaysinline auto mul (reg64 rt) { op(4); }
   alwaysinline auto imul(reg64 rt) { op(5); }

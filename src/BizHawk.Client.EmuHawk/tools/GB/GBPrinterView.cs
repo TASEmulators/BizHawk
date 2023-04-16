@@ -16,10 +16,16 @@ namespace BizHawk.Client.EmuHawk
 		// the bg color
 		private static readonly uint PaperColor = (uint)Color.AntiqueWhite.ToArgb();
 
+		public static Icon ToolIcon
+			=> Properties.Resources.GambatteIcon;
+
 		private readonly ColorMatrix _paperAdjustment;
 
 		[RequiredService]
-		public IGameboyCommon Gb { get; private set; }
+		public IGameboyCommon/*?*/ _gbCore { get; set; }
+
+		private IGameboyCommon Gb
+			=> _gbCore!;
 
 		[RequiredService]
 		public IEmulator Emulator { get; set; }
@@ -35,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 		public GBPrinterView()
 		{
 			InitializeComponent();
-			Icon = Properties.Resources.GambatteIcon;
+			Icon = ToolIcon;
 
 			// adjust the color of the printed output to be more papery
 			_paperAdjustment = new ColorMatrix
@@ -54,9 +60,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void GBPrinterView_FormClosed(object sender, FormClosedEventArgs e)
-		{
-			Gb?.SetPrinterCallback(null);
-		}
+			=> Gb.SetPrinterCallback(null);
 
 		public override void Restart()
 		{

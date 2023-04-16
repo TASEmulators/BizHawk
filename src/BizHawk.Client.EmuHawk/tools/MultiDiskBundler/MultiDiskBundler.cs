@@ -11,12 +11,18 @@ using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class MultiDiskBundler : ToolFormBase, IToolFormAutoConfig
 	{
+		private static readonly FilesystemFilterSet BundlesFSFilterSet = new(new FilesystemFilter("XML Files", new[] { "xml" }));
+
+		public static Icon ToolIcon
+			=> Properties.Resources.DualIcon;
+
 		private XElement _currentXml;
 
 		[RequiredService]
@@ -27,7 +33,25 @@ namespace BizHawk.Client.EmuHawk
 		public MultiDiskBundler()
 		{
 			InitializeComponent();
-			Icon = Properties.Resources.DualIcon;
+			Icon = ToolIcon;
+			SystemDropDown.Items.AddRange(new[]
+			{
+				VSystemID.Raw.AmstradCPC,
+				VSystemID.Raw.AppleII,
+				VSystemID.Raw.Arcade,
+				VSystemID.Raw.C64,
+				VSystemID.Raw.GBL,
+				VSystemID.Raw.GEN,
+				VSystemID.Raw.GGL,
+				VSystemID.Raw.Jaguar,
+				VSystemID.Raw.N64,
+				VSystemID.Raw.NDS,
+				VSystemID.Raw.PCFX,
+				VSystemID.Raw.PSX,
+				VSystemID.Raw.SAT,
+				VSystemID.Raw.TI83,
+				VSystemID.Raw.ZXSpectrum,
+			});
 		}
 
 		private void MultiGameCreator_Load(object sender, EventArgs e) => Restart();
@@ -38,7 +62,7 @@ namespace BizHawk.Client.EmuHawk
 			AddButton_Click(null, null);
 			AddButton_Click(null, null);
 
-			if (!Game.IsNullInstance() &&  !MainForm.CurrentlyOpenRom.EndsWith(".xml"))
+			if (!Game.IsNullInstance() && !MainForm.CurrentlyOpenRom.EndsWith(".xml"))
 			{
 				if (MainForm.CurrentlyOpenRom.Contains("|"))
 				{
@@ -112,7 +136,7 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 
 			var lra = new LoadRomArgs { OpenAdvanced = new OpenAdvanced_OpenRom { Path = fileInfo.FullName } };
-			MainForm.LoadRom(fileInfo.FullName, lra);
+			_ = MainForm.LoadRom(fileInfo.FullName, lra);
 		}
 
 		private void AddButton_Click(object sender, EventArgs e)
@@ -127,7 +151,8 @@ namespace BizHawk.Client.EmuHawk
 				Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top
 			};
 
-			var mdf = new MultiDiskFileSelector(MainForm, Config.PathEntries, () => MainForm.CurrentlyOpenRom)
+			var mdf = new MultiDiskFileSelector(MainForm, Config.PathEntries,
+				() => MainForm.CurrentlyOpenRom, () => SystemDropDown.SelectedItem?.ToString())
 			{
 				Location = UIHelper.Scale(new Point(7, 12)),
 				Width = groupBox.ClientSize.Width - UIHelper.ScaleX(13),
@@ -135,7 +160,6 @@ namespace BizHawk.Client.EmuHawk
 			};
 
 			mdf.NameChanged += FileSelector_NameChanged;
-			mdf.SystemString = SystemDropDown.SelectedText;
 
 			groupBox.Controls.Add(mdf);
 			FileSelectorPanel.Controls.Add(groupBox);
@@ -187,10 +211,7 @@ namespace BizHawk.Client.EmuHawk
 						throw new Exception("Xml Filename can not be blank");
 					}
 
-					if (names.Any(string.IsNullOrWhiteSpace))
-					{
-						throw new Exception("Rom Names can not be blank");
-					}
+					if (names.Exists(string.IsNullOrWhiteSpace)) throw new Exception("Rom Names can not be blank");
 
 					var system = SystemDropDown.SelectedItem?.ToString();
 
@@ -199,8 +220,7 @@ namespace BizHawk.Client.EmuHawk
 						throw new Exception("System Id can not be blank");
 					}
 
-					var basePath = Path.GetDirectoryName(name.Split('|').First());
-
+					var basePath = Path.GetDirectoryName(name.SubstringBefore('|'));
 					if (string.IsNullOrEmpty(basePath))
 					{
 						var fileInfo = new FileInfo(name);
@@ -242,7 +262,9 @@ namespace BizHawk.Client.EmuHawk
 		private void BrowseBtn_Click(object sender, EventArgs e)
 		{
 			string filename = "";
-			string initialDirectory = Config.PathEntries.MultiDiskAbsolutePath();
+			string initialDirectory = Config.PathEntries.UseRecentForRoms
+				? string.Empty
+				: Config.PathEntries.MultiDiskAbsolutePath();
 
 			if (!Game.IsNullInstance())
 			{
@@ -252,46 +274,19 @@ namespace BizHawk.Client.EmuHawk
 					filename = Path.ChangeExtension(Game.FilesystemSafeName(), ".xml");
 				}
 
-				initialDirectory = Path.GetDirectoryName(filename);
+				initialDirectory = Path.GetDirectoryName(filename) ?? string.Empty;
 			}
 
-			using var sfd = new SaveFileDialog
-			{
-				FileName = filename,
-				InitialDirectory = initialDirectory,
-				Filter = new FilesystemFilterSet(new FilesystemFilter("XML Files", new[] { "xml" })).ToString()
-			};
-
-			if (this.ShowDialogWithTempMute(sfd) != DialogResult.Cancel)
-			{
-				NameBox.Text = sfd.FileName;
-			}
+			var result = this.ShowFileSaveDialog(
+				filter: BundlesFSFilterSet,
+				initDir: initialDirectory,
+				initFileName: filename);
+			if (result is not null) NameBox.Text = result;
 		}
 
 		private void SystemDropDown_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			Recalculate();
-			do
-			{
-				foreach (Control ctrl in FileSelectorPanel.Controls)
-				{
-					ctrl.Dispose();
-				}
-			} while (FileSelectorPanel.Controls.Count != 0);
-
-			if (SystemDropDown.SelectedItem.ToString() == VSystemID.Raw.GB)
-			{
-				AddButton.Enabled = false;
-				btnRemove.Enabled = false;
-			}
-			else
-			{
-				AddButton.Enabled = true;
-				btnRemove.Enabled = true;
-			}
-			AddButton_Click(null, null);
-			AddButton_Click(null, null);
 		}
-
 	}
 }

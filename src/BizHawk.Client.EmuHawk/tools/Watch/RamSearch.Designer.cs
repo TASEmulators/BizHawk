@@ -143,6 +143,7 @@ namespace BizHawk.Client.EmuHawk
 			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.DisplayTypeDropdown = new System.Windows.Forms.ComboBox();
+			this.SelectAllMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SearchMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ListViewContextMenu.SuspendLayout();
 			this.RamSearchMenu.SuspendLayout();
@@ -204,7 +205,7 @@ namespace BizHawk.Client.EmuHawk
             this.ContextMenuSeparator3,
             this.ClearPreviewContextMenuItem});
 			this.ListViewContextMenu.Name = "contextMenuStrip1";
-			this.ListViewContextMenu.Size = new System.Drawing.Size(218, 220);
+			this.ListViewContextMenu.Size = new System.Drawing.Size(222, 220);
 			this.ListViewContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.ListViewContextMenu_Opening);
 			// 
 			// DoSearchContextMenuItem
@@ -439,6 +440,7 @@ namespace BizHawk.Client.EmuHawk
             this.AddToRamWatchMenuItem,
             this.PokeAddressMenuItem,
             this.FreezeAddressMenuItem,
+            this.SelectAllMenuItem,
             this.toolStripSeparator13,
             this.ClearUndoMenuItem});
 			this.searchToolStripMenuItem.Text = "&Search";
@@ -543,6 +545,13 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.UseUndoHistoryMenuItem.Text = "&Use Undo History";
 			this.UseUndoHistoryMenuItem.Click += new System.EventHandler(this.UseUndoHistoryMenuItem_Click);
+			// 
+			// SelectAllMenuItem
+			// 
+			this.SelectAllMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys) ((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
+			this.SelectAllMenuItem.ShortcutKeyDisplayString = "Ctrl+A";
+			this.SelectAllMenuItem.Text = "Select All";
+			this.SelectAllMenuItem.Click += new System.EventHandler(this.SelectAllMenuItem_Click);
 			// 
 			// MemDomainLabel
 			// 
@@ -1174,5 +1183,6 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripButton ErrorIconButton;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx Previous_LastChangeMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AutoSearchAccountForLagMenuItem;
+		private ToolStripMenuItemEx SelectAllMenuItem;
 	}
 }

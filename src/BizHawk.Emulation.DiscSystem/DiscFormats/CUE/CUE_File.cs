@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 				public CATALOG(string value) => Value = value;
 
-				public override readonly string ToString() => $"CATALOG: {Value}";
+				public readonly override string ToString() => $"CATALOG: {Value}";
 			}
 
 			public readonly struct CDTEXTFILE : Command
@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 				public CDTEXTFILE(string path) => Path = path;
 
-				public override readonly string ToString() => $"CDTEXTFILE: {Path}";
+				public override string ToString() => $"CDTEXTFILE: {Path}";
 			}
 
 			public readonly struct FILE : Command
@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 					Type = type;
 				}
 
-				public override readonly string ToString() => $"FILE ({Type}): {Path}";
+				public override string ToString() => $"FILE ({Type}): {Path}";
 			}
 
 			public readonly struct FLAGS : Command
@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 				public FLAGS(CueTrackFlags flags) => Flags = flags;
 
-				public override readonly string ToString() => $"FLAGS {Flags}";
+				public override string ToString() => $"FLAGS {Flags}";
 			}
 
 			public readonly struct INDEX : Command
@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 					Timestamp = timestamp;
 				}
 
-				public override readonly string ToString() => $"INDEX {Number,2} {Timestamp}";
+				public override string ToString() => $"INDEX {Number,2} {Timestamp}";
 			}
 
 			public readonly struct ISRC : Command
@@ -76,7 +76,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 				public ISRC(string value) => Value = value;
 
-				public override readonly string ToString() => $"ISRC: {Value}";
+				public override string ToString() => $"ISRC: {Value}";
 			}
 
 			public readonly struct PERFORMER : Command
@@ -85,7 +85,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 				public PERFORMER(string value) => Value = value;
 
-				public override readonly string ToString() => $"PERFORMER: {Value}";
+				public override string ToString() => $"PERFORMER: {Value}";
 			}
 
 			public readonly struct POSTGAP : Command
@@ -94,7 +94,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 				public POSTGAP(Timestamp length) => Length = length;
 
-				public override readonly string ToString() => $"POSTGAP: {Length}";
+				public override string ToString() => $"POSTGAP: {Length}";
 			}
 
 			public readonly struct PREGAP : Command
@@ -103,7 +103,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 				public PREGAP(Timestamp length) => Length = length;
 
-				public override readonly string ToString() => $"PREGAP: {Length}";
+				public override string ToString() => $"PREGAP: {Length}";
 			}
 
 			public readonly struct REM : Command
@@ -112,7 +112,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 				public REM(string value) => Value = value;
 
-				public override readonly string ToString() => $"REM: {Value}";
+				public override string ToString() => $"REM: {Value}";
 			}
 
 			public readonly struct COMMENT : Command
@@ -121,7 +121,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 				public COMMENT(string value) => Value = value;
 
-				public override readonly string ToString() => $"COMMENT: {Value}";
+				public override string ToString() => $"COMMENT: {Value}";
 			}
 
 			public readonly struct SONGWRITER : Command
@@ -130,7 +130,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 				public SONGWRITER(string value) => Value = value;
 
-				public override readonly string ToString() => $"SONGWRITER: {Value}";
+				public override string ToString() => $"SONGWRITER: {Value}";
 			}
 
 			public readonly struct TITLE : Command
@@ -139,7 +139,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 				public TITLE(string value) => Value = value;
 
-				public override readonly string ToString() => $"TITLE: {Value}";
+				public override string ToString() => $"TITLE: {Value}";
 			}
 
 			public readonly struct TRACK : Command
@@ -154,7 +154,18 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 					Type = type;
 				}
 
-				public override readonly string ToString() => $"TRACK {Number,2} ({Type})";
+				public override string ToString() => $"TRACK {Number,2} ({Type})";
+			}
+			
+			// This doesn't exist officially, rather it is derived from special REM comments
+			// Consider this an "extension" perhaps?
+			public readonly struct SESSION : Command
+			{
+				public readonly int Number;
+
+				public SESSION(int number) => Number = number;
+
+				public override string ToString() => $"SESSION {Number}";
 			}
 		}
 
@@ -176,6 +187,6 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		/// <summary>
 		/// Stuff other than the commands, global for the whole disc
 		/// </summary>
-		public DiscInfo GlobalDiscInfo = new DiscInfo();
+		public readonly DiscInfo GlobalDiscInfo = new();
 	}
 }

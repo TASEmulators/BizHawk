@@ -9,6 +9,7 @@ using System.Threading;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 
 // some helpful p/invoke from http://www.codeproject.com/KB/audio-video/Motion_Detection.aspx?msg=1142967
@@ -48,15 +49,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				throw new ArgumentException($"{nameof(AviWriter)} only takes its own {nameof(CodecToken)}s!");
+				throw new ArgumentException(message: $"{nameof(AviWriter)} only takes its own {nameof(CodecToken)}s!", paramName: nameof(token));
 			}
 		}
 
 		public static IEnumerator<string> CreateBasicNameProvider(string template)
 		{
-			string dir = Path.GetDirectoryName(template);
-			string baseName = Path.GetFileNameWithoutExtension(template);
-			string ext = Path.GetExtension(template);
+			var (dir, baseName, ext) = template.SplitPathToDirFileAndExt();
 			yield return template;
 			int counter = 1;
 			for (;;)
@@ -334,9 +333,7 @@ namespace BizHawk.Client.EmuHawk
 				if (a_bits == 16) bytes = 2;
 				else if (a_bits == 8) bytes = 1;
 				else throw new InvalidOperationException($"only 8/16 bits audio are supported by {nameof(AviWriter)} and you chose: {a_bits}");
-				if (a_channels == 1) { }
-				else if (a_channels == 2) { }
-				else throw new InvalidOperationException($"only 1/2 channels audio are supported by {nameof(AviWriter)} and you chose: {a_channels}");
+				if (a_channels is not (1 or 2)) throw new InvalidOperationException($"only 1/2 channels audio are supported by {nameof(AviWriter)} and you chose: {a_channels}");
 				wfex.Init();
 				wfex.nBlockAlign = (ushort)(bytes * a_channels);
 				wfex.nChannels = (ushort)a_channels;
@@ -516,8 +513,8 @@ namespace BizHawk.Client.EmuHawk
 
 				AVIWriterImports.AVICOMPRESSOPTIONS comprOptions = new AVIWriterImports.AVICOMPRESSOPTIONS();
 
-				byte[] Format;
-				byte[] Parms;
+				byte[] format;
+				byte[] parms;
 
 				try
 				{
@@ -534,8 +531,8 @@ namespace BizHawk.Client.EmuHawk
 					comprOptions.cbParms = b.ReadInt32();
 					comprOptions.dwInterleaveEvery = b.ReadInt32();
 
-					Format = b.ReadBytes(comprOptions.cbFormat);
-					Parms = b.ReadBytes(comprOptions.cbParms);
+					format = b.ReadBytes(comprOptions.cbFormat);
+					parms = b.ReadBytes(comprOptions.cbParms);
 				}
 				catch (IOException)
 				{
@@ -550,8 +547,8 @@ namespace BizHawk.Client.EmuHawk
 				var ret = new CodecToken
 				{
 					_comprOptions = comprOptions,
-					Format = Format,
-					Parms = Parms,
+					Format = format,
+					Parms = parms,
 					codec = Decode_mmioFOURCC(comprOptions.fccHandler)
 				};
 				return ret;

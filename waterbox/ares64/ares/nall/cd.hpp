@@ -22,6 +22,7 @@
 #include <nall/matrix.hpp>
 #include <nall/reed-solomon.hpp>
 
+#include <nall/bcd.hpp>
 #include <nall/cd/crc16.hpp>
 #include <nall/cd/efm.hpp>
 #include <nall/cd/sync.hpp>

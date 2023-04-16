@@ -90,12 +90,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 	internal static class SNESControllerDefExtensions
 	{
 		/// <remarks>
-		/// problem: when you're in 240 line mode, the limit on Y needs to be 240. when you're in 224 mode, it needs to be 224.
+		/// problem: when you're in 240 line mode, the limit on Y needs to be 0-239. when you're in 224 mode, it needs to be 0-224.
 		/// perhaps the deck needs to account for this...
 		/// for reference Snes9x is always in 224 mode
 		/// </remarks>
 		public static ControllerDefinition AddLightGun(this ControllerDefinition def, string nameFormat)
-			=> def.AddXYPair(nameFormat, AxisPairOrientation.RightAndUp, 0.RangeTo(256), 128, 0.RangeTo(240), 0); //TODO verify direction against hardware
+			=> def.AddXYPair(nameFormat, AxisPairOrientation.RightAndDown, 0.RangeTo(255), 128, 0.RangeTo(239), 120); //TODO verify direction against hardware
 	}
 
 	public interface ILibsnesController
@@ -331,7 +331,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public LibsnesApi.SNES_INPUT_PORT PortType => LibsnesApi.SNES_INPUT_PORT.SuperScope;
 
 		private static readonly ControllerDefinition _definition
-			= new ControllerDefinition("(SNES Controller fragment)") { BoolButtons = { "0Trigger", "0Cursor", "0Turbo", "0Pause" } }
+			= new ControllerDefinition("(SNES Controller fragment)") { BoolButtons = { "0Trigger", "0Cursor", "0Turbo", "0Pause", "0Offscreen" } }
 				.AddLightGun("0Scope {0}");
 
 		public ControllerDefinition Definition => _definition;
@@ -343,11 +343,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				default:
 					return 0;
 				case 0:
-					var x = (int)controller.AxisValue("0Scope X");
-					return (short)x;
+					if (controller.IsPressed("0Offscreen")) return -1;
+					return (short)controller.AxisValue("0Scope X");
 				case 1:
-					var y = (int)controller.AxisValue("0Scope Y");
-					return (short)y;
+					if (controller.IsPressed("0Offscreen")) return -1;
+					return (short)controller.AxisValue("0Scope Y");
 				case 2:
 					return (short)(controller.IsPressed("0Trigger") ? 1 : 0);
 				case 3:
@@ -365,7 +365,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public LibsnesApi.SNES_INPUT_PORT PortType => LibsnesApi.SNES_INPUT_PORT.Justifier;
 
 		private static readonly ControllerDefinition _definition
-			= new ControllerDefinition("(SNES Controller fragment)") { BoolButtons = { "0Trigger", "0Start", "1Trigger", "1Start" } }
+			= new ControllerDefinition("(SNES Controller fragment)") { BoolButtons = { "0Trigger", "0Start", "0Offscreen", "1Trigger", "1Start", "1Offscreen" } }
 				.AddLightGun("0Justifier {0}")
 				.AddLightGun("1Justifier {0}");
 
@@ -378,11 +378,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				default:
 					return 0;
 				case 0:
-					var x = (int)controller.AxisValue(index + "Justifier X");
-					return (short)x;
+					if (controller.IsPressed(index + "Offscreen")) return -1;
+					return (short)controller.AxisValue(index + "Justifier X");
 				case 1:
-					var y = (int)controller.AxisValue(index + "Justifier Y");
-					return (short)y;
+					if (controller.IsPressed(index + "Offscreen")) return -1;
+					return (short)controller.AxisValue(index + "Justifier Y");
 				case 2:
 					return (short)(controller.IsPressed(index + "Trigger") ? 1 : 0);
 				case 3:

@@ -27,7 +27,8 @@
   case 0xd: return name<0xd>(__VA_ARGS__); \
   case 0xe: return name<0xe>(__VA_ARGS__); \
   case 0xf: return name<0xf>(__VA_ARGS__); \
-  }
+  } \
+  unreachable;
 
 #define SA     (OP >>  6 & 31)
 #define RDn    (OP >> 11 & 31)

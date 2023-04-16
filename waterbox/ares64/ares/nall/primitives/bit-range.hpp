@@ -20,6 +20,7 @@ template<s32 Precision, s32 Lo, s32 Hi> struct BitRange {
   enum : u32 { shift = lo };
 
   BitRange(const BitRange& source) = delete;
+  BitRange(BitRange&& source) = default;
 
   auto& operator=(const BitRange& source) {
     target = target & ~mask | ((source.target & source.mask) >> source.shift) << shift & mask;
@@ -138,6 +139,7 @@ template<typename Type, s32 Precision = Type::bits()> struct DynamicBitRange {
     void>>>>;
 
   DynamicBitRange(const DynamicBitRange& source) = delete;
+  DynamicBitRange(DynamicBitRange&& source) = default;
 
   auto& operator=(const DynamicBitRange& source) {
     target = target & ~mask | ((source.target & source.mask) >> source.shift) << shift & mask;

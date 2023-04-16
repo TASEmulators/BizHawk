@@ -5,10 +5,11 @@ CXXFLAGS := -DHOOKS -DBIZHAWK -DPROFILE_COMPATIBILITY -DGAMEBOY \
 	-D_GNU_SOURCE \
 	-Werror=int-to-pointer-cast \
 	-I../libco -I./bsnes \
-	-Wno-parentheses -Wno-sign-compare \
-	-Wno-unused-variable -Wno-unused-function \
+	-Wno-parentheses -Wno-sign-compare -Wno-unused-variable -Wno-unused-function \
+	-Wno-switch -Wno-switch-bool -Wno-reorder -Wno-return-type -Wno-bool-operation  \
+	-Wno-mismatched-tags -Wno-delete-non-virtual-dtor \
 	-fno-threadsafe-statics \
-	-std=c++0x
+	-std=gnu++17
 
 TARGET = libsnes.wbx
 

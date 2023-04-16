@@ -1,4 +1,14 @@
-auto SI::readWord(u32 address) -> u32 {
+auto SI::readWord(u32 address, u32& cycles) -> u32 {
+  if(address <= 0x048f'ffff) return ioRead(address);
+
+  if (unlikely(io.ioBusy)) {
+    writeForceFinish(); //technically, we should wait until Queue::SI_BUS_Write
+    return io.busLatch;
+  }
+  return pif.read<Word>(address);
+}
+
+auto SI::ioRead(u32 address) -> u32 {
   address = (address & 0xfffff) >> 2;
   n32 data;
 
@@ -44,7 +54,17 @@ auto SI::readWord(u32 address) -> u32 {
   return data;
 }
 
-auto SI::writeWord(u32 address, u32 data_) -> void {
+auto SI::writeWord(u32 address, u32 data, u32& cycles) -> void {
+  if(address <= 0x048f'ffff) return ioWrite(address, data);
+
+  if(io.ioBusy) return;
+  io.ioBusy = 1;
+  io.busLatch = data;
+  queue.insert(Queue::SI_BUS_Write, 2150*3);
+  return pif.write<Word>(address, data);
+}
+
+auto SI::ioWrite(u32 address, u32 data_) -> void {
   address = (address & 0xfffff) >> 2;
   n32 data = data_;
 
@@ -57,7 +77,8 @@ auto SI::writeWord(u32 address, u32 data_) -> void {
     //SI_PIF_ADDRESS_READ64B
     io.readAddress = data.bit(0,31) & ~1;
     io.dmaBusy = 1;
-    queue.insert(Queue::SI_DMA_Read, 2304);
+    int cycles = pif.estimateTiming();
+    queue.insert(Queue::SI_DMA_Read, cycles*3);
   }
 
   if(address == 2) {
@@ -72,7 +93,7 @@ auto SI::writeWord(u32 address, u32 data_) -> void {
     //SI_PIF_ADDRESS_WRITE64B
     io.writeAddress = data.bit(0,31) & ~1;
     io.dmaBusy = 1;
-    queue.insert(Queue::SI_DMA_Write, 2304);
+    queue.insert(Queue::SI_DMA_Write, 4065*3);
   }
 
   if(address == 5) {
@@ -86,4 +107,13 @@ auto SI::writeWord(u32 address, u32 data_) -> void {
   }
 
   debugger.io(Write, address, data);
+}
+
+auto SI::writeFinished() -> void {
+  io.ioBusy = 0;
+}
+
+auto SI::writeForceFinish() -> void {
+  io.ioBusy = 0;
+  queue.remove(Queue::SI_BUS_Write);
 }

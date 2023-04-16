@@ -25,11 +25,15 @@ public class NInputExtraUnion {
 
   public T As<T>() where T : class { return this.Value as T; }
   public NymaTypes.NButtonInfoT AsButton() { return this.As<NymaTypes.NButtonInfoT>(); }
+  public static NInputExtraUnion FromButton(NymaTypes.NButtonInfoT _button) { return new NInputExtraUnion{ Type = NInputExtra.Button, Value = _button }; }
   public NymaTypes.NAxisInfoT AsAxis() { return this.As<NymaTypes.NAxisInfoT>(); }
+  public static NInputExtraUnion FromAxis(NymaTypes.NAxisInfoT _axis) { return new NInputExtraUnion{ Type = NInputExtra.Axis, Value = _axis }; }
   public NymaTypes.NSwitchInfoT AsSwitch() { return this.As<NymaTypes.NSwitchInfoT>(); }
+  public static NInputExtraUnion FromSwitch(NymaTypes.NSwitchInfoT _switch) { return new NInputExtraUnion{ Type = NInputExtra.Switch, Value = _switch }; }
   public NymaTypes.NStatusInfoT AsStatus() { return this.As<NymaTypes.NStatusInfoT>(); }
+  public static NInputExtraUnion FromStatus(NymaTypes.NStatusInfoT _status) { return new NInputExtraUnion{ Type = NInputExtra.Status, Value = _status }; }
 
-  public static int Pack(FlatBuffers.FlatBufferBuilder builder, NInputExtraUnion _o) {
+  public static int Pack(Google.FlatBuffers.FlatBufferBuilder builder, NInputExtraUnion _o) {
     switch (_o.Type) {
       default: return 0;
       case NInputExtra.Button: return NymaTypes.NButtonInfo.Pack(builder, _o.AsButton()).Value;

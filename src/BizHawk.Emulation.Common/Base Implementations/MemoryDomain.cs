@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Common
 	/// as required by the IMemoryDomains service.
 	/// </summary>
 	/// <seealso cref="IMemoryDomains" />
-	public abstract class MemoryDomain
+	public abstract class MemoryDomain : IMonitor
 	{
 		public enum Endian
 		{
@@ -105,28 +105,28 @@ namespace BizHawk.Emulation.Common
 
 		public virtual void BulkPeekByte(Range<long> addresses, byte[] values)
 		{
-			if (addresses == null || values == null)
-			{
-				throw new ArgumentException();
-			}
+			if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
+			if (values is null) throw new ArgumentNullException(paramName: nameof(values));
 
 			if ((long) addresses.Count() != values.Length)
 			{
 				throw new InvalidOperationException("Invalid length of values array");
 			}
 
-			for (var i = addresses.Start; i <= addresses.EndInclusive; i++)
+			using (this.EnterExit())
 			{
-				values[i - addresses.Start] = PeekByte(i);
+				for (var i = addresses.Start; i <= addresses.EndInclusive; i++)
+				{
+					values[i - addresses.Start] = PeekByte(i);
+				}
 			}
 		}
 
 		public virtual void BulkPeekUshort(Range<long> addresses,  bool bigEndian, ushort[] values)
 		{
-			if (addresses == null || values == null)
-			{
-				throw new ArgumentException();
-			}
+			if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
+			if (values is null) throw new ArgumentNullException(paramName: nameof(values));
+
 			var start = addresses.Start;
 			var end  = addresses.EndInclusive + 1;
 
@@ -139,16 +139,18 @@ namespace BizHawk.Emulation.Common
 				throw new InvalidOperationException("Invalid length of values array");
 			}
 
-			for (var i = 0; i < values.Length; i++, start += 2)
-				values[i] = PeekUshort(start, bigEndian);
+			using (this.EnterExit())
+			{
+				for (var i = 0; i < values.Length; i++, start += 2)
+					values[i] = PeekUshort(start, bigEndian);
+			}
 		}
 
 		public virtual void BulkPeekUint(Range<long> addresses, bool bigEndian, uint[] values)
 		{
-			if (addresses == null || values == null)
-			{
-				throw new ArgumentException();
-			}
+			if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
+			if (values is null) throw new ArgumentNullException(paramName: nameof(values));
+
 			var start = addresses.Start;
 			var end  = addresses.EndInclusive + 1;
 
@@ -161,10 +163,25 @@ namespace BizHawk.Emulation.Common
 				throw new InvalidOperationException("Invalid length of values array");
 			}
 
-			for (var i = 0; i < values.Length; i++, start += 4)
-				values[i] = PeekUint(start, bigEndian);
+			using (this.EnterExit())
+			{
+				for (var i = 0; i < values.Length; i++, start += 4)
+					values[i] = PeekUint(start, bigEndian);
+			}
 		}
 
 		public virtual void SendCheatToCore(int addr, byte value, int compare, int compare_type) { }
+
+		/// <summary>
+		/// only use this if you are expecting to do a lot of peeks/pokes
+		/// no-op if the domain has no monitor
+		/// </summary>
+		public virtual void Enter() { }
+
+		/// <summary>
+		/// only use this if you are expecting to do a lot of peeks/pokes
+		/// no-op if the domain has no monitor
+		/// </summary>
+		public virtual void Exit() { }
 	}
 }

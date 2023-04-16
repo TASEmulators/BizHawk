@@ -1007,18 +1007,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					var padPos = pad * -1;
 					var excessL = padPos / 2;
 					var excessR = excessL + (padPos % 2);
-					for (int i = 0; i < excessL; i++)
-					{
-						var lThing = lCop.First();
-
-						lCop.Remove(lThing);
-					}
-					for (int i = 0; i < excessL; i++)
-					{
-						var lThing = lCop.Last();
-
-						lCop.Remove(lThing);
-					}
+					for (var i = 0; i < excessL; i++) lCop.RemoveAt(0);
+					for (var i = 0; i < excessL; i++) lCop.RemoveAt(lCop.Count - 1); //TODO should be using excessR?
 				}
 
 				var lPad = pad / 2;

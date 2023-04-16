@@ -18,13 +18,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 		public PutSettingsDirtyBits PutSettings(SameboySettings o)
 		{
-			LibSameboy.sameboy_setpalette(SameboyState, o.GBPalette, o.GetCustomPalette());
-			LibSameboy.sameboy_setcolorcorrection(SameboyState, o.ColorCorrection);
-			LibSameboy.sameboy_setlighttemperature(SameboyState, o.LightTemperature);
-			LibSameboy.sameboy_sethighpassfilter(SameboyState, o.HighPassFilter);
-			LibSameboy.sameboy_setinterferencevolume(SameboyState, o.InterferenceVolume);
-			LibSameboy.sameboy_setbgwinenabled(SameboyState, o.EnableBGWIN);
-			LibSameboy.sameboy_setobjenabled(SameboyState, o.EnableOBJ);
+			var settings = new LibSameboy.NativeSettings
+			{
+				Palette = o.GBPalette,
+				CustomPalette = o.GetCustomPalette(),
+				ColorCorrectionMode = o.ColorCorrection,
+				LightTemperature = o.LightTemperature,
+				HighPassFilter = o.HighPassFilter,
+				InterferenceVolume = o.InterferenceVolume,
+				ChannelMask = o.GetChannelMask(),
+				BackgroundEnabled = o.EnableBGWIN,
+				ObjectsEnabled = o.EnableOBJ,
+			};
+			LibSameboy.sameboy_setsettings(SameboyState, ref settings);
 			_disassembler.UseRGBDSSyntax = o.UseRGBDSSyntax;
 			_settings = o;
 			return PutSettingsDirtyBits.None;
@@ -69,19 +75,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 				DISABLED,
 				[Display(Name = "Correct Color Curves")]
 				CORRECT_CURVES,
-				[Display(Name = "Emulate Hardware")]
-				EMULATE_HARDWARE,
-				[Display(Name = "Preserve Brightness")]
-				PRESERVE_BRIGHTNESS,
+				[Display(Name = "Modern - Balanced")]
+				MODERN_BALANCED,
+				[Display(Name = "Modern - Boost Contrast")]
+				MODERN_BOOST_CONTRAST,
 				[Display(Name = "Reduce Contrast")]
 				REDUCE_CONTRAST,
 				[Display(Name = "Harsh Reality")]
 				LOW_CONTRAST,
+				[Display(Name = "Modern - Accurate")]
+				MODERN_ACCURATE,
 			}
 
 			[DisplayName("GBC Color Correction")]
 			[Description("Selects which color correction method to use in GBC mode. Does nothing in GB mode.")]
-			[DefaultValue(ColorCorrectionMode.EMULATE_HARDWARE)]
+			[DefaultValue(ColorCorrectionMode.MODERN_BALANCED)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public ColorCorrectionMode ColorCorrection { get; set; }
 
@@ -130,6 +138,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 				set => _interferencevolume = Math.Max(0, Math.Min(100, value));
 			}
 
+			[DisplayName("Enable Channel 1")]
+			[Description("")]
+			[DefaultValue(true)]
+			public bool EnableCH1 { get; set; }
+
+			[DisplayName("Enable Channel 2")]
+			[Description("")]
+			[DefaultValue(true)]
+			public bool EnableCH2 { get; set; }
+
+			[DisplayName("Enable Channel 3")]
+			[Description("")]
+			[DefaultValue(true)]
+			public bool EnableCH3 { get; set; }
+
+			[DisplayName("Enable Channel 4")]
+			[Description("")]
+			[DefaultValue(true)]
+			public bool EnableCH4 { get; set; }
+
+			public int GetChannelMask()
+				=> (EnableCH1 ? 1 : 0) | (EnableCH2 ? 2 : 0) | (EnableCH3 ? 4 : 0) | (EnableCH4 ? 8 : 0);
+
 			[DisplayName("Enable Background/Window")]
 			[Description("")]
 			[DefaultValue(true)]
@@ -151,11 +182,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 				_customPal = new[] { 0x00ffffff, 0x00aaaaaa, 0x00555555, 0x00000000, 0x00ffffff, };
 			}
 
-			public SameboySettings Clone() => MemberwiseClone() as SameboySettings;
+			public SameboySettings Clone()
+				=> (SameboySettings)MemberwiseClone();
 
-			public int[] GetCustomPalette() => _customPal.Clone() as int[];
+			public int[] GetCustomPalette() 
+				=> (int[])_customPal.Clone();
 
-			public void SetCustomPalette(int[] pal) => _customPal = pal.Clone() as int[];
+			public void SetCustomPalette(int[] pal)
+				=> _customPal = (int[])pal.Clone();
 		}
 
 		public class SameboySyncSettings
@@ -189,9 +223,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 				GB_MODEL_CGB_E = 0x205,
 				// GB_MODEL_AGB_0 = 0x206,
 				// GB_MODEL_AGB_A = 0x207,
+				// GB_MODEL_GBP_A = 0x207 | 0x20,
 				[Display(Name = "AGB")]
 				GB_MODEL_AGB = 0x207,
+				[Display(Name = "GBP")]
+				GB_MODEL_GBP = 0x207 | 0x20,
 				// GB_MODEL_AGB_B = 0x208,
+				// GB_MODEL_AGB_E = 0x209,
+				// GB_MODEL_GBP_E = 0x209 | 0x20,
 			}
 
 			[DisplayName("Console Mode")]
@@ -210,11 +249,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			[DefaultValue(0)]
 			public int RTCDivisorOffset { get; set; }
 
-			public SameboySyncSettings() => SettingsUtil.SetDefaultValues(this);
+			[DisplayName("Disable Joypad Bounce")]
+			[Description("Disables emulation of the bounce from a physical joypad.")]
+			[DefaultValue(true)]
+			public bool NoJoypadBounce { get; set; }
 
-			public SameboySyncSettings Clone() => MemberwiseClone() as SameboySyncSettings;
+			public SameboySyncSettings()
+				=> SettingsUtil.SetDefaultValues(this);
 
-			public static bool NeedsReboot(SameboySyncSettings x, SameboySyncSettings y) => !DeepEquality.DeepEquals(x, y);
+			public SameboySyncSettings Clone()
+				=> (SameboySyncSettings)MemberwiseClone();
+
+			public static bool NeedsReboot(SameboySyncSettings x, SameboySyncSettings y)
+				=> !DeepEquality.DeepEquals(x, y);
 		}
 	}
 }

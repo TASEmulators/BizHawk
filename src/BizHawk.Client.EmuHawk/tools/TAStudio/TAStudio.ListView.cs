@@ -377,11 +377,11 @@ namespace BizHawk.Client.EmuHawk
 
 				if (columnName == FrameColumnName)
 				{
-					CurrentTasMovie.Markers.Add(TasView.LastSelectedIndex.Value, "");
+					CurrentTasMovie.Markers.Add(TasView.SelectionEndIndex!.Value, "");
 				}
 				else if (columnName != CursorColumnName)
 				{
-					int frame = TasView.SelectedRows.FirstOrDefault();
+					var frame = TasView.AnyRowsSelected ? TasView.FirstSelectedRowIndex : 0;
 					string buttonName = TasView.CurrentCell.Column.Name;
 
 					if (ControllerType.BoolButtons.Contains(buttonName))
@@ -495,7 +495,7 @@ namespace BizHawk.Client.EmuHawk
 
 				// Fixes auto-loading, but why is this code like this? The code above suggests we have a AxisPattern for every axis button? But we don't
 				// This is a sign of a deeper problem, but this fixes some basic functionality at least
-				if (index < BoolPatterns.Length)
+				if (index < AxisPatterns.Length)
 				{
 					AutoPatternAxis p = AxisPatterns[index];
 					InputManager.AutofireStickyXorAdapter.SetAxis(button, value, p);
@@ -566,7 +566,7 @@ namespace BizHawk.Client.EmuHawk
 						_extraAxisRows.Clear();
 						_extraAxisRows.AddRange(TasView.SelectedRows);
 						_startSelectionDrag = true;
-						_selectionDragState = TasView.SelectedRows.Contains(frame);
+						_selectionDragState = TasView.IsRowSelected(frame);
 						return;
 					}
 					if (_axisEditColumn != buttonName
@@ -608,7 +608,7 @@ namespace BizHawk.Client.EmuHawk
 					else
 					{
 						_startSelectionDrag = true;
-						_selectionDragState = TasView.SelectedRows.Contains(frame);
+						_selectionDragState = TasView.IsRowSelected(frame);
 					}
 				}
 				else if (TasView.CurrentCell.Column.Type != ColumnType.Text) // User changed input
@@ -626,27 +626,27 @@ namespace BizHawk.Client.EmuHawk
 						_patternPaint = false;
 						_startBoolDrawColumn = buttonName;
 
-						if ((ModifierKeys == Keys.Alt && ModifierKeys != Keys.Shift) || (applyPatternToPaintedInputToolStripMenuItem.Checked && (!onlyOnAutoFireColumnsToolStripMenuItem.Checked
-							|| TasView.CurrentCell.Column.Emphasis)))
+						var altOrShift4State = ModifierKeys & (Keys.Alt | Keys.Shift);
+						if (altOrShift4State is Keys.Alt
+							|| (applyPatternToPaintedInputToolStripMenuItem.Checked
+								&& (!onlyOnAutoFireColumnsToolStripMenuItem.Checked || TasView.CurrentCell.Column.Emphasis)))
 						{
 							BoolPatterns[ControllerType.BoolButtons.IndexOf(buttonName)].Reset();
 							_patternPaint = true;
 							_startRow = TasView.CurrentCell.RowIndex.Value;
 							_boolPaintState = !CurrentTasMovie.BoolIsPressed(frame, buttonName);
 						}
-						else if (ModifierKeys == Keys.Shift && ModifierKeys != Keys.Alt)
+						else if (altOrShift4State is Keys.Shift)
 						{
 							if (!TasView.AnyRowsSelected) return;
-							int firstSel = TasView.SelectedRows.First();
 
-							if (frame <= firstSel)
-							{
-								firstSel = frame;
-								frame = TasView.SelectedRows.First();
-							}
+							var iFirstSelectedRow = TasView.FirstSelectedRowIndex;
+							var (firstSel, lastSel) = frame <= iFirstSelectedRow
+								? (frame, iFirstSelectedRow)
+								: (iFirstSelectedRow, frame);
 
 							bool allPressed = true;
-							for (int i = firstSel; i <= frame; i++)
+							for (var i = firstSel; i <= lastSel; i++)
 							{
 								if (i == CurrentTasMovie.FrameCount // last movie frame can't have input, but can be selected
 									|| !CurrentTasMovie.BoolIsPressed(i, buttonName))
@@ -655,15 +655,17 @@ namespace BizHawk.Client.EmuHawk
 									break;
 								}
 							}
-							CurrentTasMovie.SetBoolStates(firstSel, (frame - firstSel) + 1, buttonName, !allPressed);
-							_boolPaintState = CurrentTasMovie.BoolIsPressed(frame, buttonName);
+							CurrentTasMovie.SetBoolStates(firstSel, lastSel - firstSel + 1, buttonName, !allPressed);
+							_boolPaintState = CurrentTasMovie.BoolIsPressed(lastSel, buttonName);
 							_triggerAutoRestore = true;
 							RefreshDialog();
 						}
-						else if (ModifierKeys == Keys.Shift && ModifierKeys == Keys.Alt) // Does not work?
+#if false // to match previous behaviour
+						else if (altOrShift4State is not 0)
 						{
 							// TODO: Pattern drawing from selection to current cell
 						}
+#endif
 						else
 						{
 							CurrentTasMovie.ChangeLog.BeginNewBatch($"Paint Bool {buttonName} from frame {frame}");
@@ -729,13 +731,13 @@ namespace BizHawk.Client.EmuHawk
 					_rightClickControl = (ModifierKeys | Keys.Control) == ModifierKeys;
 					_rightClickShift = (ModifierKeys | Keys.Shift) == ModifierKeys;
 					_rightClickAlt = (ModifierKeys | Keys.Alt) == ModifierKeys;
-					if (TasView.SelectedRows.Contains(frame))
+					if (TasView.IsRowSelected(frame))
 					{
 						_rightClickInput = new string[TasView.SelectedRows.Count()];
-						_rightClickFrame = TasView.FirstSelectedIndex.Value;
+						_rightClickFrame = TasView.SelectionStartIndex!.Value;
 						try
 						{
-							CurrentTasMovie.GetLogEntries().CopyTo(_rightClickFrame, _rightClickInput, 0, TasView.SelectedRows.Count());
+							CurrentTasMovie.GetLogEntries().CopyTo(_rightClickFrame, _rightClickInput, 0, _rightClickInput.Length);
 						}
 						catch { }
 						if (_rightClickControl && _rightClickShift)
@@ -817,10 +819,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_MouseUp(object sender, MouseEventArgs e)
 		{
-			if (e.Button == MouseButtons.Right && !TasView.IsPointingAtColumnHeader &&
-				!_suppressContextMenu && TasView.SelectedRows.Any() && !_leftButtonHeld)
+			if (e.Button == MouseButtons.Right && !TasView.IsPointingAtColumnHeader
+				&& !_suppressContextMenu && !_leftButtonHeld && TasView.AnyRowsSelected)
 			{
-				if (CurrentTasMovie.FrameCount < TasView.SelectedRows.Max())
+				if (CurrentTasMovie.FrameCount < TasView.SelectionEndIndex)
 				{
 					// trying to be smart here
 					// if a loaded branch log is shorter than selection, keep selection until you attempt to call context menu

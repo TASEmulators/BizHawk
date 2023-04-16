@@ -30,8 +30,6 @@
   OP1(mov64_s16, MOV_S16)
   OP1(mov64_u32, MOV_U32)
   OP1(mov64_s32, MOV_S32)
-  OP1(not32, NOT32)
-  OP1(not64, NOT)
 #undef OP1
 
   //2 operand instructions
@@ -42,6 +40,13 @@
     sljit_emit_op2(compiler, \
                    SLJIT_##op | flags, \
                    x.fst, x.snd, \
+                   y.fst, y.snd, \
+                   z.fst, z.snd); \
+  } \
+  template<typename U, typename V> \
+  auto name(unused, U y, V z, sljit_s32 flags = 0) { \
+    sljit_emit_op2u(compiler, \
+                   SLJIT_##op | flags, \
                    y.fst, y.snd, \
                    z.fst, z.snd); \
   }
@@ -64,10 +69,20 @@
   OP2(xor64, XOR)
   OP2(shl32, SHL32)
   OP2(shl64, SHL)
+  OP2(mshl32, MSHL32)
+  OP2(mshl64, MSHL)
   OP2(lshr32, LSHR32)
   OP2(lshr64, LSHR)
+  OP2(mlshr32, MLSHR32)
+  OP2(mlshr64, MLSHR)
   OP2(ashr32, ASHR32)
   OP2(ashr64, ASHR)
+  OP2(mashr32, MASHR32)
+  OP2(mashr64, MASHR)
+  OP2(rotl32, ROTL32)
+  OP2(rotl64, ROTL)
+  OP2(rotr32, ROTR32)
+  OP2(rotr64, ROTR)
 #undef OP2
 
   //compare instructions
@@ -118,34 +133,6 @@
 
   //meta instructions
 
-  auto mov32_to_c(mem m, int sign) {
-#if defined(ARCHITECTURE_AMD64)
-    cmp32(imm(0), m, set_c);
-#elif defined(ARCHITECTURE_ARM64)
-    if(sign < 0) {
-      cmp32(imm(0), m, set_c);
-    } else {
-      cmp32(m, imm(1), set_c);
-    }
-#else
-#error "Unimplemented architecture"
-#endif
-  }
-
-  auto mov32_from_c(reg r, int sign) {
-#if defined(ARCHITECTURE_AMD64)
-    mov32(r, imm(0));
-    addc32(r, r, r);
-#elif defined(ARCHITECTURE_ARM64)
-    mov32(r, imm(0));
-    addc32(r, r, r);
-    if(sign < 0) {
-      xor32(r, r, imm(1));
-    }
-#else
-#error "Unimplemented architecture"
-#endif
-  }
 
   auto lea(reg r, sreg base, sljit_sw offset) {
     add64(r, base, imm(offset));

@@ -2,6 +2,7 @@
 using System.Globalization;
 
 using BizHawk.Common;
+using BizHawk.Common.IOExtensions;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 
@@ -96,16 +97,7 @@ namespace BizHawk.Client.Common
 				RomData = DeInterleaveSMD(RomData);
 			}
 
-			if (file.Extension == ".z64" || file.Extension == ".n64" || file.Extension == ".v64")
-			{
-				// Use a simple magic number to detect N64 rom format, then byteswap the ROM to ensure a consistent endianness/order
-				RomData = RomData[0] switch
-				{
-					0x37 => EndiannessUtils.ByteSwap16(RomData), // V64 format (byte swapped)
-					0x40 => EndiannessUtils.ByteSwap32(RomData), // N64 format (word swapped)
-					_ => RomData // Z64 format (no swap), or something unexpected; in either case do nothing
-				};
-			}
+			if (file.Extension is ".n64" or ".v64" or ".z64") _ = N64RomByteswapper.ToZ64Native(RomData); //TODO don't use file extension for N64 rom detection (yes that means detecting all formats before converting to Z64)
 
 			// note: this will be taking several hashes, of a potentially large amount of data.. yikes!
 			GameInfo = Database.GetGameInfo(RomData, file.Name);
@@ -119,16 +111,31 @@ namespace BizHawk.Client.Common
 
 			CheckForPatchOptions();
 
-			if (patch != null)
+			if (patch is null) return;
+			using var patchFile = new HawkFile(patch);
+			patchFile.BindFirstOf(".ips");
+			if (!patchFile.IsBound) patchFile.BindFirstOf(".bps");
+			if (!patchFile.IsBound) return;
+			var patchBytes = patchFile.GetStream().ReadAllBytes();
+			if (BPSPatcher.IsIPSFile(patchBytes))
 			{
-				using var patchFile = new HawkFile(patch);
-				patchFile.BindFirstOf(".ips");
-				if (patchFile.IsBound)
-				{
-					RomData = IPS.Patch(RomData, patchFile.GetStream());
-				}
+				RomData = BPSPatcher.Patch(RomData, new BPSPatcher.IPSPayload(patchBytes));
+			}
+			else if (BPSPatcher.IsBPSFile(patchBytes, out var patchStruct))
+			{
+				var ignoreBaseChecksum = true; //TODO check base checksum and ask user before continuing
+				RomData = BPSPatcher.Patch(StripSNESDumpHeader(RomData), patchStruct, out var checksumsMatch);
+				if (!checksumsMatch && !ignoreBaseChecksum) throw new Exception("BPS patch didn't produce the expected output");
+			}
+			else
+			{
+				throw new Exception("doesn't appear to be a BPS or IPS patch");
 			}
 		}
+
+		/// <remarks>https://snes.nesdev.org/wiki/ROM_file_formats#Detecting_Headered_ROM</remarks>
+		private static ReadOnlySpan<byte> StripSNESDumpHeader(ReadOnlySpan<byte> rom)
+			=> rom.Length % 512 is 0 ? rom : rom.Slice(start: 512);
 
 		private static byte[] DeInterleaveSMD(byte[] source)
 		{

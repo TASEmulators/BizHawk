@@ -1,2 +1,2 @@
 #!/bin/sh
-dotnet build -c Debug -m
+dotnet build -c Debug -m "$@"

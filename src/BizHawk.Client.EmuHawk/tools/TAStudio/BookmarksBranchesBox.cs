@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.EmuHawk.Properties;
+using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -170,9 +171,8 @@ namespace BizHawk.Client.EmuHawk
 			MainForm.UpdateStatusSlots();
 		}
 
-		public TasBranch SelectedBranch => BranchView.AnyRowsSelected
-			? Branches[BranchView.SelectedRows.First()]
-			: null;
+		public TasBranch SelectedBranch
+			=> BranchView.AnyRowsSelected ? Branches[BranchView.FirstSelectedRowIndex] : null;
 
 		private TasBranch CreateBranch()
 		{
@@ -210,16 +210,14 @@ namespace BizHawk.Client.EmuHawk
 			Tastudio.RefreshDialog();
 		}
 
-		private void LoadSelectedBranch()
+		private bool LoadSelectedBranch()
 		{
-			if (SelectedBranch != null)
-			{
-				int index = BranchView.SelectedRows.First();
-				Branches.Current = index;
-				LoadBranch(SelectedBranch);
-				BranchView.Refresh();
-				Tastudio.MainForm.AddOnScreenMessage($"Loaded branch {Branches.Current + 1}");
-			}
+			if (SelectedBranch == null) return false;
+			Branches.Current = BranchView.FirstSelectedRowIndex;
+			LoadBranch(SelectedBranch);
+			BranchView.Refresh();
+			Tastudio.MainForm.AddOnScreenMessage($"Loaded branch {Branches.Current + 1}");
+			return true;
 		}
 
 		private void BranchesContextMenu_Opening(object sender, CancelEventArgs e)
@@ -227,10 +225,10 @@ namespace BizHawk.Client.EmuHawk
 			RemoveBranchContextMenuItem.Enabled = SelectedBranch != null;
 
 			UpdateBranchContextMenuItem.Enabled =
-			LoadBranchContextMenuItem.Enabled =
-			EditBranchTextContextMenuItem.Enabled =
-			JumpToBranchContextMenuItem.Enabled =
-				BranchView.SelectedRows.Count() == 1;
+				LoadBranchContextMenuItem.Enabled =
+				EditBranchTextContextMenuItem.Enabled =
+				JumpToBranchContextMenuItem.Enabled =
+					BranchView.SelectedRows.CountIsExactly(1);
 		}
 
 		private void AddBranchToolStripMenuItem_Click(object sender, EventArgs e)
@@ -248,7 +246,7 @@ namespace BizHawk.Client.EmuHawk
 			Tastudio.MainForm.AddOnScreenMessage($"Added branch {Branches.Current + 1}");
 		}
 
-		private void LoadBranchToolStripMenuItem_Click(object sender, EventArgs e)
+		private bool PrepareHistoryAndLoadSelectedBranch()
 		{
 			_backupBranch = CreateBranch();
 
@@ -264,12 +262,15 @@ namespace BizHawk.Client.EmuHawk
 			toolTip1.SetToolTip(UndoBranchButton, "Undo Branch Load");
 			_branchUndo = BranchUndo.Load;
 
-			if (BranchView.AnyRowsSelected)
-			{
-				LoadSelectedBranch();
-				LoadedCallback?.Invoke(BranchView.SelectedRows.First());
-			}
+			if (!BranchView.AnyRowsSelected) return false; // why'd we do all that then
+
+			var success = LoadSelectedBranch();
+			LoadedCallback?.Invoke(BranchView.FirstSelectedRowIndex);
+			return success;
 		}
+
+		private void LoadBranchToolStripMenuItem_Click(object sender, EventArgs e)
+			=> PrepareHistoryAndLoadSelectedBranch();
 
 		private void UpdateBranchToolStripMenuItem_Click(object sender, EventArgs e)
 		{
@@ -278,7 +279,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			Branches.Current = BranchView.SelectedRows.First();
+			Branches.Current = BranchView.FirstSelectedRowIndex;
 
 			_backupBranch = SelectedBranch.Clone();
 			UndoBranchToolStripMenuItem.Enabled = UndoBranchButton.Enabled = true;
@@ -300,7 +301,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			int index = BranchView.SelectedRows.First();
+			var index = BranchView.FirstSelectedRowIndex;
 			string oldText = SelectedBranch.UserText;
 
 			if (EditBranchTextPopUp(index))
@@ -318,14 +319,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void JumpToBranchToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!BranchView.AnyRowsSelected)
-			{
-				return;
-			}
-
-			int index = BranchView.SelectedRows.First();
-			var branch = Branches[index];
-			Tastudio.GoToFrame(branch.Frame);
+			if (BranchView.AnyRowsSelected) Tastudio.GoToFrame(Branches[BranchView.FirstSelectedRowIndex].Frame);
 		}
 
 		private void RemoveBranchToolStripMenuItem_Click(object sender, EventArgs e)
@@ -410,11 +404,11 @@ namespace BizHawk.Client.EmuHawk
 			AddBranchToolStripMenuItem_Click(null, null);
 		}
 
-		public void LoadBranchExternal(int slot = -1)
+		public bool LoadBranchExternal(int slot = -1)
 		{
 			if (Tastudio.AxisEditingMode)
 			{
-				return;
+				return false;
 			}
 
 			if (slot != -1)
@@ -427,11 +421,11 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					NonExistentBranchMessage(slot);
-					return;
+					return false;
 				}
 			}
 
-			LoadBranchToolStripMenuItem_Click(null, null);
+			return PrepareHistoryAndLoadSelectedBranch();
 		}
 
 		public void UpdateBranchExternal(int slot = -1)
@@ -491,7 +485,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			int sel = BranchView.SelectedRows.First();
+			var sel = BranchView.FirstSelectedRowIndex;
 			if (next)
 			{
 				if (Branches[sel + 1] != null)
@@ -515,9 +509,9 @@ namespace BizHawk.Client.EmuHawk
 		private void UpdateButtons()
 		{
 			UpdateBranchButton.Enabled =
-			LoadBranchButton.Enabled =
-			JumpToBranchButton.Enabled =
-				BranchView.SelectedRows.Count() == 1;
+				LoadBranchButton.Enabled =
+				JumpToBranchButton.Enabled =
+					BranchView.SelectedRows.CountIsExactly(1);
 		}
 
 		private void Select(int index, bool value)
@@ -618,7 +612,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Tastudio.Settings.LoadBranchOnDoubleClick)
 			{
-				LoadBranchToolStripMenuItem_Click(null, null);
+				PrepareHistoryAndLoadSelectedBranch();
 			}
 		}
 

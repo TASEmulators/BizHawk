@@ -7,13 +7,13 @@ namespace NymaTypes
 
 using global::System;
 using global::System.Collections.Generic;
-using global::FlatBuffers;
+using global::Google.FlatBuffers;
 
 public struct NInputInfo : IFlatbufferObject
 {
   private Table __p;
   public ByteBuffer ByteBuffer { get { return __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_1_12_0(); }
+  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_22_9_24(); }
   public static NInputInfo GetRootAsNInputInfo(ByteBuffer _bb) { return GetRootAsNInputInfo(_bb, new NInputInfo()); }
   public static NInputInfo GetRootAsNInputInfo(ByteBuffer _bb, NInputInfo obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
   public void __init(int _i, ByteBuffer _bb) { __p = new Table(_i, _bb); }
@@ -40,6 +40,10 @@ public struct NInputInfo : IFlatbufferObject
   public byte BitSize { get { int o = __p.__offset(16); return o != 0 ? __p.bb.Get(o + __p.bb_pos) : (byte)0; } }
   public NymaTypes.NInputExtra ExtraType { get { int o = __p.__offset(18); return o != 0 ? (NymaTypes.NInputExtra)__p.bb.Get(o + __p.bb_pos) : NymaTypes.NInputExtra.NONE; } }
   public TTable? Extra<TTable>() where TTable : struct, IFlatbufferObject { int o = __p.__offset(20); return o != 0 ? (TTable?)__p.__union<TTable>(o + __p.bb_pos) : null; }
+  public NymaTypes.NButtonInfo ExtraAsButton() { return Extra<NymaTypes.NButtonInfo>().Value; }
+  public NymaTypes.NAxisInfo ExtraAsAxis() { return Extra<NymaTypes.NAxisInfo>().Value; }
+  public NymaTypes.NSwitchInfo ExtraAsSwitch() { return Extra<NymaTypes.NSwitchInfo>().Value; }
+  public NymaTypes.NStatusInfo ExtraAsStatus() { return Extra<NymaTypes.NStatusInfo>().Value; }
 
   public static Offset<NymaTypes.NInputInfo> CreateNInputInfo(FlatBufferBuilder builder,
       StringOffset SettingNameOffset = default(StringOffset),
@@ -127,7 +131,7 @@ public struct NInputInfo : IFlatbufferObject
       _Extra_type,
       _Extra);
   }
-};
+}
 
 public class NInputInfoT
 {

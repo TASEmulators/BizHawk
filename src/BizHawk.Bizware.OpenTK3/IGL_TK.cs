@@ -618,15 +618,10 @@ namespace BizHawk.Bizware.OpenTK3
 			ret.Row1.Y = -1.0f;
 			ret.Row3.X = -(float)dims.Width * 0.5f;
 			ret.Row3.Y = (float)dims.Height * 0.5f;
-			if (autoflip)
+			if (autoflip && _currRenderTarget is not null) // flip as long as we're not a final render target
 			{
-				if (_currRenderTarget == null) { }
-				else
-				{
-					//flip as long as we're not a final render target
-					ret.Row1.Y = 1.0f;
-					ret.Row3.Y *= -1;
-				}
+				ret.Row1.Y = 1.0f;
+				ret.Row3.Y *= -1;
 			}
 			return ret;
 		}
@@ -664,9 +659,7 @@ namespace BizHawk.Bizware.OpenTK3
 
 		private GLControl CastControl(swf.Control swfControl)
 		{
-			GLControl glc = swfControl as GLControl;
-			if (glc == null)
-				throw new ArgumentException("Argument isn't a control created by the IGL interface", "glControl");
+			if (swfControl is not GLControl glc) throw new ArgumentException(message: "Argument isn't a control created by the IGL interface", paramName: nameof(swfControl));
 			return glc;
 		}
 

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <initializer_list>
 #include <type_traits>
 #include <nall/stdint.hpp>
 
@@ -17,7 +18,6 @@ namespace nall {
   using std::false_type;
   using std::is_floating_point;
   using std::is_floating_point_v;
-  using std::forward;
   using std::initializer_list;
   using std::is_array;
   using std::is_array_v;
@@ -34,7 +34,6 @@ namespace nall {
   using std::is_signed_v;
   using std::is_unsigned;
   using std::is_unsigned_v;
-  using std::move;
   using std::nullptr_t;
   using std::remove_extent;
   using std::remove_extent_t;

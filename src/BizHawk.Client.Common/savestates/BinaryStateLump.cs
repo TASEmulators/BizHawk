@@ -8,7 +8,7 @@ namespace BizHawk.Client.Common
 	public class BinaryStateLump
 	{
 		[Name("BizState 1", "0")]
-		public static BinaryStateLump Versiontag { get; private set; }
+		public static BinaryStateLump ZipVersion { get; private set; }
 		[Name("BizVersion", "txt")]
 		public static BinaryStateLump BizVersion { get; private set; }
 		[Name("Core", "bin")]

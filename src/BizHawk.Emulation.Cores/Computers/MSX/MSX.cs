@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Text;
+using System.Linq;
+
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
@@ -10,24 +12,27 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 	public partial class MSX : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IInputPollable, IRegionable, ISettable<MSX.MSXSettings, MSX.MSXSyncSettings>
 	{
 		[CoreConstructor(VSystemID.Raw.MSX)]
-		public MSX(CoreComm comm, GameInfo game, byte[] rom, MSX.MSXSettings settings, MSX.MSXSyncSettings syncSettings)
+		public MSX(CoreLoadParameters<MSXSettings, MSXSyncSettings> lp)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
-			Settings = (MSXSettings)settings ?? new MSXSettings();
-			SyncSettings = (MSXSyncSettings)syncSettings ?? new MSXSyncSettings();
+			Settings = lp.Settings ?? new MSXSettings();
+			SyncSettings = lp.SyncSettings ?? new MSXSyncSettings();
 
-			RomData = new byte[rom.Length];
+			var rom = lp.Roms.FirstOrDefault() ?? throw new Exception("Must have a ROM for MSX!");
+			if (rom.Extension.ToLowerInvariant() is not ".rom")
+			{
+				throw new NotSupportedException("Only MSX .rom files are supported!");
+			}
+
+			RomData = new byte[rom.RomData.Length];
 
 			// look up game in db before transforming ROM
-			var hash_md5 = MD5Checksum.ComputePrefixedHex(rom);
+			var hash_md5 = MD5Checksum.ComputePrefixedHex(rom.RomData);
 			var gi = Database.CheckDatabase(hash_md5);
 			var dict = (gi != null) ? gi.GetOptions() : null;
 			string s_mapper;
 
-			for (int i = 0; i < rom.Length; i++)
-			{
-				RomData[i] = rom[i];
-			}
+			Array.Copy(rom.RomData, RomData, RomData.Length);
 
 			int size = RomData.Length;
 
@@ -100,18 +105,18 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			byte[] loc_bios = null;
 			if (SyncSettings.Region_Setting == MSXSyncSettings.RegionType.USA)
 			{
-				loc_bios = comm.CoreFileProvider.GetFirmware(new("MSX", "bios_basic_usa"));
+				loc_bios = lp.Comm.CoreFileProvider.GetFirmware(new("MSX", "bios_basic_usa"));
 			}
 			else
 			{
-				loc_bios = comm.CoreFileProvider.GetFirmwareOrThrow(new("MSX", "bios_basic_jpn"));
+				loc_bios = lp.Comm.CoreFileProvider.GetFirmwareOrThrow(new("MSX", "bios_basic_jpn"));
 			}
 			
 			// look for individual files (not implemented yet)
 			if (loc_bios == null)
 			{
-				throw new Exception("Cannot load, no BIOS files found for selected region.");
-			} 
+				throw new MissingFirmwareException("Cannot load, no BIOS files found for selected region.");
+			}
 
 			if (loc_bios.Length == 32768)
 			{

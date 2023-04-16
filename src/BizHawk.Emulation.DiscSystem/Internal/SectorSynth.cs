@@ -127,12 +127,12 @@ namespace BizHawk.Emulation.DiscSystem
 	/// </summary>
 	internal class ArraySectorSynthProvider : ISectorSynthProvider
 	{
-		public List<ISectorSynthJob2448> Sectors = new List<ISectorSynthJob2448>();
+		public List<ISectorSynthJob2448> Sectors = new();
 		public int FirstLBA;
 
 		public ISectorSynthJob2448 Get(int lba)
 		{
-			int index = lba - FirstLBA;
+			var index = lba - FirstLBA;
 			if (index < 0) return null;
 			return index >= Sectors.Count ? null : Sectors[index];
 		}
@@ -156,6 +156,7 @@ namespace BizHawk.Emulation.DiscSystem
 		private Func<int,bool> Condition;
 		private ISectorSynthJob2448 Patch;
 		private ISectorSynthProvider Parent;
+		
 		public void Install(Disc disc, Func<int, bool> condition, ISectorSynthJob2448 patch)
 		{
 			Parent = disc.SynthProvider;
@@ -163,6 +164,7 @@ namespace BizHawk.Emulation.DiscSystem
 			Condition = condition;
 			Patch = patch;
 		}
+		
 		public ISectorSynthJob2448 Get(int lba)
 		{
 			return Condition(lba) ? Patch : Parent.Get(lba);
@@ -195,7 +197,8 @@ namespace BizHawk.Emulation.DiscSystem
 	internal class SS_PatchQ : ISectorSynthJob2448
 	{
 		public ISectorSynthJob2448 Original;
-		public byte[] Buffer_SubQ = new byte[12];
+		public readonly byte[] Buffer_SubQ = new byte[12];
+		
 		public void Synth(SectorSynthJob job)
 		{
 			Original.Synth(job);
@@ -204,7 +207,7 @@ namespace BizHawk.Emulation.DiscSystem
 				return;
 
 			//apply patched subQ
-			for (int i = 0; i < 12; i++)
+			for (var i = 0; i < 12; i++)
 				job.DestBuffer2448[2352 + 12 + i] = Buffer_SubQ[i];
 		}
 	}
@@ -223,16 +226,16 @@ namespace BizHawk.Emulation.DiscSystem
 			//  and the leadout entry together before extracting the D2 bit.  Audio track->data leadout is fairly benign though maybe noisy(especially if we ever implement
 			//  data scrambling properly), but data track->audio leadout could break things in an insidious manner for the more accurate drive emulation code).
 
-			var ses = job.Disc.Structure.Sessions[SessionNumber];
-			int lba_relative = job.LBA - ses.LeadoutTrack.LBA;
+			var ses = job.Disc.Sessions[SessionNumber];
+			var lba_relative = job.LBA - ses.LeadoutTrack.LBA;
 
 			//data is zero
 
-			int ts = lba_relative;
-			int ats = job.LBA;
+			var ts = lba_relative;
+			var ats = job.LBA;
 
 			const int ADR = 0x1; // Q channel data encodes position
-			EControlQ control = ses.LeadoutTrack.Control;
+			var control = ses.LeadoutTrack.Control;
 
 			//ehhh? CDI?
 //			if(toc.tracks[toc.last_track].valid) control |= toc.tracks[toc.last_track].control & 0x4;
@@ -248,16 +251,16 @@ namespace BizHawk.Emulation.DiscSystem
 			sq.zero = 0;
 
 			//finally, rely on a gap sector to do the heavy lifting to synthesize this
-			CUE.CueTrackType TrackType = CUE.CueTrackType.Audio;
+			var TrackType = CUE.CueTrackType.Audio;
 			if (ses.LeadoutTrack.IsData)
 			{
-				if (job.Disc.TOC.Session1Format == SessionFormat.Type20_CDXA || job.Disc.TOC.Session1Format == SessionFormat.Type10_CDI)
+				if (job.Disc.TOC.SessionFormat is SessionFormat.Type20_CDXA or SessionFormat.Type10_CDI)
 					TrackType = CUE.CueTrackType.Mode2_2352;
 				else
 					TrackType = CUE.CueTrackType.Mode1_2352;
 			}
 
-			CUE.SS_Gap ss_gap = new CUE.SS_Gap()
+			var ss_gap = new CUE.SS_Gap
 			{
 				Policy = Policy,
 				sq = sq,

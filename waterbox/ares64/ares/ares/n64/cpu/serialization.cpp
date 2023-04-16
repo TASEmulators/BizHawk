@@ -8,6 +8,7 @@ auto CPU::serialize(serializer& s) -> void {
   s(branch.state);
 
   s(context.endian);
+  s(context.physMask);
   s(context.mode);
   s(context.bits);
   s(context.segment);
@@ -114,6 +115,8 @@ auto CPU::serialize(serializer& s) -> void {
   s(scc.tagLo.primaryCacheState);
   s(scc.tagLo.physicalAddress);
   s(scc.epcError);
+  s(scc.latch);
+  s(scc.nmiPending);
 
   for(auto& r : fpu.r) s(r.u64);
   s(fpu.csr.roundMode);
@@ -134,7 +137,9 @@ auto CPU::serialize(serializer& s) -> void {
   s(fpu.csr.cause.invalidOperation);
   s(fpu.csr.cause.unimplementedOperation);
   s(fpu.csr.compare);
-  s(fpu.csr.flushed);
+  s(fpu.csr.flushSubnormals);
+
+  s(cop2.latch);
 
   if constexpr(Accuracy::CPU::Recompiler) {
     recompiler.reset();

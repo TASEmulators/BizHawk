@@ -31,8 +31,11 @@ namespace BizHawk.Tests.Testroms.GB
 			if (_initialised.Contains(suiteID)) return;
 			if (_initialised.Count == 0)
 			{
-				Database.InitializeDatabase(Path.Combine(".", "gamedb", "gamedb.txt"), silent: true); // runs in the background; required for Database.GetGameInfo calls
-				if (!OSTailoredCode.IsUnixHost) SetDllDirectory(Path.Combine("..", "output", "dll")); // on Linux, this is done by the shell script with the env. var. LD_LIBRARY_PATH
+				Database.InitializeDatabase( // runs in the background; required for Database.GetGameInfo calls
+					bundledRoot: Path.Combine(".", "gamedb"),
+					userRoot: Path.Combine(".", "gamedb"),
+					silent: true);
+				if (!OSTailoredCode.IsUnixHost) _ = SetDllDirectory(Path.Combine("..", "output", "dll")); // on Linux, this is done by the shell script with the env. var. LD_LIBRARY_PATH
 			}
 			_initialised.Add(suiteID);
 			DirectoryInfo di = new(suiteID);

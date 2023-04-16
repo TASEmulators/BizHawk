@@ -6,19 +6,33 @@ namespace BizHawk.Common.IOExtensions
 {
 	public static class IOExtensions
 	{
+		public static readonly Encoding ShiftJISEncoding = Encoding.GetEncoding("shift_jis");
+
 		public static Span<byte> GetBufferAsSpan(this MemoryStream ms)
 			=> ms.GetBuffer().AsSpan().Slice(start: 0, length: (int) ms.Length);
 
+		public static unsafe string GetString(this Encoding encoding, ReadOnlySpan<byte> bytes)
+		{
+			fixed (byte* p = bytes) return encoding.GetString(p, bytes.Length);
+		}
+
 		public static byte[] ReadAllBytes(this Stream stream)
+		{
+			var outStream = new MemoryStream();
+			stream.CopyTo(outStream);
+
+			return outStream.ToArray();
+		}
+
+		public static byte[] ReadAllBytes(this BinaryReader br)
 		{
 			const int BUFF_SIZE = 4096;
 			var buffer = new byte[BUFF_SIZE];
 
 			int bytesRead;
-			var inStream = new BufferedStream(stream);
 			var outStream = new MemoryStream();
 
-			while ((bytesRead = inStream.Read(buffer, 0, BUFF_SIZE)) > 0)
+			while ((bytesRead = br.Read(buffer, 0, BUFF_SIZE)) > 0)
 			{
 				outStream.Write(buffer, 0, bytesRead);
 			}

@@ -177,7 +177,7 @@ namespace BizHawk.BizInvoke
 			{
 				if (slots != null)
 				{
-					_slots = slots.Select((cb, i) => new { cb, i })
+					_slots = slots.Select(static (cb, i) => (cb, i))
 						.ToDictionary(a => a.cb, a => a.i, new ReferenceEqualityComparer());
 				}
 				_waterboxHost = waterboxHost;
@@ -189,10 +189,7 @@ namespace BizHawk.BizInvoke
 				{
 					throw new InvalidOperationException("This calling convention adapter was created for departure only!  Pass known delegate slots when constructing to enable arrival");
 				}
-				if (!(lifetime is Delegate d))
-				{
-					throw new ArgumentException("For this calling convention adapter, lifetimes must be delegate so guest slot can be inferred");
-				}
+				if (lifetime is not Delegate d) throw new ArgumentException(message: "For this calling convention adapter, lifetimes must be delegate so guest slot can be inferred", paramName: nameof(lifetime));
 				if (!_slots.TryGetValue(d, out var slot))
 				{
 					throw new InvalidOperationException("All callback delegates must be registered at load");
@@ -232,26 +229,25 @@ namespace BizHawk.BizInvoke
 		/// </summary>
 		private class MsHostSysVGuest : ICallingConventionAdapter
 		{
-			// This is implemented by using thunks defined in the waterbox native code, and putting stubs on top of them that close over the
-			// function pointer parameter.
+			// This is implemented by using thunks defined in a small dll, and putting stubs on top of them that close over the
+			// function pointer parameter. A dll is used here to easily set unwind information (allowing SEH exceptions to work).
 
 			private const int BlockSize = 32;
 			private static readonly IImportResolver ThunkDll;
 
 			static MsHostSysVGuest()
 			{
-				// If needed, these can be split out from waterboxhost.dll; they're not directly related to anything waterbox does.
-				ThunkDll = new DynamicLibraryImportResolver(OSTailoredCode.IsUnixHost ? "libwaterboxhost.so" : "waterboxhost.dll", hasLimitedLifetime: false);
+				ThunkDll = new DynamicLibraryImportResolver("libbizabiadapter_msabi_sysv.dll", hasLimitedLifetime: false);
 			}
 
 			private readonly MemoryBlock _memory;
-			private readonly object _sync = new object();
+			private readonly object _sync = new();
 			private readonly WeakReference?[] _refs;
 
 			public MsHostSysVGuest()
 			{
-				int size = 4 * 1024 * 1024;
-				_memory = new MemoryBlock((ulong)size);
+				const int size = 4 * 1024 * 1024;
+				_memory = new((ulong)size);
 				_refs = new WeakReference[size / BlockSize];
 			}
 
@@ -277,7 +273,7 @@ namespace BizHawk.BizInvoke
 			private static void VerifyParameter(Type type)
 			{
 				if (type == typeof(float) || type == typeof(double))
-					throw new NotSupportedException("floating point not supported");
+					return;
 				if (type == typeof(void) || type.IsPrimitive || type.IsEnum)
 					return;
 				if (type.IsPointer || typeof(Delegate).IsAssignableFrom(type))
@@ -292,9 +288,15 @@ namespace BizHawk.BizInvoke
 				VerifyParameter(pp.ReturnType);
 				foreach (var ppp in pp.ParameterTypes)
 					VerifyParameter(ppp);
-				var ret = pp.ParameterTypes.Count;
-				if (ret >= 7)
+				var ret = pp.ParameterTypes.Count(t => t != typeof(float) && t != typeof(double));
+				var fargs = pp.ParameterTypes.Count - ret;
+				if (ret > 6 || fargs > 4)
 					throw new InvalidOperationException("Too many parameters to marshal!");
+				// a function may only use exclusively floating point args or integer/pointer args
+				// mixing these is not supported, due to complex differences with how msabi and sysv
+				// decide which register to use when dealing with this mixing
+				if (ret > 0 && fargs > 0)
+					throw new NotSupportedException("Mixed integer/pointer and floating point parameters are not supported!");
 				return ret;
 			}
 
@@ -348,7 +350,7 @@ namespace BizHawk.BizInvoke
 					else
 					{
 						return GetArrivalFunctionPointer(
-							Marshal.GetFunctionPointerForDelegate(d), new ParameterInfo(d.GetType()), d);
+							Marshal.GetFunctionPointerForDelegate(d), new(d.GetType()), d);
 					}
 				}
 			}
@@ -370,7 +372,7 @@ namespace BizHawk.BizInvoke
 				lock (_sync)
 				{
 					var index = FindFreeIndex();
-					var count = VerifyDelegateSignature(new ParameterInfo(delegateType));
+					var count = VerifyDelegateSignature(new(delegateType));
 					WriteThunk(ThunkDll.GetProcAddrOrThrow($"depart{count}"), p, index);
 					var ret = Marshal.GetDelegateForFunctionPointer(GetThunkAddress(index), delegateType);
 					SetLifetime(index, ret);

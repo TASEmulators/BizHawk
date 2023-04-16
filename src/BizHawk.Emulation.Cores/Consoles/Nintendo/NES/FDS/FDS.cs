@@ -153,8 +153,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void InsertSide(int side)
 		{
-			if (side >= NumSides)
-				throw new ArgumentOutOfRangeException();
+			if (side >= NumSides) throw new ArgumentOutOfRangeException(paramName: nameof(side), side, message: "index out of range");
 			byte[] buf = new byte[65500];
 			Buffer.BlockCopy(diskimage, 16 + side * 65500, buf, 0, 65500);
 			diskdrive.InsertBrokenImage(buf, false /*true*/);

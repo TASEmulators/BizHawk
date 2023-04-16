@@ -126,11 +126,15 @@ auto CPU::getControlRegister(n5 index) -> u64 {
   case 30:  //error exception program counter
     data = scc.epcError;
     break;
+  default:
+    data = scc.latch;
+    break;
   }
   return data;
 }
 
 auto CPU::setControlRegister(n5 index, n64 data) -> void {
+  scc.latch = data;
   //read-only variables are defined but commented out for documentation purposes
   switch(index) {
   case  0:  //index
@@ -320,6 +324,7 @@ auto CPU::TLBP() -> void {
     auto& entry = tlb.entry[index];
     auto mask = ~entry.pageMask & ~0x1fff;
     if((entry.virtualAddress & mask) != (scc.tlb.virtualAddress & mask)) continue;
+    if(entry.region != scc.tlb.region) continue;
     if(!entry.global[0] || !entry.global[1]) {
       if(entry.addressSpaceID != scc.tlb.addressSpaceID) continue;
     }

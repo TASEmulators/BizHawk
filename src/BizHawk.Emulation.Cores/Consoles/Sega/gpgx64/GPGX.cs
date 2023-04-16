@@ -359,7 +359,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			if (!Core.gpgx_get_control(input, inputsize))
 				throw new Exception($"{nameof(Core.gpgx_get_control)}() failed");
 
-			ControlConverter = new GPGXControlConverter(input, false); // _cds != null);
+			ControlConverter = new GPGXControlConverter(input, _cds != null);
 			ControllerDefinition = ControlConverter.ControllerDef;
 		}
 

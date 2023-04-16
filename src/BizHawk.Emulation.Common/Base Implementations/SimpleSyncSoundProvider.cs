@@ -15,10 +15,7 @@ namespace BizHawk.Emulation.Common.Base_Implementations
 		/// <exception cref="ArgumentException"><paramref name="mode"/> is not <see cref="SyncSoundMode.Sync"/></exception>
 		public void SetSyncMode(SyncSoundMode mode)
 		{
-			if (mode != SyncSoundMode.Sync)
-			{
-				throw new ArgumentException("Only supports Sync mode");
-			}
+			if (mode is not SyncSoundMode.Sync) throw new ArgumentException(message: "Only supports Sync mode", paramName: nameof(mode));
 		}
 
 		public SyncSoundMode SyncMode => SyncSoundMode.Sync;

@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Common
 
 		public MemoryDomain MainMemory
 		{
-			get => _mainMemory ?? this.First();
+			get => _mainMemory ?? this[0];
 			set => _mainMemory = value;
 		}
 

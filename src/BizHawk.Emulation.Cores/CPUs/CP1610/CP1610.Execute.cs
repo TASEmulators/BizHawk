@@ -224,7 +224,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 							break;
 						case 0x3:
 							// Unknown opcode.
-							throw new ArgumentException();
+							throw new InvalidOperationException();
 					}
 					RegisterPC = addr;
 					cycles = 12;
@@ -1164,7 +1164,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 					// BEXT
 					if (ext != 0)
 					{
-						throw new ArgumentException(UNEXPECTED_BEXT);
+						throw new InvalidOperationException(UNEXPECTED_BEXT);
 					}
 					else
 					{

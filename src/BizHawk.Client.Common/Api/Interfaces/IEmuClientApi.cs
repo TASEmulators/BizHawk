@@ -88,7 +88,8 @@ namespace BizHawk.Client.Common
 		/// Load a savestate specified by its name
 		/// </summary>
 		/// <param name="name">Savestate friendly name</param>
-		void LoadState(string name);
+		/// <returns><see langword="true"/> iff succeeded</returns>
+		bool LoadState(string name);
 
 		/// <summary>
 		/// Raised before a quickload is done (just after pressing shortcut button)
@@ -125,7 +126,7 @@ namespace BizHawk.Client.Common
 		/// <param name="stateName">User friendly name for saved state</param>
 		void OnStateSaved(object sender, string stateName);
 
-		void OpenRom(string path);
+		bool OpenRom(string path);
 
 		void Pause();
 

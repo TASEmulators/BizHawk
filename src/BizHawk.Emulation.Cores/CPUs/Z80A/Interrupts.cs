@@ -31,7 +31,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public int InterruptMode
 		{
 			get => interruptMode;
-			set { if (value < 0 || value > 2) throw new ArgumentOutOfRangeException(); interruptMode = value; }
+			set
+			{
+				if (value is < 0 or > 2) throw new ArgumentOutOfRangeException(paramName: nameof(value), value, message: "invalid interrupt mode");
+				interruptMode = value;
+			}
 		}
 
 		public Action IRQCallback = () => {};

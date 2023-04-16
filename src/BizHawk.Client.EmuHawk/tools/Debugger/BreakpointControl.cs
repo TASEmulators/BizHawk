@@ -202,13 +202,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateBreakpointRemoveButton()
 		{
-			ToggleButton.Enabled =
-			RemoveBreakpointButton.Enabled =
-			EditableItems.Any();
-
-			DuplicateBreakpointButton.Enabled =
-			EditBreakpointButton.Enabled =
-			EditableItems.Count() == 1;
+			var editableCount = EditableItems.Count();
+			ToggleButton.Enabled = RemoveBreakpointButton.Enabled = editableCount > 0;
+			DuplicateBreakpointButton.Enabled = EditBreakpointButton.Enabled = editableCount == 1;
 		}
 
 		private void BreakpointView_SelectedIndexChanged(object sender, EventArgs e)
@@ -267,7 +263,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var b = CreateAddBreakpointDialog(BreakpointOperation.Duplicate, breakpoint.Type, breakpoint.Address, breakpoint.AddressMask);
 
-				if (this.ShowDialogWithTempMute(b) == DialogResult.OK)
+				if (this.ShowDialogWithTempMute(b).IsOk())
 				{
 					_breakpoints.Add(new Breakpoint(Core, MemoryDomains.SystemBus.Name, breakpoint.Callback, b.Address, b.AddressMask, b.BreakType, breakpoint.Active));
 				}
@@ -286,7 +282,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var b = CreateAddBreakpointDialog(BreakpointOperation.Edit, breakpoint.Type, breakpoint.Address, breakpoint.AddressMask);
 
-				if (this.ShowDialogWithTempMute(b) == DialogResult.OK)
+				if (this.ShowDialogWithTempMute(b).IsOk())
 				{
 					breakpoint.Type = b.BreakType;
 					breakpoint.Address = b.Address;

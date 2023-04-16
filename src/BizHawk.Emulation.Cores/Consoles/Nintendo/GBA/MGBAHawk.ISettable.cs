@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using System.ComponentModel.DataAnnotations;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
@@ -11,9 +11,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 	public partial class MGBAHawk : ISettable<MGBAHawk.Settings, MGBAHawk.SyncSettings>
 	{
 		public Settings GetSettings()
-		{
-			return _settings.Clone();
-		}
+			=> _settings.Clone();
 
 		public PutSettingsDirtyBits PutSettings(Settings o)
 		{
@@ -35,17 +33,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			LibmGBA.BizSetSoundMask(Core, smask);
 
 			var palette = new int[65536];
-			GBColors.ColorType c = GBColors.ColorType.vivid;
-			switch (o.ColorType)
+			var c = o.ColorType switch
 			{
-				case Settings.ColorTypes.Gambatte: c = GBColors.ColorType.gambatte; break;
-				case Settings.ColorTypes.Vivid: c = GBColors.ColorType.vivid; break;
-				case Settings.ColorTypes.VbaVivid: c = GBColors.ColorType.vbavivid; break;
-				case Settings.ColorTypes.VbaGbNew: c = GBColors.ColorType.vbagbnew; break;
-				case Settings.ColorTypes.VbaGbOld: c = GBColors.ColorType.vbabgbold; break;
-				case Settings.ColorTypes.BizhawkGba: c = GBColors.ColorType.gba; break;
-			}
-			GBColors.GetLut(c, palette);
+				Settings.ColorTypes.SameBoy => GBColors.ColorType.sameboy,
+				Settings.ColorTypes.Gambatte => GBColors.ColorType.gambatte,
+				Settings.ColorTypes.Vivid => GBColors.ColorType.vivid,
+				Settings.ColorTypes.VbaVivid => GBColors.ColorType.vbavivid,
+				Settings.ColorTypes.VbaGbNew => GBColors.ColorType.vbagbnew,
+				Settings.ColorTypes.VbaGbOld => GBColors.ColorType.vbabgbold,
+				Settings.ColorTypes.BizhawkGba => GBColors.ColorType.gba,
+				_ => GBColors.ColorType.vivid,
+			};
+			GBColors.GetLut(c, palette, agb: true);
 			for (var i = 32768; i < 65536; i++)
 				palette[i] = palette[i - 32768];
 			LibmGBA.BizSetPalette(Core, palette);
@@ -104,6 +103,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			public enum ColorTypes
 			{
+				[Display(Name = "SameBoy GBA")]
+				SameBoy,
 				[Display(Name = "Gambatte CGB")]
 				Gambatte,
 				[Display(Name = "Vivid")]
@@ -123,21 +124,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public ColorTypes ColorType { get; set; }
 
-			public Settings Clone()
-			{
-				return (Settings)MemberwiseClone();
-			}
-
 			public Settings()
-			{
-				SettingsUtil.SetDefaultValues(this);
-			}
+				=> SettingsUtil.SetDefaultValues(this);
+
+			public Settings Clone()
+				=> (Settings)MemberwiseClone();
 		}
 
 		public SyncSettings GetSyncSettings()
-		{
-			return _syncSettings.Clone();
-		}
+			=> _syncSettings.Clone();
 
 		public PutSettingsDirtyBits PutSyncSettings(SyncSettings o)
 		{
@@ -207,20 +202,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			[DefaultValue(false)]
 			public bool OverrideGbPlayerDetect { get; set; }
 
-			public SyncSettings()
-			{
-				SettingsUtil.SetDefaultValues(this);
-			}
+			[DisplayName("VBA Bug Compatibility Mode")]
+			[Description("Enables a compatibility mode for buggy Pokemon romhacks which rely on VBA bugs. Generally you don't need to enable yourself as Pokemon romhack detection will enable this itself.")]
+			[DefaultValue(false)]
+			public bool OverrideVbaBugCompat { get; set; }
 
-			public static bool NeedsReboot(SyncSettings x, SyncSettings y)
-			{
-				return !DeepEquality.DeepEquals(x, y);
-			}
+			[DisplayName("Detect Pokemon Romhacks")]
+			[Description("Detects Pokemon romhacks and enables compatibility options due to their generally buggy nature. Will override other override settings.")]
+			[DefaultValue(true)]
+			public bool OverridePokemonRomhackDetect { get; set; }
+
+			public SyncSettings()
+				=> SettingsUtil.SetDefaultValues(this);
 
 			public SyncSettings Clone()
-			{
-				return (SyncSettings)MemberwiseClone();
-			}
+				=> (SyncSettings)MemberwiseClone();
+
+			public static bool NeedsReboot(SyncSettings x, SyncSettings y)
+				=> !DeepEquality.DeepEquals(x, y);
 		}
 	}
 }

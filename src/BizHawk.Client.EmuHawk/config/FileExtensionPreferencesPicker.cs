@@ -53,15 +53,10 @@ namespace BizHawk.Client.EmuHawk
 			var selectedSystemId = _preferredPlatformsForExtensions[FileExtension];
 			if (!string.IsNullOrEmpty(selectedSystemId))
 			{
-				var selectedSystem = _availableSystems.FirstOrDefault(s => s.SystemId == selectedSystemId);
-
-				var selectedItem = PlatformDropdown.Items
-					.OfType<string>()
-					.FirstOrDefault(item => item == (selectedSystem?.FullName ?? ""));
-
-				if (selectedItem != null)
+				var selectedSystem = _availableSystems.Find(s => s.SystemId == selectedSystemId)?.FullName ?? string.Empty;
+				if (PlatformDropdown.Items.Contains(selectedSystem))
 				{
-					PlatformDropdown.SelectedItem = selectedItem;
+					PlatformDropdown.SelectedItem = selectedSystem;
 				}
 				else
 				{

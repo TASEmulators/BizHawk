@@ -16,6 +16,7 @@ auto Configuration::process(Markup::Node document, bool load) -> void {
 
   bind(boolean, "Video/BlurEmulation", video.blurEmulation);
   bind(boolean, "Video/ColorEmulation", video.colorEmulation);
+  bind(boolean, "Video/DrawCursor", video.drawCursor);
 
   bind(boolean, "Hacks/Hotfixes", hacks.hotfixes);
   bind(text,    "Hacks/Entropy", hacks.entropy);

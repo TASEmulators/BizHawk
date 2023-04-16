@@ -52,7 +52,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ColorPanel_DoubleClick(object sender, EventArgs e)
 		{
-			if (colorDialog1.ShowDialog() == DialogResult.OK)
+			if (colorDialog1.ShowDialog().IsOk())
 			{
 				ColorPanel.BackColor = colorDialog1.Color;
 			}

@@ -334,6 +334,80 @@ namespace Jellyfish.Virtu
 			_zeroPage[address] = (byte)data;
 		}
 
+		public byte PeekMainRam(int address)
+		{
+			return address switch
+			{
+				>= 0 and < 0x0200 => _ramMainRegion0001[address - 0],
+				>= 0x0200 and < 0xC000 => _ramMainRegion02BF[address - 0x0200],
+				>= 0xC000 and < 0xD000 => _ramMainBank1RegionD0DF[address - 0xC000],
+				>= 0xD000 and < 0xE000 => _ramMainBank2RegionD0DF[address - 0xD000],
+				>= 0xE000 and < 0x10000 => _ramMainRegionE0FF[address - 0xE000],
+				_ => throw new InvalidOperationException($"{nameof(address)} out of range ({address})")
+			};
+		}
+
+		public void PokeMainRam(int address, byte value)
+		{
+			switch (address)
+			{
+				case >= 0 and < 0x0200:
+					_ramMainRegion0001[address - 0] = value;
+					break;
+				case >= 0x0200 and < 0xC000:
+					_ramMainRegion02BF[address - 0x0200] = value;
+					break;
+				case >= 0xC000 and < 0xD000:
+					_ramMainBank1RegionD0DF[address - 0xC000] = value;
+					break;
+				case >= 0xD000 and < 0xE000:
+					_ramMainBank2RegionD0DF[address - 0xD000] = value;
+					break;
+				case >= 0xE000 and < 0x10000:
+					_ramMainRegionE0FF[address - 0xE000] = value;
+					break;
+				default:
+					throw new InvalidOperationException($"{nameof(address)} out of range ({address})");
+			}
+		}
+
+		public byte PeekAuxRam(int address)
+		{
+			return address switch
+			{
+				>= 0 and < 0x0200 => _ramAuxRegion0001[address - 0],
+				>= 0x0200 and < 0xC000 => _ramAuxRegion02BF[address - 0x0200],
+				>= 0xC000 and < 0xD000 => _ramAuxBank1RegionD0DF[address - 0xC000],
+				>= 0xD000 and < 0xE000 => _ramAuxBank2RegionD0DF[address - 0xD000],
+				>= 0xE000 and < 0x10000 => _ramAuxRegionE0FF[address - 0xE000],
+				_ => throw new InvalidOperationException($"{nameof(address)} out of range ({address})")
+			};
+		}
+
+		public void PokeAuxRam(int address, byte value)
+		{
+			switch (address)
+			{
+				case >= 0 and < 0x0200:
+					_ramAuxRegion0001[address - 0] = value;
+					break;
+				case >= 0x0200 and < 0xC000:
+					_ramAuxRegion02BF[address - 0x0200] = value;
+					break;
+				case >= 0xC000 and < 0xD000:
+					_ramAuxBank1RegionD0DF[address - 0xC000] = value;
+					break;
+				case >= 0xD000 and < 0xE000:
+					_ramAuxBank2RegionD0DF[address - 0xD000] = value;
+					break;
+				case >= 0xE000 and < 0x10000:
+					_ramAuxRegionE0FF[address - 0xE000] = value;
+					break;
+				default:
+					throw new InvalidOperationException($"{nameof(address)} out of range ({address})");
+			}
+		}
+
 		private int ReadIoRegionC0CF(int address)
 		{
 			switch (address & 0xFF00)

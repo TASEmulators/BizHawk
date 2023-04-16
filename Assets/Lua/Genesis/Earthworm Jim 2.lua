@@ -26,9 +26,8 @@ local rl     = memory.read_u32_be
 local box    = gui.drawBox
 local text   = gui.pixelText
 local line   = gui.drawLine
-local AND    = bit.band
-local SHIFTL = bit.lshift
-local SHIFTR = bit.rshift
+
+memory.usememorydomain("68K RAM")
 
 event.onframestart(function()
 	rngcount  = 0
@@ -58,7 +57,7 @@ local function PostRngRoll(object,x,y)
 	for i = 1, #MsgTable do
 		if (MsgTable[i]) then
 			if object==MsgTable[i].object_ then
-				local color = 0x00ff0000+SHIFTL((MsgTable[i].timer_-emu.framecount())*MsgStep,24)
+				local color = 0x00ff0000+((MsgTable[i].timer_-emu.framecount())*MsgStep << 24)
 				line(130,7*i+8,x,y,color)
 				text(120,7*i+8,string.format("%X",MsgTable[i].routine_),color)
 			end
@@ -128,34 +127,34 @@ end
 
 local function GetFloor(x, y)
 	if drawfloor==0 then return {0,0} end
-	x = x*16+AND(camx,0xfff0)
-	y = y*16+AND(camy,0xfff0)
-	local d6 = SHIFTR(AND(y,0xfff0),3)
+	x = x*16+(camx & 0xfff0)
+	y = y*16+(camy & 0xfff0)
+	local d6 = (y & 0xfff0) >> 3
 	local a0 = rw(d6+0xb4e8)
-	local d0 = SHIFTR(x+0x10,4)
-	local d2 = AND(x,0xf)
+	local d0 = x+0x10 >> 4
+	local d2 = x & 0xf
 	local a1 = 0xb806+rw(0xfb9e)
 	local a2 = 0x273e1e
-	local d3 = SHIFTR(rw(a0+d0*2),1)
+	local d3 = rw(a0+d0*2) >> 1
 	local temp = a1+d3
 	if temp>0xffff then return {0,0} end
-	local d5 = SHIFTL(rb(temp),4)+d2
-	local newd5 = SHIFTL(rb(a1+d3),4)+d2+15
-	local newd0 = AND(rb(a2+newd5,"MD CART"),0x1f)
-	return {AND(rb(a2+d5,"MD CART"),0x1f), newd0}
+	local d5 = (rb(temp) << 4)+d2
+	local newd5 = (rb(a1+d3) << 4)+d2+15
+	local newd0 = rb(a2+newd5,"MD CART") & 0x1f
+	return { rb(a2+d5,"MD CART") & 0x1f, newd0 }
 end
 
 local function GetWall(x, y)
 	if drawwalls==0 then return 0 end
-	x = x*16+AND(camx,0xfff0)
-	y = y*16+AND(camy,0xfff0)
+	x = x*16+(camx & 0xfff0)
+	y = y*16+(camy & 0xfff0)
 	if y<0 then return 0 end
-	local d6 = SHIFTR(AND(y+6,0xfff0),3)
+	local d6 = (y+6 & 0xfff0) >> 3
 	local a0 = rw(d6+0xb4e6)
-	local temp = a0+SHIFTR(x,4)*2
+	local temp = a0+(x >> 4)*2
 	if temp>0xffff then return 0 end
 	local d0 = rw(temp)
-	temp = 0xb808+SHIFTR(d0,1)
+	temp = 0xb808+(d0 >> 1)
 	if temp>0xffff then return 0 end
 	return rb(temp)
 end
@@ -166,10 +165,10 @@ local function DrawBG()
 		for i=1,21 do
 			local a0 = GetWall(i,j)
 			if a0>0 then
-				x1 = i*16-AND(camx,0xf)-16
-				y1 = j*16-AND(camy,0xf)-16
-				x2 = i*16-AND(camx,0xf)-1
-				y2 = j*16-AND(camy,0xf)-1
+				x1 = i*16-(camx & 0xf)-16
+				y1 = j*16-(camy & 0xf)-16
+				x2 = i*16-(camx & 0xf)-1
+				y2 = j*16-(camy & 0xf)-1
 				if     a0==255 then -- normal
 					box(x1,y1,x2,y2,0xff00ffff,0x4400ffff)
 				elseif a0==228 then -- snot
@@ -202,10 +201,10 @@ local function DrawBG()
 			if d0>0 then
 				local newd0 = GetFloor(i,j)[2]
 				if newd0>0 then
-					x1 = i*16-AND(camx,0xf)
-					y1 = j*16-AND(camy,0xf)+d0
-					x2 = i*16-AND(camx,0xf)+15
-					y2 = j*16-AND(camy,0xf)+newd0
+					x1 = i*16-(camx & 0xf)
+					y1 = j*16-(camy & 0xf)+d0
+					x2 = i*16-(camx & 0xf)+15
+					y2 = j*16-(camy & 0xf)+newd0
 				else
 					for k=-2,2 do
 						newd0 = GetFloor(i+1,j+k)[1]
@@ -219,10 +218,10 @@ local function DrawBG()
 							elseif k==2 then
 								add = 1
 							end
-							x1 = i*16-AND(camx,0xf)
-							y1 = j*16-AND(camy,0xf)+d0
-							x2 = i*16-AND(camx,0xf)+16
-							y2 = j*16-AND(camy,0xf)-newd0+k*16+add
+							x1 = i*16-(camx & 0xf)
+							y1 = j*16-(camy & 0xf)+d0
+							x2 = i*16-(camx & 0xf)+16
+							y2 = j*16-(camy & 0xf)-newd0+k*16+add
 							--text(x1,y2,k,"red")
 						end
 					end
@@ -274,7 +273,7 @@ local function Bounce()
 	end
 	local counter = rb(0xfc87)
 	local a0 = 0xfc88
-	local d0 = SHIFTL(rb(a0+counter),5)+offset
+	local d0 = (rb(a0+counter) << 5)+offset
 	local vel = rw(0x25d482+d0, "MD CART")
 	if     vel == 0x200 then bounce = 3
 	elseif vel == 0x3e0 then bounce = 1
@@ -334,4 +333,5 @@ while true do
 		Configs()
 	end
 	emu.frameadvance()
+	gui.clearGraphics()
 end

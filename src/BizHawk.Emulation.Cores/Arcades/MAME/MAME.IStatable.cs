@@ -1,31 +1,19 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
+
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Arcades.MAME
 {
 	public partial class MAME : IStatable
 	{
-		private byte[] _mameSaveBuffer;
-		private byte[] _hawkSaveBuffer;
-
 		public void SaveStateBinary(BinaryWriter writer)
 		{
-			writer.Write(_mameSaveBuffer.Length);
-
-			LibMAME.SaveError err = LibMAME.mame_save_buffer(_mameSaveBuffer, out int length);
-
-			if (length != _mameSaveBuffer.Length)
+			using (_exe.EnterExit())
 			{
-				throw new InvalidOperationException("Savestate buffer size mismatch!");
+				_exe.SaveStateBinary(writer);
 			}
 
-			if (err != LibMAME.SaveError.NONE)
-			{
-				throw new InvalidOperationException("MAME LOADSTATE ERROR: " + err.ToString());
-			}
-
-			writer.Write(_mameSaveBuffer);
 			writer.Write(Frame);
 			writer.Write(LagCount);
 			writer.Write(IsLagFrame);
@@ -33,19 +21,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		public void LoadStateBinary(BinaryReader reader)
 		{
-			int length = reader.ReadInt32();
-
-			if (length != _mameSaveBuffer.Length)
+			using (_exe.EnterExit())
 			{
-				throw new InvalidOperationException("Savestate buffer size mismatch!");
-			}
-
-			reader.Read(_mameSaveBuffer, 0, _mameSaveBuffer.Length);
-			LibMAME.SaveError err = LibMAME.mame_load_buffer(_mameSaveBuffer, _mameSaveBuffer.Length);
-
-			if (err != LibMAME.SaveError.NONE)
-			{
-				throw new InvalidOperationException("MAME SAVESTATE ERROR: " + err.ToString());
+				_exe.LoadStateBinary(reader);
 			}
 
 			Frame = reader.ReadInt32();

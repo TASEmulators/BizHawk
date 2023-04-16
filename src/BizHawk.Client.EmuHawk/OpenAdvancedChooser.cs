@@ -38,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public AdvancedRomLoaderType Result;
 
-		public string SuggestedExtensionFilter;
+		public FilesystemFilterSet SuggestedExtensionFilter = null;
 
 		public OpenAdvancedChooser(IDialogController dialogController, Config config, Func<CoreComm> createCoreComm, IGameInfo game, Func<bool> libretroCoreChooserCallback)
 		{
@@ -83,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				var coreComm = _createCoreComm();
-				using var retro = new LibretroEmulator(coreComm, _game, core, true);
+				using var retro = new LibretroHost(coreComm, _game, core, true);
 				btnLibretroLaunchGame.Enabled = true;
 				if (retro.Description.SupportsNoGame)
 					btnLibretroLaunchNoGame.Enabled = true;
@@ -113,7 +113,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var entries = new List<FilesystemFilter> { new FilesystemFilter("ROMs", _currentDescription.ValidExtensions.Split('|')) };
 			if (!_currentDescription.NeedsArchives) entries.Add(FilesystemFilter.Archives); // "needs archives" means the relevant archive extensions are already in the list, and we shouldn't scan archives for roms
-			SuggestedExtensionFilter = new FilesystemFilterSet(entries.ToArray()).ToString();
+			SuggestedExtensionFilter = new(entries.ToArray());
 			Result = AdvancedRomLoaderType.LibretroLaunchGame;
 			DialogResult = DialogResult.OK;
 			Close();

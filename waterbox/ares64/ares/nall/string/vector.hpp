@@ -4,7 +4,7 @@ namespace nall {
 
 template<typename... P> inline auto vector<string>::append(const string& data, P&&... p) -> type& {
   vector_base::append(data);
-  append(forward<P>(p)...);
+  append(std::forward<P>(p)...);
   return *this;
 }
 

@@ -23,6 +23,9 @@ namespace BizHawk.Client.EmuHawk
 		public static DialogResult ShowDialogWithTempMute(this IDialogParent dialogParent, Form dialog)
 			=> dialogParent.DialogController.DoWithTempMute(() => dialog.ShowDialog(dialogParent.AsWinFormsHandle()));
 
+		public static DialogResult ShowDialogWithTempMute(this IDialogParent dialogParent, FolderBrowserEx dialog)
+			=> dialogParent.DialogController.DoWithTempMute(() => dialog.ShowDialog(dialogParent.AsWinFormsHandle()));
+
 		public static DialogResult ShowMessageBox(
 			this IDialogController mainForm,
 			IDialogParent? owner,
@@ -43,7 +46,7 @@ namespace BizHawk.Client.EmuHawk
 						EMsgBoxIcon.Question => MessageBoxIcon.Question,
 						EMsgBoxIcon.Warning => MessageBoxIcon.Warning,
 						EMsgBoxIcon.Info => MessageBoxIcon.Information,
-						_ => throw new ArgumentException(message: "not a valid enum member", paramName: nameof(icon))
+						_ => throw new InvalidOperationException()
 					});
 	}
 }

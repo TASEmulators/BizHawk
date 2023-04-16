@@ -326,18 +326,27 @@ namespace BizHawk.Emulation.Cores.Libretro
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
-		public struct retro_system_av_info
+		public struct retro_game_geometry
 		{
-			// struct retro_game_geometry
 			public uint base_width;
 			public uint base_height;
 			public uint max_width;
 			public uint max_height;
 			public float aspect_ratio;
+		}
 
-			// struct retro_system_timing
+		[StructLayout(LayoutKind.Sequential)]
+		public struct retro_system_timing
+		{
 			public double fps;
 			public double sample_rate;
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		public struct retro_system_av_info
+		{
+			public retro_game_geometry geometry;
+			public retro_system_timing timing;
 		}
 
 		[BizImport(cc)]
@@ -350,10 +359,12 @@ namespace BizHawk.Emulation.Cores.Libretro
 		public abstract uint retro_api_version();
 
 		[BizImport(cc)]
-		public abstract void retro_get_system_info(IntPtr retro_system_info);
+		public abstract void retro_get_system_info(out retro_system_info retro_system_info);
+
+		// this is allowed to not initialize every variable, so ref is used instead of out
 
 		[BizImport(cc)]
-		public abstract void retro_get_system_av_info(IntPtr retro_system_av_info);
+		public abstract void retro_get_system_av_info(ref retro_system_av_info retro_system_av_info);
 
 		[BizImport(cc)]
 		public abstract void retro_set_environment(IntPtr retro_environment);
@@ -386,22 +397,27 @@ namespace BizHawk.Emulation.Cores.Libretro
 		public abstract long retro_serialize_size();
 
 		[BizImport(cc)]
-		public abstract bool retro_serialize(IntPtr data, long size);
+		public abstract bool retro_serialize(byte[] data, long size);
 
 		[BizImport(cc)]
-		public abstract bool retro_unserialize(IntPtr data, long size);
+		public abstract bool retro_unserialize(byte[] data, long size);
 
 		[BizImport(cc)]
 		public abstract void retro_cheat_reset();
 
 		[BizImport(cc)]
-		public abstract void retro_cheat_set(uint index, bool enabled, IntPtr code);
+		public abstract void retro_cheat_set(uint index, bool enabled, string code);
+
+		// maybe it would be better if retro_game_info was just a class instead of a struct?
+
+		[BizImport(cc, EntryPoint = "retro_load_game")]
+		public abstract bool retro_load_no_game(IntPtr no_game_info = default); // don't send anything here
 
 		[BizImport(cc)]
-		public abstract bool retro_load_game(IntPtr retro_game_info);
+		public abstract bool retro_load_game(ref retro_game_info retro_game_info);
 
 		[BizImport(cc)]
-		public abstract bool retro_load_game_special(uint game_type, IntPtr retro_game_info, long num_info);
+		public abstract bool retro_load_game_special(uint game_type, ref retro_game_info retro_game_info, long num_info);
 
 		[BizImport(cc)]
 		public abstract void retro_unload_game();
@@ -433,22 +449,28 @@ namespace BizHawk.Emulation.Cores.Libretro
 		public abstract bool LibretroBridge_GetSupportsNoGame(IntPtr cbHandler);
 
 		[BizImport(cc)]
-		public abstract void LibretroBridge_GetRetroMessage(IntPtr cbHandler, ref LibretroApi.retro_message m);
+		public abstract bool LibretroBridge_GetRetroGeometryInfo(IntPtr cbHandler, ref LibretroApi.retro_game_geometry g);
 
 		[BizImport(cc)]
-		public abstract void LibretroBridge_SetDirectories(IntPtr cbHandler, byte[] systemDirectory, byte[] saveDirectory, byte[] coreDirectory, byte[] coreAssetsDirectory);
+		public abstract bool LibretroBridge_GetRetroTimingInfo(IntPtr cbHandler, ref LibretroApi.retro_system_timing t);
+
+		[BizImport(cc)]
+		public abstract void LibretroBridge_GetRetroMessage(IntPtr cbHandler, out LibretroApi.retro_message m);
+
+		[BizImport(cc)]
+		public abstract void LibretroBridge_SetDirectories(IntPtr cbHandler, string systemDirectory, string saveDirectory, string coreDirectory, string coreAssetsDirectory);
 
 		[BizImport(cc)]
 		public abstract void LibretroBridge_SetVideoSize(IntPtr cbHandler, int sz);
 
 		[BizImport(cc)]
-		public abstract void LibretroBridge_GetVideo(IntPtr cbHandler, ref int width, ref int height, int[] videoBuf);
+		public abstract void LibretroBridge_GetVideo(IntPtr cbHandler, out int width, out int height, int[] videoBuf);
 
 		[BizImport(cc)]
 		public abstract uint LibretroBridge_GetAudioSize(IntPtr cbHandler);
 
 		[BizImport(cc)]
-		public abstract void LibretroBridge_GetAudio(IntPtr cbHandler, ref int numSamples, short[] sampleBuf);
+		public abstract void LibretroBridge_GetAudio(IntPtr cbHandler, out int numSamples, short[] sampleBuf);
 
 		[BizImport(cc)]
 		public abstract void LibretroBridge_SetInput(IntPtr cbHandler, LibretroApi.RETRO_DEVICE device, int port, short[] input);
@@ -464,6 +486,6 @@ namespace BizHawk.Emulation.Cores.Libretro
 		}
 
 		[BizImport(cc)]
-		public abstract void LibretroBridge_GetRetroProcs(ref retro_procs cb_procs);
+		public abstract void LibretroBridge_GetRetroProcs(out retro_procs cb_procs);
 	}
 }

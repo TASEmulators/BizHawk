@@ -156,7 +156,7 @@
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(216, 33);
 			this.label3.TabIndex = 7;
-			this.label3.Text = "- Uses FFMPEG for audio decoding\r\n- Loads ISO, CUE, and CCD";
+			this.label3.Text = "- Uses FFMPEG for audio decoding\r\n- Loads ISO, CUE, CCD, and CDI";
 			// 
 			// radioButton2
 			// 
@@ -270,7 +270,6 @@
 			this.groupBox2.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
-
 		}
 
 		#endregion
@@ -278,20 +277,20 @@
 		private System.Windows.Forms.Button ExitButton;
 		private System.Windows.Forms.Panel lblMagicDragArea;
 		private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Panel lblMp3ExtractMagicArea;
-        private System.Windows.Forms.Label label2;
-				private System.Windows.Forms.Button btnAbout;
-				private System.Windows.Forms.RadioButton radioButton1;
-				private System.Windows.Forms.GroupBox groupBox1;
-				private System.Windows.Forms.RadioButton radioButton2;
-				private System.Windows.Forms.Label label4;
-				private System.Windows.Forms.Label label3;
-				private System.Windows.Forms.GroupBox groupBox2;
-				private System.Windows.Forms.Label label6;
-				private System.Windows.Forms.Label label7;
-				private System.Windows.Forms.RadioButton radioButton4;
-				private System.Windows.Forms.ListView lvCompareTargets;
-				private System.Windows.Forms.ColumnHeader columnHeader1;
-				private System.Windows.Forms.CheckBox checkEnableOutput;
+		private System.Windows.Forms.Panel lblMp3ExtractMagicArea;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Button btnAbout;
+		private System.Windows.Forms.RadioButton radioButton1;
+		private System.Windows.Forms.GroupBox groupBox1;
+		private System.Windows.Forms.RadioButton radioButton2;
+		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.GroupBox groupBox2;
+		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.Label label7;
+		private System.Windows.Forms.RadioButton radioButton4;
+		private System.Windows.Forms.ListView lvCompareTargets;
+		private System.Windows.Forms.ColumnHeader columnHeader1;
+		private System.Windows.Forms.CheckBox checkEnableOutput;
 	}
 }

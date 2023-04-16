@@ -1,8 +1,10 @@
 using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 
 using BizHawk.Common.BufferExtensions;
+using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Common
 {
@@ -15,7 +17,7 @@ namespace BizHawk.Common
 		/// <remarks>in bits</remarks>
 		internal const int EXPECTED_LENGTH = 160;
 
-		internal const string PREFIX = "SHA1";
+		public const string PREFIX = "SHA1";
 
 		public /*static readonly*/const string Dummy = "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE";
 
@@ -35,6 +37,18 @@ namespace BizHawk.Common
 			return impl.GetHashAndReset();
 		}
 #else
+		private static unsafe byte[] UnmanagedImpl(byte[] buffer)
+		{
+			// Set SHA1 start state
+			var state = stackalloc uint[] { 0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0 };
+			// This will use dedicated SHA instructions, which perform 4x faster than a generic implementation
+			LibBizHash.BizCalcSha1((IntPtr) state, buffer, buffer.Length);
+			// The copy seems wasteful, but pinning the state down actually has a bigger performance impact
+			var ret = new byte[20];
+			Marshal.Copy((IntPtr) state, ret, 0, 20);
+			return ret;
+		}
+
 		private static SHA1? _sha1Impl;
 
 		private static SHA1 SHA1Impl
@@ -51,10 +65,13 @@ namespace BizHawk.Common
 		}
 
 		public static byte[] Compute(byte[] data)
-			=> SHA1Impl.ComputeHash(data);
+			=> LibBizHash.BizSupportsShaInstructions()
+				? UnmanagedImpl(data)
+				: SHA1Impl.ComputeHash(data);
 
 		public static byte[] ComputeConcat(byte[] dataA, byte[] dataB)
 		{
+			if (LibBizHash.BizSupportsShaInstructions()) return UnmanagedImpl(dataA.ConcatArray(dataB));
 			using var impl = IncrementalHash.CreateHash(HashAlgorithmName.SHA1);
 			impl.AppendData(dataA);
 			impl.AppendData(dataB);

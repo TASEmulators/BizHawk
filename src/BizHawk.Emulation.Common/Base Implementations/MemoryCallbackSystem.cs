@@ -4,9 +4,8 @@ using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace BizHawk.Emulation.Common
 {
@@ -24,14 +23,17 @@ namespace BizHawk.Emulation.Common
 			AvailableScopes = availableScopes;
 			ExecuteCallbacksAvailable = true;
 
-			_reads.CollectionChanged += OnCollectionChanged;
-			_writes.CollectionChanged += OnCollectionChanged;
-			_execs.CollectionChanged += OnCollectionChanged;
+			_reads.ItemAdded += OnCallbackAdded;
+			_reads.ItemRemoved += OnCallbackRemoved;
+			_writes.ItemAdded += OnCallbackAdded;
+			_writes.ItemRemoved += OnCallbackRemoved;
+			_execs.ItemAdded += OnCallbackAdded;
+			_execs.ItemRemoved += OnCallbackRemoved;
 		}
 
-		private readonly ObservableCollection<IMemoryCallback> _reads = new ObservableCollection<IMemoryCallback>();
-		private readonly ObservableCollection<IMemoryCallback> _writes = new ObservableCollection<IMemoryCallback>();
-		private readonly ObservableCollection<IMemoryCallback> _execs = new ObservableCollection<IMemoryCallback>();
+		private readonly MemoryCallbackCollection _reads = new();
+		private readonly MemoryCallbackCollection _writes = new();
+		private readonly MemoryCallbackCollection _execs = new();
 
 		private bool _hasAny;
 
@@ -66,40 +68,15 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		private static void Call(ObservableCollection<IMemoryCallback> cbs, uint addr, uint value, uint flags, string scope)
+		private static void Call(MemoryCallbackCollection cbs, uint addr, uint value, uint flags, string scope)
 		{
-			var cbsCopy = cbs.ToArray();
-			var e = cbsCopy.Length;
-			var i = -1;
-			void UpdateIndexAndEndpoint(object _, NotifyCollectionChangedEventArgs args)
+			foreach (var cb in cbs)
 			{
-				// this was helpful: https://www.codeproject.com/Articles/1004644/ObservableCollection-Simply-Explained
-				switch (args.Action)
-				{
-					case NotifyCollectionChangedAction.Add:
-						Debug.Assert(args.NewStartingIndex >= e);
-						// no-op
-						break;
-					case NotifyCollectionChangedAction.Remove:
-						Debug.Assert(args.OldItems.Count is 1);
-						e--;
-						if (args.OldStartingIndex <= i) i--; // if ==, i will be decremented and incremented, so it ends up pointing to the element which was at i + 1, now at i
-						break;
-					default:
-						Debug.WriteLine("Unexpected operation on memory callback collection!");
-						break;
-				}
-			}
-			cbs.CollectionChanged += UpdateIndexAndEndpoint;
-			while (++i < e)
-			{
-				var cb = cbsCopy[i];
 				if (!cb.Address.HasValue || (cb.Scope == scope && cb.Address == (addr & cb.AddressMask)))
 				{
 					cb.Callback(addr, value, flags);
 				}
 			}
-			cbs.CollectionChanged -= UpdateIndexAndEndpoint;
 		}
 
 		public void CallMemoryCallbacks(uint addr, uint value, uint flags, string scope)
@@ -169,33 +146,18 @@ namespace BizHawk.Emulation.Common
 			return HasReads != hadReads || HasWrites != hadWrites || HasExecutes != hadExecutes;
 		}
 
-		private int RemoveInternal(MemoryCallbackDelegate action)
+		private bool RemoveInternal(MemoryCallbackDelegate action)
 		{
-			var readsToRemove = _reads.Where(imc => imc.Callback == action).ToList();
-			var writesToRemove = _writes.Where(imc => imc.Callback == action).ToList();
-			var execsToRemove = _execs.Where(imc => imc.Callback == action).ToList();
-
-			foreach (var read in readsToRemove)
-			{
-				_reads.Remove(read);
-			}
-
-			foreach (var write in writesToRemove)
-			{
-				_writes.Remove(write);
-			}
-
-			foreach (var exec in execsToRemove)
-			{
-				_execs.Remove(exec);
-			}
-
-			return readsToRemove.Count + writesToRemove.Count + execsToRemove.Count;
+			bool anyRemoved = false;
+			anyRemoved |= _reads.Remove(action);
+			anyRemoved |= _writes.Remove(action);
+			anyRemoved |= _execs.Remove(action);
+			return anyRemoved;
 		}
 
 		public void Remove(MemoryCallbackDelegate action)
 		{
-			if (RemoveInternal(action) > 0)
+			if (RemoveInternal(action))
 			{
 				if (UpdateHasVariables())
 				{
@@ -209,7 +171,7 @@ namespace BizHawk.Emulation.Common
 			bool changed = false;
 			foreach (var action in actions)
 			{
-				changed |= RemoveInternal(action) > 0;
+				changed |= RemoveInternal(action);
 			}
 
 			if (changed)
@@ -223,21 +185,9 @@ namespace BizHawk.Emulation.Common
 
 		public void Clear()
 		{
-			// Remove one-by-one to avoid NotifyCollectionChangedAction.Reset events.
-			for (int i = _reads.Count - 1; i >= 0; i--)
-			{
-				_reads.RemoveAt(i);
-			}
-
-			for (int i = _writes.Count - 1; i >= 0; i--)
-			{
-				_writes.RemoveAt(i);
-			}
-
-			for (int i = _execs.Count - 1; i >= 0; i--)
-			{
-				_execs.RemoveAt(i);
-			}
+			_reads.Clear();
+			_writes.Clear();
+			_execs.Clear();
 
 			if (UpdateHasVariables())
 			{
@@ -259,25 +209,14 @@ namespace BizHawk.Emulation.Common
 			ActiveChanged?.Invoke();
 		}
 
-		public void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+		private void OnCallbackAdded(object sender, IMemoryCallback callback)
 		{
-			switch (args.Action)
-			{
-				case NotifyCollectionChangedAction.Add:
-					foreach (IMemoryCallback callback in args.NewItems)
-					{
-						CallbackAdded?.Invoke(callback);
-					}
+			CallbackAdded?.Invoke(callback);
+		}
 
-					break;
-				case NotifyCollectionChangedAction.Remove:
-					foreach (IMemoryCallback callback in args.OldItems)
-					{
-						CallbackRemoved?.Invoke(callback);
-					}
-
-					break;
-			}
+		private void OnCallbackRemoved(object sender, IMemoryCallback callback)
+		{
+			CallbackRemoved?.Invoke(callback);
 		}
 
 		public IEnumerator<IMemoryCallback> GetEnumerator()
@@ -335,5 +274,172 @@ namespace BizHawk.Emulation.Common
 		public uint? Address { get; }
 		public uint? AddressMask { get; }
 		public string Scope { get; }
+	}
+
+	/// <summary>
+	/// Specialized collection for memory callbacks with add/remove events and copy-on-write behavior during enumeration.
+	/// </summary>
+	/// <remarks>
+	/// Reentrancy from ItemAdded and ItemRemoved events is not allowed.
+	/// </remarks>
+	internal class MemoryCallbackCollection : IReadOnlyCollection<IMemoryCallback>
+	{
+		private List<IMemoryCallback> _items = new();
+		private int _copyOnWriteRequired = 0;
+		private bool _modifyInProgress = false;
+
+		public int Count => _items.Count;
+
+		public void Add(IMemoryCallback item)
+		{
+			BeginModify();
+			try
+			{
+				CopyIfRequired();
+
+				_items.Add(item);
+				ItemAdded?.Invoke(this, item);
+			}
+			finally
+			{
+				EndModify();
+			}
+		}
+
+		private void RemoveAtInternal(int index)
+		{
+			Debug.Assert(_modifyInProgress);
+			CopyIfRequired();
+
+			var removedItem = _items[index];
+			_items.RemoveAt(index);
+			ItemRemoved?.Invoke(this, removedItem);
+		}
+
+		public bool Remove(MemoryCallbackDelegate callback)
+		{
+			BeginModify();
+			try
+			{
+				int removed = 0;
+				for (int i = 0; i < _items.Count;)
+				{
+					if (_items[i].Callback == callback)
+					{
+						RemoveAtInternal(i);
+						removed++;
+					}
+					else
+					{
+						i++;
+					}
+				}
+				return removed > 0;
+			}
+			finally
+			{
+				EndModify();
+			}
+		}
+
+		public void Clear()
+		{
+			BeginModify();
+			try
+			{
+				while (Count > 0)
+					RemoveAtInternal(Count - 1);
+			}
+			finally
+			{
+				EndModify();
+			}
+		}
+
+		private void CopyIfRequired()
+		{
+			if (_copyOnWriteRequired > 0)
+			{
+				_items = new List<IMemoryCallback>(_items);
+			}
+		}
+
+		private void CheckModifyReentrancy()
+		{
+			if (_modifyInProgress)
+				throw new InvalidOperationException("Reentrancy in MemoryCallbackCollection ItemAdded/ItemRemoved is not allowed.");
+		}
+
+		private void BeginModify()
+		{
+			CheckModifyReentrancy();
+			_modifyInProgress = true;
+		}
+
+		private void EndModify()
+		{
+			_modifyInProgress = false;
+		}
+
+		private void BeginCopyOnWrite()
+		{
+			_copyOnWriteRequired++;
+		}
+
+		private void EndCopyOnWrite()
+		{
+			_copyOnWriteRequired--;
+			Debug.Assert(_copyOnWriteRequired >= 0);
+		}
+
+		public Enumerator GetEnumerator()
+		{
+			CheckModifyReentrancy();
+			return new Enumerator(this);
+		}
+
+		IEnumerator<IMemoryCallback> IEnumerable<IMemoryCallback>.GetEnumerator() => GetEnumerator();
+
+		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+		public EventHandler<IMemoryCallback> ItemAdded;
+		public EventHandler<IMemoryCallback> ItemRemoved;
+
+
+
+		/// <remarks>
+		/// This struct must not be copied.
+		/// </remarks>
+		public struct Enumerator : IEnumerator<IMemoryCallback>, IDisposable
+		{
+			private readonly MemoryCallbackCollection _collection;
+			private List<IMemoryCallback> _items;
+			private int _position;
+
+			public Enumerator(MemoryCallbackCollection collection)
+			{
+				_collection = collection;
+				_items = collection._items;
+				_position = -1;
+				_collection.BeginCopyOnWrite();
+			}
+
+			public readonly IMemoryCallback Current => _items[_position];
+			
+			object IEnumerator.Current => Current;
+
+			public bool MoveNext() => ++_position < _items.Count;
+
+			public void Dispose()
+			{
+				if (_items != null)
+				{
+					_items = null;
+					_collection.EndCopyOnWrite();
+				}
+			}
+
+			void IEnumerator.Reset() => throw new NotSupportedException();
+		}
 	}
 }

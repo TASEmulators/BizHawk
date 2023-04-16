@@ -84,14 +84,15 @@ inline auto Thread::synchronize() -> void {
 template<typename... P>
 inline auto Thread::synchronize(Thread& thread, P&&... p) -> void {
   //switching to another thread does not guarantee it will catch up before switching back.
-  while(thread.clock() < clock()) {
+  //make sure not to switch to threads that were destroyed during synchronization
+  while(thread.clock() < clock() && thread.handle()) {
     //disable synchronization for auxiliary threads during scheduler synchronization.
     //synchronization can begin inside of this while loop.
     if(scheduler.synchronizing()) break;
     co_switch(thread.handle());
   }
   //convenience: allow synchronizing multiple threads with one function call.
-  if constexpr(sizeof...(p) > 0) synchronize(forward<P>(p)...);
+  if constexpr(sizeof...(p) > 0) synchronize(std::forward<P>(p)...);
 }
 
 inline auto Thread::serialize(serializer& s) -> void {

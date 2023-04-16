@@ -8,11 +8,16 @@
 		bool WantsToControlSavestates { get; }
 
 		void SaveState();
-		void LoadState();
+
+		bool LoadState();
+
 		void SaveStateAs();
-		void LoadStateAs();
+
+		bool LoadStateAs();
+
 		void SaveQuickSave(int slot);
-		void LoadQuickSave(int slot);
+
+		bool LoadQuickSave(int slot);
 
 		/// <summary>
 		/// Overrides the select slot method
@@ -55,6 +60,6 @@
 
 		bool WantsToControlRestartMovie { get; }
 
-		void RestartMovie();
+		bool RestartMovie();
 	}
 }

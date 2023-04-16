@@ -11,6 +11,12 @@ namespace BizHawk.Common
 {
 	public static unsafe class Util
 	{
+		[Conditional("DEBUG")]
+		public static void BreakDebuggerIfAttached()
+		{
+			if (Debugger.IsAttached) Debugger.Break();
+		}
+
 		public static void CopyStream(Stream src, Stream dest, long len)
 		{
 			const int size = 0x2000;
@@ -72,6 +78,22 @@ namespace BizHawk.Common
 			return a.All(kvp => b.TryGetValue(kvp.Key, out var bVal) && comparer.Equals(kvp.Value, bVal));
 		}
 
+#if NET6_0
+		public static string DescribeIsNull<T>(T? obj, [CallerArgumentExpression("obj")] string expr = default)
+#else
+		public static string DescribeIsNull<T>(T? obj, string expr)
+#endif
+			where T : class
+			=> $"{expr} is {(obj is null ? "null" : "not null")}";
+
+#if NET6_0
+		public static string DescribeIsNullValT<T>(T? boxed, [CallerArgumentExpression("boxed")] string expr = default)
+#else
+		public static string DescribeIsNullValT<T>(T? boxed, string expr)
+#endif
+			where T : struct
+			=> $"{expr} is {(boxed is null ? "null" : "not null")}";
+
 		/// <param name="filesize">in bytes</param>
 		/// <returns>human-readable filesize (converts units up to tebibytes)</returns>
 		public static string FormatFileSize(long filesize)
@@ -104,13 +126,13 @@ namespace BizHawk.Common
 		/// <exception cref="ArgumentException"><paramref name="str"/> has an odd number of chars or contains a char not in <c>[0-9A-Fa-f]</c></exception>
 		public static byte[] HexStringToBytes(this string str)
 		{
-			if (str.Length % 2 != 0) throw new ArgumentException();
+			if (str.Length % 2 is not 0) throw new ArgumentException(message: "string length must be even (add 0 padding if necessary)", paramName: nameof(str));
 			static int CharToNybble(char c)
 			{
 				if ('0' <= c && c <= '9') return c - 0x30;
 				if ('A' <= c && c <= 'F') return c - 0x37;
 				if ('a' <= c && c <= 'f') return c - 0x57;
-				throw new ArgumentException();
+				throw new ArgumentException(message: "not a hex digit", paramName: nameof(c));
 			}
 			using var ms = new MemoryStream();
 			for (int i = 0, l = str.Length / 2; i != l; i++) ms.WriteByte((byte) ((CharToNybble(str[2 * i]) << 4) + CharToNybble(str[2 * i + 1])));

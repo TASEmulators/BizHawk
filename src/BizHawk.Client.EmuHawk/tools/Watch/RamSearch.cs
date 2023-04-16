@@ -26,6 +26,9 @@ namespace BizHawk.Client.EmuHawk
 		private const int MaxDetailedSize = 1024 * 1024; // 1mb, semi-arbitrary decision, sets the size to check for and automatically switch to fast mode for the user
 		private const int MaxSupportedSize = 1024 * 1024 * 64; // 64mb, semi-arbitrary decision, sets the maximum size RAM Search will support (as it will crash beyond this)
 
+		public static Icon ToolIcon
+			=> Resources.SearchIcon;
+
 		// TODO: DoSearch grabs the state of widgets and passes it to the engine before running, so rip out code that is attempting to keep the state up to date through change events
 		private string _currentFileName = "";
 
@@ -48,7 +51,7 @@ namespace BizHawk.Client.EmuHawk
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 
 			InitializeComponent();
-			Icon = Resources.SearchIcon;
+			Icon = ToolIcon;
 			SearchMenuItem.Image = Resources.Search;
 			DoSearchContextMenuItem.Image = Resources.Search;
 			NewSearchContextMenuItem.Image = Resources.Restart;
@@ -136,11 +139,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RamSearch_Load(object sender, EventArgs e)
 		{
-			// Hack for previous config settings
-			if (Settings.Columns.Any(c => string.IsNullOrWhiteSpace(c.Text)))
-			{
-				Settings = new RamSearchSettings();
-			}
+			if (Settings.Columns.Exists(static c => string.IsNullOrWhiteSpace(c.Text))) Settings = new(); //HACK for previous config settings
 
 			RamSearchMenu.Items.Add(WatchListView.ToColumnsMenu(ColumnToggleCallback));
 
@@ -346,8 +345,7 @@ namespace BizHawk.Client.EmuHawk
 				.OrderBy(x => x.TabIndex)
 				.ToList();
 
-			var selected = radios.FirstOrDefault(x => x.Checked);
-			var index = radios.IndexOf(selected);
+			var index = radios.FindIndex(static x => x.Checked);
 
 			if (reverse)
 			{
@@ -371,7 +369,7 @@ namespace BizHawk.Client.EmuHawk
 
 			radios[index].Checked = true;
 			var mi = radios[index].GetType().GetMethod("OnClick", BindingFlags.Instance | BindingFlags.NonPublic);
-			mi?.Invoke(radios[index], new object[] { new EventArgs() });
+			mi?.Invoke(radios[index], new object[] { EventArgs.Empty });
 		}
 
 		public void NextOperator(bool reverse = false)
@@ -382,8 +380,7 @@ namespace BizHawk.Client.EmuHawk
 				.OrderBy(x => x.TabIndex)
 				.ToList();
 
-			var selected = radios.FirstOrDefault(x => x.Checked);
-			var index = radios.IndexOf(selected);
+			var index = radios.FindIndex(static x => x.Checked);
 
 			if (reverse)
 			{
@@ -407,7 +404,7 @@ namespace BizHawk.Client.EmuHawk
 
 			radios[index].Checked = true;
 			var mi = radios[index].GetType().GetMethod("OnClick", BindingFlags.Instance | BindingFlags.NonPublic);
-			mi?.Invoke(radios[index], new object[] { new EventArgs() });
+			mi?.Invoke(radios[index], new object[] { EventArgs.Empty });
 		}
 
 		private void ToggleSearchDependentToolBarItems()
@@ -421,8 +418,7 @@ namespace BizHawk.Client.EmuHawk
 
 			PokeAddressToolBarItem.Enabled =
 				FreezeAddressToolBarItem.Enabled =
-				SelectedIndices.Any()
-				&& _searches.Domain.Writable;
+					WatchListView.AnyRowsSelected && _searches.Domain.Writable;
 		}
 
 		private long? CompareToValue
@@ -545,6 +541,9 @@ namespace BizHawk.Client.EmuHawk
 		private IEnumerable<Watch> SelectedItems => SelectedIndices.Select(index => _searches[index]);
 
 		private IEnumerable<Watch> SelectedWatches => SelectedItems.Where(x => !x.IsSeparator);
+
+		private bool MayPokeAllSelected
+			=> WatchListView.AnyRowsSelected && SelectedWatches.All(static w => w.Domain.Writable);
 
 		private void SetRemovedMessage(int val)
 		{
@@ -876,16 +875,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PokeAddress()
 		{
-			if (SelectedIndices.Any())
-			{
-				var poke = new RamPoke(DialogController, SelectedIndices.Select(t => _searches[t]), MainForm.CheatList)
-				{
-					InitialLocation = this.ChildPointToScreen(WatchListView)
-				};
-
-				this.ShowDialogWithTempMute(poke);
-				UpdateList();
-			}
+			if (!WatchListView.AnyRowsSelected) return;
+			using RamPoke poke = new(DialogController, SelectedItems, MainForm.CheatList) { InitialLocation = this.ChildPointToScreen(WatchListView) };
+			this.ShowDialogWithTempMute(poke);
+			UpdateList();
 		}
 
 		private void RemoveRamWatchesFromList()
@@ -913,8 +906,7 @@ namespace BizHawk.Client.EmuHawk
 				Message = "Enter a hexadecimal value"
 			};
 
-			var result = this.ShowDialogWithTempMute(prompt);
-			while (result.IsOk())
+			while (this.ShowDialogWithTempMute(prompt).IsOk())
 			{
 				try
 				{
@@ -978,10 +970,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			RecentSubMenu.DropDownItems.Clear();
-			RecentSubMenu.DropDownItems.AddRange(Settings.RecentSearches.RecentMenu(MainForm, LoadFileFromRecent, "Search", noAutoload: true));
-		}
+			=> RecentSubMenu.ReplaceDropDownItems(Settings.RecentSearches.RecentMenu(this, LoadFileFromRecent, "Search", noAutoload: true));
 
 		private void OpenMenuItem_Click(object sender, EventArgs e)
 		{
@@ -1058,12 +1047,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void MemoryDomainsSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			MemoryDomainsSubMenu.DropDownItems.Clear();
-			MemoryDomainsSubMenu.DropDownItems.AddRange(
-				MemoryDomains.MenuItems(SetMemoryDomain, _searches.Domain.Name, MaxSupportedSize)
-				.ToArray());
-		}
+			=> MemoryDomainsSubMenu.ReplaceDropDownItems(MemoryDomains.MenuItems(SetMemoryDomain, _searches.Domain.Name, MaxSupportedSize).ToArray());
 
 		private void SizeSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -1190,12 +1174,11 @@ namespace BizHawk.Client.EmuHawk
 
 			RemoveMenuItem.Enabled =
 				AddToRamWatchMenuItem.Enabled =
-				SelectedIndices.Any();
+					WatchListView.AnyRowsSelected;
 
 			PokeAddressMenuItem.Enabled =
 				FreezeAddressMenuItem.Enabled =
-				SelectedIndices.Any() &&
-				SelectedWatches.All(w => w.Domain.Writable);
+					MayPokeAllSelected;
 
 			UndoMenuItem.Enabled =
 				ClearUndoMenuItem.Enabled =
@@ -1292,6 +1275,9 @@ namespace BizHawk.Client.EmuHawk
 			UpdateUndoToolBarButtons();
 		}
 
+		private void SelectAllMenuItem_Click(object sender, EventArgs e)
+			=> WatchListView.ToggleSelectAll();
+
 		private void SettingsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			ExcludeRamWatchMenuItem.Checked = Settings.AlwaysExcludeRamWatch;
@@ -1368,27 +1354,17 @@ namespace BizHawk.Client.EmuHawk
 				FreezeContextMenuItem.Visible =
 				ContextMenuSeparator2.Visible =
 				ViewInHexEditorContextMenuItem.Visible =
-				SelectedIndices.Any();
+					WatchListView.AnyRowsSelected;
 
 			PokeContextMenuItem.Enabled =
 				FreezeContextMenuItem.Visible =
-				SelectedIndices.Any() &&
-				SelectedWatches.All(w => w.Domain.Writable);
+					MayPokeAllSelected;
 
-			UnfreezeAllContextMenuItem.Visible = MainForm.CheatList.ActiveCount > 0;
+			UnfreezeAllContextMenuItem.Visible = MainForm.CheatList.AnyActive;
 
-			ContextMenuSeparator3.Visible = SelectedIndices.Any() || (MainForm.CheatList.ActiveCount > 0);
+			ContextMenuSeparator3.Visible = WatchListView.AnyRowsSelected || MainForm.CheatList.AnyActive;
 
-			var allCheats = true;
-			foreach (var index in SelectedIndices)
-			{
-				if (!MainForm.CheatList.IsActive(_settings.Domain, _searches[index].Address))
-				{
-					allCheats = false;
-				}
-			}
-
-			if (allCheats)
+			if (SelectedItems.All(watch => MainForm.CheatList.IsActive(_settings.Domain, watch.Address)))
 			{
 				FreezeContextMenuItem.Text = "&Unfreeze Address";
 				FreezeContextMenuItem.Image = Resources.Unfreeze;
@@ -1647,12 +1623,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RemoveToolBarItem.Enabled =
 				AddToRamWatchToolBarItem.Enabled =
-				SelectedIndices.Any();
+					WatchListView.AnyRowsSelected;
 
 			PokeAddressToolBarItem.Enabled =
 				FreezeAddressToolBarItem.Enabled =
-				SelectedIndices.Any()
-				&& _searches.Domain.Writable;
+					WatchListView.AnyRowsSelected && _searches.Domain.Writable;
 		}
 
 		private void WatchListView_Enter(object sender, EventArgs e)
@@ -1677,7 +1652,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void WatchListView_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
-			if (SelectedIndices.Any())
+			if (WatchListView.AnyRowsSelected)
 			{
 				AddToRamWatch();
 			}

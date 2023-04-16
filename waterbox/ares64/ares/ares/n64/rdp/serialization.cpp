@@ -11,7 +11,11 @@ auto RDP::serialize(serializer& s) -> void {
   s(command.source);
   s(command.freeze);
   s(command.flush);
+  s(command.startValid);
+  s(command.endValid);
+  s(command.startGclk);
   s(command.ready);
+  s(command.crashed);
 
   s(io.bist.check);
   s(io.bist.go);

@@ -69,6 +69,24 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 	}
 
 	/// <summary>
+	/// Represents a Mode2 2336-byte sector
+	/// </summary>
+	internal class SS_Mode2_2336 : SS_Base
+	{
+		public override void Synth(SectorSynthJob job)
+		{
+			//read the sector user data
+			Blob.Read(BlobOffset, job.DestBuffer2448, job.DestOffset + 16, 2336);
+
+			if ((job.Parts & ESectorSynthPart.Header16) != 0)
+				SynthUtils.SectorHeader(job.DestBuffer2448, job.DestOffset + 0, job.LBA, 2);
+
+			//if subcode is needed, synthesize it
+			SynthSubchannelAsNeed(job);
+		}
+	}
+
+	/// <summary>
 	/// Represents a 2352-byte sector of any sort
 	/// </summary>
 	internal class SS_2352 : SS_Base
@@ -96,7 +114,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			Array.Clear(job.DestBuffer2448, job.DestOffset, 2352);
 
 			byte mode = 255;
-			int form = -1;
+			var form = -1;
 			switch (TrackType)
 			{
 				case CueTrackType.Audio:
@@ -108,6 +126,8 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 					mode = 1;
 					break;
 
+				case CueTrackType.CDI_2336:
+				case CueTrackType.Mode2_2336:
 				case CueTrackType.Mode2_2352:
 					mode = 2;
 					if (Policy.CUE_PregapMode2_As_XA_Form2)
@@ -123,7 +143,6 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 					Pause = true;
 					break;
 
-				case CueTrackType.Mode2_2336:
 				default:
 					throw new InvalidOperationException($"Not supported: {TrackType}");
 			}
@@ -135,14 +154,17 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 					SynthUtils.SectorHeader(job.DestBuffer2448, job.DestOffset + 0, job.LBA, mode);
 			}
 
-			if (mode == 1)
+			switch (mode)
 			{
-				if ((job.Parts & ESectorSynthPart.ECMAny) != 0)
-					SynthUtils.ECM_Mode1(job.DestBuffer2448, job.DestOffset + 0, job.LBA);
-			}
-			if (mode == 2 && form == 2)
-			{
-				SynthUtils.EDC_Mode2_Form2(job.DestBuffer2448, job.DestOffset);
+				case 1:
+				{
+					if ((job.Parts & ESectorSynthPart.ECMAny) != 0)
+						SynthUtils.ECM_Mode1(job.DestBuffer2448, job.DestOffset + 0, job.LBA);
+					break;
+				}
+				case 2 when form == 2:
+					SynthUtils.EDC_Mode2_Form2(job.DestBuffer2448, job.DestOffset);
+					break;
 			}
 
 			SynthSubchannelAsNeed(job);

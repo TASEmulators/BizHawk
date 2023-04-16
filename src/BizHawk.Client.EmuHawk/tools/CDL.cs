@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 
@@ -20,6 +21,11 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class CDL : ToolFormBase, IToolFormAutoConfig
 	{
+		private static readonly FilesystemFilterSet CDLFilesFSFilterSet = new(new FilesystemFilter("Code Data Logger Files", new[] { "cdl" }));
+
+		public static Icon ToolIcon
+			=> Resources.CdLoggerIcon;
+
 		private RecentFiles _recentFld = new RecentFiles();
 
 		[ConfigPersist]
@@ -48,10 +54,10 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[RequiredService]
-		private IMemoryDomains MemoryDomains { get; set; }
+		public ICodeDataLogger/*?*/ _cdlCore { get; set; }
 
-		[RequiredService]
-		private ICodeDataLogger CodeDataLogger { get; set; }
+		private ICodeDataLogger CodeDataLogger
+			=> _cdlCore!;
 
 		private string _currentFilename;
 		private CodeDataLog _cdl;
@@ -76,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 			tsbLoggingActive.Image = Resources.Placeholder;
 			tsbViewUpdate.Image = Resources.Placeholder;
 			tsbExportText.Image = Resources.LoadConfig;
-			Icon = Resources.CdLoggerIcon;
+			Icon = ToolIcon;
 
 			tsbViewStyle.SelectedIndex = 0;
 
@@ -289,10 +295,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			RecentSubMenu.DropDownItems.Clear();
-			RecentSubMenu.DropDownItems.AddRange(_recent.RecentMenu(MainForm, LoadFile, "Session"));
-		}
+			=> RecentSubMenu.ReplaceDropDownItems(_recent.RecentMenu(this, LoadFile, "Session"));
 
 		private void NewFileLogic()
 		{
@@ -323,10 +326,9 @@ namespace BizHawk.Client.EmuHawk
 		private void OpenMenuItem_Click(object sender, EventArgs e)
 		{
 			var file = OpenFileDialog(
-				_currentFilename,
-				Config.PathEntries.LogAbsolutePath(),
-				"Code Data Logger Files",
-				"cdl");
+				currentFile: _currentFilename,
+				path: Config!.PathEntries.LogAbsolutePath(),
+				CDLFilesFSFilterSet);
 
 			if (file == null)
 				return;
@@ -377,10 +379,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var file = SaveFileDialog(
-				fileName,
-				Config.PathEntries.LogAbsolutePath(),
-				"Code Data Logger Files",
-				"cdl",
+				currentFile: fileName,
+				path: Config!.PathEntries.LogAbsolutePath(),
+				CDLFilesFSFilterSet,
 				this);
 
 			if (file == null)
@@ -405,10 +406,9 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				var file = OpenFileDialog(
-					_currentFilename,
-					Config.PathEntries.LogAbsolutePath(),
-					"Code Data Logger Files",
-					"cdl");
+					currentFile: _currentFilename,
+					path: Config!.PathEntries.LogAbsolutePath(),
+					CDLFilesFSFilterSet);
 
 				if (file != null)
 				{
@@ -450,12 +450,10 @@ namespace BizHawk.Client.EmuHawk
 				this.ModalMessageBox("Cannot disassemble with no CDL loaded!", "Alert");
 				return;
 			}
-
-			using var sfd = new SaveFileDialog();
-			var result = sfd.ShowDialog(this);
-			if (result == DialogResult.OK)
+			var result = this.ShowFileSaveDialog(initDir: Config!.PathEntries.ToolsAbsolutePath());
+			if (result is not null)
 			{
-				using var fs = new FileStream(sfd.FileName, FileMode.Create, FileAccess.Write);
+				using var fs = new FileStream(result, FileMode.Create, FileAccess.Write);
 				CodeDataLogger.DisassembleCDL(fs, _cdl);
 			}
 		}
@@ -463,7 +461,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ShutdownCDL()
 		{
 			_cdl = null;
-			CodeDataLogger?.SetCDL(null);
+			CodeDataLogger.SetCDL(null);
 		}
 
 		protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
@@ -484,9 +482,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		protected override void OnClosed(EventArgs e)
-		{
-			CodeDataLogger?.SetCDL(null);
-		}
+			=> CodeDataLogger.SetCDL(null);
 
 		private void CDL_Load(object sender, EventArgs e)
 		{

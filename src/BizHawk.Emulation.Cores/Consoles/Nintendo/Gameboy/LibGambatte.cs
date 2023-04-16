@@ -277,17 +277,33 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// </summary>
 		/// <param name="cameraBuf">pointer to camera buffer</param>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate bool CameraCallback(IntPtr cameraBuf);
+		public delegate void CameraCallback(IntPtr cameraBuf);
 
 		/// <summary>
 		/// sets the camera data request callback.
 		/// the callback will receive the pointer to the buffer.
-		/// a 128x112 rgb32 image should be copied to the buffer, with success returned.
+		/// a 128x112 native endian rgb32 image should be copied to the buffer.
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
 		/// <param name="callback">the callback</param>
 		[DllImport("libgambatte", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gambatte_setcameracallback(IntPtr core, CameraCallback callback);
+
+		/// <summary>
+		/// type of the remote input callback
+		/// </summary>
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate byte RemoteCallback();
+
+		/// <summary>
+		/// sets the remote input callback.
+		/// the callback will return a value from 0 to 127.
+		/// this value represents a remote command.
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="callback">the callback</param>
+		[DllImport("libgambatte", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gambatte_setremotecallback(IntPtr core, RemoteCallback callback);
 
 		/// <summary>
 		/// Changes between cycle-based and real-time RTC. Defaults to cycle-based.

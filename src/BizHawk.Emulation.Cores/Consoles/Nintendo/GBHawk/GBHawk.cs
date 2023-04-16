@@ -226,9 +226,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			DeterministicEmulation = true;
 		}
 
-		public bool IsCGBMode() => is_GBC;
+		public bool IsCGBMode
+			=> is_GBC; //TODO inline
 
-		public bool IsCGBDMGMode() => is_GB_in_GBC;
+		public bool IsCGBDMGMode
+			=> is_GB_in_GBC; //TODO inline
 
 		/// <summary>
 		/// Produces a palette in the form that certain frontend inspection tools.
@@ -531,8 +533,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0x12: mapper = new MapperMBC3();		mppr = "MBC3";							break;
 				case 0x13: mapper = new MapperMBC3();		mppr = "MBC3";		has_bat = true;		break;
 				case 0x19: mapper = new MapperMBC5();		mppr = "MBC5";							break;
-				case 0x1A: mapper = new MapperMBC5();		mppr = "MBC5";		has_bat = true;		break;
-				case 0x1B: mapper = new MapperMBC5();		mppr = "MBC5";							break;
+				case 0x1A: mapper = new MapperMBC5();		mppr = "MBC5";							break;
+				case 0x1B: mapper = new MapperMBC5();		mppr = "MBC5";		has_bat = true;				break;
 				case 0x1C: mapper = new MapperMBC5();		mppr = "MBC5";							break;
 				case 0x1D: mapper = new MapperMBC5();		mppr = "MBC5";							break;
 				case 0x1E: mapper = new MapperMBC5();		mppr = "MBC5";		has_bat = true;		break;

@@ -107,6 +107,11 @@ namespace BizHawk.Emulation.DiscSystem
 		/// Yes, that one
 		/// </summary>
 		SonyPS2,
+		
+		/// <summary>
+		/// Atari Jaguar CD
+		/// </summary>
+		JaguarCD,
 	}
 
 	public class DiscIdentifier
@@ -114,7 +119,7 @@ namespace BizHawk.Emulation.DiscSystem
 		public DiscIdentifier(Disc disc)
 		{
 			_disc = disc;
-			_dsr = new DiscSectorReader(disc)
+			_dsr = new(disc)
 			{
 				// the first check for mode 0 should be sufficient for blocking attempts to read audio sectors
 				// but github #928 had a data track with an audio sector
@@ -125,7 +130,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		private readonly Disc _disc;
 		private readonly DiscSectorReader _dsr;
-		private readonly Dictionary<int, byte[]> _sectorCache = new Dictionary<int, byte[]>();
+		private readonly Dictionary<int, byte[]> _sectorCache = new();
 
 		/// <summary>
 		/// Attempts to determine the type of the disc.
@@ -133,6 +138,10 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public DiscType DetectDiscType()
 		{
+			// Jaguar CDs are infact audio CDs, so they get bumped to the top of detection here
+			if (DetectJaguarCD())
+				return DiscType.JaguarCD;
+
 			// PCFX & TurboCD sometimes (if not alltimes) have audio on track 1 - run these before the AudioDisc detection (asni)
 			if (DetectPCFX())
 				return DiscType.PCFX;
@@ -177,11 +186,11 @@ namespace BizHawk.Emulation.DiscSystem
 				return DiscType.Wii;
 
 			var discView = EDiscStreamView.DiscStreamView_Mode1_2048;
-			if (_disc.TOC.Session1Format == SessionFormat.Type20_CDXA)
+			if (_disc.TOC.SessionFormat == SessionFormat.Type20_CDXA)
 				discView = EDiscStreamView.DiscStreamView_Mode2_Form1_2048;
 
 			var iso = new ISOFile();
-			bool isIso = iso.Parse(new DiscStream(_disc, discView, 0));
+			var isIso = iso.Parse(new DiscStream(_disc, discView, 0));
 
 			if (!isIso)
 			{
@@ -228,7 +237,7 @@ namespace BizHawk.Emulation.DiscSystem
 				if (sysId == "ASAHI-CDV")
 					return DiscType.Playdia;
 
-				if (sysId == "CDTV" || sysId == "AMIGA"
+				if (sysId is "CDTV" or "AMIGA"
 					|| iso.Root.Children.Keys.Any(k => k.ToLowerInvariant().Contains("cd32")))
 				{
 					return DiscType.Amiga;
@@ -273,7 +282,7 @@ namespace BizHawk.Emulation.DiscSystem
 		private bool DetectPCFX()
 		{
 			var toc = _disc.TOC;
-			for (int t = toc.FirstRecordedTrackNumber;
+			for (var t = toc.FirstRecordedTrackNumber;
 				t <= toc.LastRecordedTrackNumber;
 				t++)
 			{
@@ -302,16 +311,14 @@ namespace BizHawk.Emulation.DiscSystem
 			if (!StringAt("CD001", 0x1, 0x10))
 				return false;
 
-			byte[] sector20 = ReadDataSectorCached(20);
+			var sector20 = ReadDataSectorCached(20);
 			var zecrc = CRC32.Calculate(sector20);
 
 			//known_crcs
-			if (zecrc == 0xd7b47c06) return true; // AV Tanjou
-			if (zecrc == 0x86aec522) return true; // Bishoujo Jyanshi [...]
-			if (zecrc == 0xc8d1b5ef) return true; // CD Bishoujo [...]
-			if (zecrc == 0x0bdbde64) return true; // CD Pachisuro [...]
-
-			return false;
+			return zecrc is 0xd7b47c06 // AV Tanjou
+				or 0x86aec522 // Bishoujo Jyanshi [...]
+				or 0xc8d1b5ef // CD Bishoujo [...]
+				or 0x0bdbde64; // CD Pachisuro [...]
 		}
 
 		//asni 20171011 - this ONLY works if a valid cuefile/ccd is passed into DiscIdentifier.
@@ -320,7 +327,7 @@ namespace BizHawk.Emulation.DiscSystem
 		private bool DetectTurboCD()
 		{
 			var toc = _disc.TOC;
-			for (int t = toc.FirstRecordedTrackNumber;
+			for (var t = toc.FirstRecordedTrackNumber;
 				t <= toc.LastRecordedTrackNumber;
 				t++)
 			{
@@ -335,7 +342,7 @@ namespace BizHawk.Emulation.DiscSystem
 		private bool Detect3DO()
 		{
 			var toc = _disc.TOC;
-			for (int t = toc.FirstRecordedTrackNumber;
+			for (var t = toc.FirstRecordedTrackNumber;
 				t <= toc.LastRecordedTrackNumber;
 				t++)
 			{
@@ -349,7 +356,7 @@ namespace BizHawk.Emulation.DiscSystem
 		//asni - slightly longer running than the others due to its brute-force nature. Should run later in the method
 		private bool DetectDreamcast()
 		{
-			for (int i = 0; i < 1000; i++)
+			for (var i = 0; i < 1000; i++)
 			{
 				if (SectorContains("segakatana", i))
 					return true;
@@ -367,8 +374,8 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			var data = ReadDataSectorCached(0);
 			if (data == null) return false;
-			byte[] magic = data.Skip(28).Take(4).ToArray();
-			string hexString = "";
+			var magic = data.Skip(28).Take(4).ToArray();
+			var hexString = "";
 			foreach (var b in magic)
 				hexString += b.ToString("X2");
 
@@ -379,12 +386,35 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			var data = ReadDataSectorCached(0);
 			if (data == null) return false;
-			byte[] magic = data.Skip(24).Take(4).ToArray();
-			string hexString = "";
+			var magic = data.Skip(24).Take(4).ToArray();
+			var hexString = "";
 			foreach (var b in magic)
 				hexString += b.ToString("X2");
 
 			return hexString == "5D1C9EA3";
+		}
+
+		private bool DetectJaguarCD()
+		{
+			// Atari Jaguar CDs are multisession discs which are encoded like audio CDs
+			// The first track of the second session is the boot track, which should have "ATARI APPROVED DATA HEADER ATRI" somewhere
+			// Although be wary, many dumps are byteswapped, so it might be "TARA IPARPVODED TA AEHDAREA RT.I" (. being a wildcard here)
+			// The core will fixup byteswapped dumps internally
+			if (_disc.Sessions.Count > 2 && !_disc.Sessions[2].TOC.TOCItems[_disc.Sessions[2].TOC.FirstRecordedTrackNumber].IsData)
+			{
+				var data = new byte[2352];
+				for (var i = 0; i < 2; i++)
+				{
+					_dsr.ReadLBA_2352(_disc.Sessions[2].Tracks[1].LBA + i, data, 0);
+					var s = Encoding.ASCII.GetString(data);
+					if (s.Contains("ATARI APPROVED DATA HEADER ATRI") || s.Contains("TARA IPARPVODED TA AEHDAREA RT"))
+					{
+						return true;
+					}
+				}
+			}
+
+			return false;
 		}
 
 		private byte[] ReadDataSectorCached(int lba)
@@ -395,7 +425,7 @@ namespace BizHawk.Emulation.DiscSystem
 			if (!_sectorCache.TryGetValue(lba, out var data))
 			{
 				data = new byte[2048];
-				int read = _dsr.ReadLBA_2048(lba, data, 0);
+				var read = _dsr.ReadLBA_2048(lba, data, 0);
 				if (read != 2048)
 					return null;
 				_sectorCache[lba] = data;
@@ -407,8 +437,8 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			var data = ReadDataSectorCached(lba);
 			if (data == null) return false;
-			byte[] cmp = Encoding.ASCII.GetBytes(s);
-			byte[] cmp2 = new byte[cmp.Length];
+			var cmp = Encoding.ASCII.GetBytes(s);
+			var cmp2 = new byte[cmp.Length];
 			Buffer.BlockCopy(data, offset, cmp2, 0, cmp.Length);
 			return cmp.SequenceEqual(cmp2);
 		}

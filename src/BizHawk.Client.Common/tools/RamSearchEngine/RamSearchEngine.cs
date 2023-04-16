@@ -14,10 +14,10 @@ namespace BizHawk.Client.Common.RamSearchEngine
 	{
 		private Compare _compareTo = Compare.Previous;
 
-		private List<IMiniWatch> _watchList = new List<IMiniWatch>();
+		private IMiniWatch[] _watchList = Array.Empty<IMiniWatch>();
 		private readonly SearchEngineSettings _settings;
-		private readonly UndoHistory<IEnumerable<IMiniWatch>> _history = new UndoHistory<IEnumerable<IMiniWatch>>(true, new List<IMiniWatch>()); //TODO use IList instead of IEnumerable and stop calling `.ToList()` (i.e. cloning) on reads and writes?
-		private bool _isSorted = true; // Tracks whether or not the list is sorted by address, if it is, binary search can be used for finding watches
+		private readonly UndoHistory<IEnumerable<IMiniWatch>> _history = new UndoHistory<IEnumerable<IMiniWatch>>(true, new List<IMiniWatch>()); //TODO use IList instead of IEnumerable and stop calling `.ToArray()` (i.e. cloning) on reads and writes?
+		private bool _isSorted = true; // Tracks whether or not the array is sorted by address, if it is, binary search can be used for finding watches
 
 		public RamSearchEngine(SearchEngineSettings settings, IMemoryDomains memoryDomains)
 		{
@@ -49,59 +49,59 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		{
 			_history.Clear();
 			var domain = _settings.Domain;
-			var listSize = domain.Size;
-			if (!_settings.CheckMisAligned)
+			int stepSize = _settings.CheckMisAligned ? 1 : (int)_settings.Size;
+			long listSize = domain.Size / stepSize - (int)_settings.Size + stepSize;
+
+			_watchList = new IMiniWatch[listSize];
+
+			using (Domain.EnterExit())
 			{
-				listSize /= (int)_settings.Size;
-			}
+				switch (_settings.Size)
+				{
+					default:
+					case WatchSize.Byte:
+						for (int i = 0; i < domain.Size; i++)
+						{
+							if (_settings.IsDetailed())
+							{
+								_watchList[i] = new MiniByteWatchDetailed(domain, i);
+							}
+							else
+							{
+								_watchList[i] = new MiniByteWatch(domain, i);
+							}
+						}
 
-			_watchList = new List<IMiniWatch>((int)listSize);
+						break;
+					case WatchSize.Word:
+						for (int i = 0; i < listSize; i++)
+						{
+							if (_settings.IsDetailed())
+							{
+								_watchList[i] = new MiniWordWatchDetailed(domain, i * stepSize, _settings.BigEndian);
+							}
+							else
+							{
+								_watchList[i] = new MiniWordWatch(domain, i * stepSize, _settings.BigEndian);
+							}
+						}
 
-			switch (_settings.Size)
-			{
-				default:
-				case WatchSize.Byte:
-					for (int i = 0; i < domain.Size; i++)
-					{
-						if (_settings.IsDetailed())
+						break;
+					case WatchSize.DWord:
+						for (int i = 0; i < listSize; i++)
 						{
-							_watchList.Add(new MiniByteWatchDetailed(domain, i));
+							if (_settings.IsDetailed())
+							{
+								_watchList[i] = new MiniDWordWatchDetailed(domain, i * stepSize, _settings.BigEndian);
+							}
+							else
+							{
+								_watchList[i] = new MiniDWordWatch(domain, i * stepSize, _settings.BigEndian);
+							}
 						}
-						else
-						{
-							_watchList.Add(new MiniByteWatch(domain, i));
-						}
-					}
 
-					break;
-				case WatchSize.Word:
-					for (int i = 0; i < domain.Size - 1; i += _settings.CheckMisAligned ? 1 : 2)
-					{
-						if (_settings.IsDetailed())
-						{
-							_watchList.Add(new MiniWordWatchDetailed(domain, i, _settings.BigEndian));
-						}
-						else
-						{
-							_watchList.Add(new MiniWordWatch(domain, i, _settings.BigEndian));
-						}
-					}
-
-					break;
-				case WatchSize.DWord:
-					for (int i = 0; i < domain.Size - 3; i += _settings.CheckMisAligned ? 1 : 4)
-					{
-						if (_settings.IsDetailed())
-						{
-							_watchList.Add(new MiniDWordWatchDetailed(domain, i, _settings.BigEndian));
-						}
-						else
-						{
-							_watchList.Add(new MiniDWordWatch(domain, i, _settings.BigEndian));
-						}
-					}
-
-					break;
+						break;
+				}
 			}
 		}
 
@@ -122,29 +122,32 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		public int DoSearch()
 		{
-			int before = _watchList.Count;
+			int before = _watchList.Length;
 
-			_watchList = _compareTo switch
+			using (Domain.EnterExit())
 			{
-				Compare.Previous => ComparePrevious(_watchList).ToList(),
-				Compare.SpecificValue => CompareSpecificValue(_watchList).ToList(),
-				Compare.SpecificAddress => CompareSpecificAddress(_watchList).ToList(),
-				Compare.Changes => CompareChanges(_watchList).ToList(),
-				Compare.Difference => CompareDifference(_watchList).ToList(),
-				_ => ComparePrevious(_watchList).ToList()
-			};
+				_watchList = _compareTo switch
+				{
+					Compare.Previous => ComparePrevious(_watchList).ToArray(),
+					Compare.SpecificValue => CompareSpecificValue(_watchList).ToArray(),
+					Compare.SpecificAddress => CompareSpecificAddress(_watchList).ToArray(),
+					Compare.Changes => CompareChanges(_watchList).ToArray(),
+					Compare.Difference => CompareDifference(_watchList).ToArray(),
+					_ => ComparePrevious(_watchList).ToArray()
+				};
 
-			if (_settings.PreviousType == PreviousType.LastSearch)
-			{
-				SetPreviousToCurrent();
+				if (_settings.PreviousType == PreviousType.LastSearch)
+				{
+					SetPreviousToCurrent();
+				}
 			}
 
 			if (UndoEnabled)
 			{
-				_history.AddState(_watchList.ToList());
+				_history.AddState(_watchList.ToArray());
 			}
 
-			return before - _watchList.Count;
+			return before - _watchList.Length;
 		}
 
 		public bool Preview(long address)
@@ -164,7 +167,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			};
 		}
 
-		public int Count => _watchList.Count;
+		public int Count => _watchList.Length;
 
 		public SearchMode Mode => _settings.Mode;
 
@@ -198,9 +201,12 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		{
 			if (_settings.IsDetailed())
 			{
-				foreach (IMiniWatchDetails watch in _watchList)
+				using (_settings.Domain.EnterExit())
 				{
-					watch.Update(_settings.PreviousType, _settings.Domain, _settings.BigEndian);
+					foreach (IMiniWatchDetails watch in _watchList)
+					{
+						watch.Update(_settings.PreviousType, _settings.Domain, _settings.BigEndian);
+					}
 				}
 			}
 		}
@@ -222,7 +228,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		public void SetPreviousToCurrent()
 		{
-			_watchList.ForEach(w => w.SetPreviousToCurrent(_settings.Domain, _settings.BigEndian));
+			Array.ForEach(_watchList, w => w.SetPreviousToCurrent(_settings.Domain, _settings.BigEndian));
 		}
 
 		public void ClearChangeCounts()
@@ -244,7 +250,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		{
 			if (UndoEnabled)
 			{
-				_history.AddState(_watchList.ToList());
+				_history.AddState(_watchList.ToArray());
 			}
 
 			var addresses = watches.Select(w => w.Address);
@@ -255,25 +261,20 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		{
 			if (UndoEnabled)
 			{
-				_history.AddState(_watchList.ToList());
+				_history.AddState(_watchList.ToArray());
 			}
 
 			var removeList = indices.Select(i => _watchList[i]); // This will fail after int.MaxValue but RAM Search fails on domains that large anyway
-			_watchList = _watchList.Except(removeList).ToList();
+			_watchList = _watchList.Except(removeList).ToArray();
 		}
 
 		public void RemoveAddressRange(IEnumerable<long> addresses)
 		{
-			_watchList.RemoveAll(w => addresses.Contains(w.Address));
+			_watchList = _watchList.Where(w => !addresses.Contains(w.Address)).ToArray();
 		}
 
 		public void AddRange(IEnumerable<long> addresses, bool append)
 		{
-			if (!append)
-			{
-				_watchList.Clear();
-			}
-
 			var list = _settings.Size switch
 			{
 				WatchSize.Byte => addresses.ToBytes(_settings),
@@ -282,7 +283,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 				_ => addresses.ToBytes(_settings)
 			};
 
-			_watchList.AddRange(list);
+			_watchList = (append ? _watchList.Concat(list) : list).ToArray();
 		}
 
 		public void Sort(string column, bool reverse)
@@ -291,13 +292,13 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			switch (column)
 			{
 				case WatchList.Address:
-					_watchList = _watchList.OrderBy(w => w.Address, reverse).ToList();
+					_watchList = _watchList.OrderBy(w => w.Address, reverse).ToArray();
 					break;
 				case WatchList.Value:
-					_watchList = _watchList.OrderBy(w => GetValue(w.Address), reverse).ToList();
+					_watchList = _watchList.OrderBy(w => GetValue(w.Address), reverse).ToArray();
 					break;
 				case WatchList.Prev:
-					_watchList = _watchList.OrderBy(w => w.Previous, reverse).ToList();
+					_watchList = _watchList.OrderBy(w => w.Previous, reverse).ToArray();
 					break;
 				case WatchList.ChangesCol:
 					if (_settings.IsDetailed())
@@ -306,12 +307,12 @@ namespace BizHawk.Client.Common.RamSearchEngine
 							.Cast<IMiniWatchDetails>()
 							.OrderBy(w => w.ChangeCount, reverse)
 							.Cast<IMiniWatch>()
-							.ToList();
+							.ToArray();
 					}
 
 					break;
 				case WatchList.Diff:
-					_watchList = _watchList.OrderBy(w => GetValue(w.Address) - w.Previous, reverse).ToList();
+					_watchList = _watchList.OrderBy(w => GetValue(w.Address) - w.Previous, reverse).ToArray();
 					break;
 			}
 		}
@@ -330,26 +331,26 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		public int Undo()
 		{
-			int origCount = _watchList.Count;
+			int origCount = _watchList.Length;
 			if (UndoEnabled)
 			{
-				_watchList = _history.Undo().ToList();
-				return _watchList.Count - origCount;
+				_watchList = _history.Undo().ToArray();
+				return _watchList.Length - origCount;
 			}
 
-			return _watchList.Count;
+			return _watchList.Length;
 		}
 
 		public int Redo()
 		{
-			int origCount = _watchList.Count;
+			int origCount = _watchList.Length;
 			if (UndoEnabled)
 			{
-				_watchList = _history.Redo().ToList();
-				return origCount - _watchList.Count;
+				_watchList = _history.Redo().ToArray();
+				return origCount - _watchList.Length;
 			}
 
-			return _watchList.Count;
+			return _watchList.Length;
 		}
 
 		private IEnumerable<IMiniWatch> ComparePrevious(IEnumerable<IMiniWatch> watchList)

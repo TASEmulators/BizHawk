@@ -2,7 +2,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Libretro
 {
-	public partial class LibretroEmulator : IRegionable
+	public partial class LibretroHost : IRegionable
 	{
 		private LibretroApi.RETRO_REGION _region = LibretroApi.RETRO_REGION.NTSC;
 

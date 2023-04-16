@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace BizHawk.Emulation.Common
 {
@@ -10,6 +9,7 @@ namespace BizHawk.Emulation.Common
 		{
 			new(VSystemID.Raw.A26, "Atari 2600"),
 			new(VSystemID.Raw.A78, "Atari 7800"),
+			new(VSystemID.Raw.Jaguar, "Atari Jaguar"),
 			new(VSystemID.Raw.Lynx, "Atari Lynx"),
 			new(VSystemID.Raw.NES, "NES"),
 			new(VSystemID.Raw.SNES, "Super NES"),
@@ -38,8 +38,7 @@ namespace BizHawk.Emulation.Common
 		};
 
 		public SystemInfo this[string systemId]
-			=> _systems.FirstOrDefault(s => s.SystemId == systemId)
-			?? new SystemInfo("Unknown", "Unknown");
+			=> _systems.Find(s => s.SystemId == systemId) ?? new("Unknown", "Unknown");
 
 		public IEnumerable<SystemInfo> AllSystems => _systems;
 

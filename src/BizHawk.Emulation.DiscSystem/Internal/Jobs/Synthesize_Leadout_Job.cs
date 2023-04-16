@@ -29,22 +29,22 @@ namespace BizHawk.Emulation.DiscSystem
 
 			//leadout flags.. let's set them the same as the last track.
 			//THIS IS NOT EXACTLY THE SAME WAY MEDNAFEN DOES IT
-			EControlQ leadoutFlags = lastTrackTOCItem.Control;
+			var leadoutFlags = lastTrackTOCItem.Control;
 
 			//TODO - needs to be encoded as a certain mode (mode 2 form 2 for psx... i guess...)
 
-			for (int i = 0; i < Length; i++)
+			for (var i = 0; i < Length; i++)
 			{
 				//var se = new SectorEntry(sz);
 				//Disc.Sectors.Add(se);
 				SubchannelQ sq = default;
 
-				int track_relative_msf = i;
+				var track_relative_msf = i;
 				sq.min = BCD2.FromDecimal(new Timestamp(track_relative_msf).MIN);
 				sq.sec = BCD2.FromDecimal(new Timestamp(track_relative_msf).SEC);
 				sq.frame = BCD2.FromDecimal(new Timestamp(track_relative_msf).FRAC);
 
-				int absolute_msf = i + leadoutTs;
+				var absolute_msf = i + leadoutTs;
 				sq.ap_min = BCD2.FromDecimal(new Timestamp(absolute_msf + 150).MIN);
 				sq.ap_sec = BCD2.FromDecimal(new Timestamp(absolute_msf + 150).SEC);
 				sq.ap_frame = BCD2.FromDecimal(new Timestamp(absolute_msf + 150).FRAC);
@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.DiscSystem
 				sq.q_tno.DecimalValue = 0xAA; //special value for leadout
 				sq.q_index.DecimalValue = 1;
 
-				byte ADR = 1;
+				const byte ADR = 1;
 				sq.SetStatus(ADR, leadoutFlags);
 
 				//TODO - actually stash the subQ

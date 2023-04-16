@@ -103,7 +103,11 @@ namespace BizHawk.Client.Common
 
 		public bool IsTurbo() => _mainForm.IsTurboing;
 
-		public void LoadState(string name) => _mainForm.LoadState(Path.Combine(_config.PathEntries.SaveStateAbsolutePath(Game.System), $"{name}.State"), name, suppressOSD: false);
+		public bool LoadState(string name)
+			=> _mainForm.LoadState(
+				path: Path.Combine(_config.PathEntries.SaveStateAbsolutePath(Game.System), $"{name}.State"),
+				userFriendlyStateName: name,
+				suppressOSD: false);
 
 		public void OnBeforeQuickLoad(object sender, string quickSaveSlotName, out bool eventHandled)
 		{
@@ -138,7 +142,8 @@ namespace BizHawk.Client.Common
 
 		public void OnStateSaved(object sender, string stateName) => StateSaved?.Invoke(sender, new StateSavedEventArgs(stateName));
 
-		public void OpenRom(string path) => _mainForm.LoadRom(path, new LoadRomArgs { OpenAdvanced = OpenAdvancedSerializer.ParseWithLegacy(path) });
+		public bool OpenRom(string path)
+			=> _mainForm.LoadRom(path, new LoadRomArgs { OpenAdvanced = OpenAdvancedSerializer.ParseWithLegacy(path) });
 
 		public void Pause() => _mainForm.PauseEmulator();
 
@@ -206,7 +211,7 @@ namespace BizHawk.Client.Common
 
 		public void SpeedMode(int percent)
 		{
-			if (percent.StrictlyBoundedBy(0.RangeTo(6400))) _mainForm.ClickSpeedItem(percent);
+			if (percent is > 0 and <= 6400) _mainForm.ClickSpeedItem(percent);
 			else _logCallback("Invalid speed value");
 		}
 

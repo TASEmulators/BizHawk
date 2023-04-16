@@ -203,7 +203,8 @@ namespace BizHawk.Client.Common
 		{
 			var lengthHolder = 0;
 			var lengthHolderSpan = new Span<byte>(&lengthHolder, 4);
-			var zeldas = SpanStream.GetOrBuild(state.GetReadStream());
+			using var rs = state.GetReadStream();
+			var zeldas = SpanStream.GetOrBuild(rs);
 			zeldas.Read(lengthHolderSpan);
 			_masterLength = lengthHolder;
 			fixed (byte* buffer_ = _master)

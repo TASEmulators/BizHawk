@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
-	partial class NDS : ISettable<NDS.NDSSettings, NDS.NDSSyncSettings>
+	public partial class NDS : ISettable<NDS.NDSSettings, NDS.NDSSyncSettings>
 	{
 		private NDSSettings _settings;
 		private NDSSyncSettings _syncSettings;
@@ -71,6 +71,45 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			[DefaultValue(AudioBitrateType.Auto)]
 			public AudioBitrateType AudioBitrate { get; set; }
 
+			[DisplayName("Alt Lag")]
+			[Description("If true, touch screen polling and ARM7 key polling will be considered for lag frames. Otherwise, only ARM9 key polling will be considered.")]
+			[DefaultValue(false)]
+			public bool ConsiderAltLag { get; set; }
+
+			[DisplayName("Trace ARM7 Thumb")]
+			[Description("")]
+			[DefaultValue(false)]
+			public bool TraceArm7Thumb { get; set; }
+
+			[DisplayName("Trace ARM7 ARM")]
+			[Description("")]
+			[DefaultValue(false)]
+			public bool TraceArm7Arm { get; set; }
+
+			[DisplayName("Trace ARM9 Thumb")]
+			[Description("")]
+			[DefaultValue(true)]
+			public bool TraceArm9Thumb { get; set; }
+
+			[DisplayName("Trace ARM9 ARM")]
+			[Description("")]
+			[DefaultValue(true)]
+			public bool TraceArm9Arm { get; set; }
+
+			public LibMelonDS.TraceMask GetTraceMask()
+			{
+				var ret = LibMelonDS.TraceMask.NONE;
+				if (TraceArm7Thumb)
+					ret |= LibMelonDS.TraceMask.ARM7_THUMB;
+				if (TraceArm7Arm)
+					ret |= LibMelonDS.TraceMask.ARM7_ARM;
+				if (TraceArm9Thumb)
+					ret |= LibMelonDS.TraceMask.ARM9_THUMB;
+				if (TraceArm9Arm)
+					ret |= LibMelonDS.TraceMask.ARM9_ARM;
+				return ret;
+			}
+
 			public NDSSettings Clone() => MemberwiseClone() as NDSSettings;
 
 			public static bool NeedsScreenResize(NDSSettings x, NDSSettings y)
@@ -114,7 +153,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			public bool UseRealTime { get; set; }
 
 			[DisplayName("DSi Mode")]
-			[Description("If true, DSi mode will be used.")]
+			[Description("If true, DSi mode will be used. Forced true if a DSiWare rom is detected.")]
 			[DefaultValue(false)]
 			public bool UseDSi { get; set; }
 
@@ -125,13 +164,18 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			[DisplayName("Skip Firmware")]
 			[Description("If true, initial firmware boot will be skipped. Forced true if firmware cannot be booted (no real bios or missing firmware).")]
-			[DefaultValue(false)]
+			[DefaultValue(true)]
 			public bool SkipFirmware { get; set; }
 
 			[DisplayName("Firmware Override")]
 			[Description("If true, the firmware settings will be overriden by provided settings. Forced true when recording a movie.")]
-			[DefaultValue(false)]
+			[DefaultValue(true)]
 			public bool FirmwareOverride { get; set; }
+
+			[DisplayName("Clear NAND")]
+			[Description("If true, the DSi NAND will have all its titles cleared. Forced true when recording a movie.")]
+			[DefaultValue(true)]
+			public bool ClearNAND { get; set; }
 
 			public enum StartUp : int
 			{

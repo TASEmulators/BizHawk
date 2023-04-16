@@ -317,6 +317,11 @@ namespace BizHawk.Client.Common
 				Size size = chainInSize;
 				size.Width += padding.Left + padding.Right;
 				size.Height += padding.Top + padding.Bottom;
+
+				//in case the user requested so much padding that the dimensions are now negative, just turn it to something small
+				if (size.Width < 1) size.Width = 1;
+				if (size.Height < 1) size.Height = 1;
+
 				FinalPresentation fPadding = new FinalPresentation(size);
 				chain.AddFilter(fPadding, "padding");
 				fPadding.GuiRenderer = _renderer;
@@ -619,6 +624,11 @@ namespace BizHawk.Client.Common
 			bufferWidth += padding.Horizontal;
 			bufferHeight += padding.Vertical;
 
+			//in case the user requested so much padding that the dimensions are now negative, just turn it to something small.
+			if (virtualWidth < 1) virtualWidth = 1;
+			if (virtualHeight < 1) virtualHeight = 1;
+			if (bufferWidth < 1) bufferWidth = 1;
+			if (bufferHeight < 1) bufferHeight = 1;
 
 			// old stuff
 			var fvp = new FakeVideoProvider
@@ -833,6 +843,10 @@ namespace BizHawk.Client.Common
 			vw += padding.Horizontal;
 			vh += padding.Vertical;
 
+			//in case the user requested so much padding that the dimensions are now negative, just turn it to something small.
+			if (vw < 1) vw = 1;
+			if (vh < 1) vh = 1;
+
 			BitmapBuffer bb = null;
 			Texture2d videoTexture = null;
 			if (!simulate)
@@ -1023,7 +1037,7 @@ namespace BizHawk.Client.Common
 			{
 				DisplaySurfaceID.EmuCore => (GameExtraPadding.Left + _currEmuWidth + GameExtraPadding.Right, GameExtraPadding.Top + _currEmuHeight + GameExtraPadding.Bottom),
 				DisplaySurfaceID.Client => (currNativeWidth, currNativeHeight),
-				_ => throw new ArgumentException(message: "not a valid enum member", paramName: nameof(surfaceID))
+				_ => throw new InvalidOperationException()
 			};
 
 			IDisplaySurface ret = sdss.AllocateSurface(width, height, clear);

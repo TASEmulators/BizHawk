@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 	public class HyperNyma : NymaCore, IRegionable, IPceGpuView
 	{
 		private HyperNyma(CoreComm comm)
-			: base(comm, null, null, null, null)
+			: base(comm, VSystemID.Raw.NULL, null, null, null)
 		{
 		}
 
@@ -38,6 +38,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 		[CoreConstructor(VSystemID.Raw.PCE, Priority = CorePriority.Low)]
 		[CoreConstructor(VSystemID.Raw.SGX, Priority = CorePriority.Low)]
 		[CoreConstructor(VSystemID.Raw.PCECD, Priority = CorePriority.Low)]
+		[CoreConstructor(VSystemID.Raw.SGXCD, Priority = CorePriority.Low)]
 		public HyperNyma(CoreLoadParameters<NymaSettings, NymaSyncSettings> lp)
 			: base(lp.Comm, VSystemID.Raw.PCE, "PC Engine Controller", lp.Settings, lp.SyncSettings)
 		{

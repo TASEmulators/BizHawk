@@ -37,7 +37,7 @@ struct file : inode {
 
   static auto truncate(const string& filename, uint64_t size) -> bool {
     #if defined(API_POSIX)
-    return truncate(filename, size) == 0;
+    return ::truncate(filename, size) == 0;
     #elif defined(API_WINDOWS)
     if(auto fp = _wfopen(utf16_t(filename), L"rb+")) {
       bool result = _chsize(fileno(fp), size) == 0;

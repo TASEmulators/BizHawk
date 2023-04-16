@@ -1,10 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BizHawk.Client.Common
 {
 	public sealed class UserDataApi : IUserDataApi
 	{
 		private readonly IMovieSession _movieSession;
+
+#if NET6_0
+		public IReadOnlySet<string> Keys
+			=> throw new NotImplementedException();
+#else
+		public IReadOnlyCollection<string> Keys
+			=> _movieSession.UserBag.Keys.ToList();
+#endif
 
 		public UserDataApi(IMovieSession movieSession) => _movieSession = movieSession;
 

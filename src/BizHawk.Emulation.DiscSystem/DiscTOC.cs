@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// The TOC specifies the format of the session, so here it is.
 		/// </summary>
-		public SessionFormat Session1Format = SessionFormat.None;
+		public SessionFormat SessionFormat = SessionFormat.None;
 
 		/// <summary>
 		/// Information about a single track in the TOC

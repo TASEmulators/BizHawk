@@ -10,6 +10,7 @@ struct CPU : Thread {
     auto instruction() -> void;
     auto exception(u8 code) -> void;
     auto interrupt(u8 mask) -> void;
+    auto nmi() -> void;
     auto tlbWrite(u32 index) -> void;
     auto tlbModification(u64 address) -> void;
     auto tlbLoad(u64 address, u64 physical) -> void;
@@ -83,7 +84,7 @@ struct CPU : Thread {
 
     enum Endian : bool { Little, Big };
     enum Mode : u32 { Kernel, Supervisor, User };
-    enum Segment : u32 { Unused, Mapped, Cached, Direct, Kernel64, Supervisor64, User64 };
+    enum Segment : u32 { Unused, Mapped, Cached, Direct, Cached32, Direct32, Kernel64, Supervisor64, User64 };
 
     auto littleEndian() const -> bool { return endian == Endian::Little; }
     auto bigEndian() const -> bool { return endian == Endian::Big; }
@@ -95,6 +96,7 @@ struct CPU : Thread {
     auto setMode() -> void;
 
     bool endian;
+    u64  physMask;
     u32  mode;
     u32  bits;
     u32  segment[8];  //512_MiB chunks
@@ -102,26 +104,80 @@ struct CPU : Thread {
 
   //icache.cpp
   struct InstructionCache {
+    CPU& self;
     struct Line;
-    auto line(u32 address) -> Line&;
-    auto step(u32 address) -> void;
-    auto fetch(u32 address) -> u32;
-    auto read(u32 address) -> u32;
-    auto power(bool reset) -> void;
+    auto line(u32 address) -> Line& { return lines[address >> 5 & 0x1ff]; }
+
+    //used by the recompiler to simulate instruction cache fetch timing
+    auto step(u32 address) -> void {
+      auto& line = this->line(address);
+      if(!line.hit(address)) {
+        self.step(48);
+        line.valid = 1;
+        line.tag   = address & ~0x0000'0fff;
+      } else {
+        self.step(2);
+      }
+    }
+
+    //used by the interpreter to fully emulate the instruction cache
+    auto fetch(u32 address, CPU& cpu) -> u32 {
+      auto& line = this->line(address);
+      if(!line.hit(address)) {
+        line.fill(address, cpu);
+      } else {
+        cpu.step(2);
+      }
+      return line.read(address);
+    }
+
+    auto power(bool reset) -> void {
+      u32 index = 0;
+      for(auto& line : lines) {
+        line.valid = 0;
+        line.tag   = 0;
+        line.index = index++ << 5 & 0xfe0;
+        for(auto& word : line.words) word = 0;
+       }
+    }
 
     //16KB
     struct Line {
-      auto hit(u32 address) const -> bool;
-      auto fill(u32 address) -> void;
-      auto writeBack() -> void;
-      auto read(u32 address) const -> u32;
+      auto hit(u32 address) const -> bool { return valid && tag == (address & ~0x0000'0fff); }
+      auto fill(u32 address, CPU& cpu) -> void {
+        cpu.step(48);
+        valid = 1;
+        tag   = address & ~0x0000'0fff;
+        words[0] = cpu.busRead<Word>(tag | index | 0x00);
+        words[1] = cpu.busRead<Word>(tag | index | 0x04);
+        words[2] = cpu.busRead<Word>(tag | index | 0x08);
+        words[3] = cpu.busRead<Word>(tag | index | 0x0c);
+        words[4] = cpu.busRead<Word>(tag | index | 0x10);
+        words[5] = cpu.busRead<Word>(tag | index | 0x14);
+        words[6] = cpu.busRead<Word>(tag | index | 0x18);
+        words[7] = cpu.busRead<Word>(tag | index | 0x1c);
+      }
+
+      auto writeBack(CPU& cpu) -> void {
+        cpu.step(48);
+        cpu.busWrite<Word>(tag | index | 0x00, words[0]);
+        cpu.busWrite<Word>(tag | index | 0x04, words[1]);
+        cpu.busWrite<Word>(tag | index | 0x08, words[2]);
+        cpu.busWrite<Word>(tag | index | 0x0c, words[3]);
+        cpu.busWrite<Word>(tag | index | 0x10, words[4]);
+        cpu.busWrite<Word>(tag | index | 0x14, words[5]);
+        cpu.busWrite<Word>(tag | index | 0x18, words[6]);
+        cpu.busWrite<Word>(tag | index | 0x1c, words[7]);
+      }
+
+      auto read(u32 address) const -> u32 { return words[address >> 2 & 7]; }
 
       bool valid;
       u32  tag;
       u16  index;
       u32  words[8];
     } lines[512];
-  } icache;
+  } icache{*this};
 
   //dcache.cpp
   struct DataCache {
@@ -167,9 +223,8 @@ struct CPU : Thread {
     };
 
     //tlb.cpp
-    auto load(u32 address) -> Match;
-    auto store(u32 address) -> Match;
-    auto exception(u32 address) -> void;
+    auto load(u64 vaddr) -> Match;
+    auto store(u64 vaddr) -> Match;
 
     struct Entry {
       //scc-tlb.cpp
@@ -195,20 +250,23 @@ struct CPU : Thread {
   } tlb{*this};
 
   //memory.cpp
-  auto kernelSegment32(u32 address) const -> Context::Segment;
-  auto supervisorSegment32(u32 address) const -> Context::Segment;
-  auto userSegment32(u32 address) const -> Context::Segment;
+  auto kernelSegment32(u32 vaddr) const -> Context::Segment;
+  auto supervisorSegment32(u32 vaddr) const -> Context::Segment;
+  auto userSegment32(u32 vaddr) const -> Context::Segment;
 
-  auto kernelSegment64(u64 address) const -> Context::Segment;
-  auto supervisorSegment64(u64 address) const -> Context::Segment;
-  auto userSegment64(u64 address) const -> Context::Segment;
+  auto kernelSegment64(u64 vaddr) const -> Context::Segment;
+  auto supervisorSegment64(u64 vaddr) const -> Context::Segment;
+  auto userSegment64(u64 vaddr) const -> Context::Segment;
 
-  auto segment(u64 address) -> Context::Segment;
-  auto devirtualize(u64 address) -> maybe<u64>;
-  auto fetch(u64 address) -> u32;
-  template<u32 Size> auto read(u64 address) -> maybe<u64>;
-  template<u32 Size> auto write(u64 address, u64 data) -> bool;
-  auto addressException(u64 address) -> void;
+  auto segment(u64 vaddr) -> Context::Segment;
+  auto devirtualize(u64 vaddr) -> maybe<u64>;
+  auto fetch(u64 vaddr) -> maybe<u32>;
+  template<u32 Size> auto busWrite(u32 address, u64 data) -> void;
+  template<u32 Size> auto busRead(u32 address) -> u64;
+  template<u32 Size> auto read(u64 vaddr) -> maybe<u64>;
+  template<u32 Size> auto write(u64 vaddr, u64 data) -> bool;
+  template<u32 Size> auto vaddrAlignedError(u64 vaddr, bool write) -> bool;
+  auto addressException(u64 vaddr) -> void;
 
   //serialization.cpp
   auto serialize(serializer&) -> void;
@@ -233,6 +291,7 @@ struct CPU : Thread {
     auto systemCall() -> void;
     auto breakpoint() -> void;
     auto reservedInstruction() -> void;
+    auto reservedInstructionCop2() -> void;
     auto coprocessor0() -> void;
     auto coprocessor1() -> void;
     auto coprocessor2() -> void;
@@ -241,6 +300,7 @@ struct CPU : Thread {
     auto trap() -> void;
     auto floatingPoint() -> void;
     auto watchAddress() -> void;
+    auto nmi() -> void;
   } exception{*this};
 
   enum Interrupt : u32 {
@@ -262,8 +322,6 @@ struct CPU : Thread {
     struct {   int64_t s64; };
     struct {  uint64_t u64; };
     struct { float64_t f64; };
-    auto s128() const ->  int128_t { return  (int128_t)s64; }
-    auto u128() const -> uint128_t { return (uint128_t)u64; }
   };
   using cr64 = const r64;
 
@@ -288,6 +346,20 @@ struct CPU : Thread {
     r64 hi;
     u64 pc;  //program counter
   } ipu;
+
+  //algorithms.cpp
+  template<typename T> auto roundNearest(f32 f) -> T;
+  template<typename T> auto roundNearest(f64 f) -> T;
+  template<typename T> auto roundCeil(f32 f) -> T;
+  template<typename T> auto roundCeil(f64 f) -> T;
+  template<typename T> auto roundCurrent(f32 f) -> T;
+  template<typename T> auto roundCurrent(f64 f) -> T;
+  template<typename T> auto roundFloor(f32 f) -> T;
+  template<typename T> auto roundFloor(f64 f) -> T;
+  template<typename T> auto roundTrunc(f32 f) -> T;
+  template<typename T> auto roundTrunc(f64 f) -> T;
+  auto squareRoot(f32 f) -> f32;
+  auto squareRoot(f64 f) -> f64;
 
   //interpreter-ipu.cpp
   auto ADD(r64& rd, cr64& rs, cr64& rt) -> void;
@@ -522,6 +594,10 @@ struct CPU : Thread {
 
     //30: Error Exception Program Counter
     n64 epcError;
+
+    //other
+    n64 latch;
+    n1 nmiPending;
   } scc;
 
   //interpreter-scc.cpp
@@ -574,18 +650,37 @@ struct CPU : Thread {
         n1 unimplementedOperation = 0;
       } cause;
       n1 compare = 0;
-      n1 flushed = 0;
+      n1 flushSubnormals = 0;
     } csr;
   } fpu;
 
   //interpreter-fpu.cpp
+  float_env fenv;
+
   template<typename T> auto fgr(u32) -> T&;
   auto getControlRegisterFPU(n5) -> u32;
   auto setControlRegisterFPU(n5, n32) -> void;
+  template<bool CVT> auto checkFPUExceptions() -> bool;
+  auto fpeDivisionByZero() -> bool;
+  auto fpeInexact() -> bool;
+  auto fpeUnderflow() -> bool;
+  auto fpeOverflow() -> bool;
+  auto fpeInvalidOperation() -> bool;
+  auto fpeUnimplemented() -> bool;
+  auto fpuCheckStart() -> bool;
+  auto fpuCheckInput(f32& f) -> bool;
+  auto fpuCheckInput(f64& f) -> bool;
+  auto fpuCheckOutput(f32& f) -> bool;
+  auto fpuCheckOutput(f64& f) -> bool;
+  auto fpuClearCause() -> void;
+  template<typename DST, typename SF>
+  auto fpuCheckInputConv(SF& f) -> bool;
 
   auto BC1(bool value, bool likely, s16 imm) -> void;
   auto CFC1(r64& rt, u8 rd) -> void;
   auto CTC1(cr64& rt, u8 rd) -> void;
+  auto DCFC1(r64& rt, u8 rd) -> void;
+  auto DCTC1(cr64& rt, u8 rd) -> void;
   auto DMFC1(r64& rt, u8 fs) -> void;
   auto DMTC1(cr64& rt, u8 fs) -> void;
   auto FABS_S(u8 fd, u8 fs) -> void;
@@ -594,8 +689,12 @@ struct CPU : Thread {
   auto FADD_D(u8 fd, u8 fs, u8 ft) -> void;
   auto FCEIL_L_S(u8 fd, u8 fs) -> void;
   auto FCEIL_L_D(u8 fd, u8 fs) -> void;
+  auto FCEIL_L_W(u8 fd, u8 fs) -> void;
+  auto FCEIL_L_L(u8 fd, u8 fs) -> void;
   auto FCEIL_W_S(u8 fd, u8 fs) -> void;
   auto FCEIL_W_D(u8 fd, u8 fs) -> void;
+  auto FCEIL_W_W(u8 fd, u8 fs) -> void;
+  auto FCEIL_W_L(u8 fd, u8 fs) -> void;
   auto FC_EQ_S(u8 fs, u8 ft) -> void;
   auto FC_EQ_D(u8 fs, u8 ft) -> void;
   auto FC_F_S(u8 fs, u8 ft) -> void;
@@ -628,22 +727,32 @@ struct CPU : Thread {
   auto FC_ULT_D(u8 fs, u8 ft) -> void;
   auto FC_UN_S(u8 fs, u8 ft) -> void;
   auto FC_UN_D(u8 fs, u8 ft) -> void;
+  auto FCVT_S_S(u8 fd, u8 fs) -> void;
   auto FCVT_S_D(u8 fd, u8 fs) -> void;
   auto FCVT_S_W(u8 fd, u8 fs) -> void;
   auto FCVT_S_L(u8 fd, u8 fs) -> void;
   auto FCVT_D_S(u8 fd, u8 fs) -> void;
+  auto FCVT_D_D(u8 fd, u8 fs) -> void;
   auto FCVT_D_W(u8 fd, u8 fs) -> void;
   auto FCVT_D_L(u8 fd, u8 fs) -> void;
   auto FCVT_L_S(u8 fd, u8 fs) -> void;
   auto FCVT_L_D(u8 fd, u8 fs) -> void;
+  auto FCVT_L_W(u8 fd, u8 fs) -> void;
+  auto FCVT_L_L(u8 fd, u8 fs) -> void;
   auto FCVT_W_S(u8 fd, u8 fs) -> void;
   auto FCVT_W_D(u8 fd, u8 fs) -> void;
+  auto FCVT_W_W(u8 fd, u8 fs) -> void;
+  auto FCVT_W_L(u8 fd, u8 fs) -> void;
   auto FDIV_S(u8 fd, u8 fs, u8 ft) -> void;
   auto FDIV_D(u8 fd, u8 fs, u8 ft) -> void;
   auto FFLOOR_L_S(u8 fd, u8 fs) -> void;
   auto FFLOOR_L_D(u8 fd, u8 fs) -> void;
+  auto FFLOOR_L_W(u8 fd, u8 fs) -> void;
+  auto FFLOOR_L_L(u8 fd, u8 fs) -> void;
   auto FFLOOR_W_S(u8 fd, u8 fs) -> void;
   auto FFLOOR_W_D(u8 fd, u8 fs) -> void;
+  auto FFLOOR_W_W(u8 fd, u8 fs) -> void;
+  auto FFLOOR_W_L(u8 fd, u8 fs) -> void;
   auto FMOV_S(u8 fd, u8 fs) -> void;
   auto FMOV_D(u8 fd, u8 fs) -> void;
   auto FMUL_S(u8 fd, u8 fs, u8 ft) -> void;
@@ -652,22 +761,44 @@ struct CPU : Thread {
   auto FNEG_D(u8 fd, u8 fs) -> void;
   auto FROUND_L_S(u8 fd, u8 fs) -> void;
   auto FROUND_L_D(u8 fd, u8 fs) -> void;
+  auto FROUND_L_W(u8 fd, u8 fs) -> void;
+  auto FROUND_L_L(u8 fd, u8 fs) -> void;
   auto FROUND_W_S(u8 fd, u8 fs) -> void;
   auto FROUND_W_D(u8 fd, u8 fs) -> void;
+  auto FROUND_W_W(u8 fd, u8 fs) -> void;
+  auto FROUND_W_L(u8 fd, u8 fs) -> void;
   auto FSQRT_S(u8 fd, u8 fs) -> void;
   auto FSQRT_D(u8 fd, u8 fs) -> void;
   auto FSUB_S(u8 fd, u8 fs, u8 ft) -> void;
   auto FSUB_D(u8 fd, u8 fs, u8 ft) -> void;
   auto FTRUNC_L_S(u8 fd, u8 fs) -> void;
   auto FTRUNC_L_D(u8 fd, u8 fs) -> void;
+  auto FTRUNC_L_W(u8 fd, u8 fs) -> void;
+  auto FTRUNC_L_L(u8 fd, u8 fs) -> void;
   auto FTRUNC_W_S(u8 fd, u8 fs) -> void;
   auto FTRUNC_W_D(u8 fd, u8 fs) -> void;
+  auto FTRUNC_W_W(u8 fd, u8 fs) -> void;
+  auto FTRUNC_W_L(u8 fd, u8 fs) -> void;
   auto LDC1(u8 ft, cr64& rs, s16 imm) -> void;
   auto LWC1(u8 ft, cr64& rs, s16 imm) -> void;
   auto MFC1(r64& rt, u8 fs) -> void;
   auto MTC1(cr64& rt, u8 fs) -> void;
   auto SDC1(u8 ft, cr64& rs, s16 imm) -> void;
   auto SWC1(u8 ft, cr64& rs, s16 imm) -> void;
+  auto COP1UNIMPLEMENTED() -> void;
+
+  //interpreter-cop2.cpp
+  struct COP2 {
+    u64 latch;
+  } cop2;
+
+  auto MFC2(r64& rt, u8 rd) -> void;
+  auto DMFC2(r64& rt, u8 rd) -> void;
+  auto CFC2(r64& rt, u8 rd) -> void;
+  auto MTC2(cr64& rt, u8 rd) -> void;
+  auto DMTC2(cr64& rt, u8 rd) -> void;
+  auto CTC2(cr64& rt, u8 rd) -> void;
+  auto COP2INVALID() -> void;
 
   //decoder.cpp
   auto decoderEXECUTE() -> void;
@@ -675,8 +806,8 @@ struct CPU : Thread {
   auto decoderREGIMM() -> void;
   auto decoderSCC() -> void;
   auto decoderFPU() -> void;
+  auto decoderCOP2() -> void;
 
-  auto COP2() -> void;
   auto COP3() -> void;
   auto INVALID() -> void;
 
@@ -702,12 +833,31 @@ struct CPU : Thread {
     }
 
     auto invalidate(u32 address) -> void {
+      /* FIXME: Recompiler shouldn't be so aggressive with pool eviction
+       * Sometimes there are overlapping blocks, so clearing just one block
+       * isn't sufficient and causes some games to crash (Jet Force Gemini)
+       * the recompiler needs to be smarter with block tracking
+       * Until then, clear the entire pool and live with the performance hit.
+      */
+      #if 1
+      invalidatePool(address);
+      #else
+      auto pool = pools[address >> 8 & 0x1fffff];
+      if(!pool) return;
+      memory::jitprotect(false);
+      pool->blocks[address >> 2 & 0x3f] = nullptr;
+      memory::jitprotect(true);
+      #endif
+    }
+
+    auto invalidatePool(u32 address) -> void {
       pools[address >> 8 & 0x1fffff] = nullptr;
     }
+
     auto invalidateRange(u32 address, u32 length) -> void {
       for (u32 s = 0; s < length; s += 256)
-        invalidate(address + s);
-      invalidate(address + length - 1);
+        invalidatePool(address + s);
+      invalidatePool(address + length - 1);
     }
 
     auto pool(u32 address) -> Pool*;
@@ -719,6 +869,7 @@ struct CPU : Thread {
     auto emitREGIMM(u32 instruction) -> bool;
     auto emitSCC(u32 instruction) -> bool;
     auto emitFPU(u32 instruction) -> bool;
+    auto emitCOP2(u32 instruction) -> bool;
 
     bump_allocator allocator;
     Pool* pools[1 << 21];  //2_MiB * sizeof(void*) == 16_MiB

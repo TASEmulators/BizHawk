@@ -8,8 +8,10 @@
 
 #include "resources.hpp"
 #include <nall/vfs/biz_file.hpp>
+#include <vector>
 
 static Emulator::Interface *emulator;
+static std::vector<short> audioBuffer;
 
 struct Program : Emulator::Platform
 {
@@ -27,6 +29,7 @@ struct Program : Emulator::Platform
 	auto readHook(uint address) -> void override;
 	auto writeHook(uint address, uint8 value) -> void override;
 	auto execHook(uint address) -> void override;
+	auto time() -> int64 override;
 
 	auto load() -> void;
 	auto loadSuperFamicom() -> bool;
@@ -43,6 +46,7 @@ struct Program : Emulator::Platform
 	bool overscan = false;
 	uint16_t backdropColor;
 	int regionOverride = 0;
+	bool breakOnLatch;
 
 public:
 	struct Game {
@@ -330,6 +334,8 @@ auto Program::load() -> void {
 }
 
 auto Program::load(uint id, string name, string type, vector<string> options) -> Emulator::Platform::Load {
+	// This needs to occur here rather than snes_init, as callbacks aren't set yet then
+	emulator->synchronize(time());
 
 	if (id == 1)
 	{
@@ -425,7 +431,7 @@ auto Program::loadBSMemory() -> bool {
 auto Program::videoFrame(const uint16* data, uint pitch, uint width, uint height, uint scale) -> void {
 
 	// note: scale is not used currently, but as bsnes has builtin scaling support (something something mode 7)
-	// we might actually wanna make use of that? also overscan might always be false rn, will need to check
+	// we might actually wanna make use of that?
 	pitch >>= 1;
 	if (!overscan)
 	{
@@ -434,7 +440,7 @@ auto Program::videoFrame(const uint16* data, uint pitch, uint width, uint height
 		height -= 16 * multiplier;
 	}
 
-	fprintf(stderr, "got a video frame with dimensions h: %d, w: %d, p: %d, overscan: %d, scale: %d\n", height, width, pitch, overscan, scale);
+	// fprintf(stderr, "got a video frame with dimensions h: %d, w: %d, p: %d, overscan: %d, scale: %d\n", height, width, pitch, overscan, scale);
 
  	snesCallbacks.snes_video_frame(data, width, height, pitch);
 }
@@ -452,9 +458,8 @@ static int16_t d2i16(double v)
 
 auto Program::audioFrame(const double* samples, uint channels) -> void
 {
-	int16_t left = d2i16(samples[0]);
-	int16_t right = d2i16(samples[1]);
-	return snesCallbacks.snes_audio_sample(left, right);
+	audioBuffer.push_back(d2i16(samples[0]));
+	audioBuffer.push_back(d2i16(samples[1]));
 }
 
 auto Program::notify(string message) -> void
@@ -463,8 +468,13 @@ auto Program::notify(string message) -> void
 		snesCallbacks.snes_no_lag(false);
 	else if (message == "NO_LAG_SGB")
 		snesCallbacks.snes_no_lag(true);
-	else if (message == "LATCH")
+	else if (message == "LATCH") {
+		if (breakOnLatch) {
+			scheduler.StepOnce = true;
+			breakOnLatch = false;
+		}
 		snesCallbacks.snes_controller_latch();
+	}
 }
 
 auto Program::cpuTrace(vector<string> parts) -> void
@@ -485,6 +495,11 @@ auto Program::writeHook(uint address, uint8 value) -> void
 auto Program::execHook(uint address) -> void
 {
 	snesCallbacks.snes_exec_hook(address);
+}
+
+auto Program::time() -> int64
+{
+	return snesCallbacks.snes_time();
 }
 
 auto Program::getBackdropColor() -> uint16

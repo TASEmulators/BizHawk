@@ -31,6 +31,7 @@ namespace BizHawk.Client.EmuHawk
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NesPPU));
 			this.PatternGroup = new System.Windows.Forms.GroupBox();
 			this.Table1PaletteLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.Table0PaletteLabel = new BizHawk.WinForms.Controls.LocLabelEx();
@@ -67,7 +68,7 @@ namespace BizHawk.Client.EmuHawk
 			this.label4 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.label3 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.RefreshRate = new System.Windows.Forms.TrackBar();
-			this.NesPPUMenu = new MenuStripEx();
+			this.NesPPUMenu = new BizHawk.WinForms.Controls.MenuStripEx();
 			this.FileSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SavePaletteScreenshotMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SavePatternScreenshotMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -97,7 +98,7 @@ namespace BizHawk.Client.EmuHawk
 			this.Table1P7MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SettingsSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.cHRROMTileViewerToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.NesPPUStatusBar = new StatusStripEx();
+			this.NesPPUStatusBar = new BizHawk.WinForms.Controls.StatusStripEx();
 			this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.Messagetimer = new System.Windows.Forms.Timer(this.components);
 			this.CHRROMGroup = new System.Windows.Forms.GroupBox();
@@ -126,26 +127,22 @@ namespace BizHawk.Client.EmuHawk
 			this.PatternGroup.Controls.Add(this.Table1PaletteLabel);
 			this.PatternGroup.Controls.Add(this.Table0PaletteLabel);
 			this.PatternGroup.Controls.Add(this.PatternView);
-			this.PatternGroup.Location = new System.Drawing.Point(391, 46);
-			this.PatternGroup.Margin = new System.Windows.Forms.Padding(4);
+			this.PatternGroup.Location = new System.Drawing.Point(293, 37);
 			this.PatternGroup.Name = "PatternGroup";
-			this.PatternGroup.Padding = new System.Windows.Forms.Padding(4);
-			this.PatternGroup.Size = new System.Drawing.Size(363, 208);
+			this.PatternGroup.Size = new System.Drawing.Size(272, 169);
 			this.PatternGroup.TabIndex = 0;
 			this.PatternGroup.TabStop = false;
 			this.PatternGroup.Text = "Pattern Tables";
 			// 
 			// Table1PaletteLabel
 			// 
-			this.Table1PaletteLabel.Location = new System.Drawing.Point(172, 185);
-			this.Table1PaletteLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.Table1PaletteLabel.Location = new System.Drawing.Point(129, 150);
 			this.Table1PaletteLabel.Name = "Table1PaletteLabel";
 			this.Table1PaletteLabel.Text = "Palette: 0";
 			// 
 			// Table0PaletteLabel
 			// 
-			this.Table0PaletteLabel.Location = new System.Drawing.Point(8, 185);
-			this.Table0PaletteLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.Table0PaletteLabel.Location = new System.Drawing.Point(6, 150);
 			this.Table0PaletteLabel.Name = "Table0PaletteLabel";
 			this.Table0PaletteLabel.Text = "Palette: 0";
 			// 
@@ -153,10 +150,12 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.PatternView.BackColor = System.Drawing.Color.Transparent;
 			this.PatternView.ContextMenuStrip = this.PatternContext;
-			this.PatternView.Location = new System.Drawing.Point(9, 25);
-			this.PatternView.Margin = new System.Windows.Forms.Padding(4);
+			this.PatternView.Location = new System.Drawing.Point(7, 20);
 			this.PatternView.Name = "PatternView";
-			this.PatternView.Size = new System.Drawing.Size(341, 158);
+			this.PatternView.Pal0 = 0;
+			this.PatternView.Pal1 = 0;
+			this.PatternView.Pattern = ((System.Drawing.Bitmap)(resources.GetObject("PatternView.Pattern")));
+			this.PatternView.Size = new System.Drawing.Size(256, 128);
 			this.PatternView.TabIndex = 0;
 			this.PatternView.Text = "Pattern Tables";
 			this.PatternView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PatternView_Click);
@@ -172,7 +171,7 @@ namespace BizHawk.Client.EmuHawk
             this.PatternImageToClipboardMenuItem,
             this.PatternRefreshMenuItem});
 			this.PatternContext.Name = "PatternContext";
-			this.PatternContext.Size = new System.Drawing.Size(215, 82);
+			this.PatternContext.Size = new System.Drawing.Size(166, 70);
 			// 
 			// PatternSaveImageMenuItem
 			// 
@@ -192,11 +191,9 @@ namespace BizHawk.Client.EmuHawk
 			// PalettesGroup
 			// 
 			this.PalettesGroup.Controls.Add(this.PaletteView);
-			this.PalettesGroup.Location = new System.Drawing.Point(16, 334);
-			this.PalettesGroup.Margin = new System.Windows.Forms.Padding(4);
+			this.PalettesGroup.Location = new System.Drawing.Point(12, 271);
 			this.PalettesGroup.Name = "PalettesGroup";
-			this.PalettesGroup.Padding = new System.Windows.Forms.Padding(4);
-			this.PalettesGroup.Size = new System.Drawing.Size(363, 80);
+			this.PalettesGroup.Size = new System.Drawing.Size(272, 65);
 			this.PalettesGroup.TabIndex = 1;
 			this.PalettesGroup.TabStop = false;
 			this.PalettesGroup.Text = "Palettes";
@@ -205,10 +202,9 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.PaletteView.BackColor = System.Drawing.Color.Transparent;
 			this.PaletteView.ContextMenuStrip = this.PaletteContext;
-			this.PaletteView.Location = new System.Drawing.Point(8, 23);
-			this.PaletteView.Margin = new System.Windows.Forms.Padding(4);
+			this.PaletteView.Location = new System.Drawing.Point(6, 19);
 			this.PaletteView.Name = "PaletteView";
-			this.PaletteView.Size = new System.Drawing.Size(256, 32);
+			this.PaletteView.Size = new System.Drawing.Size(192, 32);
 			this.PaletteView.TabIndex = 0;
 			this.PaletteView.Text = "Palettes";
 			this.PaletteView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PaletteView_MouseClick);
@@ -224,7 +220,7 @@ namespace BizHawk.Client.EmuHawk
             this.PaletteImageToClipboardMenuItem,
             this.PaletteRefreshMenuItem});
 			this.PaletteContext.Name = "PaletteContext";
-			this.PaletteContext.Size = new System.Drawing.Size(215, 82);
+			this.PaletteContext.Size = new System.Drawing.Size(166, 70);
 			// 
 			// PaletteSaveImageMenuItem
 			// 
@@ -252,89 +248,76 @@ namespace BizHawk.Client.EmuHawk
 			this.DetailsBox.Controls.Add(this.Value2Label);
 			this.DetailsBox.Controls.Add(this.ValueLabel);
 			this.DetailsBox.Controls.Add(this.AddressLabel);
-			this.DetailsBox.Location = new System.Drawing.Point(16, 117);
-			this.DetailsBox.Margin = new System.Windows.Forms.Padding(4);
+			this.DetailsBox.Location = new System.Drawing.Point(12, 95);
 			this.DetailsBox.Name = "DetailsBox";
-			this.DetailsBox.Padding = new System.Windows.Forms.Padding(4);
-			this.DetailsBox.Size = new System.Drawing.Size(363, 209);
+			this.DetailsBox.Size = new System.Drawing.Size(272, 170);
 			this.DetailsBox.TabIndex = 2;
 			this.DetailsBox.TabStop = false;
 			this.DetailsBox.Text = "Details";
 			// 
 			// label2
 			// 
-			this.label2.Location = new System.Drawing.Point(8, 38);
-			this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label2.Location = new System.Drawing.Point(6, 31);
 			this.label2.Name = "label2";
 			this.label2.Text = "Shift-click to remember selection";
 			// 
 			// Value5Label
 			// 
-			this.Value5Label.Location = new System.Drawing.Point(192, 182);
-			this.Value5Label.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.Value5Label.Location = new System.Drawing.Point(144, 148);
 			this.Value5Label.Name = "Value5Label";
 			this.Value5Label.Text = "Value 5";
 			// 
 			// Value4Label
 			// 
-			this.Value4Label.Location = new System.Drawing.Point(192, 148);
-			this.Value4Label.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.Value4Label.Location = new System.Drawing.Point(144, 120);
 			this.Value4Label.Name = "Value4Label";
 			this.Value4Label.Text = "Value 4";
 			// 
 			// label1
 			// 
-			this.label1.Location = new System.Drawing.Point(8, 20);
-			this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label1.Location = new System.Drawing.Point(6, 16);
 			this.label1.Name = "label1";
 			this.label1.Text = "Hover over item to view details";
 			// 
 			// ZoomBox
 			// 
-			this.ZoomBox.Location = new System.Drawing.Point(261, 20);
-			this.ZoomBox.Margin = new System.Windows.Forms.Padding(4);
+			this.ZoomBox.Location = new System.Drawing.Point(196, 16);
 			this.ZoomBox.Name = "ZoomBox";
-			this.ZoomBox.Size = new System.Drawing.Size(85, 79);
+			this.ZoomBox.Size = new System.Drawing.Size(64, 64);
 			this.ZoomBox.TabIndex = 6;
 			this.ZoomBox.TabStop = false;
 			this.ZoomBox.Text = "Details";
 			// 
 			// Value3Label
 			// 
-			this.Value3Label.Location = new System.Drawing.Point(192, 113);
-			this.Value3Label.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.Value3Label.Location = new System.Drawing.Point(144, 92);
 			this.Value3Label.Name = "Value3Label";
 			this.Value3Label.Text = "Value 3";
 			// 
 			// Value2Label
 			// 
-			this.Value2Label.Location = new System.Drawing.Point(13, 182);
-			this.Value2Label.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.Value2Label.Location = new System.Drawing.Point(10, 148);
 			this.Value2Label.Name = "Value2Label";
 			this.Value2Label.Text = "Value 2";
 			// 
 			// ValueLabel
 			// 
-			this.ValueLabel.Location = new System.Drawing.Point(13, 148);
-			this.ValueLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.ValueLabel.Location = new System.Drawing.Point(10, 120);
 			this.ValueLabel.Name = "ValueLabel";
 			this.ValueLabel.Text = "Value 1";
 			// 
 			// AddressLabel
 			// 
-			this.AddressLabel.Location = new System.Drawing.Point(13, 113);
-			this.AddressLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.AddressLabel.Location = new System.Drawing.Point(10, 92);
 			this.AddressLabel.Name = "AddressLabel";
 			this.AddressLabel.Text = "Address";
 			// 
 			// SpriteViewerBox
 			// 
 			this.SpriteViewerBox.Controls.Add(this.SpriteView);
-			this.SpriteViewerBox.Location = new System.Drawing.Point(391, 261);
-			this.SpriteViewerBox.Margin = new System.Windows.Forms.Padding(4);
+			this.SpriteViewerBox.Location = new System.Drawing.Point(293, 212);
 			this.SpriteViewerBox.Name = "SpriteViewerBox";
-			this.SpriteViewerBox.Padding = new System.Windows.Forms.Padding(4);
-			this.SpriteViewerBox.Size = new System.Drawing.Size(363, 153);
+			this.SpriteViewerBox.Size = new System.Drawing.Size(272, 124);
 			this.SpriteViewerBox.TabIndex = 5;
 			this.SpriteViewerBox.TabStop = false;
 			this.SpriteViewerBox.Text = "Sprites";
@@ -343,10 +326,10 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.SpriteView.BackColor = System.Drawing.Color.Transparent;
 			this.SpriteView.ContextMenuStrip = this.SpriteContext;
-			this.SpriteView.Location = new System.Drawing.Point(8, 22);
-			this.SpriteView.Margin = new System.Windows.Forms.Padding(4);
+			this.SpriteView.Location = new System.Drawing.Point(6, 18);
 			this.SpriteView.Name = "SpriteView";
-			this.SpriteView.Size = new System.Drawing.Size(256, 90);
+			this.SpriteView.Size = new System.Drawing.Size(257, 100);
+			this.SpriteView.Sprites = ((System.Drawing.Bitmap)(resources.GetObject("SpriteView.Sprites")));
 			this.SpriteView.TabIndex = 0;
 			this.SpriteView.Text = "Sprites";
 			this.SpriteView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.SpriteView_MouseClick);
@@ -362,7 +345,7 @@ namespace BizHawk.Client.EmuHawk
             this.SpriteImageToClipboardMenuItem,
             this.SpriteRefreshMenuItem});
 			this.SpriteContext.Name = "SpriteContext";
-			this.SpriteContext.Size = new System.Drawing.Size(215, 82);
+			this.SpriteContext.Size = new System.Drawing.Size(166, 70);
 			// 
 			// SpriteSaveImageMenuItem
 			// 
@@ -381,10 +364,9 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// txtScanline
 			// 
-			this.txtScanline.Location = new System.Drawing.Point(9, 20);
-			this.txtScanline.Margin = new System.Windows.Forms.Padding(4);
+			this.txtScanline.Location = new System.Drawing.Point(7, 16);
 			this.txtScanline.Name = "txtScanline";
-			this.txtScanline.Size = new System.Drawing.Size(79, 22);
+			this.txtScanline.Size = new System.Drawing.Size(60, 20);
 			this.txtScanline.TabIndex = 6;
 			this.txtScanline.Text = "0";
 			this.txtScanline.TextChanged += new System.EventHandler(this.ScanlineTextBox_TextChanged);
@@ -392,11 +374,9 @@ namespace BizHawk.Client.EmuHawk
 			// groupBox1
 			// 
 			this.groupBox1.Controls.Add(this.txtScanline);
-			this.groupBox1.Location = new System.Drawing.Point(16, 46);
-			this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
+			this.groupBox1.Location = new System.Drawing.Point(12, 37);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
-			this.groupBox1.Size = new System.Drawing.Size(100, 64);
+			this.groupBox1.Size = new System.Drawing.Size(75, 52);
 			this.groupBox1.TabIndex = 8;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Scanline";
@@ -406,26 +386,22 @@ namespace BizHawk.Client.EmuHawk
 			this.groupBox2.Controls.Add(this.label4);
 			this.groupBox2.Controls.Add(this.label3);
 			this.groupBox2.Controls.Add(this.RefreshRate);
-			this.groupBox2.Location = new System.Drawing.Point(124, 46);
-			this.groupBox2.Margin = new System.Windows.Forms.Padding(4);
+			this.groupBox2.Location = new System.Drawing.Point(93, 37);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Padding = new System.Windows.Forms.Padding(4);
-			this.groupBox2.Size = new System.Drawing.Size(255, 64);
+			this.groupBox2.Size = new System.Drawing.Size(191, 52);
 			this.groupBox2.TabIndex = 9;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Refresh";
 			// 
 			// label4
 			// 
-			this.label4.Location = new System.Drawing.Point(187, 25);
-			this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label4.Location = new System.Drawing.Point(140, 20);
 			this.label4.Name = "label4";
 			this.label4.Text = "Less";
 			// 
 			// label3
 			// 
-			this.label3.Location = new System.Drawing.Point(8, 23);
-			this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label3.Location = new System.Drawing.Point(6, 19);
 			this.label3.Name = "label3";
 			this.label3.Text = "More";
 			// 
@@ -433,12 +409,11 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.RefreshRate.AutoSize = false;
 			this.RefreshRate.LargeChange = 2;
-			this.RefreshRate.Location = new System.Drawing.Point(52, 18);
-			this.RefreshRate.Margin = new System.Windows.Forms.Padding(4);
+			this.RefreshRate.Location = new System.Drawing.Point(39, 15);
 			this.RefreshRate.Maximum = 8;
 			this.RefreshRate.Minimum = 1;
 			this.RefreshRate.Name = "RefreshRate";
-			this.RefreshRate.Size = new System.Drawing.Size(139, 38);
+			this.RefreshRate.Size = new System.Drawing.Size(104, 31);
 			this.RefreshRate.TabIndex = 0;
 			this.RefreshRate.TickFrequency = 8;
 			this.RefreshRate.Value = 1;
@@ -450,7 +425,6 @@ namespace BizHawk.Client.EmuHawk
             this.FileSubMenu,
             this.PatternSubMenu,
             this.SettingsSubMenu});
-			this.NesPPUMenu.Padding = new System.Windows.Forms.Padding(8, 2, 0, 2);
 			this.NesPPUMenu.TabIndex = 10;
 			// 
 			// FileSubMenu
@@ -627,16 +601,15 @@ namespace BizHawk.Client.EmuHawk
 			this.NesPPUStatusBar.ImageScalingSize = new System.Drawing.Size(20, 20);
 			this.NesPPUStatusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1});
-			this.NesPPUStatusBar.Location = new System.Drawing.Point(0, 432);
+			this.NesPPUStatusBar.Location = new System.Drawing.Point(0, 349);
 			this.NesPPUStatusBar.Name = "NesPPUStatusBar";
-			this.NesPPUStatusBar.Padding = new System.Windows.Forms.Padding(1, 0, 19, 0);
 			this.NesPPUStatusBar.SizingGrip = false;
 			this.NesPPUStatusBar.TabIndex = 11;
 			// 
 			// toolStripStatusLabel1
 			// 
 			this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-			this.toolStripStatusLabel1.Size = new System.Drawing.Size(434, 20);
+			this.toolStripStatusLabel1.Size = new System.Drawing.Size(319, 17);
 			this.toolStripStatusLabel1.Text = "Use CTRL+C to copy the pane under the mouse to the clipboard.";
 			// 
 			// Messagetimer
@@ -649,46 +622,44 @@ namespace BizHawk.Client.EmuHawk
 			this.CHRROMGroup.Controls.Add(this.label5);
 			this.CHRROMGroup.Controls.Add(this.numericUpDownCHRROMBank);
 			this.CHRROMGroup.Controls.Add(this.CHRROMView);
-			this.CHRROMGroup.Location = new System.Drawing.Point(765, 46);
-			this.CHRROMGroup.Margin = new System.Windows.Forms.Padding(4);
+			this.CHRROMGroup.Location = new System.Drawing.Point(574, 37);
 			this.CHRROMGroup.Name = "CHRROMGroup";
-			this.CHRROMGroup.Padding = new System.Windows.Forms.Padding(4);
-			this.CHRROMGroup.Size = new System.Drawing.Size(363, 368);
+			this.CHRROMGroup.Size = new System.Drawing.Size(272, 299);
 			this.CHRROMGroup.TabIndex = 12;
 			this.CHRROMGroup.TabStop = false;
 			this.CHRROMGroup.Text = "CHR ROM Tiles";
 			// 
 			// label5
 			// 
-			this.label5.Location = new System.Drawing.Point(8, 192);
-			this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label5.Location = new System.Drawing.Point(6, 156);
 			this.label5.Name = "label5";
 			this.label5.Text = "Bank:";
 			// 
 			// numericUpDownCHRROMBank
 			// 
-			this.numericUpDownCHRROMBank.Location = new System.Drawing.Point(63, 190);
-			this.numericUpDownCHRROMBank.Margin = new System.Windows.Forms.Padding(4);
+			this.numericUpDownCHRROMBank.Location = new System.Drawing.Point(47, 154);
 			this.numericUpDownCHRROMBank.Name = "numericUpDownCHRROMBank";
-			this.numericUpDownCHRROMBank.Size = new System.Drawing.Size(160, 22);
+			this.numericUpDownCHRROMBank.Size = new System.Drawing.Size(121, 20);
 			this.numericUpDownCHRROMBank.TabIndex = 1;
 			this.numericUpDownCHRROMBank.ValueChanged += new System.EventHandler(this.NumericUpDownChrRomBank_ValueChanged);
 			// 
 			// CHRROMView
 			// 
 			this.CHRROMView.BackColor = System.Drawing.Color.Transparent;
-			this.CHRROMView.Location = new System.Drawing.Point(9, 25);
-			this.CHRROMView.Margin = new System.Windows.Forms.Padding(4);
+			this.CHRROMView.Location = new System.Drawing.Point(7, 20);
 			this.CHRROMView.Name = "CHRROMView";
-			this.CHRROMView.Size = new System.Drawing.Size(341, 158);
+			this.CHRROMView.Pal0 = 0;
+			this.CHRROMView.Pal1 = 0;
+			this.CHRROMView.Pattern = ((System.Drawing.Bitmap)(resources.GetObject("CHRROMView.Pattern")));
+			this.CHRROMView.Size = new System.Drawing.Size(256, 128);
 			this.CHRROMView.TabIndex = 0;
 			this.CHRROMView.Text = "patternViewer1";
 			// 
 			// NesPPU
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(1139, 457);
+			this.ClientSize = new System.Drawing.Size(854, 371);
 			this.Controls.Add(this.CHRROMGroup);
 			this.Controls.Add(this.NesPPUStatusBar);
 			this.Controls.Add(this.groupBox2);
@@ -701,8 +672,7 @@ namespace BizHawk.Client.EmuHawk
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.NesPPUMenu;
-			this.Margin = new System.Windows.Forms.Padding(4);
-			this.MinimumSize = new System.Drawing.Size(767, 445);
+			this.MinimumSize = new System.Drawing.Size(577, 366);
 			this.Name = "NesPPU";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.NesPPU_FormClosed);

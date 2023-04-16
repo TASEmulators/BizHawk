@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					break;
 			}
 
-			CoreComm.Notify(sb.ToString());
+			CoreComm.Notify(sb.ToString(), null);
 		}
 
 		/// <summary>

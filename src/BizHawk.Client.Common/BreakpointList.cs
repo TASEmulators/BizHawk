@@ -159,13 +159,16 @@ namespace BizHawk.Client.Common
 
 		private void AddCallback()
 		{
-			_core.MemoryCallbacks.Add(new MemoryCallback(Scope, Type, Name, Callback, Address, AddressMask));
+			_core.MemoryCallbacks.Add(new MemoryCallback(Scope, Type, Name, DoCallback, Address, AddressMask));
 		}
 
 		private void RemoveCallback()
 		{
-			_core.MemoryCallbacks.Remove(Callback);
+			_core.MemoryCallbacks.Remove(DoCallback);
 		}
+
+		private void DoCallback(uint address, uint value, uint flags)
+			=> Callback(address, value, flags);
 
 		public void ResetCallback()
 		{

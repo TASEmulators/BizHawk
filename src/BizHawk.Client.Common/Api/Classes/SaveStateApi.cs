@@ -1,12 +1,14 @@
 ﻿using System;
 using System.IO;
 
-using BizHawk.Common;
-
 namespace BizHawk.Client.Common
 {
 	public sealed class SaveStateApi : ISaveStateApi
 	{
+		private const string ERR_MSG_NOT_A_SLOT = "saveslots are 1 through 10";
+
+		private const string ERR_MSG_USE_SLOT_10 = "pass 10 for slot 10, not 0";
+
 		private readonly IMainFormForApi _mainForm;
 
 		private readonly Action<string> LogCallback;
@@ -17,27 +19,38 @@ namespace BizHawk.Client.Common
 			_mainForm = mainForm;
 		}
 
-		public void Load(string path, bool suppressOSD)
+		public bool Load(string path, bool suppressOSD)
 		{
 			if (!File.Exists(path))
 			{
 				LogCallback($"could not find file: {path}");
-				return;
+				return false;
 			}
-
-			_mainForm.LoadState(path, Path.GetFileName(path), suppressOSD);
+			return _mainForm.LoadState(path: path, userFriendlyStateName: Path.GetFileName(path), suppressOSD);
 		}
 
-		public void LoadSlot(int slotNum, bool suppressOSD)
+		public bool LoadSlot(int slotNum, bool suppressOSD)
 		{
-			if (0.RangeTo(9).Contains(slotNum)) _mainForm.LoadQuickSave($"QuickSave{slotNum}", suppressOSD);
+			if (slotNum is < 0 or > 10) throw new ArgumentOutOfRangeException(paramName: nameof(slotNum), message: ERR_MSG_NOT_A_SLOT);
+			if (slotNum is 0)
+			{
+				LogCallback(ERR_MSG_USE_SLOT_10);
+				slotNum = 10;
+			}
+			return _mainForm.LoadQuickSave(slotNum, suppressOSD: suppressOSD);
 		}
 
 		public void Save(string path, bool suppressOSD) => _mainForm.SaveState(path, path, true, suppressOSD);
 
 		public void SaveSlot(int slotNum, bool suppressOSD)
 		{
-			if (0.RangeTo(9).Contains(slotNum)) _mainForm.SaveQuickSave($"QuickSave{slotNum}", true, suppressOSD);
+			if (slotNum is < 0 or > 10) throw new ArgumentOutOfRangeException(paramName: nameof(slotNum), message: ERR_MSG_NOT_A_SLOT);
+			if (slotNum is 0)
+			{
+				LogCallback(ERR_MSG_USE_SLOT_10);
+				slotNum = 10;
+			}
+			_mainForm.SaveQuickSave(slotNum, suppressOSD: suppressOSD, fromLua: true);
 		}
 	}
 }

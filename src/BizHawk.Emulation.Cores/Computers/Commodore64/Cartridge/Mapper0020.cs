@@ -26,8 +26,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 	{
 		private int _bankOffset = 63 << 13;
 
-		private readonly int[] _banksA = new int[64 << 13]; // 8000
-		private readonly int[] _banksB = new int[64 << 13]; // A000
+		private int[] _banksA = new int[64 << 13]; // 8000
+		private int[] _banksB = new int[64 << 13]; // A000
 
 		private readonly int[] _originalMediaA; // 8000
 		private readonly int[] _originalMediaB; // A000
@@ -100,6 +100,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			ser.Sync("CommandLatch55", ref _commandLatchAa);
 			ser.Sync("CommandLatchAA", ref _commandLatchAa);
 			ser.Sync("InternalROMState", ref _internalRomState);
+			ser.SyncDelta("MediaStateA", _originalMediaA, _banksA);
+			ser.SyncDelta("MediaStateB", _originalMediaB, _banksB);
+			DriveLightOn = _boardLed;
 		}
 
 		private void BankSet(int index)
@@ -305,15 +308,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		public override void WriteDF00(int addr, int val)
 		{
 			_ram[addr] = val & 0xFF;
-		}
-
-		public override void SyncState(Serializer ser)
-		{
-			// feos: drop 4MB of ROM data from savestates
-			//SaveState.SyncDelta("MediaStateA", ser, _originalMediaA, ref _banksA);
-			//SaveState.SyncDelta("MediaStateB", ser, _originalMediaB, ref _banksB);
-			base.SyncState(ser);
-			DriveLightOn = _boardLed;
 		}
 	}
 }

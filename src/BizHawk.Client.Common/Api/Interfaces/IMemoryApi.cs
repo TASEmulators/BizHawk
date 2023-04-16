@@ -8,7 +8,7 @@ namespace BizHawk.Client.Common
 
 		void SetBigEndian(bool enabled = true);
 
-		List<string> GetMemoryDomainList();
+		IReadOnlyCollection<string> GetMemoryDomainList();
 		uint GetMemoryDomainSize(string name = "");
 		string GetCurrentMemoryDomain();
 		uint GetCurrentMemoryDomainSize();
@@ -16,7 +16,7 @@ namespace BizHawk.Client.Common
 		string HashRegion(long addr, int count, string domain = null);
 
 		uint ReadByte(long addr, string domain = null);
-		List<byte> ReadByteRange(long addr, int length, string domain = null);
+		IReadOnlyList<byte> ReadByteRange(long addr, int length, string domain = null);
 		float ReadFloat(long addr, string domain = null);
 
 		int ReadS8(long addr, string domain = null);
@@ -30,7 +30,7 @@ namespace BizHawk.Client.Common
 		uint ReadU32(long addr, string domain = null);
 
 		void WriteByte(long addr, uint value, string domain = null);
-		void WriteByteRange(long addr, List<byte> memoryblock, string domain = null);
+		void WriteByteRange(long addr, IReadOnlyList<byte> memoryblock, string domain = null);
 		void WriteFloat(long addr, double value, string domain = null);
 
 		void WriteS8(long addr, int value, string domain = null);

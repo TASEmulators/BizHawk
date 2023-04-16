@@ -16,6 +16,7 @@ using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Client.EmuHawk.ToolExtensions;
+using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -39,6 +40,24 @@ namespace BizHawk.Client.EmuHawk
 				WordSize = 1;
 			}
 		}
+
+		private const string ROM_DOMAIN_NAME = "File on Disk";
+
+		private static readonly FilesystemFilterSet BinFilesFSFilterSet = CreateBinaryDumpFSFilterSet("bin");
+
+		private static readonly FilesystemFilterSet HexDumpsFSFilterSet = new(FilesystemFilter.TextFiles);
+
+		private static readonly FilesystemFilterSet ImportableFSFilterSet = new(
+			BinFilesFSFilterSet.Filters[0],
+			new FilesystemFilter("Save Files", new[] { "sav" }));
+
+		private static readonly FilesystemFilterSet TextTablesFSFilterSet = new(new FilesystemFilter("Text Table Files", new[] { "tbl" }));
+
+		public static Icon ToolIcon
+			=> Resources.PokeIcon;
+
+		private static FilesystemFilterSet CreateBinaryDumpFSFilterSet(string ext)
+			=> new(new FilesystemFilter("Binary", new[] { ext }));
 
 		[RequiredService]
 		private IMemoryDomains MemoryDomains { get; set; }
@@ -132,7 +151,7 @@ namespace BizHawk.Client.EmuHawk
 			if (OSTailoredCode.IsUnixHost) _fontHeight -= MAGIC_FIX_NUMBER_H;
 
 			InitializeComponent();
-			Icon = Resources.PokeIcon;
+			Icon = ToolIcon;
 			SaveMenuItem.Image = Resources.SaveAs;
 			CopyMenuItem.Image = Resources.Duplicate;
 			PasteMenuItem.Image = Resources.Paste;
@@ -189,15 +208,19 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void Restart()
 		{
-			if (!(MainForm.CurrentlyOpenRomArgs.OpenAdvanced is OpenAdvanced_MAME))
+			if (Emulator.SystemId is not VSystemID.Raw.Arcade)
 			{
 				_rom = GetRomBytes();
-				_romDomain = new MemoryDomainByteArray("File on Disk", MemoryDomain.Endian.Little, _rom, true, 1);
+				_romDomain = new MemoryDomainByteArray(ROM_DOMAIN_NAME, MemoryDomain.Endian.Little, _rom, writable: true, wordSize: 1);
 
 				if (_domain.Name == _romDomain.Name)
 				{
 					_domain = _romDomain;
 				}
+			}
+			else
+			{
+				_romDomain = null;
 			}
 			
 			_domain = MemoryDomains.Any(x => x.Name == _domain.Name)
@@ -242,13 +265,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_textTable.Any())
 			{
-				var byteArr = new List<byte>();
-				foreach (var chr in str)
+				var byteArr = new byte[str.Length];
+				for (var i = 0; i < str.Length; i++)
 				{
-					byteArr.Add((byte)_textTable.FirstOrDefault(kvp => kvp.Value == chr).Key);
+					var c = str[i];
+					byteArr[i] = (byte) (_textTable.FirstOrNull(kvp => kvp.Value == c)?.Key ?? 0);
 				}
-
-				return byteArr.ToArray();
+				return byteArr;
 			}
 
 			return str.Select(Convert.ToByte).ToArray();
@@ -629,7 +652,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetMemoryDomain(string name)
 		{
-			if (!(MainForm.CurrentlyOpenRomArgs.OpenAdvanced is OpenAdvanced_MAME) && name == _romDomain.Name)
+			if (_romDomain is not null && name == _romDomain.Name)
 			{
 				_domain = _romDomain;
 			}
@@ -877,17 +900,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private string GetSaveFileFilter()
-		{
-			if (_domain.Name == "File on Disk")
-			{
-				var extension = Path.GetExtension(RomName);
-				return $"Binary (*{extension})|*{extension}|All Files|*.*";
-			}
-			
-			return "Binary (*.bin)|*.bin|All Files|*.*";
-		}
-
 		private string RomDirectory
 		{
 			get
@@ -898,13 +910,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					return "";
 				}
-
-				if (path.Contains("|"))
-				{
-					path = path.Split('|').First();
-				}
-
-				return Path.GetDirectoryName(path);
+				return Path.GetDirectoryName(path.SubstringBefore('|'));
 			}
 		}
 
@@ -918,48 +924,29 @@ namespace BizHawk.Client.EmuHawk
 				{
 					return "";
 				}
-
-				if (path.Contains("|"))
-				{
-					path = path.Split('|').Last();
-				}
-
-				return Path.GetFileName(path);
+				return Path.GetFileName(path.SubstringAfterLast('|'));
 			}
 		}
 
 		private string GetBinarySaveFileFromUser()
-		{
-			using var sfd = new SaveFileDialog
-			{
-				Filter = GetSaveFileFilter()
-				, RestoreDirectory = true
-				, InitialDirectory = RomDirectory
-				, FileName =
-					_domain.Name == "File on Disk"
-						? RomName
-						: Game.FilesystemSafeName()
-			};
-
-			var result = this.ShowDialogWithTempMute(sfd);
-			return result == DialogResult.OK ? sfd.FileName : "";
-		}
+			=> this.ShowFileSaveDialog(
+				discardCWDChange: true,
+				filter: _domain.Name is ROM_DOMAIN_NAME
+					? CreateBinaryDumpFSFilterSet(Path.GetExtension(RomName).RemovePrefix('.'))
+					: BinFilesFSFilterSet,
+				initDir: RomDirectory,
+				initFileName: _domain.Name is ROM_DOMAIN_NAME
+					? RomName
+					: Game.FilesystemSafeName()) ?? string.Empty;
 
 		private string GetSaveFileFromUser()
-		{
-			using var sfd = new SaveFileDialog
-			{
-				FileName = _domain.Name == "File on Disk"
+			=> this.ShowFileSaveDialog(
+				discardCWDChange: true,
+				filter: HexDumpsFSFilterSet,
+				initDir: RomDirectory,
+				initFileName: _domain.Name is ROM_DOMAIN_NAME
 					? $"{Path.GetFileNameWithoutExtension(RomName)}.txt"
-					: Game.FilesystemSafeName(),
-				Filter = new FilesystemFilterSet(FilesystemFilter.TextFiles).ToString(),
-				InitialDirectory = RomDirectory,
-				RestoreDirectory = true
-			};
-
-			var result = this.ShowDialogWithTempMute(sfd);
-			return result == DialogResult.OK ? sfd.FileName : "";
-		}
+					: Game.FilesystemSafeName()) ?? string.Empty;
 
 		private void ResetScrollBar()
 		{
@@ -1243,13 +1230,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			if (_domain.Name == "File on Disk")
+			if (_domain.Name is ROM_DOMAIN_NAME)
 			{
 				SaveMenuItem.Visible = !CurrentRomIsArchive();
 				SaveAsBinaryMenuItem.Text = "Save as ROM...";
 			}
 			else
 			{
+				SaveMenuItem.Visible = false;
 				SaveAsBinaryMenuItem.Text = "Save as binary...";
 			}
 
@@ -1281,18 +1269,11 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			using var sfd = new OpenFileDialog
-			{
-				Filter = new FilesystemFilterSet(
-					new FilesystemFilter("Binary", new[] { "bin" }),
-					new FilesystemFilter("Save Files", new[] { "sav" })
-				).ToString(),
-				RestoreDirectory = true
-			};
-
-			if (this.ShowDialogWithTempMute(sfd) != DialogResult.OK) return;
-
-			var path = sfd.FileName;
+			var path = this.ShowFileOpenDialog(
+				discardCWDChange: true,
+				filter: ImportableFSFilterSet,
+				initDir: Config!.PathEntries.ToolsAbsolutePath());
+			if (path is null) return;
 
 			using var inf = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
 			long todo = Math.Min(inf.Length, _domain.Size);
@@ -1327,25 +1308,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadTableFileMenuItem_Click(object sender, EventArgs e)
 		{
-			string initialDirectory = Config.PathEntries.ToolsAbsolutePath();
-			var romName = Config.RecentRoms.MostRecent.Contains('|')
-				? Config.RecentRoms.MostRecent.Split('|').Last()
-				: Config.RecentRoms.MostRecent;
-
-			using var ofd = new OpenFileDialog
-			{
-				FileName = $"{Path.GetFileNameWithoutExtension(romName)}.tbl",
-				InitialDirectory = initialDirectory,
-				Filter = new FilesystemFilterSet(new FilesystemFilter("Text Table Files", new[] { "tbl" })).ToString(),
-				RestoreDirectory = false
-			};
-
-			if (this.ShowDialogWithTempMute(ofd) == DialogResult.OK)
-			{
-				LoadTable(ofd.FileName);
-				RecentTables.Add(ofd.FileName);
-				GeneralUpdate();
-			}
+			var result = this.ShowFileOpenDialog(
+				discardCWDChange: false,
+				filter: TextTablesFSFilterSet,
+				initDir: Config!.PathEntries.ToolsAbsolutePath(),
+				initFileName: $"{Path.GetFileNameWithoutExtension(Config.RecentRoms.MostRecent.SubstringAfterLast('|'))}.tbl");
+			if (result is null) return;
+			LoadTable(result);
+			RecentTables.Add(result);
+			GeneralUpdate();
 		}
 
 		private void CloseTableFileMenuItem_Click(object sender, EventArgs e)
@@ -1369,10 +1340,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void RecentTablesSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			RecentTablesSubMenu.DropDownItems.Clear();
-			RecentTablesSubMenu.DropDownItems.AddRange(RecentTables.RecentMenu(MainForm, LoadFileFromRecent, "Session"));
-		}
+			=> RecentTablesSubMenu.ReplaceDropDownItems(RecentTables.RecentMenu(this, LoadFileFromRecent, "Session"));
 
 		private void EditMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
@@ -1555,10 +1523,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MemoryDomainsMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			MemoryDomainsMenuItem.DropDownItems.Clear();
-			MemoryDomainsMenuItem.DropDownItems.AddRange(
-				MemoryDomains.MenuItems(SetMemoryDomain, _domain.Name)
-				.ToArray());
+			MemoryDomainsMenuItem.ReplaceDropDownItems(MemoryDomains.MenuItems(SetMemoryDomain, _domain.Name).ToArray());
 
 			if (_romDomain != null)
 			{
@@ -1605,9 +1570,7 @@ namespace BizHawk.Client.EmuHawk
 				Message = "Enter a hexadecimal value"
 			};
 
-			var result = this.ShowDialogWithTempMute(inputPrompt);
-
-			if (result == DialogResult.OK && inputPrompt.PromptText.IsHex())
+			if (this.ShowDialogWithTempMute(inputPrompt).IsOk() && inputPrompt.PromptText.IsHex())
 			{
 				GoToAddress(long.Parse(inputPrompt.PromptText, NumberStyles.HexNumber));
 			}
@@ -1991,7 +1954,7 @@ namespace BizHawk.Client.EmuHawk
 				(_highlightedAddress.HasValue || _secondaryHighlightedAddresses.Any()) &&
 				_domain.Writable;
 
-			UnfreezeAllContextItem.Visible = MainForm.CheatList.ActiveCount > 0;
+			UnfreezeAllContextItem.Visible = MainForm.CheatList.AnyActive;
 			PasteContextItem.Visible = _domain.Writable && data != null && data.GetDataPresent(DataFormats.Text);
 
 			ContextSeparator1.Visible =

@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -116,8 +118,7 @@ namespace BizHawk.Client.Common
 				// and process each block independently
 				List<int> framesToDelete = frames
 					.Where(fr => fr >= 0 && fr < InputLogLength)
-					.OrderBy(fr => fr)
-					.ToList();
+					.Order().ToList();
 				// f is the current index for framesToDelete
 				int f = 0;
 				int numDeleted = 0;
@@ -260,12 +261,7 @@ namespace BizHawk.Client.Common
 
 		public void InsertEmptyFrame(int frame, int count = 1)
 		{
-#pragma warning disable CA1829 //TODO check StreamStringLog.Count is counting the same things as its enumerator
-			if (frame > Log.Count())
-			{
-				frame = Log.Count();
-			}
-#pragma warning restore CA1829
+			frame = Math.Min(frame, Log.Count);
 
 			var lg = LogGeneratorInstance(Session.MovieController);
 			Log.InsertRange(frame, Enumerable.Repeat(lg.EmptyEntry, count).ToList());

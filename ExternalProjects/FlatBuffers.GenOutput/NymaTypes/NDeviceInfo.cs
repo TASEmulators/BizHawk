@@ -7,13 +7,13 @@ namespace NymaTypes
 
 using global::System;
 using global::System.Collections.Generic;
-using global::FlatBuffers;
+using global::Google.FlatBuffers;
 
 public struct NDeviceInfo : IFlatbufferObject
 {
   private Table __p;
   public ByteBuffer ByteBuffer { get { return __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_1_12_0(); }
+  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_22_9_24(); }
   public static NDeviceInfo GetRootAsNDeviceInfo(ByteBuffer _bb) { return GetRootAsNDeviceInfo(_bb, new NDeviceInfo()); }
   public static NDeviceInfo GetRootAsNDeviceInfo(ByteBuffer _bb, NDeviceInfo obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
   public void __init(int _i, ByteBuffer _bb) { __p = new Table(_i, _bb); }
@@ -71,6 +71,8 @@ public struct NDeviceInfo : IFlatbufferObject
   public static void AddInputs(FlatBufferBuilder builder, VectorOffset InputsOffset) { builder.AddOffset(5, InputsOffset.Value, 0); }
   public static VectorOffset CreateInputsVector(FlatBufferBuilder builder, Offset<NymaTypes.NInputInfo>[] data) { builder.StartVector(4, data.Length, 4); for (int i = data.Length - 1; i >= 0; i--) builder.AddOffset(data[i].Value); return builder.EndVector(); }
   public static VectorOffset CreateInputsVectorBlock(FlatBufferBuilder builder, Offset<NymaTypes.NInputInfo>[] data) { builder.StartVector(4, data.Length, 4); builder.Add(data); return builder.EndVector(); }
+  public static VectorOffset CreateInputsVectorBlock(FlatBufferBuilder builder, ArraySegment<Offset<NymaTypes.NInputInfo>> data) { builder.StartVector(4, data.Count, 4); builder.Add(data); return builder.EndVector(); }
+  public static VectorOffset CreateInputsVectorBlock(FlatBufferBuilder builder, IntPtr dataPtr, int sizeInBytes) { builder.StartVector(1, sizeInBytes, 1); builder.Add<Offset<NymaTypes.NInputInfo>>(dataPtr, sizeInBytes); return builder.EndVector(); }
   public static void StartInputsVector(FlatBufferBuilder builder, int numElems) { builder.StartVector(4, numElems, 4); }
   public static Offset<NymaTypes.NDeviceInfo> EndNDeviceInfo(FlatBufferBuilder builder) {
     int o = builder.EndTable();
@@ -110,7 +112,7 @@ public struct NDeviceInfo : IFlatbufferObject
       _o.ByteLength,
       _Inputs);
   }
-};
+}
 
 public class NDeviceInfoT
 {

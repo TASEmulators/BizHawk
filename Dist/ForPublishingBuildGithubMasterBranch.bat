@@ -12,7 +12,7 @@ mkdir %WORKDIR%
 
 rem http://stackoverflow.com/questions/13750182/git-how-to-archive-from-remote-repository-directly
 cd %WORKDIR%
-git clone --depth=1 --single-branch --branch master http://github.com/TASVideos/BizHawk.git .
+git clone --depth=1 --single-branch --branch master https://github.com/TASEmulators/BizHawk.git .
 
 rem use updated build scripts
 copy /y ..\QuickTestBuildAndPackage_Release.bat dist

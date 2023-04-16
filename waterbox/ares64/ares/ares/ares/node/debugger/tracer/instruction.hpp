@@ -18,23 +18,25 @@ struct Instruction : Tracer {
 
   auto setMask(bool mask) -> void {
     _mask = mask;
+    _masks.reset();
   }
 
   auto setDepth(u32 depth) -> void {
     _depth = depth;
     _history.reset();
     _history.resize(depth);
-    for(auto& history : _history) history = ~0;
+    for(auto& history : _history) history = ~0ull;
   }
 
   auto address(u64 address) -> bool {
-    address &= (u128(1) << _addressBits) - 1;  //mask upper bits of address
+    address &= ~0ull >> (64 - _addressBits);  //mask upper bits of address
     _address = address;
-    /*address >>= _addressMask;  //clip unneeded alignment bits (to reduce _masks size)
+    address >>= _addressMask;  //clip unneeded alignment bits (to reduce _masks size)
 
-    if(_mask && updateMasks()) {
-      if(_masks[address >> 3] & 1 << (address & 7)) return false;  //do not trace twice
-      _masks[address >> 3] |= 1 << (address & 7);
+    if(_mask) {
+      auto mask = _masks.find(address);
+      if(!mask) mask = _masks.insert(address);
+      if(mask->visit(address)) return false;  //do not trace twice
     }
 
     if(_depth) {
@@ -48,7 +50,7 @@ struct Instruction : Tracer {
         _history[index] = _history[index + 1];
       }
       _history.last() = _address;
-    }*/
+    }
 
     return true;
   }
@@ -56,11 +58,13 @@ struct Instruction : Tracer {
   //mark an already-executed address as not executed yet for trace masking.
   //call when writing to executable RAM to support self-modifying code.
   auto invalidate(u64 address) -> void {
-    /*if(unlikely(_mask && updateMasks())) {
-      address &= (u128(1) << _addressBits) - 1;
+    if(unlikely(_mask)) {
+      address &= ~0ull >> (64 - _addressBits);
       address >>= _addressMask;
-      _masks[address >> 3] &= ~(1 << (address & 7));
-    }*/
+
+      auto mask = _masks.find(address);
+      if(mask) mask->unvisit(address);
+    }
   }
 
   auto notify(const string& instruction, const string& context, const string& extra = {}) -> void {
@@ -72,6 +76,7 @@ struct Instruction : Tracer {
       );
       _omitted = 0;
     }
+
     string output{
       _component, "  ",
       hex(_address, _addressBits + 3 >> 2), "  ",
@@ -102,14 +107,27 @@ struct Instruction : Tracer {
   }
 
 protected:
-  auto updateMasks() -> bool {
-    auto size = 1ull << _addressBits >> _addressMask >> 3;
-    if(!_mask || !size) return _masks.reset(), false;
-    if(_masks.size() == size) return true;
-    _masks.reset();
-    _masks.resize(size);
-    return true;
-  }
+  struct VisitMask {
+    VisitMask(u64 address) : upper(address >> 6), mask(0) {}
+    auto operator==(const VisitMask& source) const -> bool { return upper == source.upper; }
+    auto hash() const -> u32 { return upper; }
+
+    auto visit(u64 address) -> bool {
+      const u64 bit = 1ull << (address & 0x3f);
+      if(mask & bit) return true;
+      mask |= bit;
+      return false;
+    }
+
+    auto unvisit(u64 address) -> void {
+      const u64 bit = 1ull << (address & 0x3f);
+      mask &= ~bit;
+    }
+
+  private:
+    u64 upper;
+    u64 mask;
+  };
 
   u32  _addressBits = 32;
   u32  _addressMask = 0;
@@ -119,6 +137,6 @@ protected:
 //unserialized:
   n64 _address = 0;
   n64 _omitted = 0;
-  vector<u32> _history;
-  vector<u08> _masks;
+  vector<u64> _history;
+  hashset<VisitMask> _masks;
 };

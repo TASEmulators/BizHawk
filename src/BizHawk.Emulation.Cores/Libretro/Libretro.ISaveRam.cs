@@ -5,7 +5,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Libretro
 {
-	public partial class LibretroEmulator : ISaveRam
+	public partial class LibretroHost : ISaveRam
 	{
 		private readonly List<MemoryDomainIntPtr> _saveramAreas = new();
 		private long _saveramSize = 0;

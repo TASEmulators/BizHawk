@@ -1,4 +1,4 @@
-auto RDP::readWord(u32 address) -> u32 {
+auto RDP::readWord(u32 address, u32& cycles) -> u32 {
   address = (address & 0xfffff) >> 2;
   n32 data;
 
@@ -20,16 +20,16 @@ auto RDP::readWord(u32 address) -> u32 {
   if(address == 3) {
     //DPC_STATUS
     data.bit( 0) = command.source;
-    data.bit( 1) = command.freeze;
+    data.bit( 1) = command.freeze || command.crashed;
     data.bit( 2) = command.flush;
-    data.bit( 3) = 0;  //start gclk?
+    data.bit( 3) = command.startGclk;
     data.bit( 4) = command.tmemBusy > 0;
     data.bit( 5) = command.pipeBusy > 0;
     data.bit( 6) = command.bufferBusy > 0;
     data.bit( 7) = command.ready;
     data.bit( 8) = 0;  //DMA busy
-    data.bit( 9) = 0;  //end valid
-    data.bit(10) = 0;  //start valid
+    data.bit( 9) = command.endValid;
+    data.bit(10) = command.startValid;
   }
 
   if(address == 4) {
@@ -56,24 +56,24 @@ auto RDP::readWord(u32 address) -> u32 {
   return data;
 }
 
-auto RDP::writeWord(u32 address, u32 data_) -> void {
+auto RDP::writeWord(u32 address, u32 data_, u32& cycles) -> void {
   address = (address & 0xfffff) >> 2;
   n32 data = data_;
 
   if(address == 0) {
     //DPC_START
-    command.start = data.bit(0,23) & ~7;
-    command.current = command.start;
+    if(!command.startValid) command.start = data.bit(0,23) & ~7;
+    command.startValid = 1;
   }
 
   if(address == 1) {
     //DPC_END
     command.end = data.bit(0,23) & ~7;
-    if(command.end > command.current) {
-      command.freeze = 0;
-      render();
-      command.ready = 1;
+    if(command.startValid) {
+      command.current = command.start;
+      command.startValid = 0;
     }
+    flushCommands();
   }
 
   if(address == 2) {
@@ -84,13 +84,13 @@ auto RDP::writeWord(u32 address, u32 data_) -> void {
     //DPC_STATUS
     if(data.bit(0)) command.source = 0;
     if(data.bit(1)) command.source = 1;
-    if(data.bit(2)) command.freeze = 0;
-  //if(data.bit(3)) command.freeze = 1;
+    if(data.bit(2)) command.freeze = 0, flushCommands();
+    if(data.bit(3)) command.freeze = 1;
     if(data.bit(4)) command.flush = 0;
     if(data.bit(5)) command.flush = 1;
-    if(data.bit(6)) command.tmemBusy = 0;
-    if(data.bit(7)) command.pipeBusy = 0;
-    if(data.bit(8)) command.bufferBusy = 0;
+    if(data.bit(6) && !command.crashed) command.tmemBusy = 0;
+    if(data.bit(7) && !command.crashed) command.pipeBusy = 0;
+    if(data.bit(8) && !command.crashed) command.bufferBusy = 0;
     if(data.bit(9)) command.clock = 0;
   }
 
@@ -113,7 +113,7 @@ auto RDP::writeWord(u32 address, u32 data_) -> void {
   debugger.ioDPC(Write, address, data);
 }
 
-auto RDP::IO::readWord(u32 address) -> u32 {
+auto RDP::IO::readWord(u32 address, u32& cycles) -> u32 {
   address = (address & 0xfffff) >> 2;
   n32 data;
 
@@ -144,7 +144,7 @@ auto RDP::IO::readWord(u32 address) -> u32 {
   return data;
 }
 
-auto RDP::IO::writeWord(u32 address, u32 data_) -> void {
+auto RDP::IO::writeWord(u32 address, u32 data_, u32& cycles) -> void {
   address = (address & 0xfffff) >> 2;
   n32 data = data_;
 
@@ -171,4 +171,13 @@ auto RDP::IO::writeWord(u32 address, u32 data_) -> void {
   }
 
   self.debugger.ioDPS(Write, address, data);
+}
+
+auto RDP::flushCommands() -> void {
+  if(command.freeze || command.crashed) return;
+  command.bufferBusy = 1;
+  command.pipeBusy = 1;
+  command.startGclk = 1;
+  if(command.end > command.current) render();
+  command.ready = 1;
 }

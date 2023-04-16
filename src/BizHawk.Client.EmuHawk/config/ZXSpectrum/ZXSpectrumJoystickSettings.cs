@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -56,46 +55,46 @@ namespace BizHawk.Client.EmuHawk
 				bool selectionValid = true;
 
 				var j1 = Port1ComboBox.SelectedItem.ToString();
-				if (j1 != _possibleControllers.First())
+				if (j1 != _possibleControllers[0])
 				{
 					if (j1 == Port2ComboBox.SelectedItem.ToString())
 					{
-						Port2ComboBox.SelectedItem = _possibleControllers.First();
+						Port2ComboBox.SelectedItem = _possibleControllers[0];
 						selectionValid = false;
 					}
 					if (j1 == Port3ComboBox.SelectedItem.ToString())
 					{
-						Port3ComboBox.SelectedItem = _possibleControllers.First();
+						Port3ComboBox.SelectedItem = _possibleControllers[0];
 						selectionValid = false;
 					}
 				}
 
 				var j2 = Port2ComboBox.SelectedItem.ToString();
-				if (j2 != _possibleControllers.First())
+				if (j2 != _possibleControllers[0])
 				{
 					if (j2 == Port1ComboBox.SelectedItem.ToString())
 					{
-						Port1ComboBox.SelectedItem = _possibleControllers.First();
+						Port1ComboBox.SelectedItem = _possibleControllers[0];
 						selectionValid = false;
 					}
 					if (j2 == Port3ComboBox.SelectedItem.ToString())
 					{
-						Port3ComboBox.SelectedItem = _possibleControllers.First();
+						Port3ComboBox.SelectedItem = _possibleControllers[0];
 						selectionValid = false;
 					}
 				}
 
 				var j3 = Port3ComboBox.SelectedItem.ToString();
-				if (j3 != _possibleControllers.First())
+				if (j3 != _possibleControllers[0])
 				{
 					if (j3 == Port1ComboBox.SelectedItem.ToString())
 					{
-						Port1ComboBox.SelectedItem = _possibleControllers.First();
+						Port1ComboBox.SelectedItem = _possibleControllers[0];
 						selectionValid = false;
 					}
 					if (j3 == Port2ComboBox.SelectedItem.ToString())
 					{
-						Port2ComboBox.SelectedItem = _possibleControllers.First();
+						Port2ComboBox.SelectedItem = _possibleControllers[0];
 						selectionValid = false;
 					}
 				}

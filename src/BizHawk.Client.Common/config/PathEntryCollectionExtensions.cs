@@ -87,10 +87,7 @@ namespace BizHawk.Client.Common
 				return collection.GlobalBaseAbsolutePath();
 			}
 
-			if (path == "%recent%")
-			{
-				return Environment.SpecialFolder.Recent.ToString();
-			}
+			if (path == "%recent%") return PathUtils.SpecialRecentsDir;
 
 			if (path.StartsWith("%exe%"))
 			{
@@ -183,12 +180,6 @@ namespace BizHawk.Client.Common
 			return collection.AbsolutePathFor(path, null);
 		}
 
-		public static string TastudioStatesAbsolutePath(this PathEntryCollection collection)
-		{
-			var path = collection[PathEntryCollection.GLOBAL, "TAStudio states"].Path;
-			return collection.AbsolutePathFor(path, null);
-		}
-
 		public static string MultiDiskAbsolutePath(this PathEntryCollection collection)
 		{
 			var path = collection.ResolveToolsPath(collection[PathEntryCollection.GLOBAL, "Multi-Disk Bundles"].Path);
@@ -202,10 +193,7 @@ namespace BizHawk.Client.Common
 				return collection.AbsolutePathFor(collection[PathEntryCollection.GLOBAL, "ROM"].Path, PathEntryCollection.GLOBAL);
 			}
 
-			if (collection.UseRecentForRoms)
-			{
-				return Environment.SpecialFolder.Recent.ToString();
-			}
+			if (collection.UseRecentForRoms) return /*PathUtils.SpecialRecentsDir*/string.Empty; // instructs OpenFileDialog to use the dir of the most recently-opened file, a behaviour consistent with previous versions, even though it may never have been intended; this system will be overhauled when adding #1574
 
 			var path = collection[systemId, "ROM"];
 

@@ -7,11 +7,6 @@ namespace nall::CD {
 
 enum : s32 { InvalidLBA = 100 * 60 * 75 };
 
-struct BCD {
-  static auto encode(u8 value) -> u8 { return value / 10 << 4 | value % 10; }
-  static auto decode(u8 value) -> u8 { return (value >> 4) * 10 + (value & 15); }
-};
-
 struct MSF {
   u8 minute;        //00-99
   u8 second;        //00-59

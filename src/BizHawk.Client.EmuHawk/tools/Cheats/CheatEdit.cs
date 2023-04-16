@@ -299,11 +299,11 @@ namespace BizHawk.Client.EmuHawk
 			if (address < domain.Size)
 			{
 				var watch = Watch.GenerateWatch(
-					MemoryDomains[DomainDropDown.SelectedItem.ToString()],
-					AddressBox.ToRawInt().Value,
+					domain,
+					address: address,
 					GetCurrentSize(),
 					Watch.StringToDisplayType(DisplayTypeDropDown.SelectedItem.ToString()),
-					BigEndianCheckBox.Checked,
+					bigEndian: BigEndianCheckBox.Checked,
 					NameBox.Text);
 
 				var comparisonType = CompareTypeDropDown.SelectedItem.ToString() switch
@@ -318,11 +318,12 @@ namespace BizHawk.Client.EmuHawk
 					_ => Cheat.CompareType.None
 				};
 
+				var compare = CompareBox.ToRawInt();
 				return new Cheat(
 					watch,
-					ValueBox.ToRawInt().Value,
-					CompareBox.ToRawInt() == null ? null : (int?)CompareBox.ToRawInt().Value,
-					true,
+					value: ValueBox.ToRawInt().Value,
+					compare: compare,
+					enabled: true,
 					comparisonType);
 			}
 

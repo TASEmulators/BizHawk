@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
@@ -13,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			var ret = new Dictionary<string, RegisterValue>();
 			for (var i = 0; i < RegisterNames.Length; i++)
 			{
-				ret[RegisterNames[i]] = new RegisterValue(values[i]);
+				ret[RegisterNames[i]] = new(values[i]);
 			}
 
 			return ret;
@@ -41,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				"R15" => 15,
 				"CPSR" => 16,
 				"SPSR" => 17,
-				_=> -1
+				_ => -1
 			};
 
 			if (index != -1)
@@ -50,8 +51,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			}
 		}
 
-		[FeatureNotImplemented]
-		public IMemoryCallbackSystem MemoryCallbacks { get; }
+		private readonly MGBAMemoryCallbackSystem _memoryCallbacks;
+
+		public IMemoryCallbackSystem MemoryCallbacks => _memoryCallbacks;
 
 		public bool CanStep(StepType type) => false;
 

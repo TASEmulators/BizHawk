@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 	public class Saturnus : NymaCore, IRegionable
 	{
 		private Saturnus(CoreComm comm)
-			: base(comm, null, null, null, null)
+			: base(comm, VSystemID.Raw.NULL, null, null, null)
 		{
 		}
 

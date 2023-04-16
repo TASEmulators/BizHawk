@@ -28,7 +28,7 @@
 
 			//"length of disc" for BizHawk's purposes (NOT a robust concept!) is determined by beginning of leadout track
 			var m_leadoutTrack = md.TOCTracks[100];
-			int nSectors = (int)m_leadoutTrack.lba;
+			var nSectors = (int)m_leadoutTrack.lba;
 
 			//make synth param memos
 			disc.SynthParams.MednaDisc = md;
@@ -41,13 +41,16 @@
 			const int kADR = 1;
 			const int kUnknownControl = 0;
 
+			// mednadisc only supports 1 session I think?
+			disc.Sessions.Add(new() { Number = 1 });
+
 			//mednafen delivers us what is essentially but not exactly (or completely) a TOCRaw.
 			//we need to synth RawTOCEntries from this and then turn it into a proper TOCRaw
 			//when coming from mednafen, there are 101 entries.
 			//entry[0] is placeholder junk, not to be used
 			//entry[100] is the leadout track (A0)
 			//A1 and A2 are in the form of FirstRecordedTrackNumber and LastRecordedTrackNumber
-			for (int i = 1; i < 101; i++)
+			for (var i = 1; i < 101; i++)
 			{
 				var m_te = md.TOCTracks[i];
 
@@ -78,7 +81,7 @@
 					q.q_index.BCDValue = 0xA2;
 				}
 
-				disc.RawTOCEntries.Add(new RawTOCEntry { QData = q });
+				disc.Session1.RawTOCEntries.Add(new() { QData = q });
 			}
 
 			// synth A0 and A1 entries (indicating first and last recorded tracks and also session type)
@@ -96,7 +99,7 @@
 				ap_frame = BCD2.FromDecimal(0),
 				q_crc = 0, //meaningless
 			};
-			disc.RawTOCEntries.Add(new RawTOCEntry { QData = qA0 });
+			disc.Session1.RawTOCEntries.Add(new() { QData = qA0 });
 			var qA1 = new SubchannelQ
 			{
 				q_status = SubchannelQ.ComputeStatus(kADR, kUnknownControl),
@@ -111,7 +114,7 @@
 				ap_frame = BCD2.FromDecimal(0),
 				q_crc = 0, //meaningless
 			};
-			disc.RawTOCEntries.Add(new RawTOCEntry { QData = qA1 });
+			disc.Session1.RawTOCEntries.Add(new() { QData = qA1 });
 		}
 	}
 }

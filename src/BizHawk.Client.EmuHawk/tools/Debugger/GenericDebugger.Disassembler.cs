@@ -133,7 +133,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void IncrementCurrentAddress()
 		{
-			_currentDisassemblerAddress += (uint)_disassemblyLines.First().Size;
+			_currentDisassemblerAddress += (uint) _disassemblyLines[0].Size;
 			if (_currentDisassemblerAddress >= BusMaxValue)
 			{
 				_currentDisassemblerAddress = (uint)(BusMaxValue - 1);
@@ -209,25 +209,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CopySelectedDisassembler()
 		{
-			var indices = DisassemblerView.SelectedRows.ToList();
-
-			if (indices.Count > 0)
+			if (!DisassemblerView.AnyRowsSelected) return;
+			StringBuilder blob = new();
+			foreach (var line in DisassemblerView.SelectedRows.Select(i => _disassemblyLines[i]))
 			{
-				var blob = new StringBuilder();
-				foreach (int index in indices)
-				{
-					if (blob.Length != 0)
-					{
-						blob.AppendLine();
-					}
-
-					blob.Append(_disassemblyLines[index].Address.ToHexString(_pcRegisterSize))
-						.Append(' ')
-						.Append(_disassemblyLines[index].Mnemonic);
-				}
-
-				Clipboard.SetDataObject(blob.ToString());
+				blob.AppendFormat("{0} {1}\n", line.Address.ToHexString(_pcRegisterSize), line.Mnemonic);
 			}
+			Clipboard.SetDataObject(blob.ToString());
 		}
 
 		private void OnPauseChanged(bool isPaused)
@@ -237,16 +225,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DisassemblerContextMenu_Opening(object sender, EventArgs e)
 		{
-			AddBreakpointContextMenuItem.Enabled = DisassemblerView.SelectedRows.Any();
+			AddBreakpointContextMenuItem.Enabled = DisassemblerView.AnyRowsSelected;
 		}
 
 		private void AddBreakpointContextMenuItem_Click(object sender, EventArgs e)
 		{
-			var indices = DisassemblerView.SelectedRows.ToList();
-
-			if (indices.Count > 0)
+			if (DisassemblerView.AnyRowsSelected)
 			{
-				var line = _disassemblyLines[indices[0]];
+				var line = _disassemblyLines[DisassemblerView.FirstSelectedRowIndex];
 				BreakPointControl1.AddBreakpoint(line.Address, 0xFFFFFFFF, Emulation.Common.MemoryCallbackType.Execute);
 			}
 		}

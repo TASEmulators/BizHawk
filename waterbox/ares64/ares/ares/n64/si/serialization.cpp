@@ -2,6 +2,7 @@ auto SI::serialize(serializer& s) -> void {
   s(io.dramAddress);
   s(io.readAddress);
   s(io.writeAddress);
+  s(io.busLatch);
   s(io.dmaBusy);
   s(io.ioBusy);
   s(io.readPending);

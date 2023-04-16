@@ -125,6 +125,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				LibGambatte.gambatte_setinputgetter(GambatteState, InputCallback, IntPtr.Zero);
 
+				if (_syncSettings.EnableRemote)
+				{
+					RemoteCallback = new LibGambatte.RemoteCallback(RemoteInputCallback);
+					LibGambatte.gambatte_setremotecallback(GambatteState, RemoteCallback);
+				}
+
 				InitMemoryDomains();
 
 				byte[] mbcBuf = new byte[32];
@@ -153,8 +159,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 						"Disable BIOS in sync settings to boot this game");
 				}
 
-				if (!_syncSettings.EnableBIOS && IsCgb && IsCGBDMGMode()) // without a bios, we need to set the palette for cgbdmg ourselves
+				if (!_syncSettings.EnableBIOS && IsCGBMode && IsCGBDMGMode) //TODO doesn't IsCGBDMGMode imply IsCGBMode?
 				{
+					// without a bios, we need to set the palette for cgbdmg ourselves
 					int[] cgbDmgColors = new int[] { 0xFFFFFF, 0x7BFF31, 0x0063C5, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000, 0xFFFFFF, 0xFF8484, 0x943A3A, 0x000000 };
 					if (file[0x14B] == 0x01 || (file[0x14B] == 0x33 && file[0x144] == '0' && file[0x145] == '1')) // Nintendo licencees get special palettes
 					{
@@ -180,7 +187,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				_cdCallback = new LibGambatte.CDCallback(CDCallbackProc);
 
-				ControllerDefinition = CreateControllerDefinition(sgb: IsSgb, sub: _syncSettings.FrameLength is GambatteSyncSettings.FrameLengthType.UserDefinedFrames, tilt: false);
+				ControllerDefinition = CreateControllerDefinition(
+					sgb: IsSgb,
+					sub: _syncSettings.FrameLength is GambatteSyncSettings.FrameLengthType.UserDefinedFrames,
+					tilt: false,
+					rumble: false,
+					remote: _syncSettings.EnableRemote);
 
 				NewSaveCoreSetBuff();
 			}
@@ -221,6 +233,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		private LibGambatte.Buttons CurrentButtons = 0;
 
 		/// <summary>
+		/// remote callback delegate
+		/// </summary>
+		private readonly LibGambatte.RemoteCallback RemoteCallback;
+
+		/// <summary>
+		/// remote command to send
+		/// </summary>
+		private byte RemoteCommand = 0;
+
+		/// <summary>
 		/// internal gambatte state
 		/// </summary>
 		internal IntPtr GambatteState { get; private set; } = IntPtr.Zero;
@@ -245,7 +267,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public long CycleCount => (long)_cycleCount;
 		public double ClockRate => TICKSPERSECOND;
 
-		public static ControllerDefinition CreateControllerDefinition(bool sgb, bool sub, bool tilt)
+		public static ControllerDefinition CreateControllerDefinition(bool sgb, bool sub, bool tilt, bool rumble, bool remote)
 		{
 			var ret = new ControllerDefinition((sub ? "Subframe " : "") + "Gameboy Controller" + (tilt ? " + Tilt" : ""));
 			if (sub)
@@ -255,6 +277,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			if (tilt)
 			{
 				ret.AddXYPair($"Tilt {{0}}", AxisPairOrientation.RightAndUp, (-90).RangeTo(90), 0);
+			}
+			if (rumble)
+			{
+				ret.HapticsChannels.Add("Rumble");
+			}
+			if (remote)
+			{
+				ret.AddAxis("Remote Command", 0.RangeTo(127), 127);
 			}
 			if (sgb)
 			{
@@ -299,22 +329,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			}
 		}
 
-		/// <summary>
-		/// true if the emulator is currently emulating CGB
-		/// </summary>
-		public bool IsCGBMode()
+		private byte RemoteInputCallback()
 		{
-			//return LibGambatte.gambatte_iscgb(GambatteState);
-			return IsCgb;
+			InputCallbacks.Call();
+			IsLagFrame = false;
+			return RemoteCommand;
 		}
-		
-		/// <summary>
-		/// true if the emulator is currently emulating CGB in DMG compatibility mode (NOTE: this mode does not take affect until the bootrom unmaps itself)
-		/// </summary>
-		public bool IsCGBDMGMode()
-		{
-			return LibGambatte.gambatte_iscgbdmg(GambatteState);
-		}
+
+		public bool IsCGBMode
+#if true
+			=> IsCgb; //TODO inline
+#else
+			=> LibGambatte.gambatte_iscgb(GambatteState);
+#endif
+
+		public bool IsCGBDMGMode
+			=> LibGambatte.gambatte_iscgbdmg(GambatteState);
 
 		private InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
 
@@ -360,7 +390,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					if (controller.IsPressed(GB_BUTTON_ORDER_IN_BITMASK[i])) b |= 1;
 				}
 			}
+
 			CurrentButtons = (LibGambatte.Buttons)b;
+
+			RemoteCommand = (byte)controller.AxisValue("Remote Command");
 
 			// the controller callback will set this to false if it actually gets called during the frame
 			IsLagFrame = true;
@@ -643,7 +676,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public void SetCGBColors(GBColors.ColorType type)
 		{
-			int[] lut = GBColors.GetLut(type);
+			int[] lut = GBColors.GetLut(type, IsSgb, _syncSettings.ConsoleMode is GambatteSyncSettings.ConsoleModeType.GBA);
 			LibGambatte.gambatte_setcgbpalette(GambatteState, lut);
 		}
 	}

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
+using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -66,12 +68,16 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				var (f, data) = GetStateClosestToFrame(frame);
-				if (f != frame) return NonState;
+				var (f, dataStream) = GetStateClosestToFrame(frame);
+				if (f != frame)
+				{
+					dataStream.Dispose();
+					return NonState;
+				}
 
-				var ms = new MemoryStream();
-				data.CopyTo(ms);
-				return ms.ToArray();
+				var data = dataStream.ReadAllBytes();
+				dataStream.Dispose();
+				return data;
 			}
 		}
 
@@ -141,7 +147,7 @@ namespace BizHawk.Client.Common
 					newReserved = new TempFileStateDictionary();
 					break;
 				default:
-					throw new ArgumentException("Unsupported store type for reserved states.");
+					throw new InvalidOperationException("Unsupported store type for reserved states.");
 			}
 			if (_reserved != null)
 			{
@@ -169,7 +175,11 @@ namespace BizHawk.Client.Common
 						if (_reserveCallback(si.Frame))
 							AddToReserved(si);
 						else
-							buffer.Capture(si.Frame, s => si.GetReadStream().CopyTo(s), null, true);
+							buffer.Capture(si.Frame, s => 
+							{
+								using var rs = si.GetReadStream();
+								rs.CopyTo(s);
+							}, null, true);
 					}
 					old.Dispose();
 				}
@@ -235,7 +245,7 @@ namespace BizHawk.Client.Common
 		// Enumerate all reserved states in reverse order
 		private IEnumerable<StateInfo> ReservedStates()
 		{
-			foreach (var key in _reserved.Keys.OrderByDescending(k => k))
+			foreach (var key in _reserved.Keys.OrderDescending())
 			{
 				yield return new StateInfo(key, _reserved[key]);
 			}
@@ -276,10 +286,8 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			var bb = new byte[state.Size];
-			var ms = new MemoryStream(bb);
-			state.GetReadStream().CopyTo(ms);
-			_reserved.Add(state.Frame, bb);
+			using var s = state.GetReadStream();
+			_reserved.Add(state.Frame, s.ReadAllBytes());
 			AddStateCache(state.Frame);
 		}
 
@@ -347,7 +355,8 @@ namespace BizHawk.Client.Common
 					_recent.Capture(state.Frame,
 						s =>
 						{
-							state.GetReadStream().CopyTo(s);
+							using var rs = state.GetReadStream();
+							rs.CopyTo(s);
 							AddStateCache(state.Frame);
 						},
 						index2 =>
