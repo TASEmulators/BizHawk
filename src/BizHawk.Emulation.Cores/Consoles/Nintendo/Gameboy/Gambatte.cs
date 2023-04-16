@@ -70,11 +70,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 						throw new InvalidOperationException();
 				}
 
-				if (_syncSettings.MulticartCompat)
-				{
-					flags |= LibGambatte.LoadFlags.MULTICART_COMPAT;
-				}
-
 				IsCgb = (flags & LibGambatte.LoadFlags.CGB_MODE) == LibGambatte.LoadFlags.CGB_MODE;
 
 				bool ForceBios()

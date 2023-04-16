@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				_linkedCores[i].ConnectInputCallbackSystem(_inputCallbacks);
 				_linkedCores[i].ConnectMemoryCallbackSystem(_memoryCallbacks, i);
 				isAnySgb = isAnySgb || isSgb(i);
-				_linkedConts[i] = new SaveController(Gameboy.CreateControllerDefinition(sgb: isSgb(i), sub: false, tilt: false));
+				_linkedConts[i] = new SaveController(Gameboy.CreateControllerDefinition(sgb: isSgb(i), sub: false, tilt: false, rumble: false, remote: false));
 				_linkedBlips[i] = new BlipBuffer(1024);
 				_linkedBlips[i].SetRates(2097152 * 2, 44100);
 				_linkedOverflow[i] = 0;
