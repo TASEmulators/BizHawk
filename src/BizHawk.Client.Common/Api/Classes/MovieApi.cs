@@ -9,16 +9,13 @@ namespace BizHawk.Client.Common
 {
 	public sealed class MovieApi : IMovieApi
 	{
-		private readonly IMainFormForApi _mainForm;
-
 		private readonly IMovieSession _movieSession;
 
 		private readonly Action<string> LogCallback;
 
-		public MovieApi(Action<string> logCallback, IMainFormForApi mainForm, IMovieSession movieSession)
+		public MovieApi(Action<string> logCallback, IMovieSession movieSession)
 		{
 			LogCallback = logCallback;
-			_mainForm = mainForm;
 			_movieSession = movieSession;
 		}
 
@@ -100,39 +97,13 @@ namespace BizHawk.Client.Common
 
 		public string Mode() => (_movieSession.Movie?.Mode ?? MovieMode.Inactive).ToString().ToUpper();
 
-		public bool PlayFromStart(string path = "")
-		{
-			if (string.IsNullOrEmpty(path))
-			{
-				try
-				{
-					return _mainForm.RestartMovie();
-				}
-				catch (Exception e)
-				{
-					LogCallback($"caught {e.GetType().Name} while trying to restart movie: {e.Message}");
-					return false;
-				}
-			}
-			try
-			{
-				return _mainForm.LoadMovie(filename: path);
-			}
-			catch (Exception e)
-			{
-				LogCallback($"caught {e.GetType().Name} while trying to load movie: {e.Message}");
-				return false;
-			}
-		}
-
 		public void SetReadOnly(bool readOnly) => _movieSession.ReadOnly = readOnly;
 
 		public void SetRerecordCount(ulong count) => _movieSession.Movie.Rerecords = count;
 
 		public void SetRerecordCounting(bool counting) => _movieSession.Movie.IsCountingRerecords = counting;
 
-		public void Stop(bool saveChanges = true)
-			=> _mainForm.StopMovie(saveChanges: saveChanges);
+		public void Stop() => _movieSession.StopMovie();
 
 		public double GetFps()
 		{

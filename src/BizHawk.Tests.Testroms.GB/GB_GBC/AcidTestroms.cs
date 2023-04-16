@@ -21,7 +21,7 @@ namespace BizHawk.Tests.Testroms.GB
 				"cgb-acid-hell" => "res.cgb_acid_hell_artifact.reference.png",
 				"cgb-acid2" => "res.cgb_acid2_artifact.reference.png",
 				"dmg-acid2" => $"res.dmg_acid2_artifact.reference-{(Setup.Variant.IsColour() ? "cgb" : "dmg")}.png",
-				_ => throw new InvalidOperationException()
+				_ => throw new Exception()
 			};
 
 			public readonly string RomEmbedPath => TestName switch
@@ -29,7 +29,7 @@ namespace BizHawk.Tests.Testroms.GB
 				"cgb-acid-hell" => "res.cgb_acid_hell_artifact.cgb-acid-hell.gbc",
 				"cgb-acid2" => "res.cgb_acid2_artifact.cgb-acid2.gbc",
 				"dmg-acid2" => "res.dmg_acid2_artifact.dmg-acid2.gb",
-				_ => throw new InvalidOperationException()
+				_ => throw new Exception()
 			};
 
 			public readonly CoreSetup Setup;
@@ -78,7 +78,7 @@ namespace BizHawk.Tests.Testroms.GB
 
 		private static readonly IReadOnlyCollection<string> KnownFailures = new[]
 		{
-			"", // none \o/
+			"cgb-acid2 on CGB_C in SameBoy (no BIOS)",
 		};
 
 		[ClassCleanup]

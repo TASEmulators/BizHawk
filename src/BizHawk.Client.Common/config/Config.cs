@@ -27,14 +27,14 @@ namespace BizHawk.Client.Common
 			(new[] { VSystemID.Raw.NES },
 				new[] { CoreNames.QuickNes, CoreNames.NesHawk, CoreNames.SubNesHawk }),
 			(new[] { VSystemID.Raw.SNES },
-				new[] { CoreNames.Faust, CoreNames.Snes9X, CoreNames.Bsnes, CoreNames.Bsnes115, CoreNames.SubBsnes115 }),
+				new[] { CoreNames.Faust, CoreNames.Snes9X, CoreNames.Bsnes, CoreNames.Bsnes115 }),
 			(new[] { VSystemID.Raw.N64 },
 				new[] { CoreNames.Mupen64Plus, CoreNames.Ares64 }),
 			(new[] { VSystemID.Raw.GB, VSystemID.Raw.GBC, VSystemID.Raw.SGB },
 				new[] { CoreNames.Gambatte, CoreNames.Sameboy, CoreNames.GbHawk, CoreNames.SubGbHawk, CoreNames.Bsnes115, CoreNames.SubBsnes115 }),
 			(new[] { VSystemID.Raw.GBL },
 				new[] { CoreNames.GambatteLink, CoreNames.GBHawkLink, CoreNames.GBHawkLink3x, CoreNames.GBHawkLink4x }),
-			(new[] { VSystemID.Raw.PCE, VSystemID.Raw.PCECD, VSystemID.Raw.SGX, VSystemID.Raw.SGXCD },
+			(new[] { VSystemID.Raw.PCE, VSystemID.Raw.PCECD, VSystemID.Raw.SGX },
 				new[] { CoreNames.TurboNyma, CoreNames.HyperNyma, CoreNames.PceHawk }),
 			(new[] { VSystemID.Raw.PSX },
 				new[] { CoreNames.Octoshock, CoreNames.Nymashock }),
@@ -120,7 +120,6 @@ namespace BizHawk.Client.Common
 		public bool AutofireLagFrames { get; set; } = true;
 		public int SaveSlot { get; set; } // currently selected savestate slot
 		public bool AutoLoadLastSaveSlot { get; set; }
-		public bool AutoSaveLastSaveSlot { get; set; }
 		public bool SkipLagFrame { get; set; }
 		public bool SuppressAskSave { get; set; }
 		public bool AviCaptureOsd { get; set; }
@@ -147,6 +146,9 @@ namespace BizHawk.Client.Common
 		/// Intervals at which to make AutoSave files
 		/// </summary>
 		public int FlushSaveRamFrames { get; set; }
+
+		/// <remarks>Don't rename this without changing <c>BizHawk.Client.EmuHawk.Program.CurrentDomain_AssemblyResolve</c></remarks>
+		public ELuaEngine LuaEngine { get; set; } = OSTailoredCode.IsUnixHost ? ELuaEngine.NLuaPlusKopiLua : ELuaEngine.LuaPlusLuaInterface;
 
 		public bool TurboSeek { get; set; }
 
@@ -254,6 +256,7 @@ namespace BizHawk.Client.Common
 		// Lua
 		public RecentFiles RecentLua { get; set; } = new RecentFiles(8);
 		public RecentFiles RecentLuaSession { get; set; } = new RecentFiles(8);
+		public bool DisableLuaScriptsOnLoad { get; set; }
 
 		// luaconsole-refactor TODO: move this to LuaConsole settings
 		public bool RunLuaDuringTurbo { get; set; } = true;
@@ -273,9 +276,6 @@ namespace BizHawk.Client.Common
 		public int GifWriterFrameskip { get; set; } = 3;
 		public int GifWriterDelay { get; set; } = -1;
 		public bool VideoWriterAudioSync { get; set; } = true;
-
-		[JsonIgnore]
-		public bool VideoWriterAudioSyncEffective;
 
 		// Emulation core settings
 		internal Dictionary<string, JToken> CoreSettings { get; set; } = new Dictionary<string, JToken>();
@@ -326,7 +326,6 @@ namespace BizHawk.Client.Common
 			[VSystemID.Raw.PCE] = CoreNames.TurboNyma,
 			[VSystemID.Raw.PCECD] = CoreNames.TurboNyma,
 			[VSystemID.Raw.SGX] = CoreNames.TurboNyma,
-			[VSystemID.Raw.SGXCD] = CoreNames.TurboNyma,
 			[VSystemID.Raw.PSX] = CoreNames.Nymashock,
 			[VSystemID.Raw.TI83] = CoreNames.Emu83,
 		};
@@ -354,25 +353,5 @@ namespace BizHawk.Client.Common
 		public int OSDMessageDuration { get; set; } = 2;
 
 		public Queue<string> RecentCores { get; set; } = new();
-		
-		public Dictionary<string, string> TrustedExtTools { get; set; } = new();
-
-		// RetroAchievements settings
-		public bool SkipRATelemetryWarning { get; set; }
-		public string RAUsername { get; set; } = "";
-		public string RAToken { get; set; } = "";
-		public bool RACheevosActive { get; set; } = true;
-		public bool RALBoardsActive { get; set; }
-		public bool RARichPresenceActive { get; set; } = true;
-		public bool RAHardcoreMode { get; set; }
-		public bool RASoundEffects { get; set; } = true;
-		public bool RAAllowUnofficialCheevos { get; set; }
-		public bool RAAutostart { get; set; }
-
-		public bool AVWriterPad { get; set; } = false;
-
-		public int AVWriterResizeHeight { get; set; } = 0;
-
-		public int AVWriterResizeWidth { get; set; } = 0;
 	}
 }

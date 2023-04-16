@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				{
 					int diff = _latchL - curr;
 					_latchL = curr;
-					_blipL.AddDelta(_blipAccumulate, diff >> 1);
+					_blipL.AddDelta(_blipAccumulate, diff >> 2);
 				}
 
 				curr = _soundbuff[(i * 2) + 1];
@@ -76,7 +76,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				{
 					int diff = _latchR - curr;
 					_latchR = curr;
-					_blipR.AddDelta(_blipAccumulate, diff >> 1);
+					_blipR.AddDelta(_blipAccumulate, diff >> 2);
 				}
 
 				_blipAccumulate++;

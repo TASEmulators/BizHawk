@@ -1,6 +1,5 @@
 ﻿using System;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.GBHawk;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
@@ -8,17 +7,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 	[Core(CoreNames.GBHawkLink4x, "")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class GBHawkLink4x : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable,
-		ISettable<GBHawkLink4x.GBLink4xSettings, GBHawkLink4x.GBLink4xSyncSettings>,
-		ILinkedGameBoyCommon
+	ISettable<GBHawkLink4x.GBLink4xSettings, GBHawkLink4x.GBLink4xSyncSettings>
 	{
 		// we want to create two GBHawk instances that we will run concurrently
 		public GBHawk.GBHawk A;
 		public GBHawk.GBHawk B;
 		public GBHawk.GBHawk C;
 		public GBHawk.GBHawk D;
-
-		public IGameboyCommon First
-			=> A;
 
 		// if true, the link cable is currently connected
 		private bool _cableconnected_LR = false;

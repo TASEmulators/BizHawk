@@ -16,8 +16,9 @@
 		<Reference Include="System.IO.Compression" />
 	</ItemGroup>
 	<ItemGroup>
+		<Reference Include="GongShell" HintPath="$(ProjectDir)../../References/GongShell.dll" Private="true" />
+		<Reference Include="NLua, Version=1.3.2.0, Culture=neutral, processorArchitecture=MSIL" SpecificVersion="false" HintPath="$(ProjectDir)../../Assets/dll/nlua/NLua.dll" Private="false" /><!-- don't copy, will be copied with Assets -->
 		<Reference Include="PcxFileTypePlugin.HawkQuantizer" HintPath="$(ProjectDir)../../References/PcxFileTypePlugin.HawkQuantizer.dll" Private="true" />
-		<Reference Include="NLua, Version=1.4.1.0, Culture=neutral, PublicKeyToken=null, processorArchitecture=MSIL" SpecificVersion="false" HintPath="$(ProjectDir)../../References/NLua.dll" Private="true" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.DirectX/BizHawk.Bizware.DirectX.csproj" />
@@ -297,11 +298,6 @@
 <!-- creates circular dependency
 		<Compile Update="Properties/Resources.cs" DependentUpon="Resources.resx" />
 -->
-		<Compile Update="RetroAchievements/RAIntegrationDownloaderForm.cs" SubType="Form" />
-		<Compile Update="RetroAchievements/RAIntegrationDownloaderForm.Designer.cs" DependentUpon="RAIntegrationDownloaderForm.cs" />
-		<EmbeddedResource Update="RetroAchievements/RAIntegrationDownloaderForm.resx" DependentUpon="RAIntegrationDownloaderForm.cs" />
-		<Compile Update="RetroAchievements/RCheevos.*.cs" DependentUpon="RCheevos.cs" />
-		<Compile Update="RetroAchievements/RetroAchievements.*.cs" DependentUpon="RetroAchievements.cs" />
 		<Compile Update="RomStatusPicker.cs" SubType="Form" />
 		<Compile Update="RomStatusPicker.Designer.cs" DependentUpon="RomStatusPicker.cs" />
 		<EmbeddedResource Update="RomStatusPicker.resx" DependentUpon="RomStatusPicker.cs" />
@@ -381,7 +377,6 @@
 		<Compile Update="tools/Lua/LuaFunctionsForm.cs" SubType="Form" />
 		<Compile Update="tools/Lua/LuaFunctionsForm.Designer.cs" DependentUpon="LuaFunctionsForm.cs" />
 		<EmbeddedResource Update="tools/Lua/LuaFunctionsForm.resx" DependentUpon="LuaFunctionsForm.cs" />
-		<Compile Update="tools/Lua/LuaLibraries.cs" />
 		<Compile Update="tools/Lua/LuaPictureBox.cs" SubType="Component" />
 		<Compile Update="tools/Lua/LuaRegisteredFunctionsList.cs" SubType="Form" />
 		<Compile Update="tools/Lua/LuaRegisteredFunctionsList.Designer.cs" DependentUpon="LuaRegisteredFunctionsList.cs" />
@@ -390,6 +385,8 @@
 		<Compile Update="tools/Lua/LuaWinform.cs" SubType="Form" />
 		<Compile Update="tools/Lua/LuaWinform.Designer.cs" DependentUpon="LuaWinform.cs" />
 		<EmbeddedResource Update="tools/Lua/LuaWinform.resx" DependentUpon="LuaWinform.cs" />
+		<Compile Update="tools/Lua/UnixLuaLibraries.cs" DependentUpon="LuaLibraries.cs" />
+		<Compile Update="tools/Lua/Win32LuaLibraries.cs" DependentUpon="LuaLibraries.cs" />
 		<Compile Update="tools/Macros/MacroInput.ButtonSelect.cs" SubType="Form" />
 		<Compile Update="tools/Macros/MacroInput.cs" SubType="Form" />
 		<Compile Update="tools/Macros/MacroInput.Designer.cs" DependentUpon="MacroInput.cs" />

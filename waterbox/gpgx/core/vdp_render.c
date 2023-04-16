@@ -595,7 +595,7 @@ typedef struct
   uint16 size;
 } object_info_t;
 
-static object_info_t obj_info[2][MAX_SPRITES_PER_LINE];
+static object_info_t obj_info[2][20];
 
 /* Sprite Counter */
 static uint8 object_count[2];
@@ -3212,7 +3212,6 @@ void render_obj_m5(int line)
   int xpos, width;
   int pixelcount = 0;
   int masked = 0;
-  int max_pixels = MODE5_MAX_SPRITE_PIXELS;
 
   uint8 *src, *s, *lb;
   uint32 temp, v_line;
@@ -3277,10 +3276,10 @@ void render_obj_m5(int line)
       lb = &linebuf[0][0x20 + xpos];
 
       /* Max. number of sprite pixels rendered per line */
-      if (pixelcount > max_pixels)
+      if (pixelcount > max_sprite_pixels)
       {
         /* Adjust number of pixels to draw */
-        width -= (pixelcount - max_pixels);
+        width -= (pixelcount - max_sprite_pixels);
       }
 
       /* Number of tiles to draw */
@@ -3299,7 +3298,7 @@ void render_obj_m5(int line)
     }
 
     /* Sprite limit */
-    if (pixelcount >= max_pixels)
+    if (pixelcount >= max_sprite_pixels)
     {
       /* Sprite masking is effective on next line if max pixel width is reached */
       spr_ovr = (pixelcount >= bitmap.viewport.w);
@@ -3322,7 +3321,6 @@ void render_obj_m5_ste(int line)
   int xpos, width;
   int pixelcount = 0;
   int masked = 0;
-  int max_pixels = MODE5_MAX_SPRITE_PIXELS;
 
   uint8 *src, *s, *lb;
   uint32 temp, v_line;
@@ -3390,9 +3388,9 @@ void render_obj_m5_ste(int line)
       lb = &linebuf[1][0x20 + xpos];
 
       /* Adjust number of pixels to draw for sprite limit */
-      if (pixelcount > max_pixels)
+      if (pixelcount > max_sprite_pixels)
       {
-        width -= (pixelcount - max_pixels);
+        width -= (pixelcount - max_sprite_pixels);
       }
 
       /* Number of tiles to draw */
@@ -3411,7 +3409,7 @@ void render_obj_m5_ste(int line)
     }
 
     /* Sprite limit */
-    if (pixelcount >= max_pixels)
+    if (pixelcount >= max_sprite_pixels)
     {
       /* Sprite masking is effective on next line if max pixel width is reached */
       spr_ovr = (pixelcount >= bitmap.viewport.w);
@@ -3441,7 +3439,6 @@ void render_obj_m5_im2(int line)
   int pixelcount = 0;
   int masked = 0;
   int odd = odd_frame;
-  int max_pixels = MODE5_MAX_SPRITE_PIXELS;
 
   uint8 *src, *s, *lb;
   uint32 temp, v_line;
@@ -3506,9 +3503,9 @@ void render_obj_m5_im2(int line)
       lb = &linebuf[0][0x20 + xpos];
 
       /* Adjust width for sprite limit */
-      if (pixelcount > max_pixels)
+      if (pixelcount > max_sprite_pixels)
       {
-        width -= (pixelcount - max_pixels);
+        width -= (pixelcount - max_sprite_pixels);
       }
 
       /* Number of tiles to draw */
@@ -3527,7 +3524,7 @@ void render_obj_m5_im2(int line)
     }
 
     /* Sprite Limit */
-    if (pixelcount >= max_pixels)
+    if (pixelcount >= max_sprite_pixels)
     {
       /* Sprite masking is effective on next line if max pixel width is reached */
       spr_ovr = (pixelcount >= bitmap.viewport.w);
@@ -3551,7 +3548,6 @@ void render_obj_m5_im2_ste(int line)
   int pixelcount = 0;
   int masked = 0;
   int odd = odd_frame;
-  int max_pixels = MODE5_MAX_SPRITE_PIXELS;
 
   uint8 *src, *s, *lb;
   uint32 temp, v_line;
@@ -3619,9 +3615,9 @@ void render_obj_m5_im2_ste(int line)
       lb = &linebuf[1][0x20 + xpos];
 
       /* Adjust width for sprite limit */
-      if (pixelcount > max_pixels)
+      if (pixelcount > max_sprite_pixels)
       {
-        width -= (pixelcount - max_pixels);
+        width -= (pixelcount - max_sprite_pixels);
       }
 
       /* Number of tiles to draw */
@@ -3640,7 +3636,7 @@ void render_obj_m5_im2_ste(int line)
     }
 
     /* Sprite Limit */
-    if (pixelcount >= max_pixels)
+    if (pixelcount >= max_sprite_pixels)
     {
       /* Sprite masking is effective on next line if max pixel width is reached */
       spr_ovr = (pixelcount >= bitmap.viewport.w);
@@ -3721,7 +3717,7 @@ void parse_satb_tms(int line)
       if ((ypos >= 0) && (ypos < height))
       {
         /* Sprite overflow */
-        if (count == TMS_MAX_SPRITES_PER_LINE)
+        if (count == 4)
         {
           /* Flag is set only during active area */
           if (line < bitmap.viewport.h)
@@ -3817,7 +3813,7 @@ void parse_satb_m4(int line)
     if ((ypos >= 0) && (ypos < height))
     {
       /* Sprite overflow */
-      if (count == MODE4_MAX_SPRITES_PER_LINE)
+      if (count == 8)
       {
         /* Flag is set only during active area */
         if ((line >= 0) && (line < bitmap.viewport.h))
@@ -3863,7 +3859,7 @@ void parse_satb_m5(int line)
   int count = 0;
 
   /* max. number of rendered sprites (16 or 20 sprites per line by default) */
-  int max = MODE5_MAX_SPRITES_PER_LINE;
+  int max = bitmap.viewport.w >> 4;
 
   /* max. number of parsed sprites (64 or 80 sprites per line by default) */
   int total = max_sprite_pixels >> 2;

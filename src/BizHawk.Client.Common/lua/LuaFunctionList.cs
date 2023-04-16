@@ -15,8 +15,8 @@ namespace BizHawk.Client.Common
 
 		public LuaFunctionList(Action onChanged) => Changed = onChanged;
 
-		public NamedLuaFunction this[string guid]
-			=> _functions.Find(nlf => nlf.Guid.ToString() == guid);
+		public NamedLuaFunction this[string guid] =>
+			_functions.FirstOrDefault(nlf => nlf.Guid.ToString() == guid);
 
 		public void Add(NamedLuaFunction nlf)
 		{
@@ -47,7 +47,7 @@ namespace BizHawk.Client.Common
 
 		public void RemoveForFile(LuaFile file, IEmulator emulator)
 		{
-			var functionsToRemove = _functions.Where(l => l.LuaFile.Path == file.Path || ReferenceEquals(l.LuaFile.Thread, file.Thread)).ToList();
+			var functionsToRemove = _functions.Where(l => l.LuaFile.Path == file.Path || l.LuaFile.Thread == file.Thread).ToList();
 
 			foreach (var function in functionsToRemove)
 			{

@@ -10,10 +10,7 @@ namespace BizHawk.Client.Common
 	{
 		void DisplayVsync(bool enabled);
 		int FrameCount();
-
-		/// <returns>disassembly and opcode width, or <c>(string.Empty, 0)</c> on failure</returns>
-		(string Disasm, int Length) Disassemble(uint pc, string? name = null);
-
+		object? Disassemble(uint pc, string? name = null);
 		ulong? GetRegister(string name);
 		IReadOnlyDictionary<string, ulong> GetRegisters();
 		void SetRegister(string register, int value);

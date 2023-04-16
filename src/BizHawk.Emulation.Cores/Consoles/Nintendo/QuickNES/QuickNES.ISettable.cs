@@ -80,10 +80,19 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				get => _Palette;
 				set
 				{
-					if (value is null) throw new ArgumentNullException(paramName: nameof(value));
-					const int PALETTE_LENGTH = 64 * 8 * 3;
-					if (value.Length is not PALETTE_LENGTH) throw new ArgumentException(message: "incorrect length", paramName: nameof(value));
-					_Palette = value;
+					if (value == null)
+					{
+						throw new ArgumentNullException();
+					}
+
+					if (value.Length == 64 * 8 * 3)
+					{
+						_Palette = value;
+					}
+					else
+					{
+						throw new ArgumentOutOfRangeException();
+					}
 				}
 			}
 
@@ -108,7 +117,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				//TODO - support 512 color palettes
 				int nColors = pal.GetLength(0);
 				int nElems =  pal.GetLength(1);
-				if (nColors is not (64 or 512) || nElems is not 3) throw new ArgumentException(message: "incorrect array dimensions", paramName: nameof(pal));
+				if (!(nColors == 64 || nColors == 512) || nElems != 3)
+				{
+					throw new ArgumentOutOfRangeException();
+				}
 
 				if (nColors == 512)
 				{

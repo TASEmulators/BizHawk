@@ -9,28 +9,20 @@ using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class DisplayConfig : Form, IDialogParent
+	public partial class DisplayConfig : Form
 	{
-		private static readonly FilesystemFilterSet CgShaderPresetsFSFilterSet = new(new FilesystemFilter(".CGP Files", new[] { "cgp" }))
-		{
-			AppendAllFilesEntry = false,
-		};
-
 		private readonly Config _config;
 
 		private readonly IGL _gl;
 
 		private string _pathSelection;
 
-		public IDialogController DialogController { get; }
-
 		public bool NeedReset { get; set; }
 
-		public DisplayConfig(Config config, IDialogController dialogController, IGL gl)
+		public DisplayConfig(Config config, IGL gl)
 		{
 			_config = config;
 			_gl = gl;
-			DialogController = dialogController;
 
 			InitializeComponent();
 
@@ -268,41 +260,42 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BtnSelectUserFilter_Click(object sender, EventArgs e)
 		{
-			var result = this.ShowFileOpenDialog(
-				filter: CgShaderPresetsFSFilterSet,
-				initDir: string.IsNullOrWhiteSpace(_pathSelection)
-				? string.Empty : Path.GetDirectoryName(_pathSelection)!,
-				initFileName: _pathSelection);
-			if (result is null) return;
-
-			rbUser.Checked = true;
-			var choice = Path.GetFullPath(result);
-				
-			//test the preset
-			using (var stream = File.OpenRead(choice))
+			using var ofd = new OpenFileDialog
 			{
-				var cgp = new RetroShaderPreset(stream);
+				Filter = new FilesystemFilter(".CGP Files", new[] { "cgp" }).ToString(),
+				FileName = _pathSelection
+			};
+			if (ofd.ShowDialog() == DialogResult.OK)
+			{
+				rbUser.Checked = true;
+				var choice = Path.GetFullPath(ofd.FileName);
+				
+				//test the preset
+				using (var stream = File.OpenRead(choice))
+				{
+					var cgp = new RetroShaderPreset(stream);
 
-				// try compiling it
-				bool ok = false;
-				string errors = "";
-				try
-				{
-					var filter = new RetroShaderChain(_gl, cgp, Path.GetDirectoryName(choice));
-					ok = filter.Available;
-					errors = filter.Errors;
+					// try compiling it
+					bool ok = false;
+					string errors = "";
+					try
+					{
+						var filter = new RetroShaderChain(_gl, cgp, Path.GetDirectoryName(choice));
+						ok = filter.Available;
+						errors = filter.Errors;
+					}
+					catch {}
+					if (!ok)
+					{
+						using var errorForm = new ExceptionBox(errors);
+						errorForm.ShowDialog();
+						return;
+					}
 				}
-				catch {}
-				if (!ok)
-				{
-					using var errorForm = new ExceptionBox(errors);
-					this.ShowDialogAsChild(errorForm);
-					return;
-				}
+
+				_pathSelection = choice;
+				RefreshState();
 			}
-
-			_pathSelection = choice;
-			RefreshState();
 		}
 
 		private void CheckLetterbox_CheckedChanged(object sender, EventArgs e)
@@ -378,10 +371,6 @@ namespace BizHawk.Client.EmuHawk
 			rbFinalFilterBilinear.Checked = true;
 			checkLetterbox.Checked = true;
 			rbUseSystem.Checked = true;
-			txtCropLeft.Text = "0";
-			txtCropTop.Text = "0";
-			txtCropRight.Text = "0";
-			txtCropBottom.Text = "0";
 		}
 	}
 }

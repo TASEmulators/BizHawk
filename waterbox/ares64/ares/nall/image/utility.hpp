@@ -173,7 +173,7 @@ inline auto image::transform(bool outputEndian, u32 outputDepth, u64 outputAlpha
     }
   }
 
-  operator=(std::move(output));
+  operator=(move(output));
 }
 
 }

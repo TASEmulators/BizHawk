@@ -31,14 +31,22 @@ namespace BizHawk.Emulation.Cores.Calculators.Emu83
 			CreateMemoryDomain(LibEmu83.MemoryArea_t.MEM_VRAM, "VRAM");
 
 			_memoryDomains.Add(new MemoryDomainDelegate("System Bus", 0x10000, MemoryDomain.Endian.Little,
-				addr =>
+				delegate(long addr)
 				{
-					if (addr is < 0 or > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
+					if (addr < 0 || addr >= 0x10000)
+					{
+						throw new ArgumentOutOfRangeException();
+					}
+
 					return LibEmu83.TI83_ReadMemory(Context, (ushort)addr);
 				},
-				(addr, val) =>
+				delegate(long addr, byte val)
 				{
-					if (addr is < 0 or > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
+					if (addr < 0 || addr >= 0x10000)
+					{
+						throw new ArgumentOutOfRangeException();
+					}
+
 					LibEmu83.TI83_WriteMemory(Context, (ushort)addr, val);
 				}, 1));
 

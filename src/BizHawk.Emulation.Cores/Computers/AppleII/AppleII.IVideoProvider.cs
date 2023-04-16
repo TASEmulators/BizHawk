@@ -17,9 +17,15 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		public int BackgroundColor => 0;
 
 		public int VsyncNumerator
-			=> NullVideo.DefaultVsyncNum; //TODO precise numbers or confirm the default is okay
+		{
+			[FeatureNotImplemented] // TODO: precise numbers or confirm the default is okay
+			get => NullVideo.DefaultVsyncNum;
+		}
 
 		public int VsyncDenominator
-			=> NullVideo.DefaultVsyncDen; //TODO precise numbers or confirm the default is okay
+		{
+			[FeatureNotImplemented] // TODO: precise numbers or confirm the default is okay
+			get => NullVideo.DefaultVsyncDen;
+		}
 	}
 }

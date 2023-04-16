@@ -38,7 +38,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			public byte TouchY;
 			public byte MicVolume;
 			public byte GBALightSensor;
-			public bool ConsiderAltLag;
 		}
 
 		[Flags]
@@ -48,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			USE_REAL_BIOS = 0x01,
 			SKIP_FIRMWARE = 0x02,
 			GBA_CART_PRESENT = 0x04,
-			CLEAR_NAND = 0x08,
+			RESERVED_FLAG = 0x08,
 			FIRMWARE_OVERRIDE = 0x10,
 			IS_DSI = 0x20,
 			LOAD_DSIWARE = 0x40,
@@ -99,15 +98,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		public abstract bool SaveRamIsDirty();
 
 		[BizImport(CC)]
-		public abstract void ImportDSiWareSavs(uint titleId);
-
-		[BizImport(CC)]
-		public abstract void ExportDSiWareSavs(uint titleId);
-
-		[BizImport(CC)]
-		public abstract void DSiWareSavsLength(uint titleId, out int publicSavSize, out int privateSavSize, out int bannerSavSize);
-
-		[BizImport(CC)]
 		public abstract void GetRegs(uint[] regs);
 
 		[BizImport(CC)]
@@ -122,24 +112,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		[BizImport(CC)]
 		public abstract void SetMemoryCallback(int which, MemoryCallback callback);
 
-		[Flags]
-		public enum TraceMask : uint
+		// bit 0 -> ARM9 or ARM7
+		// bit 1 -> ARM or THUMB mode
+		public enum CpuTypes : uint
 		{
-			NONE = 0,
-			ARM7_THUMB = 1,
-			ARM7_ARM = 2,
-			ARM9_THUMB = 4,
-			ARM9_ARM = 8,
+			ARM9,
+			ARM7,
+			ARM9_THUMB,
+			ARM7_THUMB,
 		}
 
 		[UnmanagedFunctionPointer(CC)]
-		public delegate void TraceCallback(TraceMask type, uint opcode, IntPtr regs, IntPtr disasm, uint cyclesOff);
+		public delegate void TraceCallback(CpuTypes _cpu, IntPtr _regs, uint _opcode);
 
 		[BizImport(CC)]
-		public abstract void SetTraceCallback(TraceCallback callback, TraceMask mask);
-
-		[BizImport(CC)]
-		public abstract void GetDisassembly(TraceMask type, uint opcode, byte[] ret);
+		public abstract void SetTraceCallback(TraceCallback callback);
 
 		[BizImport(CC)]
 		public abstract IntPtr GetFrameThreadProc();

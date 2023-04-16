@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -12,9 +11,6 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class VirtualpadTool : ToolFormBase, IToolFormAutoConfig
 	{
-		public static Icon ToolIcon
-			=> Properties.Resources.GameControllerIcon;
-
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
 
@@ -51,7 +47,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			StickyPads = true;
 			InitializeComponent();
-			Icon = ToolIcon;
+			Icon = Properties.Resources.GameControllerIcon;
 		}
 
 		private void VirtualpadTool_Load(object sender, EventArgs e)
@@ -150,8 +146,6 @@ namespace BizHawk.Client.EmuHawk
 
 			CreatePads();
 		}
-
-		protected override void GeneralUpdate() => UpdateAfter();
 
 		protected override void UpdateAfter()
 		{

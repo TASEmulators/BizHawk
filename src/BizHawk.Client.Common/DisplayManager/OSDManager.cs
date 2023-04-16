@@ -162,7 +162,7 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					var message = _messages[_messages.Count - 1];
+					var message = _messages.Last();
 					DrawMessage(g, message, 0);
 				}
 			}
@@ -172,7 +172,6 @@ namespace BizHawk.Client.Common
 				try
 				{
 					var point = GetCoordinates(g, text.Position, text.Message);
-					if (point.Y >= g.ClipBounds.Height) continue; // simple optimisation; don't bother drawing off-screen
 					g.DrawString(text.Message, MessageFont, text.ForeColor, point.X, point.Y);
 				}
 				catch (Exception)

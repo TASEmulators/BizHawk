@@ -29,6 +29,8 @@
 /BizHawk.Client.EmuHawk/tools/TAStudio/HistoryBox.resx
 
 
+/src/BizHawk.Common/VersionInfo.gen.cs
+
 /src/BizHawk.Tests*/res/*_artifact
 /src/BizHawk.Tests*/res/fw
 

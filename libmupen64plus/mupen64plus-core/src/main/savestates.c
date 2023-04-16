@@ -487,7 +487,7 @@ EXPORT int CALL savestates_load_bkm(char * curr)
 
     char *queue;
 
-	hasExpansion = 1;// !(ConfigGetParamInt(g_CoreConfig, "DisableExtraMem"));
+	hasExpansion = !(ConfigGetParamInt(g_CoreConfig, "DisableExtraMem"));
 	savestateSize = hasExpansion ? 16788288 : 12593984;
 	queue = curr + savestateSize;
 
@@ -1457,7 +1457,7 @@ EXPORT int CALL savestates_save_bkm(char *curr)
 
     queuelength = save_eventqueue_infos(queue);
 
-	hasExpansion = 1;// !(ConfigGetParamInt(g_CoreConfig, "DisableExtraMem"));
+	hasExpansion = !(ConfigGetParamInt(g_CoreConfig, "DisableExtraMem"));
 
     // Allocate memory for the save state data
 	if (hasExpansion)

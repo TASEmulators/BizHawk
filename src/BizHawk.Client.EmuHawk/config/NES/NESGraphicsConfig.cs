@@ -59,12 +59,20 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BrowsePalette_Click(object sender, EventArgs e)
 		{
-			var result = this.ShowFileOpenDialog(
-				discardCWDChange: true,
-				filter: FilesystemFilterSet.Palettes,
-				initDir: _config.PathEntries.PalettesAbsolutePathFor(VSystemID.Raw.NES));
-			if (result is null) return;
-			PalettePath.Text = result;
+			using var ofd = new OpenFileDialog
+			{
+				InitialDirectory = _config.PathEntries.PalettesAbsolutePathFor(VSystemID.Raw.NES),
+				Filter = new FilesystemFilterSet(FilesystemFilter.Palettes).ToString(),
+				RestoreDirectory = true
+			};
+
+			var result = ofd.ShowDialog();
+			if (result != DialogResult.OK)
+			{
+				return;
+			}
+
+			PalettePath.Text = ofd.FileName;
 			AutoLoadPalette.Checked = true;
 			SetPaletteImage();
 		}
@@ -164,7 +172,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ChangeBG()
 		{
-			if (BGColorDialog.ShowDialog().IsOk())
+			if (BGColorDialog.ShowDialog() == DialogResult.OK)
 			{
 				SetColorBox();
 			}

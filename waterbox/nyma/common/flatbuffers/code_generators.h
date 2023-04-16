@@ -61,7 +61,7 @@ class CodeWriter {
   }
 
   // Appends the given text to the generated code as well as a newline
-  // character.  Any text within {{ and }} delimiters is replaced by values
+  // character.  Any text within {{ and }} delimeters is replaced by values
   // previously stored in the CodeWriter by calling SetValue above.  The newline
   // will be suppressed if the text ends with the \\ character.
   void operator+=(std::string text);
@@ -75,8 +75,6 @@ class CodeWriter {
   void DecrementIdentLevel() {
     if (cur_ident_lvl_) cur_ident_lvl_--;
   }
-
-  void SetPadding(const std::string &padding) { pad_ = padding; }
 
  private:
   std::map<std::string, std::string> value_map_;
@@ -94,8 +92,7 @@ class BaseGenerator {
   virtual bool generate() = 0;
 
   static std::string NamespaceDir(const Parser &parser, const std::string &path,
-                                  const Namespace &ns,
-                                  const bool dasherize = false);
+                                  const Namespace &ns);
 
   std::string GeneratedFileName(const std::string &path,
                                 const std::string &file_name,
@@ -117,8 +114,7 @@ class BaseGenerator {
   BaseGenerator &operator=(const BaseGenerator &);
   BaseGenerator(const BaseGenerator &);
 
-  std::string NamespaceDir(const Namespace &ns,
-                           const bool dasherize = false) const;
+  std::string NamespaceDir(const Namespace &ns) const;
 
   static const char *FlatBuffersGeneratedWarning();
 
@@ -138,8 +134,7 @@ class BaseGenerator {
   std::string WrapInNameSpace(const Namespace *ns,
                               const std::string &name) const;
 
-  std::string WrapInNameSpace(const Definition &def,
-                              const std::string &suffix = "") const;
+  std::string WrapInNameSpace(const Definition &def) const;
 
   std::string GetNameSpace(const Definition &def) const;
 

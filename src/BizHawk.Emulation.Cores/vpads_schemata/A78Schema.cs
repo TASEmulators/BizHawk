@@ -9,6 +9,7 @@ using BizHawk.Emulation.Cores.Atari.A7800Hawk;
 namespace BizHawk.Emulation.Cores
 {
 	[Schema(VSystemID.Raw.A78)]
+	// ReSharper disable once UnusedMember.Global
 	public class A78Schema : IVirtualPadSchema
 	{
 		private static string StandardControllerName => typeof(StandardController).DisplayName();

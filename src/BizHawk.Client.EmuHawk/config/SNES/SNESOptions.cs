@@ -37,21 +37,23 @@ namespace BizHawk.Client.EmuHawk
 			};
 
 			var result = dialogParent.ShowDialogAsChild(dlg);
-			if (!result.IsOk()) return result;
+			if (result == DialogResult.OK)
+			{
+				s.AlwaysDoubleSize = dlg.AlwaysDoubleSize;
+				s.CropSGBFrame = dlg.CropSGBFrame;
+				ss.RandomizedInitialState = dlg.RandomizedInitialState;
+				s.ShowOBJ_0 = dlg.ShowObj1;
+				s.ShowOBJ_1 = dlg.ShowObj2;
+				s.ShowOBJ_2 = dlg.ShowObj3;
+				s.ShowOBJ_3 = dlg.ShowObj4;
+				s.ShowBG1_0 = s.ShowBG1_1 = dlg.ShowBg1;
+				s.ShowBG2_0 = s.ShowBG2_1 = dlg.ShowBg2;
+				s.ShowBG3_0 = s.ShowBG3_1 = dlg.ShowBg3;
+				s.ShowBG4_0 = s.ShowBG4_1 = dlg.ShowBg4;
 
-			s.AlwaysDoubleSize = dlg.AlwaysDoubleSize;
-			s.CropSGBFrame = dlg.CropSGBFrame;
-			ss.RandomizedInitialState = dlg.RandomizedInitialState;
-			s.ShowOBJ_0 = dlg.ShowObj1;
-			s.ShowOBJ_1 = dlg.ShowObj2;
-			s.ShowOBJ_2 = dlg.ShowObj3;
-			s.ShowOBJ_3 = dlg.ShowObj4;
-			s.ShowBG1_0 = s.ShowBG1_1 = dlg.ShowBg1;
-			s.ShowBG2_0 = s.ShowBG2_1 = dlg.ShowBg2;
-			s.ShowBG3_0 = s.ShowBG3_1 = dlg.ShowBg3;
-			s.ShowBG4_0 = s.ShowBG4_1 = dlg.ShowBg4;
-			settable.PutCoreSettings(s);
-			settable.PutCoreSyncSettings(ss);
+				settable.PutCoreSettings(s);
+				settable.PutCoreSyncSettings(ss);
+			}
 			return result;
 		}
 

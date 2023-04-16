@@ -6,7 +6,6 @@ struct System {
 
   auto name() const -> string { return information.name; }
   auto region() const -> Region { return information.region; }
-  auto _DD() const -> bool { return information.dd; }
   auto frequency() const -> u32 { return information.frequency; }
 
   //system.cpp
@@ -26,7 +25,6 @@ private:
     string name = "Nintendo 64";
     Region region = Region::NTSC;
     u32 frequency = 93'750'000 * 2;
-    bool dd = false;
   } information;
 
   //serialization.cpp
@@ -37,4 +35,3 @@ extern System system;
 
 auto Region::NTSC() -> bool { return system.region() == System::Region::NTSC; }
 auto Region::PAL() -> bool { return system.region() == System::Region::PAL; }
-auto _DD() -> bool { return system._DD(); }

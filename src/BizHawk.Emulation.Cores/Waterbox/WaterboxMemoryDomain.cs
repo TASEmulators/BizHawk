@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public static WaterboxMemoryDomain Create(MemoryArea m, WaterboxHost monitor)
 		{
 			return m.Flags.HasFlag(MemoryDomainFlags.FunctionHook)
-				? new WaterboxMemoryDomainFunc(m, monitor)
+				? (WaterboxMemoryDomain)new WaterboxMemoryDomainFunc(m, monitor)
 				: new WaterboxMemoryDomainPointer(m, monitor);
 		}
 
@@ -52,12 +52,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 			Definition = m;
 		}
-
-		public override void Enter()
-			=> _monitor.Enter();
-
-		public override void Exit()
-			=> _monitor.Exit();
 	}
 
 	public unsafe class WaterboxMemoryDomainPointer : WaterboxMemoryDomain

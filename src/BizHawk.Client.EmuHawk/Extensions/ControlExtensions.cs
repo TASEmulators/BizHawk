@@ -133,12 +133,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return tabControl.TabPages.Cast<TabPage>();
 		}
-
-		public static void ReplaceDropDownItems(this ToolStripDropDownItem menu, params ToolStripItem[] items)
-		{
-			menu.DropDownItems.Clear();
-			menu.DropDownItems.AddRange(items);
-		}
 	}
 
 	public static class ListViewExtensions
@@ -243,13 +237,17 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void SaveAsFile(this Bitmap bitmap, IGameInfo game, string suffix, string systemId, PathEntryCollection paths, IDialogParent parent)
 		{
-			var result = parent.ShowFileSaveDialog(
-				discardCWDChange: true,
-				filter: FilesystemFilterSet.Screenshots,
-				initDir: paths.ScreenshotAbsolutePathFor(systemId),
-				initFileName: $"{game.FilesystemSafeName()}-{suffix}");
-			if (result is null) return;
-			FileInfo file = new(result);
+			using var sfd = new SaveFileDialog
+			{
+				FileName = $"{game.FilesystemSafeName()}-{suffix}",
+				InitialDirectory = paths.ScreenshotAbsolutePathFor(systemId),
+				Filter = FilesystemFilterSet.Screenshots.ToString(),
+				RestoreDirectory = true
+			};
+
+			if (parent.ShowDialogWithTempMute(sfd) != DialogResult.OK) return;
+
+			var file = new FileInfo(sfd.FileName);
 			string extension = file.Extension.ToUpper();
 			ImageFormat i = extension switch
 			{

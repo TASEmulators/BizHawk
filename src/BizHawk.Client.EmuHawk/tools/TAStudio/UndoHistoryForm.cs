@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
 
@@ -84,8 +85,9 @@ namespace BizHawk.Client.EmuHawk
 			_tastudio.RefreshDialog();
 		}
 
-		private int SelectedItem
-			=> HistoryView.AnyRowsSelected ? HistoryView.FirstSelectedRowIndex : -1;
+		private int SelectedItem => HistoryView.SelectedRows.Any()
+			? HistoryView.SelectedRows.First()
+			: -1;
 
 		private void UndoToHere(int index)
 		{

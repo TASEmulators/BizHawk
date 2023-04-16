@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 
 using BizHawk.Emulation.Common;
@@ -33,8 +32,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 		}
 
 		[FeatureNotImplemented]
-		public void DisassembleCDL(Stream s, ICodeDataLog cdl)
-			=> throw new NotImplementedException();
+		void ICodeDataLogger.DisassembleCDL(Stream s, ICodeDataLog cdl)
+		{
+		}
 
 		public void SetCDL(LR35902.eCDLogMemFlags flags, string type, int cdladdr)
 		{

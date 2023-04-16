@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -27,14 +26,6 @@ namespace BizHawk.Client.EmuHawk
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 
-			// quickly check if the user is running this as a 32 bit process somehow
-			if (!Environment.Is64BitProcess)
-			{
-				using (var box = new ExceptionBox($"EmuHawk requires a 64 bit environment in order to run! EmuHawk will now close.")) box.ShowDialog();
-				Process.GetCurrentProcess().Kill();
-				return;
-			}
-
 			if (OSTC.IsUnixHost)
 			{
 				// for Unix, skip everything else and just wire up the event handler
@@ -42,26 +33,19 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			foreach (var (dllToLoad, desc) in new[]
-			{
-				("vcruntime140_1.dll", "Microsoft Visual C++ Redistributable for Visual Studio 2015, 2017 and 2019 (x64)"),
-				("msvcr100.dll", "Microsoft Visual C++ 2010 SP1 Runtime (x64)"), // for Mupen64Plus, and some others
-			})
+			static void CheckLib(string dllToLoad, string desc)
 			{
 				var p = OSTC.LinkedLibManager.LoadOrZero(dllToLoad);
-				if (p != IntPtr.Zero)
+				if (p == IntPtr.Zero)
 				{
-					OSTC.LinkedLibManager.FreeByPtr(p);
-					continue;
+					using (var box = new ExceptionBox($"EmuHawk needs {desc} in order to run! See the readme on GitHub for more info. (EmuHawk will now close.)")) box.ShowDialog();
+					Process.GetCurrentProcess().Kill();
+					return;
 				}
-				// else it's missing or corrupted
-				using (ExceptionBox box = new($"EmuHawk needs {desc} in order to run! See the readme on GitHub for more info. (EmuHawk will now close.) Internal error message: {OSTC.LinkedLibManager.GetErrorMessage()}"))
-				{
-					box.ShowDialog();
-				}
-				Process.GetCurrentProcess().Kill();
-				return;
+				OSTC.LinkedLibManager.FreeByPtr(p);
 			}
+			CheckLib("vcruntime140_1.dll", "Microsoft Visual C++ Redistributable for Visual Studio 2015, 2017 and 2019 (x64)");
+			CheckLib("msvcr100.dll", "Microsoft Visual C++ 2010 SP1 Runtime (x64)"); // for Mupen64Plus, and some others
 
 			// this will look in subdirectory "dll" to load pinvoked stuff
 			var dllDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
@@ -132,9 +116,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			typeof(Form).GetField(OSTC.IsUnixHost ? "default_icon" : "defaultIcon", BindingFlags.NonPublic | BindingFlags.Static)
-				.SetValue(null, Properties.Resources.Logo);
-
 			TempFileManager.Start();
 
 			HawkFile.DearchivalMethod = SharpCompressDearchivalMethod.Instance;
@@ -172,7 +153,6 @@ namespace BizHawk.Client.EmuHawk
 				initialConfig = ConfigService.Load<Config>(configPath);
 			}
 			initialConfig.ResolveDefaults();
-			if (initialConfig.SaveSlot is 0) initialConfig.SaveSlot = 10; //TODO remove after a while
 			// initialConfig should really be globalConfig as it's mutable
 
 			FFmpegService.FFmpegPath = Path.Combine(PathUtils.DataDirectoryPath, "dll", OSTC.IsUnixHost ? "ffmpeg" : "ffmpeg.exe");
@@ -247,22 +227,7 @@ namespace BizHawk.Client.EmuHawk
 				_ = SetDllDirectory(dllDir);
 			}
 
-			if (OSTC.HostWindowsVersion is null || OSTC.HostWindowsVersion.Value.Version >= OSTC.WindowsVersion._10) // "windows isn't capable of being useful for non-administrators until windows 10" --zeromus
-			{
-				if (EmuHawkUtil.CLRHostHasElevatedPrivileges)
-				{
-					using MsgBox dialog = new(
-						title: "This EmuHawk is privileged",
-						message: $"EmuHawk detected it {(OSTC.IsUnixHost ? "is running as root (Superuser)" : "has Administrator privileges")}.\n"
-							+ "This is a bad idea.",
-						boxIcon: MessageBoxIcon.Warning);
-					dialog.ShowDialog();
-				}
-				else
-				{
-					Util.DebugWriteLine("running as unprivileged user");
-				}
-			}
+			Util.DebugWriteLine(EmuHawkUtil.CLRHostHasElevatedPrivileges ? "running as Superuser/Administrator" : "running as unprivileged user");
 
 			var exitCode = 0;
 			try
@@ -343,6 +308,27 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var requested = args.Name;
 
+			//mutate filename depending on selection of lua core. here's how it works
+			//1. we build NLua to the output/dll/lua directory. that brings KopiLua with it
+			//2. We reference it from there, but we tell it not to copy local; that way there's no NLua in the output/dll directory
+			//3. When NLua assembly attempts to load, it can't find it
+			//I. if LuaInterface is selected by the user, we switch to requesting that.
+			//     (those DLLs are built into the output/DLL directory)
+			//II. if NLua is selected by the user, we skip over this part;
+			//    later, we look for NLua or KopiLua assembly names and redirect them to files located in the output/DLL/nlua directory
+			if (new AssemblyName(requested).Name == "NLua")
+			{
+				// if this method referenced the global config, assemblies would need to be loaded, which isn't smart to do from the assembly resolver.
+				//so.. we're going to resort to something really bad.
+				//avert your eyes.
+				var configPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "config.ini");
+				if (File.Exists(configPath)
+					&& (Array.Find(File.ReadAllLines(configPath), line => line.Contains("  \"LuaEngine\": ")) ?? string.Empty).Contains("0"))
+				{
+					requested = "LuaInterface";
+				}
+			}
+
 			lock (AppDomain.CurrentDomain)
 			{
 				var firstAsm = Array.Find(AppDomain.CurrentDomain.GetAssemblies(), asm => asm.FullName == requested);
@@ -352,6 +338,7 @@ namespace BizHawk.Client.EmuHawk
 				var dllname = $"{new AssemblyName(requested).Name}.dll";
 				var directory = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
 				var simpleName = new AssemblyName(requested).Name;
+				if (simpleName == "NLua" || simpleName == "KopiLua") directory = Path.Combine(directory, "nlua");
 				var fname = Path.Combine(directory, dllname);
 				//it is important that we use LoadFile here and not load from a byte array; otherwise mixed (managed/unmanaged) assemblies can't load
 				return File.Exists(fname) ? Assembly.LoadFile(fname) : null;

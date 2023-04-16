@@ -5,8 +5,6 @@ using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
-using BizHawk.Common.CollectionExtensions;
-
 using Emu = BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -78,7 +76,7 @@ namespace BizHawk.Client.EmuHawk
 
 						BigEndianCheckBox.ThreeState = true;
 
-						if (Watches.Select(static s => s.Size).Distinct().CountIsAtLeast(2))
+						if (Watches.Select(s => s.Size).Distinct().Count() > 1)
 						{
 							DisplayTypeDropDown.Enabled = false;
 						}
@@ -173,15 +171,22 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Watches.Count > 1)
 			{
-				var firstWasBE = Watches[0].BigEndian;
-				if (Watches.TrueForAll(w => w.BigEndian == firstWasBE))
-				{
-					BigEndianCheckBox.Checked = firstWasBE;
-				}
-				else
+				// Aggregate state
+				var hasBig = Watches.Any(x => x.BigEndian);
+				var hasLittle = Watches.Any(x => x.BigEndian == false);
+
+				if (hasBig && hasLittle)
 				{
 					BigEndianCheckBox.Checked = true;
 					BigEndianCheckBox.CheckState = CheckState.Indeterminate;
+				}
+				else if (hasBig)
+				{
+					BigEndianCheckBox.Checked = true;
+				}
+				else
+				{
+					BigEndianCheckBox.Checked = false;
 				}
 			}
 			else if (Watches.Count == 1)

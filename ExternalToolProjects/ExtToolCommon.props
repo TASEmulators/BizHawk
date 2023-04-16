@@ -1,9 +1,11 @@
 <Project>
 	<Import Project="../Common.props" />
 	<PropertyGroup>
-		<OutputPath>$(MSBuildProjectDirectory)/bin/$(Configuration)/</OutputPath>
+		<CodeAnalysisRuleSet>$(ProjectDir)../../Common.ruleset</CodeAnalysisRuleSet>
+		<OutputPath>$(ProjectDir)bin/$(Configuration)/</OutputPath>
 	</PropertyGroup>
 	<ItemGroup>
+		<AdditionalFiles Include="$(ProjectDir)../../.stylecop.json" />
 		<None Remove="*.sh" />
 	</ItemGroup>
 </Project>

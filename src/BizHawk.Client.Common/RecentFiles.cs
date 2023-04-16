@@ -62,7 +62,7 @@ namespace BizHawk.Client.Common
 
 				if (recentlist.Count > MAX_RECENT_FILES)
 				{
-					recentlist.RemoveAt(recentlist.Count - 1);
+					recentlist.Remove(recentlist.Last());
 				}
 			}
 		}

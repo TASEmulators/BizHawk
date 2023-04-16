@@ -2,24 +2,15 @@
 	<Import Project="../Common.props" />
 	<PropertyGroup>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<CodeAnalysisRuleSet>$(ProjectDir)../../Common.ruleset</CodeAnalysisRuleSet>
 		<DefineConstants>$(DefineConstants);AVI_SUPPORT</DefineConstants>
-		<DocumentationFile>$(MSBuildProjectDirectory)/bin/doc_comments.xml</DocumentationFile>
-		<LangVersion>9.0</LangVersion>
+		<DocumentationFile>$(ProjectDir)bin/doc_comments.xml</DocumentationFile>
 		<MSBuildWarningsAsMessages>NU1702</MSBuildWarningsAsMessages>
-		<NoWarn>$(NoWarn);CS1573;CS1591</NoWarn>
-		<OutputPath>$(MSBuildProjectDirectory)/../../output/dll</OutputPath>
-		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
-	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)' == 'Release' And '$(SolutionDir)' != '' ">
-		<PathMap>$(SolutionDir)=/</PathMap>
-	</PropertyGroup>
-	<PropertyGroup Condition=" '$(MachineRunAnalyzersDuringBuild)' == '' ">
-		<RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
+		<NoWarn>CS1573;CS1591</NoWarn>
+		<OutputPath>$(ProjectDir)../../output/dll</OutputPath>
 	</PropertyGroup>
 	<ItemGroup>
-		<Analyzer Include="$(MSBuildProjectDirectory)/../../References/BizHawk.SrcGen.ReflectionCache.dll" />
-	</ItemGroup>
-	<ItemGroup Condition=" '$(Configuration)' != 'Debug' ">
-		<Compile Remove="$(MSBuildProjectDirectory)/debug/**/*" />
+		<AdditionalFiles Include="$(ProjectDir)../../.stylecop.json" />
+		<Analyzer Include="$(ProjectDir)../../References/BizHawk.SrcGen.ReflectionCache.dll" />
 	</ItemGroup>
 </Project>

@@ -60,21 +60,13 @@ namespace BizHawk.Client.Common
 		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		int GetApproxFramerate();
 
-		/// <summary>
-		/// essentially <c>return MainForm.StartNewMovie(MovieSession.Get(filename), record: false);</c>,
-		/// but also ensures a rom is loaded, and defers to TAStudio
-		/// </summary>
-		/// <param name="archive">unused</param>
-		/// <remarks>only referenced from <see cref="MovieApi"/></remarks>
-		bool LoadMovie(string filename, string archive = null);
-
 		/// <remarks>only referenced from <see cref="SaveStateApi"/></remarks>
-		bool LoadQuickSave(int slot, bool suppressOSD = false);
+		void LoadQuickSave(string quickSlotName, bool suppressOSD = false);
 
 		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
 		bool LoadRom(string path, LoadRomArgs args);
 
-		bool LoadState(string path, string userFriendlyStateName, bool suppressOSD = false);
+		void LoadState(string combine, string name, bool suppressOSD = false);
 
 		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
 		void PauseEmulator();
@@ -85,11 +77,8 @@ namespace BizHawk.Client.Common
 		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
 		void Render();
 
-		/// <remarks>only referenced from <see cref="MovieApi"/></remarks>
-		bool RestartMovie();
-
 		/// <remarks>only referenced from <see cref="SaveStateApi"/></remarks>
-		void SaveQuickSave(int slot, bool suppressOSD = false, bool fromLua = false);
+		void SaveQuickSave(string quickSlotName, bool fromLua = false, bool suppressOSD = false);
 
 		void SaveState(string path, string userFriendlyStateName, bool fromLua = false, bool suppressOSD = false);
 
@@ -97,9 +86,6 @@ namespace BizHawk.Client.Common
 
 		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
 		void StepRunLoop_Throttle();
-
-		/// <remarks>only referenced from <see cref="MovieApi"/></remarks>
-		void StopMovie(bool saveChanges = true);
 
 		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
 		void TakeScreenshot();

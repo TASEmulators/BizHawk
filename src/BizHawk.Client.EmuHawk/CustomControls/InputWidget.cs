@@ -171,7 +171,9 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private bool IsDuplicate(string binding)
-			=> _bindings.Contains(binding);
+		{
+			return _bindings.FirstOrDefault(x => x == binding) != null;
+		}
 
 		protected override void OnKeyUp(KeyEventArgs e)
 		{

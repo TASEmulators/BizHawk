@@ -7,6 +7,7 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Emulation.Cores
 {
 	[Schema(VSystemID.Raw.WSWAN)]
+	// ReSharper disable once UnusedMember.Global
 	public class WonderSwanSchema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)

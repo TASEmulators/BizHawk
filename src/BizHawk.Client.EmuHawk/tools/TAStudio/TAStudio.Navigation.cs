@@ -22,10 +22,6 @@ namespace BizHawk.Client.EmuHawk
 
 					GoToFrame(frame, false, false, OnLeftMouseDown);
 				}
-				else
-				{
-					_triggerAutoRestore = false;
-				}
 			}
 		}
 

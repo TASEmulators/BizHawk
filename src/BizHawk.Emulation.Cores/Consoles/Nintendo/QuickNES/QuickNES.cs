@@ -15,9 +15,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
 	[PortedCore(CoreNames.QuickNes, "", "0.7.0", "https://github.com/kode54/QuickNES")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
-	public sealed partial class QuickNES : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IInputPollable,
-		IBoardInfo, IVideoLogicalOffsets, IStatable, IDebuggable,
-		ISettable<QuickNES.QuickNESSettings, QuickNES.QuickNESSyncSettings>, INESPPUViewable
+	public partial class QuickNES : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IInputPollable, IBoardInfo, IVideoLogicalOffsets,
+		IStatable, IDebuggable, ISettable<QuickNES.QuickNESSettings, QuickNES.QuickNESSyncSettings>, INESPPUViewable
 	{
 		static QuickNES()
 		{
@@ -293,7 +292,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		private void CheckDisposed()
 		{
 			if (Context == IntPtr.Zero)
-				throw new ObjectDisposedException(nameof(QuickNES));
+				throw new ObjectDisposedException(GetType().Name);
 		}
 
 		// Fix some incorrect ines header entries that QuickNES uses to load games.

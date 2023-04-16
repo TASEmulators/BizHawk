@@ -100,7 +100,6 @@ namespace BizHawk.Client.Common
 		string OriginalEmulatorVersion { get; set; }
 		string FirmwareHash { get; set; }
 		string BoardName { get; set; }
-		string LogKey { get; set; }
 
 		/// <summary>
 		/// Loads from the HawkFile the minimal amount of information needed to determine Header info and Movie length.
@@ -255,9 +254,6 @@ namespace BizHawk.Client.Common
 
 	public static class MovieExtensions
 	{
-		public static FilesystemFilterSet GetFSFilterSet(this IMovie/*?*/ movie)
-			=> new(new FilesystemFilter("Movie Files", new[] { movie?.PreferredExtension ?? MovieService.StandardMovieExtension }));
-
 		public static bool IsActive(this IMovie movie) => movie != null && movie.Mode != MovieMode.Inactive;
 		public static bool NotActive(this IMovie movie) => movie == null || movie.Mode == MovieMode.Inactive;
 		public static bool IsPlaying(this IMovie movie) => movie?.Mode == MovieMode.Play;

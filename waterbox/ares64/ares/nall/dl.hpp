@@ -87,7 +87,35 @@ inline auto library::close() -> void {
   handle = 0;
 }
 #elif defined(PLATFORM_WINDOWS)
-//defined in dl.cpp
+inline auto library::open(const string& name, const string& path) -> bool {
+  if(handle) close();
+  if(path) {
+    string filepath = {path, name, ".dll"};
+    handle = (uintptr)LoadLibraryW(utf16_t(filepath));
+  }
+  if(!handle) {
+    string filepath = {name, ".dll"};
+    handle = (uintptr)LoadLibraryW(utf16_t(filepath));
+  }
+  return handle;
+}
+
+inline auto library::openAbsolute(const string& name) -> bool {
+  if(handle) close();
+  handle = (uintptr)LoadLibraryW(utf16_t(name));
+  return handle;
+}
+
+inline auto library::sym(const string& name) -> void* {
+  if(!handle) return nullptr;
+  return (void*)GetProcAddress((HMODULE)handle, name);
+}
+
+inline auto library::close() -> void {
+  if(!handle) return;
+  FreeLibrary((HMODULE)handle);
+  handle = 0;
+}
 #else
 inline auto library::open(const string&, const string&) -> bool { return false; }
 inline auto library::openAbsolute(const string&) -> bool { return false; }
@@ -96,7 +124,3 @@ inline auto library::close() -> void {}
 #endif
 
 }
-
-#if defined(NALL_HEADER_ONLY)
-  #include <nall/dl.cpp>
-#endif

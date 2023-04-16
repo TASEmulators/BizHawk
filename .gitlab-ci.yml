@@ -15,7 +15,7 @@ stages:
   before_script:
   - nix-env -iA nixpkgs.cachix
   - cachix use $CACHIX_CACHE_NAME
-  image: nixos/nix:latest
+  image: nixos/nix:2.3.12
   variables:
     CACHIX_CACHE_NAME: mono-for-bizhawk
 
@@ -41,16 +41,6 @@ build_asms_release:
   - if [ "$CI_COMMIT_REF_SLUG" == "release" ]; then Dist/UpdateVersionInfoForRelease.sh; fi
   - Dist/BuildRelease.sh
   stage: build
-
-build_ext_projs:
-  allow_failure: true
-  image: mcr.microsoft.com/dotnet/sdk:6.0
-  rules:
-  - if: '$CI_PIPELINE_SOURCE == "schedule"'
-    when: always
-  script:
-  - for d in $CI_PROJECT_DIR/ExternalProjects/*; do if [ -e "$d/build_release.sh" ]; then cd "$d" && file -bi *.csproj && ./build_release.sh; fi; done
-  stage: test
 
 build_ext_tools:
   allow_failure: true
@@ -99,7 +89,9 @@ check_style:
     when: always
     allow_failure: false
   script:
-  - Dist/BuildRelease.sh -p:RunAnalyzersDuringBuild=true
+  - cd src/BizHawk.Version
+  - dotnet build -c Release # configuration doesn't really matter as the assembly is empty
+  - ../../Dist/BuildRelease.sh -p:MachineRunAnalyzersDuringBuild=true
   stage: test
 
 .disabled_job_infersharp:
@@ -125,13 +117,13 @@ check_style:
     name: "$CI_HAWK_ARTIFACT_NAME"
     paths:
     - "$CI_HAWK_ARTIFACT_NAME_TAR"
-  image: alpine:latest
+  image: nixos/nix:2.3.12
   needs:
   - build_asms_release
   - job: build_asms_debug
     artifacts: false
   script:
-  - Dist/Package.sh 'linux-x64'
+  - nix-shell -p stdenvNoCC --run 'Dist/Package.sh "linux-x64"'
   - cd packaged_output
   - tar -cf "../$CI_HAWK_ARTIFACT_NAME_TAR" *
   stage: package
@@ -142,13 +134,13 @@ check_style:
     name: "$CI_HAWK_ARTIFACT_NAME"
     paths:
     - ./*
-  image: alpine:latest
+  image: nixos/nix:2.3.12
   needs:
   - build_asms_release
   - job: build_asms_debug
     artifacts: false
   script:
-  - Dist/Package.sh 'windows-x64'
+  - nix-shell -p stdenvNoCC --run 'Dist/Package.sh "windows-x64"'
     # now we replace $CI_PROJECT_DIR with $CI_PROJECT_DIR/packaged_output, so that the archival step will put everything at the top level
   - mv packaged_output ..
   - cd ..
@@ -197,8 +189,9 @@ run_tests:
   - job: build_asms_release
     artifacts: false
   script:
-  - Dist/BuildDebug.sh # populate output
-  - Dist/BuildTestRelease.sh
+  - cd src/BizHawk.Version
+  - dotnet build -c Release # configuration doesn't really matter as the assembly is empty
+  - ../../Dist/BuildTestRelease.sh
   stage: test
 
 .disabled_job_sast:

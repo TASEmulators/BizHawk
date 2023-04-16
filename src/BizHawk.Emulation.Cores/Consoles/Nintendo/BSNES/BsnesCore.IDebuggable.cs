@@ -89,11 +89,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			}
 		}
 
-		public long TotalExecutedCycles => Api.core.snes_get_executed_cycles();
+		public long TotalExecutedCycles { get; private set; }
 
 		private void StepInto()
 		{
 			_framePassed = Api.core.snes_cpu_step();
+			TotalExecutedCycles++;
 			if (_framePassed)
 			{
 				Frame++;
@@ -151,7 +152,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			{
 				0x20 or 0xfc => 3,
 				0x22 => 4,
-				_ => throw new InvalidOperationException()
+				_ => throw new ArgumentOutOfRangeException()
 			};
 		}
 	}

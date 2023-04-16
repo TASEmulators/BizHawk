@@ -1,0 +1,38 @@
+global_cflags = ARGUMENTS.get('CFLAGS', '-I./libsameboy/Core -Wall -Wextra -O3 -std=gnu11 -fomit-frame-pointer -flto')
+global_cflags += ARGUMENTS.get('CFLAGS', ' -Wno-strict-aliasing -Wno-multichar -Wno-implicit-fallthrough -Wno-sign-compare')
+global_cflags += ARGUMENTS.get('CFLAGS', ' -Wno-unused-parameter -Wno-int-in-bool-context -Wno-missing-field-initializers -Wno-overflow')
+global_defines = ' -D_GNU_SOURCE -D_USE_MATH_DEFINES -DNDEBUG -DGB_INTERNAL -DGB_DISABLE_DEBUGGER -DGB_DISABLE_CHEATS -DGB_DISABLE_TIMEKEEPING -DGB_DISABLE_REWIND -DGB_VERSION='
+vars = Variables()
+vars.Add('CC')
+
+import os
+env = Environment(ENV = os.environ,
+                  CFLAGS = global_cflags + global_defines,
+                  variables = vars)
+
+sourceFiles = Split('''
+	libsameboy/Core/apu.c
+	libsameboy/Core/random.c
+	libsameboy/Core/camera.c       
+	libsameboy/Core/rumble.c
+	libsameboy/Core/save_state.c
+	libsameboy/Core/display.c
+	libsameboy/Core/sgb.c
+	libsameboy/Core/gb.c
+	libsameboy/Core/sm83_cpu.c
+	libsameboy/Core/mbc.c
+	libsameboy/Core/memory.c
+	libsameboy/Core/timing.c
+	libsameboy/Core/printer.c
+	libsameboy/Core/joypad.c
+''')
+
+conf = env.Configure()
+
+conf.Finish()
+
+shlib = env.SharedLibrary('sameboy', sourceFiles + ['BizInterface.c'] + ['blip_buf.c'],
+                          LINKFLAGS = env['LINKFLAGS'] + ' -s -Wno-attributes',
+                          SHLIBPREFIX = "lib")
+
+env.Default(shlib)

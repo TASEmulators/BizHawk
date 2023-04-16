@@ -12,9 +12,6 @@ namespace BizHawk.Client.EmuHawk
 	[SpecializedTool("VDP Viewer")]
 	public partial class SmsVdpViewer : ToolFormBase, IToolFormAutoConfig
 	{
-		public static Icon ToolIcon
-			=> Properties.Resources.SmsIcon;
-
 		[RequiredService]
 		private ISmsGpuView Vdp { get; set; }
 
@@ -28,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 		public SmsVdpViewer()
 		{
 			InitializeComponent();
-			Icon = ToolIcon;
+			Icon = Properties.Resources.SmsIcon;
 
 			bmpViewTiles.ChangeBitmapSize(256, 128);
 			bmpViewPalette.ChangeBitmapSize(16, 2);

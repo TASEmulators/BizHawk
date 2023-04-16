@@ -1,7 +1,6 @@
 #include <tic80.h>
 #include <tic.h>
 #include <api.h>
-#include <core.h>
 
 #include <emulibc.h>
 #include <waterboxcore.h>
@@ -22,16 +21,8 @@ clock_t BizClockCallback()
 }
 
 static tic80* tic;
-static tic80_input biz_inputs;
 
-typedef struct
-{
-	u8 gamepad[4];
-	u8 mouse;
-	u8 keyboard;
-} InputsEnabled;
-
-ECL_EXPORT bool Init(u8* rom, u32 sz, InputsEnabled* inputsEnable)
+ECL_EXPORT bool Init(u8* rom, u32 sz)
 {
 	tic = tic80_create(TIC80_SAMPLERATE, TIC80_PIXEL_COLOR_BGRA8888);
 	if (!tic)
@@ -40,29 +31,7 @@ ECL_EXPORT bool Init(u8* rom, u32 sz, InputsEnabled* inputsEnable)
 	}
 
 	tic80_load(tic, rom, sz);
-
-	// advance one frame to initialize things
-	// if initializing failed we can know after it advances
-	memset(&biz_inputs, 0, sizeof(biz_inputs));
-	tic80_tick(tic, biz_inputs);
-	tic80_sound(tic); // should this be done?
-
-	tic_mem* mem = (tic_mem*)tic;
-	if (!mem->input.gamepad)
-	{
-		memset(inputsEnable->gamepad, 0, sizeof(inputsEnable->gamepad));
-	}
-	if (!mem->input.mouse)
-	{
-		inputsEnable->mouse = false;
-	}
-	if (!mem->input.keyboard)
-	{
-		inputsEnable->keyboard = false;
-	}
-
-	tic_core* core = (tic_core*)tic;
-	return core->state.initialized;
+	return true;
 }
 
 ECL_EXPORT void GetMemoryAreas(MemoryArea* m)
@@ -84,6 +53,8 @@ ECL_EXPORT void GetMemoryAreas(MemoryArea* m)
 	m[2].Size = sizeof(mem->ram->vram.data);
 	m[2].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE;
 }
+
+static tic80_input biz_inputs;
 
 ECL_EXPORT void SetInputs(tic80_input* inputs)
 {

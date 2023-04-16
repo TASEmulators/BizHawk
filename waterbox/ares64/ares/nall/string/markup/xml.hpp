@@ -43,8 +43,7 @@ protected:
 
   //copy part of string from source document into target string; decode markup while copying
   auto copy(string& target, const char* source, u32 length) -> void {
-    string buffer;
-    buffer.resize(length);
+    target.reserve(length + 1);
 
     #if defined(NALL_XML_LITERAL)
     memory::copy(target.pointer(), source, length);
@@ -52,7 +51,7 @@ protected:
     return;
     #endif
 
-    char* output = buffer.get();
+    char* output = target.get();
     while(length) {
       if(*source == '&') {
         if(!memory::compare(source, "&lt;",   4)) { *output++ = '<';  source += 4; length -= 4; continue; }
@@ -64,7 +63,7 @@ protected:
 
       if(_metadata == 0 && source[0] == '<' && source[1] == '!') {
         //comment
-    if(!memory::compare(source, "<!--", 4)) {
+        if(!memory::compare(source, "<!--", 4)) {
           source += 4, length -= 4;
           while(memory::compare(source, "-->", 3)) source++, length--;
           source += 3, length -= 3;
@@ -82,8 +81,7 @@ protected:
 
       *output++ = *source++, length--;
     }
-    buffer.resize(output - buffer.get());
-    target = std::move(buffer);
+    *output = 0;
   }
 
   auto parseExpression(const char*& p) -> bool {
@@ -201,19 +199,19 @@ protected:
     copy(_value, dataStart, dataEnd - dataStart);
   }
 
-  friend auto unserialize(const string&) -> Markup::Node;
+  friend auto unserialize(const string&) -> Markup::SharedNode;
 };
 
-inline auto unserialize(const string& markup) -> Markup::Node {
-  SharedNode node(new ManagedNode);
+inline auto unserialize(const string& markup) -> Markup::SharedNode {
+  auto node = new ManagedNode;
   try {
-
     const char* p = markup;
     node->parse(p);
   } catch(const char* error) {
-    node.reset();
+    delete node;
+    node = nullptr;
   }
-  return (Markup::SharedNode&)node;
+  return node;
 }
 
 }

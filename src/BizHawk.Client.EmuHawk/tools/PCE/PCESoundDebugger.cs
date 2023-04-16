@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Collections.Generic;
@@ -15,9 +14,6 @@ namespace BizHawk.Client.EmuHawk
 	[SpecializedTool("Sound Debugger")]
 	public partial class PCESoundDebugger : ToolFormBase, IToolFormAutoConfig
 	{
-		public static Icon ToolIcon
-			=> Properties.Resources.BugIcon;
-
 		[RequiredService]
 		private PCEngine PCE { get; set; }
 
@@ -26,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 		public PCESoundDebugger()
 		{
 			InitializeComponent();
-			Icon = ToolIcon;
+			Icon = Properties.Resources.BugIcon;
 
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);

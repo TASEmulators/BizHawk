@@ -11,17 +11,11 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public bool StartNewMovie(IMovie movie, bool record)
 		{
-			if (movie is null) throw new ArgumentNullException(paramName: nameof(movie));
-
-			if (CheatList.AnyActive)
+			if (movie == null)
 			{
-				var result = this.ModalMessageBox3(
-					caption: "Cheats warning",
-					text: "Continue playback with cheats enabled?\nChoosing \"No\" will disable cheats but not remove them.",
-					icon: EMsgBoxIcon.Question);
-				if (result is null) return false;
-				if (result is false) CheatList.DisableAll();
+				throw new ArgumentNullException($"{nameof(movie)} cannot be null.");
 			}
+
 			var oldPreferredCores = new Dictionary<string, string>(Config.PreferredCores);
 			try
 			{
@@ -48,7 +42,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 			finally
 			{
-				MovieSession.AbortQueuedMovie();
 				Config.PreferredCores = oldPreferredCores;
 			}
 
@@ -76,19 +69,18 @@ namespace BizHawk.Client.EmuHawk
 				PlayRecordStatusButton.ToolTipText = "Movie is in record mode";
 				PlayRecordStatusButton.Visible = true;
 			}
-			else if (MovieSession.Movie.NotActive())
+			else if (!MovieSession.Movie.IsActive())
 			{
 				PlayRecordStatusButton.Image = Properties.Resources.Blank;
 				PlayRecordStatusButton.ToolTipText = "No movie is active";
 				PlayRecordStatusButton.Visible = false;
 			}
 
-			UpdateWindowTitle();
+			SetWindowText();
 			UpdateStatusSlots();
-			Tools.UpdateValues<VirtualpadTool>();
 		}
 
-		public void StopMovie(bool saveChanges = true)
+		private void StopMovie(bool saveChanges = true)
 		{
 			if (IsSlave && Master.WantsToControlStopMovie)
 			{
@@ -101,13 +93,17 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public bool RestartMovie()
+		private void RestartMovie()
 		{
-			if (IsSlave && Master.WantsToControlRestartMovie) return Master.RestartMovie();
-			if (!MovieSession.Movie.IsActive()) return false;
-			var success = StartNewMovie(MovieSession.Movie, false);
-			if (success) AddOnScreenMessage("Replaying movie file in read-only mode");
-			return success;
+			if (IsSlave && Master.WantsToControlRestartMovie)
+			{
+				Master.RestartMovie();
+			}
+			else if (MovieSession.Movie.IsActive())
+			{
+				StartNewMovie(MovieSession.Movie, false);
+				AddOnScreenMessage("Replaying movie file in read-only mode");
+			}
 		}
 
 		private void ToggleReadOnly()

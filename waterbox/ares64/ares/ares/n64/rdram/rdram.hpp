@@ -1,6 +1,6 @@
 //RAMBUS RAM
 
-struct RDRAM : Memory::RCP<RDRAM> {
+struct RDRAM : Memory::IO<RDRAM> {
   Node::Object node;
   Memory::Writable ram;
 
@@ -24,8 +24,8 @@ struct RDRAM : Memory::RCP<RDRAM> {
   auto power(bool reset) -> void;
 
   //io.cpp
-  auto readWord(u32 address, u32& cycles) -> u32;
-  auto writeWord(u32 address, u32 data, u32& cycles) -> void;
+  auto readWord(u32 address) -> u32;
+  auto writeWord(u32 address, u32 data) -> void;
 
   //serialization.cpp
   auto serialize(serializer&) -> void;

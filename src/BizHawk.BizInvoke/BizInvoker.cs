@@ -6,7 +6,6 @@ using System.Reflection.Emit;
 using System.Runtime.InteropServices;
 using System.Text;
 using BizHawk.Common;
-using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.BizInvoke
 {
@@ -86,10 +85,6 @@ namespace BizHawk.BizInvoke
 		/// How far into a string pointer the first chair is.
 		/// </summary>
 		private static readonly int StringOffset;
-		/// <summary>
-		/// How far into a value array type element 0 is.
-		/// </summary>
-		private static readonly int ValueArrayElementOffset;
 
 		static BizInvoker()
 		{
@@ -98,7 +93,6 @@ namespace BizHawk.BizInvoke
 			ImplModuleBuilder = ImplAssemblyBuilder.DefineDynamicModule("BizInvokerModule");
 			ClassFieldOffset = BizInvokerUtilities.ComputeClassFirstFieldOffset();
 			StringOffset = BizInvokerUtilities.ComputeStringOffset();
-			ValueArrayElementOffset = BizInvokerUtilities.ComputeValueArrayElementOffset();
 		}
 
 		/// <summary>
@@ -173,7 +167,11 @@ namespace BizHawk.BizInvoke
 			}
 
 			var baseMethods = baseType.GetMethods(BindingFlags.Instance | BindingFlags.Public)
-				.Select(static m => (Info: m, Attr: m.GetCustomAttributes(true).OfType<BizImportAttribute>().FirstOrDefault()))
+				.Select(m => new
+				{
+					Info = m,
+					Attr = m.GetCustomAttributes(true).OfType<BizImportAttribute>().FirstOrDefault()
+				})
 				.Where(a => a.Attr != null)
 				.ToList();
 
@@ -183,13 +181,19 @@ namespace BizHawk.BizInvoke
 			}
 
 			{
-				var uo = baseMethods.FirstOrNull(static a => !a.Info.IsVirtual || a.Info.IsFinal);
-				if (uo is not null) throw new InvalidOperationException($"Method {uo.Value.Info.Name} cannot be overriden!");
+				var uo = baseMethods.FirstOrDefault(a => !a.Info.IsVirtual || a.Info.IsFinal);
+				if (uo != null)
+				{
+					throw new InvalidOperationException($"Method {uo.Info.Name} cannot be overriden!");
+				}
 
 				// there's no technical reason to disallow this, but we wouldn't be doing anything
 				// with the base implementation, so it's probably a user error
-				var na = baseMethods.FirstOrNull(static a => !a.Info.IsAbstract);
-				if (na is not null) throw new InvalidOperationException($"Method {na.Value.Info.Name} is not abstract!");
+				var na = baseMethods.FirstOrDefault(a => !a.Info.IsAbstract);
+				if (na != null)
+				{
+					throw new InvalidOperationException($"Method {na.Info.Name} is not abstract!");
+				}
 			}
 
 			// hooks that will be run on the created proxy object
@@ -393,20 +397,12 @@ namespace BizHawk.BizInvoke
 				pli.EmitLoad();
 			}
 
-			bool WantsWinAPIBool()
-			{
-				var attrs = baseMethod.ReturnTypeCustomAttributes.GetCustomAttributes(typeof(MarshalAsAttribute), false);
-				return attrs.Length > 0 && ((MarshalAsAttribute)attrs[0]).Value is UnmanagedType.Bool;
-			}
-
 			il.Emit(OpCodes.Ldarg_0);
 			il.Emit(OpCodes.Ldfld, field);
 			il.EmitCalli(
 				OpCodes.Calli,
 				nativeCall,
-				returnType != typeof(bool) || WantsWinAPIBool()
-				? returnType
-				: typeof(byte), // undo winapi style bool garbage by default
+				returnType == typeof(bool) ? typeof(byte) : returnType, // undo winapi style bool garbage
 				paramLoadInfos.Select(p => p.NativeType).ToArray());
 
 			if (monitorField != null) // monitor: finally exit
@@ -551,10 +547,9 @@ namespace BizHawk.BizInvoke
 						il.Emit(OpCodes.Ldarg, (short)idx);
 						il.Emit(OpCodes.Dup);
 						il.Emit(OpCodes.Stloc, loc);
+						il.Emit(OpCodes.Ldc_I4_0);
+						il.Emit(OpCodes.Ldelema, et);
 						il.Emit(OpCodes.Conv_I);
-						il.Emit(OpCodes.Ldc_I4, ValueArrayElementOffset);
-						il.Emit(OpCodes.Conv_I);
-						il.Emit(OpCodes.Add);
 						il.Emit(OpCodes.Br, end);
 
 						il.MarkLabel(isNull);

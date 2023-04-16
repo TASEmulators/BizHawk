@@ -342,10 +342,18 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public override void SetValue(object component, object value)
 		{
-			var str = (string) value;
-			if (str == Port.DefaultSettingsValue) ResetValue(component);
-			else if (Port.AllowedDevices.Exists(d => d.SettingValue == str)) ((NymaSyncSettings) component).PortDevices[PortIndex] = str;
-			// else does not validate
+			if ((string)value == Port.DefaultSettingsValue)
+			{
+				ResetValue(component);
+			}
+			else if (!Port.AllowedDevices.Any(d => d.SettingValue == (string)value))
+			{
+				// does not validate
+			}
+			else
+			{
+				((NymaSyncSettings)component).PortDevices[PortIndex] = (string)value;
+			}
 		}
 
 		public override bool ShouldSerializeValue(object component)

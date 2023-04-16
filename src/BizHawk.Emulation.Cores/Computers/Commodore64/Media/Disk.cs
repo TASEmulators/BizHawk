@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
@@ -12,8 +11,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 		public const int FluxBitsPerTrack = 16000000 / 5;
 		public const int FluxEntriesPerTrack = FluxBitsPerTrack / FluxBitsPerEntry;
 		private readonly int[][] _tracks;
-		private readonly int[][] _originalMedia;
-		private bool[] _usedTracks;
+		private readonly int[] _originalMedia;
 		public bool Valid;
 		public bool WriteProtected;
 
@@ -25,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 			WriteProtected = false;
 			_tracks = new int[trackCapacity][];
 			FillMissingTracks();
-			_originalMedia = _tracks.Select(t => (int[])t.Clone()).ToArray();
+			_originalMedia = SerializeTracks(_tracks);
 			Valid = true;
 		}
 
@@ -47,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 
 			FillMissingTracks();
 			Valid = true;
-			_originalMedia = _tracks.Select(t => (int[])t.Clone()).ToArray();
+			_originalMedia = SerializeTracks(_tracks);
 		}
 
 		private int[] ConvertToFluxTransitions(int density, byte[] bytes, int fluxBitOffset)
@@ -133,41 +131,59 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 			}
 		}
 
-		public void AttachTracker(bool[] usedTracks)
+		public int[] GetDataForTrack(int halftrack)
 		{
-			if (_tracks.Length != usedTracks.Length)
-			{
-				throw new InvalidOperationException("track and tracker length mismatch! (this should be impossible, please report)");
-			}
-
-			_usedTracks = usedTracks;
+			return _tracks[halftrack];
 		}
 
 		/// <summary>
-		/// Generic update of the deltas stored in Drive1541's ISaveRam implementation.
-		/// deltaUpdateCallback will be called for each track which has been possibly dirtied
+		/// Combine the tracks into a single bitstream.
 		/// </summary>
-		/// <param name="deltaUpdateCallback">callback</param>
-		public void DeltaUpdate(Action<int, int[], int[]> deltaUpdateCallback)
+		private int[] SerializeTracks(int[][] tracks)
 		{
-			for (var i = 0; i < _tracks.Length; i++)
+			var trackCount = tracks.Length;
+			var result = new int[trackCount * FluxEntriesPerTrack];
+			for (var i = 0; i < trackCount; i++)
 			{
-				if (_usedTracks[i])
-				{
-					deltaUpdateCallback(i, _originalMedia[i], _tracks[i]);
-				}
+				Array.Copy(tracks[i], 0, result, i * FluxEntriesPerTrack, FluxEntriesPerTrack);
 			}
+			return result;
 		}
 
-		public int[] GetDataForTrack(int halftrack)
+		/// <summary>
+		/// Split a bitstream into tracks.
+		/// </summary>
+		private int[][] DeserializeTracks(int[] data)
 		{
-			_usedTracks[halftrack] = true;
-			return _tracks[halftrack];
+			var trackCount = data.Length / FluxEntriesPerTrack;
+			var result = new int[trackCount][];
+			for (var i = 0; i < trackCount; i++)
+			{
+				result[i] = new int[FluxEntriesPerTrack];
+				Array.Copy(data, i * FluxEntriesPerTrack, result[i], 0, FluxEntriesPerTrack);
+			}
+			return result;
 		}
 
 		public void SyncState(Serializer ser)
 		{
 			ser.Sync(nameof(WriteProtected), ref WriteProtected);
+
+			// Currently nothing actually writes to _tracks and so it is always the same as _originalMedia
+			// So commenting out this (very slow) code for now
+			// If/when disk writing is implemented, Disk.cs should implement ISaveRam as a means of file storage of the new disk state
+			// And this code needs to be rethought to be reasonably performant
+			//if (ser.IsReader)
+			//{
+			//	var mediaState = new int[_originalMedia.Length];
+			//	SaveState.SyncDelta("MediaState", ser, _originalMedia, ref mediaState);
+			//	_tracks = DeserializeTracks(mediaState);
+			//}
+			//else if (ser.IsWriter)
+			//{
+			//	var mediaState = SerializeTracks(_tracks);
+			//	SaveState.SyncDelta("MediaState", ser, _originalMedia, ref mediaState);
+			//}
 		}
 	}
 }

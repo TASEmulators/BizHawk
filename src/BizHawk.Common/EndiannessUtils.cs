@@ -5,10 +5,29 @@ namespace BizHawk.Common
 {
 	public static unsafe class EndiannessUtils
 	{
-		/// <summary>reverses pairs of octets in-place: <c>0xAABBIIJJPPQQYYZZ</c> &lt;=> <c>0xBBAAJJIIQQPPZZYY</c></summary>
-		public static void MutatingByteSwap16(Span<byte> a)
+		/// <summary>reverses pairs of octets: <c>0xAABBIIJJPPQQYYZZ</c> &lt;=> <c>0xBBAAJJIIQQPPZZYY</c></summary>
+		public static byte[] ByteSwap16(byte[] a)
 		{
-#if true //TODO benchmark (both methods work correctly); also there is another method involving shifting the (output copy of the) array over by 1 byte then manually writing every second byte
+			var l = a.Length;
+			var copy = new byte[l];
+			Array.Copy(a, copy, l);
+			MutatingByteSwap16(copy);
+			return copy;
+		}
+
+		/// <summary>reverses groups of 4 octets: <c>0xAABBCCDDWWXXYYZZ</c> &lt;=> <c>0xDDCCBBAAZZYYXXWW</c></summary>
+		public static byte[] ByteSwap32(byte[] a)
+		{
+			var l = a.Length;
+			var copy = new byte[l];
+			Array.Copy(a, copy, l);
+			MutatingByteSwap32(copy);
+			return copy;
+		}
+
+		/// <summary>reverses pairs of octets in-place: <c>0xAABBIIJJPPQQYYZZ</c> &lt;=> <c>0xBBAAJJIIQQPPZZYY</c></summary>
+		public static void MutatingByteSwap16(byte[] a)
+		{
 			var l = a.Length;
 			Debug.Assert(l % 2 == 0);
 			fixed (byte* p = &a[0]) for (var i = 0; i < l; i += 2)
@@ -17,17 +36,11 @@ namespace BizHawk.Common
 				p[i] = p[i + 1];
 				p[i + 1] = b;
 			}
-#else
-			Debug.Assert(a.Length % 2 == 0);
-			var shorts = MemoryMarshal.Cast<byte, ushort>(a);
-			for (var i = 0; i < shorts.Length; i++) shorts[i] = BinaryPrimitives.ReverseEndianness(shorts[i]);
-#endif
 		}
 
 		/// <summary>reverses groups of 4 octets in-place: <c>0xAABBCCDDWWXXYYZZ</c> &lt;=> <c>0xDDCCBBAAZZYYXXWW</c></summary>
-		public static void MutatingByteSwap32(Span<byte> a)
+		public static void MutatingByteSwap32(byte[] a)
 		{
-#if true //TODO benchmark (both methods work correctly)
 			var l = a.Length;
 			Debug.Assert(l % 4 == 0);
 			fixed (byte* p = &a[0]) for (var i = 0; i < l; i += 4)
@@ -39,19 +52,6 @@ namespace BizHawk.Common
 				p[i + 1] = p[i + 2];
 				p[i + 2] = b;
 			}
-#else
-			Debug.Assert(a.Length % 4 == 0);
-			var ints = MemoryMarshal.Cast<byte, uint>(a);
-			for (var i = 0; i < ints.Length; i++) ints[i] = BinaryPrimitives.ReverseEndianness(ints[i]);
-#endif
-		}
-
-		/// <summary>swaps pairs of 16-bit words in-place: <c>0xAABBIIJJPPQQYYZZ</c> &lt;=> <c>0xIIJJAABBYYZZPPQQ</c></summary>
-		public static void MutatingShortSwap32(Span<byte> a)
-		{
-			// no need to optimise this further, it's only used in the manual byteswap tool and only between the two less common formats
-			MutatingByteSwap32(a); // calls can be in either order, though this order ensures the length-mod-4 assert is hit immediately
-			MutatingByteSwap16(a);
 		}
 	}
 }

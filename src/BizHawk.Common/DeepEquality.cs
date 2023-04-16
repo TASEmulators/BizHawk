@@ -68,7 +68,9 @@ namespace BizHawk.Common
 			return true;
 		}
 
-		private static readonly MethodInfo ArrayEqualsGeneric = typeof(DeepEquality).GetMethod(nameof(ArrayEquals), BindingFlags.NonPublic | BindingFlags.Static)!;
+		private static readonly MethodInfo ArrayEqualsGeneric
+			= typeof(DeepEquality).GetMethod(nameof(ArrayEquals), BindingFlags.NonPublic | BindingFlags.Static)
+				?? throw new NullReferenceException();
 
 		/// <summary>test if two objects <paramref name="o1"/> and <paramref name="o2"/> are equal, field-by-field (with deep inspection of each field)</summary>
 		/// <exception cref="InvalidOperationException"><paramref name="o1"/> is an array with rank > 1 or is a non-zero-indexed array</exception>

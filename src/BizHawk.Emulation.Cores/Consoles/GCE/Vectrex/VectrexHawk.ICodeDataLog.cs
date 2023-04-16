@@ -23,7 +23,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		[FeatureNotImplemented]
 		public void DisassembleCDL(Stream s, ICodeDataLog cdl)
-			=> throw new NotImplementedException();
+		{
+
+		}
 
 		private enum CDLog_AddrType
 		{

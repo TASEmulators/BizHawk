@@ -30,12 +30,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			_cyclesPerFrame = _board.Vic.CyclesPerFrame;
 			_memoryCallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
 
-			if (_board.DiskDrive != null)
-			{
-				_board.DiskDrive.InitSaveRam(_roms.Count);
-				ser.Register<ISaveRam>(_board.DiskDrive);
-			}
-
 			InitMedia(_roms[_currentDisk]);
 			HardReset();
 
@@ -178,7 +172,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		private void IncrementDisk()
 		{
-			_board.DiskDrive.SaveDeltas();
 			_currentDisk++;
 			if (CurrentDisk >= _roms.Count)
 			{
@@ -190,7 +183,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		private void DecrementDisk()
 		{
-			_board.DiskDrive.SaveDeltas();
 			_currentDisk--;
 			if (_currentDisk < 0)
 			{
@@ -203,14 +195,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		private void InitDisk()
 		{
 			InitMedia(_roms[_currentDisk]);
-			_board.DiskDrive.LoadDeltas();
 		}
 
 		public void SetDisk(int discNum)
 		{
 			if (_currentDisk != discNum)
 			{
-				_board.DiskDrive.SaveDeltas();
 				_currentDisk = discNum;
 				InitDisk();
 			}
@@ -262,7 +252,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		private void Init(VicType initRegion, BorderType borderType, SidType sidType, TapeDriveType tapeDriveType, DiskDriveType diskDriveType)
 		{
 			// Force certain drive types to be available depending on ROM type
-			var rom = _roms[0];
+			var rom = _roms.First();
 
 			switch (C64FormatFinder.GetFormat(rom))
 			{

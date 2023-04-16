@@ -4,10 +4,14 @@
 
 namespace nall {
 
-auto guid() -> string;
+inline auto guid() -> string {
+  GUID guidInstance;
+  CoCreateGuid(&guidInstance);
 
+  wchar_t guidString[39];
+  StringFromGUID2(guidInstance, guidString, 39);
+
+  return (char*)utf8_t(guidString);
 }
 
-#if defined(NALL_HEADER_ONLY)
-  #include <nall/windows/guid.cpp>
-#endif
+}

@@ -83,10 +83,16 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		public int BackgroundColor => 0;
 
 		public int VsyncNumerator
-			=> NullVideo.DefaultVsyncNum; //TODO precise numbers or confirm the default is okay
+		{
+			[FeatureNotImplemented]
+			get => NullVideo.DefaultVsyncNum;
+		}
 
 		public int VsyncDenominator
-			=> NullVideo.DefaultVsyncDen; //TODO precise numbers or confirm the default is okay
+		{
+			[FeatureNotImplemented]
+			get => NullVideo.DefaultVsyncDen;
+		}
 
 		public void Reset()
 		{
@@ -307,9 +313,9 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					return 0x75CC80;
 				case 15:
 					return 0xB51A58;
-				default:
-					throw new ArgumentOutOfRangeException(paramName: nameof(color), color, message: "Specified color does not exist.");
 			}
+
+			throw new ArgumentException("Specified color does not exist.");
 		}
 
 		public void Background(int input_row)

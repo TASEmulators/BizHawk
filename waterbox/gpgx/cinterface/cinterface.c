@@ -635,11 +635,6 @@ GPGX_EX void gpgx_set_draw_mask(int mask)
 		color_update_m5(0x00, *(uint16 *)&cram[border << 1]);
 }
 
-GPGX_EX void gpgx_set_sprite_limit_enabled(int enabled)
-{
-	config.no_sprite_limit = !enabled;
-}
-
 GPGX_EX void gpgx_invalidate_pattern_cache(void)
 {
 	vdp_invalidate_full_cache();

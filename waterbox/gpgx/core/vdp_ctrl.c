@@ -219,7 +219,7 @@ void flush_vram_cache(void)
 
 void vdp_invalidate_full_cache(void)
 {
-    bg_list_index = (reg[1] & 0x04) ? 0x800 : 0x200;
+    bg_list_index = 0x800;
     for (int i=0;i<bg_list_index;i++)
     {
         bg_name_list[i] = i;

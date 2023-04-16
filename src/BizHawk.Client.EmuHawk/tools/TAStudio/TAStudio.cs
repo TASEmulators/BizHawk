@@ -16,11 +16,6 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class TAStudio : ToolFormBase, IToolFormAutoConfig, IControlMainform
 	{
-		public static readonly FilesystemFilterSet TAStudioProjectsFSFilterSet = new(FilesystemFilter.TAStudioProjects);
-
-		public static Icon ToolIcon
-			=> Resources.TAStudioIcon;
-
 		public override bool BlocksInputWhenFocused => IsInMenuLoop;
 
 		public new IMainFormForTools MainForm => base.MainForm;
@@ -31,6 +26,7 @@ namespace BizHawk.Client.EmuHawk
 		public ITasMovie CurrentTasMovie => MovieSession.Movie as ITasMovie;
 
 		public bool IsInMenuLoop { get; private set; }
+		public string StatesPath => Config.PathEntries.TastudioStatesAbsolutePath();
 
 		private readonly List<TasClipboardEntry> _tasClipboard = new List<TasClipboardEntry>();
 		private const string CursorColumnName = "CursorColumn";
@@ -128,7 +124,7 @@ namespace BizHawk.Client.EmuHawk
 			recentMacrosToolStripMenuItem.Image = Resources.Recent;
 			TASEditorManualOnlineMenuItem.Image = Resources.Help;
 			ForumThreadMenuItem.Image = Resources.TAStudio;
-			Icon = ToolIcon;
+			Icon = Resources.TAStudioIcon;
 
 			_defaultMainSplitDistance = MainVertialSplit.SplitterDistance;
 			_defaultBranchMarkerSplitDistance = BranchesMarkersSplit.SplitterDistance;
@@ -381,12 +377,11 @@ namespace BizHawk.Client.EmuHawk
 					c.Name == "Power"
 					|| c.Name == "Reset"
 					|| c.Name == "Light Sensor"
+					|| c.Name == "Open"
+					|| c.Name == "Close"
 					|| c.Name == "Disc Select"
-					|| c.Name == "Disk Index"
 					|| c.Name.StartsWith("Tilt")
 					|| c.Name.StartsWith("Key ")
-					|| c.Name.StartsWith("Open")
-					|| c.Name.StartsWith("Close")
 					|| c.Name.EndsWith("Tape")
 					|| c.Name.EndsWith("Disk")
 					|| c.Name.EndsWith("Block")
@@ -587,8 +582,6 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (Game.IsNullInstance()) throw new InvalidOperationException("how is TAStudio open with no game loaded? please report this including as much detail as possible");
-
 			var filename = DefaultTasProjName(); // TODO don't do this, take over any mainform actions that can crash without a filename
 			var tasMovie = (ITasMovie)MovieSession.Get(filename);
 			tasMovie.BindMarkersToInput = Settings.BindMarkersToInput;
@@ -605,14 +598,11 @@ namespace BizHawk.Client.EmuHawk
 				Config.DefaultAuthor);
 
 			SetTasMovieCallbacks(tasMovie);
-			MovieSession.SetMovieController(Emulator.ControllerDefinition); // hack, see interface comment
 			tasMovie.ClearChanges(); // Don't ask to save changes here.
 			tasMovie.Save();
-			_ = HandleMovieLoadStuff(tasMovie);
-			// let's not keep this longer than we actually need
-			// the user will be prompted to enter a proper name
-			// when they want to save
-			File.Delete(tasMovie.Filename);
+			if (HandleMovieLoadStuff(tasMovie))
+			{
+			}
 
 			// clear all selections
 			TasView.DeselectAll();
@@ -696,7 +686,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var loadZone = new MovieZone(path, MainForm, Emulator, MovieSession, Tools)
 			{
-				Start = TasView.SelectionStartIndex!.Value,
+				Start = TasView.FirstSelectedIndex.Value
 			};
 			loadZone.PlaceZone(CurrentTasMovie, Config);
 		}
@@ -786,16 +776,13 @@ namespace BizHawk.Client.EmuHawk
 					filename = SuggestedTasProjName();
 				}
 
-				FileInfo file;
-				do
-				{
-					file = SaveFileDialog(
-						currentFile: filename,
-						path: Config!.PathEntries.MovieAbsolutePath(),
-						TAStudioProjectsFSFilterSet,
-						this);
-				}
-				while (file?.FullName == DefaultTasProjName()); // disallow saving as this reserved filename
+				var file = SaveFileDialog(
+					filename,
+					Config.PathEntries.MovieAbsolutePath(),
+					"Tas Project Files",
+					"tasproj",
+					this
+				);
 
 				if (file != null)
 				{
@@ -816,7 +803,7 @@ namespace BizHawk.Client.EmuHawk
 					_autosaveTimer.Start();
 				}
 
-				MainForm.UpdateWindowTitle();
+				MainForm.SetWindowText();
 			});
 		}
 
@@ -920,7 +907,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				LoadState(closestState);
 			}
-			closestState.Value.Dispose();
 
 			if (fromLua)
 			{
@@ -995,8 +981,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SetSplicer()
 		{
 			// TODO: columns selected?
-			var selectedRowCount = TasView.SelectedRows.Count();
-			var temp = $"Selected: {selectedRowCount} {(selectedRowCount == 1 ? "frame" : "frames")}, States: {CurrentTasMovie.TasStateManager.Count}";
+			var temp = $"Selected: {TasView.SelectedRows.Count()} {(TasView.SelectedRows.Count() == 1 ? "frame" : "frames")}, States: {CurrentTasMovie.TasStateManager.Count}";
 			if (_tasClipboard.Any()) temp += $", Clipboard: {_tasClipboard.Count} {(_tasClipboard.Count == 1 ? "frame" : "frames")}";
 			SplicerStatusLabel.Text = temp;
 		}
@@ -1029,7 +1014,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (insertionFrame <= CurrentTasMovie.InputLogLength)
 			{
-				var needsToRollback = TasView.SelectionStartIndex < Emulator.Frame;
+				bool needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
 
 				CurrentTasMovie.InsertEmptyFrame(insertionFrame, numberOfFrames);
 
@@ -1070,7 +1055,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (beginningFrame < CurrentTasMovie.InputLogLength)
 			{
-				var needsToRollback = TasView.SelectionStartIndex < Emulator.Frame;
+				bool needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
 				int last = Math.Min(beginningFrame + numberOfFrames, CurrentTasMovie.InputLogLength);
 				for (int i = beginningFrame; i < last; i++)
 				{

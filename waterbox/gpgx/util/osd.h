@@ -27,20 +27,14 @@ typedef unsigned char bool;
 #define M_PI 3.1415926535897932385
 #endif
 
-#define MAX_SPRITES_PER_LINE 80
-#define TMS_MAX_SPRITES_PER_LINE (config.no_sprite_limit ? MAX_SPRITES_PER_LINE : 4)
-#define MODE4_MAX_SPRITES_PER_LINE (config.no_sprite_limit ? MAX_SPRITES_PER_LINE : 8)
-#define MODE5_MAX_SPRITES_PER_LINE (config.no_sprite_limit ? MAX_SPRITES_PER_LINE : (bitmap.viewport.w >> 4))
-#define MODE5_MAX_SPRITE_PIXELS (config.no_sprite_limit ? MAX_SPRITES_PER_LINE * 32 : max_sprite_pixels)
-
-typedef struct
+typedef struct 
 {
   int8 device;
   uint8 port;
   uint8 padtype;
 } t_input_config;
 
-struct
+struct 
 {
   char version[16];
   uint8 hq_fm;
@@ -70,7 +64,6 @@ struct
   uint8 gg_extra;
   uint8 render;
   t_input_config input[MAX_INPUTS];
-  uint8 no_sprite_limit;
 } config;
 
 extern char GG_ROM[256];

@@ -9,13 +9,18 @@ namespace Math {
 }
 
 #if defined(PLATFORM_WINDOWS)
-  #if defined(NALL_HEADER_ONLY)
-    #include <nall/windows/windows.hpp>
-  #endif
+  #include <nall/windows/guard.hpp>
+  #include <initguid.h>
+  #include <cguid.h>
+  #include <winsock2.h>
+  #include <ws2tcpip.h>
+  #include <windows.h>
   #include <direct.h>
   #include <io.h>
   #include <wchar.h>
-  #include <sys/utime.h>
+  #include <shlobj.h>
+  #include <shellapi.h>
+  #include <nall/windows/guard.hpp>
   #include <nall/windows/utf8.hpp>
 #endif
 
@@ -34,7 +39,9 @@ namespace Math {
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <utime.h>
 #include <fcntl.h>
+#include <unistd.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -42,7 +49,6 @@ namespace Math {
 #if !defined(PLATFORM_WINDOWS)
   #include <dlfcn.h>
   #include <unistd.h>
-  #include <utime.h>
   #include <pwd.h>
   #include <grp.h>
   #include <sys/mman.h>
@@ -62,21 +68,25 @@ namespace Math {
   #define __has_builtin(x) 0
 #endif
 
+#if defined(COMPILER_MICROSOFT)
+  #define va_copy(dest, src) ((dest) = (src))
+#endif
+
 #if defined(PLATFORM_WINDOWS)
+  #undef  IN
+  #undef  OUT
+  #undef  interface
   #define dllexport __declspec(dllexport)
   #define MSG_NOSIGNAL 0
-  #define PATH_MAX 260
 
-  #if !defined(INVALID_HANDLE_VALUE)
-    #define INVALID_HANDLE_VALUE ((HANDLE)-1)
-  #endif
-
-  typedef void* HANDLE;
+  extern "C" {
+    using pollfd = WSAPOLLFD;
+  }
 
   inline auto access(const char* path, int amode) -> int { return _waccess(nall::utf16_t(path), amode); }
   inline auto getcwd(char* buf, size_t size) -> char* { wchar_t wpath[PATH_MAX] = L""; if(!_wgetcwd(wpath, size)) return nullptr; strcpy(buf, nall::utf8_t(wpath)); return buf; }
   inline auto mkdir(const char* path, int mode) -> int { return _wmkdir(nall::utf16_t(path)); }
-  inline auto poll(struct pollfd fds[], unsigned long nfds, int timeout) -> int;
+  inline auto poll(struct pollfd fds[], unsigned long nfds, int timeout) -> int { return WSAPoll(fds, nfds, timeout); }
   inline auto putenv(const char* value) -> int { return _wputenv(nall::utf16_t(value)); }
   inline auto realpath(const char* file_name, char* resolved_name) -> char* { wchar_t wfile_name[PATH_MAX] = L""; if(!_wfullpath(wfile_name, nall::utf16_t(file_name), PATH_MAX)) return nullptr; strcpy(resolved_name, nall::utf8_t(wfile_name)); return resolved_name; }
   inline auto rename(const char* oldname, const char* newname) -> int { return _wrename(nall::utf16_t(oldname), nall::utf16_t(newname)); }
@@ -84,11 +94,17 @@ namespace Math {
   namespace nall {
     //network functions take void*, not char*. this allows them to be used without casting
 
-    auto recv(int socket, void* buffer, size_t length, int flags) -> ssize_t;
-    auto send(int socket, const void* buffer, size_t length, int flags) -> ssize_t;
-    auto setsockopt(int socket, int level, int option_name, const void* option_value, int option_len) -> int;
+    inline auto recv(int socket, void* buffer, size_t length, int flags) -> ssize_t {
+      return ::recv(socket, (char*)buffer, length, flags);
+    }
 
-    auto usleep(unsigned int us) -> int;
+    inline auto send(int socket, const void* buffer, size_t length, int flags) -> ssize_t {
+      return ::send(socket, (const char*)buffer, length, flags);
+    }
+
+    inline auto setsockopt(int socket, int level, int option_name, const void* option_value, socklen_t option_len) -> int {
+      return ::setsockopt(socket, level, option_name, (const char*)option_value, option_len);
+    }
   }
 #else
   #define dllexport
@@ -116,12 +132,6 @@ namespace Math {
   #endif
   #define likely(expression) __builtin_expect(bool(expression), true)
   #define unlikely(expression) __builtin_expect(bool(expression), false)
-#elif defined(COMPILER_MICROSOFT)
-  #define bswap16(value) _byteswap_ushort(value)
-  #define bswap32(value) _byteswap_ulong(value)
-  #define bswap64(value) _byteswap_uint64(value)
-  #define likely(expression) expression
-  #define unlikely(expression) expression
 #else
   inline auto bswap16(u16 value) -> u16 {
     return value << 8 | value >> 8;
@@ -141,21 +151,16 @@ namespace Math {
   #define unlikely(expression) expression
 #endif
 
-namespace nall {
-  //notify the processor/operating system that this thread is currently awaiting an event (eg a spinloop)
-  //calling this function aims to avoid consuming 100% CPU resources on the active thread during spinloops
-  inline auto spinloop() -> void {
+//notify the processor/operating system that this thread is currently awaiting an event (eg a spinloop)
+//calling this function aims to avoid consuming 100% CPU resources on the active thread during spinloops
+inline auto spinloop() -> void {
+  #if defined(COMPILER_CLANG) || defined(COMPILER_GCC)
     #if defined(ARCHITECTURE_X86) || defined(ARCHITECTURE_AMD64)
-      #if defined(COMPILER_CLANG) || defined(COMPILER_GCC)
-        __builtin_ia32_pause();
-        return;
-      #elif defined(COMPILER_MICROSOFT)
-        _mm_pause();
-        return;
-      #endif
+      __builtin_ia32_pause();
+      return;
     #endif
-    usleep(1);
-  }
+  #endif
+  usleep(1);
 }
 
 #if defined(PLATFORM_MACOS) && !defined(MSG_NOSIGNAL)
@@ -179,8 +184,6 @@ namespace nall {
 //P0627: [[unreachable]] -- impossible to simulate with identical syntax, must omit brackets ...
 #if defined(COMPILER_CLANG) || defined(COMPILER_GCC)
   #define unreachable __builtin_unreachable()
-#elif defined(COMPILER_MICROSOFT)
-  #define unreachable __assume(0)
 #else
   #define unreachable throw
 #endif
@@ -191,7 +194,3 @@ namespace nall {
 
 #define export $export
 #define register $register
-
-#if defined(NALL_HEADER_ONLY)
-  #include <nall/platform.cpp>
-#endif

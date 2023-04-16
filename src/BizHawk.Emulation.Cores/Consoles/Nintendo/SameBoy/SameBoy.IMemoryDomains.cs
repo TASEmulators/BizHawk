@@ -7,14 +7,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 {
 	public partial class Sameboy
 	{
-		private readonly List<MemoryDomain> _memoryDomains = new();
+		private readonly List<MemoryDomain> _memoryDomains = new List<MemoryDomain>();
 
 		private IMemoryDomains MemoryDomains { get; set; }
 
 		private void CreateMemoryDomain(LibSameboy.MemoryAreas which, string name)
 		{
 			IntPtr data = IntPtr.Zero;
-			long length = 0;
+			int length = 0;
 
 			if (!LibSameboy.sameboy_getmemoryarea(SameboyState, which, ref data, ref length))
 			{
@@ -44,14 +44,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 			// also add a special memory domain for the system bus, where calls get sent directly to the core each time
 			_memoryDomains.Add(new MemoryDomainDelegate("System Bus", 65536, MemoryDomain.Endian.Little,
-				addr =>
+				delegate(long addr)
 				{
-					if (addr is < 0 or > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
+					if (addr < 0 || addr >= 65536)
+					{
+						throw new ArgumentOutOfRangeException();
+					}
+
 					return LibSameboy.sameboy_cpuread(SameboyState, (ushort)addr);
 				},
-				(addr, val) =>
+				delegate(long addr, byte val)
 				{
-					if (addr is < 0 or > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
+					if (addr < 0 || addr >= 65536)
+					{
+						throw new ArgumentOutOfRangeException();
+					}
+
 					LibSameboy.sameboy_cpuwrite(SameboyState, (ushort)addr, val);
 				}, 1));
 

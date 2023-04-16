@@ -11,8 +11,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			writer.Write(IsLagFrame);
 			writer.Write(LagCount);
 			writer.Write(Frame);
-			writer.Write(_clockTime);
-			writer.Write(_clockRemainder);
 		}
 
 		public void LoadStateBinary(BinaryReader reader)
@@ -21,8 +19,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			IsLagFrame = reader.ReadBoolean();
 			LagCount = reader.ReadInt32();
 			Frame = reader.ReadInt32();
-			_clockTime = reader.ReadInt64();
-			_clockRemainder = reader.ReadInt32();
 		}
 	}
 }

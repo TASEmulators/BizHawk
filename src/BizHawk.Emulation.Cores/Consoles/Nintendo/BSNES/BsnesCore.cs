@@ -1,11 +1,8 @@
 using System;
 using System.IO;
-using System.Runtime.InteropServices;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.Base_Implementations;
 using BizHawk.Emulation.Cores.Components.W65816;
-using BizHawk.Emulation.Cores.Nintendo.SNES;
 
 // http://wiki.superfamicom.org/snes/show/Backgrounds
 
@@ -13,25 +10,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 {
 	[PortedCore(CoreNames.Bsnes115, "bsnes team", "v115+", "https://github.com/bsnes-emu/bsnes")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
-	public partial class BsnesCore : IEmulator, IDebuggable, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable, ISettable<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings>, IBSNESForGfxDebugger, IBoardInfo
+	public unsafe partial class BsnesCore : IEmulator, IDebuggable, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable, ISettable<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings>
 	{
 		[CoreConstructor(VSystemID.Raw.GB)]
 		[CoreConstructor(VSystemID.Raw.GBC)]
-		[CoreConstructor(VSystemID.Raw.Satellaview)]
 		[CoreConstructor(VSystemID.Raw.SNES)]
-		public BsnesCore(CoreLoadParameters<SnesSettings, SnesSyncSettings> loadParameters) : this(loadParameters, false) { }
-		public BsnesCore(CoreLoadParameters<SnesSettings, SnesSyncSettings> loadParameters, bool subframe = false)
+		public BsnesCore(CoreLoadParameters<SnesSettings, SnesSyncSettings> loadParameters)
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 
 			this._romPath = Path.ChangeExtension(loadParameters.Roms[0].RomPath, null);
 			CoreComm = loadParameters.Comm;
+			_settings = loadParameters.Settings ?? new SnesSettings();
 			_syncSettings = loadParameters.SyncSettings ?? new SnesSyncSettings();
 			SystemId = loadParameters.Game.System;
 			_isSGB = SystemId == VSystemID.Raw.GB || SystemId == VSystemID.Raw.GBC;
 			byte[] sgbRomData = null;
-			if (_isSGB)
+			if (IsSGB)
 			{
 				SystemId = VSystemID.Raw.SGB;
 				if ((loadParameters.Roms[0].RomData[0x143] & 0xc0) == 0xc0)
@@ -52,12 +48,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				noLagCb = snes_no_lag,
 				controllerLatchCb = snes_controller_latch,
 				videoFrameCb = snes_video_refresh,
+				audioSampleCb = snes_audio_sample,
 				pathRequestCb = snes_path_request,
 				traceCb = snes_trace,
 				readHookCb = ReadHook,
 				writeHookCb = WriteHook,
 				execHookCb = ExecHook,
-				timeCb = snes_time,
 				msuOpenCb = msu_open,
 				msuSeekCb = msu_seek,
 				msuReadCb = msu_read,
@@ -66,10 +62,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 			Api = new BsnesApi(CoreComm.CoreFileProvider.DllPath(), CoreComm, callbacks.AllDelegatesInMemoryOrder());
 
-			_controllers = new BsnesControllers(_syncSettings, subframe);
-
-			DeterministicEmulation = !_syncSettings.UseRealTime || loadParameters.DeterministicEmulationRequested;
-			InitializeRtc(_syncSettings.InitialTime);
+			_controllers = new BsnesControllers(_syncSettings);
 
 			generate_palette();
 			BsnesApi.SnesInitData snesInitData = new()
@@ -85,44 +78,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			};
 			Api.core.snes_init(ref snesInitData);
 			Api.SetCallbacks(callbacks);
-			PutSettings(loadParameters.Settings ?? new SnesSettings());
 
 			// start up audio resampler
 			InitAudio();
-			ser.Register<ISoundProvider>(_soundProvider);
+			ser.Register<ISoundProvider>(_resampler);
 
-			if (_isSGB)
+			if (IsSGB)
 			{
+				ser.Register<IBoardInfo>(new SGBBoardInfo());
+
 				Api.core.snes_load_cartridge_super_gameboy(sgbRomData, loadParameters.Roms[0].RomData,
 					sgbRomData!.Length, loadParameters.Roms[0].RomData.Length);
-			}
-			else if (SystemId is VSystemID.Raw.Satellaview)
-			{
-				SATELLAVIEW_CARTRIDGE slottedCartridge = _syncSettings.SatellaviewCartridge;
-				if (slottedCartridge == SATELLAVIEW_CARTRIDGE.Autodetect)
-				{
-					if (loadParameters.Game.NotInDatabase)
-					{
-						CoreComm.ShowMessage("Unable to autodetect satellaview base cartridge for unknown game. Falling back to BS-X cartridge.");
-						slottedCartridge = SATELLAVIEW_CARTRIDGE.Rom_BSX;
-					}
-					else
-					{
-						// query gamedb for slotted cartridge id, assume BS-X cartridge if not otherwise specified in gamedb
-						slottedCartridge = (SATELLAVIEW_CARTRIDGE)loadParameters.Game.GetInt("baseCartridge", (int)SATELLAVIEW_CARTRIDGE.Rom_BSX);
-					}
-				}
-				byte[] cartridgeData = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new FirmwareID("BSX", slottedCartridge.ToString()));
-				Api.core.snes_load_cartridge_bsmemory(cartridgeData, loadParameters.Roms[0].RomData,
-					cartridgeData.Length, loadParameters.Roms[0].RomData.Length);
 			}
 			else
 			{
 				Api.core.snes_load_cartridge_normal(loadParameters.Roms[0].RomData, loadParameters.Roms[0].RomData.Length);
 			}
 
-			using (Api.EnterExit()) this.BoardName = Marshal.PtrToStringAnsi(Api.core.snes_get_board());
 			_region = Api.core.snes_get_region();
+
 			if (_region == BsnesApi.SNES_REGION.NTSC)
 			{
 				// taken from bsnes source
@@ -152,14 +126,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		private readonly ITraceable _tracer;
 
 		private IController _controller;
-		private SimpleSyncSoundProvider _soundProvider;
+		private SpeexResampler _resampler;
 		private readonly string _romPath;
-		private readonly bool _isSGB;
 		private bool _disposed;
 
-		public string BoardName { get; }
+		public bool IsSGB { get; }
 
-		internal BsnesApi Api { get; }
+		private class SGBBoardInfo : IBoardInfo
+		{
+			public string BoardName => "SGB";
+		}
+
+		private BsnesApi Api { get; }
 
 		private string snes_path_request(int slot, string hint, bool required)
 		{
@@ -228,7 +206,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		private void snes_no_lag(bool sgbPoll)
 		{
 			// gets called whenever there was input read in the core
-			if (!_isSGB || sgbPoll)
+			if (!IsSGB || sgbPoll)
 			{
 				IsLagFrame = false;
 			}
@@ -256,30 +234,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			}
 		}
 
-		public SnesColors.ColorType CurrPalette => SnesColors.ColorType.BSNES;
-
-		public void SetPalette(SnesColors.ColorType colorType)
+		private void snes_video_refresh(ushort* data, int width, int height, int pitch)
 		{
-			if (colorType != SnesColors.ColorType.BSNES)
-				throw new NotImplementedException("This core does not currently support different palettes.");
-		}
-
-		public ISNESGraphicsDecoder CreateGraphicsDecoder() => new SNESGraphicsDecoder(Api);
-
-		public ScanlineHookManager ScanlineHookManager => null;
-
-		private unsafe void snes_video_refresh(IntPtr data, int width, int height, int pitch)
-		{
-			ushort* vp = (ushort*)data;
-			if (_settings.CropSGBFrame && _isSGB)
+			int widthMultiplier = 1;
+			int heightMultiplier = 1;
+			if (_settings.CropSGBFrame && IsSGB)
 			{
 				BufferWidth = 160;
 				BufferHeight = 144;
 			}
 			else
 			{
-				BufferWidth = width;
-				BufferHeight = height;
+				if (_settings.AlwaysDoubleSize)
+				{
+					if (width == 256) widthMultiplier = 2;
+					if (height == 224) heightMultiplier = 2;
+				}
+				BufferWidth = width * widthMultiplier;
+				BufferHeight = height * heightMultiplier;
 			}
 
 			int size = BufferWidth * BufferHeight;
@@ -289,12 +261,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			}
 
 			int di = 0;
-			if (_settings.CropSGBFrame && _isSGB)
+			if (_settings.CropSGBFrame && IsSGB)
 			{
-				int initialY = _settings.ShowOverscan ? 47 : 39;
-				for (int y = initialY; y < initialY + 144; y++)
+				for (int y = 39; y < 39 + 144; y++)
 				{
-					ushort* sp = vp + y * pitch + 48;
+					ushort* sp = data + y * pitch + 48;
 					for (int x = 0; x < 160; x++)
 					{
 						_videoBuffer[di++] = palette[*sp++ & 0x7FFF];
@@ -303,19 +274,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				return;
 			}
 
-			for (int y = 0; y < height; y++)
+			for (int y = 0; y < height * heightMultiplier; y++)
 			{
-				int si = y * pitch;
-				for (int x = 0; x < width; x++)
+				int si = y / heightMultiplier * pitch;
+				for (int x = 0; x < width * widthMultiplier; x++)
 				{
-					_videoBuffer[di++] = palette[vp![si++] & 0x7FFF];
+					_videoBuffer[di++] = palette[data[si + x / widthMultiplier] & 0x7FFF];
 				}
 			}
 		}
 
 		private void InitAudio()
 		{
-			_soundProvider = new SimpleSyncSoundProvider();
+			_resampler = new SpeexResampler(SpeexResampler.Quality.QUALITY_DESKTOP, 64080, 88200, 32040, 44100);
+		}
+
+		private void snes_audio_sample(short left, short right)
+		{
+			_resampler.EnqueueSample(left, right);
 		}
 
 		private void snes_trace(string disassembly, string registerInfo)
@@ -344,26 +320,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				MemoryCallbacks.CallMemoryCallbacks(addr, 0, (uint) MemoryCallbackFlags.AccessExecute, "System Bus");
 			}
 		}
-
-		private static readonly DateTime _epoch = new(1970, 1, 1, 0, 0, 0);
-		private long _clockTime;
-		private int _clockRemainder;
-
-		private void InitializeRtc(DateTime start)
-			=> _clockTime = (long)(start - _epoch).TotalSeconds;
-
-		internal void AdvanceRtc()
-		{
-			_clockRemainder += VsyncDenominator;
-			if (_clockRemainder >= VsyncNumerator)
-			{
-				_clockRemainder -= VsyncNumerator;
-				_clockTime++;
-			}
-		}
-
-		private long snes_time()
-			=> DeterministicEmulation ? _clockTime : (long)(DateTime.Now - _epoch).TotalSeconds;
 
 		private FileStream _currentMsuTrack;
 

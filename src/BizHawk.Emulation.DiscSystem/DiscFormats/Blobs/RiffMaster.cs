@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-using System.Linq;
+
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.DiscSystem
@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public void WriteFile(string fname)
 		{
-			using FileStream fs = new(fname, FileMode.Create, FileAccess.Write, FileShare.Read);
+			using FileStream fs = new FileStream(fname, FileMode.Create, FileAccess.Write, FileShare.Read);
 			WriteStream(fs);
 		}
 
@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		protected static void WriteTag(BinaryWriter bw, string tag)
 		{
-			for (var i = 0; i < 4; i++)
+			for (int i = 0; i < 4; i++)
 				bw.Write(tag[i]);
 			bw.Flush();
 		}
@@ -74,10 +74,9 @@ namespace BizHawk.Emulation.DiscSystem
 			public long Position;
 			public uint Length;
 			public Stream Source;
-
 			public override void WriteStream(Stream s)
 			{
-				BinaryWriter bw = new(s);
+				BinaryWriter bw = new BinaryWriter(s);
 				WriteTag(bw, tag);
 				bw.Write(Length);
 				bw.Flush();
@@ -89,7 +88,6 @@ namespace BizHawk.Emulation.DiscSystem
 				if (Length % 2 != 0)
 					s.WriteByte(0);
 			}
-
 			public override long GetVolume()
 			{
 				long ret = Length;
@@ -99,8 +97,8 @@ namespace BizHawk.Emulation.DiscSystem
 
 			public byte[] ReadAll()
 			{
-				var msSize = (int)Math.Min((long)int.MaxValue, Length);
-				MemoryStream ms = new(msSize);
+				int msSize = (int)Math.Min((long)int.MaxValue, Length);
+				MemoryStream ms = new MemoryStream(msSize);
 				Source.Position = Position;
 				Util.CopyStream(Source, ms, Length);
 				return ms.ToArray();
@@ -120,30 +118,28 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			public enum FORMAT_TAG : ushort
 			{
-				WAVE_FORMAT_UNKNOWN = 0x0000,
-				WAVE_FORMAT_PCM = 0x0001,
-				WAVE_FORMAT_ADPCM = 0x0002,
-				WAVE_FORMAT_ALAW = 0x0006,
-				WAVE_FORMAT_MULAW = 0x0007,
-				WAVE_FORMAT_OKI_ADPCM = 0x0010,
-				WAVE_FORMAT_DIGISTD = 0x0015,
-				WAVE_FORMAT_DIGIFIX = 0x0016,
-				IBM_FORMAT_MULAW = 0x0101,
-				IBM_FORMAT_ALAW = 0x0102,
-				IBM_FORMAT_ADPCM = 0x0103,
+				WAVE_FORMAT_UNKNOWN = (0x0000),
+				WAVE_FORMAT_PCM = (0x0001),
+				WAVE_FORMAT_ADPCM = (0x0002),
+				WAVE_FORMAT_ALAW = (0x0006),
+				WAVE_FORMAT_MULAW = (0x0007),
+				WAVE_FORMAT_OKI_ADPCM = (0x0010),
+				WAVE_FORMAT_DIGISTD = (0x0015),
+				WAVE_FORMAT_DIGIFIX = (0x0016),
+				IBM_FORMAT_MULAW = (0x0101),
+				IBM_FORMAT_ALAW = (0x0102),
+				IBM_FORMAT_ADPCM = (0x0103),
 			}
-
 			public FORMAT_TAG format_tag;
 			public ushort channels;
 			public uint samplesPerSec;
 			public uint avgBytesPerSec;
 			public ushort blockAlign;
 			public ushort bitsPerSample;
-
 			public RiffSubchunk_fmt(RiffSubchunk origin)
 			{
 				tag = "fmt ";
-				BinaryReader br = new(new MemoryStream(origin.ReadAll()));
+				BinaryReader br = new BinaryReader(new MemoryStream(origin.ReadAll()));
 				format_tag = (FORMAT_TAG)br.ReadUInt16();
 				channels = br.ReadUInt16();
 				samplesPerSec = br.ReadUInt32();
@@ -151,7 +147,6 @@ namespace BizHawk.Emulation.DiscSystem
 				blockAlign = br.ReadUInt16();
 				bitsPerSample = br.ReadUInt16();
 			}
-
 			public override void WriteStream(Stream s)
 			{
 				Flush();
@@ -160,8 +155,8 @@ namespace BizHawk.Emulation.DiscSystem
 
 			private void Flush()
 			{
-				MemoryStream ms = new();
-				BinaryWriter bw = new(ms);
+				MemoryStream ms = new MemoryStream();
+				BinaryWriter bw = new BinaryWriter(ms);
 				bw.Write((ushort)format_tag);
 				bw.Write(channels);
 				bw.Write(samplesPerSec);
@@ -185,12 +180,12 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			public RiffChunk GetSubchunk(string tag, string type)
 			{
-				foreach (var rc in subchunks.Where(rc => rc.tag == tag))
+				foreach (RiffChunk rc in subchunks)
 				{
+					if (rc.tag != tag) continue;
 					if (type == null) return rc;
 					if (rc is RiffContainer cont && cont.type == type) return cont;
 				}
-
 				return null;
 			}
 
@@ -198,28 +193,28 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				tag = "LIST";
 			}
-
 			public string type;
-			public List<RiffChunk> subchunks = new();
-
+			public List<RiffChunk> subchunks = new List<RiffChunk>();
 			public override void WriteStream(Stream s)
 			{
-				BinaryWriter bw = new(s);
+				BinaryWriter bw = new BinaryWriter(s);
 				WriteTag(bw, tag);
-				var size = GetVolume();
+				long size = GetVolume();
 				if (size > uint.MaxValue) throw new FormatException("File too big to write out");
 				bw.Write((uint)size);
 				WriteTag(bw, type);
 				bw.Flush();
-				foreach (var rc in subchunks)
+				foreach (RiffChunk rc in subchunks)
 					rc.WriteStream(s);
 				if (size % 2 != 0)
 					s.WriteByte(0);
 			}
-
 			public override long GetVolume()
 			{
-				return 4 + subchunks.Sum(rc => rc.GetVolume() + 8);
+				long len = 4;
+				foreach (RiffChunk rc in subchunks)
+					len += rc.GetVolume() + 8;
+				return len;
 			}
 
 			public override RiffChunk Morph()
@@ -242,9 +237,10 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				subchunks = rc.subchunks;
 				type = "INFO";
-				foreach (var chunk in subchunks)
+				foreach (RiffChunk chunk in subchunks)
 				{
-					if (chunk is not RiffSubchunk rsc) throw new FormatException("Invalid subchunk of INFO list");
+					RiffSubchunk rsc = chunk as RiffSubchunk;
+					if (chunk == null) throw new FormatException("Invalid subchunk of INFO list"); //TODO is this supposed to be a check on `rsc` (i.e. as a type check)? --yoshi
 					dictionary[rsc.tag] = System.Text.Encoding.ASCII.GetString(rsc.ReadAll());
 				}
 			}
@@ -254,12 +250,12 @@ namespace BizHawk.Emulation.DiscSystem
 				subchunks.Clear();
 				foreach (var (subchunkTag, s) in dictionary)
 				{
-					var rs = new RiffSubchunk
-					{
-						tag = subchunkTag,
-						Source = new MemoryStream(System.Text.Encoding.ASCII.GetBytes(s)),
-						Position = 0
-					};
+					RiffSubchunk rs = new RiffSubchunk
+						{
+							tag = subchunkTag,
+							Source = new MemoryStream(System.Text.Encoding.ASCII.GetBytes(s)),
+							Position = 0
+						};
 					rs.Length = (uint)rs.Source.Length;
 					subchunks.Add(rs);
 				}
@@ -279,38 +275,38 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 
 		public RiffContainer riff;
-		private long readCounter;
 
+		private long readCounter;
 		private RiffChunk ReadChunk(BinaryReader br)
 		{
 			RiffChunk ret;
-			var tag = ReadTag(br); readCounter += 4;
-			var size = br.ReadUInt32(); readCounter += 4;
+			string tag = ReadTag(br); readCounter += 4;
+			uint size = br.ReadUInt32(); readCounter += 4;
 			if (size > int.MaxValue)
 				throw new FormatException("chunk too big");
-			if (tag is "RIFF" or "LIST")
+			if (tag == "RIFF" || tag == "LIST")
 			{
-				var rc = new RiffContainer
-				{
-					tag = tag,
-					type = ReadTag(br)
-				};
+				RiffContainer rc = new RiffContainer
+					{
+						tag = tag,
+						type = ReadTag(br)
+					};
 
 				readCounter += 4;
-				var readEnd = readCounter - 4 + size;
+				long readEnd = readCounter - 4 + size;
 				while (readEnd > readCounter)
 					rc.subchunks.Add(ReadChunk(br));
 				ret = rc.Morph();
 			}
 			else
 			{
-				var rsc = new RiffSubchunk
-				{
-					tag = tag,
-					Source = br.BaseStream,
-					Position = br.BaseStream.Position,
-					Length = size
-				};
+				RiffSubchunk rsc = new RiffSubchunk
+					{
+						tag = tag,
+						Source = br.BaseStream,
+						Position = br.BaseStream.Position,
+						Length = size
+					};
 				readCounter += size;
 				br.BaseStream.Position += size;
 				ret = rsc.Morph();
@@ -320,8 +316,8 @@ namespace BizHawk.Emulation.DiscSystem
 				br.ReadByte();
 				readCounter += 1;
 			}
-
 			return ret;
+
 		}
 
 		public void WriteStream(Stream s)
@@ -336,8 +332,8 @@ namespace BizHawk.Emulation.DiscSystem
 			Dispose();
 			BaseStream = s;
 			readCounter = 0;
-			BinaryReader br = new(s);
-			var chunk = ReadChunk(br);
+			BinaryReader br = new BinaryReader(s);
+			RiffChunk chunk = ReadChunk(br);
 			if (chunk.tag != "RIFF") throw new FormatException("can't recognize riff chunk");
 			riff = (RiffContainer)chunk;
 		}

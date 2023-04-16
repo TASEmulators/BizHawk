@@ -1,6 +1,6 @@
 //Reality Display Processor
 
-struct RDP : Thread, Memory::RCP<RDP> {
+struct RDP : Thread, Memory::IO<RDP> {
   Node::Object node;
 
   struct Debugger {
@@ -23,7 +23,6 @@ struct RDP : Thread, Memory::RCP<RDP> {
   auto main() -> void;
   auto step(u32 clocks) -> void;
   auto power(bool reset) -> void;
-  auto crash(const char *reason) -> void;
 
   //render.cpp
   auto render() -> void;
@@ -66,9 +65,8 @@ struct RDP : Thread, Memory::RCP<RDP> {
   auto setColorImage() -> void;
 
   //io.cpp
-  auto readWord(u32 address, u32& cycles) -> u32;
-  auto writeWord(u32 address, u32 data, u32& cycles) -> void;
-  auto flushCommands() -> void;
+  auto readWord(u32 address) -> u32;
+  auto writeWord(u32 address, u32 data) -> void;
 
   //serialization.cpp
   auto serialize(serializer&) -> void;
@@ -83,11 +81,7 @@ struct RDP : Thread, Memory::RCP<RDP> {
     n24 tmemBusy;
     n1  source;  //0 = RDRAM, 1 = DMEM
     n1  freeze;
-    n1  crashed;
     n1  flush;
-    n1  startValid;
-    n1  endValid;
-    n1  startGclk;
     n1  ready = 1;
   } command;
 
@@ -333,13 +327,13 @@ struct RDP : Thread, Memory::RCP<RDP> {
     } x, y;
   } fillRectangle_;
 
-  struct IO : Memory::RCP<IO> {
+  struct IO : Memory::IO<IO> {
     RDP& self;
     IO(RDP& self) : self(self) {}
 
     //io.cpp
-    auto readWord(u32 address, u32& cycles) -> u32;
-    auto writeWord(u32 address, u32 data, u32& cycles) -> void;
+    auto readWord(u32 address) -> u32;
+    auto writeWord(u32 address, u32 data) -> void;
 
     struct BIST {
       n1 check;

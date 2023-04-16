@@ -32,14 +32,11 @@ EXAMPLE_TARGET = $(BINDIR)/func_call $(BINDIR)/first_program $(BINDIR)/branch $(
 SLJIT_HEADERS = $(SRCDIR)/sljitLir.h $(SRCDIR)/sljitConfig.h $(SRCDIR)/sljitConfigInternal.h
 
 SLJIT_LIR_FILES = $(SRCDIR)/sljitLir.c $(SRCDIR)/sljitUtils.c \
-	$(SRCDIR)/allocator_src/sljitExecAllocatorCore.c $(SRCDIR)/allocator_src/sljitExecAllocatorApple.c \
-	$(SRCDIR)/allocator_src/sljitExecAllocatorPosix.c $(SRCDIR)/allocator_src/sljitExecAllocatorWindows.c \
-	$(SRCDIR)/allocator_src/sljitProtExecAllocatorNetBSD.c $(SRCDIR)/allocator_src/sljitProtExecAllocatorPosix.c \
-	$(SRCDIR)/allocator_src/sljitWXExecAllocatorPosix.c $(SRCDIR)/allocator_src/sljitWXExecAllocatorWindows.c \
+	$(SRCDIR)/sljitExecAllocator.c $(SRCDIR)/sljitProtExecAllocator.c $(SRCDIR)/sljitWXExecAllocator.c \
 	$(SRCDIR)/sljitNativeARM_32.c $(SRCDIR)/sljitNativeARM_T2_32.c $(SRCDIR)/sljitNativeARM_64.c \
 	$(SRCDIR)/sljitNativeMIPS_common.c $(SRCDIR)/sljitNativeMIPS_32.c $(SRCDIR)/sljitNativeMIPS_64.c \
 	$(SRCDIR)/sljitNativePPC_common.c $(SRCDIR)/sljitNativePPC_32.c $(SRCDIR)/sljitNativePPC_64.c \
-	$(SRCDIR)/sljitNativeRISCV_common.c $(SRCDIR)/sljitNativeRISCV_32.c $(SRCDIR)/sljitNativeRISCV_64.c \
+	$(SRCDIR)/sljitNativeSPARC_common.c $(SRCDIR)/sljitNativeSPARC_32.c \
 	$(SRCDIR)/sljitNativeS390X.c \
 	$(SRCDIR)/sljitNativeX86_common.c $(SRCDIR)/sljitNativeX86_32.c $(SRCDIR)/sljitNativeX86_64.c
 

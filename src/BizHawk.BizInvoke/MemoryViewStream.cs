@@ -38,7 +38,7 @@ namespace BizHawk.BizInvoke
 			set
 			{
 				if (value < 0 || value > _length)
-					throw new ArgumentOutOfRangeException(paramName: nameof(value), value, message: "index out of range");
+					throw new ArgumentOutOfRangeException();
 				_pos = value;
 			}
 		}

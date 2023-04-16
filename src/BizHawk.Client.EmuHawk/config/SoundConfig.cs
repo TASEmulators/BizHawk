@@ -15,6 +15,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool _programmaticallyChangingValue;
 
+		public bool ApplyNewSoundDevice { get; private set; }
+
 		public IDialogController DialogController { get; }
 
 		public SoundConfig(IDialogController dialogController, Config config, Func<ESoundOutputMethod, IEnumerable<string>> getDeviceNamesCallback)
@@ -67,6 +69,8 @@ namespace BizHawk.Client.EmuHawk
 				DialogController.ShowMessageBox("Buffer size must be at least 60 milliseconds for DirectSound.", "Error", EMsgBoxIcon.Error);
 				return;
 			}
+			var oldOutputMethod = _config.SoundOutputMethod;
+			var oldDevice = _config.SoundDevice;
 			_config.SoundEnabled = cbEnableMaster.Checked;
 			_config.SoundEnabledNormal = cbEnableNormal.Checked;
 			_config.SoundEnabledRWFF = cbEnableRWFF.Checked;
@@ -76,6 +80,7 @@ namespace BizHawk.Client.EmuHawk
 			_config.SoundVolume = tbNormal.Value;
 			_config.SoundVolumeRWFF = tbRWFF.Value;
 			_config.SoundDevice = (string)listBoxSoundDevices.SelectedItem ?? "<default>";
+			ApplyNewSoundDevice = _config.SoundOutputMethod != oldOutputMethod || _config.SoundDevice != oldDevice; // read in MainForm at ShowDialog() callsite
 			DialogResult = DialogResult.OK;
 		}
 

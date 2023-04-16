@@ -43,13 +43,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			Bob,
 		}
 
-		public enum IplVer : uint
-		{
-			Japan,
-			Dev,
-			USA,
-		}
-
 		[StructLayout(LayoutKind.Sequential)]
 		public new class FrameInfo : LibWaterboxCore.FrameInfo
 		{
@@ -74,46 +67,47 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 
 			public bool Reset;
 			public bool Power;
+		}
 
-			public bool BobDeinterlacer;
-			public bool FastVI;
-			public bool SkipDraw;
+		[Flags]
+		public enum LoadFlags : uint
+		{
+			RestrictAnalogRange = 1 << 0,
+			Pal = 1 << 1,
+			BobDeinterlace = 1 << 2, // weave otherwise
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct LoadData
 		{
 			public IntPtr PifData;
-			public long PifLen;
-			public IntPtr IplData;
-			public long IplLen;
+			public int PifLen;
 			public IntPtr RomData;
-			public long RomLen;
-			public IntPtr DiskData;
-			public long DiskLen;
-			public IntPtr DiskErrorData;
-			public long DiskErrorLen;
+			public int RomLen;
 			public IntPtr Gb1RomData;
-			public long Gb1RomLen;
+			public int Gb1RomLen;
 			public IntPtr Gb2RomData;
-			public long Gb2RomLen;
+			public int Gb2RomLen;
 			public IntPtr Gb3RomData;
-			public long Gb3RomLen;
+			public int Gb3RomLen;
 			public IntPtr Gb4RomData;
-			public long Gb4RomLen;
+			public int Gb4RomLen;
 		}
 
 		[BizImport(CC)]
-		public abstract bool Init(ref LoadData loadData, ControllerType[] controllerSettings, bool isPal, long initTime);
+		public abstract bool Init(ref LoadData loadData, ControllerType[] controllerSettings, LoadFlags loadFlags);
 
 		[BizImport(CC)]
 		public abstract bool GetRumbleStatus(int num);
-		
-		[BizImport(CC)]
-		public abstract void PostLoadState();
 
 		[BizImport(CC)]
 		public abstract void GetDisassembly(uint address, uint instruction, byte[] buf);
+
+		[UnmanagedFunctionPointer(CC)]
+		public delegate void TraceCallback(IntPtr disasm);
+
+		[BizImport(CC)]
+		public abstract void SetTraceCallback(TraceCallback callback);
 
 		[BizImport(CC)]
 		public abstract void GetRegisters(ulong[] buf);

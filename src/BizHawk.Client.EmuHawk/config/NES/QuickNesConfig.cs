@@ -9,7 +9,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class QuickNesConfig : Form, IDialogParent
+	public partial class QuickNesConfig : Form
 	{
 		private readonly Config _config;
 
@@ -17,14 +17,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly QuickNES.QuickNESSettings _settings;
 
-		public IDialogController DialogController { get; }
-
-		public QuickNesConfig(Config config, IDialogController dialogController, ISettingsAdapter settable)
+		public QuickNesConfig(Config config, ISettingsAdapter settable)
 		{
 			_config = config;
 			_settable = settable;
 			_settings = (QuickNES.QuickNESSettings) _settable.GetSettings();
-			DialogController = dialogController;
 			InitializeComponent();
 			Icon = Properties.Resources.QuickNesIcon;
 		}
@@ -83,12 +80,20 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ButtonPal_Click(object sender, EventArgs e)
 		{
-			var result = this.ShowFileOpenDialog(
-				discardCWDChange: true,
-				filter: FilesystemFilterSet.Palettes,
-				initDir: _config.PathEntries.PalettesAbsolutePathFor(VSystemID.Raw.NES));
-			if (result is null) return;
-			HawkFile palette = new(result);
+			using var ofd = new OpenFileDialog
+			{
+				InitialDirectory = _config.PathEntries.PalettesAbsolutePathFor(VSystemID.Raw.NES),
+				Filter = new FilesystemFilterSet(FilesystemFilter.Palettes).ToString(),
+				RestoreDirectory = true
+			};
+
+			var result = ofd.ShowDialog();
+			if (result != DialogResult.OK)
+			{
+				return;
+			}
+
+			var palette = new HawkFile(ofd.FileName);
 
 			if (palette.Exists)
 			{

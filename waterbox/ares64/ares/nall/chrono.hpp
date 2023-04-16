@@ -3,15 +3,14 @@
 #include <nall/function.hpp>
 #include <nall/string.hpp>
 
-#include <chrono>
-
 namespace nall::chrono {
 
 //passage of time functions (from unknown epoch)
 
 inline auto nanosecond() -> u64 {
-  auto now = std::chrono::steady_clock::now().time_since_epoch();
-  return std::chrono::duration_cast<std::chrono::nanoseconds>(now).count();
+  timespec tv;
+  clock_gettime(CLOCK_MONOTONIC, &tv);
+  return tv.tv_sec * 1'000'000'000 + tv.tv_nsec;
 }
 
 inline auto microsecond() -> u64 { return nanosecond() / 1'000; }

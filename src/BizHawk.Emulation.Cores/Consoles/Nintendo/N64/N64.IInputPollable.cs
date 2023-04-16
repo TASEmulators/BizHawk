@@ -39,6 +39,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		}
 
 		// TODO: optimize managed to unmanaged using the ActiveChanged event
-		public IInputCallbackSystem InputCallbacks { get; }
+		public IInputCallbackSystem InputCallbacks { [FeatureNotImplemented] get; }
 	}
 }

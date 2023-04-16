@@ -40,7 +40,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		[FeatureNotImplemented]
 		public void DisassembleCDL(Stream s, ICodeDataLog cdl)
-			=> throw new NotImplementedException();
+		{
+
+		}
 
 		public enum CDLog_AddrType
 		{

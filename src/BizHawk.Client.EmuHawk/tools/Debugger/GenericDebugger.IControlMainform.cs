@@ -11,20 +11,11 @@
 		public bool WantsToControlSavestates => false;
 
 		public void SaveState() { }
-
-		public bool LoadState()
-			=> false;
-
+		public void LoadState() { }
 		public void SaveStateAs() { }
-
-		public bool LoadStateAs()
-			=> false;
-
+		public void LoadStateAs() { }
 		public void SaveQuickSave(int slot) { }
-
-		public bool LoadQuickSave(int slot)
-			=> false;
-
+		public void LoadQuickSave(int slot) { }
 		public bool SelectSlot(int slot) => false;
 		public bool PreviousSlot() => false;
 		public bool NextSlot() => false;
@@ -41,9 +32,7 @@
 		public bool Rewind() => false;
 
 		public bool WantsToControlRestartMovie => false;
-
-		public bool RestartMovie()
-			=> false;
+		public void RestartMovie() { }
 
 		// TODO: We want to prevent movies and probably other things
 	}

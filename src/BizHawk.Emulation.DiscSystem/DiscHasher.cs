@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.DiscSystem
 			//but it will help detect dumps with mangled TOCs which are all too common
 
 			CRC32 crc = new();
-			var buffer2352 = new byte[2352];
+			byte[] buffer2352 = new byte[2352];
 
 			var dsr = new DiscSectorReader(disc)
 			{
@@ -36,20 +36,19 @@ namespace BizHawk.Emulation.DiscSystem
 			//hash the TOC
 			static void AddAsBytesTo(CRC32 crc32, int i)
 				=> crc32.Add(BitConverter.GetBytes(i));
-
-			AddAsBytesTo(crc, (int)disc.TOC.SessionFormat);
+			AddAsBytesTo(crc, (int)disc.TOC.Session1Format);
 			AddAsBytesTo(crc, disc.TOC.FirstRecordedTrackNumber);
 			AddAsBytesTo(crc, disc.TOC.LastRecordedTrackNumber);
-			for (var i = 1; i <= 100; i++)
+			for (int i = 1; i <= 100; i++)
 			{
 				//if (disc.TOC.TOCItems[i].Exists) Console.WriteLine("{0:X8} {1:X2} {2:X2} {3:X8}", crc.Current, (int)disc.TOC.TOCItems[i].Control, disc.TOC.TOCItems[i].Exists ? 1 : 0, disc.TOC.TOCItems[i].LBATimestamp.Sector); //a little debugging
 				AddAsBytesTo(crc, (int)disc.TOC.TOCItems[i].Control);
 				AddAsBytesTo(crc, disc.TOC.TOCItems[i].Exists ? 1 : 0);
-				AddAsBytesTo(crc, disc.TOC.TOCItems[i].LBA);
+				AddAsBytesTo(crc, (int)disc.TOC.TOCItems[i].LBA);
 			}
 
 			//hash first 26 sectors
-			for (var i = 0; i < 26; i++)
+			for (int i = 0; i < 26; i++)
 			{
 				dsr.ReadLBA_2352(i, buffer2352, 0);
 				crc.Add(buffer2352);
@@ -64,7 +63,7 @@ namespace BizHawk.Emulation.DiscSystem
 		public uint Calculate_PSX_RedumpHash()
 		{
 			CRC32 crc = new();
-			var buffer2352 = new byte[2352];
+			byte[] buffer2352 = new byte[2352];
 
 			var dsr = new DiscSectorReader(disc)
 			{
@@ -73,7 +72,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 
 			//read all sectors for redump hash
-			for (var i = 0; i < disc.Session1.LeadoutLBA; i++)
+			for (int i = 0; i < disc.Session1.LeadoutLBA; i++)
 			{
 				dsr.ReadLBA_2352(i, buffer2352, 0);
 				crc.Add(buffer2352);
@@ -87,15 +86,15 @@ namespace BizHawk.Emulation.DiscSystem
 		//TODO - this is a very platform-specific thing. hashing the TOC may be faster and be just as effective. so, rename it appropriately
 		public string OldHash()
 		{
-			var buffer = new byte[512 * 2352];
-			var dsr = new DiscSectorReader(disc);
+			byte[] buffer = new byte[512 * 2352];
+			DiscSectorReader dsr = new DiscSectorReader(disc);
 			foreach (var track in disc.Session1.Tracks)
 			{
 				if (track.IsAudio)
 					continue;
 
-				var lba_len = Math.Min(track.NextTrack.LBA, 512);
-				for (var s = 0; s < 512 && s < lba_len; s++)
+				int lba_len = Math.Min(track.NextTrack.LBA, 512);
+				for (int s = 0; s < 512 && s < lba_len; s++)
 					dsr.ReadLBA_2352(track.LBA + s, buffer, s * 2352);
 
 				return MD5Checksum.ComputeDigestHex(buffer.AsSpan(start: 0, length: lba_len * 2352));

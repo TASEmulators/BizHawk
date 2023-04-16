@@ -1,6 +1,6 @@
 #pragma once
 
-namespace nall::primitives {
+namespace nall {
 
 inline auto operator"" _b(unsigned long long value) { return boolean{value}; }
 inline auto operator"" _n(unsigned long long value) { return natural{value}; }

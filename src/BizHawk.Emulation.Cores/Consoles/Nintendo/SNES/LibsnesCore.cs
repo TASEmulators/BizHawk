@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 	[PortedCore(CoreNames.Bsnes, "byuu", "v87", "https://github.com/bsnes-emu/bsnes/tree/386ac87d21d14fafd15162d480a111209c9955ba")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public unsafe partial class LibsnesCore : IEmulator, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable, ICodeDataLogger,
-		IDebuggable, ISettable<LibsnesCore.SnesSettings, LibsnesCore.SnesSyncSettings>, IBSNESForGfxDebugger
+		IDebuggable, ISettable<LibsnesCore.SnesSettings, LibsnesCore.SnesSyncSettings>
 	{
 		[CoreConstructor(VSystemID.Raw.SGB)]
 		[CoreConstructor(VSystemID.Raw.SNES)]
@@ -100,6 +100,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			// start up audio resampler
 			InitAudio();
+			ser.Register<ISoundProvider>(_resampler);
 
 			// strip header
 			if ((romData?.Length & 0x7FFF) == 512)
@@ -217,6 +218,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		private IController _controller;
 		private readonly LoadParams _currLoadParams;
+		private SpeexResampler _resampler;
 		private int _timeFrameCounter;
 		private bool _disposed;
 
@@ -233,17 +235,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public SnesColors.ColorType CurrPalette { get; private set; }
 
-		public void SetPalette(SnesColors.ColorType palette)
-		{
-			var s = GetSettings();
-			s.Palette = Enum.GetName(typeof(SnesColors.ColorType), palette);
-			PutSettings(s);
-		}
-
-		public ISNESGraphicsDecoder CreateGraphicsDecoder()
-			=> new SNESGraphicsDecoder(Api, CurrPalette);
-
-		public ScanlineHookManager ScanlineHookManager { get; }
+		public MyScanlineHookManager ScanlineHookManager { get; }
 
 		public class MyScanlineHookManager : ScanlineHookManager
 		{
@@ -370,6 +362,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				int idx = msg.IndexOf("AF:");
 				_tracer.Put(new(disassembly: msg.Substring(0, idx).TrimEnd(), registerInfo: msg.Substring(idx)));
 			}
+		}
+
+		private void SetPalette(SnesColors.ColorType pal)
+		{
+			CurrPalette = pal;
+			int[] tmp = SnesColors.GetLUT(pal);
+			fixed (int* p = &tmp[0])
+				Api.QUERY_set_color_lut((IntPtr)p);
 		}
 
 		private void ReadHook(uint addr)
@@ -621,12 +621,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		//  return ret;
 		//}
 
+		private void InitAudio()
+		{
+			_resampler = new SpeexResampler((SpeexResampler.Quality)6, 64081, 88200, 32041, 44100);
+		}
+
+		private void snes_audio_sample(ushort left, ushort right)
+		{
+			_resampler.EnqueueSample((short)left, (short)right);
+		}
+
 		private void RefreshPalette()
 		{
-			CurrPalette = (SnesColors.ColorType)Enum.Parse(typeof(SnesColors.ColorType), _settings.Palette, false);
-			int[] tmp = SnesColors.GetLUT(CurrPalette);
-			fixed (int* p = &tmp[0])
-				Api.QUERY_set_color_lut((IntPtr)p);
+			SetPalette((SnesColors.ColorType)Enum.Parse(typeof(SnesColors.ColorType), _settings.Palette, false));
 		}
 	}
 }

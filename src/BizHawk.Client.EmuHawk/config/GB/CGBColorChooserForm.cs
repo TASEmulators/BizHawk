@@ -23,9 +23,6 @@ namespace BizHawk.Client.EmuHawk
 			_type = s.CGBColors;
 			switch (_type)
 			{
-				case GBColors.ColorType.sameboy:
-					radioButton0.Checked = true;
-					break;
 				case GBColors.ColorType.gambatte:
 					radioButton1.Checked = true;
 					break;
@@ -79,11 +76,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RadioButton1_CheckedChanged(object sender, EventArgs e)
 		{
-			if (sender == radioButton0)
-			{
-				_type = GBColors.ColorType.sameboy;
-			}
-
 			if (sender == radioButton1)
 			{
 				_type = GBColors.ColorType.gambatte;
@@ -129,8 +121,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using var dlg = new CGBColorChooserForm();
 			dlg.LoadType(s);
-			if (!parent.ShowDialogAsChild(dlg).IsOk()) return;
-			s.CGBColors = dlg._type;
+			var result = parent.ShowDialogAsChild(dlg);
+			if (result == DialogResult.OK)
+			{
+				s.CGBColors = dlg._type;
+			}
 		}
 	}
 }

@@ -98,7 +98,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				throw new ArgumentException(message: $"{nameof(GifWriter)} only takes its own tokens!", paramName: nameof(token));
+				throw new ArgumentException($"{nameof(GifWriter)} only takes its own tokens!");
 			}
 		}
 

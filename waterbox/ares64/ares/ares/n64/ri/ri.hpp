@@ -1,6 +1,6 @@
 //RDRAM Interface
 
-struct RI : Memory::RCP<RI> {
+struct RI : Memory::IO<RI> {
   Node::Object node;
 
   struct Debugger {
@@ -19,8 +19,8 @@ struct RI : Memory::RCP<RI> {
   auto power(bool reset) -> void;
 
   //io.cpp
-  auto readWord(u32 address, u32& cycles) -> u32;
-  auto writeWord(u32 address, u32 data, u32& cycles) -> void;
+  auto readWord(u32 address) -> u32;
+  auto writeWord(u32 address, u32 data) -> void;
 
   //serialization.cpp
   auto serialize(serializer&) -> void;

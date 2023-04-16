@@ -6,13 +6,6 @@
 
 #include "flatbuffers/flatbuffers.h"
 
-// Ensure the included flatbuffers.h is the same version as when this file was
-// generated, otherwise it may not be compatible.
-static_assert(FLATBUFFERS_VERSION_MAJOR == 22 &&
-              FLATBUFFERS_VERSION_MINOR == 9 &&
-              FLATBUFFERS_VERSION_REVISION == 24,
-             "Non-compatible flatbuffers version included");
-
 namespace NymaTypes {
 
 struct EnumValue;
@@ -67,7 +60,7 @@ struct NPorts;
 struct NPortsBuilder;
 struct NPortsT;
 
-enum SettingType : int32_t {
+enum SettingType {
   /// (signed), int8, int16, int32, int64(saved as)
   SettingType_Int = 0,
   /// uint8, uint16, uint32, uint64(saved as)
@@ -122,7 +115,7 @@ inline const char *EnumNameSettingType(SettingType e) {
   return EnumNamesSettingType()[index];
 }
 
-enum SettingsFlags : uint32_t {
+enum SettingsFlags {
   /// TODO(cats)
   SettingsFlags_Input = 256,
   SettingsFlags_Sound = 512,
@@ -183,7 +176,7 @@ inline const char *EnumNameSettingsFlags(SettingsFlags e) {
   }
 }
 
-enum InputType : uint8_t {
+enum InputType {
   InputType_Padding = 0,
   InputType_Button = 1,
   InputType_ButtonCanRapid = 2,
@@ -246,7 +239,7 @@ inline const char *EnumNameInputType(InputType e) {
   return EnumNamesInputType()[index];
 }
 
-enum AxisFlags : uint8_t {
+enum AxisFlags {
   AxisFlags_Sqlr = 1,
   AxisFlags_InvertCo = 2,
   AxisFlags_SettingsUndoc = 128,
@@ -272,7 +265,7 @@ inline const char *EnumNameAxisFlags(AxisFlags e) {
   }
 }
 
-enum DeviceFlags : uint8_t {
+enum DeviceFlags {
   DeviceFlags_Keyboard = 1,
   DeviceFlags_NONE = 0,
   DeviceFlags_ANY = 1
@@ -299,7 +292,7 @@ inline const char *EnumNameDeviceFlags(DeviceFlags e) {
   return EnumNamesDeviceFlags()[index];
 }
 
-enum NInputExtra : uint8_t {
+enum NInputExtra {
   NInputExtra_NONE = 0,
   NInputExtra_Button = 1,
   NInputExtra_Axis = 2,
@@ -358,26 +351,6 @@ template<> struct NInputExtraTraits<NymaTypes::NStatusInfo> {
   static const NInputExtra enum_value = NInputExtra_Status;
 };
 
-template<typename T> struct NInputExtraUnionTraits {
-  static const NInputExtra enum_value = NInputExtra_NONE;
-};
-
-template<> struct NInputExtraUnionTraits<NymaTypes::NButtonInfoT> {
-  static const NInputExtra enum_value = NInputExtra_Button;
-};
-
-template<> struct NInputExtraUnionTraits<NymaTypes::NAxisInfoT> {
-  static const NInputExtra enum_value = NInputExtra_Axis;
-};
-
-template<> struct NInputExtraUnionTraits<NymaTypes::NSwitchInfoT> {
-  static const NInputExtra enum_value = NInputExtra_Switch;
-};
-
-template<> struct NInputExtraUnionTraits<NymaTypes::NStatusInfoT> {
-  static const NInputExtra enum_value = NInputExtra_Status;
-};
-
 struct NInputExtraUnion {
   NInputExtra type;
   void *value;
@@ -395,15 +368,17 @@ struct NInputExtraUnion {
 
   void Reset();
 
+#ifndef FLATBUFFERS_CPP98_STL
   template <typename T>
   void Set(T&& val) {
-    typedef typename std::remove_reference<T>::type RT;
+    using RT = typename std::remove_reference<T>::type;
     Reset();
-    type = NInputExtraUnionTraits<RT>::enum_value;
+    type = NInputExtraTraits<typename RT::TableType>::enum_value;
     if (type != NInputExtra_NONE) {
       value = new RT(std::forward<T>(val));
     }
   }
+#endif  // FLATBUFFERS_CPP98_STL
 
   static void *UnPack(const void *obj, NInputExtra type, const flatbuffers::resolver_function_t *resolver);
   flatbuffers::Offset<void> Pack(flatbuffers::FlatBufferBuilder &_fbb, const flatbuffers::rehasher_function_t *_rehasher = nullptr) const;
@@ -447,9 +422,11 @@ bool VerifyNInputExtraVector(flatbuffers::Verifier &verifier, const flatbuffers:
 
 struct EnumValueT : public flatbuffers::NativeTable {
   typedef EnumValue TableType;
-  std::string Name{};
-  std::string Description{};
-  std::string Value{};
+  std::string Name;
+  std::string Description;
+  std::string Value;
+  EnumValueT() {
+  }
 };
 
 struct EnumValue FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
@@ -501,6 +478,7 @@ struct EnumValueBuilder {
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
+  EnumValueBuilder &operator=(const EnumValueBuilder &);
   flatbuffers::Offset<EnumValue> Finish() {
     const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<EnumValue>(end);
@@ -539,19 +517,19 @@ flatbuffers::Offset<EnumValue> CreateEnumValue(flatbuffers::FlatBufferBuilder &_
 
 struct SettingT : public flatbuffers::NativeTable {
   typedef Setting TableType;
-  std::string Name{};
-  std::string Description{};
-  std::string SettingsKey{};
-  std::string DefaultValue{};
-  std::string Min{};
-  std::string Max{};
-  NymaTypes::SettingsFlags Flags = static_cast<NymaTypes::SettingsFlags>(0);
-  NymaTypes::SettingType Type = NymaTypes::SettingType_Int;
-  std::vector<std::unique_ptr<NymaTypes::EnumValueT>> SettingEnums{};
-  SettingT() = default;
-  SettingT(const SettingT &o);
-  SettingT(SettingT&&) FLATBUFFERS_NOEXCEPT = default;
-  SettingT &operator=(SettingT o) FLATBUFFERS_NOEXCEPT;
+  std::string Name;
+  std::string Description;
+  std::string SettingsKey;
+  std::string DefaultValue;
+  std::string Min;
+  std::string Max;
+  NymaTypes::SettingsFlags Flags;
+  NymaTypes::SettingType Type;
+  std::vector<std::unique_ptr<NymaTypes::EnumValueT>> SettingEnums;
+  SettingT()
+      : Flags(static_cast<NymaTypes::SettingsFlags>(0)),
+        Type(NymaTypes::SettingType_Int) {
+  }
 };
 
 struct Setting FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
@@ -609,8 +587,8 @@ struct Setting FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            verifier.VerifyString(Min()) &&
            VerifyOffset(verifier, VT_MAX) &&
            verifier.VerifyString(Max()) &&
-           VerifyField<uint32_t>(verifier, VT_FLAGS, 4) &&
-           VerifyField<int32_t>(verifier, VT_TYPE, 4) &&
+           VerifyField<uint32_t>(verifier, VT_FLAGS) &&
+           VerifyField<int32_t>(verifier, VT_TYPE) &&
            VerifyOffset(verifier, VT_SETTINGENUMS) &&
            verifier.VerifyVector(SettingEnums()) &&
            verifier.VerifyVectorOfTables(SettingEnums()) &&
@@ -656,6 +634,7 @@ struct SettingBuilder {
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
+  SettingBuilder &operator=(const SettingBuilder &);
   flatbuffers::Offset<Setting> Finish() {
     const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<Setting>(end);
@@ -722,11 +701,9 @@ flatbuffers::Offset<Setting> CreateSetting(flatbuffers::FlatBufferBuilder &_fbb,
 
 struct SettingsT : public flatbuffers::NativeTable {
   typedef Settings TableType;
-  std::vector<std::unique_ptr<NymaTypes::SettingT>> Values{};
-  SettingsT() = default;
-  SettingsT(const SettingsT &o);
-  SettingsT(SettingsT&&) FLATBUFFERS_NOEXCEPT = default;
-  SettingsT &operator=(SettingsT o) FLATBUFFERS_NOEXCEPT;
+  std::vector<std::unique_ptr<NymaTypes::SettingT>> Values;
+  SettingsT() {
+  }
 };
 
 struct Settings FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
@@ -761,6 +738,7 @@ struct SettingsBuilder {
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
+  SettingsBuilder &operator=(const SettingsBuilder &);
   flatbuffers::Offset<Settings> Finish() {
     const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<Settings>(end);
@@ -789,7 +767,9 @@ flatbuffers::Offset<Settings> CreateSettings(flatbuffers::FlatBufferBuilder &_fb
 
 struct NButtonInfoT : public flatbuffers::NativeTable {
   typedef NButtonInfo TableType;
-  std::string ExcludeName{};
+  std::string ExcludeName;
+  NButtonInfoT() {
+  }
 };
 
 struct NButtonInfo FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
@@ -823,6 +803,7 @@ struct NButtonInfoBuilder {
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
+  NButtonInfoBuilder &operator=(const NButtonInfoBuilder &);
   flatbuffers::Offset<NButtonInfo> Finish() {
     const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<NButtonInfo>(end);
@@ -851,10 +832,12 @@ flatbuffers::Offset<NButtonInfo> CreateNButtonInfo(flatbuffers::FlatBufferBuilde
 
 struct NAxisInfoT : public flatbuffers::NativeTable {
   typedef NAxisInfo TableType;
-  std::string SettingsNameNeg{};
-  std::string SettingsNamePos{};
-  std::string NameNeg{};
-  std::string NamePos{};
+  std::string SettingsNameNeg;
+  std::string SettingsNamePos;
+  std::string NameNeg;
+  std::string NamePos;
+  NAxisInfoT() {
+  }
 };
 
 struct NAxisInfo FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
@@ -915,6 +898,7 @@ struct NAxisInfoBuilder {
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
+  NAxisInfoBuilder &operator=(const NAxisInfoBuilder &);
   flatbuffers::Offset<NAxisInfo> Finish() {
     const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<NAxisInfo>(end);
@@ -958,12 +942,11 @@ flatbuffers::Offset<NAxisInfo> CreateNAxisInfo(flatbuffers::FlatBufferBuilder &_
 
 struct NSwitchInfoT : public flatbuffers::NativeTable {
   typedef NSwitchInfo TableType;
-  uint32_t DefaultPosition = 0;
-  std::vector<std::unique_ptr<NymaTypes::NSwitchPositionT>> Positions{};
-  NSwitchInfoT() = default;
-  NSwitchInfoT(const NSwitchInfoT &o);
-  NSwitchInfoT(NSwitchInfoT&&) FLATBUFFERS_NOEXCEPT = default;
-  NSwitchInfoT &operator=(NSwitchInfoT o) FLATBUFFERS_NOEXCEPT;
+  uint32_t DefaultPosition;
+  std::vector<std::unique_ptr<NymaTypes::NSwitchPositionT>> Positions;
+  NSwitchInfoT()
+      : DefaultPosition(0) {
+  }
 };
 
 struct NSwitchInfo FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
@@ -981,7 +964,7 @@ struct NSwitchInfo FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<uint32_t>(verifier, VT_DEFAULTPOSITION, 4) &&
+           VerifyField<uint32_t>(verifier, VT_DEFAULTPOSITION) &&
            VerifyOffset(verifier, VT_POSITIONS) &&
            verifier.VerifyVector(Positions()) &&
            verifier.VerifyVectorOfTables(Positions()) &&
@@ -1006,6 +989,7 @@ struct NSwitchInfoBuilder {
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
+  NSwitchInfoBuilder &operator=(const NSwitchInfoBuilder &);
   flatbuffers::Offset<NSwitchInfo> Finish() {
     const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<NSwitchInfo>(end);
@@ -1038,9 +1022,11 @@ flatbuffers::Offset<NSwitchInfo> CreateNSwitchInfo(flatbuffers::FlatBufferBuilde
 
 struct NSwitchPositionT : public flatbuffers::NativeTable {
   typedef NSwitchPosition TableType;
-  std::string SettingName{};
-  std::string Name{};
-  std::string Description{};
+  std::string SettingName;
+  std::string Name;
+  std::string Description;
+  NSwitchPositionT() {
+  }
 };
 
 struct NSwitchPosition FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
@@ -1092,6 +1078,7 @@ struct NSwitchPositionBuilder {
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
+  NSwitchPositionBuilder &operator=(const NSwitchPositionBuilder &);
   flatbuffers::Offset<NSwitchPosition> Finish() {
     const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<NSwitchPosition>(end);
@@ -1130,11 +1117,9 @@ flatbuffers::Offset<NSwitchPosition> CreateNSwitchPosition(flatbuffers::FlatBuff
 
 struct NStatusInfoT : public flatbuffers::NativeTable {
   typedef NStatusInfo TableType;
-  std::vector<std::unique_ptr<NymaTypes::NStatusStateT>> States{};
-  NStatusInfoT() = default;
-  NStatusInfoT(const NStatusInfoT &o);
-  NStatusInfoT(NStatusInfoT&&) FLATBUFFERS_NOEXCEPT = default;
-  NStatusInfoT &operator=(NStatusInfoT o) FLATBUFFERS_NOEXCEPT;
+  std::vector<std::unique_ptr<NymaTypes::NStatusStateT>> States;
+  NStatusInfoT() {
+  }
 };
 
 struct NStatusInfo FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
@@ -1169,6 +1154,7 @@ struct NStatusInfoBuilder {
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
+  NStatusInfoBuilder &operator=(const NStatusInfoBuilder &);
   flatbuffers::Offset<NStatusInfo> Finish() {
     const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<NStatusInfo>(end);
@@ -1197,9 +1183,12 @@ flatbuffers::Offset<NStatusInfo> CreateNStatusInfo(flatbuffers::FlatBufferBuilde
 
 struct NStatusStateT : public flatbuffers::NativeTable {
   typedef NStatusState TableType;
-  std::string ShortName{};
-  std::string Name{};
-  int32_t Color = 0;
+  std::string ShortName;
+  std::string Name;
+  int32_t Color;
+  NStatusStateT()
+      : Color(0) {
+  }
 };
 
 struct NStatusState FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
@@ -1225,7 +1214,7 @@ struct NStatusState FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            verifier.VerifyString(ShortName()) &&
            VerifyOffset(verifier, VT_NAME) &&
            verifier.VerifyString(Name()) &&
-           VerifyField<int32_t>(verifier, VT_COLOR, 4) &&
+           VerifyField<int32_t>(verifier, VT_COLOR) &&
            verifier.EndTable();
   }
   NStatusStateT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
@@ -1250,6 +1239,7 @@ struct NStatusStateBuilder {
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
+  NStatusStateBuilder &operator=(const NStatusStateBuilder &);
   flatbuffers::Offset<NStatusState> Finish() {
     const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<NStatusState>(end);
@@ -1287,14 +1277,21 @@ flatbuffers::Offset<NStatusState> CreateNStatusState(flatbuffers::FlatBufferBuil
 
 struct NInputInfoT : public flatbuffers::NativeTable {
   typedef NInputInfo TableType;
-  std::string SettingName{};
-  std::string Name{};
-  int16_t ConfigOrder = 0;
-  uint16_t BitOffset = 0;
-  NymaTypes::InputType Type = NymaTypes::InputType_Padding;
-  NymaTypes::AxisFlags Flags = static_cast<NymaTypes::AxisFlags>(0);
-  uint8_t BitSize = 0;
-  NymaTypes::NInputExtraUnion Extra{};
+  std::string SettingName;
+  std::string Name;
+  int16_t ConfigOrder;
+  uint16_t BitOffset;
+  NymaTypes::InputType Type;
+  NymaTypes::AxisFlags Flags;
+  uint8_t BitSize;
+  NymaTypes::NInputExtraUnion Extra;
+  NInputInfoT()
+      : ConfigOrder(0),
+        BitOffset(0),
+        Type(NymaTypes::InputType_Padding),
+        Flags(static_cast<NymaTypes::AxisFlags>(0)),
+        BitSize(0) {
+  }
 };
 
 struct NInputInfo FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
@@ -1357,12 +1354,12 @@ struct NInputInfo FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            verifier.VerifyString(SettingName()) &&
            VerifyOffset(verifier, VT_NAME) &&
            verifier.VerifyString(Name()) &&
-           VerifyField<int16_t>(verifier, VT_CONFIGORDER, 2) &&
-           VerifyField<uint16_t>(verifier, VT_BITOFFSET, 2) &&
-           VerifyField<uint8_t>(verifier, VT_TYPE, 1) &&
-           VerifyField<uint8_t>(verifier, VT_FLAGS, 1) &&
-           VerifyField<uint8_t>(verifier, VT_BITSIZE, 1) &&
-           VerifyField<uint8_t>(verifier, VT_EXTRA_TYPE, 1) &&
+           VerifyField<int16_t>(verifier, VT_CONFIGORDER) &&
+           VerifyField<uint16_t>(verifier, VT_BITOFFSET) &&
+           VerifyField<uint8_t>(verifier, VT_TYPE) &&
+           VerifyField<uint8_t>(verifier, VT_FLAGS) &&
+           VerifyField<uint8_t>(verifier, VT_BITSIZE) &&
+           VerifyField<uint8_t>(verifier, VT_EXTRA_TYPE) &&
            VerifyOffset(verifier, VT_EXTRA) &&
            VerifyNInputExtra(verifier, Extra(), Extra_type()) &&
            verifier.EndTable();
@@ -1423,6 +1420,7 @@ struct NInputInfoBuilder {
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
+  NInputInfoBuilder &operator=(const NInputInfoBuilder &);
   flatbuffers::Offset<NInputInfo> Finish() {
     const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<NInputInfo>(end);
@@ -1484,16 +1482,16 @@ flatbuffers::Offset<NInputInfo> CreateNInputInfo(flatbuffers::FlatBufferBuilder 
 
 struct NDeviceInfoT : public flatbuffers::NativeTable {
   typedef NDeviceInfo TableType;
-  std::string ShortName{};
-  std::string FullName{};
-  std::string Description{};
-  NymaTypes::DeviceFlags Flags = static_cast<NymaTypes::DeviceFlags>(0);
-  uint32_t ByteLength = 0;
-  std::vector<std::unique_ptr<NymaTypes::NInputInfoT>> Inputs{};
-  NDeviceInfoT() = default;
-  NDeviceInfoT(const NDeviceInfoT &o);
-  NDeviceInfoT(NDeviceInfoT&&) FLATBUFFERS_NOEXCEPT = default;
-  NDeviceInfoT &operator=(NDeviceInfoT o) FLATBUFFERS_NOEXCEPT;
+  std::string ShortName;
+  std::string FullName;
+  std::string Description;
+  NymaTypes::DeviceFlags Flags;
+  uint32_t ByteLength;
+  std::vector<std::unique_ptr<NymaTypes::NInputInfoT>> Inputs;
+  NDeviceInfoT()
+      : Flags(static_cast<NymaTypes::DeviceFlags>(0)),
+        ByteLength(0) {
+  }
 };
 
 struct NDeviceInfo FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
@@ -1533,8 +1531,8 @@ struct NDeviceInfo FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            verifier.VerifyString(FullName()) &&
            VerifyOffset(verifier, VT_DESCRIPTION) &&
            verifier.VerifyString(Description()) &&
-           VerifyField<uint8_t>(verifier, VT_FLAGS, 1) &&
-           VerifyField<uint32_t>(verifier, VT_BYTELENGTH, 4) &&
+           VerifyField<uint8_t>(verifier, VT_FLAGS) &&
+           VerifyField<uint32_t>(verifier, VT_BYTELENGTH) &&
            VerifyOffset(verifier, VT_INPUTS) &&
            verifier.VerifyVector(Inputs()) &&
            verifier.VerifyVectorOfTables(Inputs()) &&
@@ -1571,6 +1569,7 @@ struct NDeviceInfoBuilder {
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
+  NDeviceInfoBuilder &operator=(const NDeviceInfoBuilder &);
   flatbuffers::Offset<NDeviceInfo> Finish() {
     const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<NDeviceInfo>(end);
@@ -1622,14 +1621,12 @@ flatbuffers::Offset<NDeviceInfo> CreateNDeviceInfo(flatbuffers::FlatBufferBuilde
 
 struct NPortInfoT : public flatbuffers::NativeTable {
   typedef NPortInfo TableType;
-  std::string ShortName{};
-  std::string FullName{};
-  std::string DefaultDeviceShortName{};
-  std::vector<std::unique_ptr<NymaTypes::NDeviceInfoT>> Devices{};
-  NPortInfoT() = default;
-  NPortInfoT(const NPortInfoT &o);
-  NPortInfoT(NPortInfoT&&) FLATBUFFERS_NOEXCEPT = default;
-  NPortInfoT &operator=(NPortInfoT o) FLATBUFFERS_NOEXCEPT;
+  std::string ShortName;
+  std::string FullName;
+  std::string DefaultDeviceShortName;
+  std::vector<std::unique_ptr<NymaTypes::NDeviceInfoT>> Devices;
+  NPortInfoT() {
+  }
 };
 
 struct NPortInfo FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
@@ -1691,6 +1688,7 @@ struct NPortInfoBuilder {
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
+  NPortInfoBuilder &operator=(const NPortInfoBuilder &);
   flatbuffers::Offset<NPortInfo> Finish() {
     const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<NPortInfo>(end);
@@ -1734,11 +1732,9 @@ flatbuffers::Offset<NPortInfo> CreateNPortInfo(flatbuffers::FlatBufferBuilder &_
 
 struct NPortsT : public flatbuffers::NativeTable {
   typedef NPorts TableType;
-  std::vector<std::unique_ptr<NymaTypes::NPortInfoT>> Values{};
-  NPortsT() = default;
-  NPortsT(const NPortsT &o);
-  NPortsT(NPortsT&&) FLATBUFFERS_NOEXCEPT = default;
-  NPortsT &operator=(NPortsT o) FLATBUFFERS_NOEXCEPT;
+  std::vector<std::unique_ptr<NymaTypes::NPortInfoT>> Values;
+  NPortsT() {
+  }
 };
 
 struct NPorts FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
@@ -1773,6 +1769,7 @@ struct NPortsBuilder {
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
+  NPortsBuilder &operator=(const NPortsBuilder &);
   flatbuffers::Offset<NPorts> Finish() {
     const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<NPorts>(end);
@@ -1800,7 +1797,7 @@ inline flatbuffers::Offset<NPorts> CreateNPortsDirect(
 flatbuffers::Offset<NPorts> CreateNPorts(flatbuffers::FlatBufferBuilder &_fbb, const NPortsT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
 inline EnumValueT *EnumValue::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = std::unique_ptr<EnumValueT>(new EnumValueT());
+  std::unique_ptr<NymaTypes::EnumValueT> _o = std::unique_ptr<NymaTypes::EnumValueT>(new EnumValueT());
   UnPackTo(_o.get(), _resolver);
   return _o.release();
 }
@@ -1831,34 +1828,8 @@ inline flatbuffers::Offset<EnumValue> CreateEnumValue(flatbuffers::FlatBufferBui
       _Value);
 }
 
-inline SettingT::SettingT(const SettingT &o)
-      : Name(o.Name),
-        Description(o.Description),
-        SettingsKey(o.SettingsKey),
-        DefaultValue(o.DefaultValue),
-        Min(o.Min),
-        Max(o.Max),
-        Flags(o.Flags),
-        Type(o.Type) {
-  SettingEnums.reserve(o.SettingEnums.size());
-  for (const auto &SettingEnums_ : o.SettingEnums) { SettingEnums.emplace_back((SettingEnums_) ? new NymaTypes::EnumValueT(*SettingEnums_) : nullptr); }
-}
-
-inline SettingT &SettingT::operator=(SettingT o) FLATBUFFERS_NOEXCEPT {
-  std::swap(Name, o.Name);
-  std::swap(Description, o.Description);
-  std::swap(SettingsKey, o.SettingsKey);
-  std::swap(DefaultValue, o.DefaultValue);
-  std::swap(Min, o.Min);
-  std::swap(Max, o.Max);
-  std::swap(Flags, o.Flags);
-  std::swap(Type, o.Type);
-  std::swap(SettingEnums, o.SettingEnums);
-  return *this;
-}
-
 inline SettingT *Setting::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = std::unique_ptr<SettingT>(new SettingT());
+  std::unique_ptr<NymaTypes::SettingT> _o = std::unique_ptr<NymaTypes::SettingT>(new SettingT());
   UnPackTo(_o.get(), _resolver);
   return _o.release();
 }
@@ -1874,7 +1845,7 @@ inline void Setting::UnPackTo(SettingT *_o, const flatbuffers::resolver_function
   { auto _e = Max(); if (_e) _o->Max = _e->str(); }
   { auto _e = Flags(); _o->Flags = _e; }
   { auto _e = Type(); _o->Type = _e; }
-  { auto _e = SettingEnums(); if (_e) { _o->SettingEnums.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->SettingEnums[_i]) { _e->Get(_i)->UnPackTo(_o->SettingEnums[_i].get(), _resolver); } else { _o->SettingEnums[_i] = std::unique_ptr<NymaTypes::EnumValueT>(_e->Get(_i)->UnPack(_resolver)); }; } } else { _o->SettingEnums.resize(0); } }
+  { auto _e = SettingEnums(); if (_e) { _o->SettingEnums.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->SettingEnums[_i] = std::unique_ptr<NymaTypes::EnumValueT>(_e->Get(_i)->UnPack(_resolver)); } } }
 }
 
 inline flatbuffers::Offset<Setting> Setting::Pack(flatbuffers::FlatBufferBuilder &_fbb, const SettingT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
@@ -1907,18 +1878,8 @@ inline flatbuffers::Offset<Setting> CreateSetting(flatbuffers::FlatBufferBuilder
       _SettingEnums);
 }
 
-inline SettingsT::SettingsT(const SettingsT &o) {
-  Values.reserve(o.Values.size());
-  for (const auto &Values_ : o.Values) { Values.emplace_back((Values_) ? new NymaTypes::SettingT(*Values_) : nullptr); }
-}
-
-inline SettingsT &SettingsT::operator=(SettingsT o) FLATBUFFERS_NOEXCEPT {
-  std::swap(Values, o.Values);
-  return *this;
-}
-
 inline SettingsT *Settings::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = std::unique_ptr<SettingsT>(new SettingsT());
+  std::unique_ptr<NymaTypes::SettingsT> _o = std::unique_ptr<NymaTypes::SettingsT>(new SettingsT());
   UnPackTo(_o.get(), _resolver);
   return _o.release();
 }
@@ -1926,7 +1887,7 @@ inline SettingsT *Settings::UnPack(const flatbuffers::resolver_function_t *_reso
 inline void Settings::UnPackTo(SettingsT *_o, const flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
-  { auto _e = Values(); if (_e) { _o->Values.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->Values[_i]) { _e->Get(_i)->UnPackTo(_o->Values[_i].get(), _resolver); } else { _o->Values[_i] = std::unique_ptr<NymaTypes::SettingT>(_e->Get(_i)->UnPack(_resolver)); }; } } else { _o->Values.resize(0); } }
+  { auto _e = Values(); if (_e) { _o->Values.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->Values[_i] = std::unique_ptr<NymaTypes::SettingT>(_e->Get(_i)->UnPack(_resolver)); } } }
 }
 
 inline flatbuffers::Offset<Settings> Settings::Pack(flatbuffers::FlatBufferBuilder &_fbb, const SettingsT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
@@ -1944,7 +1905,7 @@ inline flatbuffers::Offset<Settings> CreateSettings(flatbuffers::FlatBufferBuild
 }
 
 inline NButtonInfoT *NButtonInfo::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = std::unique_ptr<NButtonInfoT>(new NButtonInfoT());
+  std::unique_ptr<NymaTypes::NButtonInfoT> _o = std::unique_ptr<NymaTypes::NButtonInfoT>(new NButtonInfoT());
   UnPackTo(_o.get(), _resolver);
   return _o.release();
 }
@@ -1970,7 +1931,7 @@ inline flatbuffers::Offset<NButtonInfo> CreateNButtonInfo(flatbuffers::FlatBuffe
 }
 
 inline NAxisInfoT *NAxisInfo::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = std::unique_ptr<NAxisInfoT>(new NAxisInfoT());
+  std::unique_ptr<NymaTypes::NAxisInfoT> _o = std::unique_ptr<NymaTypes::NAxisInfoT>(new NAxisInfoT());
   UnPackTo(_o.get(), _resolver);
   return _o.release();
 }
@@ -2004,20 +1965,8 @@ inline flatbuffers::Offset<NAxisInfo> CreateNAxisInfo(flatbuffers::FlatBufferBui
       _NamePos);
 }
 
-inline NSwitchInfoT::NSwitchInfoT(const NSwitchInfoT &o)
-      : DefaultPosition(o.DefaultPosition) {
-  Positions.reserve(o.Positions.size());
-  for (const auto &Positions_ : o.Positions) { Positions.emplace_back((Positions_) ? new NymaTypes::NSwitchPositionT(*Positions_) : nullptr); }
-}
-
-inline NSwitchInfoT &NSwitchInfoT::operator=(NSwitchInfoT o) FLATBUFFERS_NOEXCEPT {
-  std::swap(DefaultPosition, o.DefaultPosition);
-  std::swap(Positions, o.Positions);
-  return *this;
-}
-
 inline NSwitchInfoT *NSwitchInfo::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = std::unique_ptr<NSwitchInfoT>(new NSwitchInfoT());
+  std::unique_ptr<NymaTypes::NSwitchInfoT> _o = std::unique_ptr<NymaTypes::NSwitchInfoT>(new NSwitchInfoT());
   UnPackTo(_o.get(), _resolver);
   return _o.release();
 }
@@ -2026,7 +1975,7 @@ inline void NSwitchInfo::UnPackTo(NSwitchInfoT *_o, const flatbuffers::resolver_
   (void)_o;
   (void)_resolver;
   { auto _e = DefaultPosition(); _o->DefaultPosition = _e; }
-  { auto _e = Positions(); if (_e) { _o->Positions.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->Positions[_i]) { _e->Get(_i)->UnPackTo(_o->Positions[_i].get(), _resolver); } else { _o->Positions[_i] = std::unique_ptr<NymaTypes::NSwitchPositionT>(_e->Get(_i)->UnPack(_resolver)); }; } } else { _o->Positions.resize(0); } }
+  { auto _e = Positions(); if (_e) { _o->Positions.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->Positions[_i] = std::unique_ptr<NymaTypes::NSwitchPositionT>(_e->Get(_i)->UnPack(_resolver)); } } }
 }
 
 inline flatbuffers::Offset<NSwitchInfo> NSwitchInfo::Pack(flatbuffers::FlatBufferBuilder &_fbb, const NSwitchInfoT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
@@ -2046,7 +1995,7 @@ inline flatbuffers::Offset<NSwitchInfo> CreateNSwitchInfo(flatbuffers::FlatBuffe
 }
 
 inline NSwitchPositionT *NSwitchPosition::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = std::unique_ptr<NSwitchPositionT>(new NSwitchPositionT());
+  std::unique_ptr<NymaTypes::NSwitchPositionT> _o = std::unique_ptr<NymaTypes::NSwitchPositionT>(new NSwitchPositionT());
   UnPackTo(_o.get(), _resolver);
   return _o.release();
 }
@@ -2077,18 +2026,8 @@ inline flatbuffers::Offset<NSwitchPosition> CreateNSwitchPosition(flatbuffers::F
       _Description);
 }
 
-inline NStatusInfoT::NStatusInfoT(const NStatusInfoT &o) {
-  States.reserve(o.States.size());
-  for (const auto &States_ : o.States) { States.emplace_back((States_) ? new NymaTypes::NStatusStateT(*States_) : nullptr); }
-}
-
-inline NStatusInfoT &NStatusInfoT::operator=(NStatusInfoT o) FLATBUFFERS_NOEXCEPT {
-  std::swap(States, o.States);
-  return *this;
-}
-
 inline NStatusInfoT *NStatusInfo::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = std::unique_ptr<NStatusInfoT>(new NStatusInfoT());
+  std::unique_ptr<NymaTypes::NStatusInfoT> _o = std::unique_ptr<NymaTypes::NStatusInfoT>(new NStatusInfoT());
   UnPackTo(_o.get(), _resolver);
   return _o.release();
 }
@@ -2096,7 +2035,7 @@ inline NStatusInfoT *NStatusInfo::UnPack(const flatbuffers::resolver_function_t 
 inline void NStatusInfo::UnPackTo(NStatusInfoT *_o, const flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
-  { auto _e = States(); if (_e) { _o->States.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->States[_i]) { _e->Get(_i)->UnPackTo(_o->States[_i].get(), _resolver); } else { _o->States[_i] = std::unique_ptr<NymaTypes::NStatusStateT>(_e->Get(_i)->UnPack(_resolver)); }; } } else { _o->States.resize(0); } }
+  { auto _e = States(); if (_e) { _o->States.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->States[_i] = std::unique_ptr<NymaTypes::NStatusStateT>(_e->Get(_i)->UnPack(_resolver)); } } }
 }
 
 inline flatbuffers::Offset<NStatusInfo> NStatusInfo::Pack(flatbuffers::FlatBufferBuilder &_fbb, const NStatusInfoT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
@@ -2114,7 +2053,7 @@ inline flatbuffers::Offset<NStatusInfo> CreateNStatusInfo(flatbuffers::FlatBuffe
 }
 
 inline NStatusStateT *NStatusState::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = std::unique_ptr<NStatusStateT>(new NStatusStateT());
+  std::unique_ptr<NymaTypes::NStatusStateT> _o = std::unique_ptr<NymaTypes::NStatusStateT>(new NStatusStateT());
   UnPackTo(_o.get(), _resolver);
   return _o.release();
 }
@@ -2146,7 +2085,7 @@ inline flatbuffers::Offset<NStatusState> CreateNStatusState(flatbuffers::FlatBuf
 }
 
 inline NInputInfoT *NInputInfo::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = std::unique_ptr<NInputInfoT>(new NInputInfoT());
+  std::unique_ptr<NymaTypes::NInputInfoT> _o = std::unique_ptr<NymaTypes::NInputInfoT>(new NInputInfoT());
   UnPackTo(_o.get(), _resolver);
   return _o.release();
 }
@@ -2195,28 +2134,8 @@ inline flatbuffers::Offset<NInputInfo> CreateNInputInfo(flatbuffers::FlatBufferB
       _Extra);
 }
 
-inline NDeviceInfoT::NDeviceInfoT(const NDeviceInfoT &o)
-      : ShortName(o.ShortName),
-        FullName(o.FullName),
-        Description(o.Description),
-        Flags(o.Flags),
-        ByteLength(o.ByteLength) {
-  Inputs.reserve(o.Inputs.size());
-  for (const auto &Inputs_ : o.Inputs) { Inputs.emplace_back((Inputs_) ? new NymaTypes::NInputInfoT(*Inputs_) : nullptr); }
-}
-
-inline NDeviceInfoT &NDeviceInfoT::operator=(NDeviceInfoT o) FLATBUFFERS_NOEXCEPT {
-  std::swap(ShortName, o.ShortName);
-  std::swap(FullName, o.FullName);
-  std::swap(Description, o.Description);
-  std::swap(Flags, o.Flags);
-  std::swap(ByteLength, o.ByteLength);
-  std::swap(Inputs, o.Inputs);
-  return *this;
-}
-
 inline NDeviceInfoT *NDeviceInfo::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = std::unique_ptr<NDeviceInfoT>(new NDeviceInfoT());
+  std::unique_ptr<NymaTypes::NDeviceInfoT> _o = std::unique_ptr<NymaTypes::NDeviceInfoT>(new NDeviceInfoT());
   UnPackTo(_o.get(), _resolver);
   return _o.release();
 }
@@ -2229,7 +2148,7 @@ inline void NDeviceInfo::UnPackTo(NDeviceInfoT *_o, const flatbuffers::resolver_
   { auto _e = Description(); if (_e) _o->Description = _e->str(); }
   { auto _e = Flags(); _o->Flags = _e; }
   { auto _e = ByteLength(); _o->ByteLength = _e; }
-  { auto _e = Inputs(); if (_e) { _o->Inputs.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->Inputs[_i]) { _e->Get(_i)->UnPackTo(_o->Inputs[_i].get(), _resolver); } else { _o->Inputs[_i] = std::unique_ptr<NymaTypes::NInputInfoT>(_e->Get(_i)->UnPack(_resolver)); }; } } else { _o->Inputs.resize(0); } }
+  { auto _e = Inputs(); if (_e) { _o->Inputs.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->Inputs[_i] = std::unique_ptr<NymaTypes::NInputInfoT>(_e->Get(_i)->UnPack(_resolver)); } } }
 }
 
 inline flatbuffers::Offset<NDeviceInfo> NDeviceInfo::Pack(flatbuffers::FlatBufferBuilder &_fbb, const NDeviceInfoT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
@@ -2256,24 +2175,8 @@ inline flatbuffers::Offset<NDeviceInfo> CreateNDeviceInfo(flatbuffers::FlatBuffe
       _Inputs);
 }
 
-inline NPortInfoT::NPortInfoT(const NPortInfoT &o)
-      : ShortName(o.ShortName),
-        FullName(o.FullName),
-        DefaultDeviceShortName(o.DefaultDeviceShortName) {
-  Devices.reserve(o.Devices.size());
-  for (const auto &Devices_ : o.Devices) { Devices.emplace_back((Devices_) ? new NymaTypes::NDeviceInfoT(*Devices_) : nullptr); }
-}
-
-inline NPortInfoT &NPortInfoT::operator=(NPortInfoT o) FLATBUFFERS_NOEXCEPT {
-  std::swap(ShortName, o.ShortName);
-  std::swap(FullName, o.FullName);
-  std::swap(DefaultDeviceShortName, o.DefaultDeviceShortName);
-  std::swap(Devices, o.Devices);
-  return *this;
-}
-
 inline NPortInfoT *NPortInfo::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = std::unique_ptr<NPortInfoT>(new NPortInfoT());
+  std::unique_ptr<NymaTypes::NPortInfoT> _o = std::unique_ptr<NymaTypes::NPortInfoT>(new NPortInfoT());
   UnPackTo(_o.get(), _resolver);
   return _o.release();
 }
@@ -2284,7 +2187,7 @@ inline void NPortInfo::UnPackTo(NPortInfoT *_o, const flatbuffers::resolver_func
   { auto _e = ShortName(); if (_e) _o->ShortName = _e->str(); }
   { auto _e = FullName(); if (_e) _o->FullName = _e->str(); }
   { auto _e = DefaultDeviceShortName(); if (_e) _o->DefaultDeviceShortName = _e->str(); }
-  { auto _e = Devices(); if (_e) { _o->Devices.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->Devices[_i]) { _e->Get(_i)->UnPackTo(_o->Devices[_i].get(), _resolver); } else { _o->Devices[_i] = std::unique_ptr<NymaTypes::NDeviceInfoT>(_e->Get(_i)->UnPack(_resolver)); }; } } else { _o->Devices.resize(0); } }
+  { auto _e = Devices(); if (_e) { _o->Devices.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->Devices[_i] = std::unique_ptr<NymaTypes::NDeviceInfoT>(_e->Get(_i)->UnPack(_resolver)); } } }
 }
 
 inline flatbuffers::Offset<NPortInfo> NPortInfo::Pack(flatbuffers::FlatBufferBuilder &_fbb, const NPortInfoT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
@@ -2307,18 +2210,8 @@ inline flatbuffers::Offset<NPortInfo> CreateNPortInfo(flatbuffers::FlatBufferBui
       _Devices);
 }
 
-inline NPortsT::NPortsT(const NPortsT &o) {
-  Values.reserve(o.Values.size());
-  for (const auto &Values_ : o.Values) { Values.emplace_back((Values_) ? new NymaTypes::NPortInfoT(*Values_) : nullptr); }
-}
-
-inline NPortsT &NPortsT::operator=(NPortsT o) FLATBUFFERS_NOEXCEPT {
-  std::swap(Values, o.Values);
-  return *this;
-}
-
 inline NPortsT *NPorts::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  auto _o = std::unique_ptr<NPortsT>(new NPortsT());
+  std::unique_ptr<NymaTypes::NPortsT> _o = std::unique_ptr<NymaTypes::NPortsT>(new NPortsT());
   UnPackTo(_o.get(), _resolver);
   return _o.release();
 }
@@ -2326,7 +2219,7 @@ inline NPortsT *NPorts::UnPack(const flatbuffers::resolver_function_t *_resolver
 inline void NPorts::UnPackTo(NPortsT *_o, const flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
-  { auto _e = Values(); if (_e) { _o->Values.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->Values[_i]) { _e->Get(_i)->UnPackTo(_o->Values[_i].get(), _resolver); } else { _o->Values[_i] = std::unique_ptr<NymaTypes::NPortInfoT>(_e->Get(_i)->UnPack(_resolver)); }; } } else { _o->Values.resize(0); } }
+  { auto _e = Values(); if (_e) { _o->Values.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->Values[_i] = std::unique_ptr<NymaTypes::NPortInfoT>(_e->Get(_i)->UnPack(_resolver)); } } }
 }
 
 inline flatbuffers::Offset<NPorts> NPorts::Pack(flatbuffers::FlatBufferBuilder &_fbb, const NPortsT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
@@ -2381,7 +2274,6 @@ inline bool VerifyNInputExtraVector(flatbuffers::Verifier &verifier, const flatb
 }
 
 inline void *NInputExtraUnion::UnPack(const void *obj, NInputExtra type, const flatbuffers::resolver_function_t *resolver) {
-  (void)resolver;
   switch (type) {
     case NInputExtra_Button: {
       auto ptr = reinterpret_cast<const NymaTypes::NButtonInfo *>(obj);
@@ -2404,7 +2296,6 @@ inline void *NInputExtraUnion::UnPack(const void *obj, NInputExtra type, const f
 }
 
 inline flatbuffers::Offset<void> NInputExtraUnion::Pack(flatbuffers::FlatBufferBuilder &_fbb, const flatbuffers::rehasher_function_t *_rehasher) const {
-  (void)_rehasher;
   switch (type) {
     case NInputExtra_Button: {
       auto ptr = reinterpret_cast<const NymaTypes::NButtonInfoT *>(value);
@@ -2437,11 +2328,11 @@ inline NInputExtraUnion::NInputExtraUnion(const NInputExtraUnion &u) : type(u.ty
       break;
     }
     case NInputExtra_Switch: {
-      value = new NymaTypes::NSwitchInfoT(*reinterpret_cast<NymaTypes::NSwitchInfoT *>(u.value));
+      FLATBUFFERS_ASSERT(false);  // NymaTypes::NSwitchInfoT not copyable.
       break;
     }
     case NInputExtra_Status: {
-      value = new NymaTypes::NStatusInfoT(*reinterpret_cast<NymaTypes::NStatusInfoT *>(u.value));
+      FLATBUFFERS_ASSERT(false);  // NymaTypes::NStatusInfoT not copyable.
       break;
     }
     default:

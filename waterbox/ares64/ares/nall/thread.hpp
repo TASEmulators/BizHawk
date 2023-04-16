@@ -28,14 +28,8 @@ struct thread {
   auto operator=(const thread&) -> thread& = delete;
 
   thread() = default;
-  thread(thread&& source) { operator=(std::move(source)); }
-
-  auto operator=(thread&& source) -> thread& {
-    if(this == &source) return *this;
-    handle = source.handle;
-    source.handle = 0;
-    return *this;
-  }
+  thread(thread&&) = default;
+  auto operator=(thread&&) -> thread& = default;
 
   auto join() -> void;
 
@@ -60,10 +54,7 @@ inline auto _threadCallback(void* parameter) -> void* {
 }
 
 inline auto thread::join() -> void {
-  if(handle) {
-    pthread_join(handle, nullptr);
-    handle = 0;
-  }
+  pthread_join(handle, nullptr);
 }
 
 inline auto thread::create(const function<void (uintptr)>& callback, uintptr parameter, u32 stacksize) -> thread {
@@ -100,12 +91,11 @@ struct thread {
   auto operator=(const thread&) -> thread& = delete;
 
   thread() = default;
-  thread(thread&& source) { operator=(std::move(source)); }
+  thread(thread&& source) { operator=(move(source)); }
 
   ~thread() { close(); }
 
   auto operator=(thread&& source) -> thread& {
-    if(this == &source) return *this;
     close();
     handle = source.handle;
     source.handle = 0;
@@ -128,10 +118,50 @@ private:
   HANDLE handle = 0;
 };
 
+inline auto WINAPI _threadCallback(void* parameter) -> DWORD {
+  auto context = (thread::context*)parameter;
+  context->callback(context->parameter);
+  delete context;
+  return 0;
 }
 
-#endif
+inline auto thread::close() -> void {
+  if(handle) {
+    CloseHandle(handle);
+    handle = 0;
+  }
+}
 
-#if defined(NALL_HEADER_ONLY)
-  #include <nall/thread.cpp>
+inline auto thread::join() -> void {
+  if(handle) {
+    //wait until the thread has finished executing ...
+    WaitForSingleObject(handle, INFINITE);
+    CloseHandle(handle);
+    handle = 0;
+  }
+}
+
+inline auto thread::create(const function<void (uintptr)>& callback, uintptr parameter, u32 stacksize) -> thread {
+  thread instance;
+
+  auto context = new thread::context;
+  context->callback = callback;
+  context->parameter = parameter;
+
+  instance.handle = CreateThread(nullptr, stacksize, _threadCallback, (void*)context, 0, nullptr);
+  return instance;
+}
+
+inline auto thread::detach() -> void {
+  //Windows threads do not use this concept:
+  //~thread() frees resources via CloseHandle()
+  //thread continues to run even after handle is closed
+}
+
+inline auto thread::exit() -> void {
+  ExitThread(0);
+}
+
+}
+
 #endif

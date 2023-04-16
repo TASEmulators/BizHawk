@@ -129,7 +129,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			{
 				case C64.DiskDriveType.Commodore1541:
 				case C64.DiskDriveType.Commodore1541II:
-					DiskDrive = new Drive1541(ClockNumerator, ClockDenominator, () => _c64.CurrentDisk);
+					DiskDrive = new Drive1541(ClockNumerator, ClockDenominator);
 					Serial.Connect(DiskDrive);
 					break;
 			}
@@ -350,13 +350,23 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			Serial.SyncState(ser);
 			ser.EndSection();
 
-			// TapeDrive is already saved within Cassette if it's around, don't state it here
+			if (TapeDrive != null) // TODO: a tape object is already in a nested class, is it the same reference? do we need this?
+			{
+				ser.BeginSection(nameof(TapeDrive));
+				TapeDrive.SyncState(ser);
+				ser.EndSection();
+			}
 
 			ser.BeginSection(nameof(User));
 			User.SyncState(ser);
 			ser.EndSection();
 
-			// DiskDrive is already saved within Serial if it's around, don't state it here
+			if (DiskDrive != null) // TODO: a disk object is already in a nested class, is it the same reference? do we need this?
+			{
+				ser.BeginSection(nameof(DiskDrive));
+				DiskDrive.SyncState(ser);
+				ser.EndSection();
+			}
 
 			ser.Sync(nameof(InputRead), ref InputRead);
 			ser.Sync(nameof(Irq), ref Irq);

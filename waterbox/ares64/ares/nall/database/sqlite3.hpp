@@ -16,10 +16,9 @@ struct SQLite3 {
     auto operator=(const Statement& source) -> Statement& = delete;
 
     Statement(sqlite3_stmt* statement) : _statement(statement) {}
-    Statement(Statement&& source) { operator=(std::move(source)); }
+    Statement(Statement&& source) { operator=(move(source)); }
 
     auto operator=(Statement&& source) -> Statement& {
-      if(this == &source) return *this;
       _statement = source._statement;
       _response = source._response;
       _output = source._output;
@@ -91,7 +90,7 @@ struct SQLite3 {
     auto operator=(const Query& source) -> Query& = delete;
 
     Query(sqlite3_stmt* statement) : Statement(statement) {}
-    Query(Query&& source) : Statement(source._statement) { operator=(std::move(source)); }
+    Query(Query&& source) : Statement(source._statement) { operator=(move(source)); }
 
     ~Query() {
       sqlite3_finalize(statement());
@@ -99,8 +98,6 @@ struct SQLite3 {
     }
 
     auto operator=(Query&& source) -> Query& {
-      if(this == &source) return *this;
-      sqlite3_finalize(statement());
       _statement = source._statement;
       _input = source._input;
       source._statement = nullptr;
@@ -116,9 +113,9 @@ struct SQLite3 {
     auto& bind(u32 column, u64 value) { sqlite3_bind_int64(_statement, 1 + column, value); return *this; }
     auto& bind(u32 column, intmax value) { sqlite3_bind_int64(_statement, 1 + column, value); return *this; }
     auto& bind(u32 column, uintmax value) { sqlite3_bind_int64(_statement, 1 + column, value); return *this; }
-    auto& bind(u32 column, nall::Boolean value) { sqlite3_bind_int64(_statement, 1 + column, value); return *this; }
-    auto& bind(u32 column, nall::Integer value) { sqlite3_bind_int64(_statement, 1 + column, value); return *this; }
-    auto& bind(u32 column, nall::Natural value) { sqlite3_bind_int64(_statement, 1 + column, value); return *this; }
+    auto& bind(u32 column, nall::boolean value) { sqlite3_bind_int64(_statement, 1 + column, value); return *this; }
+    auto& bind(u32 column, nall::integer value) { sqlite3_bind_int64(_statement, 1 + column, value); return *this; }
+    auto& bind(u32 column, nall::natural value) { sqlite3_bind_int64(_statement, 1 + column, value); return *this; }
     auto& bind(u32 column, f64 value) { sqlite3_bind_double(_statement, 1 + column, value); return *this; }
     auto& bind(u32 column, const nall::string& value) { sqlite3_bind_text(_statement, 1 + column, value.data(), value.size(), SQLITE_TRANSIENT); return *this; }
     auto& bind(u32 column, const vector<u8>& value) { sqlite3_bind_blob(_statement, 1 + column, value.data(), value.size(), SQLITE_TRANSIENT); return *this; }
@@ -131,9 +128,9 @@ struct SQLite3 {
     auto& bind(u64 value) { return bind(_input++, value); }
     auto& bind(intmax value) { return bind(_input++, value); }
     auto& bind(uintmax value) { return bind(_input++, value); }
-    auto& bind(nall::Boolean value) { return bind(_input++, value); }
-    auto& bind(nall::Integer value) { return bind(_input++, value); }
-    auto& bind(nall::Natural value) { return bind(_input++, value); }
+    auto& bind(nall::boolean value) { return bind(_input++, value); }
+    auto& bind(nall::integer value) { return bind(_input++, value); }
+    auto& bind(nall::natural value) { return bind(_input++, value); }
     auto& bind(f64 value) { return bind(_input++, value); }
     auto& bind(const nall::string& value) { return bind(_input++, value); }
     auto& bind(const vector<u8>& value) { return bind(_input++, value); }
@@ -195,7 +192,7 @@ struct SQLite3 {
     }
 
     Query query{_statement};
-    bind(query, std::forward<P>(p)...);
+    bind(query, forward<P>(p)...);
     return query;
   }
 
@@ -211,7 +208,7 @@ protected:
   auto bind(Query&) -> void {}
   template<typename T, typename... P> auto bind(Query& query, const T& value, P&&... p) -> void {
     query.bind(value);
-    bind(query, std::forward<P>(p)...);
+    bind(query, forward<P>(p)...);
   }
 
   bool _debug = false;

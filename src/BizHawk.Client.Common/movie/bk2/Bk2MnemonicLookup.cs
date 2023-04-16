@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 
-using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Libretro;
 
 // ReSharper disable StyleCop.SA1509
 namespace BizHawk.Client.Common
@@ -27,7 +25,6 @@ namespace BizHawk.Client.Common
 					key = key.Substring(3);
 				}
 			}
-			key = key.RemovePrefix(LibretroHost.LibretroControllerDef.PFX_RETROPAD);
 
 			if (SystemOverrides.TryGetValue(systemId, out var overridesForSys) && overridesForSys.TryGetValue(key, out var c))
 			{
@@ -251,9 +248,7 @@ namespace BizHawk.Client.Common
 				["Extra1"] = '1',
 				["Extra2"] = '2',
 				["Extra3"] = '3',
-				["Extra4"] = '4',
-
-				["Subframe"] = 'F'
+				["Extra4"] = '4'
 			},
 			[VSystemID.Raw.TI83] = new()
 			{
@@ -398,11 +393,6 @@ namespace BizHawk.Client.Common
 				["Toggle Link Shift"] = 'F',
 				["Toggle Link Spacing"] = 'C',
 			},
-			[VSystemID.Raw.Jaguar] = new()
-			{
-				["Option"] = 'O',
-				["Asterisk"] = '*',
-			},
 			[VSystemID.Raw.Lynx] = new()
 			{
 				["Option 1"] = '1',
@@ -515,7 +505,7 @@ namespace BizHawk.Client.Common
 				["CLR"] = 'c',
 				["ENT"] = 'e'
 			},
-			[VSystemID.Raw.Arcade] = new()
+			[VSystemID.Raw.MAME] = new()
 			{
 				["1 Player Start"] = '1',
 				["2 Players Start"] = '2',
@@ -525,8 +515,6 @@ namespace BizHawk.Client.Common
 				["6 Players Start"] = '6',
 				["7 Players Start"] = '7',
 				["8 Players Start"] = '8',
-				["Attack"] = 'a',
-				["Blue"] = 'B',
 				["Board 0 (SW4)"] = '0',
 				["Board 1 (SW5)"] = '1',
 				["Board 2 (SW6)"] = '2',
@@ -551,22 +539,21 @@ namespace BizHawk.Client.Common
 				["GEAR 3"] = '3',
 				["GEAR 4"] = '4',
 				["GEAR N"] = 'N',
-				["Green"] = 'G',
 				["Gun Trigger"] = 'G',
 				["Handle A"] = 'A',
 				["Handle B"] = 'B',
 				["Jab Punch"] = 'J',
-				["Jump"] = 'j',
 				["Left Stick/Up"] = '^',
 				["Left Stick/Down"] = 'v',
 				["Left Stick/Left"] = '<',
 				["Left Stick/Right"] = '>',
 				["Light"] = 'l',
+				["Lightgun X"] = 'X',
+				["Lightgun Y"] = 'Y',
 				["Medium"] = 'm',
 				["Paddle"] = 'P',
 				["Pedal 1"] = '1',
 				["Pedal 2"] = '2',
-				["Red"] = 'R',
 				["Relay"] = 'R',
 				["Right Stick/Up"] = 'u',
 				["Right Stick/Down"] = 'd',
@@ -641,44 +628,6 @@ namespace BizHawk.Client.Common
 				["Right Stick, Pinky"] = 'p',
 				["Analog"] = 'M',
 				["Offscreen Shot"] = 'o',
-				["Open Tray"] = 'o',
-				["Close Tray"] = 'c',
-			},
-			[VSystemID.Raw.TIC80] = new()
-			{
-				["Mouse Left Click"] = 'l',
-				["Mouse Middle Click"] = 'm',
-				["Mouse Right Click"] = 'r',
-				["Mouse Relative Toggle"] = 't',
-
-				["Minus"] = '-',
-				["Equals"] = '=',
-				["Left Bracket"] = '[',
-				["Right Bracket"] = ']',
-				["Backslash"] = '\\',
-				["Semicolon"] = ';',
-				["Apostrophe"] = '\'',
-				["Grave"] = '`',
-				["Comma"] = ',',
-				["Period"] = '.',
-				["Slash"] = '/',
-				["Space"] = 's',
-				["Tab"] = 't',
-				["Return"] = 'r',
-				["Backspace"] = 'b',
-				["Delete"] = 'd',
-				["Insert"] = 'i',
-				["Page Up"] = 'u',
-				["Page Down"] = 'v',
-				["Home"] = 'h',
-				["End"] = 'e',
-				["Caps Lock"] = 'l',
-				["Control"] = 'c',
-				["Shift"] = '^',
-				["Alt"] = 'a',
-				["Escape"] = 'e',
-				["F11"] = '1',
-				["F12"] = '2',
 			},
 		};
 
@@ -698,8 +647,7 @@ namespace BizHawk.Client.Common
 			["LStick Y"] = "lsY",
 			["RStick X"] = "rsX",
 			["RStick Y"] = "rsY",
-			["Disc Select"] = "Disc",
-			["Disk Index"] = "Disk",
+			["Disc Select"] = "Disc"
 		};
 
 		private static readonly Dictionary<string, Dictionary<string, string>> AxisSystemOverrides = new Dictionary<string, Dictionary<string, string>>
@@ -722,13 +670,6 @@ namespace BizHawk.Client.Common
 				["Motion Left / Right"] = "mX",
 				["Motion Up / Down"] = "mY",
 				["Twist | / |"] = "Twist",
-			},
-			[VSystemID.Raw.TIC80] = new()
-			{
-				["Mouse Position X"] = "mpX",
-				["Mouse Position Y"] = "mpY",
-				["Mouse Scroll X"] = "msX",
-				["Mouse Scroll Y"] = "msY",
 			},
 		};
 	}

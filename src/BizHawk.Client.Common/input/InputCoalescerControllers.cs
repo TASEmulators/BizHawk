@@ -1,6 +1,7 @@
 #nullable enable
 
 using System.Linq;
+
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -19,11 +20,8 @@ namespace BizHawk.Client.Common
 			Buttons[button] = state;
 			ProcessSubsets(button, state);
 			if (state) return;
-			// when a button or modifier key is released, all modified key variants with it are released as well
-			foreach (var k in Buttons.Keys.Where(k =>
-						k.EndsWith($"+{ie.LogicalButton.Button}") || k.StartsWith($"{ie.LogicalButton.Button}+") || k.Contains($"+{ie.LogicalButton.Button}+"))
-						.ToArray())
-				Buttons[k] = false;
+			// when a button is released, all modified variants of it are released as well
+			foreach (var k in Buttons.Keys.Where(k => k.EndsWith($"+{ie.LogicalButton.Button}")).ToList()) Buttons[k] = false;
 		}
 	}
 

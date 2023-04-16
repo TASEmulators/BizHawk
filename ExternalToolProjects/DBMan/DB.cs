@@ -78,7 +78,7 @@ namespace BizHawk.DBManTool
 		{
 			get
 			{
-				if (string.IsNullOrEmpty(Region)) return 99;
+				if (String.IsNullOrEmpty(Region)) return 99;
 				if (Region.Contains("World")) return 1;
 				if (Region.Contains("USA")) return 2;
 				if (Region.Contains("Europe")) return 3;

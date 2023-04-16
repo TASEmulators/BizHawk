@@ -8,7 +8,7 @@ namespace BizHawk.Client.Common
 {
 	public class LuaSandbox
 	{
-		private static readonly ConditionalWeakTable<LuaThread, LuaSandbox> SandboxForThread = new();
+		private static readonly ConditionalWeakTable<Lua, LuaSandbox> SandboxForThread = new ConditionalWeakTable<Lua, LuaSandbox>();
 
 		public static Action<string> DefaultLogger { get; set; }
 
@@ -58,14 +58,8 @@ namespace BizHawk.Client.Common
 			}
 			catch (NLua.Exceptions.LuaException ex)
 			{
-				var exStr = ex.ToString() + '\n';
-				if (ex.InnerException is not null)
-				{
-					exStr += ex.InnerException.ToString() + '\n';
-				}
-
-				Console.Write(exStr);
-				DefaultLogger(exStr);
+				Console.WriteLine(ex);
+				DefaultLogger(ex.ToString());
 				exceptionCallback?.Invoke();
 			}
 			finally
@@ -77,7 +71,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public static LuaSandbox CreateSandbox(LuaThread thread, string initialDirectory)
+		public static LuaSandbox CreateSandbox(Lua thread, string initialDirectory)
 		{
 			var sandbox = new LuaSandbox();
 			SandboxForThread.Add(thread, sandbox);
@@ -86,11 +80,11 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <exception cref="InvalidOperationException">could not get sandbox reference for thread (<see cref="CreateSandbox"/> has not been called)</exception>
-		public static LuaSandbox GetSandbox(LuaThread thread)
+		public static LuaSandbox GetSandbox(Lua thread)
 		{
 			// this is just placeholder.
 			// we shouldn't be calling a sandbox with no thread--construct a sandbox properly
-			if (thread is null)
+			if (thread == null)
 			{
 				return new LuaSandbox();
 			}
@@ -108,7 +102,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public static void Sandbox(LuaThread thread, Action callback, Action exceptionCallback = null)
+		public static void Sandbox(Lua thread, Action callback, Action exceptionCallback = null)
 		{
 			GetSandbox(thread).Sandbox(callback, exceptionCallback);
 		}

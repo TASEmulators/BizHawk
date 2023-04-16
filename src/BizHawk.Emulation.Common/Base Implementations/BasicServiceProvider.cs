@@ -25,8 +25,11 @@ namespace BizHawk.Emulation.Common
 			// this also fully allows services that are not IEmulatorService
 			Type coreType = core.GetType();
 
-			foreach (var service in coreType.GetInterfaces().Where(static t => typeof(IEmulatorService).IsAssignableFrom(t)
-				&& t != typeof(IEmulatorService) && t != typeof(ISpecializedEmulatorService)))
+			var services = coreType.GetInterfaces()
+				.Where(t => typeof(IEmulatorService).IsAssignableFrom(t))
+				.Where(t => t != typeof(IEmulatorService) && t != typeof(ISpecializedEmulatorService));
+
+			foreach (Type service in services)
 			{
 				_services.Add(service, core);
 			}

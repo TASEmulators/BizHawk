@@ -38,37 +38,13 @@ struct Cartridge {
     u32  source = 0;
     u32  offset = 0;
   } flash;
-  struct ISViewer : Memory::PI<ISViewer> {
+  struct ISViewer : Memory::IO<ISViewer> {
     Memory::Writable ram;  //unserialized
 
     //isviewer.cpp
-    auto readHalf(u32 address) -> u16;
-    auto writeHalf(u32 address, u16 data) -> void;
     auto readWord(u32 address) -> u32;
     auto writeWord(u32 address, u32 data) -> void;
   } isviewer;
-
-  struct RTC {
-    Cartridge& self;
-    RTC(Cartridge &self) : self(self) {}
-
-    Memory::Writable ram;
-    n1 present;
-    n8 status;
-    n3 writeLock;
-
-    // rtc.cpp
-    auto power(bool reset) -> void;
-    auto run(bool run) -> void;
-    auto running() -> bool;
-    auto load() -> void;
-    auto save() -> void;
-    auto tick(int nsec=1) -> void;
-    auto advance(int nsec) -> void;
-    auto serialize(serializer& s) -> void;
-    auto read(u2 block, n8 *data) -> void;
-    auto write(u2 block, n8 *data) -> void;
-  } rtc{*this};
 
   struct Debugger {
     //debugger.cpp
@@ -91,11 +67,9 @@ struct Cartridge {
   auto allocate(Node::Port) -> Node::Peripheral;
   auto connect() -> void;
   auto disconnect() -> void;
+
   auto save() -> void;
   auto power(bool reset) -> void;
-
-  //joybus.cpp
-  auto joybusComm(n8 send, n8 recv, n8 input[], n8 output[]) -> n2;
 
   //serialization.cpp
   auto serialize(serializer&) -> void;

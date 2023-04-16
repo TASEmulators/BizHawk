@@ -62,10 +62,15 @@ namespace BizHawk.Client.EmuHawk
 			dlg.PutSettings(s, ss);
 
 			var result = dialogParent.ShowDialogAsChild(dlg);
-			if (!result.IsOk()) return result;
-			dlg.GetSettings(out s, out ss);
-			settable.PutCoreSettings(s);
-			if (dlg.SyncSettingsChanged) settable.PutCoreSyncSettings(ss);
+			if (result == DialogResult.OK)
+			{
+				dlg.GetSettings(out s, out ss);
+				settable.PutCoreSettings(s);
+				if (dlg.SyncSettingsChanged)
+				{
+					settable.PutCoreSyncSettings(ss);
+				}
+			}
 			return result;
 		}
 	}

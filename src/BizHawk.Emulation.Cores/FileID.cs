@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores
 		ZXSpectrum,
 		AmstradCPC,
 		INT,
-		A26, A52, A78, JAG, LNX,
+		A26, A52, A78, LNX,
 
 		JAD, SBI,
 		M3U,
@@ -349,7 +349,6 @@ namespace BizHawk.Emulation.Cores
 			{ "INT", new ExtensionInfo(FileIDType.INT, null) },
 			{ "SFC", new ExtensionInfo(FileIDType.SFC, null) },
 			{ "SMC", new ExtensionInfo(FileIDType.SFC, null) },
-			{ "JAG", new ExtensionInfo(FileIDType.JAG, null ) },
 			{ "LNX", new ExtensionInfo(FileIDType.LNX, null ) },
 			{ "SG", new ExtensionInfo(FileIDType.SG, null ) },
 			{ "SGX", new ExtensionInfo(FileIDType.SGX, null ) },

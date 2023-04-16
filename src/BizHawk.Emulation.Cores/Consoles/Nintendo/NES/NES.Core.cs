@@ -1149,8 +1149,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				uint flags = (uint)(MemoryCallbackFlags.CPUZero | MemoryCallbackFlags.AccessWrite | MemoryCallbackFlags.SizeByte);
 				MemoryCallbacks.CallMemoryCallbacks(addr, value, flags, "System Bus");
 			}
-
-			DB = value;
 		}
 
 		// the palette for each VS game needs to be chosen explicitly since there are 6 different ones.

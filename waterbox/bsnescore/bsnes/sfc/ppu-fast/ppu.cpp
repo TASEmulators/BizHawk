@@ -166,7 +166,7 @@ auto PPU::refresh() -> void {
       }
     }
 
-    if(configuration.video.drawCursor) if(auto device = controllerPort2.device) device->draw(output, pitch * sizeof(uint16), width, height);
+    if(auto device = controllerPort2.device) device->draw(output, pitch * sizeof(uint16), width, height);
     platform->videoFrame(output, pitch * sizeof(uint16), width, height, hd() ? hdScale() : 1);
 
     frame.pitch  = pitch;
@@ -195,7 +195,7 @@ auto PPU::power(bool reset) -> void {
   }
 
   latch = {};
-  if (!reset) io = {};
+  io = {};
   updateVideoMode();
 
   #undef ppu

@@ -15,7 +15,7 @@ namespace BizHawk.Common
 		/// <remarks>in bits</remarks>
 		internal const int EXPECTED_LENGTH = 128;
 
-		public const string PREFIX = "MD5";
+		internal const string PREFIX = "MD5";
 
 		public /*static readonly*/const string EmptyFile = "D41D8CD98F00B204E9800998ECF8427E";
 

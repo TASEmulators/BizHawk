@@ -1,6 +1,6 @@
 //Video Interface
 
-struct VI : Thread, Memory::RCP<VI> {
+struct VI : Thread, Memory::IO<VI> {
   Node::Object node;
   Node::Video::Screen screen;
 
@@ -24,8 +24,8 @@ struct VI : Thread, Memory::RCP<VI> {
   auto power(bool reset) -> void;
 
   //io.cpp
-  auto readWord(u32 address, u32& cycles) -> u32;
-  auto writeWord(u32 address, u32 data, u32& cycles) -> void;
+  auto readWord(u32 address) -> u32;
+  auto writeWord(u32 address, u32 data) -> void;
 
   //serialization.cpp
   auto serialize(serializer&) -> void;
@@ -37,7 +37,6 @@ struct VI : Thread, Memory::RCP<VI> {
     n1  divot;
     n1  serrate;  //interlace
     n2  antialias;
-    n1  dedither;
     n32 reserved;
     n24 dramAddress;
     n12 width;

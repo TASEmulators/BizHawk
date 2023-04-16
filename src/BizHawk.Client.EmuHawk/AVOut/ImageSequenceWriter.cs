@@ -4,7 +4,6 @@ using System.Drawing.Imaging;
 
 using BizHawk.Bizware.BizwareGL;
 using BizHawk.Client.Common;
-using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -46,8 +45,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void AddFrame(IVideoProvider source)
 		{
-			var (dir, fileNoExt, ext) = _baseName.SplitPathToDirFileAndExt();
-			var name = Path.Combine(dir!, $"{fileNoExt}_{_frame}{ext}");
+			string ext = Path.GetExtension(_baseName);
+			var name = Path.Combine(Path.GetDirectoryName(_baseName), $"{Path.GetFileNameWithoutExtension(_baseName)}_{_frame}{ext}");
 			BitmapBuffer bb = new BitmapBuffer(source.BufferWidth, source.BufferHeight, source.GetVideoBuffer());
 			using var bmp = bb.ToSysdrawingBitmap();
 			if (ext.ToUpper() == ".PNG")

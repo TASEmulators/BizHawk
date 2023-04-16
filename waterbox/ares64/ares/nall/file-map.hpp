@@ -29,7 +29,7 @@ struct file_map {
   auto operator=(const file_map&) = delete;
 
   file_map() = default;
-  file_map(file_map&& source) { operator=(std::move(source)); }
+  file_map(file_map&& source) { operator=(move(source)); }
   file_map(const string& filename, u32 mode) { open(filename, mode); }
 
   ~file_map() { close(); }
@@ -55,9 +55,6 @@ private:
 
 public:
   auto operator=(file_map&& source) -> file_map& {
-    if(this == &source) return *this;
-    close();
-
     _open = source._open;
     _data = source._data;
     _size = source._size;
@@ -73,9 +70,76 @@ public:
     return *this;
   }
 
-  auto open(const string& filename, u32 mode_) -> bool;
+  auto open(const string& filename, u32 mode_) -> bool {
+    close();
+    if(file::exists(filename) && file::size(filename) == 0) return _open = true;
 
-  auto close() -> void;
+    s32 desiredAccess, creationDisposition, protection, mapAccess;
+
+    switch(mode_) {
+    default: return false;
+    case mode::read:
+      desiredAccess = GENERIC_READ;
+      creationDisposition = OPEN_EXISTING;
+      protection = PAGE_READONLY;
+      mapAccess = FILE_MAP_READ;
+      break;
+    case mode::write:
+      //write access requires read access
+      desiredAccess = GENERIC_WRITE;
+      creationDisposition = CREATE_ALWAYS;
+      protection = PAGE_READWRITE;
+      mapAccess = FILE_MAP_ALL_ACCESS;
+      break;
+    case mode::modify:
+      desiredAccess = GENERIC_READ | GENERIC_WRITE;
+      creationDisposition = OPEN_EXISTING;
+      protection = PAGE_READWRITE;
+      mapAccess = FILE_MAP_ALL_ACCESS;
+      break;
+    case mode::append:
+      desiredAccess = GENERIC_READ | GENERIC_WRITE;
+      creationDisposition = CREATE_NEW;
+      protection = PAGE_READWRITE;
+      mapAccess = FILE_MAP_ALL_ACCESS;
+      break;
+    }
+
+    _file = CreateFileW(utf16_t(filename), desiredAccess, FILE_SHARE_READ, nullptr,
+      creationDisposition, FILE_ATTRIBUTE_NORMAL, nullptr);
+    if(_file == INVALID_HANDLE_VALUE) return false;
+
+    _size = GetFileSize(_file, nullptr);
+
+    _map = CreateFileMapping(_file, nullptr, protection, 0, _size, nullptr);
+    if(_map == INVALID_HANDLE_VALUE) {
+      CloseHandle(_file);
+      _file = INVALID_HANDLE_VALUE;
+      return false;
+    }
+
+    _data = (u8*)MapViewOfFile(_map, mapAccess, 0, 0, _size);
+    return _open = true;
+  }
+
+  auto close() -> void {
+    if(_data) {
+      UnmapViewOfFile(_data);
+      _data = nullptr;
+    }
+
+    if(_map != INVALID_HANDLE_VALUE) {
+      CloseHandle(_map);
+      _map = INVALID_HANDLE_VALUE;
+    }
+
+    if(_file != INVALID_HANDLE_VALUE) {
+      CloseHandle(_file);
+      _file = INVALID_HANDLE_VALUE;
+    }
+
+    _open = false;
+  }
 
   #else
 
@@ -83,9 +147,6 @@ public:
 
 public:
   auto operator=(file_map&& source) -> file_map& {
-    if(this == &source) return *this;
-    close();
-
     _open = source._open;
     _data = source._data;
     _size = source._size;
@@ -162,7 +223,3 @@ public:
 };
 
 }
-
-#if defined(NALL_HEADER_ONLY)
-  #include <nall/file-map.cpp>
-#endif

@@ -1,12 +1,10 @@
-CCFLAGS := -Wno-incompatible-pointer-types-discards-qualifiers -Wno-pointer-sign
+CCFLAGS := -Wno-discarded-qualifiers
 
 CXXFLAGS := -DMELONDS_VERSION="" \
 	-I./melonDS/src -I./melonDS/src/teakra/include \
 	-Wall -Wextra -Werror=int-to-pointer-cast \
 	-Wfatal-errors -Wno-unused-parameter -Wno-unused-variable \
 	-Wno-unused-but-set-variable -Wno-sign-compare \
-	-Wno-deprecated-declarations -Wno-missing-braces \
-	-Wno-bitwise-instead-of-logical -Wno-unused-private-field \
 	-fno-strict-aliasing -std=c++17
 
 TARGET = melonDS.wbx
@@ -18,6 +16,7 @@ CORE_SRCS = \
 	ARMInterpreter_ALU.cpp \
 	ARMInterpreter_Branch.cpp \
 	ARMInterpreter_LoadStore.cpp \
+	Config.cpp \
 	CP15.cpp \
 	CRC32.cpp \
 	DMA.cpp \
@@ -40,6 +39,7 @@ CORE_SRCS = \
 	GPU3D_Soft.cpp \
 	NDS.cpp \
 	NDSCart.cpp \
+	NDSCart_SRAMManager.cpp \
 	RTC.cpp \
 	Savestate.cpp \
 	SPI.cpp \
@@ -67,8 +67,7 @@ FATFS_SRCS = \
 MISC_SRCS = \
 	sha1/sha1.c \
 	tiny-AES-c/aes.c \
-	xxhash/xxhash.c \
-	blip_buf/blip_buf.c \
+	xxhash/xxhash.c
 
 SRCS = \
 	$(addprefix melonDS/src/,$(CORE_SRCS)) \
@@ -77,7 +76,6 @@ SRCS = \
 	$(addprefix melonDS/src/,$(MISC_SRCS)) \
 	BizConfig.cpp \
 	BizInterface.cpp \
-	BizPlatform.cpp \
-	dthumb.c
+	BizPlatform.cpp
 
 include ../common.mak

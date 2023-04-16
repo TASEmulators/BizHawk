@@ -2,11 +2,11 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
 	</PropertyGroup>
-	<Import Project="../LibCommon.props" />
+	<Import Project="../../Common.props" />
 	<PropertyGroup>
 		<Nullable>disable</Nullable>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Google.FlatBuffers" Version="22.9.24" Private="true" />
+		<ProjectReference Include="$(ProjectDir)../FlatBuffers.Core/FlatBuffers.Core.csproj" />
 	</ItemGroup>
 </Project>

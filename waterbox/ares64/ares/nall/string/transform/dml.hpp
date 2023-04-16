@@ -257,11 +257,11 @@ inline auto DML::anchor(const string& text) -> string {
 inline auto DML::markup(const string& s) -> string {
   string t;
 
-  Boolean strong;
-  Boolean emphasis;
-  Boolean insertion;
-  Boolean deletion;
-  Boolean code;
+  boolean strong;
+  boolean emphasis;
+  boolean insertion;
+  boolean deletion;
+  boolean code;
 
   maybe<u32> link;
   maybe<u32> image;
@@ -300,7 +300,7 @@ inline auto DML::markup(const string& s) -> string {
       string uri = address(list.last());
       string name = list.size() == 2 ? list.first() : uri.split("//", 1L).last();
       list = side(1).split("; ");
-      Boolean link, title, caption;
+      boolean link, title, caption;
       string Class, width, height;
       for(auto p : list) {
         if(p == "link") { link = true; continue; }

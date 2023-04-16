@@ -11,6 +11,7 @@ using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 namespace BizHawk.Emulation.Cores
 {
 	[Schema(VSystemID.Raw.NES)]
+	// ReSharper disable once UnusedMember.Global
 	public class NesSchema : IVirtualPadSchema
 	{
 		/// <exception cref="Exception">found <c>ControllerSNES</c></exception>

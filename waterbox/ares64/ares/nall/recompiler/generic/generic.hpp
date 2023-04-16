@@ -3,18 +3,14 @@
 #if defined(SLJIT)
 namespace nall::recompiler {
   struct generic {
-    static constexpr bool supported = Architecture::amd64 | Architecture::arm64 | Architecture::ppc64;
-
     bump_allocator& allocator;
     sljit_compiler* compiler = nullptr;
     sljit_label* epilogue = nullptr;
 
     generic(bump_allocator& alloc) : allocator(alloc) {}
-    ~generic() { resetCompiler(); }
 
-    auto beginFunction(int args) -> void {
+    auto beginFunction(int args) {
       assert(args <= 3);
-      resetCompiler();
       compiler = sljit_create_compiler(nullptr, &allocator);
 
       sljit_s32 options = 0;
@@ -31,25 +27,21 @@ namespace nall::recompiler {
 
     auto endFunction() -> u8* {
       u8* code = (u8*)sljit_generate_code(compiler);
-      resetCompiler();
+      sljit_free_compiler(compiler);
+      compiler = nullptr;
+      epilogue = nullptr;
       return code;
     }
 
-    auto resetCompiler() -> void {
-      if(compiler) sljit_free_compiler(compiler);
-      compiler = nullptr;
-      epilogue = nullptr;
-    }
-
-    auto testJumpEpilog() -> void {
+    auto testJumpEpilog() {
       sljit_set_label(sljit_emit_cmp(compiler, SLJIT_NOT_EQUAL | SLJIT_32, SLJIT_RETURN_REG, 0, SLJIT_IMM, 0), epilogue);
     }
 
-    auto jumpEpilog() -> void {
+    auto jumpEpilog() {
       sljit_set_label(sljit_emit_jump(compiler, SLJIT_JUMP), epilogue);
     }
 
-    auto setLabel(sljit_jump* jump) -> void {
+    auto setLabel(sljit_jump* jump) {
       sljit_set_label(jump, sljit_emit_label(compiler));
     }
 

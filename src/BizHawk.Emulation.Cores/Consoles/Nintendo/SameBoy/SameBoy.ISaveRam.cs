@@ -25,7 +25,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 		public void StoreSaveRam(byte[] data)
 		{
 			int expected = LibSameboy.sameboy_sramlen(SameboyState);
-			if (data.Length != expected) throw new ArgumentException(message: "Size of saveram data does not match expected!", paramName: nameof(data));
+			if (data.Length - expected != 0)
+			{
+				throw new ArgumentException("Size of saveram data does not match expected!");
+			}
 
 			if (expected > 0)
 			{

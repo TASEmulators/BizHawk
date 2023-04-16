@@ -1,10 +1,12 @@
-#undef GB_INTERNAL // don't rely on GB_INTERNAL in interface
-
 #include "gb.h"
 #include "blip_buf.h"
 #include "stdio.h"
 
-#define EXPORT __attribute__((visibility("default")))
+#ifdef _WIN32
+	#define EXPORT __declspec(dllexport)
+#else
+	#define EXPORT __attribute__((visibility("default")))
+#endif
 
 typedef int8_t s8;
 typedef int16_t s16;
@@ -17,7 +19,6 @@ typedef uint32_t u32;
 typedef uint64_t u64;
 
 typedef void (*input_callback_t)(void);
-typedef void (*rumble_callback_t)(u32);
 typedef void (*trace_callback_t)(u16);
 typedef void (*memory_callback_t)(u16);
 typedef void (*printer_callback_t)(u32*, u8, u8, u8, u8);
@@ -28,6 +29,7 @@ typedef struct
 	GB_gameboy_t gb;
 	blip_t* blip_l;
 	blip_t* blip_r;
+	GB_sample_t sampleBuf[1024 * 8];
 	GB_sample_t sampleLatch;
 	u32 nsamps;
 	u32 vbuf[256 * 224];
@@ -35,7 +37,6 @@ typedef struct
 	u32 obj_pal[0x20];
 	GB_palette_t custom_pal;
 	input_callback_t input_cb;
-	rumble_callback_t rumble_cb;
 	trace_callback_t trace_cb;
 	memory_callback_t read_cb;
 	memory_callback_t write_cb;
@@ -43,60 +44,32 @@ typedef struct
 	printer_callback_t printer_cb;
 	scanline_callback_t scanline_cb;
 	u32 scanline_sl;
-	bool vblank_occurred;
-	bool new_frame_present;
+	bool vblank_occured;
 	u64 cc;
 } biz_t;
 
-static inline u8 PeekIO(biz_t* biz, u8 addr)
+static u8 PeekIO(biz_t* biz, u8 addr)
 {
 	u8* io = GB_get_direct_access(&biz->gb, GB_DIRECT_ACCESS_IO, NULL, NULL);
 	return io[addr];
 }
 
-static void sample_cb(GB_gameboy_t* gb, GB_sample_t* sample)
+static void sample_cb(GB_gameboy_t *gb, GB_sample_t* sample)
 {
 	biz_t* biz = (biz_t*)gb;
-
-	if (biz->sampleLatch.left != sample->left)
-	{
-		blip_add_delta(biz->blip_l, biz->nsamps, biz->sampleLatch.left - sample->left);
-		biz->sampleLatch.left = sample->left;
-	}
-
-	if (biz->sampleLatch.right != sample->right)
-	{
-		blip_add_delta(biz->blip_r, biz->nsamps, biz->sampleLatch.right - sample->right);
-		biz->sampleLatch.right = sample->right;
-	}
-
+	biz->sampleBuf[biz->nsamps].left = sample->left;
+	biz->sampleBuf[biz->nsamps].right = sample->right;
 	biz->nsamps++;
 }
 
-static u32 rgb_cb(GB_gameboy_t* gb, u8 r, u8 g, u8 b)
+static u32 rgb_cb(GB_gameboy_t *gb, u8 r, u8 g, u8 b)
 {
     return (0xFF << 24) | (r << 16) | (g << 8) | b;
 }
 
-static void vblank_cb(GB_gameboy_t* gb, GB_vblank_type_t type)
+static void vblank_cb(GB_gameboy_t *gb)
 {
-	biz_t* biz = (biz_t*)gb;
-	biz->vblank_occurred = true;
-	if (type != GB_VBLANK_TYPE_REPEAT)
-	{
-		biz->new_frame_present = true;
-	}
-}
-
-static u8 camera_pixel_cb(GB_gameboy_t* gb, u8 x, u8 y)
-{
-	// stub for now (also needed for determinism)
-	return 0;
-}
-
-static void RumbleCallbackRelay(GB_gameboy_t* gb, double rumble_amplitude)
-{
-	((biz_t*)gb)->rumble_cb(INT32_MAX * rumble_amplitude);
+	((biz_t*)gb)->vblank_occured = true;
 }
 
 static u8 ReadCallbackRelay(GB_gameboy_t* gb, u16 addr, u8 data)
@@ -138,27 +111,18 @@ static void ScanlineCallbackRelay(GB_gameboy_t* gb, u8 line)
 	}
 }
 
-EXPORT biz_t* sameboy_create(u8* romdata, u32 romlen, u8* biosdata, u32 bioslen, GB_model_t model, bool realtime, bool nobounce)
+EXPORT biz_t* sameboy_create(u8* romdata, u32 romlen, u8* biosdata, u32 bioslen, GB_model_t model, bool realtime)
 {
 	biz_t* biz = calloc(1, sizeof (biz_t));
 	GB_random_seed(0);
 	GB_init(&biz->gb, model);
-	// this will be NULL if a GBS is going to be loaded later
-	if (romdata)
-	{
-		GB_load_rom_from_buffer(&biz->gb, romdata, romlen);
-	}
+	GB_load_rom_from_buffer(&biz->gb, romdata, romlen);
 	GB_load_boot_rom_from_buffer(&biz->gb, biosdata, bioslen);
 	GB_set_sample_rate(&biz->gb, GB_get_clock_rate(&biz->gb) / 2 / 8);
-	GB_set_rumble_mode(&biz->gb, GB_RUMBLE_ALL_GAMES);
-	GB_set_rumble_callback(&biz->gb, RumbleCallbackRelay);
 	GB_apu_set_sample_callback(&biz->gb, sample_cb);
 	GB_set_rgb_encode_callback(&biz->gb, rgb_cb);
 	GB_set_vblank_callback(&biz->gb, vblank_cb);
-	GB_set_camera_get_pixel_callback(&biz->gb, camera_pixel_cb);
-	GB_set_pixels_output(&biz->gb, biz->vbuf);
 	GB_set_rtc_mode(&biz->gb, realtime ? GB_RTC_MODE_SYNC_TO_HOST : GB_RTC_MODE_ACCURATE);
-	GB_set_emulate_joypad_bouncing(&biz->gb, !nobounce);
 	GB_set_allow_illegal_inputs(&biz->gb, true);
 	biz->blip_l = blip_new(1024);
 	biz->blip_r = blip_new(1024);
@@ -175,27 +139,12 @@ EXPORT void sameboy_destroy(biz_t* biz)
 	free(biz);
 }
 
-EXPORT bool sameboy_loadgbs(biz_t* biz, u8* gbs, u32 gbslen, GB_gbs_info_t* gbsinfo)
-{
-	return GB_load_gbs_from_buffer(&biz->gb, gbs, gbslen, gbsinfo) == 0;
-}
-
-EXPORT void sameboy_switchgbstrack(biz_t* biz, u32 track)
-{
-	GB_gbs_switch_track(&biz->gb, track);
-}
-
 EXPORT void sameboy_setinputcallback(biz_t* biz, input_callback_t callback)
 {
 	biz->input_cb = callback;
 }
 
-EXPORT void sameboy_setrumblecallback(biz_t* biz, rumble_callback_t callback)
-{
-	biz->rumble_cb = callback;
-}
-
-static inline double FromRawToG(u16 raw)
+static double FromRawToG(u16 raw)
 {
 	return (raw - 0x81D0) / (0x70 * 1.0);
 }
@@ -207,6 +156,7 @@ EXPORT void sameboy_frameadvance(biz_t* biz, GB_key_mask_t keys, u16 x, u16 y, s
 	{
 		GB_set_accelerometer_values(&biz->gb, FromRawToG(x), FromRawToG(y));
 	}
+	GB_set_pixels_output(&biz->gb, biz->vbuf);
 	GB_set_border_mode(&biz->gb, border ? GB_BORDER_ALWAYS : GB_BORDER_NEVER);
 	GB_set_rendering_disabled(&biz->gb, !render);
 
@@ -217,9 +167,7 @@ EXPORT void sameboy_frameadvance(biz_t* biz, GB_key_mask_t keys, u16 x, u16 y, s
 	}
 
 	u32 cycles = 0;
-	biz->vblank_occurred = false;
-	biz->new_frame_present = false;
-
+	biz->vblank_occured = false;
 	do
 	{
 		u8 oldjoyp = PeekIO(biz, GB_IO_JOYP) & 0x30;
@@ -232,7 +180,21 @@ EXPORT void sameboy_frameadvance(biz_t* biz, GB_key_mask_t keys, u16 x, u16 y, s
 			biz->input_cb();
 		}
 	}
-	while (!biz->vblank_occurred && cycles < 35112);
+	while (!biz->vblank_occured && cycles < 35112);
+
+	for (u32 i = 0; i < biz->nsamps; i++)
+	{
+		if (biz->sampleLatch.left != biz->sampleBuf[i].left)
+		{
+			blip_add_delta(biz->blip_l, i, biz->sampleLatch.left - biz->sampleBuf[i].left);
+			biz->sampleLatch.left = biz->sampleBuf[i].left;
+		}
+		if (biz->sampleLatch.right != biz->sampleBuf[i].right)
+		{
+			blip_add_delta(biz->blip_r, i, biz->sampleLatch.right - biz->sampleBuf[i].right);
+			biz->sampleLatch.right = biz->sampleBuf[i].right;
+		}
+	}
 
 	blip_end_frame(biz->blip_l, biz->nsamps);
 	blip_end_frame(biz->blip_r, biz->nsamps);
@@ -243,7 +205,7 @@ EXPORT void sameboy_frameadvance(biz_t* biz, GB_key_mask_t keys, u16 x, u16 y, s
 	blip_read_samples(biz->blip_r, sbuf + 1, samps, 1);
 	*nsamp = samps;
 
-	if (biz->new_frame_present && render)
+	if (biz->vblank_occured && render)
 	{
 		memcpy(vbuf, biz->vbuf, sizeof biz->vbuf);
 	}
@@ -518,26 +480,7 @@ EXPORT void sameboy_setscanlinecallback(biz_t* biz, scanline_callback_t callback
 	GB_set_lcd_line_callback(&biz->gb, callback ? ScanlineCallbackRelay : NULL);
 }
 
-EXPORT void sameboy_setrtcdivisoroffset(biz_t* biz, int offset)
-{
-	double base = GB_get_unmultiplied_clock_rate(&biz->gb) * 2.0;
-	GB_set_rtc_multiplier(&biz->gb, (base + offset) / base);
-}
-
-typedef struct
-{
-	u32 palette;
-	u32 custom_palette[5];
-	GB_color_correction_mode_t color_correction_mode;
-	s32 light_temperature;
-	GB_highpass_mode_t highpass_filter;
-	s32 interference_volume;
-	u32 channel_mask;
-	bool background_enabled;
-	bool objects_enabled;
-} settings_t;
-
-static inline struct GB_color_s argb_to_rgb(u32 argb)
+static struct GB_color_s argb_to_rgb(u32 argb)
 {
 	struct GB_color_s ret;
 	ret.r = argb >> 16 & 0xFF;
@@ -546,16 +489,16 @@ static inline struct GB_color_s argb_to_rgb(u32 argb)
 	return ret;
 }
 
-EXPORT void sameboy_setsettings(biz_t* biz, settings_t* settings)
+EXPORT void sameboy_setpalette(biz_t* biz, u32 which, u32* custom_pal)
 {
 	for (u32 i = 0; i < 4; i++)
 	{
-		biz->custom_pal.colors[3 - i] = argb_to_rgb(settings->custom_palette[i]);
+		biz->custom_pal.colors[3 - i] = argb_to_rgb(custom_pal[i]);
 	}
 
-	biz->custom_pal.colors[4] = argb_to_rgb(settings->custom_palette[4]);
+	biz->custom_pal.colors[4] = argb_to_rgb(custom_pal[4]);
 
-	switch (settings->palette)
+	switch (which)
 	{
 		case 0:
 			GB_set_palette(&biz->gb, &GB_PALETTE_GREY);
@@ -573,16 +516,40 @@ EXPORT void sameboy_setsettings(biz_t* biz, settings_t* settings)
 			GB_set_palette(&biz->gb, &biz->custom_pal);
 			break;
 	}
+}
 
-	for (u32 i = 0; i < GB_N_CHANNELS; i++)
-	{
-		GB_set_channel_muted(&biz->gb, i, !(settings->channel_mask >> i & 1));
-	}
+EXPORT void sameboy_setcolorcorrection(biz_t* biz, GB_color_correction_mode_t which)
+{
+	GB_set_color_correction_mode(&biz->gb, which);
+}
 
-	GB_set_color_correction_mode(&biz->gb, settings->color_correction_mode);
-	GB_set_light_temperature(&biz->gb, settings->light_temperature / 10.0);
-	GB_set_highpass_filter_mode(&biz->gb, settings->highpass_filter);
-	GB_set_interference_volume(&biz->gb, settings->interference_volume / 100.0);
-	GB_set_background_rendering_disabled(&biz->gb, !settings->background_enabled);
-	GB_set_object_rendering_disabled(&biz->gb, !settings->objects_enabled);
+EXPORT void sameboy_setlighttemperature(biz_t* biz, int temperature)
+{
+	GB_set_light_temperature(&biz->gb, temperature / 10.0);
+}
+
+EXPORT void sameboy_sethighpassfilter(biz_t* biz, GB_highpass_mode_t which)
+{
+	GB_set_highpass_filter_mode(&biz->gb, which);
+}
+
+EXPORT void sameboy_setinterferencevolume(biz_t* biz, int volume)
+{
+	GB_set_interference_volume(&biz->gb, volume / 100.0);
+}
+
+EXPORT void sameboy_setrtcdivisoroffset(biz_t* biz, int offset)
+{
+	double base = GB_get_unmultiplied_clock_rate(&biz->gb) * 2.0;
+	GB_set_rtc_multiplier(&biz->gb, (base + offset) / base);
+}
+
+EXPORT void sameboy_setbgwinenabled(biz_t* biz, bool enabled)
+{
+	GB_set_background_rendering_disabled(&biz->gb, !enabled);
+}
+
+EXPORT void sameboy_setobjenabled(biz_t* biz, bool enabled)
+{
+	GB_set_object_rendering_disabled(&biz->gb, !enabled);
 }

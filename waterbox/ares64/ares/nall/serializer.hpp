@@ -76,11 +76,10 @@ struct serializer {
   }
 
   template<typename T> auto operator()(T& value) -> serializer& {
-    constexpr bool integral = is_integral_v<T> || is_same_v<T, u128>;
-    static_assert(has_serialize_v<T> || integral || is_floating_point_v<T>);
+    static_assert(has_serialize_v<T> || is_integral_v<T> || is_floating_point_v<T>);
     if constexpr(has_serialize_v<T>) {
       value.serialize(*this);
-    } else if constexpr(integral) {
+    } else if constexpr(is_integral_v<T>) {
       integer(value);
     } else if constexpr(is_floating_point_v<T>) {
       real(value);
@@ -99,7 +98,6 @@ struct serializer {
   }
 
   auto operator=(const serializer& s) -> serializer& {
-    if(this == &s) return *this;
     if(_data) delete[] _data;
 
     _mode = s._mode;
@@ -112,7 +110,6 @@ struct serializer {
   }
 
   auto operator=(serializer&& s) -> serializer& {
-    if(this == &s) return *this;
     if(_data) delete[] _data;
 
     _mode = s._mode;
@@ -125,7 +122,7 @@ struct serializer {
   }
 
   serializer(const serializer& s) { operator=(s); }
-  serializer(serializer&& s) { operator=(std::move(s)); }
+  serializer(serializer&& s) { operator=(move(s)); }
 
   serializer() {
     setWriting();

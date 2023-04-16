@@ -90,7 +90,13 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		public void DisableSource(ISoundProvider source)
 		{
-			SoundProviders.RemoveAll(a => a.SoundProvider == source);
+			var sp = SoundProviders.Where(a => a.SoundProvider == source);
+			if (sp.Count() == 1)
+				SoundProviders.Remove(sp.First());
+			else if (sp.Count() > 1)
+				foreach (var s in sp)
+					SoundProviders.Remove(s);
+
 			EqualizeVolumes();
 		}
 
@@ -142,8 +148,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 
 			// are all the sample lengths the same?
-			var firstEntry = SoundProviders[0].NSamp;
-			var sameCount = SoundProviders.TrueForAll(s => s.NSamp == firstEntry);
+			var firstEntry = SoundProviders.First();
+			bool sameCount = SoundProviders.All(s => s.NSamp == firstEntry.NSamp);
 
 			if (!sameCount)
 			{

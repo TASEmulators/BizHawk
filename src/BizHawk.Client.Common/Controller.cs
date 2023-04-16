@@ -22,7 +22,7 @@ namespace BizHawk.Client.Common
 			foreach (var channel in Definition.HapticsChannels) _haptics[channel] = 0;
 		}
 
-		public ControllerDefinition Definition { get; }
+		public ControllerDefinition Definition { get; private set; }
 
 		public bool IsPressed(string button) => _buttons[button];
 
@@ -41,11 +41,17 @@ namespace BizHawk.Client.Common
 		private readonly Dictionary<string, int> _haptics = new WorkingDictionary<string, int>();
 		private readonly Dictionary<string, FeedbackBind> _feedbackBindings = new Dictionary<string, FeedbackBind>();
 
+		/// <summary>don't do this</summary>
+		public void ForceType(ControllerDefinition newType) => Definition = newType;
+
 		public bool this[string button] => IsPressed(button);
 
 		// Looks for bindings which are activated by the supplied physical button.
-		public List<string> SearchBindings(string button)
-			=> _bindings.Where(b => b.Value.Contains(button)).Select(static b => b.Key).ToList();
+		public List<string> SearchBindings(string button) =>
+			_bindings
+				.Where(b => b.Value.Any(v => v == button))
+				.Select(b => b.Key)
+				.ToList();
 
 		// Searches bindings for the controller and returns true if this binding is mapped somewhere in this controller
 		public bool HasBinding(string button) =>

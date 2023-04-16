@@ -1,15 +1,7 @@
-using System;
-
 namespace BizHawk.Emulation.Common
 {
-	public readonly struct FirmwareOption : IEquatable<FirmwareOption>
+	public readonly struct FirmwareOption
 	{
-		public static bool operator ==(FirmwareOption a, FirmwareOption b)
-			=> a.Equals(b);
-
-		public static bool operator !=(FirmwareOption a, FirmwareOption b)
-			=> !(a == b);
-
 		public readonly string Hash;
 
 		public readonly FirmwareID ID;
@@ -27,14 +19,5 @@ namespace BizHawk.Emulation.Common
 			Size = size;
 			Status = status;
 		}
-
-		public bool Equals(FirmwareOption other)
-			=> Hash == other.Hash && ID == other.ID && Size == other.Size && Status == other.Status;
-
-		public readonly override bool Equals(object? obj)
-			=> obj is FirmwareOption fr && Equals(fr);
-
-		public readonly override int GetHashCode()
-			=> HashCode.Combine(Hash, ID, Size, Status);
 	}
 }

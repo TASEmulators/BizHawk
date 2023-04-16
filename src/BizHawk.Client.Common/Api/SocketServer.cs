@@ -1,21 +1,12 @@
 using System;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-
-using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Client.Common
 {
 	public sealed class SocketServer
 	{
-		public static readonly byte[] LENGTH_PREFIX_SEPARATOR = { (byte) ' ' };
-
-		public static byte[] PrefixWithLength(byte[] payload)
-			=> Encoding.ASCII.GetBytes(payload.Length.ToString()).Concat(LENGTH_PREFIX_SEPARATOR).ToArray()
-				.ConcatArray(payload);
-
 		private IPEndPoint _remoteEp;
 
 		private Socket _soc = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -80,9 +71,6 @@ namespace BizHawk.Client.Common
 
 		public string GetInfo() => $"{_targetAddr.HostIP}:{_targetAddr.Port}";
 
-		/// <remarks>
-		/// Since BizHawk 2.6.2, all responses must be of the form <c>$"{msg.Length:D} {msg}"</c> i.e. prefixed with the length in base-10 and a space.
-		/// </remarks>
 		public string ReceiveString(Encoding encoding = null)
 		{
 			if (!Connected)
@@ -143,7 +131,7 @@ namespace BizHawk.Client.Common
 
 		public string SendScreenshot(int waitingTime = 0)
 		{
-			var bmpBytes = PrefixWithLength(_takeScreenshotCallback());
+			var bmpBytes = _takeScreenshotCallback();
 			var sentBytes = 0;
 			var tries = 0;
 			while (sentBytes <= 0 && tries < Retries)
@@ -175,7 +163,17 @@ namespace BizHawk.Client.Common
 
 		public int SendString(string sendString, Encoding encoding = null)
 		{
-			var sentBytes = SendBytes(PrefixWithLength((encoding ?? Encoding.UTF8).GetBytes(sendString)));
+			var payloadBytes = (encoding ?? Encoding.UTF8).GetBytes(sendString);
+			var strLenOfPayloadBytes = payloadBytes.Length.ToString();
+			var strLenOfPayloadBytesAsBytes = Encoding.ASCII.GetBytes(strLenOfPayloadBytes);
+			
+			System.IO.MemoryStream ms = new System.IO.MemoryStream();
+			ms.Write(strLenOfPayloadBytesAsBytes, 0, strLenOfPayloadBytesAsBytes.Length);
+			ms.WriteByte((byte)' ');
+			ms.Write(payloadBytes,0,payloadBytes.Length);
+			
+			int sentBytes = SendBytes(ms.ToArray());
+
 			Successful = sentBytes > 0;
 			return sentBytes;
 		}

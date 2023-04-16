@@ -1,7 +1,5 @@
-﻿using System;
+﻿using BizHawk.Emulation.Common;
 using System.IO;
-
-using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -66,7 +64,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		[FeatureNotImplemented]
 		public void DisassembleCDL(Stream s, ICodeDataLog cdl)
-			=> throw new NotImplementedException();
+		{
+
+		}
 
 		public enum CDLType
 		{

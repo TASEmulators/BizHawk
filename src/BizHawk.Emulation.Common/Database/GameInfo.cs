@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Common
 			return ret;
 		}
 
-		public static readonly GameInfo NullInstance = new()
+		public static GameInfo NullInstance => new GameInfo
 		{
 			Name = "Null",
 			System = VSystemID.Raw.NULL,

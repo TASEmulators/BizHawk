@@ -12,9 +12,6 @@ namespace BizHawk.Client.EmuHawk
 	[SpecializedTool("BG Viewer")]
 	public partial class PceBgViewer : ToolFormBase, IToolFormAutoConfig
 	{
-		public static Icon ToolIcon
-			=> Properties.Resources.PceIcon;
-
 		[RequiredService]
 		public IPceGpuView Viewer { get; private set; }
 		[RequiredService]
@@ -35,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 		public PceBgViewer()
 		{
 			InitializeComponent();
-			Icon = ToolIcon;
+			Icon = Properties.Resources.PceIcon;
 			Activated += (o, e) => Generate();
 		}
 

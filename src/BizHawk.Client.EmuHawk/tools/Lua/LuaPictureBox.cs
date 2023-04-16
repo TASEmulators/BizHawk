@@ -86,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var i = 0;
 			foreach (var point in TableHelper.EnumerateValues<LuaTable>(points)
-				.Select(table => TableHelper.EnumerateValues<long>(table).ToList()))
+				.Select(table => TableHelper.EnumerateValues<double>(table).ToList()))
 			{
 				pointsArr[i] = new Point((int) point[0], (int) point[1]);
 				i++;
@@ -252,7 +252,7 @@ namespace BizHawk.Client.EmuHawk
 		public void DrawPolygon(LuaTable points, int? x = null, int? y = null, [LuaColorParam] object line = null, [LuaColorParam] object background = null)
 		{
 			var pointsList = TableHelper.EnumerateValues<LuaTable>(points)
-				.Select(table => TableHelper.EnumerateValues<long>(table).ToList()).ToList();
+				.Select(table => TableHelper.EnumerateValues<double>(table).ToList()).ToList();
 			var pointsArr = new Point[pointsList.Count];
 			var i = 0;
 			foreach (var point in pointsList)

@@ -7,13 +7,13 @@ namespace NymaTypes
 
 using global::System;
 using global::System.Collections.Generic;
-using global::Google.FlatBuffers;
+using global::FlatBuffers;
 
 public struct NButtonInfo : IFlatbufferObject
 {
   private Table __p;
   public ByteBuffer ByteBuffer { get { return __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_22_9_24(); }
+  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_1_12_0(); }
   public static NButtonInfo GetRootAsNButtonInfo(ByteBuffer _bb) { return GetRootAsNButtonInfo(_bb, new NButtonInfo()); }
   public static NButtonInfo GetRootAsNButtonInfo(ByteBuffer _bb, NButtonInfo obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
   public void __init(int _i, ByteBuffer _bb) { __p = new Table(_i, _bb); }
@@ -55,7 +55,7 @@ public struct NButtonInfo : IFlatbufferObject
       builder,
       _ExcludeName);
   }
-}
+};
 
 public class NButtonInfoT
 {

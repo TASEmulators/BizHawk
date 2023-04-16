@@ -82,15 +82,10 @@ struct priority_queue<T[Size]> {
     return nothing;
   }
 
-  auto remove(const T& event) -> u32 {
-    u32 cycles = 0;
+  auto remove(const T& event) -> void {
     for(u32 i = 0; i < size; i++) {
-      if(heap[i].event == event) {
-        heap[i].valid = false;
-        cycles = max(cycles, heap[i].clock - clock);
-      }
+      if(heap[i].event == event) heap[i].valid = false;
     }
-    return cycles;
   }
 
   auto serialize(serializer& s) -> void {

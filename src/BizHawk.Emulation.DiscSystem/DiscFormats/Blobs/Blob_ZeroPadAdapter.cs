@@ -8,7 +8,6 @@ namespace BizHawk.Emulation.DiscSystem
 	{
 		private readonly IBlob srcBlob;
 		private readonly long srcBlobLength;
-
 		public Blob_ZeroPadAdapter(IBlob srcBlob, long srcBlobLength)
 		{
 			this.srcBlob = srcBlob;
@@ -17,11 +16,15 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public int Read(long byte_pos, byte[] buffer, int offset, int count)
 		{
-			var todo = count;
-			var end = byte_pos + todo;
+			int todo = count;
+			long end = byte_pos + todo;
 			if (end > srcBlobLength)
 			{
-				todo = checked((int)(srcBlobLength - byte_pos));
+				long temp = (int)(srcBlobLength - byte_pos);
+				if (temp > int.MaxValue)
+					throw new InvalidOperationException();
+				todo = (int)temp;
+
 				//zero-fill the unused part (just for safety's sake)
 				Array.Clear(buffer, offset + todo, count - todo);
 			}

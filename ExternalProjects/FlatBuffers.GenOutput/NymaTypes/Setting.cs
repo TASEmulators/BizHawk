@@ -7,13 +7,13 @@ namespace NymaTypes
 
 using global::System;
 using global::System.Collections.Generic;
-using global::Google.FlatBuffers;
+using global::FlatBuffers;
 
 public struct Setting : IFlatbufferObject
 {
   private Table __p;
   public ByteBuffer ByteBuffer { get { return __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_22_9_24(); }
+  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_1_12_0(); }
   public static Setting GetRootAsSetting(ByteBuffer _bb) { return GetRootAsSetting(_bb, new Setting()); }
   public static Setting GetRootAsSetting(ByteBuffer _bb, Setting obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
   public void __init(int _i, ByteBuffer _bb) { __p = new Table(_i, _bb); }
@@ -101,8 +101,6 @@ public struct Setting : IFlatbufferObject
   public static void AddSettingEnums(FlatBufferBuilder builder, VectorOffset SettingEnumsOffset) { builder.AddOffset(8, SettingEnumsOffset.Value, 0); }
   public static VectorOffset CreateSettingEnumsVector(FlatBufferBuilder builder, Offset<NymaTypes.EnumValue>[] data) { builder.StartVector(4, data.Length, 4); for (int i = data.Length - 1; i >= 0; i--) builder.AddOffset(data[i].Value); return builder.EndVector(); }
   public static VectorOffset CreateSettingEnumsVectorBlock(FlatBufferBuilder builder, Offset<NymaTypes.EnumValue>[] data) { builder.StartVector(4, data.Length, 4); builder.Add(data); return builder.EndVector(); }
-  public static VectorOffset CreateSettingEnumsVectorBlock(FlatBufferBuilder builder, ArraySegment<Offset<NymaTypes.EnumValue>> data) { builder.StartVector(4, data.Count, 4); builder.Add(data); return builder.EndVector(); }
-  public static VectorOffset CreateSettingEnumsVectorBlock(FlatBufferBuilder builder, IntPtr dataPtr, int sizeInBytes) { builder.StartVector(1, sizeInBytes, 1); builder.Add<Offset<NymaTypes.EnumValue>>(dataPtr, sizeInBytes); return builder.EndVector(); }
   public static void StartSettingEnumsVector(FlatBufferBuilder builder, int numElems) { builder.StartVector(4, numElems, 4); }
   public static Offset<NymaTypes.Setting> EndSetting(FlatBufferBuilder builder) {
     int o = builder.EndTable();
@@ -151,7 +149,7 @@ public struct Setting : IFlatbufferObject
       _o.Type,
       _SettingEnums);
   }
-}
+};
 
 public class SettingT
 {

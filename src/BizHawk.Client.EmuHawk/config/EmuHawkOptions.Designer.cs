@@ -62,6 +62,10 @@
 			this.AutosaveSRAMradioButton2 = new System.Windows.Forms.RadioButton();
 			this.AutosaveSRAMradioButton3 = new System.Windows.Forms.RadioButton();
 			this.AutosaveSRAMCheckbox = new System.Windows.Forms.CheckBox();
+			this.panel1 = new System.Windows.Forms.Panel();
+			this.label7 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.LuaInterfaceRadio = new System.Windows.Forms.RadioButton();
+			this.NLuaRadio = new System.Windows.Forms.RadioButton();
 			this.label6 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.cbSkipWaterboxIntegrityChecks = new System.Windows.Forms.CheckBox();
 			this.label5 = new BizHawk.WinForms.Controls.LocLabelEx();
@@ -81,6 +85,7 @@
 			this.tabPage3.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.AutosaveSRAMtextBox)).BeginInit();
+			this.panel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// OkBtn
@@ -320,6 +325,7 @@
 			this.tabPage3.Controls.Add(this.NoMixedKeyPriorityCheckBox);
 			this.tabPage3.Controls.Add(this.groupBox2);
 			this.tabPage3.Controls.Add(this.AutosaveSRAMCheckbox);
+			this.tabPage3.Controls.Add(this.panel1);
 			this.tabPage3.Controls.Add(this.label6);
 			this.tabPage3.Controls.Add(this.cbSkipWaterboxIntegrityChecks);
 			this.tabPage3.Controls.Add(this.label5);
@@ -435,6 +441,45 @@
 			this.AutosaveSRAMCheckbox.TabIndex = 4;
 			this.AutosaveSRAMCheckbox.UseVisualStyleBackColor = true;
 			this.AutosaveSRAMCheckbox.CheckedChanged += new System.EventHandler(this.AutosaveSRAMCheckbox_CheckedChanged);
+			// 
+			// panel1
+			// 
+			this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.panel1.Controls.Add(this.label7);
+			this.panel1.Controls.Add(this.LuaInterfaceRadio);
+			this.panel1.Controls.Add(this.NLuaRadio);
+			this.panel1.Location = new System.Drawing.Point(6, 327);
+			this.panel1.Name = "panel1";
+			this.panel1.Size = new System.Drawing.Size(377, 61);
+			this.panel1.TabIndex = 20;
+			// 
+			// label7
+			// 
+			this.label7.Location = new System.Drawing.Point(3, 1);
+			this.label7.Name = "label7";
+			this.label7.Text = "Lua Core";
+			// 
+			// LuaInterfaceRadio
+			// 
+			this.LuaInterfaceRadio.AutoSize = true;
+			this.LuaInterfaceRadio.Location = new System.Drawing.Point(4, 36);
+			this.LuaInterfaceRadio.Name = "LuaInterfaceRadio";
+			this.LuaInterfaceRadio.Size = new System.Drawing.Size(338, 17);
+			this.LuaInterfaceRadio.TabIndex = 2;
+			this.LuaInterfaceRadio.TabStop = true;
+			this.LuaInterfaceRadio.Text = "Lua+LuaInterface";
+			this.LuaInterfaceRadio.UseVisualStyleBackColor = true;
+			// 
+			// NLuaRadio
+			// 
+			this.NLuaRadio.AutoSize = true;
+			this.NLuaRadio.Location = new System.Drawing.Point(4, 17);
+			this.NLuaRadio.Name = "NLuaRadio";
+			this.NLuaRadio.Size = new System.Drawing.Size(96, 17);
+			this.NLuaRadio.TabIndex = 1;
+			this.NLuaRadio.TabStop = true;
+			this.NLuaRadio.Text = "NLua+KopiLua";
+			this.NLuaRadio.UseVisualStyleBackColor = true;
 			// 
 			// label6
 			// 
@@ -555,6 +600,8 @@
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.AutosaveSRAMtextBox)).EndInit();
+			this.panel1.ResumeLayout(false);
+			this.panel1.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -576,6 +623,10 @@
 		private System.Windows.Forms.CheckBox cbMoviesOnDisk;
 		private BizHawk.WinForms.Controls.LocLabelEx label6;
 		private System.Windows.Forms.CheckBox cbSkipWaterboxIntegrityChecks;
+		private System.Windows.Forms.Panel panel1;
+		private BizHawk.WinForms.Controls.LocLabelEx label7;
+		private System.Windows.Forms.RadioButton LuaInterfaceRadio;
+		private System.Windows.Forms.RadioButton NLuaRadio;
 		private System.Windows.Forms.CheckBox AutosaveSRAMCheckbox;
 		private BizHawk.WinForms.Controls.LocLabelEx label8;
 		private System.Windows.Forms.RadioButton AutosaveSRAMradioButton3;

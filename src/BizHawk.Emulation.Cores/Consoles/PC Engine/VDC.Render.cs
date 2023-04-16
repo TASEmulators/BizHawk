@@ -445,9 +445,15 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public int BackgroundColor => vce.Palette[256];
 
 		public int VsyncNumerator
-			=> NullVideo.DefaultVsyncNum; //TODO precise numbers or confirm the default is okay
+		{
+			[FeatureNotImplemented]
+			get => NullVideo.DefaultVsyncNum;
+		}
 
 		public int VsyncDenominator
-			=> NullVideo.DefaultVsyncDen; //TODO precise numbers or confirm the default is okay
+		{
+			[FeatureNotImplemented]
+			get => NullVideo.DefaultVsyncDen;
+		}
 	}
 }

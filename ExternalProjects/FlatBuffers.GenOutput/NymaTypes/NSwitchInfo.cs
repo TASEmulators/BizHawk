@@ -7,13 +7,13 @@ namespace NymaTypes
 
 using global::System;
 using global::System.Collections.Generic;
-using global::Google.FlatBuffers;
+using global::FlatBuffers;
 
 public struct NSwitchInfo : IFlatbufferObject
 {
   private Table __p;
   public ByteBuffer ByteBuffer { get { return __p.bb; } }
-  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_22_9_24(); }
+  public static void ValidateVersion() { FlatBufferConstants.FLATBUFFERS_1_12_0(); }
   public static NSwitchInfo GetRootAsNSwitchInfo(ByteBuffer _bb) { return GetRootAsNSwitchInfo(_bb, new NSwitchInfo()); }
   public static NSwitchInfo GetRootAsNSwitchInfo(ByteBuffer _bb, NSwitchInfo obj) { return (obj.__assign(_bb.GetInt(_bb.Position) + _bb.Position, _bb)); }
   public void __init(int _i, ByteBuffer _bb) { __p = new Table(_i, _bb); }
@@ -37,8 +37,6 @@ public struct NSwitchInfo : IFlatbufferObject
   public static void AddPositions(FlatBufferBuilder builder, VectorOffset PositionsOffset) { builder.AddOffset(1, PositionsOffset.Value, 0); }
   public static VectorOffset CreatePositionsVector(FlatBufferBuilder builder, Offset<NymaTypes.NSwitchPosition>[] data) { builder.StartVector(4, data.Length, 4); for (int i = data.Length - 1; i >= 0; i--) builder.AddOffset(data[i].Value); return builder.EndVector(); }
   public static VectorOffset CreatePositionsVectorBlock(FlatBufferBuilder builder, Offset<NymaTypes.NSwitchPosition>[] data) { builder.StartVector(4, data.Length, 4); builder.Add(data); return builder.EndVector(); }
-  public static VectorOffset CreatePositionsVectorBlock(FlatBufferBuilder builder, ArraySegment<Offset<NymaTypes.NSwitchPosition>> data) { builder.StartVector(4, data.Count, 4); builder.Add(data); return builder.EndVector(); }
-  public static VectorOffset CreatePositionsVectorBlock(FlatBufferBuilder builder, IntPtr dataPtr, int sizeInBytes) { builder.StartVector(1, sizeInBytes, 1); builder.Add<Offset<NymaTypes.NSwitchPosition>>(dataPtr, sizeInBytes); return builder.EndVector(); }
   public static void StartPositionsVector(FlatBufferBuilder builder, int numElems) { builder.StartVector(4, numElems, 4); }
   public static Offset<NymaTypes.NSwitchInfo> EndNSwitchInfo(FlatBufferBuilder builder) {
     int o = builder.EndTable();
@@ -67,7 +65,7 @@ public struct NSwitchInfo : IFlatbufferObject
       _o.DefaultPosition,
       _Positions);
   }
-}
+};
 
 public class NSwitchInfoT
 {

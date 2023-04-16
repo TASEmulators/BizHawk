@@ -21,7 +21,7 @@
 
 #include <sstream>
 
-constexpr u32 DSIWARE_CATEGORY = 0x00030004;
+#define EXPORT extern "C" ECL_EXPORT
 
 static GPU::RenderSettings biz_render_settings { false, 1, false };
 static bool biz_skip_fw;
@@ -38,7 +38,7 @@ typedef enum
 	USE_REAL_BIOS = 0x01,
 	SKIP_FIRMWARE = 0x02,
 	GBA_CART_PRESENT = 0x04,
-	CLEAR_NAND = 0x08,
+	RESERVED_FLAG = 0x08,
 	FIRMWARE_OVERRIDE = 0x10,
 	IS_DSI = 0x20,
 	LOAD_DSIWARE = 0x40,
@@ -73,7 +73,31 @@ typedef struct
 
 extern std::stringstream* NANDFilePtr;
 
-ECL_EXPORT bool Init(LoadFlags loadFlags, LoadData* loadData, FirmwareSettings* fwSettings)
+static bool LoadDSiWare(u8* TmdData)
+{
+	FILE* bios7i = Platform::OpenLocalFile(Config::DSiBIOS7Path, "rb");
+	if (!reinterpret_cast<void*>(bios7i))
+		return false;
+
+	u8 es_keyY[16];
+	fseek(bios7i, 0x8308, SEEK_SET);
+	fread(es_keyY, 16, 1, bios7i);
+	fclose(bios7i);
+
+	FILE* curNAND = Platform::OpenLocalFile(Config::DSiNANDPath, "r+b");
+	if (!curNAND)
+		return false;
+
+	if (!DSi_NAND::Init(curNAND, es_keyY))
+		return false;
+
+	bool ret = DSi_NAND::ImportTitle("dsiware.rom", TmdData, false);
+
+	DSi_NAND::DeInit();
+	return ret;
+}
+
+EXPORT bool Init(LoadFlags loadFlags, LoadData* loadData, FirmwareSettings* fwSettings)
 {
 	Config::ExternalBIOSEnable = !!(loadFlags & USE_REAL_BIOS);
 	Config::AudioBitrate = loadData->AudioBitrate;
@@ -82,6 +106,11 @@ ECL_EXPORT bool Init(LoadFlags loadFlags, LoadData* loadData, FirmwareSettings* 
 	bool isDsi = !!(loadFlags & IS_DSI);
 
 	NDS::SetConsoleType(isDsi);
+	// time calls are deterministic under wbx, so this will force the mac address to a constant value instead of relying on whatever is in the firmware
+	// fixme: might want to allow the user to specify mac address?
+	// edit: upstream has ability to set mac address, most work is in frontend now
+	srand(time(NULL));
+	Config::RandomizeMAC = true;
 	biz_time = 0;
 	RTC::RtcCallback = BizRtcCallback;
 
@@ -97,46 +126,14 @@ ECL_EXPORT bool Init(LoadFlags loadFlags, LoadData* loadData, FirmwareSettings* 
 		std::string fwMessage(fwSettings->FirmwareMessage, fwSettings->FirmwareMessageLength);
 		fwMessage += '\0';
 		Config::FirmwareMessage = fwMessage;
-		Config::FirmwareMAC = "00:09:BF:0E:49:16"; // TODO: Make configurable
 	}
 
 	NANDFilePtr = isDsi ? new std::stringstream(std::string(loadData->NandData, loadData->NandLen), std::ios_base::in | std::ios_base::out | std::ios_base::binary) : nullptr;
 
-	if (isDsi)
+	if (isDsi && (loadFlags & LOAD_DSIWARE))
 	{
-		FILE* bios7i = Platform::OpenLocalFile(Config::DSiBIOS7Path, "rb");
-		if (!bios7i)
+		if (!LoadDSiWare(loadData->TmdData))
 			return false;
-
-		u8 es_keyY[16];
-		fseek(bios7i, 0x8308, SEEK_SET);
-		fread(es_keyY, 16, 1, bios7i);
-		fclose(bios7i);
-
-		if (!DSi_NAND::Init(es_keyY))
-			return false;
-
-		if (loadFlags & CLEAR_NAND)
-		{
-			std::vector<u32> titlelist;
-			DSi_NAND::ListTitles(DSIWARE_CATEGORY, titlelist);
-
-			for (auto& title : titlelist)
-			{
-				DSi_NAND::DeleteTitle(DSIWARE_CATEGORY, title);
-			}
-		}
-
-		if (loadFlags & LOAD_DSIWARE)
-		{
-			if (!DSi_NAND::ImportTitle("dsiware.rom", loadData->TmdData, false))
-			{
-				DSi_NAND::DeInit();
-				return false;
-			}
-		}
-
-		DSi_NAND::DeInit();
 	}
 
 	if (!NDS::Init()) return false;
@@ -163,13 +160,13 @@ ECL_EXPORT bool Init(LoadFlags loadFlags, LoadData* loadData, FirmwareSettings* 
 namespace NDSCart { extern CartCommon* Cart; }
 extern bool NdsSaveRamIsDirty;
 
-ECL_EXPORT void PutSaveRam(u8* data, u32 len)
+EXPORT void PutSaveRam(u8* data, u32 len)
 {
 	NDS::LoadSave(data, len);
 	NdsSaveRamIsDirty = false;
 }
 
-ECL_EXPORT void GetSaveRam(u8* data)
+EXPORT void GetSaveRam(u8* data)
 {
 	if (NDSCart::Cart)
 	{
@@ -178,52 +175,14 @@ ECL_EXPORT void GetSaveRam(u8* data)
 	}
 }
 
-ECL_EXPORT u32 GetSaveRamLength()
+EXPORT s32 GetSaveRamLength()
 {
 	return NDSCart::Cart ? NDSCart::Cart->GetSaveLen() : 0;
 }
 
-ECL_EXPORT bool SaveRamIsDirty()
+EXPORT bool SaveRamIsDirty()
 {
 	return NdsSaveRamIsDirty;
-}
-
-ECL_EXPORT void ImportDSiWareSavs(u32 titleId)
-{
-	if (DSi_NAND::Init(&DSi::ARM7iBIOS[0x8308]))
-	{
-		DSi_NAND::ImportTitleData(DSIWARE_CATEGORY, titleId, DSi_NAND::TitleData_PublicSav, "public.sav");
-		DSi_NAND::ImportTitleData(DSIWARE_CATEGORY, titleId, DSi_NAND::TitleData_PrivateSav, "private.sav");
-		DSi_NAND::ImportTitleData(DSIWARE_CATEGORY, titleId, DSi_NAND::TitleData_BannerSav, "banner.sav");
-		DSi_NAND::DeInit();
-	}
-}
-
-ECL_EXPORT void ExportDSiWareSavs(u32 titleId)
-{
-	if (DSi_NAND::Init(&DSi::ARM7iBIOS[0x8308]))
-	{
-		DSi_NAND::ExportTitleData(DSIWARE_CATEGORY, titleId, DSi_NAND::TitleData_PublicSav, "public.sav");
-		DSi_NAND::ExportTitleData(DSIWARE_CATEGORY, titleId, DSi_NAND::TitleData_PrivateSav, "private.sav");
-		DSi_NAND::ExportTitleData(DSIWARE_CATEGORY, titleId, DSi_NAND::TitleData_BannerSav, "banner.sav");
-		DSi_NAND::DeInit();
-	}
-}
-
-ECL_EXPORT void DSiWareSavsLength(u32 titleId, u32* publicSavSize, u32* privateSavSize, u32* bannerSavSize)
-{
-	*publicSavSize = *privateSavSize = *bannerSavSize = 0;
-	if (DSi_NAND::Init(&DSi::ARM7iBIOS[0x8308]))
-	{
-		u32 version;
-		NDSHeader header{};
-
-		DSi_NAND::GetTitleInfo(DSIWARE_CATEGORY, titleId, version, &header, nullptr);
-		*publicSavSize = header.DSiPublicSavSize;
-		*privateSavSize = header.DSiPrivateSavSize;
-		*bannerSavSize = (header.AppFlags & 0x04) ? 0x4000 : 0;
-		DSi_NAND::DeInit();
-	}
 }
 
 /* excerpted from gbatek
@@ -306,41 +265,13 @@ static void ARM9Access(u8* buffer, s64 address, s64 count, bool write)
 	{
 		void (*Write)(u32, u8) = NDS::ConsoleType == 1 ? DSi::ARM9Write8 : NDS::ARM9Write8;
 		while (count--)
-		{
-			if (address < NDS::ARM9->ITCMSize)
-			{
-				NDS::ARM9->ITCM[address++ & (ITCMPhysicalSize - 1)] = *buffer++;
-			}
-			else if ((address & NDS::ARM9->DTCMMask) == NDS::ARM9->DTCMBase)
-			{
-				NDS::ARM9->DTCM[address++ & (DTCMPhysicalSize - 1)] = *buffer++;
-			}
-			else
-			{
-				Write(address++, *buffer++);
-			}
-		}
+			Write(address++, *buffer++);
 	}
 	else
 	{
 		u8 (*Read)(u32) = NDS::ConsoleType == 1 ? DSi::ARM9Read8 : NDS::ARM9Read8;
 		while (count--)
-		{
-			if (address < NDS::ARM9->ITCMSize)
-			{
-				*buffer++ = NDS::ARM9->ITCM[address & (ITCMPhysicalSize - 1)];
-			}
-			else if ((address & NDS::ARM9->DTCMMask) == NDS::ARM9->DTCMBase)
-			{
-				*buffer++ = NDS::ARM9->DTCM[address & (DTCMPhysicalSize - 1)];
-			}
-			else
-			{
-				*buffer++ = SafeToPeek<true>(address) ? Read(address) : 0;
-			}
-
-			address++;
-		}
+			*buffer++ = SafeToPeek<true>(address) ? Read(address) : 0, address++;
 	}
 }
 
@@ -360,52 +291,42 @@ static void ARM7Access(u8* buffer, s64 address, s64 count, bool write)
 	}
 }
 
-ECL_EXPORT void GetMemoryAreas(MemoryArea *m)
+EXPORT void GetMemoryAreas(MemoryArea *m)
 {
-	m[0].Data = NDS::MainRAM;
-	m[0].Name = "Main RAM";
-	m[0].Size = NDS::MainRAMMaxSize;
-	m[0].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_PRIMARY;
+	m[0].Data = NDS::ARM9BIOS;
+	m[0].Name = "ARM9 BIOS";
+	m[0].Size = sizeof NDS::ARM9BIOS;
+	m[0].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE;
 
-	m[1].Data = NDS::SharedWRAM;
-	m[1].Name = "Shared WRAM";
-	m[1].Size = NDS::SharedWRAMSize;
+	m[1].Data = NDS::ARM7BIOS;
+	m[1].Name = "ARM7 BIOS";
+	m[1].Size = sizeof NDS::ARM7BIOS;
 	m[1].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE;
 
-	m[2].Data = NDS::ARM7WRAM;
-	m[2].Name = "ARM7 WRAM";
-	m[2].Size = NDS::ARM7WRAMSize;
-	m[2].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE;
+	m[2].Data = NDS::MainRAM;
+	m[2].Name = "Main RAM";
+	m[2].Size = NDS::MainRAMMaxSize;
+	m[2].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_PRIMARY;
 
-	m[3].Data = NDS::ARM9->ITCM;
-	m[3].Name = "Instruction TCM";
-	m[3].Size = ITCMPhysicalSize;
+	m[3].Data = NDS::SharedWRAM;
+	m[3].Name = "Shared WRAM";
+	m[3].Size = NDS::SharedWRAMSize;
 	m[3].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE;
 
-	m[4].Data = NDS::ARM9->DTCM;
-	m[4].Name = "Data TCM";
-	m[4].Size = DTCMPhysicalSize;
+	m[4].Data = NDS::ARM7WRAM;
+	m[4].Name = "ARM7 WRAM";
+	m[4].Size = NDS::ARM7WRAMSize;
 	m[4].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE;
 
-	m[5].Data = NDS::ARM9BIOS;
-	m[5].Name = "ARM9 BIOS";
-	m[5].Size = sizeof NDS::ARM9BIOS;
-	m[5].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE;
+	m[5].Data = (void*)ARM9Access;
+	m[5].Name = "ARM9 System Bus";
+	m[5].Size = 1ull << 32;
+	m[5].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_FUNCTIONHOOK;
 
-	m[6].Data = NDS::ARM7BIOS;
-	m[6].Name = "ARM7 BIOS";
-	m[6].Size = sizeof NDS::ARM7BIOS;
-	m[6].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE;
-
-	m[7].Data = (void*)ARM9Access;
-	m[7].Name = "ARM9 System Bus";
-	m[7].Size = 1ull << 32;
-	m[7].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_FUNCTIONHOOK;
-
-	m[8].Data = (void*)ARM7Access;
-	m[8].Name = "ARM7 System Bus";
-	m[8].Size = 1ull << 32;
-	m[8].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_FUNCTIONHOOK;
+	m[6].Data = (void*)ARM7Access;
+	m[6].Name = "ARM7 System Bus";
+	m[6].Size = 1ull << 32;
+	m[6].Flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_FUNCTIONHOOK;
 
 	// fixme: include more shit
 }
@@ -418,7 +339,6 @@ struct MyFrameInfo : public FrameInfo
 	u8 TouchY;
 	s8 MicVolume;
 	s8 GBALightSensor;
-	bool ConsiderAltLag;
 };
 
 static s16 biz_mic_input[735];
@@ -443,7 +363,7 @@ static void MicFeedNoise(s8 vol)
 
 static bool RunningFrame = false;
 
-ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
+EXPORT void FrameAdvance(MyFrameInfo* f)
 {
 	RunningFrame = true;
 
@@ -495,41 +415,37 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 	memcpy(f->VideoBuffer + SingleScreenSize, GPU::Framebuffer[GPU::FrontBuffer][1], SingleScreenSize * sizeof (u32));
 	f->Width = 256;
 	f->Height = 384;
-	f->Samples = SPU::ReadOutput(f->SoundBuffer);
-	if (f->Samples < 737) // hack
+	f->Samples = SPU::GetOutputSize() / 2;
+	SPU::ReadOutput(f->SoundBuffer, f->Samples);
+	if (f->Samples < 547) // hack
 	{
-		memset(f->SoundBuffer + (f->Samples * 2), 0, ((737 * 2) - (f->Samples * 2)) * sizeof (u16));
-		f->Samples = 737;
+		memset(f->SoundBuffer + (f->Samples * 2), 0, ((547 * 2) - (f->Samples * 2)) * sizeof (u16));
+		f->Samples = 547;
 	}
 	f->Cycles = NDS::GetSysClockCycles(2);
 	f->Lagged = NDS::LagFrameFlag;
-	// if we want to consider other lag sources, use that lag flag if we haven't unlagged already 
-	if (f->ConsiderAltLag && NDS::LagFrameFlag)
-	{
-		f->Lagged = NDS::AltLagFrameFlag;
-	}
 
 	RunningFrame = false;
 }
 
 void (*InputCallback)() = nullptr;
 
-ECL_EXPORT void SetInputCallback(void (*callback)())
+EXPORT void SetInputCallback(void (*callback)())
 {
 	InputCallback = callback;
 }
 
-ECL_EXPORT void GetRegs(u32* regs)
+EXPORT void GetRegs(u32* regs)
 {
 	NDS::GetRegs(regs);
 }
 
-ECL_EXPORT void SetReg(s32 ncpu, s32 index, s32 val)
+EXPORT void SetReg(s32 ncpu, s32 index, s32 val)
 {
 	NDS::SetReg(ncpu, index, val);
 }
 
-ECL_EXPORT u32 GetCallbackCycleOffset()
+EXPORT u32 GetCallbackCycleOffset()
 {
 	return RunningFrame ? NDS::GetSysClockCycles(2) : 0;
 }
@@ -538,7 +454,7 @@ void (*ReadCallback)(u32) = nullptr;
 void (*WriteCallback)(u32) = nullptr;
 void (*ExecuteCallback)(u32) = nullptr;
 
-ECL_EXPORT void SetMemoryCallback(u32 which, void (*callback)(u32 addr))
+EXPORT void SetMemoryCallback(u32 which, void (*callback)(u32 addr))
 {
 	switch (which)
 	{
@@ -548,51 +464,12 @@ ECL_EXPORT void SetMemoryCallback(u32 which, void (*callback)(u32 addr))
 	}
 }
 
-TraceMask_t TraceMask = TRACE_NONE;
-static void (*TraceCallback)(TraceMask_t, u32, u32*, char*, u32) = nullptr;
-#define TRACE_STRING_LENGTH 80
-typedef enum {
-	ARMv4T, //ARM v4, THUMB v1
-	ARMv5TE, //ARM v5, THUMB v2
-	ARMv6, //ARM v6, THUMB v3
-} ARMARCH; //only 32-bit legacy architectures with THUMB support
-extern "C" u32 Disassemble_thumb(u32 code, char str[TRACE_STRING_LENGTH], ARMARCH tv);
-extern "C" void Disassemble_arm(u32 code, char str[TRACE_STRING_LENGTH], ARMARCH av);
+void (*TraceCallback)(u32, u32*, u32) = nullptr;
 
-void TraceTrampoline(TraceMask_t type, u32* regs, u32 opcode)
-{
-	static char disasm[TRACE_STRING_LENGTH];
-	memset(disasm, 0, sizeof disasm);
-	switch (type) {
-		case TRACE_ARM7_THUMB: Disassemble_thumb(opcode, disasm, ARMv4T); break;
-		case TRACE_ARM7_ARM: Disassemble_arm(opcode, disasm, ARMv4T); break;
-		case TRACE_ARM9_THUMB: Disassemble_thumb(opcode, disasm, ARMv5TE); break;
-		case TRACE_ARM9_ARM: Disassemble_arm(opcode, disasm, ARMv5TE); break;
-		default: __builtin_unreachable();
-	}
-	TraceCallback(type, opcode, regs, disasm, NDS::GetSysClockCycles(2));
-}
-
-ECL_EXPORT void SetTraceCallback(void (*callback)(TraceMask_t mask, u32 opcode, u32* regs, char* disasm, u32 cyclesOff), TraceMask_t mask)
+EXPORT void SetTraceCallback(void (*callback)(u32 cpu, u32* regs, u32 opcode))
 {
 	TraceCallback = callback;
-	TraceMask = callback ? mask : TRACE_NONE;
 }
-
-ECL_EXPORT void GetDisassembly(TraceMask_t type, u32 opcode, char* ret)
-{
-	static char disasm[TRACE_STRING_LENGTH];
-	memset(disasm, 0, sizeof disasm);
-	switch (type) {
-		case TRACE_ARM7_THUMB: Disassemble_thumb(opcode, disasm, ARMv4T); break;
-		case TRACE_ARM7_ARM: Disassemble_arm(opcode, disasm, ARMv4T); break;
-		case TRACE_ARM9_THUMB: Disassemble_thumb(opcode, disasm, ARMv5TE); break;
-		case TRACE_ARM9_ARM: Disassemble_arm(opcode, disasm, ARMv5TE); break;
-		default: __builtin_unreachable();
-	}
-	memcpy(ret, disasm, TRACE_STRING_LENGTH);
-}
-
 
 namespace Platform
 {
@@ -600,17 +477,17 @@ namespace Platform
 	extern void (*ThreadStartCallback)();
 }
 
-ECL_EXPORT uintptr_t GetFrameThreadProc()
+EXPORT uintptr_t GetFrameThreadProc()
 {
 	return Platform::FrameThreadProc;
 }
 
-ECL_EXPORT void SetThreadStartCallback(void (*callback)())
+EXPORT void SetThreadStartCallback(void (*callback)())
 {
 	Platform::ThreadStartCallback = callback;
 }
 
-ECL_EXPORT u32 GetNANDSize()
+EXPORT u32 GetNANDSize()
 {
 	if (NANDFilePtr)
 	{
@@ -621,7 +498,7 @@ ECL_EXPORT u32 GetNANDSize()
 	return 0;
 }
 
-ECL_EXPORT void GetNANDData(char* buf)
+EXPORT void GetNANDData(char* buf)
 {
 	if (NANDFilePtr)
 	{
@@ -633,7 +510,7 @@ ECL_EXPORT void GetNANDData(char* buf)
 
 namespace GPU { void ResetVRAMCache(); }
 
-ECL_EXPORT void ResetCaches()
+EXPORT void ResetCaches()
 {
 	GPU::ResetVRAMCache();
 }

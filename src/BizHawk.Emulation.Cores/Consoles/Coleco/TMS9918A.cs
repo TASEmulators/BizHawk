@@ -471,10 +471,16 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public int BackgroundColor => 0;
 
 		public int VsyncNumerator
-			=> NullVideo.DefaultVsyncNum; //TODO precise numbers or confirm the default is okay
+		{
+			[FeatureNotImplemented]
+			get => NullVideo.DefaultVsyncNum;
+		}
 
 		public int VsyncDenominator
-			=> NullVideo.DefaultVsyncDen; //TODO precise numbers or confirm the default is okay
+		{
+			[FeatureNotImplemented]
+			get => NullVideo.DefaultVsyncDen;
+		}
 
 		private readonly int[] PaletteTMS9918 =
 		{

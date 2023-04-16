@@ -73,23 +73,25 @@ namespace BizHawk.Client.Common
 		public int FrameCount()
 			=> Emulator!.Frame;
 
-		public (string Disasm, int Length) Disassemble(uint pc, string? name = null)
+		public object? Disassemble(uint pc, string? name = null)
 		{
 			try
 			{
 				if (DisassemblableCore != null)
 				{
-					var disasm = DisassemblableCore.Disassemble(
-						string.IsNullOrEmpty(name) ? MemoryDomains!.SystemBus : MemoryDomains![name!]!,
-						pc,
-						out var l
-					);
-					return (disasm, l);
+					return new {
+						disasm = DisassemblableCore.Disassemble(
+							string.IsNullOrEmpty(name) ? MemoryDomains!.SystemBus : MemoryDomains![name!]!,
+							pc,
+							out var l
+						),
+						length = l
+					};
 				}
 			}
 			catch (NotImplementedException) {}
 			LogCallback($"Error: {Emulator.Attributes().CoreName} does not yet implement {nameof(IDisassemblable.Disassemble)}()");
-			return (string.Empty, 0);
+			return null;
 		}
 
 		public ulong? GetRegister(string name)
@@ -235,9 +237,9 @@ namespace BizHawk.Client.Common
 				s.ShowOBJ_3 = GetSetting(args, 7);
 				core.PutSettings(s);
 			}
-			void SetBsnes(ISettable<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings> settingsProvider)
+			void SetBsnes(BsnesCore core)
 			{
-				var s = settingsProvider.GetSettings();
+				var s = core.GetSettings();
 				// TODO: This should probably support both prios inidividually but I have no idea whether changing this breaks anything
 				s.ShowBG1_0 = s.ShowBG1_1 = GetSetting(args, 0);
 				s.ShowBG2_0 = s.ShowBG2_1 = GetSetting(args, 1);
@@ -247,7 +249,7 @@ namespace BizHawk.Client.Common
 				s.ShowOBJ_1 = GetSetting(args, 5);
 				s.ShowOBJ_2 = GetSetting(args, 6);
 				s.ShowOBJ_3 = GetSetting(args, 7);
-				settingsProvider.PutSettings(s);
+				core.PutSettings(s);
 			}
 			void SetCygne(WonderSwan ws)
 			{
@@ -312,9 +314,6 @@ namespace BizHawk.Client.Common
 					break;
 				case BsnesCore bsnes:
 					SetBsnes(bsnes);
-					break;
-				case SubBsnesCore subBsnes:
-					SetBsnes(subBsnes.ServiceProvider.GetService<ISettable<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings>>());
 					break;
 				case NES nes:
 					SetNesHawk(nes);

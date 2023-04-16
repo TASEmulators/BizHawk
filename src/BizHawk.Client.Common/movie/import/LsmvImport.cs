@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
+using BizHawk.Common;
 using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
-using BizHawk.Emulation.Cores.Nintendo.BSNES;
+using BizHawk.Emulation.Cores.Nintendo.SNES;
 
 namespace BizHawk.Client.Common.movie.import
 {
@@ -16,14 +16,10 @@ namespace BizHawk.Client.Common.movie.import
 	internal class LsmvImport : MovieImporter
 	{
 		private static readonly byte[] Zipheader = { 0x50, 0x4b, 0x03, 0x04 };
-		private BsnesControllers _controllers;
-		private int _playerCount;
-		// hacky variable; just exists because if subframe input is used, the previous frame needs to be marked subframe aware
-		private SimpleController _previousControllers;
-
+		private LibsnesControllerDeck _deck;
 		protected override void RunImport()
 		{
-			Result.Movie.HeaderEntries[HeaderKeys.Core] = CoreNames.SubBsnes115;
+			Result.Movie.HeaderEntries[HeaderKeys.Core] = CoreNames.Bsnes;
 
 			// .LSMV movies are .zip files containing data files.
 			using var fs = new FileStream(SourceFile.FullName, FileMode.Open, FileAccess.Read);
@@ -40,47 +36,14 @@ namespace BizHawk.Client.Common.movie.import
 
 			using var zip = new ZipArchive(fs, ZipArchiveMode.Read, true);
 
-			var ss = new BsnesCore.SnesSyncSettings();
+			var ss = new LibsnesCore.SnesSyncSettings
+			{
+				LeftPort = LibsnesControllerDeck.ControllerType.Gamepad,
+				RightPort = LibsnesControllerDeck.ControllerType.Gamepad
+			};
+			_deck = new LibsnesControllerDeck(ss);
 
 			string platform = VSystemID.Raw.SNES;
-
-			// need to handle ports first to ensure controller types are known
-			ZipArchiveEntry portEntry;
-			if ((portEntry = zip.GetEntry("port1")) != null)
-			{
-				using var stream = portEntry.Open();
-				string port1 = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
-				Result.Movie.HeaderEntries["port1"] = port1;
-				ss.LeftPort = port1 switch
-				{
-					"none" => BsnesApi.BSNES_PORT1_INPUT_DEVICE.None,
-					"gamepad16" => BsnesApi.BSNES_PORT1_INPUT_DEVICE.ExtendedGamepad,
-					"multitap" => BsnesApi.BSNES_PORT1_INPUT_DEVICE.SuperMultitap,
-					"multitap16" => BsnesApi.BSNES_PORT1_INPUT_DEVICE.Payload,
-					_ => BsnesApi.BSNES_PORT1_INPUT_DEVICE.Gamepad
-				};
-			}
-			if ((portEntry = zip.GetEntry("port2")) != null)
-			{
-				using var stream = portEntry.Open();
-				string port2 = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
-				Result.Movie.HeaderEntries["port2"] = port2;
-				ss.RightPort = port2 switch
-				{
-					"none" => BsnesApi.BSNES_INPUT_DEVICE.None,
-					"gamepad16" => BsnesApi.BSNES_INPUT_DEVICE.ExtendedGamepad,
-					"multitap" => BsnesApi.BSNES_INPUT_DEVICE.SuperMultitap,
-					"multitap16" => BsnesApi.BSNES_INPUT_DEVICE.Payload,
-					// will these even work lol
-					"superscope" => BsnesApi.BSNES_INPUT_DEVICE.SuperScope,
-					"justifier" => BsnesApi.BSNES_INPUT_DEVICE.Justifier,
-					"justifiers" => BsnesApi.BSNES_INPUT_DEVICE.Justifiers,
-					_ => BsnesApi.BSNES_INPUT_DEVICE.Gamepad
-				};
-			}
-			_controllers = new BsnesControllers(ss, true);
-			Result.Movie.LogKey = new Bk2LogEntryGenerator("SNES", new Bk2Controller(_controllers.Definition)).GenerateLogKey();
-			_playerCount = _controllers.Definition.PlayerCount;
 
 			foreach (var item in zip.Entries)
 			{
@@ -92,8 +55,10 @@ namespace BizHawk.Client.Common.movie.import
 					string authorLast = "";
 					using (var reader = new StringReader(authors))
 					{
+						string line;
+
 						// Each author is on a different line.
-						while (reader.ReadLine() is string line)
+						while ((line = reader.ReadLine()) != null)
 						{
 							string author = line.Trim();
 							if (author != "")
@@ -161,19 +126,34 @@ namespace BizHawk.Client.Common.movie.import
 					using var stream = item.Open();
 					string input = Encoding.UTF8.GetString(stream.ReadAllBytes());
 
-					// Insert an empty frame in lsmv snes movies
-					// see https://github.com/TASEmulators/BizHawk/issues/721
-					Result.Movie.AppendFrame(EmptyLmsvFrame());
+					int lineNum = 0;
 					using (var reader = new StringReader(input))
 					{
-						while(reader.ReadLine() is string line)
+						lineNum++;
+						string line;
+						while ((line = reader.ReadLine()) != null)
 						{
-							if (line == "") continue;
+							if (line == "")
+							{
+								continue;
+							}
 
-							ImportTextFrame(line);
+							// Insert an empty frame in lsmv snes movies
+							// https://github.com/TASEmulators/BizHawk/issues/721
+							// Both emulators send the input to bsnes core at the same V interval, but:
+							// lsnes' frame boundary occurs at V = 241, after which the input is read;
+							// BizHawk's frame boundary is just before automatic polling;
+							// This isn't a great place to add this logic but this code is a mess
+							if (lineNum == 1 && platform == VSystemID.Raw.SNES)
+							{
+								// Note that this logic assumes the first non-empty log entry is a valid input log entry
+								// and that it is NOT a subframe input entry.  It seems safe to assume subframe input would not be on the first line
+								Result.Movie.AppendFrame(EmptyLmsvFrame());
+							}
+
+							ImportTextFrame(line, platform);
 						}
 					}
-					Result.Movie.AppendFrame(_previousControllers);
 				}
 				else if (item.FullName.StartsWith("moviesram."))
 				{
@@ -186,6 +166,22 @@ namespace BizHawk.Client.Common.movie.import
 						return;
 					}
 				}
+				else if (item.FullName == "port1")
+				{
+					using var stream = item.Open();
+					string port1 = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
+					Result.Movie.HeaderEntries["port1"] = port1;
+					ss.LeftPort = LibsnesControllerDeck.ControllerType.Gamepad;
+					_deck = new LibsnesControllerDeck(ss);
+				}
+				else if (item.FullName == "port2")
+				{
+					using var stream = item.Open();
+					string port2 = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
+					Result.Movie.HeaderEntries["port2"] = port2;
+					ss.RightPort = LibsnesControllerDeck.ControllerType.Gamepad;
+					_deck = new LibsnesControllerDeck(ss);
+				}
 				else if (item.FullName == "projectid")
 				{
 					using var stream = item.Open();
@@ -196,19 +192,19 @@ namespace BizHawk.Client.Common.movie.import
 				{
 					using var stream = item.Open();
 					string rerecords = Encoding.UTF8.GetString(stream.ReadAllBytes());
-					ulong rerecordCount;
+					int rerecordCount;
 
 					// Try to parse the re-record count as an integer, defaulting to 0 if it fails.
 					try
 					{
-						rerecordCount = ulong.Parse(rerecords);
+						rerecordCount = int.Parse(rerecords);
 					}
 					catch
 					{
 						rerecordCount = 0;
 					}
 
-					Result.Movie.Rerecords = rerecordCount;
+					Result.Movie.Rerecords = (ulong)rerecordCount;
 				}
 				else if (item.FullName.EndsWith(".sha256"))
 				{
@@ -229,7 +225,8 @@ namespace BizHawk.Client.Common.movie.import
 					string subtitles = Encoding.UTF8.GetString(stream.ReadAllBytes());
 					using (var reader = new StringReader(subtitles))
 					{
-						while (reader.ReadLine() is string line)
+						string line;
+						while ((line = reader.ReadLine()) != null)
 						{
 							var subtitle = ImportTextSubtitle(line);
 							if (!string.IsNullOrEmpty(subtitle))
@@ -261,11 +258,12 @@ namespace BizHawk.Client.Common.movie.import
 
 			Result.Movie.HeaderEntries[HeaderKeys.Platform] = platform;
 			Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(ss);
+			MaybeSetCorePreference(VSystemID.Raw.SNES, CoreNames.Bsnes, fileExt: ".lsmv");
 		}
 
 		private IController EmptyLmsvFrame()
 		{
-			SimpleController emptyController = new(_controllers.Definition);
+			SimpleController emptyController = new(_deck.Definition);
 
 			foreach (var button in emptyController.Definition.BoolButtons)
 			{
@@ -275,35 +273,38 @@ namespace BizHawk.Client.Common.movie.import
 			return emptyController;
 		}
 
-		private void ImportTextFrame(string line)
+		private void ImportTextFrame(string line, string platform)
 		{
-			SimpleController controllers = new(_controllers.Definition);
+			SimpleController controllers = new(_deck.Definition);
+
+			var buttons = new[]
+			{
+				"B", "Y", "Select", "Start", "Up", "Down", "Left", "Right", "A", "X", "L", "R"
+			};
+
+			if (platform == VSystemID.Raw.GB || platform == VSystemID.Raw.GBC)
+			{
+				buttons = new[] { "A", "B", "Select", "Start", "Right", "Left", "Up", "Down" };
+			}
 
 			// Split up the sections of the frame.
 			string[] sections = line.Split('|');
 
-			bool reset = false;
 			if (sections.Length != 0)
 			{
 				string flags = sections[0];
-				if (flags[0] != 'F' && _previousControllers != null) _previousControllers["Subframe"] = true;
-				reset = flags[1] != '.';
-				flags = SingleSpaces(flags.Substring(2));
-				string[] splitFlags = flags.Split(' ');
-				int delay;
-				try
+				char[] off = { '.', ' ', '\t', '\n', '\r' };
+				if (flags.Length == 0 || off.Contains(flags[0]))
 				{
-					delay = int.Parse(splitFlags[1]) * 10000 + int.Parse(splitFlags[2]);
-				}
-				catch
-				{
-					delay = 0;
+					Result.Warnings.Add("Unable to import subframe.");
+
 				}
 
-				if (delay != 0)
+				bool reset = flags.Length >= 2 && !off.Contains(flags[1]);
+				flags = SingleSpaces(flags.Substring(2));
+				if (reset && ((flags.Length >= 2 && flags[1] != '0') || (flags.Length >= 4 && flags[3] != '0')))
 				{
-					controllers.AcceptNewAxis("Reset Instruction", delay);
-					Result.Warnings.Add("Delayed reset may be mistimed."); // lsnes doesn't count some instructions that our bsnes version does
+					Result.Warnings.Add("Unable to import delayed reset.");
 				}
 
 				controllers["Reset"] = reset;
@@ -314,33 +315,28 @@ namespace BizHawk.Client.Common.movie.import
 
 			for (int player = 1; player < end; player++)
 			{
-				if (player > _playerCount) break;
-
-				IReadOnlyList<string> buttons = controllers.Definition.ControlsOrdered[player];
-				if (buttons[0].EndsWith("Up")) // hack to identify gamepad / multitap which have a different button order in bizhawk compared to lsnes
+				string prefix = $"P{player} ";
+				
+				// Gameboy doesn't currently have a prefix saying which player the input is for.
+				if (controllers.Definition.Name == "Gameboy Controller")
 				{
-					buttons = new[] { "B", "Y", "Select", "Start", "Up", "Down", "Left", "Right", "A", "X", "L", "R" }
-						.Select(button => $"P{player} {button}")
-						.ToList();
+					prefix = "";
 				}
-				// Only consider lines that have the right number of buttons
-				if (sections[player].Length == buttons.Count)
+
+				// Only count lines with that have the right number of buttons and are for valid players.
+				if (
+					sections[player].Length == buttons.Length)
 				{
-					for (int button = 0; button < buttons.Count; button++)
+					for (int button = 0; button < buttons.Length; button++)
 					{
 						// Consider the button pressed so long as its spot is not occupied by a ".".
-						controllers[buttons[button]] = sections[player][button] != '.';
+						controllers[prefix + buttons[button]] = sections[player][button] != '.';
 					}
 				}
 			}
 
 			// Convert the data for the controllers to a mnemonic and add it as a frame.
-			if (_previousControllers != null)
-				Result.Movie.AppendFrame(_previousControllers);
-
-			if (reset) Result.Movie.AppendFrame(EmptyLmsvFrame());
-
-			_previousControllers = controllers;
+			Result.Movie.AppendFrame(controllers);
 		}
 
 		private static string ImportTextSubtitle(string line)

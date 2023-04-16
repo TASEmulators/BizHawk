@@ -14,12 +14,12 @@ namespace BizHawk.Emulation.Common
 {
 	public static class Database
 	{
-		private static readonly Dictionary<string, CompactGameInfo> DB = new();
+		private static readonly Dictionary<string, CompactGameInfo> DB = new Dictionary<string, CompactGameInfo>();
 
 		/// <summary>
 		/// blocks until the DB is done loading
 		/// </summary>
-		private static readonly ManualResetEvent _acquire = new(false);
+		private static readonly EventWaitHandle acquire = new EventWaitHandle(false, EventResetMode.ManualReset);
 
 		private static string _bundledRoot = null;
 
@@ -27,13 +27,21 @@ namespace BizHawk.Emulation.Common
 
 		private static string _userRoot = null;
 
-		/// <summary>
-		/// Removes hash type if present and enforces an uppercase hash
-		/// </summary>
-		/// <param name="hash">The hash to format, this is typically prefixed with a type (e.g. sha1:)</param>
-		/// <returns>formatted hash</returns>
-		private static string FormatHash(string hash)
-			=> hash.Substring(hash.IndexOf(':') + 1).ToUpperInvariant();
+		private static string RemoveHashType(string hash)
+		{
+			hash = hash.ToUpper();
+			if (hash.StartsWith("MD5:"))
+			{
+				hash = hash.Substring(4);
+			}
+
+			if (hash.StartsWith("SHA1:"))
+			{
+				hash = hash.Substring(5);
+			}
+
+			return hash;
+		}
 
 		private static void LoadDatabase_Escape(string line, bool inUser, bool silent)
 		{
@@ -46,7 +54,7 @@ namespace BizHawk.Emulation.Common
 			if (File.Exists(filename))
 			{
 				if (!silent) Util.DebugWriteLine($"loading external game database {line} ({(searchUser ? "user" : "bundled")})");
-				InitializeWork(filename, inUser: searchUser, silent: silent);
+				initializeWork(filename, inUser: searchUser, silent: silent);
 			}
 			else if (inUser)
 			{
@@ -94,7 +102,7 @@ namespace BizHawk.Emulation.Common
 
 		private static bool initialized = false;
 
-		private static void InitializeWork(string path, bool inUser, bool silent)
+		private static void initializeWork(string path, bool inUser, bool silent)
 		{
 			if (!inUser) _expected.Remove(Path.GetFileName(path));
 			//reminder: this COULD be done on several threads, if it takes even longer
@@ -124,12 +132,13 @@ namespace BizHawk.Emulation.Common
 
 					var game = new CompactGameInfo
 					{
-						Hash = FormatHash(items[0]),
+						Hash = RemoveHashType(items[0].ToUpper()),
+						// remove a hash type identifier. well don't really need them for indexing (they're just there for human purposes)
 						Status = items[1].Trim()
 							switch
 						{
-							"B" => RomStatus.BadDump, // see /Assets/gamedb/gamedb.txt
-							"V" => RomStatus.BadDump, // see /Assets/gamedb/gamedb.txt
+							"B" => RomStatus.BadDump,
+							"V" => RomStatus.BadDump,
 							"T" => RomStatus.TranslatedRom,
 							"O" => RomStatus.Overdump,
 							"I" => RomStatus.Bios,
@@ -168,6 +177,8 @@ namespace BizHawk.Emulation.Common
 					Util.DebugWriteLine($"Error parsing database entry: {line}");
 				}
 			}
+
+			acquire.Set();
 		}
 
 		public static void InitializeDatabase(string bundledRoot, string userRoot, bool silent)
@@ -181,20 +192,19 @@ namespace BizHawk.Emulation.Common
 			_expected = new DirectoryInfo(_bundledRoot!).EnumerateFiles("*.txt").Select(static fi => fi.Name).ToList();
 
 			var stopwatch = Stopwatch.StartNew();
-			ThreadPool.QueueUserWorkItem(_ => {
-				InitializeWork(Path.Combine(bundledRoot, "gamedb.txt"), inUser: false, silent: silent);
+			ThreadPool.QueueUserWorkItem(_=> {
+				initializeWork(Path.Combine(bundledRoot, "gamedb.txt"), inUser: false, silent: silent);
 				if (_expected.Count is not 0) Util.DebugWriteLine($"extra bundled gamedb files were not #included: {string.Join(", ", _expected)}");
 				Util.DebugWriteLine("GameDB load: " + stopwatch.Elapsed + " sec");
-				_acquire.Set();
 			});
 		}
 
 		public static GameInfo CheckDatabase(string hash)
 		{
-			_acquire.WaitOne();
+			acquire.WaitOne();
 
-			var hashFormatted = FormatHash(hash);
-			DB.TryGetValue(hashFormatted, out var cgi);
+			var hashNoType = RemoveHashType(hash);
+			DB.TryGetValue(hashNoType, out var cgi);
 			if (cgi == null)
 			{
 				Console.WriteLine($"DB: hash {hash} not in game database.");
@@ -206,7 +216,7 @@ namespace BizHawk.Emulation.Common
 
 		public static GameInfo GetGameInfo(byte[] romData, string fileName)
 		{
-			_acquire.WaitOne();
+			acquire.WaitOne();
 
 			var hashSHA1 = SHA1Checksum.ComputeDigestHex(romData);
 			if (DB.TryGetValue(hashSHA1, out var cgi))
@@ -248,16 +258,7 @@ namespace BizHawk.Emulation.Common
 
 				case ".SFC":
 				case ".SMC":
-				case ".BS":
-					if (SatellaviewFileTypeDetector.IsSatellaviewRom(romData, out var warnings))
-					{
-						game.System = VSystemID.Raw.Satellaview;
-						foreach (var s in warnings) Console.WriteLine(s);
-					}
-					else
-					{
-						game.System = VSystemID.Raw.SNES;
-					}
+					game.System = VSystemID.Raw.SNES;
 					break;
 
 				case ".GB":
@@ -345,7 +346,6 @@ namespace BizHawk.Emulation.Common
 				case ".Z64":
 				case ".V64":
 				case ".N64":
-				case ".NDD":
 					game.System = VSystemID.Raw.N64;
 					break;
 
@@ -355,13 +355,7 @@ namespace BizHawk.Emulation.Common
 
 				case ".WS":
 				case ".WSC":
-				case ".PC2":
 					game.System = VSystemID.Raw.WSWAN;
-					break;
-
-				case ".J64":
-				case ".JAG":
-					game.System = VSystemID.Raw.Jaguar;
 					break;
 
 				case ".LNX":
@@ -379,7 +373,6 @@ namespace BizHawk.Emulation.Common
 
 				case ".PO":
 				case ".DO":
-				case ".NIB":
 					game.System = VSystemID.Raw.AppleII;
 					break;
 
@@ -414,9 +407,10 @@ namespace BizHawk.Emulation.Common
 					game.AddOption("VEC", "true");
 					break;
 
+				// refactor to use mame db (output of "mame -listxml" command)
+				// there's no good definition for Arcade anymore, so we might limit to coin-based machines?
 				case ".ZIP":
-				case ".7Z":
-					game.System = VSystemID.Raw.Arcade;
+					game.System = VSystemID.Raw.MAME;
 					break;
 			}
 

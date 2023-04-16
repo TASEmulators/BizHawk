@@ -26,7 +26,8 @@ auto Satellaview::read(uint addr, uint8 data) -> uint8 {
     if(regs.rtcCounter >= 18) regs.rtcCounter = 0;
 
     if(counter == 0) {
-      time_t rawtime = platform->time();
+      time_t rawtime;
+      time(&rawtime);
       tm* t = localtime(&rawtime);
 
       regs.rtcHour   = t->tm_hour;

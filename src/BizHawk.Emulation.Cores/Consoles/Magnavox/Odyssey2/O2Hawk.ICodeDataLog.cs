@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.I8048;
@@ -32,8 +31,9 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		}
 
 		[FeatureNotImplemented]
-		public void DisassembleCDL(Stream s, ICodeDataLog cdl)
-			=> throw new NotImplementedException();
+		void ICodeDataLogger.DisassembleCDL(Stream s, ICodeDataLog cdl)
+		{
+		}
 
 		public void SetCDL(I8048.eCDLogMemFlags flags, string type, int cdladdr)
 		{

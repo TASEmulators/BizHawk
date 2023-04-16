@@ -12,9 +12,6 @@ namespace BizHawk.Client.EmuHawk
 	[SpecializedTool("Tile Viewer")]
 	public partial class PceTileViewer : ToolFormBase, IToolFormAutoConfig
 	{
-		public static Icon ToolIcon
-			=> Properties.Resources.PceIcon;
-
 		[RequiredService]
 		public IPceGpuView Viewer { get; private set; }
 
@@ -29,7 +26,7 @@ namespace BizHawk.Client.EmuHawk
 		public PceTileViewer()
 		{
 			InitializeComponent();
-			Icon = ToolIcon;
+			Icon = Properties.Resources.PceIcon;
 			bmpViewBG.ChangeBitmapSize(512, 256);
 			bmpViewSP.ChangeBitmapSize(512, 256);
 			bmpViewBGPal.ChangeBitmapSize(256, 256);

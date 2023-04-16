@@ -27,8 +27,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			writer.Write(theta_prev);
 			writer.Write(phi_prev);
 			writer.Write(phi_prev_2);
-			writer.Write(_curTrack);
-			writer.Write(_switchingTrack);
 		}
 
 		public void LoadStateBinary(BinaryReader reader)
@@ -57,8 +55,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			theta_prev = reader.ReadDouble();
 			phi_prev = reader.ReadDouble();
 			phi_prev_2 = reader.ReadDouble();
-			_curTrack = reader.ReadInt32();
-			_switchingTrack = reader.ReadBoolean();
 		}
 
 		public void DebugSameBoyState()

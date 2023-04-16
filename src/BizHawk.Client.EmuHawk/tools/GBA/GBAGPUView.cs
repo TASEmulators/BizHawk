@@ -14,14 +14,8 @@ namespace BizHawk.Client.EmuHawk
 	[SpecializedTool("GPU Viewer")]
 	public partial class GbaGpuView : ToolFormBase, IToolFormAutoConfig
 	{
-		public static Icon ToolIcon
-			=> Properties.Resources.GbaIcon.Value;
-
 		[RequiredService]
-		public IGBAGPUViewable/*?*/ _gbaCore { get; set; }
-
-		private IGBAGPUViewable GBA
-			=> _gbaCore!;
+		private IGBAGPUViewable GBA { get; set; }
 
 		// emulator memory areas
 		private IntPtr _vram;
@@ -40,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 		public GbaGpuView()
 		{
 			InitializeComponent();
-			Icon = ToolIcon;
+			Icon = Properties.Resources.GbaIcon.Value;
 			// TODO: hook up something
 			// we do this twice to avoid having to & 0x7fff with every color
 			int[] tmp = GBColors.GetLut(GBColors.ColorType.vivid);
@@ -800,7 +794,9 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void GbaGpuView_FormClosed(object sender, FormClosedEventArgs e)
-			=> GBA.SetScanlineCallback(null, 0);
+		{
+			GBA?.SetScanlineCallback(null, 0);
+		}
 
 		private void timerMessage_Tick(object sender, EventArgs e)
 		{

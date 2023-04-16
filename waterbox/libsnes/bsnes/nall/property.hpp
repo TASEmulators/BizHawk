@@ -48,7 +48,7 @@
 //writeonly<foo> bar;
 //bar = true;
 
-#if defined(_MSC_VER) || defined(__clang__)
+#ifdef _MSC_VER
 #define DUMB(X)
 #else
 #define DUMB(X) X

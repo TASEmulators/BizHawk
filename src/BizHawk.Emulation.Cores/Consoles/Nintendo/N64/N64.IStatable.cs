@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public void LoadStateBinary(BinaryReader reader)
 		{
 			int length = reader.ReadInt32();
-			if (length < 16788288)
+			if ((_disableExpansionSlot && length >= 16788288) || (!_disableExpansionSlot && length < 16788288))
 			{
 				throw new SavestateSizeMismatchException("Wrong N64 savestate size");
 			}

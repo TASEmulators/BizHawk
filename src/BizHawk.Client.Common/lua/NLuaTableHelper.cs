@@ -26,7 +26,7 @@ namespace BizHawk.Client.Common
 
 		public LuaTable DictToTable<T>(IReadOnlyDictionary<string, T> dictionary)
 		{
-			var table = CreateTable();
+			var table = _lua.NewTable();
 			foreach (var (k, v) in dictionary) table[k] = v;
 			return table;
 		}
@@ -38,7 +38,7 @@ namespace BizHawk.Client.Common
 
 		public LuaTable ListToTable<T>(IReadOnlyList<T> list, int indexFrom = 1)
 		{
-			var table = CreateTable();
+			var table = _lua.NewTable();
 			for (int i = 0, l = list.Count; i != l; i++) table[indexFrom + i] = list[i];
 			return table;
 		}
@@ -49,13 +49,13 @@ namespace BizHawk.Client.Common
 			var table = CreateTable();
 			var iArray = 0;
 			var iDict = startAddr;
-			while (iArray < length) table[iDict++] = bytes[iArray++];
+			while (iArray < length) table[(double) iDict++] = bytes[iArray++];
 			return table;
 		}
 
 		public LuaTable ObjectToTable(object obj)
 		{
-			var table = CreateTable();
+			var table = _lua.NewTable();
 			foreach (var method in obj.GetType().GetMethods())
 			{
 				if (!method.IsPublic) continue;
@@ -85,8 +85,6 @@ namespace BizHawk.Client.Common
 					return ParseColor((int) (long) d, safe, logCallback);
 				case int i:
 					return Color.FromArgb(i);
-				case long l:
-					return Color.FromArgb((int)l);
 				case string s:
 					if (s[0] is '#' && (s.Length is 7 or 9))
 					{

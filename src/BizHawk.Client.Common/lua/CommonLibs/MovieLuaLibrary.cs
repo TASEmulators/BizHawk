@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 using NLua;
 
@@ -7,7 +8,7 @@ namespace BizHawk.Client.Common
 {
 	public sealed class MovieLuaLibrary : LuaLibraryBase
 	{
-		public MovieLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+		public MovieLuaLibrary(IPlatformLuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "movie";
@@ -24,16 +25,19 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local stmovfil = movie.filename( );")]
 		[LuaMethod("filename", "Returns the file name including path of the currently loaded movie")]
+		[return: LuaArbitraryStringParam]
 		public string Filename()
-			=> APIs.Movie.Filename();
+			=> UnFixString(APIs.Movie.Filename());
 
 		[LuaMethodExample("local nlmovget = movie.getinput( 500 );")]
 		[LuaMethod("getinput", "Returns a table of buttons pressed on a given frame of the loaded movie")]
+		[return: LuaASCIIStringParam]
 		public LuaTable GetInput(int frame, int? controller = null)
 			=> _th.DictToTable(APIs.Movie.GetInput(frame, controller));
 
 		[LuaMethodExample("local stmovget = movie.getinputasmnemonic( 500 );")]
 		[LuaMethod("getinputasmnemonic", "Returns the input of a given frame of the loaded movie in a raw inputlog string")]
+		[return: LuaASCIIStringParam]
 		public string GetInputAsMnemonic(int frame)
 			=> APIs.Movie.GetInputAsMnemonic(frame);
 
@@ -59,38 +63,29 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local domovlen = movie.length( );")]
 		[LuaMethod("length", "Returns the total number of frames of the loaded movie")]
-		public int Length()
+		public double Length()
 			=> APIs.Movie.Length();
 
 		[LuaMethodExample("local stmovmod = movie.mode( );")]
 		[LuaMethod("mode", "Returns the mode of the current movie. Possible modes: \"PLAY\", \"RECORD\", \"FINISHED\", \"INACTIVE\"")]
+		[return: LuaEnumStringParam]
 		public string Mode()
 			=> APIs.Movie.Mode();
 
-		[LuaMethodExample(@"movie.play_from_start(""C:\\moviename.ext"");")]
-		[LuaMethod("play_from_start", "Resets the core to frame 0 with the currently loaded movie in playback mode. If a path to a movie is specified, attempts to load it, then continues with playback if it was successful. Returns true iff successful.")]
-		public bool PlayFromStart(string path = "")
-		{
-			_luaLibsImpl.IsRebootingCore = true;
-			var success = APIs.Movie.PlayFromStart(path);
-			_luaLibsImpl.IsRebootingCore = false;
-			return success;
-		}
-
 		[LuaMethodExample("movie.save( \"C:\\moviename.ext\" );")]
 		[LuaMethod("save", "Saves the current movie to the disc. If the filename is provided (no extension or path needed), the movie is saved under the specified name to the current movie directory. The filename may contain a subdirectory, it will be created if it doesn't exist. Existing files won't get overwritten.")]
-		public void Save(string filename = "")
-			=> APIs.Movie.Save(filename);
+		public void Save([LuaArbitraryStringParam] string filename = "")
+			=> APIs.Movie.Save(FixString(filename));
 
 		[LuaMethodExample("movie.setreadonly( false );")]
 		[LuaMethod("setreadonly", "Sets the read-only state to the given value. true for read only, false for read+write")]
 		public void SetReadOnly(bool readOnly)
 			=> APIs.Movie.SetReadOnly(readOnly);
 
-		[LuaMethodExample("movie.setrerecordcount( 20 );")]
+		[LuaMethodExample("movie.setrerecordcount( 20.0 );")]
 		[LuaMethod("setrerecordcount", "Sets the rerecord count of the current movie.")]
-		public void SetRerecordCount(ulong count)
-			=> APIs.Movie.SetRerecordCount(count);
+		public void SetRerecordCount(double count)
+			=> APIs.Movie.SetRerecordCount((ulong) count.AsInteger());
 
 		[LuaMethodExample("movie.setrerecordcounting( true );")]
 		[LuaMethod("setrerecordcounting", "Sets whether or not the current movie will increment the rerecord counter on loadstate")]
@@ -98,9 +93,9 @@ namespace BizHawk.Client.Common
 			=> APIs.Movie.SetRerecordCounting(counting);
 
 		[LuaMethodExample("movie.stop( );")]
-		[LuaMethod("stop", "Stops the current movie. Pass false to discard changes.")]
-		public void Stop(bool saveChanges = true)
-			=> APIs.Movie.Stop(saveChanges);
+		[LuaMethod("stop", "Stops the current movie")]
+		public void Stop()
+			=> APIs.Movie.Stop();
 
 		[LuaMethodExample("local domovget = movie.getfps( );")]
 		[LuaMethod("getfps", "If a movie is loaded, gets the frames per second used by the movie to determine the movie length time")]
@@ -109,17 +104,20 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local nlmovget = movie.getheader( );")]
 		[LuaMethod("getheader", "If a movie is active, will return the movie header as a lua table")]
+		[return: LuaArbitraryStringParam]
 		public LuaTable GetHeader()
-			=> _th.DictToTable(APIs.Movie.GetHeader());
+			=> _th.DictToTable(APIs.Movie.GetHeader().ToDictionary(static kvp => UnFixString(kvp.Key), static kvp => UnFixString(kvp.Value)));
 
 		[LuaMethodExample("local nlmovget = movie.getcomments( );")]
 		[LuaMethod("getcomments", "If a movie is active, will return the movie comments as a lua table")]
+		[return: LuaArbitraryStringParam]
 		public LuaTable GetComments()
-			=> _th.ListToTable(APIs.Movie.GetComments(), indexFrom: 0);
+			=> _th.ListToTable(APIs.Movie.GetComments().Select(static s => UnFixString(s)).ToList(), indexFrom: 0);
 
 		[LuaMethodExample("local nlmovget = movie.getsubtitles( );")]
 		[LuaMethod("getsubtitles", "If a movie is active, will return the movie subtitles as a lua table")]
+		[return: LuaArbitraryStringParam]
 		public LuaTable GetSubtitles()
-			=> _th.ListToTable(APIs.Movie.GetSubtitles(), indexFrom: 0);
+			=> _th.ListToTable(APIs.Movie.GetSubtitles().Select(static s => UnFixString(s)).ToList(), indexFrom: 0);
 	}
 }

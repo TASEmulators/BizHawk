@@ -94,6 +94,18 @@ namespace BizHawk.Client.EmuHawk
 				default:
 					throw new InvalidOperationException();
 			}
+
+			switch (_config.LuaEngine)
+			{
+				case ELuaEngine.LuaPlusLuaInterface:
+					LuaInterfaceRadio.Checked = true;
+					break;
+				case ELuaEngine.NLuaPlusKopiLua:
+					NLuaRadio.Checked = true;
+					break;
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
 		}
 
 		private void OkBtn_Click(object sender, EventArgs e)
@@ -135,6 +147,15 @@ namespace BizHawk.Client.EmuHawk
 			_config.Movies.MoviesOnDisk = cbMoviesOnDisk.Checked;
 			_config.SkipWaterboxIntegrityChecks = cbSkipWaterboxIntegrityChecks.Checked;
 			_config.NoMixedInputHokeyOverride = NoMixedKeyPriorityCheckBox.Checked;
+
+			if (LuaInterfaceRadio.Checked)
+			{
+				_config.LuaEngine = ELuaEngine.LuaPlusLuaInterface;
+			}
+			else if (NLuaRadio.Checked)
+			{
+				_config.LuaEngine = ELuaEngine.NLuaPlusKopiLua;
+			}
 
 			Close();
 			DialogResult = DialogResult.OK;

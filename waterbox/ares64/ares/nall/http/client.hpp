@@ -2,8 +2,6 @@
 
 #include <nall/http/role.hpp>
 
-struct addrinfo;
-
 namespace nall::HTTP {
 
 struct Client : Role {
@@ -18,6 +16,21 @@ private:
   addrinfo* info = nullptr;
 };
 
+inline auto Client::open(const string& hostname, u16 port) -> bool {
+  addrinfo hint = {};
+  hint.ai_family = AF_UNSPEC;
+  hint.ai_socktype = SOCK_STREAM;
+  hint.ai_flags = AI_ADDRCONFIG;
+
+  if(getaddrinfo(hostname, string{port}, &hint, &info) != 0) return close(), false;
+
+  fd = socket(info->ai_family, info->ai_socktype, info->ai_protocol);
+  if(fd < 0) return close(), false;
+
+  if(connect(fd, info->ai_addr, info->ai_addrlen) < 0) return close(), false;
+  return true;
+}
+
 inline auto Client::upload(const Request& request) -> bool {
   return Role::upload(fd, request);
 }
@@ -28,8 +41,16 @@ inline auto Client::download(const Request& request) -> Response {
   return response;
 }
 
+inline auto Client::close() -> void {
+  if(fd) {
+    ::close(fd);
+    fd = -1;
+  }
+
+  if(info) {
+    freeaddrinfo(info);
+    info = nullptr;
+  }
 }
 
-#if defined(NALL_HEADER_ONLY)
-  #include <nall/http/client.cpp>
-#endif
+}

@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					break;
 			}
 
-			CoreComm.Notify(sb.ToString(), null);
+			CoreComm.Notify(sb.ToString());
 		}
 
 		/// <summary>

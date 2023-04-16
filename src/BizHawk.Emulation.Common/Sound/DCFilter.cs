@@ -33,8 +33,15 @@ namespace BizHawk.Emulation.Common
 		/// <exception cref="ArgumentOutOfRangeException"><paramref name="filterWidth"/> is not in 8..65536</exception>
 		public DCFilter(ISoundProvider input, int filterWidth)
 		{
-			if (input is null) throw new ArgumentNullException(paramName: nameof(input));
-			if (filterWidth is < 8 or > 65536) throw new ArgumentOutOfRangeException(paramName: nameof(filterWidth), filterWidth, message: "invalid width");
+			if (input == null)
+			{
+				throw new ArgumentNullException();
+			}
+
+			if (filterWidth < 8 || filterWidth > 65536)
+			{
+				throw new ArgumentOutOfRangeException();
+			}
 
 			_depth = DepthFromFilterWidth(filterWidth);
 

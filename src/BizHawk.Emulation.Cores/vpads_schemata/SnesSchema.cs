@@ -11,6 +11,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 namespace BizHawk.Emulation.Cores
 {
 	[Schema(VSystemID.Raw.SNES)]
+	// ReSharper disable once UnusedMember.Global
 	public class SnesSchema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
@@ -19,7 +20,6 @@ namespace BizHawk.Emulation.Cores
 			{
 				LibsnesCore libsnes => GetLibsnesPadSchemas(libsnes),
 				BsnesCore bsnes => GetBsnesPadSchemas(bsnes),
-				SubBsnesCore subBsnes => GetBsnesPadSchemas(subBsnes.ServiceProvider.GetService<ISettable<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings>>()),
 				NymaCore nyma => GetFaustSchemas(nyma, showMessageBox),
 				_ => GetSnes9xPadSchemas((Snes9x) core)
 			};
@@ -112,9 +112,9 @@ namespace BizHawk.Emulation.Cores
 			yield return ConsoleButtons();
 		}
 
-		private IEnumerable<PadSchema> GetBsnesPadSchemas(ISettable<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings> settingsProvider)
+		private IEnumerable<PadSchema> GetBsnesPadSchemas(BsnesCore core)
 		{
-			var syncSettings = settingsProvider.GetSyncSettings();
+			var syncSettings = core.GetSyncSettings();
 
 			var ports = new[]
 			{
@@ -133,9 +133,6 @@ namespace BizHawk.Emulation.Cores
 						break;
 					case BsnesApi.BSNES_INPUT_DEVICE.Gamepad:
 						yield return StandardController(playerNum);
-						break;
-					case BsnesApi.BSNES_INPUT_DEVICE.ExtendedGamepad:
-						yield return ExtendedStandardController(playerNum);
 						break;
 					case BsnesApi.BSNES_INPUT_DEVICE.Mouse:
 						yield return Mouse(playerNum);

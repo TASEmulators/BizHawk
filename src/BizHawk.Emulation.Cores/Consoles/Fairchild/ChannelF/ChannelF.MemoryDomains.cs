@@ -18,12 +18,19 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				new MemoryDomainDelegate("System Bus", 0x10000, MemoryDomain.Endian.Big,
 					(addr) =>
 					{
-						if (addr is < 0 or > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
+						if (addr < 0 || addr >= 65536)
+						{
+							throw new ArgumentOutOfRangeException();
+						}
 						return ReadBus((ushort)addr);
 					},
 					(addr, value) =>
 					{
-						if (addr is < 0 or > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
+						if (addr < 0 || addr >= 65536)
+						{
+							throw new ArgumentOutOfRangeException();
+						}
+
 						WriteBus((ushort)addr, value);
 					}, 1)
 			};

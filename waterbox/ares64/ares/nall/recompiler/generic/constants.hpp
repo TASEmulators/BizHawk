@@ -30,8 +30,6 @@
     flag_sle = SLJIT_SIG_LESS_EQUAL,
     flag_o = SLJIT_OVERFLOW,
     flag_no = SLJIT_NOT_OVERFLOW,
-    flag_c = SLJIT_CARRY,
-    flag_nc = SLJIT_NOT_CARRY,
   };
 
   struct op_base {
@@ -54,9 +52,5 @@
 
   struct mem : public op_base {
     mem(sreg base, sljit_sw offset) : op_base(SLJIT_MEM1(base.fst), offset) {}
-  };
-
-  struct unused {
-    unused() {}
   };
 //};

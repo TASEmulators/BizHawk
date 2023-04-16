@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Common
 	{
 		public CoreComm(
 			Action<string> showMessage,
-			Action<string, int?> notifyMessage,
+			Action<string> notifyMessage,
 			ICoreFileProvider coreFileProvider,
 			CorePreferencesFlags prefs
 			)
@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// Gets a message to show. less annoying (OSD message). Should be used for ignorable helpful messages
 		/// </summary>
-		public Action<string, int?> Notify { get; }
+		public Action<string> Notify { get; }
 
 		[Flags]
 		public enum CorePreferencesFlags

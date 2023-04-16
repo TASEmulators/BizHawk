@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 
 using BizHawk.Common;
-using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -14,7 +13,7 @@ namespace BizHawk.Client.Common
 		private IEmulator Emulator { get; set; }
 
 		[OptionalService]
-		public IMemoryDomains MemoryDomainCore { get; set; }
+		private IMemoryDomains MemoryDomainCore { get; set; }
 
 		private readonly Action<string> LogCallback;
 
@@ -186,8 +185,10 @@ namespace BizHawk.Client.Common
 
 		public void SetBigEndian(bool enabled = true) => _isBigEndian = enabled;
 
-		public IReadOnlyCollection<string> GetMemoryDomainList()
-			=> DomainList.Select(static domain => domain.Name).ToList();
+		public List<string> GetMemoryDomainList() =>
+			DomainList
+				.Select(domain => domain.Name)
+				.ToList();
 
 		public uint GetMemoryDomainSize(string name = null) => (uint) NamedDomainOrCurrent(name).Size;
 
@@ -217,7 +218,6 @@ namespace BizHawk.Client.Common
 		/// <exception cref="ArgumentOutOfRangeException">range defined by <paramref name="addr"/> and <paramref name="count"/> extends beyond the bound of <paramref name="domain"/> (or <see cref="Domain"/> if null)</exception>
 		public string HashRegion(long addr, int count, string domain = null)
 		{
-			if (count is 0) return SHA256Checksum.EmptyFile;
 			var d = NamedDomainOrCurrent(domain);
 			if (!0L.RangeToExclusive(d.Size).Contains(addr))
 			{
@@ -232,10 +232,7 @@ namespace BizHawk.Client.Common
 				throw new ArgumentOutOfRangeException(error);
 			}
 			var data = new byte[count];
-			using (d.EnterExit())
-			{
-				d.BulkPeekByte(addr.RangeToExclusive(addr + count), data);
-			}
+			for (var i = 0; i < count; i++) data[i] = d.PeekByte(addr + i);
 			return SHA256Checksum.ComputeDigestHex(data);
 		}
 
@@ -243,24 +240,19 @@ namespace BizHawk.Client.Common
 
 		public void WriteByte(long addr, uint value, string domain = null) => WriteUnsigned(addr, value, 1, domain);
 
-		public IReadOnlyList<byte> ReadByteRange(long addr, int length, string domain = null)
+		public List<byte> ReadByteRange(long addr, int length, string domain = null)
 		{
 			var d = NamedDomainOrCurrent(domain);
 			if (addr < 0) LogCallback($"Warning: Attempted reads on addresses {addr}..-1 outside range of domain {d.Name} in {nameof(ReadByteRange)}()");
 			var lastReqAddr = addr + length - 1;
-			var indexAfterLast = Math.Min(Math.Max(-1L, lastReqAddr), d.Size - 1L) + 1L;
-			var iSrc = Math.Min(Math.Max(0L, addr), d.Size);
-			var iDst = iSrc - addr;
-			var bytes = new byte[indexAfterLast - iSrc];
-			if (iSrc < indexAfterLast) using (d.EnterExit()) d.BulkPeekByte(iSrc.RangeToExclusive(indexAfterLast), bytes);
+			var indexAfterLast = Math.Min(lastReqAddr, d.Size - 1) - addr + 1;
+			var bytes = new byte[length];
+			for (var i = addr < 0 ? -addr : 0; i != indexAfterLast; i++) bytes[i] = d.PeekByte(addr + i);
 			if (lastReqAddr >= d.Size) LogCallback($"Warning: Attempted reads on addresses {d.Size}..{lastReqAddr} outside range of domain {d.Name} in {nameof(ReadByteRange)}()");
-			if (bytes.Length == length) return bytes;
-			var newBytes = new byte[length];
-			if (bytes.Length is not 0) Array.Copy(sourceArray: bytes, sourceIndex: 0, destinationArray: newBytes, destinationIndex: iDst, length: bytes.Length);
-			return newBytes;
+			return bytes.ToList();
 		}
 
-		public void WriteByteRange(long addr, IReadOnlyList<byte> memoryblock, string domain = null)
+		public void WriteByteRange(long addr, List<byte> memoryblock, string domain = null)
 		{
 			var d = NamedDomainOrCurrent(domain);
 			if (!d.Writable)
@@ -268,16 +260,11 @@ namespace BizHawk.Client.Common
 				LogCallback($"Error: the domain {d.Name} is not writable");
 				return;
 			}
-			if (addr < 0) LogCallback($"Warning: Attempted writes on addresses {addr}..-1 outside range of domain {d.Name} in {nameof(WriteByteRange)}()");
+			if (addr < 0) LogCallback($"Warning: Attempted reads on addresses {addr}..-1 outside range of domain {d.Name} in {nameof(WriteByteRange)}()");
 			var lastReqAddr = addr + memoryblock.Count - 1;
-			var indexAfterLast = Math.Min(Math.Max(-1L, lastReqAddr), d.Size - 1L) + 1L;
-			var iDst = Math.Min(Math.Max(0L, addr), d.Size);
-			var iSrc = checked((int) (iDst - addr));
-			using (d.EnterExit())
-			{
-				while (iDst < indexAfterLast) d.PokeByte(iDst++, memoryblock[iSrc++]);
-			}
-			if (lastReqAddr >= d.Size) LogCallback($"Warning: Attempted writes on addresses {d.Size}..{lastReqAddr} outside range of domain {d.Name} in {nameof(WriteByteRange)}()");
+			var indexAfterLast = Math.Min(lastReqAddr, d.Size - 1) - addr + 1;
+			for (var i = addr < 0 ? (int) -addr : 0; i != indexAfterLast; i++) d.PokeByte(addr + i, memoryblock[i]);
+			if (lastReqAddr >= d.Size) LogCallback($"Warning: Attempted reads on addresses {d.Size}..{lastReqAddr} outside range of domain {d.Name} in {nameof(WriteByteRange)}()");
 		}
 
 		public float ReadFloat(long addr, string domain = null)

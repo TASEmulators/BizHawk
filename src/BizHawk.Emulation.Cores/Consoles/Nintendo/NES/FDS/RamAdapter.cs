@@ -209,7 +209,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <param name="writeprotect">disk is write protected</param>
 		public void Insert(byte[] side, int bitlength, bool writeprotect)
 		{
-			if (side.Length * 8 < bitlength) throw new ArgumentException(message: "Disk too small for parameter!", paramName: nameof(side));
+			if (side.Length * 8 < bitlength)
+				throw new ArgumentException("Disk too small for parameter!");
 			disk = side;
 			disksize = bitlength;
 			diskpos = 0;
@@ -236,7 +237,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public void ApplyDiff(byte[] data)
 		{
 			int bitsize = data[0] * 0x10000 + data[1] * 0x100 + data[2];
-			if (bitsize != disksize) throw new ArgumentException(message: "Disk size mismatch!", paramName: nameof(data));
+			if (bitsize != disksize)
+				throw new ArgumentException("Disk size mismatch!");
 			int pos = 0;
 			while (bitsize > 0)
 			{

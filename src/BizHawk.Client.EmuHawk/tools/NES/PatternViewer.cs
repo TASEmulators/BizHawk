@@ -25,19 +25,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PatternViewer_Paint(object sender, PaintEventArgs e)
 		{
-			e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
-			e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
-			e.Graphics.DrawImageUnscaled(Pattern, 0, 0);
-		}
-
-		public void ScreenshotToClipboard()
-		{
-			var b = new Bitmap(Width, Height);
-			var rect = new Rectangle(new Point(0, 0), Size);
-			DrawToBitmap(b, rect);
-
-			using var img = b;
-			Clipboard.SetImage(img);
+			e.Graphics.DrawImage(Pattern, 0, 0);
 		}
 	}
 }

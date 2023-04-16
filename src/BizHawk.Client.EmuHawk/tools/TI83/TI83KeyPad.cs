@@ -11,9 +11,6 @@ namespace BizHawk.Client.EmuHawk
 {
 	public sealed partial class TI83KeyPad : ToolFormBase, IToolFormAutoConfig
 	{
-		public static Icon ToolIcon
-			=> Resources.CalculateIcon;
-
 		[RequiredService]
 		// ReSharper disable once UnusedAutoPropertyAccessor.Local
 		public TI83Common Emu { get; private set; }
@@ -23,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 		public TI83KeyPad()
 		{
 			InitializeComponent();
-			Icon = ToolIcon;
+			Icon = Resources.CalculateIcon;
 			LeftButton.Image = Resources.WhiteTriLeft;
 			RightButton.Image = Resources.WhiteTriRight;
 			DownButton.Image = Resources.WhiteTriDown;

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
@@ -8,7 +7,6 @@ using System.Windows.Forms;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
-using BizHawk.Common.StringExtensions;
 
 // todo - perks - pause, copy to clipboard, backlog length limiting
 
@@ -16,9 +14,6 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class LogWindow : ToolFormBase, IToolFormAutoConfig
 	{
-		public static Icon ToolIcon
-			=> Properties.Resources.CommandWindow;
-
 		// TODO: only show add to game db when this is a Rom details dialog
 		// Let user decide what type (instead of always adding it as a good dump)
 		private readonly List<string> _lines = new List<string>();
@@ -36,7 +31,7 @@ namespace BizHawk.Client.EmuHawk
 		public LogWindow()
 		{
 			InitializeComponent();
-			Icon = ToolIcon;
+			Icon = Properties.Resources.CommandWindow;
 			AddToGameDbBtn.Image = Properties.Resources.Add;
 			Closing += (o, e) =>
 			{
@@ -114,6 +109,11 @@ namespace BizHawk.Client.EmuHawk
 			append(str, true);
 		}
 
+		public void Append(string str)
+		{
+			append(str, false);
+		}
+
 		private void BtnClear_Click(object sender, EventArgs e)
 		{
 			lock (_lines)
@@ -154,28 +154,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ButtonCopy_Click(object sender, EventArgs e)
 		{
-			string s;
-			lock (_lines)
-			{
-				if (virtualListView1.SelectedIndices.Count > 1)
-				{
-					StringBuilder sb = new();
-					foreach (int i in virtualListView1.SelectedIndices) sb.AppendLine(_lines[i]);
-					s = sb.ToString();
-				}
-				else if (virtualListView1.SelectedIndices.Count is 1)
-				{
-					s = _lines[virtualListView1.SelectedIndices[0]]
-						.RemovePrefix(SHA1Checksum.PREFIX + ":")
-						.RemovePrefix(MD5Checksum.PREFIX + ":");
-				}
-				else
-				{
-					return;
-				}
-			}
-			s = s.Trim();
-			if (!string.IsNullOrWhiteSpace(s)) Clipboard.SetText(s, TextDataFormat.Text);
+			var sb = new StringBuilder();
+			lock(_lines)
+				foreach (int i in virtualListView1.SelectedIndices)
+					sb.AppendLine(_lines[i]);
+			if (sb.Length > 0)
+				Clipboard.SetText(sb.ToString(), TextDataFormat.Text);
 		}
 
 		private void ButtonCopyAll_Click(object sender, EventArgs e)

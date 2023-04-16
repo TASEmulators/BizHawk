@@ -7,7 +7,6 @@ using System.Text;
 using BizHawk.Emulation.Common;
 using BizHawk.Bizware.BizwareGL;
 using BizHawk.Client.Common;
-using BizHawk.Common.PathExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -38,9 +37,9 @@ namespace BizHawk.Client.EmuHawk
 		public void OpenFile(string projFile)
 		{
 			_mProjectFile = projFile;
-			var (dir, fileNoExt, _) = projFile.SplitPathToDirFileAndExt();
-			_mBaseDirectory = dir ?? string.Empty;
-			var framesDirFragment = $"{fileNoExt}_frames";
+			_mBaseDirectory = Path.GetDirectoryName(_mProjectFile) ?? "";
+			string basename = Path.GetFileNameWithoutExtension(projFile);
+			string framesDirFragment = $"{basename}_frames";
 			_mFramesDirectory = Path.Combine(_mBaseDirectory, framesDirFragment);
 			var sb = new StringBuilder();
 			sb.AppendLine("version=1");

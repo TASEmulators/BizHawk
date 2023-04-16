@@ -33,7 +33,7 @@ Gamepad::~Gamepad() {
 }
 
 auto Gamepad::save() -> void {
-#if false
+/*
   if(!slot) return;
   if(slot->name() == "Controller Pak") {
     ram.save(pak->write("save.pak"));
@@ -43,7 +43,7 @@ auto Gamepad::save() -> void {
       transferPak.ram.save(pak->write("gbram.pak"));
     }
   }
-#endif
+*/
 }
 
 auto Gamepad::allocate(string name) -> Node::Peripheral {
@@ -135,41 +135,36 @@ auto Gamepad::comm(n8 send, n8 recv, n8 input[], n8 output[]) -> n2 {
   if(input[0] == 0x02 && send >= 3 && recv >= 1) {
     //controller pak
     if(ram) {
-      u16 address = (input[1] << 8 | input[2] << 0) & ~31;
+      u32 address = (input[1] << 8 | input[2] << 0) & ~31;
       if(pif.addressCRC(address) == (n5)input[2]) {
         for(u32 index : range(recv - 1)) {
-          if(address <= 0x7FFF) output[index] = ram.read<Byte>(address);
-          else output[index] = 0;
-          address++;
+          output[index] = ram.read<Byte>(address++);
         }
-        output[recv - 1] = pif.dataCRC({&output[0], recv - 1u});
+        output[recv - 1] = pif.dataCRC({&output[0], recv - 1});
         valid = 1;
       }
     }
 
     //rumble pak
     if(motor) {
-      u16 address = (input[1] << 8 | input[2] << 0) & ~31;
+      u32 address = (input[1] << 8 | input[2] << 0) & ~31;
       if(pif.addressCRC(address) == (n5)input[2]) {
         for(u32 index : range(recv - 1)) {
-          if(address <= 0x7FFF) output[index] = 0;
-          else if(address <= 0x8FFF) output[index] = 0x80;
-          else output[index] = motor->enable() ? 0xFF : 0x00;
-          address++;
+          output[index] = 0x80;
         }
-        output[recv - 1] = pif.dataCRC({&output[0], recv - 1u});
+        output[recv - 1] = pif.dataCRC({&output[0], recv - 1});
         valid = 1;
       }
     }
 
     //transfer pak
     if(transferPak) {
-      u16 address = (input[1] << 8 | input[2] << 0) & ~31;
+      u32 address = (input[1] << 8 | input[2] << 0) & ~31;
       if(pif.addressCRC(address) == (n5)input[2]) {
         for(u32 index : range(recv - 1)) {
           output[index] = transferPak.read(address++);
         }
-        output[recv - 1] = pif.dataCRC({&output[0], recv - 1u});
+        output[recv - 1] = pif.dataCRC({&output[0], recv - 1});
         valid = 1;
       }
     }
@@ -179,35 +174,34 @@ auto Gamepad::comm(n8 send, n8 recv, n8 input[], n8 output[]) -> n2 {
   if(input[0] == 0x03 && send >= 3 && recv >= 1) {
     //controller pak
     if(ram) {
-      u16 address = (input[1] << 8 | input[2] << 0) & ~31;
+      u32 address = (input[1] << 8 | input[2] << 0) & ~31;
       if(pif.addressCRC(address) == (n5)input[2]) {
         for(u32 index : range(send - 3)) {
-          if(address <= 0x7FFF) ram.write<Byte>(address, input[3 + index]);
-          address++;
+          ram.write<Byte>(address++, input[3 + index]);
         }
-        output[0] = pif.dataCRC({&input[3], send - 3u});
+        output[0] = pif.dataCRC({&input[3], send - 3});
         valid = 1;
       }
     }
 
     //rumble pak
     if(motor) {
-      u16 address = (input[1] << 8 | input[2] << 0) & ~31;
+      u32 address = (input[1] << 8 | input[2] << 0) & ~31;
       if(pif.addressCRC(address) == (n5)input[2]) {
-        output[0] = pif.dataCRC({&input[3], send - 3u});
+        output[0] = pif.dataCRC({&input[3], send - 3});
         valid = 1;
-        if(address >= 0xC000) rumble(input[3] & 1);
+        rumble(input[3] & 1);
       }
     }
 
     //transfer pak
     if(transferPak) {
-      u16 address = (input[1] << 8 | input[2] << 0) & ~31;
+      u32 address = (input[1] << 8 | input[2] << 0) & ~31;
       if(pif.addressCRC(address) == (n5)input[2]) {
         for(u32 index : range(send - 3)) {
           transferPak.write(address++, input[3 + index]);
         }
-        output[0] = pif.dataCRC({&input[3], send - 3u});
+        output[0] = pif.dataCRC({&input[3], send - 3});
         valid = 1;
       }
     }
@@ -218,6 +212,8 @@ auto Gamepad::comm(n8 send, n8 recv, n8 input[], n8 output[]) -> n2 {
   status.bit(1) = over;
   return status;
 }
+
+bool RestrictAnalogRange;
 
 auto Gamepad::read() -> n32 {
   platform->input(x);
@@ -237,50 +233,53 @@ auto Gamepad::read() -> n32 {
   platform->input(z);
   platform->input(start);
 
-#if false
-  //scale {-32768 ... +32767} to {-85 ... +85}
-  auto ax = x->value() * 85.0 / 32767.0;
-  auto ay = y->value() * 85.0 / 32767.0;
+  auto ax = x->value() * 1.0;
+  auto ay = y->value() * 1.0;
 
-  //create inner axial dead-zone in range {-7 ... +7} and scale from it up to outer circular dead-zone of radius 85
-  auto length = sqrt(ax * ax + ay * ay);
-  if(length <= 85.0) {
-    auto lengthAbsoluteX = abs(ax);
-    auto lengthAbsoluteY = abs(ay);
-    if(lengthAbsoluteX <= 7.0) {
-      lengthAbsoluteX = 0.0;
-    } else {
-      lengthAbsoluteX = (lengthAbsoluteX - 7.0) * 85.0 / (85.0 - 7.0) / lengthAbsoluteX;
-    }
-    ax *= lengthAbsoluteX;
-    if(lengthAbsoluteY <= 7.0) {
-      lengthAbsoluteY = 0.0;
-    } else {
-      lengthAbsoluteY = (lengthAbsoluteY - 7.0) * 85.0 / (85.0 - 7.0) / lengthAbsoluteY;
-    }
-    ay *= lengthAbsoluteY;
-  } else {
-    length = 85.0 / length;
-    ax *= length;
-    ay *= length;
+  if (RestrictAnalogRange) {
+      //scale {-128 ... +127} to {-84 ... +84}
+      ax = ax * 85.0 / 127.0;
+      ay = ay * 85.0 / 127.0;
+
+      //create square dead-zone in range {-7 ... +7}
+      auto lengthAbsoluteX = abs (ax);
+      auto lengthAbsoluteY = abs (ay);
+      if (lengthAbsoluteX < 7.0) {
+        lengthAbsoluteX = 0.0;
+        ax *= lengthAbsoluteX;
+      }
+      if (lengthAbsoluteY < 7.0) {
+        lengthAbsoluteY = 0.0;
+        ay *= lengthAbsoluteY;
+      }
+      
+      //create outer circular dead-zone in ranges {-inf ... -85} and {+85 ... +inf} and scale between the two dead-zones according to the two-dimensional length
+      auto length = sqrt(ax * ax + ay * ay);
+      if(length > 85.0) {
+        length = 85.0 / length;
+      } else {
+        length = (length - 7.0) * 85.0 / (85.0 - 7.0) / length;
+      }
+      ax *= length;
+      ay *= length;
+
+      //bound diagonals to an octagonal range {-68 ... +68}
+      if(ax != 0.0 && ay != 0.0) {
+        auto slope = ay / ax;
+        auto edgex = copysign(85.0 / (abs(slope) + 16.0 / 69.0), ax);
+        auto edgey = copysign(min(abs(edgex * slope), 85.0 / (1.0 / abs(slope) + 16.0 / 69.0)), ay);
+        edgex = edgey / slope;
+
+        auto scale = sqrt(edgex * edgex + edgey * edgey) / 85.0;
+        ax *= scale;
+        ay *= scale;
+      }
   }
-
-  //bound diagonals to an octagonal range {-69 ... +69}
-  if(ax != 0.0 && ay != 0.0) {
-    auto slope = ay / ax;
-    auto edgex = copysign(85.0 / (abs(slope) + 16.0 / 69.0), ax);
-    auto edgey = copysign(min(abs(edgex * slope), 85.0 / (1.0 / abs(slope) + 16.0 / 69.0)), ay);
-    edgex = edgey / slope;
-
-    auto scale = sqrt(edgex * edgex + edgey * edgey) / 85.0;
-    ax *= scale;
-    ay *= scale;
-  }
-#endif
 
   n32 data;
-  data.byte(0) = y->value();
-  data.byte(1) = x->value();
+  //data.byte(0) = -ay;
+  data.byte(0) = +ay;
+  data.byte(1) = +ax;
   data.bit(16) = cameraRight->value();
   data.bit(17) = cameraLeft->value();
   data.bit(18) = cameraDown->value();

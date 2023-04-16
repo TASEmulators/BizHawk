@@ -14,20 +14,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 	/// <param name="exposure">The darkness/intensity of the print job. What the exact values mean is somewhat subjective but 127 is the most exposed/darkest value.</param>
 	public delegate void PrinterCallback(IntPtr image, byte height, byte top_margin, byte bottom_margin, byte exposure);
 
-	public interface ILinkedGameBoyCommon : ISpecializedEmulatorService
-	{
-		/// <remarks>really just for RetroAchivements; can be changed to a list later</remarks>
-		IGameboyCommon First { get; }
-	}
-
 	public interface IGameboyCommon : ISpecializedEmulatorService
 	{
-		/// <value><see langword="true"/> iff the emulator is currently emulating CGB</value>
-		bool IsCGBMode { get; }
+		bool IsCGBMode();
 
-		/// <value><see langword="true"/> iff the emulator is currently emulating CGB in DMG compatibility mode</value>
-		/// <remarks>NOTE: this mode does not take affect until the bootrom unmaps itself</remarks>
-		bool IsCGBDMGMode { get; }
+		bool IsCGBDMGMode();
 
 		/// <summary>
 		/// Acquire GPU memory for inspection.  The returned object must be disposed as soon as the frontend

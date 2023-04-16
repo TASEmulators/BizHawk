@@ -67,8 +67,7 @@ namespace BizHawk.Client.Common
 			return g;
 		}
 
-		public void ToggleCompositingMode()
-			=> _compositingMode = (CompositingMode) (1 - (int) _compositingMode); // enum has two members, 0 and 1
+		public void ToggleCompositingMode() => _compositingMode = 1 - _compositingMode;
 
 		public ImageAttributes GetAttributes() => _attributes;
 
@@ -151,22 +150,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public readonly ref struct LuaAutoUnlockHack
+		public void ThisIsTheLuaAutounlockHack()
 		{
-			private readonly GuiApi _guiApi;
-
-			internal LuaAutoUnlockHack(GuiApi guiApi)
-				=> _guiApi = guiApi;
-
-			public void Dispose()
-			{
-				_guiApi.UnlockSurface(DisplaySurfaceID.EmuCore);
-				_guiApi.UnlockSurface(DisplaySurfaceID.Client);
-			}
+			UnlockSurface(DisplaySurfaceID.EmuCore);
+			UnlockSurface(DisplaySurfaceID.Client);
 		}
-
-		public LuaAutoUnlockHack ThisIsTheLuaAutoUnlockHack()
-			=> new(this);
 
 		public void DrawNew(string name, bool clear)
 		{
@@ -544,23 +532,6 @@ namespace BizHawk.Client.Common
 		}
 
 		public void DrawText(int x, int y, string message, Color? forecolor = null, Color? backcolor = null, string fontfamily = null, DisplaySurfaceID? surfaceID = null)
-			=> PixelText(
-				x: x,
-				y: y,
-				message: message,
-				forecolor: forecolor,
-				backcolor: backcolor,
-				fontfamily: fontfamily,
-				surfaceID: surfaceID);
-
-		public void PixelText(
-			int x,
-			int y,
-			string message,
-			Color? forecolor = null,
-			Color? backcolor = null,
-			string fontfamily = null,
-			DisplaySurfaceID? surfaceID = null)
 		{
 			try
 			{

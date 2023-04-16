@@ -1,4 +1,3 @@
-; these are for the .z64 (no byte swapping) format -- EmuHawk automatically converts .v64 and .n64 to that format before hashing
 167C3C433DEC1F1EB921736F7D53FAC8CB45EE31	G	007 - GoldenEye (Europe)	N64		Glide_fb_smart=true;Glide64mk2_enable_hacks_for_game=8;Glide64mk2_filtering=1;Glide64mk2_fb_smart=true;Jabo_Clear_Frame=2
 2A5DADE32F7FAD6C73C659D2026994632C1B3174	G	007 - GoldenEye (Japan)	N64		Glide_fb_smart=true;Glide64mk2_enable_hacks_for_game=8;Glide64mk2_filtering=1;Glide64mk2_fb_smart=true
 ABE01E4AEB033B6C0836819F549C791B26CFDE83	G	007 - GoldenEye (USA)	N64		RiceEnableHacksForGame=19;RiceZHack=true;RiceFrameBufferOption=1;RiceScreenUpdateSettingHack=4;Glide_fb_smart=true;Glide64mk2_enable_hacks_for_game=8;Glide64mk2_filtering=1;Glide64mk2_fb_smart=true;Jabo_Clear_Frame=2

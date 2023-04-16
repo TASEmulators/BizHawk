@@ -70,7 +70,11 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			}
 
 			int count = names.Length;
-			if (count is < 1 or > 3) throw new ArgumentException(message: "Invalid number of buttons. Must be between 1 and 3.", paramName: nameof(names));
+
+			if (!1.RangeTo(3).Contains(count))
+			{
+				throw new ArgumentException("Invalid number of buttons. Must be between 1 and 3.");
+			}
 
 			//---- Set Button 1
 			_minButtonRowWidth += SetButtonParams(btn1, names[0], def == 1 ? 1 : 2, results[0]);

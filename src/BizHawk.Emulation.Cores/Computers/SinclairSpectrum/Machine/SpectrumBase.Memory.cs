@@ -157,7 +157,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Detects whether this is a 48k machine (or a 128k in 48k mode)
         /// </summary>
         public virtual bool IsIn48kMode()
-            => PagingDisabled || this is ZX48 or ZX16;
+        {
+            if (this.GetType() == typeof(ZX48) ||
+                this.GetType() == typeof(ZX16) ||
+                PagingDisabled)
+            {
+                return true;
+            }
+            else
+                return false;
+        }
 
         /// <summary>
         /// Monitors ROM access

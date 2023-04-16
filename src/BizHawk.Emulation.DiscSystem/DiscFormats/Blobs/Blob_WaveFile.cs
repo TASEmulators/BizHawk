@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.DiscSystem
 					throw new Blob_WaveFile_Exception("Not a RIFF WAVE file");
 				}
 
-				if (rm.riff.subchunks.Find(static chunk => chunk.tag == "fmt ") is not RiffMaster.RiffSubchunk_fmt fmt)
+				if (!(rm.riff.subchunks.FirstOrDefault(chunk => chunk.tag == "fmt ") is RiffMaster.RiffSubchunk_fmt fmt))
 				{
 					throw new Blob_WaveFile_Exception("Not a valid RIFF WAVE file (missing fmt chunk");
 				}
@@ -75,7 +75,7 @@ namespace BizHawk.Emulation.DiscSystem
 				//acquire the start of the data chunk
 				var dataChunk = (RiffMaster.RiffSubchunk) dataChunks[0];
 				waveDataStreamPos = dataChunk.Position;
-				Length = dataChunk.Length;
+				mDataLength = dataChunk.Length;
 			}
 			catch(Exception)
 			{
@@ -92,7 +92,8 @@ namespace BizHawk.Emulation.DiscSystem
 
 		private RiffMaster RiffSource;
 		private long waveDataStreamPos;
-		public long Length { get; private set; }
+		private long mDataLength;
+		public long Length => mDataLength;
 
 		public void Dispose()
 		{

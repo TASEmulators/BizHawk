@@ -52,8 +52,11 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_watchList.Count > 1)
 			{
-				var first = _watchList[0];
-				if (_watchList.Skip(1).Any(watch => watch.Size != first.Size || watch.Type != first.Type || watch.BigEndian != first.BigEndian))
+				bool hasMixedSizes = _watchList.Select(x => x.Size).Distinct().Count() > 1;
+				bool hasMixedTypes = _watchList.Select(x => x.Type).Distinct().Count() > 1;
+				bool hasMixedEndian = _watchList.Select(x => x.BigEndian).Distinct().Count() > 1;
+
+				if (hasMixedSizes || hasMixedTypes || hasMixedEndian)
 				{
 					UnSupportedConfiguration();
 				}

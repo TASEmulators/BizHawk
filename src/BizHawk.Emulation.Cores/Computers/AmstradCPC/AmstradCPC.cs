@@ -119,21 +119,21 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			{
 				// CPC 464 ROMS
 				case "OS464ROM":
-					embeddedRom = Zstd.DecompressZstdStream(new MemoryStream(Resources.OS_464_ROM.Value)).ToArray();
+					embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.OS_464_ROM.Value));
 					break;
 				case "BASIC1-0ROM":
-					embeddedRom = Zstd.DecompressZstdStream(new MemoryStream(Resources.CPC_BASIC_1_0_ROM.Value)).ToArray();
+					embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.CPC_BASIC_1_0_ROM.Value));
 					break;
 
 				// CPC 6128 ROMS
 				case "OS6128ROM":
-					embeddedRom = Zstd.DecompressZstdStream(new MemoryStream(Resources.CPC_OS_6128_ROM.Value)).ToArray();
+					embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.CPC_OS_6128_ROM.Value));
 					break;
 				case "BASIC1-1ROM":
-					embeddedRom = Zstd.DecompressZstdStream(new MemoryStream(Resources.CPC_BASIC_1_1_ROM.Value)).ToArray();
+					embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.CPC_BASIC_1_1_ROM.Value));
 					break;
 				case "AMSDOS0-5ROM":
-					embeddedRom = Zstd.DecompressZstdStream(new MemoryStream(Resources.CPC_AMSDOS_0_5_ROM.Value)).ToArray();
+					embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.CPC_AMSDOS_0_5_ROM.Value));
 					break;
 				default:
 					embeddedFound = false;

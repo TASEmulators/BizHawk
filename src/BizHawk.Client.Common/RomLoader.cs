@@ -5,12 +5,10 @@ using System.IO.Compression;
 using System.Linq;
 
 using BizHawk.Common;
-using BizHawk.Common.IOExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Libretro;
-using BizHawk.Emulation.Cores.Nintendo.Sameboy;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Sony.PSX;
 using BizHawk.Emulation.Cores.Arcades.MAME;
@@ -105,7 +103,7 @@ namespace BizHawk.Client.Common
 		}
 
 		// For not throwing errors but simply outputting information to the screen
-		public Action<string, int?> MessageCallback { get; set; }
+		public Action<string> MessageCallback { get; set; }
 
 		// TODO: reconsider the need for exposing these;
 		public IEmulator LoadedEmulator { get; private set; }
@@ -240,67 +238,57 @@ namespace BizHawk.Client.Common
 				: discHasher.OldHash();
 
 			var game = Database.CheckDatabase(discHash);
-			if (game is not null) return game;
-			// else try to use our wizard methods
-			game = new GameInfo { Name = name, Hash = discHash };
-			Exception NoCoreForSystem(string sysID)
+			if (game == null)
 			{
-				// no supported emulator core for these (yet)
-				game.System = sysID;
-				return new NoAvailableCoreException(sysID);
-			}
-			switch (discType)
-			{
-				case DiscType.SegaSaturn:
-					game.System = VSystemID.Raw.SAT;
-					break;
-				case DiscType.MegaCD:
-					game.System = VSystemID.Raw.GEN;
-					break;
-				case DiscType.PCFX:
-					game.System = VSystemID.Raw.PCFX;
-					break;
+				// try to use our wizard methods
+				game = new GameInfo { Name = name, Hash = discHash };
 
-				case DiscType.TurboGECD:
-				case DiscType.TurboCD:
-					game.System = VSystemID.Raw.PCE;
-					break;
+				switch (discType)
+				{
+					case DiscType.SegaSaturn:
+						game.System = VSystemID.Raw.SAT;
+						break;
+					case DiscType.SonyPSP:
+						game.System = "PSP";
+						break;
+					case DiscType.SonyPS2:
+						game.System = VSystemID.Raw.PS2;
+						break;
+					case DiscType.MegaCD:
+						game.System = VSystemID.Raw.GEN;
+						break;
+					case DiscType.PCFX:
+						game.System = VSystemID.Raw.PCFX;
+						break;
 
-				case DiscType.JaguarCD:
-					game.System = VSystemID.Raw.Jaguar;
-					break;
+					case DiscType.TurboGECD:
+					case DiscType.TurboCD:
+						game.System = VSystemID.Raw.PCE;
+						break;
 
-				case DiscType.Amiga:
-					throw NoCoreForSystem(VSystemID.Raw.Amiga);
-				case DiscType.CDi:
-					throw NoCoreForSystem(VSystemID.Raw.PhillipsCDi);
-				case DiscType.Dreamcast:
-					throw NoCoreForSystem(VSystemID.Raw.Dreamcast);
-				case DiscType.GameCube:
-					throw NoCoreForSystem(VSystemID.Raw.GameCube);
-				case DiscType.NeoGeoCD:
-					throw NoCoreForSystem(VSystemID.Raw.NeoGeoCD);
-				case DiscType.Panasonic3DO:
-					throw NoCoreForSystem(VSystemID.Raw.Panasonic3DO);
-				case DiscType.Playdia:
-					throw NoCoreForSystem(VSystemID.Raw.Playdia);
-				case DiscType.SonyPS2:
-					throw NoCoreForSystem(VSystemID.Raw.PS2);
-				case DiscType.SonyPSP:
-					throw NoCoreForSystem(VSystemID.Raw.PSP);
-				case DiscType.Wii:
-					throw NoCoreForSystem(VSystemID.Raw.Wii);
+					case DiscType.Amiga:
+					case DiscType.CDi:
+					case DiscType.Dreamcast:
+					case DiscType.GameCube:
+					case DiscType.NeoGeoCD:
+					case DiscType.Panasonic3DO:
+					case DiscType.Playdia:
+					case DiscType.Wii:
+						// no supported emulator core for these (yet)
+						game.System = discType.ToString();
+						throw new NoAvailableCoreException(discType.ToString());
 
-				case DiscType.AudioDisc:
-				case DiscType.UnknownCDFS:
-				case DiscType.UnknownFormat:
-					game.System = _config.TryGetChosenSystemForFileExt(ext, out var sysID) ? sysID : VSystemID.Raw.NULL;
-					break;
+					case DiscType.AudioDisc:
+					case DiscType.UnknownCDFS:
+					case DiscType.UnknownFormat:
+						game.System = _config.TryGetChosenSystemForFileExt(ext, out var sysID) ? sysID : VSystemID.Raw.NULL;
+						break;
 
-				default: //"for an unknown disc, default to psx instead of pce-cd, since that is far more likely to be what they are attempting to open" [5e07ab3ec3b8b8de9eae71b489b55d23a3909f55, year 2015]
-				case DiscType.SonyPSX:
-					game.System = VSystemID.Raw.PSX;
-					break;
+					default: //"for an unknown disc, default to psx instead of pce-cd, since that is far more likely to be what they are attempting to open" [5e07ab3ec3b8b8de9eae71b489b55d23a3909f55, year 2015]
+					case DiscType.SonyPSX:
+						game.System = VSystemID.Raw.PSX;
+						break;
+				}
 			}
 			return game;
 		}
@@ -347,7 +335,11 @@ namespace BizHawk.Client.Common
 			var discs = m3u.Entries
 				.Select(e => e.Path)
 				.Where(p => Disc.IsValidExtension(Path.GetExtension(p)))
-				.Select(path => (p: path, d: DiscExtensions.CreateAnyType(path, str => DoLoadErrorCallback(str, "???", LoadErrorType.DiscError))))
+				.Select(path => new
+				{
+					d = DiscExtensions.CreateAnyType(path, str => DoLoadErrorCallback(str, "???", LoadErrorType.DiscError)),
+					p = path,
+				})
 				.Where(a => a.d != null)
 				.Select(a => (IDiscAsset)new DiscAsset
 				{
@@ -416,27 +408,20 @@ namespace BizHawk.Client.Common
 			throw new AggregateException("No core could load the game", exceptions);
 		}
 
-		private void LoadOther(
-			CoreComm nextComm,
-			HawkFile file,
-			string ext,
-			string forcedCoreName,
-			out IEmulator nextEmulator,
-			out RomGame rom,
-			out GameInfo game,
-			out bool cancel)
+		private void LoadOther(CoreComm nextComm, HawkFile file, string forcedCoreName, out IEmulator nextEmulator, out RomGame rom, out GameInfo game, out bool cancel)
 		{
 			cancel = false;
 			rom = new RomGame(file);
 
 			// hacky for now
-			rom.GameInfo.System = ext switch
+			if (file.Extension == ".exe")
 			{
-				".exe" => VSystemID.Raw.PSX,
-				".nsf" => VSystemID.Raw.NES,
-				".gbs" => VSystemID.Raw.GB,
-				_ => rom.GameInfo.System,
-			};
+				rom.GameInfo.System = VSystemID.Raw.PSX;
+			}
+			else if (file.Extension == ".nsf")
+			{
+				rom.GameInfo.System = VSystemID.Raw.NES;
+			}
 
 			Util.DebugWriteLine(rom.GameInfo.System);
 
@@ -469,48 +454,15 @@ namespace BizHawk.Client.Common
 
 			switch (game.System)
 			{
-				case VSystemID.Raw.GB:
-				case VSystemID.Raw.GBC:
-					if (ext == ".gbs")
-					{
-						nextEmulator = new Sameboy(
-							nextComm,
-							rom.GameInfo,
-							rom.FileData,
-							GetCoreSettings<Sameboy, Sameboy.SameboySettings>(),
-							GetCoreSyncSettings<Sameboy, Sameboy.SameboySyncSettings>()
-						);
-						return;
-					}
-					break;
-				case VSystemID.Raw.PSX when ext is ".bin":
-					const string FILE_EXT_CUE = ".cue";
-					var cuePath = TempFileManager.GetTempFilename(friendlyName: "syn", dotAndExtension: FILE_EXT_CUE, delete: false);
-					DiscMountJob.CreateSyntheticCue(cueFilePath: cuePath, binFilePath: file.Name);
-					var gameBak = game;
-					var nextEmulatorBak = nextEmulator;
-					try
-					{
-						if (LoadDisc(
-							path: cuePath,
-							nextComm,
-							new(cuePath),
-							ext: FILE_EXT_CUE,
-							forcedCoreName: forcedCoreName,
-							out nextEmulator,
-							out game))
-						{
-							return;
-						}
-						Console.WriteLine("synthesised .cue failed to load");
-					}
-					catch (Exception e)
-					{
-						Console.WriteLine($"synthesised .cue failed to load: {e}");
-					}
-					game = gameBak;
-					nextEmulator = nextEmulatorBak;
-					break;
+				case VSystemID.Raw.MAME:
+					nextEmulator = new MAME(
+						file.Directory,
+						file.CanonicalName,
+						GetCoreSyncSettings<MAME, MAME.MAMESyncSettings>(),
+						out var gameName
+					);
+					rom.GameInfo.Name = gameName;
+					return;
 			}
 			var cip = new CoreInventoryParameters(this)
 			{
@@ -536,7 +488,9 @@ namespace BizHawk.Client.Common
 			// TODO: Why does the PSF loader need CbDeflater provided?  Surely this is a matter internal to it.
 			static byte[] CbDeflater(Stream instream, int size)
 			{
-				return new GZipStream(instream, CompressionMode.Decompress).ReadAllBytes();
+				var ret = new MemoryStream();
+				new GZipStream(instream, CompressionMode.Decompress).CopyTo(ret);
+				return ret.ToArray();
 			}
 			var psf = new PSF();
 			psf.Load(path, CbDeflater);
@@ -574,13 +528,16 @@ namespace BizHawk.Client.Common
 							RomData = kvp.Value,
 							FileData = kvp.Value, // TODO: Hope no one needed anything special here
 							Extension = Path.GetExtension(kvp.Key),
-							RomPath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(path.SubstringBefore('|')), kvp.Key)),
 							Game = Database.GetGameInfo(kvp.Value, Path.GetFileName(kvp.Key))
 						})
 						.ToList(),
 					Discs = xmlGame.AssetFullPaths
 						.Where(p => Disc.IsValidExtension(Path.GetExtension(p)))
-						.Select(path => (p: path, d: DiscExtensions.CreateAnyType(path, str => DoLoadErrorCallback(str, system, LoadErrorType.DiscError))))
+						.Select(path => new
+						{
+							d = DiscExtensions.CreateAnyType(path, str => DoLoadErrorCallback(str, system, LoadErrorType.DiscError)),
+							p = path,
+						})
 						.Where(a => a.d != null)
 						.Select(a => (IDiscAsset)new DiscAsset
 						{
@@ -620,36 +577,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private void LoadMAME(
-			string path,
-			CoreComm nextComm,
-			HawkFile file,
-			string ext,
-			out IEmulator nextEmulator,
-			out RomGame rom,
-			out GameInfo game,
-			out bool cancel)
-		{
-			try
-			{
-				LoadOther(nextComm, file, ext: ext, forcedCoreName: null, out nextEmulator, out rom, out game, out cancel);
-			}
-			catch (Exception mex) // ok, MAME threw, let's try another core...
-			{
-				try
-				{
-					using var f = new HawkFile(path, allowArchives: true);
-					if (!HandleArchiveBinding(f)) throw;
-					LoadOther(nextComm, f, ext: ext, forcedCoreName: null, out nextEmulator, out rom, out game, out cancel);
-				}
-				catch (Exception oex)
-				{
-					if (mex == oex) throw mex;
-					throw new AggregateException(mex, oex);
-				}
-			}
-		}
-
 		public bool LoadRom(string path, CoreComm nextComm, string launchLibretroCore, string forcedCoreName = null, int recursiveCount = 0)
 		{
 			if (path == null) return false;
@@ -661,7 +588,7 @@ namespace BizHawk.Client.Common
 			}
 
 			bool allowArchives = true;
-			if (OpenAdvanced is OpenAdvanced_MAME || MAMEMachineDB.IsMAMEMachine(path)) allowArchives = false;
+			if (OpenAdvanced is OpenAdvanced_MAME) allowArchives = false;
 			using var file = new HawkFile(path, false, allowArchives);
 			if (!file.Exists && OpenAdvanced is not OpenAdvanced_LibretroNoGame) return false; // if the provided file doesn't even exist, give up! (unless libretro no game is used)
 
@@ -680,7 +607,7 @@ namespace BizHawk.Client.Common
 					// must be done before LoadNoGame (which triggers retro_init and the paths to be consumed by the core)
 					// game name == name of core
 					Game = game = new GameInfo { Name = Path.GetFileNameWithoutExtension(launchLibretroCore), System = VSystemID.Raw.Libretro };
-					var retro = new LibretroHost(nextComm, game, launchLibretroCore);
+					var retro = new LibretroEmulator(nextComm, game, launchLibretroCore);
 					nextEmulator = retro;
 
 					if (retro.Description.SupportsNoGame && string.IsNullOrEmpty(path))
@@ -752,10 +679,6 @@ namespace BizHawk.Client.Common
 						case ".minipsf":
 							LoadPSF(path, nextComm, file, out nextEmulator, out rom, out game);
 							break;
-						case ".zip" when forcedCoreName is null:
-						case ".7z" when forcedCoreName is null:
-							LoadMAME(path: path, nextComm, file, ext: ext, out nextEmulator, out rom, out game, out cancel);
-							break;
 						default:
 							if (Disc.IsValidExtension(ext))
 							{
@@ -766,16 +689,7 @@ namespace BizHawk.Client.Common
 							}
 							else
 							{
-								// must be called after LoadXML because of SNES hacks
-								LoadOther(
-									nextComm,
-									file,
-									ext: ext,
-									forcedCoreName: forcedCoreName,
-									out nextEmulator,
-									out rom,
-									out game,
-									out cancel);
+								LoadOther(nextComm, file, forcedCoreName, out nextEmulator, out rom, out game, out cancel); // must be called after LoadXML because of SNES hacks
 							}
 							break;
 					}
@@ -790,8 +704,6 @@ namespace BizHawk.Client.Common
 
 					return false;
 				}
-
-				_ = game!; // shouldn't be null if `nextEmulator` isn't? just in case
 			}
 			catch (Exception ex)
 			{
@@ -858,8 +770,6 @@ namespace BizHawk.Client.Common
 
 			public static readonly IReadOnlyCollection<string> AppleII = new[] { "dsk", "do", "po" };
 
-			public static readonly IReadOnlyCollection<string> Arcade = new[] { "zip", "7z", "chd" };
-
 			public static readonly IReadOnlyCollection<string> C64 = new[] { "prg", "d64", "g64", "crt", "tap" };
 
 			public static readonly IReadOnlyCollection<string> Coleco = new[] { "col" };
@@ -872,15 +782,11 @@ namespace BizHawk.Client.Common
 
 			public static readonly IReadOnlyCollection<string> INTV = new[] { "int", "bin", "rom" };
 
-			public static readonly IReadOnlyCollection<string> Jaguar = new[] { "j64", "jag" };
-
 			public static readonly IReadOnlyCollection<string> Lynx = new[] { "lnx" };
 
 			public static readonly IReadOnlyCollection<string> MSX = new[] { "cas", "dsk", "mx1", "rom" };
 
 			public static readonly IReadOnlyCollection<string> N64 = new[] { "z64", "v64", "n64" };
-
-			public static readonly IReadOnlyCollection<string> N64DD = new[] { "ndd" };
 
 			public static readonly IReadOnlyCollection<string> NDS = new[] { "nds" };
 
@@ -894,7 +800,7 @@ namespace BizHawk.Client.Common
 
 			public static readonly IReadOnlyCollection<string> SMS = new[] { "sms", "gg", "sg" };
 
-			public static readonly IReadOnlyCollection<string> SNES = new[] { "smc", "sfc", "xml", "bs" };
+			public static readonly IReadOnlyCollection<string> SNES = new[] { "smc", "sfc", "xml" };
 
 			public static readonly IReadOnlyCollection<string> TI83 = new[] { "83g", "83l", "83p" };
 
@@ -906,7 +812,7 @@ namespace BizHawk.Client.Common
 
 			public static readonly IReadOnlyCollection<string> VEC = new[] { "vec" };
 
-			public static readonly IReadOnlyCollection<string> WSWAN = new[] { "ws", "wsc", "pc2" };
+			public static readonly IReadOnlyCollection<string> WSWAN = new[] { "ws", "wsc" };
 
 			public static readonly IReadOnlyCollection<string> ZXSpectrum = new[] { "tzx", "tap", "dsk", "pzx" };
 
@@ -920,11 +826,9 @@ namespace BizHawk.Client.Common
 				.Concat(GBA)
 				.Concat(GEN)
 				.Concat(INTV)
-				.Concat(Jaguar)
 				.Concat(Lynx)
 				.Concat(MSX)
 				.Concat(N64)
-				.Concat(N64DD)
 				.Concat(NDS)
 				.Concat(NES)
 				.Concat(NGP)
@@ -944,24 +848,22 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <remarks>TODO add and handle <see cref="FilesystemFilter.LuaScripts"/> (you can drag-and-drop scripts and there are already non-rom things in this list, so why not?)</remarks>
-		public static readonly FilesystemFilterSet RomFilter = new(
-			new FilesystemFilter("Music Files", Array.Empty<string>(), devBuildExtraExts: new[] { "psf", "minipsf", "sid", "nsf", "gbs" }),
-			new FilesystemFilter("Disc Images", new[] { "cue", "ccd", "cdi", "mds", "m3u" }),
+		private static readonly FilesystemFilterSet RomFSFilterSet = new FilesystemFilterSet(
+			new FilesystemFilter("Music Files", Array.Empty<string>(), devBuildExtraExts: new[] { "psf", "minipsf", "sid", "nsf" }),
+			new FilesystemFilter("Disc Images", new[] { "cue", "ccd", "mds", "m3u" }),
 			new FilesystemFilter("NES", RomFileExtensions.NES.Concat(new[] { "nsf" }).ToList(), addArchiveExts: true),
 			new FilesystemFilter("Super NES", RomFileExtensions.SNES, addArchiveExts: true),
-			new FilesystemFilter("PlayStation", new[] { "bin", "cue", "ccd", "mds", "m3u" }),
+			new FilesystemFilter("PlayStation", new[] { "cue", "ccd", "mds", "m3u" }),
 			new FilesystemFilter("PSX Executables (experimental)", Array.Empty<string>(), devBuildExtraExts: new[] { "exe" }),
 			new FilesystemFilter("PSF Playstation Sound File", new[] { "psf", "minipsf" }),
 			new FilesystemFilter("Nintendo 64", RomFileExtensions.N64),
-			new FilesystemFilter("Nintendo 64 Disk Drive", RomFileExtensions.N64DD),
-			new FilesystemFilter("Gameboy", RomFileExtensions.GB.Concat(new[] { "gbs" }).ToList(), addArchiveExts: true),
+			new FilesystemFilter("Gameboy", RomFileExtensions.GB, addArchiveExts: true),
 			new FilesystemFilter("Gameboy Advance", RomFileExtensions.GBA, addArchiveExts: true),
 			new FilesystemFilter("Nintendo DS", RomFileExtensions.NDS),
 			new FilesystemFilter("Master System", RomFileExtensions.SMS, addArchiveExts: true),
 			new FilesystemFilter("PC Engine", RomFileExtensions.PCE.Concat(new[] { "cue", "ccd", "mds" }).ToList(), addArchiveExts: true),
 			new FilesystemFilter("Atari 2600", RomFileExtensions.A26, devBuildExtraExts: new[] { "bin" }, addArchiveExts: true),
 			new FilesystemFilter("Atari 7800", RomFileExtensions.A78, devBuildExtraExts: new[] { "bin" }, addArchiveExts: true),
-			new FilesystemFilter("Atari Jaguar", RomFileExtensions.Jaguar, addArchiveExts: true),
 			new FilesystemFilter("Atari Lynx", RomFileExtensions.Lynx, addArchiveExts: true),
 			new FilesystemFilter("ColecoVision", RomFileExtensions.Coleco, addArchiveExts: true),
 			new FilesystemFilter("IntelliVision", RomFileExtensions.INTV, addArchiveExts: true),
@@ -981,17 +883,16 @@ namespace BizHawk.Client.Common
 			new FilesystemFilter("Uzebox", RomFileExtensions.UZE),
 			new FilesystemFilter("Vectrex", RomFileExtensions.VEC),
 			new FilesystemFilter("MSX", RomFileExtensions.MSX),
-			new FilesystemFilter("Arcade", RomFileExtensions.Arcade),
-			FilesystemFilter.EmuHawkSaveStates)
-		{
-			CombinedEntryDesc = "Everything",
-		};
+			FilesystemFilter.EmuHawkSaveStates
+		);
 
-		public static readonly IReadOnlyCollection<string> KnownRomExtensions = RomFilter.Filters
+		public static readonly IReadOnlyCollection<string> KnownRomExtensions = RomFSFilterSet.Filters
 			.SelectMany(f => f.Extensions)
 			.Distinct()
 			.Except(FilesystemFilter.ArchiveExtensions.Concat(new[] { "State" }))
 			.Select(s => $".{s.ToUpperInvariant()}") // this is what's expected at call-site
 			.ToList();
+
+		public static readonly string RomFilter = RomFSFilterSet.ToString("Everything");
 	}
 }

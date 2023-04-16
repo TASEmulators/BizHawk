@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using System.ComponentModel.DataAnnotations;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
@@ -11,7 +11,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 	public partial class MGBAHawk : ISettable<MGBAHawk.Settings, MGBAHawk.SyncSettings>
 	{
 		public Settings GetSettings()
-			=> _settings.Clone();
+		{
+			return _settings.Clone();
+		}
 
 		public PutSettingsDirtyBits PutSettings(Settings o)
 		{
@@ -33,18 +35,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			LibmGBA.BizSetSoundMask(Core, smask);
 
 			var palette = new int[65536];
-			var c = o.ColorType switch
+			GBColors.ColorType c = GBColors.ColorType.vivid;
+			switch (o.ColorType)
 			{
-				Settings.ColorTypes.SameBoy => GBColors.ColorType.sameboy,
-				Settings.ColorTypes.Gambatte => GBColors.ColorType.gambatte,
-				Settings.ColorTypes.Vivid => GBColors.ColorType.vivid,
-				Settings.ColorTypes.VbaVivid => GBColors.ColorType.vbavivid,
-				Settings.ColorTypes.VbaGbNew => GBColors.ColorType.vbagbnew,
-				Settings.ColorTypes.VbaGbOld => GBColors.ColorType.vbabgbold,
-				Settings.ColorTypes.BizhawkGba => GBColors.ColorType.gba,
-				_ => GBColors.ColorType.vivid,
-			};
-			GBColors.GetLut(c, palette, agb: true);
+				case Settings.ColorTypes.Gambatte: c = GBColors.ColorType.gambatte; break;
+				case Settings.ColorTypes.Vivid: c = GBColors.ColorType.vivid; break;
+				case Settings.ColorTypes.VbaVivid: c = GBColors.ColorType.vbavivid; break;
+				case Settings.ColorTypes.VbaGbNew: c = GBColors.ColorType.vbagbnew; break;
+				case Settings.ColorTypes.VbaGbOld: c = GBColors.ColorType.vbabgbold; break;
+				case Settings.ColorTypes.BizhawkGba: c = GBColors.ColorType.gba; break;
+			}
+			GBColors.GetLut(c, palette);
 			for (var i = 32768; i < 65536; i++)
 				palette[i] = palette[i - 32768];
 			LibmGBA.BizSetPalette(Core, palette);
@@ -103,8 +104,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			public enum ColorTypes
 			{
-				[Display(Name = "SameBoy GBA")]
-				SameBoy,
 				[Display(Name = "Gambatte CGB")]
 				Gambatte,
 				[Display(Name = "Vivid")]
@@ -124,15 +123,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public ColorTypes ColorType { get; set; }
 
-			public Settings()
-				=> SettingsUtil.SetDefaultValues(this);
-
 			public Settings Clone()
-				=> (Settings)MemberwiseClone();
+			{
+				return (Settings)MemberwiseClone();
+			}
+
+			public Settings()
+			{
+				SettingsUtil.SetDefaultValues(this);
+			}
 		}
 
 		public SyncSettings GetSyncSettings()
-			=> _syncSettings.Clone();
+		{
+			return _syncSettings.Clone();
+		}
 
 		public PutSettingsDirtyBits PutSyncSettings(SyncSettings o)
 		{
@@ -202,24 +207,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			[DefaultValue(false)]
 			public bool OverrideGbPlayerDetect { get; set; }
 
-			[DisplayName("VBA Bug Compatibility Mode")]
-			[Description("Enables a compatibility mode for buggy Pokemon romhacks which rely on VBA bugs. Generally you don't need to enable yourself as Pokemon romhack detection will enable this itself.")]
-			[DefaultValue(false)]
-			public bool OverrideVbaBugCompat { get; set; }
-
-			[DisplayName("Detect Pokemon Romhacks")]
-			[Description("Detects Pokemon romhacks and enables compatibility options due to their generally buggy nature. Will override other override settings.")]
-			[DefaultValue(true)]
-			public bool OverridePokemonRomhackDetect { get; set; }
-
 			public SyncSettings()
-				=> SettingsUtil.SetDefaultValues(this);
-
-			public SyncSettings Clone()
-				=> (SyncSettings)MemberwiseClone();
+			{
+				SettingsUtil.SetDefaultValues(this);
+			}
 
 			public static bool NeedsReboot(SyncSettings x, SyncSettings y)
-				=> !DeepEquality.DeepEquals(x, y);
+			{
+				return !DeepEquality.DeepEquals(x, y);
+			}
+
+			public SyncSettings Clone()
+			{
+				return (SyncSettings)MemberwiseClone();
+			}
 		}
 	}
 }

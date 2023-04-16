@@ -8,9 +8,7 @@ using BizHawk.BizInvoke;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.DiscSystem;
-
-using Google.FlatBuffers;
-
+using FlatBuffers;
 using NymaTypes;
 
 namespace BizHawk.Emulation.Cores.Waterbox
@@ -226,12 +224,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		private Task _frameThreadProcActive;
 
-		private IController _currentController;
-
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
 			DriveLightOn = false;
-			_currentController = controller; // need to remember this for rumble
 			_controllerAdapter.SetBits(controller, _inputPortData);
 			_frameAdvanceInputLock = GCHandle.Alloc(_inputPortData, GCHandleType.Pinned);
 			LibNymaCore.BizhawkFlags flags = 0;
@@ -256,7 +251,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 						: LibNymaCore.CommandType.NONE,
 				InputPortData = (byte*)_frameAdvanceInputLock.AddrOfPinnedObject(),
 				FrontendTime = GetRtcTime(SettingsQuery("nyma.rtcrealtime") != "0"),
-				DiskIndex = controller.AxisValue("Disk Index")
+				DiskIndex = (int)controller.AxisValue("Disk Index")
 			};
 			if (_frameThreadStart != null)
 			{
@@ -266,8 +261,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		}
 		protected override void FrameAdvancePost()
 		{
-			_controllerAdapter.DoRumble(_currentController, _inputPortData);
-
 			if (_frameThreadProcActive != null)
 			{
 				// The nyma core unmanaged code should always release the threadproc to completion

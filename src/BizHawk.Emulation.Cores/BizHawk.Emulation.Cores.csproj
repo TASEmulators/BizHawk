@@ -5,12 +5,12 @@
 	<Import Project="../MainSlnCommon.props" />
 	<PropertyGroup>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<NoWarn>$(NoWarn);CA1806;CA1825;CA2214;MA0084;SA1100;SA1120;SA1129;SA1137;SA1205;SA1208;SA1400</NoWarn>
+		<NoWarn>$(NoWarn);CA1806;CA1825;CA2214;SA1100;SA1120;SA1129;SA1137;SA1205;SA1208;SA1400</NoWarn>
 		<Nullable>disable</Nullable>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-		<PackageReference Include="Google.FlatBuffers" Version="22.9.24" Private="true" />
+		<Reference Include="FlatBuffers.Core" HintPath="$(ProjectDir)../../References/FlatBuffers.Core.dll" Private="true" />
 		<Reference Include="FlatBuffers.GenOutput" HintPath="$(ProjectDir)../../References/FlatBuffers.GenOutput.dll" Private="true" />
 		<Reference Include="Virtu" HintPath="$(ProjectDir)../../References/Virtu.dll" Private="true" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.Common/BizHawk.Emulation.Common.csproj" />
@@ -35,7 +35,6 @@
 		<Compile Update="Consoles/Atari/2600/Atari2600.*.cs" DependentUpon="Atari2600.cs" />
 		<Compile Update="Consoles/Atari/A7800Hawk/A7800Hawk.*.cs" DependentUpon="A7800Hawk.cs" />
 		<Compile Update="Consoles/Atari/A7800Hawk/MemoryMap.cs" DependentUpon="A7800Hawk.cs" />
-		<Compile Update="Consoles/Atari/jaguar/VirtualJaguar.*.cs" DependentUpon="VirtualJaguar.cs" />
 		<Compile Update="Consoles/Atari/lynx/Lynx.*.cs" DependentUpon="Lynx.cs" />
 		<Compile Update="Consoles/Coleco/ColecoVision.*.cs" DependentUpon="ColecoVision.cs" />
 		<Compile Update="Consoles/GCE/Vectrex/VectrexHawk.*.cs" DependentUpon="VectrexHawk..cs" />

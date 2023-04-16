@@ -7,33 +7,18 @@ using System.Linq;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Common;
-using BizHawk.WinForms.Controls;
 
 namespace BizHawk.Client.EmuHawk
 {
 	// TODO - Allow relative paths in record TextBox
-	public sealed class RecordMovie : Form, IDialogParent
+	public partial class RecordMovie : Form, IDialogParent
 	{
-		private const string START_FROM_POWERON = "Power-On";
-
-		private const string START_FROM_SAVERAM = "SaveRam";
-
-		private const string START_FROM_SAVESTATE = "Now";
-
 		private readonly IMainFormForTools _mainForm;
 		private readonly Config _config;
 		private readonly GameInfo _game;
 		private readonly IEmulator _emulator;
 		private readonly IMovieSession _movieSession;
 		private readonly FirmwareManager _firmwareManager;
-
-		private readonly TextBox AuthorBox;
-
-		private readonly CheckBox DefaultAuthorCheckBox;
-
-		private readonly TextBox RecordBox;
-
-		private readonly ComboBox StartFromCombo;
 
 		public IDialogController DialogController => _mainForm;
 
@@ -45,140 +30,42 @@ namespace BizHawk.Client.EmuHawk
 			IMovieSession movieSession,
 			FirmwareManager firmwareManager)
 		{
-			if (game.IsNullInstance()) throw new InvalidOperationException("how is the traditional Record dialog open with no game loaded? please report this including as much detail as possible");
-
 			_mainForm = mainForm;
 			_config = config;
 			_game = game;
 			_emulator = core;
 			_movieSession = movieSession;
 			_firmwareManager = firmwareManager;
-
-			SuspendLayout();
-
-			Button Cancel = new()
-			{
-				Anchor = AnchorStyles.Bottom | AnchorStyles.Right,
-				DialogResult = DialogResult.Cancel,
-				Location = new(391, 135),
-				Size = new(75, 23),
-				Text = "&Cancel",
-				UseVisualStyleBackColor = true,
-			};
-			Cancel.Click += Cancel_Click;
-
-			Button OK = new()
-			{
-				Anchor = AnchorStyles.Bottom | AnchorStyles.Right,
-				Location = new(310, 135),
-				Size = new(75, 23),
-				Text = "&OK",
-				UseVisualStyleBackColor = true,
-			};
-			OK.Click += Ok_Click;
-
-			Button BrowseBtn = new()
-			{
-				Anchor = AnchorStyles.Top | AnchorStyles.Right,
-				Image = Properties.Resources.OpenFile,
-				Location = new(423, 13),
-				Size = new(25, 23),
-				UseVisualStyleBackColor = true,
-			};
-			BrowseBtn.Click += BrowseBtn_Click;
-
-			RecordBox = new()
-			{
-				AllowDrop = true,
-				Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
-				Location = new(83, 13),
-				Size = new(334, 20),
-			};
-			RecordBox.DragDrop += RecordBox_DragDrop;
-			RecordBox.DragEnter += RecordBox_DragEnter;
-
-			StartFromCombo = new()
-			{
-				DropDownStyle = ComboBoxStyle.DropDownList,
-				FormattingEnabled = true,
-				Items = { START_FROM_POWERON },
-				Location = new(83, 65),
-				MaxDropDownItems = 32,
-				Size = new(152, 21),
-			};
-			if (_emulator.HasSavestates()) StartFromCombo.Items.Add(START_FROM_SAVESTATE);
-			if (_emulator.HasSaveRam()) StartFromCombo.Items.Add(START_FROM_SAVERAM);
-
-			DefaultAuthorCheckBox = new()
-			{
-				Anchor = AnchorStyles.Right,
-				AutoSize = true,
-				Location = new(327, 64),
-				Size = new(121, 17),
-				Text = "Make default author",
-				UseVisualStyleBackColor = true,
-			};
-
-			AuthorBox = new()
-			{
-				AllowDrop = true,
-				Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
-				Location = new(83, 39),
-				Size = new(365, 20),
-			};
-
-			GroupBox groupBox1 = new()
-			{
-				Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
-				Location = new(12, 12),
-				Size = new(454, 112),
-			};
-			groupBox1.SuspendLayout();
-			groupBox1.Controls.Add(new LocLabelEx { Location = new(51, 16), Text = "File:" });
-			groupBox1.Controls.Add(RecordBox);
-			groupBox1.Controls.Add(BrowseBtn);
-			groupBox1.Controls.Add(new LocLabelEx { Location = new(36, 41), Text = "Author:" });
-			groupBox1.Controls.Add(AuthorBox);
-			groupBox1.Controls.Add(new LocLabelEx { Location = new(6, 68), Text = "Record From:" });
-			groupBox1.Controls.Add(StartFromCombo);
-			groupBox1.Controls.Add(DefaultAuthorCheckBox);
-
-			AcceptButton = OK;
-			AutoScaleDimensions = new(6.0f, 13.0f);
-			AutoScaleMode = AutoScaleMode.Font;
-			CancelButton = Cancel;
-			ClientSize = new(478, 163);
-			FormBorderStyle = FormBorderStyle.FixedDialog;
+			InitializeComponent();
 			Icon = Properties.Resources.TAStudioIcon;
-			MaximizeBox = false;
-			MinimizeBox = false;
-			StartPosition = FormStartPosition.CenterParent;
-			Text = "Record Movie";
-			Controls.Add(new FlowLayoutPanel
-			{
-				Controls =
-				{
-					groupBox1,
-					new SingleRowFLP
-					{
-						Controls = { OK, Cancel },
-					},
-				},
-				FlowDirection = FlowDirection.RightToLeft, // going for two rows so the buttons are right-aligned
-				Margin = Padding.Empty,
-				Size = new(464, 144),
-			});
-			Load += RecordMovie_Load;
+			BrowseBtn.Image = Properties.Resources.OpenFile;
 			if (OSTailoredCode.IsUnixHost) Load += (_, _) =>
 			{
 				//HACK to make this usable on Linux. No clue why this Form in particular is so much worse, maybe the GroupBox? --yoshi
 				groupBox1.Height -= 24;
 				DefaultAuthorCheckBox.Location += new Size(0, 32);
+				var s = new Size(0, 40);
+				OK.Location += s;
+				Cancel.Location += s;
 			};
 
-			groupBox1.ResumeLayout(performLayout: false);
-			groupBox1.PerformLayout();
-			ResumeLayout(performLayout: false);
+			if (!_emulator.HasSavestates())
+			{
+				StartFromCombo.Items.Remove(
+					StartFromCombo.Items
+						.OfType<object>()
+						.First(i => i.ToString()
+							.ToLower() == "now"));
+			}
+
+			if (!_emulator.HasSaveRam())
+			{
+				StartFromCombo.Items.Remove(
+					StartFromCombo.Items
+						.OfType<object>()
+						.First(i => i.ToString()
+							.ToLower() == "saveram"));
+			}
 		}
 
 		private string MakePath()
@@ -230,7 +117,7 @@ namespace BizHawk.Client.EmuHawk
 					Directory.CreateDirectory(fileInfo.DirectoryName);
 				}
 
-				if (StartFromCombo.SelectedItem.ToString() is START_FROM_SAVESTATE && _emulator.HasSavestates())
+				if (StartFromCombo.SelectedItem.ToString() == "Now" && _emulator.HasSavestates())
 				{
 					var core = _emulator.AsStatable();
 
@@ -254,7 +141,7 @@ namespace BizHawk.Client.EmuHawk
 						movieToRecord.SavestateFramebuffer = (int[])_emulator.AsVideoProvider().GetVideoBuffer().Clone();
 					}
 				}
-				else if (StartFromCombo.SelectedItem.ToString() is START_FROM_SAVERAM && _emulator.HasSaveRam())
+				else if (StartFromCombo.SelectedItem.ToString() == "SaveRam"  && _emulator.HasSaveRam())
 				{
 					var core = _emulator.AsSaveRam();
 					movieToRecord.StartsFromSaveRam = true;
@@ -296,7 +183,10 @@ namespace BizHawk.Client.EmuHawk
 			// Create movie folder if it doesn't already exist
 			try
 			{
-				Directory.CreateDirectory(movieFolderPath);
+				if (!Directory.Exists(movieFolderPath))
+				{
+					Directory.CreateDirectory(movieFolderPath);
+				}
 			}
 			catch (Exception movieDirException)
 			{
@@ -308,14 +198,22 @@ namespace BizHawk.Client.EmuHawk
 				else throw;
 			}
 			
-			var filterset = _movieSession.Movie.GetFSFilterSet();
-			var result = this.ShowFileSaveDialog(
-				fileExt: $".{filterset.Filters[0].Extensions.First()}",
-				filter: filterset,
-				initDir: movieFolderPath,
-				initFileName: RecordBox.Text,
-				muteOverwriteWarning: true);
-			if (!string.IsNullOrWhiteSpace(result)) RecordBox.Text = result;
+			var preferredExt = _movieSession.Movie?.PreferredExtension ?? "bk2";
+			using var sfd = new SaveFileDialog
+			{
+				InitialDirectory = movieFolderPath,
+				DefaultExt = $".{preferredExt}",
+				FileName = RecordBox.Text,
+				OverwritePrompt = false,
+				Filter = new FilesystemFilterSet(new FilesystemFilter("Movie Files", new[] { preferredExt })).ToString()
+			};
+
+			var result = this.ShowDialogWithTempMute(sfd);
+			if (result == DialogResult.OK
+				&& !string.IsNullOrWhiteSpace(sfd.FileName))
+			{
+				RecordBox.Text = sfd.FileName;
+			}
 		}
 
 		private void RecordMovie_Load(object sender, EventArgs e)

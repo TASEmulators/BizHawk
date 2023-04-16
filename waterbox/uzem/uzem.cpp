@@ -36,6 +36,8 @@ THE SOFTWARE.
 #include "../emulibc/emulibc.h"
 #include "../emulibc/waterboxcore.h"
 
+#define EXPORT extern "C" ECL_EXPORT
+
 // header for use with UzeRom files
 static RomHeader uzeRomHeader;
 static avr8 uzebox;
@@ -51,12 +53,12 @@ int main(void)
 	return 0;
 }
 
-ECL_EXPORT bool MouseEnabled()
+EXPORT bool MouseEnabled()
 {
 	return uzeRomHeader.mouse;
 }
 
-ECL_EXPORT bool Init()
+EXPORT bool Init()
 {
 	const char *heximage = "romfile";
 
@@ -101,7 +103,7 @@ ECL_EXPORT bool Init()
 	return true;
 }
 
-ECL_EXPORT void GetMemoryAreas(MemoryArea *m)
+EXPORT void GetMemoryAreas(MemoryArea *m)
 {
 	m[0].Data = uzebox.sram;
 	m[0].Name = "SRAM";
@@ -136,7 +138,7 @@ void SampleCallback(uint8_t val)
 	audio_value = v;
 }
 
-ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
+EXPORT void FrameAdvance(MyFrameInfo* f)
 {
 	cycles = 0;
 	uzebox.video_buffer = f->VideoBuffer;
@@ -173,7 +175,7 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 
 void (*InputCallback)();
 
-ECL_EXPORT void SetInputCallback(void (*callback)())
+EXPORT void SetInputCallback(void (*callback)())
 {
 	InputCallback = callback;
 }

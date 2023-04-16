@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			{
 				if (!DeterministicEmulation)
 				{
-					CoreComm.Notify("Forcing Deterministic Emulation", null);
+					CoreComm.Notify("Forcing Deterministic Emulation");
 				}
 
 				DeterministicEmulation = lp.DeterministicEmulationRequested;
@@ -187,17 +187,17 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			switch (names.FirstOrDefault())
 			{
 				case "48ROM":
-					embeddedRom = Zstd.DecompressZstdStream(new MemoryStream(Resources.ZX_48_ROM.Value)).ToArray();
+					embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.ZX_48_ROM.Value));
 					break;
 				case "128ROM":
-					embeddedRom = Zstd.DecompressZstdStream(new MemoryStream(Resources.ZX_128_ROM.Value)).ToArray();
+					embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.ZX_128_ROM.Value));
 					break;
 				case "PLUS2ROM":
-					embeddedRom = Zstd.DecompressZstdStream(new MemoryStream(Resources.ZX_plus2_rom.Value)).ToArray();
+					embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.ZX_plus2_rom.Value));
 					break;
 				case "PLUS2AROM":
 				case "PLUS3ROM":
-					embeddedRom = Zstd.DecompressZstdStream(new MemoryStream(Resources.ZX_plus2a_rom.Value)).ToArray();
+					embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.ZX_plus2a_rom.Value));
 					break;
 				default:
 					embeddedFound = false;

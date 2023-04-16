@@ -1,6 +1,6 @@
 //Serial Interface
 
-struct SI : Memory::RCP<SI> {
+struct SI : Memory::IO<SI> {
   Node::Object node;
 
   struct Debugger {
@@ -23,12 +23,8 @@ struct SI : Memory::RCP<SI> {
   auto dmaWrite() -> void;
 
   //io.cpp
-  auto ioRead(u32 address) -> u32;
-  auto ioWrite(u32 address, u32 data) -> void;
-  auto readWord(u32 address, u32& cycles) -> u32;
-  auto writeWord(u32 address, u32 data, u32& cycles) -> void;
-  auto writeFinished() -> void;
-  auto writeForceFinish() -> void;
+  auto readWord(u32 address) -> u32;
+  auto writeWord(u32 address, u32 data) -> void;
 
   //serialization.cpp
   auto serialize(serializer&) -> void;
@@ -37,7 +33,6 @@ struct SI : Memory::RCP<SI> {
     n24 dramAddress;
     n32 readAddress;
     n32 writeAddress;
-    u32 busLatch;
     n1  dmaBusy;
     n1  ioBusy;
     n1  readPending;

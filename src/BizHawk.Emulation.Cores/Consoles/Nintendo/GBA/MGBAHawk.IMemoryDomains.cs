@@ -21,45 +21,52 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		private void CreateMemoryDomains(int romsize)
 		{
-			const MemoryDomain.Endian le = MemoryDomain.Endian.Little;
+			var le = MemoryDomain.Endian.Little;
 
-			var mm = new List<MemoryDomain>
-			{
-				(_iwram = new MemoryDomainIntPtr("IWRAM", le, IntPtr.Zero, 32 * 1024, true, 4)),
-				(_ewram = new MemoryDomainIntPtr("EWRAM", le, IntPtr.Zero, 256 * 1024, true, 4)),
-				(_bios = new MemoryDomainIntPtr("BIOS", le, IntPtr.Zero, 16 * 1024, false, 4)),
-				(_palram = new MemoryDomainIntPtr("PALRAM", le, IntPtr.Zero, 1024, true, 4)),
-				(_vram = new MemoryDomainIntPtr("VRAM", le, IntPtr.Zero, 96 * 1024, true, 4)),
-				(_oam = new MemoryDomainIntPtr("OAM", le, IntPtr.Zero, 1024, true, 4)),
-				(_rom = new MemoryDomainIntPtr("ROM", le, IntPtr.Zero, romsize, true, 4)),
-				// 128 KB is the max size for GBA savedata
-				// mGBA does not know a game's save type (and as a result actual savedata size) on startup.
-				// Instead, BizHawk's savedata buffer will be accessed directly for a consistent interface.
-				(_sram = new MemoryDomainIntPtr("SRAM", le, IntPtr.Zero, 128 * 1024, true, 4)),
-				(_cwram = new MemoryDomainDelegate("Combined WRAM", (256 + 32) * 1024, le, null, null, 4)),
+			var mm = new List<MemoryDomain>();
+			mm.Add(_iwram = new MemoryDomainIntPtr("IWRAM", le, IntPtr.Zero, 32 * 1024, true, 4));
+			mm.Add(_ewram = new MemoryDomainIntPtr("EWRAM", le, IntPtr.Zero, 256 * 1024, true, 4));
+			mm.Add(_bios = new MemoryDomainIntPtr("BIOS", le, IntPtr.Zero, 16 * 1024, false, 4));
+			mm.Add(_palram = new MemoryDomainIntPtr("PALRAM", le, IntPtr.Zero, 1024, true, 4));
+			mm.Add(_vram = new MemoryDomainIntPtr("VRAM", le, IntPtr.Zero, 96 * 1024, true, 4));
+			mm.Add(_oam = new MemoryDomainIntPtr("OAM", le, IntPtr.Zero, 1024, true, 4));
+			mm.Add(_rom = new MemoryDomainIntPtr("ROM", le, IntPtr.Zero, romsize, true, 4));
+			// 128 KB is the max size for GBA savedata
+			// mGBA does not know a game's save type (and as a result actual savedata size) on startup.
+			// Instead, BizHawk's savedata buffer will be accessed directly for a consistent interface.
+			mm.Add(_sram = new MemoryDomainIntPtr("SRAM", le, IntPtr.Zero, 128 * 1024, true, 4));
+			mm.Add(_cwram = new MemoryDomainDelegate("Combined WRAM", (256 + 32) * 1024, le, null, null, 4));
 
-				new MemoryDomainDelegate("System Bus", 0x10000000, le,
-				addr =>
+			mm.Add(new MemoryDomainDelegate("System Bus", 0x10000000, le,
+				delegate (long addr)
 				{
 					var a = (uint)addr;
-					if (a >= 0x10000000) throw new ArgumentOutOfRangeException(paramName: nameof(addr), a, message: "address out of range");
+					if (a >= 0x10000000)
+					{
+						throw new ArgumentOutOfRangeException();
+					}
+
 					return LibmGBA.BizReadBus(Core, a);
 				},
-				(addr, val) =>
+				delegate (long addr, byte val)
 				{
 					var a = (uint)addr;
-					if (a >= 0x10000000) throw new ArgumentOutOfRangeException(paramName: nameof(addr), a, message: "address out of range");
-					LibmGBA.BizWriteBus(Core, a, val);
-				}, 4)
-			};
+					if (a >= 0x10000000)
+					{
+						throw new ArgumentOutOfRangeException();
+					}
 
-			_memoryDomains = new(mm);
+					LibmGBA.BizWriteBus(Core, a, val);
+				}, 4));
+
+			_memoryDomains = new MemoryDomainList(mm);
 			WireMemoryDomainPointers();
 		}
 
 		private void WireMemoryDomainPointers()
 		{
-			LibmGBA.BizGetMemoryAreas(Core, out var s);
+			var s = new LibmGBA.MemoryAreas();
+			LibmGBA.BizGetMemoryAreas(Core, s);
 
 			_iwram.Data = s.iwram;
 			_ewram.Data = s.wram;
@@ -71,11 +78,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			_sram.Data = s.sram;
 
 			// special combined ram memory domain
-			const int SIZE_COMBINED = (256 + 32) * 1024;
 			_cwram.Peek =
 				addr =>
 				{
-					if (addr is < 0 or >= SIZE_COMBINED) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "invalid address");
+					if (addr < 0 || addr >= (256 + 32) * 1024)
+					{
+						throw new IndexOutOfRangeException();
+					}
+
 					if (addr >= 256 * 1024)
 					{
 						return PeekWRAM(s.iwram, addr & 32767);
@@ -86,7 +96,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			_cwram.Poke =
 				(addr, val) =>
 				{
-					if (addr is < 0 or >= SIZE_COMBINED) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "invalid address");
+					if (addr < 0 || addr >= (256 + 32) * 1024)
+					{
+						throw new IndexOutOfRangeException();
+					}
+
 					if (addr >= 256 * 1024)
 					{
 						PokeWRAM(s.iwram, addr & 32767, val);
@@ -97,7 +111,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 					}
 				};
 
-			_gpumem = new()
+			_gpumem = new GBAGPUMemoryAreas
 			{
 				mmio = s.mmio,
 				oam = s.oam,

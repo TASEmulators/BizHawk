@@ -2,15 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
-	public class MGBAMemoryCallbackSystem : IMemoryCallbackSystem, IDisposable
+	public class MGBAMemoryCallbackSystem : IMemoryCallbackSystem
 	{
-		private LibmGBA _mgba;
-		private IntPtr _core;
+		private readonly MGBAHawk _mgba;
 		private readonly LibmGBA.MemCallback _readWriteCallback;
 		private readonly LibmGBA.ExecCallback _executeCallback;
 		private readonly Dictionary<uint, MemoryCallbackDelegate> _readCallbacks = new();
@@ -18,10 +16,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		private readonly Dictionary<uint, MemoryCallbackDelegate> _execCallbacks = new();
 		private readonly List<CallbackContainer> _callbacks = new();
 
-		public MGBAMemoryCallbackSystem(LibmGBA mgba, IntPtr core)
+		public MGBAMemoryCallbackSystem(MGBAHawk mgba)
 		{
 			_mgba = mgba;
-			_core = core;
 			_readWriteCallback = RunReadWriteCallback;
 			_executeCallback = RunExecCallback;
 		}
@@ -29,23 +26,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public string[] AvailableScopes { get; } = { "System Bus" };
 		public bool ExecuteCallbacksAvailable => true;
 
-		public bool HasReads
-			=> _callbacks.Exists(static c => c.Callback.Type is MemoryCallbackType.Read);
+		public bool HasReads => _callbacks.Any(c => c.Callback.Type == MemoryCallbackType.Read);
+		public bool HasWrites => _callbacks.Any(c => c.Callback.Type == MemoryCallbackType.Write);
+		public bool HasExecutes => _callbacks.Any(c => c.Callback.Type == MemoryCallbackType.Execute);
 
-		public bool HasWrites
-			=> _callbacks.Exists(static c => c.Callback.Type is MemoryCallbackType.Write);
+		public bool HasReadsForScope(string scope) =>
+			_callbacks.Any(c => c.Callback.Scope == scope
+				&& c.Callback.Type == MemoryCallbackType.Read);
 
-		public bool HasExecutes
-			=> _callbacks.Exists(static c => c.Callback.Type is MemoryCallbackType.Execute);
+		public bool HasWritesForScope(string scope) =>
+			_callbacks.Any(c => c.Callback.Scope == scope
+				&& c.Callback.Type == MemoryCallbackType.Write);
 
-		public bool HasReadsForScope(string scope)
-			=> _callbacks.Exists(c => c.Callback.Type is MemoryCallbackType.Read && c.Callback.Scope == scope);
-
-		public bool HasWritesForScope(string scope)
-			=> _callbacks.Exists(c => c.Callback.Type is MemoryCallbackType.Write && c.Callback.Scope == scope);
-
-		public bool HasExecutesForScope(string scope)
-			=> _callbacks.Exists(c => c.Callback.Type is MemoryCallbackType.Execute && c.Callback.Scope == scope);
+		public bool HasExecutesForScope(string scope) =>
+			_callbacks.Any(c => c.Callback.Scope == scope
+				&& c.Callback.Type == MemoryCallbackType.Execute);
 
 		public void Add(IMemoryCallback callback)
 		{
@@ -68,12 +63,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			if (container.Callback.Type == MemoryCallbackType.Execute)
 			{
-				_mgba.BizSetExecCallback(_core, _executeCallback);
+				MGBAHawk.ZZHacky.BizSetExecCallback(_mgba.Core, _executeCallback);
 			}
 			else
 			{
-				container.ID = _mgba.BizSetWatchpoint(_core, callback.Address.Value, container.WatchPointType);
-				_mgba.BizSetMemCallback(_core, _readWriteCallback);
+				container.ID = MGBAHawk.ZZHacky.BizSetWatchpoint(_mgba.Core, callback.Address.Value, container.WatchPointType);
+				MGBAHawk.ZZHacky.BizSetMemCallback(_mgba.Core, _readWriteCallback);
 			}
 
 			var cbDict = container.Callback.Type switch
@@ -106,12 +101,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 				if (!HasExecutes)
 				{
-					_mgba.BizSetExecCallback(_core, null);
+					MGBAHawk.ZZHacky.BizSetExecCallback(_mgba.Core, null);
 				}
 			}
 			else
 			{
-				if (!_mgba.BizClearWatchpoint(_core, cb.ID))
+				if (!MGBAHawk.ZZHacky.BizClearWatchpoint(_mgba.Core, cb.ID))
 				{
 					throw new InvalidOperationException("Unable to clear watchpoint???");
 				}
@@ -131,7 +126,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 				if (!HasReads && !HasWrites)
 				{
-					_mgba.BizSetMemCallback(_core, null);
+					MGBAHawk.ZZHacky.BizSetMemCallback(_mgba.Core, null);
 				}
 			}
 		}
@@ -201,37 +196,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				cb?.Invoke(pc, 0, (uint)MemoryCallbackFlags.AccessExecute);
 			}
 		}
+	}
 
-		public void Dispose()
+	internal class CallbackContainer
+	{
+		public CallbackContainer(IMemoryCallback callBack)
 		{
-			_mgba = null;
-			_core = IntPtr.Zero;
+			Callback = callBack;
 		}
 
-		private class CallbackContainer
+		public IMemoryCallback Callback { get; }
+
+		// the core returns this when setting a wp and needs it to clear that wp
+		public int ID { get; set; }
+
+		public LibmGBA.mWatchpointType WatchPointType
 		{
-			public CallbackContainer(IMemoryCallback callBack)
+			get
 			{
-				Callback = callBack;
-			}
-
-			public IMemoryCallback Callback { get; }
-
-			// the core returns this when setting a wp and needs it to clear that wp
-			public long ID { get; set; }
-
-			public LibmGBA.mWatchpointType WatchPointType
-			{
-				get
+				return Callback.Type switch
 				{
-					return Callback.Type switch
-					{
-						MemoryCallbackType.Read => LibmGBA.mWatchpointType.WATCHPOINT_READ,
-						MemoryCallbackType.Write => LibmGBA.mWatchpointType.WATCHPOINT_WRITE,
-						MemoryCallbackType.Execute => throw new NotImplementedException("Executes can not be used from watch points."),
-						_ => throw new InvalidOperationException("Invalid callback type"),
-					};
-				}
+					MemoryCallbackType.Read => LibmGBA.mWatchpointType.WATCHPOINT_READ,
+					MemoryCallbackType.Write => LibmGBA.mWatchpointType.WATCHPOINT_WRITE,
+					MemoryCallbackType.Execute => throw new NotImplementedException("Executes can not be used from watch points."),
+					_ => throw new InvalidOperationException("Invalid callback type"),
+				};
 			}
 		}
 	}

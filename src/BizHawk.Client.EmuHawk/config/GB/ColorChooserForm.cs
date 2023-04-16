@@ -147,12 +147,15 @@ namespace BizHawk.Client.EmuHawk
 			dlg.CustomColors = customs;
 			dlg.FullOpen = true;
 
-			if (!this.ShowDialogAsChild(dlg).IsOk()) return;
+			var result = dlg.ShowDialog(this);
 
-			if (_colors[i] != dlg.Color)
+			if (result == DialogResult.OK)
 			{
-				_colors[i] = dlg.Color;
-				panel.BackColor = _colors[i];
+				if (_colors[i] != dlg.Color)
+				{
+					_colors[i] = dlg.Color;
+					panel.BackColor = _colors[i];
+				}
 			}
 		}
 
@@ -299,11 +302,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Button6_Click(object sender, EventArgs e)
 		{
-			var result = this.ShowFileOpenDialog(
-				discardCWDChange: true,
-				filter: FilesystemFilterSet.Palettes,
-				initDir: _config.PathEntries.ScreenshotAbsolutePathFor(VSystemID.Raw.GB));
-			if (result is not null) LoadColorFile(result, alert: true);
+			using var ofd = new OpenFileDialog
+			{
+				InitialDirectory = _config.PathEntries.ScreenshotAbsolutePathFor(VSystemID.Raw.GB),
+				Filter = new FilesystemFilterSet(FilesystemFilter.Palettes).ToString(),
+				RestoreDirectory = true
+			};
+
+			var result = ofd.ShowDialog(this);
+			if (result.IsOk())
+			{
+				LoadColorFile(ofd.FileName, true);
+			}
 		}
 
 		private void ColorChooserForm_DragDrop(object sender, DragEventArgs e)
@@ -328,12 +338,19 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Button7_Click(object sender, EventArgs e)
 		{
-			var result = this.ShowFileSaveDialog(
-				discardCWDChange: true,
-				filter: FilesystemFilterSet.Palettes,
-				initDir: _config.PathEntries.PalettesAbsolutePathFor(VSystemID.Raw.GB),
-				initFileName: $"{_game.Name}.pal");
-			if (result is not null) SaveColorFile(result);
+			using var sfd = new SaveFileDialog
+			{
+				InitialDirectory = _config.PathEntries.PalettesAbsolutePathFor(VSystemID.Raw.GB),
+				FileName = $"{_game.Name}.pal",
+				Filter = new FilesystemFilterSet(FilesystemFilter.Palettes).ToString(),
+				RestoreDirectory = true
+			};
+
+			var result = sfd.ShowDialog(this);
+			if (result.IsOk())
+			{
+				SaveColorFile(sfd.FileName);
+			}
 		}
 
 		private void DefaultButton_Click(object sender, EventArgs e)

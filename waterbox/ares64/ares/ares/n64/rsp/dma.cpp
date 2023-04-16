@@ -13,9 +13,7 @@ auto RSP::dmaTransferStep() -> void {
 
   if(dma.busy.read) {
     if constexpr(Accuracy::RSP::Recompiler) {
-      if(dma.current.pbusRegion) {
-        recompiler.invalidate(dma.current.pbusAddress, dma.current.length + 8);
-      }
+      if(dma.current.pbusRegion) recompiler.invalidate();
     }
     for(u32 i = 0; i <= dma.current.length; i += 8) {
         u64 data = rdram.ram.read<Dual>(dma.current.dramAddress);

@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 				emptySlot,
 				emptySlot,
 				emptySlot,
-				DiskIIController,
+				new DiskIIController(Video, diskIIRom),
 				emptySlot);
 
 			Cpu.Reset();

@@ -1,11 +1,5 @@
 #pragma once
 
-#if defined(NALL_HEADER_ONLY)
-  #define NALL_HEADER_INLINE inline
-#else
-  #define NALL_HEADER_INLINE
-#endif
-
 #if defined(__APPLE__)
   #include <machine/endian.h>
 #elif defined(linux) || defined(__linux__)
@@ -25,11 +19,6 @@ namespace nall {
     static constexpr bool GCC       = 0;
     static constexpr bool Microsoft = 0;
   };
-  #pragma clang diagnostic error   "-Wc++20-extensions"
-  #pragma clang diagnostic error   "-Wgnu-case-range"
-  #pragma clang diagnostic error   "-Wgnu-statement-expression"
-  #pragma clang diagnostic error   "-Wvla"
-  #pragma clang diagnostic warning "-Wimplicit-fallthrough"
   #pragma clang diagnostic warning "-Wreturn-type"
   #pragma clang diagnostic ignored "-Wunused-result"
   #pragma clang diagnostic ignored "-Wunknown-pragmas"
@@ -39,6 +28,7 @@ namespace nall {
   #pragma clang diagnostic ignored "-Wswitch-bool"
   #pragma clang diagnostic ignored "-Wabsolute-value"
   #pragma clang diagnostic ignored "-Wtrigraphs"
+  #pragma clang diagnostic ignored "-Wnarrowing"
   #pragma clang diagnostic ignored "-Wattributes"
 #elif defined(__GNUC__)
   #define COMPILER_GCC
@@ -47,14 +37,13 @@ namespace nall {
     static constexpr bool GCC       = 1;
     static constexpr bool Microsoft = 0;
   };
-  #pragma GCC diagnostic error   "-Wvla"
-  #pragma GCC diagnostic warning "-Wimplicit-fallthrough"
   #pragma GCC diagnostic warning "-Wreturn-type"
   #pragma GCC diagnostic ignored "-Wunused-result"
   #pragma GCC diagnostic ignored "-Wunknown-pragmas"
   #pragma GCC diagnostic ignored "-Wpragmas"
   #pragma GCC diagnostic ignored "-Wswitch-bool"
   #pragma GCC diagnostic ignored "-Wtrigraphs"
+  #pragma GCC diagnostic ignored "-Wnarrowing"
   #pragma GCC diagnostic ignored "-Wattributes"
   #pragma GCC diagnostic ignored "-Wstringop-overflow"  //GCC 10.2 warning heuristic is buggy
 #elif defined(_MSC_VER)
@@ -184,6 +173,7 @@ namespace nall {
   struct Architecture {
     static constexpr bool x86   = 1;
     static constexpr bool amd64 = 0;
+    static constexpr bool sse41 = 0;
     static constexpr bool arm64 = 0;
     static constexpr bool arm32 = 0;
     static constexpr bool ppc64 = 0;
@@ -191,25 +181,25 @@ namespace nall {
   };
 #elif defined(__amd64__) || defined(_M_AMD64)
   #define ARCHITECTURE_AMD64
-  #if defined(__SSE4_1__) || defined(COMPILER_MICROSOFT)
-    #define ARCHITECTURE_SUPPORTS_SSE4_1 1
-  #endif
   struct Architecture {
     static constexpr bool x86   = 0;
     static constexpr bool amd64 = 1;
+    #ifdef __SSE4_1__
+    static constexpr bool sse41 = 1;
+    #else
+    static constexpr bool sse41 = 0;
+    #endif
     static constexpr bool arm64 = 0;
     static constexpr bool arm32 = 0;
     static constexpr bool ppc64 = 0;
     static constexpr bool ppc32 = 0;
   };
-#elif defined(__aarch64__) || defined(_M_ARM64)
+#elif defined(__aarch64__)
   #define ARCHITECTURE_ARM64
-  #if !defined(COMPILER_MICROSOFT)
-    #define ARCHITECTURE_SUPPORTS_SSE4_1 1 // simulated via sse2neon.h
-  #endif
   struct Architecture {
     static constexpr bool x86   = 0;
     static constexpr bool amd64 = 0;
+    static constexpr bool sse41 = 0;
     static constexpr bool arm64 = 1;
     static constexpr bool arm32 = 0;
     static constexpr bool ppc64 = 0;
@@ -220,6 +210,7 @@ namespace nall {
   struct Architecture {
     static constexpr bool x86   = 0;
     static constexpr bool amd64 = 0;
+    static constexpr bool sse41 = 0;
     static constexpr bool arm64 = 0;
     static constexpr bool arm32 = 1;
     static constexpr bool ppc64 = 0;
@@ -230,6 +221,7 @@ namespace nall {
   struct Architecture {
     static constexpr bool x86   = 0;
     static constexpr bool amd64 = 0;
+    static constexpr bool sse41 = 0;
     static constexpr bool arm64 = 0;
     static constexpr bool arm32 = 0;
     static constexpr bool ppc64 = 1;
@@ -240,6 +232,7 @@ namespace nall {
   struct Architecture {
     static constexpr bool x86   = 0;
     static constexpr bool amd64 = 0;
+    static constexpr bool sse41 = 0;
     static constexpr bool arm64 = 0;
     static constexpr bool arm32 = 0;
     static constexpr bool ppc64 = 0;
@@ -249,13 +242,9 @@ namespace nall {
   #error "unable to detect architecture"
 #endif
 
-#if !defined(ARCHITECTURE_SUPPORTS_SSE4_1)
-  #define ARCHITECTURE_SUPPORTS_SSE4_1 0
-#endif
-
 /* Endian detection */
 
-#if (defined(__BYTE_ORDER) && defined(__LITTLE_ENDIAN) && __BYTE_ORDER == __LITTLE_ENDIAN) || defined(__LITTLE_ENDIAN__) || defined(__i386__) || defined(__amd64__) || defined(_M_IX86) || defined(_M_AMD64) || defined(_M_ARM64)
+#if (defined(__BYTE_ORDER) && defined(__LITTLE_ENDIAN) && __BYTE_ORDER == __LITTLE_ENDIAN) || defined(__LITTLE_ENDIAN__) || defined(__i386__) || defined(__amd64__) || defined(_M_IX86) || defined(_M_AMD64)
   #define ENDIAN_LITTLE
   struct Endian {
     static constexpr bool Little = 1;

@@ -5,7 +5,6 @@ using System.IO;
 
 using BizHawk.Client.Common;
 using BizHawk.Common.IOExtensions;
-using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -162,7 +161,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_sampleRate < 1 || _numChannels < 1)
 			{
-				throw new InvalidOperationException("Bad samplerate/numchannels");
+				throw new ArgumentException("Bad samplerate/numchannels");
 			}
 		}
 
@@ -201,7 +200,7 @@ namespace BizHawk.Client.EmuHawk
 			// advance to first
 			if (!_fileChain.MoveNext())
 			{
-				throw new ArgumentException(message: "Iterator was empty!", paramName: nameof(ss));
+				throw new ArgumentException("Iterator was empty!");
 			}
 
 			OpenCurrent(ss.Current);
@@ -235,12 +234,15 @@ namespace BizHawk.Client.EmuHawk
 			return new WavWriterVToken();
 		}
 
-		/// <exception cref="ArgumentException"><paramref name="bits"/> is not <c>16</c></exception>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="bits"/> is not <c>16</c></exception>
 		public void SetAudioParameters(int sampleRate, int channels, int bits)
 		{
 			_sampleRate = sampleRate;
 			_channels = channels;
-			if (bits is not 16) throw new ArgumentException(message: "Only support 16bit audio!", paramName: nameof(bits));
+			if (bits != 16)
+			{
+				throw new ArgumentException("Only support 16bit audio!");
+			}
 		}
 
 		public void SetMetaData(string gameName, string authors, ulong lengthMs, ulong rerecords)
@@ -262,12 +264,14 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private static IEnumerator<Stream> CreateStreamIterator(string template)
 		{
-			var (dir, baseName, ext) = template.SplitPathToDirFileAndExt();
+			string dir = Path.GetDirectoryName(template) ?? "";
+			string baseName = Path.GetFileNameWithoutExtension(template) ?? "";
+			string ext = Path.GetExtension(template);
 			yield return new FileStream(template, FileMode.Create);
 			int counter = 1;
 			while (true)
 			{
-				yield return new FileStream($"{Path.Combine(dir ?? string.Empty, baseName)}_{counter}{ext}", FileMode.Create);
+				yield return new FileStream($"{Path.Combine(dir, baseName)}_{counter}{ext}", FileMode.Create);
 				counter++;
 			}
 		}

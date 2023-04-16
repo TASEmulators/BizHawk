@@ -8,6 +8,7 @@ using BizHawk.Emulation.Cores.Consoles.Vectrex;
 namespace BizHawk.Emulation.Cores
 {
 	[Schema(VSystemID.Raw.VEC)]
+	// ReSharper disable once UnusedMember.Global
 	public class VecSchema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)

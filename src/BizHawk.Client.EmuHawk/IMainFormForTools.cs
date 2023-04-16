@@ -65,7 +65,7 @@ namespace BizHawk.Client.EmuHawk
 		void FrameBufferResized();
 
 		/// <remarks>only referenced from <see cref="BasicBot"/></remarks>
-		bool LoadQuickSave(int slot, bool suppressOSD = false);
+		void LoadQuickSave(string quickSlotName, bool suppressOSD = false);
 
 		/// <remarks>only referenced from <see cref="MultiDiskBundler"/></remarks>
 		bool LoadRom(string path, LoadRomArgs args);
@@ -89,6 +89,9 @@ namespace BizHawk.Client.EmuHawk
 
 		void SetMainformMovieInfo();
 
+		/// <remarks>only referenced from <see cref="TAStudio"/></remarks>
+		void SetWindowText();
+
 		bool StartNewMovie(IMovie movie, bool record);
 
 		/// <remarks>only referenced from <see cref="TAStudio"/></remarks>
@@ -110,8 +113,5 @@ namespace BizHawk.Client.EmuHawk
 
 		/// <remarks>only referenced from <see cref="BookmarksBranchesBox"/></remarks>
 		void UpdateStatusSlots();
-
-		/// <remarks>only referenced from <see cref="TAStudio"/></remarks>
-		void UpdateWindowTitle();
 	}
 }

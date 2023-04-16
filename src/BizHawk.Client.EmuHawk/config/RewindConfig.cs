@@ -8,11 +8,9 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class RewindConfig : Form
 	{
-		private ulong _avgStateSize;
+		private double _avgStateSize;
 
 		private readonly Config _config;
-
-		private readonly double _framerate;
 
 		private readonly Action _recreateRewinder;
 
@@ -20,15 +18,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly IStatable _statableCore;
 
-		public RewindConfig(
-			Config config,
-			double framerate,
-			IStatable statableCore,
-			Action recreateRewinder,
-			Func<IRewinder> getRewinder)
+		public RewindConfig(Config config, Action recreateRewinder, Func<IRewinder> getRewinder, IStatable statableCore)
 		{
 			_config = config;
-			_framerate = framerate;
 			_recreateRewinder = recreateRewinder;
 			_getRewinder = getRewinder;
 			_statableCore = statableCore;
@@ -42,17 +34,15 @@ namespace BizHawk.Client.EmuHawk
 			var rewinder = _getRewinder();
 			if (rewinder?.Active == true)
 			{
-				var fullnessRatio = rewinder.FullnessRatio;
-				FullnessLabel.Text = $"{fullnessRatio:P2}";
-				var stateCount = rewinder.Count;
-				RewindFramesUsedLabel.Text = stateCount.ToString();
-				_avgStateSize = stateCount is 0 ? 0UL : (ulong) Math.Round(rewinder.Size * fullnessRatio / stateCount);
+				FullnessLabel.Text = $"{rewinder.FullnessRatio:P2}";
+				RewindFramesUsedLabel.Text = rewinder.Count.ToString();
+				_avgStateSize = rewinder.Size * rewinder.FullnessRatio / rewinder.Count;
 			}
 			else
 			{
 				FullnessLabel.Text = "N/A";
 				RewindFramesUsedLabel.Text = "N/A";
-				_avgStateSize = (ulong) _statableCore.CloneSavestate().Length;
+				_avgStateSize = _statableCore.CloneSavestate().Length;
 			}
 
 			RewindEnabledBox.Checked = _config.Rewind.Enabled;
@@ -87,7 +77,7 @@ namespace BizHawk.Client.EmuHawk
 				ScreenshotInStatesCheckbox.Checked;
 		}
 
-		private string FormatKB(ulong n)
+		private string FormatKB(double n)
 		{
 			double num = n / 1024.0;
 
@@ -149,16 +139,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CalculateEstimates()
 		{
-			double estFrames = 0.0;
-			if (_avgStateSize is not 0UL)
-			{
-				var bufferSize = 1L << (int) BufferSizeUpDown.Value;
-				labelEx1.Text = bufferSize.ToString();
-				bufferSize *= 1024 * 1024;
-				estFrames = bufferSize / (double) _avgStateSize;
-			}
+			var bufferSize = 1L << (int) BufferSizeUpDown.Value;
+			labelEx1.Text = bufferSize.ToString();
+			bufferSize *= 1024 * 1024;
+			var estFrames = bufferSize / _avgStateSize;
+
+			double estTotalFrames = estFrames;
+			double minutes = estTotalFrames / 60 / 60;
+
 			ApproxFramesLabel.Text = $"{estFrames:n0} frames";
-			EstTimeLabel.Text = $"{estFrames / _framerate / 60.0:n} minutes";
+			EstTimeLabel.Text = $"{minutes:n} minutes";
 		}
 
 		private void BufferSizeUpDown_ValueChanged(object sender, EventArgs e)

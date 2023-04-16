@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace BizHawk.Common.CollectionExtensions
 {
@@ -123,43 +120,6 @@ namespace BizHawk.Common.CollectionExtensions
 			foreach (var item in collection) list.Add(item);
 		}
 
-		/// <returns>
-		/// portion of <paramref name="dest"/> that was written to,
-		/// unless either span is empty, in which case the other reference is returned<br/>
-		/// if <paramref name="dest"/> is too small, returns <see cref="Span{T}.Empty"/>
-		/// </returns>
-		public static ReadOnlySpan<T> ConcatArray<T>(this ReadOnlySpan<T> a, ReadOnlySpan<T> b, Span<T> dest)
-		{
-			if (b.Length is 0) return a;
-			if (a.Length is 0) return b;
-			var combinedLen = a.Length + b.Length;
-			if (combinedLen < dest.Length) return Span<T>.Empty;
-			a.CopyTo(dest);
-			b.CopyTo(dest.Slice(start: a.Length));
-			return dest.Slice(start: 0, length: combinedLen);
-		}
-
-		/// <returns>freshly-allocated array, unless either array is empty, in which case the other reference is returned</returns>
-		public static T[] ConcatArray<T>(this T[] a, T[] b)
-		{
-			if (b.Length is 0) return a;
-			if (a.Length is 0) return b;
-			var combined = new T[a.Length + b.Length];
-			var returned = ((ReadOnlySpan<T>) a).ConcatArray(b, combined);
-			Debug.Assert(returned == combined);
-			return combined;
-		}
-
-		public static bool CountIsAtLeast<T>(this IEnumerable<T> collection, int n)
-			=> collection is ICollection countable
-				? countable.Count >= n
-				: collection.Skip(n - 1).Any();
-
-		public static bool CountIsExactly<T>(this IEnumerable<T> collection, int n)
-			=> collection is ICollection countable
-				? countable.Count == n
-				: collection.Take(n + 1).Count() == n;
-
 		/// <inheritdoc cref="IList{T}.IndexOf"/>
 		/// <remarks>
 		/// (This is an extension method which reimplements <see cref="IList{T}.IndexOf"/> for other <see cref="IReadOnlyList{T}">collections</see>.
@@ -181,16 +141,6 @@ namespace BizHawk.Common.CollectionExtensions
 					return t;
 			return null;
 		}
-
-		/// <remarks>shorthand for <c>this.OrderBy(static e => e)</c>, backported from .NET 7</remarks>
-		public static IOrderedEnumerable<T> Order<T>(this IEnumerable<T> source)
-			where T : IComparable<T>
-			=> source.OrderBy(ReturnSelf);
-
-		/// <remarks>shorthand for <c>this.OrderByDescending(static e => e)</c>, backported from .NET 7</remarks>
-		public static IOrderedEnumerable<T> OrderDescending<T>(this IEnumerable<T> source)
-			where T : IComparable<T>
-			=> source.OrderByDescending(ReturnSelf);
 
 		/// <inheritdoc cref="List{T}.RemoveAll"/>
 		/// <remarks>
@@ -217,25 +167,6 @@ namespace BizHawk.Common.CollectionExtensions
 				}
 			}
 			return c - list.Count;
-		}
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private static T ReturnSelf<T>(this T self)
-			=> self;
-
-		public static bool ReversedSequenceEqual<T>(this ReadOnlySpan<T> a, ReadOnlySpan<T> b)
-			where T : IEquatable<T>
-		{
-			var len = a.Length;
-			if (len != b.Length) return false;
-			if (len is 0) return true;
-			var i = 0;
-			while (i < len)
-			{
-				if (!a[i].Equals(b[len - 1 - i])) return false;
-				i++;
-			}
-			return true;
 		}
 
 		public static bool IsSortedAsc<T>(this IReadOnlyList<T> list)

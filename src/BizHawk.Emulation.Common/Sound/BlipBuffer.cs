@@ -143,24 +143,36 @@ namespace BizHawk.Emulation.Common
 			return BlipBufDll.blip_samples_avail(_context);
 		}
 
-		/// <exception cref="ArgumentException"><paramref name="output"/> can't hold <paramref name="count"/> samples (or twice that if <paramref name="stereo"/> is <see langword="true"/>)</exception>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="output"/> can't hold <paramref name="count"/> samples (or twice that if <paramref name="stereo"/> is <see langword="true"/>)</exception>
 		public int ReadSamples(short[] output, int count, bool stereo)
 		{
-			if (output.Length < count * (stereo ? 2 : 1)) throw new ArgumentException(message: "buffer too small", paramName: nameof(output));
+			if (output.Length < count * (stereo ? 2 : 1))
+			{
+				throw new ArgumentOutOfRangeException();
+			}
+
 			return BlipBufDll.blip_read_samples(_context, output, count, stereo ? 1 : 0);
 		}
 
-		/// <exception cref="ArgumentException"><paramref name="output"/> can't hold 2 * <paramref name="count"/> samples</exception>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="output"/> can't hold 2 * <paramref name="count"/> samples</exception>
 		public int ReadSamplesLeft(short[] output, int count)
 		{
-			if (output.Length < count * 2) throw new ArgumentException(message: "buffer too small", paramName: nameof(output));
+			if (output.Length < count * 2)
+			{
+				throw new ArgumentOutOfRangeException();
+			}
+
 			return BlipBufDll.blip_read_samples(_context, output, count, 1);
 		}
 
-		/// <exception cref="ArgumentException"><paramref name="output"/> can't hold 2 * <paramref name="count"/> samples</exception>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="output"/> can't hold 2 * <paramref name="count"/> samples</exception>
 		public int ReadSamplesRight(short[] output, int count)
 		{
-			if (output.Length < count * 2) throw new ArgumentException(message: "buffer too small", paramName: nameof(output));
+			if (output.Length < count * 2)
+			{
+				throw new ArgumentOutOfRangeException();
+			}
+
 			unsafe
 			{
 				fixed (short* s = &output[1])

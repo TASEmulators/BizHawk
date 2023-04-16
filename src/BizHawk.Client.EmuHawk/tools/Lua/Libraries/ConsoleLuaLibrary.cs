@@ -3,8 +3,6 @@ using System.Linq;
 using System.Text;
 
 using BizHawk.Client.Common;
-using BizHawk.Common.CollectionExtensions;
-
 using NLua;
 
 namespace BizHawk.Client.EmuHawk
@@ -13,7 +11,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public ToolManager Tools { get; set; }
 
-		public ConsoleLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
+		public ConsoleLuaLibrary(IPlatformLuaLibEnv luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "console";
@@ -30,6 +28,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("local stconget = console.getluafunctionslist( );")]
 		[LuaMethod("getluafunctionslist", "returns a list of implemented functions")]
+		[return: LuaASCIIStringParam]
 		public string GetLuaFunctionsList()
 		{
 			var list = new StringBuilder();
@@ -43,35 +42,35 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("console.log( \"New log.\" );")]
 		[LuaMethod("log", "Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable")]
-		public void Log(params object[] outputs)
+		public void Log([LuaArbitraryStringParam] params object[] outputs)
 		{
 			LogWithSeparator("\t", "\n", outputs);
 		}
 
 		[LuaMethodExample("console.writeline( \"New log line.\" );")]
 		[LuaMethod("writeline", "Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable")]
-		public void WriteLine(params object[] outputs)
+		public void WriteLine([LuaArbitraryStringParam] params object[] outputs)
 		{
 			LogWithSeparator("\n", "\n", outputs);
 		}
 
 		[LuaMethodExample("console.write( \"New log message.\" );")]
 		[LuaMethod("write", "Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable")]
-		public void Write(params object[] outputs)
+		public void Write([LuaArbitraryStringParam] params object[] outputs)
 		{
 			LogWithSeparator("", "", outputs);
 		}
 
 		// Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable
-		private void LogWithSeparator(string separator, string terminator, params object[] outputs)
+		private void LogWithSeparator(string separator, string terminator, [LuaArbitraryStringParam] params object[] outputs)
 		{
-			static string SerializeTable(LuaTable lti)
+			static string SerializeTable([LuaArbitraryStringParam] LuaTable lti)
 			{
 				var keyObjs = lti.Keys;
 				var valueObjs = lti.Values;
 				if (keyObjs.Count != valueObjs.Count)
 				{
-					throw new ArgumentException(message: "each value must be paired with one key, they differ in number", paramName: nameof(lti));
+					throw new IndexOutOfRangeException("each value must be paired with one key, they differ in number");
 				}
 
 				var values = new object[keyObjs.Count];
@@ -82,8 +81,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				return string.Concat(keyObjs.Cast<object>()
-					.Select((kObj, i) => $"\"{kObj}\": \"{values[i]}\"\n")
-					.Order());
+					.Select((kObj, i) => $"\"{(kObj is string s ? FixString(s) : kObj.ToString())}\": \"{(values[i] is string s1 ? FixString(s1) : values[i].ToString())}\"\n")
+					.OrderBy(static s => s));
 			}
 
 			if (!Tools.Has<LuaConsole>())
@@ -93,15 +92,16 @@ namespace BizHawk.Client.EmuHawk
 
 			var sb = new StringBuilder();
 
-			void SerializeAndWrite(object output)
+			void SerializeAndWrite([LuaArbitraryStringParam] object output)
 				=> sb.Append(output switch
 				{
 					null => "nil",
 					LuaTable table => SerializeTable(table),
+					string s => FixString(s),
 					_ => output.ToString()
 				});
 
-			if (outputs == null || outputs.Length == 0 || (outputs.Length == 1 && outputs[0] is null))
+			if (outputs == null)
 			{
 				sb.Append($"(no return){terminator}");
 				return;

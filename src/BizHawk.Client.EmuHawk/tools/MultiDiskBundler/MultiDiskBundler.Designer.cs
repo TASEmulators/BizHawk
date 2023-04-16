@@ -78,7 +78,7 @@
 			// grpName
 			// 
 			this.grpName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.grpName.Controls.Add(this.BrowseBtn);
 			this.grpName.Controls.Add(this.NameBox);
 			this.grpName.Location = new System.Drawing.Point(8, 28);
@@ -102,7 +102,7 @@
 			// NameBox
 			// 
 			this.NameBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.NameBox.Location = new System.Drawing.Point(6, 19);
 			this.NameBox.Name = "NameBox";
 			this.NameBox.Size = new System.Drawing.Size(405, 20);
@@ -112,8 +112,8 @@
 			// FileSelectorPanel
 			// 
 			this.FileSelectorPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-			| System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.FileSelectorPanel.AutoScroll = true;
 			this.FileSelectorPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.FileSelectorPanel.Location = new System.Drawing.Point(8, 101);
@@ -137,6 +137,19 @@
 			this.SystemDropDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.SystemDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.SystemDropDown.FormattingEnabled = true;
+			this.SystemDropDown.Items.AddRange(new object[] {
+            "AppleII",
+            "C64",
+            "GBL",
+            "GEN",
+            "NDS",
+            "PCFX",
+            "PSX",
+            "SAT",
+            "ZXSpectrum",
+            "AmstradCPC",
+            "GGL",
+            "TI83"});
 			this.SystemDropDown.Location = new System.Drawing.Point(405, 75);
 			this.SystemDropDown.Name = "SystemDropDown";
 			this.SystemDropDown.Size = new System.Drawing.Size(89, 21);

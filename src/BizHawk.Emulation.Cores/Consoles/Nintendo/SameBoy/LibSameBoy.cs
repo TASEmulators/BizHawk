@@ -42,41 +42,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 		}
 
 		[BizImport(cc)]
-		public abstract IntPtr sameboy_create(byte[] romdata, int romlength, byte[] biosdata, int bioslength, Sameboy.SameboySyncSettings.GBModel model, bool realtime, bool nobounce);
+		public abstract IntPtr sameboy_create(byte[] romdata, int romlength, byte[] biosdata, int bioslength, Sameboy.SameboySyncSettings.GBModel model, bool realtime);
 
 		[BizImport(cc)]
 		public abstract void sameboy_destroy(IntPtr core);
-
-		[StructLayout(LayoutKind.Sequential)]
-		public struct GBSInfo
-		{
-			public byte TrackCount;
-			public byte FirstTrack;
-			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 33)]
-			public byte[] Title;
-			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 33)]
-			public byte[] Author;
-			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 33)]
-			public byte[] Copyright;
-		}
-
-		[BizImport(cc, Compatibility = true)]
-		public abstract bool sameboy_loadgbs(IntPtr core, byte[] gbs, int gbslen, ref GBSInfo gbsInfo);
-
-		[BizImport(cc)]
-		public abstract void sameboy_switchgbstrack(IntPtr core, int track);
 
 		[UnmanagedFunctionPointer(cc)]
 		public delegate void InputCallback();
 
 		[BizImport(cc)]
 		public abstract void sameboy_setinputcallback(IntPtr core, InputCallback callback);
-
-		[UnmanagedFunctionPointer(cc)]
-		public delegate void RumbleCallback(int amplitude);
-
-		[BizImport(cc)]
-		public abstract void sameboy_setrumblecallback(IntPtr core, RumbleCallback callback);
 
 		[BizImport(cc)]
 		public abstract void sameboy_frameadvance(IntPtr core, Buttons buttons, ushort x, ushort y, short[] soundbuf, ref int nsamps, int[] videobuf, bool render, bool border);
@@ -106,7 +81,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 		public abstract int sameboy_statelen(IntPtr core);
 
 		[BizImport(cc)]
-		public abstract bool sameboy_getmemoryarea(IntPtr core, MemoryAreas which, ref IntPtr data, ref long length);
+		public abstract bool sameboy_getmemoryarea(IntPtr core, MemoryAreas which, ref IntPtr data, ref int length);
 
 		[BizImport(cc)]
 		public abstract byte sameboy_cpuread(IntPtr core, ushort addr);
@@ -145,26 +120,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 		public abstract void sameboy_setscanlinecallback(IntPtr core, ScanlineCallback callback, int sl);
 
 		[BizImport(cc)]
+		public abstract void sameboy_setpalette(IntPtr core, Sameboy.SameboySettings.GBPaletteType which, int[] custompal);
+
+		[BizImport(cc)]
+		public abstract void sameboy_setcolorcorrection(IntPtr core, Sameboy.SameboySettings.ColorCorrectionMode which);
+
+		[BizImport(cc)]
+		public abstract void sameboy_setlighttemperature(IntPtr core, int temperature);
+
+		[BizImport(cc)]
+		public abstract void sameboy_sethighpassfilter(IntPtr core, Sameboy.SameboySettings.HighPassFilterMode which);
+
+		[BizImport(cc)]
+		public abstract void sameboy_setinterferencevolume(IntPtr core, int volume);
+
+		[BizImport(cc)]
 		public abstract void sameboy_setrtcdivisoroffset(IntPtr core, int offset);
 
-		[StructLayout(LayoutKind.Sequential)]
-		public struct NativeSettings
-		{
-			public Sameboy.SameboySettings.GBPaletteType Palette;
-			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 5)]
-			public int[] CustomPalette;
-			public Sameboy.SameboySettings.ColorCorrectionMode ColorCorrectionMode;
-			public int LightTemperature;
-			public Sameboy.SameboySettings.HighPassFilterMode HighPassFilter;
-			public int InterferenceVolume;
-			public int ChannelMask;
-			[MarshalAs(UnmanagedType.U1)]
-			public bool BackgroundEnabled;
-			[MarshalAs(UnmanagedType.U1)]
-			public bool ObjectsEnabled;
-		}
+		[BizImport(cc)]
+		public abstract void sameboy_setbgwinenabled(IntPtr core, bool enabled);
 
-		[BizImport(cc, Compatibility = true)]
-		public abstract void sameboy_setsettings(IntPtr core, ref NativeSettings settings);
+		[BizImport(cc)]
+		public abstract void sameboy_setobjenabled(IntPtr core, bool enabled);
 	}
 }

@@ -39,8 +39,6 @@ namespace BizHawk.Client.EmuHawk
 			this.SaveState0MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator6 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.SaveNamedStateMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator24 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.AutosaveLastSlotMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.LoadStateSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.LoadState1MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.LoadState2MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -214,8 +212,6 @@ namespace BizHawk.Client.EmuHawk
 			this.ExternalToolMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.dummyExternalTool = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.BatchRunnerMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.RetroAchievementsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.StartRetroAchievementsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.NESSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.NESPPUViewerMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.NESNametableViewerMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -265,12 +261,9 @@ namespace BizHawk.Client.EmuHawk
 			this.ColecoUseSGMMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.N64SubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.N64PluginSettingsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.Ares64SubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.Ares64SettingsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.N64ControllerSettingsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator23 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.N64CircularAnalogRangeMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.Ares64CircularAnalogRangeMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.MupenStyleLagMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.N64ExpansionSlotMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.GBLSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -400,7 +393,6 @@ namespace BizHawk.Client.EmuHawk
 			this.SNESSubMenu,
 			this.ColecoSubMenu,
 			this.N64SubMenu,
-			this.Ares64SubMenu,
 			this.GBLSubMenu,
 			this.AppleSubMenu,
 			this.C64SubMenu,
@@ -471,72 +463,64 @@ namespace BizHawk.Client.EmuHawk
 			this.SaveState9MenuItem,
 			this.SaveState0MenuItem,
 			this.toolStripSeparator6,
-			this.SaveNamedStateMenuItem,
-			this.toolStripSeparator24,
-			this.AutosaveLastSlotMenuItem});
+			this.SaveNamedStateMenuItem});
 			this.SaveStateSubMenu.Text = "&Save State";
 			this.SaveStateSubMenu.DropDownOpened += new System.EventHandler(this.SaveStateSubMenu_DropDownOpened);
 			// 
 			// SaveState1MenuItem
 			// 
 			this.SaveState1MenuItem.Text = "1";
-			this.SaveState1MenuItem.Click += new System.EventHandler(this.QuickSavestateMenuItem_Click);
+			this.SaveState1MenuItem.Click += new System.EventHandler(this.Savestate1MenuItem_Click);
 			// 
 			// SaveState2MenuItem
 			// 
 			this.SaveState2MenuItem.Text = "2";
-			this.SaveState2MenuItem.Click += new System.EventHandler(this.QuickSavestateMenuItem_Click);
+			this.SaveState2MenuItem.Click += new System.EventHandler(this.Savestate2MenuItem_Click);
 			// 
 			// SaveState3MenuItem
 			// 
 			this.SaveState3MenuItem.Text = "3";
-			this.SaveState3MenuItem.Click += new System.EventHandler(this.QuickSavestateMenuItem_Click);
+			this.SaveState3MenuItem.Click += new System.EventHandler(this.Savestate3MenuItem_Click);
 			// 
 			// SaveState4MenuItem
 			// 
 			this.SaveState4MenuItem.Text = "4";
-			this.SaveState4MenuItem.Click += new System.EventHandler(this.QuickSavestateMenuItem_Click);
+			this.SaveState4MenuItem.Click += new System.EventHandler(this.Savestate4MenuItem_Click);
 			// 
 			// SaveState5MenuItem
 			// 
 			this.SaveState5MenuItem.Text = "5";
-			this.SaveState5MenuItem.Click += new System.EventHandler(this.QuickSavestateMenuItem_Click);
+			this.SaveState5MenuItem.Click += new System.EventHandler(this.Savestate5MenuItem_Click);
 			// 
 			// SaveState6MenuItem
 			// 
 			this.SaveState6MenuItem.Text = "6";
-			this.SaveState6MenuItem.Click += new System.EventHandler(this.QuickSavestateMenuItem_Click);
+			this.SaveState6MenuItem.Click += new System.EventHandler(this.Savestate6MenuItem_Click);
 			// 
 			// SaveState7MenuItem
 			// 
 			this.SaveState7MenuItem.Text = "7";
-			this.SaveState7MenuItem.Click += new System.EventHandler(this.QuickSavestateMenuItem_Click);
+			this.SaveState7MenuItem.Click += new System.EventHandler(this.Savestate7MenuItem_Click);
 			// 
 			// SaveState8MenuItem
 			// 
 			this.SaveState8MenuItem.Text = "8";
-			this.SaveState8MenuItem.Click += new System.EventHandler(this.QuickSavestateMenuItem_Click);
+			this.SaveState8MenuItem.Click += new System.EventHandler(this.Savestate8MenuItem_Click);
 			// 
 			// SaveState9MenuItem
 			// 
 			this.SaveState9MenuItem.Text = "9";
-			this.SaveState9MenuItem.Click += new System.EventHandler(this.QuickSavestateMenuItem_Click);
+			this.SaveState9MenuItem.Click += new System.EventHandler(this.Savestate9MenuItem_Click);
 			// 
 			// SaveState0MenuItem
 			// 
-			this.SaveState0MenuItem.Text = "10";
-			this.SaveState0MenuItem.Click += new System.EventHandler(this.QuickSavestateMenuItem_Click);
+			this.SaveState0MenuItem.Text = "0";
+			this.SaveState0MenuItem.Click += new System.EventHandler(this.Savestate0MenuItem_Click);
 			// 
 			// SaveNamedStateMenuItem
 			// 
 			this.SaveNamedStateMenuItem.Text = "Save Named State...";
 			this.SaveNamedStateMenuItem.Click += new System.EventHandler(this.SaveNamedStateMenuItem_Click);
-			// 
-			// AutosaveLastSlotMenuItem
-			// 
-			this.AutosaveLastSlotMenuItem.Name = "AutosaveLastSlotMenuItem";
-			this.AutosaveLastSlotMenuItem.Text = "Autosave Last Slot";
-			this.AutosaveLastSlotMenuItem.Click += new System.EventHandler(this.AutosaveLastSlotMenuItem_Click);
 			// 
 			// LoadStateSubMenu
 			// 
@@ -561,52 +545,52 @@ namespace BizHawk.Client.EmuHawk
 			// LoadState1MenuItem
 			// 
 			this.LoadState1MenuItem.Text = "1";
-			this.LoadState1MenuItem.Click += new System.EventHandler(this.QuickLoadstateMenuItem_Click);
+			this.LoadState1MenuItem.Click += new System.EventHandler(this.Loadstate1MenuItem_Click);
 			// 
 			// LoadState2MenuItem
 			// 
 			this.LoadState2MenuItem.Text = "2";
-			this.LoadState2MenuItem.Click += new System.EventHandler(this.QuickLoadstateMenuItem_Click);
+			this.LoadState2MenuItem.Click += new System.EventHandler(this.Loadstate2MenuItem_Click);
 			// 
 			// LoadState3MenuItem
 			// 
 			this.LoadState3MenuItem.Text = "3";
-			this.LoadState3MenuItem.Click += new System.EventHandler(this.QuickLoadstateMenuItem_Click);
+			this.LoadState3MenuItem.Click += new System.EventHandler(this.Loadstate3MenuItem_Click);
 			// 
 			// LoadState4MenuItem
 			// 
 			this.LoadState4MenuItem.Text = "4";
-			this.LoadState4MenuItem.Click += new System.EventHandler(this.QuickLoadstateMenuItem_Click);
+			this.LoadState4MenuItem.Click += new System.EventHandler(this.Loadstate4MenuItem_Click);
 			// 
 			// LoadState5MenuItem
 			// 
 			this.LoadState5MenuItem.Text = "5";
-			this.LoadState5MenuItem.Click += new System.EventHandler(this.QuickLoadstateMenuItem_Click);
+			this.LoadState5MenuItem.Click += new System.EventHandler(this.Loadstate5MenuItem_Click);
 			// 
 			// LoadState6MenuItem
 			// 
 			this.LoadState6MenuItem.Text = "6";
-			this.LoadState6MenuItem.Click += new System.EventHandler(this.QuickLoadstateMenuItem_Click);
+			this.LoadState6MenuItem.Click += new System.EventHandler(this.Loadstate6MenuItem_Click);
 			// 
 			// LoadState7MenuItem
 			// 
 			this.LoadState7MenuItem.Text = "7";
-			this.LoadState7MenuItem.Click += new System.EventHandler(this.QuickLoadstateMenuItem_Click);
+			this.LoadState7MenuItem.Click += new System.EventHandler(this.Loadstate7MenuItem_Click);
 			// 
 			// LoadState8MenuItem
 			// 
 			this.LoadState8MenuItem.Text = "8";
-			this.LoadState8MenuItem.Click += new System.EventHandler(this.QuickLoadstateMenuItem_Click);
+			this.LoadState8MenuItem.Click += new System.EventHandler(this.Loadstate8MenuItem_Click);
 			// 
 			// LoadState9MenuItem
 			// 
 			this.LoadState9MenuItem.Text = "9";
-			this.LoadState9MenuItem.Click += new System.EventHandler(this.QuickLoadstateMenuItem_Click);
+			this.LoadState9MenuItem.Click += new System.EventHandler(this.Loadstate9MenuItem_Click);
 			// 
 			// LoadState0MenuItem
 			// 
-			this.LoadState0MenuItem.Text = "10";
-			this.LoadState0MenuItem.Click += new System.EventHandler(this.QuickLoadstateMenuItem_Click);
+			this.LoadState0MenuItem.Text = "0";
+			this.LoadState0MenuItem.Click += new System.EventHandler(this.Loadstate0MenuItem_Click);
 			// 
 			// LoadNamedStateMenuItem
 			// 
@@ -641,7 +625,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// SelectSlot0MenuItem
 			// 
-			this.SelectSlot0MenuItem.Text = "Select Slot 10";
+			this.SelectSlot0MenuItem.Text = "Select Slot 0";
 			this.SelectSlot0MenuItem.Click += new System.EventHandler(this.SelectSlotMenuItems_Click);
 			// 
 			// SelectSlot1MenuItem
@@ -1376,9 +1360,8 @@ namespace BizHawk.Client.EmuHawk
 			this.GameSharkConverterMenuItem,
 			this.toolStripSeparator29,
 			this.MultiDiskBundlerFileMenuItem,
-			this.BatchRunnerMenuItem,
 			this.ExternalToolMenuItem,
-			this.RetroAchievementsMenuItem});
+			this.BatchRunnerMenuItem});
 			this.ToolsSubMenu.Text = "&Tools";
 			this.ToolsSubMenu.DropDownOpened += new System.EventHandler(this.ToolsSubMenu_DropDownOpened);
 			// 
@@ -1441,17 +1424,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.BasicBotMenuItem.Text = "Basic Bot";
 			this.BasicBotMenuItem.Click += new System.EventHandler(this.BasicBotMenuItem_Click);
-			// 
-			// RetroAchievementsMenuItem
-			// 
-			this.RetroAchievementsMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			StartRetroAchievementsMenuItem});
-			this.RetroAchievementsMenuItem.Text = "&RetroAchievements";
-			// 
-			// StartRetroAchievementsMenuItem
-			// 
-			this.StartRetroAchievementsMenuItem.Text = "&Start RetroAchievements";
-			this.StartRetroAchievementsMenuItem.Click += new System.EventHandler(this.StartRetroAchievementsMenuItem_Click);
 			// 
 			// CheatsMenuItem
 			// 
@@ -1772,24 +1744,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.N64ExpansionSlotMenuItem.Text = "&Use Expansion Slot";
 			this.N64ExpansionSlotMenuItem.Click += new System.EventHandler(this.N64ExpansionSlotMenuItem_Click);
-			// 
-			// Ares64SubMenu
-			// 
-			this.Ares64SubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.Ares64SettingsMenuItem,
-			this.Ares64CircularAnalogRangeMenuItem});
-			this.Ares64SubMenu.Text = "N64";
-			this.Ares64SubMenu.DropDownOpened += new System.EventHandler(this.Ares64SubMenu_DropDownOpened);
-			// 
-			// Ares64SettingsMenuItem
-			// 
-			this.Ares64SettingsMenuItem.Text = "Settings...";
-			this.Ares64SettingsMenuItem.Click += new System.EventHandler(this.Ares64SettingsMenuItem_Click);
-			// 
-			// Ares64CircularAnalogRangeMenuItem
-			// 
-			this.Ares64CircularAnalogRangeMenuItem.Text = "Circular Analog Range";
-			this.Ares64CircularAnalogRangeMenuItem.Click += new System.EventHandler(this.N64CircularAnalogRangeMenuItem_Click);
 			// 
 			// GBLSubMenu
 			// 
@@ -2155,7 +2109,7 @@ namespace BizHawk.Client.EmuHawk
 			// Slot0StatusButton
 			// 
 			this.Slot0StatusButton.Text = "0";
-			this.Slot0StatusButton.ToolTipText = "Save slot 10";
+			this.Slot0StatusButton.ToolTipText = "Save slot 0";
 			this.Slot0StatusButton.MouseUp += new System.Windows.Forms.MouseEventHandler(this.SlotStatusButtons_MouseUp);
 			// 
 			// CheatStatusButton
@@ -2479,8 +2433,6 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ViewSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ConfigSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ToolsSubMenu;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RetroAchievementsMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx StartRetroAchievementsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx HelpSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx PauseMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator1;
@@ -2671,8 +2623,6 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator29;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx N64SubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx N64PluginSettingsMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx Ares64SubMenu;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx Ares64SettingsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ConfigContextMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RewindOptionsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx FirmwaresMenuItem;
@@ -2714,7 +2664,6 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator22;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator23;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx N64CircularAnalogRangeMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx Ares64CircularAnalogRangeMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx paletteToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ProfilesMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SynclessRecordingMenuItem;
@@ -2807,7 +2756,5 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx AmstradCPCNonSyncSettingsToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator8;
 		private System.Windows.Forms.ToolStripMenuItem CaptureLuaMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem AutosaveLastSlotMenuItem;
-		private ToolStripSeparatorEx toolStripSeparator24;
 	}
 }

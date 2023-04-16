@@ -10,7 +10,6 @@ using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Client.EmuHawk.ToolExtensions;
-using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -27,11 +26,6 @@ namespace BizHawk.Client.EmuHawk
 		private const string TypeColumn = "DisplayTypeColumn";
 		private const string ComparisonTypeColumn = "ComparisonTypeColumn";
 
-		private static readonly FilesystemFilterSet CheatsFSFilterSet = new(new FilesystemFilter("Cheat Files", new[] { "cht" }));
-
-		public static Icon ToolIcon
-			=> Resources.FreezeIcon;
-
 		private string _sortedColumn;
 		private bool _sortReverse;
 
@@ -40,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 		public Cheats()
 		{
 			InitializeComponent();
-			Icon = ToolIcon;
+			Icon = Resources.FreezeIcon;
 			ToggleContextMenuItem.Image = Resources.Refresh;
 			RemoveContextMenuItem.Image = Resources.Delete;
 			DisableAllContextMenuItem.Image = Resources.Stop;
@@ -152,9 +146,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var file = SaveFileDialog(
-				currentFile: fileName,
-				path: Config!.PathEntries.CheatsAbsolutePath(Game.System),
-				CheatsFSFilterSet,
+				fileName,
+				Config.PathEntries.CheatsAbsolutePath(Game.System),
+				"Cheat Files",
+				"cht",
 				this);
 
 			return file != null && MainForm.CheatList.SaveFile(file.FullName);
@@ -162,7 +157,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Cheats_Load(object sender, EventArgs e)
 		{
-			if (Settings.Columns.Exists(static c => string.IsNullOrWhiteSpace(c.Text))) Settings = new(); //HACK for previous config settings
+			// Hack for previous config settings
+			if (Settings.Columns.Any(c => string.IsNullOrWhiteSpace(c.Text)))
+			{
+				Settings = new CheatsSettings();
+			}
+
 			CheatEditor.MemoryDomains = Core;
 			LoadConfigSettings();
 			CheatsMenu.Items.Add(CheatListView.ToColumnsMenu(ColumnToggleCallback));
@@ -294,24 +294,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DoSelectedIndexChange()
 		{
-			var selected = SelectedCheats.Take(2).ToList(); // is this saving that much overhead by not enumerating the whole selection? could display the row count if we did
-			if (selected.Count is 0)
+			if (SelectedCheats.Any())
 			{
-				CheatEditor.ClearForm();
-				CheatGroupBox.Text = "New Cheat";
-				CheatGroupBox.Enabled = true;
-			}
-			else if (selected.Count is 1)
-			{
-				CheatEditor.SetCheat(selected[0]);
-				CheatGroupBox.Text = $"Editing Cheat {selected[0].Name} - {selected[0].AddressStr}";
-				CheatGroupBox.Enabled = true;
+				var cheat = SelectedCheats.First();
+				CheatEditor.SetCheat(cheat);
+				CheatGroupBox.Text = $"Editing Cheat {cheat.Name} - {cheat.AddressStr}";
 			}
 			else
 			{
-				CheatGroupBox.Enabled = false;
 				CheatEditor.ClearForm();
-				CheatGroupBox.Text = "Multiple Cheats Selected";
+				CheatGroupBox.Text = "New Cheat";
 			}
 		}
 
@@ -342,7 +334,10 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
-			=> RecentSubMenu.ReplaceDropDownItems(Config!.Cheats.Recent.RecentMenu(this, LoadFileFromRecent, "Cheats"));
+		{
+			RecentSubMenu.DropDownItems.Clear();
+			RecentSubMenu.DropDownItems.AddRange(Config.Cheats.Recent.RecentMenu(MainForm, LoadFileFromRecent, "Cheats"));
+		}
 
 		private void NewMenuItem_Click(object sender, EventArgs e)
 		{
@@ -352,9 +347,10 @@ namespace BizHawk.Client.EmuHawk
 		private void OpenMenuItem_Click(object sender, EventArgs e)
 		{
 			var file = OpenFileDialog(
-				currentFile: MainForm.CheatList.CurrentFileName,
-				path: Config!.PathEntries.CheatsAbsolutePath(Game.System),
-				CheatsFSFilterSet);
+				MainForm.CheatList.CurrentFileName,
+				Config.PathEntries.CheatsAbsolutePath(Game.System),
+				"Cheat Files",
+				"cht");
 
 			LoadFile(file, append: sender == AppendMenuItem);
 		}
@@ -388,11 +384,10 @@ namespace BizHawk.Client.EmuHawk
 				MoveUpMenuItem.Enabled =
 				MoveDownMenuItem.Enabled =
 				ToggleMenuItem.Enabled =
-					CheatListView.AnyRowsSelected;
+				SelectedIndices.Any();
 
-#if false // Always leave enabled even if no cheats enabled. This way the hotkey will always work, even if a new cheat is enabled without also refreshing the menu
-			DisableAllCheatsMenuItem.Enabled = MainForm.CheatList.AnyActive;
-#endif
+			// Always leave enabled even if no cheats enabled. This way the hotkey will always work however a new cheat is enabled
+			// DisableAllCheatsMenuItem.Enabled = MainForm.CheatList.ActiveCount > 0;
 
 			GameGenieSeparator.Visible =
 				OpenGameGenieEncoderDecoderMenuItem.Visible =
@@ -416,7 +411,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void InsertSeparatorMenuItem_Click(object sender, EventArgs e)
 		{
-			MainForm.CheatList.Insert(CheatListView.SelectionStartIndex ?? MainForm.CheatList.Count, Cheat.Separator);
+			if (SelectedIndices.Any())
+			{
+				MainForm.CheatList.Insert(SelectedIndices.Max(), Cheat.Separator);
+			}
+			else
+			{
+				MainForm.CheatList.Add(Cheat.Separator);
+			}
+			
 			GeneralUpdate();
 			UpdateMessageLabel();
 		}
@@ -451,8 +454,7 @@ namespace BizHawk.Client.EmuHawk
 		private void MoveDownMenuItem_Click(object sender, EventArgs e)
 		{
 			var indices = SelectedIndices.ToList();
-			if (indices.Count == 0
-				|| indices[indices.Count - 1] == MainForm.CheatList.Count - 1) // at end already
+			if (indices.Count == 0 || indices.Last() == MainForm.CheatList.Count - 1)
 			{
 				return;
 			}
@@ -478,7 +480,9 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void SelectAllMenuItem_Click(object sender, EventArgs e)
-			=> CheatListView.ToggleSelectAll();
+		{
+			CheatListView.SelectAll();
+		}
 
 		private void ToggleMenuItem_Click(object sender, EventArgs e)
 		{
@@ -602,7 +606,7 @@ namespace BizHawk.Client.EmuHawk
 				RemoveContextMenuItem.Enabled =
 				SelectedCheats.Any();
 
-			DisableAllContextMenuItem.Enabled = MainForm.CheatList.AnyActive;
+			DisableAllContextMenuItem.Enabled = MainForm.CheatList.ActiveCount > 0;
 		}
 
 		private void ViewInHexEditorContextMenuItem_Click(object sender, EventArgs e)
@@ -612,12 +616,14 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Tools.Load<HexEditor>();
 
-				ViewInHexEditor(
-					selected[0].Domain,
-					selected.Select(static x => x.Domain).Distinct().CountIsAtLeast(2)
-						? new[] { selected[0].Address ?? 0 }
-						: selected.Select(static x => x.Address ?? 0),
-					selected[0].Size);
+				if (selected.Select(x => x.Domain).Distinct().Count() > 1)
+				{
+					ViewInHexEditor(selected[0].Domain, new List<long> { selected.First().Address ?? 0 }, selected.First().Size);
+				}
+				else
+				{
+					ViewInHexEditor(selected.First().Domain, selected.Select(x => x.Address ?? 0), selected.First().Size);
+				}
 			}
 		}
 

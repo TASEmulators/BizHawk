@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using System.IO;
-
-using BizHawk.Common.PathExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.DiscSystem;
 
@@ -90,7 +88,7 @@ namespace BizHawk.Client.DiscoHawk
 
 		private void LblMagicDragArea_DragEnter(object sender, DragEventArgs e)
 		{
-			var files = ValidateDrop(e.Data);
+			List<string> files = ValidateDrop(e.Data);
 			e.Effect = files.Count > 0
 				? DragDropEffects.Link
 				: DragDropEffects.None;
@@ -99,14 +97,14 @@ namespace BizHawk.Client.DiscoHawk
 		private static List<string> ValidateDrop(IDataObject ido)
 		{
 			var ret = new List<string>();
-			var files = (string[])ido.GetData(DataFormats.FileDrop);
-			if (files == null) return new();
-			foreach (var str in files)
+			string[] files = (string[])ido.GetData(DataFormats.FileDrop);
+			if (files == null) return new List<string>();
+			foreach (string str in files)
 			{
 				var ext = Path.GetExtension(str) ?? string.Empty;
-				if(!ext.In(".CUE", ".ISO", ".CCD", ".CDI", ".MDS"))
+				if(!ext.In(".CUE", ".ISO", ".CCD", ".MDS"))
 				{
-					return new();
+					return new List<string>();
 				}
 
 				ret.Add(str);
@@ -122,7 +120,8 @@ namespace BizHawk.Client.DiscoHawk
 			foreach (var file in files)
 			{
 				using var disc = Disc.LoadAutomagic(file);
-				var (path, filename, _) = file.SplitPathToDirFileAndExt();
+				var path = Path.GetDirectoryName(file);
+				var filename = Path.GetFileNameWithoutExtension(file);
 				static bool? PromptForOverwrite(string mp3Path)
 					=> MessageBox.Show(
 						$"Do you want to overwrite existing files? Choosing \"No\" will simply skip those. You could also \"Cancel\" the extraction entirely.\n\ncaused by file: {mp3Path}",

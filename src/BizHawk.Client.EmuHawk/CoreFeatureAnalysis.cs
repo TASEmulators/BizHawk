@@ -78,7 +78,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Functions.Add(new FunctionInfo(method, service));
 				}
-				Complete = Functions.TrueForAll(static f => f.Complete);
+				Complete = Functions.All(f => f.Complete);
 			}
 		}
 
@@ -102,9 +102,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public static Icon ToolIcon
-			=> Properties.Resources.Logo;
-
 		[ConfigPersist]
 		private Dictionary<string, CoreInfo> KnownCores { get; set; }
 
@@ -117,7 +114,7 @@ namespace BizHawk.Client.EmuHawk
 		public CoreFeatureAnalysis()
 		{
 			InitializeComponent();
-			Icon = ToolIcon;
+			Icon = Properties.Resources.Logo;
 			KnownCores = new Dictionary<string, CoreInfo>();
 		}
 
@@ -156,10 +153,19 @@ namespace BizHawk.Client.EmuHawk
 				ret.Nodes.Add(serviceNode);
 			}
 
-			foreach (var service in Emulation.Common.ReflectionCache.Types.Where(t => t.IsInterface
-				&& typeof(IEmulatorService).IsAssignableFrom(t) && !typeof(ISpecializedEmulatorService).IsAssignableFrom(t) // don't show ISpecializedEmulatorService subinterfaces as "missing" as there's no expectation that they'll be implemented eventually
-				&& t != typeof(IEmulatorService) && t != typeof(ITextStatable) // denylisting ITextStatable is a hack for now, eventually we can get merge it into IStatable w/ default interface methods
-				&& !ci.Services.ContainsKey(t.ToString()) && !ci.NotApplicableTypes.Contains(t.ToString())))
+
+			var knownServices = Emulation.Common.ReflectionCache.Types
+				.Where(t => typeof(IEmulatorService).IsAssignableFrom(t))
+				.Where(t => t != typeof(IEmulatorService))
+				.Where(t => t != typeof(ITextStatable)) // Hack for now, eventually we can get rid of this interface in favor of a default implementation
+				.Where(t => t.IsInterface);
+
+			var additionalServices = knownServices
+				.Where(t => !ci.Services.ContainsKey(t.ToString()))
+				.Where(t => !ci.NotApplicableTypes.Contains(t.ToString()))
+				.Where(t => !typeof(ISpecializedEmulatorService).IsAssignableFrom(t)); // We don't want to show these as unimplemented, they aren't expected services
+
+			foreach (Type service in additionalServices)
 			{
 				string img = "Bad";
 				var serviceNode = new TreeNode

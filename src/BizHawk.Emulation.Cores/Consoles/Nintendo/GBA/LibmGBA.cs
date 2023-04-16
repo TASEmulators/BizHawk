@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-
 using BizHawk.BizInvoke;
 using BizHawk.Emulation.Common;
 
@@ -9,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 	public abstract class LibmGBA
 	{
 		[Flags]
-		public enum Buttons : ushort
+		public enum Buttons : int
 		{
 			A = 1,
 			B = 2,
@@ -45,9 +44,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			Sram = 1,
 			Flash512 = 2,
 			Flash1m = 3,
-			Eeprom = 4,
-			Eeprom512 = 5,
-			Sram512 = 6,
+			Eeprom = 4
 		}
 
 		[Flags]
@@ -92,7 +89,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			CHB = 32
 		}
 
-		public enum mWatchpointType : int
+		public enum mWatchpointType
 		{
 			WATCHPOINT_WRITE = 1,
 			WATCHPOINT_READ = 2,
@@ -101,19 +98,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
-		public struct OverrideInfo
+		public class OverrideInfo
 		{
 			public SaveType Savetype;
 			public Hardware Hardware;
-			public uint IdleLoop;
-			public bool VbaBugCompat;
-			public bool DetectPokemonRomHacks;
-
-			public const uint IDLE_LOOP_NONE = 0xffffffffu;
+			public uint IdleLoop = IDLE_LOOP_NONE;
+			public const uint IDLE_LOOP_NONE = unchecked((uint)0xffffffff);
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
-		public struct MemoryAreas
+		public class MemoryAreas
 		{
 			public IntPtr bios;
 			public IntPtr wram;
@@ -126,29 +120,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			public IntPtr sram;
 		}
 
-		[BizImport(cc)]
+		[BizImport(cc, Compatibility = true)]
 		public abstract void BizDestroy(IntPtr ctx);
 
-		[BizImport(cc)]
-		public abstract IntPtr BizCreate(byte[] bios, byte[] data, int length, ref OverrideInfo overrides, bool skipBios);
+		[BizImport(cc, Compatibility = true)]
+		public abstract IntPtr BizCreate(byte[] bios, byte[] data, int length, [In]OverrideInfo dbinfo, bool skipBios);
 
-		[BizImport(cc)]
+		[BizImport(cc, Compatibility = true)]
 		public abstract void BizReset(IntPtr ctx);
 
-		[BizImport(cc)]
+		[BizImport(cc, Compatibility = true)]
 		public abstract bool BizAdvance(IntPtr ctx, Buttons keys, int[] vbuff, ref int nsamp, short[] sbuff,
 			long time, short gyrox, short gyroy, short gyroz, byte luma);
 
-		[BizImport(cc)]
+		[BizImport(cc, Compatibility = true)]
 		public abstract void BizSetPalette(IntPtr ctx, int[] palette);
 
-		[BizImport(cc)]
-		public abstract void BizGetMemoryAreas(IntPtr ctx, out MemoryAreas dst);
+		[BizImport(cc, Compatibility = true)]
+		public abstract void BizGetMemoryAreas(IntPtr ctx, [Out]MemoryAreas dst);
 
-		[BizImport(cc)]
+		[BizImport(cc, Compatibility = true)]
 		public abstract int BizGetSaveRam(IntPtr ctx, byte[] dest, int maxsize);
 
-		[BizImport(cc)]
+		[BizImport(cc, Compatibility = true)]
 		public abstract void BizPutSaveRam(IntPtr ctx, byte[] src, int size);
 
 		/// <summary>
@@ -157,8 +151,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		/// <param name="p">private parameter to be passed to BizFinishGetState</param>
 		/// <param name="size">size of buffer to be allocated for BizFinishGetState</param>
 		/// <returns>if false, operation failed and BizFinishGetState should not be called</returns>
-		[BizImport(cc)]
-		public abstract bool BizStartGetState(IntPtr ctx, out IntPtr p, out int size);
+		[BizImport(cc, Compatibility = true)]
+		public abstract bool BizStartGetState(IntPtr ctx, ref IntPtr p, ref int size);
 
 		/// <summary>
 		/// finish a savestate operation.  if StartGetState returned true, this must be called else memory leaks
@@ -166,61 +160,57 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		/// <param name="p">returned by BizStartGetState</param>
 		/// <param name="dest">buffer of length size</param>
 		/// <param name="size">returned by BizStartGetState</param>
-		[BizImport(cc)]
+		[BizImport(cc, Compatibility = true)]
 		public abstract void BizFinishGetState(IntPtr p, byte[] dest, int size);
 
-		[BizImport(cc)]
+		[BizImport(cc, Compatibility = true)]
 		public abstract bool BizPutState(IntPtr ctx, byte[] src, int size);
 
-		[BizImport(cc)]
+		[BizImport(cc, Compatibility = true)]
 		public abstract void BizSetLayerMask(IntPtr ctx, Layers mask);
 
-		[BizImport(cc)]
+		[BizImport(cc, Compatibility = true)]
 		public abstract void BizSetSoundMask(IntPtr ctx, Sounds mask);
 
-		[BizImport(cc)]
+		[BizImport(cc, Compatibility = true)]
 		public abstract void BizGetRegisters(IntPtr ctx, int[] dest);
 
-		[BizImport(cc)]
+		[BizImport(cc, Compatibility = true)]
 		public abstract void BizSetRegister(IntPtr ctx, int index, int value);
 
-		[BizImport(cc)]
+		[BizImport(cc, Compatibility = true)]
 		public abstract ulong BizGetGlobalTime(IntPtr ctx);
 
-		[BizImport(cc)]
+		[BizImport(cc, Compatibility = true)]
 		public abstract void BizWriteBus(IntPtr ctx, uint addr, byte val);
 
-		[BizImport(cc)]
+		[BizImport(cc, Compatibility = true)]
 		public abstract byte BizReadBus(IntPtr ctx, uint addr);
 
 		[UnmanagedFunctionPointer(cc)]
 		public delegate void InputCallback();
-
-		[BizImport(cc)]
+		[BizImport(cc, Compatibility = true)]
 		public abstract void BizSetInputCallback(IntPtr ctx, InputCallback cb);
 
 		[UnmanagedFunctionPointer(cc)]
 		public delegate void TraceCallback(string msg);
-
-		[BizImport(cc)]
+		[BizImport(cc, Compatibility = true)]
 		public abstract void BizSetTraceCallback(IntPtr ctx, TraceCallback cb);
 
 		[UnmanagedFunctionPointer(cc)]
 		public delegate void MemCallback(uint addr, mWatchpointType type, uint oldValue, uint newValue);
-
-		[BizImport(cc)]
+		[BizImport(cc, Compatibility = true)]
 		public abstract void BizSetMemCallback(IntPtr ctx, MemCallback cb);
 
 		[UnmanagedFunctionPointer(cc)]
 		public delegate void ExecCallback(uint pc);
-
-		[BizImport(cc)]
+		[BizImport(cc, Compatibility = true)]
 		public abstract void BizSetExecCallback(IntPtr ctx, ExecCallback cb);
 
-		[BizImport(cc)]
-		public abstract long BizSetWatchpoint(IntPtr ctx, uint addr, mWatchpointType type);
+		[BizImport(cc, Compatibility = true)]
+		public abstract int BizSetWatchpoint(IntPtr ctx, uint addr, mWatchpointType type);
 
-		[BizImport(cc)]
-		public abstract bool BizClearWatchpoint(IntPtr ctx, long id);
+		[BizImport(cc, Compatibility = true)]
+		public abstract bool BizClearWatchpoint(IntPtr ctx, int id);
 	}
 }

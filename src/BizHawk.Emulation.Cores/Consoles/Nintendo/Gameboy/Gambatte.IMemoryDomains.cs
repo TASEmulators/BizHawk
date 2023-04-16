@@ -37,14 +37,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			// also add a special memory domain for the system bus, where calls get sent directly to the core each time
 			_memoryDomains.Add(new MemoryDomainDelegate("System Bus", 65536, MemoryDomain.Endian.Little,
-				addr =>
+				delegate(long addr)
 				{
-					if (addr is < 0 or > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
+					if (addr < 0 || addr >= 65536)
+					{
+						throw new ArgumentOutOfRangeException();
+					}
+
 					return LibGambatte.gambatte_cpuread(GambatteState, (ushort)addr);
 				},
-				(addr, val) =>
+				delegate(long addr, byte val)
 				{
-					if (addr is < 0 or > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
+					if (addr < 0 || addr >= 65536)
+					{
+						throw new ArgumentOutOfRangeException();
+					}
+
 					LibGambatte.gambatte_cpuwrite(GambatteState, (ushort)addr, val);
 				}, 1));
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 using BizHawk.Common.CollectionExtensions;
 
@@ -62,17 +61,6 @@ namespace BizHawk.Tests.Common.CollectionExtensions
 			SortedSet<int> b = new(new[] { 1, 2 });
 			b.AddRange(new[] { 3, 4 });
 			Assert.AreEqual(4, b.Count, nameof(CE.AddRange) + " failed on (ICollection<int> not List<int>)");
-		}
-
-		[TestMethod]
-		public void TestConcatArray()
-		{
-			var a123 = new[] { 1, 2, 3 };
-			var a456 = new[] { 4, 5, 6 };
-			Assert.IsTrue(a123.ConcatArray(a456).SequenceEqual(new[] { 1, 2, 3, 4, 5, 6 }));
-			Assert.AreSame(a123, a123.ConcatArray(Array.Empty<int>()));
-			Assert.AreSame(a456, Array.Empty<int>().ConcatArray(a456));
-			Assert.AreEqual(0, Array.Empty<int>().ConcatArray(Array.Empty<int>()).Length);
 		}
 
 		[TestMethod]

@@ -142,7 +142,7 @@ namespace BizHawk.Client.EmuHawk
 				var label = new Label
 				{
 					Location = new Point(x + _inputSize + _labelPadding, y + UIHelper.ScaleY(3)),
-					Size = new Size(labelWidth, UIHelper.ScaleY(15)),
+					Size = new Size(UIHelper.ScaleX(labelWidth), UIHelper.ScaleY(15)),
 					Text = _buttons[i].Replace('_', ' ').Trim()
 				};
 

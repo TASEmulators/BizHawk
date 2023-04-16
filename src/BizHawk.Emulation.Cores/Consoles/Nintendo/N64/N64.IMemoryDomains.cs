@@ -32,12 +32,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			{
 				peekByte = addr =>
 				{
-					if (addr < 0 || addr >= size) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
+					if (addr < 0 || addr >= size)
+					{
+						throw new ArgumentOutOfRangeException();
+					}
+
 					return Marshal.ReadByte(memPtr, (int)(addr ^ 3));
 				};
 				pokeByte = (addr, val) =>
 				{
-					if (addr < 0 || addr >= size) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
+					if (addr < 0 || addr >= size)
+					{
+						throw new ArgumentOutOfRangeException();
+					}
+
 					Marshal.WriteByte(memPtr, (int)(addr ^ 3), val);
 				};
 			}
@@ -45,12 +53,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			{
 				peekByte = addr =>
 				{
-					if (addr < 0 || addr >= size) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
+					if (addr < 0 || addr >= size)
+					{
+						throw new ArgumentOutOfRangeException();
+					}
+
 					return Marshal.ReadByte(memPtr, (int)(addr));
 				};
 				pokeByte = (addr, val) =>
 				{
-					if (addr < 0 || addr >= size) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
+					if (addr < 0 || addr >= size)
+					{
+						throw new ArgumentOutOfRangeException();
+					}
+
 					Marshal.WriteByte(memPtr, (int)(addr), val);
 				};
 			}

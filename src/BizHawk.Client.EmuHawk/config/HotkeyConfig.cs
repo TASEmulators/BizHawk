@@ -6,7 +6,6 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
-using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -85,11 +84,6 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var tab in HotkeyInfo.Groupings)
 			{
-				if (tab == "RAIntegration" && !RAIntegration.IsAvailable)
-				{
-					continue; // skip RA hotkeys if it can't be used
-				}
-
 				var tb = new TabPage { Name = tab, Text = tab };
 				var bindings = HotkeyInfo.AllHotkeys.Where(kvp => kvp.Value.TabGroup == tab)
 					.OrderBy(static kvp => kvp.Value.Ordinal).ThenBy(static kvp => kvp.Value.DisplayName);
@@ -203,7 +197,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.IsPressed(Keys.Enter) || e.IsPressed(Keys.Tab))
 			{
-				var k = HotkeyInfo.AllHotkeys.FirstOrNull(kvp => string.Compare(kvp.Value.DisplayName, SearchBox.Text, true) is 0)?.Key;
+				var k = HotkeyInfo.AllHotkeys.FirstOrDefault(kvp => string.Compare(kvp.Value.DisplayName, SearchBox.Text, true) is 0).Key;
 
 				// Found
 				if (k is not null)

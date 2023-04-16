@@ -20,12 +20,14 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			var systemBusDomain = new MemoryDomainDelegate("System Bus (21 bit)", 0x200000, MemoryDomain.Endian.Little,
 				(addr) =>
 				{
-					if (addr is < 0 or > 0x1FFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
+					if (addr < 0 || addr >= 0x200000)
+						throw new ArgumentOutOfRangeException();
 					return Cpu.ReadMemory21((int)addr);
 				},
 				(addr, value) =>
 				{
-					if (addr is < 0 or > 0x1FFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
+					if (addr < 0 || addr >= 0x200000)
+						throw new ArgumentOutOfRangeException();
 					Cpu.WriteMemory21((int)addr, value);
 				},
 				wordSize: 2);
@@ -34,12 +36,14 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			var cpuBusDomain = new MemoryDomainDelegate("System Bus", 0x10000, MemoryDomain.Endian.Little,
 				(addr) =>
 				{
-					if (addr is < 0 or > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
+					if (addr < 0 || addr >= 0x10000)
+						throw new ArgumentOutOfRangeException();
 					return Cpu.PeekMemory((ushort)addr);
 				},
 				(addr, value) =>
 				{
-					if (addr is < 0 or > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
+					if (addr < 0 || addr >= 0x10000)
+						throw new ArgumentOutOfRangeException();
 					Cpu.PokeMemory((ushort)addr, value);
 				},
 				wordSize: 2);

@@ -7,6 +7,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.WinForms.Controls;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -25,17 +26,14 @@ namespace BizHawk.Client.EmuHawk
 			if (control.BackColor == SystemColors.Control) control.BackColor = Color.WhiteSmoke;
 			foreach (Control c1 in control.Controls)
 			{
-				if (c1 is ToolStrip ts) ts.Renderer = GlobalToolStripRenderer;
+				if (c1 is ToolStrip ts) ts.Renderer = new ToolStripProfessionalRenderer(new LinuxColorTable());
 				else FixBackColorOnControls(c1);
 			}
 		}
 
-		public static readonly ToolStripSystemRenderer GlobalToolStripRenderer = new();
-
 		private string? _windowTitleStatic;
 
-		public virtual bool BlocksInputWhenFocused
-			=> true;
+		public virtual bool BlocksInputWhenFocused { get; } = true;
 
 		public Config? Config { get; set; }
 
@@ -66,17 +64,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnLoad(EventArgs e)
 		{
-			try
-			{
-				base.OnLoad(e);
-			}
-			catch (Exception ex)
-			{
-				using ExceptionBox box = new(ex);
-				box.ShowDialog(owner: this);
-				Close();
-				return;
-			}
+			base.OnLoad(e);
 			if (OSTailoredCode.IsUnixHost) FixBackColorOnControls(this);
 			UpdateWindowTitle();
 		}

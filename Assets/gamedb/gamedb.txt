@@ -7,7 +7,6 @@
 #include gamedb_gb.txt
 #include gamedb_gba.txt
 #include gamedb_gbc.txt
-#include gamedb_jaguar.txt
 #include gamedb_lynx.txt
 #include gamedb_msx.txt
 ;#include gamedb_msx1-L.txt (legacy?)
@@ -15,7 +14,7 @@
 #include gamedb_n64.txt
 #include gamedb_nds.txt
 #include gamedb_nes.txt
-#include gamedb_odyssey2.txt
+#include gamedb_Odyssey2.txt
 #include gamedb_pce_cd.txt
 #include gamedb_pce_hucards.txt
 #include gamedb_psx.txt
@@ -32,12 +31,6 @@
 #include gamedb_ngp.txt
 #include gamedb_channelf.txt
 #includeuser gamedb_user.txt
-
-; so, there's just zero explanation anywhere for B vs V status flag
-; really, I checked https://github.com/TASEmulators/BizHawk/commits/c8727ae01fc051429a59c4b91189ef479d578be7?after=c8727ae01fc051429a59c4b91189ef479d578be7+34&branch=c8727ae01fc051429a59c4b91189ef479d578be7&path%5B%5D=BizHawk.MultiClient&path%5B%5D=output&path%5B%5D=gamedb.txt&qualified_name=c8727ae01fc051429a59c4b91189ef479d578be7
-; (if link dies, it's last page of history for `/BizHawk.MultiClient/output/gamedb.txt`)
-; and it's not a borrowed convention from no-intro or bootgod either as far as I can tell
-; based only on the unstructured comments in the inital upload (054ad76ac), I'm guessing B = bad and V = very bad --yoshi
 
 ; ************ TI-83 ************
 

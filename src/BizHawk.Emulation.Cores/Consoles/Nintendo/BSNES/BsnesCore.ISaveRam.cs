@@ -5,9 +5,9 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 {
-	public partial class BsnesCore : ISaveRam
+	public unsafe partial class BsnesCore : ISaveRam
 	{
-		private IntPtr _saveRam;
+		private byte* _saveRam;
 		private int _saveRamSize;
 
 		// yeah this is not the best. this will basically always return true as long as the saveRam exists.
@@ -20,14 +20,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			byte[] saveRamCopy = new byte[_saveRamSize];
 			using (Api.exe.EnterExit())
 			{
-				if (_isSGB)
-				{
-					Api.core.snes_sgb_save_battery(saveRamCopy, _saveRamSize);
-				}
-				else
-				{
-					Marshal.Copy(_saveRam, saveRamCopy, 0, _saveRamSize);
-				}
+				Marshal.Copy((IntPtr) _saveRam, saveRamCopy, 0, _saveRamSize);
 			}
 
 			return saveRamCopy;
@@ -37,21 +30,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		{
 			if (_saveRamSize == 0) return;
 
-			if (data.Length != _saveRamSize)
-			{
-				throw new InvalidOperationException("Size of saveram data does not match expected!");
-			}
-
 			using (Api.exe.EnterExit())
 			{
-				if (_isSGB)
-				{
-					Api.core.snes_sgb_load_battery(data, _saveRamSize);
-				}
-				else
-				{
-					Marshal.Copy(data, 0, _saveRam, _saveRamSize);
-				}
+				Marshal.Copy(data, 0, (IntPtr) _saveRam, _saveRamSize);
 			}
 		}
 	}

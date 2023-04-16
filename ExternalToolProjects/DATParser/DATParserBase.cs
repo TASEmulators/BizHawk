@@ -1,6 +1,5 @@
 ﻿#nullable disable
 
-using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -137,7 +136,6 @@ namespace BizHawk.DATTool
 		// COL0:	Hash
 		public string SHA1 { get; set; }
 		public string MD5 { get; set; }
-		public string CRC32 { get; set; }
 		// COL1:	Status code indicator
 		public string Status { get; set; }
 		// COL2:	Game title
@@ -153,19 +151,15 @@ namespace BizHawk.DATTool
 		// COL7:	Forced Fore
 		public string ForcedCore { get; set; }
 
-		// prefer the strongest hash available
+		// prefer MD5 if available
 		public string HASH
 		{
 			get
 			{
-				if (!string.IsNullOrWhiteSpace(SHA1))
-					return "SHA1:" + SHA1;
-				else if (!string.IsNullOrWhiteSpace(MD5))
-					return "MD5:" + MD5;
-				else if (!string.IsNullOrWhiteSpace(CRC32))
-					return "CRC32:" + CRC32;
+				if (MD5.Trim() == "")
+					return "sha1:" + SHA1;
 
-				throw new InvalidOperationException("No valid hash available?");
+				return MD5;
 			}
 		}
 
@@ -223,7 +217,6 @@ namespace BizHawk.DATTool
 		VEC,
 		O2,
 		MSX,
-		NDS,
-		Jaguar,
+		NDS
 	}
 }

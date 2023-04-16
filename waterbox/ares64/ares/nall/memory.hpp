@@ -168,7 +168,7 @@ template<typename T> auto fill(void* target, u32 capacity, const T& value) -> T*
 
 template<typename T, typename U, typename... P> auto assign(T* target, const U& value, P&&... p) -> void {
   *target++ = value;
-  assign(target, std::forward<P>(p)...);
+  assign(target, forward<P>(p)...);
 }
 
 template<u32 size, typename T> auto readl(const void* source) -> T {
@@ -195,14 +195,50 @@ template<u32 size, typename T> auto writem(void* target, T data) -> void {
   for(s32 n = size - 1; n >= 0; n--) *p++ = data >> n * 8;
 }
 
-auto map(u32 size, bool executable) -> void*;
+inline auto map(u32 size, bool executable) -> void* {
+  #if defined(API_WINDOWS)
+  DWORD protect = executable ? PAGE_EXECUTE_READWRITE : PAGE_READWRITE;
+  return VirtualAlloc(nullptr, size, MEM_RESERVE | MEM_COMMIT, protect);
+  #elif defined(API_POSIX)
+  int prot = PROT_READ | PROT_WRITE;
+  int flags = MAP_ANON | MAP_PRIVATE;
+  if(executable) {
+    prot |= PROT_EXEC;
+    #if defined(PLATFORM_MACOS) && defined(ARCHITECTURE_ARM64)
+    flags |= MAP_JIT;
+    #endif
+  }
+  return mmap(nullptr, size, prot, flags, -1, 0);
+  #else
+  return nullptr;
+  #endif
+}
 
-auto unmap(void* target, u32 size) -> void;
+inline auto unmap(void* target, u32 size) -> void {
+  #if defined(API_WINDOWS)
+  VirtualFree(target, 0, MEM_RELEASE);
+  #elif defined(API_POSIX)
+  munmap(target, size);
+  #endif
+}
 
-auto protect(void* target, u32 size, bool executable) -> void;
+inline auto protect(void* target, u32 size, bool executable) -> void {
+  #if defined(API_WINDOWS)
+  DWORD protect = executable ? PAGE_EXECUTE_READWRITE : PAGE_READWRITE;
+  DWORD oldProtect;
+  VirtualProtect(target, size, protect, &oldProtect);
+  #elif defined(API_POSIX)
+  int prot = PROT_READ | PROT_WRITE;
+  if(executable) {
+    prot |= PROT_EXEC;
+  }
+  int ret = mprotect(target, size, prot);
+  assert(ret == 0);
+  #endif
+}
 
 inline auto jitprotect(bool executable) -> void {
-  #if defined(PLATFORM_MACOS)
+  #if defined(PLATFORM_MACOS) && defined(ARCHITECTURE_ARM64)
   if(__builtin_available(macOS 11.0, *)) {
     pthread_jit_write_protect_np(executable);
   }
@@ -210,7 +246,3 @@ inline auto jitprotect(bool executable) -> void {
 }
 
 }
-
-#if defined(NALL_HEADER_ONLY)
-  #include <nall/memory.cpp>
-#endif

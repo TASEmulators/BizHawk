@@ -4,24 +4,28 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Libretro
 {
-	public partial class LibretroHost : ISoundProvider
+	public partial class LibretroEmulator : ISoundProvider
 	{
-		private const int OUT_SAMPLE_RATE = 44100;
+		private BlipBuffer _blipL;
+		private BlipBuffer _blipR;
 
-		private BlipBuffer _blipL, _blipR;
-		private int _latchL, _latchR;
-
-		private short[] _inSampBuf = Array.Empty<short>(); // variable size, will grow as needed
-
-		private readonly short[] _outSampBuf = new short[OUT_SAMPLE_RATE * 2]; // big enough
+		private short[] _inSampBuf = new short[0];
+		private short[] _outSampBuf = new short[0];
 		private int _outSamps;
 
-		private void SetupResampler(double sps)
+		private int _latchL = 0;
+		private int _latchR = 0;
+
+		private void SetupResampler(double fps, double sps)
 		{
-			_blipL = new(OUT_SAMPLE_RATE);
-			_blipL.SetRates(sps, OUT_SAMPLE_RATE);
-			_blipR = new(OUT_SAMPLE_RATE);
-			_blipR.SetRates(sps, OUT_SAMPLE_RATE);
+			Console.WriteLine("FPS {0} SPS {1}", fps, sps);
+
+			_outSampBuf = new short[44100]; // big enough
+
+			_blipL = new BlipBuffer(44100);
+			_blipL.SetRates(sps, 44100);
+			_blipR = new BlipBuffer(44100);
+			_blipR.SetRates(sps, 44100);
 		}
 
 		private void ProcessSound()
@@ -31,44 +35,30 @@ namespace BizHawk.Emulation.Cores.Libretro
 			{
 				return;
 			}
-
-			// skip resampling if in sample rate == out sample rate
-			if (av_info.timing.sample_rate == OUT_SAMPLE_RATE)
-			{
-				if (len > (OUT_SAMPLE_RATE * 2))
-				{
-					throw new Exception("Audio buffer overflow!");
-				}
-
-				// copy directly to our output buffer
-				bridge.LibretroBridge_GetAudio(cbHandler, out _outSamps, _outSampBuf);
-				return;
-			}
-
 			if (len > _inSampBuf.Length)
 			{
 				_inSampBuf = new short[len];
 			}
-
-			bridge.LibretroBridge_GetAudio(cbHandler, out var ns, _inSampBuf);
+			var ns = 0;
+			bridge.LibretroBridge_GetAudio(cbHandler, ref ns, _inSampBuf);
 
 			for (uint i = 0; i < ns; i++)
 			{
-				int cur = _inSampBuf[i * 2];
+				int curr = _inSampBuf[i * 2];
 
-				if (cur != _latchL)
+				if (curr != _latchL)
 				{
-					int diff = _latchL - cur;
-					_latchL = cur;
+					int diff = _latchL - curr;
+					_latchL = curr;
 					_blipL.AddDelta(i, diff);
 				}
 
-				cur = _inSampBuf[(i * 2) + 1];
+				curr = _inSampBuf[(i * 2) + 1];
 
-				if (cur != _latchR)
+				if (curr != _latchR)
 				{
-					int diff = _latchR - cur;
-					_latchR = cur;
+					int diff = _latchR - curr;
+					_latchR = curr;
 					_blipR.AddDelta(i, diff);
 				}
 			}
@@ -76,12 +66,6 @@ namespace BizHawk.Emulation.Cores.Libretro
 			_blipL.EndFrame((uint)ns);
 			_blipR.EndFrame((uint)ns);
 			_outSamps = _blipL.SamplesAvailable();
-
-			if (_outSamps > OUT_SAMPLE_RATE)
-			{
-				throw new Exception("Audio buffer overflow!");
-			}
-
 			_blipL.ReadSamplesLeft(_outSampBuf, _outSamps);
 			_blipR.ReadSamplesRight(_outSampBuf, _outSamps);
 		}

@@ -26,7 +26,10 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 				throw new InvalidOperationException();
 			}
 
-			if (srcData.Length != size) throw new ArgumentException(message: "buffer too small", paramName: nameof(srcData));
+			if (size != srcData.Length)
+			{
+				throw new ArgumentOutOfRangeException();
+			}
 
 			Marshal.Copy(srcData, 0, data, size);
 		}

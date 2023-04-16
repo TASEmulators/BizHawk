@@ -164,7 +164,7 @@ auto PPU::power(bool reset) -> void {
 
   //$2133  SETINI
   io.extbg = random();
-  if (!reset) io.pseudoHires = random();
+  io.pseudoHires = random();
   io.overscan = false;
   io.interlace = false;
 
@@ -174,16 +174,14 @@ auto PPU::power(bool reset) -> void {
   //$213d  OPVCT
   io.vcounter = 0;
 
-  if (!reset) {
-    mosaic.power();
-    bg1.power();
-    bg2.power();
-    bg3.power();
-    bg4.power();
-    obj.power();
-    window.power();
-    screen.power();
-  }
+  mosaic.power();
+  bg1.power();
+  bg2.power();
+  bg3.power();
+  bg4.power();
+  obj.power();
+  window.power();
+  screen.power();
 
   updateVideoMode();
 }
@@ -209,7 +207,7 @@ auto PPU::refresh() -> void {
       }
     }
   }
-  if(configuration.video.drawCursor) if(auto device = controllerPort2.device) device->draw(output, pitch * sizeof(uint16), width, height);
+  if(auto device = controllerPort2.device) device->draw(output, pitch * sizeof(uint16), width, height);
   platform->videoFrame(output, pitch * sizeof(uint16), width, height, /* scale = */ 1);
 }
 

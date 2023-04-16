@@ -15,26 +15,34 @@ namespace BizHawk.Client.EmuHawk
 			BookMarkControl.UpdateBranchExternal();
 		}
 
-		public bool LoadState()
-			=> BookMarkControl.LoadBranchExternal();
+		public void LoadState()
+		{
+			BookMarkControl.LoadBranchExternal();
+		}
 
 		public void SaveStateAs()
 		{
 			// dummy
 		}
 
-		public bool LoadStateAs()
-			=> false;
+		public void LoadStateAs()
+		{
+			// dummy
+		}
 
 		public void SaveQuickSave(int slot)
-			=> BookMarkControl.UpdateBranchExternal(slot - 1);
+		{
+			BookMarkControl.UpdateBranchExternal(slot is 0 ? 9 : slot - 1);
+		}
 
-		public bool LoadQuickSave(int slot)
-			=> BookMarkControl.LoadBranchExternal(slot - 1);
+		public void LoadQuickSave(int slot)
+		{
+			BookMarkControl.LoadBranchExternal(slot is 0 ? 9 : slot - 1);
+		}
 
 		public bool SelectSlot(int slot)
 		{
-			BookMarkControl.SelectBranchExternal(slot - 1);
+			BookMarkControl.SelectBranchExternal(slot is 0 ? 9 : slot - 1);
 			return false;
 		}
 
@@ -112,14 +120,15 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool WantsToControlRestartMovie { get; }
 
-		public bool RestartMovie()
+		public void RestartMovie()
 		{
-			if (!AskSaveChanges()) return false;
-			WantsToControlStopMovie = false;
-			var success = StartNewMovieWrapper(CurrentTasMovie);
-			WantsToControlStopMovie = true;
-			RefreshDialog();
-			return success;
+			if (AskSaveChanges())
+			{
+				WantsToControlStopMovie = false;
+				StartNewMovieWrapper(CurrentTasMovie);
+				WantsToControlStopMovie = true;
+				RefreshDialog();
+			}
 		}
 
 		public bool WantsToControlReboot { get; private set; } = true;

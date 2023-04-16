@@ -31,22 +31,19 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BizBox_Load(object sender, EventArgs e)
 		{
+			string mainVersion = VersionInfo.MainVersion;
+			if (IntPtr.Size == 8)
+			{
+				mainVersion += " (x64)";
+			}
+
 			DeveloperBuildLabel.Visible = VersionInfo.DeveloperBuild;
 
-#if true //TODO prepare for re-adding x86 and adding ARM/RISC-V
-			const string targetArch = "x64";
-#else
-			var targetArch = IntPtr.Size is 8 ? "x64" : "x86";
-#endif
-#if DEBUG
-			const string buildConfig = "Debug";
-#else
-			const string buildConfig = "Release";
-#endif
-			VersionLabel.Text = $"Version {VersionInfo.MainVersion}";
-			VersionLabel.Text += VersionInfo.DeveloperBuild
-				? $" — dev build ({buildConfig}, {targetArch})"
-				: $" ({targetArch})";
+			Text = VersionInfo.DeveloperBuild
+				? $" BizHawk  (GIT {VersionInfo.GIT_BRANCH}#{VersionInfo.GIT_SHORTHASH})"
+				: $"Version {mainVersion} (GIT {VersionInfo.GIT_BRANCH}#{VersionInfo.GIT_SHORTHASH})";
+
+			VersionLabel.Text = $"Version {mainVersion}";
 			DateLabel.Text = VersionInfo.ReleaseDate;
 
 			foreach (var core in CoreInventory.Instance.SystemsFlat.Where(core => core.CoreAttr.Released)
@@ -58,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 				});
 			}
 
-			linkLabel2.Text = $"Commit :{VersionInfo.GIT_BRANCH}@{VersionInfo.GIT_SHORTHASH}";
+			linkLabel2.Text = $"Commit # {VersionInfo.GIT_SHORTHASH}";
 		}
 
 		private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

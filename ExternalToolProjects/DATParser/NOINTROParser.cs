@@ -71,7 +71,6 @@ namespace BizHawk.DATTool
 					item.Name = g.Value;
 					item.SHA1 = g.Elements("rom").First().Attribute("sha1").Value.ToUpper();
 					item.MD5 = g.Elements("rom").First().Attribute("md5").Value.ToUpper();
-					item.CRC32 = g.Elements("rom").First().Attribute("crc").Value.ToUpper();
 					item.System = GameDB.GetSystemCode(SysType);
 
 					ParseNOINTROFlags(item);
@@ -234,7 +233,9 @@ namespace BizHawk.DATTool
 			{
 				"alpha", "beta", "preview", "pre-release", "proto"
 			};
-			return DS.Exists(s.Contains);
+
+			bool b = DS.Any(s.Contains);
+			return b;
 		}
 
 		public static bool IsCopyrightStatus(string s)
@@ -243,7 +244,9 @@ namespace BizHawk.DATTool
 			{
 				"CW", "CW-R", "FW", "GW", "GW-R", "LW", "PD", "SW", "SW-R"
 			};
-			return CS.Exists(s.Contains);
+
+			bool b = CS.Any(s.Contains);
+			return b;
 		}
 
 		public static bool IsLanguageFlag(string s)
@@ -266,7 +269,7 @@ namespace BizHawk.DATTool
 					}
 				}
 
-//				b = LC.Exists(s.Contains);
+				//b = LC.Any(s.Contains);
 			}
 
 			return b;
@@ -293,7 +296,7 @@ namespace BizHawk.DATTool
 					}
 				}
 
-//				b = CC.Exists(s.Contains);
+				//b = CC.Any(s.Contains);
 			}
 
 			return b;

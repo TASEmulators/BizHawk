@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.IO;
 
 using BizHawk.Common;
@@ -37,19 +36,17 @@ namespace BizHawk.Client.Common
 				return false;
 			}
 
-			try
+			using var bl = ZipStateLoader.LoadAndDetect(Filename, true);
+			if (bl == null)
 			{
-				using var bl = ZipStateLoader.LoadAndDetect(Filename, true);
-				if (bl is null) return false;
-				ClearBeforeLoad();
-				LoadFields(bl, preload);
-				Changes = false;
-				return true;
+				return false;
 			}
-			catch (InvalidDataException e) when (e.StackTrace.Contains("ZipArchive.ReadEndOfCentralDirectory"))
-			{
-				throw new Exception("Archive appears to be corrupt. Make a backup, then try to repair it with e.g. 7-Zip.", e);
-			}
+
+			ClearBeforeLoad();
+			LoadFields(bl, preload);
+
+			Changes = false;
+			return true;
 		}
 
 		public bool PreLoadHeaderAndLength() => Load(true);
@@ -82,7 +79,7 @@ namespace BizHawk.Client.Common
 				if (Emulator is ICycleTiming cycleCore)
 				{
 					Header[HeaderKeys.CycleCount] = cycleCore.CycleCount.ToString();
-					Header[HeaderKeys.ClockRate] = cycleCore.ClockRate.ToString(CultureInfo.InvariantCulture);
+					Header[HeaderKeys.ClockRate] = cycleCore.ClockRate.ToString();
 				}
 			}
 			else
@@ -159,7 +156,7 @@ namespace BizHawk.Client.Common
 
 		protected void LoadBk2Fields(ZipStateLoader bl, bool preload)
 		{
-			bl.GetLump(BinaryStateLump.Movieheader, abort: true, tr =>
+			bl.GetLump(BinaryStateLump.Movieheader, true, delegate(TextReader tr)
 			{
 				string line;
 				while ((line = tr.ReadLine()) != null)
@@ -179,7 +176,7 @@ namespace BizHawk.Client.Common
 				}
 			});
 
-			bl.GetLump(BinaryStateLump.Input, abort: true, tr =>
+			bl.GetLump(BinaryStateLump.Input, true, delegate(TextReader tr)
 			{
 				IsCountingRerecords = false;
 				ExtractInputLog(tr, out _);
@@ -191,7 +188,7 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			bl.GetLump(BinaryStateLump.Comments, abort: false, tr =>
+			bl.GetLump(BinaryStateLump.Comments, false, delegate(TextReader tr)
 			{
 				string line;
 				while ((line = tr.ReadLine()) != null)
@@ -203,7 +200,7 @@ namespace BizHawk.Client.Common
 				}
 			});
 
-			bl.GetLump(BinaryStateLump.Subtitles, abort: false, tr =>
+			bl.GetLump(BinaryStateLump.Subtitles, false, delegate(TextReader tr)
 			{
 				string line;
 				while ((line = tr.ReadLine()) != null)
@@ -217,7 +214,7 @@ namespace BizHawk.Client.Common
 				Subtitles.Sort();
 			});
 
-			bl.GetLump(BinaryStateLump.SyncSettings, abort: false, tr =>
+			bl.GetLump(BinaryStateLump.SyncSettings, false, delegate(TextReader tr)
 			{
 				string line;
 				while ((line = tr.ReadLine()) != null)
@@ -232,20 +229,31 @@ namespace BizHawk.Client.Common
 			if (StartsFromSavestate)
 			{
 				bl.GetCoreState(
-					br => BinarySavestate = br.ReadAllBytes(),
-					tr => TextSavestate = tr.ReadToEnd());
-				bl.GetLump(BinaryStateLump.Framebuffer, false,
-					br =>
+					delegate(BinaryReader br, long length)
 					{
-						var fb = br.ReadAllBytes();
-						SavestateFramebuffer = new int[fb.Length / sizeof(int)];
-						Buffer.BlockCopy(fb, 0, SavestateFramebuffer, 0, fb.Length);
+						BinarySavestate = br.ReadBytes((int)length);
+					},
+					delegate(TextReader tr)
+					{
+						TextSavestate = tr.ReadToEnd();
+					});
+				bl.GetLump(BinaryStateLump.Framebuffer, false,
+					delegate(BinaryReader br, long length)
+					{
+						SavestateFramebuffer = new int[length / sizeof(int)];
+						for (int i = 0; i < SavestateFramebuffer.Length; i++)
+						{
+							SavestateFramebuffer[i] = br.ReadInt32();
+						}
 					});
 			}
 			else if (StartsFromSaveRam)
 			{
 				bl.GetLump(BinaryStateLump.MovieSaveRam, false,
-					br => SaveRam = br.ReadAllBytes());
+					delegate(BinaryReader br, long length)
+					{
+						SaveRam = br.ReadBytes((int)length);
+					});
 			}
 		}
 	}

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -18,14 +17,6 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class NESMusicRipper : ToolFormBase, IToolFormAutoConfig
 	{
-		private static readonly FilesystemFilterSet RenoiseFilesFSFilterSet = new(new FilesystemFilter("Renoise Song Files", new[] { "xrns" }))
-		{
-			AppendAllFilesEntry = false,
-		};
-
-		public static Icon ToolIcon
-			=> Properties.Resources.NesControllerIcon;
-
 		[RequiredService]
 		private NES Nes { get; set; }
 
@@ -34,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 		public NESMusicRipper()
 		{
 			InitializeComponent();
-			Icon = ToolIcon;
+			Icon = Properties.Resources.NesControllerIcon;
 			SyncContents();
 		}
 
@@ -107,12 +98,17 @@ namespace BizHawk.Client.EmuHawk
 		private void Export_Click(object sender, EventArgs e)
 		{
 			//acquire target
-			var outPath = this.ShowFileSaveDialog(
-				filter: RenoiseFilesFSFilterSet,
-				initDir: Config!.PathEntries.ToolsAbsolutePath());
-			if (outPath is null) return;
+			using var sfd = new SaveFileDialog
+			{
+				Filter = new FilesystemFilter("Renoise Song Files", new[] { "xrns" }).ToString()
+			};
+			if (sfd.ShowDialog().IsOk())
+			{
+				return;
+			}
 
 			// configuration:
+			var outPath = sfd.FileName;
 			string templatePath = Path.Combine(Path.GetDirectoryName(outPath) ?? "", "template.xrns");
 			int configuredPatternLength = int.Parse(txtPatternLength.Text);
 

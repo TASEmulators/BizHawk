@@ -72,9 +72,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public void OpenFile(string baseName)
 		{
-			var (dir, fileNoExt, ext) = baseName.SplitPathToDirFileAndExt();
-			_baseName = Path.Combine(dir!, fileNoExt);
-			_ext = ext;
+			_baseName = Path.Combine(
+				Path.GetDirectoryName(baseName),
+				Path.GetFileNameWithoutExtension(baseName));
+
+			_ext = Path.GetExtension(baseName);
+
 			_segment = 0;
 			OpenFileSegment();
 		}
@@ -228,7 +231,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				throw new ArgumentException(message: $"{nameof(FFmpegWriter)} can only take its own codec tokens!", paramName: nameof(token));
+				throw new ArgumentException($"{nameof(FFmpegWriter)} can only take its own codec tokens!");
 			}
 		}
 

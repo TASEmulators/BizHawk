@@ -64,7 +64,6 @@ namespace BizHawk.Client.Common
 			Bind("General", "Toggle Skip Lag Frame");
 			Bind("General", "Toggle Key Priority");
 			Bind("General", "Frame Inch");
-			Bind("General", "Toggle Messages");
 
 			Bind("Save States", "Save State 1", "Shift+F1");
 			Bind("Save States", "Save State 2", "Shift+F2");
@@ -75,7 +74,7 @@ namespace BizHawk.Client.Common
 			Bind("Save States", "Save State 7", "Shift+F7");
 			Bind("Save States", "Save State 8", "Shift+F8");
 			Bind("Save States", "Save State 9", "Shift+F9");
-			Bind("Save States", "Save State 10", "Shift+F10");
+			Bind("Save States", "Save State 0", "Shift+F10");
 			Bind("Save States", "Load State 1", "F1");
 			Bind("Save States", "Load State 2", "F2");
 			Bind("Save States", "Load State 3", "F3");
@@ -85,7 +84,7 @@ namespace BizHawk.Client.Common
 			Bind("Save States", "Load State 7", "F7");
 			Bind("Save States", "Load State 8", "F8");
 			Bind("Save States", "Load State 9", "F9");
-			Bind("Save States", "Load State 10", "F10");
+			Bind("Save States", "Load State 0", "F10");
 			Bind("Save States", "Select State 1", "Number1");
 			Bind("Save States", "Select State 2", "Number2");
 			Bind("Save States", "Select State 3", "Number3");
@@ -95,7 +94,7 @@ namespace BizHawk.Client.Common
 			Bind("Save States", "Select State 7", "Number7");
 			Bind("Save States", "Select State 8", "Number8");
 			Bind("Save States", "Select State 9", "Number9");
-			Bind("Save States", "Select State 10", "Number0");
+			Bind("Save States", "Select State 0", "Number0");
 			Bind("Save States", "Quick Load", "P");
 			Bind("Save States", "Quick Save", "I");
 			Bind("Save States", "Save Named State");
@@ -177,15 +176,6 @@ namespace BizHawk.Client.Common
 			Bind("NDS", "Next Screen Layout");
 			Bind("NDS", "Previous Screen Layout");
 			Bind("NDS", "Screen Rotate");
-
-			Bind("RAIntegration", "Open RA Overlay", "Escape");
-			Bind("RAIntegration", "RA Up", "Up");
-			Bind("RAIntegration", "RA Down", "Down");
-			Bind("RAIntegration", "RA Left", "Left");
-			Bind("RAIntegration", "RA Right", "Right");
-			Bind("RAIntegration", "RA Confirm", "X");
-			Bind("RAIntegration", "RA Cancel", "Z");
-			Bind("RAIntegration", "RA Quit", "Backspace");
 
 			AllHotkeys = dict;
 			Groupings = dict.Values.Select(static info => info.TabGroup).Distinct().ToList();

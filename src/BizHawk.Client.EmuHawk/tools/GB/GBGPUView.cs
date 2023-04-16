@@ -13,14 +13,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class GbGpuView : ToolFormBase, IToolFormAutoConfig
 	{
-		public static Icon ToolIcon
-			=> Properties.Resources.GambatteIcon;
-
 		[RequiredService]
-		public IGameboyCommon/*?*/ _gbCore { get; set; }
-
-		private IGameboyCommon Gb
-			=> _gbCore!;
+		public IGameboyCommon Gb { get; private set; }
 
 		// TODO: freeze semantics are a bit weird: details for a mouseover or freeze are taken from the current
 		// state, not the state at the last callback (and so can be quite different when update is set to manual).
@@ -75,7 +69,7 @@ namespace BizHawk.Client.EmuHawk
 		public GbGpuView()
 		{
 			InitializeComponent();
-			Icon = ToolIcon;
+			Icon = Properties.Resources.GambatteIcon;
 			bmpViewBG.ChangeBitmapSize(256, 256);
 			bmpViewWin.ChangeBitmapSize(256, 256);
 			bmpViewTiles1.ChangeBitmapSize(128, 192);
@@ -100,7 +94,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void Restart()
 		{
-			_cgb = Gb.IsCGBMode;
+			_cgb = Gb.IsCGBMode();
 			_lcdc = 0;
 
 			label4.Enabled = _cgb;
@@ -563,7 +557,9 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void GbGpuView_FormClosed(object sender, FormClosedEventArgs e)
-			=> _gbCore?.SetScanlineCallback(null, 0);
+		{
+			Gb?.SetScanlineCallback(null, 0);
+		}
 
 		private void radioButtonRefreshFrame_CheckedChanged(object sender, EventArgs e) { ComputeRefreshValues(); }
 		private void radioButtonRefreshScanline_CheckedChanged(object sender, EventArgs e) { ComputeRefreshValues(); }
@@ -620,17 +616,29 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return;
 			}
-			if (!Visible)
+
+			if (Gb != null)
 			{
-				if (_cbScanlineEmu is -2) return;
-				_cbScanlineEmu = -2;
-				Gb.SetScanlineCallback(null, 0);
-				return;
+				if (!Visible)
+				{
+					if (_cbScanlineEmu != -2)
+					{
+						_cbScanlineEmu = -2;
+						Gb.SetScanlineCallback(null, 0);
+					}
+				}
+				else
+				{
+					if (_cbScanline != _cbScanlineEmu)
+					{
+						_cbScanlineEmu = _cbScanline;
+						if (_cbScanline == -2)
+							Gb.SetScanlineCallback(null, 0);
+						else
+							Gb.SetScanlineCallback(ScanlineCallback, _cbScanline);
+					}
+				}
 			}
-			if (_cbScanline == _cbScanlineEmu) return;
-			_cbScanlineEmu = _cbScanline;
-			if (_cbScanline is -2) Gb.SetScanlineCallback(null, 0);
-			else Gb.SetScanlineCallback(ScanlineCallback, _cbScanline);
 		}
 
 		private string _freezeLabel;

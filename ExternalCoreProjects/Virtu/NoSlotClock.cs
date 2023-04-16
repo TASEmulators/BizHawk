@@ -21,8 +21,6 @@ namespace Jellyfish.Virtu
 		private RingRegister _clockRegister;
 		private RingRegister _comparisonRegister;
 
-		public Func<DateTime> FrontendTimeCallback;
-
 		public NoSlotClock(Video video)
 		{
 			_video = video;
@@ -119,7 +117,7 @@ namespace Jellyfish.Virtu
 		private void PopulateClockRegister()
 		{
 			// all values are in packed BCD format (4 bits per decimal digit)
-			var now = FrontendTimeCallback();
+			var now = DateTime.Now;
 
 			int centisecond = now.Millisecond / 10; // 00-99
 			_clockRegister.WriteNibble(centisecond % 10);

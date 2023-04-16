@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -8,7 +7,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Computers.TIC80
 {
-	[PortedCore(CoreNames.TIC80, "nesbox", "v1.0.2164", "https://tic80.com/")]
+	[PortedCore(CoreNames.TIC80, "nesbox", "v1.0.2164", "https://tic80.com/", isReleased: false)]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), })]
 	public partial class TIC80 : WaterboxCore
 	{
@@ -50,99 +49,66 @@ namespace BizHawk.Emulation.Cores.Computers.TIC80
 			});
 
 			var rom = lp.Roms[0].FileData;
-			var inputsActive = new bool[6]
-			{
-				_syncSettings.Gamepad1,
-				_syncSettings.Gamepad2,
-				_syncSettings.Gamepad3,
-				_syncSettings.Gamepad4,
-				_syncSettings.Mouse,
-				_syncSettings.Keyboard,
-			};
 
-			if (!_core.Init(rom, rom.Length, inputsActive))
+			if (!_core.Init(rom, rom.Length))
 			{
 				throw new InvalidOperationException("Init returned false!");
 			}
 
-			// note: InputsActive is mutated in Init call
-			// any items not available for the game will be set to false
-			ControllerDefinition = CreateControllerDefinition(inputsActive);
-			InputsActive = Array.AsReadOnly(inputsActive);
 			PostInit();
 
 			DeterministicEmulation = lp.DeterministicEmulationRequested || (!_syncSettings.UseRealTime);
 			InitializeRtc(_syncSettings.InitialTime);
 		}
 
-		public readonly ReadOnlyCollection<bool> InputsActive;
+		private static readonly List<KeyValuePair<string, LibTIC80.TIC80Keys>> KeyMap = new();
 
-		private static readonly IReadOnlyCollection<KeyValuePair<string, LibTIC80.TIC80Keys>> KeyMap = MakeKeyMap();
+		public override ControllerDefinition ControllerDefinition => TIC80Controller;
 
-		private static IReadOnlyCollection<KeyValuePair<string, LibTIC80.TIC80Keys>> MakeKeyMap()
-		{
-			var enumValues = Enum.GetValues(typeof(LibTIC80.TIC80Keys));
-			var ret = new KeyValuePair<string, LibTIC80.TIC80Keys>[enumValues.Length - 1];
-			for (int i = 0; i < ret.Length; i++)
-			{
-				var val = enumValues.GetValue(i + 1);
-				var name = Enum.GetName(typeof(LibTIC80.TIC80Keys), val).TrimStart('_').Replace('_', ' ');
-				ret[i] = new(name, (LibTIC80.TIC80Keys)val);
-			}
+		private static readonly ControllerDefinition TIC80Controller = CreateControllerDefinition();
 
-			return Array.AsReadOnly(ret);
-		}
-
-		private static ControllerDefinition CreateControllerDefinition(bool[] inputsActive)
+		private static ControllerDefinition CreateControllerDefinition()
 		{
 			var ret = new ControllerDefinition("TIC-80 Controller");
 
 			for (int i = 0; i < 4; i++)
 			{
-				if (inputsActive[i])
+				foreach (var b in Enum.GetValues(typeof(LibTIC80.TIC80Gamepad)))
 				{
-					foreach (var b in Enum.GetValues(typeof(LibTIC80.TIC80Gamepad)))
-					{
-						ret.BoolButtons.Add($"P{i + 1} {Enum.GetName(typeof(LibTIC80.TIC80Gamepad), b)}");
-					}
+					ret.BoolButtons.Add($"P{i + 1} {Enum.GetName(typeof(LibTIC80.TIC80Gamepad), b)}");
 				}
 			}
 
-			if (inputsActive[4])
+			ret.AddXYPair("Mouse Position {0}", AxisPairOrientation.RightAndUp, (-128).RangeTo(127), 0);
+			ret.BoolButtons.Add("Mouse Left Click");
+			ret.BoolButtons.Add("Mouse Middle Click");
+			ret.BoolButtons.Add("Mouse Right Click");
+			ret.AddXYPair("Mouse Scroll {0}", AxisPairOrientation.RightAndUp, (-32).RangeTo(31), 0);
+			ret.BoolButtons.Add("Mouse Relative Toggle");
+
+			foreach (var n in ret.BoolButtons)
 			{
-				ret.AddXYPair("Mouse Position {0}", AxisPairOrientation.RightAndUp, (-128).RangeTo(127), 0);
-				ret.BoolButtons.Add("Mouse Left Click");
-				ret.BoolButtons.Add("Mouse Middle Click");
-				ret.BoolButtons.Add("Mouse Right Click");
-				ret.AddXYPair("Mouse Scroll {0}", AxisPairOrientation.RightAndUp, (-32).RangeTo(31), 0);
-				ret.BoolButtons.Add("Mouse Relative Toggle");
-
-				foreach (var n in ret.BoolButtons)
+				if (n.StartsWith("Mouse"))
 				{
-					if (n.StartsWith("Mouse"))
-					{
-						ret.CategoryLabels[n] = "Mouse";
-					}
-				}
-
-				foreach (var n in ret.Axes.Keys)
-				{
-					if (n.StartsWith("Mouse"))
-					{
-						ret.CategoryLabels[n] = "Mouse";
-					}
+					ret.CategoryLabels[n] = "Mouse";
 				}
 			}
 
-			if (inputsActive[5])
+			foreach (var n in ret.Axes.Keys)
 			{
-				foreach (var k in Enum.GetValues(typeof(LibTIC80.TIC80Keys)))
+				if (n.StartsWith("Mouse"))
 				{
-					var name = Enum.GetName(typeof(LibTIC80.TIC80Keys), k).TrimStart('_').Replace('_', ' ');
-					if (name is "Unknown") continue;
-					ret.BoolButtons.Add(name);
-					ret.CategoryLabels[name] = "Keyboard";
+					ret.CategoryLabels[n] = "Mouse";
 				}
+			}
+
+			foreach (var k in Enum.GetValues(typeof(LibTIC80.TIC80Keys)))
+			{
+				var name = Enum.GetName(typeof(LibTIC80.TIC80Keys), k).TrimStart('_').Replace('_', ' ');
+				if (name is "Unknown") continue;
+				KeyMap.Add(new(name, (LibTIC80.TIC80Keys)k));
+				ret.BoolButtons.Add(name);
+				ret.CategoryLabels[name] = "Keyboard";
 			}
 
 			ret.BoolButtons.Add("Reset");

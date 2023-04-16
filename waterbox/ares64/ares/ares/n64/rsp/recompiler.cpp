@@ -1,63 +1,35 @@
-auto RSP::Recompiler::measure(u12 address) -> u12 {
-  u12 start = address;
-  bool hasBranched = 0;
-  while(true) {
-    u32 instruction = self.imem.read<Word>(address);
-    bool branched = isTerminal(instruction);
-    address += 4;
-    if(hasBranched || address == start) break;
-    hasBranched = branched;
+auto RSP::Recompiler::pool() -> Pool* {
+  if(context) return context;
+
+  nall::Hash::CRC32 hashcode;
+  for(u32 offset : range(4096)) {
+    hashcode.input(self.imem.read<Byte>(offset));
   }
 
-  return address - start;
-}
-
-auto RSP::Recompiler::hash(u12 address, u12 size) -> u64 {
-  u12 end = address + size;
-  if(address < end) {
-    return XXH3_64bits(self.imem.data + address, size);
-  } else {
-    return XXH3_64bits(self.imem.data + address, self.imem.size - address)
-         ^ XXH3_64bits(self.imem.data, end);
-  }
-}
-
-auto RSP::Recompiler::block(u12 address) -> Block* {
-  if(dirty) {
-    u12 address = 0;
-    for(auto& block : context) {
-      if(block && (dirty & mask(address, block->size)) != 0) {
-        block = nullptr;
-      }
-      address += 4;
-    }
-    dirty = 0;
+  PoolHashPair pair;
+  pair.pool = (Pool*)allocator.acquire();
+  pair.hashcode = hashcode.value();
+  if(auto result = pools.find(pair)) {
+    return context = result->pool;
   }
 
-  if(auto block = context[address >> 2]) return block;
-
-  auto size = measure(address);
-  auto hashcode = hash(address, size);
-
-  BlockHashPair pair;
-  pair.hashcode = hashcode;
-  if(auto result = blocks.find(pair)) {
-    return context[address >> 2] = result->block;
-  }
-
-  auto block = emit(address);
-  assert(block->size == size);
-  memory::jitprotect(true);
-
-  pair.block = block;
-  if(auto result = blocks.insert(pair)) {
-    return context[address >> 2] = result->block;
+  allocator.reserve(sizeof(Pool));
+  if(auto result = pools.insert(pair)) {
+    return context = result->pool;
   }
 
   throw;  //should never occur
 }
 
-auto RSP::Recompiler::emit(u12 address) -> Block* {
+auto RSP::Recompiler::block(u32 address) -> Block* {
+  if(auto block = pool()->blocks[address >> 2 & 0x3ff]) return block;
+  auto block = emit(address);
+  pool()->blocks[address >> 2 & 0x3ff] = block;
+  memory::jitprotect(true);
+  return block;
+}
+
+auto RSP::Recompiler::emit(u32 address) -> Block* {
   if(unlikely(allocator.available() < 1_MiB)) {
     print("RSP allocator flush\n");
     memory::jitprotect(false);
@@ -69,14 +41,13 @@ auto RSP::Recompiler::emit(u12 address) -> Block* {
   auto block = (Block*)allocator.acquire(sizeof(Block));
   beginFunction(3);
 
-  u12 start = address;
   bool hasBranched = 0;
   while(true) {
     u32 instruction = self.imem.read<Word>(address);
     bool branched = emitEXECUTE(instruction);
     call(&RSP::instructionEpilogue);
     address += 4;
-    if(hasBranched || address == start) break;
+    if(hasBranched || (address & 0xffc) == 0) break;  //IMEM boundary
     hasBranched = branched;
     testJumpEpilog();
   }
@@ -84,7 +55,6 @@ auto RSP::Recompiler::emit(u12 address) -> Block* {
 
   memory::jitprotect(false);
   block->code = endFunction();
-  block->size = address - start;
 
 //print(hex(PC, 8L), " ", instructions, " ", size(), "\n");
   return block;
@@ -188,7 +158,7 @@ auto RSP::Recompiler::emitEXECUTE(u32 instruction) -> bool {
   }
 
   //ADDIU Rt,Rs,i16
-  case range2(0x08, 0x09): {
+  case 0x08 ... 0x09: {
     add32(mem(Rt), mem(Rs), imm(i16));
     return 0;
   }
@@ -247,7 +217,7 @@ auto RSP::Recompiler::emitEXECUTE(u32 instruction) -> bool {
   }
 
   //INVALID
-  case range13(0x13, 0x1f): {
+  case 0x13 ... 0x1f: {
     return 0;
   }
 
@@ -348,7 +318,7 @@ auto RSP::Recompiler::emitEXECUTE(u32 instruction) -> bool {
   }
 
   //INVALID
-  case range6(0x2c, 0x31): {
+  case 0x2c ... 0x31: {
     return 0;
   }
 
@@ -358,7 +328,7 @@ auto RSP::Recompiler::emitEXECUTE(u32 instruction) -> bool {
   }
 
   //INVALID
-  case range7(0x33, 0x39): {
+  case 0x33 ... 0x39: {
     return 0;
   }
 
@@ -368,7 +338,7 @@ auto RSP::Recompiler::emitEXECUTE(u32 instruction) -> bool {
   }
 
   //INVALID
-  case range5(0x3b, 0x3f): {
+  case 0x3b ... 0x3f: {
     return 0;
   }
 
@@ -405,7 +375,8 @@ auto RSP::Recompiler::emitSPECIAL(u32 instruction) -> bool {
 
   //SLLV Rd,Rt,Rs
   case 0x04: {
-    mshl32(mem(Rd), mem(Rt), mem(Rs));
+    and32(reg(0), mem(Rs), imm(31));
+    shl32(mem(Rd), mem(Rt), reg(0));
     return 0;
   }
 
@@ -416,13 +387,15 @@ auto RSP::Recompiler::emitSPECIAL(u32 instruction) -> bool {
 
   //SRLV Rd,Rt,Rs
   case 0x06: {
-    mlshr32(mem(Rd), mem(Rt), mem(Rs));
+    and32(reg(0), mem(Rs), imm(31));
+    lshr32(mem(Rd), mem(Rt), reg(0));
     return 0;
   }
 
   //SRAV Rd,Rt,Rs
   case 0x07: {
-    mashr32(mem(Rd), mem(Rt), mem(Rs));
+    and32(reg(0), mem(Rs), imm(31));
+    ashr32(mem(Rd), mem(Rt), reg(0));
     return 0;
   }
 
@@ -442,7 +415,7 @@ auto RSP::Recompiler::emitSPECIAL(u32 instruction) -> bool {
   }
 
   //INVALID
-  case range3(0x0a, 0x0c): {
+  case 0x0a ... 0x0c: {
     return 0;
   }
 
@@ -453,18 +426,18 @@ auto RSP::Recompiler::emitSPECIAL(u32 instruction) -> bool {
   }
 
   //INVALID
-  case range18(0x0e, 0x1f): {
+  case 0x0e ... 0x1f: {
     return 0;
   }
 
   //ADDU Rd,Rs,Rt
-  case range2(0x20, 0x21): {
+  case 0x20 ... 0x21: {
     add32(mem(Rd), mem(Rs), mem(Rt));
     return 0;
   }
 
   //SUBU Rd,Rs,Rt
-  case range2(0x22, 0x23): {
+  case 0x22 ... 0x23: {
     sub32(mem(Rd), mem(Rs), mem(Rt));
     return 0;
   }
@@ -490,13 +463,13 @@ auto RSP::Recompiler::emitSPECIAL(u32 instruction) -> bool {
   //NOR Rd,Rs,Rt
   case 0x27: {
     or32(reg(0), mem(Rs), mem(Rt));
-    xor32(reg(0), reg(0), imm(-1));
+    not32(reg(0), reg(0));
     mov32(mem(Rd), reg(0));
     return 0;
   }
 
   //INVALID
-  case range2(0x28, 0x29): {
+  case 0x28 ... 0x29: {
     return 0;
   }
 
@@ -515,7 +488,7 @@ auto RSP::Recompiler::emitSPECIAL(u32 instruction) -> bool {
   }
 
   //INVALID
-  case range20(0x2c, 0x3f): {
+  case 0x2c ... 0x3f: {
     return 0;
   }
 
@@ -544,7 +517,7 @@ auto RSP::Recompiler::emitREGIMM(u32 instruction) -> bool {
   }
 
   //INVALID
-  case range14(0x02, 0x0f): {
+  case 0x02 ... 0x0f: {
     return 0;
   }
 
@@ -565,7 +538,7 @@ auto RSP::Recompiler::emitREGIMM(u32 instruction) -> bool {
   }
 
   //INVALID
-  case range14(0x12, 0x1f): {
+  case 0x12 ... 0x1f: {
     return 0;
   }
 
@@ -586,7 +559,7 @@ auto RSP::Recompiler::emitSCC(u32 instruction) -> bool {
   }
 
   //INVALID
-  case range3(0x01, 0x03): {
+  case 0x01 ... 0x03: {
     return 0;
   }
 
@@ -599,7 +572,7 @@ auto RSP::Recompiler::emitSCC(u32 instruction) -> bool {
   }
 
   //INVALID
-  case range27(0x05, 0x1f): {
+  case 0x05 ... 0x1f: {
     return 0;
   }
 
@@ -660,7 +633,7 @@ auto RSP::Recompiler::emitVU(u32 instruction) -> bool {
   }
 
   //INVALID
-  case range9(0x07, 0x0f): {
+  case 0x07 ... 0x0f: {
     return 0;
   }
 
@@ -868,7 +841,7 @@ auto RSP::Recompiler::emitVU(u32 instruction) -> bool {
   }
 
   //Broken opcodes: VADDB, VSUBB, VACCB, VSUCB, VSAD, VSAC, VSUM
-  case range7(0x16, 0x1c): {
+  case 0x16 ... 0x1c: {
     lea(reg(1), Vd);
     lea(reg(2), Vs);
     lea(reg(3), Vt);
@@ -885,7 +858,7 @@ auto RSP::Recompiler::emitVU(u32 instruction) -> bool {
   }
 
   //Invalid opcodes
-  case range2(0x1e, 0x1f): {
+  case 0x1e ... 0x1f: {
     lea(reg(1), Vd);
     lea(reg(2), Vs);
     lea(reg(3), Vt);
@@ -1020,7 +993,7 @@ auto RSP::Recompiler::emitVU(u32 instruction) -> bool {
   }
 
   //INVALID
-  case range2(0x2e, 0x2f): {
+  case 0x2e ... 0x2f: {
     lea(reg(1), Vd);
     lea(reg(2), Vs);
     lea(reg(3), Vt);
@@ -1098,7 +1071,7 @@ auto RSP::Recompiler::emitVU(u32 instruction) -> bool {
   }
 
   //Broken opcodes: VEXTT, VEXTQ, VEXTN
-  case range3(0x38, 0x3a): {
+  case 0x38 ... 0x3a: {
     lea(reg(1), Vd);
     lea(reg(2), Vs);
     lea(reg(3), Vt);
@@ -1116,7 +1089,7 @@ auto RSP::Recompiler::emitVU(u32 instruction) -> bool {
   }
 
   //Broken opcodes: VINST, VINSQ, VINSN
-  case range3(0x3c, 0x3e): {
+  case 0x3c ... 0x3e: {
     lea(reg(1), Vd);
     lea(reg(2), Vs);
     lea(reg(3), Vt);
@@ -1247,7 +1220,7 @@ auto RSP::Recompiler::emitLWC2(u32 instruction) -> bool {
   }
 
   //INVALID
-  case range20(0x0c, 0x1f): {
+  case 0x0c ... 0x1f: {
     return 0;
   }
 
@@ -1372,71 +1345,13 @@ auto RSP::Recompiler::emitSWC2(u32 instruction) -> bool {
   }
 
   //INVALID
-  case range20(0x0c, 0x1f): {
+  case 0x0c ... 0x1f: {
     return 0;
   }
 
   }
   #undef E
   #undef i7
-
-  return 0;
-}
-
-auto RSP::Recompiler::isTerminal(u32 instruction) -> bool {
-  switch(instruction >> 26) {
-
-  //SPECIAL
-  case 0x00: {
-    switch(instruction & 0x3f) {
-
-    //JR Rs
-    case 0x08:
-    //JALR Rd,Rs
-    case 0x09:
-    //BREAK
-    case 0x0d:
-      return 1;
-
-    }
-
-    break;
-  }
-
-  //REGIMM
-  case 0x01: {
-    switch(instruction >> 16 & 0x1f) {
-
-    //BLTZ Rs,i16
-    case 0x00:
-    //BGEZ Rs,i16
-    case 0x01:
-    //BLTZAL Rs,i16
-    case 0x10:
-    //BGEZAL Rs,i16
-    case 0x11:
-      return 1;
-
-    }
-
-    break;
-  }
-
-  //J n26
-  case 0x02:
-  //JAL n26
-  case 0x03:
-  //BEQ Rs,Rt,i16
-  case 0x04:
-  //BNE Rs,Rt,i16
-  case 0x05:
-  //BLEZ Rs,i16
-  case 0x06:
-  //BGTZ Rs,i16
-  case 0x07:
-    return 1;
-
-  }
 
   return 0;
 }

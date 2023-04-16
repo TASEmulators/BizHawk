@@ -19,36 +19,14 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private readonly byte[] _inputPortData = new byte[MAX_INPUT_DATA];
 		private readonly string _controllerDeckName;
 
-		protected delegate void AddAxisHook(
-			ControllerDefinition ret,
-			string name,
-			bool isReversed,
-			ref ControllerThunk thunk,
-			int thunkWriteOffset);
-
-		protected virtual void AddAxis(
-			ControllerDefinition ret,
-			string name,
-			bool isReversed,
-			ref ControllerThunk thunk,
-			int thunkWriteOffset)
-				=> ret.AddAxis(name, 0.RangeTo(0xFFFF), 0x8000, isReversed);
-
 		private void InitControls(List<NPortInfoT> allPorts, int numCds, ref SystemInfo si)
 		{
 			_controllerAdapter = new ControllerAdapter(
-				allPorts,
-				_syncSettingsActual.PortDevices,
-				OverrideButtonName,
-				numCds,
-				ref si,
-				ComputeHiddenPorts(),
-				AddAxis,
+				allPorts, _syncSettingsActual.PortDevices, OverrideButtonName, numCds, ref si, ComputeHiddenPorts(),
 				_controllerDeckName);
 			_nyma.SetInputDevices(_controllerAdapter.Devices);
 			ControllerDefinition = _controllerAdapter.Definition;
 		}
-
 		protected delegate void ControllerThunk(IController c, byte[] b);
 
 		protected class ControllerAdapter : IStatable
@@ -66,7 +44,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				int numCds,
 				ref SystemInfo systemInfo,
 				HashSet<string> hiddenPorts,
-				AddAxisHook addAxisHook,
 				string controllerDeckName)
 			{
 				ControllerDefinition ret = new(controllerDeckName)
@@ -95,12 +72,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 					var devices = portInfo.Devices;
 					
-					var device = devices.Find(a => a.ShortName == deviceName);
+					var device = devices.FirstOrDefault(a => a.ShortName == deviceName);
 					if (device == null)
 					{
 						Console.WriteLine($"Warn: unknown controller device {deviceName}");
-						device = devices.Find(a => a.ShortName == portInfo.DefaultDeviceShortName)
-							?? throw new InvalidOperationException($"Fail: unknown controller device {portInfo.DefaultDeviceShortName}");
+						device = devices.FirstOrDefault(a => a.ShortName == portInfo.DefaultDeviceShortName);
+						if (device == null)
+							throw new InvalidOperationException($"Fail: unknown controller device {portInfo.DefaultDeviceShortName}");
 					}
 
 					ActualPortData.Add(new PortResult
@@ -200,15 +178,15 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							{
 								var data = input.Extra.AsAxis();
 								var fullName = $"{name} {overrideName(data.NameNeg)} / {overrideName(data.NamePos)}";
-								ControllerThunk thunk = (c, b) =>
+
+								ret.AddAxis(fullName, 0.RangeTo(0xFFFF), 0x8000, (input.Flags & AxisFlags.InvertCo) != 0);
+								ret.CategoryLabels[fullName] = category;
+								_thunks.Add((c, b) =>
 								{
 									var val = c.AxisValue(fullName);
 									b[byteStart] = (byte)val;
 									b[byteStart + 1] = (byte)(val >> 8);
-								};
-								addAxisHook(ret, fullName, (input.Flags & AxisFlags.InvertCo) is not 0, ref thunk, byteStart);
-								ret.CategoryLabels[fullName] = category;
-								_thunks.Add(thunk);
+								});
 								break;
 							}
 							case InputType.AxisRel:
@@ -233,9 +211,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							case InputType.PointerX:
 							{
 								// I think the core expects to be sent some sort of 16 bit integer, but haven't investigated much
-								var minX = systemInfo.PointerOffsetX;
-								var maxX = systemInfo.PointerOffsetX + systemInfo.PointerScaleX;
-								ret.AddAxis(name, minX.RangeTo(maxX), (minX + maxX) / 2);
+								ret.AddAxis(name, systemInfo.PointerOffsetX.RangeTo(systemInfo.PointerScaleX), systemInfo.PointerOffsetX);
 								_thunks.Add((c, b) =>
 								{
 									var val = c.AxisValue(name);
@@ -247,9 +223,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							case InputType.PointerY:
 							{
 								// I think the core expects to be sent some sort of 16 bit integer, but haven't investigated much
-								var minY = systemInfo.PointerOffsetY;
-								var maxY = systemInfo.PointerOffsetY + systemInfo.PointerScaleY;
-								ret.AddAxis(name, minY.RangeTo(maxY), (minY + maxY) / 2);
+								ret.AddAxis(name, systemInfo.PointerOffsetY.RangeTo(systemInfo.PointerScaleY), systemInfo.PointerOffsetY);
 								_thunks.Add((c, b) =>
 								{
 									var val = c.AxisValue(name);
@@ -267,22 +241,14 @@ namespace BizHawk.Emulation.Cores.Waterbox
 									var val = c.AxisValue(name);
 									b[byteStart] = (byte)val;
 									b[byteStart + 1] = (byte)(val >> 8);
-								});
+								});									
 								break;
 							}
 							case InputType.Status:
 								// TODO: wire up statuses to something (not controller, of course)
 								break;
 							case InputType.Rumble:
-								ret.HapticsChannels.Add(name);
-								// this is a special case, we treat b here as output rather than input
-								// so these thunks are called after the frame has advanced
-								_rumblers.Add((c, b) =>
-								{
-									// TODO: not entirely sure this is correct...
-									var val = b[byteStart] | (b[byteStart + 1] << 8);
-									c.SetHapticChannelStrength(name, val << 7);
-								});
+								// TODO: wtf do we do here???
 								break;
 							default:
 							{
@@ -310,20 +276,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 			private readonly byte[] _switchPreviousFrame;
 
-			private readonly List<ControllerThunk> _thunks = new();
-			private readonly List<ControllerThunk> _rumblers = new();
+			private readonly List<Action<IController, byte[]>> _thunks = new List<Action<IController, byte[]>>();
 
 			public void SetBits(IController src, byte[] dest)
 			{
 				Array.Clear(dest, 0, dest.Length);
 				foreach (var t in _thunks)
 					t(src, dest);
-			}
-
-			public void DoRumble(IController dest, byte[] src)
-			{
-				foreach (var r in _rumblers)
-					r(dest, src);
 			}
 
 			private const ulong MAGIC = 9569546739673486731;

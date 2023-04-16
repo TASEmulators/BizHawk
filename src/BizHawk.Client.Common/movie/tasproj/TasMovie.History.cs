@@ -46,9 +46,6 @@ namespace BizHawk.Client.Common
 		private int _totalSteps;
 		private bool _recordingBatch;
 
-		private List<IMovieAction> LatestBatch
-			=> _history[_history.Count - 1];
-
 		public List<string> Names { get; } = new List<string>();
 		public int UndoIndex { get; private set; } = -1;
 
@@ -166,7 +163,7 @@ namespace BizHawk.Client.Common
 			}
 
 			_recordingBatch = false;
-			var last = LatestBatch;
+			List<IMovieAction> last = _history.Last();
 			if (last.Count == 0) // Remove batch if it's empty.
 			{
 				_history.RemoveAt(_history.Count - 1);
@@ -199,7 +196,13 @@ namespace BizHawk.Client.Common
 			UndoIndex--;
 
 			_recordingBatch = false;
-			return batch.TrueForAll(static a => a is MovieActionMarker) ? _movie.InputLogLength : PreviousUndoFrame;
+
+			if (batch.All(a => a.GetType() == typeof(MovieActionMarker)))
+			{
+				return _movie.InputLogLength;
+			}
+
+			return PreviousUndoFrame;
 		}
 
 		/// <summary>
@@ -221,7 +224,13 @@ namespace BizHawk.Client.Common
 			}
 
 			_recordingBatch = false;
-			return batch.TrueForAll(static a => a is MovieActionMarker) ? _movie.InputLogLength : PreviousRedoFrame;
+
+			if (batch.All(a => a.GetType() == typeof(MovieActionMarker)))
+			{
+				return _movie.InputLogLength;
+			}
+
+			return PreviousRedoFrame;
 		}
 
 		public bool CanUndo => UndoIndex > -1;
@@ -319,8 +328,8 @@ namespace BizHawk.Client.Common
 			if (IsRecording || force)
 			{
 				AddMovieAction(name);
-				LatestBatch.Add(new MovieAction(first, last, _movie));
-				_lastGeneral = LatestBatch.Count - 1;
+				_history.Last().Add(new MovieAction(first, last, _movie));
+				_lastGeneral = _history.Last().Count - 1;
 			}
 		}
 
@@ -328,7 +337,7 @@ namespace BizHawk.Client.Common
 		{
 			if (IsRecording || force)
 			{
-				((MovieAction) LatestBatch[_lastGeneral]).SetRedoLog(_movie);
+				(_history.Last()[_lastGeneral] as MovieAction).SetRedoLog(_movie);
 			}
 		}
 
@@ -337,7 +346,7 @@ namespace BizHawk.Client.Common
 			if (IsRecording || force)
 			{
 				AddMovieAction(name);
-				LatestBatch.Add(new MovieActionFrameEdit(frame, button, oldState, !oldState));
+				_history.Last().Add(new MovieActionFrameEdit(frame, button, oldState, !oldState));
 			}
 		}
 
@@ -346,7 +355,7 @@ namespace BizHawk.Client.Common
 			if (IsRecording || force)
 			{
 				AddMovieAction(name);
-				LatestBatch.Add(new MovieActionFrameEdit(frame, button, oldState, newState));
+				_history.Last().Add(new MovieActionFrameEdit(frame, button, oldState, newState));
 			}
 		}
 
@@ -359,7 +368,7 @@ namespace BizHawk.Client.Common
 					: $"Remove Marker at frame {oldPosition}";
 
 				AddMovieAction(name);
-				LatestBatch.Add(new MovieActionMarker(newMarker, oldPosition, oldMessage));
+				_history.Last().Add(new MovieActionMarker(newMarker, oldPosition, oldMessage));
 			}
 		}
 
@@ -368,7 +377,7 @@ namespace BizHawk.Client.Common
 			if (IsRecording || force)
 			{
 				AddMovieAction(name);
-				LatestBatch.Add(new MovieActionBindInput(_movie, frame, isDelete));
+				_history.Last().Add(new MovieActionBindInput(_movie, frame, isDelete));
 			}
 		}
 
@@ -377,7 +386,7 @@ namespace BizHawk.Client.Common
 			if (IsRecording || force)
 			{
 				AddMovieAction(name);
-				LatestBatch.Add(new MovieActionInsertFrames(frame, count));
+				_history.Last().Add(new MovieActionInsertFrames(frame, count));
 			}
 		}
 
@@ -386,7 +395,7 @@ namespace BizHawk.Client.Common
 			if (IsRecording || force)
 			{
 				AddMovieAction(name);
-				LatestBatch.Add(new MovieActionInsertFrames(frame, newInputs));
+				_history.Last().Add(new MovieActionInsertFrames(frame, newInputs));
 			}
 		}
 
@@ -395,7 +404,7 @@ namespace BizHawk.Client.Common
 			if (IsRecording || force)
 			{
 				AddMovieAction(name);
-				LatestBatch.Add(new MovieActionRemoveFrames(removeStart, removeUpTo, oldInputs, removedMarkers));
+				_history.Last().Add(new MovieActionRemoveFrames(removeStart, removeUpTo, oldInputs, removedMarkers));
 			}
 		}
 	}
@@ -499,7 +508,7 @@ namespace BizHawk.Client.Common
 		}
 	}
 
-	public sealed class MovieActionMarker : IMovieAction
+	public class MovieActionMarker : IMovieAction
 	{
 		public int FirstFrame { get; }
 		public int LastFrame { get; }

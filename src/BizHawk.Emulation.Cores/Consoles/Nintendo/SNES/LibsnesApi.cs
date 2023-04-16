@@ -198,7 +198,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public delegate void snes_input_poll_t();
 		public delegate short snes_input_state_t(int port, int device, int index, int id);
 		public delegate void snes_input_notify_t(int index);
-		public delegate void snes_audio_sample_t(short left, short right);
+		public delegate void snes_audio_sample_t(ushort left, ushort right);
 		public delegate void snes_scanlineStart_t(int line);
 		public delegate string snes_path_request_t(int slot, string hint);
 		public delegate void snes_trace_t(uint which, string msg);

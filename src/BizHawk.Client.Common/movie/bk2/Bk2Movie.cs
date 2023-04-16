@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores;
 
 namespace BizHawk.Client.Common
 {
@@ -14,9 +14,7 @@ namespace BizHawk.Client.Common
 		{
 			if (string.IsNullOrWhiteSpace(filename))
 			{
-				throw filename is null
-					? new ArgumentNullException(paramName: nameof(filename))
-					: new ArgumentException(message: "path cannot be blank", paramName: nameof(filename));
+				throw new ArgumentNullException($"{nameof(filename)} can not be null.");
 			}
 
 			Session = session;
@@ -74,7 +72,7 @@ namespace BizHawk.Client.Common
 				if (Header.TryGetValue(HeaderKeys.CycleCount, out var numCyclesStr) && Header.TryGetValue(HeaderKeys.ClockRate, out var clockRateStr))
 				{
 					var numCycles = Convert.ToUInt64(numCyclesStr);
-					var clockRate = Convert.ToDouble(clockRateStr, CultureInfo.InvariantCulture);
+					var clockRate = Convert.ToDouble(clockRateStr);
 					dblSeconds = numCycles / clockRate;
 				}
 				else
@@ -92,21 +90,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public double FrameRate
-		{
-			get
-			{
-				if (SystemID == VSystemID.Raw.Arcade && Header.TryGetValue(HeaderKeys.VsyncAttoseconds, out var vsyncAttoStr))
-				{
-					const decimal attosInSec = 1000000000000000000;
-					return (double)(attosInSec / Convert.ToUInt64(vsyncAttoStr));
-				}
-				else
-				{
-					return PlatformFrameRates.GetFrameRate(SystemID, IsPal);
-				}
-			}
-		}
+		public double FrameRate => PlatformFrameRates.GetFrameRate(SystemID, IsPal);
 
 		public IStringLog GetLogEntries() => Log;
 

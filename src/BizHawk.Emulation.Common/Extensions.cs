@@ -22,7 +22,6 @@ namespace BizHawk.Emulation.Common
 			[VSystemID.Raw.A78] = "Atari 7800",
 			[VSystemID.Raw.AmstradCPC] = "Amstrad CPC",
 			[VSystemID.Raw.AppleII] = "Apple II",
-			[VSystemID.Raw.Arcade] = "Arcade",
 			[VSystemID.Raw.C64] = "Commodore 64",
 			[VSystemID.Raw.ChannelF] = "Channel F",
 			[VSystemID.Raw.Coleco] = "ColecoVision",
@@ -36,9 +35,9 @@ namespace BizHawk.Emulation.Common
 			[VSystemID.Raw.GG] = "Game Gear",
 			[VSystemID.Raw.GGL] = "Game Gear Link",
 			[VSystemID.Raw.INTV] = "Intellivision",
-			[VSystemID.Raw.Jaguar] = "Jaguar",
 			[VSystemID.Raw.Libretro] = "Libretro",
 			[VSystemID.Raw.Lynx] = "Lynx",
+			[VSystemID.Raw.MAME] = "MAME",
 			[VSystemID.Raw.MSX] = "MSX",
 			[VSystemID.Raw.N64] = "Nintendo 64",
 			[VSystemID.Raw.NDS] = "NDS",
@@ -52,7 +51,6 @@ namespace BizHawk.Emulation.Common
 			[VSystemID.Raw.PS2] = "PlayStation 2",
 			[VSystemID.Raw.PSX] = "PlayStation",
 			[VSystemID.Raw.SAT] = "Saturn",
-			[VSystemID.Raw.Satellaview] = "Satellaview",
 			[VSystemID.Raw.Sega32X] = "Genesis 32X",
 			[VSystemID.Raw.SG] = "SG-1000",
 			[VSystemID.Raw.SGX] = "SuperGrafx",
@@ -425,12 +423,16 @@ namespace BizHawk.Emulation.Common
 		}
 
 		public static string FilesystemSafeName(this IGameInfo game)
-			=> game.Name.Replace('/', '+') // '/' is the path dir separator, obviously (methods in Path will treat it as such, even on Windows)
+		{
+			var pass1 = game.Name
+				.Replace('/', '+') // '/' is the path dir separator, obviously (methods in Path will treat it as such, even on Windows)
 				.Replace('|', '+') // '|' is the filename-member separator for archives in HawkFile
 				.Replace(":", " -") // ':' is the path separator in lists (Path.GetFileName will drop all but the last entry in such a list)
-				.Replace("\"", "") // '"' is just annoying as it needs escaping on the command-line
-				.RemoveInvalidFileSystemChars()
-				.RemoveSuffix('.'); // trailing '.' would be duplicated when file extension is added
+				.Replace("\"", ""); // '"' is just annoying as it needs escaping on the command-line
+			var filesystemDir = Path.GetDirectoryName(pass1);
+			var pass2 = Path.GetFileName(pass1).RemoveInvalidFileSystemChars();
+			return Path.Combine(filesystemDir, pass2.RemoveSuffix('.')); // trailing '.' would be duplicated when file extension is added
+		}
 
 		/// <summary>
 		/// Adds an axis to the receiver <see cref="ControllerDefinition"/>, and returns it.

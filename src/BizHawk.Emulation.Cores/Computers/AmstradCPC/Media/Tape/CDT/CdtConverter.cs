@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// <summary>
 	/// Responsible for TZX format serialization
 	/// </summary>
-	public sealed class CdtConverter : MediaConverter
+	public class CdtConverter : MediaConverter
 	{
 		/// <summary>
 		/// The type of serializer
@@ -25,9 +25,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// Signs whether this class can be used to write the data format
 		/// </summary>
 		public override bool IsWriter => false;
-
-		protected override string SelfTypeName
-			=> nameof(CdtConverter);
 
 		/// <summary>
 		/// Working list of generated tape data blocks
@@ -167,7 +164,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			if (ident != "ZXTape!" || eotm != 0x1A)
 			{
 				// this is not a valid TZX format file
-				throw new Exception($"{nameof(CdtConverter)}: This is not a valid TZX format file");
+				throw new Exception(this.GetType() +
+					"This is not a valid TZX format file");
 			}
 
 			// iterate through each block
@@ -367,7 +365,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			_position += blockLen;
 
 			// generate PAUSE block
-			CreatePauseBlock(_datacorder.DataBlocks[_datacorder.DataBlocks.Count - 1]);
+			CreatePauseBlock(_datacorder.DataBlocks.Last());
 		}
 
 		/*              length: [0F,10,11]+12
@@ -427,7 +425,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			_position += blockLen;
 
 			// generate PAUSE block
-			CreatePauseBlock(_datacorder.DataBlocks[_datacorder.DataBlocks.Count - 1]);
+			CreatePauseBlock(_datacorder.DataBlocks.Last());
 		}
 
 		/*              length: 04
@@ -551,7 +549,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			_position += blockLen;
 
 			// generate PAUSE block
-			CreatePauseBlock(_datacorder.DataBlocks[_datacorder.DataBlocks.Count - 1]);
+			CreatePauseBlock(_datacorder.DataBlocks.Last());
 		}
 
 		/*              length: [05,06,07]+08
@@ -657,7 +655,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			_datacorder.DataBlocks.Add(t);
 
 			// generate PAUSE block
-			CreatePauseBlock(_datacorder.DataBlocks[_datacorder.DataBlocks.Count - 1]);
+			CreatePauseBlock(_datacorder.DataBlocks.Last());
 		}
 
 		/*              length: [00,01,02,03]+04
@@ -728,7 +726,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			_datacorder.DataBlocks.Add(t);
 
 			// generate PAUSE block
-			CreatePauseBlock(_datacorder.DataBlocks[_datacorder.DataBlocks.Count - 1]);
+			CreatePauseBlock(_datacorder.DataBlocks.Last());
 		}
 
 		/*              length: [00,01,02,03]+04
@@ -880,7 +878,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			_position += 2;
 
 			// generate PAUSE block
-			CreatePauseBlock(_datacorder.DataBlocks[_datacorder.DataBlocks.Count - 1]);
+			CreatePauseBlock(_datacorder.DataBlocks.Last());
 
 		}
 

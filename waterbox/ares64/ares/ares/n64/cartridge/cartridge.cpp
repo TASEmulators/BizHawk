@@ -5,8 +5,6 @@ namespace ares::Nintendo64 {
 Cartridge& cartridge = cartridgeSlot.cartridge;
 #include "slot.cpp"
 #include "flash.cpp"
-#include "rtc.cpp"
-#include "joybus.cpp"
 #include "isviewer.cpp"
 #include "debugger.cpp"
 #include "serialization.cpp"
@@ -45,8 +43,6 @@ auto Cartridge::connect() -> void {
     flash.load(fp);
   }
 
-  rtc.load();
-
   isviewer.ram.allocate(64_KiB);
 
   debugger.load(node);
@@ -81,8 +77,6 @@ auto Cartridge::save() -> void {
   if(auto fp = pak->write("save.flash")) {
     flash.save(fp);
   }
-
-  rtc.save();
 }
 
 auto Cartridge::power(bool reset) -> void {
@@ -91,7 +85,6 @@ auto Cartridge::power(bool reset) -> void {
   flash.source = 0;
   flash.offset = 0;
   isviewer.ram.fill(0);
-  rtc.power(reset);
 }
 
 }

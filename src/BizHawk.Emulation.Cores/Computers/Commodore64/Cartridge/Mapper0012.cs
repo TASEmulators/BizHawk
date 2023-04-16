@@ -56,11 +56,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 		protected override void SyncStateInternal(Serializer ser)
 		{
+			ser.Sync("BankHighSelected", ref _bankHighSelected, useNull: false);
 			ser.Sync("BankIndex", ref _bankIndex);
-			if (ser.IsReader)
-			{
-				_bankHighSelected = _bankHigh[_bankIndex];
-			}
 		}
 
 		public override int Peek8000(int addr)
@@ -83,6 +80,15 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		public override int ReadA000(int addr)
 		{
 			return _bankHighSelected[addr];
+		}
+
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			if (ser.IsReader)
+			{
+				_bankHighSelected = _bankHigh[_bankIndex];
+			}
 		}
 	}
 }

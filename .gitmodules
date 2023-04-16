@@ -14,7 +14,7 @@
 [submodule "mgba"]
 	path = submodules/mgba
 	url = https://github.com/TASEmulators/mgba.git
-	branch = bizhawk-0.11
+	branch = bizhawk-0.10
 [submodule "waterbox/melon/melonDS"]
 	path = waterbox/melon/melonDS
 	url = https://github.com/TASEmulators/melonDS.git
@@ -31,7 +31,9 @@
 [submodule "waterbox/llvm-project"]
 	path = waterbox/llvm-project
 	url = https://github.com/llvm/llvm-project.git
-	branch = llvmorg-16.0.0
+[submodule "waterbox/dobie/dobiestation"]
+	path = waterbox/dobie/dobiestation
+	url = https://github.com/nattthebear/DobieStation.git
 [submodule "submodules/libdarm"]
 	path = submodules/libdarm
 	url = https://github.com/jbremer/darm.git
@@ -52,10 +54,3 @@
 	path = libmupen64plus/mupen64plus-video-angrylion-rdp
 	url = https://github.com/TASEmulators/angrylion-rdp.git
 	branch = biz_mupen64plus
-[submodule "waterbox/mame-arcade/mame"]
-	path = waterbox/mame-arcade/mame
-	url = https://github.com/TASEmulators/mame.git
-	branch = mamehawk0252
-[submodule "ExternalProjects/librcheevos/rcheevos"]
-	path = ExternalProjects/librcheevos/rcheevos
-	url = https://github.com/RetroAchievements/rcheevos.git

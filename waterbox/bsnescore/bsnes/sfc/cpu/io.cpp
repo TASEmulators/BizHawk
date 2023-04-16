@@ -16,7 +16,7 @@ auto CPU::readCPU(uint addr, uint8 data) -> uint8 {
   case 0x4016:  //JOYSER0
     data &= 0xfc;
     data |= controllerPort1.device->data();
-    platform->notify("NO_LAG");
+    if (!io.autoJoypadPoll) platform->notify("NO_LAG");
     return data;
 
   //todo: it is not known what happens when reading from this register during auto-joypad polling
@@ -24,7 +24,7 @@ auto CPU::readCPU(uint addr, uint8 data) -> uint8 {
     data &= 0xe0;
     data |= 0x1c;  //pins are connected to GND
     data |= controllerPort2.device->data();
-    platform->notify("NO_LAG");
+    if (!io.autoJoypadPoll) platform->notify("NO_LAG");
     return data;
 
   case 0x4210:  //RDNMI
@@ -159,10 +159,8 @@ auto CPU::writeCPU(uint addr, uint8 data) -> void {
     io.rddiv = io.wrmpyb << 8 | io.wrmpya;
 
     if(!configuration.hacks.cpu.fastMath) {
-      if (!alu.mpylast) {
-        alu.mpyctr = 8;  //perform multiplication over the next eight cycles
-        alu.shift = io.wrmpyb;
-      }
+      alu.mpyctr = 8;  //perform multiplication over the next eight cycles
+      alu.shift = io.wrmpyb;
     } else {
       io.rdmpy = io.wrmpya * io.wrmpyb;
     }
@@ -180,14 +178,12 @@ auto CPU::writeCPU(uint addr, uint8 data) -> void {
     io.rdmpy = io.wrdiva;
     if(alu.mpyctr || alu.divctr) return;
 
+    io.wrdivb = data;
+
     if(!configuration.hacks.cpu.fastMath) {
-      if (!alu.divlast) {
-        io.wrdivb = data;
-        alu.divctr = 16;  //perform division over the next sixteen cycles
-        alu.shift = io.wrdivb << 16;
-      }
+      alu.divctr = 16;  //perform division over the next sixteen cycles
+      alu.shift = io.wrdivb << 16;
     } else {
-      io.wrdivb = data;
       if(io.wrdivb) {
         io.rddiv = io.wrdiva / io.wrdivb;
         io.rdmpy = io.wrdiva % io.wrdivb;

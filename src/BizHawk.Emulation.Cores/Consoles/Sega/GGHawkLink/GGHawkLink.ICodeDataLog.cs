@@ -42,7 +42,9 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 		[FeatureNotImplemented]
 		public void DisassembleCDL(Stream s, ICodeDataLog cdl)
-			=> throw new NotImplementedException();
+		{
+
+		}
 
 		private enum CDLog_AddrType
 		{

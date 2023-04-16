@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.IO;
 using System.Numerics;
@@ -27,14 +28,14 @@ namespace BizHawk.Client.EmuHawk
 				_capacity = capacity;
 			}
 
-			private T[] GetBufferInternal(int length, bool zerofill, Predicate<T[]> criteria)
+			private T[] GetBufferInternal(int length, bool zerofill, Func<T[], bool> criteria)
 			{
 				if (_inUse.Count == _capacity)
 				{
 					throw new InvalidOperationException();
 				}
 
-				var candidate = _available.Find(criteria);
+				T[] candidate = _available.FirstOrDefault(criteria);
 				if (candidate == null)
 				{
 					if (_available.Count + _inUse.Count == _capacity)
@@ -72,7 +73,11 @@ namespace BizHawk.Client.EmuHawk
 			/// <exception cref="ArgumentException"><paramref name="buffer"/> is not in use</exception>
 			public void ReleaseBuffer(T[] buffer)
 			{
-				if (!_inUse.Remove(buffer)) throw new ArgumentException(message: "already released?", paramName: nameof(buffer));
+				if (!_inUse.Remove(buffer))
+				{
+					throw new ArgumentException();
+				}
+
 				_available.Add(buffer);
 			}
 		}

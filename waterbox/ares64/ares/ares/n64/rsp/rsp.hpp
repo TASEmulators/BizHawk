@@ -1,6 +1,6 @@
 //Reality Signal Processor
 
-struct RSP : Thread, Memory::RCP<RSP> {
+struct RSP : Thread, Memory::IO<RSP> {
   Node::Object node;
   Memory::Writable dmem;
   Memory::Writable imem;
@@ -47,8 +47,8 @@ struct RSP : Thread, Memory::RCP<RSP> {
   auto dmaTransferStep() -> void;
 
   //io.cpp
-  auto readWord(u32 address, u32& cycles) -> u32;
-  auto writeWord(u32 address, u32 data, u32& cycles) -> void;
+  auto readWord(u32 address) -> u32;
+  auto writeWord(u32 address, u32 data) -> void;
   auto ioRead(u32 address) -> u32;
   auto ioWrite(u32 address, u32 data) -> void;
 
@@ -75,13 +75,13 @@ struct RSP : Thread, Memory::RCP<RSP> {
     } busy, full;
   } dma;
 
-  struct Status : Memory::RCP<Status> {
+  struct Status : Memory::IO<Status> {
     RSP& self;
     Status(RSP& self) : self(self) {}
 
     //io.cpp
-    auto readWord(u32 address, u32& cycles) -> u32;
-    auto writeWord(u32 address, u32 data, u32& cycles) -> void;
+    auto readWord(u32 address) -> u32;
+    auto writeWord(u32 address, u32 data) -> void;
 
     n1 semaphore;
     n1 halted = 1;
@@ -108,7 +108,7 @@ struct RSP : Thread, Memory::RCP<RSP> {
     };
 
     r32 r[32];
-    u16 pc; // previously u12; now u16 for performance.
+    u12 pc;
   } ipu;
 
   struct Branch {
@@ -174,8 +174,8 @@ struct RSP : Thread, Memory::RCP<RSP> {
 
   //vpu.cpp: Vector Processing Unit
   union r128 {
-    struct { u64 order_msb2(hi, lo); } u128;
-#if ARCHITECTURE_SUPPORTS_SSE4_1
+    struct { uint128_t u128; };
+#if defined(ARCHITECTURE_AMD64)
     struct {   __m128i v128; };
 
     operator __m128i() const { return v128; }
@@ -203,9 +203,6 @@ struct RSP : Thread, Memory::RCP<RSP> {
 
     //vu-registers.cpp
     auto operator()(u32 index) const -> r128;
-
-    //serialization.cpp
-    auto serialize(serializer&) -> void;
   };
   using cr128 = const r128;
 
@@ -220,8 +217,8 @@ struct RSP : Thread, Memory::RCP<RSP> {
     bool divdp;
   } vpu;
 
-  static constexpr r128 zero{0ull, 0ull};
-  static constexpr r128 invert{~0ull, ~0ull};
+  static constexpr r128 zero{0};
+  static constexpr r128 invert{u128(0) - 1};
 
   auto accumulatorGet(u32 index) const -> u64;
   auto accumulatorSet(u32 index, u64 value) -> void;
@@ -337,34 +334,34 @@ struct RSP : Thread, Memory::RCP<RSP> {
       }
 
       u8* code;
-      u12 size;
     };
 
-    struct BlockHashPair {
-      auto operator==(const BlockHashPair& source) const -> bool { return hashcode == source.hashcode; }
-      auto operator< (const BlockHashPair& source) const -> bool { return hashcode <  source.hashcode; }
+    struct Pool {
+      Block* blocks[1024];
+    };
+
+    struct PoolHashPair {
+      auto operator==(const PoolHashPair& source) const -> bool { return hashcode == source.hashcode; }
+      auto operator< (const PoolHashPair& source) const -> bool { return hashcode <  source.hashcode; }
       auto hash() const -> u32 { return hashcode; }
 
-      Block* block;
-      u64 hashcode;
+      Pool* pool;
+      u32 hashcode;
     };
 
     auto reset() -> void {
-      context.fill();
-      blocks.reset();
-      dirty = 0;
+      context = nullptr;
+      pools.reset();
     }
 
-    auto invalidate(u12 address, u12 size = 1) -> void {
-      dirty |= mask(address, size);
+    auto invalidate() -> void {
+      context = nullptr;
     }
 
-    auto measure(u12 address) -> u12;
-    auto hash(u12 address, u12 size) -> u64;
+    auto pool() -> Pool*;
+    auto block(u32 address) -> Block*;
 
-    auto block(u12 address) -> Block*;
-
-    auto emit(u12 address) -> Block*;
+    auto emit(u32 address) -> Block*;
     auto emitEXECUTE(u32 instruction) -> bool;
     auto emitSPECIAL(u32 instruction) -> bool;
     auto emitREGIMM(u32 instruction) -> bool;
@@ -373,22 +370,10 @@ struct RSP : Thread, Memory::RCP<RSP> {
     auto emitLWC2(u32 instruction) -> bool;
     auto emitSWC2(u32 instruction) -> bool;
 
-    auto isTerminal(u32 instruction) -> bool;
-
-    static auto mask(u12 address, u12 size) -> u64 {
-      //1 bit per 64 bytes
-      u6 s = address >> 6;
-      u6 e = address + size - 1 >> 6;
-      u64 smask = ~0ull << s;
-      u64 emask = ~0ull >> 63 - e;
-      //handle wraparound
-      return s <= e ? smask & emask : smask | emask;
-    }
-
     bump_allocator allocator;
-    array<Block*[1024]> context;
-    hashset<BlockHashPair> blocks;
-    u64 dirty;
+    Pool* context = nullptr;
+    set<PoolHashPair> pools;
+  //hashset<PoolHashPair> pools;
   } recompiler{*this};
 
   struct Disassembler {

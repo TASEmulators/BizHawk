@@ -257,7 +257,7 @@ namespace BizHawk.Bizware.DirectX
 				BlendEquationMode.Max => BlendOperation.Maximum,
 				BlendEquationMode.Min => BlendOperation.Minimum,
 				BlendEquationMode.FuncReverseSubtract => BlendOperation.ReverseSubtract,
-				_ => throw new InvalidOperationException()
+				_ => throw new ArgumentOutOfRangeException()
 			};
 		}
 
@@ -284,7 +284,7 @@ namespace BizHawk.Bizware.DirectX
 			BlendingFactorSrc.Src1Color => throw new NotSupportedException(),
 			BlendingFactorSrc.OneMinusSrc1Color => throw new NotSupportedException(),
 			BlendingFactorSrc.OneMinusSrc1Alpha => throw new NotSupportedException(),
-			_ => throw new InvalidOperationException()
+			_ => throw new ArgumentOutOfRangeException()
 		};
 
 		public void SetBlendState(IBlendState rsBlend)

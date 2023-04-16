@@ -1,7 +1,5 @@
 #pragma once
 
-#include <nall/chrono.hpp>
-#include <nall/file-map.hpp>
 #include <nall/http/message.hpp>
 
 namespace nall::HTTP {

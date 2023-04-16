@@ -17,16 +17,10 @@ namespace BizHawk.Emulation.Common
 	{
 		MemoryDomain? this[string name] { get; }
 
-		/// <remarks>implementation note: must also be in the collection</remarks>
 		MemoryDomain MainMemory { get; }
 
 		bool HasSystemBus { get; }
 
-		/// <remarks>
-		/// if <see cref="HasSystemBus"/> is <see langword="false"/>, the getter behaviour is undefined
-		/// (it may return <see cref="MainMemory"/> or another domain)<br/>
-		/// implementation note: must also be in the collection
-		/// </remarks>
 		MemoryDomain SystemBus { get; }
 
 		bool Has(string name);
