@@ -29,12 +29,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			CoreComm = loadParameters.Comm;
 			_syncSettings = loadParameters.SyncSettings ?? new SnesSyncSettings();
 			SystemId = loadParameters.Game.System;
-			_isSGB = SystemId == VSystemID.Raw.SGB;
-
-			IsSGB = loadParameters.Game.System == VSystemID.Raw.GB || loadParameters.Game.System == VSystemID.Raw.GBC;
+			_isSGB = SystemId == VSystemID.Raw.GB || SystemId == VSystemID.Raw.GBC;
 			byte[] sgbRomData = null;
 			if (_isSGB)
 			{
+				SystemId = VSystemID.Raw.SGB;
 				if ((loadParameters.Roms[0].RomData[0x143] & 0xc0) == 0xc0)
 				{
 					throw new CGBNotSupportedException();

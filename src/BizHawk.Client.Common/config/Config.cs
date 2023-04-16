@@ -30,7 +30,7 @@ namespace BizHawk.Client.Common
 				new[] { CoreNames.Faust, CoreNames.Snes9X, CoreNames.Bsnes, CoreNames.Bsnes115, CoreNames.SubBsnes115 }),
 			(new[] { VSystemID.Raw.N64 },
 				new[] { CoreNames.Mupen64Plus, CoreNames.Ares64 }),
-			(new[] { VSystemID.Raw.GB, VSystemID.Raw.GBC, VSystemID.Raw.SGB }, //TODO the "core reboot needed" message wouldn't show up when BSNES SGB cores are being used
+			(new[] { VSystemID.Raw.GB, VSystemID.Raw.GBC, VSystemID.Raw.SGB },
 				new[] { CoreNames.Gambatte, CoreNames.Sameboy, CoreNames.GbHawk, CoreNames.SubGbHawk, CoreNames.Bsnes115, CoreNames.SubBsnes115 }),
 			(new[] { VSystemID.Raw.GBL },
 				new[] { CoreNames.GambatteLink, CoreNames.GBHawkLink, CoreNames.GBHawkLink3x, CoreNames.GBHawkLink4x }),

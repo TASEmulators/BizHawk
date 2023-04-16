@@ -22,8 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 	public unsafe partial class LibsnesCore : IEmulator, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable, ICodeDataLogger,
 		IDebuggable, ISettable<LibsnesCore.SnesSettings, LibsnesCore.SnesSyncSettings>, IBSNESForGfxDebugger
 	{
-		[CoreConstructor(VSystemID.Raw.GB)]
-		[CoreConstructor(VSystemID.Raw.GBC)]
+		[CoreConstructor(VSystemID.Raw.SGB)]
 		[CoreConstructor(VSystemID.Raw.SNES)]
 		public LibsnesCore(GameInfo game, byte[] rom, CoreComm comm,
 			LibsnesCore.SnesSettings settings, LibsnesCore.SnesSyncSettings syncSettings)
@@ -46,9 +45,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			CoreComm = comm;
 			byte[] sgbRomData = null;
 
-			if (game.System == VSystemID.Raw.GB || game.System == VSystemID.Raw.GBC)
+			if (game.System == VSystemID.Raw.SGB)
 			{
-				IsSGB = true;
 				if ((romData[0x143] & 0xc0) == 0xc0)
 				{
 					throw new CGBNotSupportedException();
@@ -111,8 +109,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				romData = newData;
 			}
 
-			if (IsSGB)
+			if (game.System == VSystemID.Raw.SGB)
 			{
+				IsSGB = true;
 				SystemId = VSystemID.Raw.SNES;
 				ser.Register<IBoardInfo>(new SGBBoardInfo());
 
