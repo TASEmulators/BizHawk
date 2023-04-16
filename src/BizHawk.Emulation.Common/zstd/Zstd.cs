@@ -380,14 +380,8 @@ namespace BizHawk.Emulation.Common
 			MaxCompressionLevel = _lib.ZSTD_maxCLevel();
 		}
 
-		private readonly ZstdCompressionStreamContext _compressionStreamContext;
-		private readonly ZstdDecompressionStreamContext _decompressionStreamContext;
-
-		public Zstd()
-		{
-			_compressionStreamContext = new();
-			_decompressionStreamContext = new();
-		}
+		private ZstdCompressionStreamContext? _compressionStreamContext;
+		private ZstdDecompressionStreamContext? _decompressionStreamContext;
 
 		private bool _disposed = false;
 
@@ -395,8 +389,8 @@ namespace BizHawk.Emulation.Common
 		{
 			if (!_disposed)
 			{
-				_compressionStreamContext.Dispose();
-				_decompressionStreamContext.Dispose();
+				_compressionStreamContext?.Dispose();
+				_decompressionStreamContext?.Dispose();
 				_disposed = true;
 			}
 		}
@@ -429,6 +423,7 @@ namespace BizHawk.Emulation.Common
 				throw new ArgumentOutOfRangeException(nameof(compressionLevel));
 			}
 
+			_compressionStreamContext ??= new();
 			_compressionStreamContext.InitContext(compressionLevel);
 			return new ZstdCompressionStream(stream, _compressionStreamContext);
 		}
@@ -446,6 +441,7 @@ namespace BizHawk.Emulation.Common
 		/// <returns>zstd decompression stream</returns>
 		public Stream CreateZstdDecompressionStream(Stream stream)
 		{
+			_decompressionStreamContext ??= new();
 			_decompressionStreamContext.InitContext();
 			return new ZstdDecompressionStream(stream, _decompressionStreamContext);
 		}
