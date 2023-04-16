@@ -69,6 +69,8 @@ namespace BizHawk.Common
 
 					if (different > 0) // only not 0 if index == end immediately
 					{
+						different = index - blockStart - same;
+	
 						if (same < 4) // we have different bytes, but we hit the end of the spans before the 8 limit, and we have less than what a same block will save
 						{
 							different += same;
@@ -82,6 +84,8 @@ namespace BizHawk.Common
 						{
 							ret[retSize++] = (byte)(orignalAsBytes[i] ^ currentAsBytes[i]);
 						}
+
+						blockStart = index - same;
 					}
 
 					if (same > 0) // same is 4-8, 8 indicates we hit the 8 same bytes threshold, 4-7 indicate hit end of span
@@ -91,10 +95,10 @@ namespace BizHawk.Common
 							while (index < end && orignalAsBytes[index] == currentAsBytes[index])
 							{
 								index++;
-								same++;
 							}
 						}
 
+						same = index - blockStart;
 						MemoryMarshal.Write(ret.Slice(retSize, 4), ref same);
 						retSize += 4;
 					}
