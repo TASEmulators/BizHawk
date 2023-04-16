@@ -91,10 +91,10 @@ namespace BizHawk.Common
 							while (index < end && orignalAsBytes[index] == currentAsBytes[index])
 							{
 								index++;
+								same++;
 							}
 						}
 
-						same = index - blockStart;
 						MemoryMarshal.Write(ret.Slice(retSize, 4), ref same);
 						retSize += 4;
 					}
