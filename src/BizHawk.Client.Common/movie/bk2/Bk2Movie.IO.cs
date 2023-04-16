@@ -29,31 +29,6 @@ namespace BizHawk.Client.Common
 			Write(backupName, isBackup: true);
 		}
 
-		public virtual bool Load(bool preload)
-		{
-			var file = new FileInfo(Filename);
-			if (!file.Exists)
-			{
-				return false;
-			}
-
-			try
-			{
-				using var bl = ZipStateLoader.LoadAndDetect(Filename, true);
-				if (bl is null) return false;
-				ClearBeforeLoad();
-				LoadFields(bl, preload);
-				Changes = false;
-				return true;
-			}
-			catch (InvalidDataException e) when (e.StackTrace.Contains("ZipArchive.ReadEndOfCentralDirectory"))
-			{
-				throw new Exception("Archive appears to be corrupt. Make a backup, then try to repair it with e.g. 7-Zip.", e);
-			}
-		}
-
-		public bool PreLoadHeaderAndLength() => Load(true);
-
 		protected virtual void Write(string fn, bool isBackup = false)
 		{
 			SetCycleValues();
@@ -136,85 +111,33 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		protected virtual void ClearBeforeLoad()
+		protected override void ClearBeforeLoad()
 		{
+			base.ClearBeforeLoad();
 			ClearBk2Fields();
 		}
 
-		protected void ClearBk2Fields()
+		private void ClearBk2Fields()
 		{
-			Header.Clear();
 			Log.Clear();
-			Subtitles.Clear();
-			Comments.Clear();
 			_syncSettingsJson = "";
 			TextSavestate = null;
 			BinarySavestate = null;
 		}
 
-		protected virtual void LoadFields(ZipStateLoader bl, bool preload)
+		protected override void LoadFields(ZipStateLoader bl)
 		{
-			LoadBk2Fields(bl, preload);
+			base.LoadFields(bl);
+			LoadBk2Fields(bl);
 		}
 
-		protected void LoadBk2Fields(ZipStateLoader bl, bool preload)
+		private void LoadBk2Fields(ZipStateLoader bl)
 		{
-			bl.GetLump(BinaryStateLump.Movieheader, abort: true, tr =>
-			{
-				string line;
-				while ((line = tr.ReadLine()) != null)
-				{
-					if (!string.IsNullOrWhiteSpace(line))
-					{
-						var pair = line.Split(new[] { ' ' }, 2, StringSplitOptions.RemoveEmptyEntries);
-
-						if (pair.Length > 1)
-						{
-							if (!Header.ContainsKey(pair[0]))
-							{
-								Header.Add(pair[0], pair[1]);
-							}
-						}
-					}
-				}
-			});
-
 			bl.GetLump(BinaryStateLump.Input, abort: true, tr =>
 			{
 				IsCountingRerecords = false;
 				ExtractInputLog(tr, out _);
 				IsCountingRerecords = true;
-			});
-
-			if (preload)
-			{
-				return;
-			}
-
-			bl.GetLump(BinaryStateLump.Comments, abort: false, tr =>
-			{
-				string line;
-				while ((line = tr.ReadLine()) != null)
-				{
-					if (!string.IsNullOrWhiteSpace(line))
-					{
-						Comments.Add(line);
-					}
-				}
-			});
-
-			bl.GetLump(BinaryStateLump.Subtitles, abort: false, tr =>
-			{
-				string line;
-				while ((line = tr.ReadLine()) != null)
-				{
-					if (!string.IsNullOrWhiteSpace(line))
-					{
-						Subtitles.AddFromString(line);
-					}
-				}
-
-				Subtitles.Sort();
 			});
 
 			bl.GetLump(BinaryStateLump.SyncSettings, abort: false, tr =>

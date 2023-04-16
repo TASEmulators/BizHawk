@@ -49,7 +49,7 @@ namespace BizHawk.Client.Common
 
 		protected override void ClearBeforeLoad()
 		{
-			ClearBk2Fields();
+			base.ClearBeforeLoad();
 			ClearTasprojExtras();
 		}
 
@@ -61,21 +61,18 @@ namespace BizHawk.Client.Common
 			ChangeLog.Clear();
 		}
 		
-		protected override void LoadFields(ZipStateLoader bl, bool preload)
+		protected override void LoadFields(ZipStateLoader bl)
 		{
-			LoadBk2Fields(bl, preload);
+			base.LoadFields(bl);
 
-			if (!preload)
+			if (MovieService.IsCurrentTasVersion(Header[HeaderKeys.MovieVersion]))
 			{
-				if (MovieService.IsCurrentTasVersion(Header[HeaderKeys.MovieVersion]))
-				{
-					LoadTasprojExtras(bl);
-				}
-				else
-				{
-					Session.PopupMessage("The current .tasproj is not compatible with this version of BizHawk! .tasproj features failed to load.");
-					Markers.Add(0, StartsFromSavestate ? "Savestate" : "Power on");
-				}
+				LoadTasprojExtras(bl);
+			}
+			else
+			{
+				Session.PopupMessage("The current .tasproj is not compatible with this version of BizHawk! .tasproj features failed to load.");
+				Markers.Add(0, StartsFromSavestate ? "Savestate" : "Power on");
 			}
 		}
 		

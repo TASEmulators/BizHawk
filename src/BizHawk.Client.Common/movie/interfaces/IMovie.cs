@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using BizHawk.Emulation.Common;
 
@@ -30,7 +29,7 @@ namespace BizHawk.Client.Common
 
 	// TODO: message callback / event handler
 	// TODO: consider other event handlers, switching modes?
-	public interface IMovie
+	public interface IMovie : IBasicMovieInfo
 	{
 		/// <summary>
 		/// Gets the current movie mode
@@ -41,28 +40,11 @@ namespace BizHawk.Client.Common
 
 		bool Changes { get; }
 
-		string Name { get; }
-
-		/// <summary>
-		/// Gets the total number of frames that count towards the completion time of the movie
-		/// </summary>
-		int FrameCount { get; }
-
 		/// <summary>
 		/// Gets the actual length of the input log, should only be used by code that needs the input log length
 		/// specifically, not the frame count
 		/// </summary>
 		int InputLogLength { get; }
-
-		/// <summary>
-		/// Gets the actual length of time a movie lasts for. For subframe cores, this will be different then the above two options
-		/// </summary>
-		TimeSpan TimeLength { get; }
-
-		/// <summary>
-		/// Gets the frame rate in frames per second for the movie's system.
-		/// </summary>
-		double FrameRate { get; }
 
 		/// <summary>
 		/// Gets the file extension for the current <see cref="IMovie"/> implementation
@@ -74,9 +56,6 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		string SyncSettingsJson { get; set; }
 
-		SubtitleList Subtitles { get; }
-		IList<string> Comments { get; }
-
 		// savestate anchor.
 		string TextSavestate { get; set; }
 		byte[] BinarySavestate { get; set; }
@@ -85,33 +64,10 @@ namespace BizHawk.Client.Common
 		// saveram anchor
 		byte[] SaveRam { get; set; }
 
-		ulong Rerecords { get; set; }
 		bool StartsFromSavestate { get; set; }
 		bool StartsFromSaveRam { get; set; }
-		string GameName { get; set; }
-		string SystemID { get; set; }
 
-		/// <value>either CRC32, MD5, or SHA1, hex-encoded, unprefixed</value>
-		string Hash { get; set; }
-
-		string Author { get; set; }
-		string Core { get; set; }
-		string EmulatorVersion { get; set; }
-		string OriginalEmulatorVersion { get; set; }
-		string FirmwareHash { get; set; }
-		string BoardName { get; set; }
 		string LogKey { get; set; }
-
-		/// <summary>
-		/// Loads from the HawkFile the minimal amount of information needed to determine Header info and Movie length.
-		/// This method is intended to be more performant than a full load
-		/// </summary>
-		bool PreLoadHeaderAndLength();
-		
-		/// <summary>
-		/// Gets the header key value pairs stored in the movie file
-		/// </summary>
-		IDictionary<string, string> HeaderEntries { get; }
 
 		/// <summary>
 		/// Forces the creation of a backup file of the current movie state
@@ -122,15 +78,6 @@ namespace BizHawk.Client.Common
 		/// Creates a log generator using the given input source
 		/// </summary>
 		ILogEntryGenerator LogGeneratorInstance(IController source);
-
-		// Filename of the movie, settable by the client
-		string Filename { get; set; }
-
-		/// <summary>
-		/// Tells the movie to load the contents of Filename
-		/// </summary>
-		/// <returns>Return whether or not the file was successfully loaded</returns>
-		bool Load(bool preload);
 
 		/// <summary>
 		/// Instructs the movie to save the current contents to Filename

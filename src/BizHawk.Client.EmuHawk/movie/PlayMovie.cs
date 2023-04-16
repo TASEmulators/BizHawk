@@ -27,7 +27,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly IEmulator _emulator;
 		private readonly IMovieSession _movieSession;
 
-		private List<IMovie> _movieList = new List<IMovie>();
+		private List<IBasicMovieInfo> _movieList = new();
 		private bool _sortReverse;
 		private string _sortedCol;
 
@@ -66,8 +66,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PlayMovie_Load(object sender, EventArgs e)
 		{
+			_suppressCheckedChanged = true;
 			IncludeSubDirectories.Checked = _config.PlayMovieIncludeSubDir;
 			MatchHashCheckBox.Checked = _config.PlayMovieMatchHash;
+			_suppressCheckedChanged = false;
 			ScanFiles();
 			PreHighlightMovie();
 			TurboCheckbox.Checked = _config.TurboSeek;
@@ -87,7 +89,9 @@ namespace BizHawk.Client.EmuHawk
 			var indices = MovieView.SelectedIndices;
 			if (indices.Count > 0) // Import file if necessary
 			{
-				_mainForm.StartNewMovie(_movieList[MovieView.SelectedIndices[0]], false);
+				var movie = _movieSession.Get(_movieList[MovieView.SelectedIndices[0]].Filename);
+				movie.Load();
+				_mainForm.StartNewMovie(movie, false);
 			}
 		}
 
@@ -99,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 				return null;
 			}
 				
-			var movie = PreLoadMovieFile(file, force);
+			var movie = LoadMovieInfo(file, force);
 			if (movie == null)
 			{
 				return null;
@@ -138,13 +142,13 @@ namespace BizHawk.Client.EmuHawk
 			return null;
 		}
 
-		private IMovie PreLoadMovieFile(HawkFile hf, bool force)
+		private IBasicMovieInfo LoadMovieInfo(HawkFile hf, bool force)
 		{
-			var movie = _movieSession.Get(hf.CanonicalFullPath);
+			IBasicMovieInfo movie = new BasicMovieInfo(hf.CanonicalFullPath);
 
 			try
 			{
-				movie.PreLoadHeaderAndLength();
+				movie.Load();
 
 				// Don't do this from browse
 				if (movie.Hash == _game.Hash
@@ -338,8 +342,8 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-		private static readonly RigidMultiPredicateSort<IMovie> ColumnSorts
-			= new RigidMultiPredicateSort<IMovie>(new Dictionary<string, Func<IMovie, IComparable>>
+		private static readonly RigidMultiPredicateSort<IBasicMovieInfo> ColumnSorts
+			= new(new Dictionary<string, Func<IBasicMovieInfo, IComparable>>
 			{
 				["File"] = x => Path.GetFileName(x.Filename),
 				["SysID"] = x => x.SystemID,
@@ -499,7 +503,11 @@ namespace BizHawk.Client.EmuHawk
 			var indices = MovieView.SelectedIndices;
 			if (indices.Count > 0)
 			{
-				var form = new EditCommentsForm(_movieList[MovieView.SelectedIndices[0]], _movieSession.ReadOnly);
+				// TODO this will allocate unnecessary memory when this movie is a TasMovie due to TasStateManager
+				var movie = _movieSession.Get(_movieList[MovieView.SelectedIndices[0]].Filename);
+				movie.Load();
+				// TODO movie should be disposed if movie is ITasMovie
+				var form = new EditCommentsForm(movie, _movieSession.ReadOnly);
 				form.Show();
 			}
 		}
@@ -509,7 +517,11 @@ namespace BizHawk.Client.EmuHawk
 			var indices = MovieView.SelectedIndices;
 			if (indices.Count > 0)
 			{
-				using EditSubtitlesForm s = new(DialogController, _movieList[MovieView.SelectedIndices[0]], _config.PathEntries, readOnly: true);
+				// TODO this will allocate unnecessary memory when this movie is a TasMovie due to TasStateManager
+				var movie = _movieSession.Get(_movieList[MovieView.SelectedIndices[0]].Filename);
+				movie.Load();
+				// TODO movie should be disposed if movie is ITasMovie
+				using EditSubtitlesForm s = new(DialogController, movie, _config.PathEntries, readOnly: true);
 				s.Show();
 			}
 		}
@@ -543,6 +555,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void IncludeSubDirectories_CheckedChanged(object sender, EventArgs e)
 		{
+			if (_suppressCheckedChanged) return;
+
 			_config.PlayMovieIncludeSubDir = IncludeSubDirectories.Checked;
 			ScanFiles();
 			PreHighlightMovie();
@@ -550,6 +564,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MatchHashCheckBox_CheckedChanged(object sender, EventArgs e)
 		{
+			if (_suppressCheckedChanged) return;
+
 			_config.PlayMovieMatchHash = MatchHashCheckBox.Checked;
 			ScanFiles();
 			PreHighlightMovie();
@@ -578,6 +594,8 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private bool _programmaticallyChangingStopFrameCheckbox;
+		private bool _suppressCheckedChanged;
+
 		private void StopOnFrameCheckbox_CheckedChanged(object sender, EventArgs e)
 		{
 			if (!_programmaticallyChangingStopFrameCheckbox)
