@@ -22,4 +22,7 @@
 	<ItemGroup Condition=" '$(Configuration)' != 'Debug' ">
 		<Compile Remove="$(MSBuildProjectDirectory)/debug/**/*" />
 	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="4.3.0-3.final" />
+	</ItemGroup>
 </Project>
