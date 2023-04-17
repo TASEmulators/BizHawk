@@ -249,7 +249,7 @@ namespace BizHawk.Client.Common
 				// FIXME: this is potentially expensive and shouldn't be necessary for something as simple as frame count
 				while (tr.ReadLine() is string line)
 				{
-					if (line.StartsWith("|"))
+					if (line.Length > 0 && line[0] == '|')
 					{
 						FrameCount++;
 					}
