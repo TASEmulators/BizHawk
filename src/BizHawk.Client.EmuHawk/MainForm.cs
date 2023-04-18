@@ -466,7 +466,7 @@ namespace BizHawk.Client.EmuHawk
 					: null,
 				new MemoryMappedFiles(NetworkingTakeScreenshot, _argParser.MMFFilename),
 				_argParser.SocketAddress is var (socketIP, socketPort)
-					? new SocketServer(NetworkingTakeScreenshot, socketIP, socketPort)
+					? new SocketServer(NetworkingTakeScreenshot, _argParser.SocketProtocol, socketIP, socketPort)
 					: null
 			);
 
