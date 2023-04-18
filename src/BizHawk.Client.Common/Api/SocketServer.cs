@@ -16,9 +16,11 @@ namespace BizHawk.Client.Common
 			=> Encoding.ASCII.GetBytes(payload.Length.ToString()).Concat(LENGTH_PREFIX_SEPARATOR).ToArray()
 				.ConcatArray(payload);
 
+		private readonly ProtocolType _protocol;
+
 		private IPEndPoint _remoteEp;
 
-		private Socket _soc = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+		private Socket _soc;
 
 		private readonly Func<byte[]> _takeScreenshotCallback;
 
@@ -64,16 +66,21 @@ namespace BizHawk.Client.Common
 
 		public bool Successful { get; private set; }
 
-		public SocketServer(Func<byte[]> takeScreenshotCallback, string ip, int port)
+		public SocketServer(Func<byte[]> takeScreenshotCallback, ProtocolType protocol, string ip, int port)
 		{
+			_protocol = protocol;
+			ReinitSocket(out _soc);
 			_takeScreenshotCallback = takeScreenshotCallback;
 			TargetAddress = (ip, port);
 		}
 
+		private void ReinitSocket(out Socket socket)
+			=> socket = new(AddressFamily.InterNetwork, SocketType.Stream, _protocol);
+
 		private void Connect()
 		{
 			_remoteEp = new IPEndPoint(IPAddress.Parse(_targetAddr.HostIP), _targetAddr.Port);
-			_soc = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+			ReinitSocket(out _soc);
 			_soc.Connect(_remoteEp);
 			Connected = true;
 		}

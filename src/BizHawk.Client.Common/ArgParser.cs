@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using System.Net.Sockets;
 
 using BizHawk.Common.CollectionExtensions;
 
@@ -42,6 +43,7 @@ namespace BizHawk.Client.Common
 			string? urlPost = null;
 			bool? audiosync = null;
 			string? openExtToolDll = null;
+			var socketProtocol = ProtocolType.Tcp;
 			List<(string Key, string Value)>? userdataUnparsedPairs = null;
 			string? cmdRom = null;
 
@@ -135,6 +137,10 @@ namespace BizHawk.Client.Common
 				{
 					socketIP = argDowncased.Substring(argDowncased.IndexOf('=') + 1);
 				}
+				else if (argDowncased.StartsWith("--socket_udp"))
+				{
+					socketProtocol = ProtocolType.Udp;
+				}
 				else if (argDowncased.StartsWith("--mmf="))
 				{
 					mmfFilename = arg.Substring(arg.IndexOf('=') + 1);
@@ -211,6 +217,7 @@ namespace BizHawk.Client.Common
 				httpAddresses: httpAddresses,
 				audiosync: audiosync,
 				openExtToolDll: openExtToolDll,
+				socketProtocol: socketProtocol,
 				userdataUnparsedPairs: userdataUnparsedPairs,
 				cmdRom: cmdRom
 			);

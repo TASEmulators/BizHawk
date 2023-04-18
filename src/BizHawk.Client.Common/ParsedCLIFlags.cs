@@ -1,6 +1,7 @@
 #nullable enable
 
 using System.Collections.Generic;
+using System.Net.Sockets;
 
 namespace BizHawk.Client.Common
 {
@@ -36,6 +37,8 @@ namespace BizHawk.Client.Common
 
 		public readonly (string IP, int Port)? SocketAddress;
 
+		public readonly ProtocolType SocketProtocol;
+
 		public readonly IReadOnlyList<(string Key, string Value)>? UserdataUnparsedPairs;
 
 		public readonly string? MMFFilename;
@@ -68,6 +71,7 @@ namespace BizHawk.Client.Common
 			(string? UrlGet, string? UrlPost)? httpAddresses,
 			bool? audiosync,
 			string? openExtToolDll,
+			ProtocolType socketProtocol,
 			IReadOnlyList<(string Key, string Value)>? userdataUnparsedPairs,
 			string? cmdRom)
 		{
@@ -90,6 +94,7 @@ namespace BizHawk.Client.Common
 			HTTPAddresses = httpAddresses;
 			this.audiosync = audiosync;
 			this.openExtToolDll = openExtToolDll;
+			SocketProtocol = socketProtocol;
 			UserdataUnparsedPairs = userdataUnparsedPairs;
 			this.cmdRom = cmdRom;
 		}
