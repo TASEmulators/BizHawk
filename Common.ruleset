@@ -112,6 +112,9 @@
 		<!-- Use the preferred exception type -->
 		<Rule Id="MEN009" Action="Hidden" />
 
+		<!-- Avoid magic numbers -->
+		<Rule Id="MEN010" Action="Hidden" />
+
 		<!-- Flags should be powers of two -->
 		<Rule Id="MEN012" Action="Hidden" />
 
