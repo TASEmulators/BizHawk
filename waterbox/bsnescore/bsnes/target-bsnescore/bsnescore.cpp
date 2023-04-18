@@ -333,7 +333,7 @@ EXPORT short* snes_get_audiobuffer_and_size(int& out_size) {
 const char* board;
 EXPORT const char* snes_get_board(void)
 {
-    if (!board) board = program->superFamicom.document["game/board"].text().data();
+    if (!board) board = strdup(program->superFamicom.document["game/board"].text().data());
 
     return board;
 }
