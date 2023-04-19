@@ -1,13 +1,9 @@
 **/.vs/**
 **/.vscode/
-**/bin/**
-**/obj/**
 /output/**
 /packaged_output
 /result
 /test_output
-**/Release/**
-**/Debug/**
 **/ipch/**
 /Assets/dll/*.wbx
 
@@ -19,9 +15,6 @@
 *.gcda
 *.filters
 *.opendb
-
-/src/BizHawk.Tests*/res/*_artifact
-/src/BizHawk.Tests*/res/fw
 
 /Dist/*.zip
 
@@ -39,7 +32,6 @@
 .hgignore
 .hgtags
 
-/ExternalCoreProjects/Virtu/bin/*.*
 /psx/octoshock/bizhawk/Win32
 /psx/octoshock/bizhawk/x64
 /psx/octoshock/bizhawk/*.opendb
