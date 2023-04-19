@@ -134,3 +134,7 @@ add_custom_command(
 	COMMAND ${CMAKE_COMMAND}
 	ARGS -E copy $<TARGET_FILE:${RC_TARGET}> ${CMAKE_SOURCE_DIR}/../../output/dll
 )
+
+if(MSVC)
+	set(PDB_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/../../output/dll)
+endif()

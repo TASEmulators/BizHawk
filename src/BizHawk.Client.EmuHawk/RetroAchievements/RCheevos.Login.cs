@@ -1,6 +1,4 @@
 using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -9,34 +7,30 @@ namespace BizHawk.Client.EmuHawk
 		private string Username, ApiToken;
 		private bool LoggedIn => !string.IsNullOrEmpty(Username) && !string.IsNullOrEmpty(ApiToken);
 
-		private ManualResetEvent InitLoginDone { get; }
-
 		private event Action LoginStatusChanged;
 
-		private async Task<bool> LoginCallback(string username, string password)
+		private bool DoLogin(string username, string apiToken = null, string password = null)
 		{
 			Username = null;
 			ApiToken = null;
 
-			var api_params = new LibRCheevos.rc_api_login_request_t(username, null, password);
-			if (_lib.rc_api_init_login_request(out var api_req, ref api_params) == LibRCheevos.rc_error_t.RC_OK)
+			var api_params = new LibRCheevos.rc_api_login_request_t(username, apiToken, password);
+			var res = _lib.rc_api_init_login_request(out var api_req, ref api_params);
+			SendAPIRequestIfOK(res, ref api_req, serv_resp =>
 			{
-				var serv_req = await SendAPIRequest(in api_req).ConfigureAwait(false);
-				if (_lib.rc_api_process_login_response(out var resp, serv_req) == LibRCheevos.rc_error_t.RC_OK)
+				if (_lib.rc_api_process_login_response(out var resp, serv_resp) == LibRCheevos.rc_error_t.RC_OK)
 				{
 					Username = resp.Username;
 					ApiToken = resp.ApiToken;
 				}
 
 				_lib.rc_api_destroy_login_response(ref resp);
-			}
-
-			_lib.rc_api_destroy_request(ref api_req);
+			}).Wait(); // currently, this is done synchronously
 
 			return LoggedIn;
 		}
 
-		private async void Login()
+		private void Login()
 		{
 			var config = _getConfig();
 			Username = config.RAUsername;
@@ -45,41 +39,20 @@ namespace BizHawk.Client.EmuHawk
 			if (LoggedIn)
 			{
 				// OK, Username and ApiToken are probably valid, let's ensure they are now
-				var api_params = new LibRCheevos.rc_api_login_request_t(Username, ApiToken, null);
-
-				Username = null;
-				ApiToken = null;
-
-				if (_lib.rc_api_init_login_request(out var api_req, ref api_params) == LibRCheevos.rc_error_t.RC_OK)
+				if (DoLogin(Username, apiToken: ApiToken))
 				{
-					var serv_req = await SendAPIRequest(in api_req).ConfigureAwait(false);
-					if (_lib.rc_api_process_login_response(out var resp, serv_req) == LibRCheevos.rc_error_t.RC_OK)
-					{
-						Username = resp.Username;
-						ApiToken = resp.ApiToken;
-					}
-
-					_lib.rc_api_destroy_login_response(ref resp);
+					config.RAUsername = Username;
+					config.RAToken = ApiToken;
+					if (EnableSoundEffects) _loginSound.PlayNoExceptions();
+					return;
 				}
-
-				_lib.rc_api_destroy_request(ref api_req);
 			}
 
-			if (LoggedIn)
-			{
-				config.RAUsername = Username;
-				config.RAToken = ApiToken;
-				InitLoginDone.Set();
-				if (EnableSoundEffects) _loginSound.PlayNoExceptions();
-				return;
-			}
-
-			using var loginForm = new RCheevosLoginForm(LoginCallback);
+			using var loginForm = new RCheevosLoginForm((username, password) => DoLogin(username, password: password));
 			loginForm.ShowDialog();
-			
+
 			config.RAUsername = Username;
 			config.RAToken = ApiToken;
-			InitLoginDone.Set();
 
 			if (LoggedIn && EnableSoundEffects)
 			{

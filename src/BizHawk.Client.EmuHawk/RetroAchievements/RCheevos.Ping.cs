@@ -8,41 +8,32 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private bool RichPresenceActive { get; set; }
 		private string CurrentRichPresence { get; set; }
+		private bool GameSessionStartSuccessful { get; set; }
 
-		private static async Task<bool> StartGameSessionAsync(string username, string api_token, int id)
+		private Task _startGameSessionTask;
+
+		private void StartGameSession()
 		{
-			var api_params = new LibRCheevos.rc_api_start_session_request_t(username, api_token, id);
-			var res = LibRCheevos.rc_error_t.RC_INVALID_STATE;
-			if (_lib.rc_api_init_start_session_request(out var api_req, ref api_params) == LibRCheevos.rc_error_t.RC_OK)
+			GameSessionStartSuccessful = false;
+			var api_params = new LibRCheevos.rc_api_start_session_request_t(Username, ApiToken, _gameData.GameID);
+			var res = _lib.rc_api_init_start_session_request(out var api_req, ref api_params);
+			_startGameSessionTask = SendAPIRequestIfOK(res, ref api_req, serv_resp =>
 			{
-				var serv_req = await SendAPIRequest(in api_req).ConfigureAwait(false);
-				res = _lib.rc_api_process_start_session_response(out var resp, serv_req);
+				GameSessionStartSuccessful = _lib.rc_api_process_start_session_response(out var resp, serv_resp) == LibRCheevos.rc_error_t.RC_OK;
 				_lib.rc_api_destroy_start_session_response(ref resp);
-			}
-
-			_lib.rc_api_destroy_request(ref api_req);
-			return res == LibRCheevos.rc_error_t.RC_OK;
+			});
 		}
 
-		// todo: warn on failure?
-		private static async void StartGameSession(string username, string api_token, int id)
-			=> await StartGameSessionAsync(username, api_token, id).ConfigureAwait(false);
-
-		private static async Task SendPingAsync(string username, string api_token, int id, string rich_presence)
+		private static void SendPing(string username, string api_token, int id, string rich_presence)
 		{
 			var api_params = new LibRCheevos.rc_api_ping_request_t(username, api_token, id, rich_presence);
-			if (_lib.rc_api_init_ping_request(out var api_req, ref api_params) == LibRCheevos.rc_error_t.RC_OK)
+			var res = _lib.rc_api_init_ping_request(out var api_req, ref api_params);
+			SendAPIRequestIfOK(res, ref api_req, static serv_resp =>
 			{
-				var serv_req = await SendAPIRequest(in api_req).ConfigureAwait(false);
-				_lib.rc_api_process_ping_response(out var resp, serv_req);
+				_lib.rc_api_process_ping_response(out var resp, serv_resp);
 				_lib.rc_api_destroy_ping_response(ref resp);
-			}
-
-			_lib.rc_api_destroy_request(ref api_req);
+			});
 		}
-
-		private static async void SendPing(string username, string api_token, int id, string rich_presence)
-			=> await SendPingAsync(username, api_token, id, rich_presence).ConfigureAwait(false);
 
 		private readonly byte[] _richPresenceBuffer = new byte[1024];
 

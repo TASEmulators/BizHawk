@@ -4,7 +4,6 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace BizHawk.Client.EmuHawk
@@ -20,6 +19,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private GameData _gameData;
 		private readonly Dictionary<int, GameData> _cachedGameDatas = new(); // keep game data around to avoid unneeded API calls for a simple RebootCore
+
+		private Task _activeModeUnlocksTask, _inactiveModeUnlocksTask;
 
 		public class GameData
 		{
@@ -38,17 +39,14 @@ namespace BizHawk.Client.EmuHawk
 
 			public Cheevo GetCheevoById(int i) => _cheevos[i];
 			public LBoard GetLboardById(int i) => _lboards[i];
-			
-			public ManualResetEvent SoftcoreInitUnlocksReady { get; }
-			public ManualResetEvent HardcoreInitUnlocksReady { get; }
 
-			public async Task InitUnlocks(string username, string api_token, bool hardcore)
+			public Task InitUnlocks(string username, string api_token, bool hardcore, Action callback = null)
 			{
 				var api_params = new LibRCheevos.rc_api_fetch_user_unlocks_request_t(username, api_token, GameID, hardcore);
-				if (_lib.rc_api_init_fetch_user_unlocks_request(out var api_req, ref api_params) == LibRCheevos.rc_error_t.RC_OK)
+				var res = _lib.rc_api_init_fetch_user_unlocks_request(out var api_req, ref api_params);
+				return SendAPIRequestIfOK(res, ref api_req, serv_resp =>
 				{
-					var serv_req = await SendAPIRequest(in api_req).ConfigureAwait(false);
-					if (_lib.rc_api_process_fetch_user_unlocks_response(out var resp, serv_req) == LibRCheevos.rc_error_t.RC_OK)
+					if (_lib.rc_api_process_fetch_user_unlocks_response(out var resp, serv_resp) == LibRCheevos.rc_error_t.RC_OK)
 					{
 						unsafe
 						{
@@ -61,26 +59,17 @@ namespace BizHawk.Client.EmuHawk
 								}
 							}
 						}
+
+						_lib.rc_api_destroy_fetch_user_unlocks_response(ref resp);
 					}
 
-					_lib.rc_api_destroy_fetch_user_unlocks_response(ref resp);
-				}
-
-				_lib.rc_api_destroy_request(ref api_req);
-
-				if (hardcore)
-				{
-					HardcoreInitUnlocksReady?.Set();
-				}
-				else
-				{
-					SoftcoreInitUnlocksReady?.Set();
-				}
+					callback?.Invoke();
+				});
 			}
 
-			public async Task LoadImages()
+			public void LoadImages()
 			{
-				GameBadge = await GetImage(ImageName, LibRCheevos.rc_api_image_type_t.RC_IMAGE_TYPE_GAME).ConfigureAwait(false);
+				GetImage(ImageName, LibRCheevos.rc_api_image_type_t.RC_IMAGE_TYPE_GAME, badge => GameBadge = badge);
 
 				if (_cheevos is null) return;
 
@@ -91,7 +80,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			public int TotalCheevoPoints(bool hardcore)
-				=> _cheevos?.Values.Sum(c => (c.IsEnabled && !c.Invalid && c.IsUnlocked(hardcore)) ? c.Points : 0) ?? 0;
+				=> _cheevos?.Values.Sum(c => c.IsEnabled && !c.Invalid && c.IsUnlocked(hardcore) ? c.Points : 0) ?? 0;
 
 			public unsafe GameData(in LibRCheevos.rc_api_fetch_game_data_response_t resp, Func<bool> allowUnofficialCheevos)
 			{
@@ -119,9 +108,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				_lboards = lboards;
-
-				SoftcoreInitUnlocksReady = new(false);
-				HardcoreInitUnlocksReady = new(false);
 			}
 
 			public GameData(GameData gameData, Func<bool> allowUnofficialCheevos)
@@ -135,9 +121,6 @@ namespace BizHawk.Client.EmuHawk
 
 				_cheevos = gameData.CheevoEnumerable.ToDictionary<Cheevo, int, Cheevo>(cheevo => cheevo.ID, cheevo => new(in cheevo, allowUnofficialCheevos));
 				_lboards = gameData.LBoardEnumerable.ToDictionary<LBoard, int, LBoard>(lboard => lboard.ID, lboard => new(in lboard));
-
-				SoftcoreInitUnlocksReady = new(false);
-				HardcoreInitUnlocksReady = new(false);
 			}
 
 			public GameData()
@@ -146,22 +129,21 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static async Task<int> SendHashAsync(string hash)
+		private static int SendHash(string hash)
 		{
 			var api_params = new LibRCheevos.rc_api_resolve_hash_request_t(null, null, hash);
 			var ret = 0;
-			if (_lib.rc_api_init_resolve_hash_request(out var api_req, ref api_params) == LibRCheevos.rc_error_t.RC_OK)
+			var res = _lib.rc_api_init_resolve_hash_request(out var api_req, ref api_params);
+			SendAPIRequestIfOK(res, ref api_req, serv_resp =>
 			{
-				var serv_req = await SendAPIRequest(in api_req).ConfigureAwait(false);
-				if (_lib.rc_api_process_resolve_hash_response(out var resp, serv_req) == LibRCheevos.rc_error_t.RC_OK)
+				if (_lib.rc_api_process_resolve_hash_response(out var resp, serv_resp) == LibRCheevos.rc_error_t.RC_OK)
 				{
 					ret = resp.game_id;
 				}
 
 				_lib.rc_api_destroy_resolve_hash_response(ref resp);
-			}
+			}).Wait(); // currently, this is done synchronously
 
-			_lib.rc_api_destroy_request(ref api_req);
 			return ret;
 		}
 
@@ -174,7 +156,7 @@ namespace BizHawk.Client.EmuHawk
 				return _cachedGameIds[hash];
 			}
 
-			var ret = SendHashAsync(hash).ConfigureAwait(false).GetAwaiter().GetResult();
+			var ret = SendHash(hash);
 			_cachedGameIds.Add(hash, ret);
 			return ret;
 		}
@@ -191,56 +173,75 @@ namespace BizHawk.Client.EmuHawk
 			return 0;
 		}
 
-		private static async Task InitGameDataAsync(GameData gameData, string username, string api_token, bool hardcore)
+		private void InitGameData()
 		{
-			await gameData.InitUnlocks(username, api_token, hardcore).ConfigureAwait(false);
-			await gameData.InitUnlocks(username, api_token, !hardcore).ConfigureAwait(false);
-			await gameData.LoadImages().ConfigureAwait(false);
-		}
+			_activeModeUnlocksTask = _gameData.InitUnlocks(Username, ApiToken, HardcoreMode, () =>
+			{
+				foreach (var cheevo in _gameData.CheevoEnumerable)
+				{
+					if (cheevo.IsEnabled && !cheevo.IsUnlocked(HardcoreMode))
+					{
+						_lib.rc_runtime_activate_achievement(ref _runtime, cheevo.ID, cheevo.Definition, IntPtr.Zero, 0);
+					}
+				}
+			});
 
-		private static async void InitGameData(GameData gameData, string username, string api_token, bool hardcore)
-			=> await InitGameDataAsync(gameData, username, api_token, hardcore);
+			_inactiveModeUnlocksTask = _gameData.InitUnlocks(Username, ApiToken, !HardcoreMode);
+			_gameData.LoadImages();
+
+			foreach (var lboard in _gameData.LBoardEnumerable)
+			{
+				_lib.rc_runtime_activate_lboard(ref _runtime, lboard.ID, lboard.Definition, IntPtr.Zero, 0);
+			}
+
+			if (_gameData.RichPresenseScript is not null)
+			{
+				_lib.rc_runtime_activate_richpresence(ref _runtime, _gameData.RichPresenseScript, IntPtr.Zero, 0);
+			}
+		}
 
 		private static GameData GetGameData(string username, string api_token, int id, Func<bool> allowUnofficialCheevos)
 		{
 			var api_params = new LibRCheevos.rc_api_fetch_game_data_request_t(username, api_token, id);
 			var ret = new GameData();
-			if (_lib.rc_api_init_fetch_game_data_request(out var api_req, ref api_params) == LibRCheevos.rc_error_t.RC_OK)
+			var res = _lib.rc_api_init_fetch_game_data_request(out var api_req, ref api_params);
+			SendAPIRequestIfOK(res, ref api_req, serv_resp =>
 			{
-				var serv_req = SendAPIRequest(in api_req).ConfigureAwait(false).GetAwaiter().GetResult();
-				if (_lib.rc_api_process_fetch_game_data_response(out var resp, serv_req) == LibRCheevos.rc_error_t.RC_OK)
+				if (_lib.rc_api_process_fetch_game_data_response(out var resp, serv_resp) == LibRCheevos.rc_error_t.RC_OK)
 				{
 					ret = new(in resp, allowUnofficialCheevos);
 				}
 
 				_lib.rc_api_destroy_fetch_game_data_response(ref resp);
-			}
+			}).Wait();
 
-			_lib.rc_api_destroy_request(ref api_req);
 			return ret;
 		}
 
-		private static async Task<Bitmap> GetImage(string image_name, LibRCheevos.rc_api_image_type_t image_type)
+		private static void GetImage(string image_name, LibRCheevos.rc_api_image_type_t image_type, Action<Bitmap> callback)
 		{
-			if (image_name is null) return null;
+			if (image_name is null)
+			{
+				callback(null);
+				return;
+			}
 
 			var api_params = new LibRCheevos.rc_api_fetch_image_request_t(image_name, image_type);
-			Bitmap ret = null;
-			if (_lib.rc_api_init_fetch_image_request(out var api_req, ref api_params) == LibRCheevos.rc_error_t.RC_OK)
+			var res = _lib.rc_api_init_fetch_image_request(out var api_req, ref api_params);
+			SendAPIRequestIfOK(res, ref api_req, serv_resp =>
 			{
+				Bitmap image;
 				try
 				{
-					var serv_resp = await SendAPIRequest(in api_req).ConfigureAwait(false);
-					ret = new(new MemoryStream(serv_resp));
+					image = new(new MemoryStream(serv_resp));
 				}
 				catch
 				{
-					ret = null;
+					image = null;
 				}
-			}
 
-			_lib.rc_api_destroy_request(ref api_req);
-			return ret;
+				callback(image);
+			});
 		}
 	}
 }

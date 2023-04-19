@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace BizHawk.Client.EmuHawk
@@ -10,17 +9,17 @@ namespace BizHawk.Client.EmuHawk
 	/// </summary>
 	public partial class RCheevosLoginForm : Form
 	{
-		public RCheevosLoginForm(Func<string, string, Task<bool>> loginCallback)
+		public RCheevosLoginForm(Func<string, string, bool> loginCallback)
 		{
 			InitializeComponent();
 			_loginCallback = loginCallback;
 		}
 
-		private readonly Func<string, string, Task<bool>> _loginCallback;
+		private readonly Func<string, string, bool> _loginCallback;
 
-		private async void btnLogin_Click(object sender, EventArgs e)
+		private void btnLogin_Click(object sender, EventArgs e)
 		{
-			var res = await _loginCallback(txtUsername.Text, txtPassword.Text);
+			var res = _loginCallback(txtUsername.Text, txtPassword.Text);
 			if (res)
 			{
 				MessageBox.Show("Login successful");
