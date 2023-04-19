@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -6,6 +7,37 @@ namespace BizHawk.Client.EmuHawk
 	public partial class RCheevos
 	{
 		private readonly RCheevosLeaderboardListForm _lboardListForm = new();
+
+		private class LboardTriggerTask
+		{
+			private LibRCheevos.rc_api_submit_lboard_entry_request_t _apiParams;
+			public Task Task { get; private set; }
+			public bool Success { get; private set; }
+
+			private void LboardTriggerTaskCallback(byte[] serv_resp)
+			{
+				var res = _lib.rc_api_process_submit_lboard_entry_response(out var resp, serv_resp);
+				_lib.rc_api_destroy_submit_lboard_entry_response(ref resp);
+				Success = res == LibRCheevos.rc_error_t.RC_OK;
+			}
+
+			public void DoRequest()
+			{
+				var res = _lib.rc_api_init_submit_lboard_entry_request(out var api_req, ref _apiParams);
+				Task = SendAPIRequestIfOK(res, ref api_req, LboardTriggerTaskCallback);
+			}
+
+			public LboardTriggerTask(string username, string api_token, int id, int value, string hash)
+			{
+				_apiParams = new(username, api_token, id, value, hash);
+				DoRequest();
+			}
+		}
+
+		// keep a list of all cheevo unlock trigger tasks that have been queued
+		// on Dispose(), we wait for all these to complete
+		// on Update(), we clear out successfully completed tasks, any not completed will be resent
+		private readonly List<LboardTriggerTask> _queuedLboardTriggerTasks = new();
 
 		private bool LBoardsActive { get; set; }
 
@@ -57,27 +89,5 @@ namespace BizHawk.Client.EmuHawk
 				SetScore(0);
 			}
 		}
-
-		private static async Task SendTriggerLeaderboardAsync(string username, string api_token, int id, int value, string hash)
-		{
-			var api_params = new LibRCheevos.rc_api_submit_lboard_entry_request_t(username, api_token, id, value, hash);
-			var res = LibRCheevos.rc_error_t.RC_INVALID_STATE;
-			if (_lib.rc_api_init_submit_lboard_entry_request(out var api_req, ref api_params) == LibRCheevos.rc_error_t.RC_OK)
-			{
-				var serv_req = await SendAPIRequest(in api_req).ConfigureAwait(false);
-				res = _lib.rc_api_process_submit_lboard_entry_response(out var resp, serv_req);
-				_lib.rc_api_destroy_submit_lboard_entry_response(ref resp);
-			}
-
-			_lib.rc_api_destroy_request(ref api_req);
-
-			if (res != LibRCheevos.rc_error_t.RC_OK)
-			{
-				// todo: warn user?
-			}
-		}
-
-		private static async void SendTriggerLeaderboard(string username, string api_token, int id, int value, string hash)
-			=> await SendTriggerLeaderboardAsync(username, api_token, id, value, hash).ConfigureAwait(false);
 	}
 }

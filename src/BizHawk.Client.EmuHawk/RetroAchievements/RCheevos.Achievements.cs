@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +9,37 @@ namespace BizHawk.Client.EmuHawk
 	public partial class RCheevos
 	{
 		private readonly RCheevosAchievementListForm _cheevoListForm = new();
+
+		private class CheevoUnlockTask
+		{
+			private LibRCheevos.rc_api_award_achievement_request_t _apiParams;
+			public Task Task { get; private set; }
+			public bool Success { get; private set; }
+
+			private void CheevoUnlockTaskCallback(byte[] serv_resp)
+			{
+				var res = _lib.rc_api_process_award_achievement_response(out var resp, serv_resp);
+				_lib.rc_api_destroy_award_achievement_response(ref resp);
+				Success = res == LibRCheevos.rc_error_t.RC_OK;
+			}
+
+			public void DoRequest()
+			{
+				var res = _lib.rc_api_init_award_achievement_request(out var api_req, ref _apiParams);
+				Task = SendAPIRequestIfOK(res, ref api_req, CheevoUnlockTaskCallback);
+			}
+
+			public CheevoUnlockTask(string username, string api_token, int achievement_id, bool hardcore, string game_hash)
+			{
+				_apiParams = new(username, api_token, achievement_id, hardcore, game_hash);
+				DoRequest();
+			}
+		}
+
+		// keep a list of all cheevo unlock trigger tasks that have been queued
+		// on Dispose(), we wait for all these to complete
+		// on Update(), we clear out successfully completed tasks, any not completed will be resent
+		private readonly List<CheevoUnlockTask> _queuedCheevoUnlockTasks = new();
 
 		private bool CheevosActive { get; set; }
 		private bool AllowUnofficialCheevos { get; set; }
@@ -51,10 +83,10 @@ namespace BizHawk.Client.EmuHawk
 			public bool IsEnabled => !Invalid && (IsOfficial || AllowUnofficialCheevos());
 			public bool IsOfficial => Category is LibRCheevos.rc_runtime_achievement_category_t.RC_ACHIEVEMENT_CATEGORY_CORE;
 
-			public async void LoadImages()
+			public void LoadImages()
 			{
-				BadgeUnlocked = await GetImage(BadgeName, LibRCheevos.rc_api_image_type_t.RC_IMAGE_TYPE_ACHIEVEMENT).ConfigureAwait(false);
-				BadgeLocked = await GetImage(BadgeName, LibRCheevos.rc_api_image_type_t.RC_IMAGE_TYPE_ACHIEVEMENT_LOCKED).ConfigureAwait(false);
+				GetImage(BadgeName, LibRCheevos.rc_api_image_type_t.RC_IMAGE_TYPE_ACHIEVEMENT, badge => BadgeUnlocked = badge);
+				GetImage(BadgeName, LibRCheevos.rc_api_image_type_t.RC_IMAGE_TYPE_ACHIEVEMENT_LOCKED, badge => BadgeLocked = badge);
 			}
 
 			public Cheevo(in LibRCheevos.rc_api_achievement_definition_t cheevo, Func<bool> allowUnofficialCheevos)
@@ -116,8 +148,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var initReady = HardcoreMode ? _gameData.HardcoreInitUnlocksReady : _gameData.SoftcoreInitUnlocksReady;
-			initReady.WaitOne();
+			_activeModeUnlocksTask.Wait();
 
 			foreach (var cheevo in _gameData.CheevoEnumerable)
 			{
@@ -142,7 +173,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_gameData == null || _gameData.GameID == 0) return;
 
-			_gameData.SoftcoreInitUnlocksReady.WaitOne();
+			_inactiveModeUnlocksTask.Wait();
 
 			foreach (var cheevo in _gameData.CheevoEnumerable)
 			{
@@ -152,7 +183,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			_gameData.HardcoreInitUnlocksReady.WaitOne();
+			_activeModeUnlocksTask.Wait();
 
 			foreach (var cheevo in _gameData.CheevoEnumerable)
 			{
@@ -164,27 +195,5 @@ namespace BizHawk.Client.EmuHawk
 
 			Update();
 		}
-
-		private static async Task SendUnlockAchievementAsync(string username, string api_token, int id, bool hardcore, string hash)
-		{
-			var api_params = new LibRCheevos.rc_api_award_achievement_request_t(username, api_token, id, hardcore, hash);
-			var res = LibRCheevos.rc_error_t.RC_INVALID_STATE;
-			if (_lib.rc_api_init_award_achievement_request(out var api_req, ref api_params) == LibRCheevos.rc_error_t.RC_OK)
-			{
-				var serv_req = await SendAPIRequest(in api_req).ConfigureAwait(false);
-				res = _lib.rc_api_process_award_achievement_response(out var resp, serv_req);
-				_lib.rc_api_destroy_award_achievement_response(ref resp);
-			}
-
-			_lib.rc_api_destroy_request(ref api_req);
-
-			if (res != LibRCheevos.rc_error_t.RC_OK)
-			{
-				// todo: warn user? correct local version of cheevos?
-			}
-		}
-
-		private static async void SendUnlockAchievement(string username, string api_token, int id, bool hardcore, string hash)
-			=> await SendUnlockAchievementAsync(username, api_token, id, hardcore, hash).ConfigureAwait(false);
 	}
 }

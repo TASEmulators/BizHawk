@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using BizHawk.BizInvoke;
@@ -194,9 +195,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_runtime = default;
 			_lib.rc_runtime_init(ref _runtime);
-			InitLoginDone = new(false);
 			Login();
-			InitLoginDone.WaitOne();
 
 			_eventcb = EventHandlerCallback;
 			_peekcb = PeekCallback;
@@ -214,6 +213,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void Dispose()
 		{
+			Task.WaitAll(_queuedCheevoUnlockTasks.Select(t => t.Task).ToArray());
+			Task.WaitAll(_queuedLboardTriggerTasks.Select(t => t.Task).ToArray());
 			_lib.rc_runtime_destroy(ref _runtime);
 			Stop();
 			_gameInfoForm.Dispose();
@@ -229,6 +230,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			_activeModeUnlocksTask.Wait();
 			var size = _lib.rc_runtime_progress_size(ref _runtime, IntPtr.Zero);
 			if (size > 0)
 			{
@@ -251,6 +253,7 @@ namespace BizHawk.Client.EmuHawk
 				HandleHardcoreModeDisable("Loading savestates is not allowed in hardcore mode.");
 			}
 
+			_activeModeUnlocksTask.Wait();
 			_lib.rc_runtime_reset(ref _runtime);
 
 			if (!File.Exists(path + ".rap")) return;
@@ -323,7 +326,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (memFunctions.ReadFunc is not null)
 					{
-						for (int i = 0; i < memFunctions.BankSize; i++)
+						for (var i = 0; i < memFunctions.BankSize; i++)
 						{
 							_readMap.Add(addr + i, (memFunctions.ReadFunc, addr));
 						}
@@ -351,43 +354,23 @@ namespace BizHawk.Client.EmuHawk
 						? new(cachedGameData, () => AllowUnofficialCheevos)
 						: GetGameData(Username, ApiToken, gameId, () => AllowUnofficialCheevos);
 
-					StartGameSession(Username, ApiToken, gameId);
+					StartGameSession();
 
 					_cachedGameDatas.Remove(gameId);
 					_cachedGameDatas.Add(gameId, _gameData);
 
-					InitGameData(_gameData, Username, ApiToken, HardcoreMode);
-
-					foreach (var lboard in _gameData.LBoardEnumerable)
-					{
-						_lib.rc_runtime_activate_lboard(ref _runtime, lboard.ID, lboard.Definition, IntPtr.Zero, 0);
-					}
-
-					if (_gameData.RichPresenseScript is not null)
-					{
-						_lib.rc_runtime_activate_richpresence(ref _runtime, _gameData.RichPresenseScript, IntPtr.Zero, 0);
-					}
-
-					var waitInit = HardcoreMode ? _gameData.HardcoreInitUnlocksReady : _gameData.SoftcoreInitUnlocksReady;
-					// hopefully not too long, given we spent some time doing other work
-					waitInit.WaitOne();
-
-					foreach (var cheevo in _gameData.CheevoEnumerable)
-					{
-						if (cheevo.IsEnabled && !cheevo.IsUnlocked(HardcoreMode))
-						{
-							_lib.rc_runtime_activate_achievement(ref _runtime, cheevo.ID, cheevo.Definition, IntPtr.Zero, 0);
-						}
-					}
+					InitGameData();
 				}
 				else
 				{
 					_gameData = new();
+					_activeModeUnlocksTask = _inactiveModeUnlocksTask = Task.CompletedTask;
 				}
 			}
 			else
 			{
 				_gameData = new();
+				_activeModeUnlocksTask = _inactiveModeUnlocksTask = Task.CompletedTask;
 			}
 
 			// validate addresses now that we have cheevos init
@@ -410,6 +393,26 @@ namespace BizHawk.Client.EmuHawk
 			if (!LoggedIn)
 			{
 				return;
+			}
+
+			if (_startGameSessionTask is not null && _startGameSessionTask.IsCompleted && !GameSessionStartSuccessful)
+			{
+				// retry if this failed
+				StartGameSession();
+			}
+
+			_queuedCheevoUnlockTasks.RemoveAll(t => t.Task.IsCompleted && t.Success);
+
+			foreach (var task in _queuedCheevoUnlockTasks.Where(task => task.Task.IsCompleted && !task.Success))
+			{
+				task.DoRequest();
+			}
+
+			_queuedLboardTriggerTasks.RemoveAll(t => t.Task.IsCompleted && t.Success);
+
+			foreach (var task in _queuedLboardTriggerTasks.Where(task => task.Task.IsCompleted && !task.Success))
+			{
+				task.DoRequest();
 			}
 
 			if (HardcoreMode)
@@ -445,7 +448,7 @@ namespace BizHawk.Client.EmuHawk
 
 							if (cheevo.IsOfficial)
 							{
-								SendUnlockAchievement(Username, ApiToken, evt->id, HardcoreMode, _gameHash);
+								_queuedCheevoUnlockTasks.Add(new(Username, ApiToken, evt->id, HardcoreMode, _gameHash));
 							}
 						}
 
@@ -530,7 +533,7 @@ namespace BizHawk.Client.EmuHawk
 						var lboard = _gameData.GetLboardById(evt->id);
 						if (!lboard.Invalid)
 						{
-							SendTriggerLeaderboard(Username, ApiToken, evt->id, evt->value, _gameHash);
+							_queuedLboardTriggerTasks.Add(new(Username, ApiToken, evt->id, evt->value, _gameHash));
 
 							if (!lboard.Hidden)
 							{
@@ -592,7 +595,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void OnFrameAdvance()
 		{
-			if (!LoggedIn)
+			if (!LoggedIn || !_activeModeUnlocksTask.IsCompleted)
 			{
 				return;
 			}
