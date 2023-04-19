@@ -139,27 +139,29 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					// this is to get around some zlib bug?
 					using var ret = new MemoryStream();
 					ret.Write(rom.FileData, 0, rom.FileData.Length);
-					using var zip = new ZipArchive(ret, ZipArchiveMode.Update, leaveOpen: true);
-					foreach (var entryName in zip.Entries.Select(e => e.FullName).ToList())
+					using (var zip = new ZipArchive(ret, ZipArchiveMode.Update, leaveOpen: true))
 					{
-						try // TODO: this is a bad way to detect deflate
+						foreach (var entryName in zip.Entries.Select(e => e.FullName).ToList())
 						{
-							var oldEntry = zip.GetEntry(entryName)!;
-							using var oldEntryStream = oldEntry.Open(); // if this isn't deflate, this throws
-							var contents = oldEntryStream.ReadAllBytes();
-							oldEntryStream.Dispose();
-							oldEntry.Delete();
-							var newEntry = zip.CreateEntry(entryName, CompressionLevel.NoCompression);
-							using var newEntryStream = newEntry.Open();
-							newEntryStream.Write(contents, 0, contents.Length);
-						}
-						catch
-						{
-							// ignored
+							try // TODO: this is a bad way to detect deflate (although it works I guess)
+							{
+								var oldEntry = zip.GetEntry(entryName)!;
+								using var oldEntryStream = oldEntry.Open(); // if this isn't deflate, this throws InvalidDataException
+								var contents = oldEntryStream.ReadAllBytes();
+								oldEntryStream.Dispose();
+								oldEntry.Delete();
+								var newEntry = zip.CreateEntry(entryName, CompressionLevel.NoCompression);
+								using var newEntryStream = newEntry.Open();
+								newEntryStream.Write(contents, 0, contents.Length);
+							}
+							catch (InvalidDataException)
+							{
+								// ignored
+							}
 						}
 					}
 
-					zip.Dispose(); // this actually modifies the MemoryStream
+					// ZipArchive's Dispose() is what actually modifies the backing stream
 					return ret.ToArray();
 				}
 
