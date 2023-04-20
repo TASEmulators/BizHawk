@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Runtime.InteropServices;
@@ -9,6 +10,7 @@ using System.Text;
 
 using BizHawk.BizInvoke;
 using BizHawk.Common;
+using BizHawk.Common.IOExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
@@ -129,15 +131,52 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			var gameName = _gameFileName.Split('.')[0];
 
+			static byte[] MakeRomData(IRomAsset rom)
+			{
+				if (rom.Extension.ToLowerInvariant() is ".zip")
+				{
+					// if this is deflate, unzip the zip, and rezip it without compression
+					// this is to get around some zlib bug?
+					using var ret = new MemoryStream();
+					ret.Write(rom.FileData, 0, rom.FileData.Length);
+					using (var zip = new ZipArchive(ret, ZipArchiveMode.Update, leaveOpen: true))
+					{
+						foreach (var entryName in zip.Entries.Select(e => e.FullName).ToList())
+						{
+							try // TODO: this is a bad way to detect deflate (although it works I guess)
+							{
+								var oldEntry = zip.GetEntry(entryName)!;
+								using var oldEntryStream = oldEntry.Open(); // if this isn't deflate, this throws InvalidDataException
+								var contents = oldEntryStream.ReadAllBytes();
+								oldEntryStream.Dispose();
+								oldEntry.Delete();
+								var newEntry = zip.CreateEntry(entryName, CompressionLevel.NoCompression);
+								using var newEntryStream = newEntry.Open();
+								newEntryStream.Write(contents, 0, contents.Length);
+							}
+							catch (InvalidDataException)
+							{
+								// ignored
+							}
+						}
+					}
+
+					// ZipArchive's Dispose() is what actually modifies the backing stream
+					return ret.ToArray();
+				}
+
+				return rom.FileData;
+			}
+
 			// mame expects chd files in a folder of the game name
 			string MakeFileName(IRomAsset rom)
-				=> rom.Extension.ToLowerInvariant() == ".chd"
+				=> rom.Extension.ToLowerInvariant() is ".chd"
 					? gameName + '/' + Path.GetFileNameWithoutExtension(rom.RomPath).ToLowerInvariant() + rom.Extension.ToLowerInvariant()
 					: Path.GetFileNameWithoutExtension(rom.RomPath).ToLowerInvariant() + rom.Extension.ToLowerInvariant();
 
 			foreach (var rom in roms)
 			{
-				_exe.AddReadonlyFile(rom.FileData, MakeFileName(rom));
+				_exe.AddReadonlyFile(MakeRomData(rom), MakeFileName(rom));
 			}
 
 			// https://docs.mamedev.org/commandline/commandline-index.html
