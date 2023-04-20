@@ -99,7 +99,7 @@ namespace BizHawk.Client.Common
 
 		public virtual ulong Rerecords
 		{
-			get => ulong.Parse(Header[HeaderKeys.Rerecords]);
+			get => Header.TryGetValue(HeaderKeys.Rerecords, out var rerecords) ? ulong.Parse(rerecords) : 0;
 			set => Header[HeaderKeys.Rerecords] = value.ToString();
 		}
 
