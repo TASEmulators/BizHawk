@@ -63,6 +63,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			[DefaultValue(false)]
 			public bool UseRealTime { get; set; }
 
+			[DisplayName("CPU Emulation")]
+			[Description("May be ignored if the game requires interpreter mode")]
+			[DefaultValue(LibAres64.CpuType.Recompiler)]
+			public LibAres64.CpuType CPUEmulation { get; set; }
+
 			[DisplayName("DD IPL Version")]
 			[Description("")]
 			[DefaultValue(LibAres64.IplVer.Japan)]

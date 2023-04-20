@@ -43,6 +43,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			Bob,
 		}
 
+		public enum CpuType : uint
+		{
+			Interpreter,
+			Recompiler,
+		}
+
 		public enum IplVer : uint
 		{
 			Japan,

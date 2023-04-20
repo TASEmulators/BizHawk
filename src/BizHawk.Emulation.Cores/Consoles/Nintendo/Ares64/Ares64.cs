@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 
 		[CoreConstructor(VSystemID.Raw.N64)]
 		public Ares64(CoreLoadParameters<Ares64Settings, Ares64SyncSettings> lp)
-			: base(lp.Comm, new Configuration
+			: base(lp.Comm, new()
 			{
 				DefaultWidth = 640,
 				DefaultHeight = 480,
@@ -45,10 +45,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			};
 
 			N64Controller = CreateControllerDefinition(ControllerSettings);
+			var interpreter = lp.Game.GetBool("ares_force_cpu_interpreter", false) || _syncSettings.CPUEmulation == LibAres64.CpuType.Interpreter;
 
-			_core = PreInit<LibAres64>(new WaterboxOptions
+			_core = PreInit<LibAres64>(new()
 			{
-				Filename = "ares64.wbx",
+				Filename = $"ares64_{(interpreter ? "interpreter" : "recompiler")}.wbx",
 				SbrkHeapSizeKB = 2 * 1024,
 				SealedHeapSizeKB = 4,
 				InvisibleHeapSizeKB = 22 * 1024,
