@@ -432,6 +432,8 @@ extern "sysv64" fn syscall(
 			// so don't need to examine the arguments here and can just treat this as another yield
 			h.threads.yield_any(&mut h.context)
 		},
+		NR_GETPID => syscall_ok(1),
+		NR_GETPPID => syscall_ok(1),
 		_ => syscall_ret(unimp(nr)),
 	}
 }
