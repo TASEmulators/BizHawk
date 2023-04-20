@@ -188,7 +188,7 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
-		/// <exception cref="MoviePlatformMismatchException"><paramref name="record"/> is <see langword="false"/> and <paramref name="movie"/>.<see cref="IMovie.SystemID"/> does not match <paramref name="systemId"/>.<see cref="IEmulator.SystemId"/></exception>
+		/// <exception cref="MoviePlatformMismatchException"><paramref name="record"/> is <see langword="false"/> and <paramref name="movie"/>.<see cref="IBasicMovieInfo.SystemID"/> does not match <paramref name="systemId"/>.<see cref="IEmulator.SystemId"/></exception>
 		public void QueueNewMovie(IMovie movie, bool record, string systemId, IDictionary<string, string> preferredCores)
 		{
 			if (movie.IsActive() && movie.Changes)
@@ -198,7 +198,7 @@ namespace BizHawk.Client.Common
 
 			if (!record) // The semantics of record is that we are starting a new movie, and even wiping a pre-existing movie with the same path, but non-record means we are loading an existing movie into playback mode
 			{
-				movie.Load(false);
+				movie.Load();
 				
 				if (movie.SystemID != systemId)
 				{
