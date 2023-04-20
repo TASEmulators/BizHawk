@@ -304,9 +304,9 @@ B8DFE78C7ABF1E33EDAD0B5ECEC1C9F1F3C8B576	G	Human Grand Prix - The New Generation
 D2210D492BAD952B055A4269E45FD89631C32D25	G	Hybrid Heaven (Europe) (En,Fr,De)	N64
 09F4D3200B0BD4B984A80248AF07DE3C40B5CC26	G	Hybrid Heaven (Japan)	N64
 16DBC21620B52DEAB5C5ABF8A309AC60ADFBEE85	G	Hybrid Heaven (USA)	N64
-0661B1B0E47BC02D9B0D87D1688FD466793C074B	G	Hydro Thunder (Europe)	N64 	ares_force_cpu_interpreter=true
-03FA91AEC0819654F1AD0D12BB81CE3F5D7D08AE	G	Hydro Thunder (France)	N64 	ares_force_cpu_interpreter=true
-F5D5054F97DA0D68857F9824130147EC38EE7A76	G	Hydro Thunder (USA)	N64 	ares_force_cpu_interpreter=true
+0661B1B0E47BC02D9B0D87D1688FD466793C074B	G	Hydro Thunder (Europe)	N64		ares_force_cpu_interpreter=true
+03FA91AEC0819654F1AD0D12BB81CE3F5D7D08AE	G	Hydro Thunder (France)	N64		ares_force_cpu_interpreter=true
+F5D5054F97DA0D68857F9824130147EC38EE7A76	G	Hydro Thunder (USA)	N64		ares_force_cpu_interpreter=true
 3D0F36371F99C8ABC8E835DAE4E0913757EE4827	G	Hyper Olympics in Nagano 64 (Japan)	N64
 26E3210F45C78D72EAE61CB066D08D6E00C0EA87	G	Ide Yosuke no Mahjong Juku (Japan)	N64
 DA3C5BA5849E104383EA4C3DF1FBDB8253F184C9	G	Iggy's Reckin' Balls (Europe)	N64		Glide_fix_tex_coord=1;Glide_filtering=0
@@ -314,7 +314,7 @@ DA3C5BA5849E104383EA4C3DF1FBDB8253F184C9	G	Iggy's Reckin' Balls (Europe)	N64		Gl
 EBB8C0C99D000A366D2DBA0D8D184EC18AA82D43	G	Iggy-kun no Bura Bura Poyon (Japan)	N64		Glide_fix_tex_coord=1;Glide_filtering=0
 D36374BE227E972B1C0B6F2CFBB8FDD724AA1074	G	In-Fisherman - Bass Hunter 64 (Europe)	N64		Glide_fix_tex_coord=1;Glide_filtering=0;Glide_buff_clear=false;Glide_swapmode=2;Glide64mk2_buff_clear=false;Glide64mk2_swapmode=2
 4AA373E23876C89A549C98036F456B564D779217	G	In-Fisherman - Bass Hunter 64 (USA)	N64		Glide_fix_tex_coord=1;Glide_filtering=0;Glide_buff_clear=false;Glide_swapmode=2;Glide64mk2_buff_clear=false;Glide64mk2_swapmode=2
-93300D63412D6C7432109B5AD2E4A8B9348E9538	G	Indiana Jones and the Infernal Machine (USA)	N64 	ares_force_cpu_interpreter=true
+93300D63412D6C7432109B5AD2E4A8B9348E9538	G	Indiana Jones and the Infernal Machine (USA)	N64		ares_force_cpu_interpreter=true
 015BF0E0BC700A80A2606D3578E4A9B7645E99EC	G	Indy Racing 2000 (USA)	N64
 CCAFFEE3A793A0C3A5E7C48FBC4A4759EF29153F	G	International Superstar Soccer '98 (Europe)	N64
 053735184D414E0A1BBD888F3C931252EA1B92FD	G	International Superstar Soccer '98 (USA)	N64
@@ -511,7 +511,7 @@ D4CB60EB3645AE803A1EFC234CEFFD8F424DC8F7	G	NBA Live 2000 (Europe) (En,Fr,De,Es)	
 89E47FFAC3EAE25B37E1A20CE66CA24E343912DD	G	NBA Live 99 (USA) (En,Fr,De,Es,It)	N64
 94416270D83A87E360BAC5059CC5F7365CA120AC	G	NBA Pro 98 (Europe)	N64
 5DECF930D859E8B834A5F897955880556CA6AADF	G	NBA Pro 99 (Europe)	N64
-702D6D55FC23C56B8A57D7348D159098FFF98650	G	NBA Showtime - NBA on NBC (USA)	N64 	ares_force_cpu_interpreter=true
+702D6D55FC23C56B8A57D7348D159098FFF98650	G	NBA Showtime - NBA on NBC (USA)	N64		ares_force_cpu_interpreter=true
 A9BA0A4AFEED48080F54AA237850F3676B3D9980	G	Neon Genesis Evangelion (Japan)	N64		RiceAccurateTextureMappingHack=1;RiceFastTextureCRC=1;Glide_filtering=0;SaveType=EEPROM_16K
 2392F403B0993F838912CEFA83AEFD35D34A05A0	G	New Tetris, The (Europe)	N64		RiceIncTexRectEdge=true;Glide_fix_tex_coord=1;Glide_increase_texrect_edge=true;Glide_filtering=0;Glide_fog=false;Glide64mk2_increase_texrect_edge=true;Glide64mk2_fog=false
 83FFF25E82181A6993F28C91B9EEB8430396838B	G	New Tetris, The (USA)	N64		RiceVIWidth=400;RiceVIHeight=300;Glide_fix_tex_coord=1;Glide_increase_texrect_edge=true;Glide_filtering=0;Glide_fog=false;Glide64mk2_increase_texrect_edge=true;Glide64mk2_fog=false
@@ -641,9 +641,9 @@ D107E8D28A262A60BA50DE4C227343EBC3587784	G	Razor Freestyle Scooter (USA)	N64
 E18477D858C623A834F24DC2717D0EF340E63364	G	Ready 2 Rumble Boxing (Europe) (En,Fr,De)	N64		Glide_fix_tex_coord=64;Glide_filtering=0
 E60FEDD535A72FDA5C424B846421BBDAD17C6CAA	G	Ready 2 Rumble Boxing (USA)	N64		RiceEnableHacksForGame=22;Glide_fix_tex_coord=64;Glide_filtering=0
 42AD558C20DDA72E9383323960CD1FD591122052	G	Ready 2 Rumble Boxing - Round 2 (USA)	N64		RiceEnableHacksForGame=22;Glide_fix_tex_coord=1;Glide_filtering=0
-D54561791BC41F1B743F8ABE769A6E8CBF435326	G	Resident Evil 2 (Europe) (En,Fr)	N64 	ares_force_cpu_interpreter=true;Glide_enable_hacks_for_game=10;Glide_detect_cpu_write=true;Glide_fix_tex_coord=128;Glide_filtering=0;Glide_swapmode=2;Glide64mk2_enable_hacks_for_game=22;Glide64mk2_detect_cpu_write=true;Glide64mk2_swapmode=2
-62EC19BEAD748C12D38F6C5A7AB0831EDBD3D44B	G	Resident Evil 2 (USA) (Rev A)	N64 	ares_force_cpu_interpreter=true;RiceForceScreenClear=true;Glide_enable_hacks_for_game=10;Glide_detect_cpu_write=true;Glide_fix_tex_coord=128;Glide_filtering=0;Glide_swapmode=2;Glide64mk2_enable_hacks_for_game=22;Glide64mk2_detect_cpu_write=true;Glide64mk2_swapmode=2
-93187C4145CAD272A255C17657CD9A1011B3FB3A	G	Resident Evil 2 (USA)	N64 	ares_force_cpu_interpreter=true;Glide_enable_hacks_for_game=10;Glide_detect_cpu_write=true;Glide_fix_tex_coord=128;Glide_filtering=0;Glide_swapmode=2;Glide64mk2_enable_hacks_for_game=22;Glide64mk2_detect_cpu_write=true;Glide64mk2_swapmode=2
+D54561791BC41F1B743F8ABE769A6E8CBF435326	G	Resident Evil 2 (Europe) (En,Fr)	N64		ares_force_cpu_interpreter=true;Glide_enable_hacks_for_game=10;Glide_detect_cpu_write=true;Glide_fix_tex_coord=128;Glide_filtering=0;Glide_swapmode=2;Glide64mk2_enable_hacks_for_game=22;Glide64mk2_detect_cpu_write=true;Glide64mk2_swapmode=2
+62EC19BEAD748C12D38F6C5A7AB0831EDBD3D44B	G	Resident Evil 2 (USA) (Rev A)	N64		ares_force_cpu_interpreter=true;RiceForceScreenClear=true;Glide_enable_hacks_for_game=10;Glide_detect_cpu_write=true;Glide_fix_tex_coord=128;Glide_filtering=0;Glide_swapmode=2;Glide64mk2_enable_hacks_for_game=22;Glide64mk2_detect_cpu_write=true;Glide64mk2_swapmode=2
+93187C4145CAD272A255C17657CD9A1011B3FB3A	G	Resident Evil 2 (USA)	N64		ares_force_cpu_interpreter=true;Glide_enable_hacks_for_game=10;Glide_detect_cpu_write=true;Glide_fix_tex_coord=128;Glide_filtering=0;Glide_swapmode=2;Glide64mk2_enable_hacks_for_game=22;Glide64mk2_detect_cpu_write=true;Glide64mk2_swapmode=2
 816824CB5DC62EE54DC52C0EBB9B2564ECB88133	G	Road Rash 64 (Europe)	N64		Glide_filtering=0
 87727A298F583EC8325F5655088FF21E37B335B2	G	Road Rash 64 (USA)	N64		RiceAccurateTextureMappingHack=1;Glide_filtering=0
 2AD3BCCD29DC879A873C926AF03002E36582525A	G	Roadsters (Europe) (En,Fr,De,Es,It,Nl)	N64		Glide_enable_hacks_for_game=1;Glide64mk2_enable_hacks_for_game=29
@@ -715,18 +715,18 @@ D8B1088520F7C5F81433292A9258C1184AFA1457	G	Star Fox 64 (USA)	N64
 0B34BDDD00C49530E0EF47330A05DC70EBE5F8B7	G	Star Soldier - Vanishing Earth (Japan)	N64		Glide_force_microcheck=true;Glide_swapmode=0;Glide64mk2_force_microcheck=true;Glide64mk2_filtering=1;Glide64mk2_swapmode=0
 14DFD0172567B47C819B3E61D1CE13281E0FFED6	G	Star Soldier - Vanishing Earth (USA)	N64		Glide_force_microcheck=true;Glide_swapmode=0;Glide64mk2_force_microcheck=true;Glide64mk2_filtering=1;Glide64mk2_swapmode=0
 15099233760B36E7AFAD7DA36B9464DA1512C4B1	G	Star Twins (Japan)	N64		GLideN64_CopyColorFromRDRAM=true;GLideN64_CopyColorToRDRAM=0
-66A70566D267532272B15ABC0BE20E2A1074AE45	G	Star Wars - Rogue Squadron (Europe) (En,Fr,De) (Rev A)	N64 	ares_force_cpu_interpreter=true
-DA91A86F1F566DC66A2AE1292AA581BFC4F9CDFD	G	Star Wars - Rogue Squadron (Europe) (En,Fr,De)	N64 	ares_force_cpu_interpreter=true;RiceEnableHacksForGame=28
-C12E1C6FB47A67DA463C50B705EC682EC24AE80D	G	Star Wars - Rogue Squadron (USA) (Rev A)	N64 	ares_force_cpu_interpreter=true
-ED42EED1EE2DB646FF7EF94BA8C5421D164A4F0D	G	Star Wars - Rogue Squadron (USA)	N64 	ares_force_cpu_interpreter=true;RiceEnableHacksForGame=28;RiceFrameBufferOption=2
+66A70566D267532272B15ABC0BE20E2A1074AE45	G	Star Wars - Rogue Squadron (Europe) (En,Fr,De) (Rev A)	N64		ares_force_cpu_interpreter=true
+DA91A86F1F566DC66A2AE1292AA581BFC4F9CDFD	G	Star Wars - Rogue Squadron (Europe) (En,Fr,De)	N64		ares_force_cpu_interpreter=true;RiceEnableHacksForGame=28
+C12E1C6FB47A67DA463C50B705EC682EC24AE80D	G	Star Wars - Rogue Squadron (USA) (Rev A)	N64		ares_force_cpu_interpreter=true
+ED42EED1EE2DB646FF7EF94BA8C5421D164A4F0D	G	Star Wars - Rogue Squadron (USA)	N64		ares_force_cpu_interpreter=true;RiceEnableHacksForGame=28;RiceFrameBufferOption=2
 E014F60BEA29BBC7FBD7F3BA4FCC6BDD228C8FE5	G	Star Wars - Shadows of the Empire (Europe)	N64
 DED8F972D1E1D662614B1EC79822D649A8CE5430	G	Star Wars - Shadows of the Empire (USA) (Rev A)	N64
 9AB85626C27372EE614B7C5301C2C4EB187FD9F6	G	Star Wars - Shadows of the Empire (USA) (Rev B)	N64		RiceFrameBufferOption=3;RiceScreenUpdateSettingHack=3
 271C285F6E5069133AB27A2A8324D4651591E35D	G	Star Wars - Shadows of the Empire (USA)	N64		RiceDisableObjBG=true;RiceScreenUpdateSettingHack=4;Jabo_Clear_Frame=2
 D8BDDB9727264C14BF3BC20B2FE983FB86EADA32	G	Star Wars - Shutsugeki! Rogue Chuutai (Japan)	N64
 93ED6F1497EDE2239F9D75B4A39204B6C9DD9FFD	G	Star Wars - Teikoku no Kage (Japan)	N64
-C949856A6CB0B59A2D171C8AD2E8D913CCA23022	G	Star Wars Episode I - Battle for Naboo (Europe)	N64 	ares_force_cpu_interpreter=true
-E4441A6EEB67861408C2E009BAAE8AAD4DF34021	G	Star Wars Episode I - Battle for Naboo (USA)	N64 	ares_force_cpu_interpreter=true
+C949856A6CB0B59A2D171C8AD2E8D913CCA23022	G	Star Wars Episode I - Battle for Naboo (Europe)	N64		ares_force_cpu_interpreter=true
+E4441A6EEB67861408C2E009BAAE8AAD4DF34021	G	Star Wars Episode I - Battle for Naboo (USA)	N64		ares_force_cpu_interpreter=true
 899A8245DA017289C88E97327FDCD6694B770A25	G	Star Wars Episode I - Racer (Europe) (En,Fr,De)	N64		SaveType=EEPROM_16K;GLideN64_CopyDepthToRDRAM=1
 9577CCD2D069D0E7E306CF21DDB0E4765A308072	G	Star Wars Episode I - Racer (Japan)	N64		SaveType=EEPROM_16K;Jabo_Resolution_Width=320;Jabo_Resolution_Height=240;GLideN64_CopyDepthToRDRAM=1
 3542D5597C8A56EA8F5C63BCEAE97A24C4C08D58	G	Star Wars Episode I - Racer (USA)	N64		RiceZHack=true;SaveType=EEPROM_16K;Jabo_Resolution_Width=320;Jabo_Resolution_Height=240;GLideN64_CopyDepthToRDRAM=1
@@ -758,10 +758,10 @@ FB905AC5887DE6C3670F73F9C92EFBACD55B6816	G	Susume! Taisen Puzzle Dama - Toukon! 
 ECC18F53E0CA563B3D5FA6876768EF2F94D35E36	G	Sydney 2000 (Europe) (Proto)	N64
 711C79790A713E65CC2ECB4857F35898B8E92985	G	Sydney 2000 (USA) (Proto)	N64
 BE11AA2170FB3900379B127241161833400BF58C	G	Tamiya Racing 64 (USA) (Proto)	N64
-7623ACEECD244F4352A7D9346A607AC183B32CD6	G	Tarzan (Europe)	N64 	ares_force_cpu_interpreter=true
-1CF1F0F8217BA4E1691427F97EF62B15DC02A1C3	G	Tarzan (France)	N64 	ares_force_cpu_interpreter=true
-4FC7DED9601A78DB964ED5B1A585BB716F6D636C	G	Tarzan (Germany)	N64 	ares_force_cpu_interpreter=true
-44C63A89E1E8F9EEEE0AA4B45442822FEB3CC579	G	Tarzan (USA)	N64 	ares_force_cpu_interpreter=true
+7623ACEECD244F4352A7D9346A607AC183B32CD6	G	Tarzan (Europe)	N64		ares_force_cpu_interpreter=true
+1CF1F0F8217BA4E1691427F97EF62B15DC02A1C3	G	Tarzan (France)	N64		ares_force_cpu_interpreter=true
+4FC7DED9601A78DB964ED5B1A585BB716F6D636C	G	Tarzan (Germany)	N64		ares_force_cpu_interpreter=true
+44C63A89E1E8F9EEEE0AA4B45442822FEB3CC579	G	Tarzan (USA)	N64		ares_force_cpu_interpreter=true
 E1D8121986652ED180505AF21456C180C8B29FAB	G	Taz Express (Europe) (En,Fr,De,Es,It,Nl)	N64		Glide_buff_clear=false;Glide64mk2_filtering=1;Glide64mk2_buff_clear=false
 674F73FE81E9121751ADD1E24991993B8DDE1B9B	G	Taz Express (USA) (Proto)	N64		Glide_buff_clear=false;Glide64mk2_filtering=1;Glide64mk2_buff_clear=false
 FFC1F3271929B0E7D6467FDCBED9E0CCF2EBA0A5	G	Telefoot Soccer 2000 (France)	N64
