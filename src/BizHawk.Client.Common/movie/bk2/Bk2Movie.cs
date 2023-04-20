@@ -1,26 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
+﻿using System.Collections.Generic;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public partial class Bk2Movie : IMovie
+	public partial class Bk2Movie : BasicMovieInfo, IMovie
 	{
 		private Bk2Controller _adapter;
 
-		public Bk2Movie(IMovieSession session, string filename)
+		public Bk2Movie(IMovieSession session, string filename) : base(filename)
 		{
-			if (string.IsNullOrWhiteSpace(filename))
-			{
-				throw filename is null
-					? new ArgumentNullException(paramName: nameof(filename))
-					: new ArgumentException(message: "path cannot be blank", paramName: nameof(filename));
-			}
-
 			Session = session;
-			Filename = filename;
 			Header[HeaderKeys.MovieVersion] = "BizHawk v2.0.0";
 		}
 
@@ -36,20 +25,6 @@ namespace BizHawk.Client.Common
 
 		protected bool MakeBackup { get; set; } = true;
 
-		private string _filename;
-
-		public string Filename
-		{
-			get => _filename;
-			set
-			{
-				_filename = value;
-				Name = Path.GetFileName(Filename);
-			}
-		}
-
-		public string Name { get; private set; }
-
 		public virtual string PreferredExtension => Extension;
 
 		public const string Extension = "bk2";
@@ -62,51 +37,8 @@ namespace BizHawk.Client.Common
 			return new Bk2LogEntryGenerator(Emulator?.SystemId ?? SystemID, source);
 		}
 
-		public int FrameCount => Log.Count;
+		public override int FrameCount => Log.Count;
 		public int InputLogLength => Log.Count;
-
-		public TimeSpan TimeLength
-		{
-			get
-			{
-				double dblSeconds;
-
-				if (Header.TryGetValue(HeaderKeys.CycleCount, out var numCyclesStr) && Header.TryGetValue(HeaderKeys.ClockRate, out var clockRateStr))
-				{
-					var numCycles = Convert.ToUInt64(numCyclesStr);
-					var clockRate = Convert.ToDouble(clockRateStr, CultureInfo.InvariantCulture);
-					dblSeconds = numCycles / clockRate;
-				}
-				else
-				{
-					var numFrames = (ulong)FrameCount;
-					dblSeconds = numFrames / FrameRate;
-				}
-
-				var seconds = (int)(dblSeconds % 60);
-				var days = seconds / 86400;
-				var hours = seconds / 3600;
-				var minutes = (seconds / 60) % 60;
-				var milliseconds = (int)((dblSeconds - seconds) * 1000);
-				return new TimeSpan(days, hours, minutes, seconds, milliseconds);
-			}
-		}
-
-		public double FrameRate
-		{
-			get
-			{
-				if (SystemID == VSystemID.Raw.Arcade && Header.TryGetValue(HeaderKeys.VsyncAttoseconds, out var vsyncAttoStr))
-				{
-					const decimal attosInSec = 1000000000000000000;
-					return (double)(attosInSec / Convert.ToUInt64(vsyncAttoStr));
-				}
-				else
-				{
-					return PlatformFrameRates.GetFrameRate(SystemID, IsPal);
-				}
-			}
-		}
 
 		public IStringLog GetLogEntries() => Log;
 

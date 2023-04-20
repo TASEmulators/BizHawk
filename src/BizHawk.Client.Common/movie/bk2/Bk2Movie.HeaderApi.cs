@@ -1,17 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Text;
+﻿using System.Text;
 
 namespace BizHawk.Client.Common
 {
 	public partial class Bk2Movie
 	{
-		protected readonly Bk2Header Header = new Bk2Header();
 		private string _syncSettingsJson = "";
-
-		public IDictionary<string, string> HeaderEntries => Header;
-
-		public SubtitleList Subtitles { get; } = new SubtitleList();
-		public IList<string> Comments { get; } = new List<string>();
 
 		public string SyncSettingsJson
 		{
@@ -26,11 +19,8 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public ulong Rerecords
+		public override ulong Rerecords
 		{
-			get => Header.TryGetValue(HeaderKeys.Rerecords, out var s)
-				? ulong.Parse(s)
-				: 0UL; // Modifying the header itself can cause a race condition between loading a movie and rendering the rerecord count, causing a movie's rerecord count to be overwritten with 0 during loading.
 			set
 			{
 				if (Header[HeaderKeys.Rerecords] != value.ToString())
@@ -80,9 +70,8 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public string GameName
+		public override string GameName
 		{
-			get => Header.TryGetValue(HeaderKeys.GameName, out var s) ? s : string.Empty;
 			set
 			{
 				if (Header[HeaderKeys.GameName] != value)
@@ -93,9 +82,8 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public string SystemID
+		public override string SystemID
 		{
-			get => Header.TryGetValue(HeaderKeys.Platform, out var s) ? s : string.Empty;
 			set
 			{
 				if (Header[HeaderKeys.Platform] != value)
@@ -106,9 +94,8 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public string Hash
+		public override string Hash
 		{
-			get => Header[HeaderKeys.Sha1];
 			set
 			{
 				if (Header[HeaderKeys.Sha1] != value)
@@ -119,9 +106,8 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public string Author
+		public override string Author
 		{
-			get => Header[HeaderKeys.Author];
 			set
 			{
 				if (Header[HeaderKeys.Author] != value)
@@ -132,9 +118,8 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public string Core
+		public override string Core
 		{
-			get => Header[HeaderKeys.Core];
 			set
 			{
 				if (Header[HeaderKeys.Core] != value)
@@ -145,9 +130,8 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public string BoardName
+		public override string BoardName
 		{
-			get => Header[HeaderKeys.BoardName];
 			set
 			{
 				if (Header[HeaderKeys.BoardName] != value)
@@ -158,9 +142,8 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public string EmulatorVersion
+		public override string EmulatorVersion
 		{
-			get => Header[HeaderKeys.EmulatorVersion];
 			set
 			{
 				if (Header[HeaderKeys.EmulatorVersion] != value)
@@ -171,9 +154,8 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public string OriginalEmulatorVersion
+		public override string OriginalEmulatorVersion
 		{
-			get => Header[HeaderKeys.OriginalEmulatorVersion];
 			set
 			{
 				if (Header[HeaderKeys.OriginalEmulatorVersion] != value)
@@ -184,9 +166,8 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public string FirmwareHash
+		public override string FirmwareHash
 		{
-			get => Header[HeaderKeys.FirmwareSha1];
 			set
 			{
 				if (Header[HeaderKeys.FirmwareSha1] != value)
@@ -208,10 +189,6 @@ namespace BizHawk.Client.Common
 
 			return sb.ToString();
 		}
-
-		// ReSharper disable SimplifyConditionalTernaryExpression
-		public bool IsPal => Header.TryGetValue(HeaderKeys.Pal, out var s) ? s == "1" : false;
-		// ReSharper restore SimplifyConditionalTernaryExpression
 
 		public string TextSavestate { get; set; }
 		public byte[] BinarySavestate { get; set; }
