@@ -16,9 +16,14 @@ CXXFLAGS := -std=gnu++17 -march=x86-64-v2 \
 	-Wno-mismatched-tags -Wno-missing-braces -Wno-overloaded-virtual \
 	-Wno-unused-private-field -Wno-sometimes-uninitialized \
 	-fno-strict-aliasing -fwrapv \
-	-DSLJIT_HAVE_CONFIG_PRE=1 -DSLJIT_HAVE_CONFIG_POST=1
+	-DSLJIT_HAVE_CONFIG_PRE=1 -DSLJIT_HAVE_CONFIG_POST=1 \
+	-DWANT_CPU_INTERPRETER=$(WANT_CPU_INTERPRETER)
 
-TARGET = ares64.wbx
+ifneq (0,$(WANT_CPU_INTERPRETER))
+TARGET = ares64_interpreter.wbx
+else
+TARGET = ares64_recompiler.wbx
+endif
 
 SRCS_NALL = \
 	$(NALL_PATH)/nall.cpp
@@ -57,6 +62,4 @@ SRCS_SLJIT = \
 	$(SLJIT_PATH)/sljitLir.c \
 	$(THIRDPARTY_PATH)/sljitAllocator.cpp
 
-SRCS = $(SRCS_NALL) $(SRCS_PROCESSORS) $(SRCS_ARES) $(SRCS_N64) $(SRCS_ANGRYLION) $(SRCS_SLJIT) BizInterface.cpp
-
-include ../common.mak
+SRCS = $(SRCS_NALL) $(SRCS_PROCESSORS) $(SRCS_ARES) $(SRCS_N64) $(SRCS_ANGRYLION) $(SRCS_SLJIT) $(ROOT_DIR)/BizInterface.cpp
