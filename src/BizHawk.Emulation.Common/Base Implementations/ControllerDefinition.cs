@@ -121,7 +121,7 @@ namespace BizHawk.Emulation.Common
 			return this;
 		}
 
-		public int PlayerNumber(string buttonName)
+		public static int PlayerNumber(string buttonName)
 		{
 			var match = PlayerRegex.Match(buttonName);
 			return match.Success
