@@ -62,6 +62,8 @@ namespace BizHawk.Client.EmuHawk
 		private int? _seekStartFrame;
 		private bool _unpauseAfterSeeking;
 
+		private readonly Dictionary<string, bool> _alternateRowColor = new();
+
 		private ControllerDefinition ControllerType => MovieSession.MovieController.Definition;
 
 		public bool WasRecording { get; set; }
@@ -247,8 +249,13 @@ namespace BizHawk.Client.EmuHawk
 				color = Palette.AnalogEdit_Col;
 			}
 
-			int player = Emulator.ControllerDefinition.PlayerNumber(columnName);
-			if (player != 0 && player % 2 == 0)
+			if (!_alternateRowColor.ContainsKey(columnName))
+			{
+				int playerNumber = ControllerDefinition.PlayerNumber(columnName);
+				_alternateRowColor[columnName] = playerNumber != 0 && playerNumber % 2 == 0;
+			}
+
+			if (_alternateRowColor[columnName])
 			{
 				color = Color.FromArgb(0x0D, 0x00, 0x00, 0x00);
 			}
