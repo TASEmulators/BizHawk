@@ -284,6 +284,7 @@ EXPORT void snes_set_ppu_sprite_limit_enabled(bool enabled)
     // see ppu-fast/ppu.cpp in PPU::power(...)
     ppufast.ItemLimit = enabled ? 32 : 128;
     ppufast.TileLimit = enabled ? 34 : 128;
+    emulator->configure("Hacks/PPU/NoSpriteLimit", !enabled);
 }
 
 EXPORT void snes_set_overscan_enabled(bool enabled)
