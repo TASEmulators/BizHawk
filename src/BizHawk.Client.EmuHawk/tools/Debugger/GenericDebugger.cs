@@ -57,48 +57,44 @@ namespace BizHawk.Client.EmuHawk
 
 		private void EngageDebugger()
 		{
-			_disassemblyLines.Clear();
-			MainForm.OnPauseChanged += OnPauseChanged;
-			CancelSeekBtn.Enabled = false;
-			if (CanDisassemble)
+			Label GenDisabledCPUPicker(string text)
+				=> new()
+				{
+					Location = new(UIHelper.ScaleX(35), UIHelper.ScaleY(23)),
+					Size = new(UIHelper.ScaleX(100), UIHelper.ScaleY(15)),
+					Text = text,
+				};
+			Control GenCPUPicker()
 			{
 				try
 				{
 					if (CanSetCpu && Disassembler.AvailableCpus.CountIsAtLeast(2))
 					{
-						var c = new ComboBox
+						ComboBox c = new()
 						{
-							Location = new Point(UIHelper.ScaleX(35), UIHelper.ScaleY(17)),
+							DropDownStyle = ComboBoxStyle.DropDownList,
+							Location = new(UIHelper.ScaleX(35), UIHelper.ScaleY(17)),
 							Width = UIHelper.ScaleX(121),
-							DropDownStyle = ComboBoxStyle.DropDownList
 						};
-
 						c.Items.AddRange(Disassembler.AvailableCpus.Cast<object>().ToArray());
 						c.SelectedItem = Disassembler.Cpu;
 						c.SelectedIndexChanged += OnCpuDropDownIndexChanged;
-
-						DisassemblerBox.Controls.Add(c);
-					}
-					else
-					{
-						DisassemblerBox.Controls.Add(new Label
-						{
-							Location = new Point(UIHelper.ScaleX(35), UIHelper.ScaleY(23)),
-							Size = new Size(UIHelper.ScaleX(100), UIHelper.ScaleY(15)),
-							Text = Disassembler.Cpu
-						});
+						return c;
 					}
 				}
 				catch (NotImplementedException)
 				{
-					DisassemblerBox.Controls.Add(new Label
-					{
-						Location = new Point(UIHelper.ScaleX(35), UIHelper.ScaleY(23)),
-						Size = new Size(UIHelper.ScaleX(100), UIHelper.ScaleY(15)),
-						Text = Disassembler.Cpu
-					});
+					// fall through
 				}
+				return GenDisabledCPUPicker(Disassembler.Cpu);
+			}
 
+			_disassemblyLines.Clear();
+			MainForm.OnPauseChanged += OnPauseChanged;
+			CancelSeekBtn.Enabled = false;
+			if (CanDisassemble)
+			{
+				DisassemblerBox.Controls.Add(GenCPUPicker());
 				_pcRegisterSize = PCRegister.BitSize / 4;
 				SetDisassemblerItemCount();
 				UpdatePC();
@@ -108,13 +104,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DisassemblerBox.Enabled = false;
 				DisassemblerView.RowCount = 0;
-				DisassemblerBox.Controls.Add(new Label
-				{
-					Location = new Point(UIHelper.ScaleX(35), UIHelper.ScaleY(23)),
-					Size = new Size(UIHelper.ScaleX(100), UIHelper.ScaleY(15)),
-					Text = "Unknown"
-				});
-
+				DisassemblerBox.Controls.Add(GenDisabledCPUPicker("Unknown"));
 				toolTip1.SetToolTip(DisassemblerBox, "This core does not currently support disassembling");
 			}
 
