@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 
+using BizHawk.Common.CollectionExtensions;
+
 namespace BizHawk.Bizware.BizwareGL
 {
 	/// <summary>
@@ -48,17 +50,11 @@ namespace BizHawk.Bizware.BizwareGL
 			private Pipeline Owner;
 			public new PipelineUniform this[string key]
 			{
-				get
-				{
-					if (!TryGetValue(key, out var temp))
-					{
-						var ui = new UniformInfo {Opaque = null};
-						temp = this[key] = new PipelineUniform(null);
-					}
-
-					return temp;
-				}
-
+#if true
+				get => this.GetValueOrPut(key, static _ => new(null));
+#else
+				get => this.GetValueOrPut(key, static _ => new(new UniformInfo { Opaque = null }));
+#endif
 				internal set => base[key] = value;
 			}
 		}

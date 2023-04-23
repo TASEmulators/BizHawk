@@ -172,11 +172,7 @@ namespace BizHawk.Client.Common
 				// do we have a user specification for this firmware record?
 				if (!userSpecifications.TryGetValue(fr.ID.ConfigKey, out var userSpec)) continue;
 
-				if (!_resolutionDictionary.TryGetValue(fr, out var ri))
-				{
-					ri = new ResolutionInfo();
-					_resolutionDictionary[fr] = ri;
-				}
+				var ri = _resolutionDictionary.GetValueOrPutNew(fr);
 				// local ri is a reference to a ResolutionInfo which is now definitely in the dict
 
 				// flag it as user specified

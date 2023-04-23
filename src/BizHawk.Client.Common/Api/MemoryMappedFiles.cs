@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO.MemoryMappedFiles;
 using System.Text;
 
+using BizHawk.Common.CollectionExtensions;
+
 namespace BizHawk.Client.Common
 {
 	public sealed class MemoryMappedFiles
@@ -27,11 +29,7 @@ namespace BizHawk.Client.Common
 
 		public byte[] ReadBytesFromFile(string filename, int expectedSize)
 		{
-			if (!_mmfFiles.TryGetValue(filename, out var mmfFile))
-			{
-				mmfFile = _mmfFiles[filename] = MemoryMappedFile.OpenExisting(filename);
-			}
-
+			var mmfFile = _mmfFiles.GetValueOrPut(filename, MemoryMappedFile.OpenExisting);
 			using var viewAccessor = mmfFile.CreateViewAccessor(0, expectedSize, MemoryMappedFileAccess.Read);
 			var bytes = new byte[expectedSize];
 			viewAccessor.ReadArray(0, bytes, 0, expectedSize);
@@ -56,12 +54,7 @@ namespace BizHawk.Client.Common
 				accessor.WriteArray(0, outputBytes, 0, outputBytes.Length);
 				return outputBytes.Length;
 			}
-
-			if (!_mmfFiles.TryGetValue(filename, out var mmfFile))
-			{
-				mmfFile = _mmfFiles[filename] = MemoryMappedFile.CreateOrOpen(filename, outputBytes.Length);
-			}
-
+			var mmfFile = _mmfFiles.GetValueOrPut(filename, s => MemoryMappedFile.CreateOrOpen(s, outputBytes.Length));
 			try
 			{
 				return TryWrite(mmfFile);

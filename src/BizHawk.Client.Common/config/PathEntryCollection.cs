@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 
@@ -81,12 +83,7 @@ namespace BizHawk.Client.Common
 		}
 
 		public static string GetDisplayNameFor(string sysID)
-		{
-			if (_displayNameLookup.TryGetValue(sysID, out var dispName)) return dispName;
-			var newDispName = $"{sysID} (INTERIM)";
-			_displayNameLookup[sysID] = newDispName;
-			return newDispName;
-		}
+			=> _displayNameLookup.GetValueOrPut(sysID, static s => s + " (INTERIM)");
 
 		public static bool InGroup(string sysID, string group)
 			=> sysID == group || group.Split('_').Contains(sysID);

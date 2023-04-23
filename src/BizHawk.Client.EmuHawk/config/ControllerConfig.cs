@@ -8,6 +8,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -108,11 +109,7 @@ namespace BizHawk.Client.EmuHawk
 			PanelCreator<TBindValue> createPanel
 		)
 		{
-			if (!settingsBlock.TryGetValue(controllerName, out var settings))
-			{
-				settings = new Dictionary<string, TBindValue>();
-				settingsBlock[controllerName] = settings;
-			}
+			var settings = settingsBlock.GetValueOrPutNew(controllerName);
 
 			// check to make sure that the settings object has all of the appropriate bool buttons
 			foreach (var button in controllerButtons)
