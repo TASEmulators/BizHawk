@@ -15,8 +15,14 @@ namespace BizHawk.Client.EmuHawk
 		private int _pcRegisterSize = 4;
 		private uint _currentDisassemblerAddress;
 
-		private class DisasmOp
+		private readonly struct DisasmOp
 		{
+			public readonly uint Address;
+
+			public readonly string Mnemonic;
+
+			public readonly int Size;
+
 			public DisasmOp(uint address, int size, string mnemonic)
 			{
 				Address = address;
@@ -24,9 +30,8 @@ namespace BizHawk.Client.EmuHawk
 				Mnemonic = mnemonic;
 			}
 
-			public uint Address { get; }
-			public int Size { get; }
-			public string Mnemonic { get; }
+			public override string ToString()
+				=> Mnemonic;
 		}
 
 		private long BusMaxValue => MemoryDomains.SystemBus.Size;
