@@ -140,14 +140,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-//		private bool _blockScroll;
-		private void DisassemblerView_Scroll(object sender, EventArgs e)
-		{
-//			if (_blockScroll) { return; }
-
-			// is this still needed?
-		}
-
 		private void SetDisassemblerItemCount()
 		{
 			if (DisassemblerView.VisibleRows > 0)

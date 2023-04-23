@@ -25,6 +25,14 @@ namespace BizHawk.Client.EmuHawk
 			Icon = ToolIcon;
 			Closing += (o, e) => DisengageDebugger();
 
+#if false
+			var blockScroll = false;
+			DisassemblerView.RowScroll += (_, _) =>
+			{
+				if (blockScroll) return;
+				//TODO is this still needed?
+			};
+#endif
 			DisassemblerView.QueryItemText += DisassemblerView_QueryItemText;
 			DisassemblerView.QueryItemBkColor += DisassemblerView_QueryItemBkColor;
 			DisassemblerView.AllColumns.Clear();

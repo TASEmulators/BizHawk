@@ -221,7 +221,6 @@ namespace BizHawk.Client.EmuHawk
             this.DisassemblerView.SeekingCutoffInterval = 0;
             this.DisassemblerView.Size = new System.Drawing.Size(395, 448);
             this.DisassemblerView.TabIndex = 1;
-            this.DisassemblerView.RowScroll += new BizHawk.Client.EmuHawk.InputRoll.RowScrollEvent(this.DisassemblerView_Scroll);
             this.DisassemblerView.SizeChanged += new System.EventHandler(this.DisassemblerView_SizeChanged);
             this.DisassemblerView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.DisassemblerView_KeyDown);
             // 
