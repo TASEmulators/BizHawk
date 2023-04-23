@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -65,7 +66,7 @@ namespace BizHawk.Client.EmuHawk
 					|| lib.GetCustomAttribute<LuaLibraryAttribute>(inherit: false)?.Released is not false)
 				{
 					var instance = (LuaLibraryBase)Activator.CreateInstance(lib, this, _apiContainer, (Action<string>)LogToLuaConsole);
-					ServiceInjector.UpdateServices(serviceProvider, instance);
+					Debug.Assert(ServiceInjector.UpdateServices(serviceProvider, instance, mayCache: true));
 
 					// TODO: make EmuHawk libraries have a base class with common properties such as this
 					// and inject them here
@@ -181,7 +182,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var lib in Libraries.Values)
 			{
 				lib.APIs = _apiContainer;
-				ServiceInjector.UpdateServices(newServiceProvider, lib);
+				Debug.Assert(ServiceInjector.UpdateServices(newServiceProvider, lib, mayCache: true));
 				lib.Restarted();
 			}
 		}
