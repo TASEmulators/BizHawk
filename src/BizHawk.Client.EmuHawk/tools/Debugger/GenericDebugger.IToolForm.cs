@@ -21,108 +21,80 @@ namespace BizHawk.Client.EmuHawk
 
 		private RegisterValue PCRegister => Debuggable.GetCpuFlagsAndRegisters()[Disassembler.PCRegisterName];
 
-		// TODO: be cachey with checks that depend on catching exceptions
-		private bool CanUseMemoryCallbacks
-		{
-			get
-			{
-				if (Debuggable != null)
-				{
-					try
-					{
-						var result = Debuggable.MemoryCallbacks.HasReads;
-						return true;
-					}
-					catch (NotImplementedException)
-					{
-						return false;
-					}
-				}
+		private bool CanUseMemoryCallbacks = false;
 
-				return false;
+		private bool CanDisassemble = false;
+
+		private bool CanSetCpu = false;
+
+		private bool CanStepInto = false;
+
+		private bool CanStepOver = false;
+
+		private bool CanStepOut = false;
+
+		private void UpdateCapabilitiesProps()
+		{
+			try
+			{
+				_ = MemoryCallbacks.HasReads;
+				CanUseMemoryCallbacks = true;
 			}
-		}
-
-		private bool CanDisassemble
-		{
-			get
+			catch (NotImplementedException)
 			{
-				if (Disassembler == null)
-				{
-					return false;
-				}
+				CanUseMemoryCallbacks = false;
+			}
 
+			if (Disassembler is null)
+			{
+				CanDisassemble = false;
+				CanSetCpu = false;
+			}
+			else
+			{
 				try
 				{
-					var pc = (uint)PCRegister.Value;
-					return true;
+					_ = (uint) PCRegister.Value;
+					CanDisassemble = true;
 				}
 				catch (NotImplementedException)
 				{
-					return false;
+					CanDisassemble = false;
 				}
-
-			}
-		}
-
-		private bool CanSetCpu
-		{
-			get
-			{
 				try
 				{
 					Disassembler.Cpu = Disassembler.Cpu;
-					return true;
+					CanSetCpu = true;
 				}
 				catch (NotImplementedException)
 				{
-					return false;
+					CanSetCpu = false;
 				}
 			}
-		}
 
-		private bool CanStepInto
-		{
-			get
+			try
 			{
-				try
-				{
-					return Debuggable.CanStep(StepType.Into);
-				}
-				catch (NotImplementedException)
-				{
-					return false;
-				}
+				CanStepInto = Debuggable.CanStep(StepType.Into);
 			}
-		}
-
-		private bool CanStepOver
-		{
-			get
+			catch (NotImplementedException)
 			{
-				try
-				{
-					return Debuggable.CanStep(StepType.Over);
-				}
-				catch (NotImplementedException)
-				{
-					return false;
-				}
+				CanStepInto = false;
 			}
-		}
-
-		private bool CanStepOut
-		{
-			get
+			try
 			{
-				try
-				{
-					return Debuggable.CanStep(StepType.Out);
-				}
-				catch (NotImplementedException)
-				{
-					return false;
-				}
+				CanStepOver = Debuggable.CanStep(StepType.Over);
+			}
+			catch (NotImplementedException)
+			{
+				CanStepOver = false;
+			}
+			try
+			{
+				CanStepOut = Debuggable.CanStep(StepType.Out);
+			}
+			catch (NotImplementedException)
+			{
+				CanStepOut = false;
 			}
 		}
 
@@ -136,6 +108,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void Restart()
 		{
+			UpdateCapabilitiesProps();
 			DisengageDebugger();
 			EngageDebugger();
 			FullUpdate();
