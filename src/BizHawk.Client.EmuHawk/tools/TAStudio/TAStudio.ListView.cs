@@ -8,6 +8,7 @@ using BizHawk.Emulation.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -249,13 +250,12 @@ namespace BizHawk.Client.EmuHawk
 				color = Palette.AnalogEdit_Col;
 			}
 
-			if (!_alternateRowColor.TryGetValue(columnName, out var useAltColor))
-			{
-				int playerNumber = ControllerDefinition.PlayerNumber(columnName);
-				_alternateRowColor[columnName] = useAltColor = playerNumber % 2 is 0 && playerNumber is not 0;
-			}
-
-			if (useAltColor)
+			if (_alternateRowColor.GetValueOrPut(
+				columnName,
+				columnName1 => {
+					var playerNumber = ControllerDefinition.PlayerNumber(columnName1);
+					return playerNumber % 2 is 0 && playerNumber is not 0;
+				}))
 			{
 				color = Color.FromArgb(0x0D, 0x00, 0x00, 0x00);
 			}

@@ -10,6 +10,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.WinForms.Controls;
@@ -129,22 +130,12 @@ namespace BizHawk.Client.EmuHawk
 			// auto settings
 			if (newTool is IToolFormAutoConfig autoConfigTool)
 			{
-				AttachSettingHooks(
-					autoConfigTool,
-					_config.CommonToolSettings.TryGetValue(toolTypeName, out var settings)
-						? settings
-						: (_config.CommonToolSettings[toolTypeName] = new ToolDialogSettings())
-				);
+				AttachSettingHooks(autoConfigTool, _config.CommonToolSettings.GetValueOrPutNew(toolTypeName));
 			}
 			// custom settings
 			if (HasCustomConfig(newTool))
 			{
-				InstallCustomConfig(
-					newTool,
-					_config.CustomToolSettings.TryGetValue(toolTypeName, out var settings)
-						? settings
-						: (_config.CustomToolSettings[toolTypeName] = new Dictionary<string, object>())
-				);
+				InstallCustomConfig(newTool, _config.CustomToolSettings.GetValueOrPutNew(toolTypeName));
 			}
 
 			newTool.Restart();
@@ -179,22 +170,12 @@ namespace BizHawk.Client.EmuHawk
 			// auto settings
 			if (newTool is IToolFormAutoConfig autoConfigTool)
 			{
-				AttachSettingHooks(
-					autoConfigTool,
-					_config.CommonToolSettings.TryGetValue(customFormTypeName, out var settings)
-						? settings
-						: (_config.CommonToolSettings[customFormTypeName] = new ToolDialogSettings())
-				);
+				AttachSettingHooks(autoConfigTool, _config.CommonToolSettings.GetValueOrPutNew(customFormTypeName));
 			}
 			// custom settings
 			if (HasCustomConfig(newTool))
 			{
-				InstallCustomConfig(
-					newTool,
-					_config.CustomToolSettings.TryGetValue(customFormTypeName, out var settings)
-						? settings
-						: (_config.CustomToolSettings[customFormTypeName] = new Dictionary<string, object>())
-				);
+				InstallCustomConfig(newTool, _config.CustomToolSettings.GetValueOrPutNew(customFormTypeName));
 			}
 
 			newTool.Restart();

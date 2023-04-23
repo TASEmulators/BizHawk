@@ -13,6 +13,7 @@ using BizHawk.Bizware.BizwareGL;
 using BizHawk.Bizware.BizwareGL.DrawingExtensions;
 using BizHawk.Client.Common.FilterManager;
 using BizHawk.Client.Common.Filters;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
@@ -1022,11 +1023,7 @@ namespace BizHawk.Client.Common
 				throw new InvalidOperationException($"ApiHawk/Lua surface is already locked: {surfaceID.GetName()}");
 			}
 
-			if (!_apiHawkSurfaceSets.TryGetValue(surfaceID, out var sdss))
-			{
-				sdss = new(CreateDisplaySurface);
-				_apiHawkSurfaceSets.Add(surfaceID, sdss);
-			}
+			var sdss = _apiHawkSurfaceSets.GetValueOrPut(surfaceID, static _ => new(CreateDisplaySurface));
 
 			// placeholder logic for more abstracted surface definitions from filter chain
 			var (currNativeWidth, currNativeHeight) = GetPanelNativeSize();

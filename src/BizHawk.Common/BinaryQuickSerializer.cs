@@ -8,6 +8,8 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.InteropServices;
 
+using BizHawk.Common.CollectionExtensions;
+
 namespace BizHawk.Common
 {
 	// fields are serialized/deserialized in their memory order as reported by Marshal.OffsetOf
@@ -162,15 +164,7 @@ namespace BizHawk.Common
 			new ConcurrentDictionary<Type, SerializationFactory>();
 
 		private static SerializationFactory GetFactory(Type t)
-		{
-			if (!Serializers.TryGetValue(t, out var f))
-			{
-				f = CreateFactory(t);
-				Serializers[t] = f;
-			}
-
-			return f;
-		}
+			=> Serializers.GetValueOrPut(t, CreateFactory);
 
 		public static T Create<T>(BinaryReader r)
 			where T : new()

@@ -6,6 +6,7 @@ using System.Drawing.Imaging;
 using System.Drawing.Text;
 using System.IO;
 
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -57,9 +58,11 @@ namespace BizHawk.Client.Common
 			_displayManager = displayManager;
 		}
 
-		private SolidBrush GetBrush(Color color) => _solidBrushes.TryGetValue(color, out var b) ? b : (_solidBrushes[color] = new SolidBrush(color));
+		private SolidBrush GetBrush(Color color)
+			=> _solidBrushes.GetValueOrPutNew1(color);
 
-		private Pen GetPen(Color color) => _pens.TryGetValue(color, out var p) ? p : (_pens[color] = new Pen(color));
+		private Pen GetPen(Color color)
+			=> _pens.GetValueOrPutNew1(color);
 
 		private Graphics GetGraphics(DisplaySurfaceID? surfaceID)
 		{
@@ -406,7 +409,7 @@ namespace BizHawk.Client.Common
 			using var g = GetGraphics(surfaceID);
 			g.CompositingMode = _compositingMode;
 			g.DrawImage(
-				_imageCache.TryGetValue(path, out var img) ? img : (_imageCache[path] = Image.FromFile(path)),
+				_imageCache.GetValueOrPut(path, Image.FromFile),
 				new Rectangle(dest_x, dest_y, dest_width ?? source_width, dest_height ?? source_height),
 				source_x,
 				source_y,

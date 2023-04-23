@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Common.CollectionExtensions;
 
 using NLua;
 
@@ -20,28 +21,10 @@ namespace BizHawk.Client.EmuHawk
 		internal NLuaTableHelper TableHelper { get; set; }
 
 		private SolidBrush GetBrush([LuaColorParam] object color)
-		{
-			var color1 = TableHelper.ParseColor(color);
-			if (!_solidBrushes.TryGetValue(color1, out var b))
-			{
-				b = new SolidBrush(color1);
-				_solidBrushes[color1] = b;
-			}
-
-			return b;
-		}
+			=> _solidBrushes.GetValueOrPutNew1(TableHelper.ParseColor(color));
 
 		private Pen GetPen([LuaColorParam] object color)
-		{
-			var color1 = TableHelper.ParseColor(color);
-			if (!_pens.TryGetValue(color1, out var p))
-			{
-				p = new Pen(color1);
-				_pens[color1] = p;
-			}
-
-			return p;
-		}
+			=> _pens.GetValueOrPutNew1(TableHelper.ParseColor(color));
 
 		private Color _defaultForeground = Color.Black;
 		private Color? _defaultBackground;
@@ -190,12 +173,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void DrawImageRegion(string path, int sourceX, int sourceY, int sourceWidth, int sourceHeight, int destX, int destY, int? destWidth = null, int? destHeight = null)
 		{
-			if (!_imageCache.TryGetValue(path, out var img))
-			{
-				img = Image.FromFile(path);
-				_imageCache.Add(path, img);
-			}
-
+			var img = _imageCache.GetValueOrPut(path, Image.FromFile);
 			var destRect = new Rectangle(destX, destY, destWidth ?? sourceWidth, destHeight ?? sourceHeight);
 
 			var boxBackground = Graphics.FromImage(Image);

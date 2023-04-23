@@ -7,6 +7,7 @@ using System.Linq;
 using NLua;
 using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 
 // ReSharper disable UnusedMember.Global
 // ReSharper disable StringLiteralTypo
@@ -517,9 +518,7 @@ namespace BizHawk.Client.EmuHawk
 					var result = luaf.Call(index, name);
 					if (result?[0] != null)
 					{
-						string path = result[0].ToString();
-						if (!_iconCache.TryGetValue(path, out var icon)) _iconCache[path] = icon = new(path);
-						return icon.ToBitmap();
+						return _iconCache.GetValueOrPutNew1(result[0].ToString()).ToBitmap();
 					}
 
 					return null;

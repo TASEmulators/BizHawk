@@ -110,18 +110,11 @@ namespace BizHawk.BizInvoke
 			where T : class
 		{
 			var nonTrivialAdapter = adapter.GetType() != CallingConventionAdapters.Native.GetType();
-			InvokerImpl? impl;
-			lock (Impls)
-			{
-				var baseType = typeof(T);
-				if (!Impls.TryGetValue(baseType, out impl))
-				{
-					impl = CreateProxy(baseType, false, nonTrivialAdapter);
-					Impls.Add(baseType, impl!);
-				}
-			}
-
-			if (impl!.IsMonitored)
+			InvokerImpl impl;
+			lock (Impls) impl = Impls.GetValueOrPut(
+				typeof(T),
+				baseType => CreateProxy(baseType, monitor: false, nonTrivialAdapter: nonTrivialAdapter));
+			if (impl.IsMonitored)
 			{
 				throw new InvalidOperationException("Class was previously proxied with a monitor!");
 			}
@@ -134,18 +127,11 @@ namespace BizHawk.BizInvoke
 			where T : class
 		{
 			var nonTrivialAdapter = adapter.GetType() != CallingConventionAdapters.Native.GetType();
-			InvokerImpl? impl;
-			lock (Impls)
-			{
-				var baseType = typeof(T);
-				if (!Impls.TryGetValue(baseType, out impl))
-				{
-					impl = CreateProxy(baseType, true, nonTrivialAdapter);
-					Impls.Add(baseType, impl!);
-				}
-			}
-
-			if (!(impl!.IsMonitored))
+			InvokerImpl impl;
+			lock (Impls) impl = Impls.GetValueOrPut(
+				typeof(T),
+				baseType => CreateProxy(baseType, monitor: true, nonTrivialAdapter: nonTrivialAdapter));
+			if (!impl.IsMonitored)
 			{
 				throw new InvalidOperationException("Class was previously proxied without a monitor!");
 			}

@@ -177,6 +177,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FirmwaresConfig_Load(object sender, EventArgs e)
 		{
+			ListViewGroup AddGroup(string sysID)
+			{
+				lvFirmwares.Groups.Add(
+					key: sysID,
+					headerText: SystemGroupNames.TryGetValue(sysID, out var name) ? name : "FIX ME (FirmwaresConfig.cs)");
+				return lvFirmwares.Groups[lvFirmwares.Groups.Count - 1];
+			}
+
 			// we'll use this font for displaying the hash, so they don't look all jagged in a long list
 			_fixedFont = new Font(new FontFamily("Courier New"), 8);
 			_boldFont = new Font(lvFirmwares.Font, FontStyle.Bold);
@@ -206,15 +214,7 @@ namespace BizHawk.Client.EmuHawk
 				lvFirmwares.Items.Add(lvi);
 
 				// build the groups in the ListView as we go:
-				if (!groups.TryGetValue(sysID, out var group))
-				{
-					if (!SystemGroupNames.TryGetValue(sysID, out var name))
-						name = "FIX ME (FirmwaresConfig.cs)";
-					lvFirmwares.Groups.Add(sysID, name);
-					var lvg = lvFirmwares.Groups[lvFirmwares.Groups.Count - 1];
-					group = groups[sysID] = lvg;
-				}
-				lvi.Group = group;
+				lvi.Group = groups.GetValueOrPut(sysID, AddGroup);
 			}
 
 			// now that we have some items in the ListView, we can size some columns to sensible widths

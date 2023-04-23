@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using BizHawk.Common.CollectionExtensions;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class RCheevos
@@ -150,7 +152,7 @@ namespace BizHawk.Client.EmuHawk
 		protected override int IdentifyHash(string hash)
 		{
 			_gameHash ??= hash;
-			return _cachedGameIds.TryGetValue(hash, out var id) ? id : (_cachedGameIds[hash] = SendHash(hash));
+			return _cachedGameIds.GetValueOrPut(hash, SendHash);
 		}
 
 		protected override int IdentifyRom(byte[] rom)

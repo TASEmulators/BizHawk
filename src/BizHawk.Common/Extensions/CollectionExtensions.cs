@@ -160,6 +160,33 @@ namespace BizHawk.Common.CollectionExtensions
 				? countable.Count == n
 				: collection.Take(n + 1).Count() == n;
 
+		/// <summary>
+		/// Returns the value at <paramref name="key"/>.
+		/// If the key is not present, stores the result of <c>defaultValue(key)</c> in the dict, and then returns that.
+		/// </summary>
+		public static TValue GetValueOrPut<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, Func<TKey, TValue> defaultValue)
+			=> dictionary.TryGetValue(key, out var found) ? found : (dictionary[key] = defaultValue(key));
+
+		/// <summary>
+		/// Returns the value at <paramref name="key"/>.
+		/// If the key is not present, stores the result of <c>new TValue()</c> in the dict, and then returns that.
+		/// </summary>
+		public static TValue GetValueOrPutNew<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key)
+			where TValue : new()
+			=> dictionary.TryGetValue(key, out var found) ? found : (dictionary[key] = new());
+
+		/// <summary>
+		/// Returns the value at <paramref name="key"/>.
+		/// If the key is not present, stores the result of <c>new TValue(key)</c> in the dict, and then returns that.
+		/// </summary>
+		/// <remarks>
+		/// Will throw if such a constructor does not exist, or exists but is not <see langword="public"/>.<br/>
+		/// TODO is <see cref="Activator.CreateInstance(Type, object[])"/> fast enough?
+		/// I suppose it's not that important because it's called on cache miss --yoshi
+		/// </remarks>
+		public static TValue GetValueOrPutNew1<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key)
+			=> dictionary.GetValueOrPut(key, static k => (TValue) Activator.CreateInstance(typeof(TValue), k));
+
 		/// <inheritdoc cref="IList{T}.IndexOf"/>
 		/// <remarks>
 		/// (This is an extension method which reimplements <see cref="IList{T}.IndexOf"/> for other <see cref="IReadOnlyList{T}">collections</see>.

@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.InteropServices;
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.BizInvoke
 {
@@ -101,18 +102,9 @@ namespace BizHawk.BizInvoke
 
 		public static IImportResolver GetExvoker(object o, ICallingConventionAdapter a)
 		{
-			DelegateStorage? ds;
-			lock (Impls)
-			{
-				var type = o.GetType();
-				if (!Impls.TryGetValue(type, out ds))
-				{
-					ds = new DelegateStorage(type);
-					Impls.Add(type, ds!);
-				}
-			}
-
-			return new ExvokerImpl(o, ds!, a);
+			DelegateStorage ds;
+			lock (Impls) ds = Impls.GetValueOrPutNew1(o.GetType());
+			return new ExvokerImpl(o, ds, a);
 		}
 	}
 

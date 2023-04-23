@@ -5,6 +5,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.Serialization;
 
+using BizHawk.Common.CollectionExtensions;
+
 namespace BizHawk.Common
 {
 	/// <summary>Wrapper over <see cref="WorkingDictionary{TKey, TValue}">WorkingDictionary</see>&lt;<typeparamref name="TKey"/>, <see cref="List{T}">List</see>&lt;<typeparamref name="TValue"/>>>.</summary>
@@ -132,9 +134,7 @@ namespace BizHawk.Common
 		[property: MaybeNull]
 		public new TValue this[TKey key]
 		{
-			get => TryGetValue(key, out var temp)
-				? temp
-				: base[key] = new TValue();
+			get => this.GetValueOrPutNew(key);
 			set => base[key] = value;
 		}
 	}

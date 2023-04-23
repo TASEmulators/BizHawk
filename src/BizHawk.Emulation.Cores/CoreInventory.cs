@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
+
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores
@@ -162,13 +164,7 @@ namespace BizHawk.Emulation.Cores
 			void ProcessConstructor(Type type, CoreConstructorAttribute consAttr, CoreAttribute coreAttr, ConstructorInfo cons)
 			{
 				var core = new Core(type, consAttr, coreAttr, cons);
-				if (!_systems.TryGetValue(consAttr.System, out var ss))
-				{
-					ss = new List<Core>();
-					_systems.Add(consAttr.System, ss);
-				}
-
-				ss.Add(core);
+				_systems.GetValueOrPutNew(consAttr.System).Add(core);
 				systemsFlat[type] = core;
 			}
 			foreach (var assy in assys)
