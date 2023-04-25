@@ -150,15 +150,7 @@ namespace BizHawk.Client.EmuHawk
 		protected override int IdentifyHash(string hash)
 		{
 			_gameHash ??= hash;
-
-			if (_cachedGameIds.ContainsKey(hash))
-			{
-				return _cachedGameIds[hash];
-			}
-
-			var ret = SendHash(hash);
-			_cachedGameIds.Add(hash, ret);
-			return ret;
+			return _cachedGameIds.TryGetValue(hash, out var id) ? id : (_cachedGameIds[hash] = SendHash(hash));
 		}
 
 		protected override int IdentifyRom(byte[] rom)

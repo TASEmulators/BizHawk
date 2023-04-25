@@ -25,16 +25,23 @@ namespace BizHawk.Client.Common
 
 		public void SetState(int frame, Stream stream)
 		{
-			if (!_streams.ContainsKey(frame))
+			if (_streams.TryGetValue(frame, out var foundStream))
 			{
-				string filename =  TempFileManager.GetTempFilename("State");
-				_streams[frame] = new FileStream(filename, FileMode.Create, FileAccess.ReadWrite, FileShare.None, 4096, FileOptions.DeleteOnClose);
+				foundStream.Seek(0, SeekOrigin.Begin);
 			}
 			else
-				_streams[frame].Seek(0, SeekOrigin.Begin);
+			{
+				_streams[frame] = foundStream = new FileStream(
+					TempFileManager.GetTempFilename("State"),
+					FileMode.Create,
+					FileAccess.ReadWrite,
+					FileShare.None,
+					4096,
+					FileOptions.DeleteOnClose);
+			}
 
-			_streams[frame].SetLength(stream.Length);
-			stream.CopyTo(_streams[frame]);
+			foundStream.SetLength(stream.Length);
+			stream.CopyTo(foundStream);
 		}
 
 		public ICollection<int> Keys => _streams.Keys;

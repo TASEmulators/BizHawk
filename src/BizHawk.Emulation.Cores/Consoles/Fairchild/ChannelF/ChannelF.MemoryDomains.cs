@@ -47,6 +47,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		public void SyncByteArrayDomain(string name, byte[] data)
 		{
+#pragma warning disable MEN014 // see ZXHawk copy
 			if (_memoryDomainsInit || _byteArrayDomains.ContainsKey(name))
 			{
 				var m = _byteArrayDomains[name];
@@ -57,6 +58,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				var m = new MemoryDomainByteArray(name, MemoryDomain.Endian.Big, data, false, 1);
 				_byteArrayDomains.Add(name, m);
 			}
+#pragma warning restore MEN014
 		}
 	}
 }
