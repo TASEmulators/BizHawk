@@ -89,10 +89,10 @@ namespace BizHawk.Common
 						{
 							il.Emit(OpCodes.Unbox_Any, desiredType);
 						}
-						else if (IntTypes.ContainsKey(sourceType) && IntTypes.ContainsKey(desiredType))
+						else if (IntTypes.ContainsKey(sourceType) && IntTypes.TryGetValue(desiredType, out var desiredOpcode))
 						{
 							il.Emit(OpCodes.Unbox_Any, sourceType);
-							il.Emit(IntTypes[desiredType]);
+							il.Emit(desiredOpcode);
 						}
 						else
 						{

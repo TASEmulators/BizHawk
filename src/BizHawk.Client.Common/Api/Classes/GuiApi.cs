@@ -356,9 +356,11 @@ namespace BizHawk.Client.Common
 				return;
 			}
 			using var g = GetGraphics(surfaceID);
-			var isCached = _imageCache.ContainsKey(path);
-			var img = isCached ? _imageCache[path] : Image.FromFile(path);
-			if (!isCached && cache) _imageCache[path] = img;
+			if (!_imageCache.TryGetValue(path, out var img))
+			{
+				img = Image.FromFile(path);
+				if (cache) _imageCache[path] = img;
+			}
 			g.CompositingMode = _compositingMode;
 			g.DrawImage(
 				img,

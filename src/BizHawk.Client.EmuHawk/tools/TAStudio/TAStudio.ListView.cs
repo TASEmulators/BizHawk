@@ -249,13 +249,13 @@ namespace BizHawk.Client.EmuHawk
 				color = Palette.AnalogEdit_Col;
 			}
 
-			if (!_alternateRowColor.ContainsKey(columnName))
+			if (!_alternateRowColor.TryGetValue(columnName, out var useAltColor))
 			{
 				int playerNumber = ControllerDefinition.PlayerNumber(columnName);
-				_alternateRowColor[columnName] = playerNumber != 0 && playerNumber % 2 == 0;
+				_alternateRowColor[columnName] = useAltColor = playerNumber % 2 is 0 && playerNumber is not 0;
 			}
 
-			if (_alternateRowColor[columnName])
+			if (useAltColor)
 			{
 				color = Color.FromArgb(0x0D, 0x00, 0x00, 0x00);
 			}

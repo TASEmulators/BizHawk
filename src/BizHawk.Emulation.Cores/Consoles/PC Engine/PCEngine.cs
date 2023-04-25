@@ -333,10 +333,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			Dictionary<string, int> sizes = new Dictionary<string, int>();
 			foreach (var m in mm)
 			{
-				if (!sizes.ContainsKey(m.Name) || m.MaxOffs >= sizes[m.Name])
-				{
-					sizes[m.Name] = m.MaxOffs;
-				}
+				if (!sizes.TryGetValue(m.Name, out var size) || size <= m.MaxOffs) sizes[m.Name] = m.MaxOffs;
 			}
 
 			var keys = new List<string>(sizes.Keys);

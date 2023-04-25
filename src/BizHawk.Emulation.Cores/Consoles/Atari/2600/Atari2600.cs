@@ -38,6 +38,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			Rom = rom;
 			_game = game;
 
+#pragma warning disable MEN014 // could rewrite this to be 1 read + 0-1 writes, but nah --yoshi
 			if (!game.GetOptions().ContainsKey("m"))
 			{
 				game.AddOption("m", DetectMapper(rom));
@@ -51,6 +52,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 
 			Console.WriteLine("Game uses mapper " + game.GetOptions()["m"]);
+#pragma warning restore MEN014
 			Console.WriteLine(romHashSHA1);
 			RebootCore();
 			SetupMemoryDomains();
