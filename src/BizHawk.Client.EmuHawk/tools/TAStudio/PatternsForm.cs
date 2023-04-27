@@ -88,6 +88,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DeleteButton_Click(object sender, EventArgs e)
 		{
+			if (PatternList.SelectedIndex >= _counts.Count)
+			{
+				return;
+			}
 			_counts.RemoveAt(PatternList.SelectedIndex);
 			_values.RemoveAt(PatternList.SelectedIndex);
 			UpdatePattern();
