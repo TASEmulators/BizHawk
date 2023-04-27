@@ -1,4 +1,5 @@
-﻿using BizHawk.Emulation.Common;
+﻿using System;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
@@ -25,6 +26,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				ret |= _linkedCores[i].PutSettings(o._linkedSettings[i]);
 			}
 			_settings = o;
+			// prevent garbage output in case one side is just muted
+			Array.Clear(SampleBuffer, 0, SampleBuffer.Length);
 			return ret;
 		}
 
