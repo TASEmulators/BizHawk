@@ -796,7 +796,7 @@ namespace BizHawk.Client.Common
 					return false;
 				}
 
-				_ = game!; // shouldn't be null if `nextEmulator` isn't? just in case
+				if (game is null) throw new Exception("RomLoader returned core but no GameInfo"); // shouldn't be null if `nextEmulator` isn't? just in case
 			}
 			catch (Exception ex)
 			{

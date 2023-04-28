@@ -66,9 +66,7 @@ namespace BizHawk.Client.EmuHawk
 					|| lib.GetCustomAttribute<LuaLibraryAttribute>(inherit: false)?.Released is not false)
 				{
 					var instance = (LuaLibraryBase)Activator.CreateInstance(lib, this, _apiContainer, (Action<string>)LogToLuaConsole);
-					var updateSuccess = ServiceInjector.UpdateServices(serviceProvider, instance, mayCache: true);
-					Debug.Assert(updateSuccess);
-					_ = updateSuccess;
+					if (!ServiceInjector.UpdateServices(serviceProvider, instance, mayCache: true)) throw new Exception("Lua lib has required service(s) that can't be fulfilled");
 
 					// TODO: make EmuHawk libraries have a base class with common properties such as this
 					// and inject them here
