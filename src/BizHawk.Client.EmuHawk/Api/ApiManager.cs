@@ -63,9 +63,7 @@ namespace BizHawk.Client.EmuHawk
 					tuple =>
 					{
 						var instance = tuple.Ctor.Invoke(tuple.CtorTypes.Select(t => avail[t]).ToArray());
-						var success = ServiceInjector.UpdateServices(serviceProvider, instance, mayCache: true);
-						Debug.Assert(success);
-						_ = success;
+						if (!ServiceInjector.UpdateServices(serviceProvider, instance, mayCache: true)) throw new Exception("ApiHawk impl. has required service(s) that can't be fulfilled");
 						return (IExternalApi) instance;
 					}));
 		}

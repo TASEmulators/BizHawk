@@ -38,6 +38,14 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 		defaultSeverity: DiagnosticSeverity.Error,
 		isEnabledByDefault: true);
 
+	private static readonly DiagnosticDescriptor DiagNoDiscardingLocals = new(
+		id: "BHI1006",
+		title: "Do not discard local variables",
+		messageFormat: "RHS is a local, so this discard has no effect, and is at best unhelpful for humans",
+		category: "Usage",
+		defaultSeverity: DiagnosticSeverity.Error,
+		isEnabledByDefault: true);
+
 	private static readonly DiagnosticDescriptor DiagNoQueryExpression = new(
 		id: "BHI1003",
 		title: "Do not use query expression syntax",
@@ -58,11 +66,14 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 		DiagInterpStringIsDollarAt,
 		DiagNoAnonClasses,
 		DiagNoAnonDelegates,
+		DiagNoDiscardingLocals,
 		DiagNoQueryExpression,
 		DiagSwitchShouldThrowIOE);
 
 	public override void Initialize(AnalysisContext context)
 	{
+		static bool IsDiscard(AssignmentExpressionSyntax aes)
+			=> aes.OperatorToken.RawKind is (int) SyntaxKind.EqualsToken && aes.Left is IdentifierNameSyntax { Identifier.Text: "_" };
 		context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
 		context.EnableConcurrentExecution();
 		INamedTypeSymbol? invalidOperationExceptionSym = null;
@@ -82,6 +93,9 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 						break;
 					case AnonymousObjectCreationExpressionSyntax:
 						snac.ReportDiagnostic(Diagnostic.Create(DiagNoAnonClasses, snac.Node.GetLocation()));
+						break;
+					case AssignmentExpressionSyntax aes when IsDiscard(aes) && snac.SemanticModel.GetSymbolInfo(aes.Right).Symbol?.Kind is SymbolKind.Local:
+						snac.ReportDiagnostic(Diagnostic.Create(DiagNoDiscardingLocals, snac.Node.GetLocation()));
 						break;
 					case InterpolatedStringExpressionSyntax ises:
 						if (ises.StringStartToken.Text[0] is '@') snac.ReportDiagnostic(Diagnostic.Create(DiagInterpStringIsDollarAt, ises.GetLocation()));
@@ -113,6 +127,7 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 			SyntaxKind.AnonymousMethodExpression,
 			SyntaxKind.InterpolatedStringExpression,
 			SyntaxKind.QueryExpression,
+			SyntaxKind.SimpleAssignmentExpression,
 			SyntaxKind.SwitchExpressionArm);
 	}
 }
