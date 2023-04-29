@@ -36,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			flowLayoutPanel1.Controls.Clear();
 			DisposeLboardForms();
-			_lboardForms = lboards.Take(128).Select(lboard => new RCheevosLeaderboardForm(lboard)).ToArray();
+			_lboardForms = lboards.Select(lboard => new RCheevosLeaderboardForm(lboard)).ToArray();
 			flowLayoutPanel1.Controls.AddRange(_lboardForms);
 		}
 
