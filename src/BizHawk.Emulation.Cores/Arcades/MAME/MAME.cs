@@ -99,7 +99,19 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			lp.Game.Name = _gameFullName;
 			lp.Game.Hash = SHA1Checksum.ComputeDigestHex(Encoding.ASCII.GetBytes(hashes));
-			lp.Game.Status = _romHashes.Values.Any(static s => s is "NO GOOD DUMP KNOWN") ? RomStatus.Unknown : RomStatus.GoodDump;
+
+			if (_romHashes.Values.Any(static s => s is "NO GOOD DUMP KNOWN"))
+			{
+				lp.Game.Status = RomStatus.Unknown;
+			}
+			else if (_romHashes.Keys.Any(static s => s.Contains("BAD DUMP")))
+			{
+				lp.Game.Status = RomStatus.BadDump;
+			}
+			else
+			{
+				lp.Game.Status = RomStatus.GoodDump;
+			}
 
 			_core.mame_info_get_warnings_string(_infoCallback);
 			_infoCallback = null;
