@@ -9,15 +9,30 @@ namespace BizHawk.Client.EmuHawk
 
 		private event Action LoginStatusChanged;
 
-		private bool DoLogin(string username, string apiToken = null, string password = null)
+		private sealed class LoginRequest : RCheevoHttpRequest
 		{
-			Username = null;
-			ApiToken = null;
+			private LibRCheevos.rc_api_login_request_t _apiParams;
+			public string Username { get; private set; }
+			public string ApiToken { get; private set; }
 
-			var api_params = new LibRCheevos.rc_api_login_request_t(username, apiToken, password);
-			var res = _lib.rc_api_init_login_request(out var api_req, ref api_params);
-			SendAPIRequestIfOK(res, ref api_req, serv_resp =>
+			public override bool ShouldRetry => false;
+
+			public LoginRequest(string username, string apiToken = null, string password = null)
 			{
+				_apiParams = new(username, apiToken, password);
+			}
+
+			public override void DoRequest()
+			{
+				var apiParamsResult = _lib.rc_api_init_login_request(out var api_req, ref _apiParams);
+				InternalDoRequest(apiParamsResult, ref api_req);
+			}
+
+			protected override void ResponseCallback(byte[] serv_resp)
+			{
+				Username = null;
+				ApiToken = null;
+
 				if (_lib.rc_api_process_login_response(out var resp, serv_resp) == LibRCheevos.rc_error_t.RC_OK)
 				{
 					Username = resp.Username;
@@ -25,7 +40,17 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				_lib.rc_api_destroy_login_response(ref resp);
-			}).Wait(); // currently, this is done synchronously
+			}
+		}
+
+		private bool DoLogin(string username, string apiToken = null, string password = null)
+		{
+			var loginRequest = new LoginRequest(username, apiToken, password);
+			_inactiveHttpRequests.Push(loginRequest);
+			loginRequest.Wait();
+
+			Username = loginRequest.Username;
+			ApiToken = loginRequest.ApiToken;
 
 			return LoggedIn;
 		}
