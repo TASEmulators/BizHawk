@@ -65,7 +65,7 @@ namespace BizHawk.Client.Common.cheats
 			foreach (var t in code)
 			{
 				hexCode <<= 5;
-				GameGenieTable.TryGetValue(t, out var y);
+				_ = GameGenieTable.TryGetValue(t, out var y);
 				hexCode |= y;
 			}
 

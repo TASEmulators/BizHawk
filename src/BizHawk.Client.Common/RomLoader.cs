@@ -379,7 +379,7 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				_config.PreferredCores.TryGetValue(cip.Game.System, out var preferredCore);
+				_ = _config.PreferredCores.TryGetValue(cip.Game.System, out var preferredCore);
 				var dbForcedCoreName = cip.Game.ForcedCore;
 				cores = CoreInventory.Instance.GetCores(cip.Game.System)
 					.OrderBy(c =>

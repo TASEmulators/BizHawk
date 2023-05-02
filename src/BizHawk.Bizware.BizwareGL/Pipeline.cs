@@ -66,7 +66,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public PipelineUniform TryGetUniform(string name)
 		{
-			Uniforms.TryGetValue(name, out var ret);
+			_ = Uniforms.TryGetValue(name, out var ret);
 			return ret;
 		}
 

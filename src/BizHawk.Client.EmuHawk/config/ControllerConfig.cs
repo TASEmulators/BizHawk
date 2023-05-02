@@ -267,7 +267,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetControllerPicture(string controlName)
 		{
-			ControllerImages.TryGetValue(controlName, out var lazyBmp);
+			_ = ControllerImages.TryGetValue(controlName, out var lazyBmp);
 			if (lazyBmp != null)
 			{
 				var bmp = lazyBmp.Value;

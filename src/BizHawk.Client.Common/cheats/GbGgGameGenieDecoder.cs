@@ -52,20 +52,20 @@ namespace BizHawk.Client.Common.cheats
 			// Getting Value
 			if (_code.Length > 0)
 			{
-				_gbGgGameGenieTable.TryGetValue(_code[0], out x);
+				_ = _gbGgGameGenieTable.TryGetValue(_code[0], out x);
 				result.Value = x << 4;
 			}
 
 			if (_code.Length > 1)
 			{
-				_gbGgGameGenieTable.TryGetValue(_code[1], out x);
+				_ = _gbGgGameGenieTable.TryGetValue(_code[1], out x);
 				result.Value |= x;
 			}
 
 			// Address
 			if (_code.Length > 2)
 			{
-				_gbGgGameGenieTable.TryGetValue(_code[2], out x);
+				_ = _gbGgGameGenieTable.TryGetValue(_code[2], out x);
 				result.Value = x << 8;
 			}
 			else
@@ -75,30 +75,30 @@ namespace BizHawk.Client.Common.cheats
 
 			if (_code.Length > 3)
 			{
-				_gbGgGameGenieTable.TryGetValue(_code[3], out x);
+				_ = _gbGgGameGenieTable.TryGetValue(_code[3], out x);
 				result.Address |= x << 4;
 			}
 
 			if (_code.Length > 4)
 			{
-				_gbGgGameGenieTable.TryGetValue(_code[4], out x);
+				_ = _gbGgGameGenieTable.TryGetValue(_code[4], out x);
 				result.Address |= x;
 			}
 
 			if (_code.Length > 5)
 			{
-				_gbGgGameGenieTable.TryGetValue(_code[5], out x);
+				_ = _gbGgGameGenieTable.TryGetValue(_code[5], out x);
 				result.Address |= (x ^ 0xF) << 12;
 			}
 
 			// compare need to be full
 			if (_code.Length > 8)
 			{
-				_gbGgGameGenieTable.TryGetValue(_code[6], out x);
+				_ = _gbGgGameGenieTable.TryGetValue(_code[6], out x);
 				var comp = x << 2;
 
 				// 8th character ignored
-				_gbGgGameGenieTable.TryGetValue(_code[8], out x);
+				_ = _gbGgGameGenieTable.TryGetValue(_code[8], out x);
 				comp |= (x & 0xC) >> 2;
 				comp |= (x & 0x3) << 6;
 				result.Compare = comp ^ 0xBA;

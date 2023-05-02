@@ -47,7 +47,7 @@ namespace BizHawk.Client.Common.FilterManager
 		{
 			get
 			{
-				_filterNameIndex.TryGetValue(name, out var ret);
+				_ = _filterNameIndex.TryGetValue(name, out var ret);
 				return ret;
 			}
 		}

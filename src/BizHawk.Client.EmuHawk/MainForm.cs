@@ -81,9 +81,9 @@ namespace BizHawk.Client.EmuHawk
 					entry.Click += ClickHandler;
 					return (ToolStripItem) entry;
 				}).ToArray());
-				submenu.DropDownOpened += (openedSender, _) =>
+				submenu.DropDownOpened += (openedSender, _1) =>
 				{
-					Config.PreferredCores.TryGetValue(groupLabel, out var preferred);
+					_ = Config.PreferredCores.TryGetValue(groupLabel, out var preferred);
 					foreach (ToolStripMenuItem entry in ((ToolStripMenuItem) openedSender).DropDownItems) entry.Checked = entry.Text == preferred;
 				};
 				CoresSubMenu.DropDownItems.Add(submenu);

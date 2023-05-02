@@ -45,7 +45,7 @@ namespace BizHawk.Client.Common
 		/// <returns>null if no settings were saved, or there was an error deserializing</returns>
 		public static object GetCoreSettings(this Config config, Type coreType, Type settingsType)
 		{
-			config.CoreSettings.TryGetValue(coreType.ToString(), out var j);
+			_ = config.CoreSettings.TryGetValue(coreType.ToString(), out var j);
 			return Deserialize(j, settingsType);
 		}
 
@@ -85,7 +85,7 @@ namespace BizHawk.Client.Common
 		/// <returns>null if no settings were saved, or there was an error deserializing</returns>
 		public static object GetCoreSyncSettings(this Config config, Type coreType, Type syncSettingsType)
 		{
-			config.CoreSyncSettings.TryGetValue(coreType.ToString(), out var j);
+			_ = config.CoreSyncSettings.TryGetValue(coreType.ToString(), out var j);
 			return Deserialize(j, syncSettingsType);
 		}
 

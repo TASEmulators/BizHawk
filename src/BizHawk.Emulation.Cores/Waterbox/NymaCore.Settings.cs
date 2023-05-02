@@ -113,8 +113,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				var possible = info.AllOverrides.Where(kvp => kvp.Value.NonSync && kvp.Value.NoRestart).Select(kvp => kvp.Key);
 				return possible.Where(key =>
 				{
-					x.MednafenValues.TryGetValue(key, out var xx);
-					y.MednafenValues.TryGetValue(key, out var yy);
+					_ = x.MednafenValues.TryGetValue(key, out var xx);
+					_ = y.MednafenValues.TryGetValue(key, out var yy);
 					return xx != yy;
 				});
 			}
@@ -124,8 +124,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				var restarters = info.AllOverrides.Where(kvp => kvp.Value.NonSync && !kvp.Value.NoRestart).Select(kvp => kvp.Key);
 				foreach (var key in restarters)
 				{
-					x.MednafenValues.TryGetValue(key, out var xx);
-					y.MednafenValues.TryGetValue(key, out var yy);
+					_ = x.MednafenValues.TryGetValue(key, out var xx);
+					_ = y.MednafenValues.TryGetValue(key, out var yy);
 					if (xx != yy)
 						return PutSettingsDirtyBits.RebootCore;
 				}
@@ -186,8 +186,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				var restarters = info.AllOverrides.Where(kvp => !kvp.Value.NonSync && !kvp.Value.NoRestart).Select(kvp => kvp.Key);
 				foreach (var key in restarters)
 				{
-					x.MednafenValues.TryGetValue(key, out var xx);
-					y.MednafenValues.TryGetValue(key, out var yy);
+					_ = x.MednafenValues.TryGetValue(key, out var xx);
+					_ = y.MednafenValues.TryGetValue(key, out var yy);
 					if (xx != yy)
 						return PutSettingsDirtyBits.RebootCore;
 				}
@@ -206,7 +206,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				// try to get actual value from settings
 				var dict = ovr.NonSync ? _settings.MednafenValues : _syncSettingsActual.MednafenValues;
-				dict.TryGetValue(name, out val);
+				_ = dict.TryGetValue(name, out val);
 			}
 			if (val == null)
 			{

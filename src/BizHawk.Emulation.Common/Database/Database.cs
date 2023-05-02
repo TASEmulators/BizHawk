@@ -194,7 +194,7 @@ namespace BizHawk.Emulation.Common
 			_acquire.WaitOne();
 
 			var hashFormatted = FormatHash(hash);
-			DB.TryGetValue(hashFormatted, out var cgi);
+			_ = DB.TryGetValue(hashFormatted, out var cgi);
 			if (cgi == null)
 			{
 				Console.WriteLine($"DB: hash {hash} not in game database.");
