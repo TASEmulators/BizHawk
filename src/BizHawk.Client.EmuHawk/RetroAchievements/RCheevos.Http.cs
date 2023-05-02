@@ -156,7 +156,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			while (_isActive)
 			{
-				if (_inactiveHttpRequests.TryPop(out var request))
+				while (_inactiveHttpRequests.TryPop(out var request))
 				{
 					Task.Run(request.DoRequest);
 					_activeHttpRequests.Add(request);

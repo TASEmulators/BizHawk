@@ -4,7 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 
 using BizHawk.BizInvoke;
 using BizHawk.Common;
@@ -211,7 +211,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			if (_frameThreadPtr != IntPtr.Zero)
 			{
 				Console.WriteLine($"Setting up waterbox thread for 0x{(ulong)_frameThreadPtr:X16}");
-				_frameThreadStart = CallingConventionAdapters.GetWaterboxUnsafeUnwrapped().GetDelegateForFunctionPointer<Action>(_frameThreadPtr);
+				_frameThread = new(FrameThreadProc) { IsBackground = true };
+				_frameThread.Start();
+				_frameThreadAction = CallingConventionAdapters.GetWaterboxUnsafeUnwrapped().GetDelegateForFunctionPointer<Action>(_frameThreadPtr);
 				_core.SetThreadStartCallback(_threadstartcb);
 			}
 
@@ -354,24 +356,56 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		}
 
 		private readonly IntPtr _frameThreadPtr;
-		private readonly Action _frameThreadStart;
+		private readonly Action _frameThreadAction;
 		private readonly LibMelonDS.ThreadStartCallback _threadstartcb;
 
-		private Task _frameThreadProcActive;
+		private readonly Thread _frameThread;
+		private readonly SemaphoreSlim _frameThreadStartEvent = new(0, 1);
+		private readonly SemaphoreSlim _frameThreadEndEvent = new(0, 1);
+		private bool _isDisposing;
+		private bool _renderThreadRanThisFrame;
+
+		public override void Dispose()
+		{
+			_isDisposing = true;
+			_frameThreadStartEvent.Release();
+			_frameThread?.Join();
+			_frameThreadStartEvent.Dispose();
+			_frameThreadEndEvent.Dispose();
+			base.Dispose();
+		}
+
+		private void FrameThreadProc()
+		{
+			while (true)
+			{
+				_frameThreadStartEvent.Wait();
+				if (_isDisposing) break;
+				_frameThreadAction();
+				_frameThreadEndEvent.Release();
+			}
+		}
 
 		private void ThreadStartCallback()
 		{
-			if (_frameThreadProcActive != null)
+			if (_renderThreadRanThisFrame)
 			{
-				throw new InvalidOperationException("Attempted to start render thread twice");
+				// This is technically possible due to the game able to force another frame to be rendered by touching vcount
+				// (ALSO MEANS VSYNC NUMBERS ARE KIND OF A LIE)
+				_frameThreadEndEvent.Wait();
 			}
-			_frameThreadProcActive = Task.Run(_frameThreadStart);
+
+			_renderThreadRanThisFrame = true;
+			_frameThreadStartEvent.Release();
 		}
 
 		protected override void FrameAdvancePost()
 		{
-			_frameThreadProcActive?.Wait();
-			_frameThreadProcActive = null;
+			if (_renderThreadRanThisFrame)
+			{
+				_frameThreadEndEvent.Wait();
+				_renderThreadRanThisFrame = false;
+			}
 		}
 
 		protected override void LoadStateBinaryInternal(BinaryReader reader)

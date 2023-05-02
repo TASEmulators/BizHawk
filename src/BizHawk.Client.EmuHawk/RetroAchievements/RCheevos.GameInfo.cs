@@ -242,7 +242,7 @@ namespace BizHawk.Client.EmuHawk
 			private LibRCheevos.rc_api_resolve_hash_request_t _apiParams;
 			public int GameID { get; private set; }
 
-			// eh? not sure I want this retried, giving the blocking behavior
+			// eh? not sure I want this retried, given the blocking behavior
 			public override bool ShouldRetry => false;
 
 			protected override void ResponseCallback(byte[] serv_resp)
