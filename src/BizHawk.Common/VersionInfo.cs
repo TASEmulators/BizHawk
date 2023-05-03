@@ -13,7 +13,7 @@ namespace BizHawk.Common
 		/// </remarks>
 		public static readonly string MainVersion = "2.9.1";
 
-		public static readonly string ReleaseDate = "May 2, 2023";
+		public static readonly string ReleaseDate = "May 3, 2023";
 
 		public static readonly string HomePage = "https://tasvideos.org/BizHawk";
 

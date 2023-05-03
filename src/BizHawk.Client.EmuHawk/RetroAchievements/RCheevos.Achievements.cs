@@ -131,7 +131,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private string GetCheevoProgress(int id)
 		{
-			var len = _lib.rc_runtime_format_achievement_measured(ref _runtime, id, _cheevoFormatBuffer, _cheevoFormatBuffer.Length);
+			var len = _lib.rc_runtime_format_achievement_measured(_runtime, id, _cheevoFormatBuffer, _cheevoFormatBuffer.Length);
 			return Encoding.ASCII.GetString(_cheevoFormatBuffer, 0, len);
 		}
 
@@ -145,50 +145,62 @@ namespace BizHawk.Client.EmuHawk
 
 			_activeModeUnlocksRequest.Wait();
 
-			foreach (var cheevo in _gameData.CheevoEnumerable)
-			{
-				if (cheevo.IsEnabled && !cheevo.IsUnlocked(HardcoreMode))
-				{
-					_lib.rc_runtime_deactivate_achievement(ref _runtime, cheevo.ID);
-				}
-			}
-
+			DeactivateCheevos(HardcoreMode);
 			AllowUnofficialCheevos ^= true;
-
-			foreach (var cheevo in _gameData.CheevoEnumerable)
-			{
-				if (cheevo.IsEnabled && !cheevo.IsUnlocked(HardcoreMode))
-				{
-					_lib.rc_runtime_activate_achievement(ref _runtime, cheevo.ID, cheevo.Definition, IntPtr.Zero, 0);
-				}
-			}
+			ActivateCheevos(HardcoreMode);
 		}
 
 		private void ToSoftcoreMode()
 		{
 			if (_gameData == null || _gameData.GameID == 0) return;
+			
+			// don't worry if the meanings of _active and _inactive are wrong
+			// if they are, then they're both already finished
 
-			_inactiveModeUnlocksRequest.Wait();
-
-			foreach (var cheevo in _gameData.CheevoEnumerable)
-			{
-				if (cheevo.IsEnabled && !cheevo.IsUnlocked(false))
-				{
-					_lib.rc_runtime_deactivate_achievement(ref _runtime, cheevo.ID);
-				}
-			}
-
+			// first deactivate any hardcore cheevos
+			// if _activeModeUnlocksRequest is still active, it's hardcore mode
 			_activeModeUnlocksRequest.Wait();
+			DeactivateCheevos(true);
 
-			foreach (var cheevo in _gameData.CheevoEnumerable)
-			{
-				if (cheevo.IsEnabled && !cheevo.IsUnlocked(true))
-				{
-					_lib.rc_runtime_activate_achievement(ref _runtime, cheevo.ID, cheevo.Definition, IntPtr.Zero, 0);
-				}
-			}
+			// now activate the softcore cheevos
+			// if _inactiveModeUnlocksRequest is still active, it's softcore mode
+			_inactiveModeUnlocksRequest.Wait();
+			ActivateCheevos(false);
 
 			Update();
+		}
+
+		private void DeactivateCheevos(bool hardcore)
+		{
+			foreach (var cheevo in _gameData.CheevoEnumerable)
+			{
+				if (cheevo.IsEnabled && !cheevo.IsUnlocked(hardcore))
+				{
+					_lib.rc_runtime_deactivate_achievement(_runtime, cheevo.ID);
+				}
+			}
+		}
+
+		private bool _activeModeCheevosOnceActivated;
+
+		private void ActivateCheevos(bool hardcore)
+		{
+			foreach (var cheevo in _gameData.CheevoEnumerable)
+			{
+				if (cheevo.IsEnabled && !cheevo.IsUnlocked(hardcore))
+				{
+					_lib.rc_runtime_activate_achievement(_runtime, cheevo.ID, cheevo.Definition, IntPtr.Zero, 0);
+				}
+			}
+
+			_activeModeCheevosOnceActivated = true;
+		}
+
+		private void OneShotActivateActiveModeCheevos()
+		{
+			if (_activeModeCheevosOnceActivated || _gameData.GameID == 0) return;
+			_activeModeUnlocksRequest.Wait();
+			ActivateCheevos(HardcoreMode);
 		}
 	}
 }

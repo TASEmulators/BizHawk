@@ -25,7 +25,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			private LibRCheevos.rc_api_fetch_user_unlocks_request_t _apiParams;
 			private readonly IReadOnlyDictionary<int, Cheevo> _cheevos;
-			private readonly Action _activeModeCallback;
 
 			protected override void ResponseCallback(byte[] serv_resp)
 			{
@@ -43,8 +42,6 @@ namespace BizHawk.Client.EmuHawk
 							}
 						}
 					}
-
-					_activeModeCallback?.Invoke();
 				}
 				else
 				{
@@ -60,12 +57,10 @@ namespace BizHawk.Client.EmuHawk
 				InternalDoRequest(apiParamsResult, ref api_req);
 			}
 
-			public UserUnlocksRequest(string username, string api_token, int game_id, bool hardcore,
-				IReadOnlyDictionary<int, Cheevo> cheevos, Action activeModeCallback = null)
+			public UserUnlocksRequest(string username, string api_token, int game_id, bool hardcore, IReadOnlyDictionary<int, Cheevo> cheevos)
 			{
 				_apiParams = new(username, api_token, game_id, hardcore);
 				_cheevos = cheevos;
-				_activeModeCallback = activeModeCallback;
 			}
 		}
 
@@ -167,9 +162,9 @@ namespace BizHawk.Client.EmuHawk
 			public Cheevo GetCheevoById(int i) => _cheevos[i];
 			public LBoard GetLboardById(int i) => _lboards[i];
 
-			public UserUnlocksRequest InitUnlocks(string username, string api_token, bool hardcore, Action callback = null)
+			public UserUnlocksRequest InitUnlocks(string username, string api_token, bool hardcore)
 			{
-				return new(username, api_token, GameID, hardcore, _cheevos, callback);
+				return new(username, api_token, GameID, hardcore, _cheevos);
 			}
 
 			public IEnumerable<RCheevoHttpRequest> LoadImages()
@@ -242,7 +237,7 @@ namespace BizHawk.Client.EmuHawk
 			private LibRCheevos.rc_api_resolve_hash_request_t _apiParams;
 			public int GameID { get; private set; }
 
-			// eh? not sure I want this retried, giving the blocking behavior
+			// eh? not sure I want this retried, given the blocking behavior
 			public override bool ShouldRetry => false;
 
 			protected override void ResponseCallback(byte[] serv_resp)
@@ -301,16 +296,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void InitGameData()
 		{
-			_activeModeUnlocksRequest = _gameData.InitUnlocks(Username, ApiToken, HardcoreMode, () =>
-			{
-				foreach (var cheevo in _gameData.CheevoEnumerable)
-				{
-					if (cheevo.IsEnabled && !cheevo.IsUnlocked(HardcoreMode))
-					{
-						_lib.rc_runtime_activate_achievement(ref _runtime, cheevo.ID, cheevo.Definition, IntPtr.Zero, 0);
-					}
-				}
-			});
+			_activeModeUnlocksRequest = _gameData.InitUnlocks(Username, ApiToken, HardcoreMode);
 			_inactiveHttpRequests.Push(_activeModeUnlocksRequest);
 
 			_inactiveModeUnlocksRequest = _gameData.InitUnlocks(Username, ApiToken, !HardcoreMode);
@@ -321,12 +307,14 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var lboard in _gameData.LBoardEnumerable)
 			{
-				_lib.rc_runtime_activate_lboard(ref _runtime, lboard.ID, lboard.Definition, IntPtr.Zero, 0);
+				_lib.rc_runtime_activate_lboard(_runtime, lboard.ID, lboard.Definition, IntPtr.Zero, 0);
 			}
+			});
+			_inactiveHttpRequests.Push(_activeModeUnlocksRequest);
 
 			if (_gameData.RichPresenseScript is not null)
 			{
-				_lib.rc_runtime_activate_richpresence(ref _runtime, _gameData.RichPresenseScript, IntPtr.Zero, 0);
+				_lib.rc_runtime_activate_richpresence(_runtime, _gameData.RichPresenseScript, IntPtr.Zero, 0);
 			}
 		}
 

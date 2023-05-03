@@ -110,22 +110,24 @@ namespace BizHawk.Client.EmuHawk
 				var apiTask = request.post_data != IntPtr.Zero
 					? HttpPost(request.URL, request.PostData)
 					: HttpGet(request.URL);
-				apiTask.ConfigureAwait(false);
+
+				apiTask.ContinueWith(async t =>
+				{
+					var result = await t;
+					if (result is null) // likely a timeout
+					{
+						ShouldRetry = true;
+						_completionEvent.Set();
+					}
+					else
+					{
+						ResponseCallback(result);
+						ShouldRetry = false; // this is a bit naive, but if the response callback "fails," retrying will just result in the same thing
+						_completionEvent.Set();
+					}
+				}, default, TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.DenyChildAttach, TaskScheduler.Default);
 
 				_lib.rc_api_destroy_request(ref request);
-				var result = apiTask.Result; // FIXME: THIS IS BAD (but kind of needed?)
-
-				if (result is null) // likely a timeout
-				{
-					ShouldRetry = true;
-					_completionEvent.Set();
-					return;
-				}
-
-				ResponseCallback(result);
-
-				ShouldRetry = false; // this is a bit naive, but if the response callback "fails," retrying will just result in the same thing
-				_completionEvent.Set();
 			}
 		}
 
@@ -156,16 +158,16 @@ namespace BizHawk.Client.EmuHawk
 		{
 			while (_isActive)
 			{
-				if (_inactiveHttpRequests.TryPop(out var request))
+				while (_inactiveHttpRequests.TryPop(out var request))
 				{
-					Task.Run(request.DoRequest);
+					request.DoRequest();
 					_activeHttpRequests.Add(request);
 				}
 
 				foreach (var activeRequest in _activeHttpRequests.Where(activeRequest => activeRequest.IsCompleted && activeRequest.ShouldRetry).ToArray())
 				{
 					activeRequest.Reset();
-					Task.Run(activeRequest.DoRequest);
+					activeRequest.DoRequest();
 				}
 
 				_activeHttpRequests.RemoveAll(activeRequest =>
@@ -178,6 +180,14 @@ namespace BizHawk.Client.EmuHawk
 
 					return shouldRemove;
 				});
+			}
+
+			// typically I'd rather do this Dispose()
+			// but the Wait() semantics mean we can't do that on the UI thread
+			foreach (var request in _activeHttpRequests)
+			{
+				if (request is ImageRequest) continue; // THIS IS BAD, I KNOW (but don't want the user to wait for useless ImageRequests to finish)
+				request.Dispose(); // implicitly waits for the request to finish or timeout
 			}
 		}
 

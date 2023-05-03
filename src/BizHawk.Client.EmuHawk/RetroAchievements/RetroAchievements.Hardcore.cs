@@ -55,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 			[typeof(Snes9x)] = new[] { "ShowBg0", "ShowBg1", "ShowBg2", "ShowBg3", "ShowSprites0", "ShowSprites1", "ShowSprites2", "ShowSprites3", "ShowWindow", "ShowTransparency" },
 			[typeof(PCEngine)] = new[] { "ShowBG1", "ShowOBJ1", "ShowBG2", "ShowOBJ2", },
 			[typeof(GPGX)] = new[] { "DrawBGA", "DrawBGB", "DrawBGW", "DrawObj", },
-			[typeof(SMS)] = new[] { "DispBG", "DispOBJ," },
+			[typeof(SMS)] = new[] { "DispBG", "DispOBJ" },
 			[typeof(WonderSwan)] = new[] { "EnableBG", "EnableFG", "EnableSprites", },
 		};
 

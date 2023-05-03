@@ -15,6 +15,7 @@ namespace BizHawk.Client.Common
 	public sealed class FirmwareManager
 	{
 		private static readonly FirmwareID NDS_FIRMWARE = new("NDS", "firmware");
+		private const int DSI_NAND_LENGTH = 251658240 + 64;
 
 		public static (byte[] Patched, string ActualHash) PerformPatchInMemory(byte[] @base, in FirmwarePatchOption patchOption)
 		{
@@ -101,6 +102,15 @@ namespace BizHawk.Client.Common
 			public RealFirmwareFile Read(FileInfo fi)
 			{
 				using var fs = fi.OpenRead();
+
+				// DSi NAND is huge, and the hash is useless (can't use it to identify a good dump)
+				// Not sure how well the system can handle a dummy hash, so let's just hash the nocash footer (which should be unique for each NAND)
+				if (fs.Length == DSI_NAND_LENGTH)
+				{
+					fs.Seek(-64, SeekOrigin.End);
+					// we can let it fall through here, as ReadAllBytes just reads all bytes starting from the stream position :)
+				}
+
 				var hash = SHA1Checksum.ComputeDigestHex(fs.ReadAllBytes());
 				return _dict![hash] = new RealFirmwareFile(fi, hash);
 			}
