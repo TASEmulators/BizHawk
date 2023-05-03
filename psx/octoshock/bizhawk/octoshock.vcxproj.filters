@@ -96,9 +96,9 @@
     <ClCompile Include="..\video\Deinterlacer.cpp">
       <Filter>video</Filter>
     </ClCompile>
-    <ClInclude Include="..\video\convert.cpp">
+    <ClCompile Include="..\video\convert.cpp">
       <Filter>video</Filter>
-    </ClInclude>
+    </ClCompile>
     <ClCompile Include="..\emuware\EW_state.cpp">
       <Filter>emuware</Filter>
     </ClCompile>
@@ -237,12 +237,23 @@
     <ClInclude Include="..\cdrom\CDUtility.h">
       <Filter>cdrom</Filter>
     </ClInclude>
-    <ClInclude Include="..\emuware\PACKED.h">
-      <Filter>emuware</Filter>
-    </ClInclude>
-    <ClInclude Include="..\emuware\PACKED_END.h">
-      <Filter>emuware</Filter>
-    </ClInclude>
+    <ClInclude Include="..\cdrom\dvdisaster.h">
+			<Filter>cdrom</Filter>
+		</ClInclude>
+    <ClInclude Include="..\cdrom\galois-inlines.h">
+			<Filter>cdrom</Filter>
+		</ClInclude>
+    <ClInclude Include="..\cdrom\lec.h">
+			<Filter>cdrom</Filter>
+		</ClInclude>
+		<ClInclude Include="..\psx\debug.h">
+			<Filter>psx</Filter>
+		</ClInclude>
+    <ClInclude Include="..\psx\FastFIFO.h">
+			<Filter>psx</Filter>
+		</ClInclude>
+    <ClInclude Include="..\tests.h" />
+    <ClInclude Include="..\video.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\psx\spu_fir_table.inc">
@@ -252,12 +263,6 @@
       <Filter>psx</Filter>
     </None>
     <None Include="..\psx\gpu_common.inc">
-      <Filter>psx</Filter>
-    </None>
-    <None Include="..\psx\cpu_computedgoto.inc">
-      <Filter>psx</Filter>
-    </None>
-    <None Include="..\psx\cpu_bigswitch.inc">
       <Filter>psx</Filter>
     </None>
   </ItemGroup>
