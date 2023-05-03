@@ -179,6 +179,14 @@ namespace BizHawk.Client.EmuHawk
 					return shouldRemove;
 				});
 			}
+
+			// typically I'd rather do this Dispose()
+			// but the Wait() semantics mean we can't do that on the UI thread
+			foreach (var request in _activeHttpRequests)
+			{
+				if (request is ImageRequest) continue; // THIS IS BAD, I KNOW (but don't want the user to wait for useless ImageRequests to finish)
+				request.Dispose(); // implicitly waits for the request to finish or timeout
+			}
 		}
 
 		private static async Task<byte[]> HttpGet(string url)

@@ -226,13 +226,6 @@ namespace BizHawk.Client.EmuHawk
 			_isActive = false;
 			_httpThread.Join();
 
-			// the http thread is dead, so we can safely use _activeHttpRequests
-			foreach (var request in _activeHttpRequests)
-			{
-				if (request is ImageRequest) continue; // THIS IS BAD, I KNOW
-				request.Dispose(); // implicitly waits for the request to finish or timeout
-			}
-
 			_lib.rc_runtime_destroy(ref _runtime);
 			Stop();
 			_gameInfoForm.Dispose();
