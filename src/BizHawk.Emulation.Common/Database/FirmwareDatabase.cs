@@ -158,12 +158,12 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption(SHA1Checksum.Dummy, 131072, "NDS", "firmwarei", "DSi_Firmware.bin", "DSi Firmware");
 			// options for each region due to region locking of the DSi
 			// also, the sizes include the "nocash footer" which contains the eMMC CID and CPU/Console ID
-			FirmwareAndOption(SHA1Checksum.Dummy, 251658264 + 40, "NDS", "NAND (JPN)", "DSi_Nand_JPN.bin", "DSi NAND (Japan)");
-			FirmwareAndOption(SHA1Checksum.Dummy, 251658264 + 40, "NDS", "NAND (EUR)", "DSi_Nand_EUR.bin", "DSi NAND (Europe)");
-			FirmwareAndOption(SHA1Checksum.Dummy, 251658264 + 40, "NDS", "NAND (USA)", "DSi_Nand_USA.bin", "DSi NAND (USA)");
-			FirmwareAndOption(SHA1Checksum.Dummy, 251658264 + 40, "NDS", "NAND (AUS)", "DSi_Nand_AUS.bin", "DSi NAND (Australia)");
-			FirmwareAndOption(SHA1Checksum.Dummy, 251658264 + 40, "NDS", "NAND (CHN)", "DSi_Nand_CHN.bin", "DSi NAND (China)");
-			FirmwareAndOption(SHA1Checksum.Dummy, 251658264 + 40, "NDS", "NAND (KOR)", "DSi_Nand_KOR.bin", "DSi NAND (Korea)");
+			FirmwareAndOption(SHA1Checksum.Dummy, 251658240 + 64, "NDS", "NAND (JPN)", "DSi_Nand_JPN.bin", "DSi NAND (Japan)");
+			FirmwareAndOption(SHA1Checksum.Dummy, 251658240 + 64, "NDS", "NAND (EUR)", "DSi_Nand_EUR.bin", "DSi NAND (Europe)");
+			FirmwareAndOption(SHA1Checksum.Dummy, 251658240 + 64, "NDS", "NAND (USA)", "DSi_Nand_USA.bin", "DSi NAND (USA)");
+			FirmwareAndOption(SHA1Checksum.Dummy, 251658240 + 64, "NDS", "NAND (AUS)", "DSi_Nand_AUS.bin", "DSi NAND (Australia)");
+			FirmwareAndOption(SHA1Checksum.Dummy, 251658240 + 64, "NDS", "NAND (CHN)", "DSi_Nand_CHN.bin", "DSi NAND (China)");
+			FirmwareAndOption(SHA1Checksum.Dummy, 251658240 + 64, "NDS", "NAND (KOR)", "DSi_Nand_KOR.bin", "DSi NAND (Korea)");
 
 			FirmwareAndOption("E4ED47FAE31693E016B081C6BDA48DA5B70D7CCB", 512, "Lynx", "Boot", "LYNX_boot.img", "Boot Rom");
 
