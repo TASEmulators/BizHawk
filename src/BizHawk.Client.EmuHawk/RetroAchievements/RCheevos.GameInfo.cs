@@ -307,12 +307,12 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var lboard in _gameData.LBoardEnumerable)
 			{
-				_lib.rc_runtime_activate_lboard(ref _runtime, lboard.ID, lboard.Definition, IntPtr.Zero, 0);
+				_lib.rc_runtime_activate_lboard(_runtime, lboard.ID, lboard.Definition, IntPtr.Zero, 0);
 			}
 
 			if (_gameData.RichPresenseScript is not null)
 			{
-				_lib.rc_runtime_activate_richpresence(ref _runtime, _gameData.RichPresenseScript, IntPtr.Zero, 0);
+				_lib.rc_runtime_activate_richpresence(_runtime, _gameData.RichPresenseScript, IntPtr.Zero, 0);
 			}
 		}
 

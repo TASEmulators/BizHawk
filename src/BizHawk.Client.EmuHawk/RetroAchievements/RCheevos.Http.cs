@@ -110,7 +110,6 @@ namespace BizHawk.Client.EmuHawk
 				var apiTask = request.post_data != IntPtr.Zero
 					? HttpPost(request.URL, request.PostData)
 					: HttpGet(request.URL);
-				apiTask.ConfigureAwait(false);
 
 				apiTask.ContinueWith(async t =>
 				{
@@ -126,7 +125,7 @@ namespace BizHawk.Client.EmuHawk
 						ShouldRetry = false; // this is a bit naive, but if the response callback "fails," retrying will just result in the same thing
 						_completionEvent.Set();
 					}
-				});
+				}, default, TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.DenyChildAttach, TaskScheduler.Default);
 
 				_lib.rc_api_destroy_request(ref request);
 			}

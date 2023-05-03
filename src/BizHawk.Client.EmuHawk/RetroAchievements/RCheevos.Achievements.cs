@@ -131,7 +131,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private string GetCheevoProgress(int id)
 		{
-			var len = _lib.rc_runtime_format_achievement_measured(ref _runtime, id, _cheevoFormatBuffer, _cheevoFormatBuffer.Length);
+			var len = _lib.rc_runtime_format_achievement_measured(_runtime, id, _cheevoFormatBuffer, _cheevoFormatBuffer.Length);
 			return Encoding.ASCII.GetString(_cheevoFormatBuffer, 0, len);
 		}
 
@@ -176,7 +176,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (cheevo.IsEnabled && !cheevo.IsUnlocked(hardcore))
 				{
-					_lib.rc_runtime_deactivate_achievement(ref _runtime, cheevo.ID);
+					_lib.rc_runtime_deactivate_achievement(_runtime, cheevo.ID);
 				}
 			}
 		}
@@ -189,7 +189,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (cheevo.IsEnabled && !cheevo.IsUnlocked(hardcore))
 				{
-					_lib.rc_runtime_activate_achievement(ref _runtime, cheevo.ID, cheevo.Definition, IntPtr.Zero, 0);
+					_lib.rc_runtime_activate_achievement(_runtime, cheevo.ID, cheevo.Definition, IntPtr.Zero, 0);
 				}
 			}
 
@@ -198,7 +198,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OneShotActivateActiveModeCheevos()
 		{
-			if (_activeModeCheevosOnceActivated) return;
+			if (_activeModeCheevosOnceActivated || _gameData.GameID == 0) return;
 			_activeModeUnlocksRequest.Wait();
 			ActivateCheevos(HardcoreMode);
 		}
