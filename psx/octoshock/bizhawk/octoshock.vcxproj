@@ -78,6 +78,7 @@ copy /Y "$(TargetDir)$(TargetName).dll" "$(SolutionDir)..\..\..\output\dll\$(Tar
     <ClCompile Include="..\emuware\emuware.cpp" />
     <ClCompile Include="..\emuware\EW_state.cpp" />
     <ClCompile Include="..\endian.cpp" />
+    <ClCompile Include="..\error.cpp" />
     <ClCompile Include="..\octoshock.cpp" />
     <ClCompile Include="..\psx\cdc.cpp" />
     <ClCompile Include="..\psx\cpu.cpp" />
