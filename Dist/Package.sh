@@ -9,7 +9,7 @@ find "output" -type f \( -wholename "output/EmuHawk.exe" -o -wholename "output/D
 	-exec install -D -m644 "{}" "packaged_{}" \;
 cd "$targetDir"
 mkdir "Firmware"
-if [ "$1" == "windows-x64" ]; then
+if [ "$1" = "windows-x64" ]; then
 	rm -f "EmuHawkMono.sh"
 	cd "dll"
 	rm -f "OpenTK.dll.config" \
