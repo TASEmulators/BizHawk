@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 
 using BizHawk.BizInvoke;
@@ -120,7 +121,6 @@ namespace BizHawk.Client.EmuHawk
 			enableHardcoreItem.CheckedChanged += (_, _) =>
 			{
 				_hardcoreMode ^= true;
-				enableLboardsItem.Enabled = HardcoreMode;
 
 				if (HardcoreMode)
 				{
@@ -130,6 +130,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					ToSoftcoreMode();
 				}
+
+				enableLboardsItem.Enabled = HardcoreMode;
 			};
 			raDropDownItems.Add(enableHardcoreItem);
 
@@ -195,7 +197,7 @@ namespace BizHawk.Client.EmuHawk
 			: base(mainForm, inputManager, tools, getConfig, raDropDownItems, shutdownRACallback)
 		{
 			_isActive = true;
-			_httpThread = new(HttpRequestThreadProc) { IsBackground = true };
+			_httpThread = new(HttpRequestThreadProc) { IsBackground = true, Priority = ThreadPriority.BelowNormal };
 			_httpThread.Start();
 
 			_runtime = default;
@@ -243,7 +245,8 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			_activeModeUnlocksRequest.Wait();
+			OneShotActivateActiveModeCheevos();
+
 			var size = _lib.rc_runtime_progress_size(ref _runtime, IntPtr.Zero);
 			if (size > 0)
 			{
@@ -266,7 +269,8 @@ namespace BizHawk.Client.EmuHawk
 				HandleHardcoreModeDisable("Loading savestates is not allowed in hardcore mode.");
 			}
 
-			_activeModeUnlocksRequest.Wait();
+			OneShotActivateActiveModeCheevos();
+
 			_lib.rc_runtime_reset(ref _runtime);
 
 			if (!File.Exists(path + ".rap")) return;
@@ -313,6 +317,8 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			}
+
+			_activeModeCheevosOnceActivated = false;
 
 			if (!LoggedIn)
 			{
@@ -598,6 +604,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return;
 			}
+
+			OneShotActivateActiveModeCheevos();
 
 			var input = _inputManager.ControllerOutput;
 			if (input.Definition.BoolButtons.Any(b => (b.Contains("Power") || b.Contains("Reset")) && input.IsPressed(b)))

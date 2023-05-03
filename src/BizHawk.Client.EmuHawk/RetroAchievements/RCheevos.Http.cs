@@ -112,20 +112,23 @@ namespace BizHawk.Client.EmuHawk
 					: HttpGet(request.URL);
 				apiTask.ConfigureAwait(false);
 
-				_lib.rc_api_destroy_request(ref request);
-				var result = apiTask.Result; // FIXME: THIS IS BAD (but kind of needed?)
-
-				if (result is null) // likely a timeout
+				apiTask.ContinueWith(async t =>
 				{
-					ShouldRetry = true;
-					_completionEvent.Set();
-					return;
-				}
+					var result = await t;
+					if (result is null) // likely a timeout
+					{
+						ShouldRetry = true;
+						_completionEvent.Set();
+					}
+					else
+					{
+						ResponseCallback(result);
+						ShouldRetry = false; // this is a bit naive, but if the response callback "fails," retrying will just result in the same thing
+						_completionEvent.Set();
+					}
+				});
 
-				ResponseCallback(result);
-
-				ShouldRetry = false; // this is a bit naive, but if the response callback "fails," retrying will just result in the same thing
-				_completionEvent.Set();
+				_lib.rc_api_destroy_request(ref request);
 			}
 		}
 
@@ -158,14 +161,14 @@ namespace BizHawk.Client.EmuHawk
 			{
 				while (_inactiveHttpRequests.TryPop(out var request))
 				{
-					Task.Run(request.DoRequest);
+					request.DoRequest();
 					_activeHttpRequests.Add(request);
 				}
 
 				foreach (var activeRequest in _activeHttpRequests.Where(activeRequest => activeRequest.IsCompleted && activeRequest.ShouldRetry).ToArray())
 				{
 					activeRequest.Reset();
-					Task.Run(activeRequest.DoRequest);
+					activeRequest.DoRequest();
 				}
 
 				_activeHttpRequests.RemoveAll(activeRequest =>
