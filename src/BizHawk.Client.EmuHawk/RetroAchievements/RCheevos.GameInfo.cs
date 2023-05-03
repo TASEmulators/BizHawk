@@ -309,8 +309,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_lib.rc_runtime_activate_lboard(_runtime, lboard.ID, lboard.Definition, IntPtr.Zero, 0);
 			}
-			});
-			_inactiveHttpRequests.Push(_activeModeUnlocksRequest);
 
 			if (_gameData.RichPresenseScript is not null)
 			{
