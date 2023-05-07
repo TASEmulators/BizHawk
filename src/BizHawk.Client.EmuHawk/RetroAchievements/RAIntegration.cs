@@ -235,6 +235,8 @@ namespace BizHawk.Client.EmuHawk
 			_mainForm.EmuClient.BeforeQuickLoad += QuickLoadCallback;
 		}
 
+		public bool OverlayActive => RA.IsOverlayFullyVisible();
+
 		public override void Update()
 		{
 			if (RA.HardcoreModeIsActive())
@@ -247,7 +249,7 @@ namespace BizHawk.Client.EmuHawk
 				RA.SetPaused(true);
 			}
 
-			if (!RA.IsOverlayFullyVisible()) return;
+			if (!OverlayActive) return;
 
 			var ci = new RAInterface.ControllerInput
 			{
@@ -263,6 +265,7 @@ namespace BizHawk.Client.EmuHawk
 			RA.NavigateOverlay(ref ci);
 
 			// todo: suppress user inputs with overlay active?
+			// cpp: well this happens now if hotkeys override controller inputs
 		}
 
 		public override void OnFrameAdvance()

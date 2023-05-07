@@ -593,6 +593,7 @@ namespace BizHawk.Client.EmuHawk
 				case "Rewind":
 				case "Fast Forward":
 				case "Open RA Overlay":
+					return true;
 				case "RA Up":
 				case "RA Down":
 				case "RA Left":
@@ -600,7 +601,8 @@ namespace BizHawk.Client.EmuHawk
 				case "RA Confirm":
 				case "RA Cancel":
 				case "RA Quit":
-					return true;
+					// don't consider these keys outside of RAIntegration overlay being active
+					return RA is RAIntegration { OverlayActive: true };
 			}
 		}
 	}
