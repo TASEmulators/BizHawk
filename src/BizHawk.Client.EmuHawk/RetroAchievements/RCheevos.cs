@@ -197,7 +197,7 @@ namespace BizHawk.Client.EmuHawk
 			: base(mainForm, inputManager, tools, getConfig, raDropDownItems, shutdownRACallback)
 		{
 			_isActive = true;
-			_httpThread = new(HttpRequestThreadProc) { IsBackground = true, Priority = ThreadPriority.BelowNormal };
+			_httpThread = new(HttpRequestThreadProc) { IsBackground = true, Priority = ThreadPriority.BelowNormal, Name = "RCheevos HTTP Thread" };
 			_httpThread.Start();
 
 			_runtime = _lib.rc_runtime_alloc();
@@ -223,13 +223,10 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void Dispose()
 		{
-			while (!_inactiveHttpRequests.IsEmpty)
-			{
-				// wait until all pending http requests are enqueued
-			}
-
 			_isActive = false;
-			_httpThread.Join();
+			_threadThrottle.Set(); // wakeup the thread
+			_httpThread.Join(); // note: the http thread handles disposing requests
+			_threadThrottle.Dispose();
 
 			_lib.rc_runtime_destroy(_runtime);
 			_runtime = IntPtr.Zero;
@@ -460,7 +457,7 @@ namespace BizHawk.Client.EmuHawk
 
 							if (cheevo.IsOfficial)
 							{
-								_inactiveHttpRequests.Push(new CheevoUnlockRequest(Username, ApiToken, evt->id, HardcoreMode, _gameHash));
+								PushRequest(new CheevoUnlockRequest(Username, ApiToken, evt->id, HardcoreMode, _gameHash));
 							}
 						}
 
@@ -545,7 +542,7 @@ namespace BizHawk.Client.EmuHawk
 						var lboard = _gameData.GetLboardById(evt->id);
 						if (!lboard.Invalid)
 						{
-							_inactiveHttpRequests.Push(new LboardTriggerRequest(Username, ApiToken, evt->id, evt->value, _gameHash));
+							PushRequest(new LboardTriggerRequest(Username, ApiToken, evt->id, evt->value, _gameHash));
 
 							if (!lboard.Hidden)
 							{

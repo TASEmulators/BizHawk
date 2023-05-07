@@ -46,7 +46,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool DoLogin(string username, string apiToken = null, string password = null)
 		{
 			var loginRequest = new LoginRequest(username, apiToken, password);
-			_inactiveHttpRequests.Push(loginRequest);
+			PushRequest(loginRequest);
 			loginRequest.Wait();
 
 			Username = loginRequest.Username;

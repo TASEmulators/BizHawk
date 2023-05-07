@@ -36,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void StartGameSession()
 		{
-			_inactiveHttpRequests.Push(new StartGameSessionRequest(Username, ApiToken, _gameData.GameID));
+			PushRequest(new StartGameSessionRequest(Username, ApiToken, _gameData.GameID));
 		}
 
 		private sealed class PingRequest : RCheevoHttpRequest
@@ -67,7 +67,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SendPing()
 		{
-			_inactiveHttpRequests.Push(new PingRequest(Username, ApiToken, _gameData.GameID, CurrentRichPresence));
+			PushRequest(new PingRequest(Username, ApiToken, _gameData.GameID, CurrentRichPresence));
 		}
 
 		private readonly byte[] _richPresenceBuffer = new byte[1024];

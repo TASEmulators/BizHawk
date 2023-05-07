@@ -271,7 +271,7 @@ namespace BizHawk.Client.EmuHawk
 		private int SendHash(string hash)
 		{
 			var resolveHashRequest = new ResolveHashRequest(hash);
-			_inactiveHttpRequests.Push(resolveHashRequest);
+			PushRequest(resolveHashRequest);
 			resolveHashRequest.Wait(); // currently, this is done synchronously
 			return resolveHashRequest.GameID;
 		}
@@ -297,13 +297,12 @@ namespace BizHawk.Client.EmuHawk
 		private void InitGameData()
 		{
 			_activeModeUnlocksRequest = _gameData.InitUnlocks(Username, ApiToken, HardcoreMode);
-			_inactiveHttpRequests.Push(_activeModeUnlocksRequest);
+			PushRequest(_activeModeUnlocksRequest);
 
 			_inactiveModeUnlocksRequest = _gameData.InitUnlocks(Username, ApiToken, !HardcoreMode);
-			_inactiveHttpRequests.Push(_inactiveModeUnlocksRequest);
+			PushRequest(_inactiveModeUnlocksRequest);
 
-			var loadImageRequests = _gameData.LoadImages();
-			_inactiveHttpRequests.PushRange(loadImageRequests.ToArray());
+			PushRequests(_gameData.LoadImages());
 
 			foreach (var lboard in _gameData.LBoardEnumerable)
 			{
@@ -319,7 +318,7 @@ namespace BizHawk.Client.EmuHawk
 		private GameData GetGameData(int id)
 		{
 			var gameDataRequest = new GameDataRequest(Username, ApiToken, id, () => AllowUnofficialCheevos);
-			_inactiveHttpRequests.Push(gameDataRequest);
+			PushRequest(gameDataRequest);
 			gameDataRequest.Wait();
 			return gameDataRequest.GameData;
 		}
