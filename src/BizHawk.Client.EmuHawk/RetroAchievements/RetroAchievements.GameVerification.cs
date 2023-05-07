@@ -253,7 +253,7 @@ namespace BizHawk.Client.EmuHawk
 								return 0;
 							case "254487B59AB21BC005338E85CBF9FD2F": // see https://github.com/RetroAchievements/rcheevos/pull/234
 							{
-								jaguarHash = HashJaguar(disc.Sessions[2].Tracks[2], dsr);
+								jaguarHash = HashJaguar(disc.Sessions[1].Tracks[2], dsr);
 								if (jaguarHash is null)
 								{
 									return 0;
