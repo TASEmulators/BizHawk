@@ -69,6 +69,8 @@ namespace BizHawk.Client.EmuHawk
 			public int SplitDistance { get; set; }
 
 			public bool DisableLuaScriptsOnLoad { get; set; }
+
+			public bool WarnedOnceOnOverwrite { get; set; }
 		}
 
 		[ConfigPersist]
@@ -843,7 +845,22 @@ namespace BizHawk.Client.EmuHawk
 			var templatePath = Path.Combine(luaDir, TEMPLATE_FILENAME);
 			const string DEF_TEMPLATE_CONTENTS = "-- This template lives at `.../Lua/.template.lua`.\nwhile true do\n\t-- Code here will run once when the script is loaded, then after each emulated frame.\n\temu.frameadvance();\nend\n";
 			if (!File.Exists(templatePath)) File.WriteAllText(path: templatePath, contents: DEF_TEMPLATE_CONTENTS);
-			File.Copy(sourceFileName: templatePath, destFileName: result);
+			if (!Settings.WarnedOnceOnOverwrite && File.Exists(result))
+			{
+				// the user normally gets an "are you sure you want to overwrite" message from the OS
+				// but some newcomer users seem to think the New Script button is for opening up scripts
+				// mostly due to weird behavior in other emulators with their lua implementations
+				// we'll warn again the first time, clarifying usage then let the OS handle warning the user
+				Settings.WarnedOnceOnOverwrite = true;
+				if (!this.ModalMessageBox2("You are about to overwrite an existing Lua script.\n" +
+						"Keep in mind the \"New Lua Script\" option is for creating a brand new Lua script, not for opening Lua scripts.\n" +
+						"This warning will not appear again! (the file manager would be warning you about an overwrite anyways)\n" +
+						"Proceed with overwrite?", "Overwrite", EMsgBoxIcon.Warning, useOKCancel: true))
+				{
+					return;
+				}
+			}
+			File.Copy(sourceFileName: templatePath, destFileName: result, overwrite: true);
 			LuaImp.ScriptList.Add(new LuaFile(Path.GetFileNameWithoutExtension(result), result));
 			Config!.RecentLua.Add(result);
 			UpdateDialog();
