@@ -63,9 +63,9 @@ struct Track {
 struct TOC {
 	uint8_t padding_0;
 	uint8_t padding_1;
-	uint8_t num_sessions;
 	uint8_t min_track_num;
 	uint8_t max_track_num;
+	uint8_t num_sessions;
 	uint8_t last_lead_out_mins;
 	uint8_t last_lead_out_secs;
 	uint8_t last_lead_out_frames;
