@@ -587,7 +587,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 				var TOCMiscInfo = new Synthesize_A0A1A2_Job(
 					firstRecordedTrackNumber: trackOffset + 1,
-					lastRecordedTrackNumber: trackOffset + cdif.Sessions[i].NumTracks + 1,
+					lastRecordedTrackNumber: trackOffset + cdif.Sessions[i].NumTracks,
 					sessionFormat: (SessionFormat)(cdif.Tracks[trackOffset + cdif.Sessions[i].NumTracks - 1].SessionType * 0x10),
 					leadoutTimestamp: disc._Sectors.Count);
 				TOCMiscInfo.Run(session.RawTOCEntries);

@@ -417,7 +417,7 @@ namespace BizHawk.Emulation.DiscSystem
 					//but in order to make a high quality CCD which can be inspected by various other tools, we need it
 					//now, regarding the indexes.. theyre truly useless. having indexes written out with the tracks is bad news.
 					//index information is only truly stored in subQ
-					for (var tnum = session.FirstInformationTrack.Number; tnum <= session.LastInformationTrack.Number; tnum++)
+					for (var tnum = 1; tnum <= session.InformationTrackCount; tnum++)
 					{
 						var track = session.Tracks[tnum];
 						sw.WriteLine("[TRACK {0}]", track.Number);
