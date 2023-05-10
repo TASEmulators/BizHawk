@@ -182,7 +182,7 @@ namespace BizHawk.Client.EmuHawk
 							{
 								dsr.ReadLBA_2352(startLba + i, buf2352, 0);
 
-								for (var j = 0; j < 2352 - 32 - 4 - 4; j++)
+								for (var j = 0; j < 2352 - bootLenOffset - 4; j++)
 								{
 									if (buf2352[j] == _jaguarHeader[0])
 									{
@@ -191,7 +191,7 @@ namespace BizHawk.Client.EmuHawk
 											bootLen = (buf2352[j + bootLenOffset + 0] << 24) | (buf2352[j + bootLenOffset + 1] << 16) |
 												(buf2352[j + bootLenOffset + 2] << 8) | buf2352[j + bootLenOffset + 3];
 											bootLba = startLba + i;
-											bootOff = j + 32 + 4 + 4;
+											bootOff = j + bootLenOffset + 4;
 											byteswapped = false;
 											foundHeader = true;
 											break;
@@ -204,7 +204,7 @@ namespace BizHawk.Client.EmuHawk
 											bootLen = (buf2352[j + bootLenOffset + 1] << 24) | (buf2352[j + bootLenOffset + 0] << 16) |
 												(buf2352[j + bootLenOffset + 3] << 8) | buf2352[j + bootLenOffset + 2];
 											bootLba = startLba + i;
-											bootOff = j + 32 + 4 + 4;
+											bootOff = j + bootLenOffset + 4;
 											byteswapped = true;
 											foundHeader = true;
 											break;
