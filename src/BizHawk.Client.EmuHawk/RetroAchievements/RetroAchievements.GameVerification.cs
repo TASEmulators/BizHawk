@@ -164,7 +164,7 @@ namespace BizHawk.Client.EmuHawk
 					// we want to hash the second session of the disc
 					if (disc.Sessions.Count > 2)
 					{
-						static string HashJaguar(DiscTrack bootTrack, DiscSectorReader dsr)
+						static string HashJaguar(DiscTrack bootTrack, DiscSectorReader dsr, bool commonHomebrewHash)
 						{
 							const string _jaguarHeader = "ATARI APPROVED DATA HEADER ATRI";
 							const string _jaguarBSHeader = "TARA IPARPVODED TA AEHDAREA RT";
@@ -177,6 +177,7 @@ namespace BizHawk.Client.EmuHawk
 							var numLbas = bootTrack.NextTrack.LBA - bootTrack.LBA;
 							int bootLen = 0, bootLba = 0, bootOff = 0;
 							bool byteswapped = false, foundHeader = false;
+							var bootLenOffset = (commonHomebrewHash ? 0x40 : 0) + 32 + 4;
 							for (var i = 0; i < numLbas; i++)
 							{
 								dsr.ReadLBA_2352(startLba + i, buf2352, 0);
@@ -187,7 +188,8 @@ namespace BizHawk.Client.EmuHawk
 									{
 										if (_jaguarHeader == Encoding.ASCII.GetString(buf2352, j, 32 - 1))
 										{
-											bootLen = (buf2352[j + 36] << 24) | (buf2352[j + 37] << 16) | (buf2352[j + 38] << 8) | buf2352[j + 39];
+											bootLen = (buf2352[j + bootLenOffset + 0] << 24) | (buf2352[j + bootLenOffset + 1] << 16) |
+												(buf2352[j + bootLenOffset + 2] << 8) | buf2352[j + bootLenOffset + 3];
 											bootLba = startLba + i;
 											bootOff = j + 32 + 4 + 4;
 											byteswapped = false;
@@ -199,7 +201,8 @@ namespace BizHawk.Client.EmuHawk
 									{
 										if (_jaguarBSHeader == Encoding.ASCII.GetString(buf2352, j, 32 - 2))
 										{
-											bootLen = (buf2352[j + 37] << 24) | (buf2352[j + 36] << 16) | (buf2352[j + 39] << 8) | buf2352[j + 38];
+											bootLen = (buf2352[j + bootLenOffset + 1] << 24) | (buf2352[j + bootLenOffset + 0] << 16) |
+												(buf2352[j + bootLenOffset + 3] << 8) | buf2352[j + bootLenOffset + 2];
 											bootLba = startLba + i;
 											bootOff = j + 32 + 4 + 4;
 											byteswapped = true;
@@ -246,14 +249,14 @@ namespace BizHawk.Client.EmuHawk
 							return MD5Checksum.ComputeDigestHex(buffer.ToArray());
 						}
 
-						var jaguarHash = HashJaguar(disc.Sessions[2].Tracks[1], dsr);
+						var jaguarHash = HashJaguar(disc.Sessions[2].Tracks[1], dsr, false);
 						switch (jaguarHash)
 						{
 							case null:
 								return 0;
 							case "254487B59AB21BC005338E85CBF9FD2F": // see https://github.com/RetroAchievements/rcheevos/pull/234
 							{
-								jaguarHash = HashJaguar(disc.Sessions[1].Tracks[2], dsr);
+								jaguarHash = HashJaguar(disc.Sessions[1].Tracks[2], dsr, true);
 								if (jaguarHash is null)
 								{
 									return 0;
