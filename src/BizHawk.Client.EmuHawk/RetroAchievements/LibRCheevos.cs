@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Runtime.InteropServices;
 
 using BizHawk.BizInvoke;
@@ -499,6 +500,78 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		[StructLayout(LayoutKind.Sequential)]
+		public struct rc_hash_filereader
+		{
+			[UnmanagedFunctionPointer(cc)]
+			public delegate IntPtr rc_hash_filereader_open_file_handler([MarshalAs(UnmanagedType.LPUTF8Str)] string path_utf8);
+
+			[UnmanagedFunctionPointer(cc)]
+			public delegate void rc_hash_filereader_seek_handler(IntPtr file_handle, long offset, SeekOrigin origin);
+
+			[UnmanagedFunctionPointer(cc)]
+			public delegate long rc_hash_filereader_tell_handler(IntPtr file_handle);
+
+			[UnmanagedFunctionPointer(cc)]
+			public delegate UIntPtr rc_hash_filereader_read_handler(IntPtr file_handle, IntPtr buffer, UIntPtr requested_bytes);
+
+			[UnmanagedFunctionPointer(cc)]
+			public delegate void rc_hash_filereader_close_file_handler(IntPtr file_handle);
+
+			public rc_hash_filereader_open_file_handler open;
+			public rc_hash_filereader_seek_handler seek;
+			public rc_hash_filereader_tell_handler tell;
+			public rc_hash_filereader_read_handler read;
+			public rc_hash_filereader_close_file_handler close;
+
+			public rc_hash_filereader(
+				rc_hash_filereader_open_file_handler open,
+				rc_hash_filereader_seek_handler seek,
+				rc_hash_filereader_tell_handler tell,
+				rc_hash_filereader_read_handler read,
+				rc_hash_filereader_close_file_handler close)
+			{
+				this.open = open;
+				this.seek = seek;
+				this.tell = tell;
+				this.read = read;
+				this.close = close;
+			}
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		public struct rc_hash_cdreader
+		{
+			[UnmanagedFunctionPointer(cc)]
+			public delegate IntPtr rc_hash_cdreader_open_track_handler([MarshalAs(UnmanagedType.LPUTF8Str)] string path, int track);
+
+			[UnmanagedFunctionPointer(cc)]
+			public delegate UIntPtr rc_hash_cdreader_read_sector_handler(IntPtr track_handle, uint sector, IntPtr buffer, UIntPtr requested_bytes);
+
+			[UnmanagedFunctionPointer(cc)]
+			public delegate void rc_hash_cdreader_close_track_handler(IntPtr track_handle);
+
+			[UnmanagedFunctionPointer(cc)]
+			public delegate uint rc_hash_cdreader_first_track_sector_handler(IntPtr track_handle);
+
+			public rc_hash_cdreader_open_track_handler open_track;
+			public rc_hash_cdreader_read_sector_handler read_sector;
+			public rc_hash_cdreader_close_track_handler close_track;
+			public rc_hash_cdreader_first_track_sector_handler first_track_sector;
+
+			public rc_hash_cdreader(
+				rc_hash_cdreader_open_track_handler open_track,
+				rc_hash_cdreader_read_sector_handler read_sector,
+				rc_hash_cdreader_close_track_handler close_track,
+				rc_hash_cdreader_first_track_sector_handler first_track_sector)
+			{
+				this.open_track = open_track;
+				this.read_sector = read_sector;
+				this.close_track = close_track;
+				this.first_track_sector = first_track_sector;
+			}
+		}
+
 		[UnmanagedFunctionPointer(cc)]
 		public delegate void rc_runtime_event_handler_t(IntPtr runtime_event);
 
@@ -591,11 +664,11 @@ namespace BizHawk.Client.EmuHawk
 		[BizImport(cc)]
 		public abstract void rc_hash_init_verbose_message_callback(rc_hash_message_callback callback);
 
-		[BizImport(cc)]
-		public abstract void rc_hash_init_custom_cdreader(IntPtr reader);
+		[BizImport(cc, Compatibility = true)]
+		public abstract void rc_hash_init_custom_cdreader(ref rc_hash_cdreader reader);
 
-		[BizImport(cc)]
-		public abstract void rc_hash_init_custom_filereader(IntPtr reader);
+		[BizImport(cc, Compatibility = true)]
+		public abstract void rc_hash_init_custom_filereader(ref rc_hash_filereader reader);
 
 		[BizImport(cc)]
 		[return: MarshalAs(UnmanagedType.Bool)]

@@ -22,6 +22,18 @@ namespace BizHawk.Client.EmuHawk
 			var resolver = new DynamicLibraryImportResolver(
 				OSTailoredCode.IsUnixHost ? "librcheevos.so" : "librcheevos.dll", hasLimitedLifetime: false);
 			_lib = BizInvoker.GetInvoker<LibRCheevos>(resolver, CallingConventionAdapters.Native);
+
+			// init message callbacks
+			_errorMessageCallback = ErrorMessageCallback;
+			_verboseMessageCallback = VerboseMessageCallback;
+			_lib.rc_hash_init_error_message_callback(_errorMessageCallback);
+			_lib.rc_hash_init_verbose_message_callback(_verboseMessageCallback);
+
+			// init readers
+			_filereader = new(OpenFileCallback, SeekFileCallback, TellFileCallback, ReadFileCallback, CloseFileCallback);
+			_cdreader = new(OpenTrackCallback, ReadSectorCallback, CloseTrackCallback, FirstTrackSectorCallback);
+			_lib.rc_hash_init_custom_filereader(ref _filereader);
+			_lib.rc_hash_init_custom_cdreader(ref _cdreader);
 		}
 
 		private IntPtr _runtime;
