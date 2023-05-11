@@ -75,8 +75,8 @@ namespace BizHawk.Emulation.DiscSystem
 
 			//fix lead-in track type
 			//guesses:
-			Tracks[0].Control = Tracks[TOCRaw.FirstRecordedTrackNumber].Control;
-			Tracks[0].Mode = Tracks[TOCRaw.FirstRecordedTrackNumber].Mode;
+			Tracks[0].Control = Tracks[1].Control;
+			Tracks[0].Mode = Tracks[1].Mode;
 		}
 	}
 }
