@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// The complete sector userdata (2352 bytes) is required
 		/// </summary>
-		UserComplete = 15,
+		UserComplete = (Header16 | User2048 | ECM288Complete),
 
 		/// <summary>
 		/// An alias for UserComplete

@@ -443,52 +443,6 @@ namespace BizHawk.Emulation.DiscSystem
 			return ret;
 		}
 
-		private class SS_CDI_RawQ : SS_Base
-		{
-			public override void Synth(SectorSynthJob job)
-			{
-				Blob.Read(BlobOffset, job.DestBuffer2448, job.DestOffset, 2352);
-
-				if ((job.Parts & ESectorSynthPart.SubchannelP) != 0)
-				{
-					SynthUtils.SubP(job.DestBuffer2448, job.DestOffset + 2352, Pause);
-				}
-
-				// Q is present in the blob and non-interleaved
-				if ((job.Parts & ESectorSynthPart.SubchannelQ) != 0)
-				{
-					Blob.Read(BlobOffset, job.DestBuffer2448, job.DestOffset + 2352 + 12, 12);
-				}
-
-				//clear R-W if needed
-				if ((job.Parts & ESectorSynthPart.Subchannel_RSTUVW) != 0)
-				{
-					Array.Clear(job.DestBuffer2448, job.DestOffset + 2352 + 12 + 12, 12 * 6);
-				}
-
-				//subcode has been generated deinterleaved; we may still need to interleave it
-				if ((job.Parts & ESectorSynthPart.SubcodeAny) != 0 && (job.Parts & ESectorSynthPart.SubcodeDeinterleave) == 0)
-				{
-					SynthUtils.InterleaveSubcodeInplace(job.DestBuffer2448, job.DestOffset + 2352);
-				}
-			}
-		}
-
-		private class SS_CDI_RawPQRSTUVW : SS_Base
-		{
-			public override void Synth(SectorSynthJob job)
-			{
-				// all subcode is present and interleaved, just read it all
-				Blob.Read(BlobOffset, job.DestBuffer2448, job.DestOffset, 2448);
-
-				// deinterleave it if needed
-				if ((job.Parts & ESectorSynthPart.SubcodeDeinterleave) != 0)
-				{
-					SynthUtils.DeinterleaveSubcodeInplace(job.DestBuffer2448, job.DestOffset + 2352);
-				}
-			}
-		}
-
 		/// <exception cref="CDIParseException">file <paramref name="cdiPath"/> not found</exception>
 		public static Disc LoadCDIToDisc(string cdiPath, DiscMountPolicy IN_DiscMountPolicy)
 		{
@@ -559,8 +513,8 @@ namespace BizHawk.Emulation.DiscSystem
 							0 => new SS_Mode1_2048(),
 							1 => new SS_Mode2_2336(),
 							2 => new SS_2352(),
-							3 => new SS_CDI_RawQ(),
-							4 => new SS_CDI_RawPQRSTUVW(),
+							3 => new SS_2364_DeinterleavedQ(),
+							4 => new SS_2448_Interleaved(),
 							_ => throw new InvalidOperationException()
 						};
 						synth.Blob = cdiBlob;
