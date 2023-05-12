@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.DiscSystem
 			Result.TOCItems[0].Control = 0;
 			Result.TOCItems[0].Exists = false;
 
-			var minFoundTrack = 1;
+			var minFoundTrack = 100;
 			var maxFoundTrack = 1;
 
 			foreach (var te in Entries)
@@ -94,7 +94,7 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 
 			//this is speculative:
-			if (Result.FirstRecordedTrackNumber == -1) { Result.FirstRecordedTrackNumber = minFoundTrack; }
+			if (Result.FirstRecordedTrackNumber == -1) { Result.FirstRecordedTrackNumber = minFoundTrack == 100 ? 1 : minFoundTrack; }
 			if (Result.LastRecordedTrackNumber == -1) { Result.LastRecordedTrackNumber = maxFoundTrack; }
 			if (Result.SessionFormat == SessionFormat.None) Result.SessionFormat = SessionFormat.Type00_CDROM_CDDA;
 
