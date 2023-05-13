@@ -1,10 +1,8 @@
 ﻿using System;
 using System.IO;
-using System.Globalization;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
-using BizHawk.Common;
+
 using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.DiscSystem.CUE;
 
@@ -14,7 +12,7 @@ using BizHawk.Emulation.DiscSystem.CUE;
 
 namespace BizHawk.Emulation.DiscSystem
 {
-	public class CDI_Format
+	public static class CDI_Format
 	{
 		/// <summary>
 		/// Represents a CDI file, faithfully. Minimal interpretation of the data happens.
@@ -461,6 +459,33 @@ namespace BizHawk.Emulation.DiscSystem
 			for (var i = 0; i < cdif.NumSessions; i++)
 			{
 				var session = new DiscSession { Number = i + 1 };
+
+				// leadin track
+				// we create this only for session 2+, not session 1
+				var leadinSize = i == 0 ? 0 : 4500;
+				for (var j = 0; j < leadinSize; j++)
+				{
+					// this is most certainly wrong
+					// nothing relies on the exact contents for now (only multisession core is VirtualJaguar which doesn't touch leadin)
+					// but this will allow the correct TOC to be generated
+					var cueTrackType = CueTrackType.Audio;
+					if ((cdif.Tracks[trackOffset].Control & 4) != 0)
+					{
+						cueTrackType = cdif.Tracks[trackOffset + cdif.Sessions[i].NumTracks - 1].SessionType switch
+						{
+							0 => CueTrackType.Mode1_2352,
+							1 => CueTrackType.CDI_2352,
+							2 => CueTrackType.Mode2_2352,
+							_ => cueTrackType
+						};
+					}
+					disc._Sectors.Add(new SS_Gap
+					{
+						Policy = IN_DiscMountPolicy,
+						TrackType = cueTrackType,
+					});
+				}
+
 				for (var j = 0; j < cdif.Sessions[i].NumTracks; j++)
 				{
 					var track = cdif.Tracks[trackOffset + j];
@@ -507,6 +532,7 @@ namespace BizHawk.Emulation.DiscSystem
 								session.RawTOCEntries.Add(EmitRawTOCEntry());
 							}
 						}
+
 						//note that CDIs contain the pregap data themselves...
 						SS_Base synth = track.ReadMode switch
 						{
@@ -520,23 +546,33 @@ namespace BizHawk.Emulation.DiscSystem
 						synth.Blob = cdiBlob;
 						synth.BlobOffset = blobOffset;
 						synth.Policy = IN_DiscMountPolicy;
-						//TODO: subchannel here is all wrong for gaps, probably
 						const byte kADR = 1;
 						synth.sq.SetStatus(kADR, (EControlQ)track.Control);
 						synth.sq.q_tno = BCD2.FromDecimal(trackOffset + j + 1);
 						synth.sq.q_index = BCD2.FromDecimal(curIndex);
-						synth.sq.Timestamp = (int)relMSF;
+						synth.sq.Timestamp = !IN_DiscMountPolicy.CUE_PregapContradictionModeA && curIndex == 0
+							? (int)relMSF + 1
+							: (int)relMSF;
 						synth.sq.zero = 0;
 						synth.sq.AP_Timestamp = disc._Sectors.Count;
 						synth.sq.q_crc = 0;
 						synth.Pause = curIndex == 0;
 						disc._Sectors.Add(synth);
 						blobOffset += sectorSize;
-						if (curIndex != 0)
-						{
-							relMSF++;
-						}
+						relMSF++;
 					}
+				}
+
+				// leadout track
+				// first leadout is 6750 sectors, later ones are 2250 sectors
+				var leadoutSize = i == 0 ? 6750 : 2250;
+				for (var j = 0; j < leadoutSize; j++)
+				{
+					disc._Sectors.Add(new SS_Leadout
+					{
+						SessionNumber = session.Number,
+						Policy = IN_DiscMountPolicy
+					});
 				}
 
 				var TOCMiscInfo = new Synthesize_A0A1A2_Job(
