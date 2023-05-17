@@ -58,8 +58,6 @@ namespace BizHawk.Common
 		}
 
 		// -------------- Default Logger Action --------------
-		public static Stream? HACK_LOG_STREAM;
-
 		private static readonly bool LogToConsole = false;
 		private static readonly bool LogToFile = false;
 
