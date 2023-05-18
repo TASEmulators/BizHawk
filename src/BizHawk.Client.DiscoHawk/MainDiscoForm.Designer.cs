@@ -30,7 +30,6 @@
 		{
 			System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("BizHawk");
 			System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("Mednafen");
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainDiscoForm));
 			this.ExitButton = new System.Windows.Forms.Button();
 			this.lblMagicDragArea = new System.Windows.Forms.Panel();
 			this.label1 = new System.Windows.Forms.Label();
@@ -48,7 +47,7 @@
 			this.label6 = new System.Windows.Forms.Label();
 			this.label7 = new System.Windows.Forms.Label();
 			this.lvCompareTargets = new System.Windows.Forms.ListView();
-			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
 			this.lblMagicDragArea.SuspendLayout();
 			this.lblMp3ExtractMagicArea.SuspendLayout();
 			this.groupBox1.SuspendLayout();
@@ -57,7 +56,7 @@
 			// 
 			// ExitButton
 			// 
-			this.ExitButton.Location = new System.Drawing.Point(411, 401);
+			this.ExitButton.Location = new System.Drawing.Point(434, 414);
 			this.ExitButton.Name = "ExitButton";
 			this.ExitButton.Size = new System.Drawing.Size(75, 23);
 			this.ExitButton.TabIndex = 0;
@@ -72,7 +71,7 @@
 			this.lblMagicDragArea.Controls.Add(this.label1);
 			this.lblMagicDragArea.Location = new System.Drawing.Point(286, 31);
 			this.lblMagicDragArea.Name = "lblMagicDragArea";
-			this.lblMagicDragArea.Size = new System.Drawing.Size(200, 100);
+			this.lblMagicDragArea.Size = new System.Drawing.Size(223, 109);
 			this.lblMagicDragArea.TabIndex = 1;
 			this.lblMagicDragArea.DragDrop += new System.Windows.Forms.DragEventHandler(this.lblMagicDragArea_DragDrop);
 			this.lblMagicDragArea.DragEnter += new System.Windows.Forms.DragEventHandler(this.LblMagicDragArea_DragEnter);
@@ -92,7 +91,7 @@
 			this.lblMp3ExtractMagicArea.Controls.Add(this.label2);
 			this.lblMp3ExtractMagicArea.Location = new System.Drawing.Point(286, 146);
 			this.lblMp3ExtractMagicArea.Name = "lblMp3ExtractMagicArea";
-			this.lblMp3ExtractMagicArea.Size = new System.Drawing.Size(200, 100);
+			this.lblMp3ExtractMagicArea.Size = new System.Drawing.Size(223, 100);
 			this.lblMp3ExtractMagicArea.TabIndex = 2;
 			this.lblMp3ExtractMagicArea.DragDrop += new System.Windows.Forms.DragEventHandler(this.LblMp3ExtractMagicArea_DragDrop);
 			this.lblMp3ExtractMagicArea.DragEnter += new System.Windows.Forms.DragEventHandler(this.LblMagicDragArea_DragEnter);
@@ -107,7 +106,7 @@
 			// 
 			// btnAbout
 			// 
-			this.btnAbout.Location = new System.Drawing.Point(319, 401);
+			this.btnAbout.Location = new System.Drawing.Point(353, 414);
 			this.btnAbout.Name = "btnAbout";
 			this.btnAbout.Size = new System.Drawing.Size(75, 23);
 			this.btnAbout.TabIndex = 3;
@@ -134,9 +133,9 @@
 			this.groupBox1.Controls.Add(this.radioButton2);
 			this.groupBox1.Controls.Add(this.radioButton1);
 			this.groupBox1.Enabled = false;
-			this.groupBox1.Location = new System.Drawing.Point(12, 12);
+			this.groupBox1.Location = new System.Drawing.Point(9, 12);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(253, 206);
+			this.groupBox1.Size = new System.Drawing.Size(271, 234);
 			this.groupBox1.TabIndex = 5;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Disc Reading Engine";
@@ -147,14 +146,13 @@
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(216, 43);
 			this.label4.TabIndex = 8;
-			this.label4.Text = "- Doesn\'t support audio decoding yet\r\n(even though Mednafen proper can do it)\r\n- " +
-    "Loads ISO, CUE, and CCD";
+			this.label4.Text = "- Doesn\'t support audio decoding yet\r\n(even though Mednafen proper can do it)\r\n- " + "Loads ISO, CUE, and CCD";
 			// 
 			// label3
 			// 
 			this.label3.Location = new System.Drawing.Point(20, 39);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(216, 33);
+			this.label3.Size = new System.Drawing.Size(235, 33);
 			this.label3.TabIndex = 7;
 			this.label3.Text = "- Uses FFMPEG for audio decoding\r\n- Loads ISO, CUE, CCD, CDI, MDS, and NRG";
 			// 
@@ -173,9 +171,9 @@
 			this.groupBox2.Controls.Add(this.checkEnableOutput);
 			this.groupBox2.Controls.Add(this.radioButton4);
 			this.groupBox2.Enabled = false;
-			this.groupBox2.Location = new System.Drawing.Point(12, 224);
+			this.groupBox2.Location = new System.Drawing.Point(9, 252);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(253, 69);
+			this.groupBox2.Size = new System.Drawing.Size(271, 69);
 			this.groupBox2.TabIndex = 6;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Output Format";
@@ -208,7 +206,7 @@
 			// 
 			this.label6.AutoSize = true;
 			this.label6.Enabled = false;
-			this.label6.Location = new System.Drawing.Point(9, 305);
+			this.label6.Location = new System.Drawing.Point(9, 324);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(111, 13);
 			this.label6.TabIndex = 2;
@@ -217,7 +215,7 @@
 			// label7
 			// 
 			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(343, 12);
+			this.label7.Location = new System.Drawing.Point(358, 12);
 			this.label7.Name = "label7";
 			this.label7.Size = new System.Drawing.Size(70, 13);
 			this.label7.TabIndex = 10;
@@ -225,17 +223,14 @@
 			// 
 			// lvCompareTargets
 			// 
-			this.lvCompareTargets.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1});
+			this.lvCompareTargets.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] { this.columnHeader1 });
 			this.lvCompareTargets.Enabled = false;
 			this.lvCompareTargets.FullRowSelect = true;
 			this.lvCompareTargets.GridLines = true;
 			this.lvCompareTargets.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.lvCompareTargets.HideSelection = false;
-			this.lvCompareTargets.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1,
-            listViewItem2});
-			this.lvCompareTargets.Location = new System.Drawing.Point(12, 321);
+			this.lvCompareTargets.Items.AddRange(new System.Windows.Forms.ListViewItem[] { listViewItem1, listViewItem2 });
+			this.lvCompareTargets.Location = new System.Drawing.Point(9, 340);
 			this.lvCompareTargets.Name = "lvCompareTargets";
 			this.lvCompareTargets.Size = new System.Drawing.Size(121, 97);
 			this.lvCompareTargets.TabIndex = 11;
@@ -246,7 +241,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(510, 436);
+			this.ClientSize = new System.Drawing.Size(521, 449);
 			this.Controls.Add(this.lvCompareTargets);
 			this.Controls.Add(this.label6);
 			this.Controls.Add(this.label7);
