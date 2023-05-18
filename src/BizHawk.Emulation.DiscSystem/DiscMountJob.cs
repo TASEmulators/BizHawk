@@ -205,8 +205,13 @@ namespace BizHawk.Emulation.DiscSystem
 					//TODO try it both ways and check the disc type to use whichever one succeeds in identifying a disc type
 					LoadCue(cueDirPath: dir, cueContent: GenerateCue(binFilename: file, binFilePath: IN_FromPath));
 					break;
+				case ".toc":
+					throw new NotSupportedException(".TOC not supported yet");
 				case ".mds":
 					OUT_Disc = MDS_Format.LoadMDSToDisc(IN_FromPath, IN_DiscMountPolicy);
+					break;
+				case ".nrg":
+					OUT_Disc = NRG_Format.LoadNRGToDisc(IN_FromPath, IN_DiscMountPolicy);
 					break;
 			}
 

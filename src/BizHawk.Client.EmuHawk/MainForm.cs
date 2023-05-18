@@ -42,6 +42,8 @@ using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 using BizHawk.Emulation.Cores.Sony.PSX;
 
+using BizHawk.Emulation.DiscSystem;
+
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.CoreExtensions;
 using BizHawk.Client.EmuHawk.CustomControls;
@@ -3880,7 +3882,7 @@ namespace BizHawk.Client.EmuHawk
 							var ext = Path.GetExtension(xmlGame.AssetFullPaths[xg])?.ToLowerInvariant();
 
 							var (filename, data) = xmlGame.Assets[xg];
-							if (ext is ".cue" or ".ccd" or ".cdi" or ".toc" or ".mds")
+							if (Disc.IsValidExtension(ext))
 							{
 								xSw.WriteLine(Path.GetFileNameWithoutExtension(filename));
 								xSw.WriteLine("SHA1:N/A");

@@ -97,7 +97,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				//it's a little unclear whether we should go for a whitelist or a blacklist here.
 				//there's similar numbers of cases either way.
 				//perhaps we could code both (and prefer choices from the whitelist)
-				if (ext is ".cue" or ".sbi" or ".ccd" or ".sub")
+				if (ext is not ".iso" && (Disc.IsValidExtension(ext) || ext is ".sbi" or ".sub"))
 					continue;
 
 				//continuing the bad plan: forbid archives (always a wrong choice, not supported anyway)

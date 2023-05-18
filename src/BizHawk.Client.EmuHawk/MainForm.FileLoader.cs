@@ -40,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private readonly string[] _nonArchive = { ".ISO", ".CUE", ".CCD" };
+		private readonly string[] _nonArchive = { ".ISO", ".CUE", ".CCD", ".CDI", ".MDS", ".NRG" };
 
 		private void LoadCdl(string filename, string archive = null)
 		{

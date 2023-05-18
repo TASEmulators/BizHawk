@@ -156,7 +156,7 @@
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(216, 33);
 			this.label3.TabIndex = 7;
-			this.label3.Text = "- Uses FFMPEG for audio decoding\r\n- Loads ISO, CUE, CCD, and CDI";
+			this.label3.Text = "- Uses FFMPEG for audio decoding\r\n- Loads ISO, CUE, CCD, CDI, MDS, and NRG";
 			// 
 			// radioButton2
 			// 

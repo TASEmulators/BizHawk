@@ -5,7 +5,6 @@ using System.Windows.Forms;
 using System.IO;
 
 using BizHawk.Common.PathExtensions;
-using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Client.DiscoHawk
@@ -104,7 +103,7 @@ namespace BizHawk.Client.DiscoHawk
 			foreach (var str in files)
 			{
 				var ext = Path.GetExtension(str) ?? string.Empty;
-				if(!ext.In(".CUE", ".ISO", ".CCD", ".CDI", ".MDS"))
+				if (!Disc.IsValidExtension(ext))
 				{
 					return new();
 				}

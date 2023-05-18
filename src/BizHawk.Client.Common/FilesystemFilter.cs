@@ -53,6 +53,8 @@ namespace BizHawk.Client.Common
 
 		public static readonly IReadOnlyCollection<string> ArchiveExtensions = new[] { "zip", "rar", "7z", "gz" };
 
+		public static readonly IReadOnlyCollection<string> DiscExtensions = new[] { "cue", "ccd", "cdi", "iso", "mds", "m3u", "nrg" };
+
 		public static readonly FilesystemFilter Archives = new FilesystemFilter("Archives", ArchiveExtensions);
 
 		public static readonly FilesystemFilter BizHawkMovies = new FilesystemFilter("Movie Files", new[] { MovieService.StandardMovieExtension });
