@@ -16,14 +16,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			using (_elf.EnterExit())
 			{
 				var mm = new List<MemoryDomain>();
-				for (int i = LibGPGX.MIN_MEM_DOMAIN; i <= LibGPGX.MAX_MEM_DOMAIN; i++)
+				for (var i = LibGPGX.MIN_MEM_DOMAIN; i <= LibGPGX.MAX_MEM_DOMAIN; i++)
 				{
-					IntPtr area = IntPtr.Zero;
-					int size = 0;
-					IntPtr pName = Core.gpgx_get_memdom(i, ref area, ref size);
+					var area = IntPtr.Zero;
+					var size = 0;
+					var pName = Core.gpgx_get_memdom(i, ref area, ref size);
 					if (area == IntPtr.Zero || pName == IntPtr.Zero || size == 0)
 						continue;
-					string name = Marshal.PtrToStringAnsi(pName);
+					var name = Marshal.PtrToStringAnsi(pName)!;
 
 					var endian = name == "Z80 RAM"
 							? MemoryDomain.Endian.Little
@@ -32,18 +32,57 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					if (name == "VRAM")
 					{
 						// vram pokes need to go through hook which invalidates cached tiles
-						byte* p = (byte*)area;
-						mm.Add(new MemoryDomainDelegate(name, size, MemoryDomain.Endian.Unknown,
+						var p = (byte*)area;
+						mm.Add(new MemoryDomainDelegate(name, size, MemoryDomain.Endian.Big,
 							addr =>
 							{
 								if (addr is < 0 or > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
 								using (_elf.EnterExit())
-									return p[addr ^ 1];
+									return p![addr ^ 1];
 							},
 							(addr, val) =>
 							{
 								if (addr is < 0 or > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
-								Core.gpgx_poke_vram(((int)addr) ^ 1, val);
+								Core.gpgx_poke_vram((int)addr ^ 1, val);
+							},
+							wordSize: 2));
+					}
+					else if (name == "CRAM")
+					{
+						// CRAM in the core is internally a different format than what it is natively
+						// this internal format isn't really useful, so let's convert it back
+						var p = (byte*)area;
+						mm.Add(new MemoryDomainDelegate(name, size, MemoryDomain.Endian.Big,
+							addr =>
+							{
+								if (addr is < 0 or > 0x7F) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
+								using (_elf.EnterExit())
+								{
+									var c = *(ushort*)&p![addr & ~1];
+									c = (ushort)(((c & 0x1C0) << 3) | ((c & 0x038) << 2) | ((c & 0x007) << 1));
+									return (byte)((addr & 1) != 0 ? c & 0xFF : c >> 8);
+								}
+							},
+							(addr, val) =>
+							{
+								if (addr is < 0 or > 0x7F) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
+								using (_elf.EnterExit())
+								{
+									var c = *(ushort*)&p![addr & ~1];
+									c = (ushort)(((c & 0x1C0) << 3) | ((c & 0x038) << 2) | ((c & 0x007) << 1));
+									if ((addr & 1) != 0)
+									{
+										c &= 0xFF00;
+										c |= val;
+									}
+									else
+									{
+										c &= 0x00FF;
+										c |= (ushort)(val << 8);
+									}
+									c = (ushort)(((c & 0xE00) >> 3) | ((c & 0x0E0) >> 2) | ((c & 0x00E) >> 1)); 
+									*(ushort*)&p![addr & ~1] = c;
+								}
 							},
 							wordSize: 2));
 					}
