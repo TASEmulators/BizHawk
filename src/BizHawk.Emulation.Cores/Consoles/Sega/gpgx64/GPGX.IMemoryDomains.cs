@@ -66,23 +66,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 							(addr, val) =>
 							{
 								if (addr is < 0 or > 0x7F) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
-								using (_elf.EnterExit())
-								{
-									var c = *(ushort*)&p![addr & ~1];
-									c = (ushort)(((c & 0x1C0) << 3) | ((c & 0x038) << 2) | ((c & 0x007) << 1));
-									if ((addr & 1) != 0)
-									{
-										c &= 0xFF00;
-										c |= val;
-									}
-									else
-									{
-										c &= 0x00FF;
-										c |= (ushort)(val << 8);
-									}
-									c = (ushort)(((c & 0xE00) >> 3) | ((c & 0x0E0) >> 2) | ((c & 0x00E) >> 1)); 
-									*(ushort*)&p![addr & ~1] = c;
-								}
+								Core.gpgx_poke_cram((int)addr, val);
 							},
 							wordSize: 2));
 					}

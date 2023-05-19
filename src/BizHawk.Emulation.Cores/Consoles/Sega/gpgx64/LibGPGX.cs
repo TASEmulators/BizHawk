@@ -311,6 +311,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public abstract void gpgx_get_vdp_view([Out] VDPView view);
 
 		[BizImport(CallingConvention.Cdecl)]
+		public abstract void gpgx_poke_cram(int addr, byte value);
+
+		[BizImport(CallingConvention.Cdecl)]
 		public abstract void gpgx_poke_vram(int addr, byte value);
 
 		/// <summary>

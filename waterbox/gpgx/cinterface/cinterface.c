@@ -343,6 +343,11 @@ GPGX_EX int gpgx_put_sram(const uint8 *data, int size)
 	}
 }
 
+GPGX_EX void gpgx_poke_cram(int addr, uint8 val)
+{
+	write_cram_byte(addr, val);
+}
+
 GPGX_EX void gpgx_poke_vram(int addr, uint8 val)
 {
 	write_vram_byte(addr, val);

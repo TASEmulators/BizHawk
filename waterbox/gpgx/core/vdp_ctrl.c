@@ -194,6 +194,45 @@ static void (*const dma_func[16])(unsigned int length) =
   vdp_dma_copy,vdp_dma_copy,vdp_dma_copy,vdp_dma_copy
 };
 
+void write_cram_byte(int addr, uint8 val)
+{
+	uint16 *p;
+	uint16 data;
+	int index;
+
+	p = (uint16 *)&cram[addr & 0x7E];
+	data = *p;
+	data = ((data & 0x1C0) << 3) | ((data & 0x038) << 2) | ((data & 0x007) << 1);
+
+	if (addr & 1)
+	{
+		data &= 0xFF00;
+		data |= val;
+	}
+	else
+	{
+		data &= 0x00FF;
+		data |= val << 8;
+	}
+
+	data = ((data & 0xE00) >> 3) | ((data & 0x0E0) >> 2) | ((data & 0x00E) >> 1);
+
+	if (*p != data)
+	{
+		index = (addr >> 1) & 0x3F;
+		*p = data;
+
+		if (index & 0x0F)
+		{
+			color_update_m5(index, data);
+		}
+
+		if (index == border)
+		{
+			color_update_m5(0x00, data);
+		}
+	}
+}
 
 void write_vram_byte(int addr, uint8 val)
 {
