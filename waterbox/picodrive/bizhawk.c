@@ -242,12 +242,12 @@ ECL_EXPORT void GetMemoryAreas(MemoryArea *m)
 
 	m[3].Data = Pico.cram;
 	m[3].Name = "CRAM";
-	m[3].Size = 0x40;
+	m[3].Size = 0x80;
 	m[3].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE1;
 
 	m[4].Data = Pico.vsram;
 	m[4].Name = "VSRAM";
-	m[4].Size = 0x40;
+	m[4].Size = 0x80;
 	m[4].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE1;
 
 	m[5].Data = Pico.rom;
