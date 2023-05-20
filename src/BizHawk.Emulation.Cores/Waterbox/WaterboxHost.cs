@@ -149,8 +149,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		}
 
 		// cache these delegates so they aren't GC'd
-		private readonly ReadCallback _readCallback = ReadCallback;
-		private readonly WriteCallback _writeCallback = WriteCallback;
+		private static readonly ReadCallback _readCallback = ReadCallback;
+		private static readonly WriteCallback _writeCallback = WriteCallback;
 
 		public WaterboxHost(WaterboxOptions opt)
 		{
