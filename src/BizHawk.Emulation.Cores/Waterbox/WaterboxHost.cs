@@ -3,6 +3,8 @@ using BizHawk.BizInvoke;
 using BizHawk.Emulation.Common;
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
+
 using static BizHawk.Emulation.Cores.Waterbox.WaterboxHostNative;
 
 namespace BizHawk.Emulation.Cores.Waterbox
@@ -68,7 +70,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 	{
 		private IntPtr _nativeHost;
 		private int _enterCount;
-		private object _keepAliveDelegate;
 
 		private static readonly WaterboxHostNative NativeImpl;
 		static WaterboxHost()
@@ -81,18 +82,76 @@ namespace BizHawk.Emulation.Cores.Waterbox
 #endif
 		}
 
-		private ReadCallback Reader(Stream s)
+		private class ReadWriteWrapper : IDisposable
 		{
-			var ret = MakeCallbackForReader(s);
-			_keepAliveDelegate = ret;
-			return ret;
+			private GCHandle _handle;
+			private readonly ISpanStream _backingSpanStream;
+			private readonly Stream _backingStream;
+			private readonly bool _disposeStreamAfterUse;
+
+			public IntPtr WaterboxHandle => GCHandle.ToIntPtr(_handle);
+
+			public ReadWriteWrapper(Stream backingStream, bool disposeStreamAfterUse = true)
+			{
+				_backingStream = backingStream;
+				_disposeStreamAfterUse = disposeStreamAfterUse;
+				_backingSpanStream = SpanStream.GetOrBuild(_backingStream);
+				_handle = GCHandle.Alloc(this, GCHandleType.Weak);
+			}
+
+			public unsafe IntPtr Read(IntPtr data, UIntPtr size)
+			{
+				try
+				{
+					var count = (int)size;
+					Console.WriteLine($"READ CALLBACK: {count}");
+					var n = _backingSpanStream.Read(new((void*)data, count));
+					return Z.SS(n);
+				}
+				catch
+				{
+					return Z.SS(-1);
+				}
+			}
+
+			public unsafe int Write(IntPtr data, UIntPtr size)
+			{
+				try
+				{
+					var count = (int)size;
+					_backingSpanStream.Write(new((void*)data, count));
+					return 0;
+				}
+				catch
+				{
+					return -1;
+				}
+			}
+
+			public void Dispose()
+			{
+				if (_disposeStreamAfterUse) _backingStream.Dispose();
+				_handle.Free();
+			}
 		}
-		private WriteCallback Writer(Stream s)
+
+		private static IntPtr ReadCallback(IntPtr userdata, IntPtr data, UIntPtr size)
 		{
-			var ret = MakeCallbackForWriter(s);
-			_keepAliveDelegate = ret;
-			return ret;
+			var handle = GCHandle.FromIntPtr(userdata);
+			var reader = (ReadWriteWrapper)handle.Target;
+			return reader.Read(data, size);
 		}
+
+		private static int WriteCallback(IntPtr userdata, IntPtr data, UIntPtr size)
+		{
+			var handle = GCHandle.FromIntPtr(userdata);
+			var writer = (ReadWriteWrapper)handle.Target;
+			return writer.Write(data, size);
+		}
+
+		// cache these delegates so they aren't GC'd
+		private readonly ReadCallback _readCallback = ReadCallback;
+		private readonly WriteCallback _writeCallback = WriteCallback;
 
 		public WaterboxHost(WaterboxOptions opt)
 		{
@@ -109,19 +168,20 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 			var path = Path.Combine(opt.Path, moduleName);
 			var zstpath = path + ".zst";
-			byte[] data;
 			if (File.Exists(zstpath))
 			{
+				using var zstd = new Zstd();
 				using var fs = new FileStream(zstpath, FileMode.Open, FileAccess.Read);
-				data = Zstd.DecompressZstdStream(fs).ToArray();
+				using var reader = new ReadWriteWrapper(zstd.CreateZstdDecompressionStream(fs));
+				NativeImpl.wbx_create_host(nativeOpts, opt.Filename, _readCallback, reader.WaterboxHandle, out var retobj);
+				_nativeHost = retobj.GetDataOrThrow();
 			}
 			else
 			{
-				data = File.ReadAllBytes(path);
+				using var reader = new ReadWriteWrapper(new FileStream(path, FileMode.Open, FileAccess.Read));
+				NativeImpl.wbx_create_host(nativeOpts, opt.Filename, _readCallback, reader.WaterboxHandle, out var retobj);
+				_nativeHost = retobj.GetDataOrThrow();
 			}
-
-			NativeImpl.wbx_create_host(nativeOpts, opt.Filename, Reader(new MemoryStream(data, false)), IntPtr.Zero, out var retobj);
-			_nativeHost = retobj.GetDataOrThrow();
 		}
 
 		public IntPtr GetProcAddrOrZero(string entryPoint)
@@ -169,7 +229,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// <param name="name">the filename that the unmanaged core will access the file by</param>
 		public void AddReadonlyFile(byte[] data, string name)
 		{
-			NativeImpl.wbx_mount_file(_nativeHost, name, Reader(new MemoryStream(data, false)), IntPtr.Zero, false, out var retobj);
+			using var reader = new ReadWriteWrapper(new MemoryStream(data, false));
+			NativeImpl.wbx_mount_file(_nativeHost, name, _readCallback, reader.WaterboxHandle, false, out var retobj);
 			retobj.GetDataOrThrow();
 		}
 
@@ -189,7 +250,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// </summary>
 		public void AddTransientFile(byte[] data, string name)
 		{
-			NativeImpl.wbx_mount_file(_nativeHost, name, Reader(new MemoryStream(data, false)), IntPtr.Zero, true, out var retobj);
+			using var reader = new ReadWriteWrapper(new MemoryStream(data, false));
+			NativeImpl.wbx_mount_file(_nativeHost, name, _readCallback, reader.WaterboxHandle, true, out var retobj);
 			retobj.GetDataOrThrow();
 		}
 
@@ -200,7 +262,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public byte[] RemoveTransientFile(string name)
 		{
 			var ms = new MemoryStream();
-			NativeImpl.wbx_unmount_file(_nativeHost, name, Writer(ms), IntPtr.Zero, out var retobj);
+			using var writer = new ReadWriteWrapper(ms);
+			NativeImpl.wbx_unmount_file(_nativeHost, name, _writeCallback, writer.WaterboxHandle, out var retobj);
 			retobj.GetDataOrThrow();
 			return ms.ToArray();
 		}
@@ -282,13 +345,15 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public void SaveStateBinary(BinaryWriter bw)
 		{
-			NativeImpl.wbx_save_state(_nativeHost, Writer(bw.BaseStream), IntPtr.Zero, out var retobj);
+			using var writer = new ReadWriteWrapper(bw.BaseStream, false);
+			NativeImpl.wbx_save_state(_nativeHost, _writeCallback, writer.WaterboxHandle, out var retobj);
 			retobj.GetDataOrThrow();
 		}
 
 		public void LoadStateBinary(BinaryReader br)
 		{
-			NativeImpl.wbx_load_state(_nativeHost, Reader(br.BaseStream), IntPtr.Zero, out var retobj);
+			using var reader = new ReadWriteWrapper(br.BaseStream, false);
+			NativeImpl.wbx_load_state(_nativeHost, _readCallback, reader.WaterboxHandle, out var retobj);
 			retobj.GetDataOrThrow();
 		}
 

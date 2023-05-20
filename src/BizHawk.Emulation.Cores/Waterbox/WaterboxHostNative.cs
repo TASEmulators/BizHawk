@@ -1,6 +1,6 @@
 using System;
-using System.IO;
 using System.Runtime.InteropServices;
+
 using BizHawk.BizInvoke;
 using BizHawk.Common;
 
@@ -71,40 +71,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		// public delegate UIntPtr /*MissingFileResult*/ FileCallback(IntPtr userdata, UIntPtr /*string*/ name);
 
-		public static unsafe WriteCallback MakeCallbackForWriter(Stream s)
-		{
-			var ss = SpanStream.GetOrBuild(s);
-			return (_, data, size) =>
-			{
-				try
-				{
-					var count = (int)size;
-					ss.Write(new((void*)data, (int)size));
-					return 0;
-				}
-				catch
-				{
-					return -1;
-				}
-			};
-		}
-		public static unsafe ReadCallback MakeCallbackForReader(Stream s)
-		{
-			var ss = SpanStream.GetOrBuild(s);
-			return (_, data, size) =>
-			{
-				try
-				{
-					var count = (int)size;
-					var n = ss.Read(new((void*)data, count));
-					return Z.SS(n);
-				}
-				catch
-				{
-					return Z.SS(-1);
-				}
-			};
-		}
 		// [StructLayout(LayoutKind.Sequential)]
 		// public class MissingFileCallback
 		// {
