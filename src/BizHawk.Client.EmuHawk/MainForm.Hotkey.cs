@@ -161,6 +161,10 @@ namespace BizHawk.Client.EmuHawk
 				case "Toggle Messages":
 					Config.DisplayMessages ^= true;
 					break;
+				case "Toggle Display Nothing":
+					// TODO: account for 1 when implemented
+					Config.DispSpeedupFeatures = Config.DispSpeedupFeatures == 0 ? 2 : 0;
+					break;
 
 				// Save States
 				case "Save State 1":

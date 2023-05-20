@@ -65,6 +65,7 @@ namespace BizHawk.Client.Common
 			Bind("General", "Toggle Key Priority");
 			Bind("General", "Frame Inch");
 			Bind("General", "Toggle Messages");
+			Bind("General", "Toggle Display Nothing");
 
 			Bind("Save States", "Save State 1", "Shift+F1");
 			Bind("Save States", "Save State 2", "Shift+F2");
