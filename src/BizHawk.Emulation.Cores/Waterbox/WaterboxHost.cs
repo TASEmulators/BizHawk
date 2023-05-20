@@ -104,7 +104,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				try
 				{
 					var count = (int)size;
-					Console.WriteLine($"READ CALLBACK: {count}");
 					var n = _backingSpanStream.Read(new((void*)data, count));
 					return Z.SS(n);
 				}
