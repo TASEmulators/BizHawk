@@ -158,7 +158,7 @@
 			this.NeverAskSaveCheckbox.Name = "NeverAskSaveCheckbox";
 			this.NeverAskSaveCheckbox.Size = new System.Drawing.Size(184, 17);
 			this.NeverAskSaveCheckbox.TabIndex = 20;
-			this.NeverAskSaveCheckbox.Text = "Never be asked to save changes";
+			this.NeverAskSaveCheckbox.Text = "When EmuHawk is closing, skip \"unsaved changes\" prompts and discard all";
 			this.NeverAskSaveCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// label2
