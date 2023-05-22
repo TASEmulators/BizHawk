@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -53,7 +54,7 @@ namespace BizHawk.Client.Common
 			string line;
 			while ((line = reader.ReadLine()) != null)
 			{
-				if (line[0] == '|')
+				if (line.StartsWith('|'))
 				{
 					Log.Add(line);
 				}
@@ -117,7 +118,7 @@ namespace BizHawk.Client.Common
 			string line;
 			while ((line = reader.ReadLine()) != null)
 			{
-				if (line[0] == '|')
+				if (line.StartsWith('|'))
 				{
 					newLog.Add(line);
 				}

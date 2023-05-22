@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 
@@ -40,7 +41,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 					//sentinel for newer format OpenAdvanced type code
 					if (romLoading)
 					{
-						if (filename.StartsWith("*"))
+						if (filename.StartsWith('*'))
 						{
 							var oa = OpenAdvancedSerializer.ParseWithLegacy(filename);
 							caption = oa.DisplayName;

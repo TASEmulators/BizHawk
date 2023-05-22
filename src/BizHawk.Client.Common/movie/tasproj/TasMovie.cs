@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -226,7 +228,7 @@ namespace BizHawk.Client.Common
 			string line;
 			while ((line = reader.ReadLine()) != null)
 			{
-				if (line[0] == '|')
+				if (line.StartsWith('|'))
 				{
 					newLog.Add(line);
 					if (!timelineBranchFrame.HasValue && counter < Log.Count && line != Log[counter])

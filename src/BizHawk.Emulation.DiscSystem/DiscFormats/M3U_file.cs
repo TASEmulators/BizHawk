@@ -1,6 +1,8 @@
 ﻿using System.IO;
 using System.Collections.Generic;
 
+using BizHawk.Common.StringExtensions;
+
 namespace BizHawk.Emulation.DiscSystem
 {
 	public class M3U_File
@@ -21,7 +23,7 @@ namespace BizHawk.Emulation.DiscSystem
 				var line = sr.ReadLine();
 				if (line == null)
 					break;
-				if (line.StartsWith("#"))
+				if (line.StartsWith('#'))
 				{
 					if (line == "#EXTM3U")
 					{

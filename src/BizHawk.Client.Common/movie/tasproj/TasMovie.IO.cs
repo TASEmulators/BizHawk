@@ -1,6 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+
+using BizHawk.Common.StringExtensions;
+
 using Newtonsoft.Json;
 
 namespace BizHawk.Client.Common
@@ -124,7 +127,7 @@ namespace BizHawk.Client.Common
 						break;
 					}
 
-					if (line[0] == '|')
+					if (line.StartsWith('|'))
 					{
 						VerificationLog.Add(line);
 					}

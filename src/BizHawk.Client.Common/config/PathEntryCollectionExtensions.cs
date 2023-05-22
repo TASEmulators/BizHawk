@@ -2,6 +2,7 @@
 using System.IO;
 using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -316,10 +317,7 @@ namespace BizHawk.Client.Common
 
 		private static string ResolveToolsPath(this PathEntryCollection collection, string subPath)
 		{
-			if (Path.IsPathRooted(subPath) || subPath.StartsWith("%"))
-			{
-				return subPath;
-			}
+			if (Path.IsPathRooted(subPath) || subPath.StartsWith('%')) return subPath;
 
 			var toolsPath = collection[PathEntryCollection.GLOBAL, "Tools"].Path;
 

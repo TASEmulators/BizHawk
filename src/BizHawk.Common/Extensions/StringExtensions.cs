@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace BizHawk.Common.StringExtensions
 {
@@ -31,7 +32,8 @@ namespace BizHawk.Common.StringExtensions
 		/// <paramref name="str"/> with the first char removed, or
 		/// <paramref name="notFoundValue"/> if the first char of <paramref name="str"/> is not <paramref name="prefix"/>
 		/// </returns>
-		public static string RemovePrefix(this string str, char prefix, string notFoundValue) => str.Length != 0 && str[0] == prefix ? str.Substring(1, str.Length - 1) : notFoundValue;
+		public static string RemovePrefix(this string str, char prefix, string notFoundValue)
+			=> str.StartsWith(prefix) ? str.Substring(1) : notFoundValue;
 
 		/// <returns>
 		/// <paramref name="str"/> with the leading substring <paramref name="prefix"/> removed, or
@@ -65,6 +67,14 @@ namespace BizHawk.Common.StringExtensions
 		/// <paramref name="notFoundValue"/> if <paramref name="str"/> does not end with <paramref name="suffix"/>
 		/// </returns>
 		public static string RemoveSuffix(this string str, string suffix, string notFoundValue) => str.EndsWith(suffix) ? str.Substring(0, str.Length - suffix.Length) : notFoundValue;
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static bool StartsWith(this ReadOnlySpan<char> str, char c)
+			=> str.Length >= 1 && str[0] == c;
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static bool StartsWith(this string str, char c)
+			=> str.Length >= 1 && str[0] == c;
 
 		/// <returns>
 		/// the substring of <paramref name="str"/> after the first occurrence of <paramref name="delimiter"/>, or

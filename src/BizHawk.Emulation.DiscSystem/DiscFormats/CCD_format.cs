@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Collections.Generic;
 using System.Linq;
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 
 //check out ccd2iso linux program?
 //https://wiki.archlinux.org/index.php/CD_Burning#TOC.2FCUE.2FBIN_for_mixed-mode_disks advice here
@@ -189,7 +190,7 @@ namespace BizHawk.Emulation.DiscSystem
 				var line = sr.ReadLine();
 				if (line is null) break;
 				if (line == string.Empty) continue;
-				if (line.StartsWith("["))
+				if (line.StartsWith('['))
 				{
 					currSection = new()
 					{

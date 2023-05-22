@@ -9,6 +9,7 @@ using BizHawk.Common.NumberExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -1283,7 +1284,7 @@ namespace BizHawk.Client.EmuHawk
 			int maxDigits = range.MaxDigits;
 			int curDigits = _axisTypedValue.Length;
 			string curMinus;
-			if (_axisTypedValue.StartsWith("-"))
+			if (_axisTypedValue.StartsWith('-'))
 			{
 				curDigits -= 1;
 				curMinus = "-";
@@ -1323,7 +1324,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (e.KeyCode == Keys.OemMinus || e.KeyCode == Keys.Subtract)
 			{
-				_axisTypedValue = _axisTypedValue.StartsWith("-")
+				_axisTypedValue = _axisTypedValue.StartsWith('-')
 					? _axisTypedValue.Substring(1)
 					: $"-{_axisTypedValue}";
 			}

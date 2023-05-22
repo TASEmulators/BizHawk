@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 
+using BizHawk.Common.StringExtensions;
+
 namespace BizHawk.Client.Common
 {
 	internal class BkmHeader : Dictionary<string, string>
@@ -62,7 +64,7 @@ namespace BizHawk.Client.Common
 				{
 					Comments.Add(line.Substring(8, line.Length - 8));
 				}
-				else if (line[0] == '|')
+				else if (line.StartsWith('|'))
 				{
 					return false;
 				}

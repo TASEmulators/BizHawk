@@ -12,7 +12,7 @@ namespace BizHawk.Client.Common
 		public static char Lookup(string button, string systemId)
 		{
 			var key = button.Replace("Key ", "");
-			if (key.StartsWith("P"))
+			if (key.StartsWith('P'))
 			{
 				if (key.Length > 2 && key[1] == '1' && key[2] >= '0' && key[2] <= '9') // Hack to support 10-20 controllers, TODO: regex this thing instead
 				{

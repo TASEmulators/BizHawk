@@ -11,6 +11,7 @@ using BizHawk.Client.Common.FilterManager;
 
 using BizHawk.Bizware.BizwareGL;
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Client.Common.Filters
 {
@@ -126,8 +127,8 @@ namespace BizHawk.Client.Common.Filters
 			foreach (var splitLine in content.Split('\n'))
 			{
 				var line = splitLine.Trim();
-				if (line.StartsWith("#")) continue; //lines that are solely comments
-				if (line == "") continue; //empty line
+				if (line.Length is 0) continue;
+				if (line.StartsWith('#')) continue; // comments
 				int eq = line.IndexOf('=');
 				var key = line.Substring(0, eq).Trim();
 				var value = line.Substring(eq + 1).Trim();

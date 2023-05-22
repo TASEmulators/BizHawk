@@ -7,6 +7,7 @@ using System.Threading;
 using BizHawk.Bizware.BizwareGL;
 using BizHawk.Bizware.OpenTK3;
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 
 using SlimDX.Direct3D9;
 
@@ -448,8 +449,7 @@ namespace BizHawk.Bizware.DirectX
 					string name = prefix + descr.Name;
 
 					//uniforms done through the entry point signature have $ in their names which isn't helpful, so get rid of that
-					if (name.StartsWith("$"))
-						name = name.Substring(1);
+					name = name.RemovePrefix('$');
 
 					ui.Name = name;
 					uw.Description = descr;

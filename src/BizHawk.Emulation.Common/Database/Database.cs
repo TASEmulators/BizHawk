@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Emulation.Common
 {
@@ -104,12 +105,9 @@ namespace BizHawk.Emulation.Common
 				var line = reader.ReadLine() ?? "";
 				try
 				{
-					if (line.StartsWith(";"))
-					{
-						continue; // comment
-					}
+					if (line.StartsWith(';')) continue; // comment
 
-					if (line.StartsWith("#"))
+					if (line.StartsWith('#'))
 					{
 						LoadDatabase_Escape(line, inUser: inUser, silent: silent);
 						continue;

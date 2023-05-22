@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Jaguar
@@ -58,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 				{
 					_core.SetRegister(gpu ? 146 : 147, value);
 				}
-				else if (regName.StartsWith("R"))
+				else if (regName.StartsWith('R'))
 				{
 					var offset = gpu ? 18 : 82;
 					var reg = int.Parse(regName.Remove(0, 1));

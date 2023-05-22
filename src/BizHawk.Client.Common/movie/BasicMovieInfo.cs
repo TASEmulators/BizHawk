@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -247,13 +249,7 @@ namespace BizHawk.Client.Common
 			{
 				// just skim through the input log and count input lines
 				// FIXME: this is potentially expensive and shouldn't be necessary for something as simple as frame count
-				while (tr.ReadLine() is string line)
-				{
-					if (line.Length > 0 && line[0] == '|')
-					{
-						FrameCount++;
-					}
-				}
+				while (tr.ReadLine() is string line) if (line.StartsWith('|')) FrameCount++;
 			});
 		}
 	}
