@@ -53,7 +53,7 @@ namespace BizHawk.Client.Common
 			string line;
 			while ((line = reader.ReadLine()) != null)
 			{
-				if (line.StartsWith("|"))
+				if (line[0] == '|')
 				{
 					Log.Add(line);
 				}
@@ -117,7 +117,7 @@ namespace BizHawk.Client.Common
 			string line;
 			while ((line = reader.ReadLine()) != null)
 			{
-				if (line.StartsWith("|"))
+				if (line[0] == '|')
 				{
 					newLog.Add(line);
 				}

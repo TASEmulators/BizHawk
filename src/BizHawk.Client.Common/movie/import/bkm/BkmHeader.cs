@@ -62,7 +62,7 @@ namespace BizHawk.Client.Common
 				{
 					Comments.Add(line.Substring(8, line.Length - 8));
 				}
-				else if (line.StartsWith("|"))
+				else if (line[0] == '|')
 				{
 					return false;
 				}

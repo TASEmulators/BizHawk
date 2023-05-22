@@ -124,7 +124,7 @@ namespace BizHawk.Client.Common
 						break;
 					}
 
-					if (line.StartsWith("|"))
+					if (line[0] == '|')
 					{
 						VerificationLog.Add(line);
 					}
