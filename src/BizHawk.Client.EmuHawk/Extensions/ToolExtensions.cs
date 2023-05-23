@@ -128,7 +128,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 								{
 									var tsddi = o as ToolStripDropDownItem;
 									tsddi.Owner.Update();
-									using var menu = new ContextMenu();
+									using var menu = new ContextMenuStrip();
 									using var dummy = new Control();
 									Win32ShellContextMenu.ShowContextMenu(
 										hf.FullPathWithoutMember, menu.Handle, dummy.Handle, tsddi.Owner.Location.X, tsddi.Owner.Location.Y);
