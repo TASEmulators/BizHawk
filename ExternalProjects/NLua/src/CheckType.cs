@@ -52,7 +52,7 @@ namespace NLua
 			if (paramType.IsByRef)
 				paramType = paramType.GetElementType();
 
-			return _extractValues.ContainsKey(paramType) ? _extractValues[paramType] : _extractNetObject;
+			return _extractValues.TryGetValue(paramType, out ExtractValue value) ? value : _extractNetObject;
 		}
 
 		internal ExtractValue CheckLuaType(LuaState luaState, int stackPos, Type paramType)
