@@ -83,7 +83,7 @@ namespace BizHawk.Client.Common
 						var val = createEmpty ? range.Neutral : _source.AxisValue(button);
 						sb.Append(val.ToString().PadLeft(5, ' ')).Append(',');
 					}
-					else if (_source.Definition.BoolButtons.Contains(button))
+					else
 					{
 						sb.Append(!createEmpty && _source.IsPressed(button)
 							? _mnemonics[button]
