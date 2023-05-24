@@ -6,15 +6,25 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
+	// Designed to be able to last the lifetime of an IMovie
 	internal class Bk2LogEntryGenerator : ILogEntryGenerator
 	{
 		private readonly string _systemId;
 		private readonly IController _source;
 
+		private readonly Dictionary<string, char> _mnemonics = new();
+
 		public Bk2LogEntryGenerator(string systemId, IController source)
 		{
 			_systemId = systemId;
 			_source = source;
+			foreach (var group in _source.Definition.ControlsOrdered.Where(static c => c.Count is not 0))
+			{
+				foreach (var button in group)
+				{
+					_mnemonics.Add(button, Bk2MnemonicLookup.Lookup(button, _systemId));
+				}
+			}
 		}
 
 		public bool IsEmpty => EmptyEntry == GenerateLogEntry();
@@ -76,7 +86,7 @@ namespace BizHawk.Client.Common
 					else if (_source.Definition.BoolButtons.Contains(button))
 					{
 						sb.Append(!createEmpty && _source.IsPressed(button)
-							? Bk2MnemonicLookup.Lookup(button, _systemId)
+							? _mnemonics[button]
 							: '.');
 					}
 				}

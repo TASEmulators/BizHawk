@@ -55,8 +55,9 @@ namespace BizHawk.Client.Common
 
 		public void SetFrom(IController source)
 		{
-			foreach (var button in Definition.BoolButtons)
+			for (int index = 0; index < Definition.BoolButtons.Count; index++)
 			{
+				string button = Definition.BoolButtons[index];
 				_myBoolButtons[button] = source.IsPressed(button);
 			}
 
