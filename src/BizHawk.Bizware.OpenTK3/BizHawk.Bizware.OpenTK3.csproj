@@ -9,8 +9,8 @@
 		<UseWindowsForms>true</UseWindowsForms>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="OpenTK" Version="3.3.3" PrivateAssets="all" />
-		<PackageReference Include="OpenTK.GLControl" Version="3.3.3" PrivateAssets="all" />
+		<PackageReference Include="OpenTK" Version="3.3.3" />
+		<PackageReference Include="OpenTK.GLControl" Version="3.3.3" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Client.Common/BizHawk.Client.Common.csproj" />
 	</ItemGroup>
 </Project>

@@ -10,7 +10,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<Reference Include="SlimDX" HintPath="$(ProjectDir)../../References/x64/SlimDX.dll" Private="true" />
-		<PackageReference Include="OpenTK" Version="3.3.3" PrivateAssets="all" />
+		<PackageReference Include="OpenTK" Version="3.3.3" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.OpenTK3/BizHawk.Bizware.OpenTK3.csproj" />
 	</ItemGroup>
 </Project>
