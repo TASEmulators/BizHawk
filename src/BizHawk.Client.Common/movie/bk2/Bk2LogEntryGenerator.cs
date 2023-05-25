@@ -7,7 +7,7 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Client.Common
 {
 	// Designed to be able to last the lifetime of an IMovie
-	internal class Bk2LogEntryGenerator : ILogEntryGenerator
+	public sealed class Bk2LogEntryGenerator
 	{
 		private readonly string _systemId;
 		private readonly IController _source;
@@ -29,12 +29,22 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public bool IsEmpty => EmptyEntry == GenerateLogEntry();
-
+		/// <summary>
+		/// Gets an input log entry that is considered empty. (booleans will be false, axes will be 0)
+		/// </summary>
 		public string EmptyEntry => CreateLogEntry(createEmpty: true);
 
+		/// <summary>
+		/// Generates an input log entry for the current state of Source
+		/// </summary>
 		public string GenerateLogEntry() => CreateLogEntry();
 
+		/// <summary>
+		/// Generates a human readable key that will specify the names of the
+		/// buttons and the order they are in. This is intended to simply be
+		/// documentation of the meaning of the mnemonics and not to be used to
+		/// enforce the mnemonic values
+		/// </summary>
 		public string GenerateLogKey()
 		{
 			var sb = new StringBuilder();
@@ -52,6 +62,9 @@ namespace BizHawk.Client.Common
 			return sb.ToString();
 		}
 
+		/// <summary>
+		/// Generates a dictionary of button names to their corresponding mnemonic values
+		/// </summary>
 		public IDictionary<string, string> Map()
 		{
 			var dict = new Dictionary<string, string>();

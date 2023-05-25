@@ -77,7 +77,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Creates a log generator using the given input source
 		/// </summary>
-		ILogEntryGenerator LogGeneratorInstance(IController source);
+		Bk2LogEntryGenerator LogGeneratorInstance(IController source);
 
 		/// <summary>
 		/// Instructs the movie to save the current contents to Filename

@@ -32,7 +32,7 @@ namespace BizHawk.Client.Common
 		public virtual bool Changes { get; protected set; }
 		public bool IsCountingRerecords { get; set; } = true;
 
-		public ILogEntryGenerator LogGeneratorInstance(IController source)
+		public Bk2LogEntryGenerator LogGeneratorInstance(IController source)
 		{
 			// Hack because initial movie loading is a mess, and you will immediate create a file with an undefined controller
 			if (!source.Definition.Any())
