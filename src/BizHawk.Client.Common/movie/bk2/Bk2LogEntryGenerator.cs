@@ -13,12 +13,14 @@ namespace BizHawk.Client.Common
 		private readonly IController _source;
 
 		private readonly Dictionary<string, char> _mnemonics = new();
+		private readonly List<IReadOnlyList<string>> _controlsOrdered;
 
 		public Bk2LogEntryGenerator(string systemId, IController source)
 		{
 			_systemId = systemId;
 			_source = source;
-			foreach (var group in _source.Definition.ControlsOrdered.Where(static c => c.Count is not 0))
+			_controlsOrdered = _source.Definition.ControlsOrdered.Where(static c => c.Count is not 0).ToList();
+			foreach (var group in _controlsOrdered)
 			{
 				foreach (var button in group)
 				{
@@ -74,7 +76,7 @@ namespace BizHawk.Client.Common
 
 			sb.Append('|');
 
-			foreach (var group in _source.Definition.ControlsOrdered.Where(static c => c.Count is not 0))
+			foreach (var group in _controlsOrdered)
 			{
 				foreach (var button in group)
 				{
