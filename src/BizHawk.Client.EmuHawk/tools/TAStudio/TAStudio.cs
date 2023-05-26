@@ -392,8 +392,14 @@ namespace BizHawk.Client.EmuHawk
 					|| c.Name.EndsWith("Block")
 					|| c.Name.EndsWith("Status"));
 
-			if (Emulator is N64)
+			if (Emulator.SystemId is VSystemID.Raw.N64)
 			{
+				foreach (var c in TasView.AllColumns
+					.Where(static c => c.Name.EndsWith(" C Up") || c.Name.EndsWith(" C Down")
+						|| c.Name.EndsWith(" C Left") || c.Name.EndsWith(" C Right")))
+				{
+					c.Text = $"c{c.Text.ToUpperInvariant()}"; // prepend 'c' to differentiate from L/R buttons -- only affects table header
+				}
 				var fakeAnalogControls = TasView.AllColumns
 					.Where(c =>
 						c.Name.EndsWith("A Up")
