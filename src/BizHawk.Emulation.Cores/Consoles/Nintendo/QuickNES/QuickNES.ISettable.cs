@@ -123,7 +123,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				else
 				{
 					// use quickNES's deemph calculator
-					for (int c = 0; c < 64; c++)
+					for (int c = 0; c < 64 * 8; c++)
 					{
 						int a = c & 63;
 						byte[] inp = { (byte)pal[a, 0], (byte)pal[a, 1], (byte)pal[a, 2] };
