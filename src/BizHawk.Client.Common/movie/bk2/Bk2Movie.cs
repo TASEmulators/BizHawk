@@ -6,7 +6,7 @@ namespace BizHawk.Client.Common
 	public partial class Bk2Movie : BasicMovieInfo, IMovie
 	{
 		private Bk2Controller _adapter;
-		private Bk2LogEntryGenerator _logGenerator;
+		//private Bk2LogEntryGenerator _logGenerator;
 		public Bk2Movie(IMovieSession session, string filename) : base(filename)
 		{
 			Session = session;
@@ -35,13 +35,13 @@ namespace BizHawk.Client.Common
 		public Bk2LogEntryGenerator LogGeneratorInstance(IController source)
 		{
 			// Hack because initial movie loading is a mess, and you will immediate create a file with an undefined controller
-			if (!source.Definition.Any())
+			//if (!source.Definition.Any())
 			{
 				return new Bk2LogEntryGenerator(Emulator?.SystemId ?? SystemID, source);
 			}
 
-			_logGenerator ??= new Bk2LogEntryGenerator(Emulator?.SystemId ?? SystemID, source);
-			return _logGenerator;
+			//_logGenerator ??= new Bk2LogEntryGenerator(Emulator?.SystemId ?? SystemID, source);
+			//return _logGenerator;
 		}
 
 		public override int FrameCount => Log.Count;
