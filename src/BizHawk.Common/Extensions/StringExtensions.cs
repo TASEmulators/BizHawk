@@ -45,7 +45,7 @@ namespace BizHawk.Common.StringExtensions
 		/// <paramref name="str"/> with the leading substring <paramref name="prefix"/> removed, or
 		/// <paramref name="notFoundValue"/> if <paramref name="str"/> does not start with <paramref name="prefix"/>
 		/// </returns>
-		public static string RemovePrefix(this string str, string prefix, string notFoundValue) => str.StartsWith(prefix) ? str.Substring(prefix.Length, str.Length - prefix.Length) : notFoundValue;
+		public static string RemovePrefix(this string str, string prefix, string notFoundValue) => str.StartsWith(prefix, StringComparison.Ordinal) ? str.Substring(prefix.Length, str.Length - prefix.Length) : notFoundValue;
 
 		/// <returns>
 		/// <paramref name="str"/> with the last char removed, or
@@ -66,7 +66,7 @@ namespace BizHawk.Common.StringExtensions
 		/// <paramref name="str"/> with the trailing substring <paramref name="suffix"/> removed, or
 		/// <paramref name="notFoundValue"/> if <paramref name="str"/> does not end with <paramref name="suffix"/>
 		/// </returns>
-		public static string RemoveSuffix(this string str, string suffix, string notFoundValue) => str.EndsWith(suffix) ? str.Substring(0, str.Length - suffix.Length) : notFoundValue;
+		public static string RemoveSuffix(this string str, string suffix, string notFoundValue) => str.EndsWith(suffix, StringComparison.Ordinal) ? str.Substring(0, str.Length - suffix.Length) : notFoundValue;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool StartsWith(this ReadOnlySpan<char> str, char c)
