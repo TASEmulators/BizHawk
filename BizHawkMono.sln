@@ -1,7 +1,5 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Version", "src\BizHawk.Version\BizHawk.Version.csproj", "{DA46C405-0308-48F3-8AEC-594782CDC40C}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.BizInvoke", "src\BizHawk.BizInvoke\BizHawk.BizInvoke.csproj", "{03F4B3BE-E4F8-4C60-8D0E-FEFE62AA0536}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Bizware.BizwareGL", "src\BizHawk.Bizware.BizwareGL\BizHawk.Bizware.BizwareGL.csproj", "{7FC6DF67-525C-45D6-A8CA-E5A53E7B9203}"
@@ -82,10 +80,6 @@ Global
 		{086F5087-994B-4D6C-B728-5DEEF0553972}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{086F5087-994B-4D6C-B728-5DEEF0553972}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{086F5087-994B-4D6C-B728-5DEEF0553972}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DA46C405-0308-48F3-8AEC-594782CDC40C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DA46C405-0308-48F3-8AEC-594782CDC40C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DA46C405-0308-48F3-8AEC-594782CDC40C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DA46C405-0308-48F3-8AEC-594782CDC40C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{00DF1536-8FF0-4E67-9BF9-417DC32A84DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{00DF1536-8FF0-4E67-9BF9-417DC32A84DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{00DF1536-8FF0-4E67-9BF9-417DC32A84DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
