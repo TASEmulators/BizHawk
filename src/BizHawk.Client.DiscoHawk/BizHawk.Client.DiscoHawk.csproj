@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net6.0-windows</TargetFramework>
+		<TargetFrameworks>net48;net6.0-windows</TargetFrameworks>
 	</PropertyGroup>
 	<Import Project="../MainSlnExecutable.props" />
 	<PropertyGroup>
@@ -15,13 +15,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Update="About.cs" SubType="Form" />
-		<Compile Update="About.Designer.cs" DependentUpon="About.cs" />
-		<EmbeddedResource Update="About.resx" DependentUpon="About.cs" />
 		<Compile Update="ComparisonResults.cs" SubType="Form" />
-		<Compile Update="ComparisonResults.Designer.cs" DependentUpon="ComparisonResults.cs" />
-		<EmbeddedResource Update="ComparisonResults.resx" DependentUpon="ComparisonResults.cs" />
 		<Compile Update="MainDiscoForm.cs" SubType="Form" />
-		<Compile Update="MainDiscoForm.Designer.cs" DependentUpon="MainDiscoForm.cs" />
-		<EmbeddedResource Update="MainDiscoForm.resx" DependentUpon="MainDiscoForm.cs" SubType="Designer" />
 	</ItemGroup>
 </Project>

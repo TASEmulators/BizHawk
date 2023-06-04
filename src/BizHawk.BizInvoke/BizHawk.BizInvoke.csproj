@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework Condition=" '$(OS)' == 'Windows_NT' ">net6.0</TargetFramework>
-		<TargetFramework Condition=" '$(OS)' != 'Windows_NT' ">net48</TargetFramework>
+		<TargetFrameworks>net48;net6.0</TargetFrameworks>
 	</PropertyGroup>
 	<Import Project="../MainSlnCommon.props" />
 	<PropertyGroup>

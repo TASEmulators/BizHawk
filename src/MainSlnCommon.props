@@ -1,13 +1,11 @@
 <Project>
 	<Import Project="../Common.props" />
 	<PropertyGroup>
-		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<DefineConstants>$(DefineConstants);AVI_SUPPORT</DefineConstants>
 		<DocumentationFile>$(MSBuildProjectDirectory)/bin/doc_comments.xml</DocumentationFile>
 		<LangVersion>9.0</LangVersion>
 		<MSBuildWarningsAsMessages>NU1702</MSBuildWarningsAsMessages>
 		<NoWarn>$(NoWarn);CS1573;CS1591</NoWarn>
-		<OutputPath>$(MSBuildProjectDirectory)/../../output/dll</OutputPath>
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
 		<TargetName>$(MSBuildProjectName.Replace("Mono", ""))</TargetName>
 	</PropertyGroup>
