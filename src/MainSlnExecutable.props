@@ -17,21 +17,13 @@
 	<ItemGroup>
 		<Compile Include="$(MSBuildProjectDirectory)/../BizHawk.Common/OSTailoredCode.cs" />
 	</ItemGroup>
-	<Target Condition="$(IsTargetingNetFramework)" Name="PostBuild" AfterTargets="PostBuildEvent">
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<ItemGroup>
 			<NotExecFilesFromExecProj Include="$(OutputPath)*.deps.json" />
-			<NotExecFilesFromExecProj Include="$(OutputPath)*.dll" />
+			<NotExecFilesFromExecProj Include="$(OutputPath)*.dll" Exclude="$(OutputPath)BizHawk.Client.*Hawk.dll" />
 			<NotExecFilesFromExecProj Include="$(OutputPath)*.pdb" />
 			<NotExecFilesFromExecProj Include="$(OutputPath)*.xml" />
 		</ItemGroup>
 		<Move SourceFiles="@(NotExecFilesFromExecProj)" DestinationFolder="$(OutputPath)dll/" />
-	</Target>
-	<Target Name="PostPublish" AfterTargets="Publish">
-		<ItemGroup>
-			<NotExecFilesFromExecProj Include="$(OutputPath)publish/*.dll" Exclude="$(OutputPath)publish/$(TargetName).dll" />
-			<NotExecFilesFromExecProj Include="$(OutputPath)publish/*.pdb" />
-			<NotExecFilesFromExecProj Include="$(OutputPath)publish/*.xml" />
-		</ItemGroup>
-		<Move SourceFiles="@(NotExecFilesFromExecProj)" DestinationFolder="$(OutputPath)publish/dll/" />
 	</Target>
 </Project>
