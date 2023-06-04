@@ -5,9 +5,6 @@
 		<OutputPath>$(MSBuildProjectDirectory)/../../output</OutputPath>
 		<AssemblyName>$(MSBuildProjectName.Substring($([MSBuild]::Add($(MSBuildProjectName.LastIndexOf('.')), 1))))</AssemblyName>
 	</PropertyGroup>
-	<PropertyGroup Condition=" !$(IsTargetingNetFramework) ">
-		<AssemblyName>$(TargetName)</AssemblyName>
-	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
 		<OutputType>Exe</OutputType>
 	</PropertyGroup>
@@ -20,7 +17,7 @@
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<ItemGroup>
 			<NotExecFilesFromExecProj Include="$(OutputPath)*.deps.json" />
-			<NotExecFilesFromExecProj Include="$(OutputPath)*.dll" Exclude="$(OutputPath)BizHawk.Client.*Hawk.dll" />
+			<NotExecFilesFromExecProj Include="$(OutputPath)*.dll" Exclude="$(OutputPath)*Hawk.dll" />
 			<NotExecFilesFromExecProj Include="$(OutputPath)*.pdb" />
 			<NotExecFilesFromExecProj Include="$(OutputPath)*.xml" />
 		</ItemGroup>
