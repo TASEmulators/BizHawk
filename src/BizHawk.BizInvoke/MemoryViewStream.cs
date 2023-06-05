@@ -53,7 +53,11 @@ namespace BizHawk.BizInvoke
 
 		private byte* CurrentPointer() => (byte*)Z.SS(_ptr + _pos);
 
+#if NET6_0_OR_GREATER
+		public override int Read(Span<byte> buffer)
+#else
 		public int Read(Span<byte> buffer)
+#endif
 		{
 			if (!_readable)
 				throw new IOException();
@@ -108,7 +112,11 @@ namespace BizHawk.BizInvoke
 			throw new IOException();
 		}
 
+#if NET6_0_OR_GREATER
+		public override void Write(ReadOnlySpan<byte> buffer)
+#else
 		public void Write(ReadOnlySpan<byte> buffer)
+#endif
 		{
 			if (!_writable)
 				throw new IOException();
