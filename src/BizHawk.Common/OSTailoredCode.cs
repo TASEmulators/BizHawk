@@ -133,7 +133,7 @@ namespace BizHawk.Common
 			public string GetErrorMessage()
 			{
 				var errCharPtr = dlerror();
-				return errCharPtr == IntPtr.Zero ? "No error present" : Marshal.PtrToStringAnsi(errCharPtr);
+				return errCharPtr == IntPtr.Zero ? "No error present" : Marshal.PtrToStringAnsi(errCharPtr)!;
 			}
 
 			private const int RTLD_NOW = 2;

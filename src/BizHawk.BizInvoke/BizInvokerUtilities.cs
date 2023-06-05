@@ -52,7 +52,7 @@ namespace BizHawk.BizInvoke
 		/// <returns></returns>
 		public static int ComputeClassFirstFieldOffset()
 		{
-			return ComputeFieldOffset(typeof(CF).GetField("FirstField"));
+			return ComputeFieldOffset(typeof(CF).GetField("FirstField")!);
 		}
 
 		/// <summary>

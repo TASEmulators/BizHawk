@@ -90,12 +90,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static string DownloadURLAsString(string url)
 		{
-			var request = (HttpWebRequest)WebRequest.Create(url);
-			request.UserAgent = "BizHawk";
-			request.KeepAlive = false;
-			using var response = (HttpWebResponse)request.GetResponse();
-			using var responseStream = new StreamReader(response.GetResponseStream());
-			return responseStream.ReadToEnd();
+			return HttpCommunication.Get(url).Result;
 		}
 
 		private static string ValidateVersionNumberString(string versionNumber)
