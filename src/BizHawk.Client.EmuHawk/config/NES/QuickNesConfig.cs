@@ -69,9 +69,9 @@ namespace BizHawk.Client.EmuHawk
 			pictureBox1.Image = bmp;
 		}
 
-		protected override void OnClosed(EventArgs e)
+		protected override void OnFormClosed(FormClosedEventArgs e)
 		{
-			base.OnClosed(e);
+			base.OnFormClosed(e);
 
 			pictureBox1.Image?.Dispose();
 			pictureBox1.Image = null;

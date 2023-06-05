@@ -61,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			UpdateDropdownAndLabel(BoundGamepadPrefix);
 			cbBoundChannel.SelectedIndexChanged += (changedSender, _)
-				=> BoundChannels = (string?) ((ComboBox) changedSender).SelectedItem ?? string.Empty;
+				=> BoundChannels = (string?) ((ComboBox) changedSender!).SelectedItem ?? string.Empty;
 			SingleRowFLP flpBindReadout = new() { Controls = { txtBoundPrefix, cbBoundChannel, new LabelEx { Text = vChannel } } };
 
 			Timer timer = new(_components);
@@ -98,7 +98,7 @@ namespace BizHawk.Client.EmuHawk
 			TransparentTrackBar tbPrescale = new() { Maximum = 20, Size = new(96, 45), TickFrequency = 5 };
 			tbPrescale.ValueChanged += (changedSender, _) =>
 			{
-				Prescale = ((TrackBar) changedSender).Value / 10.0f;
+				Prescale = ((TrackBar) changedSender!).Value / 10.0f;
 				lblPrescale.Text = $"Pre-scaled by: {Prescale:F1}x";
 			};
 			tbPrescale.Value = (int) (Prescale * 10.0f);

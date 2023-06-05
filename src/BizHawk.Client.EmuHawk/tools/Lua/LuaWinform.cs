@@ -28,7 +28,7 @@ namespace BizHawk.Client.EmuHawk
 			StartPosition = FormStartPosition.CenterParent;
 
 			_ownerFile.AddDisposable(this);
-			Closing += (o, e) =>
+			FormClosing += (o, e) =>
 			{
 				if (_closed) return;
 				_closed = true;
