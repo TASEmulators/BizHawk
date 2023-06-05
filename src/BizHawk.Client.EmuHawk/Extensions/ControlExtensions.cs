@@ -54,8 +54,8 @@ namespace BizHawk.Client.EmuHawk
 
 				menuItem.CheckedChanged += (o, ev) =>
 				{
-					var sender = (ToolStripMenuItem)o;
-					columns.Find(c => c.Name == (string)sender.Tag).Visible = sender.Checked;
+					var sender = (ToolStripMenuItem)o!;
+					columns.Find(c => c.Name == (string)sender.Tag!)!.Visible = sender.Checked;
 					columns.ColumnsChanged();
 					changeCallback();
 					inputRoll.Refresh();
@@ -112,7 +112,7 @@ namespace BizHawk.Client.EmuHawk
 			PropertyInfo[] controlProperties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
 			Type t = controlToClone.GetType();
-			var instance = (T) Activator.CreateInstance(t);
+			var instance = (T) Activator.CreateInstance(t)!;
 
 			t.GetProperty("AutoSize")?.SetMethod?.Invoke(instance, new object[] {false});
 
@@ -272,7 +272,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public static void Set(this DragEventArgs e, DragDropEffects effect)
 		{
-			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop)
+			e.Effect = e.Data!.GetDataPresent(DataFormats.FileDrop)
 				? effect
 				: DragDropEffects.None;
 		}
