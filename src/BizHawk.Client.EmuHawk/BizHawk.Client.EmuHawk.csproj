@@ -16,7 +16,7 @@
 	<ItemGroup>
 		<PackageReference Include="System.Net.Http" />
 		<Reference Include="PresentationFramework" />
-		<Reference Include="System.IO.Compression" />
+		<Reference Condition="$(IsTargetingNetFramework)" Include="System.IO.Compression" />
 	</ItemGroup>
 	<ItemGroup>
 		<Reference Include="PcxFileTypePlugin.HawkQuantizer" HintPath="$(ProjectDir)../../References/PcxFileTypePlugin.HawkQuantizer.dll" Private="true" />
