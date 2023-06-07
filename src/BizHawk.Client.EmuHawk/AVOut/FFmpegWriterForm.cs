@@ -109,8 +109,15 @@ namespace BizHawk.Client.EmuHawk
 
 			public void DeduceFormat(string commandline)
 			{
-				string formatKey = "-f ";
-				Extension = commandline.Substring(commandline.IndexOf(formatKey) + formatKey.Length);
+				var splitCommandLine = commandline.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+				for (int index = 0; index < splitCommandLine.Length - 1; index++)
+				{
+					if (splitCommandLine[index] == "-f")
+					{
+						Extension = splitCommandLine[index + 1];
+						break;
+					}
+				}
 
 				// are there other formats that don't match their file extensions?
 				if (Extension == "matroska")
