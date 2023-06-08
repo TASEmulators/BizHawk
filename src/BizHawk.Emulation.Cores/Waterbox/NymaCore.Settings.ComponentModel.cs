@@ -295,9 +295,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public override Type PropertyType => typeof(double);
 		protected override object ConvertFromString(string s)
 		{
-			var ret = double.Parse(s);
-			if (Setting.Min != null && ret < double.Parse(Setting.Min) || Setting.Max != null && ret > double.Parse(Setting.Max))
-				ret = double.Parse(Setting.DefaultValue);
+			var ret = double.Parse(s, NumberFormatInfo.InvariantInfo);
+			if (Setting.Min != null && ret < double.Parse(Setting.Min, NumberFormatInfo.InvariantInfo) || Setting.Max != null && ret > double.Parse(Setting.Max, NumberFormatInfo.InvariantInfo))
+				ret = double.Parse(Setting.DefaultValue, NumberFormatInfo.InvariantInfo);
 			return ret;
 		}
 		protected override string ConvertToString(object o)

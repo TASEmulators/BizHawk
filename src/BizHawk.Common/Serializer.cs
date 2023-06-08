@@ -1230,7 +1230,7 @@ namespace BizHawk.Common
 		{
 			if (Present(name))
 			{
-				val = float.Parse(Item(name));
+				val = float.Parse(Item(name), NumberFormatInfo.InvariantInfo);
 			}
 		}
 
@@ -1243,7 +1243,7 @@ namespace BizHawk.Common
 		{
 			if (Present(name))
 			{
-				val = double.Parse(Item(name));
+				val = double.Parse(Item(name), NumberFormatInfo.InvariantInfo);
 			}
 		}
 

@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Numerics;
 using System.Text.RegularExpressions;
@@ -234,7 +235,7 @@ namespace BizHawk.Client.Common.Filters
 
 		private static float FetchFloat(IDictionary<string, string> dict, string key, float @default)
 		{
-			return dict.TryGetValue(key, out var str) ? float.Parse(str) : @default;
+			return dict.TryGetValue(key, out var str) ? float.Parse(str, NumberFormatInfo.InvariantInfo) : @default;
 		}
 
 		private static bool FetchBool(IDictionary<string, string> dict, string key, bool @default)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Windows.Forms;
 
 using BizHawk.Common;
@@ -76,7 +77,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 						{
 							//make a menuitem to show the last modified timestamp
 							var timestamp = File.GetLastWriteTime(hf.FullPathWithoutMember);
-							var tsmiTimestamp = new ToolStripLabel { Text = timestamp.ToString() };
+							var tsmiTimestamp = new ToolStripLabel { Text = timestamp.ToString(DateTimeFormatInfo.InvariantInfo) };
 
 							tsdd.Items.Add(tsmiTimestamp);
 							tsdd.Items.Add(new ToolStripSeparator());

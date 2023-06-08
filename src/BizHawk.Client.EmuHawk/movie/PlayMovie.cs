@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -76,7 +77,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private static string MovieTimeLengthStr(TimeSpan movieLength)
-			=> movieLength.ToString(movieLength.Days == 0 ? @"hh\:mm\:ss\.fff" : @"dd\:hh\:mm\:ss\.fff");
+			=> movieLength.ToString(movieLength.Days == 0 ? @"hh\:mm\:ss\.fff" : @"dd\:hh\:mm\:ss\.fff", DateTimeFormatInfo.InvariantInfo);
 
 		private void MovieView_QueryItemText(object sender, RetrieveVirtualItemEventArgs e)
 		{
@@ -104,7 +105,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return null;
 			}
-				
+
 			var movie = LoadMovieInfo(file, force);
 			if (movie == null)
 			{
@@ -257,7 +258,7 @@ namespace BizHawk.Client.EmuHawk
 			while (dpTodo.Count > 0)
 			{
 				string dp = dpTodo.Dequeue();
-				
+
 				// enqueue subdirectories if appropriate
 				if (_config.PlayMovieIncludeSubDir)
 				{

@@ -50,7 +50,7 @@ namespace BizHawk.Common
 			if (destinationType == typeof(string))
 			{
 				var num = Convert.ToSingle(value);
-				return num.ToString();
+				return num.ToString(NumberFormatInfo.InvariantInfo);
 			}
 
 			return base.ConvertTo(context, culture, value, destinationType)!;

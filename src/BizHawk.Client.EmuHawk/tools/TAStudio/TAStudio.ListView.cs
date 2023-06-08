@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Collections.Generic;
-
+using System.Globalization;
 using BizHawk.Emulation.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Client.Common;
@@ -356,7 +356,7 @@ namespace BizHawk.Client.EmuHawk
 						if (column.Type == ColumnType.Axis)
 						{
 							// feos: this could be cached, but I don't notice any slowdown this way either
-							if (text == ((float) ControllerType.Axes[columnName].Neutral).ToString())
+							if (text == ((float) ControllerType.Axes[columnName].Neutral).ToString(NumberFormatInfo.InvariantInfo))
 							{
 								text = "";
 							}
@@ -1297,12 +1297,12 @@ namespace BizHawk.Client.EmuHawk
 			if (e.KeyCode == Keys.Right)
 			{
 				value = rMax;
-				_axisTypedValue = value.ToString();
+				_axisTypedValue = value.ToString(NumberFormatInfo.InvariantInfo);
 			}
 			else if (e.KeyCode == Keys.Left)
 			{
 				value = rMin;
-				_axisTypedValue = value.ToString();
+				_axisTypedValue = value.ToString(NumberFormatInfo.InvariantInfo);
 			}
 			else if (e.KeyCode >= Keys.D0 && e.KeyCode <= Keys.D9)
 			{
@@ -1332,7 +1332,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (_axisTypedValue == "") // Very first key press is backspace?
 				{
-					_axisTypedValue = value.ToString();
+					_axisTypedValue = value.ToString(NumberFormatInfo.InvariantInfo);
 				}
 
 				_axisTypedValue = _axisTypedValue.Substring(0, _axisTypedValue.Length - 1);
@@ -1384,7 +1384,7 @@ namespace BizHawk.Client.EmuHawk
 				value += changeBy;
 				if (changeBy != 0)
 				{
-					_axisTypedValue = value.ToString();
+					_axisTypedValue = value.ToString(NumberFormatInfo.InvariantInfo);
 				}
 			}
 
@@ -1404,7 +1404,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					if (float.TryParse(_axisTypedValue, out value)) // String "-" can't be parsed.
+					if (float.TryParse(_axisTypedValue, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out value)) // String "-" can't be parsed.
 					{
 						if (value > rMax)
 						{
@@ -1415,7 +1415,7 @@ namespace BizHawk.Client.EmuHawk
 							value = rMin;
 						}
 
-						_axisTypedValue = value.ToString();
+						_axisTypedValue = value.ToString(NumberFormatInfo.InvariantInfo);
 						CurrentTasMovie.SetAxisState(_axisEditRow, _axisEditColumn, (int) value);
 					}
 				}

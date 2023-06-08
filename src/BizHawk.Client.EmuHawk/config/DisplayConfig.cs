@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
 
@@ -98,9 +99,9 @@ namespace BizHawk.Client.EmuHawk
 			if (_config.DispCustomUserARHeight != -1)
 				txtCustomARHeight.Text = _config.DispCustomUserARHeight.ToString();
 			if (_config.DispCustomUserArx != -1)
-				txtCustomARX.Text = _config.DispCustomUserArx.ToString();
+				txtCustomARX.Text = _config.DispCustomUserArx.ToString(NumberFormatInfo.InvariantInfo);
 			if (_config.DispCustomUserAry != -1)
-				txtCustomARY.Text = _config.DispCustomUserAry.ToString();
+				txtCustomARY.Text = _config.DispCustomUserAry.ToString(NumberFormatInfo.InvariantInfo);
 
 			txtCropLeft.Text = _config.DispCropLeft.ToString();
 			txtCropTop.Text = _config.DispCropTop.ToString();
