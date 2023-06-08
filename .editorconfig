@@ -13,5 +13,7 @@ csharp_indent_case_contents = true
 csharp_indent_labels = one_less_than_current
 
 # Globalization rules
-dotnet_diagnostic.CA1305.severity = silent
+dotnet_code_quality.CA1305.excluded_symbol_names = T:System.Byte|T:System.SByte|T:System.Int16|T:System.UInt16|T:System.Int32|T:System.UInt32|T:System.Int64|T:System.UInt64|T:System.String|T:System.Text.StringBuilder|T:System.Convert
+
+dotnet_diagnostic.CA1305.severity = error
 dotnet_diagnostic.CA2101.severity = suggestion

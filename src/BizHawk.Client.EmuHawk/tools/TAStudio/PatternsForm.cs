@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -110,7 +111,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			_values[PatternList.SelectedIndex] = ValueNum.Value.ToString();
+			_values[PatternList.SelectedIndex] = ValueNum.Value.ToString(NumberFormatInfo.InvariantInfo);
 			UpdatePattern();
 			UpdateDisplay();
 		}
