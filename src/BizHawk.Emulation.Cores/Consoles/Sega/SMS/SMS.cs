@@ -293,17 +293,17 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		{
 			if (gameRegion == null)
 				return SmsSyncSettings.Regions.Export;
-			if (gameRegion.IndexOf("USA") >= 0)
+			if (gameRegion.IndexOf("USA", StringComparison.Ordinal) >= 0)
 				return SmsSyncSettings.Regions.Export;
-			if (gameRegion.IndexOf("Europe") >= 0)
+			if (gameRegion.IndexOf("Europe", StringComparison.Ordinal) >= 0)
 				return SmsSyncSettings.Regions.Export;
-			if (gameRegion.IndexOf("World") >= 0)
+			if (gameRegion.IndexOf("World", StringComparison.Ordinal) >= 0)
 				return SmsSyncSettings.Regions.Export;
-			if (gameRegion.IndexOf("Brazil") >= 0)
+			if (gameRegion.IndexOf("Brazil", StringComparison.Ordinal) >= 0)
 				return SmsSyncSettings.Regions.Export;
-			if (gameRegion.IndexOf("Australia") >= 0)
+			if (gameRegion.IndexOf("Australia", StringComparison.Ordinal) >= 0)
 				return SmsSyncSettings.Regions.Export;
-			if (gameRegion.IndexOf("Korea") >= 0)
+			if (gameRegion.IndexOf("Korea", StringComparison.Ordinal) >= 0)
 				return SmsSyncSettings.Regions.Korea;
 			return SmsSyncSettings.Regions.Japan;
 		}

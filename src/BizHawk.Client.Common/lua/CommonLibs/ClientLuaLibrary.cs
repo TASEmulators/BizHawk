@@ -330,7 +330,7 @@ namespace BizHawk.Client.Common
 		[LuaMethodExample("local nlcliget = client.getavailabletools( );")]
 		[LuaMethod("getavailabletools", "Returns a list of the tools currently open")]
 		public LuaTable GetAvailableTools()
-			=> _th.EnumerateToLuaTable(APIs.Tool.AvailableTools.Select(tool => tool.Name.ToLower()), indexFrom: 0);
+			=> _th.EnumerateToLuaTable(APIs.Tool.AvailableTools.Select(tool => tool.Name.ToLowerInvariant()), indexFrom: 0);
 
 		[LuaMethodExample("local nlcliget = client.gettool( \"Tool name\" );")]
 		[LuaMethod("gettool", "Returns an object that represents a tool of the given name (not case sensitive). If the tool is not open, it will be loaded if available. Use getavailabletools to get a list of names")]

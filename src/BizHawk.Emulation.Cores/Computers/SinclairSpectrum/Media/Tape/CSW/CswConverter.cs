@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			int majorVer = data[8];
 			int minorVer = data[9];
 
-			if (ident.ToUpper() != "COMPRESSED SQUARE WAVE")
+			if (ident.ToUpperInvariant() != "COMPRESSED SQUARE WAVE")
 			{
 				// this is not a valid CSW format file
 				return false;
@@ -80,7 +80,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// (first 22 bytes of the file)
 			string ident = Encoding.ASCII.GetString(data, 0, 22);
 
-			if (ident.ToUpper() != "COMPRESSED SQUARE WAVE")
+			if (ident.ToUpperInvariant() != "COMPRESSED SQUARE WAVE")
 			{
 				// this is not a valid CSW format file
 				throw new Exception($"{nameof(CswConverter)}: This is not a valid CSW format file");

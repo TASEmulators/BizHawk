@@ -482,7 +482,7 @@ namespace BizHawk.Emulation.DiscSystem
 						var (dir, fileNoExt, _) = aFile.MDSPath.SplitPathToDirFileAndExt();
 
 						if (f.FilenameOffset == 0 ||
-							string.Compare(fileName, "*.mdf", StringComparison.InvariantCultureIgnoreCase) == 0)
+							string.Compare(fileName, "*.mdf", StringComparison.OrdinalIgnoreCase) == 0)
 						{
 							fileName = $@"{dir}\{fileNoExt}.mdf";
 						}

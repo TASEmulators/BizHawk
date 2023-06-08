@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
@@ -235,7 +236,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			// check for SPEEDLOCK ident in sector 0
 			string ident = Encoding.ASCII.GetString(DiskTracks[0].Sectors[0].SectorData, 0, DiskTracks[0].Sectors[0].SectorData.Length);
-			if (!ident.ToUpper().Contains("SPEEDLOCK"))
+			if (!ident.Contains("SPEEDLOCK", StringComparison.OrdinalIgnoreCase))
 				return false;
 
 			// check for correct sector 0 lengths
@@ -297,7 +298,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			// check for ALKATRAZ ident in sector 0
 			string ident = Encoding.ASCII.GetString(DiskTracks[0].Sectors[0].SectorData, 0, DiskTracks[0].Sectors[0].SectorData.Length);
-			if (!ident.ToUpper().Contains("ALKATRAZ PROTECTION SYSTEM"))
+			if (!ident.Contains("ALKATRAZ PROTECTION SYSTEM", StringComparison.OrdinalIgnoreCase))
 				return false;
 
 			// ALKATRAZ NOTES (-asni 2018-05-01)
@@ -338,7 +339,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			// check for PAUL OWENS ident in sector 2
 			string ident = Encoding.ASCII.GetString(DiskTracks[0].Sectors[2].SectorData, 0, DiskTracks[0].Sectors[2].SectorData.Length);
-			if (!ident.ToUpper().Contains("PAUL OWENS"))
+			if (!ident.Contains("PAUL OWENS", StringComparison.OrdinalIgnoreCase))
 				return false;
 
 			// Paul Owens Disk Protection Notes (-asni 2018-05-01)
@@ -380,7 +381,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			// check for Hexagon ident in sector 8
 			string ident = Encoding.ASCII.GetString(DiskTracks[0].Sectors[8].SectorData, 0, DiskTracks[0].Sectors[8].SectorData.Length);
-			if (ident.ToUpper().Contains("GON DISK PROT"))
+			if (ident.Contains("GON DISK PROT", StringComparison.OrdinalIgnoreCase))
 				return true;
 
 			// hexagon protection may not be labelled as such

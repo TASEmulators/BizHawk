@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SubNESHawk;
@@ -25,13 +25,13 @@ namespace BizHawk.Emulation.Cores
 				{
 					ss = nesHawk.GetSyncSettings();
 					isFds = nesHawk.IsFDS;
-					fdsButtonCount = nesHawk.ControllerDefinition.BoolButtons.Count(b => b.StartsWith("FDS Insert "));
+					fdsButtonCount = nesHawk.ControllerDefinition.BoolButtons.Count(b => b.StartsWithOrdinal("FDS Insert "));
 				}
 				else if (core is SubNESHawk subNesHawk)
 				{
 					ss = subNesHawk.GetSyncSettings();
 					isFds = subNesHawk.IsFds;
-					fdsButtonCount = subNesHawk.ControllerDefinition.BoolButtons.Count(b => b.StartsWith("FDS Insert "));
+					fdsButtonCount = subNesHawk.ControllerDefinition.BoolButtons.Count(b => b.StartsWithOrdinal("FDS Insert "));
 				}
 
 				if (ss.Controls.Famicom)

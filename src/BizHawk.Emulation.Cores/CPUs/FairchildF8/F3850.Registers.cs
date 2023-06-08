@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Components.FairchildF8
@@ -274,7 +275,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 
 		public void SetCpuRegister(string register, int value)
 		{
-			if (register.StartsWith("SPR"))
+			if (register.StartsWithOrdinal("SPR"))
 			{
 				var reg = Convert.ToInt32(register.Replace("SPR", ""));
 

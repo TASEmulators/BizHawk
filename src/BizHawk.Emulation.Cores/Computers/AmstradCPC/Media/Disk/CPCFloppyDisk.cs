@@ -2,6 +2,7 @@
 using BizHawk.Common;
 using System.Collections.Generic;
 using System;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
@@ -27,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// look for standard magic string
 			string ident = Encoding.ASCII.GetString(data, 0, 16);
 
-			if (!ident.ToUpper().Contains("MV - CPC"))
+			if (!ident.Contains("MV - CPC", StringComparison.OrdinalIgnoreCase))
 			{
 				// incorrect format
 				return false;
@@ -158,7 +159,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			// look for standard magic string
 			string ident = Encoding.ASCII.GetString(data, 0, 16);
-			if (!ident.ToUpper().Contains("MV - CPC"))
+			if (!ident.Contains("MV - CPC", StringComparison.OrdinalIgnoreCase))
 			{
 				// incorrect format
 				return false;

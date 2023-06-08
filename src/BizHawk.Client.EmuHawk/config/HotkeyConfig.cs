@@ -203,7 +203,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.IsPressed(Keys.Enter) || e.IsPressed(Keys.Tab))
 			{
-				var k = HotkeyInfo.AllHotkeys.FirstOrNull(kvp => string.Compare(kvp.Value.DisplayName, SearchBox.Text, true) is 0)?.Key;
+				var k = HotkeyInfo.AllHotkeys.FirstOrNull(kvp => string.Compare(kvp.Value.DisplayName, SearchBox.Text, StringComparison.OrdinalIgnoreCase) is 0)?.Key;
 
 				// Found
 				if (k is not null)

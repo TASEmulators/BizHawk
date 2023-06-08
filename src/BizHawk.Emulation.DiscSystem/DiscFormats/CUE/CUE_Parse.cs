@@ -1,5 +1,6 @@
 //TODO - object initialization syntax cleanup
 
+using System;
 using System.Text.RegularExpressions;
 using System.IO;
 
@@ -312,7 +313,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 							// cues don't support multiple sessions themselves, but it is common for rips to put SESSION # in REM fields
 							// so, if we have such a REM, we'll check if the comment starts with SESSION, and interpret that as a session "command"
 							var trimmed = comment.Trim();
-							if (trimmed.ToUpperInvariant().StartsWith("SESSION ") && int.TryParse(trimmed.Substring(8), out var number) && number > 0)
+							if (trimmed.StartsWith("SESSION ", StringComparison.OrdinalIgnoreCase) && int.TryParse(trimmed.Substring(8), out var number) && number > 0)
 							{
 								OUT_CueFile.Commands.Add(new CUE_File.Command.SESSION(number));
 								break;

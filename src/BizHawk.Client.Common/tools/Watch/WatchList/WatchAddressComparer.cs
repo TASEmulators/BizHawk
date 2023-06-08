@@ -32,12 +32,12 @@ namespace BizHawk.Client.Common
 
 				if (x.Address.Equals(y.Address))
 				{
-					if (x.Domain.Name.Equals(y.Domain.Name))
+					if (x.Domain.Name.Equals(y.Domain.Name, System.StringComparison.Ordinal))
 					{
 						return x.Size.CompareTo(y.Size);
 					}
 
-					return x.Domain.Name.CompareTo(y.Domain.Name);
+					return string.CompareOrdinal(x.Domain.Name, y.Domain.Name);
 				}
 
 				return x.Address.CompareTo(y.Address);

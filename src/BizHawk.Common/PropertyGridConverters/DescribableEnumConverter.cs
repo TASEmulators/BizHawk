@@ -26,7 +26,7 @@ namespace BizHawk.Common
 			return Enum.Parse(
 				enumType,
 				enumType.GetFields(BindingFlags.Public | BindingFlags.Static)
-					.FirstOrDefault(fi => valueStr.Equals((fi.GetCustomAttribute(typeof(DisplayAttribute)) as DisplayAttribute)?.Name))?.Name
+					.FirstOrDefault(fi => valueStr.Equals((fi.GetCustomAttribute(typeof(DisplayAttribute)) as DisplayAttribute)?.Name, StringComparison.Ordinal))?.Name
 					?? valueStr
 			);
 		}

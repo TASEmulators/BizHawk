@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			int majorVer = data[8];
 			int minorVer = data[9];
 
-			if (ident.ToUpper() != "PZXT")
+			if (ident.ToUpperInvariant() != "PZXT")
 			{
 				// this is not a valid PZX format file
 				return false;
@@ -96,7 +96,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// check whether this is a valid pzx format file by looking at the identifier in the header block
 			string ident = Encoding.ASCII.GetString(data, 0, 4);
 
-			if (ident.ToUpper() != "PZXT")
+			if (ident.ToUpperInvariant() != "PZXT")
 			{
 				// this is not a valid TZX format file
 				throw new Exception($"{nameof(PzxConverter)}: This is not a valid PZX format file");

@@ -11,3 +11,7 @@ csharp_new_line_before_finally = true
 csharp_indent_switch_labels = true
 csharp_indent_case_contents = true
 csharp_indent_labels = one_less_than_current
+
+# Globalization rules
+dotnet_diagnostic.CA1305.severity = silent
+dotnet_diagnostic.CA2101.severity = suggestion

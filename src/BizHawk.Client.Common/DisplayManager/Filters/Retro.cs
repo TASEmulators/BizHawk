@@ -166,8 +166,7 @@ namespace BizHawk.Client.Common.Filters
 
 					value = value.Trim();
 				}
-
-				dict[key.ToLower()] = value;
+				dict[key.ToLowerInvariant()] = value;
 			}
 
 			// process the keys

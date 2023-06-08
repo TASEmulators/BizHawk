@@ -1456,7 +1456,7 @@ namespace BizHawk.Client.EmuHawk
 			textbox.Multiline = multiline;
 			if (scrollbars != null)
 			{
-				switch (scrollbars.ToUpper())
+				switch (scrollbars.ToUpperInvariant())
 				{
 					case "VERTICAL":
 						textbox.ScrollBars = ScrollBars.Vertical;
@@ -1489,7 +1489,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (boxtype != null)
 			{
-				switch (boxtype.ToUpper())
+				switch (boxtype.ToUpperInvariant())
 				{
 					case "HEX":
 					case "HEXADECIMAL":

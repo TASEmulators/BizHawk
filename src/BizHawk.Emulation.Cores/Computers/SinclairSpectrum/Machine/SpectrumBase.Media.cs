@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -245,7 +246,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             string hdr = Encoding.ASCII.GetString(data.Take(16).ToArray());
 
 			// disk checking first
-			if (hdr.ToUpper().Contains("EXTENDED CPC DSK") || hdr.ToUpper().Contains("MV - CPC"))
+			if (hdr.Contains("EXTENDED CPC DSK", StringComparison.OrdinalIgnoreCase) || hdr.Contains("MV - CPC", StringComparison.OrdinalIgnoreCase))
             {
                 // spectrum .dsk disk file
                 // check for number of sides
@@ -255,20 +256,20 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 else
                     return SpectrumMediaType.DiskDoubleSided;
             }
-			if (hdr.ToUpper().StartsWith("FDI"))
+			if (hdr.StartsWith("FDI", StringComparison.OrdinalIgnoreCase))
             {
                 // spectrum .fdi disk file
                 return SpectrumMediaType.Disk;
             }
-            if (hdr.ToUpper().StartsWith("CAPS"))
+            if (hdr.StartsWith("CAPS", StringComparison.OrdinalIgnoreCase))
             {
                 // IPF format file
                 return SpectrumMediaType.Disk;
             }
-            if (hdr.ToUpper().StartsWith("UDI!") && data[0x08] == 0)
+            if (hdr.StartsWith("UDI!", StringComparison.OrdinalIgnoreCase) && data[0x08] == 0)
             {
                 // UDI v1.0
-                if (hdr.StartsWith("udi!"))
+                if (hdr.StartsWithOrdinal("udi!"))
                 {
                     throw new NotSupportedException("ZXHawk currently does not supported UDIv1.0 with compression.");
                 }
@@ -282,22 +283,22 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
 
             // tape checking
-            if (hdr.ToUpper().StartsWith("ZXTAPE!"))
+            if (hdr.StartsWith("ZXTAPE!", StringComparison.OrdinalIgnoreCase))
             {
                 // spectrum .tzx tape file
                 return SpectrumMediaType.Tape;
             }
-            if (hdr.ToUpper().StartsWith("PZXT"))
+            if (hdr.StartsWith("PZXT", StringComparison.OrdinalIgnoreCase))
             {
                 // spectrum .tzx tape file
                 return SpectrumMediaType.Tape;
             }
-            if (hdr.ToUpper().StartsWith("COMPRESSED SQ"))
+            if (hdr.StartsWith("COMPRESSED SQ", StringComparison.OrdinalIgnoreCase))
             {
                 // spectrum .tzx tape file
                 return SpectrumMediaType.Tape;
             }
-            if (hdr.ToUpper().Contains("WAVE"))
+            if (hdr.Contains("WAVE", StringComparison.OrdinalIgnoreCase))
             {
                 // spectrum .tzx tape file
                 return SpectrumMediaType.Tape;

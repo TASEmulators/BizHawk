@@ -1,4 +1,5 @@
-﻿using BizHawk.Emulation.Common;
+﻿using System;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.PCEngine;
 
 namespace BizHawk.Client.Common.movie.import
@@ -43,8 +44,7 @@ namespace BizHawk.Client.Common.movie.import
 				{
 					ImportTextFrame(line);
 				}
-				else if (line.ToLower()
-					.StartsWith("ports"))
+				else if (line.StartsWith("ports", StringComparison.OrdinalIgnoreCase))
 				{
 					var portNumStr = ParseHeader(line, "ports");
 					if (int.TryParse(portNumStr, out int ports))
@@ -83,32 +83,32 @@ namespace BizHawk.Client.Common.movie.import
 							ss.Port5);
 					}
 				}
-				else if (line.ToLower().StartsWith("pcecd"))
+				else if (line.StartsWith("pcecd", StringComparison.OrdinalIgnoreCase))
 				{
 					Result.Movie.HeaderEntries[HeaderKeys.Platform] = VSystemID.Raw.PCECD;
 				}
-				else if (line.ToLower().StartsWith("emuversion"))
+				else if (line.StartsWith("emuversion", StringComparison.OrdinalIgnoreCase))
 				{
 					Result.Movie.Comments.Add($"{EmulationOrigin} Mednafen/PCEjin version {ParseHeader(line, "emuVersion")}");
 				}
-				else if (line.ToLower().StartsWith("version"))
+				else if (line.StartsWith("version", StringComparison.OrdinalIgnoreCase))
 				{
 					string version = ParseHeader(line, "version");
 					Result.Movie.Comments.Add($"{MovieOrigin} .mc2 version {version}");
 				}
-				else if (line.ToLower().StartsWith("romfilename"))
+				else if (line.StartsWith("romfilename", StringComparison.OrdinalIgnoreCase))
 				{
 					Result.Movie.HeaderEntries[HeaderKeys.GameName] = ParseHeader(line, "romFilename");
 				}
-				else if (line.ToLower().StartsWith("cdgamename"))
+				else if (line.StartsWith("cdgamename", StringComparison.OrdinalIgnoreCase))
 				{
 					Result.Movie.HeaderEntries[HeaderKeys.GameName] = ParseHeader(line, "cdGameName");
 				}
-				else if (line.ToLower().StartsWith("comment author"))
+				else if (line.StartsWith("comment author", StringComparison.OrdinalIgnoreCase))
 				{
 					Result.Movie.HeaderEntries[HeaderKeys.Author] = ParseHeader(line, "comment author");
 				}
-				else if (line.ToLower().StartsWith("rerecordcount"))
+				else if (line.StartsWith("rerecordcount", StringComparison.OrdinalIgnoreCase))
 				{
 					int rerecordCount;
 
@@ -124,7 +124,7 @@ namespace BizHawk.Client.Common.movie.import
 
 					Result.Movie.Rerecords = (ulong)rerecordCount;
 				}
-				else if (line.ToLower().StartsWith("startsfromsavestate"))
+				else if (line.StartsWith("startsfromsavestate", StringComparison.OrdinalIgnoreCase))
 				{
 					// If this movie starts from a savestate, we can't support it.
 					if (ParseHeader(line, "StartsFromSavestate") == "1")

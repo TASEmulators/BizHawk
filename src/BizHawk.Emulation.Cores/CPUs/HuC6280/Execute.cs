@@ -1,4 +1,5 @@
 using System;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 // Do not modify this file directly! This is GENERATED code.
@@ -2339,7 +2340,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 					case 0xF4: // SET
 						int a; // TODO remove these extra checks
 						string b = Disassemble(PC, out a);
-						if (b.StartsWith("ADC") == false && b.StartsWith("EOR") == false && b.StartsWith("AND") == false && b.StartsWith("ORA") == false)
+						if (b.StartsWithOrdinal("ADC") == false && b.StartsWithOrdinal("EOR") == false && b.StartsWithOrdinal("AND") == false && b.StartsWithOrdinal("ORA") == false)
 							Console.WriteLine("SETTING T FLAG, NEXT INSTRUCTION IS UNHANDLED:  {0}", b);
 						FlagT = true;
 						PendingCycles -= 2;

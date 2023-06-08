@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -177,7 +178,7 @@ namespace BizHawk.Client.Common.movie.import
 					}
 					Result.Movie.AppendFrame(_previousControllers);
 				}
-				else if (item.FullName.StartsWith("moviesram."))
+				else if (item.FullName.StartsWithOrdinal("moviesram."))
 				{
 					using var stream = item.Open();
 					byte[] movieSram = stream.ReadAllBytes();
@@ -212,7 +213,7 @@ namespace BizHawk.Client.Common.movie.import
 
 					Result.Movie.Rerecords = rerecordCount;
 				}
-				else if (item.FullName.EndsWith(".sha256"))
+				else if (item.FullName.EndsWithOrdinal(".sha256"))
 				{
 					using var stream = item.Open();
 					string sha256Hash = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
@@ -318,7 +319,7 @@ namespace BizHawk.Client.Common.movie.import
 				if (player > _playerCount) break;
 
 				IReadOnlyList<string> buttons = controllers.Definition.ControlsOrdered[player];
-				if (buttons[0].EndsWith("Up")) // hack to identify gamepad / multitap which have a different button order in bizhawk compared to lsnes
+				if (buttons[0].EndsWithOrdinal("Up")) // hack to identify gamepad / multitap which have a different button order in bizhawk compared to lsnes
 				{
 					buttons = new[] { "B", "Y", "Select", "Start", "Up", "Down", "Left", "Right", "A", "X", "L", "R" }
 						.Select(button => $"P{player} {button}")

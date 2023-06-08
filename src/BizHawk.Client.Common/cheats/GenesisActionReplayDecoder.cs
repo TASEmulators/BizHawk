@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common.cheats
 				throw new ArgumentNullException(nameof(code));
 			}
 
-			if (code.IndexOf(":") != 6)
+			if (code.IndexOf(":", StringComparison.Ordinal) != 6)
 			{
 				return new InvalidCheatCode("Action Replay/Pro Action Replay Codes need to contain a colon after the sixth character.");
 			}

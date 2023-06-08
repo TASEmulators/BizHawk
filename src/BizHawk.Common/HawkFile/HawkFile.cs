@@ -142,7 +142,7 @@ namespace BizHawk.Common
 					}
 					for (int i = 0, l = scanResults.Count; i < l; i++)
 					{
-						if (string.Equals(scanResults[i].Name, autobind, StringComparison.InvariantCultureIgnoreCase))
+						if (string.Equals(scanResults[i].Name, autobind, StringComparison.OrdinalIgnoreCase))
 						{
 							BindArchiveMember(i);
 							return;

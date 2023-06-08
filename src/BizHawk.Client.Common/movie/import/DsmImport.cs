@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
@@ -41,40 +42,40 @@ namespace BizHawk.Client.Common
 				{
 					ImportInputFrame(line);
 				}
-				else if (line.StartsWith("rerecordCount"))
+				else if (line.StartsWithOrdinal("rerecordCount"))
 				{
 					Result.Movie.Rerecords = (ulong) (int.TryParse(ParseHeader(line, "rerecordCount"), out var rerecordCount) ? rerecordCount : default);
 				}
-				else if (line.StartsWith("firmNickname"))
+				else if (line.StartsWithOrdinal("firmNickname"))
 				{
 					syncSettings.FirmwareUsername = ParseHeader(line, "firmNickname");
 				}
-				else if (line.StartsWith("firmFavColour"))
+				else if (line.StartsWithOrdinal("firmFavColour"))
 				{
 					syncSettings.FirmwareFavouriteColour = (NDS.NDSSyncSettings.Color)byte.Parse(ParseHeader(line, "firmFavColour"));
 				}
-				else if (line.StartsWith("firmBirthDay"))
+				else if (line.StartsWithOrdinal("firmBirthDay"))
 				{
 					syncSettings.FirmwareBirthdayDay = byte.Parse(ParseHeader(line, "firmBirthDay"));
 				}
-				else if (line.StartsWith("firmBirthMonth"))
+				else if (line.StartsWithOrdinal("firmBirthMonth"))
 				{
 					syncSettings.FirmwareBirthdayMonth = (NDS.NDSSyncSettings.Month)byte.Parse(ParseHeader(line, "firmBirthMonth"));
 				}
-				else if (line.StartsWith("rtcStartNew"))
+				else if (line.StartsWithOrdinal("rtcStartNew"))
 				{
 					string rtcTime = ParseHeader(line, "rtcStartNew");
 					syncSettings.InitialTime = DateTime.ParseExact(rtcTime, "yyyy'-'MMM'-'dd' 'HH':'mm':'ss':'fff", DateTimeFormatInfo.InvariantInfo);
 				}
-				else if (line.StartsWith("comment author"))
+				else if (line.StartsWithOrdinal("comment author"))
 				{
 					Result.Movie.HeaderEntries[HeaderKeys.Author] = ParseHeader(line, "comment author");
 				}
-				else if (line.StartsWith("comment"))
+				else if (line.StartsWithOrdinal("comment"))
 				{
 					Result.Movie.Comments.Add(ParseHeader(line, "comment"));
 				}
-				else if (line.ToLower().StartsWith("guid"))
+				else if (line.StartsWith("guid", StringComparison.OrdinalIgnoreCase))
 				{
 					// We no longer care to keep this info
 				}

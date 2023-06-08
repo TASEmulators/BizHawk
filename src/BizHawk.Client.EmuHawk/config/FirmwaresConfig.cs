@@ -113,7 +113,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var lva = (ListViewItem)a;
 				var lvb = (ListViewItem)b;
-				return Sign * string.Compare(lva.SubItems[Column].Text, lvb.SubItems[Column].Text);
+				return Sign * string.CompareOrdinal(lva.SubItems[Column].Text, lvb.SubItems[Column].Text);
 			}
 		}
 

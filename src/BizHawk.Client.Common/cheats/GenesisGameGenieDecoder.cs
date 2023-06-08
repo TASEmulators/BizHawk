@@ -48,7 +48,7 @@ namespace BizHawk.Client.Common.cheats
 				throw new ArgumentNullException(nameof(code));
 			}
 
-			if (code.IndexOf("-") != 4)
+			if (code.IndexOf("-", StringComparison.Ordinal) != 4)
 			{
 				return new InvalidCheatCode("Game Genie Codes need to contain a dash after the fourth character");
 			}

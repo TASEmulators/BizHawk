@@ -9,6 +9,7 @@ using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 
@@ -383,29 +384,29 @@ namespace BizHawk.Client.EmuHawk
 					|| c.Name == "Light Sensor"
 					|| c.Name == "Disc Select"
 					|| c.Name == "Disk Index"
-					|| c.Name.StartsWith("Tilt")
-					|| c.Name.StartsWith("Key ")
-					|| c.Name.StartsWith("Open")
-					|| c.Name.StartsWith("Close")
-					|| c.Name.EndsWith("Tape")
-					|| c.Name.EndsWith("Disk")
-					|| c.Name.EndsWith("Block")
-					|| c.Name.EndsWith("Status"));
+					|| c.Name.StartsWithOrdinal("Tilt")
+					|| c.Name.StartsWithOrdinal("Key ")
+					|| c.Name.StartsWithOrdinal("Open")
+					|| c.Name.StartsWithOrdinal("Close")
+					|| c.Name.EndsWithOrdinal("Tape")
+					|| c.Name.EndsWithOrdinal("Disk")
+					|| c.Name.EndsWithOrdinal("Block")
+					|| c.Name.EndsWithOrdinal("Status"));
 
 			if (Emulator.SystemId is VSystemID.Raw.N64)
 			{
 				foreach (var c in TasView.AllColumns
-					.Where(static c => c.Name.EndsWith(" C Up") || c.Name.EndsWith(" C Down")
-						|| c.Name.EndsWith(" C Left") || c.Name.EndsWith(" C Right")))
+					.Where(static c => c.Name.EndsWithOrdinal(" C Up") || c.Name.EndsWithOrdinal(" C Down")
+						|| c.Name.EndsWithOrdinal(" C Left") || c.Name.EndsWithOrdinal(" C Right")))
 				{
 					c.Text = $"c{c.Text.ToUpperInvariant()}"; // prepend 'c' to differentiate from L/R buttons -- only affects table header
 				}
 				var fakeAnalogControls = TasView.AllColumns
 					.Where(c =>
-						c.Name.EndsWith("A Up")
-						|| c.Name.EndsWith("A Down")
-						|| c.Name.EndsWith("A Left")
-						|| c.Name.EndsWith("A Right"));
+						c.Name.EndsWithOrdinal("A Up")
+						|| c.Name.EndsWithOrdinal("A Down")
+						|| c.Name.EndsWithOrdinal("A Left")
+						|| c.Name.EndsWithOrdinal("A Right"));
 
 				columnsToHide = columnsToHide.Concat(fakeAnalogControls);
 			}

@@ -65,7 +65,7 @@ namespace BizHawk.Client.Common
 
 				if (!string.IsNullOrWhiteSpace(GameInfo.Name) && GameInfo.Name == GameInfo.Name.ToUpperInvariant())
 				{
-					GameInfo.Name = Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(GameInfo.Name.ToLower());
+					GameInfo.Name = Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(GameInfo.Name.ToLowerInvariant());
 				}
 
 				return;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
-
+using BizHawk.Common.StringExtensions;
 using NLua;
 
 // ReSharper disable UnusedMember.Global
@@ -127,12 +127,12 @@ namespace BizHawk.Client.Common
 		[LuaMethodExample("if ( bizstring.startswith( \"Some string\", \"Some\") ) then\r\n\tconsole.log( \"Returns whether str starts with str2\" );\r\nend;")]
 		[LuaMethod("startswith", "Returns whether str starts with str2")]
 		public static bool StartsWith(string str, string str2)
-			=> !string.IsNullOrEmpty(str) && str.StartsWith(str2); // don't bother fixing encoding, will match (or not match) regardless
+			=> !string.IsNullOrEmpty(str) && str.StartsWithOrdinal(str2); // don't bother fixing encoding, will match (or not match) regardless
 
 		[LuaMethodExample("if ( bizstring.endswith( \"Some string\", \"string\") ) then\r\n\tconsole.log( \"Returns whether str ends wth str2\" );\r\nend;")]
 		[LuaMethod("endswith", "Returns whether str ends wth str2")]
 		public static bool EndsWith(string str, string str2)
-			=> !string.IsNullOrEmpty(str) && str.EndsWith(str2); // don't bother fixing encoding, will match (or not match) regardless
+			=> !string.IsNullOrEmpty(str) && str.EndsWithOrdinal(str2); // don't bother fixing encoding, will match (or not match) regardless
 
 		[LuaMethodExample("local nlbizspl = bizstring.split( \"Some, string\", \", \" );")]
 		[LuaMethod("split", "Splits str into a Lua-style array using the given separator (consecutive separators in str will NOT create empty entries in the array). If the separator is not a string exactly one char long, ',' will be used.")]

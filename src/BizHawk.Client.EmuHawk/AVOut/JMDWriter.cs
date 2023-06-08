@@ -602,7 +602,7 @@ namespace BizHawk.Client.EmuHawk
 		public void OpenFile(string baseName)
 		{
 			string ext = Path.GetExtension(baseName);
-			if (ext == null || ext.ToLower() != ".jmd")
+			if (ext == null || ext.ToLowerInvariant() != ".jmd")
 			{
 				baseName += ".jmd";
 			}
