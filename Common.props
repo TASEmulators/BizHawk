@@ -2,6 +2,7 @@
 	<PropertyGroup>
 		<AnalysisLevel>6</AnalysisLevel>
 		<AnalysisModeGlobalization>Recommended</AnalysisModeGlobalization>
+		<AnalysisModeMaintainability>Recommended</AnalysisModeMaintainability>
 		<CodeAnalysisRuleSet>$(MSBuildProjectDirectory)/../../Common.ruleset</CodeAnalysisRuleSet>
 		<ContinuousIntegrationBuild Condition=" '$(GITLAB_CI)' != '' Or '$(APPVEYOR)' != '' ">true</ContinuousIntegrationBuild>
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
