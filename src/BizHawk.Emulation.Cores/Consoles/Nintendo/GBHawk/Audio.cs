@@ -15,12 +15,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		private BlipBuffer _blip_L = new BlipBuffer(15000);
 		private BlipBuffer _blip_R = new BlipBuffer(15000);
 
-		public static bool[] DUTY_CYCLES = { false, false, false, false, false, false, false, true,
+		public static readonly bool[] DUTY_CYCLES = { false, false, false, false, false, false, false, true,
 													 true, false, false, false, false, false, false, true,
 													 true, false, false, false, false, true, true, true,
 													 false, true, true, true, true, true, true, false };
 
-		public static int[] DIVISOR = { 8, 16, 32, 48, 64, 80, 96, 112 };
+		public static readonly int[] DIVISOR = { 8, 16, 32, 48, 64, 80, 96, 112 };
 
 		public const int NR10 = 0;
 		public const int NR11 = 1;
@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public const int NR51 = 19;
 		public const int NR52 = 20;
 
-		public static int[] unused_bits = { 0x80, 0x3F, 0x00, 0xFF, 0xBF,
+		public static readonly int[] unused_bits = { 0x80, 0x3F, 0x00, 0xFF, 0xBF,
 															0x3F, 0x00, 0xFF, 0xBF,
 													  0x7F, 0xFF, 0x9F, 0xFF, 0xBF,
 															0xFF, 0x00, 0x00, 0xBF,

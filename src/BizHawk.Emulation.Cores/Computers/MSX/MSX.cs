@@ -171,15 +171,15 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 		private IntPtr MSX_Pntr { get; set; } = IntPtr.Zero;
 		private byte[] MSX_core = new byte[0x28000];
-		public static byte[] Bios = null;
-		public static byte[] Basic;
+		private static byte[] Bios = null;
+		private static byte[] Basic;
 
 		// Constants
 		private const int BankSize = 16384;
 
 		// ROM
-		public static byte[] RomData;
-		public static byte[] RomData2;
+		private static byte[] RomData;
+		private static byte[] RomData2;
 
 		// Machine resources
 		private IController _controller = NullController.Instance;

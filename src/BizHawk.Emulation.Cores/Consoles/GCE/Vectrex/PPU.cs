@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		public int skip;
 		public uint bright_int_1, bright_int_2, bright_int_3;
 
-		public static uint br = 0xFFFFFFFF;
+		public const uint br = 0xFFFFFFFF;
 
 		// lines to draw in a frame and vairables to go to new line
 		public double[] draw_lines = new double[1024 * 4 * 4];

@@ -9,7 +9,7 @@ namespace BizHawk.Client.EmuHawk
 	/// </remarks>
 	public readonly struct TAStudioPalette
 	{
-		public static TAStudioPalette Default = new(
+		public static readonly TAStudioPalette Default = new(
 //			currentFrame_FrameCol: Color.FromArgb(0xCF, 0xED, 0xFC),
 			currentFrame_InputLog: Color.FromArgb(0xB5, 0xE7, 0xF7),
 			greenZone_FrameCol: Color.FromArgb(0xDD, 0xFF, 0xDD),

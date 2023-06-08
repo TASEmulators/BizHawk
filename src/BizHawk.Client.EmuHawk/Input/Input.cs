@@ -27,7 +27,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly HashSet<Control> _wantingMouseFocus = new HashSet<Control>();
 
-		public static Input Instance;
+		public static Input Instance { get; set; }
 
 		private readonly Thread _updateThread;
 

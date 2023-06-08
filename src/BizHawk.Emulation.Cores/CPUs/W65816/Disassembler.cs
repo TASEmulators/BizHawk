@@ -295,7 +295,7 @@ namespace BizHawk.Emulation.Cores.Components.W65816
 					break;
 				// Block Move
 				case 0x44: case 0x54:
-					pbuf = string.Format("${0:X2},${0:X2}", peek(addr + 1), peek(addr + 2));
+					pbuf = $"${peek(addr + 1):X2},${peek(addr + 2):X2}";
 					//sprintf(pbuf, "$%02X,$%02X", mem[1], mem[2]);
 					offset = 3;
 					break;

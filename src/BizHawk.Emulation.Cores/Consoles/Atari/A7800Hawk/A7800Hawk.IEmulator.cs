@@ -364,7 +364,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		}
 
-		public static Dictionary<string, string> ValidFilterTypes = new Dictionary<string, string>
+		public static readonly Dictionary<string, string> ValidFilterTypes = new Dictionary<string, string>
 		{
 			{ "None",  "None"},
 			{ "NTSC",  "NTSC"},

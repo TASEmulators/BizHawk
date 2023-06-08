@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		private const int SHIFT = 2;
-		public static byte[,] FCEUX_Standard =
+		public static readonly byte[,] FCEUX_Standard =
 		{
 			{ 0x1D<<SHIFT, 0x1D<<SHIFT, 0x1D<<SHIFT }, /* Value 0 */
 			{ 0x09<<SHIFT, 0x06<<SHIFT, 0x23<<SHIFT }, /* Value 1 */
@@ -120,7 +120,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{ 0x00<<SHIFT, 0x00<<SHIFT, 0x00<<SHIFT }, /* Value 63 */
 		};
 
-		public static byte[,] QuickNESPalette = 
+		public static readonly byte[,] QuickNESPalette =
 		{
 			{102, 102, 102},
 			{0, 42, 136},
@@ -188,7 +188,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{0, 0, 0},
 		};
 
-		public static byte[,] palette_2c03_2c05 =
+		public static readonly byte[,] palette_2c03_2c05 =
 		{
 			{3<<5, 3<<5, 3<<5},
 			{0<<5, 1<<5, 4<<5},
@@ -256,7 +256,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{0<<5, 0<<5, 0<<5},
 		};
 
-		public static byte[,] palette_2c04_001 =
+		public static readonly byte[,] palette_2c04_001 =
 		{
 			{7<<5, 5<<5, 5<<5},
 			{6<<5, 3<<5, 7<<5},
@@ -324,7 +324,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{4<<5, 7<<5, 3<<5},
 		};
 
-		public static byte[,] palette_2c04_002 =
+		public static readonly byte[,] palette_2c04_002 =
 		{
 			{0<<5, 0<<5, 0<<5},
 			{7<<5, 5<<5, 0<<5},
@@ -392,7 +392,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{4<<5, 4<<5, 4<<5},
 		};
 
-		public static byte[,] palette_2c04_003 =
+		public static readonly byte[,] palette_2c04_003 =
 		{
 			{5<<5, 0<<5, 7<<5},
 			{7<<5, 3<<5, 7<<5},
@@ -460,7 +460,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{0<<5, 2<<5, 2<<5},
 		};
 
-		public static byte[,] palette_2c04_004 =
+		public static readonly byte[,] palette_2c04_004 =
 		{
 			{4<<5, 3<<5, 0<<5},
 			{3<<5, 2<<5, 6<<5},

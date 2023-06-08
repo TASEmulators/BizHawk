@@ -39,7 +39,7 @@ namespace BizHawk.Common
 		}
 
 		// -------------- Logging Action Configuration --------------
-		public static Action<string> LogAction = DefaultLogger;
+		public static readonly Action<string> LogAction = DefaultLogger;
 
 		// NOTEs are only logged if the domain is enabled.
 		// ERRORs are logged regardless.

@@ -85,17 +85,17 @@
 
 		public static class BIZCOLOR
 		{
-			public static int[] palette = GenLUT(ColorType.BizHawk);
+			public static readonly int[] palette = GenLUT(ColorType.BizHawk);
 		}
 
 		public static class SNES9XCOLOR
 		{
-			public static int[] palette = GenLUT(ColorType.Snes9x);
+			public static readonly int[] palette = GenLUT(ColorType.Snes9x);
 		}
 
 		public static class BSNESCOLOR
 		{
-			public static int[] palette = GenLUT(ColorType.BSNES);
+			public static readonly int[] palette = GenLUT(ColorType.BSNES);
 		}
 
 		public static int[] GetLUT(ColorType t)
