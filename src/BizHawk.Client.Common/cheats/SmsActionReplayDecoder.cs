@@ -12,7 +12,7 @@ namespace BizHawk.Client.Common.cheats
 				throw new ArgumentNullException(nameof(code));
 			}
 
-			if (code.IndexOf("-") != 3 && code.Length != 9)
+			if (code.IndexOf("-", StringComparison.Ordinal) != 3 && code.Length != 9)
 			{
 				return new InvalidCheatCode("Action Replay Codes must be 9 characters with a dash after the third character");
 			}

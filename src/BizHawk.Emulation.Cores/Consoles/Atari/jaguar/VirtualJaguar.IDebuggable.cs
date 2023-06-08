@@ -45,14 +45,14 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 		public void SetCpuRegister(string register, int value)
 		{
 			register = register.ToUpperInvariant();
-			if (register.StartsWith("M68K "))
+			if (register.StartsWithOrdinal("M68K "))
 			{
 				var reg = Enum.Parse(typeof(LibVirtualJaguar.M68KRegisters), register.Remove(0, 5));
 				_core.SetRegister((int)reg, value);
 			}
-			else if (register.StartsWith("GPU ") || register.StartsWith("DSP "))
+			else if (register.StartsWithOrdinal("GPU ") || register.StartsWithOrdinal("DSP "))
 			{
-				bool gpu = register.StartsWith("GPU ");
+				bool gpu = register.StartsWithOrdinal("GPU ");
 				var regName = register.Remove(0, 4);
 
 				if (regName == "PC")

@@ -90,12 +90,12 @@ namespace BizHawk.Client.Common
 
 			if (path == "%recent%") return PathUtils.SpecialRecentsDir;
 
-			if (path.StartsWith("%exe%"))
+			if (path.StartsWithOrdinal("%exe%"))
 			{
 				return PathUtils.ExeDirectoryPath + path.Substring(5);
 			}
 
-			if (path.StartsWith("%rom%"))
+			if (path.StartsWithOrdinal("%rom%"))
 			{
 				return collection.LastRomPath + path.Substring(5);
 			}

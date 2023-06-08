@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 using BizHawk.Common;
-
+using BizHawk.Common.StringExtensions;
 using ISOParser;
 
 //disc type identification logic
@@ -454,7 +454,7 @@ namespace BizHawk.Emulation.DiscSystem
 		private bool SectorContains(string s, int lba = 0)
 		{
 			var data = ReadDataSectorCached(lba);
-			return data != null && Encoding.ASCII.GetString(data).ToLower().Contains(s.ToLower());
+			return data != null && Encoding.ASCII.GetString(data).Contains(s, StringComparison.OrdinalIgnoreCase);
 		}
 	}
 }

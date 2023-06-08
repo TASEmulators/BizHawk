@@ -35,7 +35,7 @@ namespace BizHawk.Client.Common.cheats
 				throw new ArgumentNullException(nameof(_code));
 			}
 
-			if (_code.LastIndexOf("-") != 7 || _code.IndexOf("-") != 3)
+			if (_code.LastIndexOf("-", StringComparison.Ordinal) != 7 || _code.IndexOf("-", StringComparison.Ordinal) != 3)
 			{
 				return new InvalidCheatCode("All Master System Game Genie Codes need to have a dash after the third character and seventh character.");
 			}

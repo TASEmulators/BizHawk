@@ -1,5 +1,5 @@
 ﻿using System.IO;
-
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Sony.PSX;
 
@@ -315,7 +315,7 @@ namespace BizHawk.Client.Common
 				}
 
 				// Gross, if not CR LF, this will fail, but will the PSXjin?
-				if (!mnemonicStr.EndsWith("|\r\n"))
+				if (!mnemonicStr.EndsWithOrdinal("|\r\n"))
 				{
 					Result.Errors.Add("Unable to parse text input, unknown configuration");
 				}

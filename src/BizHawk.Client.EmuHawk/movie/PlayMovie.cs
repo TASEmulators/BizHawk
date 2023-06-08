@@ -210,7 +210,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				foreach (var ext in MovieService.MovieExtensions)
 				{
-					if ($".{ext}".Equals(Path.GetExtension(_movieList[indices[i]].Filename), StringComparison.InvariantCultureIgnoreCase))
+					if ($".{ext}".Equals(Path.GetExtension(_movieList[indices[i]].Filename), StringComparison.OrdinalIgnoreCase))
 					{
 						tas.Add(i);
 					}

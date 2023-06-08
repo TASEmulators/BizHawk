@@ -71,7 +71,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					int row = c1.RowIndex.Value.CompareTo(c2.RowIndex.Value);
 					return row == 0
-						? string.Compare(c1.Column?.Name, c2.Column?.Name)
+						? string.CompareOrdinal(c1.Column?.Name, c2.Column?.Name)
 						: row;
 				}
 					
@@ -83,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 				return -1;
 			}
 
-			return c1.Column.Name.CompareTo(c2.Column.Name);
+			return string.CompareOrdinal(c1.Column.Name, c2.Column.Name);
 		}
 	}
 

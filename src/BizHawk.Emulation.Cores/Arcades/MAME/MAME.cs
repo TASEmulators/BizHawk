@@ -47,17 +47,17 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					text + (text == "" ? "" : "\r\n") +
 					string.Join("\r\n", _romHashes.Select(static r => $"{r.Value} - {r.Key}"));
 
-				if (text.ToLower().Contains("imperfect"))
+				if (text.Contains("imperfect", StringComparison.OrdinalIgnoreCase))
 				{
 					lp.Game.Status = RomStatus.Imperfect;
 				}
 
-				if (text.ToLower().Contains("unemulated"))
+				if (text.Contains("unemulated", StringComparison.OrdinalIgnoreCase))
 				{
 					lp.Game.Status = RomStatus.Unimplemented;
 				}
 
-				if (text.ToLower().Contains("doesn't work"))
+				if (text.Contains("doesn't work", StringComparison.OrdinalIgnoreCase))
 				{
 					lp.Game.Status = RomStatus.NotWorking;
 				}
@@ -94,7 +94,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			var hashes = string.Concat(_romHashes.Values
 				.Where(static s => s.Contains("SHA:"))
 				.Select(static s => s.Split(' ')
-				.First(static s => s.StartsWith("SHA:"))
+				.First(static s => s.StartsWithOrdinal("SHA:"))
 				.RemovePrefix("SHA:")));
 
 			lp.Game.Name = _gameFullName;

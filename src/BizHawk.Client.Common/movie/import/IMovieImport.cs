@@ -117,8 +117,7 @@ namespace BizHawk.Client.Common
 		protected static string ParseHeader(string line, string headerName)
 		{
 			// Case-insensitive search.
-			int x = line.ToLower().LastIndexOf(
-				headerName.ToLower()) + headerName.Length;
+			int x = line.LastIndexOf(headerName, StringComparison.OrdinalIgnoreCase) + headerName.Length;
 			string str = line.Substring(x + 1, line.Length - x - 1);
 			return str.Trim();
 		}

@@ -14,7 +14,7 @@ namespace BizHawk.Client.Common.cheats
 				throw new ArgumentNullException(nameof(code));
 			}
 
-			if (code.IndexOf(" ") != 8)
+			if (code.IndexOf(" ", StringComparison.Ordinal) != 8)
 			{
 				return new InvalidCheatCode("All PSX GameShark Codes need to contain a space after the eighth character.");
 			}

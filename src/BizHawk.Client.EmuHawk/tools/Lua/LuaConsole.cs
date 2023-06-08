@@ -14,6 +14,7 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.PathExtensions;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -446,7 +447,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private string DressUpRelative(string path)
 		{
-			return path.StartsWith(".\\") ? path.Replace(".\\", "") : path;
+			return path.StartsWithOrdinal(".\\") ? path.Replace(".\\", "") : path;
 		}
 
 		private void UpdateNumberOfScripts()
@@ -1267,12 +1268,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				foreach (var path in filePaths)
 				{
-					if (Path.GetExtension(path)?.ToLower() == ".lua" || Path.GetExtension(path)?.ToLower() == ".txt")
+					if (Path.GetExtension(path)?.ToLowerInvariant() == ".lua" || Path.GetExtension(path)?.ToLowerInvariant() == ".txt")
 					{
 						LoadLuaFile(path);
 						UpdateDialog();
 					}
-					else if (Path.GetExtension(path)?.ToLower() == ".luases")
+					else if (Path.GetExtension(path)?.ToLowerInvariant() == ".luases")
 					{
 						LoadLuaSession(path);
 						return;

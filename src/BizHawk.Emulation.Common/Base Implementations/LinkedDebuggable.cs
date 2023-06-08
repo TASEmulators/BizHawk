@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Emulation.Common
 {
@@ -37,7 +38,7 @@ namespace BizHawk.Emulation.Common
 		{
 			for (int i = 0; i < _numCores; i++)
 			{
-				if (register.StartsWith($"P{i + 1} "))
+				if (register.StartsWithOrdinal($"P{i + 1} "))
 				{
 					_linkedCores[i].AsDebuggable().SetCpuRegister(register.Replace($"P{i + 1} ", ""), value);
 				}

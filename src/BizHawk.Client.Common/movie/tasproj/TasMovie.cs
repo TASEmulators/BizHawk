@@ -238,7 +238,7 @@ namespace BizHawk.Client.Common
 
 					counter++;
 				}
-				else if (line.StartsWith("Frame "))
+				else if (line.StartsWithOrdinal("Frame "))
 				{
 					var split = line.Split(' ');
 					try
@@ -251,7 +251,7 @@ namespace BizHawk.Client.Common
 						return false;
 					}
 				}
-				else if (line.StartsWith("LogKey:"))
+				else if (line.StartsWithOrdinal("LogKey:"))
 				{
 					LogKey = line.Replace("LogKey:", "");
 				}
@@ -327,7 +327,7 @@ namespace BizHawk.Client.Common
 				if (_changes != value)
 				{
 					_changes = value;
-					OnPropertyChanged("Changes");
+					OnPropertyChanged(nameof(Changes));
 				}
 			}
 		}

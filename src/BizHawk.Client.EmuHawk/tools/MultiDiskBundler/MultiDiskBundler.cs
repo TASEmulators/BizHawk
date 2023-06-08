@@ -62,7 +62,7 @@ namespace BizHawk.Client.EmuHawk
 			AddButton_Click(null, null);
 			AddButton_Click(null, null);
 
-			if (!Game.IsNullInstance() && !MainForm.CurrentlyOpenRom.EndsWith(".xml"))
+			if (!Game.IsNullInstance() && !MainForm.CurrentlyOpenRom.EndsWithOrdinal(".xml"))
 			{
 				if (MainForm.CurrentlyOpenRom.Contains("|"))
 				{

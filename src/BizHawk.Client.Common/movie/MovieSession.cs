@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -307,7 +308,7 @@ namespace BizHawk.Client.Common
 		public IMovie Get(string path)
 		{
 			// TODO: change IMovies to take HawkFiles only and not path
-			if (Path.GetExtension(path)?.EndsWith("tasproj") ?? false)
+			if (Path.GetExtension(path)?.EndsWithOrdinal("tasproj") ?? false)
 			{
 				return new TasMovie(this, path);
 			}

@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// check whether this is a valid wav format file by looking at the identifier in the header
 			string ident = Encoding.ASCII.GetString(data, 8, 4);
 
-			if (ident.ToUpper() != "WAVE")
+			if (ident.ToUpperInvariant() != "WAVE")
 			{
 				// this is not a valid WAV format file
 				return false;
@@ -74,7 +74,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// check whether this is a valid pzx format file by looking at the identifier in the header block
 			string ident = Encoding.ASCII.GetString(data, 8, 4);
 
-			if (ident.ToUpper() != "WAVE")
+			if (ident.ToUpperInvariant() != "WAVE")
 			{
 				// this is not a valid TZX format file
 				throw new Exception($"{nameof(WavConverter)}: This is not a valid WAV format file");

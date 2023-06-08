@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
+﻿using BizHawk.Common.StringExtensions;
+
+namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
 	/// <summary>
 	/// The abstract class that all emulated models will inherit from
@@ -64,7 +66,7 @@
 				// non matrix keys (J2)
 				foreach (string k in KeyboardDevice.NonMatrixKeys)
 				{
-					if (!k.StartsWith("P2"))
+					if (!k.StartsWithOrdinal("P2"))
 						continue;
 
 					bool currState = CPC._controller.IsPressed(k);

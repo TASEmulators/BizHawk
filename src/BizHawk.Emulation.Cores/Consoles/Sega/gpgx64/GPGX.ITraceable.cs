@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using BizHawk.Common.NumberExtensions;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
@@ -25,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 				foreach (var r in regs)
 				{
-					if (r.Key.StartsWith("M68K")) // drop Z80 regs until it has its own debugger/tracer
+					if (r.Key.StartsWithOrdinal("M68K")) // drop Z80 regs until it has its own debugger/tracer
 					{
 						if (r.Key != "M68K SP" && r.Key != "M68K ISP" && // copies of a7
 							r.Key != "M68K PC" && // already present in every line start

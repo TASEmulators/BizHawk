@@ -108,7 +108,7 @@ namespace BizHawk.Client.EmuHawk
 							exePath = Encoding.ASCII.GetString(buf2048);
 
 							// "BOOT = cdrom:" precedes the path
-							var index = exePath.IndexOf("BOOT = cdrom:");
+							var index = exePath.IndexOf("BOOT = cdrom:", StringComparison.Ordinal);
 							if (index < -1) break;
 							exePath = exePath.Remove(0, index + 13);
 

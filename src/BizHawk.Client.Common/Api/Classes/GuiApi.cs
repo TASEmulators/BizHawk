@@ -491,7 +491,7 @@ namespace BizHawk.Client.Common
 			{
 				var family = fontfamily != null ? new FontFamily(fontfamily) : FontFamily.GenericMonospace;
 
-				var fstyle = fontstyle?.ToLower() switch
+				var fstyle = fontstyle?.ToLowerInvariant() switch
 				{
 					"bold" => FontStyle.Bold,
 					"italic" => FontStyle.Italic,
@@ -507,7 +507,7 @@ namespace BizHawk.Client.Common
 				var font = new Font(family, fontsize ?? 12, fstyle, GraphicsUnit.Pixel);
 				var sizeOfText = g.MeasureString(message, font, 0, new StringFormat(StringFormat.GenericDefault)).ToSize();
 
-				switch (horizalign?.ToLower())
+				switch (horizalign?.ToLowerInvariant())
 				{
 					default:
 					case "left":
@@ -521,7 +521,7 @@ namespace BizHawk.Client.Common
 						break;
 				}
 
-				switch (vertalign?.ToLower())
+				switch (vertalign?.ToLowerInvariant())
 				{
 					default:
 					case "top":

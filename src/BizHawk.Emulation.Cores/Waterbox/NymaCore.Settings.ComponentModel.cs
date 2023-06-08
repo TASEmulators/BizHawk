@@ -279,7 +279,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		}
 		private static ulong Parse(string s)
 		{
-			if (s.StartsWith("0x"))
+			if (s.StartsWith("0x", StringComparison.Ordinal))
 			{
 				return ulong.Parse(s.Substring(2), NumberStyles.HexNumber);
 			}

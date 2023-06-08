@@ -8,6 +8,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 using BizHawk.BizInvoke;
 using BizHawk.Emulation.Common;
 using System.Linq;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 {
@@ -284,12 +285,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public void Seal()
 		{
 			exe.Seal();
-			foreach (string s in _readonlyFiles.Where(s => !s.StartsWith("msu1/")))
+			foreach (string s in _readonlyFiles.Where(s => !s.StartsWithOrdinal("msu1/")))
 			{
 				exe.RemoveReadonlyFile(s);
 			}
 
-			_readonlyFiles.RemoveAll(s => !s.StartsWith("msu1/"));
+			_readonlyFiles.RemoveAll(s => !s.StartsWithOrdinal("msu1/"));
 		}
 
 		// private int serializedSize;

@@ -280,7 +280,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			// every rom requests msu1.rom... why? who knows.
 			// also handle msu-1 pcm files here
 			bool isMsu1Rom = hint == "msu1.rom";
-			bool isMsu1Pcm = Path.GetExtension(hint).ToLower() == ".pcm";
+			bool isMsu1Pcm = Path.GetExtension(hint).ToLowerInvariant() == ".pcm";
 			if (isMsu1Rom || isMsu1Pcm)
 			{
 				// well, check if we have an msu-1 xml
@@ -362,12 +362,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 			else if (which == (uint)LibsnesApi.eTRACE.SMP)
 			{
-				int idx = msg.IndexOf("YA:");
+				int idx = msg.IndexOf("YA:", StringComparison.Ordinal);
 				_tracer.Put(new(disassembly: msg.Substring(0, idx).TrimEnd(), registerInfo: msg.Substring(idx)));
 			}
 			else if (which == (uint)LibsnesApi.eTRACE.GB)
 			{
-				int idx = msg.IndexOf("AF:");
+				int idx = msg.IndexOf("AF:", StringComparison.Ordinal);
 				_tracer.Put(new(disassembly: msg.Substring(0, idx).TrimEnd(), registerInfo: msg.Substring(idx)));
 			}
 		}

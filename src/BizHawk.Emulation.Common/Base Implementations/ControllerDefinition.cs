@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Emulation.Common
 {
@@ -147,7 +148,7 @@ namespace BizHawk.Emulation.Common
 				}
 
 				// Hack for things like gameboy/ti-83 as opposed to genesis with no controllers plugged in
-				return allNames.Exists(static b => b.StartsWith("Up")) ? 1 : 0;
+				return allNames.Exists(static b => b.StartsWithOrdinal("Up")) ? 1 : 0;
 			}
 		}
 

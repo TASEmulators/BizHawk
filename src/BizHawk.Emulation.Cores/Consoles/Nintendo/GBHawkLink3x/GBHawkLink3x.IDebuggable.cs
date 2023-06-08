@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
@@ -23,15 +24,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 
 		public void SetCpuRegister(string register, int value)
 		{
-			if (register.StartsWith("Left "))
+			if (register.StartsWithOrdinal("Left "))
 			{
 				L.SetCpuRegister(register.Replace("Left ", ""), value);
 			}
-			else if (register.StartsWith("Center "))
+			else if (register.StartsWithOrdinal("Center "))
 			{
 				C.SetCpuRegister(register.Replace("Center ", ""), value);
 			}
-			else if (register.StartsWith("Right "))
+			else if (register.StartsWithOrdinal("Right "))
 			{
 				R.SetCpuRegister(register.Replace("Right ", ""), value);
 			}

@@ -281,7 +281,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			long found = -1;
 
-			var search = value.Replace(" ", "").ToUpper();
+			var search = value.Replace(" ", "").ToUpperInvariant();
 			if (string.IsNullOrEmpty(search))
 			{
 				return;
@@ -341,7 +341,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			long found = -1;
 
-			var search = value.Replace(" ", "").ToUpper();
+			var search = value.Replace(" ", "").ToUpperInvariant();
 			if (string.IsNullOrEmpty(search))
 			{
 				return;

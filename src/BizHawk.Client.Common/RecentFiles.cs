@@ -71,7 +71,7 @@ namespace BizHawk.Client.Common
 		{
 			if (!Frozen)
 			{
-				return recentlist.RemoveAll(recent => string.Compare(newFile, recent, StringComparison.CurrentCultureIgnoreCase) == 0) != 0; // none removed => return false
+				return recentlist.RemoveAll(recent => string.Compare(newFile, recent, StringComparison.OrdinalIgnoreCase) == 0) != 0; // none removed => return false
 			}
 
 			return false;

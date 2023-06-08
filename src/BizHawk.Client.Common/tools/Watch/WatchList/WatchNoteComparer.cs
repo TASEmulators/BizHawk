@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace BizHawk.Client.Common
 {
@@ -31,7 +32,7 @@ namespace BizHawk.Client.Common
 					return 0;
 				}
 
-				if (string.Compare(x.Notes, y.Notes, true) == 0)
+				if (string.Compare(x.Notes, y.Notes, StringComparison.OrdinalIgnoreCase) == 0)
 				{
 					if (x.Address.Equals(y.Address))
 					{
@@ -41,7 +42,7 @@ namespace BizHawk.Client.Common
 					return x.Address.CompareTo(y.Address);
 				}
 
-				return string.Compare(x.Notes, y.Notes, true);
+				return string.Compare(x.Notes, y.Notes, StringComparison.OrdinalIgnoreCase);
 			}
 		}
 	}

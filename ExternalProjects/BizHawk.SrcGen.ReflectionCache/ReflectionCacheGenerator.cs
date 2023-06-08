@@ -48,7 +48,7 @@ namespace BizHawk.SrcGen.ReflectionCache
 				};
 				if (_namespace != null || syntaxNode is not NamespaceDeclarationSyntax syn) return;
 				var newNS = Ser(syn.Name);
-				if (!newNS.StartsWith("BizHawk.")) return;
+				if (!newNS.StartsWith("BizHawk.", StringComparison.Ordinal)) return;
 				_namespaces.Add(newNS);
 				if (_namespaces.Count == SAMPLE_SIZE) _namespace = CalcNamespace();
 			}
@@ -88,7 +88,7 @@ namespace {nSpace}
 		public static IEnumerable<string> EmbeddedResourceList(string extraPrefix)
 		{{
 			var fullPrefix = EMBED_PREFIX + extraPrefix;
-			return Asm.GetManifestResourceNames().Where(s => s.StartsWith(fullPrefix)).Select(s => s.RemovePrefix(fullPrefix));
+			return Asm.GetManifestResourceNames().Where(s => s.StartsWith(fullPrefix, StringComparison.Ordinal)).Select(s => s.RemovePrefix(fullPrefix));
 		}}
 
 		public static IEnumerable<string> EmbeddedResourceList()
