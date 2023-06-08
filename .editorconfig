@@ -17,3 +17,10 @@ dotnet_code_quality.CA1305.excluded_symbol_names = T:System.Byte|T:System.SByte|
 
 dotnet_diagnostic.CA1305.severity = error
 dotnet_diagnostic.CA2101.severity = suggestion
+
+# Performance rules
+dotnet_code_quality.CA1826.exclude_ordefault_methods = true
+
+dotnet_diagnostic.CA1805.severity = silent
+dotnet_diagnostic.CA1822.severity = silent
+dotnet_diagnostic.CA1838.severity = suggestion

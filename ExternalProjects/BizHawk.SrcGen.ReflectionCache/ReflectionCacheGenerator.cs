@@ -77,7 +77,7 @@ namespace {nSpace}
 	{{
 		private const string EMBED_PREFIX = ""{nSpace}."";
 
-		private static Type[]? _types = null;
+		private static Type[]? _types;
 
 		private static readonly Assembly Asm = typeof({nSpace}.ReflectionCache).Assembly;
 
