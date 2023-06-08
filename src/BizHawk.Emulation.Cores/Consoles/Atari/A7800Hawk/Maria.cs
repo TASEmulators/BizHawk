@@ -46,12 +46,12 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public int DMA_phase = 0;
 		public int DMA_phase_counter;
 
-		public static int DMA_START_UP = 0;
-		public static int DMA_HEADER = 1;
-		public static int DMA_GRAPHICS = 2;
-		public static int DMA_CHAR_MAP = 3;
-		public static int DMA_SHUTDOWN_OTHER = 4;
-		public static int DMA_SHUTDOWN_LAST = 5;
+		public const int DMA_START_UP = 0;
+		public const int DMA_HEADER = 1;
+		public const int DMA_GRAPHICS = 2;
+		public const int DMA_CHAR_MAP = 3;
+		public const int DMA_SHUTDOWN_OTHER = 4;
+		public const int DMA_SHUTDOWN_LAST = 5;
 
 		public int header_read_time = 8; // default for 4 byte headers (10 for 5 bytes ones)
 		public int graphics_read_time = 3; // depends on content of graphics header

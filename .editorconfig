@@ -24,3 +24,7 @@ dotnet_code_quality.CA1826.exclude_ordefault_methods = true
 dotnet_diagnostic.CA1805.severity = silent
 dotnet_diagnostic.CA1822.severity = silent
 dotnet_diagnostic.CA1838.severity = suggestion
+
+# Usage rules
+dotnet_diagnostic.CA1816.severity = none
+dotnet_diagnostic.CA2201.severity = suggestion

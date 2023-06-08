@@ -5,6 +5,7 @@
 		<AnalysisModeMaintainability>Recommended</AnalysisModeMaintainability>
 		<AnalysisModeReliability>Recommended</AnalysisModeReliability>
 		<AnalysisModePerformance>Recommended</AnalysisModePerformance>
+		<AnalysisModeUsage>Recommended</AnalysisModeUsage>
 		<CodeAnalysisRuleSet>$(MSBuildProjectDirectory)/../../Common.ruleset</CodeAnalysisRuleSet>
 		<ContinuousIntegrationBuild Condition=" '$(GITLAB_CI)' != '' Or '$(APPVEYOR)' != '' ">true</ContinuousIntegrationBuild>
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>

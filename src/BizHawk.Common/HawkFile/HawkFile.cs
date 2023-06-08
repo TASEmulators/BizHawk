@@ -285,7 +285,7 @@ namespace BizHawk.Common
 		}
 
 		/// <summary>Set this with an instance which can construct archive handlers as necessary for archive handling.</summary>
-		public static IFileDearchivalMethod<IHawkArchiveFile>? DearchivalMethod;
+		public static IFileDearchivalMethod<IHawkArchiveFile>? DearchivalMethod { get; set; }
 
 		[return: HawkFilePath]
 		private static string MakeCanonicalName(string root, string? member) => member == null ? root : $"{root}|{member}";

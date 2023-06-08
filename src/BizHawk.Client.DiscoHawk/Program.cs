@@ -74,8 +74,6 @@ namespace BizHawk.Client.DiscoHawk
 				OSTC.LinkedLibManager.FreeByPtr(lib);
 			}
 
-			FFmpegService.FFmpegPath = Path.Combine(PathUtils.DataDirectoryPath, "dll", OSTC.IsUnixHost ? "ffmpeg" : "ffmpeg.exe");
-
 			if (args.Length == 0)
 			{
 				using var dialog = new MainDiscoForm();

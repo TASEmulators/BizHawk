@@ -172,7 +172,7 @@ namespace BizHawk.Client.Common
 		[JsonIgnore]
 		internal string TempFilesFragment => this[GLOBAL, "Temp Files"].Path;
 
-		public static Lazy<IReadOnlyList<PathEntry>> Defaults = new(() => new[]
+		public static readonly Lazy<IReadOnlyList<PathEntry>> Defaults = new(() => new[]
 		{
 			new[] {
 				BaseEntryFor(GLOBAL, "."),

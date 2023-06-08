@@ -15,7 +15,7 @@ namespace BizHawk.Client.EmuHawk
 		private static readonly string _latestVersionInfoURL = "https://api.github.com/repos/TASVideos/BizHawk/releases/latest";
 		private static readonly TimeSpan _minimumCheckDuration = TimeSpan.FromHours(8);
 
-		public static Config GlobalConfig;
+		public static Config GlobalConfig { get; set; }
 
 		private static bool AutoCheckEnabled
 		{

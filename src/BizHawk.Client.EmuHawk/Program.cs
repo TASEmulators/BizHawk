@@ -172,8 +172,6 @@ namespace BizHawk.Client.EmuHawk
 			if (initialConfig.SaveSlot is 0) initialConfig.SaveSlot = 10; //TODO remove after a while
 			// initialConfig should really be globalConfig as it's mutable
 
-			FFmpegService.FFmpegPath = Path.Combine(PathUtils.DataDirectoryPath, "dll", OSTC.IsUnixHost ? "ffmpeg" : "ffmpeg.exe");
-
 			StringLogUtil.DefaultToDisk = initialConfig.Movies.MoviesOnDisk;
 
 			var glInitCount = 0;

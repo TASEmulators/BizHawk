@@ -32,7 +32,7 @@ namespace BizHawk.Client.Common
 					return 0;
 				}
 
-				if (string.Compare(x.Notes, y.Notes, StringComparison.OrdinalIgnoreCase) == 0)
+				if (string.Equals(x.Notes, y.Notes, StringComparison.OrdinalIgnoreCase))
 				{
 					if (x.Address.Equals(y.Address))
 					{

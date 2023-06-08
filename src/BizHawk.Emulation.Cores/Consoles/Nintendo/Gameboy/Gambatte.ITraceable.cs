@@ -41,6 +41,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					},
 					_settings.RgbdsSyntax,
 					out _).PadRight(36),
+#pragma warning disable CA2241
 				registerInfo: string.Format(
 					"A:{3:x2} F:{8:x2} B:{4:x2} C:{5:x2} D:{6:x2} E:{7:x2} H:{9:x2} L:{10:x2} LY:{13:x2} SP:{2:x2} {11} Cy:{0}",
 					(ulong)s[0] + _cycleCount,
@@ -57,6 +58,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					s[11] != 0 ? "prefetched" : "",
 					s[12] & 0xffffff, // unused (this is the opcode)
 					s[13] & 0xff)));
+#pragma warning restore CA2241
 		}
 	}
 }
