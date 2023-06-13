@@ -411,7 +411,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (duplicate)
 					{
-						_watches.AddRange(we.Watches);
+						_watches.InsertRange(WatchListView.SelectionEndIndex!.Value + 1, we.Watches); //TODO should be able to reduce the number of enumerations of selected rows if necessary --yoshi
 						WatchListView.RowCount = _watches.Count;
 						UpdateWatchCount();
 					}
