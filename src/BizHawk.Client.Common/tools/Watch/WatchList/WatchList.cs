@@ -140,6 +140,7 @@ namespace BizHawk.Client.Common
 		public void Insert(int index, Watch watch)
 		{
 			_watchList.Insert(index, watch);
+			Changes = true;
 		}
 
 		/// <summary>
