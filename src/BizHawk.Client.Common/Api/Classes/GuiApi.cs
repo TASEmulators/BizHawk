@@ -591,15 +591,16 @@ namespace BizHawk.Client.Common
 				}
 				using var g = GetGraphics(surfaceID);
 				var font = new Font(_displayManager.CustomFonts.Families[index], 8, FontStyle.Regular, GraphicsUnit.Pixel);
+				var stringFormat = new StringFormat(StringFormat.GenericTypographic) { FormatFlags = StringFormatFlags.MeasureTrailingSpaces };
 				var sizeOfText = g.MeasureString(
 					message,
 					font,
 					0,
-					new StringFormat(StringFormat.GenericTypographic) { FormatFlags = StringFormatFlags.MeasureTrailingSpaces }
+					stringFormat
 				).ToSize();
 				if (backcolor.HasValue) g.FillRectangle(GetBrush(backcolor.Value), new Rectangle(new Point(x, y), sizeOfText + new Size(1, 0)));
 				g.TextRenderingHint = TextRenderingHint.SingleBitPerPixelGridFit;
-				g.DrawString(message, font, GetBrush(forecolor ?? _defaultForeground), x, y);
+				g.DrawString(message, font, GetBrush(forecolor ?? _defaultForeground), x + 1, y, stringFormat);
 			}
 			catch (Exception)
 			{
