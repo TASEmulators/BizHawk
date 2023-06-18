@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk.CustomControls
 {
@@ -9,30 +10,46 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		{
 			const int WM_PASTE = 0x302;
 
-			if (m.Msg == WM_PASTE)
+			if (m.Msg == WM_PASTE && !OSTailoredCode.IsUnixHost)
 			{
-				bool containsText;
-				string text;
-
-				try
+				if (OnPasteInternal())
 				{
-					containsText = Clipboard.ContainsText();
-					text = containsText ? Clipboard.GetText() : "";
-				}
-				catch (Exception)
-				{
-					// Clipboard is busy? No idea if this ever happens in practice
 					return;
 				}
-
-				var args = new PasteEventArgs(containsText, text);
-				OnPaste(args);
-
-				if (args.Handled)
-					return;
 			}
 
 			base.WndProc(ref m);
+		}
+
+		protected override bool ProcessCmdKey(ref Message m, Keys keyData)
+		{
+			if (OSTailoredCode.IsUnixHost && keyData is (Keys.Control | Keys.V) or (Keys.Shift | Keys.Insert) && !ReadOnly)
+			{
+				return OnPasteInternal();
+			}
+
+			return base.ProcessCmdKey(ref m, keyData);
+		}
+
+		private bool OnPasteInternal()
+		{
+			bool containsText;
+			string text;
+
+			try
+			{
+				containsText = Clipboard.ContainsText();
+				text = containsText ? Clipboard.GetText() : "";
+			}
+			catch (Exception)
+			{
+				// Clipboard is busy? No idea if this ever happens in practice
+				return true;
+			}
+
+			var args = new PasteEventArgs(containsText, text);
+			OnPaste(args);
+			return args.Handled;
 		}
 
 		protected virtual void OnPaste(PasteEventArgs e)
