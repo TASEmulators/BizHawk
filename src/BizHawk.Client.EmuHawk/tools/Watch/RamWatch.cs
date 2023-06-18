@@ -179,6 +179,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			public List<RollColumn> Columns { get; set; }
+
+			public bool DoubleClickToPoke { get; set; }
 		}
 
 		private IEnumerable<int> SelectedIndices => WatchListView.SelectedRows;
@@ -491,6 +493,22 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				GeneralUpdate();
+			}
+		}
+
+		private void PokeAddress()
+		{
+			if (SelectedWatches.Any())
+			{
+				var poke = new RamPoke(DialogController, SelectedWatches, MainForm.CheatList)
+				{
+					InitialLocation = this.ChildPointToScreen(WatchListView)
+				};
+
+				if (this.ShowDialogWithTempMute(poke).IsOk())
+				{
+					GeneralUpdate();
+				}
 			}
 		}
 
@@ -836,18 +854,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PokeAddressMenuItem_Click(object sender, EventArgs e)
 		{
-			if (SelectedWatches.Any())
-			{
-				var poke = new RamPoke(DialogController, SelectedWatches, MainForm.CheatList)
-				{
-					InitialLocation = this.ChildPointToScreen(WatchListView)
-				};
-
-				if (this.ShowDialogWithTempMute(poke).IsOk())
-				{
-					GeneralUpdate();
-				}
-			}
+			PokeAddress();
 		}
 
 		private void FreezeAddressMenuItem_Click(object sender, EventArgs e)
@@ -1036,6 +1043,22 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void DoubleClickActionSubMenu_DropDownOpening(object sender, EventArgs e)
+		{
+			DoubleClickToEditMenuItem.Checked = !Settings.DoubleClickToPoke;
+			DoubleClickToPokeMenuItem.Checked = Settings.DoubleClickToPoke;
+		}
+
+		private void DoubleClickToEditMenuItem_Click(object sender, EventArgs e)
+		{
+			Settings.DoubleClickToPoke = false;
+		}
+
+		private void DoubleClickToPokeMenuItem_Click(object sender, EventArgs e)
+		{
+			Settings.DoubleClickToPoke = true;
+		}
+
 		[RestoreDefaults]
 		private void RestoreDefaultsMenuItem()
 		{
@@ -1217,7 +1240,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void WatchListView_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
-			EditWatch();
+			if (Settings.DoubleClickToPoke)
+				PokeAddress();
+			else
+				EditWatch();
 		}
 
 		private void WatchListView_ColumnClick(object sender, InputRoll.ColumnClickEventArgs e)
