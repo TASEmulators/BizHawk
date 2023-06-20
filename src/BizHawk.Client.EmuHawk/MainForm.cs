@@ -3956,6 +3956,9 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
+					CurrentlyOpenRom = oaOpenrom?.Path ?? openAdvancedArgs;
+					CurrentlyOpenRomArgs = args;
+
 					Tools.Restart(Config, Emulator, Game);
 
 					if (Config.Cheats.LoadFileByGame && Emulator.HasMemoryDomains())
@@ -3971,8 +3974,6 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
-					CurrentlyOpenRom = oaOpenrom?.Path ?? openAdvancedArgs;
-					CurrentlyOpenRomArgs = args;
 					OnRomChanged();
 					DisplayManager.UpdateGlobals(Config, Emulator);
 					DisplayManager.Blank();
