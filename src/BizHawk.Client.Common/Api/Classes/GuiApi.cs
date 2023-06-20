@@ -13,6 +13,11 @@ namespace BizHawk.Client.Common
 {
 	public sealed class GuiApi : IGuiApi
 	{
+		private static readonly StringFormat PixelTextFormat = new(StringFormat.GenericTypographic)
+		{
+			FormatFlags = StringFormatFlags.MeasureTrailingSpaces,
+		};
+
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
 
@@ -591,16 +596,10 @@ namespace BizHawk.Client.Common
 				}
 				using var g = GetGraphics(surfaceID);
 				var font = new Font(_displayManager.CustomFonts.Families[index], 8, FontStyle.Regular, GraphicsUnit.Pixel);
-				var stringFormat = new StringFormat(StringFormat.GenericTypographic) { FormatFlags = StringFormatFlags.MeasureTrailingSpaces };
-				var sizeOfText = g.MeasureString(
-					message,
-					font,
-					0,
-					stringFormat
-				).ToSize();
+				var sizeOfText = g.MeasureString(message, font, width: 0, PixelTextFormat).ToSize();
 				if (backcolor.HasValue) g.FillRectangle(GetBrush(backcolor.Value), new Rectangle(new Point(x, y), sizeOfText + new Size(1, 0)));
 				g.TextRenderingHint = TextRenderingHint.SingleBitPerPixelGridFit;
-				g.DrawString(message, font, GetBrush(forecolor ?? _defaultForeground), x + 1, y, stringFormat);
+				g.DrawString(message, font, GetBrush(forecolor ?? _defaultForeground), x + 1, y, PixelTextFormat);
 			}
 			catch (Exception)
 			{
