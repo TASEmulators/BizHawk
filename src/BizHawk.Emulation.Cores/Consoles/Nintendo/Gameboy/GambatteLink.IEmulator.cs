@@ -21,15 +21,34 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			{
 				if (controller.IsPressed(s))
 				{
+					int p = 0;
 					for (int i = 0; i < _numCores; i++)
 					{
-						if (s.Contains($"P{i + 1} - C"))
+						if (isSgb(i))
 						{
-							_linkedConts[i].Set(s.Replace($"P{i + 1} - C", "P"));
+							for (int j = 1; j <= 4; j++)
+							{
+								p += 1;
+								if (s.Contains($"P{p} "))
+								{
+									if (s.Contains($"Power"))
+									{
+										_linkedConts[i].Set(s.Replace($"P{p} ", ""));
+									}
+									else
+									{
+										_linkedConts[i].Set(s.Replace($"P{p} ", $"P{j} "));
+									}
+								}
+							}
 						}
-						else if (s.Contains($"P{i + 1} "))
+						else
 						{
-							_linkedConts[i].Set(s.Replace($"P{i + 1} ", ""));
+							p += 1;
+							if (s.Contains($"P{p} "))
+							{
+								_linkedConts[i].Set(s.Replace($"P{p} ", ""));
+							}
 						}
 					}
 				}

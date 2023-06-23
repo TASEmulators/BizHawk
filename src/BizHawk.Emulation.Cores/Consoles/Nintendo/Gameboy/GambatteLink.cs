@@ -147,23 +147,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		private ControllerDefinition CreateControllerDefinition()
 		{
 			ControllerDefinition ret = new($"GB Link {_numCores}x Controller");
+			int p = 0;
 			for (int i = 0; i < _numCores; i++)
 			{
-				if (isSgb(i))
-				{
-					for (int j = 0; j < 4; j++)
-					{
-						ret.BoolButtons.AddRange(
-							new[] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start" }
-								.Select(s => $"P{i + 1} - C{j + 1} {s}"));
-					}
-					ret.BoolButtons.Add($"P{i + 1} Power");
-				}
-				else
-				{
-					ret.BoolButtons.AddRange(
+				p += 1;
+				ret.BoolButtons.AddRange(
 						new[] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start", "Power" }
-							.Select(s => $"P{i + 1} {s}"));
+							.Select(s => $"P{p} {s}"));
+				if (isSgb(i)) // one Player tab per SNES controller for SGB; SNES power button on the first Player tab
+				{
+					for (int j = 1; j < 4; j++)
+					{
+						p += 1;
+						ret.BoolButtons.AddRange(
+						new[] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start" }
+							.Select(s => $"P{p} {s}"));
+					}
 				}
 			}
 			ret.BoolButtons.Add("Toggle Link Connection");
