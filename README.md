@@ -334,10 +334,12 @@ Please don't bother core devs about these WIPs unless you're looking to contribu
 ## Support and troubleshooting
 
 A short [FAQ](https://tasvideos.org/Bizhawk/FAQ) is provided on the TASVideos wiki. If your problem is one of the many not answered there, and you can't find it in the [issue tracker search](https://github.com/TASEmulators/BizHawk/issues?q=is%3Aissue+PUT_ISSUE_KEYWORDS_HERE), you can try:
-* `#emulation` on [the TASVideos Discord](https://discordapp.com/invite/GySG2b6) (also the more specialised channels `#tas-production` and `#scripting`, and [the ApiHawk server](https://discord.gg/UPhN4um3px))
-* The [TASVideos forum for BizHawk](https://tasvideos.org/Forum/Subforum/64)
-* `#bizhawk` on Libera Chat ([via Matrix](https://matrix.to/#/#bizhawk:libera.chat) or [via IRC](https://libera.chat/guides/connect))
-* The [/r/BizHawk](https://reddit.com/r/BizHawk) subreddit
+- `#emulation` on [the TASVideos Discord](https://discordapp.com/invite/GySG2b6)
+	- Also the more specialised channels `#tas-production` and `#scripting` (for Lua) on that server
+	- For the .NET API, [the ApiHawk server](https://discord.gg/UPhN4um3px))
+- The [TASVideos forum for BizHawk](https://tasvideos.org/Forum/Subforum/64)
+- `#bizhawk` on Libera Chat ([via Matrix](https://matrix.to/#/#bizhawk:libera.chat) or [via IRC](https://libera.chat/guides/connect))
+- The [/r/BizHawk](https://reddit.com/r/BizHawk) subreddit
 
 You can [open a new issue](https://github.com/TASEmulators/BizHawk/issues/new) at any time if you're logged in to GitHub. Please **at the very least read the issue templates**, we tend to ask the same questions for every one-line issue that's opened.
 
