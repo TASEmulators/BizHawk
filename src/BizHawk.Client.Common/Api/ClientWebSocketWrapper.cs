@@ -5,20 +5,33 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace BizHawk.Client.Common
 {
-	public struct ClientWebSocketWrapper
+	public class ClientWebSocketWrapper
 	{
 		private ClientWebSocket? _w;
+		//private Task _receiveTask;
+		
+		private List<string> _receivedMessages;
+
+		Uri _uri;
 
 		/// <summary>calls <see cref="ClientWebSocket.State"/> getter (unless closed/disposed, then <see cref="WebSocketState.Closed"/> is always returned)</summary>
 		public WebSocketState State => _w?.State ?? WebSocketState.Closed;
 
-		public ClientWebSocketWrapper(Uri uri, CancellationToken? cancellationToken = null)
+		public ClientWebSocketWrapper(Uri uri, int bufferSize)
 		{
+			_uri = uri;
 			_w = new ClientWebSocket();
-			_w.ConnectAsync(uri, cancellationToken ?? CancellationToken.None).Wait();
+			_receivedMessages = new List<string>();
+			try{
+				Connect(bufferSize).Wait();
+			}
+			catch(Exception ex)
+			{
+			}
 		}
 
 		/// <summary>calls <see cref="ClientWebSocket.CloseAsync"/></summary>
@@ -26,24 +39,31 @@ namespace BizHawk.Client.Common
 		public Task Close(WebSocketCloseStatus closeStatus, string statusDescription, CancellationToken? cancellationToken = null)
 		{
 			if (_w == null) throw new ObjectDisposedException(nameof(_w));
-			var task = _w.CloseAsync(closeStatus, statusDescription, cancellationToken ?? CancellationToken.None);
+			var task = _w.CloseOutputAsync(closeStatus, statusDescription, cancellationToken ?? CancellationToken.None);
 			_w.Dispose();
 			_w = null;
 			return task;
 		}
 
 		/// <summary>calls <see cref="ClientWebSocket.ReceiveAsync"/></summary>
-		public Task<WebSocketReceiveResult> Receive(ArraySegment<byte> buffer, CancellationToken? cancellationToken = null)
-			=> _w?.ReceiveAsync(buffer, cancellationToken ?? CancellationToken.None)
-				?? throw new ObjectDisposedException(nameof(_w));
+		public async Task Receive(int bufferSize){
+			var buffer = new ArraySegment<byte>(new byte[bufferSize]);
+			while (_w != null && _w.State == WebSocketState.Open)
+			{
+				WebSocketReceiveResult result;
+				result = await _w.ReceiveAsync(buffer, CancellationToken.None);
+				_receivedMessages.Add(Encoding.UTF8.GetString(buffer.Array,0,result.Count));
+			}
+		}
 
-		/// <summary>calls <see cref="ClientWebSocket.ReceiveAsync"/></summary>
-		public string Receive(int bufferCap, CancellationToken? cancellationToken = null)
-		{
-			if (_w == null) throw new ObjectDisposedException(nameof(_w));
-			var buffer = new byte[bufferCap];
-			var result = Receive(new ArraySegment<byte>(buffer), cancellationToken ?? CancellationToken.None).Result;
-			return Encoding.UTF8.GetString(buffer, 0, result.Count);
+		public async Task Connect(int bufferSize){
+			if (_w == null){
+				_w = new ClientWebSocket();
+			}
+			if(_w != null && _w.State != WebSocketState.Open){
+				_w.ConnectAsync(_uri, CancellationToken.None).Wait();
+				Receive(bufferSize);
+			}
 		}
 
 		/// <summary>calls <see cref="ClientWebSocket.SendAsync"/></summary>
@@ -61,6 +81,14 @@ namespace BizHawk.Client.Common
 				endOfMessage,
 				cancellationToken ?? CancellationToken.None
 			);
+		}
+
+		public string GetMessage()
+		{
+			if (_receivedMessages == null || _receivedMessages.Count == 0) return "";
+			string returnThis = _receivedMessages[0];
+			_receivedMessages.RemoveAt(0);
+			return returnThis;
 		}
 	}
 }
