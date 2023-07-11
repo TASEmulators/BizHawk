@@ -40,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 			// setup the GL context manager, needed for coping with multiple opengl cores vs opengl display method
 			// but is it tho? --yoshi
 			// turns out it was, calling Instance getter here initialises it, and the encapsulated Activate call is necessary too --yoshi
-			_crGraphicsControl = GLManager.Instance.GetContextForGraphicsControl(_graphicsControl);
+			_crGraphicsControl = GLManager.GetContextForGraphicsControl(_graphicsControl);
 		}
 
 		protected override void ActivateGLContext() => GLManager.Instance.Activate(_crGraphicsControl);
@@ -71,7 +71,7 @@ namespace BizHawk.Client.EmuHawk
 					vsync = false;
 
 				//for now, it's assumed that the presentation panel is the main window, but that may not always be true
-				if (vsync && GlobalConfig.DispAlternateVsync && GlobalConfig.VSyncThrottle && _gl.DispMethodEnum is EDispMethod.SlimDX9)
+				if (vsync && GlobalConfig.DispAlternateVsync && GlobalConfig.VSyncThrottle && _gl.DispMethodEnum is EDispMethod.D3D9)
 				{
 					alternateVsync = true;
 					//unset normal vsync if we've chosen the alternate vsync

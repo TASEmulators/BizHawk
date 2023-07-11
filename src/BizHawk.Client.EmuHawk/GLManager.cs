@@ -1,7 +1,6 @@
 using System;
 using BizHawk.Bizware.BizwareGL;
-using BizHawk.Bizware.DirectX;
-using BizHawk.Bizware.OpenTK3;
+using BizHawk.Bizware.Graphics;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -18,7 +17,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 		}
 
-		private static readonly Lazy<GLManager> _lazyInstance = new Lazy<GLManager>(() => new GLManager());
+		private static readonly Lazy<GLManager> _lazyInstance = new(() => new());
 
 		public static GLManager Instance => _lazyInstance.Value;
 
@@ -30,14 +29,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public ContextRef CreateGLContext(int majorVersion, int minorVersion, bool forwardCompatible)
 		{
-			var gl = new IGL_TK(majorVersion, minorVersion, forwardCompatible);
-			var ret = new ContextRef { GL = gl };
-			return ret;
+			var gl = new IGL_OpenGL(majorVersion, minorVersion, forwardCompatible);
+			return new() { GL = gl };
 		}
 
-		public ContextRef GetContextForGraphicsControl(GraphicsControl gc)
+		public static ContextRef GetContextForGraphicsControl(GraphicsControl gc)
 		{
-			return new ContextRef
+			return new()
 			{
 				Gc = gc,
 				GL = gc.IGL
@@ -53,34 +51,28 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Activate(ContextRef cr)
 		{
-			bool begun = false;
-
-			//this needs a begin signal to set the swap chain to the next backbuffer
-			if (cr.GL.DispMethodEnum is EDispMethod.SlimDX9)
-			{
-				cr.Gc.Begin();
-				begun = true;
-			}
-
 			if (cr == _activeContext)
 			{
+				// D3D9 needs a begin signal to set the swap chain to the next backbuffer
+				if (cr.GL.DispMethodEnum is EDispMethod.D3D9)
+				{
+					cr.Gc.Begin();
+				}
+
 				return;
 			}
 
 			_activeContext = cr;
+
 			if (cr.Gc != null)
 			{
-				//TODO - this is checking the current context inside to avoid an extra NOP context change. make this optional or remove it, since we're tracking it here
-				if (!begun)
-				{
-					cr.Gc.Begin();
-				}
+				cr.Gc.Begin();
 			}
 			else
 			{
-				if (cr.GL is IGL_TK tk)
+				if (cr.GL is IGL_OpenGL gl)
 				{
-					tk.MakeDefaultCurrent();
+					gl.MakeOffscreenContextCurrent();
 				}
 			}
 		}

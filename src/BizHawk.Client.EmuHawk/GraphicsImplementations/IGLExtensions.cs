@@ -1,5 +1,5 @@
 using BizHawk.Bizware.BizwareGL;
-using BizHawk.Bizware.OpenTK3;
+using BizHawk.Bizware.Graphics;
 
 namespace BizHawk.Client.EmuHawk
 {

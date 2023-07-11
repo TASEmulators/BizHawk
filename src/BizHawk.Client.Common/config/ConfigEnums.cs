@@ -29,7 +29,7 @@
 
 	public enum EHostInputMethod
 	{
-		OpenTK = 0,
+		SDL2 = 0,
 		DirectInput = 1
 	}
 

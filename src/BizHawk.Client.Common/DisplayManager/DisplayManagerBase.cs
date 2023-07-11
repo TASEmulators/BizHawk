@@ -87,7 +87,7 @@ namespace BizHawk.Client.Common
 				LoadCustomFont(fceux);
 			}
 
-			if (dispMethod == EDispMethod.OpenGL || dispMethod == EDispMethod.SlimDX9)
+			if (dispMethod == EDispMethod.OpenGL || dispMethod == EDispMethod.D3D9)
 			{
 				var fiHq2x = new FileInfo(Path.Combine(PathUtils.ExeDirectoryPath, "Shaders/BizHawk/hq2x.cgp"));
 				if (fiHq2x.Exists)
@@ -101,7 +101,7 @@ namespace BizHawk.Client.Common
 					using var stream = fiScanlines.OpenRead();
 					_shaderChainScanlines = new RetroShaderChain(_gl, new RetroShaderPreset(stream), Path.Combine(PathUtils.ExeDirectoryPath, "Shaders/BizHawk"));
 				}
-				var bicubicPath = dispMethod == EDispMethod.SlimDX9 ? "Shaders/BizHawk/bicubic-normal.cgp" : "Shaders/BizHawk/bicubic-fast.cgp";
+				var bicubicPath = dispMethod == EDispMethod.D3D9 ? "Shaders/BizHawk/bicubic-normal.cgp" : "Shaders/BizHawk/bicubic-fast.cgp";
 				var fiBicubic = new FileInfo(Path.Combine(PathUtils.ExeDirectoryPath, bicubicPath));
 				if (fiBicubic.Exists)
 				{
@@ -772,8 +772,10 @@ namespace BizHawk.Client.Common
 		private FilterProgram UpdateSourceInternal(JobInfo job)
 		{
 			//no drawing actually happens. it's important not to begin drawing on a control
-			if (!job.Simulate && !job.Offscreen)
+			if (!job.Simulate/* && !job.Offscreen*/)
 			{
+				// i don't want to do this for offscreen jobs
+				// but it seems that would be required in case this context isn't active
 				ActivateGLContext();
 
 				if (job.ChainOutsize.Width == 0 || job.ChainOutsize.Height == 0)
@@ -788,21 +790,21 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			IVideoProvider videoProvider = job.VideoProvider;
-			bool simulate = job.Simulate;
-			Size chainOutsize = job.ChainOutsize;
+			var videoProvider = job.VideoProvider;
+			var simulate = job.Simulate;
+			var chainOutsize = job.ChainOutsize;
 
 			//simulate = true;
 
-			int[] videoBuffer = videoProvider.GetVideoBuffer();
-			int bufferWidth = videoProvider.BufferWidth;
-			int bufferHeight = videoProvider.BufferHeight;
-			int presenterTextureWidth = bufferWidth;
-			int presenterTextureHeight = bufferHeight;
-			bool isGlTextureId = videoBuffer.Length == 1;
+			var videoBuffer = videoProvider.GetVideoBuffer();
+			var bufferWidth = videoProvider.BufferWidth;
+			var bufferHeight = videoProvider.BufferHeight;
+			var presenterTextureWidth = bufferWidth;
+			var presenterTextureHeight = bufferHeight;
+			var isGlTextureId = videoBuffer.Length == 1;
 
-			int vw = videoProvider.VirtualWidth;
-			int vh = videoProvider.VirtualHeight;
+			var vw = videoProvider.VirtualWidth;
+			var vh = videoProvider.VirtualHeight;
 
 			//TODO: it is bad that this is happening outside the filter chain
 			//the filter chain has the ability to add padding...
@@ -811,7 +813,7 @@ namespace BizHawk.Client.Common
 			var fCoreScreenControl = CreateCoreScreenControl();
 			if(fCoreScreenControl != null)
 			{
-				var sz = fCoreScreenControl.PresizeInput("default", new Size(bufferWidth, bufferHeight));
+				var sz = fCoreScreenControl.PresizeInput("default", new(bufferWidth, bufferHeight));
 				presenterTextureWidth = vw = sz.Width;
 				presenterTextureHeight = vh = sz.Height;
 			}
@@ -854,21 +856,21 @@ namespace BizHawk.Client.Common
 			{
 				if (isGlTextureId)
 				{
-					//FYI: this is a million years from happening on n64, since it's all geriatric non-FBO code
-					//is it workable for saturn?
-					videoTexture = _gl.WrapGLTexture2d(new IntPtr(videoBuffer[0]), bufferWidth, bufferHeight);
+					// FYI: this is a million years from happening on n64, since it's all geriatric non-FBO code
+					// is it workable for saturn?
+					videoTexture = _gl.WrapGLTexture2d(new(videoBuffer[0]), bufferWidth, bufferHeight);
 				}
 				else
 				{
-					//wrap the VideoProvider data in a BitmapBuffer (no point to refactoring that many IVideoProviders)
-					bb = new BitmapBuffer(bufferWidth, bufferHeight, videoBuffer);
+					// wrap the VideoProvider data in a BitmapBuffer (no point to refactoring that many IVideoProviders)
+					bb = new(bufferWidth, bufferHeight, videoBuffer);
 					bb.DiscardAlpha();
 
 					//now, acquire the data sent from the videoProvider into a texture
 					videoTexture = _videoTextureFrugalizer.Get(bb);
 
 					// lets not use this. lets define BizwareGL to make clamp by default (TBD: check opengl)
-					//GL.SetTextureWrapMode(videoTexture, true);
+					// GL.SetTextureWrapMode(videoTexture, true);
 				}
 			}
 
@@ -877,22 +879,22 @@ namespace BizHawk.Client.Common
 			_currEmuHeight = bufferHeight;
 
 			//build the default filter chain and set it up with services filters will need
-			Size chainInsize = new Size(bufferWidth, bufferHeight);
+			var chainInsize = new Size(bufferWidth, bufferHeight);
 
 			var filterProgram = BuildDefaultChain(chainInsize, chainOutsize, job.IncludeOSD, job.IncludeUserFilters);
 			filterProgram.GuiRenderer = _renderer;
 			filterProgram.GL = _gl;
 
 			//setup the source image filter
-			SourceImage fInput = filterProgram["input"] as SourceImage;
+			var fInput = (SourceImage)filterProgram["input"];
 			fInput.Texture = videoTexture;
 
 			//setup the final presentation filter
-			FinalPresentation fPresent = filterProgram["presentation"] as FinalPresentation;
+			var fPresent = (FinalPresentation)filterProgram["presentation"];
 			if (fPresent != null)
 			{
-				fPresent.VirtualTextureSize = new Size(vw, vh);
-				fPresent.TextureSize = new Size(presenterTextureWidth, presenterTextureHeight);
+				fPresent.VirtualTextureSize = new(vw, vh);
+				fPresent.TextureSize = new(presenterTextureWidth, presenterTextureHeight);
 				fPresent.BackgroundColor = videoProvider.BackgroundColor;
 				fPresent.GuiRenderer = _renderer;
 				fPresent.Flip = isGlTextureId;

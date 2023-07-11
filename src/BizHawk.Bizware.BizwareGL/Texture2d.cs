@@ -65,8 +65,8 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public int IntWidth => (int)Width;
 		public int IntHeight => (int)Height;
-		public Rectangle Rectangle => new Rectangle(0, 0, IntWidth, IntHeight);
-		public Size Size => new Size(IntWidth, IntHeight);
+		public Rectangle Rectangle => new(0, 0, IntWidth, IntHeight);
+		public Size Size => new(IntWidth, IntHeight);
 
 		/// <summary>
 		/// opengl sucks, man. seriously, screw this (textures from render targets are upside down)

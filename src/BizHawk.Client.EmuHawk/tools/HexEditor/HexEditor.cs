@@ -2229,7 +2229,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 #if false // if needed
-			DialogController.ShowMessageBox(new SlimDX.Matrix {
+			DialogController.ShowMessageBox(new System.Numerics.Matrix4x4() {
 				M11 = matVals[0, 0], M12 = matVals[0, 1], M13 = matVals[0, 2], M14 = matVals[0, 3],
 				M21 = matVals[1, 0], M22 = matVals[1, 1], M23 = matVals[1, 2], M24 = matVals[1, 3],
 				M31 = matVals[2, 0], M32 = matVals[2, 1], M33 = matVals[2, 2], M34 = matVals[2, 3],
