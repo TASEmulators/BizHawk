@@ -91,7 +91,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			unsafe
 			{
-				fixed (int* fbuff = &FrameBuffer[0], svbuff = &SgbVideoBuffer[0])
+				fixed (int* fbuff = &FrameBuffer[0], svbuff = SgbVideoBuffer)
 				{
 					// use pitch to have both cores write to the same frame buffer, interleaved
 					int Pitch = 160 * _numCores;

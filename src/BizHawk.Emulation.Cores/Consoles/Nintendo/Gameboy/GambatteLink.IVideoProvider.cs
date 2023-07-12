@@ -45,10 +45,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			{
 				return new int[256 * _numCores * 224];
 			}
-			else
-			{
-				return new int[1]; // create a dummy so that the fixed statement can work regardless
-			}
+			return null;
 		}
 	}
 }
