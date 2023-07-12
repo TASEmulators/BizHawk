@@ -189,14 +189,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public bool showAnyBorder()
 		{
-			for (int i = 0; i < _numCores; i++)
-			{
-				if (showBorder(i))
-				 {
-					 return true;
-				 }
-			}
-			return false;
+			return Enumerable.Range(0, _numCores).Any(showBorder);
 		}
 
 		private const int P1 = 0;
