@@ -75,6 +75,10 @@ namespace BizHawk.Bizware.Input
 				var gamepad = new SDL2Gamepad(deviceIndex);
 				Gamepads.Add(SDL_JoystickGetDeviceInstanceID(deviceIndex), gamepad);
 			}
+			else
+			{
+				Console.WriteLine($"Gamepads contained a joystick with instance ID {instanceId}, ignoring add device event");
+			}
 
 			RefreshIndexes();
 		}
@@ -85,6 +89,10 @@ namespace BizHawk.Bizware.Input
 			{
 				gamepad.Dispose();
 				Gamepads.Remove(deviceInstanceId);
+			}
+			else
+			{
+				Console.WriteLine($"Gamepads did not contain a joystick with instance ID {deviceInstanceId}, ignoring remove device event");
 			}
 
 			RefreshIndexes();
@@ -219,9 +227,9 @@ namespace BizHawk.Bizware.Input
 			{
 				Opaque = SDL_JoystickOpen(index);
 				HasRumble = SDL_JoystickHasRumble(Opaque) == SDL_bool.SDL_TRUE;
-				InputNamePrefix = $"J{index + 1} ";
 				ButtonGetters = CreateJoystickButtonGetters();
 				IsGameController = false;
+				InputNamePrefix = $"J{index + 1} ";
 			}
 			
 			DeviceIndex = index;
