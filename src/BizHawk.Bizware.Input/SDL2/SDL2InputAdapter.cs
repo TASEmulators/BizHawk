@@ -93,6 +93,7 @@ namespace BizHawk.Bizware.Input
 					}
 				}
 
+				_initialEventQueueEmptied.Set();
 				Thread.Sleep(1);
 			}
 
