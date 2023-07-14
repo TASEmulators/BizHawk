@@ -18,14 +18,17 @@ namespace BizHawk.Bizware.Input
 		/// <summary>Is an SDL_GameController rather than an SDL_Joystick</summary>
 		public readonly bool IsGameController;
 
-		/// <summary>For use in keybind boxes</summary>
-		public string InputNamePrefix { get; private set; }
-
 		/// <summary>Has rumble</summary>
 		public readonly bool HasRumble;
 
 		/// <summary>Contains name and delegate function for all buttons, hats and axis</summary>
 		public readonly IReadOnlyCollection<(string ButtonName, Func<bool> GetIsPressed)> ButtonGetters;
+		
+		/// <summary>For use in keybind boxes</summary>
+		public string InputNamePrefix { get; private set; }
+
+		/// <summary>Device index in SDL</summary>
+		public int DeviceIndex { get; private set; }
 
 		public static void Deinitialize()
 		{
@@ -39,6 +42,8 @@ namespace BizHawk.Bizware.Input
 
 		public void Dispose()
 		{
+			Console.WriteLine($"Disconnecting SDL gamepad, device index {DeviceIndex}, instance ID {SDL_JoystickGetDeviceInstanceID(DeviceIndex)}, name {SDL_JoystickNameForIndex(DeviceIndex)}");
+
 			if (IsGameController)
 			{
 				SDL_GameControllerClose(Opaque);
@@ -64,9 +69,14 @@ namespace BizHawk.Bizware.Input
 
 		public static void AddDevice(int deviceIndex)
 		{
-			var gamepad = new SDL2Gamepad(deviceIndex);
-			Gamepads.Add(SDL_JoystickGetDeviceInstanceID(deviceIndex), gamepad);
-			
+			var instanceId = SDL_JoystickGetDeviceInstanceID(deviceIndex);
+			if (!Gamepads.ContainsKey(instanceId))
+			{
+				var gamepad = new SDL2Gamepad(deviceIndex);
+				Gamepads.Add(SDL_JoystickGetDeviceInstanceID(deviceIndex), gamepad);
+			}
+
+			RefreshIndexes();
 		}
 
 		public static void RemoveDevice(int deviceInstanceId)
@@ -192,6 +202,7 @@ namespace BizHawk.Bizware.Input
 			InputNamePrefix = IsGameController
 				? $"X{index + 1} "
 				: $"J{index + 1} ";
+			DeviceIndex = index;
 		}
 
 		private SDL2Gamepad(int index)
@@ -200,9 +211,9 @@ namespace BizHawk.Bizware.Input
 			{
 				Opaque = SDL_GameControllerOpen(index);
 				HasRumble = SDL_GameControllerHasRumble(Opaque) == SDL_bool.SDL_TRUE;
-				InputNamePrefix = $"X{index + 1} ";
 				ButtonGetters = CreateGameControllerButtonGetters();
 				IsGameController = true;
+				InputNamePrefix = $"X{index + 1} ";
 			}
 			else
 			{
@@ -212,6 +223,9 @@ namespace BizHawk.Bizware.Input
 				ButtonGetters = CreateJoystickButtonGetters();
 				IsGameController = false;
 			}
+			
+			DeviceIndex = index;
+			Console.WriteLine($"Connected SDL gamepad, device index {index}, instance ID {SDL_JoystickGetDeviceInstanceID(index)}, name {SDL_JoystickNameForIndex(index)}");
 		}
 
 		public IEnumerable<(string AxisID, int Value)> GetAxes()
