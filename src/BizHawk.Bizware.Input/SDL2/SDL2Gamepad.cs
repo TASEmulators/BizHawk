@@ -1,25 +1,25 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 using static SDL2.SDL;
 
 namespace BizHawk.Bizware.Input
 {
 	/// <summary>
-	/// SDL2 Game Controller Handler
+	/// SDL2 Gamepad Handler
 	/// </summary>
-	internal class SDL2GameController
+	internal class SDL2Gamepad : IDisposable
 	{
-		private static readonly List<SDL2GameController> GameControllers = new();
+		// indexed by instance id
+		private static readonly Dictionary<int, SDL2Gamepad> Gamepads = new();
 
-		private readonly IntPtr GameController;
+		private readonly IntPtr Opaque;
 
-		/// <summary>Device unique instance Id</summary>
-		private readonly int InstanceId;
+		/// <summary>Is an SDL_GameController rather than an SDL_Joystick</summary>
+		public readonly bool IsGameController;
 
 		/// <summary>For use in keybind boxes</summary>
-		public readonly string InputNamePrefix;
+		public string InputNamePrefix { get; private set; }
 
 		/// <summary>Has rumble</summary>
 		public readonly bool HasRumble;
@@ -27,75 +27,64 @@ namespace BizHawk.Bizware.Input
 		/// <summary>Contains name and delegate function for all buttons, hats and axis</summary>
 		public readonly IReadOnlyCollection<(string ButtonName, Func<bool> GetIsPressed)> ButtonGetters;
 
-		public static void Initialize()
-		{
-			var njoysticks = SDL_NumJoysticks();
-			for (var i = 0; i < njoysticks; i++)
-			{
-				if (SDL_IsGameController(i) == SDL_bool.SDL_TRUE)
-				{
-					GameControllers.Add(new(i, GameControllers.Count));
-				}
-			}
-		}
-
 		public static void Deinitialize()
 		{
-			foreach (var controller in GameControllers)
+			foreach (var gamepad in Gamepads.Values)
 			{
-				SDL_GameControllerClose(controller.GameController);
+				gamepad.Dispose();
 			}
 
-			GameControllers.Clear();
+			Gamepads.Clear();
 		}
 
-		public static void Refresh()
+		public void Dispose()
 		{
-			var changed = false;
+			if (IsGameController)
+			{
+				SDL_GameControllerClose(Opaque);
+			}
+			else
+			{
+				SDL_JoystickClose(Opaque);
+			}
+		}
 
+		private static void RefreshIndexes()
+		{
 			var njoysticks = SDL_NumJoysticks();
-			var ngamecontrollers = 0;
 			for (var i = 0; i < njoysticks; i++)
 			{
-				if (SDL_IsGameController(i) == SDL_bool.SDL_TRUE)
+				var joystickId = SDL_JoystickGetDeviceInstanceID(i);
+				if (Gamepads.TryGetValue(joystickId, out var gamepad))
 				{
-					if (GameControllers.Count == ngamecontrollers)
-					{
-						changed = true;
-						break;
-					}
-
-					if (SDL_JoystickGetDeviceInstanceID(i) != GameControllers[ngamecontrollers].InstanceId)
-					{
-						changed = true;
-						break;
-					}
-
-					ngamecontrollers++;
+					gamepad.UpdateIndex(i);
 				}
-			}
-
-			changed |= GameControllers.Count != ngamecontrollers;
-
-			if (changed)
-			{
-				Deinitialize();
-				Initialize();
 			}
 		}
 
-		public static IEnumerable<SDL2GameController> EnumerateDevices()
-			=> GameControllers.Where(controller => SDL_GameControllerGetAttached(controller.GameController) == SDL_bool.SDL_TRUE).ToList();
-
-		private SDL2GameController(int sdlIndex, int inputIndex)
+		public static void AddDevice(int deviceIndex)
 		{
-			GameController = SDL_GameControllerOpen(sdlIndex);
-			InstanceId = SDL_JoystickGetDeviceInstanceID(sdlIndex);
-			HasRumble = SDL_GameControllerHasRumble(GameController) == SDL_bool.SDL_TRUE;
+			var gamepad = new SDL2Gamepad(deviceIndex);
+			Gamepads.Add(SDL_JoystickGetDeviceInstanceID(deviceIndex), gamepad);
+			
+		}
 
-			InputNamePrefix = $"X{inputIndex + 1} ";
+		public static void RemoveDevice(int deviceInstanceId)
+		{
+			if (Gamepads.TryGetValue(deviceInstanceId, out var gamepad))
+			{
+				gamepad.Dispose();
+				Gamepads.Remove(deviceInstanceId);
+			}
 
-			// Setup mappings prior to button initialization.
+			RefreshIndexes();
+		}
+
+		public static IEnumerable<SDL2Gamepad> EnumerateDevices()
+			=> Gamepads.Values;
+
+		private List<(string ButtonName, Func<bool> GetIsPressed)> CreateGameControllerButtonGetters()
+		{
 			List<(string ButtonName, Func<bool> GetIsPressed)> buttonGetters = new();
 
 			const int dzp = 20000;
@@ -103,43 +92,126 @@ namespace BizHawk.Bizware.Input
 			const int dzt = 5000;
 
 			// buttons
-			buttonGetters.Add(("A", () => SDL_GameControllerGetButton(GameController, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_A) == 1));
-			buttonGetters.Add(("B", () => SDL_GameControllerGetButton(GameController, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_B) == 1));
-			buttonGetters.Add(("X", () => SDL_GameControllerGetButton(GameController, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_X) == 1));
-			buttonGetters.Add(("Y", () => SDL_GameControllerGetButton(GameController, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_Y) == 1));
-			buttonGetters.Add(("Back", () => SDL_GameControllerGetButton(GameController, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_BACK) == 1));
-			buttonGetters.Add(("Guide", () => SDL_GameControllerGetButton(GameController, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_GUIDE) == 1));
-			buttonGetters.Add(("Start", () => SDL_GameControllerGetButton(GameController, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_START) == 1));
-			buttonGetters.Add(("LeftThumb", () => SDL_GameControllerGetButton(GameController, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_LEFTSTICK) == 1));
-			buttonGetters.Add(("RightThumb", () => SDL_GameControllerGetButton(GameController, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_RIGHTSTICK) == 1));
-			buttonGetters.Add(("LeftShoulder", () => SDL_GameControllerGetButton(GameController, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_LEFTSHOULDER) == 1));
-			buttonGetters.Add(("RightShoulder", () => SDL_GameControllerGetButton(GameController, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_RIGHTSHOULDER) == 1));
-			buttonGetters.Add(("DpadUp", () => SDL_GameControllerGetButton(GameController, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_UP) == 1));
-			buttonGetters.Add(("DpadDown", () => SDL_GameControllerGetButton(GameController, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_DOWN) == 1));
-			buttonGetters.Add(("DpadLeft", () => SDL_GameControllerGetButton(GameController, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_LEFT) == 1));
-			buttonGetters.Add(("DpadRight", () => SDL_GameControllerGetButton(GameController, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_RIGHT) == 1));
-			buttonGetters.Add(("Misc", () => SDL_GameControllerGetButton(GameController, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_MISC1) == 1));
-			buttonGetters.Add(("Paddle1", () => SDL_GameControllerGetButton(GameController, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE1) == 1));
-			buttonGetters.Add(("Paddle2", () => SDL_GameControllerGetButton(GameController, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE2) == 1));
-			buttonGetters.Add(("Paddle3", () => SDL_GameControllerGetButton(GameController, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE3) == 1));
-			buttonGetters.Add(("Paddle4", () => SDL_GameControllerGetButton(GameController, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE4) == 1));
-			buttonGetters.Add(("Touchpad", () => SDL_GameControllerGetButton(GameController, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_TOUCHPAD) == 1));
+			buttonGetters.Add(("A", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_A) == 1));
+			buttonGetters.Add(("B", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_B) == 1));
+			buttonGetters.Add(("X", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_X) == 1));
+			buttonGetters.Add(("Y", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_Y) == 1));
+			buttonGetters.Add(("Back", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_BACK) == 1));
+			buttonGetters.Add(("Guide", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_GUIDE) == 1));
+			buttonGetters.Add(("Start", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_START) == 1));
+			buttonGetters.Add(("LeftThumb", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_LEFTSTICK) == 1));
+			buttonGetters.Add(("RightThumb", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_RIGHTSTICK) == 1));
+			buttonGetters.Add(("LeftShoulder", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_LEFTSHOULDER) == 1));
+			buttonGetters.Add(("RightShoulder", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_RIGHTSHOULDER) == 1));
+			buttonGetters.Add(("DpadUp", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_UP) == 1));
+			buttonGetters.Add(("DpadDown", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_DOWN) == 1));
+			buttonGetters.Add(("DpadLeft", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_LEFT) == 1));
+			buttonGetters.Add(("DpadRight", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_RIGHT) == 1));
+			buttonGetters.Add(("Misc", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_MISC1) == 1));
+			buttonGetters.Add(("Paddle1", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE1) == 1));
+			buttonGetters.Add(("Paddle2", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE2) == 1));
+			buttonGetters.Add(("Paddle3", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE3) == 1));
+			buttonGetters.Add(("Paddle4", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE4) == 1));
+			buttonGetters.Add(("Touchpad", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_TOUCHPAD) == 1));
 
 			// sticks
-			buttonGetters.Add(("LStickUp", () => SDL_GameControllerGetAxis(GameController, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_LEFTY) >= dzp));
-			buttonGetters.Add(("LStickDown", () => SDL_GameControllerGetAxis(GameController, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_LEFTY) <= dzn));
-			buttonGetters.Add(("LStickLeft", () => SDL_GameControllerGetAxis(GameController, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_LEFTX) <= dzn));
-			buttonGetters.Add(("LStickRight", () => SDL_GameControllerGetAxis(GameController, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_LEFTX) >= dzp));
-			buttonGetters.Add(("RStickUp", () => SDL_GameControllerGetAxis(GameController, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_RIGHTY) >= dzp));
-			buttonGetters.Add(("RStickDown", () => SDL_GameControllerGetAxis(GameController, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_RIGHTY) <= dzn));
-			buttonGetters.Add(("RStickLeft", () => SDL_GameControllerGetAxis(GameController, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_RIGHTX) <= dzn));
-			buttonGetters.Add(("RStickRight", () => SDL_GameControllerGetAxis(GameController, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_RIGHTX) >= dzp));
+			buttonGetters.Add(("LStickUp", () => SDL_GameControllerGetAxis(Opaque, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_LEFTY) >= dzp));
+			buttonGetters.Add(("LStickDown", () => SDL_GameControllerGetAxis(Opaque, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_LEFTY) <= dzn));
+			buttonGetters.Add(("LStickLeft", () => SDL_GameControllerGetAxis(Opaque, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_LEFTX) <= dzn));
+			buttonGetters.Add(("LStickRight", () => SDL_GameControllerGetAxis(Opaque, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_LEFTX) >= dzp));
+			buttonGetters.Add(("RStickUp", () => SDL_GameControllerGetAxis(Opaque, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_RIGHTY) >= dzp));
+			buttonGetters.Add(("RStickDown", () => SDL_GameControllerGetAxis(Opaque, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_RIGHTY) <= dzn));
+			buttonGetters.Add(("RStickLeft", () => SDL_GameControllerGetAxis(Opaque, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_RIGHTX) <= dzn));
+			buttonGetters.Add(("RStickRight", () => SDL_GameControllerGetAxis(Opaque, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_RIGHTX) >= dzp));
 
 			// triggers
-			buttonGetters.Add(("LeftTrigger", () => SDL_GameControllerGetAxis(GameController, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_TRIGGERLEFT) > dzt));
-			buttonGetters.Add(("RightTrigger", () => SDL_GameControllerGetAxis(GameController, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_TRIGGERRIGHT) > dzt));
+			buttonGetters.Add(("LeftTrigger", () => SDL_GameControllerGetAxis(Opaque, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_TRIGGERLEFT) > dzt));
+			buttonGetters.Add(("RightTrigger", () => SDL_GameControllerGetAxis(Opaque, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_TRIGGERRIGHT) > dzt));
 
-			ButtonGetters = buttonGetters;
+			return buttonGetters;
+		}
+
+		private List<(string ButtonName, Func<bool> GetIsPressed)> CreateJoystickButtonGetters()
+		{
+			List<(string ButtonName, Func<bool> GetIsPressed)> buttonGetters = new();
+
+			const float dzp = 20000;
+			const float dzn = -20000;
+
+			// axes
+			buttonGetters.Add(("X+", () => SDL_JoystickGetAxis(Opaque, 0) >= dzp));
+			buttonGetters.Add(("X-", () => SDL_JoystickGetAxis(Opaque, 0) <= dzn));
+			buttonGetters.Add(("Y+", () => SDL_JoystickGetAxis(Opaque, 1) >= dzp));
+			buttonGetters.Add(("Y-", () => SDL_JoystickGetAxis(Opaque, 1) <= dzn));
+			buttonGetters.Add(("Z+", () => SDL_JoystickGetAxis(Opaque, 2) >= dzp));
+			buttonGetters.Add(("Z-", () => SDL_JoystickGetAxis(Opaque, 2) <= dzn));
+			buttonGetters.Add(("W+", () => SDL_JoystickGetAxis(Opaque, 3) >= dzp));
+			buttonGetters.Add(("W-", () => SDL_JoystickGetAxis(Opaque, 3) <= dzn));
+			buttonGetters.Add(("V+", () => SDL_JoystickGetAxis(Opaque, 4) >= dzp));
+			buttonGetters.Add(("V-", () => SDL_JoystickGetAxis(Opaque, 4) <= dzn));
+			buttonGetters.Add(("S+", () => SDL_JoystickGetAxis(Opaque, 5) >= dzp));
+			buttonGetters.Add(("S-", () => SDL_JoystickGetAxis(Opaque, 5) <= dzn));
+			buttonGetters.Add(("Q+", () => SDL_JoystickGetAxis(Opaque, 6) >= dzp));
+			buttonGetters.Add(("Q-", () => SDL_JoystickGetAxis(Opaque, 6) <= dzn));
+			buttonGetters.Add(("P+", () => SDL_JoystickGetAxis(Opaque, 7) >= dzp));
+			buttonGetters.Add(("P-", () => SDL_JoystickGetAxis(Opaque, 7) <= dzn));
+			buttonGetters.Add(("N+", () => SDL_JoystickGetAxis(Opaque, 8) >= dzp));
+			buttonGetters.Add(("N-", () => SDL_JoystickGetAxis(Opaque, 8) <= dzn));
+			var naxes = SDL_JoystickNumAxes(Opaque);
+			for (var i = 9; i < naxes; i++)
+			{
+				var j = i;
+				buttonGetters.Add(($"Axis{j.ToString()}+", () => SDL_JoystickGetAxis(Opaque, j) >= dzp));
+				buttonGetters.Add(($"Axis{j.ToString()}-", () => SDL_JoystickGetAxis(Opaque, j) <= dzn));
+			}
+
+			// buttons
+			var nbuttons = SDL_JoystickNumButtons(Opaque);
+			for (var i = 0; i < nbuttons; i++)
+			{
+				var j = i;
+				buttonGetters.Add(($"B{i + 1}", () => SDL_JoystickGetButton(Opaque, j) == 1));
+			}
+
+			// hats
+			var nhats = SDL_JoystickNumHats(Opaque);
+			for (var i = 0; i < nhats; i++)
+			{
+				var j = i;
+				buttonGetters.Add(($"POV{j.ToString()}U", () => (SDL_JoystickGetHat(Opaque, j) & SDL_HAT_UP) == SDL_HAT_UP));
+				buttonGetters.Add(($"POV{j.ToString()}D", () => (SDL_JoystickGetHat(Opaque, j) & SDL_HAT_DOWN) == SDL_HAT_DOWN));
+				buttonGetters.Add(($"POV{j.ToString()}L", () => (SDL_JoystickGetHat(Opaque, j) & SDL_HAT_LEFT) == SDL_HAT_LEFT));
+				buttonGetters.Add(($"POV{j.ToString()}R", () => (SDL_JoystickGetHat(Opaque, j) & SDL_HAT_RIGHT) == SDL_HAT_RIGHT));
+			}
+
+			return buttonGetters;
+		}
+
+		public void UpdateIndex(int index)
+		{
+			InputNamePrefix = IsGameController
+				? $"X{index + 1} "
+				: $"J{index + 1} ";
+		}
+
+		private SDL2Gamepad(int index)
+		{
+			if (SDL_IsGameController(index) == SDL_bool.SDL_TRUE)
+			{
+				Opaque = SDL_GameControllerOpen(index);
+				HasRumble = SDL_GameControllerHasRumble(Opaque) == SDL_bool.SDL_TRUE;
+				InputNamePrefix = $"X{index + 1} ";
+				ButtonGetters = CreateGameControllerButtonGetters();
+				IsGameController = true;
+			}
+			else
+			{
+				Opaque = SDL_JoystickOpen(index);
+				HasRumble = SDL_JoystickHasRumble(Opaque) == SDL_bool.SDL_TRUE;
+				InputNamePrefix = $"J{index + 1} ";
+				ButtonGetters = CreateJoystickButtonGetters();
+				IsGameController = false;
+			}
 		}
 
 		public IEnumerable<(string AxisID, int Value)> GetAxes()
@@ -148,22 +220,49 @@ namespace BizHawk.Bizware.Input
 			const float f = 32768 / 10000.0f;
 			static int Conv(short num) => (int)(num / f);
 
-			return new[]
+			if (IsGameController)
 			{
-				("LeftThumbX", Conv(SDL_GameControllerGetAxis(GameController, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_LEFTX))),
-				("LeftThumbY", Conv(SDL_GameControllerGetAxis(GameController, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_LEFTY))),
-				("RightThumbX", Conv(SDL_GameControllerGetAxis(GameController, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_RIGHTX))),
-				("RightThumbY", Conv(SDL_GameControllerGetAxis(GameController, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_RIGHTY))),
-				("LeftTrigger", Conv(SDL_GameControllerGetAxis(GameController, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_TRIGGERLEFT))),
-				("RightTrigger", Conv(SDL_GameControllerGetAxis(GameController, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_TRIGGERRIGHT))),
+				return new[]
+				{
+					("LeftThumbX", Conv(SDL_GameControllerGetAxis(Opaque, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_LEFTX))),
+					("LeftThumbY", Conv(SDL_GameControllerGetAxis(Opaque, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_LEFTY))),
+					("RightThumbX", Conv(SDL_GameControllerGetAxis(Opaque, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_RIGHTX))),
+					("RightThumbY", Conv(SDL_GameControllerGetAxis(Opaque, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_RIGHTY))),
+					("LeftTrigger", Conv(SDL_GameControllerGetAxis(Opaque, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_TRIGGERLEFT))),
+					("RightTrigger", Conv(SDL_GameControllerGetAxis(Opaque, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_TRIGGERRIGHT))),
+				};
+			}
+
+			List<(string AxisID, int Value)> values = new()
+			{
+				("X", Conv(SDL_JoystickGetAxis(Opaque, 0))),
+				("Y", Conv(SDL_JoystickGetAxis(Opaque, 1))),
+				("Z", Conv(SDL_JoystickGetAxis(Opaque, 2))),
+				("W", Conv(SDL_JoystickGetAxis(Opaque, 3))),
+				("V", Conv(SDL_JoystickGetAxis(Opaque, 4))),
+				("S", Conv(SDL_JoystickGetAxis(Opaque, 5))),
+				("Q", Conv(SDL_JoystickGetAxis(Opaque, 6))),
+				("P", Conv(SDL_JoystickGetAxis(Opaque, 7))),
+				("N", Conv(SDL_JoystickGetAxis(Opaque, 8))),
 			};
+
+			var naxes = SDL_JoystickNumAxes(Opaque);
+			for (var i = 9; i < naxes; i++)
+			{
+				var j = i;
+				values.Add(($"Axis{j.ToString()}", Conv(SDL_JoystickGetAxis(Opaque, j))));
+			}
+
+			return values;
 		}
 
 		/// <remarks><paramref name="left"/> and <paramref name="right"/> are in 0..<see cref="int.MaxValue"/></remarks>
 		public void SetVibration(int left, int right)
 		{
 			static ushort Conv(int i) => unchecked((ushort) ((i >> 15) & 0xFFFF));
-			_ = SDL_GameControllerRumble(GameController, Conv(left), Conv(right), uint.MaxValue);
+			_ = IsGameController
+				? SDL_GameControllerRumble(Opaque, Conv(left), Conv(right), uint.MaxValue)
+				: SDL_JoystickRumble(Opaque, Conv(left), Conv(right), uint.MaxValue);
 		}
 	}
 }

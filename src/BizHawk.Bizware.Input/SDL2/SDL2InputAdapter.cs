@@ -3,8 +3,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 using BizHawk.Client.Common;
+using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 
 using static SDL2.SDL;
@@ -17,30 +19,102 @@ namespace BizHawk.Bizware.Input
 
 		private IReadOnlyDictionary<string, int> _lastHapticsSnapshot = new Dictionary<string, int>();
 
+		private Thread? _sdlThread;
+		private readonly ManualResetEventSlim _initialEventQueueEmptied = new(false);
 		private readonly object _syncObject = new();
-		private bool _isInit;
+		private volatile bool _isInit;
 
 		public override string Desc => "SDL2";
 
 		static SDL2InputAdapter()
 		{
+			SDL_SetHint(SDL_HINT_JOYSTICK_THREAD, "1");
+		}
+
+		private void SDLThread()
+		{
+			// we can't use SDL_Pump here
+			// as that is only valid on the video (main) thread
+			// SDL_JoystickUpdate() works for our purposes here
+
+			// we'll want to init here, as this thread is what will be updating stuff
 			if (SDL_Init(SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER) != 0)
 			{
-				throw new InvalidOperationException("Could not init SDL2");
+				SDL_QuitSubSystem(SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER);
+				_isInit = false;
+				_initialEventQueueEmptied.Set();
+				return;
 			}
+
+			// Windows SDL bug
+			// SDL uses message pumping for hidapi device detection
+			// but besides the initial init, it will not pump this window
+			// even using SDL_PumpEvent will fail at pumping this window
+			// (although we can't use that for other reasons)
+			var hidapiWindow = IntPtr.Zero;
+			if (!OSTailoredCode.IsUnixHost)
+			{
+				hidapiWindow = Win32Imports.FindWindowEx(Win32Imports.HWND_MESSAGE, IntPtr.Zero,
+					"SDL_HIDAPI_DEVICE_DETECTION", null);
+			}
+
+			var e = new SDL_Event[1];
+			while (true)
+			{
+				lock (_syncObject)
+				{
+					if (!_isInit)
+					{
+						break;
+					}
+
+					if (!OSTailoredCode.IsUnixHost && hidapiWindow != IntPtr.Zero)
+					{
+						while (Win32Imports.PeekMessage(out var msg, hidapiWindow, 0, 0, Win32Imports.PM_REMOVE))
+						{
+							Win32Imports.TranslateMessage(ref msg);
+							Win32Imports.DispatchMessage(ref msg);
+						}
+					}
+
+					SDL_JoystickUpdate();
+					while (SDL_PeepEvents(e, 1, SDL_eventaction.SDL_GETEVENT, SDL_EventType.SDL_JOYAXISMOTION, SDL_EventType.SDL_FINGERMOTION) == 1)
+					{
+						// ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
+						switch (e[0].type)
+						{
+							case SDL_EventType.SDL_JOYDEVICEADDED:
+								SDL2Gamepad.AddDevice(e[0].jdevice.which);
+								break;
+							case SDL_EventType.SDL_JOYDEVICEREMOVED:
+								SDL2Gamepad.RemoveDevice(e[0].jdevice.which);
+								break;
+						}
+					}
+				}
+
+				Thread.Sleep(1);
+			}
+
+			SDL_QuitSubSystem(SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER);
 		}
 
 		public override void DeInitAll()
 		{
+			if (!_isInit)
+			{
+				return;
+			}
+
 			lock (_syncObject)
 			{
 				base.DeInitAll();
-
-				SDL2GameController.Deinitialize();
-				SDL2Joystick.Deinitialize();
-
+				SDL2Gamepad.Deinitialize();
 				_isInit = false;
 			}
+
+			_sdlThread!.Join();
+			_initialEventQueueEmptied.Dispose();
 		}
 
 		public override void FirstInitAll(IntPtr mainFormHandle)
@@ -52,10 +126,16 @@ namespace BizHawk.Bizware.Input
 			// as for some reason SDL2 just never receives input events
 			base.FirstInitAll(mainFormHandle);
 
-			SDL2GameController.Initialize();
-			SDL2Joystick.Initialize();
-
 			_isInit = true;
+			_sdlThread = new(SDLThread) { IsBackground = true };
+			_sdlThread.Start();
+			_initialEventQueueEmptied.Wait();
+
+			if (!_isInit)
+			{
+				base.DeInitAll();
+				throw new InvalidOperationException($"SDL failed to init, SDL error: {SDL_GetError()}");
+			}
 		}
 
 		public override IReadOnlyDictionary<string, IReadOnlyCollection<string>> GetHapticsChannels()
@@ -63,12 +143,9 @@ namespace BizHawk.Bizware.Input
 			lock (_syncObject)
 			{
 				return _isInit
-					? SDL2GameController.EnumerateDevices()
+					? SDL2Gamepad.EnumerateDevices()
 						.Where(pad => pad.HasRumble)
 						.Select(pad => pad.InputNamePrefix)
-						.Concat(SDL2Joystick.EnumerateDevices()
-							.Where(stick => stick.HasRumble)
-							.Select(stick => stick.InputNamePrefix))
 						.ToDictionary(s => s, _ => SDL2_HAPTIC_CHANNEL_NAMES)
 					: new();
 			}
@@ -80,9 +157,6 @@ namespace BizHawk.Bizware.Input
 
 		public override void PreprocessHostGamepads()
 		{
-			SDL_JoystickUpdate(); // also updates game controllers
-			SDL2GameController.Refresh();
-			SDL2Joystick.Refresh();
 		}
 
 		public override void ProcessHostGamepads(Action<string?, bool, ClientInputFocus> handleButton, Action<string?, int> handleAxis)
@@ -91,7 +165,7 @@ namespace BizHawk.Bizware.Input
 			{
 				if (!_isInit) return;
 
-				foreach (var pad in SDL2GameController.EnumerateDevices())
+				foreach (var pad in SDL2Gamepad.EnumerateDevices())
 				{
 					foreach (var but in pad.ButtonGetters) handleButton(pad.InputNamePrefix + but.ButtonName, but.GetIsPressed(), ClientInputFocus.Pad);
 					foreach (var (axisID, f) in pad.GetAxes()) handleAxis($"{pad.InputNamePrefix}{axisID} Axis", f);
@@ -101,19 +175,6 @@ namespace BizHawk.Bizware.Input
 						var leftStrength = _lastHapticsSnapshot.GetValueOrDefault(pad.InputNamePrefix + "Left");
 						var rightStrength = _lastHapticsSnapshot.GetValueOrDefault(pad.InputNamePrefix + "Right");
 						pad.SetVibration(leftStrength, rightStrength);	
-					}
-				}
-
-				foreach (var stick in SDL2Joystick.EnumerateDevices())
-				{
-					foreach (var but in stick.ButtonGetters) handleButton(stick.InputNamePrefix + but.ButtonName, but.GetIsPressed(), ClientInputFocus.Pad);
-					foreach (var (axisID, f) in stick.GetAxes()) handleAxis($"{stick.InputNamePrefix}{axisID} Axis", f);
-
-					if (stick.HasRumble)
-					{
-						var leftStrength = _lastHapticsSnapshot.GetValueOrDefault(stick.InputNamePrefix + "Left");
-						var rightStrength = _lastHapticsSnapshot.GetValueOrDefault(stick.InputNamePrefix + "Right");
-						stick.SetVibration(leftStrength, rightStrength);	
 					}
 				}
 			}
