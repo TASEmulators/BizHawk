@@ -26,8 +26,14 @@ namespace BizHawk.Bizware.Input
 
 		public override string Desc => "SDL2";
 
+		// we only want joystick adding and remove events
+		private static readonly SDL_EventFilter _sdlEventFilter = SDLEventFilter;
+		private static unsafe int SDLEventFilter(IntPtr userdata, IntPtr e)
+			=> ((SDL_Event*)e)->type is SDL_EventType.SDL_JOYDEVICEADDED or SDL_EventType.SDL_JOYDEVICEREMOVED ? 1 : 0;
+
 		static SDL2InputAdapter()
 		{
+			SDL_SetEventFilter(_sdlEventFilter, IntPtr.Zero);
 			SDL_SetHint(SDL_HINT_JOYSTICK_THREAD, "1");
 		}
 
@@ -78,7 +84,7 @@ namespace BizHawk.Bizware.Input
 					}
 
 					SDL_JoystickUpdate();
-					while (SDL_PeepEvents(e, 1, SDL_eventaction.SDL_GETEVENT, SDL_EventType.SDL_JOYAXISMOTION, SDL_EventType.SDL_FINGERMOTION) == 1)
+					while (SDL_PeepEvents(e, 1, SDL_eventaction.SDL_GETEVENT, SDL_EventType.SDL_JOYDEVICEADDED, SDL_EventType.SDL_JOYDEVICEREMOVED) == 1)
 					{
 						// ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
 						switch (e[0].type)

@@ -30,6 +30,12 @@ namespace BizHawk.Bizware.Input
 		/// <summary>Device index in SDL</summary>
 		public int DeviceIndex { get; private set; }
 
+		/// <summary>Instance ID in SDL</summary>
+		public int InstanceID { get; }
+
+		/// <summary>Device name in SDL</summary>
+		public string DeviceName { get; }
+
 		public static void Deinitialize()
 		{
 			foreach (var gamepad in Gamepads.Values)
@@ -42,7 +48,7 @@ namespace BizHawk.Bizware.Input
 
 		public void Dispose()
 		{
-			Console.WriteLine($"Disconnecting SDL gamepad, device index {DeviceIndex}, instance ID {SDL_JoystickGetDeviceInstanceID(DeviceIndex)}, name {SDL_JoystickNameForIndex(DeviceIndex)}");
+			Console.WriteLine($"Disconnecting SDL gamepad, device index {DeviceIndex}, instance ID {InstanceID}, name {DeviceName}");
 
 			if (IsGameController)
 			{
@@ -222,6 +228,7 @@ namespace BizHawk.Bizware.Input
 				ButtonGetters = CreateGameControllerButtonGetters();
 				IsGameController = true;
 				InputNamePrefix = $"X{index + 1} ";
+				DeviceName = SDL_GameControllerName(Opaque);
 			}
 			else
 			{
@@ -230,10 +237,13 @@ namespace BizHawk.Bizware.Input
 				ButtonGetters = CreateJoystickButtonGetters();
 				IsGameController = false;
 				InputNamePrefix = $"J{index + 1} ";
+				DeviceName = SDL_JoystickName(Opaque);
 			}
-			
+
 			DeviceIndex = index;
-			Console.WriteLine($"Connected SDL gamepad, device index {index}, instance ID {SDL_JoystickGetDeviceInstanceID(index)}, name {SDL_JoystickNameForIndex(index)}");
+			InstanceID = SDL_JoystickGetDeviceInstanceID(index);
+
+			Console.WriteLine($"Connected SDL gamepad, device index {index}, instance ID {InstanceID}, name {DeviceName}");
 		}
 
 		public IEnumerable<(string AxisID, int Value)> GetAxes()
