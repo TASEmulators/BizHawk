@@ -67,6 +67,7 @@ namespace BizHawk.Bizware.Input
 			var e = new SDL_Event[1];
 			while (true)
 			{
+				Console.WriteLine("Entering SDL event loop");
 				lock (_syncObject)
 				{
 					if (!_isInit)
@@ -98,9 +99,10 @@ namespace BizHawk.Bizware.Input
 						}
 					}
 				}
+				Console.WriteLine("Exiting SDL event loop");
 
 				_initialEventQueueEmptied.Set();
-				Thread.Sleep(1);
+				Thread.Sleep(10);
 			}
 
 			SDL_QuitSubSystem(SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER);
