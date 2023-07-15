@@ -11,6 +11,7 @@ namespace BizHawk.Common
 	{
 		public const int MAX_PATH = 260;
 		public static readonly IntPtr HWND_MESSAGE = new(-3); // IntPtr can't be const :(
+		public const uint PM_NOREMOVE = 0x0000U;
 		public const uint PM_REMOVE = 0x0001U;
 
 		public delegate int BFFCALLBACK(IntPtr hwnd, uint uMsg, IntPtr lParam, IntPtr lpData);
@@ -125,6 +126,10 @@ namespace BizHawk.Common
 
 		[DllImport("user32.dll")]
 		public static extern IntPtr GetActiveWindow();
+
+		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool GetMessage(ref MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
 
 		[DllImport("kernel32", SetLastError = true, EntryPoint = "GetProcAddress")]
 		public static extern IntPtr GetProcAddressOrdinal(IntPtr hModule, IntPtr procName);

@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
@@ -42,10 +41,13 @@ namespace BizHawk.Bizware.Input
 
 			if (!OSTailoredCode.IsUnixHost && _hidApiWin32Window != IntPtr.Zero)
 			{
-				while (Win32Imports.PeekMessage(out var msg, _hidApiWin32Window, 0, 0, Win32Imports.PM_REMOVE))
+				while (Win32Imports.PeekMessage(out var msg, _hidApiWin32Window, 0, 0, Win32Imports.PM_NOREMOVE))
 				{
-					Win32Imports.TranslateMessage(ref msg);
-					Win32Imports.DispatchMessage(ref msg);
+					if (Win32Imports.GetMessage(ref msg, _hidApiWin32Window, 0, 0))
+					{
+						Win32Imports.TranslateMessage(ref msg);
+						Win32Imports.DispatchMessage(ref msg);
+					}
 				}
 			}
 
