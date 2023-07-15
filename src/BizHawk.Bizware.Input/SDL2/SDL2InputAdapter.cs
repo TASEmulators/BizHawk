@@ -19,10 +19,9 @@ namespace BizHawk.Bizware.Input
 
 		private IReadOnlyDictionary<string, int> _lastHapticsSnapshot = new Dictionary<string, int>();
 
-		private Thread? _sdlThread;
-		private readonly ManualResetEventSlim _initialEventQueueEmptied = new(false);
-		private readonly object _syncObject = new();
-		private volatile bool _isInit;
+		private bool _sdlInitCalled; // must be deferred on the input thread (FirstInitAll is not on the input thread)
+		private IntPtr _hidApiWin32Window;
+		private bool _isInit;
 
 		public override string Desc => "SDL2";
 
@@ -37,75 +36,36 @@ namespace BizHawk.Bizware.Input
 			SDL_SetHint(SDL_HINT_JOYSTICK_THREAD, "1");
 		}
 
-		private void SDLThread()
+		private void DoSDLEventLoop()
 		{
-			// we can't use SDL_Pump here
-			// as that is only valid on the video (main) thread
-			// SDL_JoystickUpdate() works for our purposes here
+			Console.WriteLine("Entering SDL event loop");
 
-			// we'll want to init here, as this thread is what will be updating stuff
-			if (SDL_Init(SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER) != 0)
+			if (!OSTailoredCode.IsUnixHost && _hidApiWin32Window != IntPtr.Zero)
 			{
-				SDL_QuitSubSystem(SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER);
-				_isInit = false;
-				_initialEventQueueEmptied.Set();
-				return;
-			}
-
-			// Windows SDL bug
-			// SDL uses message pumping for hidapi device detection
-			// but besides the initial init, it will not pump this window
-			// even using SDL_PumpEvent will fail at pumping this window
-			// (although we can't use that for other reasons)
-			var hidapiWindow = IntPtr.Zero;
-			if (!OSTailoredCode.IsUnixHost)
-			{
-				hidapiWindow = Win32Imports.FindWindowEx(Win32Imports.HWND_MESSAGE, IntPtr.Zero,
-					"SDL_HIDAPI_DEVICE_DETECTION", null);
-			}
-
-			var e = new SDL_Event[1];
-			while (true)
-			{
-				Console.WriteLine("Entering SDL event loop");
-				lock (_syncObject)
+				while (Win32Imports.PeekMessage(out var msg, _hidApiWin32Window, 0, 0, Win32Imports.PM_REMOVE))
 				{
-					if (!_isInit)
-					{
-						break;
-					}
-
-					if (!OSTailoredCode.IsUnixHost && hidapiWindow != IntPtr.Zero)
-					{
-						while (Win32Imports.PeekMessage(out var msg, hidapiWindow, 0, 0, Win32Imports.PM_REMOVE))
-						{
-							Win32Imports.TranslateMessage(ref msg);
-							Win32Imports.DispatchMessage(ref msg);
-						}
-					}
-
-					SDL_JoystickUpdate();
-					while (SDL_PeepEvents(e, 1, SDL_eventaction.SDL_GETEVENT, SDL_EventType.SDL_JOYDEVICEADDED, SDL_EventType.SDL_JOYDEVICEREMOVED) == 1)
-					{
-						// ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
-						switch (e[0].type)
-						{
-							case SDL_EventType.SDL_JOYDEVICEADDED:
-								SDL2Gamepad.AddDevice(e[0].jdevice.which);
-								break;
-							case SDL_EventType.SDL_JOYDEVICEREMOVED:
-								SDL2Gamepad.RemoveDevice(e[0].jdevice.which);
-								break;
-						}
-					}
+					Win32Imports.TranslateMessage(ref msg);
+					Win32Imports.DispatchMessage(ref msg);
 				}
-				Console.WriteLine("Exiting SDL event loop");
-
-				_initialEventQueueEmptied.Set();
-				Thread.Sleep(10);
 			}
 
-			SDL_QuitSubSystem(SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER);
+			SDL_JoystickUpdate();
+			var e = new SDL_Event[1];
+			while (SDL_PeepEvents(e, 1, SDL_eventaction.SDL_GETEVENT, SDL_EventType.SDL_JOYDEVICEADDED, SDL_EventType.SDL_JOYDEVICEREMOVED) == 1)
+			{
+				// ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
+				switch (e[0].type)
+				{
+					case SDL_EventType.SDL_JOYDEVICEADDED:
+						SDL2Gamepad.AddDevice(e[0].jdevice.which);
+						break;
+					case SDL_EventType.SDL_JOYDEVICEREMOVED:
+						SDL2Gamepad.RemoveDevice(e[0].jdevice.which);
+						break;
+				}
+			}
+
+			Console.WriteLine("Exiting SDL event loop");
 		}
 
 		public override void DeInitAll()
@@ -115,15 +75,10 @@ namespace BizHawk.Bizware.Input
 				return;
 			}
 
-			lock (_syncObject)
-			{
-				base.DeInitAll();
-				SDL2Gamepad.Deinitialize();
-				_isInit = false;
-			}
-
-			_sdlThread!.Join();
-			_initialEventQueueEmptied.Dispose();
+			base.DeInitAll();
+			SDL2Gamepad.Deinitialize();
+			SDL_QuitSubSystem(SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER);
+			_isInit = false;
 		}
 
 		public override void FirstInitAll(IntPtr mainFormHandle)
@@ -133,31 +88,20 @@ namespace BizHawk.Bizware.Input
 			// SDL2's keyboard support is not usable by us, as it requires a focused window
 			// even worse, the main form doesn't even work in this context
 			// as for some reason SDL2 just never receives input events
-			base.FirstInitAll(mainFormHandle);
-
+			base.FirstInitAll(mainFormHandle); 
+			// first event loop adds controllers
+			// but it must be deferred to the input thread (first PreprocessHostGamepads call)
 			_isInit = true;
-			_sdlThread = new(SDLThread) { IsBackground = true };
-			_sdlThread.Start();
-			_initialEventQueueEmptied.Wait();
-
-			if (!_isInit)
-			{
-				base.DeInitAll();
-				throw new InvalidOperationException($"SDL failed to init, SDL error: {SDL_GetError()}");
-			}
 		}
 
 		public override IReadOnlyDictionary<string, IReadOnlyCollection<string>> GetHapticsChannels()
 		{
-			lock (_syncObject)
-			{
-				return _isInit
-					? SDL2Gamepad.EnumerateDevices()
-						.Where(pad => pad.HasRumble)
-						.Select(pad => pad.InputNamePrefix)
-						.ToDictionary(s => s, _ => SDL2_HAPTIC_CHANNEL_NAMES)
-					: new();
-			}
+			return _isInit
+				? SDL2Gamepad.EnumerateDevices()
+					.Where(pad => pad.HasRumble)
+					.Select(pad => pad.InputNamePrefix)
+					.ToDictionary(s => s, _ => SDL2_HAPTIC_CHANNEL_NAMES)
+				: new();
 		}
 
 		public override void ReInitGamepads(IntPtr mainFormHandle)
@@ -166,37 +110,49 @@ namespace BizHawk.Bizware.Input
 
 		public override void PreprocessHostGamepads()
 		{
+			if (!_sdlInitCalled)
+			{
+				if (SDL_Init(SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER) != 0)
+				{
+					SDL_QuitSubSystem(SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER);
+					throw new($"SDL failed to init, SDL error: {SDL_GetError()}");
+				}
+
+				if (!OSTailoredCode.IsUnixHost)
+				{
+					_hidApiWin32Window = Win32Imports.FindWindowEx(Win32Imports.HWND_MESSAGE, IntPtr.Zero,
+						"SDL_HIDAPI_DEVICE_DETECTION", null);
+				}
+
+				_sdlInitCalled = true;
+			}
+
+			DoSDLEventLoop();
 		}
 
 		public override void ProcessHostGamepads(Action<string?, bool, ClientInputFocus> handleButton, Action<string?, int> handleAxis)
 		{
-			lock (_syncObject)
+			if (!_isInit) return;
+
+			foreach (var pad in SDL2Gamepad.EnumerateDevices())
 			{
-				if (!_isInit) return;
+				foreach (var but in pad.ButtonGetters) handleButton(pad.InputNamePrefix + but.ButtonName, but.GetIsPressed(), ClientInputFocus.Pad);
+				foreach (var (axisID, f) in pad.GetAxes()) handleAxis($"{pad.InputNamePrefix}{axisID} Axis", f);
 
-				foreach (var pad in SDL2Gamepad.EnumerateDevices())
+				if (pad.HasRumble)
 				{
-					foreach (var but in pad.ButtonGetters) handleButton(pad.InputNamePrefix + but.ButtonName, but.GetIsPressed(), ClientInputFocus.Pad);
-					foreach (var (axisID, f) in pad.GetAxes()) handleAxis($"{pad.InputNamePrefix}{axisID} Axis", f);
-
-					if (pad.HasRumble)
-					{
-						var leftStrength = _lastHapticsSnapshot.GetValueOrDefault(pad.InputNamePrefix + "Left");
-						var rightStrength = _lastHapticsSnapshot.GetValueOrDefault(pad.InputNamePrefix + "Right");
-						pad.SetVibration(leftStrength, rightStrength);	
-					}
+					var leftStrength = _lastHapticsSnapshot.GetValueOrDefault(pad.InputNamePrefix + "Left");
+					var rightStrength = _lastHapticsSnapshot.GetValueOrDefault(pad.InputNamePrefix + "Right");
+					pad.SetVibration(leftStrength, rightStrength);	
 				}
 			}
 		}
 
 		public override IEnumerable<KeyEvent> ProcessHostKeyboards()
 		{
-			lock (_syncObject)
-			{
-				return _isInit
-					? base.ProcessHostKeyboards()
-					: Enumerable.Empty<KeyEvent>();
-			}
+			return _isInit
+				? base.ProcessHostKeyboards()
+				: Enumerable.Empty<KeyEvent>();
 		}
 
 		public override void SetHaptics(IReadOnlyCollection<(string Name, int Strength)> hapticsSnapshot)
