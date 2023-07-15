@@ -44,13 +44,13 @@ namespace BizHawk.Bizware.Input
 				int ret;
 				while ((ret = Win32Imports.PeekMessage(out var msg, _hidApiWin32Window, 0, 0, Win32Imports.PM_NOREMOVE)) != 0)
 				{
+					Console.WriteLine(ret);
+
 					if (Win32Imports.GetMessage(ref msg, _hidApiWin32Window, 0, 0))
 					{
 						Win32Imports.TranslateMessage(ref msg);
 						Win32Imports.DispatchMessage(ref msg);
 					}
-
-					Console.WriteLine(ret);
 				}
 			}
 
