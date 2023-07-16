@@ -10,9 +10,6 @@ namespace BizHawk.Common
 	public static class Win32Imports
 	{
 		public const int MAX_PATH = 260;
-		public static readonly IntPtr HWND_MESSAGE = new(-3); // IntPtr can't be const :(
-		public const uint PM_NOREMOVE = 0x0000U;
-		public const uint PM_REMOVE = 0x0001U;
 
 		public delegate int BFFCALLBACK(IntPtr hwnd, uint uMsg, IntPtr lParam, IntPtr lpData);
 
@@ -119,17 +116,10 @@ namespace BizHawk.Common
 		public static extern bool DeleteFileW([MarshalAs(UnmanagedType.LPWStr)] string lpFileName);
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-		public static extern IntPtr DispatchMessage([In] ref MSG lpMsg);
-
-		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
 		public static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr hWndChildAfter, string className, string windowTitle);
 
 		[DllImport("user32.dll")]
 		public static extern IntPtr GetActiveWindow();
-
-		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-		[return: MarshalAs(UnmanagedType.Bool)]
-		public static extern bool GetMessage(ref MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
 
 		[DllImport("kernel32", SetLastError = true, EntryPoint = "GetProcAddress")]
 		public static extern IntPtr GetProcAddressOrdinal(IntPtr hModule, IntPtr procName);
@@ -158,10 +148,6 @@ namespace BizHawk.Common
 
 		[DllImport("shlwapi.dll", CharSet = CharSet.Auto)]
 		public static extern bool PathRelativePathTo([Out] StringBuilder pszPath, [In] string pszFrom, [In] FileAttributes dwAttrFrom, [In] string pszTo, [In] FileAttributes dwAttrTo);
-
-		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-		[return: MarshalAs(UnmanagedType.Bool)]
-		public static extern bool PeekMessage(out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax, uint wRemoveMsg);
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
 		public static extern IntPtr SendMessage(IntPtr hWnd, uint msg, IntPtr wParam, ref HDITEM lParam);

@@ -17,9 +17,6 @@ namespace BizHawk.Bizware.Input
 		private static readonly IReadOnlyCollection<string> SDL2_HAPTIC_CHANNEL_NAMES = new[] { "Left", "Right" };
 
 		private IReadOnlyDictionary<string, int> _lastHapticsSnapshot = new Dictionary<string, int>();
-
-		private bool _sdlInitCalled; // must be deferred on the input thread (FirstInitAll is not on the input thread)
-		private IntPtr _hidApiWin32Window;
 		private bool _isInit;
 
 		public override string Desc => "SDL2";
@@ -32,25 +29,10 @@ namespace BizHawk.Bizware.Input
 		static SDL2InputAdapter()
 		{
 			SDL_SetEventFilter(_sdlEventFilter, IntPtr.Zero);
-			SDL_SetHint(SDL_HINT_JOYSTICK_THREAD, "1");
 		}
 
-		private void DoSDLEventLoop()
+		private static void DoSDLEventLoop()
 		{
-			Console.WriteLine("Entering SDL event loop");
-
-			if (!OSTailoredCode.IsUnixHost && _hidApiWin32Window != IntPtr.Zero)
-			{
-				while (Win32Imports.PeekMessage(out var msg, _hidApiWin32Window, 0, 0, Win32Imports.PM_NOREMOVE))
-				{
-					if (Win32Imports.GetMessage(ref msg, _hidApiWin32Window, 0, 0))
-					{
-						Win32Imports.TranslateMessage(ref msg);
-						Win32Imports.DispatchMessage(ref msg);
-					}
-				}
-			}
-
 			SDL_JoystickUpdate();
 			var e = new SDL_Event[1];
 			while (SDL_PeepEvents(e, 1, SDL_eventaction.SDL_GETEVENT, SDL_EventType.SDL_JOYDEVICEADDED, SDL_EventType.SDL_JOYDEVICEREMOVED) == 1)
@@ -66,8 +48,6 @@ namespace BizHawk.Bizware.Input
 						break;
 				}
 			}
-
-			Console.WriteLine("Exiting SDL event loop");
 		}
 
 		public override void DeInitAll()
@@ -86,6 +66,13 @@ namespace BizHawk.Bizware.Input
 		public override void FirstInitAll(IntPtr mainFormHandle)
 		{
 			if (_isInit) throw new InvalidOperationException($"Cannot reinit with {nameof(FirstInitAll)}");
+
+			// NOTE: MUST BE DONE ON MAIN THREAD
+			if (SDL_Init(SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER) != 0)
+			{
+				SDL_QuitSubSystem(SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER);
+				throw new($"SDL failed to init, SDL error: {SDL_GetError()}");
+			}
 
 			// SDL2's keyboard support is not usable by us, as it requires a focused window
 			// even worse, the main form doesn't even work in this context
@@ -112,23 +99,6 @@ namespace BizHawk.Bizware.Input
 
 		public override void PreprocessHostGamepads()
 		{
-			if (!_sdlInitCalled)
-			{
-				if (SDL_Init(SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER) != 0)
-				{
-					SDL_QuitSubSystem(SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER);
-					throw new($"SDL failed to init, SDL error: {SDL_GetError()}");
-				}
-
-				if (!OSTailoredCode.IsUnixHost)
-				{
-					_hidApiWin32Window = Win32Imports.FindWindowEx(Win32Imports.HWND_MESSAGE, IntPtr.Zero,
-						"SDL_HIDAPI_DEVICE_DETECTION", null);
-				}
-
-				_sdlInitCalled = true;
-			}
-
 			DoSDLEventLoop();
 		}
 

@@ -33,7 +33,7 @@ namespace BizHawk.Bizware.Input
 					//break;
 					throw new NotSupportedException("TODO QUARTZ");
 				case OSTailoredCode.DistinctOS.Windows:
-					//DKeyInput.Cleanup();
+					DKeyInput.Cleanup();
 					break;
 				default:
 					throw new InvalidOperationException();
@@ -76,7 +76,6 @@ namespace BizHawk.Bizware.Input
 
 		public virtual IEnumerable<KeyEvent> ProcessHostKeyboards()
 		{
-			return Enumerable.Empty<KeyEvent>();
 			var ret = OSTailoredCode.CurrentOS switch
 			{
 				OSTailoredCode.DistinctOS.Linux => X11KeyInput.Update(),
