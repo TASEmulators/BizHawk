@@ -25,21 +25,25 @@ namespace BizHawk.Bizware.Input
 
 		// we only want joystick adding and remove events
 		private static readonly SDL_EventFilter _sdlEventFilter = SDLEventFilter;
+
 		private static unsafe int SDLEventFilter(IntPtr userdata, IntPtr e)
 			=> ((SDL_Event*)e)->type is SDL_EventType.SDL_JOYDEVICEADDED or SDL_EventType.SDL_JOYDEVICEREMOVED ? 1 : 0;
 
 		static SDL2InputAdapter()
 		{
 			SDL_SetEventFilter(_sdlEventFilter, IntPtr.Zero);
+			// this is required as we create hidden (unfocused!) SDL windows in IGL backends
+			SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1");
 		}
 
 		private static void DoSDLEventLoop()
 		{
 			var e = new SDL_Event[1];
+			// this loop somewhat models SDL_PollEvent
 			while (true)
 			{
-				// need to pump events for this thread's queue
-				// shouldn't be needed on other platforms (which have global message queues and not thread local message queues)
+				// need to pump events for this thread's queue (normally expected from SDL_PumpEvents, but not allowed since this is not the video thread)
+				// similar code shouldn't be needed on other platforms (which have global message queues and not thread local message queues)
 				if (!OSTailoredCode.IsUnixHost)
 				{
 					while (Win32Imports.PeekMessage(out var msg, IntPtr.Zero, 0, 0, Win32Imports.PM_REMOVE))
@@ -118,7 +122,7 @@ namespace BizHawk.Bizware.Input
 		{
 			if (!_sdlInitCalled)
 			{
-				if (SDL_Init(SDL_INIT_EVERYTHING | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER) != 0)
+				if (SDL_Init(SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER) != 0)
 				{
 					SDL_QuitSubSystem(SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER);
 					throw new($"SDL failed to init, SDL error: {SDL_GetError()}");
