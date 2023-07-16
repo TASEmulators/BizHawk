@@ -78,7 +78,12 @@ namespace BizHawk.Bizware.Input
 
 			base.DeInitAll();
 			SDL2Gamepad.Deinitialize();
-			SDL_QuitSubSystem(SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER);
+			if (_sdlInitCalled)
+			{
+				SDL_QuitSubSystem(SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER);
+				_sdlInitCalled = false;
+			}
+
 			_isInit = false;
 		}
 
@@ -89,7 +94,7 @@ namespace BizHawk.Bizware.Input
 			// SDL2's keyboard support is not usable by us, as it requires a focused window
 			// even worse, the main form doesn't even work in this context
 			// as for some reason SDL2 just never receives input events
-			//base.FirstInitAll(mainFormHandle); 
+			base.FirstInitAll(mainFormHandle); 
 			// first event loop adds controllers
 			// but it must be deferred to the input thread (first PreprocessHostGamepads call)
 			_isInit = true;
@@ -113,9 +118,9 @@ namespace BizHawk.Bizware.Input
 		{
 			if (!_sdlInitCalled)
 			{
-				if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
+				if (SDL_Init(SDL_INIT_EVERYTHING | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER) != 0)
 				{
-					SDL_QuitSubSystem(SDL_INIT_EVERYTHING);
+					SDL_QuitSubSystem(SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER);
 					throw new($"SDL failed to init, SDL error: {SDL_GetError()}");
 				}
 
@@ -141,12 +146,12 @@ namespace BizHawk.Bizware.Input
 					handleAxis($"{pad.InputNamePrefix}{axisID} Axis", f);
 				}
 
-				if (pad.HasRumble)
+				/*if (pad.HasRumble)
 				{
 					var leftStrength = _lastHapticsSnapshot.GetValueOrDefault(pad.InputNamePrefix + "Left");
 					var rightStrength = _lastHapticsSnapshot.GetValueOrDefault(pad.InputNamePrefix + "Right");
 					pad.SetVibration(leftStrength, rightStrength);	
-				}
+				}*/
 			}
 		}
 
