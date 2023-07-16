@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Windows.Forms;
 
 using BizHawk.Bizware.BizwareGL;
 using BizHawk.Common;
@@ -36,8 +36,7 @@ namespace BizHawk.Bizware.Graphics
 
 		private Device _device;
 
-		private IntPtr _offscreenSdl2Window;
-		private IntPtr OffscreenNativeWindow;
+		private readonly Control OffscreenNativeWindow;
 
 		// rendering state
 		private IntPtr _pVertexData;
@@ -51,14 +50,6 @@ namespace BizHawk.Bizware.Graphics
 
 		public string API => "D3D9";
 
-		static IGL_D3D9()
-		{
-			if (SDL_Init(SDL_INIT_VIDEO) != 0)
-			{
-				throw new($"Failed to init SDL video, SDL error: {SDL_GetError()}");
-			}
-		}
-
 		public IGL_D3D9()
 		{
 			if (OSTailoredCode.IsUnixHost)
@@ -67,22 +58,11 @@ namespace BizHawk.Bizware.Graphics
 			}
 
 			// make an 'offscreen context' so we can at least do things without having to create a window
-			_offscreenSdl2Window = SDL_CreateWindow(null, 0, 0, 1, 1, SDL_WindowFlags.SDL_WINDOW_HIDDEN);
-			if (_offscreenSdl2Window == IntPtr.Zero)
+			OffscreenNativeWindow = new()
 			{
-				throw new($"Failed to create offscreen SDL window, SDL error: {SDL_GetError()}");
-			}
-
-			// get the native window handle
-			var wminfo = default(SDL_SysWMinfo);
-			SDL_GetVersion(out wminfo.version);
-			SDL_GetWindowWMInfo(_offscreenSdl2Window, ref wminfo);
-			if (wminfo.subsystem != SDL_SYSWM_TYPE.SDL_SYSWM_WINDOWS)
-			{
-				throw new($"SDL_SysWMinfo did not report SDL_SYSWM_WINDOWS? Something went wrong... SDL error: {SDL_GetError()}");
-			}
-
-			OffscreenNativeWindow = wminfo.info.win.window;
+				ClientSize = new(1, 1),
+				Visible = false
+			};
 
 			CreateDevice();
 			CreateRenderStates();
@@ -130,7 +110,7 @@ namespace BizHawk.Bizware.Graphics
 			{
 				BackBufferCount = 1,
 				SwapEffect = SwapEffect.Discard,
-				DeviceWindowHandle = OffscreenNativeWindow,
+				DeviceWindowHandle = OffscreenNativeWindow.Handle,
 				Windowed = true,
 				PresentationInterval = PresentInterval.Immediate,
 				EnableAutoDepthStencil = false
@@ -175,10 +155,9 @@ namespace BizHawk.Bizware.Graphics
 		{
 			DestroyDevice();
 
-			if (_offscreenSdl2Window != IntPtr.Zero)
+			if (!OffscreenNativeWindow.IsDisposed)
 			{
-				SDL_DestroyWindow(_offscreenSdl2Window);
-				_offscreenSdl2Window = OffscreenNativeWindow = IntPtr.Zero;
+				OffscreenNativeWindow.Dispose();
 			}
 		}
 
