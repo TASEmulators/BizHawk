@@ -41,11 +41,8 @@ namespace BizHawk.Bizware.Input
 
 			if (!OSTailoredCode.IsUnixHost && _hidApiWin32Window != IntPtr.Zero)
 			{
-				int ret;
-				while ((ret = Win32Imports.PeekMessage(out var msg, _hidApiWin32Window, 0, 0, Win32Imports.PM_NOREMOVE)) != 0)
+				while (Win32Imports.PeekMessage(out var msg, _hidApiWin32Window, 0, 0, Win32Imports.PM_NOREMOVE))
 				{
-					Console.WriteLine(ret);
-
 					if (Win32Imports.GetMessage(ref msg, _hidApiWin32Window, 0, 0))
 					{
 						Win32Imports.TranslateMessage(ref msg);
