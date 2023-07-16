@@ -133,6 +133,11 @@ namespace BizHawk.Bizware.Input
 			{
 				foreach (var but in pad.ButtonGetters)
 				{
+					var b = but.GetIsPressed();
+					if (b)
+					{
+						Console.WriteLine($"Button {but.ButtonName} was pressed");
+					}
 					handleButton(pad.InputNamePrefix + but.ButtonName, but.GetIsPressed(), ClientInputFocus.Pad);
 				}
 
