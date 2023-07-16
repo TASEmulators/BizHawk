@@ -57,7 +57,7 @@ namespace BizHawk.Bizware.Input
 					// TODO: Consider if we want to use RAWINPUT API for keyboards instead
 					// Would remove DInput depenency on Windows (DInput gamepads could be considered optional in this sense)
 					// (also, this would be needed for keyboard support with UWP, which doesn't support DInput)
-					//DKeyInput.Initialize(mainFormHandle);
+					DKeyInput.Initialize(mainFormHandle);
 					break;
 				default:
 					throw new InvalidOperationException();

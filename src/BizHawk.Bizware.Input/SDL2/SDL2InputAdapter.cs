@@ -31,18 +31,10 @@ namespace BizHawk.Bizware.Input
 		static SDL2InputAdapter()
 		{
 			SDL_SetEventFilter(_sdlEventFilter, IntPtr.Zero);
-			SDL_SetHint(SDL_HINT_JOYSTICK_THREAD, "1");
 		}
 
 		private static void DoSDLEventLoop()
 		{
-			Console.WriteLine("Entering SDL event loop");
-
-			static void UpdateEvents()
-			{
-
-			}
-
 			var e = new SDL_Event[1];
 			while (true)
 			{
@@ -75,8 +67,6 @@ namespace BizHawk.Bizware.Input
 						break;
 				}
 			}
-
-			Console.WriteLine("Exiting SDL event loop");
 		}
 
 		public override void DeInitAll()
@@ -99,7 +89,7 @@ namespace BizHawk.Bizware.Input
 			// SDL2's keyboard support is not usable by us, as it requires a focused window
 			// even worse, the main form doesn't even work in this context
 			// as for some reason SDL2 just never receives input events
-			base.FirstInitAll(mainFormHandle); 
+			//base.FirstInitAll(mainFormHandle); 
 			// first event loop adds controllers
 			// but it must be deferred to the input thread (first PreprocessHostGamepads call)
 			_isInit = true;
@@ -141,25 +131,14 @@ namespace BizHawk.Bizware.Input
 
 			foreach (var pad in SDL2Gamepad.EnumerateDevices())
 			{
-				SDL_ClearError();
 				foreach (var but in pad.ButtonGetters)
 				{
 					handleButton(pad.InputNamePrefix + but.ButtonName, but.GetIsPressed(), ClientInputFocus.Pad);
-					var error = SDL_GetError();
-					if (!string.IsNullOrEmpty(error))
-					{
-						Console.WriteLine($"SDL error occurred for polling {but.ButtonName}, SDL error {error}");
-					}
 				}
 
 				foreach (var (axisID, f) in pad.GetAxes())
 				{
 					handleAxis($"{pad.InputNamePrefix}{axisID} Axis", f);
-					var error = SDL_GetError();
-					if (!string.IsNullOrEmpty(error))
-					{
-						Console.WriteLine($"SDL error occurred for polling {axisID} Axis, SDL error {error}");
-					}
 				}
 
 				if (pad.HasRumble)
