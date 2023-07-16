@@ -98,9 +98,24 @@ namespace BizHawk.Bizware.Input
 			// SDL2's keyboard support is not usable by us, as it requires a focused window
 			// even worse, the main form doesn't even work in this context
 			// as for some reason SDL2 just never receives input events
-			base.FirstInitAll(mainFormHandle); 
+			base.FirstInitAll(mainFormHandle);
+
 			// first event loop adds controllers
 			// but it must be deferred to the input thread (first PreprocessHostGamepads call)
+			// however, let's just test if SDL init works (if it does, 99.9% chance it will on the input thread)
+			try
+			{
+				if (SDL_Init(SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER) != 0)
+				{
+					throw new($"SDL failed to init, SDL error: {SDL_GetError()}");
+				}
+			}
+			finally
+			{
+				SDL_QuitSubSystem(SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER);
+				SDL_FlushEvents(SDL_EventType.SDL_FIRSTEVENT, SDL_EventType.SDL_LASTEVENT);
+			}
+
 			_isInit = true;
 		}
 
