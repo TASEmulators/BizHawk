@@ -146,12 +146,12 @@ namespace BizHawk.Bizware.Input
 					handleAxis($"{pad.InputNamePrefix}{axisID} Axis", f);
 				}
 
-				/*if (pad.HasRumble)
+				if (pad.HasRumble)
 				{
 					var leftStrength = _lastHapticsSnapshot.GetValueOrDefault(pad.InputNamePrefix + "Left");
 					var rightStrength = _lastHapticsSnapshot.GetValueOrDefault(pad.InputNamePrefix + "Right");
 					pad.SetVibration(leftStrength, rightStrength);	
-				}*/
+				}
 			}
 		}
 

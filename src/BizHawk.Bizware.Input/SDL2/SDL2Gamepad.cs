@@ -79,7 +79,7 @@ namespace BizHawk.Bizware.Input
 			if (!Gamepads.ContainsKey(instanceId))
 			{
 				var gamepad = new SDL2Gamepad(deviceIndex);
-				Gamepads.Add(SDL_JoystickGetDeviceInstanceID(deviceIndex), gamepad);
+				Gamepads.Add(gamepad.InstanceID, gamepad);
 			}
 			else
 			{
@@ -116,27 +116,27 @@ namespace BizHawk.Bizware.Input
 			const int dzt = 5000;
 
 			// buttons
-			buttonGetters.Add(("A", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_A) == 1));
-			buttonGetters.Add(("B", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_B) == 1));
-			buttonGetters.Add(("X", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_X) == 1));
-			buttonGetters.Add(("Y", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_Y) == 1));
-			buttonGetters.Add(("Back", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_BACK) == 1));
-			buttonGetters.Add(("Guide", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_GUIDE) == 1));
-			buttonGetters.Add(("Start", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_START) == 1));
-			buttonGetters.Add(("LeftThumb", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_LEFTSTICK) == 1));
-			buttonGetters.Add(("RightThumb", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_RIGHTSTICK) == 1));
-			buttonGetters.Add(("LeftShoulder", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_LEFTSHOULDER) == 1));
-			buttonGetters.Add(("RightShoulder", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_RIGHTSHOULDER) == 1));
-			buttonGetters.Add(("DpadUp", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_UP) == 1));
-			buttonGetters.Add(("DpadDown", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_DOWN) == 1));
-			buttonGetters.Add(("DpadLeft", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_LEFT) == 1));
-			buttonGetters.Add(("DpadRight", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_RIGHT) == 1));
-			buttonGetters.Add(("Misc", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_MISC1) == 1));
-			buttonGetters.Add(("Paddle1", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE1) == 1));
-			buttonGetters.Add(("Paddle2", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE2) == 1));
-			buttonGetters.Add(("Paddle3", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE3) == 1));
-			buttonGetters.Add(("Paddle4", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE4) == 1));
-			buttonGetters.Add(("Touchpad", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_TOUCHPAD) == 1));
+			buttonGetters.Add(("A", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_A) != 0));
+			buttonGetters.Add(("B", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_B) != 0));
+			buttonGetters.Add(("X", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_X) != 0));
+			buttonGetters.Add(("Y", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_Y) != 0));
+			buttonGetters.Add(("Back", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_BACK) != 0));
+			buttonGetters.Add(("Guide", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_GUIDE) != 0));
+			buttonGetters.Add(("Start", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_START) != 0));
+			buttonGetters.Add(("LeftThumb", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_LEFTSTICK) != 0));
+			buttonGetters.Add(("RightThumb", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_RIGHTSTICK) != 0));
+			buttonGetters.Add(("LeftShoulder", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_LEFTSHOULDER) != 0));
+			buttonGetters.Add(("RightShoulder", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_RIGHTSHOULDER) != 0));
+			buttonGetters.Add(("DpadUp", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_UP) != 0));
+			buttonGetters.Add(("DpadDown", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_DOWN) != 0));
+			buttonGetters.Add(("DpadLeft", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_LEFT) != 0));
+			buttonGetters.Add(("DpadRight", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_RIGHT) != 0));
+			buttonGetters.Add(("Misc", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_MISC1) != 0));
+			buttonGetters.Add(("Paddle1", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE1) != 0));
+			buttonGetters.Add(("Paddle2", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE2) != 0));
+			buttonGetters.Add(("Paddle3", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE3) != 0));
+			buttonGetters.Add(("Paddle4", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE4) != 0));
+			buttonGetters.Add(("Touchpad", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_TOUCHPAD) != 0));
 
 			// sticks
 			buttonGetters.Add(("LStickUp", () => SDL_GameControllerGetAxis(Opaque, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_LEFTY) >= dzp));
@@ -185,8 +185,8 @@ namespace BizHawk.Bizware.Input
 			for (var i = 9; i < naxes; i++)
 			{
 				var j = i;
-				buttonGetters.Add(($"Axis{j.ToString()}+", () => SDL_JoystickGetAxis(Opaque, j) >= dzp));
-				buttonGetters.Add(($"Axis{j.ToString()}-", () => SDL_JoystickGetAxis(Opaque, j) <= dzn));
+				buttonGetters.Add(($"Axis{j}+", () => SDL_JoystickGetAxis(Opaque, j) >= dzp));
+				buttonGetters.Add(($"Axis{j}-", () => SDL_JoystickGetAxis(Opaque, j) <= dzn));
 			}
 
 			// buttons
@@ -194,7 +194,7 @@ namespace BizHawk.Bizware.Input
 			for (var i = 0; i < nbuttons; i++)
 			{
 				var j = i;
-				buttonGetters.Add(($"B{i + 1}", () => SDL_JoystickGetButton(Opaque, j) == 1));
+				buttonGetters.Add(($"B{i + 1}", () => SDL_JoystickGetButton(Opaque, j) != 0));
 			}
 
 			// hats
@@ -202,10 +202,10 @@ namespace BizHawk.Bizware.Input
 			for (var i = 0; i < nhats; i++)
 			{
 				var j = i;
-				buttonGetters.Add(($"POV{j.ToString()}U", () => (SDL_JoystickGetHat(Opaque, j) & SDL_HAT_UP) == SDL_HAT_UP));
-				buttonGetters.Add(($"POV{j.ToString()}D", () => (SDL_JoystickGetHat(Opaque, j) & SDL_HAT_DOWN) == SDL_HAT_DOWN));
-				buttonGetters.Add(($"POV{j.ToString()}L", () => (SDL_JoystickGetHat(Opaque, j) & SDL_HAT_LEFT) == SDL_HAT_LEFT));
-				buttonGetters.Add(($"POV{j.ToString()}R", () => (SDL_JoystickGetHat(Opaque, j) & SDL_HAT_RIGHT) == SDL_HAT_RIGHT));
+				buttonGetters.Add(($"POV{j}U", () => (SDL_JoystickGetHat(Opaque, j) & SDL_HAT_UP) == SDL_HAT_UP));
+				buttonGetters.Add(($"POV{j}D", () => (SDL_JoystickGetHat(Opaque, j) & SDL_HAT_DOWN) == SDL_HAT_DOWN));
+				buttonGetters.Add(($"POV{j}L", () => (SDL_JoystickGetHat(Opaque, j) & SDL_HAT_LEFT) == SDL_HAT_LEFT));
+				buttonGetters.Add(($"POV{j}R", () => (SDL_JoystickGetHat(Opaque, j) & SDL_HAT_RIGHT) == SDL_HAT_RIGHT));
 			}
 
 			return buttonGetters;
@@ -282,7 +282,7 @@ namespace BizHawk.Bizware.Input
 			for (var i = 9; i < naxes; i++)
 			{
 				var j = i;
-				values.Add(($"Axis{j.ToString()}", Conv(SDL_JoystickGetAxis(Opaque, j))));
+				values.Add(($"Axis{j}", Conv(SDL_JoystickGetAxis(Opaque, j))));
 			}
 
 			return values;
