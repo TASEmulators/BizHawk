@@ -9,4 +9,4 @@ Version | Supported
 
 ## Reporting a Vulnerability
 
-PM or email project lead [adelikat](https://tasvideos.org/HomePages/Adelikat#Contact).
+PM adelikat [on TASVideos](https://tasvideos.org/Messages/Create?defaultToUser=adelikat), or contact YoshiRulz [via email or otherwise](https://yoshirulz.dev).
