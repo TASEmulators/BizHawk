@@ -113,9 +113,9 @@ namespace BizHawk.Bizware.Input
 		{
 			if (!_sdlInitCalled)
 			{
-				if (SDL_Init(SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER) != 0)
+				if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
 				{
-					SDL_QuitSubSystem(SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER);
+					SDL_QuitSubSystem(SDL_INIT_EVERYTHING);
 					throw new($"SDL failed to init, SDL error: {SDL_GetError()}");
 				}
 
@@ -133,11 +133,6 @@ namespace BizHawk.Bizware.Input
 			{
 				foreach (var but in pad.ButtonGetters)
 				{
-					var b = but.GetIsPressed();
-					if (b)
-					{
-						Console.WriteLine($"Button {but.ButtonName} was pressed");
-					}
 					handleButton(pad.InputNamePrefix + but.ButtonName, but.GetIsPressed(), ClientInputFocus.Pad);
 				}
 
