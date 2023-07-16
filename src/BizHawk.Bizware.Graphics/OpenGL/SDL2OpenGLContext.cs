@@ -1,4 +1,5 @@
 using System;
+using System.Windows.Forms;
 
 using Silk.NET.OpenGL.Legacy;
 
@@ -41,6 +42,7 @@ namespace BizHawk.Bizware.Graphics
 			SDL_SetHint(SDL_HINT_VIDEO_FOREIGN_WINDOW_OPENGL, "1");
 		}
 
+		private Control _control;
 		private IntPtr _sdlWindow;
 		private IntPtr _glContext;
 
@@ -105,8 +107,13 @@ namespace BizHawk.Bizware.Graphics
 
 		public SDL2OpenGLContext(int majorVersion, int minorVersion, bool forwardCompatible)
 		{
-			_sdlWindow = SDL_CreateWindow(null, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1, 1,
-				SDL_WindowFlags.SDL_WINDOW_OPENGL | SDL_WindowFlags.SDL_WINDOW_HIDDEN);
+			_control = new()
+			{
+				ClientSize = new(1, 1),
+				Visible = false
+			};
+
+			_sdlWindow = SDL_CreateWindowFrom(_control.Handle);
 			if (_sdlWindow == IntPtr.Zero)
 			{
 				throw new($"Could not create SDL Window! SDL Error: {SDL_GetError()}");
@@ -135,6 +142,11 @@ namespace BizHawk.Bizware.Graphics
 			{
 				SDL_DestroyWindow(_sdlWindow);
 				_sdlWindow = IntPtr.Zero;
+			}
+
+			if (!_control?.IsDisposed ?? false)
+			{
+				_control.Dispose();
 			}
 		}
 
