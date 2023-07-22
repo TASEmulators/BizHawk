@@ -13,6 +13,7 @@
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
 		<UseWindowsForms>true</UseWindowsForms>
 		<UseWPF>true</UseWPF>
+		<EnableWindowsTargeting>true</EnableWindowsTargeting>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="SharpCompress" PrivateAssets="all" NoWarn="NU1902" />
