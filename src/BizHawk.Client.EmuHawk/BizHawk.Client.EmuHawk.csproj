@@ -12,6 +12,7 @@
 		<NoWarn>$(NoWarn);MA0162</NoWarn> <!-- MA0162 is helpful for migration to .NET Core -->
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
 		<UseWindowsForms>true</UseWindowsForms>
+		<EnableWindowsTargeting>true</EnableWindowsTargeting>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="System.Net.Http" />
