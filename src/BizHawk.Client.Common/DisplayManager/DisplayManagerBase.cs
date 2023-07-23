@@ -196,8 +196,6 @@ namespace BizHawk.Client.Common
 
 		private RetroShaderChain _shaderChainUser;
 
-		public virtual void ActivateOpenGLContext() => throw new NotImplementedException();
-
 		protected virtual void ActivateGraphicsControlContext() => throw new NotImplementedException();
 
 		protected virtual void SwapBuffersOfGraphicsControl() => throw new NotImplementedException();

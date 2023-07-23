@@ -233,7 +233,11 @@ namespace BizHawk.Client.EmuHawk
 							new ExceptionBox(new Exception($"Initialization of OpenGL Display Method failed; falling back to {fallback.Name}")).ShowDialog();
 							return TryInitIGL(initialConfig.DispMethod = fallback.Method);
 						}
-						return CheckRenderer(new IGL_OpenGL(2, 0, false));
+						// need to have a context active for checking renderer, will be disposed afterwards
+						using (new SDL2OpenGLContext(2, 0, false))
+						{
+							return CheckRenderer(new IGL_OpenGL(2, 0, false));
+						}
 					default:
 					case EDispMethod.GdiPlus:
 						static GLControlWrapper_GdiPlus CreateGLControlWrapper(IGL_GdiPlus self) => new(self); // inlining as lambda causes crash, don't wanna know why --yoshi

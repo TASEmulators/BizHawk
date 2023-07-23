@@ -1,6 +1,8 @@
 using System;
 using System.Runtime.InteropServices;
 
+using Silk.NET.OpenGL.Legacy;
+
 using static SDL2.SDL;
 
 namespace BizHawk.Bizware.Graphics
@@ -40,9 +42,6 @@ namespace BizHawk.Bizware.Graphics
 			SDL_SetHint(SDL_HINT_VIDEO_FOREIGN_WINDOW_OPENGL, "1");
 		}
 
-		[UnmanagedFunctionPointer(CallingConvention.Winapi)]
-		private delegate IntPtr glGetStringDelegate(int name);
-
 		private static readonly Lazy<int> _version = new(() =>
 		{
 			var prevWindow = SDL_GL_GetCurrentWindow();
@@ -52,21 +51,8 @@ namespace BizHawk.Bizware.Graphics
 			{
 				using (new SDL2OpenGLContext(2, 0, false))
 				{
-					var getStringFp = GetGLProcAddress("glGetString");
-					if (getStringFp == IntPtr.Zero) // uhhh?
-					{
-						return 0;
-					}
-
-					var getStringFunc = Marshal.GetDelegateForFunctionPointer<glGetStringDelegate>(getStringFp);
-					const int GL_VERSION = 0x1F02;
-					var version = getStringFunc(GL_VERSION);
-					if (version == IntPtr.Zero)
-					{
-						return 0;
-					}
-
-					var versionString = Marshal.PtrToStringAnsi(version);
+					using var gl = GL.GetApi(GetGLProcAddress);
+					var versionString = gl.GetStringS(StringName.Version);
 					var versionParts = versionString!.Split('.');
 					var major = int.Parse(versionParts[0]);
 					var minor = int.Parse(versionParts[1][0].ToString());

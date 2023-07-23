@@ -53,13 +53,9 @@ namespace BizHawk.Bizware.Graphics
 			_minorVersion = minorVersion;
 			_forwardCompatible = forwardCompatible;
 
-			// we need an active context in order to acquire these functions
-			// technically, they could be different between contexts
-			// but with the exact same requested version and config that is highly unlikely in practice
-			using (new SDL2OpenGLContext(majorVersion, minorVersion, forwardCompatible))
-			{
-				GL = GL.GetApi(SDL2OpenGLContext.GetGLProcAddress);
-			}
+			// the loading of symbols is delayed until actual use, so no need to create a context now
+			// if you want to do offscreen work with this GL make a dummy control or an SDL2OpenGLContext
+			GL = GL.GetApi(SDL2OpenGLContext.GetGLProcAddress);
 
 			// misc initialization
 			CreateRenderStates();
@@ -75,6 +71,7 @@ namespace BizHawk.Bizware.Graphics
 
 		public void Dispose()
 		{
+			GL.Dispose();
 		}
 
 		public void Clear(BizClearBufferMask mask)

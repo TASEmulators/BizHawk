@@ -36,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 			_getIsSecondaryThrottlingDisabled = getIsSecondaryThrottlingDisabled;
 		}
 
-		public override void ActivateOpenGLContext()
+		public void ActivateOpenGLContext()
 		{
 			if (_gl.DispMethodEnum == EDispMethod.OpenGL)
 			{
