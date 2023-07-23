@@ -11,7 +11,7 @@ namespace BizHawk.Bizware.Graphics
 		private readonly int _majorVersion;
 		private readonly int _minorVersion;
 		private readonly bool _forwardCompatible;
-		private readonly Action<SDL2OpenGLContext> _contextChangeCallback;
+		private readonly Action _contextChangeCallback;
 
 		public SDL2OpenGLContext Context { get; private set; }
 
@@ -21,7 +21,7 @@ namespace BizHawk.Bizware.Graphics
 			set => throw new NotImplementedException();
 		}
 
-		public OpenGLControl(int majorVersion, int minorVersion, bool forwardCompatible, Action<SDL2OpenGLContext> contextChangeCallback)
+		public OpenGLControl(int majorVersion, int minorVersion, bool forwardCompatible, Action contextChangeCallback)
 		{
 			_majorVersion = majorVersion;
 			_minorVersion = minorVersion;
@@ -59,8 +59,7 @@ namespace BizHawk.Bizware.Graphics
 		{
 			base.OnHandleCreated(e);
 			Context = new(Handle, _majorVersion, _minorVersion, _forwardCompatible);
-
-			_contextChangeCallback(Context);
+			_contextChangeCallback();
 		}
 
 		protected override void OnHandleDestroyed(EventArgs e)
@@ -69,7 +68,7 @@ namespace BizHawk.Bizware.Graphics
 
 			if (Context.IsCurrent)
 			{
-				_contextChangeCallback(null);
+				_contextChangeCallback();
 			}
 
 			Context.Dispose();
@@ -92,7 +91,7 @@ namespace BizHawk.Bizware.Graphics
 				if (!Context.IsCurrent)
 				{
 					Context.MakeContextCurrent();
-					_contextChangeCallback(Context);
+					_contextChangeCallback();
 				}
 			}
 		}
@@ -110,7 +109,8 @@ namespace BizHawk.Bizware.Graphics
 
 		public void End()
 		{
-			_contextChangeCallback(null);
+			SDL2OpenGLContext.MakeNoneCurrent();
+			_contextChangeCallback();
 		}
 
 		public void SwapBuffers()

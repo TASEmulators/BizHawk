@@ -37,10 +37,7 @@ namespace BizHawk.Bizware.Graphics
 	{
 		public EDispMethod DispMethodEnum => EDispMethod.OpenGL;
 
-		private readonly SDL2OpenGLContext OffscreenContext;
-		private SDL2OpenGLContext ActiveContext;
-		private GL GL => ActiveContext.GL;
-
+		private readonly GL GL;
 		private readonly int _majorVersion, _minorVersion;
 		private readonly bool _forwardCompatible;
 
@@ -50,35 +47,19 @@ namespace BizHawk.Bizware.Graphics
 
 		public string API => "OPENGL";
 
-		public int Version
-		{
-			get
-			{
-				// doesnt work on older than gl3 maybe
-				// int major, minor;
-				// // other overloads may not exist...
-				// GL.GetInteger(GetPName.MajorVersion, out major);
-				// GL.GetInteger(GetPName.MinorVersion, out minor);
-
-				// supposedly the standard dictates that whatever junk is in the version string, some kind of version is at the beginning
-				// can be either in major_number.minor_number or major_number.minor_number.release_number, with vendor specific info afterwards
-				var versionString = GL.GetStringS(StringName.Version);
-				var versionParts = versionString.Split('.');
-				var major = int.Parse(versionParts[0]);
-				var minor = int.Parse(versionParts[1][0].ToString());
-				// getting a release number is too hard and not needed now
-				return major * 100 + minor * 10;
-			}
-		}
-
 		public IGL_OpenGL(int majorVersion, int minorVersion, bool forwardCompatible)
 		{
-			// create an offscreen context, so things can be done without a control
-			ActiveContext = OffscreenContext = new(majorVersion, minorVersion, forwardCompatible);
-
 			_majorVersion = majorVersion;
 			_minorVersion = minorVersion;
 			_forwardCompatible = forwardCompatible;
+
+			// we need an active context in order to acquire these functions
+			// technically, they could be different between contexts
+			// but with the exact same requested version and config that is highly unlikely in practice
+			using (new SDL2OpenGLContext(majorVersion, minorVersion, forwardCompatible))
+			{
+				GL = GL.GetApi(SDL2OpenGLContext.GetGLProcAddress);
+			}
 
 			// misc initialization
 			CreateRenderStates();
@@ -94,7 +75,6 @@ namespace BizHawk.Bizware.Graphics
 
 		public void Dispose()
 		{
-			OffscreenContext.Dispose();
 		}
 
 		public void Clear(BizClearBufferMask mask)
@@ -477,7 +457,7 @@ namespace BizHawk.Bizware.Graphics
 
 		public Texture2d WrapGLTexture2d(IntPtr glTexId, int width, int height)
 		{
-			return new(this, glTexId.ToInt32(), width, height);
+			return new(this, (uint)glTexId.ToInt32(), width, height) { IsUpsideDown = true };
 		}
 
 		public unsafe void LoadTextureData(Texture2d tex, BitmapBuffer bmp)
@@ -505,7 +485,7 @@ namespace BizHawk.Bizware.Graphics
 		{
 			// create a texture for it
 			var texId = GenTexture();
-			var tex = new Texture2d(this, texId, w, h);
+			var tex = new Texture2d(this, texId, w, h) { IsUpsideDown = true }; // TODO: The IsUpsideDown doesn't ever get used here it seems
 
 			GL.BindTexture(TextureTarget.Texture2D, texId);
 			GL.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba8, (uint)w, (uint)h, 0, PixelFormat.Bgra, PixelType.UnsignedByte, IntPtr.Zero.ToPointer());
@@ -839,26 +819,11 @@ namespace BizHawk.Bizware.Graphics
 		private VertexLayout sStatePendingVertexLayout;
 		private readonly HashSet<uint> sVertexAttribEnables = new();
 
-		private void ContextChangeCallback(SDL2OpenGLContext context)
+		private void ContextChangeCallback()
 		{
-			// null means the current context is being cleared
-			// set it back to the offscreen context
-			if (context is null)
-			{
-				OffscreenContext.MakeContextCurrent();
-				context = OffscreenContext;
-			}
-
 			sActiveTexture = -1;
 			sStatePendingVertexLayout = null;
 			sVertexAttribEnables.Clear();
-			ActiveContext = context;
-		}
-
-		public void MakeOffscreenContextCurrent()
-		{
-			OffscreenContext.MakeContextCurrent();
-			ContextChangeCallback(OffscreenContext);
 		}
 	}
 }

@@ -20,8 +20,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly PresentationPanel _presentationPanel; // well, its the final layer's target, at least
 
-		private readonly GLManager.ContextRef _crGraphicsControl;
-
 		private GraphicsControl _graphicsControl => _presentationPanel.GraphicsControl;
 
 		public DisplayManager(
@@ -36,14 +34,17 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_presentationPanel = presentationPanel;
 			_getIsSecondaryThrottlingDisabled = getIsSecondaryThrottlingDisabled;
-
-			// setup the GL context manager, needed for coping with multiple opengl cores vs opengl display method
-			// but is it tho? --yoshi
-			// turns out it was, calling Instance getter here initialises it, and the encapsulated Activate call is necessary too --yoshi
-			_crGraphicsControl = GLManager.GetContextForGraphicsControl(_graphicsControl);
 		}
 
-		protected override void ActivateGLContext() => GLManager.Instance.Activate(_crGraphicsControl);
+		public override void ActivateOpenGLContext()
+		{
+			if (_gl.DispMethodEnum == EDispMethod.OpenGL)
+			{
+				_graphicsControl.Begin();
+			}
+		}
+
+		protected override void ActivateGraphicsControlContext() => _graphicsControl.Begin();
 
 		protected override Size GetGraphicsControlSize() => _graphicsControl.Size;
 

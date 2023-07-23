@@ -226,7 +226,8 @@ namespace BizHawk.Client.EmuHawk
 				message => this.ModalMessageBox(message, "Warning", EMsgBoxIcon.Warning),
 				AddOnScreenMessage,
 				cfp,
-				prefs);
+				prefs,
+				new OpenGLProvider());
 		}
 
 		private void SetImages()
@@ -3837,6 +3838,7 @@ namespace BizHawk.Client.EmuHawk
 					//path = ioa_openrom.Path;
 				}
 
+				DisplayManager.ActivateOpenGLContext(); // required in case the core wants to created a shared OpenGL context
 				var result = loader.LoadRom(path, nextComm, ioaRetro?.CorePath, forcedCoreName: MovieSession.QueuedCoreName);
 
 				if (result) Game = loader.Game;

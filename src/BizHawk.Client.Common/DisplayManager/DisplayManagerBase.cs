@@ -196,7 +196,9 @@ namespace BizHawk.Client.Common
 
 		private RetroShaderChain _shaderChainUser;
 
-		protected virtual void ActivateGLContext() => throw new NotImplementedException();
+		public virtual void ActivateOpenGLContext() => throw new NotImplementedException();
+
+		protected virtual void ActivateGraphicsControlContext() => throw new NotImplementedException();
 
 		protected virtual void SwapBuffersOfGraphicsControl() => throw new NotImplementedException();
 
@@ -771,12 +773,10 @@ namespace BizHawk.Client.Common
 
 		private FilterProgram UpdateSourceInternal(JobInfo job)
 		{
-			//no drawing actually happens. it's important not to begin drawing on a control
-			if (!job.Simulate/* && !job.Offscreen*/)
+			// no drawing actually happens
+			if (!job.Simulate)
 			{
-				// i don't want to do this for offscreen jobs
-				// but it seems that would be required in case this context isn't active
-				ActivateGLContext();
+				ActivateGraphicsControlContext();
 
 				if (job.ChainOutsize.Width == 0 || job.ChainOutsize.Height == 0)
 				{
@@ -791,17 +791,14 @@ namespace BizHawk.Client.Common
 			}
 
 			var videoProvider = job.VideoProvider;
+			var glTextureProvider = videoProvider as IGLTextureProvider;
 			var simulate = job.Simulate;
 			var chainOutsize = job.ChainOutsize;
 
-			//simulate = true;
-
-			var videoBuffer = videoProvider.GetVideoBuffer();
 			var bufferWidth = videoProvider.BufferWidth;
 			var bufferHeight = videoProvider.BufferHeight;
 			var presenterTextureWidth = bufferWidth;
 			var presenterTextureHeight = bufferHeight;
-			var isGlTextureId = videoBuffer.Length == 1;
 
 			var vw = videoProvider.VirtualWidth;
 			var vh = videoProvider.VirtualHeight;
@@ -854,23 +851,22 @@ namespace BizHawk.Client.Common
 			Texture2d videoTexture = null;
 			if (!simulate)
 			{
-				if (isGlTextureId)
+				if (glTextureProvider != null && _gl.DispMethodEnum == EDispMethod.OpenGL)
 				{
 					// FYI: this is a million years from happening on n64, since it's all geriatric non-FBO code
-					// is it workable for saturn?
-					videoTexture = _gl.WrapGLTexture2d(new(videoBuffer[0]), bufferWidth, bufferHeight);
+					videoTexture = _gl.WrapGLTexture2d(new(glTextureProvider.GetGLTexture()), bufferWidth, bufferHeight);
 				}
 				else
 				{
 					// wrap the VideoProvider data in a BitmapBuffer (no point to refactoring that many IVideoProviders)
-					bb = new(bufferWidth, bufferHeight, videoBuffer);
+					bb = new(bufferWidth, bufferHeight, videoProvider.GetVideoBuffer());
 					bb.DiscardAlpha();
 
 					//now, acquire the data sent from the videoProvider into a texture
 					videoTexture = _videoTextureFrugalizer.Get(bb);
 
 					// lets not use this. lets define BizwareGL to make clamp by default (TBD: check opengl)
-					// GL.SetTextureWrapMode(videoTexture, true);
+					// _gl.SetTextureWrapMode(videoTexture, true);
 				}
 			}
 
@@ -897,7 +893,6 @@ namespace BizHawk.Client.Common
 				fPresent.TextureSize = new(presenterTextureWidth, presenterTextureHeight);
 				fPresent.BackgroundColor = videoProvider.BackgroundColor;
 				fPresent.GuiRenderer = _renderer;
-				fPresent.Flip = isGlTextureId;
 				fPresent.Config_FixAspectRatio = GlobalConfig.DispFixAspectRatio;
 				fPresent.Config_FixScaleInteger = GlobalConfig.DispFixScaleInteger;
 				fPresent.Padding = (ClientExtraPadding.Left, ClientExtraPadding.Top, ClientExtraPadding.Right, ClientExtraPadding.Bottom);
@@ -932,7 +927,7 @@ namespace BizHawk.Client.Common
 
 		public void Blank()
 		{
-			ActivateGLContext();
+			ActivateGraphicsControlContext();
 			_gl.BeginScene();
 			_gl.BindRenderTarget(null);
 			_gl.SetClearColor(Color.Black);

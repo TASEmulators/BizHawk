@@ -435,7 +435,6 @@ namespace BizHawk.Client.Common.Filters
 		public int BackgroundColor;
 		public bool AutoPrescale;
 		public IGuiRenderer GuiRenderer;
-		public bool Flip;
 		public IGL GL;
 		private bool nop;
 		private LetterboxingLogic LL;
@@ -491,7 +490,7 @@ namespace BizHawk.Client.Common.Filters
 
 		public override void SetInputFormat(string channel, SurfaceState state)
 		{
-			bool need = state.SurfaceFormat.Size != OutputSize || FilterOption != eFilterOption.None || Flip;
+			bool need = state.SurfaceFormat.Size != OutputSize || FilterOption != eFilterOption.None;
 
 			if (!need)
 			{
@@ -575,14 +574,7 @@ namespace BizHawk.Client.Common.Filters
 				//this was handled earlier by another filter
 			}
 
-			GuiRenderer.Modelview.Translate(LL.vx, LL.vy);
-			if (Flip)
-			{
-				GuiRenderer.Modelview.Scale(1, -1);
-				GuiRenderer.Modelview.Translate(0, -LL.vh);
-			}
-			GuiRenderer.Draw(InputTexture,0,0,LL.vw,LL.vh);
-
+			GuiRenderer.Draw(InputTexture, LL.vx, LL.vy, LL.vw, LL.vh);
 			GuiRenderer.End();
 		}
 	}

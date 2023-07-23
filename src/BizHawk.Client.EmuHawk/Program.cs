@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -227,16 +226,14 @@ namespace BizHawk.Client.EmuHawk
 							return TryInitIGL(initialConfig.DispMethod = fallback.Method);
 						}
 					case EDispMethod.OpenGL:
-						var glOpenGL = new IGL_OpenGL(2, 0, false);
-						if (glOpenGL.Version < 200)
+						if (SDL2OpenGLContext.Version < 200)
 						{
 							// too old to use, GDI+ will be better
-							glOpenGL.Dispose();
 							var fallback = ChooseFallback();
 							new ExceptionBox(new Exception($"Initialization of OpenGL Display Method failed; falling back to {fallback.Name}")).ShowDialog();
 							return TryInitIGL(initialConfig.DispMethod = fallback.Method);
 						}
-						return CheckRenderer(glOpenGL);
+						return CheckRenderer(new IGL_OpenGL(2, 0, false));
 					default:
 					case EDispMethod.GdiPlus:
 						static GLControlWrapper_GdiPlus CreateGLControlWrapper(IGL_GdiPlus self) => new(self); // inlining as lambda causes crash, don't wanna know why --yoshi

@@ -1,6 +1,5 @@
 using System;
-
-using Silk.NET.OpenGL.Legacy;
+using System.Runtime.InteropServices;
 
 using static SDL2.SDL;
 
@@ -9,7 +8,7 @@ namespace BizHawk.Bizware.Graphics
 	/// <summary>
 	/// Wraps an SDL2 OpenGL context
 	/// </summary>
-	internal class SDL2OpenGLContext : IDisposable
+	public class SDL2OpenGLContext : IDisposable
 	{
 		static SDL2OpenGLContext()
 		{
@@ -41,10 +40,49 @@ namespace BizHawk.Bizware.Graphics
 			SDL_SetHint(SDL_HINT_VIDEO_FOREIGN_WINDOW_OPENGL, "1");
 		}
 
+		[UnmanagedFunctionPointer(CallingConvention.Winapi)]
+		private delegate IntPtr glGetStringDelegate(int name);
+
+		private static readonly Lazy<int> _version = new(() =>
+		{
+			var prevWindow = SDL_GL_GetCurrentWindow();
+			var prevContext = SDL_GL_GetCurrentContext();
+
+			try
+			{
+				using (new SDL2OpenGLContext(2, 0, false))
+				{
+					var getStringFp = GetGLProcAddress("glGetString");
+					if (getStringFp == IntPtr.Zero) // uhhh?
+					{
+						return 0;
+					}
+
+					var getStringFunc = Marshal.GetDelegateForFunctionPointer<glGetStringDelegate>(getStringFp);
+					const int GL_VERSION = 0x1F02;
+					var version = getStringFunc(GL_VERSION);
+					if (version == IntPtr.Zero)
+					{
+						return 0;
+					}
+
+					var versionString = Marshal.PtrToStringAnsi(version);
+					var versionParts = versionString!.Split('.');
+					var major = int.Parse(versionParts[0]);
+					var minor = int.Parse(versionParts[1][0].ToString());
+					return major * 100 + minor;
+				}
+			}
+			finally
+			{
+				SDL_GL_MakeCurrent(prevWindow, prevContext);
+			}
+		});
+
+		public static int Version => _version.Value;
+
 		private IntPtr _sdlWindow;
 		private IntPtr _glContext;
-
-		public GL GL { get; private set; }
 
 		private void CreateContext(int majorVersion, int minorVersion, bool forwardCompatible)
 		{
@@ -80,10 +118,6 @@ namespace BizHawk.Bizware.Graphics
 			{
 				throw new($"Could not create GL Context! SDL Error: {SDL_GetError()}");
 			}
-
-			// get GL functions
-			// these are specific towards a context, and so these are owned by the context here
-			GL = GL.GetApi(SDL_GL_GetProcAddress);
 		}
 
 		public SDL2OpenGLContext(IntPtr nativeWindowhandle, int majorVersion, int minorVersion, bool forwardCompatible)
@@ -145,6 +179,15 @@ namespace BizHawk.Bizware.Graphics
 			// no-op if already current
 			_ = SDL_GL_MakeCurrent(_sdlWindow, _glContext);
 		}
+
+		public static void MakeNoneCurrent()
+		{
+			// no-op if nothing is current
+			_ = SDL_GL_MakeCurrent(IntPtr.Zero, IntPtr.Zero);
+		}
+
+		public static IntPtr GetGLProcAddress(string proc)
+			=> SDL_GL_GetProcAddress(proc);
 
 		public void SetVsync(bool state)
 		{

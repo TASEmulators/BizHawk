@@ -159,7 +159,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 		/// <summary>
 		/// In case you already have the texture ID (from an opengl emulator gpu core) you can get a Texture2d with it this way.
-		/// Otherwise, if this isn't an OpenGL frontend implementation, I guess... try reading the texturedata out of it and making a new texture?
+		/// Otherwise, if this isn't an OpenGL frontend implementation, the core is expected to readback the texture for GetVideoBuffer()
 		/// </summary>
 		Texture2d WrapGLTexture2d(IntPtr glTexId, int width, int height);
 

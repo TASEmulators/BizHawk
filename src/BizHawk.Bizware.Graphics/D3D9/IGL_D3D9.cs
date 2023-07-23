@@ -683,8 +683,7 @@ namespace BizHawk.Bizware.Graphics
 
 		public Texture2d WrapGLTexture2d(IntPtr glTexId, int width, int height)
 		{
-			// not needed 1st pass (except for GL cores)
-			// TODO - need to rip the texture data. we had code for that somewhere...
+			// only used for OpenGL
 			return null;
 		}
 

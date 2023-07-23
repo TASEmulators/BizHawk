@@ -9,7 +9,6 @@ namespace BizHawk.Bizware.BizwareGL
 			Owner = owner;
 			Opaque = opaque;
 			Texture2d = tex;
-			tex.IsUpsideDown = true;
 		}
 
 		public override string ToString()
