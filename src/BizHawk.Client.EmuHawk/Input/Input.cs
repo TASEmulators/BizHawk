@@ -4,8 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Windows.Forms;
 
-using BizHawk.Bizware.DirectX;
-using BizHawk.Bizware.OpenTK3;
+using BizHawk.Bizware.Input;
 using BizHawk.Common;
 using BizHawk.Client.Common;
 using BizHawk.Common.CollectionExtensions;
@@ -48,8 +47,8 @@ namespace BizHawk.Client.EmuHawk
 
 			Adapter = _currentConfig.HostInputMethod switch
 			{
-				EHostInputMethod.OpenTK => new OpenTKInputAdapter(),
-				_ when OSTailoredCode.IsUnixHost => new OpenTKInputAdapter(),
+				EHostInputMethod.SDL2 => new SDL2InputAdapter(),
+				_ when OSTailoredCode.IsUnixHost => new SDL2InputAdapter(),
 				EHostInputMethod.DirectInput => new DirectInputAdapter(),
 				_ => throw new InvalidOperationException()
 			};

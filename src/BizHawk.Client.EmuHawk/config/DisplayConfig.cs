@@ -62,7 +62,7 @@ namespace BizHawk.Client.EmuHawk
 
 			rbOpenGL.Checked = _config.DispMethod == EDispMethod.OpenGL;
 			rbGDIPlus.Checked = _config.DispMethod == EDispMethod.GdiPlus;
-			rbD3D9.Checked = _config.DispMethod == EDispMethod.SlimDX9;
+			rbD3D9.Checked = _config.DispMethod == EDispMethod.D3D9;
 
 			cbStatusBarWindowed.Checked = _config.DispChromeStatusBarWindowed;
 			cbCaptionWindowed.Checked = _config.DispChromeCaptionWindowed;
@@ -228,7 +228,7 @@ namespace BizHawk.Client.EmuHawk
 			if(rbGDIPlus.Checked)
 				_config.DispMethod = EDispMethod.GdiPlus;
 			if(rbD3D9.Checked)
-				_config.DispMethod = EDispMethod.SlimDX9;
+				_config.DispMethod = EDispMethod.D3D9;
 
 			if (int.TryParse(txtCropLeft.Text, out int dispCropLeft))
 			{

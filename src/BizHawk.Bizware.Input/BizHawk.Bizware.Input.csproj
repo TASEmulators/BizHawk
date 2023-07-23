@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net48</TargetFramework>
+		<TargetFramework>netstandard2.0</TargetFramework>
 	</PropertyGroup>
 	<Import Project="../MainSlnCommon.props" />
 	<PropertyGroup>
@@ -8,9 +8,9 @@
 		<Nullable>disable</Nullable>
 	</PropertyGroup>
 	<ItemGroup>
-		<Reference Include="System.Windows.Forms" />
-		<PackageReference Include="OpenTK" Version="3.3.3" PrivateAssets="all" />
-		<PackageReference Include="OpenTK.GLControl" Version="3.3.3" PrivateAssets="all" />
+		<PackageReference Include="Vortice.DirectInput" Version="2.4.2" />
+		<PackageReference Include="Vortice.XInput" Version="2.4.2" />
+		<PackageReference Include="ppy.SDL2-CS" Version="1.0.630-alpha" ExcludeAssets="native;contentFiles" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Client.Common/BizHawk.Client.Common.csproj" />
 	</ItemGroup>
 </Project>

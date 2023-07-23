@@ -1,5 +1,4 @@
-﻿using System;
-using BizHawk.Emulation.Cores.Nintendo.SNES;
+﻿using BizHawk.Emulation.Cores.Nintendo.SNES;
 
 namespace BizHawk.Client.EmuHawk
 {

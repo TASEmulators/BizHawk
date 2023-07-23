@@ -1,6 +1,6 @@
 using BizHawk.Bizware.BizwareGL;
 
-namespace BizHawk.Bizware.OpenTK3
+namespace BizHawk.Bizware.Graphics
 {
 	/// <summary>
 	/// An IBlendState token that just caches all the args needed to create a blend state

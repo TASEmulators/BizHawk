@@ -162,6 +162,22 @@ namespace BizHawk.Common.CollectionExtensions
 
 		/// <summary>
 		/// Returns the value at <paramref name="key"/>.
+		/// If the key is not present, returns default(TValue).
+		/// backported from .NET Core 2.0
+		/// </summary>
+		public static TValue? GetValueOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key)
+			=> dictionary.TryGetValue(key, out var found) ? found : default;
+
+		/// <summary>
+		/// Returns the value at <paramref name="key"/>.
+		/// If the key is not present, returns <paramref name="defaultValue"/>.
+		/// backported from .NET Core 2.0
+		/// </summary>
+		public static TValue? GetValueOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue)
+			=> dictionary.TryGetValue(key, out var found) ? found : defaultValue;
+
+		/// <summary>
+		/// Returns the value at <paramref name="key"/>.
 		/// If the key is not present, stores the result of <c>defaultValue(key)</c> in the dict, and then returns that.
 		/// </summary>
 		public static TValue GetValueOrPut<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, Func<TKey, TValue> defaultValue)

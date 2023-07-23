@@ -3,13 +3,14 @@
 //why this stupid assert on the blendstate. just set one by default, geeze.
 
 using System;
+#if DEBUG
 using System.Diagnostics;
+#endif
+using System.Drawing;
 
 using BizHawk.Bizware.BizwareGL;
 
-using sd = System.Drawing;
-
-namespace BizHawk.Bizware.OpenTK3
+namespace BizHawk.Bizware.Graphics
 {
 	/// <summary>
 	/// A simple renderer useful for rendering GUI stuff.
@@ -24,13 +25,13 @@ namespace BizHawk.Bizware.OpenTK3
 			Owner = owner;
 
 			VertexLayout = owner.CreateVertexLayout();
-			VertexLayout.DefineVertexAttribute("aPosition", 0, 2, VertexAttribPointerType.Float, AttribUsage.Position, false, 32, 0);
+			VertexLayout.DefineVertexAttribute("aPosition", 0, 2, VertexAttribPointerType.Float, AttribUsage.Position, false, 32);
 			VertexLayout.DefineVertexAttribute("aTexcoord", 1, 2, VertexAttribPointerType.Float, AttribUsage.Texcoord0, false, 32, 8);
 			VertexLayout.DefineVertexAttribute("aColor", 2, 4, VertexAttribPointerType.Float, AttribUsage.Texcoord1, false, 32, 16);
 			VertexLayout.Close();
 
-			_Projection = new MatrixStack();
-			_Modelview = new MatrixStack();
+			_Projection = new();
+			_Modelview = new();
 
 			string psProgram, vsProgram;
 
@@ -50,7 +51,13 @@ namespace BizHawk.Bizware.OpenTK3
 			CurrPipeline = DefaultPipeline = Owner.CreatePipeline(VertexLayout, vs, ps, true, "xgui");
 		}
 
-		private readonly Vector4[] CornerColors = { new(1.0f, 1.0f, 1.0f, 1.0f), new(1.0f, 1.0f, 1.0f, 1.0f), new(1.0f, 1.0f, 1.0f, 1.0f), new(1.0f, 1.0f, 1.0f, 1.0f) };
+		private readonly Vector4[] CornerColors =
+		{
+			new(1.0f, 1.0f, 1.0f, 1.0f),
+			new(1.0f, 1.0f, 1.0f, 1.0f),
+			new(1.0f, 1.0f, 1.0f, 1.0f),
+			new(1.0f, 1.0f, 1.0f, 1.0f)
+		};
 
 		public void SetCornerColor(int which, Vector4 color)
 		{
@@ -63,7 +70,7 @@ namespace BizHawk.Bizware.OpenTK3
 		{
 			Flush(); //don't really need to flush with current implementation. we might as well roll modulate color into it too.
 			if (colors.Length != 4) throw new ArgumentException("array must be size 4", nameof(colors));
-			for (int i = 0; i < 4; i++)
+			for (var i = 0; i < 4; i++)
 				CornerColors[i] = colors[i];
 		}
 
@@ -93,10 +100,10 @@ namespace BizHawk.Bizware.OpenTK3
 
 		public void SetModulateColorWhite()
 		{
-			SetModulateColor(sd.Color.White);
+			SetModulateColor(Color.White);
 		}
 
-		public void SetModulateColor(sd.Color color)
+		public void SetModulateColor(Color color)
 		{
 			Flush();
 			CurrPipeline["uModulateColor"].Set(new Vector4(color.R / 255.0f, color.G / 255.0f, color.B / 255.0f, color.A / 255.0f));
@@ -131,7 +138,7 @@ namespace BizHawk.Bizware.OpenTK3
 			}
 		}
 
-		public void Begin(sd.Size size) { Begin(size.Width, size.Height); }
+		public void Begin(Size size) { Begin(size.Width, size.Height); }
 
 		public void Begin(int width, int height)
 		{
@@ -220,42 +227,60 @@ namespace BizHawk.Bizware.OpenTK3
 
 		private void DrawInternal(Texture2d tex, float x, float y, float w, float h)
 		{
-			Art art = new Art((ArtManager)null);
-			art.Width = w;
-			art.Height = h;
+			var art = new Art((ArtManager)null)
+			{
+				Width = w,
+				Height = h
+			};
+
 			art.u0 = art.v0 = 0;
 			art.u1 = art.v1 = 1;
 			art.BaseTexture = tex;
+
 			DrawInternal(art, x, y, w, h, false, tex.IsUpsideDown);
 		}
 
 		private unsafe void DrawInternal(Art art, float x, float y, float w, float h, bool fx, bool fy)
 		{
-			//TEST: d3d shouldn't ever use this, it was a gl hack. maybe we can handle it some other way in gl (fix the projection? take a render-to-texture arg to the gui view transforms?)
-			fy = false;
-
 			float u0, v0, u1, v1;
-			if (fx) { u0 = art.u1; u1 = art.u0; }
-			else { u0 = art.u0; u1 = art.u1; }
-			if (fy) { v0 = art.v1; v1 = art.v0; }
-			else { v0 = art.v0; v1 = art.v1; }
 
-			float[] data = new float[32] {
-				x,y, u0,v0, CornerColors[0].X, CornerColors[0].Y, CornerColors[0].Z, CornerColors[0].W,
-				x+art.Width,y, u1,v0, CornerColors[1].X, CornerColors[1].Y, CornerColors[1].Z, CornerColors[1].W,
-				x,y+art.Height, u0,v1, CornerColors[2].X, CornerColors[2].Y, CornerColors[2].Z, CornerColors[2].W,
-				x+art.Width,y+art.Height, u1,v1, CornerColors[3].X, CornerColors[3].Y, CornerColors[3].Z, CornerColors[3].W,
+			if (fx)
+			{
+				u0 = art.u1;
+				u1 = art.u0;
+			}
+			else
+			{
+				u0 = art.u0;
+				u1 = art.u1;
+			}
+
+			if (fy)
+			{
+				v0 = art.v1;
+				v1 = art.v0;
+			}
+			else
+			{
+				v0 = art.v0;
+				v1 = art.v1;
+			}
+
+			var data = stackalloc float[32]
+			{
+				x, y, u0, v0,
+				CornerColors[0].X, CornerColors[0].Y, CornerColors[0].Z, CornerColors[0].W,
+				x + w, y, u1, v0,
+				CornerColors[1].X, CornerColors[1].Y, CornerColors[1].Z, CornerColors[1].W,
+				x, y + h, u0, v1,
+				CornerColors[2].X, CornerColors[2].Y, CornerColors[2].Z, CornerColors[2].W,
+				x + w, y + h, u1, v1,
+				CornerColors[3].X, CornerColors[3].Y, CornerColors[3].Z, CornerColors[3].W,
 			};
 
-			Texture2d tex = art.BaseTexture;
-
-			PrepDrawSubrectInternal(tex);
-
-			fixed (float* pData = &data[0])
-			{
-				Owner.BindArrayData(new(pData));
-				Owner.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
-			}
+			PrepDrawSubrectInternal(art.BaseTexture);
+			Owner.BindArrayData(new(data));
+			Owner.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
 		}
 
 		private void PrepDrawSubrectInternal(Texture2d tex)
@@ -264,31 +289,24 @@ namespace BizHawk.Bizware.OpenTK3
 			{
 				sTexture = tex;
 				CurrPipeline["uSampler0"].Set(tex);
-				if (sTexture == null)
-				{
-					CurrPipeline["uSamplerEnable"].Set(false);
-				}
-				else
-				{
-					CurrPipeline["uSamplerEnable"].Set(true);
-				}
+				CurrPipeline["uSamplerEnable"].Set(tex != null);
 			}
 
 			if (_Projection.IsDirty)
 			{
-				CurrPipeline["um44Projection"].Set(ref _Projection.Top, false);
+				CurrPipeline["um44Projection"].Set(ref _Projection.Top);
 				_Projection.IsDirty = false;
 			}
 			if (_Modelview.IsDirty)
 			{
-				CurrPipeline["um44Modelview"].Set(ref _Modelview.Top, false);
+				CurrPipeline["um44Modelview"].Set(ref _Modelview.Top);
 				_Modelview.IsDirty = false;
 			}
 		}
 
 		private unsafe void EmitRectangleInternal(float x, float y, float w, float h, float u0, float v0, float u1, float v1)
 		{
-			float* pData = stackalloc float[32];
+			var pData = stackalloc float[32];
 			pData[0] = x;
 			pData[1] = y;
 			pData[2] = u0;
@@ -351,7 +369,7 @@ namespace BizHawk.Bizware.OpenTK3
 
 //shaders are hand-coded for each platform to make sure they stay as fast as possible
 
-		public readonly string DefaultShader_d3d9 = @"
+		public const string DefaultShader_d3d9 = @"
 //vertex shader uniforms
 float4x4 um44Modelview, um44Projection;
 float4 uModulateColor;
@@ -399,8 +417,9 @@ float4 psmain(PS_INPUT src) : COLOR
 }
 ";
 
-		public readonly string DefaultVertexShader_gl = @"
-#version 110 //opengl 2.0 ~ 2004
+		public const string DefaultVertexShader_gl = @"
+//opengl 2.0 ~ 2004
+#version 110
 uniform mat4 um44Modelview, um44Projection;
 uniform vec4 uModulateColor;
 
@@ -423,7 +442,8 @@ void main()
 }";
 
 		public readonly string DefaultPixelShader_gl = @"
-#version 110 //opengl 2.0 ~ 2004
+//opengl 2.0 ~ 2004
+#version 110
 uniform bool uSamplerEnable;
 uniform sampler2D uSampler0;
 

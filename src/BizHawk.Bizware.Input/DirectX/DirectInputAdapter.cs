@@ -5,8 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 
 using BizHawk.Client.Common;
+using BizHawk.Common.CollectionExtensions;
 
-namespace BizHawk.Bizware.DirectX
+namespace BizHawk.Bizware.Input
 {
 	public sealed class DirectInputAdapter : IHostInputAdapter
 	{
@@ -16,56 +17,56 @@ namespace BizHawk.Bizware.DirectX
 
 		private Config? _config;
 
-		public string Desc { get; } = "DirectInput+XInput";
+		public string Desc => "DirectInput+XInput";
 
 		public void DeInitAll()
 		{
-			KeyInput.Cleanup();
-			GamePad.Cleanup();
+			DKeyInput.Cleanup();
+			DGamepad.Cleanup();
 		}
 
 		public void FirstInitAll(IntPtr mainFormHandle)
 		{
-			KeyInput.Initialize(mainFormHandle);
+			DKeyInput.Initialize(mainFormHandle);
 			IPCKeyInput.Initialize();
 			ReInitGamepads(mainFormHandle);
 		}
 
 		public IReadOnlyDictionary<string, IReadOnlyCollection<string>> GetHapticsChannels()
-			=> GamePad360.EnumerateDevices().ToDictionary(pad => pad.InputNamePrefix, _ => XINPUT_HAPTIC_CHANNEL_NAMES);
+			=> XGamepad.EnumerateDevices().ToDictionary(pad => pad.InputNamePrefix, _ => XINPUT_HAPTIC_CHANNEL_NAMES);
 
 		public void ReInitGamepads(IntPtr mainFormHandle)
 		{
-			GamePad.Initialize(mainFormHandle);
-			GamePad360.Initialize();
+			DGamepad.Initialize(mainFormHandle);
+			XGamepad.Initialize();
 		}
 
 		public void PreprocessHostGamepads()
 		{
-			GamePad.UpdateAll();
-			GamePad360.UpdateAll();
+			DGamepad.UpdateAll();
+			XGamepad.UpdateAll();
 		}
 
 		public void ProcessHostGamepads(Action<string?, bool, ClientInputFocus> handleButton, Action<string?, int> handleAxis)
 		{
-			foreach (var pad in GamePad360.EnumerateDevices())
+			foreach (var pad in XGamepad.EnumerateDevices())
 			{
 				if (!pad.IsConnected)
 					continue;
 				for (int b = 0, n = pad.NumButtons; b < n; b++) handleButton(pad.InputNamePrefix + pad.ButtonName(b), pad.Pressed(b), ClientInputFocus.Pad);
 				foreach (var (axisName, f) in pad.GetAxes()) handleAxis(pad.InputNamePrefix + axisName, (int) f);
-				_ = _lastHapticsSnapshot.TryGetValue(pad.InputNamePrefix + "Left", out var leftStrength);
-				_ = _lastHapticsSnapshot.TryGetValue(pad.InputNamePrefix + "Right", out var rightStrength);
+				var leftStrength = _lastHapticsSnapshot.GetValueOrDefault(pad.InputNamePrefix + "Left");
+				var rightStrength = _lastHapticsSnapshot.GetValueOrDefault(pad.InputNamePrefix + "Right");
 				pad.SetVibration(leftStrength, rightStrength); // values will be 0 if not found
 			}
-			foreach (var pad in GamePad.EnumerateDevices())
+			foreach (var pad in DGamepad.EnumerateDevices())
 			{
 				for (int b = 0, n = pad.NumButtons; b < n; b++) handleButton(pad.InputNamePrefix + pad.ButtonName(b), pad.Pressed(b), ClientInputFocus.Pad);
 				foreach (var (axisName, f) in pad.GetAxes()) handleAxis(pad.InputNamePrefix + axisName, (int) f);
 			}
 		}
 
-		public IEnumerable<KeyEvent> ProcessHostKeyboards() => KeyInput.Update(_config ?? throw new Exception(nameof(ProcessHostKeyboards) + " called before the global config was passed"))
+		public IEnumerable<KeyEvent> ProcessHostKeyboards() => DKeyInput.Update(_config ?? throw new(nameof(ProcessHostKeyboards) + " called before the global config was passed"))
 			.Concat(IPCKeyInput.Update());
 
 		public void SetHaptics(IReadOnlyCollection<(string Name, int Strength)> hapticsSnapshot)

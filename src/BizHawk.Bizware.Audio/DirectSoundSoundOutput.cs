@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 
 using BizHawk.Client.Common;
 
-using SlimDX.DirectSound;
-using SlimDX.Multimedia;
+using SharpDX;
+using SharpDX.DirectSound;
+using SharpDX.Multimedia;
 
-namespace BizHawk.Bizware.DirectX
+namespace BizHawk.Bizware.Audio
 {
 	public sealed class DirectSoundSoundOutput : ISoundOutput
 	{
@@ -27,8 +29,8 @@ namespace BizHawk.Bizware.DirectX
 			_sound = sound;
 			_retryCounter = 5;
 
-			var deviceInfo = DirectSound.GetDevices().FirstOrDefault(d => d.Description == soundDevice);
-			_device = deviceInfo != null ? new DirectSound(deviceInfo.DriverGuid) : new DirectSound();
+			var deviceInfo = DirectSound.GetDevices().Find(d => d.Description == soundDevice);
+			_device = deviceInfo != null ? new(deviceInfo.DriverGuid) : new();
 			_device.SetCooperativeLevel(mainWindowHandle, CooperativeLevel.Priority);
 		}
 
@@ -53,7 +55,9 @@ namespace BizHawk.Bizware.DirectX
 
 		public int MaxSamplesDeficit { get; private set; }
 
-		private bool IsPlaying => _deviceBuffer != null && (_deviceBuffer.Status & BufferStatus.BufferLost) == 0 && (_deviceBuffer.Status & BufferStatus.Playing) == BufferStatus.Playing;
+		private bool IsPlaying => _deviceBuffer != null &&
+			((BufferStatus)_deviceBuffer.Status & BufferStatus.BufferLost) == 0 &&
+			((BufferStatus)_deviceBuffer.Status & BufferStatus.Playing) == BufferStatus.Playing;
 
 		private void StartPlaying()
 		{
@@ -61,7 +65,7 @@ namespace BizHawk.Bizware.DirectX
 			_filledBufferSizeBytes = 0;
 			_lastWriteTime = 0;
 			_lastWriteCursor = 0;
-			int attempts = _retryCounter;
+			var attempts = _retryCounter;
 			while (!IsPlaying && attempts > 0)
 			{
 				attempts--;
@@ -69,15 +73,13 @@ namespace BizHawk.Bizware.DirectX
 				{
 					if (_deviceBuffer == null)
 					{
-						var format = new WaveFormat
-						{
-							SamplesPerSecond = _sound.SampleRate,
-							BitsPerSample = (short) (_sound.BytesPerSample * 8),
-							Channels = (short) _sound.ChannelCount,
-							FormatTag = WaveFormatTag.Pcm,
-							BlockAlignment = (short) _sound.BlockAlign,
-							AverageBytesPerSecond = _sound.SampleRate * _sound.BlockAlign
-						};
+						var format = WaveFormat.CreateCustomFormat(
+							tag: WaveFormatEncoding.Pcm,
+							sampleRate: _sound.SampleRate, 
+							channels: _sound.ChannelCount, 
+							averageBytesPerSecond: _sound.SampleRate * _sound.BlockAlign, 
+							blockAlign: _sound.BlockAlign,
+							bitsPerSample: _sound.BytesPerSample * 8);
 
 						var desc = new SoundBufferDescription
 						{
@@ -87,23 +89,20 @@ namespace BizHawk.Bizware.DirectX
 									BufferFlags.Software |
 									BufferFlags.GetCurrentPosition2 |
 									BufferFlags.ControlVolume,
-							SizeInBytes = BufferSizeBytes
+							BufferBytes = BufferSizeBytes
 						};
 
-						_deviceBuffer = new SecondarySoundBuffer(_device, desc);
+						_deviceBuffer = new(_device, desc);
 					}
 
 					_deviceBuffer.Play(0, PlayFlags.Looping);
 				}
-				catch (DirectSoundException)
+				catch (SharpDXException)
 				{
-					if (_deviceBuffer != null)
-					{
-						_deviceBuffer.Restore();
-					}
+					_deviceBuffer?.Restore();
 					if (attempts > 0)
 					{
-						System.Threading.Thread.Sleep(10);
+						Thread.Sleep(10);
 					}
 				}
 			}
@@ -125,10 +124,10 @@ namespace BizHawk.Bizware.DirectX
 				try
 				{
 					// I'm not sure if this is "technically" correct but it works okay
-					int range = (int)Volume.Maximum - (int)Volume.Minimum;
-					_deviceBuffer.Volume = (int)(Math.Pow(volume, 0.1) * range) + (int)Volume.Minimum;
+					const int range = Volume.Maximum - Volume.Minimum;
+					_deviceBuffer.Volume = (int)(Math.Pow(volume, 0.1) * range) + Volume.Minimum;
 				}
-				catch (DirectSoundException)
+				catch (SharpDXException)
 				{
 				}
 			}
@@ -144,7 +143,7 @@ namespace BizHawk.Bizware.DirectX
 			// severe glitches. At least on my Windows 8 machines, the distance between the
 			// play and write cursors can be up to 30 milliseconds, so that would be the
 			// absolute minimum we could use here.
-			int minBufferFullnessMs = Math.Min(35 + ((_sound.ConfigBufferSizeMs - 60) / 2), 65);
+			var minBufferFullnessMs = Math.Min(35 + (_sound.ConfigBufferSizeMs - 60) / 2, 65);
 			MaxSamplesDeficit = BufferSizeSamples - _sound.MillisecondsToSamples(minBufferFullnessMs);
 
 			StartPlaying();
@@ -158,10 +157,11 @@ namespace BizHawk.Bizware.DirectX
 				{
 					_deviceBuffer.Stop();
 				}
-				catch (DirectSoundException)
+				catch (SharpDXException)
 				{
 				}
 			}
+
 			_deviceBuffer.Dispose();
 			_deviceBuffer = null;
 			BufferSizeSamples = 0;
@@ -169,21 +169,20 @@ namespace BizHawk.Bizware.DirectX
 
 		public int CalculateSamplesNeeded()
 		{
-			int samplesNeeded = 0;
+			var samplesNeeded = 0;
 			if (IsPlaying)
 			{
 				try
 				{
-					long currentWriteTime = Stopwatch.GetTimestamp();
-					int playCursor = _deviceBuffer.CurrentPlayPosition;
-					int writeCursor = _deviceBuffer.CurrentWritePosition;
-					bool isInitializing = _actualWriteOffsetBytes == -1;
-					bool detectedUnderrun = false;
+					var currentWriteTime = Stopwatch.GetTimestamp();
+					_deviceBuffer.GetCurrentPosition(out var playCursor, out var writeCursor);
+					var isInitializing = _actualWriteOffsetBytes == -1;
+					var detectedUnderrun = false;
 					if (!isInitializing)
 					{
-						double elapsedSeconds = (currentWriteTime - _lastWriteTime) / (double)Stopwatch.Frequency;
-						double bufferSizeSeconds = (double) BufferSizeSamples / _sound.SampleRate;
-						int cursorDelta = CircularDistance(_lastWriteCursor, writeCursor, BufferSizeBytes);
+						var elapsedSeconds = (currentWriteTime - _lastWriteTime) / (double)Stopwatch.Frequency;
+						var bufferSizeSeconds = (double) BufferSizeSamples / _sound.SampleRate;
+						var cursorDelta = CircularDistance(_lastWriteCursor, writeCursor, BufferSizeBytes);
 						cursorDelta += BufferSizeBytes * (int) Math.Round((elapsedSeconds - (cursorDelta / (double) (_sound.SampleRate * _sound.BlockAlign))) / bufferSizeSeconds);
 						_filledBufferSizeBytes -= cursorDelta;
 						detectedUnderrun = _filledBufferSizeBytes < 0;
@@ -201,7 +200,7 @@ namespace BizHawk.Bizware.DirectX
 					_lastWriteTime = currentWriteTime;
 					_lastWriteCursor = writeCursor;
 				}
-				catch (DirectSoundException)
+				catch (SharpDXException)
 				{
 					samplesNeeded = 0;
 				}
@@ -209,7 +208,7 @@ namespace BizHawk.Bizware.DirectX
 			return samplesNeeded;
 		}
 
-		private int CircularDistance(int start, int end, int size)
+		private static int CircularDistance(int start, int end, int size)
 		{
 			return (end - start + size) % size;
 		}
@@ -227,7 +226,7 @@ namespace BizHawk.Bizware.DirectX
 					_actualWriteOffsetBytes = (_actualWriteOffsetBytes + (sampleCount * _sound.BlockAlign)) % BufferSizeBytes;
 					_filledBufferSizeBytes += sampleCount * _sound.BlockAlign;
 				}
-				catch (DirectSoundException)
+				catch (SharpDXException)
 				{
 					_deviceBuffer.Restore();
 					StartPlaying();
@@ -235,10 +234,7 @@ namespace BizHawk.Bizware.DirectX
 			}
 			else
 			{
-				if (_deviceBuffer != null)
-				{
-					_deviceBuffer.Restore();
-				}
+				_deviceBuffer?.Restore();
 				StartPlaying();
 			}
 		}

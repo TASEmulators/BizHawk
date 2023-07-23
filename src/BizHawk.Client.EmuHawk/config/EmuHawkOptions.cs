@@ -85,8 +85,8 @@ namespace BizHawk.Client.EmuHawk
 
 			switch (_config.HostInputMethod)
 			{
-				case EHostInputMethod.OpenTK:
-					rbInputMethodOpenTK.Checked = true;
+				case EHostInputMethod.SDL2:
+					rbInputMethodSDL2.Checked = true;
 					break;
 				case EHostInputMethod.DirectInput:
 					rbInputMethodDirectInput.Checked = true;
@@ -123,7 +123,7 @@ namespace BizHawk.Client.EmuHawk
 			_config.MergeLAndRModifierKeys = cbMergeLAndRModifierKeys.Checked;
 			_config.SingleInstanceMode = SingleInstanceModeCheckbox.Checked;
 			if(rbInputMethodDirectInput.Checked) _config.HostInputMethod =  EHostInputMethod.DirectInput;
-			if(rbInputMethodOpenTK.Checked) _config.HostInputMethod = EHostInputMethod.OpenTK;
+			if(rbInputMethodSDL2.Checked) _config.HostInputMethod = EHostInputMethod.SDL2;
 
 			_config.BackupSaveram = BackupSRamCheckbox.Checked;
 			_config.AutosaveSaveRAM = AutosaveSRAMCheckbox.Checked;

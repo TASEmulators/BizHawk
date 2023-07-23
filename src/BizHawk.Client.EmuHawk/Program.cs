@@ -8,8 +8,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 using BizHawk.Bizware.BizwareGL;
-using BizHawk.Bizware.DirectX;
-using BizHawk.Bizware.OpenTK3;
+using BizHawk.Bizware.Graphics;
 using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Client.Common;
@@ -115,8 +114,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				BizInvoke.ReflectionCache.AsmVersion,
 				Bizware.BizwareGL.ReflectionCache.AsmVersion,
-				Bizware.DirectX.ReflectionCache.AsmVersion,
-				Bizware.OpenTK3.ReflectionCache.AsmVersion,
 				Client.Common.ReflectionCache.AsmVersion,
 				Common.ReflectionCache.AsmVersion,
 				Emulation.Common.ReflectionCache.AsmVersion,
@@ -179,8 +176,24 @@ namespace BizHawk.Client.EmuHawk
 
 			StringLogUtil.DefaultToDisk = initialConfig.Movies.MoviesOnDisk;
 
+			var glInitCount = 0;
+
 			IGL TryInitIGL(EDispMethod dispMethod)
 			{
+				glInitCount++;
+
+				(EDispMethod Method, string Name) ChooseFallback()
+					=> glInitCount switch
+					{
+						// try to fallback on the faster option on Windows
+						// if we're on a Unix platform, there's only 1 fallback here...
+						1 when OSTC.IsUnixHost => (EDispMethod.GdiPlus, "GDI+"),
+						1 or 2 when !OSTC.IsUnixHost => dispMethod == EDispMethod.D3D9
+							? (EDispMethod.OpenGL, "OpenGL")
+							: (EDispMethod.D3D9, "Direct3D9"),
+						_ => (EDispMethod.GdiPlus, "GDI+")
+					};
+
 				IGL CheckRenderer(IGL gl)
 				{
 					try
@@ -189,39 +202,45 @@ namespace BizHawk.Client.EmuHawk
 					}
 					catch (Exception ex)
 					{
-						new ExceptionBox(new Exception("Initialization of Display Method failed; falling back to GDI+", ex)).ShowDialog();
-						return TryInitIGL(initialConfig.DispMethod = EDispMethod.GdiPlus);
+						var fallback = ChooseFallback();
+						new ExceptionBox(new Exception($"Initialization of Display Method failed; falling back to {fallback.Name}", ex)).ShowDialog();
+						return TryInitIGL(initialConfig.DispMethod = fallback.Method);
 					}
 				}
+
 				switch (dispMethod)
 				{
-					case EDispMethod.SlimDX9:
-						if (OSTC.CurrentOS != OSTC.DistinctOS.Windows)
+					case EDispMethod.D3D9:
+						if (OSTC.IsUnixHost)
 						{
 							// possibly sharing config w/ Windows, assume the user wants the not-slow method (but don't change the config)
 							return TryInitIGL(EDispMethod.OpenGL);
 						}
 						try
 						{
-							return CheckRenderer(IndirectX.CreateD3DGLImpl());
+							return CheckRenderer(new IGL_D3D9());
 						}
 						catch (Exception ex)
 						{
-							new ExceptionBox(new Exception("Initialization of Direct3d 9 Display Method failed; falling back to GDI+", ex)).ShowDialog();
-							return TryInitIGL(initialConfig.DispMethod = EDispMethod.GdiPlus);
+							var fallback = ChooseFallback();
+							new ExceptionBox(new Exception($"Initialization of Direct3D9 Display Method failed; falling back to {fallback.Name}", ex)).ShowDialog();
+							return TryInitIGL(initialConfig.DispMethod = fallback.Method);
 						}
 					case EDispMethod.OpenGL:
-						var glOpenTK = new IGL_TK(2, 0, false);
-						if (glOpenTK.Version < 200)
+						var glOpenGL = new IGL_OpenGL(2, 0, false);
+						if (glOpenGL.Version < 200)
 						{
 							// too old to use, GDI+ will be better
-							((IDisposable) glOpenTK).Dispose();
-							return TryInitIGL(initialConfig.DispMethod = EDispMethod.GdiPlus);
+							glOpenGL.Dispose();
+							var fallback = ChooseFallback();
+							new ExceptionBox(new Exception($"Initialization of OpenGL Display Method failed; falling back to {fallback.Name}")).ShowDialog();
+							return TryInitIGL(initialConfig.DispMethod = fallback.Method);
 						}
-						return CheckRenderer(glOpenTK);
+						return CheckRenderer(glOpenGL);
 					default:
 					case EDispMethod.GdiPlus:
 						static GLControlWrapper_GdiPlus CreateGLControlWrapper(IGL_GdiPlus self) => new(self); // inlining as lambda causes crash, don't wanna know why --yoshi
+						// if this fails, we're screwed
 						return new IGL_GdiPlus(CreateGLControlWrapper);
 				}
 			}

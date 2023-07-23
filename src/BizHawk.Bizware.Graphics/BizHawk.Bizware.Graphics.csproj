@@ -9,8 +9,9 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<Reference Include="System.Windows.Forms" />
-		<Reference Include="SlimDX" HintPath="$(ProjectDir)../../References/x64/SlimDX.dll" Private="true" />
-		<PackageReference Include="OpenTK" Version="3.3.3" PrivateAssets="all" />
-		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.OpenTK3/BizHawk.Bizware.OpenTK3.csproj" />
+		<PackageReference Include="Silk.NET.OpenGL.Legacy" Version="2.17.1" />
+		<PackageReference Include="SharpDX.Direct3D9" Version="4.2.0" />
+		<PackageReference Include="ppy.SDL2-CS" Version="1.0.630-alpha" ExcludeAssets="native;contentFiles" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.BizwareGL/BizHawk.Bizware.BizwareGL.csproj" />
 	</ItemGroup>
 </Project>
