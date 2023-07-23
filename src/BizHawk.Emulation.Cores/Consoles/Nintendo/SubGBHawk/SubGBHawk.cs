@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 	[Core(CoreNames.SubGbHawk, "")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class SubGBHawk : IEmulator, IStatable, IInputPollable,
-		ISettable<GBHawk.GBHawk.GBSettings, GBHawk.GBHawk.GBSyncSettings>, IDebuggable, ICycleTiming
+		ISettable<GBHawk.GBHawk.GBSettings, GBHawk.GBHawk.GBSyncSettings>, IDebuggable, ICycleTiming, IGameboyCommon
 	{
 		[CoreConstructor(VSystemID.Raw.GB, Priority = CorePriority.SuperLow)]
 		[CoreConstructor(VSystemID.Raw.GBC, Priority = CorePriority.SuperLow)]
@@ -37,7 +37,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 			ser.Register(_GBCore.ServiceProvider.GetService<ISaveRam>());
 			ser.Register(_GBCore.ServiceProvider.GetService<IRegionable>());
 			ser.Register(_GBCore.ServiceProvider.GetService<ICodeDataLogger>());
-			ser.Register(_GBCore.ServiceProvider.GetService<IGameboyCommon>());
 
 			_tracer = new TraceBuffer(_GBCore.cpu.TraceHeader);
 			ser.Register(_tracer);
@@ -79,5 +78,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 		public void Step(StepType type) => throw new NotImplementedException();
 
 		public long TotalExecutedCycles => _cycleCount;
+
+		public bool IsCGBMode => _GBCore.IsCGBMode;
+		public bool IsCGBDMGMode => _GBCore.IsCGBDMGMode;
+		public IGPUMemoryAreas LockGPU() => _GBCore.LockGPU();
+		public void SetScanlineCallback(ScanlineCallback callback, int line)
+			=> _GBCore.SetScanlineCallback(callback, line);
+		public void SetPrinterCallback(PrinterCallback callback)
+			=> _GBCore.SetPrinterCallback(callback);
 	}
 }
