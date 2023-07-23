@@ -91,6 +91,8 @@ namespace BizHawk.Client.EmuHawk
 			PCEngineCD = 76,
 			JaguarCD = 77,
 			DSi = 78,
+			TI83 = 79,
+			Uzebox = 80,
 
 			NumConsoleIDs
 		}
@@ -154,9 +156,9 @@ namespace BizHawk.Client.EmuHawk
 				VSystemID.Raw.SMS => ConsoleID.MasterSystem,
 				VSystemID.Raw.SNES when Emu is LibsnesCore { IsSGB: true } => ConsoleID.GB,
 				VSystemID.Raw.SNES => ConsoleID.SNES,
-				VSystemID.Raw.TI83 => ConsoleID.UnknownConsoleID,
+				VSystemID.Raw.TI83 => ConsoleID.TI83,
 				VSystemID.Raw.TIC80 => ConsoleID.Tic80,
-				VSystemID.Raw.UZE => ConsoleID.UnknownConsoleID,
+				VSystemID.Raw.UZE => ConsoleID.Uzebox,
 				VSystemID.Raw.VB => ConsoleID.VirtualBoy,
 				VSystemID.Raw.VEC => ConsoleID.Vectrex,
 				VSystemID.Raw.Wii => ConsoleID.WII,

@@ -363,6 +363,7 @@ namespace BizHawk.Client.EmuHawk
 			ConsoleID.PlayStation, ConsoleID.Lynx, ConsoleID.Lynx, ConsoleID.NeoGeoPocket,
 			ConsoleID.Jaguar, ConsoleID.JaguarCD, ConsoleID.DS, ConsoleID.DSi,
 			ConsoleID.AppleII, ConsoleID.Vectrex, ConsoleID.Tic80, ConsoleID.PCEngine,
+			ConsoleID.Uzebox,
 		};
 
 		// these consoles will use part of the system bus at an offset
@@ -385,14 +386,14 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (domains.Has(domain))
 				{
-					if (size.HasValue && domains[domain].Size < size.Value)
+					if (size.HasValue && domains[domain]!.Size < size.Value)
 					{
 						mfs.Add(new(domains[domain], 0, domains[domain].Size, addressMangler));
 						mfs.Add(new NullMemFunctions(size.Value - domains[domain].Size));
 					}
 					else
 					{
-						mfs.Add(new(domains[domain], 0, size ?? domains[domain].Size, addressMangler));
+						mfs.Add(new(domains[domain], 0, size ?? domains[domain]!.Size, addressMangler));
 					}
 				}
 				else if (size.HasValue)
@@ -549,6 +550,10 @@ namespace BizHawk.Client.EmuHawk
 					case ConsoleID.Arcade:
 						mfs.AddRange(domains.Where(domain => domain.Name.Contains("ram"))
 							.Select(domain => new MemFunctions(domain, 0, domain.Size)));
+						break;
+					case ConsoleID.TI83:
+						TryAddDomain("RAM"); // Emu83
+						TryAddDomain("Main RAM"); // TI83Hawk
 						break;
 					case ConsoleID.UnknownConsoleID:
 					case ConsoleID.ZXSpectrum: // this doesn't actually have anything standardized, so...
