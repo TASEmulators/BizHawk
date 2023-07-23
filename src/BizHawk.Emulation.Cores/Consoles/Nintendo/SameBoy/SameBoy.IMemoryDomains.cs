@@ -56,6 +56,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 				}, 1));
 
 			MemoryDomains = new MemoryDomainList(_memoryDomains);
+			((MemoryDomainList)MemoryDomains).MainMemory = MemoryDomains["WRAM"];
 			_serviceProvider.Register(MemoryDomains);
 		}
 	}
