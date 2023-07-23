@@ -5,12 +5,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Linq;
 
-namespace BizHawk.Client.Common
+namespace BizHawk.Common
 {
 	/// <summary>
 	/// Used in conjunction with the <see cref="RangeAttribute" /> will perform range validation against an int value using PropertyGrid
 	/// </summary>
-	public class IntConverter : TypeConverter
+	public class ConstrainedIntConverter : TypeConverter
 	{
 		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
 		{
@@ -19,11 +19,11 @@ namespace BizHawk.Client.Common
 
 		public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
 		{
-			var range = context.Instance
+			var range = (RangeAttribute)context.Instance
 				.GetType()
-				.GetProperty(context.PropertyDescriptor.Name)
+				.GetProperty(context.PropertyDescriptor!.Name)!
 				.GetCustomAttributes()
-				.FirstOrDefault(i => i.GetType() == typeof(RangeAttribute)) as RangeAttribute;
+				.First(i => i.GetType() == typeof(RangeAttribute));
 
 			range.Validate(value, context.PropertyDescriptor.Name);
 
@@ -32,7 +32,7 @@ namespace BizHawk.Client.Common
 				throw new FormatException($"{context.PropertyDescriptor.Name} can not be null");
 			}
 
-			if (int.TryParse(value.ToString(), out int intVal))
+			if (int.TryParse(value.ToString(), out var intVal))
 			{
 				return intVal;
 			}
@@ -49,11 +49,11 @@ namespace BizHawk.Client.Common
 
 			if (destinationType == typeof(string))
 			{
-				int num = Convert.ToInt32(value);
+				var num = Convert.ToInt32(value);
 				return num.ToString();
 			}
 
-			return base.ConvertTo(context, culture, value, destinationType);
+			return base.ConvertTo(context, culture, value, destinationType)!;
 		}
 	}
 }

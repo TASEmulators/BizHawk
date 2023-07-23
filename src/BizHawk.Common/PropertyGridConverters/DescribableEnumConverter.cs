@@ -43,12 +43,11 @@ namespace BizHawk.Common
 					if (found is DisplayAttribute da) return da.Name;
 				}
 			}
-#pragma warning disable CS8603 // value can't be null here, it would've thrown already
+
 			return value.ToString();
-#pragma warning restore CS8603
 		}
 
-		public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context) => new StandardValuesCollection(
+		public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context) => new(
 			enumType.GetFields(BindingFlags.Public | BindingFlags.Static)
 				.Select(fi => fi.GetValue(null))
 				.ToList()

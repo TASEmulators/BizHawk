@@ -165,6 +165,9 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption(SHA1Checksum.Dummy, 251658240 + 64, "NDS", "NAND (CHN)", "DSi_Nand_CHN.bin", "DSi NAND (China)");
 			FirmwareAndOption(SHA1Checksum.Dummy, 251658240 + 64, "NDS", "NAND (KOR)", "DSi_Nand_KOR.bin", "DSi NAND (Korea)");
 
+			FirmwareAndOption("5A3D3D6DF4743E6B50AFE0FC717FA8A12BC888E6", 65536, "3DS", "boot9", "3DS_Boot9.bin", "ARM9 BIOS");
+			// TODO: need to add more 3DS crap...
+
 			FirmwareAndOption("E4ED47FAE31693E016B081C6BDA48DA5B70D7CCB", 512, "Lynx", "Boot", "LYNX_boot.img", "Boot Rom");
 
 			FirmwareAndOption("5A65B922B562CB1F57DAB51B73151283F0E20C7A", 8192, "INTV", "EROM", "INTV_EROM.bin", "Executive Rom");

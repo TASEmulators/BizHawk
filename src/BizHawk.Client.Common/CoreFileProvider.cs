@@ -36,6 +36,22 @@ namespace BizHawk.Client.Common
 		public string GetRetroSystemPath(IGameInfo game)
 			=> _pathEntries.RetroSystemAbsolutePath(game);
 
+		public string GetUserPath(string sysID, bool temp)
+		{
+			if (temp)
+			{
+				var tempUserPath = Path.Combine(Path.GetTempPath(), $"biz-temp{sysID}user");
+				if (Directory.Exists(tempUserPath))
+				{
+					Directory.Delete(tempUserPath, true);
+				}
+
+				return tempUserPath;
+			}
+
+			return _pathEntries.UserAbsolutePathFor(sysID);
+		}
+
 		private (byte[] FW, string Path)? GetFirmwareWithPath(FirmwareID id)
 		{
 			var path = _firmwareManager.Request(_pathEntries, _firmwareUserSpecifications, id);

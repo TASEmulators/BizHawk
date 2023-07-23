@@ -71,6 +71,7 @@ namespace BizHawk.Client.EmuHawk
 			["Coleco"] = "Colecovision",
 			["GBA"] = "GBA",
 			["NDS"] = "Nintendo DS",
+			["3DS"] = "Nintendo 3DS",
 			["TI83"] = "TI-83",
 			["INTV"] = "Intellivision",
 			["C64"] = "C64",

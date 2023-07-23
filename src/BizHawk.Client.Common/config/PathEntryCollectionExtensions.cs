@@ -294,6 +294,11 @@ namespace BizHawk.Client.Common
 			return collection.AbsolutePathFor(collection[systemId, "Palettes"].Path, systemId);
 		}
 
+		public static string UserAbsolutePathFor(this PathEntryCollection collection, string systemId)
+		{
+			return collection.AbsolutePathFor(collection[systemId, "User"].Path, systemId);
+		}
+
 		/// <summary>
 		/// Takes an absolute path and attempts to convert it to a relative, based on the system,
 		/// or global base if no system is supplied, if it is not a subfolder of the base, it will return the path unaltered

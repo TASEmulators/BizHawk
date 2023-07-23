@@ -16,6 +16,7 @@ namespace BizHawk.Emulation.Cores
 		public const string Bsnes115 = "BSNESv115+";
 		public const string C64Hawk = "C64Hawk";
 		public const string ChannelFHawk = "ChannelFHawk";
+		public const string Citra = "Citra";
 		public const string ColecoHawk = "ColecoHawk";
 		public const string CPCHawk = "CPCHawk";
 		public const string Cygne = "Cygne/Mednafen";

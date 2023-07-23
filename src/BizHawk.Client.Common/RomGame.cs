@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Globalization;
+using System.IO;
+using System.Threading;
 
 using BizHawk.Common;
 using BizHawk.Common.IOExtensions;
@@ -21,6 +23,12 @@ namespace BizHawk.Client.Common
 
 		private const int BankSize = 1024;
 
+		// 3DS roms typically exceed 2GiB, so we don't want to load them into memory
+		// TODO: Don't rely only on extension if this is actually a 3DS ROM (validate in some way)
+		// TODO: ELF is another 3DS extension, but it's too generic / might be used for other systems...
+		private static bool Is3DSRom(string ext)
+			=> ext is ".3DS" or ".3DSX" or ".AXF" or ".CCI" or ".CXI" or ".APP" or ".CIA";
+
 		public RomGame(HawkFile file)
 			: this(file, null)
 		{
@@ -35,6 +43,33 @@ namespace BizHawk.Client.Common
 			}
 
 			Extension = file.Extension.ToUpperInvariant();
+
+			if (Is3DSRom(Extension))
+			{
+				if (file.IsArchive)
+				{
+					throw new InvalidOperationException("3DS ROMs cannot be in archives.");
+				}
+
+				Console.WriteLine($"3DS ROM detected, skipping hash checks...");
+
+				FileData = RomData = Array.Empty<byte>();
+				GameInfo = new()
+				{
+					Name = Path.GetFileNameWithoutExtension(file.Name).Replace('_', ' '),
+					System = VSystemID.Raw._3DS,
+					Hash = "N/A",
+					Status = RomStatus.NotInDatabase,
+					NotInDatabase = true
+				};
+
+				if (!string.IsNullOrWhiteSpace(GameInfo.Name) && GameInfo.Name == GameInfo.Name.ToUpperInvariant())
+				{
+					GameInfo.Name = Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(GameInfo.Name.ToLower());
+				}
+
+				return;
+			}
 
 			var stream = file.GetStream();
 			int fileLength = (int)stream.Length;
