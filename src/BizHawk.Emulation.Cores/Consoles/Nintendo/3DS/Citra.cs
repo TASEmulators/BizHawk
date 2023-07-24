@@ -110,7 +110,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo._3DS
 			if (lp.Roms[0].Extension.ToLowerInvariant() == ".cia")
 			{
 				var message = new byte[1024];
-				var res = _core.Citra_InstallCIA(_context, romPath, true, message, message.Length);
+				var res = _core.Citra_InstallCIA(_context, romPath, message, message.Length);
 				var outMsg = Encoding.UTF8.GetString(message).TrimEnd();
 				if (res)
 				{
@@ -129,6 +129,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo._3DS
 				Dispose();
 				throw new($"{Encoding.UTF8.GetString(errorMessage).TrimEnd()}");
 			}
+
+			InitMemoryDomains();
 		}
 
 		private IntPtr RequestGLContextCallback()

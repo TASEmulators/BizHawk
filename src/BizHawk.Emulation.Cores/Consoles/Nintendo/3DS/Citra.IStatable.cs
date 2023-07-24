@@ -78,6 +78,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo._3DS
 			_motionEmu.AngularRate.X = reader.ReadSingle();
 			_motionEmu.AngularRate.Y = reader.ReadSingle();
 			_motionEmu.AngularRate.Z = reader.ReadSingle();
+
+			// memory domain pointers are no longer valid, reset them
+			WireMemoryDomains();
 		}
 	}
 }

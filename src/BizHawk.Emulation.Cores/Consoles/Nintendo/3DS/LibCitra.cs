@@ -115,7 +115,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo._3DS
 		public abstract void Citra_DestroyContext(IntPtr context);
 
 		[BizImport(cc)]
-		public abstract bool Citra_InstallCIA(IntPtr context, string ciaPath, bool force, byte[] messageBuffer, int messageBufferLen);
+		public abstract bool Citra_InstallCIA(IntPtr context, string ciaPath, byte[] messageBuffer, int messageBufferLen);
 
 		[BizImport(cc)]
 		public abstract bool Citra_LoadROM(IntPtr context, string romPath, byte[] errorMessageBuffer, int errorMessageBufferLen);
@@ -149,5 +149,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo._3DS
 
 		[BizImport(cc)]
 		public abstract void Citra_LoadState(IntPtr context, byte[] buffer, int stateLen);
+
+		public enum MemoryRegion
+		{
+			FCRAM,
+			VRAM,
+			DSP,
+			N3DS
+		}
+
+		[BizImport(cc)]
+		public abstract void Citra_GetMemoryRegion(IntPtr context, MemoryRegion region, out IntPtr ptr, out int size);
 	}
 }
