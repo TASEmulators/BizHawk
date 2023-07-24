@@ -165,21 +165,9 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption(SHA1Checksum.Dummy, 251658240 + 64, "NDS", "NAND (CHN)", "DSi_Nand_CHN.bin", "DSi NAND (China)");
 			FirmwareAndOption(SHA1Checksum.Dummy, 251658240 + 64, "NDS", "NAND (KOR)", "DSi_Nand_KOR.bin", "DSi NAND (Korea)");
 
-			FirmwareAndOption("5A3D3D6DF4743E6B50AFE0FC717FA8A12BC888E6", 65536, "3DS", "boot9", "3DS_Boot9.bin", "ARM9 BIOS");
-			FirmwareAndOption("B9CFA84916A930D272250130D67CEB822141177D", 512, "3DS", "sector0x96", "sector0x96.bin", "Secret Section");
 			// bleh, undefined hash AND size...
+			FirmwareAndOption(SHA1Checksum.Dummy, 0, "3DS", "aes_keys", "aes_keys.txt", "AES Keys");
 			FirmwareAndOption(SHA1Checksum.Dummy, 0, "3DS", "seeddb", "seeddb.bin", "SEEDDB");
-
-			Firmware("3DS", "NATIVE_FIRM", "3DS Native Firmware");
-			// TODO: add the other 26 native firmware versions!!!
-			var o3ds_nf_v27476 = File("4DBEB23726B1516FE7B4691BA8DB5602FE49CDA0", 984320, "0004013800000002.cia", "3DS Native Firmware (11.3.0-36)");
-			Option("3DS", "NATIVE_FIRM", in o3ds_nf_v27476, FirmwareOptionStatus.Ideal);
-			Firmware("3DS", "SAFE_MODE_FIRM", "3DS Safe Mode Firmware");
-			var o3ds_smf_v432 = File("58732AA986BCC7570AC63A1BB2B6865CC6DE215E", 861440, "0004013800000003.cia", "3DS Safe Mode Firmware (1.0.0-0)");
-			var o3ds_smf_v5632 = File("0FD265D5CF251E70EAC455C91DAD39447EDEEA57", 861440, "0004013800000003.cia", "3DS Safe Mode Firmware (3.0.0-5)");
-			Option("3DS", "SAFE_MODE_FIRM", in o3ds_smf_v432);
-			Option("3DS", "SAFE_MODE_FIRM", in o3ds_smf_v5632, FirmwareOptionStatus.Ideal);
-			FirmwareAndOption("2C25467FA2FADB73EB3A137072643C65033B0483", 1012992, "3DS", "N3DS_SAFE_MODE_FIRM", "0004013820000003.cia", "New 3DS Safe Mode Firmware");
 
 			FirmwareAndOption("E4ED47FAE31693E016B081C6BDA48DA5B70D7CCB", 512, "Lynx", "Boot", "LYNX_boot.img", "Boot Rom");
 

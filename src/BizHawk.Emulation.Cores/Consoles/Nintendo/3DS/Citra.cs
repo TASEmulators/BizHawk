@@ -88,48 +88,23 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo._3DS
 
 			_serviceProvider.Register<IVideoProvider>(_citraVideoProvider);
 
-			var boot9 = lp.Comm.CoreFileProvider.GetFirmware(new("3DS", "boot9"));
-			if (boot9 is not null)
+			var sysDataDir = Path.Combine(_userPath, "sysdata");
+			if (!Directory.Exists(sysDataDir))
 			{
-				File.WriteAllBytes(Path.Combine(_userPath, "sysdata", "boot9.bin"), boot9);
+				Directory.CreateDirectory(sysDataDir);
 			}
 
-			var sector0x96 = lp.Comm.CoreFileProvider.GetFirmware(new("3DS", "sector0x96"));
-			if (sector0x96 is not null)
+			var aesKeys = lp.Comm.CoreFileProvider.GetFirmware(new("3DS", "aes_keys"));
+			if (aesKeys is not null)
 			{
-				File.WriteAllBytes(Path.Combine(_userPath, "sysdata", "sector0x96.bin"), sector0x96);
+				File.WriteAllBytes(Path.Combine(sysDataDir, "aes_keys.txt"), aesKeys);
 			}
 
 			var seeddb = lp.Comm.CoreFileProvider.GetFirmware(new("3DS", "seeddb"));
 			if (seeddb is not null)
 			{
-				File.WriteAllBytes(Path.Combine(_userPath, "sysdata", "seeddb.bin"), seeddb);
+				File.WriteAllBytes(Path.Combine(sysDataDir, "seeddb.bin"), seeddb);
 			}
-
-			void InstallFirmCia(string firmName)
-			{
-				var firm = lp.Comm.CoreFileProvider.GetFirmware(new("3DS", firmName));
-				if (firm is not null)
-				{
-					var firmCia = TempFileManager.GetTempFilename(firmName, ".cia", false);
-					try
-					{
-						File.WriteAllBytes(firmCia, firm);
-						var message = new byte[1024];
-						_core.Citra_InstallCIA(_context, firmCia, true, message, message.Length);
-						// InstallCIA returns false as these CIAs should not be executable
-						Util.DebugWriteLine(Encoding.UTF8.GetString(message).TrimEnd());
-					}
-					finally
-					{
-						TempFileManager.RenameTempFilenameForDelete(firmCia);
-					}
-				}
-			}
-
-			InstallFirmCia("NATIVE_FIRM");
-			InstallFirmCia("SAFE_MODE_FIRM");
-			InstallFirmCia("N3DS_SAFE_MODE_FIRM");
 
 			var romPath = lp.Roms[0].RomPath;
 			if (lp.Roms[0].Extension.ToLowerInvariant() == ".cia")
