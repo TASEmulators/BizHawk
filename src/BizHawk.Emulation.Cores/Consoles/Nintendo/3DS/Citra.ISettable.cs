@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo._3DS
 	{
 		private CitraSettings _settings;
 		private CitraSyncSettings _syncSettings;
-		private string _userPath;
+		private readonly string _userPath;
 
 		private bool GetBooleanSettingCallback(string label) => label switch
 		{
@@ -189,8 +189,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo._3DS
 				LargeScreen,
 				SideScreen,
 				HybridScreen = 5,
-				MobilePortrait,
-				MobileLandscape,
 			}
 
 			[DisplayName("Layout Option")]

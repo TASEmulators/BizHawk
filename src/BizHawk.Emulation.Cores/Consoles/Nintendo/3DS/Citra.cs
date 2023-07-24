@@ -10,7 +10,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo._3DS
 {
-	[PortedCore(CoreNames.Citra, "Citra Emulator Project", "nightly-1943", "https://citra-emu.org", singleInstance: true, isReleased: false)]
+	[PortedCore(CoreNames.Citra, "Citra Emulator Project", "nightly-1953", "https://citra-emu.org", singleInstance: true, isReleased: false)]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(IRegionable) })]
 	public partial class Citra
 	{
@@ -93,6 +93,41 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo._3DS
 			{
 				File.WriteAllBytes(Path.Combine(_userPath, "sysdata", "boot9.bin"), boot9);
 			}
+
+			var sector0x96 = lp.Comm.CoreFileProvider.GetFirmware(new("3DS", "sector0x96"));
+			if (sector0x96 is not null)
+			{
+				File.WriteAllBytes(Path.Combine(_userPath, "sysdata", "sector0x96.bin"), sector0x96);
+			}
+
+			var seeddb = lp.Comm.CoreFileProvider.GetFirmware(new("3DS", "seeddb"));
+			if (seeddb is not null)
+			{
+				File.WriteAllBytes(Path.Combine(_userPath, "sysdata", "seeddb.bin"), seeddb);
+			}
+
+			void InstallFirmCia(string firmName)
+			{
+				var firm = lp.Comm.CoreFileProvider.GetFirmware(new("3DS", firmName));
+				if (firm is not null)
+				{
+					var firmCia = TempFileManager.GetTempFilename(firmName, ".cia", false);
+					try
+					{
+						File.WriteAllBytes(firmCia, firm);
+						var message = new byte[1024];
+						_core.Citra_InstallCIA(_context, firmCia, true, message, message.Length);
+					}
+					finally
+					{
+						TempFileManager.RenameTempFilenameForDelete(firmCia);
+					}
+				}
+			}
+
+			InstallFirmCia("NATIVE_FIRM");
+			InstallFirmCia("SAFE_MODE_FIRM");
+			InstallFirmCia("N3DS_SAFE_MODE_FIRM");
 
 			var romPath = lp.Roms[0].RomPath;
 			if (lp.Roms[0].Extension.ToLowerInvariant() == ".cia")
