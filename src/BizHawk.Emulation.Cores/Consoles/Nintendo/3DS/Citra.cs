@@ -117,6 +117,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo._3DS
 						File.WriteAllBytes(firmCia, firm);
 						var message = new byte[1024];
 						_core.Citra_InstallCIA(_context, firmCia, true, message, message.Length);
+						// InstallCIA returns false as these CIAs should not be executable
+						Util.DebugWriteLine(Encoding.UTF8.GetString(message).TrimEnd());
 					}
 					finally
 					{

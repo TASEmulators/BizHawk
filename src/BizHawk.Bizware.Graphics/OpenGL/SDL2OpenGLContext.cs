@@ -55,7 +55,7 @@ namespace BizHawk.Bizware.Graphics
 					var versionParts = versionString!.Split('.');
 					var major = int.Parse(versionParts[0]);
 					var minor = int.Parse(versionParts[1][0].ToString());
-					return major * 100 + minor;
+					return major * 100 + minor * 10;
 				}
 			}
 			finally
