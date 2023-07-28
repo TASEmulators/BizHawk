@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -33,6 +34,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo._3DS
 		private readonly LibCitra.InputCallbackInterface _inputCallbackInterface;
 		private readonly IntPtr _context;
 		private readonly CitraVideoProvider _citraVideoProvider;
+
+		public Rectangle TouchScreenRectangle { get; private set; }
+		public bool TouchScreenRotated { get; private set; }
+		public bool TouchScreenEnabled { get; private set; }
 
 		[CoreConstructor(VSystemID.Raw._3DS)]
 		public Citra(CoreLoadParameters<CitraSettings, CitraSyncSettings> lp)
@@ -131,6 +136,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo._3DS
 			}
 
 			InitMemoryDomains();
+			OnVideoRefresh();
 		}
 
 		private IntPtr RequestGLContextCallback()

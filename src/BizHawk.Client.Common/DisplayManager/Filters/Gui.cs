@@ -1,9 +1,11 @@
 using System;
 using System.Drawing;
-using BizHawk.Client.Common.FilterManager;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 
 using BizHawk.Bizware.BizwareGL;
+using BizHawk.Client.Common.FilterManager;
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Consoles.Nintendo._3DS;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 
 namespace BizHawk.Client.Common.Filters
 {
@@ -413,6 +415,76 @@ namespace BizHawk.Client.Common.Filters
 			}
 
 			GuiRenderer.End();
+		}
+	}
+
+	/// <summary>
+	/// special screen control features for 3DS
+	/// in practice, this is only for correcting mouse input
+	/// as the core internally handles screen drawing madness anyways
+	/// </summary>
+	public class ScreenControl3DS : BaseFilter
+	{
+		private readonly Citra _citra;
+
+		public ScreenControl3DS(Citra citra)
+		{
+			_citra = citra;
+		}
+
+		public override Vector2 UntransformPoint(string channel, Vector2 point)
+		{
+			if (_citra.TouchScreenEnabled)
+			{
+				var rect = _citra.TouchScreenRectangle;
+				var rotated = _citra.TouchScreenRotated;
+				var bufferWidth = (float)_citra.AsVideoProvider().BufferWidth;
+				var bufferHeight = (float)_citra.AsVideoProvider().BufferHeight;
+
+				// reset the point's origin to the top left of the screen
+				point.X -= rect.X;
+				point.Y -= rect.Y;
+				if (rotated)
+				{
+					// scale our point now
+					// X is for height here and Y is for width, due to rotation
+					point.X *= bufferHeight / rect.Width;
+					point.Y *= bufferWidth / rect.Height;
+					// adjust point
+					point = new(bufferWidth - point.Y, point.X);
+				}
+				else
+				{
+					// scale our point now
+					point.X *= bufferWidth / rect.Width;
+					point.Y *= bufferHeight / rect.Height;
+				}
+			}
+
+			return point;
+		}
+
+		public override Vector2 TransformPoint(string channel, Vector2 point)
+		{
+			if (_citra.TouchScreenEnabled)
+			{
+				var rect = _citra.TouchScreenRectangle;
+				var rotated = _citra.TouchScreenRotated;
+
+				if (rotated)
+				{
+					// adjust point
+					point = new(point.Y, rect.Height - point.X);
+				}
+
+				// reset the point's origin to the top left of the screen
+				point.X += rect.X;
+				point.Y += rect.Y;
+
+				// TODO: this doesn't handle "large screen" mode correctly
+			}
+
+			return point;
 		}
 	}
 

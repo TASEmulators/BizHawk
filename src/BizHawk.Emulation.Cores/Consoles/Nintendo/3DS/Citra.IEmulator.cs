@@ -33,8 +33,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo._3DS
 
 			_core.Citra_RunFrame(_context);
 
-			_core.Citra_GetVideoDimensions(_context, out _citraVideoProvider.Width, out _citraVideoProvider.Height);
-			_citraVideoProvider.VideoDirty = true;
+			OnVideoRefresh();
 
 			if (renderSound)
 			{
@@ -48,6 +47,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo._3DS
 			}
 
 			return true;
+		}
+
+		private void OnVideoRefresh()
+		{
+			_core.Citra_GetVideoDimensions(_context, out _citraVideoProvider.Width, out _citraVideoProvider.Height);
+			_citraVideoProvider.VideoDirty = true;
+
+			_core.Citra_GetTouchScreenLayout(_context, out var x, out var y, out var width, out var height, out var rotated, out var enabled);
+			TouchScreenRectangle = new(x, y, width, height);
+			TouchScreenRotated = rotated;
+			TouchScreenEnabled = enabled;
 		}
 
 		public void ResetCounters()

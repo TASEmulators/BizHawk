@@ -16,6 +16,7 @@ using BizHawk.Client.Common.Filters;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Consoles.Nintendo._3DS;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 using BizHawk.Emulation.Cores.Sony.PSX;
 
@@ -436,18 +437,10 @@ namespace BizHawk.Client.Common
 			if (_currentFilterProgram == null) return p;
 
 			// otherwise, have the filter program untransform it
-			Vector2 v = new Vector2(p.X, p.Y);
+			var v = new Vector2(p.X, p.Y);
 			v = _currentFilterProgram.UntransformPoint("default", v);
 
-			// Poop
-			//if (Global.Emulator is MelonDS ds && ds.TouchScreenStart.HasValue)
-			//{
-			//	Point touchLocation = ds.TouchScreenStart.Value;
-			//	v.Y = (int)((double)ds.BufferHeight / MelonDS.NativeHeight * (v.Y - touchLocation.Y));
-			//	v.X = (int)((double)ds.BufferWidth / MelonDS.NativeWidth * (v.X - touchLocation.X));
-			//}
-
-			return new Point((int)v.X, (int)v.Y);
+			return new((int)v.X, (int)v.Y);
 		}
 
 		/// <summary>
@@ -462,9 +455,9 @@ namespace BizHawk.Client.Common
 			}
 
 			// otherwise, have the filter program untransform it
-			Vector2 v = new Vector2(p.X, p.Y);
+			var v = new Vector2(p.X, p.Y);
 			v = _currentFilterProgram.TransformPoint("default", v);
-			return new Point((int)v.X, (int)v.Y);
+			return new((int)v.X, (int)v.Y);
 		}
 
 		public virtual Size GetPanelNativeSize() => throw new NotImplementedException();
@@ -474,9 +467,6 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// This will receive an emulated output frame from an IVideoProvider and run it through the complete frame processing pipeline
 		/// Then it will stuff it into the bound PresentationPanel.
-		/// ---
-		/// If the int[] is size=1, then it contains an openGL texture ID (and the size should be as specified from videoProvider)
-		/// Don't worry about the case where the frontend isnt using opengl; DisplayManager deals with it
 		/// </summary>
 		public void UpdateSource(IVideoProvider videoProvider)
 		{
@@ -494,14 +484,12 @@ namespace BizHawk.Client.Common
 
 		private BaseFilter CreateCoreScreenControl()
 		{
-			if (GlobalEmulator is NDS nds)
+			return GlobalEmulator switch
 			{
-				//TODO: need to pipe layout settings into here now
-				var filter = new ScreenControlNDS(nds);
-				return filter;
-			}
-
-			return null;
+				NDS nds => new ScreenControlNDS(nds),
+				Citra citra => new ScreenControl3DS(citra),
+				_ => null
+			};
 		}
 
 		/// <summary>

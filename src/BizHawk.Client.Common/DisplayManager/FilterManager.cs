@@ -82,7 +82,7 @@ namespace BizHawk.Client.Common.FilterManager
 		/// </summary>
 		public Vector2 UntransformPoint(string channel, Vector2 point)
 		{
-			for (int i = Filters.Count - 1; i >= 0; i--)
+			for (var i = Filters.Count - 1; i >= 0; i--)
 			{
 				var filter = Filters[i];
 				point = filter.UntransformPoint(channel, point);

@@ -160,5 +160,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo._3DS
 
 		[BizImport(cc)]
 		public abstract void Citra_GetMemoryRegion(IntPtr context, MemoryRegion region, out IntPtr ptr, out int size);
+
+		[BizImport(cc)]
+		public abstract void Citra_GetTouchScreenLayout(IntPtr context, out int x, out int y, out int width, out int height, out bool rotated, out bool enabled);
 	}
 }
