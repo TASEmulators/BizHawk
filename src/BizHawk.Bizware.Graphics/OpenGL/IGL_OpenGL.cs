@@ -482,7 +482,7 @@ namespace BizHawk.Bizware.Graphics
 		{
 			// create a texture for it
 			var texId = GenTexture();
-			var tex = new Texture2d(this, texId, w, h) { IsUpsideDown = true }; // TODO: The IsUpsideDown doesn't ever get used here it seems
+			var tex = new Texture2d(this, texId, w, h);
 
 			GL.BindTexture(TextureTarget.Texture2D, texId);
 			GL.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba8, (uint)w, (uint)h, 0, PixelFormat.Bgra, PixelType.UnsignedByte, IntPtr.Zero.ToPointer());

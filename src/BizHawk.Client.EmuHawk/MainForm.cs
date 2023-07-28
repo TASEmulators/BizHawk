@@ -3838,7 +3838,8 @@ namespace BizHawk.Client.EmuHawk
 					//path = ioa_openrom.Path;
 				}
 
-				DisplayManager.ActivateOpenGLContext(); // required in case the core wants to created a shared OpenGL context
+				DisplayManager.ActivateOpenGLContext(); // required in case the core wants to create a shared OpenGL context
+
 				var result = loader.LoadRom(path, nextComm, ioaRetro?.CorePath, forcedCoreName: MovieSession.QueuedCoreName);
 
 				if (result) Game = loader.Game;
