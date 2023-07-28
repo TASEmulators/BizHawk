@@ -14,7 +14,6 @@ namespace BizHawk.Emulation.Common
 	{
 		public static class Raw
 		{
-			public const string _3DS = "3DS";
 			public const string A26 = "A26";
 			public const string A78 = "A78";
 			public const string Amiga = "Amiga";
@@ -39,6 +38,7 @@ namespace BizHawk.Emulation.Common
 			public const string Libretro = "Libretro";
 			public const string Lynx = "Lynx";
 			public const string MSX = "MSX";
+			public const string N3DS = "3DS";
 			public const string N64 = "N64";
 			public const string NDS = "NDS";
 			public const string NeoGeoCD = "NeoGeoCD";

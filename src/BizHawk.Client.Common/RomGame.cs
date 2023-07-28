@@ -57,7 +57,7 @@ namespace BizHawk.Client.Common
 				GameInfo = new()
 				{
 					Name = Path.GetFileNameWithoutExtension(file.Name).Replace('_', ' '),
-					System = VSystemID.Raw._3DS,
+					System = VSystemID.Raw.N3DS,
 					Hash = "N/A",
 					Status = RomStatus.NotInDatabase,
 					NotInDatabase = true

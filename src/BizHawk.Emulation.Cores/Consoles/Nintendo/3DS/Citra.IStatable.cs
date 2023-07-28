@@ -3,7 +3,7 @@ using System.IO;
 
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Cores.Consoles.Nintendo._3DS
+namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 {
 	public partial class Citra : IStatable
 	{

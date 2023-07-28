@@ -1,6 +1,6 @@
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Cores.Consoles.Nintendo._3DS
+namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 {
 	public partial class Citra : IEmulator
 	{
@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo._3DS
 
 		public int Frame { get; set; }
 
-		public string SystemId => VSystemID.Raw._3DS;
+		public string SystemId => VSystemID.Raw.N3DS;
 
 		public bool DeterministicEmulation { get; }
 

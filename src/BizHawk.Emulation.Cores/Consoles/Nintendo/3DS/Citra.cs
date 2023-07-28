@@ -9,7 +9,7 @@ using BizHawk.BizInvoke;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Cores.Consoles.Nintendo._3DS
+namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 {
 	[PortedCore(CoreNames.Citra, "Citra Emulator Project", "nightly-1953", "https://citra-emu.org", singleInstance: true, isReleased: false)]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(IRegionable) })]
@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo._3DS
 		public bool TouchScreenRotated { get; private set; }
 		public bool TouchScreenEnabled { get; private set; }
 
-		[CoreConstructor(VSystemID.Raw._3DS)]
+		[CoreConstructor(VSystemID.Raw.N3DS)]
 		public Citra(CoreLoadParameters<CitraSettings, CitraSyncSettings> lp)
 		{
 			if (lp.Roms.Exists(r => r.RomPath.Contains("|")))

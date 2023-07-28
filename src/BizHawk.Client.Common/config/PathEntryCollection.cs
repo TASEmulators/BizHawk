@@ -64,7 +64,7 @@ namespace BizHawk.Client.Common
 			[VSystemID.Raw.Sega32X] = "Sega 32X",
 			[VSystemID.Raw.GGL] = "Dual Game Gear",
 			[VSystemID.Raw.Satellaview] = "Satellaview",
-			[VSystemID.Raw._3DS] = "3DS"
+			[VSystemID.Raw.N3DS] = "3DS"
 		};
 
 		private static PathEntry BaseEntryFor(string sysID, string path)
@@ -191,9 +191,9 @@ namespace BizHawk.Client.Common
 				new(GLOBAL, "Temp Files", ""),
 			},
 
-			CommonEntriesFor(VSystemID.Raw._3DS, basePath: Path.Combine(".", "3DS"), omitSaveRAM: true),
+			CommonEntriesFor(VSystemID.Raw.N3DS, basePath: Path.Combine(".", "3DS"), omitSaveRAM: true),
 			new[] {
-				UserEntryFor(VSystemID.Raw._3DS),
+				UserEntryFor(VSystemID.Raw.N3DS),
 			},
 
 			CommonEntriesFor(VSystemID.Raw.Sega32X, basePath: Path.Combine(".", "32X")),

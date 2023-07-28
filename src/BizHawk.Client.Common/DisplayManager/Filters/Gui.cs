@@ -4,7 +4,7 @@ using System.Drawing;
 using BizHawk.Bizware.BizwareGL;
 using BizHawk.Client.Common.FilterManager;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Consoles.Nintendo._3DS;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 
 namespace BizHawk.Client.Common.Filters

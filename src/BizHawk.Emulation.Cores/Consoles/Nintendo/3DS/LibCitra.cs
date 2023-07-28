@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 using BizHawk.BizInvoke;
 
-namespace BizHawk.Emulation.Cores.Consoles.Nintendo._3DS
+namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 {
 	public abstract class LibCitra
 	{

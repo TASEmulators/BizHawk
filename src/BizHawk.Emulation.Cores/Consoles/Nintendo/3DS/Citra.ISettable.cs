@@ -8,7 +8,7 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace BizHawk.Emulation.Cores.Consoles.Nintendo._3DS
+namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 {
 	public partial class Citra : ISettable<Citra.CitraSettings, Citra.CitraSyncSettings>
 	{
