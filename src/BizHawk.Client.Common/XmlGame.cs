@@ -90,7 +90,7 @@ namespace BizHawk.Client.Common
 								else
 								{
 									var path = fullPath.SubstringBefore('|');
-									data = RomGame.Is3DSRom(path)
+									data = RomGame.Is3DSRom(Path.GetExtension(path).ToUpperInvariant())
 										? Array.Empty<byte>()
 										: File.ReadAllBytes(path);
 								}
