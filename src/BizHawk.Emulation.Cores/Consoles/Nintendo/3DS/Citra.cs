@@ -128,6 +128,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 				}
 			}
 
+			// user could have other CIAs after the first ROM (e.g. DLCs, updates)
+			// they need to installed at once in the case of recording
+			// as the temp folder is cleaned for each session
+			var dummyBuffer = new byte[1];
+			for (var i = 1; i < lp.Roms.Count; i++)
+			{
+				// doesn't make sense if not a CIA
+				if (lp.Roms[i].Extension.ToLowerInvariant() != ".cia")
+				{
+					throw new("ROMs after the index 0 should be CIAs");
+				}
+
+				_core.Citra_InstallCIA(_context, lp.Roms[i].RomPath, dummyBuffer, dummyBuffer.Length);
+			}
+
 			var errorMessage = new byte[1024];
 			if (!_core.Citra_LoadROM(_context, romPath, errorMessage, errorMessage.Length))
 			{

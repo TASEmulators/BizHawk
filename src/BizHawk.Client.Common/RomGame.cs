@@ -26,7 +26,7 @@ namespace BizHawk.Client.Common
 		// 3DS roms typically exceed 2GiB, so we don't want to load them into memory
 		// TODO: Don't rely only on extension if this is actually a 3DS ROM (validate in some way)
 		// TODO: ELF is another 3DS extension, but it's too generic / might be used for other systems...
-		private static bool Is3DSRom(string ext)
+		public static bool Is3DSRom(string ext)
 			=> ext is ".3DS" or ".3DSX" or ".AXF" or ".CCI" or ".CXI" or ".APP" or ".CIA";
 
 		public RomGame(HawkFile file)
