@@ -91,8 +91,6 @@ namespace BizHawk.Bizware.Graphics
 			return ret;
 		}
 
-		public uint GenTexture() => GL.GenTexture();
-
 		public void FreeTexture(Texture2d tex)
 		{
 			GL.DeleteTexture((uint)tex.Opaque);
@@ -188,12 +186,10 @@ namespace BizHawk.Bizware.Graphics
 
 			var pid = GL.CreateProgram();
 			GL.AttachShader(pid, vsw.sid);
-			_ = GL.GetError();
 			GL.AttachShader(pid, fsw.sid);
 			_ = GL.GetError();
 
 			GL.LinkProgram(pid);
-			_ = GL.GetError();
 
 			var errcode = (ErrorCode)GL.GetError();
 			var resultLog = GL.GetProgramInfoLog(pid);
@@ -234,6 +230,7 @@ namespace BizHawk.Bizware.Graphics
 			//
 			// So, this is no big deal. we shouldn't be calling validate right now anyway.
 			// conclusion: glValidate is very complicated and is of virtually no use unless your draw calls are returning errors and you want to know why
+			// _ = GL.GetError();
 			// GL.ValidateProgram(pid);
 			// errcode = (ErrorCode)GL.GetError();
 			// resultLog = GL.GetProgramInfoLog(pid);
@@ -265,7 +262,6 @@ namespace BizHawk.Bizware.Graphics
 			for (uint i = 0; i < nUniforms; i++)
 			{
 				GL.GetActiveUniform(pid, i, 1024, out _, out _, out UniformType type, out string name);
-				_ = GL.GetError();
 				var loc = GL.GetUniformLocation(pid, name);
 
 				var ui = new UniformInfo { Name = name, Opaque = loc };
@@ -448,7 +444,7 @@ namespace BizHawk.Bizware.Graphics
 
 		public Texture2d CreateTexture(int width, int height)
 		{
-			var id = GenTexture();
+			var id = GL.GenTexture();
 			return new(this, id, width, height);
 		}
 
@@ -481,7 +477,7 @@ namespace BizHawk.Bizware.Graphics
 		public unsafe RenderTarget CreateRenderTarget(int w, int h)
 		{
 			// create a texture for it
-			var texId = GenTexture();
+			var texId = GL.GenTexture();
 			var tex = new Texture2d(this, texId, w, h);
 
 			GL.BindTexture(TextureTarget.Texture2D, texId);
@@ -528,7 +524,7 @@ namespace BizHawk.Bizware.Graphics
 		public unsafe Texture2d LoadTexture(BitmapBuffer bmp)
 		{
 			Texture2d ret;
-			var id = GenTexture();
+			var id = GL.GenTexture();
 			try
 			{
 				ret = new(this, id, bmp.Width, bmp.Height);
@@ -556,7 +552,6 @@ namespace BizHawk.Bizware.Graphics
 			var bb = new BitmapBuffer(tex.IntWidth, tex.IntHeight);
 			var bmpdata = bb.LockBits();
 			GL.GetTexImage(TextureTarget.Texture2D, 0, PixelFormat.Bgra, PixelType.UnsignedByte, bmpdata.Scan0.ToPointer());
-			_ = GL.GetError();
 			bb.UnlockBits(bmpdata);
 			return bb;
 		}
@@ -623,6 +618,7 @@ namespace BizHawk.Bizware.Graphics
 			var sw = new ShaderWrapper();
 			var info = string.Empty;
 
+			_ = GL.GetError();
 			var sid = GL.CreateShader(type);
 			var ok = CompileShaderSimple(sid, source, required);
 			if (!ok)
