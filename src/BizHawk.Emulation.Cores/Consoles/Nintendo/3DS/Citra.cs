@@ -137,6 +137,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 				// doesn't make sense if not a CIA
 				if (lp.Roms[i].Extension.ToLowerInvariant() != ".cia")
 				{
+					Dispose();
 					throw new("ROMs after the index 0 should be CIAs");
 				}
 
