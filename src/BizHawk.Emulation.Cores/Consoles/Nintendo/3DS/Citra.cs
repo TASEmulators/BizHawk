@@ -11,7 +11,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 {
-	[PortedCore(CoreNames.Citra, "Citra Emulator Project", "nightly-1953", "https://citra-emu.org", singleInstance: true, isReleased: false)]
+	[PortedCore(CoreNames.Citra, "Citra Emulator Project", "nightly-1957", "https://citra-emu.org", singleInstance: true, isReleased: false)]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight), typeof(IRegionable) })]
 	public partial class Citra
 	{

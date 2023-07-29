@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			{
 				BoolButtons =
 				{
-					"A", "B", "X", "Y", "Up", "Down", "Left", "Right", "L", "R", "Start", "Select", "Debug", "GPIO14", "ZL", "ZR", "Home", "Touch", "Tilt", "Power"
+					"A", "B", "X", "Y", "Up", "Down", "Left", "Right", "L", "R", "Start", "Select", "Debug", "GPIO14", "ZL", "ZR", "Touch", "Tilt", "Reset"
 				}
 			}.AddXYPair("Circle Pad {0}", AxisPairOrientation.RightAndUp, (-128).RangeTo(127), 0)
 			.AddXYPair("C-Stick {0}", AxisPairOrientation.RightAndUp, (-128).RangeTo(127), 0)
@@ -45,7 +45,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			LibCitra.Buttons.Gpio14 => _controller.IsPressed("GPIO14"),
 			LibCitra.Buttons.ZL => _controller.IsPressed("ZL"),
 			LibCitra.Buttons.ZR => _controller.IsPressed("ZR"),
-			LibCitra.Buttons.Home => _controller.IsPressed("Home"),
+			LibCitra.Buttons.Home => false, // not supported (can only be used if Home menu is booted, which is never be the case for us)
+			LibCitra.Buttons.Power => false, // not supported (can only be used if Home menu is booted, which is never be the case for us)
 			_ => throw new InvalidOperationException(),
 		};
 

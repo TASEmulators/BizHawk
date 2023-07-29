@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 				controller.AxisValue("Tilt X"),
 				controller.AxisValue("Tilt Y"));
 
-			if (_controller.IsPressed("Power"))
+			if (_controller.IsPressed("Reset"))
 			{
 				_core.Citra_Reset(_context);
 			}

@@ -70,18 +70,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			ZL,
 			ZR,
 			Home,
+			Power,
 		}
 
 		public enum AnalogSticks
 		{
 			CirclePad,
 			CStick,
-		}
-
-		public enum Axes
-		{
-			X,
-			Y
 		}
 
 		[UnmanagedFunctionPointer(cc)]
