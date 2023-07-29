@@ -496,6 +496,15 @@ namespace BizHawk.Client.Common
 				["Mode: Set 2-button"] = 'm',
 				["Mode: Set 6-button"] = 'M'
 			},
+			[VSystemID.Raw.N3DS] = new()
+			{
+				["Debug"] = 'd',
+				["GPIO14"] = 'g',
+				["ZL"] = 'z',
+				["ZR"] = 'z',
+				["Touch"] = 'T',
+				["Tilt"] = 't'
+			},
 			[VSystemID.Raw.NDS] = new()
 			{
 				["LidOpen"] = 'o',
