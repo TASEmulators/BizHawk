@@ -27,7 +27,7 @@ namespace BizHawk.Client.Common
 	/// Its job is to receive OSD and emulator outputs, and produce one single buffer (BitmapBuffer? Texture2d?) for display by the PresentationPanel.
 	/// Details TBD
 	/// </summary>
-	public class DisplayManagerBase : IDisposable
+	public abstract class DisplayManagerBase : IDisposable
 	{
 		private static DisplaySurface CreateDisplaySurface(int w, int h) => new(w, h);
 
@@ -132,6 +132,10 @@ namespace BizHawk.Client.Common
 		{
 			if (Disposed) return;
 			Disposed = true;
+
+			// OpenGL context needs to be active when Dispose()'ing
+			ActivateOpenGLContext();
+
 			_videoTextureFrugalizer.Dispose();
 			foreach (var f in _apiHawkSurfaceFrugalizers.Values)
 			{
@@ -197,9 +201,11 @@ namespace BizHawk.Client.Common
 
 		private RetroShaderChain _shaderChainUser;
 
-		protected virtual void ActivateGraphicsControlContext() => throw new NotImplementedException();
+		public abstract void ActivateOpenGLContext();
 
-		protected virtual void SwapBuffersOfGraphicsControl() => throw new NotImplementedException();
+		protected abstract void ActivateGraphicsControlContext();
+
+		protected abstract void SwapBuffersOfGraphicsControl();
 
 		public void RefreshUserShader()
 		{
