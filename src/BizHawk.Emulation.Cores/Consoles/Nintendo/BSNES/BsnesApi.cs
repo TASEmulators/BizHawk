@@ -294,6 +294,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		// private int serializedSize;
 
+		public bool AvoidRewind => false;
+
 		public void SaveStateBinary(BinaryWriter writer)
 		{
 			// commented code left for debug purposes; created savestates are native bsnes savestates

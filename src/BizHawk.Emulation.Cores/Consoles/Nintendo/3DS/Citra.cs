@@ -151,6 +151,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			}
 
 			InitMemoryDomains();
+			// for some reason, if a savestate is created on frame 0, Citra will crash if another savestate is made after loading that state
+			// advance one frame to avoid that issue
+			_core.Citra_RunFrame(_context);
 			OnVideoRefresh();
 		}
 

@@ -9,6 +9,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 	{
 		private byte[] _stateBuf = Array.Empty<byte>();
 
+		public bool AvoidRewind => true;
+
 		public void SaveStateBinary(BinaryWriter writer)
 		{
 			var stateLen = _core.Citra_StartSaveState(_context);

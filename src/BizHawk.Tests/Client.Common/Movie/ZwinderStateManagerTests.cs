@@ -575,6 +575,9 @@ namespace BizHawk.Tests.Client.Common.Movie
 		{
 			public int Frame { get; set; }
 			public byte[] PaddingData { get; set; } = Array.Empty<byte>();
+
+			public bool AvoidRewind => false;
+
 			public void LoadStateBinary(BinaryReader reader)
 			{
 				Frame = reader.ReadInt32();

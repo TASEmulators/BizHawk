@@ -9,6 +9,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 	{
 		private byte[] _savebuff = Array.Empty<byte>();
 
+		public bool AvoidRewind => false;
+
 		public void SaveStateBinary(BinaryWriter writer)
 		{
 			if (!LibmGBA.BizStartGetState(Core, out var p, out var size))

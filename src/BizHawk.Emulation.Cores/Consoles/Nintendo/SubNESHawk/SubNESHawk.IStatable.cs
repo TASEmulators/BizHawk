@@ -9,6 +9,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 	{
 		private readonly IStatable _nesStatable;
 
+		public bool AvoidRewind => _nesStatable.AvoidRewind;
+
 		public void SaveStateBinary(BinaryWriter bw)
 		{
 			_nesStatable.SaveStateBinary(bw);

@@ -7,6 +7,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 {
 	public partial class MAME : IStatable
 	{
+		public bool AvoidRewind => false;
+
 		public void SaveStateBinary(BinaryWriter writer)
 		{
 			using (_exe.EnterExit())

@@ -263,6 +263,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public IInputCallbackSystem InputCallbacks { get; } = new InputCallbackSystem();
 		public virtual ControllerDefinition ControllerDefinition { get; protected set; } = NullController.Instance.Definition;
 
+		public bool AvoidRewind => false;
+
 		public void LoadStateBinary(BinaryReader reader)
 		{
 			using (_exe.EnterExit())

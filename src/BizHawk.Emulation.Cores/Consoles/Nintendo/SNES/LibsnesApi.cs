@@ -428,6 +428,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			_readonlyFiles.Clear();
 		}
 
+		public bool AvoidRewind => false;
+
 		public void SaveStateBinary(BinaryWriter writer)
 		{
 			_exe.SaveStateBinary(writer);

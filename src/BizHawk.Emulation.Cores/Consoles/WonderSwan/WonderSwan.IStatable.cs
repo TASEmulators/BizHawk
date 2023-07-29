@@ -59,6 +59,8 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		private byte[] savebuff;
 
+		public bool AvoidRewind => false;
+
 		public void SaveStateBinary(BinaryWriter writer)
 		{
 			if (!BizSwan.bizswan_binstatesave(Core, savebuff, savebuff.Length))

@@ -1038,6 +1038,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			savebuff = new byte[size];
 		}
 
+		public bool AvoidRewind => false;
+
 		public void SaveStateBinary(BinaryWriter writer)
 		{
 			fixed (byte* psavebuff = savebuff)

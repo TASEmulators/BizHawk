@@ -9,6 +9,8 @@ namespace BizHawk.Emulation.Cores.Calculators.Emu83
 	{
 		private readonly byte[] _stateBuf = new byte[LibEmu83.TI83_GetStateSize()];
 
+		public bool AvoidRewind => false;
+
 		public void SaveStateBinary(BinaryWriter writer)
 		{
 			if (!LibEmu83.TI83_SaveState(Context, _stateBuf))

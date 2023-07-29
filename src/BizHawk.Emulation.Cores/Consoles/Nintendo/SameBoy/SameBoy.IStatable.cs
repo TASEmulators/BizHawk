@@ -9,6 +9,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 	{
 		private readonly byte[] _stateBuf;
 
+		public bool AvoidRewind => false;
+
 		public void SaveStateBinary(BinaryWriter writer)
 		{
 			LibSameboy.sameboy_savestate(SameboyState, _stateBuf);

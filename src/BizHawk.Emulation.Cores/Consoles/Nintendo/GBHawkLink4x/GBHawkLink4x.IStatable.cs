@@ -12,6 +12,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 		private readonly IStatable _cStates;
 		private readonly IStatable _dStates;
 
+		public bool AvoidRewind => _aStates.AvoidRewind || _bStates.AvoidRewind || _cStates.AvoidRewind || _dStates.AvoidRewind;
+
 		public void SaveStateBinary(BinaryWriter bw)
 		{
 			_aStates.SaveStateBinary(bw);

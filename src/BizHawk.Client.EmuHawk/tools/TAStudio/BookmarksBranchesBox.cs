@@ -174,16 +174,40 @@ namespace BizHawk.Client.EmuHawk
 		public TasBranch SelectedBranch
 			=> BranchView.AnyRowsSelected ? Branches[BranchView.FirstSelectedRowIndex] : null;
 
+		// to avoid a double (potentially slow) state
+		private class BufferedStatable : IStatable
+		{
+			private readonly Lazy<byte[]> _bufferedState;
+			public byte[] BufferedState => _bufferedState.Value;
+
+			public BufferedStatable(IStatable statable)
+			{
+				_bufferedState = new(statable.CloneSavestate);
+				AvoidRewind = statable.AvoidRewind;
+			}
+
+			public bool AvoidRewind { get; }
+
+			public void SaveStateBinary(BinaryWriter writer)
+				=> writer.Write(BufferedState);
+
+			public void LoadStateBinary(BinaryReader reader)
+				=> throw new NotImplementedException();
+		}
+
 		private TasBranch CreateBranch()
 		{
-			return new TasBranch
+			var bufferedStatable = new BufferedStatable(Tastudio.Emulator.AsStatable());
+			Movie.TasStateManager.Capture(Tastudio.Emulator.Frame, bufferedStatable, bufferedStatable.AvoidRewind);
+
+			return new()
 			{
 				Frame = Tastudio.Emulator.Frame,
-				CoreData = Tastudio.StatableEmulator.CloneSavestate(),
+				CoreData = bufferedStatable.BufferedState,
 				InputLog = Movie.GetLogEntries().Clone(),
 				CoreFrameBuffer = MainForm.MakeScreenshotImage(),
 				OSDFrameBuffer = MainForm.CaptureOSD(),
-				ChangeLog = new TasMovieChangeLog(Movie),
+				ChangeLog = new(Movie),
 				TimeStamp = DateTime.Now,
 				Markers = Movie.Markers.DeepClone(),
 				UserText = Movie.Branches.NewBranchText
@@ -199,8 +223,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			Movie.LoadBranch(branch);
-			Tastudio.LoadState(new KeyValuePair<int, Stream>(branch.Frame, new MemoryStream(branch.CoreData, false)));
-			Movie.TasStateManager.Capture(Tastudio.Emulator.Frame, Tastudio.Emulator.AsStatable());
+			Tastudio.LoadState(new(branch.Frame, new MemoryStream(branch.CoreData, false)));
+			Movie.TasStateManager.Capture(Tastudio.Emulator.Frame, Tastudio.Emulator.AsStatable(), Tastudio.Emulator.AsStatable().AvoidRewind);
 			Tastudio.MainForm.QuickBmpFile.Copy(new BitmapBufferVideoProvider(branch.CoreFrameBuffer), Tastudio.VideoProvider);
 
 			if (Tastudio.Settings.OldControlSchemeForBranches && Tastudio.TasPlaybackBox.RecordingMode)

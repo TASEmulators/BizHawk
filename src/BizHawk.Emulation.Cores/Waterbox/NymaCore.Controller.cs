@@ -328,6 +328,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 			private const ulong MAGIC = 9569546739673486731;
 
+			public bool AvoidRewind => false;
+
 			public void SaveStateBinary(BinaryWriter writer)
 			{
 				writer.Write(MAGIC);
