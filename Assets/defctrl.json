@@ -794,7 +794,7 @@
 				"Value": "WMouse Y",
 				"Mult": 1.0,
 				"Deadzone": 0.0
-			}
+			},
 			"Tilt X": {
 				"Value": "WMouse X",
 				"Mult": 1.0,
