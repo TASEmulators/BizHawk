@@ -8,9 +8,6 @@ namespace BizHawk.Bizware.Graphics
 {
 	internal class OpenGLControl : Control, IGraphicsControl
 	{
-		private readonly int _majorVersion;
-		private readonly int _minorVersion;
-		private readonly bool _forwardCompatible;
 		private readonly Action _contextChangeCallback;
 
 		public SDL2OpenGLContext Context { get; private set; }
@@ -21,11 +18,8 @@ namespace BizHawk.Bizware.Graphics
 			set => throw new NotImplementedException();
 		}
 
-		public OpenGLControl(int majorVersion, int minorVersion, bool forwardCompatible, Action contextChangeCallback)
+		public OpenGLControl(Action contextChangeCallback)
 		{
-			_majorVersion = majorVersion;
-			_minorVersion = minorVersion;
-			_forwardCompatible = forwardCompatible;
 			_contextChangeCallback = contextChangeCallback;
 
 			// according to OpenTK, these are the styles we want to set
@@ -58,7 +52,7 @@ namespace BizHawk.Bizware.Graphics
 		protected override void OnHandleCreated(EventArgs e)
 		{
 			base.OnHandleCreated(e);
-			Context = new(Handle, _majorVersion, _minorVersion, _forwardCompatible);
+			Context = new(Handle, 2, 0, false);
 			_contextChangeCallback();
 		}
 

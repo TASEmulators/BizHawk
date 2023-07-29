@@ -226,17 +226,18 @@ namespace BizHawk.Client.EmuHawk
 							return TryInitIGL(initialConfig.DispMethod = fallback.Method);
 						}
 					case EDispMethod.OpenGL:
-						if (SDL2OpenGLContext.Version < 200)
+						if (!IGL_OpenGL.Available)
 						{
-							// too old to use, GDI+ will be better
+							// too old to use, need to fallback to something else
 							var fallback = ChooseFallback();
 							new ExceptionBox(new Exception($"Initialization of OpenGL Display Method failed; falling back to {fallback.Name}")).ShowDialog();
 							return TryInitIGL(initialConfig.DispMethod = fallback.Method);
 						}
+						var igl = new IGL_OpenGL();
 						// need to have a context active for checking renderer, will be disposed afterwards
 						using (new SDL2OpenGLContext(2, 0, false))
 						{
-							return CheckRenderer(new IGL_OpenGL(2, 0, false));
+							return CheckRenderer(igl);
 						}
 					default:
 					case EDispMethod.GdiPlus:

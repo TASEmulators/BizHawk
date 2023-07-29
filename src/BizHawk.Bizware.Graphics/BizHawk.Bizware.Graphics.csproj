@@ -10,6 +10,7 @@
 	<ItemGroup>
 		<Reference Include="System.Windows.Forms" />
 		<PackageReference Include="Silk.NET.OpenGL.Legacy" Version="2.17.1" />
+		<PackageReference Include="Silk.NET.OpenGL.Legacy.Extensions.EXT" Version="2.17.1" />
 		<PackageReference Include="SharpDX.Direct3D9" Version="4.2.0" />
 		<PackageReference Include="ppy.SDL2-CS" Version="1.0.630-alpha" ExcludeAssets="native;contentFiles" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.BizwareGL/BizHawk.Bizware.BizwareGL.csproj" />

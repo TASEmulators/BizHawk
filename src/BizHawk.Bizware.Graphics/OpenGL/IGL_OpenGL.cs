@@ -15,6 +15,7 @@ using BizHawk.Bizware.BizwareGL;
 using BizHawk.Common;
 
 using Silk.NET.OpenGL.Legacy;
+using Silk.NET.OpenGL.Legacy.Extensions.EXT;
 
 using BizClearBufferMask = BizHawk.Bizware.BizwareGL.ClearBufferMask;
 using BizPrimitiveType = BizHawk.Bizware.BizwareGL.PrimitiveType;
@@ -38,8 +39,7 @@ namespace BizHawk.Bizware.Graphics
 		public EDispMethod DispMethodEnum => EDispMethod.OpenGL;
 
 		private readonly GL GL;
-		private readonly int _majorVersion, _minorVersion;
-		private readonly bool _forwardCompatible;
+		private readonly ExtFramebufferObject EXT;
 
 		// rendering state
 		private Pipeline _currPipeline;
@@ -47,18 +47,97 @@ namespace BizHawk.Bizware.Graphics
 
 		public string API => "OPENGL";
 
-		public IGL_OpenGL(int majorVersion, int minorVersion, bool forwardCompatible)
+		// this IGL either requires at least OpenGL 3.0, or OpenGL 2.0 + the EXT_framebuffer_object or ARB_framebuffer_object extension present
+		private static readonly Lazy<bool> _available = new(() =>
 		{
-			_majorVersion = majorVersion;
-			_minorVersion = minorVersion;
-			_forwardCompatible = forwardCompatible;
+			switch (SDL2OpenGLContext.Version)
+			{
+				case >= 300:
+					return true;
+				case < 200:
+					return false;
+			}
 
-			// the loading of symbols is delayed until actual use, so no need to create a context now
-			// if you want to do offscreen work with this GL make a dummy control or an SDL2OpenGLContext
+			using (new SDL2OpenGLContext(2, 0, false))
+			{
+				using var gl = GL.GetApi(SDL2OpenGLContext.GetGLProcAddress);
+				return gl.IsExtensionPresent("EXT_framebuffer_object") || gl.IsExtensionPresent("ARB_framebuffer_object");
+			}
+		});
+
+		public static bool Available => _available.Value;
+
+		public IGL_OpenGL()
+		{
+			if (!Available)
+			{
+				throw new InvalidOperationException("The required OpenGL version is unavailable");
+			}
+
 			GL = GL.GetApi(SDL2OpenGLContext.GetGLProcAddress);
+
+			// might need to use EXT if < OpenGL 3.0 and ARB_framebuffer_object is unavailable
+			if (SDL2OpenGLContext.Version < 300)
+			{
+				using (new SDL2OpenGLContext(2, 0, false))
+				{
+					// ARB_framebuffer_object entrypoints are identical to standard OpenGL 3.0 ones
+					// EXT_framebuffer_object has differently named entrypoints so needs a separate object
+					if (!GL.IsExtensionPresent("ARB_framebuffer_object"))
+					{
+						if (!GL.TryGetExtension(out EXT))
+						{
+							throw new InvalidOperationException("Could not get EXT_framebuffer_object? This shouldn't happen");
+						}
+					}
+				}
+			}
 
 			// misc initialization
 			CreateRenderStates();
+		}
+
+		// FBO function wrappers
+		private uint GenFramebuffer()
+			=> EXT?.GenFramebuffer() ?? GL.GenFramebuffer();
+
+		private void BindFramebuffer(FramebufferTarget target, uint fbId)
+		{
+			if (EXT != null)
+			{
+				EXT.BindFramebuffer(target, fbId);
+			}
+			else
+			{
+				GL.BindFramebuffer(target, fbId);
+			}
+		}
+
+		private void FramebufferTexture2D(FramebufferTarget fbTarget, FramebufferAttachment fbAttachment, TextureTarget textureTarget, uint fbId, int level)
+		{
+			if (EXT != null)
+			{
+				EXT.FramebufferTexture2D(fbTarget, fbAttachment, textureTarget, fbId, level);
+			}
+			else
+			{
+				GL.FramebufferTexture2D(fbTarget, fbAttachment, textureTarget, fbId, level);
+			}
+		}
+
+		private FramebufferStatus CheckFramebufferStatus(FramebufferTarget target)
+			=> (FramebufferStatus)(EXT?.CheckFramebufferStatus(target) ?? (EXT)GL.CheckFramebufferStatus(target));
+
+		private void DeleteFramebuffer(uint fbId)
+		{
+			if (EXT != null)
+			{
+				EXT.DeleteFramebuffer(fbId);
+			}
+			else
+			{
+				GL.DeleteFramebuffer(fbId);
+			}
 		}
 
 		public void BeginScene()
@@ -72,6 +151,7 @@ namespace BizHawk.Bizware.Graphics
 		public void Dispose()
 		{
 			GL.Dispose();
+			EXT?.Dispose();
 		}
 
 		public void Clear(BizClearBufferMask mask)
@@ -86,7 +166,7 @@ namespace BizHawk.Bizware.Graphics
 
 		public IGraphicsControl Internal_CreateGraphicsControl()
 		{
-			var ret = new OpenGLControl(_majorVersion, _minorVersion, _forwardCompatible, ContextChangeCallback);
+			var ret = new OpenGLControl(ContextChangeCallback);
 			ret.CreateControl(); // DisplayManager relies on this context being active for creating the GuiRenderer
 			return ret;
 		}
@@ -470,7 +550,7 @@ namespace BizHawk.Bizware.Graphics
 		public void FreeRenderTarget(RenderTarget rt)
 		{
 			rt.Texture2d.Dispose();
-			GL.DeleteFramebuffer((uint)rt.Opaque);
+			DeleteFramebuffer((uint)rt.Opaque);
 		}
 
 		/// <exception cref="InvalidOperationException">framebuffer creation unsuccessful</exception>
@@ -486,24 +566,24 @@ namespace BizHawk.Bizware.Graphics
 			tex.SetMinFilter(BizTextureMinFilter.Nearest);
 
 			// create the FBO
-			var fbId = GL.GenFramebuffer();
-			GL.BindFramebuffer(FramebufferTarget.Framebuffer, fbId);
+			var fbId = GenFramebuffer();
+			BindFramebuffer(FramebufferTarget.Framebuffer, fbId);
 
 			// bind the tex to the FBO
-			GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, texId, 0);
+			FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, texId, 0);
 
 			// do something, I guess say which color buffers are used by the framebuffer
 			var buffers = stackalloc DrawBufferMode[1];
 			buffers[0] = DrawBufferMode.ColorAttachment0;
 			GL.DrawBuffers(1, buffers);
 
-			if ((FramebufferStatus)GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer) != FramebufferStatus.Complete)
+			if (CheckFramebufferStatus(FramebufferTarget.Framebuffer) != FramebufferStatus.Complete)
 			{
-				throw new InvalidOperationException($"Error creating framebuffer (at {nameof(GL.CheckFramebufferStatus)})");
+				throw new InvalidOperationException($"Error creating framebuffer (at {nameof(CheckFramebufferStatus)})");
 			}
 
 			// since we're done configuring unbind this framebuffer, to return to the default
-			GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+			BindFramebuffer(FramebufferTarget.Framebuffer, 0);
 
 			return new(this, fbId, tex);
 		}
@@ -513,11 +593,11 @@ namespace BizHawk.Bizware.Graphics
 			_currRenderTarget = rt;
 			if (rt == null)
 			{
-				GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+				BindFramebuffer(FramebufferTarget.Framebuffer, 0);
 			}
 			else
 			{
-				GL.BindFramebuffer(FramebufferTarget.Framebuffer, (uint)rt.Opaque);
+				BindFramebuffer(FramebufferTarget.Framebuffer, (uint)rt.Opaque);
 			}
 		}
 
