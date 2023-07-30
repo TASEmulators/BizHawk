@@ -65,8 +65,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 
 			_openGLProvider = lp.Comm.OpenGLProvider;
 			_supportsOpenGL43 = _openGLProvider.GLVersion >= 430;
-			if (!_supportsOpenGL43 && _syncSettings.GraphicsApi == CitraSyncSettings.EGraphicsApi.OpenGL)
+			if (!_supportsOpenGL43/* && _syncSettings.GraphicsApi == CitraSyncSettings.EGraphicsApi.OpenGL*/)
 			{
+				throw new("OpenGL 4.3 is required, but it is not supported on this machine");
 				lp.Comm.Notify("OpenGL 4.3 is not supported on this machine, falling back to software renderer", null);
 			}
 
@@ -82,7 +83,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 
 			_context = _core.Citra_CreateContext(ref _configCallbackInterface, ref _glCallbackInterface, ref _inputCallbackInterface);
 
-			if (_supportsOpenGL43 && _syncSettings.GraphicsApi == CitraSyncSettings.EGraphicsApi.OpenGL)
+			if (_supportsOpenGL43/* && _syncSettings.GraphicsApi == CitraSyncSettings.EGraphicsApi.OpenGL*/)
 			{
 				_citraVideoProvider = new CitraGLTextureProvider(_core, _context);
 			}

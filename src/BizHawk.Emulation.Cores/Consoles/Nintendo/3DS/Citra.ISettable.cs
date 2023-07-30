@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 		private ulong GetIntegerSettingCallback(string label) => label switch
 		{
 			"cpu_clock_percentage" => (ulong)_syncSettings.CpuClockPercentage,
-			"graphics_api" => _supportsOpenGL43 ? (ulong)_syncSettings.GraphicsApi : (ulong)CitraSyncSettings.EGraphicsApi.Software,
+			"graphics_api" => (ulong)CitraSyncSettings.EGraphicsApi.OpenGL,//_supportsOpenGL43 ? (ulong)_syncSettings.GraphicsApi : (ulong)CitraSyncSettings.EGraphicsApi.Software,
 			"region_value" => (ulong)_syncSettings.RegionValue,
 			"init_clock" => _syncSettings.UseRealTime && !DeterministicEmulation ? 0UL : 1UL,
 			"init_time" => (ulong)(_syncSettings.InitialTime - _epoch).TotalSeconds,
