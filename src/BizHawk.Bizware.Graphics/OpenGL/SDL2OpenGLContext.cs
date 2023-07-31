@@ -39,6 +39,9 @@ namespace BizHawk.Bizware.Graphics
 			// we will be turning a foreign window into an SDL window
 			// we need this so it knows that it is capable of using OpenGL functions
 			SDL_SetHint(SDL_HINT_VIDEO_FOREIGN_WINDOW_OPENGL, "1");
+			// don't allow windows events to be pumped
+			// it's not needed and can be dangerous in some rare cases
+			SDL_SetHint(SDL_HINT_WINDOWS_ENABLE_MESSAGELOOP, "0");
 		}
 
 		private static readonly Lazy<int> _version = new(() =>
