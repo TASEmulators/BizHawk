@@ -67,6 +67,26 @@ namespace BizHawk.Common
 
 		public static bool IsWSL => _isWSL.Value;
 
+		private static readonly Lazy<bool> _isWine = new(() =>
+		{
+			if (IsUnixHost)
+			{
+				return false;
+			}
+
+			var ntdll = LinkedLibManager.LoadOrZero("ntdll.dll");
+			if (ntdll == IntPtr.Zero)
+			{
+				return false;
+			}
+
+			var isWine = LinkedLibManager.GetProcAddrOrZero(ntdll, "wine_get_version") != IntPtr.Zero;
+			LinkedLibManager.FreeByPtr(ntdll);
+			return isWine;
+		});
+
+		public static bool IsWine => _isWine.Value;
+
 		private static readonly Lazy<ILinkedLibManager> _LinkedLibManager = new Lazy<ILinkedLibManager>(() => CurrentOS switch
 		{
 			DistinctOS.Linux => new UnixMonoLLManager(),
