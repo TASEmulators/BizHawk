@@ -160,6 +160,7 @@ namespace BizHawk.Common.CollectionExtensions
 				? countable.Count == n
 				: collection.Take(n + 1).Count() == n;
 
+#if !NET6_0
 		/// <summary>
 		/// Returns the value at <paramref name="key"/>.
 		/// If the key is not present, returns default(TValue).
@@ -175,6 +176,7 @@ namespace BizHawk.Common.CollectionExtensions
 		/// </summary>
 		public static TValue? GetValueOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue)
 			=> dictionary.TryGetValue(key, out var found) ? found : defaultValue;
+#endif
 
 		/// <summary>
 		/// Returns the value at <paramref name="key"/>.
