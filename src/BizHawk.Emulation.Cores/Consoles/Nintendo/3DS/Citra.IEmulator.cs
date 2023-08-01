@@ -29,6 +29,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			if (_controller.IsPressed("Reset"))
 			{
 				_core.Citra_Reset(_context);
+				// memory domain pointers are no longer valid, reset them
+				WireMemoryDomains();
 			}
 
 			_core.Citra_RunFrame(_context);
