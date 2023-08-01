@@ -38,6 +38,8 @@ namespace BizHawk.Bizware.Graphics
 	{
 		public EDispMethod DispMethodEnum => EDispMethod.OpenGL;
 
+		private static readonly bool _supportsOpenGL3 = OpenGLVersion.SupportsVersion(3, 0);
+
 		private readonly GL GL;
 		private readonly ExtFramebufferObject EXT;
 
@@ -50,15 +52,17 @@ namespace BizHawk.Bizware.Graphics
 		// this IGL either requires at least OpenGL 3.0, or OpenGL 2.0 + the EXT_framebuffer_object or ARB_framebuffer_object extension present
 		private static readonly Lazy<bool> _available = new(() =>
 		{
-			switch (SDL2OpenGLContext.Version)
+			if (_supportsOpenGL3)
 			{
-				case >= 300:
-					return true;
-				case < 200:
-					return false;
+				return true;
 			}
 
-			using (new SDL2OpenGLContext(2, 0, false))
+			if (!OpenGLVersion.SupportsVersion(2, 0))
+			{
+				return false;
+			}
+
+			using (new SDL2OpenGLContext(2, 0, false, false))
 			{
 				using var gl = GL.GetApi(SDL2OpenGLContext.GetGLProcAddress);
 				return gl.IsExtensionPresent("EXT_framebuffer_object") || gl.IsExtensionPresent("ARB_framebuffer_object");
@@ -77,9 +81,9 @@ namespace BizHawk.Bizware.Graphics
 			GL = GL.GetApi(SDL2OpenGLContext.GetGLProcAddress);
 
 			// might need to use EXT if < OpenGL 3.0 and ARB_framebuffer_object is unavailable
-			if (SDL2OpenGLContext.Version < 300)
+			if (!_supportsOpenGL3)
 			{
-				using (new SDL2OpenGLContext(2, 0, false))
+				using (new SDL2OpenGLContext(2, 0, false, false))
 				{
 					// ARB_framebuffer_object entrypoints are identical to standard OpenGL 3.0 ones
 					// EXT_framebuffer_object has differently named entrypoints so needs a separate object
@@ -166,7 +170,7 @@ namespace BizHawk.Bizware.Graphics
 
 		public IGraphicsControl Internal_CreateGraphicsControl()
 		{
-			var ret = new OpenGLControl(ContextChangeCallback);
+			var ret = new OpenGLControl(_supportsOpenGL3, ContextChangeCallback);
 			ret.CreateControl(); // DisplayManager relies on this context being active for creating the GuiRenderer
 			return ret;
 		}

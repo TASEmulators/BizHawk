@@ -8,6 +8,7 @@ namespace BizHawk.Bizware.Graphics
 {
 	internal class OpenGLControl : Control, IGraphicsControl
 	{
+		private readonly bool _openGL3;
 		private readonly Action _contextChangeCallback;
 
 		public SDL2OpenGLContext Context { get; private set; }
@@ -18,8 +19,9 @@ namespace BizHawk.Bizware.Graphics
 			set => throw new NotImplementedException();
 		}
 
-		public OpenGLControl(Action contextChangeCallback)
+		public OpenGLControl(bool openGL3, Action contextChangeCallback)
 		{
+			_openGL3 = openGL3;
 			_contextChangeCallback = contextChangeCallback;
 
 			// according to OpenTK, these are the styles we want to set
@@ -52,7 +54,7 @@ namespace BizHawk.Bizware.Graphics
 		protected override void OnHandleCreated(EventArgs e)
 		{
 			base.OnHandleCreated(e);
-			Context = new(Handle, 2, 0, false);
+			Context = new(Handle, _openGL3 ? 3 : 2, 0, false, false);
 			_contextChangeCallback();
 		}
 

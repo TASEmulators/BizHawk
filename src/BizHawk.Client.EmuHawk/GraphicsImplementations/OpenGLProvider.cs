@@ -10,10 +10,11 @@ namespace BizHawk.Client.EmuHawk
 	/// </summary>
 	public class OpenGLProvider : IOpenGLProvider
 	{
-		public int GLVersion => SDL2OpenGLContext.Version;
+		public bool SupportsGLVersion(int major, int minor)
+			=> OpenGLVersion.SupportsVersion(major, minor);
 
-		public object RequestGLContext(int major, int minor, bool forwardCompatible)
-			=> new SDL2OpenGLContext(major, minor, forwardCompatible);
+		public object RequestGLContext(int major, int minor, bool coreProfile, bool forwardCompatible)
+			=> new SDL2OpenGLContext(major, minor, coreProfile, forwardCompatible);
 
 		public void ReleaseGLContext(object context)
 			=> ((SDL2OpenGLContext)context).Dispose();

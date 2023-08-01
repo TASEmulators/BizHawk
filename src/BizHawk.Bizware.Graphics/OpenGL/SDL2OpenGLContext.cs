@@ -44,35 +44,10 @@ namespace BizHawk.Bizware.Graphics
 			SDL_SetHint(SDL_HINT_WINDOWS_ENABLE_MESSAGELOOP, "0");
 		}
 
-		private static readonly Lazy<int> _version = new(() =>
-		{
-			var prevWindow = SDL_GL_GetCurrentWindow();
-			var prevContext = SDL_GL_GetCurrentContext();
-
-			try
-			{
-				using (new SDL2OpenGLContext(2, 0, false))
-				{
-					using var gl = GL.GetApi(GetGLProcAddress);
-					var versionString = gl.GetStringS(StringName.Version);
-					var versionParts = versionString!.Split('.');
-					var major = int.Parse(versionParts[0]);
-					var minor = int.Parse(versionParts[1][0].ToString());
-					return major * 100 + minor * 10;
-				}
-			}
-			finally
-			{
-				SDL_GL_MakeCurrent(prevWindow, prevContext);
-			}
-		});
-
-		public static int Version => _version.Value;
-
 		private IntPtr _sdlWindow;
 		private IntPtr _glContext;
 
-		private void CreateContext(int majorVersion, int minorVersion, bool forwardCompatible)
+		private void CreateContext(int majorVersion, int minorVersion, bool coreProfile, bool forwardCompatible)
 		{
 			if (SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_MAJOR_VERSION, majorVersion) != 0)
 			{
@@ -84,17 +59,16 @@ namespace BizHawk.Bizware.Graphics
 				throw new($"Could not set GL Minor Version! SDL Error: {SDL_GetError()}");
 			}
 
+			// TODO: Debug flag / debug callback with DEBUG build
 			if (SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_FLAGS, forwardCompatible 
 					? (int)SDL_GLcontext.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG : 0) != 0)
 			{
 				throw new($"Could not set GL Context Flags! SDL Error: {SDL_GetError()}");
 			}
 
-			// if we're requesting OpenGL 3.3+, get the core profile
-			// profiles don't exist otherwise
-			var profile = majorVersion * 10 + minorVersion >= 33
+			var profile = coreProfile
 				? SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_CORE
-				: 0;
+				: SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_COMPATIBILITY;
 
 			if (SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_PROFILE_MASK, profile) != 0)
 			{
@@ -108,7 +82,7 @@ namespace BizHawk.Bizware.Graphics
 			}
 		}
 
-		public SDL2OpenGLContext(IntPtr nativeWindowhandle, int majorVersion, int minorVersion, bool forwardCompatible)
+		public SDL2OpenGLContext(IntPtr nativeWindowhandle, int majorVersion, int minorVersion, bool coreProfile, bool forwardCompatible)
 		{
 			_sdlWindow = SDL_CreateWindowFrom(nativeWindowhandle);
 			if (_sdlWindow == IntPtr.Zero)
@@ -122,10 +96,10 @@ namespace BizHawk.Bizware.Graphics
 				throw new($"Could not set share context attribute! SDL Error: {SDL_GetError()}");
 			}
 
-			CreateContext(majorVersion, minorVersion, forwardCompatible);
+			CreateContext(majorVersion, minorVersion, coreProfile, forwardCompatible);
 		}
 
-		public SDL2OpenGLContext(int majorVersion, int minorVersion, bool forwardCompatible)
+		public SDL2OpenGLContext(int majorVersion, int minorVersion, bool coreProfile, bool forwardCompatible)
 		{
 			_sdlWindow = SDL_CreateWindow(null, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1, 1,
 				SDL_WindowFlags.SDL_WINDOW_OPENGL | SDL_WindowFlags.SDL_WINDOW_HIDDEN);
@@ -135,14 +109,13 @@ namespace BizHawk.Bizware.Graphics
 			}
 
 			// offscreen contexts are shared (as we want to send texture from it over to our control's context)
-			// make sure to set the current graphics' control context before creating this context
-			// (if no context is set, i.e. first IGL, then this won't do anything)
+			// make sure to set the current graphics control context before creating this context
 			if (SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1) != 0)
 			{
 				throw new($"Could not set share context attribute! SDL Error: {SDL_GetError()}");
 			}
 
-			CreateContext(majorVersion, minorVersion, forwardCompatible);
+			CreateContext(majorVersion, minorVersion, coreProfile, forwardCompatible);
 		}
 
 		public void Dispose()

@@ -8,16 +8,19 @@ namespace BizHawk.Emulation.Common
 	public interface IOpenGLProvider
 	{
 		/// <summary>
-		/// OpenGL version, using major.minor.build format with decimal points ommitted (e.g. 1.2.3 turns into 123)
+		/// Checks if specified OpenGL version is supported
+		/// The current context will be preserved
 		/// </summary>
-		public int GLVersion { get; }
+		public bool SupportsGLVersion(int major, int minor);
 
 		/// <summary>
-		/// Requests an OpenGL context with specified major / minor / forwardCompatible
+		/// Requests an OpenGL context with specified major / minor
+		/// The core profile can be requested (otherwise, the compatibility profile will be used)
+		/// The forward compatible bit can also be requested
 		/// The requested OpenGL context will be shared with the current context
 		/// Note: creating a context implicitly makes that created context current
 		/// </summary>
-		public object RequestGLContext(int major, int minor, bool forwardCompatible);
+		public object RequestGLContext(int major, int minor, bool coreProfile, bool forwardCompatible);
 
 		/// <summary>
 		/// Frees this OpenGL context
