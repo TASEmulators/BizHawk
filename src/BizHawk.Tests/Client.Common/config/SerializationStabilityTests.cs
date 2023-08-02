@@ -49,7 +49,7 @@ namespace BizHawk.Tests.Client.Common.config
 			[typeof(PathEntry)] = PATHENTRY_SER,
 			[typeof(PathEntryCollection)] = $@"{{""Paths"":[{PATHENTRY_SER}],""UseRecentForRoms"":false,""LastRomPath"":"".""}}",
 			[typeof(RecentFiles)] = RECENT_SER,
-			[typeof(RewindConfig)] = @"{""UseCompression"":false,""UseDelta"":false,""Enabled"":true,""BufferSize"":512,""UseFixedRewindInterval"":false,""TargetFrameLength"":600,""TargetRewindInterval"":5,""AllowOutOfOrderStates"":true,""BackingStore"":0}",
+			[typeof(RewindConfig)] = @"{""UseCompression"":false,""UseDelta"":false,""Enabled"":true,""AllowSlowStates"":false,""BufferSize"":512,""UseFixedRewindInterval"":false,""TargetFrameLength"":600,""TargetRewindInterval"":5,""AllowOutOfOrderStates"":true,""BackingStore"":0}",
 			[typeof(SaveStateConfig)] = @"{""Type"":0,""CompressionLevelNormal"":1,""CompressionLevelRewind"":0,""MakeBackups"":true,""SaveScreenshot"":true,""BigScreenshotSize"":131072,""NoLowResLargeScreenshots"":false}",
 			[typeof(ToolDialogSettings)] = @"{""_wndx"":52,""_wndy"":44,""Width"":796,""Height"":455,""SaveWindowPosition"":true,""TopMost"":false,""FloatingWindow"":true,""AutoLoad"":false}",
 			[typeof(ZoomFactors)] = @"{""NULL"":2,""GB"":3}",
