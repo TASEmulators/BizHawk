@@ -132,7 +132,7 @@ namespace MDFN_IEN_PSX
  MDFN_HIDE extern PS_CPU *CPU;
  MDFN_HIDE extern PS_CDC *CDC;
  MDFN_HIDE extern PS_SPU *SPU;
- MDFN_HIDE extern MultiAccessSizeMem<2048 * 1024, false> MainRAM;
+ MDFN_HIDE extern MultiAccessSizeMem<8192 * 1024, false> MainRAM;
 }
 
 enum eRegion
