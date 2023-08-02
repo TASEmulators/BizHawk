@@ -985,7 +985,7 @@ static void PSX_Power(bool powering_up)
 {
  PSX_PRNG.ResetState();	// Should occur first!
 
- memset(MainRAM.data8, 0, 2048 * 1024);
+ memset(MainRAM.data8, 0, 8192 * 1024);
 
  for(unsigned i = 0; i < 9; i++)
   SysControl.Regs[i] = 0;
@@ -1336,11 +1336,11 @@ EW_EXPORT s32 shock_Peripheral_MemcardTransact(void* psx, s32 address, ShockMemc
 
 static void MountCPUAddressSpace()
 {
-	for(uint32 ma = 0x00000000; ma < 0x00800000; ma += 2048 * 1024)
+	for(uint32 ma = 0x00000000; ma < 0x00800000; ma += 8192 * 1024)
 	{
-		CPU->SetFastMap(MainRAM.data8, 0x00000000 + ma, 2048 * 1024);
-		CPU->SetFastMap(MainRAM.data8, 0x80000000 + ma, 2048 * 1024);
-		CPU->SetFastMap(MainRAM.data8, 0xA0000000 + ma, 2048 * 1024);
+		CPU->SetFastMap(MainRAM.data8, 0x00000000 + ma, 8192 * 1024);
+		CPU->SetFastMap(MainRAM.data8, 0x80000000 + ma, 8192 * 1024);
+		CPU->SetFastMap(MainRAM.data8, 0xA0000000 + ma, 8192 * 1024);
 	}
 
 	CPU->SetFastMap(BIOSROM->data8, 0x1FC00000, 512 * 1024);
@@ -2630,7 +2630,7 @@ EW_EXPORT s32 shock_GetMemData(void* psx, void** ptr, s32* size, s32 memType)
 {
 	switch(memType)
 	{
-	case eMemType_MainRAM: *ptr = MainRAM.data8; *size = 2048*1024; break;
+	case eMemType_MainRAM: *ptr = MainRAM.data8; *size = 8192*1024; break;
 	case eMemType_BiosROM: *ptr = BIOSROM->data8; *size = 512*1024; break;
 	case eMemType_PIOMem: *ptr = PIOMem->data8; *size = 64*1024; break;
 	case eMemType_GPURAM: *ptr = GPU.GPURAM; *size = 2*512*1024; break;
