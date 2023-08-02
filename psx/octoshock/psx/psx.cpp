@@ -190,7 +190,7 @@ FrontIO *FIO = NULL;
 static MultiAccessSizeMem<512 * 1024, false> *BIOSROM = NULL;
 static MultiAccessSizeMem<65536, false> *PIOMem = NULL;
 
-MultiAccessSizeMem<2048 * 1024, false> MainRAM;
+MultiAccessSizeMem<8192 * 1024, false> MainRAM;
 
 static uint32 TextMem_Start;
 static std::vector<uint8> TextMem;
@@ -440,16 +440,16 @@ template<typename T, bool IsWrite, bool Access24> static INLINE void MemRW(pscpu
   if(Access24)
   {
    if(IsWrite)
-    MainRAM.WriteU24(A & 0x1FFFFF, V);
+    MainRAM.WriteU24(A & 0x7FFFFF, V);
    else
-    V = MainRAM.ReadU24(A & 0x1FFFFF);
+    V = MainRAM.ReadU24(A & 0x7FFFFF);
   }
   else
   {
    if(IsWrite)
-    MainRAM.Write<T>(A & 0x1FFFFF, V);
+    MainRAM.Write<T>(A & 0x7FFFFF, V);
    else
-    V = MainRAM.Read<T>(A & 0x1FFFFF);
+    V = MainRAM.Read<T>(A & 0x7FFFFF);
   }
 
   return;
@@ -800,9 +800,9 @@ template<typename T, bool Access24> static INLINE uint32 MemPeek(pscpu_timestamp
  if(A < 0x00800000)
  {
   if(Access24)
-   return(MainRAM.ReadU24(A & 0x1FFFFF));
+   return(MainRAM.ReadU24(A & 0x7FFFFF));
   else
-   return(MainRAM.Read<T>(A & 0x1FFFFF));
+   return(MainRAM.Read<T>(A & 0x7FFFFF));
  }
 
  if(A >= 0x1FC00000 && A <= 0x1FC7FFFF)
@@ -932,9 +932,9 @@ template<typename T, bool Access24> static INLINE void MemPoke(pscpu_timestamp_t
  if(A < 0x00800000)
  {
   if(Access24)
-   MainRAM.WriteU24(A & 0x1FFFFF, V);
+   MainRAM.WriteU24(A & 0x7FFFFF, V);
   else
-   MainRAM.Write<T>(A & 0x1FFFFF, V);
+   MainRAM.Write<T>(A & 0x7FFFFF, V);
 
   return;
  }
