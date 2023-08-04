@@ -237,7 +237,7 @@ namespace BizHawk.Common
 		private IContextMenu ComInterface { get; }
 		private IContextMenu2 ComInterface2 { get; }
 
-		private static Guid SFObject = new("3981e224-f559-11d3-8e3a-00c04f6837d5");
+		private static readonly Guid SFObject = new("3981e224-f559-11d3-8e3a-00c04f6837d5");
 
 		private Win32ShellContextMenu(string path)
 		{
@@ -264,12 +264,43 @@ namespace BizHawk.Common
 			ComInterface2 = (IContextMenu2)ComInterface;
 		}
 
-		public static void ShowContextMenu(string path, IntPtr handle, IntPtr hwnd, int x, int y)
+		// TODO: ref struct when c# 10
+		private class TempMenu : IDisposable
+		{
+			[DllImport("user32.dll")]
+			private static extern IntPtr CreatePopupMenu();
+
+			[DllImport("user32.dll", SetLastError = true)]
+			private static extern bool DestroyMenu(IntPtr hMenu);
+
+			public IntPtr Handle { get; private set; }
+
+			public TempMenu()
+			{
+				Handle = CreatePopupMenu();
+				if (Handle == IntPtr.Zero)
+				{
+					throw new InvalidOperationException($"{nameof(CreatePopupMenu)} returned NULL!");
+				}
+			}
+
+			public void Dispose()
+			{
+				if (Handle != IntPtr.Zero)
+				{
+					_ = DestroyMenu(Handle);
+					Handle = IntPtr.Zero;
+				}
+			}
+		}
+
+		public static void ShowContextMenu(string path, IntPtr parentWindow, int x, int y)
 		{
 			var ctxMenu = new Win32ShellContextMenu(path);
+			using var menu = new TempMenu();
 			const int CmdFirst = 0x8000;
-			ctxMenu.ComInterface.QueryContextMenu(handle, 0, CmdFirst, int.MaxValue, CMF.EXPLORE);
-			int command = TrackPopupMenuEx(handle, TPM.TPM_RETURNCMD, x, y, hwnd, IntPtr.Zero);
+			ctxMenu.ComInterface.QueryContextMenu(menu.Handle, 0, CmdFirst, int.MaxValue, CMF.EXPLORE);
+			var command = TrackPopupMenuEx(menu.Handle, TPM.TPM_RETURNCMD, x, y, parentWindow, IntPtr.Zero);
 			if (command > 0)
 			{
 				const int SW_SHOWNORMAL = 1;

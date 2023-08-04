@@ -126,12 +126,9 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 								var tsmiTest = new ToolStripMenuItem { Text = "&Shell Context Menu" };
 								tsmiTest.Click += (o, ev) =>
 								{
-									var tsddi = o as ToolStripDropDownItem;
+									var tsddi = (ToolStripDropDownItem)o;
 									tsddi.Owner.Update();
-									using var menu = new ContextMenu();
-									using var dummy = new Control();
-									Win32ShellContextMenu.ShowContextMenu(
-										hf.FullPathWithoutMember, menu.Handle, dummy.Handle, tsddi.Owner.Location.X, tsddi.Owner.Location.Y);
+									Win32ShellContextMenu.ShowContextMenu(hf.FullPathWithoutMember, tsddi.Owner.Handle, tsddi.Owner.Location.X, tsddi.Owner.Location.Y);
 								};
 								tsdd.Items.Add(tsmiTest);
 							}
