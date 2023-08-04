@@ -327,16 +327,16 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
+			// avoid capturing in this case
+			if (source.AvoidRewind)
+			{
+				return;
+			}
+
 			// We use the gap buffer for forced capture to avoid crowding the "current" buffer and thus reducing it's actual span of covered frames.
 			if (NeedsGap(frame) || force)
 			{
 				CaptureGap(frame, source);
-				return;
-			}
-
-			// avoid capturing in this case
-			if (source.AvoidRewind)
-			{
 				return;
 			}
 
