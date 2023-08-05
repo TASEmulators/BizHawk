@@ -484,21 +484,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_messageCount++;
-
-			if (_messageCount <= MaxCount)
+			if (_messageCount > MaxCount) return;
+			if (_messageCount == MaxCount) message += "\nFlood warning! Message cap reached, suppressing output.\n";
+			OutputBox.Invoke(() =>
 			{
-				if (_messageCount == MaxCount)
-				{
-					message = "Message Cap reached, supressing output.\n";
-				}
-
-				OutputBox.Invoke(() =>
-				{
-					OutputBox.Text += message;
-					OutputBox.SelectionStart = OutputBox.Text.Length;
-					OutputBox.ScrollToCaret();
-				});
-			}
+				OutputBox.Text += message;
+				OutputBox.SelectionStart = OutputBox.Text.Length;
+				OutputBox.ScrollToCaret();
+			});
 			
 		}
 
