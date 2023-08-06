@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Drawing;
+using System.Numerics;
 
 namespace BizHawk.Bizware.BizwareGL
 {
@@ -55,12 +56,12 @@ namespace BizHawk.Bizware.BizwareGL
 		/// <summary>
 		/// Sets a uniform value
 		/// </summary>
-		void SetPipelineUniformMatrix(PipelineUniform uniform, Matrix4 mat, bool transpose);
+		void SetPipelineUniformMatrix(PipelineUniform uniform, Matrix4x4 mat, bool transpose);
 
 		/// <summary>
 		/// Sets a uniform value
 		/// </summary>
-		void SetPipelineUniformMatrix(PipelineUniform uniform, ref Matrix4 mat, bool transpose);
+		void SetPipelineUniformMatrix(PipelineUniform uniform, ref Matrix4x4 mat, bool transpose);
 
 		/// <summary>
 		/// sets a uniform value
@@ -219,24 +220,24 @@ namespace BizHawk.Bizware.BizwareGL
 		/// <summary>
 		/// generates a proper 2d othographic projection for the given destination size, suitable for use in a GUI
 		/// </summary>
-		Matrix4 CreateGuiProjectionMatrix(int w, int h);
+		Matrix4x4 CreateGuiProjectionMatrix(int w, int h);
 
 		/// <summary>
 		/// generates a proper 2d othographic projection for the given destination size, suitable for use in a GUI
 		/// </summary>
-		Matrix4 CreateGuiProjectionMatrix(Size dims);
+		Matrix4x4 CreateGuiProjectionMatrix(Size dims);
 
 		/// <summary>
 		/// generates a proper view transform for a standard 2d ortho projection, including half-pixel jitter if necessary and
 		/// re-establishing of a normal 2d graphics top-left origin. suitable for use in a GUI
 		/// </summary>
-		Matrix4 CreateGuiViewMatrix(int w, int h, bool autoflip = true);
+		Matrix4x4 CreateGuiViewMatrix(int w, int h, bool autoflip = true);
 
 		/// <summary>
 		/// generates a proper view transform for a standard 2d ortho projection, including half-pixel jitter if necessary and
 		/// re-establishing of a normal 2d graphics top-left origin. suitable for use in a GUI
 		/// </summary>
-		Matrix4 CreateGuiViewMatrix(Size dims, bool autoflip = true);
+		Matrix4x4 CreateGuiViewMatrix(Size dims, bool autoflip = true);
 
 		/// <summary>
 		/// Creates a render target. Only includes a color buffer. Pixel format control TBD

@@ -7,9 +7,10 @@
 // glBindAttribLocation (programID, 0, "vertexPosition_modelspace");
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Collections.Generic;
+using System.Numerics;
 
 using BizHawk.Bizware.BizwareGL;
 using BizHawk.Common;
@@ -445,14 +446,14 @@ namespace BizHawk.Bizware.Graphics
 			GL.Uniform1((int)uniform.Sole.Opaque, value ? 1 : 0);
 		}
 
-		public unsafe void SetPipelineUniformMatrix(PipelineUniform uniform, Matrix4 mat, bool transpose)
+		public unsafe void SetPipelineUniformMatrix(PipelineUniform uniform, Matrix4x4 mat, bool transpose)
 		{
 			GL.UniformMatrix4((int)uniform.Sole.Opaque, 1, transpose, (float*)&mat);
 		}
 
-		public unsafe void SetPipelineUniformMatrix(PipelineUniform uniform, ref Matrix4 mat, bool transpose)
+		public unsafe void SetPipelineUniformMatrix(PipelineUniform uniform, ref Matrix4x4 mat, bool transpose)
 		{
-			fixed (Matrix4* pMat = &mat)
+			fixed (Matrix4x4* pMat = &mat)
 			{
 				GL.UniformMatrix4((int)uniform.Sole.Opaque, 1, transpose, (float*)pMat);
 			}
@@ -646,35 +647,36 @@ namespace BizHawk.Bizware.Graphics
 			return LoadTexture(fs);
 		}
 
-		public Matrix4 CreateGuiProjectionMatrix(int w, int h)
+		public Matrix4x4 CreateGuiProjectionMatrix(int w, int h)
 		{
 			return CreateGuiProjectionMatrix(new(w, h));
 		}
 
-		public Matrix4 CreateGuiViewMatrix(int w, int h, bool autoflip)
+		public Matrix4x4 CreateGuiViewMatrix(int w, int h, bool autoflip)
 		{
 			return CreateGuiViewMatrix(new(w, h), autoflip);
 		}
 
-		public Matrix4 CreateGuiProjectionMatrix(Size dims)
+		public Matrix4x4 CreateGuiProjectionMatrix(Size dims)
 		{
-			var ret = Matrix4.Identity;
-			ret.Row0.X = 2.0f / dims.Width;
-			ret.Row1.Y = 2.0f / dims.Height;
+			var ret = Matrix4x4.Identity;
+			ret.M11 = 2.0f / dims.Width;
+			ret.M22 = 2.0f / dims.Height;
 			return ret;
 		}
 
-		public Matrix4 CreateGuiViewMatrix(Size dims, bool autoflip)
+		public Matrix4x4 CreateGuiViewMatrix(Size dims, bool autoflip)
 		{
-			var ret = Matrix4.Identity;
-			ret.Row1.Y = -1.0f;
-			ret.Row3.X = dims.Width * -0.5f;
-			ret.Row3.Y = dims.Height * 0.5f;
+			var ret = Matrix4x4.Identity;
+			ret.M22 = -1.0f;
+			ret.M41 = dims.Width * -0.5f;
+			ret.M42 = dims.Height * 0.5f;
 			if (autoflip && _currRenderTarget is not null) // flip as long as we're not a final render target
 			{
-				ret.Row1.Y = 1.0f;
-				ret.Row3.Y *= -1;
+				ret.M22 = 1.0f;
+				ret.M42 *= -1;
 			}
+
 			return ret;
 		}
 

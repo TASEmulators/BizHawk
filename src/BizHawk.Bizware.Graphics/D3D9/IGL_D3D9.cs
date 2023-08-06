@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -573,10 +574,10 @@ namespace BizHawk.Bizware.Graphics
 			}
 		}
 
-		public void SetPipelineUniformMatrix(PipelineUniform uniform, Matrix4 mat, bool transpose)
+		public void SetPipelineUniformMatrix(PipelineUniform uniform, Matrix4x4 mat, bool transpose)
 			=> SetPipelineUniformMatrix(uniform, ref mat, transpose);
 
-		public void SetPipelineUniformMatrix(PipelineUniform uniform, ref Matrix4 mat, bool transpose)
+		public void SetPipelineUniformMatrix(PipelineUniform uniform, ref Matrix4x4 mat, bool transpose)
 		{
 			foreach (var ui in uniform.UniformInfos)
 			{
@@ -755,32 +756,32 @@ namespace BizHawk.Bizware.Graphics
 			return LoadTexture(fs);
 		}
 
-		public Matrix4 CreateGuiProjectionMatrix(int w, int h)
+		public Matrix4x4 CreateGuiProjectionMatrix(int w, int h)
 		{
 			return CreateGuiProjectionMatrix(new(w, h));
 		}
 
-		public Matrix4 CreateGuiViewMatrix(int w, int h, bool autoFlip)
+		public Matrix4x4 CreateGuiViewMatrix(int w, int h, bool autoFlip)
 		{
 			return CreateGuiViewMatrix(new(w, h), autoFlip);
 		}
 
-		public Matrix4 CreateGuiProjectionMatrix(Size dims)
+		public Matrix4x4 CreateGuiProjectionMatrix(Size dims)
 		{
-			var ret = Matrix4.Identity;
-			ret.Row0.X = 2.0f / dims.Width;
-			ret.Row1.Y = 2.0f / dims.Height;
+			var ret = Matrix4x4.Identity;
+			ret.M11 = 2.0f / dims.Width;
+			ret.M22 = 2.0f / dims.Height;
 			return ret;
 		}
 
-		public Matrix4 CreateGuiViewMatrix(Size dims, bool autoFlip)
+		public Matrix4x4 CreateGuiViewMatrix(Size dims, bool autoFlip)
 		{
-			var ret = Matrix4.Identity;
-			ret.Row1.Y = -1.0f;
-			ret.Row3.X = -dims.Width * 0.5f - 0.5f;
-			ret.Row3.Y = dims.Height * 0.5f + 0.5f;
+			var ret = Matrix4x4.Identity;
+			ret.M22 = -1.0f;
+			ret.M41 = -dims.Width * 0.5f - 0.5f;
+			ret.M42 = dims.Height * 0.5f + 0.5f;
 
-			// auto-flipping isn't needed on d3d
+			// auto-flipping isn't needed on D3D
 			return ret;
 		}
 

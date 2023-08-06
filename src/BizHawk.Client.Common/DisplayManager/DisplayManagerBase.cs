@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Text;
 using System.IO;
-using System.Linq;
+using System.Numerics;
 using System.Runtime.InteropServices;
 
 using BizHawk.Bizware.BizwareGL;
@@ -52,7 +52,7 @@ namespace BizHawk.Client.Common
 
 		private IEmulator GlobalEmulator;
 
-		public DisplayManagerBase(
+		protected DisplayManagerBase(
 			Config config,
 			IEmulator emulator,
 			InputManager inputManager,
@@ -63,58 +63,58 @@ namespace BizHawk.Client.Common
 		{
 			GlobalConfig = config;
 			GlobalEmulator = emulator;
-			OSD = new OSDManager(config, emulator, inputManager, movieSession);
+			OSD = new(config, emulator, inputManager, movieSession);
 			_gl = gl;
 			_renderer = renderer;
 
 			// it's sort of important for these to be initialized to something nonzero
 			_currEmuWidth = _currEmuHeight = 1;
 
-			_videoTextureFrugalizer = new TextureFrugalizer(_gl);
+			_videoTextureFrugalizer = new(_gl);
 
 			_shaderChainFrugalizers = new RenderTargetFrugalizer[16]; // hacky hardcoded limit.. need some other way to manage these
-			for (int i = 0; i < 16; i++)
+			for (var i = 0; i < 16; i++)
 			{
-				_shaderChainFrugalizers[i] = new RenderTargetFrugalizer(_gl);
+				_shaderChainFrugalizers[i] = new(_gl);
 			}
 
 			{
 				using var xml = ReflectionCache.EmbeddedResourceStream("Resources.courier16px.fnt");
 				using var tex = ReflectionCache.EmbeddedResourceStream("Resources.courier16px_0.png");
-				_theOneFont = new StringRenderer(_gl, xml, tex);
+				_theOneFont = new(_gl, xml, tex);
 				using var gens = ReflectionCache.EmbeddedResourceStream("Resources.gens.ttf");
 				LoadCustomFont(gens);
 				using var fceux = ReflectionCache.EmbeddedResourceStream("Resources.fceux.ttf");
 				LoadCustomFont(fceux);
 			}
 
-			if (dispMethod == EDispMethod.OpenGL || dispMethod == EDispMethod.D3D9)
+			if (dispMethod is EDispMethod.OpenGL or EDispMethod.D3D9)
 			{
 				var fiHq2x = new FileInfo(Path.Combine(PathUtils.ExeDirectoryPath, "Shaders/BizHawk/hq2x.cgp"));
 				if (fiHq2x.Exists)
 				{
 					using var stream = fiHq2x.OpenRead();
-					_shaderChainHq2X = new RetroShaderChain(_gl, new RetroShaderPreset(stream), Path.Combine(PathUtils.ExeDirectoryPath, "Shaders/BizHawk"));
+					_shaderChainHq2X = new(_gl, new(stream), Path.Combine(PathUtils.ExeDirectoryPath, "Shaders/BizHawk"));
 				}
 				var fiScanlines = new FileInfo(Path.Combine(PathUtils.ExeDirectoryPath, "Shaders/BizHawk/BizScanlines.cgp"));
 				if (fiScanlines.Exists)
 				{
 					using var stream = fiScanlines.OpenRead();
-					_shaderChainScanlines = new RetroShaderChain(_gl, new RetroShaderPreset(stream), Path.Combine(PathUtils.ExeDirectoryPath, "Shaders/BizHawk"));
+					_shaderChainScanlines = new(_gl, new(stream), Path.Combine(PathUtils.ExeDirectoryPath, "Shaders/BizHawk"));
 				}
 				var bicubicPath = dispMethod == EDispMethod.D3D9 ? "Shaders/BizHawk/bicubic-normal.cgp" : "Shaders/BizHawk/bicubic-fast.cgp";
 				var fiBicubic = new FileInfo(Path.Combine(PathUtils.ExeDirectoryPath, bicubicPath));
 				if (fiBicubic.Exists)
 				{
 					using var stream = fiBicubic.Open(FileMode.Open, FileAccess.Read, FileShare.Read);
-					_shaderChainBicubic = new RetroShaderChain(_gl, new RetroShaderPreset(stream), Path.Combine(PathUtils.ExeDirectoryPath, "Shaders/BizHawk"));
+					_shaderChainBicubic = new(_gl, new(stream), Path.Combine(PathUtils.ExeDirectoryPath, "Shaders/BizHawk"));
 				}
 			}
 
 			_apiHawkSurfaceSets[DisplaySurfaceID.EmuCore] = new(CreateDisplaySurface);
 			_apiHawkSurfaceSets[DisplaySurfaceID.Client] = new(CreateDisplaySurface);
-			_apiHawkSurfaceFrugalizers[DisplaySurfaceID.EmuCore] = new TextureFrugalizer(_gl);
-			_apiHawkSurfaceFrugalizers[DisplaySurfaceID.Client] = new TextureFrugalizer(_gl);
+			_apiHawkSurfaceFrugalizers[DisplaySurfaceID.EmuCore] = new(_gl);
+			_apiHawkSurfaceFrugalizers[DisplaySurfaceID.Client] = new(_gl);
 
 			RefreshUserShader();
 		}
@@ -130,7 +130,11 @@ namespace BizHawk.Client.Common
 
 		public void Dispose()
 		{
-			if (Disposed) return;
+			if (Disposed)
+			{
+				return;
+			}
+
 			Disposed = true;
 
 			// OpenGL context needs to be active when Dispose()'ing
@@ -185,7 +189,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// custom fonts that don't need to be installed on the user side
 		/// </summary>
-		public PrivateFontCollection CustomFonts { get; } = new PrivateFontCollection();
+		public PrivateFontCollection CustomFonts { get; } = new();
 
 		private readonly TextureFrugalizer _videoTextureFrugalizer;
 
@@ -193,11 +197,11 @@ namespace BizHawk.Client.Common
 
 		protected readonly RenderTargetFrugalizer[] _shaderChainFrugalizers;
 
-		private RetroShaderChain _shaderChainHq2X;
+		private readonly RetroShaderChain _shaderChainHq2X;
 
-		private RetroShaderChain _shaderChainScanlines;
+		private readonly RetroShaderChain _shaderChainScanlines;
 
-		private RetroShaderChain _shaderChainBicubic;
+		private readonly RetroShaderChain _shaderChainBicubic;
 
 		private RetroShaderChain _shaderChainUser;
 
@@ -214,7 +218,7 @@ namespace BizHawk.Client.Common
 			{
 				var fi = new FileInfo(GlobalConfig.DispUserFilterPath);
 				using var stream = fi.OpenRead();
-				_shaderChainUser = new RetroShaderChain(_gl, new RetroShaderPreset(stream), Path.GetDirectoryName(GlobalConfig.DispUserFilterPath));
+				_shaderChainUser = new(_gl, new(stream), Path.GetDirectoryName(GlobalConfig.DispUserFilterPath));
 			}
 		}
 
@@ -261,26 +265,24 @@ namespace BizHawk.Client.Common
 			// select user special FX shader chain
 			var selectedChainProperties = new Dictionary<string, object>();
 			RetroShaderChain selectedChain = null;
-			if (GlobalConfig.TargetDisplayFilter == 1 && _shaderChainHq2X != null && _shaderChainHq2X.Available)
+			switch (GlobalConfig.TargetDisplayFilter)
 			{
-				selectedChain = _shaderChainHq2X;
-			}
-
-			if (GlobalConfig.TargetDisplayFilter == 2 && _shaderChainScanlines != null && _shaderChainScanlines.Available)
-			{
-				selectedChain = _shaderChainScanlines;
-				selectedChainProperties["uIntensity"] = 1.0f - GlobalConfig.TargetScanlineFilterIntensity / 256.0f;
-			}
-
-			if (GlobalConfig.TargetDisplayFilter == 3 && _shaderChainUser != null && _shaderChainUser.Available)
-			{
-				selectedChain = _shaderChainUser;
+				case 1 when _shaderChainHq2X is { Available: true }:
+					selectedChain = _shaderChainHq2X;
+					break;
+				case 2 when _shaderChainScanlines is { Available: true }:
+					selectedChain = _shaderChainScanlines;
+					selectedChainProperties["uIntensity"] = 1.0f - GlobalConfig.TargetScanlineFilterIntensity / 256.0f;
+					break;
+				case 3 when _shaderChainUser is { Available: true }:
+					selectedChain = _shaderChainUser;
+					break;
 			}
 
 			if (!includeUserFilters)
 				selectedChain = null;
 
-			BaseFilter fCoreScreenControl = CreateCoreScreenControl();
+			var fCoreScreenControl = CreateCoreScreenControl();
 
 			var fPresent = new FinalPresentation(chainOutSize);
 			var fInput = new SourceImage(chainInSize);
@@ -311,7 +313,9 @@ namespace BizHawk.Client.Common
 			chain.AddFilter(fInput, "input");
 
 			if (fCoreScreenControl != null)
+			{
 				chain.AddFilter(fCoreScreenControl, "CoreScreenControl");
+			}
 
 			// if a non-zero padding is required, add a filter to allow for that
 			// note, we have two sources of padding right now.. one can come from the VideoProvider and one from the user.
@@ -322,35 +326,37 @@ namespace BizHawk.Client.Common
 			if (padding != (0, 0, 0, 0))
 			{
 				// TODO - add another filter just for this, its cumbersome to use final presentation... I think. but maybe there's enough similarities to justify it.
-				Size size = chainInSize;
+				var size = chainInSize;
 				size.Width += padding.Left + padding.Right;
 				size.Height += padding.Top + padding.Bottom;
 
-				//in case the user requested so much padding that the dimensions are now negative, just turn it to something small
+				// in case the user requested so much padding that the dimensions are now negative, just turn it to something small
 				if (size.Width < 1) size.Width = 1;
 				if (size.Height < 1) size.Height = 1;
 
-				FinalPresentation fPadding = new FinalPresentation(size);
+				var fPadding = new FinalPresentation(size);
 				chain.AddFilter(fPadding, "padding");
-				fPadding.GuiRenderer = _renderer;
-				fPadding.GL = _gl;
 				fPadding.Config_PadOnly = true;
 				fPadding.Padding = padding;
 			}
 
-			//add lua layer 'emu'
+			// add lua layer 'emu'
 			AppendApiHawkLayer(chain, DisplaySurfaceID.EmuCore);
 
-			if(includeUserFilters)
+			if (includeUserFilters)
+			{
 				if (GlobalConfig.DispPrescale != 1)
 				{
 					var fPrescale = new PrescaleFilter() { Scale = GlobalConfig.DispPrescale };
 					chain.AddFilter(fPrescale, "user_prescale");
 				}
+			}
 
 			// add user-selected retro shader
 			if (selectedChain != null)
+			{
 				AppendRetroShaderChain(chain, "retroShader", selectedChain, selectedChainProperties);
+			}
 
 			// AutoPrescale makes no sense for a None final filter
 			if (GlobalConfig.DispAutoPrescale && GlobalConfig.DispFinalFilter != (int)FinalPresentation.eFilterOption.None)
@@ -359,22 +365,18 @@ namespace BizHawk.Client.Common
 				chain.AddFilter(apf, "auto_prescale");
 			}
 
-			//choose final filter
-			var finalFilter = FinalPresentation.eFilterOption.None;
-			if (GlobalConfig.DispFinalFilter == 1)
+			// choose final filter
+			var finalFilter = GlobalConfig.DispFinalFilter switch
 			{
-				finalFilter = FinalPresentation.eFilterOption.Bilinear;
-			}
+				1 => FinalPresentation.eFilterOption.Bilinear,
+				2 => FinalPresentation.eFilterOption.Bicubic,
+				_ => FinalPresentation.eFilterOption.None
+			};
 
-			if (GlobalConfig.DispFinalFilter == 2)
-			{
-				finalFilter = FinalPresentation.eFilterOption.Bicubic;
-			}
-
-			//if bicubic is selected and unavailable, don't use it. use bilinear instead I guess
+			// if bicubic is selected and unavailable, don't use it. use bilinear instead I guess
 			if (finalFilter == FinalPresentation.eFilterOption.Bicubic)
 			{
-				if (_shaderChainBicubic == null || !_shaderChainBicubic.Available)
+				if (_shaderChainBicubic is not { Available: true })
 				{
 					finalFilter = FinalPresentation.eFilterOption.Bilinear;
 				}
@@ -398,18 +400,20 @@ namespace BizHawk.Client.Common
 			// and OSD goes on top of that
 			// TODO - things break if this isn't present (the final presentation filter gets messed up when used with prescaling)
 			// so, always include it (we'll handle this flag in the callback to do no rendering)
-			if (true /*includeOSD*/) chain.AddFilter(fOSD, "osd");
+			if (true /*includeOSD*/)
+			{
+				chain.AddFilter(fOSD, "osd");
+			}
 
 			return chain;
 		}
 
-		private void AppendRetroShaderChain(FilterProgram program, string name, RetroShaderChain retroChain, Dictionary<string, object> properties)
+		private static void AppendRetroShaderChain(FilterProgram program, string name, RetroShaderChain retroChain, Dictionary<string, object> properties)
 		{
-			for (int i = 0; i < retroChain.Passes.Length; i++)
+			for (var i = 0; i < retroChain.Passes.Length; i++)
 			{
-				var pass = retroChain.Passes[i];
 				var rsp = new RetroShaderPass(retroChain, i);
-				string fname = $"{name}[{i}]";
+				var fname = $"{name}[{i}]";
 				program.AddFilter(rsp, fname);
 				rsp.Parameters = properties;
 			}
@@ -423,13 +427,13 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			Texture2d luaNativeTexture = _apiHawkSurfaceFrugalizers[surfaceID].Get(luaNativeSurface);
+			var luaNativeTexture = _apiHawkSurfaceFrugalizers[surfaceID].Get(luaNativeSurface);
 			var fLuaLayer = new LuaLayer();
 			fLuaLayer.SetTexture(luaNativeTexture);
 			chain.AddFilter(fLuaLayer, surfaceID.GetName());
 		}
 
-		protected virtual Point GraphicsControlPointToClient(Point p) => throw new NotImplementedException();
+		protected abstract Point GraphicsControlPointToClient(Point p);
 
 		/// <summary>
 		/// Using the current filter program, turn a mouse coordinate from window space to the original emulator screen space.
@@ -454,7 +458,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public Point TransformPoint(Point p)
 		{
-			//now, if there's no filter program active, just give up
+			// now, if there's no filter program active, just give up
 			if (_currentFilterProgram == null)
 			{
 				return p;
@@ -466,9 +470,9 @@ namespace BizHawk.Client.Common
 			return new((int)v.X, (int)v.Y);
 		}
 
-		public virtual Size GetPanelNativeSize() => throw new NotImplementedException();
+		public abstract Size GetPanelNativeSize();
 
-		protected virtual Size GetGraphicsControlSize() => throw new NotImplementedException();
+		protected abstract Size GetGraphicsControlSize();
 
 		/// <summary>
 		/// This will receive an emulated output frame from an IVideoProvider and run it through the complete frame processing pipeline
@@ -476,7 +480,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void UpdateSource(IVideoProvider videoProvider)
 		{
-			bool displayNothing = GlobalConfig.DispSpeedupFeatures == 0;
+			var displayNothing = GlobalConfig.DispSpeedupFeatures == 0;
 			var job = new JobInfo
 			{
 				VideoProvider = videoProvider,
@@ -485,6 +489,7 @@ namespace BizHawk.Client.Common
 				IncludeOSD = true,
 				IncludeUserFilters = true
 			};
+
 			UpdateSourceInternal(job);
 		}
 
@@ -512,6 +517,7 @@ namespace BizHawk.Client.Common
 				IncludeOSD = includeOSD,
 				IncludeUserFilters = true,
 			};
+
 			UpdateSourceInternal(job);
 			return job.OffscreenBb;
 		}
@@ -524,37 +530,42 @@ namespace BizHawk.Client.Common
 			{
 				VideoProvider = videoProvider,
 				Simulate = false,
-				ChainOutsize = new Size(videoProvider.BufferWidth, videoProvider.BufferHeight),
+				ChainOutsize = new(videoProvider.BufferWidth, videoProvider.BufferHeight),
 				Offscreen = true,
 				IncludeOSD = false,
 				IncludeUserFilters = false,
 			};
+
 			UpdateSourceInternal(job);
 			return job.OffscreenBb;
 		}
 
 		private class FakeVideoProvider : IVideoProvider
 		{
+			public FakeVideoProvider(int bw, int bh, int vw, int vh)
+			{
+				BufferWidth = bw;
+				BufferHeight = bh;
+				VirtualWidth = vw;
+				VirtualHeight = vh;
+			}
+
 			public int[] GetVideoBuffer()
 				=> Array.Empty<int>();
 
-			public int VirtualWidth { get; set; }
-			public int VirtualHeight { get; set; }
+			public int VirtualWidth { get; }
+			public int VirtualHeight { get; }
+			public int BufferWidth { get; }
+			public int BufferHeight { get; }
+			public int BackgroundColor => 0;
 
-			public int BufferWidth { get; set; }
-			public int BufferHeight { get; set; }
-			public int BackgroundColor { get; set; }
-
-			/// <exception cref="InvalidOperationException">always</exception>
-			public int VsyncNumerator => throw new InvalidOperationException();
-
-			/// <exception cref="InvalidOperationException">always</exception>
-			public int VsyncDenominator => throw new InvalidOperationException();
+			public int VsyncNumerator => throw new NotImplementedException();
+			public int VsyncDenominator => throw new NotImplementedException();
 		}
 
-		private void FixRatio(float x, float y, int inw, int inh, out int outW, out int outH)
+		private static void FixRatio(float x, float y, int inw, int inh, out int outW, out int outH)
 		{
-			float ratio = x / y;
+			var ratio = x / y;
 			if (ratio <= 1)
 			{
 				// taller. weird. expand height.
@@ -576,17 +587,17 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public Size CalculateClientSize(IVideoProvider videoProvider, int zoom)
 		{
-			bool arActive = GlobalConfig.DispFixAspectRatio;
-			bool arSystem = GlobalConfig.DispManagerAR == EDispManagerAR.System;
-			bool arCustom = GlobalConfig.DispManagerAR == EDispManagerAR.CustomSize;
-			bool arCustomRatio = GlobalConfig.DispManagerAR == EDispManagerAR.CustomRatio;
-			bool arCorrect = arSystem || arCustom || arCustomRatio;
-			bool arInteger = GlobalConfig.DispFixScaleInteger;
+			var arActive = GlobalConfig.DispFixAspectRatio;
+			var arSystem = GlobalConfig.DispManagerAR == EDispManagerAR.System;
+			var arCustom = GlobalConfig.DispManagerAR == EDispManagerAR.CustomSize;
+			var arCustomRatio = GlobalConfig.DispManagerAR == EDispManagerAR.CustomRatio;
+			var arCorrect = arSystem || arCustom || arCustomRatio;
+			var arInteger = GlobalConfig.DispFixScaleInteger;
 
-			int bufferWidth = videoProvider.BufferWidth;
-			int bufferHeight = videoProvider.BufferHeight;
-			int virtualWidth = videoProvider.VirtualWidth;
-			int virtualHeight = videoProvider.VirtualHeight;
+			var bufferWidth = videoProvider.BufferWidth;
+			var bufferHeight = videoProvider.BufferHeight;
+			var virtualWidth = videoProvider.VirtualWidth;
+			var virtualHeight = videoProvider.VirtualHeight;
 
 			if (arCustom)
 			{
@@ -596,17 +607,18 @@ namespace BizHawk.Client.Common
 
 			if (arCustomRatio)
 			{
-				FixRatio(GlobalConfig.DispCustomUserArx, GlobalConfig.DispCustomUserAry, videoProvider.BufferWidth, videoProvider.BufferHeight, out virtualWidth, out virtualHeight);
+				FixRatio(GlobalConfig.DispCustomUserArx, GlobalConfig.DispCustomUserAry,
+					videoProvider.BufferWidth, videoProvider.BufferHeight, out virtualWidth, out virtualHeight);
 			}
 
-			//TODO: it is bad that this is happening outside the filter chain
-			//the filter chain has the ability to add padding...
-			//for now, we have to have some hacks. this could be improved by refactoring the filter setup hacks to be in one place only though
-			//could the PADDING be done as filters too? that would be nice.
+			// TODO: it is bad that this is happening outside the filter chain
+			// the filter chain has the ability to add padding...
+			// for now, we have to have some hacks. this could be improved by refactoring the filter setup hacks to be in one place only though
+			// could the PADDING be done as filters too? that would be nice.
 			var fCoreScreenControl = CreateCoreScreenControl();
-			if(fCoreScreenControl != null)
+			if (fCoreScreenControl != null)
 			{
-				var sz = fCoreScreenControl.PresizeInput("default", new Size(bufferWidth, bufferHeight));
+				var sz = fCoreScreenControl.PresizeInput("default", new(bufferWidth, bufferHeight));
 				virtualWidth = bufferWidth = sz.Width;
 				virtualHeight = bufferHeight = sz.Height;
 			}
@@ -619,21 +631,14 @@ namespace BizHawk.Client.Common
 			bufferWidth += padding.Horizontal;
 			bufferHeight += padding.Vertical;
 
-			//in case the user requested so much padding that the dimensions are now negative, just turn it to something small.
+			// in case the user requested so much padding that the dimensions are now negative, just turn it to something small.
 			if (virtualWidth < 1) virtualWidth = 1;
 			if (virtualHeight < 1) virtualHeight = 1;
 			if (bufferWidth < 1) bufferWidth = 1;
 			if (bufferHeight < 1) bufferHeight = 1;
 
 			// old stuff
-			var fvp = new FakeVideoProvider
-			{
-				BufferWidth = bufferWidth,
-				BufferHeight = bufferHeight,
-				VirtualWidth = virtualWidth,
-				VirtualHeight = virtualHeight
-			};
-
+			var fvp = new FakeVideoProvider(bufferWidth, bufferHeight, virtualWidth, virtualHeight);
 			Size chainOutsize;
 
 			if (arActive)
@@ -643,51 +648,45 @@ namespace BizHawk.Client.Common
 					if (arInteger)
 					{
 						// ALERT COPYPASTE LAUNDROMAT
-						Vector2 AR = new(virtualWidth / (float) bufferWidth, virtualHeight / (float) bufferHeight);
-						float targetPar = AR.X / AR.Y;
+						var AR = new Vector2(virtualWidth / (float) bufferWidth, virtualHeight / (float) bufferHeight);
+						var targetPar = AR.X / AR.Y;
 
 						// this would malfunction for AR <= 0.5 or AR >= 2.0
 						// EDIT - in fact, we have AR like that coming from PSX, sometimes, so maybe we should solve this better
-						Vector2 PS = new Vector2(1, 1);
+						var PS = Vector2.One; // this would malfunction for AR <= 0.5 or AR >= 2.0
 
 						// here's how we define zooming, in this case:
 						// make sure each step is an increment of zoom for at least one of the dimensions (or maybe both of them)
 						// look for the increment which helps the AR the best
-						//TODO - this cant possibly support scale factors like 1.5x
-						//TODO - also, this might be messing up zooms and stuff, we might need to run this on the output size of the filter chain
-						for (int i = 1; i < zoom;i++)
+						// TODO - this cant possibly support scale factors like 1.5x
+						// TODO - also, this might be messing up zooms and stuff, we might need to run this on the output size of the filter chain
+
+						Span<Vector2> trials = stackalloc Vector2[3];
+						for (var i = 1; i < zoom; i++)
 						{
-							//would not be good to run this per frame, but it seems to only run when the resolution changes, etc.
-							Vector2[] trials =
-							{
-								PS + new Vector2(1, 0),
-								PS + new Vector2(0, 1),
-								PS + new Vector2(1, 1)
-							};
-							int bestIndex = -1;
-							float bestValue = 1000.0f;
-							for (int t = 0; t < trials.Length; t++)
+							// would not be good to run this per frame, but it seems to only run when the resolution changes, etc.
+							trials[0] = PS + Vector2.UnitX;
+							trials[1] = PS + Vector2.UnitY;
+							trials[2] = PS + Vector2.One;
+
+							var bestIndex = -1;
+							var bestValue = 1000.0f;
+							for (var t = 0; t < trials.Length; t++)
 							{
 								//I.
-								float testAr = trials[t].X / trials[t].Y;
+								var testAr = trials[t].X / trials[t].Y;
 
 								// II.
-								//Vector2 calc = Vector2.Multiply(trials[t], VS);
-								//float test_ar = calc.X / calc.Y;
+								// var calc = Vector2.Multiply(trials[t], VS);
+								// var test_ar = calc.X / calc.Y;
 
 								// not clear which approach is superior
-								float deviationLinear = Math.Abs(testAr - targetPar);
-								float deviationGeom = testAr / targetPar;
-								if (deviationGeom < 1)
-								{
-									deviationGeom = 1.0f / deviationGeom;
-								}
 
-								float value = deviationLinear;
-								if (value < bestValue)
+								var deviationLinear = Math.Abs(testAr - targetPar);
+								if (deviationLinear < bestValue)
 								{
 									bestIndex = t;
-									bestValue = value;
+									bestValue = deviationLinear;
 								}
 							}
 
@@ -699,26 +698,26 @@ namespace BizHawk.Client.Common
 							}
 						}
 
-						chainOutsize = new Size((int)(bufferWidth * PS.X), (int)(bufferHeight * PS.Y));
+						chainOutsize = new((int)(bufferWidth * PS.X), (int)(bufferHeight * PS.Y));
 					}
 					else
 					{
 						// obey the AR, but allow free scaling: just zoom the virtual size
-						chainOutsize = new Size(virtualWidth * zoom, virtualHeight * zoom);
+						chainOutsize = new(virtualWidth * zoom, virtualHeight * zoom);
 					}
 				}
 				else
 				{
 					// ar_unity:
 					// just choose to zoom the buffer (make no effort to incorporate AR)
-					chainOutsize = new Size(bufferWidth * zoom, bufferHeight * zoom);
+					chainOutsize = new(bufferWidth * zoom, bufferHeight * zoom);
 				}
 			}
 			else
 			{
 				// !ar_active:
 				// just choose to zoom the buffer (make no effort to incorporate AR)
-				chainOutsize = new Size(bufferWidth * zoom, bufferHeight * zoom);
+				chainOutsize = new(bufferWidth * zoom, bufferHeight * zoom);
 			}
 
 			chainOutsize.Width += ClientExtraPadding.Left + ClientExtraPadding.Right;
@@ -738,11 +737,10 @@ namespace BizHawk.Client.Common
 			// we need some other more sensible client size.
 			if (filterProgram == null)
 			{
-				return new Size(256, 192);
+				return new(256, 192);
 			}
 
-			var size = filterProgram.Filters.Last().FindOutput().SurfaceFormat.Size;
-
+			var size = filterProgram.Filters[filterProgram.Filters.Count - 1].FindOutput().SurfaceFormat.Size;
 			return size;
 		}
 
@@ -795,10 +793,10 @@ namespace BizHawk.Client.Common
 			var vw = videoProvider.VirtualWidth;
 			var vh = videoProvider.VirtualHeight;
 
-			//TODO: it is bad that this is happening outside the filter chain
-			//the filter chain has the ability to add padding...
-			//for now, we have to have some hacks. this could be improved by refactoring the filter setup hacks to be in one place only though
-			//could the PADDING be done as filters too? that would be nice.
+			// TODO: it is bad that this is happening outside the filter chain
+			// the filter chain has the ability to add padding...
+			// for now, we have to have some hacks. this could be improved by refactoring the filter setup hacks to be in one place only though
+			// could the PADDING be done as filters too? that would be nice.
 			var fCoreScreenControl = CreateCoreScreenControl();
 			if(fCoreScreenControl != null)
 			{
@@ -809,25 +807,26 @@ namespace BizHawk.Client.Common
 
 			if (GlobalConfig.DispFixAspectRatio)
 			{
-				if (GlobalConfig.DispManagerAR == EDispManagerAR.None)
+				switch (GlobalConfig.DispManagerAR)
 				{
-					vw = bufferWidth;
-					vh = bufferHeight;
-				}
-				if (GlobalConfig.DispManagerAR == EDispManagerAR.System)
-				{
-					//Already set
-				}
-				if (GlobalConfig.DispManagerAR == EDispManagerAR.CustomSize)
-				{
-					//not clear what any of these other options mean for "screen controlled" systems
-					vw = GlobalConfig.DispCustomUserARWidth;
-					vh = GlobalConfig.DispCustomUserARHeight;
-				}
-				if (GlobalConfig.DispManagerAR == EDispManagerAR.CustomRatio)
-				{
-					//not clear what any of these other options mean for "screen controlled" systems
-					FixRatio(GlobalConfig.DispCustomUserArx, GlobalConfig.DispCustomUserAry, videoProvider.BufferWidth, videoProvider.BufferHeight, out vw, out vh);
+					case EDispManagerAR.None:
+						vw = bufferWidth;
+						vh = bufferHeight;
+						break;
+					case EDispManagerAR.System:
+						// Already set
+						break;
+					case EDispManagerAR.CustomSize:
+						// not clear what any of these other options mean for "screen controlled" systems
+						vw = GlobalConfig.DispCustomUserARWidth;
+						vh = GlobalConfig.DispCustomUserARHeight;
+						break;
+					case EDispManagerAR.CustomRatio:
+						// not clear what any of these other options mean for "screen controlled" systems
+						FixRatio(GlobalConfig.DispCustomUserArx, GlobalConfig.DispCustomUserAry, videoProvider.BufferWidth, videoProvider.BufferHeight, out vw, out vh);
+						break;
+					default:
+						throw new InvalidOperationException();
 				}
 			}
 
@@ -884,20 +883,9 @@ namespace BizHawk.Client.Common
 				fPresent.VirtualTextureSize = new(vw, vh);
 				fPresent.TextureSize = new(presenterTextureWidth, presenterTextureHeight);
 				fPresent.BackgroundColor = videoProvider.BackgroundColor;
-				fPresent.GuiRenderer = _renderer;
 				fPresent.Config_FixAspectRatio = GlobalConfig.DispFixAspectRatio;
 				fPresent.Config_FixScaleInteger = GlobalConfig.DispFixScaleInteger;
 				fPresent.Padding = (ClientExtraPadding.Left, ClientExtraPadding.Top, ClientExtraPadding.Right, ClientExtraPadding.Bottom);
-				fPresent.AutoPrescale = GlobalConfig.DispAutoPrescale;
-
-				fPresent.GL = _gl;
-			}
-
-			//POOPY. why are we delivering the GL context this way? such bad
-			if (filterProgram["CoreScreenControl"] is ScreenControlNDS fNDS)
-			{
-				fNDS.GuiRenderer = _renderer;
-				fNDS.GL = _gl;
 			}
 
 			filterProgram.Compile("default", chainInsize, chainOutsize, !job.Offscreen);
@@ -938,12 +926,12 @@ namespace BizHawk.Client.Common
 			//GraphicsControl.Begin(); // CRITICAL POINT for yabause+GL
 
 			//TODO - auto-create and age these (and dispose when old)
-			int rtCounter = 0;
-
+			var rtCounter = 0;
+			// ReSharper disable once AccessToModifiedClosure
 			_currentFilterProgram.RenderTargetProvider = new DisplayManagerRenderTargetProvider(size => _shaderChainFrugalizers[rtCounter++].Get(size));
 
 			_gl.BeginScene();
-			RunFilterChainSteps(ref rtCounter, out var rtCurr, out var inFinalTarget);
+			RunFilterChainSteps(ref rtCounter, out var rtCurr, out _);
 			_gl.EndScene();
 
 			job.OffscreenBb = rtCurr.Texture2d.Resolve();
@@ -977,19 +965,25 @@ namespace BizHawk.Client.Common
 					inFinalTarget = true;
 					break;
 				default:
-					throw new Exception();
+					throw new InvalidOperationException();
 			}
 		}
 
 		private void LoadCustomFont(Stream fontStream)
 		{
-			IntPtr data = Marshal.AllocCoTaskMem((int)fontStream.Length);
-			byte[] fontData = new byte[fontStream.Length];
-			fontStream.Read(fontData, 0, (int)fontStream.Length);
-			Marshal.Copy(fontData, 0, data, (int)fontStream.Length);
-			CustomFonts.AddMemoryFont(data, fontData.Length);
-			fontStream.Close();
-			Marshal.FreeCoTaskMem(data);
+			var data = Marshal.AllocCoTaskMem((int)fontStream.Length);
+			try
+			{
+				var fontData = new byte[fontStream.Length];
+				fontStream.Read(fontData, 0, (int)fontStream.Length);
+				Marshal.Copy(fontData, 0, data, (int)fontStream.Length);
+				CustomFonts.AddMemoryFont(data, fontData.Length);
+			}
+			finally
+			{
+				Marshal.FreeCoTaskMem(data);
+				fontStream.Close();
+			}
 		}
 
 		private readonly Dictionary<DisplaySurfaceID, IDisplaySurface> _apiHawkIDToSurface = new();
@@ -1041,8 +1035,12 @@ namespace BizHawk.Client.Common
 					if (PeekApiHawkLockedSurface(kvp.Key) == null)
 					{
 						var surfLocked = LockApiHawkSurface(kvp.Key, true);
-						if (surfLocked != null) UnlockApiHawkSurface(surfLocked);
+						if (surfLocked != null)
+						{
+							UnlockApiHawkSurface(surfLocked);
+						}
 					}
+
 					_apiHawkSurfaceSets[kvp.Key].SetPending(null);
 				}
 				catch (InvalidOperationException)
@@ -1056,8 +1054,16 @@ namespace BizHawk.Client.Common
 		/// <exception cref="InvalidOperationException">already unlocked</exception>
 		public void UnlockApiHawkSurface(IDisplaySurface surface)
 		{
-			if (surface is not DisplaySurface dispSurfaceImpl) throw new ArgumentException("don't mix " + nameof(IDisplaySurface) + " implementations!", nameof(surface));
-			if (!_apiHawkSurfaceToID.TryGetValue(dispSurfaceImpl, out var surfaceID)) throw new InvalidOperationException("Surface was not locked as a lua surface");
+			if (surface is not DisplaySurface dispSurfaceImpl)
+			{
+				throw new ArgumentException("don't mix " + nameof(IDisplaySurface) + " implementations!", nameof(surface));
+			}
+
+			if (!_apiHawkSurfaceToID.TryGetValue(dispSurfaceImpl, out var surfaceID))
+			{
+				throw new InvalidOperationException("Surface was not locked as a lua surface");
+			}
+
 			_apiHawkSurfaceToID.Remove(dispSurfaceImpl);
 			_apiHawkIDToSurface.Remove(surfaceID);
 			_apiHawkSurfaceSets[surfaceID].SetPending(dispSurfaceImpl);

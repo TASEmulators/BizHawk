@@ -7,6 +7,7 @@ using System;
 using System.Diagnostics;
 #endif
 using System.Drawing;
+using System.Numerics;
 
 using BizHawk.Bizware.BizwareGL;
 
@@ -153,7 +154,7 @@ namespace BizHawk.Bizware.Graphics
 		/// <exception cref="InvalidOperationException">no pipeline set (need to call <see cref="SetPipeline"/>)</exception>
 		public void Begin()
 		{
-			//uhhmmm I want to throw an exception if its already active, but its annoying.
+			// uhhmmm I want to throw an exception if its already active, but its annoying.
 
 			if (CurrPipeline == null)
 				throw new InvalidOperationException("Pipeline hasn't been set!");
@@ -176,14 +177,17 @@ namespace BizHawk.Bizware.Graphics
 
 		public void Flush()
 		{
-			//no batching, nothing to do here yet
+			// no batching, nothing to do here yet
 		}
 
 		/// <exception cref="InvalidOperationException"><see cref="IsActive"/> is <see langword="false"/></exception>
 		public void End()
 		{
 			if (!IsActive)
+			{
 				throw new InvalidOperationException($"{nameof(GuiRenderer)} is not active!");
+			}
+
 			IsActive = false;
 		}
 
@@ -199,26 +203,40 @@ namespace BizHawk.Bizware.Graphics
 			DrawSubrectInternal(tex, x, y, w, h, u0, v0, u1, v1);
 		}
 
+		public void Draw(Art art)
+		{
+			DrawInternal(art, 0, 0, art.Width, art.Height, false, false);
+		}
 
-		public void Draw(Art art) { DrawInternal(art, 0, 0, art.Width, art.Height, false, false); }
+		public void Draw(Art art, float x, float y)
+		{
+			DrawInternal(art, x, y, art.Width, art.Height, false, false);
+		}
 
+		public void Draw(Art art, float x, float y, float width, float height)
+		{
+			DrawInternal(art, x, y, width, height, false, false);
+		}
 
-		public void Draw(Art art, float x, float y) { DrawInternal(art, x, y, art.Width, art.Height, false, false); }
+		public void Draw(Art art, Vector2 pos)
+		{
+			DrawInternal(art, pos.X, pos.Y, art.Width, art.Height, false, false);
+		}
 
+		public void Draw(Texture2d tex)
+		{
+			DrawInternal(tex, 0, 0, tex.Width, tex.Height);
+		}
 
-		public void Draw(Art art, float x, float y, float width, float height) { DrawInternal(art, x, y, width, height, false, false); }
+		public void Draw(Texture2d tex, float x, float y)
+		{
+			DrawInternal(tex, x, y, tex.Width, tex.Height);
+		}
 
-
-		public void Draw(Art art, Vector2 pos) { DrawInternal(art, pos.X, pos.Y, art.Width, art.Height, false, false); }
-
-
-		public void Draw(Texture2d tex) { DrawInternal(tex, 0, 0, tex.Width, tex.Height); }
-
-
-		public void Draw(Texture2d tex, float x, float y) { DrawInternal(tex, x, y, tex.Width, tex.Height); }
-
-
-		public void DrawFlipped(Art art, bool xflip, bool yflip) { DrawInternal(art, 0, 0, art.Width, art.Height, xflip, yflip); }
+		public void DrawFlipped(Art art, bool xflip, bool yflip)
+		{
+			DrawInternal(art, 0, 0, art.Width, art.Height, xflip, yflip);
+		}
 
 		public void Draw(Texture2d art, float x, float y, float width, float height)
 		{
@@ -441,7 +459,7 @@ void main()
 	vCornerColor = aColor * uModulateColor;
 }";
 
-		public readonly string DefaultPixelShader_gl = @"
+		public const string DefaultPixelShader_gl = @"
 //opengl 2.0 ~ 2004
 #version 110
 uniform bool uSamplerEnable;

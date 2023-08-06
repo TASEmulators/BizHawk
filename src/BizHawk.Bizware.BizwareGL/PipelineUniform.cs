@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 
 namespace BizHawk.Bizware.BizwareGL
 {
@@ -12,17 +13,16 @@ namespace BizHawk.Bizware.BizwareGL
 		internal PipelineUniform(Pipeline owner)
 		{
 			Owner = owner;
-			//Opaque = info.Opaque;
-			//SamplerIndex = info.SamplerIndex;
 		}
 
 		internal void AddUniformInfo(UniformInfo ui)
 		{
-			_UniformInfos.Add(ui);
+			_uniformInfos.Add(ui);
 		}
 
-		public IEnumerable<UniformInfo> UniformInfos => _UniformInfos;
-		private readonly List<UniformInfo> _UniformInfos = new List<UniformInfo>();
+		public IEnumerable<UniformInfo> UniformInfos => _uniformInfos;
+
+		private readonly List<UniformInfo> _uniformInfos = new();
 
 		/// <returns>the first and only <see cref="UniformInfo"/></returns>
 		/// <exception cref="InvalidOperationException">more than one <see cref="UniformInfo"/> exists</exception>
@@ -30,14 +30,18 @@ namespace BizHawk.Bizware.BizwareGL
 		{
 			get
 			{
-				if (_UniformInfos.Count != 1) throw new InvalidOperationException();
-				return _UniformInfos[0];
+				if (_uniformInfos.Count != 1)
+				{
+					throw new InvalidOperationException();
+				}
+
+				return _uniformInfos[0];
 			}
 		}
 
 		public Pipeline Owner { get; }
 		
-		public void Set(Matrix4 mat, bool transpose = false)
+		public void Set(Matrix4x4 mat, bool transpose = false)
 		{
 			Owner?.Owner.SetPipelineUniformMatrix(this, mat, transpose);
 		}
@@ -62,7 +66,7 @@ namespace BizHawk.Bizware.BizwareGL
 			Owner?.Owner.SetPipelineUniform(this, vecs);
 		}
 
-		public void Set(ref Matrix4 mat, bool transpose = false)
+		public void Set(ref Matrix4x4 mat, bool transpose = false)
 		{
 			Owner?.Owner.SetPipelineUniformMatrix(this, ref mat, transpose);
 		}

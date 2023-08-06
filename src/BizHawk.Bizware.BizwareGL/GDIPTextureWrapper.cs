@@ -1,12 +1,14 @@
 using System;
+using System.Drawing;
 
 namespace BizHawk.Bizware.BizwareGL
 {
 	public class GDIPTextureWrapper : IDisposable
 	{
-		public System.Drawing.Bitmap SDBitmap;
+		public Bitmap SDBitmap;
 		public TextureMinFilter MinFilter = TextureMinFilter.Nearest;
 		public TextureMagFilter MagFilter = TextureMagFilter.Nearest;
+
 		public void Dispose()
 		{
 			if (SDBitmap != null)

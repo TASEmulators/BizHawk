@@ -1,4 +1,6 @@
 namespace BizHawk.Bizware.BizwareGL
 {
-	public interface IBlendState {}
+	public interface IBlendState
+	{
+	}
 }

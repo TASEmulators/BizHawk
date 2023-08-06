@@ -1,14 +1,13 @@
-﻿//TODO - introduce Trim for ArtManager
-//TODO - add a small buffer reuse manager.. small images can be stored in larger buffers which we happen to have held. use a timer to wait to free it until some time has passed
+﻿// TODO - introduce Trim for ArtManager
+// TODO - add a small buffer reuse manager.. small images can be stored in larger buffers which we happen to have held. use a timer to wait to free it until some time has passed
 
 using System;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
-using System.Drawing.Imaging;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 using System.IO;
-
-using sd = System.Drawing;
 
 namespace BizHawk.Bizware.BizwareGL
 {
@@ -28,7 +27,7 @@ namespace BizHawk.Bizware.BizwareGL
 		/// </summary>
 		public bool HasAlpha = true;
 
-		public Size Size => new Size(Width, Height);
+		public Size Size => new(Width, Height);
 
 		private readonly Bitmap WrappedBitmap;
 		private GCHandle CurrLockHandle;
@@ -48,7 +47,7 @@ namespace BizHawk.Bizware.BizwareGL
 			}
 
 			CurrLockHandle = GCHandle.Alloc(Pixels, GCHandleType.Pinned);
-			CurrLock = new BitmapData
+			CurrLock = new()
 			{
 				Height = Height,
 				Width = Width,
@@ -82,16 +81,15 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public void YFlip()
 		{
-			//TODO - could be faster
+			// TODO - could be faster
 			var bmpdata = LockBits();
-			int[] newPixels = new int[Width * Height];
-			int todo = Width * Height;
-			int* s = (int*)bmpdata.Scan0.ToPointer();
+			var newPixels = new int[Width * Height];
+			var s = (int*)bmpdata.Scan0.ToPointer();
 			fixed (int* d = newPixels)
 			{
 				for (int y = 0, si = 0, di = (Height - 1) * Width; y < Height; y++)
 				{
-					for (int x = 0; x < Width; x++, si++, di++)
+					for (var x = 0; x < Width; x++, si++, di++)
 					{
 						d[di] = s[si];
 					}
@@ -110,16 +108,15 @@ namespace BizHawk.Bizware.BizwareGL
 		public void Normalize(bool yflip)
 		{
 			var bmpdata = LockBits();
-			int[] newPixels = new int[Width * Height];
-			int todo = Width*Height;
-			int* s = (int*)bmpdata.Scan0.ToPointer();
+			var newPixels = new int[Width * Height];
+			var s = (int*)bmpdata.Scan0.ToPointer();
 			fixed (int* d = newPixels)
 			{
 				if (yflip)
 				{
 					for (int y = 0, si = 0, di = (Height - 1) * Width; y < Height; y++)
 					{
-						for (int x = 0; x < Width; x++, si++, di++)
+						for (var x = 0; x < Width; x++, si++, di++)
 						{
 							d[di] = s[si] | unchecked((int)0xFF000000);
 						}
@@ -130,7 +127,7 @@ namespace BizHawk.Bizware.BizwareGL
 				{
 					for (int y = 0, i=0; y < Height; y++)
 					{
-						for (int x = 0; x < Width; x++, i++)
+						for (var x = 0; x < Width; x++, i++)
 						{
 							d[i] = s[i] | unchecked((int)0xFF000000);
 						}
@@ -143,11 +140,19 @@ namespace BizHawk.Bizware.BizwareGL
 			Pixels = newPixels;
 		}
 
-		public int GetPixel(int x, int y) { return Pixels[Width * y + x]; }
-		public void SetPixel(int x, int y, int value) { Pixels[Width * y + x] = value; }
+		public int GetPixel(int x, int y)
+		{
+			return Pixels[Width * y + x];
+		}
+
+		public void SetPixel(int x, int y, int value)
+		{
+			Pixels[Width * y + x] = value;
+		}
+
 		public Color GetPixelAsColor(int x, int y)
 		{
-			int c = Pixels[Width * y + x];
+			var c = Pixels[Width * y + x];
 			return Color.FromArgb(c);
 		}
 
@@ -157,11 +162,15 @@ namespace BizHawk.Bizware.BizwareGL
 		public void Alphafy(int tcol)
 		{
 			for (int y = 0, idx = 0; y < Height; y++)
-				for (int x = 0; x < Width; x++, idx++)
+			{
+				for (var x = 0; x < Width; x++, idx++)
 				{
 					if (Pixels[idx] == tcol)
+					{
 						Pixels[idx] = 0;
+					}
 				}
+			}
 		}
 
 		/// <summary>
@@ -177,15 +186,16 @@ namespace BizHawk.Bizware.BizwareGL
 		/// </summary>
 		public BitmapBuffer Trim(out int xofs, out int yofs)
 		{
-			int minx = int.MaxValue;
-			int maxx = int.MinValue;
-			int miny = int.MaxValue;
-			int maxy = int.MinValue;
-			for (int y = 0; y < Height; y++)
-				for (int x = 0; x < Width; x++)
+			var minx = int.MaxValue;
+			var maxx = int.MinValue;
+			var miny = int.MaxValue;
+			var maxy = int.MinValue;
+			for (var y = 0; y < Height; y++)
+			{
+				for (var x = 0; x < Width; x++)
 				{
-					int pixel = GetPixel(x, y);
-					int a = (pixel >> 24) & 0xFF;
+					var pixel = GetPixel(x, y);
+					var a = (pixel >> 24) & 0xFF;
 					if (a != 0)
 					{
 						minx = Math.Min(minx, x);
@@ -194,21 +204,24 @@ namespace BizHawk.Bizware.BizwareGL
 						maxy = Math.Max(maxy, y);
 					}
 				}
+			}
 
 			if (minx == int.MaxValue || maxx == int.MinValue || miny == int.MaxValue || minx == int.MinValue)
 			{
 				xofs = yofs = 0;
-				return new BitmapBuffer(0, 0);
+				return new(0, 0);
 			}
 
-			int w = maxx - minx + 1;
-			int h = maxy - miny + 1;
-			BitmapBuffer bbRet = new BitmapBuffer(w, h);
-			for (int y = 0; y < h; y++)
-				for (int x = 0; x < w; x++)
+			var w = maxx - minx + 1;
+			var h = maxy - miny + 1;
+			var bbRet = new BitmapBuffer(w, h);
+			for (var y = 0; y < h; y++)
+			{
+				for (var x = 0; x < w; x++)
 				{
 					bbRet.SetPixel(x, y, GetPixel(x + minx, y + miny));
 				}
+			}
 
 			xofs = minx;
 			yofs = miny;
@@ -220,15 +233,18 @@ namespace BizHawk.Bizware.BizwareGL
 		/// </summary>
 		public void Pad()
 		{
-			int widthRound = NextHigher(Width);
-			int heightRound = NextHigher(Height);
+			var widthRound = NextHigher(Width);
+			var heightRound = NextHigher(Height);
 			if (widthRound == Width && heightRound == Height) return;
-			int[] NewPixels = new int[heightRound * widthRound];
+			var NewPixels = new int[heightRound * widthRound];
 
 			for (int y = 0, sptr = 0, dptr = 0; y < Height; y++)
 			{
-				for (int x = 0; x < Width; x++)
+				for (var x = 0; x < Width; x++)
+				{
 					NewPixels[dptr++] = Pixels[sptr++];
+				}
+
 				dptr += (widthRound - Width);
 			}
 
@@ -265,9 +281,11 @@ namespace BizHawk.Bizware.BizwareGL
 				Height = bitmap.Height;
 				WrappedBitmap = bitmap;
 			}
-			else LoadInternal(null, bitmap, options);
+			else
+			{
+				LoadInternal(null, bitmap, options);
+			}
 		}
-
 
 		/// <summary>
 		/// Initializes a BitmapBuffer --WRAPPED-- from the supplied parameters, which should definitely have a stride==width and be in the standard color format
@@ -290,82 +308,89 @@ namespace BizHawk.Bizware.BizwareGL
 
 		private void LoadInternal(Stream stream, Bitmap bitmap, BitmapLoadOptions options)
 		{
-			bool cleanup = options.CleanupAlpha0;
-			bool needsPad = true;
+			var cleanup = options.CleanupAlpha0;
+			var needsPad = true;
 
 			var colorKey24bpp = options.ColorKey24bpp;
-			using (Bitmap loadedBmp = bitmap == null ? new Bitmap(stream) : null) //sneaky!
+			using (var loadedBmp = bitmap == null ? new Bitmap(stream) : null) // sneaky!
 			{
-				Bitmap bmp = loadedBmp;
-				if (bmp == null)
-					bmp = bitmap;
+				var bmp = loadedBmp ?? bitmap;
 
-				//if we have a 24bpp image and a colorkey callback, the callback can choose a colorkey color and we'll use that
+				// if we have a 24bpp image and a colorkey callback, the callback can choose a colorkey color and we'll use that
 				if (bmp.PixelFormat == PixelFormat.Format24bppRgb && colorKey24bpp != null)
 				{
-					int colorKey = colorKey24bpp(bmp);
-					int w = bmp.Width;
-					int h = bmp.Height;
+					var colorKey = colorKey24bpp(bmp);
+					var w = bmp.Width;
+					var h = bmp.Height;
 					InitSize(w, h);
-					BitmapData bmpdata = bmp.LockBits(new Rectangle(0, 0, w, h), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-					Color[] palette = bmp.Palette.Entries;
-					int* ptr = (int*)bmpdata.Scan0.ToPointer();
-					int stride = bmpdata.Stride;
+					var bmpdata = bmp.LockBits(new(0, 0, w, h), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+					var ptr = (int*)bmpdata.Scan0.ToPointer();
 					fixed (int* pPtr = &Pixels[0])
 					{
 						for (int idx = 0, y = 0; y < h; y++)
-							for (int x = 0; x < w; x++)
+						{
+							for (var x = 0; x < w; x++)
 							{
-								int srcPixel = ptr[idx];
+								var srcPixel = ptr[idx];
 								if (srcPixel == colorKey)
+								{
 									srcPixel = 0;
+								}
+
 								pPtr[idx++] = srcPixel;
 							}
+						}
 					}
 
 					bmp.UnlockBits(bmpdata);
 				}
-				if (bmp.PixelFormat == PixelFormat.Format8bppIndexed || bmp.PixelFormat == PixelFormat.Format4bppIndexed)
+				if (bmp.PixelFormat is PixelFormat.Format8bppIndexed or PixelFormat.Format4bppIndexed)
 				{
-					int w = bmp.Width;
-					int h = bmp.Height;
+					var w = bmp.Width;
+					var h = bmp.Height;
 					InitSize(w, h);
-					BitmapData bmpdata = bmp.LockBits(new Rectangle(0, 0, w, h), ImageLockMode.ReadOnly, PixelFormat.Format8bppIndexed);
-					Color[] palette = bmp.Palette.Entries;
-					byte* ptr = (byte*)bmpdata.Scan0.ToPointer();
+					var bmpdata = bmp.LockBits(new(0, 0, w, h), ImageLockMode.ReadOnly, PixelFormat.Format8bppIndexed);
+					var palette = bmp.Palette.Entries;
+					var ptr = (byte*)bmpdata.Scan0.ToPointer();
 					fixed (int* pPtr = &Pixels[0])
 					{
 						for (int idx = 0, y = 0; y < h; y++)
-							for (int x = 0; x < w; x++)
+						{
+							for (var x = 0; x < w; x++)
 							{
 								int srcPixel = ptr[idx];
 								if (srcPixel != 0)
 								{
-									int color = palette[srcPixel].ToArgb();
+									var color = palette[srcPixel].ToArgb();
 									
-									//make transparent pixels turn into black to avoid filtering issues and other annoying issues with stray junk in transparent pixels.
-									//(yes, we can have palette entries with transparency in them (PNGs support this, annoyingly))
+									// make transparent pixels turn into black to avoid filtering issues and other annoying issues with stray junk in transparent pixels.
+									// (yes, we can have palette entries with transparency in them (PNGs support this, annoyingly))
 									if (cleanup)
 									{
-										if ((color & 0xFF000000) == 0) color = 0;
+										if ((color & 0xFF000000) == 0)
+										{
+											color = 0;
+										}
+
 										pPtr[idx] = color;
 									}
 								}
 								idx++;
 							}
+						}
 					}
 
 					bmp.UnlockBits(bmpdata);
 				}
 				else
 				{
-					//dump the supplied bitmap into our pixels array
-					int width = bmp.Width;
-					int height = bmp.Height;
+					// dump the supplied bitmap into our pixels array
+					var width = bmp.Width;
+					var height = bmp.Height;
 					InitSize(width, height);
-					BitmapData bmpdata = bmp.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-					int* ptr = (int*)bmpdata.Scan0;
-					int stride = bmpdata.Stride / 4;
+					var bmpdata = bmp.LockBits(new(0, 0, width, height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+					var ptr = (int*)bmpdata.Scan0;
+					var stride = bmpdata.Stride / 4;
 					LoadFrom(width, stride, height, (byte*)ptr, options);
 					bmp.UnlockBits(bmpdata);
 					needsPad = false;
@@ -373,7 +398,9 @@ namespace BizHawk.Bizware.BizwareGL
 			}
 
 			if (needsPad && options.Pad)
+			{
 				Pad();
+			}
 		}
 
 
@@ -382,29 +409,37 @@ namespace BizHawk.Bizware.BizwareGL
 		/// </summary>
 		public void LoadFrom(int width, int stride, int height, byte* data, BitmapLoadOptions options)
 		{
-			bool cleanup = options.CleanupAlpha0;
+			var cleanup = options.CleanupAlpha0;
 			Width = width;
 			Height = height;
 			Pixels = new int[width * height];
 			fixed (int* pPtr = &Pixels[0])
 			{
 				for (int idx = 0, y = 0; y < Height; y++)
-					for (int x = 0; x < Width; x++)
+				{
+					for (var x = 0; x < Width; x++)
 					{
-						int src = y * stride + x;
-						int srcVal = ((int*)data)[src];
-						
-						//make transparent pixels turn into black to avoid filtering issues and other annoying issues with stray junk in transparent pixels
+						var src = y * stride + x;
+						var srcVal = ((int*)data)[src];
+
+						// make transparent pixels turn into black to avoid filtering issues and other annoying issues with stray junk in transparent pixels
 						if (cleanup)
 						{
-							if ((srcVal & 0xFF000000) == 0) srcVal = 0;
+							if ((srcVal & 0xFF000000) == 0)
+							{
+								srcVal = 0;
+							}
+
 							pPtr[idx++] = srcVal;
 						}
 					}
+				}
 			}
 
 			if (options.Pad)
+			{
 				Pad();
+			}
 		}
 
 		/// <summary>
@@ -412,10 +447,10 @@ namespace BizHawk.Bizware.BizwareGL
 		/// </summary>
 		public static int PremultiplyColor(int srcVal)
 		{
-			int b = (srcVal >> 0) & 0xFF;
-			int g = (srcVal >> 8) & 0xFF;
-			int r = (srcVal >> 16) & 0xFF;
-			int a = (srcVal >> 24) & 0xFF;
+			var b = (srcVal >> 0) & 0xFF;
+			var g = (srcVal >> 8) & 0xFF;
+			var r = (srcVal >> 16) & 0xFF;
+			var a = (srcVal >> 24) & 0xFF;
 			r = (r * a) >> 8;
 			g = (g * a) >> 8;
 			b = (b * a) >> 8;
@@ -434,7 +469,9 @@ namespace BizHawk.Bizware.BizwareGL
 		/// <summary>
 		/// Makes a new bitmap buffer, in ??? state
 		/// </summary>
-		public BitmapBuffer() { }
+		public BitmapBuffer()
+		{
+		}
 
 		/// <summary>
 		/// initializes an empty BitmapBuffer, cleared to all 0
@@ -449,24 +486,24 @@ namespace BizHawk.Bizware.BizwareGL
 		/// </summary>
 		public void ClearWithoutAlloc()
 		{
-			//http://techmikael.blogspot.com/2009/12/filling-array-with-default-value.html
-			//this guy says its faster
+			// http://techmikael.blogspot.com/2009/12/filling-array-with-default-value.html
+			// this guy says its faster
 
-			int size = Width * Height;
-			byte fillValue = 0;
-			ulong fillValueLong = 0;
+			var size = Width * Height;
+			const byte fillValue = 0;
+			const ulong fillValueLong = 0;
 
 			fixed (int* ptr = &Pixels[0])
 			{
-				ulong* dest = (ulong*)ptr;
-				int length = size;
+				var dest = (ulong*)ptr;
+				var length = size;
 				while (length >= 8)
 				{
 					*dest = fillValueLong;
 					dest++;
 					length -= 8;
 				}
-				byte* bDest = (byte*)dest;
+				var bDest = (byte*)dest;
 				for (byte i = 0; i < length; i++)
 				{
 					*bDest = fillValue;
@@ -488,9 +525,12 @@ namespace BizHawk.Bizware.BizwareGL
 		private static int NextHigher(int k)
 		{
 			k--;
-			for (int i = 1; i < 32; i <<= 1)
+			for (var i = 1; i < 32; i <<= 1)
+			{
 				k = k | k >> i;
-			int candidate = k + 1;
+			}
+
+			var candidate = k + 1;
 			return candidate;
 		}
 
@@ -501,11 +541,12 @@ namespace BizHawk.Bizware.BizwareGL
 		public Bitmap ToSysdrawingBitmap()
 		{
 			if (WrappedBitmap != null)
+			{
 				return (Bitmap)WrappedBitmap.Clone();
-			var pf = PixelFormat.Format32bppArgb;
-			if (!HasAlpha)
-				pf = PixelFormat.Format24bppRgb;
-			Bitmap bmp = new Bitmap(Width, Height, pf);
+			}
+
+			var pf = HasAlpha ? PixelFormat.Format32bppArgb : PixelFormat.Format24bppRgb;
+			var bmp = new Bitmap(Width, Height, pf);
 			ToSysdrawingBitmap(bmp);
 			return bmp;
 		}
@@ -519,30 +560,33 @@ namespace BizHawk.Bizware.BizwareGL
 			if (WrappedBitmap != null)
 			{
 				using var g = Graphics.FromImage(bmp);
-				g.CompositingMode = sd.Drawing2D.CompositingMode.SourceCopy;
-				g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighSpeed;
+				g.CompositingMode = CompositingMode.SourceCopy;
+				g.CompositingQuality = CompositingQuality.HighSpeed;
 				g.DrawImageUnscaled(WrappedBitmap, 0, 0);
 				return;
 			}
 
 			//note: we lock it as 32bpp even if the bitmap is 24bpp so we can write to it more conveniently.
-			var bmpdata = bmp.LockBits(new Rectangle(0, 0, Width, Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+			var bmpdata = bmp.LockBits(new(0, 0, Width, Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
-			if(bmpdata.Stride == bmpdata.Width*4)
+			if (bmpdata.Stride == bmpdata.Width * 4)
+			{
 				Marshal.Copy(Pixels, 0, bmpdata.Scan0, Width * Height);
+			}
 			else if (bmp.Width != 0 && bmp.Height != 0)
 			{
-				int* ptr = (int*)bmpdata.Scan0.ToPointer();
-				int stride = bmpdata.Stride;
+				var ptr = (int*)bmpdata.Scan0.ToPointer();
 				fixed (int* pPtr = &Pixels[0])
 				{
 					for (int idx = 0, y = 0; y < Height; y++)
-						for (int x = 0; x < Width; x++)
+					{
+						for (var x = 0; x < Width; x++)
 						{
-							int srcPixel = pPtr[idx];
+							var srcPixel = pPtr[idx];
 							ptr[idx] = srcPixel;
 							idx++;
 						}
+					}
 				}
 			}
 

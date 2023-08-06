@@ -1,7 +1,7 @@
 using System.Drawing;
-using BizHawk.Client.Common.FilterManager;
 
 using BizHawk.Bizware.BizwareGL;
+using BizHawk.Client.Common.FilterManager;
 
 namespace BizHawk.Client.Common.Filters
 {
@@ -23,7 +23,7 @@ namespace BizHawk.Client.Common.Filters
 
 		public override void Initialize()
 		{
-			DeclareOutput(new SurfaceState(new SurfaceFormat(_size), SurfaceDisposition.Texture));
+			DeclareOutput(new SurfaceState(new(_size), SurfaceDisposition.Texture));
 		}
 
 		public override void SetInputFormat(string channel, SurfaceState format)
@@ -71,7 +71,7 @@ namespace BizHawk.Client.Common.Filters
 
 		public override void Run()
 		{
-			YieldOutput(FilterProgram.GetRenderTarget().Texture2d);
+			YieldOutput(FilterProgram.CurrRenderTarget.Texture2d);
 		}
 	}
 }

@@ -1,5 +1,6 @@
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
+
 using BizHawk.Bizware.BizwareGL;
 
 namespace BizHawk.Client.EmuHawk
@@ -17,9 +18,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly IGL_GdiPlus _gdi;
 
-		public Control Control => this;
-
-
 		/// <summary>
 		/// the render target for rendering to this control
 		/// </summary>
@@ -34,24 +32,29 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_gdi.BeginControl(this);
 			RenderTargetWrapper.CreateGraphics();
-			//using (var g = CreateGraphics())
-			//  MyBufferedGraphics = Gdi.MyBufferedGraphicsContext.Allocate(g, ClientRectangle);
-			//MyBufferedGraphics.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighSpeed;
 
-			////not sure about this stuff...
-			////it will wreck alpha blending, for one thing
-			//MyBufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
-			//MyBufferedGraphics.Graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighSpeed;
+#if false
+			using (var g = CreateGraphics())
+			{
+				MyBufferedGraphics = _gdi.MyBufferedGraphicsContext.Allocate(g, ClientRectangle);
+			}
+
+			MyBufferedGraphics.Graphics.PixelOffsetMode = PixelOffsetMode.HighSpeed;
+
+			// not sure about this stuff...
+			// it will wreck alpha blending, for one thing
+			MyBufferedGraphics.Graphics.CompositingMode = CompositingMode.SourceCopy;
+			MyBufferedGraphics.Graphics.CompositingQuality = CompositingQuality.HighSpeed;
+#endif
 		}
 
 		public void End()
 		{
-			_gdi.EndControl(this);
+			_gdi.EndControl();
 		}
 
 		public void SwapBuffers()
 		{
-			_gdi.SwapControl(this);
 			if (RenderTargetWrapper.MyBufferedGraphics == null)
 			{
 				return;

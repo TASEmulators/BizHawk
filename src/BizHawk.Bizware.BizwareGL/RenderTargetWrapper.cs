@@ -1,9 +1,12 @@
 using System;
 using System.Drawing;
+#if false
+using System.Drawing.Drawing2D;
+#endif
 
 namespace BizHawk.Bizware.BizwareGL
 {
-	public class RenderTargetWrapper
+	public class RenderTargetWrapper : IDisposable
 	{
 		public RenderTargetWrapper(
 			Func<BufferedGraphicsContext> getBufferedGraphicsContext,
@@ -15,6 +18,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public void Dispose()
 		{
+			MyBufferedGraphics?.Dispose();
 		}
 
 		private readonly Func<BufferedGraphicsContext> _getBufferedGraphicsContext;
@@ -31,7 +35,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public BufferedGraphics MyBufferedGraphics;
 
-		public Graphics refGraphics; //?? hacky?
+		public Graphics refGraphics; // ?? hacky?
 
 		public void CreateGraphics()
 		{
@@ -43,19 +47,21 @@ namespace BizHawk.Bizware.BizwareGL
 			}
 			else
 			{
-				var tw = Target.Texture2d.Opaque as GDIPTextureWrapper;
+				var tw = (GDIPTextureWrapper)Target.Texture2d.Opaque;
 				r = Target.Texture2d.Rectangle;
 				refGraphics = Graphics.FromImage(tw.SDBitmap);
 			}
 
 			MyBufferedGraphics?.Dispose();
 			MyBufferedGraphics = _getBufferedGraphicsContext().Allocate(refGraphics, r);
-//			MyBufferedGraphics.Graphics.PixelOffsetMode = PixelOffsetMode.HighSpeed;
+#if false
+			MyBufferedGraphics.Graphics.PixelOffsetMode = PixelOffsetMode.HighSpeed;
 
-			//not sure about this stuff...
-			//it will wreck alpha blending, for one thing
-//			MyBufferedGraphics.Graphics.CompositingMode = CompositingMode.SourceCopy;
-//			MyBufferedGraphics.Graphics.CompositingQuality = CompositingQuality.HighSpeed;
+			// not sure about this stuff...
+			// it will wreck alpha blending, for one thing
+			MyBufferedGraphics.Graphics.CompositingMode = CompositingMode.SourceCopy;
+			MyBufferedGraphics.Graphics.CompositingQuality = CompositingQuality.HighSpeed;
+#endif
 		}
 	}
 }

@@ -16,7 +16,7 @@ namespace BizHawk.Bizware.BizwareGL
 		{
 			Owner = owner;
 			Opaque = opaque;
-			Items = new MyDictionary();
+			Items = new();
 		}
 
 		public object Opaque { get; }
@@ -29,8 +29,10 @@ namespace BizHawk.Bizware.BizwareGL
 			RefCount--;
 			if (RefCount <= 0)
 			{
-				//nothing like this yet
-				//Available = false;
+				// nothing like this yet
+#if false
+				Available = false;
+#endif
 			}
 		}
 
@@ -43,8 +45,11 @@ namespace BizHawk.Bizware.BizwareGL
 		public void DefineVertexAttribute(string name, int index, int components, VertexAttribPointerType attribType, AttribUsage usage, bool normalized, int stride, int offset = 0)
 		{
 			if (Closed)
+			{
 				throw new InvalidOperationException("Type is Closed and is now immutable.");
-			Items[index] = new LayoutItem { Name = name, Components = components, AttribType = attribType, Usage = usage, Normalized = normalized, Stride = stride, Offset = offset };
+			}
+
+			Items[index] = new() { Name = name, Components = components, AttribType = attribType, Usage = usage, Normalized = normalized, Stride = stride, Offset = offset };
 		}
 
 		/// <summary>
@@ -66,7 +71,7 @@ namespace BizHawk.Bizware.BizwareGL
 			public AttribUsage Usage { get; internal set; }
 		}
 
-		public class MyDictionary : WorkingDictionary<int, LayoutItem>
+		public class LayoutItemWorkingDictionary : WorkingDictionary<int, LayoutItem>
 		{
 			public new LayoutItem this[int key]
 			{
@@ -75,8 +80,8 @@ namespace BizHawk.Bizware.BizwareGL
 			}
 		}
 
-		public MyDictionary Items { get; }
-		private bool Closed = false;
+		public LayoutItemWorkingDictionary Items { get; }
+		private bool Closed;
 
 	}
 }
