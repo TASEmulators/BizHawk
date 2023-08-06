@@ -753,6 +753,17 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public void GeneralUpdate()
+		{
+			foreach (var tool in _tools)
+			{
+				if (tool.IsActive)
+				{
+					tool.UpdateValues(ToolFormUpdateType.General);
+				}
+			}
+		}
+
 		private static readonly IList<string> PossibleToolTypeNames = EmuHawk.ReflectionCache.Types.Select(t => t.AssemblyQualifiedName).ToList();
 
 		public bool IsAvailable(Type tool)
