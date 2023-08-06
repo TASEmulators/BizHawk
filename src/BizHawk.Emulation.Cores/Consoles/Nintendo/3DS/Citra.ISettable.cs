@@ -188,7 +188,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 				SingleScreen,
 				LargeScreen,
 				SideScreen,
-				HybridScreen = 5,
+				//HybridScreen = 5,
 			}
 
 			[DisplayName("Layout Option")]
