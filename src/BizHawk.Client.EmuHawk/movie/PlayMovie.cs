@@ -75,13 +75,16 @@ namespace BizHawk.Client.EmuHawk
 			TurboCheckbox.Checked = _config.TurboSeek;
 		}
 
+		private static string MovieTimeLengthStr(TimeSpan movieLength)
+			=> movieLength.ToString(movieLength.Days == 0 ? @"hh\:mm\:ss\.fff" : @"dd\:hh\:mm\:ss\.fff");
+
 		private void MovieView_QueryItemText(object sender, RetrieveVirtualItemEventArgs e)
 		{
 			var entry = _movieList[e.ItemIndex];
 			e.Item = new ListViewItem(entry.Filename);
 			e.Item.SubItems.Add(entry.SystemID);
 			e.Item.SubItems.Add(entry.GameName);
-			e.Item.SubItems.Add(entry.TimeLength.ToString(entry.TimeLength.Days == 0 ? @"hh\:mm\:ss\.fff" : @"dd\.hh\:mm\:ss\.fff"));
+			e.Item.SubItems.Add(MovieTimeLengthStr(entry.TimeLength));
 		}
 
 		private void Run()
@@ -327,7 +330,7 @@ namespace BizHawk.Client.EmuHawk
 							.Append(_movieList[index].Filename).Append('\t')
 							.Append(_movieList[index].SystemID).Append('\t')
 							.Append(_movieList[index].GameName).Append('\t')
-							.Append(_movieList[index].TimeLength.ToString(@"hh\:mm\:ss\.fff"))
+							.Append(MovieTimeLengthStr(_movieList[index].TimeLength))
 							.AppendLine();
 					}
 
