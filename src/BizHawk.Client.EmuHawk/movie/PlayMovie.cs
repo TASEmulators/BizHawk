@@ -93,7 +93,6 @@ namespace BizHawk.Client.EmuHawk
 			if (indices.Count > 0) // Import file if necessary
 			{
 				var movie = _movieSession.Get(_movieList[MovieView.SelectedIndices[0]].Filename);
-				movie.Load();
 				_mainForm.StartNewMovie(movie, false);
 			}
 		}
