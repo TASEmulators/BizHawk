@@ -81,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 			e.Item = new ListViewItem(entry.Filename);
 			e.Item.SubItems.Add(entry.SystemID);
 			e.Item.SubItems.Add(entry.GameName);
-			e.Item.SubItems.Add(entry.TimeLength.ToString(@"hh\:mm\:ss\.fff"));
+			e.Item.SubItems.Add(entry.TimeLength.ToString(entry.TimeLength.Days == 0 ? @"hh\:mm\:ss\.fff" : @"dd\.hh\:mm\:ss\.fff"));
 		}
 
 		private void Run()
