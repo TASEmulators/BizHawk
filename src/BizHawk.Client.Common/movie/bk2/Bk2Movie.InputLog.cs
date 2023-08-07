@@ -56,7 +56,8 @@ namespace BizHawk.Client.Common
 			{
 				if (line.StartsWith('|'))
 				{
-					Log.Add(line);
+					string previous = Log.Count > 0 ? Log[Log.Count - 1] : null;
+					Log.Add(line == previous ? previous : line);
 				}
 				else if (line.StartsWith("Frame "))
 				{
