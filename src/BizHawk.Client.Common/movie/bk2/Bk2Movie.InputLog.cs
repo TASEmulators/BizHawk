@@ -7,6 +7,8 @@ namespace BizHawk.Client.Common
 {
 	public partial class Bk2Movie
 	{
+		private readonly Dictionary<string, string> _logStringCache = new();
+
 		protected IStringLog Log { get; set; } = StringLogUtil.MakeStringLog();
 		public string LogKey { get; set; }
 
@@ -56,8 +58,13 @@ namespace BizHawk.Client.Common
 			{
 				if (line.StartsWith('|'))
 				{
-					string previous = Log.Count > 0 ? Log[Log.Count - 1] : null;
-					Log.Add(line == previous ? previous : line);
+					if (_logStringCache.TryGetValue(line, out string value))
+						Log.Add(value);
+					else
+					{
+						_logStringCache[line] = line;
+						Log.Add(line);
+					}
 				}
 				else if (line.StartsWith("Frame "))
 				{
