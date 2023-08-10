@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -30,48 +29,41 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		[CoreConstructor(VSystemID.Raw.NES, Priority = CorePriority.Low)]
 		public QuickNES(byte[] file, QuickNESSettings settings, QuickNESSyncSettings syncSettings)
 		{
-			FP = OSTailoredCode.IsUnixHost
-				? (IFPCtrl) new Unix_FPCtrl()
-				: new Win32_FPCtrl();
-
-			using (FP.Save())
+			ServiceProvider = new BasicServiceProvider(this);
+			Context = QN.qn_new();
+			if (Context == IntPtr.Zero)
 			{
-				ServiceProvider = new BasicServiceProvider(this);
-				Context = QN.qn_new();
-				if (Context == IntPtr.Zero)
-				{
-					throw new InvalidOperationException($"{nameof(QN.qn_new)}() returned NULL");
-				}
+				throw new InvalidOperationException($"{nameof(QN.qn_new)}() returned NULL");
+			}
 
-				try
-				{
-					file = FixInesHeader(file);
-					LibQuickNES.ThrowStringError(QN.qn_loadines(Context, file, file.Length));
+			try
+			{
+				file = FixInesHeader(file);
+				LibQuickNES.ThrowStringError(QN.qn_loadines(Context, file, file.Length));
 
-					InitSaveRamBuff();
-					InitSaveStateBuff();
-					InitAudio();
-					InitMemoryDomains();
+				InitSaveRamBuff();
+				InitSaveStateBuff();
+				InitAudio();
+				InitMemoryDomains();
 
-					int mapper = 0;
-					string mappername = Marshal.PtrToStringAnsi(QN.qn_get_mapper(Context, ref mapper));
-					Console.WriteLine("QuickNES: Booted with Mapper #{0} \"{1}\"", mapper, mappername);
-					BoardName = mappername;
-					PutSettings((QuickNESSettings)settings ?? new QuickNESSettings());
+				int mapper = 0;
+				string mappername = Marshal.PtrToStringAnsi(QN.qn_get_mapper(Context, ref mapper));
+				Console.WriteLine("QuickNES: Booted with Mapper #{0} \"{1}\"", mapper, mappername);
+				BoardName = mappername;
+				PutSettings((QuickNESSettings)settings ?? new QuickNESSettings());
 
-					_syncSettings = (QuickNESSyncSettings)syncSettings ?? new QuickNESSyncSettings();
-					_syncSettingsNext = _syncSettings.Clone();
+				_syncSettings = (QuickNESSyncSettings)syncSettings ?? new QuickNESSyncSettings();
+				_syncSettingsNext = _syncSettings.Clone();
 
-					SetControllerDefinition();
-					ComputeBootGod();
+				SetControllerDefinition();
+				ComputeBootGod();
 
-					ConnectTracer();
-				}
-				catch
-				{
-					Dispose();
-					throw;
-				}
+				ConnectTracer();
+			}
+			catch
+			{
+				Dispose();
+				throw;
 			}
 		}
 
@@ -82,40 +74,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		int IVideoLogicalOffsets.ScreenX => _settings.ClipLeftAndRight ? 8 : 0;
 
 		int IVideoLogicalOffsets.ScreenY => _settings.ClipTopAndBottom ? 8 : 0;
-
-		private interface IFPCtrl : IDisposable
-		{
-			IDisposable Save();
-		}
-
-		private class Win32_FPCtrl : IFPCtrl
-		{
-			[Conditional("DEBUG")]
-			public static void PrintCurrentFP() => Console.WriteLine($"Current FP word: 0x{Win32Imports._control87(0, 0):X8}");
-
-			private uint cw;
-
-			public IDisposable Save()
-			{
-				cw = Win32Imports._control87(0, 0);
-				Win32Imports._control87(0x00000, 0x30000);
-				return this;
-			}
-
-			public void Dispose()
-			{
-				Win32Imports._control87(cw, 0x30000);
-			}
-		}
-
-		private class Unix_FPCtrl : IFPCtrl
-		{
-			public IDisposable Save() => this;
-
-			public void Dispose() {}
-		}
-
-		private readonly IFPCtrl FP;
 
 		public ControllerDefinition ControllerDefinition { get; private set; }
 
@@ -185,34 +143,32 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
 			CheckDisposed();
-			using (FP.Save())
-			{
-				if (controller.IsPressed("Power"))
-					QN.qn_reset(Context, true);
-				if (controller.IsPressed("Reset"))
-					QN.qn_reset(Context, false);
 
-				SetPads(controller, out var j1, out var j2);
+			if (controller.IsPressed("Power"))
+				QN.qn_reset(Context, true);
+			if (controller.IsPressed("Reset"))
+				QN.qn_reset(Context, false);
 
-				QN.qn_set_tracecb(Context, Tracer.IsEnabled() ? _traceCb : null);
+			SetPads(controller, out var j1, out var j2);
 
-				LibQuickNES.ThrowStringError(QN.qn_emulate_frame(Context, j1, j2));
-				IsLagFrame = QN.qn_get_joypad_read_count(Context) == 0;
-				if (IsLagFrame)
-					LagCount++;
+			QN.qn_set_tracecb(Context, Tracer.IsEnabled() ? _traceCb : null);
 
-				if (render)
-					Blit();
-				if (rendersound)
-					DrainAudio();
+			LibQuickNES.ThrowStringError(QN.qn_emulate_frame(Context, j1, j2));
+			IsLagFrame = QN.qn_get_joypad_read_count(Context) == 0;
+			if (IsLagFrame)
+				LagCount++;
 
-				_callBack1?.Invoke();
-				_callBack2?.Invoke();
+			if (render)
+				Blit();
+			if (rendersound)
+				DrainAudio();
 
-				Frame++;
+			_callBack1?.Invoke();
+			_callBack2?.Invoke();
 
-				return true;
-			}
+			Frame++;
+
+			return true;
 		}
 
 		private IntPtr Context;

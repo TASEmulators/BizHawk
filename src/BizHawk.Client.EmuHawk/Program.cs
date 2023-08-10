@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
+using BizHawk.BizInvoke;
 using BizHawk.Bizware.BizwareGL;
 using BizHawk.Bizware.Graphics;
 using BizHawk.Common;
@@ -284,6 +285,8 @@ namespace BizHawk.Client.EmuHawk
 					Util.DebugWriteLine("running as unprivileged user");
 				}
 			}
+
+			FPCtrl.FixFPCtrl();
 
 			var exitCode = 0;
 			try
