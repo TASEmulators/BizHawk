@@ -5,8 +5,8 @@ if [ -z "$CXX" ]; then export CXX="clang++"; fi
 
 # libc++ must be used currently as Citra fails to build with stdlibc++ due to a stdlibc++ bug
 
-rm -rf build
-mkdir build
+#rm -rf build
+#mkdir build
 export GLSLANG_VALIDATOR_DIR=$(realpath ./glslangValidator)
 cd build
 cmake ../citra -DENABLE_SDL2=OFF -DUSE_SYSTEM_SDL2=OFF -DENABLE_QT=OFF -DENABLE_QT_TRANSLATION=OFF -DENABLE_QT_UPDATER=OFF \
