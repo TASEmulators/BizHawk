@@ -18,9 +18,6 @@ using SharpDX.Mathematics.Interop;
 
 using static SDL2.SDL;
 
-using BizPrimitiveType = BizHawk.Bizware.BizwareGL.PrimitiveType;
-using D3D9PrimitiveType = SharpDX.Direct3D9.PrimitiveType;
-
 // todo - do a better job selecting shader model? base on caps somehow? try several and catch compilation exceptions (yuck, exceptions)
 namespace BizHawk.Bizware.Graphics
 {
@@ -927,7 +924,7 @@ namespace BizHawk.Bizware.Graphics
 			return ret;
 		}
 
-		private delegate void DrawPrimitiveUPDelegate(Device device, D3D9PrimitiveType primitiveType, int primitiveCount, IntPtr vertexStreamZeroDataRef, int vertexStreamZeroStride);
+		private delegate void DrawPrimitiveUPDelegate(Device device, PrimitiveType primitiveType, int primitiveCount, IntPtr vertexStreamZeroDataRef, int vertexStreamZeroStride);
 
 		private static readonly Lazy<DrawPrimitiveUPDelegate> _drawPrimitiveUP = new(() =>
 		{
@@ -935,23 +932,12 @@ namespace BizHawk.Bizware.Graphics
 			return (DrawPrimitiveUPDelegate)Delegate.CreateDelegate(typeof(DrawPrimitiveUPDelegate), mi!);
 		});
 
-		private void DrawPrimitiveUP(D3D9PrimitiveType primitiveType, int primitiveCount, IntPtr vertexStreamZeroDataRef, int vertexStreamZeroStride)
+		private void DrawPrimitiveUP(PrimitiveType primitiveType, int primitiveCount, IntPtr vertexStreamZeroDataRef, int vertexStreamZeroStride)
 			=> _drawPrimitiveUP.Value(_device, primitiveType, primitiveCount, vertexStreamZeroDataRef, vertexStreamZeroStride);
 
-		/// <exception cref="NotSupportedException"><paramref name="mode"/> is not <see cref="BizwareGL.PrimitiveType.TriangleStrip"/></exception>
-		public void DrawArrays(BizPrimitiveType mode, int first, int count)
+		public void Draw(IntPtr data, int count)
 		{
-			if (mode != BizPrimitiveType.TriangleStrip)
-			{
-				throw new NotSupportedException();
-			}
-
-			// for tristrip
-			var primCount = count - 2;
-
 			var pw = (PipelineWrapper)_currPipeline.Opaque;
-			var stride = pw.VertexStride;
-			var ptr = _pVertexData + first * stride;
 
 			// this is stupid, sharpdx only public exposes DrawUserPrimatives
 			// why is this bad? it takes in an array of T
@@ -959,11 +945,8 @@ namespace BizHawk.Bizware.Graphics
 			// since stride for us is just completely variable, this is no good
 			// DrawPrimitiveUP is internal so we have to use this hack to use it directly
 
-			DrawPrimitiveUP(D3D9PrimitiveType.TriangleStrip, primCount, ptr, stride);
+			DrawPrimitiveUP(PrimitiveType.TriangleStrip, count - 2, _pVertexData, pw.VertexStride);
 		}
-
-		public void BindArrayData(IntPtr pData)
-			=> _pVertexData = pData;
 
 		public void BeginScene()
 		{

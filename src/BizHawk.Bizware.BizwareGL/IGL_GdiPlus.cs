@@ -37,10 +37,6 @@ namespace BizHawk.Bizware.BizwareGL
 			return null;
 		}
 
-		public void BindArrayData(IntPtr pData)
-		{
-		}
-
 		public void FreeTexture(Texture2d tex)
 		{
 			var tw = (GDIPTextureWrapper)tex.Opaque;
@@ -88,7 +84,7 @@ namespace BizHawk.Bizware.BizwareGL
 		{
 		}
 
-		public void DrawArrays(PrimitiveType mode, int first, int count)
+		public void Draw(IntPtr data, int count)
 		{
 		}
 

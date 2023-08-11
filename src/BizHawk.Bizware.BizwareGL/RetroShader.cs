@@ -126,10 +126,8 @@ namespace BizHawk.Bizware.BizwareGL
 			pData[i++] = 1; pData[i] = v1;
 
 			Owner.SetBlendState(Owner.BlendNoneCopy);
-			Owner.BindArrayData(new(pData));
-			Owner.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
+			Owner.Draw(new(pData), 4);
 		}
-
 
 		public IGL Owner { get; }
 

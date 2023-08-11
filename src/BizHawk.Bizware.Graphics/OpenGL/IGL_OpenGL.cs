@@ -19,14 +19,11 @@ using BizHawk.Common;
 
 using Silk.NET.OpenGL.Legacy;
 
-using BizPrimitiveType = BizHawk.Bizware.BizwareGL.PrimitiveType;
-
 using BizShader = BizHawk.Bizware.BizwareGL.Shader;
 
 using BizTextureMagFilter = BizHawk.Bizware.BizwareGL.TextureMagFilter;
 using BizTextureMinFilter = BizHawk.Bizware.BizwareGL.TextureMinFilter;
 
-using GLPrimitiveType = Silk.NET.OpenGL.Legacy.PrimitiveType;
 using GLVertexAttribPointerType = Silk.NET.OpenGL.Legacy.VertexAttribPointerType;
 
 namespace BizHawk.Bizware.Graphics
@@ -369,11 +366,6 @@ namespace BizHawk.Bizware.Graphics
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)mode);
 		}
 
-		private IntPtr pVertexData;
-
-		public void BindArrayData(IntPtr pData)
-			=> pVertexData = pData;
-
 		private void LegacyBindArrayData(VertexLayout vertexLayout, IntPtr pData)
 		{
 			// DEPRECATED CRAP USED, NEEDED FOR ANCIENT SHADERS
@@ -426,19 +418,19 @@ namespace BizHawk.Bizware.Graphics
 #pragma warning restore CS0612
 		}
 
-		public void DrawArrays(BizPrimitiveType mode, int first, int count)
+		public void Draw(IntPtr data, int count)
 		{
-			var vertexLayout = _currPipeline?.VertexLayout;
-
-			if (vertexLayout == null || pVertexData == IntPtr.Zero)
+			if (_currPipeline == null)
 			{
-				throw new InvalidOperationException($"Tried to {nameof(DrawArrays)} without bound vertex info!");
+				throw new InvalidOperationException($"Tried to {nameof(Draw)} without pipeline!");
 			}
+
+			var vertexLayout = _currPipeline.VertexLayout;
 
 			if (_currPipeline.Memo != "xgui")
 			{
-				LegacyBindArrayData(vertexLayout, pVertexData);
-				GL.DrawArrays((GLPrimitiveType)mode, first, (uint)count); // these are the same enum
+				LegacyBindArrayData(vertexLayout, data);
+				GL.DrawArrays(PrimitiveType.TriangleStrip, 0, (uint)count);
 				return;
 			}
 
@@ -451,7 +443,7 @@ namespace BizHawk.Bizware.Graphics
 
 			unsafe
 			{
-				GL.BufferData(GLEnum.ArrayBuffer, new UIntPtr((uint)(count * stride)), (pVertexData + first * stride).ToPointer(), GLEnum.StaticDraw);
+				GL.BufferData(GLEnum.ArrayBuffer, new UIntPtr((uint)(count * stride)), data.ToPointer(), GLEnum.StaticDraw);
 
 				foreach (var (i, item) in vertexLayout.Items)
 				{
@@ -466,7 +458,7 @@ namespace BizHawk.Bizware.Graphics
 				}
 			}
 
-			GL.DrawArrays((GLPrimitiveType)mode, first, (uint)count); // these are the same enum
+			GL.DrawArrays(PrimitiveType.TriangleStrip, 0, (uint)count);
 
 			foreach (var (i, _) in vertexLayout.Items)
 			{

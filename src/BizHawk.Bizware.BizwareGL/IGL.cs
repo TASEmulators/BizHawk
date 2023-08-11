@@ -94,15 +94,12 @@ namespace BizHawk.Bizware.BizwareGL
 		void EndScene();
 
 		/// <summary>
-		/// Binds array data for use with the currently-bound pipeline's VertexLayout
+		/// Draws based on the currently set pipeline
+		/// data contains vertexes based on the pipeline's VertexLayout
+		/// count is the vertex count
+		/// Vertexes must form triangle strips
 		/// </summary>
-		void BindArrayData(IntPtr pData);
-
-		/// <summary>
-		/// Draws based on the currently set pipeline, VertexLayout and ArrayData.
-		/// Count is the VERT COUNT not the primitive count
-		/// </summary>
-		void DrawArrays(PrimitiveType mode, int first, int count);
+		void Draw(IntPtr data, int count);
 
 		/// <summary>
 		/// resolves the texture into a new BitmapBuffer

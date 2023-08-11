@@ -300,8 +300,7 @@ namespace BizHawk.Bizware.Graphics
 			};
 
 			PrepDrawSubrectInternal(art.BaseTexture);
-			Owner.BindArrayData(new(data));
-			Owner.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
+			Owner.Draw(new(data), 4);
 		}
 
 		private void PrepDrawSubrectInternal(Texture2d tex)
@@ -361,9 +360,7 @@ namespace BizHawk.Bizware.Graphics
 			pData[30] = CornerColors[3].Z;
 			pData[31] = CornerColors[3].W;
 
-			Owner.BindArrayData(new(pData));
-			Owner.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
-
+			Owner.Draw(new(pData), 4);
 #if DEBUG
 			Debug.Assert(BlendStateSet);
 #endif
