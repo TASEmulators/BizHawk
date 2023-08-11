@@ -332,6 +332,7 @@ namespace BizHawk.Bizware.Graphics
 		{
 			public uint vao;
 			public uint vbo;
+			public int bufferLen;
 		}
 
 		public VertexLayout CreateVertexLayout()
@@ -340,6 +341,7 @@ namespace BizHawk.Bizware.Graphics
 			{
 				vao = GL.GenVertexArray(),
 				vbo = GL.GenBuffer(),
+				bufferLen = 0,
 			};
 
 			return new(this, vlw);
@@ -443,7 +445,20 @@ namespace BizHawk.Bizware.Graphics
 
 			unsafe
 			{
-				GL.BufferData(GLEnum.ArrayBuffer, new UIntPtr((uint)(count * stride)), data.ToPointer(), GLEnum.StaticDraw);
+				var vertexes = new ReadOnlySpan<byte>(data.ToPointer(), count * stride);
+
+				// BufferData reallocs and BufferSubData doesn't, so only use the former if size changes
+				if (vertexes.Length != vlw.bufferLen)
+				{
+					GL.BufferData(GLEnum.ArrayBuffer, vertexes, GLEnum.DynamicDraw);
+				}
+				else
+				{
+					// I tried to do a CRC check to avoid BufferSubData calls, actually hurts performance
+					GL.BufferSubData(GLEnum.ArrayBuffer, 0, vertexes);
+				}
+
+				vlw.bufferLen = vertexes.Length;
 
 				foreach (var (i, item) in vertexLayout.Items)
 				{
