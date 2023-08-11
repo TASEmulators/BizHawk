@@ -37,12 +37,10 @@ namespace BizHawk.Bizware.Graphics
 		private IntPtr OffscreenNativeWindow;
 
 		// rendering state
-		private IntPtr _pVertexData;
 		private Pipeline _currPipeline;
 		private D3D9Control _currentControl;
 
 		// misc state
-		private RawColorBGRA _clearColor;
 		private CacheBlendState _rsBlendNoneVerbatim, _rsBlendNoneOpaque, _rsBlendNormal;
 		private readonly HashSet<RenderTarget> _renderTargets = new();
 
@@ -945,7 +943,7 @@ namespace BizHawk.Bizware.Graphics
 			// since stride for us is just completely variable, this is no good
 			// DrawPrimitiveUP is internal so we have to use this hack to use it directly
 
-			DrawPrimitiveUP(PrimitiveType.TriangleStrip, count - 2, _pVertexData, pw.VertexStride);
+			DrawPrimitiveUP(PrimitiveType.TriangleStrip, count - 2, data, pw.VertexStride);
 		}
 
 		public void BeginScene()
