@@ -19,14 +19,9 @@ namespace BizHawk.Bizware.BizwareGL
 		EDispMethod DispMethodEnum { get; }
 
 		/// <summary>
-		/// Clears the specified buffer parts
+		/// Clears the color buffer with the specified color
 		/// </summary>
-		void Clear(ClearBufferMask mask);
-
-		/// <summary>
-		/// Sets the current clear color
-		/// </summary>
-		void SetClearColor(Color color);
+		void ClearColor(Color color);
 
 		/// <summary>
 		/// compile a fragment shader. This is the simplified method. A more complex method may be added later which will accept multiple sources and preprocessor definitions independently
@@ -89,11 +84,6 @@ namespace BizHawk.Bizware.BizwareGL
 		void SetPipelineUniform(PipelineUniform uniform, bool value);
 
 		/// <summary>
-		/// Binds array data for use with the currently-bound pipeline's VertexLayout
-		/// </summary>
-		void BindArrayData(IntPtr pData);
-
-		/// <summary>
 		/// Begins a rendering scene; use before doing any draw calls, as per normal
 		/// </summary>
 		void BeginScene();
@@ -102,6 +92,11 @@ namespace BizHawk.Bizware.BizwareGL
 		/// Indicates end of scene rendering; use after all draw calls as per normal
 		/// </summary>
 		void EndScene();
+
+		/// <summary>
+		/// Binds array data for use with the currently-bound pipeline's VertexLayout
+		/// </summary>
+		void BindArrayData(IntPtr pData);
 
 		/// <summary>
 		/// Draws based on the currently set pipeline, VertexLayout and ArrayData.

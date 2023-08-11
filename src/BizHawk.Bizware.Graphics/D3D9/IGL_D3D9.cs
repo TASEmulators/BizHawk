@@ -182,17 +182,8 @@ namespace BizHawk.Bizware.Graphics
 			}
 		}
 
-		public void Clear(ClearBufferMask mask)
-		{
-			var flags = ClearFlags.None;
-			if ((mask & ClearBufferMask.ColorBufferBit) != 0) flags |= ClearFlags.Target;
-			if ((mask & ClearBufferMask.DepthBufferBit) != 0) flags |= ClearFlags.ZBuffer;
-			if ((mask & ClearBufferMask.StencilBufferBit) != 0) flags |= ClearFlags.Stencil;
-			_device.Clear(flags, _clearColor, 0.0f, 0);
-		}
-
-		public void SetClearColor(Color color)
-			=> _clearColor = color.ToSharpDXColor();
+		public void ClearColor(Color color)
+			=> _device.Clear(ClearFlags.Target, color.ToSharpDXColor(), 0.0f, 0);
 
 		public IBlendState CreateBlendState(
 			BlendingFactorSrc colorSource,

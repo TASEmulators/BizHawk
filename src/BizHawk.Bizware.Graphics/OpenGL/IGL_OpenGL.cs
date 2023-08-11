@@ -19,7 +19,6 @@ using BizHawk.Common;
 
 using Silk.NET.OpenGL.Legacy;
 
-using BizClearBufferMask = BizHawk.Bizware.BizwareGL.ClearBufferMask;
 using BizPrimitiveType = BizHawk.Bizware.BizwareGL.PrimitiveType;
 
 using BizShader = BizHawk.Bizware.BizwareGL.Shader;
@@ -27,7 +26,6 @@ using BizShader = BizHawk.Bizware.BizwareGL.Shader;
 using BizTextureMagFilter = BizHawk.Bizware.BizwareGL.TextureMagFilter;
 using BizTextureMinFilter = BizHawk.Bizware.BizwareGL.TextureMinFilter;
 
-using GLClearBufferMask = Silk.NET.OpenGL.Legacy.ClearBufferMask;
 using GLPrimitiveType = Silk.NET.OpenGL.Legacy.PrimitiveType;
 using GLVertexAttribPointerType = Silk.NET.OpenGL.Legacy.VertexAttribPointerType;
 
@@ -77,14 +75,10 @@ namespace BizHawk.Bizware.Graphics
 			GL.Dispose();
 		}
 
-		public void Clear(BizClearBufferMask mask)
-		{
-			GL.Clear((GLClearBufferMask)mask); // these are the same enum
-		}
-
-		public void SetClearColor(Color color)
+		public void ClearColor(Color color)
 		{
 			GL.ClearColor(color);
+			GL.Clear(ClearBufferMask.ColorBufferBit);
 		}
 
 		public IGraphicsControl Internal_CreateGraphicsControl()

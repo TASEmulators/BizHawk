@@ -910,8 +910,7 @@ namespace BizHawk.Client.Common
 			ActivateGraphicsControlContext();
 			_gl.BeginScene();
 			_gl.BindRenderTarget(null);
-			_gl.SetClearColor(Color.Black);
-			_gl.Clear(ClearBufferMask.ColorBufferBit);
+			_gl.ClearColor(Color.Black);
 			_gl.EndScene();
 			SwapBuffersOfGraphicsControl();
 		}

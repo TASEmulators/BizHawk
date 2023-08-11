@@ -395,8 +395,7 @@ namespace BizHawk.Client.Common.Filters
 #endif
 
 			// TODO: this could be more efficient (draw only in gap)
-			FilterProgram.GL.SetClearColor(Color.Black);
-			FilterProgram.GL.Clear(ClearBufferMask.ColorBufferBit);
+			FilterProgram.GL.ClearColor(Color.Black);
 
 			FilterProgram.GuiRenderer.Begin(outputSize);
 			FilterProgram.GuiRenderer.SetBlendState(FilterProgram.GL.BlendNoneCopy);
@@ -662,8 +661,7 @@ namespace BizHawk.Client.Common.Filters
 				return;
 			}
 
-			FilterProgram.GL.SetClearColor(Color.FromArgb(BackgroundColor));
-			FilterProgram.GL.Clear(ClearBufferMask.ColorBufferBit);
+			FilterProgram.GL.ClearColor(Color.FromArgb(BackgroundColor));
 
 			FilterProgram.GuiRenderer.Begin(OutputSize.Width, OutputSize.Height);
 			FilterProgram.GuiRenderer.SetBlendState(FilterProgram.GL.BlendNoneCopy);

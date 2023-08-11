@@ -26,14 +26,8 @@ namespace BizHawk.Bizware.BizwareGL
 			MyBufferedGraphicsContext.Dispose();
 		}
 
-		public void Clear(ClearBufferMask mask)
-		{
-			var g = GetCurrentGraphics();
-			if ((mask & ClearBufferMask.ColorBufferBit) != 0)
-			{
-				g.Clear(_currentClearColor);
-			}
-		}
+		public void ClearColor(Color color)
+			=> GetCurrentGraphics().Clear(color);
 
 		public string API => "GDIPLUS";
 
@@ -41,13 +35,6 @@ namespace BizHawk.Bizware.BizwareGL
 					BlendingFactorSrc alphaSource, BlendEquationMode alphaEquation, BlendingFactorDest alphaDest)
 		{
 			return null;
-		}
-
-		private Color _currentClearColor = Color.Transparent;
-
-		public void SetClearColor(Color color)
-		{
-			_currentClearColor = color;
 		}
 
 		public void BindArrayData(IntPtr pData)
