@@ -3,6 +3,49 @@
 #include <emulibc.h>
 #include <waterboxcore.h>
 
+struct CallinFenvGuard {
+	nall::float_env saved_fenv;
+	nall::float_env& fenv;
+
+	CallinFenvGuard(float_env& fenv_) : fenv(fenv_)
+	{
+		if (fenv.getRound() != saved_fenv.getRound())
+		{
+			fenv.setRound(fenv.getRound());
+		}
+	}
+
+	~CallinFenvGuard()
+	{
+		if (fenv.getRound() != saved_fenv.getRound())
+		{
+			saved_fenv.setRound(saved_fenv.getRound());
+		}
+	}
+};
+
+struct CallbackFenvGuard {
+	nall::float_env& saved_fenv;
+
+	CallbackFenvGuard(float_env& saved_fenv_) : saved_fenv(saved_fenv_)
+	{
+		nall::float_env cur_fenv;
+		if (cur_fenv.getRound() != nall::float_env::toNearest)
+		{
+			cur_fenv.setRound(nall::float_env::toNearest);
+		}
+	}
+
+	~CallbackFenvGuard()
+	{
+		nall::float_env cur_fenv;
+		if (cur_fenv.getRound() != saved_fenv.getRound())
+		{
+			saved_fenv.setRound(saved_fenv.getRound());
+		}
+	}
+};
+
 typedef enum
 {
 	Unplugged,
@@ -80,7 +123,11 @@ auto BizPlatform::input(ares::Node::Input::Input node) -> void
 		if (input->name() == "Start" || input->name() == "Left Click")
 		{
 			lagged = false;
-			if (inputcb) inputcb();
+			if (inputcb)
+			{
+				CallbackFenvGuard guard(ares::Nintendo64::cpu.fenv);
+				inputcb();
+			}
 		}
 	}
 }
@@ -480,6 +527,8 @@ namespace angrylion
 
 ECL_EXPORT bool Init(LoadData* loadData, ControllerType* controllers, bool isPal, u64 initTime)
 {
+	CallinFenvGuard guard(ares::Nintendo64::cpu.fenv);
+
 	platform = new BizPlatform;
 	platform->bizpak = new vfs::directory;
 	ares::platform = platform;
@@ -802,6 +851,8 @@ struct MyFrameInfo : public FrameInfo
 
 ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 {
+	CallinFenvGuard guard(ares::Nintendo64::cpu.fenv);
+
 	ares::Nintendo64::BobDeinterlace = f->BobDeinterlace;
 	ares::Nintendo64::FastVI = f->FastVI;
 
