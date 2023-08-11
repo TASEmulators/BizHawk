@@ -42,12 +42,12 @@ auto PI::ioRead(u32 address) -> u32 {
 
   if(address == 7) {
     //PI_BSD_DOM1_PGS
-    data.bit(0,7) = bsd1.pageSize;
+    data.bit(0,3) = bsd1.pageSize;
   }
 
   if(address == 8) {
     //PI_BSD_DOM1_RLS
-    data.bit(0,7) = bsd1.releaseDuration;
+    data.bit(0,1) = bsd1.releaseDuration;
   }
 
   if(address == 9) {
@@ -98,7 +98,7 @@ auto PI::ioWrite(u32 address, u32 data_) -> void {
     //PI_READ_LENGTH
     io.readLength = n24(data);
     io.dmaBusy = 1;
-    queue.insert(Queue::PI_DMA_Read, io.readLength * 36);
+    queue.insert(Queue::PI_DMA_Read, dmaDuration(true));
     dmaRead();
   }
 
@@ -106,7 +106,7 @@ auto PI::ioWrite(u32 address, u32 data_) -> void {
     //PI_WRITE_LENGTH
     io.writeLength = n24(data);
     io.dmaBusy = 1;
-    queue.insert(Queue::PI_DMA_Write, io.writeLength * 36);
+    queue.insert(Queue::PI_DMA_Write, dmaDuration(false));
     dmaWrite();
   }
 
@@ -136,12 +136,12 @@ auto PI::ioWrite(u32 address, u32 data_) -> void {
 
   if(address == 7) {
     //PI_BSD_DOM1_PGS
-    bsd1.pageSize = data.bit(0,7);
+    bsd1.pageSize = data.bit(0,3);
   }
 
   if(address == 8) {
     //PI_BSD_DOM1_RLS
-    bsd1.releaseDuration = data.bit(0,7);
+    bsd1.releaseDuration = data.bit(0,1);
   }
 
   if(address == 9) {

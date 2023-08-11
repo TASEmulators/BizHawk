@@ -43,7 +43,7 @@ using namespace nall::primitives;
 
 namespace ares {
   static const string Name       = "ares";
-  static const string Version    = "132";
+  static const string Version    = "133";
   static const string Copyright  = "ares team, Near";
   static const string License    = "ISC";
   static const string LicenseURI = "https://opensource.org/licenses/ISC";

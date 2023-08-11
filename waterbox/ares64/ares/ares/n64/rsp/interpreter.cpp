@@ -6,7 +6,7 @@
 #define VS vpu.r[VSn]
 #define VT vpu.r[VTn]
 
-#define jp(id, name, ...) case id: return decoder##name(__VA_ARGS__)
+#define jp(id, name, ...) case id: return interpreter##name(__VA_ARGS__)
 #define op(id, name, ...) case id: return name(__VA_ARGS__)
 #define br(id, name, ...) case id: return name(__VA_ARGS__)
 #define vu(id, name, ...) case id: \
@@ -41,7 +41,7 @@
 #define IMMu16 u16(OP)
 #define IMMu26 (OP & 0x03ff'ffff)
 
-auto RSP::decoderEXECUTE() -> void {
+auto RSP::interpreterEXECUTE() -> void {
   switch(OP >> 26) {
   jp(0x00, SPECIAL);
   jp(0x01, REGIMM);
@@ -110,7 +110,7 @@ auto RSP::decoderEXECUTE() -> void {
   }
 }
 
-auto RSP::decoderSPECIAL() -> void {
+auto RSP::interpreterSPECIAL() -> void {
   switch(OP & 0x3f) {
   op(0x00, SLL, RD, RT, SA);
   op(0x01, INVALID);
@@ -179,7 +179,7 @@ auto RSP::decoderSPECIAL() -> void {
   }
 }
 
-auto RSP::decoderREGIMM() -> void {
+auto RSP::interpreterREGIMM() -> void {
   switch(OP >> 16 & 0x1f) {
   br(0x00, BLTZ, RS, IMMi16);
   br(0x01, BGEZ, RS, IMMi16);
@@ -216,7 +216,7 @@ auto RSP::decoderREGIMM() -> void {
   }
 }
 
-auto RSP::decoderSCC() -> void {
+auto RSP::interpreterSCC() -> void {
   switch(OP >> 21 & 0x1f) {
   op(0x00, MFC0, RT, RDn);
   op(0x01, INVALID);  //DMFC0
@@ -237,7 +237,7 @@ auto RSP::decoderSCC() -> void {
   }
 }
 
-auto RSP::decoderVU() -> void {
+auto RSP::interpreterVU() -> void {
   #define E (OP >> 7 & 15)
   switch(OP >> 21 & 0x1f) {
   vu(0x00, MFC2, RT, VS);
@@ -331,7 +331,7 @@ auto RSP::decoderVU() -> void {
   #undef DE
 }
 
-auto RSP::decoderLWC2() -> void {
+auto RSP::interpreterLWC2() -> void {
   #define E     (OP >> 7 & 15)
   #define IMMi7 i7(OP)
   switch(OP >> 11 & 0x1f) {
@@ -352,7 +352,7 @@ auto RSP::decoderLWC2() -> void {
   #undef IMMi7
 }
 
-auto RSP::decoderSWC2() -> void {
+auto RSP::interpreterSWC2() -> void {
   #define E     (OP >> 7 & 15)
   #define IMMi7 i7(OP)
   switch(OP >> 11 & 0x1f) {
@@ -390,6 +390,7 @@ auto RSP::INVALID() -> void {
 #undef jp
 #undef op
 #undef br
+#undef vu
 
 #undef OP
 #undef RD

@@ -1,4 +1,4 @@
-auto RDRAM::readWord(u32 address, u32& cycles) -> u32 {
+auto RDRAM::readWord(u32 address, Thread& thread) -> u32 {
   u32 chipID = address >> 13 & 3;
   auto& chip = chips[chipID];
   address = (address & 0x3ff) >> 2;
@@ -63,7 +63,7 @@ auto RDRAM::readWord(u32 address, u32& cycles) -> u32 {
   return data;
 }
 
-auto RDRAM::writeWord(u32 address, u32 data, u32& cycles) -> void {
+auto RDRAM::writeWord(u32 address, u32 data, Thread& thread) -> void {
   u32 chipID = address >> 13 & 3;
   auto& chip = chips[chipID];
   address = (address & 0x3ff) >> 2;

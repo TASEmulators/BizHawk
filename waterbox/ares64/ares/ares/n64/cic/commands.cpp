@@ -51,7 +51,6 @@ auto CIC::cmdChallenge() -> void {
     fifo.write(0); // write 0 bit
     for (auto i : range(30)) fifo.writeNibble(data[i]);
     state = Run;
-    printf("CIC challenge complete %d\n", fifo.size());
   }
 }
 

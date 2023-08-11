@@ -1,4 +1,4 @@
-auto RI::readWord(u32 address, u32& cycles) -> u32 {
+auto RI::readWord(u32 address, Thread& thread) -> u32 {
   address = (address & 0xfffff) >> 2;
   n32 data = 0;
 
@@ -30,7 +30,7 @@ auto RI::readWord(u32 address, u32& cycles) -> u32 {
       //after a cold boot on real hardware with no expansion pak and using the
       //CIC-NUS-6102 IPL3, upon reaching the test ROM's entry point the count
       //register was measured to be ~0x1184000.
-      cpu.step(17'641'000);
+      cpu.step(17'641'000 * 2);
     }
   }
 
@@ -58,7 +58,7 @@ auto RI::readWord(u32 address, u32& cycles) -> u32 {
   return data;
 }
 
-auto RI::writeWord(u32 address, u32 data_, u32& cycles) -> void {
+auto RI::writeWord(u32 address, u32 data_, Thread& thread) -> void {
   address = (address & 0xfffff) >> 2;
   n32 data = data_;
 

@@ -2,12 +2,15 @@
 
 namespace ares::Memory {
 
+constexpr u32 fixedBufferSize = 8_MiB;
+
 #if defined(PLATFORM_MACOS)
-//stub for unsupported platforms
+//dynamic allocation for unsupported platforms
 FixedAllocator::FixedAllocator() {
+  _allocator.resize(fixedBufferSize, bump_allocator::executable);
 }
 #else
-alignas(4096) u8 fixedBuffer[8_MiB];
+alignas(4096) u8 fixedBuffer[fixedBufferSize];
 
 FixedAllocator::FixedAllocator() {
   _allocator.resize(sizeof(fixedBuffer), 0, fixedBuffer);

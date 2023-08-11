@@ -490,10 +490,10 @@ auto RSP::Disassembler::sccRegisterName(u32 index) const -> string {
 }
 
 auto RSP::Disassembler::sccRegisterValue(u32 index) const -> string {
-  u32 value = 0; u32 cycles;
-  if(index <= 6) value = rsp.readWord((index & 7) << 2, cycles);
+  u32 value = 0; Thread thread;
+  if(index <= 6) value = rsp.readWord((index & 7) << 2, thread);
   if(index == 7) value = self.status.semaphore;  //rsp.readSCC(7) has side-effects
-  if(index >= 8) value = rdp.readWord((index & 7) << 2, cycles);
+  if(index >= 8) value = rdp.readWord((index & 7) << 2, thread);
   if(showValues) return {sccRegisterName(index), hint("{$", hex(value, 8L), "}")};
   return sccRegisterName(index);
 }

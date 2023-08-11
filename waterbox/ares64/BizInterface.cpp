@@ -184,7 +184,6 @@ static inline SaveType DetectSaveType(u8* rom)
 	if (id == "NCR") ret = EEPROM512;
 	if (id == "NEA") ret = EEPROM512;
 	if (id == "NPW") ret = EEPROM512;
-	if (id == "NPM") ret = EEPROM512;
 	if (id == "NPY") ret = EEPROM512;
 	if (id == "NPT") ret = EEPROM512;
 	if (id == "NRA") ret = EEPROM512;
@@ -194,7 +193,6 @@ static inline SaveType DetectSaveType(u8* rom)
 	if (id == "NK2") ret = EEPROM512;
 	if (id == "NSV") ret = EEPROM512;
 	if (id == "NFX") ret = EEPROM512;
-	if (id == "NFP") ret = EEPROM512;
 	if (id == "NS6") ret = EEPROM512;
 	if (id == "NNA") ret = EEPROM512;
 	if (id == "NRS") ret = EEPROM512;
@@ -202,7 +200,6 @@ static inline SaveType DetectSaveType(u8* rom)
 	if (id == "NSC") ret = EEPROM512;
 	if (id == "NSA") ret = EEPROM512;
 	if (id == "NB6") ret = EEPROM512;
-	if (id == "NSM") ret = EEPROM512;
 	if (id == "NSS") ret = EEPROM512;
 	if (id == "NTX") ret = EEPROM512;
 	if (id == "NT6") ret = EEPROM512;
@@ -215,12 +212,13 @@ static inline SaveType DetectSaveType(u8* rom)
 	if (id == "NIR") ret = EEPROM512;
 	if (id == "NVL") ret = EEPROM512;
 	if (id == "NVY") ret = EEPROM512;
-	if (id == "NWR") ret = EEPROM512;
 	if (id == "NWC") ret = EEPROM512;
 	if (id == "NAD") ret = EEPROM512;
 	if (id == "NWU") ret = EEPROM512;
 	if (id == "NYK") ret = EEPROM512;
 	if (id == "NMZ") ret = EEPROM512;
+	if (id == "NSM") ret = EEPROM512;
+	if (id == "NWR") ret = EEPROM512;
 	if (id == "NDK" && region_code == 'J') ret = EEPROM512;
 	if (id == "NWT" && region_code == 'J') ret = EEPROM512;
 
@@ -236,7 +234,6 @@ static inline SaveType DetectSaveType(u8* rom)
 	if (id == "NMX") ret = EEPROM2KB;
 	if (id == "NGC") ret = EEPROM2KB;
 	if (id == "NIM") ret = EEPROM2KB;
-	if (id == "NK4") ret = EEPROM2KB;
 	if (id == "NNB") ret = EEPROM2KB;
 	if (id == "NMV") ret = EEPROM2KB;
 	if (id == "NM8") ret = EEPROM2KB;
@@ -248,16 +245,17 @@ static inline SaveType DetectSaveType(u8* rom)
 	if (id == "NR7") ret = EEPROM2KB;
 	if (id == "NEP") ret = EEPROM2KB;
 	if (id == "NYS") ret = EEPROM2KB;
+	if (id == "NK4") ret = EEPROM2KB;
 	if (id == "ND3" && region_code == 'J') ret = EEPROM2KB;
 	if (id == "ND4" && region_code == 'J') ret = EEPROM2KB;
 
 	if (id == "NTE") ret = SRAM32KB;
 	if (id == "NVB") ret = SRAM32KB;
+	if (id == "NB5") ret = SRAM32KB;
 	if (id == "CFZ") ret = SRAM32KB;
 	if (id == "NFZ") ret = SRAM32KB;
 	if (id == "NSI") ret = SRAM32KB;
 	if (id == "NG6") ret = SRAM32KB;
-	if (id == "N3H") ret = SRAM32KB;
 	if (id == "NGP") ret = SRAM32KB;
 	if (id == "NYW") ret = SRAM32KB;
 	if (id == "NHY") ret = SRAM32KB;
@@ -278,7 +276,7 @@ static inline SaveType DetectSaveType(u8* rom)
 	if (id == "NUM") ret = SRAM32KB;
 	if (id == "NOB") ret = SRAM32KB;
 	if (id == "CPS") ret = SRAM32KB;
-	if (id == "NB5") ret = SRAM32KB;
+	if (id == "NPM") ret = SRAM32KB;
 	if (id == "NRE") ret = SRAM32KB;
 	if (id == "NAL") ret = SRAM32KB;
 	if (id == "NT3") ret = SRAM32KB;
@@ -288,6 +286,7 @@ static inline SaveType DetectSaveType(u8* rom)
 	if (id == "NWL") ret = SRAM32KB;
 	if (id == "NW2") ret = SRAM32KB;
 	if (id == "NWX") ret = SRAM32KB;
+	if (id == "N3H" && region_code == 'J') ret = SRAM32KB;
 	if (id == "NK4" && region_code == 'J' && revision < 2) ret = SRAM32KB;
 
 	if (id == "CDZ") ret = SRAM96KB;
@@ -697,7 +696,7 @@ static u8 PeekFunc(u64 address)
 		}
 	}
 
-	u32 unused = 0;
+	ares::Nintendo64::Thread unused;
 	return ares::Nintendo64::bus.read<ares::Nintendo64::Byte>(addr, unused);
 }
 
@@ -705,7 +704,7 @@ static void SysBusAccess(u8* buffer, u64 address, u64 count, bool write)
 {
 	if (write)
 	{
-		u32 unused = 0;
+		ares::Nintendo64::Thread unused;
 		while (count--)
 			ares::Nintendo64::bus.write<ares::Nintendo64::Byte>(address++, *buffer++, unused);
 	}

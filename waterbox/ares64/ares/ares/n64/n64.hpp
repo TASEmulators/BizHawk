@@ -19,6 +19,10 @@ using v128 = __m128i;
 using v128 = __m128i;
 #endif
 
+#if defined(VULKAN)
+  #include <n64/vulkan/vulkan.hpp>
+#endif
+
 namespace ares::Nintendo64 {
   auto enumerate() -> vector<string>;
   auto load(Node::System& node, string name) -> bool;
@@ -37,6 +41,10 @@ namespace ares::Nintendo64 {
   struct Thread {
     auto reset() -> void {
       clock = 0;
+    }
+
+    auto step(u32 clocks) -> void {
+      clock += clocks;
     }
 
     auto serialize(serializer& s) -> void {
