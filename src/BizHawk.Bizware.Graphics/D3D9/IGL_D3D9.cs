@@ -547,7 +547,12 @@ namespace BizHawk.Bizware.Graphics
 			public TextureFilter MinFilter = TextureFilter.Point, MagFilter = TextureFilter.Point;
 		}
 
-		public VertexLayout CreateVertexLayout() => new(this, new IntPtr(0));
+		public VertexLayout CreateVertexLayout()
+			=> new(this, null);
+
+		public void Internal_FreeVertexLayout(VertexLayout layout)
+		{
+		}
 
 		public void BindPipeline(Pipeline pipeline)
 		{

@@ -20,9 +20,11 @@ namespace BizHawk.Bizware.BizwareGL
 			VertexLayout = vertexLayout;
 			Available = available;
 
-			//create the uniforms from the info list we got
-			if(!Available)
+			// create the uniforms from the info list we got
+			if (!Available)
+			{
 				return;
+			}
 
 			UniformsDictionary = new(this);
 			foreach (var ui in uniforms)

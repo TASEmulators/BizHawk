@@ -8,9 +8,6 @@ namespace BizHawk.Bizware.Graphics
 {
 	internal class OpenGLControl : Control, IGraphicsControl
 	{
-		private readonly bool _openGL3;
-		private readonly Action _contextChangeCallback;
-
 		public SDL2OpenGLContext Context { get; private set; }
 
 		public RenderTargetWrapper RenderTargetWrapper
@@ -19,11 +16,8 @@ namespace BizHawk.Bizware.Graphics
 			set => throw new NotImplementedException();
 		}
 
-		public OpenGLControl(bool openGL3, Action contextChangeCallback)
+		public OpenGLControl()
 		{
-			_openGL3 = openGL3;
-			_contextChangeCallback = contextChangeCallback;
-
 			// according to OpenTK, these are the styles we want to set
 			SetStyle(ControlStyles.Opaque, true);
 			SetStyle(ControlStyles.UserPaint, true);
@@ -54,19 +48,12 @@ namespace BizHawk.Bizware.Graphics
 		protected override void OnHandleCreated(EventArgs e)
 		{
 			base.OnHandleCreated(e);
-			Context = new(Handle, _openGL3 ? 3 : 2, 0, false, false);
-			_contextChangeCallback();
+			Context = new(Handle, 3, 0, false, false);
 		}
 
 		protected override void OnHandleDestroyed(EventArgs e)
 		{
 			base.OnHandleDestroyed(e);
-
-			if (Context.IsCurrent)
-			{
-				_contextChangeCallback();
-			}
-
 			Context.Dispose();
 			Context = null;
 		}
@@ -84,11 +71,7 @@ namespace BizHawk.Bizware.Graphics
 			}
 			else
 			{
-				if (!Context.IsCurrent)
-				{
-					Context.MakeContextCurrent();
-					_contextChangeCallback();
-				}
+				Context.MakeContextCurrent();
 			}
 		}
 
@@ -106,7 +89,6 @@ namespace BizHawk.Bizware.Graphics
 		public void End()
 		{
 			SDL2OpenGLContext.MakeNoneCurrent();
-			_contextChangeCallback();
 		}
 
 		public void SwapBuffers()

@@ -250,17 +250,17 @@ namespace BizHawk.Bizware.BizwareGL
 		void BindRenderTarget(RenderTarget rt);
 
 		/// <summary>
-		/// returns a string representing the API employed by this context
+		/// Returns a string representing the API employed by this context
 		/// </summary>
 		string API { get; }
 
 		/// <summary>
-		/// frees the provided render target. Same as disposing the resource.
+		/// Frees the provided render target. Same as disposing the resource.
 		/// </summary>
 		void FreeRenderTarget(RenderTarget rt);
 
 		/// <summary>
-		/// frees the provided texture. Same as disposing the resource.
+		/// Frees the provided texture. Same as disposing the resource.
 		/// </summary>
 		void FreeTexture(Texture2d tex);
 
@@ -270,9 +270,14 @@ namespace BizHawk.Bizware.BizwareGL
 		void FreePipeline(Pipeline pipeline);
 
 		/// <summary>
-		/// Frees the provided texture. For internal use only.
+		/// Frees the provided shader. For internal use only.
 		/// </summary>
 		void Internal_FreeShader(Shader shader);
+
+		/// <summary>
+		/// Frees the provided vertex layout. For internal use only.
+		/// </summary>
+		void Internal_FreeVertexLayout(VertexLayout vertexLayout);
 
 		IGraphicsControl Internal_CreateGraphicsControl();
 	}

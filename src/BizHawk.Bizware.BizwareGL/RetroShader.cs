@@ -62,6 +62,7 @@ namespace BizHawk.Bizware.BizwareGL
 		public void Dispose()
 		{
 			Pipeline.Dispose();
+			VertexLayout.Release();
 		}
 
 		public void Bind()

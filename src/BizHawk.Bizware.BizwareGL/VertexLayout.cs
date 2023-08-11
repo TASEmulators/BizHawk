@@ -10,8 +10,6 @@ namespace BizHawk.Bizware.BizwareGL
 	/// </summary>
 	public class VertexLayout
 	{
-		//TODO - could refactor to use vertex array objects? check opengl profile requirements (answer: 3.0. don't want to do this.)
-
 		public VertexLayout(IGL owner, object opaque)
 		{
 			Owner = owner;
@@ -29,10 +27,7 @@ namespace BizHawk.Bizware.BizwareGL
 			RefCount--;
 			if (RefCount <= 0)
 			{
-				// nothing like this yet
-#if false
-				Available = false;
-#endif
+				Owner.Internal_FreeVertexLayout(this);
 			}
 		}
 

@@ -93,6 +93,10 @@ namespace BizHawk.Bizware.BizwareGL
 		public VertexLayout CreateVertexLayout()
 			=> new(this, null);
 
+		public void Internal_FreeVertexLayout(VertexLayout layout)
+		{
+		}
+
 		public void SetTextureWrapMode(Texture2d tex, bool clamp)
 		{
 		}

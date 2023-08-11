@@ -72,12 +72,15 @@ namespace BizHawk.Bizware.Graphics
 			Flush(); //don't really need to flush with current implementation. we might as well roll modulate color into it too.
 			if (colors.Length != 4) throw new ArgumentException("array must be size 4", nameof(colors));
 			for (var i = 0; i < 4; i++)
+			{
 				CornerColors[i] = colors[i];
+			}
 		}
 
 		public void Dispose()
 		{
 			DefaultPipeline.Dispose();
+			VertexLayout.Release();
 		}
 
 		/// <exception cref="InvalidOperationException"><see cref="IsActive"/> is <see langword="true"/></exception>
@@ -89,9 +92,9 @@ namespace BizHawk.Bizware.Graphics
 			Flush();
 			CurrPipeline = pipeline;
 
-			//clobber state cache
+			// clobber state cache
 			sTexture = null;
-			//save the modulate color? user beware, I guess, for now.
+			// save the modulate color? user beware, I guess, for now.
 		}
 
 		public void SetDefaultPipeline()
@@ -379,13 +382,13 @@ namespace BizHawk.Bizware.Graphics
 		private Pipeline CurrPipeline;
 		private readonly Pipeline DefaultPipeline;
 
-		//state cache
+		// state cache
 		private Texture2d sTexture;
 #if DEBUG
 		private bool BlendStateSet;
 #endif
 
-//shaders are hand-coded for each platform to make sure they stay as fast as possible
+		// shaders are hand-coded for each platform to make sure they stay as fast as possible
 
 		public const string DefaultShader_d3d9 = @"
 //vertex shader uniforms
@@ -441,12 +444,9 @@ float4 psmain(PS_INPUT src) : COLOR
 uniform mat4 um44Modelview, um44Projection;
 uniform vec4 uModulateColor;
 
-//attribute vec2 aPosition : gl_Vertex;
-//attribute vec2 aTexcoord : gl_MultiTexCoord0;
-//attribute vec4 aColor : gl_Color;
-#define aPosition vec2(gl_Vertex.xy)
-#define aTexcoord vec2(gl_MultiTexCoord0.xy)
-#define aColor gl_Color
+attribute vec2 aPosition;
+attribute vec2 aTexcoord;
+attribute vec4 aColor;
 
 varying vec2 vTexcoord0;
 varying vec4 vCornerColor;

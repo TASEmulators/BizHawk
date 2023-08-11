@@ -8,15 +8,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Numerics;
 
 using BizHawk.Bizware.BizwareGL;
 using BizHawk.Common;
 
 using Silk.NET.OpenGL.Legacy;
-using Silk.NET.OpenGL.Legacy.Extensions.EXT;
 
 using BizClearBufferMask = BizHawk.Bizware.BizwareGL.ClearBufferMask;
 using BizPrimitiveType = BizHawk.Bizware.BizwareGL.PrimitiveType;
@@ -39,10 +40,7 @@ namespace BizHawk.Bizware.Graphics
 	{
 		public EDispMethod DispMethodEnum => EDispMethod.OpenGL;
 
-		private static readonly bool _supportsOpenGL3 = OpenGLVersion.SupportsVersion(3, 0);
-
 		private readonly GL GL;
-		private readonly ExtFramebufferObject EXT;
 
 		// rendering state
 		private Pipeline _currPipeline;
@@ -50,99 +48,20 @@ namespace BizHawk.Bizware.Graphics
 
 		public string API => "OPENGL";
 
-		// this IGL either requires at least OpenGL 3.0, or OpenGL 2.0 + the EXT_framebuffer_object or ARB_framebuffer_object extension present
-		private static readonly Lazy<bool> _available = new(() =>
-		{
-			if (_supportsOpenGL3)
-			{
-				return true;
-			}
-
-			if (!OpenGLVersion.SupportsVersion(2, 0))
-			{
-				return false;
-			}
-
-			using (new SDL2OpenGLContext(2, 0, false, false))
-			{
-				using var gl = GL.GetApi(SDL2OpenGLContext.GetGLProcAddress);
-				return gl.IsExtensionPresent("EXT_framebuffer_object") || gl.IsExtensionPresent("ARB_framebuffer_object");
-			}
-		});
-
-		public static bool Available => _available.Value;
+		// this IGL either requires at least OpenGL 3.0
+		public static bool Available => OpenGLVersion.SupportsVersion(3, 0);
 
 		public IGL_OpenGL()
 		{
 			if (!Available)
 			{
-				throw new InvalidOperationException("The required OpenGL version is unavailable");
+				throw new InvalidOperationException("OpenGL 3.0 is required and unavailable");
 			}
 
 			GL = GL.GetApi(SDL2OpenGLContext.GetGLProcAddress);
 
-			// might need to use EXT if < OpenGL 3.0 and ARB_framebuffer_object is unavailable
-			if (!_supportsOpenGL3)
-			{
-				using (new SDL2OpenGLContext(2, 0, false, false))
-				{
-					// ARB_framebuffer_object entrypoints are identical to standard OpenGL 3.0 ones
-					// EXT_framebuffer_object has differently named entrypoints so needs a separate object
-					if (!GL.IsExtensionPresent("ARB_framebuffer_object"))
-					{
-						if (!GL.TryGetExtension(out EXT))
-						{
-							throw new InvalidOperationException("Could not get EXT_framebuffer_object? This shouldn't happen");
-						}
-					}
-				}
-			}
-
 			// misc initialization
 			CreateRenderStates();
-		}
-
-		// FBO function wrappers
-		private uint GenFramebuffer()
-			=> EXT?.GenFramebuffer() ?? GL.GenFramebuffer();
-
-		private void BindFramebuffer(FramebufferTarget target, uint fbId)
-		{
-			if (EXT != null)
-			{
-				EXT.BindFramebuffer(target, fbId);
-			}
-			else
-			{
-				GL.BindFramebuffer(target, fbId);
-			}
-		}
-
-		private void FramebufferTexture2D(FramebufferTarget fbTarget, FramebufferAttachment fbAttachment, TextureTarget textureTarget, uint fbId, int level)
-		{
-			if (EXT != null)
-			{
-				EXT.FramebufferTexture2D(fbTarget, fbAttachment, textureTarget, fbId, level);
-			}
-			else
-			{
-				GL.FramebufferTexture2D(fbTarget, fbAttachment, textureTarget, fbId, level);
-			}
-		}
-
-		private FramebufferStatus CheckFramebufferStatus(FramebufferTarget target)
-			=> (FramebufferStatus)(EXT?.CheckFramebufferStatus(target) ?? (EXT)GL.CheckFramebufferStatus(target));
-
-		private void DeleteFramebuffer(uint fbId)
-		{
-			if (EXT != null)
-			{
-				EXT.DeleteFramebuffer(fbId);
-			}
-			else
-			{
-				GL.DeleteFramebuffer(fbId);
-			}
 		}
 
 		public void BeginScene()
@@ -156,7 +75,6 @@ namespace BizHawk.Bizware.Graphics
 		public void Dispose()
 		{
 			GL.Dispose();
-			EXT?.Dispose();
 		}
 
 		public void Clear(BizClearBufferMask mask)
@@ -171,7 +89,7 @@ namespace BizHawk.Bizware.Graphics
 
 		public IGraphicsControl Internal_CreateGraphicsControl()
 		{
-			var ret = new OpenGLControl(_supportsOpenGL3, ContextChangeCallback);
+			var ret = new OpenGLControl();
 			ret.CreateControl(); // DisplayManager relies on this context being active for creating the GuiRenderer
 			return ret;
 		}
@@ -210,8 +128,8 @@ namespace BizHawk.Bizware.Graphics
 				GL.Enable(EnableCap.Blend);
 				// these are all casts to copies of the same enum
 				GL.BlendEquationSeparate(
-					(BlendEquationModeEXT)mybs.colorEquation,
-					(BlendEquationModeEXT)mybs.alphaEquation);
+					(GLEnum)mybs.colorEquation,
+					(GLEnum)mybs.alphaEquation);
 				GL.BlendFuncSeparate(
 					(BlendingFactor)mybs.colorSource,
 					(BlendingFactor)mybs.colorDest,
@@ -289,7 +207,7 @@ namespace BizHawk.Bizware.Graphics
 				success = false;
 			}
 
-			GL.GetProgram(pid, ProgramPropertyARB.LinkStatus, out var linkStatus);
+			GL.GetProgram(pid, GLEnum.LinkStatus, out var linkStatus);
 			if (linkStatus == 0)
 			{
 				if (required)
@@ -331,7 +249,7 @@ namespace BizHawk.Bizware.Graphics
 #if false
 			//get all the attributes (not needed)
 			var attributes = new List<AttributeInfo>();
-			GL.GetProgram(pid, ProgramPropertyARB.ActiveAttributes, out var nAttributes);
+			GL.GetProgram(pid, GLEnum.ActiveAttributes, out var nAttributes);
 			for (uint i = 0; i < nAttributes; i++)
 			{
 				GL.GetActiveAttrib(pid, i, 1024, out _, out _, out AttributeType _, out string name);
@@ -341,7 +259,7 @@ namespace BizHawk.Bizware.Graphics
 
 			// get all the uniforms
 			var uniforms = new List<UniformInfo>();
-			GL.GetProgram(pid, ProgramPropertyARB.ActiveUniforms, out var nUniforms);
+			GL.GetProgram(pid, GLEnum.ActiveUniforms, out var nUniforms);
 			var samplers = new List<int>();
 
 			for (uint i = 0; i < nUniforms; i++)
@@ -400,13 +318,14 @@ namespace BizHawk.Bizware.Graphics
 
 			if (pipeline == null)
 			{
-				sStatePendingVertexLayout = null;
 				GL.UseProgram(0);
 				return;
 			}
 
-			if (!pipeline.Available) throw new InvalidOperationException("Attempt to bind unavailable pipeline");
-			sStatePendingVertexLayout = pipeline.VertexLayout;
+			if (!pipeline.Available)
+			{
+				throw new InvalidOperationException("Attempt to bind unavailable pipeline");
+			}
 
 			var pw = (PipelineWrapper)pipeline.Opaque;
 			GL.UseProgram(pw.pid);
@@ -418,7 +337,29 @@ namespace BizHawk.Bizware.Graphics
 			}
 		}
 
-		public VertexLayout CreateVertexLayout() => new(this, null);
+		private class VertexLayoutWrapper
+		{
+			public uint vao;
+			public uint vbo;
+		}
+
+		public VertexLayout CreateVertexLayout()
+		{
+			var vlw = new VertexLayoutWrapper()
+			{
+				vao = GL.GenVertexArray(),
+				vbo = GL.GenBuffer(),
+			};
+
+			return new(this, vlw);
+		}
+
+		public void Internal_FreeVertexLayout(VertexLayout vl)
+		{
+			var vlw = (VertexLayoutWrapper)vl.Opaque;
+			GL.DeleteVertexArray(vlw.vao);
+			GL.DeleteBuffer(vlw.vbo);
+		}
 
 		private void BindTexture2d(Texture2d tex)
 		{
@@ -434,11 +375,112 @@ namespace BizHawk.Bizware.Graphics
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)mode);
 		}
 
-		public void BindArrayData(IntPtr pData) => MyBindArrayData(sStatePendingVertexLayout, pData);
+		private IntPtr pVertexData;
+
+		public void BindArrayData(IntPtr pData)
+			=> pVertexData = pData;
+
+		private void LegacyBindArrayData(VertexLayout vertexLayout, IntPtr pData)
+		{
+			// DEPRECATED CRAP USED, NEEDED FOR ANCIENT SHADERS
+			// ALSO THIS IS WHY LEGACY PACKAGE IS USED AS NON-LEGACY DOESN'T HAVE THESE
+			// TODO: REMOVE NEED FOR THIS
+#pragma warning disable CS0618
+#pragma warning disable CS0612
+
+			// disable all the client states.. a lot of overhead right now, to be sure
+
+			GL.DisableClientState(EnableCap.VertexArray);
+			GL.DisableClientState(EnableCap.ColorArray);
+
+			for (var i = 1; i >= 0; i--)
+			{
+				GL.ClientActiveTexture(TextureUnit.Texture0 + i);
+				GL.DisableClientState(EnableCap.TextureCoordArray);
+			}
+
+			unsafe
+			{
+				foreach (var (_, item) in vertexLayout.Items)
+				{
+					switch (item.Usage)
+					{
+						case AttribUsage.Position:
+							GL.EnableClientState(EnableCap.VertexArray);
+							GL.VertexPointer(item.Components, VertexPointerType.Float, (uint)item.Stride, (pData + item.Offset).ToPointer());
+							break;
+						case AttribUsage.Texcoord0:
+							GL.ClientActiveTexture(TextureUnit.Texture0);
+							GL.EnableClientState(EnableCap.TextureCoordArray);
+							GL.TexCoordPointer(item.Components, TexCoordPointerType.Float, (uint)item.Stride, (pData + item.Offset).ToPointer());
+							break;
+						case AttribUsage.Texcoord1:
+							GL.ClientActiveTexture(TextureUnit.Texture1);
+							GL.EnableClientState(EnableCap.TextureCoordArray);
+							GL.TexCoordPointer(item.Components, TexCoordPointerType.Float, (uint)item.Stride, (pData + item.Offset).ToPointer());
+							GL.ClientActiveTexture(TextureUnit.Texture0);
+							break;
+						case AttribUsage.Color0:
+							break;
+						case AttribUsage.Unspecified:
+						default:
+							throw new InvalidOperationException();
+					}
+				}
+			}
+#pragma warning restore CS0618
+#pragma warning restore CS0612
+		}
 
 		public void DrawArrays(BizPrimitiveType mode, int first, int count)
 		{
+			var vertexLayout = _currPipeline?.VertexLayout;
+
+			if (vertexLayout == null || pVertexData == IntPtr.Zero)
+			{
+				throw new InvalidOperationException($"Tried to {nameof(DrawArrays)} without bound vertex info!");
+			}
+
+			if (_currPipeline.Memo != "xgui")
+			{
+				LegacyBindArrayData(vertexLayout, pVertexData);
+				GL.DrawArrays((GLPrimitiveType)mode, first, (uint)count); // these are the same enum
+				return;
+			}
+
+			var vlw = (VertexLayoutWrapper)vertexLayout.Opaque;
+			GL.BindVertexArray(vlw.vao);
+			GL.BindBuffer(GLEnum.ArrayBuffer, vlw.vbo);
+
+			var stride = vertexLayout.Items[0].Stride;
+			Debug.Assert(vertexLayout.Items.All(i => i.Value.Stride == stride));
+
+			unsafe
+			{
+				GL.BufferData(GLEnum.ArrayBuffer, new UIntPtr((uint)(count * stride)), (pVertexData + first * stride).ToPointer(), GLEnum.StaticDraw);
+
+				foreach (var (i, item) in vertexLayout.Items)
+				{
+					GL.VertexAttribPointer(
+						(uint)i,
+						item.Components,
+						(GLVertexAttribPointerType)item.AttribType, // these are the same enum
+						item.Normalized,
+						(uint)item.Stride,
+						(void*)item.Offset);
+					GL.EnableVertexAttribArray((uint)i);
+				}
+			}
+
 			GL.DrawArrays((GLPrimitiveType)mode, first, (uint)count); // these are the same enum
+
+			foreach (var (i, _) in vertexLayout.Items)
+			{
+				GL.DisableVertexAttribArray((uint)i);
+			}
+
+			GL.BindBuffer(GLEnum.ArrayBuffer, 0);
+			GL.BindVertexArray(0);
 		}
 
 		public void SetPipelineUniform(PipelineUniform uniform, bool value)
@@ -492,12 +534,7 @@ namespace BizHawk.Bizware.Graphics
 			var n = (int)uniform.Sole.Opaque >> 24;
 
 			// set the sampler index into the uniform first
-			if (sActiveTexture != n)
-			{
-				sActiveTexture = n;
-				var selectedUnit = TextureUnit.Texture0 + n;
-				GL.ActiveTexture(selectedUnit);
-			}
+			GL.ActiveTexture(TextureUnit.Texture0 + n);
 
 			// now bind the texture
 			GL.BindTexture(TextureTarget.Texture2D, (uint)tex.Opaque);
@@ -555,7 +592,7 @@ namespace BizHawk.Bizware.Graphics
 		public void FreeRenderTarget(RenderTarget rt)
 		{
 			rt.Texture2d.Dispose();
-			DeleteFramebuffer((uint)rt.Opaque);
+			GL.DeleteFramebuffer((uint)rt.Opaque);
 		}
 
 		/// <exception cref="InvalidOperationException">framebuffer creation unsuccessful</exception>
@@ -566,29 +603,27 @@ namespace BizHawk.Bizware.Graphics
 			var tex = new Texture2d(this, texId, w, h);
 
 			GL.BindTexture(TextureTarget.Texture2D, texId);
-			GL.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba8, (uint)w, (uint)h, 0, PixelFormat.Bgra, PixelType.UnsignedByte, IntPtr.Zero.ToPointer());
+			GL.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba8, (uint)w, (uint)h, 0, PixelFormat.Bgra, PixelType.UnsignedByte, null);
 			tex.SetMagFilter(BizTextureMagFilter.Nearest);
 			tex.SetMinFilter(BizTextureMinFilter.Nearest);
 
 			// create the FBO
-			var fbId = GenFramebuffer();
-			BindFramebuffer(FramebufferTarget.Framebuffer, fbId);
+			var fbId = GL.GenFramebuffer();
+			GL.BindFramebuffer(FramebufferTarget.Framebuffer, fbId);
 
 			// bind the tex to the FBO
-			FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, texId, 0);
+			GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, texId, 0);
 
 			// do something, I guess say which color buffers are used by the framebuffer
-			var buffers = stackalloc DrawBufferMode[1];
-			buffers[0] = DrawBufferMode.ColorAttachment0;
-			GL.DrawBuffers(1, buffers);
+			GL.DrawBuffer(DrawBufferMode.ColorAttachment0);
 
-			if (CheckFramebufferStatus(FramebufferTarget.Framebuffer) != FramebufferStatus.Complete)
+			if ((FramebufferStatus)GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer) != FramebufferStatus.Complete)
 			{
-				throw new InvalidOperationException($"Error creating framebuffer (at {nameof(CheckFramebufferStatus)})");
+				throw new InvalidOperationException($"Error creating framebuffer (at {nameof(GL.CheckFramebufferStatus)})");
 			}
 
 			// since we're done configuring unbind this framebuffer, to return to the default
-			BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+			GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
 
 			return new(this, fbId, tex);
 		}
@@ -598,11 +633,11 @@ namespace BizHawk.Bizware.Graphics
 			_currRenderTarget = rt;
 			if (rt == null)
 			{
-				BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+				GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
 			}
 			else
 			{
-				BindFramebuffer(FramebufferTarget.Framebuffer, (uint)rt.Opaque);
+				GL.BindFramebuffer(FramebufferTarget.Framebuffer, (uint)rt.Opaque);
 			}
 		}
 
@@ -697,8 +732,6 @@ namespace BizHawk.Bizware.Graphics
 			SetViewport(size.Width, size.Height);
 		}
 
-		// my utility methods
-
 		private BizShader CreateShader(ShaderType type, string source, bool required)
 		{
 			var sw = new ShaderWrapper();
@@ -782,96 +815,6 @@ namespace BizHawk.Bizware.Graphics
 
 			return success;
 		}
-	
-		private void UnbindVertexAttributes()
-		{
-			// HAMNUTS:
-			// its not clear how many bindings we'll have to disable before we can enable the ones we need..
-			// so lets just disable the ones we remember we have bound
-			foreach (var index in sVertexAttribEnables)
-			{
-				GL.DisableVertexAttribArray(index);
-			}
-				
-			sVertexAttribEnables.Clear();
-		}
-
-		private unsafe void MyBindArrayData(VertexLayout layout, IntPtr pData)
-		{
-			UnbindVertexAttributes();
-
-			// HAMNUTS (continued)
-			
-			// DEPRECATED CRAP USED, I DON'T KNOW WHAT TO USE NOW
-			// ALSO THIS IS WHY LEGACY PACKAGE IS USED AS NON-LEGACY DOESN'T HAVE THESE
-#pragma warning disable CS0618
-#pragma warning disable CS0612
-
-			if (layout == null) return;
-
-			// disable all the client states.. a lot of overhead right now, to be sure
-
-			GL.DisableClientState(EnableCap.VertexArray);
-			GL.DisableClientState(EnableCap.ColorArray);
-
-			for (uint i = 0; i < 8; i++)
-			{
-				GL.DisableVertexAttribArray(i);
-			}
-
-			for (var i = 0; i < 8; i++)
-			{
-				GL.ClientActiveTexture(TextureUnit.Texture0 + i);
-				GL.DisableClientState(EnableCap.TextureCoordArray);
-			}
-
-			GL.ClientActiveTexture(TextureUnit.Texture0);
-
-			foreach (var (i, item) in layout.Items)
-			{
-				if (_currPipeline.Memo == "gui")
-				{
-					GL.VertexAttribPointer(
-						(uint)i,
-						item.Components,
-						(GLVertexAttribPointerType)item.AttribType, // these are the same enum
-						item.Normalized,
-						(uint)item.Stride,
-						(pData + item.Offset).ToPointer());
-					GL.EnableVertexAttribArray((uint)i);
-					sVertexAttribEnables.Add((uint)i);
-				}
-				else
-				{
-					// comment SNACKPANTS
-					switch (item.Usage)
-					{
-						case AttribUsage.Position:
-							GL.EnableClientState(EnableCap.VertexArray);
-							GL.VertexPointer(item.Components, VertexPointerType.Float, (uint)item.Stride, (pData + item.Offset).ToPointer());
-							break;
-						case AttribUsage.Texcoord0:
-							GL.ClientActiveTexture(TextureUnit.Texture0);
-							GL.EnableClientState(EnableCap.TextureCoordArray);
-							GL.TexCoordPointer(item.Components, TexCoordPointerType.Float, (uint)item.Stride, (pData + item.Offset).ToPointer());
-							break;
-						case AttribUsage.Texcoord1:
-							GL.ClientActiveTexture(TextureUnit.Texture1);
-							GL.EnableClientState(EnableCap.TextureCoordArray);
-							GL.TexCoordPointer(item.Components, TexCoordPointerType.Float, (uint)item.Stride, (pData + item.Offset).ToPointer());
-							GL.ClientActiveTexture(TextureUnit.Texture0);
-							break;
-						case AttribUsage.Color0:
-							break;
-						case AttribUsage.Unspecified:
-						default:
-							throw new InvalidOperationException();
-					}
-				}
-			}
-#pragma warning restore CS0618
-#pragma warning restore CS0612
-		}
 
 		private void CreateRenderStates()
 		{
@@ -892,17 +835,5 @@ namespace BizHawk.Bizware.Graphics
 		}
 
 		private CacheBlendState _rsBlendNoneVerbatim, _rsBlendNoneOpaque, _rsBlendNormal;
-
-		// state caches
-		private int sActiveTexture = -1;
-		private VertexLayout sStatePendingVertexLayout;
-		private readonly HashSet<uint> sVertexAttribEnables = new();
-
-		private void ContextChangeCallback()
-		{
-			sActiveTexture = -1;
-			sStatePendingVertexLayout = null;
-			sVertexAttribEnables.Clear();
-		}
 	}
 }
