@@ -446,17 +446,15 @@ namespace BizHawk.Client.EmuHawk
 
 			// TODO GL - a lot of disorganized wiring-up here
 			// installed separately on Unix (via package manager or from https://developer.nvidia.com/cg-toolkit-download), look in $PATH
-			_presentationPanel = new PresentationPanel(
+			_presentationPanel = new(
 				Config,
 				GL,
 				ToggleFullscreen,
 				MainForm_MouseClick,
 				MainForm_MouseMove,
-				MainForm_MouseWheel)
-			{
-				GraphicsControl = { MainWindow = true }
-			};
-			DisplayManager = new DisplayManager(Config, Emulator, InputManager, MovieSession, GL, _presentationPanel, () => DisableSecondaryThrottling);
+				MainForm_MouseWheel);
+
+			DisplayManager = new(Config, Emulator, InputManager, MovieSession, GL, _presentationPanel, () => DisableSecondaryThrottling);
 			Controls.Add(_presentationPanel);
 			Controls.SetChildIndex(_presentationPanel, 0);
 

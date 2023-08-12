@@ -242,9 +242,8 @@ namespace BizHawk.Client.EmuHawk
 						}
 					default:
 					case EDispMethod.GdiPlus:
-						static GLControlWrapper_GdiPlus CreateGLControlWrapper(IGL_GdiPlus self) => new(self); // inlining as lambda causes crash, don't wanna know why --yoshi
 						// if this fails, we're screwed
-						return new IGL_GdiPlus(CreateGLControlWrapper);
+						return new IGL_GDIPlus();
 				}
 			}
 

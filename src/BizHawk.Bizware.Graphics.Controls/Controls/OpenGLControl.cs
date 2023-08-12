@@ -1,20 +1,13 @@
 using System;
 using System.Windows.Forms;
 
-using BizHawk.Bizware.BizwareGL;
 using BizHawk.Common;
 
-namespace BizHawk.Bizware.Graphics
+namespace BizHawk.Bizware.Graphics.Controls
 {
-	internal class OpenGLControl : Control, IGraphicsControl
+	internal sealed class OpenGLControl : GraphicsControl
 	{
 		public SDL2OpenGLContext Context { get; private set; }
-
-		public RenderTargetWrapper RenderTargetWrapper
-		{
-			get => throw new NotImplementedException();
-			set => throw new NotImplementedException();
-		}
 
 		public OpenGLControl()
 		{
@@ -75,23 +68,23 @@ namespace BizHawk.Bizware.Graphics
 			}
 		}
 
-		public void SetVsync(bool state)
+		public override void SetVsync(bool state)
 		{
 			MakeContextCurrent();
 			Context.SetVsync(state);
 		}
 
-		public void Begin()
+		public override void Begin()
 		{
 			MakeContextCurrent();
 		}
 
-		public void End()
+		public override void End()
 		{
 			SDL2OpenGLContext.MakeNoneCurrent();
 		}
 
-		public void SwapBuffers()
+		public override void SwapBuffers()
 		{
 			MakeContextCurrent();
 			Context.SwapBuffers();

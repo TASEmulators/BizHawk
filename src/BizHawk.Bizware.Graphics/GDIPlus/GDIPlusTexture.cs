@@ -1,9 +1,11 @@
 using System;
 using System.Drawing;
 
-namespace BizHawk.Bizware.BizwareGL
+using BizHawk.Bizware.BizwareGL;
+
+namespace BizHawk.Bizware.Graphics
 {
-	public class GDIPTextureWrapper : IDisposable
+	public class GDIPlusTexture : IDisposable
 	{
 		public Bitmap SDBitmap;
 		public TextureMinFilter MinFilter = TextureMinFilter.Nearest;
@@ -11,11 +13,8 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public void Dispose()
 		{
-			if (SDBitmap != null)
-			{
-				SDBitmap.Dispose();
-				SDBitmap = null;
-			}
+			SDBitmap?.Dispose();
+			SDBitmap = null;
 		}
 	}
 }

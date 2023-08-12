@@ -4,26 +4,20 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Numerics;
 
+using BizHawk.Bizware.BizwareGL;
+
+using SDGraphics = System.Drawing.Graphics;
+
 //TODO - maybe a layer to cache Graphics parameters (notably, filtering) ?
-namespace BizHawk.Bizware.BizwareGL
+namespace BizHawk.Bizware.Graphics
 {
-	public class IGL_GdiPlus : IGL
+	public class IGL_GDIPlus : IGL
 	{
 		public EDispMethod DispMethodEnum => EDispMethod.GdiPlus;
 
-#if false
-		// rendering state
-		private RenderTarget _currRenderTarget;
-#endif
-
-		private readonly Func<IGL_GdiPlus, IGraphicsControl> _createGLControlWrapper;
-
-		public IGL_GdiPlus(Func<IGL_GdiPlus, IGraphicsControl> createGLControlWrapper)
-			=> _createGLControlWrapper = createGLControlWrapper;
-
 		public void Dispose()
 		{
-			MyBufferedGraphicsContext.Dispose();
+			BufferedGraphicsContext.Dispose();
 		}
 
 		public void ClearColor(Color color)
@@ -39,8 +33,8 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public void FreeTexture(Texture2d tex)
 		{
-			var tw = (GDIPTextureWrapper)tex.Opaque;
-			tw.Dispose();
+			var gtex = (GDIPlusTexture)tex.Opaque;
+			gtex.Dispose();
 		}
 
 		public Shader CreateFragmentShader(string source, string entry, bool required)
@@ -99,7 +93,6 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public void SetPipelineUniform(PipelineUniform uniform, bool value)
 		{
-		
 		}
 
 		public void SetPipelineUniformMatrix(PipelineUniform uniform, Matrix4x4 mat, bool transpose)
@@ -128,20 +121,19 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public void SetPipelineUniformSampler(PipelineUniform uniform, Texture2d tex)
 		{
-	
 		}
 
 		public void SetMinFilter(Texture2d texture, TextureMinFilter minFilter)
-			=> ((GDIPTextureWrapper) texture.Opaque).MinFilter = minFilter;
+			=> ((GDIPlusTexture) texture.Opaque).MinFilter = minFilter;
 
 		public void SetMagFilter(Texture2d texture, TextureMagFilter magFilter)
-			=> ((GDIPTextureWrapper) texture.Opaque).MagFilter = magFilter;
+			=> ((GDIPlusTexture) texture.Opaque).MagFilter = magFilter;
 
 		public Texture2d LoadTexture(Bitmap bitmap)
 		{
 			var sdBitmap = (Bitmap)bitmap.Clone();
-			var tw = new GDIPTextureWrapper { SDBitmap = sdBitmap };
-			return new(this, tw, bitmap.Width, bitmap.Height);
+			var gtex = new GDIPlusTexture { SDBitmap = sdBitmap };
+			return new(this, gtex, bitmap.Width, bitmap.Height);
 		}
 
 		public Texture2d LoadTexture(Stream stream)
@@ -161,27 +153,27 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public void LoadTextureData(Texture2d tex, BitmapBuffer bmp)
 		{
-			var tw = (GDIPTextureWrapper)tex.Opaque;
-			bmp.ToSysdrawingBitmap(tw.SDBitmap);
+			var gtex = (GDIPlusTexture)tex.Opaque;
+			bmp.ToSysdrawingBitmap(gtex.SDBitmap);
 		}
 
 		public Texture2d LoadTexture(BitmapBuffer bmp)
 		{
 			// definitely needed (by TextureFrugalizer at least)
 			var sdBitmap = bmp.ToSysdrawingBitmap();
-			var tw = new GDIPTextureWrapper { SDBitmap = sdBitmap };
-			return new(this, tw, bmp.Width, bmp.Height);
+			var gtex = new GDIPlusTexture { SDBitmap = sdBitmap };
+			return new(this, gtex, bmp.Width, bmp.Height);
 		}
 
 		public BitmapBuffer ResolveTexture2d(Texture2d tex)
 		{
-			var tw = (GDIPTextureWrapper)tex.Opaque;
+			var gtex = (GDIPlusTexture)tex.Opaque;
 			var blow = new BitmapLoadOptions
 			{
 				AllowWrap = false // must be an independent resource
 			};
 
-			var bb = new BitmapBuffer(tw.SDBitmap, blow);
+			var bb = new BitmapBuffer(gtex.SDBitmap, blow);
 			return bb;
 		}
 
@@ -212,16 +204,6 @@ namespace BizHawk.Bizware.BizwareGL
 			// on account of gdi+ working internally with a default view exactly like we want, we don't need to setup a new one here
 			// furthermore, we _cant_, without inverting the GuiView and GuiProjection before drawing, to completely undo it
 			// this might be feasible, but its kind of slow and annoying and worse, seemingly numerically unstable
-#if false
-			if (autoFlip && _currRenderTarget != null)
-			{
-				Matrix4 ret = Matrix4.Identity;
-				ret.M22 = -1;
-				ret.M42 = dims.Height;
-				return ret;
-			}
-#endif
-
 			return Matrix4x4.Identity;
 		}
 
@@ -237,16 +219,6 @@ namespace BizHawk.Bizware.BizwareGL
 		{
 			SetViewport(size.Width, size.Height);
 		}
-	
-		public void BeginControl(IGraphicsControl control)
-		{
-			CurrentControl = control;
-		}
-
-		public void EndControl()
-		{
-			CurrentControl = null;
-		}
 
 		public void BeginScene()
 		{
@@ -254,37 +226,28 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public void EndScene()
 		{
-			//maybe an inconsistent semantic with other implementations..
-			//but accomplishes the needed goal of getting the current RT to render
+			// maybe an inconsistent semantic with other implementations..
+			// but accomplishes the needed goal of getting the current RT to render
 			BindRenderTarget(null);
-		}
-
-		public IGraphicsControl Internal_CreateGraphicsControl()
-		{
-			var ret = _createGLControlWrapper(this);
-			// create a render target for this control
-			var rtw = new RenderTargetWrapper(() => MyBufferedGraphicsContext, ret);
-			ret.RenderTargetWrapper = rtw;
-			return ret;
 		}
 
 		public void FreeRenderTarget(RenderTarget rt)
 		{
-			var rtw = (RenderTargetWrapper)rt.Opaque;
-			rtw.Dispose();
+			var grt = (GDIPlusRenderTarget)rt.Opaque;
+			grt.Dispose();
 		}
 
 		public RenderTarget CreateRenderTarget(int w, int h)
 		{
-			var tw = new GDIPTextureWrapper
+			var gtex = new GDIPlusTexture
 			{
 				SDBitmap = new(w, h, PixelFormat.Format32bppArgb)
 			};
-			var tex = new Texture2d(this, tw, w, h);
+			var tex = new Texture2d(this, gtex, w, h);
 
-			var rtw = new RenderTargetWrapper(() => MyBufferedGraphicsContext);
-			var rt = new RenderTarget(this, rtw, tex);
-			rtw.Target = rt;
+			var grt = new GDIPlusRenderTarget(() => BufferedGraphicsContext);
+			var rt = new RenderTarget(this, grt, tex);
+			grt.Target = rt;
 			return rt;
 		}
 
@@ -296,56 +259,41 @@ namespace BizHawk.Bizware.BizwareGL
 				_currOffscreenGraphics = null;
 			}
 
-#if false
-			_currRenderTarget = rt;
-			if (CurrentRenderTargetWrapper != null)
-			{
-				if (CurrentRenderTargetWrapper == CurrentControl.RenderTargetWrapper)
-				{
-					// don't do anything til swapbuffers
-				}
-				else
-				{
-					// CurrentRenderTargetWrapper.MyBufferedGraphics.Render();
-				}
-			}
-#endif
-
 			if (rt == null)
 			{
 				// null means to use the default RT for the current control
-				CurrentRenderTargetWrapper = CurrentControl.RenderTargetWrapper;
+				CurrentRenderTarget = _controlRenderTarget;
 			}
 			else
 			{
-				var tw = (GDIPTextureWrapper)rt.Texture2d.Opaque;
-				CurrentRenderTargetWrapper = (RenderTargetWrapper)rt.Opaque;
-				_currOffscreenGraphics = Graphics.FromImage(tw.SDBitmap);
-#if false
-				if (CurrentRenderTargetWrapper.MyBufferedGraphics == null)
-				{
-					CurrentRenderTargetWrapper.CreateGraphics();
-				}
-#endif
+				var gtex = (GDIPlusTexture)rt.Texture2d.Opaque;
+				CurrentRenderTarget = (GDIPlusRenderTarget)rt.Opaque;
+				_currOffscreenGraphics = SDGraphics.FromImage(gtex.SDBitmap);
 			}
 		}
 
-		private Graphics _currOffscreenGraphics;
+		private GDIPlusRenderTarget _controlRenderTarget;
 
-		public Graphics GetCurrentGraphics()
+		public GDIPlusRenderTarget CreateControlRenderTarget(Func<(SDGraphics Graphics, Rectangle Rectangle)> getControlRenderContext)
 		{
-			if (_currOffscreenGraphics != null)
+			if (_controlRenderTarget != null)
 			{
-				return _currOffscreenGraphics;
+				throw new InvalidOperationException($"{nameof(IGL_GDIPlus)} can only have one control render target");
 			}
 
-			var rtw = CurrentRenderTargetWrapper;
-			return rtw.MyBufferedGraphics.Graphics;
+			_controlRenderTarget = new(() => BufferedGraphicsContext, getControlRenderContext);
+			return _controlRenderTarget;
 		}
 
-		public IGraphicsControl CurrentControl;
-		public RenderTargetWrapper CurrentRenderTargetWrapper;
+		private SDGraphics _currOffscreenGraphics;
 
-		public readonly BufferedGraphicsContext MyBufferedGraphicsContext = new();
+		public SDGraphics GetCurrentGraphics()
+		{
+			return _currOffscreenGraphics ?? CurrentRenderTarget.BufferedGraphics.Graphics;
+		}
+
+		public GDIPlusRenderTarget CurrentRenderTarget;
+
+		public readonly BufferedGraphicsContext BufferedGraphicsContext = new();
 	}
 }

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Drawing;
 
 using BizHawk.Bizware.BizwareGL;
+using BizHawk.Bizware.Graphics.Controls;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 

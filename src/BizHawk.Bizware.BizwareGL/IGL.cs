@@ -270,7 +270,5 @@ namespace BizHawk.Bizware.BizwareGL
 		/// Frees the provided vertex layout. For internal use only.
 		/// </summary>
 		void Internal_FreeVertexLayout(VertexLayout vertexLayout);
-
-		IGraphicsControl Internal_CreateGraphicsControl();
 	}
 }

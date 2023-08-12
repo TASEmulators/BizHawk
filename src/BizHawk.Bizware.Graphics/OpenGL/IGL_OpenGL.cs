@@ -78,13 +78,6 @@ namespace BizHawk.Bizware.Graphics
 			GL.Clear(ClearBufferMask.ColorBufferBit);
 		}
 
-		public IGraphicsControl Internal_CreateGraphicsControl()
-		{
-			var ret = new OpenGLControl();
-			ret.CreateControl(); // DisplayManager relies on this context being active for creating the GuiRenderer
-			return ret;
-		}
-
 		public void FreeTexture(Texture2d tex)
 		{
 			GL.DeleteTexture((uint)tex.Opaque);

@@ -6,14 +6,18 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Numerics;
 
-namespace BizHawk.Bizware.BizwareGL
+using BizHawk.Bizware.BizwareGL;
+
+using SDGraphics = System.Drawing.Graphics;
+
+namespace BizHawk.Bizware.Graphics
 {
 	public class GDIPlusGuiRenderer : IGuiRenderer
 	{
-		private readonly IGL_GdiPlus Gdi;
+		private readonly IGL_GDIPlus _gdi;
 
-		public GDIPlusGuiRenderer(IGL_GdiPlus gl)
-			=> Gdi = gl;
+		public GDIPlusGuiRenderer(IGL_GDIPlus gdi)
+			=> _gdi = gdi;
 
 		private readonly Vector4[] CornerColors =
 		{
@@ -129,7 +133,7 @@ namespace BizHawk.Bizware.BizwareGL
 		{
 			Begin();
 
-			CurrentBlendState = Gdi.BlendNormal;
+			CurrentBlendState = _gdi.BlendNormal;
 
 			Projection = Owner.CreateGuiProjectionMatrix(width, height);
 			Modelview = Owner.CreateGuiViewMatrix(width, height);
@@ -166,8 +170,8 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public void DrawSubrect(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
 		{
-			var tw = (GDIPTextureWrapper)tex.Opaque;
-			var g = Gdi.GetCurrentGraphics();
+			var gtex = (GDIPlusTexture)tex.Opaque;
+			var g = _gdi.GetCurrentGraphics();
 
 			PrepDraw(g, tex);
 			SetupMatrix(g);
@@ -184,10 +188,9 @@ namespace BizHawk.Bizware.BizwareGL
 				new(x, y+h),
 			};
 
-			g.DrawImage(tw.SDBitmap, destPoints, new(x0, y0, x1 - x0, y1 - y0), GraphicsUnit.Pixel, CurrentImageAttributes);
+			g.DrawImage(gtex.SDBitmap, destPoints, new(x0, y0, x1 - x0, y1 - y0), GraphicsUnit.Pixel, CurrentImageAttributes);
 			g.Transform = new(); // .Reset() doesnt work?
 		}
-
 
 		public void Draw(Art art) { DrawInternal(art, 0, 0, art.Width, art.Height, false, false); }
 		public void Draw(Art art, float x, float y) { DrawInternal(art, x, y, art.Width, art.Height, false, false); }
@@ -202,9 +205,9 @@ namespace BizHawk.Bizware.BizwareGL
 			DrawInternal(art, x, y, width, height);
 		}
 
-		private void PrepDraw(Graphics g, Texture2d tex)
+		private void PrepDraw(SDGraphics g, Texture2d tex)
 		{
-			var tw = (GDIPTextureWrapper)tex.Opaque;
+			var tw = (GDIPlusTexture)tex.Opaque;
 
 			// TODO - we can support bicubic for the final presentation...
 			if ((int)tw.MagFilter != (int)tw.MinFilter)
@@ -219,12 +222,10 @@ namespace BizHawk.Bizware.BizwareGL
 				_ => g.InterpolationMode
 			};
 
-			if (CurrentBlendState == Gdi.BlendNormal)
+			if (CurrentBlendState == _gdi.BlendNormal)
 			{
 				g.CompositingMode = CompositingMode.SourceOver;
 				g.CompositingQuality = CompositingQuality.Default; // ?
-
-				// CurrentImageAttributes.ClearColorMatrix(ColorAdjustType.Bitmap);
 			}
 			else
 			// if (CurrentBlendState == Gdi.BlendNoneCopy)
@@ -239,7 +240,7 @@ namespace BizHawk.Bizware.BizwareGL
 			}
 		}
 
-		private void SetupMatrix(Graphics g)
+		private void SetupMatrix(SDGraphics g)
 		{
 			// projection is always identity, so who cares i guess
 			// var mat = Projection.Top * Modelview.Top;
@@ -259,7 +260,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 		private void DrawInternal(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
 		{
-			var g = Gdi.GetCurrentGraphics();
+			var g = _gdi.GetCurrentGraphics();
 			PrepDraw(g, tex);
 
 			SetupMatrix(g);
@@ -278,9 +279,9 @@ namespace BizHawk.Bizware.BizwareGL
 			var sw = sx2 - sx;
 			var sh = sy2 - sy;
 
-			var tw = (GDIPTextureWrapper)tex.Opaque;
+			var gtex = (GDIPlusTexture)tex.Opaque;
 			g.PixelOffsetMode = PixelOffsetMode.Half;
-			g.DrawImage(tw.SDBitmap, destPoints, new(sx, sy, sw, sh), GraphicsUnit.Pixel, CurrentImageAttributes);
+			g.DrawImage(gtex.SDBitmap, destPoints, new(sx, sy, sw, sh), GraphicsUnit.Pixel, CurrentImageAttributes);
 			g.Transform = new(); // .Reset() doesn't work ? ?
 		}
 
@@ -290,6 +291,6 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public bool IsActive { get; private set; }
 
-		public IGL Owner => Gdi;
+		public IGL Owner => _gdi;
 	}
 }

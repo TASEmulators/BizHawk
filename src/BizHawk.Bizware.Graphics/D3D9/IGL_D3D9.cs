@@ -12,9 +12,7 @@ using BizHawk.Bizware.BizwareGL;
 using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
 
-using SharpDX;
 using SharpDX.Direct3D9;
-using SharpDX.Mathematics.Interop;
 
 using static SDL2.SDL;
 
@@ -28,17 +26,16 @@ namespace BizHawk.Bizware.Graphics
 	{
 		public EDispMethod DispMethodEnum => EDispMethod.D3D9;
 
-		private const int D3DERR_DEVICELOST = unchecked((int)0x88760868);
 		private const int D3DERR_DEVICENOTRESET = unchecked((int)0x88760869);
 
 		private Device _device;
+		private SwapChain _controlSwapchain;
 
 		private IntPtr _offscreenSdl2Window;
 		private IntPtr OffscreenNativeWindow;
 
 		// rendering state
 		private Pipeline _currPipeline;
-		private D3D9Control _currentControl;
 
 		// misc state
 		private CacheBlendState _rsBlendNoneVerbatim, _rsBlendNoneOpaque, _rsBlendNormal;
@@ -110,15 +107,6 @@ namespace BizHawk.Bizware.Graphics
 			_device = new(d3d9, 0, DeviceType.Hardware, pp.DeviceWindowHandle, flags, pp);
 		}
 
-		private void DestroyDevice()
-		{
-			if (_device != null)
-			{
-				_device.Dispose();
-				_device = null;
-			}
-		}
-
 		private PresentParameters MakePresentParameters()
 		{
 			return new()
@@ -128,14 +116,15 @@ namespace BizHawk.Bizware.Graphics
 				DeviceWindowHandle = OffscreenNativeWindow,
 				Windowed = true,
 				PresentationInterval = PresentInterval.Immediate,
-				EnableAutoDepthStencil = false
 			};
 		}
 
-		private void ResetDevice(D3D9Control control)
+		private SwapChain ResetDevice(PresentParameters swapChainPresentParameters)
 		{
 			SuspendRenderTargets();
-			FreeControlSwapChain(control);
+			_controlSwapchain.Dispose();
+
+			var pp = MakePresentParameters();
 
 			while (true)
 			{
@@ -149,7 +138,6 @@ namespace BizHawk.Bizware.Graphics
 				{
 					try
 					{
-						var pp = MakePresentParameters();
 						_device.Reset(pp);
 						break;
 					}
@@ -162,19 +150,55 @@ namespace BizHawk.Bizware.Graphics
 				Thread.Sleep(100);
 			}
 
-			RefreshControlSwapChain(control);
 			ResumeRenderTargets();
+			_controlSwapchain = new(_device, swapChainPresentParameters);
+
+			return _controlSwapchain;
+		}
+
+		private SwapChain ResetSwapChain(PresentParameters pp)
+		{
+			_controlSwapchain.Dispose();
+			_controlSwapchain = new(_device, pp);
+			return _controlSwapchain;
+		}
+
+		public D3D9SwapChain CreateSwapChain(IntPtr handle)
+		{
+			if (_controlSwapchain != null)
+			{
+				throw new InvalidOperationException($"{nameof(IGL_D3D9)} can only have 1 control swap chain");
+			}
+
+			var pp = new PresentParameters
+			{
+				BackBufferCount = 1,
+				BackBufferFormat = Format.X8R8G8B8,
+				SwapEffect = SwapEffect.Discard,
+				DeviceWindowHandle = handle,
+				Windowed = true,
+				PresentationInterval = PresentInterval.Immediate
+			};
+
+			_controlSwapchain = new(_device, pp);
+			return new(_device, _controlSwapchain, ResetDevice, ResetSwapChain);
 		}
 
 		public void Dispose()
 		{
-			DestroyDevice();
+			if (_device != null)
+			{
+				_device.Dispose();
+				_device = null;
+			}
 
 			if (_offscreenSdl2Window != IntPtr.Zero)
 			{
 				SDL_DestroyWindow(_offscreenSdl2Window);
 				_offscreenSdl2Window = OffscreenNativeWindow = IntPtr.Zero;
 			}
+
+			_controlSwapchain = null;
 		}
 
 		public void ClearColor(Color color)
@@ -670,7 +694,8 @@ namespace BizHawk.Bizware.Graphics
 		{
 			var tex = new Texture(_device, width, height, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
 			var tw = new TextureWrapper { Texture = tex };
-			return new(this, tw, width, height);	
+			var ret = new Texture2d(this, tw, width, height);
+			return ret;
 		}
 
 		public Texture2d WrapGLTexture2d(IntPtr glTexId, int width, int height)
@@ -792,46 +817,6 @@ namespace BizHawk.Bizware.Graphics
 			SetViewport(size.Width, size.Height);
 		}
 
-		internal void BeginControl(D3D9Control control)
-		{
-			_currentControl = control;
-
-			// this dispose isn't strictly needed but it seems benign
-			using var surface = control.SwapChain.GetBackBuffer(0);
-			_device.SetRenderTarget(0, surface);
-		}
-
-		/// <exception cref="InvalidOperationException"><paramref name="control"/> does not match control passed to <see cref="BeginControl"/></exception>
-		internal void EndControl(D3D9Control control)
-		{
-			if (control != _currentControl)
-			{
-				throw new InvalidOperationException($"{nameof(control)} does not match control passed to {nameof(BeginControl)}");
-			}
-
-			using var surface = control.SwapChain.GetBackBuffer(0);
-			_device.SetRenderTarget(0, surface);
-
-			_currentControl = null;
-		}
-
-		internal void SwapControl(D3D9Control control)
-		{
-			EndControl(control);
-
-			try
-			{
-				control.SwapChain.Present(Present.None);
-			}
-			catch (SharpDXException ex)
-			{
-				if (ex.ResultCode.Code == D3DERR_DEVICELOST)
-				{
-					ResetDevice(control);
-				}
-			}
-		}
-
 		public void FreeRenderTarget(RenderTarget rt)
 		{
 			var tw = (TextureWrapper)rt.Texture2d.Opaque;
@@ -850,13 +835,11 @@ namespace BizHawk.Bizware.Graphics
 		}
 
 		private Texture CreateRenderTargetTexture(int w, int h)
-		{
-			return new(_device, w, h, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
-		}
+			=> new(_device, w, h, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
 
 		private void SuspendRenderTargets()
 		{
-			foreach (var tw in _renderTargets.Select(rt => (TextureWrapper)rt.Opaque))
+			foreach (var tw in _renderTargets.Select(tex => (TextureWrapper)tex.Opaque))
 			{
 				tw.Texture.Dispose();
 				tw.Texture = null;
@@ -876,50 +859,17 @@ namespace BizHawk.Bizware.Graphics
 		{
 			if (rt == null)
 			{
-				// this dispose is needed for correct device resets, I have no idea why
-				// don't try caching it either
-				using var surface = _currentControl.SwapChain.GetBackBuffer(0);
-				_device.SetRenderTarget(0, surface);
+				using var bb = _controlSwapchain.GetBackBuffer(0);
+				_device.SetRenderTarget(0, bb);
 				_device.DepthStencilSurface = null;
 				return;
 			}
 
 			// dispose doesn't seem necessary for reset here...
 			var tw = (TextureWrapper)rt.Opaque;
-			_device.SetRenderTarget(0, tw.Texture.GetSurfaceLevel(0));
+			using var texSurface = tw.Texture.GetSurfaceLevel(0);
+			_device.SetRenderTarget(0, texSurface);
 			_device.DepthStencilSurface = null;
-		}
-
-		internal static void FreeControlSwapChain(D3D9Control control)
-		{
-			control.SwapChain?.Dispose();
-			control.SwapChain = null;
-		}
-
-		internal void RefreshControlSwapChain(D3D9Control control)
-		{
-			FreeControlSwapChain(control);
-
-			var pp = new PresentParameters
-			{
-				BackBufferWidth = Math.Max(1, control.ClientSize.Width),
-				BackBufferHeight = Math.Max(1, control.ClientSize.Height),
-				BackBufferCount = 1,
-				BackBufferFormat = Format.X8R8G8B8,
-				SwapEffect = SwapEffect.Discard,
-				DeviceWindowHandle = control.Handle,
-				Windowed = true,
-				PresentationInterval = control.Vsync ? PresentInterval.One : PresentInterval.Immediate
-			};
-
-			control.SwapChain = new(_device, pp);
-		}
-
-		public IGraphicsControl Internal_CreateGraphicsControl()
-		{
-			var ret = new D3D9Control(this);
-			ret.CreateControl();
-			return ret;
 		}
 
 		private delegate void DrawPrimitiveUPDelegate(Device device, PrimitiveType primitiveType, int primitiveCount, IntPtr vertexStreamZeroDataRef, int vertexStreamZeroStride);
