@@ -2,18 +2,14 @@
 using System.IO;
 using System.Runtime.InteropServices;
 
-using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 // ReSharper disable FieldCanBeMadeReadOnly.Local
 // ReSharper disable InconsistentNaming
-// ReSharper disable StyleCop.SA1304
-// ReSharper disable StyleCop.SA1307
-// ReSharper disable StyleCop.SA1401
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Client.Common
 {
-	public readonly struct QuickBmpFile : IQuickBmpFile
+	public readonly struct QuickBmpFile
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = 1)]
 		private class BITMAPFILEHEADER
@@ -332,14 +328,6 @@ namespace BizHawk.Client.EmuHawk
 			s.Write(dst, 0, dst.Length);
 		}
 
-		public static readonly QuickBmpFile INSTANCE = default;
-
-		readonly void IQuickBmpFile.Copy(IVideoProvider src, IVideoProvider dst) => Copy(src, dst);
-
-		readonly bool IQuickBmpFile.Load(IVideoProvider v, Stream s) => Load(v, s);
-
-		public readonly bool LoadAuto(Stream s, out IVideoProvider vp) => Load(vp = new LoadedBMP(), s);
-
-		readonly void IQuickBmpFile.Save(IVideoProvider v, Stream s, int w, int h) => Save(v, s, w, h);
+		public static bool LoadAuto(Stream s, out IVideoProvider vp) => Load(vp = new LoadedBMP(), s);
 	}
 }

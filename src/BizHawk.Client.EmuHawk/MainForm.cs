@@ -407,7 +407,6 @@ namespace BizHawk.Client.EmuHawk
 				Config.Movies,
 				Config.PathEntries.MovieBackupsAbsolutePath(),
 				this,
-				QuickBmpFile,
 				PauseEmulator,
 				SetMainformMovieInfo);
 
@@ -4235,7 +4234,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!Emulator.HasSavestates()) return false;
 			if (IsSavestateSlave) return Master.LoadState();
 
-			if (!new SavestateFile(Emulator, MovieSession, QuickBmpFile, MovieSession.UserBag).Load(path, this))
+			if (!new SavestateFile(Emulator, MovieSession, MovieSession.UserBag).Load(path, this))
 			{
 				AddOnScreenMessage("Loadstate error!");
 				return false;
@@ -4305,7 +4304,7 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
-				new SavestateFile(Emulator, MovieSession, QuickBmpFile, MovieSession.UserBag).Create(path, Config.Savestates);
+				new SavestateFile(Emulator, MovieSession, MovieSession.UserBag).Create(path, Config.Savestates);
 
 				EmuClient.OnStateSaved(this, userFriendlyStateName);
 				RA?.OnSaveState(path);
@@ -4850,8 +4849,6 @@ namespace BizHawk.Client.EmuHawk
 			//BANZAIIIIIIIIIIIIIIIIIIIIIIIIIII
 			_ = LoadRom(args[0]);
 		}
-
-		public IQuickBmpFile QuickBmpFile { get; } = EmuHawk.QuickBmpFile.INSTANCE;
 
 		private IRetroAchievements RA { get; set; }
 

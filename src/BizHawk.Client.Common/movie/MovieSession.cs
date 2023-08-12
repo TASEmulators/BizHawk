@@ -17,20 +17,16 @@ namespace BizHawk.Client.Common
 
 		private IMovie _queuedMovie;
 
-		private readonly IQuickBmpFile _quickBmpFile;
-
 		public MovieSession(
 			IMovieConfig settings,
 			string backDirectory,
 			IDialogParent dialogParent,
-			IQuickBmpFile quickBmpFile,
 			Action pauseCallback,
 			Action modeChangedCallback)
 		{
 			Settings = settings;
 			BackupDirectory = backDirectory;
 			_dialogParent = dialogParent;
-			_quickBmpFile = quickBmpFile;
 			_pauseCallback = pauseCallback
 				?? throw new ArgumentNullException(paramName: nameof(pauseCallback));
 			_modeChangedCallback = modeChangedCallback
@@ -313,7 +309,7 @@ namespace BizHawk.Client.Common
 			// TODO: change IMovies to take HawkFiles only and not path
 			if (Path.GetExtension(path)?.EndsWith("tasproj") ?? false)
 			{
-				return new TasMovie(this, path, _quickBmpFile);
+				return new TasMovie(this, path);
 			}
 
 			return new Bk2Movie(this, path);
