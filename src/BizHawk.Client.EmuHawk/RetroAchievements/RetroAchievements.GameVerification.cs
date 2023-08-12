@@ -284,6 +284,14 @@ namespace BizHawk.Client.EmuHawk
 			return IdentifyHash(hash);
 		}
 
+		private int Hash3DS(string path)
+		{
+			// 3DS is too big to hash as a byte array...
+			var hash = new byte[33];
+			return RCheevos._lib.rc_hash_generate_from_file(hash, ConsoleID.Nintendo3DS, path)
+				? IdentifyHash(Encoding.ASCII.GetString(hash, 0, 32)) : 0;
+		}
+
 		protected IReadOnlyList<int> GetRAGameIds(IOpenAdvanced ioa, ConsoleID consoleID)
 		{
 			var ret = new List<int>();
@@ -303,12 +311,18 @@ namespace BizHawk.Client.EmuHawk
 						}
 						else if (ext == ".xml")
 						{
-							var xml = XmlGame.Create(new HawkFile(ioa.SimplePath));
+							var xml = XmlGame.Create(new(ioa.SimplePath));
 							foreach (var kvp in xml.Assets)
 							{
 								if (consoleID is ConsoleID.Arcade)
 								{
 									ret.Add(HashArcade(kvp.Key));
+									break;
+								}
+
+								if (consoleID is ConsoleID.Nintendo3DS)
+								{
+									ret.Add(Hash3DS(kvp.Key));
 									break;
 								}
 
@@ -322,6 +336,12 @@ namespace BizHawk.Client.EmuHawk
 							if (consoleID is ConsoleID.Arcade)
 							{
 								ret.Add(HashArcade(ioa.SimplePath));
+								break;
+							}
+
+							if (consoleID is ConsoleID.Nintendo3DS)
+							{
+								ret.Add(Hash3DS(ioa.SimplePath));
 								break;
 							}
 

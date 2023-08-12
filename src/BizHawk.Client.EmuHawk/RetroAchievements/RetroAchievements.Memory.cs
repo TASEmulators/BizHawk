@@ -363,7 +363,7 @@ namespace BizHawk.Client.EmuHawk
 			ConsoleID.PlayStation, ConsoleID.Lynx, ConsoleID.Lynx, ConsoleID.NeoGeoPocket,
 			ConsoleID.Jaguar, ConsoleID.JaguarCD, ConsoleID.DS, ConsoleID.DSi,
 			ConsoleID.AppleII, ConsoleID.Vectrex, ConsoleID.Tic80, ConsoleID.PCEngine,
-			ConsoleID.Uzebox,
+			ConsoleID.Uzebox, ConsoleID.Nintendo3DS,
 		};
 
 		// these consoles will use part of the system bus at an offset

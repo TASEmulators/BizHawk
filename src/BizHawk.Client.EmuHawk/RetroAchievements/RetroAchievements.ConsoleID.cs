@@ -130,6 +130,7 @@ namespace BizHawk.Client.EmuHawk
 				VSystemID.Raw.Libretro => ConsoleID.UnknownConsoleID,
 				VSystemID.Raw.Lynx => ConsoleID.Lynx,
 				VSystemID.Raw.MSX => ConsoleID.MSX,
+				VSystemID.Raw.N3DS => ConsoleID.Nintendo3DS,
 				VSystemID.Raw.N64 => ConsoleID.N64,
 				VSystemID.Raw.NDS when Emu is NDS { IsDSi: true } => ConsoleID.DSi,
 				VSystemID.Raw.NDS => ConsoleID.DS,
