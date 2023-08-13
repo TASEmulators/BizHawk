@@ -183,7 +183,7 @@ namespace BizHawk.Client.Common.movie.import
 				// 000 3 bytes of zero padding: 00 00 00 003 4-byte integer: CRC32 of the ROM 007 23-byte ascii string
 				r.ReadBytes(3);
 				int crc32 = r.ReadInt32();
-				Result.Movie.HeaderEntries["CRC32"] = crc32.ToString("X08");
+				Result.Movie.HeaderEntries[HeaderKeys.Crc32] = crc32.ToString("X08");
 
 				// the game name copied from the ROM, truncated to 23 bytes (the game name in the ROM is 21 bytes)
 				string gameName = NullTerminated(Encoding.UTF8.GetString(r.ReadBytes(23)));

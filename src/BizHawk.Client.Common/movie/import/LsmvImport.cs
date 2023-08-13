@@ -217,7 +217,7 @@ namespace BizHawk.Client.Common.movie.import
 					using var stream = item.Open();
 					string sha256Hash = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					string name = item.FullName.RemoveSuffix(".sha256");
-					Result.Movie.HeaderEntries[name is "rom" ? "SHA256" : $"SHA256_{name}"] = sha256Hash;
+					Result.Movie.HeaderEntries[name is "rom" ? HeaderKeys.Sha256 : $"SHA256_{name}"] = sha256Hash;
 				}
 				else if (item.FullName == "savestate")
 				{

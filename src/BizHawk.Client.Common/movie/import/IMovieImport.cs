@@ -56,15 +56,15 @@ namespace BizHawk.Client.Common
 				{
 					string hash = null;
 					// try to generate a matching hash from the original ROM
-					if (Result.Movie.HeaderEntries.TryGetValue("CRC32", out string crcHash))
+					if (Result.Movie.HeaderEntries.TryGetValue(HeaderKeys.Crc32, out string crcHash))
 					{
 						hash = PromptForRom(data => string.Equals(CRC32Checksum.ComputeDigestHex(data), crcHash, StringComparison.OrdinalIgnoreCase));
 					}
-					else if (Result.Movie.HeaderEntries.TryGetValue("MD5", out string md5Hash))
+					else if (Result.Movie.HeaderEntries.TryGetValue(HeaderKeys.Md5, out string md5Hash))
 					{
 						hash = PromptForRom(data => string.Equals(MD5Checksum.ComputeDigestHex(data), md5Hash, StringComparison.OrdinalIgnoreCase));
 					}
-					else if (Result.Movie.HeaderEntries.TryGetValue("SHA256", out string sha256Hash))
+					else if (Result.Movie.HeaderEntries.TryGetValue(HeaderKeys.Sha256, out string sha256Hash))
 					{
 						hash = PromptForRom(data => string.Equals(SHA256Checksum.ComputeDigestHex(data), sha256Hash, StringComparison.OrdinalIgnoreCase));
 					}
