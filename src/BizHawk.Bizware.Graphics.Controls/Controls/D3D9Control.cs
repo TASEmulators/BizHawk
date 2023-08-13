@@ -1,16 +1,17 @@
 using System;
-using System.Drawing;
 using System.Windows.Forms;
 
 namespace BizHawk.Bizware.Graphics.Controls
 {
 	internal sealed class D3D9Control : GraphicsControl
 	{
-		private readonly Func<IntPtr, D3D9SwapChain> _createSwapChain;
+		private readonly Func<D3D9SwapChain.ControlParameters, D3D9SwapChain> _createSwapChain;
 		private D3D9SwapChain _swapChain;
 		private bool Vsync;
 
-		public D3D9Control(Func<IntPtr, D3D9SwapChain> createSwapChain)
+		private D3D9SwapChain.ControlParameters ControlParameters => new(Handle, Width, Height, Vsync);
+
+		public D3D9Control(Func<D3D9SwapChain.ControlParameters, D3D9SwapChain> createSwapChain)
 		{
 			_createSwapChain = createSwapChain;
 
@@ -21,12 +22,10 @@ namespace BizHawk.Bizware.Graphics.Controls
 			DoubleBuffered = false;
 		}
 
-		protected override Size DefaultSize => new(1, 1);
-
 		protected override void OnHandleCreated(EventArgs e)
 		{
 			base.OnHandleCreated(e);
-			_swapChain = _createSwapChain(Handle);
+			_swapChain = _createSwapChain(ControlParameters);
 		}
 
 		protected override void OnHandleDestroyed(EventArgs e)
@@ -39,7 +38,7 @@ namespace BizHawk.Bizware.Graphics.Controls
 		protected override void OnResize(EventArgs e)
 		{
 			base.OnResize(e);
-			_swapChain.Refresh(Vsync);
+			_swapChain.Refresh(ControlParameters);
 		}
 
 		public override void SetVsync(bool state)
@@ -47,7 +46,7 @@ namespace BizHawk.Bizware.Graphics.Controls
 			if (Vsync != state)
 			{
 				Vsync = state;
-				_swapChain.Refresh(Vsync);
+				_swapChain.Refresh(ControlParameters);
 			}
 		}
 
@@ -58,6 +57,6 @@ namespace BizHawk.Bizware.Graphics.Controls
 			=> _swapChain.SetBackBuffer();
 
 		public override void SwapBuffers()
-			=> _swapChain.PresentBuffer();
+			=> _swapChain.PresentBuffer(ControlParameters);
 	}
 }

@@ -7,16 +7,32 @@ namespace BizHawk.Bizware.Graphics
 {
 	public sealed class D3D9SwapChain : IDisposable
 	{
+		public readonly struct ControlParameters
+		{
+			public readonly IntPtr Handle;
+			public readonly int Width;
+			public readonly int Height;
+			public readonly bool Vsync;
+
+			public ControlParameters(IntPtr handle, int width, int height, bool vsync)
+			{
+				Handle = handle;
+				Width = Math.Max(width, 1);
+				Height = Math.Max(height, 1);
+				Vsync = vsync;
+			}
+		}
+
 		private const int D3DERR_DEVICELOST = unchecked((int)0x88760868);
 
 		private readonly Device _device;
-		private readonly Func<PresentParameters, SwapChain> _resetDeviceCallback;
-		private readonly Func<PresentParameters, SwapChain> _resetSwapChainCallback;
+		private readonly Func<ControlParameters, SwapChain> _resetDeviceCallback;
+		private readonly Func<ControlParameters, SwapChain> _resetSwapChainCallback;
 
 		private SwapChain _swapChain;
 
 		internal D3D9SwapChain(Device device, SwapChain swapChain,
-			Func<PresentParameters, SwapChain> resetDeviceCallback, Func<PresentParameters, SwapChain> resetSwapChainCallback)
+			Func<ControlParameters, SwapChain> resetDeviceCallback, Func<ControlParameters, SwapChain> resetSwapChainCallback)
 		{
 			_device = device;
 			_swapChain = swapChain;
@@ -37,7 +53,7 @@ namespace BizHawk.Bizware.Graphics
 			_device.DepthStencilSurface = null;
 		}
 
-		public void PresentBuffer()
+		public void PresentBuffer(ControlParameters cp)
 		{
 			SetBackBuffer();
 
@@ -49,19 +65,12 @@ namespace BizHawk.Bizware.Graphics
 			{
 				if (ex.ResultCode.Code == D3DERR_DEVICELOST)
 				{
-					var pp = _swapChain.PresentParameters;
-					pp.BackBufferWidth = pp.BackBufferHeight = 0;
-					_swapChain = _resetDeviceCallback(pp);
+					_swapChain = _resetDeviceCallback(cp);
 				}
 			}
 		}
 
-		public void Refresh(bool vsync)
-		{
-			var pp = _swapChain.PresentParameters;
-			pp.BackBufferWidth = pp.BackBufferHeight = 0;
-			pp.PresentationInterval = vsync ? PresentInterval.One : PresentInterval.Immediate;
-			_swapChain = _resetSwapChainCallback(pp);
-		}
+		public void Refresh(ControlParameters cp)
+			=> _swapChain = _resetSwapChainCallback(cp);
 	}
 }

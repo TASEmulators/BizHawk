@@ -29,6 +29,7 @@ namespace BizHawk.Bizware.Graphics
 		private const int D3DERR_DEVICENOTRESET = unchecked((int)0x88760869);
 
 		private Device _device;
+		private Size _maxWindowSize;
 		private SwapChain _controlSwapchain;
 
 		private IntPtr _offscreenSdl2Window;
@@ -105,6 +106,11 @@ namespace BizHawk.Bizware.Graphics
 
 			flags |= CreateFlags.FpuPreserve;
 			_device = new(d3d9, 0, DeviceType.Hardware, pp.DeviceWindowHandle, flags, pp);
+
+			// save the maximum size a window backbuffer can be
+			// this allows us to avoid resetting the swapchain on resizing the window
+			var displayMode = d3d9.Adapters[0].CurrentDisplayMode;
+			_maxWindowSize = new(displayMode.Width, displayMode.Height);
 		}
 
 		private PresentParameters MakePresentParameters()
@@ -119,7 +125,22 @@ namespace BizHawk.Bizware.Graphics
 			};
 		}
 
-		private SwapChain ResetDevice(PresentParameters swapChainPresentParameters)
+		private static PresentParameters MakePresentParameters(D3D9SwapChain.ControlParameters cp)
+		{
+			return new()
+			{
+				BackBufferWidth = cp.Width,
+				BackBufferHeight = cp.Height,
+				BackBufferFormat = Format.X8R8G8B8,
+				BackBufferCount = 2,
+				SwapEffect = SwapEffect.Discard,
+				DeviceWindowHandle = cp.Handle,
+				Windowed = true,
+				PresentationInterval = cp.Vsync ? PresentInterval.One : PresentInterval.Immediate
+			};
+		}
+
+		private SwapChain ResetDevice(D3D9SwapChain.ControlParameters cp)
 		{
 			SuspendRenderTargets();
 			_controlSwapchain.Dispose();
@@ -151,35 +172,29 @@ namespace BizHawk.Bizware.Graphics
 			}
 
 			ResumeRenderTargets();
-			_controlSwapchain = new(_device, swapChainPresentParameters);
 
-			return _controlSwapchain;
-		}
-
-		private SwapChain ResetSwapChain(PresentParameters pp)
-		{
-			_controlSwapchain.Dispose();
+			pp = MakePresentParameters(cp);
 			_controlSwapchain = new(_device, pp);
 			return _controlSwapchain;
 		}
 
-		public D3D9SwapChain CreateSwapChain(IntPtr handle)
+		private SwapChain ResetSwapChain(D3D9SwapChain.ControlParameters cp)
+		{
+			_controlSwapchain.Dispose();
+
+			var pp = MakePresentParameters(cp);
+			_controlSwapchain = new(_device, pp);
+			return _controlSwapchain;
+		}
+
+		public D3D9SwapChain CreateSwapChain(D3D9SwapChain.ControlParameters cp)
 		{
 			if (_controlSwapchain != null)
 			{
 				throw new InvalidOperationException($"{nameof(IGL_D3D9)} can only have 1 control swap chain");
 			}
 
-			var pp = new PresentParameters
-			{
-				BackBufferCount = 1,
-				BackBufferFormat = Format.X8R8G8B8,
-				SwapEffect = SwapEffect.Discard,
-				DeviceWindowHandle = handle,
-				Windowed = true,
-				PresentationInterval = PresentInterval.Immediate
-			};
-
+			var pp = MakePresentParameters(cp);
 			_controlSwapchain = new(_device, pp);
 			return new(_device, _controlSwapchain, ResetDevice, ResetSwapChain);
 		}
