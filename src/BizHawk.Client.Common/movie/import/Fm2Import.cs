@@ -84,7 +84,7 @@ namespace BizHawk.Client.Common
 					byte[] md5 = DecodeBlob(blob);
 					if (md5 != null && md5.Length == 16)
 					{
-						Result.Movie.HeaderEntries[Md5] = md5.BytesToHexString().ToLower();
+						Result.Movie.HeaderEntries["MD5"] = md5.BytesToHexString().ToLower();
 					}
 					else
 					{
