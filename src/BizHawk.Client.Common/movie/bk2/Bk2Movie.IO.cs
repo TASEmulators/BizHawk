@@ -160,8 +160,9 @@ namespace BizHawk.Client.Common
 				bl.GetLump(BinaryStateLump.Framebuffer, false,
 					br =>
 					{
-						QuickBmpFile.LoadAuto(br.BaseStream, out var bmp);
-						SavestateFramebuffer = bmp.GetVideoBuffer();
+						var fb = br.ReadAllBytes();
+						SavestateFramebuffer = new int[fb.Length / sizeof(int)];
+						Buffer.BlockCopy(fb, 0, SavestateFramebuffer, 0, fb.Length);
 					});
 			}
 			else if (StartsFromSaveRam)
