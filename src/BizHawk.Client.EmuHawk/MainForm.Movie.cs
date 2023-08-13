@@ -54,7 +54,11 @@ namespace BizHawk.Client.EmuHawk
 
 			SetMainformMovieInfo();
 
-			if (MovieSession.Movie.Hash != Game.Hash)
+			if (string.IsNullOrEmpty(MovieSession.Movie.Hash))
+			{
+				AddOnScreenMessage("Movie is missing hash, skipping hash check");
+			}
+			else if (MovieSession.Movie.Hash != Game.Hash)
 			{
 				AddOnScreenMessage("Warning: Movie hash does not match the ROM");
 			}

@@ -4150,7 +4150,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ProcessMovieImport(string fn, bool start)
 		{
-			var result = MovieImport.ImportFile(this, MovieSession, Emulator, fn, Config);
+			var result = MovieImport.ImportFile(this, MovieSession, fn, Config);
 
 			if (result.Errors.Any())
 			{

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Reflection;
-using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
@@ -36,7 +35,6 @@ namespace BizHawk.Client.Common
 		public static ImportResult ImportFile(
 			IDialogParent dialogParent,
 			IMovieSession session,
-			IEmulator emulator,
 			string path,
 			Config config)
 		{
@@ -51,7 +49,7 @@ namespace BizHawk.Client.Common
 			// Create a new instance of the importer class using the no-argument constructor
 
 			return importerType.GetConstructor(Array.Empty<Type>())?.Invoke(Array.Empty<object>()) is IMovieImport importer
-				? importer.Import(dialogParent, session, emulator, path, config)
+				? importer.Import(dialogParent, session, path, config)
 				: ImportResult.Error($"No importer found for file type {ext}");
 		}
 

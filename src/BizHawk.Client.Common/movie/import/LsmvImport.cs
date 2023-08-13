@@ -4,6 +4,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using BizHawk.Common.IOExtensions;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Nintendo.BSNES;
@@ -214,10 +215,9 @@ namespace BizHawk.Client.Common.movie.import
 				else if (item.FullName.EndsWith(".sha256"))
 				{
 					using var stream = item.Open();
-					string rom = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
-					int pos = item.FullName.LastIndexOf(".sha256");
-					string name = item.FullName.Substring(0, pos);
-					Result.Movie.HeaderEntries[$"SHA256_{name}"] = rom;
+					string sha256Hash = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
+					string name = item.FullName.RemoveSuffix(".sha256");
+					Result.Movie.HeaderEntries[name is "rom" ? HeaderKeys.Sha256 : $"SHA256_{name}"] = sha256Hash;
 				}
 				else if (item.FullName == "savestate")
 				{
