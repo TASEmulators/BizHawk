@@ -29,7 +29,6 @@ namespace BizHawk.Bizware.Graphics
 		private const int D3DERR_DEVICENOTRESET = unchecked((int)0x88760869);
 
 		private Device _device;
-		private Size _maxWindowSize;
 		private SwapChain _controlSwapchain;
 
 		private IntPtr _offscreenSdl2Window;
@@ -106,11 +105,6 @@ namespace BizHawk.Bizware.Graphics
 
 			flags |= CreateFlags.FpuPreserve;
 			_device = new(d3d9, 0, DeviceType.Hardware, pp.DeviceWindowHandle, flags, pp);
-
-			// save the maximum size a window backbuffer can be
-			// this allows us to avoid resetting the swapchain on resizing the window
-			var displayMode = d3d9.Adapters[0].CurrentDisplayMode;
-			_maxWindowSize = new(displayMode.Width, displayMode.Height);
 		}
 
 		private PresentParameters MakePresentParameters()
