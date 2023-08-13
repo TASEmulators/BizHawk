@@ -91,13 +91,13 @@ namespace BizHawk.Client.Common
 			while (true)
 			{
 				if (!_dialogParent.ModalMessageBox2(messageBoxText, "ROM required to populate hash", useOKCancel: true))
-					return "";
+					return null;
 
 				var result = _dialogParent.ShowFileOpenDialog(
 					filter: RomLoader.RomFilter,
 					initDir: Config.PathEntries.RomAbsolutePath(_emulator.SystemId));
 				if (result is null)
-					return "";
+					return null;
 
 				using var rom = new HawkFile(result);
 				if (rom.IsArchive) rom.BindFirst();
