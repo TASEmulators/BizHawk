@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 
 using BizHawk.Common;
-using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
@@ -13,7 +12,6 @@ namespace BizHawk.Client.Common
 		ImportResult Import(
 			IDialogParent dialogParent,
 			IMovieSession session,
-			IEmulator emulator,
 			string path,
 			Config config);
 	}
@@ -24,18 +22,15 @@ namespace BizHawk.Client.Common
 		protected const string MovieOrigin = "MovieOrigin";
 
 		protected IDialogParent _dialogParent;
-		private IEmulator _emulator;
 		private delegate bool MatchesMovieHash(ReadOnlySpan<byte> romData);
 
 		public ImportResult Import(
 			IDialogParent dialogParent,
 			IMovieSession session,
-			IEmulator emulator,
 			string path,
 			Config config)
 		{
 			_dialogParent = dialogParent;
-			_emulator = emulator;
 			SourceFile = new FileInfo(path);
 			Config = config;
 
@@ -47,7 +42,6 @@ namespace BizHawk.Client.Common
 
 			var newFileName = $"{SourceFile.FullName}.{Bk2Movie.Extension}";
 			Result.Movie = session.Get(newFileName);
-			Result.Movie.Attach(emulator);
 			RunImport();
 
 			if (!Result.Errors.Any())
@@ -95,9 +89,9 @@ namespace BizHawk.Client.Common
 
 				var result = _dialogParent.ShowFileOpenDialog(
 					filter: RomLoader.RomFilter,
-					initDir: Config.PathEntries.RomAbsolutePath(_emulator.SystemId));
+					initDir: Config.PathEntries.RomAbsolutePath(Result.Movie.SystemID));
 				if (result is null)
-					return null;
+					return null; // skip hash migration when the dialog was canceled
 
 				using var rom = new HawkFile(result);
 				if (rom.IsArchive) rom.BindFirst();
