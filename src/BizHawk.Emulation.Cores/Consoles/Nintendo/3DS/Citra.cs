@@ -67,8 +67,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			_supportsOpenGL43 = _openGLProvider.SupportsGLVersion(4, 3);
 			if (!_supportsOpenGL43/* && _syncSettings.GraphicsApi == CitraSyncSettings.EGraphicsApi.OpenGL*/)
 			{
+				lp.Comm.Notify("OpenGL 4.3 is not supported on this machine, falling back to software renderer", null);
 				throw new("OpenGL 4.3 is required, but it is not supported on this machine");
-//				lp.Comm.Notify("OpenGL 4.3 is not supported on this machine, falling back to software renderer", null);
 			}
 
 			_glCallbackInterface.RequestGLContext = RequestGLContextCallback;
