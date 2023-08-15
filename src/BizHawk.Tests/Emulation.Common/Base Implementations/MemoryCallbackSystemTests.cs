@@ -203,7 +203,7 @@ namespace BizHawk.Tests.Emulation.Common
 			MemoryCallback callback3 = new(ScopeA, MemoryCallbackType.Read, "Callback 3", _testCallbacks.Callback3, null, null);
 
 			var callback1invoked = false;
-			void callback(uint _, uint _, uint _)
+			void callback(uint _1, uint _2, uint _3)
 			{
 				callback1invoked = true;
 				_memoryCallbackSystem.Add(callback2);
@@ -228,7 +228,7 @@ namespace BizHawk.Tests.Emulation.Common
 			MemoryCallback callback1 = new(ScopeA, MemoryCallbackType.Read, "Callback 1", _testCallbacks.Callback1, null, null);
 
 			var callback2invoked = false;
-			void callback(uint _, uint _, uint _)
+			void callback(uint _1, uint _2, uint _3)
 			{
 				callback2invoked = true;
 				_memoryCallbackSystem.Remove(callback1.Callback);
@@ -259,7 +259,7 @@ namespace BizHawk.Tests.Emulation.Common
 
 			MemoryCallback? callback2 = null;
 			var callback2invoked = false;
-			void callback(uint _, uint _, uint _)
+			void callback(uint _1, uint _2, uint _3)
 			{
 				callback2invoked = true;
 				_memoryCallbackSystem.Remove(callback2!.Callback);

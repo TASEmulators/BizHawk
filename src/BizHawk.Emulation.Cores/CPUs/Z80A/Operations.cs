@@ -651,7 +651,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public void EXCH_16_Func(ushort dest_l, ushort dest_h, ushort src_l, ushort src_h)
 		{
 			(Regs[src_l], Regs[dest_l]) = (Regs[dest_l], Regs[src_l]);
-			temp = Regs[dest_h];
+			var temp = Regs[dest_h];
 			Regs[dest_h] = Regs[src_h];
 			Regs[src_h] = temp;
 		}
