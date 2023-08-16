@@ -90,7 +90,7 @@ namespace BizHawk.Client.Common.movie.import
 
 			GPGXControlConverter controlConverter = new(input, systemId: VSystemID.Raw.GEN, cdButtons: false);
 			
-			SimpleController controller = new(controlConverter.ControllerDef);
+			SimpleLogEntryController controller = new(controlConverter.ControllerDef, Result.Movie.SystemID);
 
 			// Unknown.
 			r.ReadByte();
