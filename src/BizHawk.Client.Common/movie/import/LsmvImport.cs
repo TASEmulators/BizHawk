@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
+
 using BizHawk.Common.IOExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
@@ -18,10 +18,14 @@ namespace BizHawk.Client.Common.movie.import
 	internal class LsmvImport : MovieImporter
 	{
 		private static readonly byte[] Zipheader = { 0x50, 0x4b, 0x03, 0x04 };
-		private BsnesControllers _controllers;
 		private int _playerCount;
-		// hacky variable; just exists because if subframe input is used, the previous frame needs to be marked subframe aware
-		private SimpleController _previousControllers;
+		private SimpleController _controller;
+		private SimpleController _emptyController;
+
+		private readonly string[][] _lsnesGamepadButtons = Enumerable.Range(1, 8)
+		.Select(player => new[] { "B", "Y", "Select", "Start", "Up", "Down", "Left", "Right", "A", "X", "L", "R" }
+			.Select(button => $"P{player} {button}").ToArray())
+		.ToArray();
 
 		protected override void RunImport()
 		{
@@ -80,9 +84,13 @@ namespace BizHawk.Client.Common.movie.import
 					_ => BsnesApi.BSNES_INPUT_DEVICE.Gamepad
 				};
 			}
-			_controllers = new BsnesControllers(ss, true);
-			Result.Movie.LogKey = new Bk2LogEntryGenerator("SNES", new Bk2Controller(_controllers.Definition)).GenerateLogKey();
-			_playerCount = _controllers.Definition.PlayerCount;
+
+			ControllerDefinition controllerDefinition = new BsnesControllers(ss, true).Definition;
+			_emptyController = new SimpleController(controllerDefinition);
+			_controller = new SimpleController(controllerDefinition);
+			_playerCount = controllerDefinition.PlayerCount;
+
+			Result.Movie.LogKey = new Bk2LogEntryGenerator(VSystemID.Raw.SNES, new Bk2Controller(controllerDefinition)).GenerateLogKey();
 
 			foreach (var item in zip.Entries)
 			{
@@ -166,7 +174,7 @@ namespace BizHawk.Client.Common.movie.import
 
 					// Insert an empty frame in lsmv snes movies
 					// see https://github.com/TASEmulators/BizHawk/issues/721
-					Result.Movie.AppendFrame(EmptyLmsvFrame());
+					// note: this is done inside ImportTextFrame already
 					using (var reader = new StringReader(input))
 					{
 						while(reader.ReadLine() is string line)
@@ -176,7 +184,7 @@ namespace BizHawk.Client.Common.movie.import
 							ImportTextFrame(line);
 						}
 					}
-					Result.Movie.AppendFrame(_previousControllers);
+					Result.Movie.AppendFrame(_controller);
 				}
 				else if (item.FullName.StartsWithOrdinal("moviesram."))
 				{
@@ -265,22 +273,8 @@ namespace BizHawk.Client.Common.movie.import
 			Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(ss);
 		}
 
-		private IController EmptyLmsvFrame()
-		{
-			SimpleController emptyController = new(_controllers.Definition);
-
-			foreach (var button in emptyController.Definition.BoolButtons)
-			{
-				emptyController[button] = false;
-			}
-
-			return emptyController;
-		}
-
 		private void ImportTextFrame(string line)
 		{
-			SimpleController controllers = new(_controllers.Definition);
-
 			// Split up the sections of the frame.
 			string[] sections = line.Split('|');
 
@@ -288,7 +282,8 @@ namespace BizHawk.Client.Common.movie.import
 			if (sections.Length != 0)
 			{
 				string flags = sections[0];
-				if (flags[0] != 'F' && _previousControllers != null) _previousControllers["Subframe"] = true;
+				_controller["Subframe"] = flags[0] != 'F';
+				Result.Movie.AppendFrame(_controller); // need to append the subframe input to the previous frame
 				reset = flags[1] != '.';
 				flags = SingleSpaces(flags.Substring(2));
 				string[] splitFlags = flags.Split(' ');
@@ -302,13 +297,13 @@ namespace BizHawk.Client.Common.movie.import
 					delay = 0;
 				}
 
+				_controller.AcceptNewAxis("Reset Instruction", delay);
 				if (delay != 0)
 				{
-					controllers.AcceptNewAxis("Reset Instruction", delay);
 					Result.Warnings.Add("Delayed reset may be mistimed."); // lsnes doesn't count some instructions that our bsnes version does
 				}
 
-				controllers["Reset"] = reset;
+				_controller["Reset"] = reset;
 			}
 
 			// LSNES frames don't start or end with a |.
@@ -318,12 +313,10 @@ namespace BizHawk.Client.Common.movie.import
 			{
 				if (player > _playerCount) break;
 
-				IReadOnlyList<string> buttons = controllers.Definition.ControlsOrdered[player];
+				IReadOnlyList<string> buttons = _controller.Definition.ControlsOrdered[player];
 				if (buttons[0].EndsWithOrdinal("Up")) // hack to identify gamepad / multitap which have a different button order in bizhawk compared to lsnes
 				{
-					buttons = new[] { "B", "Y", "Select", "Start", "Up", "Down", "Left", "Right", "A", "X", "L", "R" }
-						.Select(button => $"P{player} {button}")
-						.ToList();
+					buttons = _lsnesGamepadButtons[player - 1];
 				}
 				// Only consider lines that have the right number of buttons
 				if (sections[player].Length == buttons.Count)
@@ -331,18 +324,12 @@ namespace BizHawk.Client.Common.movie.import
 					for (int button = 0; button < buttons.Count; button++)
 					{
 						// Consider the button pressed so long as its spot is not occupied by a ".".
-						controllers[buttons[button]] = sections[player][button] != '.';
+						_controller[buttons[button]] = sections[player][button] != '.';
 					}
 				}
 			}
 
-			// Convert the data for the controllers to a mnemonic and add it as a frame.
-			if (_previousControllers != null)
-				Result.Movie.AppendFrame(_previousControllers);
-
-			if (reset) Result.Movie.AppendFrame(EmptyLmsvFrame());
-
-			_previousControllers = controllers;
+			if (reset) Result.Movie.AppendFrame(_emptyController);
 		}
 
 		private static string ImportTextSubtitle(string line)
