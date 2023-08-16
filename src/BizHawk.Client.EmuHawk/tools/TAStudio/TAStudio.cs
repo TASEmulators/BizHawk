@@ -351,9 +351,7 @@ namespace BizHawk.Client.EmuHawk
 				Rotatable = true,
 			});
 
-			var columnNames = MovieSession.Movie
-				.LogGeneratorInstance(MovieSession.MovieController)
-				.Map();
+			var columnNames = MovieSession.MovieController.LogEntryGenerator.Map();
 
 			foreach (var (name, mnemonic0) in columnNames)
 			{
@@ -498,8 +496,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				var lg = CurrentTasMovie.LogGeneratorInstance(MovieSession.MovieController);
-				var empty = lg.EmptyEntry;
+				var empty = MovieSession.MovieController.LogEntryGenerator.EmptyEntry;
 				foreach (var row in TasView.SelectedRows)
 				{
 					if (CurrentTasMovie[row].LogEntry != empty)
@@ -603,7 +600,7 @@ namespace BizHawk.Client.EmuHawk
 				Config.DefaultAuthor);
 
 			SetTasMovieCallbacks(tasMovie);
-			MovieSession.SetMovieController(Emulator.ControllerDefinition); // hack, see interface comment
+			MovieSession.SetMovieController(Emulator.ControllerDefinition, Emulator.SystemId); // hack, see interface comment
 			tasMovie.ClearChanges(); // Don't ask to save changes here.
 			tasMovie.Save();
 			_ = HandleMovieLoadStuff(tasMovie);

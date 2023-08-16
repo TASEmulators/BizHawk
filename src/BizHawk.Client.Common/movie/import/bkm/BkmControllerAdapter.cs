@@ -6,9 +6,9 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	internal class BkmControllerAdapter : IController
+	internal class BkmControllerAdapter : ILogEntryController
 	{
-		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
+		public Bk2LogEntryGenerator LogEntryGenerator { get; }
 
 		public BkmControllerAdapter(ControllerDefinition definition, string systemId)
 		{
@@ -35,6 +35,7 @@ namespace BizHawk.Client.Common
 				_ => "Null Controller",
 			};
 			Definition = new(copyFrom: definition, withName: name);
+			LogEntryGenerator = new Bk2LogEntryGenerator(systemId, this);
 		}
 
 		public ControllerDefinition Definition { get; set; }

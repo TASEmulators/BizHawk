@@ -1,5 +1,5 @@
 ﻿using System;
-
+using BizHawk.Client.Common.movie.import;
 using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
@@ -166,7 +166,7 @@ namespace BizHawk.Client.Common
 		private readonly string[] _buttons = { "Right", "Left", "Down", "Up", "Start", "Select", "B", "A" };
 		private void ImportInputFrame(string line)
 		{
-			SimpleController controllers = new(_deck.ControllerDef);
+			SimpleLogEntryController controllers = new(_deck.ControllerDef, Result.Movie.SystemID);
 
 			string[] sections = line.Split(new[] {'|'}, StringSplitOptions.RemoveEmptyEntries);
 			controllers["Reset"] = sections[1][0] == '1';

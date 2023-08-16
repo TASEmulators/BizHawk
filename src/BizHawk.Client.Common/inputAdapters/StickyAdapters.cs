@@ -15,8 +15,6 @@ namespace BizHawk.Client.Common
 	{
 		public ControllerDefinition Definition => Source.Definition;
 
-		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
-
 		public bool IsPressed(string button)
 		{
 			var source = Source.IsPressed(button);
@@ -116,8 +114,6 @@ namespace BizHawk.Client.Common
 	public class AutoFireStickyXorAdapter : IStickyAdapter, IInputAdapter
 	{
 		public ControllerDefinition Definition => Source.Definition;
-
-		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
 
 		public bool IsPressed(string button)
 		{

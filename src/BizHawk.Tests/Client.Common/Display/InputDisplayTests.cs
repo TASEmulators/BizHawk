@@ -27,8 +27,8 @@ namespace BizHawk.Tests.Client.Common.Display
 		public void Generate_BoolPressed_GeneratesMnemonic()
 		{
 			_boolController["A"] = true;
-			var displayGenerator = new Bk2InputDisplayGenerator("NES", _boolController);
-			var actual = displayGenerator.Generate();
+			var displayGenerator = new Bk2InputDisplayGenerator("NES", _boolController.Definition);
+			var actual = displayGenerator.Generate(_boolController);
 			Assert.AreEqual("A", actual);
 		}
 
@@ -36,16 +36,16 @@ namespace BizHawk.Tests.Client.Common.Display
 		public void Generate_BoolUnPressed_GeneratesSpace()
 		{
 			_boolController["A"] = false;
-			var displayGenerator = new Bk2InputDisplayGenerator("NES", _boolController);
-			var actual = displayGenerator.Generate();
+			var displayGenerator = new Bk2InputDisplayGenerator("NES", _boolController.Definition);
+			var actual = displayGenerator.Generate(_boolController);
 			Assert.AreEqual(" ", actual);
 		}
 
 		[TestMethod]
 		public void Generate_Floats()
 		{
-			var displayGenerator = new Bk2InputDisplayGenerator("NES", _axisController);
-			var actual = displayGenerator.Generate();
+			var displayGenerator = new Bk2InputDisplayGenerator("NES", _axisController.Definition);
+			var actual = displayGenerator.Generate(_axisController);
 			Assert.AreEqual("    0,    0,", actual);
 		}
 
@@ -53,8 +53,8 @@ namespace BizHawk.Tests.Client.Common.Display
 		public void Generate_MidRangeDisplaysEmpty()
 		{
 			_axisController.AcceptNewAxis("StickX", MidValue);
-			var displayGenerator = new Bk2InputDisplayGenerator("NES", _axisController);
-			var actual = displayGenerator.Generate();
+			var displayGenerator = new Bk2InputDisplayGenerator("NES", _axisController.Definition);
+			var actual = displayGenerator.Generate(_axisController);
 			Assert.AreEqual("          0,", actual);
 		}
 	}

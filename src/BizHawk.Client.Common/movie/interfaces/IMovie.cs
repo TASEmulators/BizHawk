@@ -75,11 +75,6 @@ namespace BizHawk.Client.Common
 		void SaveBackup();
 
 		/// <summary>
-		/// Creates a log generator using the given input source
-		/// </summary>
-		Bk2LogEntryGenerator LogGeneratorInstance(IController source);
-
-		/// <summary>
 		/// Instructs the movie to save the current contents to Filename
 		/// </summary>
 		void Save();
@@ -148,19 +143,19 @@ namespace BizHawk.Client.Common
 		/// Adds the given input to the movie
 		/// Note: this edits the input log without the normal movie recording logic applied
 		/// </summary>
-		void AppendFrame(IController source);
+		void AppendFrame(ILogEntryController source);
 
 		/// <summary>
 		/// Replaces the input at the given frame with the given input
 		/// Note: this edits the input log without the normal movie recording logic applied
 		/// </summary>
-		void PokeFrame(int frame, IController source);
+		void PokeFrame(int frame, ILogEntryController source);
 
 		/// <summary>
 		/// Records the given input into the given frame,
 		/// This is subject to normal movie recording logic
 		/// </summary>
-		void RecordFrame(int frame, IController source);
+		void RecordFrame(int frame, ILogEntryController source);
 
 		/// <summary>
 		/// Instructs the movie to remove all input from its input log starting with the input at frame.

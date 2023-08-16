@@ -15,8 +15,6 @@ namespace BizHawk.Client.Common
 
 		public ControllerDefinition Definition { get; set; }
 
-		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
-
 		public bool IsPressed(string button) => _pressed.Contains(button);
 
 		public int AxisValue(string name) => 0;

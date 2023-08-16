@@ -200,7 +200,7 @@ namespace BizHawk.Client.Common.movie.import
 			Result.Movie.Comments.Add(movieDescription);
 			r.BaseStream.Position = firstFrameOffset;
 
-			SimpleController controllers = isGBA
+			SimpleLogEntryController controllers = isGBA
 				? GbaController()
 				: GbController();
 
@@ -302,13 +302,13 @@ namespace BizHawk.Client.Common.movie.import
 			}
 		}
 
-		private static SimpleController GbController()
+		private static SimpleLogEntryController GbController()
 			=> new(new ControllerDefinition("Gameboy Controller")
 			{
 				BoolButtons = { "Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Power" }
-			}.MakeImmutable());
+			}.MakeImmutable(), VSystemID.Raw.GB);
 
-		private static SimpleController GbaController()
-			=> new(MGBAHawk.GBAController);
+		private static SimpleLogEntryController GbaController()
+			=> new(MGBAHawk.GBAController, VSystemID.Raw.GBA);
 	}
 }

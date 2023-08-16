@@ -51,17 +51,23 @@ namespace BizHawk.Client.Common
 		public IInputAdapter MovieOut { get; } = new CopyControllerAdapter();
 		public IStickyAdapter StickySource { get; set; }
 
-		public IMovieController MovieController { get; private set; } = new Bk2Controller("", NullController.Instance.Definition);
+		public IMovieController MovieController { get; private set; }
 
-		public IMovieController GenerateMovieController(ControllerDefinition definition = null)
+		public IMovieController GenerateMovieController()
 		{
 			// TODO: expose Movie.LogKey and pass in here
-			return new Bk2Controller("", definition ?? MovieController.Definition);
+			return new Bk2Controller("", MovieController.Definition, Movie.SystemID);
 		}
 
-		public void SetMovieController(ControllerDefinition definition)
+		public IMovieController GenerateMovieController(ControllerDefinition definition, string systemId)
 		{
-			MovieController = GenerateMovieController(definition);
+			// TODO: expose Movie.LogKey and pass in here
+			return new Bk2Controller("", definition, systemId);
+		}
+
+		public void SetMovieController(ControllerDefinition definition, string systemId)
+		{
+			MovieController = GenerateMovieController(definition, systemId);
 		}
 
 		public void HandleFrameBefore()
@@ -238,7 +244,7 @@ namespace BizHawk.Client.Common
 
 		public void RunQueuedMovie(bool recordMode, IEmulator emulator)
 		{
-			MovieController = new Bk2Controller(emulator.ControllerDefinition);
+			MovieController = new Bk2Controller(emulator.ControllerDefinition, emulator.SystemId);
 
 			Movie = _queuedMovie;
 			Movie.Attach(emulator);

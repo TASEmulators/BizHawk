@@ -48,11 +48,12 @@ namespace BizHawk.Client.Common
 
 		/// <summary>
 		/// Creates a <see cref="IMovieController" /> instance based on the
-		/// given button definition if provided else the
-		/// current <see cref="MovieController" /> button definition
-		/// will be used
+		/// given button definition and system id if provided else the
+		/// current <see cref="MovieController"/>s button definition
+		/// and the current <see cref="Movie"/>s system id will be used
 		/// </summary>
-		IMovieController GenerateMovieController(ControllerDefinition definition = null);
+		IMovieController GenerateMovieController(ControllerDefinition definition, string systemId);
+		IMovieController GenerateMovieController();
 
 		/// <summary>
 		/// Hack only used for TAStudio when starting a new movie
@@ -63,7 +64,7 @@ namespace BizHawk.Client.Common
 		/// TODO: Stop relying on this dummy file so we do not need this ugly hack
 		/// </summary>
 		/// <param name="definition">current IEmulator ControllerDefinition</param>
-		void SetMovieController(ControllerDefinition definition);
+		void SetMovieController(ControllerDefinition definition, string systemId);
 
 		void HandleFrameBefore();
 		void HandleFrameAfter();

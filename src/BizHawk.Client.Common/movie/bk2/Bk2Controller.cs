@@ -13,6 +13,7 @@ namespace BizHawk.Client.Common
 		private readonly WorkingDictionary<string, int> _myAxisControls = new();
 
 		private readonly Bk2ControllerDefinition _type;
+		private readonly string _systemId;
 
 		private IList<ControlMap> _controlsOrdered;
 
@@ -23,25 +24,24 @@ namespace BizHawk.Client.Common
 				IsBool = _type.BoolButtons.Contains(c),
 				IsAxis = _type.Axes.ContainsKey(c)
 			})
-			.ToList();
+			.ToArray();
 
-		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
-
-		public Bk2Controller(string key, ControllerDefinition definition) : this(definition)
+		public Bk2Controller(string key, ControllerDefinition definition, string systemId) : this(definition, systemId)
 		{
 			if (!string.IsNullOrEmpty(key))
 			{
 				var groups = key.Split(new[] { "#" }, StringSplitOptions.RemoveEmptyEntries);
 
 				_type.ControlsFromLog = groups
-					.Select(group => group.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries).ToList())
-					.ToList();
+					.Select(group => group.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries))
+					.ToArray();
 			}
 		}
 
-		public Bk2Controller(ControllerDefinition definition)
+		public Bk2Controller(ControllerDefinition definition, string systemId)
 		{
 			_type = new Bk2ControllerDefinition(definition);
+			_systemId = systemId;
 			foreach ((string axisName, AxisSpec range) in definition.Axes)
 			{
 				_myAxisControls[axisName] = range.Neutral;
@@ -56,6 +56,9 @@ namespace BizHawk.Client.Common
 		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Array.Empty<(string, int)>();
 
 		public void SetHapticChannelStrength(string name, int strength) {}
+
+		private Bk2LogEntryGenerator _logEntryGenerator;
+		public Bk2LogEntryGenerator LogEntryGenerator => _logEntryGenerator ??= new Bk2LogEntryGenerator(_systemId, this);
 
 		public void SetFrom(IController source)
 		{

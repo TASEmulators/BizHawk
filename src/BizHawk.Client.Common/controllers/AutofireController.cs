@@ -9,8 +9,6 @@ namespace BizHawk.Client.Common
 {
 	public class AutofireController : IController
 	{
-		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
-
 		public AutofireController(IEmulator emulator, int on, int off)
 		{
 			On = on < 1 ? 0 : on;
