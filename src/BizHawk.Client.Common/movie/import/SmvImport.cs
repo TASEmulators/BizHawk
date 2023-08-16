@@ -27,7 +27,7 @@ namespace BizHawk.Client.Common.movie.import
 				return;
 			}
 
-			Result.Movie.HeaderEntries[HeaderKeys.Platform] = VSystemID.Raw.SNES;
+			Result.Movie.SystemID = VSystemID.Raw.SNES;
 
 			// 004 4-byte little-endian unsigned int: version number
 			uint versionNumber = r.ReadUInt32();
@@ -189,7 +189,7 @@ namespace BizHawk.Client.Common.movie.import
 			}
 
 			ControllerDefinition definition = new Snes9xControllers(ss).ControllerDefinition;
-			SimpleController controllers = new(definition);
+			SimpleLogEntryController controllers = new(definition, Result.Movie.SystemID);
 
 			Result.Movie.LogKey = Bk2LogEntryGenerator.GenerateLogKey(definition);
 

@@ -1027,7 +1027,7 @@ namespace BizHawk.Client.EmuHawk
 				MovieSession.Movie.IsCountingRerecords = false;
 			}
 
-			_logGenerator = MovieSession.Movie.LogGeneratorInstance(InputManager.ClickyVirtualPadController);
+			_logGenerator = new Bk2LogEntryGenerator(MovieSession.Movie.SystemID, InputManager.ClickyVirtualPadController);
 			_cachedControlProbabilities = ControlProbabilities;
 
 			_doNotUpdateValues = true;

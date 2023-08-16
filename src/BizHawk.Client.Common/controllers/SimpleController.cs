@@ -13,8 +13,6 @@ namespace BizHawk.Client.Common
 	{
 		public ControllerDefinition Definition { get; }
 
-		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
-
 		protected Dictionary<string, int> Axes { get; private set; } = new();
 
 		protected Dictionary<string, bool> Buttons { get; private set; } = new();

@@ -146,7 +146,7 @@ namespace BizHawk.Client.Common
 		public void InvalidateEntireGreenzone()
 			=> InvalidateAfter(0);
 
-		private (int Frame, IMovieController Controller) _displayCache = (-1, new Bk2Controller("", NullController.Instance.Definition));
+		private (int Frame, IMovieController Controller) _displayCache = (-1, new Bk2Controller(NullController.Instance.Definition, VSystemID.Raw.NULL));
 
 		/// <summary>
 		/// Returns the mnemonic value for boolean buttons, and actual value for axes,

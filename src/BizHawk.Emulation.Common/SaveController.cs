@@ -15,8 +15,6 @@ namespace BizHawk.Emulation.Common
 	{
 		private readonly Dictionary<string, int> _buttons = new();
 
-		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
-
 		public SaveController()
 		{
 			Definition = null;

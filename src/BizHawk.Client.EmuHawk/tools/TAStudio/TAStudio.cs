@@ -351,9 +351,7 @@ namespace BizHawk.Client.EmuHawk
 				Rotatable = true,
 			});
 
-			var columnNames = MovieSession.Movie
-				.LogGeneratorInstance(MovieSession.MovieController)
-				.Map();
+			var columnNames = MovieSession.MovieController.LogEntryGenerator.Map();
 
 			foreach (var (name, mnemonic0) in columnNames)
 			{
@@ -497,8 +495,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				var lg = CurrentTasMovie.LogGeneratorInstance(MovieSession.MovieController);
-				var empty = lg.EmptyEntry;
+				var empty = MovieSession.MovieController.LogEntryGenerator.EmptyEntry;
 				foreach (var row in TasView.SelectedRows)
 				{
 					if (CurrentTasMovie[row].LogEntry != empty)

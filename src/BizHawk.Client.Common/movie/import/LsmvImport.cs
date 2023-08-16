@@ -18,8 +18,8 @@ namespace BizHawk.Client.Common.movie.import
 	{
 		private static readonly byte[] Zipheader = { 0x50, 0x4b, 0x03, 0x04 };
 		private int _playerCount;
-		private SimpleController _controller;
-		private SimpleController _emptyController;
+		private SimpleLogEntryController _controller;
+		private SimpleLogEntryController _emptyController;
 
 		private readonly string[][] _lsnesGamepadButtons = Enumerable.Range(1, 8)
 		.Select(player => new[] { "B", "Y", "Select", "Start", "Up", "Down", "Left", "Right", "A", "X", "L", "R" }
@@ -85,8 +85,8 @@ namespace BizHawk.Client.Common.movie.import
 			}
 
 			ControllerDefinition controllerDefinition = new BsnesControllers(ss, true).Definition;
-			_emptyController = new SimpleController(controllerDefinition);
-			_controller = new SimpleController(controllerDefinition);
+			_emptyController = new SimpleLogEntryController(controllerDefinition, Result.Movie.SystemID);
+			_controller = new SimpleLogEntryController(controllerDefinition, Result.Movie.SystemID);
 			_playerCount = controllerDefinition.PlayerCount;
 
 			Result.Movie.LogKey = Bk2LogEntryGenerator.GenerateLogKey(controllerDefinition);
