@@ -48,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 
 			// Update the selected zone's key
 			string key = MovieSession.MovieController.LogEntryGenerator.GenerateLogKey();
-			key = key.Replace("LogKey:", "").Replace("#", "");
+			key = key.Replace("#", "");
 
 			foreach (var box in _buttonBoxes)
 			{

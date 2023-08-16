@@ -22,10 +22,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (key == "")
 			{
-				key = Bk2LogEntryGenerator.GenerateLogKey(movieSession.MovieController.Definition);
+				key = movieSession.MovieController.LogEntryGenerator.GenerateLogKey();
 			}
 
-			key = key.Replace("LogKey:", "").Replace("#", "");
+			key = key.Replace("#", "");
 			key = key[..^1];
 
 			_inputKey = key;
@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var logGenerator = _controller.LogEntryGenerator;
 
-			string movieKey = logGenerator.GenerateLogKey().Replace("LogKey:", "").Replace("#", "");
+			string movieKey = logGenerator.GenerateLogKey().Replace("#", "");
 			movieKey = movieKey[..^1];
 			if (key == movieKey)
 			{
@@ -233,7 +233,7 @@ namespace BizHawk.Client.EmuHawk
 			//	tell the user and display the macro's controller name and player count
 			_inputKey = readText[0];
 			string key = _movieSession.MovieController.LogEntryGenerator.GenerateLogKey();
-			key = key.Replace("LogKey:", "").Replace("#", "");
+			key = key.Replace("#", "");
 			key = key[..^1];
 			string[] emuKeys = key.Split('|');
 			string[] macroKeys = _inputKey.Split('|');
