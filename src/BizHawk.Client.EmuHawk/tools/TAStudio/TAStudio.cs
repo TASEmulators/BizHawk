@@ -219,8 +219,6 @@ namespace BizHawk.Client.EmuHawk
 			MainForm.PauseOnFrame = null;
 			MainForm.PauseEmulator();
 
-			SetupBoolPatterns();
-
 			// Nag if inaccurate core, but not if auto-loading or movie is already loaded
 			if (!CanAutoload && MovieSession.Movie.NotActive())
 			{
