@@ -192,7 +192,8 @@ namespace BizHawk.Client.Common.movie.import
 
 			ControllerDefinition definition = new Snes9xControllers(ss).ControllerDefinition;
 			SimpleLogEntryController controllers = new(definition, Result.Movie.SystemID);
-			Result.Movie.LogKey = controllers.LogEntryGenerator.GenerateLogKey();
+
+			Result.Movie.LogKey = Bk2LogEntryGenerator.GenerateLogKey(definition);
 
 			r.BaseStream.Position = firstFrameOffset;
 			/*
