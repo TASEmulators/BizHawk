@@ -38,7 +38,7 @@ namespace BizHawk.Client.Common
 
 		public void SetFromMnemonicStr(string inputLogEntry)
 		{
-			var controller = _movieSession.GenerateMovieController(_inputManager.ActiveController.Definition);
+			var controller = _movieSession.GenerateMovieController(_inputManager.ActiveController.Definition, null);
 			try
 			{
 				controller.SetFromMnemonic(inputLogEntry);

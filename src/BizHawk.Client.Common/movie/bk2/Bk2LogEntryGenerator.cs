@@ -14,13 +14,14 @@ namespace BizHawk.Client.Common
 		private readonly IController _source;
 
 		private readonly Dictionary<string, char> _mnemonics = new();
-		private readonly List<IReadOnlyList<string>> _controlsOrdered;
+		private readonly IReadOnlyList<IReadOnlyList<string>> _controlsOrdered;
 
 		public Bk2LogEntryGenerator(string systemId, IController source)
 		{
 			_systemId = systemId;
 			_source = source;
-			_controlsOrdered = _source.Definition.ControlsOrdered.Where(static c => c.Count is not 0).ToList();
+
+			_controlsOrdered = _source.Definition.ControlsOrdered.Where(static c => c.Count is not 0).ToArray();
 			foreach (var group in _controlsOrdered) foreach (var button in group)
 			{
 				var found = Bk2MnemonicLookup.Lookup(button, _systemId);
@@ -35,28 +36,18 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		/// <summary>
-		/// Gets an input log entry that is considered empty. (booleans will be false, axes will be 0)
-		/// </summary>
-		public string EmptyEntry => CreateLogEntry(createEmpty: true);
+		private string _emptyEntry;
+		public string EmptyEntry => _emptyEntry ??= CreateLogEntry(createEmpty: true);
 
-		/// <summary>
-		/// Generates an input log entry for the current state of Source
-		/// </summary>
 		public string GenerateLogEntry() => CreateLogEntry();
 
-		/// <summary>
-		/// Generates a human readable key that will specify the names of the
-		/// buttons and the order they are in. This is intended to simply be
-		/// documentation of the meaning of the mnemonics and not to be used to
-		/// enforce the mnemonic values
-		/// </summary>
-		public string GenerateLogKey()
+		public string GenerateLogKey() => GenerateLogKey(_source.Definition);
+		public static string GenerateLogKey(ControllerDefinition definition)
 		{
 			var sb = new StringBuilder();
 			sb.Append("LogKey:");
 
-			foreach (var group in _source.Definition.ControlsOrdered.Where(static c => c.Count is not 0))
+			foreach (var group in definition.ControlsOrdered.Where(static c => c.Count is not 0))
 			{
 				sb.Append('#');
 				foreach (var button in group)
@@ -68,9 +59,6 @@ namespace BizHawk.Client.Common
 			return sb.ToString();
 		}
 
-		/// <summary>
-		/// Generates a dictionary of button names to their corresponding mnemonic values
-		/// </summary>
 		public IDictionary<string, string> Map()
 		{
 			var dict = new Dictionary<string, string>();

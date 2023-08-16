@@ -21,7 +21,7 @@ namespace BizHawk.Client.Common.movie.import
 		private BsnesControllers _controllers;
 		private int _playerCount;
 		// hacky variable; just exists because if subframe input is used, the previous frame needs to be marked subframe aware
-		private SimpleController _previousControllers;
+		private SimpleLogEntryController _previousControllers;
 
 		protected override void RunImport()
 		{
@@ -81,7 +81,7 @@ namespace BizHawk.Client.Common.movie.import
 				};
 			}
 			_controllers = new BsnesControllers(ss, true);
-			Result.Movie.LogKey = new Bk2LogEntryGenerator("SNES", new Bk2Controller(_controllers.Definition)).GenerateLogKey();
+			Result.Movie.LogKey = Bk2LogEntryGenerator.GenerateLogKey(_controllers.Definition);
 			_playerCount = _controllers.Definition.PlayerCount;
 
 			foreach (var item in zip.Entries)
@@ -265,9 +265,9 @@ namespace BizHawk.Client.Common.movie.import
 			Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(ss);
 		}
 
-		private IController EmptyLmsvFrame()
+		private ILogEntryController EmptyLmsvFrame()
 		{
-			SimpleController emptyController = new(_controllers.Definition);
+			SimpleLogEntryController emptyController = new(_controllers.Definition, Result.Movie.SystemID);
 
 			foreach (var button in emptyController.Definition.BoolButtons)
 			{
@@ -279,7 +279,7 @@ namespace BizHawk.Client.Common.movie.import
 
 		private void ImportTextFrame(string line)
 		{
-			SimpleController controllers = new(_controllers.Definition);
+			SimpleLogEntryController controllers = new(_controllers.Definition, Result.Movie.SystemID);
 
 			// Split up the sections of the frame.
 			string[] sections = line.Split('|');
