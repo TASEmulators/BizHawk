@@ -96,7 +96,7 @@ namespace BizHawk.Client.Common.movie.import
 
 			var ss = new SMS.SmsSyncSettings();
 			var cd = new SMSControllerDeck(ss.Port1, ss.Port2, isGameGear, ss.UseKeyboard);
-			SimpleController controllers = new(cd.Definition);
+			SimpleLogEntryController controllers = new(cd.Definition, Result.Movie.SystemID);
 
 			/*
 			 76543210

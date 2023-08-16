@@ -144,7 +144,7 @@ namespace BizHawk.Client.Common.movie.import
 			// Advance to first byte of input data.
 			r.BaseStream.Position = firstFrameOffset;
 
-			SimpleController controllers = new(_deck.ControllerDef);
+			SimpleLogEntryController controllers = new(_deck.ControllerDef, Result.Movie.SystemID);
 
 			string[] buttons = { "A", "B", "Select", "Start", "Up", "Down", "Left", "Right" };
 			bool fds = false;
