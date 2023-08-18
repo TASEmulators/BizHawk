@@ -1398,7 +1398,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (prevTyped != "")
 					{
-						value = 0f;
+						value = ControllerType.Axes[_axisEditColumn].Neutral;
 						CurrentTasMovie.SetAxisState(_axisEditRow, _axisEditColumn, (int) value);
 					}
 				}
