@@ -42,6 +42,10 @@ namespace BizHawk.Client.Common
 		public Bk2Controller(ControllerDefinition definition)
 		{
 			_type = new Bk2ControllerDefinition(definition);
+			foreach ((string axisName, AxisSpec range) in definition.Axes)
+			{
+				_myAxisControls[axisName] = range.Neutral;
+			}
 		}
 
 		public ControllerDefinition Definition => _type;
