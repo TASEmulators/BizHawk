@@ -334,5 +334,17 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		private IntPtr _frameThreadPtr;
 		private Action _frameThreadStart;
+
+		public override void Dispose()
+		{
+			if (_disks != null)
+			{
+				foreach (var disk in _disks)
+				{
+					disk.Dispose();
+				}
+			}
+			base.Dispose();
+		}
 	}
 }
