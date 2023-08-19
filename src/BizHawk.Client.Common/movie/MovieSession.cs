@@ -154,7 +154,9 @@ namespace BizHawk.Client.Common
 				}
 				else if (Movie.IsPlayingOrFinished())
 				{
-					LatchInputToLog();
+					// set the controller state to the previous frame for input display purposes
+					int previousFrame = Movie.Emulator.Frame - 1;
+					Movie.Session.MovieController.SetFrom(Movie.GetInputState(previousFrame));
 				}
 				else if (Movie.IsFinished())
 				{
