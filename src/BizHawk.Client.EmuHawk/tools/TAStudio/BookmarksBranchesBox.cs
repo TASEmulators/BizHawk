@@ -219,6 +219,7 @@ namespace BizHawk.Client.EmuHawk
 
 			Movie.LoadBranch(branch);
 			Tastudio.LoadState(new(branch.Frame, new MemoryStream(branch.CoreData, false)));
+			// set the controller state to the previous frame for input display purposes
 			int previousFrame = Movie.Emulator.Frame - 1;
 			Tastudio.MovieSession.MovieController.SetFrom(Movie.GetInputState(previousFrame));
 
