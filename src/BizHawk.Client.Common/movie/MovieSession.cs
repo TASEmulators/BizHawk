@@ -52,7 +52,7 @@ namespace BizHawk.Client.Common
 		public IInputAdapter MovieOut { get; } = new CopyControllerAdapter();
 		public IStickyAdapter StickySource { get; set; }
 
-		public IMovieController MovieController { get; private set; }
+		public IMovieController MovieController { get; private set; } = new Bk2Controller(NullController.Instance.Definition, VSystemID.Raw.NULL);
 
 		public IMovieController GenerateMovieController()
 		{
