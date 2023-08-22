@@ -38,7 +38,7 @@ namespace BizHawk.Client.Common
 				?? throw new ObjectDisposedException(nameof(_w));
 
 		/// <summary>calls <see cref="ClientWebSocket.ReceiveAsync"/></summary>
-		public string Receive(int bufferCap, CancellationToken? cancellationToken = null)
+		public readonly string Receive(int bufferCap, CancellationToken? cancellationToken = null)
 		{
 			if (_w == null) throw new ObjectDisposedException(nameof(_w));
 			var buffer = new byte[bufferCap];
@@ -52,7 +52,7 @@ namespace BizHawk.Client.Common
 				?? throw new ObjectDisposedException(nameof(_w));
 
 		/// <summary>calls <see cref="ClientWebSocket.SendAsync"/></summary>
-		public Task Send(string message, bool endOfMessage, CancellationToken? cancellationToken = null)
+		public readonly Task Send(string message, bool endOfMessage, CancellationToken? cancellationToken = null)
 		{
 			if (_w == null) throw new ObjectDisposedException(nameof(_w));
 			return Send(

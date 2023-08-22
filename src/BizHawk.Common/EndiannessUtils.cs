@@ -31,10 +31,8 @@ namespace BizHawk.Common
 			fixed (byte* p = &a[0]) for (var i = 0; i < l; i += 4)
 			{
 					(p[i + 3], p[i]) = (p[i], p[i + 3]);
-					var b = p[i + 1];
-				p[i + 1] = p[i + 2];
-				p[i + 2] = b;
-			}
+					(p[i + 2], p[i + 1]) = (p[i + 1], p[i + 2]);
+				}
 #else
 			Debug.Assert(a.Length % 4 == 0);
 			var ints = MemoryMarshal.Cast<byte, uint>(a);

@@ -28,10 +28,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         }
         #pragma warning restore IDE0051
 
-        /// <summary>
-        /// The last CPU cycle when the FDC accepted an IO read/write
-        /// </summary>
-        private long LastCPUCycle;
+		/// <summary>
+		/// The last CPU cycle when the FDC accepted an IO read/write
+		/// </summary>
+		private long LastCPUCycle;
 
         /// <summary>
         /// The current delay figure (in Z80 t-states)

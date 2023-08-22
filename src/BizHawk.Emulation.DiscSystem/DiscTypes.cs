@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.DiscSystem
 			return BCDValue == other.BCDValue;
 		}
 
-		public override bool Equals(object obj)
+		public override readonly bool Equals(object obj)
 		{
 			return obj is BCD2 other && Equals(other);
 		}
