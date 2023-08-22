@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Arcades.MAME;
 
@@ -57,6 +58,7 @@ namespace BizHawk.Client.EmuHawk
 			Scan.Image = Properties.Resources.Scan;
 			editToolStripMenuItem.Image = Properties.Resources.Cut;
 			MovieView.RetrieveVirtualItem += MovieView_QueryItemText;
+			MovieView.ShowItemToolTips = true;
 			MovieView.VirtualMode = true;
 			_sortReverse = false;
 			_sortedCol = "";
@@ -82,7 +84,12 @@ namespace BizHawk.Client.EmuHawk
 		private void MovieView_QueryItemText(object sender, RetrieveVirtualItemEventArgs e)
 		{
 			var entry = _movieList[e.ItemIndex];
-			e.Item = new ListViewItem(entry.Filename);
+			// don't display the common movie path prefix in the dialog
+			string displayedPath = entry.Filename.RemovePrefix(_config.PathEntries.MovieAbsolutePath() + Path.DirectorySeparatorChar);
+			e.Item = new ListViewItem(displayedPath)
+			{
+				ToolTipText = entry.Filename
+			};
 			e.Item.SubItems.Add(entry.SystemID);
 			e.Item.SubItems.Add(entry.GameName);
 			e.Item.SubItems.Add(MovieTimeLengthStr(entry.TimeLength));
