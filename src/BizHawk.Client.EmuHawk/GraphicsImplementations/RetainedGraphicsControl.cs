@@ -101,7 +101,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_guiRenderer.Begin(Width, Height);
-			_guiRenderer.SetBlendState(_gl.BlendNoneCopy);
+			_guiRenderer.DisableBlending();
 			_guiRenderer.Draw(_rt.Texture2d);
 			_guiRenderer.End();
 			_graphicsControl.SwapBuffers();

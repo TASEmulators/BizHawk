@@ -38,7 +38,6 @@ namespace BizHawk.Bizware.Graphics
 		private Pipeline _currPipeline;
 
 		// misc state
-		private CacheBlendState _rsBlendNoneVerbatim, _rsBlendNoneOpaque, _rsBlendNormal;
 		private readonly HashSet<RenderTarget> _renderTargets = new();
 
 		public string API => "D3D9";
@@ -77,7 +76,6 @@ namespace BizHawk.Bizware.Graphics
 			OffscreenNativeWindow = wminfo.info.win.window;
 
 			CreateDevice();
-			CreateRenderStates();
 		}
 
 		public void AlternateVsyncPass(int pass)
@@ -213,15 +211,6 @@ namespace BizHawk.Bizware.Graphics
 		public void ClearColor(Color color)
 			=> _device.Clear(ClearFlags.Target, color.ToSharpDXColor(), 0.0f, 0);
 
-		public IBlendState CreateBlendState(
-			BlendingFactorSrc colorSource,
-			BlendEquationMode colorEquation,
-			BlendingFactorDest colorDest,
-			BlendingFactorSrc alphaSource,
-			BlendEquationMode alphaEquation,
-			BlendingFactorDest alphaDest)
-			=> new CacheBlendState(true, colorSource, colorEquation, colorDest, alphaSource, alphaEquation, alphaDest);
-
 		public void FreeTexture(Texture2d tex)
 		{
 			var tw = (TextureWrapper)tex.Opaque;
@@ -301,94 +290,22 @@ namespace BizHawk.Bizware.Graphics
 			}
 		}
 
-		private static BlendOperation ConvertBlendOp(BlendEquationMode glMode)
-			=> glMode switch
-			{
-				BlendEquationMode.FuncAdd => BlendOperation.Add,
-				BlendEquationMode.FuncSubtract => BlendOperation.Subtract,
-				BlendEquationMode.Max => BlendOperation.Maximum,
-				BlendEquationMode.Min => BlendOperation.Minimum,
-				BlendEquationMode.FuncReverseSubtract => BlendOperation.ReverseSubtract,
-				_ => throw new InvalidOperationException()
-			};
-
-		private static Blend ConvertBlendArg(BlendingFactorDest glMode)
-			=> ConvertBlendArg((BlendingFactorSrc)glMode);
-
-		private static Blend ConvertBlendArg(BlendingFactorSrc glMode)
-			=> glMode switch
-			{
-				BlendingFactorSrc.Zero => Blend.Zero,
-				BlendingFactorSrc.One => Blend.One,
-				BlendingFactorSrc.SrcColor => Blend.SourceColor,
-				BlendingFactorSrc.OneMinusSrcColor => Blend.InverseSourceColor,
-				BlendingFactorSrc.SrcAlpha => Blend.SourceAlpha,
-				BlendingFactorSrc.OneMinusSrcAlpha => Blend.InverseSourceAlpha,
-				BlendingFactorSrc.DstAlpha => Blend.DestinationAlpha,
-				BlendingFactorSrc.OneMinusDstAlpha => Blend.InverseDestinationAlpha,
-				BlendingFactorSrc.DstColor => Blend.DestinationColor,
-				BlendingFactorSrc.OneMinusDstColor => Blend.InverseDestinationColor,
-				BlendingFactorSrc.SrcAlphaSaturate => Blend.SourceAlphaSaturated,
-				BlendingFactorSrc.ConstantColor => Blend.BlendFactor,
-				BlendingFactorSrc.OneMinusConstantColor => Blend.InverseBlendFactor,
-				BlendingFactorSrc.ConstantAlpha => throw new NotSupportedException(),
-				BlendingFactorSrc.OneMinusConstantAlpha => throw new NotSupportedException(),
-				BlendingFactorSrc.Src1Alpha => throw new NotSupportedException(),
-				BlendingFactorSrc.Src1Color => throw new NotSupportedException(),
-				BlendingFactorSrc.OneMinusSrc1Color => throw new NotSupportedException(),
-				BlendingFactorSrc.OneMinusSrc1Alpha => throw new NotSupportedException(),
-				_ => throw new InvalidOperationException()
-			};
-
-		public void SetBlendState(IBlendState rsBlend)
+		public void EnableBlending()
 		{
-			var myBs = (CacheBlendState)rsBlend;
-			if (myBs.Enabled)
-			{
-				_device.SetRenderState(RenderState.AlphaBlendEnable, true);
-				_device.SetRenderState(RenderState.SeparateAlphaBlendEnable, true);
+			_device.SetRenderState(RenderState.AlphaBlendEnable, true);
+			_device.SetRenderState(RenderState.SeparateAlphaBlendEnable, true);
 
-				_device.SetRenderState(RenderState.BlendOperation, ConvertBlendOp(myBs.colorEquation));
-				_device.SetRenderState(RenderState.SourceBlend, ConvertBlendArg(myBs.colorSource));
-				_device.SetRenderState(RenderState.DestinationBlend, ConvertBlendArg(myBs.colorDest));
+			_device.SetRenderState(RenderState.BlendOperation, BlendOperation.Add);
+			_device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
+			_device.SetRenderState(RenderState.DestinationBlend, Blend.InverseSourceAlpha);
 
-				_device.SetRenderState(RenderState.BlendOperationAlpha, ConvertBlendOp(myBs.alphaEquation));
-				_device.SetRenderState(RenderState.SourceBlendAlpha, ConvertBlendArg(myBs.alphaSource));
-				_device.SetRenderState(RenderState.DestinationBlendAlpha, ConvertBlendArg(myBs.alphaDest));
-			}
-			else
-			{
-				_device.SetRenderState(RenderState.AlphaBlendEnable, false);
-			}
-
-			if (rsBlend == _rsBlendNoneOpaque)
-			{
-				// make sure constant color is set correctly
-				_device.SetRenderState(RenderState.BlendFactor, -1); // white
-			}
+			_device.SetRenderState(RenderState.BlendOperationAlpha, BlendOperation.Add);
+			_device.SetRenderState(RenderState.SourceBlendAlpha, Blend.One);
+			_device.SetRenderState(RenderState.DestinationBlendAlpha, Blend.Zero);
 		}
 
-		private void CreateRenderStates()
-		{
-			_rsBlendNoneVerbatim = new(
-				false,
-				BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero,
-				BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero);
-
-			_rsBlendNoneOpaque = new(
-				false,
-				BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero,
-				BlendingFactorSrc.ConstantAlpha, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero);
-
-			_rsBlendNormal = new(
-				true,
-				BlendingFactorSrc.SrcAlpha, BlendEquationMode.FuncAdd, BlendingFactorDest.OneMinusSrcAlpha,
-				BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero);
-		}
-
-		public IBlendState BlendNoneCopy => _rsBlendNoneVerbatim;
-		public IBlendState BlendNoneOpaque => _rsBlendNoneOpaque;
-		public IBlendState BlendNormal => _rsBlendNormal;
+		public void DisableBlending()
+			=> _device.SetRenderState(RenderState.AlphaBlendEnable, false);
 
 		/// <exception cref="InvalidOperationException">
 		/// <paramref name="required"/> is <see langword="true"/> and either <paramref name="vertexShader"/> or <paramref name="fragmentShader"/> is unavailable (their <see cref="Shader.Available"/> property is <see langword="false"/>), or

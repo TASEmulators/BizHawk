@@ -300,7 +300,7 @@ namespace BizHawk.Client.Common
 				{
 					ClipBounds = new Rectangle(0, 0, size.Width, size.Height)
 				};
-				_renderer.SetBlendState(_gl.BlendNormal);
+				_renderer.EnableBlending();
 				OSD.Begin(myBlitter);
 				OSD.DrawScreenInfo(myBlitter);
 				OSD.DrawMessages(myBlitter);

@@ -51,7 +51,7 @@ namespace BizHawk.Client.Common.Filters
 		{
 			var renderer = FilterProgram.GuiRenderer;
 			renderer.Begin(FindOutput().SurfaceFormat.Size);
-			renderer.SetBlendState(FilterProgram.GL.BlendNoneCopy);
+			renderer.DisableBlending();
 			renderer.Draw(InputTexture);
 			renderer.End();
 		}

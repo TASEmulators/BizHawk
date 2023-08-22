@@ -116,33 +116,14 @@ namespace BizHawk.Bizware.BizwareGL
 		VertexLayout CreateVertexLayout();
 
 		/// <summary>
-		/// Creates a blending state object
+		/// Enables normal (non-premultiplied) alpha blending.
 		/// </summary>
-		IBlendState CreateBlendState(BlendingFactorSrc colorSource, BlendEquationMode colorEquation, BlendingFactorDest colorDest,
-			BlendingFactorSrc alphaSource, BlendEquationMode alphaEquation, BlendingFactorDest alphaDest);
+		void EnableBlending();
 
 		/// <summary>
-		/// retrieves a blend state for opaque rendering
-		/// Alpha values are copied from the source fragment.
+		/// Disables blending (alpha values are copied from the source fragment)
 		/// </summary>
-		IBlendState BlendNoneCopy { get; }
-
-		/// <summary>
-		/// retrieves a blend state for opaque rendering
-		/// Alpha values are written as opaque
-		/// </summary>
-		IBlendState BlendNoneOpaque { get; }
-
-		/// <summary>
-		/// retrieves a blend state for normal (non-premultiplied) alpha blending.
-		/// Alpha values are copied from the source fragment.
-		/// </summary>
-		IBlendState BlendNormal { get; }
-
-		/// <summary>
-		/// Sets the current blending state object
-		/// </summary>
-		void SetBlendState(IBlendState rsBlend);
+		void DisableBlending();
 
 		/// <summary>
 		/// Creates a texture with the specified dimensions

@@ -398,7 +398,7 @@ namespace BizHawk.Client.Common.Filters
 			FilterProgram.GL.ClearColor(Color.Black);
 
 			FilterProgram.GuiRenderer.Begin(outputSize);
-			FilterProgram.GuiRenderer.SetBlendState(FilterProgram.GL.BlendNoneCopy);
+			FilterProgram.GuiRenderer.DisableBlending();
 
 			// TODO: may depend on input, or other factors, not sure yet
 			// watch out though... if we filter linear, then screens will bleed into each other.
@@ -664,7 +664,7 @@ namespace BizHawk.Client.Common.Filters
 			FilterProgram.GL.ClearColor(Color.FromArgb(BackgroundColor));
 
 			FilterProgram.GuiRenderer.Begin(OutputSize.Width, OutputSize.Height);
-			FilterProgram.GuiRenderer.SetBlendState(FilterProgram.GL.BlendNoneCopy);
+			FilterProgram.GuiRenderer.DisableBlending();
 
 			if (FilterOption != eFilterOption.None)
 			{
@@ -708,7 +708,7 @@ namespace BizHawk.Client.Common.Filters
 		{
 			var outSize = FindOutput().SurfaceFormat.Size;
 			FilterProgram.GuiRenderer.Begin(outSize);
-			FilterProgram.GuiRenderer.SetBlendState(FilterProgram.GL.BlendNoneCopy);
+			FilterProgram.GuiRenderer.DisableBlending();
 			FilterProgram.GuiRenderer.Modelview.Scale(Scale);
 			FilterProgram.GuiRenderer.Draw(InputTexture);
 			FilterProgram.GuiRenderer.End();
@@ -763,7 +763,7 @@ namespace BizHawk.Client.Common.Filters
 		public override void Run()
 		{
 			FilterProgram.GuiRenderer.Begin(OutputSize); // hope this didn't change
-			FilterProgram.GuiRenderer.SetBlendState(FilterProgram.GL.BlendNoneCopy);
+			FilterProgram.GuiRenderer.DisableBlending();
 			FilterProgram.GuiRenderer.Modelview.Scale(XIS,YIS);
 			FilterProgram.GuiRenderer.Draw(InputTexture);
 			FilterProgram.GuiRenderer.End();
@@ -794,7 +794,7 @@ namespace BizHawk.Client.Common.Filters
 		{
 			var outSize = FindOutput().SurfaceFormat.Size;
 			FilterProgram.GuiRenderer.Begin(outSize);
-			FilterProgram.GuiRenderer.SetBlendState(FilterProgram.GL.BlendNormal);
+			FilterProgram.GuiRenderer.EnableBlending();
 			FilterProgram.GuiRenderer.Draw(_texture);
 			FilterProgram.GuiRenderer.End();
 		}

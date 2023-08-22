@@ -25,12 +25,6 @@ namespace BizHawk.Bizware.Graphics
 
 		public string API => "GDIPLUS";
 
-		public IBlendState CreateBlendState(BlendingFactorSrc colorSource, BlendEquationMode colorEquation, BlendingFactorDest colorDest,
-					BlendingFactorSrc alphaSource, BlendEquationMode alphaEquation, BlendingFactorDest alphaDest)
-		{
-			return null;
-		}
-
 		public void FreeTexture(Texture2d tex)
 		{
 			var gtex = (GDIPlusTexture)tex.Opaque;
@@ -43,20 +37,15 @@ namespace BizHawk.Bizware.Graphics
 		public Shader CreateVertexShader(string source, string entry, bool required)
 			=> null;
 
-		public void SetBlendState(IBlendState rsBlend)
+		public void EnableBlending()
 		{
 			// TODO for real
 		}
 
-		private class EmptyBlendState : IBlendState
+		public void DisableBlending()
 		{
+			// TODO for real
 		}
-
-		private static readonly EmptyBlendState _rsBlendNoneVerbatim = new(), _rsBlendNoneOpaque = new(), _rsBlendNormal = new();
-
-		public IBlendState BlendNoneCopy => _rsBlendNoneVerbatim;
-		public IBlendState BlendNoneOpaque => _rsBlendNoneOpaque;
-		public IBlendState BlendNormal => _rsBlendNormal;
 
 		public Pipeline CreatePipeline(VertexLayout vertexLayout, Shader vertexShader, Shader fragmentShader, bool required, string memo)
 		{

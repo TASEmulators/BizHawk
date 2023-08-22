@@ -84,7 +84,9 @@ namespace BizHawk.Bizware.BizwareGL
 
 		void RectFill(float x, float y, float w, float h);
 
-		void SetBlendState(IBlendState rsBlend);
+		void EnableBlending();
+
+		void DisableBlending();
 
 		/// <summary>
 		/// Sets the specified corner color (for the gradient effect)

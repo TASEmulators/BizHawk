@@ -1,11 +1,6 @@
 //http://stackoverflow.com/questions/6893302/decode-rgb-value-to-single-float-without-bit-shift-in-glsl
 
-//why this stupid assert on the blendstate. just set one by default, geeze.
-
 using System;
-#if DEBUG
-using System.Diagnostics;
-#endif
 using System.Drawing;
 using System.Numerics;
 
@@ -113,13 +108,16 @@ namespace BizHawk.Bizware.Graphics
 			CurrPipeline["uModulateColor"].Set(new Vector4(color.R / 255.0f, color.G / 255.0f, color.B / 255.0f, color.A / 255.0f));
 		}
 
-		public void SetBlendState(IBlendState rsBlend)
+		public void EnableBlending()
 		{
-#if DEBUG
-			BlendStateSet = true;
-#endif
 			Flush();
-			Owner.SetBlendState(rsBlend);
+			Owner.EnableBlending();
+		}
+
+		public void DisableBlending()
+		{
+			Flush();
+			Owner.DisableBlending();
 		}
 
 		private MatrixStack _Projection, _Modelview;
@@ -142,7 +140,10 @@ namespace BizHawk.Bizware.Graphics
 			}
 		}
 
-		public void Begin(Size size) { Begin(size.Width, size.Height); }
+		public void Begin(Size size)
+		{
+			Begin(size.Width, size.Height);
+		}
 
 		public void Begin(int width, int height)
 		{
@@ -160,10 +161,13 @@ namespace BizHawk.Bizware.Graphics
 			// uhhmmm I want to throw an exception if its already active, but its annoying.
 
 			if (CurrPipeline == null)
+			{
 				throw new InvalidOperationException("Pipeline hasn't been set!");
+			}
 
 			IsActive = true;
 			Owner.BindPipeline(CurrPipeline);
+			Owner.DisableBlending();
 
 			//clear state cache
 			sTexture = null;
@@ -171,10 +175,6 @@ namespace BizHawk.Bizware.Graphics
 			Modelview.Clear();
 			Projection.Clear();
 			SetModulateColorWhite();
-
-#if DEBUG
-			BlendStateSet = false;
-#endif
 		}
 
 

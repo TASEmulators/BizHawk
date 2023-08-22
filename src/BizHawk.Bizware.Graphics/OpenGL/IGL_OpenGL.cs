@@ -54,9 +54,6 @@ namespace BizHawk.Bizware.Graphics
 			}
 
 			GL = GL.GetApi(SDL2OpenGLContext.GetGLProcAddress);
-
-			// misc initialization
-			CreateRenderStates();
 		}
 
 		public void BeginScene()
@@ -93,48 +90,15 @@ namespace BizHawk.Bizware.Graphics
 			return CreateShader(ShaderType.VertexShader, source, required);
 		}
 
-		public IBlendState CreateBlendState(
-			BlendingFactorSrc colorSource,
-			BlendEquationMode colorEquation,
-			BlendingFactorDest colorDest,
-			BlendingFactorSrc alphaSource,
-			BlendEquationMode alphaEquation,
-			BlendingFactorDest alphaDest)
+		public void EnableBlending()
 		{
-			return new CacheBlendState(true, colorSource, colorEquation, colorDest, alphaSource, alphaEquation, alphaDest);
+			GL.Enable(EnableCap.Blend);
+			GL.BlendEquation(GLEnum.FuncAdd);
+			GL.BlendFuncSeparate(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha, BlendingFactor.One, BlendingFactor.Zero);
 		}
 
-		public void SetBlendState(IBlendState rsBlend)
-		{
-			var mybs = (CacheBlendState)rsBlend;
-			if (mybs.Enabled)
-			{
-				GL.Enable(EnableCap.Blend);
-				// these are all casts to copies of the same enum
-				GL.BlendEquationSeparate(
-					(GLEnum)mybs.colorEquation,
-					(GLEnum)mybs.alphaEquation);
-				GL.BlendFuncSeparate(
-					(BlendingFactor)mybs.colorSource,
-					(BlendingFactor)mybs.colorDest,
-					(BlendingFactor)mybs.alphaSource,
-					(BlendingFactor)mybs.alphaDest);
-			}
-			else
-			{
-				GL.Disable(EnableCap.Blend);
-			}
-
-			if (rsBlend == _rsBlendNoneOpaque)
-			{
-				//make sure constant color is set correctly
-				GL.BlendColor(Color.FromArgb(255, 255, 255, 255));
-			}
-		}
-
-		public IBlendState BlendNoneCopy => _rsBlendNoneVerbatim;
-		public IBlendState BlendNoneOpaque => _rsBlendNoneOpaque;
-		public IBlendState BlendNormal => _rsBlendNormal;
+		public void DisableBlending()
+			=> GL.Disable(EnableCap.Blend);
 
 		private class ShaderWrapper
 		{
@@ -809,25 +773,5 @@ namespace BizHawk.Bizware.Graphics
 
 			return success;
 		}
-
-		private void CreateRenderStates()
-		{
-			_rsBlendNoneVerbatim = new(
-				false,
-				BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero,
-				BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero);
-
-			_rsBlendNoneOpaque = new(
-				false,
-				BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero,
-				BlendingFactorSrc.ConstantAlpha, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero);
-
-			_rsBlendNormal = new(
-				true,
-				BlendingFactorSrc.SrcAlpha, BlendEquationMode.FuncAdd, BlendingFactorDest.OneMinusSrcAlpha,
-				BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero);
-		}
-
-		private CacheBlendState _rsBlendNoneVerbatim, _rsBlendNoneOpaque, _rsBlendNormal;
 	}
 }

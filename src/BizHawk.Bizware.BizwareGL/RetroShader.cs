@@ -125,7 +125,7 @@ namespace BizHawk.Bizware.BizwareGL
 			pData[i++] = 0; pData[i++] = 0; pData[i++] = 0; pData[i++] = 0; //useless color
 			pData[i++] = 1; pData[i] = v1;
 
-			Owner.SetBlendState(Owner.BlendNoneCopy);
+			Owner.DisableBlending();
 			Owner.Draw(new(pData), 4);
 		}
 

@@ -95,12 +95,13 @@ namespace BizHawk.Bizware.Graphics
 			CurrentImageAttributes.SetColorMatrix(colorMatrix,ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
 		}
 
-		private IBlendState CurrentBlendState;
+		private bool _enableBlending;
 
-		public void SetBlendState(IBlendState rsBlend)
-		{
-			CurrentBlendState = rsBlend;
-		}
+		public void EnableBlending()
+			=> _enableBlending = true;
+
+		public void DisableBlending()
+			=> _enableBlending = false;
 
 		private MatrixStack _Projection, _Modelview;
 
@@ -132,9 +133,7 @@ namespace BizHawk.Bizware.Graphics
 		public void Begin(int width, int height)
 		{
 			Begin();
-
-			CurrentBlendState = _gdi.BlendNormal;
-
+			
 			Projection = Owner.CreateGuiProjectionMatrix(width, height);
 			Modelview = Owner.CreateGuiViewMatrix(width, height);
 		}
@@ -143,7 +142,11 @@ namespace BizHawk.Bizware.Graphics
 		{
 			// uhhmmm I want to throw an exception if its already active, but its annoying.
 			IsActive = true;
+			_enableBlending = false;
+
 			CurrentImageAttributes = new();
+			Modelview.Clear();
+			Projection.Clear();
 		}
 
 		public void Flush()
@@ -222,14 +225,12 @@ namespace BizHawk.Bizware.Graphics
 				_ => g.InterpolationMode
 			};
 
-			if (CurrentBlendState == _gdi.BlendNormal)
+			if (_enableBlending)
 			{
 				g.CompositingMode = CompositingMode.SourceOver;
 				g.CompositingQuality = CompositingQuality.Default; // ?
 			}
 			else
-			// if (CurrentBlendState == Gdi.BlendNoneCopy)
-			// if (CurrentBlendState == Gdi.BlendNoneOpaque)
 			{
 				g.CompositingMode = CompositingMode.SourceCopy;
 				g.CompositingQuality = CompositingQuality.HighSpeed;
