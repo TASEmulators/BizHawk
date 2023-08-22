@@ -32,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 		// TODO: merge ToolHelper code where logical
 		// For instance, add an IToolForm property called UsesCheats, so that a UpdateCheatRelatedTools() method can update all tools of this type
 		// Also a UsesRam, and similar method
-		private readonly List<IToolForm> _tools = new List<IToolForm>();
+		private readonly List<IToolForm> _tools = new();
 
 		private IExternalApiProvider ApiProvider
 		{

@@ -7,7 +7,7 @@ namespace BizHawk.Client.Common
 {
 	public sealed class HttpCommunication
 	{
-		private readonly HttpClient _client = new HttpClient();
+		private readonly HttpClient _client = new();
 
 		private readonly Func<byte[]> _takeScreenshotCallback;
 

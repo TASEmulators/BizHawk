@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -33,6 +33,7 @@ namespace BizHawk.Client.EmuHawk
 		[ConfigPersist]
 		private int FileSizeCap { get; set; }
 
+		#pragma warning disable IDE0051
 		[ConfigPersist]
 		private List<RollColumn> Columns
 		{
@@ -48,6 +49,7 @@ namespace BizHawk.Client.EmuHawk
 				TraceView.AllColumns.ColumnsChanged();
 			}
 		}
+		#pragma warning restore IDE0051
 
 		private FileInfo _logFile;
 		private FileInfo LogFile
@@ -61,7 +63,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private readonly List<TraceInfo> _instructions = new List<TraceInfo>();
+		private readonly List<TraceInfo> _instructions = new();
 		private StreamWriter _streamWriter;
 		private bool _splitFile;
 		private string _baseName;
@@ -237,6 +239,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		#pragma warning disable IDE0051
 		private void LogToWindow()
 		{
 			if (_instructions.Count >= MaxLines)
@@ -245,6 +248,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			TraceView.RowCount = _instructions.Count;
 		}
+		#pragma warning restore IDE0051
 
 		private void SetTracerBoxTitle()
 		{

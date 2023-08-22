@@ -139,20 +139,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				BufferHeight = info.NominalHeight;
 				_mdfnNominalWidth = info.NominalWidth;
 				_mdfnNominalHeight = info.NominalHeight;
-				switch (info.VideoSystem)
+				Region = info.VideoSystem switch
 				{
 					// TODO: There seriously isn't any region besides these?
-					case LibNymaCore.VideoSystem.PAL:
-					case LibNymaCore.VideoSystem.SECAM:
-						Region = DisplayType.PAL;
-						break;
-					case LibNymaCore.VideoSystem.PAL_M:
-						Region = DisplayType.Dendy; // sort of...
-						break;
-					default:
-						Region = DisplayType.NTSC;
-						break;
-				}
+					LibNymaCore.VideoSystem.PAL or LibNymaCore.VideoSystem.SECAM => DisplayType.PAL,
+					LibNymaCore.VideoSystem.PAL_M => DisplayType.Dendy,// sort of...
+					_ => DisplayType.NTSC,
+				};
 				VsyncNumerator = info.FpsFixed;
 				VsyncDenominator = 1 << 24;
 				ClockRate = info.MasterClock / (double)0x100000000;

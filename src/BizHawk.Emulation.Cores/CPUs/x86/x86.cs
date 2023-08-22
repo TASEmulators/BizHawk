@@ -140,6 +140,6 @@ namespace BizHawk.Emulation.Cores.Components.x86
 		[FieldOffset(1)]
 		public byte High;
 
-		public override string ToString() => $"{Word:X4}";
+		public override readonly string ToString() => $"{Word:X4}";
 	}
 }

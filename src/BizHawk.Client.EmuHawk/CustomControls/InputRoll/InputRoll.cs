@@ -22,19 +22,19 @@ namespace BizHawk.Client.EmuHawk
 	public partial class InputRoll : Control
 	{
 		private readonly IControlRenderer _renderer;
-		private readonly SortedSet<Cell> _selectedItems = new SortedSet<Cell>(new SortCell());
+		private readonly SortedSet<Cell> _selectedItems = new(new SortCell());
 
 		// scrollbar location(s) are calculated later (e.g. on resize)
-		private readonly VScrollBar _vBar = new VScrollBar { Visible = false };
-		private readonly HScrollBar _hBar = new HScrollBar { Visible = false };
+		private readonly VScrollBar _vBar = new() { Visible = false };
+		private readonly HScrollBar _hBar = new() { Visible = false };
 
-		private readonly Timer _hoverTimer = new Timer();
+		private readonly Timer _hoverTimer = new();
 		private readonly byte[] _lagFrames = new byte[256]; // Large enough value that it shouldn't ever need resizing. // apparently not large enough for 4K
 
 		private readonly Color _foreColor;
 		private readonly Color _backColor;
 
-		private RollColumns _columns = new RollColumns();
+		private RollColumns _columns = new();
 		private bool _horizontalOrientation;
 		private bool _programmaticallyUpdatingScrollBarValues;
 
@@ -652,7 +652,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private InputRollSettings Settings => new InputRollSettings
+		private InputRollSettings Settings => new()
 		{
 			Columns = _columns,
 			HorizontalOrientation = HorizontalOrientation,

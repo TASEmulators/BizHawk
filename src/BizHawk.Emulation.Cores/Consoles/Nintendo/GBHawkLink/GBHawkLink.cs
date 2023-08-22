@@ -100,10 +100,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 			set => _cableconnected = value;
 		}
 
+		#pragma warning disable IDE0051
 		private void ExecFetch(ushort addr)
 		{
 			uint flags = (uint)(MemoryCallbackFlags.AccessExecute);
 			MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
 		}
+		#pragma warning restore IDE0051
 	}
 }

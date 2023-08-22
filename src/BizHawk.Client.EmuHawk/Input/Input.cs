@@ -25,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 			if (types.HasFlag(ClientInputFocus.Mouse) && !wants) _wantingMouseFocus.Remove(c);
 		}
 
-		private readonly HashSet<Control> _wantingMouseFocus = new HashSet<Control>();
+		private readonly HashSet<Control> _wantingMouseFocus = new();
 
 		public static Input Instance { get; set; }
 
@@ -63,9 +63,9 @@ namespace BizHawk.Client.EmuHawk
 			_updateThread.Start();
 		}
 
-		private readonly WorkingDictionary<string, bool> _lastState = new WorkingDictionary<string, bool>();
-		private readonly WorkingDictionary<string, int> _axisValues = new WorkingDictionary<string, int>();
-		private readonly WorkingDictionary<string, float> _axisDeltas = new WorkingDictionary<string, float>();
+		private readonly WorkingDictionary<string, bool> _lastState = new();
+		private readonly WorkingDictionary<string, int> _axisValues = new();
+		private readonly WorkingDictionary<string, float> _axisDeltas = new();
 		private bool _trackDeltas;
 		private bool _ignoreEventsNextPoll;
 
@@ -142,7 +142,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private uint _modifiers;
-		private readonly List<InputEvent> _newEvents = new List<InputEvent>();
+		private readonly List<InputEvent> _newEvents = new();
 
 		public void ClearEvents()
 		{
@@ -154,7 +154,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private readonly Queue<InputEvent> _inputEvents = new Queue<InputEvent>();
+		private readonly Queue<InputEvent> _inputEvents = new();
 		public InputEvent DequeueEvent()
 		{
 			lock (this)

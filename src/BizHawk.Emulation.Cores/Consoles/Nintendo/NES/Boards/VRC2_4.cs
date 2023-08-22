@@ -210,21 +210,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "KONAMI-VRC-4":
 					AssertPrg(128, 256); AssertChr(128, 256); AssertVram(0); AssertWram(0, 2, 8);
 					type = 4;
-					switch (Cart.Pcb)
+					remap = Cart.Pcb switch
 					{
-						case "352398": // vrc4a A1 A2
-							remap = AddrA1A2; break;
-						case "351406": // vrc4b A1 A0
-							remap = AddrA1A0; break;
-						case "352889": // vrc4c A6 A7
-							remap = AddrA6A7; break;
-						case "352400": // vrc4d A3 A2
-							remap = AddrA3A2; break;
-						case "352396": // vrc4e A2 A3
-							remap = AddrA2A3; break;
-						default:
-							throw new Exception("Unknown PCB type for VRC4");
-					}
+						// vrc4a A1 A2
+						"352398" => AddrA1A2,
+						// vrc4b A1 A0
+						"351406" => AddrA1A0,
+						// vrc4c A6 A7
+						"352889" => AddrA6A7,
+						// vrc4d A3 A2
+						"352400" => AddrA3A2,
+						// vrc4e A2 A3
+						"352396" => AddrA2A3,
+						_ => throw new Exception("Unknown PCB type for VRC4"),
+					};
 					break;
 				case "KONAMI-VRC-2":
 					AssertPrg(128, 256); AssertChr(128, 256); AssertVram(0); AssertWram(0, 8);

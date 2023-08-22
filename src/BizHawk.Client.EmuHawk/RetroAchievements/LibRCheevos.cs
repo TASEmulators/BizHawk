@@ -104,8 +104,8 @@ namespace BizHawk.Client.EmuHawk
 			public IntPtr post_data;
 			public rc_api_buffer_t buffer;
 
-			public string URL => Mershul.PtrToStringUtf8(url);
-			public string PostData => Mershul.PtrToStringUtf8(post_data);
+			public readonly string URL => Mershul.PtrToStringUtf8(url);
+			public readonly string PostData => Mershul.PtrToStringUtf8(post_data);
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -115,7 +115,7 @@ namespace BizHawk.Client.EmuHawk
 			public IntPtr error_message;
 			public rc_api_buffer_t buffer;
 
-			public string ErrorMessage => Mershul.PtrToStringUtf8(error_message);
+			public readonly string ErrorMessage => Mershul.PtrToStringUtf8(error_message);
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -136,9 +136,9 @@ namespace BizHawk.Client.EmuHawk
 			public IntPtr display_name;
 			public rc_api_response_t response;
 
-			public string Username => Mershul.PtrToStringUtf8(username);
-			public string ApiToken => Mershul.PtrToStringUtf8(api_token);
-			public string DisplayName => Mershul.PtrToStringUtf8(display_name);
+			public readonly string Username => Mershul.PtrToStringUtf8(username);
+			public readonly string ApiToken => Mershul.PtrToStringUtf8(api_token);
+			public readonly string DisplayName => Mershul.PtrToStringUtf8(display_name);
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -225,11 +225,11 @@ namespace BizHawk.Client.EmuHawk
 			public long created; // time_t?
 			public long updated; // time_t?
 
-			public string Title => Mershul.PtrToStringUtf8(title);
-			public string Description => Mershul.PtrToStringUtf8(description);
-			public string Definition => Mershul.PtrToStringUtf8(definition);
-			public string Author => Mershul.PtrToStringUtf8(author);
-			public string BadgeName => Mershul.PtrToStringUtf8(badge_name);
+			public readonly string Title => Mershul.PtrToStringUtf8(title);
+			public readonly string Description => Mershul.PtrToStringUtf8(description);
+			public readonly string Definition => Mershul.PtrToStringUtf8(definition);
+			public readonly string Author => Mershul.PtrToStringUtf8(author);
+			public readonly string BadgeName => Mershul.PtrToStringUtf8(badge_name);
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -243,9 +243,9 @@ namespace BizHawk.Client.EmuHawk
 			public int lower_is_better;
 			public int hidden;
 
-			public string Title => Mershul.PtrToStringUtf8(title);
-			public string Description => Mershul.PtrToStringUtf8(description);
-			public string Definition => Mershul.PtrToStringUtf8(definition);
+			public readonly string Title => Mershul.PtrToStringUtf8(title);
+			public readonly string Description => Mershul.PtrToStringUtf8(description);
+			public readonly string Definition => Mershul.PtrToStringUtf8(definition);
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -262,9 +262,9 @@ namespace BizHawk.Client.EmuHawk
 			public int num_leaderboards;
 			public rc_api_response_t response;
 
-			public string Title => Mershul.PtrToStringUtf8(title);
-			public string ImageName => Mershul.PtrToStringUtf8(image_name);
-			public string RichPresenceScript => Mershul.PtrToStringUtf8(rich_presence_script);
+			public readonly string Title => Mershul.PtrToStringUtf8(title);
+			public readonly string ImageName => Mershul.PtrToStringUtf8(image_name);
+			public readonly string RichPresenceScript => Mershul.PtrToStringUtf8(rich_presence_script);
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -443,9 +443,9 @@ namespace BizHawk.Client.EmuHawk
 			public int num_entries;
 			public rc_api_response_t response;
 
-			public string Title => Mershul.PtrToStringUtf8(title);
-			public string Description => Mershul.PtrToStringUtf8(description);
-			public string Definition => Mershul.PtrToStringUtf8(definition);
+			public readonly string Title => Mershul.PtrToStringUtf8(title);
+			public readonly string Description => Mershul.PtrToStringUtf8(description);
+			public readonly string Definition => Mershul.PtrToStringUtf8(definition);
 		}
 
 		[StructLayout(LayoutKind.Sequential)]

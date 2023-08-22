@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
 	public partial class N64
 	{
-		private readonly List<MemoryDomain> _memoryDomains = new List<MemoryDomain>();
+		private readonly List<MemoryDomain> _memoryDomains = new();
 
 		private IMemoryDomains MemoryDomains;
 
@@ -101,8 +101,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			}
 
 
-			Func<long, byte> peekByte = addr => api.m64p_read_memory_8((uint) addr);
-			Action<long, byte> pokeByte = (addr, val) => api.m64p_write_memory_8((uint) addr, val);
+			byte peekByte(long addr) => api.m64p_read_memory_8((uint)addr);
+			void pokeByte(long addr, byte val) => api.m64p_write_memory_8((uint)addr, val);
 
 			_memoryDomains.Add(new MemoryDomainDelegate
 				(

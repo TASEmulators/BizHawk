@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			savebuff = new byte[BizSwan.bizswan_binstatesize(Core)];
 		}
 
-		private readonly JsonSerializer ser = new JsonSerializer { Formatting = Formatting.Indented };
+		private readonly JsonSerializer ser = new() { Formatting = Formatting.Indented };
 
 		[StructLayout(LayoutKind.Sequential)]
 		private class TextStateData

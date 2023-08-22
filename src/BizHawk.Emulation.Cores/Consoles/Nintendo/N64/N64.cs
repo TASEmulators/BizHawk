@@ -49,30 +49,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			}
 
 			byte country_code = rom[0x3E];
-			switch (country_code)
+			_display_type = country_code switch
 			{
 				// PAL codes
-				case 0x44:
-				case 0x46:
-				case 0x49:
-				case 0x50:
-				case 0x53:
-				case 0x55:
-				case 0x58:
-				case 0x59:
-					_display_type = DisplayType.PAL;
-					break;
-
+				0x44 or 0x46 or 0x49 or 0x50 or 0x53 or 0x55 or 0x58 or 0x59 => DisplayType.PAL,
 				// NTSC codes
-				case 0x37:
-				case 0x41:
-				case 0x45:
-				case 0x4a:
-				default: // Fallback for unknown codes
-					_display_type = DisplayType.NTSC;
-					break;
-			}
-
+				_ => DisplayType.NTSC,
+			};
 			StartThreadLoop();
 
 			var videosettings = _syncSettings.GetVPS(game, _settings.VideoSizeX, _settings.VideoSizeY);
@@ -147,8 +130,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		private readonly N64VideoProvider _videoProvider;
 		private readonly N64Audio _audioProvider;
 
-		private readonly EventWaitHandle _pendingThreadEvent = new EventWaitHandle(false, EventResetMode.AutoReset);
-		private readonly EventWaitHandle _completeThreadEvent = new EventWaitHandle(false, EventResetMode.AutoReset);
+		private readonly EventWaitHandle _pendingThreadEvent = new(false, EventResetMode.AutoReset);
+		private readonly EventWaitHandle _completeThreadEvent = new(false, EventResetMode.AutoReset);
 
 		private mupen64plusApi api; // mupen64plus DLL Api
 

@@ -269,8 +269,10 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 		public static string Disassemble(ushort addr, Func<ushort, byte> reader, out ushort size)
 		{
 			ushort origaddr = addr;
-			List<byte> bytes = new List<byte>();
-			bytes.Add(reader(addr++));
+			List<byte> bytes = new()
+			{
+				reader(addr++)
+			};
 
 			string result = table[bytes[0]];
 
@@ -281,7 +283,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 				result = result.Replace("i8", string.Format("#{0:X2}h", d));
 			}
 
-			StringBuilder ret = new StringBuilder();
+			StringBuilder ret = new();
 			ret.Append(string.Format("{0:X4}:  ", origaddr));
 			foreach (var b in bytes)
 				ret.Append(string.Format("{0:X2} ", b));

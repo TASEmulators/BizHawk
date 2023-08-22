@@ -158,7 +158,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public static FormatPreset DoFFmpegWriterDlg(IWin32Window owner, Config config)
 		{
-			FFmpegWriterForm dlg = new FFmpegWriterForm();
+			FFmpegWriterForm dlg = new();
 			dlg.listBox1.Items.AddRange(FormatPreset.GetPresets(config.FFmpegCustomCommand).Cast<object>().ToArray());
 
 			int i = dlg.listBox1.FindStringExact(config.FFmpegFormat);

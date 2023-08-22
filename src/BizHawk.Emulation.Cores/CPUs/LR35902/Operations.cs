@@ -251,7 +251,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 			Regs[src] = (ushort)((FlagC ? 0x80 : 0) | (Regs[src] >> 1));
 
-			FlagZ = imm ? false : (Regs[src] == 0);
+			FlagZ = !imm && (Regs[src] == 0);
 			FlagH = false;
 			FlagN = false;
 		}
@@ -267,7 +267,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 			Regs[src] = (ushort)(c | (Regs[src] >> 1));
 
-			FlagZ = imm ? false : (Regs[src] == 0);
+			FlagZ = !imm && (Regs[src] == 0);
 			FlagH = false;
 			FlagN = false;
 		}
@@ -282,7 +282,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 			Regs[src] = (ushort)(((Regs[src] << 1) & 0xFF) | c);
 
-			FlagZ = imm ? false : (Regs[src] == 0);
+			FlagZ = !imm && (Regs[src] == 0);
 			FlagH = false;
 			FlagN = false;
 		}
@@ -297,7 +297,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 			Regs[src] = (ushort)(((Regs[src] << 1) & 0xFF) | c);
 
-			FlagZ = imm ? false : (Regs[src] == 0);
+			FlagZ = !imm && (Regs[src] == 0);
 			FlagH = false;
 			FlagN = false;
 		}

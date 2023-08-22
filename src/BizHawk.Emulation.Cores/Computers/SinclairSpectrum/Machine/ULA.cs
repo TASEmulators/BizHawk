@@ -301,9 +301,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			private void CalculateRenderItem(int item, int line, int pix)
 			{
-				Renderer[item] = new RenderCycle();
-
-				Renderer[item].RAction = RenderAction.None;
+				Renderer[item] = new RenderCycle
+				{
+					RAction = RenderAction.None
+				};
 				int pitchWidth = _ula.ScreenWidth + _ula.BorderRightWidth + _ula.BorderLeftWidth;
 
 				int scrPix = pix - _ula.FirstPaperTState;
@@ -620,9 +621,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// swap paper and ink when flash is on
 			if (flashOn && (flash != 0))
 			{
-				int temp = palInk;
-				palInk = palPaper;
-				palPaper = temp;
+				(palPaper, palInk) = (palInk, palPaper);
 			}
 		}
 
@@ -631,7 +630,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public void GenerateP3PortTable()
 		{
-			List<ushort> table = new List<ushort>();
+			List<ushort> table = new();
 			for (int i = 0; i < 0x1000; i++)
 			{
 				ushort r = (ushort)(1 + (4 * i));
@@ -701,23 +700,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					}
 
 					// floating bus on +2a/+3 always returns a byte with Bit0 set
-					switch (item.RAction)
+					result = item.RAction switch
 					{
-						case RenderTable.RenderAction.BorderAndFetchByte1:
-						case RenderTable.RenderAction.Shift1AndFetchByte2:
-						case RenderTable.RenderAction.Shift2AndFetchByte1:
-							result = (byte)(_machine.FetchScreenMemory(item.ByteAddress) | 0x01);
-							break;
-						case RenderTable.RenderAction.BorderAndFetchAttribute1:
-						case RenderTable.RenderAction.Shift1AndFetchAttribute2:
-						case RenderTable.RenderAction.Shift2AndFetchAttribute1:
-							result = (byte)(_machine.FetchScreenMemory(item.AttributeAddress) | 0x01);
-							break;
-						default:
-							result = (byte)(_machine.LastContendedReadByte | 0x01);
-							break;
-					}
-
+						RenderTable.RenderAction.BorderAndFetchByte1 or RenderTable.RenderAction.Shift1AndFetchByte2 or RenderTable.RenderAction.Shift2AndFetchByte1 => (byte)(_machine.FetchScreenMemory(item.ByteAddress) | 0x01),
+						RenderTable.RenderAction.BorderAndFetchAttribute1 or RenderTable.RenderAction.Shift1AndFetchAttribute2 or RenderTable.RenderAction.Shift2AndFetchAttribute1 => (byte)(_machine.FetchScreenMemory(item.AttributeAddress) | 0x01),
+						_ => (int)(byte)(_machine.LastContendedReadByte | 0x01),
+					};
 					break;
 			}
 		}

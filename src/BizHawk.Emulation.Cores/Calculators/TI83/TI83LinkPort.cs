@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Calculators.TI83
 
 		// Note: Each hardware read/write to the link port calls tthe update method.
 		private readonly TI83 Parent;
-		private readonly Queue<byte> CurrentData = new Queue<byte>();
+		private readonly Queue<byte> CurrentData = new();
 
 		private Stream _currentFile;
 		private byte[] _variableData;

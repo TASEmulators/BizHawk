@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		private readonly SN76489col PSG;
 		private readonly AY_3_8910_SGM SGM_sound;
 
-		private readonly BlipBuffer _blip = new BlipBuffer(4096);
+		private readonly BlipBuffer _blip = new(4096);
 
 		public void DiscardSamples()
 		{

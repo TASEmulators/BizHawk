@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
 	public partial class LibsnesCore
 	{
-		private readonly List<MemoryDomain> _memoryDomainList = new List<MemoryDomain>();
+		private readonly List<MemoryDomain> _memoryDomainList = new();
 		private IMemoryDomains _memoryDomains;
 		private LibsnesApi.SNES_MAPPER? _mapper;
 		private LibsnesApi.SNES_REGION? _region;

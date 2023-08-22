@@ -175,7 +175,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 			var sectorInterleave = 3;
 			var directory = new List<LocatedEntry>();
 
-			Func<int, int, int> GetOutputOffset = (t, s) => trackByteOffsets[t] + (s * 256);
+			int GetOutputOffset(int t, int s) => trackByteOffsets[t] + (s * 256);
 
 			foreach (var entry in Entries)
 			{

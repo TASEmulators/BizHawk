@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Common
 		protected readonly IDisassemblable Disassembler;
 		protected readonly IDebuggable DebuggableCore;
 
-		protected readonly List<TraceInfo> Buffer = new List<TraceInfo>();
+		protected readonly List<TraceInfo> Buffer = new();
 
 		protected abstract void TraceFromCallback(uint addr, uint value, uint flags);
 

@@ -14,7 +14,7 @@ namespace BizHawk.WinForms.Controls
 		public new Size Size => base.Size;
 
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public new Point Location => new Point(0, 0);
+		public new Point Location => new(0, 0);
 
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public new string Text => "";

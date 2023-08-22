@@ -14,7 +14,7 @@ namespace BizHawk.Client.Common
 		private static readonly byte[] NonState = Array.Empty<byte>();
 
 		private readonly Func<int, bool> _reserveCallback;
-		internal readonly SortedList<int> StateCache = new SortedList<int>();
+		internal readonly SortedList<int> StateCache = new();
 		private ZwinderBuffer _current;
 		private ZwinderBuffer _recent;
 
@@ -98,7 +98,7 @@ namespace BizHawk.Client.Common
 				if (settings.AncientStateInterval > _ancientInterval)
 				{
 					int lastReserved = 0;
-					List<int> framesToRemove = new List<int>();
+					List<int> framesToRemove = new();
 					foreach (int f in _reserved.Keys)
 					{
 						if (!_reserveCallback(f) && f - lastReserved < settings.AncientStateInterval)
@@ -117,7 +117,7 @@ namespace BizHawk.Client.Common
 			{
 				if (_reserved != null)
 				{
-					List<int> framesToRemove = new List<int>();
+					List<int> framesToRemove = new();
 					foreach (int f in _reserved.Keys)
 					{
 						if (f != 0 && !_reserveCallback(f))
@@ -137,18 +137,12 @@ namespace BizHawk.Client.Common
 
 		private void RebuildReserved()
 		{
-			IDictionary<int, byte[]> newReserved;
-			switch (Settings.AncientStoreType)
+			IDictionary<int, byte[]> newReserved = Settings.AncientStoreType switch
 			{
-				case IRewindSettings.BackingStoreType.Memory:
-					newReserved = new Dictionary<int, byte[]>();
-					break;
-				case IRewindSettings.BackingStoreType.TempFile:
-					newReserved = new TempFileStateDictionary();
-					break;
-				default:
-					throw new InvalidOperationException("Unsupported store type for reserved states.");
-			}
+				IRewindSettings.BackingStoreType.Memory => new Dictionary<int, byte[]>(),
+				IRewindSettings.BackingStoreType.TempFile => new TempFileStateDictionary(),
+				_ => throw new InvalidOperationException("Unsupported store type for reserved states."),
+			};
 			if (_reserved != null)
 			{
 				foreach (var (f, data) in _reserved) newReserved.Add(f, data);

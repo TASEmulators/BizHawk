@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			ControllerDefinition = def.MakeImmutable();
 		}
 
-		private struct PadEnt
+		private readonly struct PadEnt
 		{
 			public readonly string Name;
 			public readonly int Mask;
@@ -276,7 +276,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		}
 
 		// These games are known to not work in quicknes but quicknes thinks it can run them, bail out if one of these is loaded
-		private static readonly HashSet<string> HashBlackList = new HashSet<string>
+		private static readonly HashSet<string> HashBlackList = new()
 		{
 			"E39CA4477D3B96E1CE3A1C61D8055187EA5F1784", // Bill and Ted's Excellent Adventure
 			"E8BC7E6BAE7032D571152F6834516535C34C68F0", // Bill and Ted's Excellent Adventure bad dump

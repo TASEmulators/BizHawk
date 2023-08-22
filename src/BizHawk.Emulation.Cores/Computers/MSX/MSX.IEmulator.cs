@@ -1,4 +1,4 @@
-﻿using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common;
 using System;
 
 namespace BizHawk.Emulation.Cores.Computers.MSX
@@ -174,12 +174,14 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			}
 		}
 
-		public BlipBuffer blip = new BlipBuffer(4500);
+		public BlipBuffer blip = new(4500);
 
 		public int[] Aud = new int [9000];
 		public uint num_samp;
 
+		#pragma warning disable IDE0051
 		private const int blipbuffsize = 4500;
+		#pragma warning restore IDE0051
 
 		public bool CanProvideAsync => false;
 

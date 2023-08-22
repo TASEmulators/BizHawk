@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common.cheats
 		// Code: D F 4 7 0 9 1 5 6 B C 8 A 2 3 E
 		// Hex:  0 1 2 3 4 5 6 7 8 9 A B C D E F
 		// This only applies to the SNES
-		private static readonly Dictionary<char, int> SNESGameGenieTable = new Dictionary<char, int>
+		private static readonly Dictionary<char, int> SNESGameGenieTable = new()
 		{
 			['D'] = 0,  // 0000
 			['F'] = 1,  // 0001

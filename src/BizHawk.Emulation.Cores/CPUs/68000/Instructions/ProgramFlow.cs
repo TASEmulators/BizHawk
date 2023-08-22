@@ -6,51 +6,50 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 	{
 		private bool TestCondition(int condition)
 		{
-			switch (condition)
+			return condition switch
 			{
-				case 0x00: return true;     // True
-				case 0x01: return false;    // False
-				case 0x02: return !C && !Z; // High (Unsigned)
-				case 0x03: return C || Z;   // Less or Same (Unsigned)
-				case 0x04: return !C;       // Carry Clear (High or Same)
-				case 0x05: return C;        // Carry Set (Lower)
-				case 0x06: return !Z;       // Not Equal
-				case 0x07: return Z;        // Equal
-				case 0x08: return !V;       // Overflow Clear
-				case 0x09: return V;        // Overflow Set
-				case 0x0A: return !N;       // Plus (Positive)
-				case 0x0B: return N;        // Minus (Negative)
-				case 0x0C: return N && V || !N && !V;             // Greater or Equal
-				case 0x0D: return N && !V || !N && V;             // Less Than
-				case 0x0E: return N && V && !Z || !N && !V && !Z; // Greater Than
-				case 0x0F: return Z || N && !V || !N && V;        // Less or Equal
-				default:
-					throw new Exception("Invalid condition " + condition);
-			}
+				0x00 => true,// True
+				0x01 => false,// False
+				0x02 => !C && !Z,// High (Unsigned)
+				0x03 => C || Z,// Less or Same (Unsigned)
+				0x04 => !C,// Carry Clear (High or Same)
+				0x05 => C,// Carry Set (Lower)
+				0x06 => !Z,// Not Equal
+				0x07 => Z,// Equal
+				0x08 => !V,// Overflow Clear
+				0x09 => V,// Overflow Set
+				0x0A => !N,// Plus (Positive)
+				0x0B => N,// Minus (Negative)
+				0x0C => N && V || !N && !V,// Greater or Equal
+				0x0D => N && !V || !N && V,// Less Than
+				0x0E => N && V && !Z || !N && !V && !Z,// Greater Than
+				0x0F => Z || N && !V || !N && V,// Less or Equal
+				_ => throw new Exception("Invalid condition " + condition),
+			};
 		}
 
 		private string DisassembleCondition(int condition)
 		{
-			switch (condition)
+			return condition switch
 			{
-				case 0x00: return "t";  // True
-				case 0x01: return "f";  // False
-				case 0x02: return "hi"; // High (Unsigned)
-				case 0x03: return "ls"; // Less or Same (Unsigned)
-				case 0x04: return "cc"; // Carry Clear (High or Same)
-				case 0x05: return "cs"; // Carry Set (Lower)
-				case 0x06: return "ne"; // Not Equal
-				case 0x07: return "eq"; // Equal
-				case 0x08: return "vc"; // Overflow Clear
-				case 0x09: return "vs"; // Overflow Set
-				case 0x0A: return "pl"; // Plus (Positive)
-				case 0x0B: return "mi"; // Minus (Negative)
-				case 0x0C: return "ge"; // Greater or Equal
-				case 0x0D: return "lt"; // Less Than
-				case 0x0E: return "gt"; // Greater Than
-				case 0x0F: return "le"; // Less or Equal
-				default: return "??"; // Invalid condition
-			}
+				0x00 => "t",// True
+				0x01 => "f",// False
+				0x02 => "hi",// High (Unsigned)
+				0x03 => "ls",// Less or Same (Unsigned)
+				0x04 => "cc",// Carry Clear (High or Same)
+				0x05 => "cs",// Carry Set (Lower)
+				0x06 => "ne",// Not Equal
+				0x07 => "eq",// Equal
+				0x08 => "vc",// Overflow Clear
+				0x09 => "vs",// Overflow Set
+				0x0A => "pl",// Plus (Positive)
+				0x0B => "mi",// Minus (Negative)
+				0x0C => "ge",// Greater or Equal
+				0x0D => "lt",// Less Than
+				0x0E => "gt",// Greater Than
+				0x0F => "le",// Less or Equal
+				_ => "??",// Invalid condition
+			};
 		}
 
 		private void Bcc() // Branch on condition

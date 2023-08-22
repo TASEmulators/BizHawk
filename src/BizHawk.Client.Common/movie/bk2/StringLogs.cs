@@ -89,7 +89,7 @@ namespace BizHawk.Client.Common
 	internal class StreamStringLog : IStringLog
 	{
 		private readonly Stream _stream;
-		private readonly List<long> _offsets = new List<long>();
+		private readonly List<long> _offsets = new();
 		private readonly BinaryWriter _bw;
 		private readonly BinaryReader _br;
 		private readonly bool _mDisk;

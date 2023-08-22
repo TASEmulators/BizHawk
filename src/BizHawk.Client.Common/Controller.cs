@@ -33,13 +33,13 @@ namespace BizHawk.Client.Common
 
 		public void SetHapticChannelStrength(string name, int strength) => _haptics[name] = strength;
 
-		private readonly WorkingDictionary<string, List<string>> _bindings = new WorkingDictionary<string, List<string>>();
-		private readonly WorkingDictionary<string, bool> _buttons = new WorkingDictionary<string, bool>();
-		private readonly WorkingDictionary<string, int> _axes = new WorkingDictionary<string, int>();
+		private readonly WorkingDictionary<string, List<string>> _bindings = new();
+		private readonly WorkingDictionary<string, bool> _buttons = new();
+		private readonly WorkingDictionary<string, int> _axes = new();
 		private readonly Dictionary<string, AxisSpec> _axisRanges = new WorkingDictionary<string, AxisSpec>();
-		private readonly Dictionary<string, AnalogBind> _axisBindings = new Dictionary<string, AnalogBind>();
+		private readonly Dictionary<string, AnalogBind> _axisBindings = new();
 		private readonly Dictionary<string, int> _haptics = new WorkingDictionary<string, int>();
-		private readonly Dictionary<string, FeedbackBind> _feedbackBindings = new Dictionary<string, FeedbackBind>();
+		private readonly Dictionary<string, FeedbackBind> _feedbackBindings = new();
 
 		public bool this[string button] => IsPressed(button);
 

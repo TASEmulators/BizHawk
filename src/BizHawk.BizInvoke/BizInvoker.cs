@@ -152,12 +152,7 @@ namespace BizHawk.BizInvoke
 				throw new InvalidOperationException("Type must be public");
 			}
 
-			var baseConstructor = baseType.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, Type.EmptyTypes, null);
-			if (baseConstructor == null)
-			{
-				throw new InvalidOperationException("Base type must have a zero arg constructor");
-			}
-
+			var baseConstructor = baseType.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, Type.EmptyTypes, null) ?? throw new InvalidOperationException("Base type must have a zero arg constructor");
 			var baseMethods = baseType.GetMethods(BindingFlags.Instance | BindingFlags.Public)
 				.Select(static m => (Info: m, Attr: m.GetCustomAttributes(true).OfType<BizImportAttribute>().FirstOrDefault()))
 				.Where(a => a.Attr != null)
@@ -187,13 +182,13 @@ namespace BizHawk.BizInvoke
 
 			var adapterField = type.DefineField("CallingConvention", typeof(ICallingConventionAdapter), FieldAttributes.Public);
 
-			foreach (var mi in baseMethods)
+			foreach (var (Info, Attr) in baseMethods)
 			{
-				var entryPointName = mi.Attr!.EntryPoint ?? mi.Info.Name;
+				var entryPointName = Attr!.EntryPoint ?? Info.Name;
 
-				var hook = mi.Attr.Compatibility
-					? ImplementMethodDelegate(type, mi.Info, mi.Attr.CallingConvention, entryPointName, monitorField, nonTrivialAdapter)
-					: ImplementMethodCalli(type, mi.Info, mi.Attr.CallingConvention, entryPointName, monitorField, adapterField);
+				var hook = Attr.Compatibility
+					? ImplementMethodDelegate(type, Info, Attr.CallingConvention, entryPointName, monitorField, nonTrivialAdapter)
+					: ImplementMethodCalli(type, Info, Attr.CallingConvention, entryPointName, monitorField, adapterField);
 
 				postCreateHooks.Add(hook);
 			}

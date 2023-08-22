@@ -276,6 +276,6 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 		[FieldOffset(0)]
 		public sbyte s8;
 
-		public override string ToString() => $"{u32:X8}";
+		public override readonly string ToString() => $"{u32:X8}";
 	}
 }

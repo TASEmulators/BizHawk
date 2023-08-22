@@ -49,7 +49,7 @@ namespace BizHawk.Bizware.BizwareGL
 				Owner = owner;
 			}
 
-			private Pipeline Owner;
+			private readonly Pipeline Owner;
 			public new PipelineUniform this[string key]
 			{
 #if true

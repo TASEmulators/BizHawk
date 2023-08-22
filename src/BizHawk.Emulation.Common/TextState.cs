@@ -23,8 +23,8 @@ namespace BizHawk.Emulation.Common
 
 		public class Node
 		{
-			public readonly Dictionary<string, byte[]> Data = new Dictionary<string, byte[]>();
-			public readonly Dictionary<string, Node> Objects = new Dictionary<string, Node>();
+			public readonly Dictionary<string, byte[]> Data = new();
+			public readonly Dictionary<string, Node> Objects = new();
 
 			// methods named "ShouldSerialize*" are detected and dynamically invoked by JSON.NET
 			// if they return false during serialization, the field/prop is omitted from the created json
@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public readonly Node Root = new Node();
+		public readonly Node Root = new();
 
 		[JsonIgnore]
 		private Stack<Node> Nodes;
@@ -76,7 +76,7 @@ namespace BizHawk.Emulation.Common
 
 		public void EnterSectionSave(string name)
 		{
-			Node next = new Node();
+			Node next = new();
 			Current.Objects.Add(name, next);
 			Nodes.Push(next);
 		}

@@ -25,15 +25,15 @@ namespace BizHawk.Client.Common
 
 		private readonly DisplayManagerBase _displayManager;
 
-		private readonly Dictionary<string, Image> _imageCache = new Dictionary<string, Image>();
+		private readonly Dictionary<string, Image> _imageCache = new();
 
-		private readonly Bitmap _nullGraphicsBitmap = new Bitmap(1, 1);
+		private readonly Bitmap _nullGraphicsBitmap = new(1, 1);
 
-		private readonly Dictionary<Color, Pen> _pens = new Dictionary<Color, Pen>();
+		private readonly Dictionary<Color, Pen> _pens = new();
 
-		private readonly Dictionary<Color, SolidBrush> _solidBrushes = new Dictionary<Color, SolidBrush>();
+		private readonly Dictionary<Color, SolidBrush> _solidBrushes = new();
 
-		private ImageAttributes _attributes = new ImageAttributes();
+		private ImageAttributes _attributes = new();
 
 		private CompositingMode _compositingMode = CompositingMode.SourceOver;
 

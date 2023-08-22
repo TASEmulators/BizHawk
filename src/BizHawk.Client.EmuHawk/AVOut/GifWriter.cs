@@ -174,7 +174,7 @@ namespace BizHawk.Client.EmuHawk
 			bmp.UnlockBits(data);
 
 			using var qBmp = new OctreeQuantizer(255, 8).Quantize(bmp);
-			MemoryStream ms = new MemoryStream();
+			MemoryStream ms = new();
 			qBmp.Save(ms, System.Drawing.Imaging.ImageFormat.Gif);
 			byte[] b = ms.GetBuffer();
 			if (!_firstDone)

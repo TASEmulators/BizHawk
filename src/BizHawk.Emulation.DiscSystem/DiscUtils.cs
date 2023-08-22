@@ -4,11 +4,13 @@ namespace BizHawk.Emulation.DiscSystem
 {
 	public static class DiscUtils
 	{
+		#pragma warning disable IDE0051
 		private static byte IntToBCD(int n)
 		{
 			var tens = Math.DivRem(n, 10, out var ones);
 			return (byte)((tens << 4) | ones);
 		}
+		#pragma warning restore IDE0051
 
 		/// <summary>
 		/// converts the given int to a BCD value

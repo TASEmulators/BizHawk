@@ -69,7 +69,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private readonly Dictionary<string, char> _mnemonicCache = new Dictionary<string, char>();
+		private readonly Dictionary<string, char> _mnemonicCache = new();
 
 		public override bool StartsFromSavestate
 		{

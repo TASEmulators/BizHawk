@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	public partial class AmstradCPC
 	{
 		internal IMemoryDomains memoryDomains;
-		private readonly Dictionary<string, MemoryDomainByteArray> _byteArrayDomains = new Dictionary<string, MemoryDomainByteArray>();
+		private readonly Dictionary<string, MemoryDomainByteArray> _byteArrayDomains = new();
 		private bool _memoryDomainsInit = false;
 
 		private void SetupMemoryDomains()

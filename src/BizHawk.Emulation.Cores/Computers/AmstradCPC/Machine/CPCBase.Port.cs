@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		protected virtual List<PortDevice> DecodeOUTPort(ushort port)
 		{
-			List<PortDevice> devs = new List<PortDevice>();
+			List<PortDevice> devs = new();
 
 			if (!port.Bit(15) && port.Bit(14))
 				devs.Add(PortDevice.GateArray);

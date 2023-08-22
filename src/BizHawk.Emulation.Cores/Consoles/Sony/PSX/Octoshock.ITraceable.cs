@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public void ShockTraceCallback(IntPtr opaque, uint PC, uint inst, string dis)
 		{
 			var regs = GetCpuFlagsAndRegisters();
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 
 			foreach (var r in regs)
 			{
@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 					sb.Append($"{r.Key}:{r.Value.Value.ToHexString(r.Value.BitSize / 4)} ");
 			}
 
-			Tracer.Put(new(disassembly: $"{PC:X8}:  {inst:X8}  {dis.PadRight(30)}", registerInfo: sb.ToString().Trim()));
+			Tracer.Put(new(disassembly: $"{PC:X8}:  {inst:X8}  {dis,-30}", registerInfo: sb.ToString().Trim()));
 		}
 
 		private void ConnectTracer()

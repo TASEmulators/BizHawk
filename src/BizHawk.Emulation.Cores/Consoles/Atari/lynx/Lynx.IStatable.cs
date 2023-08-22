@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			Frame = reader.ReadInt32();
 		}
 
-		private readonly JsonSerializer _ser = new JsonSerializer { Formatting = Formatting.Indented };
+		private readonly JsonSerializer _ser = new() { Formatting = Formatting.Indented };
 		private readonly byte[] _saveBuff;
 
 		private class TextStateData

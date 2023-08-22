@@ -156,7 +156,7 @@ namespace BizHawk.Client.Common
 			Log.CopyTo(removeStart, removedInputs, 0, removedInputs.Length);
 
 			// Pre-process removed markers for the ChangeLog.
-			List<TasMovieMarker> removedMarkers = new List<TasMovieMarker>();
+			List<TasMovieMarker> removedMarkers = new();
 			if (BindMarkersToInput)
 			{
 				bool wasRecording = ChangeLog.IsRecording;

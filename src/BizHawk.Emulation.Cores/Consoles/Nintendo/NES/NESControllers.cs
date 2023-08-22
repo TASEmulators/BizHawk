@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	/// <summary>
 	/// stores information about the strobe lines controlled by $4016
 	/// </summary>
-	public struct StrobeInfo
+	public readonly struct StrobeInfo
 	{
 		/// <summary>
 		/// the current value of $4016.0; strobes regular controller ports
@@ -238,7 +238,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 
-		private readonly Dictionary<string, int> _buttonOrdinals = new Dictionary<string, int>
+		private readonly Dictionary<string, int> _buttonOrdinals = new()
 		{
 			{ "0Up", 1 },
 			{ "0Down", 2 },

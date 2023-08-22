@@ -34,7 +34,7 @@ namespace BizHawk.Client.Common
 	{
 		public ISoundProvider BaseSoundProvider { get; set; }
 
-		private readonly Queue<short> buffer = new Queue<short>(MaxExcessSamples);
+		private readonly Queue<short> buffer = new(MaxExcessSamples);
 
 		private int SamplesInOneFrame = 1470;
 		private readonly int TargetExtraSamples = 882;

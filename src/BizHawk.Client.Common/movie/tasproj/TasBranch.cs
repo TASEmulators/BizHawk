@@ -10,7 +10,7 @@ namespace BizHawk.Client.Common
 {
 	public class TasBranch
 	{
-		internal struct ForSerialization
+		internal readonly struct ForSerialization
 		{
 			public readonly int Frame;
 

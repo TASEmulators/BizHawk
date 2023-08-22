@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	partial class NES
 	{
-		private static readonly List<Type> INESBoardImplementors = new List<Type>();
+		private static readonly List<Type> INESBoardImplementors = new();
 
 		private static INesBoard CreateBoardInstance(Type boardType)
 		{
@@ -107,7 +107,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// </summary>
 		private static Type FindBoard(CartInfo cart, EDetectionOrigin origin, Dictionary<string, string> properties)
 		{
-			NES nes = new NES { cart = cart };
+			NES nes = new() { cart = cart };
 			Type ret = null;
 			lock(INESBoardImplementors)
 				foreach (var type in INESBoardImplementors)
@@ -158,7 +158,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			var gi = Database.CheckDatabase(hash);
 			if (gi == null) return null;
 
-			CartInfo cart = new CartInfo();
+			CartInfo cart = new();
 
 			//try generating a bootgod cart descriptor from the game database
 			var dict = gi.GetOptions();

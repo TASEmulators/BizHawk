@@ -348,7 +348,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public bool IsCGBDMGMode
 			=> LibGambatte.gambatte_iscgbdmg(GambatteState);
 
-		private InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+		private InputCallbackSystem _inputCallbacks = new();
 
 		// low priority TODO: due to certain aspects of the core implementation,
 		// we don't smartly use the ActiveChanged event here.

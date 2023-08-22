@@ -1,4 +1,4 @@
-﻿using BizHawk.Common;
+using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
@@ -35,8 +35,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			Reset();
 		}
 
+		#pragma warning disable IDE0051
 		private const int WRITE = 0;
 		private const int READ = 1;
+		#pragma warning restore IDE0051
 
 		/// <summary>
 		/// Denotes that HSYNC is active

@@ -149,7 +149,7 @@ namespace BizHawk.Client.Common
 				}
 			});
 
-			ZwinderStateManagerSettings settings = new ZwinderStateManagerSettings();
+			ZwinderStateManagerSettings settings = new();
 			bl.GetLump(BinaryStateLump.StateHistorySettings, abort: false, tr =>
 			{
 				var json = tr.ReadToEnd();

@@ -424,8 +424,8 @@ namespace BizHawk.Emulation.Common
 			}
 
 			public readonly IMemoryCallback Current => _items[_position];
-			
-			object IEnumerator.Current => Current;
+
+			readonly object IEnumerator.Current => Current;
 
 			public bool MoveNext() => ++_position < _items.Count;
 

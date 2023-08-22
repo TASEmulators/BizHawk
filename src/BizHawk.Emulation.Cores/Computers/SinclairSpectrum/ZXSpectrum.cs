@@ -136,7 +136,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				_machine.TapeBuzzer.Volume = settings.TapeVolume;
 			}
 
-			DCFilter dc = new DCFilter(SoundMixer, 512);
+			DCFilter dc = new(SoundMixer, 512);
 			ser.Register<ISoundProvider>(dc);
 			ser.Register<IStatable>(new StateSerializer(SyncState));
 			HardReset();
@@ -157,13 +157,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		public readonly IList<GameInfo> _tapeInfo = new List<GameInfo>();
 		public readonly IList<GameInfo> _diskInfo = new List<GameInfo>();
 
-		private SyncSoundMixer SoundMixer;
+		private readonly SyncSoundMixer SoundMixer;
 
 		private readonly List<byte[]> _files;
 
 		public bool DiagRom = false;
 
-		private readonly List<string> diagRoms = new List<string>
+		private readonly List<string> diagRoms = new()
 		{
 			@"\DiagROM.v28",
 			@"\zx-diagnostics\testrom.bin"
@@ -207,12 +207,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				return embeddedRom;
 
 			// Embedded ROM not found, maybe this is a peripheral ROM?
-			var result = names.Select(n => CoreComm.CoreFileProvider.GetFirmware(new("ZXSpectrum", n))).FirstOrDefault(b => b != null && b.Length == length);
-			if (result == null)
-			{
-				throw new MissingFirmwareException($"At least one of these firmwares is required: {string.Join(", ", names)}");
-			}
-
+			var result = names.Select(n => CoreComm.CoreFileProvider.GetFirmware(new("ZXSpectrum", n))).FirstOrDefault(b => b != null && b.Length == length) ?? throw new MissingFirmwareException($"At least one of these firmwares is required: {string.Join(", ", names)}");
 			return result;
 		}
 

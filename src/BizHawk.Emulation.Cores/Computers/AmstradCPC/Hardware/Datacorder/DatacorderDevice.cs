@@ -114,7 +114,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// A list of the currently loaded data blocks
 		/// </summary>
-		private List<TapeDataBlock> _dataBlocks = new List<TapeDataBlock>();
+		private List<TapeDataBlock> _dataBlocks = new();
 		public List<TapeDataBlock> DataBlocks
 		{
 			get => _dataBlocks;
@@ -140,7 +140,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// Signs whether the device should autodetect when the Z80 has entered into
 		/// 'load' mode and auto-play the tape if neccesary
 		/// </summary>
-		private bool _autoPlay;
+		private readonly bool _autoPlay;
 
 		/// <summary>
 		/// Should be fired at the end of every frame
@@ -303,7 +303,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			var bl = _dataBlocks[targetBlockId];
 
-			StringBuilder sbd = new StringBuilder();
+			StringBuilder sbd = new();
 			sbd.Append('(');
 			sbd.Append((targetBlockId + 1) + " of " + _dataBlocks.Count);
 			sbd.Append(") : ");
@@ -331,7 +331,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public void LoadTape(byte[] tapeData)
 		{
 			// instantiate converters
-			CdtConverter cdtSer = new CdtConverter(this);
+			CdtConverter cdtSer = new(this);
 
 			// CDT
 			if (cdtSer.CheckType(tapeData))
@@ -482,7 +482,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					// notify about the current block
 					var bl = _dataBlocks[_currentDataBlockIndex];
 
-					StringBuilder sbd = new StringBuilder();
+					StringBuilder sbd = new();
 					sbd.Append('(');
 					sbd.Append((_currentDataBlockIndex + 1) + " of " + _dataBlocks.Count);
 					sbd.Append(") : ");
@@ -508,7 +508,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					{
 						// notify about the current block (we are skipping it because its empty)
 						var bl = _dataBlocks[_currentDataBlockIndex];
-						StringBuilder sbd = new StringBuilder();
+						StringBuilder sbd = new();
 						sbd.Append('(');
 						sbd.Append((_currentDataBlockIndex + 1) + " of " + _dataBlocks.Count);
 						sbd.Append(") : ");

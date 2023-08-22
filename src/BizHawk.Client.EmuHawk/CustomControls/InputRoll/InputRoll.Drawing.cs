@@ -299,7 +299,7 @@ namespace BizHawk.Client.EmuHawk
 
 						int strOffsetX = 0;
 						int strOffsetY = 0;
-						Point point = new Point(col.Left + xPadding, RowsToPixels(i) + CellHeightPadding);
+						Point point = new(col.Left + xPadding, RowsToPixels(i) + CellHeightPadding);
 
 						Bitmap image = null;
 						int bitmapOffsetX = 0;
@@ -520,7 +520,7 @@ namespace BizHawk.Client.EmuHawk
 					continue;
 				}
 
-				Cell relativeCell = new Cell
+				Cell relativeCell = new()
 				{
 					RowIndex = cell.RowIndex - visibleRows.Start,
 					Column = cell.Column

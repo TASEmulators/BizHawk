@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.DiscSystem
 	/// </summary>
 	public struct BCD2 : IEquatable<BCD2>
 	{
-		public bool Equals(BCD2 other)
+		public readonly bool Equals(BCD2 other)
 		{
 			return BCDValue == other.BCDValue;
 		}
@@ -54,8 +54,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// The derived decimal value. you can do math on this! the largest number it can logically contain is 99.
 		/// </summary>
 		public int DecimalValue
-		{
-			get => (BCDValue & 0xF) + ((BCDValue >> 4) & 0xF) * 10;
+		{ readonly get => (BCDValue & 0xF) + ((BCDValue >> 4) & 0xF) * 10;
 			set => BCDValue = IntToBCD(value);
 		}
 

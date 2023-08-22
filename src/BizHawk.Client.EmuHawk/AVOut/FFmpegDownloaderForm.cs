@@ -42,32 +42,30 @@ namespace BizHawk.Client.EmuHawk
 			{
 				using (var evt = new ManualResetEvent(false))
 				{
-					using (var client = new System.Net.WebClient())
+					using var client = new System.Net.WebClient();
+					System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
+					client.DownloadFileAsync(new Uri(FFmpegService.Url), fn);
+					client.DownloadProgressChanged += (object sender, System.Net.DownloadProgressChangedEventArgs e) =>
 					{
-						System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
-						client.DownloadFileAsync(new Uri(FFmpegService.Url), fn);
-						client.DownloadProgressChanged += (object sender, System.Net.DownloadProgressChangedEventArgs e) =>
-						{
-							pct = e.ProgressPercentage;
-						};
-						client.DownloadFileCompleted += (object sender, System.ComponentModel.AsyncCompletedEventArgs e) =>
-						{
-							//we don't really need a status. we'll just try to unzip it when it's done
-							evt.Set();
-						};
+						pct = e.ProgressPercentage;
+					};
+					client.DownloadFileCompleted += (object sender, System.ComponentModel.AsyncCompletedEventArgs e) =>
+					{
+						//we don't really need a status. we'll just try to unzip it when it's done
+						evt.Set();
+					};
 
-						for (; ; )
-						{
-							if (evt.WaitOne(10))
-								break;
+					for (; ; )
+					{
+						if (evt.WaitOne(10))
+							break;
 
-							//if the gui thread ordered an exit, cancel the download and wait for it to acknowledge
-							if (exiting)
-							{
-								client.CancelAsync();
-								evt.WaitOne();
-								break;
-							}
+						//if the gui thread ordered an exit, cancel the download and wait for it to acknowledge
+						if (exiting)
+						{
+							client.CancelAsync();
+							evt.WaitOne();
+							break;
 						}
 					}
 				}
@@ -81,22 +79,20 @@ namespace BizHawk.Client.EmuHawk
 				//try acquiring file
 				using (var hf = new HawkFile(fn))
 				{
-					using (var exe = OSTailoredCode.IsUnixHost ? hf.BindArchiveMember("ffmpeg") : hf.BindFirstOf(".exe"))
+					using var exe = OSTailoredCode.IsUnixHost ? hf.BindArchiveMember("ffmpeg") : hf.BindFirstOf(".exe");
+					var data = exe!.ReadAllBytes();
+
+					//last chance. exiting, don't dump the new ffmpeg file
+					if (exiting)
+						return;
+
+					DirectoryInfo parentDir = new(Path.GetDirectoryName(FFmpegService.FFmpegPath)!);
+					if (!parentDir.Exists) parentDir.Create();
+					File.WriteAllBytes(FFmpegService.FFmpegPath, data);
+					if (OSTailoredCode.IsUnixHost)
 					{
-						var data = exe!.ReadAllBytes();
-
-						//last chance. exiting, don't dump the new ffmpeg file
-						if (exiting)
-							return;
-
-						DirectoryInfo parentDir = new(Path.GetDirectoryName(FFmpegService.FFmpegPath)!);
-						if (!parentDir.Exists) parentDir.Create();
-						File.WriteAllBytes(FFmpegService.FFmpegPath, data);
-						if (OSTailoredCode.IsUnixHost)
-						{
-							OSTailoredCode.ConstructSubshell("chmod", $"+x {FFmpegService.FFmpegPath}", checkStdout: false).Start();
-							Thread.Sleep(50); // Linux I/O flush idk
-						}
+						OSTailoredCode.ConstructSubshell("chmod", $"+x {FFmpegService.FFmpegPath}", checkStdout: false).Start();
+						Thread.Sleep(50); // Linux I/O flush idk
 					}
 				}
 

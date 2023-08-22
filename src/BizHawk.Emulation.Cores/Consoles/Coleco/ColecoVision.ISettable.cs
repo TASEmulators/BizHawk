@@ -40,8 +40,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			}
 		}
 
-		private ColecoSettings _settings = new ColecoSettings();
-		private ColecoSyncSettings _syncSettings = new ColecoSyncSettings();
+		private ColecoSettings _settings = new();
+		private ColecoSyncSettings _syncSettings = new();
 
 		public class ColecoSyncSettings
 		{

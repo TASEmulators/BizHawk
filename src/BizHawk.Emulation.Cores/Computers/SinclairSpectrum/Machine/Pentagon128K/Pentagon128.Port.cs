@@ -80,9 +80,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public override void WritePort(ushort port, byte value)
         {
             // get a BitArray of the port
-            BitArray portBits = new BitArray(BitConverter.GetBytes(port));
+            BitArray portBits = new(BitConverter.GetBytes(port));
             // get a BitArray of the value byte
-            BitArray bits = new BitArray(new byte[] { value });
+            BitArray bits = new(new byte[] { value });
 
             // handle AY port writes
             AYDevice.WritePort(port, value);

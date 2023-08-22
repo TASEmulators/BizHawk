@@ -241,8 +241,8 @@ namespace BizHawk.Common
 		public static byte[] Patch(byte[] baseRom, IPSPayload patch)
 		{
 			var rom = baseRom;
-			var last = patch.Records[patch.Records.Count - 1];
-			var reqSize = last.TargetOffset + last.Size;
+			var (PatchOffset, TargetOffset, Size, IsRLE) = patch.Records[patch.Records.Count - 1];
+			var reqSize = TargetOffset + Size;
 			if (baseRom.Length < reqSize)
 			{
 				rom = new byte[reqSize];
@@ -257,8 +257,8 @@ namespace BizHawk.Common
 		public static bool TryPatchInPlace(Span<byte> rom, IPSPayload patch)
 		{
 			IPSPayload.CheckRomSize(rom);
-			var last = patch.Records[patch.Records.Count - 1];
-			if (rom.Length < last.TargetOffset + last.Size) return false;
+			var (PatchOffset, TargetOffset, Size, IsRLE) = patch.Records[patch.Records.Count - 1];
+			if (rom.Length < TargetOffset + Size) return false;
 			patch.DoPatch(rom);
 			return true;
 		}

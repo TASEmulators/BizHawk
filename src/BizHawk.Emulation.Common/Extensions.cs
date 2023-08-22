@@ -108,7 +108,7 @@ namespace BizHawk.Emulation.Common
 			return core.ServiceProvider.GetService<ISoundProvider>();
 		}
 
-		private static readonly ConditionalWeakTable<IEmulator, ISoundProvider> CachedNullSoundProviders = new ConditionalWeakTable<IEmulator, ISoundProvider>();
+		private static readonly ConditionalWeakTable<IEmulator, ISoundProvider> CachedNullSoundProviders = new();
 
 		/// <summary>
 		/// returns the core's SoundProvider, or a suitable dummy provider
@@ -478,7 +478,7 @@ namespace BizHawk.Emulation.Common
 				.AddAxis(string.Format(nameFormat, "Y"), rangeAll, neutralAll)
 				.AddAxis(string.Format(nameFormat, "Z"), rangeAll, neutralAll);
 
-		public static AxisSpec With(this in AxisSpec spec, Range<int> range, int neutral) => new AxisSpec(range, neutral, spec.IsReversed, spec.Constraint);
+		public static AxisSpec With(this in AxisSpec spec, Range<int> range, int neutral) => new(range, neutral, spec.IsReversed, spec.Constraint);
 
 		public static string SystemIDToDisplayName(string sysID)
 			=> SystemIDDisplayNames.TryGetValue(sysID, out var dispName) ? dispName : string.Empty;

@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 	{
 		// this isn't all done
 
-		private struct CName
+		private readonly struct CName
 		{
 			public readonly string Name;
 			public readonly LibGPGX.INPUT_KEYS Key;
@@ -100,7 +100,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		private LibGPGX.InputData _target;
 		private IController _source;
 
-		private readonly List<Action> _converts = new List<Action>();
+		private readonly List<Action> _converts = new();
 
 		public ControllerDefinition ControllerDef { get; }
 

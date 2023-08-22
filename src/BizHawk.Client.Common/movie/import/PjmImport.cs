@@ -33,7 +33,7 @@ namespace BizHawk.Client.Common
 		{
 			var info = new MiscHeaderInfo();
 
-			string magic = new string(br.ReadChars(4));
+			string magic = new(br.ReadChars(4));
 			if (magic != expectedMagic)
 			{
 				Result.Errors.Add($"Not a {expectedMagic}file: invalid magic number in file header.");
@@ -282,7 +282,7 @@ namespace BizHawk.Client.Common
 
 		protected void ParseTextInputLog(BinaryReader br, IMovie movie, MiscHeaderInfo info)
 		{
-			Octoshock.SyncSettings settings = new Octoshock.SyncSettings();
+			Octoshock.SyncSettings settings = new();
 			settings.FIOConfig.Devices8 = new[]
 			{
 				info.Player1Type,

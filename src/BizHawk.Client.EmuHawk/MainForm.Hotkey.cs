@@ -586,28 +586,12 @@ namespace BizHawk.Client.EmuHawk
 		// Determines if the value is a hotkey  that would be handled outside of the CheckHotkey method
 		private bool IsInternalHotkey(string trigger)
 		{
-			switch (trigger)
+			return trigger switch
 			{
-				default:
-					return false;
-				case "Autohold":
-				case "Autofire":
-				case "Frame Advance":
-				case "Turbo":
-				case "Rewind":
-				case "Fast Forward":
-				case "Open RA Overlay":
-					return true;
-				case "RA Up":
-				case "RA Down":
-				case "RA Left":
-				case "RA Right":
-				case "RA Confirm":
-				case "RA Cancel":
-				case "RA Quit":
-					// don't consider these keys outside of RAIntegration overlay being active
-					return RA is RAIntegration { OverlayActive: true };
-			}
+				"Autohold" or "Autofire" or "Frame Advance" or "Turbo" or "Rewind" or "Fast Forward" or "Open RA Overlay" => true,
+				"RA Up" or "RA Down" or "RA Left" or "RA Right" or "RA Confirm" or "RA Cancel" or "RA Quit" => RA is RAIntegration { OverlayActive: true },// don't consider these keys outside of RAIntegration overlay being active
+				_ => false,
+			};
 		}
 	}
 }

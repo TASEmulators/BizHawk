@@ -185,15 +185,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override byte ReadPpu(int addr)
 		{
-			switch (mode)
+			return mode switch
 			{
-				case 0: return vrc2.ReadPpu(addr);
-				case 1: return mmc3.ReadPpu(addr);
-				case 2:
-				case 3: return mmc1.ReadPpu(addr);
-
-			}
-			return 0;
+				0 => vrc2.ReadPpu(addr),
+				1 => mmc3.ReadPpu(addr),
+				2 or 3 => mmc1.ReadPpu(addr),
+				_ => 0,
+			};
 		}
 
 		public override void WritePrg(int addr, byte value)
@@ -216,14 +214,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override byte ReadPrg(int addr)
 		{
-			switch (mode)
+			return mode switch
 			{
-				case 0: return vrc2.ReadPrg(addr);
-				case 1: return mmc3.ReadPrg(addr);
-				case 2:
-				case 3: return mmc1.ReadPrg(addr);
-			}
-			return 0;
+				0 => vrc2.ReadPrg(addr),
+				1 => mmc3.ReadPrg(addr),
+				2 or 3 => mmc1.ReadPrg(addr),
+				_ => 0,
+			};
 		}
 
 		public override void AddressPpu(int addr)

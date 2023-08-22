@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 {
 	internal class mupen64plusVideoApi
 	{
-		private IntPtr GfxDll;
+		private readonly IntPtr GfxDll;
 
 		/// <summary>
 		/// Fills a provided buffer with the mupen64plus framebuffer
@@ -36,31 +36,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		private delegate int GetScreenTextureID();
 
-		private GetScreenTextureID GFXGetScreenTextureID;
+		private readonly GetScreenTextureID GFXGetScreenTextureID;
 
 		public mupen64plusVideoApi(mupen64plusApi core, VideoPluginSettings settings)
 		{
-			string videoplugin;
-			switch (settings.Plugin)
+			string videoplugin = settings.Plugin switch
 			{
-				default:
-				case PluginType.Rice:
-					videoplugin = "mupen64plus-video-rice.dll";
-					break;
-				case PluginType.Glide:
-					videoplugin = "mupen64plus-video-glide64.dll";
-					break;
-				case PluginType.GlideMk2:
-					videoplugin = "mupen64plus-video-glide64mk2.dll";
-					break;
-				case PluginType.GLideN64:
-					videoplugin = "mupen64plus-video-GLideN64.dll";
-					break;
-				case PluginType.Angrylion:
-					videoplugin = "mupen64plus-video-angrylion-rdp.dll";
-					break;
-			}
-
+				PluginType.Glide => "mupen64plus-video-glide64.dll",
+				PluginType.GlideMk2 => "mupen64plus-video-glide64mk2.dll",
+				PluginType.GLideN64 => "mupen64plus-video-GLideN64.dll",
+				PluginType.Angrylion => "mupen64plus-video-angrylion-rdp.dll",
+				_ => "mupen64plus-video-rice.dll",
+			};
 			GfxDll = core.AttachPlugin(mupen64plusApi.m64p_plugin_type.M64PLUGIN_GFX,
 				videoplugin);
 			GFXReadScreen2 = mupen64plusApi.GetTypedDelegate<ReadScreen2>(GfxDll, "ReadScreen2");
@@ -118,7 +105,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		//public Dictionary<string, int> IntParameters = new Dictionary<string,int>();
 		//public Dictionary<string, string> StringParameters = new Dictionary<string,string>();
 
-		public Dictionary<string, object> Parameters = new Dictionary<string, object>();
+		public Dictionary<string, object> Parameters = new();
 		public int Height;
 		public int Width;
 

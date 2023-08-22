@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
@@ -12,6 +12,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 	// which incidentally would allow us to put it back to an int from a long if we wanted to
 	public sealed class ScsiCDBus
 	{
+		#pragma warning disable IDE0051
 		private const int STATUS_GOOD = 0;
 		private const int STATUS_CHECK_CONDITION = 1;
 		private const int STATUS_CONDITION_MET = 2;
@@ -26,6 +27,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		private const int SCSI_PAUSE = 0xDA;
 		private const int SCSI_READ_SUBCODE_Q = 0xDD;
 		private const int SCSI_READ_TOC = 0xDE;
+		#pragma warning restore IDE0051
 
 		private bool bsy, sel, cd, io, msg, req, ack, atn, rst;
 		private bool signalsChanged;
@@ -137,8 +139,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		private bool StatusCompleted;
 		private byte MessageValue;
 
-		private readonly QuickList<byte> CommandBuffer = new QuickList<byte>(10); // 10 = biggest command
-		public QuickQueue<byte> DataIn = new QuickQueue<byte>(2048); // one data sector
+		private readonly QuickList<byte> CommandBuffer = new(10); // 10 = biggest command
+		public QuickQueue<byte> DataIn = new(2048); // one data sector
 
 		// ******** Data Transfer / READ command support ********
 

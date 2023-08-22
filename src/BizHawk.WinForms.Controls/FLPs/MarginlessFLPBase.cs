@@ -15,6 +15,6 @@ namespace BizHawk.WinForms.Controls
 
 		protected MarginlessFLPBase() => base.Margin = Padding.Empty;
 
-		protected static readonly Size TinySize = new Size(24, 24);
+		protected static readonly Size TinySize = new(24, 24);
 	}
 }

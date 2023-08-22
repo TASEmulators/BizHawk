@@ -149,23 +149,16 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public static MednaPropertyDescriptor Create(SettingT s, bool isSyncSetting)
 		{
-			switch (s.Type)
+			return s.Type switch
 			{
-				case SettingType.Int:
-					return new MednaLongDescriptor(s, isSyncSetting);
-				case SettingType.Uint:
-					return new MednaUlongDescriptor(s, isSyncSetting);
-				case SettingType.Bool:
-					return new MednaBoolDescriptor(s, isSyncSetting);
-				case SettingType.Float:
-					return new MednaDoubleDescriptor(s, isSyncSetting);
-				case SettingType.String:
-					return new MednaStringDescriptor(s, isSyncSetting);
-				case SettingType.Enum:
-					return new MednaEnumDescriptor(s, isSyncSetting);
-				default:
-					throw new NotImplementedException($"Unexpected SettingType {s.Type}");
-			}
+				SettingType.Int => new MednaLongDescriptor(s, isSyncSetting),
+				SettingType.Uint => new MednaUlongDescriptor(s, isSyncSetting),
+				SettingType.Bool => new MednaBoolDescriptor(s, isSyncSetting),
+				SettingType.Float => new MednaDoubleDescriptor(s, isSyncSetting),
+				SettingType.String => new MednaStringDescriptor(s, isSyncSetting),
+				SettingType.Enum => new MednaEnumDescriptor(s, isSyncSetting),
+				_ => throw new NotImplementedException($"Unexpected SettingType {s.Type}"),
+			};
 		}
 	}
 
@@ -211,7 +204,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					.Name;
 			}
 
-			public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context) => new StandardValuesCollection(
+			public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context) => new(
 				ValidSettingEnums.Select(e => e.Value).ToList()
 			);
 
@@ -379,7 +372,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					.Name;
 			}
 
-			public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context) => new StandardValuesCollection(
+			public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context) => new(
 				Port.AllowedDevices.Select(d => d.SettingValue).ToList()
 			);
 

@@ -20,7 +20,7 @@ namespace BizHawk.Common
 		}
 
 		// -------------- Logging Domain Configuration --------------
-		private static readonly List<string> EnabledLogDomains = new List<string>();
+		private static readonly List<string> EnabledLogDomains = new();
 
 		public static void EnableDomain(string domain)
 		{

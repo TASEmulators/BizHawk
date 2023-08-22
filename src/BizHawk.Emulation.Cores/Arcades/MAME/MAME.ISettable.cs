@@ -179,10 +179,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			if (setting.Options.Count > 0)
 			{
-				if (setting.DefaultValue == null)
-				{
-					setting.DefaultValue = tempDefault;
-				}
+				setting.DefaultValue ??= tempDefault;
 
 				CurrentDriverSettings.Add(setting);
 			}

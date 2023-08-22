@@ -23,7 +23,7 @@ namespace BizHawk.Client.Common
 				.Any(e => string.Equals(extension, e.Extension, StringComparison.OrdinalIgnoreCase));
 		}
 
-		public static readonly FilesystemFilterSet AvailableImporters = new FilesystemFilterSet(
+		public static readonly FilesystemFilterSet AvailableImporters = new(
 			Importers.Values.OrderBy(attr => attr.Emulator)
 				.Select(attr => new FilesystemFilter(attr.Emulator, new[] { attr.Extension.Substring(1) })) // substring removes initial '.'
 				.ToArray())

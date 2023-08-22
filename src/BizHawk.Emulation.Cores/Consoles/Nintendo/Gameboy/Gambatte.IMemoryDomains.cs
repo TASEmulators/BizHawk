@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
 	public partial class Gameboy
 	{
-		private readonly List<MemoryDomain> _memoryDomains = new List<MemoryDomain>();
+		private readonly List<MemoryDomain> _memoryDomains = new();
 		internal IMemoryDomains MemoryDomains { get; private set; }
 
 		private void CreateMemoryDomain(LibGambatte.MemoryAreas which, string name)

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
@@ -27,6 +27,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_outputBufferIndex = 0;
 		}
 
+		#pragma warning disable IDE0051
 		// Expose this as GetSamplesAsync to support async sound
 		// There's not need to do this though unless this core wants to handle async in its own way (the client can handle these situations if not available from the core)
 		private void GetSamples(short[] samples)
@@ -39,6 +40,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 			_outputBufferIndex = 0;
 		}
+		#pragma warning restore IDE0051
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{

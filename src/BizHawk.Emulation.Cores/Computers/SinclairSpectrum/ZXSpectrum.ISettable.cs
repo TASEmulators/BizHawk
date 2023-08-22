@@ -13,8 +13,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// </summary>
 	public partial class ZXSpectrum : ISettable<ZXSpectrum.ZXSpectrumSettings, ZXSpectrum.ZXSpectrumSyncSettings>
 	{
-		internal ZXSpectrumSettings Settings = new ZXSpectrumSettings();
-		internal ZXSpectrumSyncSettings SyncSettings = new ZXSpectrumSyncSettings();
+		internal ZXSpectrumSettings Settings = new();
+		internal ZXSpectrumSyncSettings SyncSettings = new();
 
 		public ZXSpectrumSettings GetSettings() => Settings.Clone();
 
@@ -234,14 +234,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		public string Media { get; set; }
 		public string OtherMisc { get; set; }
 
-		private readonly Dictionary<string, string> Data = new Dictionary<string, string>();
+		private readonly Dictionary<string, string> Data = new();
 
 		/// <summary>
 		/// Detailed info to be displayed within the settings UIs
 		/// </summary>
 		public static ZXMachineMetaData GetMetaObject(MachineType type)
 		{
-			ZXMachineMetaData m = new ZXMachineMetaData { MachineType = type };
+			ZXMachineMetaData m = new() { MachineType = type };
 
 			switch (type)
 			{

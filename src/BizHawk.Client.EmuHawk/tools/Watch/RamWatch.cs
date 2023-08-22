@@ -1036,6 +1036,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		#pragma warning disable IDE0051
 		[RestoreDefaults]
 		private void RestoreDefaultsMenuItem()
 		{
@@ -1052,6 +1053,7 @@ namespace BizHawk.Client.EmuHawk
 			SetColumns();
 			WatchListView.Refresh();
 		}
+		#pragma warning restore IDE0051
 
 		private void RamWatch_Load(object sender, EventArgs e)
 		{

@@ -89,7 +89,7 @@ namespace BizHawk.Common
 
 		public static bool IsWine => _isWine.Value;
 
-		private static readonly Lazy<ILinkedLibManager> _LinkedLibManager = new Lazy<ILinkedLibManager>(() => CurrentOS switch
+		private static readonly Lazy<ILinkedLibManager> _LinkedLibManager = new(() => CurrentOS switch
 		{
 			DistinctOS.Linux => new UnixMonoLLManager(),
 			DistinctOS.macOS => new UnixMonoLLManager(),
@@ -243,7 +243,8 @@ namespace BizHawk.Common
 		/// <param name="checkStderr">stderr is discarded if false</param>
 		/// <remarks>OS is implicit and needs to be checked at callsite. Returned <see cref="Process"/> has not been started.</remarks>
 		public static Process ConstructSubshell(string cmd, string args, bool checkStdout = true, bool checkStderr = false)
-			=> new Process {
+			=> new()
+			{
 				StartInfo = new ProcessStartInfo {
 					Arguments = args,
 					CreateNoWindow = true,

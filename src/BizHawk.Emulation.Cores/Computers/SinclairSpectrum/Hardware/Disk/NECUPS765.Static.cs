@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             if (bitNumber < 0 || bitNumber > 7)
                 return false;
 
-            BitArray bi = new BitArray(new byte[] { dataByte });
+            BitArray bi = new(new byte[] { dataByte });
 
             return bi[bitNumber];
         }

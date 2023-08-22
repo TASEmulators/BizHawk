@@ -1,4 +1,4 @@
-﻿
+
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
     /// <summary>
@@ -12,6 +12,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     */
     public partial class NECUPD765
     {
+        #pragma warning disable IDE0051
         /// <summary>
         /// The current Z80 cycle
         /// </summary>
@@ -25,6 +26,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     return _machine.CPU.TotalExecutedCycles;
             }
         }
+        #pragma warning restore IDE0051
 
         /// <summary>
         /// The last CPU cycle when the FDC accepted an IO read/write
@@ -89,6 +91,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         }
 
+        #pragma warning disable IDE0051
         /// <summary>
         /// Called by reads to the main status register
         /// Returns true if there is no delay
@@ -114,5 +117,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 return true;
             }
         }
+        #pragma warning restore IDE0051
     }
 }

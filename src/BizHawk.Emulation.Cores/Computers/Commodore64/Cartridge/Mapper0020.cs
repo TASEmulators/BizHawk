@@ -26,8 +26,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 	{
 		private int _bankOffset = 63 << 13;
 
-		private int[] _banksA = new int[64 << 13]; // 8000
-		private int[] _banksB = new int[64 << 13]; // A000
+		private readonly int[] _banksA = new int[64 << 13]; // 8000
+		private readonly int[] _banksB = new int[64 << 13]; // A000
 
 		private readonly int[] _originalMediaA; // 8000
 		private readonly int[] _originalMediaB; // A000

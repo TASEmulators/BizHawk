@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// Pinned managed arrays
 		/// </summary>
-		private readonly Dictionary<string, GCHandle> _pins = new Dictionary<string, GCHandle>();
+		private readonly Dictionary<string, GCHandle> _pins = new();
 
 		/// <summary>
 		/// Whether the CDL is tracking a block with the given name

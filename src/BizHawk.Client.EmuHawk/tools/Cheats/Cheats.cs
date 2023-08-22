@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -521,6 +521,7 @@ namespace BizHawk.Client.EmuHawk
 			Config.Cheats.DisableOnLoad ^= true;
 		}
 
+		#pragma warning disable IDE0051
 		[RestoreDefaults]
 		private void RestoreDefaults()
 		{
@@ -540,6 +541,7 @@ namespace BizHawk.Client.EmuHawk
 			CheatListView.AllColumns.Clear();
 			SetColumns();
 		}
+		#pragma warning restore IDE0051
 
 		private void CheatListView_DoubleClick(object sender, EventArgs e)
 		{

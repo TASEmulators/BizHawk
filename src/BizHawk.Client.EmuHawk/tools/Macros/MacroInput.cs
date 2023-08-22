@@ -16,13 +16,13 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
 
-		public static readonly FilesystemFilterSet MacrosFSFilterSet = new FilesystemFilterSet(new FilesystemFilter("Movie Macros", new[] { "bk2m" }));
+		public static readonly FilesystemFilterSet MacrosFSFilterSet = new(new FilesystemFilter("Movie Macros", new[] { "bk2m" }));
 
 		public static Icon ToolIcon
 			=> Properties.Resources.TAStudioIcon;
 
-		private readonly List<MovieZone> _zones = new List<MovieZone>();
-		private readonly List<int> _unsavedZones = new List<int>();
+		private readonly List<MovieZone> _zones = new();
+		private readonly List<int> _unsavedZones = new();
 		private bool _selecting;
 
 		private IMovie CurrentMovie => MovieSession.Movie;
@@ -251,7 +251,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DummyLoadMacro(string path)
 		{
-			MovieZone loadZone = new MovieZone(path, MainForm, Emulator, MovieSession, Tools);
+			MovieZone loadZone = new(path, MainForm, Emulator, MovieSession, Tools);
 			_zones.Add(loadZone);
 			ZonesList.Items.Add($"{loadZone.Name} - length: {loadZone.Length}");
 		}

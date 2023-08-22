@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Disk information header
 		/// </summary>
-		public Header DiskHeader = new Header();
+		public Header DiskHeader = new();
 
 		/// <summary>
 		/// Track array
@@ -118,7 +118,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				if (!sec.ContainsMultipleWeakSectors)
 				{
 					byte[] origData = sec.SectorData.ToArray();
-					List<byte> data = new List<byte>();
+					List<byte> data = new();
 					for (int m = 0; m < 3; m++)
 					{
 						for (int i = 0; i < 512; i++)
@@ -534,11 +534,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			var sector = track.Sectors[sectorIndex];
 
-			CHRN chrn = new CHRN();
-
-			chrn.C = sector.TrackNumber;
-			chrn.H = sector.SideNumber;
-			chrn.R = sector.SectorID;
+			CHRN chrn = new()
+			{
+				C = sector.TrackNumber,
+				H = sector.SideNumber,
+				R = sector.SectorID
+			};
 
 			// wrap around for N > 7
 			if (sector.SectorSize > 7)
@@ -603,7 +604,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			{
 				get
 				{
-					List<byte> list = new List<byte>();
+					List<byte> list = new();
 
 					foreach (var sec in Sectors)
 					{
@@ -661,7 +662,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 						int size = 0x80 << SectorSize;
 						if (size > ActualDataByteLength)
 						{
-							List<byte> l = new List<byte>();
+							List<byte> l = new();
 							l.AddRange(SectorData);
 							for (int i = 0; i < size - ActualDataByteLength; i++)
 							{
@@ -703,7 +704,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			}
 
 			public CHRN SectorIDInfo =>
-				new CHRN
+				new()
 				{
 					C = TrackNumber,
 					H = SideNumber,

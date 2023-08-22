@@ -262,7 +262,7 @@ namespace BizHawk.Client.Common
 			{
 				_owner = owner;
 			}
-			private ZeldaWinder _owner;
+			private readonly ZeldaWinder _owner;
 			private byte[] _dest
 			{
 				get => _owner._scratch;

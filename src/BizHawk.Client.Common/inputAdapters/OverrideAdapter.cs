@@ -15,9 +15,9 @@ namespace BizHawk.Client.Common
 
 		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
 
-		private readonly Dictionary<string, bool> _overrides = new Dictionary<string, bool>();
-		private readonly Dictionary<string, int> _axisOverrides = new Dictionary<string, int>();
-		private readonly List<string> _inverses = new List<string>();
+		private readonly Dictionary<string, bool> _overrides = new();
+		private readonly Dictionary<string, int> _axisOverrides = new();
+		private readonly List<string> _inverses = new();
 
 		/// <exception cref="InvalidOperationException"><paramref name="button"/> not overridden</exception>
 		public bool IsPressed(string button)

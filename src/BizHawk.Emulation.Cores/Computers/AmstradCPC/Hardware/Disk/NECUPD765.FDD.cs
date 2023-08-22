@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			for (int i = 0; i < 4; i++)
 			{
-				DriveState ds = new DriveState(i, this);
+				DriveState ds = new(i, this);
 				DriveStates[i] = ds;
 			}
 		}

@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 		public GenericDebugger ParentDebugger { get; set; }
 		public IMemoryDomains MemoryDomains { get; set; }
 
-		private readonly BreakpointList _breakpoints = new BreakpointList();
+		private readonly BreakpointList _breakpoints = new();
 
 		public IDialogController DialogController => MainForm;
 

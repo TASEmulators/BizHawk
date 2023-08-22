@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores
 	/// </summary>
 	public class CoreInventory
 	{
-		private readonly Dictionary<string, List<Core>> _systems = new Dictionary<string, List<Core>>();
+		private readonly Dictionary<string, List<Core>> _systems = new();
 
 		/// <summary>keys are system IDs; values are core/ctor info for all that system's cores</summary>
 		public IReadOnlyDictionary<string, List<Core>> AllCores => _systems;
@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores
 			}
 
 			// map parameter names to locations in the constructor
-			private readonly Dictionary<string, int> _paramMap = new Dictionary<string, int>();
+			private readonly Dictionary<string, int> _paramMap = new();
 			// If true, this is a new style constructor that takes a CoreLoadParameters object
 			private readonly bool _useCoreLoadParameters;
 
@@ -191,7 +191,7 @@ namespace BizHawk.Emulation.Cores
 			SystemsFlat = systemsFlat.Values;
 		}
 
-		public static readonly CoreInventory Instance = new CoreInventory(new[] { Emulation.Cores.ReflectionCache.Types });
+		public static readonly CoreInventory Instance = new(new[] { Emulation.Cores.ReflectionCache.Types });
 	}
 
 	public enum CorePriority

@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.DiscSystem
 			/// <summary>
 			/// Whether the Control indicates that this is data
 			/// </summary>
-			public bool IsData => (Control & EControlQ.DATA) != 0;
+			public readonly bool IsData => (Control & EControlQ.DATA) != 0;
 
 			/// <summary>
 			/// The location of the track (Index 1)

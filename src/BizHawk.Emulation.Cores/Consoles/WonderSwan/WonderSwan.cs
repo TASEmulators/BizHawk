@@ -99,10 +99,10 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		public string SystemId => VSystemID.Raw.WSWAN;
 		public bool DeterministicEmulation { get; }
 
-		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+		private readonly InputCallbackSystem _inputCallbacks = new();
 		public IInputCallbackSystem InputCallbacks => _inputCallbacks;
 
-		private readonly MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem(new[] { "System Bus" }); // This isn't an actual memory domain in this core (yet), but there's nothing that enforces that it has to be
+		private readonly MemoryCallbackSystem _memorycallbacks = new(new[] { "System Bus" }); // This isn't an actual memory domain in this core (yet), but there's nothing that enforces that it has to be
 		public IMemoryCallbackSystem MemoryCallbacks => _memorycallbacks;
 
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()

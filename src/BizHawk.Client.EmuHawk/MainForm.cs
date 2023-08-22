@@ -1334,7 +1334,7 @@ namespace BizHawk.Client.EmuHawk
 				int borderHeight = Size.Height - _presentationPanel.Control.Size.Height;
 
 				// start at target zoom and work way down until we find acceptable zoom
-				Size lastComputedSize = new Size(1, 1);
+				Size lastComputedSize = new(1, 1);
 				for (; zoom >= 1; zoom--)
 				{
 					lastComputedSize = DisplayManager.CalculateClientSize(_currentVideoProvider, zoom);
@@ -1689,8 +1689,8 @@ namespace BizHawk.Client.EmuHawk
 			return true;
 		}
 
-		private Size _lastVideoSize = new Size(-1, -1), _lastVirtualSize = new Size(-1, -1);
-		private readonly SaveSlotManager _stateSlots = new SaveSlotManager();
+		private Size _lastVideoSize = new(-1, -1), _lastVirtualSize = new(-1, -1);
+		private readonly SaveSlotManager _stateSlots = new();
 
 		// AVI/WAV state
 		private IVideoWriter _currAviWriter;
@@ -1748,7 +1748,7 @@ namespace BizHawk.Client.EmuHawk
 		// input state which has been destined for game controller inputs are coalesced here
 		// public static ControllerInputCoalescer ControllerInputCoalescer = new ControllerInputCoalescer();
 		// input state which has been destined for client hotkey consumption are colesced here
-		private readonly InputCoalescer _hotkeyCoalescer = new InputCoalescer();
+		private readonly InputCoalescer _hotkeyCoalescer = new();
 
 		private readonly PresentationPanel _presentationPanel;
 
@@ -2406,8 +2406,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var video = _currentVideoProvider;
-			Size currVideoSize = new Size(video.BufferWidth, video.BufferHeight);
-			Size currVirtualSize = new Size(video.VirtualWidth, video.VirtualHeight);
+			Size currVideoSize = new(video.BufferWidth, video.BufferHeight);
+			Size currVirtualSize = new(video.VirtualWidth, video.VirtualHeight);
 
 
 			bool resizeFramebuffer = currVideoSize != _lastVideoSize || currVirtualSize != _lastVirtualSize;
@@ -3817,10 +3817,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					// prepare a core specification
 					// if it wasn't already specified, use the current default
-					if (ioaRetro.CorePath == null)
-					{
-						ioaRetro.CorePath = Config.LibretroCore;
-					}
+					ioaRetro.CorePath ??= Config.LibretroCore;
 
 					if (ioaRetro.CorePath == null)
 					{

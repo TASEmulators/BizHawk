@@ -92,15 +92,11 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		public bool CanStep(StepType type)
 		{
-			switch (type)
+			return type switch
 			{
-				case StepType.Into:
-				case StepType.Over:
-				case StepType.Out:
-					return true;
-				default:
-					return false;
-			}
+				StepType.Into or StepType.Over or StepType.Out => true,
+				_ => false,
+			};
 		}
 
 		public void Step(StepType type) 
@@ -123,18 +119,12 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		private RegisterValue GetRegisterValue(KeyValuePair<string, int> reg)
 		{
-			switch (reg.Key)
+			return reg.Key switch
 			{
-				case "A":
-				case "X":
-				case "Y":
-				case "S":
-					return (byte)reg.Value;
-				case "PC":
-					return (ushort)reg.Value;
-				default:
-					return reg.Value;
-			}
+				"A" or "X" or "Y" or "S" => (RegisterValue)(byte)reg.Value,
+				"PC" => (RegisterValue)(ushort)reg.Value,
+				_ => (RegisterValue)reg.Value,
+			};
 		}
 
 		private void StepInto()

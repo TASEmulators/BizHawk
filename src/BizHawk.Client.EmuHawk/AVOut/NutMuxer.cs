@@ -16,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public class ReusableBufferPool<T>
 		{
-			private readonly List<T[]> _available = new List<T[]>();
+			private readonly List<T[]> _available = new();
 			private readonly ICollection<T[]> _inUse = new HashSet<T[]>();
 
 			private readonly int _capacity;
@@ -333,7 +333,7 @@ namespace BizHawk.Client.EmuHawk
 		// audio packets waiting to be written
 		private readonly Queue<NutFrame> _audioQueue;
 
-		private readonly ReusableBufferPool<byte> _bufferPool = new ReusableBufferPool<byte>(12);
+		private readonly ReusableBufferPool<byte> _bufferPool = new(12);
 
 		/// <summary>
 		/// write out the main header
@@ -508,18 +508,18 @@ namespace BizHawk.Client.EmuHawk
 			/// </summary>
 			public static bool operator <=(NutFrame lhs, NutFrame rhs)
 			{
-				BigInteger left = new BigInteger(lhs._pts);
+				BigInteger left = new(lhs._pts);
 				left = left * lhs._ptsNum * rhs._ptsDen;
-				BigInteger right = new BigInteger(rhs._pts);
+				BigInteger right = new(rhs._pts);
 				right = right * rhs._ptsNum * lhs._ptsDen;
 
 				return left <= right;
 			}
 			public static bool operator >=(NutFrame lhs, NutFrame rhs)
 			{
-				BigInteger left = new BigInteger(lhs._pts);
+				BigInteger left = new(lhs._pts);
 				left = left * lhs._ptsNum * rhs._ptsDen;
-				BigInteger right = new BigInteger(rhs._pts);
+				BigInteger right = new(rhs._pts);
 				right = right * rhs._ptsNum * lhs._ptsDen;
 
 				return left >= right;

@@ -25,19 +25,18 @@ namespace BizHawk.Client.EmuHawk
 		private const int NO_COMPRESSION = 0;
 		private const int BEST_COMPRESSION = 9;
 		private const int DEFAULT_COMPRESSION = -1;
+		#pragma warning disable IDE0051
 		private const int BEST_SPEED = 1;
+		#pragma warning restore IDE0051
 
 		private static CompressionLevel GetCompressionLevel(int v)
 		{
-			switch (v)
+			return v switch
 			{
-				case NO_COMPRESSION:
-					return CompressionLevel.NoCompression;
-				case BEST_COMPRESSION:
-					return CompressionLevel.Optimal;
-				default:
-					return CompressionLevel.Fastest;
-			}
+				NO_COMPRESSION => CompressionLevel.NoCompression,
+				BEST_COMPRESSION => CompressionLevel.Optimal,
+				_ => CompressionLevel.Fastest,
+			};
 		}
 
 		/// <summary>
@@ -789,7 +788,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SetDefaultVideoCodecToken(Config config)
 		{
-			CodecToken ct = new CodecToken();
+			CodecToken ct = new();
 
 			// load from config and sanitize
 			int t = Math.Min(Math.Max(config.JmdThreads, 1), 6);

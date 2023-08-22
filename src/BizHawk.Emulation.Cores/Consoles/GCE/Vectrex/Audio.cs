@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 	{
 		public VectrexHawk Core { get; set; }
 
-		private BlipBuffer _blip = new BlipBuffer(15000);
+		private BlipBuffer _blip = new(15000);
 
 		public uint master_audio_clock;
 
@@ -372,10 +372,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			master_audio_clock = 0;
 		}
 
+		#pragma warning disable IDE0051
 		private void GetSamples(short[] samples)
 		{
 
 		}
+		#pragma warning restore IDE0051
 
 		public void DisposeSound()
 		{

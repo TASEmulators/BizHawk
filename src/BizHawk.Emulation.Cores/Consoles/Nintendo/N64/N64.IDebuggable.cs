@@ -79,21 +79,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		public IMemoryCallbackSystem MemoryCallbacks => _memoryCallbacks;
 
-		private readonly MemoryCallbackSystem _memoryCallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
+		private readonly MemoryCallbackSystem _memoryCallbacks = new(new[] { "System Bus" });
 
 		public bool CanStep(StepType type)
 		{
-			switch(type)
+			return type switch
 			{
-				case StepType.Into:
-					return false; // Implemented but disabled for now. Should be re-enabled once BizHawk supports mid-frame pausing.
-				case StepType.Out:
-					return false;
-				case StepType.Over:
-					return false;
-			}
-
-			return false;
+				StepType.Into => false,// Implemented but disabled for now. Should be re-enabled once BizHawk supports mid-frame pausing.
+				StepType.Out => false,
+				StepType.Over => false,
+				_ => false,
+			};
 		}
 
 		[FeatureNotImplemented]

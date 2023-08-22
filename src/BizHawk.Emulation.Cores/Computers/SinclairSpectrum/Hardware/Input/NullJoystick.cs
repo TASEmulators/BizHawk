@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	public class NullJoystick : IJoystick
 	{
 		private int _joyLine;
-		private SpectrumBase _machine;
+		private readonly SpectrumBase _machine;
 
 		public NullJoystick(SpectrumBase machine, int playerNumber)
 		{

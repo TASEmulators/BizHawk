@@ -1,4 +1,4 @@
-﻿namespace BizHawk.Emulation.Cores.Computers.Commodore64
+namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	public sealed partial class Motherboard
 	{
@@ -24,11 +24,13 @@
 					0x3F;
 		}
 
+		#pragma warning disable IDE0051
 		private int Cia1_ReadPortB()
 		{
 			// Ordinarily these are connected to the userport.
 			return 0x00;
 		}
+		#pragma warning restore IDE0051
 
 		private int Cpu_ReadPort()
 		{

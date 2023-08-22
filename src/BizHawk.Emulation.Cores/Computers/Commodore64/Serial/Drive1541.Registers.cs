@@ -1,4 +1,4 @@
-﻿namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
+namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 {
 	public sealed partial class Drive1541
 	{
@@ -9,6 +9,7 @@
 			return unchecked((byte)Peek(addr));
 		}
 
+		#pragma warning disable IDE0051
 		private byte CpuRead(ushort addr)
 		{
 			return unchecked((byte)Read(addr));
@@ -18,6 +19,7 @@
 		{
 			Write(addr, val);
 		}
+		#pragma warning restore IDE0051
 
 		private bool ViaReadClock()
 		{

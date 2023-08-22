@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common
 		private static readonly double NTSCCarrier = 4500000 * 227.5 / 286; // 3.579545454... MHz
 		private static readonly double PALNCarrier = (15625 * 229.25) + 25; // 3.58205625 MHz
 
-		private static readonly Dictionary<string, double> Rates = new Dictionary<string, double>
+		private static readonly Dictionary<string, double> Rates = new()
 		{
 			["NES"] = 60.098813897440515532, // discussion here: http://forums.nesdev.com/viewtopic.php?t=492 ; a rational expression would be (19687500 / 11) / ((341*262-0.529780.5)/3) -> (118125000 / 1965513) -> 60.098813897440515529533511098629 (so our chosen number is very close)
 			["NES_PAL"] = 50.006977968268290849,

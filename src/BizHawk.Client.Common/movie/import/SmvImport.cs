@@ -22,7 +22,7 @@ namespace BizHawk.Client.Common.movie.import
 			using var r = new BinaryReader(fs);
 
 			// 000 4-byte signature: 53 4D 56 1A "SMV\x1A"
-			string signature = new string(r.ReadChars(4));
+			string signature = new(r.ReadChars(4));
 			if (signature != "SMV\x1A")
 			{
 				Result.Errors.Add("This is not a valid .SMV file.");

@@ -16,7 +16,7 @@ namespace BizHawk.Client.Common
 		}
 
 		private readonly Watch _watch;
-		private int? _compare;
+		private readonly int? _compare;
 		private int _val;
 		private bool _enabled;
 
@@ -59,7 +59,7 @@ namespace BizHawk.Client.Common
 		public delegate void CheatEventHandler(object sender);
 		public event CheatEventHandler Changed;
 
-		public static Cheat Separator => new Cheat(SeparatorWatch.Instance, 0, null, false);
+		public static Cheat Separator => new(SeparatorWatch.Instance, 0, null, false);
 
 		public bool IsSeparator => _watch.IsSeparator;
 
@@ -214,19 +214,14 @@ namespace BizHawk.Client.Common
 
 		public bool Contains(long addr)
 		{
-			switch (_watch.Size)
+			return _watch.Size switch
 			{
-				default:
-				case WatchSize.Separator:
-					return false;
-				case WatchSize.Byte:
-					return _watch.Address == addr;
-				case WatchSize.Word:
-					return addr == _watch.Address || addr == _watch.Address + 1;
-				case WatchSize.DWord:
-					return addr == _watch.Address || addr == _watch.Address + 1 ||
-						addr == _watch.Address + 2 || addr == _watch.Address + 3;
-			}
+				WatchSize.Byte => _watch.Address == addr,
+				WatchSize.Word => addr == _watch.Address || addr == _watch.Address + 1,
+				WatchSize.DWord => addr == _watch.Address || addr == _watch.Address + 1 ||
+										addr == _watch.Address + 2 || addr == _watch.Address + 3,
+				_ => false,
+			};
 		}
 
 		public void PokeValue(int val)

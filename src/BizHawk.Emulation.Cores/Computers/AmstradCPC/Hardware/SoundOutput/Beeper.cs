@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Device blipbuffer
 		/// </summary>
-		private readonly BlipBuffer blip = new BlipBuffer(883);
+		private readonly BlipBuffer blip = new(883);
 
 		/// <summary>
 		/// Takes an int 0-100 and returns the relevant short volume to output

@@ -1321,6 +1321,7 @@ namespace BizHawk.Client.EmuHawk
 			Settings.UseUndoHistory = _searches.UndoEnabled;
 		}
 
+		#pragma warning disable IDE0051
 		[RestoreDefaults]
 		private void RestoreDefaultsMenuItem()
 		{
@@ -1344,6 +1345,7 @@ namespace BizHawk.Client.EmuHawk
 			WatchListView.AllColumns.Clear();
 			SetColumns();
 		}
+		#pragma warning restore IDE0051
 
 		private void ListViewContextMenu_Opening(object sender, CancelEventArgs e)
 		{

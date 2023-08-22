@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public long TotalExecutedCycles => Math.Max((long)_cycleCount, (long)callbackCycleCount);
 
-		private MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem(new[] { "System Bus", "ROM", "VRAM", "SRAM", "WRAM", "OAM", "HRAM" });
+		private MemoryCallbackSystem _memorycallbacks = new(new[] { "System Bus", "ROM", "VRAM", "SRAM", "WRAM", "OAM", "HRAM" });
 		public IMemoryCallbackSystem MemoryCallbacks => _memorycallbacks;
 
 		private LibGambatte.MemoryCallback _readcb;

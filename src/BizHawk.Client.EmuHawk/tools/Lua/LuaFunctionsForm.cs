@@ -13,10 +13,10 @@ namespace BizHawk.Client.EmuHawk
 	public partial class LuaFunctionsForm : Form
 	{
 		private readonly LuaDocumentation _docs;
-		private readonly Sorting _columnSort = new Sorting();
+		private readonly Sorting _columnSort = new();
 
-		private List<LibraryFunction> _functionList = new List<LibraryFunction>();
-		private List<LibraryFunction> _filteredList = new List<LibraryFunction>();
+		private List<LibraryFunction> _functionList = new();
+		private List<LibraryFunction> _filteredList = new();
 
 		public LuaFunctionsForm(LuaDocumentation docs)
 		{

@@ -13,7 +13,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private int _prgMask8k;
 		private int _chrMask2k;
 
+		#pragma warning disable IDE0051
 		private const int DipSwitchMask = 3;
+		#pragma warning restore IDE0051
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

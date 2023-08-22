@@ -60,21 +60,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public override byte ReadMemoryHigh(ushort addr)
 		{
-			switch (ctrl)
+			return ctrl switch
 			{
-				case 0xA:
-					// The game won't proceed unless this value (anded with 3) is 1
-					// see bank 0: 0x1A7D to 0x1A89
-					return 1;
-				case 0xC:
-					//Console.WriteLine("read low: " + Chip_return_low);
-					return Chip_return_low;
-				case 0xD:
-					//Console.WriteLine("read high: " + Chip_return_high);
-					return Chip_return_high;
-			}
-
-			return 0x0;
+				0xA => 1,// The game won't proceed unless this value (anded with 3) is 1
+						 // see bank 0: 0x1A7D to 0x1A89
+				0xC => Chip_return_low,//Console.WriteLine("read low: " + Chip_return_low);
+				0xD => Chip_return_high,//Console.WriteLine("read high: " + Chip_return_high);
+				_ => 0x0,
+			};
 		}
 
 		public override void MapCDL(ushort addr, LR35902.eCDLogMemFlags flags)

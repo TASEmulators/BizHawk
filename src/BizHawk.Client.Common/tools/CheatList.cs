@@ -27,7 +27,7 @@ namespace BizHawk.Client.Common
 		private readonly IDialogParent _dialogParent;
 
 		private readonly ICheatConfig _config;
-		private List<Cheat> _cheatList = new List<Cheat>();
+		private List<Cheat> _cheatList = new();
 		private string _defaultFileName = "";
 		private bool _changes;
 
@@ -412,7 +412,7 @@ namespace BizHawk.Client.Common
 		}
 
 		private static readonly RigidMultiPredicateSort<Cheat> ColumnSorts
-			= new RigidMultiPredicateSort<Cheat>(new Dictionary<string, Func<Cheat, IComparable>>
+			= new(new Dictionary<string, Func<Cheat, IComparable>>
 			{
 				[NameColumn] = c => c.Name,
 				[AddressColumn] = c => c.Address ?? 0L,

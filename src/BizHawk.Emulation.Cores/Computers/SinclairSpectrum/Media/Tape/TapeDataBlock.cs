@@ -68,14 +68,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// List containing the pulse timing values
 		/// </summary>
-		public List<int> DataPeriods = new List<int>();
+		public List<int> DataPeriods = new();
 
 		/// <summary>
 		/// List containing the pulse levels (in relation to the pulse timing values)
 		/// </summary>
-		public List<bool> DataLevels = new List<bool>();
+		public List<bool> DataLevels = new();
 
-		public List<string> PulseDescription = new List<string>();
+		public List<string> PulseDescription = new();
 
 		public bool InitialPulseLevel;
 

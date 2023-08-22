@@ -1,4 +1,4 @@
-﻿using BizHawk.Common;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using System;
 using System.Collections.Generic;
@@ -341,6 +341,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			BufferUpdate(frameCycle);
 		}
 
+		#pragma warning disable IDE0051
 		/// <summary>
 		/// Register indicies
 		/// </summary>
@@ -360,6 +361,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private const int AY_E_SHAPE = 13;
 		private const int AY_PORT_A = 14;
 		private const int AY_PORT_B = 15;
+		#pragma warning restore IDE0051
 
 		/// <summary>
 		/// The register array
@@ -414,7 +416,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// The rendering resolution of the chip
 		/// </summary>
-		private double _resolution = 50D * 8D / _chipFrequency;
+		private readonly double _resolution = 50D * 8D / _chipFrequency;
 
 		/// <summary>
 		/// Channel generator state
@@ -504,7 +506,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Panning table list
 		/// </summary>
-		private static readonly List<uint[]> PanTabs = new List<uint[]>
+		private static readonly List<uint[]> PanTabs = new()
 		{
             // MONO
             new uint[] { 50,50, 50,50, 50,50 },

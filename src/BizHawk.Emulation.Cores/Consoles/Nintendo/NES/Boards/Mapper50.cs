@@ -83,10 +83,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return Rom[(0x0F * 0x2000) + (addr & 0x1FFF)];
 		}
 
+		#pragma warning disable IDE0051
 		private void IRQ_Ready()
 		{
 			base.SyncIRQ(irq_ready);
 		}
+		#pragma warning restore IDE0051
 
 		public override void  ClockCpu()
 		{

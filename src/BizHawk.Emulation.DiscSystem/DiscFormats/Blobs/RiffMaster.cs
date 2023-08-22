@@ -108,11 +108,11 @@ namespace BizHawk.Emulation.DiscSystem
 
 			public override RiffChunk Morph()
 			{
-				switch (tag)
+				return tag switch
 				{
-					case "fmt ": return new RiffSubchunk_fmt(this);
-				}
-				return this;
+					"fmt " => new RiffSubchunk_fmt(this),
+					_ => this,
+				};
 			}
 		}
 
@@ -224,11 +224,11 @@ namespace BizHawk.Emulation.DiscSystem
 
 			public override RiffChunk Morph()
 			{
-				switch (type)
+				return type switch
 				{
-					case "INFO": return new RiffContainer_INFO(this);
-				}
-				return this;
+					"INFO" => new RiffContainer_INFO(this),
+					_ => this,
+				};
 			}
 		}
 

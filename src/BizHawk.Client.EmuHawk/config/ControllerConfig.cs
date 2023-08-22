@@ -15,7 +15,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class ControllerConfig : Form, IDialogParent
 	{
-		private static readonly Dictionary<string, Lazy<Bitmap>> ControllerImages = new Dictionary<string, Lazy<Bitmap>>();
+		private static readonly Dictionary<string, Lazy<Bitmap>> ControllerImages = new();
 		private readonly IEmulator _emulator;
 		private readonly Config _config;
 
@@ -97,7 +97,7 @@ namespace BizHawk.Client.EmuHawk
 			return new FeedbacksBindPanel(settings, buttons) { Dock = DockStyle.Fill, AutoScroll = true };
 		}
 
-		private static readonly Regex ButtonMatchesPlayer = new Regex("^P(\\d+)\\s");
+		private static readonly Regex ButtonMatchesPlayer = new("^P(\\d+)\\s");
 
 		private void LoadToPanel<TBindValue>(
 			Control dest,

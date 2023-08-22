@@ -12,8 +12,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// </summary>
 	public partial class AmstradCPC : ISettable<AmstradCPC.AmstradCPCSettings, AmstradCPC.AmstradCPCSyncSettings>
 	{
-		internal AmstradCPCSettings Settings = new AmstradCPCSettings();
-		internal AmstradCPCSyncSettings SyncSettings = new AmstradCPCSyncSettings();
+		internal AmstradCPCSettings Settings = new();
+		internal AmstradCPCSyncSettings SyncSettings = new();
 
 		public AmstradCPCSettings GetSettings()
 		{
@@ -158,7 +158,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			public string Media { get; set; }
 			public string OtherMisc { get; set; }
 
-			private readonly Dictionary<string, string> Data = new Dictionary<string, string>();
+			private readonly Dictionary<string, string> Data = new();
 
 			public static CPCMachineMetaData GetMetaObject(MachineType type)
 			{
@@ -237,7 +237,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					// output the data splitting and tabbing as neccessary
 					var arr = d.Value.Split(' ');
 
-					List<string> builder = new List<string>();
+					List<string> builder = new();
 					string working = "";
 					foreach (var s in arr)
 					{
@@ -276,7 +276,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			{
 				var m = GetMetaObject(type);
 
-				StringBuilder sb = new StringBuilder();
+				StringBuilder sb = new();
 
 				sb.Append(m.Name);
 				sb.AppendLine();

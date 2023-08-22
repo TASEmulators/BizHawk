@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	public partial class Atari2600
 	{
 		internal IMemoryDomains MemoryDomains;
-		private readonly Dictionary<string, MemoryDomainByteArray> _byteArrayDomains = new Dictionary<string, MemoryDomainByteArray>();
+		private readonly Dictionary<string, MemoryDomainByteArray> _byteArrayDomains = new();
 		private bool _memoryDomainsInit;
 
 		private void SetupMemoryDomains()

@@ -116,7 +116,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private readonly Queue<Bitmap> _disposeQueue = new Queue<Bitmap>();
+		private readonly Queue<Bitmap> _disposeQueue = new();
 
 		private void SignalPaint()
 		{

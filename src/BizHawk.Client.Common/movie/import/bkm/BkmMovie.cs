@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common
 {
 	internal class BkmMovie
 	{
-		private readonly List<string> _log = new List<string>();
+		private readonly List<string> _log = new();
 		public BkmHeader Header { get; } = new BkmHeader();
 		public string Filename { get; set; } = "";
 		public bool Loaded { get; private set; }

@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Cores.Components
 		public byte VoiceLatch;
 		private byte WaveTableWriteOffset;
 
-		private readonly Queue<QueuedCommand> commands = new Queue<QueuedCommand>(256);
+		private readonly Queue<QueuedCommand> commands = new(256);
 		private long frameStartTime, frameStopTime;
 
 		private const int SampleRate = 44100;

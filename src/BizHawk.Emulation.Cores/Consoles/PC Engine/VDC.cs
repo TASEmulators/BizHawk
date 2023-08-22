@@ -23,15 +23,14 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		{
 			get
 			{
-				switch ((Registers[5] >> 11) & 3)
+				return ((Registers[5] >> 11) & 3) switch
 				{
-					case 0: return 1;
-					case 1: return 32;
-					case 2: return 64;
-					case 3: return 128;
-				}
-
-				return 1;
+					0 => 1,
+					1 => 32,
+					2 => 64,
+					3 => 128,
+					_ => 1,
+				};
 			}
 		}
 
@@ -43,7 +42,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public bool SpriteCollisionInterruptEnabled => (Registers[CR] & 0x01) != 0;
 		public bool Sprite4ColorModeEnabled => (Registers[MWR] & 0x0C) == 4;
 
-		public int BatWidth { get { switch ((Registers[MWR] >> 4) & 3) { case 0: return 32; case 1: return 64; default: return 128; } } }
+		public int BatWidth { get { return ((Registers[MWR] >> 4) & 3) switch { 0 => 32, 1 => 64, _ => 128, }; } }
 		public int BatHeight => (Registers[MWR] & 0x40) == 0 ? 32 : 64;
 
 		public int RequestedFrameWidth => ((Registers[HDR] & 0x3F) + 1) * 8;

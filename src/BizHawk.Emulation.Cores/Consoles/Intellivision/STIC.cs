@@ -273,43 +273,26 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		private int ColorToRGBA(int color)
 		{
-			switch (color)
+			return color switch
 			{
-				case 0:
-					return 0x000000;
-				case 1:
-					return 0x002DFF;
-				case 2:
-					return 0xFF3D10;
-				case 3:
-					return 0xC9CFAB;
-				case 4:
-					return 0x386B3F;
-				case 5:
-					return 0x00A756;
-				case 6:
-					return 0xFAEA50;
-				case 7:
-					return 0xFFFCFF;
-				case 8:
-					return 0xBDACC8;
-				case 9:
-					return 0x24B8FF;
-				case 10:
-					return 0xFFB41F;
-				case 11:
-					return 0x546E00;
-				case 12:
-					return 0xFF4E57;
-				case 13:
-					return 0xA496FF;
-				case 14:
-					return 0x75CC80;
-				case 15:
-					return 0xB51A58;
-				default:
-					throw new ArgumentOutOfRangeException(paramName: nameof(color), color, message: "Specified color does not exist.");
-			}
+				0 => 0x000000,
+				1 => 0x002DFF,
+				2 => 0xFF3D10,
+				3 => 0xC9CFAB,
+				4 => 0x386B3F,
+				5 => 0x00A756,
+				6 => 0xFAEA50,
+				7 => 0xFFFCFF,
+				8 => 0xBDACC8,
+				9 => 0x24B8FF,
+				10 => 0xFFB41F,
+				11 => 0x546E00,
+				12 => 0xFF4E57,
+				13 => 0xA496FF,
+				14 => 0x75CC80,
+				15 => 0xB51A58,
+				_ => throw new ArgumentOutOfRangeException(paramName: nameof(color), color, message: "Specified color does not exist."),
+			};
 		}
 
 		public void Background(int input_row)

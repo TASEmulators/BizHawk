@@ -234,7 +234,7 @@ namespace BizHawk.Client.EmuHawk
 			 *	  Make that order easy to change in the code, heavily suggesting ROM and playback as first and last respectively.
 			 */
 
-			Dictionary<LoadOrdering, List<FileInformation>> sortedFiles = new Dictionary<LoadOrdering, List<FileInformation>>();
+			Dictionary<LoadOrdering, List<FileInformation>> sortedFiles = new();
 
 			// Initialize the dictionary's lists.
 			foreach (LoadOrdering value in Enum.GetValues(typeof(LoadOrdering)))

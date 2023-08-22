@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 	{
 		private readonly ScsiCDBus _scsi;
 		private readonly PCEngine _pce;
-		private readonly VecnaSynchronizer _synchronizer = new VecnaSynchronizer();
+		private readonly VecnaSynchronizer _synchronizer = new();
 
 		// ***************************************************************************
 

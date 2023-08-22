@@ -418,7 +418,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private readonly List<ApuState> _log = new List<ApuState>();
+		private readonly List<ApuState> _log = new();
 
 		private void DebugCallback()
 		{

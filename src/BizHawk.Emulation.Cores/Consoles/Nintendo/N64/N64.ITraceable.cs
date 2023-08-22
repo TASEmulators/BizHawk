@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			// drop MMU co-processor regs for now
 
-			Tracer.Put(new(disassembly: $"{pc:X}:  {disasm.PadRight(32)}", registerInfo: sb.ToString().Trim()));
+			Tracer.Put(new(disassembly: $"{pc:X}:  {disasm,-32}", registerInfo: sb.ToString().Trim()));
 		}
 
 		private const string TraceHeader = "r3400: PC, mnemonic, operands, registers (GPRs, Load/Link Bit, MultHI, MultLO, Implementation/Revision, Control/Status, FGRs)";

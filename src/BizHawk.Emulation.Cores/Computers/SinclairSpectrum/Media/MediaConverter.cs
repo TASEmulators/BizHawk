@@ -89,24 +89,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				return 0;
 			int res = b[0];
 			int pos = 1;
-			switch (b.Length)
+			return b.Length switch
 			{
-				case 1:
-				default:
-					return res;
-				case 2:
-					return res | b[pos] << (8 * pos++);
-				case 3:
-					return res | b[pos] << (8 * pos++) | b[pos] << (8 * pos++);
-				case 4:
-					return res | b[pos] << (8 * pos++) | b[pos] << (8 * pos++) | b[pos] << (8 * pos++);
-				case 5:
-					return res | b[pos] << (8 * pos++) | b[pos] << (8 * pos++) | b[pos] << (8 * pos++) | b[pos] << (8 * pos++);
-				case 6:
-					return res | b[pos] << (8 * pos++) | b[pos] << (8 * pos++) | b[pos] << (8 * pos++) | b[pos] << (8 * pos++) | b[pos] << (8 * pos++);
-				case 7:
-					return res | b[pos] << (8 * pos++) | b[pos] << (8 * pos++) | b[pos] << (8 * pos++) | b[pos] << (8 * pos++) | b[pos] << (8 * pos++) | b[pos] << (8 * pos++);
-			}
+				2 => res | b[pos] << (8 * pos++),
+				3 => res | b[pos] << (8 * pos++) | b[pos] << (8 * pos++),
+				4 => res | b[pos] << (8 * pos++) | b[pos] << (8 * pos++) | b[pos] << (8 * pos++),
+				5 => res | b[pos] << (8 * pos++) | b[pos] << (8 * pos++) | b[pos] << (8 * pos++) | b[pos] << (8 * pos++),
+				6 => res | b[pos] << (8 * pos++) | b[pos] << (8 * pos++) | b[pos] << (8 * pos++) | b[pos] << (8 * pos++) | b[pos] << (8 * pos++),
+				7 => res | b[pos] << (8 * pos++) | b[pos] << (8 * pos++) | b[pos] << (8 * pos++) | b[pos] << (8 * pos++) | b[pos] << (8 * pos++) | b[pos] << (8 * pos++),
+				_ => res,
+			};
 		}
 
 		/// <summary>
@@ -172,12 +164,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public static void DecompressZRLE(byte[] sourceBuffer, ref byte[] destBuffer)
 		{
-			MemoryStream stream = new MemoryStream();
+			MemoryStream stream = new();
 			stream.Write(sourceBuffer, 0, sourceBuffer.Length);
 			stream.Position = 0;
 			stream.ReadByte();
 			stream.ReadByte();
-			DeflateStream ds = new DeflateStream(stream, CompressionMode.Decompress, false);
+			DeflateStream ds = new(stream, CompressionMode.Decompress, false);
 			ds.Read(destBuffer, 0, destBuffer.Length);
 		}
 

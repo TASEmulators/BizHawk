@@ -256,8 +256,8 @@ namespace BizHawk.Client.Common
 
 		private (int Horizontal, int Vertical) CalculateCompleteContentPaddingSum(bool user, bool source)
 		{
-			var p = CalculateCompleteContentPadding(user: user, source: source);
-			return (p.Left + p.Right, p.Top + p.Bottom);
+			var (Left, Top, Right, Bottom) = CalculateCompleteContentPadding(user: user, source: source);
+			return (Left + Right, Top + Bottom);
 		}
 
 		private FilterProgram BuildDefaultChain(Size chainInSize, Size chainOutSize, bool includeOSD, bool includeUserFilters)
@@ -811,9 +811,9 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			var padding = CalculateCompleteContentPaddingSum(true,false);
-			vw += padding.Horizontal;
-			vh += padding.Vertical;
+			var (Horizontal, Vertical) = CalculateCompleteContentPaddingSum(true,false);
+			vw += Horizontal;
+			vh += Vertical;
 
 			//in case the user requested so much padding that the dimensions are now negative, just turn it to something small.
 			if (vw < 1) vw = 1;

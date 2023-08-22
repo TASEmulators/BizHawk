@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public bool Dipswitch4 = false;
 
 		private List<bool> Switches =>
-			new List<bool>
+			new()
 			{
 				{ Dipswitch1 },
 				{ Dipswitch2 },

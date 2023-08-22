@@ -12,8 +12,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 	{
 		public GBHawk Core { get; set; }
 
-		private BlipBuffer _blip_L = new BlipBuffer(15000);
-		private BlipBuffer _blip_R = new BlipBuffer(15000);
+		private BlipBuffer _blip_L = new(15000);
+		private BlipBuffer _blip_R = new(15000);
 
 		public static readonly bool[] DUTY_CYCLES = { false, false, false, false, false, false, false, true,
 													 true, false, false, false, false, false, false, true,
@@ -1234,10 +1234,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			master_audio_clock = 0;
 		}
 
+		#pragma warning disable IDE0051
 		private void GetSamples(short[] samples)
 		{
 
 		}
+		#pragma warning restore IDE0051
 
 		public void DisposeSound()
 		{

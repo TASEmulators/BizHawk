@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		private IntPtr DllBase;
 
-		private readonly List<Symbol> SymbolsByAddr = new List<Symbol>();
+		private readonly List<Symbol> SymbolsByAddr = new();
 		private readonly IDictionary<string, Symbol> SymbolsByName = new Dictionary<string, Symbol>();
 
 		private readonly byte[][] data = new byte[10][];
@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public unsafe void Cmp(int statex, int statey)
 		{
 			if (disposed) throw new ObjectDisposedException(nameof(GenDbgHlp));
-			List<Tuple<int, int>> bads = new List<Tuple<int, int>>();
+			List<Tuple<int, int>> bads = new();
 
 			byte[] x = data[statex];
 			byte[] y = data[statey];
@@ -119,7 +119,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public GenDbgHlp()
 		{
-			using (StreamReader sr = new StreamReader(symbolname))
+			using (StreamReader sr = new(symbolname))
 			{
 				string line;
 				while ((line = sr.ReadLine()) != null)
@@ -136,8 +136,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public List<Symbol> Find(IntPtr addr, int length)
 		{
 			if (disposed) throw new ObjectDisposedException(nameof(GenDbgHlp));
-			Symbol min = new Symbol { addr = addr };
-			Symbol max = new Symbol { addr = addr + length };
+			Symbol min = new() { addr = addr };
+			Symbol max = new() { addr = addr + length };
 
 			int minidx = SymbolsByAddr.BinarySearch(min);
 			if (minidx < 0)
@@ -170,7 +170,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					throw new Exception();
 				if (!ss[1].StartsWithOrdinal("0x"))
 					throw new Exception();
-				Symbol ret = new Symbol
+				Symbol ret = new()
 				{
 					addr = (IntPtr)int.Parse(ss[1].Substring(2), System.Globalization.NumberStyles.AllowHexSpecifier),
 					section = ss[3],
@@ -179,12 +179,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				return ret;
 			}
 
-			public int CompareTo(Symbol other)
+			public readonly int CompareTo(Symbol other)
 			{
 				return (int)this.addr - (int)other.addr;
 			}
 
-			public override string ToString() => $"0x{(int)addr:X8} {name} ({section})";
+			public override readonly string ToString() => $"0x{(int)addr:X8} {name} ({section})";
 		}
 	}
 }

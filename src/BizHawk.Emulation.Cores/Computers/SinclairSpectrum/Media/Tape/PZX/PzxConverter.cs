@@ -105,7 +105,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			_position = 0;
 
 			// parse all blocks out into seperate byte arrays first
-			List<byte[]> bDatas = new List<byte[]>();
+			List<byte[]> bDatas = new();
 
 			while (_position < data.Length)
 			{
@@ -131,7 +131,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				string blockId = Encoding.ASCII.GetString(b, 0, 4);
 				int blockSize = GetInt32(b, 4);
 
-				TapeDataBlock t = new TapeDataBlock();
+				TapeDataBlock t = new();
 
 				switch (blockId)
 				{
@@ -165,7 +165,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 						t.InitialPulseLevel = false;
 						bool pLevel = !t.InitialPulseLevel;
 
-						List<ushort[]> pulses = new List<ushort[]>();
+						List<ushort[]> pulses = new();
 
 						while (pos < blockSize + 8)
 						{
@@ -228,9 +228,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 						t.DataPeriods = new List<int>();
 						t.DataLevels = new List<bool>();
 
-						List<ushort> s0 = new List<ushort>();
-						List<ushort> s1 = new List<ushort>();
-						List<byte> dData = new List<byte>();
+						List<ushort> s0 = new();
+						List<ushort> s1 = new();
+						List<byte> dData = new();
 
 						uint initPulseLevel = 1;
 						int dCount = 1;

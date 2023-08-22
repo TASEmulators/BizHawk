@@ -1,4 +1,4 @@
-﻿using BizHawk.Common;
+using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.Z80A;
@@ -19,10 +19,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private readonly CPCBase _machine;
 		private Z80A CPU => _machine.CPU;
 		private CRCT_6845 CRCT => _machine.CRCT;
+		#pragma warning disable IDE0051
 		//private CRTDevice CRT => _machine.CRT;
 		private IPSG PSG => _machine.AYDevice;
 		private NECUPD765 FDC => _machine.UPDDiskDevice;
 		private DatacorderDevice DATACORDER => _machine.TapeDevice;
+		#pragma warning disable IDE0051
 		private ushort BUSRQ => CPU.MEMRQ[CPU.bus_pntr];
 		public const ushort PCh = 1;
 
@@ -338,6 +340,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// 16-bit address - read from the CRCT
 		/// </summary>
 		private short _MA;
+		#pragma warning disable IDE0051
 		private short MA
 		{
 			get
@@ -346,6 +349,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				return _MA;
 			}
 		}
+		#pragma warning restore IDE0051
 
 		/// <summary>
 		/// Set when the HSYNC signal is detected from the CRCT
@@ -527,6 +531,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 		}
 
+		#pragma warning disable IDE0051
 		/// <summary>
 		/// The CRCT builds the picture in a strange way, so that the top left of the display area is the first pixel from
 		/// video RAM. The borders come either side of the HSYNC and VSYNCs later on:
@@ -573,6 +578,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				IsNewFrame = false;
 			}
 		}
+		#pragma warning restore IDE0051
 
 		/// <summary>
 		/// Handles interrupt generation
@@ -684,7 +690,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// List of screen lines as they are built up
 		/// </summary>
-		private readonly List<CharacterLine> ScreenLines = new List<CharacterLine>();
+		private readonly List<CharacterLine> ScreenLines = new();
 
 		/// <summary>
 		/// Pixel value lookups for every scanline byte value
@@ -1144,8 +1150,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public bool WritePort(ushort port, int result)
 		{
-			BitArray portBits = new BitArray(BitConverter.GetBytes(port));
-			BitArray dataBits = new BitArray(BitConverter.GetBytes((byte)result));
+			BitArray portBits = new(BitConverter.GetBytes(port));
+			BitArray dataBits = new(BitConverter.GetBytes((byte)result));
 			byte portUpper = (byte)(port >> 8);
 			byte portLower = (byte)(port & 0xff);
 
@@ -1234,8 +1240,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			//}
 
 			public int ScreenMode = 1;
-			public List<Phase> Phases = new List<Phase>();
-			public List<int> Pixels = new List<int>();
+			public List<Phase> Phases = new();
+			public List<int> Pixels = new();
 
 			/// <summary>
 			/// Adds a new horizontal character to the list

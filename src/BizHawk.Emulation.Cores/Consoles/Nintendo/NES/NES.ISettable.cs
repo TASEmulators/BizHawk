@@ -40,12 +40,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
-		internal NESSettings Settings = new NESSettings();
-		internal NESSyncSettings SyncSettings = new NESSyncSettings();
+		internal NESSettings Settings = new();
+		internal NESSyncSettings SyncSettings = new();
 
 		public class NESSyncSettings
 		{
-			public Dictionary<string, string> BoardProperties = new Dictionary<string, string>();
+			public Dictionary<string, string> BoardProperties = new();
 
 			public enum Region
 			{
@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			public Region RegionOverride = Region.Default;
 
-			public NESControlSettings Controls = new NESControlSettings();
+			public NESControlSettings Controls = new();
 
 			public List<byte> InitialWRamStatePattern = null;
 
@@ -124,7 +124,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 
-			public VSDipswitchSettings VSDipswitches = new VSDipswitchSettings();
+			public VSDipswitchSettings VSDipswitches = new();
 		}
 
 		public class NESSettings

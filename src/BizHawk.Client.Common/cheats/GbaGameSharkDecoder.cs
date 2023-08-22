@@ -28,6 +28,7 @@ namespace BizHawk.Client.Common.cheats
 			return $"{op1:X8} {op2:X8}";
 		}
 
+		#pragma warning disable IDE0051
 		// TODO: When to use this?
 		private static string DecryptPro(string code)
 		{
@@ -44,6 +45,7 @@ namespace BizHawk.Client.Common.cheats
 
 			return $"{op1:X8} {op2:X8}";
 		}
+		#pragma warning restore IDE0051
 
 		public static IDecodeResult Decode(string code)
 		{

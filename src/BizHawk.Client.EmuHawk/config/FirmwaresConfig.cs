@@ -60,7 +60,7 @@ namespace BizHawk.Client.EmuHawk
 
 		// friendlier names than the system Ids
 		// Redundant with SystemLookup? Not so fast. That data drives things. This is one step abstracted. Don't be such a smart guy. Keep this redundant list up to date.
-		private static readonly Dictionary<string, string> SystemGroupNames = new Dictionary<string, string>
+		private static readonly Dictionary<string, string> SystemGroupNames = new()
 		{
 			["NES"] = "NES",
 			["SNES"] = "SNES",
@@ -532,7 +532,7 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var o in options)
 			{
-				ListViewItem olvi = new ListViewItem();
+				ListViewItem olvi = new();
 				olvi.SubItems.Add(new ListViewItem.ListViewSubItem());
 				olvi.SubItems.Add(new ListViewItem.ListViewSubItem());
 				olvi.SubItems.Add(new ListViewItem.ListViewSubItem());

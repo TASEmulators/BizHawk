@@ -7,9 +7,9 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 	{
 		private Graphics _graphics;
 
-		private readonly Pen _currentPen = new Pen(Color.Black);
-		private readonly SolidBrush _currentBrush = new SolidBrush(Color.Black);
-		private readonly SolidBrush _currentStringBrush = new SolidBrush(Color.Black);
+		private readonly Pen _currentPen = new(Color.Black);
+		private readonly SolidBrush _currentBrush = new(Color.Black);
+		private readonly SolidBrush _currentStringBrush = new(Color.Black);
 		private Font _currentFont;
 		private bool _rotateString;
 

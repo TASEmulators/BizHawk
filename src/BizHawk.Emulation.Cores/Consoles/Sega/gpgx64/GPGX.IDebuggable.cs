@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		[FeatureNotImplemented]
 		public long TotalExecutedCycles => throw new NotImplementedException();
 
-		private readonly MemoryCallbackSystem _memoryCallbacks = new MemoryCallbackSystem(new[] { "M68K BUS" });
+		private readonly MemoryCallbackSystem _memoryCallbacks = new(new[] { "M68K BUS" });
 
 		private LibGPGX.mem_cb ExecCallback;
 		private LibGPGX.mem_cb ReadCallback;

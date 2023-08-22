@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			int pos = 0;
 
-			List<IPFBlock> blocks = new List<IPFBlock>();
+			List<IPFBlock> blocks = new();
 
 			while (pos < data.Length)
 			{
@@ -292,8 +292,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			public static IPFBlock ParseNextBlock(ref int startPos, FloppyDisk disk, byte[] data, List<IPFBlock> blockCollection)
 			{
-				IPFBlock ipf = new IPFBlock();
-				ipf.StartPos = startPos;
+				IPFBlock ipf = new()
+				{
+					StartPos = startPos
+				};
 
 				if (startPos >= data.Length)
 				{

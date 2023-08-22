@@ -60,7 +60,7 @@ namespace BizHawk.Client.EmuHawk
 			public string Text { get; set; }
 		}
 
-		private readonly List<PendingChanges> _changeList = new List<PendingChanges>(); //TODO: Initialize it to empty list on a script reload, and have each script have it's own list
+		private readonly List<PendingChanges> _changeList = new(); //TODO: Initialize it to empty list on a script reload, and have each script have it's own list
 
 		[LuaMethodExample("if ( tastudio.engaged( ) ) then\r\n\tconsole.log( \"returns whether or not tastudio is currently engaged ( active )\" );\r\nend;")]
 		[LuaMethod("engaged", "returns whether or not tastudio is currently engaged (active)")]

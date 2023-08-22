@@ -222,12 +222,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				using var f = new StreamReader(filename);
-				int[] newColors = LoadPalFile(f);
-				if (newColors == null)
-				{
-					throw new Exception();
-				}
-
+				int[] newColors = LoadPalFile(f) ?? throw new Exception();
 				SetAllColors(newColors);
 			}
 			catch

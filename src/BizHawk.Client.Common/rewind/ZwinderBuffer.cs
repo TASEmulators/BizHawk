@@ -76,7 +76,7 @@ namespace BizHawk.Client.Common
 			_zstd.Dispose();
 		}
 
-		private readonly List<IDisposable> _disposables = new List<IDisposable>();
+		private readonly List<IDisposable> _disposables = new();
 
 		/// <summary>
 		/// Number of states that could be in the state ringbuffer, Mask for the state ringbuffer
@@ -223,7 +223,7 @@ namespace BizHawk.Client.Common
 			var initialMaxSize = Count > 0
 					? (_states[_firstStateIndex].Start - start) & _sizeMask
 					: Size;
-			Func<long> notifySizeReached = () =>
+			long notifySizeReached()
 			{
 				if (Count == 0)
 					throw new IOException("A single state must not be larger than the buffer");
@@ -232,7 +232,7 @@ namespace BizHawk.Client.Common
 				return Count > 0
 					? (_states[_firstStateIndex].Start - start) & _sizeMask
 					: Size;
-			};
+			}
 			var stream = new SaveStateStream(_backingStore, start, _sizeMask, initialMaxSize, notifySizeReached);
 
 			if (_useCompression)

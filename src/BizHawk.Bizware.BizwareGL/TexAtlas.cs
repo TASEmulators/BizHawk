@@ -28,8 +28,8 @@ namespace BizHawk.Bizware.BizwareGL
 			public readonly int w;
 			public readonly int h;
 			public bool ok = true;
-			public readonly RectangleBinPack rbp = new RectangleBinPack();
-			public readonly List<RectangleBinPack.Node> nodes = new List<RectangleBinPack.Node>();
+			public readonly RectangleBinPack rbp = new();
+			public readonly List<RectangleBinPack.Node> nodes = new();
 		}
 
 		public const int MaxSizeBits = 16;
@@ -190,6 +190,7 @@ namespace BizHawk.Bizware.BizwareGL
 				return Insert(root, width, height);
 			}
 
+            #pragma warning disable IDE0051
 			/// <summary>Computes the ratio of used surface area.</summary>
 			private float Occupancy()
 			{
@@ -198,6 +199,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 				return (float)usedSurfaceArea / totalSurfaceArea;
 			}
+			#pragma warning restore IDE0051
 
 			private Node root;
 

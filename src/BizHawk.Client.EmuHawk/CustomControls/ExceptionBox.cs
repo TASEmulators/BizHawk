@@ -72,7 +72,7 @@ namespace BizHawk.Client.EmuHawk
 			protected override void OnPaint(PaintEventArgs e)
 			{
 				Rectangle rc = ClientRectangle;
-				StringFormat fmt = new StringFormat(StringFormat.GenericTypographic);
+				StringFormat fmt = new(StringFormat.GenericTypographic);
 				using var br = new SolidBrush(ForeColor);
 				e.Graphics.DrawString(this.Text, this.Font, br, rc, fmt);
 			}

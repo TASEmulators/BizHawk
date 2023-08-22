@@ -114,6 +114,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public string DesiredExtension() => "syncless.txt";
 
+		#pragma warning disable IDE0051
 		/// <summary>
 		/// splits the string into chunks of length s
 		/// </summary>
@@ -140,6 +141,7 @@ namespace BizHawk.Client.EmuHawk
 
 			return output;
 		}
+		#pragma warning restore IDE0051
 
 		private string GetAndCreatePathForFrameNum(int index)
 		{

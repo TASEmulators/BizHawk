@@ -98,7 +98,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			_linkSpaceSignal = reader.ReadBoolean();
 		}
 
-		private readonly JsonSerializer ser = new JsonSerializer { Formatting = Formatting.Indented };
+		private readonly JsonSerializer ser = new() { Formatting = Formatting.Indented };
 
 		private class GBLSerialized
 		{

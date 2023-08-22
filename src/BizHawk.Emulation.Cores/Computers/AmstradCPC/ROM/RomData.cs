@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public static RomData InitROM(MachineType machineType, byte[] rom, ROMChipType type, int romPosition = 0)
 		{
-			RomData RD = new RomData { RomBytes = new byte[rom.Length] };
+			RomData RD = new() { RomBytes = new byte[rom.Length] };
 			RD.RomBytes = rom;
 			RD.ROMType = type;
 

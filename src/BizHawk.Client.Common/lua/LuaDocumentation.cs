@@ -76,23 +76,23 @@ namespace BizHawk.Client.Common
 ** The ''name'' of a callback is an optional parameter in all the event subscription functions. The ''ID'' of a callback is what's returned by the subscription function. Multiple callbacks can share the same name, but IDs are unique.
 ");
 
-			foreach (var library in this.Select(lf => (Name: lf.Library, Description: lf.LibraryDescription))
+			foreach (var (Name, Description) in this.Select(lf => (Name: lf.Library, Description: lf.LibraryDescription))
 				.Distinct()
 				.OrderBy(library => library.Name))
 			{
 				sb
-					.AppendFormat("%%TAB {0}%%", library.Name)
+					.AppendFormat("%%TAB {0}%%", Name)
 					.AppendLine()
 					.AppendLine();
-				if (!string.IsNullOrWhiteSpace(library.Description))
+				if (!string.IsNullOrWhiteSpace(Description))
 				{
 					sb
-						.Append(library.Description)
+						.Append(Description)
 						.AppendLine()
 						.AppendLine();
 				}
 
-				foreach (var func in this.Where(lf => lf.Library == library.Name).OrderBy(lf => lf.Name))
+				foreach (var func in this.Where(lf => lf.Library == Name).OrderBy(lf => lf.Name))
 				{
 					string deprecated = func.IsDeprecated ? "__[[deprecated]]__ " : "";
 					sb

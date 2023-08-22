@@ -414,7 +414,7 @@ namespace BizHawk.Client.EmuHawk
 
 			// validate addresses now that we have cheevos init
 			// ReSharper disable once ConvertToLocalFunction
-			LibRCheevos.rc_runtime_validate_address_t peekcb = address => _readMap.ContainsKey(address);
+			bool peekcb(int address) => _readMap.ContainsKey(address);
 			_lib.rc_runtime_validate_addresses(_runtime, _eventcb, peekcb);
 
 			_gameInfoForm.Restart(_gameData.Title, _gameData.TotalCheevoPoints(HardcoreMode), CurrentRichPresence ?? "N/A");

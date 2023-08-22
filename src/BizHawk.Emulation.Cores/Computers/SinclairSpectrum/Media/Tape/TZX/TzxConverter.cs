@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Object to keep track of loops - this assumes there is only one loop at a time
 		/// </summary>
-		private readonly List<KeyValuePair<int, int>> _loopCounter = new List<KeyValuePair<int, int>>();
+		private readonly List<KeyValuePair<int, int>> _loopCounter = new();
 
 		/// <summary>
 		/// The virtual cassette deck
@@ -442,7 +442,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			{
 				string fileName = Encoding.ASCII.GetString(blockdata.Skip(2).Take(10).ToArray()).Trim();
 				string type = "Unknown Type";
-				StringBuilder sb = new StringBuilder();
+				StringBuilder sb = new();
 
 				var param1 = GetWordValue(blockdata, 12);
 				var param2 = GetWordValue(blockdata, 14);
@@ -482,7 +482,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			else
 			{
 				// some other type (turbo data etc..)
-				description = $"#{blockdata[0].ToString("X2")} block, {blockLen} bytes";
+				description = $"#{blockdata[0]:X2} block, {blockLen} bytes";
 				//description += (crc != 0) ? $", crc bad (#{crcFile:X2}!=#{crcValue:X2})" : ", crc ok";
 				t.AddMetaData(BlockDescriptorTitle.Undefined, description);
 			}
@@ -566,7 +566,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			{
 				string fileName = Encoding.ASCII.GetString(blockdata.Skip(2).Take(10).ToArray()).Trim();
 				string type = "Unknown Type";
-				StringBuilder sb = new StringBuilder();
+				StringBuilder sb = new();
 
 				var param1 = GetWordValue(blockdata, 12);
 				var param2 = GetWordValue(blockdata, 14);
@@ -606,7 +606,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			else
 			{
 				// some other type (turbo data etc..)
-				description = $"#{blockdata[0].ToString("X2")} block, {blockLen} bytes";
+				description = $"#{blockdata[0]:X2} block, {blockLen} bytes";
 				//description += (crc != 0) ? $", crc bad (#{crcFile:X2}!=#{crcValue:X2})" : ", crc ok";
 				t.AddMetaData(BlockDescriptorTitle.Undefined, description);
 			}
@@ -823,7 +823,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			Please, if you can, don't use other sampling frequencies.
 			Please use this block only if you cannot use any other block. */
 
-			TapeDataBlock t = new TapeDataBlock
+			TapeDataBlock t = new()
 			{
 				BlockID = 0x15,
 				BlockDescription = BlockType.Direct_Recording
@@ -987,10 +987,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			This will make a silence (low amplitude level (0)) for a given time in milliseconds. If the value is 0 then the 
 			emulator or utility should (in effect) STOP THE TAPE, i.e. should not continue loading until the user or emulator requests it.     */
-			t = new TapeDataBlock();
-			t.BlockID = 0x20;
-			t.DataPeriods = new List<int>();
-			t.BlockDescription = BlockType.Pause_or_Stop_the_Tape;
+			t = new TapeDataBlock
+			{
+				BlockID = 0x20,
+				DataPeriods = new List<int>(),
+				BlockDescription = BlockType.Pause_or_Stop_the_Tape
+			};
 
 			pauseLen = GetWordValue(data, _position);
 
@@ -1033,10 +1035,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			You can also give the group a name (example 'Bleepload Block 1').
 			For each group start block, there must be a group end block. Nesting of groups is not allowed.           */
 
-			t = new TapeDataBlock();
-			t.BlockID = 0x21;
-			t.DataPeriods = new List<int>();
-			t.BlockDescription = BlockType.Group_Start;
+			t = new TapeDataBlock
+			{
+				BlockID = 0x21,
+				DataPeriods = new List<int>(),
+				BlockDescription = BlockType.Group_Start
+			};
 
 			int nameLength = data[_position];
 			_position++;
@@ -1067,14 +1071,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			This indicates the end of a group. This block has no body.           */
 
-			t = new TapeDataBlock();
-			t.BlockID = 0x22;
-			t.DataPeriods = new List<int>();
-			t.BlockDescription = BlockType.Group_End;
-			t.Command = TapeCommand.END_GROUP;
+			t = new TapeDataBlock
+			{
+				BlockID = 0x22,
+				DataPeriods = new List<int>(),
+				BlockDescription = BlockType.Group_End,
+				Command = TapeCommand.END_GROUP,
 
-			t.PauseInMS = 0;
-			t.PauseInTStates = 0;
+				PauseInMS = 0,
+				PauseInTStates = 0
+			};
 
 			// add to tape
 			_datacorder.DataBlocks.Add(t);
@@ -1097,9 +1103,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			be repeated. This block is the same as the FOR statement in BASIC.
 			For simplicity reasons don't nest loop blocks!           */
 
-			t = new TapeDataBlock();
-			t.BlockID = 0x24;
-			t.BlockDescription = BlockType.Loop_Start;
+			t = new TapeDataBlock
+			{
+				BlockID = 0x24,
+				BlockDescription = BlockType.Loop_Start
+			};
 
 			// loop should start from the next block
 			int loopStart = _datacorder.DataBlocks.Count + 1;
@@ -1139,10 +1147,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			been run for the specified number of times.
 			This block has no body.          */
 
-			t = new TapeDataBlock();
-			t.BlockID = 0x25;
-			t.DataPeriods = new List<int>();
-			t.BlockDescription = BlockType.Loop_End;
+			t = new TapeDataBlock
+			{
+				BlockID = 0x25,
+				DataPeriods = new List<int>(),
+				BlockDescription = BlockType.Loop_End
+			};
 
 			// get the most recent loop info
 			var loop = _loopCounter.LastOrDefault();
@@ -1161,9 +1171,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// loop through each group to repeat
 			for (int b = 0; b < numberOfRepetitions; b++)
 			{
-				TapeDataBlock repeater = new TapeDataBlock();
-				//repeater.BlockDescription = "[LOOP REPEAT - " + (b + 1) + "]";
-				repeater.DataPeriods = new List<int>();
+				TapeDataBlock repeater = new()
+				{
+					//repeater.BlockDescription = "[LOOP REPEAT - " + (b + 1) + "]";
+					DataPeriods = new List<int>()
+				};
 
 				// add the repeat block
 				_datacorder.DataBlocks.Add(repeater);
@@ -1194,11 +1206,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			multiloading games that load one level at a time in 48K mode, but load the entire tape at once if in 128K mode.
 			This block has no body of its own, but follows the extension rule.          */
 
-			t = new TapeDataBlock();
-			t.BlockID = 0x2A;
-			t.DataPeriods = new List<int>();
-			t.BlockDescription = BlockType.Stop_the_Tape_48K;
-			t.Command = TapeCommand.STOP_THE_TAPE_48K;
+			t = new TapeDataBlock
+			{
+				BlockID = 0x2A,
+				DataPeriods = new List<int>(),
+				BlockDescription = BlockType.Stop_the_Tape_48K,
+				Command = TapeCommand.STOP_THE_TAPE_48K
+			};
 
 			int blockSize = 4 + GetWordValue(data, _position);
 
@@ -1229,13 +1243,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			This block sets the current signal level to the specified value (high or low). It should be used whenever it is necessary to avoid any 
 			ambiguities, e.g. with custom loaders which are level-sensitive.         */
 
-			t = new TapeDataBlock();
-			t.BlockID = 0x2B;
-			t.DataPeriods = new List<int>();
-			t.BlockDescription = BlockType.Set_Signal_Level;
+			t = new TapeDataBlock
+			{
+				BlockID = 0x2B,
+				DataPeriods = new List<int>(),
+				BlockDescription = BlockType.Set_Signal_Level,
 
-			t.PauseInMS = 0;
-			t.PauseInTStates = 0;
+				PauseInMS = 0,
+				PauseInTStates = 0
+			};
 
 			// we already flip the signal *before* adding to the buffer elsewhere
 			// so set the opposite level specified in this block
@@ -1273,10 +1289,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			(where this is appropriate).
 			Please use 'Archive Info' block for title, authors, publisher, etc.        */
 
-			t = new TapeDataBlock();
-			t.BlockID = 0x30;
-			t.DataPeriods = new List<int>();
-			t.BlockDescription = BlockType.Text_Description;
+			t = new TapeDataBlock
+			{
+				BlockID = 0x30,
+				DataPeriods = new List<int>(),
+				BlockDescription = BlockType.Text_Description
+			};
 
 			int textLen = data[_position];
 			_position++;
@@ -1336,9 +1354,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			If all texts on the tape are in English language then you don't have to supply the 'Language' field
 			The information about what hardware the tape uses is in the 'Hardware Type' block, so no need for it here.              */
 
-			t = new TapeDataBlock();
-			t.BlockID = 0x32;
-			t.BlockDescription = BlockType.Archive_Info;
+			t = new TapeDataBlock
+			{
+				BlockID = 0x32,
+				BlockDescription = BlockType.Archive_Info
+			};
 
 			blockLen = GetWordValue(data, _position);
 			_position += 2;
@@ -1425,12 +1445,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			This block can be used to save any information you want. For example, it might contain some information written by a utility, 
 			extra settings required by a particular emulator, or even poke data.               */
 
-			t = new TapeDataBlock();
-			t.BlockID = 0x35;
-			t.BlockDescription = BlockType.Custom_Info_Block;
+			t = new TapeDataBlock
+			{
+				BlockID = 0x35,
+				BlockDescription = BlockType.Custom_Info_Block,
 
-			t.PauseInMS = 0;
-			t.PauseInTStates = 0;
+				PauseInMS = 0,
+				PauseInTStates = 0
+			};
 
 			string info = Encoding.ASCII.GetString(data, _position, 0x10);
 			t.AddMetaData(BlockDescriptorTitle.Custom_Info, info);
@@ -1464,14 +1486,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			them. Of course, this means that resulting file would be 10 bytes longer than if this block was not used. All you have to do 
 			if you encounter this block ID is to skip next 9 bytes.
 			If you can avoid using this block for this purpose, then do so; it is preferable to use a utility to join the two files and 
-			ensure that they are both of the higher version number.               */			
+			ensure that they are both of the higher version number.               */
 
-			t = new TapeDataBlock();
-			t.BlockID = 0x5A;
-			t.DataPeriods = new List<int>();
-			t.BlockDescription = BlockType.Glue_Block;
+			t = new TapeDataBlock
+			{
+				BlockID = 0x5A,
+				DataPeriods = new List<int>(),
+				BlockDescription = BlockType.Glue_Block,
 
-			t.PauseInMS = 0;
+				PauseInMS = 0
+			};
 
 			// add to tape
 			_datacorder.DataBlocks.Add(t);
@@ -1488,10 +1512,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		private void ProcessUnidentifiedBlock()
 		{
-			TapeDataBlock t = new TapeDataBlock();
-			t.BlockID = -2;
-			t.DataPeriods = new List<int>();
-			t.BlockDescription = BlockType.Unsupported;
+			TapeDataBlock t = new()
+			{
+				BlockID = -2,
+				DataPeriods = new List<int>(),
+				BlockDescription = BlockType.Unsupported
+			};
 			//t.BlockDescription = "[UNSUPPORTED - 0x" + data[_position - 1]  + "]";
 
 			_position += GetInt32(data, _position) & 0xFFFFFF;
@@ -1541,13 +1567,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			// currently not implemented properly in ZXHawk
 
-			t = new TapeDataBlock();
-			t.BlockID = 0x33;
-			t.DataPeriods = new List<int>();
-			t.BlockDescription = BlockType.Hardware_Type;
+			t = new TapeDataBlock
+			{
+				BlockID = 0x33,
+				DataPeriods = new List<int>(),
+				BlockDescription = BlockType.Hardware_Type,
 
-			t.PauseInMS = 0;
-			t.PauseInTStates = 0;
+				PauseInMS = 0,
+				PauseInTStates = 0
+			};
 
 			// first byte contains number of HWINFOs
 			int infos = data[_position];
@@ -1589,10 +1617,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			// currently not implemented properly in ZXHawk
 
-			t = new TapeDataBlock();
-			t.BlockID = 0x31;
-			t.DataPeriods = new List<int>();
-			t.BlockDescription = BlockType.Message_Block;
+			t = new TapeDataBlock
+			{
+				BlockID = 0x31,
+				DataPeriods = new List<int>(),
+				BlockDescription = BlockType.Message_Block
+			};
 
 			_position++;
 
@@ -1633,10 +1663,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			file without disturbing the call values. Please take a look at 'Jump To Block' for reference on the values.          */
 
 			// block processing not implemented for this - just gets added for informational purposes only
-			t = new TapeDataBlock();
-			t.BlockID = 0x26;
-			t.DataPeriods = new List<int>();
-			t.BlockDescription = BlockType.Call_Sequence;
+			t = new TapeDataBlock
+			{
+				BlockID = 0x26,
+				DataPeriods = new List<int>(),
+				BlockDescription = BlockType.Call_Sequence
+			};
 
 			int blockSize = 2 + 2 * GetWordValue(data, _position);
 
@@ -1665,11 +1697,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			Again, this block has no body.          */
 
 			// block processing not implemented for this - just gets added for informational purposes only
-			t = new TapeDataBlock();
-			t.BlockID = 0x27;
-			t.BlockDescription = BlockType.Return_From_Sequence;
-			t.PauseInMS = 0;
-			t.PauseInTStates = 0;
+			t = new TapeDataBlock
+			{
+				BlockID = 0x27,
+				BlockDescription = BlockType.Return_From_Sequence,
+				PauseInMS = 0,
+				PauseInTStates = 0
+			};
 
 			// add to tape
 			_datacorder.DataBlocks.Add(t);
@@ -1704,10 +1738,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			selections when it encounters such a block. All offsets are relative signed words.          */
 
 			// block processing not implemented for this - just gets added for informational purposes only
-			t = new TapeDataBlock();
-			t.BlockID = 0x28;
-			t.DataPeriods = new List<int>();
-			t.BlockDescription = BlockType.Select_Block;
+			t = new TapeDataBlock
+			{
+				BlockID = 0x28,
+				DataPeriods = new List<int>(),
+				BlockDescription = BlockType.Select_Block
+			};
 
 			int blockSize = 2 + GetWordValue(data, _position);
 
@@ -1745,10 +1781,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			// not implemented properly
 
-			t = new TapeDataBlock();
-			t.BlockID = 0x23;
-			t.DataPeriods = new List<int>();
-			t.BlockDescription = BlockType.Jump_to_Block;
+			t = new TapeDataBlock
+			{
+				BlockID = 0x23,
+				DataPeriods = new List<int>(),
+				BlockDescription = BlockType.Jump_to_Block
+			};
 
 			int relativeJumpValue = GetWordValue(data, _position);
 			string result = string.Empty;
@@ -1852,10 +1890,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			// not currently implemented properly
 
-			TapeDataBlock t = new TapeDataBlock();
-			t.BlockID = 0x19;
-			t.BlockDescription = BlockType.Generalized_Data_Block;
-			t.DataPeriods = new List<int>();
+			TapeDataBlock t = new()
+			{
+				BlockID = 0x19,
+				BlockDescription = BlockType.Generalized_Data_Block,
+				DataPeriods = new List<int>()
+			};
 
 			int blockLen = GetInt32(data, _position);
 			_position += 4;
@@ -1893,12 +1933,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		private void ProcessBlockID16()
 		{
 			// zxhawk will not implement this block. it will however handle it so subsequent blocks can be parsed
-			TapeDataBlock t = new TapeDataBlock();
-			t.BlockID = 0x16;
-			t.DataPeriods = new List<int>();
-			t.BlockDescription = BlockType.C64_ROM_Type_Data_Block;
+			TapeDataBlock t = new()
+			{
+				BlockID = 0x16,
+				DataPeriods = new List<int>(),
+				BlockDescription = BlockType.C64_ROM_Type_Data_Block,
 
-			t.PauseInMS = 0;
+				PauseInMS = 0
+			};
 
 			// add to tape
 			_datacorder.DataBlocks.Add(t);
@@ -1911,12 +1953,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		private void ProcessBlockID17()
 		{
 			// zxhawk will not implement this block. it will however handle it so subsequent blocks can be parsed
-			TapeDataBlock t = new TapeDataBlock();
-			t.BlockID = 0x17;
-			t.DataPeriods = new List<int>();
-			t.BlockDescription = BlockType.C64_Turbo_Tape_Data_Block;
+			TapeDataBlock t = new()
+			{
+				BlockID = 0x17,
+				DataPeriods = new List<int>(),
+				BlockDescription = BlockType.C64_Turbo_Tape_Data_Block,
 
-			t.PauseInMS = 0;
+				PauseInMS = 0
+			};
 
 			// add to tape
 			_datacorder.DataBlocks.Add(t);
@@ -1930,10 +1974,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		{
 			// currently not implemented properly in ZXHawk
 
-			TapeDataBlock t = new TapeDataBlock();
-			t.BlockID = 0x34;
-			t.DataPeriods = new List<int>();
-			t.BlockDescription = BlockType.Emulation_Info;
+			TapeDataBlock t = new()
+			{
+				BlockID = 0x34,
+				DataPeriods = new List<int>(),
+				BlockDescription = BlockType.Emulation_Info
+			};
 
 			// add to tape
 			_datacorder.DataBlocks.Add(t);
@@ -1958,10 +2004,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		{
 			// currently not implemented properly in ZXHawk
 
-			TapeDataBlock t = new TapeDataBlock();
-			t.BlockID = 0x40;
-			t.DataPeriods = new List<int>();
-			t.BlockDescription = BlockType.Snapshot_Block;
+			TapeDataBlock t = new()
+			{
+				BlockID = 0x40,
+				DataPeriods = new List<int>(),
+				BlockDescription = BlockType.Snapshot_Block
+			};
 
 			_position++;
 

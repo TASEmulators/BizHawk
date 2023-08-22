@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Components
 		// If it underflows beyond that threshold, it will give up and output silence.
 		// Since it has done this, it will go ahead and generate some excess silence in order
 		// to restock its excess buffer.
-		private struct Sample
+		private readonly struct Sample
 		{
 			public readonly short Left;
 			public readonly short Right;

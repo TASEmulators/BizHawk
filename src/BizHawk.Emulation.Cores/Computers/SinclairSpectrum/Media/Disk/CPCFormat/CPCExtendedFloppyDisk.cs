@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			if (DiskHeader.NumberOfSides > 1)
 			{
-				StringBuilder sbm = new StringBuilder();
+				StringBuilder sbm = new();
 				sbm.AppendLine();
 				sbm.AppendLine();
 				sbm.AppendLine("The detected disk image contains multiple sides.");
@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			if (DiskHeader.NumberOfTracks > 42)
 			{
-				StringBuilder sbm = new StringBuilder();
+				StringBuilder sbm = new();
 				sbm.AppendLine();
 				sbm.AppendLine();
 				sbm.AppendLine("The detected disk is an " + DiskHeader.NumberOfTracks + " track disk image.");
@@ -80,16 +80,19 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				// check for unformatted track
 				if (DiskHeader.TrackSizes[i] == 0)
 				{
-					DiskTracks[i] = new Track();
-					DiskTracks[i].Sectors = new Sector[0];
+					DiskTracks[i] = new Track
+					{
+						Sectors = new Sector[0]
+					};
 					continue;
 				}
 
 				int p = pos;
-				DiskTracks[i] = new Track();
-
-				// track info block
-				DiskTracks[i].TrackIdent = Encoding.ASCII.GetString(data, p, 12);
+				DiskTracks[i] = new Track
+				{
+					// track info block
+					TrackIdent = Encoding.ASCII.GetString(data, p, 12)
+				};
 				p += 16;
 				DiskTracks[i].TrackNumber = data[p++];
 				DiskTracks[i].SideNumber = data[p++];
@@ -106,15 +109,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				DiskTracks[i].Sectors = new Sector[DiskTracks[i].NumberOfSectors];
 				for (int s = 0; s < DiskTracks[i].NumberOfSectors; s++)
 				{
-					DiskTracks[i].Sectors[s] = new Sector();
-
-					DiskTracks[i].Sectors[s].TrackNumber = data[p++];
-					DiskTracks[i].Sectors[s].SideNumber = data[p++];
-					DiskTracks[i].Sectors[s].SectorID = data[p++];
-					DiskTracks[i].Sectors[s].SectorSize = data[p++];
-					DiskTracks[i].Sectors[s].Status1 = data[p++];
-					DiskTracks[i].Sectors[s].Status2 = data[p++];
-					DiskTracks[i].Sectors[s].ActualDataByteLength = MediaConverter.GetWordValue(data, p);
+					DiskTracks[i].Sectors[s] = new Sector
+					{
+						TrackNumber = data[p++],
+						SideNumber = data[p++],
+						SectorID = data[p++],
+						SectorSize = data[p++],
+						Status1 = data[p++],
+						Status2 = data[p++],
+						ActualDataByteLength = MediaConverter.GetWordValue(data, p)
+					};
 					p += 2;
 
 					// sector data - begins at 0x100 offset from the start of the track info block (in this case dpos)

@@ -13,7 +13,7 @@ namespace BizHawk.Common
 	[Serializable]
 	public class Bag<TKey, TValue> : IEnumerable<TValue> where TKey : notnull
 	{
-		private readonly WorkingDictionary<TKey, List<TValue>> dictionary = new WorkingDictionary<TKey, List<TValue>>();
+		private readonly WorkingDictionary<TKey, List<TValue>> dictionary = new();
 
 		public IList<TKey> Keys => dictionary.Keys.ToList();
 

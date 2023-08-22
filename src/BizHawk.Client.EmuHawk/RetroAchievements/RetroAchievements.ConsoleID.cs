@@ -117,7 +117,7 @@ namespace BizHawk.Client.EmuHawk
 				VSystemID.Raw.GB => ConsoleID.GB,
 				VSystemID.Raw.GBA => ConsoleID.GBA,
 				VSystemID.Raw.GBC => ConsoleID.GBC, // Not actually used
-				VSystemID.Raw.GBL when Emu is ILinkedGameBoyCommon { First: { IsCGBMode: true } } => ConsoleID.GBC,
+				VSystemID.Raw.GBL when Emu is ILinkedGameBoyCommon { First.IsCGBMode: true } => ConsoleID.GBC,
 				VSystemID.Raw.GBL => ConsoleID.GB, // actually can be a mix of GB and GBC
 				VSystemID.Raw.GEN when Emu is GPGX { IsMegaCD: true } => ConsoleID.SegaCD,
 				VSystemID.Raw.GEN when Emu is PicoDrive { Is32XActive: true } => ConsoleID.Sega32X,

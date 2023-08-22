@@ -75,11 +75,11 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		// older versions fo the SMS VDP have a masking bit in register two that effects mirroring.
 		// This is needed for Ys (JPN) in the status bar
 		private int NameTableMaskBit;
-		private bool JPN_Compat =false;
+		private readonly bool JPN_Compat =false;
 
 		// For SMS, the last 8 x-tiles are fixed if vertscroll (reg[0].bit(7)) is set, but on GG it must be
 		// only the last 7 or Fray displays incorrectly
-		private int lock_tile_start;
+		private readonly int lock_tile_start;
 
 		// preprocessed state assist stuff.
 		public int[] Palette = new int[32];

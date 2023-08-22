@@ -4,7 +4,7 @@ namespace BizHawk.Client.Common
 {
 	public sealed class CommApi : ICommApi
 	{
-		private static readonly WebSocketServer _wsServer = new WebSocketServer();
+		private static readonly WebSocketServer _wsServer = new();
 
 		private readonly (HttpCommunication? HTTP, MemoryMappedFiles MMF, SocketServer? Sockets) _networkingHelpers;
 

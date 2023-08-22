@@ -57,7 +57,7 @@ namespace BizHawk.Client.EmuHawk
 			int tileW = nt.Width;
 			int tileH = nt.Height;
 
-			Size pixSize = new Size(tileW * 8, tileH * 8);
+			Size pixSize = new(tileW * 8, tileH * 8);
 			bv.Size = pixSize;
 			bv.ChangeBitmapSize(pixSize);
 

@@ -17,7 +17,7 @@ namespace BizHawk.Client.EmuHawk
 		private const string FrameColumnName = "FrameColumn";
 		private const string UserTextColumnName = "TextColumn";
 
-		private readonly ScreenshotForm _screenshot = new ScreenshotForm();
+		private readonly ScreenshotForm _screenshot = new();
 
 		private ITasMovie Movie => Tastudio.CurrentTasMovie;
 		private ITasBranchCollection Branches => Movie.Branches;

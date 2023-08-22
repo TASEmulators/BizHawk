@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common
 {
 	public class LuaFunctionList : IEnumerable<NamedLuaFunction>
 	{
-		private readonly List<NamedLuaFunction> _functions = new List<NamedLuaFunction>();
+		private readonly List<NamedLuaFunction> _functions = new();
 
 		private readonly Action Changed;
 

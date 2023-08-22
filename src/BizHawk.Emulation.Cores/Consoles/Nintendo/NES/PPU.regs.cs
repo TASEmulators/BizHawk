@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public struct PPUSTATUS
 		{
 			public int sl;
-			public bool rendering => sl >= 0 && sl < 241;
+			public readonly bool rendering => sl >= 0 && sl < 241;
 			public int cycle;
 		}
 
@@ -103,7 +103,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			//cached state data. these are always reset at the beginning of a frame and don't need saving
 			//but just to be safe, we're gonna save it
-			public PPUSTATUS status = new PPUSTATUS();
+			public PPUSTATUS status = new();
 
 			//public int ComputeIndex()
 			//{
@@ -706,12 +706,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public byte PeekReg(int addr)
 		{
-			switch (addr)
+			return addr switch
 			{
-				case 0: return peek_2000(); case 1: return peek_2001(); case 2: return peek_2002(); case 3: return peek_2003();
-				case 4: return peek_2004(); case 5: return peek_2005(); case 6: return peek_2006(); case 7: return peek_2007();
-				default: throw new InvalidOperationException();
-			}
+				0 => peek_2000(),
+				1 => peek_2001(),
+				2 => peek_2002(),
+				3 => peek_2003(),
+				4 => peek_2004(),
+				5 => peek_2005(),
+				6 => peek_2006(),
+				7 => peek_2007(),
+				_ => throw new InvalidOperationException(),
+			};
 		}
 
 		public void WriteReg(int addr, byte value)

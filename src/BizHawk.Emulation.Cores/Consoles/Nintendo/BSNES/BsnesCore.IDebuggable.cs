@@ -59,15 +59,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		public bool CanStep(StepType type)
 		{
-			switch (type)
+			return type switch
 			{
-				case StepType.Into:
-				case StepType.Over:
-				case StepType.Out:
-					return true;
-				default:
-					return false;
-			}
+				StepType.Into or StepType.Over or StepType.Out => true,
+				_ => false,
+			};
 		}
 
 		public void Step(StepType type)

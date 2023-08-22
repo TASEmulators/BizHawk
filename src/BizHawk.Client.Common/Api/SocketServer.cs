@@ -103,7 +103,7 @@ namespace BizHawk.Client.Common
 			{
 				//build length of string into a string
 				byte[] oneByte = new byte[1];
-				StringBuilder sb = new StringBuilder();
+				StringBuilder sb = new();
 				for (; ; )
 				{
 					int recvd = _soc.Receive(oneByte, 1, 0);

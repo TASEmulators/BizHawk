@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 	public sealed unsafe class SNESGraphicsDecoder : ISNESGraphicsDecoder
 	{
 		[StructLayout(LayoutKind.Sequential)]
-		public struct Object // size: 10 bytes; equivalent to the c++ version
+		public readonly struct Object // size: 10 bytes; equivalent to the c++ version
 		{
 			public readonly ushort x;
 			public readonly byte y;

@@ -528,10 +528,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					// scanline callback
 					if ((LY + LY_inc) == Core._scanlineCallbackLine)
 					{
-						if (Core._scanlineCallback != null)
-						{
-							Core._scanlineCallback(LCDC);
-						}						
+						Core._scanlineCallback?.Invoke(LCDC);
 					}
 
 					cycle = 0;

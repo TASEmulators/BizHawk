@@ -325,11 +325,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			CartInfo choice = null;
 			CartInfo iNesHeaderInfo = null;
 			CartInfo iNesHeaderInfoV2 = null;
-			List<string> hash_sha1_several = new List<string>();
+			List<string> hash_sha1_several = new();
 			string hash_sha1 = null, hash_md5 = null;
 			Unif unif = null;
 
-			Dictionary<string, string> InitialMapperRegisterValues = new Dictionary<string, string>(SyncSettings.BoardProperties);
+			Dictionary<string, string> InitialMapperRegisterValues = new(SyncSettings.BoardProperties);
 
 			origin = EDetectionOrigin.None;
 
@@ -382,8 +382,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (fdsbios == null)
 					throw new MissingFirmwareException("Missing FDS Bios");
 				cart = new CartInfo();
-				var fdsboard = new FDS();
-				fdsboard.biosrom = fdsbios;
+				var fdsboard = new FDS
+				{
+					biosrom = fdsbios
+				};
 				fdsboard.SetDiskImage(rom);
 				fdsboard.Create(this);
 				// at the moment, FDS doesn't use the IRVs, but it could at some point in the future
@@ -499,8 +501,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (USE_DATABASE)
 			{
 				if (hash_md5 != null) choice = IdentifyFromGameDB(hash_md5);
-				if (choice == null)
-					choice = IdentifyFromGameDB(hash_sha1);
+				choice ??= IdentifyFromGameDB(hash_sha1);
 				if (choice == null)
 					LoadWriteLine("Could not locate game in bizhawk gamedb");
 				else

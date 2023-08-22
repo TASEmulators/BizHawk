@@ -20,8 +20,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			{
 				_blockID = value;
 
-				if (MetaData == null)
-					MetaData = new Dictionary<BlockDescriptorTitle, string>();
+				MetaData ??= new Dictionary<BlockDescriptorTitle, string>();
 
 				AddMetaData(BlockDescriptorTitle.Block_ID, value.ToString());
 			}
@@ -37,8 +36,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			set
 			{
 				_blockType = value;
-				if (MetaData == null)
-					MetaData = new Dictionary<BlockDescriptorTitle, string>();
+				MetaData ??= new Dictionary<BlockDescriptorTitle, string>();
 			}
 		}
 
@@ -93,7 +91,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// List containing the pulse timing values
 		/// </summary>
-		public List<int> DataPeriods = new List<int>();
+		public List<int> DataPeriods = new();
 
 		public bool InitialPulseLevel;
 

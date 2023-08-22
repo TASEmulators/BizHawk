@@ -23,28 +23,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		private static ILibsnesController Factory(ControllerType t, LibsnesCore.SnesSyncSettings ss)
 		{
-			switch (t)
+			return t switch
 			{
-				case ControllerType.Unplugged:
-					return new SnesUnpluggedController();
-				case ControllerType.Gamepad:
-					return new SnesController();
-				case ControllerType.Multitap:
-					return new SnesMultitapController();
-				case ControllerType.Payload:
-					return new SnesPayloadController();
-				case ControllerType.Mouse:
-					return new SnesMouseController
-					{
-						LimitAnalogChangeSensitivity = ss.LimitAnalogChangeSensitivity
-					};
-				case ControllerType.SuperScope:
-					return new SnesSuperScopeController();
-				case ControllerType.Justifier:
-					return new SnesJustifierController();
-				default:
-					throw new InvalidOperationException();
-			}
+				ControllerType.Unplugged => new SnesUnpluggedController(),
+				ControllerType.Gamepad => new SnesController(),
+				ControllerType.Multitap => new SnesMultitapController(),
+				ControllerType.Payload => new SnesPayloadController(),
+				ControllerType.Mouse => new SnesMouseController
+				{
+					LimitAnalogChangeSensitivity = ss.LimitAnalogChangeSensitivity
+				},
+				ControllerType.SuperScope => new SnesSuperScopeController(),
+				ControllerType.Justifier => new SnesJustifierController(),
+				_ => throw new InvalidOperationException(),
+			};
 		}
 
 		private readonly ILibsnesController[] _ports;

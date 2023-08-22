@@ -39,7 +39,7 @@ namespace BizHawk.Client.Common
 			_movie = movie;
 		}
 
-		private readonly List<List<IMovieAction>> _history = new List<List<IMovieAction>>();
+		private readonly List<List<IMovieAction>> _history = new();
 		private readonly ITasMovie _movie;
 
 		private int _maxSteps = 100;

@@ -26,8 +26,8 @@ namespace BizHawk.Common
 			return FromExpression(f.Body);
 		}
 
-		private static readonly Dictionary<Type, MethodInfo> Readhandlers = new Dictionary<Type, MethodInfo>();
-		private static readonly Dictionary<Type, MethodInfo> Writehandlers = new Dictionary<Type, MethodInfo>();
+		private static readonly Dictionary<Type, MethodInfo> Readhandlers = new();
+		private static readonly Dictionary<Type, MethodInfo> Writehandlers = new();
 
 		private static void AddR<T>(Expression<Action<BinaryReader>> f)
 		{
@@ -169,7 +169,7 @@ namespace BizHawk.Common
 		public static T Create<T>(BinaryReader r)
 			where T : new()
 		{
-			T target = new T();
+			T target = new();
 			Read(target, r);
 			return target;
 		}

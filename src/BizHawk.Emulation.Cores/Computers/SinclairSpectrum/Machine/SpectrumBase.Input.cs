@@ -301,21 +301,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public IJoystick InstantiateJoystick(JoystickType type, int playerNumber)
 		{
-			switch (type)
+			return type switch
 			{
-				case JoystickType.Kempston:
-					return new KempstonJoystick(this, playerNumber);
-				case JoystickType.Cursor:
-					return new CursorJoystick(this, playerNumber);
-				case JoystickType.SinclairLEFT:
-					return new SinclairJoystick1(this, playerNumber);
-				case JoystickType.SinclairRIGHT:
-					return new SinclairJoystick2(this, playerNumber);
-				case JoystickType.NULL:
-					return new NullJoystick(this, playerNumber);
-			}
-
-			return null;
+				JoystickType.Kempston => new KempstonJoystick(this, playerNumber),
+				JoystickType.Cursor => new CursorJoystick(this, playerNumber),
+				JoystickType.SinclairLEFT => new SinclairJoystick1(this, playerNumber),
+				JoystickType.SinclairRIGHT => new SinclairJoystick2(this, playerNumber),
+				JoystickType.NULL => new NullJoystick(this, playerNumber),
+				_ => null,
+			};
 		}
 
 		/// <summary>

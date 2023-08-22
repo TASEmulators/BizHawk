@@ -88,7 +88,7 @@ namespace BizHawk.Common.ReflectionExtensions
 				}
 			}
 
-			return default(T);
+			return default;
 		}
 
 		/// <summary>

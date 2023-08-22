@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 	// TODO: This class is specifically for the SNES Graphics Debugger, but written generally, perhaps it could be moved to a more generic place
 	public class ScanlineHookManager
 	{
-		private readonly List<RegistrationRecord> _records = new List<RegistrationRecord>();
+		private readonly List<RegistrationRecord> _records = new();
 
 		public void Register(object tag, Action<int> callback)
 		{

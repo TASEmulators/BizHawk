@@ -11,7 +11,7 @@ namespace BizHawk.Client.Common
 
 		private readonly Action<string> LogCallback;
 
-		private readonly Dictionary<Guid, byte[]> _memorySavestates = new Dictionary<Guid, byte[]>();
+		private readonly Dictionary<Guid, byte[]> _memorySavestates = new();
 
 		public MemorySaveStateApi(Action<string> logCallback) => LogCallback = logCallback;
 

@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <summary>
 		/// Handle to native audio plugin
 		/// </summary>
-		private IntPtr AudDll;
+		private readonly IntPtr AudDll;
 
 		/// <summary>
 		/// Gets the size of the mupen64plus audio buffer

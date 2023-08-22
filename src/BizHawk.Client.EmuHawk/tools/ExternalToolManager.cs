@@ -59,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private FileSystemWatcher DirectoryMonitor;
 
-		private readonly List<ToolStripMenuItem> MenuItems = new List<ToolStripMenuItem>();
+		private readonly List<ToolStripMenuItem> MenuItems = new();
 
 		internal readonly IList<string> PossibleExtToolTypeNames = new List<string>();
 
@@ -122,9 +122,7 @@ namespace BizHawk.Client.EmuHawk
 				var asmBytes = File.ReadAllBytes(fileName);
 				var externalToolFile = Assembly.Load(asmBytes);
 				var entryPoint = externalToolFile.GetTypes()
-					.SingleOrDefault(t => typeof(IExternalToolForm).IsAssignableFrom(t) && t.GetCustomAttributes().OfType<ExternalToolAttribute>().Any());
-				if (entryPoint == null) throw new ExternalToolAttribute.MissingException();
-
+					.SingleOrDefault(t => typeof(IExternalToolForm).IsAssignableFrom(t) && t.GetCustomAttributes().OfType<ExternalToolAttribute>().Any()) ?? throw new ExternalToolAttribute.MissingException();
 				var allAttrs = entryPoint.GetCustomAttributes().ToList();
 				var applicabilityAttrs = allAttrs.OfType<ExternalToolApplicabilityAttributeBase>().ToList();
 				if (applicabilityAttrs.Count > 1) throw new ExternalToolApplicabilityAttributeBase.DuplicateException();

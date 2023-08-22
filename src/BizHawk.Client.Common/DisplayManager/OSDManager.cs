@@ -78,9 +78,9 @@ namespace BizHawk.Client.Common
 			return _emulator.Frame.ToString();
 		}
 
-		private readonly List<UIMessage> _messages = new List<UIMessage>(5);
-		private readonly List<UIDisplay> _guiTextList = new List<UIDisplay>();
-		private readonly List<UIDisplay> _ramWatchList = new List<UIDisplay>();
+		private readonly List<UIMessage> _messages = new(5);
+		private readonly List<UIDisplay> _guiTextList = new();
+		private readonly List<UIDisplay> _ramWatchList = new();
 
 		public void AddMessage(string message, int? duration = null)
 			=> _messages.Add(new() {

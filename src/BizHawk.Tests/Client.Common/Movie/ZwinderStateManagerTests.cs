@@ -82,7 +82,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 		[TestMethod]
 		public void SaveCreateBufferRoundTrip()
 		{
-			RewindConfig config = new RewindConfig
+			RewindConfig config = new()
 			{
 				BufferSize = 1,
 				TargetFrameLength = 10

@@ -44,8 +44,8 @@ namespace BizHawk.Client.EmuHawk
 		private long _frames;
 		private int _targetFrame;
 		private bool _oldCountingSetting;
-		private BotAttempt _currentBotAttempt;
-		private BotAttempt _bestBotAttempt;
+		private readonly BotAttempt _currentBotAttempt;
+		private readonly BotAttempt _bestBotAttempt;
 		private readonly BotAttempt _comparisonBotAttempt;
 		private bool _replayMode;
 		private int _startFrame;

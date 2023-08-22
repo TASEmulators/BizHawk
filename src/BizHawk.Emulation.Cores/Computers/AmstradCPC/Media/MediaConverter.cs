@@ -100,12 +100,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public static void DecompressZRLE(byte[] sourceBuffer, ref byte[] destBuffer)
 		{
-			MemoryStream stream = new MemoryStream();
+			MemoryStream stream = new();
 			stream.Write(sourceBuffer, 0, sourceBuffer.Length);
 			stream.Position = 0;
 			stream.ReadByte();
 			stream.ReadByte();
-			DeflateStream ds = new DeflateStream(stream, CompressionMode.Decompress, false);
+			DeflateStream ds = new(stream, CompressionMode.Decompress, false);
 			ds.Read(destBuffer, 0, destBuffer.Length);
 		}
 	}

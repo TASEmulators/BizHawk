@@ -9,9 +9,9 @@ namespace BizHawk.Client.EmuHawk
 	public partial class VirtualPadTargetScreen : UserControl, IVirtualPadControl
 	{
 		private readonly StickyXorAdapter _stickyXorAdapter;
-		private readonly Pen BlackPen = new Pen(Brushes.Black, 2);
-		private readonly Pen GrayPen = new Pen(Brushes.Gray, 2);
-		private readonly Pen RedPen = new Pen(Brushes.Red, 2);
+		private readonly Pen BlackPen = new(Brushes.Black, 2);
+		private readonly Pen GrayPen = new(Brushes.Gray, 2);
+		private readonly Pen RedPen = new(Brushes.Red, 2);
 
 		private bool _isProgrammicallyChangingNumerics;
 		private bool _isDragging;
@@ -117,7 +117,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// Size of the extra controls to the right / bottom of the target panel at 96 DPI
-		private Size PaddingSize => new Size(0, 30);
+		private Size PaddingSize => new(0, 30);
 
 		public Size TargetSize
 		{

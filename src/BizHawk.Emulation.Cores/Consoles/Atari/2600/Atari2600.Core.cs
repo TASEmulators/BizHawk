@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public bool unselect_reset;
 		public bool unselect_select;
 
-		internal struct CpuLink : IMOS6502XLink
+		internal readonly struct CpuLink : IMOS6502XLink
 		{
 			private readonly Atari2600 _atari2600;
 
@@ -49,15 +49,15 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				_atari2600 = atari2600;
 			}
 
-			public byte DummyReadMemory(ushort address) => _atari2600.ReadMemory(address);
+			public readonly byte DummyReadMemory(ushort address) => _atari2600.ReadMemory(address);
 
-			public void OnExecFetch(ushort address) => _atari2600.ExecFetch(address);
+			public readonly void OnExecFetch(ushort address) => _atari2600.ExecFetch(address);
 
-			public byte PeekMemory(ushort address) => _atari2600.ReadMemory(address);
+			public readonly byte PeekMemory(ushort address) => _atari2600.ReadMemory(address);
 
-			public byte ReadMemory(ushort address) => _atari2600.ReadMemory(address);
+			public readonly byte ReadMemory(ushort address) => _atari2600.ReadMemory(address);
 
-			public void WriteMemory(ushort address, byte value) => _atari2600.WriteMemory(address, value);
+			public readonly void WriteMemory(ushort address, byte value) => _atari2600.WriteMemory(address, value);
 		}
 
 		// keeps track of tia cycles, 3 cycles per CPU cycle

@@ -46,18 +46,18 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public byte ReadVPC(int port)
 		{
 			port &= 0x0F;
-			switch (port)
+			return port switch
 			{
-				case 0x08: return Registers[0];
-				case 0x09: return Registers[1];
-				case 0x0A: return Registers[2];
-				case 0x0B: return Registers[3];
-				case 0x0C: return Registers[4];
-				case 0x0D: return Registers[5];
-				case 0x0E: return Registers[6];
-				case 0x0F: return 0;
-				default: return 0xFF;
-			}
+				0x08 => Registers[0],
+				0x09 => Registers[1],
+				0x0A => Registers[2],
+				0x0B => Registers[3],
+				0x0C => Registers[4],
+				0x0D => Registers[5],
+				0x0E => Registers[6],
+				0x0F => 0,
+				_ => 0xFF,
+			};
 		}
 
 		public void WriteVPC(int port, byte value)

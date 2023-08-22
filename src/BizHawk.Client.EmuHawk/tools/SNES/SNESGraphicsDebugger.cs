@@ -38,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public unsafe partial class SNESGraphicsDebugger : ToolFormBase, IToolFormAutoConfig
 	{
-		private readonly List<DisplayTypeItem> displayTypeItems = new List<DisplayTypeItem>();
+		private readonly List<DisplayTypeItem> displayTypeItems = new();
 
 		[RequiredService]
 		private IBSNESForGfxDebugger Emulator { get; set; }
@@ -344,13 +344,13 @@ namespace BizHawk.Client.EmuHawk
 			int* pixelptr = null;
 			int stride = 0;
 
-			Action<int, int> allocate = (w, h) =>
+			void allocate(int w, int h)
 			{
 				bmp = new Bitmap(w, h);
 				bmpdata = bmp.LockBits(new Rectangle(0, 0, w, h), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 				pixelptr = (int*)bmpdata.Scan0.ToPointer();
 				stride = bmpdata.Stride;
-			};
+			}
 
 			var selection = CurrDisplaySelection;
 			if (selection == eDisplayType.OBJ)
@@ -491,18 +491,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private static SNESGraphicsDecoder.BGMode BGModeForDisplayType(eDisplayType type)
 		{
-			switch (type)
+			return type switch
 			{
-				case eDisplayType.Tiles2bpp: return SNESGraphicsDecoder.BGMode.Text;
-				case eDisplayType.Tiles4bpp: return SNESGraphicsDecoder.BGMode.Text;
-				case eDisplayType.Tiles8bpp: return SNESGraphicsDecoder.BGMode.Text;
-				case eDisplayType.TilesMode7: return SNESGraphicsDecoder.BGMode.Mode7;
-				case eDisplayType.TilesMode7Ext: return SNESGraphicsDecoder.BGMode.Mode7Ext;
-				case eDisplayType.TilesMode7DC: return SNESGraphicsDecoder.BGMode.Mode7DC;
-				case eDisplayType.OBJTiles0: return SNESGraphicsDecoder.BGMode.OBJ;
-				case eDisplayType.OBJTiles1: return SNESGraphicsDecoder.BGMode.OBJ;
-				default: throw new InvalidOperationException();
-			}
+				eDisplayType.Tiles2bpp => SNESGraphicsDecoder.BGMode.Text,
+				eDisplayType.Tiles4bpp => SNESGraphicsDecoder.BGMode.Text,
+				eDisplayType.Tiles8bpp => SNESGraphicsDecoder.BGMode.Text,
+				eDisplayType.TilesMode7 => SNESGraphicsDecoder.BGMode.Mode7,
+				eDisplayType.TilesMode7Ext => SNESGraphicsDecoder.BGMode.Mode7Ext,
+				eDisplayType.TilesMode7DC => SNESGraphicsDecoder.BGMode.Mode7DC,
+				eDisplayType.OBJTiles0 => SNESGraphicsDecoder.BGMode.OBJ,
+				eDisplayType.OBJTiles1 => SNESGraphicsDecoder.BGMode.OBJ,
+				_ => throw new InvalidOperationException(),
+			};
 		}
 
 		private class DisplayTypeItem

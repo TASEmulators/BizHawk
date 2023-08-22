@@ -68,12 +68,12 @@ namespace BizHawk.Client.EmuHawk
 		private readonly int _fontWidth;
 		private readonly int _fontHeight;
 
-		private readonly List<char> _nibbles = new List<char>();
+		private readonly List<char> _nibbles = new();
 
 		private long? _highlightedAddress;
-		private readonly List<long> _secondaryHighlightedAddresses = new List<long>();
+		private readonly List<long> _secondaryHighlightedAddresses = new();
 
-		private readonly Dictionary<int, char> _textTable = new Dictionary<int, char>();
+		private readonly Dictionary<int, char> _textTable = new();
 
 		private int _rowsVisible;
 		private int _numDigits = 4;
@@ -119,7 +119,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private WatchSize WatchSize => (WatchSize)DataSize;
 
-		private readonly Pen _blackPen = new Pen(Color.Black);
+		private readonly Pen _blackPen = new(Color.Black);
 		private SolidBrush _freezeBrush;
 		private SolidBrush _freezeHighlightBrush;
 		private SolidBrush _highlightBrush;
@@ -638,16 +638,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private int MakeValue(int dataSize, long address)
 		{
-			switch (dataSize)
+			return dataSize switch
 			{
-				default:
-				case 1:
-					return _domain.PeekByte(address);
-				case 2:
-					return _domain.PeekUshort(address, BigEndian);
-				case 4:
-					return (int)_domain.PeekUint(address, BigEndian);
-			}
+				2 => _domain.PeekUshort(address, BigEndian),
+				4 => (int)_domain.PeekUint(address, BigEndian),
+				_ => _domain.PeekByte(address),
+			};
 		}
 
 		private void SetMemoryDomain(string name)
@@ -806,16 +802,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private Watch MakeWatch(long address)
 		{
-			switch (DataSize)
+			return DataSize switch
 			{
-				default:
-				case 1:
-					return Watch.GenerateWatch(_domain, address, WatchSize.Byte, Common.WatchDisplayType.Hex, BigEndian);
-				case 2:
-					return Watch.GenerateWatch(_domain, address, WatchSize.Word, Common.WatchDisplayType.Hex, BigEndian);
-				case 4:
-					return Watch.GenerateWatch(_domain, address, WatchSize.DWord, Common.WatchDisplayType.Hex, BigEndian);
-			}
+				2 => Watch.GenerateWatch(_domain, address, WatchSize.Word, Common.WatchDisplayType.Hex, BigEndian),
+				4 => Watch.GenerateWatch(_domain, address, WatchSize.DWord, Common.WatchDisplayType.Hex, BigEndian),
+				_ => Watch.GenerateWatch(_domain, address, WatchSize.Byte, Common.WatchDisplayType.Hex, BigEndian),
+			};
 		}
 
 		private bool IsFrozen(long address)

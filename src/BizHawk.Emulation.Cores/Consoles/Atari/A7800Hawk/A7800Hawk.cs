@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public TIA tia;
 		public Pokey pokey;
 
-		public struct CpuLink : IMOS6502XLink
+		public readonly struct CpuLink : IMOS6502XLink
 		{
 			private readonly A7800Hawk _a7800;
 
@@ -64,15 +64,15 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				_a7800 = a7800;
 			}
 
-			public byte DummyReadMemory(ushort address) => _a7800.ReadMemory(address);
+			public readonly byte DummyReadMemory(ushort address) => _a7800.ReadMemory(address);
 
-			public void OnExecFetch(ushort address) => _a7800.ExecFetch(address);
+			public readonly void OnExecFetch(ushort address) => _a7800.ExecFetch(address);
 
-			public byte PeekMemory(ushort address) => _a7800.ReadMemory(address);
+			public readonly byte PeekMemory(ushort address) => _a7800.ReadMemory(address);
 
-			public byte ReadMemory(ushort address) => _a7800.ReadMemory(address);
+			public readonly byte ReadMemory(ushort address) => _a7800.ReadMemory(address);
 
-			public void WriteMemory(ushort address, byte value) => _a7800.WriteMemory(address, value);
+			public readonly void WriteMemory(ushort address, byte value) => _a7800.WriteMemory(address, value);
 		}
 
 		[CoreConstructor(VSystemID.Raw.A78)]

@@ -229,15 +229,13 @@ namespace BizHawk.Client.Common.movie.import
 				{
 					using var stream = item.Open();
 					string subtitles = Encoding.UTF8.GetString(stream.ReadAllBytes());
-					using (var reader = new StringReader(subtitles))
+					using var reader = new StringReader(subtitles);
+					while (reader.ReadLine() is string line)
 					{
-						while (reader.ReadLine() is string line)
+						var subtitle = ImportTextSubtitle(line);
+						if (!string.IsNullOrEmpty(subtitle))
 						{
-							var subtitle = ImportTextSubtitle(line);
-							if (!string.IsNullOrEmpty(subtitle))
-							{
-								Result.Movie.Subtitles.AddFromString(subtitle);
-							}
+							Result.Movie.Subtitles.AddFromString(subtitle);
 						}
 					}
 				}

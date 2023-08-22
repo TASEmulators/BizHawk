@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 	public partial class SMS
 	{
 		private MemoryDomainList MemoryDomains;
-		private readonly Dictionary<string, MemoryDomainByteArray> _byteArrayDomains = new Dictionary<string, MemoryDomainByteArray>();
+		private readonly Dictionary<string, MemoryDomainByteArray> _byteArrayDomains = new();
 		private bool _memoryDomainsInit = false;
 
 		private void SetupMemoryDomains()

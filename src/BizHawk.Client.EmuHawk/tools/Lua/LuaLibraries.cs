@@ -160,7 +160,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly IDictionary<Type, LuaLibraryBase> Libraries = new Dictionary<Type, LuaLibraryBase>();
 
-		private EventWaitHandle LuaWait;
+		private readonly EventWaitHandle LuaWait;
 
 		public PathEntryCollection PathEntries { get; private set; }
 

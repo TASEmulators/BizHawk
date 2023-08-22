@@ -1,4 +1,4 @@
-﻿using BizHawk.Common;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.Z80A;
 using System;
@@ -19,7 +19,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private readonly CPCBase _machine;
 		private Z80A CPU => _machine.CPU;
 		private CRCT_6845 CRCT => _machine.CRCT;
+		#pragma warning disable IDE0051
 		private IPSG PSG => _machine.AYDevice;
+		#pragma warning restore IDE0051
 
 		/// <summary>
 		/// CRTC Register constants
@@ -361,8 +363,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public bool WritePort(ushort port, int result)
 		{
-			BitArray portBits = new BitArray(BitConverter.GetBytes(port));
-			BitArray dataBits = new BitArray(BitConverter.GetBytes((byte)result));
+			BitArray portBits = new(BitConverter.GetBytes(port));
+			BitArray dataBits = new(BitConverter.GetBytes((byte)result));
 
 			// The gate array responds to port 0x7F
 			bool accessed = !portBits[15];

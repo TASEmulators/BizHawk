@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			Data = 0x04
 		}
 
-#pragma warning disable CS0649
+#pragma warning disable CS0649,IDE0051
 		private struct CDLog_MapResults
 		{
 			public CDLog_AddrType Type;
@@ -48,8 +48,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		}
 
 		private delegate CDLog_MapResults MapMemoryDelegate(ushort addr, bool write);
-		private MapMemoryDelegate MapMemory;
-#pragma warning restore CS0649
+		private readonly MapMemoryDelegate MapMemory;
 		private ICodeDataLog CDL;
 
 		private void RunCDL(ushort address, CDLog_Flags flags)
@@ -84,4 +83,5 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			return ReadMemory(address);
 		}
 	}
+#pragma warning restore CS0649,IDE0051
 }

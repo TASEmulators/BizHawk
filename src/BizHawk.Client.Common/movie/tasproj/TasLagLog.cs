@@ -7,8 +7,8 @@ namespace BizHawk.Client.Common
 {
 	public class TasLagLog
 	{
-		private Dictionary<int, bool> _lagLog = new Dictionary<int, bool>();
-		private Dictionary<int, bool> _wasLag = new Dictionary<int, bool>();
+		private Dictionary<int, bool> _lagLog = new();
+		private Dictionary<int, bool> _wasLag = new();
 
 		public bool? this[int frame]
 		{

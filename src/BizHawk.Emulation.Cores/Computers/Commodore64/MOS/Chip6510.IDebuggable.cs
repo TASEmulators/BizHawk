@@ -11,15 +11,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		bool IDebuggable.CanStep(StepType type)
 		{
-			switch (type)
+			return type switch
 			{
-				case StepType.Into:
-				case StepType.Over:
-				case StepType.Out:
-					return DebuggerStep != null;
-				default:
-					return false;
-			}
+				StepType.Into or StepType.Over or StepType.Out => DebuggerStep != null,
+				_ => false,
+			};
 		}
 
 		void IDebuggable.Step(StepType type)

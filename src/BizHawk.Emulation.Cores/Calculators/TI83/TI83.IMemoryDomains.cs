@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Calculators.TI83
 {
 	public partial class TI83
 	{
-		private readonly Dictionary<string, MemoryDomainByteArray> _byteArrayDomains = new Dictionary<string, MemoryDomainByteArray>();
+		private readonly Dictionary<string, MemoryDomainByteArray> _byteArrayDomains = new();
 		private IMemoryDomains _memoryDomains;
 		private bool _memoryDomainsInit;
 

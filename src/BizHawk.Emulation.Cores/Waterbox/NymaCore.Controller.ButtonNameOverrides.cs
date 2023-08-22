@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private static bool IsRomanNumeral(string str)
 			=> new[] {"I", "II", "III", "IV", "V", "VI"}.Contains(str);
 
-		private static readonly Dictionary<string, string> ButtonNameOverrides = new Dictionary<string, string>
+		private static readonly Dictionary<string, string> ButtonNameOverrides = new()
 		{
 			["Left Shoulder"] = "L",
 			["Right Shoulder"] = "R",

@@ -1,10 +1,11 @@
-﻿namespace BizHawk.Emulation.Cores.Consoles.ChannelF
+namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
 	/// <summary>
 	/// Video related functions
 	/// </summary>
 	public partial class ChannelF
 	{
+		#pragma warning disable IDE0051
 		private void BuildFrame1()
 		{
 			// rows
@@ -30,5 +31,6 @@
 				}
 			}
 		}
+		#pragma warning restore IDE0051
 	}
 }

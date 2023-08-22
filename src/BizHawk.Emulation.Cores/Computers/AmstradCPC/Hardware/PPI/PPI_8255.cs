@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 
@@ -13,7 +13,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	{
 		private readonly CPCBase _machine;
 		private CRCT_6845 CRTC => _machine.CRCT;
+		#pragma warning disable IDE0051
 		private AmstradGateArray GateArray => _machine.GateArray;
+		#pragma warning restore IDE0051
 		private IPSG PSG => _machine.AYDevice;
 		private DatacorderDevice Tape => _machine.TapeDevice;
 		private IKeyboard Keyboard => _machine.KeyboardDevice;
@@ -202,7 +204,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			{
 				// build the PortB output
 				// start with every bit reset
-				BitArray rBits = new BitArray(8);
+				BitArray rBits = new(8);
 
 				// Bit0 - Vertical Sync ("1"=VSYNC active, "0"=VSYNC inactive)
 				if (CRTC.VSYNC)

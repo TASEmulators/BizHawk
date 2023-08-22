@@ -75,9 +75,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 LastFe = value;
 
             // get a BitArray of the port
-            BitArray portBits = new BitArray(BitConverter.GetBytes(port));
+            BitArray portBits = new(BitConverter.GetBytes(port));
             // get a BitArray of the value byte
-            BitArray bits = new BitArray(new byte[] { value });
+            BitArray bits = new(new byte[] { value });
 
             // Check whether the low bit is reset
             bool lowBitReset = !portBits[0]; // (port & 0x01) == 0;
@@ -127,7 +127,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         // Config 1 = Bit1-1 Bit2-0
                         // Config 2 = Bit1-0 Bit2-1
                         // Config 3 = Bit1-1 Bit2-1
-                        BitArray confHalfNibble = new BitArray(2);
+                        BitArray confHalfNibble = new(2);
                         confHalfNibble[0] = bits[1];
                         confHalfNibble[1] = bits[2];
 

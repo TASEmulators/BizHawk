@@ -38,7 +38,7 @@ namespace BizHawk.Common
 			f.SetDefaultValues(obj, f.DefaultValues);
 		}
 
-		private static readonly Dictionary<Type, OpCode> IntTypes = new Dictionary<Type,OpCode>
+		private static readonly Dictionary<Type, OpCode> IntTypes = new()
 		{
 			{ typeof(byte), OpCodes.Conv_U1 },
 			{ typeof(sbyte), OpCodes.Conv_I1 },
@@ -56,7 +56,7 @@ namespace BizHawk.Common
 		{
 			var dyn = new DynamicMethod($"SetDefaultValues_{t.Name}", null, new[] { typeof(object), typeof(object[]) }, false);
 			var il = dyn.GetILGenerator();
-			List<object> DefaultValues = new List<object>();
+			List<object> DefaultValues = new();
 
 			il.Emit(OpCodes.Ldarg_0); // arg0: object to set properties of
 			il.Emit(OpCodes.Castclass, t); // cast to appropriate type

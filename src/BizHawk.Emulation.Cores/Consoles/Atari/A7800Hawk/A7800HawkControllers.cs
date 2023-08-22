@@ -165,7 +165,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			"Up", "Down", "Left", "Right", "Button"
 		};
 
-		private static byte[] HandControllerButtons =
+		private static readonly byte[] HandControllerButtons =
 		{
 			0x0, // UP
 			0x0, // Down
@@ -257,7 +257,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			"Up", "Down", "Left", "Right", "Trigger", "Trigger 2"
 		};
 
-		private static byte[] HandControllerButtons =
+		private static readonly byte[] HandControllerButtons =
 		{
 			0x0, // UP
 			0x0, // Down

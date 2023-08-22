@@ -19,7 +19,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets the separator instance
 		/// </summary>
-		public static SeparatorWatch Instance => new SeparatorWatch();
+		public static SeparatorWatch Instance => new();
 
 		public static SeparatorWatch NewSeparatorWatch(string description)
 		{

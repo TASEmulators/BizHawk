@@ -29,8 +29,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
-		private object _settings = new object();
-		public VectrexSyncSettings _syncSettings = new VectrexSyncSettings();
+		private object _settings = new();
+		public VectrexSyncSettings _syncSettings = new();
 
 		public class VectrexSyncSettings
 		{

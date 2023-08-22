@@ -146,7 +146,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     case SpectrumMediaType.DiskDoubleSided:
                         // this is a bit tricky. we will attempt to parse the double sided disk image byte array,
                         // then output two separate image byte arrays
-                        List<byte[]> working = new List<byte[]>();
+                        List<byte[]> working = new();
                         foreach (DiskType type in Enum.GetValues(typeof(DiskType)))
                         {
                             bool found = false;
@@ -171,12 +171,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                                 // add side 2
                                 diskImages.Add(working[1]);
 
-                                Common.GameInfo one = new Common.GameInfo();
-                                Common.GameInfo two = new Common.GameInfo();
+                                Common.GameInfo one = new();
+                                Common.GameInfo two = new();
                                 var gi = Spectrum._gameInfo[cnt];
                                 for (int i = 0; i < 2; i++)
                                 {
-                                    Common.GameInfo work = new Common.GameInfo();
+                                    Common.GameInfo work = new();
                                     if (i == 0)
                                     {
                                         work = one;

@@ -16,8 +16,8 @@ namespace BizHawk.Client.EmuHawk
 		private const int Interval = 40;
 		private const double AlphaStep = 0.125;
 
-		private readonly Timer _showTimer = new Timer();
-		private readonly Timer _hideTimer = new Timer();
+		private readonly Timer _showTimer = new();
+		private readonly Timer _hideTimer = new();
 
 		private TasBranch _branch;
 		private int _drawingHeight;

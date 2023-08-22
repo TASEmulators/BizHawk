@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common
 		private ClientWebSocket? _w;
 
 		/// <summary>calls <see cref="ClientWebSocket.State"/> getter (unless closed/disposed, then <see cref="WebSocketState.Closed"/> is always returned)</summary>
-		public WebSocketState State => _w?.State ?? WebSocketState.Closed;
+		public readonly WebSocketState State => _w?.State ?? WebSocketState.Closed;
 
 		public ClientWebSocketWrapper(Uri uri, CancellationToken? cancellationToken = null)
 		{
@@ -33,7 +33,7 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>calls <see cref="ClientWebSocket.ReceiveAsync"/></summary>
-		public Task<WebSocketReceiveResult> Receive(ArraySegment<byte> buffer, CancellationToken? cancellationToken = null)
+		public readonly Task<WebSocketReceiveResult> Receive(ArraySegment<byte> buffer, CancellationToken? cancellationToken = null)
 			=> _w?.ReceiveAsync(buffer, cancellationToken ?? CancellationToken.None)
 				?? throw new ObjectDisposedException(nameof(_w));
 
@@ -47,7 +47,7 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>calls <see cref="ClientWebSocket.SendAsync"/></summary>
-		public Task Send(ArraySegment<byte> buffer, WebSocketMessageType messageType, bool endOfMessage, CancellationToken? cancellationToken = null)
+		public readonly Task Send(ArraySegment<byte> buffer, WebSocketMessageType messageType, bool endOfMessage, CancellationToken? cancellationToken = null)
 			=> _w?.SendAsync(buffer, messageType, endOfMessage, cancellationToken ?? CancellationToken.None)
 				?? throw new ObjectDisposedException(nameof(_w));
 

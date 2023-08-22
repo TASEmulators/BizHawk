@@ -21,9 +21,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 
 		private readonly Thread m64pEmulator;
 
-		private readonly AutoResetEvent m64pEvent = new AutoResetEvent(false);
-		private AutoResetEvent m64pContinueEvent = new AutoResetEvent(false);
-		private readonly ManualResetEvent m64pStartupComplete = new ManualResetEvent(false);
+		private readonly AutoResetEvent m64pEvent = new(false);
+		private readonly AutoResetEvent m64pContinueEvent = new(false);
+		private readonly ManualResetEvent m64pStartupComplete = new(false);
 
 		private bool event_frameend = false;
 		private bool event_breakpoint = false;
@@ -387,7 +387,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void FrameCallback();
 
-		private FrameCallback m64pFrameCallback;
+		private readonly FrameCallback m64pFrameCallback;
 
 		/// <summary>
 		/// This will be called every time a VI occurs
@@ -395,7 +395,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void VICallback();
 
-		private VICallback m64pVICallback;
+		private readonly VICallback m64pVICallback;
 
 		/// <summary>
 		/// This will be called every time before the screen is drawn
@@ -403,7 +403,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void RenderCallback();
 
-		private RenderCallback m64pRenderCallback;
+		private readonly RenderCallback m64pRenderCallback;
 
 		/// <summary>
 		/// This will be called after the emulator is setup and is ready to be used
@@ -439,7 +439,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void DebugInitCallback();
 
-		private DebugInitCallback m64pDebugInitCallback;
+		private readonly DebugInitCallback m64pDebugInitCallback;
 
 		/// <summary>
 		/// This will be called when the debugger hits a breakpoint or executes one instruction in stepping mode
@@ -447,7 +447,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void DebugUpdateCallback(int bpt);
 
-		private DebugUpdateCallback m64pDebugUpdateCallback;
+		private readonly DebugUpdateCallback m64pDebugUpdateCallback;
 
 		/// <summary>
 		/// This will be called during each vertical interrupt
@@ -503,7 +503,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 
 		private DebugStep m64pDebugStep;
 
-		private readonly DynamicLibraryImportResolver Library = new DynamicLibraryImportResolver(OSTailoredCode.IsUnixHost ? "libmupen64plus.so.2" : "mupen64plus.dll");
+		private readonly DynamicLibraryImportResolver Library = new(OSTailoredCode.IsUnixHost ? "libmupen64plus.so.2" : "mupen64plus.dll");
 
 		public mupen64plusApi(N64 bizhawkCore, byte[] rom, VideoPluginSettings video_settings, int SaveType, int CoreType, bool DisableExpansionSlot)
 		{
@@ -688,7 +688,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 				if (video_settings.Parameters[Parameter].GetType() == typeof(string))
 				{
 					string value = ((string)video_settings.Parameters[Parameter]);
-					StringBuilder sb = new StringBuilder(value);
+					StringBuilder sb = new(value);
 					m64pConfigSetParameterStr(video_plugin_section, Parameter, m64p_type.M64TYPE_STRING, sb);
 				}
 				else
@@ -967,7 +967,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 					break;
 			}
 
-			m64p_breakpoint unused = new m64p_breakpoint();
+			m64p_breakpoint unused = new();
 
 			m64pDebugBreakpointCommand(m64p_dbg_bkp_command.M64P_BKP_CMD_REMOVE_IDX, (uint)index, ref unused);
 		}
@@ -1028,7 +1028,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			public PluginShutdown dllShutdown;
 		}
 
-		private readonly Dictionary<m64p_plugin_type, AttachedPlugin> plugins = new Dictionary<m64p_plugin_type, AttachedPlugin>();
+		private readonly Dictionary<m64p_plugin_type, AttachedPlugin> plugins = new();
 
 		public IntPtr AttachPlugin(m64p_plugin_type type, string PluginName)
 		{
@@ -1096,7 +1096,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 				return;
 			}
 
-			m64p_breakpoint breakpoint = new m64p_breakpoint();
+			m64p_breakpoint breakpoint = new();
 
 			m64pDebugBreakpointCommand(m64p_dbg_bkp_command.M64P_BKP_CMD_GET_STRUCT, (uint)bpt, ref breakpoint);
 
@@ -1120,9 +1120,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			m64pDebugSetRunState(m64p_dbg_runstate.M64P_DBG_RUNSTATE_RUNNING);
 		}
 
+		#pragma warning disable IDE0051
 		private void CompletedFrameCallback()
 		{
 			m64pEvent.Set();
 		}
+		#pragma warning restore IDE0051
 	}
 }

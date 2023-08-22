@@ -5,7 +5,7 @@ namespace BizHawk.Client.Common.cheats
 {
 	public static class GenesisGameGenieDecoder
 	{
-		private static readonly Dictionary<char, long> GameGenieTable = new Dictionary<char, long>
+		private static readonly Dictionary<char, long> GameGenieTable = new()
 		{
 			['A'] = 0,
 			['B'] = 1,

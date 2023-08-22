@@ -208,11 +208,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				var dict = ovr.NonSync ? _settings.MednafenValues : _syncSettingsActual.MednafenValues;
 				_ = dict.TryGetValue(name, out val);
 			}
-			if (val == null)
-			{
-				// get default
-				val = ovr.Default ?? SettingsInfo.AllSettingsByKey[name].DefaultValue;
-			}
+			// get default
+			val ??= ovr.Default ?? SettingsInfo.AllSettingsByKey[name].DefaultValue;
 			return val;
 		}
 

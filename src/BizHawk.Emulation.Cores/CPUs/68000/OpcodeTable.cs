@@ -98,8 +98,10 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 
 		private void Assign(string instr, Action exec, string root, params string[] bitfield)
 		{
-			List<string> opList = new List<string>();
-			opList.Add(root);
+			List<string> opList = new()
+			{
+				root
+			};
 
 			foreach (var component in bitfield)
 			{
@@ -135,7 +137,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 
 		private List<string> AppendPermutations(List<string> ops, string[] permutations)
 		{
-			List<string> output = new List<string>();
+			List<string> output = new();
 
 			foreach (var input in ops)
 				foreach (var perm in permutations)
@@ -146,7 +148,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 
 		private List<string> AppendData(List<string> ops, int bits)
 		{
-			List<string> output = new List<string>();
+			List<string> output = new();
 
 			foreach (var input in ops)
 				for (int i = 0; i < BinaryExp(bits); i++)

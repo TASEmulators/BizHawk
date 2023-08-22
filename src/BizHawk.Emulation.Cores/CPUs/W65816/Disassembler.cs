@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Components.W65816
 	{
 		public string Cpu { get; set; }
 
-		private readonly W65816 disassemblerCpu = new W65816();
+		private readonly W65816 disassemblerCpu = new();
 		
 		public IEnumerable<string> AvailableCpus
 		{
@@ -468,7 +468,7 @@ namespace BizHawk.Emulation.Cores.Components.W65816
 					break;
 			}
 
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 
 			bool print_addr = false;
 			bool print_hex = false;

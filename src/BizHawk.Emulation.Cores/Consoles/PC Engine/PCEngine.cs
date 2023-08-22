@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 using BizHawk.Common;
@@ -85,7 +85,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 			else if (lp.Discs.Count == 0 && lp.Roms.Count == 1)
 			{
-				switch (SystemId = lp.Game.System)
+				Type = (SystemId = lp.Game.System) switch
 				{
 					default:
 					case VSystemID.Raw.PCE:
@@ -330,7 +330,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		private static Dictionary<string, int> SizesFromHuMap(IEnumerable<HuC6280.MemMapping> mm)
 		{
-			Dictionary<string, int> sizes = new Dictionary<string, int>();
+			Dictionary<string, int> sizes = new();
 			foreach (var m in mm)
 			{
 				if (!sizes.TryGetValue(m.Name, out var size) || size <= m.MaxOffs) sizes[m.Name] = m.MaxOffs;

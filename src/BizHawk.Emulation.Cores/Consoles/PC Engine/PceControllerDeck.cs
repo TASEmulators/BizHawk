@@ -57,21 +57,15 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public byte Read(int portNum, IController c, bool sel)
 		{
-			switch (portNum)
+			return portNum switch
 			{
-				default:
-					throw new ArgumentOutOfRangeException(paramName: nameof(portNum), portNum, "port index out of range");
-				case 1:
-					return _port1.Read(c, sel);
-				case 2:
-					return _port2.Read(c, sel);
-				case 3:
-					return _port3.Read(c, sel);
-				case 4:
-					return _port4.Read(c, sel);
-				case 5:
-					return _port5.Read(c, sel);
-			}
+				1 => _port1.Read(c, sel),
+				2 => _port2.Read(c, sel),
+				3 => _port3.Read(c, sel),
+				4 => _port4.Read(c, sel),
+				5 => _port5.Read(c, sel),
+				_ => throw new ArgumentOutOfRangeException(paramName: nameof(portNum), portNum, "port index out of range"),
+			};
 		}
 
 		public ControllerDefinition Definition { get; }

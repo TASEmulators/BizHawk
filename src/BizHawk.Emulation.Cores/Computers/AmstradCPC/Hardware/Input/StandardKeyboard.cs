@@ -107,7 +107,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			var lin = _currentLine; // - 0x40;
 			var pos = lin * 8;
 			var l = KeyStatus.Skip(pos).Take(8).ToArray();
-			BitArray bi = new BitArray(l);
+			BitArray bi = new(l);
 			byte[] bytes = new byte[1];
 			bi.CopyTo(bytes, 0);
 			byte inv = (byte)(~bytes[0]);

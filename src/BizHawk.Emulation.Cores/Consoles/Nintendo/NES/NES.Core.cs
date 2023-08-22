@@ -81,7 +81,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private DisplayType _display_type = DisplayType.NTSC;
 
-		private BlipBuffer blip = new BlipBuffer(4096);
+		private BlipBuffer blip = new(4096);
 		private const int blipbuffsize = 4096;
 
 		public int old_s = 0;

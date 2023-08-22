@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 		public Action DebuggerStep;
 		public readonly Chip23128 DriveRom;
 
-		private struct CpuLink : IMOS6502XLink
+		private readonly struct CpuLink : IMOS6502XLink
 		{
 			private readonly Drive1541 _drive;
 
@@ -42,15 +42,15 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 				_drive = drive;
 			}
 
-			public byte DummyReadMemory(ushort address) => unchecked((byte)_drive.Read(address));
+			public readonly byte DummyReadMemory(ushort address) => unchecked((byte)_drive.Read(address));
 
-			public void OnExecFetch(ushort address) { }
+			public readonly void OnExecFetch(ushort address) { }
 
-			public byte PeekMemory(ushort address) => unchecked((byte)_drive.Peek(address));
+			public readonly byte PeekMemory(ushort address) => unchecked((byte)_drive.Peek(address));
 
-			public byte ReadMemory(ushort address) => unchecked((byte)_drive.Read(address));
+			public readonly byte ReadMemory(ushort address) => unchecked((byte)_drive.Read(address));
 
-			public void WriteMemory(ushort address, byte value) => _drive.Write(address, value);
+			public readonly void WriteMemory(ushort address, byte value) => _drive.Write(address, value);
 		}
 
 		public Drive1541(int clockNum, int clockDen, Func<int> getCurrentDiskNumber)

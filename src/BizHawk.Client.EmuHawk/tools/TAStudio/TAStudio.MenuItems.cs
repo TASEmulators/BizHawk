@@ -1355,6 +1355,7 @@ namespace BizHawk.Client.EmuHawk
 			TasView.AllColumns.ColumnsChanged();
 		}
 
+        #pragma warning disable IDE0051
 		// ReSharper disable once UnusedMember.Local
 		[RestoreDefaults]
 		private void RestoreDefaults()
@@ -1367,6 +1368,7 @@ namespace BizHawk.Client.EmuHawk
 			MainVertialSplit.SplitterDistance = _defaultMainSplitDistance;
 			BranchesMarkersSplit.SplitterDistance = _defaultBranchMarkerSplitDistance;
 		}
+		#pragma warning restore IDE0051
 
 		private void RightClickMenu_Opened(object sender, EventArgs e)
 		{

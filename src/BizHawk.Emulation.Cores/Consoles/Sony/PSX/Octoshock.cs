@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			string romDetails;
 			if (lp.Discs.Count > 0)
 			{
-				string DiscHashWarningText(GameInfo game, string discHash)
+				static string DiscHashWarningText(GameInfo game, string discHash)
 				{
 					if (game == null || game.IsRomStatusBad() || game.Status == RomStatus.NotInDatabase)
 					{
@@ -363,7 +363,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		}
 
 		private int[] frameBuffer = new int[0];
-		private Random rand = new Random();
+		private readonly Random rand = new();
 
 		//we can only have one active core at a time, due to the lib being so static.
 		//so we'll track the current one here and detach the previous one whenever a new one is booted up.
@@ -405,8 +405,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				OctoshockDll.shock_CreateDisc(out OctoshockHandle, IntPtr.Zero, disc.Session1.LeadoutLBA, cbReadTOC, cbReadLBA, true);
 			}
 
-			private OctoshockDll.ShockDisc_ReadTOC cbReadTOC;
-			private OctoshockDll.ShockDisc_ReadLBA cbReadLBA;
+			private readonly OctoshockDll.ShockDisc_ReadTOC cbReadTOC;
+			private readonly OctoshockDll.ShockDisc_ReadLBA cbReadLBA;
 			private readonly Action<DiscInterface> cbActivity;
 
 			public readonly Disc Disc;
@@ -465,7 +465,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		}
 
 		public List<Disc> Discs;
-		private readonly List<DiscInterface> discInterfaces = new List<DiscInterface>();
+		private readonly List<DiscInterface> discInterfaces = new();
 		private DiscInterface currentDiscInterface;
 
 		public DisplayType Region => SystemVidStandard == OctoshockDll.eVidStandard.PAL ? DisplayType.PAL : DisplayType.NTSC;
@@ -613,7 +613,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		/// </summary>
 		public static ResolutionInfo CalculateResolution(OctoshockDll.eVidStandard standard, Settings settings, int w, int h)
 		{
-			ResolutionInfo ret = new ResolutionInfo();
+			ResolutionInfo ret = new();
 
 			//some of this logic is duplicated in the c++ side, be sure to check there
 			//TODO - scanline control + framebuffer mode is majorly broken
@@ -860,7 +860,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				return true;
 			}
 
-			OctoshockDll.ShockFramebufferInfo fb = new OctoshockDll.ShockFramebufferInfo();
+			OctoshockDll.ShockFramebufferInfo fb = new();
 
 			//run this once to get current logical size
 			OctoshockDll.shock_GetFramebuffer(psx, ref fb);
@@ -974,9 +974,11 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				{
 					fixed (byte* pbuf = buf)
 					{
-						var transaction = new OctoshockDll.ShockMemcardTransaction();
-						transaction.buffer128k = pbuf + idx * 128 * 1024;
-						transaction.transaction = OctoshockDll.eShockMemcardTransaction.Read;
+						var transaction = new OctoshockDll.ShockMemcardTransaction
+						{
+							buffer128k = pbuf + idx * 128 * 1024,
+							transaction = OctoshockDll.eShockMemcardTransaction.Read
+						};
 						OctoshockDll.shock_Peripheral_MemcardTransact(psx, addr, ref transaction);
 						idx++;
 					}
@@ -994,9 +996,11 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				{
 					fixed (byte* pbuf = data)
 					{
-						var transaction = new OctoshockDll.ShockMemcardTransaction();
-						transaction.buffer128k = pbuf + idx * 128 * 1024;
-						transaction.transaction = OctoshockDll.eShockMemcardTransaction.Write;
+						var transaction = new OctoshockDll.ShockMemcardTransaction
+						{
+							buffer128k = pbuf + idx * 128 * 1024,
+							transaction = OctoshockDll.eShockMemcardTransaction.Write
+						};
 						OctoshockDll.shock_Peripheral_MemcardTransact(psx, addr, ref transaction);
 						idx++;
 					}
@@ -1013,8 +1017,10 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				{
 					if (cfg.Memcards[i])
 					{
-						var transaction = new OctoshockDll.ShockMemcardTransaction();
-						transaction.transaction = OctoshockDll.eShockMemcardTransaction.CheckDirty;
+						var transaction = new OctoshockDll.ShockMemcardTransaction
+						{
+							transaction = OctoshockDll.eShockMemcardTransaction.CheckDirty
+						};
 						OctoshockDll.shock_Peripheral_MemcardTransact(psx, addr, ref transaction);
 						if (OctoshockDll.shock_Peripheral_MemcardTransact(psx, addr, ref transaction) == OctoshockDll.SHOCK_TRUE)
 							return true;
@@ -1032,8 +1038,10 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		private void StudySaveBufferSize()
 		{
-			var transaction = new OctoshockDll.ShockStateTransaction();
-			transaction.transaction = OctoshockDll.eShockStateTransaction.BinarySize;
+			var transaction = new OctoshockDll.ShockStateTransaction
+			{
+				transaction = OctoshockDll.eShockStateTransaction.BinarySize
+			};
 			int size = OctoshockDll.shock_StateTransaction(psx, ref transaction);
 			savebuff = new byte[size];
 		}
@@ -1095,7 +1103,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			}
 		}
 
-		private Settings _Settings = new Settings();
+		private Settings _Settings = new();
 		private SyncSettings _SyncSettings;
 
 		public enum eResolutionMode
@@ -1186,15 +1194,11 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				//make sure theyre not in the wrong order
 				if (ScanlineEnd_NTSC < ScanlineStart_NTSC)
 				{
-					int temp = ScanlineEnd_NTSC;
-					ScanlineEnd_NTSC = ScanlineStart_NTSC;
-					ScanlineStart_NTSC = temp;
+					(ScanlineStart_NTSC, ScanlineEnd_NTSC) = (ScanlineEnd_NTSC, ScanlineStart_NTSC);
 				}
 				if (ScanlineEnd_PAL < ScanlineStart_PAL)
 				{
-					int temp = ScanlineEnd_PAL;
-					ScanlineEnd_PAL = ScanlineStart_PAL;
-					ScanlineStart_PAL = temp;
+					(ScanlineStart_PAL, ScanlineEnd_PAL) = (ScanlineEnd_PAL, ScanlineStart_PAL);
 				}
 			}
 

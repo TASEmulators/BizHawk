@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Common
 	/// </summary>
 	public class MemoryBasedInputCallbackSystem : IInputCallbackSystem
 	{
-		private readonly List<Action> _inputCallbacks = new List<Action>();
+		private readonly List<Action> _inputCallbacks = new();
 
 		public MemoryBasedInputCallbackSystem(IDebuggable debuggableCore, string scope, IEnumerable<uint> addresses)
 		{

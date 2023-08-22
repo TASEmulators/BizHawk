@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		public static RomData InitROM(MachineType machineType, byte[] rom)
 		{
-			RomData RD = new RomData { RomBytes = new byte[rom.Length] };
+			RomData RD = new() { RomBytes = new byte[rom.Length] };
 			RD.RomBytes = rom;
 
 			switch (machineType)

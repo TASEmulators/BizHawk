@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 			public string Name;
 			public int Offs;
 			public int VOffs; // if non-zero, specifies a larger potential offset
-			public int MaxOffs => Math.Max(Offs, VOffs);
+			public readonly int MaxOffs => Math.Max(Offs, VOffs);
 		}
 
 		public MemMapping[] Mappings; // = new MemMapping[256];

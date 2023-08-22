@@ -20,7 +20,7 @@ namespace BizHawk.Client.Common.movie.import
 			bool is_GBC = false;
 
 			// 000 4-byte signature: 56 42 4D 1A "VBM\x1A"
-			string signature = new string(r.ReadChars(4));
+			string signature = new(r.ReadChars(4));
 			if (signature != "VBM\x1A")
 			{
 				Result.Errors.Add("This is not a valid .VBM file.");

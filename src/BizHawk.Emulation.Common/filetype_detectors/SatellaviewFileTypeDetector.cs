@@ -14,6 +14,7 @@ namespace BizHawk.Emulation.Common
 		/// </remarks>
 		public readonly ref struct SatellaviewHeader
 		{
+			#pragma warning disable IDE0051
 			private const byte LIMITED_0_PLAYS_LEFT = 0b10000000;
 
 			private const byte LIMITED_1_PLAYS_LEFT = 0b10000100;
@@ -43,6 +44,7 @@ namespace BizHawk.Emulation.Common
 			private const int OFFSET_SPEED = 0x28; // 1 octet
 
 			private const int OFFSET_TITLE = 0x10; // 16 octets
+			#pragma warning restore IDE0051
 
 			internal const byte UNLIMITED_PLAYS_LEFT = 0b00000000;
 

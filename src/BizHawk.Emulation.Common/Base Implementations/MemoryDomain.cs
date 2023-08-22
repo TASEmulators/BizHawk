@@ -36,33 +36,27 @@ namespace BizHawk.Emulation.Common
 		public virtual ushort PeekUshort(long addr, bool bigEndian)
 		{
 			Endian endian = bigEndian ? Endian.Big : Endian.Little;
-			switch (endian)
+			return endian switch
 			{
-				default:
-				case Endian.Big:
-					return (ushort)((PeekByte(addr) << 8) | PeekByte(addr + 1));
-				case Endian.Little:
-					return (ushort)(PeekByte(addr) | (PeekByte(addr + 1) << 8));
-			}
+				Endian.Little => (ushort)(PeekByte(addr) | (PeekByte(addr + 1) << 8)),
+				_ => (ushort)((PeekByte(addr) << 8) | PeekByte(addr + 1)),
+			};
 		}
 
 		public virtual uint PeekUint(long addr, bool bigEndian)
 		{
 			Endian endian = bigEndian ? Endian.Big : Endian.Little;
-			switch (endian)
+			return endian switch
 			{
-				default:
-				case Endian.Big:
-					return (uint)((PeekByte(addr) << 24)
-					| (PeekByte(addr + 1) << 16)
-					| (PeekByte(addr + 2) << 8)
-					| (PeekByte(addr + 3) << 0));
-				case Endian.Little:
-					return (uint)((PeekByte(addr) << 0)
-					| (PeekByte(addr + 1) << 8)
-					| (PeekByte(addr + 2) << 16)
-					| (PeekByte(addr + 3) << 24));
-			}
+				Endian.Little => (uint)((PeekByte(addr) << 0)
+									| (PeekByte(addr + 1) << 8)
+									| (PeekByte(addr + 2) << 16)
+									| (PeekByte(addr + 3) << 24)),
+				_ => (uint)((PeekByte(addr) << 24)
+									| (PeekByte(addr + 1) << 16)
+									| (PeekByte(addr + 2) << 8)
+									| (PeekByte(addr + 3) << 0)),
+			};
 		}
 
 		public virtual void PokeUshort(long addr, ushort val, bool bigEndian)

@@ -31,8 +31,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
-		private IntvSettings _settings = new IntvSettings();
-		private IntvSyncSettings _syncSettings = new IntvSyncSettings();
+		private IntvSettings _settings = new();
+		private IntvSyncSettings _syncSettings = new();
 
 		public class IntvSettings
 		{

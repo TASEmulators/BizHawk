@@ -142,7 +142,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private HMoveData _hmove;
 		private BallData _ball;
 
-		private readonly Audio AUD =new Audio();
+		private readonly Audio AUD =new();
 
 		// current audio register state used to sample correct positions in the scanline (clrclk 0 and 114)
 		public readonly short[] LocalAudioCycles = new short[2000];

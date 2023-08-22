@@ -49,27 +49,16 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			// get board type
 			string boardStr = gi.OptionPresent("board") ? gi.GetStringValue("board") : "STD";
 
-			switch (boardStr)
+			return boardStr switch
 			{
 				// standard cart layout
-				case "STD":				
-					// any number of F3851 Program Storage Units (1KB ROM each) or F3856 Program Storage Unit (2KB ROM)
-					// no on-pcb RAM and no extra IO
-					return new mapper_STD(rom);
-
-				case "MAZE":
-					return new mapper_MAZE(rom);
-
-				case "SCHACH":
-				default:
-					// F3853 Memory Interface Chip, 6KB of ROM and 2KB of RAM
-					//  - default to this
-					return new mapper_SCHACH(rom);
-
-				case "HANG":
-
-					return new mapper_HANG(rom);
-			}
+				"STD" => new mapper_STD(rom),// any number of F3851 Program Storage Units (1KB ROM each) or F3856 Program Storage Unit (2KB ROM)
+											 // no on-pcb RAM and no extra IO
+				"MAZE" => new mapper_MAZE(rom),
+				"HANG" => new mapper_HANG(rom),
+				_ => new mapper_SCHACH(rom),// F3853 Memory Interface Chip, 6KB of ROM and 2KB of RAM
+											//  - default to this
+			};
 		}
 
 		/// <summary>
@@ -130,7 +119,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				// notice that data is 8bits, so when swapping bit8 & bit9 are always 0!
 				//m_addr_latch = (m_addr_latch & 0x0c) | (bitswap < 16 > ((uint16_t)data, 15, 14, 13, 12, 11, 10, 7, 6, 5, 3, 2, 1, 9, 8, 4, 0));
 
-				BitArray b = new BitArray(16);
+				BitArray b = new(16);
 				b[3] = false;// data.Bit(3);
 				b[2] = false; // data.Bit(2);
 

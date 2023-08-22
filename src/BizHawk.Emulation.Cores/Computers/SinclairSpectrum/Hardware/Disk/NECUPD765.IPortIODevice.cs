@@ -21,8 +21,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public string outputString = "STATUS,WRITE,READ,CODE,MT,MF,SK,CMDCNT,RESCNT,EXECCNT,EXECLEN\r\n";
         public bool writeDebug = false;
 
-        public List<string> dLog = new List<string>
-        {
+        public List<string> dLog = new()
+		{
             "STATUS,WRITE,READ,CODE,MT,MF,SK,CMDCNT,RESCNT,EXECCNT,EXECLEN"
         };
 
@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         private void BuildCSVLine()
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             for (int i = 0; i < 3; i++)
             {
                 sb.Append(workingArr[i]);
@@ -71,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public bool ReadPort(ushort port, ref int data)
         {
-            BitArray bits = new BitArray(new byte[] { (byte)data });
+            BitArray bits = new(new byte[] { (byte)data });
 
             if (port == 0x3ffd)
             {
@@ -111,7 +111,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public bool WritePort(ushort port, int data)
         {
-            BitArray bits = new BitArray(new byte[] { (byte)data });
+            BitArray bits = new(new byte[] { (byte)data });
 
             if (port == 0x3ffd)
             {

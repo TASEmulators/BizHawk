@@ -81,11 +81,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			//_position = 0;
 
-			MemoryStream stream = new MemoryStream();
+			MemoryStream stream = new();
 			stream.Write(data, 0, data.Length);
 			stream.Position = 0;
 
-			WavStreamReader reader = new WavStreamReader(stream);
+			WavStreamReader reader = new(stream);
 
 			const double d = /*69888.0*/70000.0 * 50.0;
 			int rate = (int) (d / reader.Header.sampleRate);
@@ -93,11 +93,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			int state = reader.ReadNext();
 
 			// create the single tape block
-			TapeDataBlock t = new TapeDataBlock();
-			t.BlockDescription = BlockType.WAV_Recording;
-			t.BlockID = 0;
-			t.DataPeriods = new List<int>();
-			t.DataLevels = new List<bool>();
+			TapeDataBlock t = new()
+			{
+				BlockDescription = BlockType.WAV_Recording,
+				BlockID = 0,
+				DataPeriods = new List<int>(),
+				DataLevels = new List<bool>()
+			};
 
 			bool currLevel = false;
 

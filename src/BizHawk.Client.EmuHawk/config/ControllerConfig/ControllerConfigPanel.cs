@@ -16,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 		// for instance, to show only a single player
 		private List<string> _realConfigButtons;
 
-		private readonly List<string> _buttons = new List<string>();
+		private readonly List<string> _buttons = new();
 
 		private readonly int _inputMarginLeft = UIHelper.ScaleX(0);
 		private readonly int _labelPadding = UIHelper.ScaleX(5);
@@ -27,9 +27,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public ToolTip Tooltip { get; set; }
 
-		private readonly List<InputCompositeWidget> _inputs = new List<InputCompositeWidget>();
+		private readonly List<InputCompositeWidget> _inputs = new();
 
-		private Size _panelSize = new Size(0, 0);
+		private Size _panelSize = new(0, 0);
 
 		private bool _autoTab;
 

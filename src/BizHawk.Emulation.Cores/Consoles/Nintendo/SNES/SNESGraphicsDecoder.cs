@@ -120,7 +120,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			public Dimensions(int w, int h) { Width = w; Height = h; }
 			public int Width, Height;
-			public override string ToString() => $"{Width}x{Height}";
+			public override readonly string ToString() => $"{Width}x{Height}";
 		}
 
 		public enum ScreenSize
@@ -271,7 +271,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			/// <summary>
 			/// The size of the layer, in pixels. This has factored in the selection of 8x8 or 16x16 tiles
 			/// </summary>
-			public Dimensions ScreenSizeInPixels => new Dimensions(ScreenSizeInTiles.Width * TileSize, ScreenSizeInTiles.Height * TileSize);
+			public Dimensions ScreenSizeInPixels => new(ScreenSizeInTiles.Width * TileSize, ScreenSizeInTiles.Height * TileSize);
 
 			/// <summary>
 			/// returns information about what colors could possibly be used for this bg
@@ -347,7 +347,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			public Size ObjSizeBounds;
 			public Size ObjSizeBoundsSquare;
 
-			public BGInfos BG = new BGInfos();
+			public BGInfos BG = new();
 
 			public int Mode { get; init; }
 			public bool Mode1_BG3_Priority { get; init; }

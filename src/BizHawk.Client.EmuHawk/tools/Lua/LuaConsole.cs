@@ -29,12 +29,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private static readonly FilesystemFilterSet ScriptsAndTextFilesFSFilterSet = new(FilesystemFilter.LuaScripts, FilesystemFilter.TextFiles);
 
-		private static readonly FilesystemFilterSet SessionsFSFilterSet = new FilesystemFilterSet(new FilesystemFilter("Lua Session Files", new[] { "luases" }));
+		private static readonly FilesystemFilterSet SessionsFSFilterSet = new(new FilesystemFilter("Lua Session Files", new[] { "luases" }));
 
 		public static Icon ToolIcon
 			=> Resources.TextDocIcon;
 
-		private readonly LuaAutocompleteInstaller _luaAutoInstaller = new LuaAutocompleteInstaller();
+		private readonly LuaAutocompleteInstaller _luaAutoInstaller = new();
 		private readonly Dictionary<LuaFile, FileSystemWatcher> _watches = new();
 
 		private readonly int _defaultSplitDistance;
@@ -45,7 +45,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _sortReverse;
 		private string _lastColumnSorted;
 
-		private readonly List<string> _consoleCommandHistory = new List<string>();
+		private readonly List<string> _consoleCommandHistory = new();
 		private int _consoleCommandHistoryIndex = -1;
 
 		public ToolDialogSettings.ColumnList Columns { get; set; }
@@ -1524,6 +1524,7 @@ namespace BizHawk.Client.EmuHawk
 			ToggleLuaScript(file);
 		}
 
+		#pragma warning disable IDE0051
 		[RestoreDefaults]
 		private void RestoreDefaults()
 		{
@@ -1533,5 +1534,6 @@ namespace BizHawk.Client.EmuHawk
 			splitContainer1.SplitterDistance = _defaultSplitDistance;
 			UpdateDialog();
 		}
+		#pragma warning restore IDE0051
 	}
 }

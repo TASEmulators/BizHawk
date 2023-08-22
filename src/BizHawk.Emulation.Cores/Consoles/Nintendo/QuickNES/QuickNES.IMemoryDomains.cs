@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 	{
 		private void InitMemoryDomains()
 		{
-			List<MemoryDomain> mm = new List<MemoryDomain>();
+			List<MemoryDomain> mm = new();
 			for (int i = 0; ; i++)
 			{
 				IntPtr data = IntPtr.Zero;

@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly string _sysID;
 
-		private static AutoCompleteStringCollection AutoCompleteOptions => new AutoCompleteStringCollection
+		private static AutoCompleteStringCollection AutoCompleteOptions => new()
 		{
 			"%recent%",
 			"%exe%",

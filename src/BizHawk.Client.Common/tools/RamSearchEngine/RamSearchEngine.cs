@@ -16,7 +16,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		private IMiniWatch[] _watchList = Array.Empty<IMiniWatch>();
 		private readonly SearchEngineSettings _settings;
-		private readonly UndoHistory<IEnumerable<IMiniWatch>> _history = new UndoHistory<IEnumerable<IMiniWatch>>(true, new List<IMiniWatch>()); //TODO use IList instead of IEnumerable and stop calling `.ToArray()` (i.e. cloning) on reads and writes?
+		private readonly UndoHistory<IEnumerable<IMiniWatch>> _history = new(true, new List<IMiniWatch>()); //TODO use IList instead of IEnumerable and stop calling `.ToArray()` (i.e. cloning) on reads and writes?
 		private bool _isSorted = true; // Tracks whether or not the array is sorted by address, if it is, binary search can be used for finding watches
 
 		public RamSearchEngine(SearchEngineSettings settings, IMemoryDomains memoryDomains)
@@ -203,7 +203,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			{
 				using (_settings.Domain.EnterExit())
 				{
-					foreach (IMiniWatchDetails watch in _watchList)
+					foreach (IMiniWatchDetails watch in _watchList.Cast<IMiniWatchDetails>())
 					{
 						watch.Update(_settings.PreviousType, _settings.Domain, _settings.BigEndian);
 					}

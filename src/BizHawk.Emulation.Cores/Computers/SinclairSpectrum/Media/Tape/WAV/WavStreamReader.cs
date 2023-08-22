@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	public class WavStreamReader
 	{
 		private readonly Stream m_stream;
-		private readonly WavHeader m_header = new WavHeader();
+		private readonly WavHeader m_header = new();
 
 		public WavStreamReader(Stream stream)
 		{
@@ -102,10 +102,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			return (int) (fSample * int.MaxValue);
 		}
 
+		#pragma warning disable IDE0051
 		private const int WAVE_FORMAT_PCM = 1;              /* PCM */
 		private const int WAVE_FORMAT_IEEE_FLOAT = 3;       /* IEEE float */
 		private const int WAVE_FORMAT_ALAW = 6;             /* 8-bit ITU-T G.711 A-law */
 		private const int WAVE_FORMAT_MULAW = 7;            /* 8-bit ITU-T G.711 µ-law */
 		private const int WAVE_FORMAT_EXTENSIBLE = 0xFFFE;  /* Determined by SubFormat */
+		#pragma warning restore IDE0051
 	}
 }

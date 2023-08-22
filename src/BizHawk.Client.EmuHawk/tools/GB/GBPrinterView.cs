@@ -183,7 +183,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// slight hack to use the nice SaveFile() feature of a BmpView
 
-			BmpView toSave = new BmpView();
+			BmpView toSave = new();
 			toSave.ChangeBitmapSize(_printerHistory.Size);
 			using (var g = Graphics.FromImage(toSave.Bmp))
 			{

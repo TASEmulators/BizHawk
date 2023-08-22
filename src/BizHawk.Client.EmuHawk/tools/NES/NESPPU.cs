@@ -25,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private int _scanline;
 
-		private Bitmap _zoomBoxDefaultImage = new Bitmap(64, 64);
+		private Bitmap _zoomBoxDefaultImage = new(64, 64);
 		private bool _forceChange;
 
 		[RequiredService]

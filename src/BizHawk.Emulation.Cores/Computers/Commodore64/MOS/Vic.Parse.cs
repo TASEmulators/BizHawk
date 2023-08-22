@@ -152,21 +152,13 @@
 							case VideoMode010:
 							case VideoMode011:
 								_parseSrColorEnable = _parsePixelData != 0;
-								switch (_parsePixelData)
+								_pixel = _parsePixelData switch
 								{
-									case 0:
-										_pixel = 0;
-										break;
-									case 1:
-										_pixel = _idle ? 0 : _dataC >> 4;
-										break;
-									case 2:
-										_pixel = _idle ? 0 : _dataC;
-										break;
-									default:
-										_pixel = _idle ? 0 : _dataC >> 8;
-										break;
-								}
+									0 => 0,
+									1 => _idle ? 0 : _dataC >> 4,
+									2 => _idle ? 0 : _dataC,
+									_ => _idle ? 0 : _dataC >> 8,
+								};
 								break;
 							case VideoMode100:
 								if (_parsePixelData != 0)

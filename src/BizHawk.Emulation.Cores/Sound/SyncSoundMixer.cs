@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Components
 		/// <summary>
 		/// Currently attached ChildProviders
 		/// </summary>
-		private readonly List<ChildProvider> _soundProviders = new List<ChildProvider>();
+		private readonly List<ChildProvider> _soundProviders = new();
 
 		/// <summary>
 		/// The final output max volume

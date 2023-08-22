@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Calculators.TI83
 
 		private readonly TraceBuffer _tracer;
 
-		private readonly Z80A _cpu = new Z80A();
+		private readonly Z80A _cpu = new();
 		private readonly byte[] _rom;
 
 		// configuration

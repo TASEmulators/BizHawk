@@ -47,11 +47,11 @@ namespace BizHawk.Client.Common
 
 		public IController Source { get; set; }
 
-		private List<string> _justPressed = new List<string>();
+		private List<string> _justPressed = new();
 
 		// if SetAxis() is called (typically virtual pads), then that axis will entirely override the Source input
 		// otherwise, the source is passed thru.
-		private readonly WorkingDictionary<string, int?> _axisSet = new WorkingDictionary<string, int?>();
+		private readonly WorkingDictionary<string, int?> _axisSet = new();
 
 		public void SetAxis(string name, int? value)
 		{
@@ -154,8 +154,8 @@ namespace BizHawk.Client.Common
 			_off = off < 0 ? 0 : off;
 		}
 
-		private readonly WorkingDictionary<string, AutoPatternBool> _boolPatterns = new WorkingDictionary<string, AutoPatternBool>();
-		private readonly WorkingDictionary<string, AutoPatternAxis> _axisPatterns = new WorkingDictionary<string, AutoPatternAxis>();
+		private readonly WorkingDictionary<string, AutoPatternBool> _boolPatterns = new();
+		private readonly WorkingDictionary<string, AutoPatternAxis> _axisPatterns = new();
 
 		public AutoFireStickyXorAdapter()
 		{
@@ -196,7 +196,7 @@ namespace BizHawk.Client.Common
 			return _boolPatterns.ContainsKey(button) || _axisPatterns.ContainsKey(button);
 		}
 
-		public HashSet<string> CurrentStickies => new HashSet<string>(_boolPatterns.Keys);
+		public HashSet<string> CurrentStickies => new(_boolPatterns.Keys);
 
 		public void ClearStickies()
 		{
@@ -217,7 +217,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private List<string> _justPressed = new List<string>();
+		private List<string> _justPressed = new();
 
 		public void MassToggleStickyState(List<string> buttons)
 		{

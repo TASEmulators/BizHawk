@@ -6,8 +6,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
 	public partial class ChannelF : ISettable<ChannelF.ChannelFSettings, ChannelF.ChannelFSyncSettings>
 	{
-		internal ChannelFSettings Settings = new ChannelFSettings();
-		internal ChannelFSyncSettings SyncSettings = new ChannelFSyncSettings();
+		internal ChannelFSettings Settings = new();
+		internal ChannelFSyncSettings SyncSettings = new();
 
 		public ChannelFSettings GetSettings()
 		{

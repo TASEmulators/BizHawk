@@ -771,9 +771,9 @@ namespace BizHawk.Common
 
 		private bool _isText;
 		private bool _isReader;
-		private readonly Stack<string> _sections = new Stack<string>();
+		private readonly Stack<string> _sections = new();
 		private Section _readerSection, _currSection;
-		private readonly Stack<Section> _sectionStack = new Stack<Section>();
+		private readonly Stack<Section> _sectionStack = new();
 
 		private void BeginTextBlock()
 		{
@@ -1277,7 +1277,7 @@ namespace BizHawk.Common
 		private sealed class Section : Dictionary<string, Section>
 		{
 			public string Name = "";
-			public readonly Dictionary<string, string> Items = new Dictionary<string, string>();
+			public readonly Dictionary<string, string> Items = new();
 		}
 	}
 }

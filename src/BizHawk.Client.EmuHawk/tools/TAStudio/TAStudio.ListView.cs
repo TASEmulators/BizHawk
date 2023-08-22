@@ -47,7 +47,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool AxisEditingMode => _axisEditRow != -1;
 
-		private readonly List<int> _extraAxisRows = new List<int>();
+		private readonly List<int> _extraAxisRows = new();
 
 		// Right-click dragging
 		private string[] _rightClickInput;

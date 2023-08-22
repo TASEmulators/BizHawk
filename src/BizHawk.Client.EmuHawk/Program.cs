@@ -200,9 +200,9 @@ namespace BizHawk.Client.EmuHawk
 					}
 					catch (Exception ex)
 					{
-						var fallback = ChooseFallback();
-						new ExceptionBox(new Exception($"Initialization of Display Method failed; falling back to {fallback.Name}", ex)).ShowDialog();
-						return TryInitIGL(initialConfig.DispMethod = fallback.Method);
+						var (Method, Name) = ChooseFallback();
+						new ExceptionBox(new Exception($"Initialization of Display Method failed; falling back to {Name}", ex)).ShowDialog();
+						return TryInitIGL(initialConfig.DispMethod = Method);
 					}
 				}
 
@@ -220,17 +220,17 @@ namespace BizHawk.Client.EmuHawk
 						}
 						catch (Exception ex)
 						{
-							var fallback = ChooseFallback();
-							new ExceptionBox(new Exception($"Initialization of Direct3D9 Display Method failed; falling back to {fallback.Name}", ex)).ShowDialog();
-							return TryInitIGL(initialConfig.DispMethod = fallback.Method);
+							var (Method, Name) = ChooseFallback();
+							new ExceptionBox(new Exception($"Initialization of Direct3D9 Display Method failed; falling back to {Name}", ex)).ShowDialog();
+							return TryInitIGL(initialConfig.DispMethod = Method);
 						}
 					case EDispMethod.OpenGL:
 						if (!IGL_OpenGL.Available)
 						{
 							// too old to use, need to fallback to something else
-							var fallback = ChooseFallback();
-							new ExceptionBox(new Exception($"Initialization of OpenGL Display Method failed; falling back to {fallback.Name}")).ShowDialog();
-							return TryInitIGL(initialConfig.DispMethod = fallback.Method);
+							var (Method, Name) = ChooseFallback();
+							new ExceptionBox(new Exception($"Initialization of OpenGL Display Method failed; falling back to {Name}")).ShowDialog();
+							return TryInitIGL(initialConfig.DispMethod = Method);
 						}
 						var igl = new IGL_OpenGL();
 						// need to have a context active for checking renderer, will be disposed afterwards

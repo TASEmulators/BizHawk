@@ -457,18 +457,12 @@ namespace BizHawk.Emulation.Cores.Components
 					RL = Rks & 3;
 					if (RM > 15)
 						RM = 15;
-					switch (AR)
+					dphaseARTable[AR, Rks] = AR switch
 					{
-						case 0:
-							dphaseARTable[AR, Rks] = 0;
-							break;
-						case 15:
-							dphaseARTable[AR, Rks] = 0;/*EG_DP_WIDTH;*/
-							break;
-						default:
-							dphaseARTable[AR, Rks] = RATE_ADJUST((uint)((3 * (RL + 4) << (RM + 1))));
-							break;
-					}
+						0 => 0,
+						15 => 0,/*EG_DP_WIDTH;*/
+						_ => RATE_ADJUST((uint)((3 * (RL + 4) << (RM + 1)))),
+					};
 				}
 		}
 
@@ -484,15 +478,11 @@ namespace BizHawk.Emulation.Cores.Components
 					RL = Rks & 3;
 					if (RM > 15)
 						RM = 15;
-					switch (DR)
+					dphaseDRTable[DR, Rks] = DR switch
 					{
-						case 0:
-							dphaseDRTable[DR, Rks] = 0;
-							break;
-						default:
-							dphaseDRTable[DR, Rks] = RATE_ADJUST((uint)((RL + 4) << (RM - 1)));
-							break;
-					}
+						0 => 0,
+						_ => RATE_ADJUST((uint)((RL + 4) << (RM - 1))),
+					};
 				}
 		}
 
@@ -938,7 +928,7 @@ namespace BizHawk.Emulation.Cores.Components
 
 		private OPLL OPLL_new(uint clk, uint rate, int type)
 		{
-			OPLL opll = new OPLL();
+			OPLL opll = new();
 			int i;
 
 			maketables(clk, rate);
@@ -1773,8 +1763,22 @@ namespace BizHawk.Emulation.Cores.Components
 
 			public object Clone()
 			{
-				OPLL_PATCH o = new OPLL_PATCH();
-				o.tl = this.tl; o.fb = this.fb; o.eg = this.eg; o.ml = this.ml; o.ar = this.ar; o.dr = this.dr; o.sl = this.sl; o.rr = this.rr; o.kr = this.kr; o.kl = this.kl; o.am = this.am; o.pm = this.pm; o.wf = this.wf;
+				OPLL_PATCH o = new()
+				{
+					tl = this.tl,
+					fb = this.fb,
+					eg = this.eg,
+					ml = this.ml,
+					ar = this.ar,
+					dr = this.dr,
+					sl = this.sl,
+					rr = this.rr,
+					kr = this.kr,
+					kl = this.kl,
+					am = this.am,
+					pm = this.pm,
+					wf = this.wf
+				};
 				return o;
 			}
 		}

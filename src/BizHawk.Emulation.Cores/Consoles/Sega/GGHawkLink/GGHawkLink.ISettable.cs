@@ -29,8 +29,8 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
-		private GGLinkSettings linkSettings = new GGLinkSettings();
-		public GGLinkSyncSettings linkSyncSettings = new GGLinkSyncSettings();
+		private GGLinkSettings linkSettings = new();
+		public GGLinkSyncSettings linkSyncSettings = new();
 
 		public class GGLinkSettings
 		{

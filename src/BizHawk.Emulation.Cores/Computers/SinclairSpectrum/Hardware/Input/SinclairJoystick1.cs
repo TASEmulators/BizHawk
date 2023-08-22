@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			}.ToArray();
 		}
 
-		private readonly List<string> btnLookups = new List<string>
+		private readonly List<string> btnLookups = new()
 		{
 			"Key 1",    // left
             "Key 2",    // right

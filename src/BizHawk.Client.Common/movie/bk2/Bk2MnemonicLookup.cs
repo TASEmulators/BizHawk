@@ -65,7 +65,7 @@ namespace BizHawk.Client.Common
 			return button;
 		}
 
-		private static readonly Dictionary<string, char> BaseMnemonicLookupTable = new Dictionary<string, char>
+		private static readonly Dictionary<string, char> BaseMnemonicLookupTable = new()
 		{
 			["Power"] = 'P',
 			["Reset"] = 'r',
@@ -177,7 +177,7 @@ namespace BizHawk.Client.Common
 			["F10"] = '0'
 		};
 
-		private static readonly Dictionary<string, Dictionary<string, char>> SystemOverrides = new Dictionary<string, Dictionary<string, char>>
+		private static readonly Dictionary<string, Dictionary<string, char>> SystemOverrides = new()
 		{
 			[VSystemID.Raw.NES] = new()
 			{
@@ -687,7 +687,7 @@ namespace BizHawk.Client.Common
 			},
 		};
 
-		private static readonly Dictionary<string, string> BaseAxisLookupTable = new Dictionary<string, string>
+		private static readonly Dictionary<string, string> BaseAxisLookupTable = new()
 		{
 			["Zapper X"] = "zapX",
 			["Zapper Y"] = "zapY",
@@ -707,7 +707,7 @@ namespace BizHawk.Client.Common
 			["Disk Index"] = "Disk",
 		};
 
-		private static readonly Dictionary<string, Dictionary<string, string>> AxisSystemOverrides = new Dictionary<string, Dictionary<string, string>>
+		private static readonly Dictionary<string, Dictionary<string, string>> AxisSystemOverrides = new()
 		{
 			[VSystemID.Raw.A78] = new()
 			{

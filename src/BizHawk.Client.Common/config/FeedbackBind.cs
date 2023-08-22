@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common
 		public string? GamepadPrefix;
 
 		[JsonIgnore]
-		public bool IsZeroed => GamepadPrefix == null;
+		public readonly bool IsZeroed => GamepadPrefix == null;
 
 		public float Prescale;
 

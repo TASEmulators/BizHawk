@@ -8,7 +8,7 @@ namespace BizHawk.Client.Common.cheats
 	/// </summary>
 	public static class GbGgGameGenieDecoder
 	{
-		private static readonly Dictionary<char, int> _gbGgGameGenieTable = new Dictionary<char, int>
+		private static readonly Dictionary<char, int> _gbGgGameGenieTable = new()
 		{
 			['0'] = 0,
 			['1'] = 1,

@@ -213,8 +213,8 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private readonly WorkingDictionary<string, bool> _myBoolButtons = new WorkingDictionary<string, bool>();
-		private readonly WorkingDictionary<string, int> _myAxisControls = new WorkingDictionary<string, int>();
+		private readonly WorkingDictionary<string, bool> _myBoolButtons = new();
+		private readonly WorkingDictionary<string, int> _myAxisControls = new();
 
 		private bool IsGenesis6Button() => Definition.BoolButtons.Contains("P1 X");
 

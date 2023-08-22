@@ -24,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly SzNUDEx _nudDuration;
 
-		private Dictionary<string, MessagePosition> Positions => new Dictionary<string, MessagePosition>
+		private Dictionary<string, MessagePosition> Positions => new()
 		{
 			["Fps"] = _fps,
 			["Frame Counter"] = _frameCounter,
@@ -36,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 			["Autohold"] = _autohold
 		};
 
-		private Dictionary<string, int> Colors => new Dictionary<string, int>
+		private Dictionary<string, int> Colors => new()
 		{
 			["Main Messages"] = _config.MessagesColor,
 			["Alert Messages"] = _config.AlertMessageColor,

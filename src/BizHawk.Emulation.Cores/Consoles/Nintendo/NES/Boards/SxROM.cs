@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	internal sealed class MMC1
 	{
-		public MMC1_SerialController scnt = new MMC1_SerialController();
+		public MMC1_SerialController scnt = new();
 
 		public MMC1()
 		{

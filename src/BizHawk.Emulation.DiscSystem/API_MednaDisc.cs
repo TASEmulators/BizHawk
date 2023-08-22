@@ -131,7 +131,7 @@ namespace BizHawk.Emulation.DiscSystem
 			//can't be a bool due to marshalling...
 			[FieldOffset(8)] public byte _validByte;
 
-			public bool Valid => _validByte != 0;
+			public readonly bool Valid => _validByte != 0;
 		}
 
 		[DllImport("mednadisc.dll", CallingConvention = CallingConvention.Cdecl)]

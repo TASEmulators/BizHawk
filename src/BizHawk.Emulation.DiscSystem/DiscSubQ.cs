@@ -129,12 +129,12 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// Retrives the ADR field of the q_status member (low 4 bits)
 		/// </summary>
-		public int ADR => q_status & 0xF;
+		public readonly int ADR => q_status & 0xF;
 
 		/// <summary>
 		/// Retrieves the CONTROL field of the q_status member (high 4 bits)
 		/// </summary>
-		public EControlQ CONTROL => (EControlQ)((q_status >> 4) & 0xF);
+		public readonly EControlQ CONTROL => (EControlQ)((q_status >> 4) & 0xF);
 	}
 	
 }

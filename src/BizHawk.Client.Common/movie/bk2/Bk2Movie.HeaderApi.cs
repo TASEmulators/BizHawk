@@ -34,7 +34,7 @@ namespace BizHawk.Client.Common
 		public virtual bool StartsFromSavestate
 		{
 			// ReSharper disable SimplifyConditionalTernaryExpression
-			get => Header.TryGetValue(HeaderKeys.StartsFromSavestate, out var s) ? bool.Parse(s) : false;
+			get => Header.TryGetValue(HeaderKeys.StartsFromSavestate, out var s) && bool.Parse(s);
 			// ReSharper restore SimplifyConditionalTernaryExpression
 			set
 			{
@@ -52,7 +52,7 @@ namespace BizHawk.Client.Common
 		public bool StartsFromSaveRam
 		{
 			// ReSharper disable SimplifyConditionalTernaryExpression
-			get => Header.TryGetValue(HeaderKeys.StartsFromSaveram, out var s) ? bool.Parse(s) : false;
+			get => Header.TryGetValue(HeaderKeys.StartsFromSaveram, out var s) && bool.Parse(s);
 			// ReSharper restore SimplifyConditionalTernaryExpression
 			set
 			{

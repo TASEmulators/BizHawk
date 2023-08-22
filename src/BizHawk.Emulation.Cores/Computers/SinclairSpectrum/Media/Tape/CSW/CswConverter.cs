@@ -192,11 +192,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			// create the single tape block
 			// (use DATA block for now so initial signal level is handled correctly by the datacorder device)
-			TapeDataBlock t = new TapeDataBlock();
-			t.BlockDescription = BlockType.CSW_Recording;
-			t.BlockID = 0x18;
-			t.DataPeriods = new List<int>();
-			t.DataLevels = new List<bool>();
+			TapeDataBlock t = new()
+			{
+				BlockDescription = BlockType.CSW_Recording,
+				BlockID = 0x18,
+				DataPeriods = new List<int>(),
+				DataLevels = new List<bool>()
+			};
 
 			if (flags.Bit(0))
 				t.InitialPulseLevel = true;

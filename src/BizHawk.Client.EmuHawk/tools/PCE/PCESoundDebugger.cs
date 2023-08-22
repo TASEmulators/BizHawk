@@ -164,8 +164,8 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private readonly PsgEntry[] _lastSamples = new PsgEntry[8];
-		private readonly List<PsgEntry> _psgEntries = new List<PsgEntry>();
-		private readonly Dictionary<string, PsgEntry> _psgEntryTable = new Dictionary<string, PsgEntry>();
+		private readonly List<PsgEntry> _psgEntries = new();
+		private readonly Dictionary<string, PsgEntry> _psgEntryTable = new();
 
 		// 32*16 samples, 16bit, mono, 8khz (but we'll change the sample rate)
 		private static readonly byte[] EmptyWav = {

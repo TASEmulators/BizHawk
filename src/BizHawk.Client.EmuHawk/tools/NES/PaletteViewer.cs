@@ -5,8 +5,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public sealed class PaletteViewer : Control
 	{
-		private readonly SolidBrush BgPalettesBrush = new SolidBrush(Color.Black);
-		private readonly SolidBrush SpritePalettesBrush = new SolidBrush(Color.Black);
+		private readonly SolidBrush BgPalettesBrush = new(Color.Black);
+		private readonly SolidBrush SpritePalettesBrush = new(Color.Black);
 
 		public class Palette
 		{

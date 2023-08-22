@@ -16,7 +16,7 @@ namespace BizHawk.Client.Common.movie.import
 			using var r = new BinaryReader(fs);
 
 			// 0000: 4-byte signature: "MMV\0"
-			string signature = new string(r.ReadChars(4));
+			string signature = new(r.ReadChars(4));
 			if (signature != "MMV\0")
 			{
 				Result.Errors.Add("This is not a valid .MMV file.");

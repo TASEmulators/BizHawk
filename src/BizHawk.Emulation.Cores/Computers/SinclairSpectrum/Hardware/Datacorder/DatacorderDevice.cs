@@ -85,7 +85,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// A list of the currently loaded data blocks
 		/// </summary>
-		private List<TapeDataBlock> _dataBlocks = new List<TapeDataBlock>();
+		private List<TapeDataBlock> _dataBlocks = new();
 		public List<TapeDataBlock> DataBlocks
 		{
 			get => _dataBlocks;
@@ -111,7 +111,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// Signs whether the device should autodetect when the Z80 has entered into
 		/// 'load' mode and auto-play the tape if neccesary
 		/// </summary>
-		private bool _autoPlay;
+		private readonly bool _autoPlay;
 
 		/// <summary>
 		/// Should be fired at the end of every frame
@@ -266,7 +266,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			var bl = _dataBlocks[targetBlockId];
 
-			StringBuilder sbd = new StringBuilder();
+			StringBuilder sbd = new();
 			sbd.Append('(');
 			sbd.Append((targetBlockId + 1) + " of " + _dataBlocks.Count);
 			sbd.Append(") : ");
@@ -291,11 +291,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		public void LoadTape(byte[] tapeData)
 		{
 			// instantiate converters
-			TzxConverter tzxSer = new TzxConverter(this);
-			TapConverter tapSer = new TapConverter(this);
-			PzxConverter pzxSer = new PzxConverter(this);
-			CswConverter cswSer = new CswConverter(this);
-			WavConverter wavSer = new WavConverter(this);
+			TzxConverter tzxSer = new(this);
+			TapConverter tapSer = new(this);
+			PzxConverter pzxSer = new(this);
+			CswConverter cswSer = new(this);
+			WavConverter wavSer = new(this);
 
 			// TZX
 			if (tzxSer.CheckType(tapeData))
@@ -452,7 +452,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					// notify about the current block
 					var bl = _dataBlocks[_currentDataBlockIndex];
 
-					StringBuilder sbd = new StringBuilder();
+					StringBuilder sbd = new();
 					sbd.Append('(');
 					sbd.Append((_currentDataBlockIndex + 1) + " of " + _dataBlocks.Count);
 					sbd.Append(") : ");
@@ -475,7 +475,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					{
 						// notify about the current block (we are skipping it because its empty)
 						var bl = _dataBlocks[_currentDataBlockIndex];
-						StringBuilder sbd = new StringBuilder();
+						StringBuilder sbd = new();
 						sbd.Append('(');
 						sbd.Append((_currentDataBlockIndex + 1) + " of " + _dataBlocks.Count);
 						sbd.Append(") : ");

@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// State parameters relating to the Active command
 		/// </summary>
-		public CommandParameters ActiveCommandParams = new CommandParameters();
+		public CommandParameters ActiveCommandParams = new();
 
 		/// <summary>
 		/// The current active phase of the controller
@@ -1866,7 +1866,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 					// process parameter byte
 					byte currByte = CommBuffer[CommCounter];
-					BitArray bi = new BitArray(new byte[] { currByte });
+					BitArray bi = new(new byte[] { currByte });
 
 					switch (CommCounter)
 					{
@@ -2572,7 +2572,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private void ParseParamByteStandard(int index)
 		{
 			byte currByte = CommBuffer[index];
-			BitArray bi = new BitArray(new byte[] { currByte });
+			BitArray bi = new(new byte[] { currByte });
 
 			switch (index)
 			{

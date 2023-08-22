@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.DiscSystem
 	{
 		private readonly int SectorSize;
 		private readonly int NumSectors;
-		private Disc Disc;
+		private readonly Disc Disc;
 
 		private long currPosition;
 		private readonly byte[] cachedSectorBuffer;
@@ -69,19 +69,12 @@ namespace BizHawk.Emulation.DiscSystem
 			dsr = new(disc);
 
 			//following the provided view
-			switch (view)
+			dsr.Policy.UserData2048Mode = view switch
 			{
-				case EDiscStreamView.DiscStreamView_Mode1_2048:
-					dsr.Policy.UserData2048Mode = DiscSectorReaderPolicy.EUserData2048Mode.AssumeMode1;
-					break;
-				case EDiscStreamView.DiscStreamView_Mode2_Form1_2048:
-					dsr.Policy.UserData2048Mode = DiscSectorReaderPolicy.EUserData2048Mode.AssumeMode2_Form1;
-					break;
-				default:
-					throw new NotSupportedException($"Unsupported {nameof(EDiscStreamView)}");
-			}
-
-
+				EDiscStreamView.DiscStreamView_Mode1_2048 => DiscSectorReaderPolicy.EUserData2048Mode.AssumeMode1,
+				EDiscStreamView.DiscStreamView_Mode2_Form1_2048 => DiscSectorReaderPolicy.EUserData2048Mode.AssumeMode2_Form1,
+				_ => throw new NotSupportedException($"Unsupported {nameof(EDiscStreamView)}"),
+			};
 			currPosition = from_lba * SectorSize;
 			cachedSector = -1;
 			cachedSectorBuffer = new byte[SectorSize];

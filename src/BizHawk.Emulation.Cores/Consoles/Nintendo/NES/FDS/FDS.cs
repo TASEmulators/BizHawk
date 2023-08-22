@@ -94,7 +94,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				int nsides = diskimage.Length / 65500;
 
-				MemoryStream ms = new MemoryStream();
+				MemoryStream ms = new();
 				ms.Write(Encoding.ASCII.GetBytes("FDS\x1A"), 0, 4);
 				ms.WriteByte((byte)nsides);
 				byte[] nulls = new byte[11];
@@ -167,8 +167,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// update diff for currently loaded disk first!
 			if (currentside != null)
 				diskdiffs[(int)currentside] = diskdrive.MakeDiff();
-			MemoryStream ms = new MemoryStream();
-			BinaryWriter bw = new BinaryWriter(ms);
+			MemoryStream ms = new();
+			BinaryWriter bw = new(ms);
 			bw.Write(Encoding.ASCII.GetBytes("FDSS"));
 			bw.Write(NumSides);
 			for (int i = 0; i < NumSides; i++)
@@ -193,8 +193,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// but in fact, StoreSaveRam() is only called once right at startup, so this is no big deal
 			//if (currentside != null)
 			//	throw new Exception("FDS Saveram: Can't load when a disk is active!");
-			MemoryStream ms = new MemoryStream(data, false);
-			BinaryReader br = new BinaryReader(ms);
+			MemoryStream ms = new(data, false);
+			BinaryReader br = new(ms);
 			byte[] cmp = Encoding.ASCII.GetBytes("FDSS");
 			byte[] tmp = br.ReadBytes(cmp.Length);
 			if (!cmp.SequenceEqual(tmp))

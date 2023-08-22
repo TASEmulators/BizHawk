@@ -97,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 			var formats = _roms.Select(C64FormatFinder.GetFormat);
 
-			HashSet<C64Format> uniqueFormats = new HashSet<C64Format>();
+			HashSet<C64Format> uniqueFormats = new();
 
 			foreach (var format in formats)
 			{
@@ -218,7 +218,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		/**********************************************/
 
-		private ISoundProvider _soundProvider;
+		private readonly ISoundProvider _soundProvider;
 
 		private void DoCycle()
 		{
@@ -250,12 +250,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		private byte[] GetFirmware(int length, params string[] names)
 		{
-			var result = names.Select(n => CoreComm.CoreFileProvider.GetFirmware(new("C64", n))).FirstOrDefault(b => b != null && b.Length == length);
-			if (result == null)
-			{
-				throw new MissingFirmwareException($"At least one of these firmwares is required: {string.Join(", ", names)}");
-			}
-
+			var result = names.Select(n => CoreComm.CoreFileProvider.GetFirmware(new("C64", n))).FirstOrDefault(b => b != null && b.Length == length) ?? throw new MissingFirmwareException($"At least one of these firmwares is required: {string.Join(", ", names)}");
 			return result;
 		}
 

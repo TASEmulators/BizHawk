@@ -259,7 +259,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		private readonly bool HasYM2413 = false;
 		private bool disablePSG = false;
-		private bool PortDEEnabled = false;
+		private readonly bool PortDEEnabled = false;
 		private IController _controller = NullController.Instance;
 
 		private int _frame = 0;

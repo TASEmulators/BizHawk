@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 
@@ -166,7 +166,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			get
 			{
-				BitArray MA = new BitArray(16);
+				BitArray MA = new(16);
 				MA[0] = _CLK;
 				MA[1] = MA0;
 				MA[2] = MA1;
@@ -438,14 +438,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			get
 			{
-				switch ((int)ChipType)
+				return (int)ChipType switch
 				{
-					case 0:
-					case 1:
-						return HSYNCWidth_Type0_1;
-					default:
-						return HSYNCWidth_Type2_3_4;
-				}
+					0 or 1 => HSYNCWidth_Type0_1,
+					_ => HSYNCWidth_Type2_3_4,
+				};
 			}
 		}
 
@@ -457,14 +454,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			get
 			{
-				switch ((int)ChipType)
+				return (int)ChipType switch
 				{
-					case 1:
-					case 2:
-						return VSYNCWidth_Type1_2;
-					default:
-						return VSYNCWidth_Type0_3_4;
-				}
+					1 or 2 => VSYNCWidth_Type1_2,
+					_ => VSYNCWidth_Type0_3_4,
+				};
 			}
 		}
 
@@ -485,15 +479,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		private bool ReadRegister(ref int data)
 		{
-			switch ((int)ChipType)
+			return (int)ChipType switch
 			{
-				case 0: return ReadRegister_Type0(ref data);
-				case 1: return ReadRegister_Type1(ref data);
-				case 2: return ReadRegister_Type2(ref data);
-				case 3:
-				case 4: return ReadRegister_Type3_4(ref data);
-				default: return false;
-			}
+				0 => ReadRegister_Type0(ref data),
+				1 => ReadRegister_Type1(ref data),
+				2 => ReadRegister_Type2(ref data),
+				3 or 4 => ReadRegister_Type3_4(ref data),
+				_ => false,
+			};
 		}
 
 		/// <summary>
@@ -516,13 +509,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		private bool ReadStatus(ref int data)
 		{
-			switch ((int)ChipType)
+			return (int)ChipType switch
 			{
-				case 1: return ReadStatus_Type1(ref data);
-				case 3:
-				case 4: return ReadStatus_Type3_4(ref data);
-				default: return false;
-			}
+				1 => ReadStatus_Type1(ref data),
+				3 or 4 => ReadStatus_Type3_4(ref data),
+				_ => false,
+			};
 		}
 
 		/// <summary>
@@ -599,6 +591,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 		}
 
+		#pragma warning disable IDE0051
 		/// <summary>
 		/// The currently selected Interlace Mode (based on R8)
 		/// Looks to be the same for all chip types
@@ -626,6 +619,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				return InterlaceMode.NormalSyncMode;
 			}
 		}
+		#pragma warning restore IDE0051
 
 		/// <summary>
 		/// Gets the combined value of R12 &amp; R13
@@ -1084,6 +1078,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			return ReadRegister(ref data);
 		}
 
+		#pragma warning disable IDE0051
 		/// <summary>
 		/// Read Status Register (HD6845S &amp; UM6845)
 		/// No status register available
@@ -1092,6 +1087,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			return false;
 		}
+		#pragma warning restore IDE0051
 
 		/* persistent switch signals */
 		private bool s_VS;
@@ -1516,6 +1512,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 		}
 
+		#pragma warning disable IDE0051
 		/// <summary>
 		/// Runs a Type1 Clock Cycle
 		/// There doesnt seem to be a block diagram in the datasheets for this, so will use the type0
@@ -1808,6 +1805,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				_LPSTB = false;
 			}
 		}
+		#pragma warning restore IDE0051
 
 		/// <summary>
 		/// Runs a Type2 Clock Cycle
@@ -2097,6 +2095,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 		}
 
+		#pragma warning disable IDE0051
 		/// <summary>
 		/// Runs a Type3or4 Clock Cycle
 		/// </summary>
@@ -2104,6 +2103,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 
 		}
+		#pragma warning restore IDE0051
 
 		/* Horizontal Timing Register Constants */
 		/// <summary>

@@ -11,8 +11,8 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private readonly TAStudio _tastudio;
 
-		private readonly List<int> _counts = new List<int>();
-		private readonly List<string> _values = new List<string>();
+		private readonly List<int> _counts = new();
+		private readonly List<string> _values = new();
 		private int _loopAt;
 		private bool _updating;
 

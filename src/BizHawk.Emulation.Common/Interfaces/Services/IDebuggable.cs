@@ -124,14 +124,14 @@ namespace BizHawk.Emulation.Common
 			BitSize = 64;
 		}
 
-		public static implicit operator RegisterValue(bool val) => new RegisterValue(val);
-		public static implicit operator RegisterValue(byte val) => new RegisterValue(val);
-		public static implicit operator RegisterValue(sbyte val) => new RegisterValue(val);
-		public static implicit operator RegisterValue(ushort val) => new RegisterValue(val);
-		public static implicit operator RegisterValue(short val) => new RegisterValue(val);
-		public static implicit operator RegisterValue(uint val) => new RegisterValue(val);
-		public static implicit operator RegisterValue(int val) => new RegisterValue(val);
-		public static implicit operator RegisterValue(ulong val) => new RegisterValue(val);
-		public static implicit operator RegisterValue(long val) => new RegisterValue(val);
+		public static implicit operator RegisterValue(bool val) => new(val);
+		public static implicit operator RegisterValue(byte val) => new(val);
+		public static implicit operator RegisterValue(sbyte val) => new(val);
+		public static implicit operator RegisterValue(ushort val) => new(val);
+		public static implicit operator RegisterValue(short val) => new(val);
+		public static implicit operator RegisterValue(uint val) => new(val);
+		public static implicit operator RegisterValue(int val) => new(val);
+		public static implicit operator RegisterValue(ulong val) => new(val);
+		public static implicit operator RegisterValue(long val) => new(val);
 	}
 }

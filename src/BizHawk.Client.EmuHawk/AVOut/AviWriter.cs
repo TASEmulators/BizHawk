@@ -346,7 +346,7 @@ namespace BizHawk.Client.EmuHawk
 			public int fps, fps_scale;
 		}
 
-		private readonly Parameters _parameters = new Parameters();
+		private readonly Parameters _parameters = new();
 
 
 		/// <summary>
@@ -511,7 +511,7 @@ namespace BizHawk.Client.EmuHawk
 				var m = new MemoryStream(data, false);
 				var b = new BinaryReader(m);
 
-				AVIWriterImports.AVICOMPRESSOPTIONS comprOptions = new AVIWriterImports.AVICOMPRESSOPTIONS();
+				AVIWriterImports.AVICOMPRESSOPTIONS comprOptions = new();
 
 				byte[] format;
 				byte[] parms;
@@ -677,8 +677,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				// initialize the video stream
-				AVIWriterImports.AVISTREAMINFOW vidstream_header = new AVIWriterImports.AVISTREAMINFOW();
-				AVIWriterImports.BITMAPINFOHEADER bmih = new AVIWriterImports.BITMAPINFOHEADER();
+				AVIWriterImports.AVISTREAMINFOW vidstream_header = new();
+				AVIWriterImports.BITMAPINFOHEADER bmih = new();
 				parameters.PopulateBITMAPINFOHEADER24(ref bmih);
 				vidstream_header.fccType = mmioFOURCC("vids");
 				vidstream_header.dwRate = parameters.fps;
@@ -691,8 +691,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				// initialize audio stream
-				AVIWriterImports.AVISTREAMINFOW audstream_header = new AVIWriterImports.AVISTREAMINFOW();
-				AVIWriterImports.WAVEFORMATEX wfex = new AVIWriterImports.WAVEFORMATEX();
+				AVIWriterImports.AVISTREAMINFOW audstream_header = new();
+				AVIWriterImports.WAVEFORMATEX wfex = new();
 				parameters.PopulateWAVEFORMATEX(ref wfex);
 				audstream_header.fccType = mmioFOURCC("auds");
 				audstream_header.dwQuality = -1;
@@ -726,7 +726,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				// encoder params
-				AVIWriterImports.AVICOMPRESSOPTIONS comprOptions = new AVIWriterImports.AVICOMPRESSOPTIONS();
+				AVIWriterImports.AVICOMPRESSOPTIONS comprOptions = new();
 				_currVideoCodecToken?.AllocateToAVICOMPRESSOPTIONS(ref comprOptions);
 
 				bool result = AVISaveOptions(_pAviRawVideoStream, ref comprOptions, hwnd) != 0;
@@ -759,7 +759,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				// open compressed video stream
-				AVIWriterImports.AVICOMPRESSOPTIONS opts = new AVIWriterImports.AVICOMPRESSOPTIONS();
+				AVIWriterImports.AVICOMPRESSOPTIONS opts = new();
 				_currVideoCodecToken.AllocateToAVICOMPRESSOPTIONS(ref opts);
 				bool failed = FAILED(AVIWriterImports.AVIMakeCompressedStream(out _pAviCompressedVideoStream, _pAviRawVideoStream, ref opts, IntPtr.Zero));
 				CodecToken.DeallocateAVICOMPRESSOPTIONS(ref opts);
@@ -771,7 +771,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				// set the compressed video stream input format
-				AVIWriterImports.BITMAPINFOHEADER bmih = new AVIWriterImports.BITMAPINFOHEADER();
+				AVIWriterImports.BITMAPINFOHEADER bmih = new();
 				if (_bit32)
 				{
 					_parameters.PopulateBITMAPINFOHEADER32(ref bmih);
@@ -789,7 +789,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				// set audio stream input format
-				AVIWriterImports.WAVEFORMATEX wfex = new AVIWriterImports.WAVEFORMATEX();
+				AVIWriterImports.WAVEFORMATEX wfex = new();
 				_parameters.PopulateWAVEFORMATEX(ref wfex);
 				if (FAILED(AVIWriterImports.AVIStreamSetFormat(_pAviRawAudioStream, 0, ref wfex, Marshal.SizeOf(wfex))))
 				{

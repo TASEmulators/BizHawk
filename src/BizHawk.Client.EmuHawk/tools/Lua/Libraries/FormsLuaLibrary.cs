@@ -24,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override string Name => "forms";
 
-		private readonly List<LuaWinform> _luaForms = new List<LuaWinform>();
+		private readonly List<LuaWinform> _luaForms = new();
 
 		public void WindowClosed(IntPtr handle)
 		{

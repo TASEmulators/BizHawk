@@ -28,7 +28,7 @@ namespace BizHawk.Client.Common
 
 		private static readonly Dictionary<string, IComparer<Watch>> WatchComparers;
 
-		private readonly List<Watch> _watchList = new List<Watch>(0);
+		private readonly List<Watch> _watchList = new(0);
 		private readonly string _systemId;
 		private IMemoryDomains _memoryDomains;
 

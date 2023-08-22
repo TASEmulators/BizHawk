@@ -167,6 +167,7 @@ namespace BizHawk.Emulation.Cores
 			return ps;
 		}
 
+		#pragma warning disable IDE0051
 		private static PadSchema TapeDevice()
 		{
 			return new PadSchema
@@ -189,5 +190,6 @@ namespace BizHawk.Emulation.Cores
 				}
 			};
 		}
+		#pragma warning restore IDE0051
 	}
 }

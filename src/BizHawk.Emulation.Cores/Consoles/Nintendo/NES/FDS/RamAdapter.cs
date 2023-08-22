@@ -32,10 +32,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// todo: implement CRC.  since the RamAdapter itself doesn't implement it, broken is not a problem
 			// since its not contained in dumps, no way to be sure that the implementation is right
 
-			MemoryStream inp = new MemoryStream(inputdisk, false);
-			BinaryReader br = new BinaryReader(inp);
+			MemoryStream inp = new(inputdisk, false);
+			BinaryReader br = new(inp);
 
-			MemoryStream ret = new MemoryStream();
+			MemoryStream ret = new();
 
 			// block 1: header
 			byte[] header = br.ReadBytes(56);

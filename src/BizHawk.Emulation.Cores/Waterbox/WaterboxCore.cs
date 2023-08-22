@@ -75,8 +75,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					memoryDomains.Cast<MemoryDomain>()
 						.Concat(new[] { _exe.GetPagesDomain() })
 						.ToList()
-				);
-				mdl.MainMemory = primaryDomain;
+				)
+				{
+					MainMemory = primaryDomain
+				};
 				_serviceProvider.Register<IMemoryDomains>(mdl);
 
 				_saveramAreas = memoryDomains
@@ -88,7 +90,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
-		private static readonly DateTime Epoch = new DateTime(1970, 1, 1, 0, 0, 0);
+		private static readonly DateTime Epoch = new(1970, 1, 1, 0, 0, 0);
 		private long _clockTime;
 		private int _clockRemainder;
 

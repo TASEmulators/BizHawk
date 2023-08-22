@@ -21,7 +21,7 @@ namespace BizHawk.Client.EmuHawk
 
 		// TODO: only show add to game db when this is a Rom details dialog
 		// Let user decide what type (instead of always adding it as a good dump)
-		private readonly List<string> _lines = new List<string>();
+		private readonly List<string> _lines = new();
 		private LogWriter _logWriter;
 
 		[RequiredService]

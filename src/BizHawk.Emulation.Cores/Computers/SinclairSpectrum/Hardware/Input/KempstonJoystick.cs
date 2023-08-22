@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	public class KempstonJoystick : IJoystick
 	{
 		private int _joyLine;
-		private SpectrumBase _machine;
+		private readonly SpectrumBase _machine;
 
 		public KempstonJoystick(SpectrumBase machine, int playerNumber)
 		{

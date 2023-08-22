@@ -139,19 +139,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetSizeSelected(WatchSize size)
 		{
-			switch (size)
+			SizeDropDown.SelectedIndex = size switch
 			{
-				default:
-				case WatchSize.Byte:
-					SizeDropDown.SelectedIndex = 0;
-					break;
-				case WatchSize.Word:
-					SizeDropDown.SelectedIndex = 1;
-					break;
-				case WatchSize.DWord:
-					SizeDropDown.SelectedIndex = 2;
-					break;
-			}
+				WatchSize.Word => 1,
+				WatchSize.DWord => 2,
+				_ => 0,
+			};
 		}
 
 		private void SetTypeSelected(WatchDisplayType type)
@@ -240,16 +233,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private WatchSize GetCurrentSize()
 		{
-			switch (SizeDropDown.SelectedIndex)
+			return SizeDropDown.SelectedIndex switch
 			{
-				default:
-				case 0:
-					return WatchSize.Byte;
-				case 1:
-					return WatchSize.Word;
-				case 2:
-					return WatchSize.DWord;
-			}
+				1 => WatchSize.Word,
+				2 => WatchSize.DWord,
+				_ => WatchSize.Byte,
+			};
 		}
 
 		private void DisplayTypeDropDown_SelectedIndexChanged(object sender, EventArgs e)

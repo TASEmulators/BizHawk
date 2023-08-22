@@ -13,10 +13,10 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class LuaPictureBox : PictureBox
 	{
-		private readonly Dictionary<string, Image> _imageCache = new Dictionary<string, Image>();
+		private readonly Dictionary<string, Image> _imageCache = new();
 
-		private readonly Dictionary<Color, SolidBrush> _solidBrushes = new Dictionary<Color, SolidBrush>();
-		private readonly Dictionary<Color, Pen> _pens = new Dictionary<Color, Pen>();
+		private readonly Dictionary<Color, SolidBrush> _solidBrushes = new();
+		private readonly Dictionary<Color, Pen> _pens = new();
 
 		internal NLuaTableHelper TableHelper { get; set; }
 
@@ -342,7 +342,7 @@ namespace BizHawk.Client.EmuHawk
 						break;
 				}
 			}
-			Rectangle rect = new Rectangle(new Point(x, y), sizeOfText);
+			Rectangle rect = new(new Point(x, y), sizeOfText);
 			boxBackground = Graphics.FromImage(Image);
 			boxBackground.FillRectangle(GetBrush(TableHelper.SafeParseColor(backColor) ?? _defaultTextBackground.Value), rect);
 			boxBackground = Graphics.FromImage(Image);

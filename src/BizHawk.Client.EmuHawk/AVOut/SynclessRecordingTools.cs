@@ -17,7 +17,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly IGameInfo _game;
 
 #if AVI_SUPPORT
-		private readonly List<FrameInfo> _mFrameInfos = new List<FrameInfo>();
+		private readonly List<FrameInfo> _mFrameInfos = new();
 
 		private string _mFramesDirectory;
 

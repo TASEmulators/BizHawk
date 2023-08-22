@@ -8,7 +8,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class MessageEdit : UserControl
 	{
-		private MessagePosition _messagePosition = new MessagePosition();
+		private MessagePosition _messagePosition = new();
 		private Action _changeCallback;
 		private bool _programmaticallyChangingValues;
 		private bool _mousedown;

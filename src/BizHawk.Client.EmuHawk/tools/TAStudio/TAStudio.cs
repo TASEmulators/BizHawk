@@ -32,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool IsInMenuLoop { get; private set; }
 
-		private readonly List<TasClipboardEntry> _tasClipboard = new List<TasClipboardEntry>();
+		private readonly List<TasClipboardEntry> _tasClipboard = new();
 		private const string CursorColumnName = "CursorColumn";
 		private const string FrameColumnName = "FrameColumn";
 		private MovieEndAction _originalEndAction; // The movie end behavior selected by the user (that is overridden by TAStudio)

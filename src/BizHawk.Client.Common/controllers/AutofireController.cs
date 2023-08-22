@@ -21,9 +21,9 @@ namespace BizHawk.Client.Common
 
 		private readonly IEmulator _emulator;
 
-		private readonly WorkingDictionary<string, List<string>> _bindings = new WorkingDictionary<string, List<string>>();
-		private readonly WorkingDictionary<string, bool> _buttons = new WorkingDictionary<string, bool>();
-		private readonly WorkingDictionary<string, int> _buttonStarts = new WorkingDictionary<string, int>();
+		private readonly WorkingDictionary<string, List<string>> _bindings = new();
+		private readonly WorkingDictionary<string, bool> _buttons = new();
+		private readonly WorkingDictionary<string, int> _buttonStarts = new();
 
 		public int On { get; set; }
 		public int Off { get; set; }

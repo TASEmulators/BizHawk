@@ -49,33 +49,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private static int RemapM117(int addr)
 		{
 			//addr &= 0x7007; // i don't know all of which bits are decoded, but this breaks stuff
-			switch (addr)
+			return addr switch
 			{
 				//prg
-				case 0x0000: return 0x0000;
-				case 0x0001: return 0x0001;
-				case 0x0002: return 0x1000;
+				0x0000 => 0x0000,
+				0x0001 => 0x0001,
+				0x0002 => 0x1000,
 				//chr
-				case 0x2000: return 0x2000;
-				case 0x2001: return 0x2001;
-				case 0x2002: return 0x3000;
-				case 0x2003: return 0x3001;
-				case 0x2004: return 0x4000;
-				case 0x2005: return 0x4001;
-				case 0x2006: return 0x5000;
-				case 0x2007: return 0x5001;
+				0x2000 => 0x2000,
+				0x2001 => 0x2001,
+				0x2002 => 0x3000,
+				0x2003 => 0x3001,
+				0x2004 => 0x4000,
+				0x2005 => 0x4001,
+				0x2006 => 0x5000,
+				0x2007 => 0x5001,
 				//irq
 				// fake addressees to activate different irq handling logic
-				case 0x4001: return 0x10001;
-				case 0x4002: return 0x10002;
-				case 0x4003: return 0x10003;
-				case 0x6000: return 0x10004;
+				0x4001 => 0x10001,
+				0x4002 => 0x10002,
+				0x4003 => 0x10003,
+				0x6000 => 0x10004,
 				//mir
-				case 0x5000: return 0x6000;
-
+				0x5000 => 0x6000,
 				//probably nothing at all
-				default: return 0xffff;
-			}
+				_ => 0xffff,
+			};
 		}
 
 		public override bool Configure(EDetectionOrigin origin)

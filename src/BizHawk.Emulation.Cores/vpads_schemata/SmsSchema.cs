@@ -63,10 +63,12 @@ namespace BizHawk.Emulation.Cores
 	[Schema(VSystemID.Raw.SMS)]
 	public class SMSSchema : IVirtualPadSchema
 	{
+		#pragma warning disable IDE0051
 		private static string StandardControllerName => typeof(SmsController).DisplayName();
 		private static string PaddleControllerName => typeof(SMSPaddleController).DisplayName();
 		private static string SportControllerName => typeof(SMSSportsPadController).DisplayName();
 		private static string LightGunControllerName => typeof(SMSLightPhaserController).DisplayName();
+		#pragma warning restore IDE0051
 
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
 		{

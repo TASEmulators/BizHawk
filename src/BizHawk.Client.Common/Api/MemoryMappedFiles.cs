@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common
 {
 	public sealed class MemoryMappedFiles
 	{
-		private readonly Dictionary<string, MemoryMappedFile> _mmfFiles = new Dictionary<string, MemoryMappedFile>();
+		private readonly Dictionary<string, MemoryMappedFile> _mmfFiles = new();
 
 		private readonly Func<byte[]> _takeScreenshotCallback;
 

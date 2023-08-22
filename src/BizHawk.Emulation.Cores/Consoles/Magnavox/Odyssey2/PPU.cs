@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
@@ -1329,7 +1329,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			AudioSyncState(ser);
 		}
 
-		private BlipBuffer _blip_C = new BlipBuffer(15000);
+		private BlipBuffer _blip_C = new(15000);
 
 		public byte sample;
 
@@ -1513,10 +1513,12 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			master_audio_clock = 0;
 		}
 
+		#pragma warning disable IDE0051
 		private void GetSamples(short[] samples)
 		{
 
 		}
+		#pragma warning restore IDE0051
 
 		public void DisposeSound()
 		{

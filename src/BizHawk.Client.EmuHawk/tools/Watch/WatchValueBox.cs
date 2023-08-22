@@ -108,82 +108,52 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				switch (Type)
+				Text = Type switch
 				{
-					default:
-					case WatchDisplayType.Signed:
-					case WatchDisplayType.Unsigned:
-						Text = "0";
-						break;
-					case WatchDisplayType.Hex:
-						Text = 0.ToHexString(MaxLength);
-						break;
-					case WatchDisplayType.FixedPoint_12_4:
-					case WatchDisplayType.FixedPoint_20_12:
-					case WatchDisplayType.FixedPoint_16_16:
-					case WatchDisplayType.Float:
-						Text = "0.0";
-						break;
-					case WatchDisplayType.Binary:
-						Text = "0".PadLeft(((int)_size) * 8);
-						break;
-				}
+					WatchDisplayType.Hex => 0.ToHexString(MaxLength),
+					WatchDisplayType.FixedPoint_12_4 or WatchDisplayType.FixedPoint_20_12 or WatchDisplayType.FixedPoint_16_16 or WatchDisplayType.Float => "0.0",
+					WatchDisplayType.Binary => "0".PadLeft(((int)_size) * 8),
+					_ => "0",
+				};
 			}
 		}
 
 		private void SetMaxLength()
 		{
-			switch (_type)
+			MaxLength = _type switch
 			{
-				default:
-					MaxLength = 8;
-					break;
-				case WatchDisplayType.Binary:
-					MaxLength = _size switch
-					{
-						WatchSize.Byte => 8,
-						WatchSize.Word => 16,
-						_ => 8
-					};
-					break;
-				case WatchDisplayType.Hex:
-					MaxLength = _size switch
-					{
-						WatchSize.Byte => 2,
-						WatchSize.Word => 4,
-						WatchSize.DWord => 8,
-						_ => 2
-					};
-					break;
-				case WatchDisplayType.Signed:
-					MaxLength = _size switch
-					{
-						WatchSize.Byte => 4,
-						WatchSize.Word => 6,
-						WatchSize.DWord => 11,
-						_ => 4
-					};
-					break;
-				case WatchDisplayType.Unsigned:
-					MaxLength = _size switch
-					{
-						WatchSize.Byte => 3,
-						WatchSize.Word => 5,
-						WatchSize.DWord => 10,
-						_ => 3
-					};
-					break;
-				case WatchDisplayType.FixedPoint_12_4:
-					MaxLength = 10;
-					break;
-				case WatchDisplayType.Float:
-					MaxLength = 40;
-					break;
-				case WatchDisplayType.FixedPoint_20_12:
-				case WatchDisplayType.FixedPoint_16_16:
-					MaxLength = 24;
-					break;
-			}
+				WatchDisplayType.Binary => _size switch
+				{
+					WatchSize.Byte => 8,
+					WatchSize.Word => 16,
+					_ => 8
+				},
+				WatchDisplayType.Hex => _size switch
+				{
+					WatchSize.Byte => 2,
+					WatchSize.Word => 4,
+					WatchSize.DWord => 8,
+					_ => 2
+				},
+				WatchDisplayType.Signed => _size switch
+				{
+					WatchSize.Byte => 4,
+					WatchSize.Word => 6,
+					WatchSize.DWord => 11,
+					_ => 4
+				},
+				WatchDisplayType.Unsigned => _size switch
+				{
+					WatchSize.Byte => 3,
+					WatchSize.Word => 5,
+					WatchSize.DWord => 10,
+					_ => 3
+				},
+				WatchDisplayType.FixedPoint_12_4 => 10,
+				WatchDisplayType.Float => 40,
+				WatchDisplayType.FixedPoint_20_12 or WatchDisplayType.FixedPoint_16_16 => 24,
+				_ => 8,
+			};
 		}
 
 		protected override void OnKeyDown(KeyEventArgs e)

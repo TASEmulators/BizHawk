@@ -364,14 +364,14 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		}
 
-		public static readonly Dictionary<string, string> ValidFilterTypes = new Dictionary<string, string>
+		public static readonly Dictionary<string, string> ValidFilterTypes = new()
 		{
 			{ "None",  "None"},
 			{ "NTSC",  "NTSC"},
 			{ "Pal",  "Pal"}
 		};
 
-		private BlipBuffer _blip = new BlipBuffer(4096);
+		private BlipBuffer _blip = new(4096);
 
 		public bool CanProvideAsync => false;
 

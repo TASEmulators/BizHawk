@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private readonly bool validate = true;
 
-		private readonly Bag<string, CartInfo> _sha1Table = new Bag<string, CartInfo>();
+		private readonly Bag<string, CartInfo> _sha1Table = new();
 
 		private static BootGodDb instance;
 
@@ -134,10 +134,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					case 1:
 						if (xmlReader.NodeType == XmlNodeType.Element && xmlReader.Name == "cartridge")
 						{
-							currCart = new CartInfo();
-							currCart.System = xmlReader.GetAttribute("system");
-							currCart.Sha1 = $"SHA1:{xmlReader.GetAttribute("sha1")}";
-							currCart.Name = currName;
+							currCart = new CartInfo
+							{
+								System = xmlReader.GetAttribute("system"),
+								Sha1 = $"SHA1:{xmlReader.GetAttribute("sha1")}",
+								Name = currName
+							};
 							state = 2;
 						}
 						if (xmlReader.NodeType == XmlNodeType.EndElement && xmlReader.Name == "game")

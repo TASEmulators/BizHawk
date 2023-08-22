@@ -155,9 +155,9 @@ namespace BizHawk.Bizware.Input
 
 			foreach (var pad in SDL2Gamepad.EnumerateDevices())
 			{
-				foreach (var but in pad.ButtonGetters)
+				foreach (var (ButtonName, GetIsPressed) in pad.ButtonGetters)
 				{
-					handleButton(pad.InputNamePrefix + but.ButtonName, but.GetIsPressed(), ClientInputFocus.Pad);
+					handleButton(pad.InputNamePrefix + ButtonName, GetIsPressed(), ClientInputFocus.Pad);
 				}
 
 				foreach (var (axisID, f) in pad.GetAxes())

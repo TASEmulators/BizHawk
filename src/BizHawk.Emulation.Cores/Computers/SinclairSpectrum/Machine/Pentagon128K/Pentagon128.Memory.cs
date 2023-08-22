@@ -293,17 +293,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public override bool ContendedBankPaged()
         {
-            switch (RAMPaged)
-            {
-                case 1:
-                case 3:
-                case 5:
-                case 7:
-                    return true;
-            }
-
-            return false;
-        }
+			return RAMPaged switch
+			{
+				1 or 3 or 5 or 7 => true,
+				_ => false,
+			};
+		}
 
         /// <summary>
         /// ULA reads the memory at the specified address
@@ -312,7 +307,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public override byte FetchScreenMemory(ushort addr)
         {
-            byte value = new byte();
+            byte value = new();
 
             if (SHADOWPaged && !PagingDisabled)
             {

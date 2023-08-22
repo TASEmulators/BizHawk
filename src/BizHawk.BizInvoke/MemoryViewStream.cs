@@ -84,20 +84,12 @@ namespace BizHawk.BizInvoke
 
 		public override long Seek(long offset, SeekOrigin origin)
 		{
-			long newpos;
-			switch (origin)
+			var newpos = origin switch
 			{
-				default:
-				case SeekOrigin.Begin:
-					newpos = offset;
-					break;
-				case SeekOrigin.Current:
-					newpos = _pos + offset;
-					break;
-				case SeekOrigin.End:
-					newpos = _length + offset;
-					break;
-			}
+				SeekOrigin.Current => _pos + offset,
+				SeekOrigin.End => _length + offset,
+				_ => offset,
+			};
 			Position = newpos;
 			return newpos;
 		}

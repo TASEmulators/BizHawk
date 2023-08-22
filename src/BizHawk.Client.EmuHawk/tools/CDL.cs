@@ -26,7 +26,7 @@ namespace BizHawk.Client.EmuHawk
 		public static Icon ToolIcon
 			=> Resources.CdLoggerIcon;
 
-		private RecentFiles _recentFld = new RecentFiles();
+		private RecentFiles _recentFld = new();
 
 		[ConfigPersist]
 		private RecentFiles _recent

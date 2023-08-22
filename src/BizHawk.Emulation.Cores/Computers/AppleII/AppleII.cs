@@ -119,10 +119,10 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			LoadDelta(false);
 		}
 
-		private static readonly List<string> RealButtons = new List<string>(Keyboard.GetKeyNames()
+		private static readonly List<string> RealButtons = new(Keyboard.GetKeyNames()
 			.Where(k => k != "Reset"));
 
-		private static readonly List<string> ExtraButtons = new List<string>
+		private static readonly List<string> ExtraButtons = new()
 		{
 			"Previous Disk",
 			"Next Disk",

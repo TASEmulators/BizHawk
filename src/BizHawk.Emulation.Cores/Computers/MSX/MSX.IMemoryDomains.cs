@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 	public partial class MSX
 	{
 		private MemoryDomainList MemoryDomains;
-		private readonly Dictionary<string, MemoryDomainByteArray> _byteArrayDomains = new Dictionary<string, MemoryDomainByteArray>();
+		private readonly Dictionary<string, MemoryDomainByteArray> _byteArrayDomains = new();
 		private bool _memoryDomainsInit = false;
 
 		private void SetupMemoryDomains()

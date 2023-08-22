@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public readonly AxisDict Axes = new AxisDict();
+		public readonly AxisDict Axes = new();
 
 		/// <summary>Contains names of virtual haptic feedback channels, e.g. <c>{ "P1 Mono" }</c>, <c>{ "P2 Left", "P2 Right" }</c>.</summary>
 		public IList<string> HapticsChannels { get; private set; } = new List<string>();
@@ -130,7 +130,7 @@ namespace BizHawk.Emulation.Common
 				: 0;
 		}
 
-		private static readonly Regex PlayerRegex = new Regex("^P(\\d+) ");
+		private static readonly Regex PlayerRegex = new("^P(\\d+) ");
 
 		public int PlayerCount
 		{

@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				this.b = b;
 			}
 			
-			public Triple Bit5to8Bad()
+			public readonly Triple Bit5to8Bad()
 			{
 				Triple ret;
 				ret.r = r * 8;
@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				return ret;
 			}
 
-			public Triple Bit5to8Good()
+			public readonly Triple Bit5to8Good()
 			{
 				Triple ret;
 				ret.r = (r * 255 + 15) / 31;
@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			private static readonly int[] sameboy_agb_color_curve = new int[32] { 0, 3, 8, 14, 20, 26, 33, 40, 47, 54, 62, 70, 78, 86, 94, 103, 112, 120, 129, 138, 147, 157, 166, 176, 185, 195, 205, 215, 225, 235, 245, 255 };
 			private static readonly int[] sameboy_sgb_color_curve = new int[32] { 0, 2, 5, 9, 15, 20, 27, 34, 42, 50, 58, 67, 76, 85, 94, 104, 114, 123, 133, 143, 153, 163, 173, 182, 192, 202, 211, 220, 229, 238, 247, 255 };
 
-			public Triple Bit5to8SameBoy(bool sgb, bool agb)
+			public readonly Triple Bit5to8SameBoy(bool sgb, bool agb)
 			{
 				Triple ret;
 				if (sgb)
@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				return ret;
 			}
 
-			public int ToARGB32()
+			public readonly int ToARGB32()
 			{
 				return b | g << 8 | r << 16 | 255 << 24;
 			}

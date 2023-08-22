@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 	public partial class ColecoVision
 	{
 		private MemoryDomainList _memoryDomains;
-		private readonly Dictionary<string, MemoryDomainByteArray> _byteArrayDomains = new Dictionary<string, MemoryDomainByteArray>();
+		private readonly Dictionary<string, MemoryDomainByteArray> _byteArrayDomains = new();
 		private bool _memoryDomainsInit = false;
 
 		private void SetupMemoryDomains()

@@ -5,7 +5,7 @@ namespace BizHawk.WinForms.Controls
 {
 	public abstract class GroupBoxExBase : GroupBox
 	{
-		public readonly RadioButtonGroupTracker Tracker = new RadioButtonGroupTracker();
+		public readonly RadioButtonGroupTracker Tracker = new();
 
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]

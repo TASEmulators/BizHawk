@@ -12,8 +12,8 @@ namespace BizHawk.Client.EmuHawk
 	public sealed class InputWidget : TextBox
 	{
 		// TODO: when binding, make sure that the new key combo is not in one of the other bindings
-		private readonly Timer _timer = new Timer();
-		private readonly List<string> _bindings = new List<string>();
+		private readonly Timer _timer = new();
+		private readonly List<string> _bindings = new();
 
 		private InputEvent _lastPress;
 

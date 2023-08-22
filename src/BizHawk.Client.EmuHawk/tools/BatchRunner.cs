@@ -25,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 		public event ProgressEventHandler OnProgress;
 
 		private readonly List<string> _files;
-		private readonly List<Result> _results = new List<Result>();
+		private readonly List<Result> _results = new();
 		private readonly RomLoader _ldr;
 		private readonly CoreComm _comm;
 		private readonly int _numFrames;

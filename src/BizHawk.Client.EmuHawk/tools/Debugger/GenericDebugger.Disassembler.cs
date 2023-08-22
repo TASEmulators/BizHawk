@@ -11,7 +11,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class GenericDebugger
 	{
-		private readonly List<DisasmOp> _disassemblyLines = new List<DisasmOp>();
+		private readonly List<DisasmOp> _disassemblyLines = new();
 		private int _pcRegisterSize = 4;
 		private uint _currentDisassemblerAddress;
 

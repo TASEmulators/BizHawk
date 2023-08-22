@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Belogic
 	[PortedCore(CoreNames.Uzem, "David Etherton")]
 	public class Uzem : WaterboxCore
 	{
-		private LibUzem _uze;
+		private readonly LibUzem _uze;
 		private readonly bool _mouseEnabled;
 
 		[CoreConstructor(VSystemID.Raw.UZE)]
