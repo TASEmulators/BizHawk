@@ -45,6 +45,12 @@ namespace BizHawk.Client.Common.Filters
 			Passes = preset.Passes.ToArray();
 			Errors = string.Empty;
 
+			if (owner.API is not ("OPENGL" or "D3D9"))
+			{
+				Errors = $"Unsupported API {owner.API}";
+				return;
+			}
+
 			// load up the shaders
 			var shaders = new RetroShader[preset.Passes.Count];
 			for (var i = 0; i < preset.Passes.Count; i++)

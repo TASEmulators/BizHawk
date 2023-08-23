@@ -95,13 +95,15 @@ namespace BizHawk.Bizware.Graphics
 			CurrentImageAttributes.SetColorMatrix(colorMatrix,ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
 		}
 
-		private bool _enableBlending;
-
 		public void EnableBlending()
-			=> _enableBlending = true;
+		{
+			Owner.EnableBlending();
+		}
 
 		public void DisableBlending()
-			=> _enableBlending = false;
+		{ 
+			Owner.DisableBlending();
+		}
 
 		private MatrixStack _Projection, _Modelview;
 
@@ -133,7 +135,7 @@ namespace BizHawk.Bizware.Graphics
 		public void Begin(int width, int height)
 		{
 			Begin();
-			
+
 			Projection = Owner.CreateGuiProjectionMatrix(width, height);
 			Modelview = Owner.CreateGuiViewMatrix(width, height);
 		}
@@ -142,11 +144,12 @@ namespace BizHawk.Bizware.Graphics
 		{
 			// uhhmmm I want to throw an exception if its already active, but its annoying.
 			IsActive = true;
-			_enableBlending = false;
+			Owner.DisableBlending();
 
+			CurrentImageAttributes?.Dispose();
 			CurrentImageAttributes = new();
-			Modelview.Clear();
-			Projection.Clear();
+			Modelview?.Clear();
+			Projection?.Clear();
 		}
 
 		public void Flush()
@@ -187,8 +190,8 @@ namespace BizHawk.Bizware.Graphics
 			PointF[] destPoints =
 			{
 				new(x, y),
-				new(x+w, y),
-				new(x, y+h),
+				new(x + w, y),
+				new(x, y + h),
 			};
 
 			g.DrawImage(gtex.SDBitmap, destPoints, new(x0, y0, x1 - x0, y1 - y0), GraphicsUnit.Pixel, CurrentImageAttributes);
@@ -208,7 +211,7 @@ namespace BizHawk.Bizware.Graphics
 			DrawInternal(art, x, y, width, height);
 		}
 
-		private void PrepDraw(SDGraphics g, Texture2d tex)
+		private static void PrepDraw(SDGraphics g, Texture2d tex)
 		{
 			var tw = (GDIPlusTexture)tex.Opaque;
 
@@ -224,21 +227,6 @@ namespace BizHawk.Bizware.Graphics
 				TextureMagFilter.Nearest => InterpolationMode.NearestNeighbor,
 				_ => g.InterpolationMode
 			};
-
-			if (_enableBlending)
-			{
-				g.CompositingMode = CompositingMode.SourceOver;
-				g.CompositingQuality = CompositingQuality.Default; // ?
-			}
-			else
-			{
-				g.CompositingMode = CompositingMode.SourceCopy;
-				g.CompositingQuality = CompositingQuality.HighSpeed;
-
-				// WARNING : DO NOT USE COLOR MATRIX TO WIPE THE ALPHA
-				// ITS SOOOOOOOOOOOOOOOOOOOOOOOOOOOO SLOW
-				// instead, we added kind of hacky support for 24bpp images
-			}
 		}
 
 		private void SetupMatrix(SDGraphics g)

@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Numerics;
 
@@ -39,12 +40,16 @@ namespace BizHawk.Bizware.Graphics
 
 		public void EnableBlending()
 		{
-			// TODO for real
+			var g = GetCurrentGraphics();
+			g.CompositingMode = CompositingMode.SourceOver;
+			g.CompositingQuality = CompositingQuality.Default;
 		}
 
 		public void DisableBlending()
 		{
-			// TODO for real
+			var g = GetCurrentGraphics();
+			g.CompositingMode = CompositingMode.SourceCopy;
+			g.CompositingQuality = CompositingQuality.HighSpeed;
 		}
 
 		public Pipeline CreatePipeline(VertexLayout vertexLayout, Shader vertexShader, Shader fragmentShader, bool required, string memo)

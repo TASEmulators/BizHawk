@@ -361,9 +361,6 @@ namespace BizHawk.Bizware.Graphics
 			pData[31] = CornerColors[3].W;
 
 			Owner.Draw(new(pData), 4);
-#if DEBUG
-			Debug.Assert(BlendStateSet);
-#endif
 		}
 
 		private void DrawSubrectInternal(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
@@ -381,9 +378,6 @@ namespace BizHawk.Bizware.Graphics
 
 		// state cache
 		private Texture2d sTexture;
-#if DEBUG
-		private bool BlendStateSet;
-#endif
 
 		// shaders are hand-coded for each platform to make sure they stay as fast as possible
 
