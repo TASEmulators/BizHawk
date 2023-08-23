@@ -243,7 +243,7 @@ namespace BizHawk.Common
 		{
 			var uri = new Uri(path);
 
-			// gongshell supported shell schemes, although that seems complicated to support and very edge case, so not bothering for now --cpp
+			// this should be the only scheme used in practice
 			if (uri.Scheme != "file")
 			{
 				throw new NotSupportedException("Non-file Uri schemes are unsupported");
@@ -264,8 +264,7 @@ namespace BizHawk.Common
 			ComInterface2 = (IContextMenu2)ComInterface;
 		}
 
-		// TODO: ref struct when c# 10
-		private class TempMenu : IDisposable
+		private ref struct TempMenu
 		{
 			[DllImport("user32.dll")]
 			private static extern IntPtr CreatePopupMenu();

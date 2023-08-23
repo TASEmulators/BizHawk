@@ -13,8 +13,7 @@ namespace BizHawk.Bizware.Graphics
 	/// </summary>
 	public static class OpenGLVersion
 	{
-		// TODO: make this a ref struct once we're c# 10 (parameterless struct ctor)
-		private class SavedOpenGLContext : IDisposable
+		private readonly ref struct SavedOpenGLContext
 		{
 			private readonly IntPtr _sdlWindow, _glContext;
 
