@@ -802,31 +802,70 @@ namespace BizHawk.Client.Common.Filters
 
 	public class OSD : BaseFilter
 	{
-		// this class has the ability to disable its operations for higher performance when the callback is removed,
-		// without having to take it out of the chain. although, its presence in the chain may slow down performance due to added resolves/renders
-		// so, we should probably rebuild the chain.
+		// This class has the ability to disable its operations for higher performance _drawOsd is false, while still allowing it to be in the chain
+		// (although its presence in the chain may slow down performance itself due to added resolves/renders)
+
+		private readonly bool _drawOsd;
+		private readonly OSDManager _manager;
+		private readonly StringRenderer _font;
+
+		public OSD(bool drawOsd, OSDManager manager, StringRenderer font)
+		{
+			_drawOsd = drawOsd;
+			_manager = manager;
+			_font = font;
+		}
 
 		public override void Initialize()
 		{
-			if (RenderCallback != null)
-			{
-				DeclareInput(SurfaceDisposition.RenderTarget);
-			}
+			DeclareInput(SurfaceDisposition.RenderTarget);
 		}
 
 		public override void SetInputFormat(string channel, SurfaceState state)
 		{
-			if (RenderCallback != null)
-			{
-				DeclareOutput(state);
-			}
+			DeclareOutput(state);
 		}
-
-		public Action RenderCallback;
 
 		public override void Run()
 		{
-			RenderCallback?.Invoke();
+			if (!_drawOsd)
+			{
+				return;
+			}
+
+			var size = FindInput().SurfaceFormat.Size;
+			
+			FilterProgram.GuiRenderer.Begin(size.Width, size.Height);
+			var blitter = new OSDBlitter(_font, FilterProgram.GuiRenderer, new(0, 0, size.Width, size.Height));
+			FilterProgram.GuiRenderer.EnableBlending();
+			_manager.DrawScreenInfo(blitter);
+			_manager.DrawMessages(blitter);
+			FilterProgram.GuiRenderer.End();
+		}
+
+		private class OSDBlitter : IBlitter
+		{
+			private readonly StringRenderer _font;
+			private readonly IGuiRenderer _renderer;
+
+			public OSDBlitter(StringRenderer font, IGuiRenderer renderer, Rectangle clipBounds)
+			{
+				_font = font;
+				_renderer = renderer;
+				ClipBounds = clipBounds;
+			}
+
+			public void DrawString(string s, Color color, float x, float y)
+			{
+				_renderer.SetModulateColor(color);
+				_font.RenderString(_renderer, x, y, s);
+				_renderer.SetModulateColorWhite();
+			}
+
+			public SizeF MeasureString(string s)
+				=> _font.Measure(s);
+
+			public Rectangle ClipBounds { get; }
 		}
 	}
 }

@@ -280,32 +280,15 @@ namespace BizHawk.Client.Common
 			}
 
 			if (!includeUserFilters)
+			{
 				selectedChain = null;
+			}
 
 			var fCoreScreenControl = CreateCoreScreenControl();
 
 			var fPresent = new FinalPresentation(chainOutSize);
 			var fInput = new SourceImage(chainInSize);
-			var fOSD = new OSD();
-			fOSD.RenderCallback = () =>
-			{
-				if (!includeOSD)
-				{
-					return;
-				}
-
-				var size = fOSD.FindInput().SurfaceFormat.Size;
-				_renderer.Begin(size.Width, size.Height);
-				var myBlitter = new MyBlitter(this)
-				{
-					ClipBounds = new Rectangle(0, 0, size.Width, size.Height)
-				};
-				_renderer.EnableBlending();
-				OSD.Begin(myBlitter);
-				OSD.DrawScreenInfo(myBlitter);
-				OSD.DrawMessages(myBlitter);
-				_renderer.End();
-			};
+			var fOSD = new OSD(includeOSD, OSD, _theOneFont);
 
 			var chain = new FilterProgram();
 
@@ -392,18 +375,17 @@ namespace BizHawk.Client.Common
 
 			// add final presentation
 			if (includeUserFilters)
+			{
 				chain.AddFilter(fPresent, "presentation");
+			}
 
 			//add lua layer 'native'
 			AppendApiHawkLayer(chain, DisplaySurfaceID.Client);
 
 			// and OSD goes on top of that
 			// TODO - things break if this isn't present (the final presentation filter gets messed up when used with prescaling)
-			// so, always include it (we'll handle this flag in the callback to do no rendering)
-			if (true /*includeOSD*/)
-			{
-				chain.AddFilter(fOSD, "osd");
-			}
+			// so, always include it (we'll handle includeOSD on Run)
+			chain.AddFilter(fOSD, "osd");
 
 			return chain;
 		}
@@ -1066,30 +1048,6 @@ namespace BizHawk.Client.Common
 			_apiHawkSurfaceToID.Remove(dispSurfaceImpl);
 			_apiHawkIDToSurface.Remove(surfaceID);
 			_apiHawkSurfaceSets[surfaceID].SetPending(dispSurfaceImpl);
-		}
-
-		// helper classes:
-		private class MyBlitter : IBlitter
-		{
-			private readonly DisplayManagerBase _owner;
-
-			public MyBlitter(DisplayManagerBase dispManager)
-			{
-				_owner = dispManager;
-			}
-
-			public StringRenderer GetFontType(string fontType) => _owner._theOneFont;
-
-			public void DrawString(string s, StringRenderer font, Color color, float x, float y)
-			{
-				_owner._renderer.SetModulateColor(color);
-				font.RenderString(_owner._renderer, x, y, s);
-				_owner._renderer.SetModulateColorWhite();
-			}
-
-			public SizeF MeasureString(string s, StringRenderer font) => font.Measure(s);
-
-			public Rectangle ClipBounds { get; set; }
 		}
 	}
 }
