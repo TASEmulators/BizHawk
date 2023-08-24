@@ -285,7 +285,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SetFromRawInt(int? val)
 		{
-			Text = val.HasValue ? val.ToString() : "";
+			Text = val?.ToString() ?? "";
 		}
 	}
 }

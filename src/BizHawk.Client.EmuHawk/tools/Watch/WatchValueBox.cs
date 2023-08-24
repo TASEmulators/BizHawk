@@ -195,7 +195,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					default:
 					case WatchDisplayType.Signed:
-						int? val = ToRawInt() ?? 0;
+						int val = ToRawInt() ?? 0;
 						if (val == MaxSignedInt)
 						{
 							val = MinSignedInt;
@@ -307,12 +307,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					default:
 					case WatchDisplayType.Signed:
-						var val = ToRawInt();
-						if (!val.HasValue)
-						{
-							Text = "";
-						}
-						else if (val == MinSignedInt)
+						int val = ToRawInt() ?? 0;
+						if (val == MinSignedInt)
 						{
 							val = MaxSignedInt;
 						}
@@ -468,7 +464,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					default:
 					case WatchDisplayType.Signed:
-						Text = val.ToString();
+						Text = val.Value.ToString();
 						break;
 					case WatchDisplayType.Unsigned:
 						var uval = (uint)val.Value;
