@@ -28,7 +28,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			key = key.Replace("LogKey:", "").Replace("#", "");
-			key = key.Substring(0, key.Length - 1);
+			key = key[..^1];
 
 			_inputKey = key;
 			Length = length;
@@ -41,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 			logGenerator.GenerateLogEntry(); // Reference and create all buttons.
 
 			string movieKey = logGenerator.GenerateLogKey().Replace("LogKey:", "").Replace("#", "");
-			movieKey = movieKey.Substring(0, movieKey.Length - 1);
+			movieKey = movieKey[..^1];
 			if (key == movieKey)
 			{
 				for (int i = 0; i < length; i++)
@@ -239,7 +239,7 @@ namespace BizHawk.Client.EmuHawk
 			var lg = _movieSession.Movie.LogGeneratorInstance(_movieSession.MovieController);
 			string key = lg.GenerateLogKey();
 			key = key.Replace("LogKey:", "").Replace("#", "");
-			key = key.Substring(0, key.Length - 1);
+			key = key[..^1];
 			string[] emuKeys = key.Split('|');
 			string[] macroKeys = _inputKey.Split('|');
 			foreach (var macro in macroKeys)

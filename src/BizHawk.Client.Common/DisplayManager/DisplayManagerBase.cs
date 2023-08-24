@@ -763,7 +763,6 @@ namespace BizHawk.Client.Common
 			}
 
 			var videoProvider = job.VideoProvider;
-			var glTextureProvider = videoProvider as IGLTextureProvider;
 			var simulate = job.Simulate;
 			var chainOutsize = job.ChainOutsize;
 
@@ -824,7 +823,7 @@ namespace BizHawk.Client.Common
 			Texture2d videoTexture = null;
 			if (!simulate)
 			{
-				if (glTextureProvider != null && _gl.DispMethodEnum == EDispMethod.OpenGL)
+				if (videoProvider is IGLTextureProvider glTextureProvider && _gl.DispMethodEnum == EDispMethod.OpenGL)
 				{
 					// FYI: this is a million years from happening on n64, since it's all geriatric non-FBO code
 					videoTexture = _gl.WrapGLTexture2d(new(glTextureProvider.GetGLTexture()), bufferWidth, bufferHeight);

@@ -56,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				temp = mmc3.prg_regs_8k[i];
 
 				if ((exRegs[1] & 0x8) > 0)
-					temp = temp & 0x1F;
+					temp &= 0x1F;
 				else
 					temp = ((temp & 0x0F) | (exRegs[1] & 0x10));
 

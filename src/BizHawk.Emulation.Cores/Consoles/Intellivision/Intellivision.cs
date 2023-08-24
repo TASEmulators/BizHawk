@@ -16,8 +16,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 			_rom = rom;
-			_settings = (IntvSettings)settings ?? new IntvSettings();
-			_syncSettings = (IntvSyncSettings)syncSettings ?? new IntvSyncSettings();
+			_settings = settings ?? new IntvSettings();
+			_syncSettings = syncSettings ?? new IntvSyncSettings();
 
 			_controllerDeck = new IntellivisionControllerDeck(_syncSettings.Port1, _syncSettings.Port2);
 

@@ -605,7 +605,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 
 			// update lastCycle and return currentstate
-			_lastCycle = cpuCycle - (long)cycles;
+			_lastCycle = cpuCycle - cycles;
 
 			// play the buzzer
 			//_buzzer.ProcessPulseValue(false, currentState);

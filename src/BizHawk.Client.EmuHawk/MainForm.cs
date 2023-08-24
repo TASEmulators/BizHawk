@@ -1208,7 +1208,7 @@ namespace BizHawk.Client.EmuHawk
 			//NOTE: these must go together, because in the case of screen rotation, X and Y are transformed together
 			if(mouseX != null && mouseY != null)
 			{
-				var p = DisplayManager.UntransformPoint(new Point((int) mouseX.Value.Value, (int) mouseY.Value.Value));
+				var p = DisplayManager.UntransformPoint(new Point(mouseX.Value.Value, mouseY.Value.Value));
 				float x = p.X / (float)_currentVideoProvider.BufferWidth;
 				float y = p.Y / (float)_currentVideoProvider.BufferHeight;
 				finalHostController.AcceptNewAxis("WMouse X", (int) ((x * 20000) - 10000));
@@ -3810,8 +3810,6 @@ namespace BizHawk.Client.EmuHawk
 
 				IOpenAdvanced ioa = args.OpenAdvanced;
 				var oaOpenrom = ioa as OpenAdvanced_OpenRom;
-				var oaMame = ioa as OpenAdvanced_MAME;
-				var oaRetro = ioa as OpenAdvanced_Libretro;
 				var ioaRetro = ioa as IOpenAdvancedLibretro;
 
 				// we need to inform LoadRom which Libretro core to use...
@@ -3846,7 +3844,7 @@ namespace BizHawk.Client.EmuHawk
 				// we need to replace the path in the OpenAdvanced with the canonical one the user chose.
 				// It can't be done until loader.LoadRom happens (for CanonicalFullPath)
 				// i'm not sure this needs to be more abstractly engineered yet until we have more OpenAdvanced examples
-				if (oaRetro != null)
+				if (ioa is OpenAdvanced_Libretro oaRetro)
 				{
 					oaRetro.token.Path = loader.CanonicalFullPath;
 				}
@@ -3856,7 +3854,7 @@ namespace BizHawk.Client.EmuHawk
 					oaOpenrom.Path = loader.CanonicalFullPath;
 				}
 
-				if (oaMame != null)
+				if (ioa is OpenAdvanced_MAME oaMame)
 				{
 					oaMame.Path = loader.CanonicalFullPath;
 				}
@@ -3871,7 +3869,7 @@ namespace BizHawk.Client.EmuHawk
 					InputManager.SyncControls(Emulator, MovieSession, Config);
 					_multiDiskMode = false;
 
-					if (oaOpenrom != null && Path.GetExtension(oaOpenrom.Path.Replace("|", "")).ToLowerInvariant() == ".xml" && !(Emulator is LibsnesCore))
+					if (oaOpenrom != null && Path.GetExtension(oaOpenrom.Path.Replace("|", "")).ToLowerInvariant() == ".xml" && Emulator is not LibsnesCore)
 					{
 						// this is a multi-disk bundler file
 						// determine the xml assets and create RomStatusDetails for all of them

@@ -59,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			key = key.Substring(0, key.Length - 1);
+			key = key[..^1];
 
 			SelectedZone.InputKey = key;
 		}

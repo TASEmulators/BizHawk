@@ -1,6 +1,4 @@
-﻿using BizHawk.Common;
-
-namespace BizHawk.Emulation.Cores.Consoles.ChannelF
+﻿namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
 	/// <summary>
 	/// Video related functions

@@ -165,8 +165,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				if ((exRegs[3] & 0x2)>0)
 				{
-					prg_regs_8k[2] = (byte)(exRegs[4]);
-					prg_regs_8k[3] = (byte)(exRegs[5]);
+					prg_regs_8k[2] = exRegs[4];
+					prg_regs_8k[3] = exRegs[5];
 				}
 				UpdatePrg();
 			}

@@ -94,8 +94,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			ConnectTracer();
 			DriveLightEnabled = true;
 
-			_Settings = (Settings)settings ?? new Settings();
-			_SyncSettings = (SyncSettings)syncSettings ?? new SyncSettings();
+			_Settings = settings ?? new Settings();
+			_SyncSettings = syncSettings ?? new SyncSettings();
 
 			Discs = discs;
 
@@ -754,7 +754,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			//change the disc if needed, and valid
 			//also if frame is 0, we need to set a disc no matter what
-			int requestedDisc = (int)_controller.AxisValue("Disc Select");
+			int requestedDisc = _controller.AxisValue("Disc Select");
 			if (requestedDisc != CurrentDiscIndexMounted && CurrentTrayOpen
 				|| Frame == 0
 				)

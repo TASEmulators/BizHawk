@@ -3,9 +3,6 @@ using System.Runtime.InteropServices;
 using System.Reflection;
 using System.Collections.Generic;
 using System.IO;
-
-using BizHawk.Common;
-using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.DiscSystem;
 
 using OSTC = EXE_PROJECT.OSTailoredCode;

@@ -209,7 +209,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (!(CurrentMovie is ITasMovie))
+			if (CurrentMovie is not ITasMovie)
 			{
 				SelectedZone.Start = Emulator.Frame;
 			}
@@ -238,7 +238,7 @@ namespace BizHawk.Client.EmuHawk
 				ZonesList.Items.Add($"{loadZone.Name} - length: {loadZone.Length}");
 
 				// Options only for TasMovie
-				if (!(CurrentMovie is ITasMovie))
+				if (CurrentMovie is not ITasMovie)
 				{
 					loadZone.Replace = false;
 					loadZone.Overlay = false;

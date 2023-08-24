@@ -4,10 +4,6 @@ using BizHawk.Emulation.Cores.Waterbox;
 using System.IO;
 using System.ComponentModel;
 using BizHawk.Common;
-using System.Collections.Generic;
-using System.Linq;
-
-using BizHawk.Emulation.Cores.Nintendo.SNES;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 {

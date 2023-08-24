@@ -18,12 +18,12 @@ namespace BizHawk.Client.Common
 			/// <returns>True if <see cref="Watch"/> are equal; otherwise, false</returns>
 			public bool Equals(Watch x, Watch y)
 			{
-				if (ReferenceEquals(x, null))
+				if (x is null)
 				{
-					return ReferenceEquals(y, null);
+					return y is null;
 				}
 
-				if (ReferenceEquals(y, null))
+				if (y is null)
 				{
 					return false;
 				}

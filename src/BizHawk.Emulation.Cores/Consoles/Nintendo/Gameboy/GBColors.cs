@@ -132,7 +132,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		// "gameboy colors" mode on older versions of VBA
 		private static int gbGetValue(int min, int max, int v)
 		{
-			return (int)(min + (float)(max - min) * (2.0 * (v / 31.0) - (v / 31.0) * (v / 31.0)));
+			return (int)(min + (max - min) * (2.0 * (v / 31.0) - (v / 31.0) * (v / 31.0)));
 		}
 
 		public static Triple OldVBAColor(Triple c, bool sgb, bool agb)

@@ -9,7 +9,6 @@ using System.Threading;
 using BizHawk.Client.Common;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {

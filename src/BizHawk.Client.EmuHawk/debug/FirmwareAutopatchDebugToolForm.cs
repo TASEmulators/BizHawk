@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk.ForDebugging
 		public FirmwareAutopatchDebugToolForm()
 		{
 			static string LabelFragment(string hash)
-				=> $"{hash.Substring(0, 8)}... {FirmwareDatabase.FirmwareFilesByHash[hash].RecommendedName}";
+				=> $"{hash[..8]}... {FirmwareDatabase.FirmwareFilesByHash[hash].RecommendedName}";
 			List<(string Label, FirmwarePatchOption PatchOption)> patches = FirmwareDatabase.AllPatches
 				.Select(static fpo => ($"{LabelFragment(fpo.BaseHash)} --> {LabelFragment(fpo.TargetHash)}", fpo)).ToList();
 			patches.Sort(static (a, b) => a.Label.CompareTo(b.Label));

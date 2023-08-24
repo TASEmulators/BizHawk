@@ -150,7 +150,7 @@ namespace BizHawk.Client.Common
 		/// <returns>True if both watch are equals; otherwise, false</returns>
 		public static bool operator ==(Watch a, Watch b)
 		{
-			if (ReferenceEquals(a, null) || ReferenceEquals(b, null))
+			if (a is null || b is null)
 			{
 				return false;
 			}
@@ -171,7 +171,7 @@ namespace BizHawk.Client.Common
 		/// <returns>True if they are equals; otherwise, false</returns>
 		public static bool operator ==(Watch a, Cheat b)
 		{
-			if (ReferenceEquals(a, null) || ReferenceEquals(b, null))
+			if (a is null || b is null)
 			{
 				return false;
 			}
@@ -325,7 +325,7 @@ namespace BizHawk.Client.Common
 		/// <returns>True if both object are equals; otherwise, false</returns>
 		public bool Equals(Watch other)
 		{
-			if (ReferenceEquals(other, null))
+			if (other is null)
 			{
 				return false;
 			}
@@ -342,7 +342,7 @@ namespace BizHawk.Client.Common
 		/// <returns>True if both object are equals; otherwise, false</returns>
 		public bool Equals(Cheat other)
 		{
-			return !ReferenceEquals(other, null)
+			return other is not null
 				&& _domain == other.Domain
 				&& Address == other.Address
 				&& Size == other.Size;

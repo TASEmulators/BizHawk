@@ -63,15 +63,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0:
 					prg_banks_8k[0] = (byte)((prg_high * 2 + 0) ^ prg_low_val);
 					prg_banks_8k[1] = (byte)((prg_high * 2 + 1) ^ prg_low_val);
-					prg_high = prg_high | 0x01;
+					prg_high |= 0x01;
 					prg_banks_8k[2] = (byte)((prg_high * 2 + 0) ^ prg_low_val);
 					prg_banks_8k[3] = (byte)((prg_high * 2 + 1) ^ prg_low_val);
 					break;
 				case 1:
 					prg_banks_8k[0] = (byte)((prg_high*2+0) ^ prg_low_val);
 					prg_banks_8k[1] = (byte)((prg_high*2+1) ^ prg_low_val);
-					prg_banks_8k[2] = (byte)(0xFE);
-					prg_banks_8k[3] = (byte)(0xFF);
+					prg_banks_8k[2] = 0xFE;
+					prg_banks_8k[3] = 0xFF;
 					//maybe all 4?
 					break;
 				case 2:

@@ -1,6 +1,4 @@
 using System;
-using System.IO;
-using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS

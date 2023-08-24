@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 
@@ -16,8 +15,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 		public SubGBHawk(CoreComm comm, GameInfo game, byte[] rom, /*string gameDbFn,*/ GBHawk.GBHawk.GBSettings settings, GBHawk.GBHawk.GBSyncSettings syncSettings)
 		{
 			
-			var subGBSettings = (GBHawk.GBHawk.GBSettings)settings ?? new GBHawk.GBHawk.GBSettings();
-			var subGBSyncSettings = (GBHawk.GBHawk.GBSyncSettings)syncSettings ?? new GBHawk.GBHawk.GBSyncSettings();
+			var subGBSettings = settings ?? new GBHawk.GBHawk.GBSettings();
+			var subGBSyncSettings = syncSettings ?? new GBHawk.GBHawk.GBSyncSettings();
 
 			_GBCore = new GBHawk.GBHawk(comm, game, rom, subGBSettings, subGBSyncSettings, true);
 

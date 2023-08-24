@@ -541,7 +541,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 					case 0x30: // BMI +/-rel
 						rel8 = (sbyte)ReadMemory(PC++);
 						value16 = (ushort)(PC + rel8);
-						if (FlagN == true)
+						if (FlagN)
 						{
 							PendingCycles -= 2;
 							PC = value16;
@@ -1213,7 +1213,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 					case 0x70: // BVS +/-rel
 						rel8 = (sbyte)ReadMemory(PC++);
 						value16 = (ushort)(PC + rel8);
-						if (FlagV == true)
+						if (FlagV)
 						{
 							PendingCycles -= 2;
 							PC = value16;
@@ -1747,7 +1747,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 					case 0xB0: // BCS +/-rel
 						rel8 = (sbyte)ReadMemory(PC++);
 						value16 = (ushort)(PC + rel8);
-						if (FlagC == true)
+						if (FlagC)
 						{
 							PendingCycles -= 2;
 							PC = value16;
@@ -2255,7 +2255,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 					case 0xF0: // BEQ +/-rel
 						rel8 = (sbyte)ReadMemory(PC++);
 						value16 = (ushort)(PC + rel8);
-						if (FlagZ == true)
+						if (FlagZ)
 						{
 							PendingCycles -= 2;
 							PC = value16;

@@ -67,9 +67,9 @@ namespace BizHawk.Client.Common
 
 		public long? Address => _watch.Address;
 
-		public int? Value => IsSeparator ? (int?)null : _val;
+		public int? Value => IsSeparator ? null : _val;
 
-		public bool? BigEndian => IsSeparator ? (bool?)null : _watch.BigEndian;
+		public bool? BigEndian => IsSeparator ? null : _watch.BigEndian;
 
 		public int? Compare => _compare.HasValue && !IsSeparator ? _compare : null;
 
@@ -304,7 +304,7 @@ namespace BizHawk.Client.Common
 		public static bool operator ==(Cheat a, Cheat b)
 		{
 			// If one is null, but not both, return false.
-			if ((object)a == null || (object)b == null)
+			if (a is null || b is null)
 			{
 				return false;
 			}
@@ -320,7 +320,7 @@ namespace BizHawk.Client.Common
 		public static bool operator ==(Cheat a, Watch b)
 		{
 			// If one is null, but not both, return false.
-			if ((object)a == null || (object)b == null)
+			if (a is null || b is null)
 			{
 				return false;
 			}

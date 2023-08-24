@@ -1,7 +1,5 @@
 using System;
 
-using Silk.NET.OpenGL.Legacy;
-
 using static SDL2.SDL;
 
 namespace BizHawk.Bizware.Graphics

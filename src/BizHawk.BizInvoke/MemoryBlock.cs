@@ -1,7 +1,5 @@
 using System;
 using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
 using BizHawk.Common;
 
 namespace BizHawk.BizInvoke
@@ -19,7 +17,7 @@ namespace BizHawk.BizInvoke
 			Size = WaterboxUtils.AlignUp(size);
 
 			_pal = OSTailoredCode.IsUnixHost
-				? (IMemoryBlockPal)new MemoryBlockLinuxPal(Size)
+				? new MemoryBlockLinuxPal(Size)
 				: new MemoryBlockWindowsPal(Size);
 			Start = _pal!.Start;
 			EndExclusive = Start + Size;

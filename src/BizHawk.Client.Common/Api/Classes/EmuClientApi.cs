@@ -1,8 +1,6 @@
 using System;
 using System.Drawing;
 using System.IO;
-
-using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common

@@ -469,7 +469,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							_tasClipboard.Clear();
 							int linesToPaste = lines.Length;
-							if (lines[lines.Length - 1] == "") linesToPaste--;
+							if (lines[^1] == "") linesToPaste--;
 							for (int i = 0; i < linesToPaste; i++)
 							{
 								var line = ControllerFromMnemonicStr(lines[i]);
@@ -511,7 +511,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							_tasClipboard.Clear();
 							int linesToPaste = lines.Length;
-							if (lines[lines.Length - 1] == "") linesToPaste--;
+							if (lines[^1] == "") linesToPaste--;
 							for (int i = 0; i < linesToPaste; i++)
 							{
 								var line = ControllerFromMnemonicStr(lines[i]);

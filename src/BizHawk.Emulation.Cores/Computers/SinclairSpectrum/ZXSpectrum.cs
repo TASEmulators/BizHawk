@@ -1,5 +1,4 @@
-﻿using BizHawk.Common;
-using BizHawk.Emulation.Common;
+﻿using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.Z80A;
 using BizHawk.Emulation.Cores.Properties;
 using System;
@@ -41,12 +40,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			var joysticks = new List<JoystickType>
 			{
-				((ZXSpectrumSyncSettings)syncSettings).JoystickType1,
-				((ZXSpectrumSyncSettings)syncSettings).JoystickType2,
-				((ZXSpectrumSyncSettings)syncSettings).JoystickType3
+				syncSettings.JoystickType1,
+				syncSettings.JoystickType2,
+				syncSettings.JoystickType3
 			};
 
-			DeterministicEmulation = ((ZXSpectrumSyncSettings)syncSettings).DeterministicEmulation;
+			DeterministicEmulation = syncSettings.DeterministicEmulation;
 
 			if (lp.DeterministicEmulationRequested)
 			{
@@ -113,8 +112,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			// initialize sound mixer and attach the various ISoundProvider devices
 			SoundMixer = new SyncSoundMixer(targetSampleCount: 882);
-			SoundMixer.PinSource(_machine.BuzzerDevice, "System Beeper", (int)(32767 / 10));
-			SoundMixer.PinSource(_machine.TapeBuzzer, "Tape Audio", (int)(32767 / 10));
+			SoundMixer.PinSource(_machine.BuzzerDevice, "System Beeper", 32767 / 10);
+			SoundMixer.PinSource(_machine.TapeBuzzer, "Tape Audio", 32767 / 10);
 			if (_machine.AYDevice != null)
 			{
 				SoundMixer.PinSource(_machine.AYDevice, "AY-3-3912");
@@ -123,18 +122,18 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// set audio device settings
 			if (_machine.AYDevice != null && _machine.AYDevice.GetType() == typeof(AY38912))
 			{
-				((AY38912)_machine.AYDevice).PanningConfiguration = ((ZXSpectrumSettings)settings).AYPanConfig;
-				_machine.AYDevice.Volume = ((ZXSpectrumSettings)settings).AYVolume;
+				((AY38912)_machine.AYDevice).PanningConfiguration = settings.AYPanConfig;
+				_machine.AYDevice.Volume = settings.AYVolume;
 			}
 
 			if (_machine.BuzzerDevice != null)
 			{
-				_machine.BuzzerDevice.Volume = ((ZXSpectrumSettings)settings).EarVolume;
+				_machine.BuzzerDevice.Volume = settings.EarVolume;
 			}
 
 			if (_machine.TapeBuzzer != null)
 			{
-				_machine.TapeBuzzer.Volume = ((ZXSpectrumSettings)settings).TapeVolume;
+				_machine.TapeBuzzer.Volume = settings.TapeVolume;
 			}
 
 			DCFilter dc = new DCFilter(SoundMixer, 512);

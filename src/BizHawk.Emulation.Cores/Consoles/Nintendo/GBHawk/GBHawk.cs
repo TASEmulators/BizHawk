@@ -152,7 +152,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			serialport = new SerialPort();
 
 			_ = PutSettings(settings ?? new GBSettings());
-			_syncSettings = (GBSyncSettings)syncSettings ?? new GBSyncSettings();
+			_syncSettings = syncSettings ?? new GBSyncSettings();
 
 			is_GBC = _syncSettings.ConsoleMode switch
 			{
@@ -211,7 +211,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ServiceProvider = ser;
 
 			_ = PutSettings(settings ?? new GBSettings());
-			_syncSettings = (GBSyncSettings)syncSettings ?? new GBSyncSettings();
+			_syncSettings = syncSettings ?? new GBSyncSettings();
 
 			_tracer = new TraceBuffer(cpu.TraceHeader);
 			ser.Register<ITraceable>(_tracer);
@@ -684,13 +684,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				mapper.RTC_Get(hours & 0xFF, 2);
 
-				remaining = remaining - (hours * 3600);
+				remaining -= (hours * 3600);
 
 				int minutes = (int)Math.Floor(remaining / 60.0);
 
 				mapper.RTC_Get(minutes & 0xFF, 1);
 
-				remaining = remaining - (minutes * 60);
+				remaining -= (minutes * 60);
 
 				mapper.RTC_Get(remaining & 0xFF, 0);
 			}
@@ -711,7 +711,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				mapper.RTC_Get(days_upper, 20);
 				mapper.RTC_Get(days & 0xFF, 12);
 
-				remaining = remaining - (days * 86400);
+				remaining -= (days * 86400);
 
 				int minutes = (int)Math.Floor(remaining / 60.0);
 				int minutes_upper = (minutes >> 8) & 0xF;

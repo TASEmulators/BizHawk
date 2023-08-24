@@ -302,7 +302,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (p[i] == lastValue)
 					{
-						_counts[_counts.Count - 1]++;
+						_counts[^1]++;
 					}
 					else
 					{
@@ -335,7 +335,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (p[i] == lastValue)
 					{
-						_counts[_counts.Count - 1]++;
+						_counts[^1]++;
 					}
 					else
 					{

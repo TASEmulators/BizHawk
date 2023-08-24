@@ -1,7 +1,6 @@
 ﻿using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.Z80A;
-using System;
 
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {

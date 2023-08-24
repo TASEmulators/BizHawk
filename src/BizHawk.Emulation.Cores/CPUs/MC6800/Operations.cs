@@ -382,7 +382,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6800
 			}
 			if (FlagC || (((a >> 4) & 0xF) > 9) || ((((a >> 4) & 0xF) > 8) && ((a & 0xF) > 9)))
 			{
-				CF |= (byte)(6 << 4);
+				CF |= 6 << 4;
 			}
 
 			a += CF;

@@ -91,7 +91,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 						IDLE,
 						RD, W, PCl, PCh,
 						INC16, PCl, PCh,
-						COND_CHECK, cond, (ushort)0,							
+						COND_CHECK, cond, 0,							
 						IDLE,
 						ASGN, Z, 0,
 						IDLE,

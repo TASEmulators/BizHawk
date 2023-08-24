@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 
-using BizHawk.Emulation.Common;
-
 namespace BizHawk.Emulation.Common
 {
 	public abstract class PadSchemaControl

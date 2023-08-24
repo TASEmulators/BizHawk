@@ -40,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private static readonly IScreenBlankTimer _screenBlankTimer = OSTailoredCode.IsUnixHost
-			? (IScreenBlankTimer) new UnixScreenBlankTimer()
+			? new UnixScreenBlankTimer()
 			: new Win32ScreenBlankTimer();
 
 		private static int ctr;

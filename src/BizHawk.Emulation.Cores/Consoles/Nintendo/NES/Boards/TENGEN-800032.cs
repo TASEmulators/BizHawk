@@ -273,7 +273,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void ClockCpu()
 		{
 
-			if (irq_mode == true)
+			if (irq_mode)
 			{
 				irq_countdown--;
 				if (irq_countdown == 0)

@@ -562,7 +562,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			}
 
 			// update lastCycle and return currentstate
-			_lastCycle = cpuCycle - (long)cycles;
+			_lastCycle = cpuCycle - cycles;
 
 			return currentState;
 		}

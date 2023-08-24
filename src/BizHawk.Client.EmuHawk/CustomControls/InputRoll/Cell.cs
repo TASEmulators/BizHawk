@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static bool operator ==(Cell a, Cell b)
 		{
-			return a?.Equals(b) ?? ReferenceEquals(b, null);
+			return a?.Equals(b) ?? b is null;
 		}
 
 		public static bool operator !=(Cell a, Cell b)

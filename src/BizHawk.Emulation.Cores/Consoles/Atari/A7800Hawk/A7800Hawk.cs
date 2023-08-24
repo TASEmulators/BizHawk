@@ -94,8 +94,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			_blip.SetRates(1789773, 44100);
 
-			_settings = (A7800Settings)settings ?? new A7800Settings();
-			_syncSettings = (A7800SyncSettings)syncSettings ?? new A7800SyncSettings();
+			_settings = settings ?? new A7800Settings();
+			_syncSettings = syncSettings ?? new A7800SyncSettings();
 			_controllerDeck = new A7800HawkControllerDeck(_syncSettings.Port1, _syncSettings.Port2);
 
 			var highscoreBios = comm.CoreFileProvider.GetFirmware(new("A78", "Bios_HSC"), "Some functions may not work without the high score BIOS.");

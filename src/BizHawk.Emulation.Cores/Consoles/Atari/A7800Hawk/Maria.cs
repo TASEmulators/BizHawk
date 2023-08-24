@@ -359,7 +359,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 								global_write_mode = temp.Bit(7);
 								GFX_Objects[header_counter].ind_mode = temp.Bit(5);
 								header_pointer++;
-								temp = (byte)(ReadMemory((ushort)(current_DLL_addr + header_pointer)));
+								temp = ReadMemory((ushort)(current_DLL_addr + header_pointer));
 								GFX_Objects[header_counter].addr |= (ushort)(temp << 8);
 								header_pointer++;
 								temp = ReadMemory((ushort)(current_DLL_addr + header_pointer));
@@ -372,7 +372,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 								}
 								else
 								{
-									temp_w = (temp_w - 1);
+									temp_w--;
 									temp_w = (0x1F - temp_w);
 									GFX_Objects[header_counter].width = (byte)(temp_w & 0x1F);
 								}
@@ -390,13 +390,13 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 						else
 						{
 							int temp_w = (temp & 0x1F); // this is the 2's complement of width (for reasons that escape me)
-							temp_w = (temp_w - 1);
+							temp_w--;
 							temp_w = (0x1F - temp_w);
 							GFX_Objects[header_counter].width = (byte)(temp_w & 0x1F);
 
 							GFX_Objects[header_counter].palette = (byte)((temp & 0xE0) >> 5);
 							header_pointer++;
-							temp = (byte)(ReadMemory((ushort)(current_DLL_addr + header_pointer)));
+							temp = ReadMemory((ushort)(current_DLL_addr + header_pointer));
 							GFX_Objects[header_counter].addr |= (ushort)(temp << 8);
 							header_pointer++;
 							GFX_Objects[header_counter].h_pos = ReadMemory((ushort)(current_DLL_addr + header_pointer));

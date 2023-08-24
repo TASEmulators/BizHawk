@@ -43,7 +43,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				// if DirectSound or XAudio is chosen, use OpenAL, otherwise comply with the user's choice
 				_outputDevice = config.SoundOutputMethod == ESoundOutputMethod.Dummy
-					? (ISoundOutput) new DummySoundOutput(this)
+					? new DummySoundOutput(this)
 					: new OpenALSoundOutput(this, config.SoundDevice);
 			}
 			else

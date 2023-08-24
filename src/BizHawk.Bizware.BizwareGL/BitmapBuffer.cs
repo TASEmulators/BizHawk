@@ -527,7 +527,7 @@ namespace BizHawk.Bizware.BizwareGL
 			k--;
 			for (var i = 1; i < 32; i <<= 1)
 			{
-				k = k | k >> i;
+				k |= k >> i;
 			}
 
 			var candidate = k + 1;

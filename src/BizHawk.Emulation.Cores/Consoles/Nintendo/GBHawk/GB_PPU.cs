@@ -578,7 +578,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							read_case_prev = 0;
 
 							// calculate the row number of the tiles to be fetched
-							y_tile = (((int)scroll_y + LY) >> 3) % 32;
+							y_tile = ((scroll_y + LY) >> 3) % 32;
 							x_tile = scroll_x >> 3;
 
 							temp_fetch = y_tile * 32 + (x_tile + tile_inc) % 32;

@@ -1,7 +1,5 @@
 using System.Drawing;
 
-using BizHawk.Bizware.BizwareGL;
-
 namespace BizHawk.Client.Common
 {
 	/// <summary>
