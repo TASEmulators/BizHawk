@@ -22,6 +22,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			Justifier = 5
 		}
 
+		public delegate bool OpenAudio(ushort trackId);
+		public delegate void SeekAudio(long offset, bool relative);
+		public delegate byte ReadAudio();
+		public delegate bool AudioEnd();
+
+		[BizImport(CC)]
+		public abstract void SetMsu1Callbacks(OpenAudio openAudio, SeekAudio seekAudio, ReadAudio readAudio, AudioEnd audioEnd);
 		[BizImport(CC)]
 		public abstract void SetButtons(short[] buttons);
 		[BizImport(CC)]
