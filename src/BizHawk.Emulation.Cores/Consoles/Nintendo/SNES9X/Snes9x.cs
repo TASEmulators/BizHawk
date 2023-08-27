@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 {
 	[PortedCore(CoreNames.Snes9X, "", "e49165c5607011f4d95adcb7b5983140ab5a75f1", "https://github.com/snes9xgit/snes9x")]
 	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
-	public class Snes9x : WaterboxCore, 
+	public class Snes9x : WaterboxCore,
 		ISettable<Snes9x.Settings, Snes9x.SyncSettings>, IRegionable
 	{
 		private readonly LibSnes9x _core;
@@ -37,8 +37,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			{
 				Filename = "snes9x.wbx",
 				SbrkHeapSizeKB = 1024,
-				InvisibleHeapSizeKB = 17 * 1024,
+				InvisibleHeapSizeKB = 5 * 1024,
 				MmapHeapSizeKB = 1024,
+				PlainHeapSizeKB = 13 * 1024,
 				SkipCoreConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			});
