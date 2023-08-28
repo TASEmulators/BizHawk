@@ -911,7 +911,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 							addressed = true;
 							data = 0x0ff;
 						}
-						else if (ChipType is CRCTType.HD6845S or CRCTType.UM6845R or CRCTType.MC6845)
+						else if (ChipType is CRCTType.HD6845S or CRCTType.UM6845 or CRCTType.MC6845)
 						{
 							addressed = true;
 							data = 0;
