@@ -33,10 +33,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			this._romPath = Path.ChangeExtension(loadParameters.Roms[0].RomPath, null);
 			this._currentMsuTrack = new ProxiedFile();
 
-			LibSnes9x.AudioEnd audioEndCb;
-			LibSnes9x.ReadAudio readAudioCb;
-			LibSnes9x.SeekAudio seekAudioCb;
-			LibSnes9x.OpenAudio openAudioCb;
+			LibSnes9x.OpenAudio openAudioCb = MsuOpenAudio;
+			LibSnes9x.SeekAudio seekAudioCb = _currentMsuTrack.Seek;
+			LibSnes9x.ReadAudio readAudioCb = _currentMsuTrack.ReadByte;
+			LibSnes9x.AudioEnd audioEndCb = _currentMsuTrack.AtEnd;
 			_core = PreInit<LibSnes9x>(new WaterboxOptions
 			{
 				Filename = "snes9x.wbx",
@@ -46,10 +46,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 				PlainHeapSizeKB = 13 * 1024,
 				SkipCoreConsistencyCheck = loadParameters.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = loadParameters.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
-			}, new Delegate[]
-			{
-				openAudioCb = MsuOpenAudio, seekAudioCb = _currentMsuTrack.Seek, readAudioCb = _currentMsuTrack.ReadByte, audioEndCb = _currentMsuTrack.AtEnd
-			});
+			}, new Delegate[] { openAudioCb, seekAudioCb, readAudioCb, audioEndCb });
 
 			if (!_core.biz_init())
 				throw new InvalidOperationException("Init() failed");
