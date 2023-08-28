@@ -868,7 +868,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				case 9:
 				case 10:
 				case 11:
-					if (ChipType == 0 || (int)ChipType == 1)
+					if (ChipType is CRCTType.HD6845S or CRCTType.UM6845 or CRCTType.UM6845R)
 					{
 						addressed = true;
 						data = 0;
@@ -877,9 +877,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				case 12:
 				case 13:
 					addressed = true;
-					if (ChipType == 0)
+					if (ChipType is CRCTType.HD6845S or CRCTType.UM6845)
 						data = Regs[SelectedRegister];
-					else if ((int)ChipType == 1)
+					else if (ChipType is CRCTType.UM6845R)
 						data = 0;
 					break;
 				case 14:
@@ -906,12 +906,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					}
 					else if (SelectedRegister == 31)
 					{
-						if ((int)ChipType == 1)
+						if (ChipType == CRCTType.UM6845R)
 						{
 							addressed = true;
 							data = 0x0ff;
 						}
-						else if (ChipType == 0 || (int)ChipType == 2)
+						else if (ChipType is CRCTType.HD6845S or CRCTType.UM6845R or CRCTType.MC6845)
 						{
 							addressed = true;
 							data = 0;
