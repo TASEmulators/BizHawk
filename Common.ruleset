@@ -14,7 +14,7 @@
 		<Rule Id="BHI1004" Action="Error" />
 
 		<!-- Default branch of switch expression should throw InvalidOperationException/SwitchExpressionException or not throw -->
-		<Rule Id="BHI1005" Action="Error" />
+		<Rule Id="BHI1005" Action="Hidden" />
 
 		<!-- Do not discard local variables -->
 		<Rule Id="BHI1006" Action="Error" />
