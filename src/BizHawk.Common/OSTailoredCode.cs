@@ -1,4 +1,6 @@
+#pragma warning disable IDE0240
 #nullable enable
+#pragma warning restore IDE0240
 
 using System;
 using System.Diagnostics;

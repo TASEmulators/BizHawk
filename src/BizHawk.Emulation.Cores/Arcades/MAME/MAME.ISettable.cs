@@ -168,7 +168,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 						if (hashdata.Contains("^"))
 						{
 							hashdata = hashdata.RemoveSuffix("^");
-							name = name + " (BAD DUMP)";
+							name += " (BAD DUMP)";
 						}
 
 						hashdata = hashdata.Replace("R", "CRC:").Replace("S", " SHA:");

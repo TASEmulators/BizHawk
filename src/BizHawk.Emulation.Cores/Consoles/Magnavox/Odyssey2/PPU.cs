@@ -323,7 +323,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				{
 					VDC_status &= 0xFE;
 					if (VDC_ctrl.Bit(0)) { Core.cpu.IRQPending = false; }
-					LY_ret = LY_ret + 1;
+					LY_ret++;
 				}
 			}
 
@@ -1555,7 +1555,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				{
 					VDC_status &= 0xFE;
 					if (VDC_ctrl.Bit(0)) { Core.cpu.IRQPending = false; }
-					LY_ret = LY_ret + 1;
+					LY_ret++;
 				}
 			}
 
@@ -1638,7 +1638,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				{
 					VDC_status &= 0xFE;
 					if (VDC_ctrl.Bit(0)) { Core.cpu.IRQPending = false; }
-					LY_ret = LY_ret + 1;
+					LY_ret++;
 				}
 			}
 

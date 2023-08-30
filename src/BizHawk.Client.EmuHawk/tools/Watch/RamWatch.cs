@@ -415,7 +415,7 @@ namespace BizHawk.Client.EmuHawk
 				foreach (var row in clipboardRows)
 				{
 					var watch = Watch.FromString(row, MemoryDomains);
-					if ((object)watch != null)
+					if (watch is not null)
 					{
 						_watches.Add(watch);
 					}
@@ -910,7 +910,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var indices = SelectedIndices.ToList();
 			if (indices.Count == 0
-				|| indices[indices.Count - 1] == _watches.Count - 1) // at end already
+				|| indices[^1] == _watches.Count - 1) // at end already
 			{
 				return;
 			}

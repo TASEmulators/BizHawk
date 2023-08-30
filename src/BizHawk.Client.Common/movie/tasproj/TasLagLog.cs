@@ -15,7 +15,7 @@ namespace BizHawk.Client.Common
 			get
 			{
 				var result = _lagLog.TryGetValue(frame, out var lag);
-				return result ? (bool?)lag : null;
+				return result ? lag : null;
 			}
 
 			set

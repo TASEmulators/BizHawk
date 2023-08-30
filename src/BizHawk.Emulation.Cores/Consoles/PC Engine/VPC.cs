@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				case 0x0D: Registers[5] = value; break;
 				case 0x0E:
 					// CPU Store Immediate VDC Select
-					CPU.WriteVDC = (value & 1) == 0 ? (Action<int, byte>)VDC1.WriteVDC : VDC2.WriteVDC;
+					CPU.WriteVDC = (value & 1) == 0 ? VDC1.WriteVDC : VDC2.WriteVDC;
 					Registers[6] = value;
 					break;
 			}

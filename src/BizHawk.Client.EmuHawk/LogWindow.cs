@@ -92,7 +92,7 @@ namespace BizHawk.Client.EmuHawk
 						if (invoked)
 						{
 							//basically an easy way to post an update message which should hopefully happen before anything else happens (redraw or user interaction)
-							BeginInvoke((Action)doUpdateListSize);
+							BeginInvoke(doUpdateListSize);
 						}
 						else
 							doUpdateListSize();

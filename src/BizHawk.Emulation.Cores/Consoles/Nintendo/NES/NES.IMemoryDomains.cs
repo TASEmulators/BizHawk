@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			domains.Add(CIRAMdomain);
 			domains.Add(OAMdoman);
 
-			if (!(Board is FDS) && Board.SaveRam != null)
+			if (Board is not FDS && Board.SaveRam != null)
 			{
 				var BatteryRam = new MemoryDomainByteArray("Battery RAM", MemoryDomain.Endian.Little, Board.SaveRam, true, 1);
 				domains.Add(BatteryRam);

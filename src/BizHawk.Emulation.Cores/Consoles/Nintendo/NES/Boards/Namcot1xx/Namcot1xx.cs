@@ -143,7 +143,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (NES._isVS)
 			{
-				addr = addr - 0x2000;
+				addr -= 0x2000;
 				if (addr < 0x800)
 				{
 					return NES.CIRAM[addr];
@@ -169,7 +169,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				addr &= 0x2FFF;
 
 
-				addr = addr - 0x2000;
+				addr -= 0x2000;
 				if (addr < 0x800)
 				{
 					NES.CIRAM[addr] = value;

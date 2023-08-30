@@ -126,7 +126,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 					for (int c = 0; c < 64 * 8; c++)
 					{
 						int a = c & 63;
-						byte[] inp = { (byte)pal[a, 0], (byte)pal[a, 1], (byte)pal[a, 2] };
+						byte[] inp = { pal[a, 0], pal[a, 1], pal[a, 2] };
 						byte[] outp = new byte[3];
 						Nes_NTSC_Colors.Emphasis(inp, outp, c);
 						_Palette[c * 3] = outp[0];

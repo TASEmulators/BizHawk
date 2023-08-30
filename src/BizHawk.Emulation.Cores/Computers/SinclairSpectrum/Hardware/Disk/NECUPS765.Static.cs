@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             if (bitNumber < 0 || bitNumber > 7)
                 return;
 
-            int db = (int)dataByte;
+            int db = dataByte;
 
             db |= 1 << bitNumber;
 
@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             if (bitNumber < 0 || bitNumber > 7)
                 return;
 
-            int db = (int)dataByte;
+            int db = dataByte;
 
             db &= ~(1 << bitNumber);
 

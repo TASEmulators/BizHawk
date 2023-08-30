@@ -162,7 +162,7 @@ namespace BizHawk.Client.EmuHawk
 
 				try
 				{
-					lines.Add(line.Substring(0, i), int.Parse(line.Substring(i + 1)));
+					lines.Add(line[..i], int.Parse(line[(i + 1)..]));
 				}
 				catch (FormatException)
 				{

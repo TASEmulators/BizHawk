@@ -126,7 +126,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 							// deterministic 'random' implementation
 							int n = origData[i] + m + 1;
 							if (n > 0xff)
-								n = n - 0xff;
+								n -= 0xff;
 							else if (n < 0)
 								n = 0xff + n;
 

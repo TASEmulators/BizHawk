@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
-			_syncSettings = (ColecoSyncSettings)syncSettings ?? new ColecoSyncSettings();
+			_syncSettings = syncSettings ?? new ColecoSyncSettings();
 			bool skipBios = _syncSettings.SkipBiosIntro;
 
 			_cpu = new Z80A

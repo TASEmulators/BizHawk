@@ -110,7 +110,7 @@ namespace BizHawk.Common
 			else
 			{
 				// All items *after* the item
-				startIndex = startIndex + 1;
+				startIndex++;
 			}
 			if (startIndex < _list.Count)
 			{

@@ -419,7 +419,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			int end = _machine.TapeDevice.DataBlocks[_machine.TapeDevice.CurrentDataBlockIndex].DataPeriods.Count;
 			double p = 0;
 			if (end != 0)
-				p = ((double)pos / (double)end) * 100.0;
+				p = (pos / (double)end) * 100.0;
 
 			sb.Append(p.ToString("N0", NumberFormatInfo.InvariantInfo) + "%");
 			SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
@@ -443,7 +443,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 			// work out overall position within the tape
 			p = 0;
-			p = ((double)ourPos / (double)cnt) * 100.0;
+			p = (ourPos / (double)cnt) * 100.0;
 			sb.Append(p.ToString("N0", NumberFormatInfo.InvariantInfo) + "%");
 			SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
 		}

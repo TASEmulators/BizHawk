@@ -1140,7 +1140,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 		private void RelBranch_Stage2_BVS()
 		{
-			branch_taken = FlagV == true;
+			branch_taken = FlagV;
 			RelBranch_Stage2();
 		}
 
@@ -1152,7 +1152,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 		private void RelBranch_Stage2_BMI()
 		{
-			branch_taken = FlagN == true;
+			branch_taken = FlagN;
 			RelBranch_Stage2();
 		}
 
@@ -1164,7 +1164,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 		private void RelBranch_Stage2_BCS()
 		{
-			branch_taken = FlagC == true;
+			branch_taken = FlagC;
 			RelBranch_Stage2();
 		}
 
@@ -1176,7 +1176,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 		private void RelBranch_Stage2_BEQ()
 		{
-			branch_taken = FlagZ == true;
+			branch_taken = FlagZ;
 			RelBranch_Stage2();
 		}
 
@@ -1209,7 +1209,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			if (RDY)
 			{
 				_link.DummyReadMemory(PC);
-				alu_temp = (byte)PC + (int)(sbyte)opcode2;
+				alu_temp = (byte)PC + (sbyte)opcode2;
 				PC &= 0xFF00;
 				PC |= (ushort)(alu_temp & 0xFF);
 
@@ -1273,7 +1273,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			rdy_freeze = !RDY;
 			if (RDY)
 			{
-				PC = (ushort)((_link.ReadMemory((ushort)(PC)) << 8) + opcode2);
+				PC = (ushort)((_link.ReadMemory(PC) << 8) + opcode2);
 			}
 		}
 

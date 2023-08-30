@@ -1,8 +1,4 @@
-﻿
-using BizHawk.Common;
-using BizHawk.Emulation.Common;
-
-namespace BizHawk.Emulation.Cores.Sega.MasterSystem
+﻿namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
 	public partial class SMS
 	{
@@ -134,7 +130,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				if (SyncSettings.Port1 == SMSControllerTypes.Phaser)
 				{
 					byte phaserX = (byte)(_controller.AxisValue("P1 X") + 20);
-					int phaserY = (int)_controller.AxisValue("P1 Y");
+					int phaserY = _controller.AxisValue("P1 Y");
 					int scanline = Vdp.ScanLine;
 
 					if (!LatchLightPhaser1 && phaserY >= scanline - phaserRadius && phaserY <= scanline + phaserRadius)
@@ -155,7 +151,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				if (SyncSettings.Port2 == SMSControllerTypes.Phaser)
 				{
 					byte phaserX = (byte)(_controller.AxisValue("P2 X") + 20);
-					int phaserY = (int)_controller.AxisValue("P2 Y");
+					int phaserY = _controller.AxisValue("P2 Y");
 					int scanline = Vdp.ScanLine;
 
 					if (!LatchLightPhaser2 && phaserY >= scanline - phaserRadius && phaserY <= scanline + phaserRadius)

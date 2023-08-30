@@ -3,8 +3,6 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 using System.Collections.Generic;
-
-using BizHawk.Bizware.BizwareGL;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common

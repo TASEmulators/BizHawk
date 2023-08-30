@@ -270,7 +270,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							if (SQ1_shift > 0)
 							{
 								int shadow_frq = SQ1_frq_shadow;
-								shadow_frq = shadow_frq >> SQ1_shift;
+								shadow_frq >>= SQ1_shift;
 								if (SQ1_negate) { shadow_frq = -shadow_frq; }
 								shadow_frq += SQ1_frq_shadow;
 
@@ -727,7 +727,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 					if (NOISE_wdth_md)
 					{
-						NOISE_LFSR = NOISE_LFSR & 0x7FBF;
+						NOISE_LFSR &= 0x7FBF;
 						NOISE_LFSR |= (bit_lfsr << 6);
 					}
 
@@ -782,7 +782,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						if ((SQ1_swp_prd > 0))
 						{
 							int shadow_frq = SQ1_frq_shadow;
-							shadow_frq = shadow_frq >> SQ1_shift;
+							shadow_frq >>= SQ1_shift;
 							if (SQ1_negate) { shadow_frq = -shadow_frq; }
 							shadow_frq += SQ1_frq_shadow;
 
@@ -809,7 +809,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 									// after writing, we repeat the process and do another overflow check
 									shadow_frq = SQ1_frq_shadow;
-									shadow_frq = shadow_frq >> SQ1_shift;
+									shadow_frq >>= SQ1_shift;
 									if (SQ1_negate) { shadow_frq = -shadow_frq; }
 									shadow_frq += SQ1_frq_shadow;
 

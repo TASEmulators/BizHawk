@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateCoreAssociation()
 		{
-			if (!(_ownerEmulator is Octoshock psx))
+			if (_ownerEmulator is not Octoshock psx)
 			{
 				return;
 			}

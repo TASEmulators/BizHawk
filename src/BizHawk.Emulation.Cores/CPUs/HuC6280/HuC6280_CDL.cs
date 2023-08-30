@@ -22,10 +22,9 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 				{
 					if ((kvp.Value[i] & (byte)CDLUsage.Code) != 0)
 					{
-						int unused;
 						string dis = DisassembleExt(
 							0,
-							out unused,
+							out int unused,
 							addr => md.PeekByte(addr + i),
 							addr => md.PeekUshort(addr + i, bigEndian: false));
 						w.WriteLine("0x{0:x8}: {1}", i, dis);

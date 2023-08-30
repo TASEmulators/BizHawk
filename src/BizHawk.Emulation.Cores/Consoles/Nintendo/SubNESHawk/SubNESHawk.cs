@@ -11,8 +11,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 		[CoreConstructor(VSystemID.Raw.NES, Priority = CorePriority.SuperLow)]
 		public SubNESHawk(CoreComm comm, GameInfo game, byte[] rom, /*string gameDbFn,*/ NES.NES.NESSettings settings, NES.NES.NESSyncSettings syncSettings)
 		{
-			var subNesSettings = (NES.NES.NESSettings)settings ?? new NES.NES.NESSettings();
-			var subNesSyncSettings = (NES.NES.NESSyncSettings)syncSettings ?? new NES.NES.NESSyncSettings();
+			var subNesSettings = settings ?? new NES.NES.NESSettings();
+			var subNesSyncSettings = syncSettings ?? new NES.NES.NESSyncSettings();
 
 			_nesCore = new NES.NES(comm, game, rom, subNesSettings, subNesSyncSettings, true);
 

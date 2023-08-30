@@ -11,7 +11,6 @@ using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Nintendo.N64;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -228,7 +227,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// Start Scenario 1: A regular movie is active
-			if (MovieSession.Movie.IsActive() && !(MovieSession.Movie is ITasMovie))
+			if (MovieSession.Movie.IsActive() && MovieSession.Movie is not ITasMovie)
 			{
 				var changesString = "Would you like to save the current movie before closing it?";
 				if (MovieSession.Movie.Changes)
@@ -451,8 +450,8 @@ namespace BizHawk.Client.EmuHawk
 				BoolPatterns[i] = new AutoPatternBool(1, 1);
 			}
 
-			BoolPatterns[BoolPatterns.Length - 2] = new AutoPatternBool(1, 0);
-			BoolPatterns[BoolPatterns.Length - 1] = new AutoPatternBool(
+			BoolPatterns[^2] = new AutoPatternBool(1, 0);
+			BoolPatterns[^1] = new AutoPatternBool(
 				Config.AutofireOn, Config.AutofireOff);
 
 			for (int i = fStart; i < AxisPatterns.Length - 2; i++)
@@ -460,8 +459,8 @@ namespace BizHawk.Client.EmuHawk
 				AxisPatterns[i] = new AutoPatternAxis(new[] { 1 });
 			}
 
-			AxisPatterns[AxisPatterns.Length - 2] = new AutoPatternAxis(new[] { 1 });
-			AxisPatterns[AxisPatterns.Length - 1] = new AutoPatternAxis(1, Config.AutofireOn, 0, Config.AutofireOff);
+			AxisPatterns[^2] = new AutoPatternAxis(new[] { 1 });
+			AxisPatterns[^1] = new AutoPatternAxis(1, Config.AutofireOn, 0, Config.AutofireOff);
 
 			SetUpToolStripColumns();
 		}

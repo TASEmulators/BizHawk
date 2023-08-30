@@ -40,8 +40,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 
-			linkSettings = (GBLinkSettings)lp.Settings ?? new GBLinkSettings();
-			linkSyncSettings = (GBLinkSyncSettings)lp.SyncSettings ?? new GBLinkSyncSettings();
+			linkSettings = lp.Settings ?? new GBLinkSettings();
+			linkSyncSettings = lp.SyncSettings ?? new GBLinkSyncSettings();
 			_controllerDeck = new(
 				GBHawkControllerDeck.DefaultControllerName,
 				GBHawkControllerDeck.DefaultControllerName);

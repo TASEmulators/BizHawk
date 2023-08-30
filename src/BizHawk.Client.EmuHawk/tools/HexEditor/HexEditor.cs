@@ -1374,7 +1374,7 @@ namespace BizHawk.Client.EmuHawk
 			// and add HighlightedAddress if present
 			if (_highlightedAddress.HasValue)
 			{
-				addresses[addresses.Length - 1] = _highlightedAddress.Value;
+				addresses[^1] = _highlightedAddress.Value;
 			}
 
 			// these need to be sorted. it's not just for HighlightedAddress, _secondaryHighlightedAddresses can even be jumbled
@@ -2224,7 +2224,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						ushort hi = _domain.PeekUshort(((addr+(i<<3)+(j<<1)     )^0x0), bigEndian);
 						ushort lo = _domain.PeekUshort(((addr+(i<<3)+(j<<1) + 32)^0x0), bigEndian);
-						matVals[i,j] = (int)(((hi << 16) | lo)) / 65536.0f;
+						matVals[i,j] = ((hi << 16) | lo) / 65536.0f;
 					}
 			}
 

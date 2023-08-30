@@ -297,7 +297,7 @@ namespace BizHawk.Common
 #if DEBUG
 			if (path.IndexOf('|') != i) Console.WriteLine($"{nameof(HawkFile)} path contains multiple '|'");
 #endif
-			return i == -1 ? ((string, string)?) null : (path.Substring(0, i), path.Substring(i + 1));
+			return i == -1 ? null : (path.Substring(0, i), path.Substring(i + 1));
 		}
 	}
 }

@@ -252,7 +252,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				int bank_1k = base.Get_CHRBank_1K(addr);
 
 				if ((exRegs[1] & 0x4) > 0)
-					bank_1k = (bank_1k | 0x100);
+					bank_1k |= 0x100;
 				else
 					bank_1k = (bank_1k & 0x7F) | (exRegs[1] << 3 & 0x80);
 

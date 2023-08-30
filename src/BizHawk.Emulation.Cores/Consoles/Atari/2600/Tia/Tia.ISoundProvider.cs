@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				// convert from 31khz to 44khz
 				for (var i = 0; i < samples.Length / 2; i++)
 				{
-					samples[i * 2] = samples31Khz[(int)(((double)samples31Khz.Length / (double)(samples.Length / 2)) * i)];
+					samples[i * 2] = samples31Khz[(int)((samples31Khz.Length / (double)(samples.Length / 2)) * i)];
 					samples[(i * 2) + 1] = samples[i * 2];
 				}
 			}

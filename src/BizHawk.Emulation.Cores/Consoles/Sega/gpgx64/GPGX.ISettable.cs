@@ -268,7 +268,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			[DisplayName("Low Pass Range")]
 			[Description("Only active when filter type is lowpass. Range is 0 - 0xffff. Default value is 40%")]
 			[TypeConverter(typeof(UshortToHexConverter))]
-			[DefaultValue((ushort)0x6666)]
+			[DefaultValue(0x6666)]
 			public ushort LowPassRange { get; set; }
 
 			[DisplayName("Three band low cutoff")]
@@ -298,7 +298,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			[Description("Magic pink by default. Requires core reboot")]
 			[TypeConverter(typeof(UintToHexConverter))]
-			[DefaultValue((uint)0xffff00ff)]
+			[DefaultValue(0xffff00ff)]
 			public uint BackdropColor { get; set; }
 
 			public LibGPGX.InitSettings GetNativeSettings(GameInfo game)

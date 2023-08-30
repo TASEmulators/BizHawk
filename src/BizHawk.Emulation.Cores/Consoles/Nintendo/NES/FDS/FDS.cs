@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				// silly little hack
 				int tmp = currentside != null ? (int)currentside : 1234567;
 				ser.Sync(nameof(currentside), ref tmp);
-				currentside = tmp == 1234567 ? null : (int?)tmp;
+				currentside = tmp == 1234567 ? null : tmp;
 			}
 			for (int i = 0; i < NumSides; i++)
 				ser.Sync("diskdiffs" + i, ref diskdiffs[i], true);
@@ -180,7 +180,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 				else
 				{
-					bw.Write((int)0);
+					bw.Write(0);
 				}
 			}
 			bw.Close();

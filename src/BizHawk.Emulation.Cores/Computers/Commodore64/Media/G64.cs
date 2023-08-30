@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 
 						var data = trackData[trackIndex];
 						var buffer = Enumerable.Repeat(dataFillerValue, trackMaxLength).ToArray();
-						var dataBytes = data.Select(d => unchecked((byte)d)).ToArray();
+						var dataBytes = data.Select(d => unchecked(d)).ToArray();
 						Array.Copy(dataBytes, buffer, dataBytes.Length);
 						trackMemWriter.Write((ushort)dataBytes.Length);
 						trackMemWriter.Write(buffer);

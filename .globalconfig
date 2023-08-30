@@ -1,0 +1,18 @@
+is_global = true
+
+# Globalization rules
+dotnet_code_quality.CA1305.excluded_symbol_names = T:System.Byte|T:System.SByte|T:System.Int16|T:System.UInt16|T:System.Int32|T:System.UInt32|T:System.Int64|T:System.UInt64|T:System.String|T:System.Text.StringBuilder|T:System.Convert
+
+dotnet_diagnostic.CA1305.severity = error
+dotnet_diagnostic.CA2101.severity = suggestion
+
+# Performance rules
+dotnet_code_quality.CA1826.exclude_ordefault_methods = true
+
+dotnet_diagnostic.CA1805.severity = silent
+dotnet_diagnostic.CA1822.severity = silent
+dotnet_diagnostic.CA1838.severity = suggestion
+
+# Usage rules
+dotnet_diagnostic.CA1816.severity = none
+dotnet_diagnostic.CA2201.severity = suggestion

@@ -12,8 +12,6 @@ SHADOW
 7. RAM   001X X000 0000 0000 - 001X X111 1111 1111
 */
 
-using System;
-
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
 	public partial class A7800Hawk

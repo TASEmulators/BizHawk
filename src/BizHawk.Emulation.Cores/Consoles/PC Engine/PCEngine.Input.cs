@@ -20,7 +20,7 @@
 
 			if (Clr == false && prevSel == false && Sel)
 			{
-				_selectedController = _selectedController + 1;
+				_selectedController++;
 			}
 		}
 

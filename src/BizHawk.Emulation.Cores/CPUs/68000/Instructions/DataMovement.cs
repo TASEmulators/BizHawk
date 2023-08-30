@@ -508,7 +508,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			string address = DisassembleAddress(mode, reg, ref pc);
 
 			info.Mnemonic = size == 0 ? "movem.w" : "movem.l";
-			info.Args = DisassembleRegisterList0((uint)registers) + ", " + address;
+			info.Args = DisassembleRegisterList0(registers) + ", " + address;
 			info.Length = pc - info.PC;
 		}
 

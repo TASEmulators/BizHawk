@@ -1126,7 +1126,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			int quotient = dest / source;
 			int remainder = dest % source;
 
-			V = ((int)quotient < short.MinValue || (int)quotient > short.MaxValue);
+			V = (quotient < short.MinValue || quotient > short.MaxValue);
 			N = (quotient & 0x8000) != 0;
 			Z = quotient == 0;
 			C = false;

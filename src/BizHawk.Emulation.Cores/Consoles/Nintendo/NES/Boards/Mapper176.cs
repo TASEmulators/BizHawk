@@ -109,7 +109,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					SetPrg32k(value>>1);
 					break;
 				case 0x1FF2: //0x5FF2
-					chr_banks_8k[0] = (byte)value;
+					chr_banks_8k[0] = value;
 					ApplyMemoryMapMask(chr_bank_mask_8k, chr_banks_8k);
 					break;
 			}

@@ -214,9 +214,9 @@ namespace BizHawk.Emulation.Cores.Components
 				}
 
 				// final hard limit
-				if (sampleVal > (int)FinalMaxVolume)
+				if (sampleVal > FinalMaxVolume)
 				{
-					sampleVal = (int)FinalMaxVolume;
+					sampleVal = FinalMaxVolume;
 				}
 
 				samples[i] = (short)sampleVal;

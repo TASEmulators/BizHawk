@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
@@ -108,7 +107,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				smpCounter++;
 				if ((state < 0 && sample < 0) || (state >= 0 && sample >= 0))
 					continue;
-				t.DataPeriods.Add((int)(((double)smpCounter * (double)rate) / (double)0.9838560885608856));
+				t.DataPeriods.Add((int)((smpCounter * (double)rate) / (double)0.9838560885608856));
 				currLevel = !currLevel;
 				t.DataLevels.Add(currLevel);
 				smpCounter = 0;

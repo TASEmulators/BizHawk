@@ -211,7 +211,7 @@ namespace BizHawk.Emulation.Cores.Components
 			else
 			{
 				if (channel.Frequency <= 1) return;
-				freq = PsgBase / (32 * ((int)channel.Frequency));
+				freq = PsgBase / (32 * channel.Frequency);
 			}
 
 			int globalPanFactorLeft = VolumeReductionTable[MainVolumeLeft];

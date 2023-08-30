@@ -27,10 +27,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prgregs[2] = 0xFE;
 			prgregs[3] = 0xFF;
 
-			byte r0_0 = (byte)(0 & ~1);
-			byte r0_1 = (byte)(0 | 1);
-			byte r1_0 = (byte)(2 & ~1);
-			byte r1_1 = (byte)(2 | 1);
+			byte r0_0 = 0 & ~1;
+			byte r0_1 = 0 | 1;
+			byte r1_0 = 2 & ~1;
+			byte r1_1 = 2 | 1;
 
 
 			chrregs[0] = 4;

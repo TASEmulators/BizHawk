@@ -244,7 +244,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 							t.InitialPulseLevel = initPulseLevel == 1;
 							bool bLevel = !t.InitialPulseLevel;
 
-							dCount = (int)(dCount & 0x7FFFFFFF);
+							dCount &= 0x7FFFFFFF;
 							pos += 4;
 
 							tail = GetWordValue(b, pos);
@@ -277,11 +277,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 							{
 								for (int i = 7; i >= 0; i--)
 								{
-									if (by.Bit(i) == true)
+									if (by.Bit(i))
 									{
 										foreach (var pu in s1)
 										{
-											t.DataPeriods.Add((int)pu);
+											t.DataPeriods.Add(pu);
 											bLevel = !bLevel;
 											t.DataLevels.Add(bLevel);
 										}
@@ -291,7 +291,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 									{
 										foreach (var pu in s0)
 										{
-											t.DataPeriods.Add((int)pu);
+											t.DataPeriods.Add(pu);
 											bLevel = !bLevel;
 											t.DataLevels.Add(bLevel);
 										}

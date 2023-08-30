@@ -58,7 +58,7 @@
 			if ((addr & chr_addr_mask) != 0)
 				addr = addr & 0x3ff | 0x400;
 			else
-				addr = addr & 0x3ff;
+				addr &= 0x3ff;
 			return addr;
 		}
 

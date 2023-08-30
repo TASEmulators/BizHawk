@@ -31,8 +31,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				SystemId = VSystemID.Raw.PCECD;
 				Type = NecSystemType.TurboCD;
 				this.disc = lp.Discs[0].DiscData;
-				Settings = (PCESettings)lp.Settings ?? new PCESettings();
-				_syncSettings = (PCESyncSettings)lp.SyncSettings ?? new PCESyncSettings();
+				Settings = lp.Settings ?? new PCESettings();
+				_syncSettings = lp.SyncSettings ?? new PCESyncSettings();
 
 				var (rom, biosInfo) = lp.Comm.CoreFileProvider.GetFirmwareWithGameInfoOrThrow(
 					new("PCECD", "Bios"),
@@ -96,8 +96,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 						break;
 				}
 
-				Settings = (PCESettings)lp.Settings ?? new PCESettings();
-				_syncSettings = (PCESyncSettings)lp.SyncSettings ?? new PCESyncSettings();
+				Settings = lp.Settings ?? new PCESettings();
+				_syncSettings = lp.SyncSettings ?? new PCESyncSettings();
 				Init(lp.Game, lp.Roms[0].RomData);
 
 				_controllerDeck = new PceControllerDeck(

@@ -58,7 +58,7 @@ namespace BizHawk.Client.Common
 			// ALL button names with P{controller} prefixes
 			foreach (var button in _inputManager.ActiveController.ToBoolButtonNameList(controller))
 			{
-				Set(button, buttons.TryGetValue(button, out var state) ? state : (bool?) null, controller);
+				Set(button, buttons.TryGetValue(button, out var state) ? state : null, controller);
 			}
 		}
 

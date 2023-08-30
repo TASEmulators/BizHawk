@@ -47,10 +47,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						int temp4 = (addr & 0x10);
 						int temp6 = (addr & 0x40);
 
-						temp0 = temp0 << 6;
-						temp1 = temp1 << 3;
-						temp4 = temp4 >> 3;
-						temp6 = temp6 >> 6;
+						temp0 <<= 6;
+						temp1 <<= 3;
+						temp4 >>= 3;
+						temp6 >>= 6;
 
 						addr &= 0x1AC;
 						addr |= (ushort)(temp0 | temp1 | temp4 | temp6);
@@ -85,10 +85,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						int temp4 = (addr & 0x10);
 						int temp6 = (addr & 0x40);
 
-						temp0 = temp0 << 6;
-						temp1 = temp1 << 3;
-						temp4 = temp4 >> 3;
-						temp6 = temp6 >> 6;
+						temp0 <<= 6;
+						temp1 <<= 3;
+						temp4 >>= 3;
+						temp6 >>= 6;
 
 						addr &= 0x1AC;
 						addr |= (ushort)(temp0 | temp1 | temp4 | temp6);

@@ -56,8 +56,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				game.FirmwareHash = SHA1Checksum.ComputeDigestHex(sgbRomData);
 			}
 
-			_settings = (SnesSettings)settings ?? new SnesSettings();
-			_syncSettings = (SnesSyncSettings)syncSettings ?? new SnesSyncSettings();
+			_settings = settings ?? new SnesSettings();
+			_syncSettings = syncSettings ?? new SnesSyncSettings();
 
 			_videocb = snes_video_refresh;
 			_inputpollcb = snes_input_poll;

@@ -174,7 +174,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		public bool IRQRequest
 		{
 			get => Regs[IRQR] > 0;
-			set => Regs[IRQR] = value == true ? (byte)1 : (byte)0;
+			set => Regs[IRQR] = value ? (byte)1 : (byte)0;
 		}
 
 		/// <summary>

@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Xml.Linq;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
-using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
@@ -121,15 +119,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveButton_Click(object sender, EventArgs e)
 		{
-			FileInfo dummy;
-			DoSave(out dummy);
+			DoSave(out var dummy);
 		}
 
 		private void SaveRunButton_Click(object sender, EventArgs e)
 		{
-			FileInfo fileInfo;
 
-			if (!DoSave(out fileInfo))
+			if (!DoSave(out var fileInfo))
 				return;
 
 			DialogResult = DialogResult.OK;

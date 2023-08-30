@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 		public string Disassemble(MemoryDomain m, uint addr, out int length)
 		{
-			return MOS6502X.Disassemble((ushort)addr, out length, a => m.PeekByte((int)a));
+			return MOS6502X.Disassemble((ushort)addr, out length, a => m.PeekByte(a));
 		}
 	}
 
