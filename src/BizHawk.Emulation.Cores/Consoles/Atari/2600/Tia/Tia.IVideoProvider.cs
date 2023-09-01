@@ -38,11 +38,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public int VsyncNumerator { get; private set; }
 
-		public int VsyncDenominator => _vsyncDen;
+		public int VsyncDenominator { get; private set; }
 
 		public int BackgroundColor => _core.Settings.BackgroundColor.ToArgb();
 
 		private readonly int[] _frameBuffer = new int[ScreenWidth * MaxScreenHeight];
-		private int _vsyncDen;
 	}
 }

@@ -92,7 +92,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				prg[3] = (byte)(addr & 0x3F);
 			}
-			else if (addr & 0xF80C is >= 0xB000 and <= 0xE00C)
+			else if ((addr & 0xF80C) is >= 0xB000 and <= 0xE00C)
 			{
 				int index = (((addr >> 11) - 6) | (addr >> 3)) & 7;
 				chr[index] = (byte)((chr[index] & (0xF0 >> (addr & 4))) | ((value & 0x0F) << (addr & 4)));

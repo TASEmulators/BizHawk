@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 					if (LCDC.Bit(7))
 					{
-						if (STAT & 3 is 0 or 1)
+						if ((STAT & 3) is 0 or 1)
 						{
 							LYC_INT = true;
 							//if (Core.REG_FFFF.Bit(1)) { Core.cpu.FlagI = true; }

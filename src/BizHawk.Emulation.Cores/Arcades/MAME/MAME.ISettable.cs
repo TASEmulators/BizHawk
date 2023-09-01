@@ -142,7 +142,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					string hashdata = substrings[1];
 					long flags = long.Parse(substrings[2]);
 
-					if (flags & LibMAME.ROMENTRY_TYPEMASK is LibMAME.ROMENTRYTYPE_SYSTEM_BIOS
+					if ((flags & LibMAME.ROMENTRY_TYPEMASK) is LibMAME.ROMENTRYTYPE_SYSTEM_BIOS
 						or LibMAME.ROMENTRYTYPE_DEFAULT_BIOS)
 					{
 						setting.Options.Add(name, hashdata);

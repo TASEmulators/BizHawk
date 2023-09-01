@@ -474,7 +474,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 					defectAmount--;
 				}
 
-				int blockCalc = (lba & 3 is 0 or 3) ? 0 : 1;
+				int blockCalc = ((lba & 3) is 0 or 3) ? 0 : 1;
 
 				int offsetCalc = _startOffsetTable[pzoneCalc];
 				offsetCalc += (trackCalc - trackStart) * _blockSizeTable[headCalc ? pzoneCalc - 7 : pzoneCalc] * 2;

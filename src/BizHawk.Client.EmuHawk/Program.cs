@@ -296,7 +296,7 @@ namespace BizHawk.Client.EmuHawk
 					newSound => globalSound = newSound,
 					args,
 					out var movieSession,
-					out object exitEarly);
+					out bool exitEarly);
 				if (exitEarly)
 				{
 					//TODO also use this for ArgParser failure

@@ -224,7 +224,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 								ch_out[i] = poly5.Bit(16);
 							}
 						}
-						else if (Regs[i * 2 + 1] & 0xF0 is 0x20 or 0x60)
+						else if ((Regs[i * 2 + 1] & 0xF0) is 0x20 or 0x60)
 						{
 							// 5 bit poly
 							//if (ch_src[i])

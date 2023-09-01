@@ -87,14 +87,9 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			{
 				Type = (SystemId = lp.Game.System) switch
 				{
-					default:
-					case VSystemID.Raw.PCE:
-						Type = NecSystemType.TurboGrafx;
-						break;
-					case VSystemID.Raw.SGX:
-						Type = NecSystemType.SuperGrafx;
-						break;
-				}
+					VSystemID.Raw.PCE => NecSystemType.TurboGrafx,
+					_ => NecSystemType.SuperGrafx,
+				};
 
 				Settings = lp.Settings ?? new PCESettings();
 				_syncSettings = lp.SyncSettings ?? new PCESyncSettings();
