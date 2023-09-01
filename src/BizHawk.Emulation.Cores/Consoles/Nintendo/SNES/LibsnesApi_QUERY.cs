@@ -118,10 +118,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 		}
 
-		public void QUERY_set_layer_enable()
-		{
-			_core.Message(eMessage.eMessage_QUERY_set_layer_enable);
-		}
+		public void QUERY_set_layer_enable() => _core.Message(eMessage.eMessage_QUERY_set_layer_enable);
 
 		public void QUERY_set_backdropColor(int backdropColor)
 		{

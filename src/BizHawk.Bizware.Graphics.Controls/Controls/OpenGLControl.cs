@@ -74,15 +74,9 @@ namespace BizHawk.Bizware.Graphics.Controls
 			Context.SetVsync(state);
 		}
 
-		public override void Begin()
-		{
-			MakeContextCurrent();
-		}
+		public override void Begin() => MakeContextCurrent();
 
-		public override void End()
-		{
-			SDL2OpenGLContext.MakeNoneCurrent();
-		}
+		public override void End() => SDL2OpenGLContext.MakeNoneCurrent();
 
 		public override void SwapBuffers()
 		{

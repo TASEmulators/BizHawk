@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 				if (_lfsr != _rate)
 				{
-					var feedback = ((_lfsr >> 14) ^ (_lfsr >> 13)) & 0x1;
+					int feedback = ((_lfsr >> 14) ^ (_lfsr >> 13)) & 0x1;
 					_lfsr = ((_lfsr << 1) & 0x7FFF) | feedback;
 					return;
 				}
@@ -132,7 +132,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			{
 
 				{
-					for (var i = 0; i < 7; i++)
+					for (int i = 0; i < 7; i++)
 					{
 						if (_envCounter == ExpCounterTable[i])
 							_expPeriod = ExpPeriodTable[i];
@@ -171,7 +171,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				get => _gate;
 				set
 				{
-					var nextGate = value;
+					bool nextGate = value;
 					if (nextGate && !_gate)
 					{
 						_state = StateAttack;

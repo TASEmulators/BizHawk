@@ -20,7 +20,7 @@ namespace BizHawk.BizInvoke
 		/// </exception>
 		public MemoryBlockLinuxPal(ulong size)
 		{
-			var ptr = (ulong)mmap(IntPtr.Zero, Z.UU(size), MemoryProtection.None, 0x22 /* MAP_PRIVATE | MAP_ANON */, -1, IntPtr.Zero);
+			ulong ptr = (ulong)mmap(IntPtr.Zero, Z.UU(size), MemoryProtection.None, 0x22 /* MAP_PRIVATE | MAP_ANON */, -1, IntPtr.Zero);
 			if (ptr == ulong.MaxValue)
 				throw new InvalidOperationException($"{nameof(mmap)}() failed with error {Marshal.GetLastWin32Error()}");
 			_size = size;
@@ -55,7 +55,7 @@ namespace BizHawk.BizInvoke
 
 		public void Protect(ulong start, ulong size, Protection prot)
 		{
-			var errorCode = mprotect(
+			int errorCode = mprotect(
 				Z.US(start),
 				Z.UU(size),
 				ToMemoryProtection(prot)

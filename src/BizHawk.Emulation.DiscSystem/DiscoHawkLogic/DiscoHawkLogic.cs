@@ -30,25 +30,25 @@ namespace BizHawk.Emulation.DiscSystem
 				sw.WriteLine("BEGIN COMPARE: {0}\nSRC {1} vs DST {2}", infile, loadDiscInterface, cmpif);
 
 				//reload the original disc, with new policies as needed
-				var dmj = new DiscMountJob(
+				DiscMountJob dmj = new DiscMountJob(
 					fromPath: infile,
 					discMountPolicy: new DiscMountPolicy { CUE_PregapContradictionModeA = cmpif != DiscInterface.MednaDisc },
 					discInterface: loadDiscInterface);
 				dmj.Run();
 				srcDisc = dmj.OUT_Disc;
 
-				var dstDmj = new DiscMountJob(fromPath: infile, discInterface: cmpif);
+				DiscMountJob dstDmj = new DiscMountJob(fromPath: infile, discInterface: cmpif);
 				dstDmj.Run();
 				dstDisc = dstDmj.OUT_Disc;
 
-				var srcDsr = new DiscSectorReader(srcDisc);
-				var dstDsr = new DiscSectorReader(dstDisc);
+				DiscSectorReader srcDsr = new DiscSectorReader(srcDisc);
+				DiscSectorReader dstDsr = new DiscSectorReader(dstDisc);
 
 				var srcToc = srcDisc.TOC;
 				var dstToc = dstDisc.TOC;
 
-				var srcDataBuf = new byte[2448];
-				var dstDataBuf = new byte[2448];
+				byte[] srcDataBuf = new byte[2448];
+				byte[] dstDataBuf = new byte[2448];
 
 				void SwDumpTocOne(DiscTOC.TOCItem item)
 				{
@@ -122,7 +122,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 				void SwDumpChunk(int lba, int dispAddr, int addr, int count, int numOffenders)
 				{
-					var hashedOffenders = new HashSet<int>();
+					HashSet<int> hashedOffenders = new HashSet<int>();
 					for (int i = 0; i < numOffenders; i++)
 					{
 						hashedOffenders.Add(offenders[i]);
@@ -224,14 +224,14 @@ namespace BizHawk.Emulation.DiscSystem
 
 		private static List<string> FindCuesRecurse(string dir)
 		{
-			var ret = new List<string>();
-			var dpTodo = new Queue<string>();
+			List<string> ret = new List<string>();
+			Queue<string> dpTodo = new Queue<string>();
 			dpTodo.Enqueue(dir);
 			for (; ; )
 			{
 				if (dpTodo.Count == 0)
 					break;
-				var dpCurr = dpTodo.Dequeue();
+				string dpCurr = dpTodo.Dequeue();
 				foreach(var fi in new DirectoryInfo(dpCurr).GetFiles("*.cue"))
 				{
 					ret.Add(fi.FullName);
@@ -257,7 +257,7 @@ namespace BizHawk.Emulation.DiscSystem
 				return false;
 			}
 			var (dir, baseName, _) = inputPath.SplitPathToDirFileAndExt();
-			var outfile = Path.Combine(dir!, $"{baseName}_hawked.ccd");
+			string outfile = Path.Combine(dir!, $"{baseName}_hawked.ccd");
 			CCD_Format.Dump(disc, outfile);
 			return true;
 		}
@@ -268,7 +268,7 @@ namespace BizHawk.Emulation.DiscSystem
 			string dirArg = null;
 			string infile = null;
 			var loadDiscInterface = DiscInterface.BizHawk;
-			var compareDiscInterfaces = new List<DiscInterface>();
+			List<DiscInterface> compareDiscInterfaces = new List<DiscInterface>();
 			bool hawk = false;
 			bool music = false;
 			bool overwrite = false;
@@ -311,7 +311,7 @@ namespace BizHawk.Emulation.DiscSystem
 			if (music)
 			{
 				if (infile is null) return;
-				using var disc = Disc.LoadAutomagic(infile);
+				using Disc disc = Disc.LoadAutomagic(infile);
 				var (path, filename, _) = infile.SplitPathToDirFileAndExt();
 				bool? CheckOverwrite(string mp3Path)
 				{
@@ -328,8 +328,8 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				verbose = false;
 				var todo = FindCuesRecurse(dirArg);
-				var po = new ParallelOptions();
-				var cts = new CancellationTokenSource();
+				ParallelOptions po = new ParallelOptions();
+				CancellationTokenSource cts = new CancellationTokenSource();
 				po.CancellationToken = cts.Token;
 				po.MaxDegreeOfParallelism = 1;
 				if(po.MaxDegreeOfParallelism < 0) po.MaxDegreeOfParallelism = 1;
@@ -351,7 +351,7 @@ namespace BizHawk.Emulation.DiscSystem
 						if(!blocked)
 							foreach (var cmpif in compareDiscInterfaces)
 							{
-								var sw = new StringWriter();
+								StringWriter sw = new StringWriter();
 								bool success = CompareFile(fp, loadDiscInterface, cmpif, verbose, cts, sw);
 								if (!success)
 								{
@@ -377,7 +377,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			if (compareDiscInterfaces.Count != 0)
 			{
-				var sw = new StringWriter();
+				StringWriter sw = new StringWriter();
 				foreach (var cmpif in compareDiscInterfaces)
 				{
 					CompareFile(infile, loadDiscInterface, cmpif, verbose, null, sw);

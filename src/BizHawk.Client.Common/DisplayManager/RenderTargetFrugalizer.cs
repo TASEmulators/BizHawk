@@ -28,23 +28,17 @@ namespace BizHawk.Client.Common
 			ResetList();
 		}
 
-		private void ResetList()
-		{
-			_currentRenderTargets = new List<RenderTarget> { null, null };
-		}
+		private void ResetList() => _currentRenderTargets = new List<RenderTarget> { null, null };
 
 		private readonly IGL _gl;
 		private List<RenderTarget> _currentRenderTargets;
 
-		public RenderTarget Get(Size dimensions)
-		{
-			return Get(dimensions.Width, dimensions.Height);
-		}
+		public RenderTarget Get(Size dimensions) => Get(dimensions.Width, dimensions.Height);
 
 		public RenderTarget Get(int width, int height)
 		{
 			//get the current entry
-			RenderTarget currentRenderTarget = _currentRenderTargets[0];
+			var currentRenderTarget = _currentRenderTargets[0];
 
 			//check if its rotten and needs recreating
 			if (currentRenderTarget == null

@@ -97,13 +97,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			50, 63, 18, 13, 52, 52, 63, 50, 0, 45, 35, 52, 44, 48, 49, 14, 
 		};
 
-		private int[] _currentLuma = PaletteLumaNES;
-
-		public int[] CurrentLuma
-		{
-			get => _currentLuma;
-			set => _currentLuma = value;
-		}
+		public int[] CurrentLuma { get; set; } = PaletteLumaNES;
 
 		// true = light sensed
 		public bool LightGunCallback(int x, int y)
@@ -139,7 +133,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				palcolor = (short)(s & 0x3F);
 				intensity = (short)((s >> 6) & 0x7);
 
-				sum += _currentLuma[palcolor];
+				sum += CurrentLuma[palcolor];
 
 				i++;
 				if (i > xmax)
@@ -182,10 +176,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		//debug tools peek into the ppu through this
-		public byte ppubus_peek(int addr)
-		{
-			return nes.Board.PeekPPU(addr);
-		}
+		public byte ppubus_peek(int addr) => nes.Board.PeekPPU(addr);
 
 		public const int PPU_PHASE_VBL = 0;
 		public const int PPU_PHASE_BG = 1;
@@ -213,12 +204,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Reset();
 		}
 
-		public void NESSoftReset()
-		{
+		public void NESSoftReset() =>
 			//this hasn't been brought up to date since NEShawk was first made.
 			//in particular http://wiki.nesdev.com/w/index.php/PPU_power_up_state should be studied, but theres no use til theres test cases
 			Reset();
-		}
 
 		//state
 		public int ppudead; //measured in frames

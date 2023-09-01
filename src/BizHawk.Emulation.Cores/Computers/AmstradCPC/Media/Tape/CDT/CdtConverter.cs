@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		private TapeDataBlock ConvertClock(TapeDataBlock db)
 		{
-			var tb = new TapeDataBlock
+			TapeDataBlock tb = new TapeDataBlock
 			{
 				BlockDescription = db.BlockDescription,
 				BlockID = db.BlockID,
@@ -93,10 +93,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		private int Scale => ((40 << 16) / 35);
 
-		private int Adjust(int val)
-		{
-			return (int)((val * CLOCK_MULTIPLIER));
-		}
+		private int Adjust(int val) => (int)((val * CLOCK_MULTIPLIER));
 
 		private const double CLOCK_MULTIPLIER = 1.142857;
 
@@ -338,7 +335,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				for custom loading routines that use the same timings as ROM ones do. */
 		private void ProcessBlockID10(byte[] data)
 		{
-			var t = new TapeDataBlock
+			TapeDataBlock t = new TapeDataBlock
 			{
 				BlockID = 0x10,
 				BlockDescription = BlockType.Standard_Speed_Data_Block,
@@ -390,7 +387,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				sync or pilot tones (i.e. all sorts of protection schemes) then use the next three blocks to describe it.*/
 		private void ProcessBlockID11(byte[] data)
 		{
-			var t = new TapeDataBlock
+			TapeDataBlock t = new TapeDataBlock
 			{
 				BlockID = 0x11,
 				BlockDescription = BlockType.Turbo_Speed_Data_Block,
@@ -441,7 +438,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			int blockLen = 4;
 
-			var t = new TapeDataBlock
+			TapeDataBlock t = new TapeDataBlock
 			{
 				BlockID = 0x12,
 				BlockDescription = BlockType.Pure_Tone,
@@ -572,7 +569,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				Please use this block only if you cannot use any other block. */
 		private void ProcessBlockID15(byte[] data)
 		{
-			var t = new TapeDataBlock
+			TapeDataBlock t = new TapeDataBlock
 			{
 				BlockID = 0x15,
 				BlockDescription = BlockType.Direct_Recording,
@@ -704,7 +701,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			SinclairSpectrum.CswConverter.ProcessCSWV2(src, ref dest, compType, pulses);
 
 			// create the periods
-			var rate = (69888 * 50) / sampleRate;
+			int rate = (69888 * 50) / sampleRate;
 
 			for (int i = 0; i < dest.Length;)
 			{
@@ -793,7 +790,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private void ProcessBlockID19(byte[] data)
 		{
 			// not currently implemented properly
-			var t = new TapeDataBlock
+			TapeDataBlock t = new TapeDataBlock
 			{
 				BlockID = 0x19,
 				BlockDescription = BlockType.Generalized_Data_Block,
@@ -895,7 +892,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				For each group start block, there must be a group end block. Nesting of groups is not allowed.           */
 		private void ProcessBlockID21(byte[] data)
 		{
-			var t = new TapeDataBlock
+			TapeDataBlock t = new TapeDataBlock
 			{
 				BlockID = 0x21,
 				DataPeriods = new List<int>(),
@@ -950,7 +947,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private void ProcessBlockID23(byte[] data)
 		{
 			// not implemented properly
-			var t = new TapeDataBlock
+			TapeDataBlock t = new TapeDataBlock
 			{
 				BlockID = 0x23,
 				DataPeriods = new List<int>(),
@@ -996,7 +993,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				For simplicity reasons don't nest loop blocks!           */
 		private void ProcessBlockID24(byte[] data)
 		{
-			var t = new TapeDataBlock
+			TapeDataBlock t = new TapeDataBlock
 			{
 				BlockID = 0x24,
 				DataPeriods = new List<int>(),
@@ -1033,7 +1030,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				This block has no body.          */
 		private void ProcessBlockID25(byte[] data)
 		{
-			var t = new TapeDataBlock
+			TapeDataBlock t = new TapeDataBlock
 			{
 				BlockID = 0x25,
 				DataPeriods = new List<int>(),
@@ -1088,7 +1085,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private void ProcessBlockID26(byte[] data)
 		{
 			// block processing not implemented for this - just gets added for informational purposes only
-			var t = new TapeDataBlock
+			TapeDataBlock t = new TapeDataBlock
 			{
 				BlockID = 0x26,
 				DataPeriods = new List<int>(),
@@ -1114,7 +1111,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private void ProcessBlockID27(byte[] data)
 		{
 			// block processing not implemented for this - just gets added for informational purposes only
-			var t = new TapeDataBlock
+			TapeDataBlock t = new TapeDataBlock
 			{
 				BlockID = 0x27,
 				DataPeriods = new List<int>(),
@@ -1147,7 +1144,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private void ProcessBlockID28(byte[] data)
 		{
 			// block processing not implemented for this - just gets added for informational purposes only
-			var t = new TapeDataBlock
+			TapeDataBlock t = new TapeDataBlock
 			{
 				BlockID = 0x28,
 				DataPeriods = new List<int>(),
@@ -1174,7 +1171,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 						This block has no body of its own, but follows the extension rule.          */
 		private void ProcessBlockID2A(byte[] data)
 		{
-			var t = new TapeDataBlock
+			TapeDataBlock t = new TapeDataBlock
 			{
 				BlockID = 0x2A,
 				DataPeriods = new List<int>(),
@@ -1202,7 +1199,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				ambiguities, e.g. with custom loaders which are level-sensitive.         */
 		private void ProcessBlockID2B(byte[] data)
 		{
-			var t = new TapeDataBlock
+			TapeDataBlock t = new TapeDataBlock
 			{
 				BlockID = 0x2B,
 				DataPeriods = new List<int>(),
@@ -1230,7 +1227,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				Please use 'Archive Info' block for title, authors, publisher, etc.        */
 		private void ProcessBlockID30(byte[] data)
 		{
-			var t = new TapeDataBlock
+			TapeDataBlock t = new TapeDataBlock
 			{
 				BlockID = 0x30,
 				DataPeriods = new List<int>(),
@@ -1269,7 +1266,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private void ProcessBlockID31(byte[] data)
 		{
 			// currently not implemented properly in CPCHawk
-			var t = new TapeDataBlock
+			TapeDataBlock t = new TapeDataBlock
 			{
 				BlockID = 0x31,
 				DataPeriods = new List<int>(),
@@ -1329,7 +1326,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				The information about what hardware the tape uses is in the 'Hardware Type' block, so no need for it here.              */
 		private void ProcessBlockID32(byte[] data)
 		{
-			var t = new TapeDataBlock
+			TapeDataBlock t = new TapeDataBlock
 			{
 				BlockID = 0x32,
 				DataPeriods = new List<int>(),
@@ -1467,7 +1464,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				extra settings required by a particular emulator, or even poke data.               */
 		private void ProcessBlockID35(byte[] data)
 		{
-			var t = new TapeDataBlock
+			TapeDataBlock t = new TapeDataBlock
 			{
 				BlockID = 0x35,
 				DataPeriods = new List<int>(),
@@ -1501,7 +1498,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				ensure that they are both of the higher version number.               */
 		private void ProcessBlockID5A(byte[] data)
 		{
-			var t = new TapeDataBlock
+			TapeDataBlock t = new TapeDataBlock
 			{
 				BlockID = 0x5A,
 				DataPeriods = new List<int>(),
@@ -1518,7 +1515,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		private void ProcessUnidentifiedBlock(byte[] data)
 		{
-			var t = new TapeDataBlock
+			TapeDataBlock t = new TapeDataBlock
 			{
 				BlockID = -2,
 				DataPeriods = new List<int>(),
@@ -1559,7 +1556,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private void ProcessBlockID17(byte[] data)
 		{
 			// CPCHawk will not implement this block. it will however handle it so subsequent blocks can be parsed
-			var t = new TapeDataBlock
+			TapeDataBlock t = new TapeDataBlock
 			{
 				BlockID = 0x17,
 				DataPeriods = new List<int>(),
@@ -1578,7 +1575,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private void ProcessBlockID34(byte[] data)
 		{
 			// currently not implemented properly in CPCHawk
-			var t = new TapeDataBlock
+			TapeDataBlock t = new TapeDataBlock
 			{
 				BlockID = 0x34,
 				DataPeriods = new List<int>(),
@@ -1670,8 +1667,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					string type = "Unknown Type";
 					StringBuilder sb = new();
 
-					var param1 = GetWordValue(blockdata, 12);
-					var param2 = GetWordValue(blockdata, 14);
+					ushort param1 = GetWordValue(blockdata, 12);
+					ushort param2 = GetWordValue(blockdata, 14);
 
 					// header block - examine first byte of header
 					if (blockdata[1] == 0)
@@ -1907,13 +1904,13 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			if (original.PauseInMS > 0)
 			{
-				var pBlock = new TapeDataBlock
+				TapeDataBlock pBlock = new TapeDataBlock
 				{
 					DataPeriods = new List<int>(),
 					BlockDescription = BlockType.PAUSE_BLOCK,
 					PauseInMS = 0
 				};
-				var pauseInTStates = TranslatePause(original.PauseInMS);
+				int pauseInTStates = TranslatePause(original.PauseInMS);
 
 				pBlock.AddMetaData(BlockDescriptorTitle.Block_ID, pauseInTStates + " cycles");
 

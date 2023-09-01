@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		public ZXSpectrum(
 			CoreLoadParameters<ZXSpectrumSettings, ZXSpectrumSyncSettings> lp)
 		{
-			var ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 			CoreComm = lp.Comm;
 
@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			PutSyncSettings(syncSettings);
 			PutSettings(settings);
 
-			var joysticks = new List<JoystickType>
+			List<JoystickType> joysticks = new List<JoystickType>
 			{
 				syncSettings.JoystickType1,
 				syncSettings.JoystickType2,
@@ -176,7 +176,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		{
 			if (DiagRom & File.Exists(Directory.GetCurrentDirectory() + diagRoms[diagIndex]))
 			{
-				var rom = File.ReadAllBytes(Directory.GetCurrentDirectory() + diagRoms[diagIndex]);
+				byte[] rom = File.ReadAllBytes(Directory.GetCurrentDirectory() + diagRoms[diagIndex]);
 				return rom;
 			}
 
@@ -207,7 +207,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				return embeddedRom;
 
 			// Embedded ROM not found, maybe this is a peripheral ROM?
-			var result = names.Select(n => CoreComm.CoreFileProvider.GetFirmware(new("ZXSpectrum", n))).FirstOrDefault(b => b != null && b.Length == length) ?? throw new MissingFirmwareException($"At least one of these firmwares is required: {string.Join(", ", names)}");
+			byte[] result = names.Select(n => CoreComm.CoreFileProvider.GetFirmware(new("ZXSpectrum", n))).FirstOrDefault(b => b != null && b.Length == length) ?? throw new MissingFirmwareException($"At least one of these firmwares is required: {string.Join(", ", names)}");
 			return result;
 		}
 
@@ -222,46 +222,46 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			{
 				case MachineType.ZXSpectrum16:
 					_machine = new ZX16(this, _cpu, borderType, files, joys);
-					var _systemRom16 = GetFirmware(0x4000, "48ROM");
-					var romData16 = RomData.InitROM(machineType, _systemRom16);
+					byte[] _systemRom16 = GetFirmware(0x4000, "48ROM");
+					RomData romData16 = RomData.InitROM(machineType, _systemRom16);
 					_machine.InitROM(romData16);
 					break;
 				case MachineType.ZXSpectrum48:
 					_machine = new ZX48(this, _cpu, borderType, files, joys);
-					var _systemRom = GetFirmware(0x4000, "48ROM");
-					var romData = RomData.InitROM(machineType, _systemRom);
+					byte[] _systemRom = GetFirmware(0x4000, "48ROM");
+					RomData romData = RomData.InitROM(machineType, _systemRom);
 					_machine.InitROM(romData);
 					break;
 				case MachineType.ZXSpectrum128:
 					_machine = new ZX128(this, _cpu, borderType, files, joys);
-					var _systemRom128 = GetFirmware(0x8000, "128ROM");
-					var romData128 = RomData.InitROM(machineType, _systemRom128);
+					byte[] _systemRom128 = GetFirmware(0x8000, "128ROM");
+					RomData romData128 = RomData.InitROM(machineType, _systemRom128);
 					_machine.InitROM(romData128);
 					break;
 				case MachineType.ZXSpectrum128Plus2:
 					_machine = new ZX128Plus2(this, _cpu, borderType, files, joys);
-					var _systemRomP2 = GetFirmware(0x8000, "PLUS2ROM");
-					var romDataP2 = RomData.InitROM(machineType, _systemRomP2);
+					byte[] _systemRomP2 = GetFirmware(0x8000, "PLUS2ROM");
+					RomData romDataP2 = RomData.InitROM(machineType, _systemRomP2);
 					_machine.InitROM(romDataP2);
 					break;
 				case MachineType.ZXSpectrum128Plus2a:
 					_machine = new ZX128Plus2a(this, _cpu, borderType, files, joys);
-					var _systemRomP4 = GetFirmware(0x10000, "PLUS2AROM");
-					var romDataP4 = RomData.InitROM(machineType, _systemRomP4);
+					byte[] _systemRomP4 = GetFirmware(0x10000, "PLUS2AROM");
+					RomData romDataP4 = RomData.InitROM(machineType, _systemRomP4);
 					_machine.InitROM(romDataP4);
 					break;
 				case MachineType.ZXSpectrum128Plus3:
 					_machine = new ZX128Plus3(this, _cpu, borderType, files, joys);
-					var _systemRomP3 = GetFirmware(0x10000, "PLUS3ROM");
-					var romDataP3 = RomData.InitROM(machineType, _systemRomP3);
+					byte[] _systemRomP3 = GetFirmware(0x10000, "PLUS3ROM");
+					RomData romDataP3 = RomData.InitROM(machineType, _systemRomP3);
 					_machine.InitROM(romDataP3);
 					break;
 				case MachineType.Pentagon128:
 					_machine = new Pentagon128(this, _cpu, borderType, files, joys);
-					var _systemRomPen128 = GetFirmware(0x8000, "PentagonROM");
-					var _systemRomTrdos = GetFirmware(0x4000, "TRDOSROM");
-					var conc = _systemRomPen128.Concat(_systemRomTrdos).ToArray();
-					var romDataPen128 = RomData.InitROM(machineType, conc);
+					byte[] _systemRomPen128 = GetFirmware(0x8000, "PentagonROM");
+					byte[] _systemRomTrdos = GetFirmware(0x4000, "TRDOSROM");
+					byte[] conc = _systemRomPen128.Concat(_systemRomTrdos).ToArray();
+					RomData romDataPen128 = RomData.InitROM(machineType, conc);
 					_machine.InitROM(romDataPen128);
 					break;
 			}

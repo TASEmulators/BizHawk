@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 		private void CreateMemoryDomain(LibSameboy.MemoryAreas which, string name)
 		{
-			IntPtr data = IntPtr.Zero;
+			var data = IntPtr.Zero;
 			long length = 0;
 
 			if (!LibSameboy.sameboy_getmemoryarea(SameboyState, which, ref data, ref length))

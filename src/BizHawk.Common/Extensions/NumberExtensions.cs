@@ -5,55 +5,25 @@ namespace BizHawk.Common.NumberExtensions
 {
 	public static class NumberExtensions
 	{
-		public static string ToHexString(this int n, int numDigits)
-		{
-			return string.Format($"{{0:X{numDigits}}}", n);
-		}
+		public static string ToHexString(this int n, int numDigits) => string.Format($"{{0:X{numDigits}}}", n);
 
-		public static string ToHexString(this uint n, int numDigits)
-		{
-			return string.Format($"{{0:X{numDigits}}}", n);
-		}
+		public static string ToHexString(this uint n, int numDigits) => string.Format($"{{0:X{numDigits}}}", n);
 
-		public static string ToHexString(this long n, int numDigits)
-		{
-			return string.Format($"{{0:X{numDigits}}}", n);
-		}
+		public static string ToHexString(this long n, int numDigits) => string.Format($"{{0:X{numDigits}}}", n);
 
-		public static string ToHexString(this ulong n, int numDigits)
-		{
-			return string.Format($"{{0:X{numDigits}}}", n);
-		}
+		public static string ToHexString(this ulong n, int numDigits) => string.Format($"{{0:X{numDigits}}}", n);
 
-		public static bool Bit(this byte b, int index)
-		{
-			return (b & (1 << index)) != 0;
-		}
+		public static bool Bit(this byte b, int index) => (b & (1 << index)) != 0;
 
-		public static bool Bit(this int b, int index)
-		{
-			return (b & (1 << index)) != 0;
-		}
+		public static bool Bit(this int b, int index) => (b & (1 << index)) != 0;
 
-		public static bool Bit(this ushort b, int index)
-		{
-			return (b & (1 << index)) != 0;
-		}
+		public static bool Bit(this ushort b, int index) => (b & (1 << index)) != 0;
 
-		public static bool In(this int i, params int[] options)
-		{
-			return options.Any(j => i == j);
-		}
+		public static bool In(this int i, params int[] options) => options.Any(j => i == j);
 
-		public static byte BinToBCD(this byte v)
-		{
-			return (byte)(((v / 10) * 16) + (v % 10));
-		}
+		public static byte BinToBCD(this byte v) => (byte)(((v / 10) * 16) + (v % 10));
 
-		public static byte BCDtoBin(this byte v)
-		{
-			return (byte)(((v / 16) * 10) + (v % 16));
-		}
+		public static byte BCDtoBin(this byte v) => (byte)(((v / 16) * 10) + (v % 16));
 
 		/// <summary>
 		/// Receives a number and returns the number of hexadecimal digits it is
@@ -93,10 +63,7 @@ namespace BizHawk.Common.NumberExtensions
 		/// <summary>
 		/// The % operator is a remainder operator. (e.g. -1 mod 4 returns -1, not 3.)
 		/// </summary>
-		public static int Mod(this int a, int b)
-		{
-			return a - (b * (int)Math.Floor((float)a / b));
-		}
+		public static int Mod(this int a, int b) => a - (b * (int)Math.Floor((float)a / b));
 
 		/// <summary>
 		/// Force the value to be strictly between min and max (both excluded)

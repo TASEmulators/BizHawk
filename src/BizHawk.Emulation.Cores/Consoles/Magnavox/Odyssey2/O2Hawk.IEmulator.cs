@@ -203,10 +203,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			_islag = false;
 		}
 
-		public void Dispose()
-		{
-			ppu.DisposeSound();
-		}
+		public void Dispose() => ppu.DisposeSound();
 
 		public int _frameHz = 60;
 
@@ -214,10 +211,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public int[] frame_buffer;
 
-		public int[] GetVideoBuffer()
-		{
-			return frame_buffer;
-		}
+		public int[] GetVideoBuffer() => frame_buffer;
 
 		public void SendVideoBuffer()
 		{

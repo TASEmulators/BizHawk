@@ -150,9 +150,9 @@ namespace BizHawk.Client.Common
 
 		public string SendScreenshot(int waitingTime = 0)
 		{
-			var bmpBytes = PrefixWithLength(_takeScreenshotCallback());
-			var sentBytes = 0;
-			var tries = 0;
+			byte[] bmpBytes = PrefixWithLength(_takeScreenshotCallback());
+			int sentBytes = 0;
+			int tries = 0;
 			while (sentBytes <= 0 && tries < Retries)
 			{
 				try
@@ -176,13 +176,13 @@ namespace BizHawk.Client.Common
 			{
 				return Successful ? "Screenshot was sent" : "Screenshot could not be sent";
 			}
-			var resp = ReceiveString();
+			string resp = ReceiveString();
 			return resp == "" ? "Failed to get a response" : resp;
 		}
 
 		public int SendString(string sendString, Encoding encoding = null)
 		{
-			var sentBytes = SendBytes(PrefixWithLength((encoding ?? Encoding.UTF8).GetBytes(sendString)));
+			int sentBytes = SendBytes(PrefixWithLength((encoding ?? Encoding.UTF8).GetBytes(sendString)));
 			Successful = sentBytes > 0;
 			return sentBytes;
 		}

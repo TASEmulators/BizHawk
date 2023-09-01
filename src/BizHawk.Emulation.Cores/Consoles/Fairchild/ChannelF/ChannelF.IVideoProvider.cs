@@ -46,14 +46,14 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			for (int r = 0; r < 64; r++)
 			{
 				// lines
-				var p1 = (VRAM[(r * 0x80) + 125]) & 0x03;
-				var p2 = (VRAM[(r * 0x80) + 126]) & 0x03;
-				var pOffset = ((p2 & 0x02) | (p1 >> 1)) << 2;
+				int p1 = (VRAM[(r * 0x80) + 125]) & 0x03;
+				int p2 = (VRAM[(r * 0x80) + 126]) & 0x03;
+				int pOffset = ((p2 & 0x02) | (p1 >> 1)) << 2;
 
 				for (int c = 0; c < 128; c++)
 				{
 					// columns
-					var colourIndex = pOffset + (VRAM[c | (r << 7)] & 0x03);
+					int colourIndex = pOffset + (VRAM[c | (r << 7)] & 0x03);
 					frameBuffer[(r << 7) + c] = CMap[colourIndex];
 				}
 			}
@@ -74,12 +74,12 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		{
 			BuildFrame();
 
-			var lBorderWidth = 4;
-			var rBorderWidth = 128 - 102 - lBorderWidth;
-			var tBorderHeight = 4;
-			var bBorderHeight = 64 - 58 - tBorderHeight;
-			var startP = 128 * tBorderHeight;
-			var endP = 128 * bBorderHeight;
+			int lBorderWidth = 4;
+			int rBorderWidth = 128 - 102 - lBorderWidth;
+			int tBorderHeight = 4;
+			int bBorderHeight = 64 - 58 - tBorderHeight;
+			int startP = 128 * tBorderHeight;
+			int endP = 128 * bBorderHeight;
 
 			int index = 0;
 

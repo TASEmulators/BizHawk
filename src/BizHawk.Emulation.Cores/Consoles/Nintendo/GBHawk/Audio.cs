@@ -772,7 +772,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 
 				// clock the sweep
-				if ((sequencer_swp == 0) || (sequencer_swp == 4))
+				if (sequencer_swp is 0 or 4)
 				{
 					SQ1_intl_swp_cnt--;
 					if ((SQ1_intl_swp_cnt == 0) && SQ1_swp_enable)
@@ -1222,10 +1222,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			master_audio_clock = 0;
 		}
 
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Async is not available");
-		}
+		public void GetSamplesAsync(short[] samples) => throw new NotSupportedException("Async is not available");
 
 		public void DiscardSamples()
 		{

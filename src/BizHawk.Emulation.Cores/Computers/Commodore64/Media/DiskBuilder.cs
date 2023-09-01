@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 			public BamEntry(int sectors)
 			{
 				Data = 0;
-				for (var i = 0; i < sectors; i++)
+				for (int i = 0; i < sectors; i++)
 				{
 					Data >>= 1;
 					Data |= 0x800000;
@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 
 			public void Allocate(int sector)
 			{
-				var bit = GetBit(sector);
+				int bit = GetBit(sector);
 				if (bit != 0 && (Data & bit) != 0)
 				{
 					Data &= ~bit;
@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 
 			public void Free(int sector)
 			{
-				var bit = GetBit(sector);
+				int bit = GetBit(sector);
 				if (bit != 0 && (Data & bit) == 0)
 				{
 					Data |= bit;
@@ -81,10 +81,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 				}
 			}
 
-			public byte[] GetBytes()
-			{
-				return GetBytesEnumerable().ToArray();
-			}
+			public byte[] GetBytes() => GetBytesEnumerable().ToArray();
 
 			private IEnumerable<byte> GetBytesEnumerable()
 			{
@@ -98,8 +95,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 			{
 				get
 				{
-					var d = Data;
-					for (var i = 0; i < Sectors; i++)
+					int d = Data;
+					for (int i = 0; i < Sectors; i++)
 					{
 						d <<= 1;
 						yield return (d & 0x1000000) != 0;
@@ -155,11 +152,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 		public Disk Build()
 		{
 			const int tracks = 35;
-			var trackByteOffsets = new int[tracks];
-			var bam = new BamEntry[tracks];
-			var diskFull = false;
+			int[] trackByteOffsets = new int[tracks];
+			BamEntry[] bam = new BamEntry[tracks];
+			bool diskFull = false;
 
-			for (var i = 0; i < tracks; i++)
+			for (int i = 0; i < tracks; i++)
 			{
 				bam[i] = new BamEntry(SectorsPerTrack[i]);
 				if (i > 0)
@@ -167,23 +164,23 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 					trackByteOffsets[i] = trackByteOffsets[i - 1] + (SectorsPerTrack[i - 1] * 256);
 				}
 			}
-			var bytes = new byte[trackByteOffsets[tracks - 1] + (SectorsPerTrack[tracks - 1] * 256)];
+			byte[] bytes = new byte[trackByteOffsets[tracks - 1] + (SectorsPerTrack[tracks - 1] * 256)];
 
-			var currentTrack = 16;
-			var currentSector = 0;
-			var interleaveStart = 0;
-			var sectorInterleave = 3;
-			var directory = new List<LocatedEntry>();
+			int currentTrack = 16;
+			int currentSector = 0;
+			int interleaveStart = 0;
+			int sectorInterleave = 3;
+			List<LocatedEntry> directory = new List<LocatedEntry>();
 
 			int GetOutputOffset(int t, int s) => trackByteOffsets[t] + (s * 256);
 
 			foreach (var entry in Entries)
 			{
-				var sourceOffset = 0;
-				var dataLength = entry.Data == null ? 0 : entry.Data.Length;
-				var lengthInSectors = dataLength / 254;
-				var dataRemaining = dataLength;
-				var directoryEntry = new LocatedEntry
+				int sourceOffset = 0;
+				int dataLength = entry.Data == null ? 0 : entry.Data.Length;
+				int lengthInSectors = dataLength / 254;
+				int dataRemaining = dataLength;
+				LocatedEntry directoryEntry = new LocatedEntry
 				{
 					Entry = entry,
 					LengthInSectors = lengthInSectors + 1,
@@ -194,7 +191,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 
 				while (!diskFull)
 				{
-					var outputOffset = GetOutputOffset(currentTrack, currentSector);
+					int outputOffset = GetOutputOffset(currentTrack, currentSector);
 
 					if (dataRemaining > 254)
 					{
@@ -256,11 +253,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 			}
 
 			// write Directory
-			var directoryOffset = -(0x20);
+			int directoryOffset = -(0x20);
 			currentTrack = 17;
 			currentSector = 1;
-			var directoryOutputOffset = GetOutputOffset(currentTrack, currentSector);
-			var fileIndex = 0;
+			int directoryOutputOffset = GetOutputOffset(currentTrack, currentSector);
+			int fileIndex = 0;
 			bam[currentTrack].Allocate(currentSector);
 			foreach (var entry in directory)
 			{
@@ -279,12 +276,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 				bytes[directoryOutputOffset + directoryOffset + 0x02] = (byte)((int)entry.Entry.Type | (entry.Entry.Locked ? 0x40 : 0x00) | (entry.Entry.Closed ? 0x80 : 0x00));
 				bytes[directoryOutputOffset + directoryOffset + 0x03] = (byte)(entry.Track + 1);
 				bytes[directoryOutputOffset + directoryOffset + 0x04] = (byte)entry.Sector;
-				for (var i = 0x05; i <= 0x14; i++)
+				for (int i = 0x05; i <= 0x14; i++)
 				{
 					bytes[directoryOutputOffset + directoryOffset + i] = 0xA0;
 				}
 
-				var fileNameBytes = Encoding.ASCII.GetBytes(entry.Entry.Name ?? $"FILE{fileIndex:D3}");
+				byte[] fileNameBytes = Encoding.ASCII.GetBytes(entry.Entry.Name ?? $"FILE{fileIndex:D3}");
 				Array.Copy(fileNameBytes, 0, bytes, directoryOutputOffset + directoryOffset + 0x05, Math.Min(fileNameBytes.Length, 0x10));
 				bytes[directoryOutputOffset + directoryOffset + 0x1E] = (byte)(entry.LengthInSectors & 0xFF);
 				bytes[directoryOutputOffset + directoryOffset + 0x1F] = (byte)((entry.LengthInSectors >> 8) & 0xFF);
@@ -294,21 +291,21 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 			bytes[directoryOutputOffset + 0x01] = 0xFF;
 
 			// write BAM
-			var bamOutputOffset = GetOutputOffset(17, 0);
+			int bamOutputOffset = GetOutputOffset(17, 0);
 			bytes[bamOutputOffset + 0x00] = 18;
 			bytes[bamOutputOffset + 0x01] = 1;
 			bytes[bamOutputOffset + 0x02] = (byte)VersionType;
-			for (var i = 0; i < 35; i++)
+			for (int i = 0; i < 35; i++)
 			{
 				Array.Copy(bam[i].GetBytes(), 0, bytes, bamOutputOffset + 4 + (i * 4), 4);
 			}
 
-			for (var i = 0x90; i <= 0xAA; i++)
+			for (int i = 0x90; i <= 0xAA; i++)
 			{
 				bytes[bamOutputOffset + i] = 0xA0;
 			}
 
-			var titleBytes = Encoding.ASCII.GetBytes(Title ?? "UNTITLED");
+			byte[] titleBytes = Encoding.ASCII.GetBytes(Title ?? "UNTITLED");
 			Array.Copy(titleBytes, 0, bytes, bamOutputOffset + 0x90, Math.Min(titleBytes.Length, 0x10));
 
 			return D64.Read(bytes);

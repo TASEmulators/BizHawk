@@ -9,24 +9,15 @@
 			// nothing to initialize
 		}
 
-		public override byte ReadMemory(ushort addr)
-		{
-			return Core._rom[addr];
-		}
+		public override byte ReadMemory(ushort addr) => Core._rom[addr];
 
-		public override byte PeekMemory(ushort addr)
-		{
-			return ReadMemory(addr);
-		}
+		public override byte PeekMemory(ushort addr) => ReadMemory(addr);
 
 		public override void WriteMemory(ushort addr, byte value)
 		{
 
 		}
 
-		public override void PokeMemory(ushort addr, byte value)
-		{
-			WriteMemory(addr, value);
-		}
+		public override void PokeMemory(ushort addr, byte value) => WriteMemory(addr, value);
 	}
 }

@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			_romA[0] = 0xFF;
 			_romB[0] = 0xFF;
 
-			for (var i = 0; i < newAddresses.Count; i++)
+			for (int i = 0; i < newAddresses.Count; i++)
 			{
 				if (newAddresses[i] == 0x8000)
 				{
@@ -56,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 							return;
 					}
 				}
-				else if (newAddresses[i] == 0xA000 || newAddresses[i] == 0xE000)
+				else if (newAddresses[i] is 0xA000 or 0xE000)
 				{
 					switch (newData[i].Length)
 					{
@@ -82,24 +82,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			ser.Sync("RomMaskB", ref _romBMask);
 		}
 
-		public override int Peek8000(int addr)
-		{
-			return _romA[addr & _romAMask];
-		}
+		public override int Peek8000(int addr) => _romA[addr & _romAMask];
 
-		public override int PeekA000(int addr)
-		{
-			return _romB[addr & _romBMask];
-		}
+		public override int PeekA000(int addr) => _romB[addr & _romBMask];
 
-		public override int Read8000(int addr)
-		{
-			return _romA[addr & _romAMask];
-		}
+		public override int Read8000(int addr) => _romA[addr & _romAMask];
 
-		public override int ReadA000(int addr)
-		{
-			return _romB[addr & _romBMask];
-		}
+		public override int ReadA000(int addr) => _romB[addr & _romBMask];
 	}
 }

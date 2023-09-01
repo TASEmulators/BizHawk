@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			_rom = new int[0x40000];
 			Array.Copy(newData.First(), _rom, 0x2000);
 			pinGame = true;
-			for (var i = 0; i < newData.Count; i++)
+			for (int i = 0; i < newData.Count; i++)
 			{
 				if (newAddresses[i] == 0x8000)
 				{
@@ -45,16 +45,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			_romOffset = 0;
 		}
 
-		public override int Peek8000(int addr)
-		{
-			return _romOffset | (addr & 0x1FFF);
-		}
+		public override int Peek8000(int addr) => _romOffset | (addr & 0x1FFF);
 
-		public override int PeekDF00(int addr)
-		{
+		public override int PeekDF00(int addr) =>
 			// For debugging only. The processor does not see this.
-			return ((_romOffset >> 13) & 0x1F) | (_romEnabled ? 0x20 : 0x00);
-		}
+			((_romOffset >> 13) & 0x1F) | (_romEnabled ? 0x20 : 0x00);
 
 		public override void PokeDF00(int addr, int val)
 		{
@@ -62,15 +57,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			_romEnabled = (val & 0x20) != 0;
 		}
 
-		public override int Read8000(int addr)
-		{
-			return _romOffset | (addr & 0x1FFF);
-		}
+		public override int Read8000(int addr) => _romOffset | (addr & 0x1FFF);
 
-		public override int ReadDF00(int addr)
-		{
-			return 0x00;
-		}
+		public override int ReadDF00(int addr) => 0x00;
 
 		public override void WriteDF00(int addr, int val)
 		{

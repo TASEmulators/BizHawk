@@ -65,12 +65,12 @@ namespace BizHawk.Emulation.DiscSystem
 			while (true)
 			{
 				//read block count. this format is really stupid. maybe its good for detecting non-ecm files or something.
-				var b = stream.ReadByte();
+				int b = stream.ReadByte();
 				if (b == -1) MisformedException();
-				var bytes = 1;
-				var T = b & 3;
+				int bytes = 1;
+				int T = b & 3;
 				long N = (b >> 2) & 0x1F;
-				var nbits = 5;
+				int nbits = 5;
 				while (b.Bit(7))
 				{
 					if (bytes == 5) MisformedException(); //if we're gonna need a 6th byte, this file is broken
@@ -89,7 +89,7 @@ namespace BizHawk.Emulation.DiscSystem
 				if (N >= 0x100000000)
 					MisformedException();
 
-				var todo = (uint)N + 1;
+				uint todo = (uint)N + 1;
 
 				Index.Add(new IndexEntry(type: T, number: todo, ecmOffset: stream.Position, logicalOffset: logOffset));
 
@@ -119,24 +119,21 @@ namespace BizHawk.Emulation.DiscSystem
 
 			//TODO - endian bug. need an endian-independent binary reader with good license (miscutils is apache license)
 			//extension methods on binary reader wont suffice, we need something that lets you control the endianness used for reading. a complete replacement.
-			var br = new BinaryReader(stream);
+			BinaryReader br = new BinaryReader(stream);
 			EDC = br.ReadInt32();
 
 			Length = logOffset;
 		}
 
-		private static void MisformedException()
-		{
-			throw new InvalidOperationException("Mis-formed ECM file");
-		}
+		private static void MisformedException() => throw new InvalidOperationException("Mis-formed ECM file");
 
 		public static bool IsECM(string path)
 		{
-			using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-			var e = fs.ReadByte();
-			var c = fs.ReadByte();
-			var m = fs.ReadByte();
-			var o = fs.ReadByte();
+			using FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+			int e = fs.ReadByte();
+			int c = fs.ReadByte();
+			int m = fs.ReadByte();
+			int o = fs.ReadByte();
 			return e == 'E' && c == 'C' && m == 'M' && o == 0;
 		}
 
@@ -146,7 +143,7 @@ namespace BizHawk.Emulation.DiscSystem
 		private int FindInIndex(long offset, int LastReadIndex)
 		{
 			//try to avoid searching the index. check the last index we we used.
-			for (var i = 0; i < 2; i++) //try 2 times
+			for (int i = 0; i < 2; i++) //try 2 times
 			{
 				var last = Index[LastReadIndex];
 				if (LastReadIndex == Index.Count - 1)
@@ -171,7 +168,7 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 
 			//Console.WriteLine("binary searched"); //use this to check for mistaken LastReadIndex logic resulting in binary searches during sequential access
-			var listIndex = Index.LowerBoundBinarySearch(idx => idx.LogicalOffset, offset);
+			int listIndex = Index.LowerBoundBinarySearch(idx => idx.LogicalOffset, offset);
 			System.Diagnostics.Debug.Assert(listIndex < Index.Count);
 			//Console.WriteLine("byte_pos {0:X8} using index #{1} at offset {2:X8}", offset, listIndex, Index[listIndex].LogicalOffset);
 
@@ -182,7 +179,7 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			//sync
 			secbuf[0] = 0;
-			for (var i = 1; i <= 10; i++)
+			for (int i = 1; i <= 10; i++)
 				secbuf[i] = 0xFF;
 			secbuf[11] = 0x00;
 
@@ -193,7 +190,7 @@ namespace BizHawk.Emulation.DiscSystem
 					//mode 1
 					secbuf[15] = 0x01;
 					//reserved
-					for (var i = 0x814; i <= 0x81B; i++)
+					for (int i = 0x814; i <= 0x81B; i++)
 						secbuf[i] = 0x00;
 					break;
 
@@ -233,7 +230,7 @@ namespace BizHawk.Emulation.DiscSystem
 		public int Read(long byte_pos, byte[] buffer, int offset, int _count)
 		{
 			long remain = _count;
-			var completed = 0;
+			int completed = 0;
 
 			//we take advantage of the fact that we pretty much always read one sector at a time.
 			//this would be really inefficient if we only read one byte at a time.
@@ -241,7 +238,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			while (remain > 0)
 			{
-				var listIndex = FindInIndex(byte_pos, Read_LastIndex);
+				int listIndex = FindInIndex(byte_pos, Read_LastIndex);
 
 				var ie = Index[listIndex];
 				Read_LastIndex = listIndex;
@@ -249,10 +246,10 @@ namespace BizHawk.Emulation.DiscSystem
 				if (ie.Type == 0)
 				{
 					//type 0 is special: its just a raw blob. so all we need to do is read straight out of the stream
-					var blockOffset = byte_pos - ie.LogicalOffset;
-					var bytesRemainInBlock = ie.Number - blockOffset;
+					long blockOffset = byte_pos - ie.LogicalOffset;
+					long bytesRemainInBlock = ie.Number - blockOffset;
 
-					var todo = remain;
+					long todo = remain;
 					if (bytesRemainInBlock < todo)
 						todo = bytesRemainInBlock;
 
@@ -264,7 +261,7 @@ namespace BizHawk.Emulation.DiscSystem
 							toRead = int.MaxValue;
 						else toRead = (int)todo;
 
-						var done = stream.Read(buffer, offset, toRead);
+						int done = stream.Read(buffer, offset, toRead);
 						if (done != toRead)
 							return completed;
 
@@ -279,7 +276,7 @@ namespace BizHawk.Emulation.DiscSystem
 				{
 					//these are sector-based types. they have similar handling.
 
-					var blockOffset = byte_pos - ie.LogicalOffset;
+					long blockOffset = byte_pos - ie.LogicalOffset;
 
 					//figure out which sector within the block we're in
 					int outSecSize;
@@ -300,12 +297,12 @@ namespace BizHawk.Emulation.DiscSystem
 							throw new InvalidOperationException();
 					}
 
-					var secNumberInBlock = blockOffset / outSecSize;
-					var secOffsetInEcm = secNumberInBlock * outSecSize;
-					var bytesAskedIntoSector = blockOffset % outSecSize;
-					var bytesRemainInSector = outSecSize - bytesAskedIntoSector;
+					long secNumberInBlock = blockOffset / outSecSize;
+					long secOffsetInEcm = secNumberInBlock * outSecSize;
+					long bytesAskedIntoSector = blockOffset % outSecSize;
+					long bytesRemainInSector = outSecSize - bytesAskedIntoSector;
 
-					var todo = remain;
+					long todo = remain;
 					if (bytesRemainInSector < todo)
 						todo = bytesRemainInSector;
 
@@ -336,7 +333,7 @@ namespace BizHawk.Emulation.DiscSystem
 					//sector is decoded to 2352 bytes. Handling doesnt depend much on type from here
 
 					Array.Copy(Read_SectorBuf, (int)bytesAskedIntoSector + outSecOffset, buffer, offset, todo);
-					var done = (int)todo;
+					int done = (int)todo;
 
 					offset += done;
 					completed += done;

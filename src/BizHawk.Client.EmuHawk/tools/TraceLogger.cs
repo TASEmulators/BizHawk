@@ -142,10 +142,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private class CallbackSink : ITraceSink
 		{
-			public void Put(TraceInfo info)
-			{
-				Putter(info);
-			}
+			public void Put(TraceInfo info) => Putter(info);
 
 			public Action<TraceInfo> Putter { get; set; }
 		}
@@ -194,7 +191,7 @@ namespace BizHawk.Client.EmuHawk
 							Putter = (info) =>
 							{
 								//no padding supported. core should be doing this!
-								var data = $"{info.Disassembly} {info.RegisterInfo}";
+								string data = $"{info.Disassembly} {info.RegisterInfo}";
 								_streamWriter.WriteLine(data);
 								_currentSize += (ulong)data.Length;
 								if (_splitFile)
@@ -231,7 +228,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var instruction in _instructions)
 			{
 				//no padding supported. core should be doing this!
-				var data = $"{instruction.Disassembly} {instruction.RegisterInfo}";
+				string data = $"{instruction.Disassembly} {instruction.RegisterInfo}";
 				_streamWriter.WriteLine(data);
 				_currentSize += (ulong)data.Length;
 				if (_splitFile)
@@ -309,7 +306,7 @@ namespace BizHawk.Client.EmuHawk
 				initFileName = Path.GetFileNameWithoutExtension(LogFile.FullName);
 				initDir = Config!.PathEntries.LogAbsolutePath();
 			}
-			var result = this.ShowFileSaveDialog(
+			string result = this.ShowFileSaveDialog(
 				discardCWDChange: true,
 				filter: LogFilesFSFilterSet,
 				initDir: initDir,
@@ -342,7 +339,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SelectAllMenuItem_Click(object sender, EventArgs e)
 		{
-			for (var i = 0; i < _instructions.Count; i++)
+			for (int i = 0; i < _instructions.Count; i++)
 			{
 				TraceView.SelectRow(i, true);
 			}
@@ -350,7 +347,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MaxLinesMenuItem_Click(object sender, EventArgs e)
 		{
-			using var prompt = new InputPrompt
+			using InputPrompt prompt = new InputPrompt
 			{
 				StartLocation = this.ChildPointToScreen(TraceView),
 				TextInputType = InputPrompt.InputType.Unsigned,
@@ -358,13 +355,13 @@ namespace BizHawk.Client.EmuHawk
 				InitialValue = MaxLines.ToString()
 			};
 			if (!this.ShowDialogWithTempMute(prompt).IsOk()) return;
-			var max = int.Parse(prompt.PromptText);
+			int max = int.Parse(prompt.PromptText);
 			if (max > 0) MaxLines = max;
 		}
 
 		private void SegmentSizeMenuItem_Click(object sender, EventArgs e)
 		{
-			using var prompt = new InputPrompt
+			using InputPrompt prompt = new InputPrompt
 			{
 				StartLocation = this.ChildPointToScreen(TraceView),
 				TextInputType = InputPrompt.InputType.Unsigned,
@@ -397,7 +394,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void StartLogFile(bool append = false)
 		{
-			var data = Tracer.Header;
+			string data = Tracer.Header;
 			_streamWriter = new StreamWriter(
 				string.Concat(_baseName, _segmentCount == 0 ? string.Empty : $"_{_segmentCount}", _extension),
 				append);
@@ -439,8 +436,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				FileBox.Visible = true;
 				BrowseBox.Visible = true;
-				var name = Game.FilesystemSafeName();
-				var filename = Path.Combine(Config.PathEntries.LogAbsolutePath(), name) + _extension;
+				string name = Game.FilesystemSafeName();
+				string filename = Path.Combine(Config.PathEntries.LogAbsolutePath(), name) + _extension;
 				LogFile = new FileInfo(filename);
 				if (LogFile.Directory != null && !LogFile.Directory.Exists)
 				{
@@ -477,10 +474,7 @@ namespace BizHawk.Client.EmuHawk
 			SetTracerBoxTitle();
 		}
 
-		private void ClearMenuItem_Click(object sender, EventArgs e)
-		{
-			ClearList();
-		}
+		private void ClearMenuItem_Click(object sender, EventArgs e) => ClearList();
 
 		private void OpenLogFile_Click(object sender, EventArgs e)
 		{

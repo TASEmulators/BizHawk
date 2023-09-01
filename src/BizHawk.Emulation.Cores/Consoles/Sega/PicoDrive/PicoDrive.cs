@@ -35,10 +35,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 				SystemId = VSystemID.Raw.GEN,
 			})
 		{
-			var biosg = comm.CoreFileProvider.GetFirmware(new("32X", "G"));
-			var biosm = comm.CoreFileProvider.GetFirmware(new("32X", "M"));
-			var bioss = comm.CoreFileProvider.GetFirmware(new("32X", "S"));
-			var has32xBios = biosg != null && biosm != null && bioss != null;
+			byte[] biosg = comm.CoreFileProvider.GetFirmware(new("32X", "G"));
+			byte[] biosm = comm.CoreFileProvider.GetFirmware(new("32X", "M"));
+			byte[] bioss = comm.CoreFileProvider.GetFirmware(new("32X", "S"));
+			bool has32xBios = biosg != null && biosm != null && bioss != null;
 			if (deterministic && !has32xBios)
 				throw new InvalidOperationException("32X BIOS files are required for deterministic mode");
 			deterministic |= has32xBios;
@@ -82,7 +82,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 				_exe.AddReadonlyFile(rom, "romfile.md");
 			}
 
-			var regionAutoOrder = (LibPicoDrive.Region)(
+			LibPicoDrive.Region regionAutoOrder = (LibPicoDrive.Region)(
 				(int)_syncSettings.FirstChoice |
 				(int)_syncSettings.SecondChoice << 4 |
 				(int)_syncSettings.ThirdChoice << 8);
@@ -142,9 +142,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
-			var b = 0;
-			var v = 1;
-			foreach (var s in ButtonOrders)
+			int b = 0;
+			int v = 1;
+			foreach (string s in ButtonOrders)
 			{
 				if (controller.IsPressed(s))
 					b |= v;
@@ -174,10 +174,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 			}
 		}
 
-		protected override void LoadStateBinaryInternal(BinaryReader reader)
-		{
-			_core.SetCDReadCallback(_cdcallback);
-		}
+		protected override void LoadStateBinaryInternal(BinaryReader reader) => _core.SetCDReadCallback(_cdcallback);
 
 		public class SyncSettings
 		{
@@ -197,15 +194,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 			[Description("When region is set to automatic, lowest priority region to use if the game supports multiple regions")]
 			public LibPicoDrive.Region ThirdChoice { get; set; }
 
-			public SyncSettings Clone()
-			{
-				return (SyncSettings)MemberwiseClone();
-			}
+			public SyncSettings Clone() => (SyncSettings)MemberwiseClone();
 
-			public static bool NeedsReboot(SyncSettings x, SyncSettings y)
-			{
-				return !DeepEquality.DeepEquals(x, y);
-			}
+			public static bool NeedsReboot(SyncSettings x, SyncSettings y) => !DeepEquality.DeepEquals(x, y);
 
 			public SyncSettings()
 			{
@@ -215,24 +206,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 
 		private SyncSettings _syncSettings;
 
-		public object GetSettings()
-		{
-			return new object();
-		}
+		public object GetSettings() => new object();
 
-		public SyncSettings GetSyncSettings()
-		{
-			return _syncSettings.Clone();
-		}
+		public SyncSettings GetSyncSettings() => _syncSettings.Clone();
 
-		public PutSettingsDirtyBits PutSettings(object o)
-		{
-			return PutSettingsDirtyBits.None;
-		}
+		public PutSettingsDirtyBits PutSettings(object o) => PutSettingsDirtyBits.None;
 
 		public PutSettingsDirtyBits PutSyncSettings(SyncSettings o)
 		{
-			var ret = SyncSettings.NeedsReboot(_syncSettings, o);
+			bool ret = SyncSettings.NeedsReboot(_syncSettings, o);
 			_syncSettings = o;
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}

@@ -16,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 
 		static ApiManager()
 		{
-			var list = new List<(Type, Type, ConstructorInfo, Type[])>();
+			List<(Type, Type, ConstructorInfo, Type[])> list = new List<(Type, Type, ConstructorInfo, Type[])>();
 			foreach (var implType in Common.ReflectionCache.Types.Concat(ReflectionCache.Types)
 				.Where(t => /*t.IsClass &&*/t.IsSealed)) // small optimisation; api impl. types are all sealed classes
 			{
@@ -44,7 +44,7 @@ namespace BizHawk.Client.EmuHawk
 			IEmulator emulator,
 			IGameInfo game)
 		{
-			var avail = new Dictionary<Type, object>
+			Dictionary<Type, object> avail = new Dictionary<Type, object>
 			{
 				[typeof(Action<string>)] = logCallback,
 				[typeof(IMainFormForApi)] = mainForm,
@@ -61,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 					tuple => tuple.InterfaceType,
 					tuple =>
 					{
-						var instance = tuple.Ctor.Invoke(tuple.CtorTypes.Select(t => avail[t]).ToArray());
+						object instance = tuple.Ctor.Invoke(tuple.CtorTypes.Select(t => avail[t]).ToArray());
 						if (!ServiceInjector.UpdateServices(serviceProvider, instance, mayCache: true)) throw new Exception("ApiHawk impl. has required service(s) that can't be fulfilled");
 						return (IExternalApi) instance;
 					}));

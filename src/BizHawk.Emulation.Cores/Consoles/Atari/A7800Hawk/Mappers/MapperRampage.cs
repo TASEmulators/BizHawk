@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public override byte ReadMemory(ushort addr)
 		{
-			if (addr >= 0x1000 && addr < 0x1800)
+			if (addr is >= 0x1000 and < 0x1800)
 			{
 				// could be hsbios RAM here
 				if (Core._hsbios != null)
@@ -48,25 +48,25 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			$a000-$dfff Banked 
 			*/
 			int tempAddr;
-			if (addr >= 0x4000 && addr < 0x6000)
+			if (addr is >= 0x4000 and < 0x6000)
 			{
 				tempAddr = addr - 0x4000;
 				return Core._rom[6 * 0x4000 + 0x2000 + tempAddr];
 			}
 
-			if (addr >= 0x6000 && addr < 0x8000)
+			if (addr is >= 0x6000 and < 0x8000)
 			{
 				tempAddr = addr - 0x6000;
 				return Core._rom[6 * 0x4000 + tempAddr];
 			}
 
-			if (addr >= 0x8000 && addr < 0xA000)
+			if (addr is >= 0x8000 and < 0xA000)
 			{
 				tempAddr = addr - 0x8000;
 				return Core._rom[7 * 0x4000 + 0x2000 + tempAddr];
 			}
 
-			if (addr >= 0xA000 && addr < 0xE000)
+			if (addr is >= 0xA000 and < 0xE000)
 			{
 				tempAddr = addr - 0xA000;
 				return Core._rom[_bank * 0x4000 + tempAddr];
@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public override void WriteMemory(ushort addr, byte value)
 		{
-			if (addr >= 0x1000 && addr < 0x1800)
+			if (addr is >= 0x1000 and < 0x1800)
 			{
 				//could be hsbios RAM here
 				if (Core._hsbios != null)
@@ -101,16 +101,13 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			else
 			{
 				// cartridge and other OPSYS
-				if (addr >= 0xFF80 && addr < 0xFF88) // might be other addresses, but only these are used
+				if (addr is >= 0xFF80 and < 0xFF88) // might be other addresses, but only these are used
 				{
 					_bank = (byte)(addr & 7);
 				}
 			}
 		}
 
-		public override void SyncState(Serializer ser)
-		{
-			ser.Sync("Bank", ref _bank);
-		}
+		public override void SyncState(Serializer ser) => ser.Sync("Bank", ref _bank);
 	}
 }

@@ -44,10 +44,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(holydiver), ref holydiver);
 		}
 
-		private void SyncPRG()
-		{
-			prg_banks_16k[0] = prg_bank_16k;
-		}
+		private void SyncPRG() => prg_banks_16k[0] = prg_bank_16k;
 
 		public override void WritePrg(int addr, byte value)
 		{

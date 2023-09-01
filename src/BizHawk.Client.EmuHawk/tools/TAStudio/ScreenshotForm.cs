@@ -29,8 +29,8 @@ namespace BizHawk.Client.EmuHawk
 		public ScreenshotForm()
 		{
 			InitializeComponent();
-			
-			var fontSize = 10;
+
+			int fontSize = 10;
 			var fontStyle = FontStyle.Regular;
 			Font = new Font(FontFamily.GenericMonospace, fontSize, fontStyle);
 			_drawingHeight = 0;
@@ -111,7 +111,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				CreateParams createParams = base.CreateParams;
+				var createParams = base.CreateParams;
 				createParams.ExStyle |= WS_EX_TOPMOST;
 				return createParams;
 			}

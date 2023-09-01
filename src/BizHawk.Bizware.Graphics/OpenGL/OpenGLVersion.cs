@@ -23,10 +23,7 @@ namespace BizHawk.Bizware.Graphics
 				_glContext = SDL_GL_GetCurrentContext();
 			}
 
-			public void Dispose()
-			{
-				_ = SDL_GL_MakeCurrent(_sdlWindow, _glContext);
-			}
+			public void Dispose() => _ = SDL_GL_MakeCurrent(_sdlWindow, _glContext);
 		}
 
 		private static readonly IDictionary<int, bool> _glSupport = new Dictionary<int, bool>();
@@ -42,11 +39,11 @@ namespace BizHawk.Bizware.Graphics
 				{
 					using (new SDL2OpenGLContext(requestedMajor, requestedMinor, true, false))
 					{
-						using var gl = GL.GetApi(SDL2OpenGLContext.GetGLProcAddress);
-						var versionString = gl.GetStringS(StringName.Version);
-						var versionParts = versionString!.Split('.');
-						var major = int.Parse(versionParts[0]);
-						var minor = int.Parse(versionParts[1][0].ToString());
+						using GL gl = GL.GetApi(SDL2OpenGLContext.GetGLProcAddress);
+						string versionString = gl.GetStringS(StringName.Version);
+						string[] versionParts = versionString!.Split('.');
+						int major = int.Parse(versionParts[0]);
+						int minor = int.Parse(versionParts[1][0].ToString());
 						return PackGLVersion(major, minor) >= PackGLVersion(requestedMajor, requestedMinor);
 					}
 				}

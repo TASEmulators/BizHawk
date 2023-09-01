@@ -25,10 +25,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
-		public override void WritePrg(int addr, byte value)
-		{
-			latche = addr & 65535;
-		}
+		public override void WritePrg(int addr, byte value) => latche = addr & 65535;
 
 		public override byte ReadPrg(int addr)
 		{

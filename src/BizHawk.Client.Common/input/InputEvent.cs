@@ -69,9 +69,9 @@ namespace BizHawk.Client.Common
 			if (Modifiers is 0U) return Button;
 			var allMods = _getEffectiveModListCallback();
 			StringBuilder ret = new();
-			for (var i = 0; i < allMods.Count; i++)
+			for (int i = 0; i < allMods.Count; i++)
 			{
-				var b = 1U << i;
+				uint b = 1U << i;
 				if ((Modifiers & b) is not 0U)
 				{
 					ret.Append(allMods[i]);

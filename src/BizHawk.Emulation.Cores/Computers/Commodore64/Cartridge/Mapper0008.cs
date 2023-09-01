@@ -24,9 +24,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			_latchedval = 0;
 
 			// load data into the banks from the list
-			for (var j = 0; j < 4; j++)
+			for (int j = 0; j < 4; j++)
 			{
-				for (var i = 0; i < 0x4000; i++)
+				for (int i = 0; i < 0x4000; i++)
 				{
 					_banks[j, i] = newData[j][i];
 				}
@@ -60,15 +60,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			}
 		}
 
-		public override int Peek8000(int addr)
-		{
-			return _banks[_bankNumber, addr];
-		}
+		public override int Peek8000(int addr) => _banks[_bankNumber, addr];
 
-		public override int PeekA000(int addr)
-		{
-			return _banks[_bankNumber, addr + 0x2000];
-		}
+		public override int PeekA000(int addr) => _banks[_bankNumber, addr + 0x2000];
 
 		public override void PokeDF00(int addr, int val)
 		{
@@ -78,15 +72,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			}
 		}
 
-		public override int Read8000(int addr)
-		{
-				return _banks[_bankNumber, addr];
-		}
+		public override int Read8000(int addr) => _banks[_bankNumber, addr];
 
-		public override int ReadA000(int addr)
-		{
-				return _banks[_bankNumber, addr + 0x2000];
-		}
+		public override int ReadA000(int addr) => _banks[_bankNumber, addr + 0x2000];
 
 		public override void WriteDF00(int addr, int val)
 		{
@@ -96,9 +84,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			}
 		}
 
-		public override int ReadDF00(int addr)
-		{
-			return _latchedval;
-		}
+		public override int ReadDF00(int addr) => _latchedval;
 	}
 }

@@ -81,10 +81,7 @@ namespace BizHawk.Emulation.Cores.Components
 		/// </summary>
 		/// <param name="source">The source ISoundProvider</param>
 		/// <param name="sourceDescription">An ident string for the ISoundProvider (useful when debugging)</param>
-		public void PinSource(ISoundProvider source, string sourceDescription)
-		{
-			PinSource(source, sourceDescription, FinalMaxVolume);
-		}
+		public void PinSource(ISoundProvider source, string sourceDescription) => PinSource(source, sourceDescription, FinalMaxVolume);
 
 		/// <summary>
 		/// Adds an ISoundProvider to the SyncSoundMixer
@@ -124,7 +121,7 @@ namespace BizHawk.Emulation.Cores.Components
 			switch (MixBalanceMethod)
 			{
 				case SoundMixBalance.Equalize:
-					var eachVolume = FinalMaxVolume / _soundProviders.Count;
+					int eachVolume = FinalMaxVolume / _soundProviders.Count;
 					foreach (var source in _soundProviders)
 					{
 						source.MaxVolume = eachVolume;
@@ -167,10 +164,7 @@ namespace BizHawk.Emulation.Cores.Components
 				throw new InvalidOperationException("Only Sync mode is supported.");
 		}
 
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Async is not available");
-		}
+		public void GetSamplesAsync(short[] samples) => throw new NotSupportedException("Async is not available");
 
 		public void DiscardSamples()
 		{
@@ -266,10 +260,7 @@ namespace BizHawk.Emulation.Cores.Components
 			/// <summary>
 			/// Fetches sample data from the child ISoundProvider
 			/// </summary>
-			public void GetSamples()
-			{
-				SoundProvider.GetSamplesSync(out InputBuffer, out InputNSamp);
-			}
+			public void GetSamples() => SoundProvider.GetSamplesSync(out InputBuffer, out InputNSamp);
 
 			/// <summary>
 			/// Ensures the output buffer is ready for mixing based on the supplied nsamp value
@@ -278,13 +269,13 @@ namespace BizHawk.Emulation.Cores.Components
 			public void PrepareOutput(int nsamp)
 			{
 				OutputNSamp = nsamp;
-				var outputBuffSize = OutputNSamp * 2;
+				int outputBuffSize = OutputNSamp * 2;
 
 				if (OutputNSamp != InputNSamp || InputBuffer.Length != outputBuffSize)
 				{
 					OutputBuffer = new short[outputBuffSize];
 
-					var i = 0;
+					int i = 0;
 					while (i < InputBuffer.Length && i < outputBuffSize)
 					{
 						OutputBuffer[i] = InputBuffer[i];

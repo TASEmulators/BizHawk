@@ -44,21 +44,18 @@ namespace BizHawk.Client.EmuHawk
 			return _succeeded;
 		}
 
-		private void ThreadProc()
-		{
-			Download();
-		}
+		private void ThreadProc() => Download();
 
 		private void Download()
 		{
 			//the temp file is owned by this thread
-			var fn = TempFileManager.GetTempFilename("RAIntegration_download", ".dll", false);
+			string fn = TempFileManager.GetTempFilename("RAIntegration_download", ".dll", false);
 
 			try
 			{
-				using (var evt = new ManualResetEvent(false))
+				using (ManualResetEvent evt = new ManualResetEvent(false))
 				{
-					using var client = new System.Net.WebClient();
+					using System.Net.WebClient client = new System.Net.WebClient();
 					System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
 					client.DownloadFileAsync(new Uri(_url), fn);
 					client.DownloadProgressChanged += (object sender, System.Net.DownloadProgressChangedEventArgs e) =>
@@ -93,9 +90,9 @@ namespace BizHawk.Client.EmuHawk
 					return;
 
 				//try acquiring file
-				using (var dll = new HawkFile(fn))
+				using (HawkFile dll = new HawkFile(fn))
 				{
-					var data = dll!.ReadAllBytes();
+					byte[] data = dll!.ReadAllBytes();
 
 					//last chance. exiting, don't dump the new RAIntegration file
 					if (_exiting)
@@ -131,17 +128,12 @@ namespace BizHawk.Client.EmuHawk
 			_thread.Start();
 		}
 
-		private void btnCancel_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
+		private void btnCancel_Click(object sender, EventArgs e) => Close();
 
-		protected override void OnClosed(EventArgs e)
-		{
+		protected override void OnClosed(EventArgs e) =>
 			//inform the worker thread that it needs to try terminating without doing anything else
 			//(it will linger on in background for a bit til it can service this)
 			_exiting = true;
-		}
 
 		private void timer1_Tick(object sender, EventArgs e)
 		{
@@ -158,10 +150,7 @@ namespace BizHawk.Client.EmuHawk
 			progressBar1.Value = _pct;
 		}
 
-		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-		{
-			System.Diagnostics.Process.Start(_url);
-		}
+		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => System.Diagnostics.Process.Start(_url);
 	}
 }
 

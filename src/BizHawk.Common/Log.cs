@@ -52,10 +52,7 @@ namespace BizHawk.Common
 			}
 		}
 
-		public static void Error(string domain, string msg, params object[] vals)
-		{
-			LogAction(string.Format(msg, vals));
-		}
+		public static void Error(string domain, string msg, params object[] vals) => LogAction(string.Format(msg, vals));
 
 		// -------------- Default Logger Action --------------
 		private static readonly bool LogToConsole = false;

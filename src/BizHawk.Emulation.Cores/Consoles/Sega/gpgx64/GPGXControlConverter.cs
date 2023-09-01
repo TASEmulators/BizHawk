@@ -131,8 +131,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			// The game in question is Eye of the Beholder, you can FFW to the main menu and get a cursor right away.
 			// --yoshi
 			ControllerDef.AddXYPair($"P{player} Mouse {{0}}", AxisPairOrientation.RightAndUp, (-256).RangeTo(256), 0);
-			var nx = $"P{player} Mouse X";
-			var ny = $"P{player} Mouse Y";
+			string nx = $"P{player} Mouse X";
+			string ny = $"P{player} Mouse Y";
 			_converts.Add(() =>
 			{
 				_target.analog[(2 * idx) + 0] = (short)_source.AxisValue(nx);
@@ -144,8 +144,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		{
 			// lightgun needs to be transformed to match the current screen resolution
 			ControllerDef.AddXYPair($"P{player} Lightgun {{0}}", AxisPairOrientation.RightAndUp, 0.RangeTo(10000), 5000); //TODO verify direction against hardware
-			var nx = $"P{player} Lightgun X";
-			var ny = $"P{player} Lightgun Y";
+			string nx = $"P{player} Lightgun X";
+			string ny = $"P{player} Lightgun Y";
 			_converts.Add(() =>
 			{
 				_target.analog[(2 * idx) + 0] = (short)(_source.AxisValue(nx) / 10000.0f * (ScreenWidth - 1));
@@ -156,9 +156,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		private void DoXea1PAnalog(int idx, int player)
 		{
 			ControllerDef.AddXYZTriple($"P{player} Stick {{0}}", (-128).RangeTo(127), 0);
-			var nx = $"P{player} Stick X";
-			var ny = $"P{player} Stick Y";
-			var nz = $"P{player} Stick Z";
+			string nx = $"P{player} Stick X";
+			string ny = $"P{player} Stick Y";
+			string nz = $"P{player} Stick Z";
 			_converts.Add(() =>
 			{
 				_target.analog[(2 * idx) + 0] = (short)_source.AxisValue(nx);

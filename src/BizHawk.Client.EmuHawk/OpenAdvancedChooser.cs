@@ -70,7 +70,7 @@ namespace BizHawk.Client.EmuHawk
 			btnLibretroLaunchNoGame.Enabled = false;
 			btnLibretroLaunchGame.Enabled = false;
 
-			var core = _config.LibretroCore;
+			string core = _config.LibretroCore;
 			if (string.IsNullOrEmpty(core))
 			{
 				return;
@@ -83,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				var coreComm = _createCoreComm();
-				using var retro = new LibretroHost(coreComm, _game, core, true);
+				using LibretroHost retro = new LibretroHost(coreComm, _game, core, true);
 				btnLibretroLaunchGame.Enabled = true;
 				if (retro.Description.SupportsNoGame)
 					btnLibretroLaunchNoGame.Enabled = true;
@@ -111,7 +111,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void btnLibretroLaunchGame_Click(object sender, EventArgs e)
 		{
-			var entries = new List<FilesystemFilter> { new FilesystemFilter("ROMs", _currentDescription.ValidExtensions.Split('|')) };
+			List<FilesystemFilter> entries = new List<FilesystemFilter> { new FilesystemFilter("ROMs", _currentDescription.ValidExtensions.Split('|')) };
 			if (!_currentDescription.NeedsArchives) entries.Add(FilesystemFilter.Archives); // "needs archives" means the relevant archive extensions are already in the list, and we shouldn't scan archives for roms
 			SuggestedExtensionFilter = new(entries.ToArray());
 			Result = AdvancedRomLoaderType.LibretroLaunchGame;
@@ -144,8 +144,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.Data.GetDataPresent(DataFormats.FileDrop))
 			{
-				var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
-				var ext = Path.GetExtension(filePaths[0]).ToUpperInvariant();
+				string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+				string ext = Path.GetExtension(filePaths[0]).ToUpperInvariant();
 				if (OSTailoredCode.IsUnixHost ? ext == ".SO" : ext == ".DLL")
 				{
 					e.Effect = DragDropEffects.Copy;
@@ -158,7 +158,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void txtLibretroCore_DragDrop(object sender, DragEventArgs e)
 		{
-			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+			string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
 			_config.LibretroCore = filePaths[0];
 			RefreshLibretroCore(false);
 		}

@@ -296,10 +296,7 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 		public int[] buff_L = new int[160 * 144];
 		public int[] buff_R = new int[160 * 144];
 
-		public int[] GetVideoBuffer()
-		{
-			return _vidbuffer;		
-		}
+		public int[] GetVideoBuffer() => _vidbuffer;
 
 		public void FillVideoBuffer()
 		{
@@ -364,10 +361,7 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 			}
 		}
 
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Async is not available");
-		}
+		public void GetSamplesAsync(short[] samples) => throw new NotSupportedException("Async is not available");
 
 		public void DiscardSamples()
 		{

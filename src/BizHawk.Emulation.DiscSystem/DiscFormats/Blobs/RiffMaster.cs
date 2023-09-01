@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		protected static void WriteTag(BinaryWriter bw, string tag)
 		{
-			for (var i = 0; i < 4; i++)
+			for (int i = 0; i < 4; i++)
 				bw.Write(tag[i]);
 			bw.Flush();
 		}
@@ -99,7 +99,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			public byte[] ReadAll()
 			{
-				var msSize = (int)Math.Min((long)int.MaxValue, Length);
+				int msSize = (int)Math.Min((long)int.MaxValue, Length);
 				MemoryStream ms = new(msSize);
 				Source.Position = Position;
 				Util.CopyStream(Source, ms, Length);
@@ -206,7 +206,7 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				BinaryWriter bw = new(s);
 				WriteTag(bw, tag);
-				var size = GetVolume();
+				long size = GetVolume();
 				if (size > uint.MaxValue) throw new FormatException("File too big to write out");
 				bw.Write((uint)size);
 				WriteTag(bw, type);
@@ -217,10 +217,7 @@ namespace BizHawk.Emulation.DiscSystem
 					s.WriteByte(0);
 			}
 
-			public override long GetVolume()
-			{
-				return 4 + subchunks.Sum(rc => rc.GetVolume() + 8);
-			}
+			public override long GetVolume() => 4 + subchunks.Sum(rc => rc.GetVolume() + 8);
 
 			public override RiffChunk Morph()
 			{
@@ -254,7 +251,7 @@ namespace BizHawk.Emulation.DiscSystem
 				subchunks.Clear();
 				foreach (var (subchunkTag, s) in dictionary)
 				{
-					var rs = new RiffSubchunk
+					RiffSubchunk rs = new RiffSubchunk
 					{
 						tag = subchunkTag,
 						Source = new MemoryStream(System.Text.Encoding.ASCII.GetBytes(s)),
@@ -284,27 +281,27 @@ namespace BizHawk.Emulation.DiscSystem
 		private RiffChunk ReadChunk(BinaryReader br)
 		{
 			RiffChunk ret;
-			var tag = ReadTag(br); readCounter += 4;
-			var size = br.ReadUInt32(); readCounter += 4;
+			string tag = ReadTag(br); readCounter += 4;
+			uint size = br.ReadUInt32(); readCounter += 4;
 			if (size > int.MaxValue)
 				throw new FormatException("chunk too big");
 			if (tag is "RIFF" or "LIST")
 			{
-				var rc = new RiffContainer
+				RiffContainer rc = new RiffContainer
 				{
 					tag = tag,
 					type = ReadTag(br)
 				};
 
 				readCounter += 4;
-				var readEnd = readCounter - 4 + size;
+				long readEnd = readCounter - 4 + size;
 				while (readEnd > readCounter)
 					rc.subchunks.Add(ReadChunk(br));
 				ret = rc.Morph();
 			}
 			else
 			{
-				var rsc = new RiffSubchunk
+				RiffSubchunk rsc = new RiffSubchunk
 				{
 					tag = tag,
 					Source = br.BaseStream,
@@ -324,10 +321,7 @@ namespace BizHawk.Emulation.DiscSystem
 			return ret;
 		}
 
-		public void WriteStream(Stream s)
-		{
-			riff.WriteStream(s);
-		}
+		public void WriteStream(Stream s) => riff.WriteStream(s);
 
 		/// <summary>takes posession of the supplied stream</summary>
 		/// <exception cref="FormatException"><paramref name="s"/> does not contain a riff chunk</exception>

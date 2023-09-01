@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public void Load(string wavePath)
 		{
-			var stream = new FileStream(wavePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+			FileStream stream = new FileStream(wavePath, FileMode.Open, FileAccess.Read, FileShare.Read);
 			Load(stream);
 		}
 
@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.DiscSystem
 			try
 			{
 				RiffSource = null;
-				var rm = new RiffMaster();
+				RiffMaster rm = new RiffMaster();
 				rm.LoadStream(stream);
 				RiffSource = rm;
 
@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.DiscSystem
 					throw new Blob_WaveFile_Exception("Not a valid RIFF WAVE file (missing fmt chunk");
 				}
 
-				var dataChunks = rm.riff.subchunks.Where(chunk => chunk.tag == "data").ToList();
+				System.Collections.Generic.List<RiffMaster.RiffChunk> dataChunks = rm.riff.subchunks.Where(chunk => chunk.tag == "data").ToList();
 				if (dataChunks.Count != 1)
 				{
 					//later, we could make a Stream which would make an index of data chunks and walk around them
@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.DiscSystem
 				}
 
 				//acquire the start of the data chunk
-				var dataChunk = (RiffMaster.RiffSubchunk) dataChunks[0];
+				RiffMaster.RiffSubchunk dataChunk = (RiffMaster.RiffSubchunk) dataChunks[0];
 				waveDataStreamPos = dataChunk.Position;
 				Length = dataChunk.Length;
 			}

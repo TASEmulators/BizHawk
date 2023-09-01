@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			}
 
 			byte country_code = rom[0x3E];
-			_display_type = country_code switch
+			Region = country_code switch
 			{
 				// PAL codes
 				0x44 or 0x46 or 0x49 or 0x50 or 0x53 or 0x55 or 0x58 or 0x59 => DisplayType.PAL,
@@ -139,9 +139,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		private N64Settings _settings;
 
 		private bool _pendingThreadTerminate;
-
-		private readonly DisplayType _display_type = DisplayType.NTSC;
-
 		private Action _pendingThreadAction;
 
 		private readonly bool _disableExpansionSlot = true;
@@ -191,14 +188,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		private void StartThreadLoop()
 		{
-			var thread = new Thread(ThreadLoop) { IsBackground = true };
+			Thread thread = new Thread(ThreadLoop) { IsBackground = true };
 			thread.Start(); // will this solve the hanging process problem?
 		}
 
-		private void EndThreadLoop()
-		{
-			RunThreadAction(() => { _pendingThreadTerminate = true; });
-		}
+		private void EndThreadLoop() => RunThreadAction(() => { _pendingThreadTerminate = true; });
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
@@ -236,7 +230,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		public string SystemId => VSystemID.Raw.N64;
 
-		public DisplayType Region => _display_type;
+		public DisplayType Region { get; } = DisplayType.NTSC;
 
 		public ControllerDefinition ControllerDefinition { get; private set; } = new("Nintendo 64 Controller");
 

@@ -10,15 +10,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
 	public partial class GBHawk : IEmulator, ISettable<GBHawk.GBSettings, GBHawk.GBSyncSettings>
 	{
-		public GBSettings GetSettings()
-		{
-			return _settings.Clone();
-		}
+		public GBSettings GetSettings() => _settings.Clone();
 
-		public GBSyncSettings GetSyncSettings()
-		{
-			return _syncSettings.Clone();
-		}
+		public GBSyncSettings GetSyncSettings() => _syncSettings.Clone();
 
 		public PutSettingsDirtyBits PutSettings(GBSettings o)
 		{
@@ -71,10 +65,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			[DefaultValue(true)]
 			public bool UseRGBDSSyntax { get; set; }
 
-			public GBSettings Clone()
-			{
-				return (GBSettings)MemberwiseClone();
-			}
+			public GBSettings Clone() => (GBSettings)MemberwiseClone();
 
 			public GBSettings()
 			{
@@ -131,20 +122,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			[JsonIgnore]
 			public ushort _DivInitialTime = 8;
 
-			public GBSyncSettings Clone()
-			{
-				return (GBSyncSettings)MemberwiseClone();
-			}
+			public GBSyncSettings Clone() => (GBSyncSettings)MemberwiseClone();
 
 			public GBSyncSettings()
 			{
 				SettingsUtil.SetDefaultValues(this);
 			}
 
-			public static bool NeedsReboot(GBSyncSettings x, GBSyncSettings y)
-			{
-				return !DeepEquality.DeepEquals(x, y);
-			}
+			public static bool NeedsReboot(GBSyncSettings x, GBSyncSettings y) => !DeepEquality.DeepEquals(x, y);
 		}
 	}
 }

@@ -27,10 +27,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 		}
 
-		public void Unregister(object tag)
-		{
-			_records.RemoveAll(r => r.Tag == tag);
-		}
+		public void Unregister(object tag) => _records.RemoveAll(r => r.Tag == tag);
 
 		public void HandleScanline(int scanline)
 		{

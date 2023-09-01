@@ -27,22 +27,16 @@ namespace BizHawk.Client.EmuHawk
 			SettingsPropertyGrid.SelectedObject = _settings;
 		}
 
-		private void GreenzoneSettings_Load(object sender, EventArgs e)
-		{
-			SettingsPropertyGrid.AdjustDescriptionHeightToFit();
-		}
+		private void GreenzoneSettings_Load(object sender, EventArgs e) => SettingsPropertyGrid.AdjustDescriptionHeightToFit();
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
-			var keep = !_isDefault && DialogController.ShowMessageBox2("Attempt to keep old states?", "Keep old states?");
+			bool keep = !_isDefault && DialogController.ShowMessageBox2("Attempt to keep old states?", "Keep old states?");
 			_saveSettings(_settings, keep);
 			Close();
 		}
 
-		private void CancelBtn_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
+		private void CancelBtn_Click(object sender, EventArgs e) => Close();
 
 		private void DefaultsButton_Click(object sender, EventArgs e)
 		{

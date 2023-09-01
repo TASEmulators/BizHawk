@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			_controller = controller;
 
 			uint b = 0;
-			for (var i = 0; i < 8; i++)
+			for (int i = 0; i < 8; i++)
 			{
 				b <<= 1;
 				if (controller.IsPressed(GB_BUTTON_ORDER_IN_BITMASK[i])) b |= 1;
@@ -36,8 +36,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 				LibSameboy.sameboy_reset(SameboyState);
 			}
 
-			var prevTrack = controller.IsPressed("Previous Track");
-			var nextTrack = controller.IsPressed("Next Track");
+			bool prevTrack = controller.IsPressed("Previous Track");
+			bool nextTrack = controller.IsPressed("Next Track");
 
 			if (!_switchingTrack)
 			{

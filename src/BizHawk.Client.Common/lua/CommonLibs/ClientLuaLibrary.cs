@@ -53,17 +53,11 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local inclibuf = client.bufferheight( );")]
 		[LuaMethod("bufferheight", "Gets the visible height of the emu display surface (the core video output). This excludes the gameExtraPadding you've set.")]
-		public int BufferHeight()
-		{
-			return VideoProvider?.BufferHeight ?? NullVideo.Instance.BufferHeight; // TODO: consider exposing the video provider from mainform, so it can decide NullVideo is the correct substitute
-		}
+		public int BufferHeight() => VideoProvider?.BufferHeight ?? NullVideo.Instance.BufferHeight; // TODO: consider exposing the video provider from mainform, so it can decide NullVideo is the correct substitute
 
 		[LuaMethodExample("local inclibuf = client.bufferwidth( );")]
 		[LuaMethod("bufferwidth", "Gets the visible width of the emu display surface (the core video output). This excludes the gameExtraPadding you've set.")]
-		public int BufferWidth()
-		{
-			return VideoProvider?.BufferWidth ?? NullVideo.Instance.BufferWidth;
-		}
+		public int BufferWidth() => VideoProvider?.BufferWidth ?? NullVideo.Instance.BufferWidth;
 
 		[LuaMethodExample("client.clearautohold( );")]
 		[LuaMethod("clearautohold", "Clears all autohold keys")]
@@ -201,7 +195,7 @@ namespace BizHawk.Client.Common
 		public bool OpenRom(string path)
 		{
 			_luaLibsImpl.IsRebootingCore = true;
-			var success = APIs.EmuClient.OpenRom(path);
+			bool success = APIs.EmuClient.OpenRom(path);
 			_luaLibsImpl.IsRebootingCore = false;
 			return success;
 		}
@@ -322,10 +316,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local incbhver = client.getversion( );")]
 		[LuaMethod("getversion", "Returns the current stable BizHawk version")]
-		public static string GetVersion()
-		{
-			return VersionInfo.MainVersion;
-		}
+		public static string GetVersion() => VersionInfo.MainVersion;
 
 		[LuaMethodExample("local nlcliget = client.getavailabletools( );")]
 		[LuaMethod("getavailabletools", "Returns a list of the tools currently open")]
@@ -344,7 +335,7 @@ namespace BizHawk.Client.Common
 		[LuaMethod("createinstance", "returns a default instance of the given type of object if it exists (not case sensitive). Note: This will only work on objects which have a parameterless constructor.  If no suitable type is found, or the type does not have a parameterless constructor, then nil is returned")]
 		public LuaTable CreateInstance(string name)
 		{
-			var instance = APIs.Tool.CreateInstance(name);
+			object instance = APIs.Tool.CreateInstance(name);
 			return instance == null ? null : _th.ObjectToTable(instance);
 		}
 
@@ -360,10 +351,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("client.sleep( 50 );")]
 		[LuaMethod("sleep", "sleeps for n milliseconds")]
-		public void Sleep(int millis)
-		{
-			Thread.Sleep(millis);
-		}
+		public void Sleep(int millis) => Thread.Sleep(millis);
 
 		[LuaMethodExample("client.exactsleep( 50 );")]
 		[LuaMethod("exactsleep", "sleeps exactly for n milliseconds")]
@@ -397,8 +385,8 @@ namespace BizHawk.Client.Common
 				Log($"cheat codes not supported by the current system: {MainForm.Emulator.SystemId}");
 				return;
 			}
-			
-			var decoder = new GameSharkDecoder(MainForm.Emulator.AsMemoryDomains(), MainForm.Emulator.SystemId);
+
+			GameSharkDecoder decoder = new GameSharkDecoder(MainForm.Emulator.AsMemoryDomains(), MainForm.Emulator.SystemId);
 			var result = decoder.Decode(code);
 			
 			if (result.IsValid(out var valid))
@@ -427,7 +415,7 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			var decoder = new GameSharkDecoder(MainForm.Emulator.AsMemoryDomains(), MainForm.Emulator.SystemId);
+			GameSharkDecoder decoder = new GameSharkDecoder(MainForm.Emulator.AsMemoryDomains(), MainForm.Emulator.SystemId);
 			var result = decoder.Decode(code);
 
 			if (result.IsValid(out var valid))

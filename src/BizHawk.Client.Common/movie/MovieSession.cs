@@ -53,16 +53,11 @@ namespace BizHawk.Client.Common
 
 		public IMovieController MovieController { get; private set; } = new Bk2Controller("", NullController.Instance.Definition);
 
-		public IMovieController GenerateMovieController(ControllerDefinition definition = null)
-		{
+		public IMovieController GenerateMovieController(ControllerDefinition definition = null) =>
 			// TODO: expose Movie.LogKey and pass in here
-			return new Bk2Controller("", definition ?? MovieController.Definition);
-		}
+			new Bk2Controller("", definition ?? MovieController.Definition);
 
-		public void SetMovieController(ControllerDefinition definition)
-		{
-			MovieController = GenerateMovieController(definition);
-		}
+		public void SetMovieController(ControllerDefinition definition) => MovieController = GenerateMovieController(definition);
 
 		public void HandleFrameBefore()
 		{
@@ -128,7 +123,7 @@ namespace BizHawk.Client.Common
 		{
 			if (Movie.IsActive() && ReadOnly)
 			{
-				var result = Movie.CheckTimeLines(reader, out var errorMsg);
+				bool result = Movie.CheckTimeLines(reader, out string errorMsg);
 				if (!result)
 				{
 					Output(errorMsg);
@@ -174,7 +169,7 @@ namespace BizHawk.Client.Common
 					Movie.SwitchToRecord();
 				}
 
-				var result = Movie.ExtractInputLog(reader, out var errorMsg);
+				bool result = Movie.ExtractInputLog(reader, out string errorMsg);
 				if (!result)
 				{
 					Output(errorMsg);
@@ -210,14 +205,14 @@ namespace BizHawk.Client.Common
 			{
 				if (string.IsNullOrWhiteSpace(movie.Core))
 				{
-					PopupMessage(preferredCores.TryGetValue(systemId, out var coreName)
+					PopupMessage(preferredCores.TryGetValue(systemId, out string coreName)
 						? $"No core specified in the movie file, using the preferred core {coreName} instead."
 						: "No core specified in the movie file, using the default core instead.");
 				}
 				else
 				{
-					var keys = preferredCores.Keys.ToList();
-					foreach (var k in keys)
+					List<string> keys = preferredCores.Keys.ToList();
+					foreach (string k in keys)
 					{
 						preferredCores[k] = movie.Core;
 					}
@@ -267,7 +262,7 @@ namespace BizHawk.Client.Common
 		{
 			if (Movie.IsActive())
 			{
-				var message = "Movie ";
+				string message = "Movie ";
 				if (Movie.IsRecording())
 				{
 					message += "recording ";
@@ -279,7 +274,7 @@ namespace BizHawk.Client.Common
 
 				message += "stopped.";
 
-				var result = Movie.Stop(saveChanges);
+				bool result = Movie.Stop(saveChanges);
 				if (result)
 				{
 					Output($"{Path.GetFileName(Movie.Filename)} written to disk.");
@@ -323,10 +318,7 @@ namespace BizHawk.Client.Common
 		private void Output(string message)
 			=> _dialogParent.DialogController.AddOnScreenMessage(message);
 
-		private void LatchInputToUser()
-		{
-			MovieOut.Source = MovieIn;
-		}
+		private void LatchInputToUser() => MovieOut.Source = MovieIn;
 
 		// Latch input from the input log, if available
 		private void LatchInputToLog()
@@ -350,11 +342,11 @@ namespace BizHawk.Client.Common
 				bool movieHasValue = Movie.HeaderEntries.TryGetValue(HeaderKeys.CycleCount, out string movieValueStr);
 
 				long movieValue = movieHasValue ? Convert.ToInt64(movieValueStr) : 0;
-				var valuesMatch = movieValue == coreValue;
+				bool valuesMatch = movieValue == coreValue;
 
 				if (!movieHasValue || !valuesMatch)
 				{
-					var previousState = !movieHasValue
+					string previousState = !movieHasValue
 						? $"The movie is currently missing a cycle count."
 						: $"The cycle count in the movie ({movieValue}) doesn't match the current value.";
 					// TODO: Ideally, this would be a Yes/No MessageBox that saves when "Yes" is pressed.

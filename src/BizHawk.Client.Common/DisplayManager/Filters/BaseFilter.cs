@@ -74,10 +74,7 @@ namespace BizHawk.Client.Common.Filters
 			return point;
 		}
 
-		public void SetInput(Texture2d tex)
-		{
-			InputTexture = tex;
-		}
+		public void SetInput(Texture2d tex) => InputTexture = tex;
 
 		public virtual void Run()
 		{
@@ -87,10 +84,7 @@ namespace BizHawk.Client.Common.Filters
 			=> _outputTexture;
 
 		// filter actions
-		protected void YieldOutput(Texture2d tex)
-		{
-			_outputTexture = tex;
-		}
+		protected void YieldOutput(Texture2d tex) => _outputTexture = tex;
 
 		protected FilterProgram FilterProgram;
 		protected Texture2d InputTexture;
@@ -100,21 +94,12 @@ namespace BizHawk.Client.Common.Filters
 		/// Indicate a 'RenderTarget' disposition if you want to draw directly to the input
 		/// Indicate a 'Texture' disposition if you want to use it to draw to a newly allocated render target
 		/// </summary>
-		protected IOSurfaceInfo DeclareInput(SurfaceDisposition disposition = SurfaceDisposition.Unspecified, string channel = "default")
-		{
-			return DeclareIO(SurfaceDirection.Input, channel, disposition);
-		}
+		protected IOSurfaceInfo DeclareInput(SurfaceDisposition disposition = SurfaceDisposition.Unspecified, string channel = "default") => DeclareIO(SurfaceDirection.Input, channel, disposition);
 
-		protected IOSurfaceInfo DeclareOutput(SurfaceDisposition disposition = SurfaceDisposition.Unspecified, string channel = "default")
-		{
-			return DeclareIO(SurfaceDirection.Output, channel, disposition);
-		}
+		protected IOSurfaceInfo DeclareOutput(SurfaceDisposition disposition = SurfaceDisposition.Unspecified, string channel = "default") => DeclareIO(SurfaceDirection.Output, channel, disposition);
 
 		// TODO - why a different param order than DeclareOutput?
-		protected RenderTarget GetTempTarget(int width, int height)
-		{
-			return FilterProgram.GetTempTarget(width, height);
-		}
+		protected RenderTarget GetTempTarget(int width, int height) => FilterProgram.GetTempTarget(width, height);
 
 		protected IOSurfaceInfo DeclareOutput(SurfaceState state, string channel = "default")
 		{
@@ -123,19 +108,13 @@ namespace BizHawk.Client.Common.Filters
 			return iosi;
 		}
 
-		public IOSurfaceInfo FindInput(string channel = "default")
-		{
-			return FindIOSurfaceInfo(channel, SurfaceDirection.Input);
-		}
+		public IOSurfaceInfo FindInput(string channel = "default") => FindIOSurfaceInfo(channel, SurfaceDirection.Input);
 
-		public IOSurfaceInfo FindOutput(string channel = "default")
-		{
-			return FindIOSurfaceInfo(channel, SurfaceDirection.Output);
-		}
+		public IOSurfaceInfo FindOutput(string channel = "default") => FindIOSurfaceInfo(channel, SurfaceDirection.Output);
 
 		private IOSurfaceInfo DeclareIO(SurfaceDirection direction, string channel, SurfaceDisposition disposition)
 		{
-			var iosi = new IOSurfaceInfo
+			IOSurfaceInfo iosi = new IOSurfaceInfo
 			{
 				SurfaceDirection = direction,
 				Channel = channel,
@@ -149,10 +128,7 @@ namespace BizHawk.Client.Common.Filters
 		private readonly List<IOSurfaceInfo> _ioSurfaceInfos = new();
 
 
-		private IOSurfaceInfo FindIOSurfaceInfo(string channel, SurfaceDirection direction)
-		{
-			return _ioSurfaceInfos.Find(iosi => iosi.Channel == channel && iosi.SurfaceDirection == direction);
-		}
+		private IOSurfaceInfo FindIOSurfaceInfo(string channel, SurfaceDirection direction) => _ioSurfaceInfos.Find(iosi => iosi.Channel == channel && iosi.SurfaceDirection == direction);
 
 		public class IOSurfaceInfo
 		{

@@ -15,50 +15,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		// in addition, each variety has two other bits; a "low bit" and a "high bit"
 		// for vrc2b, low bit is A0 and high bit is A1, so it's represented by AddrA0A1
 		// other remaps are named similarly
-		private int AddrA1A0(int addr)
-		{
-			return addr & 0x7000 | (addr >> 1) & 1 | (addr << 1) & 2;
-		}
+		private int AddrA1A0(int addr) => addr & 0x7000 | (addr >> 1) & 1 | (addr << 1) & 2;
 
-		private int AddrA0A1(int addr)
-		{
-			return addr & 0x7003;
-		}
+		private int AddrA0A1(int addr) => addr & 0x7003;
 
-		private int AddrA1A2(int addr)
-		{
-			return addr & 0x7000 | (addr >> 1) & 3;
-		}
+		private int AddrA1A2(int addr) => addr & 0x7000 | (addr >> 1) & 3;
 
-		private int AddrA6A7(int addr)
-		{
-			return addr & 0x7000 | (addr >> 6) & 3;
-		}
+		private int AddrA6A7(int addr) => addr & 0x7000 | (addr >> 6) & 3;
 
-		private int AddrA2A3(int addr)
-		{
-			return addr & 0x7000 | (addr >> 2) & 3;
-		}
+		private int AddrA2A3(int addr) => addr & 0x7000 | (addr >> 2) & 3;
 
-		private int AddrA3A2(int addr)
-		{
-			return addr & 0x7000 | (addr >> 3) & 1 | (addr >> 1) & 2;
-		}
+		private int AddrA3A2(int addr) => addr & 0x7000 | (addr >> 3) & 1 | (addr >> 1) & 2;
 		// these composite mappings are what's needed for ines mappers
-		private int AddrA1A2_A6A7(int addr)
-		{
-			return addr & 0x7000 | (addr >> 1) & 3 | (addr >> 6) & 3;
-		}
+		private int AddrA1A2_A6A7(int addr) => addr & 0x7000 | (addr >> 1) & 3 | (addr >> 6) & 3;
 
-		private int AddrA0A1_A2A3(int addr)
-		{
-			return addr & 0x7003 | (addr >> 2) & 3;
-		}
+		private int AddrA0A1_A2A3(int addr) => addr & 0x7003 | (addr >> 2) & 3;
 
-		private int AddrA3A2_A1A0(int addr)
-		{
-			return addr & 0x7000 | (addr >> 3) & 1 | (addr >> 1) & 3 | (addr << 1) & 2;
-		}
+		private int AddrA3A2_A1A0(int addr) => addr & 0x7000 | (addr >> 3) & 1 | (addr >> 1) & 3 | (addr << 1) & 2;
 
 		private int prg_bank_mask_8k, chr_bank_mask_1k;
 		private int prg_reg_mask_8k;
@@ -150,10 +123,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		private void SyncIRQ()
-		{
-			IrqSignal = (irq_pending && irq_enabled);
-		}
+		private void SyncIRQ() => IrqSignal = (irq_pending && irq_enabled);
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
@@ -315,12 +285,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					prg_banks_8k[_prgMode?1:0] = (byte)((prg_banks_8k[0] & 0x20) | (value & 0x1F));
 					return;
 				}
-				else if (addr >= 0x2000 && addr < 0x3000)
+				else if (addr is >= 0x2000 and < 0x3000)
 				{
 					prg_banks_8k[1] = (byte)((prg_banks_8k[0] & 0x20) | (value & 0x1F));
 					return;
 				}
-				else if (addr >= 0x3000 && addr < 0x7000)
+				else if (addr is >= 0x3000 and < 0x7000)
 				{
 					value = (byte)(value << 2 & 0x20);
 

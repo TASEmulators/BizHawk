@@ -38,10 +38,7 @@ namespace BizHawk.Client.EmuHawk
 			PopulateListView();
 		}
 
-		private void OK_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
+		private void OK_Click(object sender, EventArgs e) => Close();
 
 		private void PopulateListView()
 		{
@@ -52,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 				.ThenBy(f => f.Name);
 			foreach (var nlf in functions)
 			{
-				var item = new ListViewItem { Text = nlf.Event };
+				ListViewItem item = new ListViewItem { Text = nlf.Event };
 				item.SubItems.Add(nlf.Name);
 				item.SubItems.Add(nlf.Guid.ToString());
 				FunctionView.Items.Add(item);
@@ -61,15 +58,9 @@ namespace BizHawk.Client.EmuHawk
 			DoButtonsStatus();
 		}
 
-		private void CallButton_Click(object sender, EventArgs e)
-		{
-			CallFunction();
-		}
+		private void CallButton_Click(object sender, EventArgs e) => CallFunction();
 
-		private void RemoveButton_Click(object sender, EventArgs e)
-		{
-			RemoveFunctionButton();
-		}
+		private void RemoveButton_Click(object sender, EventArgs e) => RemoveFunctionButton();
 
 		private void CallFunction()
 		{
@@ -78,7 +69,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				foreach (int index in indices)
 				{
-					var guid = FunctionView.Items[index].SubItems[2].Text;
+					string guid = FunctionView.Items[index].SubItems[2].Text;
 					_registeredFunctions[guid].Call();
 				}
 			}
@@ -91,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				foreach (int index in indices)
 				{
-					var guid = FunctionView.Items[index].SubItems[2].Text;
+					string guid = FunctionView.Items[index].SubItems[2].Text;
 					var nlf = _registeredFunctions[guid];
 					_registeredFunctions.Remove(nlf, _mainForm.Emulator);
 				}
@@ -100,15 +91,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void FunctionView_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			DoButtonsStatus();
-		}
+		private void FunctionView_SelectedIndexChanged(object sender, EventArgs e) => DoButtonsStatus();
 
-		private void FunctionView_DoubleClick(object sender, EventArgs e)
-		{
-			CallFunction();
-		}
+		private void FunctionView_DoubleClick(object sender, EventArgs e) => CallFunction();
 
 		private void RemoveAllBtn_Click(object sender, EventArgs e)
 		{

@@ -6,10 +6,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 	{
 		public VectrexHawk Core { get; set; }
 
-		public byte ReadReg(int addr)
-		{
-			return 0xFF;
-		}
+		public byte ReadReg(int addr) => 0xFF;
 
 		public void WriteReg(int addr, byte value)
 		{

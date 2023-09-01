@@ -56,10 +56,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			if (funcPtr != IntPtr.Zero) GFXGetScreenTextureID = (GetScreenTextureID) Marshal.GetDelegateForFunctionPointer(funcPtr, typeof(GetScreenTextureID));
 		}
 
-		public void GetScreenDimensions(ref int width, ref int height)
-		{
-			GFXReadScreen2Res(IntPtr.Zero, ref width, ref height, 0);
-		}
+		public void GetScreenDimensions(ref int width, ref int height) => GFXReadScreen2Res(IntPtr.Zero, ref width, ref height, 0);
 
 		private int[] m64pBuffer = new int[0];
 		/// <summary>

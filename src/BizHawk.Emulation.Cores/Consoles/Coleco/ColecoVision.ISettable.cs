@@ -8,15 +8,9 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 {
 	public partial class ColecoVision : IEmulator, ISettable<ColecoVision.ColecoSettings, ColecoVision.ColecoSyncSettings>
 	{
-		public ColecoSettings GetSettings()
-		{
-			return _settings.Clone();
-		}
+		public ColecoSettings GetSettings() => _settings.Clone();
 
-		public ColecoSyncSettings GetSyncSettings()
-		{
-			return _syncSettings.Clone();
-		}
+		public ColecoSyncSettings GetSyncSettings() => _syncSettings.Clone();
 
 		public PutSettingsDirtyBits PutSettings(ColecoSettings o)
 		{
@@ -34,10 +28,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		public class ColecoSettings
 		{
-			public ColecoSettings Clone()
-			{
-				return (ColecoSettings)MemberwiseClone();
-			}
+			public ColecoSettings Clone() => (ColecoSettings)MemberwiseClone();
 		}
 
 		private ColecoSettings _settings = new();
@@ -81,15 +72,9 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				}
 			}
 
-			public ColecoSyncSettings Clone()
-			{
-				return (ColecoSyncSettings)MemberwiseClone();
-			}
+			public ColecoSyncSettings Clone() => (ColecoSyncSettings)MemberwiseClone();
 
-			public static bool NeedsReboot(ColecoSyncSettings x, ColecoSyncSettings y)
-			{
-				return !DeepEquality.DeepEquals(x, y);
-			}
+			public static bool NeedsReboot(ColecoSyncSettings x, ColecoSyncSettings y) => !DeepEquality.DeepEquals(x, y);
 		}
 	}
 }

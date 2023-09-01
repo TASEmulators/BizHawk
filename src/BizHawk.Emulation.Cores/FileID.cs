@@ -93,10 +93,7 @@ namespace BizHawk.Emulation.Cores
 		{
 			base.Add(item);
 		}
-		public new void Sort()
-		{
-			base.Sort((x, y) => x.Confidence.CompareTo(y.Confidence));
-		}
+		public new void Sort() => base.Sort((x, y) => x.Confidence.CompareTo(y.Confidence));
 
 		/// <summary>
 		/// indicates whether the client should try again after mounting the disc image for further inspection
@@ -182,7 +179,7 @@ namespace BizHawk.Emulation.Cores
 					//add a low confidence result just based on extension, if it doesnt exist
 					if(ret.Find( (x) => x.FileIDType == handler.DefaultForExtension) == null)
 					{
-						var fidr = new FileIDResult(handler.DefaultForExtension, 5);
+						FileIDResult fidr = new FileIDResult(handler.DefaultForExtension, 5);
 						ret.Add(fidr);
 					}
 				}
@@ -214,7 +211,7 @@ namespace BizHawk.Emulation.Cores
 
 		private FileIDResults IdentifyDisc(IdentifyJob job)
 		{
-			var discIdentifier = new DiscSystem.DiscIdentifier(job.Disc);
+			DiscSystem.DiscIdentifier discIdentifier = new DiscSystem.DiscIdentifier(job.Disc);
 			//DiscSystem could use some newer approaches from this file (instead of parsing ISO filesystem... maybe?)
 			return discIdentifier.DetectDiscType() switch
 			{
@@ -398,10 +395,7 @@ namespace BizHawk.Emulation.Cores
 			return false;
 		}
 
-		private static bool CheckMagic(Stream stream, SimpleMagicRecord rec, params int[] offsets)
-		{
-			return CheckMagic(stream, new SimpleMagicRecord[] { rec }, offsets);
-		}
+		private static bool CheckMagic(Stream stream, SimpleMagicRecord rec, params int[] offsets) => CheckMagic(stream, new SimpleMagicRecord[] { rec }, offsets);
 
 		private static bool CheckMagicOne(Stream stream, SimpleMagicRecord rec, int offset)
 		{
@@ -436,7 +430,7 @@ namespace BizHawk.Emulation.Cores
 			if (!CheckMagic(job.Stream, SimpleMagics.INES))
 				return new FileIDResult();
 
-			var ret = new FileIDResult(FileIDType.INES, 100);
+			FileIDResult ret = new FileIDResult(FileIDType.INES, 100);
 
 			//an INES file should be a multiple of 8k, with the 16 byte header.
 			//if it isnt.. this is fishy.
@@ -461,7 +455,7 @@ namespace BizHawk.Emulation.Cores
 		/// </summary>
 		private static FileIDResult Test_Simple(IdentifyJob job, FileIDType type, SimpleMagicRecord[] magics)
 		{
-			var ret = new FileIDResult(type);
+			FileIDResult ret = new FileIDResult(type);
 
 			if (CheckMagic(job.Stream, magics))
 				return new FileIDResult(type, 100);
@@ -471,7 +465,7 @@ namespace BizHawk.Emulation.Cores
 
 		private static FileIDResult Test_Simple(IdentifyJob job, FileIDType type, SimpleMagicRecord magic)
 		{
-			var ret = new FileIDResult(type);
+			FileIDResult ret = new FileIDResult(type);
 
 			if (CheckMagic(job.Stream, magic))
 				return new FileIDResult(type, 100);
@@ -486,7 +480,7 @@ namespace BizHawk.Emulation.Cores
 
 			//TODO - simple parser (for starters, check for a known chunk being next, see http://wiki.nesdev.com/w/index.php/UNIF)
 
-			var ret = new FileIDResult(FileIDType.UNIF, 100);
+			FileIDResult ret = new FileIDResult(FileIDType.UNIF, 100);
 
 			return ret;
 		}
@@ -496,7 +490,7 @@ namespace BizHawk.Emulation.Cores
 			if (!CheckMagic(job.Stream, SimpleMagics.GB))
 				return new FileIDResult();
 
-			var ret = new FileIDResult(FileIDType.GB, 100);
+			FileIDResult ret = new FileIDResult(FileIDType.GB, 100);
 			int type = ReadByte(job.Stream, 0x143);
 			if ((type & 0x80) != 0)
 				ret.FileIDType = FileIDType.GBC;
@@ -506,13 +500,11 @@ namespace BizHawk.Emulation.Cores
 			return ret;
 		}
 
-		private static FileIDResult Test_SMS(IdentifyJob job)
-		{
+		private static FileIDResult Test_SMS(IdentifyJob job) =>
 			//http://www.smspower.org/Development/ROMHeader
 
 			//actually, not sure how to handle this yet
-			return new FileIDResult();
-		}
+			new FileIDResult();
 
 		private static FileIDResult Test_N64(IdentifyJob job)
 		{
@@ -521,7 +513,7 @@ namespace BizHawk.Emulation.Cores
 			//  .V64 = Byte Swapped
 
 			//not sure how to check for these yet...
-			var ret = new FileIDResult(FileIDType.N64, 5);
+			FileIDResult ret = new FileIDResult(FileIDType.N64, 5);
 			if (job.Extension == "V64") ret.ExtraInfo["byteswap"] = true;
 			if (job.Extension == "N64") ret.ExtraInfo["wordswap"] = true;
 			return ret;
@@ -576,7 +568,7 @@ namespace BizHawk.Emulation.Cores
 			//so, I think it's possible that every valid PSX disc is mode2 in the track 1
 			if (CheckMagic(job.Stream, SimpleMagics.PSX))
 			{
-				var ret = new FileIDResult(FileIDType.PSX, 95);
+				FileIDResult ret = new FileIDResult(FileIDType.PSX, 95);
 				//this is an unreliable way to get a PSX game!
 				ret.ExtraInfo["unreliable"] = true;
 				return ret;
@@ -604,12 +596,10 @@ namespace BizHawk.Emulation.Cores
 				return new FileIDResult(FileIDType.Multiple, 1);
 		}
 
-		private static FileIDResult Test_JAD_JAC(IdentifyJob job)
-		{
+		private static FileIDResult Test_JAD_JAC(IdentifyJob job) =>
 			//TBD
 			//just mount it as a disc and send it through the disc checker?
-			return null;
-		}
+			null;
 
 	}
 }

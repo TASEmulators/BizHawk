@@ -104,7 +104,7 @@ namespace BizHawk.Client.EmuHawk
 			int y = 12;
 			foreach (var (name, pos) in Positions)
 			{
-				var row = new MessageRow
+				MessageRow row = new MessageRow
 				{
 					Name = name,
 					Location = new Point(10, y)
@@ -128,7 +128,7 @@ namespace BizHawk.Client.EmuHawk
 			int y = 20;
 			foreach (var (name, argb) in Colors)
 			{
-				var row = new ColorRow
+				ColorRow row = new ColorRow
 				{
 					Name = name,
 					Location = new Point(10, y),
@@ -162,10 +162,7 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-		private void Cancel_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
+		private void Cancel_Click(object sender, EventArgs e) => Close();
 
 		private void ResetDefaultsButton_Click(object sender, EventArgs e)
 		{

@@ -31,9 +31,6 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 
 		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new InvalidOperationException("Async mode is not supported.");
-		}
+		public void GetSamplesAsync(short[] samples) => throw new InvalidOperationException("Async mode is not supported.");
 	}
 }

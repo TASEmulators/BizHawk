@@ -481,9 +481,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			L.audio.GetSamplesSync(out var tempSampL, out var nsampL);
-			C.audio.GetSamplesSync(out var tempSampC, out var nsampC);
-			R.audio.GetSamplesSync(out var tempSampR, out var nsampR);
+			L.audio.GetSamplesSync(out short[] tempSampL, out int nsampL);
+			C.audio.GetSamplesSync(out short[] tempSampC, out int nsampC);
+			R.audio.GetSamplesSync(out short[] tempSampR, out int nsampR);
 
 			if (Link3xSettings.AudioSet == GBLink3xSettings.AudioSrc.Left)
 			{
@@ -507,10 +507,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 			}
 		}
 
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Async is not available");
-		}
+		public void GetSamplesAsync(short[] samples) => throw new NotSupportedException("Async is not available");
 
 		public void DiscardSamples()
 		{

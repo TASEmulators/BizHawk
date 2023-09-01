@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Common
 		/// <remarks>don't think having a genericised overload would be helpful, but TODO pass in type to save <c>target.GetType()</c> call</remarks>
 		public static bool UpdateServices(IEmulatorServiceProvider source, object target, bool mayCache = false)
 		{
-			Type targetType = target.GetType();
+			var targetType = target.GetType();
 			object?[] tmp = new object?[1];
 			var (req, opt) = GetServicePropsFor(targetType, mayCache: mayCache);
 			foreach (var info in req)

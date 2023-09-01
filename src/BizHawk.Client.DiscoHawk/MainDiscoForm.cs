@@ -24,15 +24,9 @@ namespace BizHawk.Client.DiscoHawk
 			else Console.WriteLine("couldn't load .ico EmbeddedResource?");
 		}
 
-		private void MainDiscoForm_Load(object sender, EventArgs e)
-		{
-			lvCompareTargets.Columns[0].Width = lvCompareTargets.ClientSize.Width;
-		}
+		private void MainDiscoForm_Load(object sender, EventArgs e) => lvCompareTargets.Columns[0].Width = lvCompareTargets.ClientSize.Width;
 
-		private void ExitButton_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
+		private void ExitButton_Click(object sender, EventArgs e) => Close();
 
 		private void lblMagicDragArea_DragDrop(object sender, DragEventArgs e)
 		{
@@ -40,9 +34,9 @@ namespace BizHawk.Client.DiscoHawk
 			Cursor = Cursors.WaitCursor;
 			try
 			{
-				foreach (var file in ValidateDrop(e.Data))
+				foreach (string file in ValidateDrop(e.Data))
 				{
-					var success = DiscoHawkLogic.HawkAndWriteFile(
+					bool success = DiscoHawkLogic.HawkAndWriteFile(
 						inputPath: file,
 						errorCallback: err => MessageBox.Show(err, "Error loading disc"));
 					if (!success) break;
@@ -97,12 +91,12 @@ namespace BizHawk.Client.DiscoHawk
 
 		private static List<string> ValidateDrop(IDataObject ido)
 		{
-			var ret = new List<string>();
-			var files = (string[])ido.GetData(DataFormats.FileDrop);
+			List<string> ret = new List<string>();
+			string[] files = (string[])ido.GetData(DataFormats.FileDrop);
 			if (files == null) return new();
-			foreach (var str in files)
+			foreach (string str in files)
 			{
-				var ext = Path.GetExtension(str) ?? string.Empty;
+				string ext = Path.GetExtension(str) ?? string.Empty;
 				if (!Disc.IsValidExtension(ext))
 				{
 					return new();
@@ -118,9 +112,9 @@ namespace BizHawk.Client.DiscoHawk
 		{
 			var files = ValidateDrop(e.Data);
 			if (files.Count == 0) return;
-			foreach (var file in files)
+			foreach (string file in files)
 			{
-				using var disc = Disc.LoadAutomagic(file);
+				using Disc disc = Disc.LoadAutomagic(file);
 				var (path, filename, _) = file.SplitPathToDirFileAndExt();
 				static bool? PromptForOverwrite(string mp3Path)
 					=> MessageBox.Show(
@@ -136,9 +130,6 @@ namespace BizHawk.Client.DiscoHawk
 			}
 		}
 
-		private void BtnAbout_Click(object sender, EventArgs e)
-		{
-			new About().ShowDialog();
-		}
+		private void BtnAbout_Click(object sender, EventArgs e) => new About().ShowDialog();
 	}
 }

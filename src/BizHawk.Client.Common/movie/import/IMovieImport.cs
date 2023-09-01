@@ -40,7 +40,7 @@ namespace BizHawk.Client.Common
 				return Result;
 			}
 
-			var newFileName = $"{SourceFile.FullName}.{Bk2Movie.Extension}";
+			string newFileName = $"{SourceFile.FullName}.{Bk2Movie.Extension}";
 			Result.Movie = session.Get(newFileName);
 			RunImport();
 
@@ -87,15 +87,15 @@ namespace BizHawk.Client.Common
 				if (!_dialogParent.ModalMessageBox2(messageBoxText, "ROM required to populate hash", useOKCancel: true))
 					return null;
 
-				var result = _dialogParent.ShowFileOpenDialog(
+				string result = _dialogParent.ShowFileOpenDialog(
 					filter: RomLoader.RomFilter,
 					initDir: Config.PathEntries.RomAbsolutePath(Result.Movie.SystemID));
 				if (result is null)
 					return null; // skip hash migration when the dialog was canceled
 
-				using var rom = new HawkFile(result);
+				using HawkFile rom = new HawkFile(result);
 				if (rom.IsArchive) rom.BindFirst();
-				var romData = (ReadOnlySpan<byte>) rom.ReadAllBytes();
+				ReadOnlySpan<byte> romData = (ReadOnlySpan<byte>) rom.ReadAllBytes();
 				if (romData.Length % 1024 == 512)
 					romData = romData.Slice(512, romData.Length - 512);
 				if (matchesMovieHash(romData))
@@ -161,7 +161,7 @@ namespace BizHawk.Client.Common
 
 		public static ImportResult Error(string errorMsg)
 		{
-			var result = new ImportResult();
+			ImportResult result = new ImportResult();
 			result.Errors.Add(errorMsg);
 			return result;
 		}

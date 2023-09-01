@@ -62,10 +62,10 @@ namespace BizHawk.Bizware.Input
 
 		private static void RefreshIndexes()
 		{
-			var njoysticks = SDL_NumJoysticks();
-			for (var i = 0; i < njoysticks; i++)
+			int njoysticks = SDL_NumJoysticks();
+			for (int i = 0; i < njoysticks; i++)
 			{
-				var joystickId = SDL_JoystickGetDeviceInstanceID(i);
+				int joystickId = SDL_JoystickGetDeviceInstanceID(i);
 				if (Gamepads.TryGetValue(joystickId, out var gamepad))
 				{
 					gamepad.UpdateIndex(i);
@@ -75,10 +75,10 @@ namespace BizHawk.Bizware.Input
 
 		public static void AddDevice(int deviceIndex)
 		{
-			var instanceId = SDL_JoystickGetDeviceInstanceID(deviceIndex);
+			int instanceId = SDL_JoystickGetDeviceInstanceID(deviceIndex);
 			if (!Gamepads.ContainsKey(instanceId))
 			{
-				var gamepad = new SDL2Gamepad(deviceIndex);
+				SDL2Gamepad gamepad = new SDL2Gamepad(deviceIndex);
 				Gamepads.Add(gamepad.InstanceID, gamepad);
 			}
 			else
@@ -183,27 +183,27 @@ namespace BizHawk.Bizware.Input
 			buttonGetters.Add(("P-", () => SDL_JoystickGetAxis(Opaque, 7) <= dzn));
 			buttonGetters.Add(("N+", () => SDL_JoystickGetAxis(Opaque, 8) >= dzp));
 			buttonGetters.Add(("N-", () => SDL_JoystickGetAxis(Opaque, 8) <= dzn));
-			var naxes = SDL_JoystickNumAxes(Opaque);
-			for (var i = 9; i < naxes; i++)
+			int naxes = SDL_JoystickNumAxes(Opaque);
+			for (int i = 9; i < naxes; i++)
 			{
-				var j = i;
+				int j = i;
 				buttonGetters.Add(($"Axis{j}+", () => SDL_JoystickGetAxis(Opaque, j) >= dzp));
 				buttonGetters.Add(($"Axis{j}-", () => SDL_JoystickGetAxis(Opaque, j) <= dzn));
 			}
 
 			// buttons
-			var nbuttons = SDL_JoystickNumButtons(Opaque);
-			for (var i = 0; i < nbuttons; i++)
+			int nbuttons = SDL_JoystickNumButtons(Opaque);
+			for (int i = 0; i < nbuttons; i++)
 			{
-				var j = i;
+				int j = i;
 				buttonGetters.Add(($"B{i + 1}", () => SDL_JoystickGetButton(Opaque, j) == 1));
 			}
 
 			// hats
-			var nhats = SDL_JoystickNumHats(Opaque);
-			for (var i = 0; i < nhats; i++)
+			int nhats = SDL_JoystickNumHats(Opaque);
+			for (int i = 0; i < nhats; i++)
 			{
-				var j = i;
+				int j = i;
 				buttonGetters.Add(($"POV{j}U", () => (SDL_JoystickGetHat(Opaque, j) & SDL_HAT_UP) == SDL_HAT_UP));
 				buttonGetters.Add(($"POV{j}D", () => (SDL_JoystickGetHat(Opaque, j) & SDL_HAT_DOWN) == SDL_HAT_DOWN));
 				buttonGetters.Add(($"POV{j}L", () => (SDL_JoystickGetHat(Opaque, j) & SDL_HAT_LEFT) == SDL_HAT_LEFT));
@@ -282,10 +282,10 @@ namespace BizHawk.Bizware.Input
 				("N", Conv(SDL_JoystickGetAxis(Opaque, 8))),
 			};
 
-			var naxes = SDL_JoystickNumAxes(Opaque);
-			for (var i = 9; i < naxes; i++)
+			int naxes = SDL_JoystickNumAxes(Opaque);
+			for (int i = 9; i < naxes; i++)
 			{
-				var j = i;
+				int j = i;
 				values.Add(($"Axis{j}", Conv(SDL_JoystickGetAxis(Opaque, j))));
 			}
 

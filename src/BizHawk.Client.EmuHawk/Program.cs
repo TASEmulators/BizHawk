@@ -29,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 			// quickly check if the user is running this as a 32 bit process somehow
 			if (!Environment.Is64BitProcess)
 			{
-				using (var box = new ExceptionBox($"EmuHawk requires a 64 bit environment in order to run! EmuHawk will now close.")) box.ShowDialog();
+				using (ExceptionBox box = new ExceptionBox($"EmuHawk requires a 64 bit environment in order to run! EmuHawk will now close.")) box.ShowDialog();
 				Process.GetCurrentProcess().Kill();
 				return;
 			}
@@ -63,7 +63,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// this will look in subdirectory "dll" to load pinvoked stuff
-			var dllDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
+			string dllDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
 			_ = SetDllDirectory(dllDir);
 
 			//in case assembly resolution fails, such as if we moved them into the dll subdiretory, this event handler can reroute to them
@@ -76,7 +76,7 @@ namespace BizHawk.Client.EmuHawk
 				// some people are getting MOTW through a combination of browser used to download bizhawk, and program used to dearchive it
 				// We need to do it here too... otherwise people get exceptions when externaltools we distribute try to startup
 				static void RemoveMOTW(string path) => DeleteFileW($"{path}:Zone.Identifier");
-				var todo = new Queue<DirectoryInfo>(new[] { new DirectoryInfo(dllDir) });
+				Queue<DirectoryInfo> todo = new Queue<DirectoryInfo>(new[] { new DirectoryInfo(dllDir) });
 				while (todo.Count != 0)
 				{
 					var di = todo.Dequeue();
@@ -94,7 +94,7 @@ namespace BizHawk.Client.EmuHawk
 		[STAThread]
 		private static int Main(string[] args)
 		{
-			var exitCode = SubMain(args);
+			int exitCode = SubMain(args);
 			if (OSTC.IsUnixHost)
 			{
 				Console.WriteLine("BizHawk has completed its shutdown routines, killing process...");
@@ -146,12 +146,12 @@ namespace BizHawk.Client.EmuHawk
 				new ExceptionBox(e.Message).ShowDialog();
 			}
 
-			var configPath = cliFlags.cmdConfigFile ?? Path.Combine(PathUtils.ExeDirectoryPath, "config.ini");
+			string configPath = cliFlags.cmdConfigFile ?? Path.Combine(PathUtils.ExeDirectoryPath, "config.ini");
 
 			Config initialConfig;
 			try
 			{
-				if (!VersionInfo.DeveloperBuild && !ConfigService.IsFromSameVersion(configPath, out var msg))
+				if (!VersionInfo.DeveloperBuild && !ConfigService.IsFromSameVersion(configPath, out string msg))
 				{
 					new MsgBox(msg, "Mismatched version in config file", MessageBoxIcon.Warning).ShowDialog();
 				}
@@ -174,7 +174,7 @@ namespace BizHawk.Client.EmuHawk
 
 			StringLogUtil.DefaultToDisk = initialConfig.Movies.MoviesOnDisk;
 
-			var glInitCount = 0;
+			int glInitCount = 0;
 
 			IGL TryInitIGL(EDispMethod dispMethod)
 			{
@@ -232,7 +232,7 @@ namespace BizHawk.Client.EmuHawk
 							new ExceptionBox(new Exception($"Initialization of OpenGL Display Method failed; falling back to {Name}")).ShowDialog();
 							return TryInitIGL(initialConfig.DispMethod = Method);
 						}
-						var igl = new IGL_OpenGL();
+						IGL_OpenGL igl = new IGL_OpenGL();
 						// need to have a context active for checking renderer, will be disposed afterwards
 						using (new SDL2OpenGLContext(3, 0, false, false))
 						{
@@ -262,7 +262,7 @@ namespace BizHawk.Client.EmuHawk
 				//It isn't clear whether we need the earlier SetDllDirectory(), but I think we do.
 				//note: this is pasted instead of being put in a static method due to this initialization code being sensitive to things like that, and not wanting to cause it to break
 				//pasting should be safe (not affecting the jit order of things)
-				var dllDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
+				string dllDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
 				_ = SetDllDirectory(dllDir);
 			}
 
@@ -285,7 +285,7 @@ namespace BizHawk.Client.EmuHawk
 
 			FPCtrl.FixFPCtrl();
 
-			var exitCode = 0;
+			int exitCode = 0;
 			try
 			{
 				MainForm mf = new(
@@ -296,7 +296,7 @@ namespace BizHawk.Client.EmuHawk
 					newSound => globalSound = newSound,
 					args,
 					out var movieSession,
-					out var exitEarly);
+					out object exitEarly);
 				if (exitEarly)
 				{
 					//TODO also use this for ArgParser failure
@@ -305,7 +305,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				mf.LoadGlobalConfigFromFile = iniPath =>
 				{
-					if (!VersionInfo.DeveloperBuild && !ConfigService.IsFromSameVersion(iniPath, out var msg))
+					if (!VersionInfo.DeveloperBuild && !ConfigService.IsFromSameVersion(iniPath, out string msg))
 					{
 						new MsgBox(msg, "Mismatched version in config file", MessageBoxIcon.Warning).ShowDialog();
 					}
@@ -362,7 +362,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <remarks>http://www.codeproject.com/Articles/310675/AppDomain-AssemblyResolve-Event-Tips</remarks>
 		private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
 		{
-			var requested = args.Name;
+			string requested = args.Name;
 
 			lock (AppDomain.CurrentDomain)
 			{
@@ -370,10 +370,10 @@ namespace BizHawk.Client.EmuHawk
 				if (firstAsm != null) return firstAsm;
 
 				//load missing assemblies by trying to find them in the dll directory
-				var dllname = $"{new AssemblyName(requested).Name}.dll";
-				var directory = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
-				var simpleName = new AssemblyName(requested).Name;
-				var fname = Path.Combine(directory, dllname);
+				string dllname = $"{new AssemblyName(requested).Name}.dll";
+				string directory = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
+				string simpleName = new AssemblyName(requested).Name;
+				string fname = Path.Combine(directory, dllname);
 				//it is important that we use LoadFile here and not load from a byte array; otherwise mixed (managed/unmanaged) assemblies can't load
 				return File.Exists(fname) ? Assembly.LoadFile(fname) : null;
 			}

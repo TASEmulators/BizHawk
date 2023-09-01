@@ -50,10 +50,7 @@ namespace BizHawk.BizInvoke
 		/// Computes the byte offset of the first field of any class relative to a class pointer.
 		/// </summary>
 		/// <returns></returns>
-		public static int ComputeClassFirstFieldOffset()
-		{
-			return ComputeFieldOffset(typeof(CF).GetField("FirstField"));
-		}
+		public static int ComputeClassFirstFieldOffset() => ComputeFieldOffset(typeof(CF).GetField("FirstField"));
 
 		/// <summary>
 		/// Compute the byte offset of the first byte of string data (UTF16) relative to a pointer to the string.
@@ -61,7 +58,7 @@ namespace BizHawk.BizInvoke
 		/// <returns></returns>
 		public static int ComputeStringOffset()
 		{
-			var s = new string(Array.Empty<char>());
+			string s = new string(Array.Empty<char>());
 			int ret;
 			fixed(char* fx = s)
 			{
@@ -77,7 +74,7 @@ namespace BizHawk.BizInvoke
 		/// <returns></returns>
 		public static int ComputeValueArrayElementOffset()
 		{
-			var arr = new int[4];
+			int[] arr = new int[4];
 			int ret;
 			fixed (int* p = arr)
 			{
@@ -94,8 +91,8 @@ namespace BizHawk.BizInvoke
 		/// <returns></returns>
 		public static int ComputeObjectArrayElementOffset()
 		{
-			var obj = new object[4];
-			var method = new DynamicMethod("ComputeObjectArrayElementOffsetHelper", typeof(int), new[] { typeof(object[]) }, typeof(string).Module, true);
+			object[] obj = new object[4];
+			DynamicMethod method = new DynamicMethod("ComputeObjectArrayElementOffsetHelper", typeof(int), new[] { typeof(object[]) }, typeof(string).Module, true);
 			var il = method.GetILGenerator();
 			var local = il.DeclareLocal(typeof(object[]), true);
 			il.Emit(OpCodes.Ldarg_0);
@@ -109,7 +106,7 @@ namespace BizHawk.BizInvoke
 			il.Emit(OpCodes.Sub);
 			il.Emit(OpCodes.Conv_I4);
 			il.Emit(OpCodes.Ret);
-			var del = (Func<object[], int>)method.CreateDelegate(typeof(Func<object[], int>));
+			Func<object[], int> del = (Func<object[], int>)method.CreateDelegate(typeof(Func<object[], int>));
 			return del(obj);
 		}
 
@@ -124,8 +121,8 @@ namespace BizHawk.BizInvoke
 				throw new NotImplementedException("Only supported for class fields right now");
 			}
 
-			var obj = FormatterServices.GetUninitializedObject(fi.DeclaringType);
-			var method = new DynamicMethod("ComputeFieldOffsetHelper", typeof(int), new[] { typeof(object) }, typeof(string).Module, true);
+			object obj = FormatterServices.GetUninitializedObject(fi.DeclaringType);
+			DynamicMethod method = new DynamicMethod("ComputeFieldOffsetHelper", typeof(int), new[] { typeof(object) }, typeof(string).Module, true);
 			var il = method.GetILGenerator();
 			var local = il.DeclareLocal(fi.DeclaringType, true);
 			il.Emit(OpCodes.Ldarg_0);
@@ -138,7 +135,7 @@ namespace BizHawk.BizInvoke
 			il.Emit(OpCodes.Sub);
 			il.Emit(OpCodes.Conv_I4);
 			il.Emit(OpCodes.Ret);
-			var del = (Func<object, int>)method.CreateDelegate(typeof(Func<object, int>));
+			Func<object, int> del = (Func<object, int>)method.CreateDelegate(typeof(Func<object, int>));
 			return del(obj);
 		}
 	}

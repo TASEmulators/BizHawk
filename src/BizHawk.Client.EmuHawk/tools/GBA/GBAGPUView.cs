@@ -175,7 +175,7 @@ namespace BizHawk.Client.EmuHawk
 				case 2: mbv.ChangeAllSizes(256, 512); break;
 				case 3: mbv.ChangeAllSizes(512, 512); break;
 			}
-			Bitmap bmp = mbv.BmpView.Bmp;
+			var bmp = mbv.BmpView.Bmp;
 			var lockData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
 			int* pixels = (int*)lockData.Scan0;
@@ -234,7 +234,7 @@ namespace BizHawk.Client.EmuHawk
 				case 2: mbv.ChangeAllSizes(512, 512); break;
 				case 3: mbv.ChangeAllSizes(1024, 1024); break;
 			}
-			Bitmap bmp = mbv.BmpView.Bmp;
+			var bmp = mbv.BmpView.Bmp;
 			var lockData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
 			int* pixels = (int*)lockData.Scan0;
@@ -262,7 +262,7 @@ namespace BizHawk.Client.EmuHawk
 		private unsafe void DrawM3BG(MobileBmpView mbv)
 		{
 			mbv.ChangeAllSizes(240, 160);
-			Bitmap bmp = mbv.BmpView.Bmp;
+			var bmp = mbv.BmpView.Bmp;
 			var lockData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
 			int* pixels = (int*)lockData.Scan0;
@@ -288,7 +288,7 @@ namespace BizHawk.Client.EmuHawk
 		private unsafe void DrawM4BG(MobileBmpView mbv, bool secondFrame)
 		{
 			mbv.ChangeAllSizes(240, 160);
-			Bitmap bmp = mbv.BmpView.Bmp;
+			var bmp = mbv.BmpView.Bmp;
 			var lockData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
 			int* pixels = (int*)lockData.Scan0;
@@ -315,7 +315,7 @@ namespace BizHawk.Client.EmuHawk
 		private unsafe void DrawM5BG(MobileBmpView mbv, bool secondFrame)
 		{
 			mbv.ChangeAllSizes(160, 128);
-			Bitmap bmp = mbv.BmpView.Bmp;
+			var bmp = mbv.BmpView.Bmp;
 			var lockData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
 			int* pixels = (int*)lockData.Scan0;
@@ -417,7 +417,7 @@ namespace BizHawk.Client.EmuHawk
 		private unsafe void DrawSprites(MobileBmpView mbv)
 		{
 			mbv.BmpView.ChangeBitmapSize(1024, 512);
-			Bitmap bmp = mbv.BmpView.Bmp;
+			var bmp = mbv.BmpView.Bmp;
 			var lockData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
 			BmpView.Clear_Selected_Region((byte*)lockData.Scan0, (uint)(lockData.Height * lockData.Stride));
@@ -450,7 +450,7 @@ namespace BizHawk.Client.EmuHawk
 		private unsafe void DrawPalette(MobileBmpView mbv, bool sprite)
 		{
 			mbv.BmpView.ChangeBitmapSize(16, 16);
-			Bitmap bmp = mbv.BmpView.Bmp;
+			var bmp = mbv.BmpView.Bmp;
 			var lockData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
 			int* pixels = (int*)lockData.Scan0;
@@ -500,7 +500,7 @@ namespace BizHawk.Client.EmuHawk
 			int th = tophalfonly ? 16 : 32;
 
 			mbv.BmpView.ChangeBitmapSize(tw * 8, 256);
-			Bitmap bmp = mbv.BmpView.Bmp;
+			var bmp = mbv.BmpView.Bmp;
 			var lockData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
 			int* pixels = (int*)lockData.Scan0;
@@ -528,7 +528,7 @@ namespace BizHawk.Client.EmuHawk
 			int th = 32;
 
 			mbv.BmpView.ChangeBitmapSize(tw * 8, th * 8);
-			Bitmap bmp = mbv.BmpView.Bmp;
+			var bmp = mbv.BmpView.Bmp;
 			var lockData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
 			int* pixels = (int*)lockData.Scan0;
@@ -635,7 +635,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private MobileBmpView MakeMBVWidget(string text, int w, int h)
 		{
-			var mbv = new MobileBmpView { Text = text };
+			MobileBmpView mbv = new MobileBmpView { Text = text };
 			mbv.BmpView.Text = text;
 			mbv.TopLevel = false;
 			mbv.ChangeViewSize(w, h);
@@ -647,7 +647,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private MobileDetailView MakeMDVWidget(string text, int w, int h)
 		{
-			var mdv = new MobileDetailView { Text = text };
+			MobileDetailView mdv = new MobileDetailView { Text = text };
 			mdv.BmpView.Text = text;
 			mdv.TopLevel = false;
 			mdv.ClientSize = new Size(w, h);
@@ -676,7 +676,7 @@ namespace BizHawk.Client.EmuHawk
 			// memory = MakeMDVWidget("Details - Memory", 128, 192);
 			listBoxWidgets.EndUpdate();
 
-			foreach (var f in listBoxWidgets.Items)
+			foreach (object f in listBoxWidgets.Items)
 			{
 				Form form = (Form)f;
 				// close becomes hide
@@ -742,22 +742,16 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (listBoxWidgets.SelectedItem != null)
 			{
-				var form = listBoxWidgets.SelectedItem as Form;
+				Form form = listBoxWidgets.SelectedItem as Form;
 				form.Show();
 				form.BringToFront();
 				listBoxWidgets.Items.RemoveAt(listBoxWidgets.SelectedIndex);
 			}
 		}
 
-		private void buttonShowWidget_Click(object sender, EventArgs e)
-		{
-			ShowSelectedWidget();
-		}
+		private void buttonShowWidget_Click(object sender, EventArgs e) => ShowSelectedWidget();
 
-		private void listBoxWidgets_DoubleClick(object sender, EventArgs e)
-		{
-			ShowSelectedWidget();
-		}
+		private void listBoxWidgets_DoubleClick(object sender, EventArgs e) => ShowSelectedWidget();
 
 		private int? _cbScanline;
 		private int? _cbScanlineEmu = 500;
@@ -778,10 +772,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void radioButtonScanline_CheckedChanged(object sender, EventArgs e)
-		{
-			RecomputeRefresh();
-		}
+		private void radioButtonScanline_CheckedChanged(object sender, EventArgs e) => RecomputeRefresh();
 
 		private void hScrollBar1_ValueChanged(object sender, EventArgs e)
 		{
@@ -789,15 +780,9 @@ namespace BizHawk.Client.EmuHawk
 			radioButtonScanline.Text = $"Scanline {_cbScanline}";
 		}
 
-		private void radioButtonManual_CheckedChanged(object sender, EventArgs e)
-		{
-			RecomputeRefresh();
-		}
+		private void radioButtonManual_CheckedChanged(object sender, EventArgs e) => RecomputeRefresh();
 
-		private void buttonRefresh_Click(object sender, EventArgs e)
-		{
-			DrawEverything();
-		}
+		private void buttonRefresh_Click(object sender, EventArgs e) => DrawEverything();
 
 		private void GbaGpuView_FormClosed(object sender, FormClosedEventArgs e)
 			=> GBA.SetScanlineCallback(null, 0);
@@ -813,7 +798,7 @@ namespace BizHawk.Client.EmuHawk
 			if (ModifierKeys.HasFlag(Keys.Control) && e.KeyCode == Keys.C)
 			{
 				// find the control under the mouse
-				Point m = Cursor.Position;
+				var m = Cursor.Position;
 				Control top = this;
 				Control found;
 				do

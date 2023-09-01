@@ -569,7 +569,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				//----------------------------------------
 				case Phase.Execution:
 
-					var index = ExecLength - ExecCounter;
+					int index = ExecLength - ExecCounter;
 
 					LastSectorDataReadByte = ExecBuffer[index];
 
@@ -883,7 +883,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				//  FDC in execution phase reading/writing bytes
 				//----------------------------------------
 				case Phase.Execution:
-					var index = ExecLength - ExecCounter;
+					int index = ExecLength - ExecCounter;
 
 					LastSectorDataReadByte = ExecBuffer[index];
 
@@ -1122,7 +1122,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				//----------------------------------------
 				case Phase.Execution:
 
-					var index = ExecLength - ExecCounter;
+					int index = ExecLength - ExecCounter;
 
 					LastSectorDataReadByte = ExecBuffer[index];
 
@@ -1402,7 +1402,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				//----------------------------------------
 				case Phase.Execution:
 
-					var index = ExecLength - ExecCounter;
+					int index = ExecLength - ExecCounter;
 
 					ExecBuffer[index] = LastSectorDataWriteByte;
 
@@ -1695,7 +1695,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				//----------------------------------------
 				case Phase.Execution:
 
-					var index = ExecLength - ExecCounter;
+					int index = ExecLength - ExecCounter;
 
 					ExecBuffer[index] = LastSectorDataWriteByte;
 
@@ -2134,8 +2134,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					// for now I will assume that the first call is aimed at DriveA, the second at DriveB (which we are NOT implementing)
 
 					// check active drive first
-					if (ActiveDrive.SeekStatus == SEEK_RECALIBRATE ||
-						ActiveDrive.SeekStatus == SEEK_SEEK)
+					if (ActiveDrive.SeekStatus is SEEK_RECALIBRATE or
+						SEEK_SEEK)
 					{
 						// interrupt has been raised for this drive
 						// acknowledge
@@ -2523,7 +2523,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			cmdByte = cByte;
 
 			// lookup the command
-			var i = CommandList.FindIndex(a => a.CommandCode == cmdByte);
+			int i = CommandList.FindIndex(a => a.CommandCode == cmdByte);
 			if (i is -1)
 			{
 				// no command found - use invalid

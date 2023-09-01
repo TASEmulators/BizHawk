@@ -48,7 +48,7 @@ namespace BizHawk.Client.Common.cheats
 			// Bit  # |3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|
 			// maps to|     Value     |i|j|k|l|q|r|s|t|o|p|a|b|c|d|u|v|w|x|e|f|g|h|m|n|
 			// order  |     Value     |a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|
-			var result = new DecodeResult { Size = WatchSize.Byte };
+			DecodeResult result = new DecodeResult { Size = WatchSize.Byte };
 
 			int x;
 

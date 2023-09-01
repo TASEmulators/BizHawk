@@ -175,10 +175,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			base.SyncState(ser);
 		}
 
-		public override void ClockCpu()
-		{
-			_elapsedCycles++;
-		}
+		public override void ClockCpu() => _elapsedCycles++;
 
 		public override byte ReadMemory(ushort addr) => ReadMem(addr, false);
 
@@ -453,7 +450,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					{
 						int bank = _header[16 + j] & 0x03;
 						int page = (_header[16 + j] >> 2) & 0x07;
-						var src = _loadedImages
+						byte[] src = _loadedImages
 							.Skip((image * 8448) + (j * 256))
 							.Take(256)
 							.ToArray();

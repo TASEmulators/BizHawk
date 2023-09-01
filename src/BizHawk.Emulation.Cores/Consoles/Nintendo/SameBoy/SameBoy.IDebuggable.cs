@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 		{
 			LibSameboy.MemoryCallback CreateCallback(MemoryCallbackFlags flags, Func<bool> getHasCBOfType)
 			{
-				var rawFlags = (uint)flags;
+				uint rawFlags = (uint)flags;
 				return (address) =>
 				{
 					if (getHasCBOfType())

@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			var ses = this;
 
-			for (var i = 1; i < Tracks.Count; i++)
+			for (int i = 1; i < Tracks.Count; i++)
 			{
 				var track = ses.Tracks[i];
 				//funny logic here: if the current track's LBA is > the requested track number, it means the previous track is the one we wanted

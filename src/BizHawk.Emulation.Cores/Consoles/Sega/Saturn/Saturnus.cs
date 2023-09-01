@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		{
 			if (_cachedSettingsInfo is null)
 			{
-				using var n = new Saturnus(comm);
+				using Saturnus n = new Saturnus(comm);
 				n.InitForSettingsInfo("ss.wbx");
 				_cachedSettingsInfo = n.SettingsInfo.Clone();
 			}
@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		{
 			if (lp.Roms.Count > 0)
 				throw new InvalidOperationException("To load a Saturn game, please load the CUE file and not the BIN file.");
-			var firmwares = new Dictionary<string, FirmwareID>
+			Dictionary<string, FirmwareID> firmwares = new Dictionary<string, FirmwareID>
 			{
 				{ "FIRMWARE:$J", new("SAT", "J") },
 				{ "FIRMWARE:$U", new("SAT", "U") },
@@ -86,13 +86,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 
 		protected override HashSet<string> ComputeHiddenPorts()
 		{
-			var devCount = 12;
+			int devCount = 12;
 			if (SettingsQuery("ss.input.sport1.multitap") != "1")
 				devCount -= 5;
 			if (SettingsQuery("ss.input.sport2.multitap") != "1")
 				devCount -= 5;
-			var ret = new HashSet<string>();
-			for (var i = 1; i <= 12; i++)
+			HashSet<string> ret = new HashSet<string>();
+			for (int i = 1; i <= 12; i++)
 			{
 				if (i > devCount)
 					ret.Add($"port{i}");

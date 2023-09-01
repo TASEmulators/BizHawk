@@ -52,7 +52,7 @@ namespace BizHawk.BizInvoke
 
 			public object Create(IImportResolver dll, IMonitor? monitor, ICallingConventionAdapter adapter)
 			{
-				var ret = Activator.CreateInstance(_implType)!;
+				object ret = Activator.CreateInstance(_implType)!;
 				_connectCallingConventionAdapter(ret, adapter);
 				foreach (var f in _hooks)
 				{
@@ -93,7 +93,7 @@ namespace BizHawk.BizInvoke
 
 		static BizInvoker()
 		{
-			var aname = new AssemblyName("BizInvokeProxyAssembly");
+			AssemblyName aname = new AssemblyName("BizInvokeProxyAssembly");
 			ImplAssemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(aname, AssemblyBuilderAccess.Run);
 			ImplModuleBuilder = ImplAssemblyBuilder.DefineDynamicModule("BizInvokerModule");
 			ClassFieldOffset = BizInvokerUtilities.ComputeClassFirstFieldOffset();
@@ -109,7 +109,7 @@ namespace BizHawk.BizInvoke
 		public static T GetInvoker<T>(IImportResolver dll, ICallingConventionAdapter adapter)
 			where T : class
 		{
-			var nonTrivialAdapter = adapter.GetType() != CallingConventionAdapters.Native.GetType();
+			bool nonTrivialAdapter = adapter.GetType() != CallingConventionAdapters.Native.GetType();
 			InvokerImpl impl;
 			lock (Impls) impl = Impls.GetValueOrPut(
 				typeof(T),
@@ -126,7 +126,7 @@ namespace BizHawk.BizInvoke
 		public static T GetInvoker<T>(IImportResolver dll, IMonitor monitor, ICallingConventionAdapter adapter)
 			where T : class
 		{
-			var nonTrivialAdapter = adapter.GetType() != CallingConventionAdapters.Native.GetType();
+			bool nonTrivialAdapter = adapter.GetType() != CallingConventionAdapters.Native.GetType();
 			InvokerImpl impl;
 			lock (Impls) impl = Impls.GetValueOrPut(
 				typeof(T),
@@ -153,7 +153,7 @@ namespace BizHawk.BizInvoke
 			}
 
 			var baseConstructor = baseType.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, Type.EmptyTypes, null) ?? throw new InvalidOperationException("Base type must have a zero arg constructor");
-			var baseMethods = baseType.GetMethods(BindingFlags.Instance | BindingFlags.Public)
+			List<(MethodInfo Info, BizImportAttribute Attr)> baseMethods = baseType.GetMethods(BindingFlags.Instance | BindingFlags.Public)
 				.Select(static m => (Info: m, Attr: m.GetCustomAttributes(true).OfType<BizImportAttribute>().FirstOrDefault()))
 				.Where(a => a.Attr != null)
 				.ToList();
@@ -174,7 +174,7 @@ namespace BizHawk.BizInvoke
 			}
 
 			// hooks that will be run on the created proxy object
-			var postCreateHooks = new List<Action<object, IImportResolver, ICallingConventionAdapter>>();
+			List<Action<object, IImportResolver, ICallingConventionAdapter>> postCreateHooks = new List<Action<object, IImportResolver, ICallingConventionAdapter>>();
 
 			var type = ImplModuleBuilder.DefineType($"Bizhawk.BizInvokeProxy{baseType.Name}", TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed, baseType);
 
@@ -184,7 +184,7 @@ namespace BizHawk.BizInvoke
 
 			foreach (var (Info, Attr) in baseMethods)
 			{
-				var entryPointName = Attr!.EntryPoint ?? Info.Name;
+				string entryPointName = Attr!.EntryPoint ?? Info.Name;
 
 				var hook = Attr.Compatibility
 					? ImplementMethodDelegate(type, Info, Attr.CallingConvention, entryPointName, monitorField, nonTrivialAdapter)
@@ -331,7 +331,7 @@ namespace BizHawk.BizInvoke
 		{
 			var paramInfos = baseMethod.GetParameters();
 			var paramTypes = paramInfos.Select(p => p.ParameterType).ToArray();
-			var paramLoadInfos = new List<ParameterLoadInfo>();
+			List<ParameterLoadInfo> paramLoadInfos = new List<ParameterLoadInfo>();
 			var returnType = baseMethod.ReturnType;
 			if (returnType != typeof(void) && !returnType.IsPrimitive && !returnType.IsPointer && !returnType.IsEnum)
 			{
@@ -376,7 +376,7 @@ namespace BizHawk.BizInvoke
 
 			bool WantsWinAPIBool()
 			{
-				var attrs = baseMethod.ReturnTypeCustomAttributes.GetCustomAttributes(typeof(MarshalAsAttribute), false);
+				object[] attrs = baseMethod.ReturnTypeCustomAttributes.GetCustomAttributes(typeof(MarshalAsAttribute), false);
 				return attrs.Length > 0 && ((MarshalAsAttribute)attrs[0]).Value is UnmanagedType.Bool;
 			}
 

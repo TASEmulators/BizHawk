@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			IsDSi = _syncSettings.UseDSi;
 
-			var roms = lp.Roms.Select(r => r.RomData).ToList();
+			List<byte[]> roms = lp.Roms.Select(r => r.RomData).ToList();
 			
 			DSiTitleId = GetDSiTitleId(roms[0]);
 			IsDSi |= IsDSiWare;
@@ -52,8 +52,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				throw new InvalidOperationException("Wrong number of ROMs!");
 			}
 
-			var gbacartpresent = roms.Count > 1;
-			var gbasrampresent = roms.Count == 3;
+			bool gbacartpresent = roms.Count > 1;
+			bool gbasrampresent = roms.Count == 3;
 
 			InitMemoryCallbacks();
 			_tracecb = MakeTrace;
@@ -71,35 +71,35 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				SkipMemoryConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			}, new Delegate[] { _readcb, _writecb, _execcb, _tracecb, _threadstartcb });
 
-			var bios7 = IsDSi || _syncSettings.UseRealBIOS
+			byte[] bios7 = IsDSi || _syncSettings.UseRealBIOS
 				? CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios7"))
 				: null;
 
-			var bios9 = IsDSi || _syncSettings.UseRealBIOS
+			byte[] bios9 = IsDSi || _syncSettings.UseRealBIOS
 				? CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios9"))
 				: null;
 
-			var bios7i = IsDSi
+			byte[] bios7i = IsDSi
 				? CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios7i"))
 				: null;
 
-			var bios9i = IsDSi
+			byte[] bios9i = IsDSi
 				? CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "bios9i"))
 				: null;
 
-			var nand = IsDSi
+			byte[] nand = IsDSi
 				? DecideNAND(CoreComm.CoreFileProvider, (DSiTitleId.Upper & ~0xFF) == 0x00030000, roms[0][0x1B0])
 				: null;
 
-			var fw = IsDSi
+			byte[] fw = IsDSi
 				? CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("NDS", "firmwarei"))
 				: CoreComm.CoreFileProvider.GetFirmware(new("NDS", "firmware"));
 
-			var tmd = IsDSiWare
+			byte[] tmd = IsDSiWare
 				? GetTMDData(DSiTitleId.Full)
 				: null;
 
-			var skipfw = _syncSettings.SkipFirmware || !_syncSettings.UseRealBIOS || fw == null;
+			bool skipfw = _syncSettings.SkipFirmware || !_syncSettings.UseRealBIOS || fw == null;
 
 			var loadFlags = LibMelonDS.LoadFlags.NONE;
 
@@ -120,18 +120,18 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			if (_syncSettings.ThreadedRendering)
 				loadFlags |= LibMelonDS.LoadFlags.THREADED_RENDERING;
 
-			var fwSettings = new LibMelonDS.FirmwareSettings();
-			var name = Encoding.UTF8.GetBytes(_syncSettings.FirmwareUsername);
+			LibMelonDS.FirmwareSettings fwSettings = new LibMelonDS.FirmwareSettings();
+			byte[] name = Encoding.UTF8.GetBytes(_syncSettings.FirmwareUsername);
 			fwSettings.FirmwareUsernameLength = name.Length;
 			fwSettings.FirmwareLanguage = _syncSettings.FirmwareLanguage;
 			if (!IsDSi && _syncSettings.FirmwareStartUp == NDSSyncSettings.StartUp.AutoBoot) fwSettings.FirmwareLanguage |= (NDSSyncSettings.Language)0x40;
 			fwSettings.FirmwareBirthdayMonth = _syncSettings.FirmwareBirthdayMonth;
 			fwSettings.FirmwareBirthdayDay = _syncSettings.FirmwareBirthdayDay;
 			fwSettings.FirmwareFavouriteColour = _syncSettings.FirmwareFavouriteColour;
-			var message = _syncSettings.FirmwareMessage.Length != 0 ? Encoding.UTF8.GetBytes(_syncSettings.FirmwareMessage) : new byte[1];
+			byte[] message = _syncSettings.FirmwareMessage.Length != 0 ? Encoding.UTF8.GetBytes(_syncSettings.FirmwareMessage) : new byte[1];
 			fwSettings.FirmwareMessageLength = message.Length;
 
-			var loadData = new LibMelonDS.LoadData
+			LibMelonDS.LoadData loadData = new LibMelonDS.LoadData
 			{
 				DsRomLength = roms[0].Length,
 				GbaRomLength = gbacartpresent ? roms[1].Length : 0,
@@ -228,7 +228,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private static (ulong Full, uint Upper, uint Lower) GetDSiTitleId(IReadOnlyList<byte> file)
 		{
 			ulong titleId = 0;
-			for (var i = 0; i < 8; i++)
+			for (int i = 0; i < 8; i++)
 			{
 				titleId <<= 8;
 				titleId |= file[0x237 - i];
@@ -239,7 +239,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private static byte[] DecideNAND(ICoreFileProvider cfp, bool isDSiEnhanced, byte regionFlags)
 		{
 			// TODO: priority settings?
-			var nandOptions = new List<string> { "NAND (JPN)", "NAND (USA)", "NAND (EUR)", "NAND (AUS)", "NAND (CHN)", "NAND (KOR)" };
+			List<string> nandOptions = new List<string> { "NAND (JPN)", "NAND (USA)", "NAND (EUR)", "NAND (AUS)", "NAND (CHN)", "NAND (KOR)" };
 			if (isDSiEnhanced) // NB: Core makes cartridges region free regardless, DSiWare must follow DSi region locking however (we'll enforce it regardless)
 			{
 				nandOptions.Clear();
@@ -251,9 +251,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				if (regionFlags.Bit(5)) nandOptions.Add("NAND (KOR)");
 			}
 
-			foreach (var option in nandOptions)
+			foreach (string option in nandOptions)
 			{
-				var ret = cfp.GetFirmware(new("NDS", option));
+				byte[] ret = cfp.GetFirmware(new("NDS", option));
 				if (ret is not null) return ret;
 			}
 
@@ -262,7 +262,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		private static byte[] GetTMDData(ulong titleId)
 		{
-			using var zip = new ZipArchive(Zstd.DecompressZstdStream(new MemoryStream(Resources.TMDS.Value)), ZipArchiveMode.Read, false);
+			using ZipArchive zip = new ZipArchive(Zstd.DecompressZstdStream(new MemoryStream(Resources.TMDS.Value)), ZipArchiveMode.Read, false);
 			using var tmd = zip.GetEntry($"{titleId:x16}.tmd")?.Open() ?? throw new($"Cannot find TMD for title ID {titleId:x16}, please report");
 			return tmd.ReadAllBytes();
 		}
@@ -270,11 +270,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		// todo: wire this up w/ frontend
 		public byte[] GetNAND()
 		{
-			var length = _core.GetNANDSize();
+			int length = _core.GetNANDSize();
 
 			if (length > 0)
 			{
-				var ret = new byte[length];
+				byte[] ret = new byte[length];
 				_core.GetNANDData(ret);
 				return ret;
 			}

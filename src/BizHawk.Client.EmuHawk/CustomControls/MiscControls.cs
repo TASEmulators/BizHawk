@@ -5,15 +5,9 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class HorizontalLine : Control
 	{
-		protected override void SetBoundsCore(int x, int y, int width, int height, BoundsSpecified specified)
-		{
-			base.SetBoundsCore(x, y, width, 2, specified);
-		}
+		protected override void SetBoundsCore(int x, int y, int width, int height, BoundsSpecified specified) => base.SetBoundsCore(x, y, width, 2, specified);
 
-		protected override void OnPaint(PaintEventArgs e)
-		{
-			ControlPaint.DrawBorder3D(e.Graphics, 0, 0, Width, 2, Border3DStyle.Etched);
-		}
+		protected override void OnPaint(PaintEventArgs e) => ControlPaint.DrawBorder3D(e.Graphics, 0, 0, Width, 2, Border3DStyle.Etched);
 	}
 
 	public class CustomCheckBox : CheckBox
@@ -35,15 +29,15 @@ namespace BizHawk.Client.EmuHawk
 		protected override void OnPaint(PaintEventArgs pevent)
 		{
 			// draw text-label part of the control with something so that it isn't hallofmirrorsy
-			using(var brush = new SolidBrush(Parent.BackColor))
+			using(SolidBrush brush = new SolidBrush(Parent.BackColor))
 				pevent.Graphics.FillRectangle(brush, ClientRectangle);
-			
-			var r = new Rectangle(ClientRectangle.Location, SystemInformation.MenuCheckSize);
+
+			Rectangle r = new Rectangle(ClientRectangle.Location, SystemInformation.MenuCheckSize);
 			var glyphLoc = ClientRectangle;
 			glyphLoc.Size = SystemInformation.MenuCheckSize;
 
 			// draw the selectedbackdrop color roughly where the glyph belongs
-			using (var brush = new SolidBrush(_checkBackColor))
+			using (SolidBrush brush = new SolidBrush(_checkBackColor))
 				pevent.Graphics.FillRectangle(brush, glyphLoc);
 
 			// draw a checkbox menu glyph (we could do this more elegantly with DrawFrameControl)

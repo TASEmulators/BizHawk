@@ -66,10 +66,10 @@ namespace BizHawk.Client.EmuHawk
 					.OrderBy(p => p.Ordinal)
 					.ThenBy(p => p.Type);
 
-				var y = UIHelper.ScaleY(14);
+				int y = UIHelper.ScaleY(14);
 				foreach (var path in paths)
 				{
-					var box = new TextBox
+					TextBox box = new TextBox
 					{
 						Text = path.Path,
 						Location = new Point(x, y),
@@ -82,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 						AutoCompleteSource = AutoCompleteSource.CustomSource
 					};
 
-					var btn = new Button
+					Button btn = new Button
 					{
 						Text = "",
 						Image = Properties.Resources.OpenFile,
@@ -93,11 +93,11 @@ namespace BizHawk.Client.EmuHawk
 					};
 
 					var tempBox = box;
-					var tempPath = path.Type;
-					var tempSystem = path.System;
+					string tempPath = path.Type;
+					string tempSystem = path.System;
 					btn.Click += (sender, args) => BrowseFolder(tempBox, tempPath, tempSystem);
 
-					var label = new Label
+					Label label = new Label
 					{
 						Text = path.Type,
 						Location = new Point(widgetOffset + buttonWidth + padding, y + UIHelper.ScaleY(4)),
@@ -115,7 +115,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			void AddTabPageForSystem(string system, string systemDisplayName)
 			{
-				var t = new TabPage
+				TabPage t = new TabPage
 				{
 					Name = system,
 					Text = systemDisplayName,
@@ -135,7 +135,7 @@ namespace BizHawk.Client.EmuHawk
 			tcMain.Visible = false;
 
 			PathTabControl.TabPages.Clear();
-			var systems = _pathEntries.Select(e => e.System).Distinct() // group entries by "system" (intentionally using instance field here, not parameter)
+			List<(string SysGroup, string DisplayName)> systems = _pathEntries.Select(e => e.System).Distinct() // group entries by "system" (intentionally using instance field here, not parameter)
 				.Select(sys => (SysGroup: sys, DisplayName: PathEntryCollection.GetDisplayNameFor(sys)))
 				.OrderBy(tuple => tuple.DisplayName)
 				.ToList();
@@ -143,7 +143,7 @@ namespace BizHawk.Client.EmuHawk
 			// add the Global tab first...
 			tpGlobal.Name = PathEntryCollection.GLOBAL; // required for SaveSettings
 			systems.RemoveAll(tuple => tuple.SysGroup == PathEntryCollection.GLOBAL);
-			var hack = tpGlobal.Size.Width - UIHelper.ScaleX(220); // whyyyyyyyyyy
+			int hack = tpGlobal.Size.Width - UIHelper.ScaleX(220); // whyyyyyyyyyy
 			textBoxWidth += hack;
 			widgetOffset += hack;
 			Size hack1 = new(17, 0); // also whyyyyyyyyyy
@@ -156,7 +156,7 @@ namespace BizHawk.Client.EmuHawk
 			// ...then continue with the others (after removing unreleased systems in Release builds)
 			if (!VersionInfo.DeveloperBuild)
 			{
-				var releasedCoreSysIDs = CoreInventory.Instance.AllCores.SelectMany(kvp => kvp.Value.Select(coreInfo => (SysID: kvp.Key, CoreInfo: coreInfo)))
+				List<string> releasedCoreSysIDs = CoreInventory.Instance.AllCores.SelectMany(kvp => kvp.Value.Select(coreInfo => (SysID: kvp.Key, CoreInfo: coreInfo)))
 					.Where(tuple => tuple.CoreInfo.CoreAttr.Released)
 					.Select(tuple => tuple.SysID)
 					.Distinct().ToList();
@@ -188,7 +188,7 @@ namespace BizHawk.Client.EmuHawk
 			if (OSTailoredCode.IsUnixHost)
 			{
 				// FolderBrowserEx doesn't work in Mono for obvious reasons
-				using var f = new FolderBrowserDialog
+				using FolderBrowserDialog f = new FolderBrowserDialog
 				{
 					Description = $"Set the directory for {name}",
 					SelectedPath = _pathEntries.AbsolutePathFor(box.Text, system)
@@ -198,7 +198,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				using var f = new FolderBrowserEx
+				using FolderBrowserEx f = new FolderBrowserEx
 				{
 					Description = $"Set the directory for {name}",
 					SelectedPath = _pathEntries.AbsolutePathFor(box.Text, system)
@@ -236,25 +236,13 @@ namespace BizHawk.Client.EmuHawk
 		private IEnumerable<Control> AllPathControls
 			=> new[] { tpGlobal }.Concat(PathTabControl.TabPages.Cast<TabPage>()).SelectMany(tp => tp.Controls());
 
-		private void NewPathConfig_Load(object sender, EventArgs e)
-		{
-			LoadSettings();
-		}
+		private void NewPathConfig_Load(object sender, EventArgs e) => LoadSettings();
 
-		private void RecentForRoms_CheckedChanged(object sender, EventArgs e)
-		{
-			DoRomToggle();
-		}
+		private void RecentForRoms_CheckedChanged(object sender, EventArgs e) => DoRomToggle();
 
-		private void SpecialCommandsBtn_Click(object sender, EventArgs e)
-		{
-			new PathInfo().Show();
-		}
+		private void SpecialCommandsBtn_Click(object sender, EventArgs e) => new PathInfo().Show();
 
-		private void SaveBtn_Click(object sender, EventArgs e)
-		{
-			SaveSettings();
-		}
+		private void SaveBtn_Click(object sender, EventArgs e) => SaveSettings();
 
 		private void DefaultsBtn_Click(object sender, EventArgs e)
 			=> DoTabs(PathEntryCollection.Defaults.Value, PathEntryCollection.GLOBAL);
@@ -267,14 +255,8 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-		private void Cancel_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
+		private void Cancel_Click(object sender, EventArgs e) => Close();
 
-		private void comboSystem_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			PathTabControl.SelectTab(((ComboBox) sender).SelectedIndex);
-		}
+		private void comboSystem_SelectedIndexChanged(object sender, EventArgs e) => PathTabControl.SelectTab(((ComboBox)sender).SelectedIndex);
 	}
 }

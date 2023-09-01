@@ -24,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 			int count = 0;
 			foreach (var (fileExt, sysID) in _preferredPlatformsForExtensions)
 			{
-				var picker = new FileExtensionPreferencesPicker(_preferredPlatformsForExtensions)
+				FileExtensionPreferencesPicker picker = new FileExtensionPreferencesPicker(_preferredPlatformsForExtensions)
 				{
 					FileExtension = fileExt,
 					OriginalPreference = sysID,
@@ -47,9 +47,6 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-		private void CancelBtn_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
+		private void CancelBtn_Click(object sender, EventArgs e) => Close();
 	}
 }

@@ -6,15 +6,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
 	public partial class N64 : ISettable<N64Settings, N64SyncSettings>
 	{
-		public N64Settings GetSettings()
-		{
-			return _settings.Clone();
-		}
+		public N64Settings GetSettings() => _settings.Clone();
 
-		public N64SyncSettings GetSyncSettings()
-		{
-			return _syncSettings.Clone();
-		}
+		public N64SyncSettings GetSyncSettings() => _syncSettings.Clone();
 
 		public PutSettingsDirtyBits PutSettings(N64Settings o)
 		{
@@ -45,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			ControllerDefinition = new("Nintendo 64 Controller");
 			ControllerDefinition.BoolButtons.AddRange(new[] { "Reset", "Power" });
-			for (var i = 0; i < 4; i++)
+			for (int i = 0; i < 4; i++)
 			{
 				if (_syncSettings.Controllers[i].IsConnected)
 				{

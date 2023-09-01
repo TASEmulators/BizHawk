@@ -23,14 +23,14 @@ namespace BizHawk.Common
 
 		static VersionInfo()
 		{
-			var path = Path.Combine(
+			string path = Path.Combine(
 				Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)?.RemoveSuffix(Path.DirectorySeparatorChar) ?? string.Empty,
 				"dll",
 				"custombuild.txt"
 			);
 			if (File.Exists(path))
 			{
-				var lines = File.ReadAllLines(path);
+				string[] lines = File.ReadAllLines(path);
 				if (lines.Length > 0)
 				{
 					CustomBuildString = lines[0];
@@ -44,13 +44,13 @@ namespace BizHawk.Common
 		/// <summary>"2.5.1" => 0x02050100</summary>
 		public static uint VersionStrToInt(string s)
 		{
-			var a = s.Split('.');
-			var v = 0U;
-			var i = 0;
+			string[] a = s.Split('.');
+			uint v = 0U;
+			int i = 0;
 			while (i < 4)
 			{
 				v <<= 8;
-				v += i < a.Length && byte.TryParse(a[i], out var b) ? b : 0U;
+				v += i < a.Length && byte.TryParse(a[i], out byte b) ? b : 0U;
 				i++;
 			}
 			return v;

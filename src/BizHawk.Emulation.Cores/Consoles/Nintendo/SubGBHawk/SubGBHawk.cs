@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 
 			_GBStatable = _GBCore.ServiceProvider.GetService<IStatable>();
 
-			var ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 
 			ser.Register(_GBCore.ServiceProvider.GetService<IVideoProvider>());

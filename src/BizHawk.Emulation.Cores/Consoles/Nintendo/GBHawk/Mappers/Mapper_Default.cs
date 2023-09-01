@@ -10,10 +10,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			// nothing to initialize
 		}
 
-		public override byte ReadMemoryLow(ushort addr)
-		{
-			return Core._rom[addr];
-		}
+		public override byte ReadMemoryLow(ushort addr) => Core._rom[addr];
 
 		public override byte ReadMemoryHigh(ushort addr)
 		{
@@ -48,15 +45,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
-		public override byte PeekMemoryLow(ushort addr)
-		{
-			return ReadMemoryLow(addr);
-		}
+		public override byte PeekMemoryLow(ushort addr) => ReadMemoryLow(addr);
 
-		public override byte PeekMemoryHigh(ushort addr)
-		{
-			return ReadMemoryHigh(addr);
-		}
+		public override byte PeekMemoryHigh(ushort addr) => ReadMemoryHigh(addr);
 
 		public override void WriteMemory(ushort addr, byte value)
 		{
@@ -73,9 +64,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
-		public override void PokeMemory(ushort addr, byte value)
-		{
-			WriteMemory(addr, value);
-		}
+		public override void PokeMemory(ushort addr, byte value) => WriteMemory(addr, value);
 	}
 }

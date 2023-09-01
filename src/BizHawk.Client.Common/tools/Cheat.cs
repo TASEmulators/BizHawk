@@ -123,7 +123,7 @@ namespace BizHawk.Client.Common
 		{
 			if (!IsSeparator)
 			{
-				var wasEnabled = _enabled;
+				bool wasEnabled = _enabled;
 				_enabled = true;
 				if (!wasEnabled && handleChange)
 				{
@@ -136,7 +136,7 @@ namespace BizHawk.Client.Common
 		{
 			if (!IsSeparator)
 			{
-				var wasEnabled = _enabled;
+				bool wasEnabled = _enabled;
 				_enabled = false;
 				if (wasEnabled && handleChange)
 				{
@@ -271,10 +271,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private void Changes()
-		{
-			Changed?.Invoke(this);
-		}
+		private void Changes() => Changed?.Invoke(this);
 
 		public override bool Equals(object obj)
 		{
@@ -291,10 +288,7 @@ namespace BizHawk.Client.Common
 			return base.Equals(obj);
 		}
 
-		public override int GetHashCode()
-		{
-			return Domain.GetHashCode() + (int)(Address ?? 0);
-		}
+		public override int GetHashCode() => Domain.GetHashCode() + (int)(Address ?? 0);
 
 		public static bool operator ==(Cheat a, Cheat b)
 		{

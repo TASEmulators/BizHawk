@@ -43,7 +43,7 @@
 
 		public byte ReadMemory(ushort addr, bool peek)
 		{
-			var maskedAddr = (ushort)(addr & 0x000F);
+			ushort maskedAddr = (ushort)(addr & 0x000F);
 
 			if (maskedAddr == 0x00) // CXM0P
 			{
@@ -196,7 +196,7 @@
 
 		public void WriteMemory(ushort addr, byte value, bool poke)
 		{
-			var maskedAddr = (ushort)(addr & 0x3f);
+			ushort maskedAddr = (ushort)(addr & 0x3f);
 			if (!poke)
 			{
 				BusState = value;

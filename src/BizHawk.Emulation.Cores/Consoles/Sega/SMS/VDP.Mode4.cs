@@ -343,7 +343,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		// Handles GG clipping or highlighting
 		internal void ProcessGGScreen()
 		{
-			if (mode != VdpMode.GameGear)
+			if (VdpMode != VdpMode.GameGear)
 				return;
 
 			if (Sms.Settings.ShowClippedRegions == false)

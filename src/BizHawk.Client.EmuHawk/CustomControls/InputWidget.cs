@@ -55,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 			set
 			{
 				ClearBindings();
-				var newBindings = value.Trim().Split(',');
+				string[] newBindings = value.Trim().Split(',');
 				_bindings.AddRange(newBindings);
 				UpdateLabel();
 			}
@@ -73,10 +73,7 @@ namespace BizHawk.Client.EmuHawk
 			Clear();
 		}
 
-		private void ClearBindings()
-		{
-			_bindings.Clear();
-		}
+		private void ClearBindings() => _bindings.Clear();
 
 		protected override void OnEnter(EventArgs e)
 		{
@@ -100,10 +97,7 @@ namespace BizHawk.Client.EmuHawk
 			base.OnHandleDestroyed(e);
 		}
 
-		private void Timer_Tick(object sender, EventArgs e)
-		{
-			ReadKeys();
-		}
+		private void Timer_Tick(object sender, EventArgs e) => ReadKeys();
 
 		private void EraseMappings()
 		{
@@ -127,7 +121,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ReadKeys()
 		{
 			Input.Instance.Update();
-			var bindingStr = Input.Instance.GetNextBindEvent(ref _lastPress);
+			string bindingStr = Input.Instance.GetNextBindEvent(ref _lastPress);
 			
 			if (bindingStr != null)
 			{
@@ -215,10 +209,7 @@ namespace BizHawk.Client.EmuHawk
 			CompositeWidget.RefreshTooltip();
 		}
 
-		protected override void OnKeyPress(KeyPressEventArgs e)
-		{
-			e.Handled = true;
-		}
+		protected override void OnKeyPress(KeyPressEventArgs e) => e.Handled = true;
 
 		protected override void WndProc(ref Message m)
 		{
@@ -256,9 +247,6 @@ namespace BizHawk.Client.EmuHawk
 			if (!OSTailoredCode.IsUnixHost) Win32Imports.HideCaret(Handle);
 		}
 
-		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-		{
-			return !(keyData.ToString() == "F4" || keyData.ToString().Contains("Alt"));
-		}
+		protected override bool ProcessCmdKey(ref Message msg, Keys keyData) => !(keyData.ToString() == "F4" || keyData.ToString().Contains("Alt"));
 	}
 }

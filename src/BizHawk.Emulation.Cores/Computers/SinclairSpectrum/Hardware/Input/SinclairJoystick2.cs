@@ -16,15 +16,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		{
 			_machine = machine;
 			//_joyLine = 0;
-			_playerNumber = playerNumber;
+			PlayerNumber = playerNumber;
 
 			ButtonCollection = new List<string>
 			{
-				"P" + _playerNumber + " Left",
-				"P" + _playerNumber + " Right",
-				"P" + _playerNumber + " Down",
-				"P" + _playerNumber + " Up",
-				"P" + _playerNumber + " Button",
+				"P" + PlayerNumber + " Left",
+				"P" + PlayerNumber + " Right",
+				"P" + PlayerNumber + " Down",
+				"P" + PlayerNumber + " Up",
+				"P" + PlayerNumber + " Button",
 			}.ToArray();
 		}
 
@@ -40,20 +40,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		public JoystickType JoyType => JoystickType.SinclairRIGHT;
 
 		public string[] ButtonCollection { get; set; }
-
-		private int _playerNumber;
-		public int PlayerNumber
-		{
-			get => _playerNumber;
-			set => _playerNumber = value;
-		}
+		public int PlayerNumber { get; set; }
 
 		/// <summary>
 		/// Sets the joystick line based on key pressed
 		/// </summary>
 		public void SetJoyInput(string key, bool isPressed)
 		{
-			var pos = GetBitPos(key);
+			int pos = GetBitPos(key);
 
 			if (isPressed)
 			{
@@ -78,7 +72,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public bool GetJoyInput(string key)
 		{
-			var pos = GetBitPos(key);
+			int pos = GetBitPos(key);
 			if (_machine == null)
 				return false;
 

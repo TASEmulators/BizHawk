@@ -14,8 +14,8 @@ namespace BizHawk.Client.Common
 
 		static HotkeyInfo()
 		{
-			var dict = new Dictionary<string, HotkeyInfo>();
-			var i = 0;
+			Dictionary<string, HotkeyInfo> dict = new Dictionary<string, HotkeyInfo>();
+			int i = 0;
 #if true
 			void Bind(string tabGroup, string displayName, string defaultBinding = "", string toolTip = "")
 				=> dict.Add(displayName, new(tabGroup: tabGroup, i++, displayName: displayName, toolTip: toolTip, defaultBinding: defaultBinding));

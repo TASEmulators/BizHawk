@@ -95,10 +95,7 @@ namespace BizHawk.Emulation.Cores.Components
 				if (!Enable)
 					length = 0;
 			}
-			public bool ReadLength()
-			{
-				return length > 0;
-			}
+			public bool ReadLength() => length > 0;
 
 			public void ClockFrame()
 			{
@@ -299,11 +296,7 @@ namespace BizHawk.Emulation.Cores.Components
 
 		private readonly Action<int> enqueuer;
 
-		private void PulseAddDiff(int value)
-		{
-			enqueuer(value * 370);
-			//Console.WriteLine(value);
-		}
+		private void PulseAddDiff(int value) => enqueuer(value * 370);//Console.WriteLine(value);
 
 		public MMC5Audio(Action<int> enqueuer, Action<bool> RaiseIRQ)
 		{

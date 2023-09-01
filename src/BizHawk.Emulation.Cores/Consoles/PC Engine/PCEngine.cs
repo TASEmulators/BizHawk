@@ -208,7 +208,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				// 384k roms require special loading code. Why ;_;
 				// In memory, 384k roms look like [1st 256k][Then full 384k]
 				RomData = new byte[0xA0000];
-				var origRom = rom;
+				byte[] origRom = rom;
 				for (int i = 0; i < 0x40000; i++)
 					RomData[i] = origRom[i];
 				for (int i = 0; i < 0x60000; i++)
@@ -316,7 +316,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			Cpu.ResetPC();
 
 			Tracer = new TraceBuffer(Cpu.TraceHeader);
-			var ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 			ser.Register<ITraceable>(Tracer);
 			ser.Register<IDisassemblable>(Cpu);
@@ -333,11 +333,11 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			Dictionary<string, int> sizes = new();
 			foreach (var m in mm)
 			{
-				if (!sizes.TryGetValue(m.Name, out var size) || size <= m.MaxOffs) sizes[m.Name] = m.MaxOffs;
+				if (!sizes.TryGetValue(m.Name, out int size) || size <= m.MaxOffs) sizes[m.Name] = m.MaxOffs;
 			}
 
-			var keys = new List<string>(sizes.Keys);
-			foreach (var key in keys)
+			List<string> keys = new List<string>(sizes.Keys);
+			foreach (string key in keys)
 			{
 				// becase we were looking at offsets, and each bank is 8192 big, we need to add that size
 				sizes[key] += 8192;

@@ -21,10 +21,10 @@ namespace BizHawk.Client.Common
 
 		/// <exception cref="InvalidOperationException"><paramref name="button"/> not overridden</exception>
 		public bool IsPressed(string button)
-			=> _overrides.TryGetValue(button, out var b) ? b : throw new InvalidOperationException();
+			=> _overrides.TryGetValue(button, out bool b) ? b : throw new InvalidOperationException();
 
 		public int AxisValue(string name)
-			=> _axisOverrides.TryGetValue(name, out var i) ? i : 0;
+			=> _axisOverrides.TryGetValue(name, out int i) ? i : 0;
 
 		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => throw new NotImplementedException(); // no idea --yoshi
 
@@ -51,10 +51,7 @@ namespace BizHawk.Client.Common
 			_inverses.Remove(button);
 		}
 
-		public void SetInverse(string button)
-		{
-			_inverses.Add(button);
-		}
+		public void SetInverse(string button) => _inverses.Add(button);
 
 		public void FrameTick()
 		{

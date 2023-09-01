@@ -16,10 +16,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			nsamp = sbuffcontains;
 		}
 
-		public void DiscardSamples()
-		{
-			sbuffcontains = 0;
-		}
+		public void DiscardSamples() => sbuffcontains = 0;
 
 		public void SetSyncMode(SyncSoundMode mode)
 		{
@@ -31,9 +28,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new InvalidOperationException("Async mode is not supported.");
-		}
+		public void GetSamplesAsync(short[] samples) => throw new InvalidOperationException("Async mode is not supported.");
 	}
 }

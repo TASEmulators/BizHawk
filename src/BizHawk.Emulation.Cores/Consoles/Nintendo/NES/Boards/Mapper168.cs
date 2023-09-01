@@ -43,10 +43,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		// the chr reg on hardware is supposedly bitscrambled and then inverted from
 		// what would be expected.  since it doesn't make a difference and i don't know
 		// of any clear source on what it's actually supposed to be, ignore.
-		private int Scramble(int chr)
-		{
-			return chr;
-		}
+		private int Scramble(int chr) => chr;
 
 		public override void WritePrg(int addr, byte value)
 		{

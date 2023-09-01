@@ -48,10 +48,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private static readonly EMirrorType[] kMirrorTypes = {EMirrorType.Vertical,EMirrorType.Horizontal,EMirrorType.OneScreenA,EMirrorType.OneScreenB};
 
-		private void SyncMirror()
-		{
-			SetMirrorType(kMirrorTypes[mirror]);
-		}
+		private void SyncMirror() => SetMirrorType(kMirrorTypes[mirror]);
 
 		public override byte ReadPrg(int addr)
 		{

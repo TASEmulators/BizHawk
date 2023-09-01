@@ -62,7 +62,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!job.Offscreen)
 			{
 				//apply the vsync setting (should probably try to avoid repeating this)
-				var vsync = GlobalConfig.VSyncThrottle || GlobalConfig.VSync;
+				bool vsync = GlobalConfig.VSyncThrottle || GlobalConfig.VSync;
 
 				//ok, now this is a bit undesirable.
 				//maybe the user wants vsync, but not vsync throttle.
@@ -107,7 +107,7 @@ namespace BizHawk.Client.EmuHawk
 			_currentFilterProgram.RenderTargetProvider = new DisplayManagerRenderTargetProvider(size => _shaderChainFrugalizers[rtCounter++].Get(size));
 
 			_gl.BeginScene();
-			RunFilterChainSteps(ref rtCounter, out var rtCurr, out var inFinalTarget);
+			RunFilterChainSteps(ref rtCounter, out var rtCurr, out bool inFinalTarget);
 			_gl.EndScene();
 
 			if (job.Offscreen)

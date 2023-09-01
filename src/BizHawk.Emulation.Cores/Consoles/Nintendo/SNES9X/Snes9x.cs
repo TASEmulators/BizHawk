@@ -95,23 +95,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 		public override int VirtualWidth => BufferWidth == 256 && BufferHeight <= 240 ? 293 : 587;
 		public override int VirtualHeight => BufferHeight <= 240 && BufferWidth == 512 ? BufferHeight * 2 : BufferHeight;
 
-		protected override void LoadStateBinaryInternal(BinaryReader reader)
-		{
-			_core.biz_post_load_state();
-		}
+		protected override void LoadStateBinaryInternal(BinaryReader reader) => _core.biz_post_load_state();
 
 		private Settings _settings;
 		private SyncSettings _syncSettings;
 
-		public Settings GetSettings()
-		{
-			return _settings.Clone();
-		}
+		public Settings GetSettings() => _settings.Clone();
 
-		public SyncSettings GetSyncSettings()
-		{
-			return _syncSettings.Clone();
-		}
+		public SyncSettings GetSyncSettings() => _syncSettings.Clone();
 
 		public PutSettingsDirtyBits PutSettings(Settings o)
 		{
@@ -144,7 +135,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 
 		public PutSettingsDirtyBits PutSyncSettings(SyncSettings o)
 		{
-			var ret = SyncSettings.NeedsReboot(_syncSettings, o);
+			bool ret = SyncSettings.NeedsReboot(_syncSettings, o);
 			_syncSettings = o;
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
@@ -228,10 +219,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 				SettingsUtil.SetDefaultValues(this);
 			}
 
-			public Settings Clone()
-			{
-				return (Settings)MemberwiseClone();
-			}
+			public Settings Clone() => (Settings)MemberwiseClone();
 		}
 
 		public class SyncSettings
@@ -251,17 +239,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 				SettingsUtil.SetDefaultValues(this);
 			}
 
-			public SyncSettings Clone()
-			{
-				return (SyncSettings)MemberwiseClone();
-			}
+			public SyncSettings Clone() => (SyncSettings)MemberwiseClone();
 
-			public static bool NeedsReboot(SyncSettings x, SyncSettings y)
-			{
+			public static bool NeedsReboot(SyncSettings x, SyncSettings y) =>
 				// the core can handle dynamic plugging and unplugging, but that changes
 				// the controllerdefinition, and we're not ready for that
-				return !DeepEquality.DeepEquals(x, y);
-			}
+				!DeepEquality.DeepEquals(x, y);
 		}
 	}
 }

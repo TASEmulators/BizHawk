@@ -93,7 +93,7 @@ namespace BizHawk.Emulation.DiscSystem
 		public int Timestamp {
 			readonly get => MSF.ToInt(min.DecimalValue, sec.DecimalValue, frame.DecimalValue);
 			set {
-				var ts = new Timestamp(value);
+				Timestamp ts = new Timestamp(value);
 				min.DecimalValue = ts.MIN; sec.DecimalValue = ts.SEC; frame.DecimalValue = ts.FRAC;
 			}
 		}
@@ -105,7 +105,7 @@ namespace BizHawk.Emulation.DiscSystem
 		public int AP_Timestamp {
 			readonly get => MSF.ToInt(ap_min.DecimalValue, ap_sec.DecimalValue, ap_frame.DecimalValue);
 			set {
-				var ts = new Timestamp(value);
+				Timestamp ts = new Timestamp(value);
 				ap_min.DecimalValue = ts.MIN; ap_sec.DecimalValue = ts.SEC; ap_frame.DecimalValue = ts.FRAC;
 			}
 		}
@@ -113,18 +113,12 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// sets the status byte from the provided adr/qmode and control values
 		/// </summary>
-		public void SetStatus(byte adr_or_qmode, EControlQ control)
-		{
-			q_status = ComputeStatus(adr_or_qmode, control);
-		}
+		public void SetStatus(byte adr_or_qmode, EControlQ control) => q_status = ComputeStatus(adr_or_qmode, control);
 
 		/// <summary>
 		/// computes a status byte from the provided adr/qmode and control values
 		/// </summary>
-		public static byte ComputeStatus(int adr_or_qmode, EControlQ control)
-		{
-			return (byte)(adr_or_qmode | (((int)control) << 4));
-		}
+		public static byte ComputeStatus(int adr_or_qmode, EControlQ control) => (byte)(adr_or_qmode | (((int)control) << 4));
 
 		/// <summary>
 		/// Retrives the ADR field of the q_status member (low 4 bits)

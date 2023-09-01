@@ -7,15 +7,9 @@ namespace BizHawk.Emulation.Cores.PCEngine
 {
 	public sealed partial class PCEngine : ISettable<PCEngine.PCESettings, PCEngine.PCESyncSettings>
 	{
-		public PCESettings GetSettings()
-		{
-			return Settings.Clone();
-		}
+		public PCESettings GetSettings() => Settings.Clone();
 
-		public PCESyncSettings GetSyncSettings()
-		{
-			return _syncSettings.Clone();
-		}
+		public PCESyncSettings GetSyncSettings() => _syncSettings.Clone();
 
 		public PutSettingsDirtyBits PutSettings(PCESettings o)
 		{

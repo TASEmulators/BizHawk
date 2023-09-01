@@ -34,20 +34,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			var fields = board.GetType().GetFields();
 			foreach (var field in fields)
 			{
-				var attribs = field.GetCustomAttributes(false);
-				foreach (var attrib in attribs)
+				object[] attribs = field.GetCustomAttributes(false);
+				foreach (object attrib in attribs)
 				{
 					if (attrib is MapperPropAttribute)
 					{
 						string name = field.Name;
 
-						if (board.InitialRegisterValues.TryGetValue(name, out var value))
+						if (board.InitialRegisterValues.TryGetValue(name, out string value))
 						{
 							try
 							{
 								field.SetValue(board, Convert.ChangeType(value, field.FieldType));
 							}
-							catch (Exception e) when (e is InvalidCastException || e is FormatException || e is OverflowException)
+							catch (Exception e) when (e is InvalidCastException or FormatException or OverflowException)
 							{
 								throw new InvalidOperationException("Auto Mapper Properties were in a bad format!", e);
 							}

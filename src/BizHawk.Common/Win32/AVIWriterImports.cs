@@ -62,10 +62,7 @@ namespace BizHawk.Common
 			public uint biClrUsed;
 			public uint biClrImportant;
 
-			public void Init()
-			{
-				biSize = (uint)Marshal.SizeOf(this);
-			}
+			public void Init() => biSize = (uint)Marshal.SizeOf(this);
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -95,10 +92,7 @@ namespace BizHawk.Common
 			public ushort wBitsPerSample;
 			public ushort cbSize;
 
-			public void Init()
-			{
-				cbSize = (ushort)Marshal.SizeOf(this);
-			}
+			public void Init() => cbSize = (ushort)Marshal.SizeOf(this);
 		}
 
 		/// <summary>Create a new stream in an existing file and creates an interface to the new stream</summary>

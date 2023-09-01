@@ -53,7 +53,7 @@ namespace BizHawk.Client.EmuHawk
 				url = url.Replace("http:", "https:");
 			}
 
-			using var downloadForm = new RAIntegrationDownloaderForm(url);
+			using RAIntegrationDownloaderForm downloadForm = new RAIntegrationDownloaderForm(url);
 			downloadForm.ShowDialog();
 			return downloadForm.DownloadSucceeded();
 		}
@@ -62,12 +62,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				var http = new HttpCommunication(null, "https://retroachievements.org/dorequest.php?r=latestintegration", null);
+				HttpCommunication http = new HttpCommunication(null, "https://retroachievements.org/dorequest.php?r=latestintegration", null);
 				var info = JsonConvert.DeserializeObject<Dictionary<string, object>>(http.ExecGet());
-				if (info.TryGetValue("Success", out var success) && (bool)success)
+				if (info.TryGetValue("Success", out object success) && (bool)success)
 				{
-					var lastestVer = new Version((string)info["LatestVersion"]);
-					var minVer = new Version((string)info["MinimumVersion"]);
+					Version lastestVer = new Version((string)info["LatestVersion"]);
+					Version minVer = new Version((string)info["MinimumVersion"]);
 
 					if (_version < minVer)
 					{
@@ -79,7 +79,7 @@ namespace BizHawk.Client.EmuHawk
 								icon: EMsgBoxIcon.Question,
 								useOKCancel: false)) return false;
 						DetachDll();
-						var ret = DownloadDll((string)info["LatestVersionUrlX64"]);
+						bool ret = DownloadDll((string)info["LatestVersionUrlX64"]);
 						AttachDll();
 						return ret;
 					}

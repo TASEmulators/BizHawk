@@ -89,10 +89,7 @@ namespace BizHawk.Client.Common
 		/// specified <see cref="Watch"/>
 		/// </summary>
 		/// <param name="watch">The object to</param>
-		public bool Contains(Watch watch)
-		{
-			return _watchList.Contains(watch);
-		}
+		public bool Contains(Watch watch) => _watchList.Contains(watch);
 
 		/// <summary>
 		/// Copies the elements of the current <see cref="WatchList"/>
@@ -100,10 +97,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		/// <param name="array">The one-dimension <see cref="Array"/> that will serve as destination to copy</param>
 		/// <param name="arrayIndex">Zero-based index where the copy should starts</param>
-		public void CopyTo(Watch[] array, int arrayIndex)
-		{
-			_watchList.CopyTo(array, arrayIndex);
-		}
+		public void CopyTo(Watch[] array, int arrayIndex) => _watchList.CopyTo(array, arrayIndex);
 
 		/// <summary>
 		/// Removes the first of specified <see cref="Watch"/>
@@ -127,10 +121,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		/// <param name="watch"><see cref="Watch"/> to look for</param>
 		/// <returns>Zero-base position if <see cref="Watch"/> has been found; otherwise -1</returns>
-		public int IndexOf(Watch watch)
-		{
-			return _watchList.IndexOf(watch);
-		}
+		public int IndexOf(Watch watch) => _watchList.IndexOf(watch);
 
 		/// <summary>
 		/// Insert a <see cref="Watch"/> at the specified index
@@ -172,19 +163,13 @@ namespace BizHawk.Client.Common
 		/// Returns an enumerator that iterates through the collection
 		/// </summary>
 		/// <returns>An <see cref="IEnumerator{T}"/> for the current collection</returns>
-		public IEnumerator<Watch> GetEnumerator()
-		{
-			return _watchList.GetEnumerator();
-		}
+		public IEnumerator<Watch> GetEnumerator() => _watchList.GetEnumerator();
 
 		/// <summary>
 		/// Returns an enumerator that iterates through the collection
 		/// </summary>
 		/// <returns>An <see cref="IEnumerator"/> for the current collection</returns>
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return GetEnumerator();
-		}
+		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 		/// <summary>
 		/// Add an existing collection of <see cref="Watch"/> into the current one
@@ -214,8 +199,8 @@ namespace BizHawk.Client.Common
 		/// <param name="reverse">Defines the order of the sort. Ascending (true) or descending (false)</param>
 		public void OrderWatches(string column, bool reverse)
 		{
-			var separatorIndices = new List<int>();
-			for (var i = 0; i < _watchList.Count; i++)
+			List<int> separatorIndices = new List<int>();
+			for (int i = 0; i < _watchList.Count; i++)
 			{
 				if (_watchList[i].IsSeparator)
 				{
@@ -311,7 +296,7 @@ namespace BizHawk.Client.Common
 
 		public bool Load(string path, bool append)
 		{
-			var result = LoadFile(path, append);
+			bool result = LoadFile(path, append);
 
 			if (result)
 			{
@@ -345,9 +330,9 @@ namespace BizHawk.Client.Common
 				return false;
 			}
 
-			using (var sw = new StreamWriter(CurrentFileName))
+			using (StreamWriter sw = new StreamWriter(CurrentFileName))
 			{
-				var sb = new StringBuilder();
+				StringBuilder sb = new StringBuilder();
 				sb.Append("SystemID ").AppendLine(_systemId);
 
 				foreach (var watch in _watchList)
@@ -375,13 +360,13 @@ namespace BizHawk.Client.Common
 
 		private bool LoadFile(string path, bool append)
 		{
-			var file = new FileInfo(path);
+			FileInfo file = new FileInfo(path);
 			if (file.Exists == false)
 			{
 				return false;
 			}
 
-			var isBizHawkWatch = true; // Hack to support .wch files from other emulators
+			bool isBizHawkWatch = true; // Hack to support .wch files from other emulators
 			using var sr = file.OpenText();
 			string line;
 
@@ -410,7 +395,7 @@ namespace BizHawk.Client.Common
 					continue;
 				}
 
-				var numColumns = line.Count(c => c == '\t');
+				int numColumns = line.Count(c => c == '\t');
 				int startIndex;
 				if (numColumns == 5)
 				{
@@ -434,7 +419,7 @@ namespace BizHawk.Client.Common
 				int addr;
 				var memDomain = _memoryDomains.MainMemory;
 
-				var temp = line.Substring(0, line.IndexOf('\t'));
+				string temp = line.Substring(0, line.IndexOf('\t'));
 				try
 				{
 					addr = int.Parse(temp, NumberStyles.HexNumber);
@@ -463,7 +448,7 @@ namespace BizHawk.Client.Common
 					continue;
 				}
 
-				var bigEndian = startIndex != 0;
+				bool bigEndian = startIndex != 0;
 
 				if (isBizHawkWatch)
 				{
@@ -474,7 +459,7 @@ namespace BizHawk.Client.Common
 				}
 
 				startIndex = line.IndexOf('\t') + 1;
-				var notes = line.Substring(startIndex, line.Length - startIndex);
+				string notes = line.Substring(startIndex, line.Length - startIndex);
 
 				_watchList.Add(
 					Watch.GenerateWatch(

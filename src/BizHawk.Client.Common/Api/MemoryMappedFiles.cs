@@ -23,7 +23,7 @@ namespace BizHawk.Client.Common
 
 		public string ReadFromFile(string filename, int expectedSize)
 		{
-			var bytes = ReadBytesFromFile(filename, expectedSize);
+			byte[] bytes = ReadBytesFromFile(filename, expectedSize);
 			return Encoding.UTF8.GetString(bytes);
 		}
 
@@ -31,7 +31,7 @@ namespace BizHawk.Client.Common
 		{
 			var mmfFile = _mmfFiles.GetValueOrPut(filename, MemoryMappedFile.OpenExisting);
 			using var viewAccessor = mmfFile.CreateViewAccessor(0, expectedSize, MemoryMappedFileAccess.Read);
-			var bytes = new byte[expectedSize];
+			byte[] bytes = new byte[expectedSize];
 			viewAccessor.ReadArray(0, bytes, 0, expectedSize);
 			return bytes;
 		}

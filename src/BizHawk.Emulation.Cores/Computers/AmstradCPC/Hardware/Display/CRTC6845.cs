@@ -390,7 +390,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			if (portUpper.Bit(6))
 				return accessed;
 
-			var func = portUpper & 3;
+			int func = portUpper & 3;
 
 			switch (func)
 			{
@@ -467,8 +467,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		private void SelectRegister(int value)
 		{
-			var v = (byte)((byte)value & 0x1F);
-			if (v > 0 && v < 18)
+			byte v = (byte)((byte)value & 0x1F);
+			if (v is > 0 and < 18)
 			{
 				AddressRegister = v;
 			}
@@ -524,7 +524,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			get
 			{
-				var val = Register[INTERLACE_MODE];
+				byte val = Register[INTERLACE_MODE];
 				int res = 0;
 				switch ((int)ChipType)
 				{
@@ -561,7 +561,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			get
 			{
-				var val = Register[INTERLACE_MODE];
+				byte val = Register[INTERLACE_MODE];
 				int res = 0;
 				switch ((int)ChipType)
 				{
@@ -628,8 +628,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			get
 			{
-				var Reg13 = Register[START_ADDR_L];
-				var Reg12 = (byte)(Register[START_ADDR_H] & 0x3f);
+				byte Reg13 = Register[START_ADDR_L];
+				byte Reg12 = (byte)(Register[START_ADDR_H] & 0x3f);
 				return (Reg12 << 8) + Reg13;
 			}
 		}
@@ -641,8 +641,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			get
 			{
-				var reg15 = Register[CURSOR_L];
-				var reg14 = (byte)(Register[CURSOR_H] & 0x3f);
+				byte reg15 = Register[CURSOR_L];
+				byte reg14 = (byte)(Register[CURSOR_H] & 0x3f);
 				return (reg14 << 8) + reg15;
 			}
 		}
@@ -663,7 +663,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			{
 				// Bits 3..0 define Horizontal Sync Width. 
 				// If 0 is programmed this gives a HSYNC width of 16
-				var width = (Register[SYNC_WIDTHS] >> 0) & 0x0F;
+				int width = (Register[SYNC_WIDTHS] >> 0) & 0x0F;
 				if (width == 0)
 					width = 16;
 				return width;
@@ -679,7 +679,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			{
 				// Bits 7..4 define Vertical Sync Width
 				// If 0 is programmed this gives 16 lines of VSYNC
-				var width = (Register[SYNC_WIDTHS] >> 4) & 0x0F;
+				int width = (Register[SYNC_WIDTHS] >> 4) & 0x0F;
 				if (width == 0)
 					width = 16;
 				return width;
@@ -727,7 +727,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					data = Register[AddressRegister];
 					break;
 				default:
-					if (AddressRegister > 17 && AddressRegister < 32)
+					if (AddressRegister is > 17 and < 32)
 					{
 						data = 0;
 					}
@@ -785,7 +785,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					data = 0xff;
 					break;
 				default:
-					if (AddressRegister > 17 && AddressRegister < 31)
+					if (AddressRegister is > 17 and < 31)
 					{
 						data = 0;
 					}
@@ -834,7 +834,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					data = Register[AddressRegister];
 					break;
 				default:
-					if (AddressRegister > 17 && AddressRegister < 32)
+					if (AddressRegister is > 17 and < 32)
 					{
 						data = 0;
 					}
@@ -1073,21 +1073,15 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// Status Register is unavailable but attempts to read will return the currently
 		/// selected register data instead
 		/// </summary>
-		private bool ReadStatus_Type3_4(ref int data)
-		{
-			return ReadRegister(ref data);
-		}
+		private bool ReadStatus_Type3_4(ref int data) => ReadRegister(ref data);
 
-		#pragma warning disable IDE0051
+#pragma warning disable IDE0051
 		/// <summary>
 		/// Read Status Register (HD6845S &amp; UM6845)
 		/// No status register available
 		/// </summary>
-		private bool ReadStatus_Unavailable(ref int data)
-		{
-			return false;
-		}
-		#pragma warning restore IDE0051
+		private bool ReadStatus_Unavailable(ref int data) => false;
+#pragma warning restore IDE0051
 
 		/* persistent switch signals */
 		private bool s_VS;
@@ -1400,9 +1394,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				bool curOutput = false;
 
 				// info from registers
-				var curStartRaster = Register[CURSOR_START] & 0x1f;
-				var curEndRaster = Register[CURSOR_END] & 0x1f;
-				var curDisplayMode = (Register[CURSOR_START] & 0x60) >> 5;
+				int curStartRaster = Register[CURSOR_START] & 0x1f;
+				int curEndRaster = Register[CURSOR_END] & 0x1f;
+				int curDisplayMode = (Register[CURSOR_START] & 0x60) >> 5;
 
 				switch (curDisplayMode)
 				{
@@ -1747,9 +1741,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				bool curOutput = false;
 
 				// info from registers
-				var curStartRaster = Register[CURSOR_START] & 0x1f;
-				var curEndRaster = Register[CURSOR_END] & 0x1f;
-				var curDisplayMode = (Register[CURSOR_START] & 0x60) >> 5;
+				int curStartRaster = Register[CURSOR_START] & 0x1f;
+				int curEndRaster = Register[CURSOR_END] & 0x1f;
+				int curDisplayMode = (Register[CURSOR_START] & 0x60) >> 5;
 
 				switch (curDisplayMode)
 				{
@@ -2039,9 +2033,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				bool curOutput = false;
 
 				// info from registers
-				var curStartRaster = Register[CURSOR_START] & 0x1f;
-				var curEndRaster = Register[CURSOR_END] & 0x1f;
-				var curDisplayMode = (Register[CURSOR_START] & 0x60) >> 5;
+				int curStartRaster = Register[CURSOR_START] & 0x1f;
+				int curEndRaster = Register[CURSOR_END] & 0x1f;
+				int curDisplayMode = (Register[CURSOR_START] & 0x60) >> 5;
 
 				switch (curDisplayMode)
 				{

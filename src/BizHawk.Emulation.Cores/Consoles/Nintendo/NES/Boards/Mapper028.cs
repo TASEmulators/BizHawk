@@ -178,10 +178,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				base.WritePpu(addr, value);
 		}
 
-		public override byte ReadPrg(int addr)
-		{
-			return Rom[(addr & 0x3fff) | (addr < 0x4000 ? prglo : prghi) << 14];
-		}
+		public override byte ReadPrg(int addr) => Rom[(addr & 0x3fff) | (addr < 0x4000 ? prglo : prghi) << 14];
 
 		public override void SyncState(Serializer ser)
 		{

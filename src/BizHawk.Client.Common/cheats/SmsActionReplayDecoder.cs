@@ -17,11 +17,11 @@ namespace BizHawk.Client.Common.cheats
 				return new InvalidCheatCode("Action Replay Codes must be 9 characters with a dash after the third character");
 			}
 
-			var result = new DecodeResult { Size = WatchSize.Byte };
+			DecodeResult result = new DecodeResult { Size = WatchSize.Byte };
 
-			var s = code.Remove(0, 2);
-			var ramAddress = s.Remove(4, 2).Replace("-", "");
-			var ramValue = s.Remove(0, 5);
+			string s = code.Remove(0, 2);
+			string ramAddress = s.Remove(4, 2).Replace("-", "");
+			string ramValue = s.Remove(0, 5);
 			result.Address = int.Parse(ramAddress, NumberStyles.HexNumber);
 			result.Value = int.Parse(ramValue, NumberStyles.HexNumber);
 			return result;

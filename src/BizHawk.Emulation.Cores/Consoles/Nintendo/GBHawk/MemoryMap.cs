@@ -60,18 +60,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					return bus_value;
 				}
 
-				if (addr >= 0xE000 && addr < 0xF000)
+				if (addr is >= 0xE000 and < 0xF000)
 				{
 					return RAM[addr - 0xE000];
 				}
 
-				if (addr >= 0xF000 && addr < 0xFE00)
+				if (addr is >= 0xF000 and < 0xFE00)
 				{
 					//if (RAM_read[(RAM_Bank * 0x1000) + (addr - 0xF000)] == 0) { Console.WriteLine("RAM: " + addr + " " + cpu.TotalExecutedCycles); }
 					return RAM[(RAM_Bank * 0x1000) + (addr - 0xF000)];
 				}
 
-				if (addr >= 0xFE00 && addr < 0xFEA0)
+				if (addr is >= 0xFE00 and < 0xFEA0)
 				{
 					if (ppu.DMA_OAM_access)
 					{
@@ -83,7 +83,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}				
 				}
 
-				if (addr >= 0xFF00 && addr < 0xFF80) // The game GOAL! Requires Hardware Regs to be accessible
+				if (addr is >= 0xFF00 and < 0xFF80) // The game GOAL! Requires Hardware Regs to be accessible
 				{
 					return Read_Registers(addr);
 				}
@@ -280,12 +280,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					mapper.WriteMemory(addr, value);
 				}
 
-				if (addr >= 0xE000 && addr < 0xF000)
+				if (addr is >= 0xE000 and < 0xF000)
 				{
 					//RAM_read[addr - 0xE000] = 1;
 					RAM[addr - 0xE000] = value;
 				}
-				else if (addr >= 0xF000 && addr < 0xFE00)
+				else if (addr is >= 0xF000 and < 0xFE00)
 				{
 					//RAM_read[RAM_Bank * 0x1000 + (addr - 0xF000)] = 1;
 					RAM[RAM_Bank * 0x1000 + (addr - 0xF000)] = value;
@@ -294,7 +294,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				{
 					OAM[addr - 0xFE00] = value; 
 				}
-				else if (addr >= 0xFF00 && addr < 0xFF80) // The game GOAL! Requires Hardware Regs to be accessible
+				else if (addr is >= 0xFF00 and < 0xFF80) // The game GOAL! Requires Hardware Regs to be accessible
 				{
 					Write_Registers(addr, value);
 				}
@@ -443,17 +443,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					return mapper.PeekMemoryHigh(addr);
 				}
 
-				if (addr >= 0xE000 && addr < 0xF000)
+				if (addr is >= 0xE000 and < 0xF000)
 				{
 					return RAM[addr - 0xE000];
 				}
 
-				if (addr >= 0xF000 && addr < 0xFE00)
+				if (addr is >= 0xF000 and < 0xFE00)
 				{
 					return RAM[(RAM_Bank * 0x1000) + (addr - 0xF000)];
 				}
 
-				if (addr >= 0xFE00 && addr < 0xFEA0)
+				if (addr is >= 0xFE00 and < 0xFEA0)
 				{
 					if (ppu.DMA_OAM_access)
 					{
@@ -465,7 +465,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}
 				}
 
-				if (addr >= 0xFF00 && addr < 0xFF80) // The game GOAL! Requires Hardware Regs to be accessible
+				if (addr is >= 0xFF00 and < 0xFF80) // The game GOAL! Requires Hardware Regs to be accessible
 				{
 					return Read_Registers(addr);
 				}

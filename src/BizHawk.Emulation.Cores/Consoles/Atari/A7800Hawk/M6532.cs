@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				return 0; 
 			}
 
-			var registerAddr = (ushort)(addr & 0x0007);
+			ushort registerAddr = (ushort)(addr & 0x0007);
 			if (registerAddr == 0x00)
 			{
 				Core._isLag = false;
@@ -114,7 +114,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				// If bit 0x0010 is set, and bit 0x0004 is set, this is a timer write
 				if ((addr & 0x0014) == 0x0014)
 				{
-					var registerAddr = (ushort)(addr & 0x0007);
+					ushort registerAddr = (ushort)(addr & 0x0007);
 
 					// Bit 0x0080 contains interrupt enable/disable
 					Timer.InterruptEnabled = (addr & 0x0080) != 0;
@@ -159,7 +159,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				// these are register writes
 				else if ((addr & 0x0004) == 0)
 				{
-					var registerAddr = (ushort)(addr & 0x0007);
+					ushort registerAddr = (ushort)(addr & 0x0007);
 
 					if (registerAddr == 0x00)
 					{

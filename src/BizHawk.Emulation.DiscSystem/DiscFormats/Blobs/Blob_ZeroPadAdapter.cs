@@ -17,8 +17,8 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public int Read(long byte_pos, byte[] buffer, int offset, int count)
 		{
-			var todo = count;
-			var end = byte_pos + todo;
+			int todo = count;
+			long end = byte_pos + todo;
 			if (end > srcBlobLength)
 			{
 				todo = checked((int)(srcBlobLength - byte_pos));

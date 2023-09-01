@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Common
 
 		public IEnumerator<KeyValuePair<string, AxisSpec>> GetEnumerator()
 		{
-			foreach (var key in _keys)
+			foreach (string key in _keys)
 			{
 				yield return new(key, _specs[key]);
 			}

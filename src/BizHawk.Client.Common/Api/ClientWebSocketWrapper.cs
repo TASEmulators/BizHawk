@@ -41,7 +41,7 @@ namespace BizHawk.Client.Common
 		public readonly string Receive(int bufferCap, CancellationToken? cancellationToken = null)
 		{
 			if (_w == null) throw new ObjectDisposedException(nameof(_w));
-			var buffer = new byte[bufferCap];
+			byte[] buffer = new byte[bufferCap];
 			var result = Receive(new ArraySegment<byte>(buffer), cancellationToken ?? CancellationToken.None).Result;
 			return Encoding.UTF8.GetString(buffer, 0, result.Count);
 		}

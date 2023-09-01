@@ -146,10 +146,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 			public GBLinkSyncSettings() => SettingsUtil.SetDefaultValues(this);
 
-			public static bool NeedsReboot(GBLinkSyncSettings x, GBLinkSyncSettings y)
-			{
-				return !DeepEquality.DeepEquals(x, y);
-			}
+			public static bool NeedsReboot(GBLinkSyncSettings x, GBLinkSyncSettings y) => !DeepEquality.DeepEquals(x, y);
 		}
 	}
 }

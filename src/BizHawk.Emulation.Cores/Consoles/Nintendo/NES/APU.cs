@@ -126,7 +126,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ser.EndSection();
 			}
 
-			public bool IsLenCntNonZero() { return len_cnt > 0; }
+			public bool IsLenCntNonZero() => len_cnt > 0;
 
 			public void WriteReg(int addr, byte val)
 			{
@@ -535,7 +535,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ser.EndSection();
 			}
 
-			public bool IsLenCntNonZero() { return len_cnt > 0; }
+			public bool IsLenCntNonZero() => len_cnt > 0;
 
 			public void set_lenctr_en(int value)
 			{
@@ -917,10 +917,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				apu.SyncIRQ();
 			}
 
-			public bool IsLenCntNonZero()
-			{
-				return sample_length != 0;
-			}
+			public bool IsLenCntNonZero() => sample_length != 0;
 
 			public void WriteReg(int addr, byte val)
 			{
@@ -1028,10 +1025,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private int sequencer_counter, sequencer_step, sequencer_mode, sequencer_irq_inhibit, sequencer_irq_assert;
 		private bool sequencer_irq, sequence_reset_pending, sequencer_irq_clear_pending, sequencer_irq_flag;
 
-		public void RunDMCFetch()
-		{
-			dmc.Fetch();
-		}
+		public void RunDMCFetch() => dmc.Fetch();
 
 		private readonly int[][] sequencer_lut = new int[2][];
 
@@ -1110,10 +1104,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			sequencer_check();
 		}
 
-		public void SyncIRQ()
-		{
-			irq_pending = sequencer_irq | dmc_irq;
-		}
+		public void SyncIRQ() => irq_pending = sequencer_irq | dmc_irq;
 
 		private void sequencer_check()
 		{
@@ -1373,7 +1364,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// the current code simply matches known behaviour			
 			if (pending_reg != -1)
 			{
-				if ( pending_reg == 0x4003 || pending_reg == 0x4007 || pending_reg == 0x4010 || pending_reg == 0x4015 || pending_reg == 0x4017)
+				if ( pending_reg is 0x4003 or 0x4007 or 0x4010 or 0x4015 or 0x4017)
 				{
 					_WriteReg(pending_reg, pending_val);
 					pending_reg = -1;

@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			set
 			{
 				_mmc3type = value;
-				oldIrqType = (_mmc3type == EMMC3Type.MMC3A || _mmc3type == EMMC3Type.MMC3BNonSharp || _mmc3type == EMMC3Type.MMC6);
+				oldIrqType = (_mmc3type is EMMC3Type.MMC3A or EMMC3Type.MMC3BNonSharp or EMMC3Type.MMC6);
 			}
 		}
 
@@ -161,10 +161,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		//some MMC3 variants pass along the irq signal differently (primarily different delay)
 		//this is overrideable so that those boards can get signals whenever this mmc3 base class code manipulates the irq line
-		public virtual void SyncIRQ()
-		{
-			board.SyncIRQ(irq_pending);
-		}
+		public virtual void SyncIRQ() => board.SyncIRQ(irq_pending);
 
 		public byte cmd;
 
@@ -325,15 +322,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public MMC3 mmc3;
 		public int extra_vrom;
 
-		public override void AddressPpu(int addr)
-		{
-			mmc3.AddressPPU(addr);
-		}
+		public override void AddressPpu(int addr) => mmc3.AddressPPU(addr);
 
-		public override void ClockPpu()
-		{
-			mmc3.ClockPPU();
-		}
+		public override void ClockPpu() => mmc3.ClockPPU();
 
 		//configuration
 		protected int prg_mask, chr_mask;
@@ -345,15 +336,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(extra_vrom), ref extra_vrom);
 		}
 
-		protected virtual int Get_CHRBank_1K(int addr)
-		{
-			return mmc3.Get_CHRBank_1K(addr);
-		}
+		protected virtual int Get_CHRBank_1K(int addr) => mmc3.Get_CHRBank_1K(addr);
 
-		protected virtual int Get_PRGBank_8K(int addr)
-		{
-			return mmc3.Get_PRGBank_8K(addr);
-		}
+		protected virtual int Get_PRGBank_8K(int addr) => mmc3.Get_PRGBank_8K(addr);
 
 		protected virtual int MapCHR(int addr)
 		{
@@ -389,10 +374,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 
-		public override void WritePrg(int addr, byte value)
-		{
-			mmc3.WritePRG(addr, value);
-		}
+		public override void WritePrg(int addr, byte value) => mmc3.WritePRG(addr, value);
 
 		public override byte ReadPrg(int addr)
 		{

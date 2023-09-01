@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		private void ProcessSound()
 		{
-			var len = bridge.LibretroBridge_GetAudioSize(cbHandler);
+			uint len = bridge.LibretroBridge_GetAudioSize(cbHandler);
 			if (len == 0) // no audio?
 			{
 				return;
@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 				_inSampBuf = new short[len];
 			}
 
-			bridge.LibretroBridge_GetAudio(cbHandler, out var ns, _inSampBuf);
+			bridge.LibretroBridge_GetAudio(cbHandler, out int ns, _inSampBuf);
 
 			for (uint i = 0; i < ns; i++)
 			{
@@ -105,14 +105,8 @@ namespace BizHawk.Emulation.Cores.Libretro
 			DiscardSamples();
 		}
 
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new InvalidOperationException("Async mode is not supported.");
-		}
+		public void GetSamplesAsync(short[] samples) => throw new InvalidOperationException("Async mode is not supported.");
 
-		public void DiscardSamples()
-		{
-			_outSamps = 0;
-		}
+		public void DiscardSamples() => _outSamps = 0;
 	}
 }

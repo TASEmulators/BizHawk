@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					// is the memory address of the BUSRQ potentially contended?
 					if (_machine.IsContended(AscertainBUSRQAddress()))
 					{
-						var cont = _machine.ULADevice.GetContentionValue((int)_machine.CurrentFrameCycle);
+						int cont = _machine.ULADevice.GetContentionValue((int)_machine.CurrentFrameCycle);
 						if (cont > 0)
 						{
 							_cpu.TotalExecutedCycles += cont;

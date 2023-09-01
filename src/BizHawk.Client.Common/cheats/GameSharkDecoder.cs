@@ -34,7 +34,7 @@ namespace BizHawk.Client.Common.cheats
 
 		public MemoryDomain CheatDomain()
 		{
-			var domain = CheatDomainName();
+			string domain = CheatDomainName();
 			return domain is null ? _domains.SystemBus : _domains[domain]!;
 		}
 

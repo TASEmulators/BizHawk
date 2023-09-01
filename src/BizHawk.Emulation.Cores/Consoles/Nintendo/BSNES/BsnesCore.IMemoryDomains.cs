@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			List<MemoryDomain> mm = new();
 			foreach (int i in Enum.GetValues(typeof(BsnesApi.SNES_MEMORY)))
 			{
-				var data = Api.core.snes_get_memory_region(i, out var size, out var wordSize);
+				var data = Api.core.snes_get_memory_region(i, out int size, out int wordSize);
 				if (data == IntPtr.Zero) continue;
 				if (i == (int) BsnesApi.SNES_MEMORY.CARTRAM)
 				{
@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			{
 				foreach (int i in Enum.GetValues(typeof(BsnesApi.SGB_MEMORY)))
 				{
-					var data = Api.core.snes_get_sgb_memory_region(i, out var size);
+					var data = Api.core.snes_get_sgb_memory_region(i, out int size);
 					if (data == IntPtr.Zero || size == 0) continue;
 					mm.Add(new MemoryDomainIntPtrMonitor("SGB " + Enum.GetName(typeof(BsnesApi.SGB_MEMORY), i), MemoryDomain.Endian.Little, data, size, true, 1, Api));
 				}

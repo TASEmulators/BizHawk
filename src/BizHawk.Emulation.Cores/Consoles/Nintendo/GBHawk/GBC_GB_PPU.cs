@@ -610,7 +610,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							if (!STAT.Bit(5)) { VBL_INT = false; }
 						}
 
-						if ((cycle >= 2) && (cycle < 4))
+						if (cycle is >= 2 and < 4)
 						{
 							// there is an edge case where a VBL INT is triggered if STAT bit 5 is set
 							if (STAT.Bit(5)) { VBL_INT = true; }

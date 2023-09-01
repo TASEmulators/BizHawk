@@ -39,17 +39,14 @@ namespace BizHawk.Bizware.BizwareGL
 		/// <summary>
 		/// Loads the given stream as an Art instance
 		/// </summary>
-		public Art LoadArt(Stream stream)
-		{
-			return LoadArtInternal(new BitmapBuffer(stream, new BitmapLoadOptions()));
-		}
+		public Art LoadArt(Stream stream) => LoadArtInternal(new BitmapBuffer(stream, new BitmapLoadOptions()));
 
 		/// <summary>
 		/// Loads the given path as an Art instance.
 		/// </summary>
 		public Art LoadArt(string path)
 		{
-			using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+			using FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
 			return LoadArtInternal(new BitmapBuffer(path, new BitmapLoadOptions()));
 		}
 
@@ -57,7 +54,7 @@ namespace BizHawk.Bizware.BizwareGL
 		{
 			AssertIsOpen(true);
 
-			var a = new Art(this);
+			Art a = new Art(this);
 			ArtLooseTextureAssociation.Add((a, tex));
 			ManagedArts.Add(a);
 
@@ -84,7 +81,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 			// prepare input for atlas process and perform atlas
 			// add 2 extra pixels for padding on all sides
-			var atlasItems = ArtLooseTextureAssociation
+			List<TexAtlas.RectItem> atlasItems = ArtLooseTextureAssociation
 				.Select(kvp => new TexAtlas.RectItem(kvp.Bitmap.Width + 2, kvp.Bitmap.Height + 2, kvp))
 				.ToList();
 			var results = TexAtlas.PackAtlas(atlasItems);
@@ -94,28 +91,28 @@ namespace BizHawk.Bizware.BizwareGL
 				throw new InvalidOperationException("Art files too big for atlas");
 
 			// prepare the output buffer
-			var bmpResult = new BitmapBuffer(results[0].Size);
+			BitmapBuffer bmpResult = new BitmapBuffer(results[0].Size);
 
 			//for each item, copy it into the output buffer and set the tex parameters on them
-			for (var i = 0; i < atlasItems.Count; i++)
+			for (int i = 0; i < atlasItems.Count; i++)
 			{
 				var item = results[0].Items[i];
 				var (art, bitmap) = ((Art, BitmapBuffer)) item.Item;
-				var w = bitmap.Width;
-				var h = bitmap.Height;
-				var dx = item.X + 1;
-				var dy = item.Y + 1;
-				for (var y = 0; y < h; y++)
+				int w = bitmap.Width;
+				int h = bitmap.Height;
+				int dx = item.X + 1;
+				int dy = item.Y + 1;
+				for (int y = 0; y < h; y++)
 				{
-					for (var x = 0; x < w; x++)
+					for (int x = 0; x < w; x++)
 					{
-						var pixel = bitmap.GetPixel(x, y);
+						int pixel = bitmap.GetPixel(x, y);
 						bmpResult.SetPixel(x+dx,y+dy,pixel);
 					}
 				}
 
-				var myDestWidth = (float)bmpResult.Width;
-				var myDestHeight = (float)bmpResult.Height;
+				float myDestWidth = (float)bmpResult.Width;
+				float myDestHeight = (float)bmpResult.Height;
 
 				art.u0 = dx / myDestWidth;
 				art.v0 = dy / myDestHeight;

@@ -64,7 +64,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_stickyXorAdapter = stickyXorAdapter;
 
-			var scaleBase = Math.Min(Size.Width, Size.Height) - 10.0; // be circular when control is stretched
+			double scaleBase = Math.Min(Size.Width, Size.Height) - 10.0; // be circular when control is stretched
 
 			XName = nameX;
 			_fullRangeX = rangeX;
@@ -154,14 +154,14 @@ namespace BizHawk.Client.EmuHawk
 			BorderStyle = BorderStyle.Fixed3D;
 
 			// Draw the dot into a bitmap
-			using var g = Graphics.FromImage(_dot);
+			using Graphics g = Graphics.FromImage(_dot);
 			g.Clear(Color.Transparent);
 			var redBrush = Brushes.Red;
 			g.FillRectangle(redBrush, 2, 0, 3, 7);
 			g.FillRectangle(redBrush, 1, 1, 5, 5);
 			g.FillRectangle(redBrush, 0, 2, 7, 3);
 
-			using var gg = Graphics.FromImage(_grayDot);
+			using Graphics gg = Graphics.FromImage(_grayDot);
 			gg.Clear(Color.Transparent);
 			gg.FillRectangle(Brushes.Gray, 2, 0, 3, 7);
 			gg.FillRectangle(Brushes.Gray, 1, 1, 5, 5);
@@ -191,8 +191,8 @@ namespace BizHawk.Client.EmuHawk
 				// Previous frame
 				if (_previous != null)
 				{
-					var pX = _previous.AxisValue(XName);
-					var pY = _previous.AxisValue(YName);
+					int pX = _previous.AxisValue(XName);
+					int pY = _previous.AxisValue(YName);
 					e.Graphics.DrawLine(_grayPen, PixelMidX, PixelMidY, RealToGfxX(pX), RealToGfxY(pY));
 					e.Graphics.DrawImage(_grayDot, RealToGfxX(pX) - 3, RealToGfxY(_rangeY.EndInclusive) - RealToGfxY(pY) - 3);
 				}
@@ -268,15 +268,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Set(IController controller)
 		{
-			var newX = controller.AxisValue(XName);
-			var newY = controller.AxisValue(YName);
+			int newX = controller.AxisValue(XName);
+			int newY = controller.AxisValue(YName);
 			if (newX != X || newY != Y) SetPosition(newX, newY);
 		}
 
-		public void SetPrevious(IController previous)
-		{
-			_previous = previous;
-		}
+		public void SetPrevious(IController previous) => _previous = previous;
 
 		private void SetPosition(int xval, int yval)
 		{

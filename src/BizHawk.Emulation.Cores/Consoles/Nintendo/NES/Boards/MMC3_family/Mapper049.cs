@@ -53,9 +53,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return prg * 4 + block_offset;
 		}
 
-		protected override int Get_CHRBank_1K(int addr)
-		{
-			return (base.Get_CHRBank_1K(addr)&0x7F) + block * 128;
-		}
+		protected override int Get_CHRBank_1K(int addr) => (base.Get_CHRBank_1K(addr) & 0x7F) + block * 128;
 	}
 }

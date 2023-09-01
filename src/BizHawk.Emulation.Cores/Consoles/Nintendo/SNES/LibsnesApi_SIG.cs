@@ -45,11 +45,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 							if (audio_sample != null)
 							{
-								var audiobuffer = (short*)_comm->ptr;
+								short* audiobuffer = (short*)_comm->ptr;
 								for (uint i = 0; i < nsamples;)
 								{
-									var left = audiobuffer[i++];
-									var right = audiobuffer[i++];
+									short left = audiobuffer[i++];
+									short right = audiobuffer[i++];
 									audio_sample(left, right);
 								}
 							}
@@ -74,9 +74,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					case eMessage.eMessage_SIG_allocSharedMemory:
 						{
 							// NB: shared memory blocks are allocated on the unmanaged side
-							var name = _comm->GetAscii();
-							var size = _comm->size;
-							var ptr = _comm->ptr;
+							string name = _comm->GetAscii();
+							uint size = _comm->size;
+							void* ptr = _comm->ptr;
 
 							if (_sharedMemoryBlocks.ContainsKey(name))
 								throw new InvalidOperationException("Re-defined a shared memory block. Check bsnes init/shutdown code. Block name: " + name);

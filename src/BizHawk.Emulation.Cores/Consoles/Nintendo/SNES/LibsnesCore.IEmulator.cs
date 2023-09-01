@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				Api.CMD_power();
 			}
 
-			var enables = new LibsnesApi.LayerEnables
+			LibsnesApi.LayerEnables enables = new LibsnesApi.LayerEnables
 			{
 				BG1_Prio0 = _settings.ShowBG1_0,
 				BG1_Prio1 = _settings.ShowBG1_1,
@@ -71,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			// apparently this is one frame?
 			Api.CMD_run();
-			_timeFrameCounter++;
+			Frame++;
 
 			// once upon a time we forwarded messages from bsnes here, by checking for queued text messages, but I don't think it's needed any longer
 			if (IsLagFrame)
@@ -87,18 +87,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			return true;
 		}
 
-		public int Frame
-		{
-			get => _timeFrameCounter;
-			private set => _timeFrameCounter = value;
-		}
+		public int Frame { get; private set; }
 
 		public string SystemId { get; }
 		public bool DeterministicEmulation => true;
 
 		public void ResetCounters()
 		{
-			_timeFrameCounter = 0;
+			Frame = 0;
 			LagCount = 0;
 			IsLagFrame = false;
 		}

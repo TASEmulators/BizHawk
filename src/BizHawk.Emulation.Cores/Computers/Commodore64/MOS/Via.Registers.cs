@@ -2,15 +2,9 @@
 {
 	public sealed partial class Via
 	{
-		public int Peek(int addr)
-		{
-			return ReadRegister(addr & 0xF);
-		}
+		public int Peek(int addr) => ReadRegister(addr & 0xF);
 
-		public void Poke(int addr, int val)
-		{
-			WriteRegister(addr & 0xF, val);
-		}
+		public void Poke(int addr, int val) => WriteRegister(addr & 0xF, val);
 
 		public int Read(int addr)
 		{
@@ -18,13 +12,13 @@
 			switch (addr)
 			{
 				case 0x0:
-					if (_pcrCb2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_NEGATIVE_EDGE && _pcrCb2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_POSITIVE_EDGE)
+					if (_pcrCb2Control is not PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_NEGATIVE_EDGE and not PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_POSITIVE_EDGE)
 						_ifr &= 0xE7;
 					if (_acrPbLatchEnable)
 						return _pbLatch;
 					break;
 				case 0x1:
-					if (_pcrCa2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_NEGATIVE_EDGE && _pcrCa2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_POSITIVE_EDGE)
+					if (_pcrCa2Control is not PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_NEGATIVE_EDGE and not PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_POSITIVE_EDGE)
 						_ifr &= 0xFC;
 					if (_acrPaLatchEnable)
 						return _paLatch;
@@ -79,14 +73,14 @@
 			switch (addr)
 			{
 				case 0x0:
-					if (_pcrCb2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_NEGATIVE_EDGE && _pcrCb2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_POSITIVE_EDGE)
+					if (_pcrCb2Control is not PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_NEGATIVE_EDGE and not PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_POSITIVE_EDGE)
 						_ifr &= 0xE7;
 					if (_pcrCb2Control == PCR_CONTROL_PULSE_OUTPUT)
 						_handshakeCb2NextClock = true;
 					WriteRegister(addr, val);
 					break;
 				case 0x1:
-					if (_pcrCa2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_NEGATIVE_EDGE && _pcrCa2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_POSITIVE_EDGE)
+					if (_pcrCa2Control is not PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_NEGATIVE_EDGE and not PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_POSITIVE_EDGE)
 						_ifr &= 0xFC;
 					if (_pcrCa2Control == PCR_CONTROL_PULSE_OUTPUT)
 						_handshakeCa2NextClock = true;

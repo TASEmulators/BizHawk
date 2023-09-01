@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Common
 
 		public virtual ushort PeekUshort(long addr, bool bigEndian)
 		{
-			Endian endian = bigEndian ? Endian.Big : Endian.Little;
+			var endian = bigEndian ? Endian.Big : Endian.Little;
 			return endian switch
 			{
 				Endian.Little => (ushort)(PeekByte(addr) | (PeekByte(addr + 1) << 8)),
@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Common
 
 		public virtual uint PeekUint(long addr, bool bigEndian)
 		{
-			Endian endian = bigEndian ? Endian.Big : Endian.Little;
+			var endian = bigEndian ? Endian.Big : Endian.Little;
 			return endian switch
 			{
 				Endian.Little => (uint)((PeekByte(addr) << 0)
@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Common
 
 		public virtual void PokeUshort(long addr, ushort val, bool bigEndian)
 		{
-			Endian endian = bigEndian ? Endian.Big : Endian.Little;
+			var endian = bigEndian ? Endian.Big : Endian.Little;
 			switch (endian)
 			{
 				default:
@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Common
 
 		public virtual void PokeUint(long addr, uint val, bool bigEndian)
 		{
-			Endian endian = bigEndian ? Endian.Big : Endian.Little;
+			var endian = bigEndian ? Endian.Big : Endian.Little;
 			switch (endian)
 			{
 				default:
@@ -109,7 +109,7 @@ namespace BizHawk.Emulation.Common
 
 			using (this.EnterExit())
 			{
-				for (var i = addresses.Start; i <= addresses.EndInclusive; i++)
+				for (long i = addresses.Start; i <= addresses.EndInclusive; i++)
 				{
 					values[i - addresses.Start] = PeekByte(i);
 				}
@@ -121,8 +121,8 @@ namespace BizHawk.Emulation.Common
 			if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
 			if (values is null) throw new ArgumentNullException(paramName: nameof(values));
 
-			var start = addresses.Start;
-			var end  = addresses.EndInclusive + 1;
+			long start = addresses.Start;
+			long end  = addresses.EndInclusive + 1;
 
 			if ((start & 1) != 0 || (end & 1) != 0)
 				throw new InvalidOperationException("The API contract doesn't define what to do for unaligned reads and writes!");
@@ -135,7 +135,7 @@ namespace BizHawk.Emulation.Common
 
 			using (this.EnterExit())
 			{
-				for (var i = 0; i < values.Length; i++, start += 2)
+				for (int i = 0; i < values.Length; i++, start += 2)
 					values[i] = PeekUshort(start, bigEndian);
 			}
 		}
@@ -145,8 +145,8 @@ namespace BizHawk.Emulation.Common
 			if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
 			if (values is null) throw new ArgumentNullException(paramName: nameof(values));
 
-			var start = addresses.Start;
-			var end  = addresses.EndInclusive + 1;
+			long start = addresses.Start;
+			long end  = addresses.EndInclusive + 1;
 
 			if ((start & 3) != 0 || (end & 3) != 0)
 				throw new InvalidOperationException("The API contract doesn't define what to do for unaligned reads and writes!");
@@ -159,7 +159,7 @@ namespace BizHawk.Emulation.Common
 
 			using (this.EnterExit())
 			{
-				for (var i = 0; i < values.Length; i++, start += 4)
+				for (int i = 0; i < values.Length; i++, start += 4)
 					values[i] = PeekUint(start, bigEndian);
 			}
 		}

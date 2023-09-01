@@ -31,10 +31,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 		}
 
-		public override void WriteWram(int addr, byte value)
-		{
-			block = value & 0x03;
-		}
+		public override void WriteWram(int addr, byte value) => block = value & 0x03;
 
 		public override byte ReadPrg(int addr)
 		{

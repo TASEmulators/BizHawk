@@ -54,9 +54,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			else return base.ReadPpu(addr);
 		}
 
-		public override void WriteWram(int addr, byte value)
-		{
-			chr_bank_8k = value & chr_bank_mask_8k;
-		}
+		public override void WriteWram(int addr, byte value) => chr_bank_8k = value & chr_bank_mask_8k;
 	}
 }

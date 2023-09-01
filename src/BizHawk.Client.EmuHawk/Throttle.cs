@@ -205,10 +205,7 @@ namespace BizHawk.Client.EmuHawk
 			fSkipFrames *= 0.5f;
 		}
 
-		private void AutoFrameSkip_BeforeThrottle()
-		{
-			preThrottleEndticks = GetCurTime();
-		}
+		private void AutoFrameSkip_BeforeThrottle() => preThrottleEndticks = GetCurTime();
 
 		private void AutoFrameSkip_NextFrame()
 		{

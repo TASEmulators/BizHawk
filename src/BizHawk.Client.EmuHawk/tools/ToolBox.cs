@@ -77,7 +77,7 @@ namespace BizHawk.Client.EmuHawk
 					Image = tsi.Image ?? IconMissingIcon.Value,
 					Text = tsi.Text,
 				};
-				var info = (ExternalToolManager.MenuItemInfo) tsi.Tag;
+				ExternalToolManager.MenuItemInfo info = (ExternalToolManager.MenuItemInfo) tsi.Tag;
 				tsb.Click += (_, _) => info.TryLoad();
 				ToolBoxStrip.Items.Add(tsb);
 			}
@@ -85,7 +85,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetSize()
 		{
-			var rows = (int)Math.Ceiling(ToolBoxItems.Count() / 4.0);
+			int rows = (int)Math.Ceiling(ToolBoxItems.Count() / 4.0);
 			Height = 30 + (rows * 30);
 		}
 

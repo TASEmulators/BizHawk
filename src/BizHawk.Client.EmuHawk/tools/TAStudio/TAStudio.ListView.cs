@@ -158,7 +158,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var columnName = column.Name;
+			string columnName = column.Name;
 
 			if (columnName == CursorColumnName)
 			{
@@ -218,7 +218,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			Color? overrideColor = QueryItemBgColorCallback?.Invoke(index, column.Name);
+			var overrideColor = QueryItemBgColorCallback?.Invoke(index, column.Name);
 
 			if (overrideColor.HasValue)
 			{
@@ -254,7 +254,7 @@ namespace BizHawk.Client.EmuHawk
 			if (_alternateRowColor.GetValueOrPut(
 				columnName,
 				columnName1 => {
-					var playerNumber = ControllerDefinition.PlayerNumber(columnName1);
+					int playerNumber = ControllerDefinition.PlayerNumber(columnName1);
 					return playerNumber % 2 is 0 && playerNumber is not 0;
 				}))
 			{
@@ -318,7 +318,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var overrideText = QueryItemTextCallback?.Invoke(index, column.Name);
+			string overrideText = QueryItemTextCallback?.Invoke(index, column.Name);
 			if (overrideText != null)
 			{
 				text = overrideText;
@@ -328,7 +328,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				text = "";
-				var columnName = column.Name;
+				string columnName = column.Name;
 
 				if (columnName == CursorColumnName)
 				{
@@ -381,7 +381,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (TasView.AnyRowsSelected)
 			{
-				var columnName = e.Column.Name;
+				string columnName = e.Column.Name;
 
 				if (columnName == FrameColumnName)
 				{
@@ -389,7 +389,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (columnName != CursorColumnName)
 				{
-					var frame = TasView.AnyRowsSelected ? TasView.FirstSelectedRowIndex : 0;
+					int frame = TasView.AnyRowsSelected ? TasView.FirstSelectedRowIndex : 0;
 					string buttonName = TasView.CurrentCell.Column.Name;
 
 					if (ControllerType.BoolButtons.Contains(buttonName))
@@ -398,7 +398,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							// nifty taseditor logic
 							bool allPressed = true;
-							foreach (var index in TasView.SelectedRows)
+							foreach (int index in TasView.SelectedRows)
 							{
 								if (index == CurrentTasMovie.FrameCount // last movie frame can't have input, but can be selected
 									|| !CurrentTasMovie.BoolIsPressed(index, buttonName))
@@ -412,7 +412,7 @@ namespace BizHawk.Client.EmuHawk
 						else
 						{
 							BoolPatterns[ControllerType.BoolButtons.IndexOf(buttonName)].Reset();
-							foreach (var index in TasView.SelectedRows)
+							foreach (int index in TasView.SelectedRows)
 							{
 								CurrentTasMovie.SetBoolState(index, buttonName, BoolPatterns[ControllerType.BoolButtons.IndexOf(buttonName)].GetNextValue());
 							}
@@ -480,7 +480,7 @@ namespace BizHawk.Client.EmuHawk
 				// This is a sign of a deeper problem, but this fixes some basic functionality at least
 				if (index < BoolPatterns.Length)
 				{
-					AutoPatternBool p = BoolPatterns[index];
+					var p = BoolPatterns[index];
 					InputManager.AutofireStickyXorAdapter.SetSticky(button, isOn.Value, p);
 				}
 			}
@@ -505,16 +505,13 @@ namespace BizHawk.Client.EmuHawk
 				// This is a sign of a deeper problem, but this fixes some basic functionality at least
 				if (index < AxisPatterns.Length)
 				{
-					AutoPatternAxis p = AxisPatterns[index];
+					var p = AxisPatterns[index];
 					InputManager.AutofireStickyXorAdapter.SetAxis(button, value, p);
 				}
 			}
 		}
 
-		private void TasView_ColumnReordered(object sender, InputRoll.ColumnReorderedEventArgs e)
-		{
-			CurrentTasMovie.FlagChanges();
-		}
+		private void TasView_ColumnReordered(object sender, InputRoll.ColumnReorderedEventArgs e) => CurrentTasMovie.FlagChanges();
 
 		private void TasView_MouseEnter(object sender, EventArgs e)
 		{
@@ -569,7 +566,7 @@ namespace BizHawk.Client.EmuHawk
 				// SuuperW: Exit axis editing mode, or re-enter mouse editing
 				if (AxisEditingMode)
 				{
-					if (ModifierKeys == Keys.Control || ModifierKeys == Keys.Shift)
+					if (ModifierKeys is Keys.Control or Keys.Shift)
 					{
 						_extraAxisRows.Clear();
 						_extraAxisRows.AddRange(TasView.SelectedRows);
@@ -648,13 +645,13 @@ namespace BizHawk.Client.EmuHawk
 						{
 							if (!TasView.AnyRowsSelected) return;
 
-							var iFirstSelectedRow = TasView.FirstSelectedRowIndex;
+							int iFirstSelectedRow = TasView.FirstSelectedRowIndex;
 							var (firstSel, lastSel) = frame <= iFirstSelectedRow
 								? (frame, iFirstSelectedRow)
 								: (iFirstSelectedRow, frame);
 
 							bool allPressed = true;
-							for (var i = firstSel; i <= lastSel; i++)
+							for (int i = firstSel; i <= lastSel; i++)
 							{
 								if (i == CurrentTasMovie.FrameCount // last movie frame can't have input, but can be selected
 									|| !CurrentTasMovie.BoolIsPressed(i, buttonName))
@@ -1000,7 +997,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (_startSelectionDrag)
 			{
-				for (var i = startVal; i <= endVal; i++)
+				for (int i = startVal; i <= endVal; i++)
 				{
 					TasView.SelectRow(i, _selectionDragState);
 					if (AxisEditingMode && (ModifierKeys == Keys.Control || ModifierKeys == Keys.Shift))
@@ -1163,7 +1160,7 @@ namespace BizHawk.Client.EmuHawk
 
 				for (int i = startVal; i <= endVal; i++) // Inclusive on both ends (drawing up or down)
 				{
-					var setVal = _axisPaintState;
+					int setVal = _axisPaintState;
 					if (_patternPaint)
 					{
 						if (CurrentTasMovie[frame].Lagged.HasValue && CurrentTasMovie[frame].Lagged.Value)
@@ -1203,17 +1200,14 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 
-				var value = (_axisPaintState + increment).ConstrainWithin(ControllerType.Axes[_axisEditColumn].Range);
+				int value = (_axisPaintState + increment).ConstrainWithin(ControllerType.Axes[_axisEditColumn].Range);
 				CurrentTasMovie.SetAxisState(_axisEditRow, _axisEditColumn, value);
 				_axisTypedValue = value.ToString();
 				RefreshDialog();
 			}
 		}
 
-		private void TasView_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			SetSplicer();
-		}
+		private void TasView_SelectedIndexChanged(object sender, EventArgs e) => SetSplicer();
 
 		public void AnalogIncrementByOne()
 		{
@@ -1304,7 +1298,7 @@ namespace BizHawk.Client.EmuHawk
 				value = rMin;
 				_axisTypedValue = value.ToString(NumberFormatInfo.InvariantInfo);
 			}
-			else if (e.KeyCode >= Keys.D0 && e.KeyCode <= Keys.D9)
+			else if (e.KeyCode is >= Keys.D0 and <= Keys.D9)
 			{
 				if (curDigits >= maxDigits)
 				{
@@ -1313,7 +1307,7 @@ namespace BizHawk.Client.EmuHawk
 
 				_axisTypedValue += e.KeyCode - Keys.D0;
 			}
-			else if (e.KeyCode >= Keys.NumPad0 && e.KeyCode <= Keys.NumPad9)
+			else if (e.KeyCode is >= Keys.NumPad0 and <= Keys.NumPad9)
 			{
 				if (curDigits >= maxDigits)
 				{
@@ -1322,7 +1316,7 @@ namespace BizHawk.Client.EmuHawk
 
 				_axisTypedValue += e.KeyCode - Keys.NumPad0;
 			}
-			else if (e.KeyCode == Keys.OemMinus || e.KeyCode == Keys.Subtract)
+			else if (e.KeyCode is Keys.OemMinus or Keys.Subtract)
 			{
 				_axisTypedValue = _axisTypedValue.StartsWith('-')
 					? _axisTypedValue[1..]
@@ -1336,7 +1330,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				_axisTypedValue = _axisTypedValue[..^1];
-				if (_axisTypedValue == "" || _axisTypedValue == "-")
+				if (_axisTypedValue is "" or "-")
 				{
 					value = 0f;
 				}

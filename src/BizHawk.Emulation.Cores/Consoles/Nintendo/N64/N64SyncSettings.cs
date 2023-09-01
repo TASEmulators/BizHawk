@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		// get mupenapi internal object
 		public VideoPluginSettings GetVPS(GameInfo game, int videoSizeX, int videoSizeY)
 		{
-			var ret = new VideoPluginSettings(VideoPlugin, videoSizeX, videoSizeY);
+			VideoPluginSettings ret = new VideoPluginSettings(VideoPlugin, videoSizeX, videoSizeY);
 			IPluginSettings ips = null;
 			switch (VideoPlugin)
 			{
@@ -136,13 +136,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public static Dictionary<string, object> GetPluginSettings(this IPluginSettings plugin)
 		{
 			// TODO: deal witn the game depedent settings
-			var dictionary = new Dictionary<string, object>();
+			Dictionary<string, object> dictionary = new Dictionary<string, object>();
 			var members = plugin.GetType().GetMembers();
 			foreach (var member in members)
 			{
 				if (member.MemberType == MemberTypes.Property)
 				{
-					var field = plugin.GetType().GetProperty(member.Name).GetValue(plugin, null);
+					object field = plugin.GetType().GetProperty(member.Name).GetValue(plugin, null);
 					dictionary.Add(member.Name, field);
 				}
 			}

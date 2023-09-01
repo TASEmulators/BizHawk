@@ -37,7 +37,7 @@ namespace BizHawk.Bizware.Input
 				{
 					// check if we can use XKb
 					int major = 1, minor = 0;
-					var supportsXkb = XkbQueryExtension(Display, out _, out _, out _, ref major, ref minor);
+					bool supportsXkb = XkbQueryExtension(Display, out _, out _, out _, ref major, ref minor);
 
 					if (supportsXkb)
 					{
@@ -66,7 +66,7 @@ namespace BizHawk.Bizware.Input
 		{
 			lock (_syncObject)
 			{
-				var keys = stackalloc byte[32];
+				byte* keys = stackalloc byte[32];
 
 				using (new XLock(Display))
 				{
@@ -74,10 +74,10 @@ namespace BizHawk.Bizware.Input
 					_ = XQueryKeymap(Display, keys);
 				}
 
-				var eventList = new List<KeyEvent>();
-				for (var keycode = 0; keycode < 256; keycode++)
+				List<KeyEvent> eventList = new List<KeyEvent>();
+				for (int keycode = 0; keycode < 256; keycode++)
 				{
-					var keystate = (keys[keycode >> 3] >> (keycode & 0x07) & 0x01) != 0;
+					bool keystate = (keys[keycode >> 3] >> (keycode & 0x07) & 0x01) != 0;
 
 					if (LastKeyState[keycode] != keystate)
 					{
@@ -92,7 +92,7 @@ namespace BizHawk.Bizware.Input
 
 		private static unsafe void CreateKeyMap(bool supportsXkb)
 		{
-			for (var i = 0; i < KeyEnumMap.Length; i++)
+			for (int i = 0; i < KeyEnumMap.Length; i++)
 			{
 				KeyEnumMap[i] = DistinctKey.Unknown;
 			}
@@ -106,7 +106,7 @@ namespace BizHawk.Bizware.Input
 
 					for (int i = keyboard->min_key_code; i <= keyboard->max_key_code; i++)
 					{
-						var name = new string(keyboard->names->keys[i].name, 0, 4);
+						string name = new string(keyboard->names->keys[i].name, 0, 4);
 						var key = name switch
 						{
 							"TLDE" => DistinctKey.OemTilde,
@@ -166,7 +166,7 @@ namespace BizHawk.Bizware.Input
 				}
 			}
 
-			for (var i = 0; i < KeyEnumMap.Length; i++)
+			for (int i = 0; i < KeyEnumMap.Length; i++)
 			{
 				if (KeyEnumMap[i] == DistinctKey.Unknown)
 				{
@@ -201,7 +201,7 @@ namespace BizHawk.Bizware.Input
 					}
 					else
 					{
-						var e = new XKeyEvent
+						XKeyEvent e = new XKeyEvent
 						{
 							display = Display,
 							keycode = i,

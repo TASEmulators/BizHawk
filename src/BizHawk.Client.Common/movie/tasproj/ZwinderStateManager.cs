@@ -75,7 +75,7 @@ namespace BizHawk.Client.Common
 					return NonState;
 				}
 
-				var data = dataStream.ReadAllBytes();
+				byte[] data = dataStream.ReadAllBytes();
 				dataStream.Dispose();
 				return data;
 			}
@@ -160,11 +160,11 @@ namespace BizHawk.Client.Common
 				if (keepOldStates)
 				{
 					// force capture all the old states, let the buffer handle decay if they don't all fit
-					ZwinderBuffer old = buffer;
+					var old = buffer;
 					buffer = new ZwinderBuffer(newConfig);
 					for (int i = 0; i < old.Count; i++)
 					{
-						ZwinderBuffer.StateInformation si = old.GetState(i);
+						var si = old.GetState(i);
 						// don't allow states that should be reserved to decay here, where we don't attempt re-capture
 						if (_reserveCallback(si.Frame))
 							AddToReserved(si);
@@ -189,7 +189,7 @@ namespace BizHawk.Client.Common
 		private void RebuildStateCache()
 		{
 			StateCache.Clear();
-			foreach (StateInfo state in AllStates())
+			foreach (var state in AllStates())
 			{
 				AddStateCache(state.Frame);
 			}
@@ -217,11 +217,11 @@ namespace BizHawk.Client.Common
 		// Enumerate all current and recent states in reverse order
 		private IEnumerable<StateInfo> CurrentAndRecentStates()
 		{
-			for (var i = _current.Count - 1; i >= 0; i--)
+			for (int i = _current.Count - 1; i >= 0; i--)
 			{
 				yield return new StateInfo(_current.GetState(i));
 			}
-			for (var i = _recent.Count - 1; i >= 0; i--)
+			for (int i = _recent.Count - 1; i >= 0; i--)
 			{
 				yield return new StateInfo(_recent.GetState(i));
 			}
@@ -230,7 +230,7 @@ namespace BizHawk.Client.Common
 		// Enumerate all gap states in reverse order
 		private IEnumerable<StateInfo> GapStates()
 		{
-			for (var i = _gapFiller.Count - 1; i >= 0; i--)
+			for (int i = _gapFiller.Count - 1; i >= 0; i--)
 			{
 				yield return new StateInfo(_gapFiller.GetState(i));
 			}
@@ -239,7 +239,7 @@ namespace BizHawk.Client.Common
 		// Enumerate all reserved states in reverse order
 		private IEnumerable<StateInfo> ReservedStates()
 		{
-			foreach (var key in _reserved.Keys.OrderDescending())
+			foreach (int key in _reserved.Keys.OrderDescending())
 			{
 				yield return new StateInfo(key, _reserved[key]);
 			}
@@ -267,7 +267,7 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			var ms = new MemoryStream();
+			MemoryStream ms = new MemoryStream();
 			source.SaveStateBinary(new BinaryWriter(ms));
 			_reserved.Add(frame, ms.ToArray());
 			AddStateCache(frame);
@@ -364,7 +364,7 @@ namespace BizHawk.Client.Common
 							var state2 = _recent.GetState(index2);
 							StateCache.Remove(state2.Frame);
 
-							var isReserved = _reserveCallback(state2.Frame);
+							bool isReserved = _reserveCallback(state2.Frame);
 
 							// Add to reserved if reserved, or if it matches an "ancient" state consideration
 							if (isReserved || !HasNearByReserved(state2.Frame))
@@ -409,7 +409,7 @@ namespace BizHawk.Client.Common
 
 			// When starting to fill gaps we won't actually know the true frequency, so fall back to current
 			// Current may very well not be the same as gap, but it's a reasonable behavior to have a current sized gap before seeing filler sized gaps
-			var frequency = _gapFiller.Count == 0 ? _current.RewindFrequency : _gapFiller.RewindFrequency;
+			int frequency = _gapFiller.Count == 0 ? _current.RewindFrequency : _gapFiller.RewindFrequency;
 			return !StateCache.Any(sc => sc < frame && sc > frame - frequency);
 		}
 
@@ -475,14 +475,11 @@ namespace BizHawk.Client.Common
 			return new KeyValuePair<int, Stream>(si.Frame, si.Read());
 		}
 
-		public bool HasState(int frame)
-		{
-			return StateCache.Contains(frame);
-		}
+		public bool HasState(int frame) => StateCache.Contains(frame);
 
 		private bool InvalidateGaps(int frame)
 		{
-			for (var i = 0; i < _gapFiller.Count; i++)
+			for (int i = 0; i < _gapFiller.Count; i++)
 			{
 				var state = _gapFiller.GetState(i);
 				if (state.Frame > frame)
@@ -496,7 +493,7 @@ namespace BizHawk.Client.Common
 
 		private bool InvalidateNormal(int frame)
 		{
-			for (var i = 0; i < _recent.Count; i++)
+			for (int i = 0; i < _recent.Count; i++)
 			{
 				if (_recent.GetState(i).Frame > frame)
 				{
@@ -506,7 +503,7 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			for (var i = 0; i < _current.Count; i++)
+			for (int i = 0; i < _current.Count; i++)
 			{
 				if (_current.GetState(i).Frame > frame)
 				{
@@ -519,7 +516,7 @@ namespace BizHawk.Client.Common
 
 		private bool InvalidateReserved(int frame)
 		{
-			var origCount = _reserved.Count;
+			int origCount = _reserved.Count;
 			_reserved = _reserved
 				.Where(kvp => kvp.Key <= frame)
 				.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
@@ -531,9 +528,9 @@ namespace BizHawk.Client.Common
 		{
 			if (frame < 0)
 				throw new ArgumentOutOfRangeException(nameof(frame));
-			var b1 = InvalidateNormal(frame);
-			var b2 = InvalidateGaps(frame);
-			var b3 = InvalidateReserved(frame);
+			bool b1 = InvalidateNormal(frame);
+			bool b2 = InvalidateGaps(frame);
+			bool b3 = InvalidateReserved(frame);
 			StateCache.RemoveAfter(frame);
 			return b1 || b2 || b3;
 		}
@@ -543,21 +540,21 @@ namespace BizHawk.Client.Common
 			// Initial format had no version number, but I think it's a safe bet no valid file has buffer size 2^56 or more so this should work.
 			int version = br.ReadByte();
 
-			var current = ZwinderBuffer.Create(br, settings.Current(), version == 0);
-			var recent = ZwinderBuffer.Create(br, settings.Recent());
-			var gaps = ZwinderBuffer.Create(br, settings.GapFiller());
+			ZwinderBuffer current = ZwinderBuffer.Create(br, settings.Current(), version == 0);
+			ZwinderBuffer recent = ZwinderBuffer.Create(br, settings.Recent());
+			ZwinderBuffer gaps = ZwinderBuffer.Create(br, settings.GapFiller());
 
 			if (version == 0)
 				settings.AncientStateInterval = br.ReadInt32();
 
-			var ret = new ZwinderStateManager(current, recent, gaps, reserveCallback, settings);
+			ZwinderStateManager ret = new ZwinderStateManager(current, recent, gaps, reserveCallback, settings);
 
-			var ancientCount = br.ReadInt32();
-			for (var i = 0; i < ancientCount; i++)
+			int ancientCount = br.ReadInt32();
+			for (int i = 0; i < ancientCount; i++)
 			{
-				var key = br.ReadInt32();
-				var length = br.ReadInt32();
-				var data = br.ReadBytes(length);
+				int key = br.ReadInt32();
+				int length = br.ReadInt32();
+				byte[] data = br.ReadBytes(length);
 				ret._reserved.Add(key, data);
 			}
 

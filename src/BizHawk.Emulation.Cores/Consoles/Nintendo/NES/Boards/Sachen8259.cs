@@ -60,14 +60,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void WriteExp(int addr, byte value)
-		{
-			Write(addr, value);
-		}
-		public override void WriteWram(int addr, byte value)
-		{
-			Write(addr, value);
-		}
+		public override void WriteExp(int addr, byte value) => Write(addr, value);
+		public override void WriteWram(int addr, byte value) => Write(addr, value);
 
 		private void Write(int addr, byte value)
 		{
@@ -212,14 +206,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void WriteExp(int addr, byte value)
-		{
-			Write(addr, value);
-		}
-		public override void WriteWram(int addr, byte value)
-		{
-			Write(addr, value);
-		}
+		public override void WriteExp(int addr, byte value) => Write(addr, value);
+		public override void WriteWram(int addr, byte value) => Write(addr, value);
 
 		private void Write(int addr, byte value)
 		{

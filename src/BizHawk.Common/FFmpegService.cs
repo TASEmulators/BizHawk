@@ -28,17 +28,14 @@ namespace BizHawk.Common
 			public bool IsAudio;
 		}
 
-		private static string[] Escape(IEnumerable<string> args)
-		{
-			return args.Select(s => s.Contains(" ") ? $"\"{s}\"" : s).ToArray();
-		}
+		private static string[] Escape(IEnumerable<string> args) => args.Select(s => s.Contains(" ") ? $"\"{s}\"" : s).ToArray();
 
 		//note: accepts . or : in the stream stream/substream separator in the stream ID format, since that changed at some point in FFMPEG history
 		//if someone has a better idea how to make the determination of whether an audio stream is available, I'm all ears
 		private static readonly Regex rxHasAudio = new(@"Stream \#(\d*(\.|\:)\d*)\: Audio", RegexOptions.Compiled);
 		public static AudioQueryResult QueryAudio(string path)
 		{
-			var ret = new AudioQueryResult();
+			AudioQueryResult ret = new AudioQueryResult();
 			string stdout = Run("-i", path).Text;
 			ret.IsAudio = rxHasAudio.Matches(stdout).Count > 0;
 			return ret;
@@ -89,9 +86,9 @@ namespace BizHawk.Common
 			};
 			Mutex m = new();
 
-			var outputBuilder = new StringBuilder();
-			var outputCloseEvent = new TaskCompletionSource<bool>();
-			var errorCloseEvent = new TaskCompletionSource<bool>();
+			StringBuilder outputBuilder = new StringBuilder();
+			TaskCompletionSource<bool> outputCloseEvent = new TaskCompletionSource<bool>();
+			TaskCompletionSource<bool> errorCloseEvent = new TaskCompletionSource<bool>();
 
 			proc.OutputDataReceived += (s, e) =>
 			{

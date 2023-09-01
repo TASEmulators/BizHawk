@@ -24,9 +24,9 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 		// most of this is taken from virtualjaguar's dasmjag function
 		public string DisassembleRISC(bool gpu, MemoryDomain m, uint addr, out int length)
 		{
-			var opcode = m.PeekUshort(addr & 0xFFFFFF, true);
-			var arg1 = (opcode >> 5) & 0x1F;
-			var arg2 = opcode & 0x1F;
+			ushort opcode = m.PeekUshort(addr & 0xFFFFFF, true);
+			int arg1 = (opcode >> 5) & 0x1F;
+			int arg2 = opcode & 0x1F;
 			length = (opcode >> 10) == 0x26 ? 6 : 2;
 
 			string argRR() => $"r{arg1}, r{arg2}";
@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 			string argR2() => $"r{arg2}";
 			string argSR()
 			{
-				var s1 = (short)(arg1 << 11) >> 11;
+				int s1 = (short)(arg1 << 11) >> 11;
 				if (s1 < 0)
 				{
 					return $"-${-s1:X02}, r{arg2}";
@@ -75,7 +75,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 				};
 			}
 
-			var disasm = (opcode >> 10) switch
+			string disasm = (opcode >> 10) switch
 			{
 				0x00 => $"add {argRR()}",
 				0x01 => $"addc {argRR()}",

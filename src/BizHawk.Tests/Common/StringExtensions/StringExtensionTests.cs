@@ -13,12 +13,12 @@ namespace BizHawk.Tests.Common.StringExtensions
 		[TestMethod]
 		public void In_CaseInsensitive()
 		{
-			var strArray = new[]
+			string[] strArray = new[]
 			{
 				"Hello World"
 			};
 
-			var actual = "hello world".In(strArray);
+			bool actual = "hello world".In(strArray);
 			Assert.IsTrue(actual);
 		}
 

@@ -79,10 +79,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SyncIRQ();
 		}
 
-		private void SyncIRQ()
-		{
-			IrqSignal = irq_asserted;
-		}
+		private void SyncIRQ() => IrqSignal = irq_asserted;
 
 		public override byte ReadPrg(int addr)
 		{

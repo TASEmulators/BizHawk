@@ -94,7 +94,7 @@ namespace BizHawk.Emulation.DiscSystem
 		private static void CheckLibrary()
 		{
 			var lib = OSTailoredCode.LinkedLibManager.LoadOrZero("mednadisc.dll");
-			_IsLibraryAvailable = lib != IntPtr.Zero
+			IsLibraryAvailable = lib != IntPtr.Zero
 				&& OSTailoredCode.LinkedLibManager.GetProcAddrOrZero(lib, "mednadisc_LoadCD") != IntPtr.Zero;
 			if (lib != IntPtr.Zero) OSTailoredCode.LinkedLibManager.FreeByPtr(lib);
 		}
@@ -104,8 +104,7 @@ namespace BizHawk.Emulation.DiscSystem
 			CheckLibrary();
 		}
 
-		private static bool _IsLibraryAvailable;
-		public static bool IsLibraryAvailable => _IsLibraryAvailable;
+		public static bool IsLibraryAvailable { get; private set; }
 
 		public void Dispose()
 		{

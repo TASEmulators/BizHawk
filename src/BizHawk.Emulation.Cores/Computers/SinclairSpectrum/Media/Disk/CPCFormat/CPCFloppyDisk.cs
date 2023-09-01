@@ -189,20 +189,20 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			S0[0x31] = 1;
 			S1[0x31] = 1;
 
-			var trkSize = MediaConverter.GetWordValue(data, 0x32);
+			ushort trkSize = MediaConverter.GetWordValue(data, 0x32);
 
 			// start at track info blocks
 			int mPos = 0x100;
 			int s0Pos = 0x100;
 			int s1Pos = 0x100;
 
-			var numTrks = data[0x30];
-			var numSides = data[0x31];
+			byte numTrks = data[0x30];
+			byte numSides = data[0x31];
 
 			while (mPos < trkSize * data[0x30] * data[0x31])
 			{
 				// which side is this?
-				var side = data[mPos + 0x11];
+				byte side = data[mPos + 0x11];
 				if (side == 0)
 				{
 					// side 1

@@ -21,9 +21,9 @@ namespace BizHawk.Emulation.Common
 				throw new InvalidOperationException("Memory callbacks are required");
 			}
 
-			foreach (var address in addresses)
+			foreach (uint address in addresses)
 			{
-				var callback = new MemoryCallback(
+				MemoryCallback callback = new MemoryCallback(
 					scope,
 					MemoryCallbackType.Read,
 					"InputCallback" + address,
@@ -49,10 +49,7 @@ namespace BizHawk.Emulation.Common
 
 		public void Add(Action item) => _inputCallbacks.Add(item);
 
-		public void Clear()
-		{
-			_inputCallbacks.Clear();
-		}
+		public void Clear() => _inputCallbacks.Clear();
 
 		public bool Contains(Action item) => _inputCallbacks.Contains(item);
 
@@ -63,10 +60,7 @@ namespace BizHawk.Emulation.Common
 		public int Count => _inputCallbacks.Count;
 		public bool IsReadOnly => false;
 
-		public void Call()
-		{
-			throw new InvalidOperationException("This implementation does not require being called directly");
-		}
+		public void Call() => throw new InvalidOperationException("This implementation does not require being called directly");
 
 		public void RemoveAll(IEnumerable<Action> actions)
 		{

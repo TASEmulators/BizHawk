@@ -39,22 +39,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		protected override int Get_PRGBank_8K(int addr)
-		{
+		protected override int Get_PRGBank_8K(int addr) =>
 			//base logic will return the mmc reg, which needs to be masked without awareness of the extra block
-			return (base.Get_PRGBank_8K(addr) & 0xF) + block * 16;
-		}
+			(base.Get_PRGBank_8K(addr) & 0xF) + block * 16;
 
-		protected override int Get_CHRBank_1K(int addr)
-		{
+		protected override int Get_CHRBank_1K(int addr) =>
 			//base logic will return the mmc reg, which needs to be masked without awareness of the extra block
-			return (base.Get_CHRBank_1K(addr) & 0x7F) + block * 128;
-		}
+			(base.Get_CHRBank_1K(addr) & 0x7F) + block * 128;
 
-		public override byte ReadWram(int addr)
-		{
-			return (byte)block;
-		}
+		public override byte ReadWram(int addr) => (byte)block;
 		public override void WriteWram(int addr, byte value)
 		{
 			if (mmc3.wram_enable && !mmc3.wram_write_protect)

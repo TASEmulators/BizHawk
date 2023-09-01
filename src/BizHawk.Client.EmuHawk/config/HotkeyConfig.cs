@@ -36,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HotkeyConfig_Load(object sender, EventArgs e)
 		{
-			var source = new AutoCompleteStringCollection();
+			AutoCompleteStringCollection source = new AutoCompleteStringCollection();
 			source.AddRange(HotkeyInfo.AllHotkeys.Keys.ToArray());
 
 			SearchBox.AutoCompleteCustomSource = source;
@@ -47,15 +47,9 @@ namespace BizHawk.Client.EmuHawk
 			DoFocus();
 		}
 
-		private void HotkeyConfig_FormClosed(object sender, FormClosedEventArgs e)
-		{
-			Input.Instance.ClearEvents();
-		}
+		private void HotkeyConfig_FormClosed(object sender, FormClosedEventArgs e) => Input.Instance.ClearEvents();
 
-		private void IDB_CANCEL_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
+		private void IDB_CANCEL_Click(object sender, EventArgs e) => Close();
 
 		private void IDB_SAVE_Click(object sender, EventArgs e)
 		{
@@ -64,10 +58,7 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-		private void AutoTabCheckBox_CheckedChanged(object sender, EventArgs e)
-		{
-			SetAutoTab();
-		}
+		private void AutoTabCheckBox_CheckedChanged(object sender, EventArgs e) => SetAutoTab();
 
 		private void Save()
 		{
@@ -83,14 +74,14 @@ namespace BizHawk.Client.EmuHawk
 			HotkeyTabControl.SuspendLayout();
 			HotkeyTabControl.TabPages.Clear();
 
-			foreach (var tab in HotkeyInfo.Groupings)
+			foreach (string tab in HotkeyInfo.Groupings)
 			{
 				if (tab == "RAIntegration" && !RAIntegration.IsAvailable)
 				{
 					continue; // skip RA hotkeys if it can't be used
 				}
 
-				var tb = new TabPage { Name = tab, Text = tab };
+				TabPage tb = new TabPage { Name = tab, Text = tab };
 				var bindings = HotkeyInfo.AllHotkeys.Where(kvp => kvp.Value.TabGroup == tab)
 					.OrderBy(static kvp => kvp.Value.Ordinal).ThenBy(static kvp => kvp.Value.DisplayName);
 				int x = UIHelper.ScaleX(6);
@@ -103,14 +94,14 @@ namespace BizHawk.Client.EmuHawk
 
 				foreach (var (k, b) in bindings)
 				{
-					var l = new Label
+					Label l = new Label
 					{
 						Text = b.DisplayName,
 						Location = new Point(x, y),
 						Size = new Size(iwOffsetX - UIHelper.ScaleX(2), UIHelper.ScaleY(15))
 					};
 
-					var w = new InputCompositeWidget(_config.ModifierKeysEffective)
+					InputCompositeWidget w = new InputCompositeWidget(_config.ModifierKeysEffective)
 					{
 						Location = new Point(x + iwOffsetX, y + iwOffsetY),
 						AutoTab = AutoTabCheckBox.Checked,
@@ -182,10 +173,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void HotkeyTabControl_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			DoFocus();
-		}
+		private void HotkeyTabControl_SelectedIndexChanged(object sender, EventArgs e) => DoFocus();
 
 		private void DoFocus()
 		{
@@ -203,7 +191,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.IsPressed(Keys.Enter) || e.IsPressed(Keys.Tab))
 			{
-				var k = HotkeyInfo.AllHotkeys.FirstOrNull(kvp => string.Compare(kvp.Value.DisplayName, SearchBox.Text, StringComparison.OrdinalIgnoreCase) is 0)?.Key;
+				string k = HotkeyInfo.AllHotkeys.FirstOrNull(kvp => string.Compare(kvp.Value.DisplayName, SearchBox.Text, StringComparison.OrdinalIgnoreCase) is 0)?.Key;
 
 				// Found
 				if (k is not null)
@@ -220,19 +208,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void ClearAllToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			ClearAll(true);
-		}
+		private void ClearAllToolStripMenuItem_Click(object sender, EventArgs e) => ClearAll(true);
 
-		private void ClearCurrentTabToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			ClearAll(false);
-		}
+		private void ClearCurrentTabToolStripMenuItem_Click(object sender, EventArgs e) => ClearAll(false);
 
-		private void RestoreDefaultsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Defaults();
-		}
+		private void RestoreDefaultsToolStripMenuItem_Click(object sender, EventArgs e) => Defaults();
 	}
 }

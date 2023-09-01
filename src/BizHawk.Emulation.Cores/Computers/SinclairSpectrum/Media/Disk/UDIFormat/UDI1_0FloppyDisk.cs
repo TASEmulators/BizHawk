@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			int fileSize = MediaConverter.GetInt32(data, 4); // not including the final 4-byte checksum
 
 			// ignore extended header
-			var extHdrSize = MediaConverter.GetInt32(data, 0x0C);
+			int extHdrSize = MediaConverter.GetInt32(data, 0x0C);
 			int pos = 0x10 + extHdrSize;
 
 			// process track information
@@ -106,7 +106,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			byte[] S1 = new byte[data.Length];
 
 			// header
-			var extHdr = MediaConverter.GetInt32(data, 0x0C);
+			int extHdr = MediaConverter.GetInt32(data, 0x0C);
 			Array.Copy(data, 0, S0, 0, 0x10 + extHdr);
 			Array.Copy(data, 0, S1, 0, 0x10 + extHdr);
 			// change side number
@@ -122,9 +122,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// process track information
 			for (int t = 0; t < (data[0x09] + 1) * 2; t++)
 			{
-				var TLEN = MediaConverter.GetWordValue(data, pos + 1);
-				var CLEN = TLEN / 8 + (TLEN % 8 / 7) / 8;
-				var blockSize = TLEN + CLEN + 3;
+				ushort TLEN = MediaConverter.GetWordValue(data, pos + 1);
+				int CLEN = TLEN / 8 + (TLEN % 8 / 7) / 8;
+				int blockSize = TLEN + CLEN + 3;
 
 				// 2 sided image: side 0 tracks will all have t as an even number
 				try
@@ -172,8 +172,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				get
 				{
 					List<Sector> secs = new();
-					var datas = TrackData.Skip(3).Take(TLEN).ToArray();
-					var clocks = new BitArray(TrackData.Skip(3 + TLEN).Take(CLEN).ToArray());
+					byte[] datas = TrackData.Skip(3).Take(TLEN).ToArray();
+					BitArray clocks = new BitArray(TrackData.Skip(3 + TLEN).Take(CLEN).ToArray());
 
 					return secs.ToArray();
 				}

@@ -47,15 +47,15 @@ namespace BizHawk.Client.Common
 			{
 				double numSeconds;
 
-				if (Header.TryGetValue(HeaderKeys.CycleCount, out var numCyclesStr) && Header.TryGetValue(HeaderKeys.ClockRate, out var clockRateStr))
+				if (Header.TryGetValue(HeaderKeys.CycleCount, out string numCyclesStr) && Header.TryGetValue(HeaderKeys.ClockRate, out string clockRateStr))
 				{
-					var numCycles = Convert.ToUInt64(numCyclesStr);
-					var clockRate = Convert.ToDouble(clockRateStr, CultureInfo.InvariantCulture);
+					ulong numCycles = Convert.ToUInt64(numCyclesStr);
+					double clockRate = Convert.ToDouble(clockRateStr, CultureInfo.InvariantCulture);
 					numSeconds = numCycles / clockRate;
 				}
 				else
 				{
-					var numFrames = (ulong)FrameCount;
+					ulong numFrames = (ulong)FrameCount;
 					numSeconds = numFrames / FrameRate;
 				}
 
@@ -67,7 +67,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				if (SystemID == VSystemID.Raw.Arcade && Header.TryGetValue(HeaderKeys.VsyncAttoseconds, out var vsyncAttoStr))
+				if (SystemID == VSystemID.Raw.Arcade && Header.TryGetValue(HeaderKeys.VsyncAttoseconds, out string vsyncAttoStr))
 				{
 					const decimal attosInSec = 1000000000000000000;
 					return (double)(attosInSec / Convert.ToUInt64(vsyncAttoStr));
@@ -96,7 +96,7 @@ namespace BizHawk.Client.Common
 
 		public virtual ulong Rerecords
 		{
-			get => Header.TryGetValue(HeaderKeys.Rerecords, out var rerecords) ? ulong.Parse(rerecords) : 0;
+			get => Header.TryGetValue(HeaderKeys.Rerecords, out string rerecords) ? ulong.Parse(rerecords) : 0;
 			set => Header[HeaderKeys.Rerecords] = value.ToString();
 		}
 
@@ -146,7 +146,7 @@ namespace BizHawk.Client.Common
 
 		public bool Load()
 		{
-			var file = new FileInfo(Filename);
+			FileInfo file = new FileInfo(Filename);
 			if (!file.Exists)
 			{
 				return false;
@@ -154,7 +154,7 @@ namespace BizHawk.Client.Common
 
 			try
 			{
-				using var bl = ZipStateLoader.LoadAndDetect(Filename, true);
+				using ZipStateLoader bl = ZipStateLoader.LoadAndDetect(Filename, true);
 				if (bl is null) return false;
 				ClearBeforeLoad();
 				LoadFields(bl);
@@ -187,7 +187,7 @@ namespace BizHawk.Client.Common
 				{
 					if (!string.IsNullOrWhiteSpace(line))
 					{
-						var pair = line.Split(new[] { ' ' }, 2, StringSplitOptions.RemoveEmptyEntries);
+						string[] pair = line.Split(new[] { ' ' }, 2, StringSplitOptions.RemoveEmptyEntries);
 
 						if (pair.Length > 1)
 						{

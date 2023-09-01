@@ -189,8 +189,8 @@ namespace BizHawk.Emulation.DiscSystem
 			if (_disc.TOC.SessionFormat == SessionFormat.Type20_CDXA)
 				discView = EDiscStreamView.DiscStreamView_Mode2_Form1_2048;
 
-			var iso = new ISOFile();
-			var isIso = iso.Parse(new DiscStream(_disc, discView, 0));
+			ISOFile iso = new ISOFile();
+			bool isIso = iso.Parse(new DiscStream(_disc, discView, 0));
 
 			if (!isIso)
 			{
@@ -211,8 +211,8 @@ namespace BizHawk.Emulation.DiscSystem
 						return DiscType.SonyPSX;
 				}
 
-				var appId = Encoding.ASCII.GetString(iso.VolumeDescriptors[0].ApplicationIdentifier).TrimEnd('\0', ' ');
-				var sysId = Encoding.ASCII.GetString(iso.VolumeDescriptors[0].SystemIdentifier).TrimEnd('\0', ' ');
+				string appId = Encoding.ASCII.GetString(iso.VolumeDescriptors[0].ApplicationIdentifier).TrimEnd('\0', ' ');
+				string sysId = Encoding.ASCII.GetString(iso.VolumeDescriptors[0].SystemIdentifier).TrimEnd('\0', ' ');
 
 				//for example: PSX magical drop F (JP SLPS_02337) doesn't have the correct iso PVD fields
 				//but, some PSX games (junky rips) don't have the 'licensed by string' so we'll hope they get caught here
@@ -256,18 +256,12 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// This is reasonable approach to ID saturn.
 		/// </summary>
-		private bool DetectSegaSaturn()
-		{
-			return StringAt("SEGA SEGASATURN", 0);
-		}
+		private bool DetectSegaSaturn() => StringAt("SEGA SEGASATURN", 0);
 
 		/// <summary>
 		/// probably wrong
 		/// </summary>
-		private bool DetectMegaCD()
-		{
-			return StringAt("SEGADISCSYSTEM", 0) || StringAt("SEGADISCSYSTEM", 16);
-		}
+		private bool DetectMegaCD() => StringAt("SEGADISCSYSTEM", 0) || StringAt("SEGADISCSYSTEM", 16);
 
 		private bool DetectPSX()
 		{
@@ -282,7 +276,7 @@ namespace BizHawk.Emulation.DiscSystem
 		private bool DetectPCFX()
 		{
 			var toc = _disc.TOC;
-			for (var t = toc.FirstRecordedTrackNumber;
+			for (int t = toc.FirstRecordedTrackNumber;
 				t <= toc.LastRecordedTrackNumber;
 				t++)
 			{
@@ -311,8 +305,8 @@ namespace BizHawk.Emulation.DiscSystem
 			if (!StringAt("CD001", 0x1, 0x10))
 				return false;
 
-			var sector20 = ReadDataSectorCached(20);
-			var zecrc = CRC32.Calculate(sector20);
+			byte[] sector20 = ReadDataSectorCached(20);
+			uint zecrc = CRC32.Calculate(sector20);
 
 			//known_crcs
 			return zecrc is 0xd7b47c06 // AV Tanjou
@@ -327,7 +321,7 @@ namespace BizHawk.Emulation.DiscSystem
 		private bool DetectTurboCD()
 		{
 			var toc = _disc.TOC;
-			for (var t = toc.FirstRecordedTrackNumber;
+			for (int t = toc.FirstRecordedTrackNumber;
 				t <= toc.LastRecordedTrackNumber;
 				t++)
 			{
@@ -342,7 +336,7 @@ namespace BizHawk.Emulation.DiscSystem
 		private bool Detect3DO()
 		{
 			var toc = _disc.TOC;
-			for (var t = toc.FirstRecordedTrackNumber;
+			for (int t = toc.FirstRecordedTrackNumber;
 				t <= toc.LastRecordedTrackNumber;
 				t++)
 			{
@@ -356,7 +350,7 @@ namespace BizHawk.Emulation.DiscSystem
 		//asni - slightly longer running than the others due to its brute-force nature. Should run later in the method
 		private bool DetectDreamcast()
 		{
-			for (var i = 0; i < 1000; i++)
+			for (int i = 0; i < 1000; i++)
 			{
 				if (SectorContains("segakatana", i))
 					return true;
@@ -365,18 +359,15 @@ namespace BizHawk.Emulation.DiscSystem
 			return false;
 		}
 
-		private bool DetectCDi()
-		{
-			return StringAt("CD-RTOS", 8, 16);
-		}
+		private bool DetectCDi() => StringAt("CD-RTOS", 8, 16);
 
 		private bool DetectGameCube()
 		{
-			var data = ReadDataSectorCached(0);
+			byte[] data = ReadDataSectorCached(0);
 			if (data == null) return false;
-			var magic = data.Skip(28).Take(4).ToArray();
-			var hexString = "";
-			foreach (var b in magic)
+			byte[] magic = data.Skip(28).Take(4).ToArray();
+			string hexString = "";
+			foreach (byte b in magic)
 				hexString += b.ToString("X2");
 
 			return hexString == "C2339F3D";
@@ -384,11 +375,11 @@ namespace BizHawk.Emulation.DiscSystem
 
 		private bool DetectWii()
 		{
-			var data = ReadDataSectorCached(0);
+			byte[] data = ReadDataSectorCached(0);
 			if (data == null) return false;
-			var magic = data.Skip(24).Take(4).ToArray();
-			var hexString = "";
-			foreach (var b in magic)
+			byte[] magic = data.Skip(24).Take(4).ToArray();
+			string hexString = "";
+			foreach (byte b in magic)
 				hexString += b.ToString("X2");
 
 			return hexString == "5D1C9EA3";
@@ -402,11 +393,11 @@ namespace BizHawk.Emulation.DiscSystem
 			// The core will fixup byteswapped dumps internally
 			if (_disc.Sessions.Count > 2 && !_disc.Sessions[2].TOC.TOCItems[_disc.Sessions[2].TOC.FirstRecordedTrackNumber].IsData)
 			{
-				var data = new byte[2352];
-				for (var i = 0; i < 2; i++)
+				byte[] data = new byte[2352];
+				for (int i = 0; i < 2; i++)
 				{
 					_dsr.ReadLBA_2352(_disc.Sessions[2].Tracks[1].LBA + i, data, 0);
-					var s = Encoding.ASCII.GetString(data);
+					string s = Encoding.ASCII.GetString(data);
 					if (s.Contains("ATARI APPROVED DATA HEADER ATRI") || s.Contains("TARA IPARPVODED TA AEHDAREA RT"))
 					{
 						return true;
@@ -415,7 +406,7 @@ namespace BizHawk.Emulation.DiscSystem
 				
 				// special case, Caves of Fear has the header 27 sectors in
 				_dsr.ReadLBA_2352(_disc.Sessions[2].Tracks[1].LBA + 27, data, 0);
-				var ss = Encoding.ASCII.GetString(data);
+				string ss = Encoding.ASCII.GetString(data);
 				if (ss.Contains("ATARI APPROVED DATA HEADER ATRI") || ss.Contains("TARA IPARPVODED TA AEHDAREA RT"))
 				{
 					return true;
@@ -430,10 +421,10 @@ namespace BizHawk.Emulation.DiscSystem
 			//read it if we don't have it cached
 			//we wont be caching very much here, it's no big deal
 			//identification is not something we want to take a long time
-			if (!_sectorCache.TryGetValue(lba, out var data))
+			if (!_sectorCache.TryGetValue(lba, out byte[] data))
 			{
 				data = new byte[2048];
-				var read = _dsr.ReadLBA_2048(lba, data, 0);
+				int read = _dsr.ReadLBA_2048(lba, data, 0);
 				if (read != 2048)
 					return null;
 				_sectorCache[lba] = data;
@@ -443,17 +434,17 @@ namespace BizHawk.Emulation.DiscSystem
 
 		private bool StringAt(string s, int offset, int lba = 0)
 		{
-			var data = ReadDataSectorCached(lba);
+			byte[] data = ReadDataSectorCached(lba);
 			if (data == null) return false;
-			var cmp = Encoding.ASCII.GetBytes(s);
-			var cmp2 = new byte[cmp.Length];
+			byte[] cmp = Encoding.ASCII.GetBytes(s);
+			byte[] cmp2 = new byte[cmp.Length];
 			Buffer.BlockCopy(data, offset, cmp2, 0, cmp.Length);
 			return cmp.SequenceEqual(cmp2);
 		}
 
 		private bool SectorContains(string s, int lba = 0)
 		{
-			var data = ReadDataSectorCached(lba);
+			byte[] data = ReadDataSectorCached(lba);
 			return data != null && Encoding.ASCII.GetString(data).Contains(s, StringComparison.OrdinalIgnoreCase);
 		}
 	}

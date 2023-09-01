@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			if (addr < 0x4000)
 			{
 				// header is scrambled
-				if ((addr >= 0x100) && (addr < 0x200))
+				if (addr is >= 0x100 and < 0x200)
 				{
 					int temp0 = (addr & 1);
 					int temp1 = (addr & 2);
@@ -69,17 +69,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
-		public override byte ReadMemoryHigh(ushort addr)
-		{
-			return 0xFF;
-		}
+		public override byte ReadMemoryHigh(ushort addr) => 0xFF;
 
 		public override void MapCDL(ushort addr, LR35902.eCDLogMemFlags flags)
 		{
 			if (addr < 0x4000)
 			{
 				// header is scrambled
-				if ((addr >= 0x100) && (addr < 0x200))
+				if (addr is >= 0x100 and < 0x200)
 				{
 					int temp0 = (addr & 1);
 					int temp1 = (addr & 2);
@@ -112,10 +109,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
-		public override byte PeekMemoryLow(ushort addr)
-		{
-			return ReadMemoryLow(addr);
-		}
+		public override byte PeekMemoryLow(ushort addr) => ReadMemoryLow(addr);
 
 		public override void WriteMemory(ushort addr, byte value)
 		{
@@ -148,10 +142,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
-		public override void PokeMemory(ushort addr, byte value)
-		{
-			WriteMemory(addr, value);
-		}
+		public override void PokeMemory(ushort addr, byte value) => WriteMemory(addr, value);
 
 		public override void Mapper_Tick()
 		{

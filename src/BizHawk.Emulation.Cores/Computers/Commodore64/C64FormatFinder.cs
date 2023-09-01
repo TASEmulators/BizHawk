@@ -13,8 +13,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				return C64Format.Unknown;
 			}
 
-			using var reader = new BinaryReader(new MemoryStream(data));
-			var header = Encoding.GetEncoding(437).GetString(reader.ReadBytes(0x10));
+			using BinaryReader reader = new BinaryReader(new MemoryStream(data));
+			string header = Encoding.GetEncoding(437).GetString(reader.ReadBytes(0x10));
 
 			if (header.StartsWithOrdinal("C64 CARTRIDGE   "))
 			{
@@ -51,12 +51,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				return C64Format.X64;
 			}
 
-			if (data.Length == 174848 || data.Length == 175531 || data.Length == 196608 || data.Length == 197376)
+			if (data.Length is 174848 or 175531 or 196608 or 197376)
 			{
 				return C64Format.D64;
 			}
 
-			if (data.Length == 349696 || data.Length == 351062)
+			if (data.Length is 349696 or 351062)
 			{
 				return C64Format.D71;
 			}
@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				return C64Format.D80;
 			}
 
-			if (data.Length == 819200 || data.Length == 822400)
+			if (data.Length is 819200 or 822400)
 			{
 				return C64Format.D81;
 			}

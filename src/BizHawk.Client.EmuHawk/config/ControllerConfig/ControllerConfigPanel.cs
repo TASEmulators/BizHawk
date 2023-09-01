@@ -41,10 +41,7 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		private void ClearAll()
-		{
-			_inputs.ForEach(x => x.Clear());
-		}
+		private void ClearAll() => _inputs.ForEach(x => x.Clear());
 
 		/// <summary>
 		/// save to config
@@ -55,7 +52,7 @@ namespace BizHawk.Client.EmuHawk
 			var saveTo = saveConfigObject ?? _realConfigObject;
 			for (int button = 0; button < _buttons.Count; button++)
 			{
-				var bindings = _inputs[button].Bindings;
+				string bindings = _inputs[button].Bindings;
 				if (!string.IsNullOrWhiteSpace(bindings))
 				{
 					saveTo[_buttons[button]] = bindings;
@@ -89,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SetButtonList()
 		{
 			_buttons.Clear();
-			IEnumerable<string> bl = _realConfigButtons ?? (IEnumerable<string>)_realConfigObject.Keys;
+			var bl = _realConfigButtons ?? (IEnumerable<string>)_realConfigObject.Keys;
 			foreach (string s in bl)
 			{
 				_buttons.Add(s);
@@ -100,7 +97,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			for (int button = 0; button < _buttons.Count; button++)
 			{
-				if (!_realConfigObject.TryGetValue(_buttons[button], out var s))
+				if (!_realConfigObject.TryGetValue(_buttons[button], out string s))
 				{
 					s = "";
 				}
@@ -111,8 +108,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Startup()
 		{
-			var labelWidth = _buttons.Max(b => b.Length) * _charWidth;
-			var columnWidth = _inputSize + (_labelPadding * 2) + labelWidth;
+			int labelWidth = _buttons.Max(b => b.Length) * _charWidth;
+			int columnWidth = _inputSize + (_labelPadding * 2) + labelWidth;
 			int x = _inputMarginLeft;
 			int y = _marginTop - _ySpacing;
 			for (int i = 0; i < _buttons.Count; i++)
@@ -124,7 +121,7 @@ namespace BizHawk.Client.EmuHawk
 					x += columnWidth;
 				}
 
-				var iw = new InputCompositeWidget(_effectiveModList)
+				InputCompositeWidget iw = new InputCompositeWidget(_effectiveModList)
 				{
 					Location = new Point(x, y),
 					Size = new Size(_inputSize, UIHelper.ScaleY(23)),
@@ -137,7 +134,7 @@ namespace BizHawk.Client.EmuHawk
 				iw.BringToFront();
 				Controls.Add(iw);
 				_inputs.Add(iw);
-				var label = new Label
+				Label label = new Label
 				{
 					Location = new Point(x + _inputSize + _labelPadding, y + UIHelper.ScaleY(3)),
 					Size = new Size(labelWidth, UIHelper.ScaleY(15)),
@@ -150,14 +147,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void SetAutoTab(bool value)
-		{
-			_inputs.ForEach(x => x.AutoTab = value);
-		}
+		public void SetAutoTab(bool value) => _inputs.ForEach(x => x.AutoTab = value);
 
-		private void ClearToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			ClearAll();
-		}
+		private void ClearToolStripMenuItem_Click(object sender, EventArgs e) => ClearAll();
 	}
 }

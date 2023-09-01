@@ -42,9 +42,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			}
 		}
 
-		private void Blit()
-		{
-			QN.qn_blit(Context, _videoOutput, _videoPalette, _cropLeft, _cropTop, _cropRight, _cropBottom);
-		}
+		private void Blit() => QN.qn_blit(Context, _videoOutput, _videoPalette, _cropLeft, _cropTop, _cropRight, _cropBottom);
 	}
 }

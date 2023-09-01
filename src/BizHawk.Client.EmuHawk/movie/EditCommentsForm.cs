@@ -44,7 +44,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (CommentGrid.Rows.Count > 8)
 			{
-				var x = Height + ((CommentGrid.Rows.Count - 8) * 21);
+				int x = Height + ((CommentGrid.Rows.Count - 8) * 21);
 				Height = x < 600 ? x : 600;
 			}
 		}
@@ -61,10 +61,7 @@ namespace BizHawk.Client.EmuHawk
 			_movie.Save();
 		}
 
-		private void Cancel_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
+		private void Cancel_Click(object sender, EventArgs e) => Close();
 
 		private void Ok_Click(object sender, EventArgs e)
 		{
@@ -72,19 +69,13 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-		private void SaveBtn_Click(object sender, EventArgs e)
-		{
-			Save();
-		}
+		private void SaveBtn_Click(object sender, EventArgs e) => Save();
 
-		private void OnColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
-		{
-			SortColumn(CommentGrid.Columns[e.ColumnIndex]);
-		}
+		private void OnColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e) => SortColumn(CommentGrid.Columns[e.ColumnIndex]);
 
 		private void SortColumn(DataGridViewColumn e)
 		{
-			DataGridViewColumn column = e;
+			var column = e;
 			if (_lastHeaderClicked != column.Name)
 			{
 				_sortReverse = false;

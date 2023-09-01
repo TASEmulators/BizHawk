@@ -12,16 +12,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	{
 		public SpectrumBase _machine { get; set; }
 		private byte[] LineStatus;
-		private string[] _keyboardMatrix;
 		private int[] _keyLine;
-		private bool _isIssue2Keyboard;
 		private string[] _nonMatrixKeys;
 
-		public bool IsIssue2Keyboard
-		{
-			get => _isIssue2Keyboard;
-			set => _isIssue2Keyboard = value;
-		}
+		public bool IsIssue2Keyboard { get; set; }
 
 		public int[] KeyLine
 		{
@@ -29,11 +23,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			set => _keyLine = value;
 		}
 
-		public string[] KeyboardMatrix
-		{
-			get => _keyboardMatrix;
-			set => _keyboardMatrix = value;
-		}
+		public string[] KeyboardMatrix { get; set; }
 
 		public string[] NonMatrixKeys
 		{
@@ -65,9 +55,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				"Key Space", "Key Symbol Shift", "Key M", "Key N", "Key B"
 			};
 
-			var nonMatrix = new List<string>();
+			List<string> nonMatrix = new List<string>();
 
-			foreach (var key in _machine.Spectrum.ZXSpectrumControllerDefinition.BoolButtons)
+			foreach (string key in _machine.Spectrum.ZXSpectrumControllerDefinition.BoolButtons)
 			{
 				if (!KeyboardMatrix.Any(s => s == key))
 					nonMatrix.Add(key);
@@ -86,8 +76,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			if (k != 255)
 			{
-				var lineIndex = k / 5;
-				var lineMask = 1 << k % 5;
+				int lineIndex = k / 5;
+				int lineMask = 1 << k % 5;
 
 				_keyLine[lineIndex] = isPressed
 					? (byte)(_keyLine[lineIndex] & ~lineMask)
@@ -137,8 +127,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		public bool GetKeyStatus(string key)
 		{
 			byte keyByte = GetByteFromKeyMatrix(key);
-			var lineIndex = keyByte / 5;
-			var lineMask = 1 << keyByte % 5;
+			int lineIndex = keyByte / 5;
+			int lineMask = 1 << keyByte % 5;
 
 			return (_keyLine[lineIndex] & lineMask) == 0;
 		}
@@ -158,7 +148,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			{
 				byte status = 0;
 				lines = (byte)~lines;
-				var lineIndex = 0;
+				int lineIndex = 0;
 				while (lines > 0)
 				{
 					if ((lines & 0x01) != 0)
@@ -166,16 +156,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					lineIndex++;
 					lines >>= 1;
 				}
-				var result = status;
+				byte result = status;
 
 				return result;
 			}
 		}
 
-		public byte ReadKeyboardByte(ushort addr)
-		{
-			return GetLineStatus((byte)(addr >> 8));
-		}
+		public byte ReadKeyboardByte(ushort addr) => GetLineStatus((byte)(addr >> 8));
 
 		public byte GetByteFromKeyMatrix(string key)
 		{
@@ -259,11 +246,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Device responds to an OUT instruction
 		/// </summary>
-		public bool WritePort(ushort port, int result)
-		{
+		public bool WritePort(ushort port, int result) =>
 			// not implemented
-			return false;
-		}
+			false;
 
 		public void SyncState(Serializer ser)
 		{

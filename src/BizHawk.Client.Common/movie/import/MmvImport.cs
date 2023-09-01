@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common.movie.import
 		protected override void RunImport()
 		{
 			using var fs = SourceFile.Open(FileMode.Open, FileAccess.Read);
-			using var r = new BinaryReader(fs);
+			using BinaryReader r = new BinaryReader(fs);
 
 			// 0000: 4-byte signature: "MMV\0"
 			string signature = new(r.ReadChars(4));
@@ -94,8 +94,8 @@ namespace BizHawk.Client.Common.movie.import
 			byte[] md5 = r.ReadBytes(16);
 			Result.Movie.HeaderEntries[HeaderKeys.Md5] = md5.BytesToHexString().ToLowerInvariant();
 
-			var ss = new SMS.SmsSyncSettings();
-			var cd = new SMSControllerDeck(ss.Port1, ss.Port2, isGameGear, ss.UseKeyboard);
+			SMS.SmsSyncSettings ss = new SMS.SmsSyncSettings();
+			SMSControllerDeck cd = new SMSControllerDeck(ss.Port1, ss.Port2, isGameGear, ss.UseKeyboard);
 			SimpleController controllers = new(cd.Definition);
 
 			/*

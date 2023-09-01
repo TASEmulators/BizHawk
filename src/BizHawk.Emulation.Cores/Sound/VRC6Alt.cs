@@ -25,15 +25,9 @@ namespace BizHawk.Emulation.Cores.Components
 
 		// the two pulse channels are about the same volume as 2a03 pulse channels.
 		// everything is flipped, though; but that's taken care of in the classes
-		private void PulseAddDiff(int value)
-		{
-			enqueuer(value * 360);
-		}
+		private void PulseAddDiff(int value) => enqueuer(value * 360);
 		// saw ends up being not that loud because of differences in implementation
-		private void SawAddDiff(int value)
-		{
-			enqueuer(value * 360);
-		}
+		private void SawAddDiff(int value) => enqueuer(value * 360);
 
 		// state
 		private bool masterenable;
@@ -54,9 +48,9 @@ namespace BizHawk.Emulation.Cores.Components
 			ser.EndSection();
 		}
 
-		public void Write9000(byte value) { pulse1.Write0(value); }
-		public void Write9001(byte value) { pulse1.Write1(value); }
-		public void Write9002(byte value) { pulse1.Write2(value); }
+		public void Write9000(byte value) => pulse1.Write0(value);
+		public void Write9001(byte value) => pulse1.Write1(value);
+		public void Write9002(byte value) => pulse1.Write2(value);
 
 		public void Write9003(byte value)
 		{
@@ -71,13 +65,13 @@ namespace BizHawk.Emulation.Cores.Components
 			saw.SetRSHIFT(RSHIFT);
 		}
 
-		public void WriteA000(byte value) { pulse2.Write0(value); }
-		public void WriteA001(byte value) { pulse2.Write1(value); }
-		public void WriteA002(byte value) { pulse2.Write2(value); }
+		public void WriteA000(byte value) => pulse2.Write0(value);
+		public void WriteA001(byte value) => pulse2.Write1(value);
+		public void WriteA002(byte value) => pulse2.Write2(value);
 
-		public void WriteB000(byte value) { saw.Write0(value); }
-		public void WriteB001(byte value) { saw.Write1(value); }
-		public void WriteB002(byte value) { saw.Write2(value); }
+		public void WriteB000(byte value) => saw.Write0(value);
+		public void WriteB001(byte value) => saw.Write1(value);
+		public void WriteB002(byte value) => saw.Write2(value);
 
 		public void Clock()
 		{
@@ -114,10 +108,7 @@ namespace BizHawk.Emulation.Cores.Components
 			/// <summary>latched output, 0..31</summary>
 			private int output;
 
-			public void SetRSHIFT(int RSHIFT)
-			{
-				this.RSHIFT = RSHIFT;
-			}
+			public void SetRSHIFT(int RSHIFT) => this.RSHIFT = RSHIFT;
 
 			private void SendNew()
 			{
@@ -141,10 +132,7 @@ namespace BizHawk.Emulation.Cores.Components
 				ser.Sync(nameof(output), ref output);
 			}
 
-			public void Write0(byte value)
-			{
-				A = (byte)(value & 63);
-			}
+			public void Write0(byte value) => A = (byte)(value & 63);
 			public void Write1(byte value)
 			{
 				F &= 0xf00;
@@ -213,10 +201,7 @@ namespace BizHawk.Emulation.Cores.Components
 			/// <summary>latched output, 0..15</summary>
 			private int output;
 
-			public void SetRSHIFT(int RSHIFT)
-			{
-				this.RSHIFT = RSHIFT;
-			}
+			public void SetRSHIFT(int RSHIFT) => this.RSHIFT = RSHIFT;
 
 			private void SendNew()
 			{

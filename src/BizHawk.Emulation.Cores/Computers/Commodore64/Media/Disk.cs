@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 		{
 			WriteProtected = true;
 			_tracks = new int[trackCapacity][];
-			for (var i = 0; i < trackData.Count; i++)
+			for (int i = 0; i < trackData.Count; i++)
 			{
 				_tracks[trackNumbers[i]] = ConvertToFluxTransitions(trackDensities[i], trackData[i], 0);
 			}
@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 
 		private int[] ConvertToFluxTransitions(int density, byte[] bytes, int fluxBitOffset)
 		{
-			var paddedLength = bytes.Length;
+			int paddedLength = bytes.Length;
 			switch (density)
 			{
 				case 3:
@@ -69,28 +69,28 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 			}
 
 			paddedLength++;
-			var paddedBytes = new byte[paddedLength];
+			byte[] paddedBytes = new byte[paddedLength];
 			Array.Copy(bytes, paddedBytes, bytes.Length);
-			for (var i = bytes.Length; i < paddedLength; i++)
+			for (int i = bytes.Length; i < paddedLength; i++)
 			{
 				paddedBytes[i] = 0xAA;
 			}
-			var result = new int[FluxEntriesPerTrack];
-			var lengthBits = (paddedLength * 8) - 7;
-			var offsets = new List<long>();
-			var remainingBits = lengthBits;
+			int[] result = new int[FluxEntriesPerTrack];
+			int lengthBits = (paddedLength * 8) - 7;
+			List<long> offsets = new List<long>();
+			int remainingBits = lengthBits;
 
 			const long bitsNum = FluxEntriesPerTrack * FluxBitsPerEntry;
 			long bitsDen = lengthBits;
 
-			for (var i = 0; i < paddedLength; i++)
+			for (int i = 0; i < paddedLength; i++)
 			{
-				var byteData = paddedBytes[i];
-				for (var j = 0; j < 8; j++)
+				byte byteData = paddedBytes[i];
+				for (int j = 0; j < 8; j++)
 				{
-					var offset = fluxBitOffset + ((i * 8 + j) * bitsNum / bitsDen);
-					var byteOffset = (int)(offset / FluxBitsPerEntry);
-					var bitOffset = (int)(offset % FluxBitsPerEntry);
+					long offset = fluxBitOffset + ((i * 8 + j) * bitsNum / bitsDen);
+					int byteOffset = (int)(offset / FluxBitsPerEntry);
+					int bitOffset = (int)(offset % FluxBitsPerEntry);
 					offsets.Add(offset);
 					result[byteOffset] |= ((byteData & 0x80) != 0 ? 1 : 0) << bitOffset;
 					byteData <<= 1;
@@ -113,7 +113,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 		private void FillMissingTracks()
 		{
 			// Fill half tracks (should assist with EA "fat-track" protections)
-			for (var i = 1; i < _tracks.Length; i += 2)
+			for (int i = 1; i < _tracks.Length; i += 2)
 			{
 				if (_tracks[i] == null && _tracks[i - 1] != null)
 				{
@@ -123,7 +123,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 			}
 
 			// Fill vacant tracks
-			for (var i = 0; i < _tracks.Length; i++)
+			for (int i = 0; i < _tracks.Length; i++)
 			{
 				if (_tracks[i] == null)
 				{
@@ -149,7 +149,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 		/// <param name="deltaUpdateCallback">callback</param>
 		public void DeltaUpdate(Action<int, int[], int[]> deltaUpdateCallback)
 		{
-			for (var i = 0; i < _tracks.Length; i++)
+			for (int i = 0; i < _tracks.Length; i++)
 			{
 				if (_usedTracks[i])
 				{
@@ -164,9 +164,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 			return _tracks[halftrack];
 		}
 
-		public void SyncState(Serializer ser)
-		{
-			ser.Sync(nameof(WriteProtected), ref WriteProtected);
-		}
+		public void SyncState(Serializer ser) => ser.Sync(nameof(WriteProtected), ref WriteProtected);
 	}
 }

@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 				x = (int)(x * factor.Width);
 			if (specified.HasFlag(BoundsSpecified.Y))
 				y = (int)(y * factor.Height);
-			var pt = new Point(x, y);
+			Point pt = new Point(x, y);
 			if (pt != Location)
 				Location = pt;
 		}

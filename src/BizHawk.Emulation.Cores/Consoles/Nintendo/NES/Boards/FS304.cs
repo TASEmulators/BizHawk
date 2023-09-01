@@ -47,9 +47,6 @@
 			prg &= prg_mask_32k;
 		}
 
-		public override byte ReadPrg(int addr)
-		{
-			return Rom[addr | prg << 15];
-		}
+		public override byte ReadPrg(int addr) => Rom[addr | prg << 15];
 	}
 }

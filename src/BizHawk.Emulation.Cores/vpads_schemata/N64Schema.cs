@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores
 			if (core is N64 n64)
 			{
 				var ss = n64.GetSyncSettings();
-				for (var i = 0; i < 4; i++)
+				for (int i = 0; i < 4; i++)
 				{
 					if (ss.Controllers[i].IsConnected)
 					{
@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores
 			}
 			else if (core is Ares64 ares64)
 			{
-				for (var i = 0; i < 4; i++)
+				for (int i = 0; i < 4; i++)
 				{
 					if (ares64.ControllerSettings[i] != LibAres64.ControllerType.Unplugged)
 					{

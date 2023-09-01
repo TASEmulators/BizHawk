@@ -399,7 +399,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			// get position within the tape itself
 			sb.Append("Tape Pos: ");
-			var ind = _machine.TapeDevice.CurrentDataBlockIndex;
+			int ind = _machine.TapeDevice.CurrentDataBlockIndex;
 			int cnt = 0;
 			for (int i = 0; i < ind; i++)
 			{

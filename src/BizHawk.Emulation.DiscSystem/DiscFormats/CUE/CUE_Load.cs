@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			BlobInfos = new();
 			foreach (var ccf in IN_CompileJob.OUT_CompiledCueFiles)
 			{
-				var bi = new BlobInfo();
+				BlobInfo bi = new BlobInfo();
 				BlobInfos.Add(bi);
 
 				IBlob file_blob;
@@ -88,14 +88,14 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 					case CompiledCueFileType.Unknown:
 						{
 							//raw files:
-							var blob = new Blob_RawFile { PhysicalPath = ccf.FullPath };
+							Blob_RawFile blob = new Blob_RawFile { PhysicalPath = ccf.FullPath };
 							OUT_Disc.DisposableResources.Add(file_blob = blob);
 							bi.Length = blob.Length;
 							break;
 						}
 					case CompiledCueFileType.ECM:
 						{
-							var blob = new Blob_ECM();
+							Blob_ECM blob = new Blob_ECM();
 							OUT_Disc.DisposableResources.Add(file_blob = blob);
 							blob.Load(ccf.FullPath);
 							bi.Length = blob.Length;
@@ -103,7 +103,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 						}
 					case CompiledCueFileType.WAVE:
 						{
-							var blob = new Blob_WaveFile();
+							Blob_WaveFile blob = new Blob_WaveFile();
 							OUT_Disc.DisposableResources.Add(file_blob = blob);
 							blob.Load(ccf.FullPath);
 							bi.Length = blob.Length;
@@ -116,8 +116,8 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 								throw new DiscReferenceException(ccf.FullPath, "No decoding service was available (make sure ffmpeg.exe is available. Even though this may be a wav, ffmpeg is used to load oddly formatted wave files. If you object to this, please send us a note and we'll see what we can do. It shouldn't be too hard.)");
 							}
 							AudioDecoder dec = new();
-							var buf = dec.AcquireWaveData(ccf.FullPath);
-							var blob = new Blob_WaveFile();
+							byte[] buf = dec.AcquireWaveData(ccf.FullPath);
+							Blob_WaveFile blob = new Blob_WaveFile();
 							OUT_Disc.DisposableResources.Add(file_blob = blob);
 							blob.Load(new MemoryStream(buf));
 							bi.Length = buf.Length;
@@ -174,7 +174,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		{
 			//add RawTOCEntries A0 A1 A2 to round out the TOC
 			var sessionInfo = IN_CompileJob.OUT_CompiledSessionInfo[CurrentSession.Number];
-			var TOCMiscInfo = new Synthesize_A0A1A2_Job(
+			Synthesize_A0A1A2_Job TOCMiscInfo = new Synthesize_A0A1A2_Job(
 				firstRecordedTrackNumber: sessionInfo.FirstRecordedTrackNumber,
 				lastRecordedTrackNumber: sessionInfo.LastRecordedTrackNumber,
 				sessionFormat: sessionInfo.SessionFormat,
@@ -192,8 +192,8 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			OUT_Disc = new();
 
 			//generation state
-			var curr_blobIndex = -1;
-			var curr_blobMSF = -1;
+			int curr_blobIndex = -1;
+			int curr_blobMSF = -1;
 			BlobInfo curr_blobInfo = null;
 			long curr_blobOffset = -1;
 
@@ -206,7 +206,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 			//loop from track 1 to 99
 			//(track 0 isnt handled yet, that's way distant work)
-			for (var t = 1; t < TrackInfos.Count; t++)
+			for (int t = 1; t < TrackInfos.Count; t++)
 			{
 				var ti = TrackInfos[t];
 				var cct = ti.CompiledCueTrack;
@@ -232,12 +232,12 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				//---------------------------------
 				//setup track pregap processing
 				//per "Example 05" on digitalx.org, pregap can come from index specification and pregap command
-				var specifiedPregapLength = cct.PregapLength.Sector;
-				var impliedPregapLength = cct.Indexes[1].FileMSF.Sector - cct.Indexes[0].FileMSF.Sector;
-				var totalPregapLength = specifiedPregapLength + impliedPregapLength;
+				int specifiedPregapLength = cct.PregapLength.Sector;
+				int impliedPregapLength = cct.Indexes[1].FileMSF.Sector - cct.Indexes[0].FileMSF.Sector;
+				int totalPregapLength = specifiedPregapLength + impliedPregapLength;
 
 				//from now on we'll track relative timestamp and increment it continually
-				var relMSF = -totalPregapLength;
+				int relMSF = -totalPregapLength;
 
 				//read more at policies declaration
 				//if (!context.DiscMountPolicy.CUE_PauseContradictionModeA)
@@ -258,11 +258,11 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				}
 
 				//work until the next track is reached, or the end of the current file is reached, depending on the track type
-				var curr_index = 0;
+				int curr_index = 0;
 				while (true)
 				{
-					var trackDone = false;
-					var generateGap = false;
+					bool trackDone = false;
+					bool generateGap = false;
 
 					if (specifiedPregapLength > 0)
 					{
@@ -293,7 +293,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 					//select the track type for the subQ
 					//it's obviously the same as the main track type usually, but during a pregap it can be different
 					var qTrack = ti;
-					var qRelMSF = relMSF;
+					int qRelMSF = relMSF;
 					if (curr_index == 0)
 					{
 						//tweak relMSF due to ambiguity/contradiction in yellowbook docs
@@ -390,10 +390,10 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 				//---------------------------------
 				//gen postgap sectors
-				var specifiedPostgapLength = cct.PostgapLength.Sector;
-				for (var s = 0; s < specifiedPostgapLength; s++)
+				int specifiedPostgapLength = cct.PostgapLength.Sector;
+				for (int s = 0; s < specifiedPostgapLength; s++)
 				{
-					var ss = new SS_Gap
+					SS_Gap ss = new SS_Gap
 					{
 						TrackType = cct.TrackType // TODO - old track type in some < -150 cases?
 					};

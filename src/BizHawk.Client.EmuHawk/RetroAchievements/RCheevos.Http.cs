@@ -114,7 +114,7 @@ namespace BizHawk.Client.EmuHawk
 
 				apiTask.ContinueWith(async t =>
 				{
-					var result = await t;
+					byte[] result = await t;
 					if (result is null) // likely a timeout
 					{
 						ShouldRetry = true;
@@ -196,7 +196,7 @@ namespace BizHawk.Client.EmuHawk
 
 				_activeHttpRequests.RemoveAll(activeRequest =>
 				{
-					var shouldRemove = activeRequest.IsCompleted && !activeRequest.ShouldRetry;
+					bool shouldRemove = activeRequest.IsCompleted && !activeRequest.ShouldRetry;
 					if (shouldRemove)
 					{
 						activeRequest.Dispose();
@@ -247,7 +247,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				using var content = new StringContent(post, Encoding.UTF8, "application/x-www-form-urlencoded");
+				using StringContent content = new StringContent(post, Encoding.UTF8, "application/x-www-form-urlencoded");
 				using var response = await _http.PostAsync(url, content).ConfigureAwait(false);
 				return response.IsSuccessStatusCode
 					? await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false)

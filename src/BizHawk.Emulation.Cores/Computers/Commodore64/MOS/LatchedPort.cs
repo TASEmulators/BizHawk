@@ -25,15 +25,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		// cause the pull-up resistors not to be enough to keep the bus bit set to 1 when
 		// both the direction and latch are 1 (the keyboard and joystick port 2 can do this.)
 		// the class does not handle this case as it must be handled differently in every occurrence.
-		public int ReadInput(int bus)
-		{
-			return (Latch & Direction) | ((Direction ^ 0xFF) & bus);
-		}
+		public int ReadInput(int bus) => (Latch & Direction) | ((Direction ^ 0xFF) & bus);
 
-		public int ReadOutput()
-		{
-			return (Latch & Direction) | (Direction ^ 0xFF);
-		}
+		public int ReadOutput() => (Latch & Direction) | (Direction ^ 0xFF);
 
 		public void SyncState(Serializer ser)
 		{
@@ -66,15 +60,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		//  1       1       0       1
 		//  1       1       1       1
 
-		public bool ReadInput(bool bus)
-		{
-			return (Direction && Latch) || (!Direction && bus);
-		}
+		public bool ReadInput(bool bus) => (Direction && Latch) || (!Direction && bus);
 
-		public bool ReadOutput()
-		{
-			return Latch || !Direction;
-		}
+		public bool ReadOutput() => Latch || !Direction;
 
 		public void SyncState(Serializer ser)
 		{

@@ -18,16 +18,12 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 
 		// Status Registers
 		private int InterruptMaskLevel;
-		private bool s, m;
+		private bool s;
 		private int usp, ssp;
 
 		/// <summary>Machine/Interrupt mode</summary>
 		/// <remarks>TODO probably have some switch logic maybe</remarks>
-		public bool M
-		{
-			get => m;
-			set => m = value;
-		}
+		public bool M { get; set; }
 
 		/// <summary>Supervisor/User mode</summary>
 		public bool S
@@ -208,7 +204,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			writer.WriteLine("USP {0:X8}", usp);
 			writer.WriteLine("SSP {0:X8}", ssp);
 			writer.WriteLine("S {0}", s);
-			writer.WriteLine("M {0}", m);
+			writer.WriteLine("M {0}", M);
 			writer.WriteLine();
 
 			writer.WriteLine($"{nameof(TotalExecutedCycles)} {TotalExecutedCycles}");
@@ -247,7 +243,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 				else if (args[0] == "USP") usp = int.Parse(args[1], NumberStyles.HexNumber);
 				else if (args[0] == "SSP") ssp = int.Parse(args[1], NumberStyles.HexNumber);
 				else if (args[0] == "S") s = bool.Parse(args[1]);
-				else if (args[0] == "M") m = bool.Parse(args[1]);
+				else if (args[0] == "M") M = bool.Parse(args[1]);
 
 				else if (args[0] == nameof(TotalExecutedCycles)) TotalExecutedCycles = int.Parse(args[1]);
 				else if (args[0] == nameof(PendingCycles)) PendingCycles = int.Parse(args[1]);

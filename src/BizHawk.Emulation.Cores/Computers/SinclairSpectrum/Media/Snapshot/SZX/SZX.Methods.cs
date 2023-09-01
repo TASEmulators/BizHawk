@@ -28,13 +28,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public static byte[] ExportSZX(SpectrumBase machine)
 		{
-			var s = new SZX(machine);
+			SZX s = new SZX(machine);
 
 			byte[] result = null;
 
-			using (var ms = new MemoryStream())
+			using (MemoryStream ms = new MemoryStream())
 			{
-				using (var r = new BinaryWriter(ms))
+				using (BinaryWriter r = new BinaryWriter(ms))
 				{
 					// temp buffer
 					byte[] buff;
@@ -108,7 +108,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 
 					// ZXSTAYBLOCK
-					if (s._machine.Spectrum.MachineType != MachineType.ZXSpectrum16 && s._machine.Spectrum.MachineType != MachineType.ZXSpectrum48)
+					if (s._machine.Spectrum.MachineType is not MachineType.ZXSpectrum16 and not MachineType.ZXSpectrum48)
 					{
 						var gStruct = s.GetZXSTAYBLOCK();
 						block.dwId = MediaConverter.GetUInt32(Encoding.UTF8.GetBytes("AY\0\0"), 0);
@@ -233,7 +233,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		private ZXSTRAMPAGE GetZXSTRAMPAGE(byte page, byte[] RAM)
 		{
-			var s = new ZXSTRAMPAGE
+			ZXSTRAMPAGE s = new ZXSTRAMPAGE
 			{
 				wFlags = 0, // uncompressed only at the moment
 				chPageNo = page,
@@ -244,8 +244,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		private ZXSTCREATOR GetZXSTCREATOR()
 		{
-			var s = new ZXSTCREATOR();
-			var str = "BIZHAWK EMULATOR".ToCharArray();
+			ZXSTCREATOR s = new ZXSTCREATOR();
+			char[] str = "BIZHAWK EMULATOR".ToCharArray();
 			s.szCreator = new char[32];
 			for (int i = 0; i < str.Length; i++)
 				s.szCreator[i] = str[i];
@@ -257,7 +257,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		private ZXSTZ80REGS GetZXSTZ80REGS()
 		{
-			var s = new ZXSTZ80REGS
+			ZXSTZ80REGS s = new ZXSTZ80REGS
 			{
 				AF = (ushort) _machine.Spectrum.GetCpuFlagsAndRegisters()["AF"].Value,
 				BC = (ushort) _machine.Spectrum.GetCpuFlagsAndRegisters()["BC"].Value,
@@ -295,7 +295,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		private ZXSTSPECREGS GetZXSTSPECREGS()
 		{
-			var s = new ZXSTSPECREGS
+			ZXSTSPECREGS s = new ZXSTSPECREGS
 			{
 				chBorder = _machine.ULADevice.BorderColor > 7 ? (byte)0 : (byte)_machine.ULADevice.BorderColor,
 				chFe = _machine.LastFe
@@ -363,7 +363,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		private ZXSTKEYBOARD GetZXSTKEYBOARD()
 		{
-			var s = new ZXSTKEYBOARD
+			ZXSTKEYBOARD s = new ZXSTKEYBOARD
 			{
 				dwFlags = 0 //no issue 2 emulation
 			};
@@ -373,7 +373,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		private ZXSTJOYSTICK GetZXSTJOYSTICK()
 		{
-			var s = new ZXSTJOYSTICK
+			ZXSTJOYSTICK s = new ZXSTJOYSTICK
 			{
 				dwFlags = 0 //depreciated
 			};
@@ -384,12 +384,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		private ZXSTAYBLOCK GetZXSTAYBLOCK()
 		{
-			var s = new ZXSTAYBLOCK
+			ZXSTAYBLOCK s = new ZXSTAYBLOCK
 			{
 				cFlags = 0, // no external units
 				chCurrentRegister = (byte)_machine.AYDevice.SelectedRegister
 			};
-			var regs = _machine.AYDevice.ExportRegisters();
+			int[] regs = _machine.AYDevice.ExportRegisters();
 			s.chAyRegs = new byte[16];
 			for (int i = 0; i < 16; i++)
 			{
@@ -401,7 +401,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		#pragma warning disable IDE0051
 		private ZXSTTAPE GetZXSTTAPE()
 		{
-			var s = new ZXSTTAPE();
+			ZXSTTAPE s = new ZXSTTAPE();
 			s.wFlags |= (int)CassetteRecorderState.ZXSTTP_EMBEDDED;
 			s.wCurrentBlockNo = (ushort)_machine.TapeDevice.CurrentDataBlockIndex;
 			s.dwCompressedSize = _machine.tapeImages[_machine.TapeDevice.CurrentDataBlockIndex].Length;
@@ -417,7 +417,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		private ZXSTPLUS3 GetZXSTPLUS3()
 		{
-			var s = new ZXSTPLUS3
+			ZXSTPLUS3 s = new ZXSTPLUS3
 			{
 				chNumDrives = 1,
 				fMotorOn = _machine.UPDDiskDevice.FDD_FLAG_MOTOR ? (byte)1 : (byte)0
@@ -427,7 +427,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		private ZXSTDSKFILE GetZXSTDSKFILE()
 		{
-			var s = new ZXSTDSKFILE
+			ZXSTDSKFILE s = new ZXSTDSKFILE
 			{
 				wFlags = 0,
 				chDriveNum = 0,

@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 		{
 			if (_cachedSettingsInfo is null)
 			{
-				using var n = new Tst(comm);
+				using Tst n = new Tst(comm);
 				n.InitForSettingsInfo("pcfx.wbx");
 				_cachedSettingsInfo = n.SettingsInfo.Clone();
 			}
@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 		{
 			if (lp.Roms.Count > 0)
 				throw new InvalidOperationException("To load a PC-FX game, please load the CUE file and not the BIN file.");
-			var firmwares = new Dictionary<string, FirmwareID>
+			Dictionary<string, FirmwareID> firmwares = new Dictionary<string, FirmwareID>
 			{
 				{ "FIRMWARE:pcfx.rom", new("PCFX", "BIOS") },
 			};
@@ -71,13 +71,13 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 		protected override HashSet<string> ComputeHiddenPorts()
 		{
 			// NB: Since we're hiding these settings up above, this will always trim us down to 2 ports
-			var devCount = 8;
+			int devCount = 8;
 			if (SettingsQuery("pcfx.input.port1.multitap") != "1")
 				devCount -= 3;
 			if (SettingsQuery("pcfx.input.port2.multitap") != "1")
 				devCount -= 3;
-			var ret = new HashSet<string>();
-			for (var i = 1; i <= 8; i++)
+			HashSet<string> ret = new HashSet<string>();
+			for (int i = 1; i <= 8; i++)
 			{
 				if (i > devCount)
 					ret.Add($"port{i}");

@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		private void SetupMemoryDomains()
 		{
-			var domains = new List<MemoryDomain>
+			List<MemoryDomain> domains = new List<MemoryDomain>
 			{
 				new MemoryDomainDelegate("System Bus", 0x10000, MemoryDomain.Endian.Little,
 				(addr) =>
@@ -97,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			}
 			else
 			{
-				var m = new MemoryDomainByteArray(name, MemoryDomain.Endian.Little, data, true, 1);
+				MemoryDomainByteArray m = new MemoryDomainByteArray(name, MemoryDomain.Endian.Little, data, true, 1);
 				_byteArrayDomains.Add(name, m);
 			}
 #pragma warning restore MEN014

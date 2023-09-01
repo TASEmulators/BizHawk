@@ -111,11 +111,9 @@ namespace BizHawk.Emulation.Cores.Components
 			ser.EndSection();
 		}
 
-		public byte ReadReg()
-		{
+		public byte ReadReg() =>
 			// not used, reading not allowed, just return 0xFF
-			return 0xFF;
-		}
+			0xFF;
 
 		public void WriteReg(byte value)
 		{

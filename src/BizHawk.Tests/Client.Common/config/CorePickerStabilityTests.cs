@@ -16,10 +16,10 @@ namespace BizHawk.Tests.Client.Common.config
 		[TestMethod]
 		public void AssertAllChoicesInMenu()
 		{
-			var multiCoreSystems = CoreInventory.Instance.AllCores.Where(kvp => kvp.Value.Count != 1)
+			HashSet<string> multiCoreSystems = CoreInventory.Instance.AllCores.Where(kvp => kvp.Value.Count != 1)
 				.Select(kvp => kvp.Key)
 				.ToHashSet();
-			foreach (var sysID in DefaultCorePrefDict.Keys)
+			foreach (string sysID in DefaultCorePrefDict.Keys)
 			{
 				Assert.IsTrue(multiCoreSystems.Contains(sysID), $"a default core preference exists for {sysID} but that system doesn't have alternate cores");
 			}
@@ -34,12 +34,12 @@ namespace BizHawk.Tests.Client.Common.config
 		[TestMethod]
 		public void AssertNoMissingCores()
 		{
-			var allCoreNames = CoreInventory.Instance.SystemsFlat.Select(coreInfo => coreInfo.Name).ToHashSet();
+			HashSet<string> allCoreNames = CoreInventory.Instance.SystemsFlat.Select(coreInfo => coreInfo.Name).ToHashSet();
 			foreach (var (sysID, coreName) in DefaultCorePrefDict)
 			{
 				Assert.IsTrue(allCoreNames.Contains(coreName), $"default core preference for {sysID} is \"{coreName}\", which doesn't exist");
 			}
-			foreach (var (appliesTo, coreNames) in Config.CorePickerUIData) foreach (var coreName in coreNames)
+			foreach (var (appliesTo, coreNames) in Config.CorePickerUIData) foreach (string? coreName in coreNames)
 			{
 				Assert.IsTrue(allCoreNames.Contains(coreName), $"core picker includes nonexistant core \"{coreName}\" under {appliesTo[0]} group");
 			}
@@ -49,14 +49,14 @@ namespace BizHawk.Tests.Client.Common.config
 		[TestMethod]
 		public void AssertNoMissingSystems()
 		{
-			var allSysIDs = CoreInventory.Instance.AllCores.Keys.ToHashSet();
+			HashSet<string> allSysIDs = CoreInventory.Instance.AllCores.Keys.ToHashSet();
 #if false // already covered by AssertAllChoicesInMenu
 			foreach (var sysID in DefaultCorePrefDict.Keys)
 			{
 				Assert.IsTrue(allSysIDs.Contains(sysID), $"a default core preference exists for {sysID}, which isn't emulated by any core");
 			}
 #endif
-			foreach (var (appliesTo, _) in Config.CorePickerUIData) foreach (var sysID in appliesTo)
+			foreach (var (appliesTo, _) in Config.CorePickerUIData) foreach (string? sysID in appliesTo)
 			{
 				Assert.IsTrue(allSysIDs.Contains(sysID), $"core picker has choices for {sysID}, which isn't emulated by any core");
 			}

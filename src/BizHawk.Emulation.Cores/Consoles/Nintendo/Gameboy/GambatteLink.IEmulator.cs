@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				_linkedConts[i].Clear();
 			}
 
-			foreach (var s in GBLinkController.BoolButtons)
+			foreach (string s in GBLinkController.BoolButtons)
 			{
 				if (controller.IsPressed(s))
 				{

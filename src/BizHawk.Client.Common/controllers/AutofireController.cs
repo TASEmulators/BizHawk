@@ -34,20 +34,14 @@ namespace BizHawk.Client.Common
 
 		public bool IsPressed(string button)
 		{
-			var a = (internal_frame - _buttonStarts[button]) % (On + Off);
+			int a = (internal_frame - _buttonStarts[button]) % (On + Off);
 			return a < On && _buttons[button];
 		}
 
-		public void ClearStarts()
-		{
-			_buttonStarts.Clear();
-		}
+		public void ClearStarts() => _buttonStarts.Clear();
 
 		/// <exception cref="NotImplementedException">always</exception>
-		public int AxisValue(string name)
-		{
-			throw new NotImplementedException();
-		}
+		public int AxisValue(string name) => throw new NotImplementedException();
 
 		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Array.Empty<(string, int)>();
 
@@ -63,7 +57,7 @@ namespace BizHawk.Client.Common
 			
 			foreach (var (k, v) in _bindings)
 			{
-				foreach (var boundBtn in v)
+				foreach (string boundBtn in v)
 				{
 					if (_buttons[k] == false && controller.IsPressed(boundBtn))
 					{
@@ -76,7 +70,7 @@ namespace BizHawk.Client.Common
 			foreach (var (k, v) in _bindings)
 			{
 				_buttons[k] = false;
-				foreach (var button in v)
+				foreach (string button in v)
 				{
 					if (controller.IsPressed(button))
 					{
@@ -90,8 +84,8 @@ namespace BizHawk.Client.Common
 		{
 			if (!string.IsNullOrEmpty(controlString))
 			{
-				var controlBindings = controlString.Split(',');
-				foreach (var control in controlBindings)
+				string[] controlBindings = controlString.Split(',');
+				foreach (string control in controlBindings)
 				{
 					_bindings[button].Add(control.Trim());
 				}
@@ -100,7 +94,7 @@ namespace BizHawk.Client.Common
 
 		public void IncrementStarts()
 		{
-			foreach (var key in _buttonStarts.Keys.ToArray())
+			foreach (string key in _buttonStarts.Keys.ToArray())
 			{
 				_buttonStarts[key]++;
 			}

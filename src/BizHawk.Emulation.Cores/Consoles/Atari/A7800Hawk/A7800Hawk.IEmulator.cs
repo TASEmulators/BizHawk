@@ -164,7 +164,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			tia._hsyncCnt++;
 			tia._hsyncCnt %= 454;
 			// do the audio sampling of TIA audio
-			if (tia._hsyncCnt == 113 || tia._hsyncCnt == 340)
+			if (tia._hsyncCnt is 113 or 340)
 			{
 				temp_s_tia = tia.Execute();
 			}
@@ -404,10 +404,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			temp = 0;
 		}
 
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Async is not available");
-		}
+		public void GetSamplesAsync(short[] samples) => throw new NotSupportedException("Async is not available");
 
 		public void DiscardSamples()
 		{

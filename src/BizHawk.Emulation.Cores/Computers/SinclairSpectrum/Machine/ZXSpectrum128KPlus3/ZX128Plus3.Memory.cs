@@ -349,7 +349,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public override byte ReadMemory(ushort addr)
         {
-            var data = ReadBus(addr);
+			byte data = ReadBus(addr);
             if (CPUMon.NextMemReadContended)
             {
                 LastContendedReadByte = data;
@@ -364,7 +364,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public override ZXSpectrum.CDLResult ReadCDL(ushort addr)
         {
-            var result = new ZXSpectrum.CDLResult();
+			ZXSpectrum.CDLResult result = new ZXSpectrum.CDLResult();
 
             int divisor = addr / 0x4000;
             result.Address = addr % 0x4000;
@@ -501,45 +501,43 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             return result;
         }
 
-        /// <summary>
-        /// Writes a byte of data to a specified memory address
-        /// (with memory contention if appropriate)
-        /// </summary>
-        public override void WriteMemory(ushort addr, byte value)
-        {
-            /*
-            // update ULA screen buffer if necessary BEFORE T1 write
-            if (!SpecialPagingMode)
-            {
-                if (((addr & 49152) == 16384 || ((addr & 0xc000) == 0xc000) && (RAMPaged == 5 || RAMPaged == 7)) && _render)
-                    ULADevice.RenderScreen((int)CurrentFrameCycle);
-            }
-            else
-            {
-                switch (PagingConfiguration)
-                {
-                    case 2:
-                    case 3:
-                        if ((addr & 49152) == 16384)
-                            ULADevice.RenderScreen((int)CurrentFrameCycle);
-                        break;
-                    case 1:
-                        if ((addr & 49152) == 16384 || addr >= 0xc000)
-                            ULADevice.RenderScreen((int)CurrentFrameCycle);
-                        break;
-                }
-            }
-            */
-            
-            WriteBus(addr, value);
-        }
+		/// <summary>
+		/// Writes a byte of data to a specified memory address
+		/// (with memory contention if appropriate)
+		/// </summary>
+		public override void WriteMemory(ushort addr, byte value) =>
+			/*
+// update ULA screen buffer if necessary BEFORE T1 write
+if (!SpecialPagingMode)
+{
+if (((addr & 49152) == 16384 || ((addr & 0xc000) == 0xc000) && (RAMPaged == 5 || RAMPaged == 7)) && _render)
+ULADevice.RenderScreen((int)CurrentFrameCycle);
+}
+else
+{
+switch (PagingConfiguration)
+{
+case 2:
+case 3:
+if ((addr & 49152) == 16384)
+ULADevice.RenderScreen((int)CurrentFrameCycle);
+break;
+case 1:
+if ((addr & 49152) == 16384 || addr >= 0xc000)
+ULADevice.RenderScreen((int)CurrentFrameCycle);
+break;
+}
+}
+*/
 
-        /// <summary>
-        /// Checks whether supplied address is in a potentially contended bank
-        /// </summary>
-        public override bool IsContended(ushort addr)
+			WriteBus(addr, value);
+
+		/// <summary>
+		/// Checks whether supplied address is in a potentially contended bank
+		/// </summary>
+		public override bool IsContended(ushort addr)
         {
-            var a = addr & 0xc000;
+			int a = addr & 0xc000;
 
             if (a == 0x4000)
             {

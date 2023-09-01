@@ -39,10 +39,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void SetText()
-		{
-			LocationLabel.Text = MessagePosition.ToCoordinateStr();
-		}
+		public void SetText() => LocationLabel.Text = MessagePosition.ToCoordinateStr();
 
 		private void RowRadio_CheckedChanged(object sender, EventArgs e)
 		{

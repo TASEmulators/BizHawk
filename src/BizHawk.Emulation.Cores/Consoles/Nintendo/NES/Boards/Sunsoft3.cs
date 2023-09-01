@@ -85,10 +85,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ApplyMemoryMapMask(chr_bank_mask_2k, chr_banks_2k);
 		}
 
-		private void SyncIRQ()
-		{
-			IrqSignal = irq_asserted;
-		}
+		private void SyncIRQ() => IrqSignal = irq_asserted;
 
 		public override void WritePrg(int addr, byte value)
 		{

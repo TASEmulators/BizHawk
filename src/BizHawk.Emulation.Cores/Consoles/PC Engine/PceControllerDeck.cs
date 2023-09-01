@@ -88,10 +88,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			Definition = new("(PC Engine Controller fragment)");
 		}
 
-		public byte Read(IController c, bool sel)
-		{
-			return 0x3F;
-		}
+		public byte Read(IController c, bool sel) => 0x3F;
 
 		public ControllerDefinition Definition { get; }
 

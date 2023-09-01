@@ -100,7 +100,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				try
 				{
-					var chunk = new FDSChunk(r) { Hidden = true };
+					FDSChunk chunk = new FDSChunk(r) { Hidden = true };
 					if (r.BaseStream.Position <= endpos)
 					{
 						Chunks.Add(chunk);

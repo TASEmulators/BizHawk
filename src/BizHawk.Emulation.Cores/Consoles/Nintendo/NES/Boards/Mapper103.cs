@@ -27,11 +27,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void WriteWram(int addr, byte value)
-		{
+		public override void WriteWram(int addr, byte value) =>
 			// writes always go to wram, even if rom is mapped in for read
 			Wram[addr] = value;
-		}
 
 		public override byte ReadWram(int addr)
 		{
@@ -51,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void WritePrg(int addr, byte value)
 		{
-			if (addr >= 0x3800 && addr < 0x5800)
+			if (addr is >= 0x3800 and < 0x5800)
 				Wram[addr - 0x1800] = value;
 			else
 			{

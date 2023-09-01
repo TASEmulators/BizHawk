@@ -48,13 +48,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		{
 			get
 			{
-				if (_dataBlocks.Count > 0) { return _currentDataBlockIndex; }
+				if (DataBlocks.Count > 0) { return _currentDataBlockIndex; }
 				else { return -1; }
 			}
 			set
 			{
 				if (value == _currentDataBlockIndex) { return; }
-				if (value < _dataBlocks.Count && value >= 0)
+				if (value < DataBlocks.Count && value >= 0)
 				{
 					_currentDataBlockIndex = value;
 					_position = 0;
@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		{
 			get
 			{
-				if (_position >= _dataBlocks[_currentDataBlockIndex].DataPeriods.Count) { return 0; }
+				if (_position >= DataBlocks[_currentDataBlockIndex].DataPeriods.Count) { return 0; }
 
 				return _position;
 			}
@@ -82,15 +82,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		private bool _tapeIsPlaying = false;
 		public bool TapeIsPlaying => _tapeIsPlaying;
 
-		/// <summary>
-		/// A list of the currently loaded data blocks
-		/// </summary>
-		private List<TapeDataBlock> _dataBlocks = new();
-		public List<TapeDataBlock> DataBlocks
-		{
-			get => _dataBlocks;
-			set => _dataBlocks = value;
-		}
+		public List<TapeDataBlock> DataBlocks { get; set; } = new();
 
 		/// <summary>
 		/// Stores the last CPU t-state value
@@ -117,10 +109,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// Should be fired at the end of every frame
 		/// Primary purpose is to detect tape traps and manage auto play
 		/// </summary>
-		public void EndFrame()
-		{
-			MonitorFrame();
-		}
+		public void EndFrame() => MonitorFrame();
 
 		/// <summary>
 		/// Starts the tape playing from the beginning of the current block
@@ -140,25 +129,25 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			_position = 0;
 
 			if (
-				_dataBlocks.Count > 0 &&        // data blocks are present &&
+				DataBlocks.Count > 0 &&        // data blocks are present &&
 				_currentDataBlockIndex >= 0     // the current data block index is 1 or greater
 				)
 			{
-				while (_position >= _dataBlocks[_currentDataBlockIndex].DataPeriods.Count)
+				while (_position >= DataBlocks[_currentDataBlockIndex].DataPeriods.Count)
 				{
 					// we are at the end of a data block - move to the next
 					_position = 0;
 					_currentDataBlockIndex++;
 
 					// are we at the end of the tape?
-					if (_currentDataBlockIndex >= _dataBlocks.Count)
+					if (_currentDataBlockIndex >= DataBlocks.Count)
 					{
 						break;
 					}
 				}
 
 				// check for end of tape
-				if (_currentDataBlockIndex >= _dataBlocks.Count)
+				if (_currentDataBlockIndex >= DataBlocks.Count)
 				{
 					// end of tape reached. Rewind to beginning
 					AutoStopTape();
@@ -167,7 +156,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				}
 
 				// update waitEdge with the current position in the current block
-				_waitEdge = _dataBlocks[_currentDataBlockIndex].DataPeriods[_position];
+				_waitEdge = DataBlocks[_currentDataBlockIndex].DataPeriods[_position];
 
 				// sign that the tape is now playing
 				_tapeIsPlaying = true;
@@ -190,13 +179,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			if (
 				_currentDataBlockIndex >= 0 &&                                              // we are at datablock 1 or above
-				_position >= _dataBlocks[_currentDataBlockIndex].DataPeriods.Count - 1      // the block is still playing back
+				_position >= DataBlocks[_currentDataBlockIndex].DataPeriods.Count - 1      // the block is still playing back
 				)
 			{
 				// move to the next block
 				_currentDataBlockIndex++;
 
-				if (_currentDataBlockIndex >= _dataBlocks.Count)
+				if (_currentDataBlockIndex >= DataBlocks.Count)
 				{
 					_currentDataBlockIndex = -1;
 				}
@@ -207,7 +196,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 				if (
 					_currentDataBlockIndex < 0 &&       // block index is -1
-					_dataBlocks.Count > 0               // number of blocks is greater than 0
+					DataBlocks.Count > 0               // number of blocks is greater than 0
 					)
 				{
 					// move the index on to 0
@@ -236,7 +225,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public void SkipBlock(bool skipForward)
 		{
-			int blockCount = _dataBlocks.Count;
+			int blockCount = DataBlocks.Count;
 			int targetBlockId = _currentDataBlockIndex;
 
 			if (skipForward)
@@ -264,11 +253,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				}
 			}
 
-			var bl = _dataBlocks[targetBlockId];
+			var bl = DataBlocks[targetBlockId];
 
 			StringBuilder sbd = new();
 			sbd.Append('(');
-			sbd.Append((targetBlockId + 1) + " of " + _dataBlocks.Count);
+			sbd.Append((targetBlockId + 1) + " of " + DataBlocks.Count);
 			sbd.Append(") : ");
 			sbd.Append(bl.BlockDescription);
 			if (bl.MetaData.Count > 0)
@@ -390,10 +379,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Resets the tape
 		/// </summary>
-		public void Reset()
-		{
-			RTZ();
-		}
+		public void Reset() => RTZ();
 
 		/// <summary>
 		/// Is called every cpu cycle but runs every 50 t-states
@@ -450,11 +436,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				if (_position == 0 && _tapeIsPlaying)
 				{				
 					// notify about the current block
-					var bl = _dataBlocks[_currentDataBlockIndex];
+					var bl = DataBlocks[_currentDataBlockIndex];
 
 					StringBuilder sbd = new();
 					sbd.Append('(');
-					sbd.Append((_currentDataBlockIndex + 1) + " of " + _dataBlocks.Count);
+					sbd.Append((_currentDataBlockIndex + 1) + " of " + DataBlocks.Count);
 					sbd.Append(") : ");
 					sbd.Append(bl.BlockDescription);
 					if (bl.MetaData.Count > 0)
@@ -468,16 +454,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				// increment the current period position
 				_position++;
 
-				if (_position >= _dataBlocks[_currentDataBlockIndex].DataPeriods.Count)
+				if (_position >= DataBlocks[_currentDataBlockIndex].DataPeriods.Count)
 				{
 					// we have reached the end of the current block
-					if (_dataBlocks[_currentDataBlockIndex].DataPeriods.Count == 0)
+					if (DataBlocks[_currentDataBlockIndex].DataPeriods.Count == 0)
 					{
 						// notify about the current block (we are skipping it because its empty)
-						var bl = _dataBlocks[_currentDataBlockIndex];
+						var bl = DataBlocks[_currentDataBlockIndex];
 						StringBuilder sbd = new();
 						sbd.Append('(');
-						sbd.Append((_currentDataBlockIndex + 1) + " of " + _dataBlocks.Count);
+						sbd.Append((_currentDataBlockIndex + 1) + " of " + DataBlocks.Count);
 						sbd.Append(") : ");
 						sbd.Append(bl.BlockDescription);
 						if (bl.MetaData.Count > 0)
@@ -490,11 +476,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					}
 
 					// skip any empty blocks (and process any command blocks)
-					while (_position >= _dataBlocks[_currentDataBlockIndex].DataPeriods.Count)
+					while (_position >= DataBlocks[_currentDataBlockIndex].DataPeriods.Count)
 					{
 						// check for any commands
-						var command = _dataBlocks[_currentDataBlockIndex].Command;
-						var block = _dataBlocks[_currentDataBlockIndex];
+						var command = DataBlocks[_currentDataBlockIndex].Command;
+						var block = DataBlocks[_currentDataBlockIndex];
 						bool shouldStop = false;
 						switch (command)
 						{
@@ -505,7 +491,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 								_machine.Spectrum.OSD_TapeStoppedAuto();
 								shouldStop = true;
 
-								if (_currentDataBlockIndex >= _dataBlocks.Count)
+								if (_currentDataBlockIndex >= DataBlocks.Count)
 									RTZ();
 								else
 								{
@@ -520,7 +506,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 									_machine.Spectrum.OSD_TapeStoppedAuto();
 									shouldStop = true;
 
-									if (_currentDataBlockIndex >= _dataBlocks.Count)
+									if (_currentDataBlockIndex >= DataBlocks.Count)
 										RTZ();
 									else
 									{
@@ -538,14 +524,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 						_position = 0;
 						_currentDataBlockIndex++;
 
-						if (_currentDataBlockIndex >= _dataBlocks.Count)
+						if (_currentDataBlockIndex >= DataBlocks.Count)
 						{
 							break;
 						}
 					}
 
 					// check for end of tape
-					if (_currentDataBlockIndex >= _dataBlocks.Count)
+					if (_currentDataBlockIndex >= DataBlocks.Count)
 					{
 						_currentDataBlockIndex = -1;
 						RTZ();
@@ -554,11 +540,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				}
 
 				// update waitEdge with current position within the current block
-				_waitEdge = _dataBlocks[_currentDataBlockIndex].DataPeriods.Count > 0 ? _dataBlocks[_currentDataBlockIndex].DataPeriods[_position] : 0;
+				_waitEdge = DataBlocks[_currentDataBlockIndex].DataPeriods.Count > 0 ? DataBlocks[_currentDataBlockIndex].DataPeriods[_position] : 0;
 
 				// flip the current state
 				//FlipTapeState();
-				currentState = _dataBlocks[_currentDataBlockIndex].DataLevels[_position];
+				currentState = DataBlocks[_currentDataBlockIndex].DataLevels[_position];
 			}
 
 			// update lastCycle and return currentstate
@@ -567,10 +553,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			return currentState;
 		}
 
-		private void FlipTapeState()
-		{
-			currentState = !currentState;
-		}
+		private void FlipTapeState() => currentState = !currentState;
 
 		/// <summary>
 		/// Flash loading implementation
@@ -602,7 +585,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			}
 
 			var tb = DataBlocks[_currentDataBlockIndex];
-			var tData = tb.BlockData;
+			byte[] tData = tb.BlockData;
 
 			if (tData == null || tData.Length < 2)
 			{
@@ -610,7 +593,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				return false;
 			}
 
-			var toRead = tData.Length - 1;
+			int toRead = tData.Length - 1;
 
 			if (toRead < _cpu.Regs[_cpu.E] + (_cpu.Regs[_cpu.D] << 8))
 			{
@@ -624,27 +607,27 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			if (toRead <= 0)
 				return false;
 
-			var parity = tData[0];
+			byte parity = tData[0];
 
 			if (parity != _cpu.Regs[_cpu.F_s] + (_cpu.Regs[_cpu.A_s] << 8) >> 8)
 				return false;
 
 			util.SetCpuRegister("Shadow AF", 0x0145);
 
-			for (var i = 0; i < toRead; i++)
+			for (int i = 0; i < toRead; i++)
 			{
-				var v = tData[i + 1];
+				byte v = tData[i + 1];
 				_cpu.Regs[_cpu.L] = v;
 				parity ^= v;
-				var d = (ushort)(_cpu.Regs[_cpu.Ixl] + (_cpu.Regs[_cpu.Ixh] << 8) + 1);
+				ushort d = (ushort)(_cpu.Regs[_cpu.Ixl] + (_cpu.Regs[_cpu.Ixh] << 8) + 1);
 				_machine.WriteBus(d, v);
 			}
-			var pc = (ushort)0x05DF;
+			ushort pc = (ushort)0x05DF;
 
 			if (_cpu.Regs[_cpu.E] + (_cpu.Regs[_cpu.D] << 8) == toRead &&
 				toRead + 1 < tData.Length)
 			{
-				var v = tData[toRead + 1];
+				byte v = tData[toRead + 1];
 				_cpu.Regs[_cpu.L] = v;
 				parity ^= v;
 				_cpu.Regs[_cpu.B] = 0xB0;
@@ -659,9 +642,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			}
 
 			_cpu.Regs[_cpu.H] = parity;
-			var de = _cpu.Regs[_cpu.E] + (_cpu.Regs[_cpu.D] << 8);
+			int de = _cpu.Regs[_cpu.E] + (_cpu.Regs[_cpu.D] << 8);
 			util.SetCpuRegister("DE", de - toRead);
-			var ix = _cpu.Regs[_cpu.Ixl] + (_cpu.Regs[_cpu.Ixh] << 8);
+			int ix = _cpu.Regs[_cpu.Ixl] + (_cpu.Regs[_cpu.Ixh] << 8);
 			util.SetCpuRegister("IX", ix + toRead);
 
 			util.SetCpuRegister("PC", pc);
@@ -698,7 +681,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			int delta = (int)(cpuCycle - _lastINCycle);
 			_lastINCycle = cpuCycle;
 
-			var nRegs = new ushort[]
+			ushort[] nRegs = new ushort[]
 			{
 				_cpu.Regs[_cpu.A],
 				_cpu.Regs[_cpu.B],
@@ -783,8 +766,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			if (_tapeIsPlaying && _autoPlay)
 			{
 				if (DataBlocks.Count > 1 ||
-					(_dataBlocks[_currentDataBlockIndex].BlockDescription != BlockType.CSW_Recording &&
-					_dataBlocks[_currentDataBlockIndex].BlockDescription != BlockType.WAV_Recording))
+					(DataBlocks[_currentDataBlockIndex].BlockDescription != BlockType.CSW_Recording &&
+					DataBlocks[_currentDataBlockIndex].BlockDescription != BlockType.WAV_Recording))
 				{
 					// we should only stop the tape when there are multiple blocks
 					// if we just have one big block (maybe a CSW or WAV) then auto stopping will cock things up
@@ -793,8 +776,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 				if (_monitorTimeOut < 0)
 				{
-					if (_dataBlocks[_currentDataBlockIndex].BlockDescription != BlockType.PAUSE_BLOCK &&
-						_dataBlocks[_currentDataBlockIndex].BlockDescription != BlockType.PAUS)
+					if (DataBlocks[_currentDataBlockIndex].BlockDescription is not BlockType.PAUSE_BLOCK and
+						not BlockType.PAUS)
 					{
 						AutoStopTape();
 					}
@@ -811,7 +794,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				var block = DataBlocks[_currentDataBlockIndex];
 
 				// is this a pause block?
-				if (block.BlockDescription == BlockType.PAUS || block.BlockDescription == BlockType.PAUSE_BLOCK)
+				if (block.BlockDescription is BlockType.PAUS or BlockType.PAUSE_BLOCK)
 				{
 					// don't autostop the tape here
 					return;
@@ -828,8 +811,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					return;
 
 				// don't autostop if there is only 1 block
-				if (DataBlocks.Count == 1 || _dataBlocks[_currentDataBlockIndex].BlockDescription == BlockType.CSW_Recording ||
-					_dataBlocks[_currentDataBlockIndex].BlockDescription == BlockType.WAV_Recording
+				if (DataBlocks.Count == 1 || DataBlocks[_currentDataBlockIndex].BlockDescription == BlockType.CSW_Recording ||
+					DataBlocks[_currentDataBlockIndex].BlockDescription == BlockType.WAV_Recording
 					)
 				{
 					return;

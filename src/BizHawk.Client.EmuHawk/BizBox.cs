@@ -24,10 +24,7 @@ namespace BizHawk.Client.EmuHawk
 			Process.Start(VersionInfo.HomePage);
 		}
 
-		private void OK_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
+		private void OK_Click(object sender, EventArgs e) => Close();
 
 		private void BizBox_Load(object sender, EventArgs e)
 		{
@@ -61,19 +58,10 @@ namespace BizHawk.Client.EmuHawk
 			linkLabel2.Text = $"Commit :{VersionInfo.GIT_BRANCH}@{VersionInfo.GIT_SHORTHASH}";
 		}
 
-		private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-		{
-			Process.Start($"https://github.com/TASEmulators/BizHawk/commit/{VersionInfo.GIT_SHORTHASH}");
-		}
+		private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => Process.Start($"https://github.com/TASEmulators/BizHawk/commit/{VersionInfo.GIT_SHORTHASH}");
 
-		private void btnCopyHash_Click(object sender, EventArgs e)
-		{
-			Clipboard.SetText(VersionInfo.GIT_SHORTHASH);
-		}
+		private void btnCopyHash_Click(object sender, EventArgs e) => Clipboard.SetText(VersionInfo.GIT_SHORTHASH);
 
-		private void linkLabel3_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-		{
-			Process.Start("https://github.com/TASEmulators/BizHawk/graphs/contributors");
-		}
+		private void linkLabel3_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => Process.Start("https://github.com/TASEmulators/BizHawk/graphs/contributors");
 	}
 }

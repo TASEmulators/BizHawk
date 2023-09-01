@@ -95,25 +95,13 @@ namespace BizHawk.BizInvoke
 	{
 		private class NativeConvention : ICallingConventionAdapter
 		{
-			public IntPtr GetArrivalFunctionPointer(IntPtr p, ParameterInfo pp, object lifetime)
-			{
-				return p;
-			}
+			public IntPtr GetArrivalFunctionPointer(IntPtr p, ParameterInfo pp, object lifetime) => p;
 
-			public Delegate GetDelegateForFunctionPointer(IntPtr p, Type delegateType)
-			{
-				return Marshal.GetDelegateForFunctionPointer(p, delegateType);
-			}
+			public Delegate GetDelegateForFunctionPointer(IntPtr p, Type delegateType) => Marshal.GetDelegateForFunctionPointer(p, delegateType);
 
-			public IntPtr GetDepartureFunctionPointer(IntPtr p, ParameterInfo pp, object lifetime)
-			{
-				return p;
-			}
+			public IntPtr GetDepartureFunctionPointer(IntPtr p, ParameterInfo pp, object lifetime) => p;
 
-			public IntPtr GetFunctionPointerForDelegate(Delegate d)
-			{
-				return Marshal.GetFunctionPointerForDelegate(d);
-			}
+			public IntPtr GetFunctionPointerForDelegate(Delegate d) => Marshal.GetFunctionPointerForDelegate(d);
 		}
 
 		/// <summary>
@@ -124,17 +112,11 @@ namespace BizHawk.BizInvoke
 		/// <summary>
 		/// waterbox calling convention, including thunk handling for stack marshalling
 		/// </summary>
-		public static ICallingConventionAdapter MakeWaterbox(IEnumerable<Delegate> slots, ICallbackAdjuster waterboxHost)
-		{
-			return new WaterboxAdapter(slots, waterboxHost);
-		}
+		public static ICallingConventionAdapter MakeWaterbox(IEnumerable<Delegate> slots, ICallbackAdjuster waterboxHost) => new WaterboxAdapter(slots, waterboxHost);
 		/// <summary>
 		/// waterbox calling convention, including thunk handling for stack marshalling.  Can only do callins, not callouts
 		/// </summary>
-		public static ICallingConventionAdapter MakeWaterboxDepartureOnly(ICallbackAdjuster waterboxHost)
-		{
-			return new WaterboxAdapter(null, waterboxHost);
-		}
+		public static ICallingConventionAdapter MakeWaterboxDepartureOnly(ICallbackAdjuster waterboxHost) => new WaterboxAdapter(null, waterboxHost);
 
 		/// <summary>
 		/// Get a waterbox calling convention adapater, except no wrapping is done for stack marshalling and callback support.
@@ -142,24 +124,15 @@ namespace BizHawk.BizInvoke
 		/// DO NOT USE THIS.
 		/// </summary>
 		/// <returns></returns>
-		public static ICallingConventionAdapter GetWaterboxUnsafeUnwrapped()
-		{
-			return WaterboxAdapter.WaterboxWrapper;
-		}
+		public static ICallingConventionAdapter GetWaterboxUnsafeUnwrapped() => WaterboxAdapter.WaterboxWrapper;
 
 		private class WaterboxAdapter : ICallingConventionAdapter
 		{
 			private class ReferenceEqualityComparer : IEqualityComparer<Delegate>
 			{
-				public bool Equals(Delegate x, Delegate y)
-				{
-					return x == y;
-				}
+				public bool Equals(Delegate x, Delegate y) => x == y;
 
-				public int GetHashCode(Delegate obj)
-				{
-					return System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(obj);
-				}
+				public int GetHashCode(Delegate obj) => System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(obj);
 			}
 
 			internal static readonly ICallingConventionAdapter WaterboxWrapper;
@@ -190,7 +163,7 @@ namespace BizHawk.BizInvoke
 					throw new InvalidOperationException("This calling convention adapter was created for departure only!  Pass known delegate slots when constructing to enable arrival");
 				}
 				if (lifetime is not Delegate d) throw new ArgumentException(message: "For this calling convention adapter, lifetimes must be delegate so guest slot can be inferred", paramName: nameof(lifetime));
-				if (!_slots.TryGetValue(d, out var slot))
+				if (!_slots.TryGetValue(d, out int slot))
 				{
 					throw new InvalidOperationException("All callback delegates must be registered at load");
 				}
@@ -215,7 +188,7 @@ namespace BizHawk.BizInvoke
 				{
 					throw new InvalidOperationException("This calling convention adapter was created for departure only!  Pass known delegate slots when constructing to enable arrival");
 				}
-				if (!_slots.TryGetValue(d, out var slot))
+				if (!_slots.TryGetValue(d, out int slot))
 				{
 					throw new InvalidOperationException("All callback delegates must be registered at load");
 				}
@@ -288,8 +261,8 @@ namespace BizHawk.BizInvoke
 				VerifyParameter(pp.ReturnType);
 				foreach (var ppp in pp.ParameterTypes)
 					VerifyParameter(ppp);
-				var ret = pp.ParameterTypes.Count(t => t != typeof(float) && t != typeof(double));
-				var fargs = pp.ParameterTypes.Count - ret;
+				int ret = pp.ParameterTypes.Count(t => t != typeof(float) && t != typeof(double));
+				int fargs = pp.ParameterTypes.Count - ret;
 				if (ret > 6 || fargs > 4)
 					throw new InvalidOperationException("Too many parameters to marshal!");
 				// a function may only use exclusively floating point args or integer/pointer args
@@ -304,7 +277,7 @@ namespace BizHawk.BizInvoke
 			{
 				_memory.Protect(_memory.Start, _memory.Size, MemoryBlock.Protection.RW);
 				var ss = _memory.GetStream(_memory.Start + (ulong)index * BlockSize, BlockSize, true);
-				var bw = new BinaryWriter(ss);
+				BinaryWriter bw = new BinaryWriter(ss);
 
 				// The thunks all take the expected parameters in the expected places, but additionally take the parameter
 				// of the function to call as a hidden extra parameter in rax.
@@ -325,10 +298,7 @@ namespace BizHawk.BizInvoke
 				_memory.Protect(_memory.Start, _memory.Size, MemoryBlock.Protection.RX);
 			}
 
-			private IntPtr GetThunkAddress(int index)
-			{
-				return Z.US(_memory.Start + (ulong)index * BlockSize);
-			}
+			private IntPtr GetThunkAddress(int index) => Z.US(_memory.Start + (ulong)index * BlockSize);
 
 			private void SetLifetime(int index, object lifetime)
 			{
@@ -342,7 +312,7 @@ namespace BizHawk.BizInvoke
 				// on the same delegate and not leak extra memory, so the result has to be cached
 				lock (_sync)
 				{
-					var index = FindUsedIndex(d);
+					int index = FindUsedIndex(d);
 					if (index != -1)
 					{
 						return GetThunkAddress(index);
@@ -359,8 +329,8 @@ namespace BizHawk.BizInvoke
 			{
 				lock (_sync)
 				{
-					var index = FindFreeIndex();
-					var count = VerifyDelegateSignature(pp);
+					int index = FindFreeIndex();
+					int count = VerifyDelegateSignature(pp);
 					WriteThunk(ThunkDll.GetProcAddrOrThrow($"arrive{count}"), p, index);
 					SetLifetime(index, lifetime);
 					return GetThunkAddress(index);
@@ -371,8 +341,8 @@ namespace BizHawk.BizInvoke
 			{
 				lock (_sync)
 				{
-					var index = FindFreeIndex();
-					var count = VerifyDelegateSignature(new(delegateType));
+					int index = FindFreeIndex();
+					int count = VerifyDelegateSignature(new(delegateType));
 					WriteThunk(ThunkDll.GetProcAddrOrThrow($"depart{count}"), p, index);
 					var ret = Marshal.GetDelegateForFunctionPointer(GetThunkAddress(index), delegateType);
 					SetLifetime(index, ret);
@@ -384,8 +354,8 @@ namespace BizHawk.BizInvoke
 			{
 				lock (_sync)
 				{
-					var index = FindFreeIndex();
-					var count = VerifyDelegateSignature(pp);
+					int index = FindFreeIndex();
+					int count = VerifyDelegateSignature(pp);
 					WriteThunk(ThunkDll.GetProcAddrOrThrow($"depart{count}"), p, index);
 					SetLifetime(index, lifetime);
 					return GetThunkAddress(index);

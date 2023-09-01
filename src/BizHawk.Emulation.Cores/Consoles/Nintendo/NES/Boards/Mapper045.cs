@@ -51,10 +51,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		private void Sync45()
-		{
-			lock_regs = regs[3].Bit(6);
-		}
+		private void Sync45() => lock_regs = regs[3].Bit(6);
 
 		private void IncrementCounter()
 		{

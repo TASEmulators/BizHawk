@@ -616,7 +616,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 
-			var tmp = disk[diskpos >> 3];
+			byte tmp = disk[diskpos >> 3];
 			tmp &= unchecked((byte)~(1 << (diskpos & 7)));
 			if (bittowrite)
 				tmp |= (byte)(1 << (diskpos & 7));
@@ -624,12 +624,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			diskpos++;
 		}
 
-		private void MoveDummy()
-		{
+		private void MoveDummy() =>
 			// It seems that the real disk doesn't keep on running at normal speed to the end while restting
 			// Whoever told me that was mistaken...
 			diskpos += 5000;
-		}
 
 
 	}

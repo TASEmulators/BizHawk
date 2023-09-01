@@ -126,8 +126,8 @@ namespace BizHawk.Client.EmuHawk
 
 			int y = UIHelper.ScaleY(0);
 
-			var maxCharSize = registers.Where(r => r.Value.BitSize != 1).Max(r => r.Key.Length);
-			var width = maxCharSize * (int)Font.Size;
+			int maxCharSize = registers.Where(r => r.Value.BitSize != 1).Max(r => r.Key.Length);
+			int width = maxCharSize * (int)Font.Size;
 			if (width < 20)
 			{
 				width = 20;
@@ -144,7 +144,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (_canSetCpuRegisters)
 				{
-					var t = new TextBox
+					TextBox t = new TextBox
 					{
 						Name = name,
 						Text = rv.Value.ToHexString(rv.BitSize / 4),
@@ -195,7 +195,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (flags.Any())
 			{
-				var p = new Panel
+				Panel p = new Panel
 				{
 					Name = "FlagPanel",
 					Location = new Point(UIHelper.ScaleX(5), y),
@@ -206,7 +206,7 @@ namespace BizHawk.Client.EmuHawk
 
 				foreach (var (name, rv) in registers.Where(r => r.Value.BitSize == 1).OrderByDescending(x => x.Key))
 				{
-					var c = new CheckBox
+					CheckBox c = new CheckBox
 					{
 						Appearance = Appearance.Button,
 						Name = name,

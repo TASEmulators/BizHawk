@@ -239,10 +239,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override byte ReadWram(int addr)
-		{
-			return wram_disable ? NES.DB : base.ReadWram(addr);
-		}
+		public override byte ReadWram(int addr) => wram_disable ? NES.DB : base.ReadWram(addr);
 
 		public override void NesSoftReset()
 		{
@@ -261,10 +258,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Sync();
 		}
 
-		public override void WritePrg(int addr, byte value)
-		{
-			scnt.Write(addr, value);
-		}
+		public override void WritePrg(int addr, byte value) => scnt.Write(addr, value);
 
 
 		public override byte ReadPrg(int addr)
@@ -296,9 +290,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SyncIRQ();
 		}
 
-		private void SyncIRQ()
-		{
-			SyncIRQ(irq_pending);
-		}
+		private void SyncIRQ() => SyncIRQ(irq_pending);
 	}
 }

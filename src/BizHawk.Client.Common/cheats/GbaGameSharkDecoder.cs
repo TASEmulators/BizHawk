@@ -12,8 +12,8 @@ namespace BizHawk.Client.Common.cheats
 
 		private static string Decrypt(string code)
 		{
-			var op1 = uint.Parse(code.Remove(8, 9), NumberStyles.HexNumber);
-			var op2 = uint.Parse(code.Remove(0, 9), NumberStyles.HexNumber);
+			uint op1 = uint.Parse(code.Remove(8, 9), NumberStyles.HexNumber);
+			uint op2 = uint.Parse(code.Remove(0, 9), NumberStyles.HexNumber);
 
 			uint sum = 0xC6EF3720;
 
@@ -32,9 +32,9 @@ namespace BizHawk.Client.Common.cheats
 		// TODO: When to use this?
 		private static string DecryptPro(string code)
 		{
-			var sum = 0xC6EF3720;
-			var op1 = uint.Parse(code.Remove(8, 9), NumberStyles.HexNumber);
-			var op2 = uint.Parse(code.Remove(0, 9), NumberStyles.HexNumber);
+			uint sum = 0xC6EF3720;
+			uint op1 = uint.Parse(code.Remove(8, 9), NumberStyles.HexNumber);
+			uint op2 = uint.Parse(code.Remove(0, 9), NumberStyles.HexNumber);
 
 			for (int j = 0; j < 32; ++j)
 			{
@@ -64,7 +64,7 @@ namespace BizHawk.Client.Common.cheats
 				return new InvalidCheatCode("All GBA GameShark Codes need to be 17 characters in length with a space after the first eight.");
 			}
 
-			var result = new DecodeResult
+			DecodeResult result = new DecodeResult
 			{
 				Size = code.First() switch
 				{
@@ -91,9 +91,6 @@ namespace BizHawk.Client.Common.cheats
 			return result;
 		}
 
-		private static string GetLast(string str, int length)
-		{
-			return length >= str.Length ? str : str.Substring(str.Length - length);
-		}
+		private static string GetLast(string str, int length) => length >= str.Length ? str : str.Substring(str.Length - length);
 	}
 }

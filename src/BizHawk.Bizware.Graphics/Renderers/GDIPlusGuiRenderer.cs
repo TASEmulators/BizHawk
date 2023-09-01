@@ -27,10 +27,7 @@ namespace BizHawk.Bizware.Graphics
 			new(1.0f, 1.0f, 1.0f, 1.0f)
 		};
 
-		public void SetCornerColor(int which, Vector4 color)
-		{
-			CornerColors[which] = color;
-		}
+		public void SetCornerColor(int which, Vector4 color) => CornerColors[which] = color;
 
 		/// <exception cref="ArgumentException"><paramref name="colors"/> does not have exactly <c>4</c> elements</exception>
 		public void SetCornerColors(Vector4[] colors)
@@ -42,16 +39,13 @@ namespace BizHawk.Bizware.Graphics
 				throw new ArgumentException("array must be size 4", nameof(colors));
 			}
 
-			for (var i = 0; i < 4; i++)
+			for (int i = 0; i < 4; i++)
 			{
 				CornerColors[i] = colors[i];
 			}
 		}
 
-		public void Dispose()
-		{
-			CurrentImageAttributes?.Dispose();
-		}
+		public void Dispose() => CurrentImageAttributes?.Dispose();
 
 		public void SetPipeline(Pipeline pipeline)
 		{
@@ -61,10 +55,7 @@ namespace BizHawk.Bizware.Graphics
 		{
 		}
 
-		public void SetModulateColorWhite()
-		{
-			SetModulateColor(Color.White);
-		}
+		public void SetModulateColorWhite() => SetModulateColor(Color.White);
 
 		private ImageAttributes CurrentImageAttributes;
 
@@ -77,10 +68,10 @@ namespace BizHawk.Bizware.Graphics
 				return;
 			}
 
-			var r = color.R / 255.0f;
-			var g = color.G / 255.0f;
-			var b = color.B / 255.0f;
-			var a = color.A / 255.0f;
+			float r = color.R / 255.0f;
+			float g = color.G / 255.0f;
+			float b = color.B / 255.0f;
+			float a = color.A / 255.0f;
 
 			float[][] colorMatrixElements =
 			{
@@ -91,19 +82,13 @@ namespace BizHawk.Bizware.Graphics
 				new float[] { 0, 0, 0, 0, 1 },
 			};
 
-			var colorMatrix = new ColorMatrix(colorMatrixElements);
+			ColorMatrix colorMatrix = new ColorMatrix(colorMatrixElements);
 			CurrentImageAttributes.SetColorMatrix(colorMatrix,ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
 		}
 
-		public void EnableBlending()
-		{
-			Owner.EnableBlending();
-		}
+		public void EnableBlending() => Owner.EnableBlending();
 
-		public void DisableBlending()
-		{ 
-			Owner.DisableBlending();
-		}
+		public void DisableBlending() => Owner.DisableBlending();
 
 		private MatrixStack _Projection, _Modelview;
 
@@ -127,10 +112,7 @@ namespace BizHawk.Bizware.Graphics
 			}
 		}
 
-		public void Begin(Size size)
-		{
-			Begin(size.Width, size.Height);
-		}
+		public void Begin(Size size) => Begin(size.Width, size.Height);
 
 		public void Begin(int width, int height)
 		{
@@ -176,16 +158,16 @@ namespace BizHawk.Bizware.Graphics
 
 		public void DrawSubrect(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
 		{
-			var gtex = (GDIPlusTexture)tex.Opaque;
+			GDIPlusTexture gtex = (GDIPlusTexture)tex.Opaque;
 			var g = _gdi.GetCurrentGraphics();
 
 			PrepDraw(g, tex);
 			SetupMatrix(g);
 
-			var x0 = u0 * tex.Width;
-			var y0 = v0 * tex.Height;
-			var x1 = u1 * tex.Width;
-			var y1 = v1 * tex.Height;
+			float x0 = u0 * tex.Width;
+			float y0 = v0 * tex.Height;
+			float x1 = u1 * tex.Width;
+			float y1 = v1 * tex.Height;
 
 			PointF[] destPoints =
 			{
@@ -198,22 +180,19 @@ namespace BizHawk.Bizware.Graphics
 			g.Transform = new(); // .Reset() doesnt work?
 		}
 
-		public void Draw(Art art) { DrawInternal(art, 0, 0, art.Width, art.Height, false, false); }
-		public void Draw(Art art, float x, float y) { DrawInternal(art, x, y, art.Width, art.Height, false, false); }
-		public void Draw(Art art, float x, float y, float width, float height) { DrawInternal(art, x, y, width, height, false, false); }
-		public void Draw(Art art, Vector2 pos) { DrawInternal(art, pos.X, pos.Y, art.Width, art.Height, false, false); }
-		public void Draw(Texture2d tex) { DrawInternal(tex, 0, 0, tex.Width, tex.Height); }
-		public void Draw(Texture2d tex, float x, float y) { DrawInternal(tex, x, y, tex.Width, tex.Height); }
-		public void DrawFlipped(Art art, bool xflip, bool yflip) { DrawInternal(art, 0, 0, art.Width, art.Height, xflip, yflip); }
+		public void Draw(Art art) => DrawInternal(art, 0, 0, art.Width, art.Height, false, false);
+		public void Draw(Art art, float x, float y) => DrawInternal(art, x, y, art.Width, art.Height, false, false);
+		public void Draw(Art art, float x, float y, float width, float height) => DrawInternal(art, x, y, width, height, false, false);
+		public void Draw(Art art, Vector2 pos) => DrawInternal(art, pos.X, pos.Y, art.Width, art.Height, false, false);
+		public void Draw(Texture2d tex) => DrawInternal(tex, 0, 0, tex.Width, tex.Height);
+		public void Draw(Texture2d tex, float x, float y) => DrawInternal(tex, x, y, tex.Width, tex.Height);
+		public void DrawFlipped(Art art, bool xflip, bool yflip) => DrawInternal(art, 0, 0, art.Width, art.Height, xflip, yflip);
 
-		public void Draw(Texture2d art, float x, float y, float width, float height)
-		{
-			DrawInternal(art, x, y, width, height);
-		}
+		public void Draw(Texture2d art, float x, float y, float width, float height) => DrawInternal(art, x, y, width, height);
 
 		private static void PrepDraw(SDGraphics g, Texture2d tex)
 		{
-			var tw = (GDIPlusTexture)tex.Opaque;
+			GDIPlusTexture tw = (GDIPlusTexture)tex.Opaque;
 
 			// TODO - we can support bicubic for the final presentation...
 			if ((int)tw.MagFilter != (int)tw.MinFilter)
@@ -237,15 +216,9 @@ namespace BizHawk.Bizware.Graphics
 			g.Transform = new(mat.M11, mat.M12, mat.M21, mat.M22, mat.M41, mat.M42);
 		}
 
-		private void DrawInternal(Art art, float x, float y, float w, float h)
-		{
-			DrawInternal(art.BaseTexture, x, y, w, h, art.u0, art.v0, art.u1, art.v1);
-		}
+		private void DrawInternal(Art art, float x, float y, float w, float h) => DrawInternal(art.BaseTexture, x, y, w, h, art.u0, art.v0, art.u1, art.v1);
 
-		private void DrawInternal(Texture2d tex, float x, float y, float w, float h)
-		{
-			DrawInternal(tex, x, y, w, h, 0, 0, 1, 1);
-		}
+		private void DrawInternal(Texture2d tex, float x, float y, float w, float h) => DrawInternal(tex, x, y, w, h, 0, 0, 1, 1);
 
 		private void DrawInternal(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
 		{
@@ -261,14 +234,14 @@ namespace BizHawk.Bizware.Graphics
 				new(x, y+h),
 			};
 
-			var sx = tex.Width * u0;
-			var sy = tex.Height * v0;
-			var sx2 = tex.Width * u1;
-			var sy2 = tex.Height * v1;
-			var sw = sx2 - sx;
-			var sh = sy2 - sy;
+			float sx = tex.Width * u0;
+			float sy = tex.Height * v0;
+			float sx2 = tex.Width * u1;
+			float sy2 = tex.Height * v1;
+			float sw = sx2 - sx;
+			float sh = sy2 - sy;
 
-			var gtex = (GDIPlusTexture)tex.Opaque;
+			GDIPlusTexture gtex = (GDIPlusTexture)tex.Opaque;
 			g.PixelOffsetMode = PixelOffsetMode.Half;
 			g.DrawImage(gtex.SDBitmap, destPoints, new(sx, sy, sw, sh), GraphicsUnit.Pixel, CurrentImageAttributes);
 			g.Transform = new(); // .Reset() doesn't work ? ?

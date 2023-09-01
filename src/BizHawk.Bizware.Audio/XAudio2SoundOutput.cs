@@ -27,7 +27,7 @@ namespace BizHawk.Bizware.Audio
 				return null;
 			}
 
-			using var enumerator = new IMMDeviceEnumerator();
+			using IMMDeviceEnumerator enumerator = new IMMDeviceEnumerator();
 			var devices = enumerator.EnumAudioEndpoints(DataFlow.Render);
 			var device = devices.FirstOrDefault(capDevice => capDevice.FriendlyName == deviceName);
 			if (device is null)
@@ -62,7 +62,7 @@ namespace BizHawk.Bizware.Audio
 
 		public static IEnumerable<string> GetDeviceNames()
 		{
-			using var enumerator = new IMMDeviceEnumerator();
+			using IMMDeviceEnumerator enumerator = new IMMDeviceEnumerator();
 			var devices = enumerator.EnumAudioEndpoints(DataFlow.Render);
 			return devices.Select(capDevice => capDevice.FriendlyName);
 		}
@@ -71,17 +71,14 @@ namespace BizHawk.Bizware.Audio
 
 		public int MaxSamplesDeficit { get; private set; }
 
-		public void ApplyVolumeSettings(double volume)
-		{
-			_sourceVoice.Volume = (float)volume;
-		}
+		public void ApplyVolumeSettings(double volume) => _sourceVoice.Volume = (float)volume;
 
 		public void StartSound()
 		{
 			BufferSizeSamples = _sound.MillisecondsToSamples(_sound.ConfigBufferSizeMs);
 			MaxSamplesDeficit = BufferSizeSamples;
 
-			var format = new WaveFormat(_sound.SampleRate, _sound.BytesPerSample * 8, _sound.ChannelCount);
+			WaveFormat format = new WaveFormat(_sound.SampleRate, _sound.BytesPerSample * 8, _sound.ChannelCount);
 			_sourceVoice = _device.CreateSourceVoice(format);
 
 			_bufferPool = new();
@@ -104,10 +101,10 @@ namespace BizHawk.Bizware.Audio
 
 		public int CalculateSamplesNeeded()
 		{
-			var isInitializing = _runningSamplesQueued == 0;
-			var detectedUnderrun = !isInitializing && _sourceVoice.State.BuffersQueued == 0;
-			var samplesAwaitingPlayback = _runningSamplesQueued - (long)_sourceVoice.State.SamplesPlayed;
-			var samplesNeeded = (int)Math.Max(BufferSizeSamples - samplesAwaitingPlayback, 0);
+			bool isInitializing = _runningSamplesQueued == 0;
+			bool detectedUnderrun = !isInitializing && _sourceVoice.State.BuffersQueued == 0;
+			long samplesAwaitingPlayback = _runningSamplesQueued - (long)_sourceVoice.State.SamplesPlayed;
+			int samplesNeeded = (int)Math.Max(BufferSizeSamples - samplesAwaitingPlayback, 0);
 			if (isInitializing || detectedUnderrun)
 			{
 				_sound.HandleInitializationOrUnderrun(detectedUnderrun, ref samplesNeeded);
@@ -119,7 +116,7 @@ namespace BizHawk.Bizware.Audio
 		{
 			if (sampleCount == 0) return;
 			_bufferPool.Release(_sourceVoice.State.BuffersQueued);
-			var byteCount = sampleCount * _sound.BlockAlign;
+			int byteCount = sampleCount * _sound.BlockAlign;
 			var item = _bufferPool.Obtain(byteCount);
 			samples.AsSpan(sampleOffset * _sound.BlockAlign / 2, byteCount / 2)
 				.CopyTo(item.AudioBuffer.AsSpan<short>());
@@ -152,8 +149,8 @@ namespace BizHawk.Bizware.Audio
 
 			private BufferPoolItem GetAvailableItem(int length)
 			{
-				var foundIndex = -1;
-				for (var i = 0; i < _availableItems.Count; i++)
+				int foundIndex = -1;
+				for (int i = 0; i < _availableItems.Count; i++)
 				{
 					if (_availableItems[i].MaxLength >= length && (foundIndex == -1 || _availableItems[i].MaxLength < _availableItems[foundIndex].MaxLength))
 						foundIndex = i;

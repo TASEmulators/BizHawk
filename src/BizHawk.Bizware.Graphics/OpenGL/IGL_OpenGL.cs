@@ -64,10 +64,7 @@ namespace BizHawk.Bizware.Graphics
 		{
 		}
 
-		public void Dispose()
-		{
-			GL.Dispose();
-		}
+		public void Dispose() => GL.Dispose();
 
 		public void ClearColor(Color color)
 		{
@@ -75,20 +72,11 @@ namespace BizHawk.Bizware.Graphics
 			GL.Clear(ClearBufferMask.ColorBufferBit);
 		}
 
-		public void FreeTexture(Texture2d tex)
-		{
-			GL.DeleteTexture((uint)tex.Opaque);
-		}
+		public void FreeTexture(Texture2d tex) => GL.DeleteTexture((uint)tex.Opaque);
 
-		public BizShader CreateFragmentShader(string source, string entry, bool required)
-		{
-			return CreateShader(ShaderType.FragmentShader, source, required);
-		}
+		public BizShader CreateFragmentShader(string source, string entry, bool required) => CreateShader(ShaderType.FragmentShader, source, required);
 
-		public BizShader CreateVertexShader(string source, string entry, bool required)
-		{
-			return CreateShader(ShaderType.VertexShader, source, required);
-		}
+		public BizShader CreateVertexShader(string source, string entry, bool required) => CreateShader(ShaderType.VertexShader, source, required);
 
 		public void EnableBlending()
 		{
@@ -121,7 +109,7 @@ namespace BizHawk.Bizware.Graphics
 			// if the shaders aren't available, the pipeline isn't either
 			if (!vertexShader.Available || !fragmentShader.Available)
 			{
-				var errors = $"Vertex Shader:\r\n {vertexShader.Errors} \r\n-------\r\nFragment Shader:\r\n{fragmentShader.Errors}";
+				string errors = $"Vertex Shader:\r\n {vertexShader.Errors} \r\n-------\r\nFragment Shader:\r\n{fragmentShader.Errors}";
 				if (required)
 				{
 					throw new InvalidOperationException($"Couldn't build required GL pipeline:\r\n{errors}");
@@ -130,20 +118,20 @@ namespace BizHawk.Bizware.Graphics
 				return new(this, null, false, null, null, null) { Errors = errors };
 			}
 
-			var success = true;
+			bool success = true;
 
-			var vsw = (ShaderWrapper)vertexShader.Opaque;
-			var fsw = (ShaderWrapper)fragmentShader.Opaque;
+			ShaderWrapper vsw = (ShaderWrapper)vertexShader.Opaque;
+			ShaderWrapper fsw = (ShaderWrapper)fragmentShader.Opaque;
 
-			var pid = GL.CreateProgram();
+			uint pid = GL.CreateProgram();
 			GL.AttachShader(pid, vsw.sid);
 			GL.AttachShader(pid, fsw.sid);
 			_ = GL.GetError();
 
 			GL.LinkProgram(pid);
 
-			var errcode = (ErrorCode)GL.GetError();
-			var resultLog = GL.GetProgramInfoLog(pid);
+			ErrorCode errcode = (ErrorCode)GL.GetError();
+			string resultLog = GL.GetProgramInfoLog(pid);
 
 			if (errcode != ErrorCode.NoError)
 			{
@@ -155,7 +143,7 @@ namespace BizHawk.Bizware.Graphics
 				success = false;
 			}
 
-			GL.GetProgram(pid, GLEnum.LinkStatus, out var linkStatus);
+			GL.GetProgram(pid, GLEnum.LinkStatus, out int linkStatus);
 			if (linkStatus == 0)
 			{
 				if (required)
@@ -206,16 +194,16 @@ namespace BizHawk.Bizware.Graphics
 #endif
 
 			// get all the uniforms
-			var uniforms = new List<UniformInfo>();
-			GL.GetProgram(pid, GLEnum.ActiveUniforms, out var nUniforms);
-			var samplers = new List<int>();
+			List<UniformInfo> uniforms = new List<UniformInfo>();
+			GL.GetProgram(pid, GLEnum.ActiveUniforms, out int nUniforms);
+			List<int> samplers = new List<int>();
 
 			for (uint i = 0; i < nUniforms; i++)
 			{
 				GL.GetActiveUniform(pid, i, 1024, out _, out _, out UniformType type, out string name);
-				var loc = GL.GetUniformLocation(pid, name);
+				int loc = GL.GetUniformLocation(pid, name);
 
-				var ui = new UniformInfo { Name = name, Opaque = loc };
+				UniformInfo ui = new UniformInfo { Name = name, Opaque = loc };
 
 				if (type == UniformType.Sampler2D)
 				{
@@ -234,7 +222,7 @@ namespace BizHawk.Bizware.Graphics
 			if (!vertexShader.Available) success = false;
 			if (!fragmentShader.Available) success = false;
 
-			var pw = new PipelineWrapper { pid = pid, VertexShader = vertexShader, FragmentShader = fragmentShader, SamplerLocs = samplers };
+			PipelineWrapper pw = new PipelineWrapper { pid = pid, VertexShader = vertexShader, FragmentShader = fragmentShader, SamplerLocs = samplers };
 
 			return new(this, pw, success, vertexLayout, uniforms, memo);
 		}
@@ -255,7 +243,7 @@ namespace BizHawk.Bizware.Graphics
 
 		public void Internal_FreeShader(BizShader shader)
 		{
-			var sw = (ShaderWrapper)shader.Opaque;
+			ShaderWrapper sw = (ShaderWrapper)shader.Opaque;
 			GL.DeleteShader(sw.sid);
 		}
 
@@ -275,11 +263,11 @@ namespace BizHawk.Bizware.Graphics
 				throw new InvalidOperationException("Attempt to bind unavailable pipeline");
 			}
 
-			var pw = (PipelineWrapper)pipeline.Opaque;
+			PipelineWrapper pw = (PipelineWrapper)pipeline.Opaque;
 			GL.UseProgram(pw.pid);
 
 			// this is dumb and confusing, but we have to bind physical sampler numbers to sampler variables.
-			for (var i = 0; i < pw.SamplerLocs.Count; i++)
+			for (int i = 0; i < pw.SamplerLocs.Count; i++)
 			{
 				GL.Uniform1(pw.SamplerLocs[i], i);
 			}
@@ -294,7 +282,7 @@ namespace BizHawk.Bizware.Graphics
 
 		public VertexLayout CreateVertexLayout()
 		{
-			var vlw = new VertexLayoutWrapper()
+			VertexLayoutWrapper vlw = new VertexLayoutWrapper()
 			{
 				vao = GL.GenVertexArray(),
 				vbo = GL.GenBuffer(),
@@ -306,15 +294,12 @@ namespace BizHawk.Bizware.Graphics
 
 		public void Internal_FreeVertexLayout(VertexLayout vl)
 		{
-			var vlw = (VertexLayoutWrapper)vl.Opaque;
+			VertexLayoutWrapper vlw = (VertexLayoutWrapper)vl.Opaque;
 			GL.DeleteVertexArray(vlw.vao);
 			GL.DeleteBuffer(vlw.vbo);
 		}
 
-		private void BindTexture2d(Texture2d tex)
-		{
-			GL.BindTexture(TextureTarget.Texture2D, (uint)tex.Opaque);
-		}
+		private void BindTexture2d(Texture2d tex) => GL.BindTexture(TextureTarget.Texture2D, (uint)tex.Opaque);
 
 		public void SetTextureWrapMode(Texture2d tex, bool clamp)
 		{
@@ -338,7 +323,7 @@ namespace BizHawk.Bizware.Graphics
 			GL.DisableClientState(EnableCap.VertexArray);
 			GL.DisableClientState(EnableCap.ColorArray);
 
-			for (var i = 1; i >= 0; i--)
+			for (int i = 1; i >= 0; i--)
 			{
 				GL.ClientActiveTexture(TextureUnit.Texture0 + i);
 				GL.DisableClientState(EnableCap.TextureCoordArray);
@@ -393,16 +378,16 @@ namespace BizHawk.Bizware.Graphics
 				return;
 			}
 
-			var vlw = (VertexLayoutWrapper)vertexLayout.Opaque;
+			VertexLayoutWrapper vlw = (VertexLayoutWrapper)vertexLayout.Opaque;
 			GL.BindVertexArray(vlw.vao);
 			GL.BindBuffer(GLEnum.ArrayBuffer, vlw.vbo);
 
-			var stride = vertexLayout.Items[0].Stride;
+			int stride = vertexLayout.Items[0].Stride;
 			Debug.Assert(vertexLayout.Items.All(i => i.Value.Stride == stride));
 
 			unsafe
 			{
-				var vertexes = new ReadOnlySpan<byte>(data.ToPointer(), count * stride);
+				ReadOnlySpan<byte> vertexes = new ReadOnlySpan<byte>(data.ToPointer(), count * stride);
 
 				// BufferData reallocs and BufferSubData doesn't, so only use the former if size changes
 				if (vertexes.Length != vlw.bufferLen)
@@ -441,15 +426,9 @@ namespace BizHawk.Bizware.Graphics
 			GL.BindVertexArray(0);
 		}
 
-		public void SetPipelineUniform(PipelineUniform uniform, bool value)
-		{
-			GL.Uniform1((int)uniform.Sole.Opaque, value ? 1 : 0);
-		}
+		public void SetPipelineUniform(PipelineUniform uniform, bool value) => GL.Uniform1((int)uniform.Sole.Opaque, value ? 1 : 0);
 
-		public unsafe void SetPipelineUniformMatrix(PipelineUniform uniform, Matrix4x4 mat, bool transpose)
-		{
-			GL.UniformMatrix4((int)uniform.Sole.Opaque, 1, transpose, (float*)&mat);
-		}
+		public unsafe void SetPipelineUniformMatrix(PipelineUniform uniform, Matrix4x4 mat, bool transpose) => GL.UniformMatrix4((int)uniform.Sole.Opaque, 1, transpose, (float*)&mat);
 
 		public unsafe void SetPipelineUniformMatrix(PipelineUniform uniform, ref Matrix4x4 mat, bool transpose)
 		{
@@ -459,15 +438,9 @@ namespace BizHawk.Bizware.Graphics
 			}
 		}
 
-		public void SetPipelineUniform(PipelineUniform uniform, Vector4 value)
-		{
-			GL.Uniform4((int)uniform.Sole.Opaque, value.X, value.Y, value.Z, value.W);
-		}
+		public void SetPipelineUniform(PipelineUniform uniform, Vector4 value) => GL.Uniform4((int)uniform.Sole.Opaque, value.X, value.Y, value.Z, value.W);
 
-		public void SetPipelineUniform(PipelineUniform uniform, Vector2 value)
-		{
-			GL.Uniform2((int)uniform.Sole.Opaque, value.X, value.Y);
-		}
+		public void SetPipelineUniform(PipelineUniform uniform, Vector2 value) => GL.Uniform2((int)uniform.Sole.Opaque, value.X, value.Y);
 
 		public void SetPipelineUniform(PipelineUniform uniform, float value)
 		{
@@ -489,7 +462,7 @@ namespace BizHawk.Bizware.Graphics
 
 		public void SetPipelineUniformSampler(PipelineUniform uniform, Texture2d tex)
 		{
-			var n = (int)uniform.Sole.Opaque >> 24;
+			int n = (int)uniform.Sole.Opaque >> 24;
 
 			// set the sampler index into the uniform first
 			GL.ActiveTexture(TextureUnit.Texture0 + n);
@@ -512,26 +485,23 @@ namespace BizHawk.Bizware.Graphics
 
 		public Texture2d LoadTexture(Bitmap bitmap)
 		{
-			using var bmp = new BitmapBuffer(bitmap, new());
+			using BitmapBuffer bmp = new BitmapBuffer(bitmap, new());
 			return LoadTexture(bmp);
 		}
 
 		public Texture2d LoadTexture(Stream stream)
 		{
-			using var bmp = new BitmapBuffer(stream, new());
+			using BitmapBuffer bmp = new BitmapBuffer(stream, new());
 			return LoadTexture(bmp);
 		}
 
 		public Texture2d CreateTexture(int width, int height)
 		{
-			var id = GL.GenTexture();
+			uint id = GL.GenTexture();
 			return new(this, id, width, height);
 		}
 
-		public Texture2d WrapGLTexture2d(IntPtr glTexId, int width, int height)
-		{
-			return new(this, (uint)glTexId.ToInt32(), width, height) { IsUpsideDown = true };
-		}
+		public Texture2d WrapGLTexture2d(IntPtr glTexId, int width, int height) => new(this, (uint)glTexId.ToInt32(), width, height) { IsUpsideDown = true };
 
 		public unsafe void LoadTextureData(Texture2d tex, BitmapBuffer bmp)
 		{
@@ -557,8 +527,8 @@ namespace BizHawk.Bizware.Graphics
 		public unsafe RenderTarget CreateRenderTarget(int w, int h)
 		{
 			// create a texture for it
-			var texId = GL.GenTexture();
-			var tex = new Texture2d(this, texId, w, h);
+			uint texId = GL.GenTexture();
+			Texture2d tex = new Texture2d(this, texId, w, h);
 
 			GL.BindTexture(TextureTarget.Texture2D, texId);
 			GL.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba8, (uint)w, (uint)h, 0, PixelFormat.Bgra, PixelType.UnsignedByte, null);
@@ -566,7 +536,7 @@ namespace BizHawk.Bizware.Graphics
 			tex.SetMinFilter(BizTextureMinFilter.Nearest);
 
 			// create the FBO
-			var fbId = GL.GenFramebuffer();
+			uint fbId = GL.GenFramebuffer();
 			GL.BindFramebuffer(FramebufferTarget.Framebuffer, fbId);
 
 			// bind the tex to the FBO
@@ -602,7 +572,7 @@ namespace BizHawk.Bizware.Graphics
 		public unsafe Texture2d LoadTexture(BitmapBuffer bmp)
 		{
 			Texture2d ret;
-			var id = GL.GenTexture();
+			uint id = GL.GenTexture();
 			try
 			{
 				ret = new(this, id, bmp.Width, bmp.Height);
@@ -627,7 +597,7 @@ namespace BizHawk.Bizware.Graphics
 		{
 			// note - this is dangerous since it changes the bound texture. could we save it?
 			BindTexture2d(tex);
-			var bb = new BitmapBuffer(tex.IntWidth, tex.IntHeight);
+			BitmapBuffer bb = new BitmapBuffer(tex.IntWidth, tex.IntHeight);
 			var bmpdata = bb.LockBits();
 			GL.GetTexImage(TextureTarget.Texture2D, 0, PixelFormat.Bgra, PixelType.UnsignedByte, bmpdata.Scan0.ToPointer());
 			bb.UnlockBits(bmpdata);
@@ -636,19 +606,13 @@ namespace BizHawk.Bizware.Graphics
 
 		public Texture2d LoadTexture(string path)
 		{
-			using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+			using FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
 			return LoadTexture(fs);
 		}
 
-		public Matrix4x4 CreateGuiProjectionMatrix(int w, int h)
-		{
-			return CreateGuiProjectionMatrix(new(w, h));
-		}
+		public Matrix4x4 CreateGuiProjectionMatrix(int w, int h) => CreateGuiProjectionMatrix(new(w, h));
 
-		public Matrix4x4 CreateGuiViewMatrix(int w, int h, bool autoflip)
-		{
-			return CreateGuiViewMatrix(new(w, h), autoflip);
-		}
+		public Matrix4x4 CreateGuiViewMatrix(int w, int h, bool autoflip) => CreateGuiViewMatrix(new(w, h), autoflip);
 
 		public Matrix4x4 CreateGuiProjectionMatrix(Size dims)
 		{
@@ -680,24 +644,18 @@ namespace BizHawk.Bizware.Graphics
 			// BUT ALSO: new specifications.. viewport+scissor make sense together
 		}
 
-		public void SetViewport(int width, int height)
-		{
-			SetViewport(0, 0, width, height);
-		}
+		public void SetViewport(int width, int height) => SetViewport(0, 0, width, height);
 
-		public void SetViewport(Size size)
-		{
-			SetViewport(size.Width, size.Height);
-		}
+		public void SetViewport(Size size) => SetViewport(size.Width, size.Height);
 
 		private BizShader CreateShader(ShaderType type, string source, bool required)
 		{
-			var sw = new ShaderWrapper();
-			var info = string.Empty;
+			ShaderWrapper sw = new ShaderWrapper();
+			string info = string.Empty;
 
 			_ = GL.GetError();
-			var sid = GL.CreateShader(type);
-			var ok = CompileShaderSimple(sid, source, required);
+			uint sid = GL.CreateShader(type);
+			bool ok = CompileShaderSimple(sid, source, required);
 			if (!ok)
 			{
 				GL.GetShaderInfoLog(sid, out info);
@@ -705,7 +663,7 @@ namespace BizHawk.Bizware.Graphics
 				sid = 0;
 			}
 
-			var ret = new BizShader(this, sw, ok)
+			BizShader ret = new BizShader(this, sw, ok)
 			{
 				Errors = info
 			};
@@ -717,9 +675,9 @@ namespace BizHawk.Bizware.Graphics
 
 		private bool CompileShaderSimple(uint sid, string source, bool required)
 		{
-			var success = true;
+			bool success = true;
 
-			var errcode = (ErrorCode)GL.GetError();
+			ErrorCode errcode = (ErrorCode)GL.GetError();
 			if (errcode != ErrorCode.NoError)
 			{
 				if (required)
@@ -746,10 +704,10 @@ namespace BizHawk.Bizware.Graphics
 			GL.CompileShader(sid);
 
 			errcode = (ErrorCode)GL.GetError();
-			var resultLog = GL.GetShaderInfoLog(sid);
+			string resultLog = GL.GetShaderInfoLog(sid);
 			if (errcode != ErrorCode.NoError)
 			{
-				var message = $"Error compiling shader ({nameof(GL.CompileShader)}) {errcode}\r\n\r\n{resultLog}";
+				string message = $"Error compiling shader ({nameof(GL.CompileShader)}) {errcode}\r\n\r\n{resultLog}";
 				if (required)
 				{
 					throw new InvalidOperationException(message);
@@ -759,7 +717,7 @@ namespace BizHawk.Bizware.Graphics
 				success = false;
 			}
 
-			GL.GetShader(sid, ShaderParameterName.CompileStatus, out var n);
+			GL.GetShader(sid, ShaderParameterName.CompileStatus, out int n);
 
 			if (n == 0)
 			{

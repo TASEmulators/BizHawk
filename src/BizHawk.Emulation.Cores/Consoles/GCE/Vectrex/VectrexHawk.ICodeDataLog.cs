@@ -7,10 +7,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 {
 	public sealed partial class VectrexHawk : ICodeDataLogger
 	{
-		public void SetCDL(ICodeDataLog cdl)
-		{
-			CDL = cdl;
-		}
+		public void SetCDL(ICodeDataLog cdl) => CDL = cdl;
 
 		public void NewCDL(ICodeDataLog cdl)
 		{
@@ -55,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		{
 			if (MapMemory != null)
 			{
-				CDLog_MapResults results = MapMemory(address, false);
+				var results = MapMemory(address, false);
 				switch (results.Type)
 				{
 					case CDLog_AddrType.None: break;

@@ -48,10 +48,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly EventHandler _setLastFocusedNUD;
 		private bool _readOnly;
 
-		public void UpdateValues()
-		{
-			PadControls.ForEach(c => c.UpdateValues());
-		}
+		public void UpdateValues() => PadControls.ForEach(c => c.UpdateValues());
 
 		private List<IVirtualPadControl> PadControls =>
 			PadBox.Controls
@@ -88,7 +85,7 @@ namespace BizHawk.Client.EmuHawk
 			static VirtualPadButton GenVirtualPadButton(InputManager inputManager, ButtonSchema button)
 			{
 				var icon = button.Icon == null ? null : _buttonImages[button.Icon.Value];
-				var buttonControl = new VirtualPadButton
+				VirtualPadButton buttonControl = new VirtualPadButton
 				{
 					InputManager = inputManager,
 					Name = button.Name,
@@ -170,10 +167,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void Clear()
-		{
-			PadControls.ForEach(p => p.Clear());
-		}
+		public void Clear() => PadControls.ForEach(p => p.Clear());
 
 		public void ClearBoolean()
 		{
@@ -183,10 +177,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void Set(IController controller)
-		{
-			PadControls.ForEach(c => c.Set(controller));
-		}
+		public void Set(IController controller) => PadControls.ForEach(c => c.Set(controller));
 
 		public void SetPrevious(IController previous)
 		{

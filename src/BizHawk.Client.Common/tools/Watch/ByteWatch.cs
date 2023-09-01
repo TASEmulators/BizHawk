@@ -51,18 +51,12 @@ namespace BizHawk.Client.Common
 		/// Get a list a <see cref="WatchDisplayType"/> that can be used for this <see cref="ByteWatch"/>
 		/// </summary>
 		/// <returns>An enumeration that contains all valid <see cref="WatchDisplayType"/></returns>
-		public override IEnumerable<WatchDisplayType> AvailableTypes()
-		{
-			return ValidTypes;
-		}
+		public override IEnumerable<WatchDisplayType> AvailableTypes() => ValidTypes;
 
 		/// <summary>
 		/// Reset the previous value; set it to the current one
 		/// </summary>
-		public override void ResetPrevious()
-		{
-			_previous = GetByte();
-		}
+		public override void ResetPrevious() => _previous = GetByte();
 
 		/// <summary>
 		/// Try to sets the value into the <see cref="MemoryDomain"/>
@@ -102,7 +96,7 @@ namespace BizHawk.Client.Common
 				case PreviousType.Original:
 					return;
 				case PreviousType.LastChange:
-					var temp = _value;
+					byte temp = _value;
 					_value = GetByte();
 					if (_value != temp)
 					{

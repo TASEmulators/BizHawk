@@ -75,10 +75,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				throw new InvalidOperationException("Only Sync mode is supported.");
 		}
 
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Async is not available");
-		}
+		public void GetSamplesAsync(short[] samples) => throw new NotSupportedException("Async is not available");
 
 		public void DiscardSamples()
 		{

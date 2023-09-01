@@ -223,7 +223,7 @@ namespace BizHawk.Client.EmuHawk
 				WriteBe32(0); // timestamp (same time as previous packet)
 				_f.WriteByte(71); // GameName
 
-				var temp = Encoding.UTF8.GetBytes(mmd.GameName);
+				byte[] temp = Encoding.UTF8.GetBytes(mmd.GameName);
 				WriteVar(temp.Length);
 				_f.Write(temp, 0, temp.Length);
 
@@ -353,7 +353,7 @@ namespace BizHawk.Client.EmuHawk
 					throw new ArithmeticException("JMD Timestamp problem?");
 				}
 
-				var timeStampOut = j.Timestamp - _timestampOff;
+				ulong timeStampOut = j.Timestamp - _timestampOff;
 				while (timeStampOut > 0xffffffff)
 				{
 					timeStampOut -= 0xffffffff;
@@ -375,7 +375,7 @@ namespace BizHawk.Client.EmuHawk
 			/// <param name="source">zlibed frame with width and height prepended</param>
 			public void AddVideo(byte[] source)
 			{
-				var j = new JmdPacket
+				JmdPacket j = new JmdPacket
 				{
 					Stream = 0,
 					Subtype = 1,// zlib compressed, other possibility is 0 = uncompressed
@@ -416,7 +416,7 @@ namespace BizHawk.Client.EmuHawk
 			/// <param name="r">right sample</param>
 			private void DoAudioPacket(short l, short r)
 			{
-				var j = new JmdPacket
+				JmdPacket j = new JmdPacket
 				{
 					Stream = 1,
 					Subtype = 1, // raw PCM audio
@@ -542,7 +542,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public IDisposable AcquireVideoCodecToken(Config config)
 		{
-			var ret = new CodecToken();
+			CodecToken ret = new CodecToken();
 
 			// load from config and sanitize
 			int t = Math.Min(Math.Max(config.JmdThreads, 1), 6);
@@ -712,7 +712,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <returns>zlib compressed frame, with width and height prepended</returns>
 		private byte[] GzipFrame(VideoCopy v)
 		{
-			var m = new MemoryStream();
+			MemoryStream m = new MemoryStream();
 
 			// write frame height and width first
 			m.WriteByte((byte)(v.BufferWidth >> 8));
@@ -720,7 +720,7 @@ namespace BizHawk.Client.EmuHawk
 			m.WriteByte((byte)(v.BufferHeight >> 8));
 			m.WriteByte((byte)(v.BufferHeight & 255));
 
-			var g = new GZipStream(m, GetCompressionLevel(_token.CompressionLevel), true); // leave memory stream open so we can pick its contents
+			GZipStream g = new GZipStream(m, GetCompressionLevel(_token.CompressionLevel), true); // leave memory stream open so we can pick its contents
 			g.Write(v.VideoBuffer, 0, v.VideoBuffer.Length);
 			g.Flush();
 			g.Close();

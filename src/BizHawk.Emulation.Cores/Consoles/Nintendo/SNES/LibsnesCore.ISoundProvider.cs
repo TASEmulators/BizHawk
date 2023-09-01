@@ -12,10 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		private uint _inSamps;
 		private int _outSamps;
 
-		public void DiscardSamples()
-		{
-			_outSamps = 0;
-		}
+		public void DiscardSamples() => _outSamps = 0;
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
@@ -65,10 +62,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public bool CanProvideAsync => false;
 
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new InvalidOperationException("Async mode is not supported.");
-		}
+		public void GetSamplesAsync(short[] samples) => throw new InvalidOperationException("Async mode is not supported.");
 
 		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 

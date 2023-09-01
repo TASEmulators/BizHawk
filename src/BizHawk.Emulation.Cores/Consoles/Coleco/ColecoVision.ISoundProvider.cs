@@ -17,10 +17,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			_sampleClock = 0;
 		}
 
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Async is not available");
-		}
+		public void GetSamplesAsync(short[] samples) => throw new NotSupportedException("Async is not available");
 
 		public bool CanProvideAsync => false;
 
@@ -50,10 +47,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			}
 		}
 
-		public void GetSamples(short[] samples)
-		{
-			throw new Exception();
-		}
+		public void GetSamples(short[] samples) => throw new Exception();
 
 	}
 }

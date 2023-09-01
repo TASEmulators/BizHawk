@@ -6,15 +6,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 	// adelikat: changing settings to default object until there are actually settings, as the ui depends on it to know if there are any settings available
 	public partial class C64 : ISettable<C64.C64Settings, C64.C64SyncSettings>
 	{
-		public C64Settings GetSettings()
-		{
-			return Settings.Clone();
-		}
+		public C64Settings GetSettings() => Settings.Clone();
 
-		public C64SyncSettings GetSyncSettings()
-		{
-			return SyncSettings.Clone();
-		}
+		public C64SyncSettings GetSyncSettings() => SyncSettings.Clone();
 
 		public PutSettingsDirtyBits PutSettings(C64Settings o)
 		{
@@ -43,10 +37,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			[DefaultValue(BorderType.SmallProportional)]
 			public BorderType BorderType { get; set; }
 
-			public C64Settings Clone()
-			{
-				return (C64Settings)MemberwiseClone();
-			}
+			public C64Settings Clone() => (C64Settings)MemberwiseClone();
 
 			public C64Settings()
 			{
@@ -86,10 +77,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			[DefaultValue(DiskDriveType.None)]
 			public DiskDriveType DiskDriveType { get; set; }
 
-			public C64SyncSettings Clone()
-			{
-				return (C64SyncSettings)MemberwiseClone();
-			}
+			public C64SyncSettings Clone() => (C64SyncSettings)MemberwiseClone();
 
 			public C64SyncSettings()
 			{

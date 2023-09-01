@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Common
 
 		public byte[] CloneSaveRam()
 		{
-			var linkedBuffers = new List<byte[]>();
+			List<byte[]> linkedBuffers = new List<byte[]>();
 			int len = 0;
 			for (int i = 0; i < _numCores; i++)
 			{
@@ -56,7 +56,7 @@ namespace BizHawk.Emulation.Common
 			int pos = 0;
 			for (int i = 0; i < _numCores; i++)
 			{
-				var b = new byte[_linkedCores[i].AsSaveRam().CloneSaveRam()!.Length];
+				byte[] b = new byte[_linkedCores[i].AsSaveRam().CloneSaveRam()!.Length];
 				Buffer.BlockCopy(data, pos, b, 0, b.Length);
 				pos += b.Length;
 				_linkedCores[i].AsSaveRam().StoreSaveRam(b);

@@ -27,7 +27,7 @@ namespace BizHawk.Client.Common
 
 		public IReadOnlyDictionary<string, string?> GetOptions()
 		{
-			var options = new Dictionary<string, string?>();
+			Dictionary<string, string?> options = new Dictionary<string, string?>();
 			if (_game == null) return options;
 			foreach (var (k, v) in ((GameInfo) _game).GetOptions()) options[k] = v;
 			return options;

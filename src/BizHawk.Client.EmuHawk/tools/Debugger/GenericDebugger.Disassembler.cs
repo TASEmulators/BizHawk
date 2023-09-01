@@ -61,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 			uint a = _currentDisassemblerAddress;
 			for (int i = 0; i <= lineCount; ++i)
 			{
-				string line = Disassembler.Disassemble(MemoryDomains.SystemBus, a, out var advance);
+				string line = Disassembler.Disassemble(MemoryDomains.SystemBus, a, out int advance);
 				_disassemblyLines.Add(new DisasmOp(a, advance, line));
 				a += (uint)advance;
 				if (a > BusMaxValue)
@@ -111,7 +111,7 @@ namespace BizHawk.Client.EmuHawk
 			
 			while (true)
 			{
-				Disassembler.Disassemble(MemoryDomains.SystemBus, newaddress, out var bytestoadvance);
+				Disassembler.Disassemble(MemoryDomains.SystemBus, newaddress, out int bytestoadvance);
 				if (newaddress + bytestoadvance == _currentDisassemblerAddress)
 				{
 					break;
@@ -220,10 +220,7 @@ namespace BizHawk.Client.EmuHawk
 			if (isPaused) FullUpdate();
 		}
 
-		private void DisassemblerContextMenu_Opening(object sender, EventArgs e)
-		{
-			AddBreakpointContextMenuItem.Enabled = DisassemblerView.AnyRowsSelected;
-		}
+		private void DisassemblerContextMenu_Opening(object sender, EventArgs e) => AddBreakpointContextMenuItem.Enabled = DisassemblerView.AnyRowsSelected;
 
 		private void AddBreakpointContextMenuItem_Click(object sender, EventArgs e)
 		{

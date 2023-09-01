@@ -38,7 +38,7 @@ namespace BizHawk.Bizware.Input
 
 		private static void DoSDLEventLoop()
 		{
-			var e = new SDL_Event[1];
+			SDL_Event[] e = new SDL_Event[1];
 			// this loop somewhat models SDL_PollEvent
 			while (true)
 			{
@@ -167,8 +167,8 @@ namespace BizHawk.Bizware.Input
 
 				if (pad.HasRumble)
 				{
-					var leftStrength = _lastHapticsSnapshot.GetValueOrDefault(pad.InputNamePrefix + "Left");
-					var rightStrength = _lastHapticsSnapshot.GetValueOrDefault(pad.InputNamePrefix + "Right");
+					int leftStrength = _lastHapticsSnapshot.GetValueOrDefault(pad.InputNamePrefix + "Left");
+					int rightStrength = _lastHapticsSnapshot.GetValueOrDefault(pad.InputNamePrefix + "Right");
 					pad.SetVibration(leftStrength, rightStrength);	
 				}
 			}

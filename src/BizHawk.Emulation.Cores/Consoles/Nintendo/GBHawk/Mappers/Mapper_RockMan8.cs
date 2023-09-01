@@ -32,10 +32,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
-		public override byte ReadMemoryHigh(ushort addr)
-		{
-			return 0xFF;
-		}
+		public override byte ReadMemoryHigh(ushort addr) => 0xFF;
 
 		public override void MapCDL(ushort addr, LR35902.eCDLogMemFlags flags)
 		{
@@ -55,14 +52,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
-		public override byte PeekMemoryLow(ushort addr)
-		{
-			return ReadMemoryLow(addr);
-		}
+		public override byte PeekMemoryLow(ushort addr) => ReadMemoryLow(addr);
 
 		public override void WriteMemory(ushort addr, byte value)
 		{
-			if ((addr >= 0x2000) && (addr < 0x4000))
+			if (addr is >= 0x2000 and < 0x4000)
 			{
 				value &= 0x1F;
 
@@ -73,10 +67,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
-		public override void PokeMemory(ushort addr, byte value)
-		{
-			WriteMemory(addr, value);
-		}
+		public override void PokeMemory(ushort addr, byte value) => WriteMemory(addr, value);
 
 		public override void SyncState(Serializer ser)
 		{

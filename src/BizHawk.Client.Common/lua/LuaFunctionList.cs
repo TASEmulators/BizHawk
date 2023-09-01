@@ -36,7 +36,7 @@ namespace BizHawk.Client.Common
 				emulator.AsDebuggable().MemoryCallbacks.Remove(function.MemCallback);
 			}
 
-			var result = _functions.Remove(function);
+			bool result = _functions.Remove(function);
 			if (result)
 			{
 				Changed();
@@ -47,7 +47,7 @@ namespace BizHawk.Client.Common
 
 		public void RemoveForFile(LuaFile file, IEmulator emulator)
 		{
-			var functionsToRemove = _functions.Where(l => l.LuaFile.Path == file.Path || ReferenceEquals(l.LuaFile.Thread, file.Thread)).ToList();
+			List<NamedLuaFunction> functionsToRemove = _functions.Where(l => l.LuaFile.Path == file.Path || ReferenceEquals(l.LuaFile.Thread, file.Thread)).ToList();
 
 			foreach (var function in functionsToRemove)
 			{

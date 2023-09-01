@@ -165,12 +165,12 @@ namespace BizHawk.Emulation.DiscSystem
 			public string Name;
 
 			public int FetchOrDefault(int def, string key)
-				=> TryGetValue(key, out var val) ? val : def;
+				=> TryGetValue(key, out int val) ? val : def;
 
 			/// <exception cref="CCDParseException"><paramref name="key"/> not found in <see langword="this"/></exception>
 			public int FetchOrFail(string key)
 			{
-				if (!TryGetValue(key, out var ret))
+				if (!TryGetValue(key, out int ret))
 					throw new CCDParseException($"Malformed or unexpected CCD format: missing required [Entry] key: {key}");
 				return ret;
 			}
@@ -178,16 +178,16 @@ namespace BizHawk.Emulation.DiscSystem
 
 		private static List<CCDSection> ParseSections(Stream stream)
 		{
-			var sections = new List<CCDSection>();
+			List<CCDSection> sections = new List<CCDSection>();
 
 			//TODO - do we need to attempt to parse out the version tag in a first pass?
 			//im doing this from a version 3 example
 
-			var sr = new StreamReader(stream);
+			StreamReader sr = new StreamReader(stream);
 			CCDSection currSection = null;
 			while (true)
 			{
-				var line = sr.ReadLine();
+				string line = sr.ReadLine();
 				if (line is null) break;
 				if (line == string.Empty) continue;
 				if (line.StartsWith('['))
@@ -202,7 +202,7 @@ namespace BizHawk.Emulation.DiscSystem
 				{
 					if (currSection is null)
 						throw new CCDParseException("Malformed or unexpected CCD format: started without [");
-					var parts = line.Split('=');
+					string[] parts = line.Split('=');
 					if (parts.Length != 2)
 						throw new CCDParseException("Malformed or unexpected CCD format: parsing item into two parts");
 					if (parts[0].ToUpperInvariant() == "FLAGS")
@@ -239,7 +239,7 @@ namespace BizHawk.Emulation.DiscSystem
 			if (ccdSection.Name != "CLONECD")
 				throw new CCDParseException("Malformed CCD format: confusing first section name");
 
-			if (!ccdSection.TryGetValue("VERSION", out var version))
+			if (!ccdSection.TryGetValue("VERSION", out int version))
 				throw new CCDParseException("Malformed CCD format: missing version in CloneCD section");
 
 			if (sections[1].Name != "DISC")
@@ -251,27 +251,27 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <exception cref="CCDParseException">parsed <see cref="CCDFile.DataTracksScrambled"/> is <c>1</c>, parsed session number is not <c>1</c>, or malformed entry</exception>
 		public static CCDFile ParseFrom(Stream stream)
 		{
-			var ccdf = new CCDFile();
+			CCDFile ccdf = new CCDFile();
 
 			var sections = ParseSections(stream);
 			ccdf.Version = PreParseIntegrityCheck(sections);
 
 			var discSection = sections[1];
-			var nTocEntries = discSection["TOCENTRIES"]; //its conceivable that this could be missing
-			var nSessions = discSection["SESSIONS"]; //its conceivable that this could be missing
+			int nTocEntries = discSection["TOCENTRIES"]; //its conceivable that this could be missing
+			int nSessions = discSection["SESSIONS"]; //its conceivable that this could be missing
 			ccdf.DataTracksScrambled = discSection.FetchOrDefault(0, "DATATRACKSSCRAMBLED");
 			ccdf.CDTextLength = discSection.FetchOrDefault(0, "CDTEXTLENGTH");
 
 			if (ccdf.DataTracksScrambled == 1)
 				throw new CCDParseException($"Malformed CCD format: {nameof(ccdf.DataTracksScrambled)}=1 not supported. Please report this, so we can understand what it means.");
 
-			for (var i = 2; i < sections.Count; i++)
+			for (int i = 2; i < sections.Count; i++)
 			{
 				var section = sections[i];
 				if (section.Name.StartsWithOrdinal("SESSION"))
 				{
-					var sesnum = int.Parse(section.Name.Split(' ')[1]);
-					var session = new CCDSession(sesnum);
+					int sesnum = int.Parse(section.Name.Split(' ')[1]);
+					CCDSession session = new CCDSession(sesnum);
 					ccdf.Sessions.Add(session);
 					if (sesnum != ccdf.Sessions.Count)
 						throw new CCDParseException("Malformed CCD format: wrong session number in sequence");
@@ -280,8 +280,8 @@ namespace BizHawk.Emulation.DiscSystem
 				}
 				else if (section.Name.StartsWithOrdinal("ENTRY"))
 				{
-					var entryNum = int.Parse(section.Name.Split(' ')[1]);
-					var entry = new CCDTocEntry(entryNum);
+					int entryNum = int.Parse(section.Name.Split(' ')[1]);
+					CCDTocEntry entry = new CCDTocEntry(entryNum);
 					ccdf.TOCEntries.Add(entry);
 					
 					entry.Session = section.FetchOrFail("SESSION");
@@ -307,8 +307,8 @@ namespace BizHawk.Emulation.DiscSystem
 				}
 				else if (section.Name.StartsWithOrdinal("TRACK"))
 				{
-					var entryNum = int.Parse(section.Name.Split(' ')[1]);
-					var track = new CCDTrack(entryNum);
+					int entryNum = int.Parse(section.Name.Split(' ')[1]);
+					CCDTrack track = new CCDTrack(entryNum);
 					ccdf.Tracks.Add(track);
 					ccdf.TracksByNumber[entryNum] = track;
 					foreach (var (k, v) in section)
@@ -335,7 +335,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public static LoadResults LoadCCDPath(string path)
 		{
-			var ret = new LoadResults
+			LoadResults ret = new LoadResults
 			{
 				CcdPath = path,
 				ImgPath = Path.ChangeExtension(path, ".img"),
@@ -346,7 +346,7 @@ namespace BizHawk.Emulation.DiscSystem
 				if (!File.Exists(path)) throw new CCDParseException("Malformed CCD format: nonexistent CCD file!");
 
 				CCDFile ccdf;
-				using (var infCCD = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+				using (FileStream infCCD = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
 					ccdf = ParseFrom(infCCD);
 
 				ret.ParsedCCDFile = ccdf;
@@ -363,7 +363,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public static void Dump(Disc disc, string path)
 		{
-			using (var sw = new StreamWriter(path))
+			using (StreamWriter sw = new StreamWriter(path))
 			{
 				//NOTE: IsoBuster requires the A0,A1,A2 RawTocEntries to be first or else it can't do anything with the tracks
 				//if we ever get them in a different order, we'll have to re-order them here
@@ -377,7 +377,7 @@ namespace BizHawk.Emulation.DiscSystem
 				sw.WriteLine("DataTracksScrambled=0");
 				sw.WriteLine("CDTextLength=0"); //not supported anyway
 				sw.WriteLine();
-				for (var i = 1; i < disc.Sessions.Count; i++)
+				for (int i = 1; i < disc.Sessions.Count; i++)
 				{
 					var session = disc.Sessions[i];
 					
@@ -386,12 +386,12 @@ namespace BizHawk.Emulation.DiscSystem
 					sw.WriteLine("PreGapSubC=1");
 					sw.WriteLine();
 					
-					for (var j = 0; j < session.RawTOCEntries.Count; j++)
+					for (int j = 0; j < session.RawTOCEntries.Count; j++)
 					{
 						var entry = session.RawTOCEntries[j];
 
 						//ehhh something's wrong with how I track these
-						var point = entry.QData.q_index.DecimalValue;
+						int point = entry.QData.q_index.DecimalValue;
 						if (point == 100) point = 0xA0;
 						if (point == 101) point = 0xA1;
 						if (point == 102) point = 0xA2;
@@ -418,7 +418,7 @@ namespace BizHawk.Emulation.DiscSystem
 					//but in order to make a high quality CCD which can be inspected by various other tools, we need it
 					//now, regarding the indexes.. theyre truly useless. having indexes written out with the tracks is bad news.
 					//index information is only truly stored in subQ
-					for (var tnum = 1; tnum <= session.InformationTrackCount; tnum++)
+					for (int tnum = 1; tnum <= session.InformationTrackCount; tnum++)
 					{
 						var track = session.Tracks[tnum];
 						sw.WriteLine("[TRACK {0}]", track.Number);
@@ -433,15 +433,15 @@ namespace BizHawk.Emulation.DiscSystem
 			//TODO - actually re-add
 			//dump the img and sub
 			//TODO - acquire disk size first
-			var imgPath = Path.ChangeExtension(path, ".img");
-			var subPath = Path.ChangeExtension(path, ".sub");
-			var buf2448 = new byte[2448];
-			var dsr = new DiscSectorReader(disc);
+			string imgPath = Path.ChangeExtension(path, ".img");
+			string subPath = Path.ChangeExtension(path, ".sub");
+			byte[] buf2448 = new byte[2448];
+			DiscSectorReader dsr = new DiscSectorReader(disc);
 
 			using var imgFile = File.OpenWrite(imgPath);
 			using var subFile = File.OpenWrite(subPath);
-			var nLBA = disc.Sessions[disc.Sessions.Count - 1].LeadoutLBA;
-			for (var lba = 0; lba < nLBA; lba++)
+			int nLBA = disc.Sessions[disc.Sessions.Count - 1].LeadoutLBA;
+			for (int lba = 0; lba < nLBA; lba++)
 			{
 				dsr.ReadLBA_2448(lba, buf2448, 0);
 				imgFile.Write(buf2448, 0, 2352);
@@ -454,8 +454,8 @@ namespace BizHawk.Emulation.DiscSystem
 			public void Synth(SectorSynthJob job)
 			{
 				//CCD is always containing everything we'd need (unless a .sub is missing?) so don't worry about flags
-				var imgBlob = (IBlob) job.Disc.DisposableResources[0];
-				var subBlob = (IBlob) job.Disc.DisposableResources[1];
+				IBlob imgBlob = (IBlob) job.Disc.DisposableResources[0];
+				IBlob subBlob = (IBlob) job.Disc.DisposableResources[1];
 				//Read_2442(job.LBA, job.DestBuffer2448, job.DestOffset);
 				
 				//read the IMG data if needed
@@ -487,22 +487,22 @@ namespace BizHawk.Emulation.DiscSystem
 			if (!loadResults.Valid)
 				throw loadResults.FailureException;
 
-			var disc = new Disc();
+			Disc disc = new Disc();
 
 			IBlob imgBlob = null;
 			long imgLen = -1;
 
 			//mount the IMG file
 			//first check for a .ecm in place of the img
-			var imgPath = loadResults.ImgPath;
+			string imgPath = loadResults.ImgPath;
 			if (!File.Exists(imgPath))
 			{
-				var ecmPath = Path.ChangeExtension(imgPath, ".img.ecm");
+				string ecmPath = Path.ChangeExtension(imgPath, ".img.ecm");
 				if (File.Exists(ecmPath))
 				{
 					if (Blob_ECM.IsECM(ecmPath))
 					{
-						var ecm = new Blob_ECM();
+						Blob_ECM ecm = new Blob_ECM();
 						ecm.Load(ecmPath);
 						imgBlob = ecm;
 						imgLen = ecm.Length;
@@ -512,7 +512,7 @@ namespace BizHawk.Emulation.DiscSystem
 			if (imgBlob == null)
 			{
 				if (!File.Exists(loadResults.ImgPath)) throw new CCDParseException("Malformed CCD format: nonexistent IMG file!");
-				var imgFile = new Blob_RawFile() { PhysicalPath = loadResults.ImgPath };
+				Blob_RawFile imgFile = new Blob_RawFile() { PhysicalPath = loadResults.ImgPath };
 				imgLen = imgFile.Length;
 				imgBlob = imgFile;
 			}
@@ -520,22 +520,22 @@ namespace BizHawk.Emulation.DiscSystem
 
 			//mount the SUB file
 			if (!File.Exists(loadResults.SubPath)) throw new CCDParseException("Malformed CCD format: nonexistent SUB file!");
-			var subFile = new Blob_RawFile { PhysicalPath = loadResults.SubPath };
+			Blob_RawFile subFile = new Blob_RawFile { PhysicalPath = loadResults.SubPath };
 			disc.DisposableResources.Add(subFile);
-			var subLen = subFile.Length;
+			long subLen = subFile.Length;
 
 			//quick integrity check of file sizes
 			if (imgLen % 2352 != 0) throw new CCDParseException("Malformed CCD format: IMG file length not multiple of 2352");
-			var NumImgSectors = (int)(imgLen / 2352);
+			int NumImgSectors = (int)(imgLen / 2352);
 			if (subLen != NumImgSectors * 96) throw new CCDParseException("Malformed CCD format: SUB file length not matching IMG");
 
 			var ccdf = loadResults.ParsedCCDFile;
 
 			//the only instance of a sector synthesizer we'll need
-			var synth = new SS_CCD();
+			SS_CCD synth = new SS_CCD();
 
 			// create the initial session
-			var curSession = 1;
+			int curSession = 1;
 			disc.Sessions.Add(new() { Number = curSession });
 
 			//generate DiscTOCRaw items from the ones specified in the CCD file
@@ -551,20 +551,20 @@ namespace BizHawk.Emulation.DiscSystem
 				}
 
 				//this should actually be zero. im not sure if this is stored as BCD2 or not
-				var tno = BCD2.FromDecimal(entry.TrackNo);
+				BCD2 tno = BCD2.FromDecimal(entry.TrackNo);
 
 				//these are special values.. I think, taken from this:
 				//http://www.staff.uni-mainz.de/tacke/scsi/SCSI2-14.html
 				//the CCD will contain Points as decimal values except for these specially converted decimal values which should stay as BCD.
 				//Why couldn't they all be BCD? I don't know. I guess because BCD is inconvenient, but only A0 and friends have special meaning. It's confusing.
-				var ino = BCD2.FromDecimal(entry.Point);
+				BCD2 ino = BCD2.FromDecimal(entry.Point);
 				ino.BCDValue = entry.Point switch
 				{
 					0xA0 or 0xA1 or 0xA2 => (byte)entry.Point,
 					_ => ino.BCDValue
 				};
 
-				var q = new SubchannelQ
+				SubchannelQ q = new SubchannelQ
 				{
 					q_status = SubchannelQ.ComputeStatus(entry.ADR, (EControlQ)(entry.Control & 0xF)),
 					q_tno = tno,
@@ -583,7 +583,7 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 
 			//analyze the RAWTocEntries to figure out what type of track track 1 is
-			var tocSynth = new Synthesize_DiscTOC_From_RawTOCEntries_Job(disc.Session1.RawTOCEntries);
+			Synthesize_DiscTOC_From_RawTOCEntries_Job tocSynth = new Synthesize_DiscTOC_From_RawTOCEntries_Job(disc.Session1.RawTOCEntries);
 			tocSynth.Run();
 			
 			//Add sectors for the mandatory track 1 pregap, which isn't stored in the CCD file
@@ -602,16 +602,16 @@ namespace BizHawk.Emulation.DiscSystem
 				};
 			}
 
-			for (var i = 0; i < 150; i++)
+			for (int i = 0; i < 150; i++)
 			{
-				var ss_gap = new CUE.SS_Gap()
+				CUE.SS_Gap ss_gap = new CUE.SS_Gap()
 				{
 					Policy = IN_DiscMountPolicy,
 					TrackType = pregapTrackType
 				};
 				disc._Sectors.Add(ss_gap);
 
-				var qRelMSF = i - 150;
+				int qRelMSF = i - 150;
 
 				//tweak relMSF due to ambiguity/contradiction in yellowbook docs
 				if (!IN_DiscMountPolicy.CUE_PregapContradictionModeA)
@@ -632,7 +632,7 @@ namespace BizHawk.Emulation.DiscSystem
 			//build the sectors:
 			//set up as many sectors as we have img/sub for, even if the TOC doesnt reference them
 			//(the TOC is unreliable, and the Track records are redundant)
-			for (var i = 0; i < NumImgSectors; i++)
+			for (int i = 0; i < NumImgSectors; i++)
 			{
 				disc._Sectors.Add(synth);
 			}

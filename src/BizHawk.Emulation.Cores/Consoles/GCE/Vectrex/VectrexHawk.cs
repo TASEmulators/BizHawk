@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		[CoreConstructor(VSystemID.Raw.VEC)]
 		public VectrexHawk(CoreComm comm, byte[] rom, VectrexHawk.VectrexSyncSettings syncSettings)
 		{
-			var ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new BasicServiceProvider(this);
 
 			cpu = new MC6809
 			{
@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			/*var Bios =*/ _bios = comm.CoreFileProvider.GetFirmwareOrThrow(new("VEC", "Bios"), "BIOS Not Found, Cannot Load");
 			/*var Mine =*/ minestorm = comm.CoreFileProvider.GetFirmwareOrThrow(new("VEC", "Minestorm"), "Minestorm Not Found, Cannot Load");
 
-			var romHashSHA1 = SHA1Checksum.ComputePrefixedHex(rom);
+			string romHashSHA1 = SHA1Checksum.ComputePrefixedHex(rom);
 			Console.WriteLine(romHashSHA1);
 
 			_rom = rom;

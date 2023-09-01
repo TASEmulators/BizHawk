@@ -179,10 +179,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				return ret;
 			}
 
-			public readonly int CompareTo(Symbol other)
-			{
-				return (int)this.addr - (int)other.addr;
-			}
+			public readonly int CompareTo(Symbol other) => (int)this.addr - (int)other.addr;
 
 			public override readonly string ToString() => $"0x{(int)addr:X8} {name} ({section})";
 		}

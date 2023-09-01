@@ -67,7 +67,7 @@ namespace BizHawk.Client.Common
 
 		public static string Serialize(IOpenAdvanced ioa)
 		{
-			var sw = new StringWriter();
+			StringWriter sw = new StringWriter();
 			sw.Write("{0}*", ioa.TypeName);
 			ioa.Serialize(sw);
 			return sw.ToString();
@@ -87,15 +87,9 @@ namespace BizHawk.Client.Common
 		public string DisplayName => $"{Path.GetFileNameWithoutExtension(token.CorePath)}: {token.Path}";
 		public string SimplePath => token.Path;
 
-		public void Deserialize(string str)
-		{
-			token = JsonConvert.DeserializeObject<Token>(str);
-		}
-		
-		public void Serialize(TextWriter tw)
-		{
-			tw.Write(JsonConvert.SerializeObject(token));
-		}
+		public void Deserialize(string str) => token = JsonConvert.DeserializeObject<Token>(str);
+
+		public void Serialize(TextWriter tw) => tw.Write(JsonConvert.SerializeObject(token));
 
 		public string CorePath
 		{
@@ -125,15 +119,9 @@ namespace BizHawk.Client.Common
 		public string DisplayName => Path.GetFileName(CorePath); // assume we like the filename of the core
 		public string SimplePath => ""; // effectively a signal to not use a game
 
-		public void Deserialize(string str)
-		{
-			CorePath = str;
-		}
+		public void Deserialize(string str) => CorePath = str;
 
-		public void Serialize(TextWriter tw)
-		{
-			tw.Write(CorePath);
-		}
+		public void Serialize(TextWriter tw) => tw.Write(CorePath);
 
 		public string CorePath { get; set; }
 	}
@@ -146,15 +134,9 @@ namespace BizHawk.Client.Common
 		public string DisplayName => Path;
 		public string SimplePath => Path;
 
-		public void Deserialize(string str)
-		{
-			Path = str;
-		}
+		public void Deserialize(string str) => Path = str;
 
-		public void Serialize(TextWriter tw)
-		{
-			tw.Write(Path);
-		}
+		public void Serialize(TextWriter tw) => tw.Write(Path);
 	}
 
 	public class OpenAdvanced_MAME : IOpenAdvanced
@@ -165,14 +147,8 @@ namespace BizHawk.Client.Common
 		public string DisplayName => $"{TypeName}: {Path}";
 		public string SimplePath => Path;
 
-		public void Deserialize(string str)
-		{
-			Path = str;
-		}
+		public void Deserialize(string str) => Path = str;
 
-		public void Serialize(TextWriter tw)
-		{
-			tw.Write(Path);
-		}
+		public void Serialize(TextWriter tw) => tw.Write(Path);
 	}
 }

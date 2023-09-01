@@ -62,10 +62,10 @@ namespace BizHawk.Client.Common.cheats
 			long hexCode = 0;
 
 			// convert code to a long binary string
-			foreach (var t in code)
+			foreach (char t in code)
 			{
 				hexCode <<= 5;
-				_ = GameGenieTable.TryGetValue(t, out var y);
+				_ = GameGenieTable.TryGetValue(t, out long y);
 				hexCode |= y;
 			}
 

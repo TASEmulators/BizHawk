@@ -207,7 +207,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			bool currLevel = !t.InitialPulseLevel;
 
-			var rate = (69888 * 50) / sampleRate;
+			int rate = (69888 * 50) / sampleRate;
 
 			for (int i = 0; i < cswDataUncompressed.Length;)
 			{

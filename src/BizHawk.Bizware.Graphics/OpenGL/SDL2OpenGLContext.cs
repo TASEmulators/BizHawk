@@ -133,17 +133,13 @@ namespace BizHawk.Bizware.Graphics
 
 		public bool IsCurrent => SDL_GL_GetCurrentContext() == _glContext;
 
-		public void MakeContextCurrent()
-		{
+		public void MakeContextCurrent() =>
 			// no-op if already current
 			_ = SDL_GL_MakeCurrent(_sdlWindow, _glContext);
-		}
 
-		public static void MakeNoneCurrent()
-		{
+		public static void MakeNoneCurrent() =>
 			// no-op if nothing is current
 			_ = SDL_GL_MakeCurrent(IntPtr.Zero, IntPtr.Zero);
-		}
 
 		public static IntPtr GetGLProcAddress(string proc)
 			=> SDL_GL_GetProcAddress(proc);

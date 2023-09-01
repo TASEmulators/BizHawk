@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores
 		/// <exception cref="Exception">found <c>ControllerSNES</c></exception>
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
 		{
-			if (core is NES || core is SubNESHawk)
+			if (core is NES or SubNESHawk)
 			{
 				NES.NESSyncSettings ss = null;
 				bool isFds = false;
@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Cores
 				}
 				else
 				{
-					var currentControllerNo = 1;
+					int currentControllerNo = 1;
 					switch (ss.Controls.NesLeftPort)
 					{
 						default:
@@ -174,7 +174,7 @@ namespace BizHawk.Emulation.Cores
 
 		private static PadSchema FdsConsoleButtons(int diskSize)
 		{
-			var buttons = new List<ButtonSchema>
+			List<ButtonSchema> buttons = new List<ButtonSchema>
 			{
 				new ButtonSchema(10, 15, "Reset"),
 				new ButtonSchema(58, 15, "Power"),
@@ -184,7 +184,7 @@ namespace BizHawk.Emulation.Cores
 				}
 			};
 
-			for (var i = 0; i < diskSize; i++)
+			for (int i = 0; i < diskSize; i++)
 			{
 				buttons.Add(new ButtonSchema(10 + (i * 58), 50, $"FDS Insert {i}")
 				{
@@ -192,7 +192,7 @@ namespace BizHawk.Emulation.Cores
 				});
 			}
 
-			var width = 20 + (diskSize * 58);
+			int width = 20 + (diskSize * 58);
 			if (width < 160)
 			{
 				width = 160;
@@ -227,7 +227,7 @@ namespace BizHawk.Emulation.Cores
 
 		private static PadSchema Famicom2ndController()
 		{
-			var controller = 2;
+			int controller = 2;
 			return new PadSchema
 			{
 				DisplayName = "Player 2",

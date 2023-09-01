@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		private void SetupMemoryDomains()
 		{
-			var domains = new List<MemoryDomain>
+			List<MemoryDomain> domains = new List<MemoryDomain>
 			{
 				new MemoryDomainDelegate(
 					"TIA",
@@ -72,7 +72,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 			else
 			{
-				var m = new MemoryDomainByteArray(name, MemoryDomain.Endian.Little, data, true, 1);
+				MemoryDomainByteArray m = new MemoryDomainByteArray(name, MemoryDomain.Endian.Little, data, true, 1);
 				_byteArrayDomains.Add(name, m);
 			}
 		}

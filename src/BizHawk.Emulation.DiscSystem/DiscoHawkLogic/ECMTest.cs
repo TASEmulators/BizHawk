@@ -20,8 +20,8 @@ namespace BizHawk.Emulation.DiscSystem
 				}
 			}
 
-			var plaindisc = Disc.LoadAutomagic("d:\\ecmtest\\test.cue");
-			var ecmdisc = Disc.LoadAutomagic("d:\\ecmtest\\ecmtest.cue");
+			Disc plaindisc = Disc.LoadAutomagic("d:\\ecmtest\\test.cue");
+			Disc ecmdisc = Disc.LoadAutomagic("d:\\ecmtest\\ecmtest.cue");
 
 //			var prefs = new CueBinPrefs
 //			{
@@ -54,8 +54,8 @@ namespace BizHawk.Emulation.DiscSystem
 
 				byte[] chunkbuf_corlet = new byte[2352 * 20];
 				byte[] chunkbuf_mine = new byte[2352 * 20];
-//				int length = (ecmdisc._Sectors.Count - 150) * 2352; // API has changed
-				var length = 0;
+				//				int length = (ecmdisc._Sectors.Count - 150) * 2352; // API has changed
+				int length = 0;
 				int counter = 0;
 				List<Tuple<int, int>> testChunks = new();
 				while (counter < length)

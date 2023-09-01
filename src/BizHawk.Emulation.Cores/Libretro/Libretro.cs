@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		static LibretroHost()
 		{
-			var resolver = new DynamicLibraryImportResolver(
+			DynamicLibraryImportResolver resolver = new DynamicLibraryImportResolver(
 				OSTailoredCode.IsUnixHost ? "libLibretroBridge.so" : "libLibretroBridge.dll", hasLimitedLifetime: false);
 
 			bridge = BizInvoker.GetInvoker<LibretroBridge>(resolver, CallingConventionAdapters.Native);
@@ -158,7 +158,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		private byte[] RetroString(string managedString)
 		{
-			var ret = Encoding.UTF8.GetBytes(managedString);
+			byte[] ret = Encoding.UTF8.GetBytes(managedString);
 			Array.Resize(ref ret, ret.Length + 1);
 			return ret;
 		}
@@ -234,7 +234,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			api.retro_set_input_poll(cb_procs.retro_input_poll_proc);
 			api.retro_set_input_state(cb_procs.retro_input_state_proc);
 
-			var len = checked((int)api.retro_serialize_size());
+			int len = checked((int)api.retro_serialize_size());
 			if (len > 0)
 			{
 				_stateWrapper = new StatableLibretro(this, api, len);
@@ -264,7 +264,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		public RetroDescription CalculateDescription()
 		{
-			var descr = new RetroDescription();
+			RetroDescription descr = new RetroDescription();
 			api.retro_get_system_info(out var sys_info);
 			descr.LibraryName = Mershul.PtrToStringUtf8(sys_info.library_name);
 			descr.LibraryVersion = Mershul.PtrToStringUtf8(sys_info.library_version);

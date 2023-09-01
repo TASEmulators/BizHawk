@@ -12,10 +12,7 @@ namespace BizHawk.Bizware.BizwareGL
 		/// <summary>
 		/// resolves the texture into a new BitmapBuffer
 		/// </summary>
-		public BitmapBuffer Resolve()
-		{
-			return Owner.ResolveTexture2d(this);
-		}
+		public BitmapBuffer Resolve() => Owner.ResolveTexture2d(this);
 
 		public void Dispose()
 		{
@@ -31,10 +28,7 @@ namespace BizHawk.Bizware.BizwareGL
 			Height = height;
 		}
 
-		public override string ToString()
-		{
-			return $"GL Tex: {Width}x{Height}";
-		}
+		public override string ToString() => $"GL Tex: {Width}x{Height}";
 
 		public void LoadFrom(BitmapBuffer buffer)
 		{

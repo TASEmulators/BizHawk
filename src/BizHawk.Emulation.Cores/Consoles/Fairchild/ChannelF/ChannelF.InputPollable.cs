@@ -4,11 +4,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
 	public partial class ChannelF : IInputPollable
 	{
-		public int LagCount
-		{
-			get => _lagCount;
-			set => _lagCount = value;
-		}
+		public int LagCount { get; set; } = 0;
 
 		public bool IsLagFrame
 		{
@@ -18,7 +14,6 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		public IInputCallbackSystem InputCallbacks { get; } = new InputCallbackSystem();
 
-		private int _lagCount = 0;
 		private bool _isLag = false;
 
 		/// <summary>
@@ -35,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			{
 				for (int i = 0; i < ButtonsConsole.Length; i++)
 				{
-					var key = ButtonsConsole[i];
+					string key = ButtonsConsole[i];
 					bool prevState = StateConsole[i]; // CTRLConsole.Bit(i);      
 					bool currState = _controller.IsPressed(key);
 					if (currState != prevState)
@@ -57,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 				for (int i = 0; i < ButtonsRight.Length; i++)
 				{
-					var key = "P1 " + ButtonsRight[i];
+					string key = "P1 " + ButtonsRight[i];
 					bool prevState = StateRight[i];
 					bool currState = _controller.IsPressed(key);
 					if (currState != prevState)
@@ -69,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 				for (int i = 0; i < ButtonsLeft.Length; i++)
 				{
-					var key = "P2 " + ButtonsLeft[i];
+					string key = "P2 " + ButtonsLeft[i];
 					bool prevState = StateLeft[i];
 					bool currState = _controller.IsPressed(key);
 					if (currState != prevState)

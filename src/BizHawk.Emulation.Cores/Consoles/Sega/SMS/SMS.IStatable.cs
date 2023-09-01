@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			byte[] core = null;
 			if (ser.IsWriter)
 			{
-				using var ms = new MemoryStream();
+				using MemoryStream ms = new MemoryStream();
 				ms.Close();
 				core = ms.ToArray();
 			}

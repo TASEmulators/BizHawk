@@ -40,10 +40,10 @@ namespace BizHawk.Emulation.Common
 		{
 			if (!line.StartsWith("#include", StringComparison.InvariantCultureIgnoreCase)) return;
 
-			var isUserInclude = line.StartsWith("#includeuser", StringComparison.InvariantCultureIgnoreCase);
-			var searchUser = inUser || isUserInclude;
+			bool isUserInclude = line.StartsWith("#includeuser", StringComparison.InvariantCultureIgnoreCase);
+			bool searchUser = inUser || isUserInclude;
 			line = line.Substring(isUserInclude ? 12 : 8).TrimStart();
-			var filename = Path.Combine(searchUser ? _userRoot : _bundledRoot, line);
+			string filename = Path.Combine(searchUser ? _userRoot : _bundledRoot, line);
 			if (File.Exists(filename))
 			{
 				if (!silent) Util.DebugWriteLine($"loading external game database {line} ({(searchUser ? "user" : "bundled")})");
@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Common
 
 		public static void SaveDatabaseEntry(CompactGameInfo gameInfo, string filename = "gamedb_user.txt")
 		{
-			var sb = new StringBuilder();
+			StringBuilder sb = new StringBuilder();
 			sb
 				.Append("sha1:") // TODO: how do we know it is sha1?
 				.Append(gameInfo.Hash)
@@ -99,10 +99,10 @@ namespace BizHawk.Emulation.Common
 		{
 			if (!inUser) _expected.Remove(Path.GetFileName(path));
 			//reminder: this COULD be done on several threads, if it takes even longer
-			using var reader = new StreamReader(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read));
+			using StreamReader reader = new StreamReader(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read));
 			while (reader.EndOfStream == false)
 			{
-				var line = reader.ReadLine() ?? "";
+				string line = reader.ReadLine() ?? "";
 				try
 				{
 					if (line.StartsWith(';')) continue; // comment
@@ -118,9 +118,9 @@ namespace BizHawk.Emulation.Common
 						continue;
 					}
 
-					var items = line.Split('\t');
+					string[] items = line.Split('\t');
 
-					var game = new CompactGameInfo
+					CompactGameInfo game = new CompactGameInfo
 					{
 						Hash = FormatHash(items[0]),
 						Status = items[1].Trim()
@@ -178,7 +178,7 @@ namespace BizHawk.Emulation.Common
 
 			_expected = new DirectoryInfo(_bundledRoot!).EnumerateFiles("*.txt").Select(static fi => fi.Name).ToList();
 
-			var stopwatch = Stopwatch.StartNew();
+			Stopwatch stopwatch = Stopwatch.StartNew();
 			ThreadPool.QueueUserWorkItem(_ => {
 				InitializeWork(Path.Combine(bundledRoot, "gamedb.txt"), inUser: false, silent: silent);
 				if (_expected.Count is not 0) Util.DebugWriteLine($"extra bundled gamedb files were not #included: {string.Join(", ", _expected)}");
@@ -191,7 +191,7 @@ namespace BizHawk.Emulation.Common
 		{
 			_acquire.WaitOne();
 
-			var hashFormatted = FormatHash(hash);
+			string hashFormatted = FormatHash(hash);
 			_ = DB.TryGetValue(hashFormatted, out var cgi);
 			if (cgi == null)
 			{
@@ -206,26 +206,26 @@ namespace BizHawk.Emulation.Common
 		{
 			_acquire.WaitOne();
 
-			var hashSHA1 = SHA1Checksum.ComputeDigestHex(romData);
+			string hashSHA1 = SHA1Checksum.ComputeDigestHex(romData);
 			if (DB.TryGetValue(hashSHA1, out var cgi))
 			{
 				return new GameInfo(cgi);
 			}
 
-			var hashMD5 = MD5Checksum.ComputeDigestHex(romData);
+			string hashMD5 = MD5Checksum.ComputeDigestHex(romData);
 			if (DB.TryGetValue(hashMD5, out cgi))
 			{
 				return new GameInfo(cgi);
 			}
 
-			var hashCRC32 = CRC32Checksum.ComputeDigestHex(romData);
+			string hashCRC32 = CRC32Checksum.ComputeDigestHex(romData);
 			if (DB.TryGetValue(hashCRC32, out cgi))
 			{
 				return new GameInfo(cgi);
 			}
 
 			// rom is not in database. make some best-guesses
-			var game = new GameInfo
+			GameInfo game = new GameInfo
 			{
 				Hash = hashSHA1,
 				Status = RomStatus.NotInDatabase,
@@ -234,7 +234,7 @@ namespace BizHawk.Emulation.Common
 
 			Console.WriteLine($"Game was not in DB. CRC: {hashCRC32} MD5: {hashMD5}");
 
-			var ext = Path.GetExtension(fileName)?.ToUpperInvariant();
+			string ext = Path.GetExtension(fileName)?.ToUpperInvariant();
 
 			switch (ext)
 			{
@@ -250,7 +250,7 @@ namespace BizHawk.Emulation.Common
 					if (SatellaviewFileTypeDetector.IsSatellaviewRom(romData, out var warnings))
 					{
 						game.System = VSystemID.Raw.Satellaview;
-						foreach (var s in warnings) Console.WriteLine(s);
+						foreach (string s in warnings) Console.WriteLine(s);
 					}
 					else
 					{
@@ -371,7 +371,7 @@ namespace BizHawk.Emulation.Common
 					break;
 
 				case ".DSK":
-					var dId = new DskIdentifier(romData);
+					DskIdentifier dId = new DskIdentifier(romData);
 					game.System = dId.IdentifiedSystem;
 					break;
 

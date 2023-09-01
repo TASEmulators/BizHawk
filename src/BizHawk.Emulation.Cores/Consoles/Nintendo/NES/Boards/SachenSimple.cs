@@ -68,15 +68,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			chr = value & 7 & chr_mask;
 		}
 
-		private void SA72007_Write(byte value)
-		{
-			chr = (value >> 7) & 1 & chr_mask;
-		}
+		private void SA72007_Write(byte value) => chr = (value >> 7) & 1 & chr_mask;
 
-		private void SA009_Write(byte value)
-		{
-			chr = value & 1 & chr_mask;
-		}
+		private void SA009_Write(byte value) => chr = value & 1 & chr_mask;
 
 		private void SA72008_Write(byte value)
 		{
@@ -90,15 +84,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ExpWrite(value);
 		}
 
-		public override void WritePrg(int addr, byte value)
-		{
-			PrgWrite?.Invoke(value);
-		}
+		public override void WritePrg(int addr, byte value) => PrgWrite?.Invoke(value);
 
-		public override byte ReadPrg(int addr)
-		{
-			return Rom[(addr & prg_addr_mask) + (prg << 15)];
-		}
+		public override byte ReadPrg(int addr) => Rom[(addr & prg_addr_mask) + (prg << 15)];
 		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)

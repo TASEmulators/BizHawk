@@ -6,10 +6,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
 	public partial class SMS : ISaveRam
 	{
-		public byte[] CloneSaveRam()
-		{
-			return (byte[]) SaveRAM?.Clone();
-		}
+		public byte[] CloneSaveRam() => (byte[])SaveRAM?.Clone();
 
 		public void StoreSaveRam(byte[] data)
 		{

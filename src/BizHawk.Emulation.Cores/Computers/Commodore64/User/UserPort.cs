@@ -42,30 +42,15 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.User
 			}
 		}
 
-		public bool ReadAtn()
-		{
-			return !_connected || _device.ReadAtn();
-		}
+		public bool ReadAtn() => !_connected || _device.ReadAtn();
 
-		public int ReadData()
-		{
-			return !_connected ? 0xFF : _device.ReadData();
-		}
+		public int ReadData() => !_connected ? 0xFF : _device.ReadData();
 
-		public bool ReadFlag2()
-		{
-			return !_connected || _device.ReadFlag2();
-		}
+		public bool ReadFlag2() => !_connected || _device.ReadFlag2();
 
-		public bool ReadPa2()
-		{
-			return !_connected || _device.ReadPa2();
-		}
+		public bool ReadPa2() => !_connected || _device.ReadPa2();
 
-		public bool ReadReset()
-		{
-			return !_connected || _device.ReadReset();
-		}
+		public bool ReadReset() => !_connected || _device.ReadReset();
 
 		public void SyncState(Serializer ser)
 		{

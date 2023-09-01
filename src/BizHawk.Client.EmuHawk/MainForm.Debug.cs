@@ -77,11 +77,11 @@ namespace BizHawk.Client.EmuHawk
 			};
 			debugMenu.DropDownOpened += (ddoSender, _) =>
 			{
-				var sysID = Emulator.SystemId;
-				var coreName = Emulator.Attributes().CoreName;
+				string sysID = Emulator.SystemId;
+				string coreName = Emulator.Attributes().CoreName;
 				foreach (var item in ((ToolStripMenuItemEx) ddoSender).DropDownItems.OfType<DebugVSystemMenuItem>())
 				{
-					var groupEnabled = item.SysIDs.Contains(sysID);
+					bool groupEnabled = item.SysIDs.Contains(sysID);
 					foreach (var child in item.DropDownItems.Cast<DebugVSystemChildItem>().Where(static child => child.RequiresLoadedRom)) // RequiresLoadedRom == false => leave Enabled as default true
 					{
 						child.Enabled = groupEnabled && (child.RequiresCore is null || child.RequiresCore == coreName);

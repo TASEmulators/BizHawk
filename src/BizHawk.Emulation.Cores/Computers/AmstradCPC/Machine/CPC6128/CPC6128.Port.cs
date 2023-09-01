@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 						RAMConfig = value & 0x07;
 
 						// additional 64K bank index
-						var b64 = value & 0x38;
+						int b64 = value & 0x38;
 					}
 				}
 				else if (d == PortDevice.CRCT)

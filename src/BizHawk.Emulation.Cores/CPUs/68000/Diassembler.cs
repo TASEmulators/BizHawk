@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 	{
 		public DisassemblyInfo Disassemble(int pc)
 		{
-			var info = new DisassemblyInfo { Mnemonic = "UNKNOWN", PC = pc, Length = 2 };
+			DisassemblyInfo info = new DisassemblyInfo { Mnemonic = "UNKNOWN", PC = pc, Length = 2 };
 			op = (ushort)ReadWord(pc);
 
 			if (Opcodes[op] == MOVE) MOVE_Disasm(info);
@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			else if (Opcodes[op] == MOVECCR) MOVECCR_Disasm(info);
 			else if (Opcodes[op] == TRAP) TRAP_Disasm(info);
 
-			var sb = new StringBuilder();
+			StringBuilder sb = new StringBuilder();
 			for (int p = info.PC; p < info.PC + info.Length; p++)
 				sb.AppendFormat("{0:X2}", ReadByte(p));
 			info.RawBytes = sb.ToString();

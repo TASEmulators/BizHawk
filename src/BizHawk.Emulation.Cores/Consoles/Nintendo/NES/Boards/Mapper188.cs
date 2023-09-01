@@ -28,10 +28,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override void WritePrg(int addr, byte value)
-		{
-			prg = value;
-		}
+		public override void WritePrg(int addr, byte value) => prg = value;
 
 		public override void SyncState(Serializer ser)
 		{
@@ -49,9 +46,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return Rom[addr & 0x3fff | bank << 14];
 		}
 
-		public override byte ReadWram(int addr)
-		{
-			return 3;
-		}
+		public override byte ReadWram(int addr) => 3;
 	}
 }

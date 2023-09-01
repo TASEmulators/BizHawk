@@ -77,7 +77,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				return "F8";
 			}
 
-			if (rom.Length >= 10240 && rom.Length <= 10496)  // ~10K - Pitfall2
+			if (rom.Length is >= 10240 and <= 10496)  // ~10K - Pitfall2
 			{
 				return "DPC";
 			}
@@ -112,7 +112,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				return "F6";
 			}
 
-			if (rom.Length == 24 * 1024 || rom.Length == 28 * 1024)  // 24K & 28K
+			if (rom.Length is (24 * 1024) or (28 * 1024))  // 24K & 28K
 			{
 				return "FA2";
 			}
@@ -236,11 +236,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			// We assume a Superchip cart contains the same bytes for its entire
 			// RAM area; obviously this test will fail if it doesn't
 			// The RAM area will be the first 256 bytes of each 4K bank
-			var numBanks = rom.Count / 4096;
-			for (var i = 0; i < numBanks; i++)
+			int numBanks = rom.Count / 4096;
+			for (int i = 0; i < numBanks; i++)
 			{
-				var first = rom[i * 4096];
-				for (var j = 0; j < 256; j++)
+				byte first = rom[i * 4096];
+				for (int j = 0; j < 256; j++)
 				{
 					if (rom[(i * 4096) + j] != first)
 					{
@@ -252,13 +252,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			return false;
 		}
 
-		private static bool IsProbably3E(byte[] rom)
-		{
+		private static bool IsProbably3E(byte[] rom) =>
 			// 3E cart bankswitching is triggered by storing the bank number
 			// in address 3E using 'STA $3E', commonly followed by an
 			// immediate mode LDA
-			return rom.FindBytes(new byte[] { 0x85, 0x3E, 0xA9, 0x00 }); // STA $3E; LDA #$00
-		}
+			rom.FindBytes(new byte[] { 0x85, 0x3E, 0xA9, 0x00 }); // STA $3E; LDA #$00
 
 		private static bool IsProbably3F(byte[] rom)
 		{
@@ -441,14 +439,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			});
 		}
 
-		private static bool ContainsAny(byte[] rom, IEnumerable<byte[]> signatures)
-		{
-			return signatures.Any(rom.FindBytes);
-		}
+		private static bool ContainsAny(byte[] rom, IEnumerable<byte[]> signatures) => signatures.Any(rom.FindBytes);
 
-		private static bool ContainsAll(byte[] rom, IEnumerable<byte[]> signatures)
-		{
-			return signatures.All(rom.FindBytes);
-		}
+		private static bool ContainsAll(byte[] rom, IEnumerable<byte[]> signatures) => signatures.All(rom.FindBytes);
 	}
 }

@@ -71,13 +71,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			_cdTocCallback = CDTOCCallback;
 			_cdSectorCallback = CDSectorCallback;
 
-			var filesToRemove = new List<string>();
+			List<string> filesToRemove = new List<string>();
 
-			var firmwareDelegate = new LibNymaCore.FrontendFirmwareNotify((name) =>
+			LibNymaCore.FrontendFirmwareNotify firmwareDelegate = new LibNymaCore.FrontendFirmwareNotify((name) =>
 			{
 				if (firmwares != null && firmwares.TryGetValue(name, out var id))
 				{
-					var data = CoreComm.CoreFileProvider.GetFirmwareOrThrow(id, "Firmware files are usually required and may stop your game from loading");
+					byte[] data = CoreComm.CoreFileProvider.GetFirmwareOrThrow(id, "Firmware files are usually required and may stop your game from loading");
 					_exe.AddReadonlyFile(data, name);
 					filesToRemove.Add(name);
 				}
@@ -103,16 +103,16 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					_disks = discs;
 					_diskReaders = _disks.Select(d => new DiscSectorReader(d) { Policy = _diskPolicy }).ToArray();
 					_nyma.SetCDCallbacks(_cdTocCallback, _cdSectorCallback);
-					var didInit = _nyma.InitCd(_disks.Length);
+					bool didInit = _nyma.InitCd(_disks.Length);
 					if (!didInit)
 						throw new InvalidOperationException("Core rejected the CDs!");
 				}
 				else
 				{
-					var fn = game.FilesystemSafeName();
+					string fn = game.FilesystemSafeName();
 					_exe.AddReadonlyFile(rom, fn);
 
-					var didInit = _nyma.InitRom(new LibNymaCore.InitData
+					bool didInit = _nyma.InitRom(new LibNymaCore.InitData
 					{
 						// TODO: Set these as some cores need them
 						FileNameBase = "",
@@ -126,7 +126,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					_exe.RemoveReadonlyFile(fn);
 				}
 
-				foreach (var s in filesToRemove)
+				foreach (string s in filesToRemove)
 				{
 					_exe.RemoveReadonlyFile(s);
 				}
@@ -200,10 +200,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
-		protected override void SaveStateBinaryInternal(BinaryWriter writer)
-		{
-			_controllerAdapter.SaveStateBinary(writer);
-		}
+		protected override void SaveStateBinaryInternal(BinaryWriter writer) => _controllerAdapter.SaveStateBinary(writer);
 
 		protected override void LoadStateBinaryInternal(BinaryReader reader)
 		{
@@ -240,7 +237,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			if (controller.IsPressed("Close Tray"))
 				flags |= LibNymaCore.BizhawkFlags.CloseTray;
 
-			var ret = new LibNymaCore.FrameInfo
+			LibNymaCore.FrameInfo ret = new LibNymaCore.FrameInfo
 			{
 				Flags = flags,
 				Command = controller.IsPressed("Power")
@@ -289,11 +286,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// </summary>
 		private List<string> GetLayerData()
 		{
-			var ret = new List<string>();
-			var p = _nyma.GetLayerData();
+			List<string> ret = new List<string>();
+			byte* p = _nyma.GetLayerData();
 			if (p == null)
 				return ret;
-			var q = p;
+			byte* q = p;
 			while (true)
 			{
 				if (*q == 0)
@@ -313,7 +310,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			_exe.AddTransientFile(new byte[0], "settings");
 			_nyma.DumpSettings();
-			var settingsBuff = _exe.RemoveTransientFile("settings");
+			byte[] settingsBuff = _exe.RemoveTransientFile("settings");
 			return NymaTypes.Settings.GetRootAsSettings(new ByteBuffer(settingsBuff)).UnPack().Values;
 		}
 
@@ -321,7 +318,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			_exe.AddTransientFile(new byte[0], "inputs");
 			_nyma.DumpInputs();
-			var settingsBuff = _exe.RemoveTransientFile("inputs");
+			byte[] settingsBuff = _exe.RemoveTransientFile("inputs");
 			return NymaTypes.NPorts.GetRootAsNPorts(new ByteBuffer(settingsBuff)).UnPack().Values;
 		}
 

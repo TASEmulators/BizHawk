@@ -37,7 +37,7 @@ namespace BizHawk.Client.Common
 		public void ExtractFile(int index, Stream stream)
 		{
 			var reader = _archive!.ExtractAllEntries();
-			for (var i = 0; i <= index; i++) reader.MoveToNextEntry();
+			for (int i = 0; i <= index; i++) reader.MoveToNextEntry();
 			using var entryStream = reader.OpenEntryStream();
 			entryStream.CopyTo(stream);
 		}
@@ -45,8 +45,8 @@ namespace BizHawk.Client.Common
 		public List<HawkArchiveFileItem>? Scan()
 		{
 			List<HawkArchiveFileItem> outFiles = new();
-			var entries = EnumerateArchiveFiles().ToList();
-			for (var i = 0; i < entries.Count; i++)
+			List<(IArchiveEntry Entry, int ArchiveIndex)> entries = EnumerateArchiveFiles().ToList();
+			for (int i = 0; i < entries.Count; i++)
 			{
 				var (entry, archiveIndex) = entries[i];
 				if (entry.Key is null) return null; // see https://github.com/adamhathcock/sharpcompress/issues/137

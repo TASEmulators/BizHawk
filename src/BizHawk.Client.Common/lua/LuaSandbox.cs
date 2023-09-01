@@ -12,10 +12,7 @@ namespace BizHawk.Client.Common
 
 		public static Action<string> DefaultLogger { get; set; }
 
-		public void SetSandboxCurrentDirectory(string dir)
-		{
-			_currentDirectory = dir;
-		}
+		public void SetSandboxCurrentDirectory(string dir) => _currentDirectory = dir;
 
 		private string _currentDirectory;
 
@@ -58,7 +55,7 @@ namespace BizHawk.Client.Common
 			}
 			catch (NLua.Exceptions.LuaException ex)
 			{
-				var exStr = ex.ToString() + '\n';
+				string exStr = ex.ToString() + '\n';
 				if (ex.InnerException is not null)
 				{
 					exStr += ex.InnerException.ToString() + '\n';
@@ -79,7 +76,7 @@ namespace BizHawk.Client.Common
 
 		public static LuaSandbox CreateSandbox(LuaThread thread, string initialDirectory)
 		{
-			var sandbox = new LuaSandbox();
+			LuaSandbox sandbox = new LuaSandbox();
 			SandboxForThread.Add(thread, sandbox);
 			sandbox.SetSandboxCurrentDirectory(initialDirectory);
 			return sandbox;
@@ -108,9 +105,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public static void Sandbox(LuaThread thread, Action callback, Action exceptionCallback = null)
-		{
-			GetSandbox(thread).Sandbox(callback, exceptionCallback);
-		}
+		public static void Sandbox(LuaThread thread, Action callback, Action exceptionCallback = null) => GetSandbox(thread).Sandbox(callback, exceptionCallback);
 	}
 }

@@ -100,7 +100,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (cbMergeLAndRModifierKeys.Checked != _config.MergeLAndRModifierKeys)
 			{
-				var merging = cbMergeLAndRModifierKeys.Checked;
+				bool merging = cbMergeLAndRModifierKeys.Checked;
 				var result = MessageBox.Show(
 					this,
 					text: $"Would you like to replace {(merging ? "LShift and RShift with Shift" : "Shift with LShift")},\nand the same for the other modifier keys,\nin existing keybinds for hotkeys and all systems' gamepads?",
@@ -146,19 +146,10 @@ namespace BizHawk.Client.EmuHawk
 			DialogResult = DialogResult.Cancel;
 		}
 
-		private void AcceptBackgroundInputCheckbox_CheckedChanged(object sender, EventArgs e)
-		{
-			AcceptBackgroundInputControllerOnlyCheckBox.Enabled = AcceptBackgroundInputCheckbox.Checked;
-		}
+		private void AcceptBackgroundInputCheckbox_CheckedChanged(object sender, EventArgs e) => AcceptBackgroundInputControllerOnlyCheckBox.Enabled = AcceptBackgroundInputCheckbox.Checked;
 
-		private void AutosaveSRAMCheckbox_CheckedChanged(object sender, EventArgs e)
-		{
-			groupBox2.Enabled = AutosaveSRAMCheckbox.Checked;
-		}
+		private void AutosaveSRAMCheckbox_CheckedChanged(object sender, EventArgs e) => groupBox2.Enabled = AutosaveSRAMCheckbox.Checked;
 
-		private void AutosaveSRAMRadioButton3_CheckedChanged(object sender, EventArgs e)
-		{
-			AutosaveSRAMtextBox.Enabled = AutosaveSRAMradioButton3.Checked;
-		}
+		private void AutosaveSRAMRadioButton3_CheckedChanged(object sender, EventArgs e) => AutosaveSRAMtextBox.Enabled = AutosaveSRAMradioButton3.Checked;
 	}
 }

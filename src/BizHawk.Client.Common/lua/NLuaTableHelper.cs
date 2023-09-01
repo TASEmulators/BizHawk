@@ -45,10 +45,10 @@ namespace BizHawk.Client.Common
 
 		public LuaTable MemoryBlockToTable(IReadOnlyList<byte> bytes, long startAddr)
 		{
-			var length = bytes.Count;
+			int length = bytes.Count;
 			var table = CreateTable();
-			var iArray = 0;
-			var iDict = startAddr;
+			int iArray = 0;
+			long iDict = startAddr;
 			while (iArray < length) table[iDict++] = bytes[iArray++];
 			return table;
 		}
@@ -59,7 +59,7 @@ namespace BizHawk.Client.Common
 			foreach (var method in obj.GetType().GetMethods())
 			{
 				if (!method.IsPublic) continue;
-				var foundAttrs = method.GetCustomAttributes(typeof(LuaMethodAttribute), false);
+				object[] foundAttrs = method.GetCustomAttributes(typeof(LuaMethodAttribute), false);
 				table[method.Name] = _lua.RegisterFunction(
 					foundAttrs.Length == 0 ? string.Empty : ((LuaMethodAttribute) foundAttrs[0]).Name, // empty string will default to the actual method name
 					obj,
@@ -90,11 +90,11 @@ namespace BizHawk.Client.Common
 				case string s:
 					if (s[0] is '#' && (s.Length is 7 or 9))
 					{
-						var i1 = uint.Parse(s.Substring(1), NumberStyles.HexNumber);
+						uint i1 = uint.Parse(s.Substring(1), NumberStyles.HexNumber);
 						if (s.Length is 7) i1 |= 0xFF000000U;
 						return ParseColor(unchecked((int) i1), safe, logCallback);
 					}
-					var fromName = Color.FromName(s);
+					Color fromName = Color.FromName(s);
 					if (fromName.IsNamedColor) return fromName;
 					if (safe) logCallback($"ParseColor: not a known color name (\"{s}\")");
 					return null;

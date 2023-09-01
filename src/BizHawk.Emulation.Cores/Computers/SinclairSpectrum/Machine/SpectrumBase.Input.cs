@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			lock (this)
 			{
 				// parse single keyboard matrix keys
-				for (var i = 0; i < KeyboardDevice.KeyboardMatrix.Length; i++)
+				for (int i = 0; i < KeyboardDevice.KeyboardMatrix.Length; i++)
 				{
 					string key = KeyboardDevice.KeyboardMatrix[i];
 					bool prevState = KeyboardDevice.GetKeyStatus(key);
@@ -281,7 +281,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		protected void InitJoysticks(List<JoystickType> joys)
 		{
-			var jCollection = new List<IJoystick>();
+			List<IJoystick> jCollection = new List<IJoystick>();
 
 			for (int i = 0; i < joys.Count; i++)
 			{
@@ -315,10 +315,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Returns a IJoystick object depending on the type (or null if not found)
 		/// </summary>
-		protected IJoystick LocateUniqueJoystick(JoystickType type)
-		{
-			return JoystickCollection.FirstOrDefault(a => a.JoyType == type);
-		}
+		protected IJoystick LocateUniqueJoystick(JoystickType type) => JoystickCollection.FirstOrDefault(a => a.JoyType == type);
 
 		/// <summary>
 		/// Signs whether input read has been requested

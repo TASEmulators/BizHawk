@@ -23,8 +23,8 @@ namespace BizHawk.Client.EmuHawk
 		private void IntvControllerSettings_Load(object sender, EventArgs e)
 		{
 			// OSD Message Verbosity
-			var osdTypes = Enum.GetNames(typeof(AmstradCPC.OSDVerbosity));
-			foreach (var val in osdTypes)
+			string[] osdTypes = Enum.GetNames(typeof(AmstradCPC.OSDVerbosity));
+			foreach (string val in osdTypes)
 			{
 				osdMessageVerbositycomboBox1.Items.Add(val);
 			}
@@ -77,7 +77,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OSDComboBox_SelectionChangeCommitted(object sender, EventArgs e)
 		{
-			var cb = (ComboBox)sender;
+			ComboBox cb = (ComboBox)sender;
 			UpdateOSDNotes((AmstradCPC.OSDVerbosity)Enum.Parse(typeof(AmstradCPC.OSDVerbosity), cb.SelectedItem.ToString()));
 		}
 	}

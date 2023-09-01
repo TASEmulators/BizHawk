@@ -18,10 +18,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			}
 		}
 
-		private void SetDefaultDisassemblable()
-		{
-			_selectedDisassemblable = GetAvailableDisassemblables().First();
-		}
+		private void SetDefaultDisassemblable() => _selectedDisassemblable = GetAvailableDisassemblables().First();
 
 		public string Cpu
 		{
@@ -59,10 +56,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			}
 		}
 
-		public IEnumerable<string> AvailableCpus
-		{
-			get { return GetAvailableDisassemblables().SelectMany(d => d.AvailableCpus); }
-		}
+		public IEnumerable<string> AvailableCpus => GetAvailableDisassemblables().SelectMany(d => d.AvailableCpus);
 
 		public string Disassemble(MemoryDomain m, uint addr, out int length)
 		{

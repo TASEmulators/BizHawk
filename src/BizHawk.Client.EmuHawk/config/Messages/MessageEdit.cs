@@ -113,15 +113,9 @@ namespace BizHawk.Client.EmuHawk
 			SetPosition(e.X, e.Y);
 		}
 
-		private void PositionPanel_MouseEnter(object sender, EventArgs e)
-		{
-			Cursor = Cursors.Hand;
-		}
+		private void PositionPanel_MouseEnter(object sender, EventArgs e) => Cursor = Cursors.Hand;
 
-		private void PositionPanel_MouseLeave(object sender, EventArgs e)
-		{
-			Cursor = Cursors.Default;
-		}
+		private void PositionPanel_MouseLeave(object sender, EventArgs e) => Cursor = Cursors.Default;
 
 		private void PositionPanel_MouseMove(object sender, MouseEventArgs e)
 		{
@@ -162,7 +156,7 @@ namespace BizHawk.Client.EmuHawk
 					break;
 			}
 
-			using var p = new Pen(Color.Black);
+			using Pen p = new Pen(Color.Black);
 			e.Graphics.DrawLine(p, new Point(x, y), new Point(x + 8, y + 8));
 			e.Graphics.DrawLine(p, new Point(x + 8, y), new Point(x, y + 8));
 			e.Graphics.DrawRectangle(p, new Rectangle(x, y, 8, 8));

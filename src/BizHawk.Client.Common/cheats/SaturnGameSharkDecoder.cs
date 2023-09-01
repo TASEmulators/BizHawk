@@ -28,16 +28,16 @@ namespace BizHawk.Client.Common.cheats
 				return new InvalidCheatCode("All Saturn GameShark Cheats need to be 13 characters in length.");
 			}
 
-			var result = new DecodeResult { Size = WatchSize.Word };
+			DecodeResult result = new DecodeResult { Size = WatchSize.Word };
 
 			//  Only the first character really matters?  16 or 36?
-			var test = code.Remove(2, 11).Remove(1, 1);
+			string test = code.Remove(2, 11).Remove(1, 1);
 			if (test == "3")
 			{
 				result.Size = WatchSize.Byte;
 			}
-			
-			var s = code.Remove(0, 2);
+
+			string s = code.Remove(0, 2);
 			result.Address = int.Parse(s.Remove(6, 5), NumberStyles.HexNumber);
 			result.Value = int.Parse(s.Remove(0, 7));
 			return result;

@@ -30,10 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(piratecrap), ref piratecrap);
 		}
 
-		public override void WriteExp(int addr, byte value)
-		{
-			piratecrap = value.Bit(1);
-		}
+		public override void WriteExp(int addr, byte value) => piratecrap = value.Bit(1);
 
 		protected override int Get_CHRBank_1K(int addr)
 		{

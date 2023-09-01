@@ -11,13 +11,13 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		private byte ReadMemoryPopulous(int addr)
 		{
-			if (addr >= 0x80000 && addr < 0x88000)
+			if (addr is >= 0x80000 and < 0x88000)
 				return PopulousRAM[addr & 0x7FFF];
 
 			if (addr < 0xFFFFF) // read ROM
 				return RomData[addr % RomLength];
 
-			if (addr >= 0x1F0000 && addr < 0x1F8000) // read RAM
+			if (addr is >= 0x1F0000 and < 0x1F8000) // read RAM
 				return Ram[addr & 0x1FFF];
 
 			if (addr >= 0x1FE000) // hardware page.
@@ -26,8 +26,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				if (addr < 0x1FE800) { Cpu.PendingCycles--; return VCE.ReadVCE(addr); }
 				if (addr < 0x1FEC00) return IOBuffer;
 				if (addr < 0x1FF000) { IOBuffer = (byte)(Cpu.ReadTimerValue() | (IOBuffer & 0x80)); return IOBuffer; }
-				if (addr >= 0x1FF000 &&
-					addr < 0x1FF400) { IOBuffer = ReadInput(); return IOBuffer; }
+				if (addr is >= 0x1FF000 and
+					< 0x1FF400) { IOBuffer = ReadInput(); return IOBuffer; }
 				if ((addr & ~1) == 0x1FF400) return IOBuffer;
 				if (addr == 0x1FF402) { IOBuffer = Cpu.IRQControlByte; return IOBuffer; }
 				if (addr == 0x1FF403) { IOBuffer = (byte)(Cpu.ReadIrqStatus() | (IOBuffer & 0xF8)); return IOBuffer; }
@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		private void WriteMemoryPopulous(int addr, byte value)
 		{
-			if (addr >= 0x1F0000 && addr < 0x1F8000) // write RAM.
+			if (addr is >= 0x1F0000 and < 0x1F8000) // write RAM.
 				Ram[addr & 0x1FFF] = value;
 
 			else if (addr >= 0x1FE000) // hardware page.
@@ -49,13 +49,13 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				else if (addr < 0x1FEC00) { IOBuffer = value; PSG.WritePSG((byte)addr, value, Cpu.TotalExecutedCycles); }
 				else if (addr == 0x1FEC00) { IOBuffer = value; Cpu.WriteTimer(value); }
 				else if (addr == 0x1FEC01) { IOBuffer = value; Cpu.WriteTimerEnable(value); }
-				else if (addr >= 0x1FF000 &&
-						 addr < 0x1FF400) { IOBuffer = value; WriteInput(value); }
+				else if (addr is >= 0x1FF000 and
+						 < 0x1FF400) { IOBuffer = value; WriteInput(value); }
 				else if (addr == 0x1FF402) { IOBuffer = value; Cpu.WriteIrqControl(value); }
 				else if (addr == 0x1FF403) { IOBuffer = value; Cpu.WriteIrqStatus(); }
 				else Log.Error("MEM", "unhandled hardware write [{0:X6}] : {1:X2}", addr, value);
 			}
-			else if (addr >= 0x80000 && addr < 0x88000)
+			else if (addr is >= 0x80000 and < 0x88000)
 				PopulousRAM[addr & 0x7FFF] = value;
 			else
 				Log.Error("MEM", "UNHANDLED WRITE: {0:X6}:{1:X2}", addr, value);

@@ -15,10 +15,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			bridge.LibretroBridge_SetVideoSize(cbHandler, maxSize);
 		}
 
-		private void UpdateVideoBuffer()
-		{
-			bridge.LibretroBridge_GetVideo(cbHandler, out _vidWidth, out _vidHeight, _vidBuffer);
-		}
+		private void UpdateVideoBuffer() => bridge.LibretroBridge_GetVideo(cbHandler, out _vidWidth, out _vidHeight, _vidBuffer);
 
 		public int BackgroundColor => 0;
 		public int[] GetVideoBuffer() => _vidBuffer;
@@ -27,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		{
 			get
 			{
-				var dar = av_info.geometry.aspect_ratio;
+				float dar = av_info.geometry.aspect_ratio;
 				if (dar <= 0)
 				{
 					return _vidWidth;
@@ -44,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		{
 			get
 			{
-				var dar = av_info.geometry.aspect_ratio;
+				float dar = av_info.geometry.aspect_ratio;
 				if (dar <= 0)
 				{
 					return _vidHeight;

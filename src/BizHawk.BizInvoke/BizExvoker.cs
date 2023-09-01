@@ -23,7 +23,7 @@ namespace BizHawk.BizInvoke
 
 		static BizExvoker()
 		{
-			var aname = new AssemblyName("BizExvokeProxyAssembly");
+			AssemblyName aname = new AssemblyName("BizExvokeProxyAssembly");
 			ImplAssemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(aname, AssemblyBuilderAccess.Run);
 			ImplModuleBuilder = ImplAssemblyBuilder.DefineDynamicModule("BizExvokerModule");
 		}
@@ -85,7 +85,7 @@ namespace BizHawk.BizInvoke
 			{
 				foreach (var sdt in d.DelegateTypes)
 				{
-					var del = Delegate.CreateDelegate(sdt.DelegateType, o, sdt.Method);
+					Delegate del = Delegate.CreateDelegate(sdt.DelegateType, o, sdt.Method);
 					Delegates.Add(del); // prevent garbage collection of the delegate, which would invalidate the pointer
 					EntryPoints.Add(sdt.EntryPointName, a.GetFunctionPointerForDelegate(del));
 				}

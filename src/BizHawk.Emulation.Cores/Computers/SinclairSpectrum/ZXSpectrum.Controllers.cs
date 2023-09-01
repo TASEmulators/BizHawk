@@ -19,44 +19,44 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				ControllerDefinition definition = new("ZXSpectrum Controller");
 
 				// joysticks
-				var joys1 = new List<string>
+				List<string> joys1 = new List<string>
 				{
 					// P1 Joystick
 					"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Button",
 				};
 
-				foreach (var s in joys1)
+				foreach (string s in joys1)
 				{
 					definition.BoolButtons.Add(s);
 					definition.CategoryLabels[s] = "J1 (" + SyncSettings.JoystickType1 + ")";
 				}
 
-				var joys2 = new List<string>
+				List<string> joys2 = new List<string>
 				{
 					// P2 Joystick
 					"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Button",
 				};
 
-				foreach (var s in joys2)
+				foreach (string s in joys2)
 				{
 					definition.BoolButtons.Add(s);
 					definition.CategoryLabels[s] = "J2 (" + SyncSettings.JoystickType2 + ")";
 				}
 
-				var joys3 = new List<string>
+				List<string> joys3 = new List<string>
 				{
 					// P3 Joystick
 					"P3 Up", "P3 Down", "P3 Left", "P3 Right", "P3 Button",
 				};
 
-				foreach (var s in joys3)
+				foreach (string s in joys3)
 				{
 					definition.BoolButtons.Add(s);
 					definition.CategoryLabels[s] = "J3 (" + SyncSettings.JoystickType3 + ")";
 				}
 
 				// keyboard
-				var keys = new List<string>
+				List<string> keys = new List<string>
 				{
 					// Controller mapping includes all keyboard keys from the following models:
 					// https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/ZXSpectrum48k.jpg/1200px-ZXSpectrum48k.jpg
@@ -74,47 +74,47 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					"Key Symbol Shift", "Key Semi-Colon", "Key Quote", "Key Left Cursor", "Key Right Cursor", "Key Space", "Key Up Cursor", "Key Down Cursor", "Key Comma",
 				};
 
-				foreach (var s in keys)
+				foreach (string s in keys)
 				{
 					definition.BoolButtons.Add(s);
 					definition.CategoryLabels[s] = "Keyboard";
 				}
 
 				// Power functions
-				var power = new List<string>
+				List<string> power = new List<string>
 				{
 					// Power functions
 					"Reset", "Power"
 				};
 
-				foreach (var s in power)
+				foreach (string s in power)
 				{
 					definition.BoolButtons.Add(s);
 					definition.CategoryLabels[s] = "Power";
 				}
 
 				// Datacorder (tape device)
-				var tape = new List<string>
+				List<string> tape = new List<string>
 				{
 					// Tape functions
 					"Play Tape", "Stop Tape", "RTZ Tape", "Record Tape", "Insert Next Tape",
 					"Insert Previous Tape", "Next Tape Block", "Prev Tape Block", "Get Tape Status"
 				};
 
-				foreach (var s in tape)
+				foreach (string s in tape)
 				{
 					definition.BoolButtons.Add(s);
 					definition.CategoryLabels[s] = "Datacorder";
 				}
 
 				// Datacorder (tape device)
-				var disk = new List<string>
+				List<string> disk = new List<string>
 				{
 					// Tape functions
 					"Insert Next Disk", "Insert Previous Disk", /*"Eject Current Disk",*/ "Get Disk Status"
 				};
 
-				foreach (var s in disk)
+				foreach (string s in disk)
 				{
 					definition.BoolButtons.Add(s);
 					definition.CategoryLabels[s] = "+3 Disk Drive";

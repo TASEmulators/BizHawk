@@ -203,7 +203,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			{
 				using (_settings.Domain.EnterExit())
 				{
-					foreach (IMiniWatchDetails watch in _watchList.Cast<IMiniWatchDetails>())
+					foreach (var watch in _watchList.Cast<IMiniWatchDetails>())
 					{
 						watch.Update(_settings.PreviousType, _settings.Domain, _settings.BigEndian);
 					}
@@ -226,10 +226,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			_settings.PreviousType = type;
 		}
 
-		public void SetPreviousToCurrent()
-		{
-			Array.ForEach(_watchList, w => w.SetPreviousToCurrent(_settings.Domain, _settings.BigEndian));
-		}
+		public void SetPreviousToCurrent() => Array.ForEach(_watchList, w => w.SetPreviousToCurrent(_settings.Domain, _settings.BigEndian));
 
 		public void ClearChangeCounts()
 		{
@@ -268,10 +265,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			_watchList = _watchList.Except(removeList).ToArray();
 		}
 
-		public void RemoveAddressRange(IEnumerable<long> addresses)
-		{
-			_watchList = _watchList.Where(w => !addresses.Contains(w.Address)).ToArray();
-		}
+		public void RemoveAddressRange(IEnumerable<long> addresses) => _watchList = _watchList.Where(w => !addresses.Contains(w.Address)).ToArray();
 
 		public void AddRange(IEnumerable<long> addresses, bool append)
 		{
@@ -384,7 +378,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 				case ComparisonOperator.DifferentBy:
 					if (DifferentBy.HasValue)
 					{
-						var differentBy = DifferentBy.Value;
+						int differentBy = DifferentBy.Value;
 						if (_settings.Type == WatchDisplayType.Float)
 						{
 							return watchList.Where(w => (GetValue(w.Address).ToFloat() + differentBy).HawkFloatEquality(w.Previous.ToFloat())
@@ -410,7 +404,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		{
 			if (CompareValue.HasValue)
 			{
-				var compareValue = CompareValue.Value;
+				long compareValue = CompareValue.Value;
 				switch (Operator)
 				{
 					default:
@@ -443,7 +437,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 					case ComparisonOperator.DifferentBy:
 						if (DifferentBy.HasValue)
 						{
-							var differentBy = DifferentBy.Value;
+							int differentBy = DifferentBy.Value;
 							if (_settings.Type == WatchDisplayType.Float)
 							{
 								return watchList.Where(w => (GetValue(w.Address).ToFloat() + differentBy).HawkFloatEquality(compareValue)
@@ -466,7 +460,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		{
 			if (CompareValue.HasValue)
 			{
-				var compareValue = CompareValue.Value;
+				long compareValue = CompareValue.Value;
 				switch (Operator)
 				{
 					default:
@@ -500,7 +494,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		{
 			if (_settings.IsDetailed() && CompareValue.HasValue)
 			{
-				var compareValue = CompareValue.Value;
+				long compareValue = CompareValue.Value;
 				switch (Operator)
 				{
 					default:
@@ -548,7 +542,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		{
 			if (CompareValue.HasValue)
 			{
-				var compareValue = CompareValue.Value;
+				long compareValue = CompareValue.Value;
 				switch (Operator)
 				{
 					default:
@@ -579,7 +573,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 					case ComparisonOperator.DifferentBy:
 						if (DifferentBy.HasValue)
 						{
-							var differentBy = DifferentBy.Value;
+							int differentBy = DifferentBy.Value;
 							if (_settings.Type == WatchDisplayType.Float)
 							{
 								return watchList.Where(w => (GetValue(w.Address).ToFloat() - w.Previous.ToFloat() + differentBy).HawkFloatEquality(compareValue)

@@ -29,13 +29,13 @@ namespace BizHawk.Emulation.DiscSystem
 			Result.TOCItems[0].Control = 0;
 			Result.TOCItems[0].Exists = false;
 
-			var minFoundTrack = 100;
-			var maxFoundTrack = 1;
+			int minFoundTrack = 100;
+			int maxFoundTrack = 1;
 
 			foreach (var te in Entries)
 			{
 				var q = te.QData;
-				var point = q.q_index.DecimalValue;
+				int point = q.q_index.DecimalValue;
 
 				//see ECMD-394 page 5-14 for info about point = 0xA0, 0xA1, 0xA2
 

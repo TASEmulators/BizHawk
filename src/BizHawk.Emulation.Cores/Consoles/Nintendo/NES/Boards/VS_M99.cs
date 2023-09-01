@@ -52,11 +52,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//but we don't actually need to do anything yet
 		}
 
-		public override byte ReadExp(int addr)
-		{
+		public override byte ReadExp(int addr) =>
 			//what are we reading?
-			return 0;
-		}
+			0;
 
 		public override byte ReadPpu(int addr)
 		{

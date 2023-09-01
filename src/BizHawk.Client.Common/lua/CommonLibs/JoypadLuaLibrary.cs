@@ -37,7 +37,7 @@ namespace BizHawk.Client.Common
 		[LuaMethod("set", "sets the given buttons to their provided values for the current frame")]
 		public void Set(LuaTable buttons, int? controller = null)
 		{
-			var dict = new Dictionary<string, bool>();
+			Dictionary<string, bool> dict = new Dictionary<string, bool>();
 			foreach (var (k, v) in _th.EnumerateEntries<object, object>(buttons))
 			{
 				dict[k.ToString()] = Convert.ToBoolean(v); // Accepts 1/0 or true/false
@@ -49,10 +49,10 @@ namespace BizHawk.Client.Common
 		[LuaMethod("setanalog", "sets the given analog controls to their provided values for the current frame. Note that unlike set() there is only the logic of overriding with the given value.")]
 		public void SetAnalog(LuaTable controls, int? controller = null)
 		{
-			var dict = new Dictionary<string, int?>();
+			Dictionary<string, int?> dict = new Dictionary<string, int?>();
 			foreach (var (k, v) in _th.EnumerateEntries<object, object>(controls))
 			{
-				dict[k.ToString()] = long.TryParse(v.ToString(), out var d) ? (int) d : null;
+				dict[k.ToString()] = long.TryParse(v.ToString(), out long d) ? (int) d : null;
 			}
 			APIs.Joypad.SetAnalog(dict, controller);
 		}

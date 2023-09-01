@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (acquire != null) throw new InvalidOperationException("Bootgod DB multiply initialized");
 			acquire = new EventWaitHandle(false, EventResetMode.ManualReset);
 
-			var stopwatch = Stopwatch.StartNew();
+			Stopwatch stopwatch = Stopwatch.StartNew();
 			ThreadPool.QueueUserWorkItem(_ =>
 			{
 				instance = new BootGodDb(basePath);
@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			// in anticipation of any slowness annoying people, and just for shits and giggles, i made a super fast parser
 			int state=0;
-			var xmlReader = XmlReader.Create(stream);
+			XmlReader xmlReader = XmlReader.Create(stream);
 			CartInfo currCart = null;
 			string currName = null;
 			while (xmlReader.Read())

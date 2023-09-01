@@ -43,9 +43,6 @@
 
 		private static readonly byte[] scramble_table = { 0, 3, 1, 5, 6, 7, 2, 4 };
 
-		private static int scramble_A000(byte val)
-		{
-			return (val & ~0x7) | scramble_table[val & 0x7];
-		}
+		private static int scramble_A000(byte val) => (val & ~0x7) | scramble_table[val & 0x7];
 	}
 }

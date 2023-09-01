@@ -63,7 +63,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			public NESSyncSettings Clone()
 			{
-				var ret = (NESSyncSettings)MemberwiseClone();
+				NESSyncSettings ret = (NESSyncSettings)MemberwiseClone();
 				ret.BoardProperties = new Dictionary<string, string>(BoardProperties);
 				ret.Controls = Controls.Clone();
 				ret.VSDipswitches = VSDipswitches.Clone();
@@ -90,10 +90,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				public bool Dip_Switch_7 { get; set; }
 				public bool Dip_Switch_8 { get; set; }
 
-				public VSDipswitchSettings Clone()
-				{
-					return (VSDipswitchSettings)MemberwiseClone();
-				}
+				public VSDipswitchSettings Clone() => (VSDipswitchSettings)MemberwiseClone();
 
 				public override bool Equals(object obj)
 				{
@@ -104,7 +101,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 					if (obj is VSDipswitchSettings)
 					{
-						var settings = obj as VSDipswitchSettings;
+						VSDipswitchSettings settings = obj as VSDipswitchSettings;
 						return Dip_Switch_1 == settings.Dip_Switch_1
 							&& Dip_Switch_2 == settings.Dip_Switch_2
 							&& Dip_Switch_3 == settings.Dip_Switch_3
@@ -118,10 +115,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return base.Equals(obj);
 				}
 
-				public override int GetHashCode()
-				{
-					return base.GetHashCode();
-				}
+				public override int GetHashCode() => base.GetHashCode();
 			}
 
 			public VSDipswitchSettings VSDipswitches = new();
@@ -146,7 +140,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			public NESSettings Clone()
 			{
-				var ret = (NESSettings)MemberwiseClone();
+				NESSettings ret = (NESSettings)MemberwiseClone();
 				ret.Palette = (byte[,])ret.Palette.Clone();
 				return ret;
 			}

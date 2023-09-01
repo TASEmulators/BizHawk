@@ -54,10 +54,7 @@ namespace BizHawk.Client.EmuHawk
 			Icon = ToolIcon;
 		}
 
-		private void VirtualpadTool_Load(object sender, EventArgs e)
-		{
-			CreatePads();
-		}
+		private void VirtualpadTool_Load(object sender, EventArgs e) => CreatePads();
 
 		public void ClearVirtualPadHolds()
 		{
@@ -72,9 +69,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public void BumpAnalogValue(int? x, int? y) // TODO: multi-player
-		{
-			Pads.ForEach(pad => pad.BumpAnalog(x, y));
-		}
+=> Pads.ForEach(pad => pad.BumpAnalog(x, y));
 
 		private void SetLastFocusedNUD(object sender, EventArgs args)
 			=> _lastFocusedNUD = (Control) sender;
@@ -96,7 +91,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var padSchemata = ((IVirtualPadSchema) Activator.CreateInstance(schemaType))
+			List<PadSchema> padSchemata = ((IVirtualPadSchema) Activator.CreateInstance(schemaType))
 				.GetPadSchemas(Emulator, s => DialogController.ShowMessageBox(s))
 				.ToList();
 
@@ -126,7 +121,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void ScrollToPadSchema(string padSchemaName)
 		{
-			foreach (var control in ControllerPanel.Controls)
+			foreach (object control in ControllerPanel.Controls)
 			{
 				if (control is not VirtualPad vp)
 				{
@@ -214,39 +209,18 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void PadsSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			StickyMenuItem.Checked = StickyPads;
-		}
+		private void PadsSubMenu_DropDownOpened(object sender, EventArgs e) => StickyMenuItem.Checked = StickyPads;
 
-		private void ClearAllMenuItem_Click(object sender, EventArgs e)
-		{
-			ClearVirtualPadHolds();
-		}
+		private void ClearAllMenuItem_Click(object sender, EventArgs e) => ClearVirtualPadHolds();
 
-		private void StickyMenuItem_Click(object sender, EventArgs e)
-		{
-			StickyPads ^= true;
-		}
+		private void StickyMenuItem_Click(object sender, EventArgs e) => StickyPads ^= true;
 
-		private void PadBoxContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
-		{
-			StickyContextMenuItem.Checked = StickyPads;
-		}
+		private void PadBoxContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e) => StickyContextMenuItem.Checked = StickyPads;
 
-		private void ExitMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
+		private void ExitMenuItem_Click(object sender, EventArgs e) => Close();
 
-		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			ClearClearsAnalogInputMenuItem.Checked = ClearAlsoClearsAnalog;
-		}
+		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e) => ClearClearsAnalogInputMenuItem.Checked = ClearAlsoClearsAnalog;
 
-		private void ClearClearsAnalogInputMenuItem_Click(object sender, EventArgs e)
-		{
-			ClearAlsoClearsAnalog ^= true;
-		}
+		private void ClearClearsAnalogInputMenuItem_Click(object sender, EventArgs e) => ClearAlsoClearsAnalog ^= true;
 	}
 }

@@ -5,10 +5,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 {
 	public partial class O2Hawk : ISaveRam
 	{
-		public byte[] CloneSaveRam()
-		{
-			return (byte[])cart_RAM?.Clone();
-		}
+		public byte[] CloneSaveRam() => (byte[])cart_RAM?.Clone();
 
 		public void StoreSaveRam(byte[] data)
 		{

@@ -556,7 +556,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			int size = (extension >> 11) & 0x1;
 			int scale = (extension >> 9) & 0x3;
 			sbyte displacement = (sbyte)extension;
-			var indexReg = scale switch
+			int indexReg = scale switch
 			{
 				0 => 1,
 				1 => 2,
@@ -582,7 +582,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			int size = (extension >> 11) & 0x1;
 			int scale = (extension >> 9) & 0x3;
 			sbyte displacement = (sbyte)extension;
-			var indexReg = scale switch
+			int indexReg = scale switch
 			{
 				0 => 1,
 				1 => 2,

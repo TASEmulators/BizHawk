@@ -177,25 +177,13 @@ namespace BizHawk.Client.EmuHawk
 			lblTweakedMednafen.Text = _lblTweakedMednafenText.Replace("400x300", $"{ri.Resolution.Width}x{ri.Resolution.Height}");
 		}
 
-		private void DrawingArea_ValueChanged(object sender, EventArgs e)
-		{
-			SyncLabels();
-		}
+		private void DrawingArea_ValueChanged(object sender, EventArgs e) => SyncLabels();
 
-		private void RbClipHorizontal_CheckedChanged(object sender, EventArgs e)
-		{
-			SyncLabels();
-		}
+		private void RbClipHorizontal_CheckedChanged(object sender, EventArgs e) => SyncLabels();
 
-		private void RbClipToFramebuffer_CheckedChanged(object sender, EventArgs e)
-		{
-			SyncLabels();
-		}
+		private void RbClipToFramebuffer_CheckedChanged(object sender, EventArgs e) => SyncLabels();
 
-		private void RbClipNone_CheckedChanged(object sender, EventArgs e)
-		{
-			SyncLabels();
-		}
+		private void RbClipNone_CheckedChanged(object sender, EventArgs e) => SyncLabels();
 
 		private void LinkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{

@@ -90,10 +90,7 @@ namespace BizHawk.Emulation.Cores.Components
 		private int RegNum;
 		private readonly Pulse[] pulse = new Pulse[3];
 
-		public void RegSelect(byte val)
-		{
-			RegNum = val & 15;
-		}
+		public void RegSelect(byte val) => RegNum = val & 15;
 		public void RegWrite(byte val)
 		{
 			switch (RegNum)
@@ -134,10 +131,7 @@ namespace BizHawk.Emulation.Cores.Components
 		}
 
 		private readonly Action<int> enqueuer;
-		private void PulseAddDiff(int val)
-		{
-			enqueuer(val * 250);
-		}
+		private void PulseAddDiff(int val) => enqueuer(val * 250);
 
 		public Sunsoft5BAudio(Action<int> enqueuer)
 		{
@@ -150,7 +144,7 @@ namespace BizHawk.Emulation.Cores.Components
 
 		public void Clock()
 		{
-			foreach (Pulse p in pulse)
+			foreach (var p in pulse)
 			{
 				p.Clock();
 			}

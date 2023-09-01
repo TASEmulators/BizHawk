@@ -132,7 +132,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		[CoreConstructor(VSystemID.Raw.GBC)]
 		public GBHawk(CoreComm comm, GameInfo game, byte[] rom, /*string gameDbFn,*/ GBSettings settings, GBSyncSettings syncSettings, bool subframe = false)
 		{
-			var ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new BasicServiceProvider(this);
 
 			cpu = new LR35902
 			{
@@ -188,13 +188,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				is_GB_in_GBC = true; // for movie files
 			}
 
-			var romHashMD5 = MD5Checksum.ComputePrefixedHex(rom);
+			string romHashMD5 = MD5Checksum.ComputePrefixedHex(rom);
 			Console.WriteLine(romHashMD5);
-			var romHashSHA1 = SHA1Checksum.ComputePrefixedHex(rom);
+			string romHashSHA1 = SHA1Checksum.ComputePrefixedHex(rom);
 			Console.WriteLine(romHashSHA1);
 
 			_rom = rom;
-			var mppr = Setup_Mapper(romHashMD5, romHashSHA1);
+			string mppr = Setup_Mapper(romHashMD5, romHashSHA1);
 			if (cart_RAM != null) { cart_RAM_vbls = new byte[cart_RAM.Length]; }
 
 			_controllerDeck = new(mppr is "MBC7"
@@ -244,7 +244,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 			else
 			{
-				var scratch = new uint[4];
+				uint[] scratch = new uint[4];
 				for (int i = 0; i < 4; i++)
 				{
 					scratch[i] = ppu.color_palette[(ppu.BGP >> (i * 2)) & 3];
@@ -265,7 +265,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 			else
 			{
-				var scratch = new uint[8];
+				uint[] scratch = new uint[8];
 				for (int i = 0; i < 4; i++)
 				{
 					scratch[i] = ppu.color_palette[(ppu.obj_pal_0 >> (i * 2)) & 3];
@@ -307,7 +307,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			private IntPtr AddHandle(object target)
 			{
-				var handle = GCHandle.Alloc(target, GCHandleType.Pinned);
+				GCHandle handle = GCHandle.Alloc(target, GCHandleType.Pinned);
 				_handles.Add(handle);
 				return handle.AddrOfPinnedObject();
 			}
@@ -338,10 +338,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		private PrinterCallback _printerCallback = null;
 #pragma warning restore CS0414
 
-		public void SetPrinterCallback(PrinterCallback callback)
-		{
-			_printerCallback = null;
-		}
+		public void SetPrinterCallback(PrinterCallback callback) => _printerCallback = null;
 
 		public DisplayType Region => DisplayType.NTSC;
 
@@ -626,7 +623,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 
 			// Sachen maper not known to have RAM
-			if ((mppr == "Schn1") || (mppr == "Schn2"))
+			if (mppr is "Schn1" or "Schn2")
 			{
 				cart_RAM = null;
 				Use_MT = true;
@@ -741,7 +738,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			public override string Disassemble(MemoryDomain m, uint addr, out int length)
 			{
-				var ret = LR35902.Disassemble((ushort) addr, a => m.PeekByte(a), UseRGBDSSyntax, out var tmp);
+				string ret = LR35902.Disassemble((ushort) addr, a => m.PeekByte(a), UseRGBDSSyntax, out ushort tmp);
 				length = tmp;
 				return ret;
 			}

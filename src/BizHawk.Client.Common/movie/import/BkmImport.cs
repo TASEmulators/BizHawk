@@ -8,10 +8,10 @@ namespace BizHawk.Client.Common.movie.import
 	{
 		protected override void RunImport()
 		{
-			var bkm = new BkmMovie { Filename = SourceFile.FullName };
+			BkmMovie bkm = new BkmMovie { Filename = SourceFile.FullName };
 			bkm.Load();
 
-			for (var i = 0; i < bkm.InputLogLength; i++)
+			for (int i = 0; i < bkm.InputLogLength; i++)
 			{
 				var input = bkm.GetInputState(i, Result.Movie.Emulator.ControllerDefinition, bkm.Header[HeaderKeys.Platform]);
 				Result.Movie.AppendFrame(input);
@@ -23,7 +23,7 @@ namespace BizHawk.Client.Common.movie.import
 			Result.Movie.SyncSettingsJson = bkm.SyncSettingsJson;
 
 			Result.Movie.Comments.Clear();
-			foreach (var comment in bkm.Comments)
+			foreach (string comment in bkm.Comments)
 			{
 				Result.Movie.Comments.Add(comment);
 			}

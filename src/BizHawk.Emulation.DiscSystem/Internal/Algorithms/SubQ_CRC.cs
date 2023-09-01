@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.DiscSystem
 			for (ushort i = 0; i < 256; ++i)
 			{
 				ushort value = 0;
-				var temp = (ushort)(i << 8);
+				ushort temp = (ushort)(i << 8);
 				for (byte j = 0; j < 8; ++j)
 				{
 					if (((value ^ temp) & 0x8000) != 0)
@@ -28,10 +28,10 @@ namespace BizHawk.Emulation.DiscSystem
 		public static ushort Calculate(byte[] data, int offset, int length)
 		{
 			ushort Result = 0;
-			for (var i = 0; i < length; i++)
+			for (int i = 0; i < length; i++)
 			{
-				var b = data[offset + i];
-				var index = (b ^ ((Result >> 8) & 0xFF));
+				byte b = data[offset + i];
+				int index = (b ^ ((Result >> 8) & 0xFF));
 				Result = (ushort)((Result << 8) ^ table[index]);
 			}
 			return Result;

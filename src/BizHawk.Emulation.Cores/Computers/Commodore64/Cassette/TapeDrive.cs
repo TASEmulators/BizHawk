@@ -15,35 +15,17 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cassette
 			}
 		}
 
-		public override void HardReset()
-		{
-			_tape?.Rewind();
-		}
+		public override void HardReset() => _tape?.Rewind();
 
-		public override bool ReadDataInputBuffer()
-		{
-			return _tape == null || _tape.Read();
-		}
+		public override bool ReadDataInputBuffer() => _tape == null || _tape.Read();
 
-		public override bool ReadSenseBuffer()
-		{
-			return _tape == null;
-		}
+		public override bool ReadSenseBuffer() => _tape == null;
 
-		public override void SyncState(Serializer ser)
-		{
-			_tape?.SyncState(ser);
-		}
+		public override void SyncState(Serializer ser) => _tape?.SyncState(ser);
 
-		public void Insert(Tape tape)
-		{
-			_tape = tape;
-		}
+		public void Insert(Tape tape) => _tape = tape;
 
-		public void RemoveMedia()
-		{
-			_tape = null;
-		}
+		public void RemoveMedia() => _tape = null;
 
 		// Exposed for memory domains, should not be used for actual emulation implementation
 		public override byte[] TapeDataDomain => _tape?.TapeDataDomain;

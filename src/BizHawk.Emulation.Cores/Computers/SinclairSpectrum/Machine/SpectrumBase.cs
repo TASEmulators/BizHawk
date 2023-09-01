@@ -238,7 +238,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				RAM7
 			};
 
-			foreach (var r in rams)
+			foreach (byte[] r in rams)
 			{
 				for (int i = 0; i < r.Length; i++)
 				{
@@ -289,7 +289,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				RAM7
 			};
 
-			foreach (var r in rams)
+			foreach (byte[] r in rams)
 			{
 				for (int i = 0; i < r.Length; i++)
 				{

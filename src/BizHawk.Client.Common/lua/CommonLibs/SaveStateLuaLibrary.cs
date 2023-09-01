@@ -14,7 +14,7 @@ namespace BizHawk.Client.Common
 		public bool Load(string path, bool suppressOSD = false)
 		{
 			_luaLibsImpl.IsUpdateSupressed = true;
-			var success = APIs.SaveState.Load(path, suppressOSD);
+			bool success = APIs.SaveState.Load(path, suppressOSD);
 			_luaLibsImpl.IsUpdateSupressed = false;
 			return success;
 		}
@@ -24,7 +24,7 @@ namespace BizHawk.Client.Common
 		public bool LoadSlot(int slotNum, bool suppressOSD = false)
 		{
 			_luaLibsImpl.IsUpdateSupressed = true;
-			var success = APIs.SaveState.LoadSlot(slotNum, suppressOSD: suppressOSD);
+			bool success = APIs.SaveState.LoadSlot(slotNum, suppressOSD: suppressOSD);
 			_luaLibsImpl.IsUpdateSupressed = false;
 			return success;
 		}

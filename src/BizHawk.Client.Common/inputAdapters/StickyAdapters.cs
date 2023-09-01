@@ -19,14 +19,14 @@ namespace BizHawk.Client.Common
 
 		public bool IsPressed(string button)
 		{
-			var source = Source.IsPressed(button);
+			bool source = Source.IsPressed(button);
 			source ^= CurrentStickies.Contains(button);
 			return source;
 		}
 
 		public int AxisValue(string name)
 		{
-			var val = _axisSet[name];
+			int? val = _axisSet[name];
 
 			if (val.HasValue)
 			{
@@ -97,7 +97,7 @@ namespace BizHawk.Client.Common
 
 		public void MassToggleStickyState(List<string> buttons)
 		{
-			foreach (var button in buttons.Where(button => !_justPressed.Contains(button)))
+			foreach (string button in buttons.Where(button => !_justPressed.Contains(button)))
 			{
 				if (CurrentStickies.Contains(button))
 				{
@@ -121,7 +121,7 @@ namespace BizHawk.Client.Common
 
 		public bool IsPressed(string button)
 		{
-			var source = Source.IsPressed(button);
+			bool source = Source.IsPressed(button);
 			bool patternValue = false;
 			if (_boolPatterns.TryGetValue(button, out var pattern))
 			{
@@ -191,10 +191,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public bool IsSticky(string button)
-		{
-			return _boolPatterns.ContainsKey(button) || _axisPatterns.ContainsKey(button);
-		}
+		public bool IsSticky(string button) => _boolPatterns.ContainsKey(button) || _axisPatterns.ContainsKey(button);
 
 		public HashSet<string> CurrentStickies => new(_boolPatterns.Keys);
 
@@ -221,7 +218,7 @@ namespace BizHawk.Client.Common
 
 		public void MassToggleStickyState(List<string> buttons)
 		{
-			foreach (var button in buttons.Where(button => !_justPressed.Contains(button)))
+			foreach (string button in buttons.Where(button => !_justPressed.Contains(button)))
 			{
 				SetSticky(button, !_boolPatterns.ContainsKey(button));
 			}

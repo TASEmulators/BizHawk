@@ -58,7 +58,7 @@ namespace BizHawk.Client.EmuHawk
 			e.Item = new ListViewItem(entry.ReturnType);
 			e.Item.SubItems.Add(entry.Library);
 
-			var deprecated = entry.IsDeprecated ? "[Deprecated] " : "";
+			string deprecated = entry.IsDeprecated ? "[Deprecated] " : "";
 			e.Item.SubItems.Add(deprecated + entry.Name);
 			e.Item.SubItems.Add(entry.ParameterList);
 			e.Item.SubItems.Add(entry.Description);
@@ -81,15 +81,9 @@ namespace BizHawk.Client.EmuHawk
 			UpdateList();
 		}
 
-		private void Ok_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
+		private void Ok_Click(object sender, EventArgs e) => Close();
 
-		private void FunctionView_ColumnClick(object sender, ColumnClickEventArgs e)
-		{
-			OrderColumn(e.Column);
-		}
+		private void FunctionView_ColumnClick(object sender, ColumnClickEventArgs e) => OrderColumn(e.Column);
 
 		private class Sorting
 		{
@@ -127,7 +121,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var sb = new StringBuilder();
+			StringBuilder sb = new StringBuilder();
 			foreach (int index in FunctionView.SelectedIndices)
 			{
 				var itm = _filteredList[index];
@@ -152,14 +146,8 @@ namespace BizHawk.Client.EmuHawk
 			FunctionView.Refresh();
 		}
 
-		private void FilterBox_KeyUp(object sender, KeyEventArgs e)
-		{
-			UpdateList();
-		}
+		private void FilterBox_KeyUp(object sender, KeyEventArgs e) => UpdateList();
 
-		private void ToWikiMarkupButton_Click(object sender, EventArgs e)
-		{
-			Clipboard.SetDataObject(_docs.ToTASVideosWikiMarkup());
-		}
+		private void ToWikiMarkupButton_Click(object sender, EventArgs e) => Clipboard.SetDataObject(_docs.ToTASVideosWikiMarkup());
 	}
 }

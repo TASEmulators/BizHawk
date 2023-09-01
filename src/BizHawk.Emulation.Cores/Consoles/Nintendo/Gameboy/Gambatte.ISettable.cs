@@ -8,10 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
 	public partial class Gameboy : ISettable<Gameboy.GambatteSettings, Gameboy.GambatteSyncSettings>
 	{
-		public GambatteSettings GetSettings()
-		{
-			return _settings.Clone();
-		}
+		public GambatteSettings GetSettings() => _settings.Clone();
 
 		public PutSettingsDirtyBits PutSettings(GambatteSettings o)
 		{
@@ -29,10 +26,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			return PutSettingsDirtyBits.None;
 		}
 
-		public GambatteSyncSettings GetSyncSettings()
-		{
-			return _syncSettings.Clone();
-		}
+		public GambatteSyncSettings GetSyncSettings() => _syncSettings.Clone();
 
 		public PutSettingsDirtyBits PutSyncSettings(GambatteSyncSettings o)
 		{
@@ -91,7 +85,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			public GambatteSettings Clone()
 			{
-				var ret = (GambatteSettings)MemberwiseClone();
+				GambatteSettings ret = (GambatteSettings)MemberwiseClone();
 				ret.GBPalette = (int[])GBPalette.Clone();
 				return ret;
 			}
@@ -178,15 +172,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				SettingsUtil.SetDefaultValues(this);
 			}
 
-			public GambatteSyncSettings Clone()
-			{
-				return (GambatteSyncSettings)MemberwiseClone();
-			}
+			public GambatteSyncSettings Clone() => (GambatteSyncSettings)MemberwiseClone();
 
-			public static bool NeedsReboot(GambatteSyncSettings x, GambatteSyncSettings y)
-			{
-				return !DeepEquality.DeepEquals(x, y);
-			}
+			public static bool NeedsReboot(GambatteSyncSettings x, GambatteSyncSettings y) => !DeepEquality.DeepEquals(x, y);
 		}
 	}
 }

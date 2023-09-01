@@ -64,10 +64,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			Definition.MakeImmutable();
 		}
 
-		public short CoreInputPoll(IController controller, int port, int index, int id)
-		{
-			return _ports[port].GetState(_mergers[port].UnMerge(controller), index, id);
-		}
+		public short CoreInputPoll(IController controller, int port, int index, int id) => _ports[port].GetState(_mergers[port].UnMerge(controller), index, id);
 	}
 
 	public interface IBsnesController

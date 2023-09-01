@@ -90,7 +90,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if ((exRegs[0] & 0x80) > 0)
 			{
-				var bank = exRegs[0] & 0x1F;
+				int bank = exRegs[0] & 0x1F;
 				if ((exRegs[0] & 0x20) > 0)
 				{
 					if ((exRegs[0] & 0x40) > 0)

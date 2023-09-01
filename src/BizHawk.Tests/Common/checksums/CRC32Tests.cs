@@ -18,18 +18,18 @@ namespace BizHawk.Tests.Common.checksums
 		{
 			static byte[] InitialiseArray()
 			{
-				var a = new byte[0x100];
-				for (var i = 0; i < 0x100; i++) a[i] = (byte) ~i;
+				byte[] a = new byte[0x100];
+				for (int i = 0; i < 0x100; i++) a[i] = (byte) ~i;
 				return a;
 			}
 			static byte[] InitialiseArrayExtra()
 			{
-				var a = new byte[0x100];
-				for (var i = 0; i < 0x100; i++) a[i] = (byte) i;
+				byte[] a = new byte[0x100];
+				for (int i = 0; i < 0x100; i++) a[i] = (byte) i;
 				return a;
 			}
 
-			var data = InitialiseArray();
+			byte[] data = InitialiseArray();
 			Assert.AreEqual(EXPECTED, CRC32.Calculate(data));
 
 			data = InitialiseArray();
@@ -37,7 +37,7 @@ namespace BizHawk.Tests.Common.checksums
 			crc32.Add(data);
 			Assert.AreEqual(EXPECTED, crc32.Result);
 
-			var dataExtra = InitialiseArrayExtra();
+			byte[] dataExtra = InitialiseArrayExtra();
 			CRC32 crc32Extra = new();
 			crc32Extra.Add(dataExtra);
 			Assert.AreEqual(EXPECTED_EXTRA, crc32Extra.Result);

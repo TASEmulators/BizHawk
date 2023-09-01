@@ -192,16 +192,10 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		/// <exception cref="InvalidOperationException">always</exception>
-		public new virtual void AddFrame(IVideoProvider source)
-		{
-			throw new InvalidOperationException("Must call AddAV()!");
-		}
+		public new virtual void AddFrame(IVideoProvider source) => throw new InvalidOperationException("Must call AddAV()!");
 
 		/// <exception cref="InvalidOperationException">always</exception>
-		public new virtual void AddSamples(short[] samples)
-		{
-			throw new InvalidOperationException("Must call AddAV()!");
-		}
+		public new virtual void AddSamples(short[] samples) => throw new InvalidOperationException("Must call AddAV()!");
 	}
 
 	public abstract class VwWrap : IVideoWriter
@@ -212,74 +206,32 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool UsesVideo => W.UsesVideo;
 
-		public void SetVideoCodecToken(IDisposable token)
-		{
-			W.SetVideoCodecToken(token);
-		}
+		public void SetVideoCodecToken(IDisposable token) => W.SetVideoCodecToken(token);
 
-		public void SetDefaultVideoCodecToken(Config config)
-		{
-			W.SetDefaultVideoCodecToken(config);
-		}
+		public void SetDefaultVideoCodecToken(Config config) => W.SetDefaultVideoCodecToken(config);
 
-		public void OpenFile(string baseName)
-		{
-			W.OpenFile(baseName);
-		}
+		public void OpenFile(string baseName) => W.OpenFile(baseName);
 
-		public void CloseFile()
-		{
-			W.CloseFile();
-		}
+		public void CloseFile() => W.CloseFile();
 
-		public void SetFrame(int frame)
-		{
-			W.SetFrame(frame);
-		}
+		public void SetFrame(int frame) => W.SetFrame(frame);
 
-		public void AddFrame(IVideoProvider source)
-		{
-			W.AddFrame(source);
-		}
+		public void AddFrame(IVideoProvider source) => W.AddFrame(source);
 
-		public void AddSamples(short[] samples)
-		{
-			W.AddSamples(samples);
-		}
+		public void AddSamples(short[] samples) => W.AddSamples(samples);
 
-		public IDisposable AcquireVideoCodecToken(Config config)
-		{
-			return W.AcquireVideoCodecToken(config);
-		}
+		public IDisposable AcquireVideoCodecToken(Config config) => W.AcquireVideoCodecToken(config);
 
-		public void SetMovieParameters(int fpsNum, int fpsDen)
-		{
-			W.SetMovieParameters(fpsNum, fpsDen);
-		}
+		public void SetMovieParameters(int fpsNum, int fpsDen) => W.SetMovieParameters(fpsNum, fpsDen);
 
-		public void SetVideoParameters(int width, int height)
-		{
-			W.SetVideoParameters(width, height);
-		}
+		public void SetVideoParameters(int width, int height) => W.SetVideoParameters(width, height);
 
-		public void SetAudioParameters(int sampleRate, int channels, int bits)
-		{
-			W.SetAudioParameters(sampleRate, channels, bits);
-		}
+		public void SetAudioParameters(int sampleRate, int channels, int bits) => W.SetAudioParameters(sampleRate, channels, bits);
 
-		public void SetMetaData(string gameName, string authors, ulong lengthMs, ulong rerecords)
-		{
-			W.SetMetaData(gameName, authors, lengthMs, rerecords);
-		}
+		public void SetMetaData(string gameName, string authors, ulong lengthMs, ulong rerecords) => W.SetMetaData(gameName, authors, lengthMs, rerecords);
 
-		public string DesiredExtension()
-		{
-			return W.DesiredExtension();
-		}
+		public string DesiredExtension() => W.DesiredExtension();
 
-		public void Dispose()
-		{
-			W.Dispose();
-		}
+		public void Dispose() => W.Dispose();
 	}
 }

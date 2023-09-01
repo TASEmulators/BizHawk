@@ -132,7 +132,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public ISectorSynthJob2448 Get(int lba)
 		{
-			var index = lba - FirstLBA;
+			int index = lba - FirstLBA;
 			if (index < 0) return null;
 			return index >= Sectors.Count ? null : Sectors[index];
 		}
@@ -145,7 +145,7 @@ namespace BizHawk.Emulation.DiscSystem
 	{
 		public ISectorSynthJob2448 SS;
 
-		public ISectorSynthJob2448 Get(int lba) { return SS; }
+		public ISectorSynthJob2448 Get(int lba) => SS;
 	}
 
 	/// <summary>
@@ -164,11 +164,8 @@ namespace BizHawk.Emulation.DiscSystem
 			Condition = condition;
 			Patch = patch;
 		}
-		
-		public ISectorSynthJob2448 Get(int lba)
-		{
-			return Condition(lba) ? Patch : Parent.Get(lba);
-		}
+
+		public ISectorSynthJob2448 Get(int lba) => Condition(lba) ? Patch : Parent.Get(lba);
 	}
 
 	/// <summary>
@@ -207,7 +204,7 @@ namespace BizHawk.Emulation.DiscSystem
 				return;
 
 			//apply patched subQ
-			for (var i = 0; i < 12; i++)
+			for (int i = 0; i < 12; i++)
 				job.DestBuffer2448[2352 + 12 + i] = Buffer_SubQ[i];
 		}
 	}
@@ -227,12 +224,12 @@ namespace BizHawk.Emulation.DiscSystem
 			//  data scrambling properly), but data track->audio leadout could break things in an insidious manner for the more accurate drive emulation code).
 
 			var ses = job.Disc.Sessions[SessionNumber];
-			var lba_relative = job.LBA - ses.LeadoutTrack.LBA;
+			int lba_relative = job.LBA - ses.LeadoutTrack.LBA;
 
 			//data is zero
 
-			var ts = lba_relative;
-			var ats = job.LBA;
+			int ts = lba_relative;
+			int ats = job.LBA;
 
 			const int ADR = 0x1; // Q channel data encodes position
 			var control = ses.LeadoutTrack.Control;
@@ -260,7 +257,7 @@ namespace BizHawk.Emulation.DiscSystem
 					TrackType = CUE.CueTrackType.Mode1_2352;
 			}
 
-			var ss_gap = new CUE.SS_Gap
+			CUE.SS_Gap ss_gap = new CUE.SS_Gap
 			{
 				Policy = Policy,
 				sq = sq,

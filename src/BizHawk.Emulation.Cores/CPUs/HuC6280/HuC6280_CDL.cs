@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 	{
 		public void DisassembleCDL(Stream s, ICodeDataLog cdl, IMemoryDomains mem)
 		{
-			var w = new StreamWriter(s);
+			StreamWriter w = new StreamWriter(s);
 			w.WriteLine("; Bizhawk CDL Disassembly");
 			w.WriteLine();
 			foreach (var kvp in cdl)

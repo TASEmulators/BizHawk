@@ -309,7 +309,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6800
 
 			StringBuilder ret = new();
 			ret.Append(string.Format("{0:X4}:  ", origaddr));
-			foreach (var b in bytes)
+			foreach (byte b in bytes)
 				ret.Append(string.Format("{0:X2} ", b));
 			while (ret.Length < 22)
 				ret.Append(' ');

@@ -97,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			if (!disassemble) return new(disassembly: string.Empty, registerInfo: string.Empty);
 
 			string rawbytes = "";
-			string disasm = Disassemble(PC, out var length);
+			string disasm = Disassemble(PC, out int length);
 
 			for (int i = 0; i < length; i++)
 			{
@@ -129,11 +129,9 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 		public bool AtStart => opcode == VOP_Fetch1 || Microcode[opcode][mi] >= Uop.End;
 
-		public TraceInfo TraceState()
-		{
+		public TraceInfo TraceState() =>
 			// only disassemble when we're at the beginning of an opcode
-			return State(AtStart);
-		}
+			State(AtStart);
 
 		public const ushort NMIVector = 0xFFFA;
 		public const ushort ResetVector = 0xFFFC;
@@ -244,10 +242,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		public long TotalExecutedCycles;
 
 		// SO pin
-		public void SetOverflow()
-		{
-			FlagV = true;
-		}
+		public void SetOverflow() => FlagV = true;
 
 		private static readonly byte[] TableNZ = 
 		{ 

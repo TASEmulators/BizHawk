@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				return;
 			}
 
-			IntPtr memPtr = api.get_memory_ptr(id);
+			var memPtr = api.get_memory_ptr(id);
 
 			Func<long, byte> peekByte;
 			Action<long, byte> pokeByte;
@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				};
 			}
 
-			var md = new MemoryDomainDelegate(name, size, endian, peekByte, pokeByte, 4);
+			MemoryDomainDelegate md = new MemoryDomainDelegate(name, size, endian, peekByte, pokeByte, 4);
 
 			_memoryDomains.Add(md);
 		}

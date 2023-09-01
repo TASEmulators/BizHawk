@@ -15,9 +15,9 @@ namespace BizHawk.Client.Common.movie.import
 		protected override void RunImport()
 		{
 			using var fs = SourceFile.Open(FileMode.Open, FileAccess.Read);
-			using var r = new BinaryReader(fs);
+			using BinaryReader r = new BinaryReader(fs);
 			// 000 4-byte signature: 46 4D 56 1A "FMV\x1A"
-			var signature = new string(r.ReadChars(4));
+			string signature = new string(r.ReadChars(4));
 			if (signature != "FMV\x1A")
 			{
 				Result.Errors.Add("This is not a valid .FMV file.");
@@ -35,7 +35,7 @@ namespace BizHawk.Client.Common.movie.import
 			}
 
 			Result.Movie.HeaderEntries[HeaderKeys.Platform] = VSystemID.Raw.NES;
-			var syncSettings = new NES.NESSyncSettings();
+			NES.NESSyncSettings syncSettings = new NES.NESSyncSettings();
 
 			// other bits: unknown, set to 0
 			// 005 1-byte flags:
@@ -89,7 +89,7 @@ namespace BizHawk.Client.Common.movie.import
 				Result.Warnings.Add("No input recorded.");
 			}
 
-			var controllerSettings = new NESControlSettings
+			NESControlSettings controllerSettings = new NESControlSettings
 			{
 				NesLeftPort = controller1 ? nameof(ControllerNES) : nameof(UnpluggedNES),
 				NesRightPort = controller2 ? nameof(ControllerNES) : nameof(UnpluggedNES)

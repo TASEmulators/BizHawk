@@ -76,21 +76,21 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_sampleCyclesDen = cyclesDen * sampleRate;
 
 			_envelopes = new Envelope[3];
-			for (var i = 0; i < 3; i++)
+			for (int i = 0; i < 3; i++)
 				_envelopes[i] = new Envelope();
 			_envelope0 = _envelopes[0];
 			_envelope1 = _envelopes[1];
 			_envelope2 = _envelopes[2];
 
 			_voices = new Voice[3];
-			for (var i = 0; i < 3; i++)
+			for (int i = 0; i < 3; i++)
 				_voices[i] = new Voice(newWaveformTable);
 			_voice0 = _voices[0];
 			_voice1 = _voices[1];
 			_voice2 = _voices[2];
 
 			_filterEnable = new bool[3];
-			for (var i = 0; i < 3; i++)
+			for (int i = 0; i < 3; i++)
 				_filterEnable[i] = false;
 
 			_outputBufferFiltered = new int[sampleRate];
@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public void HardReset()
 		{
-			for (var i = 0; i < 3; i++)
+			for (int i = 0; i < 3; i++)
 			{
 				_envelopes[i].HardReset();
 				_voices[i].HardReset();
@@ -283,7 +283,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 				// add resonance effect
 				// let's assume that frequencies near the peak are doubled in strength at max resonance
-				if ((1.2 > freq / loc_filterFrequency) && (freq / loc_filterFrequency > 0.8 ))
+				if (freq / loc_filterFrequency is < 1.2 and > 0.8)
 				{
 					_fftBuffer[i] = _fftBuffer[i] * (1 + (double)_filterResonance/15);
 				}

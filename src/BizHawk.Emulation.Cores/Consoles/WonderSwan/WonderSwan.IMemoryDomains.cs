@@ -9,10 +9,10 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 	{
 		private void InitIMemoryDomains()
 		{
-			var mmd = new List<MemoryDomain>();
+			List<MemoryDomain> mmd = new List<MemoryDomain>();
 			for (int i = 0;; i++)
 			{
-				if (!BizSwan.bizswan_getmemoryarea(Core, i, out var name, out var size, out var data))
+				if (!BizSwan.bizswan_getmemoryarea(Core, i, out var name, out int size, out var data))
 				{
 					break;
 				}

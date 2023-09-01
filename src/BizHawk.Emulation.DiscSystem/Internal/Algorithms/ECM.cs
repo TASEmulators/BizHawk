@@ -50,11 +50,11 @@ namespace BizHawk.Emulation.DiscSystem
 			const uint edc_poly = 0x8001801B;
 
 			//generate the CRC table
-			var reverse_edc_poly = BitReverse.Reverse32(edc_poly);
+			uint reverse_edc_poly = BitReverse.Reverse32(edc_poly);
 			for (uint i = 0; i < 256; ++i)
 			{
-				var crc = i;
-				for (var j = 8; j > 0; --j)
+				uint crc = i;
+				for (int j = 8; j > 0; --j)
 				{
 					if ((crc & 1) == 1)
 						crc = ((crc >> 1) ^ reverse_edc_poly);
@@ -71,10 +71,10 @@ namespace BizHawk.Emulation.DiscSystem
 		private static void Prep_ECC()
 		{
 			//create a table implementing f(i) = i*2
-			for (var i = 0; i < 256; i++)
+			for (int i = 0; i < 256; i++)
 			{
-				var n = i * 2;
-				var b = n & 0xFF;
+				int n = i * 2;
+				int b = n & 0xFF;
 				if (n > 0xFF) b ^= 0x1D; //primitive polynomial x^8 + x^4 + x^3 + x^2 + 1 -> 0x11D
 				mul2tab[i] = (byte)b;
 			}
@@ -89,11 +89,11 @@ namespace BizHawk.Emulation.DiscSystem
 			//  System.Diagnostics.Debug.Assert(mul2tab[i] == mul2tab_B[i]);
 
 			//create a table implementing f(i) = i/3
-			for (var i = 0; i < 256; i++)
+			for (int i = 0; i < 256; i++)
 			{
-				var x1 = (byte)i;
-				var x2 = mul2tab[i];
-				var x3 = (byte)(x2 ^ x1); //2x + x = 3x
+				byte x1 = (byte)i;
+				byte x2 = mul2tab[i];
+				byte x3 = (byte)(x2 ^ x1); //2x + x = 3x
 				//instead of dividing 1/3 we write the table backwards since its the inverse of multiplying by 3
 				//this idea was taken from Corlett's techniques; I know not from whence they came.
 				div3tab[x3] = x1;
@@ -153,10 +153,10 @@ namespace BizHawk.Emulation.DiscSystem
 
 			byte pow_accum = 0;
 			byte add_accum = 0;
-			for (var i = 0; i < todo; i++)
+			for (int i = 0; i < todo; i++)
 			{
 				addr_offset %= (1118 * 2); //modulo addressing is irrelevant for P-parity calculation but comes into play for Q-parity
-				var d = data[base_offset + addr_offset];
+				byte d = data[base_offset + addr_offset];
 				addr_offset += addr_add;
 				add_accum ^= d;
 				pow_accum ^= d;
@@ -185,10 +185,10 @@ namespace BizHawk.Emulation.DiscSystem
 		public static uint EDC_Calc(byte[] data, int offset, int length)
 		{
 			uint crc = 0;
-			for (var i = 0; i < length; i++)
+			for (int i = 0; i < length; i++)
 			{
-				var b = data[offset + i];
-				var entry = ((int)crc ^ b) & 0xFF;
+				byte b = data[offset + i];
+				int entry = ((int)crc ^ b) & 0xFF;
 				crc = edc_table[entry] ^ (crc >> 8);
 			}
 
@@ -226,7 +226,7 @@ namespace BizHawk.Emulation.DiscSystem
 		public static void ECC_Populate(byte[] src, int src_offset, byte[] dest, int dest_offset, bool zeroSectorAddress)
 		{
 			//save the old sector address, so we can restore it later. SOMETIMES ECC is supposed to be calculated without it? see TODO
-			var address = GetSectorAddress(src, src_offset);
+			uint address = GetSectorAddress(src, src_offset);
 			if (zeroSectorAddress) SetSectorAddress(src, src_offset, 0);
 
 			//all further work takes place relative to offset 12 in the sector
@@ -235,9 +235,9 @@ namespace BizHawk.Emulation.DiscSystem
 
 			//calculate P parity for 86 columns (twice 43 word-columns)
 			byte parity0, parity1;
-			for (var col = 0; col < 86; col++)
+			for (int col = 0; col < 86; col++)
 			{
-				var offset = col;
+				int offset = col;
 				CalcECC(src, src_offset, offset, 86, 24, out parity0, out parity1);
 				//store the parities in the sector; theyre read for the Q parity calculations
 				dest[dest_offset + 1032 * 2 + col] = parity0;
@@ -246,11 +246,11 @@ namespace BizHawk.Emulation.DiscSystem
 
 			//calculate Q parity for 52 diagonals (twice 26 word-diagonals)
 			//modulo addressing is taken care of in CalcECC
-			for (var d = 0; d < 26; d++)
+			for (int d = 0; d < 26; d++)
 			{
-				for (var w = 0; w < 2; w++)
+				for (int w = 0; w < 2; w++)
 				{
-					var offset = d * 86 + w;
+					int offset = d * 86 + w;
 					CalcECC(src, src_offset, offset, 88, 43, out parity0, out parity1);
 					//store the parities in the sector; that's where theyve got to go anyway
 					dest[dest_offset + 1118 * 2 + d * 2 + w] = parity0;

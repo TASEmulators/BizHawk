@@ -121,7 +121,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			diskImages = new List<byte[]>();
 
 			int cnt = 0;
-			foreach (var m in mediaImages)
+			foreach (byte[] m in mediaImages)
 			{
 				switch (IdentifyMedia(m))
 				{
@@ -205,10 +205,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Attempts to load a tape into the tape device based on tapeMediaIndex
 		/// </summary>
-		protected void LoadTapeMedia()
-		{
-			TapeDevice.LoadTape(tapeImages[tapeMediaIndex]);
-		}
+		protected void LoadTapeMedia() => TapeDevice.LoadTape(tapeImages[tapeMediaIndex]);
 
 		/// <summary>
 		/// Attempts to load a disk into the disk device based on diskMediaIndex
@@ -237,7 +234,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			{
 				// amstrad .dsk disk file
 				// check for number of sides
-				var sides = data[0x31];
+				byte sides = data[0x31];
 				if (sides == 1)
 					return CPCMediaType.Disk;
 				else

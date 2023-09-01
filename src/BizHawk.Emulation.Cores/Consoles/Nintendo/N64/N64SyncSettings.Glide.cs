@@ -341,10 +341,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			[Category("More Per Game Settings")]
 			public int depth_bias { get; set; }
 
-			public N64GlidePluginSettings Clone()
-			{
-				return (N64GlidePluginSettings)MemberwiseClone();
-			}
+			public N64GlidePluginSettings Clone() => (N64GlidePluginSettings)MemberwiseClone();
 
 			public void FillPerGameHacks(GameInfo game)
 			{
@@ -386,10 +383,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				}
 			}
 
-			public PluginType GetPluginType()
-			{
-				return PluginType.Glide;
-			}
+			public PluginType GetPluginType() => PluginType.Glide;
 		}
 	}
 }

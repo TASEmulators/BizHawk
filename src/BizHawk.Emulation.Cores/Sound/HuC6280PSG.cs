@@ -69,15 +69,9 @@ namespace BizHawk.Emulation.Cores.Components
 			frameStartTime = cycles;
 		}
 
-		internal void EndFrame(long cycles)
-		{
-			frameStopTime = cycles;
-		}
+		internal void EndFrame(long cycles) => frameStopTime = cycles;
 
-		internal void WritePSG(byte register, byte value, long cycles)
-		{
-			commands.Enqueue(new QueuedCommand { Register = register, Value = value, Time = cycles - frameStartTime });
-		}
+		internal void WritePSG(byte register, byte value, long cycles) => commands.Enqueue(new QueuedCommand { Register = register, Value = value, Time = cycles - frameStartTime });
 
 		private void WritePSGImmediate(int register, byte value)
 		{

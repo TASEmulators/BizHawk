@@ -42,47 +42,23 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			return oambuf;
 		}
 
-		public byte PeekPPU(int addr)
-		{
-			return QN.qn_peek_ppu(Context, addr);
-		}
+		public byte PeekPPU(int addr) => QN.qn_peek_ppu(Context, addr);
 
 		// we don't use quicknes's MMC5 at all, so these three methods are just stubs
-		public byte[] GetExTiles()
-		{
-			throw new InvalidOperationException();
-		}
+		public byte[] GetExTiles() => throw new InvalidOperationException();
 
 		public bool ExActive => false;
 
-		public byte[] GetExRam()
-		{
-			throw new InvalidOperationException();
-		}
+		public byte[] GetExRam() => throw new InvalidOperationException();
 
-		public MemoryDomain GetCHRROM()
-		{
-			return _memoryDomains["CHR VROM"];
-		}
+		public MemoryDomain GetCHRROM() => _memoryDomains["CHR VROM"];
 
-		public void InstallCallback1(Action cb, int sl)
-		{
-			_callBack1 = cb;
-		}
+		public void InstallCallback1(Action cb, int sl) => _callBack1 = cb;
 
-		public void InstallCallback2(Action cb, int sl)
-		{
-			_callBack2 = cb;
-		}
+		public void InstallCallback2(Action cb, int sl) => _callBack2 = cb;
 
-		public void RemoveCallback1()
-		{
-			_callBack1 = null;
-		}
+		public void RemoveCallback1() => _callBack1 = null;
 
-		public void RemoveCallback2()
-		{
-			_callBack2 = null;
-		}
+		public void RemoveCallback2() => _callBack2 = null;
 	}
 }

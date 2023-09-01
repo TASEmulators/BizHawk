@@ -11,7 +11,7 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		public BmpView BmpView => bmpView1;
+		public BmpView BmpView { get; private set; }
 
 		[Browsable(false)]
 		public bool ShouldDraw => Visible;
@@ -20,19 +20,16 @@ namespace BizHawk.Client.EmuHawk
 
 		public void ChangeViewSize(Size size)
 		{
-			bmpView1.Size = size;
+			BmpView.Size = size;
 			this.ClientSize = size;
 		}
 
-		public void ChangeViewSize(int w, int h)
-		{
-			ChangeViewSize(new Size(w, h));
-		}
+		public void ChangeViewSize(int w, int h) => ChangeViewSize(new Size(w, h));
 
 		public void ChangeAllSizes(int w, int h)
 		{
 			ChangeViewSize(w, h);
-			bmpView1.ChangeBitmapSize(w, h);
+			BmpView.ChangeBitmapSize(w, h);
 		}
 	}
 }

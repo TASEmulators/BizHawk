@@ -56,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			_core.Citra_GetVideoDimensions(_context, out _citraVideoProvider.Width, out _citraVideoProvider.Height);
 			_citraVideoProvider.VideoDirty = true;
 
-			_core.Citra_GetTouchScreenLayout(_context, out var x, out var y, out var width, out var height, out var rotated, out var enabled);
+			_core.Citra_GetTouchScreenLayout(_context, out int x, out int y, out int width, out int height, out bool rotated, out bool enabled);
 			TouchScreenRectangle = new(x, y, width, height);
 			TouchScreenRotated = rotated;
 			TouchScreenEnabled = enabled;
@@ -80,7 +80,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 
 			_core.Citra_DestroyContext(_context);
 
-			foreach (var glContext in _glContexts)
+			foreach (object glContext in _glContexts)
 			{
 				_openGLProvider.ReleaseGLContext(glContext);
 			}

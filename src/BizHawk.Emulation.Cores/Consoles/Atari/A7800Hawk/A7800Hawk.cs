@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		[CoreConstructor(VSystemID.Raw.A78)]
 		public A7800Hawk(CoreComm comm, byte[] rom, A7800Hawk.A7800Settings settings, A7800Hawk.A7800SyncSettings syncSettings)
 		{
-			var ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new BasicServiceProvider(this);
 
 			maria = new Maria();
 			tia = new TIA();
@@ -98,9 +98,9 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			_syncSettings = syncSettings ?? new A7800SyncSettings();
 			_controllerDeck = new A7800HawkControllerDeck(_syncSettings.Port1, _syncSettings.Port2);
 
-			var highscoreBios = comm.CoreFileProvider.GetFirmware(new("A78", "Bios_HSC"), "Some functions may not work without the high score BIOS.");
-			var palBios = comm.CoreFileProvider.GetFirmware(new("A78", "Bios_PAL"), "The game will not run if the correct region BIOS is not available.");
-			var ntscBios = comm.CoreFileProvider.GetFirmware(new("A78", "Bios_NTSC"), "The game will not run if the correct region BIOS is not available.");
+			byte[] highscoreBios = comm.CoreFileProvider.GetFirmware(new("A78", "Bios_HSC"), "Some functions may not work without the high score BIOS.");
+			byte[] palBios = comm.CoreFileProvider.GetFirmware(new("A78", "Bios_PAL"), "The game will not run if the correct region BIOS is not available.");
+			byte[] ntscBios = comm.CoreFileProvider.GetFirmware(new("A78", "Bios_NTSC"), "The game will not run if the correct region BIOS is not available.");
 
 			byte[] header = new byte[128];
 			bool is_header = false;
@@ -121,7 +121,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			// if none found default is zero
 			// also check for PAL region
 			s_mapper = null;
-			var hash_md5 = MD5Checksum.ComputePrefixedHex(rom);
+			string hash_md5 = MD5Checksum.ComputePrefixedHex(rom);
 
 			var gi = Database.CheckDatabase(hash_md5);
 
@@ -136,26 +136,26 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				if (!dict.TryGetValue("board", out s_mapper)) throw new Exception("No Board selected for this game");
 
 				// check if the game uses pokey or RAM
-				if (dict.TryGetValue("RAM", out var cartRAMStr))
+				if (dict.TryGetValue("RAM", out string cartRAMStr))
 				{
 					int.TryParse(cartRAMStr, out cart_RAM);
 				}
 
-				if (dict.TryGetValue("Pokey", out var pokeyStr))
+				if (dict.TryGetValue("Pokey", out string pokeyStr))
 				{
 					bool.TryParse(pokeyStr, out is_pokey);
 				}
 
-				if (dict.TryGetValue("Pokey_450", out var pokey450Str))
+				if (dict.TryGetValue("Pokey_450", out string pokey450Str))
 				{
 					bool.TryParse(pokey450Str, out is_pokey_450);
 				}
 
 				// some games will not function with the high score bios
 				// if such a game is being played, tell the user and disable it
-				if (dict.TryGetValue("No_HS", out var noHSStr))
+				if (dict.TryGetValue("No_HS", out string noHSStr))
 				{
-					bool.TryParse(noHSStr, out var no_hs);
+					bool.TryParse(noHSStr, out bool no_hs);
 
 					if (no_hs)
 					{

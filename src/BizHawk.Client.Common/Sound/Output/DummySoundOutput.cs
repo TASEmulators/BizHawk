@@ -34,10 +34,7 @@ namespace BizHawk.Client.Common
 			_lastWriteTime = 0;
 		}
 
-		public void StopSound()
-		{
-			BufferSizeSamples = 0;
-		}
+		public void StopSound() => BufferSizeSamples = 0;
 
 		public int CalculateSamplesNeeded()
 		{

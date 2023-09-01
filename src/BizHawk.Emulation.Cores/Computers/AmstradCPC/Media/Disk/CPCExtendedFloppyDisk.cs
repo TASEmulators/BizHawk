@@ -194,7 +194,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			while (tCount < data[0x30] * data[0x31])
 			{
 				// which side is this?
-				var side = data[mPos + 0x11];
+				byte side = data[mPos + 0x11];
 				if (side == 0)
 				{
 					// side 1

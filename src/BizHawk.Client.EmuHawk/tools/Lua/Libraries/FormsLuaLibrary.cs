@@ -28,13 +28,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public void WindowClosed(IntPtr handle)
 		{
-			var i = _luaForms.FindIndex(form => form.Handle == handle);
+			int i = _luaForms.FindIndex(form => form.Handle == handle);
 			if (i is not -1) _luaForms.RemoveAt(i);
 		}
 
 		private LuaWinform GetForm(long formHandle)
 		{
-			var ptr = new IntPtr(formHandle);
+			IntPtr ptr = new IntPtr(formHandle);
 			return _luaForms.Find(form => form.Handle == ptr);
 		}
 
@@ -55,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("addclick", "adds the given lua function as a click event to the given control")]
 		public void AddClick(long handle, LuaFunction clickEvent)
 		{
-			var ptr = new IntPtr(handle);
+			IntPtr ptr = new IntPtr(handle);
 			foreach (var form in _luaForms)
 			{
 				foreach (Control control in form.Controls)
@@ -86,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 				return 0;
 			}
 
-			var button = new LuaButton();
+			LuaButton button = new LuaButton();
 			SetText(button, caption);
 			form.Controls.Add(button);
 			form.ControlEvents.Add(new LuaWinform.LuaEvent(button.Handle, clickEvent));
@@ -115,7 +115,7 @@ namespace BizHawk.Client.EmuHawk
 				return 0;
 			}
 
-			var checkbox = new LuaCheckbox();
+			LuaCheckbox checkbox = new LuaCheckbox();
 			form.Controls.Add(checkbox);
 			SetText(checkbox, caption);
 
@@ -131,7 +131,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("clearclicks", "Removes all click events from the given widget at the specified handle")]
 		public void ClearClicks(long handle)
 		{
-			var ptr = new IntPtr(handle);
+			IntPtr ptr = new IntPtr(handle);
 			foreach (var form in _luaForms)
 			{
 				foreach (Control control in form.Controls)
@@ -148,7 +148,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("destroy", "Closes and removes a Lua created form with the specified handle. If a dialog was found and removed true is returned, else false")]
 		public bool Destroy(long handle)
 		{
-			var ptr = new IntPtr(handle);
+			IntPtr ptr = new IntPtr(handle);
 			foreach (var form in _luaForms)
 			{
 				if (form.Handle == ptr)
@@ -166,7 +166,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("destroyall", "Closes and removes all Lua created dialogs")]
 		public void DestroyAll()
 		{
-			for (var i = _luaForms.Count - 1; i >= 0; i--)
+			for (int i = _luaForms.Count - 1; i >= 0; i--)
 			{
 				_luaForms[i].Close();
 			}
@@ -189,10 +189,10 @@ namespace BizHawk.Client.EmuHawk
 				return 0;
 			}
 
-			var dropdownItems = _th.EnumerateValues<string>(items).ToList();
+			List<string> dropdownItems = _th.EnumerateValues<string>(items).ToList();
 			dropdownItems.Sort();
 
-			var dropdown = new LuaDropDown(dropdownItems);
+			LuaDropDown dropdown = new LuaDropDown(dropdownItems);
 			form.Controls.Add(dropdown);
 
 			if (x.HasValue && y.HasValue)
@@ -214,7 +214,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				var ptr = new IntPtr(handle);
+				IntPtr ptr = new IntPtr(handle);
 				foreach (var form in _luaForms)
 				{
 					if (form.Handle == ptr)
@@ -245,7 +245,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				var ptr = new IntPtr(handle);
+				IntPtr ptr = new IntPtr(handle);
 				foreach (var form in _luaForms)
 				{
 					if (form.Handle == ptr)
@@ -274,7 +274,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("ischecked", "Returns the given checkbox's checked property")]
 		public bool IsChecked(long handle)
 		{
-			var ptr = new IntPtr(handle);
+			IntPtr ptr = new IntPtr(handle);
 			foreach (var form in _luaForms)
 			{
 				if (form.Handle == ptr)
@@ -317,7 +317,7 @@ namespace BizHawk.Client.EmuHawk
 				return 0;
 			}
 
-			var label = new Label();
+			Label label = new Label();
 			if (fixedWidth)
 			{
 				label.Font = new Font("Courier New", 8);
@@ -348,7 +348,7 @@ namespace BizHawk.Client.EmuHawk
 			string title = null,
 			LuaFunction onClose = null)
 		{
-			var form = new LuaWinform(CurrentFile, WindowClosed);
+			LuaWinform form = new LuaWinform(CurrentFile, WindowClosed);
 			_luaForms.Add(form);
 			if (width.HasValue && height.HasValue)
 			{
@@ -389,7 +389,7 @@ namespace BizHawk.Client.EmuHawk
 			string filter = null)
 		{
 			if (initialDirectory is null && fileName is not null) initialDirectory = Path.GetDirectoryName(fileName);
-			var result = ((IDialogParent) MainForm).ShowFileOpenDialog(
+			string result = ((IDialogParent) MainForm).ShowFileOpenDialog(
 				filterStr: filter ?? FilesystemFilter.AllFilesEntry,
 				initDir: initialDirectory ?? PathEntries.LuaAbsolutePath(),
 				initFileName: fileName);
@@ -408,7 +408,7 @@ namespace BizHawk.Client.EmuHawk
 				return 0;
 			}
 
-			var pictureBox = new LuaPictureBox { TableHelper = _th };
+			LuaPictureBox pictureBox = new LuaPictureBox { TableHelper = _th };
 			form.Controls.Add(pictureBox);
 
 			if (x.HasValue && y.HasValue)
@@ -434,7 +434,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				var color1 = _th.ParseColor(color);
-				var ptr = new IntPtr(componentHandle);
+				IntPtr ptr = new IntPtr(componentHandle);
 				foreach (var form in _luaForms)
 				{
 					if (form.Handle == ptr)
@@ -465,7 +465,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				var ptr = new IntPtr(componentHandle);
+				IntPtr ptr = new IntPtr(componentHandle);
 				foreach (var form in _luaForms)
 				{
 					if (form.Handle == ptr)
@@ -497,7 +497,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				var color1 = _th.ParseColor(color);
-				var ptr = new IntPtr(componentHandle);
+				IntPtr ptr = new IntPtr(componentHandle);
 				foreach (var form in _luaForms)
 				{
 					if (form.Handle == ptr)
@@ -529,7 +529,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				var color1 = _th.ParseColor(color);
-				var ptr = new IntPtr(componentHandle);
+				IntPtr ptr = new IntPtr(componentHandle);
 				foreach (var form in _luaForms)
 				{
 					if (form.Handle == ptr)
@@ -561,7 +561,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				var color1 = _th.ParseColor(color);
-				var ptr = new IntPtr(componentHandle);
+				IntPtr ptr = new IntPtr(componentHandle);
 				foreach (var form in _luaForms)
 				{
 					if (form.Handle == ptr)
@@ -593,7 +593,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				var color1 = _th.ParseColor(color);
-				var ptr = new IntPtr(componentHandle);
+				IntPtr ptr = new IntPtr(componentHandle);
 				foreach (var form in _luaForms)
 				{
 					if (form.Handle == ptr)
@@ -633,7 +633,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var strokeColor = _th.SafeParseColor(line);
 				var fillColor = _th.SafeParseColor(background);
-				var ptr = new IntPtr(componentHandle);
+				IntPtr ptr = new IntPtr(componentHandle);
 				foreach (var form in _luaForms)
 				{
 					if (form.Handle == ptr)
@@ -673,7 +673,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var strokeColor = _th.SafeParseColor(line);
 				var fillColor = _th.SafeParseColor(background);
-				var ptr = new IntPtr(componentHandle);
+				IntPtr ptr = new IntPtr(componentHandle);
 				foreach (var form in _luaForms)
 				{
 					if (form.Handle == ptr)
@@ -715,7 +715,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			try
 			{
-				var ptr = new IntPtr(componentHandle);
+				IntPtr ptr = new IntPtr(componentHandle);
 				foreach (var form in _luaForms)
 				{
 					if (form.Handle == ptr)
@@ -758,7 +758,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			try
 			{
-				var ptr = new IntPtr(componentHandle);
+				IntPtr ptr = new IntPtr(componentHandle);
 				foreach (var form in _luaForms)
 				{
 					if (form.Handle == ptr)
@@ -789,7 +789,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				var ptr = new IntPtr(componentHandle);
+				IntPtr ptr = new IntPtr(componentHandle);
 				foreach (var form in _luaForms)
 				{
 					if (form.Handle == ptr)
@@ -835,7 +835,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			try
 			{
-				var ptr = new IntPtr(componentHandle);
+				IntPtr ptr = new IntPtr(componentHandle);
 				foreach (var form in _luaForms)
 				{
 					if (form.Handle == ptr)
@@ -867,7 +867,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				var color1 = _th.SafeParseColor(color);
-				var ptr = new IntPtr(componentHandle);
+				IntPtr ptr = new IntPtr(componentHandle);
 				foreach (var form in _luaForms)
 				{
 					if (form.Handle == ptr)
@@ -899,7 +899,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				var color1 = _th.SafeParseColor(color);
-				var ptr = new IntPtr(componentHandle);
+				IntPtr ptr = new IntPtr(componentHandle);
 				foreach (var form in _luaForms)
 				{
 					if (form.Handle == ptr)
@@ -940,7 +940,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				var strokeColor = _th.SafeParseColor(line);
-				var ptr = new IntPtr(componentHandle);
+				IntPtr ptr = new IntPtr(componentHandle);
 				foreach (var form in _luaForms)
 				{
 					if (form.Handle == ptr)
@@ -982,7 +982,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var strokeColor = _th.SafeParseColor(line);
 				var fillColor = _th.SafeParseColor(background);
-				var ptr = new IntPtr(componentHandle);
+				IntPtr ptr = new IntPtr(componentHandle);
 				foreach (var form in _luaForms)
 				{
 					if (form.Handle == ptr)
@@ -1014,7 +1014,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				var color1 = _th.SafeParseColor(color);
-				var ptr = new IntPtr(componentHandle);
+				IntPtr ptr = new IntPtr(componentHandle);
 				foreach (var form in _luaForms)
 				{
 					if (form.Handle == ptr)
@@ -1053,7 +1053,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var strokeColor = _th.SafeParseColor(line);
 				var fillColor = _th.SafeParseColor(background);
-				var ptr = new IntPtr(componentHandle);
+				IntPtr ptr = new IntPtr(componentHandle);
 				foreach (var form in _luaForms)
 				{
 					if (form.Handle == ptr)
@@ -1094,7 +1094,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var strokeColor = _th.SafeParseColor(line);
 				var fillColor = _th.SafeParseColor(background);
-				var ptr = new IntPtr(componentHandle);
+				IntPtr ptr = new IntPtr(componentHandle);
 				foreach (var form in _luaForms)
 				{
 					if (form.Handle == ptr)
@@ -1138,7 +1138,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var fgColor = _th.SafeParseColor(forecolor);
 				var bgColor = _th.SafeParseColor(backcolor);
-				var ptr = new IntPtr(componentHandle);
+				IntPtr ptr = new IntPtr(componentHandle);
 				foreach (var form in _luaForms)
 				{
 					if (form.Handle == ptr)
@@ -1182,7 +1182,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var fgColor = _th.SafeParseColor(forecolor);
 				var bgColor = _th.SafeParseColor(backcolor);
-				var ptr = new IntPtr(componentHandle);
+				IntPtr ptr = new IntPtr(componentHandle);
 				foreach (var form in _luaForms)
 				{
 					if (form.Handle == ptr)
@@ -1214,7 +1214,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				var ptr = new IntPtr(componentHandle);
+				IntPtr ptr = new IntPtr(componentHandle);
 				foreach (var form in _luaForms)
 				{
 					if (form.Handle == ptr)
@@ -1247,7 +1247,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				var ptr = new IntPtr(componentHandle);
+				IntPtr ptr = new IntPtr(componentHandle);
 				foreach (var form in _luaForms)
 				{
 					if (form.Handle == ptr)
@@ -1278,7 +1278,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				var ptr = new IntPtr(handle);
+				IntPtr ptr = new IntPtr(handle);
 				foreach (var form in _luaForms)
 				{
 					if (form.Handle == ptr)
@@ -1292,7 +1292,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							if (control is LuaDropDown ldd)
 							{
-								var dropdownItems = _th.EnumerateValues<string>(items).ToList();
+								List<string> dropdownItems = _th.EnumerateValues<string>(items).ToList();
 								if (alphabetize) dropdownItems.Sort();
 								ldd.SetItems(dropdownItems);
 							}
@@ -1311,7 +1311,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("setlocation", "Sets the location of a control or form by passing in the handle of the created object")]
 		public void SetLocation(long handle, int x, int y)
 		{
-			var ptr = new IntPtr(handle);
+			IntPtr ptr = new IntPtr(handle);
 			foreach (var form in _luaForms)
 			{
 				if (form.Handle == ptr)
@@ -1344,7 +1344,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var pi = c.GetType().GetProperty(property) ?? throw new Exception($"no property with the identifier {property}");
 				var pt = pi.PropertyType;
-				var o = pt.IsEnum
+				object o = pt.IsEnum
 					? Enum.Parse(pt, value.ToString(), true)
 					: pt == typeof(Color)
 						? _th.ParseColor(value)
@@ -1352,7 +1352,7 @@ namespace BizHawk.Client.EmuHawk
 				pi.SetValue(c, o, null);
 			}
 
-			var ptr = new IntPtr(handle);
+			IntPtr ptr = new IntPtr(handle);
 			foreach (var form in _luaForms)
 			{
 				if (form.Handle == ptr)
@@ -1373,16 +1373,13 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("local coforcre = forms.createcolor( 0x7F, 0x3F, 0x1F, 0xCF );")]
 		[LuaMethod("createcolor", "Creates a color object useful with setproperty")]
-		public Color CreateColor(int r, int g, int b, int a)
-		{
-			return Color.FromArgb(a, r, g, b);
-		}
+		public Color CreateColor(int r, int g, int b, int a) => Color.FromArgb(a, r, g, b);
 
 		[LuaMethodExample("forms.setsize( 332, 77, 99 );")]
 		[LuaMethod("setsize", "TODO")]
 		public void SetSize(long handle, int width, int height)
 		{
-			var ptr = new IntPtr(handle);
+			IntPtr ptr = new IntPtr(handle);
 			foreach (var form in _luaForms)
 			{
 				if (form.Handle == ptr)
@@ -1406,7 +1403,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("settext", "Sets the text property of a control or form by passing in the handle of the created object")]
 		public void Settext(long handle, string caption)
 		{
-			var ptr = new IntPtr(handle);
+			IntPtr ptr = new IntPtr(handle);
 			foreach (var form in _luaForms)
 			{
 				if (form.Handle == ptr)
@@ -1447,7 +1444,7 @@ namespace BizHawk.Client.EmuHawk
 				return 0;
 			}
 
-			var textbox = new LuaTextBox();
+			LuaTextBox textbox = new LuaTextBox();
 			if (fixedWidth)
 			{
 				textbox.Font = new Font("Courier New", 8);

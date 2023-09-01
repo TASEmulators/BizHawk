@@ -61,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_bmp != null)
 			{
-				using Graphics g = CreateGraphics();
+				using var g = CreateGraphics();
 				g.PixelOffsetMode = PixelOffsetMode.HighSpeed;
 				g.InterpolationMode = InterpolationMode.NearestNeighbor;
 				g.CompositingMode = CompositingMode.SourceCopy;
@@ -74,7 +74,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					using (var sb = new SolidBrush(Color.Black))
+					using (SolidBrush sb = new SolidBrush(Color.Black))
 					{
 						g.FillRectangle(sb, _bmp.Width, 0, Width - _bmp.Width, Height);
 						g.FillRectangle(sb, 0, _bmp.Height, _bmp.Width, Height - _bmp.Height);
@@ -143,10 +143,7 @@ namespace BizHawk.Client.EmuHawk
 
 		/// <summary>bit of a hack; use at your own risk</summary>
 		/// <returns>you probably shouldn't modify this?</returns>
-		public Bitmap GetBitmap()
-		{
-			return _bmp;
-		}
+		public Bitmap GetBitmap() => _bmp;
 
 		protected override void OnPaintBackground(PaintEventArgs pevent)
 		{

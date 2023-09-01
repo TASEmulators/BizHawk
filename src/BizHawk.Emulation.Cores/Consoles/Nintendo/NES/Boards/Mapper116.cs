@@ -28,10 +28,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				this.master = master;
 			}
 
-			public override void SyncIRQ(bool flag)
-			{
-				master.SyncIRQ(flag);
-			}
+			public override void SyncIRQ(bool flag) => master.SyncIRQ(flag);
 
 			private readonly Mapper116 master;
 
@@ -139,10 +136,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 		}
 
-		private void mmc1_reset()
-		{
-			mmc1.mmc1.StandardReset();
-		}
+		private void mmc1_reset() => mmc1.mmc1.StandardReset();
 
 		private void WriteModeControl(int addr, byte value)
 		{
@@ -167,10 +161,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (mode == 3) Console.WriteLine("(mmc1)");
 		}
 
-		public override void WriteExp(int addr, byte value)
-		{
-			WriteModeControl(addr + 0x4000, value);
-		}
+		public override void WriteExp(int addr, byte value) => WriteModeControl(addr + 0x4000, value);
 
 		public override void WritePpu(int addr, byte value)
 		{
@@ -223,10 +214,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			};
 		}
 
-		public override void AddressPpu(int addr)
-		{
-			mmc3.AddressPpu(addr);
-		}
+		public override void AddressPpu(int addr) => mmc3.AddressPpu(addr);
 
 		public override void ClockPpu()
 		{

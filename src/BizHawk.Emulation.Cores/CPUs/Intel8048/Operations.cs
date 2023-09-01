@@ -20,10 +20,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 			WriteMemory(Regs[dest], (byte)Regs[src]);
 		}
 
-		public void TR_Func(ushort dest, ushort src)
-		{
-			Regs[dest] = Regs[src];
-		}
+		public void TR_Func(ushort dest, ushort src) => Regs[dest] = Regs[src];
 
 		public void ADD8_Func(ushort dest, ushort src)
 		{
@@ -43,20 +40,11 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 			Regs[dest] = ans;
 		}
 
-		public void AND8_Func(ushort dest, ushort src)
-		{
-			Regs[dest] = (ushort)(Regs[dest] & Regs[src]);
-		}
+		public void AND8_Func(ushort dest, ushort src) => Regs[dest] = (ushort)(Regs[dest] & Regs[src]);
 
-		public void OR8_Func(ushort dest, ushort src)
-		{
-			Regs[dest] = (ushort)(Regs[dest] | Regs[src]);
-		}
+		public void OR8_Func(ushort dest, ushort src) => Regs[dest] = (ushort)(Regs[dest] | Regs[src]);
 
-		public void XOR8_Func(ushort dest, ushort src)
-		{
-			Regs[dest] = (ushort)(Regs[dest] ^ Regs[src]);
-		}
+		public void XOR8_Func(ushort dest, ushort src) => Regs[dest] = (ushort)(Regs[dest] ^ Regs[src]);
 
 		public void ROR_Func(ushort src)
 		{
@@ -89,15 +77,9 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 			Regs[src] = (ushort)(((Regs[src] << 1) & 0xFF) | c);
 		}
 
-		public void INC8_Func(ushort src)
-		{
-			Regs[src] = (ushort)((Regs[src] + 1) & 0xFF);
-		}
+		public void INC8_Func(ushort src) => Regs[src] = (ushort)((Regs[src] + 1) & 0xFF);
 
-		public void DEC8_Func(ushort src)
-		{
-			Regs[src] = (ushort)((Regs[src] - 1) & 0xFF);
-		}
+		public void DEC8_Func(ushort src) => Regs[src] = (ushort)((Regs[src] - 1) & 0xFF);
 
 		public void ADC8_Func(ushort dest, ushort src)
 		{

@@ -12,27 +12,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		{
 			// note: the approach this code takes is highly bug-prone
 			// warning: tracer magically relies on these register names!
-			var ret = new Dictionary<string, RegisterValue>();
-			var data = new byte[32 * 8 + 4 + 4 + 8 + 8 + 4 + 4 + 32 * 4 + 32 * 8];
+			Dictionary<string, RegisterValue> ret = new Dictionary<string, RegisterValue>();
+			byte[] data = new byte[32 * 8 + 4 + 4 + 8 + 8 + 4 + 4 + 32 * 4 + 32 * 8];
 			api.getRegisters(data);
 
 			for (int i = 0; i < 32; i++)
 			{
-				var reg = BitConverter.ToInt64(data, i * 8);
+				long reg = BitConverter.ToInt64(data, i * 8);
 				ret.Add(GPRnames[i] + "_lo", (int)(reg));
 				ret.Add(GPRnames[i] + "_hi", (int)(reg >> 32));
 			}
 
-			var PC = BitConverter.ToUInt32(data, 32 * 8);
+			uint PC = BitConverter.ToUInt32(data, 32 * 8);
 			ret.Add("PC", (int)PC);
 
 			ret.Add("LL", BitConverter.ToInt32(data, 32 * 8 + 4));
 
-			var Lo = BitConverter.ToInt64(data, 32 * 8 + 4 + 4);
+			long Lo = BitConverter.ToInt64(data, 32 * 8 + 4 + 4);
 			ret.Add("LO_lo", (int)Lo);
 			ret.Add("LO_hi", (int)(Lo >> 32));
 
-			var Hi = BitConverter.ToInt64(data, 32 * 8 + 4 + 4 + 8);
+			long Hi = BitConverter.ToInt64(data, 32 * 8 + 4 + 4 + 8);
 			ret.Add("HI_lo", (int)Hi);
 			ret.Add("HI_hi", (int)(Hi >> 32));
 
@@ -41,13 +41,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			for (int i = 0; i < 32; i++)
 			{
-				var reg_cop0 = BitConverter.ToUInt32(data, 32 * 8 + 4 + 4 + 8 + 8 + 4 + 4 + i * 4);
+				uint reg_cop0 = BitConverter.ToUInt32(data, 32 * 8 + 4 + 4 + 8 + 8 + 4 + 4 + i * 4);
 				ret.Add("CP0 REG" + i, (int)reg_cop0);
 			}
 
 			for (int i = 0; i < 32; i++)
 			{
-				var reg_cop1_fgr_64 = BitConverter.ToInt64(data, 32 * 8 + 4 + 4 + 8 + 8 + 4 + 4 + 32 * 4 + i * 8);
+				long reg_cop1_fgr_64 = BitConverter.ToInt64(data, 32 * 8 + 4 + 4 + 8 + 8 + 4 + 4 + 32 * 4 + i * 8);
 				ret.Add("CP1 FGR REG" + i + "_lo", (int)reg_cop1_fgr_64);
 				ret.Add("CP1 FGR REG" + i + "_hi", (int)(reg_cop1_fgr_64 >> 32));
 			}
@@ -72,10 +72,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		};
 
 		[FeatureNotImplemented]
-		public void SetCpuRegister(string register, int value)
-		{
-			throw new NotImplementedException();
-		}
+		public void SetCpuRegister(string register, int value) => throw new NotImplementedException();
 
 		public IMemoryCallbackSystem MemoryCallbacks => _memoryCallbacks;
 

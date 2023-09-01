@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 
 		public PutSettingsDirtyBits PutSyncSettings(Ares64SyncSettings o)
 		{
-			var ret = Ares64SyncSettings.NeedsReboot(_syncSettings, o);
+			bool ret = Ares64SyncSettings.NeedsReboot(_syncSettings, o);
 			_syncSettings = o;
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}

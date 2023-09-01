@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 				case RETRO_DEVICE.KEYBOARD:
 					{
-						var button = (RETRO_KEY)id switch
+						string button = (RETRO_KEY)id switch
 						{
 							RETRO_KEY.BACKSPACE => "Backspace",
 							RETRO_KEY.TAB => "Tab",
@@ -212,7 +212,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 				case RETRO_DEVICE.JOYPAD:
 					{
-						var button = (RETRO_DEVICE_ID_JOYPAD)id switch
+						string button = (RETRO_DEVICE_ID_JOYPAD)id switch
 						{
 							RETRO_DEVICE_ID_JOYPAD.A => "A",
 							RETRO_DEVICE_ID_JOYPAD.B => "B",
@@ -242,7 +242,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		private static bool GetButton(IController controller, int pnum, string type, string button)
 		{
-			var key = $"P{pnum} {type} {button}";
+			string key = $"P{pnum} {type} {button}";
 			return controller.IsPressed(key);
 		}
 	}

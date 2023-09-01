@@ -54,172 +54,172 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			switch (_mapper)
 			{
 				case 0:
-					if (addr >= 0x5000 && addr <= 0x6FFF)
+					if (addr is >= 0x5000 and <= 0x6FFF)
 					{
 						return Data[addr - 0x5000];
 					}
 
-					if (addr >= 0xD000 && addr <= 0xDFFF)
+					if (addr is >= 0xD000 and <= 0xDFFF)
 					{
 						return Data[addr - 0xB000];
 					}
 
-					if (addr >= 0xF000 && addr <= 0xFFFF)
+					if (addr is >= 0xF000 and <= 0xFFFF)
 					{
 						return Data[addr - 0xC000];
 					}
 					break;
 
 				case 1:
-					if (addr >= 0x5000 && addr <= 0x6FFF)
+					if (addr is >= 0x5000 and <= 0x6FFF)
 					{
 						return Data[addr - 0x5000];
 					}
 
-					if (addr >= 0xD000 && addr <= 0xFFFF)
+					if (addr is >= 0xD000 and <= 0xFFFF)
 					{
 						return Data[addr - 0xB000];
 					}
 					break;
 
 				case 2:
-					if (addr >= 0x5000 && addr <= 0x6FFF)
+					if (addr is >= 0x5000 and <= 0x6FFF)
 					{
 						return Data[addr - 0x5000];
 					}
 
-					if (addr >= 0x9000 && addr <= 0xBFFF)
+					if (addr is >= 0x9000 and <= 0xBFFF)
 					{
 						return Data[addr - 0x7000];
 					}
 
-					if (addr >= 0xD000 && addr <= 0xDFFF)
+					if (addr is >= 0xD000 and <= 0xDFFF)
 					{
 						return Data[addr - 0x8000];
 					}
 					break;
 
 				case 3:
-					if (addr >= 0x5000 && addr <= 0x6FFF)
+					if (addr is >= 0x5000 and <= 0x6FFF)
 					{
 						return Data[addr - 0x5000];
 					}
 
-					if (addr >= 0x9000 && addr <= 0xAFFF)
+					if (addr is >= 0x9000 and <= 0xAFFF)
 					{
 						return Data[addr - 0x7000];
 					}
 
-					if (addr >= 0xD000 && addr <= 0xDFFF)
+					if (addr is >= 0xD000 and <= 0xDFFF)
 					{
 						return Data[addr - 0x9000];
 					}
 
-					if (addr >= 0xF000 && addr <= 0xFFFF)
+					if (addr is >= 0xF000 and <= 0xFFFF)
 					{
 						return Data[addr - 0xA000];
 					}
 					break;
 
 				case 4:
-					if (addr >= 0x5000 && addr <= 0x6FFF)
+					if (addr is >= 0x5000 and <= 0x6FFF)
 					{
 						return Data[addr - 0x5000];
 					}
 
-					if (addr >= 0xD000 && addr <= 0xD3FF)
+					if (addr is >= 0xD000 and <= 0xD3FF)
 					{
 						return Cart_Ram[addr - 0xD000];
 					}
 					break;
 
 				case 5:
-					if (addr >= 0x5000 && addr <= 0x7FFF)
+					if (addr is >= 0x5000 and <= 0x7FFF)
 					{
 						return Data[addr - 0x5000];
 					}
 
-					if (addr >= 0x9000 && addr <= 0xBFFF)
+					if (addr is >= 0x9000 and <= 0xBFFF)
 					{
 						return Data[addr - 0x6000];
 					}
 					break;
 
 				case 6:
-					if (addr >= 0x6000 && addr <= 0x7FFF)
+					if (addr is >= 0x6000 and <= 0x7FFF)
 					{
 						return Data[addr - 0x6000];
 					}
 					break;
 
 				case 7:
-					if (addr >= 0x4800 && addr <= 0x67FF)
+					if (addr is >= 0x4800 and <= 0x67FF)
 					{
 						return Data[addr - 0x4800];
 					}
 					break;
 
 				case 8:
-					if (addr >= 0x5000 && addr <= 0x5FFF)
+					if (addr is >= 0x5000 and <= 0x5FFF)
 					{
 						return Data[addr - 0x5000];
 					}
-					else if (addr >= 0x7000 && addr <= 0x7FFF)
+					else if (addr is >= 0x7000 and <= 0x7FFF)
 					{
 						return Data[addr - 0x6000];
 					}
 					break;
 
 				case 9:
-					if (addr >= 0x5000 && addr <= 0x6FFF)
+					if (addr is >= 0x5000 and <= 0x6FFF)
 					{
 						return Data[addr - 0x5000];
 					}
 
-					if (addr >= 0x9000 && addr <= 0xAFFF)
+					if (addr is >= 0x9000 and <= 0xAFFF)
 					{
 						return Data[addr - 0x7000];
 					}
 
-					if (addr >= 0xD000 && addr <= 0xDFFF)
+					if (addr is >= 0xD000 and <= 0xDFFF)
 					{
 						return Data[addr - 0x9000];
 					}
 
-					if (addr >= 0xF000 && addr <= 0xFFFF)
+					if (addr is >= 0xF000 and <= 0xFFFF)
 					{
 						return Data[addr - 0xA000];
 					}
 
-					if (addr >= 0x8800 && addr <= 0x8FFF)
+					if (addr is >= 0x8800 and <= 0x8FFF)
 					{
 						return Cart_Ram[addr - 0x8800];
 					}
 					break;
 
 				case 10:
-					if (addr >= 0x5000 && addr <= 0x6FFF)
+					if (addr is >= 0x5000 and <= 0x6FFF)
 					{
 						return Data[addr - 0x5000];
 					}
 
-					if (addr >= 0x8800 && addr <= 0xB7FF)
+					if (addr is >= 0x8800 and <= 0xB7FF)
 					{
 						return Data[addr - 0x6800];
 					}
 
-					if (addr >= 0xD000 && addr <= 0xFFFF)
+					if (addr is >= 0xD000 and <= 0xFFFF)
 					{
 						return Data[addr - 0x8000];
 					}
 					break;
 				case 11:
-					if (addr >= 0x5000 && addr <= 0x5FFF)
+					if (addr is >= 0x5000 and <= 0x5FFF)
 					{
 						return Data[addr - 0x5000];
 					}
 
-					if (addr >= 0xD000 && addr <= 0xDFFF)
+					if (addr is >= 0xD000 and <= 0xDFFF)
 					{
 						return Data[addr - 0xC000];
 					}
@@ -234,14 +234,14 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			switch (_mapper)
 			{
 				case 4:
-					if (addr >= 0xD000 && addr <= 0xD3FF)
+					if (addr is >= 0xD000 and <= 0xD3FF)
 					{
 						Cart_Ram[addr - 0xD000] = value;
 						return true;
 					}
 					break;
 				case 9:
-					if (addr >= 0x8800 && addr <= 0x8FFF)
+					if (addr is >= 0x8800 and <= 0x8FFF)
 					{
 						Cart_Ram[addr - 0x8800] = value;
 						return true;

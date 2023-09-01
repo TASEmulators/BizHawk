@@ -54,18 +54,12 @@ namespace BizHawk.Client.Common
 		/// Get a list of <see cref="WatchDisplayType"/> that can be used for a <see cref="DWordWatch"/>
 		/// </summary>
 		/// <returns>An enumeration that contains all valid <see cref="WatchDisplayType"/></returns>
-		public override IEnumerable<WatchDisplayType> AvailableTypes()
-		{
-			return ValidTypes;
-		}
+		public override IEnumerable<WatchDisplayType> AvailableTypes() => ValidTypes;
 
 		/// <summary>
 		/// Reset the previous value; set it to the current one
 		/// </summary>
-		public override void ResetPrevious()
-		{
-			_previous = GetWord();
-		}
+		public override void ResetPrevious() => _previous = GetWord();
 
 		/// <summary>
 		/// Try to sets the value into the <see cref="MemoryDomain"/>
@@ -107,7 +101,7 @@ namespace BizHawk.Client.Common
 				case PreviousType.Original:
 					return;
 				case PreviousType.LastChange:
-					var temp = _value;
+					uint temp = _value;
 					_value = GetDWord();
 					if (_value != temp)
 					{
@@ -133,15 +127,15 @@ namespace BizHawk.Client.Common
 		{
 			string FormatFloat()
 			{
-				var bytes = BitConverter.GetBytes(val);
-				var _float = BitConverter.ToSingle(bytes, 0);
+				byte[] bytes = BitConverter.GetBytes(val);
+				float _float = BitConverter.ToSingle(bytes, 0);
 				return _float.ToString(NumberFormatInfo.InvariantInfo);
 			}
 
 			string FormatBinary()
 			{
-				var str = Convert.ToString(val, 2).PadLeft(32, '0');
-				for (var i = 28; i > 0; i -= 4)
+				string str = Convert.ToString(val, 2).PadLeft(32, '0');
+				for (int i = 28; i > 0; i -= 4)
 				{
 					str = str.Insert(i, " ");
 				}

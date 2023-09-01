@@ -39,7 +39,7 @@ namespace BizHawk.Client.Common.cheats
 
 		public static Cheat ToCheat(this DecodeResult result, MemoryDomain domain, string description)
 		{
-			var watch = Watch.GenerateWatch(
+			Watch watch = Watch.GenerateWatch(
 				domain,
 				result.Address,
 				result.Size,

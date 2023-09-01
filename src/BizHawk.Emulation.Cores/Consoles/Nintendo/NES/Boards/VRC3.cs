@@ -32,10 +32,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SyncIRQ();
 		}
 
-		private void SyncIRQ()
-		{
-			IrqSignal = (irq_pending && irq_enabled);
-		}
+		private void SyncIRQ() => IrqSignal = (irq_pending && irq_enabled);
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

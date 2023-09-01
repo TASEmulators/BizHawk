@@ -60,11 +60,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void WritePrg(int addr, byte value)
 		{
 			addr += 0x8000;
-			if ((addr >= 0xB000) && (addr <= 0xE00C))
+			if (addr is >= 0xB000 and <= 0xE00C)
 			{
-				var ind = ((((addr & 8) | (addr >> 8)) >> 3) + 2) & 7;
-				var sar = addr & 4;
-				var clo = (chrlo[ind] & (0xF0 >> sar)) | ((value & 0x0F) << sar);
+				int ind = ((((addr & 8) | (addr >> 8)) >> 3) + 2) & 7;
+				int sar = addr & 4;
+				int clo = (chrlo[ind] & (0xF0 >> sar)) | ((value & 0x0F) << sar);
 				chrlo[ind] = (byte)clo;
 				if (ind == 0)
 				{
@@ -133,7 +133,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (addr < 0x2000)
 			{
 				int x = (addr >> 10) & 7;
-				var chr = chrlo[x] | (chrhi[x] << 8);
+				int chr = chrlo[x] | (chrhi[x] << 8);
 				int bank = (chr & _chrBankMask1k) << 10;
 
 				if ((chrlo[x] == 4 || chrlo[x] == 5) && !_vLock)
@@ -158,7 +158,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (Vram != null)
 				{ 
 					int x = (addr >> 10) & 7;
-					var chr = chrlo[x] | (chrhi[x] << 8);
+					int chr = chrlo[x] | (chrhi[x] << 8);
 					int bank = (chr & _chrBankMask1k) << 10;
 
 					if ((chrlo[x] == 4 || chrlo[x] == 5) && !_vLock)

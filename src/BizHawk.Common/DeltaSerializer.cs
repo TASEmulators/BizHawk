@@ -32,24 +32,24 @@ namespace BizHawk.Common
 				throw new InvalidOperationException($"{nameof(orignalAsBytes.Length)} must equal {nameof(currentAsBytes.Length)}");
 			}
 
-			var index = 0;
-			var end = currentAsBytes.Length;
+			int index = 0;
+			int end = currentAsBytes.Length;
 			var ret = new byte[end + 4].AsSpan(); // worst case scenario size (i.e. everything is different)
-			var retSize = 0;
+			int retSize = 0;
 
 			while (index < end)
 			{
-				var blockStart = index;
+				int blockStart = index;
 				while (index < end && orignalAsBytes[index] == currentAsBytes[index])
 				{
 					index++;
 				}
 
-				var same = index - blockStart;
+				int same = index - blockStart;
 
 				if (same < 4) // something changed, or we hit end of spans, count how many different bytes come after
 				{
-					var different = 0;
+					int different = 0;
 					while (index < end && same < 8) // in case we hit end of span before, this does nothing and different is 0
 					{
 						if (orignalAsBytes[index] != currentAsBytes[index])
@@ -80,7 +80,7 @@ namespace BizHawk.Common
 						different = -different; // negative is a signal that these are different bytes
 						MemoryMarshal.Write(ret.Slice(retSize, 4), ref different);
 						retSize += 4;
-						for (var i = blockStart; i < index - same; i++)
+						for (int i = blockStart; i < index - same; i++)
 						{
 							ret[retSize++] = (byte)(orignalAsBytes[i] ^ currentAsBytes[i]);
 						}
@@ -124,10 +124,10 @@ namespace BizHawk.Common
 				throw new InvalidOperationException($"{nameof(orignalAsBytes.Length)} must equal {nameof(currentAsBytes.Length)}");
 			}
 
-			var dataPos = 0;
-			var dataEnd = currentAsBytes.Length;
-			var deltaPos = 0;
-			var deltaEnd = delta.Length;
+			int dataPos = 0;
+			int dataEnd = currentAsBytes.Length;
+			int deltaPos = 0;
+			int deltaEnd = delta.Length;
 
 			while (deltaPos < deltaEnd)
 			{
@@ -136,7 +136,7 @@ namespace BizHawk.Common
 					throw new InvalidOperationException("Hit end of delta unexpectingly!");
 				}
 
-				var header = MemoryMarshal.Read<int>(delta.Slice(deltaPos, 4));
+				int header = MemoryMarshal.Read<int>(delta.Slice(deltaPos, 4));
 				deltaPos += 4;
 				if (header < 0) // difference block
 				{
@@ -147,7 +147,7 @@ namespace BizHawk.Common
 						throw new InvalidOperationException("Corrupt delta header!");
 					}
 
-					for (var i = 0; i < header; i++)
+					for (int i = 0; i < header; i++)
 					{
 						currentAsBytes[dataPos + i] = (byte)(orignalAsBytes[dataPos + i] ^ delta[deltaPos + i]);
 					}

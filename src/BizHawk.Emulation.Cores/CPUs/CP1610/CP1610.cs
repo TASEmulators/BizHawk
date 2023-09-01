@@ -98,10 +98,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 			PendingCycles = 0;
 		}
 
-		public bool GetBusAk()
-		{
-			return BusAk;
-		}
+		public bool GetBusAk() => BusAk;
 
 		public void SetIntRM(bool value)
 		{
@@ -112,20 +109,11 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 			}
 		}
 
-		public void SetBusRq(bool value)
-		{
-			BusRq = !value;
-		}
+		public void SetBusRq(bool value) => BusRq = !value;
 
-		public int GetPendingCycles()
-		{
-			return PendingCycles;
-		}
+		public int GetPendingCycles() => PendingCycles;
 
-		public void AddPendingCycles(int cycles)
-		{
-			PendingCycles += cycles;
-		}
+		public void AddPendingCycles(int cycles) => PendingCycles += cycles;
 
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{

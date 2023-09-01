@@ -73,8 +73,7 @@ namespace BizHawk.Client.Common
 
 		[LuaDeprecatedMethod]
 		[LuaMethod("writebyterange", "Writes the given values to the given addresses as unsigned bytes")]
-		public void WriteByteRange(LuaTable memoryblock, string domain = null)
-		{
+		public void WriteByteRange(LuaTable memoryblock, string domain = null) =>
 #if true
 			WriteBytesAsDict(memoryblock, domain);
 #else
@@ -98,7 +97,7 @@ namespace BizHawk.Client.Common
 				Log($"Error: the domain {d.Name} is not writable");
 			}
 #endif
-		}
+
 
 		[LuaMethodExample("memory.write_bytes_as_array(0x100, { 0xAB, 0x12, 0xCD, 0x34 });")]
 		[LuaMethod("write_bytes_as_array", "Writes sequential bytes starting at addr.")]

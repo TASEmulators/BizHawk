@@ -25,10 +25,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			ser.Sync("toggle", ref _toggle);
 		}
 
-		public override void HardReset()
-		{
-			_toggle = 0;
-		}
+		public override void HardReset() => _toggle = 0;
 
 		public override byte ReadMemory(ushort addr) => ReadMem(addr, false);
 

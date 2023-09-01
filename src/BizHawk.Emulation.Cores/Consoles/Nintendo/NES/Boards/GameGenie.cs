@@ -65,9 +65,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				return PatternTables[addr & 0xff];
 		}
 
-		public override void WritePrg(int addr, byte value)
-		{
-			NES.LogLine("{0:x4}<={1:x2}", addr + 0x8000, value);
-		}
+		public override void WritePrg(int addr, byte value) => NES.LogLine("{0:x4}<={1:x2}", addr + 0x8000, value);
 	}
 }

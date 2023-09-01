@@ -178,8 +178,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					string type = "Unknown Type";
 					StringBuilder sb = new();
 
-					var param1 = GetWordValue(blockdata, 12);
-					var param2 = GetWordValue(blockdata, 14);
+					ushort param1 = GetWordValue(blockdata, 12);
+					ushort param2 = GetWordValue(blockdata, 14);
 
 					// header block - examine first byte of header
 					if (blockdata[1] == 0)

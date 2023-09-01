@@ -103,8 +103,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				try
 				{
-					var count = (int)size;
-					var n = _backingSpanStream.Read(new((void*)data, count));
+					int count = (int)size;
+					int n = _backingSpanStream.Read(new((void*)data, count));
 					return Z.SS(n);
 				}
 				catch
@@ -117,7 +117,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				try
 				{
-					var count = (int)size;
+					int count = (int)size;
 					_backingSpanStream.Write(new((void*)data, count));
 					return 0;
 				}
@@ -136,15 +136,15 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		private static IntPtr ReadCallback(IntPtr userdata, IntPtr data, UIntPtr size)
 		{
-			var handle = GCHandle.FromIntPtr(userdata);
-			var reader = (ReadWriteWrapper)handle.Target;
+			GCHandle handle = GCHandle.FromIntPtr(userdata);
+			ReadWriteWrapper reader = (ReadWriteWrapper)handle.Target;
 			return reader.Read(data, size);
 		}
 
 		private static int WriteCallback(IntPtr userdata, IntPtr data, UIntPtr size)
 		{
-			var handle = GCHandle.FromIntPtr(userdata);
-			var writer = (ReadWriteWrapper)handle.Target;
+			GCHandle handle = GCHandle.FromIntPtr(userdata);
+			ReadWriteWrapper writer = (ReadWriteWrapper)handle.Target;
 			return writer.Write(data, size);
 		}
 
@@ -154,7 +154,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public WaterboxHost(WaterboxOptions opt)
 		{
-			var nativeOpts = new MemoryLayoutTemplate
+			MemoryLayoutTemplate nativeOpts = new MemoryLayoutTemplate
 			{
 				sbrk_size = Z.UU(opt.SbrkHeapSizeKB * 1024),
 				sealed_size = Z.UU(opt.SealedHeapSizeKB * 1024),
@@ -163,21 +163,21 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				mmap_size = Z.UU(opt.MmapHeapSizeKB * 1024),
 			};
 
-			var moduleName = opt.Filename;
+			string moduleName = opt.Filename;
 
-			var path = Path.Combine(opt.Path, moduleName);
-			var zstpath = path + ".zst";
+			string path = Path.Combine(opt.Path, moduleName);
+			string zstpath = path + ".zst";
 			if (File.Exists(zstpath))
 			{
-				using var zstd = new Zstd();
-				using var fs = new FileStream(zstpath, FileMode.Open, FileAccess.Read);
-				using var reader = new ReadWriteWrapper(zstd.CreateZstdDecompressionStream(fs));
+				using Zstd zstd = new Zstd();
+				using FileStream fs = new FileStream(zstpath, FileMode.Open, FileAccess.Read);
+				using ReadWriteWrapper reader = new ReadWriteWrapper(zstd.CreateZstdDecompressionStream(fs));
 				NativeImpl.wbx_create_host(nativeOpts, opt.Filename, _readCallback, reader.WaterboxHandle, out var retobj);
 				_nativeHost = retobj.GetDataOrThrow();
 			}
 			else
 			{
-				using var reader = new ReadWriteWrapper(new FileStream(path, FileMode.Open, FileAccess.Read));
+				using ReadWriteWrapper reader = new ReadWriteWrapper(new FileStream(path, FileMode.Open, FileAccess.Read));
 				NativeImpl.wbx_create_host(nativeOpts, opt.Filename, _readCallback, reader.WaterboxHandle, out var retobj);
 				_nativeHost = retobj.GetDataOrThrow();
 			}
@@ -228,7 +228,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// <param name="name">the filename that the unmanaged core will access the file by</param>
 		public void AddReadonlyFile(byte[] data, string name)
 		{
-			using var reader = new ReadWriteWrapper(new MemoryStream(data, false));
+			using ReadWriteWrapper reader = new ReadWriteWrapper(new MemoryStream(data, false));
 			NativeImpl.wbx_mount_file(_nativeHost, name, _readCallback, reader.WaterboxHandle, false, out var retobj);
 			retobj.GetDataOrThrow();
 		}
@@ -249,7 +249,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// </summary>
 		public void AddTransientFile(byte[] data, string name)
 		{
-			using var reader = new ReadWriteWrapper(new MemoryStream(data, false));
+			using ReadWriteWrapper reader = new ReadWriteWrapper(new MemoryStream(data, false));
 			NativeImpl.wbx_mount_file(_nativeHost, name, _readCallback, reader.WaterboxHandle, true, out var retobj);
 			retobj.GetDataOrThrow();
 		}
@@ -260,8 +260,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// <returns>The state of the file when it was removed</returns>
 		public byte[] RemoveTransientFile(string name)
 		{
-			var ms = new MemoryStream();
-			using var writer = new ReadWriteWrapper(ms);
+			MemoryStream ms = new MemoryStream();
+			using ReadWriteWrapper writer = new ReadWriteWrapper(ms);
 			NativeImpl.wbx_unmount_file(_nativeHost, name, _writeCallback, writer.WaterboxHandle, out var retobj);
 			retobj.GetDataOrThrow();
 			return ms.ToArray();
@@ -308,10 +308,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		}
 #endif
 
-		public MemoryDomain GetPagesDomain()
-		{
-			return new WaterboxPagesDomain(this);
-		}
+		public MemoryDomain GetPagesDomain() => new WaterboxPagesDomain(this);
 
 		private class WaterboxPagesDomain : MemoryDomain
 		{
@@ -336,24 +333,21 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				return (byte)retobj.GetDataOrThrow();
 			}
 
-			public override void PokeByte(long addr, byte val)
-			{
-				throw new InvalidOperationException();
-			}
+			public override void PokeByte(long addr, byte val) => throw new InvalidOperationException();
 		}
 
 		public bool AvoidRewind => false;
 
 		public void SaveStateBinary(BinaryWriter bw)
 		{
-			using var writer = new ReadWriteWrapper(bw.BaseStream, false);
+			using ReadWriteWrapper writer = new ReadWriteWrapper(bw.BaseStream, false);
 			NativeImpl.wbx_save_state(_nativeHost, _writeCallback, writer.WaterboxHandle, out var retobj);
 			retobj.GetDataOrThrow();
 		}
 
 		public void LoadStateBinary(BinaryReader br)
 		{
-			using var reader = new ReadWriteWrapper(br.BaseStream, false);
+			using ReadWriteWrapper reader = new ReadWriteWrapper(br.BaseStream, false);
 			NativeImpl.wbx_load_state(_nativeHost, _readCallback, reader.WaterboxHandle, out var retobj);
 			retobj.GetDataOrThrow();
 		}

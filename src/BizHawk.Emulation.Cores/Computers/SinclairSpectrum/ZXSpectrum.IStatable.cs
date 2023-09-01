@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			byte[] core = null;
 			if (ser.IsWriter)
 			{
-				var ms = new MemoryStream();
+				MemoryStream ms = new MemoryStream();
 				ms.Close();
 				core = ms.ToArray();
 			}

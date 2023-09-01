@@ -22,7 +22,7 @@ namespace BizHawk.Client.Common
 			_controlsOrdered = _source.Definition.ControlsOrdered.Where(static c => c.Count is not 0).ToList();
 			foreach (var group in _controlsOrdered)
 			{
-				foreach (var button in group)
+				foreach (string button in group)
 				{
 					_mnemonics.Add(button, Bk2MnemonicLookup.Lookup(button, _systemId));
 				}
@@ -47,13 +47,13 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public string GenerateLogKey()
 		{
-			var sb = new StringBuilder();
+			StringBuilder sb = new StringBuilder();
 			sb.Append("LogKey:");
 
 			foreach (var group in _source.Definition.ControlsOrdered.Where(static c => c.Count is not 0))
 			{
 				sb.Append('#');
-				foreach (var button in group)
+				foreach (string button in group)
 				{
 					sb.Append(button).Append('|');
 				}
@@ -67,8 +67,8 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public IDictionary<string, string> Map()
 		{
-			var dict = new Dictionary<string, string>();
-			foreach (var button in _source.Definition.OrderedControlsFlat)
+			Dictionary<string, string> dict = new Dictionary<string, string>();
+			foreach (string button in _source.Definition.OrderedControlsFlat)
 			{
 				if (_source.Definition.BoolButtons.Contains(button))
 				{
@@ -85,17 +85,17 @@ namespace BizHawk.Client.Common
 
 		private string CreateLogEntry(bool createEmpty = false)
 		{
-			var sb = new StringBuilder();
+			StringBuilder sb = new StringBuilder();
 
 			sb.Append('|');
 
 			foreach (var group in _controlsOrdered)
 			{
-				foreach (var button in group)
+				foreach (string button in group)
 				{
 					if (_source.Definition.Axes.TryGetValue(button, out var range))
 					{
-						var val = createEmpty ? range.Neutral : _source.AxisValue(button);
+						int val = createEmpty ? range.Neutral : _source.AxisValue(button);
 						sb.Append(val.ToString().PadLeft(5, ' ')).Append(',');
 					}
 					else

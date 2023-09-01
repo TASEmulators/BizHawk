@@ -62,14 +62,11 @@ namespace BizHawk.Client.EmuHawk
 			return (1L << (4 * MaxLength)) - 1;
 		}
 
-		public override void ResetText()
-		{
-			Text = Nullable ? "" : string.Format(_addressFormatStr, 0);
-		}
+		public override void ResetText() => Text = Nullable ? "" : string.Format(_addressFormatStr, 0);
 
 		protected override void OnKeyPress(KeyPressEventArgs e)
 		{
-			if (e.KeyChar == '\b' || e.KeyChar == 22 || e.KeyChar == 1 || e.KeyChar == 3)
+			if (e.KeyChar is '\b' or (char)22 or (char)1 or (char)3)
 			{
 				return;
 			}
@@ -86,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Text.IsHex() && !string.IsNullOrEmpty(_addressFormatStr))
 				{
-					var val = (uint)ToRawInt();
+					uint val = (uint)ToRawInt();
 
 					if (val == GetMax())
 					{
@@ -104,7 +101,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Text.IsHex() && !string.IsNullOrEmpty(_addressFormatStr))
 				{
-					var val = (uint)ToRawInt();
+					uint val = (uint)ToRawInt();
 					if (val == 0)
 					{
 						val = (uint)GetMax(); // int to long todo
@@ -150,15 +147,9 @@ namespace BizHawk.Client.EmuHawk
 			return int.Parse(Text, NumberStyles.HexNumber);
 		}
 
-		public void SetFromRawInt(int? val)
-		{
-			Text = val.HasValue ? string.Format(_addressFormatStr, val) : "";
-		}
+		public void SetFromRawInt(int? val) => Text = val.HasValue ? string.Format(_addressFormatStr, val) : "";
 
-		public void SetFromLong(long val)
-		{
-			Text = string.Format(_addressFormatStr, val);
-		}
+		public void SetFromLong(long val) => Text = string.Format(_addressFormatStr, val);
 
 		public void SetFromU64(ulong? val)
 			=> Text = val is null ? string.Empty : string.Format(_addressFormatStr, val.Value);
@@ -179,7 +170,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public ulong? ToU64()
-			=> ulong.TryParse(Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var l)
+			=> ulong.TryParse(Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ulong l)
 				? l
 				: Nullable
 					? null
@@ -197,7 +188,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnKeyPress(KeyPressEventArgs e)
 		{
-			if (e.KeyChar == '\b' || e.KeyChar == 22 || e.KeyChar == 1 || e.KeyChar == 3)
+			if (e.KeyChar is '\b' or (char)22 or (char)1 or (char)3)
 			{
 				return;
 			}
@@ -208,10 +199,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public override void ResetText()
-		{
-			Text = Nullable ? "" : "0";
-		}
+		public override void ResetText() => Text = Nullable ? "" : "0";
 
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
@@ -219,7 +207,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Text.IsHex())
 				{
-					var val = (uint)ToRawInt();
+					uint val = (uint)ToRawInt();
 					if (val == uint.MaxValue)
 					{
 						val = 0;
@@ -236,7 +224,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Text.IsHex())
 				{
-					var val = (uint)ToRawInt();
+					uint val = (uint)ToRawInt();
 
 					if (val == 0)
 					{
@@ -283,9 +271,6 @@ namespace BizHawk.Client.EmuHawk
 			return (int)uint.Parse(Text);
 		}
 
-		public void SetFromRawInt(int? val)
-		{
-			Text = val?.ToString() ?? "";
-		}
+		public void SetFromRawInt(int? val) => Text = val?.ToString() ?? "";
 	}
 }

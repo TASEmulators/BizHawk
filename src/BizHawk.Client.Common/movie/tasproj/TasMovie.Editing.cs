@@ -105,10 +105,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void RemoveFrame(int frame)
-		{
-			RemoveFrames(frame, frame + 1);
-		}
+		public void RemoveFrame(int frame) => RemoveFrames(frame, frame + 1);
 
 		public void RemoveFrames(ICollection<int> frames)
 		{
@@ -125,11 +122,11 @@ namespace BizHawk.Client.Common
 				while (numDeleted != framesToDelete.Count)
 				{
 					int startFrame;
-					var prevFrame = startFrame = framesToDelete[f];
+					int prevFrame = startFrame = framesToDelete[f];
 					f++;
 					for (; f < framesToDelete.Count; f++)
 					{
-						var frame = framesToDelete[f];
+						int frame = framesToDelete[f];
 						if (frame - 1 != prevFrame)
 						{
 							f--;
@@ -190,7 +187,7 @@ namespace BizHawk.Client.Common
 
 		public void InsertInput(int frame, string inputState)
 		{
-			var inputLog = new List<string> { inputState };
+			List<string> inputLog = new List<string> { inputState };
 			InsertInput(frame, inputLog); // ChangeLog handled within
 		}
 
@@ -209,7 +206,7 @@ namespace BizHawk.Client.Common
 		public void InsertInput(int frame, IEnumerable<IController> inputStates)
 		{
 			// ChangeLog is done in the InsertInput call.
-			var inputLog = new List<string>();
+			List<string> inputLog = new List<string>();
 
 			foreach (var input in inputStates)
 			{
@@ -224,8 +221,8 @@ namespace BizHawk.Client.Common
 		{
 			int firstChangedFrame = -1;
 			ChangeLog.BeginNewBatch($"Copy Over Input: {frame}");
-			
-			var states = inputStates.ToList();
+
+			List<IController> states = inputStates.ToList();
 
 			if (Log.Count < states.Count + frame)
 			{
@@ -242,7 +239,7 @@ namespace BizHawk.Client.Common
 				}
 
 				var lg = LogGeneratorInstance(states[i]);
-				var entry = lg.GenerateLogEntry();
+				string entry = lg.GenerateLogEntry();
 				if (firstChangedFrame == -1 && Log[frame + i] != entry)
 				{
 					firstChangedFrame = frame + i;
@@ -325,7 +322,7 @@ namespace BizHawk.Client.Common
 			}
 
 			var adapter = GetInputState(frame);
-			var old = adapter.IsPressed(buttonName);
+			bool old = adapter.IsPressed(buttonName);
 			adapter.SetBool(buttonName, val);
 
 			var lg = LogGeneratorInstance(adapter);
@@ -381,7 +378,7 @@ namespace BizHawk.Client.Common
 			}
 
 			var adapter = GetInputState(frame);
-			var old = adapter.AxisValue(buttonName);
+			int old = adapter.AxisValue(buttonName);
 			adapter.SetAxis(buttonName, val);
 
 			var lg = LogGeneratorInstance(adapter);
@@ -408,7 +405,7 @@ namespace BizHawk.Client.Common
 			for (int i = 0; i < count; i++)
 			{
 				var adapter = GetInputState(frame + i);
-				var old = adapter.AxisValue(buttonName);
+				int old = adapter.AxisValue(buttonName);
 				adapter.SetAxis(buttonName, val);
 
 				var lg = LogGeneratorInstance(adapter);

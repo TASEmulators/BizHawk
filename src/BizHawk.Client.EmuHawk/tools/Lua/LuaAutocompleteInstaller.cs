@@ -62,7 +62,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool IsBizLuaSublimeInstalled()
 		{
-			var bizCompletions = Path.Combine(AppDataFolder, SublimeLuaPath, SublimeCompletionsFilename);
+			string bizCompletions = Path.Combine(AppDataFolder, SublimeLuaPath, SublimeCompletionsFilename);
 			return File.Exists(bizCompletions);
 		}
 
@@ -71,23 +71,23 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool IsBizLuaNotepadInstalled()
 		{
-			var bizCompletions = Path.Combine(AppDataFolder, NotepadPath, NotepadAutoCompleteFileName);
+			string bizCompletions = Path.Combine(AppDataFolder, NotepadPath, NotepadAutoCompleteFileName);
 			return File.Exists(bizCompletions);
 		}
 
 		private void InstallBizLuaToSublime2(LuaDocumentation docs)
 		{
-			var bizCompletions = Path.Combine(AppDataFolder, SublimeLuaPath, SublimeCompletionsFilename);
+			string bizCompletions = Path.Combine(AppDataFolder, SublimeLuaPath, SublimeCompletionsFilename);
 
-			var text = docs.ToSublime2CompletionList();
+			string text = docs.ToSublime2CompletionList();
 			File.WriteAllText(bizCompletions, text);
 		}
 
 		private void InstallBizLuaToNotepad(LuaDocumentation docs)
 		{
-			var bizAutocomplete = Path.Combine(AppDataFolder, NotepadPath, NotepadAutoCompleteFileName);
+			string bizAutocomplete = Path.Combine(AppDataFolder, NotepadPath, NotepadAutoCompleteFileName);
 
-			var text = docs.ToNotepadPlusPlusAutoComplete();
+			string text = docs.ToNotepadPlusPlusAutoComplete();
 
 			// TODO
 			//File.WriteAllText(bizCompletions, text);

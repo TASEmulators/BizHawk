@@ -21,9 +21,6 @@ namespace BizHawk.Client.EmuHawk
 			Paint += BGViewer_Paint;
 		}
 
-		private void BGViewer_Paint(object sender, PaintEventArgs e)
-		{
-			e.Graphics.DrawImageUnscaled(Bat, 0, 0);
-		}
+		private void BGViewer_Paint(object sender, PaintEventArgs e) => e.Graphics.DrawImageUnscaled(Bat, 0, 0);
 	}
 }

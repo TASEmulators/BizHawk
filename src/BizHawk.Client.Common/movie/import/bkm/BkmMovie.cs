@@ -19,7 +19,7 @@ namespace BizHawk.Client.Common
 		{
 			if (frame < InputLogLength && frame >= 0)
 			{
-				var adapter = new BkmControllerAdapter(definition, sytemId);
+				BkmControllerAdapter adapter = new BkmControllerAdapter(definition, sytemId);
 				adapter.SetControllersAsMnemonic(_log[frame]);
 				return adapter;
 			}
@@ -41,7 +41,7 @@ namespace BizHawk.Client.Common
 
 		public bool Load()
 		{
-			var file = new FileInfo(Filename);
+			FileInfo file = new FileInfo(Filename);
 
 			if (file.Exists == false)
 			{

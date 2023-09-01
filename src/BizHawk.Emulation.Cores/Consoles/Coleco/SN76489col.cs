@@ -42,10 +42,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			noise = 0x40000;
 		}
 
-		public int Sample()
-		{
-			return current_sample;
-		}
+		public int Sample() => current_sample;
 
 		public void SyncState(Serializer ser)
 		{
@@ -77,11 +74,9 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			ser.EndSection();
 		}
 
-		public byte ReadReg()
-		{
+		public byte ReadReg() =>
 			// not used, reading not allowed, just return 0xFF
-			return 0xFF;
-		}
+			0xFF;
 
 		public void WriteReg(byte value)
 		{

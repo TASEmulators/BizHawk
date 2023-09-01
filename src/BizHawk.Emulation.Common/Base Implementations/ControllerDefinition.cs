@@ -89,8 +89,8 @@ namespace BizHawk.Emulation.Common
 				switch (constraint)
 				{
 					case CircularAxisConstraint circular:
-						var xAxis = k;
-						var yAxis = circular.PairedAxis;
+						string xAxis = k;
+						string yAxis = circular.PairedAxis;
 						(axes[xAxis], axes[yAxis]) = circular.ApplyTo(axes[xAxis], axes[yAxis]);
 						break;
 				}
@@ -105,9 +105,9 @@ namespace BizHawk.Emulation.Common
 
 		protected virtual IReadOnlyList<IReadOnlyList<string>> GenOrderedControls()
 		{
-			var ret = new List<string>[PlayerCount + 1];
-			for (var i = 0; i < ret.Length; i++) ret[i] = new();
-			foreach (var btn in Axes.Keys.Concat(BoolButtons)) ret[PlayerNumber(btn)].Add(btn);
+			List<string>[] ret = new List<string>[PlayerCount + 1];
+			for (int i = 0; i < ret.Length; i++) ret[i] = new();
+			foreach (string btn in Axes.Keys.Concat(BoolButtons)) ret[PlayerNumber(btn)].Add(btn);
 			return ret;
 		}
 
@@ -136,8 +136,8 @@ namespace BizHawk.Emulation.Common
 		{
 			get
 			{
-				var allNames = Axes.Keys.Concat(BoolButtons).ToList();
-				var player = allNames
+				List<string> allNames = Axes.Keys.Concat(BoolButtons).ToList();
+				int player = allNames
 					.Select(PlayerNumber)
 					.DefaultIfEmpty(0)
 					.Max();
@@ -152,9 +152,6 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public bool Any()
-		{
-			return BoolButtons.Any() || Axes.Any();
-		}
+		public bool Any() => BoolButtons.Any() || Axes.Any();
 	}
 }

@@ -62,10 +62,7 @@ namespace BizHawk.Emulation.Cores.Components
 			_buffer.Enqueue(new Sample(left, right));
 		}
 
-		public void Clear()
-		{
-			_buffer.Clear();
-		}
+		public void Clear() => _buffer.Clear();
 
 		public int OutputSamples(short[] buf, int samplesRequested)
 		{
@@ -85,7 +82,7 @@ namespace BizHawk.Emulation.Cores.Components
 					int index = 0;
 					for (int i = 0; i < samplesRequested; i++)
 					{
-						Sample sample = _resampleBuffer[i * samplesAvailable / samplesRequested];
+						var sample = _resampleBuffer[i * samplesAvailable / samplesRequested];
 						buf[index++] += sample.Left;
 						buf[index++] += sample.Right;
 					}
@@ -102,7 +99,7 @@ namespace BizHawk.Emulation.Cores.Components
 				int index = 0;
 				for (int i = 0; i < samplesRequested && _buffer.Count > 0; i++)
 				{
-					Sample sample = _buffer.Dequeue();
+					var sample = _buffer.Dequeue();
 					buf[index++] += sample.Left;
 					buf[index++] += sample.Right;
 				}

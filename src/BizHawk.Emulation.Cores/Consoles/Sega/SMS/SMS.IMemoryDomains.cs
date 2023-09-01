@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		private void SetupMemoryDomains()
 		{
-			var domains = new List<MemoryDomain>
+			List<MemoryDomain> domains = new List<MemoryDomain>
 			{
 				new MemoryDomainDelegate("System Bus", 0x10000, MemoryDomain.Endian.Little,
 				(addr) =>
@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 			if (SaveRAM != null)
 			{
-				var saveRamDomain = new MemoryDomainDelegate("Save RAM", SaveRAM.Length, MemoryDomain.Endian.Little,
+				MemoryDomainDelegate saveRamDomain = new MemoryDomainDelegate("Save RAM", SaveRAM.Length, MemoryDomain.Endian.Little,
 					addr => SaveRAM[addr],
 					(addr, value) => { SaveRAM[addr] = value; SaveRamModified = true; }, 1);
 				domains.Add(saveRamDomain);
@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 			else
 			{
-				var m = new MemoryDomainByteArray(name, MemoryDomain.Endian.Little, data, true, 1);
+				MemoryDomainByteArray m = new MemoryDomainByteArray(name, MemoryDomain.Endian.Little, data, true, 1);
 				_byteArrayDomains.Add(name, m);
 			}
 		}

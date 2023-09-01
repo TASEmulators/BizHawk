@@ -6,15 +6,9 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 {
 	public partial class O2Hawk : IEmulator, ISettable<O2Hawk.O2Settings, O2Hawk.O2SyncSettings>
 	{
-		public O2Settings GetSettings()
-		{
-			return _settings.Clone();
-		}
+		public O2Settings GetSettings() => _settings.Clone();
 
-		public O2SyncSettings GetSyncSettings()
-		{
-			return _syncSettings.Clone();
-		}
+		public O2SyncSettings GetSyncSettings() => _syncSettings.Clone();
 
 		public PutSettingsDirtyBits PutSettings(O2Settings o)
 		{
@@ -59,10 +53,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			[DefaultValue(true)]
 			public bool Show_G7400_BG { get; set; }
 
-			public O2Settings Clone()
-			{
-				return (O2Settings)MemberwiseClone();
-			}
+			public O2Settings Clone() => (O2Settings)MemberwiseClone();
 
 			public O2Settings()
 			{
@@ -82,20 +73,14 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			[DefaultValue(true)]
 			public bool Use_SRAM { get; set; }
 
-			public O2SyncSettings Clone()
-			{
-				return (O2SyncSettings)MemberwiseClone();
-			}
+			public O2SyncSettings Clone() => (O2SyncSettings)MemberwiseClone();
 
 			public O2SyncSettings()
 			{
 				SettingsUtil.SetDefaultValues(this);
 			}
 
-			public static bool NeedsReboot(O2SyncSettings x, O2SyncSettings y)
-			{
-				return !DeepEquality.DeepEquals(x, y);
-			}
+			public static bool NeedsReboot(O2SyncSettings x, O2SyncSettings y) => !DeepEquality.DeepEquals(x, y);
 		}
 	}
 }

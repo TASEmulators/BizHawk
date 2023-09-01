@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			int n = Core.gpgx_getregs(regs);
 			if (n > regs.Length)
 				throw new InvalidOperationException("A buffer overrun has occured!");
-			var ret = new Dictionary<string, RegisterValue>();
+			Dictionary<string, RegisterValue> ret = new Dictionary<string, RegisterValue>();
 			using (_elf.EnterExit())
 			{
 				for (int i = 0; i < n; i++)
@@ -35,17 +35,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		}
 
 		[FeatureNotImplemented]
-		public void SetCpuRegister(string register, int value)
-		{
-			throw new NotImplementedException();
-		}
+		public void SetCpuRegister(string register, int value) => throw new NotImplementedException();
 
 		public IMemoryCallbackSystem MemoryCallbacks => _memoryCallbacks;
 
-		public bool CanStep(StepType type) { return false; }
+		public bool CanStep(StepType type) => false;
 
 		[FeatureNotImplemented]
-		public void Step(StepType type) { throw new NotImplementedException(); }
+		public void Step(StepType type) => throw new NotImplementedException();
 
 		[FeatureNotImplemented]
 		public long TotalExecutedCycles => throw new NotImplementedException();
@@ -94,9 +91,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				MemoryCallbacks.HasExecutes ? ExecCallback : null);
 		}
 
-		private void KillMemCallbacks()
-		{
-			Core.gpgx_set_mem_callback(null, null, null);
-		}
+		private void KillMemCallbacks() => Core.gpgx_set_mem_callback(null, null, null);
 	}
 }

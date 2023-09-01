@@ -360,10 +360,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			(Acc_X_state, Acc_Y_state) = _controllerDeck.ReadAcc1(controller);
 		}
 
-		public byte GetButtons(ushort r)
-		{
-			return input_register;
-		}
+		public byte GetButtons(ushort r) => input_register;
 
 		public byte GetIntRegs(ushort r)
 		{
@@ -419,10 +416,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			_islag = false;
 		}
 
-		public void Dispose()
-		{
-			audio.DisposeSound();
-		}
+		public void Dispose() => audio.DisposeSound();
 
 		public int[] frame_buffer;
 
@@ -430,10 +424,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public uint[] vid_buffer;
 
 
-		public int[] GetVideoBuffer()
-		{
-			return frame_buffer;
-		}
+		public int[] GetVideoBuffer() => frame_buffer;
 
 		public void SendVideoBuffer()
 		{

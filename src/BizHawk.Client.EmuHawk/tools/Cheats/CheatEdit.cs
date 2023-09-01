@@ -20,18 +20,13 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private const string HexInd = "0x";
-
-		private Cheat _cheat;
 		private bool _loading;
 		private bool _editMode;
 
 		private Action _addCallback;
 		private Action _editCallback;
 
-		private void CheatEdit_Load(object sender, EventArgs e)
-		{
-			Restart();
-		}
+		private void CheatEdit_Load(object sender, EventArgs e) => Restart();
 
 		public void Restart()
 		{
@@ -56,43 +51,43 @@ namespace BizHawk.Client.EmuHawk
 		private void SetFormToCheat()
 		{
 			_loading = true;
-			SetSizeSelected(_cheat.Size);
+			SetSizeSelected(OriginalCheat.Size);
 			PopulateTypeDropdown();
-			SetTypeSelected(_cheat.Type);
-			SetDomainSelected(_cheat.Domain);
+			SetTypeSelected(OriginalCheat.Type);
+			SetDomainSelected(OriginalCheat.Domain);
 
-			AddressBox.SetHexProperties(_cheat.Domain.Size);
+			AddressBox.SetHexProperties(OriginalCheat.Domain.Size);
 
 			ValueBox.ByteSize =
 				CompareBox.ByteSize =
-				_cheat.Size;
+				OriginalCheat.Size;
 
 			ValueBox.Type =
 				CompareBox.Type =
-				_cheat.Type;
+				OriginalCheat.Type;
 
 			ValueHexIndLabel.Text =
 				CompareHexIndLabel.Text =
-				_cheat.Type == WatchDisplayType.Hex ? HexInd : "";
+				OriginalCheat.Type == WatchDisplayType.Hex ? HexInd : "";
 
-			BigEndianCheckBox.Checked = _cheat.BigEndian ?? false;
+			BigEndianCheckBox.Checked = OriginalCheat.BigEndian ?? false;
 
-			NameBox.Text = _cheat.Name;
-			AddressBox.Text = _cheat.AddressStr;
-			ValueBox.Text = _cheat.ValueStr;
-			CompareBox.Text = _cheat.Compare.HasValue ? _cheat.CompareStr : "";
+			NameBox.Text = OriginalCheat.Name;
+			AddressBox.Text = OriginalCheat.AddressStr;
+			ValueBox.Text = OriginalCheat.ValueStr;
+			CompareBox.Text = OriginalCheat.Compare.HasValue ? OriginalCheat.CompareStr : "";
 
-			if (_cheat.ComparisonType.Equals(Cheat.CompareType.None))
+			if (OriginalCheat.ComparisonType.Equals(Cheat.CompareType.None))
 			{
 				CompareTypeDropDown.SelectedIndex = 0;
 			}
 			else
 			{
-				CompareTypeDropDown.SelectedIndex = (int)_cheat.ComparisonType - 1;
+				CompareTypeDropDown.SelectedIndex = (int)OriginalCheat.ComparisonType - 1;
 			}
 
 			CheckFormState();
-			if (!_cheat.Compare.HasValue)
+			if (!OriginalCheat.Compare.HasValue)
 			{
 				CompareBox.Text = ""; // Necessary hack until WatchValueBox.ToRawInt() becomes nullable
 			}
@@ -149,7 +144,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetTypeSelected(WatchDisplayType type)
 		{
-			foreach (var item in DisplayTypeDropDown.Items)
+			foreach (object item in DisplayTypeDropDown.Items)
 			{
 				if (item.ToString() == Watch.DisplayTypeToString(type))
 				{
@@ -161,7 +156,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetDomainSelected(Emu.MemoryDomain domain)
 		{
-			foreach (var item in DomainDropDown.Items)
+			foreach (object item in DomainDropDown.Items)
 			{
 				if (item.ToString() == domain.Name)
 				{
@@ -178,21 +173,21 @@ namespace BizHawk.Client.EmuHawk
 			{
 				default:
 				case 0:
-					foreach (WatchDisplayType t in ByteWatch.ValidTypes)
+					foreach (var t in ByteWatch.ValidTypes)
 					{
 						DisplayTypeDropDown.Items.Add(Watch.DisplayTypeToString(t));
 					}
 
 					break;
 				case 1:
-					foreach (WatchDisplayType t in WordWatch.ValidTypes)
+					foreach (var t in WordWatch.ValidTypes)
 					{
 						DisplayTypeDropDown.Items.Add(Watch.DisplayTypeToString(t));
 					}
 
 					break;
 				case 2:
-					foreach (WatchDisplayType t in DWordWatch.ValidTypes)
+					foreach (var t in DWordWatch.ValidTypes)
 					{
 						DisplayTypeDropDown.Items.Add(Watch.DisplayTypeToString(t));
 					}
@@ -205,7 +200,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CheckFormState()
 		{
-			var valid = !string.IsNullOrWhiteSpace(AddressBox.Text) && !string.IsNullOrWhiteSpace(ValueBox.Text);
+			bool valid = !string.IsNullOrWhiteSpace(AddressBox.Text) && !string.IsNullOrWhiteSpace(ValueBox.Text);
 			AddButton.Enabled = valid;
 			EditButton.Enabled = _editMode && valid;
 		}
@@ -248,20 +243,14 @@ namespace BizHawk.Client.EmuHawk
 				Watch.StringToDisplayType(DisplayTypeDropDown.SelectedItem.ToString());
 		}
 
-		private void AddButton_Click(object sender, EventArgs e)
-		{
-			_addCallback?.Invoke();
-		}
+		private void AddButton_Click(object sender, EventArgs e) => _addCallback?.Invoke();
 
-		private void EditButton_Click(object sender, EventArgs e)
-		{
-			_editCallback?.Invoke();
-		}
+		private void EditButton_Click(object sender, EventArgs e) => _editCallback?.Invoke();
 
 		public void SetCheat(Cheat cheat)
 		{
 			_editMode = true;
-			_cheat = cheat;
+			OriginalCheat = cheat;
 			if (cheat.IsSeparator)
 			{
 				SetFormToDefault();
@@ -274,20 +263,20 @@ namespace BizHawk.Client.EmuHawk
 
 		public void ClearForm()
 		{
-			_cheat = Cheat.Separator;
+			OriginalCheat = Cheat.Separator;
 			_editMode = false;
 			SetFormToDefault();
 		}
 
-		public Cheat OriginalCheat => _cheat;
+		public Cheat OriginalCheat { get; private set; }
 
 		public Cheat GetCheat()
 		{
 			var domain = MemoryDomains[DomainDropDown.SelectedItem.ToString()]!;
-			var address = AddressBox.ToRawInt().Value;
+			int address = AddressBox.ToRawInt().Value;
 			if (address < domain.Size)
 			{
-				var watch = Watch.GenerateWatch(
+				Watch watch = Watch.GenerateWatch(
 					domain,
 					address: address,
 					GetCurrentSize(),
@@ -307,7 +296,7 @@ namespace BizHawk.Client.EmuHawk
 					_ => Cheat.CompareType.None
 				};
 
-				var compare = CompareBox.ToRawInt();
+				int? compare = CompareBox.ToRawInt();
 				return new Cheat(
 					watch,
 					value: ValueBox.ToRawInt().Value,
@@ -320,19 +309,13 @@ namespace BizHawk.Client.EmuHawk
 			return Cheat.Separator;
 		}
 
-		public void SetAddEvent(Action addCallback)
-		{
-			_addCallback = addCallback;
-		}
+		public void SetAddEvent(Action addCallback) => _addCallback = addCallback;
 
-		public void SetEditEvent(Action editCallback)
-		{
-			_editCallback = editCallback;
-		}
+		public void SetEditEvent(Action editCallback) => _editCallback = editCallback;
 
 		private void CompareBox_TextChanged(object sender, EventArgs e)
 		{
-			var compareBox = (WatchValueBox)sender;
+			WatchValueBox compareBox = (WatchValueBox)sender;
 			PopulateComparisonTypeBox(string.IsNullOrWhiteSpace(compareBox.Text));
 		}
 

@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 			public BizSwan.Settings GetNativeSettings()
 			{
-				var ret = new BizSwan.Settings();
+				BizSwan.Settings ret = new BizSwan.Settings();
 				if (EnableBG) ret.LayerMask |= BizSwan.LayerFlags.BG;
 				if (EnableFG) ret.LayerMask |= BizSwan.LayerFlags.FG;
 				if (EnableSprites) ret.LayerMask |= BizSwan.LayerFlags.Sprite;
@@ -54,9 +54,9 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 					{
 						for (int b = 0; b < 16; b++)
 						{
-							var neoR = (uint)r * 17;
-							var neoG = (uint)g * 17;
-							var neoB = (uint)b * 17;
+							uint neoR = (uint)r * 17;
+							uint neoG = (uint)g * 17;
+							uint neoB = (uint)b * 17;
 							ret.ColorPalette[r << 8 | g << 4 | b] = 0xff000000 | neoR << 16 | neoG << 8 | neoB << 0;
 						}
 					}
@@ -77,7 +77,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 			public Settings Clone()
 			{
-				var ret = (Settings)MemberwiseClone();
+				Settings ret = (Settings)MemberwiseClone();
 				ret.BWPalette = (Color[])BWPalette.Clone();
 				return ret;
 			}
@@ -124,7 +124,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 			public BizSwan.SyncSettings GetNativeSettings()
 			{
-				var ret = new BizSwan.SyncSettings
+				BizSwan.SyncSettings ret = new BizSwan.SyncSettings
 				{
 					color = Color,
 					userealtime = UseRealTime,
@@ -145,15 +145,9 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 				SettingsUtil.SetDefaultValues(this);
 			}
 
-			public SyncSettings Clone()
-			{
-				return (SyncSettings)MemberwiseClone();
-			}
+			public SyncSettings Clone() => (SyncSettings)MemberwiseClone();
 
-			public static bool NeedsReboot(SyncSettings x, SyncSettings y)
-			{
-				return !DeepEquality.DeepEquals(x, y);
-			}
+			public static bool NeedsReboot(SyncSettings x, SyncSettings y) => !DeepEquality.DeepEquals(x, y);
 		}
 
 		public Settings GetSettings() => _settings.Clone();

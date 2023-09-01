@@ -47,7 +47,7 @@ namespace BizHawk.Common
 				{
 					// Win11 has ProductName == "Windows 10 Pro" MICROSOFT WHY https://stackoverflow.com/a/69922526 https://stackoverflow.com/a/70456554
 //					Version win10PlusVer = new(FileVersionInfo.GetVersionInfo(@"C:\Windows\System32\kernel32.dll").FileVersion.SubstringBefore(' ')); // bonus why: this doesn't work because the file's metadata wasn't updated
-					Version win10PlusVer = new(10, 0, int.TryParse(GetRegValue("CurrentBuild") ?? "19044", out var i) ? i : 19044); // still, leaving the Version wrapper here for when they inevitably do something stupid like decide to call Win11 11.0.x (or 10.1.x because they're incapable of doing anything sensible)
+					Version win10PlusVer = new(10, 0, int.TryParse(GetRegValue("CurrentBuild") ?? "19044", out int i) ? i : 19044); // still, leaving the Version wrapper here for when they inevitably do something stupid like decide to call Win11 11.0.x (or 10.1.x because they're incapable of doing anything sensible)
 					return (win10PlusVer < new Version(10, 0, 22000) ? WindowsVersion._10 : WindowsVersion._11, win10PlusVer);
 				}
 				// ...else we're on 8.1. Can't be bothered writing code for KB installed check, not that I have a Win8.1 machine to test on anyway, so it gets a free pass (though I suspect `CurrentBuild` would work here too). --yoshi
@@ -82,7 +82,7 @@ namespace BizHawk.Common
 				return false;
 			}
 
-			var isWine = LinkedLibManager.GetProcAddrOrZero(ntdll, "wine_get_version") != IntPtr.Zero;
+			bool isWine = LinkedLibManager.GetProcAddrOrZero(ntdll, "wine_get_version") != IntPtr.Zero;
 			LinkedLibManager.FreeByPtr(ntdll);
 			return isWine;
 		});
@@ -210,10 +210,10 @@ namespace BizHawk.Common
 
 			public string GetErrorMessage()
 			{
-				var errCode = GetLastError();
-				var sz = FormatMessageA(FORMAT_MESSAGE.ALLOCATE_BUFFER | FORMAT_MESSAGE.FROM_SYSTEM | FORMAT_MESSAGE.IGNORE_INSERTS,
+				uint errCode = GetLastError();
+				int sz = FormatMessageA(FORMAT_MESSAGE.ALLOCATE_BUFFER | FORMAT_MESSAGE.FROM_SYSTEM | FORMAT_MESSAGE.IGNORE_INSERTS,
 					IntPtr.Zero, errCode, 0, out var buffer, 1024, IntPtr.Zero);
-				var ret = Marshal.PtrToStringAnsi(buffer, sz);
+				string ret = Marshal.PtrToStringAnsi(buffer, sz);
 				_ = LocalFree(buffer);
 				return ret;
 			}

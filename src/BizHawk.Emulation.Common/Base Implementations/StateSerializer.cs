@@ -30,10 +30,7 @@ namespace BizHawk.Emulation.Common
 
 		public bool AvoidRewind => false;
 
-		public void SaveStateText(TextWriter writer)
-		{
-			_syncState(Serializer.CreateTextWriter(writer));
-		}
+		public void SaveStateText(TextWriter writer) => _syncState(Serializer.CreateTextWriter(writer));
 
 		public void LoadStateText(TextReader reader)
 		{
@@ -41,10 +38,7 @@ namespace BizHawk.Emulation.Common
 			LoadStateCallback?.Invoke();
 		}
 
-		public void SaveStateBinary(BinaryWriter bw)
-		{
-			_syncState(Serializer.CreateBinaryWriter(bw));
-		}
+		public void SaveStateBinary(BinaryWriter bw) => _syncState(Serializer.CreateBinaryWriter(bw));
 
 		public void LoadStateBinary(BinaryReader br)
 		{

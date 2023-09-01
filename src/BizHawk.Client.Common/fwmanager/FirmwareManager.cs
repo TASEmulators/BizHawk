@@ -19,19 +19,19 @@ namespace BizHawk.Client.Common
 
 		public static (byte[] Patched, string ActualHash) PerformPatchInMemory(byte[] @base, in FirmwarePatchOption patchOption)
 		{
-			var patched = patchOption.Patches.Aggregate(seed: @base, (a, fpd) => fpd.ApplyToMutating(a));
+			byte[] patched = patchOption.Patches.Aggregate(seed: @base, (a, fpd) => fpd.ApplyToMutating(a));
 			return (patched, SHA1Checksum.ComputeDigestHex(patched));
 		}
 
 		public static (string FilePath, int FileSize, FirmwareFile FF) PerformPatchOnDisk(string baseFilename, in FirmwarePatchOption patchOption, PathEntryCollection pathEntries)
 		{
-			var @base = File.ReadAllBytes(baseFilename);
+			byte[] @base = File.ReadAllBytes(baseFilename);
 			var (patched, actualHash) = PerformPatchInMemory(@base, in patchOption);
 			Trace.Assert(actualHash == patchOption.TargetHash);
-			var patchedParentDir = Path.Combine(pathEntries[PathEntryCollection.GLOBAL, "Temp Files"].Path, "AutopatchedFirmware");
+			string patchedParentDir = Path.Combine(pathEntries[PathEntryCollection.GLOBAL, "Temp Files"].Path, "AutopatchedFirmware");
 			Directory.CreateDirectory(patchedParentDir);
 			var ff = FirmwareDatabase.FirmwareFilesByHash[patchOption.TargetHash];
-			var patchedFilePath = Path.Combine(patchedParentDir, ff.RecommendedName);
+			string patchedFilePath = Path.Combine(patchedParentDir, ff.RecommendedName);
 			File.WriteAllBytes(patchedFilePath, patched);
 			return (patchedFilePath, @base.Length, ff); // patches can't change length with the current implementation
 		}
@@ -48,12 +48,12 @@ namespace BizHawk.Client.Common
 		private ResolutionInfo? AttemptPatch(FirmwareRecord requested, PathEntryCollection pathEntries, IDictionary<string, string> userSpecifications)
 		{
 			// look for patchsets where 1. they produce a file that fulfils the request, and 2. a matching input file is present in the firmware dir
-			var targetOptionHashes = FirmwareDatabase.FirmwareOptions.Where(fo => fo.ID == requested.ID).Select(fo => fo.Hash).ToList();
-			var presentBaseFiles = _resolutionDictionary.Values.Select(ri => ri.Hash).ToList(); //TODO might want to use files which are known (in the database), but not assigned to any record
+			List<string> targetOptionHashes = FirmwareDatabase.FirmwareOptions.Where(fo => fo.ID == requested.ID).Select(fo => fo.Hash).ToList();
+			List<string?> presentBaseFiles = _resolutionDictionary.Values.Select(ri => ri.Hash).ToList(); //TODO might want to use files which are known (in the database), but not assigned to any record
 			var patchOption = FirmwareDatabase.AllPatches.FirstOrNull(fpo => targetOptionHashes.Contains(fpo.TargetHash) && presentBaseFiles.Contains(fpo.BaseHash));
 			if (patchOption is null) return null;
 			// found one, proceed with patching the base file
-			var baseFilename = _resolutionDictionary.Values.First(ri => ri.Hash == patchOption.Value.BaseHash).FilePath!;
+			string baseFilename = _resolutionDictionary.Values.First(ri => ri.Hash == patchOption.Value.BaseHash).FilePath!;
 			var (patchedFilePath, patchedFileLength, ff) = PerformPatchOnDisk(baseFilename, patchOption.Value, pathEntries);
 			// cache and return this new file's metadata
 			userSpecifications[requested.ID.ConfigKey] = patchedFilePath;
@@ -111,7 +111,7 @@ namespace BizHawk.Client.Common
 					// we can let it fall through here, as ReadAllBytes just reads all bytes starting from the stream position :)
 				}
 
-				var hash = SHA1Checksum.ComputeDigestHex(fs.ReadAllBytes());
+				string hash = SHA1Checksum.ComputeDigestHex(fs.ReadAllBytes());
 				return _dict![hash] = new RealFirmwareFile(fi, hash);
 			}
 		}
@@ -123,16 +123,16 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				var fi = new FileInfo(f);
+				FileInfo fi = new FileInfo(f);
 				if (!fi.Exists) return false;
 
 				// weed out filesizes first to reduce the unnecessary overhead of a hashing operation
 				if (!_firmwareSizes.Contains(fi.Length)) return false;
 
 				// check the hash
-				var reader = new RealFirmwareReader();
+				RealFirmwareReader reader = new RealFirmwareReader();
 				reader.Read(fi);
-				var hash = reader.Dict.Values.First().Hash;
+				string hash = reader.Dict.Values.First().Hash;
 				return FirmwareDatabase.FirmwareFiles.Any(a => a.Hash == hash);
 			}
 			catch
@@ -143,10 +143,10 @@ namespace BizHawk.Client.Common
 
 		public void DoScanAndResolve(PathEntryCollection pathEntries, IDictionary<string, string> userSpecifications)
 		{
-			var reader = new RealFirmwareReader();
+			RealFirmwareReader reader = new RealFirmwareReader();
 
 			// build a list of files under the global firmwares path, and build a hash for each of them (as ResolutionInfo) while we're at it
-			var todo = new Queue<DirectoryInfo>(new[] { new DirectoryInfo(pathEntries.AbsolutePathFor(pathEntries.FirmwaresPathFragment, null)) });
+			Queue<DirectoryInfo> todo = new Queue<DirectoryInfo>(new[] { new DirectoryInfo(pathEntries.AbsolutePathFor(pathEntries.FirmwaresPathFragment, null)) });
 			while (todo.Count != 0)
 			{
 				var di = todo.Dequeue();
@@ -180,7 +180,7 @@ namespace BizHawk.Client.Common
 			foreach (var fr in FirmwareDatabase.FirmwareRecords)
 			{
 				// do we have a user specification for this firmware record?
-				if (!userSpecifications.TryGetValue(fr.ID.ConfigKey, out var userSpec)) continue;
+				if (!userSpecifications.TryGetValue(fr.ID.ConfigKey, out string? userSpec)) continue;
 
 				var ri = _resolutionDictionary.GetValueOrPutNew(fr);
 				// local ri is a reference to a ResolutionInfo which is now definitely in the dict
@@ -192,7 +192,7 @@ namespace BizHawk.Client.Common
 				ri.Hash = null;
 
 				// check whether it exists
-				var fi = new FileInfo(userSpec);
+				FileInfo fi = new FileInfo(userSpec);
 				if (!fi.Exists)
 				{
 					ri.Missing = true;

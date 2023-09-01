@@ -57,10 +57,10 @@ namespace BizHawk.Client.EmuHawk
 				return FindBox.Text;
 			}
 
-			var bytes = _hexEditor.ConvertTextToBytes(FindBox.Text);
+			byte[] bytes = _hexEditor.ConvertTextToBytes(FindBox.Text);
 
-			var byteString = new StringBuilder();
-			foreach (var b in bytes)
+			StringBuilder byteString = new StringBuilder();
+			foreach (byte b in bytes)
 			{
 				byteString.Append($"{b:X2}");
 			}
@@ -68,19 +68,13 @@ namespace BizHawk.Client.EmuHawk
 			return byteString.ToString();
 		}
 
-		private void Find_Prev_Click(object sender, EventArgs e)
-		{
-			_hexEditor.FindPrev(GetFindBoxChars(), false);
-		}
+		private void Find_Prev_Click(object sender, EventArgs e) => _hexEditor.FindPrev(GetFindBoxChars(), false);
 
-		private void Find_Next_Click(object sender, EventArgs e)
-		{
-			_hexEditor.FindNext(GetFindBoxChars(), false);
-		}
+		private void Find_Next_Click(object sender, EventArgs e) => _hexEditor.FindNext(GetFindBoxChars(), false);
 
 		private void ChangeCasing()
 		{
-			var text = FindBox.Text;
+			string text = FindBox.Text;
 			var location = FindBox.Location;
 			var size = FindBox.Size;
 

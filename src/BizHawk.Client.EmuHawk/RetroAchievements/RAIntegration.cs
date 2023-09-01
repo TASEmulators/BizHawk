@@ -55,11 +55,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RebuildMenu()
 		{
-			var numItems = RA.GetPopupMenuItems(_menuItems);
+			int numItems = RA.GetPopupMenuItems(_menuItems);
 			var tsmiddi = _raDropDownItems;
 			tsmiddi.Clear();
 			{
-				var tsi = new ToolStripMenuItem("Shutdown RetroAchievements");
+				ToolStripMenuItem tsi = new ToolStripMenuItem("Shutdown RetroAchievements");
 				tsi.Click += (_, _) => _shutdownRACallback();
 				tsmiddi.Add(tsi);
 
@@ -71,14 +71,14 @@ namespace BizHawk.Client.EmuHawk
 				tsi.CheckedChanged += (_, _) => _getConfig().RAAutostart ^= true;
 				tsmiddi.Add(tsi);
 
-				var tss = new ToolStripSeparator();
+				ToolStripSeparator tss = new ToolStripSeparator();
 				tsmiddi.Add(tss);
 			}
 			for (int i = 0; i < numItems; i++)
 			{
 				if (_menuItems[i].Label != IntPtr.Zero)
 				{
-					var tsi = new ToolStripMenuItem(Marshal.PtrToStringUni(_menuItems[i].Label))
+					ToolStripMenuItem tsi = new ToolStripMenuItem(Marshal.PtrToStringUni(_menuItems[i].Label))
 					{
 						Checked = _menuItems[i].Checked != 0,
 					};
@@ -92,7 +92,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					var tss = new ToolStripSeparator();
+					ToolStripSeparator tss = new ToolStripSeparator();
 					tsmiddi.Add(tss);
 				}
 			}
@@ -127,7 +127,7 @@ namespace BizHawk.Client.EmuHawk
 			_rebuildMenu = RebuildMenu;
 			_estimateTitle = buffer =>
 			{
-				var name = Encoding.UTF8.GetBytes(Game?.Name ?? "No Game Info Available");
+				byte[] name = Encoding.UTF8.GetBytes(Game?.Name ?? "No Game Info Available");
 				Marshal.Copy(name, 0, buffer, Math.Min(name.Length, 256));
 			};
 			_resetEmulator = () => _mainForm.RebootCore();
@@ -202,7 +202,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_memFunctions = CreateMemoryBanks(consoleId, Domains, Emu.CanDebug() ? Emu.AsDebuggable() : null);
 
-				for (var i = 0; i < _memFunctions.Count; i++)
+				for (int i = 0; i < _memFunctions.Count; i++)
 				{
 					_memFunctions[i].MemGuard = _memGuard;
 					RA.InstallMemoryBank(i, _memFunctions[i].ReadFunc, _memFunctions[i].WriteFunc, _memFunctions[i].BankSize);
@@ -251,7 +251,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!OverlayActive) return;
 
-			var ci = new RAInterface.ControllerInput
+			RAInterface.ControllerInput ci = new RAInterface.ControllerInput
 			{
 				UpPressed = _inputManager.ClientControls["RA Up"],
 				DownPressed = _inputManager.ClientControls["RA Down"],

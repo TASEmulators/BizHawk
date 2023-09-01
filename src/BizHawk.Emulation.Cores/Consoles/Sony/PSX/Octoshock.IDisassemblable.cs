@@ -25,8 +25,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public string Disassemble(MemoryDomain m, uint addr, out int length)
 		{
 			length = 4;
-			var buf = new StringBuilder(32);
-			var result = OctoshockDll.shock_Util_DisassembleMIPS(addr, m.PeekUint(addr, false), buf, buf.Capacity);
+			StringBuilder buf = new StringBuilder(32);
+			int result = OctoshockDll.shock_Util_DisassembleMIPS(addr, m.PeekUint(addr, false), buf, buf.Capacity);
 			return result==0?buf.ToString():"";
 		}
 	}

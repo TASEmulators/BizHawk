@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Faust
 		{
 			if (_cachedSettingsInfo is null)
 			{
-				using var n = new Faust(comm);
+				using Faust n = new Faust(comm);
 				n.InitForSettingsInfo("faust.wbx");
 				_cachedSettingsInfo = n.SettingsInfo.Clone();
 			}
@@ -42,13 +42,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Faust
 
 		protected override HashSet<string> ComputeHiddenPorts()
 		{
-			var devCount = 8;
+			int devCount = 8;
 			if (SettingsQuery("snes_faust.input.sport1.multitap") != "1")
 				devCount -= 3;
 			if (SettingsQuery("snes_faust.input.sport2.multitap") != "1")
 				devCount -= 3;
-			var ret = new HashSet<string>();
-			for (var i = 1; i <= 8; i++)
+			HashSet<string> ret = new HashSet<string>();
+			for (int i = 1; i <= 8; i++)
 			{
 				if (i > devCount)
 					ret.Add($"port{i}");

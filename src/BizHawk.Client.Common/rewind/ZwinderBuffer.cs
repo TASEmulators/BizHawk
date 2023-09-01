@@ -33,7 +33,7 @@ namespace BizHawk.Client.Common
 			{
 				case IRewindSettings.BackingStoreType.Memory:
 				{
-					var buffer = new MemoryBlock((ulong)Size);
+						MemoryBlock buffer = new MemoryBlock((ulong)Size);
 					buffer.Protect(buffer.Start, buffer.Size, MemoryBlock.Protection.RW);
 					_disposables.Add(buffer);
 					_backingStore = new MemoryViewStream(true, true, (long)buffer.Start, (long)buffer.Size);
@@ -42,8 +42,8 @@ namespace BizHawk.Client.Common
 				}
 				case IRewindSettings.BackingStoreType.TempFile:
 				{
-					var filename = TempFileManager.GetTempFilename("ZwinderBuffer");
-					var filestream = new FileStream(filename, FileMode.Create, FileAccess.ReadWrite, FileShare.None, 4096, FileOptions.DeleteOnClose);
+						string filename = TempFileManager.GetTempFilename("ZwinderBuffer");
+						FileStream filestream = new FileStream(filename, FileMode.Create, FileAccess.ReadWrite, FileShare.None, 4096, FileOptions.DeleteOnClose);
 					filestream.SetLength(Size);
 					_backingStore = filestream;
 					_disposables.Add(filestream);
@@ -150,10 +150,10 @@ namespace BizHawk.Client.Common
 			}
 
 			// assume that the most recent state size is representative of stuff
-			var sizeRatio = Size / (float)_states[HeadStateIndex].Size;
-			var frameRatio = _targetFrameLength / sizeRatio;
+			float sizeRatio = Size / (float)_states[HeadStateIndex].Size;
+			float frameRatio = _targetFrameLength / sizeRatio;
 
-			var idealInterval = (int)Math.Round(frameRatio);
+			int idealInterval = (int)Math.Round(frameRatio);
 			return Math.Max(idealInterval, 1);
 		}
 
@@ -185,7 +185,7 @@ namespace BizHawk.Client.Common
 
 		private bool ShouldCapture(int frame)
 		{
-			var frameDiff = frame - _states[HeadStateIndex].Frame;
+			int frameDiff = frame - _states[HeadStateIndex].Frame;
 			return ShouldCaptureForFrameDiff(frameDiff);
 		}
 
@@ -194,10 +194,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		/// <param name="frameDelta">The assumed frame delta.  Normally this will be equal to `nextStateFrame - GetState(Count - 1).Frame`.</param>
 		/// <returns>Whether Capture(nextStateFrame) would actually capture, assuming the frameDelta matched.</returns>
-		public bool WouldCapture(int frameDelta)
-		{
-			return ShouldCaptureForFrameDiff(frameDelta);
-		}
+		public bool WouldCapture(int frameDelta) => ShouldCaptureForFrameDiff(frameDelta);
 
 		/// <summary>
 		/// Maybe captures a state, if the conditions are favorable
@@ -219,8 +216,8 @@ namespace BizHawk.Client.Common
 				_firstStateIndex = (_firstStateIndex + 1) & STATEMASK;
 			}
 
-			var start = (_states[HeadStateIndex].Start + _states[HeadStateIndex].Size) & _sizeMask;
-			var initialMaxSize = Count > 0
+			long start = (_states[HeadStateIndex].Start + _states[HeadStateIndex].Size) & _sizeMask;
+			long initialMaxSize = Count > 0
 					? (_states[_firstStateIndex].Start - start) & _sizeMask
 					: Size;
 			long notifySizeReached()
@@ -233,7 +230,7 @@ namespace BizHawk.Client.Common
 					? (_states[_firstStateIndex].Start - start) & _sizeMask
 					: Size;
 			}
-			var stream = new SaveStateStream(_backingStore, start, _sizeMask, initialMaxSize, notifySizeReached);
+			SaveStateStream stream = new SaveStateStream(_backingStore, start, _sizeMask, initialMaxSize, notifySizeReached);
 
 			if (_useCompression)
 			{
@@ -268,10 +265,7 @@ namespace BizHawk.Client.Common
 			public int Frame => _parent._states[_index].Frame;
 			public int Size => _parent._states[_index].Size;
 			private readonly ZwinderBuffer _parent;
-			public Stream GetReadStream()
-			{
-				return _parent.MakeLoadStream(_index);
-			}
+			public Stream GetReadStream() => _parent.MakeLoadStream(_index);
 			internal StateInformation(ZwinderBuffer parent, int index)
 			{
 				_index = index;
@@ -315,15 +309,15 @@ namespace BizHawk.Client.Common
 		private void SaveStateBodyBinary(BinaryWriter writer)
 		{
 			writer.Write(Count);
-			for (var i = _firstStateIndex; i != _nextStateIndex; i = (i + 1) & STATEMASK)
+			for (int i = _firstStateIndex; i != _nextStateIndex; i = (i + 1) & STATEMASK)
 			{
 				writer.Write(_states[i].Frame);
 				writer.Write(_states[i].Size);
 			}
 			if (Count != 0)
 			{
-				var startByte = _states[_firstStateIndex].Start;
-				var endByte = (_states[HeadStateIndex].Start + _states[HeadStateIndex].Size) & _sizeMask;
+				long startByte = _states[_firstStateIndex].Start;
+				long endByte = (_states[HeadStateIndex].Start + _states[HeadStateIndex].Size) & _sizeMask;
 				var destStream = SpanStream.GetOrBuild(writer.BaseStream);
 				if (startByte > endByte)
 				{
@@ -343,7 +337,7 @@ namespace BizHawk.Client.Common
 			_firstStateIndex = 0;
 			_nextStateIndex = reader.ReadInt32();
 			long nextByte = 0;
-			for (var i = 0; i < _nextStateIndex; i++)
+			for (int i = 0; i < _nextStateIndex; i++)
 			{
 				_states[i].Frame = reader.ReadInt32();
 				_states[i].Size = reader.ReadInt32();
@@ -364,10 +358,10 @@ namespace BizHawk.Client.Common
 			{
 				byte[] sizeArr = new byte[8];
 				reader.Read(sizeArr, 1, 7);
-				var size = BitConverter.ToInt64(sizeArr, 0);
-				var sizeMask = reader.ReadInt64();
-				var targetFrameLength = reader.ReadInt32();
-				var useCompression = reader.ReadBoolean();
+				long size = BitConverter.ToInt64(sizeArr, 0);
+				long sizeMask = reader.ReadInt64();
+				int targetFrameLength = reader.ReadInt32();
+				bool useCompression = reader.ReadBoolean();
 				ret = new ZwinderBuffer(new RewindConfig
 				{
 					BufferSize = (int)(size >> 20),
@@ -440,10 +434,7 @@ namespace BizHawk.Client.Common
 			public override void SetLength(long value) => throw new IOException();
 			public int Read(Span<byte> buffer) => throw new IOException();
 
-			public override void Write(byte[] buffer, int offset, int count)
-			{
-				Write(new ReadOnlySpan<byte>(buffer, offset, count));
-			}
+			public override void Write(byte[] buffer, int offset, int count) => Write(new ReadOnlySpan<byte>(buffer, offset, count));
 
 			public void Write(ReadOnlySpan<byte> buffer)
 			{
@@ -453,8 +444,8 @@ namespace BizHawk.Client.Common
 				long n = buffer.Length;
 				if (n > 0)
 				{
-					var start = (_position + _offset) & _mask;
-					var end = (start + n) & _mask;
+					long start = (_position + _offset) & _mask;
+					long end = (start + n) & _mask;
 					_backingStore.Position = start;
 					if (end < start)
 					{
@@ -516,10 +507,7 @@ namespace BizHawk.Client.Common
 			}
 			public override void Flush() {}
 
-			public override int Read(byte[] buffer, int offset, int count)
-			{
-				return Read(new Span<byte>(buffer, offset, count));
-			}
+			public override int Read(byte[] buffer, int offset, int count) => Read(new Span<byte>(buffer, offset, count));
 
 			public int Read(Span<byte> buffer)
 			{
@@ -527,8 +515,8 @@ namespace BizHawk.Client.Common
 				int ret = (int)n;
 				if (n > 0)
 				{
-					var start = (_position + _offset) & _mask;
-					var end = (start + n) & _mask;
+					long start = (_position + _offset) & _mask;
+					long end = (start + n) & _mask;
 					if (end < start)
 					{
 						long m = BufferLength - start;
@@ -554,7 +542,7 @@ namespace BizHawk.Client.Common
 			{
 				if (_position < _size)
 				{
-					var ret = _backingStore.ReadByte();
+					int ret = _backingStore.ReadByte();
 					if (ret == -1)
 						throw new IOException("Unexpected end of underlying buffer");
 					_position++;

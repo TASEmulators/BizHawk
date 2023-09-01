@@ -50,9 +50,6 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-		private void DefaultAuthorButton_Click(object sender, EventArgs e)
-		{
-			AuthorTextBox.Text = _config.DefaultAuthor;
-		}
+		private void DefaultAuthorButton_Click(object sender, EventArgs e) => AuthorTextBox.Text = _config.DefaultAuthor;
 	}
 }

@@ -12,7 +12,7 @@ namespace BizHawk.BizInvoke
 
 		public MemoryBlockWindowsPal(ulong size)
 		{
-			var ptr = (ulong)Kernel32.VirtualAlloc(
+			ulong ptr = (ulong)Kernel32.VirtualAlloc(
 				UIntPtr.Zero, Z.UU(size), Kernel32.AllocationType.MEM_RESERVE | Kernel32.AllocationType.MEM_COMMIT, Kernel32.MemoryProtection.NOACCESS);
 			if (ptr == 0)
 				throw new InvalidOperationException($"{nameof(Kernel32.VirtualAlloc)}() returned NULL");

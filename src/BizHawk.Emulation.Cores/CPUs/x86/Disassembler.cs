@@ -15,10 +15,7 @@ namespace BizHawk.Emulation.Cores.Components.x86
 
 	public partial class x86<TCpu> where TCpu : struct, x86CpuType
 	{
-		private ushort ReadWord(int addr)
-		{
-			return (ushort)(ReadMemory(addr++) + (ReadMemory(addr) << 8));
-		}
+		private ushort ReadWord(int addr) => (ushort)(ReadMemory(addr++) + (ReadMemory(addr) << 8));
 
 		private string DisassembleRM8(ref int addr)
 		{
@@ -104,7 +101,7 @@ namespace BizHawk.Emulation.Cores.Components.x86
 
 		public DisassemblyInfo Disassemble(int addr)
 		{
-			var info = new DisassemblyInfo { Addr = addr };
+			DisassemblyInfo info = new DisassemblyInfo { Addr = addr };
 			byte op1 = ReadMemory(addr++);
 			switch (op1)
 			{
@@ -183,7 +180,7 @@ namespace BizHawk.Emulation.Cores.Components.x86
 			}
 
 			info.Length = addr - info.Addr;
-			var sb = new StringBuilder();
+			StringBuilder sb = new StringBuilder();
 			for (int p = info.Addr; p < info.Addr + info.Length; p++)
 				sb.AppendFormat("{0:X2}", ReadMemory(p));
 			info.RawBytes = sb.ToString();

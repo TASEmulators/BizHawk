@@ -64,7 +64,7 @@ namespace BizHawk.Client.EmuHawk
 			Config config)
 				where T : IMainFormForTools, IDialogParent
 		{
-			var dlg = new VideoWriterChooserForm(owner, emulator, config)
+			VideoWriterChooserForm dlg = new VideoWriterChooserForm(owner, emulator, config)
 			{
 				checkBoxASync = { Checked = config.VideoWriterAudioSyncEffective },
 				checkBoxPad = { Checked = config.AVWriterPad },
@@ -99,7 +99,7 @@ namespace BizHawk.Client.EmuHawk
 			if (owner.ShowDialogAsChild(dlg).IsOk()
 				&& dlg.listBox1.SelectedIndex is not -1)
 			{
-				var vwi = (VideoWriterInfo)dlg.listBox1.SelectedItem;
+				VideoWriterInfo vwi = (VideoWriterInfo)dlg.listBox1.SelectedItem;
 				ret = vwi.Create(owner);
 				config.VideoWriter = vwi.Attribs.ShortName;
 			}

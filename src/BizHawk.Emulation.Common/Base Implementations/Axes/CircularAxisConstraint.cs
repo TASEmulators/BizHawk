@@ -19,10 +19,10 @@ namespace BizHawk.Emulation.Common
 
 		public (int X, int Y) ApplyTo(int rawX, int rawY)
 		{
-			var xVal = (double) rawX;
-			var yVal = (double) rawY;
-			var length = Math.Sqrt(xVal * xVal + yVal * yVal);
-			var ratio = Magnitude / length;
+			double xVal = (double) rawX;
+			double yVal = (double) rawY;
+			double length = Math.Sqrt(xVal * xVal + yVal * yVal);
+			double ratio = Magnitude / length;
 			return ratio < 1.0
 				? ((int) (xVal * ratio), (int) (yVal * ratio))
 				: ((int) xVal, (int) yVal);

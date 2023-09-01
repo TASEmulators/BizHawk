@@ -14,13 +14,13 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				string pre = "P1 ";
 
 				// sticks
-				var stickR = new List<string>
+				List<string> stickR = new List<string>
 				{
 					// P1 (right) stick
 					pre + "Forward", pre + "Back", pre + "Left", pre + "Right", pre + "CCW", pre + "CW", pre + "Pull", pre + "Push"
 				};
 
-				foreach (var s in stickR)
+				foreach (string s in stickR)
 				{
 					definition.BoolButtons.Add(s);
 					definition.CategoryLabels[s] = "Right Controller";
@@ -28,25 +28,25 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 				pre = "P2 ";
 
-				var stickL = new List<string>
+				List<string> stickL = new List<string>
 				{
 					// P2 (left) stick
 					pre + "Forward", pre + "Back", pre + "Left", pre + "Right", pre + "CCW", pre + "CW", pre + "Pull", pre + "Push"
 				};
 
-				foreach (var s in stickL)
+				foreach (string s in stickL)
 				{
 					definition.BoolButtons.Add(s);
 					definition.CategoryLabels[s] = "Left Controller";
 				}
 
 				// console
-				var consoleButtons = new List<string>
+				List<string> consoleButtons = new List<string>
 				{
 					"TIME", "MODE", "HOLD", "START", "RESET"
 				};
 
-				foreach (var s in consoleButtons)
+				foreach (string s in consoleButtons)
 				{
 					definition.BoolButtons.Add(s);
 					definition.CategoryLabels[s] = "Console";

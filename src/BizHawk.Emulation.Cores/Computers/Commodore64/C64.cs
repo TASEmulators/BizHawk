@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			PutSyncSettings(lp.SyncSettings ?? new C64SyncSettings());
 			PutSettings(lp.Settings ?? new C64Settings());
 
-			var ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 
 			CoreComm = lp.Comm;
@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 			if (_board.CartPort.IsConnected)
 			{
-				var first = _roms[0]; // There are no multi-cart cart games, so just hardcode first
+				byte[] first = _roms[0]; // There are no multi-cart cart games, so just hardcode first
 				RomDetails = $"{lp.Game.Name}\r\n{SHA1Checksum.ComputePrefixedHex(first)}\r\n{MD5Checksum.ComputePrefixedHex(first)}\r\nMapper Impl \"{_board.CartPort.CartridgeType}\"";
 			}
 
@@ -250,14 +250,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		private byte[] GetFirmware(int length, params string[] names)
 		{
-			var result = names.Select(n => CoreComm.CoreFileProvider.GetFirmware(new("C64", n))).FirstOrDefault(b => b != null && b.Length == length) ?? throw new MissingFirmwareException($"At least one of these firmwares is required: {string.Join(", ", names)}");
+			byte[] result = names.Select(n => CoreComm.CoreFileProvider.GetFirmware(new("C64", n))).FirstOrDefault(b => b != null && b.Length == length) ?? throw new MissingFirmwareException($"At least one of these firmwares is required: {string.Join(", ", names)}");
 			return result;
 		}
 
 		private void Init(VicType initRegion, BorderType borderType, SidType sidType, TapeDriveType tapeDriveType, DiskDriveType diskDriveType)
 		{
 			// Force certain drive types to be available depending on ROM type
-			var rom = _roms[0];
+			byte[] rom = _roms[0];
 
 			switch (C64FormatFinder.GetFormat(rom))
 			{
@@ -321,14 +321,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 					}
 					break;
 				case C64Format.CRT:
-					var cart = CartridgeDevice.Load(rom);
+					CartridgeDevice cart = CartridgeDevice.Load(rom);
 					if (cart != null)
 					{
 						_board.CartPort.Connect(cart);
 					}
 					break;
 				case C64Format.TAP:
-					var tape = Tape.Load(rom);
+					Tape tape = Tape.Load(rom);
 					if (tape != null)
 					{
 						_board.TapeDrive.Insert(tape);
@@ -375,14 +375,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			}
 		}
 
-		private void HardReset()
-		{
-			_board.HardReset();
-		}
+		private void HardReset() => _board.HardReset();
 
-		private void SoftReset()
-		{
-			_board.SoftReset();
-		}
+		private void SoftReset() => _board.SoftReset();
 	}
 }

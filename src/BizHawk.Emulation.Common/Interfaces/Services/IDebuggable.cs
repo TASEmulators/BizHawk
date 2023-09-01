@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Common
 			{
 				Value = val;
 			}
-			else if (bitSize > 64 || bitSize == 0)
+			else if (bitSize is > 64 or 0)
 			{
 				throw new ArgumentOutOfRangeException(nameof(bitSize), $"{nameof(BitSize)} must be in 1..64");
 			}

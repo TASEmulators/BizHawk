@@ -48,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (PakTypeDropdown.Items.Count > 0) // Null check for designer
 				{
-					var toSelect = PakTypeDropdown.Items
+					object toSelect = PakTypeDropdown.Items
 						.OfType<object>()
 						.FirstOrDefault(item => item.ToString() == value.GetDescription());
 					PakTypeDropdown.SelectedItem = toSelect;
@@ -64,9 +64,6 @@ namespace BizHawk.Client.EmuHawk
 			base.Refresh();
 		}
 
-		private void EnabledCheckbox_CheckedChanged(object sender, EventArgs e)
-		{
-			PakTypeDropdown.Enabled = EnabledCheckbox.Checked;
-		}
+		private void EnabledCheckbox_CheckedChanged(object sender, EventArgs e) => PakTypeDropdown.Enabled = EnabledCheckbox.Checked;
 	}
 }

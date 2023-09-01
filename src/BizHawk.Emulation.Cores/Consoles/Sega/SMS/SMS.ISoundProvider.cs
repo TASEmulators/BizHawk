@@ -50,10 +50,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			SampleClock = 0;
 		}
 
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Async not supported");
-		}
+		public void GetSamplesAsync(short[] samples) => throw new NotSupportedException("Async not supported");
 
 		public void DiscardSamples()
 		{

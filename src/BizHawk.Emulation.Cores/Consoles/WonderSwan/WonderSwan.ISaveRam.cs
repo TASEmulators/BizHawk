@@ -7,10 +7,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 	{
 		private byte[] _saveramBuff;
 
-		private void InitISaveRam()
-		{
-			_saveramBuff = new byte[BizSwan.bizswan_saveramsize(Core)];
-		}
+		private void InitISaveRam() => _saveramBuff = new byte[BizSwan.bizswan_saveramsize(Core)];
 
 		public byte[] CloneSaveRam()
 		{

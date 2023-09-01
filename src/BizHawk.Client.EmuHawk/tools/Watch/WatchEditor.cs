@@ -65,7 +65,7 @@ namespace BizHawk.Client.EmuHawk
 						_ => SizeDropDown.SelectedItem
 					};
 
-					var index = DisplayTypeDropDown.Items.IndexOf(Watch.DisplayTypeToString(Watches[0].Type));
+					int index = DisplayTypeDropDown.Items.IndexOf(Watch.DisplayTypeToString(Watches[0].Type));
 					DisplayTypeDropDown.SelectedItem = DisplayTypeDropDown.Items[index];
 
 					if (Watches.Count > 1)
@@ -146,19 +146,19 @@ namespace BizHawk.Client.EmuHawk
 			{
 				default:
 				case 0:
-					foreach (WatchDisplayType t in ByteWatch.ValidTypes)
+					foreach (var t in ByteWatch.ValidTypes)
 					{
 						DisplayTypeDropDown.Items.Add(Watch.DisplayTypeToString(t));
 					}
 					break;
 				case 1:
-					foreach (WatchDisplayType t in WordWatch.ValidTypes)
+					foreach (var t in WordWatch.ValidTypes)
 					{
 						DisplayTypeDropDown.Items.Add(Watch.DisplayTypeToString(t));
 					}
 					break;
 				case 2:
-					foreach (WatchDisplayType t in DWordWatch.ValidTypes)
+					foreach (var t in DWordWatch.ValidTypes)
 					{
 						DisplayTypeDropDown.Items.Add(Watch.DisplayTypeToString(t));
 					}
@@ -174,7 +174,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Watches.Count > 1)
 			{
-				var firstWasBE = Watches[0].BigEndian;
+				bool firstWasBE = Watches[0].BigEndian;
 				if (Watches.TrueForAll(w => w.BigEndian == firstWasBE))
 				{
 					BigEndianCheckBox.Checked = firstWasBE;
@@ -211,10 +211,10 @@ namespace BizHawk.Client.EmuHawk
 				default:
 				case Mode.New:
 					var domain = MemoryDomains.FirstOrDefault(d => d.Name == DomainDropDown.SelectedItem.ToString());
-					var address = AddressBox.ToLong() ?? 0;
-					var notes = NotesBox.Text;
+					long address = AddressBox.ToLong() ?? 0;
+					string notes = NotesBox.Text;
 					var type = Watch.StringToDisplayType(DisplayTypeDropDown.SelectedItem.ToString());
-					var bigEndian = BigEndianCheckBox.Checked;
+					bool bigEndian = BigEndianCheckBox.Checked;
 					switch (SizeDropDown.SelectedIndex)
 					{
 						case 0:
@@ -233,7 +233,7 @@ namespace BizHawk.Client.EmuHawk
 					DoEdit();
 					break;
 				case Mode.Duplicate:
-					var tempWatchList = new List<Watch>();
+					List<Watch> tempWatchList = new List<Watch>();
 					tempWatchList.AddRange(Watches);
 					Watches.Clear();
 					foreach (var watch in tempWatchList)
@@ -263,7 +263,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_changedSize)
 			{
-				for (var i = 0; i < Watches.Count; i++)
+				for (int i = 0; i < Watches.Count; i++)
 				{
 					var size = SizeDropDown.SelectedIndex switch
 					{
@@ -310,9 +310,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void DisplayTypeDropDown_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			_changedDisplayType = true;
-		}
+		private void DisplayTypeDropDown_SelectedIndexChanged(object sender, EventArgs e) => _changedDisplayType = true;
 	}
 }

@@ -55,8 +55,8 @@ namespace BizHawk.Bizware.Input
 					continue;
 				for (int b = 0, n = pad.NumButtons; b < n; b++) handleButton(pad.InputNamePrefix + pad.ButtonName(b), pad.Pressed(b), ClientInputFocus.Pad);
 				foreach (var (axisName, f) in pad.GetAxes()) handleAxis(pad.InputNamePrefix + axisName, (int) f);
-				var leftStrength = _lastHapticsSnapshot.GetValueOrDefault(pad.InputNamePrefix + "Left");
-				var rightStrength = _lastHapticsSnapshot.GetValueOrDefault(pad.InputNamePrefix + "Right");
+				int leftStrength = _lastHapticsSnapshot.GetValueOrDefault(pad.InputNamePrefix + "Left");
+				int rightStrength = _lastHapticsSnapshot.GetValueOrDefault(pad.InputNamePrefix + "Right");
 				pad.SetVibration(leftStrength, rightStrength); // values will be 0 if not found
 			}
 			foreach (var pad in DGamepad.EnumerateDevices())

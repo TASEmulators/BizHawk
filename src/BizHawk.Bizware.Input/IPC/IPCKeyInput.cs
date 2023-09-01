@@ -15,7 +15,7 @@ namespace BizHawk.Bizware.Input
 		{
 			if (!IPCActive)
 			{
-				var t = new Thread(IPCThread) { IsBackground = true };
+				Thread t = new Thread(IPCThread) { IsBackground = true };
 				t.Start();
 				IPCActive = true;
 			}
@@ -27,21 +27,21 @@ namespace BizHawk.Bizware.Input
 
 		private static void IPCThread()
 		{
-			var pipeName = $"bizhawk-pid-{Process.GetCurrentProcess().Id}-IPCKeyInput";
+			string pipeName = $"bizhawk-pid-{Process.GetCurrentProcess().Id}-IPCKeyInput";
 
 			while (true)
 			{
-				using var pipe = new NamedPipeServerStream(pipeName, PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous, 1024, 1024);
+				using NamedPipeServerStream pipe = new NamedPipeServerStream(pipeName, PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous, 1024, 1024);
 				try
 				{
 					pipe.WaitForConnection();
 
-					var br = new BinaryReader(pipe);
+					BinaryReader br = new BinaryReader(pipe);
 
 					while (true)
 					{
-						var e = br.ReadUInt32();
-						var pressed = (e & 0x80000000) != 0;
+						uint e = br.ReadUInt32();
+						bool pressed = (e & 0x80000000) != 0;
 						lock (PendingEventList)
 						{
 							PendingEventList.Add(new((DistinctKey)(e & 0x7FFFFFFF), pressed));

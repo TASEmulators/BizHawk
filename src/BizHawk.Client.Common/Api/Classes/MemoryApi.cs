@@ -28,7 +28,7 @@ namespace BizHawk.Client.Common
 				{
 					if (MemoryDomainCore == null)
 					{
-						var error = $"Error: {Emulator.Attributes().CoreName} does not implement memory domains";
+						string error = $"Error: {Emulator.Attributes().CoreName} does not implement memory domains";
 						LogCallback(error);
 						throw new NotImplementedException(error);
 					}
@@ -46,7 +46,7 @@ namespace BizHawk.Client.Common
 			{
 				if (MemoryDomainCore == null)
 				{
-					var error = $"Error: {Emulator.Attributes().CoreName} does not implement memory domains";
+					string error = $"Error: {Emulator.Attributes().CoreName} does not implement memory domains";
 					LogCallback(error);
 					throw new NotImplementedException(error);
 				}
@@ -60,7 +60,7 @@ namespace BizHawk.Client.Common
 			{
 				if (MemoryDomainCore == null)
 				{
-					var error = $"Error: {Emulator.Attributes().CoreName} does not implement memory domains";
+					string error = $"Error: {Emulator.Attributes().CoreName} does not implement memory domains";
 					LogCallback(error);
 					throw new NotImplementedException(error);
 				}
@@ -90,32 +90,32 @@ namespace BizHawk.Client.Common
 
 		private static int U2S(uint u, int size)
 		{
-			var sh = 8 * (4 - size);
+			int sh = 8 * (4 - size);
 			return ((int) u << sh) >> sh;
 		}
 
 		private uint ReadUnsignedLittle(long addr, int size, string domain = null)
 		{
 			uint v = 0;
-			for (var i = 0; i < size; i++) v |= ReadUnsigned(addr + i, 1, domain) << (8 * i);
+			for (int i = 0; i < size; i++) v |= ReadUnsigned(addr + i, 1, domain) << (8 * i);
 			return v;
 		}
 
 		private uint ReadUnsignedBig(long addr, int size, string domain = null)
 		{
 			uint v = 0;
-			for (var i = 0; i < size; i++) v |= ReadUnsigned(addr + i, 1, domain) << (8 * (size - 1 - i));
+			for (int i = 0; i < size; i++) v |= ReadUnsigned(addr + i, 1, domain) << (8 * (size - 1 - i));
 			return v;
 		}
 
 		private void WriteUnsignedLittle(long addr, uint v, int size, string domain = null)
 		{
-			for (var i = 0; i < size; i++) WriteUnsigned(addr + i, (v >> (8 * i)) & 0xFF, 1, domain);
+			for (int i = 0; i < size; i++) WriteUnsigned(addr + i, (v >> (8 * i)) & 0xFF, 1, domain);
 		}
 
 		private void WriteUnsignedBig(long addr, uint v, int size, string domain = null)
 		{
-			for (var i = 0; i < size; i++) WriteUnsigned(addr + i, (v >> (8 * (size - 1 - i))) & 0xFF, 1, domain);
+			for (int i = 0; i < size; i++) WriteUnsigned(addr + i, (v >> (8 * (size - 1 - i))) & 0xFF, 1, domain);
 		}
 
 		private int ReadSigned(long addr, int size, string domain = null) => U2S(ReadUnsigned(addr, size, domain), size);
@@ -220,17 +220,17 @@ namespace BizHawk.Client.Common
 			var d = NamedDomainOrCurrent(domain);
 			if (!0L.RangeToExclusive(d.Size).Contains(addr))
 			{
-				var error = $"Address {addr} is outside the bounds of domain {d.Name}";
+				string error = $"Address {addr} is outside the bounds of domain {d.Name}";
 				LogCallback(error);
 				throw new ArgumentOutOfRangeException(error);
 			}
 			if (addr + count > d.Size)
 			{
-				var error = $"Address {addr} + count {count} is outside the bounds of domain {d.Name}";
+				string error = $"Address {addr} + count {count} is outside the bounds of domain {d.Name}";
 				LogCallback(error);
 				throw new ArgumentOutOfRangeException(error);
 			}
-			var data = new byte[count];
+			byte[] data = new byte[count];
 			using (d.EnterExit())
 			{
 				d.BulkPeekByte(addr.RangeToExclusive(addr + count), data);
@@ -246,15 +246,15 @@ namespace BizHawk.Client.Common
 		{
 			var d = NamedDomainOrCurrent(domain);
 			if (addr < 0) LogCallback($"Warning: Attempted reads on addresses {addr}..-1 outside range of domain {d.Name} in {nameof(ReadByteRange)}()");
-			var lastReqAddr = addr + length - 1;
-			var indexAfterLast = Math.Min(Math.Max(-1L, lastReqAddr), d.Size - 1L) + 1L;
-			var iSrc = Math.Min(Math.Max(0L, addr), d.Size);
-			var iDst = iSrc - addr;
-			var bytes = new byte[indexAfterLast - iSrc];
+			long lastReqAddr = addr + length - 1;
+			long indexAfterLast = Math.Min(Math.Max(-1L, lastReqAddr), d.Size - 1L) + 1L;
+			long iSrc = Math.Min(Math.Max(0L, addr), d.Size);
+			long iDst = iSrc - addr;
+			byte[] bytes = new byte[indexAfterLast - iSrc];
 			if (iSrc < indexAfterLast) using (d.EnterExit()) d.BulkPeekByte(iSrc.RangeToExclusive(indexAfterLast), bytes);
 			if (lastReqAddr >= d.Size) LogCallback($"Warning: Attempted reads on addresses {d.Size}..{lastReqAddr} outside range of domain {d.Name} in {nameof(ReadByteRange)}()");
 			if (bytes.Length == length) return bytes;
-			var newBytes = new byte[length];
+			byte[] newBytes = new byte[length];
 			if (bytes.Length is not 0) Array.Copy(sourceArray: bytes, sourceIndex: 0, destinationArray: newBytes, destinationIndex: iDst, length: bytes.Length);
 			return newBytes;
 		}
@@ -268,10 +268,10 @@ namespace BizHawk.Client.Common
 				return;
 			}
 			if (addr < 0) LogCallback($"Warning: Attempted writes on addresses {addr}..-1 outside range of domain {d.Name} in {nameof(WriteByteRange)}()");
-			var lastReqAddr = addr + memoryblock.Count - 1;
-			var indexAfterLast = Math.Min(Math.Max(-1L, lastReqAddr), d.Size - 1L) + 1L;
-			var iDst = Math.Min(Math.Max(0L, addr), d.Size);
-			var iSrc = checked((int) (iDst - addr));
+			long lastReqAddr = addr + memoryblock.Count - 1;
+			long indexAfterLast = Math.Min(Math.Max(-1L, lastReqAddr), d.Size - 1L) + 1L;
+			long iDst = Math.Min(Math.Max(0L, addr), d.Size);
+			int iSrc = checked((int) (iDst - addr));
 			using (d.EnterExit())
 			{
 				while (iDst < indexAfterLast) d.PokeByte(iDst++, memoryblock[iSrc++]);

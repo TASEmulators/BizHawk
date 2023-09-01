@@ -16,10 +16,7 @@ namespace BizHawk.Emulation.Common
 		private MemoryDomain _mainMemory;
 		private MemoryDomain _systemBus;
 
-		public bool Has(string name)
-		{
-			return this.Any(md => md.Name == name);
-		}
+		public bool Has(string name) => this.Any(md => md.Name == name);
 
 		public MemoryDomainList(IList<MemoryDomain> domains)
 			: base(domains)
@@ -56,7 +53,7 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		public void MergeList(MemoryDomainList other)
 		{
-			var domains = this.ToDictionary(m => m.Name);
+			Dictionary<string, MemoryDomain> domains = this.ToDictionary(m => m.Name);
 			foreach (var src in other)
 			{
 				if (domains.TryGetValue(src.Name, out var dst))

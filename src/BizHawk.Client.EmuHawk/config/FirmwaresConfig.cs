@@ -111,8 +111,8 @@ namespace BizHawk.Client.EmuHawk
 
 			public int Compare(object a, object b)
 			{
-				var lva = (ListViewItem)a;
-				var lvb = (ListViewItem)b;
+				ListViewItem lva = (ListViewItem)a;
+				ListViewItem lvb = (ListViewItem)b;
 				return Sign * string.CompareOrdinal(lva.SubItems[Column].Text, lvb.SubItems[Column].Text);
 			}
 		}
@@ -182,7 +182,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				lvFirmwares.Groups.Add(
 					key: sysID,
-					headerText: SystemGroupNames.TryGetValue(sysID, out var name) ? name : "FIX ME (FirmwaresConfig.cs)");
+					headerText: SystemGroupNames.TryGetValue(sysID, out string name) ? name : "FIX ME (FirmwaresConfig.cs)");
 				return lvFirmwares.Groups[^1];
 			}
 
@@ -192,11 +192,11 @@ namespace BizHawk.Client.EmuHawk
 			_boldFixedFont = new Font(_fixedFont, FontStyle.Bold);
 
 			// populate ListView from firmware DB
-			var groups = new Dictionary<string, ListViewGroup>();
+			Dictionary<string, ListViewGroup> groups = new Dictionary<string, ListViewGroup>();
 			foreach (var fr in FirmwareDatabase.FirmwareRecords)
 			{
-				var sysID = fr.ID.System;
-				var lvi = new ListViewItem
+				string sysID = fr.ID.System;
+				ListViewItem lvi = new ListViewItem
 				{
 					Tag = fr,
 					UseItemStyleForSubItems = false,
@@ -228,7 +228,7 @@ namespace BizHawk.Client.EmuHawk
 				WarpToSystemId(TargetSystem);
 			}
 
-			var oldBasePath = _currSelectorDir;
+			string oldBasePath = _currSelectorDir;
 			linkBasePath.Text = _currSelectorDir = _pathEntries.FirmwareAbsolutePath();
 			if (_currSelectorDir != oldBasePath) DoScan();
 		}
@@ -252,11 +252,9 @@ namespace BizHawk.Client.EmuHawk
 			_boldFixedFont.Dispose();
 		}
 
-		private void TbbGroup_Click(object sender, EventArgs e)
-		{
+		private void TbbGroup_Click(object sender, EventArgs e) =>
 			// toggle the grouping state
 			lvFirmwares.ShowGroups = !lvFirmwares.ShowGroups;
-		}
 
 		private void LvFirmwares_ColumnClick(object sender, ColumnClickEventArgs e)
 		{
@@ -271,11 +269,9 @@ namespace BizHawk.Client.EmuHawk
 			lvFirmwares.Sort();
 		}
 
-		private void TbbScan_Click(object sender, EventArgs e)
-		{
+		private void TbbScan_Click(object sender, EventArgs e) =>
 			// user-initiated scan
 			DoScan();
-		}
 
 		private void DoScan()
 		{
@@ -287,7 +283,7 @@ namespace BizHawk.Client.EmuHawk
 			// for each type of firmware, try resolving and record the result
 			foreach (ListViewItem lvi in lvFirmwares.Items)
 			{
-				var fr = (FirmwareRecord) lvi.Tag;
+				FirmwareRecord fr = (FirmwareRecord) lvi.Tag;
 				var ri = Manager.Resolve(
 					_pathEntries,
 					_firmwareUserSpecifications,
@@ -307,15 +303,15 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					// lazy substring extraction. really should do a better job
-					var basePath = _pathEntries.FirmwareAbsolutePath() + Path.DirectorySeparatorChar;
-					
-					var path = ri.FilePath.Replace(basePath, "");
+					string basePath = _pathEntries.FirmwareAbsolutePath() + Path.DirectorySeparatorChar;
+
+					string path = ri.FilePath.Replace(basePath, "");
 
 					// bolden the item if the user has specified a path for it
 					bool bolden = ri.UserSpecified;
 
 					// set columns based on whether it was a known file
-					var hash = ri.KnownFirmwareFile?.Hash;
+					string hash = ri.KnownFirmwareFile?.Hash;
 					if (hash == null)
 					{
 						lvi.ImageIndex = (int) FirmwareOptionStatus.Unknown;
@@ -387,7 +383,7 @@ namespace BizHawk.Client.EmuHawk
 				if (ri?.KnownFirmwareFile == null) continue;
 				if (ri.UserSpecified) continue;
 
-				var fpTarget = Path.Combine(_pathEntries.FirmwareAbsolutePath(), ri.KnownFirmwareFile.Value.RecommendedName);
+				string fpTarget = Path.Combine(_pathEntries.FirmwareAbsolutePath(), ri.KnownFirmwareFile.Value.RecommendedName);
 				string fpSource = ri.FilePath;
 
 				try
@@ -406,7 +402,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TbbOpenFolder_Click(object sender, EventArgs e)
 		{
-			var frmWares = _pathEntries.FirmwareAbsolutePath();
+			string frmWares = _pathEntries.FirmwareAbsolutePath();
 			Directory.CreateDirectory(frmWares);
 			System.Diagnostics.Process.Start(frmWares);
 		}
@@ -421,7 +417,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PerformListCopy()
 		{
-			var str = lvFirmwares.CopyItemsAsText();
+			string str = lvFirmwares.CopyItemsAsText();
 			if (str.Length > 0) Clipboard.SetDataObject(str);
 		}
 
@@ -433,7 +429,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TsmiSetCustomization_Click(object sender, EventArgs e)
 		{
-			var result = this.ShowFileOpenDialog(
+			string result = this.ShowFileOpenDialog(
 				discardCWDChange: true,
 				initDir: _currSelectorDir);
 			if (result is null) return;
@@ -449,18 +445,18 @@ namespace BizHawk.Client.EmuHawk
 				// for each selected item, set the user choice (even though multiple selection for this operation is no longer allowed)
 				foreach (ListViewItem lvi in lvFirmwares.SelectedItems)
 				{
-					var fr = (FirmwareRecord) lvi.Tag;
-					var filePath = result;
+					FirmwareRecord fr = (FirmwareRecord) lvi.Tag;
+					string filePath = result;
 
 					// if the selected file is an archive, allow the user to pick the inside file
 					// to always be copied to the global firmwares directory
 					if (hf.IsArchive)
 					{
-						var ac = new ArchiveChooser(new HawkFile(filePath));
+						ArchiveChooser ac = new ArchiveChooser(new HawkFile(filePath));
 						if (!ac.ShowDialog(this).IsOk()) return;
 
 						var insideFile = hf.BindArchiveMember(ac.SelectedMemberIndex);
-						var fileData = insideFile.ReadAllBytes();
+						byte[] fileData = insideFile.ReadAllBytes();
 
 						// write to file in the firmwares folder
 						File.WriteAllBytes(Path.Combine(firmwarePath, insideFile.Name), fileData);
@@ -472,12 +468,12 @@ namespace BizHawk.Client.EmuHawk
 						// check whether this file is currently outside of the global firmware directory
 						if (_currSelectorDir != firmwarePath)
 						{
-							var askMoveResult = this.ModalMessageBox2("The selected custom firmware does not reside in the root of the global firmware directory.\nDo you want to copy it there?", "Import Custom Firmware");
+							bool askMoveResult = this.ModalMessageBox2("The selected custom firmware does not reside in the root of the global firmware directory.\nDo you want to copy it there?", "Import Custom Firmware");
 							if (askMoveResult)
 							{
 								try
 								{
-									var fi = new FileInfo(filePath);
+									FileInfo fi = new FileInfo(filePath);
 									filePath = Path.Combine(firmwarePath, fi.Name);
 									File.Copy(result, filePath);
 								}
@@ -507,7 +503,7 @@ namespace BizHawk.Client.EmuHawk
 			// for each selected item, clear the user choice
 			foreach (ListViewItem lvi in lvFirmwares.SelectedItems)
 			{
-				var fr = (FirmwareRecord) lvi.Tag;
+				FirmwareRecord fr = (FirmwareRecord) lvi.Tag;
 				_firmwareUserSpecifications.Remove(fr.ID.ConfigKey);
 			}
 
@@ -517,12 +513,12 @@ namespace BizHawk.Client.EmuHawk
 		private void TsmiInfo_Click(object sender, EventArgs e)
 		{
 			var lvi = lvFirmwares.SelectedItems[0];
-			var fr = (FirmwareRecord) lvi.Tag;
+			FirmwareRecord fr = (FirmwareRecord) lvi.Tag;
 
 			// get all options for this firmware (in order)
 			var options = FirmwareDatabase.FirmwareOptions.Where(fo => fo.ID == fr.ID);
 
-			var fciDialog = new FirmwaresConfigInfo
+			FirmwaresConfigInfo fciDialog = new FirmwaresConfigInfo
 			{
 				lblFirmware =
 				{
@@ -568,10 +564,7 @@ namespace BizHawk.Client.EmuHawk
 			tsmiInfo.Visible = lvFirmwares.SelectedItems.Count == 1;
 		}
 
-		private void TsmiCopy_Click(object sender, EventArgs e)
-		{
-			PerformListCopy();
-		}
+		private void TsmiCopy_Click(object sender, EventArgs e) => PerformListCopy();
 
 		private void TbbImport_Click(object sender, EventArgs e)
 		{
@@ -583,7 +576,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				var fi = new FileInfo(f);
+				FileInfo fi = new FileInfo(f);
 				if (!fi.Exists)
 				{
 					return false;
@@ -622,11 +615,11 @@ namespace BizHawk.Client.EmuHawk
 		private void RunImportJob(IEnumerable<string> files)
 		{
 			bool didSomething = false;
-			var basePath = _pathEntries.FirmwareAbsolutePath();
+			string basePath = _pathEntries.FirmwareAbsolutePath();
 			string errors = "";
-			foreach(var f in files)
+			foreach(string f in files)
 			{
-				using var hf = new HawkFile(f);
+				using HawkFile hf = new HawkFile(f);
 				if (hf.IsArchive)
 				{
 					// blech. the worst extraction code in the universe.
@@ -686,10 +679,7 @@ namespace BizHawk.Client.EmuHawk
 			return base.ProcessCmdKey(ref msg, keyData);
 		}
 
-		private void LvFirmwares_DragEnter(object sender, DragEventArgs e)
-		{
-			e.Set(DragDropEffects.Copy);
-		}
+		private void LvFirmwares_DragEnter(object sender, DragEventArgs e) => e.Set(DragDropEffects.Copy);
 
 		private void LvFirmwares_DragDrop(object sender, DragEventArgs e)
 		{

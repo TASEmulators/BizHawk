@@ -52,7 +52,7 @@ namespace BizHawk.Client.EmuHawk
 			// and the rgb order is switched
 			int customColor = BackgroundPanel.BackColor.R | BackgroundPanel.BackColor.G << 8 | BackgroundPanel.BackColor.B << 16;
 
-			using var dlg = new ColorDialog
+			using ColorDialog dlg = new ColorDialog
 			{
 				AllowFullOpen = true,
 				AnyColor = true,
@@ -73,7 +73,7 @@ namespace BizHawk.Client.EmuHawk
 			// and the rgb order is switched
 			int customColor = ForeGroundPanel.BackColor.R | ForeGroundPanel.BackColor.G << 8 | ForeGroundPanel.BackColor.B << 16;
 
-			using var dlg = new ColorDialog
+			using ColorDialog dlg = new ColorDialog
 			{
 				AllowFullOpen = true,
 				AnyColor = true,
@@ -89,7 +89,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DefaultsBtn_Click(object sender, EventArgs e)
 		{
-			var s = new TI83Common.TI83CommonSettings();
+			TI83Common.TI83CommonSettings s = new TI83Common.TI83CommonSettings();
 			BackgroundPanel.BackColor = Color.FromArgb((int)s.BGColor);
 			ForeGroundPanel.BackColor = Color.FromArgb((int)s.ForeColor);
 		}

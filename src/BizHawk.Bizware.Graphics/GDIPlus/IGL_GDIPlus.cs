@@ -16,10 +16,7 @@ namespace BizHawk.Bizware.Graphics
 	{
 		public EDispMethod DispMethodEnum => EDispMethod.GdiPlus;
 
-		public void Dispose()
-		{
-			BufferedGraphicsContext.Dispose();
-		}
+		public void Dispose() => BufferedGraphicsContext.Dispose();
 
 		public void ClearColor(Color color)
 			=> GetCurrentGraphics().Clear(color);
@@ -28,7 +25,7 @@ namespace BizHawk.Bizware.Graphics
 
 		public void FreeTexture(Texture2d tex)
 		{
-			var gtex = (GDIPlusTexture)tex.Opaque;
+			GDIPlusTexture gtex = (GDIPlusTexture)tex.Opaque;
 			gtex.Dispose();
 		}
 
@@ -52,10 +49,7 @@ namespace BizHawk.Bizware.Graphics
 			g.CompositingQuality = CompositingQuality.HighSpeed;
 		}
 
-		public Pipeline CreatePipeline(VertexLayout vertexLayout, Shader vertexShader, Shader fragmentShader, bool required, string memo)
-		{
-			return null;
-		}
+		public Pipeline CreatePipeline(VertexLayout vertexLayout, Shader vertexShader, Shader fragmentShader, bool required, string memo) => null;
 
 		public void FreePipeline(Pipeline pipeline)
 		{
@@ -125,29 +119,27 @@ namespace BizHawk.Bizware.Graphics
 
 		public Texture2d LoadTexture(Bitmap bitmap)
 		{
-			var sdBitmap = (Bitmap)bitmap.Clone();
-			var gtex = new GDIPlusTexture { SDBitmap = sdBitmap };
+			Bitmap sdBitmap = (Bitmap)bitmap.Clone();
+			GDIPlusTexture gtex = new GDIPlusTexture { SDBitmap = sdBitmap };
 			return new(this, gtex, bitmap.Width, bitmap.Height);
 		}
 
 		public Texture2d LoadTexture(Stream stream)
 		{
-			using var bmp = new BitmapBuffer(stream, new());
+			using BitmapBuffer bmp = new BitmapBuffer(stream, new());
 			return LoadTexture(bmp);
 		}
 
 		public Texture2d CreateTexture(int width, int height)
 			=> null;
 
-		public Texture2d WrapGLTexture2d(IntPtr glTexId, int width, int height)
-		{
+		public Texture2d WrapGLTexture2d(IntPtr glTexId, int width, int height) =>
 			// only used for OpenGL
-			return null;
-		}
+			null;
 
 		public void LoadTextureData(Texture2d tex, BitmapBuffer bmp)
 		{
-			var gtex = (GDIPlusTexture)tex.Opaque;
+			GDIPlusTexture gtex = (GDIPlusTexture)tex.Opaque;
 			bmp.ToSysdrawingBitmap(gtex.SDBitmap);
 		}
 
@@ -155,51 +147,41 @@ namespace BizHawk.Bizware.Graphics
 		{
 			// definitely needed (by TextureFrugalizer at least)
 			var sdBitmap = bmp.ToSysdrawingBitmap();
-			var gtex = new GDIPlusTexture { SDBitmap = sdBitmap };
+			GDIPlusTexture gtex = new GDIPlusTexture { SDBitmap = sdBitmap };
 			return new(this, gtex, bmp.Width, bmp.Height);
 		}
 
 		public BitmapBuffer ResolveTexture2d(Texture2d tex)
 		{
-			var gtex = (GDIPlusTexture)tex.Opaque;
-			var blow = new BitmapLoadOptions
+			GDIPlusTexture gtex = (GDIPlusTexture)tex.Opaque;
+			BitmapLoadOptions blow = new BitmapLoadOptions
 			{
 				AllowWrap = false // must be an independent resource
 			};
 
-			var bb = new BitmapBuffer(gtex.SDBitmap, blow);
+			BitmapBuffer bb = new BitmapBuffer(gtex.SDBitmap, blow);
 			return bb;
 		}
 
 		public Texture2d LoadTexture(string path)
 		{
-			using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+			using FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
 			return LoadTexture(fs);
 		}
 
-		public Matrix4x4 CreateGuiProjectionMatrix(int w, int h)
-		{
-			return CreateGuiProjectionMatrix(new(w, h));
-		}
+		public Matrix4x4 CreateGuiProjectionMatrix(int w, int h) => CreateGuiProjectionMatrix(new(w, h));
 
-		public Matrix4x4 CreateGuiViewMatrix(int w, int h, bool autoFlip)
-		{
-			return CreateGuiViewMatrix(new(w, h), autoFlip);
-		}
+		public Matrix4x4 CreateGuiViewMatrix(int w, int h, bool autoFlip) => CreateGuiViewMatrix(new(w, h), autoFlip);
 
-		public Matrix4x4 CreateGuiProjectionMatrix(Size dims)
-		{
+		public Matrix4x4 CreateGuiProjectionMatrix(Size dims) =>
 			// see CreateGuiViewMatrix for more
-			return Matrix4x4.Identity;
-		}
+			Matrix4x4.Identity;
 
-		public Matrix4x4 CreateGuiViewMatrix(Size dims, bool autoFlip)
-		{
+		public Matrix4x4 CreateGuiViewMatrix(Size dims, bool autoFlip) =>
 			// on account of gdi+ working internally with a default view exactly like we want, we don't need to setup a new one here
 			// furthermore, we _cant_, without inverting the GuiView and GuiProjection before drawing, to completely undo it
 			// this might be feasible, but its kind of slow and annoying and worse, seemingly numerically unstable
-			return Matrix4x4.Identity;
-		}
+			Matrix4x4.Identity;
 
 		public void SetViewport(int x, int y, int width, int height)
 		{
@@ -209,38 +191,33 @@ namespace BizHawk.Bizware.Graphics
 		{
 		}
 
-		public void SetViewport(Size size)
-		{
-			SetViewport(size.Width, size.Height);
-		}
+		public void SetViewport(Size size) => SetViewport(size.Width, size.Height);
 
 		public void BeginScene()
 		{
 		}
 
-		public void EndScene()
-		{
+		public void EndScene() =>
 			// maybe an inconsistent semantic with other implementations..
 			// but accomplishes the needed goal of getting the current RT to render
 			BindRenderTarget(null);
-		}
 
 		public void FreeRenderTarget(RenderTarget rt)
 		{
-			var grt = (GDIPlusRenderTarget)rt.Opaque;
+			GDIPlusRenderTarget grt = (GDIPlusRenderTarget)rt.Opaque;
 			grt.Dispose();
 		}
 
 		public RenderTarget CreateRenderTarget(int w, int h)
 		{
-			var gtex = new GDIPlusTexture
+			GDIPlusTexture gtex = new GDIPlusTexture
 			{
 				SDBitmap = new(w, h, PixelFormat.Format32bppArgb)
 			};
-			var tex = new Texture2d(this, gtex, w, h);
+			Texture2d tex = new Texture2d(this, gtex, w, h);
 
-			var grt = new GDIPlusRenderTarget(() => BufferedGraphicsContext);
-			var rt = new RenderTarget(this, grt, tex);
+			GDIPlusRenderTarget grt = new GDIPlusRenderTarget(() => BufferedGraphicsContext);
+			RenderTarget rt = new RenderTarget(this, grt, tex);
 			grt.Target = rt;
 			return rt;
 		}
@@ -260,7 +237,7 @@ namespace BizHawk.Bizware.Graphics
 			}
 			else
 			{
-				var gtex = (GDIPlusTexture)rt.Texture2d.Opaque;
+				GDIPlusTexture gtex = (GDIPlusTexture)rt.Texture2d.Opaque;
 				CurrentRenderTarget = (GDIPlusRenderTarget)rt.Opaque;
 				_currOffscreenGraphics = SDGraphics.FromImage(gtex.SDBitmap);
 			}
@@ -281,10 +258,7 @@ namespace BizHawk.Bizware.Graphics
 
 		private SDGraphics _currOffscreenGraphics;
 
-		public SDGraphics GetCurrentGraphics()
-		{
-			return _currOffscreenGraphics ?? CurrentRenderTarget.BufferedGraphics.Graphics;
-		}
+		public SDGraphics GetCurrentGraphics() => _currOffscreenGraphics ?? CurrentRenderTarget.BufferedGraphics.Graphics;
 
 		public GDIPlusRenderTarget CurrentRenderTarget;
 

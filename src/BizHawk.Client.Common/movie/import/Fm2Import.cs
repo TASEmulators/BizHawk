@@ -17,11 +17,11 @@ namespace BizHawk.Client.Common
 		{
 			Result.Movie.HeaderEntries[HeaderKeys.Core] = CoreNames.NesHawk;
 			const string emulator = "FCEUX";
-			var platform = VSystemID.Raw.NES; // TODO: FDS?
+			string platform = VSystemID.Raw.NES; // TODO: FDS?
 
-			var syncSettings = new NES.NESSyncSettings();
+			NES.NESSyncSettings syncSettings = new NES.NESSyncSettings();
 
-			var controllerSettings = new NESControlSettings
+			NESControlSettings controllerSettings = new NESControlSettings
 			{
 				NesLeftPort = nameof(UnpluggedNES),
 				NesRightPort = nameof(UnpluggedNES)
@@ -46,7 +46,7 @@ namespace BizHawk.Client.Common
 				}
 				else if (line.StartsWith("sub", StringComparison.OrdinalIgnoreCase))
 				{
-					var subtitle = ImportTextSubtitle(line);
+					string subtitle = ImportTextSubtitle(line);
 
 					if (!string.IsNullOrEmpty(subtitle))
 					{
@@ -97,7 +97,7 @@ namespace BizHawk.Client.Common
 				}
 				else if (line.StartsWith("rerecordcount", StringComparison.OrdinalIgnoreCase))
 				{
-					Result.Movie.Rerecords = (ulong) (int.TryParse(ParseHeader(line, "rerecordCount"), out var rerecordCount) ? rerecordCount : default);
+					Result.Movie.Rerecords = (ulong) (int.TryParse(ParseHeader(line, "rerecordCount"), out int rerecordCount) ? rerecordCount : default);
 				}
 				else if (line.StartsWith("guid", StringComparison.OrdinalIgnoreCase))
 				{

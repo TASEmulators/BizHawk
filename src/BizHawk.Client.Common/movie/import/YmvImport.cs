@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common.movie.import
 		protected override void RunImport()
 		{
 			Result.Movie.HeaderEntries[HeaderKeys.Platform] = VSystemID.Raw.SAT;
-			var ss = new Emulation.Cores.Waterbox.NymaCore.NymaSyncSettings
+			Emulation.Cores.Waterbox.NymaCore.NymaSyncSettings ss = new Emulation.Cores.Waterbox.NymaCore.NymaSyncSettings
 			{
 				PortDevices =
 				{
@@ -109,7 +109,7 @@ namespace BizHawk.Client.Common.movie.import
 			}.MakeImmutable());
 
 			// Split up the sections of the frame.
-			var sections = line.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries);
+			string[] sections = line.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries);
 			if (sections.Length != 2)
 			{
 				Result.Errors.Add("Unsupported input configuration");

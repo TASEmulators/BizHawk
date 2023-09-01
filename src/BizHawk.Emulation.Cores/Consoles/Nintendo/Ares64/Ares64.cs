@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			};
 
 			N64Controller = CreateControllerDefinition(ControllerSettings);
-			var interpreter = lp.Game.GetBool("ares_force_cpu_interpreter", false) || _syncSettings.CPUEmulation == LibAres64.CpuType.Interpreter;
+			bool interpreter = lp.Game.GetBool("ares_force_cpu_interpreter", false) || _syncSettings.CPUEmulation == LibAres64.CpuType.Interpreter;
 
 			_core = PreInit<LibAres64>(new()
 			{
@@ -71,8 +71,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			// (probably should, but needs refactoring)
 			foreach (var r in lp.Roms) _ = N64RomByteswapper.ToZ64Native(r.RomData); // no-op if N64 magic bytes not present
 
-			var gbRoms = lp.Roms.FindAll(r => IsGBRom(r.FileData)).Select(r => r.FileData).ToArray();
-			var rom = lp.Roms.Find(r => !gbRoms.Contains(r.FileData) && (char)r.RomData[0x3B] is 'N' or 'C')?.RomData;
+			byte[][] gbRoms = lp.Roms.FindAll(r => IsGBRom(r.FileData)).Select(r => r.FileData).ToArray();
+			byte[] rom = lp.Roms.Find(r => !gbRoms.Contains(r.FileData) && (char)r.RomData[0x3B] is 'N' or 'C')?.RomData;
 			var (disk, error) = TransformDisk(lp.Roms.Find(r => !gbRoms.Contains(r.FileData) && r.RomData != rom)?.FileData);
 
 			if (rom is null && disk is null)
@@ -87,14 +87,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 				}
 			}
 
-			var regionByte = rom is null ? 0 : rom[0x3E];
+			int regionByte = rom is null ? 0 : rom[0x3E];
 			Region = regionByte switch
 			{
 				0x44 or 0x46 or 0x49 or 0x50 or 0x53 or 0x55 or 0x58 or 0x59 => DisplayType.PAL,
 				_ => DisplayType.NTSC, // note that N64DD is only valid as NTSC
 			};
 
-			var pal = Region == DisplayType.PAL;
+			bool pal = Region == DisplayType.PAL;
 
 			if (pal)
 			{
@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 				VsyncDenominator = 1;
 			}
 
-			var pif = Zstd.DecompressZstdStream(new MemoryStream(pal ? Resources.PIF_PAL_ROM.Value : Resources.PIF_NTSC_ROM.Value)).ToArray();
+			byte[] pif = Zstd.DecompressZstdStream(new MemoryStream(pal ? Resources.PIF_PAL_ROM.Value : Resources.PIF_NTSC_ROM.Value)).ToArray();
 
 			IsDD = disk is not null;
 			byte[] ipl = null;
@@ -133,7 +133,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 					gb3RomPtr = GetGBRomOrNull(2),
 					gb4RomPtr = GetGBRomOrNull(3)) 
 				{
-					var loadData = new LibAres64.LoadData
+					LibAres64.LoadData loadData = new LibAres64.LoadData
 					{
 						PifData = (IntPtr)pifPtr,
 						PifLen = pif.Length,
@@ -179,7 +179,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 
 		private static ControllerDefinition CreateControllerDefinition(LibAres64.ControllerType[] controllerSettings)
 		{
-			var ret = new ControllerDefinition("Nintendo 64 Controller");
+			ControllerDefinition ret = new ControllerDefinition("Nintendo 64 Controller");
 			for (int i = 0; i < 4; i++)
 			{
 				if (controllerSettings[i] == LibAres64.ControllerType.Mouse)
@@ -315,13 +315,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 				return true;
 			}
 
-			var ret = new byte[1175 * 2 * 2];
+			byte[] ret = new byte[1175 * 2 * 2];
 			ret[12] = 0;
-			var systemBlocks = new[] { 0, 1, 8, 9 };
+			int[] systemBlocks = new[] { 0, 1, 8, 9 };
 
 			for (int i = 0; i < 4; i++)
 			{
-				var systemOffset = systemBlocks[i] * 0x4D08;
+				int systemOffset = systemBlocks[i] * 0x4D08;
 				if (disk[systemOffset + 0x00] is not 0xE8 and not 0x22) continue;
 				if (disk[systemOffset + 0x01] is not 0x48 and not 0x63) continue;
 				if (disk[systemOffset + 0x02] is not 0xD3 and not 0xEE) continue;
@@ -343,8 +343,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			{
 				for (int i = 0; i < 4; i++)
 				{
-					var systemBlock = disk.Length == 0x3DEC800 ? (systemBlocks[i] + 2) ^ 1 : (systemBlocks[i] + 2);
-					var systemOffset = systemBlock * 0x4D08;
+					int systemBlock = disk.Length == 0x3DEC800 ? (systemBlocks[i] + 2) ^ 1 : (systemBlocks[i] + 2);
+					int systemOffset = systemBlock * 0x4D08;
 					ret[systemBlocks[i] + 2] = 1;
 					if (disk[systemOffset + 0x00] != 0x00) continue;
 					if (disk[systemOffset + 0x01] != 0x00) continue;
@@ -365,7 +365,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 
 			for (int i = 0; i < 2; i++)
 			{
-				var diskIdOffset = (14 + i) * 0x4D08;
+				int diskIdOffset = (14 + i) * 0x4D08;
 				ret[14 + i] = 1;
 				if (!RepeatCheck(new(disk, diskIdOffset, 0xE8 * 0x55), 0xE8, 0x55)) continue;
 				ret[14 + i] = 0;
@@ -411,17 +411,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			if (disk.Length != 0x3DEC800) return default;
 
 			// need the error table for this
-			var errorTable = CreateErrorTable(disk);
+			byte[] errorTable = CreateErrorTable(disk);
 
 			// "system area check"
-			var systemCheck = false;
-			var systemBlocks = new[] { 9, 8, 1, 0 };
-			var systemOffset = 0;
+			bool systemCheck = false;
+			int[] systemBlocks = new[] { 9, 8, 1, 0 };
+			int systemOffset = 0;
 			for (int i = 0; i < 4; i++)
 			{
 				if (errorTable[12] == 0)
 				{
-					var systemBlock = systemBlocks[i] + 2;
+					int systemBlock = systemBlocks[i] + 2;
 					if (errorTable[systemBlock] == 0)
 					{
 						systemCheck = true;
@@ -430,7 +430,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 				}
 				else
 				{
-					var systemBlock = systemBlocks[i];
+					int systemBlock = systemBlocks[i];
 					if (errorTable[systemBlock] == 0)
 					{
 						systemCheck = true;
@@ -441,31 +441,31 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 
 			if (!systemCheck) return default;
 
-			var dataFormat = new ReadOnlySpan<byte>(disk, systemOffset, 0xE8);
+			ReadOnlySpan<byte> dataFormat = new ReadOnlySpan<byte>(disk, systemOffset, 0xE8);
 
-			var diskIndex = 0;
-			var ret = new byte[0x435B0C0];
+			int diskIndex = 0;
+			byte[] ret = new byte[0x435B0C0];
 
-			var type = dataFormat[5] & 0xF;
-			var vzone = 0;
+			int type = dataFormat[5] & 0xF;
+			int vzone = 0;
 
 			for (int lba = 0; lba < 0x10DC; lba++)
 			{
 				if (lba >= _vzoneLbaTable[type, vzone]) vzone++;
-				var pzoneCalc = _vzone2pzoneTable[type, vzone];
-				var headCalc = pzoneCalc > 7;
+				int pzoneCalc = _vzone2pzoneTable[type, vzone];
+				bool headCalc = pzoneCalc > 7;
 
-				var lba_vzone = lba;
+				int lba_vzone = lba;
 				if (vzone > 0) lba_vzone -= _vzoneLbaTable[type, vzone - 1];
 
-				var trackStart = _trackPhysicalTable[headCalc ? pzoneCalc - 8 : pzoneCalc];
-				var trackCalc = _trackPhysicalTable[pzoneCalc];
+				int trackStart = _trackPhysicalTable[headCalc ? pzoneCalc - 8 : pzoneCalc];
+				int trackCalc = _trackPhysicalTable[pzoneCalc];
 				if (headCalc) trackCalc -= (lba_vzone >> 1);
 				else trackCalc += (lba_vzone >> 1);
 
-				var defectOffset = 0;
+				int defectOffset = 0;
 				if (pzoneCalc > 0) defectOffset = dataFormat[8 + pzoneCalc - 1];
-				var defectAmount = dataFormat[8 + pzoneCalc] - defectOffset;
+				int defectAmount = dataFormat[8 + pzoneCalc] - defectOffset;
 
 				while ((defectAmount != 0) && ((dataFormat[0x20 + defectOffset] + trackStart) <= trackCalc))
 				{
@@ -474,13 +474,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 					defectAmount--;
 				}
 
-				var blockCalc = ((lba & 3) == 0 || (lba & 3) == 3) ? 0 : 1;
+				int blockCalc = (lba & 3 is 0 or 3) ? 0 : 1;
 
-				var offsetCalc = _startOffsetTable[pzoneCalc];
+				int offsetCalc = _startOffsetTable[pzoneCalc];
 				offsetCalc += (trackCalc - trackStart) * _blockSizeTable[headCalc ? pzoneCalc - 7 : pzoneCalc] * 2;
 				offsetCalc += _blockSizeTable[headCalc ? pzoneCalc - 7 : pzoneCalc] * blockCalc;
 
-				var blockSize = _blockSizeTable[headCalc ? pzoneCalc - 7 : pzoneCalc];
+				int blockSize = _blockSizeTable[headCalc ? pzoneCalc - 7 : pzoneCalc];
 				for (int i = 0; i < blockSize; i++)
 				{
 					ret[offsetCalc + i] = disk[diskIndex++];

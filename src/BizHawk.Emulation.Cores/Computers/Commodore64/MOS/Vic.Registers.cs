@@ -2,15 +2,9 @@
 {
 	public sealed partial class Vic
 	{
-		public int Peek(int addr)
-		{
-			return ReadRegister(addr & 0x3F);
-		}
+		public int Peek(int addr) => ReadRegister(addr & 0x3F);
 
-		public void Poke(int addr, int val)
-		{
-			WriteRegister(addr & 0x3F, val);
-		}
+		public void Poke(int addr, int val) => WriteRegister(addr & 0x3F, val);
 
 		public int Read(int addr)
 		{

@@ -102,10 +102,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			int ofs = addr & 0x3FFF;
 			return Rom[(page << 14) | ofs];
 		}
-		public override void WritePrg(int addr, byte value)
-		{
-			prg = adjust_prg(value) & prg_mask;
-		}
+		public override void WritePrg(int addr, byte value) => prg = adjust_prg(value) & prg_mask;
 
 		public override byte ReadPpu(int addr)
 		{

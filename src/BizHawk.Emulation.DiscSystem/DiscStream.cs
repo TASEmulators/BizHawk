@@ -83,7 +83,7 @@ namespace BizHawk.Emulation.DiscSystem
 		public override bool CanRead => true;
 		public override bool CanSeek => true;
 		public override bool CanWrite => false;
-		public override void Flush() { throw new NotImplementedException(); }
+		public override void Flush() => throw new NotImplementedException();
 		public override long Length => NumSectors * SectorSize;
 
 		public override long Position
@@ -107,18 +107,18 @@ namespace BizHawk.Emulation.DiscSystem
 		//TODO - I'm not sure everything in here makes sense right now..
 		public override int Read(byte[] buffer, int offset, int count)
 		{
-			var remainInDisc = Length - currPosition;
+			long remainInDisc = Length - currPosition;
 			if (count > remainInDisc)
 				count = (int)Math.Min(remainInDisc, int.MaxValue);
 
-			var remain = count;
-			var readed = 0;
+			int remain = count;
+			int readed = 0;
 			while (remain > 0)
 			{
-				var lba = (int)(currPosition / SectorSize);
-				var lba_within = (int)(currPosition % SectorSize);
-				var todo = remain;
-				var remains_in_lba = SectorSize - lba_within;
+				int lba = (int)(currPosition / SectorSize);
+				int lba_within = (int)(currPosition % SectorSize);
+				int todo = remain;
+				int remains_in_lba = SectorSize - lba_within;
 				if (remains_in_lba < todo)
 					todo = remains_in_lba;
 				if (cachedSector != lba)
@@ -147,7 +147,7 @@ namespace BizHawk.Emulation.DiscSystem
 			return Position;
 		}
 
-		public override void SetLength(long value) { throw new NotImplementedException(); }
-		public override void Write(byte[] buffer, int offset, int count) { throw new NotImplementedException(); }
+		public override void SetLength(long value) => throw new NotImplementedException();
+		public override void Write(byte[] buffer, int offset, int count) => throw new NotImplementedException();
 	}
 }

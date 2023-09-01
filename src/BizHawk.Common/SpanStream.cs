@@ -41,7 +41,7 @@ namespace BizHawk.Common
 				{
 					_buffer = new byte[buffer.Length];
 				}
-				var n = _stream.Read(_buffer, 0, buffer.Length);
+				int n = _stream.Read(_buffer, 0, buffer.Length);
 				fixed(byte* p = buffer)
 				{
 					Marshal.Copy(_buffer, 0, (IntPtr)p, n);

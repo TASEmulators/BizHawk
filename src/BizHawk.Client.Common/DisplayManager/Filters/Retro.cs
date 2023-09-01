@@ -32,9 +32,9 @@ namespace BizHawk.Client.Common.Filters
 					return content;
 				}
 
-				var fname = match.Groups[4].Value;
+				string fname = match.Groups[4].Value;
 				fname = Path.Combine(baseDirectory,fname);
-				var includedContent = ResolveIncludes(File.ReadAllText(fname),Path.GetDirectoryName(fname));
+				string includedContent = ResolveIncludes(File.ReadAllText(fname),Path.GetDirectoryName(fname));
 				content = content.Substring(0, match.Index) + includedContent + content.Substring(match.Index + match.Length);
 			}
 		}
@@ -52,12 +52,12 @@ namespace BizHawk.Client.Common.Filters
 			}
 
 			// load up the shaders
-			var shaders = new RetroShader[preset.Passes.Count];
-			for (var i = 0; i < preset.Passes.Count; i++)
+			RetroShader[] shaders = new RetroShader[preset.Passes.Count];
+			for (int i = 0; i < preset.Passes.Count; i++)
 			{
 				// acquire content. we look for it in any reasonable filename so that one preset can bind to multiple shaders
 				string content;
-				var path = Path.Combine(baseDirectory, preset.Passes[i].ShaderPath);
+				string path = Path.Combine(baseDirectory, preset.Passes[i].ShaderPath);
 				if (!File.Exists(path))
 				{
 					if (!Path.HasExtension(path))
@@ -136,14 +136,14 @@ namespace BizHawk.Client.Common.Filters
 		/// </summary>
 		public RetroShaderPreset(Stream stream)
 		{
-			var content = new StreamReader(stream).ReadToEnd();
-			var dict = new Dictionary<string, string>();
+			string content = new StreamReader(stream).ReadToEnd();
+			Dictionary<string, string> dict = new Dictionary<string, string>();
 
 			// parse the key-value-pair format of the file
 			content = content.Replace("\r", "");
-			foreach (var splitLine in content.Split('\n'))
+			foreach (string splitLine in content.Split('\n'))
 			{
-				var line = splitLine.Trim();
+				string line = splitLine.Trim();
 				if (line.Length is 0)
 				{
 					continue;
@@ -154,10 +154,10 @@ namespace BizHawk.Client.Common.Filters
 					continue; // comments
 				}
 
-				var eq = line.IndexOf('=');
-				var key = line.Substring(0, eq).Trim();
-				var value = line.Substring(eq + 1).Trim();
-				var quote = value.IndexOf('\"');
+				int eq = line.IndexOf('=');
+				string key = line.Substring(0, eq).Trim();
+				string value = line.Substring(eq + 1).Trim();
+				int quote = value.IndexOf('\"');
 				if (quote != -1)
 				{
 					value = value.Substring(quote + 1, value.IndexOf('\"', quote + 1) - (quote + 1));
@@ -165,7 +165,7 @@ namespace BizHawk.Client.Common.Filters
 				else
 				{
 					// remove comments from end of value. exclusive from above condition, since comments after quoted strings would be snipped by the quoted string extraction
-					var hash = value.IndexOf('#');
+					int hash = value.IndexOf('#');
 					if (hash != -1)
 					{
 						value = value.Substring(0, hash);
@@ -177,10 +177,10 @@ namespace BizHawk.Client.Common.Filters
 			}
 
 			// process the keys
-			var nShaders = FetchInt(dict, "shaders", 0);
-			for (var i = 0; i < nShaders; i++)
+			int nShaders = FetchInt(dict, "shaders", 0);
+			for (int i = 0; i < nShaders; i++)
 			{
-				var sp = new ShaderPass { Index = i };
+				ShaderPass sp = new ShaderPass { Index = i };
 				Passes.Add(sp);
 
 				sp.InputFilterLinear = FetchBool(dict, $"filter_linear{i}", false); // Should this value not be defined, the filtering option is implementation defined.
@@ -192,7 +192,7 @@ namespace BizHawk.Client.Common.Filters
 				// It is possible to set scale_type_xN and scale_type_yN to specialize the scaling type in either direction. scale_typeN however overrides both of these.
 				sp.ScaleTypeX = (ScaleType)Enum.Parse(typeof(ScaleType), FetchString(dict, $"scale_type_x{i}", "Source"), true);
 				sp.ScaleTypeY = (ScaleType)Enum.Parse(typeof(ScaleType), FetchString(dict, $"scale_type_y{i}", "Source"), true);
-				var st = (ScaleType)Enum.Parse(typeof(ScaleType), FetchString(dict, $"scale_type{i}", "NotSet"), true);
+				ScaleType st = (ScaleType)Enum.Parse(typeof(ScaleType), FetchString(dict, $"scale_type{i}", "NotSet"), true);
 				if (st != ScaleType.NotSet)
 				{
 					sp.ScaleTypeX = sp.ScaleTypeY = st;
@@ -229,25 +229,13 @@ namespace BizHawk.Client.Common.Filters
 			public Vector2 Scale;
 		}
 
-		private static string FetchString(IDictionary<string, string> dict, string key, string @default)
-		{
-			return dict.TryGetValue(key, out var str) ? str : @default;
-		}
+		private static string FetchString(IDictionary<string, string> dict, string key, string @default) => dict.TryGetValue(key, out string str) ? str : @default;
 
-		private static int FetchInt(IDictionary<string, string> dict, string key, int @default)
-		{
-			return dict.TryGetValue(key, out var str) ? int.Parse(str) : @default;
-		}
+		private static int FetchInt(IDictionary<string, string> dict, string key, int @default) => dict.TryGetValue(key, out string str) ? int.Parse(str) : @default;
 
-		private static float FetchFloat(IDictionary<string, string> dict, string key, float @default)
-		{
-			return dict.TryGetValue(key, out var str) ? float.Parse(str, NumberFormatInfo.InvariantInfo) : @default;
-		}
+		private static float FetchFloat(IDictionary<string, string> dict, string key, float @default) => dict.TryGetValue(key, out string str) ? float.Parse(str, NumberFormatInfo.InvariantInfo) : @default;
 
-		private static bool FetchBool(IDictionary<string, string> dict, string key, bool @default)
-		{
-			return dict.TryGetValue(key, out var str) ? ParseBool(str) : @default;
-		}
+		private static bool FetchBool(IDictionary<string, string> dict, string key, bool @default) => dict.TryGetValue(key, out string str) ? ParseBool(str) : @default;
 
 		private static bool ParseBool(string value)
 		{
@@ -285,10 +273,7 @@ namespace BizHawk.Client.Common.Filters
 			_sp = _rsc.Passes[index];
 		}
 
-		public override void Initialize()
-		{
-			DeclareInput(SurfaceDisposition.Texture);
-		}
+		public override void Initialize() => DeclareInput(SurfaceDisposition.Texture);
 
 		public override void SetInputFormat(string channel, SurfaceState state)
 		{

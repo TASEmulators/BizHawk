@@ -233,8 +233,8 @@ namespace BizHawk.Client.Common
 
 		public static unsafe bool Load(IVideoProvider v, Stream s)
 		{
-			var bf = BITMAPFILEHEADER.FromStream(s);
-			var bi = BITMAPINFOHEADER.FromStream(s);
+			BITMAPFILEHEADER bf = BITMAPFILEHEADER.FromStream(s);
+			BITMAPINFOHEADER bi = BITMAPINFOHEADER.FromStream(s);
 			if (bf.bfType != 0x4d42
 				|| bf.bfOffBits != bf.bfSize + bi.biSize
 				|| bi.biPlanes != 1
@@ -251,7 +251,7 @@ namespace BizHawk.Client.Common
 			s.Read(src, 0, src.Length);
 			if (v is LoadedBMP)
 			{
-				var l = v as LoadedBMP;
+				LoadedBMP l = v as LoadedBMP;
 				l.BufferWidth = inW;
 				l.BufferHeight = inH;
 				l.VideoBuffer = new int[inW * inH];
@@ -284,8 +284,8 @@ namespace BizHawk.Client.Common
 
 		public static unsafe void Save(IVideoProvider v, Stream s, int w, int h)
 		{
-			var bf = new BITMAPFILEHEADER();
-			var bi = new BITMAPINFOHEADER();
+			BITMAPFILEHEADER bf = new BITMAPFILEHEADER();
+			BITMAPINFOHEADER bi = new BITMAPINFOHEADER();
 			bf.bfType = 0x4d42;
 			bf.bfOffBits = bf.bfSize + bi.biSize;
 

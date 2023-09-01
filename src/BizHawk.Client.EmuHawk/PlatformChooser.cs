@@ -38,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 			int spacing = 25;
 			foreach (var platform in _availableSystems)
 			{
-				var radio = new RadioButton
+				RadioButton radio = new RadioButton
 				{
 					Text = platform.FullName,
 					Location = UIHelper.Scale(new Point(15, 15 + (count * spacing))),
@@ -55,14 +55,11 @@ namespace BizHawk.Client.EmuHawk
 				.Select();
 		}
 
-		private void CancelButton_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
+		private void CancelButton_Click(object sender, EventArgs e) => Close();
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
-			var selectedValue = SelectedRadio != null ? SelectedRadio.Text : "";
+			string selectedValue = SelectedRadio != null ? SelectedRadio.Text : "";
 			PlatformChoice = _availableSystems.First(x => x.FullName == selectedValue).SystemId;
 
 			if (AlwaysCheckbox.Checked)
@@ -73,9 +70,6 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-		private void label4_Click(object sender, EventArgs e)
-		{
-			AlwaysCheckbox.Checked ^= true;
-		}
+		private void label4_Click(object sender, EventArgs e) => AlwaysCheckbox.Checked ^= true;
 	}
 }

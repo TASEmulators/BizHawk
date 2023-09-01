@@ -100,9 +100,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HandleButton(string button, bool newState, ClientInputFocus source)
 		{
-			if (!(_currentConfig.MergeLAndRModifierKeys && ModifierKeyPreMap.TryGetValue(button, out var button1))) button1 = button;
-			var modIndex = _currentConfig.ModifierKeysEffective.IndexOf(button1);
-			var currentModifier = modIndex is -1 ? 0U : 1U << modIndex;
+			if (!(_currentConfig.MergeLAndRModifierKeys && ModifierKeyPreMap.TryGetValue(button, out string button1))) button1 = button;
+			int modIndex = _currentConfig.ModifierKeysEffective.IndexOf(button1);
+			uint currentModifier = modIndex is -1 ? 0U : 1U << modIndex;
 			if (EnableIgnoreModifiers && currentModifier is not 0U) return;
 			if (newState == _lastState[button1]) return;
 
@@ -115,13 +115,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// don't generate events for things like Ctrl+LeftControl
-			var mods = _modifiers;
+			uint mods = _modifiers;
 			if (!newState)
 				mods = 0; // don't set mods for release events, handle releasing all corresponding buttons later in InputCoalescer.Receive()
 			else if (currentModifier is not 0U)
 				mods &= ~currentModifier;
 
-			var ie = new InputEvent
+			InputEvent ie = new InputEvent
 				{
 					EventType = newState ? InputEventType.Press : InputEventType.Release,
 					LogicalButton = new(button1, mods, () => _getConfigCallback().ModifierKeysEffective),
@@ -250,7 +250,7 @@ namespace BizHawk.Client.EmuHawk
 					if (_newEvents.Count != 0)
 					{
 						//WHAT!? WE SHOULD NOT BE SO NAIVELY TOUCHING MAINFORM FROM THE INPUTTHREAD. ITS BUSY RUNNING.
-						AllowInput allowInput = MainFormInputAllowedCallback(false);
+						var allowInput = MainFormInputAllowedCallback(false);
 
 						foreach (var ie in _newEvents)
 						{
@@ -272,10 +272,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static bool ShouldSwallow(AllowInput allowInput, InputEvent inputEvent)
-		{
-			return allowInput == AllowInput.None || (allowInput == AllowInput.OnlyController && inputEvent.Source != ClientInputFocus.Pad);
-		}
+		private static bool ShouldSwallow(AllowInput allowInput, InputEvent inputEvent) => allowInput == AllowInput.None || (allowInput == AllowInput.OnlyController && inputEvent.Source != ClientInputFocus.Pad);
 
 		public void StartListeningForAxisEvents()
 		{
@@ -320,7 +317,7 @@ namespace BizHawk.Client.EmuHawk
 			lock (this)
 			{
 				if (_inputEvents.Count == 0) return null;
-				AllowInput allowInput = MainFormInputAllowedCallback(false);
+				var allowInput = MainFormInputAllowedCallback(false);
 
 				//wait for the first release after a press to complete input binding, because we need to distinguish pure modifierkeys from modified keys
 				//if you just pressed ctrl, wanting to bind ctrl, we'd see: pressed:ctrl, unpressed:ctrl
@@ -329,7 +326,7 @@ namespace BizHawk.Client.EmuHawk
 
 				while (_inputEvents.Count != 0)
 				{
-					InputEvent ie = DequeueEvent();
+					var ie = DequeueEvent();
 
 					if (ShouldSwallow(allowInput, ie)) continue;
 

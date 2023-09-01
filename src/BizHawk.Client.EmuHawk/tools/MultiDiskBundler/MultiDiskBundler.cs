@@ -64,10 +64,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (MainForm.CurrentlyOpenRom.Contains("|"))
 				{
-					var pieces = MainForm.CurrentlyOpenRom.Split('|');
+					string[] pieces = MainForm.CurrentlyOpenRom.Split('|');
 
-					var directory = Path.GetDirectoryName(pieces[0]) ?? "";
-					var filename = Path.ChangeExtension(pieces[1], ".xml");
+					string directory = Path.GetDirectoryName(pieces[0]) ?? "";
+					string filename = Path.ChangeExtension(pieces[1], ".xml");
 
 					NameBox.Text = Path.Combine(directory, filename);
 				}
@@ -106,7 +106,7 @@ namespace BizHawk.Client.EmuHawk
 			fileInfo = new FileInfo(NameBox.Text);
 			if (fileInfo.Exists)
 			{
-				var result = this.ModalMessageBox2("File already exists, overwrite?", "File exists", EMsgBoxIcon.Warning, useOKCancel: true);
+				bool result = this.ModalMessageBox2("File already exists, overwrite?", "File exists", EMsgBoxIcon.Warning, useOKCancel: true);
 				if (!result)
 				{
 					return false;
@@ -117,10 +117,7 @@ namespace BizHawk.Client.EmuHawk
 			return true;
 		}
 
-		private void SaveButton_Click(object sender, EventArgs e)
-		{
-			DoSave(out var dummy);
-		}
+		private void SaveButton_Click(object sender, EventArgs e) => DoSave(out var dummy);
 
 		private void SaveRunButton_Click(object sender, EventArgs e)
 		{
@@ -131,7 +128,7 @@ namespace BizHawk.Client.EmuHawk
 			DialogResult = DialogResult.OK;
 			Close();
 
-			var lra = new LoadRomArgs { OpenAdvanced = new OpenAdvanced_OpenRom { Path = fileInfo.FullName } };
+			LoadRomArgs lra = new LoadRomArgs { OpenAdvanced = new OpenAdvanced_OpenRom { Path = fileInfo.FullName } };
 			_ = MainForm.LoadRom(fileInfo.FullName, lra);
 		}
 
@@ -139,7 +136,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			int start = 3 + (FileSelectorPanel.Controls.Count * 43);
 
-			var groupBox = new GroupBox
+			GroupBox groupBox = new GroupBox
 			{
 				Text = "",
 				Location = UIHelper.Scale(new Point(6, start)),
@@ -147,7 +144,7 @@ namespace BizHawk.Client.EmuHawk
 				Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top
 			};
 
-			var mdf = new MultiDiskFileSelector(MainForm, Config.PathEntries,
+			MultiDiskFileSelector mdf = new MultiDiskFileSelector(MainForm, Config.PathEntries,
 				() => MainForm.CurrentlyOpenRom, () => SystemDropDown.SelectedItem?.ToString())
 			{
 				Location = UIHelper.Scale(new Point(7, 12)),
@@ -166,7 +163,7 @@ namespace BizHawk.Client.EmuHawk
 			//ToDo:
 			//Make this better?
 			//We need to have i at 1 and not zero because Controls Count doesn't start at zero (sort of)
-			var i = 1;
+			int i = 1;
 			//For Each Control box we have, loop
 			foreach (Control ctrl in FileSelectorPanel.Controls)
 			{
@@ -182,10 +179,7 @@ namespace BizHawk.Client.EmuHawk
 			Recalculate();
 		}
 
-		private void FileSelector_NameChanged(object sender, EventArgs e)
-		{
-			Recalculate();
-		}
+		private void FileSelector_NameChanged(object sender, EventArgs e) => Recalculate();
 
 		private IEnumerable<MultiDiskFileSelector> FileSelectors =>
 			FileSelectorPanel.Controls
@@ -196,11 +190,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				var names = FileSelectors.Select(f => f.Path).ToList();
+				List<string> names = FileSelectors.Select(f => f.Path).ToList();
 
 				if (names.Count != 0)
 				{
-					var name = NameBox.Text;
+					string name = NameBox.Text;
 
 					if (string.IsNullOrWhiteSpace(name))
 					{
@@ -209,17 +203,17 @@ namespace BizHawk.Client.EmuHawk
 
 					if (names.Exists(string.IsNullOrWhiteSpace)) throw new Exception("Rom Names can not be blank");
 
-					var system = SystemDropDown.SelectedItem?.ToString();
+					string system = SystemDropDown.SelectedItem?.ToString();
 
 					if (string.IsNullOrWhiteSpace(system))
 					{
 						throw new Exception("System Id can not be blank");
 					}
 
-					var basePath = Path.GetDirectoryName(name.SubstringBefore('|'));
+					string basePath = Path.GetDirectoryName(name.SubstringBefore('|'));
 					if (string.IsNullOrEmpty(basePath))
 					{
-						var fileInfo = new FileInfo(name);
+						FileInfo fileInfo = new FileInfo(name);
 						basePath = Path.GetDirectoryName(fileInfo.FullName);
 					}
 
@@ -250,10 +244,7 @@ namespace BizHawk.Client.EmuHawk
 			return false;
 		}
 
-		private void NameBox_TextChanged(object sender, EventArgs e)
-		{
-			Recalculate();
-		}
+		private void NameBox_TextChanged(object sender, EventArgs e) => Recalculate();
 
 		private void BrowseBtn_Click(object sender, EventArgs e)
 		{
@@ -273,16 +264,13 @@ namespace BizHawk.Client.EmuHawk
 				initialDirectory = Path.GetDirectoryName(filename) ?? string.Empty;
 			}
 
-			var result = this.ShowFileSaveDialog(
+			string result = this.ShowFileSaveDialog(
 				filter: BundlesFSFilterSet,
 				initDir: initialDirectory,
 				initFileName: filename);
 			if (result is not null) NameBox.Text = result;
 		}
 
-		private void SystemDropDown_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			Recalculate();
-		}
+		private void SystemDropDown_SelectedIndexChanged(object sender, EventArgs e) => Recalculate();
 	}
 }

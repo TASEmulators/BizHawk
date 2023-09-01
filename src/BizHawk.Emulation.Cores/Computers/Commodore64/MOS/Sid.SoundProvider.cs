@@ -17,24 +17,18 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 		}
 
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Async is not available");
-		}
+		public void GetSamplesAsync(short[] samples) => throw new NotSupportedException("Async is not available");
 
-		public void DiscardSamples()
-		{
-			_outputBufferIndex = 0;
-		}
+		public void DiscardSamples() => _outputBufferIndex = 0;
 
-		#pragma warning disable IDE0051
+#pragma warning disable IDE0051
 		// Expose this as GetSamplesAsync to support async sound
 		// There's not need to do this though unless this core wants to handle async in its own way (the client can handle these situations if not available from the core)
 		private void GetSamples(short[] samples)
 		{
 			Flush(true);
-			var length = Math.Min(samples.Length, _outputBufferIndex);
-			for (var i = 0; i < length; i++)
+			int length = Math.Min(samples.Length, _outputBufferIndex);
+			for (int i = 0; i < length; i++)
 			{
 				samples[i] = _outputBuffer[i];
 			}

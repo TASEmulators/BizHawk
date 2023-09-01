@@ -15,12 +15,12 @@ namespace BizHawk.Client.EmuHawk
 
 			for (int i = 0; i < def.Axes.Count; i++)
 			{
-				var box = new CheckBox { Text = def.Axes[i] };
+				CheckBox box = new CheckBox { Text = def.Axes[i] };
 				_buttonBoxes[i] = box;
 			}
 			for (int i = 0; i < def.BoolButtons.Count; i++)
 			{
-				var box = new CheckBox { Text = def.BoolButtons[i] };
+				CheckBox box = new CheckBox { Text = def.BoolButtons[i] };
 				_buttonBoxes[i + def.Axes.Count] = box;
 			}
 

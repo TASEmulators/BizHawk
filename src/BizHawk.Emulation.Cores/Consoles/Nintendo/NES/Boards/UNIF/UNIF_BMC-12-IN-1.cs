@@ -48,10 +48,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		private void SetMirroring(bool horizontal)
-		{
-			SetMirrorType(horizontal ? EMirrorType.Horizontal : EMirrorType.Vertical);
-		}
+		private void SetMirroring(bool horizontal) => SetMirrorType(horizontal ? EMirrorType.Horizontal : EMirrorType.Vertical);
 
 		public override byte ReadPpu(int addr)
 		{
@@ -76,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override byte ReadPrg(int addr)
 		{
-			var basebank = (ctrl & 3) << 3;
+			int basebank = (ctrl & 3) << 3;
 			int bank = 0;
 
 			if (ctrl.Bit(3))

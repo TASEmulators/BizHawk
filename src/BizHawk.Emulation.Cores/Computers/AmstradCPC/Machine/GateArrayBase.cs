@@ -271,17 +271,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			byte[] b = new byte[1];
 			bi.CopyTo(b, 0);
-			var colour = b[0] & 0x1f;
+			int colour = b[0] & 0x1f;
 			PenColours[CurrentPen] = colour;
 		}
 
 		/// <summary>
 		/// Returns the actual ARGB pen colour value
 		/// </summary>
-		public virtual int GetPenColour(int idx)
-		{
-			return CPCHardwarePalette[PenColours[idx]];
-		}
+		public virtual int GetPenColour(int idx) => CPCHardwarePalette[PenColours[idx]];
 
 		/// <summary>
 		/// Screen mode and ROM config
@@ -292,7 +289,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			bi.CopyTo(b, 0);
 
 			// screen mode
-			var mode = b[0] & 0x03;
+			int mode = b[0] & 0x03;
 			ScreenMode = mode;
 
 			// ROM
@@ -333,10 +330,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			return;
 		}
 
-		public void InterruptACK()
-		{
-			INTScanlineCnt &= 0x01f;
-		}
+		public void InterruptACK() => INTScanlineCnt &= 0x01f;
 
 
 		public void Reset()
@@ -352,11 +346,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Device responds to an IN instruction
 		/// </summary>
-		public bool ReadPort(ushort port, ref int result)
-		{
+		public bool ReadPort(ushort port, ref int result) =>
 			// gate array is OUT only
-			return false;
-		}
+			false;
 
 		/// <summary>
 		/// Device responds to an OUT instruction
@@ -403,31 +395,15 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// Video output buffer
 		/// </summary>
 		public int[] ScreenBuffer;
-
-		private int _virtualWidth;
-		private int _virtualHeight;
-		private int _bufferWidth;
 		private int _bufferHeight;
 
 		public int BackgroundColor => CPCHardwarePalette[16];
 
-		public int VirtualWidth
-		{
-			get => _virtualWidth;
-			set => _virtualWidth = value;
-		}
+		public int VirtualWidth { get; set; }
 
-		public int VirtualHeight
-		{
-			get => _virtualHeight;
-			set => _virtualHeight = value;
-		}
+		public int VirtualHeight { get; set; }
 
-		public int BufferWidth
-		{
-			get => _bufferWidth;
-			set => _bufferWidth = value;
-		}
+		public int BufferWidth { get; set; }
 
 		public int BufferHeight
 		{

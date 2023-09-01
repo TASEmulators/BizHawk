@@ -11,7 +11,7 @@ namespace BizHawk.Client.Common
 	{
 		public static char Lookup(string button, string systemId)
 		{
-			var key = button.Replace("Key ", "");
+			string key = button.Replace("Key ", "");
 			if (key.StartsWith('P'))
 			{
 				if (key.Length > 2 && key[1] == '1' && key[2] >= '0' && key[2] <= '9') // Hack to support 10-20 controllers, TODO: regex this thing instead
@@ -25,12 +25,12 @@ namespace BizHawk.Client.Common
 			}
 			key = key.RemovePrefix(LibretroHost.LibretroControllerDef.PFX_RETROPAD);
 
-			if (SystemOverrides.TryGetValue(systemId, out var overridesForSys) && overridesForSys.TryGetValue(key, out var c))
+			if (SystemOverrides.TryGetValue(systemId, out var overridesForSys) && overridesForSys.TryGetValue(key, out char c))
 			{
 				return c;
 			}
 
-			if (BaseMnemonicLookupTable.TryGetValue(key, out var c1))
+			if (BaseMnemonicLookupTable.TryGetValue(key, out char c1))
 			{
 				return c1;
 			}
@@ -45,19 +45,19 @@ namespace BizHawk.Client.Common
 
 		public static string LookupAxis(string button, string systemId)
 		{
-			var key = button
+			string key = button
 				.Replace("P1 ", "")
 				.Replace("P2 ", "")
 				.Replace("P3 ", "")
 				.Replace("P4 ", "")
 				.Replace("Key ", "");
 
-			if (AxisSystemOverrides.TryGetValue(systemId, out var overridesForSystem) && overridesForSystem.TryGetValue(key, out var s))
+			if (AxisSystemOverrides.TryGetValue(systemId, out var overridesForSystem) && overridesForSystem.TryGetValue(key, out string s))
 			{
 				return s;
 			}
 
-			if (BaseAxisLookupTable.TryGetValue(key, out var s1))
+			if (BaseAxisLookupTable.TryGetValue(key, out string s1))
 			{
 				return s1;
 			}

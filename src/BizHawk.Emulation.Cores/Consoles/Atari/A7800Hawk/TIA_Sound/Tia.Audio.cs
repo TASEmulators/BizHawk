@@ -120,7 +120,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 							Run5();
 							break;
 						case 0x02:
-							if ((sr5 == 31) || (sr5 == 16))
+							if (sr5 is 31 or 16)
 							{
 								on = Run4();
 							}

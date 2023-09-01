@@ -19,7 +19,7 @@
 
 		protected override int Get_PRGBank_8K(int addr)
 		{
-			var val = base.Get_PRGBank_8K(addr);
+			int val = base.Get_PRGBank_8K(addr);
 			if (val >= 0x50)
 			{
 				return val & 0x4F;

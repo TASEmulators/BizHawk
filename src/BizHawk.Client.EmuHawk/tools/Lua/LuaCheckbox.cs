@@ -7,7 +7,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private void DoLuaClick(object sender, EventArgs e)
 		{
-			var parent = Parent as LuaWinform;
+			LuaWinform parent = Parent as LuaWinform;
 			parent?.DoLuaEvent(Handle);
 		}
 

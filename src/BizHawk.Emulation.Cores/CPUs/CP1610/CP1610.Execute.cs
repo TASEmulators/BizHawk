@@ -34,10 +34,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 							FlagD ? "D" : "d")
 					}.Concat(Register.Select((r, i) => $"R{i}:{r:X4}"))));
 
-		private void Calc_FlagC(int result)
-		{
-			FlagC = ((result & 0x10000) != 0);
-		}
+		private void Calc_FlagC(int result) => FlagC = ((result & 0x10000) != 0);
 
 		private void Calc_FlagO_Add(int op1, int op2, int result)
 		{
@@ -61,20 +58,11 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 			);
 		}
 
-		private void Calc_FlagS(int result)
-		{
-			FlagS = ((result & 0x8000) != 0);
-		}
+		private void Calc_FlagS(int result) => FlagS = ((result & 0x8000) != 0);
 
-		private void Calc_FlagS_7(int result)
-		{
-			FlagS = ((result & 0x80) != 0);
-		}
+		private void Calc_FlagS_7(int result) => FlagS = ((result & 0x80) != 0);
 
-		private void Calc_FlagZ(int result)
-		{
-			FlagZ = (result == 0);
-		}
+		private void Calc_FlagZ(int result) => FlagZ = (result == 0);
 
 		private ushort Indirect_Get(byte mem)
 		{
@@ -97,7 +85,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				value |= (ushort)(ReadMemoryWrapper(Register[mem], false) << 8);
 			}
 			// Auto-increment the memory register if it does so on write.
-			if (mem >= 0x4 && mem != 0x6)
+			if (mem is >= 0x4 and not 0x6)
 			{
 				Register[mem]++;
 			}
@@ -307,7 +295,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				case 0x027:
 					dest = (byte)(opcode & 0x7);
 					dest_value = Register[dest];
-					var ones = (dest_value ^ 0xFFFF);
+					int ones = (dest_value ^ 0xFFFF);
 					result = ones + 1;
 					Calc_FlagC(result);
 					Calc_FlagO_Sub(dest_value, 0, result);
@@ -329,7 +317,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				case 0x02F:
 					dest = (byte)(opcode & 0x7);
 					dest_value = Register[dest];
-					var carry = FlagC ? 1 : 0;
+					int carry = FlagC ? 1 : 0;
 					result = dest_value + carry;
 					Calc_FlagC(result);
 					Calc_FlagO_Add(dest_value, carry, result);
@@ -694,7 +682,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 					Calc_FlagS(result);
 					Calc_FlagZ(result);
 					Register[dest] = (ushort)result;
-					if (dest == 0x6 || dest == 0x7)
+					if (dest is 0x6 or 0x7)
 					{
 						cycles = 7;
 					}

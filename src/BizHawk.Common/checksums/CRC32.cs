@@ -29,7 +29,7 @@ namespace BizHawk.Common
 			// put operator for one zero bit in odd
 			odd[0] = POLYNOMIAL_CONST;
 			var oddTail = odd.Slice(1);
-			for (var n = 0; n < oddTail.Length; n++) oddTail[n] = 1U << n;
+			for (int n = 0; n < oddTail.Length; n++) oddTail[n] = 1U << n;
 			// put operator for two zero bits in even
 			gf2_matrix_square(even, odd);
 			// put operator for four zero bits in odd
@@ -46,12 +46,12 @@ namespace BizHawk.Common
 		private static void gf2_matrix_square(Span<uint> square, ReadOnlySpan<uint> mat)
 		{
 			if (mat.Length != square.Length) throw new ArgumentException(message: "must be same length as " + nameof(square), paramName: nameof(mat));
-			for (var n = 0; n < square.Length; n++) square[n] = gf2_matrix_times(mat, mat[n]);
+			for (int n = 0; n < square.Length; n++) square[n] = gf2_matrix_times(mat, mat[n]);
 		}
 
 		private static uint gf2_matrix_times(ReadOnlySpan<uint> mat, uint vec)
 		{
-			var matIdx = 0;
+			int matIdx = 0;
 			uint sum = 0U;
 			while (vec != 0U)
 			{
@@ -62,23 +62,17 @@ namespace BizHawk.Common
 			return sum;
 		}
 
-		private uint _current = 0xFFFFFFFFU;
-
 		/// <summary>The raw non-negated output</summary>
-		public uint Current
-		{
-			get => _current;
-			set => _current = value;
-		}
+		public uint Current { get; set; } = 0xFFFFFFFFU;
 
 		/// <summary>The negated output (the typical result of the CRC calculation)</summary>
-		public uint Result => ~_current;
+		public uint Result => ~Current;
 
 		public unsafe void Add(ReadOnlySpan<byte> data)
 		{
 			fixed (byte* d = &data.GetPinnableReference())
 			{
-				_current = _calcCRC(_current, (IntPtr) d, data.Length);
+				Current = _calcCRC(Current, (IntPtr) d, data.Length);
 			}
 		}
 
@@ -101,7 +95,7 @@ namespace BizHawk.Common
 			{
 				// apply zeros operator for this bit of len
 				gf2_matrix_square(even, odd);
-				if ((len & 1U) != 0U) _current = gf2_matrix_times(even, _current);
+				if ((len & 1U) != 0U) Current = gf2_matrix_times(even, Current);
 				len >>= 1;
 
 				// if no more bits set, then done
@@ -109,14 +103,14 @@ namespace BizHawk.Common
 
 				// another iteration of the loop with odd and even swapped
 				gf2_matrix_square(odd, even);
-				if ((len & 1U) != 0U) _current = gf2_matrix_times(odd, _current);
+				if ((len & 1U) != 0U) Current = gf2_matrix_times(odd, Current);
 				len >>= 1;
 
 				// if no more bits set, then done
 			} while (len != 0U);
 
 			// finally, combine and return
-			_current ^= crc;
+			Current ^= crc;
 		}
 	}
 }

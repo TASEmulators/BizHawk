@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void WriteExp(int addr, byte value)
 		{
-			if (addr >= 0x1000 && addr <= 0x1003)
+			if (addr is >= 0x1000 and <= 0x1003)
 			{
 				regs[addr & 3] = value;
 				SetMirrorType((regs[0] & 0x20) > 0 ? EMirrorType.Horizontal : EMirrorType.Vertical);
@@ -36,10 +36,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.WriteExp(addr, value);
 		}
 
-		public override void WritePrg(int addr, byte value)
-		{
-			regs[3] = value;
-		}
+		public override void WritePrg(int addr, byte value) => regs[3] = value;
 
 		public override byte ReadPrg(int addr)
 		{

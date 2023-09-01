@@ -39,8 +39,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 			// latch initial video buffer
 			FrameBuffer = vdc1.GetVideoBuffer();
-			FrameWidth = vdc1.BufferWidth;
-			FrameHeight = vdc1.BufferHeight;
+			BufferWidth = vdc1.BufferWidth;
+			BufferHeight = vdc1.BufferHeight;
 		}
 
 		public byte ReadVPC(int port)
@@ -101,9 +101,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		private const int DCR = 15;
 
 		private int EffectivePriorityMode = 0;
-
-		private int FrameHeight;
-		private int FrameWidth;
 		private int[] FrameBuffer;
 
 		private readonly byte[] PriorityBuffer = new byte[512];
@@ -123,8 +120,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 
 			// Latch frame dimensions and framebuffer, for purely dumb reasons
-			FrameWidth = VDC1.BufferWidth;
-			FrameHeight = VDC1.BufferHeight;
+			BufferWidth = VDC1.BufferWidth;
+			BufferHeight = VDC1.BufferHeight;
 			FrameBuffer = VDC1.GetVideoBuffer();
 
 			int ScanLine = 0;
@@ -272,10 +269,10 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		private void InitializeScanLine(int scanline)
 		{
 			// Clear priority buffer
-			Array.Clear(PriorityBuffer, 0, FrameWidth);
+			Array.Clear(PriorityBuffer, 0, BufferWidth);
 			// Initialize scanline to background color
-			for (int i = 0; i < FrameWidth; i++)
-				FrameBuffer[((scanline + VDC1.ViewStartLine) * FrameWidth) + i] = VCE.Palette[256];
+			for (int i = 0; i < BufferWidth; i++)
+				FrameBuffer[((scanline + VDC1.ViewStartLine) * BufferWidth) + i] = VCE.Palette[256];
 		}
 
 		private unsafe void RenderBackgroundScanline(VDC vdc, byte priority, bool show)
@@ -299,7 +296,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			{
 				// pointer to the BAT and the framebuffer for this line
 				ushort* BatRow = VRAMptr + yTile * vdc.BatWidth;
-				int* dst = FBptr + (vdc.ActiveLine + vdc.ViewStartLine - PCE.Settings.TopLine) * FrameWidth;
+				int* dst = FBptr + (vdc.ActiveLine + vdc.ViewStartLine - PCE.Settings.TopLine) * BufferWidth;
 
 				// parameters that change per tile
 				ushort BatEnt;
@@ -317,7 +314,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				paletteBase = paletteNo * 16;
 				src = Patternptr + (tileNo << 6 | yOfs << 3 | xOfs);
 
-				for (int x = 0; x < FrameWidth; x++)
+				for (int x = 0; x < BufferWidth; x++)
 				{
 					if (Priortyptr[x] < priority)
 					{
@@ -355,7 +352,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				return;
 
 			// clear inter-sprite priority buffer
-			Array.Clear(InterSpritePriorityBuffer, 0, FrameWidth);
+			Array.Clear(InterSpritePriorityBuffer, 0, BufferWidth);
 
 			var testRange = 0.MutableRangeTo(vdc.ActiveLine + 1);
 			for (int i = 0; i < 64; i++)
@@ -446,7 +443,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				{
 					if (x + width > 0 && y + height > 0)
 					{
-						for (int xs = x >= 0 ? x : 0; xs < x + 16 && xs >= 0 && xs < FrameWidth; xs++)
+						for (int xs = x >= 0 ? x : 0; xs < x + 16 && xs >= 0 && xs < BufferWidth; xs++)
 						{
 							byte pixel = vdc.SpriteBuffer[(patternNo * 256) + (yofs * 16) + (xs - x)];
 							if (pixel != 0 && InterSpritePriorityBuffer[xs] == 0)
@@ -455,7 +452,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 								byte myPriority = priority ? highPriority : lowPriority;
 								if (PriorityBuffer[xs] < myPriority)
 								{
-									if (show) FrameBuffer[((vdc.ActiveLine + vdc.ViewStartLine - PCE.Settings.TopLine) * FrameWidth) + xs] = VCE.Palette[paletteBase + pixel];
+									if (show) FrameBuffer[((vdc.ActiveLine + vdc.ViewStartLine - PCE.Settings.TopLine) * BufferWidth) + xs] = VCE.Palette[paletteBase + pixel];
 									PriorityBuffer[xs] = myPriority;
 								}
 							}
@@ -465,7 +462,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					{
 						patternNo++;
 						x += 16;
-						for (int xs = x >= 0 ? x : 0; xs < x + 16 && xs >= 0 && xs < FrameWidth; xs++)
+						for (int xs = x >= 0 ? x : 0; xs < x + 16 && xs >= 0 && xs < BufferWidth; xs++)
 						{
 							byte pixel = vdc.SpriteBuffer[(patternNo * 256) + (yofs * 16) + (xs - x)];
 							if (pixel != 0 && InterSpritePriorityBuffer[xs] == 0)
@@ -474,7 +471,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 								byte myPriority = priority ? highPriority : lowPriority;
 								if (PriorityBuffer[xs] < myPriority)
 								{
-									if (show) FrameBuffer[((vdc.ActiveLine + vdc.ViewStartLine - PCE.Settings.TopLine) * FrameWidth) + xs] = VCE.Palette[paletteBase + pixel];
+									if (show) FrameBuffer[((vdc.ActiveLine + vdc.ViewStartLine - PCE.Settings.TopLine) * BufferWidth) + xs] = VCE.Palette[paletteBase + pixel];
 									PriorityBuffer[xs] = myPriority;
 								}
 							}
@@ -487,7 +484,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					{
 						if (width == 32)
 							patternNo++;
-						for (int xs = x >= 0 ? x : 0; xs < x + 16 && xs >= 0 && xs < FrameWidth; xs++)
+						for (int xs = x >= 0 ? x : 0; xs < x + 16 && xs >= 0 && xs < BufferWidth; xs++)
 						{
 							byte pixel = vdc.SpriteBuffer[(patternNo * 256) + (yofs * 16) + 15 - (xs - x)];
 							if (pixel != 0 && InterSpritePriorityBuffer[xs] == 0)
@@ -496,7 +493,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 								byte myPriority = priority ? highPriority : lowPriority;
 								if (PriorityBuffer[xs] < myPriority)
 								{
-									if (show) FrameBuffer[((vdc.ActiveLine + vdc.ViewStartLine - PCE.Settings.TopLine) * FrameWidth) + xs] = VCE.Palette[paletteBase + pixel];
+									if (show) FrameBuffer[((vdc.ActiveLine + vdc.ViewStartLine - PCE.Settings.TopLine) * BufferWidth) + xs] = VCE.Palette[paletteBase + pixel];
 									PriorityBuffer[xs] = myPriority;
 								}
 							}
@@ -505,7 +502,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 						{
 							patternNo--;
 							x += 16;
-							for (int xs = x >= 0 ? x : 0; xs < x + 16 && xs >= 0 && xs < FrameWidth; xs++)
+							for (int xs = x >= 0 ? x : 0; xs < x + 16 && xs >= 0 && xs < BufferWidth; xs++)
 							{
 								byte pixel = vdc.SpriteBuffer[(patternNo * 256) + (yofs * 16) + 15 - (xs - x)];
 								if (pixel != 0 && InterSpritePriorityBuffer[xs] == 0)
@@ -514,7 +511,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 									byte myPriority = priority ? highPriority : lowPriority;
 									if (PriorityBuffer[xs] < myPriority)
 									{
-										if (show) FrameBuffer[((vdc.ActiveLine + vdc.ViewStartLine - PCE.Settings.TopLine) * FrameWidth) + xs] = VCE.Palette[paletteBase + pixel];
+										if (show) FrameBuffer[((vdc.ActiveLine + vdc.ViewStartLine - PCE.Settings.TopLine) * BufferWidth) + xs] = VCE.Palette[paletteBase + pixel];
 										PriorityBuffer[xs] = myPriority;
 									}
 								}
@@ -527,10 +524,10 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		// IVideoProvider implementation
 		public int[] GetVideoBuffer() => FrameBuffer;
-		public int VirtualWidth => FrameWidth;
-		public int VirtualHeight => FrameHeight;
-		public int BufferWidth => FrameWidth;
-		public int BufferHeight => FrameHeight;
+		public int VirtualWidth => BufferWidth;
+		public int VirtualHeight => BufferHeight;
+		public int BufferWidth { get; private set; }
+		public int BufferHeight { get; private set; }
 		public int BackgroundColor => VCE.Palette[0];
 
 		public int VsyncNumerator

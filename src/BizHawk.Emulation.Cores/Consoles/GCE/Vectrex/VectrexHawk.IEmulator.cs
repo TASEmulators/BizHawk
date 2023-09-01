@@ -108,20 +108,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			_islag = false;
 		}
 
-		public void Dispose()
-		{
-			audio.DisposeSound();
-		}
+		public void Dispose() => audio.DisposeSound();
 
 		public int _frameHz = 50;
 
 		public int[] _vidbuffer;
 		public int[] _framebuffer;
 
-		public int[] GetVideoBuffer()
-		{
-			return _framebuffer;		
-		}
+		public int[] GetVideoBuffer() => _framebuffer;
 
 		public void get_video_frame()
 		{

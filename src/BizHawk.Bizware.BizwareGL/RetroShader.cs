@@ -21,8 +21,8 @@ namespace BizHawk.Bizware.BizwareGL
 			VertexLayout.DefineVertexAttribute("tex", 2, 2, VertexAttribPointerType.Float, AttribUsage.Texcoord0, false, 40, 32);
 			VertexLayout.Close();
 
-			var vsSource = $"#define VERTEX\r\n{source}";
-			var psSource = $"#define FRAGMENT\r\n{source}";
+			string vsSource = $"#define VERTEX\r\n{source}";
+			string psSource = $"#define FRAGMENT\r\n{source}";
 			var vs = owner.CreateVertexShader(vsSource, "main_vertex", debug);
 			var ps = owner.CreateFragmentShader(psSource, "main_fragment", debug);
 			Pipeline = Owner.CreatePipeline(VertexLayout, vs, ps, debug, "retro");
@@ -65,11 +65,9 @@ namespace BizHawk.Bizware.BizwareGL
 			VertexLayout.Release();
 		}
 
-		public void Bind()
-		{
+		public void Bind() =>
 			// lame...
 			Owner.BindPipeline(Pipeline);
-		}
 
 		public unsafe void Run(Texture2d tex, Size InputSize, Size OutputSize, bool flip)
 		{
@@ -84,7 +82,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 			var Projection = Owner.CreateGuiProjectionMatrix(OutputSize);
 			var Modelview = Owner.CreateGuiViewMatrix(OutputSize);
-			var mat = Matrix4x4.Transpose(Modelview * Projection);
+			Matrix4x4 mat = Matrix4x4.Transpose(Modelview * Projection);
 			Pipeline["modelViewProj"].Set(mat, true);
 
 			Owner.SetTextureWrapMode(tex, true);
@@ -92,11 +90,11 @@ namespace BizHawk.Bizware.BizwareGL
 			sampler0.Set(tex);
 			Owner.SetViewport(OutputSize);
 
-			var time = DateTime.Now.Second + (float)DateTime.Now.Millisecond / 1000;
+			float time = DateTime.Now.Second + (float)DateTime.Now.Millisecond / 1000;
 			Pipeline["Time"].Set(time);
 
-			var w = OutputSize.Width;
-			var h = OutputSize.Height;
+			int w = OutputSize.Width;
+			int h = OutputSize.Height;
 
 			float v0, v1;
 			if (flip)
@@ -110,8 +108,8 @@ namespace BizHawk.Bizware.BizwareGL
 				v1 = 1;
 			}
 
-			var pData = stackalloc float[10 * 4];
-			var i = 0;
+			float* pData = stackalloc float[10 * 4];
+			int i = 0;
 			pData[i++] = 0; pData[i++] = 0; pData[i++] = 0; pData[i++] = 1; //topleft vert
 			pData[i++] = 0; pData[i++] = 0; pData[i++] = 0; pData[i++] = 0; //useless color
 			pData[i++] = 0; pData[i++] = v0;

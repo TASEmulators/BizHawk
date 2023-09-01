@@ -12,16 +12,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		private void MakeTrace(string msg)
 		{
-			var disasm = msg.Split('|')[1];
-			var split = disasm.Split(':');
-			var machineCode = split[0].PadLeft(8);
-			var instruction = split[1].Trim();
+			string disasm = msg.Split('|')[1];
+			string[] split = disasm.Split(':');
+			string machineCode = split[0].PadLeft(8);
+			string instruction = split[1].Trim();
 			var regs = GetCpuFlagsAndRegisters();
-			var wordSize = (regs["CPSR"].Value & 32) == 0 ? 4UL : 2UL;
-			var pc = regs["R15"].Value - wordSize * 2;
-			var sb = new StringBuilder();
+			ulong wordSize = (regs["CPSR"].Value & 32) == 0 ? 4UL : 2UL;
+			ulong pc = regs["R15"].Value - wordSize * 2;
+			StringBuilder sb = new StringBuilder();
 
-			for (var i = 0; i < RegisterNames.Length; i++)
+			for (int i = 0; i < RegisterNames.Length; i++)
 			{
 				sb.Append($" { RegisterNames[i] }:{ regs[RegisterNames[i]].Value:X8}");
 			}

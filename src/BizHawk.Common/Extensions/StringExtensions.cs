@@ -8,8 +8,8 @@ namespace BizHawk.Common.StringExtensions
 	{
 		public static string CharCodepointsToString(byte[] array)
 		{
-			var a = new char[array.Length];
-			for (var i = 0; i < array.Length; i++) a[i] = char.ConvertFromUtf32(array[i])[0];
+			char[] a = new char[array.Length];
+			for (int i = 0; i < array.Length; i++) a[i] = char.ConvertFromUtf32(array[i])[0];
 			return new(a);
 		}
 
@@ -88,7 +88,7 @@ namespace BizHawk.Common.StringExtensions
 		/// </returns>
 		public static string SubstringAfter(this string str, string delimiter, string notFoundValue)
 		{
-			var index = str.IndexOf(delimiter, StringComparison.Ordinal);
+			int index = str.IndexOf(delimiter, StringComparison.Ordinal);
 			return index < 0 ? notFoundValue : str.Substring(index + delimiter.Length, str.Length - index - delimiter.Length);
 		}
 
@@ -105,7 +105,7 @@ namespace BizHawk.Common.StringExtensions
 		/// </returns>
 		public static string SubstringAfterLast(this string str, char delimiter, string notFoundValue)
 		{
-			var index = str.LastIndexOf(delimiter);
+			int index = str.LastIndexOf(delimiter);
 			return index < 0 ? notFoundValue : str.Substring(index + 1, str.Length - index - 1);
 		}
 
@@ -121,7 +121,7 @@ namespace BizHawk.Common.StringExtensions
 		/// </returns>
 		public static string SubstringBefore(this string str, char delimiter, string notFoundValue)
 		{
-			var index = str.IndexOf(delimiter);
+			int index = str.IndexOf(delimiter);
 			return index < 0 ? notFoundValue : str.Substring(0, index);
 		}
 
@@ -137,7 +137,7 @@ namespace BizHawk.Common.StringExtensions
 		/// </returns>
 		public static string SubstringBeforeLast(this string str, char delimiter, string notFoundValue)
 		{
-			var index = str.LastIndexOf(delimiter);
+			int index = str.LastIndexOf(delimiter);
 			return index < 0 ? notFoundValue : str.Substring(0, index);
 		}
 
@@ -147,14 +147,14 @@ namespace BizHawk.Common.StringExtensions
 		/// </returns>
 		public static string? SubstringBeforeOrNull(this string str, string delimiter)
 		{
-			var index = str.IndexOf(delimiter, StringComparison.Ordinal);
+			int index = str.IndexOf(delimiter, StringComparison.Ordinal);
 			return index < 0 ? null : str.Substring(0, index);
 		}
 
 		public static byte[] ToCharCodepointArray(this string str)
 		{
-			var a = new byte[str.Length];
-			for (var i = 0; i < str.Length; i++) a[i] = (byte) char.ConvertToUtf32(str, i);
+			byte[] a = new byte[str.Length];
+			for (int i = 0; i < str.Length; i++) a[i] = (byte) char.ConvertToUtf32(str, i);
 			return a;
 		}
 

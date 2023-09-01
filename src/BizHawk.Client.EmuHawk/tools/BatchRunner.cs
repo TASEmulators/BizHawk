@@ -58,10 +58,7 @@ namespace BizHawk.Client.EmuHawk
 
 			public string BoardName { get; set; } // IEmulator's board name return (could be null!)
 
-			public void DumpTo(TextWriter tw)
-			{
-				tw.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}", Filename, Fullname, CoreType, Status, Frames, LaggedFrames, Game.Hash, BoardName);
-			}
+			public void DumpTo(TextWriter tw) => tw.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}", Filename, Fullname, CoreType, Status, Frames, LaggedFrames, Game.Hash, BoardName);
 		}
 
 		public BatchRunner(Config config, CoreComm comm, IEnumerable<string> files, int numFrames)
@@ -110,7 +107,7 @@ namespace BizHawk.Client.EmuHawk
 				} while (_multiHasNext);
 				if (OnProgress != null)
 				{
-					var e = new ProgressEventArgs(i + 1, _files.Count);
+					ProgressEventArgs e = new ProgressEventArgs(i + 1, _files.Count);
 					OnProgress(this, e);
 					if (e.ShouldCancel)
 					{
@@ -153,11 +150,11 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			using (IEmulator emu = _ldr.LoadedEmulator)
+			using (var emu = _ldr.LoadedEmulator)
 			{
 				_current.Game = _ldr.Game;
 				_current.CoreType = emu.GetType();
-				var controller = new Controller(emu.ControllerDefinition);
+				Controller controller = new Controller(emu.ControllerDefinition);
 				_current.BoardName = emu.HasBoardInfo() ? emu.AsBoardInfo().BoardName : null;
 
 				_current.Frames = 0;

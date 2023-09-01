@@ -28,21 +28,18 @@ namespace BizHawk.Client.EmuHawk
 		private bool succeeded = false;
 		private bool failed = false;
 
-		private void ThreadProc()
-		{
-			Download();
-		}
+		private void ThreadProc() => Download();
 
 		private void Download()
 		{
 			//the temp file is owned by this thread
-			var fn = TempFileManager.GetTempFilename("ffmpeg_download", ".7z", false);
+			string fn = TempFileManager.GetTempFilename("ffmpeg_download", ".7z", false);
 
 			try
 			{
-				using (var evt = new ManualResetEvent(false))
+				using (ManualResetEvent evt = new ManualResetEvent(false))
 				{
-					using var client = new System.Net.WebClient();
+					using System.Net.WebClient client = new System.Net.WebClient();
 					System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
 					client.DownloadFileAsync(new Uri(FFmpegService.Url), fn);
 					client.DownloadProgressChanged += (object sender, System.Net.DownloadProgressChangedEventArgs e) =>
@@ -77,10 +74,10 @@ namespace BizHawk.Client.EmuHawk
 					return;
 
 				//try acquiring file
-				using (var hf = new HawkFile(fn))
+				using (HawkFile hf = new HawkFile(fn))
 				{
 					using var exe = OSTailoredCode.IsUnixHost ? hf.BindArchiveMember("ffmpeg") : hf.BindFirstOf(".exe");
-					var data = exe!.ReadAllBytes();
+					byte[] data = exe!.ReadAllBytes();
 
 					//last chance. exiting, don't dump the new ffmpeg file
 					if (exiting)
@@ -119,21 +116,16 @@ namespace BizHawk.Client.EmuHawk
 			failed = false;
 			succeeded = false;
 			pct = 0;
-			var t = new Thread(ThreadProc);
+			Thread t = new Thread(ThreadProc);
 			t.Start();
 		}
 
-		private void btnCancel_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
+		private void btnCancel_Click(object sender, EventArgs e) => Close();
 
-		protected override void OnClosed(EventArgs e)
-		{
+		protected override void OnClosed(EventArgs e) =>
 			//inform the worker thread that it needs to try terminating without doing anything else
 			//(it will linger on in background for a bit til it can service this)
 			exiting = true;
-		}
 
 		private void timer1_Tick(object sender, EventArgs e)
 		{
@@ -150,10 +142,7 @@ namespace BizHawk.Client.EmuHawk
 			progressBar1.Value = pct;
 		}
 
-		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-		{
-			System.Diagnostics.Process.Start(FFmpegService.Url);
-		}
+		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => System.Diagnostics.Process.Start(FFmpegService.Url);
 	}
 }
 

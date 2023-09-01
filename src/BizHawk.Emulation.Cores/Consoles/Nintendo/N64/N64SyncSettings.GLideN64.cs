@@ -601,10 +601,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			[Category("Emulation")]
 			public float GammaCorrectionLevel { get; set; }
 
-			public N64GLideN64PluginSettings Clone()
-			{
-				return (N64GLideN64PluginSettings)MemberwiseClone();
-			}
+			public N64GLideN64PluginSettings Clone() => (N64GLideN64PluginSettings)MemberwiseClone();
 
 			public void FillPerGameHacks(GameInfo game)
 			{
@@ -618,10 +615,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				}
 			}
 
-			public PluginType GetPluginType()
-			{
-				return PluginType.GLideN64;
-			}
+			public PluginType GetPluginType() => PluginType.GLideN64;
 		}
 	}
 }

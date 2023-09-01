@@ -144,10 +144,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				cachedTiles[4][i] = (byte)(cachedTiles[3][i] & 0x7F);
 		}
 
-		public int Colorize(int rgb555)
-		{
-			return palette[rgb555];
-		}
+		public int Colorize(int rgb555) => palette[rgb555];
 
 		public void Colorize(int* buf, int offset, int numpixels)
 		{
@@ -255,7 +252,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		public TileEntry[] FetchMode7Tilemap()
 		{
-			var buf = new TileEntry[128*128];
+			TileEntry[] buf = new TileEntry[128*128];
 			for (int tidx = 0; tidx < 128 * 128; tidx++)
 			{
 				buf[tidx].address = tidx * 2;
@@ -267,7 +264,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		public TileEntry[] FetchTilemap(int addr, ScreenSize size)
 		{
-			Dimensions blockDimensions = SizeInBlocksForBGSize(size);
+			var blockDimensions = SizeInBlocksForBGSize(size);
 			int realWidth = blockDimensions.Width * 32;
 			int realHeight = blockDimensions.Height * 32;
 			TileEntry[] buf = new TileEntry[realWidth*realHeight];
@@ -349,7 +346,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			byte[,] spriteMap)
 		{
 			oam ??= new OAMInfo(objects, si, spritenum);
-			Size dim = ObjSizes[si.OBSEL_Size, oam.Size ? 1 : 0];
+			var dim = ObjSizes[si.OBSEL_Size, oam.Size ? 1 : 0];
 
 			byte[] cachedTileBuffer = cachedTiles[bppArrayIndex[4]];
 

@@ -90,10 +90,7 @@ namespace BizHawk.Client.Common
 			AutofireStickyXorAdapter.MassToggleStickyState(AutoFireController.PressedButtons);
 		}
 
-		public void ToggleAutoStickies()
-		{
-			AutofireStickyXorAdapter.MassToggleStickyState(ActiveController.PressedButtons);
-		}
+		public void ToggleAutoStickies() => AutofireStickyXorAdapter.MassToggleStickyState(ActiveController.PressedButtons);
 
 		private static Controller BindToDefinition(
 			ControllerDefinition def,
@@ -101,12 +98,12 @@ namespace BizHawk.Client.Common
 			IDictionary<string, Dictionary<string, AnalogBind>> analogBinds,
 			IDictionary<string, Dictionary<string, FeedbackBind>> feedbackBinds)
 		{
-			var ret = new Controller(def);
+			Controller ret = new Controller(def);
 			if (allBinds.TryGetValue(def.Name, out var binds))
 			{
-				foreach (var btn in def.BoolButtons)
+				foreach (string btn in def.BoolButtons)
 				{
-					if (binds.TryGetValue(btn, out var bind))
+					if (binds.TryGetValue(btn, out string bind))
 					{
 						ret.BindMulti(btn, bind);
 					}
@@ -115,7 +112,7 @@ namespace BizHawk.Client.Common
 
 			if (analogBinds.TryGetValue(def.Name, out var aBinds))
 			{
-				foreach (var btn in def.Axes.Keys)
+				foreach (string btn in def.Axes.Keys)
 				{
 					if (aBinds.TryGetValue(btn, out var bind))
 					{
@@ -126,7 +123,7 @@ namespace BizHawk.Client.Common
 
 			if (feedbackBinds.TryGetValue(def.Name, out var fBinds))
 			{
-				foreach (var channel in def.HapticsChannels)
+				foreach (string channel in def.HapticsChannels)
 				{
 					if (fBinds.TryGetValue(channel, out var bind)) ret.BindFeedbackChannel(channel, bind);
 				}
@@ -141,12 +138,12 @@ namespace BizHawk.Client.Common
 			int on,
 			int off)
 		{
-			var ret = new AutofireController(emulator, on, off);
+			AutofireController ret = new AutofireController(emulator, on, off);
 			if (allBinds.TryGetValue(emulator.ControllerDefinition.Name, out var binds))
 			{
-				foreach (var btn in emulator.ControllerDefinition.BoolButtons)
+				foreach (string btn in emulator.ControllerDefinition.BoolButtons)
 				{
-					if (binds.TryGetValue(btn, out var bind))
+					if (binds.TryGetValue(btn, out string bind))
 					{
 						ret.BindMulti(btn, bind);
 					}

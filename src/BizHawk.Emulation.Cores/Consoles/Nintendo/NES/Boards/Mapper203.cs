@@ -38,10 +38,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			chr_reg_8k = (value & 0x03) & chr_bank_mask_8k;
 		}
 
-		public override byte ReadPrg(int addr)
-		{
-			return Rom[(prg_reg_16k * 0x4000) + (addr & 0x3FFF)];
-		}
+		public override byte ReadPrg(int addr) => Rom[(prg_reg_16k * 0x4000) + (addr & 0x3FFF)];
 
 		public override byte ReadPpu(int addr)
 		{

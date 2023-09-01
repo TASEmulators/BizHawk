@@ -32,15 +32,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new InvalidOperationException("Async mode is not supported.");
-		}
+		public void GetSamplesAsync(short[] samples) => throw new InvalidOperationException("Async mode is not supported.");
 
-		private void InitAudio()
-		{
-			LibQuickNES.ThrowStringError(QN.qn_set_sample_rate(Context, 44100));
-		}
+		private void InitAudio() => LibQuickNES.ThrowStringError(QN.qn_set_sample_rate(Context, 44100));
 
 		private void DrainAudio()
 		{

@@ -127,7 +127,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void DoCGBColorChooserFormDialog(IDialogParent parent, Gameboy.GambatteSettings s)
 		{
-			using var dlg = new CGBColorChooserForm();
+			using CGBColorChooserForm dlg = new CGBColorChooserForm();
 			dlg.LoadType(s);
 			if (!parent.ShowDialogAsChild(dlg).IsOk()) return;
 			s.CGBColors = dlg._type;

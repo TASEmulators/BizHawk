@@ -27,7 +27,7 @@ namespace BizHawk.Client.Common
 		{
 			if (_ser is null)
 			{
-				var entries = Filters.Select(static filter => filter.ToString()).ToList();
+				List<string> entries = Filters.Select(static filter => filter.ToString()).ToList();
 				if (CombinedEntryDesc is not null) entries.Insert(0, FilesystemFilter.SerializeEntry(CombinedEntryDesc, CombinedExts));
 				if (AppendAllFilesEntry) entries.Add(FilesystemFilter.AllFilesEntry);
 				_ser = string.Join("|", entries);

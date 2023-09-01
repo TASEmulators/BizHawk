@@ -155,7 +155,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public void ExecutePhase()
 		{
-			var shiftIn = false;
+			bool shiftIn = false;
 
 			// TODO: use this or delete
 			////var shiftOut = false;

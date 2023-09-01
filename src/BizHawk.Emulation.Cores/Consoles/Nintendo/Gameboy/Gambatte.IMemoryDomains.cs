@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		private void CreateMemoryDomain(LibGambatte.MemoryAreas which, string name)
 		{
-			IntPtr data = IntPtr.Zero;
+			var data = IntPtr.Zero;
 			int length = 0;
 
 			if (!LibGambatte.gambatte_getmemoryarea(GambatteState, which, ref data, ref length))

@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores
 					}
 
 					int pNum = i + 1;
-					if (fioConfig.DevicesPlayer[i] == OctoshockDll.ePeripheralType.DualAnalog || fioConfig.DevicesPlayer[i] == OctoshockDll.ePeripheralType.DualShock)
+					if (fioConfig.DevicesPlayer[i] is OctoshockDll.ePeripheralType.DualAnalog or OctoshockDll.ePeripheralType.DualShock)
 					{
 						yield return DualShockController(pNum);
 					}
@@ -49,8 +49,8 @@ namespace BizHawk.Emulation.Cores
 			{
 				foreach (var result in nyma.ActualPortData)
 				{
-					var num = int.Parse(result.Port.ShortName.Last().ToString());
-					var device = result.Device.ShortName;
+					int num = int.Parse(result.Port.ShortName.Last().ToString());
+					string device = result.Device.ShortName;
 					if (device is "none") continue;
 					yield return device switch
 					{

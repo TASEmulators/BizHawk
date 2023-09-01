@@ -66,9 +66,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SetMirroring();
 		}
 
-		private void SetMirroring()
-		{
-			SetMirrorType(_verticalMirror ? EMirrorType.Vertical : EMirrorType.Horizontal);
-		}
+		private void SetMirroring() => SetMirrorType(_verticalMirror ? EMirrorType.Vertical : EMirrorType.Horizontal);
 	}
 }

@@ -118,10 +118,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Video buffer processing
 		/// </summary>
-		public int[] ProcessVideoBuffer()
-		{
-			return ScreenBuffer;
-		}
+		public int[] ProcessVideoBuffer() => ScreenBuffer;
 
 		/// <summary>
 		/// Sets up buffers and the like at the start of a frame

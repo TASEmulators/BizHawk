@@ -45,7 +45,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Tools.IsAvailable<CDL>())
 			{
-				CDL cdl = Tools.Load<CDL>();
+				var cdl = Tools.Load<CDL>();
 				cdl.LoadFile(filename);
 			}
 		}
@@ -100,7 +100,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool LoadRom(string filename, string archive = null)
 		{
-			var args = new LoadRomArgs
+			LoadRomArgs args = new LoadRomArgs
 			{
 				OpenAdvanced = new OpenAdvanced_OpenRom {Path = filename}
 			};
@@ -120,7 +120,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			foreach (string file in fileList)
 			{
-				var ext = Path.GetExtension(file)?.ToUpperInvariant() ?? "";
+				string ext = Path.GetExtension(file)?.ToUpperInvariant() ?? "";
 				FileInformation fileInformation = new(file.SplitPathToDirAndFile(), archive);
 
 				switch (ext)

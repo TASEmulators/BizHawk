@@ -21,9 +21,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public string PCRegisterName => "PC";
 
-		public string Disassemble(MemoryDomain m, uint addr, out int length)
-		{
-			return MOS6502X.Disassemble((ushort) addr, out length, a => unchecked((byte) Peek(a)));
-		}
+		public string Disassemble(MemoryDomain m, uint addr, out int length) => MOS6502X.Disassemble((ushort)addr, out length, a => unchecked((byte)Peek(a)));
 	}
 }

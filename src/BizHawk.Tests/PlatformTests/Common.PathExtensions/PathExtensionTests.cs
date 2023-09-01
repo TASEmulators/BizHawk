@@ -15,7 +15,7 @@ namespace BizHawk.Tests.Common.PathExtensions
 		{
 			PlatformTestUtils.RunEverywhere();
 
-			var p = OSTailoredCode.IsUnixHost ? "/" : @"C:\";
+			string p = OSTailoredCode.IsUnixHost ? "/" : @"C:\";
 
 			Assert.IsFalse(PE.IsSubfolderOf(childPath: null, parentPath: p));
 			Assert.IsFalse(PE.IsSubfolderOf(childPath: p, parentPath: null));

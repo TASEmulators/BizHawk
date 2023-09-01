@@ -46,7 +46,7 @@ namespace BizHawk.Client.Common.cheats
 					return new InvalidCheatCode("This code is not needed by Bizhawk.");
 			}
 
-			var s = code.Remove(0, 2);
+			string s = code.Remove(0, 2);
 
 			return new DecodeResult
 			{

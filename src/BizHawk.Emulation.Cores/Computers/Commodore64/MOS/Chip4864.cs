@@ -25,35 +25,20 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		public void HardReset()
 		{
 			// stripe the ram
-			for (var i = 0; i < 10000; i++)
+			for (int i = 0; i < 10000; i++)
 			{
 				_ram[i] = (i & 0x40) != 0 ? 0xFF : 0x00;
 			}
 		}
 
-		public int Peek(int addr)
-		{
-			return _ram[addr];
-		}
+		public int Peek(int addr) => _ram[addr];
 
-		public void Poke(int addr, int val)
-		{
-			_ram[addr] = val;
-		}
+		public void Poke(int addr, int val) => _ram[addr] = val;
 
-		public int Read(int addr)
-		{
-			return _ram[addr];
-		}
+		public int Read(int addr) => _ram[addr];
 
-		public void SyncState(Serializer ser)
-		{
-			ser.Sync(nameof(_ram), ref _ram, useNull: false);
-		}
+		public void SyncState(Serializer ser) => ser.Sync(nameof(_ram), ref _ram, useNull: false);
 
-		public void Write(int addr, int val)
-		{
-			_ram[addr] = val;
-		}
+		public void Write(int addr, int val) => _ram[addr] = val;
 	}
 }

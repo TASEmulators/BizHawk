@@ -76,15 +76,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 
 		private void GetStringSettingCallback(string label, IntPtr buffer, int bufferSize)
 		{
-			var ret = label switch
+			string ret = label switch
 			{
 				"user_directory" => _userPath,
 				"username" => _syncSettings.CFGUsername,
 				_ => throw new InvalidOperationException()
 			};
 
-			var bytes = Encoding.UTF8.GetBytes(ret);
-			var numToCopy = Math.Min(bytes.Length, bufferSize - 1);
+			byte[] bytes = Encoding.UTF8.GetBytes(ret);
+			int numToCopy = Math.Min(bytes.Length, bufferSize - 1);
 			Marshal.Copy(bytes, 0, buffer, numToCopy);
 			Marshal.WriteByte(buffer, numToCopy, 0);
 		}
@@ -104,7 +104,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 
 		public PutSettingsDirtyBits PutSyncSettings(CitraSyncSettings o)
 		{
-			var ret = CitraSyncSettings.NeedsReboot(_syncSettings, o);
+			bool ret = CitraSyncSettings.NeedsReboot(_syncSettings, o);
 			_syncSettings = o;
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}

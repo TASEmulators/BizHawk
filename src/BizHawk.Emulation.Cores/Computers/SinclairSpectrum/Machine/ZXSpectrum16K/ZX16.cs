@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		public override byte ReadBus(ushort addr)
 		{
 			int divisor = addr / 0x4000;
-			var index = addr % 0x4000;
+			int index = addr % 0x4000;
 
 			// paging logic goes here
 
@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		public override void WriteBus(ushort addr, byte value)
 		{
 			int divisor = addr / 0x4000;
-			var index = addr % 0x4000;
+			int index = addr % 0x4000;
 
 			// paging logic goes here
 
@@ -84,7 +84,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public override byte ReadMemory(ushort addr)
 		{
-			var data = ReadBus(addr);
+			byte data = ReadBus(addr);
 			return data;
 		}
 
@@ -93,7 +93,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public override ZXSpectrum.CDLResult ReadCDL(ushort addr)
 		{
-			var res = new ZXSpectrum.CDLResult();
+			ZXSpectrum.CDLResult res = new ZXSpectrum.CDLResult();
 
 			int divisor = addr / 0x4000;
 			res.Address = addr % 0x4000;
@@ -112,10 +112,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// Writes a byte of data to a specified memory address
 		/// (with memory contention if appropriate)
 		/// </summary>
-		public override void WriteMemory(ushort addr, byte value)
-		{
-			WriteBus(addr, value);
-		}
+		public override void WriteMemory(ushort addr, byte value) => WriteBus(addr, value);
 
 		/// <summary>
 		/// Sets up the ROM

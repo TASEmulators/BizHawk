@@ -93,12 +93,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// TRUE:   disk parsed
 		/// FALSE:  unable to parse disk
 		/// </returns>
-		public virtual bool ParseDisk(byte[] diskData)
-		{
+		public virtual bool ParseDisk(byte[] diskData) =>
 			// default result
 			// override in inheriting class
-			return false;
-		}
+			false;
 
 		/// <summary>
 		/// Examines the floppydisk data to work out what protection (if any) is present
@@ -114,7 +112,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			{
 				Protection = ProtectionType.Speedlock;
 
-				Sector sec = DiskTracks[0].Sectors[1];
+				var sec = DiskTracks[0].Sectors[1];
 				if (!sec.ContainsMultipleWeakSectors)
 				{
 					byte[] origData = sec.SectorData.ToArray();
@@ -245,7 +243,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				return false;
 
 			// sector[1] (SectorID 2) contains the weak sectors
-			Sector sec = DiskTracks[0].Sectors[1];
+			var sec = DiskTracks[0].Sectors[1];
 
 			// check for correct sector 1 lengths
 			if (sec.SectorSize != 2 ||
@@ -288,8 +286,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			try
 			{
-				var data1 = DiskTracks[0].Sectors[0].SectorData;
-				var data2 = DiskTracks[0].Sectors[0].SectorData.Length;
+				byte[] data1 = DiskTracks[0].Sectors[0].SectorData;
+				int data2 = DiskTracks[0].Sectors[0].SectorData.Length;
 			}
 			catch (Exception)
 			{
@@ -329,8 +327,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			try
 			{
-				var data1 = DiskTracks[0].Sectors[2].SectorData;
-				var data2 = DiskTracks[0].Sectors[2].SectorData.Length;
+				byte[] data1 = DiskTracks[0].Sectors[2].SectorData;
+				int data2 = DiskTracks[0].Sectors[2].SectorData.Length;
 			}
 			catch (Exception)
 			{
@@ -365,10 +363,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			try
 			{
-				var data1 = DiskTracks[0].Sectors.Length;
-				var data2 = DiskTracks[0].Sectors[8].ActualDataByteLength;
-				var data3 = DiskTracks[0].Sectors[8].SectorData;
-				var data4 = DiskTracks[0].Sectors[8].SectorData.Length;
+				int data1 = DiskTracks[0].Sectors.Length;
+				int data2 = DiskTracks[0].Sectors[8].ActualDataByteLength;
+				byte[] data3 = DiskTracks[0].Sectors[8].SectorData;
+				int data4 = DiskTracks[0].Sectors[8].SectorData.Length;
 				var data5 = DiskTracks[1].Sectors[0];
 			}
 			catch (Exception)
@@ -505,10 +503,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Returns the track count for the disk
 		/// </summary>
-		public virtual int GetTrackCount()
-		{
-			return DiskHeader.NumberOfTracks * DiskHeader.NumberOfSides;
-		}
+		public virtual int GetTrackCount() => DiskHeader.NumberOfTracks * DiskHeader.NumberOfSides;
 
 		/// <summary>
 		/// Reads the current sector ID info

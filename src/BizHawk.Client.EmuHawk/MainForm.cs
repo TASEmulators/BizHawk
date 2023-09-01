@@ -69,37 +69,37 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var (groupLabel, appliesTo, coreNames) in Config.CorePickerUIData.Select(static tuple => (GroupLabel: tuple.AppliesTo[0], tuple.AppliesTo, tuple.CoreNames))
 				.OrderBy(static tuple => tuple.GroupLabel))
 			{
-				var submenu = new ToolStripMenuItem { Text = groupLabel };
+				ToolStripMenuItem submenu = new ToolStripMenuItem { Text = groupLabel };
 				void ClickHandler(object clickSender, EventArgs clickArgs)
 				{
-					var coreName = ((ToolStripMenuItem) clickSender).Text;
-					foreach (var system in appliesTo)
+					string coreName = ((ToolStripMenuItem) clickSender).Text;
+					foreach (string system in appliesTo)
 					{
 						if (Emulator.SystemId == system && Emulator.Attributes().CoreName != coreName) FlagNeedsReboot();
 						Config.PreferredCores[system] = coreName;
 					}
 				}
 				submenu.DropDownItems.AddRange(coreNames.Select(coreName => {
-					var entry = new ToolStripMenuItem { Text = coreName };
+					ToolStripMenuItem entry = new ToolStripMenuItem { Text = coreName };
 					entry.Click += ClickHandler;
 					return (ToolStripItem) entry;
 				}).ToArray());
 				submenu.DropDownOpened += (openedSender, _1) =>
 				{
-					_ = Config.PreferredCores.TryGetValue(groupLabel, out var preferred);
+					_ = Config.PreferredCores.TryGetValue(groupLabel, out string preferred);
 					foreach (ToolStripMenuItem entry in ((ToolStripMenuItem) openedSender).DropDownItems) entry.Checked = entry.Text == preferred;
 				};
 				CoresSubMenu.DropDownItems.Add(submenu);
 			}
 			CoresSubMenu.DropDownItems.Add(new ToolStripSeparator { AutoSize = true });
-			var GBInSGBMenuItem = new ToolStripMenuItem { Text = "GB in SGB" };
+			ToolStripMenuItem GBInSGBMenuItem = new ToolStripMenuItem { Text = "GB in SGB" };
 			GBInSGBMenuItem.Click += (_, _) =>
 			{
 				Config.GbAsSgb ^= true;
 				if (Emulator.SystemId is VSystemID.Raw.GB or VSystemID.Raw.GBC or VSystemID.Raw.SGB) FlagNeedsReboot();
 			};
 			CoresSubMenu.DropDownItems.Add(GBInSGBMenuItem);
-			var setLibretroCoreToolStripMenuItem = new ToolStripMenuItem { Text = "Set Libretro Core..." };
+			ToolStripMenuItem setLibretroCoreToolStripMenuItem = new ToolStripMenuItem { Text = "Set Libretro Core..." };
 			setLibretroCoreToolStripMenuItem.Click += (_, _) => RunLibretroCoreChooser();
 			CoresSubMenu.DropDownItems.Add(setLibretroCoreToolStripMenuItem);
 			CoresSubMenu.DropDownOpened += (_, _) => GBInSGBMenuItem.Checked = Config.GbAsSgb;
@@ -188,7 +188,7 @@ namespace BizHawk.Client.EmuHawk
 			UpdateChecker.BeginCheck(); // Won't actually check unless enabled by user
 
 			// open requested ext. tool
-			var requestedExtToolDll = _argParser.openExtToolDll;
+			string requestedExtToolDll = _argParser.openExtToolDll;
 			if (requestedExtToolDll != null)
 			{
 				var found = ExtToolManager.ToolStripItems.Where(static item => item.Enabled)
@@ -213,7 +213,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public CoreComm CreateCoreComm()
 		{
-			var cfp = new CoreFileProvider(
+			CoreFileProvider cfp = new CoreFileProvider(
 				this,
 				FirmwareManager,
 				Config.PathEntries,
@@ -695,8 +695,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					"true" => true,
 					"false" => false,
-					_ when int.TryParse(v, out var i) => i,
-					_ when double.TryParse(v, out var d) => d,
+					_ when int.TryParse(v, out int i) => i,
+					_ when double.TryParse(v, out double d) => d,
 					_ => v
 				};
 			}
@@ -742,7 +742,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!Config.SkipOutdatedOsCheck && OSTailoredCode.HostWindowsVersion is not null)
 			{
 				var (winVersion, win10PlusVersion) = OSTailoredCode.HostWindowsVersion.Value;
-				var message = winVersion switch
+				string message = winVersion switch
 				{
 //					OSTailoredCode.WindowsVersion._11 when win10PlusVersion! < new Version(10, 0, 22621) => $"Quick reminder: Your copy of Windows 11 (build {win10PlusVersion.Build}) is no longer supported by Microsoft.\nEmuHawk will probably continue working, but please update to at least 21H2 for increased security.",
 					OSTailoredCode.WindowsVersion._11 => null,
@@ -1110,8 +1110,8 @@ namespace BizHawk.Client.EmuHawk
 					{
 						if (ie.LogicalButton.Button.Length == 1)
 						{
-							var c = ie.LogicalButton.Button.ToLowerInvariant()[0];
-							if ((c >= 'a' && c <= 'z') || c == ' ')
+							char c = ie.LogicalButton.Button.ToLowerInvariant()[0];
+							if (c is >= 'a' and <= 'z' or ' ')
 							{
 								SendAltKeyChar(c);
 							}
@@ -1271,17 +1271,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private string ScreenshotPrefix()
 		{
-			var screenPath = Config.PathEntries.ScreenshotAbsolutePathFor(Game.System);
-			var name = Game.FilesystemSafeName();
+			string screenPath = Config.PathEntries.ScreenshotAbsolutePathFor(Game.System);
+			string name = Game.FilesystemSafeName();
 			return Path.Combine(screenPath, name);
 		}
 
 		public void TakeScreenshot()
 		{
-			var basename = $"{ScreenshotPrefix()}.{DateTime.Now:yyyy-MM-dd HH.mm.ss}";
+			string basename = $"{ScreenshotPrefix()}.{DateTime.Now:yyyy-MM-dd HH.mm.ss}";
 
-			var fnameBare = $"{basename}.png";
-			var fname = $"{basename} (0).png";
+			string fnameBare = $"{basename}.png";
+			string fname = $"{basename} (0).png";
 
 			// if the (0) filename exists, do nothing. we'll bump up the number later
 			// if the bare filename exists, move it to (0)
@@ -1292,7 +1292,7 @@ namespace BizHawk.Client.EmuHawk
 				else fname = fnameBare;
 			}
 
-			for (var seq = 0; File.Exists(fname); seq++)
+			for (int seq = 0; File.Exists(fname); seq++)
 				fname = $"{basename} ({seq}).png";
 
 			TakeScreenshot(fname);
@@ -1300,7 +1300,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void TakeScreenshot(string path)
 		{
-			var fi = new FileInfo(path);
+			FileInfo fi = new FileInfo(path);
 			if (fi.Directory != null && !fi.Directory.Exists)
 			{
 				fi.Directory.Create();
@@ -1472,10 +1472,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void OpenLuaConsole()
-		{
-			Tools.Load<LuaConsole>();
-		}
+		private void OpenLuaConsole() => Tools.Load<LuaConsole>();
 
 		public void ClickSpeedItem(int num)
 		{
@@ -1489,15 +1486,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void Unthrottle()
-		{
-			Config.Unthrottled = true;
-		}
+		public void Unthrottle() => Config.Unthrottled = true;
 
-		public void Throttle()
-		{
-			Config.Unthrottled = false;
-		}
+		public void Throttle() => Config.Unthrottled = false;
 
 		private void ThrottleMessage()
 		{
@@ -1523,10 +1514,7 @@ namespace BizHawk.Client.EmuHawk
 			AddOnScreenMessage(msg);
 		}
 
-		public void FrameSkipMessage()
-		{
-			AddOnScreenMessage($"Frameskipping set to {Config.FrameSkip}");
-		}
+		public void FrameSkipMessage() => AddOnScreenMessage($"Frameskipping set to {Config.FrameSkip}");
 
 		public void UpdateCheatStatus()
 		{
@@ -1679,7 +1667,7 @@ namespace BizHawk.Client.EmuHawk
 				initDir = Config.PathEntries.AbsolutePathForType(VSystemID.Raw.Libretro, "Cores");
 				Directory.CreateDirectory(initDir);
 			}
-			var result = this.ShowFileOpenDialog(
+			string result = this.ShowFileOpenDialog(
 				discardCWDChange: true,
 				filter: LibretroCoresFSFilterSet,
 				initDir: initDir!,
@@ -1769,7 +1757,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				var sb = new StringBuilder();
+				StringBuilder sb = new StringBuilder();
 
 				if (_inResizeLoop)
 				{
@@ -1805,7 +1793,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				var sb = new StringBuilder();
+				StringBuilder sb = new StringBuilder();
 				sb.Append(string.IsNullOrEmpty(VersionInfo.CustomBuildString)
 					? "BizHawk"
 					: VersionInfo.CustomBuildString);
@@ -1925,11 +1913,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				try // zero says: this is sort of sketchy... but this is no time for rearchitecting
 				{
-					var saveRamPath = Config.PathEntries.SaveRamAbsolutePath(Game, MovieSession.Movie);
+					string saveRamPath = Config.PathEntries.SaveRamAbsolutePath(Game, MovieSession.Movie);
 					if (Config.AutosaveSaveRAM)
 					{
-						var saveram = new FileInfo(saveRamPath);
-						var autosave = new FileInfo(Config.PathEntries.AutoSaveRamAbsolutePath(Game, MovieSession.Movie));
+						FileInfo saveram = new FileInfo(saveRamPath);
+						FileInfo autosave = new FileInfo(Config.PathEntries.AutoSaveRamAbsolutePath(Game, MovieSession.Movie));
 						if (autosave.Exists && autosave.LastWriteTime > saveram.LastWriteTime)
 						{
 							AddOnScreenMessage("AutoSaveRAM is newer than last saved SaveRAM");
@@ -1945,7 +1933,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						var oldRam = Emulator.AsSaveRam().CloneSaveRam();
+						byte[] oldRam = Emulator.AsSaveRam().CloneSaveRam();
 						if (oldRam == null)
 						{
 							// we're eating this one now. The possible negative consequence is that a user could lose
@@ -1956,7 +1944,7 @@ namespace BizHawk.Client.EmuHawk
 
 						// why do we silently truncate\pad here instead of warning\erroring?
 						sram = new byte[oldRam.Length];
-						using var reader = new BinaryReader(new FileStream(saveRamPath, FileMode.Open, FileAccess.Read));
+						using BinaryReader reader = new BinaryReader(new FileStream(saveRamPath, FileMode.Open, FileAccess.Read));
 						reader.Read(sram, 0, sram.Length);
 					}
 
@@ -1985,11 +1973,11 @@ namespace BizHawk.Client.EmuHawk
 					path =  Config.PathEntries.SaveRamAbsolutePath(Game, MovieSession.Movie);
 				}
 
-				var file = new FileInfo(path);
-				var newPath = $"{path}.new";
-				var newFile = new FileInfo(newPath);
-				var backupPath = $"{path}.bak";
-				var backupFile = new FileInfo(backupPath);
+				FileInfo file = new FileInfo(path);
+				string newPath = $"{path}.new";
+				FileInfo newFile = new FileInfo(newPath);
+				string backupPath = $"{path}.bak";
+				FileInfo backupFile = new FileInfo(backupPath);
 				if (file.Directory != null && !file.Directory.Exists)
 				{
 					try
@@ -2003,11 +1991,11 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				var saveram = Emulator.AsSaveRam().CloneSaveRam();
+				byte[] saveram = Emulator.AsSaveRam().CloneSaveRam();
 				if (saveram == null)
 					return true;
 
-				using (var writer = new BinaryWriter(new FileStream(newPath, FileMode.Create, FileAccess.Write)))
+				using (BinaryWriter writer = new BinaryWriter(new FileStream(newPath, FileMode.Create, FileAccess.Write)))
 					writer.Write(saveram, 0, saveram.Length);
 
 				if (file.Exists)
@@ -2053,7 +2041,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (GenericCoreSubMenu.Visible)
 			{
-				var i = GenericCoreSubMenu.Text.IndexOf('&');
+				int i = GenericCoreSubMenu.Text.IndexOf('&');
 				if (i != -1) AvailableAccelerators.Add(GenericCoreSubMenu.Text[i + 1]);
 			}
 			GenericCoreSubMenu.Visible = false;
@@ -2073,7 +2061,7 @@ namespace BizHawk.Client.EmuHawk
 			zXSpectrumToolStripMenuItem.Visible = false;
 			amstradCPCToolStripMenuItem.Visible = false;
 
-			var sysID = Emulator.SystemId;
+			string sysID = Emulator.SystemId;
 			switch (sysID)
 			{
 				case VSystemID.Raw.NULL:
@@ -2152,11 +2140,11 @@ namespace BizHawk.Client.EmuHawk
 				if (_availableAccelerators == null)
 				{
 					_availableAccelerators = new HashSet<char>();
-					for (var c = 'A'; c <= 'Z'; c++) _availableAccelerators.Add(c);
+					for (char c = 'A'; c <= 'Z'; c++) _availableAccelerators.Add(c);
 					foreach (ToolStripItem item in MainMenuStrip.Items)
 					{
 						if (!item.Visible) continue;
-						var i = item.Text.IndexOf('&');
+						int i = item.Text.IndexOf('&');
 						if (i == -1 || i == item.Text.Length - 1) continue;
 						_availableAccelerators.Remove(char.ToUpperInvariant(item.Text[i + 1]));
 					}
@@ -2168,10 +2156,10 @@ namespace BizHawk.Client.EmuHawk
 		private void DisplayDefaultCoreMenu()
 		{
 			GenericCoreSubMenu.Visible = true;
-			var sysID = Emulator.SystemId;
-			for (var i = 0; i < sysID.Length; i++)
+			string sysID = Emulator.SystemId;
+			for (int i = 0; i < sysID.Length; i++)
 			{
-				var upper = char.ToUpperInvariant(sysID[i]);
+				char upper = char.ToUpperInvariant(sysID[i]);
 				if (AvailableAccelerators.Contains(upper))
 				{
 					AvailableAccelerators.Remove(upper);
@@ -2182,11 +2170,11 @@ namespace BizHawk.Client.EmuHawk
 			GenericCoreSubMenu.Text = sysID;
 			GenericCoreSubMenu.DropDownItems.Clear();
 
-			var settingsMenuItem = new ToolStripMenuItem { Text = "&Settings" };
+			ToolStripMenuItem settingsMenuItem = new ToolStripMenuItem { Text = "&Settings" };
 			settingsMenuItem.Click += GenericCoreSettingsMenuItem_Click;
 			GenericCoreSubMenu.DropDownItems.Add(settingsMenuItem);
 
-			var specializedTools = SpecializedTools.Where(Tools.IsAvailable).OrderBy(static t => t.Name).ToList();
+			List<Type> specializedTools = SpecializedTools.Where(Tools.IsAvailable).OrderBy(static t => t.Name).ToList();
 			if (specializedTools.Count is 0) return;
 
 			GenericCoreSubMenu.DropDownItems.Add(new ToolStripSeparator());
@@ -2234,7 +2222,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var ioa = OpenAdvancedSerializer.ParseWithLegacy(rom);
 
-			var args = new LoadRomArgs
+			LoadRomArgs args = new LoadRomArgs
 			{
 				OpenAdvanced = ioa
 			};
@@ -2242,7 +2230,7 @@ namespace BizHawk.Client.EmuHawk
 			// if(ioa is this or that) - for more complex behaviour
 			string romPath = ioa.SimplePath;
 
-			if (!LoadRom(romPath, args, out var failureIsFromAskSave))
+			if (!LoadRom(romPath, args, out bool failureIsFromAskSave))
 			{
 				if (failureIsFromAskSave) AddOnScreenMessage("ROM loading cancelled; a tool had unsaved changes");
 				else if (ioa is OpenAdvanced_LibretroNoGame || File.Exists(romPath)) AddOnScreenMessage("ROM loading failed");
@@ -2288,9 +2276,9 @@ namespace BizHawk.Client.EmuHawk
 			// skips outputting the audio. There's also a third way which is when no throttle
 			// method is selected, but the clock throttle determines that by itself and
 			// everything appears normal here.
-			var rewind = Rewinder?.Active == true && (InputManager.ClientControls["Rewind"] || PressRewind);
-			var fastForward = InputManager.ClientControls["Fast Forward"] || FastForward;
-			var turbo = IsTurboing;
+			bool rewind = Rewinder?.Active == true && (InputManager.ClientControls["Rewind"] || PressRewind);
+			bool fastForward = InputManager.ClientControls["Fast Forward"] || FastForward;
+			bool turbo = IsTurboing;
 
 			int speedPercent = fastForward ? Config.SpeedPercentAlternate : Config.SpeedPercent;
 
@@ -2364,7 +2352,7 @@ namespace BizHawk.Client.EmuHawk
 					_singleInstanceForwardedArgs.Clear();
 				}
 			}
-			foreach (var args in todo) SingleInstanceProcessArgs(args);
+			foreach (string[] args in todo) SingleInstanceProcessArgs(args);
 		}
 
 		private void AutohideCursor(bool hide)
@@ -2385,7 +2373,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public BitmapBuffer MakeScreenshotImage()
 		{
-			var ret = new BitmapBuffer(_currentVideoProvider.BufferWidth, _currentVideoProvider.BufferHeight, _currentVideoProvider.GetVideoBuffer().ToArray());
+			BitmapBuffer ret = new BitmapBuffer(_currentVideoProvider.BufferWidth, _currentVideoProvider.BufferHeight, _currentVideoProvider.GetVideoBuffer().ToArray());
 			ret.DiscardAlpha();
 			return ret;
 		}
@@ -2438,7 +2426,7 @@ namespace BizHawk.Client.EmuHawk
 		// sends a simulation of a plain alt key keystroke
 		private void SendPlainAltKey(int lparam)
 		{
-			var m = new Message { WParam = new IntPtr(0xF100), LParam = new IntPtr(lparam), Msg = 0x0112, HWnd = Handle };
+			Message m = new Message { WParam = new IntPtr(0xF100), LParam = new IntPtr(lparam), Msg = 0x0112, HWnd = Handle };
 			base.WndProc(ref m);
 		}
 
@@ -2459,12 +2447,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenRom()
 		{
-			var result = this.ShowFileOpenDialog(
+			string result = this.ShowFileOpenDialog(
 				filter: RomLoader.RomFilter,
 				filterIndex: ref _lastOpenRomFilter,
 				initDir: Config.PathEntries.RomAbsolutePath(Emulator.SystemId));
 			if (result is null) return;
-			var filePath = new FileInfo(result).FullName;
+			string filePath = new FileInfo(result).FullName;
 			_ = LoadRom(filePath, new LoadRomArgs { OpenAdvanced = new OpenAdvanced_OpenRom { Path = filePath } });
 		}
 
@@ -2497,10 +2485,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void CoreSettings(object sender, RomLoader.SettingsLoadArgs e)
-		{
-			e.Settings = Config.GetCoreSettings(e.Core, e.SettingsType);
-		}
+		private void CoreSettings(object sender, RomLoader.SettingsLoadArgs e) => e.Settings = Config.GetCoreSettings(e.Core, e.SettingsType);
 
 		private void HandlePutCoreSettings(PutSettingsDirtyBits dirty)
 		{
@@ -2570,25 +2555,13 @@ namespace BizHawk.Client.EmuHawk
 			ConfigService.Save(path, Config);
 		}
 
-		private void ToggleFps()
-		{
-			Config.DisplayFps ^= true;
-		}
+		private void ToggleFps() => Config.DisplayFps ^= true;
 
-		private void ToggleFrameCounter()
-		{
-			Config.DisplayFrameCounter ^= true;
-		}
+		private void ToggleFrameCounter() => Config.DisplayFrameCounter ^= true;
 
-		private void ToggleLagCounter()
-		{
-			Config.DisplayLagCounter ^= true;
-		}
+		private void ToggleLagCounter() => Config.DisplayLagCounter ^= true;
 
-		private void ToggleInputDisplay()
-		{
-			Config.DisplayInput ^= true;
-		}
+		private void ToggleInputDisplay() => Config.DisplayInput ^= true;
 
 		public void ToggleSound()
 		{
@@ -2788,7 +2761,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!CheckCanSetSpeed())
 				return;
 
-			var oldPercent = Config.SpeedPercent;
+			int oldPercent = Config.SpeedPercent;
 			int newPercent;
 
 			int i = 0;
@@ -2807,7 +2780,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!CheckCanSetSpeed())
 				return;
 
-			var oldPercent = Config.SpeedPercent;
+			int oldPercent = Config.SpeedPercent;
 			int newPercent;
 
 			int i = SpeedPercents.Length - 1;
@@ -2834,7 +2807,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (MainStatusBar.Visible)
 			{
-				var hasDriveLight = Emulator.HasDriveLight() && Emulator.AsDriveLight().DriveLightEnabled;
+				bool hasDriveLight = Emulator.HasDriveLight() && Emulator.AsDriveLight().DriveLightEnabled;
 
 				if (hasDriveLight)
 				{
@@ -2904,10 +2877,7 @@ namespace BizHawk.Client.EmuHawk
 			AddOnScreenMessage($"Background Input {(Config.AcceptBackgroundInput ? "enabled" : "disabled")}");
 		}
 
-		private void VsyncMessage()
-		{
-			AddOnScreenMessage($"Display Vsync set to {(Config.VSync ? "on" : "off")}");
-		}
+		private void VsyncMessage() => AddOnScreenMessage($"Display Vsync set to {(Config.VSync ? "on" : "off")}");
 
 		private void FdsInsertDiskMenuAdd(string name, string button, string msg)
 		{
@@ -2941,16 +2911,14 @@ namespace BizHawk.Client.EmuHawk
 			base.WndProc(ref m);
 		}
 
-		protected override bool ProcessDialogChar(char charCode)
-		{
+		protected override bool ProcessDialogChar(char charCode) =>
 			// this is necessary to trap alt+char combinations so that only our hotkey system gets them
-			return (ModifierKeys & Keys.Alt) != 0 || base.ProcessDialogChar(charCode);
-		}
+			(ModifierKeys & Keys.Alt) != 0 || base.ProcessDialogChar(charCode);
 
 		private void UpdateCoreStatusBarButton()
 		{
 			var attributes = Emulator.Attributes();
-			var coreDispName = attributes.Released ? attributes.CoreName : $"(Experimental) {attributes.CoreName}";
+			string coreDispName = attributes.Released ? attributes.CoreName : $"(Experimental) {attributes.CoreName}";
 			LoadedCoreNameMenuItem.Text = $"Loaded core: {coreDispName} ({Emulator.SystemId})";
 			if (Emulator.IsNull())
 			{
@@ -2967,13 +2935,13 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Emulator.SystemId == VSystemID.Raw.ZXSpectrum)
 			{
-				var core = (Emulation.Cores.Computers.SinclairSpectrum.ZXSpectrum)Emulator;
+				Emulation.Cores.Computers.SinclairSpectrum.ZXSpectrum core = (Emulation.Cores.Computers.SinclairSpectrum.ZXSpectrum)Emulator;
 				CoreNameStatusBarButton.ToolTipText = core.GetMachineType();
 			}
 
 			if (Emulator.SystemId == VSystemID.Raw.AmstradCPC)
 			{
-				var core = (Emulation.Cores.Computers.AmstradCPC.AmstradCPC)Emulator;
+				Emulation.Cores.Computers.AmstradCPC.AmstradCPC core = (Emulation.Cores.Computers.AmstradCPC.AmstradCPC)Emulator;
 				CoreNameStatusBarButton.ToolTipText = core.GetMachineType();
 			}
 		}
@@ -3043,9 +3011,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void StepRunLoop_Core(bool force = false)
 		{
-			var runFrame = false;
+			bool runFrame = false;
 			_runloopFrameAdvance = false;
-			var currentTimestamp = Stopwatch.GetTimestamp();
+			long currentTimestamp = Stopwatch.GetTimestamp();
 
 			double frameAdvanceTimestampDeltaMs = (double)(currentTimestamp - _frameAdvanceTimestamp) / Stopwatch.Frequency * 1000.0;
 			bool frameProgressTimeElapsed = frameAdvanceTimestampDeltaMs >= Config.FrameProgressDelayMs;
@@ -3112,15 +3080,15 @@ namespace BizHawk.Client.EmuHawk
 				runFrame = true;
 			}
 
-			bool isRewinding = Rewind(ref runFrame, currentTimestamp, out var returnToRecording);
+			bool isRewinding = Rewind(ref runFrame, currentTimestamp, out bool returnToRecording);
 
 			float atten = 0;
 
 			// BlockFrameAdvance (true when input it being editted in TAStudio) supercedes all other frame advance conditions
 			if ((runFrame || force) && !BlockFrameAdvance)
 			{
-				var isFastForwarding = InputManager.ClientControls["Fast Forward"] || IsTurboing || InvisibleEmulation;
-				var isFastForwardingOrRewinding = isFastForwarding || isRewinding || Config.Unthrottled;
+				bool isFastForwarding = InputManager.ClientControls["Fast Forward"] || IsTurboing || InvisibleEmulation;
+				bool isFastForwardingOrRewinding = isFastForwarding || isRewinding || Config.Unthrottled;
 
 				if (isFastForwardingOrRewinding != _lastFastForwardingOrRewinding)
 				{
@@ -3306,7 +3274,7 @@ namespace BizHawk.Client.EmuHawk
 			_framesSinceLastFpsUpdate = 0;
 			_timestampLastFpsUpdate = currentTimestamp;
 
-			var fpsString = $"{_lastFpsRounded} fps";
+			string fpsString = $"{_lastFpsRounded} fps";
 			if (isRewinding)
 			{
 				fpsString += IsTurboing || isFastForwarding ?
@@ -3338,18 +3306,12 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		/// <param name="videoWriterName">match the short name of an <see cref="IVideoWriter"/></param>
 		/// <param name="filename">filename to save to</param>
-		private void RecordAv(string videoWriterName, string filename)
-		{
-			RecordAvBase(videoWriterName, filename, true);
-		}
+		private void RecordAv(string videoWriterName, string filename) => RecordAvBase(videoWriterName, filename, true);
 
 		/// <summary>
 		/// start AV recording, asking user for filename and options
 		/// </summary>
-		private void RecordAv()
-		{
-			RecordAvBase(null, null, false);
-		}
+		private void RecordAv() => RecordAvBase(null, null, false);
 
 		/// <summary>
 		/// start AV recording
@@ -3449,7 +3411,7 @@ namespace BizHawk.Client.EmuHawk
 					// handle directories first
 					if (ext == "<directory>")
 					{
-						using var fbd = new FolderBrowserEx();
+						using FolderBrowserEx fbd = new FolderBrowserEx();
 						if (this.ShowDialogWithTempMute(fbd) is DialogResult.Cancel)
 						{
 							aw.Dispose();
@@ -3460,7 +3422,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						var result = this.ShowFileSaveDialog(
+						string result = this.ShowFileSaveDialog(
 							filter: new(new FilesystemFilter(ext, new[] { ext })),
 							initDir: Config.PathEntries.AvAbsolutePath(),
 							initFileName: $"{Game.FilesystemSafeName()}.{ext}");
@@ -3578,7 +3540,7 @@ namespace BizHawk.Client.EmuHawk
 
 							Bitmap bmpOut = new(width: Config.AVWriterResizeWidth, height: Config.AVWriterResizeHeight, PixelFormat.Format32bppArgb);
 							bmpIn = bbIn.ToSysdrawingBitmap();
-							using (var g = Graphics.FromImage(bmpOut))
+							using (Graphics g = Graphics.FromImage(bmpOut))
 							{
 								if (Config.AVWriterPad)
 								{
@@ -3657,7 +3619,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private int? LoadArchiveChooser(HawkFile file)
 		{
-			using var ac = new ArchiveChooser(file);
+			using ArchiveChooser ac = new ArchiveChooser(file);
 			if (this.ShowDialogAsChild(ac).IsOk())
 			{
 				return ac.SelectedMemberIndex;
@@ -3668,7 +3630,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public string SaveStatePrefix()
 		{
-			var name = Game.FilesystemSafeName();
+			string name = Game.FilesystemSafeName();
 			name += $".{Emulator.Attributes().CoreName}";
 
 			// Bsnes profiles have incompatible savestates so save the profile name
@@ -3682,7 +3644,7 @@ namespace BizHawk.Client.EmuHawk
 				name += $".{Path.GetFileNameWithoutExtension(MovieSession.Movie.Filename)}";
 			}
 
-			var pathEntry = Config.PathEntries.SaveStateAbsolutePath(Game.System);
+			string pathEntry = Config.PathEntries.SaveStateAbsolutePath(Game.System);
 
 			return Path.Combine(pathEntry, name);
 		}
@@ -3721,7 +3683,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private string ChoosePlatformForRom(RomGame rom)
 		{
-			using var platformChooser = new PlatformChooser(Config)
+			using PlatformChooser platformChooser = new PlatformChooser(Config)
 			{
 				RomGame = rom
 			};
@@ -3742,7 +3704,7 @@ namespace BizHawk.Client.EmuHawk
 			// what's the meaning of the last rom path when opening an archive? based on the archive file location
 			if (args.OpenAdvanced is OpenAdvanced_OpenRom)
 			{
-				var leftPart = path.Split('|')[0];
+				string leftPart = path.Split('|')[0];
 				Config.PathEntries.LastRomPath = Path.GetFullPath(Path.GetDirectoryName(leftPart) ?? "");
 			}
 
@@ -3786,7 +3748,7 @@ namespace BizHawk.Client.EmuHawk
 					return false;
 				}
 
-				var loader = new RomLoader(Config)
+				RomLoader loader = new RomLoader(Config)
 				{
 					ChooseArchive = LoadArchiveChooser,
 					ChoosePlatform = ChoosePlatformForRom,
@@ -3808,9 +3770,9 @@ namespace BizHawk.Client.EmuHawk
 
 				var nextComm = CreateCoreComm();
 
-				IOpenAdvanced ioa = args.OpenAdvanced;
-				var oaOpenrom = ioa as OpenAdvanced_OpenRom;
-				var ioaRetro = ioa as IOpenAdvancedLibretro;
+				var ioa = args.OpenAdvanced;
+				OpenAdvanced_OpenRom oaOpenrom = ioa as OpenAdvanced_OpenRom;
+				IOpenAdvancedLibretro ioaRetro = ioa as IOpenAdvancedLibretro;
 
 				// we need to inform LoadRom which Libretro core to use...
 				if (ioaRetro != null)
@@ -3834,7 +3796,7 @@ namespace BizHawk.Client.EmuHawk
 
 				DisplayManager.ActivateOpenGLContext(); // required in case the core wants to create a shared OpenGL context
 
-				var result = loader.LoadRom(path, nextComm, ioaRetro?.CorePath, forcedCoreName: MovieSession.QueuedCoreName);
+				bool result = loader.LoadRom(path, nextComm, ioaRetro?.CorePath, forcedCoreName: MovieSession.QueuedCoreName);
 
 				if (result) Game = loader.Game;
 
@@ -3870,13 +3832,13 @@ namespace BizHawk.Client.EmuHawk
 					{
 						// this is a multi-disk bundler file
 						// determine the xml assets and create RomStatusDetails for all of them
-						var xmlGame = XmlGame.Create(new HawkFile(oaOpenrom.Path));
+						XmlGame xmlGame = XmlGame.Create(new HawkFile(oaOpenrom.Path));
 
-						using var xSw = new StringWriter();
+						using StringWriter xSw = new StringWriter();
 
 						for (int xg = 0; xg < xmlGame.Assets.Count; xg++)
 						{
-							var ext = Path.GetExtension(xmlGame.AssetFullPaths[xg])?.ToLowerInvariant();
+							string ext = Path.GetExtension(xmlGame.AssetFullPaths[xg])?.ToLowerInvariant();
 
 							var (filename, data) = xmlGame.Assets[xg];
 							if (Disc.IsValidExtension(ext))
@@ -3921,7 +3883,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
-					var romDetails = Emulator.RomDetails();
+					string romDetails = Emulator.RomDetails();
 					if (string.IsNullOrWhiteSpace(romDetails) && loader.Rom != null)
 					{
 						_defaultRomDetails = $"{loader.Game.Name}\r\n{SHA1Checksum.ComputePrefixedHex(loader.Rom.RomData)}\r\n{MD5Checksum.ComputePrefixedHex(loader.Rom.RomData)}\r\n";
@@ -4066,7 +4028,7 @@ namespace BizHawk.Client.EmuHawk
 			GameIsClosing = true;
 			if (clearSram)
 			{
-				var path = Config.PathEntries.SaveRamAbsolutePath(Game, MovieSession.Movie);
+				string path = Config.PathEntries.SaveRamAbsolutePath(Game, MovieSession.Movie);
 				if (File.Exists(path))
 				{
 					File.Delete(path);
@@ -4077,7 +4039,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (!FlushSaveRAM())
 				{
-					var msgRes = ShowMessageBox2(
+					bool msgRes = ShowMessageBox2(
 						owner: null,
 						"Failed flushing the game's Save RAM to your disk.\nClose without flushing Save RAM?",
 						"Directory IO Error",
@@ -4211,20 +4173,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool IsRewindSlave => IsSlave && Master.WantsToControlRewind;
 
-		public void RelinquishControl(IControlMainform master)
-		{
-			Master = master;
-		}
+		public void RelinquishControl(IControlMainform master) => Master = master;
 
-		public void TakeBackControl()
-		{
-			Master = null;
-		}
+		public void TakeBackControl() => Master = null;
 
-		private int SlotToInt(string slot)
-		{
-			return int.Parse(slot.Substring(slot.Length - 1, 1));
-		}
+		private int SlotToInt(string slot) => int.Parse(slot.Substring(slot.Length - 1, 1));
 
 		public bool LoadState(string path, string userFriendlyStateName, bool suppressOSD = false) // Move to client.common
 		{
@@ -4270,13 +4223,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!Emulator.HasSavestates()) return false;
 
-			var quickSlotName = $"QuickSave{slot % 10}";
-			EmuClient.OnBeforeQuickLoad(this, quickSlotName, out var handled);
+			string quickSlotName = $"QuickSave{slot % 10}";
+			EmuClient.OnBeforeQuickLoad(this, quickSlotName, out bool handled);
 			if (handled) return true; // not sure
 
 			if (IsSavestateSlave) return Master.LoadQuickSave(SlotToInt(quickSlotName));
 
-			var path = $"{SaveStatePrefix()}.{quickSlotName}.State";
+			string path = $"{SaveStatePrefix()}.{quickSlotName}.State";
 			if (!File.Exists(path))
 			{
 				AddOnScreenMessage($"Unable to load {quickSlotName}.State");
@@ -4329,8 +4282,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return;
 			}
-			var quickSlotName = $"QuickSave{slot % 10}";
-			EmuClient.OnBeforeQuickSave(this, quickSlotName, out var handled);
+			string quickSlotName = $"QuickSave{slot % 10}";
+			EmuClient.OnBeforeQuickSave(this, quickSlotName, out bool handled);
 			if (handled)
 			{
 				return;
@@ -4342,9 +4295,9 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var path = $"{SaveStatePrefix()}.{quickSlotName}.State";
+			string path = $"{SaveStatePrefix()}.{quickSlotName}.State";
 
-			var file = new FileInfo(path);
+			FileInfo file = new FileInfo(path);
 			if (file.Directory != null && !file.Directory.Exists)
 			{
 				file.Directory.Create();
@@ -4368,7 +4321,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			bool PromptToSwitchCore(string currentCore, string recommendedCore, Action disableCurrentCore)
 			{
-				using var box = new MsgBox(
+				using MsgBox box = new MsgBox(
 					$"While the {currentCore} core is faster, it is not nearly as accurate as {recommendedCore}.{Environment.NewLine}It is recommended that you switch to the {recommendedCore} core for movie recording.{Environment.NewLine}Switch to {recommendedCore}?",
 					"Accuracy Warning",
 					MessageBoxIcon.Warning);
@@ -4415,15 +4368,15 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var path = Config.PathEntries.SaveStateAbsolutePath(Game.System);
+			string path = Config.PathEntries.SaveStateAbsolutePath(Game.System);
 
-			var file = new FileInfo(path);
+			FileInfo file = new FileInfo(path);
 			if (file.Directory != null && !file.Directory.Exists)
 			{
 				file.Directory.Create();
 			}
 
-			var result = this.ShowFileSaveDialog(
+			string result = this.ShowFileSaveDialog(
 				fileExt: "State",
 				filter: EmuHawkSaveStatesFSFilterSet,
 				initDir: path,
@@ -4441,7 +4394,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!Emulator.HasSavestates()) return false;
 			if (IsSavestateSlave) return Master.LoadStateAs();
 
-			var result = this.ShowFileOpenDialog(
+			string result = this.ShowFileOpenDialog(
 				discardCWDChange: true,
 				filter: EmuHawkSaveStatesFSFilterSet,
 				initDir: Config.PathEntries.SaveStateAbsolutePath(Game.System));
@@ -4454,7 +4407,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!Emulator.HasSavestates()) return;
 			if (IsSavestateSlave)
 			{
-				var handled = Master.SelectSlot(slot);
+				bool handled = Master.SelectSlot(slot);
 				if (handled) return;
 			}
 			Config.SaveSlot = slot;
@@ -4467,7 +4420,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!Emulator.HasSavestates()) return;
 			if (IsSavestateSlave)
 			{
-				var handled = Master.PreviousSlot();
+				bool handled = Master.PreviousSlot();
 				if (handled) return;
 			}
 			Config.SaveSlot--;
@@ -4481,7 +4434,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!Emulator.HasSavestates()) return;
 			if (IsSavestateSlave)
 			{
-				var handled = Master.NextSlot();
+				bool handled = Master.NextSlot();
 				if (handled) return;
 			}
 			Config.SaveSlot++;
@@ -4504,7 +4457,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool Rewind(ref bool runFrame, long currentTimestamp, out bool returnToRecording)
 		{
-			var isRewinding = false;
+			bool isRewinding = false;
 
 			returnToRecording = false;
 
@@ -4582,7 +4535,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					// Try to avoid the previous frame:  We want to frame advance right after rewinding so we can give a useful
 					// framebuffer.
-					var frameToAvoid = Emulator.Frame - 1;
+					int frameToAvoid = Emulator.Frame - 1;
 					runFrame = Rewinder.Rewind(frameToAvoid);
 					if (Emulator.Frame == frameToAvoid)
 					{
@@ -4725,20 +4678,17 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SingleInstanceDispose()
-		{
-			_singleInstanceServer?.Dispose();
-		}
+		private void SingleInstanceDispose() => _singleInstanceServer?.Dispose();
 
 		private void ForwardSingleInstanceStartup(string[] args)
 		{
-			using var namedPipeClientStream = new NamedPipeClientStream(".", "pipe-{84125ACB-F570-4458-9748-321F887FE795}", PipeDirection.Out);
+			using NamedPipeClientStream namedPipeClientStream = new NamedPipeClientStream(".", "pipe-{84125ACB-F570-4458-9748-321F887FE795}", PipeDirection.Out);
 			try
 			{
 				namedPipeClientStream.Connect(0);
 				//do this a bit cryptically to avoid loading up another big assembly (especially ones as frail as http and/or web ones)
-				var payloadString = string.Join("|", args.Select(a => Encoding.UTF8.GetBytes(a).BytesToHexString()));
-				var payloadBytes = Encoding.ASCII.GetBytes(payloadString);
+				string payloadString = string.Join("|", args.Select(a => Encoding.UTF8.GetBytes(a).BytesToHexString()));
+				byte[] payloadBytes = Encoding.ASCII.GetBytes(payloadString);
 				namedPipeClientStream.Write(payloadBytes, 0, payloadBytes.Length);
 			}
 			catch
@@ -4752,13 +4702,13 @@ namespace BizHawk.Client.EmuHawk
 			//MIT LICENSE - https://www.autoitconsulting.com/site/development/single-instance-winform-app-csharp-mutex-named-pipes/
 
 			// Create a new pipe accessible by local authenticated users, disallow network
-			var sidNetworkService = new SecurityIdentifier(WellKnownSidType.NetworkServiceSid, null);
-			var sidWorld = new SecurityIdentifier(WellKnownSidType.WorldSid, null);
+			SecurityIdentifier sidNetworkService = new SecurityIdentifier(WellKnownSidType.NetworkServiceSid, null);
+			SecurityIdentifier sidWorld = new SecurityIdentifier(WellKnownSidType.WorldSid, null);
 
-			var pipeSecurity = new PipeSecurity();
+			PipeSecurity pipeSecurity = new PipeSecurity();
 
 			// Deny network access to the pipe
-			var accessRule = new PipeAccessRule(sidNetworkService, PipeAccessRights.ReadWrite, AccessControlType.Deny);
+			PipeAccessRule accessRule = new PipeAccessRule(sidNetworkService, PipeAccessRights.ReadWrite, AccessControlType.Deny);
 			pipeSecurity.AddAccessRule(accessRule);
 
 			// Alow Everyone to read/write
@@ -4766,7 +4716,7 @@ namespace BizHawk.Client.EmuHawk
 			pipeSecurity.AddAccessRule(accessRule);
 
 			// Current user is the owner
-			SecurityIdentifier sidOwner = WindowsIdentity.GetCurrent().Owner;
+			var sidOwner = WindowsIdentity.GetCurrent().Owner;
 			if (sidOwner != null)
 			{
 				accessRule = new PipeAccessRule(sidOwner, PipeAccessRights.FullControl, AccessControlType.Allow);
@@ -4799,17 +4749,17 @@ namespace BizHawk.Client.EmuHawk
 
 				//a bit over-engineered in case someone wants to send a script or a rom or something
 				//buffer size is set to something tiny so that we are continually testing it
-				var payloadBytes = new MemoryStream();
+				MemoryStream payloadBytes = new MemoryStream();
 				while (true)
 				{
-					var bytes = new byte[16];
+					byte[] bytes = new byte[16];
 					int did = _singleInstanceServer.Read(bytes, 0, bytes.Length);
 					payloadBytes.Write(bytes, 0, did);
 					if (_singleInstanceServer.IsMessageComplete) break;
 				}
 
-				var payloadString = System.Text.Encoding.ASCII.GetString(payloadBytes.GetBuffer(), 0, (int)payloadBytes.Length);
-				var args = payloadString.Split('|').Select(a => Encoding.UTF8.GetString(a.HexStringToBytes())).ToArray();
+				string payloadString = System.Text.Encoding.ASCII.GetString(payloadBytes.GetBuffer(), 0, (int)payloadBytes.Length);
+				string[] args = payloadString.Split('|').Select(a => Encoding.UTF8.GetString(a.HexStringToBytes())).ToArray();
 
 				Console.WriteLine("RECEIVED SINGLE INSTANCE FORWARDED ARGS:");
 				lock (_singleInstanceForwardedArgs)
@@ -4836,8 +4786,7 @@ namespace BizHawk.Client.EmuHawk
 			StartSingleInstanceServer();
 		}
 
-		private void SingleInstanceProcessArgs(string[] args)
-		{
+		private void SingleInstanceProcessArgs(string[] args) =>
 			//ulp. it's not clear how to handle these.
 			//we only have a legacy case where we can tell the form to load a rom, if it's in a sensible condition for that.
 			//er.. let's assume it's always in a sensible condition
@@ -4845,7 +4794,6 @@ namespace BizHawk.Client.EmuHawk
 
 			//BANZAIIIIIIIIIIIIIIIIIIIIIIIIIII
 			_ = LoadRom(args[0]);
-		}
 
 		private IRetroAchievements RA { get; set; }
 

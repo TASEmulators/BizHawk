@@ -19,7 +19,7 @@ namespace BizHawk.Bizware.BizwareGL
 			FontInfo.LoadXml(xml);
 			
 			// load textures
-			for (var i=0; i<FontInfo.Pages.Length; i++)
+			for (int i =0; i<FontInfo.Pages.Length; i++)
 			{
 				TexturePages.Add(owner.LoadTexture(textures[i]));
 			}
@@ -39,12 +39,12 @@ namespace BizHawk.Bizware.BizwareGL
 		{
 			float x = 0;
 			float y = FontInfo.LineHeight;
-			var ox = x;
-			var len = str.Length;
+			float ox = x;
+			int len = str.Length;
 
-			for (var i = 0; i < len; i++)
+			for (int i = 0; i < len; i++)
 			{
-				var c = str[i];
+				char c = str[i];
 
 				if (c == '\r')
 				{
@@ -85,12 +85,12 @@ namespace BizHawk.Bizware.BizwareGL
 				throw new InvalidOperationException("Owner mismatch!");
 			}
 
-			var ox = x;
-			var len = str.Length;
+			float ox = x;
+			int len = str.Length;
 
-			for (var i = 0; i < len; i++)
+			for (int i = 0; i < len; i++)
 			{
-				var c = str[i];
+				char c = str[i];
 
 				if (c == '\r')
 				{
@@ -116,16 +116,16 @@ namespace BizHawk.Bizware.BizwareGL
 
 				// calculate texcoords (we shouldve already had this cached, but im speedcoding now)
 				var tex = TexturePages[bfc.TexturePage];
-				var w = tex.Width;
-				var h = tex.Height;
-				var bounds = new Rectangle(bfc.X, bfc.Y, bfc.Width, bfc.Height);
-				var u0 = bounds.Left / w;
-				var v0 = bounds.Top / h;
-				var u1 = bounds.Right / w;
-				var v1 = bounds.Bottom / h;
+				float w = tex.Width;
+				float h = tex.Height;
+				Rectangle bounds = new Rectangle(bfc.X, bfc.Y, bfc.Width, bfc.Height);
+				float u0 = bounds.Left / w;
+				float v0 = bounds.Top / h;
+				float u1 = bounds.Right / w;
+				float v1 = bounds.Bottom / h;
 
-				var gx = x + bfc.XOffset;
-				var gy = y + bfc.YOffset;
+				float gx = x + bfc.XOffset;
+				float gy = y + bfc.YOffset;
 				renderer.DrawSubrect(tex, gx, gy, bfc.Width, bfc.Height, u0, v0, u1, v1);
 
 				x += bfc.XAdvance;

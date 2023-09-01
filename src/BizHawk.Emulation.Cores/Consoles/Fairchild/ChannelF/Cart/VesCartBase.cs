@@ -7,24 +7,21 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
 	public abstract class VesCartBase
 	{
-		public abstract string BoardType { get; }	
+		public abstract string BoardType { get; }
 
-		public virtual void SyncByteArrayDomain(ChannelF sys)
-		{
-			sys.SyncByteArrayDomain("ROM", _rom);
-		}
+		public virtual void SyncByteArrayDomain(ChannelF sys) => sys.SyncByteArrayDomain("ROM", _rom);
 
 		public virtual byte[] ROM
 		{
-			get { return _rom; }
-			protected set { _rom = value; }
+			get => _rom;
+			protected set => _rom = value;
 		}
 		protected byte[] _rom;		
 
 		public virtual byte[] RAM
 		{
-			get { return _ram; }
-			protected set { _ram = value; }
+			get => _ram;
+			protected set => _ram = value;
 		}
 		protected byte[] _ram;
 
@@ -135,7 +132,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 				b[0] = data.Bit(0);
 
-				var resBytes = new byte[4];
+				byte[] resBytes = new byte[4];
 				b.CopyTo(resBytes, 0);
 				m_addr_latch = (ushort)(resBytes[0] | resBytes[1] << 8);
 			}

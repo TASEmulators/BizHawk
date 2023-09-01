@@ -45,7 +45,7 @@
 			this.RemoveMarkerButton = new System.Windows.Forms.Button();
 			this.ScrollToMarkerButton = new System.Windows.Forms.Button();
 			this.AddMarkerWithTextButton = new System.Windows.Forms.Button();
-			this.MarkerView = new BizHawk.Client.EmuHawk.InputRoll();
+			this.MarkerInputRoll = new BizHawk.Client.EmuHawk.InputRoll();
 			this.MarkersGroupBox = new System.Windows.Forms.GroupBox();
 			this.MarkerContextMenu.SuspendLayout();
 			this.MarkersGroupBox.SuspendLayout();
@@ -179,35 +179,35 @@
 			// 
 			// MarkerView
 			// 
-			this.MarkerView.AllowColumnReorder = false;
-			this.MarkerView.AllowColumnResize = false;
-			this.MarkerView.AllowMassNavigationShortcuts = true;
-			this.MarkerView.AllowRightClickSelection = true;
-			this.MarkerView.AlwaysScroll = false;
-			this.MarkerView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.MarkerInputRoll.AllowColumnReorder = false;
+			this.MarkerInputRoll.AllowColumnResize = false;
+			this.MarkerInputRoll.AllowMassNavigationShortcuts = true;
+			this.MarkerInputRoll.AllowRightClickSelection = true;
+			this.MarkerInputRoll.AlwaysScroll = false;
+			this.MarkerInputRoll.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.MarkerView.CellHeightPadding = 0;
-			this.MarkerView.ChangeSelectionWhenPaging = true;
-			this.MarkerView.ContextMenuStrip = this.MarkerContextMenu;
-			this.MarkerView.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.MarkerView.FullRowSelect = true;
-			this.MarkerView.HorizontalOrientation = false;
-			this.MarkerView.LetKeysModifySelection = false;
-			this.MarkerView.Location = new System.Drawing.Point(6, 19);
-			this.MarkerView.Name = "MarkerView";
-			this.MarkerView.RowCount = 0;
-			this.MarkerView.ScrollSpeed = 1;
-			this.MarkerView.SeekingCutoffInterval = 0;
-			this.MarkerView.Size = new System.Drawing.Size(186, 224);
-			this.MarkerView.TabIndex = 0;
-			this.MarkerView.TabStop = false;
-			this.MarkerView.SelectedIndexChanged += new System.EventHandler(this.MarkerView_SelectedIndexChanged);
-			this.MarkerView.DoubleClick += new System.EventHandler(this.MarkerView_MouseDoubleClick);
+			this.MarkerInputRoll.CellHeightPadding = 0;
+			this.MarkerInputRoll.ChangeSelectionWhenPaging = true;
+			this.MarkerInputRoll.ContextMenuStrip = this.MarkerContextMenu;
+			this.MarkerInputRoll.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.MarkerInputRoll.FullRowSelect = true;
+			this.MarkerInputRoll.HorizontalOrientation = false;
+			this.MarkerInputRoll.LetKeysModifySelection = false;
+			this.MarkerInputRoll.Location = new System.Drawing.Point(6, 19);
+			this.MarkerInputRoll.Name = "MarkerView";
+			this.MarkerInputRoll.RowCount = 0;
+			this.MarkerInputRoll.ScrollSpeed = 1;
+			this.MarkerInputRoll.SeekingCutoffInterval = 0;
+			this.MarkerInputRoll.Size = new System.Drawing.Size(186, 224);
+			this.MarkerInputRoll.TabIndex = 0;
+			this.MarkerInputRoll.TabStop = false;
+			this.MarkerInputRoll.SelectedIndexChanged += new System.EventHandler(this.MarkerView_SelectedIndexChanged);
+			this.MarkerInputRoll.DoubleClick += new System.EventHandler(this.MarkerView_MouseDoubleClick);
 			// 
 			// MarkersGroupBox
 			// 
-			this.MarkersGroupBox.Controls.Add(this.MarkerView);
+			this.MarkersGroupBox.Controls.Add(this.MarkerInputRoll);
 			this.MarkersGroupBox.Controls.Add(this.AddMarkerButton);
 			this.MarkersGroupBox.Controls.Add(this.AddMarkerWithTextButton);
 			this.MarkersGroupBox.Controls.Add(this.RemoveMarkerButton);
@@ -237,7 +237,6 @@
 
 		#endregion
 
-		private InputRoll MarkerView;
 		private System.Windows.Forms.Button AddMarkerButton;
 		private System.Windows.Forms.Button RemoveMarkerButton;
 		private System.Windows.Forms.Button JumpToMarkerButton;

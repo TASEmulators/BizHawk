@@ -81,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 			/// </summary>
 			public static FormatPreset GetDefaultPreset(Config config)
 			{
-				FormatPreset[] fps = GetPresets(config.FFmpegCustomCommand);
+				var fps = GetPresets(config.FFmpegCustomCommand);
 
 				foreach (var fp in fps)
 				{
@@ -98,10 +98,7 @@ namespace BizHawk.Client.EmuHawk
 				return fps[1];
 			}
 
-			public override string ToString()
-			{
-				return Name;
-			}
+			public override string ToString() => Name;
 
 			public void Dispose()
 			{
@@ -109,7 +106,7 @@ namespace BizHawk.Client.EmuHawk
 
 			public void DeduceFormat(string commandline)
 			{
-				var splitCommandLine = commandline.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+				string[] splitCommandLine = commandline.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 				for (int index = 0; index < splitCommandLine.Length - 1; index++)
 				{
 					if (splitCommandLine[index] == "-f")
@@ -146,7 +143,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (listBox1.SelectedIndex != -1)
 			{
-				var f = (FormatPreset)listBox1.SelectedItem;
+				FormatPreset f = (FormatPreset)listBox1.SelectedItem;
 				label5.Text = $"Extension: {f.Extension}";
 				label3.Text = f.Desc;
 				textBox1.Text = f.Commandline;
@@ -167,7 +164,7 @@ namespace BizHawk.Client.EmuHawk
 				dlg.listBox1.SelectedIndex = i;
 			}
 
-			DialogResult result = dlg.ShowDialog(owner);
+			var result = dlg.ShowDialog(owner);
 
 			FormatPreset ret;
 			if (result != DialogResult.OK || dlg.listBox1.SelectedIndex == -1)

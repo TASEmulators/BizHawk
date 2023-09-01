@@ -28,15 +28,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cassette
 			}
 		}
 
-		public bool ReadDataInputBuffer()
-		{
-			return !_connected || _device.ReadDataInputBuffer();
-		}
+		public bool ReadDataInputBuffer() => !_connected || _device.ReadDataInputBuffer();
 
-		public bool ReadSenseBuffer()
-		{
-			return !_connected || _device.ReadSenseBuffer();
-		}
+		public bool ReadSenseBuffer() => !_connected || _device.ReadSenseBuffer();
 
 		public void SyncState(Serializer ser)
 		{

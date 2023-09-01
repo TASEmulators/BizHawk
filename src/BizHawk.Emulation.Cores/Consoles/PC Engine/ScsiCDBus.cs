@@ -183,7 +183,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				if (DataIn.Count == 0)
 				{
 					// read in a sector and shove it in the queue
-					var dsr = new DiscSectorReader(disc); // TODO - cache reader
+					DiscSectorReader dsr = new DiscSectorReader(disc); // TODO - cache reader
 					dsr.ReadLBA_2048(CurrentReadingSector, DataIn.GetBuffer(), 0);
 					DataIn.SignalBufferFilled(2048);
 					CurrentReadingSector++;
@@ -554,7 +554,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 						// zero 07-jul-2015 - I may have broken this
 						int totalLbaLength = disc.Session1.LeadoutLBA;
 
-						DiscUtils.Convert_LBA_To_AMSF(totalLbaLength + 150, out var m, out var s, out var f);
+						DiscUtils.Convert_LBA_To_AMSF(totalLbaLength + 150, out byte m, out byte s, out byte f);
 
 						DataIn.Clear();
 						DataIn.Enqueue(m.BinToBCD());
@@ -578,7 +578,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 						else
 							lbaPos = tracks[track].LBA;
 
-						DiscUtils.Convert_LBA_To_AMSF(lbaPos, out var m, out var s, out var f);
+						DiscUtils.Convert_LBA_To_AMSF(lbaPos, out byte m, out byte s, out byte f);
 
 						DataIn.Clear();
 						DataIn.Enqueue(m.BinToBCD());

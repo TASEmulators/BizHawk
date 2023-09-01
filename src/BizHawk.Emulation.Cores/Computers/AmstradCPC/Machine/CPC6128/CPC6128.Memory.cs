@@ -184,7 +184,7 @@
 		/// </summary>
 		public override byte ReadMemory(ushort addr)
 		{
-			var data = ReadBus(addr);
+			byte data = ReadBus(addr);
 			return data;
 		}
 
@@ -192,10 +192,7 @@
 		/// Writes a byte of data to a specified memory address
 		/// (with memory contention if appropriate)
 		/// </summary>
-		public override void WriteMemory(ushort addr, byte value)
-		{
-			WriteBus(addr, value);
-		}
+		public override void WriteMemory(ushort addr, byte value) => WriteBus(addr, value);
 
 
 		/// <summary>

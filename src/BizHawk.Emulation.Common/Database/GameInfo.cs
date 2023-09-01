@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Common
 
 		public GameInfo Clone()
 		{
-			var ret = (GameInfo)MemberwiseClone();
+			GameInfo ret = (GameInfo)MemberwiseClone();
 			ret.Options = new Dictionary<string, string>(Options);
 			return ret;
 		}
@@ -69,42 +69,21 @@ namespace BizHawk.Emulation.Common
 			ParseOptionsDictionary(cgi.MetaData);
 		}
 
-		public void AddOption(string option, string param)
-		{
-			Options[option] = param;
-		}
+		public void AddOption(string option, string param) => Options[option] = param;
 
-		public void RemoveOption(string option)
-		{
-			Options.Remove(option);
-		}
+		public void RemoveOption(string option) => Options.Remove(option);
 
 		public bool this[string option] => Options.ContainsKey(option);
 
-		public bool OptionPresent(string option)
-		{
-			return Options.ContainsKey(option);
-		}
+		public bool OptionPresent(string option) => Options.ContainsKey(option);
 
-		public string OptionValue(string option)
-		{
-			return Options.TryGetValue(option, out var s) ? s : null;
-		}
+		public string OptionValue(string option) => Options.TryGetValue(option, out string s) ? s : null;
 
-		public int GetIntValue(string option)
-		{
-			return int.Parse(Options[option]);
-		}
+		public int GetIntValue(string option) => int.Parse(Options[option]);
 
-		public string GetStringValue(string option)
-		{
-			return Options[option];
-		}
+		public string GetStringValue(string option) => Options[option];
 
-		public int GetHexValue(string option)
-		{
-			return int.Parse(Options[option], NumberStyles.HexNumber);
-		}
+		public int GetHexValue(string option) => int.Parse(Options[option], NumberStyles.HexNumber);
 
 		/// <summary>
 		/// /// Gets a boolean value from the database
@@ -150,10 +129,7 @@ namespace BizHawk.Emulation.Common
 			return defaultVal;
 		}
 
-		public IReadOnlyDictionary<string, string> GetOptions()
-		{
-			return new ReadOnlyDictionary<string, string>(Options);
-		}
+		public IReadOnlyDictionary<string, string> GetOptions() => new ReadOnlyDictionary<string, string>(Options);
 
 		private void ParseOptionsDictionary(string metaData)
 		{
@@ -162,13 +138,13 @@ namespace BizHawk.Emulation.Common
 				return;
 			}
 
-			var options = metaData.Split(';').Where(opt => string.IsNullOrEmpty(opt) == false).ToArray();
+			string[] options = metaData.Split(';').Where(opt => string.IsNullOrEmpty(opt) == false).ToArray();
 
-			foreach (var opt in options)
+			foreach (string opt in options)
 			{
-				var parts = opt.Split('=');
-				var key = parts[0];
-				var value = parts.Length > 1 ? parts[1] : "";
+				string[] parts = opt.Split('=');
+				string key = parts[0];
+				string value = parts.Length > 1 ? parts[1] : "";
 				Options[key] = value;
 			}
 		}
@@ -176,14 +152,8 @@ namespace BizHawk.Emulation.Common
 
 	public static class GameInfoExtensions
 	{
-		public static bool IsNullInstance(this IGameInfo game)
-		{
-			return game == null || game.System == VSystemID.Raw.NULL;
-		}
+		public static bool IsNullInstance(this IGameInfo game) => game == null || game.System == VSystemID.Raw.NULL;
 
-		public static bool IsRomStatusBad(this IGameInfo game)
-		{
-			return game.Status == RomStatus.BadDump || game.Status == RomStatus.Overdump;
-		}
+		public static bool IsRomStatusBad(this IGameInfo game) => game.Status is RomStatus.BadDump or RomStatus.Overdump;
 	}
 }

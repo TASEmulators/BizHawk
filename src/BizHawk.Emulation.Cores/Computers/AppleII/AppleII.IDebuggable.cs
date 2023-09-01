@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 	{
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			var regs = new Dictionary<string, int>
+			Dictionary<string, int> regs = new Dictionary<string, int>
 			{
 				["A"] = _machine.Cpu.RA,
 				["X"] = _machine.Cpu.RX,
@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 				["Flag T"] = _machine.Cpu.FlagT ? 1 : 0
 			};
 
-			var dic = new Dictionary<string, RegisterValue>();
+			Dictionary<string, RegisterValue> dic = new Dictionary<string, RegisterValue>();
 
 			foreach (var reg in regs)
 			{
@@ -138,7 +138,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 				_machine.Cpu.TraceCallback = null;
 			}
 
-			var machineInVblank = _machine.Video.IsVBlank;
+			bool machineInVblank = _machine.Video.IsVBlank;
 
 
 			_machine.Events.HandleEvents(_machine.Cpu.Execute());
@@ -158,11 +158,11 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		private void StepOver()
 		{
-			var instruction = _machine.Memory.Read(_machine.Cpu.RPC);
+			int instruction = _machine.Memory.Read(_machine.Cpu.RPC);
 
 			if (instruction == Jsr)
 			{
-				var destination = _machine.Cpu.RPC + JsrSize;
+				int destination = _machine.Cpu.RPC + JsrSize;
 				while (_machine.Cpu.RPC != destination)
 				{
 					StepInto();
@@ -176,11 +176,11 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		private void StepOut()
 		{
-			var instr = _machine.Memory.Read(_machine.Cpu.RPC);
+			int instr = _machine.Memory.Read(_machine.Cpu.RPC);
 
 			_jsrCount = instr == Jsr ? 1 : 0;
 
-			var bailOutFrame = Frame + 1;
+			int bailOutFrame = Frame + 1;
 
 			while (true)
 			{

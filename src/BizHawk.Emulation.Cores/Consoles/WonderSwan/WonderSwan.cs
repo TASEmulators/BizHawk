@@ -107,7 +107,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			var ret = new Dictionary<string, RegisterValue>();
+			Dictionary<string, RegisterValue> ret = new Dictionary<string, RegisterValue>();
 			for (int i = (int)BizSwan.NecRegsMin; i <= (int)BizSwan.NecRegsMax; i++)
 			{
 				BizSwan.NecRegs en = (BizSwan.NecRegs)i;
@@ -118,10 +118,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		}
 
 		[FeatureNotImplemented]
-		public void SetCpuRegister(string register, int value)
-		{
-			throw new NotImplementedException();
-		}
+		public void SetCpuRegister(string register, int value) => throw new NotImplementedException();
 
 		public bool CanStep(StepType type) => false;
 
@@ -163,10 +160,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			}
 		}
 
-		private void ButtonCallback()
-		{
-			InputCallbacks.Call();
-		}
+		private void ButtonCallback() => InputCallbacks.Call();
 
 		private void InitDebugCallbacks()
 		{
@@ -178,10 +172,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			_memorycallbacks.ActiveChanged += SetMemoryCallbacks;
 		}
 
-		private void SetInputCallback()
-		{
-			BizSwan.bizswan_setbuttoncallback(Core, InputCallbacks.Any() ? ButtonCallbackD : null);
-		}
+		private void SetInputCallback() => BizSwan.bizswan_setbuttoncallback(Core, InputCallbacks.Any() ? ButtonCallbackD : null);
 
 		private void SetMemoryCallbacks()
 		{

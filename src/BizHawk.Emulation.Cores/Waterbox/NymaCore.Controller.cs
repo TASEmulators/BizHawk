@@ -82,13 +82,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					}
 				};
 
-				var finalDevices = new List<string>();
+				List<string> finalDevices = new List<string>();
 
-				var switchPreviousFrame = new List<byte>();
+				List<byte> switchPreviousFrame = new List<byte>();
 				for (int port = 0, devByteStart = 0; port < allPorts.Count; port++)
 				{
 					var portInfo = allPorts[port];
-					if (!config.TryGetValue(port, out var deviceName)) deviceName = portInfo.DefaultDeviceShortName;
+					if (!config.TryGetValue(port, out string deviceName)) deviceName = portInfo.DefaultDeviceShortName;
 					finalDevices.Add(deviceName);
 
 					if (hiddenPorts.Contains(portInfo.ShortName))
@@ -111,7 +111,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					});
 
 					var deviceInfo = device;
-					var category = portInfo.FullName + " - " + deviceInfo.FullName;
+					string category = portInfo.FullName + " - " + deviceInfo.FullName;
 
 					var inputs = deviceInfo.Inputs
 						.OrderBy(a => a.ConfigOrder);
@@ -121,14 +121,14 @@ namespace BizHawk.Emulation.Cores.Waterbox
 						if (input.Type == InputType.Padding)
 							continue;
 
-						var bitSize = (int)input.BitSize;
-						var bitOffset = (int)input.BitOffset;
-						var byteStart = devByteStart + bitOffset / 8;
+						int bitSize = (int)input.BitSize;
+						int bitOffset = (int)input.BitOffset;
+						int byteStart = devByteStart + bitOffset / 8;
 						bitOffset %= 8;
-						var baseName = input.Name;
+						string baseName = input.Name;
 						if (baseName != null)
 							baseName = overrideName(baseName);
-						var name = input.Type == InputType.ResetButton ? "Reset" : $"P{port + 1} {baseName}";
+						string name = input.Type == InputType.ResetButton ? "Reset" : $"P{port + 1} {baseName}";
 
 						switch (input.Type)
 						{
@@ -156,19 +156,19 @@ namespace BizHawk.Emulation.Cores.Waterbox
 								if (data.Positions.Count > 8)
 									throw new NotImplementedException("Need code changes to support Mdfn switch with more than 8 positions");
 
-								// fake switches as a series of push downs that select each state
-								// imagine the "gear" selector on a Toyota Prius
+									// fake switches as a series of push downs that select each state
+									// imagine the "gear" selector on a Toyota Prius
 
-								var si = switchPreviousFrame.Count;
+									int si = switchPreviousFrame.Count;
 								// [si]: position of this switch on the previous frame
 								switchPreviousFrame.Add((byte)data.DefaultPosition);
 								// [si + 1]: bit array of the previous state of each selector button
 								switchPreviousFrame.Add(0);
 
-								var names = data.Positions.Select(p => $"{name}: Set {p.Name}").ToArray();
+									string[] names = data.Positions.Select(p => $"{name}: Set {p.Name}").ToArray();
 								if (!input.Name.StartsWithOrdinal("AF ") && !input.Name.EndsWithOrdinal(" AF") && !input.Name.StartsWithOrdinal("Autofire ")) // hack: don't support some devices
 								{
-									foreach (var n in names)
+									foreach (string n in names)
 									{
 										{
 											ret.BoolButtons.Add(n);
@@ -179,14 +179,14 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 								_thunks.Add((c, b) =>
 								{
-									var val = _switchPreviousFrame[si];
-									var allOldPressed = _switchPreviousFrame[si + 1];
+									byte val = _switchPreviousFrame[si];
+									byte allOldPressed = _switchPreviousFrame[si + 1];
 									byte allNewPressed = 0;
-									for (var i = 0; i < names.Length; i++)
+									for (int i = 0; i < names.Length; i++)
 									{
-										var mask = (byte)(1 << i);
-										var oldPressed = allOldPressed & mask;
-										var newPressed = c.IsPressed(names[i]) ? mask : (byte)0;
+										byte mask = (byte)(1 << i);
+										int oldPressed = allOldPressed & mask;
+										byte newPressed = c.IsPressed(names[i]) ? mask : (byte)0;
 										if (newPressed > oldPressed)
 											val = (byte)i;
 										allNewPressed |= newPressed;
@@ -200,10 +200,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							case InputType.Axis:
 							{
 								var data = input.Extra.AsAxis();
-								var fullName = $"{name} {overrideName(data.NameNeg)} / {overrideName(data.NamePos)}";
+									string fullName = $"{name} {overrideName(data.NameNeg)} / {overrideName(data.NamePos)}";
 								ControllerThunk thunk = (c, b) =>
 								{
-									var val = c.AxisValue(fullName);
+									int val = c.AxisValue(fullName);
 									b[byteStart] = (byte)val;
 									b[byteStart + 1] = (byte)(val >> 8);
 								};
@@ -215,7 +215,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							case InputType.AxisRel:
 							{
 								var data = input.Extra.AsAxis();
-								var fullName = $"{name} {input.Extra.AsAxis().NameNeg} / {input.Extra.AsAxis().NamePos}";
+									string fullName = $"{name} {input.Extra.AsAxis().NameNeg} / {input.Extra.AsAxis().NamePos}";
 
 								// TODO: Mednafen docs say this range should be [-32768, 32767], and inspecting the code
 								// reveals that a 16 bit value is read, but using anywhere near this full range makes
@@ -225,7 +225,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 								ret.CategoryLabels[fullName] = category;
 								_thunks.Add((c, b) =>
 								{
-									var val = c.AxisValue(fullName);
+									int val = c.AxisValue(fullName);
 									b[byteStart] = (byte)val;
 									b[byteStart + 1] = (byte)(val >> 8);
 								});
@@ -233,13 +233,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							}
 							case InputType.PointerX:
 							{
-								// I think the core expects to be sent some sort of 16 bit integer, but haven't investigated much
-								var minX = systemInfo.PointerOffsetX;
-								var maxX = systemInfo.PointerOffsetX + systemInfo.PointerScaleX;
+									// I think the core expects to be sent some sort of 16 bit integer, but haven't investigated much
+									int minX = systemInfo.PointerOffsetX;
+									int maxX = systemInfo.PointerOffsetX + systemInfo.PointerScaleX;
 								ret.AddAxis(name, minX.RangeTo(maxX), (minX + maxX) / 2);
 								_thunks.Add((c, b) =>
 								{
-									var val = c.AxisValue(name);
+									int val = c.AxisValue(name);
 									b[byteStart] = (byte)val;
 									b[byteStart + 1] = (byte)(val >> 8);
 								});
@@ -247,13 +247,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							}
 							case InputType.PointerY:
 							{
-								// I think the core expects to be sent some sort of 16 bit integer, but haven't investigated much
-								var minY = systemInfo.PointerOffsetY;
-								var maxY = systemInfo.PointerOffsetY + systemInfo.PointerScaleY;
+									// I think the core expects to be sent some sort of 16 bit integer, but haven't investigated much
+									int minY = systemInfo.PointerOffsetY;
+									int maxY = systemInfo.PointerOffsetY + systemInfo.PointerScaleY;
 								ret.AddAxis(name, minY.RangeTo(maxY), (minY + maxY) / 2);
 								_thunks.Add((c, b) =>
 								{
-									var val = c.AxisValue(name);
+									int val = c.AxisValue(name);
 									b[byteStart] = (byte)val;
 									b[byteStart + 1] = (byte)(val >> 8);
 								});
@@ -265,7 +265,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 								ret.CategoryLabels[name] = category;
 								_thunks.Add((c, b) =>
 								{
-									var val = c.AxisValue(name);
+									int val = c.AxisValue(name);
 									b[byteStart] = (byte)val;
 									b[byteStart + 1] = (byte)(val >> 8);
 								});
@@ -281,7 +281,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 								_rumblers.Add((c, b) =>
 								{
 									// TODO: not entirely sure this is correct...
-									var val = b[byteStart] | (b[byteStart + 1] << 8);
+									int val = b[byteStart] | (b[byteStart + 1] << 8);
 									c.SetHapticChannelStrength(name, val << 7);
 								});
 								break;
@@ -350,10 +350,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// On some cores, some controller ports are not relevant when certain settings are off (like multitap).
 		/// Override this if your core has such an issue
 		/// </summary>
-		protected virtual HashSet<string> ComputeHiddenPorts()
-		{
-			return new HashSet<string>();
-		}
+		protected virtual HashSet<string> ComputeHiddenPorts() => new HashSet<string>();
 
 		public class PortResult
 		{

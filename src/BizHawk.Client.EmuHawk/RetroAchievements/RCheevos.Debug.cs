@@ -28,7 +28,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static IntPtr OpenFileCallback(string utf8_path)
 		{
-			var file = new HawkFile(utf8_path);
+			HawkFile file = new HawkFile(utf8_path);
 
 			// this probably shouldn't ever happen
 			if (!file.Exists || !file.IsBound || !file.GetStream().CanSeek || !file.GetStream().CanRead)
@@ -37,37 +37,37 @@ namespace BizHawk.Client.EmuHawk
 				return IntPtr.Zero;
 			}
 
-			var handle = GCHandle.Alloc(file, GCHandleType.Normal);
+			GCHandle handle = GCHandle.Alloc(file, GCHandleType.Normal);
 			return GCHandle.ToIntPtr(handle);
 		}
 
 		private static void SeekFileCallback(IntPtr file_handle, long offset, SeekOrigin origin)
 		{
-			var handle = GCHandle.FromIntPtr(file_handle);
-			var file = (HawkFile)handle.Target;
+			GCHandle handle = GCHandle.FromIntPtr(file_handle);
+			HawkFile file = (HawkFile)handle.Target;
 			file.GetStream().Seek(offset, origin);
 		}
 
 		private static long TellFileCallback(IntPtr file_handle)
 		{
-			var handle = GCHandle.FromIntPtr(file_handle);
-			var file = (HawkFile)handle.Target;
+			GCHandle handle = GCHandle.FromIntPtr(file_handle);
+			HawkFile file = (HawkFile)handle.Target;
 			return file.GetStream().Position;
 		}
 
 		private static UIntPtr ReadFileCallback(IntPtr file_handle, IntPtr buffer, UIntPtr requested_bytes)
 		{
-			var handle = GCHandle.FromIntPtr(file_handle);
-			var file = (HawkFile)handle.Target;
+			GCHandle handle = GCHandle.FromIntPtr(file_handle);
+			HawkFile file = (HawkFile)handle.Target;
 			// this is poop without spans
 			const int TMP_BUFFER_LEN = 65536;
-			var tmp = new byte[TMP_BUFFER_LEN];
+			byte[] tmp = new byte[TMP_BUFFER_LEN];
 			var stream = file.GetStream();
-			var remainingBytes = (ulong)requested_bytes;
+			ulong remainingBytes = (ulong)requested_bytes;
 
 			while (remainingBytes != 0)
 			{
-				var numRead = stream.Read(tmp, 0, (int)Math.Min(remainingBytes, TMP_BUFFER_LEN));
+				int numRead = stream.Read(tmp, 0, (int)Math.Min(remainingBytes, TMP_BUFFER_LEN));
 				if (numRead == 0) // reached end of stream
 				{
 					break;
@@ -83,8 +83,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private static void CloseFileCallback(IntPtr file_handle)
 		{
-			var handle = GCHandle.FromIntPtr(file_handle);
-			var file = (HawkFile)handle.Target;
+			GCHandle handle = GCHandle.FromIntPtr(file_handle);
+			HawkFile file = (HawkFile)handle.Target;
 			file.Dispose();
 			handle.Free();
 		}
@@ -119,7 +119,7 @@ namespace BizHawk.Client.EmuHawk
 				switch (tracknum) // implicitly, this checks the first session only, except for RC_HASH_CDTRACK_FIRST_OF_SECOND_SESSION
 				{
 					case RC_HASH_CDTRACK_FIRST_DATA:
-						for (var i = 1; i <= _disc.Session1.InformationTrackCount; i++)
+						for (int i = 1; i <= _disc.Session1.InformationTrackCount; i++)
 						{
 							var track = _disc.Session1.Tracks[i];
 							if (track.IsData)
@@ -130,7 +130,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 						break;
 					case RC_HASH_CDTRACK_LAST:
-						for (var i = _disc.Session1.InformationTrackCount; i >= 1; i--)
+						for (int i = _disc.Session1.InformationTrackCount; i >= 1; i--)
 						{
 							var track = _disc.Session1.Tracks[i];
 							if (track.IsData)
@@ -141,7 +141,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 						break;
 					case RC_HASH_CDTRACK_LARGEST or 0: // 0 is same meaning
-						for (var i = 1; i <= _disc.Session1.InformationTrackCount; i++)
+						for (int i = 1; i <= _disc.Session1.InformationTrackCount; i++)
 						{
 							var track = _disc.Session1.Tracks[i];
 							if (track.IsData)
@@ -152,8 +152,8 @@ namespace BizHawk.Client.EmuHawk
 								}
 								else
 								{
-									var curTrackLen = _track.NextTrack.LBA - _track.LBA;
-									var nextTrackLen = track.NextTrack.LBA - track.LBA;
+									int curTrackLen = _track.NextTrack.LBA - _track.LBA;
+									int nextTrackLen = track.NextTrack.LBA - track.LBA;
 									if (nextTrackLen > curTrackLen)
 									{
 										_track = track;
@@ -196,50 +196,47 @@ namespace BizHawk.Client.EmuHawk
 					return 0;
 				}
 
-				var numRead = _dsr.ReadLBA_2448(lba, _buf2448, 0);
-				var numCopied = (int)Math.Min((ulong)numRead, requestedBytes);
+				int numRead = _dsr.ReadLBA_2448(lba, _buf2448, 0);
+				int numCopied = (int)Math.Min((ulong)numRead, requestedBytes);
 				Marshal.Copy(_buf2448, 0, buffer, numCopied);
 				return numCopied;
 			}
 
-			public void Dispose()
-			{
-				_disc.Dispose();
-			}
+			public void Dispose() => _disc.Dispose();
 		}
 
 		private static IntPtr OpenTrackCallback(string path, int tracknum)
 		{
-			var track = new RCTrack(path, tracknum);
+			RCTrack track = new RCTrack(path, tracknum);
 
 			if (!track.IsAvailable)
 			{
 				return IntPtr.Zero;
 			}
 
-			var handle = GCHandle.Alloc(track, GCHandleType.Normal);
+			GCHandle handle = GCHandle.Alloc(track, GCHandleType.Normal);
 			return GCHandle.ToIntPtr(handle);
 		}
 
 		private static UIntPtr ReadSectorCallback(IntPtr track_handle, uint sector, IntPtr buffer, UIntPtr requested_bytes)
 		{
-			var handle = GCHandle.FromIntPtr(track_handle);
-			var track = (RCTrack)handle.Target;
+			GCHandle handle = GCHandle.FromIntPtr(track_handle);
+			RCTrack track = (RCTrack)handle.Target;
 			return new((uint)track.ReadSector((int)sector, buffer, (ulong)requested_bytes));
 		}
 
 		private static void CloseTrackCallback(IntPtr track_handle)
 		{
-			var handle = GCHandle.FromIntPtr(track_handle);
-			var track = (RCTrack)handle.Target;
+			GCHandle handle = GCHandle.FromIntPtr(track_handle);
+			RCTrack track = (RCTrack)handle.Target;
 			track.Dispose();
 			handle.Free();
 		}
 
 		private static uint FirstTrackSectorCallback(IntPtr track_handle)
 		{
-			var handle = GCHandle.FromIntPtr(track_handle);
-			var track = (RCTrack)handle.Target;
+			GCHandle handle = GCHandle.FromIntPtr(track_handle);
+			RCTrack track = (RCTrack)handle.Target;
 			return (uint)track.LBA;
 		}
 
@@ -247,7 +244,7 @@ namespace BizHawk.Client.EmuHawk
 		// outputs results in the console
 		public static void DebugHash()
 		{
-			using var ofd = new OpenFileDialog
+			using OpenFileDialog ofd = new OpenFileDialog
 			{
 				CheckFileExists = true,
 				CheckPathExists = true,
@@ -266,15 +263,15 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var ext = Path.GetExtension(Path.GetExtension(path.Replace("|", "")).ToLowerInvariant());
+			string ext = Path.GetExtension(Path.GetExtension(path.Replace("|", "")).ToLowerInvariant());
 
 			switch (ext)
 			{
 				case ".m3u":
 				{
-					using var file = new HawkFile(path);
-					using var sr = new StreamReader(file.GetStream());
-					var m3u = M3U_File.Read(sr);
+					using HawkFile file = new HawkFile(path);
+					using StreamReader sr = new StreamReader(file.GetStream());
+						M3U_File m3u = M3U_File.Read(sr);
 					m3u.Rebase(Path.GetDirectoryName(path));
 					foreach (var entry in m3u.Entries)
 					{
@@ -285,7 +282,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				case ".xml":
 				{
-					var xml = XmlGame.Create(new(path));
+						XmlGame xml = XmlGame.Create(new(path));
 					foreach (var kvp in xml.Assets)
 					{
 						InternalDebugHash(kvp.Key);
@@ -315,10 +312,10 @@ namespace BizHawk.Client.EmuHawk
 					return Path.GetFileName(path).ToLowerInvariant();
 				}
 
-				using var file = new HawkFile(path);
+				using HawkFile file = new HawkFile(path);
 				if (file.IsArchive && !file.IsBound)
 				{
-					using var ac = new ArchiveChooser(file);
+					using ArchiveChooser ac = new ArchiveChooser(file);
 					if (ac.ShowDialog().IsOk())
 					{
 						file.BindArchiveMember(ac.SelectedMemberIndex);
@@ -374,8 +371,8 @@ namespace BizHawk.Client.EmuHawk
 					return ConsoleID.Arcade;
 				}
 
-				using var file = new HawkFile(path);
-				var rom = new RomGame(file);
+				using HawkFile file = new HawkFile(path);
+				RomGame rom = new RomGame(file);
 				return rom.GameInfo.System switch
 				{
 					VSystemID.Raw.A26 => ConsoleID.Atari2600,
@@ -441,8 +438,8 @@ namespace BizHawk.Client.EmuHawk
 
 			path = ResolvePath(path);
 			var consoleID = IdentifyConsole(path);
-			var hash = new byte[33];
-			var success = _lib.rc_hash_generate_from_file(hash, consoleID, path);
+			byte[] hash = new byte[33];
+			bool success = _lib.rc_hash_generate_from_file(hash, consoleID, path);
 			Console.WriteLine(path);
 			Console.WriteLine(success
 				? $"Generated RC Hash: {Encoding.ASCII.GetString(hash, 0, 32)}"

@@ -20,10 +20,10 @@ namespace BizHawk.Common
 		public static void CopyStream(Stream src, Stream dest, long len)
 		{
 			const int size = 0x2000;
-			var buffer = new byte[size];
+			byte[] buffer = new byte[size];
 			while (len > 0)
 			{
-				var n = src.Read(buffer, 0, (int) Math.Min(len, size));
+				int n = src.Read(buffer, 0, (int) Math.Min(len, size));
 				dest.Write(buffer, 0, n);
 				len -= n;
 			}
@@ -49,15 +49,15 @@ namespace BizHawk.Common
 		/// <remarks>TODO use <see cref="MemoryStream(int)"/> and <see cref="MemoryStream.ToArray"/> instead of using <see cref="MemoryStream(byte[])"/> and keeping a reference to the array? --yoshi</remarks>
 		public static byte[] DecompressGzipFile(Stream src)
 		{
-			var tmp = new byte[4];
+			byte[] tmp = new byte[4];
 			if (src.Read(tmp, 0, 2) != 2) throw new InvalidOperationException("Unexpected end of stream");
 			if (tmp[0] != 0x1F || tmp[1] != 0x8B) throw new InvalidOperationException("GZIP header not present");
 			src.Seek(-4, SeekOrigin.End);
 			src.Read(tmp, 0, 4);
 			src.Seek(0, SeekOrigin.Begin);
-			using var gs = new GZipStream(src, CompressionMode.Decompress, true);
-			var data = new byte[BitConverter.ToInt32(tmp, 0)];
-			using var ms = new MemoryStream(data);
+			using GZipStream gs = new GZipStream(src, CompressionMode.Decompress, true);
+			byte[] data = new byte[BitConverter.ToInt32(tmp, 0)];
+			using MemoryStream ms = new MemoryStream(data);
 			gs.CopyTo(ms);
 			return data;
 		}
@@ -129,25 +129,25 @@ namespace BizHawk.Common
 			if (str.Length % 2 is not 0) throw new ArgumentException(message: "string length must be even (add 0 padding if necessary)", paramName: nameof(str));
 			static int CharToNybble(char c)
 			{
-				if ('0' <= c && c <= '9') return c - 0x30;
-				if ('A' <= c && c <= 'F') return c - 0x37;
-				if ('a' <= c && c <= 'f') return c - 0x57;
+				if (c is >= '0' and <= '9') return c - 0x30;
+				if (c is >= 'A' and <= 'F') return c - 0x37;
+				if (c is >= 'a' and <= 'f') return c - 0x57;
 				throw new ArgumentException(message: "not a hex digit", paramName: nameof(c));
 			}
-			using var ms = new MemoryStream();
+			using MemoryStream ms = new MemoryStream();
 			for (int i = 0, l = str.Length / 2; i != l; i++) ms.WriteByte((byte) ((CharToNybble(str[2 * i]) << 4) + CharToNybble(str[2 * i + 1])));
 			return ms.ToArray();
 		}
 
 		public static int Memcmp(void* a, void* b, int len)
 		{
-			var ba = (byte*) a;
-			var bb = (byte*) b;
-			for (var i = 0; i != len; i++)
+			byte* ba = (byte*) a;
+			byte* bb = (byte*) b;
+			for (int i = 0; i != len; i++)
 			{
-				var _a = ba[i];
-				var _b = bb[i];
-				var c = _a - _b;
+				byte _a = ba[i];
+				byte _b = bb[i];
+				int c = _a - _b;
 				if (c != 0) return c;
 			}
 			return 0;
@@ -155,19 +155,19 @@ namespace BizHawk.Common
 
 		public static void Memset(void* ptr, int val, int len)
 		{
-			var bptr = (byte*) ptr;
-			for (var i = 0; i != len; i++) bptr[i] = (byte) val;
+			byte* bptr = (byte*) ptr;
+			for (int i = 0; i != len; i++) bptr[i] = (byte) val;
 		}
 
 		public static byte[]? ReadByteBuffer(this BinaryReader br, bool returnNull)
 		{
-			var len = br.ReadInt32();
+			int len = br.ReadInt32();
 			if (len == 0 && returnNull) return null;
-			var ret = new byte[len];
-			var ofs = 0;
+			byte[] ret = new byte[len];
+			int ofs = 0;
 			while (len > 0)
 			{
-				var done = br.Read(ret, ofs, len);
+				int done = br.Read(ret, ofs, len);
 				ofs += done;
 				len -= done;
 			}
@@ -177,23 +177,23 @@ namespace BizHawk.Common
 		/// <remarks>Any non-zero element is interpreted as <see langword="true"/>.</remarks>
 		public static bool[] ToBoolBuffer(this byte[] buf)
 		{
-			var ret = new bool[buf.Length];
+			bool[] ret = new bool[buf.Length];
 			for (int i = 0, len = buf.Length; i != len; i++) ret[i] = buf[i] != 0;
 			return ret;
 		}
 
 		public static double[] ToDoubleBuffer(this byte[] buf)
 		{
-			var len = buf.Length;
-			var ret = new double[len / 8];
+			int len = buf.Length;
+			double[] ret = new double[len / 8];
 			Buffer.BlockCopy(buf, 0, ret, 0, len);
 			return ret;
 		}
 
 		public static float[] ToFloatBuffer(this byte[] buf)
 		{
-			var len = buf.Length;
-			var ret = new float[len / 4];
+			int len = buf.Length;
+			float[] ret = new float[len / 4];
 			Buffer.BlockCopy(buf, 0, ret, 0, len);
 			return ret;
 		}
@@ -201,11 +201,11 @@ namespace BizHawk.Common
 		/// <remarks>Each set of 4 elements in <paramref name="buf"/> becomes 1 element in the returned buffer. The first of each set is interpreted as the LSB, with the 4th being the MSB. Elements are used as raw bits without regard for sign.</remarks>
 		public static int[] ToIntBuffer(this byte[] buf)
 		{
-			var len = buf.Length / 4;
-			var ret = new int[len];
+			int len = buf.Length / 4;
+			int[] ret = new int[len];
 			unchecked
 			{
-				for (var i = 0; i != len; i++) ret[i] = (buf[4 * i + 3] << 24) | (buf[4 * i + 2] << 16) | (buf[4 * i + 1] << 8) | buf[4 * i];
+				for (int i = 0; i != len; i++) ret[i] = (buf[4 * i + 3] << 24) | (buf[4 * i + 2] << 16) | (buf[4 * i + 1] << 8) | buf[4 * i];
 			}
 			return ret;
 		}
@@ -213,34 +213,34 @@ namespace BizHawk.Common
 		/// <remarks>Each pair of elements in <paramref name="buf"/> becomes 1 element in the returned buffer. The first of each pair is interpreted as the LSB. Elements are used as raw bits without regard for sign.</remarks>
 		public static short[] ToShortBuffer(this byte[] buf)
 		{
-			var len = buf.Length / 2;
-			var ret = new short[len];
+			int len = buf.Length / 2;
+			short[] ret = new short[len];
 			unchecked
 			{
-				for (var i = 0; i != len; i++) ret[i] = (short) ((buf[2 * i + 1] << 8) | buf[2 * i]);
+				for (int i = 0; i != len; i++) ret[i] = (short) ((buf[2 * i + 1] << 8) | buf[2 * i]);
 			}
 			return ret;
 		}
 
 		public static byte[] ToUByteBuffer(this bool[] buf)
 		{
-			var ret = new byte[buf.Length];
+			byte[] ret = new byte[buf.Length];
 			for (int i = 0, len = buf.Length; i != len; i++) ret[i] = buf[i] ? (byte) 1 : (byte) 0;
 			return ret;
 		}
 
 		public static byte[] ToUByteBuffer(this double[] buf)
 		{
-			var len = buf.Length * 8;
-			var ret = new byte[len];
+			int len = buf.Length * 8;
+			byte[] ret = new byte[len];
 			Buffer.BlockCopy(buf, 0, ret, 0, len);
 			return ret;
 		}
 
 		public static byte[] ToUByteBuffer(this float[] buf)
 		{
-			var len = buf.Length * 4;
-			var ret = new byte[len];
+			int len = buf.Length * 4;
+			byte[] ret = new byte[len];
 			Buffer.BlockCopy(buf, 0, ret, 0, len);
 			return ret;
 		}
@@ -248,11 +248,11 @@ namespace BizHawk.Common
 		/// <remarks>Each element of <paramref name="buf"/> becomes 4 elements in the returned buffer, with the LSB coming first. Elements are used as raw bits without regard for sign.</remarks>
 		public static byte[] ToUByteBuffer(this int[] buf)
 		{
-			var len = buf.Length;
-			var ret = new byte[4 * len];
+			int len = buf.Length;
+			byte[] ret = new byte[4 * len];
 			unchecked
 			{
-				for (var i = 0; i != len; i++)
+				for (int i = 0; i != len; i++)
 				{
 					ret[4 * i] = (byte) buf[i];
 					ret[4 * i + 1] = (byte) (buf[i] >> 8);
@@ -266,11 +266,11 @@ namespace BizHawk.Common
 		/// <remarks>Each element of <paramref name="buf"/> becomes 2 elements in the returned buffer, with the LSB coming first. Elements are used as raw bits without regard for sign.</remarks>
 		public static byte[] ToUByteBuffer(this short[] buf)
 		{
-			var len = buf.Length;
-			var ret = new byte[2 * len];
+			int len = buf.Length;
+			byte[] ret = new byte[2 * len];
 			unchecked
 			{
-				for (var i = 0; i != len; i++)
+				for (int i = 0; i != len; i++)
 				{
 					ret[2 * i] = (byte) buf[i];
 					ret[2 * i + 1] = (byte) (buf[i] >> 8);
@@ -282,11 +282,11 @@ namespace BizHawk.Common
 		/// <inheritdoc cref="ToUByteBuffer(int[])"/>
 		public static byte[] ToUByteBuffer(this uint[] buf)
 		{
-			var len = buf.Length;
-			var ret = new byte[4 * len];
+			int len = buf.Length;
+			byte[] ret = new byte[4 * len];
 			unchecked
 			{
-				for (var i = 0; i != len; i++)
+				for (int i = 0; i != len; i++)
 				{
 					ret[4 * i] = (byte) buf[i];
 					ret[4 * i + 1] = (byte) (buf[i] >> 8);
@@ -300,11 +300,11 @@ namespace BizHawk.Common
 		/// <inheritdoc cref="ToUByteBuffer(short[])"/>
 		public static byte[] ToUByteBuffer(this ushort[] buf)
 		{
-			var len = buf.Length;
-			var ret = new byte[2 * len];
+			int len = buf.Length;
+			byte[] ret = new byte[2 * len];
 			unchecked
 			{
-				for (var i = 0; i != len; i++)
+				for (int i = 0; i != len; i++)
 				{
 					ret[2 * i] = (byte) buf[i];
 					ret[2 * i + 1] = (byte) (buf[i] >> 8);
@@ -316,11 +316,11 @@ namespace BizHawk.Common
 		/// <inheritdoc cref="ToIntBuffer"/>
 		public static uint[] ToUIntBuffer(this byte[] buf)
 		{
-			var len = buf.Length / 4;
-			var ret = new uint[len];
+			int len = buf.Length / 4;
+			uint[] ret = new uint[len];
 			unchecked
 			{
-				for (var i = 0; i != len; i++) ret[i] = (uint) ((buf[4 * i + 3] << 24) | (buf[4 * i + 2] << 16) | (buf[4 * i + 1] << 8) | buf[4 * i]);
+				for (int i = 0; i != len; i++) ret[i] = (uint) ((buf[4 * i + 3] << 24) | (buf[4 * i + 2] << 16) | (buf[4 * i + 1] << 8) | buf[4 * i]);
 			}
 			return ret;
 		}
@@ -328,11 +328,11 @@ namespace BizHawk.Common
 		/// <inheritdoc cref="ToShortBuffer"/>
 		public static ushort[] ToUShortBuffer(this byte[] buf)
 		{
-			var len = buf.Length / 2;
-			var ret = new ushort[len];
+			int len = buf.Length / 2;
+			ushort[] ret = new ushort[len];
 			unchecked
 			{
-				for (var i = 0; i != len; i++) ret[i] = (ushort) ((buf[2 * i + 1] << 8) | buf[2 * i]);
+				for (int i = 0; i != len; i++) ret[i] = (ushort) ((buf[2 * i + 1] << 8) | buf[2 * i]);
 			}
 			return ret;
 		}
@@ -356,7 +356,7 @@ namespace BizHawk.Common
 			// deletions are asynchronous, so wait for a while and then give up
 			static bool TryWaitForFileToVanish(string path)
 			{
-				for (var i = 25; i != 0; i--)
+				for (int i = 25; i != 0; i--)
 				{
 					if (!File.Exists(path)) return true;
 					Thread.Sleep(10);

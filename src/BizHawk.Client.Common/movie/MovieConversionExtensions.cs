@@ -23,7 +23,7 @@ namespace BizHawk.Client.Common
 		public static ITasMovie ToTasMovie(this IMovie old)
 		{
 			string newFilename = ConvertFileNameToTasMovie(old.Filename);
-			var tas = (ITasMovie)old.Session.Get(newFilename);
+			ITasMovie tas = (ITasMovie)old.Session.Get(newFilename);
 			tas.CopyLog(old.GetLogEntries());
 			tas.LogKey = old.LogKey;
 
@@ -38,7 +38,7 @@ namespace BizHawk.Client.Common
 			tas.SyncSettingsJson = old.SyncSettingsJson;
 
 			tas.Comments.Clear();
-			foreach (var comment in old.Comments)
+			foreach (string comment in old.Comments)
 			{
 				tas.Comments.Add(comment);
 			}
@@ -72,7 +72,7 @@ namespace BizHawk.Client.Common
 			bk2.SyncSettingsJson = old.SyncSettingsJson;
 
 			bk2.Comments.Clear();
-			foreach (var comment in old.Comments)
+			foreach (string comment in old.Comments)
 			{
 				bk2.Comments.Add(comment);
 			}
@@ -94,7 +94,7 @@ namespace BizHawk.Client.Common
 		{
 			string newFilename = ConvertFileNameToTasMovie(old.Filename);
 
-			var tas = (ITasMovie)old.Session.Get(newFilename);
+			ITasMovie tas = (ITasMovie)old.Session.Get(newFilename);
 			tas.BinarySavestate = savestate;
 			tas.LagLog.Clear();
 
@@ -126,12 +126,12 @@ namespace BizHawk.Client.Common
 			}
 
 			tas.Subtitles.Clear();
-			foreach (Subtitle sub in old.Subtitles)
+			foreach (var sub in old.Subtitles)
 			{
 				tas.Subtitles.Add(sub);
 			}
 
-			foreach (TasMovieMarker marker in old.Markers)
+			foreach (var marker in old.Markers)
 			{
 				if (marker.Frame > frame)
 				{
@@ -149,7 +149,7 @@ namespace BizHawk.Client.Common
 		{
 			string newFilename = ConvertFileNameToTasMovie(old.Filename);
 
-			var tas = (ITasMovie)old.Session.Get(newFilename);
+			ITasMovie tas = (ITasMovie)old.Session.Get(newFilename);
 			tas.SaveRam = saveRam;
 			tas.TasStateManager.Clear();
 			tas.LagLog.Clear();
@@ -172,7 +172,7 @@ namespace BizHawk.Client.Common
 			}
 
 			tas.Subtitles.Clear();
-			foreach (Subtitle sub in old.Subtitles)
+			foreach (var sub in old.Subtitles)
 			{
 				tas.Subtitles.Add(sub);
 			}
@@ -227,7 +227,7 @@ namespace BizHawk.Client.Common
 			{
 				foreach (var firmware in firmwareManager.RecentlyServed)
 				{
-					var key = firmware.ID.MovieHeaderKey;
+					string key = firmware.ID.MovieHeaderKey;
 					if (!movie.HeaderEntries.ContainsKey(key))
 					{
 						movie.HeaderEntries.Add(key, firmware.Hash);
@@ -309,7 +309,7 @@ namespace BizHawk.Client.Common
 			if (oldFileName is null) return null;
 			var (dir, fileNoExt, _) = oldFileName.SplitPathToDirFileAndExt();
 			if (dir is null) return string.Empty;
-			var newFileName = Path.Combine(dir, $"{fileNoExt}.{TasMovie.Extension}");
+			string newFileName = Path.Combine(dir, $"{fileNoExt}.{TasMovie.Extension}");
 			int fileSuffix = 0;
 			while (File.Exists(newFileName))
 			{

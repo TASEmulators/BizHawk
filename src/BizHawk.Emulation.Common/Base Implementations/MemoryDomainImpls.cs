@@ -28,15 +28,9 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public override byte PeekByte(long addr)
-		{
-			return Peek(addr);
-		}
+		public override byte PeekByte(long addr) => Peek(addr);
 
-		public override void PokeByte(long addr, byte val)
-		{
-			_poke?.Invoke(addr, val);
-		}
+		public override void PokeByte(long addr, byte val) => _poke?.Invoke(addr, val);
 
 		public override void BulkPeekByte(Range<long> addresses, byte[] values)
 		{
@@ -112,10 +106,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public override byte PeekByte(long addr)
-		{
-			return Data[addr];
-		}
+		public override byte PeekByte(long addr) => Data[addr];
 
 		public override void PokeByte(long addr, byte val)
 		{
@@ -213,8 +204,8 @@ namespace BizHawk.Emulation.Common
 
 		public override void BulkPeekByte(Range<long> addresses, byte[] values)
 		{
-			var start = (ulong)addresses.Start;
-			var count = addresses.Count();
+			ulong start = (ulong)addresses.Start;
+			ulong count = addresses.Count();
 
 			if (start < (ulong)Size && (start + count) <= (ulong)Size)
 			{
@@ -226,10 +217,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public void SetSize(long size)
-		{
-			Size = size;
-		}
+		public void SetSize(long size) => Size = size;
 
 		public MemoryDomainIntPtr(string name, Endian endian, IntPtr data, long size, bool writable, int wordSize)
 		{
@@ -278,10 +266,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public void SetSize(long size)
-		{
-			Size = size;
-		}
+		public void SetSize(long size) => Size = size;
 
 		public MemoryDomainIntPtrMonitor(string name, Endian endian, IntPtr data, long size, bool writable, int wordSize,
 			IMonitor monitor)

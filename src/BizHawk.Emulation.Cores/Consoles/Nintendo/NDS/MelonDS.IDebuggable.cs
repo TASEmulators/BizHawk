@@ -9,14 +9,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 	{
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			var regs = new uint[2 * 16];
+			uint[] regs = new uint[2 * 16];
 			_core.GetRegs(regs);
 
-			var ret = new Dictionary<string, RegisterValue>();
-			for (var i = 0; i < 2; i++)
+			Dictionary<string, RegisterValue> ret = new Dictionary<string, RegisterValue>();
+			for (int i = 0; i < 2; i++)
 			{
-				var ncpu = i == 0 ? 9 : 7;
-				for (var j = 0; j < 16; j++)
+				int ncpu = i == 0 ? 9 : 7;
+				for (int j = 0; j < 16; j++)
 				{
 					ret["ARM" + ncpu + " r" + j] = regs[i * 16 + j];
 				}
@@ -26,16 +26,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public void SetCpuRegister(string register, int value)
 		{
-			if (register.Length != 7 && register.Length != 8)
+			if (register.Length is not 7 and not 8)
 			{
 				throw new InvalidOperationException("Wrong String Length???");
 			}
-			var ncpu = int.Parse(register.Substring(3, 1));
+			int ncpu = int.Parse(register.Substring(3, 1));
 			if (ncpu is not (9 or 7))
 			{
 				throw new InvalidOperationException("Invalid CPU???");
 			}
-			var index = int.Parse(register.Substring(6, register.Length - 6));
+			int index = int.Parse(register.Substring(6, register.Length - 6));
 			if (index is < 0 or > 15)
 			{
 				throw new InvalidOperationException("Invalid Reg Index???");
@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		{
 			LibMelonDS.MemoryCallback CreateCallback(MemoryCallbackFlags flags, Func<bool> getHasCBOfType)
 			{
-				var rawFlags = (uint)flags;
+				uint rawFlags = (uint)flags;
 				return address =>
 				{
 					if (getHasCBOfType())

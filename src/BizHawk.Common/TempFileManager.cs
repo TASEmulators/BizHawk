@@ -20,7 +20,7 @@ namespace BizHawk.Common
 		public static string GetTempFilename(string friendlyName, string? dotAndExtension = null, bool delete = true)
 		{
 			string guidPart = Guid.NewGuid().ToString();
-			var fname = $"biz-{System.Diagnostics.Process.GetCurrentProcess().Id}-{friendlyName}-{guidPart}{dotAndExtension ?? ""}";
+			string fname = $"biz-{System.Diagnostics.Process.GetCurrentProcess().Id}-{friendlyName}-{guidPart}{dotAndExtension ?? ""}";
 			if (delete)
 			{
 				fname = RenameTempFilenameForDelete(fname);
@@ -64,8 +64,8 @@ namespace BizHawk.Common
 		private static void ThreadProc()
 		{
 			// squirrely logic, trying not to create garbage
-			var knownTempDirs = new HashSet<string>();
-			var dis = new List<DirectoryInfo>();
+			HashSet<string> knownTempDirs = new HashSet<string>();
+			List<DirectoryInfo> dis = new List<DirectoryInfo>();
 			for (;;)
 			{
 				lock (typeof(TempFileManager))

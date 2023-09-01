@@ -84,8 +84,8 @@ namespace BizHawk.Client.EmuHawk
 			_inputManager.ClientControls.Overrides(_hardcoreHotkeyOverrides);
 			_mainForm.FrameInch = false;
 
-			var fastForward = _inputManager.ClientControls["Fast Forward"] || _mainForm.FastForward;
-			var speedPercent = fastForward ? _getConfig().SpeedPercentAlternate : _getConfig().SpeedPercent;
+			bool fastForward = _inputManager.ClientControls["Fast Forward"] || _mainForm.FastForward;
+			int speedPercent = fastForward ? _getConfig().SpeedPercentAlternate : _getConfig().SpeedPercent;
 			if (speedPercent < 100)
 			{
 				HandleHardcoreModeDisable("Slow motion in hardcore mode is not allowed.");
@@ -147,11 +147,11 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				}
 				default:
-					if (CoreGraphicsLayers.TryGetValue(Emu.GetType(), out var layers))
+					if (CoreGraphicsLayers.TryGetValue(Emu.GetType(), out string[] layers))
 					{
-						var s = _mainForm.GetSettingsAdapterForLoadedCoreUntyped().GetSettings();
+						object s = _mainForm.GetSettingsAdapterForLoadedCoreUntyped().GetSettings();
 						var t = s.GetType();
-						foreach (var layer in layers)
+						foreach (string layer in layers)
 						{
 							// annoyingly NES has fields instead of properties for layers
 							if ((bool)(t.GetProperty(layer)

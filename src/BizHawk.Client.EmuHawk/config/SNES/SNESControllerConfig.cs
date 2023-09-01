@@ -61,8 +61,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!_suppressDropdownChangeEvents)
 			{
-				var leftPort = (LibsnesControllerDeck.ControllerType)Enum.Parse(typeof(LibsnesControllerDeck.ControllerType), Port1ComboBox.SelectedItem.ToString());
-				var rightPort = (LibsnesControllerDeck.ControllerType)Enum.Parse(typeof(LibsnesControllerDeck.ControllerType), Port2ComboBox.SelectedItem.ToString());
+				LibsnesControllerDeck.ControllerType leftPort = (LibsnesControllerDeck.ControllerType)Enum.Parse(typeof(LibsnesControllerDeck.ControllerType), Port1ComboBox.SelectedItem.ToString());
+				LibsnesControllerDeck.ControllerType rightPort = (LibsnesControllerDeck.ControllerType)Enum.Parse(typeof(LibsnesControllerDeck.ControllerType), Port2ComboBox.SelectedItem.ToString());
 				ToggleMouseSection(leftPort == LibsnesControllerDeck.ControllerType.Mouse
 					|| rightPort == LibsnesControllerDeck.ControllerType.Mouse);
 			}

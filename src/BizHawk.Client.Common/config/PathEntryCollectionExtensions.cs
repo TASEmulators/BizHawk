@@ -22,7 +22,7 @@ namespace BizHawk.Client.Common
 
 		public static string GlobalBaseAbsolutePath(this PathEntryCollection collection)
 		{
-			var globalBase = collection[PathEntryCollection.GLOBAL, "Base"].Path;
+			string globalBase = collection[PathEntryCollection.GLOBAL, "Base"].Path;
 
 			// if %exe% prefixed then substitute exe path and repeat
 			if (globalBase.StartsWith("%exe%", StringComparison.InvariantCultureIgnoreCase))
@@ -56,7 +56,7 @@ namespace BizHawk.Client.Common
 
 		public static string AbsolutePathForType(this PathEntryCollection collection, string systemId, string type)
 		{
-			var path = collection.EntryWithFallback(type, systemId).Path;
+			string path = collection.EntryWithFallback(type, systemId).Path;
 			return collection.AbsolutePathFor(path, systemId);
 		}
 
@@ -67,12 +67,10 @@ namespace BizHawk.Client.Common
 		/// Logic will fallback until an absolute path is found,
 		/// using Global Base as a last resort
 		/// </summary>
-		public static string AbsolutePathFor(this PathEntryCollection collection, string path, string systemId)
-		{
+		public static string AbsolutePathFor(this PathEntryCollection collection, string path, string systemId) =>
 			// warning: supposedly Path.GetFullPath accesses directories (and needs permissions)
 			// if this poses a problem, we need to paste code from .net or mono sources and fix them to not pose problems, rather than homebrew stuff
-			return Path.GetFullPath(collection.AbsolutePathForInner(path, systemId));
-		}
+			Path.GetFullPath(collection.AbsolutePathForInner(path, systemId));
 
 		private static string AbsolutePathForInner(this PathEntryCollection collection,  string path, string systemId)
 		{
@@ -136,54 +134,51 @@ namespace BizHawk.Client.Common
 
 		public static string MovieAbsolutePath(this PathEntryCollection collection)
 		{
-			var path = collection[PathEntryCollection.GLOBAL, "Movies"].Path;
+			string path = collection[PathEntryCollection.GLOBAL, "Movies"].Path;
 			return collection.AbsolutePathFor(path, null);
 		}
 
 		public static string MovieBackupsAbsolutePath(this PathEntryCollection collection)
 		{
-			var path = collection[PathEntryCollection.GLOBAL, "Movie backups"].Path;
+			string path = collection[PathEntryCollection.GLOBAL, "Movie backups"].Path;
 			return collection.AbsolutePathFor(path, null);
 		}
 
 		public static string AvAbsolutePath(this PathEntryCollection collection)
 		{
-			var path = collection[PathEntryCollection.GLOBAL, "A/V Dumps"].Path;
+			string path = collection[PathEntryCollection.GLOBAL, "A/V Dumps"].Path;
 			return collection.AbsolutePathFor(path, null);
 		}
 
 		public static string LuaAbsolutePath(this PathEntryCollection collection)
 		{
-			var path = collection[PathEntryCollection.GLOBAL, "Lua"].Path;
+			string path = collection[PathEntryCollection.GLOBAL, "Lua"].Path;
 			return collection.AbsolutePathFor(path, null);
 		}
 
-		public static string FirmwareAbsolutePath(this PathEntryCollection collection)
-		{
-			return collection.AbsolutePathFor(collection.FirmwaresPathFragment, null);
-		}
+		public static string FirmwareAbsolutePath(this PathEntryCollection collection) => collection.AbsolutePathFor(collection.FirmwaresPathFragment, null);
 
 		public static string LogAbsolutePath(this PathEntryCollection collection)
 		{
-			var path = collection.ResolveToolsPath(collection[PathEntryCollection.GLOBAL, "Debug Logs"].Path);
+			string path = collection.ResolveToolsPath(collection[PathEntryCollection.GLOBAL, "Debug Logs"].Path);
 			return collection.AbsolutePathFor(path, null);
 		}
 
 		public static string WatchAbsolutePath(this PathEntryCollection collection)
 		{
-			var path = 	collection.ResolveToolsPath(collection[PathEntryCollection.GLOBAL, "Watch (.wch)"].Path);
+			string path = 	collection.ResolveToolsPath(collection[PathEntryCollection.GLOBAL, "Watch (.wch)"].Path);
 			return collection.AbsolutePathFor(path, null);
 		}
 
 		public static string ToolsAbsolutePath(this PathEntryCollection collection)
 		{
-			var path = collection[PathEntryCollection.GLOBAL, "Tools"].Path;
+			string path = collection[PathEntryCollection.GLOBAL, "Tools"].Path;
 			return collection.AbsolutePathFor(path, null);
 		}
 
 		public static string MultiDiskAbsolutePath(this PathEntryCollection collection)
 		{
-			var path = collection.ResolveToolsPath(collection[PathEntryCollection.GLOBAL, "Multi-Disk Bundles"].Path);
+			string path = collection.ResolveToolsPath(collection[PathEntryCollection.GLOBAL, "Multi-Disk Bundles"].Path);
 			return collection.AbsolutePathFor(path, null);
 		}
 
@@ -213,7 +208,7 @@ namespace BizHawk.Client.Common
 
 		public static string SaveRamAbsolutePath(this PathEntryCollection collection, IGameInfo game, IMovie movie)
 		{
-			var name = game.FilesystemSafeName();
+			string name = game.FilesystemSafeName();
 			if (movie.IsActive())
 			{
 				name += $".{Path.GetFileNameWithoutExtension(movie.Filename)}";
@@ -228,7 +223,7 @@ namespace BizHawk.Client.Common
 		// Shenanigans
 		public static string RetroSaveRamAbsolutePath(this PathEntryCollection collection, IGameInfo game)
 		{
-			var name = game.FilesystemSafeName();
+			string name = game.FilesystemSafeName();
 			name = Path.GetDirectoryName(name);
 			if (name == "")
 			{
@@ -246,7 +241,7 @@ namespace BizHawk.Client.Common
 		// Shenanigans
 		public static string RetroSystemAbsolutePath(this PathEntryCollection collection, IGameInfo game)
 		{
-			var name = game.FilesystemSafeName();
+			string name = game.FilesystemSafeName();
 			name = Path.GetDirectoryName(name);
 			if (string.IsNullOrEmpty(name))
 			{
@@ -261,7 +256,7 @@ namespace BizHawk.Client.Common
 
 		public static string AutoSaveRamAbsolutePath(this PathEntryCollection collection, IGameInfo game, IMovie movie)
 		{
-			var path = collection.SaveRamAbsolutePath(game, movie);
+			string path = collection.SaveRamAbsolutePath(game, movie);
 			return path.Insert(path.Length - 8, ".AutoSaveRAM");
 		}
 
@@ -289,15 +284,9 @@ namespace BizHawk.Client.Common
 			return collection.AbsolutePathFor(entry.Path, systemId);
 		}
 
-		public static string PalettesAbsolutePathFor(this PathEntryCollection collection, string systemId)
-		{
-			return collection.AbsolutePathFor(collection[systemId, "Palettes"].Path, systemId);
-		}
+		public static string PalettesAbsolutePathFor(this PathEntryCollection collection, string systemId) => collection.AbsolutePathFor(collection[systemId, "Palettes"].Path, systemId);
 
-		public static string UserAbsolutePathFor(this PathEntryCollection collection, string systemId)
-		{
-			return collection.AbsolutePathFor(collection[systemId, "User"].Path, systemId);
-		}
+		public static string UserAbsolutePathFor(this PathEntryCollection collection, string systemId) => collection.AbsolutePathFor(collection[systemId, "User"].Path, systemId);
 
 		/// <summary>
 		/// Takes an absolute path and attempts to convert it to a relative, based on the system,
@@ -316,7 +305,7 @@ namespace BizHawk.Client.Common
 		{
 			if (string.IsNullOrWhiteSpace(collection.TempFilesFragment))
 				return;
-			var path = collection.AbsolutePathFor(collection.TempFilesFragment, null);
+			string path = collection.AbsolutePathFor(collection.TempFilesFragment, null);
 			TempFileManager.HelperSetTempPath(path);
 		}
 
@@ -324,7 +313,7 @@ namespace BizHawk.Client.Common
 		{
 			if (Path.IsPathRooted(subPath) || subPath.StartsWith('%')) return subPath;
 
-			var toolsPath = collection[PathEntryCollection.GLOBAL, "Tools"].Path;
+			string toolsPath = collection[PathEntryCollection.GLOBAL, "Tools"].Path;
 
 			// Hack for backwards compatibility, prior to 1.11.5, .wch files were in .\Tools, we don't want that to turn into .Tools\Tools
 			if (subPath == "Tools")

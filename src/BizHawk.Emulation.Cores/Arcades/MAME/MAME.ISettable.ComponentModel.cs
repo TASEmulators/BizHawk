@@ -113,20 +113,17 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		public override object GetValue(object component)
 		{
-			var ss = (MAMESyncSettings)component;
-			if (!ss.DriverSettings.TryGetValue(Setting.LookupKey, out var val))
+			MAMESyncSettings ss = (MAMESyncSettings)component;
+			if (!ss.DriverSettings.TryGetValue(Setting.LookupKey, out string val))
 				val = Setting.DefaultValue;
 			return ConvertFromString(val);
 		}
 
-		public override void ResetValue(object component)
-		{
-			((MAMESyncSettings)component).DriverSettings.Remove(Setting.LookupKey);
-		}
+		public override void ResetValue(object component) => ((MAMESyncSettings)component).DriverSettings.Remove(Setting.LookupKey);
 
 		public override void SetValue(object component, object value)
 		{
-			var s = ConvertToString(value);
+			string s = ConvertToString(value);
 			if (s == null || s == Setting.DefaultValue)
 			{
 				ResetValue(component);

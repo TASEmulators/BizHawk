@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		private void CalcClock()
 		{
-			var c = ((cpuFreq * 1000000) / refreshRate);
+			double c = ((cpuFreq * 1000000) / refreshRate);
 			ClockPerFrame = (int) c;
 
 			SetupAudio();
@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{
 			_controller = controller;
-			_isLag = true;
+			IsLagFrame = true;
 
 			if (_tracer.IsEnabled())
 			{
@@ -48,15 +48,13 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			PollInput();
 
 			FrameClock = 0;
-			_frame++;
+			Frame++;
 
-			if (_isLag)
-				_lagCount++;
+			if (IsLagFrame)
+				LagCount++;
 
 			return true;
 		}
-
-		private int _frame;
 #pragma warning disable CS0414
 		//private int _lagcount;
 		//private bool _islag;
@@ -64,12 +62,12 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		public void ResetCounters()
 		{
-			_frame = 0;
-			_lagCount = 0;
-			_isLag = false;
+			Frame = 0;
+			LagCount = 0;
+			IsLagFrame = false;
 		}
 
-		public int Frame => _frame;
+		public int Frame { get; private set; }
 
 		public void Dispose()
 		{

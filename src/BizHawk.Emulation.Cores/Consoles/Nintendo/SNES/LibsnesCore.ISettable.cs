@@ -4,18 +4,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
 	public partial class LibsnesCore : ISettable<LibsnesCore.SnesSettings, LibsnesCore.SnesSyncSettings>
 	{
-		public SnesSettings GetSettings()
-		{
-			return _settings.Clone();
-		}
+		public SnesSettings GetSettings() => _settings.Clone();
 
 		IBSNESForGfxDebugger.SettingsObj IBSNESForGfxDebugger.GetSettings()
 			=> GetSettings();
 
-		public SnesSyncSettings GetSyncSettings()
-		{
-			return _syncSettings.Clone();
-		}
+		public SnesSyncSettings GetSyncSettings() => _syncSettings.Clone();
 
 		public PutSettingsDirtyBits PutSettings(SnesSettings o)
 		{
@@ -65,10 +59,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			public bool AlwaysDoubleSize { get; set; } = false;
 			public string Palette { get; set; } = "BizHawk";
 
-			public SnesSettings Clone()
-			{
-				return (SnesSettings)MemberwiseClone();
-			}
+			public SnesSettings Clone() => (SnesSettings)MemberwiseClone();
 		}
 
 		public class SnesSyncSettings
@@ -80,10 +71,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			public bool RandomizedInitialState { get; set; } = true;
 
-			public SnesSyncSettings Clone()
-			{
-				return (SnesSyncSettings)MemberwiseClone();
-			}
+			public SnesSyncSettings Clone() => (SnesSyncSettings)MemberwiseClone();
 		}
 	}
 }

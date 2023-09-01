@@ -73,8 +73,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void ScreenshotToClipboard()
 		{
-			var b = new Bitmap(Width, Height);
-			var rect = new Rectangle(new Point(0, 0), Size);
+			Bitmap b = new Bitmap(Width, Height);
+			Rectangle rect = new Rectangle(new Point(0, 0), Size);
 			DrawToBitmap(b, rect);
 
 			using var img = b;

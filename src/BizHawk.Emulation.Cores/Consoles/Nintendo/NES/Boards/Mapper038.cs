@@ -29,10 +29,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public override byte ReadPrg(int addr)
-		{
-			return Rom[addr + (prg << 15)];
-		}
+		public override byte ReadPrg(int addr) => Rom[addr + (prg << 15)];
 
 		public override byte ReadPpu(int addr)
 		{

@@ -30,8 +30,8 @@ namespace BizHawk.Client.EmuHawk
 			checkBoxShowCoreBrdColor.Checked = _settings.UseCoreBorderForBackground;
 
 			// OSD Message Verbosity
-			var osdTypes = Enum.GetNames(typeof(ZXSpectrum.OSDVerbosity));
-			foreach (var val in osdTypes)
+			string[] osdTypes = Enum.GetNames(typeof(ZXSpectrum.OSDVerbosity));
+			foreach (string val in osdTypes)
 			{
 				osdMessageVerbositycomboBox1.Items.Add(val);
 			}
@@ -41,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetBtnColor()
 		{
-			var c = System.Drawing.Color.FromArgb(_bgColor);
+			System.Drawing.Color c = System.Drawing.Color.FromArgb(_bgColor);
 			buttonChooseBGColor.ForeColor = c;
 			buttonChooseBGColor.BackColor = c;
 		}
@@ -95,15 +95,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OSDComboBox_SelectionChangeCommitted(object sender, EventArgs e)
 		{
-			var cb = (ComboBox)sender;
+			ComboBox cb = (ComboBox)sender;
 			UpdateOSDNotes((ZXSpectrum.OSDVerbosity)Enum.Parse(typeof(ZXSpectrum.OSDVerbosity), cb.SelectedItem.ToString()));
 		}
 
 		private void buttonChooseBGColor_Click(object sender, EventArgs e)
 		{
-			var currColor = _settings.BackgroundColor;
+			int currColor = _settings.BackgroundColor;
 			System.Drawing.Color c = System.Drawing.Color.FromArgb(currColor);
-			using var cd = new ColorDialog();
+			using ColorDialog cd = new ColorDialog();
 
 			System.Drawing.Color[] colors =
 			{

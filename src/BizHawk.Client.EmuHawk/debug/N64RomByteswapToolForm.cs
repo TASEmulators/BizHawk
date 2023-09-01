@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk.ForDebugging
 			SzTextBoxEx txtBaseFile = new() { Size = new(224, 23) };
 			void ChooseBaseFile()
 			{
-				var filename = this.ShowFileOpenDialog(initDir: Config!.PathEntries.RomAbsolutePath());
+				string? filename = this.ShowFileOpenDialog(initDir: Config!.PathEntries.RomAbsolutePath());
 				if (filename is not null) txtBaseFile.Text = filename;
 			}
 			ComboBox comboFormats = new()
@@ -35,7 +35,7 @@ namespace BizHawk.Client.EmuHawk.ForDebugging
 			SzTextBoxEx txtTargetFile = new() { Size = new(224, 23) };
 			void ChooseTargetFile()
 			{
-				var filename = this.ShowFileSaveDialog(
+				string? filename = this.ShowFileSaveDialog(
 					fileExt: comboFormats.SelectedIndex switch
 					{
 						0 => "n64",
@@ -50,7 +50,7 @@ namespace BizHawk.Client.EmuHawk.ForDebugging
 			{
 				try
 				{
-					var rom = File.ReadAllBytes(txtBaseFile.Text);
+					byte[] rom = File.ReadAllBytes(txtBaseFile.Text);
 					_ = comboFormats.SelectedIndex switch
 					{
 						0 => N64RomByteswapper.ToN64LittleEndian(rom),

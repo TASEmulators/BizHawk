@@ -6,15 +6,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		private int _lastReadVicData = 0xFF;
 		private int _vicBank = 0xC000;
 
-		private bool CassPort_ReadDataOutput()
-		{
-			return (Cpu.PortData & 0x08) != 0;
-		}
+		private bool CassPort_ReadDataOutput() => (Cpu.PortData & 0x08) != 0;
 
-		private bool CassPort_ReadMotor()
-		{
-			return (Cpu.PortData & 0x20) != 0;
-		}
+		private bool CassPort_ReadMotor() => (Cpu.PortData & 0x20) != 0;
 
 		private int Cia1_ReadPortA()
 		{
@@ -24,17 +18,15 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 					0x3F;
 		}
 
-		#pragma warning disable IDE0051
-		private int Cia1_ReadPortB()
-		{
+#pragma warning disable IDE0051
+		private int Cia1_ReadPortB() =>
 			// Ordinarily these are connected to the userport.
-			return 0x00;
-		}
-		#pragma warning restore IDE0051
+			0x00;
+#pragma warning restore IDE0051
 
 		private int Cpu_ReadPort()
 		{
-			var data = 0x1F;
+			int data = 0x1F;
 			if (!Cassette.ReadSenseBuffer())
 			{
 				data &= 0xEF;
@@ -43,39 +35,21 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			return data;
 		}
 
-		private void Cpu_WriteMemoryPort(int addr)
-		{
-			Pla.WriteMemory(addr, ReadOpenBus());
-		}
+		private void Cpu_WriteMemoryPort(int addr) => Pla.WriteMemory(addr, ReadOpenBus());
 
-		private bool Glue_ReadIRQ()
-		{
-			return Cia0.ReadIrq() && Vic.ReadIrq() && CartPort.ReadIrq();
-		}
+		private bool Glue_ReadIRQ() => Cia0.ReadIrq() && Vic.ReadIrq() && CartPort.ReadIrq();
 
-		private bool Glue_ReadNMI()
-		{
-			return !_restorePressed && Cia1.ReadIrq() && CartPort.ReadNmi();
-		}
+		private bool Glue_ReadNMI() => !_restorePressed && Cia1.ReadIrq() && CartPort.ReadNmi();
 
-		private bool[] Input_ReadJoysticks()
-		{
-			return _joystickPressed;
-		}
+		private bool[] Input_ReadJoysticks() => _joystickPressed;
 
-		private bool[] Input_ReadKeyboard()
-		{
-			return _keyboardPressed;
-		}
+		private bool[] Input_ReadKeyboard() => _keyboardPressed;
 
-		private bool Pla_ReadCharen()
-		{
-			return (Cpu.PortData & 0x04) != 0;
-		}
+		private bool Pla_ReadCharen() => (Cpu.PortData & 0x04) != 0;
 
 		private int Pla_ReadCia0(int addr)
 		{
-			if (addr == 0xDC00 || addr == 0xDC01)
+			if (addr is 0xDC00 or 0xDC01)
 			{
 				InputRead = true;
 			}
@@ -84,59 +58,35 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		private int Pla_ReadColorRam(int addr)
 		{
-			var result = ReadOpenBus();
+			int result = ReadOpenBus();
 			result &= 0xF0;
 			result |= ColorRam.Read(addr);
 			return result;
 		}
 
-		private bool Pla_ReadHiRam()
-		{
-			return (Cpu.PortData & 0x02) != 0;
-		}
+		private bool Pla_ReadHiRam() => (Cpu.PortData & 0x02) != 0;
 
-		private bool Pla_ReadLoRam()
-		{
-			return (Cpu.PortData & 0x01) != 0;
-		}
+		private bool Pla_ReadLoRam() => (Cpu.PortData & 0x01) != 0;
 
-		private int Pla_ReadExpansion0(int addr)
-		{
-			return CartPort.IsConnected ? CartPort.ReadLoExp(addr) : _lastReadVicData;
-		}
+		private int Pla_ReadExpansion0(int addr) => CartPort.IsConnected ? CartPort.ReadLoExp(addr) : _lastReadVicData;
 
-		private int Pla_ReadExpansion1(int addr)
-		{
-			return CartPort.IsConnected ? CartPort.ReadHiExp(addr) : _lastReadVicData;
-		}
+		private int Pla_ReadExpansion1(int addr) => CartPort.IsConnected ? CartPort.ReadHiExp(addr) : _lastReadVicData;
 
-		private bool SerPort_ReadAtnOut()
-		{
+		private bool SerPort_ReadAtnOut() =>
 			// inverted PA3 (input NOT pulled up)
-			return !((Cia1.DdrA & 0x08) != 0 && (Cia1.PrA & 0x08) != 0);
-		}
+			!((Cia1.DdrA & 0x08) != 0 && (Cia1.PrA & 0x08) != 0);
 
-		private bool SerPort_ReadClockOut()
-		{
+		private bool SerPort_ReadClockOut() =>
 			// inverted PA4 (input NOT pulled up)
-			return !((Cia1.DdrA & 0x10) != 0 && (Cia1.PrA & 0x10) != 0);
-		}
+			!((Cia1.DdrA & 0x10) != 0 && (Cia1.PrA & 0x10) != 0);
 
-		private bool SerPort_ReadDataOut()
-		{
+		private bool SerPort_ReadDataOut() =>
 			// inverted PA5 (input NOT pulled up)
-			return !((Cia1.DdrA & 0x20) != 0 && (Cia1.PrA & 0x20) != 0);
-		}
+			!((Cia1.DdrA & 0x20) != 0 && (Cia1.PrA & 0x20) != 0);
 
-		private int Sid_ReadPotX()
-		{
-			return 255;
-		}
+		private int Sid_ReadPotX() => 255;
 
-		private int Sid_ReadPotY()
-		{
-			return 255;
-		}
+		private int Sid_ReadPotY() => 255;
 
 		private int Vic_ReadMemory(int addr)
 		{
@@ -146,9 +96,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			return _lastReadVicData;
 		}
 
-		private int ReadOpenBus()
-		{
-			return _lastReadVicData;
-		}
+		private int ReadOpenBus() => _lastReadVicData;
 	}
 }

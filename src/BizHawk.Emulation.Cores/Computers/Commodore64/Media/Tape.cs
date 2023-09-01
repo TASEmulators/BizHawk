@@ -6,7 +6,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 {
 	public class Tape
 	{
-		private readonly byte[] _tapeData;
 		private readonly byte _version;
 		private readonly int _start;
 		private readonly int _end;
@@ -20,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 		public Tape(byte version, byte[] tapeData, int start, int end)
 		{
 			_version = version;
-			_tapeData = tapeData;
+			TapeDataDomain = tapeData;
 			_start = start;
 			_end = end;
 			Rewind();
@@ -36,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 					return;
 				}
 
-				_cycle = _tapeData[_pos++] * 8;
+				_cycle = TapeDataDomain[_pos++] * 8;
 				if (_cycle == 0)
 				{
 					if (_version == 0)
@@ -45,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 					}
 					else
 					{
-						_cycle = (int)(BitConverter.ToUInt32(_tapeData, _pos - 1) >> 8);
+						_cycle = (int)(BitConverter.ToUInt32(TapeDataDomain, _pos - 1) >> 8);
 						_pos += 3;
 						if (_cycle == 0)
 						{
@@ -69,10 +68,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 		}
 
 		// Reads from tape, this will tell the caller if the flag pin should be raised
-		public bool Read()
-		{
-			return _data;
-		}
+		public bool Read() => _data;
 
 		// Try to construct a tape file from file data. Returns null if not a tape file, throws exceptions for bad tape files.
 		// (Note that some error conditions aren't caught right here.)
@@ -82,13 +78,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 
 			if (Encoding.ASCII.GetString(tapeFile, 0, 12) == "C64-TAPE-RAW")
 			{
-				var version = tapeFile[12];
+				byte version = tapeFile[12];
 				if (version > 1)
 				{
 					throw new Exception("This tape has an unsupported version");
 				}
 
-				var size = BitConverter.ToUInt32(tapeFile, 16);
+				uint size = BitConverter.ToUInt32(tapeFile, 16);
 				if (size + 20 != tapeFile.Length)
 				{
 					throw new Exception("Tape file header specifies a length that doesn't match the file size");
@@ -113,6 +109,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 		}
 
 		// Exposed for memory domains, should not be used for actual emulation implementation
-		public byte[] TapeDataDomain => _tapeData;
+		public byte[] TapeDataDomain { get; }
 	}
 }

@@ -24,15 +24,9 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public int Count => Position;
 
-		public void Add(T item)
-		{
-			buffer[Position++] = item;
-		}
+		public void Add(T item) => buffer[Position++] = item;
 
-		public void Clear()
-		{
-			Position = 0;
-		}
+		public void Clear() => Position = 0;
 	}
 
 	// and the point of this one is to be easier to serialize quickly. AND fast to clear.
@@ -82,7 +76,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			if (size == 0)
 				throw new Exception($"{nameof(QuickQueue<T>)} is empty!");
 
-			T item = buffer[head];
+			var item = buffer[head];
 			head = (head + 1) % buffer.Length;
 			size--;
 			return item;
@@ -95,10 +89,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			size = 0;
 		}
 
-		public T[] GetBuffer()
-		{
-			return buffer;
-		}
+		public T[] GetBuffer() => buffer;
 
 		public void SignalBufferFilled(int count)
 		{

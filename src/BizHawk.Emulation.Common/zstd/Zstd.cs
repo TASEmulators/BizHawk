@@ -103,7 +103,7 @@ namespace BizHawk.Emulation.Common
 					Flush();
 					while (true)
 					{
-						var n = _lib.ZSTD_endStream(_ctx.Zcs, ref _ctx.Output);
+						ulong n = _lib.ZSTD_endStream(_ctx.Zcs, ref _ctx.Output);
 						CheckError(n);
 						InternalFlush();
 						if (n == 0)
@@ -154,7 +154,7 @@ namespace BizHawk.Emulation.Common
 							InternalFlush();
 						}
 
-						var n = _lib.ZSTD_flushStream(_ctx.Zcs, ref _ctx.Output);
+						ulong n = _lib.ZSTD_flushStream(_ctx.Zcs, ref _ctx.Output);
 						CheckError(n);
 						if (n == 0)
 						{
@@ -185,7 +185,7 @@ namespace BizHawk.Emulation.Common
 						Flush();
 					}
 
-					var n = Math.Min(count, (int)(ZstdCompressionStreamContext.INPUT_BUFFER_SIZE - _ctx.Input.Size));
+					int n = Math.Min(count, (int)(ZstdCompressionStreamContext.INPUT_BUFFER_SIZE - _ctx.Input.Size));
 					Marshal.Copy(buffer, offset, _ctx.Input.Ptr + (int)_ctx.Input.Size, n);
 					offset += n;
 					_ctx.Input.Size += (ulong)n;
@@ -317,10 +317,10 @@ namespace BizHawk.Emulation.Common
 
 			public override int Read(byte[] buffer, int offset, int count)
 			{
-				var n = count;
+				int n = count;
 				while (n > 0)
 				{
-					var inputConsumed = _baseStream.Read(_ctx.InputBuffer,
+					int inputConsumed = _baseStream.Read(_ctx.InputBuffer,
 						(int)_ctx.Input.Size, (int)(ZstdDecompressionStreamContext.INPUT_BUFFER_SIZE - _ctx.Input.Size));
 					_ctx.Input.Size += (ulong)inputConsumed;
 					// avoid interop in case compression cannot be done
@@ -329,7 +329,7 @@ namespace BizHawk.Emulation.Common
 					{
 						CheckError(_lib.ZSTD_decompressStream(_ctx.Zds, ref _ctx.Output, ref _ctx.Input));
 					}
-					var outputToConsume = Math.Min(n, (int)(_ctx.Output.Pos - _outputConsumed));
+					int outputToConsume = Math.Min(n, (int)(_ctx.Output.Pos - _outputConsumed));
 					Marshal.Copy(_ctx.Output.Ptr + (int)_outputConsumed, buffer, offset, outputToConsume);
 					_outputConsumed += (ulong)outputToConsume;
 					offset += outputToConsume;
@@ -376,7 +376,7 @@ namespace BizHawk.Emulation.Common
 
 		static Zstd()
 		{
-			var resolver = new DynamicLibraryImportResolver(
+			DynamicLibraryImportResolver resolver = new DynamicLibraryImportResolver(
 				OSTailoredCode.IsUnixHost ? "libzstd.so.1" : "libzstd.dll", hasLimitedLifetime: false);
 			_lib = BizInvoker.GetInvoker<LibZstd>(resolver, CallingConventionAdapters.Native);
 
@@ -462,7 +462,7 @@ namespace BizHawk.Emulation.Common
 		public static MemoryStream DecompressZstdStream(Stream src)
 		{
 			// check for ZSTD header
-			var tmp = new byte[4];
+			byte[] tmp = new byte[4];
 			if (src.Read(tmp, 0, 4) != 4)
 			{
 				throw new InvalidOperationException("Unexpected end of stream");
@@ -473,10 +473,10 @@ namespace BizHawk.Emulation.Common
 			}
 			src.Seek(0, SeekOrigin.Begin);
 
-			using var dctx = new ZstdDecompressionStreamContext();
+			using ZstdDecompressionStreamContext dctx = new ZstdDecompressionStreamContext();
 			dctx.InitContext();
-			using var dstream = new ZstdDecompressionStream(src, dctx);
-			var ret = new MemoryStream();
+			using ZstdDecompressionStream dstream = new ZstdDecompressionStream(src, dctx);
+			MemoryStream ret = new MemoryStream();
 			dstream.CopyTo(ret);
 			return ret;
 		}

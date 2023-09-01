@@ -24,8 +24,8 @@ namespace BizHawk.Client.EmuHawk
 		private void IntvControllerSettings_Load(object sender, EventArgs e)
 		{
 			// AY panning config
-			var panTypes = Enum.GetNames(typeof(AY38912.AYPanConfig));
-			foreach (var val in panTypes)
+			string[] panTypes = Enum.GetNames(typeof(AY38912.AYPanConfig));
+			foreach (string val in panTypes)
 			{
 				panTypecomboBox1.Items.Add(val);
 			}

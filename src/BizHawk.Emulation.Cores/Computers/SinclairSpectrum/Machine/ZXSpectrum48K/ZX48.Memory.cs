@@ -37,7 +37,7 @@
         public override byte ReadBus(ushort addr)
         {
             int divisor = addr / 0x4000;
-            var index = addr % 0x4000;
+			int index = addr % 0x4000;
 
             // paging logic goes here
 
@@ -60,7 +60,7 @@
         public override void WriteBus(ushort addr, byte value)
         {
             int divisor = addr / 0x4000;
-            var index = addr % 0x4000;
+			int index = addr % 0x4000;
 
             // paging logic goes here
 
@@ -88,7 +88,7 @@
         /// </summary>
         public override byte ReadMemory(ushort addr)
         {
-            var data = ReadBus(addr);
+			byte data = ReadBus(addr);
             return data;
         }
 
@@ -97,7 +97,7 @@
         /// </summary>
         public override ZXSpectrum.CDLResult ReadCDL(ushort addr)
         {
-            var res = new ZXSpectrum.CDLResult();
+			ZXSpectrum.CDLResult res = new ZXSpectrum.CDLResult();
 
             int divisor = addr / 0x4000;
             res.Address = addr % 0x4000;
@@ -114,37 +114,31 @@
             return res;
         }
 
-        /// <summary>
-        /// Writes a byte of data to a specified memory address
-        /// (with memory contention if appropriate)
-        /// </summary>
-        public override void WriteMemory(ushort addr, byte value)
-        {                     
-            WriteBus(addr, value);
-        }
+		/// <summary>
+		/// Writes a byte of data to a specified memory address
+		/// (with memory contention if appropriate)
+		/// </summary>
+		public override void WriteMemory(ushort addr, byte value) => WriteBus(addr, value);
 
-        /// <summary>
-        /// Checks whether supplied address is in a potentially contended bank
-        /// </summary>
-        public override bool IsContended(ushort addr)
+		/// <summary>
+		/// Checks whether supplied address is in a potentially contended bank
+		/// </summary>
+		public override bool IsContended(ushort addr)
         {
             if ((addr & 49152) == 16384)
                 return true;
             return false;
         }
 
-        /// <summary>
-        /// Returns TRUE if there is a contended bank paged in
-        /// </summary>
-        public override bool ContendedBankPaged()
-        {
-            return false;
-        }
+		/// <summary>
+		/// Returns TRUE if there is a contended bank paged in
+		/// </summary>
+		public override bool ContendedBankPaged() => false;
 
-        /// <summary>
-        /// Sets up the ROM
-        /// </summary>
-        public override void InitROM(RomData romData)
+		/// <summary>
+		/// Sets up the ROM
+		/// </summary>
+		public override void InitROM(RomData romData)
         {
             RomData = romData;
             // for 16/48k machines only ROM0 is used (no paging)

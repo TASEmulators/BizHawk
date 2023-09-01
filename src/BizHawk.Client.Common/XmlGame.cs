@@ -24,7 +24,7 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				var x = new XmlDocument();
+				XmlDocument x = new XmlDocument();
 				x.Load(f.GetStream());
 				var y = x.SelectSingleNode("./BizHawk-XMLGame");
 				if (y == null)
@@ -32,7 +32,7 @@ namespace BizHawk.Client.Common
 					return null;
 				}
 
-				var ret = new XmlGame
+				XmlGame ret = new XmlGame
 				{
 					GI =
 					{
@@ -42,17 +42,17 @@ namespace BizHawk.Client.Common
 					},
 					Xml = x
 				};
-				var fullPath = "";
+				string fullPath = "";
 
 				var n = y.SelectSingleNode("./LoadAssets");
 				if (n != null)
 				{
-					var hashStream = new MemoryStream();
+					MemoryStream hashStream = new MemoryStream();
 					int? originalIndex = null;
 
 					foreach (XmlNode a in n.ChildNodes)
 					{
-						var filename = a.Attributes!["FileName"].Value;
+						string filename = a.Attributes!["FileName"].Value;
 						byte[] data;
 						if (filename[0] == '|')
 						{
@@ -77,7 +77,7 @@ namespace BizHawk.Client.Common
 							fullPath = Path.Combine(fullPath, filename.SubstringBefore('|'));
 							try
 							{
-								using var hf = new HawkFile(fullPath, allowArchives: !MAMEMachineDB.IsMAMEMachine(fullPath));
+								using HawkFile hf = new HawkFile(fullPath, allowArchives: !MAMEMachineDB.IsMAMEMachine(fullPath));
 								if (hf.IsArchive)
 								{
 									var archiveItem = hf.ArchiveItems.First(ai => ai.Name == filename.Split('|').Skip(1).First());
@@ -89,7 +89,7 @@ namespace BizHawk.Client.Common
 								}
 								else
 								{
-									var path = fullPath.SubstringBefore('|');
+									string path = fullPath.SubstringBefore('|');
 									data = RomGame.Is3DSRom(Path.GetExtension(path).ToUpperInvariant())
 										? Array.Empty<byte>()
 										: File.ReadAllBytes(path);
@@ -103,7 +103,7 @@ namespace BizHawk.Client.Common
 
 						ret.Assets.Add(new(filename, data));
 						ret.AssetFullPaths.Add(fullPath);
-						var sha1 = SHA1Checksum.Compute(data);
+						byte[] sha1 = SHA1Checksum.Compute(data);
 						hashStream.Write(sha1, 0, sha1.Length);
 					}
 

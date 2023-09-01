@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public BsnesCore(CoreLoadParameters<SnesSettings, SnesSyncSettings> loadParameters) : this(loadParameters, false) { }
 		public BsnesCore(CoreLoadParameters<SnesSettings, SnesSyncSettings> loadParameters, bool subframe = false)
 		{
-			var ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 
 			this._romPath = Path.ChangeExtension(loadParameters.Roms[0].RomPath, null);
@@ -97,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			}
 			else if (SystemId is VSystemID.Raw.Satellaview)
 			{
-				SATELLAVIEW_CARTRIDGE slottedCartridge = _syncSettings.SatellaviewCartridge;
+				var slottedCartridge = _syncSettings.SatellaviewCartridge;
 				if (slottedCartridge == SATELLAVIEW_CARTRIDGE.Autodetect)
 				{
 					if (loadParameters.Game.NotInDatabase)
@@ -219,10 +219,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		/// <param name="index">meaningless for most controllers.  for multitap, 0-3 for which multitap controller</param>
 		/// <param name="id">button ID enum; in the case of a regular controller, this corresponds to shift register position</param>
 		/// <returns>for regular controllers, one bit D0 of button status.  for other controls, varying ranges depending on id</returns>
-		private short snes_input_poll(int port, int index, int id)
-		{
-			return _controllers.CoreInputPoll(_controller, port, index, id);
-		}
+		private short snes_input_poll(int port, int index, int id) => _controllers.CoreInputPoll(_controller, port, index, id);
 
 		private void snes_no_lag(bool sgbPoll)
 		{
@@ -233,10 +230,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			}
 		}
 
-		private void snes_controller_latch()
-		{
-			InputCallbacks.Call();
-		}
+		private void snes_controller_latch() => InputCallbacks.Call();
 
 		private readonly int[] palette = new int[0x8000];
 
@@ -312,10 +306,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			}
 		}
 
-		private void InitAudio()
-		{
-			_soundProvider = new SimpleSyncSoundProvider();
-		}
+		private void InitAudio() => _soundProvider = new SimpleSyncSoundProvider();
 
 		private void snes_trace(string disassembly, string registerInfo)
 			=> _tracer.Put(new(disassembly: disassembly, registerInfo: registerInfo));
@@ -366,14 +357,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		private FileStream _currentMsuTrack;
 
-		private void msu_seek(long offset, bool relative)
-		{
-			_currentMsuTrack?.Seek(offset, relative ? SeekOrigin.Current : SeekOrigin.Begin);
-		}
-		private byte msu_read()
-		{
-			return (byte) (_currentMsuTrack?.ReadByte() ?? 0);
-		}
+		private void msu_seek(long offset, bool relative) => _currentMsuTrack?.Seek(offset, relative ? SeekOrigin.Current : SeekOrigin.Begin);
+		private byte msu_read() => (byte)(_currentMsuTrack?.ReadByte() ?? 0);
 
 		private void msu_open(ushort trackId)
 		{
@@ -387,9 +372,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				_currentMsuTrack = null;
 			}
 		}
-		private bool msu_end()
-		{
-			return _currentMsuTrack.Position == _currentMsuTrack.Length;
-		}
+		private bool msu_end() => _currentMsuTrack.Position == _currentMsuTrack.Length;
 	}
 }

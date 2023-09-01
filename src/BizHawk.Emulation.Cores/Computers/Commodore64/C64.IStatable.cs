@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			ser.Sync(nameof(Frame), ref _frame);
 			ser.Sync(nameof(IsLagFrame), ref _isLagFrame);
 			ser.Sync(nameof(LagCount), ref _lagCount);
-			var oldDisk = _currentDisk;
+			int oldDisk = _currentDisk;
 			ser.Sync(nameof(CurrentDisk), ref _currentDisk);
 			if (oldDisk != _currentDisk)
 			{

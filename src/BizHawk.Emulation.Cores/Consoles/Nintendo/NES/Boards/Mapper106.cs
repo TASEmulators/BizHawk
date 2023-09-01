@@ -68,10 +68,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		private void SetMirror()
-		{
-			SetMirrorType(regs[0xC].Bit(0) ? EMirrorType.Horizontal : EMirrorType.Vertical);
-		}
+		private void SetMirror() => SetMirrorType(regs[0xC].Bit(0) ? EMirrorType.Horizontal : EMirrorType.Vertical);
 
 		public override byte ReadPpu(int addr)
 		{
@@ -126,10 +123,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return Rom[(bank << 13) + (addr & 0x1FFF)];
 		}
 
-		public override void ClockCpu()
-		{
-			IrqHook(1);
-		}
+		public override void ClockCpu() => IrqHook(1);
 
 		private void IrqHook(int a)
 		{

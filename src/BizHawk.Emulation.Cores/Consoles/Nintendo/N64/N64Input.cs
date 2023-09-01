@@ -122,19 +122,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		/// </summary>
 		/// <param name="controller">Id of the controller</param>
 		/// <param name="type">Type to which the controller pak is set. Currently only NO_PAK and MEMORY_CARD are supported</param>
-		public void SetControllerPakType(int controller, N64SyncSettings.N64ControllerSettings.N64ControllerPakType type)
-		{
-			_api.SetM64PControllerPakType(controller, type);
-		}
+		public void SetControllerPakType(int controller, N64SyncSettings.N64ControllerSettings.N64ControllerPakType type) => _api.SetM64PControllerPakType(controller, type);
 
 		/// <summary>
 		/// Sets the connection status of the controller
 		/// </summary>
 		/// <param name="controller">Id of the controller to connect or disconnect</param>
 		/// <param name="connectionStatus">New status of the controller connection</param>
-		public void SetControllerConnected(int controller, bool connectionStatus)
-		{
-			_api.SetM64PControllerConnected(controller, connectionStatus);
-		}
+		public void SetControllerConnected(int controller, bool connectionStatus) => _api.SetM64PControllerConnected(controller, connectionStatus);
 	}
 }

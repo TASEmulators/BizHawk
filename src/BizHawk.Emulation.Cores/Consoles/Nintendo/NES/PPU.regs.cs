@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public struct PPUSTATUS
 		{
 			public int sl;
-			public readonly bool rendering => sl >= 0 && sl < 241;
+			public readonly bool rendering => sl is >= 0 and < 241;
 			public int cycle;
 		}
 
@@ -186,16 +186,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			public int get_ntread()
-			{
-				return 0x2000 | (v << 0xB) | (h << 0xA) | (vt << 5) | ht;
-			}
+			public int get_ntread() => 0x2000 | (v << 0xB) | (h << 0xA) | (vt << 5) | ht;
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			public int get_2007access()
-			{
-				return ((fv & 3) << 0xC) | (v << 0xB) | (h << 0xA) | (vt << 5) | ht;
-			}
+			public int get_2007access() => ((fv & 3) << 0xC) | (v << 0xB) | (h << 0xA) | (vt << 5) | ht;
 
 			//The PPU has an internal 4-position, 2-bit shifter, which it uses for
 			//obtaining the 2-bit palette select data during an attribute table byte
@@ -204,10 +198,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//apply to the data read from the attribute data (a is always 0). This is why
 			//you only see bits 0 and 1 used off the read attribute data in the diagram.
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			public int get_atread()
-			{
-				return 0x2000 | (v << 0xB) | (h << 0xA) | 0x3C0 | ((vt & 0x1C) << 1) | ((ht & 0x1C) >> 2);
-			}
+			public int get_atread() => 0x2000 | (v << 0xB) | (h << 0xA) | 0x3C0 | ((vt & 0x1C) << 1) | ((ht & 0x1C) >> 2);
 
 			public void increment2007(bool rendering, bool by32)
 			{
@@ -325,8 +316,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				reg_2000.Value = value;
 		}
 
-		private byte read_2000() { return ppu_open_bus; }
-		private byte peek_2000() { return ppu_open_bus; }
+		private byte read_2000() => ppu_open_bus;
+		private byte peek_2000() => ppu_open_bus;
 
 		//PPU MASK (write)
 		private void write_2001(byte value)
@@ -336,8 +327,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			install_2001 = 2;
 		}
 
-		private byte read_2001() {return ppu_open_bus; }
-		private byte peek_2001() {return ppu_open_bus; }
+		private byte read_2001() => ppu_open_bus;
+		private byte peek_2001() => ppu_open_bus;
 
 		//PPU STATUS (read)
 		private void write_2002(byte value) { }
@@ -424,8 +415,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		private byte read_2003() { return ppu_open_bus; }
-		private byte peek_2003() { return ppu_open_bus; }
+		private byte read_2003() => ppu_open_bus;
+		private byte peek_2003() => ppu_open_bus;
 
 		//OAM DATA (write)
 		private void write_2004(byte value)
@@ -499,7 +490,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return ret;
 		}
 
-		private byte peek_2004() { return OAM[reg_2003]; }
+		private byte peek_2004() => OAM[reg_2003];
 
 		//SCROLL (write)
 		private void write_2005(byte value)
@@ -519,8 +510,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			vtoggle ^= true;
 		}
 
-		private byte read_2005() { return ppu_open_bus; }
-		private byte peek_2005() { return ppu_open_bus; }
+		private byte read_2005() => ppu_open_bus;
+		private byte peek_2005() => ppu_open_bus;
 
 		//VRAM address register (write)
 		private void write_2006(byte value)
@@ -550,8 +541,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			vtoggle ^= true;
 		}
 
-		private byte read_2006() { return ppu_open_bus; }
-		private byte peek_2006() { return ppu_open_bus; }
+		private byte read_2006() => ppu_open_bus;
+		private byte peek_2006() => ppu_open_bus;
 
 		//VRAM data register (r/w)
 		private void write_2007(byte value)

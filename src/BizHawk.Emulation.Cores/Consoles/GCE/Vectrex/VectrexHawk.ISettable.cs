@@ -11,10 +11,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 	{
 		public object GetSettings() => _settings;
 
-		public VectrexSyncSettings GetSyncSettings()
-		{
-			return _syncSettings.Clone();
-		}
+		public VectrexSyncSettings GetSyncSettings() => _syncSettings.Clone();
 
 		public PutSettingsDirtyBits PutSettings(object o)
 		{
@@ -78,20 +75,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 				}
 			}
 
-			public VectrexSyncSettings Clone()
-			{
-				return (VectrexSyncSettings)MemberwiseClone();
-			}
+			public VectrexSyncSettings Clone() => (VectrexSyncSettings)MemberwiseClone();
 
 			public VectrexSyncSettings()
 			{
 				SettingsUtil.SetDefaultValues(this);
 			}
 
-			public static bool NeedsReboot(VectrexSyncSettings x, VectrexSyncSettings y)
-			{
-				return !DeepEquality.DeepEquals(x, y);
-			}
+			public static bool NeedsReboot(VectrexSyncSettings x, VectrexSyncSettings y) => !DeepEquality.DeepEquals(x, y);
 		}
 	}
 }

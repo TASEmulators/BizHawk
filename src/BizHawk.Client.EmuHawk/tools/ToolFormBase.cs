@@ -81,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 		public FileInfo OpenFileDialog(string currentFile, string path, FilesystemFilterSet filterSet)
 		{
 			Directory.CreateDirectory(path);
-			var result = this.ShowFileOpenDialog(
+			string result = this.ShowFileOpenDialog(
 				discardCWDChange: true,
 				filter: filterSet,
 				initDir: path,
@@ -94,7 +94,7 @@ namespace BizHawk.Client.EmuHawk
 		public static FileInfo SaveFileDialog(string currentFile, string path, FilesystemFilterSet filterSet, IDialogParent parent)
 		{
 			Directory.CreateDirectory(path);
-			var result = parent.ShowFileSaveDialog(
+			string result = parent.ShowFileSaveDialog(
 				discardCWDChange: true,
 				filter: filterSet,
 				initDir: path,
@@ -121,10 +121,7 @@ namespace BizHawk.Client.EmuHawk
 			Tools.HexEditor.SetToAddresses(addresses, domain, size);
 		}
 
-		protected void GenericDragEnter(object sender, DragEventArgs e)
-		{
-			e.Set(DragDropEffects.Copy);
-		}
+		protected void GenericDragEnter(object sender, DragEventArgs e) => e.Set(DragDropEffects.Copy);
 
 		protected override void OnLoad(EventArgs e)
 		{

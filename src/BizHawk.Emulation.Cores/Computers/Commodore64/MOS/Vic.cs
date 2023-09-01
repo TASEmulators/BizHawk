@@ -25,11 +25,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		public Func<int, int> ReadColorRam;
 		public Func<int, int> ReadMemory;
 
-		public bool ReadAec() { return _pinAec; }
-		public bool ReadBa() { return _pinBa; }
-		public bool ReadIrq() { return (_irqBuffer & 1) == 0; }
+		public bool ReadAec() => _pinAec;
+		public bool ReadBa() => _pinBa;
+		public bool ReadIrq() => (_irqBuffer & 1) == 0;
 
-		private readonly int _cyclesPerSec;
 		private readonly int[] _rasterXPipeline;
 		private readonly int[] _fetchPipeline;
 		private readonly int[] _baPipeline;
@@ -48,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		{
 			Util.DebugWriteLine("C64 VIC timings:");
 			Util.DebugWriteLine("RX   FTCH BA   ACT");
-			for (var i = 0; i < newPipeline[0].Length; i++)
+			for (int i = 0; i < newPipeline[0].Length; i++)
 			{
 				Util.DebugWriteLine("{0:x4} {1:x4} {2:x4} {3:x8}", newPipeline[0][i], newPipeline[1][i], newPipeline[2][i], newPipeline[3][i]);
 			}
@@ -62,12 +61,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_actPipeline = newPipeline[3];
 			_totalCycles = newCycles;
 			_totalLines = newLines;
-			_cyclesPerSec = newCyclesPerSec;
+			CyclesPerSecond = newCyclesPerSec;
 
 			ConfigureBlanking(newLines, hblankStart, hblankEnd, vblankStart, vblankEnd, borderType);
 
 			_sprites = new Sprite[8];
-			for (var i = 0; i < 8; i++)
+			for (int i = 0; i < 8; i++)
 				_sprites[i] = new Sprite(i);
 
 			_sprite0 = _sprites[0];
@@ -86,13 +85,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private void ConfigureBlanking(int lines, int hblankStart, int hblankEnd, int vblankStart, int vblankEnd,
 			C64.BorderType borderType)
 		{
-			var newHblankStart = hblankStart;
-			var newHblankEnd = hblankEnd;
-			var newVblankStart = vblankStart;
-			var newVblankEnd = vblankEnd;
-			var hBorderSize = 16; // must be a multiple of 4
-			var vBorderSize = hBorderSize * _pixelRatioNum / _pixelRatioDen; // to keep top and bottom in proportion
-			var maxWidth = _rasterXPipeline.Max();
+			int newHblankStart = hblankStart;
+			int newHblankEnd = hblankEnd;
+			int newVblankStart = vblankStart;
+			int newVblankEnd = vblankEnd;
+			int hBorderSize = 16; // must be a multiple of 4
+			int vBorderSize = hBorderSize * _pixelRatioNum / _pixelRatioDen; // to keep top and bottom in proportion
+			int maxWidth = _rasterXPipeline.Max();
 
 			switch (borderType)
 			{
@@ -156,12 +155,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_hblankEndCheckXRaster = newHblankEnd & 0xFFC;
 			_vblankStart = newVblankStart;
 			_vblankEnd = newVblankEnd;
-			_bufWidth = TimingBuilder_ScreenWidth(_rasterXPipeline, newHblankStart, newHblankEnd);
-			_bufHeight = TimingBuilder_ScreenHeight(newVblankStart, newVblankEnd, lines);
-			_buf = new int[_bufWidth * _bufHeight];
+			BufferWidth = TimingBuilder_ScreenWidth(_rasterXPipeline, newHblankStart, newHblankEnd);
+			BufferHeight = TimingBuilder_ScreenHeight(newVblankStart, newVblankEnd, lines);
+			_buf = new int[BufferWidth * BufferHeight];
 			_bufLength = _buf.Length;
-			VirtualWidth = _bufWidth * _pixelRatioNum / _pixelRatioDen;
-			VirtualHeight = _bufHeight;
+			VirtualWidth = BufferWidth * _pixelRatioNum / _pixelRatioDen;
+			VirtualHeight = BufferHeight;
 		}
 
 		private int WrapValue(int min, int max, int val)
@@ -171,7 +170,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				return min;
 			}
 
-			var width = Math.Abs(min - max);
+			int width = Math.Abs(min - max);
 			while (val > max)
 			{
 				val -= width;
@@ -187,7 +186,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public int CyclesPerFrame => _totalCycles * _totalLines;
 
-		public int CyclesPerSecond => _cyclesPerSec;
+		public int CyclesPerSecond { get; }
 
 		public void ExecutePhase1()
 		{
@@ -336,10 +335,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		{
 			// IRQ is treated as a delay line
 
-			var intIrq = (_enableIntRaster && _intRaster) ? 0x0002 : 0x0000;
-			var sdIrq = (_enableIntSpriteDataCollision & _intSpriteDataCollision) ? 0x0001 : 0x0000;
-			var ssIrq = (_enableIntSpriteCollision & _intSpriteCollision) ? 0x0001 : 0x0000;
-			var lpIrq = (_enableIntLightPen & _intLightPen) ? 0x0001 : 0x0000;
+			int intIrq = (_enableIntRaster && _intRaster) ? 0x0002 : 0x0000;
+			int sdIrq = (_enableIntSpriteDataCollision & _intSpriteDataCollision) ? 0x0001 : 0x0000;
+			int ssIrq = (_enableIntSpriteCollision & _intSpriteCollision) ? 0x0001 : 0x0000;
+			int lpIrq = (_enableIntLightPen & _intLightPen) ? 0x0001 : 0x0000;
 
 			_irqBuffer >>= 1;
 			_irqBuffer |= intIrq | sdIrq | ssIrq | lpIrq;

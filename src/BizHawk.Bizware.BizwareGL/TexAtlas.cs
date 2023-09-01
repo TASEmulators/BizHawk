@@ -50,14 +50,14 @@ namespace BizHawk.Bizware.BizwareGL
 					// this is where the texture size range is determined.
 					// we run this every time we make an atlas, in case we want to variably control the maximum texture output size.
 					// ALSO - we accumulate data in there, so we need to refresh it each time. ... lame.
-					var todoSizes = new List<TryFitParam>();
-					for (var i = 3; i <= MaxSizeBits; i++)
+					List<TryFitParam> todoSizes = new List<TryFitParam>();
+					for (int i = 3; i <= MaxSizeBits; i++)
 					{
-						for (var j = 3; j <= MaxSizeBits; j++)
+						for (int j = 3; j <= MaxSizeBits; j++)
 						{
-							var w = 1 << i;
-							var h = 1 << j;
-							var tfp = new TryFitParam(w, h);
+							int w = 1 << i;
+							int h = 1 << j;
+							TryFitParam tfp = new TryFitParam(w, h);
 							todoSizes.Add(tfp);
 						}
 					}
@@ -65,7 +65,7 @@ namespace BizHawk.Bizware.BizwareGL
 					//run the packing algorithm on each potential size
 					Parallel.ForEach(todoSizes, (param) =>
 					{
-						var rbp = new RectangleBinPack();
+						RectangleBinPack rbp = new RectangleBinPack();
 						rbp.Init(16384, 16384);
 						param.rbp.Init(param.w, param.h);
 
@@ -86,7 +86,7 @@ namespace BizHawk.Bizware.BizwareGL
 					});
 
 					// find the best fit among the potential sizes that worked
-					var best = long.MaxValue;
+					long best = long.MaxValue;
 					tfpFinal = todoSizes[0];
 					foreach (var tfp in todoSizes)
 					{
@@ -95,7 +95,7 @@ namespace BizHawk.Bizware.BizwareGL
 							continue;
 						}
 
-						var area = tfp.w * (long) tfp.h;
+						long area = tfp.w * (long) tfp.h;
 						if (area > best)
 						{
 							continue; // larger than best, not interested
@@ -185,17 +185,14 @@ namespace BizHawk.Bizware.BizwareGL
 			/// <summary>Inserts a new rectangle of the given size into the bin.</summary>
 			/// <returns>A pointer to the node that stores the newly added rectangle, or 0 if it didn't fit.</returns>
 			/// <remarks>Running time is linear to the number of rectangles that have been already packed.</remarks>
-			public Node Insert(int width, int height)
-			{
-				return Insert(root, width, height);
-			}
+			public Node Insert(int width, int height) => Insert(root, width, height);
 
-            #pragma warning disable IDE0051
+#pragma warning disable IDE0051
 			/// <summary>Computes the ratio of used surface area.</summary>
 			private float Occupancy()
 			{
-				var totalSurfaceArea = binWidth * binHeight;
-				var usedSurfaceArea = UsedSurfaceArea(root);
+				int totalSurfaceArea = binWidth * binHeight;
+				int usedSurfaceArea = UsedSurfaceArea(root);
 
 				return (float)usedSurfaceArea / totalSurfaceArea;
 			}
@@ -212,7 +209,7 @@ namespace BizHawk.Bizware.BizwareGL
 			{
 				if (node.left != null || node.right != null)
 				{
-					var usedSurfaceArea = node.width * node.height;
+					int usedSurfaceArea = node.width * node.height;
 					if (node.left != null)
 						usedSurfaceArea += UsedSurfaceArea(node.left);
 					if (node.right != null)
@@ -255,8 +252,8 @@ namespace BizHawk.Bizware.BizwareGL
 
 				// The new cell will fit, split the remaining space along the shorter axis,
 				// that is probably more optimal.
-				var w = node.width - width;
-				var h = node.height - height;
+				int w = node.width - width;
+				int h = node.height - height;
 				node.left = new();
 				node.right = new();
 				if (w <= h) // Split the remaining space in horizontal direction.

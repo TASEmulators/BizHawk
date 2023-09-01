@@ -170,7 +170,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		/// <summary>
 		/// is a BGMode a mode7 type (mode7, mode7ext, mode7DC)
 		/// </summary>
-		public static bool BGModeIsMode7Type(BGMode bgMode) => bgMode == BGMode.Mode7 || bgMode == BGMode.Mode7DC || bgMode == BGMode.Mode7Ext;
+		public static bool BGModeIsMode7Type(BGMode bgMode) => bgMode is BGMode.Mode7 or BGMode.Mode7DC or BGMode.Mode7Ext;
 
 		/// <summary>
 		/// this class is not 'smart' - it wont recompute values for you. it's meant to be read only (we should find some way to protect write access to make that clear)
@@ -408,7 +408,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			int OBSEL_NameSel = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.OBSEL_NAMESEL);
 			int OBSEL_NameBase = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.OBSEL_NAMEBASE);
 
-			var si = new ScreenInfo
+			ScreenInfo si = new ScreenInfo
 			{
 				Mode = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG_MODE),
 				Mode1_BG3_Priority = api.QUERY_peek_logical_register(LibsnesApi.SNES_REG.BG3_PRIORITY) == 1,
@@ -1073,18 +1073,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				}
 		}
 
-		public int Colorize(int rgb555)
-		{
+		public int Colorize(int rgb555) =>
 			//skip to max luminance in the palette table
-			return colortable[491520 + rgb555];
-		}
+			colortable[491520 + rgb555];
 
 		/// <summary>
 		/// returns the current palette, transformed into an int array, for more convenience
 		/// </summary>
 		public int[] GetPalette()
 		{
-			var ret = new int[256];
+			int[] ret = new int[256];
 			for (int i = 0; i < 256; i++)
 				ret[i] = cgram[i] & 0x7FFF;
 			return ret;
@@ -1097,14 +1095,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		}
 
-		public void Enter()
-		{
-			((IMonitor)api).Enter();
-		}
+		public void Enter() => ((IMonitor)api).Enter();
 
-		public void Exit()
-		{
-			((IMonitor)api).Exit();
-		}
+		public void Exit() => ((IMonitor)api).Exit();
 	} //class SNESGraphicsDecoder
 } //namespace

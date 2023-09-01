@@ -13,13 +13,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				var presentationFramework =
+				Assembly presentationFramework =
 					Assembly.Load(
 						"PresentationFramework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35");
 				var application = presentationFramework.GetType("System.Windows.Application");
 				JumpList = presentationFramework.GetType("System.Windows.Shell.JumpList");
 				JumpTask = presentationFramework.GetType("System.Windows.Shell.JumpTask");
-				var app = Activator.CreateInstance(application);
+				object app = Activator.CreateInstance(application);
 				dynamic jmp = Activator.CreateInstance(JumpList);
 				jmp.ShowRecentCategory = true;
 				JumpList

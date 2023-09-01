@@ -12,10 +12,7 @@ namespace BizHawk.Common.CollectionExtensions
 		public static IOrderedEnumerable<TSource> OrderBy<TSource, TKey>(
 			this IEnumerable<TSource> source,
 			Func<TSource, TKey> keySelector,
-			bool desc)
-		{
-			return desc ? source.OrderByDescending(keySelector) : source.OrderBy(keySelector);
-		}
+			bool desc) => desc ? source.OrderByDescending(keySelector) : source.OrderBy(keySelector);
 
 		public static int LowerBoundBinarySearch<T, TKey>(this IList<T> list, Func<T, TKey> keySelector, TKey key)
 			where TKey : IComparable<TKey>
@@ -27,7 +24,7 @@ namespace BizHawk.Common.CollectionExtensions
 			while (min < max)
 			{
 				mid = (max + min) / 2;
-				T midItem = list[mid];
+				var midItem = list[mid];
 				midKey = keySelector(midItem);
 				int comp = midKey.CompareTo(key);
 				if (comp < 0)
@@ -82,8 +79,8 @@ namespace BizHawk.Common.CollectionExtensions
 			while (min < max)
 			{
 				int mid = (max + min) / 2;
-				T midItem = list[mid];
-				TKey midKey = keySelector(midItem);
+				var midItem = list[mid];
+				var midKey = keySelector(midItem);
 				int comp = midKey.CompareTo(key);
 				if (comp < 0)
 				{
@@ -132,7 +129,7 @@ namespace BizHawk.Common.CollectionExtensions
 		{
 			if (b.Length is 0) return a;
 			if (a.Length is 0) return b;
-			var combinedLen = a.Length + b.Length;
+			int combinedLen = a.Length + b.Length;
 			if (combinedLen < dest.Length) return Span<T>.Empty;
 			a.CopyTo(dest);
 			b.CopyTo(dest.Slice(start: a.Length));
@@ -144,7 +141,7 @@ namespace BizHawk.Common.CollectionExtensions
 		{
 			if (b.Length is 0) return a;
 			if (a.Length is 0) return b;
-			var combined = new T[a.Length + b.Length];
+			T[] combined = new T[a.Length + b.Length];
 			var returned = ((ReadOnlySpan<T>) a).ConcatArray(b, combined);
 			Debug.Assert(returned == combined);
 			return combined;
@@ -245,10 +242,10 @@ namespace BizHawk.Common.CollectionExtensions
 		public static int RemoveAll<T>(this ICollection<T> list, Predicate<T> match)
 		{
 			if (list is List<T> listImpl) return listImpl.RemoveAll(match);
-			var c = list.Count;
+			int c = list.Count;
 			if (list is IList<T> iList)
 			{
-				for (var i = 0; i < iList.Count; i++)
+				for (int i = 0; i < iList.Count; i++)
 				{
 					if (match(iList[i])) iList.RemoveAt(i--);
 				}
@@ -271,10 +268,10 @@ namespace BizHawk.Common.CollectionExtensions
 		public static bool ReversedSequenceEqual<T>(this ReadOnlySpan<T> a, ReadOnlySpan<T> b)
 			where T : IEquatable<T>
 		{
-			var len = a.Length;
+			int len = a.Length;
 			if (len != b.Length) return false;
 			if (len is 0) return true;
-			var i = 0;
+			int i = 0;
 			while (i < len)
 			{
 				if (!a[i].Equals(b[len - 1 - i])) return false;

@@ -34,15 +34,15 @@ namespace BizHawk.Client.EmuHawk
 			void UpdateDropdownAndLabel(string newPrefix)
 			{
 				txtBoundPrefix.Text = newPrefix;
-				var wasSelected = (string) cbBoundChannel.SelectedItem;
+				string wasSelected = (string) cbBoundChannel.SelectedItem;
 				cbBoundChannel.Enabled = false;
 				cbBoundChannel.SelectedIndex = -1;
 				cbBoundChannel.Items.Clear();
 				if (hostInputAdapter.GetHapticsChannels().TryGetValue(newPrefix, out var channels) && channels.Count != 0)
 				{
-					var hasLeft = false;
-					var hasRight = false;
-					foreach (var hostChannel in channels)
+					bool hasLeft = false;
+					bool hasRight = false;
+					foreach (string hostChannel in channels)
 					{
 						cbBoundChannel.Items.Add(hostChannel);
 						if (hostChannel == "Left") hasLeft = true;
@@ -80,10 +80,10 @@ namespace BizHawk.Client.EmuHawk
 					btnBind.Text = "Bind!";
 				}
 			}
-			var isListening = false;
+			bool isListening = false;
 			timer.Tick += (_, _) =>
 			{
-				var bindValue = Input.Instance.GetNextAxisEvent();
+				string bindValue = Input.Instance.GetNextAxisEvent();
 				if (bindValue == null) return;
 				UpdateListeningState(isListening = false);
 				UpdateDropdownAndLabel(BoundGamepadPrefix = bindValue.SubstringBefore(' ') + ' ');

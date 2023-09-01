@@ -271,10 +271,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			[Category("More Per Game Settings")]
 			public int read_back_to_screen { get; set; }
 
-			public N64Glide64mk2PluginSettings Clone()
-			{
-				return (N64Glide64mk2PluginSettings)MemberwiseClone();
-			}
+			public N64Glide64mk2PluginSettings Clone() => (N64Glide64mk2PluginSettings)MemberwiseClone();
 
 			public void FillPerGameHacks(GameInfo game)
 			{
@@ -320,10 +317,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				}
 			}
 
-			public PluginType GetPluginType()
-			{
-				return PluginType.GlideMk2;
-			}
+			public PluginType GetPluginType() => PluginType.GlideMk2;
 		}
 
 	}

@@ -20,11 +20,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private int _palIndex;
 
-		protected override Point ScrollToControl(Control activeControl)
-		{
+		protected override Point ScrollToControl(Control activeControl) =>
 			// Returning the current location prevents the panel from scrolling to the active control when the panel loses and regains focus
-			return DisplayRectangle.Location;
-		}
+			DisplayRectangle.Location;
 
 		protected override string WindowTitleStatic => "VDP Viewer";
 
@@ -143,10 +141,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public override void Restart()
-		{
-			GeneralUpdate();
-		}
+		public override void Restart() => GeneralUpdate();
 
 		private void BmpViewPal_MouseClick(object sender, MouseEventArgs e)
 		{
@@ -161,7 +156,7 @@ namespace BizHawk.Client.EmuHawk
 			if (ModifierKeys.HasFlag(Keys.Control) && e.KeyCode == Keys.C)
 			{
 				// find the control under the mouse
-				Point m = Cursor.Position;
+				var m = Cursor.Position;
 				Control top = this;
 				Control found;
 				do
@@ -177,34 +172,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SaveAsFile(Bitmap bitmap, string suffix)
-		{
-			bitmap.SaveAsFile(Game, suffix, Emu.SystemId, Config.PathEntries, this);
-		}
+		private void SaveAsFile(Bitmap bitmap, string suffix) => bitmap.SaveAsFile(Game, suffix, Emu.SystemId, Config.PathEntries, this);
 
-		private void SaveBGAScreenshotToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			SaveAsFile(bmpViewNTA.Bmp, "NTA");
-		}
+		private void SaveBGAScreenshotToolStripMenuItem_Click(object sender, EventArgs e) => SaveAsFile(bmpViewNTA.Bmp, "NTA");
 
-		private void SaveBGBScreenshotToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			SaveAsFile(bmpViewNTB.Bmp, "NTB");
-		}
+		private void SaveBGBScreenshotToolStripMenuItem_Click(object sender, EventArgs e) => SaveAsFile(bmpViewNTB.Bmp, "NTB");
 
-		private void SaveTilesScreenshotToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			SaveAsFile(bmpViewTiles.Bmp, "Tiles");
-		}
+		private void SaveTilesScreenshotToolStripMenuItem_Click(object sender, EventArgs e) => SaveAsFile(bmpViewTiles.Bmp, "Tiles");
 
-		private void SaveWindowScreenshotToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			SaveAsFile(bmpViewNTW.Bmp, "Window");
-		}
+		private void SaveWindowScreenshotToolStripMenuItem_Click(object sender, EventArgs e) => SaveAsFile(bmpViewNTW.Bmp, "Window");
 
-		private void SavePaletteScreenshotToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			SaveAsFile(bmpViewPal.Bmp, "Palettes");
-		}
+		private void SavePaletteScreenshotToolStripMenuItem_Click(object sender, EventArgs e) => SaveAsFile(bmpViewPal.Bmp, "Palettes");
 	}
 }

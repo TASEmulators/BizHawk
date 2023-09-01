@@ -163,10 +163,7 @@ namespace BizHawk.Client.EmuHawk
 			CheckBoxVDC2_CheckedChanged(null, null);
 		}
 
-		private void CheckBoxVDC2_CheckedChanged(object sender, EventArgs e)
-		{
-			GeneralUpdate();
-		}
+		private void CheckBoxVDC2_CheckedChanged(object sender, EventArgs e) => GeneralUpdate();
 
 		private void BmpViewBGPal_MouseClick(object sender, MouseEventArgs e)
 		{
@@ -189,7 +186,7 @@ namespace BizHawk.Client.EmuHawk
 			if (ModifierKeys.HasFlag(Keys.Control) && e.KeyCode == Keys.C)
 			{
 				// find the control under the mouse
-				Point m = Cursor.Position;
+				var m = Cursor.Position;
 				Control top = this;
 				Control found;
 				do
@@ -205,19 +202,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SaveAsFile(Bitmap bmp, string suffix)
-		{
-			bmp.SaveAsFile(Game, suffix, Emulator.SystemId, Config.PathEntries, this);
-		}
+		private void SaveAsFile(Bitmap bmp, string suffix) => bmp.SaveAsFile(Game, suffix, Emulator.SystemId, Config.PathEntries, this);
 
-		private void SaveBackgroundScreenshotMenuItem_Click(object sender, EventArgs e)
-		{
-			SaveAsFile(bmpViewBG.Bmp, "BG");
-		}
+		private void SaveBackgroundScreenshotMenuItem_Click(object sender, EventArgs e) => SaveAsFile(bmpViewBG.Bmp, "BG");
 
-		private void SaveSpriteScreenshotMenuItem_Click(object sender, EventArgs e)
-		{
-			SaveAsFile(bmpViewBG.Bmp, "Sprites");
-		}
+		private void SaveSpriteScreenshotMenuItem_Click(object sender, EventArgs e) => SaveAsFile(bmpViewBG.Bmp, "Sprites");
 	}
 }

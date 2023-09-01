@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			if (_acquire != null) throw new InvalidOperationException("MAME Machine DB multiply initialized");
 			_acquire = new(false);
 
-			var sw = Stopwatch.StartNew();
+			Stopwatch sw = Stopwatch.StartNew();
 			ThreadPool.QueueUserWorkItem(_ =>
 			{
 				Instance = new(basePath);
@@ -36,11 +36,11 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private MAMEMachineDB(string basePath)
 		{
-			using var mameMachineFile = new HawkFile(Path.Combine(basePath, "mame_machines.txt"));
-			using var sr = new StreamReader(mameMachineFile.GetStream());
+			using HawkFile mameMachineFile = new HawkFile(Path.Combine(basePath, "mame_machines.txt"));
+			using StreamReader sr = new StreamReader(mameMachineFile.GetStream());
 			while (true)
 			{
-				var line = sr.ReadLine();
+				string line = sr.ReadLine();
 
 				if (string.IsNullOrEmpty(line))
 				{

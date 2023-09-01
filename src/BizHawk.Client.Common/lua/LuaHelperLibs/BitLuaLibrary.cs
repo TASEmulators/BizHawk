@@ -60,17 +60,11 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local uibitrol = bit.rol( 1000, 4 );")]
 		[LuaMethod("rol", "Left rotate 'val' by 'amt' bits")]
-		public static uint Rol(uint val, int amt)
-		{
-			return (val << amt) | (val >> (32 - amt));
-		}
+		public static uint Rol(uint val, int amt) => (val << amt) | (val >> (32 - amt));
 
 		[LuaMethodExample("local uibitror = bit.ror( 1000, 4 );")]
 		[LuaMethod("ror", "Right rotate 'val' by 'amt' bits")]
-		public static uint Ror(uint val, int amt)
-		{
-			return (val >> amt) | (val << (32 - amt));
-		}
+		public static uint Ror(uint val, int amt) => (val >> amt) | (val << (32 - amt));
 
 		[LuaDeprecatedMethod]
 		[LuaMethodExample("local uibitrsh = bit.rshift( 1000, 4 );")]
@@ -83,31 +77,19 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local inbitars = bit.arshift( -1000, 4 );")]
 		[LuaMethod("arshift", "Arithmetic shift right of 'val' by 'amt' bits")]
-		public static int Arshift(uint val, int amt)
-		{
-			return (int)val >> amt;
-		}
+		public static int Arshift(uint val, int amt) => (int)val >> amt;
 
 		[LuaMethodExample("if ( bit.check( -12345, 35 ) ) then\r\n\tconsole.log( \"Returns result of bit 'pos' being set in 'num'\" );\r\nend;")]
 		[LuaMethod("check", "Returns result of bit 'pos' being set in 'num'")]
-		public static bool Check(long num, int pos)
-		{
-			return (num & (1 << pos)) != 0;
-		}
+		public static bool Check(long num, int pos) => (num & (1 << pos)) != 0;
 
 		[LuaMethodExample("local uibitset = bit.set( 25, 35 );")]
 		[LuaMethod("set", "Sets the bit 'pos' in 'num'")]
-		public static uint Set(uint num, int pos)
-		{
-			return num | 1U << pos;
-		}
+		public static uint Set(uint num, int pos) => num | 1U << pos;
 
 		[LuaMethodExample("local lobitcle = bit.clear( 25, 35 );")]
 		[LuaMethod("clear", "Clears the bit 'pos' in 'num'")]
-		public static long Clear(uint num, int pos)
-		{
-			return num & ~(1 << pos);
-		}
+		public static long Clear(uint num, int pos) => num & ~(1 << pos);
 
 		[LuaMethodExample("local usbitbyt = bit.byteswap_16( 100 );")]
 		[LuaMethod("byteswap_16", "Byte swaps 'short', i.e. bit.byteswap_16(0xFF00) would return 0x00FF")]

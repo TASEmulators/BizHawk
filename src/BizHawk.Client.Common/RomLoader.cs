@@ -71,20 +71,14 @@ namespace BizHawk.Client.Common
 
 		// helper methods for the settings events
 		private TSetting GetCoreSettings<TCore, TSetting>()
-			where TCore : IEmulator
-		{
-			return (TSetting)GetCoreSettings(typeof(TCore), typeof(TSetting));
-		}
+			where TCore : IEmulator => (TSetting)GetCoreSettings(typeof(TCore), typeof(TSetting));
 
 		private TSync GetCoreSyncSettings<TCore, TSync>()
-			where TCore : IEmulator
-		{
-			return (TSync)GetCoreSyncSettings(typeof(TCore), typeof(TSync));
-		}
+			where TCore : IEmulator => (TSync)GetCoreSyncSettings(typeof(TCore), typeof(TSync));
 
 		private object GetCoreSettings(Type t, Type settingsType)
 		{
-			var e = new SettingsLoadArgs(t, settingsType);
+			SettingsLoadArgs e = new SettingsLoadArgs(t, settingsType);
 			if (OnLoadSettings == null)
 				throw new InvalidOperationException("Frontend failed to provide a settings getter");
 			OnLoadSettings(this, e);
@@ -95,7 +89,7 @@ namespace BizHawk.Client.Common
 
 		private object GetCoreSyncSettings(Type t, Type syncSettingsType)
 		{
-			var e = new SettingsLoadArgs(t, syncSettingsType);
+			SettingsLoadArgs e = new SettingsLoadArgs(t, syncSettingsType);
 			if (OnLoadSyncSettings == null)
 				throw new InvalidOperationException("Frontend failed to provide a sync settings getter");
 			OnLoadSyncSettings(this, e);
@@ -183,15 +177,9 @@ namespace BizHawk.Client.Common
 		}
 
 		// May want to phase out this method in favor of the overload with more parameters
-		private void DoLoadErrorCallback(string message, string systemId, LoadErrorType type = LoadErrorType.Unknown)
-		{
-			OnLoadError?.Invoke(this, new RomErrorArgs(message, systemId, type));
-		}
+		private void DoLoadErrorCallback(string message, string systemId, LoadErrorType type = LoadErrorType.Unknown) => OnLoadError?.Invoke(this, new RomErrorArgs(message, systemId, type));
 
-		private void DoLoadErrorCallback(string message, string systemId, string path, bool det, LoadErrorType type = LoadErrorType.Unknown)
-		{
-			OnLoadError?.Invoke(this, new RomErrorArgs(message, systemId, path, det, type));
-		}
+		private void DoLoadErrorCallback(string message, string systemId, string path, bool det, LoadErrorType type = LoadErrorType.Unknown) => OnLoadError?.Invoke(this, new RomErrorArgs(message, systemId, path, det, type));
 
 		public IOpenAdvanced OpenAdvanced { get; set; }
 
@@ -205,7 +193,7 @@ namespace BizHawk.Client.Common
 			// ...including unrecognised extensions that the user has set a platform for
 			if (!file.IsBound)
 			{
-				var exts = _config.PreferredPlatformsForExtensions.Where(static kvp => !string.IsNullOrEmpty(kvp.Value))
+				List<string> exts = _config.PreferredPlatformsForExtensions.Where(static kvp => !string.IsNullOrEmpty(kvp.Value))
 					.Select(static kvp => kvp.Key)
 					.ToList();
 				if (exts.Count is not 0) file.BindSoleItemOf(exts);
@@ -234,8 +222,8 @@ namespace BizHawk.Client.Common
 		{
 			// TODO - use more sophisticated IDer
 			var discType = new DiscIdentifier(disc).DetectDiscType();
-			var discHasher = new DiscHasher(disc);
-			var discHash = discType == DiscType.SonyPSX
+			DiscHasher discHasher = new DiscHasher(disc);
+			string discHash = discType == DiscType.SonyPSX
 				? discHasher.Calculate_PSX_BizIDHash()
 				: discHasher.OldHash();
 
@@ -266,7 +254,7 @@ namespace BizHawk.Client.Common
 				DiscType.SonyPS2 => throw NoCoreForSystem(VSystemID.Raw.PS2),
 				DiscType.SonyPSP => throw NoCoreForSystem(VSystemID.Raw.PSP),
 				DiscType.Wii => throw NoCoreForSystem(VSystemID.Raw.Wii),
-				DiscType.AudioDisc or DiscType.UnknownCDFS or DiscType.UnknownFormat => _config.TryGetChosenSystemForFileExt(ext, out var sysID) ? sysID : VSystemID.Raw.NULL,
+				DiscType.AudioDisc or DiscType.UnknownCDFS or DiscType.UnknownFormat => _config.TryGetChosenSystemForFileExt(ext, out string sysID) ? sysID : VSystemID.Raw.NULL,
 				//"for an unknown disc, default to psx instead of pce-cd, since that is far more likely to be what they are attempting to open" [5e07ab3ec3b8b8de9eae71b489b55d23a3909f55, year 2015]
 				_ => VSystemID.Raw.PSX,
 			};
@@ -285,7 +273,7 @@ namespace BizHawk.Client.Common
 
 			game = MakeGameFromDisc(disc, ext, Path.GetFileNameWithoutExtension(file.Name));
 
-			var cip = new CoreInventoryParameters(this)
+			CoreInventoryParameters cip = new CoreInventoryParameters(this)
 			{
 				Comm = nextComm,
 				Game = game,
@@ -306,13 +294,13 @@ namespace BizHawk.Client.Common
 		private void LoadM3U(string path, CoreComm nextComm, HawkFile file, string forcedCoreName, out IEmulator nextEmulator, out GameInfo game)
 		{
 			M3U_File m3u;
-			using (var sr = new StreamReader(path))
+			using (StreamReader sr = new StreamReader(path))
 				m3u = M3U_File.Read(sr);
 			if (m3u.Entries.Count == 0)
 				throw new InvalidOperationException("Can't load an empty M3U");
 			m3u.Rebase(Path.GetDirectoryName(path));
 
-			var discs = m3u.Entries
+			List<IDiscAsset> discs = m3u.Entries
 				.Select(e => e.Path)
 				.Where(p => Disc.IsValidExtension(Path.GetExtension(p)))
 				.Select(path => (p: path, d: DiscExtensions.CreateAnyType(path, str => DoLoadErrorCallback(str, "???", LoadErrorType.DiscError))))
@@ -328,7 +316,7 @@ namespace BizHawk.Client.Common
 				throw new InvalidOperationException("Couldn't load any contents of the M3U as discs");
 
 			game = MakeGameFromDisc(discs[0].DiscData, Path.GetExtension(m3u.Entries[0].Path), discs[0].DiscName);
-			var cip = new CoreInventoryParameters(this)
+			CoreInventoryParameters cip = new CoreInventoryParameters(this)
 			{
 				Comm = nextComm,
 				Game = game,
@@ -347,8 +335,8 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				_ = _config.PreferredCores.TryGetValue(cip.Game.System, out var preferredCore);
-				var dbForcedCoreName = cip.Game.ForcedCore;
+				_ = _config.PreferredCores.TryGetValue(cip.Game.System, out string preferredCore);
+				string dbForcedCoreName = cip.Game.ForcedCore;
 				cores = CoreInventory.Instance.GetCores(cip.Game.System)
 					.OrderBy(c =>
 					{
@@ -367,7 +355,7 @@ namespace BizHawk.Client.Common
 					.ToList();
 				if (cores.Count == 0) throw new InvalidOperationException("No core was found to try on the game");
 			}
-			var exceptions = new List<Exception>();
+			List<Exception> exceptions = new List<Exception>();
 			foreach (var core in cores)
 			{
 				try
@@ -411,13 +399,13 @@ namespace BizHawk.Client.Common
 			if (string.IsNullOrEmpty(rom.GameInfo.System))
 			{
 				// Has the user picked a preference for this extension?
-				if (_config.TryGetChosenSystemForFileExt(rom.Extension.ToLowerInvariant(), out var systemID))
+				if (_config.TryGetChosenSystemForFileExt(rom.Extension.ToLowerInvariant(), out string systemID))
 				{
 					rom.GameInfo.System = systemID;
 				}
 				else if (ChoosePlatform != null)
 				{
-					var result = ChoosePlatform(rom);
+					string result = ChoosePlatform(rom);
 					if (!string.IsNullOrEmpty(result))
 					{
 						rom.GameInfo.System = result;
@@ -458,7 +446,7 @@ namespace BizHawk.Client.Common
 					break;
 				case VSystemID.Raw.PSX when ext is ".bin":
 					const string FILE_EXT_CUE = ".cue";
-					var cuePath = TempFileManager.GetTempFilename(friendlyName: "syn", dotAndExtension: FILE_EXT_CUE, delete: false);
+					string cuePath = TempFileManager.GetTempFilename(friendlyName: "syn", dotAndExtension: FILE_EXT_CUE, delete: false);
 					DiscMountJob.CreateSyntheticCue(cueFilePath: cuePath, binFilePath: file.Name);
 					var gameBak = game;
 					var nextEmulatorBak = nextEmulator;
@@ -485,7 +473,7 @@ namespace BizHawk.Client.Common
 					nextEmulator = nextEmulatorBak;
 					break;
 			}
-			var cip = new CoreInventoryParameters(this)
+			CoreInventoryParameters cip = new CoreInventoryParameters(this)
 			{
 				Comm = nextComm,
 				Game = game,
@@ -511,7 +499,7 @@ namespace BizHawk.Client.Common
 			{
 				return new GZipStream(instream, CompressionMode.Decompress).ReadAllBytes();
 			}
-			var psf = new PSF();
+			PSF psf = new PSF();
 			psf.Load(path, CbDeflater);
 			nextEmulator = new Octoshock(
 				nextComm,
@@ -532,11 +520,11 @@ namespace BizHawk.Client.Common
 			game = null;
 			try
 			{
-				var xmlGame = XmlGame.Create(file); // if load fails, are we supposed to retry as a bsnes XML????????
+				XmlGame xmlGame = XmlGame.Create(file); // if load fails, are we supposed to retry as a bsnes XML????????
 				game = xmlGame.GI;
 
-				var system = game.System;
-				var cip = new CoreInventoryParameters(this)
+				string system = game.System;
+				CoreInventoryParameters cip = new CoreInventoryParameters(this)
 				{
 					Comm = nextComm,
 					Game = game,
@@ -611,7 +599,7 @@ namespace BizHawk.Client.Common
 			{
 				try
 				{
-					using var f = new HawkFile(path, allowArchives: true);
+					using HawkFile f = new HawkFile(path, allowArchives: true);
 					if (!HandleArchiveBinding(f)) throw;
 					LoadOther(nextComm, f, ext: ext, forcedCoreName: null, out nextEmulator, out rom, out game, out cancel);
 				}
@@ -635,7 +623,7 @@ namespace BizHawk.Client.Common
 
 			bool allowArchives = true;
 			if (OpenAdvanced is OpenAdvanced_MAME || MAMEMachineDB.IsMAMEMachine(path)) allowArchives = false;
-			using var file = new HawkFile(path, false, allowArchives);
+			using HawkFile file = new HawkFile(path, false, allowArchives);
 			if (!file.Exists && OpenAdvanced is not OpenAdvanced_LibretroNoGame) return false; // if the provided file doesn't even exist, give up! (unless libretro no game is used)
 
 			CanonicalFullPath = file.CanonicalFullPath;
@@ -646,14 +634,14 @@ namespace BizHawk.Client.Common
 
 			try
 			{
-				var cancel = false;
+				bool cancel = false;
 
 				if (OpenAdvanced is OpenAdvanced_Libretro or OpenAdvanced_LibretroNoGame)
 				{
 					// must be done before LoadNoGame (which triggers retro_init and the paths to be consumed by the core)
 					// game name == name of core
 					Game = game = new GameInfo { Name = Path.GetFileNameWithoutExtension(launchLibretroCore), System = VSystemID.Raw.Libretro };
-					var retro = new LibretroHost(nextComm, game, launchLibretroCore);
+					LibretroHost retro = new LibretroHost(nextComm, game, launchLibretroCore);
 					nextEmulator = retro;
 
 					if (retro.Description.SupportsNoGame && string.IsNullOrEmpty(path))
@@ -711,7 +699,7 @@ namespace BizHawk.Client.Common
 					}
 
 					// not libretro: do extension checking
-					var ext = file.Extension;
+					string ext = file.Extension;
 					switch (ext)
 					{
 						case ".m3u":
@@ -768,7 +756,7 @@ namespace BizHawk.Client.Common
 			}
 			catch (Exception ex)
 			{
-				var system = game?.System;
+				string system = game?.System;
 
 				DispatchErrorMessage(ex, system: system, path: path);
 				return false;
@@ -789,7 +777,7 @@ namespace BizHawk.Client.Common
 				{
 					DoLoadErrorCallback("Multiple cores failed to load the rom:", system);
 				}
-				foreach (Exception e in agg.InnerExceptions)
+				foreach (var e in agg.InnerExceptions)
 				{
 					DispatchErrorMessage(e, system: system, path: path);
 				}

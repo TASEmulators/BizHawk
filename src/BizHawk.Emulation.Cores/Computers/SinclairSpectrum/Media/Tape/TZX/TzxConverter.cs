@@ -249,10 +249,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Inverts the audio signal
 		/// </summary>
-		private void ToggleSignal()
-		{
-			signal = !signal;
-		}
+		private void ToggleSignal() => signal = !signal;
 
 		/// <summary>
 		/// Processes a TZX block
@@ -444,8 +441,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				string type = "Unknown Type";
 				StringBuilder sb = new();
 
-				var param1 = GetWordValue(blockdata, 12);
-				var param2 = GetWordValue(blockdata, 14);
+				ushort param1 = GetWordValue(blockdata, 12);
+				ushort param2 = GetWordValue(blockdata, 14);
 
 				// header block - examine first byte of header
 				if (blockdata[1] == 0)
@@ -568,8 +565,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				string type = "Unknown Type";
 				StringBuilder sb = new();
 
-				var param1 = GetWordValue(blockdata, 12);
-				var param2 = GetWordValue(blockdata, 14);
+				ushort param1 = GetWordValue(blockdata, 12);
+				ushort param2 = GetWordValue(blockdata, 14);
 
 				// header block - examine first byte of header
 				if (blockdata[1] == 0)
@@ -859,7 +856,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				}
 
 				// get the byte to be processed
-				var currByte = data[_position++];
+				byte currByte = data[_position++];
 
 				// do the bits
 				while (bitCount > 0)
@@ -946,7 +943,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			CswConverter.ProcessCSWV2(src, ref dest, compType, pulses);
 
 			// create the periods
-			var rate = (69888 * 50) / sampleRate;
+			int rate = (69888 * 50) / sampleRate;
 
 			for (int i = 0; i < dest.Length;)
 			{
@@ -2092,7 +2089,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				}
 
 				// get the byte to be processed
-				var currByte = data[_position];
+				byte currByte = data[_position];
 
 				// do the bits
 				int currBitLength = 0;

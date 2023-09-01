@@ -37,7 +37,7 @@ namespace BizHawk.Common.ReflectionExtensions
 
 			if (memInfo.Length > 0)
 			{
-				var attrs = memInfo[0].GetCustomAttributes(typeof(DescriptionAttribute), false);
+				object[] attrs = memInfo[0].GetCustomAttributes(typeof(DescriptionAttribute), false);
 
 				if (attrs.Length > 0)
 				{
@@ -53,7 +53,7 @@ namespace BizHawk.Common.ReflectionExtensions
 		/// </summary>
 		public static string DisplayName(this Type type)
 		{
-			var attr = type.GetCustomAttributes(typeof(DisplayNameAttribute), false).FirstOrDefault();
+			object attr = type.GetCustomAttributes(typeof(DisplayNameAttribute), false).FirstOrDefault();
 			return attr is DisplayNameAttribute displayName ? displayName.DisplayName : type.Name;
 		}
 
@@ -98,15 +98,12 @@ namespace BizHawk.Common.ReflectionExtensions
 		{
 			var vals = Enum.GetValues(type);
 
-			foreach (var v in vals)
+			foreach (object? v in vals)
 			{
 				yield return v.GetDescription();
 			}
 		}
 
-		public static T GetAttribute<T>(this object o)
-		{
-			return (T)o.GetType().GetCustomAttributes(typeof(T), false)[0];
-		}
+		public static T GetAttribute<T>(this object o) => (T)o.GetType().GetCustomAttributes(typeof(T), false)[0];
 	}
 }

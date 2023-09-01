@@ -32,9 +32,9 @@
 
 			// scan joysticks
 			_pollIndex = 0;
-			for (var j = 0; j < 2; j++)
+			for (int j = 0; j < 2; j++)
 			{
-				for (var i = 0; i < 5; i++)
+				for (int i = 0; i < 5; i++)
 				{
 					_joystickPressed[_pollIndex] = Controller.IsPressed(JoystickMatrix[j][i]);
 					_pollIndex++;
@@ -43,9 +43,9 @@
 
 			// scan keyboard
 			_pollIndex = 0;
-			for (var i = 0; i < 8; i++)
+			for (int i = 0; i < 8; i++)
 			{
-				for (var j = 0; j < 8; j++)
+				for (int j = 0; j < 8; j++)
 				{
 					_keyboardPressed[_pollIndex++] = Controller.IsPressed(KeyboardMatrix[i][j]);
 				}

@@ -34,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 				var ss = gb.GetSyncSettings();
-				var newState = !getter(ss);
+				bool newState = !getter(ss);
 				setter(ss, newState);
 				gb.PutSyncSettings(ss);
 				AddOnScreenMessage($"{name} toggled {(newState ? "on" : "off")}");
@@ -311,10 +311,10 @@ namespace BizHawk.Client.EmuHawk
 					Tools.Load<Cheats>();
 					break;
 				case "Toggle All Cheats":
-					var cheats = CheatList.Where(static c => !c.IsSeparator).ToList();
+					System.Collections.Generic.List<Common.Cheat> cheats = CheatList.Where(static c => !c.IsSeparator).ToList();
 					if (cheats.Count is 0) break;
-					var firstWasEnabled = cheats[0].Enabled;
-					var kind = cheats.TrueForAll(c => c.Enabled == firstWasEnabled)
+					bool firstWasEnabled = cheats[0].Enabled;
+					string kind = cheats.TrueForAll(c => c.Enabled == firstWasEnabled)
 						? firstWasEnabled
 							? "off"
 							: "on"
@@ -561,7 +561,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator is NDS ds)
 			{
 				var settings = ds.GetSettings();
-				var num = (int)settings.ScreenLayout;
+				int num = (int)settings.ScreenLayout;
 				if (decrement)
 				{
 					num--;
@@ -571,7 +571,7 @@ namespace BizHawk.Client.EmuHawk
 					num++;
 				}
 
-				var next = (NDS.ScreenLayoutKind)Enum.Parse(typeof(NDS.ScreenLayoutKind), num.ToString());
+				NDS.ScreenLayoutKind next = (NDS.ScreenLayoutKind)Enum.Parse(typeof(NDS.ScreenLayoutKind), num.ToString());
 				if (typeof(NDS.ScreenLayoutKind).IsEnumDefined(next))
 				{
 					settings.ScreenLayout = next;

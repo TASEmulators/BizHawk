@@ -19,7 +19,7 @@ namespace BizHawk.Client.Common
 		[LuaMethod("hex", "Converts the number to a string representation of the hexadecimal value of the given number")]
 		public static string Hex(long num)
 		{
-			var hex = $"{num:X}";
+			string hex = $"{num:X}";
 			if (hex.Length == 1)
 			{
 				hex = $"0{hex}";
@@ -32,7 +32,7 @@ namespace BizHawk.Client.Common
 		[LuaMethod("binary", "Converts the number to a string representation of the binary value of the given number")]
 		public static string Binary(long num)
 		{
-			var binary = Convert.ToString(num, 2);
+			string binary = Convert.ToString(num, 2);
 			binary = binary.TrimStart('0');
 			return binary;
 		}
@@ -41,7 +41,7 @@ namespace BizHawk.Client.Common
 		[LuaMethod("octal", "Converts the number to a string representation of the octal value of the given number")]
 		public static string Octal(long num)
 		{
-			var octal = Convert.ToString(num, 8);
+			string octal = Convert.ToString(num, 8);
 			if (octal.Length == 1)
 			{
 				octal = $"0{octal}";

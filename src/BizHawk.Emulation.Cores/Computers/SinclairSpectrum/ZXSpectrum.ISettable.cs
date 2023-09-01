@@ -86,10 +86,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			[DefaultValue(false)]
 			public bool UseCoreBorderForBackground { get; set; }
 
-			public ZXSpectrumSettings Clone()
-			{
-				return (ZXSpectrumSettings)MemberwiseClone();
-			}
+			public ZXSpectrumSettings Clone() => (ZXSpectrumSettings)MemberwiseClone();
 
 			public ZXSpectrumSettings()
 			{
@@ -140,20 +137,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			public bool AutoLoadTape { get; set; }
 
 
-			public ZXSpectrumSyncSettings Clone()
-			{
-				return (ZXSpectrumSyncSettings)MemberwiseClone();
-			}
+			public ZXSpectrumSyncSettings Clone() => (ZXSpectrumSyncSettings)MemberwiseClone();
 
 			public ZXSpectrumSyncSettings()
 			{
 				SettingsUtil.SetDefaultValues(this);
 			}
 
-			public static bool NeedsReboot(ZXSpectrumSyncSettings x, ZXSpectrumSyncSettings y)
-			{
-				return !DeepEquality.DeepEquals(x, y);
-			}
+			public static bool NeedsReboot(ZXSpectrumSyncSettings x, ZXSpectrumSyncSettings y) => !DeepEquality.DeepEquals(x, y);
 		}
 
 		/// <summary>
@@ -348,7 +339,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		{
 			var m = GetMetaObject(type);
 
-			var sb = new StringBuilder();
+			StringBuilder sb = new StringBuilder();
 
 			// get longest title
 			int titleLen = 0;
@@ -358,13 +349,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					titleLen = d.Key.Length;
 			}
 
-			var maxDataLineLen = 40;
+			int maxDataLineLen = 40;
 
 			// generate layout
 			foreach (var d in m.Data)
 			{
-				var tLen = d.Key.Length;
-				var makeup = (titleLen - tLen) / 4;
+				int tLen = d.Key.Length;
+				int makeup = (titleLen - tLen) / 4;
 				sb.Append(d.Key + ":\t");
 				for (int i = 0; i < makeup; i++)
 				{
@@ -378,14 +369,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				}
 
 				// output the data splitting and tabbing as necessary
-				var arr = d.Value.Split(' ');
+				string[] arr = d.Value.Split(' ');
 				//int cnt = 0;
 
-				var builder = new List<string>();
+				List<string> builder = new List<string>();
 				string working = "";
-				foreach (var s in arr)
+				foreach (string s in arr)
 				{
-					var len = s.Length;
+					int len = s.Length;
 					if (working.Length + 1 + len > maxDataLineLen)
 					{
 						// new line needed

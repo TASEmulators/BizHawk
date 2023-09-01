@@ -21,24 +21,15 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			}
 		}
 
-		public override byte ReadMemory(ushort addr)
-		{
-			return Core._rom[addr & ROM_mask];
-		}
+		public override byte ReadMemory(ushort addr) => Core._rom[addr & ROM_mask];
 
-		public override void MapCDL(ushort addr, I8048.eCDLogMemFlags flags)
-		{
-			SetCDLROM(flags, addr);
-		}
+		public override void MapCDL(ushort addr, I8048.eCDLogMemFlags flags) => SetCDLROM(flags, addr);
 
 		public override void WriteMemory(ushort addr, byte value)
 		{
 			// no mapping hardware available
 		}
 
-		public override void SyncState(Serializer ser)
-		{
-			ser.Sync(nameof(ROM_mask), ref ROM_mask);
-		}
+		public override void SyncState(Serializer ser) => ser.Sync(nameof(ROM_mask), ref ROM_mask);
 	}
 }

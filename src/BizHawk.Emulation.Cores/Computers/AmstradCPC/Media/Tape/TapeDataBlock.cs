@@ -105,35 +105,20 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			get => _command;
 			set => _command = value;
 		}
-
-		/// <summary>
-		/// The defined post-block pause
-		/// </summary>
-		private int _pauseInMS;
-		public int PauseInMS
-		{
-			get => _pauseInMS;
-			set => _pauseInMS = value;
-		}
+		public int PauseInMS { get; set; }
 
 
 		/// <summary>
 		/// Returns the data periods as an array
 		/// (primarily to aid in bizhawk state serialization)
 		/// </summary>
-		public int[] GetDataPeriodsArray()
-		{
-			return DataPeriods.ToArray();
-		}
+		public int[] GetDataPeriodsArray() => DataPeriods.ToArray();
 
 		/// <summary>
 		/// Accepts an array of data periods and updates the DataPeriods list accordingly
 		/// (primarily to aid in bizhawk state serialization)
 		/// </summary>
-		public void SetDataPeriodsArray(int[] periodArray)
-		{
-			DataPeriods = periodArray?.ToList() ?? new List<int>();
-		}
+		public void SetDataPeriodsArray(int[] periodArray) => DataPeriods = periodArray?.ToList() ?? new List<int>();
 
 		/// <summary>
 		/// Bizhawk state serialization

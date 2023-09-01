@@ -21,10 +21,7 @@ namespace BizHawk.Common
 				? caller.Method
 				: throw new ArgumentException(message: "Expression must be a method call", paramName: nameof(e));
 
-		private static MethodInfo Method<T>(Expression<Action<T>> f)
-		{
-			return FromExpression(f.Body);
-		}
+		private static MethodInfo Method<T>(Expression<Action<T>> f) => FromExpression(f.Body);
 
 		private static readonly Dictionary<Type, MethodInfo> Readhandlers = new();
 		private static readonly Dictionary<Type, MethodInfo> Writehandlers = new();
@@ -100,13 +97,13 @@ namespace BizHawk.Common
 
 		private static SerializationFactory CreateFactory(Type t)
 		{
-			var fields = DeepEquality.GetAllFields(t)
+			List<FieldInfo> fields = DeepEquality.GetAllFields(t)
 				////.OrderBy(fi => (int)fi.GetManagedOffset()) // [StructLayout.Sequential] doesn't work with this
 				.OrderBy(fi => (int)Marshal.OffsetOf(t, fi.Name))
 				.ToList();
 
-			var rmeth = new DynamicMethod($"{t.Name}_r", null, new[] { typeof(object), typeof(BinaryReader) }, true);
-			var wmeth = new DynamicMethod($"{t.Name}_w", null, new[] { typeof(object), typeof(BinaryWriter) }, true);
+			DynamicMethod rmeth = new DynamicMethod($"{t.Name}_r", null, new[] { typeof(object), typeof(BinaryReader) }, true);
+			DynamicMethod wmeth = new DynamicMethod($"{t.Name}_w", null, new[] { typeof(object), typeof(BinaryWriter) }, true);
 
 			{
 				var il = rmeth.GetILGenerator();
@@ -181,14 +178,8 @@ namespace BizHawk.Common
 			return target;
 		}
 
-		public static void Read(object target, BinaryReader r)
-		{
-			GetFactory(target.GetType()).Read(target, r);
-		}
+		public static void Read(object target, BinaryReader r) => GetFactory(target.GetType()).Read(target, r);
 
-		public static void Write(object target, BinaryWriter w)
-		{
-			GetFactory(target.GetType()).Write(target, w);
-		}
+		public static void Write(object target, BinaryWriter w) => GetFactory(target.GetType()).Write(target, w);
 	}
 }

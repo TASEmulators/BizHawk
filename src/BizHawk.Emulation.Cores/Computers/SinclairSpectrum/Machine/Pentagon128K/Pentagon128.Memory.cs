@@ -179,7 +179,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public override byte ReadMemory(ushort addr)
         {
-            var data = ReadBus(addr);
+			byte data = ReadBus(addr);
             return data;
         }
 
@@ -188,7 +188,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public override ZXSpectrum.CDLResult ReadCDL(ushort addr)
         {
-            var result = new ZXSpectrum.CDLResult();
+			ZXSpectrum.CDLResult result = new ZXSpectrum.CDLResult();
 
             int divisor = addr / 0x4000;
             result.Address = addr % 0x4000;
@@ -250,21 +250,18 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             return result;
         }
 
-        /// <summary>
-        /// Writes a byte of data to a specified memory address
-        /// (with memory contention if appropriate)
-        /// </summary>
-        public override void WriteMemory(ushort addr, byte value)
-        {
-            WriteBus(addr, value);
-        }
+		/// <summary>
+		/// Writes a byte of data to a specified memory address
+		/// (with memory contention if appropriate)
+		/// </summary>
+		public override void WriteMemory(ushort addr, byte value) => WriteBus(addr, value);
 
-        /// <summary>
-        /// Checks whether supplied address is in a potentially contended bank
-        /// </summary>
-        public override bool IsContended(ushort addr)
+		/// <summary>
+		/// Checks whether supplied address is in a potentially contended bank
+		/// </summary>
+		public override bool IsContended(ushort addr)
         {
-            var a = addr & 0xc000;
+			int a = addr & 0xc000;
 
             if (a == 0x4000)
             {

@@ -81,8 +81,8 @@ namespace BizHawk.Common
 			}
 			if (o1 == null || o2 == null) return false; // not equal (above) and one is null
 
-			Type t1 = o1.GetType();
-			Type t2 = o2.GetType();
+			var t1 = o1.GetType();
+			var t2 = o2.GetType();
 			if (t1 != t2)
 			{
 				return false;

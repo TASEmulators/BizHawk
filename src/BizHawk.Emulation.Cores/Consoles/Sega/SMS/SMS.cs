@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		[CoreConstructor(VSystemID.Raw.GG)]
 		public SMS(CoreComm comm, GameInfo game, byte[] rom, SmsSettings settings, SmsSyncSettings syncSettings)
 		{
-			var ser = new BasicServiceProvider(this);
+			BasicServiceProvider ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 			Settings = settings ?? new SmsSettings();
 			SyncSettings = syncSettings ?? new SmsSyncSettings();
@@ -312,7 +312,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		{
 			if (display == SmsSyncSettings.DisplayTypes.Ntsc) return DisplayType.NTSC;
 			if (display == SmsSyncSettings.DisplayTypes.Pal) return DisplayType.PAL;
-			if (region != null && region == "Europe") return DisplayType.PAL;
+			if (region is not null and "Europe") return DisplayType.PAL;
 			return DisplayType.NTSC;
 		}
 
@@ -338,10 +338,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 		}
 
-		public byte FetchMemory(ushort addr)
-		{
-			return ReadMemoryMapper(addr);
-		}
+		public byte FetchMemory(ushort addr) => ReadMemoryMapper(addr);
 
 		private void OnExecMemory(ushort addr)
 		{

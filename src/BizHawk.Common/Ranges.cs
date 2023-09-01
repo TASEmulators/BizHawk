@@ -115,7 +115,7 @@ namespace BizHawk.Common
 		/// <inheritdoc cref="Enumerate(Range{float},float)"/>
 		public static IEnumerable<double> Enumerate(this Range<double> range, double step)
 		{
-			var d = range.Start;
+			double d = range.Start;
 			while (d < range.EndInclusive)
 			{
 				yield return d;
@@ -127,7 +127,7 @@ namespace BizHawk.Common
 		/// <remarks>beware precision errors</remarks>
 		public static IEnumerable<float> Enumerate(this Range<float> range, float step)
 		{
-			var f = range.Start;
+			float f = range.Start;
 			while (f < range.EndInclusive)
 			{
 				yield return f;
@@ -138,14 +138,14 @@ namespace BizHawk.Common
 
 		public static IEnumerable<int> Enumerate(this Range<int> range)
 		{
-			var i = range.Start;
+			int i = range.Start;
 			while (i < range.EndInclusive) yield return i++;
 			yield return i;
 		}
 
 		public static IEnumerable<long> Enumerate(this Range<long> range)
 		{
-			var l = range.Start;
+			long l = range.Start;
 			while (l < range.EndInclusive) yield return l++;
 			yield return l;
 		}
@@ -156,14 +156,14 @@ namespace BizHawk.Common
 
 		public static IEnumerable<uint> Enumerate(this Range<uint> range)
 		{
-			var i = range.Start;
+			uint i = range.Start;
 			while (i < range.EndInclusive) yield return i++;
 			yield return i;
 		}
 
 		public static IEnumerable<ulong> Enumerate(this Range<ulong> range)
 		{
-			var l = range.Start;
+			ulong l = range.Start;
 			while (l < range.EndInclusive) yield return l++;
 			yield return l;
 		}

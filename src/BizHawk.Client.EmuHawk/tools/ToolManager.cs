@@ -126,7 +126,7 @@ namespace BizHawk.Client.EmuHawk
 			if (newTool is Form form) form.Owner = _owner;
 			if (!ServiceInjector.UpdateServices(_emulator.ServiceProvider, newTool)) return null; //TODO pass `true` for `mayCache` when from EmuHawk assembly
 			SetBaseProperties(newTool);
-			var toolTypeName = typeof(T).FullName!;
+			string toolTypeName = typeof(T).FullName!;
 			// auto settings
 			if (newTool is IToolFormAutoConfig autoConfigTool)
 			{
@@ -162,7 +162,7 @@ namespace BizHawk.Client.EmuHawk
 				_tools.Remove(existingTool);
 			}
 
-			var newTool = (IExternalToolForm) CreateInstance(typeof(IExternalToolForm), toolPath, customFormTypeName, skipExtToolWarning: skipExtToolWarning);
+			IExternalToolForm newTool = (IExternalToolForm) CreateInstance(typeof(IExternalToolForm), toolPath, customFormTypeName, skipExtToolWarning: skipExtToolWarning);
 			if (newTool == null) return null;
 			if (newTool is Form form) form.Owner = _owner;
 			if (!(ServiceInjector.UpdateServices(_emulator.ServiceProvider, newTool) && ApiInjector.UpdateApis(ApiProvider, newTool))) return null;
@@ -195,7 +195,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var typeNames = genericSettings.Concat(customSettings);
 
-			foreach (var typename in typeNames)
+			foreach (string typename in typeNames)
 			{
 				// this type resolution might not be sufficient.  more investigation is needed
 				Type t = Type.GetType(typename);
@@ -216,7 +216,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RefreshSettings(Form form, ToolStripItemCollection menu, ToolDialogSettings settings, int idx)
 		{
 			((ToolStripMenuItem)menu[idx + 0]).Checked = settings.SaveWindowPosition;
-			var stayOnTopItem = (ToolStripMenuItem)menu[idx + 1];
+			ToolStripMenuItem stayOnTopItem = (ToolStripMenuItem)menu[idx + 1];
 			stayOnTopItem.Checked = settings.TopMost;
 			if (OSTailoredCode.IsUnixHost)
 			{
@@ -242,7 +242,7 @@ namespace BizHawk.Client.EmuHawk
 				subMenu.DropDownItems.Add(new ToolStripSeparatorEx());
 			}
 
-			var closeMenuItem = new ToolStripMenuItem
+			ToolStripMenuItem closeMenuItem = new ToolStripMenuItem
 			{
 				Name = "CloseBtn",
 				Text = "&Close",
@@ -255,7 +255,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AttachSettingHooks(IToolFormAutoConfig tool, ToolDialogSettings settings)
 		{
-			var form = (Form)tool;
+			Form form = (Form)tool;
 			ToolStripItemCollection dest = null;
 			var oldSize = form.Size; // this should be the right time to grab this size
 			foreach (Control c in form.Controls)
@@ -277,7 +277,7 @@ namespace BizHawk.Client.EmuHawk
 
 					if (dest == null)
 					{
-						var submenu = new ToolStripMenuItem("&Settings");
+						ToolStripMenuItem submenu = new ToolStripMenuItem("&Settings");
 						ms.Items.Add(submenu);
 						dest = submenu.DropDownItems;
 					}
@@ -309,7 +309,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (settings.UseWindowSize)
 			{
-				if (form.FormBorderStyle == FormBorderStyle.Sizable || form.FormBorderStyle == FormBorderStyle.SizableToolWindow)
+				if (form.FormBorderStyle is FormBorderStyle.Sizable or FormBorderStyle.SizableToolWindow)
 				{
 					form.Size = settings.WindowSize;
 				}
@@ -373,15 +373,12 @@ namespace BizHawk.Client.EmuHawk
 			};
 		}
 
-		private static bool HasCustomConfig(IToolForm tool)
-		{
-			return tool.GetType().GetPropertiesWithAttrib(typeof(ConfigPersistAttribute)).Any();
-		}
+		private static bool HasCustomConfig(IToolForm tool) => tool.GetType().GetPropertiesWithAttrib(typeof(ConfigPersistAttribute)).Any();
 
 		private static void InstallCustomConfig(IToolForm tool, Dictionary<string, object> data)
 		{
-			Type type = tool.GetType();
-			var props = type.GetPropertiesWithAttrib(typeof(ConfigPersistAttribute)).ToList();
+			var type = tool.GetType();
+			List<PropertyInfo> props = type.GetPropertiesWithAttrib(typeof(ConfigPersistAttribute)).ToList();
 			if (props.Count == 0)
 			{
 				return;
@@ -389,7 +386,7 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var prop in props)
 			{
-				if (data.TryGetValue(prop.Name, out var val))
+				if (data.TryGetValue(prop.Name, out object val))
 				{
 					if (val is string str && prop.PropertyType != typeof(string))
 					{
@@ -457,10 +454,7 @@ namespace BizHawk.Client.EmuHawk
 		/// Gets the instance of T, or creates and returns a new instance
 		/// </summary>
 		/// <typeparam name="T">Type of tool to get</typeparam>
-		public IToolForm Get<T>() where T : class, IToolForm
-		{
-			return Load<T>(false);
-		}
+		public IToolForm Get<T>() where T : class, IToolForm => Load<T>(false);
 
 		/// <summary>
 		/// returns the instance of <paramref name="toolType"/>, regardless of whether it's loaded,<br/>
@@ -524,7 +518,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (IconAndNameCache.TryGetValue(toolType, out var tuple)) return tuple;
 			Image/*?*/ icon = null;
-			var name = toolType.GetCustomAttribute<SpecializedToolAttribute>()?.DisplayName; //TODO codegen ToolIcon and WindowTitleStatic from [Tool] or some new attribute -- Bitmap..ctor(Type, string)
+			string name = toolType.GetCustomAttribute<SpecializedToolAttribute>()?.DisplayName; //TODO codegen ToolIcon and WindowTitleStatic from [Tool] or some new attribute -- Bitmap..ctor(Type, string)
 			var instance = LazyGet(toolType);
 			if (instance is not null)
 			{
@@ -564,7 +558,7 @@ namespace BizHawk.Client.EmuHawk
 				_owner.CheatList.NewList(GenerateDefaultCheatFilename(), autosave: true);
 			}
 
-			var unavailable = new List<IToolForm>();
+			List<IToolForm> unavailable = new List<IToolForm>();
 
 			foreach (var tool in _tools)
 			{
@@ -647,10 +641,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="dllPath">Path .dll for an external tool</param>
 		/// <returns>New instance of an IToolForm</returns>
 		private IToolForm CreateInstance<T>(string dllPath)
-			where T : IToolForm
-		{
-			return CreateInstance(typeof(T), dllPath);
-		}
+			where T : IToolForm => CreateInstance(typeof(T), dllPath);
 
 		/// <summary>
 		/// Create a new instance of an IToolForm and return it
@@ -761,7 +752,7 @@ namespace BizHawk.Client.EmuHawk
 			if (typeof(IExternalToolForm).IsAssignableFrom(tool) && !ApiInjector.IsAvailable(ApiProvider, tool)) return false;
 			if (!PossibleToolTypeNames.Contains(tool.AssemblyQualifiedName) && !_extToolManager.PossibleExtToolTypeNames.Contains(tool.AssemblyQualifiedName)) return false; // not a tool
 
-			ToolAttribute attr = tool.GetCustomAttributes(false).OfType<ToolAttribute>().SingleOrDefault();
+			var attr = tool.GetCustomAttributes(false).OfType<ToolAttribute>().SingleOrDefault();
 			if (attr == null)
 			{
 				return true; // no ToolAttribute on given type -> assumed all supported
@@ -777,7 +768,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private T GetTool<T>() where T : class, IToolForm, new()
 		{
-			T tool = _tools.OfType<T>().FirstOrDefault();
+			var tool = _tools.OfType<T>().FirstOrDefault();
 			if (tool != null)
 			{
 				if (tool.IsActive)
@@ -832,9 +823,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public string GenerateDefaultCheatFilename()
 		{
-			var path = _config.PathEntries.CheatsAbsolutePath(_game.System);
+			string path = _config.PathEntries.CheatsAbsolutePath(_game.System);
 
-			var f = new FileInfo(path);
+			FileInfo f = new FileInfo(path);
 			if (f.Directory != null && f.Directory.Exists == false)
 			{
 				f.Directory.Create();

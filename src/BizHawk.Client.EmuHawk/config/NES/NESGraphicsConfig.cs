@@ -36,10 +36,7 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		private void NESGraphicsConfig_Load(object sender, EventArgs e)
-		{
-			LoadStuff();
-		}
+		private void NESGraphicsConfig_Load(object sender, EventArgs e) => LoadStuff();
 
 		private void LoadStuff()
 		{
@@ -59,7 +56,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BrowsePalette_Click(object sender, EventArgs e)
 		{
-			var result = this.ShowFileOpenDialog(
+			string result = this.ShowFileOpenDialog(
 				discardCWDChange: true,
 				filter: FilesystemFilterSet.Palettes,
 				initDir: _config.PathEntries.PalettesAbsolutePathFor(VSystemID.Raw.NES));
@@ -71,12 +68,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetPaletteImage()
 		{
-			var pal = ResolvePalette();
+			byte[,] pal = ResolvePalette();
 
 			int w = pictureBoxPalette.Size.Width;
 			int h = pictureBoxPalette.Size.Height;
 
-			var bmp = new Bitmap(w, h);
+			Bitmap bmp = new Bitmap(w, h);
 			for (int j = 0; j < h; j++)
 			{
 				int cy = j * 4 / h;
@@ -98,11 +95,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (PalettePath.Text.Length > 0)
 				{
-					var palette = new HawkFile(PalettePath.Text);
+					HawkFile palette = new HawkFile(PalettePath.Text);
 
 					if (palette.Exists)
 					{
-						var data = Palettes.Load_FCEUX_Palette(palette.ReadAllBytes());
+						byte[,] data = Palettes.Load_FCEUX_Palette(palette.ReadAllBytes());
 						if (showMsg)
 						{
 							DialogController.AddOnScreenMessage($"Palette file loaded: {palette.Name}");
@@ -157,10 +154,7 @@ namespace BizHawk.Client.EmuHawk
 			BackgroundColorPanel.BackColor = BGColorDialog.Color;
 		}
 
-		private void ChangeBGColor_Click(object sender, EventArgs e)
-		{
-			ChangeBG();
-		}
+		private void ChangeBGColor_Click(object sender, EventArgs e) => ChangeBG();
 
 		private void ChangeBG()
 		{
@@ -182,10 +176,7 @@ namespace BizHawk.Client.EmuHawk
 			NTSC_LastLineNumeric.Value = 239;
 		}
 
-		private void BackgroundColorPanel_DoubleClick(object sender, EventArgs e)
-		{
-			ChangeBG();
-		}
+		private void BackgroundColorPanel_DoubleClick(object sender, EventArgs e) => ChangeBG();
 
 		private void RestoreDefaultsButton_Click(object sender, EventArgs e)
 		{
@@ -193,9 +184,6 @@ namespace BizHawk.Client.EmuHawk
 			LoadStuff();
 		}
 
-		private void AutoLoadPalette_Click(object sender, EventArgs e)
-		{
-			SetPaletteImage();
-		}
+		private void AutoLoadPalette_Click(object sender, EventArgs e) => SetPaletteImage();
 	}
 }

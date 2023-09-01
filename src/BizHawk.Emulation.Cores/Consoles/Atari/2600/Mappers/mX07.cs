@@ -47,10 +47,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			ser.Sync("rombank_2k", ref _romBank2K);
 		}
 
-		public override void HardReset()
-		{
-			_romBank2K = 0;
-		}
+		public override void HardReset() => _romBank2K = 0;
 
 		public override byte ReadMemory(ushort addr) => ReadMem(addr, false);
 
@@ -105,9 +102,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 		}
 
-		private void Bank(int bank)
-		{
-			_romBank2K = bank & 0x0F;
-		}
+		private void Bank(int bank) => _romBank2K = bank & 0x0F;
 	}
 }

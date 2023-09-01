@@ -16,12 +16,12 @@ namespace BizHawk.Emulation.Cores
 
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core, Action<string> showMessageBox)
 		{
-			var nyma = (NymaCore)core;
+			NymaCore nyma = (NymaCore)core;
 			foreach (var result in nyma.ActualPortData
 				.Where(r => r.Port.ShortName != "builtin"))
 			{
-				var num = int.Parse(result.Port.ShortName.Last().ToString());
-				var device = result.Device.ShortName;
+				int num = int.Parse(result.Port.ShortName.Last().ToString());
+				string device = result.Device.ShortName;
 				var schema = GenerateSchemaForPort(device, num, showMessageBox);
 				if (schema != null)
 				{

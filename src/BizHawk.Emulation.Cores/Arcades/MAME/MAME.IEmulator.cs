@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		public bool DeterministicEmulation { get; }
 		public int Frame { get; private set; }
 		public IEmulatorServiceProvider ServiceProvider { get; }
-		public ControllerDefinition ControllerDefinition => MAMEController;
+		public ControllerDefinition ControllerDefinition { get; } = new("MAME Controller");
 
 		/// <summary>
 		/// MAME fires the periodic callback on every video and debugger update,

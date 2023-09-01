@@ -162,10 +162,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Used for snapshot generation
 		/// </summary>
-		public int[] ExportRegisters()
-		{
-			return _registers;
-		}
+		public int[] ExportRegisters() => _registers;
 
 		/// <summary>
 		/// Resets the PSG
@@ -210,10 +207,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Reads the value from the currently selected register
 		/// </summary>
-		public int PortRead()
-		{
-			return _registers[_activeRegister];
-		}
+		public int PortRead() => _registers[_activeRegister];
 
 		/// <summary>
 		/// Writes to the currently selected register
@@ -324,20 +318,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// End of frame
 		/// </summary>
-		public void EndFrame()
-		{
-			BufferUpdate(_tStatesPerFrame);
-		}
+		public void EndFrame() => BufferUpdate(_tStatesPerFrame);
 
 		/// <summary>
 		/// Updates the audiobuffer based on the current frame t-state
 		/// </summary>
-		public void UpdateSound(int frameCycle)
-		{
-			BufferUpdate(frameCycle);
-		}
+		public void UpdateSound(int frameCycle) => BufferUpdate(frameCycle);
 
-		#pragma warning disable IDE0051
+#pragma warning disable IDE0051
 		/// <summary>
 		/// Register indicies
 		/// </summary>
@@ -548,9 +536,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		private void UpdateVolume()
 		{
 			int upperFloor = 40000;
-			var inc = (0xFFFF - upperFloor) / 100;
+			int inc = (0xFFFF - upperFloor) / 100;
 
-			var vol = inc * _volume; // ((ulong)0xFFFF * (ulong)_volume / 100UL) - 20000 ;
+			int vol = inc * _volume; // ((ulong)0xFFFF * (ulong)_volume / 100UL) - 20000 ;
 			_volumeTables = new uint[6][];
 
 			// parent array
@@ -589,7 +577,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			mult_const = ((_chipFrequency / 8) << 14) / _machine.ULADevice.ClockSpeed;
 
-			var aytickspercputick = _machine.ULADevice.ClockSpeed / (double)_chipFrequency;
+			double aytickspercputick = _machine.ULADevice.ClockSpeed / (double)_chipFrequency;
 			int ayCyclesPerSample = (int)(_tStatesPerSample * (double)aytickspercputick);
 		}
 
@@ -647,7 +635,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 						if ((_eState & ~31) != 0)
 						{
-							var mask = (1 << _registers[AY_E_SHAPE]);
+							int mask = (1 << _registers[AY_E_SHAPE]);
 
 							if ((mask & ((1 << 0) | (1 << 1) | (1 << 2) |
 								(1 << 3) | (1 << 4) | (1 << 5) | (1 << 6) |
@@ -675,12 +663,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				}
 
 				// mix the sample
-				var mixA = ((_eMaskA & _eState) | _vA) & ((_bitA | _bit0) & (_bitN | _bit3));
-				var mixB = ((_eMaskB & _eState) | _vB) & ((_bitB | _bit1) & (_bitN | _bit4));
-				var mixC = ((_eMaskC & _eState) | _vC) & ((_bitC | _bit2) & (_bitN | _bit5));
+				int mixA = ((_eMaskA & _eState) | _vA) & ((_bitA | _bit0) & (_bitN | _bit3));
+				int mixB = ((_eMaskB & _eState) | _vB) & ((_bitB | _bit1) & (_bitN | _bit4));
+				int mixC = ((_eMaskC & _eState) | _vC) & ((_bitC | _bit2) & (_bitN | _bit5));
 
-				var l = _volumeTables[0][mixA];
-				var r = _volumeTables[1][mixA];
+				uint l = _volumeTables[0][mixA];
+				uint r = _volumeTables[1][mixA];
 
 				l += _volumeTables[2][mixB];
 				r += _volumeTables[3][mixB];
@@ -706,15 +694,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				throw new InvalidOperationException("Only Sync mode is supported.");
 		}
 
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Async is not available");
-		}
+		public void GetSamplesAsync(short[] samples) => throw new NotSupportedException("Async is not available");
 
-		public void DiscardSamples()
-		{
-			_audioBuffer = new short[_samplesPerFrame * 2];
-		}
+		public void DiscardSamples() => _audioBuffer = new short[_samplesPerFrame * 2];
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{

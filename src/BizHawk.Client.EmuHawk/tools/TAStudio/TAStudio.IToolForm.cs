@@ -54,10 +54,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		protected override void GeneralUpdate()
-		{
-			RefreshDialog();
-		}
+		protected override void GeneralUpdate() => RefreshDialog();
 
 		protected override void UpdateAfter()
 		{
@@ -71,7 +68,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var refreshNeeded = false;
+			bool refreshNeeded = false;
 			if (AutoadjustInputMenuItem.Checked)
 			{
 				refreshNeeded = AutoAdjustInput();
@@ -89,10 +86,7 @@ namespace BizHawk.Client.EmuHawk
 			UpdateProgressBar();
 		}
 
-		protected override void FastUpdateAfter()
-		{
-			UpdateProgressBar();
-		}
+		protected override void FastUpdateAfter() => UpdateProgressBar();
 
 		public override void Restart()
 		{

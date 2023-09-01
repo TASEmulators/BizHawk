@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 						int result = D[Dreg].s8 + value;
 						int uresult = D[Dreg].u8 + (byte)value;
 						X = C = (uresult & 0x100) != 0;
-						V = result > sbyte.MaxValue || result < sbyte.MinValue;
+						V = result is > sbyte.MaxValue or < sbyte.MinValue;
 						N = (result & 0x80) != 0;
 						Z = result == 0;
 						D[Dreg].s8 = (sbyte)result;
@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 						int result = D[Dreg].s16 + value;
 						int uresult = D[Dreg].u16 + (ushort)value;
 						X = C = (uresult & 0x10000) != 0;
-						V = result > short.MaxValue || result < short.MinValue;
+						V = result is > short.MaxValue or < short.MinValue;
 						N = (result & 0x8000) != 0;
 						Z = result == 0;
 						D[Dreg].s16 = (short)result;
@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 						long result = D[Dreg].s32 + value;
 						long uresult = D[Dreg].u32 + (uint)value;
 						X = C = (uresult & 0x100000000) != 0;
-						V = result > int.MaxValue || result < int.MinValue;
+						V = result is > int.MaxValue or < int.MinValue;
 						N = (result & 0x80000000) != 0;
 						Z = result == 0;
 						D[Dreg].s32 = (int)result;
@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 						int result = value + D[Dreg].s8;
 						int uresult = (byte)value + D[Dreg].u8;
 						X = C = (uresult & 0x100) != 0;
-						V = result > sbyte.MaxValue || result < sbyte.MinValue;
+						V = result is > sbyte.MaxValue or < sbyte.MinValue;
 						N = (result & 0x80) != 0;
 						Z = result == 0;
 						WriteValueB(mode, reg, (sbyte)result);
@@ -83,7 +83,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 						int result = value + D[Dreg].s16;
 						int uresult = (ushort)value + D[Dreg].u16;
 						X = C = (uresult & 0x10000) != 0;
-						V = result > short.MaxValue || result < short.MinValue;
+						V = result is > short.MaxValue or < short.MinValue;
 						N = (result & 0x8000) != 0;
 						Z = result == 0;
 						WriteValueW(mode, reg, (short)result);
@@ -96,7 +96,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 						long result = value + D[Dreg].s32;
 						long uresult = (uint)value + D[Dreg].u32;
 						X = C = (uresult & 0x100000000) != 0;
-						V = result > int.MaxValue || result < int.MinValue;
+						V = result is > int.MaxValue or < int.MinValue;
 						N = (result & 0x80000000) != 0;
 						Z = result == 0;
 						WriteValueL(mode, reg, (int)result);
@@ -143,7 +143,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 						int result = value + immed;
 						int uresult = (byte)value + (byte)immed;
 						X = C = (uresult & 0x100) != 0;
-						V = result > sbyte.MaxValue || result < sbyte.MinValue;
+						V = result is > sbyte.MaxValue or < sbyte.MinValue;
 						N = (result & 0x80) != 0;
 						Z = result == 0;
 						WriteValueB(mode, reg, (sbyte)result);
@@ -158,7 +158,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 						int result = value + immed;
 						int uresult = (ushort)value + (ushort)immed;
 						X = C = (uresult & 0x10000) != 0;
-						V = result > short.MaxValue || result < short.MinValue;
+						V = result is > short.MaxValue or < short.MinValue;
 						N = (result & 0x8000) != 0;
 						Z = result == 0;
 						WriteValueW(mode, reg, (short)result);
@@ -173,7 +173,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 						long result = value + immed;
 						long uresult = (uint)value + (uint)immed;
 						X = C = (uresult & 0x100000000) != 0;
-						V = result > int.MaxValue || result < int.MinValue;
+						V = result is > int.MaxValue or < int.MinValue;
 						N = (result & 0x80000000) != 0;
 						Z = result == 0;
 						WriteValueL(mode, reg, (int)result);
@@ -228,7 +228,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 						int uresult = (byte)value + data;
 						N = (result & 0x80) != 0;
 						Z = result == 0;
-						V = result > sbyte.MaxValue || result < sbyte.MinValue;
+						V = result is > sbyte.MaxValue or < sbyte.MinValue;
 						C = X = (uresult & 0x100) != 0;
 						WriteValueB(mode, reg, (sbyte)result);
 						if (mode == 0) PendingCycles -= 4;
@@ -249,7 +249,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 							int uresult = (ushort)value + data;
 							N = (result & 0x8000) != 0;
 							Z = result == 0;
-							V = result > short.MaxValue || result < short.MinValue;
+							V = result is > short.MaxValue or < short.MinValue;
 							C = X = (uresult & 0x10000) != 0;
 							WriteValueW(mode, reg, (short)result);
 						}
@@ -266,7 +266,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 						{
 							N = (result & 0x80000000) != 0;
 							Z = result == 0;
-							V = result > int.MaxValue || result < int.MinValue;
+							V = result is > int.MaxValue or < int.MinValue;
 							C = X = (uresult & 0x100000000) != 0;
 						}
 						WriteValueL(mode, reg, (int)result);
@@ -349,7 +349,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 						sbyte b = ReadValueB(mode, reg);
 						int result = a - b;
 						X = C = ((a < b) ^ ((a ^ b) >= 0) == false);
-						V = result > sbyte.MaxValue || result < sbyte.MinValue;
+						V = result is > sbyte.MaxValue or < sbyte.MinValue;
 						N = (result & 0x80) != 0;
 						Z = result == 0;
 						D[dReg].s8 = (sbyte)result;
@@ -362,7 +362,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 						short b = ReadValueW(mode, reg);
 						int result = a - b;
 						X = C = ((a < b) ^ ((a ^ b) >= 0) == false);
-						V = result > short.MaxValue || result < short.MinValue;
+						V = result is > short.MaxValue or < short.MinValue;
 						N = (result & 0x8000) != 0;
 						Z = result == 0;
 						D[dReg].s16 = (short)result;
@@ -375,7 +375,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 						int b = ReadValueL(mode, reg);
 						long result = a - b;
 						X = C = ((a < b) ^ ((a ^ b) >= 0) == false);
-						V = result > int.MaxValue || result < int.MinValue;
+						V = result is > int.MaxValue or < int.MinValue;
 						N = (result & 0x80000000) != 0;
 						Z = result == 0;
 						D[dReg].s32 = (int)result;
@@ -400,7 +400,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 						sbyte b = D[dReg].s8;
 						int result = a - b;
 						X = C = ((a < b) ^ ((a ^ b) >= 0) == false);
-						V = result > sbyte.MaxValue || result < sbyte.MinValue;
+						V = result is > sbyte.MaxValue or < sbyte.MinValue;
 						N = (result & 0x80) != 0;
 						Z = result == 0;
 						WriteValueB(mode, reg, (sbyte)result);
@@ -413,7 +413,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 						short b = D[dReg].s16;
 						int result = a - b;
 						X = C = ((a < b) ^ ((a ^ b) >= 0) == false);
-						V = result > short.MaxValue || result < short.MinValue;
+						V = result is > short.MaxValue or < short.MinValue;
 						N = (result & 0x8000) != 0;
 						Z = result == 0;
 						WriteValueW(mode, reg, (short)result);
@@ -426,7 +426,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 						int b = D[dReg].s32;
 						long result = a - b;
 						X = C = ((a < b) ^ ((a ^ b) >= 0) == false);
-						V = result > int.MaxValue || result < int.MinValue;
+						V = result is > int.MaxValue or < int.MinValue;
 						N = (result & 0x80000000) != 0;
 						Z = result == 0;
 						WriteValueL(mode, reg, (int)result);
@@ -472,7 +472,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 						sbyte a = PeekValueB(mode, reg);
 						int result = a - b;
 						X = C = ((a < b) ^ ((a ^ b) >= 0) == false);
-						V = result > sbyte.MaxValue || result < sbyte.MinValue;
+						V = result is > sbyte.MaxValue or < sbyte.MinValue;
 						N = (result & 0x80) != 0;
 						Z = result == 0;
 						WriteValueB(mode, reg, (sbyte)result);
@@ -486,7 +486,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 						short a = PeekValueW(mode, reg);
 						int result = a - b;
 						X = C = ((a < b) ^ ((a ^ b) >= 0) == false);
-						V = result > short.MaxValue || result < short.MinValue;
+						V = result is > short.MaxValue or < short.MinValue;
 						N = (result & 0x8000) != 0;
 						Z = result == 0;
 						WriteValueW(mode, reg, (short)result);
@@ -500,7 +500,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 						int a = PeekValueL(mode, reg);
 						long result = a - b;
 						X = C = ((a < b) ^ ((a ^ b) >= 0) == false);
-						V = result > int.MaxValue || result < int.MinValue;
+						V = result is > int.MaxValue or < int.MinValue;
 						N = (result & 0x80000000) != 0;
 						Z = result == 0;
 						WriteValueL(mode, reg, (int)result);
@@ -554,7 +554,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 						int result = value - data;
 						N = (result & 0x80) != 0;
 						Z = result == 0;
-						V = result > sbyte.MaxValue || result < sbyte.MinValue;
+						V = result is > sbyte.MaxValue or < sbyte.MinValue;
 						C = X = ((value < data) ^ ((value ^ data) >= 0) == false);
 						WriteValueB(mode, reg, (sbyte)result);
 						if (mode == 0) PendingCycles -= 4;
@@ -574,7 +574,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 							int result = value - data;
 							N = (result & 0x8000) != 0;
 							Z = result == 0;
-							V = result > short.MaxValue || result < short.MinValue;
+							V = result is > short.MaxValue or < short.MinValue;
 							C = X = ((value < data) ^ ((value ^ data) >= 0) == false);
 							WriteValueW(mode, reg, (short)result);
 						}
@@ -590,7 +590,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 						{
 							N = (result & 0x80000000) != 0;
 							Z = result == 0;
-							V = result > int.MaxValue || result < int.MinValue;
+							V = result is > int.MaxValue or < int.MinValue;
 							C = X = ((value < data) ^ ((value ^ data) >= 0) == false);
 						}
 						WriteValueL(mode, reg, (int)result);
@@ -675,7 +675,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 						int result = 0 - value;
 						N = (result & 0x80) != 0;
 						Z = result == 0;
-						V = result > sbyte.MaxValue || result < sbyte.MinValue;
+						V = result is > sbyte.MaxValue or < sbyte.MinValue;
 						C = X = ((0 < value) ^ ((0 ^ value) >= 0) == false);
 						WriteValueB(mode, reg, (sbyte)result);
 						if (mode == 0) PendingCycles -= 4;
@@ -688,7 +688,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 						int result = 0 - value;
 						N = (result & 0x8000) != 0;
 						Z = result == 0;
-						V = result > short.MaxValue || result < short.MinValue;
+						V = result is > short.MaxValue or < short.MinValue;
 						C = X = ((0 < value) ^ ((0 ^ value) >= 0) == false);
 						WriteValueW(mode, reg, (short)result);
 						if (mode == 0) PendingCycles -= 4;
@@ -701,7 +701,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 						long result = 0 - value;
 						N = (result & 0x80000000) != 0;
 						Z = result == 0;
-						V = result > int.MaxValue || result < int.MinValue;
+						V = result is > int.MaxValue or < int.MinValue;
 						C = X = ((0 < value) ^ ((0 ^ value) >= 0) == false);
 						WriteValueL(mode, reg, (int)result);
 						if (mode == 0) PendingCycles -= 8;
@@ -754,7 +754,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 						int result = a - b;
 						N = (result & 0x80) != 0;
 						Z = result == 0;
-						V = result > sbyte.MaxValue || result < sbyte.MinValue;
+						V = result is > sbyte.MaxValue or < sbyte.MinValue;
 						C = ((a < b) ^ ((a ^ b) >= 0) == false);
 						if (mode == 0) PendingCycles -= 8;
 						PendingCycles -= 4 + EACyclesBW[mode, reg];
@@ -767,7 +767,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 						int result = a - b;
 						N = (result & 0x8000) != 0;
 						Z = result == 0;
-						V = result > short.MaxValue || result < short.MinValue;
+						V = result is > short.MaxValue or < short.MinValue;
 						C = ((a < b) ^ ((a ^ b) >= 0) == false);
 						if (mode == 0) PendingCycles -= 8;
 						PendingCycles -= 4 + EACyclesBW[mode, reg];
@@ -780,7 +780,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 						long result = a - b;
 						N = (result & 0x80000000) != 0;
 						Z = result == 0;
-						V = result > int.MaxValue || result < int.MinValue;
+						V = result is > int.MaxValue or < int.MinValue;
 						C = ((a < b) ^ ((a ^ b) >= 0) == false);
 						PendingCycles -= 6 + EACyclesL[mode, reg];
 						return;
@@ -831,7 +831,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 						int result = a - b;
 						N = (result & 0x8000) != 0;
 						Z = result == 0;
-						V = result > short.MaxValue || result < short.MinValue;
+						V = result is > short.MaxValue or < short.MinValue;
 						C = ((a < b) ^ ((a ^ b) >= 0) == false);
 						PendingCycles -= 6 + EACyclesBW[mode, reg];
 						return;
@@ -843,7 +843,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 						long result = a - b;
 						N = (result & 0x80000000) != 0;
 						Z = result == 0;
-						V = result > int.MaxValue || result < int.MinValue;
+						V = result is > int.MaxValue or < int.MinValue;
 						C = ((a < b) ^ ((a ^ b) >= 0) == false);
 						PendingCycles -= 6 + EACyclesL[mode, reg];
 						return;
@@ -889,7 +889,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 						int result = a - b;
 						N = (result & 0x80) != 0;
 						Z = result == 0;
-						V = result > sbyte.MaxValue || result < sbyte.MinValue;
+						V = result is > sbyte.MaxValue or < sbyte.MinValue;
 						C = ((a < b) ^ ((a ^ b) >= 0) == false);
 						PendingCycles -= 12;
 						return;
@@ -901,7 +901,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 						int result = a - b;
 						N = (result & 0x8000) != 0;
 						Z = result == 0;
-						V = result > short.MaxValue || result < short.MinValue;
+						V = result is > short.MaxValue or < short.MinValue;
 						C = ((a < b) ^ ((a ^ b) >= 0) == false);
 						PendingCycles -= 12;
 						return;
@@ -913,7 +913,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 						long result = a - b;
 						N = (result & 0x80000000) != 0;
 						Z = result == 0;
-						V = result > int.MaxValue || result < int.MinValue;
+						V = result is > int.MaxValue or < int.MinValue;
 						C = ((a < b) ^ ((a ^ b) >= 0) == false);
 						PendingCycles -= 20;
 						return;
@@ -953,7 +953,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 						int result = a - b;
 						N = (result & 0x80) != 0;
 						Z = result == 0;
-						V = result > sbyte.MaxValue || result < sbyte.MinValue;
+						V = result is > sbyte.MaxValue or < sbyte.MinValue;
 						C = ((a < b) ^ ((a ^ b) >= 0) == false);
 						if (mode == 0) PendingCycles -= 8;
 						else PendingCycles -= 8 + EACyclesBW[mode, reg];
@@ -966,7 +966,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 						int result = a - b;
 						N = (result & 0x8000) != 0;
 						Z = result == 0;
-						V = result > short.MaxValue || result < short.MinValue;
+						V = result is > short.MaxValue or < short.MinValue;
 						C = ((a < b) ^ ((a ^ b) >= 0) == false);
 						if (mode == 0) PendingCycles -= 8;
 						else PendingCycles -= 8 + EACyclesBW[mode, reg];
@@ -979,7 +979,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 						long result = a - b;
 						N = (result & 0x80000000) != 0;
 						Z = result == 0;
-						V = result > int.MaxValue || result < int.MinValue;
+						V = result is > int.MaxValue or < int.MinValue;
 						C = ((a < b) ^ ((a ^ b) >= 0) == false);
 						if (mode == 0) PendingCycles -= 14;
 						else PendingCycles -= 12 + EACyclesL[mode, reg];
@@ -1090,7 +1090,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			uint quotient = dest / source;
 			uint remainder = dest % source;
 
-			V = ((int)quotient < short.MinValue || (int)quotient > short.MaxValue);
+			V = ((int)quotient is < short.MinValue or > short.MaxValue);
 			N = (quotient & 0x8000) != 0;
 			Z = quotient == 0;
 			C = false;
@@ -1126,7 +1126,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			int quotient = dest / source;
 			int remainder = dest % source;
 
-			V = (quotient < short.MinValue || quotient > short.MaxValue);
+			V = (quotient is < short.MinValue or > short.MaxValue);
 			N = (quotient & 0x8000) != 0;
 			Z = quotient == 0;
 			C = false;

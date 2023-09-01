@@ -2,20 +2,14 @@
 {
 	public sealed partial class Sid
 	{
-		public int Peek(int addr)
-		{
-			return ReadRegister(addr & 0x1F);
-		}
+		public int Peek(int addr) => ReadRegister(addr & 0x1F);
 
-		public void Poke(int addr, int val)
-		{
-			WriteRegister(addr & 0x1F, val);
-		}
+		public void Poke(int addr, int val) => WriteRegister(addr & 0x1F, val);
 
 		public int Read(int addr)
 		{
 			addr &= 0x1F;
-			var result = _databus;
+			int result = _databus;
 
 			switch (addr)
 			{
@@ -33,7 +27,7 @@
 
 		private int ReadRegister(int addr)
 		{
-			var result = 0x00;
+			int result = 0x00;
 
 			switch (addr)
 			{
@@ -145,7 +139,7 @@
 
 					// we want to only flush the filter when the filter is actually changed, that way
 					// the FFT will not be impacted by small sample sizes from other changes
-					if ((addr == 0x15) || (addr == 0x16) || (addr == 0x17))
+					if (addr is 0x15 or 0x16 or 0x17)
 					{
 						Flush(true);
 					}

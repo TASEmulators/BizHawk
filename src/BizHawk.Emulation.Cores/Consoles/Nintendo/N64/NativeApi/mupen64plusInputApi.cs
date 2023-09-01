@@ -77,14 +77,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			_ = InpSetRumbleCallback(m64pRumbleCallback = rumbleCallback);
 		}
 
-		public void SetM64PControllerPakType(int controller, N64SyncSettings.N64ControllerSettings.N64ControllerPakType type)
-		{
-			InpSetControllerPakType(controller, (int)type);
-		}
+		public void SetM64PControllerPakType(int controller, N64SyncSettings.N64ControllerSettings.N64ControllerPakType type) => InpSetControllerPakType(controller, (int)type);
 
-		public void SetM64PControllerConnected(int controller, bool connected)
-		{
-			InpSetControllerConnected(controller, connected?1:0);
-		}
+		public void SetM64PControllerConnected(int controller, bool connected) => InpSetControllerConnected(controller, connected ? 1 : 0);
 	}
 }

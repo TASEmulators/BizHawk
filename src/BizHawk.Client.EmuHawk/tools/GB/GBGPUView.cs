@@ -558,16 +558,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 			// try to run the current mouseover, to refresh if the mouse is being held over a pane while the emulator runs
 			// this doesn't really work well; the update rate seems to be throttled
-			var e = new MouseEventArgs(MouseButtons.None, 0, Cursor.Position.X, Cursor.Position.Y, 0);
+			MouseEventArgs e = new MouseEventArgs(MouseButtons.None, 0, Cursor.Position.X, Cursor.Position.Y, 0);
 			OnMouseMove(e);
 		}
 
 		private void GbGpuView_FormClosed(object sender, FormClosedEventArgs e)
 			=> _gbCore?.SetScanlineCallback(null, 0);
 
-		private void radioButtonRefreshFrame_CheckedChanged(object sender, EventArgs e) { ComputeRefreshValues(); }
-		private void radioButtonRefreshScanline_CheckedChanged(object sender, EventArgs e) { ComputeRefreshValues(); }
-		private void radioButtonRefreshManual_CheckedChanged(object sender, EventArgs e) { ComputeRefreshValues(); }
+		private void radioButtonRefreshFrame_CheckedChanged(object sender, EventArgs e) => ComputeRefreshValues();
+		private void radioButtonRefreshScanline_CheckedChanged(object sender, EventArgs e) => ComputeRefreshValues();
+		private void radioButtonRefreshManual_CheckedChanged(object sender, EventArgs e) => ComputeRefreshValues();
 
 		private void ComputeRefreshValues()
 		{
@@ -650,7 +650,7 @@ namespace BizHawk.Client.EmuHawk
 			groupBoxDetails.Text = _freezeLabel;
 			bmpViewDetails.Height = _freezeBmp.Height * 8;
 			bmpViewDetails.ChangeBitmapSize(_freezeBmp.Size);
-			using (var g = Graphics.FromImage(bmpViewDetails.Bmp))
+			using (Graphics g = Graphics.FromImage(bmpViewDetails.Bmp))
 				g.DrawImageUnscaled(_freezeBmp, 0, 0);
 			labelDetails.Text = _freezeDetails;
 			bmpViewDetails.Refresh();
@@ -661,7 +661,7 @@ namespace BizHawk.Client.EmuHawk
 			groupBoxMemory.Text = groupBoxDetails.Text;
 			bmpViewMemory.Size = bmpViewDetails.Size;
 			bmpViewMemory.ChangeBitmapSize(bmpViewDetails.Bmp.Size);
-			using (var g = Graphics.FromImage(bmpViewMemory.Bmp))
+			using (Graphics g = Graphics.FromImage(bmpViewMemory.Bmp))
 				g.DrawImageUnscaled(bmpViewDetails.Bmp, 0, 0);
 			labelMemory.Text = labelDetails.Text;
 			bmpViewMemory.Refresh();
@@ -676,7 +676,7 @@ namespace BizHawk.Client.EmuHawk
 			bmpViewDetails.ChangeBitmapSize(8, 10);
 			if (bmpViewDetails.Height != 80)
 				bmpViewDetails.Height = 80;
-			var sb = new StringBuilder();
+			StringBuilder sb = new StringBuilder();
 			x /= 16;
 			y /= 16;
 			int* pal = (int*)(sprite ? spPal : bgPal) + x * 4;
@@ -721,7 +721,7 @@ namespace BizHawk.Client.EmuHawk
 			bmpViewDetails.ChangeBitmapSize(8, 8);
 			if (bmpViewDetails.Height != 64)
 				bmpViewDetails.Height = 64;
-			var sb = new StringBuilder();
+			StringBuilder sb = new StringBuilder();
 			x /= 8;
 			y /= 8;
 			int tileIndex = y * 16 + x;
@@ -746,7 +746,7 @@ namespace BizHawk.Client.EmuHawk
 			bmpViewDetails.ChangeBitmapSize(8, 8);
 			if (bmpViewDetails.Height != 64)
 				bmpViewDetails.Height = 64;
-			var sb = new StringBuilder();
+			StringBuilder sb = new StringBuilder();
 			bool secondMap = win ? _lcdc.Bit(6) : _lcdc.Bit(3);
 			int mapOffset = secondMap ? 0x1c00 : 0x1800;
 			x /= 8;
@@ -793,7 +793,7 @@ namespace BizHawk.Client.EmuHawk
 			bmpViewDetails.ChangeBitmapSize(8, tall ? 16 : 8);
 			if (bmpViewDetails.Height != bmpViewDetails.Bmp.Height * 8)
 				bmpViewDetails.Height = bmpViewDetails.Bmp.Height * 8;
-			var sb = new StringBuilder();
+			StringBuilder sb = new StringBuilder();
 
 			byte* oament = (byte*)oam + 4 * x;
 			int sy = oament[0];
@@ -839,15 +839,9 @@ namespace BizHawk.Client.EmuHawk
 			groupBoxDetails.Text = "Details - Background";
 		}
 
-		private void bmpViewBG_MouseLeave(object sender, EventArgs e)
-		{
-			LoadDetails();
-		}
+		private void bmpViewBG_MouseLeave(object sender, EventArgs e) => LoadDetails();
 
-		private void bmpViewBG_MouseMove(object sender, MouseEventArgs e)
-		{
-			TileMapMouseover(e.X, e.Y, false);
-		}
+		private void bmpViewBG_MouseMove(object sender, MouseEventArgs e) => TileMapMouseover(e.X, e.Y, false);
 
 		private void bmpViewWin_MouseEnter(object sender, EventArgs e)
 		{
@@ -855,15 +849,9 @@ namespace BizHawk.Client.EmuHawk
 			groupBoxDetails.Text = "Details - Window";
 		}
 
-		private void bmpViewWin_MouseLeave(object sender, EventArgs e)
-		{
-			LoadDetails();
-		}
+		private void bmpViewWin_MouseLeave(object sender, EventArgs e) => LoadDetails();
 
-		private void bmpViewWin_MouseMove(object sender, MouseEventArgs e)
-		{
-			TileMapMouseover(e.X, e.Y, true);
-		}
+		private void bmpViewWin_MouseMove(object sender, MouseEventArgs e) => TileMapMouseover(e.X, e.Y, true);
 
 		private void bmpViewTiles1_MouseEnter(object sender, EventArgs e)
 		{
@@ -871,15 +859,9 @@ namespace BizHawk.Client.EmuHawk
 			groupBoxDetails.Text = "Details - Tiles";
 		}
 
-		private void bmpViewTiles1_MouseLeave(object sender, EventArgs e)
-		{
-			LoadDetails();
-		}
+		private void bmpViewTiles1_MouseLeave(object sender, EventArgs e) => LoadDetails();
 
-		private void bmpViewTiles1_MouseMove(object sender, MouseEventArgs e)
-		{
-			TileMouseover(e.X, e.Y, false);
-		}
+		private void bmpViewTiles1_MouseMove(object sender, MouseEventArgs e) => TileMouseover(e.X, e.Y, false);
 
 		private void bmpViewTiles2_MouseEnter(object sender, EventArgs e)
 		{
@@ -909,15 +891,9 @@ namespace BizHawk.Client.EmuHawk
 			groupBoxDetails.Text = "Details - Palette";
 		}
 
-		private void bmpViewBGPal_MouseLeave(object sender, EventArgs e)
-		{
-			LoadDetails();
-		}
+		private void bmpViewBGPal_MouseLeave(object sender, EventArgs e) => LoadDetails();
 
-		private void bmpViewBGPal_MouseMove(object sender, MouseEventArgs e)
-		{
-			PaletteMouseover(e.X, e.Y, false);
-		}
+		private void bmpViewBGPal_MouseMove(object sender, MouseEventArgs e) => PaletteMouseover(e.X, e.Y, false);
 
 		private void bmpViewSPPal_MouseEnter(object sender, EventArgs e)
 		{
@@ -925,15 +901,9 @@ namespace BizHawk.Client.EmuHawk
 			groupBoxDetails.Text = "Details - Palette";
 		}
 
-		private void bmpViewSPPal_MouseLeave(object sender, EventArgs e)
-		{
-			LoadDetails();
-		}
+		private void bmpViewSPPal_MouseLeave(object sender, EventArgs e) => LoadDetails();
 
-		private void bmpViewSPPal_MouseMove(object sender, MouseEventArgs e)
-		{
-			PaletteMouseover(e.X, e.Y, true);
-		}
+		private void bmpViewSPPal_MouseMove(object sender, MouseEventArgs e) => PaletteMouseover(e.X, e.Y, true);
 
 		private void bmpViewOAM_MouseEnter(object sender, EventArgs e)
 		{
@@ -941,15 +911,9 @@ namespace BizHawk.Client.EmuHawk
 			groupBoxDetails.Text = "Details - Sprite";
 		}
 
-		private void bmpViewOAM_MouseLeave(object sender, EventArgs e)
-		{
-			LoadDetails();
-		}
+		private void bmpViewOAM_MouseLeave(object sender, EventArgs e) => LoadDetails();
 
-		private void bmpViewOAM_MouseMove(object sender, MouseEventArgs e)
-		{
-			SpriteMouseover(e.X, e.Y);
-		}
+		private void bmpViewOAM_MouseMove(object sender, MouseEventArgs e) => SpriteMouseover(e.X, e.Y);
 
 		private void bmpViewOBJ_MouseEnter(object sender, EventArgs e)
 		{
@@ -957,10 +921,7 @@ namespace BizHawk.Client.EmuHawk
 			groupBoxDetails.Text = "Details - Objects";
 		}
 
-		private void bmpViewOBJ_MouseLeave(object sender, EventArgs e)
-		{
-			LoadDetails();
-		}
+		private void bmpViewOBJ_MouseLeave(object sender, EventArgs e) => LoadDetails();
 
 		private void bmpViewOBJ_MouseMove(object sender, MouseEventArgs e)
 		{
@@ -995,7 +956,7 @@ namespace BizHawk.Client.EmuHawk
 			if (ModifierKeys.HasFlag(Keys.Control) && e.KeyCode == Keys.C)
 			{
 				// find the control under the mouse
-				Point m = Cursor.Position;
+				var m = Cursor.Position;
 				Control top = this;
 				Control found;
 				do
@@ -1022,7 +983,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ButtonChangeColor_Click(object sender, EventArgs e)
 		{
-			using var dlg = new ColorDialog
+			using ColorDialog dlg = new ColorDialog
 			{
 				AllowFullOpen = true,
 				AnyColor = true,

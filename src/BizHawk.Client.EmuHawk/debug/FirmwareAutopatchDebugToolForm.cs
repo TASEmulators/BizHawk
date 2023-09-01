@@ -32,7 +32,7 @@ namespace BizHawk.Client.EmuHawk.ForDebugging
 			SzTextBoxEx txtBaseFile = new() { Size = new(224, 23) };
 			void ShowBaseFilePicker()
 			{
-				var filename = this.ShowFileSaveDialog(initDir: Config!.PathEntries.FirmwareAbsolutePath());
+				string? filename = this.ShowFileSaveDialog(initDir: Config!.PathEntries.FirmwareAbsolutePath());
 				if (filename is not null) txtBaseFile.Text = filename;
 			}
 			CheckBoxEx cbDryRun = new() { Checked = true, Text = "dry run (skip writing to disk)" };
@@ -48,7 +48,7 @@ namespace BizHawk.Client.EmuHawk.ForDebugging
 						this.ModalMessageBox($"wrote {filePath}");
 						return;
 					}
-					var @base = File.ReadAllBytes(txtBaseFile.Text);
+					byte[] @base = File.ReadAllBytes(txtBaseFile.Text);
 					var (_, actualHash) = FirmwareManager.PerformPatchInMemory(@base, in fpo);
 					if (actualHash == fpo.TargetHash)
 					{
@@ -56,7 +56,7 @@ namespace BizHawk.Client.EmuHawk.ForDebugging
 						return;
 					}
 					// else something happened, figure out what it was
-					var baseHash = SHA1Checksum.ComputeDigestHex(@base);
+					string baseHash = SHA1Checksum.ComputeDigestHex(@base);
 					this.ModalMessageBox(baseHash == fpo.BaseHash
 						? $"patchset declared with target\nSHA1:{fpo.TargetHash}\nbut produced\nSHA1:{actualHash}\n(is the patch wrong, or the hash?)"
 						: $"patchset declared for base\nSHA1:{fpo.BaseHash}\nbut\nSHA1:{baseHash}\nwas provided");

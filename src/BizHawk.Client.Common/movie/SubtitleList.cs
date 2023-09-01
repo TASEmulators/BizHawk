@@ -22,7 +22,7 @@ namespace BizHawk.Client.Common
 
 		public override string ToString()
 		{
-			var sb = new StringBuilder();
+			StringBuilder sb = new StringBuilder();
 			Sort();
 			ForEach(subtitle => sb.AppendLine(subtitle.ToString()));
 			return sb.ToString();
@@ -34,11 +34,11 @@ namespace BizHawk.Client.Common
 			{
 				try
 				{
-					var subParts = subtitleStr.Split(' ');
+					string[] subParts = subtitleStr.Split(' ');
 
 					// Unfortunately I made the file format space delaminated so this hack is necessary to get the message
-					var message = "";
-					for (var i = 6; i < subParts.Length; i++)
+					string message = "";
+					for (int i = 6; i < subParts.Length; i++)
 					{
 						message += subParts[i] + ' ';
 					}
@@ -76,8 +76,8 @@ namespace BizHawk.Client.Common
 		public string ToSubRip(double fps)
 		{
 			int index = 1;
-			var sb = new StringBuilder();
-			var subs = new List<Subtitle>();
+			StringBuilder sb = new StringBuilder();
+			List<Subtitle> subs = new List<Subtitle>();
 			foreach (var subtitle in this)
 			{
 				subs.Add(new Subtitle(subtitle));

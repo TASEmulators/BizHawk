@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 		public void SetupMemoryDomains()
 		{
-			var domains = new List<MemoryDomain>
+			List<MemoryDomain> domains = new List<MemoryDomain>
 			{
 				new MemoryDomainDelegate(
 					"Main RAM L",
@@ -71,13 +71,13 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 			if (L.SaveRAM != null)
 			{
-				var cartRamL = new MemoryDomainByteArray("Cart RAM L", MemoryDomain.Endian.Little, L.SaveRAM, true, 1);
+				MemoryDomainByteArray cartRamL = new MemoryDomainByteArray("Cart RAM L", MemoryDomain.Endian.Little, L.SaveRAM, true, 1);
 				domains.Add(cartRamL);
 			}
 
 			if (R.SaveRAM != null)
 			{
-				var cartRamR = new MemoryDomainByteArray("Cart RAM R", MemoryDomain.Endian.Little, R.SaveRAM, true, 1);
+				MemoryDomainByteArray cartRamR = new MemoryDomainByteArray("Cart RAM R", MemoryDomain.Endian.Little, R.SaveRAM, true, 1);
 				domains.Add(cartRamR);
 			}
 

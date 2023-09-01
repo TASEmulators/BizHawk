@@ -57,15 +57,9 @@
 		/// <summary>
 		/// Gets the next value without incrementing index.
 		/// </summary>
-		public bool PeekNextValue()
-		{
-			return Pattern[_index];
-		}
+		public bool PeekNextValue() => Pattern[_index];
 
-		public void Reset()
-		{
-			_index = 0;
-		}
+		public void Reset() => _index = 0;
 	}
 
 	public class AutoPatternAxis
@@ -134,14 +128,8 @@
 		/// <summary>
 		/// Gets the next value without incrementing index.
 		/// </summary>
-		public int PeekNextValue()
-		{
-			return Pattern[_index];
-		}
+		public int PeekNextValue() => Pattern[_index];
 
-		public void Reset()
-		{
-			_index = 0;
-		}
+		public void Reset() => _index = 0;
 	}
 }

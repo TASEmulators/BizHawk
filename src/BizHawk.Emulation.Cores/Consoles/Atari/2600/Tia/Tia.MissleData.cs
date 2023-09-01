@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			public bool Tick()
 			{
-				var result = false;
+				bool result = false;
 
 				if (_scanCntInit)
 				{
@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 				// our goal here is to send a start signal 4 clocks before drawing begins. The properly emulates
 				// drawing on a real TIA
-				if (HPosCnt == 156 || HPosCnt == 12 || HPosCnt == 28 || HPosCnt == 60)
+				if (HPosCnt is 156 or 12 or 28 or 60)
 				{
 					_startSignal = HPosCnt;
 					_signalReached = HPosCnt + 5;

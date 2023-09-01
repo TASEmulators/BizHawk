@@ -105,10 +105,7 @@ namespace BizHawk.Client.EmuHawk
 			_tastudio.RefreshDialog();
 		}
 
-		private void HistoryView_DoubleClick(object sender, EventArgs e)
-		{
-			UndoToHere(SelectedItem);
-		}
+		private void HistoryView_DoubleClick(object sender, EventArgs e) => UndoToHere(SelectedItem);
 
 		private void HistoryView_MouseUp(object sender, MouseEventArgs e)
 		{
@@ -128,15 +125,9 @@ namespace BizHawk.Client.EmuHawk
 		// Hacky way to select a row by clicking the names row
 		private int _hackSelect = -1;
 
-		private void HistoryView_MouseDown(object sender, MouseEventArgs e)
-		{
-			_hackSelect = SelectedItem;
-		}
+		private void HistoryView_MouseDown(object sender, MouseEventArgs e) => _hackSelect = SelectedItem;
 
-		private void UndoHereMenuItem_Click(object sender, EventArgs e)
-		{
-			UndoToHere(SelectedItem);
-		}
+		private void UndoHereMenuItem_Click(object sender, EventArgs e) => UndoToHere(SelectedItem);
 
 		private void RedoHereMenuItem_Click(object sender, EventArgs e)
 		{
@@ -166,9 +157,6 @@ namespace BizHawk.Client.EmuHawk
 			UpdateValues();
 		}
 
-		private void MaxStepsNum_ValueChanged(object sender, EventArgs e)
-		{
-			Log.MaxSteps = (int)MaxStepsNum.Value;
-		}
+		private void MaxStepsNum_ValueChanged(object sender, EventArgs e) => Log.MaxSteps = (int)MaxStepsNum.Value;
 	}
 }

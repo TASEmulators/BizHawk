@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Common
 
 				foreach (var (k, v) in def.Axes)
 				{
-					var r = Allocate(k, ref plr, ref playerNext);
+					string r = Allocate(k, ref plr, ref playerNext);
 					ret.Axes.Add(r, v);
 					buttonAxisRemaps[k] = r;
 				}
@@ -83,15 +83,9 @@ namespace BizHawk.Emulation.Common
 			/// <exception cref="NotImplementedException">always</exception>
 			public ControllerDefinition Definition => throw new NotImplementedException();
 
-			public bool IsPressed(string button)
-			{
-				return _src.IsPressed(_buttonAxisRemaps[button]);
-			}
+			public bool IsPressed(string button) => _src.IsPressed(_buttonAxisRemaps[button]);
 
-			public int AxisValue(string name)
-			{
-				return _src.AxisValue(_buttonAxisRemaps[name]);
-			}
+			public int AxisValue(string name) => _src.AxisValue(_buttonAxisRemaps[name]);
 
 			public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot() => Array.Empty<(string, int)>();
 

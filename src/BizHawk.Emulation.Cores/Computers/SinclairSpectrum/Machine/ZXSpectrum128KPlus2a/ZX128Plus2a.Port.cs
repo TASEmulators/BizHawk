@@ -80,8 +80,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                 if (!PagingDisabled)
                 {
-                    // bits 0, 1, 2 select the RAM page
-                    var rp = value & 0x07;
+					// bits 0, 1, 2 select the RAM page
+					int rp = value & 0x07;
                     if (rp < 8)
                         RAMPaged = rp;
 
@@ -177,8 +177,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             get
             {
-                // calculate the ROMpage from the high and low bits
-                var rp = ZXSpectrum.GetIntFromBitArray(new BitArray(new bool[] { ROMlow, ROMhigh }));
+				// calculate the ROMpage from the high and low bits
+				int rp = ZXSpectrum.GetIntFromBitArray(new BitArray(new bool[] { ROMlow, ROMhigh }));
 
                 if (rp != 0)
                 {

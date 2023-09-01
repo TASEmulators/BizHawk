@@ -20,18 +20,18 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// this shouldn't throw in practice, this is only called when loading was successful!
 			using var disc = DiscExtensions.CreateAnyType(path, e => throw new(e));
-			var dsr = new DiscSectorReader(disc)
+			DiscSectorReader dsr = new DiscSectorReader(disc)
 			{
 				Policy = { DeterministicClearBuffer = false } // let's make this a little faster
 			};
 
-			var buf2048 = new byte[2048];
-			var buffer = new List<byte>();
+			byte[] buf2048 = new byte[2048];
+			List<byte> buffer = new List<byte>();
 
 			int FirstDataTrackLBA()
 			{
 				var toc = disc.TOC;
-				for (var t = toc.FirstRecordedTrackNumber; t <= toc.LastRecordedTrackNumber; t++)
+				for (int t = toc.FirstRecordedTrackNumber; t <= toc.LastRecordedTrackNumber; t++)
 				{
 					if (toc.TOCItems[t]
 						.IsData) return toc.TOCItems[t].LBA;
@@ -44,12 +44,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				case ConsoleID.PCEngineCD:
 					{
-						var slba = FirstDataTrackLBA();
+						int slba = FirstDataTrackLBA();
 						dsr.ReadLBA_2048(slba + 1, buf2048, 0);
 						buffer.AddRange(new ArraySegment<byte>(buf2048, 128 - 22, 22));
-						var bootSector = (buf2048[0] << 16) | (buf2048[1] << 8) | buf2048[2];
-						var numSectors = buf2048[3];
-						for (var i = 0; i < numSectors; i++)
+						int bootSector = (buf2048[0] << 16) | (buf2048[1] << 8) | buf2048[2];
+						byte numSectors = buf2048[3];
+						for (int i = 0; i < numSectors; i++)
 						{
 							dsr.ReadLBA_2048(slba + bootSector + i, buf2048, 0);
 							buffer.AddRange(buf2048);
@@ -58,12 +58,12 @@ namespace BizHawk.Client.EmuHawk
 					}
 				case ConsoleID.PCFX:
 					{
-						var slba = FirstDataTrackLBA();
+						int slba = FirstDataTrackLBA();
 						dsr.ReadLBA_2048(slba + 1, buf2048, 0);
 						buffer.AddRange(new ArraySegment<byte>(buf2048, 0, 128));
-						var bootSector = (buf2048[35] << 24) | (buf2048[34] << 16) | (buf2048[33] << 8) | buf2048[32];
-						var numSectors = (buf2048[39] << 24) | (buf2048[38] << 16) | (buf2048[37] << 8) | buf2048[36];
-						for (var i = 0; i < numSectors; i++)
+						int bootSector = (buf2048[35] << 24) | (buf2048[34] << 16) | (buf2048[33] << 8) | buf2048[32];
+						int numSectors = (buf2048[39] << 24) | (buf2048[38] << 16) | (buf2048[37] << 8) | buf2048[36];
+						for (int i = 0; i < numSectors; i++)
 						{
 							dsr.ReadLBA_2048(slba + bootSector + i, buf2048, 0);
 							buffer.AddRange(buf2048);
@@ -75,15 +75,15 @@ namespace BizHawk.Client.EmuHawk
 						int GetFileSector(string filename, out int filesize)
 						{
 							dsr.ReadLBA_2048(16, buf2048, 0);
-							var sector = (buf2048[160] << 16) | (buf2048[159] << 8) | buf2048[158];
+							int sector = (buf2048[160] << 16) | (buf2048[159] << 8) | buf2048[158];
 							dsr.ReadLBA_2048(sector, buf2048, 0);
-							var index = 0;
+							int index = 0;
 							while (index + 33 + filename.Length < 2048)
 							{
-								var term = buf2048[index + 33 + filename.Length];
-								if (term == ';' || term == '\0')
+								byte term = buf2048[index + 33 + filename.Length];
+								if (term is (byte)';' or (byte)'\0')
 								{
-									var fn = Encoding.ASCII.GetString(buf2048, index + 33, filename.Length);
+									string fn = Encoding.ASCII.GetString(buf2048, index + 33, filename.Length);
 									if (filename.Equals(fn, StringComparison.OrdinalIgnoreCase))
 									{
 										filesize = (buf2048[index + 13] << 24) | (buf2048[index + 12] << 16) | (buf2048[index + 11] << 8) | buf2048[index + 10];
@@ -97,10 +97,10 @@ namespace BizHawk.Client.EmuHawk
 							return -1;
 						}
 
-						var exePath = "PSX.EXE";
+						string exePath = "PSX.EXE";
 
 						// find SYSTEM.CNF sector
-						var sector = GetFileSector("SYSTEM.CNF", out _);
+						int sector = GetFileSector("SYSTEM.CNF", out _);
 						if (sector > 0)
 						{
 							// read SYSTEM.CNF sector
@@ -108,7 +108,7 @@ namespace BizHawk.Client.EmuHawk
 							exePath = Encoding.ASCII.GetString(buf2048);
 
 							// "BOOT = cdrom:" precedes the path
-							var index = exePath.IndexOf("BOOT = cdrom:", StringComparison.Ordinal);
+							int index = exePath.IndexOf("BOOT = cdrom:", StringComparison.Ordinal);
 							if (index < -1) break;
 							exePath = exePath.Remove(0, index + 13);
 
@@ -117,7 +117,7 @@ namespace BizHawk.Client.EmuHawk
 							while (index < exePath.Length && exePath[index] is '\\') index++;
 
 							// end of the path has ;
-							var end = exePath.IndexOf(';');
+							int end = exePath.IndexOf(';');
 							if (end < 0) break;
 							exePath = exePath[index..end];
 						}
@@ -126,14 +126,14 @@ namespace BizHawk.Client.EmuHawk
 
 						// get the filename
 						// valid too if -1, as that means we already have the filename
-						var start = exePath.LastIndexOf('\\');
+						int start = exePath.LastIndexOf('\\');
 						if (start > 0)
 						{
 							exePath = exePath.Remove(0, start + 1);
 						}
 
 						// get sector for exe
-						sector = GetFileSector(exePath, out var exeSize);
+						sector = GetFileSector(exePath, out int exeSize);
 						if (sector < 0) break;
 
 						dsr.ReadLBA_2048(sector++, buf2048, 0);
@@ -168,21 +168,21 @@ namespace BizHawk.Client.EmuHawk
 						{
 							const string _jaguarHeader = "ATARI APPROVED DATA HEADER ATRI";
 							const string _jaguarBSHeader = "TARA IPARPVODED TA AEHDAREA RT";
-							var buffer = new List<byte>();
-							var buf2352 = new byte[2352];
+							List<byte> buffer = new List<byte>();
+							byte[] buf2352 = new byte[2352];
 
 							// find the boot track header
 							// see https://github.com/TASEmulators/BizHawk/blob/f29113287e88c6a644dbff30f92a9833307aad20/waterbox/virtualjaguar/src/cdhle.cpp#L109-L145
-							var startLba = bootTrack.LBA;
-							var numLbas = bootTrack.NextTrack.LBA - bootTrack.LBA;
+							int startLba = bootTrack.LBA;
+							int numLbas = bootTrack.NextTrack.LBA - bootTrack.LBA;
 							int bootLen = 0, bootLba = 0, bootOff = 0;
 							bool byteswapped = false, foundHeader = false;
-							var bootLenOffset = (commonHomebrewHash ? 0x40 : 0) + 32 + 4;
-							for (var i = 0; i < numLbas; i++)
+							int bootLenOffset = (commonHomebrewHash ? 0x40 : 0) + 32 + 4;
+							for (int i = 0; i < numLbas; i++)
 							{
 								dsr.ReadLBA_2352(startLba + i, buf2352, 0);
 
-								for (var j = 0; j < 2352 - bootLenOffset - 4; j++)
+								for (int j = 0; j < 2352 - bootLenOffset - 4; j++)
 								{
 									if (buf2352[j] == _jaguarHeader[0])
 									{
@@ -249,7 +249,7 @@ namespace BizHawk.Client.EmuHawk
 							return MD5Checksum.ComputeDigestHex(buffer.ToArray());
 						}
 
-						var jaguarHash = HashJaguar(disc.Sessions[2].Tracks[1], dsr, false);
+						string jaguarHash = HashJaguar(disc.Sessions[2].Tracks[1], dsr, false);
 						switch (jaguarHash)
 						{
 							case null:
@@ -272,46 +272,46 @@ namespace BizHawk.Client.EmuHawk
 					return 0;
 			}
 
-			var hash = MD5Checksum.ComputeDigestHex(buffer.ToArray());
+			string hash = MD5Checksum.ComputeDigestHex(buffer.ToArray());
 			return IdentifyHash(hash);
 		}
 
 		private int HashArcade(string path)
 		{
 			// Arcade wants to just hash the filename (with no extension)
-			var name = Encoding.UTF8.GetBytes(Path.GetFileNameWithoutExtension(path));
-			var hash = MD5Checksum.ComputeDigestHex(name);
+			byte[] name = Encoding.UTF8.GetBytes(Path.GetFileNameWithoutExtension(path));
+			string hash = MD5Checksum.ComputeDigestHex(name);
 			return IdentifyHash(hash);
 		}
 
 		private int Hash3DS(string path)
 		{
 			// 3DS is too big to hash as a byte array...
-			var hash = new byte[33];
+			byte[] hash = new byte[33];
 			return RCheevos._lib.rc_hash_generate_from_file(hash, ConsoleID.Nintendo3DS, path)
 				? IdentifyHash(Encoding.ASCII.GetString(hash, 0, 32)) : 0;
 		}
 
 		protected IReadOnlyList<int> GetRAGameIds(IOpenAdvanced ioa, ConsoleID consoleID)
 		{
-			var ret = new List<int>();
+			List<int> ret = new List<int>();
 			switch (ioa.TypeName)
 			{
 				case OpenAdvancedTypes.OpenRom:
 					{
-						var ext = Path.GetExtension(Path.GetExtension(ioa.SimplePath.Replace("|", "")).ToLowerInvariant());
+						string ext = Path.GetExtension(Path.GetExtension(ioa.SimplePath.Replace("|", "")).ToLowerInvariant());
 
 						if (ext == ".m3u")
 						{
-							using var file = new HawkFile(ioa.SimplePath);
-							using var sr = new StreamReader(file.GetStream());
-							var m3u = M3U_File.Read(sr);
+							using HawkFile file = new HawkFile(ioa.SimplePath);
+							using StreamReader sr = new StreamReader(file.GetStream());
+							M3U_File m3u = M3U_File.Read(sr);
 							m3u.Rebase(Path.GetDirectoryName(ioa.SimplePath));
 							ret.AddRange(m3u.Entries.Select(entry => HashDisc(entry.Path, consoleID)));
 						}
 						else if (ext == ".xml")
 						{
-							var xml = XmlGame.Create(new(ioa.SimplePath));
+							XmlGame xml = XmlGame.Create(new(ioa.SimplePath));
 							foreach (var kvp in xml.Assets)
 							{
 								if (consoleID is ConsoleID.Arcade)
@@ -351,8 +351,8 @@ namespace BizHawk.Client.EmuHawk
 							}
 							else
 							{
-								using var file = new HawkFile(ioa.SimplePath);
-								var rom = file.ReadAllBytes();
+								using HawkFile file = new HawkFile(ioa.SimplePath);
+								byte[] rom = file.ReadAllBytes();
 								ret.Add(IdentifyRom(rom));
 							}
 						}
@@ -369,8 +369,8 @@ namespace BizHawk.Client.EmuHawk
 				case OpenAdvancedTypes.Libretro:
 					{
 						// can't know what's here exactly, so we'll just hash the entire thing
-						using var file = new HawkFile(ioa.SimplePath);
-						var rom = file.ReadAllBytes();
+						using HawkFile file = new HawkFile(ioa.SimplePath);
+						byte[] rom = file.ReadAllBytes();
 						ret.Add(IdentifyRom(rom));
 						break;
 					}

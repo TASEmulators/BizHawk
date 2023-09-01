@@ -26,10 +26,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			pinGame = true;
 		}
 
-		protected override void SyncStateInternal(Serializer ser)
-		{
-			ser.Sync("CapacitorCycles", ref _capacitorCycles);
-		}
+		protected override void SyncStateInternal(Serializer ser) => ser.Sync("CapacitorCycles", ref _capacitorCycles);
 
 		public override void ExecutePhase()
 		{
@@ -46,20 +43,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			base.HardReset();
 		}
 
-		public override int Peek8000(int addr)
-		{
-			return _rom[addr & 0x1FFF];
-		}
+		public override int Peek8000(int addr) => _rom[addr & 0x1FFF];
 
-		public override int PeekDE00(int addr)
-		{
-			return 0x00;
-		}
+		public override int PeekDE00(int addr) => 0x00;
 
-		public override int PeekDF00(int addr)
-		{
-			return _rom[(addr & 0xFF) | 0x1F00];
-		}
+		public override int PeekDF00(int addr) => _rom[(addr & 0xFF) | 0x1F00];
 
 		public override int Read8000(int addr)
 		{
@@ -73,9 +61,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			return 0x00;
 		}
 
-		public override int ReadDF00(int addr)
-		{
-			return _rom[(addr & 0xFF) | 0x1F00];
-		}
+		public override int ReadDF00(int addr) => _rom[(addr & 0xFF) | 0x1F00];
 	}
 }

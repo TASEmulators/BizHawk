@@ -73,10 +73,7 @@ namespace BizHawk.Client.EmuHawk
 			Text = $"{_emulator.ControllerDefinition.Name} Configuration";
 		}
 
-		private void ControllerConfig_FormClosed(object sender, FormClosedEventArgs e)
-		{
-			Input.Instance.ClearEvents();
-		}
+		private void ControllerConfig_FormClosed(object sender, FormClosedEventArgs e) => Input.Instance.ClearEvents();
 
 		private delegate Control PanelCreator<TBindValue>(Dictionary<string, TBindValue> settings, List<string> buttons, Size size);
 
@@ -87,15 +84,9 @@ namespace BizHawk.Client.EmuHawk
 			return cp;
 		}
 
-		private static Control CreateAnalogPanel(Dictionary<string, AnalogBind> settings, List<string> buttons, Size size)
-		{
-			return new AnalogBindPanel(settings, buttons) { Dock = DockStyle.Fill, AutoScroll = true };
-		}
+		private static Control CreateAnalogPanel(Dictionary<string, AnalogBind> settings, List<string> buttons, Size size) => new AnalogBindPanel(settings, buttons) { Dock = DockStyle.Fill, AutoScroll = true };
 
-		private static Control CreateFeedbacksPanel(Dictionary<string, FeedbackBind> settings, List<string> buttons, Size size)
-		{
-			return new FeedbacksBindPanel(settings, buttons) { Dock = DockStyle.Fill, AutoScroll = true };
-		}
+		private static Control CreateFeedbacksPanel(Dictionary<string, FeedbackBind> settings, List<string> buttons, Size size) => new FeedbacksBindPanel(settings, buttons) { Dock = DockStyle.Fill, AutoScroll = true };
 
 		private static readonly Regex ButtonMatchesPlayer = new("^P(\\d+)\\s");
 
@@ -112,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 			var settings = settingsBlock.GetValueOrPutNew(controllerName);
 
 			// check to make sure that the settings object has all of the appropriate bool buttons
-			foreach (var button in controllerButtons)
+			foreach (string button in controllerButtons)
 			{
 				if (!settings.ContainsKey(button))
 				{
@@ -127,15 +118,15 @@ namespace BizHawk.Client.EmuHawk
 
 			// split the list of all settings into buckets by player number, or supplied category
 			// the order that buttons appeared in determines the order of the tabs
-			var orderedBuckets = new List<KeyValuePair<string, List<string>>>();
-			var buckets = new Dictionary<string, List<string>>();
+			List<KeyValuePair<string, List<string>>> orderedBuckets = new List<KeyValuePair<string, List<string>>>();
+			Dictionary<string, List<string>> buckets = new Dictionary<string, List<string>>();
 
 			// by iterating through only the controller's active buttons, we're silently
 			// discarding anything that's not on the controller right now.  due to the way
 			// saving works, those entries will still be preserved in the config file, tho
-			foreach (var button in controllerButtons)
+			foreach (string button in controllerButtons)
 			{
-				if (!categoryLabels.TryGetValue(button, out var categoryLabel))
+				if (!categoryLabels.TryGetValue(button, out string categoryLabel))
 				{
 					var m = ButtonMatchesPlayer.Match(button);
 					categoryLabel = m.Success
@@ -145,7 +136,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (!buckets.ContainsKey(categoryLabel))
 				{
-					var l = new List<string>();
+					List<string> l = new List<string>();
 					buckets.Add(categoryLabel, l);
 					orderedBuckets.Add(new KeyValuePair<string, List<string>>(categoryLabel, l));
 				}
@@ -161,7 +152,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				// create multiple tabs
-				var tt = new TabControl { Dock = DockStyle.Fill };
+				TabControl tt = new TabControl { Dock = DockStyle.Fill };
 				dest.Controls.Add(tt);
 				int pageIdx = 0;
 				foreach (var (tabName, buttons) in orderedBuckets)
@@ -255,15 +246,9 @@ namespace BizHawk.Client.EmuHawk
 			if (FeedbacksTab.Controls.Count == 0) tabControl1.TabPages.Remove(FeedbacksTab);
 		}
 
-		private void LoadPanels(DefaultControls cd)
-		{
-			LoadPanels(cd.AllTrollers, cd.AllTrollersAutoFire, cd.AllTrollersAnalog, cd.AllTrollersFeedbacks);
-		}
+		private void LoadPanels(DefaultControls cd) => LoadPanels(cd.AllTrollers, cd.AllTrollersAutoFire, cd.AllTrollersAnalog, cd.AllTrollersFeedbacks);
 
-		private void LoadPanels(Config c)
-		{
-			LoadPanels(c.AllTrollers, c.AllTrollersAutoFire, c.AllTrollersAnalog, c.AllTrollersFeedbacks);
-		}
+		private void LoadPanels(Config c) => LoadPanels(c.AllTrollers, c.AllTrollersAutoFire, c.AllTrollersAnalog, c.AllTrollersFeedbacks);
 
 		private void SetControllerPicture(string controlName)
 		{
@@ -283,7 +268,7 @@ namespace BizHawk.Client.EmuHawk
 			// Uberhack
 			if (controlName == "Commodore 64 Controller")
 			{
-				var pictureBox2 = new PictureBox
+				PictureBox pictureBox2 = new PictureBox
 					{
 						Image = Properties.Resources.C64Keyboard.Value,
 						Size = Properties.Resources.C64Keyboard.Value.Size
@@ -373,10 +358,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void CheckBoxAutoTab_CheckedChanged(object sender, EventArgs e)
-		{
-			SetAutoTab(this, checkBoxAutoTab.Checked);
-		}
+		private void CheckBoxAutoTab_CheckedChanged(object sender, EventArgs e) => SetAutoTab(this, checkBoxAutoTab.Checked);
 
 		private void ButtonOk_Click(object sender, EventArgs e)
 		{
@@ -391,10 +373,7 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-		private void ButtonCancel_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
+		private void ButtonCancel_Click(object sender, EventArgs e) => Close();
 
 		private static TabControl GetTabControl(IEnumerable controls)
 		{
@@ -407,7 +386,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			tabControl1.SuspendLayout();
 
-			var wasTabbedMain = tabControl1.SelectedTab.Name;
+			string wasTabbedMain = tabControl1.SelectedTab.Name;
 			var tb1 = GetTabControl(NormalControlsTab.Controls);
 			var tb2 = GetTabControl(AutofireControlsTab.Controls);
 			var tb3 = GetTabControl(AnalogControlsTab.Controls);
@@ -466,7 +445,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// this doesn't work anymore, as it stomps out any defaults for buttons that aren't currently active on the console
 			// there are various ways to fix it, each with its own semantic problems
-			var result = this.ModalMessageBox2("OK to overwrite defaults for current control scheme?", "Save Defaults");
+			bool result = this.ModalMessageBox2("OK to overwrite defaults for current control scheme?", "Save Defaults");
 			if (result)
 			{
 				var cd = ConfigService.Load<DefaultControls>(Config.ControlDefaultPath);
@@ -495,7 +474,7 @@ namespace BizHawk.Client.EmuHawk
 					break;
 			}
 
-			var children = c.Controls().ToList();
+			List<Control> children = c.Controls().ToList();
 			if (children.Count != 0)
 			{
 				foreach (var child in children) ClearWidgetAndChildren(child);

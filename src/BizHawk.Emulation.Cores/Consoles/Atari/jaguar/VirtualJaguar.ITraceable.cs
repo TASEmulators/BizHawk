@@ -13,20 +13,20 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 
 		private unsafe void MakeCPUTrace(IntPtr r)
 		{
-			var regs = (uint*)r;
-			var pc = regs![16] & 0xFFFFFF;
-			var disasm = _disassembler.DisassembleM68K(this.AsMemoryDomains().SystemBus, pc, out _);
-			var regInfo = new StringBuilder(216);
-			for (var i = 0; i < 8; i++)
+			uint* regs = (uint*)r;
+			uint pc = regs![16] & 0xFFFFFF;
+			string disasm = _disassembler.DisassembleM68K(this.AsMemoryDomains().SystemBus, pc, out _);
+			StringBuilder regInfo = new StringBuilder(216);
+			for (int i = 0; i < 8; i++)
 			{
 				regInfo.Append($"D{i}:{regs[i]:X8} ");
 			}
-			for (var i = 0; i < 8; i++)
+			for (int i = 0; i < 8; i++)
 			{
 				regInfo.Append($"A{i}:{regs[i + 8]:X8} ");
 			}
 			regInfo.Append($"SR:{regs[17]:X8} ");
-			var sr = regs[17];
+			uint sr = regs[17];
 			regInfo.Append(string.Concat(
 				(sr & 16) > 0 ? "X" : "x",
 				(sr & 8) > 0 ? "N" : "n",
@@ -40,11 +40,11 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 
 		private unsafe void MakeGPUTrace(uint pc, IntPtr r)
 		{
-			var regs = (uint*)r;
+			uint* regs = (uint*)r;
 			pc &= 0xFFFFFF;
-			var disasm = _disassembler.DisassembleRISC(true, this.AsMemoryDomains().SystemBus, pc, out _);
-			var regInfo = new StringBuilder(411);
-			for (var i = 0; i < 32; i++)
+			string disasm = _disassembler.DisassembleRISC(true, this.AsMemoryDomains().SystemBus, pc, out _);
+			StringBuilder regInfo = new StringBuilder(411);
+			for (int i = 0; i < 32; i++)
 			{
 				regInfo.Append($"r{i}:{regs![i]:X8} ");
 			}
@@ -55,11 +55,11 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 
 		private unsafe void MakeDSPTrace(uint pc, IntPtr r)
 		{
-			var regs = (uint*)r;
+			uint* regs = (uint*)r;
 			pc &= 0xFFFFFF;
-			var disasm = _disassembler.DisassembleRISC(false, this.AsMemoryDomains().SystemBus, pc, out _);
-			var regInfo = new StringBuilder(411);
-			for (var i = 0; i < 32; i++)
+			string disasm = _disassembler.DisassembleRISC(false, this.AsMemoryDomains().SystemBus, pc, out _);
+			StringBuilder regInfo = new StringBuilder(411);
+			for (int i = 0; i < 32; i++)
 			{
 				regInfo.Append($"r{i}:{regs![i]:X8} ");
 			}

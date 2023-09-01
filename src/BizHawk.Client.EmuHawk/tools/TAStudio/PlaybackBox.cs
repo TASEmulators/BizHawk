@@ -79,20 +79,11 @@ namespace BizHawk.Client.EmuHawk
 			_loading = false;
 		}
 
-		private void PreviousMarkerButton_Click(object sender, EventArgs e)
-		{
-			Tastudio.GoToPreviousMarker();
-		}
+		private void PreviousMarkerButton_Click(object sender, EventArgs e) => Tastudio.GoToPreviousMarker();
 
-		private void PauseButton_Click(object sender, EventArgs e)
-		{
-			Tastudio.TogglePause();
-		}
+		private void PauseButton_Click(object sender, EventArgs e) => Tastudio.TogglePause();
 
-		private void NextMarkerButton_Click(object sender, EventArgs e)
-		{
-			Tastudio.GoToNextMarker();
-		}
+		private void NextMarkerButton_Click(object sender, EventArgs e) => Tastudio.GoToNextMarker();
 
 		private void TurboSeekCheckbox_CheckedChanged(object sender, EventArgs e)
 		{
@@ -130,34 +121,16 @@ namespace BizHawk.Client.EmuHawk
 			Tastudio.WasRecording = RecordingMode; // hard reset at manual click
 		}
 
-		private void RewindButton_MouseDown(object sender, MouseEventArgs e)
-		{
-			Tastudio.MainForm.PressRewind = true;
-		}
+		private void RewindButton_MouseDown(object sender, MouseEventArgs e) => Tastudio.MainForm.PressRewind = true;
 
-		private void RewindButton_MouseUp(object sender, MouseEventArgs e)
-		{
-			Tastudio.MainForm.PressRewind = false;
-		}
+		private void RewindButton_MouseUp(object sender, MouseEventArgs e) => Tastudio.MainForm.PressRewind = false;
 
-		private void RewindButton_MouseLeave(object sender, EventArgs e)
-		{
-			Tastudio.MainForm.PressRewind = false;
-		}
+		private void RewindButton_MouseLeave(object sender, EventArgs e) => Tastudio.MainForm.PressRewind = false;
 
-		private void FrameAdvanceButton_MouseDown(object sender, MouseEventArgs e)
-		{
-			Tastudio.MainForm.HoldFrameAdvance = true;
-		}
+		private void FrameAdvanceButton_MouseDown(object sender, MouseEventArgs e) => Tastudio.MainForm.HoldFrameAdvance = true;
 
-		private void FrameAdvanceButton_MouseLeave(object sender, EventArgs e)
-		{
-			Tastudio.MainForm.HoldFrameAdvance = false;
-		}
+		private void FrameAdvanceButton_MouseLeave(object sender, EventArgs e) => Tastudio.MainForm.HoldFrameAdvance = false;
 
-		private void FrameAdvanceButton_MouseUp(object sender, MouseEventArgs e)
-		{
-			Tastudio.MainForm.HoldFrameAdvance = false;
-		}
+		private void FrameAdvanceButton_MouseUp(object sender, MouseEventArgs e) => Tastudio.MainForm.HoldFrameAdvance = false;
 	}
 }

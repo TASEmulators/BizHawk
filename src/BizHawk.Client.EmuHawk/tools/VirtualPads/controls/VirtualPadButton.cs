@@ -45,8 +45,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Set(IController controller)
 		{
-			var newVal = controller.IsPressed(Name);
-			var changed = newVal != Checked;
+			bool newVal = controller.IsPressed(Name);
+			bool changed = newVal != Checked;
 
 			Checked = newVal;
 			if (changed)

@@ -10,10 +10,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 {
 	partial class WonderSwan: ITextStatable
 	{
-		private void InitIStatable()
-		{
-			savebuff = new byte[BizSwan.bizswan_binstatesize(Core)];
-		}
+		private void InitIStatable() => savebuff = new byte[BizSwan.bizswan_binstatesize(Core)];
 
 		private readonly JsonSerializer ser = new() { Formatting = Formatting.Indented };
 
@@ -40,7 +37,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		public void SaveStateText(TextWriter writer)
 		{
-			var s = new TextState<TextStateData>();
+			TextState<TextStateData> s = new TextState<TextStateData>();
 			s.Prepare();
 			var ff = s.GetFunctionPointersSave();
 			BizSwan.bizswan_txtstatesave(Core, ref ff);
@@ -50,7 +47,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		public void LoadStateText(TextReader reader)
 		{
-			var s = (TextState<TextStateData>)ser.Deserialize(reader, typeof(TextState<TextStateData>));
+			TextState<TextStateData> s = (TextState<TextStateData>)ser.Deserialize(reader, typeof(TextState<TextStateData>));
 			s.Prepare();
 			var ff = s.GetFunctionPointersLoad();
 			BizSwan.bizswan_txtstateload(Core, ref ff);
@@ -68,7 +65,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			writer.Write(savebuff.Length);
 			writer.Write(savebuff);
 
-			var d = new TextStateData();
+			TextStateData d = new TextStateData();
 			SaveTextStateData(d);
 			BinaryQuickSerializer.Write(d, writer);
 		}

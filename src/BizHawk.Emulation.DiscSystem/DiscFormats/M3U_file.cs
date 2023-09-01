@@ -9,18 +9,18 @@ namespace BizHawk.Emulation.DiscSystem
 	{
 		public static M3U_File Read(StreamReader sr)
 		{
-			var ret = new M3U_File();
+			M3U_File ret = new M3U_File();
 			return !ret.Parse(sr) ? null : ret;
 		}
 
 		private bool Parse(StreamReader sr)
 		{
-			var ext = false;
-			var runtime = -1;
+			bool ext = false;
+			int runtime = -1;
 			string title = null;
 			while (true)
 			{
-				var line = sr.ReadLine();
+				string line = sr.ReadLine();
 				if (line == null)
 					break;
 				if (line.StartsWith('#'))
@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.DiscSystem
 						if (!ext) continue;
 
 						line = line.Substring(8);
-						var cidx = line.IndexOf(',');
+						int cidx = line.IndexOf(',');
 
 						//don't know what to do with this, but its a comment, so ignore it
 						if (cidx == -1)
@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.DiscSystem
 					continue;
 				}
 
-				var e = new Entry
+				Entry e = new Entry
 				{
 					Path = line,
 					Runtime = runtime,

@@ -695,15 +695,9 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			info.Length = 2;
 		}
 
-		private void NOP()
-		{
-			PendingCycles -= 4;
-		}
+		private void NOP() => PendingCycles -= 4;
 
-		private void NOP_Disasm(DisassemblyInfo info)
-		{
-			info.Mnemonic = "nop";
-		}
+		private void NOP_Disasm(DisassemblyInfo info) => info.Mnemonic = "nop";
 
 		private void Scc() // Set on condition
 		{

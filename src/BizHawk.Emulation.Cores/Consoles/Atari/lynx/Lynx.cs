@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 
 		static Lynx()
 		{
-			var resolver = new DynamicLibraryImportResolver(
+			DynamicLibraryImportResolver resolver = new DynamicLibraryImportResolver(
 				OSTailoredCode.IsUnixHost ? "libbizlynx.dll.so" : "bizlynx.dll", hasLimitedLifetime: false);
 			LibLynx = BizInvoker.GetInvoker<LibLynx>(resolver, CallingConventionAdapters.Native);
 		}
@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 
-			var bios = comm.CoreFileProvider.GetFirmwareOrThrow(new("Lynx", "Boot"), "Boot rom is required");
+			byte[] bios = comm.CoreFileProvider.GetFirmwareOrThrow(new("Lynx", "Boot"), "Boot rom is required");
 			if (bios.Length != 512)
 			{
 				throw new MissingFirmwareException("Lynx Bootrom must be 512 bytes!");
@@ -38,8 +38,8 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			byte[] realfile = null;
 
 			{
-				using var ms = new MemoryStream(file, false);
-				using var br = new BinaryReader(ms);
+				using MemoryStream ms = new MemoryStream(file, false);
+				using BinaryReader br = new BinaryReader(ms);
 				string header = Encoding.ASCII.GetString(br.ReadBytes(4));
 				int p0 = br.ReadUInt16();
 				int p1 = br.ReadUInt16();

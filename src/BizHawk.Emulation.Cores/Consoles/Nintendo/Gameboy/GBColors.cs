@@ -70,10 +70,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				return ret;
 			}
 
-			public readonly int ToARGB32()
-			{
-				return b | g << 8 | r << 16 | 255 << 24;
-			}
+			public readonly int ToARGB32() => b | g << 8 | r << 16 | 255 << 24;
 		}
 
 		// sameboy's "emulate hardware" color conversion
@@ -82,7 +79,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		// todo: maybe add in its "harsh reality" too? (""accuracy"")
 		public static Triple SameBoyColor(Triple c, bool sgb, bool agb)
 		{
-			Triple ret = c.Bit5to8SameBoy(sgb, agb);
+			var ret = c.Bit5to8SameBoy(sgb, agb);
 			if (!sgb)
 			{
 				if (agb)
@@ -124,16 +121,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		}
 
 		// vba's default mode
-		public static Triple VividVBAColor(Triple c, bool sgb, bool agb)
-		{
-			return c.Bit5to8Bad();
-		}
+		public static Triple VividVBAColor(Triple c, bool sgb, bool agb) => c.Bit5to8Bad();
 
 		// "gameboy colors" mode on older versions of VBA
-		private static int gbGetValue(int min, int max, int v)
-		{
-			return (int)(min + (max - min) * (2.0 * (v / 31.0) - (v / 31.0) * (v / 31.0)));
-		}
+		private static int gbGetValue(int min, int max, int v) => (int)(min + (max - min) * (2.0 * (v / 31.0) - (v / 31.0) * (v / 31.0)));
 
 		public static Triple OldVBAColor(Triple c, bool sgb, bool agb)
 		{
@@ -162,17 +153,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		}
 
 		// as vivid as possible
-		public static Triple UltraVividColor(Triple c, bool sgb, bool agb)
-		{
-			return c.Bit5to8Good();
-		}
+		public static Triple UltraVividColor(Triple c, bool sgb, bool agb) => c.Bit5to8Good();
 
 		// possibly represents a GBA screen, more or less
 		// but probably not (black point?)
-		private static int GBAGamma(int input)
-		{
-			return (int)Math.Round(Math.Pow(input / 31.0, 3.5 / 2.2) * 255.0);
-		}
+		private static int GBAGamma(int input) => (int)Math.Round(Math.Pow(input / 31.0, 3.5 / 2.2) * 255.0);
 
 		public static Triple GBAColor(Triple c, bool sgb, bool agb)
 		{

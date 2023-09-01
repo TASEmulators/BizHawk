@@ -32,7 +32,7 @@ namespace BizHawk.Client.DiscoHawk
 			// otherwise, some people will have crashes at boot-up due to .net security disliking MOTW.
 			// some people are getting MOTW through a combination of browser used to download BizHawk, and program used to dearchive it
 			static void RemoveMOTW(string path) => DeleteFileW($"{path}:Zone.Identifier");
-			var todo = new Queue<DirectoryInfo>(new[] { new DirectoryInfo(dllDir) });
+			Queue<DirectoryInfo> todo = new Queue<DirectoryInfo>(new[] { new DirectoryInfo(dllDir) });
 			while (todo.Count != 0)
 			{
 				var di = todo.Dequeue();
@@ -43,10 +43,7 @@ namespace BizHawk.Client.DiscoHawk
 		}
 
 		[STAThread]
-		private static void Main(string[] args)
-		{
-			SubMain(args);
-		}
+		private static void Main(string[] args) => SubMain(args);
 
 		// NoInlining should keep this code from getting jammed into Main() which would create dependencies on types which haven't been setup by the resolver yet... or something like that
 		[DllImport("user32.dll", SetLastError = true)]
@@ -60,8 +57,8 @@ namespace BizHawk.Client.DiscoHawk
 				// WELL, OBVIOUSLY IT DOES SOMETIMES. I DON'T REMEMBER THE DETAILS OR WHY WE HAD TO DO THIS SHIT
 				// BUT THE FUNCTION WE NEED DOESN'T EXIST UNTIL WINDOWS 7, CONVENIENTLY
 				// SO CHECK FOR IT
-				IntPtr lib = OSTC.LinkedLibManager.LoadOrThrow("user32.dll");
-				IntPtr proc = OSTC.LinkedLibManager.GetProcAddrOrZero(lib, "ChangeWindowMessageFilterEx");
+				var lib = OSTC.LinkedLibManager.LoadOrThrow("user32.dll");
+				var proc = OSTC.LinkedLibManager.GetProcAddrOrZero(lib, "ChangeWindowMessageFilterEx");
 				if (proc != IntPtr.Zero)
 				{
 					ChangeWindowMessageFilter(WM_DROPFILES, ChangeWindowMessageFilterFlags.Add);
@@ -73,7 +70,7 @@ namespace BizHawk.Client.DiscoHawk
 
 			if (args.Length == 0)
 			{
-				using var dialog = new MainDiscoForm();
+				using MainDiscoForm dialog = new MainDiscoForm();
 				dialog.ShowDialog();
 			}
 			else
@@ -82,17 +79,14 @@ namespace BizHawk.Client.DiscoHawk
 					args,
 					results =>
 					{
-						using var cr = new ComparisonResults { textBox1 = { Text = results } };
+						using ComparisonResults cr = new ComparisonResults { textBox1 = { Text = results } };
 						cr.ShowDialog();
 					});
 			}
 		}
 
 
-		public static string GetExeDirectoryAbsolute()
-		{
-			return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-		}
+		public static string GetExeDirectoryAbsolute() => Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
 		private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
 		{

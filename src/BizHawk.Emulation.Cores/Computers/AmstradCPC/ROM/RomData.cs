@@ -9,12 +9,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// ROM Contents
 		/// </summary>
-		public byte[] RomBytes
-		{
-			get => _romBytes;
-			set => _romBytes = value;
-		}
-		private byte[] _romBytes;
+		public byte[] RomBytes { get; set; }
 
 		public enum ROMChipType
 		{

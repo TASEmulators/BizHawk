@@ -13,24 +13,24 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 		public static CartridgeDevice Load(byte[] crtFile)
 		{
-			using var mem = new MemoryStream(crtFile);
-			var reader = new BinaryReader(mem);
+			using MemoryStream mem = new MemoryStream(crtFile);
+			BinaryReader reader = new BinaryReader(mem);
 
 			if (new string(reader.ReadChars(16)) != "C64 CARTRIDGE   ")
 			{
 				return null;
 			}
 
-			var chipAddress = new List<int>();
-			var chipBank = new List<int>();
-			var chipData = new List<int[]>();
-			var chipType = new List<int>();
+			List<int> chipAddress = new List<int>();
+			List<int> chipBank = new List<int>();
+			List<int[]> chipData = new List<int[]>();
+			List<int> chipType = new List<int>();
 
-			var headerLength = ReadCRTInt(reader);
-			var version = ReadCRTShort(reader);
-			var mapper = ReadCRTShort(reader);
-			var exrom = reader.ReadByte() != 0;
-			var game = reader.ReadByte() != 0;
+			int headerLength = ReadCRTInt(reader);
+			int version = ReadCRTShort(reader);
+			int mapper = ReadCRTShort(reader);
+			bool exrom = reader.ReadByte() != 0;
+			bool game = reader.ReadByte() != 0;
 
 			// reserved
 			reader.ReadBytes(6);
@@ -52,11 +52,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 					break;
 				}
 
-				var chipLength = ReadCRTInt(reader);
+				int chipLength = ReadCRTInt(reader);
 				chipType.Add(ReadCRTShort(reader));
 				chipBank.Add(ReadCRTShort(reader));
 				chipAddress.Add(ReadCRTShort(reader));
-				var chipDataLength = ReadCRTShort(reader);
+				int chipDataLength = ReadCRTShort(reader);
 				chipData.Add(reader.ReadBytes(chipDataLength).Select(x => (int)x).ToArray());
 				chipLength -= chipDataLength + 0x10;
 				if (chipLength > 0)
@@ -150,25 +150,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 		public bool NMI => pinNMI;
 
-		public virtual int Peek8000(int addr)
-		{
-			return ReadOpenBus();
-		}
+		public virtual int Peek8000(int addr) => ReadOpenBus();
 
-		public virtual int PeekA000(int addr)
-		{
-			return ReadOpenBus();
-		}
+		public virtual int PeekA000(int addr) => ReadOpenBus();
 
-		public virtual int PeekDE00(int addr)
-		{
-			return ReadOpenBus();
-		}
+		public virtual int PeekDE00(int addr) => ReadOpenBus();
 
-		public virtual int PeekDF00(int addr)
-		{
-			return ReadOpenBus();
-		}
+		public virtual int PeekDF00(int addr) => ReadOpenBus();
 
 		public virtual void Poke8000(int addr, int val)
 		{
@@ -186,25 +174,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		{
 		}
 
-		public virtual int Read8000(int addr)
-		{
-			return ReadOpenBus();
-		}
+		public virtual int Read8000(int addr) => ReadOpenBus();
 
-		public virtual int ReadA000(int addr)
-		{
-			return ReadOpenBus();
-		}
+		public virtual int ReadA000(int addr) => ReadOpenBus();
 
-		public virtual int ReadDE00(int addr)
-		{
-			return ReadOpenBus();
-		}
+		public virtual int ReadDE00(int addr) => ReadOpenBus();
 
-		public virtual int ReadDF00(int addr)
-		{
-			return ReadOpenBus();
-		}
+		public virtual int ReadDF00(int addr) => ReadOpenBus();
 
 		public bool Reset => pinReset;
 

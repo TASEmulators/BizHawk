@@ -36,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ColorPanel_Click(object sender, EventArgs e)
 		{
-			using var colorPicker = new ColorDialog
+			using ColorDialog colorPicker = new ColorDialog
 			{
 				FullOpen = true, Color = Color.FromArgb(_selectedColor)
 			};

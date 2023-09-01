@@ -80,9 +80,6 @@ namespace BizHawk.Bizware.BizwareGL
 		public bool Available { get; }
 		public string Errors { get; set; }
 
-		public void Dispose()
-		{
-			Owner.FreePipeline(this);
-		}
+		public void Dispose() => Owner.FreePipeline(this);
 	}
 }

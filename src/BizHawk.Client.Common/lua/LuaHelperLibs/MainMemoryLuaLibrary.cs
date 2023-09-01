@@ -38,10 +38,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local uimaiget = mainmemory.getcurrentmemorydomainsize( );")]
 		[LuaMethod("getcurrentmemorydomainsize", "Returns the number of bytes of the domain defined as main memory")]
-		public uint GetSize()
-		{
-			return (uint)Domain.Size;
-		}
+		public uint GetSize() => (uint)Domain.Size;
 
 		[LuaMethodExample("local uimairea = mainmemory.readbyte( 0x100 );")]
 		[LuaMethod("readbyte", "gets the value from the given address as an unsigned byte")]
@@ -70,8 +67,7 @@ namespace BizHawk.Client.Common
 
 		[LuaDeprecatedMethod]
 		[LuaMethod("writebyterange", "Writes the given values to the given addresses as unsigned bytes")]
-		public void WriteByteRange(LuaTable memoryblock)
-		{
+		public void WriteByteRange(LuaTable memoryblock) =>
 #if true
 			WriteBytesAsDict(memoryblock);
 #else
@@ -95,7 +91,7 @@ namespace BizHawk.Client.Common
 				Log($"Error: the domain {d.Name} is not writable");
 			}
 #endif
-		}
+
 
 		[LuaMethodExample("mainmemory.write_bytes_as_array(0x100, { 0xAB, 0x12, 0xCD, 0x34 });")]
 		[LuaMethod("write_bytes_as_array", "Writes sequential bytes starting at addr.")]

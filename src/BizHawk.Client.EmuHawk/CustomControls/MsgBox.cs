@@ -47,10 +47,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		/// </summary>
 		public DialogBoxResult DialogBoxResult { get; private set; }
 
-		public void SetMessageToAutoSize()
-		{
-			messageLbl.MaximumSize = new Size(MaximumSize.Width - _msgIcon.Width - UIHelper.ScaleX(25), MaximumSize.Height);
-		}
+		public void SetMessageToAutoSize() => messageLbl.MaximumSize = new Size(MaximumSize.Width - _msgIcon.Width - UIHelper.ScaleX(25), MaximumSize.Height);
 
 		/// <summary>
 		/// Create up to 3 buttons with given DialogResult values.

@@ -57,7 +57,7 @@ namespace BizHawk.Bizware.Input
 			{
 				if (_keyboard == null || _keyboard.Acquire().Failure || _keyboard.Poll().Failure) return Enumerable.Empty<KeyEvent>();
 
-				var eventList = new List<KeyEvent>();
+				List<KeyEvent> eventList = new List<KeyEvent>();
 				while (true)
 				{
 					try
@@ -78,7 +78,7 @@ namespace BizHawk.Bizware.Input
 		{
 			const uint MAPVK_VSC_TO_VK_EX = 0x03;
 			// DInputKey is a scancode as is
-			var virtualKey = MapVirtualKey((uint) key, MAPVK_VSC_TO_VK_EX);
+			uint virtualKey = MapVirtualKey((uint) key, MAPVK_VSC_TO_VK_EX);
 			return VKeyToDKeyMap.GetValueOrDefault(virtualKey, DInputKey.Unknown);
 		}
 

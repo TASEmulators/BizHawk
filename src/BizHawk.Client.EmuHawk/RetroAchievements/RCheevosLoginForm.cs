@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void btnLogin_Click(object sender, EventArgs e)
 		{
-			var res = _loginCallback(txtUsername.Text, txtPassword.Text);
+			bool res = _loginCallback(txtUsername.Text, txtPassword.Text);
 			if (res)
 			{
 				MessageBox.Show("Login successful");
@@ -31,10 +31,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-		{
-			Process.Start("https://retroachievements.org/createaccount.php");
-		}
+		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => Process.Start("https://retroachievements.org/createaccount.php");
 	}
 }
 

@@ -168,7 +168,7 @@ namespace BizHawk.Client.EmuHawk
 				return; // skip this frame
 			}
 
-			using var bmp = new Bitmap(source.BufferWidth, source.BufferHeight, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			using Bitmap bmp = new Bitmap(source.BufferWidth, source.BufferHeight, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 			var data = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 			System.Runtime.InteropServices.Marshal.Copy(source.GetVideoBuffer(), 0, data.Scan0, bmp.Width * bmp.Height);
 			bmp.UnlockBits(data);
@@ -200,10 +200,7 @@ namespace BizHawk.Client.EmuHawk
 			// ignored
 		}
 
-		public IDisposable AcquireVideoCodecToken(Config config)
-		{
-			return GifWriterForm.DoTokenForm(_dialogParent.AsWinFormsHandle(), config);
-		}
+		public IDisposable AcquireVideoCodecToken(Config config) => GifWriterForm.DoTokenForm(_dialogParent.AsWinFormsHandle(), config);
 
 		private void CalcDelay()
 		{
@@ -249,10 +246,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 
-		public string DesiredExtension()
-		{
-			return "gif";
-		}
+		public string DesiredExtension() => "gif";
 
 		public void Dispose()
 		{

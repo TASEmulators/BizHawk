@@ -86,10 +86,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			Regs[src] = ans;
 		}
 
-		public void TR_Func(ushort dest, ushort src)
-		{
-			Regs[dest] = Regs[src];
-		}
+		public void TR_Func(ushort dest, ushort src) => Regs[dest] = Regs[src];
 
 		public void LD_8_Func(ushort dest, ushort src)
 		{
@@ -133,7 +130,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 		{
 			Regs[dest] = Regs[src];
 
-			if (dest == X || dest == Y)
+			if (dest is X or Y)
 			{
 				FlagZ = Regs[dest] == 0;
 			}
@@ -158,10 +155,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 
 		// source is considered a 16 bit signed value, used for long relative branch
 		// no flags used
-		public void ADD16BR_Func(ushort dest, ushort src)
-		{
-			Regs[dest] = (ushort)(Regs[dest] + (short)Regs[src]);
-		}
+		public void ADD16BR_Func(ushort dest, ushort src) => Regs[dest] = (ushort)(Regs[dest] + (short)Regs[src]);
 
 		public void ADD8BR_Func(ushort dest, ushort src)
 		{
@@ -381,15 +375,9 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			FlagN = (Regs[src] & 0xFF) > 127;
 		}
 
-		public void INC16_Func(ushort src)
-		{
-			Regs[src] += 1;
-		}
+		public void INC16_Func(ushort src) => Regs[src] += 1;
 
-		public void DEC16_Func(ushort src)
-		{
-			Regs[src] -= 1;
-		}
+		public void DEC16_Func(ushort src) => Regs[src] -= 1;
 
 		public void ADC8_Func(ushort dest, ushort src)
 		{

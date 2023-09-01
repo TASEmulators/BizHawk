@@ -148,12 +148,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 
 			_mapper.Bit13 = addr.Bit(13);
-			var temp = _mapper.ReadMemory((ushort)(addr & 0x1FFF));
+			byte temp = _mapper.ReadMemory((ushort)(addr & 0x1FFF));
 			_tia.BusState = temp;
 
 			if (MemoryCallbacks.HasReads)
 			{
-				var flags = (uint)(MemoryCallbackFlags.AccessRead);
+				uint flags = (uint)(MemoryCallbackFlags.AccessRead);
 				MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
 			}
 
@@ -173,22 +173,19 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			if (MemoryCallbacks.HasWrites)
 			{
-				var flags = (uint)(MemoryCallbackFlags.AccessWrite);
+				uint flags = (uint)(MemoryCallbackFlags.AccessWrite);
 				MemoryCallbacks.CallMemoryCallbacks(addr, value, flags, "System Bus");
 			}
 		}
 
-		internal void PokeMemory(ushort addr, byte value)
-		{
-			_mapper.PokeMemory((ushort)(addr & 0x1FFF), value);
-		}
+		internal void PokeMemory(ushort addr, byte value) => _mapper.PokeMemory((ushort)(addr & 0x1FFF), value);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void ExecFetch(ushort addr)
 		{
 			if (MemoryCallbacks.HasExecutes)
 			{
-				var flags = (uint)(MemoryCallbackFlags.AccessExecute);
+				uint flags = (uint)(MemoryCallbackFlags.AccessExecute);
 				MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
 			}
 		}
@@ -225,17 +222,17 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			RomDetails = $"{_game.Name}\r\n{SHA1Checksum.ComputePrefixedHex(Rom)}\r\n{MD5Checksum.ComputePrefixedHex(Rom)}\r\nMapper Impl \"{_mapper.GetType()}\"";
 
 			// Some games (ex. 3D tic tac toe), turn off the screen for extended periods, so we need to allow for this here.
-			if (_game.GetOptions().TryGetValue("SP_FRAME", out var spFrameStr) && spFrameStr == "true")
+			if (_game.GetOptions().TryGetValue("SP_FRAME", out string spFrameStr) && spFrameStr == "true")
 			{
 				SP_FRAME = true;
 			}
 			// Some games wait for reset to be unpressed before turning the screen back on, hack unset it if needed
-			if (_game.GetOptions().TryGetValue("SP_RESET", out var spResetStr) && spResetStr == "true")
+			if (_game.GetOptions().TryGetValue("SP_RESET", out string spResetStr) && spResetStr == "true")
 			{
 				SP_RESET = true;
 			}
 			// Ditto select (ex. Karate)
-			if (_game.GetOptions().TryGetValue("SP_SELECT", out var spSelectStr) && spSelectStr == "true")
+			if (_game.GetOptions().TryGetValue("SP_SELECT", out string spSelectStr) && spSelectStr == "true")
 			{
 				SP_SELECT = true;
 			}

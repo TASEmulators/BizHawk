@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		public void SetupMemoryDomains()
 		{
-			var domains = new List<MemoryDomain>
+			List<MemoryDomain> domains = new List<MemoryDomain>
 			{
 				new MemoryDomainDelegate(
 					"Main RAM",

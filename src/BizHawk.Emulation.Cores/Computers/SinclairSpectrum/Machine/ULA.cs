@@ -127,7 +127,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			// has more than one cycle past since this last ran
 			// (this can be true if contention has taken place)
-			var ticksToProcess = totalCycles - LastULATick;
+			long ticksToProcess = totalCycles - LastULATick;
 
 			// store the current cycle
 			LastULATick = totalCycles;
@@ -284,9 +284,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			/// </summary>
 			private void InitRenderer(MachineType machineType)
 			{
-				for (var t = 0; t < _ula.FrameCycleLength; t++)
+				for (int t = 0; t < _ula.FrameCycleLength; t++)
 				{
-					var tStateScreen = t + _ula.RenderTableOffset;// + _ula.InterruptStartTime;
+					int tStateScreen = t + _ula.RenderTableOffset;// + _ula.InterruptStartTime;
 
 					if (tStateScreen < 0)
 						tStateScreen += _ula.FrameCycleLength;
@@ -433,7 +433,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 						continue;
 					}
 					int scrPix = pix - _ula.FirstPaperTState;
-					if (scrPix < 0 || scrPix >= 128)
+					if (scrPix is < 0 or >= 128)
 					{
 						Renderer[t].ContentionValue = 0;
 						continue;
@@ -447,14 +447,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			private ushort CalculateByteAddress(int x, int y)
 			{
 				x >>= 2;
-				var vp = x | (y << 5);
+				int vp = x | (y << 5);
 				return (ushort)((vp & 0x181F) | ((vp & 0x0700) >> 3) | ((vp & 0x00E0) << 3));
 			}
 
 			private ushort CalculateAttributeAddress(int x, int y)
 			{
 				x >>= 2;
-				var ap = x | ((y >> 3) << 5);
+				int ap = x | ((y >> 3) << 5);
 				return (ushort)(6144 + ap);
 			}
 
@@ -713,10 +713,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Returns the contention value for the current t-state
 		/// </summary>
-		public int GetContentionValue()
-		{
-			return GetContentionValue((int)_machine.CurrentFrameCycle);
-		}
+		public int GetContentionValue() => GetContentionValue((int)_machine.CurrentFrameCycle);
 
 		/// <summary>
 		/// Returns the contention value for the supplied t-state
@@ -750,10 +747,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// Video output buffer
 		/// </summary>
 		public int[] ScreenBuffer;
-
-		private int _virtualWidth;
-		private int _virtualHeight;
-		private int _bufferWidth;
 		private int _bufferHeight;
 
 		public int BackgroundColor
@@ -761,7 +754,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			get
 			{
 				var settings = _machine.Spectrum.GetSettings();
-				var color = settings.BackgroundColor;
+				int color = settings.BackgroundColor;
 				if (!settings.UseCoreBorderForBackground)
 					return color;
 				else
@@ -769,23 +762,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			}
 		}
 
-		public int VirtualWidth
-		{
-			get => _virtualWidth;
-			set => _virtualWidth = value;
-		}
+		public int VirtualWidth { get; set; }
 
-		public int VirtualHeight
-		{
-			get => _virtualHeight;
-			set => _virtualHeight = value;
-		}
+		public int VirtualHeight { get; set; }
 
-		public int BufferWidth
-		{
-			get => _bufferWidth;
-			set => _bufferWidth = value;
-		}
+		public int BufferWidth { get; set; }
 
 		public int BufferHeight
 		{
@@ -808,8 +789,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				// Full side borders, no top or bottom border (giving *almost* 16:9 output)
 				case ZXSpectrum.BorderType.Widescreen:
 					// we are cropping out the top and bottom borders
-					var startPixelsToCrop = ScanLineWidth * BorderTopHeight;
-					var endPixelsToCrop = ScanLineWidth * BorderBottomHeight;
+					int startPixelsToCrop = ScanLineWidth * BorderTopHeight;
+					int endPixelsToCrop = ScanLineWidth * BorderBottomHeight;
 					int index = 0;
 					for (int i = startPixelsToCrop; i < ScreenBuffer.Length - endPixelsToCrop; i++)
 					{
@@ -823,12 +804,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 				case ZXSpectrum.BorderType.Medium:
 					// all border sizes now 24
-					var lR = BorderLeftWidth - 24;
-					var rR = BorderRightWidth - 24;
-					var tR = BorderTopHeight - 24;
-					var bR = BorderBottomHeight - 24;
-					var startP = ScanLineWidth * tR;
-					var endP = ScanLineWidth * bR;
+					int lR = BorderLeftWidth - 24;
+					int rR = BorderRightWidth - 24;
+					int tR = BorderTopHeight - 24;
+					int bR = BorderBottomHeight - 24;
+					int startP = ScanLineWidth * tR;
+					int endP = ScanLineWidth * bR;
 
 					int index2 = 0;
 					// line by line
@@ -847,12 +828,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 				case ZXSpectrum.BorderType.Small:
 					// all border sizes now 24
-					var lR_ = BorderLeftWidth - 10;
-					var rR_ = BorderRightWidth - 10;
-					var tR_ = BorderTopHeight - 10;
-					var bR_ = BorderBottomHeight - 10;
-					var startP_ = ScanLineWidth * tR_;
-					var endP_ = ScanLineWidth * bR_;
+					int lR_ = BorderLeftWidth - 10;
+					int rR_ = BorderRightWidth - 10;
+					int tR_ = BorderTopHeight - 10;
+					int bR_ = BorderBottomHeight - 10;
+					int startP_ = ScanLineWidth * tR_;
+					int endP_ = ScanLineWidth * bR_;
 
 					int index2_ = 0;
 					// line by line
@@ -871,12 +852,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 				case ZXSpectrum.BorderType.None:
 					// all border sizes now 0
-					var lR__ = BorderLeftWidth;
-					var rR__ = BorderRightWidth;
-					var tR__ = BorderTopHeight;
-					var bR__ = BorderBottomHeight;
-					var startP__ = ScanLineWidth * tR__;
-					var endP__ = ScanLineWidth * bR__;
+					int lR__ = BorderLeftWidth;
+					int rR__ = BorderRightWidth;
+					int tR__ = BorderTopHeight;
+					int bR__ = BorderBottomHeight;
+					int startP__ = ScanLineWidth * tR__;
+					int endP__ = ScanLineWidth * bR__;
 
 					int index2__ = 0;
 					// line by line
@@ -951,13 +932,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		protected int[] croppedBuffer;
 
-		private ZXSpectrum.BorderType _borderType;
-
-		public ZXSpectrum.BorderType borderType
-		{
-			get => _borderType;
-			set => _borderType = value;
-		}
+		public ZXSpectrum.BorderType borderType { get; set; }
 
 		public void SyncState(Serializer ser)
 		{

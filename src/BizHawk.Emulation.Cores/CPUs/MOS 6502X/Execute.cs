@@ -618,15 +618,9 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			}
 		}
 
-		private void PushPCH()
-		{
-			_link.WriteMemory((ushort)(S-- + 0x100), (byte)(PC >> 8));
-		}
+		private void PushPCH() => _link.WriteMemory((ushort)(S-- + 0x100), (byte)(PC >> 8));
 
-		private void PushPCL()
-		{
-			_link.WriteMemory((ushort)(S-- + 0x100), (byte)PC);
-		}
+		private void PushPCL() => _link.WriteMemory((ushort)(S-- + 0x100), (byte)PC);
 
 		private void PushP_BRK()
 		{
@@ -737,21 +731,11 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			}
 		}
 
-		private void NZ_A()
-		{
-			P = (byte)((P & 0x7D) | TableNZ[A]);
-		}
+		private void NZ_A() => P = (byte)((P & 0x7D) | TableNZ[A]);
 
-		private void NZ_X()
-		{
-			P = (byte)((P & 0x7D) | TableNZ[X]);
-		}
+		private void NZ_X() => P = (byte)((P & 0x7D) | TableNZ[X]);
 
-		private void NZ_Y()
-		{
-			P = (byte)((P & 0x7D) | TableNZ[Y]);
-
-		}
+		private void NZ_Y() => P = (byte)((P & 0x7D) | TableNZ[Y]);
 
 		private void Imp_TSX()
 		{
@@ -876,46 +860,21 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			}
 		}
 
-		private void Abs_WRITE_STA()
-		{
-			_link.WriteMemory((ushort)((opcode3 << 8) + opcode2), A);
-		}
+		private void Abs_WRITE_STA() => _link.WriteMemory((ushort)((opcode3 << 8) + opcode2), A);
 
-		private void Abs_WRITE_STX()
-		{
-			_link.WriteMemory((ushort)((opcode3 << 8) + opcode2), X);
-		}
+		private void Abs_WRITE_STX() => _link.WriteMemory((ushort)((opcode3 << 8) + opcode2), X);
 
-		private void Abs_WRITE_STY()
-		{
-			_link.WriteMemory((ushort)((opcode3 << 8) + opcode2), Y);
-		}
+		private void Abs_WRITE_STY() => _link.WriteMemory((ushort)((opcode3 << 8) + opcode2), Y);
 
-		private void Abs_WRITE_SAX()
-		{
-			_link.WriteMemory((ushort)((opcode3 << 8) + opcode2), (byte)(X & A));
+		private void Abs_WRITE_SAX() => _link.WriteMemory((ushort)((opcode3 << 8) + opcode2), (byte)(X & A));
 
-		}
+		private void ZP_WRITE_STA() => _link.WriteMemory(opcode2, A);
 
-		private void ZP_WRITE_STA()
-		{
-			_link.WriteMemory(opcode2, A);
-		}
+		private void ZP_WRITE_STY() => _link.WriteMemory(opcode2, Y);
 
-		private void ZP_WRITE_STY()
-		{
-			_link.WriteMemory(opcode2, Y);
-		}
+		private void ZP_WRITE_STX() => _link.WriteMemory(opcode2, X);
 
-		private void ZP_WRITE_STX()
-		{
-			_link.WriteMemory(opcode2, X);
-		}
-
-		private void ZP_WRITE_SAX()
-		{
-			_link.WriteMemory(opcode2, (byte)(X & A));
-		}
+		private void ZP_WRITE_SAX() => _link.WriteMemory(opcode2, (byte)(X & A));
 
 		private void IndIdx_Stage3()
 		{
@@ -978,15 +937,9 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			}
 		}
 
-		private void IndIdx_WRITE_Stage6_STA()
-		{
-			_link.WriteMemory((ushort)ea, A);
-		}
+		private void IndIdx_WRITE_Stage6_STA() => _link.WriteMemory((ushort)ea, A);
 
-		private void IndIdx_WRITE_Stage6_SHA()
-		{
-			_link.WriteMemory((ushort)ea, (byte)(A & X & 7));
-		}
+		private void IndIdx_WRITE_Stage6_SHA() => _link.WriteMemory((ushort)ea, (byte)(A & X & 7));
 
 		private void IndIdx_READ_Stage6_LDA()
 		{
@@ -1133,10 +1086,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			NZ_A();
 		}
 
-		private void IndIdx_RMW_Stage8()
-		{
-			_link.WriteMemory((ushort)ea, (byte)alu_temp);
-		}
+		private void IndIdx_RMW_Stage8() => _link.WriteMemory((ushort)ea, (byte)alu_temp);
 
 		private void RelBranch_Stage2_BVS()
 		{
@@ -1477,10 +1427,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			}
 		}
 
-		private void ZpIdx_RMW_Stage6()
-		{
-			_link.WriteMemory(opcode2, (byte)alu_temp);
-		}
+		private void ZpIdx_RMW_Stage6() => _link.WriteMemory(opcode2, (byte)alu_temp);
 
 		private void ZP_READ_EOR()
 		{
@@ -2060,10 +2007,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			}
 		}
 
-		private void IdxInd_Stage6_WRITE_STA()
-		{
-			_link.WriteMemory((ushort)ea, A);
-		}
+		private void IdxInd_Stage6_WRITE_STA() => _link.WriteMemory((ushort)ea, A);
 
 		private void IdxInd_Stage6_WRITE_SAX()
 		{
@@ -2138,10 +2082,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			NZ_A();
 		}
 
-		private void IdxInd_Stage8_RMW()
-		{
-			_link.WriteMemory((ushort)ea, (byte)alu_temp);
-		}
+		private void IdxInd_Stage8_RMW() => _link.WriteMemory((ushort)ea, (byte)alu_temp);
 
 		private void PushP()
 		{
@@ -2149,10 +2090,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			_link.WriteMemory((ushort)(S-- + 0x100), P);
 		}
 
-		private void PushA()
-		{
-			_link.WriteMemory((ushort)(S-- + 0x100), A);
-		}
+		private void PushA() => _link.WriteMemory((ushort)(S-- + 0x100), A);
 
 		private void PullA_NoInc()
 		{
@@ -2255,10 +2193,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			}
 		}
 
-		private void ZP_RMW_Stage5()
-		{
-			_link.WriteMemory(opcode2, (byte)alu_temp);
-		}
+		private void ZP_RMW_Stage5() => _link.WriteMemory(opcode2, (byte)alu_temp);
 
 		private void ZP_RMW_INC()
 		{
@@ -2425,10 +2360,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			}
 		}
 
-		private void AbsIdx_WRITE_Stage5_STA()
-		{
-			_link.WriteMemory((ushort)ea, A);
-		}
+		private void AbsIdx_WRITE_Stage5_STA() => _link.WriteMemory((ushort)ea, A);
 
 		private void AbsIdx_WRITE_Stage5_SHY()
 		{
@@ -2459,10 +2391,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			}
 		}
 
-		private void AbsIdx_RMW_Stage7()
-		{
-			_link.WriteMemory((ushort)ea, (byte)alu_temp);
-		}
+		private void AbsIdx_RMW_Stage7() => _link.WriteMemory((ushort)ea, (byte)alu_temp);
 
 		private void AbsIdx_RMW_Stage6_DEC()
 		{
@@ -2829,10 +2758,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			P = (byte)((P & 0x7D) | TableNZ[value8]);
 		}
 
-		private void Abs_RMW_Stage6()
-		{
-			_link.WriteMemory((ushort)ea, (byte)alu_temp);
-		}
+		private void Abs_RMW_Stage6() => _link.WriteMemory((ushort)ea, (byte)alu_temp);
 
 		private void End_ISpecial()
 		{
@@ -2858,22 +2784,16 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			ExecuteOneRetry();
 		}
 
-		private void End_BranchSpecial()
-		{
-			End();
-		}
+		private void End_BranchSpecial() => End();
 
-		private void Jam()
-		{
-			rdy_freeze = true;
-		}
+		private void Jam() => rdy_freeze = true;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void ExecuteOneRetry()
 		{
 			//don't know whether this system is any faster. hard to get benchmarks someone else try it?
 			//Uop uop = (Uop)CompiledMicrocode[MicrocodeIndex[opcode] + mi];
-			Uop uop = Microcode[opcode][mi];
+			var uop = Microcode[opcode][mi];
 			switch (uop)
 			{
 				default: throw new InvalidOperationException();
@@ -3140,9 +3060,6 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				mi++;
 		}
 
-		public bool AtInstructionStart()
-		{
-			return Microcode[opcode][mi] >= Uop.End;
-		}
+		public bool AtInstructionStart() => Microcode[opcode][mi] >= Uop.End;
 	}
 }

@@ -6,7 +6,7 @@ namespace BizHawk.Common.StringExtensions
 	public static class NumericStringExtensions
 	{
 		/// <returns><see langword="true"/> iff <paramref name="c"/> is either <c>'0'</c> or <c>'1'</c></returns>
-		public static bool IsBinary(this char c) => c == '0' || c == '1';
+		public static bool IsBinary(this char c) => c is '0' or '1';
 
 		/// <returns><see langword="true"/> iff <paramref name="str"/> is not <see langword="null"/> and all chars of <paramref name="str"/> are either <c>'0'</c> or <c>'1'</c></returns>
 		/// <remarks><paramref name="str"/> should exclude the prefix <c>0b</c></remarks>

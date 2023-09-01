@@ -18,8 +18,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		{
 			using var fs = File.OpenRead(fpPSF);
 			//not endian safe
-			var br = new BinaryReader(fs);
-			var sig = br.ReadStringFixedUtf8(4);
+			BinaryReader br = new BinaryReader(fs);
+			string sig = br.ReadStringFixedUtf8(4);
 			if (sig != "PSF\x1")
 				return false;
 
@@ -38,8 +38,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			{
 				if (br.ReadStringFixedUtf8(5) == "[TAG]")
 				{
-					var tagstring = br.ReadStringFixedUtf8((int)(fs.Length - fs.Position)).Replace("\r\n", "\n");
-					foreach (var tag in tagstring.Split('\n', '\x0'))
+					string tagstring = br.ReadStringFixedUtf8((int)(fs.Length - fs.Position)).Replace("\r\n", "\n");
+					foreach (string tag in tagstring.Split('\n', '\x0'))
 					{
 						if (tag.Trim() == "")
 							continue;
@@ -57,9 +57,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			Data = cbDeflater(fs, compressed_size);
 
 			//load lib if needed
-			if (TagsDictionary.TryGetValue("_lib", out var relPath))
+			if (TagsDictionary.TryGetValue("_lib", out string relPath))
 			{
-				var fpLib = Path.Combine(Path.GetDirectoryName(fpPSF), relPath);
+				string fpLib = Path.Combine(Path.GetDirectoryName(fpPSF), relPath);
 				if (!File.Exists(fpLib))
 					return false;
 				PSF lib = new();

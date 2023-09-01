@@ -27,13 +27,13 @@ namespace BizHawk.Client.EmuHawk
 				Released = emu.Attributes().Released;
 				Services = new Dictionary<string, ServiceInfo>();
 				var ser = emu.ServiceProvider;
-				foreach (Type t in ser.AvailableServices.Where(type => type != emu.GetType()))
+				foreach (var t in ser.AvailableServices.Where(type => type != emu.GetType()))
 				{
-					var si = new ServiceInfo(t, ser.GetService(t));
+					ServiceInfo si = new ServiceInfo(t, ser.GetService(t));
 					Services.Add(si.TypeName, si);
 				}
 
-				var notApplicableAttribute = ((ServiceNotApplicableAttribute)Attribute
+				ServiceNotApplicableAttribute notApplicableAttribute = ((ServiceNotApplicableAttribute)Attribute
 					.GetCustomAttribute(emu.GetType(), typeof(ServiceNotApplicableAttribute)));
 
 				if (notApplicableAttribute != null)
@@ -123,7 +123,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private TreeNode CreateCoreTree(CoreInfo ci)
 		{
-			var ret = new TreeNode
+			TreeNode ret = new TreeNode
 			{
 				Text = ci.CoreName + (ci.Released ? "" : " (UNRELEASED)"),
 				ForeColor = ci.Released ? Color.Black : Color.DarkGray
@@ -132,7 +132,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var service in ci.Services.Values)
 			{
 				string img = service.Complete ? "Good" : "Bad";
-				var serviceNode = new TreeNode
+				TreeNode serviceNode = new TreeNode
 				{
 					Text = service.TypeName,
 					ForeColor = service.Complete ? Color.Black : Color.Red,
@@ -162,7 +162,7 @@ namespace BizHawk.Client.EmuHawk
 				&& !ci.Services.ContainsKey(t.ToString()) && !ci.NotApplicableTypes.Contains(t.ToString())))
 			{
 				string img = "Bad";
-				var serviceNode = new TreeNode
+				TreeNode serviceNode = new TreeNode
 				{
 					Text = service.ToString(),
 					ForeColor = Color.Red,
@@ -196,7 +196,7 @@ namespace BizHawk.Client.EmuHawk
 			CoreTree.ImageList.Images.Add("Bad", Properties.Resources.ExclamationRed);
 			CoreTree.ImageList.Images.Add("Unknown", Properties.Resources.RetroQuestion);
 
-			var possibleCoreTypes = CoreInventory.Instance.SystemsFlat
+			List<CoreInventory.Core> possibleCoreTypes = CoreInventory.Instance.SystemsFlat
 				.OrderByDescending(core => core.CoreAttr.Released)
 				.ThenBy(core => core.Name)
 				.ToList();
@@ -222,7 +222,7 @@ namespace BizHawk.Client.EmuHawk
 				if (!KnownCores.ContainsKey(core.Name))
 				{
 					string img = "Unknown";
-					var coreNode = new TreeNode
+					TreeNode coreNode = new TreeNode
 					{
 						Text = core.Name + (core.CoreAttr.Released ? "" : " (UNRELEASED)"),
 						ForeColor = core.CoreAttr.Released ? Color.Black : Color.DarkGray,
@@ -239,7 +239,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void Restart()
 		{
-			var ci = new CoreInfo(Emulator);
+			CoreInfo ci = new CoreInfo(Emulator);
 			KnownCores[ci.CoreName] = ci;
 
 			DoCurrentCoreTree(ci);

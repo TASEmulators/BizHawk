@@ -15,10 +15,7 @@ namespace BizHawk.Bizware.BizwareGL
 			Owner = owner;
 		}
 
-		internal void AddUniformInfo(UniformInfo ui)
-		{
-			_uniformInfos.Add(ui);
-		}
+		internal void AddUniformInfo(UniformInfo ui) => _uniformInfos.Add(ui);
 
 		public IEnumerable<UniformInfo> UniformInfos => _uniformInfos;
 
@@ -40,45 +37,21 @@ namespace BizHawk.Bizware.BizwareGL
 		}
 
 		public Pipeline Owner { get; }
-		
-		public void Set(Matrix4x4 mat, bool transpose = false)
-		{
-			Owner?.Owner.SetPipelineUniformMatrix(this, mat, transpose);
-		}
 
-		public void Set(Vector4 vec)
-		{
-			Owner?.Owner.SetPipelineUniform(this, vec);
-		}
+		public void Set(Matrix4x4 mat, bool transpose = false) => Owner?.Owner.SetPipelineUniformMatrix(this, mat, transpose);
 
-		public void Set(Vector2 vec)
-		{
-			Owner?.Owner.SetPipelineUniform(this, vec);
-		}
+		public void Set(Vector4 vec) => Owner?.Owner.SetPipelineUniform(this, vec);
 
-		public void Set(float f)
-		{
-			Owner?.Owner.SetPipelineUniform(this, f);
-		}
+		public void Set(Vector2 vec) => Owner?.Owner.SetPipelineUniform(this, vec);
 
-		public void Set(Vector4[] vecs)
-		{
-			Owner?.Owner.SetPipelineUniform(this, vecs);
-		}
+		public void Set(float f) => Owner?.Owner.SetPipelineUniform(this, f);
 
-		public void Set(ref Matrix4x4 mat, bool transpose = false)
-		{
-			Owner?.Owner.SetPipelineUniformMatrix(this, ref mat, transpose);
-		}
+		public void Set(Vector4[] vecs) => Owner?.Owner.SetPipelineUniform(this, vecs);
 
-		public void Set(bool value)
-		{
-			Owner?.Owner.SetPipelineUniform(this, value);
-		}
+		public void Set(ref Matrix4x4 mat, bool transpose = false) => Owner?.Owner.SetPipelineUniformMatrix(this, ref mat, transpose);
 
-		public void Set(Texture2d tex)
-		{
-			Owner?.Owner.SetPipelineUniformSampler(this, tex);
-		}
+		public void Set(bool value) => Owner?.Owner.SetPipelineUniform(this, value);
+
+		public void Set(Texture2d tex) => Owner?.Owner.SetPipelineUniformSampler(this, tex);
 	}
 }

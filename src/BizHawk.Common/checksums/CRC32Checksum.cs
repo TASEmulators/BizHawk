@@ -17,7 +17,7 @@ namespace BizHawk.Common
 
 		public static byte[] BytesAsDigest(uint digest)
 		{
-			var a = BitConverter.GetBytes(digest);
+			byte[] a = BitConverter.GetBytes(digest);
 			return new[] { a[3], a[2], a[1], a[0] };
 		}
 

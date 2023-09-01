@@ -92,28 +92,22 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public abstract byte ReadBus(ushort addr);
 
-        /// <summary>
-        ///  Pushes a value onto the data bus that should be valid as long as the interrupt is true
-        /// </summary>
-        public virtual byte PushBus()
-        {
-            return 0xFF;
-        }
+		/// <summary>
+		///  Pushes a value onto the data bus that should be valid as long as the interrupt is true
+		/// </summary>
+		public virtual byte PushBus() => 0xFF;
 
-        /// <summary>
-        /// Simulates writing to the bus
-        /// Paging should be handled here
-        /// </summary>
-        public virtual void WriteBus(ushort addr, byte value)
-        {
-            throw new NotImplementedException("Must be overriden");
-        }
+		/// <summary>
+		/// Simulates writing to the bus
+		/// Paging should be handled here
+		/// </summary>
+		public virtual void WriteBus(ushort addr, byte value) => throw new NotImplementedException("Must be overriden");
 
-        /// <summary>
-        /// Reads a byte of data from a specified memory address
-        /// (with memory contention if appropriate)
-        /// </summary>
-        public abstract byte ReadMemory(ushort addr);
+		/// <summary>
+		/// Reads a byte of data from a specified memory address
+		/// (with memory contention if appropriate)
+		/// </summary>
+		public abstract byte ReadMemory(ushort addr);
 
         /// <summary>
         /// Returns the ROM/RAM enum that relates to this particular memory read operation
@@ -137,7 +131,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public virtual byte FetchScreenMemory(ushort addr)
         {
-            var value = ReadBus((ushort)((addr & 0x3FFF) + 0x4000));
+			byte value = ReadBus((ushort)((addr & 0x3FFF) + 0x4000));
             //var value = ReadBus(addr);
             return value;
         }

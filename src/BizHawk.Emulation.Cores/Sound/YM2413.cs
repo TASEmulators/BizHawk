@@ -52,15 +52,9 @@ namespace BizHawk.Emulation.Cores.Components
 			RegisterLatch = 0;
 		}
 
-		public void Write(byte value)
-		{
-			OPLL_writeReg(opll, RegisterLatch, value);
-		}
+		public void Write(byte value) => OPLL_writeReg(opll, RegisterLatch, value);
 
-		public void Write(byte register, byte value)
-		{
-			OPLL_writeReg(opll, register, value);
-		}
+		public void Write(byte register, byte value) => OPLL_writeReg(opll, register, value);
 
 		public void GetSamples(short[] samples)
 		{
@@ -73,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Components
 		}
 
 		/* Mask */
-		private static int OPLL_MASK_CH(int x) { return (1 << (x)); }
+		private static int OPLL_MASK_CH(int x) => (1 << (x));
 		private const int OPLL_MASK_HH = (1 << (9));
 		private const int OPLL_MASK_CYM = (1 << (10));
 		private const int OPLL_MASK_TOM = (1 << (11));
@@ -205,12 +199,12 @@ namespace BizHawk.Emulation.Cores.Components
 		private const int SL_BITS = 4;
 		private const int SL_MUTE = (1 << SL_BITS);
 
-		private static uint EG2DB(uint d) { return ((d) * unchecked((int)(EG_STEP / DB_STEP))); }
-		private static uint TL2EG(uint d) { return ((d) * unchecked((int)(TL_STEP / EG_STEP))); }
-		private static uint SL2EG(uint d) { return ((d) * unchecked((int)(SL_STEP / EG_STEP))); }
+		private static uint EG2DB(uint d) => ((d) * unchecked((int)(EG_STEP / DB_STEP)));
+		private static uint TL2EG(uint d) => ((d) * unchecked((int)(TL_STEP / EG_STEP)));
+		private static uint SL2EG(uint d) => ((d) * unchecked((int)(SL_STEP / EG_STEP)));
 
-		private static uint DB_POS(double x) { return (uint)((x) / DB_STEP); }
-		private static uint DB_NEG(double x) { return (uint)(DB_MUTE + DB_MUTE + (x) / DB_STEP); }
+		private static uint DB_POS(double x) => (uint)((x) / DB_STEP);
+		private static uint DB_NEG(double x) => (uint)(DB_MUTE + DB_MUTE + (x) / DB_STEP);
 
 		/* Bits for liner value */
 		private const int DB2LIN_AMP_BITS = 8;
@@ -243,25 +237,25 @@ namespace BizHawk.Emulation.Cores.Components
 		private const double AM_DEPTH = 4.875;
 
 		/* Cut the lower b bit(s) off. */
-		private static uint HIGHBITS(uint c, int b) { return ((c) >> (b)); }
+		private static uint HIGHBITS(uint c, int b) => ((c) >> (b));
 
 		/* Leave the lower b bit(s). */
-		private static int LOWBITS(int c, int b) { return ((c) & ((1 << (b)) - 1)); }
+		private static int LOWBITS(int c, int b) => ((c) & ((1 << (b)) - 1));
 
 		/* Expand x which is s bits to d bits. */
-		private static int EXPAND_BITS(int x, int s, int d) { return ((x) << ((d) - (s))); }
+		private static int EXPAND_BITS(int x, int s, int d) => ((x) << ((d) - (s)));
 
 		/* Expand x which is s bits to d bits and fill expanded bits '1' */
-		private static int EXPAND_BITS_X(int x, int s, int d) { return (((x) << ((d) - (s))) | ((1 << ((d) - (s))) - 1)); }
+		private static int EXPAND_BITS_X(int x, int s, int d) => (((x) << ((d) - (s))) | ((1 << ((d) - (s))) - 1));
 
 		/* Adjust envelope speed which depends on sampling rate. */
-		private static uint RATE_ADJUST(double x) { return (rate == 49716 ? (uint)x : (uint)((double)(x) * clk / 72 / rate + 0.5)); }        /* added 0.5 to round the value*/
+		private static uint RATE_ADJUST(double x) => (rate == 49716 ? (uint)x : (uint)((double)(x) * clk / 72 / rate + 0.5));         /* added 0.5 to round the value*/
 
-		private static OPLL_SLOT MOD(OPLL o, int x) { return ((o).slot[(x) << 1]); }
-		private static OPLL_SLOT CAR(OPLL o, int x) { return ((o).slot[((x) << 1) | 1]); }
+		private static OPLL_SLOT MOD(OPLL o, int x) => ((o).slot[(x) << 1]);
+		private static OPLL_SLOT CAR(OPLL o, int x) => ((o).slot[((x) << 1) | 1]);
 
-		private static bool BIT(uint s, int b) { return (((s) >> (b)) & 1) != 0; }
-		private static bool BIT(int s, int b) { return (((s) >> (b)) & 1) != 0; }
+		private static bool BIT(uint s, int b) => (((s) >> (b)) & 1) != 0;
+		private static bool BIT(int s, int b) => (((s) >> (b)) & 1) != 0;
 
 		/* Input clock */
 		private static uint clk = 844451141;
@@ -604,7 +598,7 @@ namespace BizHawk.Emulation.Cores.Components
 		private const int SLOT_TOM = 16;
 		private const int SLOT_CYM = 17;
 
-		private static void UPDATE_PG(OPLL_SLOT S) { (S).dphase = dphaseTable[(S).fnum, (S).block, (S).patch.ml]; }
+		private static void UPDATE_PG(OPLL_SLOT S) => (S).dphase = dphaseTable[(S).fnum, (S).block, (S).patch.ml];
 
 		private static void UPDATE_TLL(OPLL_SLOT S)
 		{
@@ -618,9 +612,9 @@ namespace BizHawk.Emulation.Cores.Components
 			}
 		}
 
-		private static void UPDATE_RKS(OPLL_SLOT S) { (S).rks = (uint)rksTable[((S).fnum) >> 8, (S).block, (S).patch.kr]; }
-		private static void UPDATE_WF(OPLL_SLOT S) { (S).sintbl = (S).patch.wf == 0 ? fullsintable : halfsintable; }
-		private static void UPDATE_EG(OPLL_SLOT S) { (S).eg_dphase = calc_eg_dphase(S); }
+		private static void UPDATE_RKS(OPLL_SLOT S) => (S).rks = (uint)rksTable[((S).fnum) >> 8, (S).block, (S).patch.kr];
+		private static void UPDATE_WF(OPLL_SLOT S) => (S).sintbl = (S).patch.wf == 0 ? fullsintable : halfsintable;
+		private static void UPDATE_EG(OPLL_SLOT S) => (S).eg_dphase = calc_eg_dphase(S);
 
 		private static void UPDATE_ALL(OPLL_SLOT S)
 		{
@@ -675,10 +669,7 @@ namespace BizHawk.Emulation.Cores.Components
 			opll.key_status[i] = 0;
 		}
 
-		private static void keyOn_BD(OPLL opll)
-		{
-			keyOn(opll, 6);
-		}
+		private static void keyOn_BD(OPLL opll) => keyOn(opll, 6);
 
 		private static void keyOn_SD(OPLL opll)
 		{
@@ -705,10 +696,7 @@ namespace BizHawk.Emulation.Cores.Components
 		}
 
 		/* Drum key off */
-		private static void keyOff_BD(OPLL opll)
-		{
-			keyOff(opll, 6);
-		}
+		private static void keyOff_BD(OPLL opll) => keyOff(opll, 6);
 
 		private static void keyOff_SD(OPLL opll)
 		{
@@ -743,10 +731,7 @@ namespace BizHawk.Emulation.Cores.Components
 		}
 
 		/* Change a rhythm voice */
-		private static void setSlotPatch(OPLL_SLOT slot, OPLL_PATCH patch)
-		{
-			slot.patch = patch;
-		}
+		private static void setSlotPatch(OPLL_SLOT slot, OPLL_PATCH patch) => slot.patch = patch;
 
 		/* Set sustine parameter */
 		private static void setSustine(OPLL opll, int c, int sustine)
@@ -757,15 +742,9 @@ namespace BizHawk.Emulation.Cores.Components
 		}
 
 		/* Volume : 6bit ( Volume register << 2 ) */
-		private static void setVolume(OPLL opll, int c, int volume)
-		{
-			CAR(opll, c).volume = volume;
-		}
+		private static void setVolume(OPLL opll, int c, int volume) => CAR(opll, c).volume = volume;
 
-		private static void setSlotVolume(OPLL_SLOT slot, int volume)
-		{
-			slot.volume = volume;
-		}
+		private static void setSlotVolume(OPLL_SLOT slot, int volume) => slot.volume = volume;
 
 		/* Set F-Number ( fnum : 9bit ) */
 		private static void setFnumber(OPLL opll, int c, int fnum)
@@ -861,10 +840,7 @@ namespace BizHawk.Emulation.Cores.Components
 			}
 		}
 
-		private void OPLL_copyPatch(OPLL opll, int num, OPLL_PATCH patch)
-		{
-			opll.patch[num] = (OPLL_PATCH)patch.Clone();
-		}
+		private void OPLL_copyPatch(OPLL opll, int num, OPLL_PATCH patch) => opll.patch[num] = (OPLL_PATCH)patch.Clone();
 
 		/***********************************************************
 
@@ -1041,22 +1017,15 @@ namespace BizHawk.Emulation.Cores.Components
 		}
 
 		/* Convert Amp(0 to EG_HEIGHT) to Phase(0 to 4PI). */
-		private static int wave2_4pi(int e)
-		{
-			return ((e) << (1 + PG_BITS - SLOT_AMP_BITS));
-			/*if ((SLOT_AMP_BITS - PG_BITS - 1) == 0) {
+		private static int wave2_4pi(int e) => ((e) << (1 + PG_BITS - SLOT_AMP_BITS));/*if ((SLOT_AMP_BITS - PG_BITS - 1) == 0) {
 				return (e);
 			} else if ((SLOT_AMP_BITS - PG_BITS - 1) > 0) {
 				return ((e) >> (SLOT_AMP_BITS - PG_BITS - 1));
 			} else {
 				return ((e) << (1 + PG_BITS - SLOT_AMP_BITS));
 			}*/
-		}
 		/* Convert Amp(0 to EG_HEIGHT) to Phase(0 to 8PI). */
-		private static int wave2_8pi(int e)
-		{
-			return ((e) << (2 + PG_BITS - SLOT_AMP_BITS));
-			/*
+		private static int wave2_8pi(int e) => ((e) << (2 + PG_BITS - SLOT_AMP_BITS));/*
 			if ((SLOT_AMP_BITS - PG_BITS - 2) == 0) {
 				return (e);
 			} else if ((SLOT_AMP_BITS - PG_BITS - 2) > 0) {
@@ -1065,7 +1034,6 @@ namespace BizHawk.Emulation.Cores.Components
 				return ((e) << (2 + PG_BITS - SLOT_AMP_BITS));
 			}
 			*/
-		}
 		/* Update AM, PM unit */
 		private static void update_ampm(OPLL opll)
 		{
@@ -1096,7 +1064,7 @@ namespace BizHawk.Emulation.Cores.Components
 		}
 
 		/* EG */
-		private static uint S2E(double x) { return (SL2EG((uint)(x / SL_STEP)) << (EG_DP_BITS - EG_BITS)); }
+		private static uint S2E(double x) => (SL2EG((uint)(x / SL_STEP)) << (EG_DP_BITS - EG_BITS));
 
 		private static readonly uint[] SL =
 		{
@@ -1667,10 +1635,7 @@ namespace BizHawk.Emulation.Cores.Components
 		}
 
 		/* STEREO MODE (OPT) */
-		private void OPLL_set_pan(OPLL opll, uint ch, uint pan)
-		{
-			opll.pan[ch & 15] = pan & 3;
-		}
+		private void OPLL_set_pan(OPLL opll, uint ch, uint pan) => opll.pan[ch & 15] = pan & 3;
 
 		private static void calc_stereo(OPLL opll, int[] output)
 		{

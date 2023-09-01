@@ -39,20 +39,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 			}
 		}
 
-		public bool ReadDeviceClock()
-		{
-			return !_connected || _device.ReadDeviceClk();
-		}
+		public bool ReadDeviceClock() => !_connected || _device.ReadDeviceClk();
 
-		public bool ReadDeviceData()
-		{
-			return !_connected || _device.ReadDeviceData();
-		}
+		public bool ReadDeviceData() => !_connected || _device.ReadDeviceData();
 
-		public bool ReadDeviceLight()
-		{
-			return _connected && _device.ReadDeviceLight();
-		}
+		public bool ReadDeviceLight() => _connected && _device.ReadDeviceLight();
 
 		public void SyncState(Serializer ser)
 		{

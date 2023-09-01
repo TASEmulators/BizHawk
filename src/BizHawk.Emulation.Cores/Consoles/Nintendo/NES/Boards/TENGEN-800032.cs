@@ -207,10 +207,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				return base.ReadPpu(addr);
 		}
 
-		private void SyncIRQ()
-		{
-			IrqSignal = irq_pending;
-		}
+		private void SyncIRQ() => IrqSignal = irq_pending;
 
 		private void ClockIRQ()
 		{

@@ -45,11 +45,11 @@ namespace BizHawk.Client.EmuHawk.ForDebugging
 			Random rng = new();
 			void Fuzz(bool limit)
 			{
-				var props = propDict.Keys.ToList();
+				List<PropertyInfo> props = propDict.Keys.ToList();
 				if (limit)
 				{
 					props.Sort((_, _) => rng.Next(2));
-					var l = props.Count / 10;
+					int l = props.Count / 10;
 					while (l < props.Count) props.RemoveAt(l);
 				}
 				var ss = Emulator.GetSyncSettings();

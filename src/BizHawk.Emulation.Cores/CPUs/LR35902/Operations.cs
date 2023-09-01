@@ -22,10 +22,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 		}
 
 		// special read for POP AF that always clears the lower 4 bits of F 
-		public void Read_Func_F(ushort dest, ushort src_l, ushort src_h)
-		{
-			Regs[dest] = (byte)(ReadMemory((ushort)(Regs[src_l] | (Regs[src_h]) << 8)) & 0xF0);
-		}
+		public void Read_Func_F(ushort dest, ushort src_l, ushort src_h) => Regs[dest] = (byte)(ReadMemory((ushort)(Regs[src_l] | (Regs[src_h]) << 8)) & 0xF0);
 
 		public void Write_Func(ushort dest_l, ushort dest_h, ushort src)
 		{
@@ -34,10 +31,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 			WriteMemory(addr, (byte)Regs[src]);
 		}
 
-		public void TR_Func(ushort dest, ushort src)
-		{
-			Regs[dest] = Regs[src];
-		}
+		public void TR_Func(ushort dest, ushort src) => Regs[dest] = Regs[src];
 
 		public void ADD16_Func(ushort dest_l, ushort dest_h, ushort src_l, ushort src_h)
 		{
@@ -112,20 +106,11 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 			FlagN = false;
 		}
 
-		public void SET_Func(ushort bit, ushort src)
-		{
-			Regs[src] |= (ushort)(1 << bit);
-		}
+		public void SET_Func(ushort bit, ushort src) => Regs[src] |= (ushort)(1 << bit);
 
-		public void RES_Func(ushort bit, ushort src)
-		{
-			Regs[src] &= (ushort)(0xFF - (1 << bit));
-		}
+		public void RES_Func(ushort bit, ushort src) => Regs[src] &= (ushort)(0xFF - (1 << bit));
 
-		public void ASGN_Func(ushort src, ushort val)
-		{
-			Regs[src] = val;
-		}
+		public void ASGN_Func(ushort src, ushort val) => Regs[src] = val;
 
 		public void SWAP_Func(ushort src)
 		{

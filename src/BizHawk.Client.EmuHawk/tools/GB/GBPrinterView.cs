@@ -89,7 +89,7 @@ namespace BizHawk.Client.EmuHawk
 			//   exposure is ignored
 
 			// The page received image
-			var page = new Bitmap(PaperWidth, height);
+			Bitmap page = new Bitmap(PaperWidth, height);
 
 			var bmp = page.LockBits(new Rectangle(0, 0, PaperWidth, height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
@@ -113,10 +113,10 @@ namespace BizHawk.Client.EmuHawk
 			// add it to the bottom of the history
 			int oldHeight = _printerHistory.Height;
 			ResizeHistory(_printerHistory.Height + page.Height + topMargin + bottomMargin);
-			using (var g = Graphics.FromImage(_printerHistory))
+			using (Graphics g = Graphics.FromImage(_printerHistory))
 			{
 				// Make it brown
-				var a = new ImageAttributes();
+				ImageAttributes a = new ImageAttributes();
 				a.SetColorMatrix(_paperAdjustment);
 
 				g.DrawImage(page, new Rectangle(0, oldHeight + topMargin, page.Width, page.Height), 0F, 0F, page.Width, page.Height, GraphicsUnit.Pixel, a);
@@ -148,8 +148,8 @@ namespace BizHawk.Client.EmuHawk
 		private void ResizeHistory(int height)
 		{
 			// copy to a new image of height
-			var newHistory = new Bitmap(PaperWidth, height);
-			using (var g = Graphics.FromImage(newHistory))
+			Bitmap newHistory = new Bitmap(PaperWidth, height);
+			using (Graphics g = Graphics.FromImage(newHistory))
 			{
 				g.Clear(Color.FromArgb((int)PaperColor));
 				if (_printerHistory != null)
@@ -169,7 +169,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RefreshView()
 		{
-			using (var g = Graphics.FromImage(paperView.Bmp))
+			using (Graphics g = Graphics.FromImage(paperView.Bmp))
 			{
 				g.Clear(Color.FromArgb((int)PaperColor));
 				g.DrawImage(_printerHistory, new Point(0, -paperScroll.Value));
@@ -185,7 +185,7 @@ namespace BizHawk.Client.EmuHawk
 
 			BmpView toSave = new();
 			toSave.ChangeBitmapSize(_printerHistory.Size);
-			using (var g = Graphics.FromImage(toSave.Bmp))
+			using (Graphics g = Graphics.FromImage(toSave.Bmp))
 			{
 				g.DrawImage(_printerHistory, Point.Empty);
 				g.Flush();
@@ -194,14 +194,8 @@ namespace BizHawk.Client.EmuHawk
 			toSave.Bmp.SaveAsFile(Game, "Print", Emulator.SystemId, Config.PathEntries, this);
 		}
 
-		private void CopyToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Clipboard.SetImage(_printerHistory);
-		}
+		private void CopyToolStripMenuItem_Click(object sender, EventArgs e) => Clipboard.SetImage(_printerHistory);
 
-		private void PaperScroll_ValueChanged(object sender, EventArgs e)
-		{
-			RefreshView();
-		}
+		private void PaperScroll_ValueChanged(object sender, EventArgs e) => RefreshView();
 	}
 }

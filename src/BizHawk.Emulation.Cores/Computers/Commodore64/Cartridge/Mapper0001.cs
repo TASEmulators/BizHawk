@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		{
 			pinExRom = false;
 			pinGame = false;
-			for (var i = 0; i < newData.Count; i++)
+			for (int i = 0; i < newData.Count; i++)
 			{
 				if (newAddresses[i] == 0x8000)
 				{
@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			base.HardReset();
 			pinExRom = false;
 			pinGame = false;
-			for (var i = 0; i < 0x2000; i++)
+			for (int i = 0; i < 0x2000; i++)
 			{
 				_ram[i] = 0x00;
 			}
@@ -53,75 +53,33 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			_cartEnabled = true;
 		}
 
-		public override int Peek8000(int addr)
-		{
-			return GetLoRom(addr);
-		}
+		public override int Peek8000(int addr) => GetLoRom(addr);
 
-		public override int PeekA000(int addr)
-		{
-			return Peek8000(addr);
-		}
+		public override int PeekA000(int addr) => Peek8000(addr);
 
-		public override int PeekDF00(int addr)
-		{
-			return GetIo2(addr);
-		}
+		public override int PeekDF00(int addr) => GetIo2(addr);
 
-		public override void Poke8000(int addr, int val)
-		{
-			SetLoRom(addr, val);
-		}
+		public override void Poke8000(int addr, int val) => SetLoRom(addr, val);
 
-		public override void PokeA000(int addr, int val)
-		{
-			Poke8000(addr, val);
-		}
+		public override void PokeA000(int addr, int val) => Poke8000(addr, val);
 
-		public override void PokeDE00(int addr, int val)
-		{
-			SetState(val);
-		}
+		public override void PokeDE00(int addr, int val) => SetState(val);
 
-		public override void PokeDF00(int addr, int val)
-		{
-			SetIo2(addr, val);
-		}
+		public override void PokeDF00(int addr, int val) => SetIo2(addr, val);
 
-		public override int Read8000(int addr)
-		{
-			return GetLoRom(addr);
-		}
+		public override int Read8000(int addr) => GetLoRom(addr);
 
-		public override int ReadA000(int addr)
-		{
-			return GetHiRom(addr);
-		}
+		public override int ReadA000(int addr) => GetHiRom(addr);
 
-		public override int ReadDF00(int addr)
-		{
-			return GetIo2(addr);
-		}
+		public override int ReadDF00(int addr) => GetIo2(addr);
 
-		public override void Write8000(int addr, int val)
-		{
-			SetLoRom(addr, val);
-		}
+		public override void Write8000(int addr, int val) => SetLoRom(addr, val);
 
-		public override void WriteA000(int addr, int val)
-		{
-			SetLoRom(addr, val);
-		}
+		public override void WriteA000(int addr, int val) => SetLoRom(addr, val);
 
-		public override void WriteDE00(int addr, int val)
-		{
-			SetState(val);
-		}
+		public override void WriteDE00(int addr, int val) => SetState(val);
 
-		public override void WriteDF00(int addr, int val)
-		{
-			SetIo2(addr, val);
-		}
+		public override void WriteDF00(int addr, int val) => SetIo2(addr, val);
 
 		private void SetState(int val)
 		{
@@ -139,15 +97,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 				: _rom[(addr & 0x1FFF) | _romOffset];
 		}
 
-		private int GetHiRom(int addr)
-		{
-			return _rom[(addr & 0x1FFF) | _romOffset];
-		}
+		private int GetHiRom(int addr) => _rom[(addr & 0x1FFF) | _romOffset];
 
-		private void SetLoRom(int addr, int val)
-		{
-			_ram[addr & 0x1FFF] = val;
-		}
+		private void SetLoRom(int addr, int val) => _ram[addr & 0x1FFF] = val;
 
 		private int GetIo2(int addr)
 		{
@@ -161,9 +113,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 				: _rom[(addr & 0xFF) | _romOffset | 0x1F00];
 		}
 
-		private void SetIo2(int addr, int val)
-		{
-			_ram[addr & 0x1FFF] = val & 0xFF;
-		}
+		private void SetIo2(int addr, int val) => _ram[addr & 0x1FFF] = val & 0xFF;
 	}
 }

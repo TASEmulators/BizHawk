@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			//TODO: encode_mode2_form2_sector
 
-			var leadoutTs = Disc.TOC.LeadoutLBA;
+			int leadoutTs = Disc.TOC.LeadoutLBA;
 			var lastTrackTOCItem = Disc.TOC.TOCItems[Disc.TOC.LastRecordedTrackNumber]; //NOTE: in case LastRecordedTrackNumber is al ie, this will malfunction
 
 			//leadout flags.. let's set them the same as the last track.
@@ -33,18 +33,18 @@ namespace BizHawk.Emulation.DiscSystem
 
 			//TODO - needs to be encoded as a certain mode (mode 2 form 2 for psx... i guess...)
 
-			for (var i = 0; i < Length; i++)
+			for (int i = 0; i < Length; i++)
 			{
 				//var se = new SectorEntry(sz);
 				//Disc.Sectors.Add(se);
 				SubchannelQ sq = default;
 
-				var track_relative_msf = i;
+				int track_relative_msf = i;
 				sq.min = BCD2.FromDecimal(new Timestamp(track_relative_msf).MIN);
 				sq.sec = BCD2.FromDecimal(new Timestamp(track_relative_msf).SEC);
 				sq.frame = BCD2.FromDecimal(new Timestamp(track_relative_msf).FRAC);
 
-				var absolute_msf = i + leadoutTs;
+				int absolute_msf = i + leadoutTs;
 				sq.ap_min = BCD2.FromDecimal(new Timestamp(absolute_msf + 150).MIN);
 				sq.ap_sec = BCD2.FromDecimal(new Timestamp(absolute_msf + 150).SEC);
 				sq.ap_frame = BCD2.FromDecimal(new Timestamp(absolute_msf + 150).FRAC);

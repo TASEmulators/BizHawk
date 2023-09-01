@@ -90,7 +90,7 @@ namespace BizHawk.Emulation.Cores
 
 			private void Bp(object[] parameters, string name, object value)
 			{
-				if (_paramMap.TryGetValue(name, out var i))
+				if (_paramMap.TryGetValue(name, out int i))
 				{
 					parameters[i] = value;
 				}
@@ -160,10 +160,10 @@ namespace BizHawk.Emulation.Cores
 		/// </summary>
 		public CoreInventory(IEnumerable<IEnumerable<Type>> assys)
 		{
-			var systemsFlat = new Dictionary<Type, Core>();
+			Dictionary<Type, Core> systemsFlat = new Dictionary<Type, Core>();
 			void ProcessConstructor(Type type, CoreConstructorAttribute consAttr, CoreAttribute coreAttr, ConstructorInfo cons)
 			{
-				var core = new Core(type, consAttr, coreAttr, cons);
+				Core core = new Core(type, consAttr, coreAttr, cons);
 				_systems.GetValueOrPutNew(consAttr.System).Add(core);
 				systemsFlat[type] = core;
 			}
@@ -173,7 +173,7 @@ namespace BizHawk.Emulation.Cores
 				{
 					if (!typ.IsAbstract && typ.GetInterfaces().Contains(typeof(IEmulator)))
 					{
-						var coreAttr = typ.GetCustomAttributes(typeof(CoreAttribute), false);
+						object[] coreAttr = typ.GetCustomAttributes(typeof(CoreAttribute), false);
 						if (coreAttr.Length != 1)
 							throw new InvalidOperationException($"{nameof(IEmulator)} {typ} without {nameof(CoreAttribute)}s!");
 						var cons = typ.GetConstructors(BindingFlags.Public | BindingFlags.Instance)

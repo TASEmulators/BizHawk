@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 	{
 		static QuickNES()
 		{
-			var resolver = new DynamicLibraryImportResolver(
+			DynamicLibraryImportResolver resolver = new DynamicLibraryImportResolver(
 				$"libquicknes{(OSTailoredCode.IsUnixHost ? ".dll.so.0.7.0" : ".dll")}", hasLimitedLifetime: false);
 			QN = BizInvoker.GetInvoker<LibQuickNES>(resolver, CallingConventionAdapters.Native);
 			QN.qn_setup_mappers();
@@ -149,7 +149,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			if (controller.IsPressed("Reset"))
 				QN.qn_reset(Context, false);
 
-			SetPads(controller, out var j1, out var j2);
+			SetPads(controller, out int j1, out int j2);
 
 			QN.qn_set_tracecb(Context, Tracer.IsEnabled() ? _traceCb : null);
 
@@ -194,14 +194,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			var chrrom = _memoryDomains["CHR VROM"];
 			var prgrom = _memoryDomains["PRG ROM"]!;
 
-			var ms = new MemoryStream();
+			MemoryStream ms = new MemoryStream();
 			for (int i = 0; i < prgrom.Size; i++)
 				ms.WriteByte(prgrom.PeekByte(i));
 			if (chrrom != null)
 				for (int i = 0; i < chrrom.Size; i++)
 					ms.WriteByte(chrrom.PeekByte(i));
 
-			var sha1 = SHA1Checksum.ComputeDigestHex(ms.ToArray());
+			string sha1 = SHA1Checksum.ComputeDigestHex(ms.ToArray());
 			Console.WriteLine("Hash for BootGod: {0}", sha1);
 
 			// Bail out on ROM's known to not be playable by this core
@@ -256,7 +256,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		// we need to do this from the raw file since QuickNES hasn't had time to process it yet.
 		private byte[] FixInesHeader(byte[] file)
 		{
-			var sha1 = SHA1Checksum.ComputeDigestHex(file);
+			string sha1 = SHA1Checksum.ComputeDigestHex(file);
 			bool didSomething = false;
 
 			Console.WriteLine(sha1);

@@ -48,11 +48,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			ser.EndSection();
 		}
 
-		public int[] GetVideoBuffer()
-		{
-			
-			return FrameBuffer; 
-		}
+		public int[] GetVideoBuffer() => FrameBuffer;
 
 		// gets called when a new border color is chosen
 		private void Update_Border()
@@ -105,15 +101,9 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		public bool GetSr1() => Sr1;
 		public bool GetSr2() => Sr2;
 
-		public void ToggleSr2()
-		{
-			Sr2 = !Sr2;
-		}
+		public void ToggleSr2() => Sr2 = !Sr2;
 
-		public void SetSst(bool value)
-		{
-			Sst = value;
-		}
+		public void SetSst(bool value) => Sst = value;
 
 		// mask off appropriate STIC bits and write to register
 		private void write_reg(int reg, ushort value, bool poke)
@@ -839,7 +829,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					}
 
 					// the extra condition here is to ignore only border/BG collsion bit set
-					if (Collision[i, j] != 0 && Collision[i,j] != (1 << 9) && Collision[i,j] != (1 << 8)) 
+					if (Collision[i, j] is not 0 and not (1 << 9) and not (1 << 8)) 
 					{
 						for (int k = 0; k < 8; k++)
 						{

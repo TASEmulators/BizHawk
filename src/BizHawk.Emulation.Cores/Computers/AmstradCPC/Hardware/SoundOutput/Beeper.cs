@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			get => VolumeConverterOut(_volume);
 			set
 			{
-				var newVol = VolumeConverterIn(value);
+				int newVol = VolumeConverterIn(value);
 				if (newVol != _volume)
 					blip.Clear();
 				_volume = VolumeConverterIn(value);
@@ -147,15 +147,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				throw new InvalidOperationException("Only Sync mode is supported.");
 		}
 
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new NotSupportedException("Async is not available");
-		}
+		public void GetSamplesAsync(short[] samples) => throw new NotSupportedException("Async is not available");
 
-		public void DiscardSamples()
-		{
-			blip.Clear();
-		}
+		public void DiscardSamples() => blip.Clear();
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{

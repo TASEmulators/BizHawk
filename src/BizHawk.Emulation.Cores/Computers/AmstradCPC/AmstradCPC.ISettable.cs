@@ -15,15 +15,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		internal AmstradCPCSettings Settings = new();
 		internal AmstradCPCSyncSettings SyncSettings = new();
 
-		public AmstradCPCSettings GetSettings()
-		{
-			return Settings.Clone();
-		}
+		public AmstradCPCSettings GetSettings() => Settings.Clone();
 
-		public AmstradCPCSyncSettings GetSyncSettings()
-		{
-			return SyncSettings.Clone();
-		}
+		public AmstradCPCSyncSettings GetSyncSettings() => SyncSettings.Clone();
 
 		public PutSettingsDirtyBits PutSettings(AmstradCPCSettings o)
 		{
@@ -74,10 +68,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			[DefaultValue(50)]
 			public int TapeVolume { get; set; }
 
-			public AmstradCPCSettings Clone()
-			{
-				return (AmstradCPCSettings)MemberwiseClone();
-			}
+			public AmstradCPCSettings Clone() => (AmstradCPCSettings)MemberwiseClone();
 
 			public AmstradCPCSettings()
 			{
@@ -107,20 +98,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			[DefaultValue(BorderType.Uniform)]
 			public BorderType BorderType { get; set; }
 
-			public AmstradCPCSyncSettings Clone()
-			{
-				return (AmstradCPCSyncSettings)MemberwiseClone();
-			}
+			public AmstradCPCSyncSettings Clone() => (AmstradCPCSyncSettings)MemberwiseClone();
 
 			public AmstradCPCSyncSettings()
 			{
 				SettingsUtil.SetDefaultValues(this);
 			}
 
-			public static bool NeedsReboot(AmstradCPCSyncSettings x, AmstradCPCSyncSettings y)
-			{
-				return !DeepEquality.DeepEquals(x, y);
-			}
+			public static bool NeedsReboot(AmstradCPCSyncSettings x, AmstradCPCSyncSettings y) => !DeepEquality.DeepEquals(x, y);
 		}
 
 		/// <summary>
@@ -162,7 +147,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			public static CPCMachineMetaData GetMetaObject(MachineType type)
 			{
-				var m = new CPCMachineMetaData { MachineType = type };
+				CPCMachineMetaData m = new CPCMachineMetaData { MachineType = type };
 
 				switch (type)
 				{
@@ -205,7 +190,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			public static string GetMetaString(MachineType type)
 			{
 				var m = GetMetaObject(type);
-				var sb = new StringBuilder();
+				StringBuilder sb = new StringBuilder();
 
 				// get longest title
 				int titleLen = 0;
@@ -215,13 +200,13 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 						titleLen = d.Key.Length;
 				}
 
-				var maxDataLineLen = 40;
+				int maxDataLineLen = 40;
 
 				// generate layout
 				foreach (var d in m.Data)
 				{
-					var tLen = d.Key.Length;
-					var makeup = (titleLen - tLen) / 4;
+					int tLen = d.Key.Length;
+					int makeup = (titleLen - tLen) / 4;
 					sb.Append(d.Key + ":\t");
 					for (int i = 0; i < makeup; i++)
 					{
@@ -235,13 +220,13 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					}
 
 					// output the data splitting and tabbing as neccessary
-					var arr = d.Value.Split(' ');
+					string[] arr = d.Value.Split(' ');
 
 					List<string> builder = new();
 					string working = "";
-					foreach (var s in arr)
+					foreach (string s in arr)
 					{
-						var len = s.Length;
+						int len = s.Length;
 						if (working.Length + 1 + len > maxDataLineLen)
 						{
 							// new line needed

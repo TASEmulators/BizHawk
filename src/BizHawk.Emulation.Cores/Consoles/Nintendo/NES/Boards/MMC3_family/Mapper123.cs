@@ -72,7 +72,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if ((EXPREGS[0] & 0x40) > 0)
 			{
-				var bank = (EXPREGS[0] & 5) | ((EXPREGS[0] & 8) >> 2) | ((EXPREGS[0] & 0x20) >> 2);
+				int bank = (EXPREGS[0] & 5) | ((EXPREGS[0] & 8) >> 2) | ((EXPREGS[0] & 0x20) >> 2);
 				if ((EXPREGS[0] & 2) > 0)
 				{
 					return Rom[((bank >> 1) << 15) + (addr & 0x7FFF)];

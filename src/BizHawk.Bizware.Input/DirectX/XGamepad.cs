@@ -144,8 +144,8 @@ namespace BizHawk.Bizware.Input
 			const float f = 32768 / 10000.0f;
 
 			//since our whole input framework really only understands whole axes, let's make the triggers look like an axis
-			var lTrig = g.LeftTrigger / 255.0f * 2 - 1;
-			var rTrig = g.RightTrigger / 255.0f * 2 - 1;
+			float lTrig = g.LeftTrigger / 255.0f * 2 - 1;
+			float rTrig = g.RightTrigger / 255.0f * 2 - 1;
 			lTrig *= 10000;
 			rTrig *= 10000;
 

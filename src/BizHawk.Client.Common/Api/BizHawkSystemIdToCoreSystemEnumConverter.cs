@@ -76,10 +76,7 @@ namespace BizHawk.Client.Common
 		/// <param name="value"><see cref="string"/> you want to convert</param>
 		/// <returns>A <see cref="CoreSystem"/> that is equivalent to BizHawk SystemId <see cref="string"/></returns>
 		/// <exception cref="InvalidOperationException">Thrown when SystemId hasn't been found</exception>
-		public CoreSystem Convert(string value)
-		{
-			return (CoreSystem)Convert(value, null, null, CultureInfo.CurrentCulture);
-		}
+		public CoreSystem Convert(string value) => (CoreSystem)Convert(value, null, null, CultureInfo.CurrentCulture);
 
 
 		/// <summary>
@@ -142,9 +139,6 @@ namespace BizHawk.Client.Common
 		/// <param name="value"><see cref="CoreSystem"/> you want to convert</param>
 		/// <returns>A <see cref="string"/> that is used by BizHawk SystemId</returns>
 		/// <exception cref="InvalidOperationException">Thrown when <see cref="CoreSystem"/> hasn't been found</exception>
-		public string ConvertBack(CoreSystem value)
-		{
-			return (string)ConvertBack(value, null, null, CultureInfo.CurrentCulture);
-		}
+		public string ConvertBack(CoreSystem value) => (string)ConvertBack(value, null, null, CultureInfo.CurrentCulture);
 	}
 }

@@ -2,20 +2,11 @@
 {
 	public sealed partial class Cia
 	{
-		public int Peek(int addr)
-		{
-			return ReadRegister(addr & 0xF);
-		}
+		public int Peek(int addr) => ReadRegister(addr & 0xF);
 
-		public bool ReadIrq()
-		{
-			return (_icr & 0x80) == 0;
-		}
+		public bool ReadIrq() => (_icr & 0x80) == 0;
 
-		public int ReadPortA()
-		{
-			return (_pra | ~_ddra) & 0xFF;
-		}
+		public int ReadPortA() => (_pra | ~_ddra) & 0xFF;
 
 		public int Read(int addr)
 		{
@@ -33,7 +24,7 @@
 					_todLatch = true;
 					return _latchHr;
 				case 0xD:
-					var icrTemp = _icr;
+					int icrTemp = _icr;
 					_icr = 0;
 					return icrTemp;
 			}
@@ -65,10 +56,7 @@
 			};
 		}
 
-		public void Poke(int addr, int val)
-		{
-			WriteRegister(addr, val);
-		}
+		public void Poke(int addr, int val) => WriteRegister(addr, val);
 
 		public void Write(int addr, int val)
 		{
@@ -154,7 +142,7 @@
 					}
 					break;
 				case 0xE:
-					var oldCra = _cra;
+					int oldCra = _cra;
 					WriteRegister(addr, val);
 
 					// Toggle output begins high when timer starts.
@@ -164,7 +152,7 @@
 					}
 					break;
 				case 0xF:
-					var oldCrb = _crb;
+					int oldCrb = _crb;
 					WriteRegister(addr, val);
 
 					// Toggle output begins high when timer starts.

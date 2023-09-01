@@ -518,11 +518,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			connectFunctionPointers();
 
 			// Start up the core
-			m64p_error result = m64pCoreStartup(0x20001, "", "", "Core",
+			var result = m64pCoreStartup(0x20001, "", "", "Core",
 				null, "", IntPtr.Zero);
 
 			// Open the core settings section in the config system
-			IntPtr core_section = IntPtr.Zero;
+			var core_section = IntPtr.Zero;
 			m64pConfigOpenSection("Core", ref core_section);
 
 			// Set the savetype if needed
@@ -547,7 +547,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			result = m64pCoreDoCommandByteArray(m64p_command.M64CMD_ROM_OPEN, rom.Length, rom);
 
 			// Open the general video settings section in the config system
-			IntPtr video_section = IntPtr.Zero;
+			var video_section = IntPtr.Zero;
 			m64pConfigOpenSection("Video-General", ref video_section);
 
 			// Set the desired width and height for mupen64plus
@@ -598,7 +598,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		private void ExecuteEmulatorThread()
 		{
 			emulator_running = true;
-			var cb = new StartupCallback(() => m64pStartupComplete.Set());
+			StartupCallback cb = new StartupCallback(() => m64pStartupComplete.Set());
 			m64pCoreDoCommandPtr(m64p_command.M64CMD_EXECUTE, 0,
 				Marshal.GetFunctionPointerForDelegate(cb));
 			emulator_running = false;
@@ -657,7 +657,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <param name="video_settings">Settings to put into mupen64plus</param>
 		public void set_video_parameters(VideoPluginSettings video_settings)
 		{
-			IntPtr video_plugin_section = IntPtr.Zero;
+			var video_plugin_section = IntPtr.Zero;
 			if (video_settings.Plugin == PluginType.Rice)
 			{
 				m64pConfigOpenSection("Video-Rice", ref video_plugin_section);
@@ -712,25 +712,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			}
 		}
 
-		public int get_memory_size(N64_MEMORY id)
-		{
-			return m64pMemGetSize(id);
-		}
+		public int get_memory_size(N64_MEMORY id) => m64pMemGetSize(id);
 
-		public IntPtr get_memory_ptr(N64_MEMORY id)
-		{
-			return m64pDebugMemGetPointer(id);
-		}
+		public IntPtr get_memory_ptr(N64_MEMORY id) => m64pDebugMemGetPointer(id);
 
-		public void soft_reset()
-		{
-			m64pCoreDoCommandPtr(m64p_command.M64CMD_RESET, 0, IntPtr.Zero);
-		}
+		public void soft_reset() => m64pCoreDoCommandPtr(m64p_command.M64CMD_RESET, 0, IntPtr.Zero);
 
-		public void hard_reset()
-		{
-			m64pCoreDoCommandPtr(m64p_command.M64CMD_RESET, 1, IntPtr.Zero);
-		}
+		public void hard_reset() => m64pCoreDoCommandPtr(m64p_command.M64CMD_RESET, 1, IntPtr.Zero);
 
 		public enum BreakType
 		{
@@ -862,22 +850,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			m64pEvent.Set(); //order important
 		}
 
-		public int SaveState(byte[] buffer)
-		{
-			return m64pCoreSaveState(buffer);
-		}
+		public int SaveState(byte[] buffer) => m64pCoreSaveState(buffer);
 
-		public void LoadState(byte[] buffer)
-		{
-			m64pCoreLoadState(buffer);
-		}
+		public void LoadState(byte[] buffer) => m64pCoreLoadState(buffer);
 
 		private byte[] saveram_backup;
 
-		public void InitSaveram()
-		{
-			m64pinit_saveram();
-		}
+		public void InitSaveram() => m64pinit_saveram();
 
 		public const int kSaveramSize = 0x800 + 4 * 0x8000 + 0x20000 + 0x8000;
 
@@ -903,15 +882,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			}
 		}
 
-		public void LoadSaveram(byte[] src)
-		{
-			m64pload_saveram(src);
-		}
+		public void LoadSaveram(byte[] src) => m64pload_saveram(src);
 
 		/* TODO: Support address masks */
 		public void SetBreakpoint(BreakType type, uint? address)
 		{
-			m64p_breakpoint breakpoint = address is null
+			var breakpoint = address is null
 				? new m64p_breakpoint()
 				{
 					// For null address, specify max address range to match any address
@@ -972,20 +948,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			m64pDebugBreakpointCommand(m64p_dbg_bkp_command.M64P_BKP_CMD_REMOVE_IDX, (uint)index, ref unused);
 		}
 
-		public void setTraceCallback(TraceCallback callback)
-		{
-			m64pSetTraceCallback(callback);
-		}
+		public void setTraceCallback(TraceCallback callback) => m64pSetTraceCallback(callback);
 
-		public void getRegisters(byte[] dest)
-		{
-			m64pGetRegisters(dest);
-		}
+		public void getRegisters(byte[] dest) => m64pGetRegisters(dest);
 
-		public void Step()
-		{
-			m64pDebugStep();
-		}
+		public void Step() => m64pDebugStep();
 
 		public void Resume()
 		{
@@ -1034,7 +1001,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		{
 			static IntPtr GetDLIRPtrByRefl(DynamicLibraryImportResolver dlir) => (IntPtr) fiDLIRInternalPtr.GetValue(dlir);
 			if (plugins.ContainsKey(type)) DetachPlugin(type);
-			var lib = new DynamicLibraryImportResolver(PluginName);
+			DynamicLibraryImportResolver lib = new DynamicLibraryImportResolver(PluginName);
 			var libPtr = GetDLIRPtrByRefl(lib);
 			GetTypedDelegate<PluginStartup>(libPtr, "PluginStartup")(GetDLIRPtrByRefl(Library), null, null);
 			if (m64pCoreAttachPlugin(type, libPtr) != m64p_error.M64ERR_SUCCESS)
@@ -1064,11 +1031,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		public delegate void BreakpointHitCallback(uint address, BreakType type);
 		public event BreakpointHitCallback BreakpointHit;
 
-		private void FireFrameFinishedEvent()
-		{
+		private void FireFrameFinishedEvent() =>
 			// Execute Frame Callback functions
 			FrameFinished?.Invoke();
-		}
 
 		private void FireVIEvent()
 		{
@@ -1078,15 +1043,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			m64pEvent.Set(); //order important
 		}
 
-		private void FireRenderEvent()
-		{
-			BeforeRender?.Invoke();
-		}
+		private void FireRenderEvent() => BeforeRender?.Invoke();
 
-		private bool CheckBreakpointFlag(ref m64p_breakpoint bkp, m64p_dbg_bkp_flags flag)
-		{
-			return ((bkp.flags & (uint)flag) != 0);
-		}
+		private bool CheckBreakpointFlag(ref m64p_breakpoint bkp, m64p_dbg_bkp_flags flag) => ((bkp.flags & (uint)flag) != 0);
 
 		private void FireBreakpointEvent(int bpt)
 		{
@@ -1100,7 +1059,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 
 			m64pDebugBreakpointCommand(m64p_dbg_bkp_command.M64P_BKP_CMD_GET_STRUCT, (uint)bpt, ref breakpoint);
 
-			BreakType type = BreakType.Execute;
+			var type = BreakType.Execute;
 
 			if(CheckBreakpointFlag(ref breakpoint, m64p_dbg_bkp_flags.M64P_BPT_FLAG_READ))
 			{
@@ -1114,17 +1073,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			BreakpointHit(breakpoint.address, type);
 		}
 
-		private void OnDebuggerInitialized()
-		{
+		private void OnDebuggerInitialized() =>
 			// Default value is M64P_DBG_RUNSTATE_PAUSED
 			m64pDebugSetRunState(m64p_dbg_runstate.M64P_DBG_RUNSTATE_RUNNING);
-		}
 
-		#pragma warning disable IDE0051
-		private void CompletedFrameCallback()
-		{
-			m64pEvent.Set();
-		}
-		#pragma warning restore IDE0051
+#pragma warning disable IDE0051
+		private void CompletedFrameCallback() => m64pEvent.Set();
+#pragma warning restore IDE0051
 	}
 }

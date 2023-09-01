@@ -11,14 +11,8 @@ namespace BizHawk.Client.DiscoHawk
 			lblVersion.Text = $"v{System.Reflection.Assembly.GetExecutingAssembly().GetName().Version}";
 		}
 
-		private void richTextBox1_LinkClicked(object sender, LinkClickedEventArgs e)
-		{
-			System.Diagnostics.Process.Start(e.LinkText);
-		}
+		private void richTextBox1_LinkClicked(object sender, LinkClickedEventArgs e) => System.Diagnostics.Process.Start(e.LinkText);
 
-		private void button1_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
+		private void button1_Click(object sender, EventArgs e) => Close();
 	}
 }

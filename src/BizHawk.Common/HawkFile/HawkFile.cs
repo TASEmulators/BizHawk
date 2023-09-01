@@ -95,7 +95,7 @@ namespace BizHawk.Common
 
 			if (DearchivalMethod != null && allowArchives)
 			{
-				var ext = Path.GetExtension(path).ToLowerInvariant();
+				string ext = Path.GetExtension(path).ToLowerInvariant();
 				if (DearchivalMethod.AllowedArchiveExtensions.Contains(ext))
 				{
 					if (DearchivalMethod.CheckSignature(path, out _, out _))
@@ -165,7 +165,7 @@ namespace BizHawk.Common
 			if (_boundStream != null) throw new InvalidOperationException("stream already bound!");
 			if (_archiveItems == null || _extractor == null) throw new InvalidOperationException("not an archive");
 
-			var archiveIndex = _archiveItems[index].ArchiveIndex;
+			int archiveIndex = _archiveItems[index].ArchiveIndex;
 			_boundStream = new MemoryStream();
 			_extractor.ExtractFile(archiveIndex, _boundStream);
 			_boundStream.Position = 0;
@@ -194,7 +194,7 @@ namespace BizHawk.Common
 			{
 				if (extensions.Count != 0)
 				{
-					var candidates = _archiveItems.Where(item => extensions.Contains(Path.GetExtension(item.Name).ToLowerInvariant())).ToList();
+					List<HawkArchiveFileItem> candidates = _archiveItems.Where(item => extensions.Contains(Path.GetExtension(item.Name).ToLowerInvariant())).ToList();
 					if (onlyBindSingle ? candidates.Count == 1 : candidates.Count != 0) BindArchiveMember(candidates[0].Index);
 					return this;
 				}
@@ -270,7 +270,7 @@ namespace BizHawk.Common
 		public byte[] ReadAllBytes()
 		{
 			using var stream = GetStream();
-			using var ms = new MemoryStream((int) stream.Length);
+			using MemoryStream ms = new MemoryStream((int) stream.Length);
 			stream.CopyTo(ms);
 			return ms.GetBuffer();
 		}
@@ -293,7 +293,7 @@ namespace BizHawk.Common
 		/// <returns>path / member path pair iff <paramref name="path"/> contains <c>'|'</c>, <see langword="null"/> otherwise</returns>
 		private static (string, string)? SplitArchiveMemberPath([HawkFilePath] string path)
 		{
-			var i = path.LastIndexOf('|');
+			int i = path.LastIndexOf('|');
 #if DEBUG
 			if (path.IndexOf('|') != i) Console.WriteLine($"{nameof(HawkFile)} path contains multiple '|'");
 #endif

@@ -79,10 +79,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SetIRQ();
 		}
 
-		public void SetDriveLightCallback(Action<bool> callback)
-		{
-			diskdrive.DriveLightCallback = callback;
-		}
+		public void SetDriveLightCallback(Action<bool> callback) => diskdrive.DriveLightCallback = callback;
 
 		/// <summary>
 		/// should only be called once, before emulation begins
@@ -217,15 +214,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override byte[] SaveRam => throw new Exception("FDS Saveram: Must access with method api!");
 
 
-		public MemoryDomain GetDiskPeeker()
-		{
-			return new MemoryDomainDelegate("FDS Side", diskdrive.NumBytes, MemoryDomain.Endian.Little, diskdrive.PeekData, null, 1);
-		}
+		public MemoryDomain GetDiskPeeker() => new MemoryDomainDelegate("FDS Side", diskdrive.NumBytes, MemoryDomain.Endian.Little, diskdrive.PeekData, null, 1);
 
-		private void SetIRQ()
-		{
-			IrqSignal = _diskirq || _timerirq;
-		}
+		private void SetIRQ() => IrqSignal = _diskirq || _timerirq;
 
 		private bool diskirq
 		{
@@ -406,15 +397,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			diskirq = diskdrive.irq;
 		}
 
-		public override byte ReadWram(int addr)
-		{
-			return Wram[addr & 0x1fff];
-		}
+		public override byte ReadWram(int addr) => Wram[addr & 0x1fff];
 
-		public override void WriteWram(int addr, byte value)
-		{
-			Wram[addr & 0x1fff] = value;
-		}
+		public override void WriteWram(int addr, byte value) => Wram[addr & 0x1fff] = value;
 
 		public override byte ReadPrg(int addr)
 		{

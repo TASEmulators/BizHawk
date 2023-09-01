@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void WriteExp(int addr, byte value)
 		{
 			// Mirroring
-			if (addr == 0x2FE || addr == 0x2FF)
+			if (addr is 0x2FE or 0x2FF)
 			{
 				int mirr = ((addr << 1) & 2) | ((value >> 4) & 1);
 				switch (mirr)
@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			// IRQ
-			else if (addr >= 0x500 && addr <= 0x503)
+			else if (addr is >= 0x500 and <= 0x503)
 			{
 				switch (addr)
 				{
@@ -87,10 +87,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void WritePrg(int addr, byte value)
-		{
-			_reg = value;
-		}
+		public override void WritePrg(int addr, byte value) => _reg = value;
 
 		public override byte ReadPrg(int addr)
 		{
@@ -144,9 +141,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SyncIRQ();
 		}
 
-		private void SyncIRQ()
-		{
-			SyncIRQ(_irqPending);
-		}
+		private void SyncIRQ() => SyncIRQ(_irqPending);
 	}
 }

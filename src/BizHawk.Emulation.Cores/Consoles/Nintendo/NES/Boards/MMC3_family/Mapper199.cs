@@ -169,7 +169,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		protected override int Get_PRGBank_8K(int addr)
 		{
-			if (addr >= 0x4000 && addr < 0x6000)
+			if (addr is >= 0x4000 and < 0x6000)
 			{
 				return exRegs[0];
 			}

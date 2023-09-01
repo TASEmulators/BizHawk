@@ -51,10 +51,7 @@ namespace BizHawk.Client.EmuHawk
 			YNumeric.Maximum = TargetPanel.Height - 1;
 		}
 
-		public void UpdateValues()
-		{
-			TargetPanel.Refresh();
-		}
+		public void UpdateValues() => TargetPanel.Refresh();
 
 		public void Clear()
 		{
@@ -68,13 +65,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Set(IController controller)
 		{
-			var newX = controller.AxisValue(XName) / MultiplierX;
-			var newY = controller.AxisValue(YName) / MultiplierY;
+			float newX = controller.AxisValue(XName) / MultiplierX;
+			float newY = controller.AxisValue(YName) / MultiplierY;
 
-			var oldX = X / MultiplierX;
-			var oldY = Y / MultiplierY;
+			float oldX = X / MultiplierX;
+			float oldY = Y / MultiplierY;
 
-			var changed = newX != oldX && newY != oldY;
+			bool changed = newX != oldX && newY != oldY;
 
 			XNumeric.Value = (int)newX;
 			YNumeric.Value = (int)newY;
@@ -255,25 +252,13 @@ namespace BizHawk.Client.EmuHawk
 				new Rectangle(X - 2, Y - 2, 4, 4));
 		}
 
-		private void XNumeric_ValueChanged(object sender, EventArgs e)
-		{
-			UpdatePanelFromNumeric();
-		}
+		private void XNumeric_ValueChanged(object sender, EventArgs e) => UpdatePanelFromNumeric();
 
-		private void XNumeric_KeyUp(object sender, KeyEventArgs e)
-		{
-			UpdatePanelFromNumeric();
-		}
+		private void XNumeric_KeyUp(object sender, KeyEventArgs e) => UpdatePanelFromNumeric();
 
-		private void YNumeric_ValueChanged(object sender, EventArgs e)
-		{
-			UpdatePanelFromNumeric();
-		}
+		private void YNumeric_ValueChanged(object sender, EventArgs e) => UpdatePanelFromNumeric();
 
-		private void YNumeric_KeyUp(object sender, KeyEventArgs e)
-		{
-			UpdatePanelFromNumeric();
-		}
+		private void YNumeric_KeyUp(object sender, KeyEventArgs e) => UpdatePanelFromNumeric();
 
 		private void TargetPanel_MouseDown(object sender, MouseEventArgs e)
 		{

@@ -9,13 +9,13 @@ namespace BizHawk.Client.Common
 	{
 		public new string this[string key]
 		{
-			get => TryGetValue(key, out var s) ? s : string.Empty;
+			get => TryGetValue(key, out string s) ? s : string.Empty;
 			set => base[key] = value;
 		}
 
 		public override string ToString()
 		{
-			var sb = new StringBuilder();
+			StringBuilder sb = new StringBuilder();
 			foreach (var (k, v) in this) sb.Append(k).Append(' ').Append(v).AppendLine();
 			return sb.ToString();
 		}

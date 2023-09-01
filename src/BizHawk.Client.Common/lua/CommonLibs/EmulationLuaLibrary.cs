@@ -25,10 +25,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("emu.frameadvance( );")]
 		[LuaMethod("frameadvance", "Signals to the emulator to resume emulation. Necessary for any lua script while loop or else the emulator will freeze!")]
-		public void FrameAdvance()
-		{
-			FrameAdvanceCallback();
-		}
+		public void FrameAdvance() => FrameAdvanceCallback();
 
 		[LuaMethodExample("local inemufra = emu.framecount( );")]
 		[LuaMethod("framecount", "Returns the current frame count")]
@@ -110,10 +107,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("emu.yield( );")]
 		[LuaMethod("yield", "allows a script to run while emulation is paused and interact with the gui/main window in realtime ")]
-		public void Yield()
-		{
-			YieldCallback();
-		}
+		public void Yield() => YieldCallback();
 
 		[LuaMethodExample("local stemuget = emu.getdisplaytype();")]
 		[LuaMethod("getdisplaytype", "returns the display type (PAL vs NTSC) that the emulator is currently running in")]

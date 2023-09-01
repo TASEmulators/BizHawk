@@ -73,10 +73,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					DriveLightEnabled = true;
 				}
 
-				LibGPGX.INPUT_SYSTEM system_a = SystemForSystem(_syncSettings.ControlTypeLeft);
-				LibGPGX.INPUT_SYSTEM system_b = SystemForSystem(_syncSettings.ControlTypeRight);
+				var system_a = SystemForSystem(_syncSettings.ControlTypeLeft);
+				var system_b = SystemForSystem(_syncSettings.ControlTypeRight);
 
-				var initResult = Core.gpgx_init(romextension, LoadCallback, _syncSettings.GetNativeSettings(lp.Game));
+				bool initResult = Core.gpgx_init(romextension, LoadCallback, _syncSettings.GetNativeSettings(lp.Game));
 
 				if (!initResult)
 					throw new Exception($"{nameof(Core.gpgx_init)}() failed");
@@ -188,7 +188,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				}
 				srcdata = _romfile;
 			}
-			else if (filename == "PRIMARY_CD" || filename == "SECONDARY_CD")
+			else if (filename is "PRIMARY_CD" or "SECONDARY_CD")
 			{
 				if (filename == "PRIMARY_CD" && _romfile != null)
 				{
@@ -296,7 +296,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public static LibGPGX.CDData GetCDDataStruct(Disc cd)
 		{
-			var ret = new LibGPGX.CDData();
+			LibGPGX.CDData ret = new LibGPGX.CDData();
 
 			var ses = cd.Session1;
 			int ntrack = ses.InformationTrackCount;
@@ -355,10 +355,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			ControllerDefinition = ControlConverter.ControllerDef;
 		}
 
-		public LibGPGX.INPUT_DEVICE[] GetDevices()
-		{
-			return (LibGPGX.INPUT_DEVICE[])input.dev.Clone();
-		}
+		public LibGPGX.INPUT_DEVICE[] GetDevices() => (LibGPGX.INPUT_DEVICE[])input.dev.Clone();
 
 		public bool IsMegaCD => _cds != null;
 
@@ -385,20 +382,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			public LibGPGX.VDPNameTable NTW;
 
 
-			public void Enter()
-			{
-				_m.Enter();
-			}
+			public void Enter() => _m.Enter();
 
-			public void Exit()
-			{
-				_m.Exit();
-			}
+			public void Exit() => _m.Exit();
 		}
 
 		public VDPView UpdateVDPViewContext()
 		{
-			var v = new LibGPGX.VDPView();
+			LibGPGX.VDPView v = new LibGPGX.VDPView();
 			Core.gpgx_get_vdp_view(v);
 			Core.gpgx_flush_vram(); // fully regenerate internal caches as needed
 			return new VDPView(v, _elf);

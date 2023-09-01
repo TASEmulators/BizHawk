@@ -21,7 +21,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override bool Equals(object obj)
 		{
-			var cell = obj as Cell;
+			Cell cell = obj as Cell;
 			if (cell != null)
 			{
 				return Column == cell.Column && RowIndex == cell.RowIndex;
@@ -30,10 +30,7 @@ namespace BizHawk.Client.EmuHawk
 			return false;
 		}
 
-		public override int GetHashCode()
-		{
-			return Column.GetHashCode() + RowIndex.GetHashCode();
-		}
+		public override int GetHashCode() => Column.GetHashCode() + RowIndex.GetHashCode();
 
 		public static bool operator ==(Cell a, Cell b)
 		{
@@ -89,9 +86,6 @@ namespace BizHawk.Client.EmuHawk
 
 	public static class CellExtensions
 	{
-		public static bool IsDataCell(this Cell cell)
-		{
-			return cell != null && cell.RowIndex != null && cell.Column != null;
-		}
+		public static bool IsDataCell(this Cell cell) => cell != null && cell.RowIndex != null && cell.Column != null;
 	}
 }

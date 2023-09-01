@@ -19,8 +19,8 @@ namespace BizHawk.Common.PathExtensions
 			if (OSTailoredCode.IsUnixHost)
 			{
 #if true
-				var c = OSTailoredCode.SimpleSubshell("realpath", $"-Lm \"{childPath}\"", $"invalid path {childPath} or missing realpath binary");
-				var p = OSTailoredCode.SimpleSubshell("realpath", $"-Lm \"{parentPath}\"", $"invalid path {parentPath} or missing realpath binary");
+				string c = OSTailoredCode.SimpleSubshell("realpath", $"-Lm \"{childPath}\"", $"invalid path {childPath} or missing realpath binary");
+				string p = OSTailoredCode.SimpleSubshell("realpath", $"-Lm \"{parentPath}\"", $"invalid path {parentPath} or missing realpath binary");
 				return c == p || c.StartsWithOrdinal($"{p}/");
 #else // written for Unix port but may be useful for Windows when moving to .NET Core
 				var parentUriPath = new Uri(parentPath.TrimEnd('.')).AbsolutePath.TrimEnd('/');
@@ -39,8 +39,8 @@ namespace BizHawk.Common.PathExtensions
 #endif
 			}
 
-			var parentUri = new Uri(parentPath.RemoveSuffix(Path.DirectorySeparatorChar));
-			for (var childUri = new DirectoryInfo(childPath); childUri != null; childUri = childUri.Parent)
+			Uri parentUri = new Uri(parentPath.RemoveSuffix(Path.DirectorySeparatorChar));
+			for (DirectoryInfo childUri = new DirectoryInfo(childPath); childUri != null; childUri = childUri.Parent)
 			{
 				if (new Uri(childUri.FullName) == parentUri) return true;
 			}
@@ -49,10 +49,7 @@ namespace BizHawk.Common.PathExtensions
 
 		/// <returns><see langword="true"/> iff absolute (OS-dependent)</returns>
 		/// <seealso cref="IsRelative"/>
-		public static bool IsAbsolute(this string path)
-		{
-			return PathInternal.IsPathFullyQualified(path);
-		}
+		public static bool IsAbsolute(this string path) => PathInternal.IsPathFullyQualified(path);
 
 		/// <returns><see langword="false"/> iff absolute (OS-dependent)</returns>
 		/// <remarks>that means it may return <see langword="true"/> for invalid paths</remarks>
@@ -71,7 +68,7 @@ namespace BizHawk.Common.PathExtensions
 			if (fromPath == null || toPath == null) return null;
 			if (OSTailoredCode.IsUnixHost)
 			{
-				var realpathOutput = OSTailoredCode.SimpleSubshell("realpath", $"--relative-to=\"{fromPath}\" \"{toPath}\"", $"invalid path {toPath}, invalid path {fromPath}, or missing realpath binary");
+				string realpathOutput = OSTailoredCode.SimpleSubshell("realpath", $"--relative-to=\"{fromPath}\" \"{toPath}\"", $"invalid path {toPath}, invalid path {fromPath}, or missing realpath binary");
 				return !realpathOutput.StartsWithOrdinal("../") && realpathOutput != "." && realpathOutput != ".." ? $"./{realpathOutput}" : realpathOutput;
 			}
 
@@ -82,7 +79,7 @@ namespace BizHawk.Common.PathExtensions
 				if (File.Exists(path1.SubstringBefore('|'))) return FileAttributes.Normal;
 				throw new FileNotFoundException();
 			}
-			var path = new StringBuilder(260 /* = MAX_PATH */);
+			StringBuilder path = new StringBuilder(260 /* = MAX_PATH */);
 			return Win32Imports.PathRelativePathTo(path, fromPath, GetPathAttribute(fromPath), toPath, GetPathAttribute(toPath))
 				? path.ToString()
 				: throw new ArgumentException(message: "Paths must have a common prefix", paramName: nameof(toPath));
@@ -100,9 +97,9 @@ namespace BizHawk.Common.PathExtensions
 			else
 			{
 				// FileInfo for normalisation ("C:\a\b\..\c" => "C:\a\c")
-				var mycwd = cwd ?? (OSTailoredCode.IsUnixHost ? Environment.CurrentDirectory : CWDHacks.Get());
-				var finalpath = $"{mycwd}/{path}";
-				var fi = new FileInfo(finalpath);
+				string mycwd = cwd ?? (OSTailoredCode.IsUnixHost ? Environment.CurrentDirectory : CWDHacks.Get());
+				string finalpath = $"{mycwd}/{path}";
+				FileInfo fi = new FileInfo(finalpath);
 				return fi.FullName;
 			}
 		}
@@ -125,7 +122,7 @@ namespace BizHawk.Common.PathExtensions
 			if (!absolutePath.IsSubfolderOf(basePath)) return absolutePath;
 			if (!OSTailoredCode.IsUnixHost) return absolutePath.Replace(basePath, ".").RemoveSuffix(Path.DirectorySeparatorChar);
 #if true // Unix implementation using realpath
-			var realpathOutput = OSTailoredCode.SimpleSubshell("realpath", $"--relative-base=\"{basePath}\" \"{absolutePath}\"", $"invalid path {absolutePath}, invalid path {basePath}, or missing realpath binary");
+			string realpathOutput = OSTailoredCode.SimpleSubshell("realpath", $"--relative-base=\"{basePath}\" \"{absolutePath}\"", $"invalid path {absolutePath}, invalid path {basePath}, or missing realpath binary");
 			return !realpathOutput.StartsWithOrdinal("../") && realpathOutput != "." && realpathOutput != ".." ? $"./{realpathOutput}" : realpathOutput;
 #else // for some reason there were two Unix implementations in the codebase before me? --yoshi
 			// alt. #1
@@ -185,7 +182,7 @@ namespace BizHawk.Common.PathExtensions
 
 		static PathUtils()
 		{
-			var dirPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
+			string dirPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
 			ExeDirectoryPath = OSTailoredCode.IsUnixHost
 				? string.IsNullOrEmpty(dirPath) || dirPath == "/" ? string.Empty : dirPath
 				: string.IsNullOrEmpty(dirPath) ? throw new Exception("failed to get location of executable, very bad things must have happened") : dirPath.RemoveSuffix('\\');
@@ -194,7 +191,7 @@ namespace BizHawk.Common.PathExtensions
 			DataDirectoryPath = ExeDirectoryPath;
 			if (OSTailoredCode.IsUnixHost)
 			{
-				var envVar = Environment.GetEnvironmentVariable("BIZHAWK_DATA_HOME");
+				string envVar = Environment.GetEnvironmentVariable("BIZHAWK_DATA_HOME");
 				try
 				{
 					envVar = envVar?.MakeAbsolute() ?? string.Empty;

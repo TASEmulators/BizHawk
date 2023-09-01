@@ -143,10 +143,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_banks_8k[3] = 0xFF;
 		}
 
-		private void SyncIRQ()
-		{
-			IrqSignal = (irq_pending && irq_enabled);
-		}
+		private void SyncIRQ() => IrqSignal = (irq_pending && irq_enabled);
 
 		public override bool Configure(EDetectionOrigin origin)
 		{

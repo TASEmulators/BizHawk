@@ -9,15 +9,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		public int bank;
 
-		public virtual byte ReadMemory(ushort addr)
-		{
-			return 0;
-		}
+		public virtual byte ReadMemory(ushort addr) => 0;
 
-		public virtual byte PeekMemory(ushort addr)
-		{
-			return 0;
-		}
+		public virtual byte PeekMemory(ushort addr) => 0;
 
 		public virtual void WriteMemory(ushort addr, byte value)
 		{
@@ -27,10 +21,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		{
 		}
 
-		public virtual void SyncState(Serializer ser)
-		{
-			ser.Sync(nameof(bank), ref bank);
-		}
+		public virtual void SyncState(Serializer ser) => ser.Sync(nameof(bank), ref bank);
 
 		public virtual void Dispose()
 		{

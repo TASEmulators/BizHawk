@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (reg[0].Bit(5))
 			{
-				var offset=0;
+				int offset =0;
 				if (Ghostbusters63in1_63set)
 					offset = banks[bank];
 				else
@@ -71,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else
 			{
-				var offset = 0;
+				int offset = 0;
 				if (Ghostbusters63in1_63set)
 					offset = banks[bank];
 				else

@@ -18,7 +18,7 @@ namespace BizHawk.Common.IOExtensions
 
 		public static byte[] ReadAllBytes(this Stream stream)
 		{
-			var outStream = new MemoryStream();
+			MemoryStream outStream = new MemoryStream();
 			stream.CopyTo(outStream);
 
 			return outStream.ToArray();
@@ -27,10 +27,10 @@ namespace BizHawk.Common.IOExtensions
 		public static byte[] ReadAllBytes(this BinaryReader br)
 		{
 			const int BUFF_SIZE = 4096;
-			var buffer = new byte[BUFF_SIZE];
+			byte[] buffer = new byte[BUFF_SIZE];
 
 			int bytesRead;
-			var outStream = new MemoryStream();
+			MemoryStream outStream = new MemoryStream();
 
 			while ((bytesRead = br.Read(buffer, 0, BUFF_SIZE)) > 0)
 			{
@@ -48,7 +48,7 @@ namespace BizHawk.Common.IOExtensions
 		/// <returns></returns>
 		public static string ReadStringFixedUtf8(this BinaryReader r, int bytes)
 		{
-			var read = new byte[bytes];
+			byte[] read = new byte[bytes];
 			r.Read(read, 0, bytes);
 			return Encoding.UTF8.GetString(read);
 		}
@@ -60,10 +60,10 @@ namespace BizHawk.Common.IOExtensions
 		/// <returns></returns>
 		public static string ReadStringUtf8NullTerminated(this BinaryReader br)
 		{
-			using var ms = new MemoryStream();
+			using MemoryStream ms = new MemoryStream();
 			for (;;)
 			{
-				var b = br.ReadByte();
+				byte b = br.ReadByte();
 				if (b == 0)
 				{
 					return Encoding.UTF8.GetString(ms.ToArray());
@@ -105,14 +105,8 @@ namespace BizHawk.Common.IOExtensions
 			}
 		}
 
-		public static void WriteBit(this BinaryWriter bw, Bit bit)
-		{
-			bw.Write((bool)bit);
-		}
+		public static void WriteBit(this BinaryWriter bw, Bit bit) => bw.Write((bool)bit);
 
-		public static Bit ReadBit(this BinaryReader br)
-		{
-			return br.ReadBoolean();
-		}
+		public static Bit ReadBit(this BinaryReader br) => br.ReadBoolean();
 	}
 }
